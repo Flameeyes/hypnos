@@ -9,8 +9,10 @@
 #include "tmpeff.h"
 #include "sndpkg.h"
 #include "inlines.h"
-#include "skills/skills.h"
 #include "misc.h"
+#include "skills/skills.h"
+#include "objects/cchar.h"
+#include "objects/citem.h"
 
 namespace tempfx {
 

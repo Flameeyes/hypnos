@@ -6,8 +6,10 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
-#include "bounty.h"
 #include "logsystem.h"
+#include "extras/bounty.h"
+#include "objects/cchar.h"
+#include "objects/citem/cmsgboard.h"
 
 /*
 //////////////////////////////////////////////////////////////////////////////

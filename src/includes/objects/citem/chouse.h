@@ -12,6 +12,8 @@
 #include "common_libs.h"
 #include "objects/citem/cmulti.h"
 
+#include <wefts_mutex.h>
+
 /*!
 \class cHouse chouse.h "objects/citem/chouse.h"
 \brief House item class

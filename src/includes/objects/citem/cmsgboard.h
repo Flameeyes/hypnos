@@ -41,8 +41,8 @@ protected:
 	pChar targetnpc;	//!< if LOCAL post it is unused, if quest contains the serial of the target of the quest
 
 public:
-	cMessage();
-	cMessage(uint32_t serial);
+	cMessage(pMsgBoard board);
+	cMessage(uint32_t serial, pMsgBoard board);
 	~cMessage();
 	
 	std::string getTimeString();

@@ -12,6 +12,8 @@
 */
 #include "common_libs.h"
 #include "inlines.h"
+#include "objects/cchar.h"
+#include "objects/citem.h"
 
 void read_in_teleport()
 {

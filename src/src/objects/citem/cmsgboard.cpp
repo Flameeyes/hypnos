@@ -51,9 +51,9 @@ void cMessage::Delete()
 	cItem::Delete();  //this will do the safedelete, too
 }
 
-cMessage::cMessage()
+cMessage::cMessage(pMsgBoard board)
 {
-	cMessage(nextSerial());
+	cMessage(nextSerial(), board);
 }
 
 cMessage::cMessage(uint32_t serial, pMsgBoard board) : cItem(serial)

@@ -21,7 +21,7 @@ AC_EXEEXT
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([fcntl.h limits.h memory.h signal.h stdint.h stdlib.h sys/time.h sys/timeb.h unistd.h netinet/in.h ])
+AC_CHECK_HEADERS([fcntl.h limits.h memory.h signal.h stdint.h stdlib.h sys/time.h sys/timeb.h sys/mman.h unistd.h netinet/in.h ])
 
 AC_EGREP_CPP(yes,
 [#ifdef WIN32
@@ -66,9 +66,11 @@ AC_CHECK_FUNCS([basename ftime gettimeofday memset munmap strchr strstr strtol s
 # Adding include dirs and WEFTS_ variables
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
 CXXFLAGS="$CXXFLAGS $INCLUDES -Wall -Wno-reorder -Wno-switch-enum $WEFTS_CXXFLAGS"
+CFLAGS="$CXXFLAGS"
 LDFLAGS="$LDFLAGS $WEFTS_LIBS"
 
 AC_SUBST(CXXFLAGS)
+AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 
 AC_CONFIG_FILES([Makefile

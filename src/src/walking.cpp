@@ -17,6 +17,7 @@
 #include "inlines.h"
 #include "networking/network.h"
 #include "libhypnos/cvariant.h"
+#include "objects/cchar.h"
 
 /*!
 \brief Checks if the Char is allowed to move at all (not frozen, overloaded...)
