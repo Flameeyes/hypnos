@@ -219,3 +219,88 @@ void cPacketSendOverallLight::prepare()
 	buffer[0] = 0x4F;
 	buffer[1] = level;
 }
+
+void cPacketSendStatus::prepare()
+{
+	length = 0;
+	if ( ! pc ) return;
+
+	pBody body = pc->getBody();
+	if ( ! body ) return;
+
+	switch(type)
+	{
+		case 0: length = 43; break;
+		case 1: length = 66; break;
+		case 3: length = 70; break;
+		case 4: length = 88; break;
+		default: return;
+	}
+
+	buffer = new UI08[length];
+	buffer[0] = 0x11;
+	ShortToCharPtr(length, buffer+1);
+	ShortToCharPtr(pc->getSerial(), buffer+3);
+
+	memset(buffer+7, 0, 30);
+	strncpy(buffer+7, body->getName().c_str(), 30);
+
+	ShortToCharPtr(body->getHitPoints(), buffer+37);
+	ShortToCharPtr(body->getMaxHitPoints(), buffer+39);
+
+	buffer[41] = canrename ? 0xFF : 0x00;
+	buffer[42] = type;
+
+	switch(type)
+	{
+		case 4: prepare4();
+		case 3: prepare3();
+		case 1: prepare1();
+	}
+}
+
+void cPacketSendStatus::prepare1()
+{
+	pBody body = pc->getBody();
+	buffer[43] = body->getGender();
+
+	ShortToCharPtr(body->getStrength(), buffer+44);
+	ShortToCharPtr(body->getDexterity(), buffer+46);
+	ShortToCharPtr(body->getIntelligence(), buffer+48);
+	ShortToCharPtr(body->getStamina(), buffer+50);
+	ShortToCharPtr(body->getMaxStamina(), buffer+52);
+	ShortToCharPtr(body->getMana(), buffer+54);
+	ShortToCharPtr(body->getMaxMana(), buffer+56);
+
+	UI32 gold = pc->rtti() == rttiPC ? (reinterpret_cast<pPC*>pc)->getGold : 0;
+	LongToCharPtr(gold, buffer+58);
+
+	ShortToCharPtr(body->getArmor(), buffer+62);
+	ShortToCharPtr(body->getWeight(), buffer+64);
+}
+
+void cPacketSendStatus::prepare3()
+{
+	pBody body = pc->getBody();
+
+	ShortToCharPtr(body->getStatCap(), buffer+66);
+	buffer[68] = body->getFollowers();
+	buffer[69] = body->getMaxFollowers();
+
+}
+
+void cPacketSendStatus::prepare4()
+{
+	pBody body = pc->getBody();
+
+	ShortToCharPtr(body->getResistFire(), buffer+70);
+	ShortToCharPtr(body->getResistCold(), buffer+72);
+	ShortToCharPtr(body->getResistPoison(), buffer+74);
+	ShortToCharPtr(body->getResistEnergy(), buffer+76);
+
+	ShortToCharPtr(body->getLuck(), buffer+78);
+	ShortToCharPtr(body->getDamageMin(), buffer+80);
+	ShortToCharPtr(body->getDamageMax(), buffer+82);
+
+	memset(buffer+84, 0, 4);
+}

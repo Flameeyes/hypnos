@@ -402,9 +402,6 @@ private:
 /*!
 \name Appearence
 */
-protected:
-	std::string	title;
-
 public:
 	void showLongName( P_CHAR showToWho, bool showSerials );
 
@@ -453,19 +450,6 @@ public:
 	*/
 	inline void castSpell(magic::SpellId spellnumber, TargetLocation& dest, SI32 flags = 0, SI32 param = 0)
 	{ magic::castSpell(spellnumber, dest, this, flags, param); }
-//@}
-
-//@{
-/*!
-\name Char Equipment
-*/
-public:
-	inline const bool isWearing(pItem pi) const
-	{ return this == pi->getContainer(); }
-
-	SI32 Equip(pItem pi, bool drag = false);
-	SI32 UnEquip(pItem pi, bool drag = false);
-	void checkEquipement();
 //@}
 
 //@{
@@ -797,14 +781,7 @@ public:
 		inline const UI32 CountGold()
 		{ return CountItems(ITEMID_GOLD); }
 
-		P_ITEM 			GetItemOnLayer(UI08 layer);
-		P_ITEM 			GetBankBox( short type = BANK_GOLD);
-		void			openBankBox( P_CHAR pc );
-		void 			openSpecialBank( P_CHAR pc );
 		SI32  			countBankGold();
-		P_ITEM 			getWeapon();
-		P_ITEM 			getShield();
-		P_ITEM 			getBackpack();
 		bool			isInBackpack( P_ITEM pi );
 		void			addGold(UI16 totgold);
 
@@ -883,16 +860,6 @@ public:
 								short hairstyle = INVALID, short haircolor = INVALID, short beardstyle = INVALID,
 								short beardcolor = INVALID, const char* newname = NULL, bool bBackup = true);
 
-
-//@{
-/*!
-\name possess stuff
-\author Luxor
-*/
-		P_CHAR		possessor;
-		P_CHAR		possessed;
-		void		possess( P_CHAR pc );
-//@}
 
 		void		Kill();
 		void		goPlace(SI32);

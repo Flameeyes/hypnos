@@ -3873,25 +3873,6 @@ P_GUILD_MEMBER cChar::getGuildMember()
 
 
 /*!
-\brief open a bankbox
-\author Flameeyes
-\param pc the character to open the bank of
-*/
-void cChar::openBankBox(pChar pc)
-{
-	if ( ! pc || ! client || ( ( this != pc ) && !IsGMorCounselor() ) )
-		return;
-
-	pItem bank = pc->GetBankBox(BANK_GOLD);
-	if ( ! bank )
-		return;
-
-	wearIt(getSocket(), bank);
-
-	client->showContainer(bank);
-}
-
-/*!
 \brief region specific bankbox
 \author Endymion
 \param pc character owner of bank

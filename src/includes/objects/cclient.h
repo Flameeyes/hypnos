@@ -32,7 +32,8 @@ class cClient
 public:
 	static const UI32 clientHasCrypto	= 0x00000001;
 	static const UI32 clientIsT2A		= 0x00000002;
-	static const UI32 clientIsAoS		= 0x00000004;
+	static const UI32 clientIsUO3D		= 0x00000004;
+	static const UI32 clientIsAoS		= 0x00000008;
 protected:
 	pChar pc;	//!< Current char used by the client
 	pAccount acc;	//!< Current account logged in by the client
@@ -61,6 +62,9 @@ public:
 	void playMidi();
 	void playSFX(UI16 sound, bool onlyMe = false);
 	void light();
+	void showBankBox(pChar dest);
+	void showSpecialBankBox(pChar dest);
+	void statusWindow(pChar sorg, bool extended, bool canrename);
 };
 
 #endif

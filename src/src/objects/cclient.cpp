@@ -240,3 +240,39 @@ void cClient::light(UI08 level)
 
 	sendPacket(&pk);
 }
+
+void cClient::openBankBox(pPC dest)
+{
+	if ( ! dest || (dest != pc && acc->getPrivLevel() < privSeer ) )
+		return;
+
+	pItem bank = dest->getBankBox();
+	if ( ! bank )
+		return;
+
+	showClient(bank);
+}
+
+void cClient::openSpecialBankBox(pPC dest)
+{
+	if ( ! dest || (dest != pc && acc->getPrivLevel() < privSeer ) )
+		return;
+
+	pItem bank = dest->getSpecialBankBox();
+	if ( ! bank )
+		return;
+
+	showClient(bank);
+}
+
+void cClient::statusWindow(pChar sorg, bool extended, bool canrename)
+{
+	UI08 ext = 0x01;
+	if ( flags & flagClientIsUO3D )
+		ext = 0x03;
+	if ( flags & flagClientIsAoS )
+		ext = 0x04;
+
+	cPacketSendStatus pk(sorg, ext, canrename);
+	sendPacket(&pk);
+}

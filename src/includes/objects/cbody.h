@@ -71,15 +71,84 @@ public:
 \name Items
 \brief Item related stuff
 */
-protected:
-	std::map<Layer, pItem> layers;
 public:
-	inline pItem getHair() const
-	{ return layers[layHair]; }
+	//! One handed weapon layer
+	static const UI08 layWeapon1H	= 0x01;
+	//! Two handed weapon, shield, or misc layer
+	static const UI08 layWeapon2H	= 0x02;
+	//! Shoes layer
+	static const UI08 layShoes	= 0x03;
+	//! Pants layer
+	static const UI08 layPants	= 0x04;
+	//! Shirt layer
+	static const UI08 layShirt	= 0x05;
+	//! Helm/Hat layer
+	static const UI08 layHat	= 0x06;
+	//! Gloves layer
+	static const UI08 layGloves	= 0x07;
+	//! Ring layer
+	static const UI08 layRing	= 0x08;
+	//! Unused layer
+	static const UI08 layUnused	= 0x09;
+	//! Neck layer
+	static const UI08 layNeck	= 0x0A;
+	//! Hair layer
+	static const UI08 layHair	= 0x0B;
+	//! Waist (half apron) layer
+	static const UI08 layWaist	= 0x0C;
+	//! Torso (inner) (chest armor) layer
+	static const UI08 layTorsoInner	= 0x0D;
+	//! Bracelet layer
+	static const UI08 layBracelet	= 0x0E;
+	//! Unused (backpack?) layer
+	static const UI08 layUnused2	= 0x0F;
+	//! Facial Hair (Beard) layer
+	static const UI08 layBeard	= 0x10;
+	//! Torso (middle) (sircoat, tunic, full apron, sash) layer
+	static const UI08 layTorsoMiddle= 0x11;
+	//! Earrings layer
+	static const UI08 layEarrings	= 0x12;
+	//! Arms layer
+	static const UI08 layArms	= 0x13;
+	//! Back (cloack) layer
+	static const UI08 layBack	= 0x14;
+	//! Backpack layer
+	static const UI08 layBackpack	= 0x15;
+	//! Torso (outer) (robe) layer
+	static const UI08 layTorsoOuter	= 0x16;
+	//! Legs (outer) (skirt/kilt) layer
+	static const UI08 layLegsOuter	= 0x17;
+	//! Legs (inner) (leg armor) layer
+	static const UI08 layLegsInner	= 0x18;
+	//! Mount (horse, ostarard, etc) layer
+	static const UI08 layMount	= 0x19;
+	//! NPC Buy Restock container layer (see cNPC::restock)
+	static const UI08 layNPCBuyR	= 0x1A;
+	//! NPC Buy no-restock container layer (see cNPC::bought)
+	static const UI08 layNPCBuyN	= 0x1B;
+	//! NPC Buy Sell container layer (see cNPC::sell)
+	static const UI08 laySell	= 0x1C;
+	//! PC Bank Box (see cPC::bankBox)
+	static const UI08 layBank	= 0x1D;
 
-	inline pItem getBeard() const
-	{ return layers[layBeard]; }
+protected:
+	pItem layers[0x1E];
+public:
+	//! Gets the item on the specified layer
+	inline pItem getLayerItem(UI08 layer) const
+	{ return layers[layer]; }
 
+	//! Sets the item on the specified layer
+	inline pItem setLayerItem(UI08 layer, pItem item)
+	{ layers[layer] = item; }
+
+	inline const bool isWearing(pItem pi) const
+	{ return this == pi->getContainer(); }
+
+	SI32 equip(pItem pi, bool drag = false);
+	SI32 unEquip(pItem pi, bool drag = false);
+
+	void checkEquipement();
 //@}
 
 //@{

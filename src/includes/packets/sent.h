@@ -300,6 +300,27 @@ public:
 	void prepare();
 };
 
+//! Status window
+class cPacketSendStatus : cPacketSend
+{
+protected:
+	pChar pc;	//!< Character
+	UI08 type;	//!< Type
+	bool canrename;	//!< Can be renamed
+public:
+	/*!
+	\brief p Character
+	*/
+	inline cPacketSendStatus(pChar p, UI08 t, bool r) :
+		pc(p), type(t), canrename(r)
+	{ }
+
+	void prepare();
+	void prepare1();
+	void prepare3();
+	void prepare4();
+};
+
 /*!
 \brief Packet received
 \author Flameeyes
