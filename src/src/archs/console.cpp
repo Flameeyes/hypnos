@@ -23,34 +23,35 @@
 #include "libhypnos/strings.hpp"
 
 #ifdef HAVE_WINCON_H
-#include <wincon.h>
+#	include <wincon.h>
 #endif
 
 #ifdef HAVE_STDARG_H
-#include <stdarg.h>
+#	include <stdarg.h>
 #endif
 
 #ifdef HAVE_IOSTREAM
-	#include <iostream>
+#	include <iostream>
 	using std::endl;
 	using std::cout;
 	using std::cerr;
+	using std::cin;
 #elif defined HAVE_IOSTREAM_H
-	#include <iostream.h>
+#	include <iostream.h>
 #endif
 
 #ifdef HAVE_IOS
-	#include <ios>
-	using std::sync_with_stdio;
+#	include <ios>
+	using std::ios_base;
 #elif defined HAVE_IOS_H
-	#include <ios.h>
+#	include <ios.h>
 #endif
 
 // Only on unix-es we do colored output
 #if defined(__unix__)
-#define AnsiOut(s, x) s << x
+#	define AnsiOut(s, x) s << x
 #else
-#define AnsiOut(s, x)
+#	define AnsiOut(s, x)
 #endif
 
 /*!
@@ -61,7 +62,7 @@ by console interface, and preparing to expect orders from standard input.
 */
 tConsoleInterface::tConsoleInterface() : tInterface()
 {
-	ios::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
 	
 	cout << "Starting Hypnos..." << endl << endl;
 	

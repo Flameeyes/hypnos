@@ -6,15 +6,20 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-// Request limits
-#define __STDC_LIMIT_MACROS
-
 #include "logsystem.hpp"
 #include "inlines.hpp"
 #include "backend/scheduler.hpp"
 #include "archs/tinterface.hpp"
 
 #include <mxml.h>
+
+#ifdef HAVE_FSTREAM
+#	include <fstream>
+	using std::ifstream;
+#elif defined HAVE_FSTREAM_H
+#	include <fstream.h>
+	using std::ifstream;
+#endif
 
 cScheduler *cScheduler::scheduler = NULL;
 

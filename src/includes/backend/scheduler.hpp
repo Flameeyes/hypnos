@@ -11,6 +11,8 @@
 
 #include "backend/scripting.hpp"
 #include "common_libs.hpp"
+#include "libhypnos/hypstl/list.hpp"
+
 #include <wefts_thread.h>
 
 /*!

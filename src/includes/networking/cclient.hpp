@@ -18,6 +18,7 @@
 #include "libhypnos/hypstl/iosfwd.hpp"
 #include "libhypnos/hypstl/list.hpp"
 #include "libhypnos/hypstl/slist.hpp"
+#include "libhypnos/hypstl/algorithm.hpp"
 
 //! Used in trading methods
 struct sBoughtItem
@@ -159,7 +160,7 @@ public:
 
 	//! removing trade session between this and another client
 	inline void removeTradeSession(sSecureTradeSession &session)
-	{ SecureTrade.erase(std::find(SecureTrade.begin(), SecureTrade.end(), session)); }
+	{ SecureTrade.erase(find(SecureTrade.begin(), SecureTrade.end(), session)); }
 
 	sSecureTradeSession findTradeSession(pContainer tradecontainer);	//!< Finds the trade session between "this" and another client knowing "this" tradecontainer
 	sSecureTradeSession findTradeSession(pClient tradeclient);		//!< Finds the trade session between "this" and another client knowing the other client

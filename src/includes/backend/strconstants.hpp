@@ -13,6 +13,7 @@
 #include "constants.hpp"
 #include "typedefs.hpp"
 #include "enums.hpp"
+#include "libhypnos/hypstl/string.hpp"
 
 /*!
 \namespace nStrConstants

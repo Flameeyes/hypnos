@@ -33,7 +33,7 @@ AC_CHECK_HEADERS([fcntl.h limits.h memory.h signal.h stdlib.h sys/time.h sys/tim
 
 AC_LANG_CPLUSPLUS
 # Those are all stl headers... checking both for standard and deprecated header (and gcc extension when needed)
-AC_CHECK_HEADERS([ios ios.h sstream sstream.h iosfwd iosfwd.h iostream iostream.h ostream ostream.h fstream fstream.h iomanip iomanip.h set set.h vector vector.h slist ext/slist slist.h cassert assert.h string string.h hash_map ext/hash_map stlport/hash_map hash_map.h map map.h list list.h queue queue.h])
+AC_CHECK_HEADERS([ios ios.h sstream sstream.h iosfwd iosfwd.h iostream iostream.h ostream ostream.h fstream fstream.h iomanip iomanip.h set set.h vector vector.h slist ext/slist slist.h cassert assert.h string string.h hash_map ext/hash_map stlport/hash_map hash_map.h map map.h list list.h queue queue.h algorithm algorithm.h])
 
 # Check for windows headers only under windows
 # And check for fork() or ntoh/hton functions only if not under windows

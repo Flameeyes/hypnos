@@ -24,6 +24,8 @@ more of them.
 #define __LIBHYPNOS_STRINGS_H__
 
 #include "libhypnos/commons.hpp"
+#include "libhypnos/hypstl/string.hpp"
+#include "libhypnos/hypstl/vector.hpp"
 
 namespace nLibhypnos {
 
