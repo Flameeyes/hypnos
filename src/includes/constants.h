@@ -103,8 +103,6 @@ enum
 				//!< Maximum clients allowed
 	MAXSERV = 15,		//!< Maximum servers in login listing
 	MAXBUFFER = 2560,	//!< Buffer Size (For socket operations)
-	MAXSTART = 15,		//!< Maximum starting locations
-	MAXPAGES = 75,		//!< Maximum number of pages in the GM queue
 	VISRANGE = 18,		//!< Visibility for normal items & chars
 	BUILDRANGE = 90,	//!< Visibility for castles and keeps
 	MAP0CACHE = 300,
