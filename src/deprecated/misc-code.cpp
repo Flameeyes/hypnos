@@ -32,3 +32,60 @@ void location2xyz(int loc, int& x, int& y, int& z)
 	safedelete(iter);
 }
 
+int strtonum(int countx, int base)
+{
+	char *err= NULL;
+	int n;
+
+	if(comm[countx] == NULL)
+		return 0;
+
+	n= strtol((char*)comm[countx], &err, base);
+
+	if(*err != '\0')	// invalid character found
+	{
+		WarnOut("error in strtonum: %c invalid digit for base %2d\n", *err, base);
+		return 0;
+	}
+
+	return n;
+}
+
+/*!
+\brief converts hex string comm[countx] to int
+\param countx the line of comm array to convert
+*/
+int hexnumber(int countx)
+{
+	// sscanf is an ANSI function to read formated data from a string.
+	if (comm[countx] == NULL)
+		return 0;
+
+	int i;
+	sscanf((char*)comm[countx], "%x", &i);
+
+	return i;
+}
+
+/*!
+\todo write documentation
+*/
+int whichbit( int number, int bit )
+{
+	int i, setbits = 0, whichbit = 0, intsize = sizeof(int) * 8;
+
+	for( i=0; i<intsize; i++ )
+	{
+		if( number & 0x1 ) setbits++;
+
+		if( setbits == bit )
+		{
+			whichbit = i+1;
+			break;
+		}
+		number >>= 1;
+	}
+
+	return whichbit;
+}
+

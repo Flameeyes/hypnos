@@ -22,14 +22,18 @@ warnings/errors/issues.
 	#error You need at least GCC 3.2 to compile this!
 #endif
 
+#ifdef __GNUC__
+	#define PACK_NEEDED __attribute__ ((packed))
+#else
+	#define PACK_NEEDED
+	#define strncasecmp strncmpi
+	#define strcasecmp strcmpi
+#endif
+
 #ifdef __BORLANDC__
 	#define NDEBUG
 	#define WIN32
-	#ifdef __CONSOLE__
-		#define _CONSOLE
-	#else
-		#define _WINDOWS
-	#endif
+	#define _CONSOLE
 	#include <stlport/hash_map>
 #endif
 
@@ -41,17 +45,6 @@ warnings/errors/issues.
 
 	#define snprintf _snprintf
 	typedef int socklen_t;
-#endif
-
-#ifndef __GNUC__
-	#define strncasecmp strncmpi
-	#define strcasecmp strcmpi
-#endif
-
-#ifdef __GNUC__
-	#define PACK_NEEDED __attribute__ ((packed))
-#else
-	#define PACK_NEEDED
 #endif
 
 #include <cstdio>
@@ -91,10 +84,6 @@ warnings/errors/issues.
 #include <ctype.h>
 #include <stdint.h>
 
-extern char* getOSVersionString();
-enum OSVersion { OSVER_UNKNOWN, OSVER_WIN9X, OSVER_WINNT, OSVER_NONWINDOWS };
-extern OSVersion getOSVersion();
-
 #ifndef MSG_NOSIGNAL
     #define MSG_NOSIGNAL 0
 #endif
@@ -104,5 +93,34 @@ extern OSVersion getOSVersion();
 #include "typedefs.h"
 #include "constants.h"
 #include "console.h"
+
+extern char* getOSVersionString();
+enum OSVersion { OSVER_UNKNOWN, OSVER_WIN9X, OSVER_WINNT, OSVER_NONWINDOWS };
+extern OSVersion getOSVersion();
+
+//@{
+/*!
+\name System dependent functions
+
+Functions defined into archs/pyunix and archs/pywin32
+*/
+uint32_t getclock();
+uint32_t getsysclock();
+uint32_t getclockday();
+void initclock();
+//@}
+
+//@{
+/*!
+\name Strings
+\brief Strings functions
+*/
+
+char *linestart(char *line);
+void strupr(std::string &str);
+void strlwr(std::string &str);
+
+int strtonum(int countx, int base= 0);
+//@}
 
 #endif //__COMMON_LIBS_H__

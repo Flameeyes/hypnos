@@ -16,63 +16,6 @@
 #include "utils.h"
 
 /*!
-\brief for putting single worlds of cline into comm array
-*/
-void splitline()
-{
-	int i=0;
-	char *s;
-	char *d;
-
-	d=" ";
-	s=strtok((char*)cline,d);
-	int loopexit=0;
-	while ( (s!=NULL) && (++loopexit < MAXLOOPS) )
-	{
-		comm[i]=(unsigned char*)s;
-		i++;
-		s=strtok(NULL,d);
-	}
-	tnum=i;
-}
-
-int strtonum(int countx, int base)
-{
-	char *err= NULL;
-	int n;
-
-	if(comm[countx] == NULL)
-		return 0;
-
-	n= strtol((char*)comm[countx], &err, base);
-
-	if(*err != '\0')	// invalid character found
-	{
-		WarnOut("error in strtonum: %c invalid digit for base %2d\n", *err, base);
-		return 0;
-	}
-
-	return n;
-}
-
-/*!
-\brief converts hex string comm[countx] to int
-\param countx the line of comm array to convert
-*/
-int hexnumber(int countx)
-{
-	// sscanf is an ANSI function to read formated data from a string.
-	if (comm[countx] == NULL)
-		return 0;
-
-	int i;
-	sscanf((char*)comm[countx], "%x", &i);
-
-	return i;
-}
-
-
-/*!
 \brief plays the proper door sfx for doors/gates/secretdoors
 \author Dupois
 \since Oct 8, 1998
@@ -80,14 +23,14 @@ int hexnumber(int countx)
 static void doorsfx(pItem pi, int x, int y)
 {
 
-	static const int OPENWOOD = 0x00EA;
-	static const int OPENGATE = 0x00EB;
-	static const int OPENSTEEL = 0x00EC;
-	static const int OPENSECRET = 0x00ED;
-	static const int CLOSEWOOD = 0x00F1;
-	static const int CLOSEGATE = 0x00F2;
-	static const int CLOSESTEEL = 0x00F3;
-	static const int CLOSESECRET = 0x00F4;
+	static const uint16_t OPENWOOD = 0x00EA;
+	static const uint16_t OPENGATE = 0x00EB;
+	static const uint16_t OPENSTEEL = 0x00EC;
+	static const uint16_t OPENSECRET = 0x00ED;
+	static const uint16_t CLOSEWOOD = 0x00F1;
+	static const uint16_t CLOSEGATE = 0x00F2;
+	static const uint16_t CLOSESTEEL = 0x00F3;
+	static const uint16_t CLOSESECRET = 0x00F4;
 
 	if (y==0) // Request open door sfx
 	{
@@ -129,18 +72,19 @@ static void doorsfx(pItem pi, int x, int y)
 } // doorsfx() END
 
 
-void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
+/*!
+\brief Uses of a door
+\param pc The Player who used the door (is NULL for automatic door close)
+\param pi Door to close
+\note Don't validate pc, because it can be NULL for automatic door close
+*/
+void dooruse(pChar pc, pItem pi)
 {
-	pChar pc;
-//!!! NOT VALIDATE !!, this function is called with invalid socket when automatic door close
-	if(s <0)
-		pc = NULL;
-	else
-		pc =cSerializable::findCharBySerial(currchar[s]);
-//	const pItem pi=MAKE_ITEMREF_LR(item);	// on error return
+	if ( ! pi )
+		return;
 
-	int i, db, x;//, z;
-	char changed=0;
+	int i, db, x;
+	bool changed=0;
 
 	/*if (pc && ( !pc->hasInRange(pi, 2) ) && s>INVALID) {
 		sysmessage(s, "You cannot reach the handle from here");
@@ -289,49 +233,52 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 			pi->dooropen=0;
 		}
 	}
-
-	if (changed && pc)
+	
+	if ( !changed && pc )
 	{
-
-		pc->objectdelay=uiCurrentTime+ (server_data.objectdelay/4)*MY_CLOCKS_PER_SEC;
-		// house refreshment when a house owner or friend of a houe opens the house door
-
-		int j, houseowner_serial,ds;
-		pItem pi_house=findmulti( pi->getPosition() );
-		if( pi_house )
-		{
-			const pItem pi2=pi_house;
-			if ( pi_house->IsHouse() )
-			{
-				houseowner_serial=pi2->getOwnerSerial32();
-				j=on_hlist(pi_house, pc->getSerial().ser1,  pc->getSerial().ser2,  pc->getSerial().ser3,  pc->getSerial().ser4, NULL);
-				if ( j==H_FRIEND || (pi2->getOwnerSerial32()==pc->getSerial()) ) // house_refresh stuff, LB, friends of the house can do.
-				{
-					if (s!=INVALID)
-					{
-						if (SrvParms->housedecay_secs!=0)
-							ds=((pi2->time_unused)*100)/(SrvParms->housedecay_secs);
-						else ds=INVALID;
-
-						if (ds>=50) // sysmessage iff decay status >=50%
-						{
-							if (houseowner_serial!= pc->getSerial())
-								sysmessage(s,"You refreshed your friend's house");
-							else
-								sysmessage(s,"You refreshed the house");
-						}
-					}
-
-					pi2->time_unused=0;
-					pi2->timeused_last=getclock();
-				}
-				//ConOut("house name: %s\n",pi2->name);
-			} // end of is_house
-		} // end of is_multi
+		pc->getClient()->sysmessage("This doesnt seem to be a valid door type. Contact a GM.");
+		return;
 	}
+	
+	if ( ! changed || ! pc )
+		return;
 
-	if (changed==0 && s>INVALID)
-		sysmessage(s, "This doesnt seem to be a valid door type. Contact a GM.");
+	pc->objectdelay=uiCurrentTime+ (server_data.objectdelay/4)*MY_CLOCKS_PER_SEC;
+	// house refreshment when a house owner or friend of a houe opens the house door
+
+	int j, houseowner_serial,ds;
+	pItem pi_house=findmulti( pi->getPosition() );
+	
+	if ( ! pi_house )
+		return;
+	
+	const pItem pi2=pi_house;
+	if ( ! pi_house->isHouse() )
+		return;
+	
+	houseowner_serial=pi2->getOwnerSerial32();
+	j=on_hlist(pi_house, pc->getSerial().ser1,  pc->getSerial().ser2,  pc->getSerial().ser3,  pc->getSerial().ser4, NULL);
+	
+	if ( j != H_FRIEND && ( pi->getOwner() != pc ) )
+		return;
+	
+	if ( s == INVALID )
+		return;
+	
+	if (SrvParms->housedecay_secs!=0)
+		ds=((pi2->time_unused)*100)/(SrvParms->housedecay_secs);
+	else ds=INVALID;
+
+	if (ds < 50) // sysmessage iff decay status >=50%
+		return;
+		
+	if (houseowner_serial!= pc->getSerial())
+		sysmessage(s,"You refreshed your friend's house");
+	else
+		sysmessage(s,"You refreshed the house");
+
+	pi2->time_unused=0;
+	pi2->timeused_last=getclock();
 }
 
 void endmessage(int x) // If shutdown is initialized
@@ -475,64 +422,3 @@ int calcGoodValue(CHARACTER npcnum2, int i, int value,int goodtype)
 	return value;
 }
 
-/*!
-\todo write documentation
-*/
-int whichbit( int number, int bit )
-{
-	int i, setbits = 0, whichbit = 0, intsize = sizeof(int) * 8;
-
-	for( i=0; i<intsize; i++ )
-	{
-		if( number & 0x1 ) setbits++;
-
-		if( setbits == bit )
-		{
-			whichbit = i+1;
-			break;
-		}
-		number >>= 1;
-	}
-
-	return whichbit;
-}
-
-/*!
-\author Akron
-\brief return the start of the line passed
-\param line string that represent the line
-\return the pointer to the start of the line, chopping out all initial space characters
-\since 0.82r3
-*/
-char *linestart(char *line)
-{
-	char*t = line;
-	while (isspace(*t)) t++;
-	return t;
-}
-
-/*!
-\author Akron
-\brief capitalize a c++ string
-\param str the string to capitalize
-\since 0.82r3
-*/
-void strupr(std::string &str)
-{
-	for(std::string::iterator it = str.begin(); it != str.end(); it++)
-		if ( islower(*it) )
-			*it -= 0x20;
-}
-
-/*!
-\author Akron
-\brief lowerize a c++ string
-\param str the string to lowerize
-\since 0.82r3
-*/
-void strlwr(std::string &str)
-{
-	for(std::string::iterator it = str.begin(); it != str.end(); it++)
-		if ( isupper(*it) )
-			*it += 0x20;
-}

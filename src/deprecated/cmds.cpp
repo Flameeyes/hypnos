@@ -167,86 +167,81 @@ cCommandMap* commands = new cCommandMap();
 
 //The function that is called after the control done in speech.cpp
 
-
+/*!
+\todo The new splitline function doesn't works with old global vars, so all this
+is to be changed
+*/
 void Command(NXWSOCKET  s, char* speech) // Client entred a command like 'ADD
-	{
-		unsigned char *comm;
-		unsigned char nonuni[512];
-		//cCallCommand* command; 
+{
+	unsigned char *comm;
+	unsigned char nonuni[512];
+	//cCallCommand* command; 
 
-		//cmd_offset = 1;
+	//cmd_offset = 1;
 
-		//cCallCommandMap* callcommands = new cCallCommandMap()
-		
-		
-		pChar pc_currchar =  cSerializable::findCharBySerial(currchar[s]);
-		if ( ! pc_currchar )
-			return;
+	//cCallCommandMap* callcommands = new cCallCommandMap()
+	
+	
+	pChar pc_currchar =  cSerializable::findCharBySerial(currchar[s]);
+	if ( ! pc_currchar )
+		return;
 
-		strcpy((char*)nonuni, speech);
-		strcpy((char*)tbuffer, (char*)nonuni);
+	strcpy((char*)nonuni, speech);
+	strcpy((char*)tbuffer, (char*)nonuni);
 
-		strupr((char*)nonuni);
-		cline = (char*)&nonuni[0];
-		splitline();
+	strupr((char*)nonuni);
+	cline = (char*)&nonuni[0];
+	
+	stringVector tokens = splitline(nonuni);
 
-		if (tnum<1)	return;
-		// Let's ignore the command prefix;
-		comm = nonuni + 1;
+	if ( tokens.size() < 1 )
+		return;
+	// Let's ignore the command prefix;
+	comm = nonuni + 1;
 
-		pCommand p_cmd= commands->findCommand((char*)comm);
-		
-		
-		NXWCLIENT client= getClientFromSocket(s);
+	pCommand p_cmd= commands->findCommand((char*)comm);
+	
+	
+	NXWCLIENT client= getClientFromSocket(s);
 
-		if(p_cmd==NULL) {
-			return;
-		}
-		
-		
-		//Control between cCommand privilege and cChar privilege.
+	if(p_cmd==NULL) {
+		return;
+	}
+	
+	
+	//Control between cCommand privilege and cChar privilege.
 
-		if(p_cmd->getCommandLevel(p_cmd)==pc_currchar->commandLevel){
-		client->sysmsg("You can't use this command!");
-			return;
-		}
-
-		
-		cCallCommand* called= new cCallCommand(speech);
-
-
-		uint32_t cmd_serial=called->addCallCommand(called);
-
-		
-		
-		// Frodo:
-		// NOW CALL AMX FUNCTION specified in cCommand.cmd_callback giving pc_currchar and 
-		// cmd_serial
-		
-		
-		
-		//Let's delete the temp object		
-			  
-		called->delCommand(cmd_serial);
-		
-
+	if(p_cmd->getCommandLevel(p_cmd)==pc_currchar->commandLevel){
+	client->sysmsg("You can't use this command!");
+		return;
 	}
 
+	
+	cCallCommand* called= new cCallCommand(speech);
 
 
+	uint32_t cmd_serial=called->addCallCommand(called);
 
+	
+	
+	// Frodo:
+	// NOW CALL AMX FUNCTION specified in cCommand.cmd_callback giving pc_currchar and 
+	// cmd_serial
+	
+	
+	
+	//Let's delete the temp object		
+			
+	called->delCommand(cmd_serial);
+	
 
-
+}
 
 /*******
 Must complete a native function for AMX to get command property
 for use it in small scripting.
 
 *******/
-
-
-
-
 const int CP_PARAM=0;
 const int CP_ALLPARAMS=1;
 const int CP_N_PARAMS=2;
