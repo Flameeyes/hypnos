@@ -1544,7 +1544,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 
 			if (!msgboard->addMessage( newmessage ))
                         {
-                                if (pc->postType == LOCALPOST) client->sysmessage( tr("This Message Board has too many messages!");
+                                if (pc->postType == LOCALPOST) client->sysmessage( tr("This Message Board has too many messages!") );
 	                   	newmessage->Delete(); //if could not link, message should be deleted
                         }
                         else
@@ -1608,7 +1608,7 @@ bool cPacketReceiveWarModeChange::execute(pClient client)
         pPC pc = client->currChar();
         if( pc )
         {
-        	if( (pc->inWarMode() && !buffer[1]) || (!pc->inWarMode() && buffer[1])  //Translation: if warmode has to change
+        	if( (pc->inWarMode() && !buffer[1]) || (!pc->inWarMode() && buffer[1]) )  //Translation: if warmode has to change
                 {
 			pc->toggleWarMode();
 			pc->targserial=INVALID;
@@ -1640,7 +1640,7 @@ bool cPacketReceivePing::execute(pClient client)
 bool cPacketReceiveRenameCharacter::execute(pClient client)
 {
 	if (length != 35) return false;
-	pChar pc = pointers::findCharBySerPtr(buffer + 1);
+	pChar pc = pointers::findCharBySerial(LongFromCharPtr(buffer + 1));
         if(pc && ( client->currChar()->IsGMorCounselor() || client->currChar()->isOwnerOf( pc ) ) )
         {
         	pc->setCurrentName( buffer + 5 );
