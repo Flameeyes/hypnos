@@ -11,6 +11,7 @@
 
 #include "libhypnos/strings.h"
 #include "libhypnos/exceptions.h"
+#include <sstream>
 
 namespace nLibhypnos {
 
@@ -52,12 +53,11 @@ std::string long2ip(int l)
 {
 	uint8_t a = l >> 24, b = ( l >> 16 ) & 0xFF,
 		c = ( l >> 8 ) & 0xFF, d = l & 0xFF;
-	char *tmp;
-	asprintf(&tmp, "%u.%u.%u.%u", a, b, c, d);
 	
-	std::string ret(tmp);
-	free(tmp);
-	return ret;
+	std::ostringstream sout;
+	
+	sout << a << "." << b << "." << c << "." << d;
+	return sout.str();
 }
 
 /*!
@@ -113,7 +113,7 @@ stringVector tokenize(std::string str)
 
 #ifndef HAVE_ASPRINTF
 
-#include "wefts_mutex.h"
+#include <wefts_mutex.h>
 
 //@
 /*!
