@@ -399,19 +399,36 @@ void nPackets::Sent::ShowItemInContainer::prepare()
 	//invisible light source!
 	if(pc->isGM() && item.id == 0x1647)
 	{
-		ShortToCharPtr(0x0A0F, ptrItem+5);
-		ShortToCharPtr(0x00C6, ptrItem+18);
+		ShortToCharPtr(0x0A0F, buffer + 5);
+		ShortToCharPtr(0x00C6, buffer + 18);
 	}
 	else
 	{
-		ShortToCharPtr(item->getAnimId(), ptrItem+5);
-		ShortToCharPtr(item->getColor(), ptrItem+18);
+		ShortToCharPtr(item->getAnimId(), buffer + 5);
+		ShortToCharPtr(item->getColor(), buffer + 18);
 	}
-	ShortToCharPtr(item->getAmount(), ptrItem+8);
-	ShortToCharPtr(item->getLocation().x, ptrItem+10);
-	ShortToCharPtr(item->getLocation().y, ptrItem+12);
-	LongToCharPtr(item->getContainer()->getSerial(), ptrItem+14);
+	ShortToCharPtr(item->getAmount(), buffer + 8);
+	ShortToCharPtr(item->getLocation().x, buffer + 10);
+	ShortToCharPtr(item->getLocation().y, buffer + 12);
+	LongToCharPtr(item->getContainer()->getSerial(), buffer + 14);
 }
+
+/*!
+\brief Kick client
+\author Chronodt
+\note packet 0x26
+
+\todo use this packet where it is needed
+*/
+
+void nPackets::Sent::Kick::prepare()
+{
+	buffer = new uint8_t[5];
+	length = 2;
+	buffer[0] = 0x26;
+	LongToCharPtr(kicker->getSerial(), buffer + 1);
+}
+
 
 /*!
 \brief Bounce item
@@ -425,6 +442,100 @@ void nPackets::Sent::BounceItem::prepare()
 	length = 2;
 	buffer[0] = 0x27;
 	buffer[1] = mode;
+}
+
+/*!
+\brief Clear Square
+\author Chronodt
+\note packet 0x28
+
+\todo this packet is not used anywhere, but may be useful when wiping
+*/
+void nPackets::Sent::ClearSquare::prepare()
+{
+	buffer = new uint8_t[5];
+	length = 5;
+	buffer[0] = 0x28;
+	ShortToCharPtr(x, buffer + 1);
+	ShortToCharPtr(y, buffer + 3);
+}
+
+/*!
+\brief Tells the client paperdoll has been changed
+\author Chronodt
+\note packet 0x29
+
+\todo verify if this packet has to be sent on equip() and unEquip() methods of cChar
+*/
+
+void nPackets::Sent::PaperdollClothingUpdated::prepare()
+{
+	length = 1;
+	buffer = new uint8_t[1];
+	buffer[0] = 0x29;
+}
+
+/*!
+\brief Mobile attributes
+\author Chronodt
+\note packet 0x2d
+
+\todo apparently this useful packet is not used -_-
+*/
+void nPackets::Sent::MobileAttributes::prepare()
+{
+	length = 16;
+	buffer = new uint8_t[16];
+	buffer[0] = 0x2d;
+	LongToCharPtr(chr->getSerial(), buffer + 1);
+	ShortToCharPtr(chr->getMaxHp(), buffer + 5);
+	ShortToCharPtr(chr->getHp(), buffer + 7);
+	ShortToCharPtr(chr->getMaxMana(), buffer + 9);
+	ShortToCharPtr(chr->getMana(), buffer + 11);
+	ShortToCharPtr(chr->getMaxStamina(), buffer + 13);
+	ShortToCharPtr(chr->getStamina(), buffer + 15);
+}
+
+/*!
+\brief Adds item to client's paperdoll
+\author Chronodt
+\note packet 0x2e
+*/
+
+void nPackets::Sent::WornItem::prepare()
+{
+	length = 15;
+	buffer = new uint8_t[15];
+
+	buffer[0] = 0x2E;
+	buffer[7] = 0x00;
+
+	LongToCharPtr(item->getSerial(), buffer+1);
+	ShortToCharPtr(item->getAnimId(), buffer+5);
+	buffer[8] = item->getLayer();
+	pBody body = dynamic_cast<pBody> (item->getContainer());
+	LongToCharPtr(body->getChar()->getSerial(), buffer+9);
+	ShortToCharPtr(item->getColor(), buffer+13);
+}
+
+/*!
+\brief There is a fight going on somewhere on screen
+\author Chronodt
+\note packet 0x2f
+
+\todo awaiting new combat/status system for implementation
+*/
+
+void nPackets::Sent::FightOnScreen::prepare()
+{
+	length = 10;
+	buffer = new uint8_t[10];
+
+	buffer[0] = 0x2F;
+	buffer[1] = 0x00;
+
+	LongToCharPtr(attacker->getSerial(), buffer+2);
+	LongToCharPtr(defender->getSerial(), buffer+6);
 }
 
 
@@ -480,20 +591,6 @@ void nPackets::Sent::ContainerItem::prepare()
 	}
 }
 
-void nPackets::Sent::WornItem::prepare()
-{
-	length = 15;
-	buffer = new uint8_t[15];
-
-	buffer[0] = 0x2E;
-	buffer[7] = 0x00;
-
-	LongToCharPtr(item->getSerial(), buffer+1);
-	ShortToCharPtr(item->getAnimId(), buffer+5);
-	buffer[8] = item->getLayer();
-	LongToCharPtr(item->getContainer()->getSerial(), buffer+9);
-	ShortToCharPtr(item->getColor(), buffer+13);
-}
 
 void nPackets::Sent::SoundFX::prepare()
 {
@@ -599,12 +696,7 @@ void nPackets::Sent::ClearBuyWindow::prepare()
 }
 
 
-void nPackets::Sent::PaperdollClothingUpdated::prepare()
-{
-	length = 1;
-	buffer = new uint8_t[1];
-	buffer[0] = 0x29;
-}
+
 
 void nPackets::Sent::OpenMapGump::prepare()
 {
@@ -1782,38 +1874,34 @@ bool nPackets::Received::SecureTrade::execute(pClient client)
         uint16_t size = ShortFromCharPtr(buffer + 1);
 	uint32_t serial = LongFromCharPtr(buffer +4);
 
-        if (length != size) return false;
+	if (length != size) return false;
 
-	pContainer cont1, cont2;
+	pContainer container = dynamic_cast<pContainer>(cSerializable::findItemBySerial(serial));
+	if (!container) return false;
+	sSecureTradeSession session = client->findTradeSession(container);
+	if (!session.tradepartner) return false;
 
-	switch(buffer+3) //Buffer + 3 = Action byte
+	//container is now this client's secure trading container (a temporary container wich holds the trade items)
+
+	switch(buffer + 3) //Buffer + 3 = Action byte
 	{
 	case 0://Start trade - Never happens, sent out by the server only.
+		return false;
+	case 1://Cancel trade. Send each person cancel messages, move items back to owners
+		client->endtrade(session);
 		break;
 	case 2://Change check marks. Possibly conclude trade
-		cont1 = dynamic_cast<pContainer>(cSerializable::findItemBySerial(serial));
-                //cont1 is now this client's secure trading container (a temporary container wich holds the trade items)
 
-		if (cont1) cont2 = dynamic_cast<pContainer>( cSerializable::findItemBySerial(cont1->moreb) );
-		else cont2=NULL;
+		sSecureTradeSession session2 = session.tradepartner->findTradeSession(client);
+		if (!session2.tradepartner) return false;
 
-		if (cont2)
-		{
-			cont1->morez=buffer[11];
-			client->sendtradestatus(cont1, cont2);
-			if (cont1->morez && cont2->morez)
-			{
-				client->dotrade(cont1, cont2);
-				client->endtrade(cont1);
-			}
-		}
-		break;
-	case 1://Cancel trade. Send each person cancel messages, move items.
-		client->endtrade(cont1);
+		session->status1  = buffer[11];
+		session2->status2 = buffer[11];
+		client->sendtradestatus(session);
+		if (session->status1 && session->status2) client->dotrade(session);
 		break;
 	default:
-		ErrOut("Switch fallout. trade.cpp, trademsg()\n"); //Morrolan
-                return false;
+		return false;
 	}
         return true;
 }

@@ -105,19 +105,6 @@ inline void pack_little_uint16(uint8 * buf, uint16 x)
 
 const uint32 INVALID_uint32_t = 0xffffffff;
 
-// Message codes used when creating new messages:
-const int CODE_CLIENT_TALK = 0x03;
-const int CODE_DOUBLE_CLICK_ITEM = 0x06;
-const int CODE_PICK_UpItem = 0x07;
-const int CODE_DROpItem = 0x08;
-const int CODE_CAST_SPELL_USE_SKILL = 0x12;
-const int CODE_CLIENT_EQUIpItem = 0x13;
-const int CODE_SERVER_TALK = 0x1c;
-const int CODE_PAUSE_CONTROL = 0x33;
-const int CODE_VENDOR_BUY_REPLY = 0x3b;
-const int CODE_GLOBAL_LIGHT_LEVEL = 0x4f;
-const int CODE_TARGETING_CURSOR = 0x6c;
-const int CODE_MENU_CHOICE = 0x7d;
 ////////////////////////////////////////////////////////////////////////////////
 
 void log_printf(const char * format, ...) GCC_PRINTF(1,2);

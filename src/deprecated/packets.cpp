@@ -211,17 +211,6 @@ cPacket##NAME::cPacket##NAME() { \
 
 
 
-CREATE( CreateCharacter, PKG_CREATE_CHARACTER, 0x0A )
-RECEIVE( CreateCharacter ) {
-	/*if( ps == NULL ) return; //after error here
-	getFromSocket( ps->toInt(), this->getBeginValidForReceive(), this->headerSize -1 );
-	getStringFromSocket( ps->toInt(), this->name, 30 ); 	
-	getStringFromSocket( ps->toInt(), this->passwd, 30 );
-	getFromSocket( ps->toInt(), (char*)(&this->sex), 30 );*/
-};
-
-CREATE( DisconnectNotification, PKG_DISCONNECT_NOTIFY, 0x05 )
-
 CREATE( TalkRequest, PKG_TALK_REQUEST, 0x08 )
 RECEIVE( TalkRequest ) {
 	/*if( ps == NULL ) return; //after error here
@@ -232,43 +221,6 @@ RECEIVE( TalkRequest ) {
 
 CREATE( GodModeToggle, PKG_GODMODE_TOGGLE, 0x02  )
 
-CREATE( AttackRequest, PKG_ATTACK_REQUEST, 0x05 )
-
-CREATE( DoubleClick, PKG_DB_CLICK, 0x05 )
-
-CREATE( PickUpItem, PKG_PICK_UP, 0x07 )
-
-CREATE( DropItem, PKG_DROpItem, 0x0E )
-
-CREATE( SingleClick, PKG_SINGLE_CLICK, 0x05 )
-
-CREATE( StatWindow, PKG_STAT_WINDOW, 0x2B )
-SEND( StatWindow ) {
-	this->sendBasic( ps );
-};
-
-void cPacketStatWindow::sendBasic( NXWCLIENT ps, uint8_t flag  ) {
-	if( ps == NULL ) return; //after error here
-	this->flag = flag;
-	Xsend( ps->toInt(), this->getBeginValid(), this->headerSize );
-};
-
-void cPacketStatWindow::sendStat( NXWCLIENT ps ) {
-	if( ps == NULL ) return; //after error here
-	sendBasic( ps, 0x01 );
-	Xsend( ps->toInt(), (char*)(&this->sex), 0x17 );
-};
-
-void cPacketStatWindow::sendExtended( NXWCLIENT ps ) {
-	if( ps == NULL ) return; //after error here
-	sendBasic( ps, 0x03 );
-	Xsend( ps->toInt(), (char*)(&this->sex), 0x1B );
-};
-
-CREATE( Wear, PKG_DROP_OR_WEAR_ITEM, 0x0A )
-
-CREATE( CharInfo, PKG_CHAR_INFO, 0x25 )
-
 CREATE( Speech, PKG_SPEECH, 0x0E )
 SEND( Speech ) {
 	if( ps == NULL ) return; //after error here
@@ -278,23 +230,6 @@ SEND( Speech ) {
 	Xsend( ps->toInt(), this->name.c_str(), 30 );
 	Xsend( ps->toInt(), this->msg->c_str(), this->msg->length()+1 );
 };
-CREATE( AddItemIntoCont, PKG_ADD_ITEM_INTO_CONTAINER, 0x14 )
-
-CREATE( Kick, PKG_KICK, 0x05 )
-
-CREATE( RejectMoveItem, PKG_REJECT_MOVE_ITEM, 0x02 )
-
-CREATE( ClearSquare, PKG_CLEAR_SQUARE, 0x05 )
-
-CREATE( PDClothing, PKG_PD_CLOTHING, 0x01 )
-
-CREATE( RessMenu, PKG_RESS_MENU, 0x02 )
-
-CREATE( MobileAttributes, PKG_MOBILE_ATTRIBUTES, 0x11 )
-
-CREATE( WornItem, PKG_WORN_ITEM, 0x0F )
-
-CREATE( FightOccuring, PKG_FIGHT_OCCURING, 0x0A )
 
 CREATE( PauseResumeClient, PKG_PAUSE_RESUME, 0x02 )
 

@@ -35,6 +35,16 @@ cClient::~cClient()
 		dragItem->setContainer(dragItem->getOldContainer());
 		dragItem->Refresh();
 	}
+	if (hasOpenTradeSessions())
+	{
+		/*
+		clear all open secure trade sessions before destroying this client, automatically canceling it
+		and putting all items back on respective backpacks
+		*/
+		std::list<sSecureTradeSession>::iterator it = SecureTrade.begin();
+		for(;it!=SecureTrade.end(); ++it) endtrade(*it);
+	}
+
 	if ( pc )
 		pc->setClient(NULL);
 	if ( acc )
@@ -456,21 +466,6 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 
 	if ( container )
 	{
-		if ( (!equipcont || equipcont->getLayer()== 0) && container->getId() == 0x1E5E)
-		{
-			// Trade window???
-			if ( pi->moreb == INVALID ) return;
-			pItem piz = cSerializable::findItemBySerial(pi->moreb);
-			if ( piz )
-				if ( piz->morez || container->morez )
-				{
-					piz->morez = 0;
-					container->morez = 0;
-					sendtradestatus( piz, container );
-				}
-
-		}
-		//<Luxor>
 		pFunctionHandle evt = pi->getEvent(cItem::evtItmOnTakeFromContainer);
 		if ( evt )
 		{
@@ -505,6 +500,25 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 				return;
 			}
 		}
+
+		if(hasOpenTradeSessions())	//Secure trade check, but only if at least one is open
+		{
+			sSecureTradeSession session = findTradeSession(container);
+			if (session.tradepartner)
+			{
+				if (session.status1 || session.status2)
+				{
+					session.status1=0;
+					session.status2=0;
+					sSecureTradeSession session2 = session.tradepartner->findTradeSession(this);
+					session2.status1=0;
+					session2.status2=0;
+					dest->morez=0;
+					sendtradestatus(session);
+				}
+			}
+		}
+		
 		pContainer pi_cont = dynamic_cast<pContainer> pi->getContainer();
 		if ( pi_cont ) //pi_cont could have been a body if it was the player's backpack
 		{
@@ -806,17 +820,20 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 		}
 	}
 
-	if(destcont && SecureTrade.size())	//Secure trade check
+	if(hasOpenTradeSessions())	//Secure trade check, but only if at least one is open
 	{
-		sSecureTradeSession session = findTradeSession(destcont);
+		sSecureTradeSession session = findTradeSession(destcont->getOutMostCont());
 		if (session.tradepartner)
 		{
 			if (session.status1 || session.status2)
 			{
-			//!\todo reset status
-				pi_z->morez=0;
+				session.status1=0;
+				session.status2=0;
+				sSecureTradeSession session2 = session.tradepartner->findTradeSession(this);
+				session2.status1=0;
+				session2.status2=0;
 				dest->morez=0;
-				sendtradestatus( pi_z, dest );
+				sendtradestatus(session);
 			}
 		}
 	}
@@ -966,7 +983,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 				return;
 			}
 		}
-		dest->addItem( pi, UINVALID16, UINVALID16); //add item without trying to stack
+		dest->addItem( pi ); //add item without trying to stack
 		sendSpellBook(dest);
 		dragItem = NULL;
 		resetDragging();
@@ -977,6 +994,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 	{
 		if ( npc && npc->npcaitype==NPCAI_PLAYERVENDOR && npc->getOwner()==pc )
 		{
+			//!\todo modify speech awaiting triggers
 			pc->fx1= pi->getSerial();
 			pc->fx2=17;
 			sysmessage("Set a price for this item.");
@@ -1045,7 +1063,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 		if (dest->isCombinableWith(pi))
 			dest->getContainer()->addItem(pi, 0, 0); //since items are stackable, putting x & y as 0 will still stack & randomize position if combined amount > 65535
 		else
-			dest->getContainer()->addItem(pi, UINVALID16, UINVALID16); // to use random positioning and avoid stacking, we set x & y as UINVALID16
+			dest->getContainer()->addItem(pi); // random positioning
 
 		pc_currchar->getBody()->calcWeight();
 		if (destOwner) destOwner->getBody()->calcWeight();
@@ -1573,7 +1591,7 @@ void cClient::droppedOnSelf(pItem pi)
 	}
 	else
 	{
-		pack->addItem(pi, UINVALID16, UINVALID16); // player has a pack, put it in there (in a random position)
+		pack->addItem(pi); // player has a pack, put it in there (in a random position)
 		pc->getBody()->calcWeight();
 		updateStatusWindow(pi);
 		pc->playSFX( itemsfx(pi->getId()) );
@@ -1671,13 +1689,13 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 	if ( ServerScp::g_nUnequipOnReequip )
 	{
 		if (pi->isWeapon() && layer == layWeapon2H)	//If equipping a 2 handed sword, we must empty both layers, so, since the 2h layer is emptied below, we empty the first :D
-		       	if (pck->unEquip(body->getLayerItem(layWeapon1H),false) == 2) //since it is not a bounce, we set the drag bool of unequip to false
+		       	if (pck->unEquip(body->getLayerItem(layWeapon1H),false) == 2) //since it is not a drag on paperdoll, we set the drag bool of unequip to false
                         {       //if unequip bypass
 				item_bounce6(pi);
 				return;
                         }
-		if (pi->isWeapon() && layer == layWeapon1H && secondhand != NULL) //If equipping a 1 handed sword, while already equipping a 2 handed sword, we must empty both layers, so, since the 1h layer is emptied below, we empty the second :D
-	       	       	if (pck->unEquip(body->getLayerItem(layWeapon2H),false) ==2) //since it is not a bounce, we set the drag bool of unequip to false
+		if (pi->isWeapon() && layer == layWeapon1H && secondhand->isWeapon()) //If equipping a 1 handed sword, while already equipping a 2 handed sword, we must empty both layers, so, since the 1h layer is emptied below, we empty the second :D
+	       	       	if (pck->unEquip(body->getLayerItem(layWeapon2H),false) ==2) //since it is not a drag on paperdoll, we set the drag bool of unequip to false
                         {       // if unequip bypass
 				item_bounce6(pi);
 				return;
@@ -1688,12 +1706,12 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 			item_bounce6(pi);
 			return;
                 }
-                pc->playSFX( itemsfx(pi->getId()) );
-	        if (pck->equip(epi, true) == 2)
-                {       // equip bounce, this time
+		if (pck->equip(epi, true) == 2)
+		{       // equip bounce, this time
 			item_bounce6(pi);
 			return;
-                }
+		}
+                pc->playSFX( itemsfx(pi->getId()) );
         }
         else
         {
@@ -1705,24 +1723,17 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 			return;
 		}
 
-		if (pi->isWeapon() && layer == layWeapon1H && secondhand != NULL) //If equipping a 1 handed sword, while already equipping a 2 handed sword, we must empty both layers, so, since the 1h layer is emptied below, we empty the second :D
-	       	       	if (pck->unEquip(body->getLayerItem(layWeapon2H),false) ==2) //since it is not a bounce, we set the drag bool of unequip to false
-                        {       // if unequip bypass
-				item_bounce6(pi);
-				return;
-                        }
-
 	        if (epj) // if something already equipped in the same layer, bounce (we are not allowed to automatically deequip them)
                 {
 			item_bounce6(pi);
 			return;
                 }
-                pc->playSFX( itemsfx(pi->getId()) );
-	        if (pck->equip(epi, true) == 2)
-                {       // if script bypasses equip, bounce
+		if (pck->equip(epi, true) == 2)
+		{       // if script bypasses equip, bounce
 			item_bounce6(pi);
 			return;
-                }
+		}
+		pc->playSFX( itemsfx(pi->getId()) );
         }
 
 	NxwSocketWrapper sws;
@@ -2130,11 +2141,10 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 \author Chronodt (14/8/04)
 */
 
-
 sSecureTradeSession cClient::findTradeSession(pContainer tradecontainer)
 {
 	std::list<sSecureTradeSession>::iterator it = SecureTrade.begin();
-	while(it!= SecureTrade.end()) if (it->container1 == tradecontainer) return *it;
+	for(;it!= SecureTrade.end(); ++it) if (it->container1 == tradecontainer) return *it;
 	sSecureTradeSession session;
 	session.tradepartner = NULL;
 	return session;
@@ -2145,11 +2155,10 @@ sSecureTradeSession cClient::findTradeSession(pContainer tradecontainer)
 \author Chronodt (14/8/04)
 */
 
-
 sSecureTradeSession cClient::findTradeSession(pClient tradeclient)
 {
 	std::list<sSecureTradeSession>::iterator it = SecureTrade.begin();
-	while(it!= SecureTrade.end()) if (it->tradepartner == tradeclient) return *it;
+	for(;it!= SecureTrade.end(); ++it) if (it->tradepartner == tradeclient) return *it;
 	sSecureTradeSession session;
 	session.tradepartner = NULL;
 	return session;
@@ -2212,32 +2221,22 @@ pContainer cClient::tradestart(pClient targetClient)
 	return cont1;
 }
 
-void sendtradestatus(pContainer cont1, pContainer cont2)  //takes clients from containers' owners
+void cClient::sendtradestatus(sSecureTradeSession &session)  //takes clients from containers' owners
 {
-	if(!cont1) return;
-	if(!cont2) return;
+	if(!session.tradepartner) return;
 
-	pChar p1, p2;
-
-	p1 = cSerializable::findCharBySerial(cont1->getContSerial());
-	p2 = cSerializable::findCharBySerial(cont2->getContSerial());
-
-	if(!p1) return;
-	if(!p2) return;
-
-	nPackets::Sent::SecureTrading pk1(0x02, cont1->getSerial(), (uint32_t) (cont1->morez%256), (uint32_t) (cont2->morez%256));
-	nPackets::Sent::SecureTrading pk2(0x02, cont2->getSerial(), (uint32_t) (cont2->morez%256), (uint32_t) (cont1->morez%256));
-	p1->getClient()->sendPacket(&pk1);
-	p2->getClient()->sendPacket(&pk2);
+	nPackets::Sent::SecureTrading pk1(0x02, session.container1->getSerial(), (session.status1) ? 1: 0, (session.status2) ? 1: 0);
+	nPackets::Sent::SecureTrading pk2(0x02, session.container2->getSerial(), (session.status2) ? 1: 0, (session.status1) ? 1: 0);
+	sendPacket(&pk1);
+	session.tradepartner->sendPacket(&pk2);
 }
 
-void dotrade(pContainer cont1, pContainer cont2)
+void cClient::dotrade(sSecureTradeSession &session)
 {
-	if(!cont1) return;
-	if(!cont2) return;
+	if(!session.tradepartner) return;
 
-	pPC pc1 = cSerializable::findCharBySerial(cont1->getContSerial());
-	pPC pc2 = cSerializable::findCharBySerial(cont2->getContSerial());
+	pPC pc1 = currChar();
+	pPC pc2 = session.tradepartner->currChar();
 
 	if(!pc1) return;
 	if(!pc2) return;
@@ -2248,83 +2247,101 @@ void dotrade(pContainer cont1, pContainer cont2)
 	if(!bp1) return;
 	if(!bp2) return;
 
-        if (pc1->getClient() == NULL || pc2->getClient() == NULL) return;
+	bool trade = true;
+	if (!session.status1 || !session.status2)
+	{
+		//If the trade is not accepted, then give items back to original owners
+		pPC pc_dummy = NULL;
+		pc_dummy = pc1;
+		pc1 = pc2;
+		pc2 = pc_dummy;
+		trade = false;	//items are sent back to their owners
+	}
 
-        if (cont1->morez == 0 || cont2->morez == 0) {
-                //If the trade is not accepted, then give items back to original owners
-                pPC pc_dummy = NULL;
-                pc_dummy = pc1;
-                pc1 = pc2;
-                pc2 = pc_dummy;
-        }
-
-        //Player1 items go to player2
+	//Player1 items go to player2
 
 	NxwItemWrapper si;
-	si.fillItemsInContainer( cont1, false );
+	si.fillItemsInContainer( session.container1, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pi = si.getItem();
 		if ( ! pi )
 			continue;
-			
-		pFunctionHandle evt = pi->getEvent(cItem::evtItmOnTransfer);
-		if ( evt )
-		{
-			tVariantVector params = tVariantVector(3);
-			params[0] = pi->getSerial(); params[1] = pc1->getSerial();
-			params[2] = pc2->getSerial();
-			evt->setParams(params);
-			evt->execute();
-			if ( evt->isBypassed() )
-				continue;
+		if (trade)	//Event ontransfer should be called only if a trade is done, not on trade cancel
+			pFunctionHandle evt = pi->getEvent(cItem::evtItmOnTransfer);
+			if ( evt )
+			{
+				tVariantVector params = tVariantVector(3);
+				params[0] = pi->getSerial(); params[1] = pc1->getSerial();
+				params[2] = pc2->getSerial();
+				evt->setParams(params);
+				evt->execute();
+				if ( evt->isBypassed() )	//If bypass, send item back to original owner
+				{
+					pi->setContainer( bp1 );
+					pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
+					pc1->getClient()->showItemInContainer(pi);
+					pi->Refresh();
+					continue;
+				}
+			}
 		}
-	
 		pi->setContainer( bp2 );
 		pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
 		pc2->getClient()->showItemInContainer(pi);
 		pi->Refresh();
 	}
 
-
 	si.clear();
-	si.fillItemsInContainer( cont2, false );
+	si.fillItemsInContainer( session.container2, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pi = si.getItem();
 		if ( ! pi )
 			continue;
-			
-		pFunctionHandle evt = pi->getEvent(cItem::evtItmOnTransfer);
-		if ( evt )
+		if (trade)
 		{
-			tVariantVector params = tVariantVector(3);
-			params[0] = pi->getSerial(); params[1] = pc2->getSerial();
-			params[2] = pc1->getSerial();
-			evt->setParams(params);
-			evt->execute();
-			if ( evt->isBypassed() )
-				continue;
+			pFunctionHandle evt = pi->getEvent(cItem::evtItmOnTransfer);
+			if ( evt )
+			{
+				tVariantVector params = tVariantVector(3);
+				params[0] = pi->getSerial(); params[1] = pc2->getSerial();
+				params[2] = pc1->getSerial();
+				evt->setParams(params);
+				evt->execute();
+				if ( evt->isBypassed() )	//If bypass, send item back to original owner
+				{
+					pi->setContainer( bp2 );
+					pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
+					pc2->getClient()->showItemInContainer(pi);
+					pi->Refresh();
+					continue;
+				}
+
+			}
 		}
-	
 		pi->setContainer( bp1 );
 		pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
 		pc1->getClient()->showItemInContainer(pi);
 		pi->Refresh();
 	}
+
+	sSecureTradeSession session2 = findTradeSession(session.tradepartner);
+
+	removeTradeSession(session);
+	session.tradepartner->removeTradeSession(session2);
+	session.container1->Delete();
+	session.container2->Delete();
 }
 
-void endtrade(pContainer c1)
+void cClient::endtrade(sSecureTradeSession &session)
 {
-	if(!c1) return;
+	if(!session.tradepartner) return;
 
-	pItem c2=cSerializable::findItemBySerial( c1->moreb );
-	if(!c2) return;
-
-	pChar pc1=cSerializable::findCharBySerial(c1->getContSerial());
+	pChar pc1=currChar();
 	if(!pc1) return;
 
-	pChar pc2=cSerializable::findCharBySerial(c2->getContSerial());
+	pChar pc2=session.tradepartner->currChar();
 	if(!pc2) return;
 
 	pItem bp1= pc1->getBackpack();
@@ -2333,22 +2350,14 @@ void endtrade(pContainer c1)
 	pItem bp2= pc2->getBackpack();
 	if(!bp2) return;
 
-	pClient c1 = pc1->getClient();
-	pClient c2 = pc2->getClient();
+	nPackets::Sent::SecureTrading pk1(0x01, session.container1->getSerial(), 0, 0);
+	sendPacket(&pk1);
 
-	if (c1)	// player may have been disconnected (Duke)
-        {
-		nPackets::Sent::SecureTrading pk1(0x01, cont1->getSerial(), 0, 0);
-		c1->sendPacket(&pk1);
-	}
-	if (c2)	// player may have been disconnected (Duke)
-        {
-              	nPackets::Sent::SecureTrading pk2(0x01, cont2->getSerial(), 0, 0);
-              	c2->sendPacket(&pk2);
-        }
+	nPackets::Sent::SecureTrading pk2(0x01, session.container2->getSerial(), 0, 0);
+	session.tradepartner->sendPacket(&pk2);
 
 	NxwItemWrapper si;
-	si.fillItemsInContainer( c1, false );
+	si.fillItemsInContainer( session.container1, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pj=si.getItem(); //</Luxor>
@@ -2357,12 +2366,11 @@ void endtrade(pContainer c1)
 			
 		bp1->AddItem(pj);
 
-		if (s1!=INVALID)
-			pj->Refresh();
+		if (s1!=INVALID && pj) pj->Refresh();
 	}
 
 	NxwItemWrapper si2;
-	si2.fillItemsInContainer( c2, false );
+	si2.fillItemsInContainer( session.container2, false );
 	for( si2.rewind(); !si2.isEmpty(); si2++ )
 	{
 		pItem pj=si2.getItem();
@@ -2371,12 +2379,14 @@ void endtrade(pContainer c1)
 		
 		bp2->AddItem(pj);
 
-		if (s2!=INVALID)
-			pj->Refresh();
+		if (s2!=INVALID && pj) pj->Refresh();
 	}
 
-	c1->Delete();
-	c2->Delete();
+	sSecureTradeSession session2 = findTradeSession(session.tradepartner);
+	removeTradeSession(session);
+	session.tradepartner->removeTradeSession(session2);
+	session.container1->Delete();
+	session.container2->Delete();
 }
 
 

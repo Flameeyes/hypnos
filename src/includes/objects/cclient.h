@@ -124,6 +124,13 @@ protected:
 		pContainer container2;
 		bool status1;		//status of the secure trade: flagged or not
 		bool status2;		//status of the secure trade: flagged or not
+
+		inline bool operator==(const sSecureTradeSession& session2) const
+			return 	tradepartner == session2.tradepartner &&
+				container1   == session2.container1 &&
+				container2   == session2.container2 &&
+				status1      == session2.status1 &&
+				status2      == session2.status2;
 	};
 
 	std::list<sSecureTradeSession> SecureTrade;	//!< Holds the secure trade session of this client (begun and received both)
@@ -132,16 +139,24 @@ public:
 	//! Adds a session to this client's list of open secure trading sessions
 	inline void addTradeSession(sSecureTradeSession &session)
 	{ SecureTrade.push_back(session); }
-	
+
+	//! returns true if client has at least an open trade session
+	inline bool hasOpenTradeSessions()
+	{ return SecureTrade.size() }
+
+	//! removing trade session between this and another client
+	inline void removeTradeSession(sSecureTradeSession &session)
+	{ SecureTrade.erase(find(SecureTrade.begin(), Securerade.end(), session)); }
+
 	sSecureTradeSession findTradeSession(pContainer tradecontainer);	//!< Finds the trade session between "this" and another client knowing "this" tradecontainer
 	sSecureTradeSession findTradeSession(pClient tradeclient);		//!< Finds the trade session between "this" and another client knowing the other client
 	pContainer tradestart(pClient targetClient);				//!< Opens a secure trade windows between this and targetClient. returns this client's ctrade container
-	static void sendtradestatus(pContainer cont1, pContainer cont2);	//!< updates secure trade window
-	static void dotrade(pContainer cont1,pContainer cont2);			//!< concludes trade (either swapping items or returning them)
-	static void endtrade(uint32_t serial);					//!< closing trade window : called when one client ends the transaction (either accepted or canceled)
+	void sendtradestatus(sSecureTradeSession &session);			//!< updates secure trade window
+	void dotrade(sSecureTradeSession &session);				//!< concludes trade (either swapping items or returning them)
+	void endtrade(sSecureTradeSession &session);				//!< closing trade window : called when one client ends the transaction (closing the trade window) or one client crashes (client destruction)
 	void buyaction(pNPC npc, std::list< sBoughtItem > &allitemsbought);	//!< Getting purchased item and gold/availability check
 	void sellaction(pNPC npc, std::list< sBoughtItem > &allitemssold);	//!< Sellig of items. Moving from char and getting paid :D
-	//@}
+//@}
 
 //@{
 /*!
@@ -168,7 +183,7 @@ public:
 	void statusWindow(pChar target, bool extended = true);
 	void updateStatusWindow(pItem item);
 	void skillWindow();
-	void updatePaperdoll();
+	void updatePaperdoll();					//!< tells to the client that something has changed in his paperdoll
 	void sendMidi(char num1, char num2);			//!< plays midi on client (note: if client disabled music it will not play :D)
 	void sendItem(pItem pi);				//!< Shows items to client (on the ground or inside containers)
 	void senditem_lsd(pItem pi, uint16_t color, Location position);	//!< warps item in world for hallucinatory effect (sets new color and location) 	

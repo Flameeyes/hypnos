@@ -329,6 +329,29 @@ namespace nPackets {
 			void prepare();
 		};
 
+		/*!
+		\brief Kick client
+		\author Chronodt
+		\note packet 0x26
+
+		\todo use this packet where it is needed
+		*/
+
+		class Kick : public cPacketSend
+		{
+		protected:
+			pPC kicker;	//!< gm who performs the kick (not sure if really needed)
+		public:
+			/*!
+			\param aKicker gm who kick this client'pg
+			*/
+			inline Kick(pPC aKicker) :
+				cPacketSend(NULL, 0), kicker(aKicker)
+			{ }
+
+			void prepare();
+		};
+
 
 		/*!
 		\brief Bounce item
@@ -347,6 +370,97 @@ namespace nPackets {
 
 			void prepare();
 		};
+
+
+
+		/*!
+		\brief Clear Square
+		\author Chronodt
+		\note packet 0x28
+		*/
+		class ClearSquare : public cPacketSend
+		{
+		protected:
+		uint16_t x;	//!< x coordinate
+		uint16_t y;	//!< y coordinate
+		public:
+			inline ClearSquare(uint16_t aX, uint16_t aY) :
+				cPacketSend(NULL, 0), x(aX), y(aY)
+			{ }
+
+			void prepare();
+		};
+
+		/*!
+		\brief Packet to warn client that something has been added to pc's clothing
+		\author Chronodt
+		\note packet 0x29
+		*/
+
+		class PaperdollClothingUpdated : public cPacketSend
+		{
+		public:
+			inline PaperdollClothingUpdated() :
+				cPacketSend(NULL, 0)
+			{ }
+
+			void prepare();
+		};
+
+		/*!
+		\brief Mobile attributes
+		\author Chronodt
+		\note packet 0x2d
+		*/
+		class MobileAttributes : public cPacketSend
+		{
+		protected:
+		pChar chr;		//!< character
+		public:
+			inline MobileAttributes(pChar aChr) :
+				cPacketSend(NULL, 0), chr(aChr)
+			{ }
+
+			void prepare();
+		};
+
+		/*!
+		\brief Adds item to client's paperdoll
+		\author Chronodt
+		\note packet 0x2e
+		*/
+
+		class WornItem : public cPacketSend
+		{
+		protected:
+			pEquippable item;
+		public:
+			inline WornItem(pEquippable aItem) :
+				cPacketSend(NULL, 0), item(aItem)
+			{ }
+
+			void prepare();
+		};
+
+		/*!
+		\brief There is a fight going on somewhere on screen
+		\author Chronodt
+		\note 0x2F
+		*/
+		class FightOnScreen : public cPacketSend
+		{
+		protected:
+			pChar attacker;		// attacking character
+			pChar defender;		// attacked character
+
+		public:
+			inline FightOnScreen(pChar aAttacker, pChar aDefender) :
+				cPacketSend(NULL, 0), attacker(aAttacker), defender(aDefender)
+			{ }
+
+			void prepare();
+		};
+
 
 		/*!
 		\brief cChar::action() packet
@@ -397,18 +511,7 @@ namespace nPackets {
 			void prepare();
 		};
 
-		//! Work item
-		class WornItem : public cPacketSend
-		{
-		protected:
-			pItem item;
-		public:
-			inline WornItem(pItem itm) :
-				cPacketSend(NULL, 0), item(itm)
-			{ }
-		
-			void prepare();
-		};
+
 		
 		//! Sound FX
 		class SoundFX : public cPacketSend
@@ -535,21 +638,7 @@ namespace nPackets {
 			void prepare();
 		};
 		
-		/*!
-		\brief Packet to warn client that something has been added to pc's clothing
-		\author Chronodt
-		*/
-		
-		class PaperdollClothingUpdated : public cPacketSend
-		{
-		public:
-			inline PaperdollClothingUpdated() :
-				cPacketSend(NULL, 0)
-			{ }
-		
-			void prepare();
-		};
-		
+
 		/*!
 		\brief Opens map gump with data from map
 		\author Chronodt

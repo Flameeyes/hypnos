@@ -8,18 +8,6 @@
 #ifndef __TRADE_H__
 #define __TRADE_H__
 
-void sellaction(int s);
-void clearalltrades();
-void trademsg(int s);
-
-
-
-typedef struct {
-	int layer;
-	pItem item;
-	int amount;
-} buyeditem;
-
 #define RESTOCK_PER_TIME 20
 #define CHECK_RESTOCK_EVERY 3
 
