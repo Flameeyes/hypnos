@@ -1165,7 +1165,7 @@ void Skills::target_healingSkill(pClient client, pTarget t )
 		return;
 	}
 
-	if( ((pp->getId() != BODY_MALE) || (pp->getId() != BODY_FEMALE)) && pp->tamed==false) //Used on non-human and controls if tamed
+	if( ((pp->getId() != BODY_MALE) || (pp->getId() != BODY_FEMALE)) && !pp->tamed) //Used on non-human and controls if tamed
 
         if ((ph->IsInnocent()) &&(ph->getSerial() != pp->getSerial()))
         {

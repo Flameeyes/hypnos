@@ -460,7 +460,7 @@ void cTempfx::start()
 			uint16_t body, skincolor, hairstyle, haircolor, beardstyle, beardcolor, x;
 
 			//--Sex--
-			(chance(50) == true)? body = BODY_MALE : body = BODY_FEMALE;
+			body = change(50) ? BODY_MALE : BODY_FEMALE;
 			//--Skin color--
 			x=rand()%6;
 			switch(x)

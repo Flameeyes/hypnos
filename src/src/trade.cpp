@@ -176,7 +176,7 @@ void restock(bool total)
 			if( !pj || !pj->restock )
 				continue;
 
-			if (total==true)
+			if ( total )
 			{
 				pj->amount+=pj->restock;
 				pj->restock=0;

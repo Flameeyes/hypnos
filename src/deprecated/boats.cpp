@@ -731,7 +731,7 @@ bool cBoat::Speech(pChar pc, pClient clientocket, std::string &talk)//See if the
 
 	if( talk == "TURN LEFT" || talk == "TURN PORT" )
 	{
-		if (good_position(pBoat, pBoat->getPosition(), -1) && collision(pBoat,pBoat->getPosition(),-1)==false)
+		if (good_position(pBoat, pBoat->getPosition(), -1) && !collision(pBoat,pBoat->getPosition(),-1))
 		{
 		  Turn(pBoat,0);
 		  itemtalk(tiller, "Aye, sir.");
@@ -747,7 +747,7 @@ bool cBoat::Speech(pChar pc, pClient clientocket, std::string &talk)//See if the
 
 	if( talk == "TURN RIGHT" || talk == "TURN STARBOARD" )
 	{
-		if (good_position(pBoat, pBoat->getPosition(), 1) && collision(pBoat,pBoat->getPosition(),1)==false)
+		if (good_position(pBoat, pBoat->getPosition(), 1) && !collision(pBoat,pBoat->getPosition(),1))
 		{
 		  Turn(pBoat,1);
 		  itemtalk(tiller, "Aye, sir.");
@@ -762,7 +762,7 @@ bool cBoat::Speech(pChar pc, pClient clientocket, std::string &talk)//See if the
 	if( talk == "COME ABOUT" || talk == "TURN ABOUT" )
 	{
 
-		if (good_position(pBoat, pBoat->getPosition(), 2) && collision(pBoat,pBoat->getPosition(),2)==false)
+		if (good_position(pBoat, pBoat->getPosition(), 2) && !collision(pBoat,pBoat->getPosition(),2))
 		{
 			Turn(pBoat,1);
 			Turn(pBoat,1);
@@ -843,8 +843,6 @@ bool cBoat::tile_check(multi_st multi,pItem pBoat,map_st map,int x, int y,int di
 	return false;
 }
 
-
-
 /*!
 \author Elcabesa
 \brief Check if this is a good position for building or moving a boat
@@ -855,60 +853,55 @@ bool cBoat::tile_check(multi_st multi,pItem pBoat,map_st map,int x, int y,int di
 bool cBoat::good_position(pItem pBoat, Location where, int dir)
 {
 	uint32_t x= where.x, y= where.y, i;
-	bool good_pos=false;
+	bool good_pos = false;
 
 	multiVector m;
 	data::seekMulti( pBoat->getId()-0x4000, m );
 
-	for( i = 0; i < m.size(); i++ ) {
+	for( i = 0; i < m.size(); i++ )
+	{
 
 		map_st map;
-/*		if (m.visible)
-		{*/
-			switch(dir)
-			{
-			case -1:
-				data::seekMap(x-m[i].y,y+m[i].x, map);
-				break;
-			case 0:
-				data::seekMap(x+m[i].x,y+m[i].y, map);
-				break;
-			case 1:
-				data::seekMap(x+m[i].y,y-m[i].x, map);
-				break;
-			case 2:
-				data::seekMap(x-m[i].x,y-m[i].y, map);
-				break;
-			}
+		switch(dir)
+		{
+		case -1:
+			data::seekMap(x-m[i].y,y+m[i].x, map);
+			break;
+		case 0:
+			data::seekMap(x+m[i].x,y+m[i].y, map);
+			break;
+		case 1:
+			data::seekMap(x+m[i].y,y-m[i].x, map);
+			break;
+		case 2:
+			data::seekMap(x-m[i].x,y-m[i].y, map);
+			break;
+		}
 
-			switch(map.id)
-			{
-	//water tiles:
-				case 0x00A8://168
-				case 0x00A9://169
-				case 0x00AA://170
-				case 0x00Ab://171
-				case 0x0136://310
-				case 0x0137://311
-				case 0x3FF0://16368
-				case 0x3FF1://16369
-				case 0x3FF2://16370
-				case 0x3FF3://16371
-	//Lava tiles:
-				case 0x01F4://500
-				case 0x01F5://501
-				case 0x01F6://502
-				case 0x01F7://503
-					good_pos=true;
-					break;
-				default:// we are in default if we are nearer coast
-					{
-						good_pos=tile_check( m[i],pBoat,map,x,y,dir );
-						if (good_pos==false)
-							return false;
-					}
-			}
-		//}
+		switch(map.id)
+		{
+//water tiles:
+		case 0x00A8://168
+		case 0x00A9://169
+		case 0x00AA://170
+		case 0x00Ab://171
+		case 0x0136://310
+		case 0x0137://311
+		case 0x3FF0://16368
+		case 0x3FF1://16369
+		case 0x3FF2://16370
+		case 0x3FF3://16371
+//Lava tiles:
+		case 0x01F4://500
+		case 0x01F5://501
+		case 0x01F6://502
+		case 0x01F7://503
+			good_pos=true;
+			break;
+		default:// we are in default if we are nearer coast
+			good_pos=tile_check( m[i],pBoat,map,x,y,dir );
+			if (!good_pos) return false;
+		}
 	}
 	return good_pos;
 }
@@ -942,14 +935,11 @@ bool cBoat::Build(pClient client, pItem pBoat, char id2)
 		return false;
 	}
 	//Start checking for a valid position:
-	if (good_position(pBoat, pBoat->getPosition(), 0)==false)
-	{
+	if (! good_position(pBoat, pBoat->getPosition(), 0))
 		return false;
-	}
-	if(collision(pBoat, pBoat->getPosition(),0)==true)
-	{
+	
+	if(collision(pBoat, pBoat->getPosition(),0))
 		return false;
-	}
 	// Okay we found a good  place....
 
 	pBoat->setOwnerSerial32(pc_cs->getSerial());
@@ -1093,7 +1083,7 @@ bool cBoat::collision(pItem pi,Location where,int dir)
 		if ( dist >= 10 )
 			continue;
 			
-		if(boat_collision(pi,x,y,dir,coll.p_serial)==true)
+		if(boat_collision(pi,x,y,dir,coll.p_serial))
 			return true;
 	}
 	return false;
@@ -1314,7 +1304,7 @@ void cBoat::iMove(pClient client, int dir, pItem pBoat, bool forced)
 		SendPauseResumePkt(s, 0x00);
 		return;
 	}
-	if(collision(pBoat, boatpos,0)==true)
+	if(collision(pBoat, boatpos,0))
 	{
 		pBoat->type2=0;
 		itemtalk(tiller, "Arr, another ship in the way");
