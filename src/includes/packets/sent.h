@@ -1750,6 +1750,23 @@ namespace nPackets {
 			void prepare();
 		};
 
+		/*!
+		\brief Sends a predefined message (Packet 0xc1)
+		\author Chronodt
+
+		\note hypnos does not need to load or even look into clicloc.* files, the client automatically translates index + parameters into a valid text and displays it
+		*/
+		class PredefinedMessage : public cPacketSend
+		{
+		protected:
+			cSpeech parameters;	// it will contain the speech parameters to pass to client
+			uint32_t messageIndex;	// message index in clicloc.* (in ultima online directory) for message localization.
+		public:
+			inline PredefinedMessage(cSpeech &aParameters, uint32_t aMessageIndex) :
+				parameters(aParameters), messageIndex(aMessageIndex)
+			{ }
+			void prepare();
+		};
 
 
 		class LogoutStatus : public cPacketSend

@@ -1749,7 +1749,7 @@ void nPackets::Sent::UnicodeSpeech::prepare()
 	LongToCharPtr(speech.getLanguage(), buffer+14);
 	strncpy(buffer + 18, (ps) ? ps->getCurrentName().c_str() : "System", 30);	// this will write the name and fills the missing char in the 30 bytes buffer with \0
 	speech.setPacketByteOrder();							// reorder (if necessary) packet to network-endian
-	memcpy(buffer + 48, text.rawBytes(), length - 48);
+	memcpy(buffer + 48, speech.rawBytes(), length - 48);
 }
 
 
@@ -1948,6 +1948,31 @@ void nPackets::Sent::ColoredGraphicalEffect::prepare()
 	LongToCharPtr(renderMode, buffer + 32);
 }
 
+/*!
+\brief Sends a predefined message (Packet 0xc1)
+\author Chronodt
+\note packet 0xc1
+*/
+
+void nPackets::Sent::PredefinedMessage::prepare()
+{
+	length = 52;
+	if (!parameters.size()) length += (parameters.size() + 1) * 2;	// If there are text parameters, length of parameters (as unicode string + 16-bit null terminator) is added to the packet size
+	buffer = new uint8_t[length];
+	buffer[0] = 0xc1;
+	ShortToCharPtr(length, buffer + 1);
+	pSerializable ps = parameters.getSpeaker();
+	LongToCharPtr(ps ? ps->getSerial() : 0xffffffff, buffer+3);
+	ShortToCharPtr(ps ? ps->getId() : 0xffff, buffer+7);
+	buffer[9] = parameters.getMode();
+	ShortToCharPtr(parameters.getColor(), buffer+10);
+	ShortToCharPtr(parameters.getFont(), buffer+12);
+	LongToCharPtr(messageIndex, buffer+14);
+	strncpy(buffer + 18, (ps) ? ps->getCurrentName().c_str() : "System", 30);	// this will write the name and fills the missing char in the 30 bytes buffer with \0
+	speech.setPacketByteOrder();							// reorder (if necessary) packet to network-endian
+	memcpy(buffer + 48, text.rawBytes(), length - 48);
+	//! \todo verify packet documentation... it is absurd a requirement of a LITTLE endian only in this packet and a 32byte name size when all oher packets use network-endian (= big endian) and a 30-char name
+}
 
 
 

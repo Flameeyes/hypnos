@@ -25,8 +25,8 @@ well as network to host byte order conversion and vice versa.
 \li \c 0x06 - Label (You see: )
 \li \c 0x07 - Emphasis (clears previous messages)
 \li \c 0x08 - Whisper
-\li \c 0x09  Yell
-\li \c 0x0a  spell
+\li \c 0x09 - Yell
+\li \c 0x0a - spell
 */
 class cSpeech
 {
@@ -98,7 +98,7 @@ public:
 
 	inline void setLanguage(uint32_t newlanguage)
 	{
-		language = newlanguage & 0xffffff00;	//ensure 0-termination
+		language = newlanguage & 0xffffff00;	//ensure 0-termination (remeber, we are using this only when sending it back in network-endian, so the ending 0 is the lsb)
 	}
 
 	inline const pSerializable getSpeaker()

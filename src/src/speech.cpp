@@ -23,9 +23,6 @@ static NxwCharWrapper*	nearbyNpcs = NULL;
 
 extern void checkAmxSpeech(int s, char *speech);
 
-void wchar2char (const char* str);
-void char2wchar (const char* str);
-
 //! Size is used only for not null-terminated strings, if it is 0 is ignored, else reads size bytes wherever \\0 is present or not
 cSpeech::cSpeech(char* buffer, uint16_t size)
 {
@@ -1886,26 +1883,6 @@ static bool buyFromVendor( pChar pc, pClient client, string &speech, NxwCharWrap
 }// namespace Speech
 
 
-void makeGhost( wstring* from, wstring* to )
-{
-	to->erase();
-
-	if ( from == NULL || to == NULL )
-		return;
-
-	wstring::iterator iter( from->begin() ), end( from->end() );
-	for( ; iter != end; iter++ ) {
-		/*if( (*iter)!=32 )
-			(*to)+= ((*iter) %2)? L'O' : L'o';*/
-
-		(*to) += ( (RandomNum(1,2) == 2) ? L'O' : L'o' );
-	}
-
-}
-
-
-
-
 static int32_t findKeyword( const std::string &str, const std::string &keyword )
 {
 	int32_t tokenPosition = str.find( keyword );
@@ -1929,20 +1906,4 @@ static std::string trimString( const std::string &str )
 	while( str[j] == ' ' )
 		--j;
 	return str.substr( i, (j-i)+1 );
-}
-
-
-void char2wchar (const char* str)
-{
-	memset(&Unicode::temp[0], 0, 1024);
-	uint32_t size = strlen(str);
-	// client wants to have a 0 as very fist byte.
-	// after that 0 the unicode text
-	// after it two(!) 0's as termintor
-	uint32_t j=1;
-	for (uint32_t i = 0; i < size; i++)
-	{
-		Unicode::temp[j] = str[i];
-		j+=2;
-	}
 }
