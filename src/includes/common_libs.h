@@ -68,7 +68,6 @@ warnings/errors/issues.
 
 #include "typedefs.h"
 #include "constants.h"
-#include "console.h"
 
 #define TIMEOUT(X) ((X) <= getclock())
 

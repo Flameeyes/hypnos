@@ -216,20 +216,6 @@ void PanicOut(char *txt, ...)
 	AnsiOut("\x1B[0m");
 }
 
-
-void DmpOut(char *txt, ...)
-{
-	va_list argptr;
-
-	va_start( argptr, txt );
-	vsnprintf( s_szErrMsg, sizeof(s_szErrMsg)-1, txt, argptr );
-	va_end( argptr );
-
-	AnsiOut("\x1B[33m");
-	ConOut("--> %s", s_szErrMsg);
-	AnsiOut("\x1B[0m");
-}
-
 static inline void exitOnError(bool error)
 {
 	//! \todo Replace with exception handling

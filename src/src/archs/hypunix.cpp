@@ -12,43 +12,17 @@
 #ifdef __unix__
 
 #include "common_libs.h"
+#include "logsystem.h"
 #include <fstream>
 
 void sockManageError(int bcode)
 {
-	ErrOut("ERROR: Unable to bind socket - Error code: %i\n", bcode);
+	LogError("ERROR: Unable to bind socket - Error code: %i\n", bcode);
 }
 
 termios termstate;
 unsigned long int oldtime, newtime;
 	
-void init_deamon()
-{
-	int i ;
-	pid_t pid ;
-
-	if ((pid = fork() ) != 0)
-		_exit(0) ;
-	
-	setsid() ;
-	signal(SIGHUP, SIG_IGN);
-	if ((pid=fork()) != 0)
-	{
-		std::fstream fPid("nxwpid", std::ios::out);
-		fPid << pid << std::endl;
-		fPid.close() ;
-		_exit(0);
-	}
-	// We should close any dangling descriptors we have
-	for (i=0 ; i < 64 ; i++)
-		close(i) ;
-
-	signal(SIGUSR2,&signal_handler);
-	signal(SIGHUP,&signal_handler);
-	signal(SIGUSR1,&signal_handler);
-	signal(SIGTERM,&signal_handler);
-}
-
 /*!
 \brief Sleeps some milliseconds
 \author AnomCwrd

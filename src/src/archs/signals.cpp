@@ -9,7 +9,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "signals.h"
+#include "archs/signals.h"
 
 // If not USE_SIGNALS simply compile an empty unit
 #ifdef USE_SIGNALS
@@ -175,6 +175,33 @@ void setup_signals ()
 
 	// ignore SIGPIPE, we catch it on Socket::write()
 	sigaction(SIGPIPE, &ignore_handler, 0);
+}
+
+void init_deamon()
+{
+	int i ;
+	pid_t pid ;
+
+	if ((pid = fork() ) != 0)
+		_exit(0) ;
+	
+	setsid() ;
+	signal(SIGHUP, SIG_IGN);
+	if ((pid=fork()) != 0)
+	{
+		std::fstream fPid("nxwpid", std::ios::out);
+		fPid << pid << std::endl;
+		fPid.close() ;
+		_exit(0);
+	}
+	// We should close any dangling descriptors we have
+	for (i=0 ; i < 64 ; i++)
+		close(i) ;
+
+	signal(SIGUSR2,&signal_handler);
+	signal(SIGHUP,&signal_handler);
+	signal(SIGUSR1,&signal_handler);
+	signal(SIGTERM,&signal_handler);
 }
 
 #endif

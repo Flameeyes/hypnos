@@ -37,7 +37,6 @@
 
 #define SLPMULTI 1000
 
-void init_deamon();
 void initclock();
 extern termios termstate ;
 extern unsigned long int oldtime, newtime;

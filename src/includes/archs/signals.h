@@ -33,6 +33,7 @@ bool pollHUPStatus();
 bool pollCloseRequests();
 void setup_signals();
 void start_signal_thread();
+void init_deamon();
 
 #endif // USE_SIGNALS
 
