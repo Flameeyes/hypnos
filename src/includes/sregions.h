@@ -13,6 +13,5 @@ void checkregion(pChar pc);
 short calcRegionFromXY(sLocation pos);	// added by Anthalir
 short calcRegionFromXY(int x, int y);
 void check_region_weatherchange ();
-sint8_t getIntensityModifier(region1, region2);
-
+sint16_t getIntensityModifier(uint16_t region1, uint16_t region2);
 #endif

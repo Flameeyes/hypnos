@@ -179,5 +179,25 @@ enum PlotCourseCommands {
 	pccToggleWritable,	//!< Toggle the 'editable' state of the map
 	pccWriteableStatus	//!< Return message from the server to request 6 of the client
 };
-		
+
+//! climate types
+enum Climates {
+	clNormal = 1,		//!< Temperate
+	clArtic,		//!< frigid and should have high snow probability
+	clTropical,		//!< hot and humid areas. Should have a high rain probability
+	clDry			//!< deserts (or generally warm low-raining areas)
+};
+
+//! types of weather
+enum WeatherType {
+	wtSun,		//!< Sunny, no clouds in the sky
+	wtCloud,	//!< moderately cloudy
+	wtStormCloud,	//!< heavy clouds, storm-type (but no raining yet)
+	wtLightRain,	//!< light rain
+	wtMediumRain,	//!< medium sized storm
+	wtHeavyRain,	//!< waterfall-level storm :D
+	wtLightSnow,	//!< light snow
+	wtMediumSnow,	//!< medium snowstorm
+	wtHeavySnow	//!< blizzard
+};
 #endif

@@ -359,22 +359,85 @@ void check_region_weatherchange ()
 	// Chronodt 17/8/04 - begun additional weathercode
 	//! \todo sobstitute temporary region subnames with the true ones when regions redone
 
-	uint8_t current = region[cregion].weatherCurrent;
-	sint8_t newintensity = region[cregion].weatherIntensity;
+	WeatherType current = region[cregion].weatherCurrent;
+	sint16_t oldintensity = region[cregion].weatherIntensity;
+	sint16_t newintensity = oldintensity;
 
 	//Getting the 4 adiacent regions. getXXXXregion should return invalid if such region does not exist
-	uint8_t nregion = getNorthregion(cregion);
-	uint8_t eregion = getEastregion(cregion);
-	uint8_t sregion = getSouthregion(cregion);
-	uint8_t wregion = getWestregion(cregion);
+	uint16_t nregion = getNorthregion(cregion);
+	uint16_t eregion = getEastregion(cregion);
+	uint16_t sregion = getSouthregion(cregion);
+	uint16_t wregion = getWestregion(cregion);
 
-	switch (current)
+	// modifying the intensity by surrounding squares (obiously the old status)
+	newintensity += getIntensityModifier(cregion, nregion);
+	newintensity += getIntensityModifier(cregion, eregion);
+	newintensity += getIntensityModifier(cregion, sregion);
+	newintensity += getIntensityModifier(cregion, wregion);
+
+	// adding intensity by random raincheck (based on region configuration)
+	//! \todo modify these with new region parameters
+	uint8_t dry  = region[cregion].drychance;
+	uint8_t rain = region[cregion].rainchance;
+	uint8_t snow = region[cregion].snowchance;
+	uint8_t r = rand()%100;
+	if (r < dry) newintensity -= (dry - r) * 5;
+	r = rand()%100;
+	if (r < rain) newintensity += (rain - r) * 5;
+
+	if (newintensity > 140) newintensity = 140;
+	if (newintensity < 0) newintensity = 0;
+
+	bool snow = false;
+	std::string message = "";
+
+	//! \todo insert a maxlight to limit light in bad beather (but nightvision should counter this) 
+
+	switch (current)	//select message type to send clients based on previous weather in region. Also checking if weather change is too sudden, and if so lessen the impact :D
 	{
-	case wtNormal:	//in this weather type, we use intensity as the "cloud coverage" :P
-		newintensity = getIntensityModifier(cregion, nregion);
+	case wtSun:		// intensity 0 - 20
+		if (newintensity >= 35)
+		{
+			newintensity = 69;	//If it was so clear, we need at least a few clouds in the sky before it can rain (or snow)
+			message = "You see some clouds closing in";
+		}
+		break;
+	case wtCloud:		// intensity 21 - 40
+		if (newintensity >= 105)		// to have more than a light rain we need heavier clouds first
+		{
+			newintensity = 69;
+			message = "Cloud covering thickens visibly. You hear rumbling in the distance";
+		}
+		else if (newintensity < 35) message = "The sky clears off and the sun shines again";
+		else if (newintensity >= 70)
+		{	//snow check
+			r = rand()%100;
+			if (r < snow) snow = true
+		}
+		break;
+	case wtStormCloud:	// intensity 41 - 70
+		//from this weather type, we can reach every other, since from here it can start raining with any intensity. Or it can snow but even clear up
+		if (newintensity < 70 && newintensity > 35) message = "The sky begins to clear off";
+		else if (newintensity < 35) message = "Strong winds clear away all the clouds, until the sun shines again";
+		else if (newintensity > 70)
+		{	//snow check
+			r = rand()%100;
+			if (r < snow) snow = true
+		}
+	case wtLightRain:	// intensity 71 - 90
+	case wtMediumRain:	// intensity 91 - 110
+	case wtHeavyRain:	// intensity 111 - 140
+	case wtLightSnow:	// intensity 71 - 90
+		snow = true;
+	case wtMediumSnow:	// intensity 91 - 110
+		snow = true;
+	case wtHeavySnow:	// intensity 111 - 140
+		snow = true;
+	}
 
 
 	//! \todo weather control in nox wasn't bad, not much to modify, but still we must update it to hypnos
+	//! \todo actually the calendar system for weather variation during the year wasn't a bad idea, but it should NOT involve 3 float multiplications + 3 float to int and 3 int to float conversions for each region every weathercheck
 	if (region[wregion].wtype==0) packet[2] = 0x00;
 	if (region[wregion].wtype==1) packet[1] = 0x00;
 	if (region[wregion].wtype==2) { packet[1] = 0x02; packet[3] = 0xEC; }
@@ -395,14 +458,45 @@ void check_region_weatherchange ()
 }
 
 
-sint8_t getIntensityModifier(region1, region2)
+sint16_t getIntensityModifier(uint16_t region1, uint16_t region2)
 {
 	if (region1 == INVALID || region2 == INVALID) return 0;
-	if (region[region1].climate == clNone ||  region[region2].climate == clNone) return 0;	//dungeons don't influence nearby areas' weather
+	Climates climate1 = region[region1].climate;
+	Climates climate2 = region[region2].climate;
+	if (climate1 == clNone || climate2 == clNone) return 0;	//dungeons don't influence nearby areas' weather
 
-	if (region[region1].weatherCurrent == region[region2].weatherCurrent)
-		return (region[region1].weatherIntensity - region[region1].weatherIntensity) /4;
+	uint8_t weather1 = region[region1].weatherCurrent;
+	uint8_t weather2 = region[region2].weatherCurrent;
 
+	sint16_t delta = (region[region1].weatherIntensity - region[region1].weatherIntensity) /10;
+	if (climate1 == climate2) return delta; 	//if the 2 regions have the same climate, they just "try" to level weather intensity
 
+	//if flow continues here, the 2 regions have different climates
+	switch(climate1)
+	{
+	case clNormal:
+		if (climate2 == clArtic) return delta + 2;	// humidity usually is higher in the hotter region
+		if (climate2 == clTropical) return delta - 3;	// humid winds to slightly colder climates :D
+		if (climate2 == clDry) return delta + 5;	// deserts usually have few precipitations :D
+		break;
+	case clArtic:
+		if (climate2 == clNormal) return delta - 2;	// humidity usually is higher in the hotter region
+		if (climate2 == clTropical) return delta - 6;	// vastly different climates. very cold wind vs very hot and humid ones.... hurricanes anyone? :P
+		if (climate2 == clDry) return delta + 1;	// deserts and artic areas are both almost equally dry
+		break;
+	case clTropical:
+		if (climate2 == clNormal) return delta + 3;	// mostof the precipitations go to the tropical area
+		if (climate2 == clArtic) return delta + 10;	// vastly different climates. very cold wind vs very hot and humid ones.... hurricanes anyone? :P
+		if (climate2 == clDry) return delta + 8;	// deserts and tropical areas usually are nice neighbor... simply all the rain goes away from the desert :D
+		break;
+	case clDry:
+		if (climate2 == clNormal) return delta - 5;	// deserts usually have few precipitations. they drain humidity from surrounding areas :D
+		if (climate2 == clArtic) return delta - 1;	// deserts and artic areas are both almost equally dry
+		if (climate2 == clTropical) return delta - 8;	// deserts and tropical areas usually are nice neighbor... simply all the rain goes away from the desert :D
+		break;
+	}
+	//should never arrive here
+	return 0;
 }
+
 
