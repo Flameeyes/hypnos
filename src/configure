@@ -18242,7 +18242,7 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 
 
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
-CXXFLAGS="$CXXFLAGS $INCLUDES"
+CXXFLAGS="$CXXFLAGS $INCLUDES -Wall -Wno-reorder"
 
 
 
