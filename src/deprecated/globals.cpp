@@ -185,10 +185,8 @@ int donpcupdate;
 
 unsigned long int serverstarttime;
 
-begging_st begging_data; // was = {BEGGINGRANGE,"Could thou spare a few coins?","Hey buddy can you spare some gold?","I have a family to feed, think of the children."};
-fishing_st fishing_data = {FISHINGTIMEBASE,FISHINGTIMER};
 spiritspeak_st spiritspeak_data = {SPIRITSPEAKTIMER};
-speed_st speed;
+sSpeed speed;
 int triggerx;
 int triggery;
 signed char triggerz;

@@ -378,13 +378,11 @@ void loadserverdefaults()
 	repsys.maxkills=4;
 	repsys.murderdecay=420;
 	//RepSys ---^
-	begging_data.range=3;
-	begging_data.timer=300;
-	strcpy(begging_data.text[0],"Could thou spare a few coins?");
-	strcpy(begging_data.text[1],"Hey buddy can you spare some gold?");
-	strcpy(begging_data.text[2],"I have a family to feed, think of the children.");
-	fishing_data.basetime=FISHINGTIMEBASE;
-	fishing_data.randomtime=FISHINGTIMER;
+
+	Begging::initialize();
+	
+	Fishing::basetime=FISHINGTIMEBASE;
+	Fishing::randomtime=FISHINGTIMER;
 	spiritspeak_data.spiritspeaktimer=SPIRITSPEAKTIMER;
 
 	server_data.blockaccbadpass=0;		//elcabesa tempblock
@@ -676,16 +674,16 @@ static int loadserver(char *script1, char *script2)
 		else if(!strcmp(script1,"TAMED_DISAPPEAR"))		server_data.tamed_disappear=str2num(script2);
 		else if(!strcmp(script1,"HOUSEINTOWN"))			server_data.houseintown=str2num(script2);
 		else if(!strcmp(script1,"SHOPRESTOCK"))			server_data.shoprestock=str2num(script2);
-		else if(!strcmp(script1, "COMMANDPREFIX"))		server_data.commandPrefix=script2[0];
+		else if(!strcmp(script1,"COMMANDPREFIX"))		server_data.commandPrefix=script2[0];
 		else if(!strcmp(script1,"ERRORS_TO_CONSOLE"))		server_data.errors_to_console=str2num( script2 );
 		else if(!strcmp(script1,"HOUSEDECAY_SECS"))		server_data.housedecay_secs=str2num( script2 );
-		else if(!strcmp(script1,"BEGGING_TIME"))		begging_data.timer=str2num(script2);
-		else if(!strcmp(script1,"BEGGING_RANGE"))		begging_data.range=str2num(script2);
-		else if(!strcmp(script1,"BEGGING_TEXT0"))		strcpy(begging_data.text[0],script2);
-		else if(!strcmp(script1,"BEGGING_TEXT1"))		strcpy(begging_data.text[1],script2);
-		else if(!strcmp(script1,"BEGGING_TEXT2"))		strcpy(begging_data.text[2],script2);
-		else if(!strcmp(script1,"BASE_FISHING_TIME"))		fishing_data.basetime=str2num(script2);
-		else if(!strcmp(script1,"RANDOM_FISHING_TIME"))		fishing_data.randomtime=str2num(script2);
+		else if(!strcmp(script1,"BEGGING_TIME"))		Begging::timer=str2num(script2);
+		else if(!strcmp(script1,"BEGGING_RANGE"))		Begging::range=str2num(script2);
+		else if(!strcmp(script1,"BEGGING_TEXT0"))		Begging::text[0]=script2;
+		else if(!strcmp(script1,"BEGGING_TEXT1"))		Begging::text[1]=script2;
+		else if(!strcmp(script1,"BEGGING_TEXT2"))		Begging::text[2]=script2;
+		else if(!strcmp(script1,"BASE_FISHING_TIME"))		Fishing::basetime=str2num(script2);
+		else if(!strcmp(script1,"RANDOM_FISHING_TIME"))		Fishing::randomtime=str2num(script2);
 		else if(!strcmp(script1,"SPIRITSPEAKTIMER"))		spiritspeak_data.spiritspeaktimer=str2num(script2);
 		else return -1;
 		return 0;

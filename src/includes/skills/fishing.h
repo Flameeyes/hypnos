@@ -17,6 +17,9 @@
 
 namespace Fishing
 {
+	extern TIMERVAL basetime;
+	extern TIMERVAL randomtime;
+	
 	void target_fish( NXWCLIENT ps, P_TARGET t );
 	void Fish(CHARACTER c);
 };

@@ -61,10 +61,8 @@ extern int autoTimeCount;
 extern int loopTimeCount;
 
 //server.cfg/scp things :)
-extern begging_st begging_data;
-extern fishing_st fishing_data;
 extern spiritspeak_st spiritspeak_data;
-extern speed_st speed;//Lag Fix -- Zippy
+extern sSpeed speed;//Lag Fix -- Zippy
 
 
 extern char n_scripts[NUM_SCRIPTS][512] ; // array of script filenames

@@ -28,6 +28,8 @@
 #include "scripts.h"
 #include "range.h"
 
+TIMERVAL Fishing::basetime = FISHINGTIMEBASE;
+TIMERVAL Fishing::randomtime = FISHINGTIMER;
 
 int SpawnFishingMonster(P_CHAR pc, char* cScript, char* cList, char* cNpcID)
 {
@@ -188,10 +190,10 @@ void Fishing::target_fish( NXWCLIENT ps, P_TARGET t )
 	
 	pPlayer->facexy(px, py);
 	pPlayer->playAction(0x0B);
-	if (fishing_data.randomtime!=0)
-		pPlayer->fishingtimer=rand()%fishing_data.randomtime+fishing_data.basetime;
+	if (randomtime!=0)
+		pPlayer->fishingtimer=rand()%randomtime+basetime;
 	else
-		pPlayer->fishingtimer=fishing_data.basetime;
+		pPlayer->fishingtimer=basetime;
 	pPlayer->playSFX(0x023F);
 //	pPlayer->hidden=UNHIDDEN;
 	pPlayer->unHide();

@@ -197,26 +197,6 @@ struct gmpage_st
 } PACK_NEEDED;
 
 /*!
-\todo rename to sBegging
-\todo Use std::string instead of c-strings
-*/
-struct begging_st
-{
- SI32 timer;
- UI32 range;
- TEXT text[3][256];
-};
-
-/*!
-\todo rename to sFishing
-*/
-struct fishing_st
-{
- TIMERVAL basetime;
- TIMERVAL randomtime;
-};
-
-/*!
 \todo We really need it? It's only a value!
 */
 struct spiritspeak_st
@@ -228,7 +208,7 @@ struct spiritspeak_st
 \brief struct for manage lag fix
 \note extended by AntiChrist and Ripper
 */
-struct speed_st
+struct sSpeed
 {
 	SI32 nice;
 	R32 itemtime;
