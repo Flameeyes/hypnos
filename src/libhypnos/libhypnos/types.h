@@ -16,6 +16,11 @@ libhypnos library and are common to different applications of the suite.
 #ifndef __LIBHYPNOS_TYPES_H__
 #define __LIBHYPNOS_TYPES_H__
 
+namespace nLibhypnos {
+	typedef class nLibhypnos::cVariant *pVariant;	//!< Pointer to a variant instance
+	typedef std::vector<cVariant> cVariantVector;	//!< Vector of variants
+}
+
 typedef std::set<uint32_t> uint32_set;		//!< A set of uint32_t
 typedef std::vector<uint32_t> uint32_vector;	//!< A vector of uint32_t
 typedef std::slist<uint32_t> uint32_slist;	//!< Singly-linked list of uint32_t

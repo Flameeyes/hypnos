@@ -1,18 +1,28 @@
 /*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
-| Hypnos UO Server Emulator                                                |
+| Hypnos UO Server Emulator (Utility Library)                              |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in hypnos.cpp file.            |
+| You can find detailed license information in LICENSE file.               |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#ifndef __TVARIANT_H__
-#define __TVARIANT_H__
+#ifndef __LIBHYPNOS_CVARIANT_H__
+#define __LIBHYPNOS_CVARIANT_H__
 
-#include "common_libs.h"
+#include "commons.h"
+#include "exceptions.h"
+
+// Only if not included by the hypnos complete sources defines the pointers
+#ifndef __TYPEDEFS_H__
+typedef class cChar *pChar;
+typedef class cItem *pItem;
+typedef class cClient *pClient;
+#endif
+
+namespace nLibhypnos {
 
 /*!
-\class cVariant cvariant.h "abstraction/cvariant.h"
+\class cVariant cvariant.h "libhypnos/cvariant.h"
 \brief Variant type class
 \author Flameeyes
 
@@ -251,5 +261,22 @@ protected:
 	
 	void *pointer;			//!< Pointer to the store value
 };
+
+/*!
+\class eInvalidInteger cvariant.h "libhypnos/cvariant.h"
+\brief Exception thrown when a variant is set to an integer type but hasn't the
+	integer size set to a valid one.
+*/
+class eInvalidInteger : public eException
+{
+public:
+	const pVariant var;	//!< Invalid variant variable
+	
+	eInvalidInteger(pVariant aVar)
+		: var(aVar)
+	{ }
+};
+
+}
 
 #endif

@@ -21,9 +21,6 @@
 typedef int32_t				ACCOUNT;
 typedef int32_t				FUNCIDX;
 
-typedef class cVariant *pVariant;		//!< Pointer to a variant instance
-typedef std::vector<cVariant> cVariantVector;	//!< Vector of variants
-
 typedef std::basic_string<uint16_t> unistring;	//!< Unicode string
 //@}
 

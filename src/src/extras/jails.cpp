@@ -11,7 +11,7 @@
 #include "objects/cclient.h"
 #include "objects/caccount.h"
 #include "objects/cbody.h"
-#include "abstraction/cvariant.h"
+#include "libhypnos/cvariant.h"
 #include "logsystem.h"
 #include "inlines.h"
 #include <mxml.h>

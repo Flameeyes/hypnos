@@ -564,7 +564,7 @@ const std::string cItem::getRealItemName()
 	try {
 		if ( !current_name.length() )
 			return tiledataStatic->getName(getId());
-	} catch( nLibhypmul::eOutOfBound &e ) {
+	} catch( eOutOfBound &e ) {
 		LogWarning("Out of bound in tiledata.mul for id %04x (maxid %04x)", getId(), e.max);
 		
 		return "unnamed";
@@ -589,7 +589,7 @@ const std::string cItem::getName()
 			name = "an ";
 		else if ( tiledataStatic->getFlags(getId()) & nMULFiles::flagTileAPrefix )
 			name = "a ";
-	} catch( nLibhypmul::eOutOfBound &e ) {
+	} catch( eOutOfBound &e ) {
 		LogWarning("Out of bound in tiledata.mul for id %04x (maxid %04x)", getId(), e.max);
 		
 		return "unnamed";
@@ -633,7 +633,7 @@ float cItem::getWeight()
 
 	try {
 		itemweight = tiledataStatic->getWeight(getId());
-	} catch( nLibhypmul::eOutOfBound &e ) {
+	} catch( eOutOfBound &e ) {
 		LogWarning("Out of bound in tiledata.mul for id %04x (maxid %04x)", getId(), e.max);
 		itemweight = 0;
 	}

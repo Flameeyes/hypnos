@@ -22,7 +22,7 @@ if it makes the error handling more difficult).
 #include <mxml.h>
 #include "settings.h"
 #include "logsystem.h"
-#include "abstraction/cvariant.h"
+#include "libhypnos/cvariant.h"
 #include "backend/strconstants.h"
 
 #define SETTING(type, name, default) \

@@ -15,7 +15,7 @@
 
 #include "common_libs.h"
 #include "typedefs.h"
-#include "abstraction/cvariant.h"
+#include "libhypnos/cvariant.h"
 
 /*!
 \class cScriptingEngine scripting.h "backend/scripting.h"

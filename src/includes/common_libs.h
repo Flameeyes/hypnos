@@ -88,4 +88,6 @@ uint32_t getclockday();
 void initclock();
 //@}
 
+using namespace nLibhypnos;
+
 #endif //__COMMON_LIBS_H__

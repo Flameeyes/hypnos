@@ -1,8 +1,8 @@
 /*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
-| Hypnos UO Server Emulator                                                |
+| Hypnos UO Server Emulator (Utility Library)                              |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in hypnos.cpp file.            |
+| You can find detailed license information in LICENSE file.               |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
@@ -10,9 +10,9 @@
 // UINT16_MAX and sibling constants to calc the size of the integer values.
 #define __STDC_LIMIT_MACROS
 
-#include "abstraction/cvariant.h"
-#include "objects/cchar.h"
-#include "objects/citem.h"
+#include "libhypnos/cvariant.h"
+
+namespace nLibhypnos {
 
 //! Inline function to recalc the uint size
 inline void cVariant::recalcUIntSize(const uint64_t &val)
@@ -99,7 +99,7 @@ void cVariant::clear()
 				delete reinterpret_cast<uint8_t*>(pointer);
 				break;
 			case isNotInt:
-				LogCritical("cVariant %p has invalid pointer %p to a not integer size for an unsigned integer type", this, pointer);
+				throw eInvalidInteger(this);
 		};
 		pointer = NULL;
 		break;
@@ -120,7 +120,7 @@ void cVariant::clear()
 				delete reinterpret_cast<int8_t*>(pointer);
 				break;
 			case isNotInt:
-				LogCritical("cVariant %p has invalid pointer %p to a not integer size for a signed integer type", this, pointer);
+				throw eInvalidInteger(this);
 		};
 		pointer = NULL;
 		break;
@@ -1210,4 +1210,6 @@ int8_t cVariant::toSInt8(bool *result) const
 		if ( result ) *result = false;
 		return 0;
 	}
+}
+
 }

@@ -898,7 +898,7 @@ bool isWaterTile(sPoint pt)
 			if ( tiledataLand->getFlags(s[i].id) & nMULFiles::flagTileWet )
 				return true;
 		}
-	} catch( nLibhypmul::eOutOfBound &e ) {
+	} catch( eOutOfBound &e ) {
 		LogWarning("Out of bound in tiledata.mul for id %04x (maxid %04x)", e.requested, e.max);
 		return false;
 	}

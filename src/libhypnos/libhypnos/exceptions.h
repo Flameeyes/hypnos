@@ -1,8 +1,8 @@
 /*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
-| Hypnos UO Server Emulator                                                |
+| Hypnos UO Server Emulator (Utility Library)                              |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in hypnos.cpp file.            |
+| You can find detailed license information in LICENSE file.               |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
@@ -42,11 +42,11 @@ namespace nLibhypnos {
 	
 		/*!
 		\brief Constructor
-		\param pMax Value to assign to \c max attribute
-		\param pRequested Value to assign to \c requested attribute
+		\param aMax Value to assign to \c max attribute
+		\param aRequested Value to assign to \c requested attribute
 		*/
-		eOutOfBound(uint32_t pMax, uint32_t pRequested)
-			: max(pMax), requested(pRequested)
+		eOutOfBound(uint32_t aMax, uint32_t aRequested)
+			: max(aMax), requested(aRequested)
 		{ }
 	};
 	
@@ -61,10 +61,10 @@ namespace nLibhypnos {
 		
 		/*!
 		\brief Constructor
-		\param pInvalidIP Value to assign to \c invalidIP attribute
+		\param aInvalidIP Value to assign to \c invalidIP attribute
 		*/
-		eInvalidIP(std::string pInvalidIP)
-			: invalidIP(pInvalidIP)
+		eInvalidIP(std::string aInvalidIP)
+			: invalidIP(aInvalidIP)
 		{ }
 	};
 }
