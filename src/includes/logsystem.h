@@ -8,11 +8,10 @@
 /*!
 \file
 \brief Log System stuff
-\author Anthalir
 */
 
-#ifndef __LOGSYSTEM_H
-#define __LOGSYSTEM_H
+#ifndef __LOGSYSTEM_H__
+#define __LOGSYSTEM_H__
 
 #include "common_libs.h"
 #include "constants.h"
@@ -22,7 +21,7 @@
 class LogFile;
 
 extern int32_t entries_e, entries_c, entries_w;
-extern LogFile ServerLog;	//! global log object
+extern LogFile ServerLog;	//!< global log object
 
 void WriteGMLog(pChar, char *msg, ...) PRINTF_LIKE(2,3)
 
@@ -63,14 +62,16 @@ public:
 
 /*!
 \brief Check if new errors has been logged
-\return true if new errors
+\retval true New errors had been logged, warn the user
+\retval false No new errors had been logged
 */
 inline bool NewErrorsLogged()
 { return (entries_e > 0 || entries_c > 0); }
 
 /*!
 \brief Check if new warnings has been logged
-\return true if new warnings
+\retval true New warnings had been logged, warn the user
+\retval false No new warnings had been logged
 */
 inline bool NewWarningsLogged()
 { return (entries_w > 0); }
@@ -87,9 +88,6 @@ void prepareLogs(char type, char *fpath, int lnum);
 #define LogError	prepareLogs('E', __FILE__, __LINE__);LogMessageF
 #define LogCritical	prepareLogs('C', __FILE__, __LINE__);LogMessageF
 
-// Spcific error code handling for sockets
 void LogSocketError(char* message, int err);
 
-//#define FAULTLOG { LogCritical("Invalidated function for parameters check at line %d\n", nInvalidate); }
-//#define REPORTERROR	LogMessage("Error in %s:%d\n", __FILE__, __LINE__);
-#endif // __LOGSYSTEM_H
+#endif

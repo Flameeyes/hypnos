@@ -9,6 +9,7 @@
 #include "objects/cserializable.h"
 #include "objects/cchar.h"
 #include "objects/citem.h"
+#include "objects/citem/cmulti.h"
 #include "logsystem.h"
 
 SerializableMap cSerializable::objects;
