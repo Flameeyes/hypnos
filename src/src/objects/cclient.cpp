@@ -3128,3 +3128,33 @@ void cClient::telltime()
 	
 	sysmessage("%s %s %s", prefix, strhour, suffix);
 }
+
+/*!
+\brief Pauses the client
+
+This function pauses the client, making it not do stuff until the resume packet
+is received.
+
+\see nPackets::Sent::PauseClient
+\see cClient::resume()
+*/
+void cClient::pause()
+{
+	static nPackets::Sent::PauseClient pk(0x00);
+	sendPacket(&pk);
+}
+
+/*!
+\brief Pauses the client
+
+This function resumes the client, making it take a look to what was received
+after the pause packet (sent by the above function)
+
+\see nPackets::Sent::PauseClient
+\see cClient::pause()
+*/
+void cClient::resume()
+{
+	static nPackets::Sent::PauseClient pk(0x01);
+	sendPacket(&pk);
+}

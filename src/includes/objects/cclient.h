@@ -182,6 +182,9 @@ public:
 \brief Packets
 */
 public:
+	void pause();
+	void resume();
+
 	void showContainer(pItem pCont);
 	void light();
 	void showBankBox(pChar dest);

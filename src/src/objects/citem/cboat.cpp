@@ -48,8 +48,8 @@ cBoat::cBoat(uint32_t nserial) : cItem(nserial)
 */
 void cBoat::step(pClient client, uint8_t dir)
 {
-	int8_t tx = 0, ty = 0;
-	
+	static sRect navigable( XBORDER, YBORDER, (map_width*8)-XBORDER, (map_height*8)-YBORDER );
+
 	if ( dir == 0xFF ) dir = getDirection();
 	
 	// This packet pauses the client before move the board
@@ -58,41 +58,41 @@ void cBoat::step(pClient client, uint8_t dir)
 
 	sLocation boatpos = getPosition();
 	
-	switch(dir&0x07)//Which DIR is it going in?
+	// Direction where the boat is moving
+	switch(dir&0x07)
 	{
-	case 0:
+	case dirNorth:
 		--boatpos.y;
 		break;
-	case 1:
+	case dirNorthEast:
 		++boatpos.x;
 		--boatpos.y;
 		break;
-	case 2:
+	case dirEast:
 		++boatpos.x;
 		break;
-	case 3:
+	case dirSouthEast:
 		++boatpos.x;
 		++boatpos.y;
 		break;
-	case 4:
+	case dirSouth:
 		++boatpos.y;
 		break;
-	case 5:
+	case dirSouthWest:
 		--boatpos.x;
 		++boatpos.y;
 		break;
-	case 6:
+	case dirWest:
 		--boatpos.x;
 		break;
-	case 7:
+	case dirNorthWest:
 		--boatpos.x;
 		--boatpos.y;
 		break;
 	}
 
 
-	if( ( boatpos.x <= XBORDER || boatpos.x >= ((map_width*8)-XBORDER))
-		|| (boatpos.y <= YBORDER || boatpos.y >= ((map_height*8)-YBORDER))) //bugfix LB
+	if ( ! navigable.isInside(boatpos) )
 	{
 		type2=0;
 		itemtalk(tillerMan,"Arr, Sir, we've hit rough waters!");
@@ -101,7 +101,7 @@ void cBoat::step(pClient client, uint8_t dir)
 		return;
 	}
 
-	if(!good_position(this, boatpos, 0))
+	if( ! good_position(this, boatpos, 0) )
 	{
 		type2=0;
 		itemtalk(tillerMan, "Arr, somethings in the way!");
@@ -109,7 +109,7 @@ void cBoat::step(pClient client, uint8_t dir)
 		client->sendPacket(&pk);
 		return;
 	}
-	if(collision(this, boatpos,0))
+	if( collision(this, boatpos,0) )
 	{
 		type2=0;
 		itemtalk(tillerMan, "Arr, another ship in the way");
@@ -122,48 +122,7 @@ void cBoat::step(pClient client, uint8_t dir)
 	// The special items are also multi's items, so this moves all
 	MoveTo( boatpos );
 
-//!\todo wait until set hav appropriate function
-#if 0
-	for (a=0;a<imultisp[serial%HASHMAX].max;a++)  // move all item upside the boat
-	{
-		c=imultisp[serial%HASHMAX].pointer[a];
-		if(c!=-1)
-		{
-			pItem pi= MAKE_ITEMREF_LOGGED(c,err);
-			if(!err)
-			{
-				mapRegions->remove(pi);
-				sLocation itmpos= pi->getPosition();
-				itmpos.x+= tx;
-				itmpos.y+= ty;
-				pi->setPosition( itmpos );
-				pi->Refresh();
-				mapRegions->add(pi);
-			}
-		}
-	}
-
-	for (a=0;a<cmultisp[serial%HASHMAX].max;a++) // move all char upside the boat
-	{
-		c=cmultisp[serial%HASHMAX].pointer[a];
-		if (c!=-1)
-		{
-		   pc_c=MAKE_CHARREF_LOGGED(c,err);
-		   if (!err)
-		   {
-			   sLocation charpos= pc_c->getPosition();
-			   mapRegions->remove(pc_c);
-			   charpos.x+= tx;
-			   charpos.y+= ty;
-			   pc_c->MoveTo(charpos);
-			   pc_c->teleport();
-			   mapRegions->add(pc_c);
-		   }
-		}
-	}
-#endif
-
-	//! Removes the pause in the client
+	// Removes the pause in the client
 	nPackets::Sent::PauseClient pk(0x00);
 	client->sendPacket(&pk);
 }
@@ -176,7 +135,6 @@ void cBoat::turn(bool turnRight)
 {
 	ClientSList toResume;
 	
-	nPackets::Sent::PauseClient pk(0x01);
 	NxwSocketWrapper sw;
 	sw.fillOnline();
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
@@ -191,9 +149,12 @@ void cBoat::turn(bool turnRight)
 			
 		toResumes.push_back(ps_i);
 
-		ps_i->sendPacket(&pk);
+		ps_i->pause();
 	}
 
+	uint8_t id1 = getId() >> 8;
+	uint8_t id2 = getId() & 0xFF;
+	
 	if(turnRight)
 	{
 		setDirection(getDirection()+2);
@@ -202,9 +163,6 @@ void cBoat::turn(bool turnRight)
 		setDirection(getDirection()-2);
 		id2--;
 	}
-	
-	uint8_t id1 = getId() >> 8;
-	uint8_t id2 = getId() & 0xFF;
 	
 	//! \todo Try to figure out what this is!
 	if(id2 < more1.moreb1)
@@ -224,29 +182,17 @@ void cBoat::turn(bool turnRight)
 
 	const uint8_t *pShipItems = ShipItems[ dir ];
 
-	//set it's Z to 0,0 inside the boat
-	sLocation bpos= getPosition();
-
-	plankLeft->MoveTo( bpos.x, bpos.y, plankLeft->getPosition().z );
 	plankLeft->setId( plankLeft->getId() | pShipItems[idPortPlankClosed] );//change the ID
-
-	plankRight->MoveTo( bpos.x, bpos.y, plankRight->getPosition().z );
 	plankRight->setId( pplankRight->getId() | pShipItems[idStarPlankClosed] );
-
-	tillerMan->MoveTo( bpos.x, bpos.y, tillerMan->getPosition().z );
 	tillerMan->setId( tillerMan->getId() | pShipItems[idTiller] );
-
-	hold->MoveTo(bpos.x, bpos.y, hold->getPosition().z );
 	hold->setId( hold->getId() | pShipItems[idHold] );
 
 	TurnShip( pi->more1, dir, plankLeft, plankRight, tillerMan, hold );
+	
+	// This moves all the items and refreshes them.. but before we should change their 
+	// offsets from the center..
+	MoveTo(getPosition());
 
-	plankLeft->Refresh();
-	plankRight->Refresh();
-	hold->Refresh();
-	tillerMan->Refresh();
-
-	nPackets::Sent::PauseClient pk(0x00);
 	for ( ClientSList::iterator it = toResume.begin(); it != toResume.end(); it++ )
-		(*it)->sendPacket(&pk);
+		(*it)->resume():
 }

@@ -41,6 +41,8 @@ protected:
 	
 	//! The items component of the multi
 	MultiItemSList items;
+	//! The chars which are inside the multi
+	CharSList chars;
 public:
 	cMulti();
 	cMulti(uint32_t nserial);

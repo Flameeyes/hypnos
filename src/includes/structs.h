@@ -10,7 +10,6 @@
 \brief Contains misc structs used here and there in the code
 \todo complete the documentation of structs
 \todo Rename structures ending in _st to starting with s
-\deprecated Many structs should be renamed / moved in proper way
 */
 
 #ifndef __STRUCTS_H__
@@ -23,6 +22,23 @@ struct sPoint {
 	uint16_t x;
 	uint16_t y;
 	sPoint(uint16_t X, uint16_t Y) : x(X), y(Y) { }
+};
+
+/*!
+\brief Rectangle definition
+
+This struct is used to define a rectangle and test if a point is inside it.
+It's used in many place, like for example cBoat::step() function to test
+if the boat is still into the movement area.
+*/
+struct sRect {
+	sPoint ul;	//!< Upperleft corner
+	sPoint br;	//!< Bottomright corner
+	sRect();
+	sRect(sPoint a, sPoint b);
+	sRect(uint16_t ulx, uint16_t uly, uint16_t brx, uint16_t bry)
+	{ sRect(sPoint(ulx, uly), sPoint(brx, bry)); }
+	bool isInside(sPoint p);
 };
 
 //! Represent a location on one map

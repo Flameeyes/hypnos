@@ -77,6 +77,7 @@ typedef class cBody* pBody;			//!< Pointer to a cBody
 
 typedef class cChar *pChar;			//!< Pointer to a cChar (character)
 typedef std::list<pChar> CharList;		//!< List of characters
+typedef std::slist<pChar> CharSList;		//!< Singly-linked list of characters
 typedef class cPC *pPC;				//!< Pointer to a pPC (playing character)
 typedef std::vector<pPC> PCVector;		//!< Vector of playing characters
 typedef std::list<pPC> PCList;			//!< List of playinc characters

@@ -469,8 +469,8 @@ namespace nPackets {
 		class FightOnScreen : public cPacketSend
 		{
 		protected:
-			pChar attacker;		// attacking character
-			pChar defender;		// attacked character
+			pChar attacker;		//!< attacking character
+			pChar defender;		//!< attacked character
 
 		public:
 			inline FightOnScreen(pChar aAttacker, pChar aDefender) :
@@ -482,11 +482,14 @@ namespace nPackets {
 
 
 		/*!
-		\brief pause/resume client
+		\brief Pause/resume client [Packet 0x33]
 		\author Chronodt
-		\note packet 0x33
+		
+		This packet is sent by the functions cClient::pause() and
+		cClient::resume() which contains two static copies of this.
+		
+		Don't use this directly, but call the above methods
 		*/
-
 		class PauseClient : public cPacketSend
 		{
 		protected:
@@ -495,7 +498,7 @@ namespace nPackets {
 		public:
 			inline PauseClient(uint8_t aPauseStatus) :
 				cPacketSend(NULL, 0), pausestatus(aPauseStatus)
-			{ }
+			{ prepare(); }
 
 			void prepare();
 		};
