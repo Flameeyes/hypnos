@@ -15,7 +15,7 @@
 
 void Skills::target_enticement2(pClient client, pTarget t )
 {
-	pChar pc=ps->currChar();
+	pChar pc = client->currChar();
 	pChar pc_ftarg = dynamic_cast<pChar>( t->getClicked() );
 	if ( ! pc || ! pc_ftarg ) return;
 
@@ -44,38 +44,36 @@ void Skills::target_enticement2(pClient client, pTarget t )
 
 void Skills::target_enticement1(pClient client, pTarget t )
 {
-	pChar current=ps->currChar();
+	pChar current=client->currChar();
 	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if ( !current || !pc ) return;
 
-	pClient client = ps->toInt();
-
-	ITEM inst = Skills::GetInstrument(s);
-	if (inst==INVALID)
+	pItem inst = Skills::getInstrument(client);
+	if (!inst)
 	{
-		sysmessage(s, "You do not have an instrument to play on!");
+		client->sysmessage("You do not have an instrument to play on!");
 		return;
 	}
 	if ( pc->IsInvul() || pc->shopkeeper )
 	{
-		sysmessage(s," You cant entice that npc!");
+		client->sysmessage(" You cant entice that npc!");
 		return;
 	}
 	if (pc->InGuardedArea())
 	{
-		sysmessage(s," You cant do that in town!");
+		client->sysmessage(" You cant do that in town!");
 		return;
 	}
 	if (!pc->npc)
-		sysmessage(s, "You cannot entice other players.");
+		client->sysmessage("You cannot entice other players.");
 	else
 	{
 		pTarget targ= clientInfo[s]->newTarget( new cCharTarget() );
 		targ->code_callback = Skills::target_enticement2;
 		targ->buffer[0]= pc->getSerial();
 		targ->send( ps );
-		ps->sysmsg("You play your music, luring them near. Whom do you wish them to follow?");
-		PlayInstrumentWell(s, inst);
+		client->sysmessage("You play your music, luring them near. Whom do you wish them to follow?");
+		PlayInstrumentWell(client, inst);
 	}
 }
 
@@ -85,43 +83,40 @@ void target_provocation2(pClient client, pTarget t )
 	pChar Victim1 = cSerializable::findCharBySerial( t->buffer[0] );
 	if( !Victim1 || !Victim2 ) return;
 
-	pChar Player = ps->currChar();
+	pChar Player = client->currChar();
 	if(!Player) return;
 
 	Location charpos= Player->getPosition();
 
-
-	pClient client =ps->toInt();
-
 	if (Victim2->InGuardedArea())
 	{
-		sysmessage(s,"You cant do that in town!");
+		client->sysmessage("You cant do that in town!");
 		return;
 	}
 	if (Victim1->isSameAs(Victim2))
 	{
-		sysmessage(s, "Silly bard! You can't get something to attack itself.");
+		client->sysmessage("Silly bard! You can't get something to attack itself.");
 		return;
 	}
 
-	int inst = Skills::GetInstrument(s);
-	if (inst==INVALID)
+	pItem inst = Skills::getInstrument(client);
+	if (!inst)
 	{
-		sysmessage(s, "You do not have an instrument to play on!");
+		client->sysmessage("You do not have an instrument to play on!");
 		return;
 	}
 	if (Player->checkSkill( skMusicianship, 0, 1000))
 	{
-		Skills::PlayInstrumentWell(s, inst);
+		Skills::PlayInstrumentWell(client, inst);
 		if (Player->checkSkill( skProvocation, 0, 1000))
 		{
 			if (Player->InGuardedArea() && ServerScp::g_nInstantGuard == 1) //Luxor
 				npcs::SpawnGuard(Player, Player, charpos.x+1, charpos.y, charpos.z); //ripper
-			sysmessage(s, "Your music succeeds as you start a fight.");
+			client->sysmessage("Your music succeeds as you start a fight.");
 		}
 		else
 		{
-			sysmessage(s, "Your music fails to incite enough anger.");
+			client->sysmessage("Your music fails to incite enough anger.");
 			Victim2 = Player;		// make the targeted one attack the Player
 		}
 
@@ -146,61 +141,59 @@ void target_provocation2(pClient client, pTarget t )
 	}
 	else
 	{
-		Skills::PlayInstrumentPoor(s, inst);
-		sysmessage(s, "You play rather poorly and to no effect.");
+		Skills::PlayInstrumentPoor(client, inst);
+		client->sysmessage("You play rather poorly and to no effect.");
 	}
 }
 
 void Skills::target_provocation1(pClient client, pTarget t )
 {
-	pChar current=ps->currChar();
+	pChar current = client->currChar();
 	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 
 	if(!current || !pc ) return;
 
-	pClient client =ps->toInt();
-
-	int inst = Skills::GetInstrument(s);
-	if (inst==INVALID)
+	pItem inst = Skills::getInstrument(client);
+	if (!inst)
 	{
-		sysmessage(s, "You do not have an instrument to play on!");
+		client->sysmessage("You do not have an instrument to play on!");
 		return;
 	}
 
 	if (!pc->npc)
-		sysmessage(s, "You cannot provoke other players.");
+		client->sysmessage("You cannot provoke other players.");
 	else
 	{
 		pTarget targ=clientInfo[s]->newTarget( new cCharTarget() );
 		targ->code_callback=target_provocation2;
 		targ->buffer[0]=pc->getSerial();
 		targ->send( ps );
-		ps->sysmsg( "You play your music, inciting anger, and your target begins to look furious. Whom do you wish it to attack?");
-		PlayInstrumentWell(s, inst);
+		client->sysmessage( "You play your music, inciting anger, and your target begins to look furious. Whom do you wish it to attack?");
+		PlayInstrumentWell(client, inst);
 	}
 }
 
 void Skills::PeaceMaking(pClient client)
 {
 	pChar pc = NULL;
-	if ( ! client || ! (pc = client->currChar()) ) //Luxor
+	if ( !client || ! (pc = client->currChar()) ) //Luxor
 		return;
 
-	pItem inst = Skills::GetInstrument( s );
-	if( ! inst )
+	pItem inst = Skills::getInstrument(client);
+	if( !inst )
 	{
 		client->sysmessage( "You do not have an instrument to play on!");
 		return;
 	}
 	
-	if ( ! pc->checkSkill( skPeacemaking, 0, 1000) || ! pc->checkSkill( skMusicianship, 0, 1000) )
+	if ( !pc->checkSkill( skPeacemaking, 0, 1000) || !pc->checkSkill( skMusicianship, 0, 1000) )
 	{
-		Skills::PlayInstrumentPoor(s, inst);
+		Skills::PlayInstrumentPoor(client, inst);
 		client->sysmessage("You attempt to calm everyone, but fail.");
 		return;
 	}
 
-	Skills::PlayInstrumentWell(s, inst);
+	Skills::PlayInstrumentWell(client, inst);
 	client->sysmessage("You play your hypnotic music, stopping the battle.");
 
 	NxwCharWrapper sc;
@@ -208,13 +201,17 @@ void Skills::PeaceMaking(pClient client)
 	for( sc.rewind(); !sc.isEmpty(); sc++ )
 	{
 		pChar pcm = sc.getChar();
-		if ( ! pcm )
+		if ( !pcm )
 			continue;
 		
 		if ( !pcm->war || pc == pcm )
 			continue;
-		
-		pcm->sysmsg("You hear some lovely music, and forget about fighting.");
+
+		pPC pcm_PC = dynamic_cast<pPC>(pcm);
+		if(!pcm_PC)
+			continue;
+		pcm_PC->getClient()->sysmessage("You hear some lovely music, and forget about fighting.");
+
 		if (pcm->war)
 			pcm->toggleCombat();
 		pcm->targserial = INVALID;
@@ -231,7 +228,7 @@ void Skills::PeaceMaking(pClient client)
 void Skills::PlayInstrumentWell(pClient client, pItem pi)
 {
 	pChar pc = NULL;
-	if ( ! client || ! (pc = client->currChar()) || ! pi ) //Luxor
+	if ( !client || ! (pc = client->currChar()) || ! pi ) //Luxor
 		return;
 
 	switch(pi->getId())

@@ -23,13 +23,11 @@ void Begging::initialize()
 	text[2] = "I have a family to feed, think of the children.";
 }
 
-void Begging::target(pClient ps, pTarget t)
+void Begging::target(pClient client, pTarget t)
 {
-	pChar pcc = ps->currChar();
-	if ( ! pcc )
-		return;
-	pChar pc = t->getClicked()->toChar();
-	if ( ! pc )
+	pChar pcc = client->currChar();
+	pChar pc = dynamic_cast<pChar>( t->getClicked() );
+	if ( !pcc || !pc )
 		return;
 	
 	// TODO! Convertire a interfaccia eventi migliorata
@@ -37,20 +35,20 @@ void Begging::target(pClient ps, pTarget t)
 	
 	if(pc->IsOnline())
 	{
-		sysmessage(s,tr("Maybe you should just ask."));
+		client->sysmessage(tr("Maybe you should just ask."));
 		return;
 	}
 	
 	if( pc->distFrom(pcc) >= Begging::range)
 	{
-		sysmessage(s,tr("You are not close enough to beg."));
+		client->sysmessage(tr("You are not close enough to beg."));
 		return;
         }
 
 	// Not used on human
 	if( !pc->getBody()->isHuman() || !pc->getBody()->getIntelligence() )
 	{
-		sysmessage(s, "That would be foolish.");
+		client->sysmessage("That would be foolish.");
 		return;
 	}
 
@@ -64,7 +62,7 @@ void Begging::target(pClient ps, pTarget t)
 	
 	if (!pcc->checkSkill( skiBegging, 0, 1000))
 	{
-		sysmessage(s,"They seem to ignore your begging plees.");
+		client->sysmessage("They seem to ignore your begging plees.");
 		return;
 	}
 	
@@ -97,7 +95,7 @@ void Begging::target(pClient ps, pTarget t)
 	
 	pc->talkAll("Ohh thou lookest so poor, Here is some gold I hope this will assist thee.",0); // zippy
 	pcc->addGold(gold);
-	sysmessage(s,"Some gold is placed in your pack.");
+	client->sysmessage("Some gold is placed in your pack.");
 
 	// TODO need to update to new event system
 //	AMXEXECSVTARGET( pcc->getSerial(),AMXT_SKITARGS,skBegging,AMX_AFTER);

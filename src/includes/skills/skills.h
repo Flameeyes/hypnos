@@ -76,7 +76,7 @@ namespace nSkills {
 	void PeaceMaking(pClient client);
 	void PlayInstrumentWell(pClient client, pItem pi);
 	void PlayInstrumentPoor(pClient client, pItem pi);
-	pItem GetInstrument(pClient client);
+	pItem getInstrument(pClient client);
 	void target_provocation1( pClient client, pTarget t );
 	void target_enticement1( pClient client, pTarget t );
 	//@}

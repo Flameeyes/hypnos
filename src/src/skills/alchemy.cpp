@@ -158,7 +158,7 @@ void Skills::CreatePotion(pChar pc, uint8_t type, uint8_t sub, pItem mortar)
 		targ->code_callback=Skills::target_bottle;
 		targ->buffer[0]=pi_mortar->getSerial();
 		targ->send( ps );
-		ps->sysmsg("Where is an empty bottle for your potion?");
+		client->sysmessage("Where is an empty bottle for your potion?");
 	}
 	else
 	{
@@ -175,15 +175,13 @@ void Skills::CreatePotion(pChar pc, uint8_t type, uint8_t sub, pItem mortar)
 pour in the potion from the mortar
 \param client client of the crafter
 */
-void Skills::target_bottle( pClient ps, pTarget t )
+void Skills::target_bottle( pClient client, pTarget t )
 {
-	pChar pc=ps->currChar();
+	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
 	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
-
-	pClient client = ps->toInt();
 
 	if(pi->magic==4)
 		return;    // Ripper
@@ -202,7 +200,7 @@ void Skills::target_bottle( pClient ps, pTarget t )
 		}
 	}
 	else
-		sysmessage(s,"This is not an appropriate container for a potion.");
+		client->sysmessage("This is not an appropriate container for a potion.");
 }
 
 #define CREATEINBACKPACK( ITEM ) pi = item::CreateFromScript( ITEM, pc->getBackpack() );
@@ -289,15 +287,12 @@ void Skills::PotionToBottle( pChar pc, pItem pi_mortar )
 //
 void Skills::target_alchemy(pClient client, pTarget t )
 {
-	pChar pc_currchar = ps->currChar();
+	pChar pc_currchar = client->currChar();
 	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 	if ( ! pc_currchar || ! pi ) return;
 
 	pItem pack = pc_currchar->getBackpack();    // Get the packitem
 	if ( ! pack ) return;
-
-	pClient client = ps->toInt();
-
 
 	pItem pfbottle=NULL; //candidate of the bottle
 

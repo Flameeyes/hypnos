@@ -386,7 +386,7 @@ void cPC::deadAttack (pChar victim)
 		}
 		else
 		{
-			sysmessage(s,"You are dead and cannot do that.");
+			client->sysmessage("You are dead and cannot do that.");
 		}//npcaitype check
 	}
 	else
@@ -398,7 +398,7 @@ void cPC::deadAttack (pChar victim)
 		}
 		else
 		{
-			sysmessage(s, "You are dead and cannot do that.");
+			client->sysmessage("You are dead and cannot do that.");
 		}
 	}//if npc
 }
