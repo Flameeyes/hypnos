@@ -107,6 +107,7 @@ char *strupr(char *str) {
 \author Xanathar
 */
 namespace tthreads {
+
 /*!
 \author Xanathar
 \param funk pointer to thread function
@@ -121,11 +122,13 @@ int startTThread( TTHREAD ( *funk )( void * ), void* param )
 
 } //namespaze
 
-///////////////////////////////////////////////////////////////////
-// Function name     : Sleep
-// Description       : sleeps some milliseconds, thread-safe
-// Return type       : void
-// Author            : AnomCwrd
+
+/*!
+\brief Sleeps some milliseconds
+\author AnomCwrd
+
+  thread-safe
+*/
 void Sleep(unsigned long msec)
 {
 	timeval timeout;
@@ -139,12 +142,14 @@ static volatile bool g_bHUPReceived = false; // Xan : this is not thread safe, b
 				//       problem.
 static volatile bool g_bShouldClose = false;
 
-///////////////////////////////////////////////////////////////////
-// Function name     : pollHUPStatus
-// Description       : returns true if a SIGHUP was handled
-// Return type       : bool
-// Author            : Xanathar
-// Notes             : can miss an HUP -- but should never be a problem
+
+/*!
+\brief Checks for a SIGHUP was handled
+\author Xanatar
+\return true if a SIGHUP was handled
+
+Can miss a HUP, but should never be a problem
+*/
 bool pollHUPStatus ()
 {
 	if (g_bHUPReceived) {
@@ -154,23 +159,22 @@ bool pollHUPStatus ()
 	return false;
 }
 
-///////////////////////////////////////////////////////////////////
-// Function name     : pollCloseRequests
-// Description       : returns true if a SIGQUIT or similar was handled
-// Return type       : bool
-// Author            : Xanathar
+
+/*!
+\brief Checks for a SIGQUIT (or similar) was handled
+\author Xanatar
+\return true if a SIGQUIT was handled
+*/
 bool pollCloseRequests()
 {
 	return g_bShouldClose;
 }
 
 
-
-///////////////////////////////////////////////////////////////////
-// Function name     : SignalThread
-// Description       : Signal-handling thread
-// Return type       : void
-// Author            : AnomCwrd
+/*!
+\brief Signal-handling thread
+\author AnomCwrd
+*/
 static void* SignalThread(void*)
 {
 	sigset_t signals_to_catch;
@@ -208,14 +212,14 @@ static void* SignalThread(void*)
 			//pthread_exit(0);
 		}
 		Sleep(100);
-}
+	}
 }
 
-///////////////////////////////////////////////////////////////////
-// Function name     : start_signal_thread
-// Description       : starts signal handling thread
-// Return type       : void
-// Author            : AnomCwrd
+
+/*!
+\brief Starts signal handling thread
+\author AnomCwrd
+*/
 void start_signal_thread()
 {
 	// frist thing we need to do is setup POSIX signals
@@ -231,11 +235,11 @@ void start_signal_thread()
 	pthread_create(&signal_thread_id, &thread_attr, SignalThread, 0);
 }
 
-///////////////////////////////////////////////////////////////////
-// Function name     : setup_signals
-// Description       : starts signal handling thread etc
-// Return type       : void
-// Author            : AnomCwrd
+
+/*!
+\brief Setup signals to handle
+\author AnomCwrd
+*/
 void setup_signals ()
 {
 	sigset_t signals_to_block;
@@ -308,6 +312,7 @@ uint32_t getclock()
 	return milliseconds ;
 }
 
+
 /*!
 \author Keldan
 \since 0.82r3
@@ -317,11 +322,11 @@ used by getSystemTime amx function
 */
 uint32_t getsysclock()
 {
-   uint32_t seconds;
-   timeval buffer;
-   gettimeofday(&buffer,NULL);
-   seconds = buffer.tv_sec;
-   return seconds;
+	uint32_t seconds;
+	timeval buffer;
+	gettimeofday(&buffer,NULL);
+	seconds = buffer.tv_sec;
+	return seconds;
 }
 
 #endif
