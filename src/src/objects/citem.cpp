@@ -324,7 +324,6 @@ cItem& cItem::operator=(const cItem& b)
                 resists[i] = b.resists[i];
 
 	vendorDescription = b.vendorDescription;
-	amxVS.copyVariable(getSerial(), b.getSerial32());
 
         return *this;
 }
@@ -566,7 +565,6 @@ void cItem::MoveTo(Location newloc)
 /*
 \brief Check if two item are similar so pileable
 \author Endymion
-\todo add amx vars and events
 \note if same item is compared, false is returned
 */
 inline bool operator ==( cItem& a, cItem& b ) {
@@ -694,6 +692,7 @@ const float cItem::getWeightActual()
 bool LoadItemEventsFromScript (pItem pi, char *script1, char *script2)
 {
 
+#if 0
 #define CASEITEMEVENT( NAME, ID ) 	else if (!(strcmp(NAME,script1))) pi->amxevents[ID] = newAmxEvent(script2);
 
 	if (!strcmp("@ONSTART",script1))	{
@@ -720,6 +719,7 @@ bool LoadItemEventsFromScript (pItem pi, char *script1, char *script2)
 	else if (!(strcmp("@ONCREATION",script1))) newAmxEvent(script2)->Call(pi->getSerial(),-1);
 	else return false;
 	return true;
+#endif
 }
 
 /*!

@@ -315,23 +315,16 @@ void cChar::resetData()
 	oldmenu=INVALID;
 }
 
-/*
+/*!
 \brief Destructor
 */
 cChar::~cChar()
 {
-	if( staticProfile!=NULL )
-		safedelete( staticProfile );
-	if( speechCurrent!=NULL )
-		safedelete( speechCurrent );
-	if ( path != NULL )
-		safedelete( path );
-#ifdef ENCRYPTION
-	if ( crypter != NULL )
-		safedelete(crypter);
-#endif
+	safedelete( staticProfile );
+	safedelete( speechCurrent );
+	safedelete( path );
+	safedelete(crypter);
 }
-
 
 /*!
 \note Don't add onstart events in npc scripts, because then they'll also be executed when character is created
