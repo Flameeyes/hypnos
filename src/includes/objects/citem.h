@@ -380,7 +380,8 @@ protected:
 public:
 	pItem getOutMostCont( uint16_t rec=50 );
 	pBody getPackOwner();
-	
+	pChar getCurrentOwner(bool searchBank = false);	//!< returns pChar to item who has item, either equipped or in the pack (and subcontainers too) else NULL
+
 	inline const pObject getContainer() const
 	{ return cont; }
 

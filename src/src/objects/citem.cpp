@@ -891,6 +891,23 @@ pBody cItem::getPackOwner()
 }
 
 /*!
+\brief Get the owner of this item. item may be equipped or in the backpack. If searchBank is true, bank is also searched
+\author Flameeyes
+\return pointer to pack owner
+*/
+
+pChar getCurrentOwner(bool searchBank)
+{
+	pItem cont = getOutMostCont(); 		// this returns a container equipped on char or a container in the world. If it is equipped, cont == this
+        if (cont->isInWorld()) return NULL;     // if it is in the world it has no current owner
+	if (cont == this) return (dynamic_cast<pBody> cont->getContainer())->getChar();
+        pEquippableContainer econt = dynamic_cast<pEquippableContainer> cont;
+       	if (!econt) return NULL;   //I have no idea of what "this" is if at this point econt is NULL :)
+        if (!searchBank && econt->getLayer() == layBank) return NULL;
+	return (dynamic_cast<pBody> cont->getContainer())->getChar();;
+}
+
+/*!
 \brief Get item's distance from the given char
 \author Flameeyes
 \return distance ( if error is returned VERY_VERY_FAR )

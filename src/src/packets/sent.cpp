@@ -304,6 +304,31 @@ void cPacketSendMoveReject::prepare()
         buffer[7] = pc->getPosition().z;
 }
 
+/*!
+\brief Move accepted
+\author Chronodt
+\note packet 0x22
+*/
+
+void cPacketSendMoveAcknowdledge::prepare()
+{
+	buffer = new uint8_t[3];
+        length = 3;
+        buffer[0] = 0x22;
+        buffer[1] = sequence;
+	buffer[2] = notoriety;
+/*
+notoriety:
+0 = invalid/across server line
+1 = innocent (blue)
+2 = guilded/ally (green)
+3 = attackable but not criminal (gray)
+4 = criminal (gray)
+5 = enemy (orange)
+6 = murderer (red)
+7 = unknown use (translucent (like 0x4000 hue))
+*/
+}
 
 
 void cPacketSendAction::prepare()
@@ -811,25 +836,6 @@ void cPacketSendLogoutStatus::prepare()
         buffer[1] = 0x01;
 }
 
-void cPacketSendMoveAcknowdledge::prepare()
-{
-	buffer = new uint8_t[3];
-        length = 3;
-        buffer[0] = 0x22;
-        buffer[1] = sequence;
-	buffer[2] = notoriety; //!\todo change to real notoriety of pg
-/*
-notoriety:
-0 = invalid/across server line
-1 = innocent (blue)
-2 = guilded/ally (green)
-3 = attackable but not criminal (gray)
-4 = criminal (gray)
-5 = enemy (orange)
-6 = murderer (red)
-7 = unknown use (translucent (like 0x4000 hue))
-*/
-}
 
 pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
 {

@@ -243,6 +243,26 @@ public:
 };
 
 /*!
+\brief Move accepted
+\author Chronodt
+\note packet 0x22
+*/
+
+class cPacketSendMoveAcknowdledge : public cPacketSend
+{
+protected:
+	uint8_t sequence;
+	uint8_t notoriety;
+public:
+	inline cPacketSendMoveAcknowdledge(uint8_t s, uint8_t n) :
+        	cPacketSend(NULL, 0), sequence(s), notoriety(n)
+	{ }
+
+	void prepare();
+};
+
+
+/*!
 \brief cChar::action() packet
 \author Flameeyes
 */
@@ -706,19 +726,6 @@ protected:
 public:
 	inline cPacketSendClientViewRange(uint8_t r) :
         	cPacketSend(NULL, 0), range(r)
-	{ }
-
-	void prepare();
-};
-
-class cPacketSendMoveAcknowdledge : public cPacketSend
-{
-protected:
-	uint8_t sequence;
-	uint8_t notoriety;
-public:
-	inline cPacketSendMoveAcknowdledge(uint8_t s, uint8_t n) :
-        	cPacketSend(NULL, 0), sequence(s), notoriety(n)
 	{ }
 
 	void prepare();

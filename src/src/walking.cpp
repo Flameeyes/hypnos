@@ -421,12 +421,13 @@ void walking(pChar pc, int dir, int sequence)
 
 	if (s!=INVALID)
 	{
-		cPacketWalkAck walkok;
-		walkok.sequence=buffer[s][2];
-		walkok.notoriety=0x41;
+        	//!\todo verify notoriety... what does it do????????????
+		uint8_t notoriety=0x41;
 		//if (pc->hidden==1) walkok.notoriety=0x00;
 		//if (pc->isHidden()) walkok.notoriety=0x00;
-		walkok.send( pc->getClient() );
+
+	        cPacketSendMoveAcknowdledge pk(sequence, notoriety);
+                getClient()->sendPacket(&pk);
 
 		walksequence[s]=sequence;
 		walksequence[s]%=255;

@@ -408,9 +408,12 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
  	data::seekTile( pi->getId(), item );
 
 	// Check if item is equiped
- 	if( pi->getContainer == pc_currchar && pi->layer == item.quality )
+        pEquippable ei = dynamic_cast<pEquippable> pi;
+        pBody body = pc_currchar->getBody();
+
+ 	if( ei && ei->getContainer() == body && !ei->getLayer())
  	{
- 		if( pc_currchar->UnEquip( pi, 1 ) == 1 )	// bypass called
+ 		if( body->UnEquip( pe, true ) == 1 )	// bypass called
  		{
  			if( isDragging() )
  			{
@@ -426,9 +429,9 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 	pItem container=NULL;
 	if ( !pi->isInWorld() ) { // Find character owning item
 
-		if ( isCharSerial(pi->getContainer()->getSerial()) )  // or: isChar(pi->getContainer()) -.^?
+		if ( isCharSerial(pi->getOutMostCont()->getContainer()getSerial()) )
 		{
-			owner = (pChar) pi->getContainer();
+			owner = (pChar) pi->getContainer()->getChar();
 		}
 		else  // its an item
 		{
