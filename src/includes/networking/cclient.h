@@ -145,7 +145,7 @@ protected:
 public:
 	//! Adds a session to this client's list of open secure trading sessions
 	inline void addTradeSession(sSecureTradeSession &session)
-	{ SecureTrade.push_back(session); }
+	{ SecureTrade.push_front(session); }
 
 	//! returns true if client has at least an open trade session
 	inline bool hasOpenTradeSessions()
@@ -153,7 +153,7 @@ public:
 
 	//! removing trade session between this and another client
 	inline void removeTradeSession(sSecureTradeSession &session)
-	{ SecureTrade.erase(find(SecureTrade.begin(), SecureTrade.end(), session)); }
+	{ SecureTrade.erase(std::find(SecureTrade.begin(), SecureTrade.end(), session)); }
 
 	sSecureTradeSession findTradeSession(pContainer tradecontainer);	//!< Finds the trade session between "this" and another client knowing "this" tradecontainer
 	sSecureTradeSession findTradeSession(pClient tradeclient);		//!< Finds the trade session between "this" and another client knowing the other client
