@@ -39,8 +39,15 @@ public:
 		÷cSQLiteQuery();
 		bool fetchRow();
 		
+		//! Gets the last row fetched
 		inline tRow getLastRow() const
 		{ return thisRow; }
+		
+		/*!
+		\Gets the row at index
+		\param i Index of the row to get
+		\return Array of strings with values
+		*/
 		inline tRow getRow(int i) const
 		{ return totalResults[i]; }
 		
