@@ -30,8 +30,8 @@ void char2wchar (const char* str);
 cSpeech::cSpeech(char* buffer, uint16_t size)
 {
 	unicodeText.clear();
-	if (size) for(uint16_t i = 0;i<size;i+=2) unicodeText += *(reinterpret_cast<const uint16_t *>(buffer +i);
-	else for(uint16_t i = 0;!*(reinterpret_cast<const uint16_t *>(buffer +i));i+=2) unicodeText += *(reinterpret_cast<const uint16_t *>(buffer +i);
+	if (size) for(uint16_t i = 0;i<size;i+=2) unicodeText += *(reinterpret_cast<const uint16_t *>(buffer +i));
+	else for(uint16_t i = 0;!*(reinterpret_cast<const uint16_t *>(buffer +i));i+=2) unicodeText += *(reinterpret_cast<const uint16_t *>(buffer +i));
 	packetByteOrder = true;
 	mode = 0;	// normal speech
 	speaker = NULL;	//defaults to system
@@ -92,7 +92,7 @@ void cSpeech::clearPackeByteOrder()
 std::string cSpeech::toString()
 {
 	std::string text;
-	if(packetByteOrder) for(uint16_t i = 0; i<unicodeText.size();++i) text+= (char)((ntohs(unicodeText[i]) & 0xff);
+	if(packetByteOrder) for(uint16_t i = 0; i<unicodeText.size();++i) text+= (char)((ntohs(unicodeText[i]) & 0xff));
 	else for(uint16_t i = 0; i<unicodeText.size();++i) text+= (char)(unicodeText[i] & 0xff);
 	return text;
 }
@@ -136,7 +136,7 @@ int response(pClient client)
 	static char buffer1[MAXBUFFER];
 	if(pc->unicode)
 	{
-		j = (buffer[s][1]<<8)+buffer[s][2];
+		j = ShortFromCharPtr(buffer[s] +1);
 		for (i=13; i<j; i+=2 )
 			nonuni[(i-13)/2]=buffer[s][i];
 		for (i=0; i < MAXBUFFER_REAL-8; ++i)
@@ -360,7 +360,7 @@ int response(pClient client)
 				//
 				if ( requestTime )
 				{
-					if(pc_map->npcaitype!= NPCAI_EVIL && pc_map->npcaitype!= NPCAI_PLAYERVENDOR && (pc_map->getId()==0x0190 || pc_map->getId()==0x0191))
+					if( pc_map->npcaitype!= NPCAI_EVIL && pc_map->npcaitype!= NPCAI_PLAYERVENDOR && pc_map->getBody()->isHuman() )
 					{
 						int hour = Calendar::g_nHour % 12;
 						if (hour==0) hour = 12;
@@ -380,7 +380,7 @@ int response(pClient client)
 				//
 				if ( requestLocation )
 				{
-					if( pc_map->npcaitype!= NPCAI_EVIL && pc_map->npcaitype!= NPCAI_PLAYERVENDOR  && (pc_map->getId()==0x0190 || pc_map->getId()==0x0191))
+					if( pc_map->npcaitype!= NPCAI_EVIL && pc_map->npcaitype!= NPCAI_PLAYERVENDOR  && pc_map->getBody()->isHuman() )
 					{
 						if (strlen(region[pc->region].name)>0)
 							pc_map->takAll("You are in %s", false, region[pc->region].name);
@@ -505,7 +505,7 @@ int response(pClient client)
 				//		Sparhawk	All npcs not only humanoids can teach skills
 				//				<trainername> train should be allowed
 				//
-				if ( requestTrain && pc_map->cantrain && pc_map->HasHumanBody() )
+				if ( requestTrain && pc_map->cantrain && pc_map->getBody()->isHuman() )
 				{
 					pc->trainer = INVALID; //this is to prevent errors when a player says "train <skill>" then doesn't pay the npc
 					for(i=0;i<ALLSKILLS;i++)
@@ -908,14 +908,14 @@ int response(pClient client)
 
 void PlVGetgold(pClient client, pChar pc_vendor)//PlayerVendors
 {
-	if ( s < 0 || s >= now ) //Luxor
-		return;
-	pChar pc_currchar = cSerializable::findCharBySerial( currchar[s] );
+	if ( !client ) return;
+
+	pChar pc_currchar = client->currChar();
 	
 	if ( ! pc_currchar || ! pc_vendor ) return;
 
 	unsigned int pay=0, give=pc_vendor->holdg, t=0;
- 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+ 	char *temp;
 
 	if (pc_currchar->isOwnerOf( pc_vendor ))
 	{
@@ -950,8 +950,9 @@ void PlVGetgold(pClient client, pChar pc_vendor)//PlayerVendors
 		if (give) //Luxor
 			item::CreateFromScript( "$item_gold_coin", pc_currchar->getBackpack(), give );
 
-		sprintf(temp, "Today's purchases total %i gold. I am keeping %i gold for my self. Here is the remaining %i gold. Have a nice day.",pc_vendor->holdg,pay,give);
+		asprintf(&temp, "Today's purchases total %i gold. I am keeping %i gold for my self. Here is the remaining %i gold. Have a nice day.", pc_vendor->holdg, pay, give);
 		pc_vendor->talk(s,temp,0);
+		free(temp);
 		pc_vendor->holdg=t;
 	}
 	else
@@ -1228,7 +1229,6 @@ static bool describePlayerVendorItem( pChar pc, pClient client, string &descript
 		pItem pi = MAKE_ITEM_REF( pc->fx1 );
 		if( pi )
 		{
-			//strcpy( pi->desc, description.c_str() );
 			pi->vendorDescription = description;
 			client->sysmessage("This item is now described as %s, ", description.c_str() );
 		}
@@ -1294,9 +1294,9 @@ static bool pageCouncillor( pChar pc, pClient client, string &reason )
 	bool success = false;
 	if (pc->pagegm == 2) // Counselor page
 	{
-		char temp[TEMP_STR_SIZE];
+		char *temp;
 		strcpy( counspages[pc->playercallnum].reason, reason.c_str() );
-		sprintf(temp, "Counselor Page from %s [%08x]: %s",pc->getCurrentName().c_str(), pc->getSerial(), counspages[pc->playercallnum].reason);
+		asprintf(&temp, "Counselor Page from %s [%08x]: %s",pc->getCurrentName().c_str(), pc->getSerial(), counspages[pc->playercallnum].reason);
 		bool foundCons = false;
 		pChar councillor;
 		
@@ -1305,15 +1305,15 @@ static bool pageCouncillor( pChar pc, pClient client, string &reason )
 		
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			pClient ps=sw.getClient();
-			if( ps==NULL )
+			pClient ps = sw.getClient();
+			if( !ps )
 				continue;
 			
 			councillor = ps->currChar();
 			if( councillor && councillor->IsCounselor() )
 			{
 				foundCons = true;
-				sysmessage(ps->toInt(), temp);
+				ps->sysmessage(temp);
 			}
 		}
 		if (foundCons)
@@ -1322,6 +1322,7 @@ static bool pageCouncillor( pChar pc, pClient client, string &reason )
 			client->sysmessage("There was no Counselor available to take your call.");
 		pc->pagegm = 0;
 		success = true;
+		free(temp);
 	}
 	return success;
 }
@@ -1345,7 +1346,7 @@ static bool callGuards( pChar pc, pClient client, string &helpcall )
 		//
 		// TODO Check if not part of another word or part of not help call related speech
 		//
-		callguards(cSerializable::findCharBySerial(currchar[socket]));
+		callguards(client->currChar());
 		success = true;
 	}
 	return success;
@@ -1484,7 +1485,7 @@ static bool stablePet( pChar pc, pClient client, std::string &speech, NxwCharWra
 					sw.fillOnline( pc_pet, false );
 					for ( sw.rewind(); !sw.isEmpty(); sw++ ) {
 						pClient ps=sw.getClient();
-						if( ps==NULL )
+						if( !ps )
 							continue;
 						
 						nPackets::Sent::DeleteObj pk(pc_pet);
@@ -1508,12 +1509,13 @@ static bool stablePet( pChar pc, pClient client, std::string &speech, NxwCharWra
 					pc_pet->time_unused=0;
 					pc_pet->timeused_last = getclock();
 				}
-				char temp[TEMP_STR_SIZE];
+				char *temp;
 				if( petsToStable.size() == 1 )
-					sprintf(temp,"I have stabled %s", pc_pet->getCurrentName().c_str());
+					asprintf(&temp,"I have stabled %s", pc_pet->getCurrentName().c_str());
 				else
-					sprintf(temp,"I have stabled %d pets", petsToStable.size() );
+					asprintf(&temp,"I have stabled %d pets", petsToStable.size() );
 				pc_stablemaster->talk(socket,temp,0);
+				free(temp);
 			}
 			success = true;
 		}
