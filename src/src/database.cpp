@@ -12,8 +12,6 @@
 
 using namespace Database;
 
-sqlite *db;
-
 void setFile(const char* file, int line)
 {
 	logLine = int;

@@ -28,10 +28,15 @@
 
 namespace Database
 {
-	extern ZThread::FastMutex dbMutex;
+	static ZThread::FastMutex dbMutex;
+		//!< Database mutex
+	static sqlite *db;
+		//!< Database pointer
 
 	static char logFile[50];
+		//!< File where the error was thrown
 	static int logLine = 0;
+		//!< Line where the error was thrown
 
 	void setFile(const char* file, int line);
 	void logQuery(int r, const char* query, const char* errmsg);

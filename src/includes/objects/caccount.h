@@ -79,6 +79,8 @@ public:
 	~cAccount();
 		//!< Default destructor
 
+	void save();
+
 	inline const bool inGame() const
 	{ return currentChar; }
 
