@@ -19,14 +19,16 @@ int main(int argc, char *argv[])
 	{
 		std::cerr << "You need to supply the filename for the cliloc to list." << std::endl
 			<< "Usage: clilist clilocfile" << std::endl;
+		
+		return -1;
 	}
 	
 	nLibhypnos::nMULFiles::fCliloc cli(argv[1]);
 	
-	for(register int i = 0; i < cli.getCount(); i++)
+	for(constCliIterator it = cli.getEntries().begin(); it != cli.getEntries().end(); it++ )
 	{
 		std::cout << "0x" << std::hex << std::setw(8)
-			<< std::setfill('0') << i << '\t' << cli.getEntry(i)
+			<< std::setfill('0') << (*it).first << '\t' << (*it).second
 			<< std::endl;
 	}
 }

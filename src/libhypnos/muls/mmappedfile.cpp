@@ -164,5 +164,7 @@ namespace nLibhypnos {
 			*/
 			CloseHandle(hMapObject);
 		#endif
+		
+		size = length;
 	}
 }
