@@ -38,7 +38,16 @@ void cSocket::cReceiver::run()
 
 	while( (read = recv(sock, buf, 1024, 0)) > 0 )
 	{
-		pPacketReceive pr = cPacketReceived::fromBuffer(buf, read);
-		pr->execute(sock->getClient());
+		pPacketReceive pr = cPacketReceive::fromBuffer(buf, read);
+		if (pr != NULL)
+                {
+                        if(!pr->execute(sock->getClient()))   //execute actually returns a bool, and if true the packet has been correctly handled
+                        {
+                                ;       //error message to console??
+                        }
+                        //! after execution (and probably ending the buffer usefulness) pr should be deleted or we'll run out of memory :D
+                        //! but since PacketReceive is not yet fully done, there may be need (in future packets) of keeping it, even with the buffer no longer valid
+                        // delete pr;
+                }
 	}
 }

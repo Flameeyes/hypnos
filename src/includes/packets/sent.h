@@ -328,13 +328,27 @@ public:
 class cPacketReceive
 {
 protected:
-	cPacketReceive();
 
+        UI08 *buffer;           // needed in derived classes 
+        UI16 length;
 public:
+	cPacketReceive();
+      	inline cPacketReceive(UI08 *buf, UI16 len) :
+		buffer(buf), length(len)
+	{ } 
 	~cPacketReceive();
 	static pPacketReceive fromBuffer(UI08 *buffer, UI16 length);
-	inline virtual void execute(pClient client)
+	inline virtual bool execute(pClient client)
 	{ }
 };
 
+
+/*!
+\brief packet reception classes declarations
+\author Chronodt
+*/
+
+class cPacketReceiveCreateChar          : public cPacketReceive;
+class cPacketReceiveDisconnectNotify    : public cPacketReceive;
+class cPacketReceiveMoveRequest         : public cPacketReceive;
 #endif

@@ -33,7 +33,6 @@ void StartMilliTimer(unsigned long &Seconds, unsigned long &Milliseconds);
 unsigned long CheckMilliTimer(unsigned long &Seconds, unsigned long &Milliseconds);
 
 void callguards( int p );
-void charcreate(NXWSOCKET  s);			//!< All the character creation stuff
 void usepotion(P_CHAR pc, P_ITEM pi);
 
 void newScriptsInit();

@@ -79,6 +79,12 @@ public:
 	~cAccount();
 		//!< Default destructor
 
+        inline const UI08 getCharsNumber() const                //!< Returns number of characters in account
+        { return chars.size() }
+
+        inline void addChartoAccount(pPC pc) const              //!< Adds pc to account
+        { chars.push_back(pc) }
+
 	void save();
 
 	inline const bool inGame() const

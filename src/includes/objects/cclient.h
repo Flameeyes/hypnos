@@ -16,6 +16,8 @@
 class cClient;
 typedef cClient *pClient;
 
+typedef std::list<pClient> cClients;
+
 #include "cchar.h"
 
 /*!
@@ -25,17 +27,21 @@ typedef cClient *pClient;
 This class represent the client connection and is an high-end socket class.
 Sending packages to be sent here, will call cSocket raw-level socket for send
 them to the client itself.
-Is this class which provides client compression & encryption.
+This is the class which provides client compression & encryption.
 */
 class cClient
 {
+protected:
+      	static cClients clients;        	                //!< All the clients
+
 public:
 	static const UI32 clientHasCrypto	= 0x00000001;
 	static const UI32 clientIsT2A		= 0x00000002;
 	static const UI32 clientIsUO3D		= 0x00000004;
 	static const UI32 clientIsAoS		= 0x00000008;
+
 protected:
-	pChar pc;	//!< Current char used by the client
+	pPC pc;	        //!< Current char used by the client
 	pAccount acc;	//!< Current account logged in by the client
 	pSocket sock;	//!< Current socket used by the client
 
@@ -58,6 +64,8 @@ public:
 	void compress(char &*);
 	void encrypt(char &*);
 
+
+        //! packet methods
 	void showContainer(pItem pCont);
 	void playMidi();
 	void playSFX(UI16 sound, bool onlyMe = false);

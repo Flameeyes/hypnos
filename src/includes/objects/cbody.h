@@ -181,7 +181,7 @@ public:
 	static const UI16 skillPeacemaking	= 0x09;
 	static const UI16 skillCamping		= 0x0a;
 	static const UI16 skillCarpentry	= 0x0b;
-	static const UI16 skillCartography	= 0x0c
+	static const UI16 skillCartography	= 0x0c;
 	static const UI16 skillCooking		= 0x0d;
 	static const UI16 skillDetectHidden	= 0x0e;
 	static const UI16 skillEnticement	= 0x0f;
@@ -264,6 +264,8 @@ protected:
 
 	UI16 damageMin;		//!< Minimum damage of the character [UO4]
 	UI16 damageMax;		//!< Maximum damage of the character [UO4]
+
+        UI16 skinColor;         //!< Skin color of the character
 public:
 	//! Gets the character strength
 	inline const UI16 getStrength() const
@@ -341,6 +343,10 @@ public:
 	inline const UI16 getDamageMax() const
 	{ return damageMax; }
 
+        //! Gets the skin color of the character
+	inline const UI16 getSkinColor() const
+	{ return skinColor; }
+
 	void setStrength(UI16 value);
 	void setHitPoints(UI16 value);
 	void setMaxHitPoints(UI16 value);
@@ -364,6 +370,7 @@ public:
 	void setResistEnergy(UI16 value);
 	void setDamageMin(UI16 value);
 	void setDamageMax(UI16 value);
+       	void setSkinColor(UI16 value);
 //@}
 
 //@{

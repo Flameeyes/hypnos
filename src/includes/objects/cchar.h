@@ -137,6 +137,8 @@ public:
 
 protected:
 	pClient client;
+        pBody body;     //! The body the character is currently "using"
+        pBody oldbody;  //! Old body. To use in polimorph-type effects
 
 public:
 	inline pClient getClient() const
@@ -144,6 +146,18 @@ public:
 
 	inline void setClient(pClient c)
 	{ client = c; }
+        
+        inline pBody getBody() const
+	{ return body; }
+
+	inline void setBody(pBody b)
+	{ body = b; }
+
+        inline pBody getOldBody() const
+	{ return oldbody; }
+
+	inline void setOldBody(pBody b)
+	{ oldbody = b; }
 
 	//! get online status
 	inline const bool isOnline() const

@@ -120,7 +120,7 @@ PYNATIVE(chr_getShield)
 	return Py_BuildValue("i", pi);
 }
 
-//! get character's shield
+//! get character's weapon
 PYNATIVE(chr_getWeapon)
 {
 	P_CHAR pc = NULL;

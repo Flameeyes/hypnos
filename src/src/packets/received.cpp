@@ -304,3 +304,311 @@ void cPacketSendStatus::prepare4()
 
 	memset(buffer+84, 0, 4);
 }
+
+static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
+{
+
+       switch(buffer[0])
+       {
+                case 0x00: return new cPacketReceiveCreateChar(buffer, length);         // Create Character
+                case 0x01: return new cPacketReceiveDisconnectNotify(buffer, length);   // Disconnect Notification
+                case 0x02: return new cPacketReceiveMoveRequest(buffer, length);        // Move Request
+                case 0x03: length = ???; break; // Talk Request
+                case 0x05: length =   5; break; // Attack Request
+                case 0x06: length =   5; break; // Double click
+                case 0x07: length =   7; break; // Pick Up Item(s)
+                case 0x08: length =  14; break; // Drop Item(s)
+                case 0x09: length =   5; break; // Single click
+                case 0x12: length = ???; break; // Request Skill/Action/Magic Usage
+                case 0x13: length =  10; break; // Drop - Wear Item
+                case 0x1a: length = ???; break; // Object Information
+                case 0x1b: length =  37; break; // Char Location and body type (Login confirmation)
+                case 0x1c: length = ???; break; // Send Speech
+                case 0x22: length =   3; break; // when received, this packet is a Resync Request
+                case 0x23: length =  26; break; // Dragging of Items
+//                case 0x2c: length =   2; break; // (Obsolete) Resurrection Menu Choice
+                case 0x34: length =  10; break; // Get Player Status
+
+                // packet 0x38 (pathfinding) is received or sent???
+
+                case 0x3a: length = ???; break; // Set Skill Lock (receive version of packet 0x3a)
+                case 0x3b: length = ???; break; // Buy Item(s)
+                case 0x56: length =  11; break; // Map Related
+                case 0x5d: length =  73; break; // Login Character
+                case 0x66: length = ???; break; // Books - Page
+//                case 0x69: length =   5; break; // (Obsolete) Change Text/Emote Color
+                case 0x6c: length =  19; break; // Targeting Cursor Commands
+
+                // packet 0x6f (secure trading) seems send-only package, but not sure
+
+                case 0x71: length = ???; break; // Bulletin Board Message
+                case 0x72: length =   5; break; // Request War Mode Change/Send War Mode status
+                case 0x73: length =   2; break; // Ping message
+                case 0x7d: length =  13; break; // Client Response To Dialog
+                case 0x80: length =  62; break; // Login Request
+                case 0x83: length =  39; break; // Delete Character
+                case 0x86: length = 304; break; // Resend Characters After Delete
+
+                //what is this???
+                case 0x91: length =  65; break; // Game Server Login
+
+                case 0x93: length =  99; break; // Books – Update Title Page (receive version of packet 0x93)
+                case 0x95: length =   9; break; // Dye Window
+                case 0x98: length =   7; break; // All-names “3D” (3d clients only packet, receive version 7 bytes long)
+                case 0x99: length =  26; break; // Bring Up House/Boat Placement View
+                case 0x9a: length =  16; break; // Console Entry Prompt
+                case 0x9b: length = 258; break; // Request Help
+                case 0x9f: length = ???; break; // Sell Reply
+                case 0xa0: length =   3; break; // Select Server
+//                case 0xa4: length =   5; break; // Client Machine info (Apparently was a sort of lame spyware command .. unknown if it still works)
+                case 0xa7: length =   4; break; // Request Tips/Notice
+
+                //packet 0xa9 has a receiving part?? (Characters / Starting Locations)
+
+                case 0xaa: length =   5; break; // Attack Request Reply
+                case 0xac: length = ???; break; // Gump Text Entry Dialog Reply
+                case 0xad: length = ???; break; // Unicode speech request
+                case 0xb1: length = ???; break; // Gump Menu Selection
+
+                //unsure about this message if received, sent or both
+                case 0xb2: length = ???; break; // Chat Message
+
+                case 0xb5: length =  64; break; // Open Chat window
+                case 0xb6: length =   9; break; // Send Help/Tip Request
+                case 0xb8: length = ???; break; // Request Char Profil
+                case 0xbb: length =   9; break; // Ultima Messenger (do we need this?)
+                case 0xbd: length = ???; break; // Client Version Message
+                case 0xbe: length = ???; break; // Assist Version
+                case 0xbf: length = ???; break; // Misc. Commands Packet
+                case 0xc2: length = ???; break; // Textentry Unicode
+                case 0xc8: length =   2; break; // Client view range
+//                case 0xc9: length =   6; break; // Get area server ping (OSI GM clients only)
+//                case 0xca: length =   6; break; // Get user server ping (OSI GM clients only)
+                case 0xcc: length = ???; break; // Localized Message Affix
+                case 0xd1: length =   2; break; // Logout Status
+                case 0xd4: length = ???; break; // new Book Header
+                default: // Discard received packet
+       }
+}
+
+/*!
+\brief Character creation packet
+\author Chronodt
+\todo if needed add to all return NULL stantement a disconnect packet sending, and all Network-> stantement
+Mostly taken from old noxwizard.cpp and (vastly :) ) modified to pyuo object system
+*/
+
+
+virtual bool cPacketReceiveCreateChar::execute(pClient client)
+{
+        // Disconnect-level encryption or transfer error check
+        //!< now packet integrity check :D
+        if ((length !=104) ||                                           // packet length check
+           (LongFromCharPtr(buffer+1) != 0xedededed) ||                 // pattern checking
+           (LongFromCharPtr(buffer+5) != 0xffffffff) ||
+           //(buffer[9] != 0x00) ||                                     // this pattern is different for some clients, so commented out (for now)
+           (buffer[10] != 0x00) ||                                      // at least one "letter" in character name
+           (buffer[40] != 0x00))                                        // at least one "letter" in character password
+        {
+                Network->Disconnect(client);
+	        return false;
+	}
+
+        UI08 sex                = buffer[70];
+        UI16 strength           = buffer[71];
+        UI16 dexterity          = buffer[72];
+        UI16 intelligence       = buffer[73];
+        UI16 skill1             = buffer[74];
+        UI16 skill1value1       = buffer[75];
+        UI16 skill12            = buffer[76];
+        UI16 skill1value2       = buffer[77];
+        UI16 skill3             = buffer[78];
+        UI16 skill1value3       = buffer[79];
+        UI16 SkinColor          = ShortFromCharPtr(buffer + 80) | 0x8000;
+        UI16 HairStyle          = ShortFromCharPtr(buffer + 82);
+        UI16 HairColor          = ShortFromCharPtr(buffer + 84);
+        UI16 FacialHair         = ShortFromCharPtr(buffer + 86);
+        UI16 FacialHairColor    = ShortFromCharPtr(buffer + 88);
+        UI16 StartingLocation   = ShortFromCharPtr(buffer + 90);        // from starting list
+        // UI16 unknown         = ShortFromCharPtr(buffer + 92);
+        UI16 slot               = ShortFromCharPtr(buffer + 94);
+        UI32 clientIP           = LongFromCharPtr (buffer + 96);
+        UI16 shirt_color        = ShortFromCharPtr(buffer + 100);
+        UI16 pants_color        = ShortFromCharPtr(buffer + 102);
+
+
+        // Disconnect-level protocol error check (possible client hack or too many chars already present in account)
+        if (
+                !(client->currAccount()->GetPassword()->compare(buffer+40)) ||                  //!< Password check
+                (client->currAccount()->getCharsNumber() >= ServerScp::g_nLimitRoleNumbers) ||  //!< Max user per account check
+                ((sex !=1) && (sex != 0)) ||                                                    //!< Sex validity check
+                (strength + dexterity + intelligence > 80) ||                                   //!< Stat check: stat sum must be <=80
+                (strength < 10)     || (strength > 60)     ||                                   //!< each stat must be >= 10 and <= 60
+                (dexterity < 10)    || (dexterity > 60)    ||
+                (intelligence < 10) || (intelligence > 60) ||
+                (skillvalue1 + skillvalue2 + skillvalue3 != 100) ||                             //!< Skill check : sum of skills selected must be 100
+                (skillvalue1 > 50)  || (skillvalue2 > 50)  || (skillvalue3 > 50) ||             //!< each skill must be >= 0 and <= 50. Since the 3 variables are UI08, if they are negative they will be seen as a number surely bigger than 127 :)
+                (skill1 == skill2)  || (skill2 == skill3)  || (skill3 == skill1)                //!< 3 different skills must be selected
+           )
+        {
+                Network->Disconnect(client);
+	        return false;
+	}
+
+
+        // Correctable-level protocol error check (mainly out of bonds color or hair/beard style)
+        //! Color & hairstyle boundary check
+        if ((SkinColor <= 0x83EA) || (SkinColor >= 0x8422)) SkinColor = 0x83EA;
+        if ((FacialHairColor <= 0x44E) || (FacialHairColor >= 0x4AD)) FacialHairColor = 0x044E;
+        if ((HairColor <= 0x44E) || (HairColor >= 0x4AD)) HairColor = 0x044E;
+
+        if (!((HairStyle >= 0x203b && HairStyle <= 0x203d ) || ( HairStyle >= 0x2044 && HairStyle <= 0x204a ))) HairStyle = 0;
+        if (!(((FacialHair >= 0x203e && FacialHair <= 0x2041) || ( FacialHair >= 0x204b && FacialHair <= 0x204d )) || sex )) FacialHair = 0; //if female the beard check is always valid :P So FacialHair is put to 0
+
+        // From here building a cBody to pass to cClient::charcreate()
+        // no serial number required because we use it only as a "container" to pass parameters to charcreate
+        pBody charbody = new cBody();
+
+        if (sex) charbody->setId(bodyFemale) else charbody->setId(bodyMale);     // 0 = male 1 = female
+
+        charbody->setStrength(strength);
+        charbody->setHitPoints(strength);
+        charbody->setMaxHitPoints(strength);
+
+        charbody->setDexterity(dexterity);
+        charbody->setStamina(dexterity);
+        charbody->setMaxStamina(dexterity);
+
+        charbody->setIntelligence(intelligence);
+        charbody->setMana(intelligence);
+        charbody->setMaxMana(intelligence);
+
+        // all skills are set to 0 in the constructor, so the only skills needing to be set are the 3 selected
+        charbody->SetSkill(skill1, skillvalue1 * 10);
+        charbody->SetSkill(skill2, skillvalue2 * 10);
+        charbody->SetSkill(skill3, skillvalue3 * 10);
+
+        charbody->setSkinColor(SkinColor);
+      	charbody->setName((const char*)&buffer[10]);
+	charbody->setTitle("");                         //TODO check if this is enough to have a clean title
+
+        //Now with the body completed and data verified, building cPC
+        pPC pc = new cPC( cPC::nextSerial() );
+
+        pc->setBody(charbody);
+        pc->npc=false;
+      	pc->SetPriv(defaultpriv1);
+	pc->SetPriv2(defaultpriv2);
+
+	Location charpos;
+	charpos.x= str2num(start[StartingLocation][2]);
+	charpos.y= str2num(start[StartingLocation][3]);
+	charpos.dispz= charpos.z= str2num(start[StartingLocation][4]);
+	pc->MoveTo( charpos );
+
+	pc->dir=4;
+	pc->namedeedserial=INVALID;
+        for (int ii = 0; ii < TRUESKILLS; i++) Skills::updateSkillLevel(pc, ii);  //updating skill levels for pc
+
+	P_ITEM pi;
+
+      	if (HairStyle)  //If HairStyle was invalid, is now 0, so baldy pg :D
+	{
+		pi = item::CreateFromScript( "$item_short_hair" );
+		VALIDATEPI(pi);
+		pi->setId(HairStyle);
+		pi->setColor(HairColor);
+		pi->setContainer(pc);
+		pi->layer=LAYER_HAIR;
+                charbody->setLayerItem(layHair, pi);
+	}
+
+	if (FacialHair)
+	{
+		pi = item::CreateFromScript( "$item_short_beard" );
+		VALIDATEPI(pi);
+		pi->setId(FacialHair);
+		pi->setColor(FacialHairColor);
+		pi->setContainer(pc);
+		pi->layer=LAYER_BEARD;
+                charbody->setLayerItem(layBeard, pi);
+	}
+
+        // - create the backpack
+	pi= item::CreateFromScript( "$item_backpack");
+	VALIDATEPI(pi);
+	pc->packitemserial= pi->getSerial();
+        pi->setContainer(pc);
+
+        // has to be set to its layer???
+
+
+        // - create pants
+	if( !RandomNum(0, 1) )
+	{
+		if(!sex)
+			pi= item::CreateFromScript( "$item_long_pants");
+		else
+			pi= item::CreateFromScript( "$item_a_skirt");
+	}
+	else
+	{
+		if(!sex)
+			pi= item::CreateFromScript( "$item_short_pants");
+		else
+			pi= item::CreateFromScript( "$item_a_kilt");
+	}
+
+	VALIDATEPI(pi);
+
+	// pant/skirt color -> old client code, random color
+	pi->setColor(pants_color);
+	pi->setContainer(pc);
+
+	if( !(rand()%2) )
+		pi= item::CreateFromScript( "$item_fancy_shirt");
+	else
+		pi= item::CreateFromScript( "$item_shirt");
+
+	VALIDATEPI(pi);
+	pi->setColor(shirt_color);
+	pi->setContainer(pc);
+
+	// Give the character some gold
+	if ( goldamount > 0 )
+	{
+		pi = item::CreateFromScript( "$item_gold_coin", pc->getBackpack(), goldamount );
+	}
+
+
+        // Assignation of new Char to user account
+        client->currAccount()->addChartoAccount( pc );
+
+
+        newbieitems(pc);
+        Network->startchar(s);
+      	//clientInfo[s]->ingame=true;
+        return true;
+}
+
+virtual bool cPacketReceiveDisconnectNotify::execute(pClient client)
+{
+        if ((length |= 5) || (LongFromCharPtr(buffer+1) != 0xffffffff)) return false;
+        Network->Disconnect(client);
+        return true;
+}
+
+
+virtual bool cPacketReceiveMoveRequest::execute (pClient client)
+{
+        if (length |= 7) return false;
+/*
+Move Request (7 bytes)
+BYTE cmd
+BYTE direction
+BYTE sequence number
+BYTE[4] fastwalk prevention key
+
+The festwalk prevention key is a number sent by the server into the MOVE ACK, telling the client the next key to be used. This is used to prevent exploits where client sends "MOVE" message without waitting for the MOVE ACK from the server. Note: Sequence number starts at 0, is reseted when reaches 255. However, when it's reseted, the next sequence number is 1, not 0.
+*/
+}

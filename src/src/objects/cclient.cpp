@@ -12,11 +12,14 @@
 
 #include "cclient.h"
 
+static cClients cClient::clients;               //!< this keeps all online clients
+
 cClient::cClient(SI32 sd, struct sockaddr_in* addr)
 {
 	sock = new cSocket(sd, addr);
 	pc = NULL;
 	acc = NULL:
+        clients.push_back(this);
 }
 
 cClient::~cClient()
@@ -27,6 +30,7 @@ cClient::~cClient()
 		acc->setClient(NULL);
 
 	delete sock;
+        clients.erase(find(clients.begin(), clients.end(), this));
 }
 
 /*!
@@ -291,3 +295,5 @@ void cClient::statusWindow(pChar sorg, bool extended, bool canrename)
 	cPacketSendStatus pk(sorg, ext, canrename);
 	sendPacket(&pk);
 }
+
+
