@@ -110,9 +110,7 @@ namespace magic {
 		virtual void handleButton( pClient client, void /*cClientPacket*/* pkg  );
 	};
 
-	/*!
-	\brief Spells ID
-	*/
+	//! Spells' IDs
 	enum SpellId {
 		// Level 1
 		spellInvalid = -1,
@@ -186,10 +184,11 @@ namespace magic {
 		spellSummonDaemon,
 		spellSummonElemEarth,
 		spellSummonElemFire,
-		spellSummonElemWater,
-
-		MAX_SPELLS
+		spellSummonElemWater
 	};
+	
+	//! Maximum number of spells
+	static const uint8_t MAX_SPELLS = spellSummonElemWater+1;
 
 	enum CastingType {
 		CASTINGTYPE_SPELL = 0,
@@ -235,7 +234,7 @@ namespace magic {
 		uint16_t hidamage;
 		int areasize;
 		int alwaysflag;
-		DamageType damagetype;
+		DamageType damagetype;	//!< Type of damage from the spell
 	};
 
 	enum {	TARGTYPE_NONE = 0, TARGTYPE_XYZ, TARGTYPE_ITEM, TARGTYPE_CHAR,

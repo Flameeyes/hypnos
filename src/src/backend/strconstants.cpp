@@ -22,11 +22,15 @@ and then calls the right function to get the C++ constant.
 */
 uint32_t nStrConstants::generic(std::string str)
 {
-	if ( strcmp(str.c_str(), "sk", 2) == 0 )
+	if ( strncmp(str.c_str(), "ip", 2) == 0 )
+		return itemPlace(str);
+	if ( strncmp(str.c_str(), "sk", 2) == 0 )
 		return skills(str);
-	if ( strcmp(str.c_str(), "sa", 2) == 0 )
+	if ( strncmp(str.c_str(), "sa", 2) == 0 )
 		return suspectAction(str);
-	if ( strcmp(str.c_str(), "weapon", 6) == 0 )
+	if ( strncmp(str.c_str(), "spell", 5) == 0 )
+		return spellId(str);
+	if ( strncmp(str.c_str(), "weapon", 6) == 0 )
 		return weaponsTypes(str);
 }
 
@@ -132,7 +136,7 @@ SuspectAction nStrConstants::suspectAction(std::string str)
 
 /*!
 \brief Translates a ip?? string into the enumerated constant
-\param str String  representing the ItemPlace enum value
+\param str String representing the ItemPlace enum value
 \return The ItemPlace enum value represented by the string, or ipBackpack if
 	not a valid string
 */
@@ -143,4 +147,87 @@ ItemPlace nStrConstants::itemPlace(std::string str)
 	
 	// No need to check for ipBackpack :)
 	return ipBackpack;
+}
+
+/*!
+\brief Tranlates a spell?? string into the enumerated constant
+\param str String representing th e SpellId enum value
+\return The SpellId enum value represented by the string, or spellInvalid if
+	not a valid spell identifier
+*/
+magic::SpellId nStrConstants::spellId(std::string str)
+{
+	if ( str == "spellClumsy" ) return magic::spellClumsy;
+	if ( str == "spellCreateFood" ) return magic::spellCreateFood;
+	if ( str == "spellFeebleMind" ) return magic::spellFeebleMind;
+	if ( str == "spellHeal" ) return magic::spellHeal;
+	if ( str == "spellMagicArrow" ) return magic::spellMagicArrow;
+	if ( str == "spellNightSight" ) return magic::spellNightSight;
+	if ( str == "spellReactiveArmour" ) return magic::spellReactiveArmour;
+	if ( str == "spellWeaken" ) return magic::spellWeaken;
+	
+	if ( str == "spellAgility" ) return magic::spellAgility;
+	if ( str == "spellCunning" ) return magic::spellCunning;
+	if ( str == "spellCure" ) return magic::spellCure;
+	if ( str == "spellHarm" ) return magic::spellHarm;
+	if ( str == "spellTrap" ) return magic::spellTrap;
+	if ( str == "spellUntrap" ) return magic::spellUntrap;
+	if ( str == "spellProtection" ) return magic::spellProtection;
+	if ( str == "spellStrength" ) return magic::spellStrength;
+	
+	if ( str == "spellBless" ) return magic::spellBless;
+	if ( str == "spellFireball" ) return magic::spellFireball;
+	if ( str == "spellLock" ) return magic::spellLock;
+	if ( str == "spellPoison" ) return magic::spellPoison;
+	if ( str == "spellTelekinesys" ) return magic::spellTelekinesys;
+	if ( str == "spellTeleport" ) return magic::spellTeleport;
+	if ( str == "spellUnlock" ) return magic::spellUnlock;
+	if ( str == "spellWallStone" ) return magic::spellWallStone;
+	
+	if ( str == "spellArchCure" ) return magic::spellArchCure;
+	if ( str == "spellArchProtection" ) return magic::spellArchProtection;
+	if ( str == "spellCurse" ) return magic::spellCurse;
+	if ( str == "spellFireField" ) return magic::spellFireField;
+	if ( str == "spellGreatHeal" ) return magic::spellGreatHeal;
+	if ( str == "spellLightning" ) return magic::spellLightning;
+	if ( str == "spellManaDrain" ) return magic::spellManaDrain;
+	if ( str == "spellRecall" ) return magic::spellRecall;
+	
+	if ( str == "spellBladeSpirit" ) return magic::spellBladeSpirit;
+	if ( str == "spellDispelField" ) return magic::spellDispelField;
+	if ( str == "spellIncognito" ) return magic::spellIncognito;
+	if ( str == "spellReflection" ) return magic::spellReflection;
+	if ( str == "spellMindBlast" ) return magic::spellMindBlast;
+	if ( str == "spellParalyze" ) return magic::spellParalyze;
+	if ( str == "spellPoisonField" ) return magic::spellPoisonField;
+	if ( str == "spellSummon" ) return magic::spellSummon;
+	
+	if ( str == "spellDispel" ) return magic::spellDispel;
+	if ( str == "spellEnergyBolt" ) return magic::spellEnergyBolt;
+	if ( str == "spellExplosion" ) return magic::spellExplosion;
+	if ( str == "spellInvisibility" ) return magic::spellInvisibility;
+	if ( str == "spellMark" ) return magic::spellMark;
+	if ( str == "spellMassCurse" ) return magic::spellMassCurse;
+	if ( str == "spellParalyzeField" ) return magic::spellParalyzeField;
+	if ( str == "spellReveal" ) return magic::spellReveal;
+	
+	if ( str == "spellChainLighting" ) return magic::spellChainLighting;
+	if ( str == "spellEnergyField" ) return magic::spellEnergyField;
+	if ( str == "spellFlameStrike" ) return magic::spellFlameStrike;
+	if ( str == "spellGate" ) return magic::spellGate;
+	if ( str == "spellManaVampire" ) return magic::spellManaVampire;
+	if ( str == "spellMassDispel" ) return magic::spellMassDispel;
+	if ( str == "spellMeteorSwarm" ) return magic::spellMeteorSwarm;
+	if ( str == "spellPolymorph" ) return magic::spellPolymorph;
+	
+	if ( str == "spellEarthquake" ) return magic::spellEarthquake;
+	if ( str == "spellEnergyVortex" ) return magic::spellEnergyVortex;
+	if ( str == "spellResurrection" ) return magic::spellResurrection;
+	if ( str == "spellSummonElemAir" ) return magic::spellSummonElemAir;
+	if ( str == "spellSummonDaemon" ) return magic::spellSummonDaemon;
+	if ( str == "spellSummonElemEarth" ) return magic::spellSummonElemEarth;
+	if ( str == "spellSummonElemFire" ) return magic::spellSummonElemFire;
+	if ( str == "spellSummonElemWater" ) return magic::spellSummonElemWater;
+	
+	return spellInvalid;
 }
