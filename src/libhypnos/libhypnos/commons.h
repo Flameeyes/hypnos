@@ -13,6 +13,11 @@
 #include "config.h"
 #endif
 
+// Seems like MinGW have trouble handling that...
+#ifdef WIN32
+#undef malloc
+#endif
+
 /*!
 \file
 \brief Common abstraction for libhypnos
