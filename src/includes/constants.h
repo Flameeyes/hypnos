@@ -49,6 +49,8 @@ static const uint16_t SPIRITSPEAKTIMER	= 30;
 			//!< spiritspeak lasts at least 30 seconds, additional time is calculated by Skill & INT
 static const uint16_t VERY_VERY_FAR = 50000; //!< Used as distance between invalid objects
 
+static const int8_t illegal_z = -128;	//!< An illegal z-value to return in case of error
+
 // Miscellaneous constants
 enum
 {
@@ -176,21 +178,6 @@ enum {	ITEM_TYPE_CHOICES = 6,
 	FLOORS_FLAT_ROOFING = 16,	//!< So can't tele onto slanted roofs, basically
 	LAVA_WATER = 32			//!< Don't know what all to use this for yet
 };
-//@}
-
-//@{
-	/*!
-	\name Guilds related
-	\author DasRaetsels'
-	*/
-	
-	static const uint16_t MAXGUILDS = 100;
-	static const uint16_t MAXGUILDMEMBERS = 30;
-	static const uint16_t MAXGUILDRECRUITS = 30;
-	static const uint16_t MAXGUILDWARS = 10;
-	static const uint16_t MAXMEMRECWAR = 30; //!< max of max guildmembers, max recruits and max war
-	static const char DEFAULTCHARTER[] = "Guildstone";
-	static const char DEFAULTWEBPAGE[] = "";
 //@}
 
 /*!

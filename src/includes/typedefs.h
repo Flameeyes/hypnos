@@ -96,14 +96,4 @@ typedef class cEquippableContainer *pEquippableContainer;
 						//!< Pointer to a cEquippableContainer (backpacks, bank boxes)
 //@}
 
-//@{
-/*!
-\name Guilds
-*/
-
-typedef class cGuild *pGuild;			//!< Pointer to a cGuild
-typedef class cGuildMember *pGuildMember;	//!< Pointer to a cGuildMember
-typedef class cGuildRecruit *pguildRecruit;	//!< Pointer to a cGuildRecruit
-//@}
-
 #endif //__TYPEDEFS_H__
