@@ -34,8 +34,8 @@ protected:
 	virtual uint16_t eventsNumber() const
 	{ return evtCntMax; }
 	
-	virtual void doubleClicked()
-	{ cContainer::doubleClicked(); }
+	virtual void doubleClicked(pClient client)
+	{ cContainer::doubleClicked(client); }
 };
 
 #endif
