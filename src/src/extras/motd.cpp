@@ -7,6 +7,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "extras/motd.h"
+#include "logsystem.h"
 #include <mxml.h>
 
 namespace nMOTD {
@@ -17,7 +18,7 @@ namespace nMOTD {
 /*!
 \brief Loads MOTD and Tips data from motd.xml configuration file.
 */
-void loadMOTD()
+void nMOTD::loadMOTD()
 {
 	bool motdLoaded = false;
 
@@ -40,7 +41,7 @@ void loadMOTD()
 					continue;
 				}
 			} else if ( n->name() == "tip" )
-				tip.push_back(n->data());
+				tips.push_back(n->data());
 			else
 			{
 				LogWarning("Unknown element in motd.xml: %s", n->name().c_str());
