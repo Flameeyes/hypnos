@@ -175,6 +175,30 @@ public:
 
 //@{
 /*!
+\brief Resistance stuff [UO4}
+
+UO:AoS implements a completely new resistence system: there are now five types
+of resistences and damages, which are:
+\ul
+	\li Physical
+	\li Fire
+	\li Cold
+	\li Poison
+	\li Energy
+
+All the spells and the weapons do one or more of these damage types. This
+system simplify the old NoX one, which was a lot more complicated. To add more
+types of resistance and damages, which will not be used direcly by the UO:AoS
+client, you can work at scripting level.
+*/
+protected:
+	uint8_t resistances[5];
+public:
+	virtual uint8_t getResistance(DamageType index);
+//@}
+
+//@{
+/*!
 \name Temp - Fx
 */
 protected:

@@ -522,7 +522,6 @@ public:
 	int32_t		wpsk;		//!< The skill needed to use the item
 	int32_t		spd;		//!< The speed of the weapon
 	int32_t		itmhand;	//!< ITEMHAND system - AntiChrist
-	int32_t		resists[MAX_RESISTANCE_INDEX];	//!< for resists system
 
 	int32_t		st2;		//!< The strength the item gives
 

@@ -142,7 +142,7 @@ It will be quite simple to implement at scripting level new types of damage, so
 they won't be handled by the core system.
 */
 enum DamageType {
-	damPhysical, damEnergy, damPoison, damCold, damfire
+	damPhysical, damFire, damCold, damPoison, damEnergy
 };
 
 //! Type of hiding
@@ -295,7 +295,7 @@ framework provided by Hypnos if not otherwise specified int the spells datafile.
 New spells which shares the underlying framework with the base's one can be
 added always using the spells datafile.
 
-\todo Add values for necromantic and chivalry spells.
+\todo Add values for necromantic spells.
 \todo Add documentation about the spells' datafile.
 \todo Add support for the spells' datafile
 */
@@ -324,7 +324,11 @@ enum SpellId {
 	spellManaVampire, spellMassDispel, spellMeteorSwarm, spellPolymorph,
 	// Magery - Level 8
 	spellEarthquake, spellEnergyVortex, spellResurrection, spellSummonElemAir,
-	spellSummonDaemon, spellSummonElemEarth, spellSummonElemFire, spellSummonElemWater
+	spellSummonDaemon, spellSummonElemEarth, spellSummonElemFire, spellSummonElemWater,
+	// Chivalry
+	spellCleanseByFire, spellCloseWounds, spellConsecrateWeapon,
+	spellDispelEvil, spellDivineFury, spellEnemyOfOne, spellHolyLight,
+	spellNobleSacrifice, spellRemoveCurse, spellSacredJourney
 };
 
 #endif

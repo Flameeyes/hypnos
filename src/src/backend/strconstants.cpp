@@ -142,7 +142,7 @@ SuspectAction nStrConstants::suspectAction(std::string str)
 */
 ItemPlace nStrConstants::itemPlace(std::string str)
 {
-	if ( str == "ipBankbox" ) return ipBankBox;
+	if ( str == "ipBankbox" ) return ipBankbox;
 	if ( str == "ipEquip" ) return ipEquip;
 	
 	// No need to check for ipBackpack :)
@@ -155,79 +155,79 @@ ItemPlace nStrConstants::itemPlace(std::string str)
 \return The SpellId enum value represented by the string, or spellInvalid if
 	not a valid spell identifier
 */
-magic::SpellId nStrConstants::spellId(std::string str)
+SpellId nStrConstants::spellId(std::string str)
 {
-	if ( str == "spellClumsy" ) return magic::spellClumsy;
-	if ( str == "spellCreateFood" ) return magic::spellCreateFood;
-	if ( str == "spellFeebleMind" ) return magic::spellFeebleMind;
-	if ( str == "spellHeal" ) return magic::spellHeal;
-	if ( str == "spellMagicArrow" ) return magic::spellMagicArrow;
-	if ( str == "spellNightSight" ) return magic::spellNightSight;
-	if ( str == "spellReactiveArmour" ) return magic::spellReactiveArmour;
-	if ( str == "spellWeaken" ) return magic::spellWeaken;
+	if ( str == "spellClumsy" ) return spellClumsy;
+	if ( str == "spellCreateFood" ) return spellCreateFood;
+	if ( str == "spellFeebleMind" ) return spellFeebleMind;
+	if ( str == "spellHeal" ) return spellHeal;
+	if ( str == "spellMagicArrow" ) return spellMagicArrow;
+	if ( str == "spellNightSight" ) return spellNightSight;
+	if ( str == "spellReactiveArmour" ) return spellReactiveArmour;
+	if ( str == "spellWeaken" ) return spellWeaken;
 	
-	if ( str == "spellAgility" ) return magic::spellAgility;
-	if ( str == "spellCunning" ) return magic::spellCunning;
-	if ( str == "spellCure" ) return magic::spellCure;
-	if ( str == "spellHarm" ) return magic::spellHarm;
-	if ( str == "spellTrap" ) return magic::spellTrap;
-	if ( str == "spellUntrap" ) return magic::spellUntrap;
-	if ( str == "spellProtection" ) return magic::spellProtection;
-	if ( str == "spellStrength" ) return magic::spellStrength;
+	if ( str == "spellAgility" ) return spellAgility;
+	if ( str == "spellCunning" ) return spellCunning;
+	if ( str == "spellCure" ) return spellCure;
+	if ( str == "spellHarm" ) return spellHarm;
+	if ( str == "spellTrap" ) return spellTrap;
+	if ( str == "spellUntrap" ) return spellUntrap;
+	if ( str == "spellProtection" ) return spellProtection;
+	if ( str == "spellStrength" ) return spellStrength;
 	
-	if ( str == "spellBless" ) return magic::spellBless;
-	if ( str == "spellFireball" ) return magic::spellFireball;
-	if ( str == "spellLock" ) return magic::spellLock;
-	if ( str == "spellPoison" ) return magic::spellPoison;
-	if ( str == "spellTelekinesys" ) return magic::spellTelekinesys;
-	if ( str == "spellTeleport" ) return magic::spellTeleport;
-	if ( str == "spellUnlock" ) return magic::spellUnlock;
-	if ( str == "spellWallStone" ) return magic::spellWallStone;
+	if ( str == "spellBless" ) return spellBless;
+	if ( str == "spellFireball" ) return spellFireball;
+	if ( str == "spellLock" ) return spellLock;
+	if ( str == "spellPoison" ) return spellPoison;
+	if ( str == "spellTelekinesys" ) return spellTelekinesys;
+	if ( str == "spellTeleport" ) return spellTeleport;
+	if ( str == "spellUnlock" ) return spellUnlock;
+	if ( str == "spellWallStone" ) return spellWallStone;
 	
-	if ( str == "spellArchCure" ) return magic::spellArchCure;
-	if ( str == "spellArchProtection" ) return magic::spellArchProtection;
-	if ( str == "spellCurse" ) return magic::spellCurse;
-	if ( str == "spellFireField" ) return magic::spellFireField;
-	if ( str == "spellGreatHeal" ) return magic::spellGreatHeal;
-	if ( str == "spellLightning" ) return magic::spellLightning;
-	if ( str == "spellManaDrain" ) return magic::spellManaDrain;
-	if ( str == "spellRecall" ) return magic::spellRecall;
+	if ( str == "spellArchCure" ) return spellArchCure;
+	if ( str == "spellArchProtection" ) return spellArchProtection;
+	if ( str == "spellCurse" ) return spellCurse;
+	if ( str == "spellFireField" ) return spellFireField;
+	if ( str == "spellGreatHeal" ) return spellGreatHeal;
+	if ( str == "spellLightning" ) return spellLightning;
+	if ( str == "spellManaDrain" ) return spellManaDrain;
+	if ( str == "spellRecall" ) return spellRecall;
 	
-	if ( str == "spellBladeSpirit" ) return magic::spellBladeSpirit;
-	if ( str == "spellDispelField" ) return magic::spellDispelField;
-	if ( str == "spellIncognito" ) return magic::spellIncognito;
-	if ( str == "spellReflection" ) return magic::spellReflection;
-	if ( str == "spellMindBlast" ) return magic::spellMindBlast;
-	if ( str == "spellParalyze" ) return magic::spellParalyze;
-	if ( str == "spellPoisonField" ) return magic::spellPoisonField;
-	if ( str == "spellSummon" ) return magic::spellSummon;
+	if ( str == "spellBladeSpirit" ) return spellBladeSpirit;
+	if ( str == "spellDispelField" ) return spellDispelField;
+	if ( str == "spellIncognito" ) return spellIncognito;
+	if ( str == "spellReflection" ) return spellReflection;
+	if ( str == "spellMindBlast" ) return spellMindBlast;
+	if ( str == "spellParalyze" ) return spellParalyze;
+	if ( str == "spellPoisonField" ) return spellPoisonField;
+	if ( str == "spellSummon" ) return spellSummon;
 	
-	if ( str == "spellDispel" ) return magic::spellDispel;
-	if ( str == "spellEnergyBolt" ) return magic::spellEnergyBolt;
-	if ( str == "spellExplosion" ) return magic::spellExplosion;
-	if ( str == "spellInvisibility" ) return magic::spellInvisibility;
-	if ( str == "spellMark" ) return magic::spellMark;
-	if ( str == "spellMassCurse" ) return magic::spellMassCurse;
-	if ( str == "spellParalyzeField" ) return magic::spellParalyzeField;
-	if ( str == "spellReveal" ) return magic::spellReveal;
+	if ( str == "spellDispel" ) return spellDispel;
+	if ( str == "spellEnergyBolt" ) return spellEnergyBolt;
+	if ( str == "spellExplosion" ) return spellExplosion;
+	if ( str == "spellInvisibility" ) return spellInvisibility;
+	if ( str == "spellMark" ) return spellMark;
+	if ( str == "spellMassCurse" ) return spellMassCurse;
+	if ( str == "spellParalyzeField" ) return spellParalyzeField;
+	if ( str == "spellReveal" ) return spellReveal;
 	
-	if ( str == "spellChainLighting" ) return magic::spellChainLighting;
-	if ( str == "spellEnergyField" ) return magic::spellEnergyField;
-	if ( str == "spellFlameStrike" ) return magic::spellFlameStrike;
-	if ( str == "spellGate" ) return magic::spellGate;
-	if ( str == "spellManaVampire" ) return magic::spellManaVampire;
-	if ( str == "spellMassDispel" ) return magic::spellMassDispel;
-	if ( str == "spellMeteorSwarm" ) return magic::spellMeteorSwarm;
-	if ( str == "spellPolymorph" ) return magic::spellPolymorph;
+	if ( str == "spellChainLighting" ) return spellChainLighting;
+	if ( str == "spellEnergyField" ) return spellEnergyField;
+	if ( str == "spellFlameStrike" ) return spellFlameStrike;
+	if ( str == "spellGate" ) return spellGate;
+	if ( str == "spellManaVampire" ) return spellManaVampire;
+	if ( str == "spellMassDispel" ) return spellMassDispel;
+	if ( str == "spellMeteorSwarm" ) return spellMeteorSwarm;
+	if ( str == "spellPolymorph" ) return spellPolymorph;
 	
-	if ( str == "spellEarthquake" ) return magic::spellEarthquake;
-	if ( str == "spellEnergyVortex" ) return magic::spellEnergyVortex;
-	if ( str == "spellResurrection" ) return magic::spellResurrection;
-	if ( str == "spellSummonElemAir" ) return magic::spellSummonElemAir;
-	if ( str == "spellSummonDaemon" ) return magic::spellSummonDaemon;
-	if ( str == "spellSummonElemEarth" ) return magic::spellSummonElemEarth;
-	if ( str == "spellSummonElemFire" ) return magic::spellSummonElemFire;
-	if ( str == "spellSummonElemWater" ) return magic::spellSummonElemWater;
+	if ( str == "spellEarthquake" ) return spellEarthquake;
+	if ( str == "spellEnergyVortex" ) return spellEnergyVortex;
+	if ( str == "spellResurrection" ) return spellResurrection;
+	if ( str == "spellSummonElemAir" ) return spellSummonElemAir;
+	if ( str == "spellSummonDaemon" ) return spellSummonDaemon;
+	if ( str == "spellSummonElemEarth" ) return spellSummonElemEarth;
+	if ( str == "spellSummonElemFire" ) return spellSummonElemFire;
+	if ( str == "spellSummonElemWater" ) return spellSummonElemWater;
 	
 	return spellInvalid;
 }
