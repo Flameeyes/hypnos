@@ -907,7 +907,7 @@ bool cPacketReceiveAttackRequest::execute (pClient client)
         if (length != 5) return false;
 	pPC pc = client->currChar();
 	VALIDATEPCR( pc, false );
-	pChar victim = pointers::findCharBySerPtr(LongFromCharPtr(buffer + 1));  //victim may be an npc too, so it is a cChar
+	pChar victim = pointers::findCharBySerial(LongFromCharPtr(buffer + 1));  //victim may be an npc too, so it is a cChar
 	VALIDATEPCR( victim, false );
 
 	if( pc->dead ) pc->deadAttack(victim);
@@ -955,7 +955,7 @@ bool cPacketReceiveDoubleclick::execute(pClient client)
 bool cPacketReceivePickUp::execute(pClient client)
 {
         if (length != 7) return false;
-	pItem pi = pointers::findItemBySerPtr(LongFromCharPtr(buffer+1));
+	pItem pi = pointers::findItemBySerial(LongFromCharPtr(buffer+1));
         uint16_t amount = ShortFromCharPtr(buffer+5);
       	VALIDATEPIR(pi, false);
         client->get_item(pi, amount);  //!< if refused, the get_item automatically bounces the item back
@@ -972,7 +972,7 @@ bool cPacketReceivePickUp::execute(pClient client)
 bool cPacketReceiveDropItem::execute(pClient client)
 {
         if (length != 14) return false;
-	pItem pi = pointers::findItemBySerPtr(LongFromCharPtr(buffer+1));
+	pItem pi = pointers::findItemBySerial(LongFromCharPtr(buffer+1));
         Location drop_at = Location(ShortFromCharPtr(buffer+5), ShortFromCharPtr(buffer+7), buffer[9]);
         pItem container = pointers::findItemBySerial(LongFromCharPtr(buffer+10));
         client->drop_item(pi, drop_at, container);  //!< if refused, the drop_item automatically bounces the item back
@@ -1113,10 +1113,10 @@ bool cPacketReceiveWearItem::execute(pClient client)
 
         if (length != 10) return false;
 
-	pChar pc = pointers::findCharBySerPtr(LongFromCharPtr(buffer + 6));
+	pChar pc = pointers::findCharBySerial(LongFromCharPtr(buffer+6));
 
 	VALIDATEPCR(pck, false);
-	pItem pi = pointers::findItemBySerPtr(LongFromCharPtr(buffer + 1));
+	pItem pi = pointers::findItemBySerial(LongFromCharPtr(buffer+1));
 	VALIDATEPIR(pi, false);
 
         client->wear_item(pc, pi);
@@ -1178,7 +1178,7 @@ bool cPacketReceiveStatusRequest::execute(pClient client)
 {
         if (length != 10) return false;
         if ( client->currChar() != NULL ) {
-	        if (buffer[5]==4) client->statusWindow(pointers::findCharBySerPtr(LongFromCharPtr(buffer + 6)), false); //!< NOTE: packet description states sending basic stats, so second argument is false. Correct if necessary
+	        if (buffer[5]==4) client->statusWindow(pointers::findCharBySerial(LongFromCharPtr(buffer + 6)), false); //!< NOTE: packet description states sending basic stats, so second argument is false. Correct if necessary
                 if (buffer[5]==5) client->skillWindow();
 	}
         return true
@@ -1217,7 +1217,7 @@ bool cPacketReceiveBuyItems::execute(pClient client)
 
         std::list< sBoughtItem > allitemsbought;
 
-	pNpc npc = (pNpc)pointers::findCharBySerPtr(LongFromCharPtr(buffer + 3));
+	pNpc npc = (pNpc)pointers::findCharBySerial(LongFromCharPtr(buffer +3));
 	VALIDATEPCR(npc, false);
 
 	int itemtotal=(size - 8)/7;
@@ -1231,7 +1231,7 @@ bool cPacketReceiveBuyItems::execute(pClient client)
 
 		b.layer=buffer[pos];
                 uint32_t itemserial = LongFromCharPtr(buffer + pos + 1);
-		b.item=pointers::findItemBySerPtr(itemserial);
+		b.item=pointers::findItemBySerial(itemserial);
 		if(!b.item)
 			continue;
 		b.amount=ShortFromCharPtr(buffer + pos + 5);
@@ -1252,7 +1252,7 @@ bool cPacketReceiveMapPlotCourse::execute(pClient client)
 {
         if (length != 10) return false;
 
-        pMap map = (pMap)pointers::findItemBySerPtr(LongFromCharPtr(buffer + 1));
+        pMap map = (pMap)pointers::findItemBySerial(LongFromCharPtr(buffer + 1));
         VALIDATEPIR( map, false);
 
         PlotCourseCommands command     	= buffer[5];
@@ -1355,7 +1355,7 @@ bool cPacketReceiveBookPage::execute(pClient client)
 	uint16_t size = ShortFromCharPtr(buffer + 1);
 	if (length != size) return false;
 
-	pItem item = pointers::findItemBySerPtr(LongFromCharPtr(buffer + 3));
+	pItem item = pointers::findItemBySerial(LongFromCharPtr(buffer + 3));
 	pBook book = NULL;
 	
 	if ( item && ( book = item->toBook() ) )
@@ -1404,7 +1404,7 @@ bool cPacketReceiveSecureTrade::execute(pClient client)
 	case 0://Start trade - Never happens, sent out by the server only.
 		break;
 	case 2://Change check marks. Possibly conclude trade
-		cont1 = pointers::findItemBySerPtr(LongFromCharPtr(buffer + 4));
+		cont1 = pointers::findItemBySerial(LongFromCharPtr(buffer + 4));
                 //cont1 is now this client's secure trading container (a temporary container wich holds the trade items)
 
 		if (cont1) cont2 = pointers::findItemBySerial(calcserial(cont1->moreb1, cont1->moreb2, cont1->moreb3, cont1->moreb4));
@@ -1512,7 +1512,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                         uint32_t msgSN = LongFromCharPtr(buffer + 8);
 
                 	// If this is a reply to anything other than a LOCAL post, abort
-			if ( msgSN>0))
+			if ( msgSN>0)
 			{
 				VALIDATEPIR( message, false);
                                 if ( (message->availability != LOCALPOST) && !global::canReplytoGlobalMsgBoardPosts() )
@@ -1768,7 +1768,7 @@ bool cPacketReceiveBookUpdateTitle::execute(pClient client)
 	if (length != 99) return false;
 	char author[31], title[61];
 
-	pItem item = pointers::findItemBySerPtr(LongFromCharPtr(buffer + 1));
+	pItem item = pointers::findItemBySerial(LongFromCharPtr(buffer + 1));
 	pBook book = NULL;
 	if ( ! item || ! ( book = item->toBook() ) )
 		return false;
@@ -1810,7 +1810,7 @@ bool cPacketReceiveSellItems::execute(pClient client)
 
         std::list< sBoughtItem > allitemssold;
 
-	pNpc npc = (pNpc)pointers::findCharBySerPtr(LongFromCharPtr(buffer + 3));
+	pNpc npc = (pNpc)pointers::findCharBySerial(LongFromCharPtr(buffer + 3));
 	VALIDATEPCR(npc, false);
 
 	int itemtotal=ShortFromCharPtr(buffer + 7);
@@ -1822,7 +1822,7 @@ bool cPacketReceiveSellItems::execute(pClient client)
 
 		sBoughtItem b;
 
-		b.item=pointers::findItemBySerPtr(LongFromCharPtr(buffer + pos));
+		b.item=pointers::findItemBySerial(LongFromCharPtr(buffer + pos));
 		if(!b.item)
 			continue;
 		b.amount=ShortFromCharPtr(buffer + pos + 4);
