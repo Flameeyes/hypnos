@@ -134,6 +134,16 @@ AC_CONFIG_FILES([Makefile
 		 libhypnos/libhypnos/muls/Makefile
                  utils/Makefile
                  utils/clilist/Makefile
+		 includes/Makefile
+		 includes/archetypes/Makefile
+		 includes/archs/Makefile
+		 includes/backend/Makefile
+		 includes/objects/Makefile
+		 includes/objects/citem/Makefile
+		 includes/encryption/Makefile
+		 includes/networking/Makefile
+		 includes/skills/Makefile
+		 includes/extras/Makefile
                  src/Makefile
                  src/archetypes/Makefile
                  src/archs/Makefile

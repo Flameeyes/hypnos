@@ -2,4 +2,4 @@
 # have all needed files, that a GNU package needs
 AUTOMAKE_OPTIONS = foreign 1.8
 
-SUBDIRS = src libhypnos utils
+SUBDIRS = libhypnos includes src utils
