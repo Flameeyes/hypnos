@@ -264,7 +264,7 @@ namespace tempfx {
 		SPELL_REACTARMOR,
 		EXPLOTIONMSG,
 		EXPLOTIONEXP,
-		SPELL_POLYMORPH,
+		spellPolymorph,
 		spellIncognito,
 		LSD,
 		spellProtection,

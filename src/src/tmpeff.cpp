@@ -130,7 +130,7 @@ bool isSrcRepeatable(int num)
 	{
 		case spellIncognito:
 		case spellInvisibility:
-		case SPELL_POLYMORPH:
+		case spellPolymorph:
 		case DRINK_FINISHED:
 			return false;
 
@@ -160,7 +160,7 @@ bool isDestRepeatable(int num)
 		case spellBless:
 		case spellCurse:
 		case spellIncognito:
-		case SPELL_POLYMORPH:
+		case spellPolymorph:
 		case spellInvisibility:
 		case CRIMINAL:
 		case FIELD_DAMAGE:
@@ -213,7 +213,7 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 			dur = src->skill[skMagery]/10;
 			break;
 
-		case SPELL_POLYMORPH:
+		case spellPolymorph:
 			dur = polyduration;
 			break;
 
@@ -441,7 +441,7 @@ void cTempfx::start()
 		case EXPLOTIONEXP:
 			break;
 
-		case SPELL_POLYMORPH:
+		case spellPolymorph:
 			if (dest->morphed)
 				dest->morph();  //if the char is morphed, unmorph him
 			dest->setCrimGrey(nSettings::Reputation::getPolymorphAction());
@@ -788,7 +788,7 @@ void cTempfx::executeExpireCode()
 				pi_dest->explode(src->getClient()->toInt());
 			break;
 
-		case SPELL_POLYMORPH:
+		case spellPolymorph:
 			if (!dest) return;
 			dest->morph();
 			dest->polymorph = false;

@@ -86,7 +86,7 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 				pc_att->beginCasting(pc_def, magic::spellExplosion );
 				break;
 			case 13:
-				pc_att->beginCasting(pc_def, magic::SPELL_FLAMESTRIKE );
+				pc_att->beginCasting(pc_def, magic::spellFlameStrike );
 				break;
 			case 14:
 				pc_att->beginCasting(pc_def, magic::spellMindBlast );
@@ -243,7 +243,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::spellExplosion );
 			break;
 		case 13:
-			pc_att->beginCasting(pc_def, magic::SPELL_FLAMESTRIKE );
+			pc_att->beginCasting(pc_def, magic::spellFlameStrike );
 			break;
 		case 14:
 			pc_att->beginCasting(pc_def, magic::spellFireField );
@@ -270,7 +270,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::spellManaDrain );
 			break;
 		case 24:
-			pc_att->beginCasting(pc_def, magic::SPELL_MANAVAMPIRE );
+			pc_att->beginCasting(pc_def, magic::spellManaVampire );
 			break;
 		case 27:
 			pc_att->beginCasting(pc_att, magic::spellReflection );

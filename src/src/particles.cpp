@@ -38,7 +38,7 @@ void ParticleFx::initWithSpellMoveEffect( magic::SpellId num )
 			effect[15]=0; effect[16]=1; effect[17]=0;
 			break;
 
-		case magic::SPELL_METEORSWARM:    
+		case magic::spellMeteorSwarm:    
 			effect[0]=0x36; effect[1]=0xD5; effect[2]=0x07; effect[3]=0x00; effect[4]=0x01;
 			effect[10]=0x1d; effect[11]=0x00; effect[12]=0x01; effect[13]=0x0; effect[14]=0x0;
 			effect[15]=0; effect[16]=1; effect[17]=1;

@@ -464,7 +464,7 @@ void cNPC::checkAI()
 							talkAll("You are ridiculous", 1);
 							break;
 						case 1:
-							beginCasting(pj, magic::SPELL_FLAMESTRIKE);
+							beginCasting(pj, magic::spellFlameStrike);
 							talkAll("Die unusefull mortal!", 1);
 							break;
 						case 2:

@@ -327,7 +327,7 @@ static inline bool isFieldSpell(SpellId spell)
 		case spellFireField:
 		case spellPoisonField:
 		case spellParalyzeField:
-		case SPELL_ENERGYFIELD:
+		case spellEnergyField:
 		case spellWallStone:
 			return true;
 		default:
@@ -529,7 +529,7 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			pcfrom->playSFX( 0x201 );
 			break;
 		case spellIncognito:
-		case SPELL_POLYMORPH:
+		case spellPolymorph:
 			pcfrom->playSFX( 0x20F );
 			break;
 		case spellReflection:
@@ -577,28 +577,28 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 		case spellReveal:
 			pcfrom->playSFX( 0x1FD );
 			break;
-		case SPELL_CHAINLIGHTNING:
+		case spellChainLighting:
 			pcto->playSFX( 0x206 );
 			boltFX(pcto, false );
 			break;
-		case SPELL_ENERGYFIELD:
+		case spellEnergyField:
 			pcfrom->playSFX( 0x210 );
 			break;
-		case SPELL_FLAMESTRIKE:
+		case spellFlameStrike:
 			staticFX(pcto, 0x3709, 0, 10, &spfx );
 			pcto->playSFX( 0x208 );
 			break;
-		case SPELL_GATE:
+		case spellGate:
 			pcfrom->playSFX( 0x20D );
 			break;
-		case SPELL_MANAVAMPIRE:
+		case spellManaVampire:
 			pcto->playSFX( 0x1F9 );
 			movingFX(pcto, pcfrom, 0x36F4, 5, 0, true, &mpfx );
 			break;
-		case SPELL_MASSDISPEL:
+		case spellMassDispel:
 			pcto->playSFX( 0x209 );
 			break;
-		case SPELL_METEORSWARM:
+		case spellMeteorSwarm:
 			pcto->playSFX( 0x11B );
 			staticFX(pcto, 0x36B0, 0, 10, &spfx );
 			break;
@@ -695,7 +695,7 @@ static void damage(pChar pa, pChar pd, SpellId spellnum, uint16_t spellflags = 0
 	if ( p_realattacker ) p_realattacker->attackStuff(p_realdefender);
 
 	StatType stattodamage = STAT_HP;
-	if ((spellnum==spellManaDrain)||(spellnum==SPELL_MANAVAMPIRE)) stattodamage = STAT_MANA;
+	if ((spellnum==spellManaDrain)||(spellnum==spellManaVampire)) stattodamage = STAT_MANA;
 	pd->damage(amount, spellsData[spellnum].damagetype, stattodamage);
 }
 
@@ -801,7 +801,7 @@ void castAreaAttackSpell (sPoint epi, SpellId spellnum, pChar pcaster)
 		pChar pd = sc.getChar();
 		if ( ! pd ) return;
 			
-		if ( (spellnum == SPELL_EARTHQUAKE || spellnum == SPELL_CHAINLIGHTNING)
+		if ( (spellnum == SPELL_EARTHQUAKE || spellnum == spellChainLighting)
 			&& ( pd == pcaster ) )
 				return;
 		
@@ -841,14 +841,14 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellArchCure:
 		case SPELL_RESURRECTION:
 		case spellMagicArrow:
-		case SPELL_FLAMESTRIKE:
+		case spellFlameStrike:
 		case spellExplosion:
 		case spellLightning:
 		case spellEnergyBolt:
 		case spellHarm:
 		case spellMindBlast:
 		case spellManaDrain:
-		case SPELL_MANAVAMPIRE:
+		case spellManaVampire:
 			return TARGTYPE_CHAR;
 
 		case spellReactiveArmour:
@@ -866,7 +866,7 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellSummon_WATER:
 		case SPELL_EARTHQUAKE:
 		case spellCreateFood:
-		case SPELL_POLYMORPH:
+		case spellPolymorph:
 			return TARGTYPE_NONE;
 
 		case spellTrap:
@@ -877,7 +877,7 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellUnlock:
 			return TARGTYPE_CONTAINERORDOOR;
 
-		case SPELL_GATE:
+		case spellGate:
 		case spellMark:
 		case spellRecall:
 			return TARGTYPE_RUNE;
@@ -886,16 +886,16 @@ static inline int spellTargetType(SpellId spellnum)
 		case SPELL_ENERGYVORTEX:
 		case spellWallStone:
 		case spellTeleport:
-		case SPELL_MASSDISPEL:
+		case spellMassDispel:
 		case spellMassCurse:
 		case spellReveal:
 		case spellFireField:
 		case spellDispelField:
 		case spellPoisonField:
 		case spellParalyzeField:
-		case SPELL_ENERGYFIELD:
-		case SPELL_CHAINLIGHTNING:
-		case SPELL_METEORSWARM:
+		case spellEnergyField:
+		case spellChainLighting:
+		case spellMeteorSwarm:
 			return TARGTYPE_XYZ;
 
 		default:
@@ -1189,7 +1189,7 @@ void castFieldSpell( pChar pc, sPosition pos, int spellnumber)
 			id = (j) ? 0x3920 : 0x3915; break;
 		case spellParalyzeField:
 			id = (j) ? 0x3979 : 0x3967; break;
-		case SPELL_ENERGYFIELD:
+		case spellEnergyField:
 			id = (j) ? 0x3956 : 0x3946; break;
 		default:
 			ErrOut("Switch fallout in magic::castFieldSpell\n");
@@ -1310,13 +1310,13 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			break;
 		case spellMagicArrow:
 		case spellFireball:
-		case SPELL_FLAMESTRIKE:
+		case spellFlameStrike:
 		case spellLightning:
 		case spellExplosion:
 		case spellEnergyBolt:
 		case spellHarm:
-		case SPELL_METEORSWARM:
-		case SPELL_CHAINLIGHTNING:
+		case spellMeteorSwarm:
+		case spellChainLighting:
 		case SPELL_EARTHQUAKE:
 			if (pd) {
 				if (spellsData[spellnumber].areasize<=0 && (spellnumber!=spellExplosion || src->skill[skMagery] < 800)) //Luxor
@@ -1354,7 +1354,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_MANAVAMPIRE:
+		case spellManaVampire:
 			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
@@ -1460,7 +1460,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_MASSDISPEL: //Luxor
+		case spellMassDispel: //Luxor
 			{
 			if ( pd ) {
 				pos = sPoint(pd->getPosition());
@@ -1489,7 +1489,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			spellFX( spellnumber, src );
 			break;
 
-		case SPELL_POLYMORPH: //Luxor
+		case spellPolymorph: //Luxor
 			{
 			P_MENU menu = Menus.insertMenu( new cPolymorphMenu( src ) );
 			if(!menu) return;
@@ -1498,7 +1498,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_GATE: //Luxor
+		case spellGate: //Luxor
 			if ( src && pi ) {
 				if ( pi->type == ITYPE_RUNE ) {
 					if ((pi->morex < 10)&&(pi->morey < 10)) {
@@ -1696,7 +1696,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case spellFireField:
 		case spellPoisonField:
 		case spellParalyzeField:
-		case SPELL_ENERGYFIELD:
+		case spellEnergyField:
 		case spellWallStone:
 			spellFX(spellnumber, src, src);
 			castFieldSpell( src, loc, spellnumber);
@@ -2027,7 +2027,7 @@ bool beginCasting (SpellId num, pClient s, CastingType type)
 cPolymorphMenu::cPolymorphMenu( pChar pc ) : cIconListMenu()
 {
 	if ( ! pc ) return;
-	if ( pc->getTempfx( tempfx::SPELL_POLYMORPH ) != NULL )
+	if ( pc->getTempfx( tempfx::spellPolymorph ) != NULL )
 		addIcon( 0x2106, 0, pc->getOldId(), std::string("Undo polymorph") );
 	addIcon( 0x20CF, 0, 0xd3, std::string("Black Bear") );
 	addIcon( 0x20DB, 0, 0xd4, std::string("Grizzly Bear") );
@@ -2073,13 +2073,13 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	pc->delTempfx( tempfx::spellWeaken );
 
 
-	if ( pc->getTempfx( tempfx::SPELL_POLYMORPH ) != NULL && data == pc->getOldId() ) {
-		pc->delTempfx( tempfx::SPELL_POLYMORPH );
+	if ( pc->getTempfx( tempfx::spellPolymorph ) != NULL && data == pc->getOldId() ) {
+		pc->delTempfx( tempfx::spellPolymorph );
 		return;
 	}
 
-	pc->delTempfx( tempfx::SPELL_POLYMORPH );
-	pc->addTempfx( *pc, tempfx::SPELL_POLYMORPH, data );
+	pc->delTempfx( tempfx::spellPolymorph );
+	pc->addTempfx( *pc, tempfx::spellPolymorph, data );
 
 	switch( data )
 	{
@@ -2120,7 +2120,7 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 			break;
 	}
 
-	spellFX( SPELL_POLYMORPH, pc, pc );
+	spellFX( spellPolymorph, pc, pc );
 }
 
 
