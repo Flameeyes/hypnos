@@ -86,20 +86,20 @@ namespace nSettings {
 	
 	//! Reputation system settings
 	namespace Reputation {
-		uint16_t getBountyKarmaGain();		//!< How much karma is gained for bounty hunting? [Default: \b missing ]
-		uint16_t getBountyFameGain();		//!< How much fame is gained for bounty hunting? [Default: \b missing ]
+		uint16_t getBountyKarmaGain();
+		uint16_t getBountyFameGain();
 		
 		SuspectAction getPolymorphAction();
 		SuspectAction getHelpingGreyAction();
 		SuspectAction getHelpingCriminalAction();
 		SuspectAction getLootingAction();
 		
-		uint16_t getStealKarmaLoss();	//!< How much karma is lost stealing? [Default: \b missing ]
-		uint16_t getStealFameLoss();	//!< How much fame is lost stealing? [Default: \b missing ]
+		uint16_t getStealKarmaLoss();
+		uint16_t getStealFameLoss();
 		SuspectAction getStealAction();
 		
-		uint16_t getSnoopKarmaLoss();	//!< How much karma is lost snooping? [Default: \b missing ]
-		uint16_t getSnoopFameLoss();	//!< How much fame is lost snooping? [Default: \b missing ]
+		uint16_t getSnoopKarmaLoss();
+		uint16_t getSnoopFameLoss();
 		SuspectAction getSnoopAction();
 		
 		uint16_t getChopFameLoss();

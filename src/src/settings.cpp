@@ -292,11 +292,11 @@ namespace Actions {
 }
 
 namespace Reputation {
-	//! How much karma is gained for bounty hunting? \todo Set the default
-	SETTING(uint16_t, BountyKarmaGain, 0);
+	//! Karma gain when collecting a bounty (absolue value)
+	SETTING(uint16_t, BountyKarmaGain, 100);
 	
-	//! How much fame is gained for bounty hunting? \todo Set the default
-	SETTING(uint16_t, BountyFameGain, 0);
+	//! Fame gain when collecting a bounty (absolue value)
+	SETTING(uint16_t, BountyFameGain, 50);
 	
 	//! What to do after a polymorph
 	SETTING(SuspectAction, PolymorphAction, saNormal);
@@ -307,28 +307,28 @@ namespace Reputation {
 	//! What to do after helping a criminal
 	SETTING(SuspectAction, HelpingCriminalAction, saNormal);
 	
-	//! How much karma is lost stealing? \todo Set the default
-	SETTING(uint16_t, StealKarmaLoss, 0);
+	//! Karma loss when stealing (absolue value)
+	SETTING(uint16_t, StealKarmaLoss, 9000);
 	
-	//! How much fame is lost stealing? \todo Set the default
+	//! Fame loss when stealing (absolue value)
 	SETTING(uint16_t, StealFameLoss, 0);
 	
 	//! What to do after a steal
 	SETTING(SuspectAction, StealAction, saNormal);
 	
-	//! How much karma is lost snooping? \todo Set the default
-	SETTING(uint16_t, SnoopKarmaLoss, 0);
+	//! Karma loss when snooping (absolue value)
+	SETTING(uint16_t, SnoopKarmaLoss, 2000);
 	
-	//! How much fame is lost snooping? \todo Set the default
+	//! Fame loss when snooping (absolue value)
 	SETTING(uint16_t, SnoopFameLoss, 0);
 	
 	//! What to do after a snoop
 	SETTING(SuspectAction, SnoopAction, saNormal);
 	
-	//! How much karma is loss chopping a corpse? \todo Set the default
-	SETTING(uint16_t, ChopKarmaLoss, 0);
+	//! Karma loss when chopping dead bodies (absolue value)
+	SETTING(uint16_t, ChopKarmaLoss, 100);
 	
-	//! How much fame is loss chopping a corpse? \todo Set the default
+	//! Fame loss when chopping dead bodies (absolue value)
 	SETTING(uint16_t, ChopFameLoss, 0);
 	
 	//! What to do after a corpse chop

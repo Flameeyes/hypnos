@@ -110,14 +110,6 @@ int g_nLowKarmaWillCriminal=1;
 int g_nHelpingGreyWillCriminal=1;
 int g_nHelpingCriminalWillCriminal=2;
 int g_nGreyCanBeLooted=1;
-int g_nSnoopKarmaLoss=-2000;
-int g_nStealKarmaLoss=-9000;
-int g_nSnoopFameLoss=0;
-int g_nStealFameLoss=0;
-int g_nChopKarmaLoss=-100;
-int g_nChopFameLoss=0;
-int g_nBountyKarmaGain=+100;
-int g_nBountyFameGain=50;
 int g_nEnableKarmaLock=1;
 int g_nVerboseCrontab = 0;
 int g_nPopUpHelp = 1;
@@ -143,13 +135,7 @@ int g_nRacTCPPort=2594;
 int g_nUseCharByCharMode=1;
 
 //[AMX Scripting]
-int g_nEnableAMXScripts=1;
 int g_nDeamonMode = 0;
-int g_css_override_case_sensitive = 1;
-
-//[System]
-int g_nUseAccountEncryption=0;
-//[System]
 
 //[Windows]
 int g_nAutoDetectMuls=1;
@@ -1183,22 +1169,6 @@ void saveserverscript()
 	fprintf(file, "HELPINGCRIMINALWILLCRIMINAL %d\n", ServerScp::g_nHelpingCriminalWillCriminal);
 	fprintf(file, "// 1 if greys can be looted freely\n");
 	fprintf(file, "GREYCANBELOOTED %d\n", ServerScp::g_nGreyCanBeLooted);
-	fprintf(file, "// Karma loss when snooping (relative value)\n");
-	fprintf(file, "SNOOPKARMALOSS %d\n", ServerScp::g_nSnoopKarmaLoss);
-	fprintf(file, "// Karma loss when stealing (relative value)\n");
-	fprintf(file, "STEALKARMALOSS %d\n", ServerScp::g_nStealKarmaLoss);
-	fprintf(file, "// Fame loss when snooping (relative value)\n");
-	fprintf(file, "SNOOPFAMELOSS %d\n", ServerScp::g_nSnoopFameLoss);
-	fprintf(file, "// Fame loss when stealing (relative value)\n");
-	fprintf(file, "STEALFAMELOSS %d\n", ServerScp::g_nStealFameLoss);
-	fprintf(file, "// Karma loss when chopping dead bodies (absolute value!)\n");
-	fprintf(file, "CHOPKARMALOSS %d\n", ServerScp::g_nChopKarmaLoss);
-	fprintf(file, "// Fame loss when chopping dead bodies (absolute value!)\n");
-	fprintf(file, "CHOPFAMELOSS %d\n", ServerScp::g_nChopFameLoss);
-	fprintf(file, "// Karma gain when collecting a bounty (absolute value!)\n");
-	fprintf(file, "BOUNTYKARMAGAIN %d\n", ServerScp::g_nBountyKarmaGain);
-	fprintf(file, "// Fame gain when collecting a bounty (absolute value!)\n");
-	fprintf(file, "BOUNTYFAMEGAIN %d\n", ServerScp::g_nBountyFameGain);
 	fprintf(file, "// Set to 1 to enable Karma Lock when karma level drops down\n");
 	fprintf(file, "ENABLEKARMALOCK %d\n", ServerScp::g_nEnableKarmaLock);
 	fprintf(file, "// Karma unlock prayer\n");
