@@ -1,0 +1,4 @@
+<!-- elements in hypnosmotd -->
+<!ELEMENT hypnosmotd motd, (tip)*>
+<!ELEMENT motd>
+<!ELEMENT tip>
