@@ -174,3 +174,84 @@ void cChar::doGmEffect()
 	}
 	return;
 }
+
+/*!
+\brief Makes the char doing an action
+\author Luxor
+*/
+void cChar::playAction(UI16 action)
+{
+	switch (action)
+	{
+		case 0x1A:// Mining-Gravedigging
+		case 0x0B:
+			if (onhorse)
+				action = 0x1A;
+			else
+				action = 0x0b;
+			break;
+		case 0x1C:// LumberJacking-Bowcraft
+		case 0x0D:
+			if (onhorse)
+				action = 0x1C;
+			else
+				action = 0x0D;
+			break;
+		case 0x1D:// Swordtarget
+			// case 0x0D:
+			if (onhorse)
+				action = 0x1D;
+			else
+				action = 0x0D;
+			break;
+		case 0x0A:// Fist Fighting
+			if (onhorse)
+				action = 0x1A;
+			else
+				action = 0x0A;
+			break;
+		case 0x0E:// Smelting irons
+			if (onhorse)
+				action = 0x1C;
+			else
+				action = 0x0E;
+			break;
+		case 0x09:// Working ingots
+			if (onhorse)
+				action = 0x1A;
+			else
+				action = 0x09;
+			break;
+		case 0x14:// These can be done only if not onhorse
+		case 0x22:
+			if (onhorse)
+				action = 0x00;
+			break;
+		default:
+			break;
+	}
+
+	if ( ! action )
+		return;
+
+	cPacketSendAction pa(serial, action);
+
+	cClientSet cs;
+	cs.fillOnline( this, false );
+
+	for( cs.rewind(); !cs.isEmpty(); cs++ )
+		cs.sendPacket(&pa);
+}
+
+void cChar::impAction(UI16 action)
+{
+	if ( isMounting() && (action==0x10 || action==0x11))
+	{
+		playAction(0x1b);
+		return;
+	}
+	if ( isMounting() || ( getId() < 0x190 ) && action == 0x22 )
+		return;
+	playAction(action);
+}
+

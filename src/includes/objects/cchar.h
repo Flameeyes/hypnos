@@ -343,7 +343,7 @@ public:
 
 public:
 	void			checkSafeStats();
-	virtual void		heartbeat();
+	virtual void		heartbeat() = 0;
 
 private:
 	void			generic_heartbeat();

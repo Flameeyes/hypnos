@@ -11,6 +11,24 @@
 */
 
 /*!
+\brief easy wrapper to sysmsg
+\author Luxor
+\param txt as default
+\param ... as default
+*/
+void cChar::sysmsg(const TEXT *txt, ...)
+{
+	va_list argptr;
+	char msg[512];
+	va_start( argptr, txt );
+
+	vsnprintf( msg, sizeof(msg)-1,(const char *)txt, argptr );
+	va_end( argptr );
+	if (getClient() != NULL)
+		getClient()->sysmsg(msg);
+}
+
+/*!
 \author Luxor
 \brief shows speech text to all pcs near the char
 \param txt the speech
