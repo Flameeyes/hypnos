@@ -98,7 +98,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 noinst_LTLIBRARIES = libextras.la
-libextras_la_SOURCES = bounty.cpp jails.cpp motd.cpp
+libextras_la_SOURCES = bounty.cpp jails.cpp motd.cpp loginserver.cpp
 subdir = src/extras
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -107,7 +107,7 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 
 libextras_la_LDFLAGS =
 libextras_la_LIBADD =
-am_libextras_la_OBJECTS = bounty.lo jails.lo motd.lo
+am_libextras_la_OBJECTS = bounty.lo jails.lo motd.lo loginserver.lo
 libextras_la_OBJECTS = $(am_libextras_la_OBJECTS)
 
 DEFS = @DEFS@
@@ -117,7 +117,7 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/bounty.Plo ./$(DEPDIR)/jails.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/motd.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/loginserver.Plo ./$(DEPDIR)/motd.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -159,6 +159,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bounty.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jails.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loginserver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/motd.Plo@am__quote@
 
 distclean-depend:
