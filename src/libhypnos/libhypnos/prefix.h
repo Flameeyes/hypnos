@@ -14,6 +14,7 @@
  * to br_*", try renaming prefix.c to prefix.cpp
  */
 
+#ifdef ENABLE_BINRELOC
 #ifndef _PREFIX_H_
 #define _PREFIX_H_
 
@@ -35,8 +36,6 @@ extern "C" {
 #undef BR_NAMESPACE
 #define BR_NAMESPACE(funcName) funcName
 
-
-#ifdef ENABLE_BINRELOC
 
 #define br_thread_local_store BR_NAMESPACE(br_thread_local_store)
 #define br_locate BR_NAMESPACE(br_locate)
@@ -83,9 +82,6 @@ char *br_locate_prefix	(void *symbol);
 char *br_prepend_prefix	(void *symbol, char *path);
 
 
-#endif /* ENABLE_BINRELOC */
-
-
 /* These macros and functions are not guarded by the ENABLE_BINRELOC
  * macro because they are portable. You can use these functions.
  */
@@ -120,3 +116,5 @@ char *br_extract_prefix(const char *path);
 #endif /* __cplusplus */
 
 #endif /* _PREFIX_H_ */
+
+#endif /* ENABLE_BINRELOC */

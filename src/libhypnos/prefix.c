@@ -23,6 +23,8 @@
  * --> expands br_locate to foobar_br_locate
  */
 
+#ifdef ENABLE_BINRELOC
+
 #ifndef _PREFIX_C_
 #define _PREFIX_C_
 
@@ -35,19 +37,28 @@
 	#define BR_PTHREADS 1
 #endif /* BR_PTHREADS */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <limits.h>
-#include <string.h>
+#ifdef HAVE_STDLIB_H
+	#include <stdlib.h>
+#endif
+
+#ifdef HAVE_STDIO_H
+	#include <stdio.h>
+#endif
+
+#ifdef HAVE_LIMITS_H
+	#include <limits.h>
+#endif
+
+#ifdef HAVE_STRING_H
+	#include <string.h>
+#endif
+
 #include "libhypnos/prefix.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-
-#undef NULL
-#define NULL ((void *) 0)
 
 #ifdef __GNUC__
 	#define br_return_val_if_fail(expr,val) if (!(expr)) {fprintf (stderr, "** BinReloc (%s): assertion %s failed\n", __PRETTY_FUNCTION__, #expr); return val;}
@@ -56,11 +67,21 @@ extern "C" {
 #endif /* __GNUC__ */
 
 
-#ifdef ENABLE_BINRELOC
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/param.h>
-#include <unistd.h>
+#ifdef HAVE_SYS_TYPES_H
+	#include <sys/types.h>
+#endif
+
+#ifdef HAVE_SYS_STAT_H
+	#include <sys/stat.h>
+#endif
+
+#ifdef HAVE_SYS_PARAM_H
+	#include <sys/param.h>
+#endif
+
+#ifdef HAVE_UNISTD_H
+	#include <unistd.h>
+#endif
 
 
 /**
@@ -213,13 +234,12 @@ br_prepend_prefix (void *symbol, char *path)
 	return newpath;
 }
 
-#endif /* ENABLE_BINRELOC */
-
-
 /* Pthread stuff for thread safetiness */
 #if BR_PTHREADS
 
-#include <pthread.h>
+#ifdef HAVE_PTHREAD_H
+	#include <pthread.h>
+#endif
 
 static pthread_key_t br_thread_key;
 static pthread_once_t br_thread_key_once = PTHREAD_ONCE_INIT;
@@ -447,3 +467,5 @@ br_extract_prefix (const char *path)
 #endif /* __cplusplus */
 
 #endif /* _PREFIX_C */
+
+#endif /* ENABLE_BINRELOC */

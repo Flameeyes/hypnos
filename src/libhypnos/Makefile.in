@@ -109,9 +109,8 @@ INCLUDES = $(all_includes)
 
 # the library search path.
 lib_LTLIBRARIES = libhypnos.la
-libhypnos_la_SOURCES = cvariant.cpp strings.cpp $(BRSRCS)
-EXTRA_libhypnos_la_SOURCES = prefix.c
-libhypnos_la_LIBADD = $(top_builddir)/libhypnos/muls/libhypmul.la $(CPPLIB)
+libhypnos_la_SOURCES = cvariant.cpp strings.cpp prefix.c
+libhypnos_la_LIBADD = $(top_builddir)/libhypnos/muls/libhypmul.la $(CPPLIB) 
 libhypnos_la_LDFLAGS = -module -no-undefined
 subdir = libhypnos
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -120,7 +119,7 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libhypnos_la_DEPENDENCIES = $(top_builddir)/libhypnos/muls/libhypmul.la
-am_libhypnos_la_OBJECTS = cvariant.lo strings.lo $(am__objects_1)
+am_libhypnos_la_OBJECTS = cvariant.lo strings.lo prefix.lo
 libhypnos_la_OBJECTS = $(am_libhypnos_la_OBJECTS)
 
 DEFS = @DEFS@
@@ -146,7 +145,7 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libhypnos_la_SOURCES) $(EXTRA_libhypnos_la_SOURCES)
+DIST_SOURCES = $(libhypnos_la_SOURCES)
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
@@ -154,7 +153,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
 DIST_COMMON = Makefile.am Makefile.in
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(libhypnos_la_SOURCES) $(EXTRA_libhypnos_la_SOURCES)
+SOURCES = $(libhypnos_la_SOURCES)
 
 all: all-recursive
 
@@ -481,9 +480,6 @@ uninstall-info: uninstall-info-recursive
 	uninstall-info-recursive uninstall-libLTLIBRARIES \
 	uninstall-recursive
 
-
-@BINRELOC_TRUE@	BRSRCS = prefix.c
-@BINRELOC_FALSE@	BRSRCS = 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
