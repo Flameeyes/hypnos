@@ -127,11 +127,11 @@ public:
 	*/
 	
 	#define op_assign_uint(dim) \
-		inline cVariant &operator =(const uint#dim &aval) \
+		inline cVariant &operator =(const uint##dim_t &aval) \
 		{ *this = (uint64_t)aval; }
 	
 	#define op_assign_int(dim) \
-		inline cVariant &operator =(const int#dim &aval) \
+		inline cVariant &operator =(const int##dim_t &aval) \
 		{ *this = (int64_t)aval; }
 		
 	op_assign_uint(32)
