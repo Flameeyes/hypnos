@@ -128,7 +128,7 @@ void prison::checkForFree()
 */
 void prison::release( pChar releaser, pChar pc )
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	JAILEDVECTOR::iterator j = prison::jailed.begin();
 	while(  j!=prison::jailed.end() && (*j).serial!=pc->getSerial() )	j++;
 	if(j==prison::jailed.end()) {

@@ -80,7 +80,7 @@ int SpawnFishingItem(NXWSOCKET  s,int nInPack, char* cScript, char* cList, char*
  	  SpawnItemBackpack2 passing the new number*/
 	
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPCR( pc, INVALID )
+	if ( ! pc ) return INVALID;
 	
 	char sect[512];
 	int i=0,item[256]={0};
@@ -168,7 +168,7 @@ void Fishing::target_fish( NXWCLIENT ps, P_TARGET t )
 
 	NXWSOCKET  s=ps->toInt();
 	pChar pPlayer=ps->currChar();
-	VALIDATEPC( pPlayer );
+	if ( ! pPlayer ) return;
 
 	Location charpos= pPlayer->getPosition();
 	Location whereFish = t->getLocation();
@@ -212,7 +212,7 @@ void Fishing::Fish(CHARACTER i)
 	int16_t color;
 
 	pChar pc = MAKE_CHAR_REF(i);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	pItem pc_bp = pc->getBackpack();
 	NXWSOCKET s = pc->getSocket();
         
@@ -358,7 +358,7 @@ void Fishing::Fish(CHARACTER i)
 				//Luxor: fishes should be read from items.xss
 				//pFish=item::SpawnItem(i,1,"#",1,0x0900+idnum,(c1<<8)+c2,0);
 			pItem fish = item::CreateFromScript( "$item_fish" );
-			VALIDATEPI(fish);
+			if ( ! fish ) return;
 		
 			fish->setColor(color);
 			fish->setId( fish->getId() | idnum );

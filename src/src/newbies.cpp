@@ -19,8 +19,7 @@
 
 static int nextbestskill(pChar pc, int bstskll)  // Which skill is the second highest
 {
-
-	VALIDATEPCR(pc,0);
+	if ( ! pc ) return 0;
 	
 	int i, a = 0, b = 0;
 
@@ -44,7 +43,7 @@ static int nextbestskill(pChar pc, int bstskll)  // Which skill is the second hi
 void newbieitems(pChar pc)
 {
 
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	
 	NXWCLIENT ps=pc->getClient();
 	if(ps==NULL)

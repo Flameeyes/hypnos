@@ -732,11 +732,10 @@ int calcGoodValue(CHARACTER npcnum2, int i, int value,int goodtype)
 {
 
 	pChar npc=MAKE_CHAR_REF(npcnum2);
-	VALIDATEPCR(npc,0);
-
 	const pItem pi=MAKE_ITEM_REF(i);
-	VALIDATEPIR(pi,value);
-
+	if ( ! npc ) return 0;
+	if ( ! pi ) return value;
+	
 	int actreg=calcRegionFromXY( npc->getPosition() );
 	int regvalue=0;
 	int x;

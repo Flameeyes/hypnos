@@ -98,7 +98,9 @@ void setSeason(int nSeason)
 */
 void commitSeason(pChar pc)
 {
-	VALIDATEPC(pc);
+	if ( ! pc )
+		return;
+	
 	NXWSOCKET s = pc->getSocket();
 
 	uint8_t setseason[3]={ 0xBC, 0x00, 0x01 };

@@ -142,20 +142,9 @@ void cResources::deleteBlock( Location location )
 		this->resources.erase( iter );
 }
 
-
-
-
-
-
-
-
-
-
-
 static bool canMine( pChar pc, pItem weapon )
 {
-
-	VALIDATEPCR(pc,false);
+	if ( ! pc ) return false;
 	
 	if( !weapon )
 		pc->sysmsg("You can't mine with nothing in your hand !!");
@@ -186,7 +175,7 @@ void Skills::target_mine( NXWCLIENT ps, P_TARGET t )
 {
 
 	pChar pc = ps->currChar();
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	NXWSOCKET s = ps->toInt();
 	

@@ -596,7 +596,7 @@ void cNetwork::LoginMain(int s)
 		if (chrSerial == INVALID)
 			return;
 		pChar pc = pointers::findCharBySerial(chrSerial);
-		VALIDATEPC(pc);
+		if ( ! pc ) return;
 		pc->kick();
 		loginchars[s] = NULL;
 		return;
@@ -922,7 +922,7 @@ void cNetwork::enterchar(int s)
 {
 	if (s < 0 || s >= now) return; //Luxor
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	uint8_t startup[38]="\x1B\x00\x05\xA8\x90\x00\x00\x00\x00\x01\x90\x06\x08\x06\x49\x00\x0A\x04\x00\x00\x00\x7F\x00\x00\x00\x00\x00\x07\x80\x09\x60\x00\x00\x00\x00\x00\x00";
 	uint8_t techstuff[5]={ 0x69, 0x00, 0x05, 0x01, 0x00 };
@@ -1007,7 +1007,7 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 #ifdef ENCRYPTION
 	pc->setCrypter(clientCrypter[s]);
 #endif
@@ -1140,7 +1140,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 	if (s < 0 || s >= now) return 0; //Luxor
 
 	pChar pc = pointers::findCharBySerial(currchar[s]);
-	VALIDATEPCR(pc, 0);
+	if ( ! pc ) return 0;
 
 	uint32_t a, valid=0;
 	Location charpos= pc->getPosition();

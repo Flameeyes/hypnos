@@ -1069,7 +1069,7 @@ void telltime( NXWCLIENT ps )
 int chardirxyz(int a, int x, int y)
 {
 	pChar pc = MAKE_CHAR_REF( a );
-	VALIDATEPCR( pc, INVALID );
+	if ( ! pc ) return INVALID;
 
 	int dir,xdif,ydif;
 
@@ -1095,7 +1095,7 @@ int fielddir(CHARACTER s, int x, int y, int z)
 //WARNING: unreferenced formal parameter z
 
 	pChar pc=MAKE_CHAR_REF(s);
-	VALIDATEPCR(pc,0);
+	if ( ! pc ) return 0;
 
 	int dir=chardirxyz(s, x, y);
 	switch (dir)
@@ -1145,21 +1145,14 @@ int fielddir(CHARACTER s, int x, int y, int z)
 */
 void npcattacktarget(pChar pc, pChar pc_target)
 {
-	VALIDATEPC(pc);
-	VALIDATEPC(pc_target);
-
-	if ( !pc->npc )
-		return;
-
-	if ( pc->dead || pc_target->dead )
-		return;
-
-	if ( pc->getSerial() == pc_target->getSerial32() )
-		return;
-
-	if ( !pc->losFrom(pc_target) )
-		return;
-
+	if (
+		! pc || ! pc_target ||
+		! pc->npc ||
+		pc->isDead() || pc_target->isDead() ||
+		pc->getSerial() == pc_target->getSerial() ||
+		!pc->losFrom(pc_target)
+	) return;
+	
 	if( pc->amxevents[ EVENT_CHR_ONBEGINATTACK ]!=NULL ) {
 		pc->amxevents[ EVENT_CHR_ONBEGINATTACK ]->Call( pc->getSerial(), pc_target->getSerial32() );
 		if (g_bByPass==true)
@@ -1241,7 +1234,7 @@ void usepotion(pChar pc, pItem pi)
 {
 	int x;
 
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	NXWSOCKET s = pc->getSocket();
 
@@ -1495,7 +1488,7 @@ void StoreItemRandomValue(pItem pi,int tmpreg)
 
 	int max=0,min=0;
 
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	if (pi->good<0) return;
 
@@ -1566,7 +1559,7 @@ unsigned long CheckMilliTimer(unsigned long &Seconds, unsigned long &Millisecond
 void enlist(int s, int listnum) // listnum is stored in items morex
 {
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	int x,j;
 //	char sect[512];
@@ -1586,8 +1579,7 @@ void enlist(int s, int listnum) // listnum is stored in items morex
 		{
 			x=str2num(script1);
 			pItem pj=item::CreateFromScript( x, pc->getBackpack() );
-			VALIDATEPI(pj);
-			j= DEREF_pItem(pj);
+			if ( ! pj ) return;
 			pj->Refresh();
 		}
 	}

@@ -139,7 +139,7 @@ void cParty::privateMessage( uint32_t from, SERIAL to, std::wstring& s, COLOR co
 	pkg.member=from;
 	pkg.message=&s;
 	pChar pc = pointers::findCharBySerial( to );
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	pkg.send( pc->getClient() );	
 }
 
@@ -152,7 +152,7 @@ void cParty::talkToOthers( uint32_t from, std::wstring& s, COLOR color )
 	std::vector<P_PARTY_MEMBER>::iterator iter( members.begin() ), end( members.end() );
 	for ( ; iter!=end; ++iter ) {
 		pChar pc = pointers::findCharBySerial( (*iter)->serial );
-		VALIDATEPC(pc);
+		if ( ! pc ) return;
 			pkg.send( pc->getClient() );	
 	}
 			
@@ -243,7 +243,7 @@ void cPartys::recive( NXWCLIENT ps )
 			}
 			else {
 				pChar pc = pointers::findCharBySerial( toRemove );
-				VALIDATEPC( pc );
+				if ( ! pc ) return;
 
 				delMem->Call( ps->currCharIdx(), pc->getSerial() );
 			}

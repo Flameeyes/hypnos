@@ -278,7 +278,7 @@ void cClient::skillWindow() // Opens the skills list, updated for client 1.26.2b
 {
 
 	pChar pc = currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
         //!  \todo: port this into cPackets since it is a raw packet
 
@@ -672,7 +672,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 //	bool abort=false;
 
 	pChar pc= currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	Location charpos = pc->getPosition();
 
@@ -945,7 +945,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 	tile_st tile;
 
 	pChar pc=currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	if ( isCharSerial(pi->getContainer()->getSerial()) && pi->getContainer() != pc ) {
 		pChar pc_i = (pChar) pi->getContainer();
@@ -1557,7 +1557,7 @@ void wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 {
 
 	pChar pc = currChar();
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 	if( pck->dead )  //Exploit fix: Dead ppl can't equip anything.
 		return;
 
@@ -1844,7 +1844,7 @@ void cClient::item_bounce5( const pItem pi)
 
 void cClient::item_bounce6(const pItem pi)
 {
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 	Sndbounce5();
 	if ( isDragging() )
 	{
@@ -1880,7 +1880,7 @@ void cClient::buyaction(pNpc npc, std::vector< buyeditem > &allitemsbought)
  	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
 	pChar pc = currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	pItem pack = pc->getBackpack();
 	VALIDATEPI(pack);
@@ -2195,7 +2195,7 @@ void cClient::playMidi()
 {
 
 	pPC pc = currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	cScpIterator* iter = NULL;
 
     	char script1[1024];

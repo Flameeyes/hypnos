@@ -63,7 +63,7 @@ void cChar::doubleClick(pClient client, int keyboard)
 {
 	if (client==NULL) return;
 	pChar clicker = client->currChar();
-	VALIDATEPC(clicker);
+	if ( ! clicker ) return;
 
 	if( clicker->war && (clicker->getSerial()!=getSerial32()) )
 		clicker->attackStuff(this);

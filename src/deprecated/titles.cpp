@@ -17,8 +17,8 @@
 
 int bestskill(pChar p) // Which skill is the highest for character p
 {
-
-	VALIDATEPCR(p, 0);
+	if ( ! p ) return 0;
+	
 	int i,a=0,b=0;
 
 	for (i=0;i<TRUESKILLS;i++)
@@ -142,9 +142,14 @@ void loadcustomtitle() // for custom titles
 
 }
 
-char *title1(pChar pc) // Paperdoll title for character p (1)
+/*!
+\brief Paperdoll title for character p (1)
+\todo Move to cChar!
+*/
+char *title1(pChar pc)
 {
-	VALIDATEPCR(pc, 0);
+	if ( ! pc ) return NULL;
+	
 	int titlenum = 0;
 	int x = pc->baseskill[bestskill(pc)];
 
@@ -163,9 +168,13 @@ char *title1(pChar pc) // Paperdoll title for character p (1)
 	return prowesstitle;
 }
 
+/*!
+\brief Paperdoll title for character p (1)
+\todo Move to cChar!
+*/
 char *title2(pChar pc) // Paperdoll title for character p (2)
 {
-	VALIDATEPCR(pc, 0);
+	if ( ! pc ) return NULL;
 
 	int titlenum=0;
 
@@ -179,7 +188,8 @@ char *title2(pChar pc) // Paperdoll title for character p (2)
 
 char *title3(pChar pc) // Paperdoll title for character p (3)
 {
-	VALIDATEPCR(pc, 0);
+	if ( ! pc ) return NULL;
+	
 	char thetitle[50];
 	int titlenum=0;
 	int k;
@@ -296,7 +306,8 @@ char *title3(pChar pc) // Paperdoll title for character p (3)
 
 char *complete_title(pChar pc) // generates the ENTIRE title plus criminal stuff
 {
-	VALIDATEPCR(pc, 0);
+	if ( ! pc ) return NULL;
+	
 	char tempstr[1024];
  	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 

@@ -459,8 +459,8 @@ namespace item
 		pile = (tile.flags&TILEFLAG_STACKABLE);
 
 		pItem pi = item::CreateFromScript( "$item_hardcoded" );
-   		VALIDATEPIR( pi, NULL );
-    	pi->setId( id );
+		if ( ! pi ) return NULL;
+		pi->setId( id );
 		pi->setColor( color );
     		pi->pileable = pile;
 
@@ -586,7 +586,7 @@ namespace item
 		if (pi==NULL) return NULL;
 		if (nSend && nSocket!=INVALID) {
 			pChar pc=MAKE_CHAR_REF(currchar[nSocket]);
-			VALIDATEPCR(pc,NULL);
+			if ( ! pc ) return NULL;
 			statwindow(pc,MAKE_CHAR_REF(ch));
 		}
 		return pi;
@@ -788,7 +788,7 @@ namespace item
 	{
 
 		pChar pc=MAKE_CHAR_REF( currchar[s] );
-		VALIDATEPCR( pc, NULL );
+		if ( ! pc ) return NULL;
 
 		char sect[512];
 		char script1[1024];

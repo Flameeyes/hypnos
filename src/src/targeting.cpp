@@ -52,7 +52,7 @@ void CarveTarget(NXWSOCKET s, int feat, int ribs, int hides, int fur, int wool, 
         if ( s < 0 || s >= now )
 		return;
 	pChar pc = MAKE_CHAR_REF( currchar[s] );
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	pItem pi1 = item::CreateFromScript( "$item_blood_puddle" );
 	VALIDATEPI(pi1);
@@ -69,14 +69,14 @@ void CarveTarget(NXWSOCKET s, int feat, int ribs, int hides, int fur, int wool, 
 	if(feat>0)
 	{
 		pItem pi=item::CreateFromScript( "$item_feathers", pc->getBackpack(), feat );
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 		pi->Refresh();
 		sysmessage(s,TRANSLATE("You pluck the bird and get some feathers."));
 	}
 	if(ribs>0)
 	{
 		pItem pi=item::CreateFromScript( "$item_cuts_of_raw_ribs", pc->getBackpack(), ribs );
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 		pi->Refresh();
 		pc->sysmsg(TRANSLATE("You carve away some meat."));
 	}
@@ -84,28 +84,28 @@ void CarveTarget(NXWSOCKET s, int feat, int ribs, int hides, int fur, int wool, 
 	if(hides>0)
 	{
 		pItem pi=item::CreateFromScript( "$item_hide", pc->getBackpack(), hides );
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 		pi->Refresh();
 		pc->sysmsg(TRANSLATE("You skin the corpse and get the hides."));
 	}
 	if(fur>0)
 	{
 		pItem pi=item::CreateFromScript( "$item_hide", pc->getBackpack(), fur );
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 		pi->Refresh();
 		pc->sysmsg(TRANSLATE("You skin the corpse and get the hides."));
 	}
 	if(wool>0)
 	{
 		pItem pi=item::CreateFromScript( "$item_piles_of_wool", pc->getBackpack(), wool );
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 		pi->Refresh();
 		pc->sysmsg(TRANSLATE("You skin the corpse and get some unspun wool."));
 	}
 	if(bird>0)
 	{
 		pItem pi = item::CreateFromScript( "$item_raw_bird", pc->getBackpack(), bird );
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 		pi->Refresh();
 		pc->sysmsg(TRANSLATE("You carve away some raw bird."));
 	}
@@ -127,7 +127,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	pItem pi1 = item::CreateFromScript( "$item_blood_puddle" );
 	VALIDATEPI(pi1);
@@ -155,7 +155,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		//create the Head
 		sprintf(temp,"the head of %s",pi3->getSecondaryNameC());
 		pItem pi = item::CreateFromScript( "$item_hardcoded" );
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 		pi->setId( 0x1DA0 );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
@@ -171,7 +171,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		//create the Heart
 		sprintf(temp,"the heart of %s",pi3->getSecondaryNameC());
 		pi=item::CreateFromScript( "$item_a_heart" );
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 		pi->setCurrentName( temp );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
@@ -185,7 +185,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		//create the Body
 		sprintf(temp,"the body of %s",pi3->getSecondaryNameC());
         pi = item::CreateFromScript( "$item_hardcoded" );
-        VALIDATEPI(pi);
+        if ( ! pi ) return;
         pi->setId( 0x1DAD );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
@@ -199,7 +199,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		//create the Left Arm
 		sprintf(temp,"the left arm of %s",pi3->getSecondaryNameC());
         pi = item::CreateFromScript( "$item_hardcoded" );
-        VALIDATEPI(pi);
+        if ( ! pi ) return;
         pi->setId( 0x1DA1 );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
@@ -213,7 +213,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		//create the Right Arm
 		sprintf(temp,"the right arm of %s",pi3->getSecondaryNameC());
         pi = item::CreateFromScript( "$item_hardcoded" );
-        VALIDATEPI(pi);
+        if ( ! pi ) return;
         pi->setId( 0x1DA2 );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
@@ -227,7 +227,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		//create the Left Leg
 		sprintf(temp,"the left leg of %s",pi3->getSecondaryNameC());
         pi = item::CreateFromScript( "$item_hardcoded" );
-        VALIDATEPI(pi);
+        if ( ! pi ) return;
         pi->setId( 0x1DAE );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
@@ -241,7 +241,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		//create the Rigth Leg
 		sprintf(temp,"the right leg of %s",pi3->getSecondaryNameC());
         pi = item::CreateFromScript( "$item_hardcoded" );
-        VALIDATEPI(pi);
+        if ( ! pi ) return;
         pi->setId( 0x1DA4 );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
@@ -515,7 +515,7 @@ int BuyShop(NXWSOCKET s, uint32_t c)
 void target_playerVendorBuy( NXWCLIENT ps, P_TARGET t )
 {
     pChar pc = MAKE_CHAR_REF(t->buffer[0]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
     pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
 
@@ -577,7 +577,7 @@ void target_envoke( NXWCLIENT ps, P_TARGET t )
 	else if( isCharSerial( serial ) )
 	{
         pChar pc = MAKE_CHAR_REF(serial);
-		VALIDATEPC(pc);
+		if ( ! pc ) return;
         triggerNpc( ps->toInt(), pc, TRIGTYPE_NPCENVOKED );
         curr->envokeid=0x0000;
     }
@@ -592,10 +592,10 @@ void target_key( NXWCLIENT ps, P_TARGET t )
 {
 
 	pChar pc=ps->currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	pItem pi = pointers::findItemBySerial( t->getClicked() );
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	NXWSOCKET s = ps->toInt();
 
@@ -704,7 +704,7 @@ void target_follow( NXWCLIENT ps, P_TARGET t )
 {
 
     pChar pc = pointers::findCharBySerial( t->buffer[0] );
-    VALIDATEPC(pc);
+    if ( ! pc ) return;
 
 	pChar pc2 = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc2);
@@ -728,7 +728,7 @@ void target_axe( NXWCLIENT ps, P_TARGET t )
 void target_sword( NXWCLIENT ps, P_TARGET t )
 {
 	pChar pc = ps->currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	uint16_t id = t->getModel();
 	if (itemById::IsTree2(id))
@@ -746,7 +746,7 @@ void target_sword( NXWCLIENT ps, P_TARGET t )
 		pc->playSFX(0x013E);
 
 		pItem pi=item::CreateFromScript( "$item_kindling" );
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 
 		pi->setPosition( pcpos );
 		mapRegions->add(pi);
@@ -774,7 +774,7 @@ void target_fetch( NXWCLIENT ps, P_TARGET t )
 void target_guard( NXWCLIENT ps, P_TARGET t )
 {
     pChar pc=ps->currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	pChar pPet = pointers::findCharBySerial(t->buffer[0]);
     VALIDATEPC(pPet);
@@ -827,7 +827,7 @@ void target_transfer( NXWCLIENT ps, P_TARGET t )
 void target_expPotion( NXWCLIENT ps, P_TARGET t )
 {
 	pChar pc=ps->currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
     Location loc=t->getLocation();
 
@@ -854,7 +854,7 @@ void target_trigger( NXWCLIENT ps, P_TARGET t )
 {
 
 	pItem pi = MAKE_ITEM_REF(t->getClicked());
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	triggerItem(ps->toInt(), pi, TRIGTYPE_TARGET);
 
@@ -864,7 +864,7 @@ void target_npcMenu( NXWCLIENT ps, P_TARGET t )
 {
 
 	pChar pc=ps->currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	npcs::AddRespawnNPC(pc,t->buffer[0]);
 }
@@ -877,7 +877,7 @@ void target_telestuff( NXWCLIENT ps, P_TARGET t )
 {
 
 	pChar pc = ps->currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	NXWSOCKET s = ps->toInt();
 
@@ -903,7 +903,7 @@ void target_telestuff( NXWCLIENT ps, P_TARGET t )
 			pt->teleport();
 		} else if ( isItemSerial(serial) ) {
 			pItem pi = pointers::findItemBySerial( serial );
-			VALIDATEPI(pi);
+			if ( ! pi ) return;
 
 			pi->MoveTo(loc);
 			pi->Refresh();
@@ -920,7 +920,7 @@ void target_allAttack( NXWCLIENT ps, P_TARGET t )
 {
 
 	pChar pc=ps->currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
     pChar pc_target = pointers::findCharBySerial( t->getClicked() );
     VALIDATEPC(pc_target);
@@ -942,7 +942,7 @@ void target_allAttack( NXWCLIENT ps, P_TARGET t )
 void target_xTeleport( NXWCLIENT ps, P_TARGET t )
 {
 	pChar pc=ps->currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	uint32_t serial = t->getClicked();
 	if( isCharSerial( serial ) ) {

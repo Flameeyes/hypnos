@@ -44,7 +44,7 @@ static int32_t linInterpolation (int32_t ix1, int32_t iy1, int32_t ix2, int32_t 
 void checkFieldEffects( uint32_t currenttime, pChar pc, char timecheck )
 {
 
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	if ( (timecheck && !(nextfieldeffecttime<=currenttime)) ) //changed by Luxor
 		return;

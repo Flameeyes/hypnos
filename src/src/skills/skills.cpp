@@ -65,7 +65,7 @@ void Skills::Hide(NXWSOCKET s)
 		return;
 
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	NxwCharWrapper sc;
 	pChar pj = NULL;
@@ -91,7 +91,7 @@ void Skills::Stealth(NXWSOCKET s)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
     if ( (pc->isMounting()) && (ServerScp::g_nStealthOnHorse==0) ) {
         sysmessage(s,TRANSLATE("You can't stealth on horse!"));
@@ -153,7 +153,7 @@ void Skills::PeaceMaking(NXWSOCKET s)
 		return;
 
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
     int inst = Skills::GetInstrument( s );
     if( inst == INVALID )
@@ -198,10 +198,10 @@ void Skills::PlayInstrumentWell(NXWSOCKET s, int i)
 		return;
 
 	pItem pi=MAKE_ITEM_REF(i);
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
     switch(pi->getId())
     {
@@ -224,10 +224,10 @@ void Skills::PlayInstrumentPoor(NXWSOCKET s, int i)
 		return;
 
 	pItem pi=MAKE_ITEM_REF(i);
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
     switch(pi->getId())
     {
@@ -313,7 +313,7 @@ void Skills::DoPotion(NXWSOCKET s, int32_t type, int32_t sub, pItem pi_mortar)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	VALIDATEPI(pi_mortar);
 
@@ -368,7 +368,7 @@ in the mortar on success and tries to put it into a bottle
 void Skills::CreatePotion(CHARACTER s, char type, char sub, int mortar)
 {
 	pChar pc=MAKE_CHAR_REF(s);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	NXWCLIENT ps=pc->getClient();
 	if( ps==NULL )	return;
@@ -444,10 +444,10 @@ pour in the potion from the mortar
 void Skills::target_bottle( NXWCLIENT ps, P_TARGET t )
 {
 	pChar pc=ps->currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	pItem pi=pointers::findItemBySerial( t->getClicked() );
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	NXWSOCKET s = ps->toInt();
 
@@ -481,7 +481,7 @@ void Skills::target_bottle( NXWCLIENT ps, P_TARGET t )
 */
 void Skills::PotionToBottle( pChar pc, pItem pi_mortar )
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	NXWCLIENT ps=pc->getClient();
 	if( ps==NULL ) return;
@@ -525,7 +525,7 @@ void Skills::PotionToBottle( pChar pc, pItem pi_mortar )
 			return;
 	}
 
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 
 	if(!pc->IsGM())
@@ -913,7 +913,7 @@ void Skills::AdvanceStats(CHARACTER s, int sk)
 
 
 	pChar pc = MAKE_CHAR_REF(s);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
     	// Begin: Determine statcap
     	// 1. get statcap as defined in server.cfg
@@ -1049,7 +1049,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 		return;
 
 	pChar pc = ps->currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	if( (pc->skilldelay>uiCurrentTime) && (!pc->IsGM()) )
 	{
@@ -1261,7 +1261,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 */
 void Skills::updateSkillLevel(pChar pc, int s)
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	if ( s < 0 || s >= TRUESKILLS ) //Luxor
 		return;
 
@@ -1282,7 +1282,7 @@ void Skills::TDummy(NXWSOCKET s)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 	pChar pc = MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	int hit;
 
@@ -1353,7 +1353,7 @@ void Skills::AButte(NXWSOCKET s1, pItem pButte)
 	if ( s1 < 0 || s1 >= now ) //Luxor
 		return;
 	pChar pc = MAKE_CHAR_REF( currchar[s1] );
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 
 
@@ -1379,14 +1379,14 @@ void Skills::AButte(NXWSOCKET s1, pItem pButte)
         {
 
 			pItem pi = item::CreateFromScript( "$item_arrow", pc->getBackpack(), pButte->more1/2 );
-			VALIDATEPI(pi);
+			if ( ! pi ) return;
             pi->Refresh();
         }
 
         if(pButte->more2>0)
         {
 			pItem pi = item::CreateFromScript( "$item_crossbow_bolt", pc->getBackpack(), pButte->more2/2 );
-			VALIDATEPI(pi);
+			if ( ! pi ) return;
             pi->Refresh();
         }
 
@@ -1513,7 +1513,7 @@ void Skills::Meditation (NXWSOCKET  s)
 		return;
 
 	pChar pc = pointers::findCharBySerial(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	pItem pi = NULL;
 
@@ -1575,7 +1575,7 @@ void Skills::Persecute (NXWSOCKET  s)
 		return;
 
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	pChar pc_targ=pointers::findCharBySerial(pc->targserial);
 	VALIDATEPC(pc_targ);
@@ -1781,7 +1781,7 @@ void Skills::Cartography(NXWSOCKET s)
 		return;
 
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
     if( Skills::HasEmptyMap(pc->getSerial()) )
     {
@@ -1868,7 +1868,7 @@ void Skills::Decipher(pItem tmap, NXWSOCKET s)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
  	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
     char sect[512];         // Needed for script search
     int regtouse;           // Stores the region-number of the TH-region

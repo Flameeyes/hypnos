@@ -310,7 +310,7 @@ mode they are in.
 void cMsgBoard::getPostType( pClient client )
 {
 	pPC pc = client->currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	PostType type = pc->postType;
 
@@ -344,7 +344,7 @@ different types of messages.
 void cMsgBoard::setPostType( pClient client, PostType nPostType )
 {
 	pChar pc=client->currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	pc->postType = nPostType;
 

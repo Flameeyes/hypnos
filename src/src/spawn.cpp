@@ -68,7 +68,7 @@ cSpawnScripted::~cSpawnScripted()
 
 void cSpawnScripted::safeCreate( pChar npc, cSpawnArea& single  )
 {
-	VALIDATEPC(npc);
+	if ( ! npc ) return;
 
 	Location location;
 	if( single.findValidLocation( location ) ) {
@@ -93,7 +93,7 @@ void cSpawnScripted::safeCreate( pChar npc, cSpawnArea& single  )
 
 void cSpawnScripted::safeCreate( pItem pi, cSpawnArea& single  )
 {
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 	
 	Location location;
 	if( single.findValidLocation( location ) ) {
@@ -354,7 +354,7 @@ void cSpawns::clearDynamic()
 */
 void cSpawns::loadFromItem( pItem pi )
 {
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	//
 	// If it's not a spawner, return.
@@ -430,7 +430,7 @@ void cSpawns::removeObject( uint32_t spawn, pChar pc )
 
 void cSpawns::removeSpawnDinamic( pItem pi )
 {
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 	SPAWN_DINAMIC_DB::iterator iter( this->dinamic.find( pi->getSerial() ) );
 	if( iter!=this->dinamic.end() ) {
 		this->dinamic.erase( iter );
@@ -448,7 +448,7 @@ void cSpawns::removeSpawnDinamic( pItem pi )
 
 void cSpawns::removeSpawnDinamic( pChar pc )
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	if( pc->spawnserial!=INVALID ) {
 		SPAWN_DINAMIC_DB::iterator iter= this->dinamic.find( pc->spawnserial );
 		if( iter!=this->dinamic.end() ) {
@@ -474,10 +474,10 @@ cSpawnDinamic::~cSpawnDinamic()
 
 void cSpawnDinamic::doSpawn()
 {
-	pItem spawn=pointers::findItemBySerial( this->item );
-	VALIDATEPI(spawn);
+	pItem spawn=pointers::findItemBySerial( item );
+	if ( ! spawn ) return;
 
-	if( this->current>=spawn->amount || spawn->morex == 0)
+	if( current>=spawn->getAmount() || spawn->morex == 0)
 		return;
 	if( !spawn->isInWorld() )
 		return; //npc spawned in container? ahhah i have a gremlin in backpack :P
@@ -486,9 +486,9 @@ void cSpawnDinamic::doSpawn()
 		
 		pItem pi=item::CreateFromScript( spawn->morex );
 		if( pi ) {
-			this->current++;
-			this->item_spawned.insert( pi->getSerial() );
-			pi->spawnserial=this->item;
+			current++;
+			item_spawned.insert( pi->getSerial() );
+			pi->spawnserial=item;
 			pi->MoveTo( spawn->getPosition() );
 			pi->Refresh();
 		}
@@ -498,14 +498,14 @@ void cSpawnDinamic::doSpawn()
 	else if( spawn->type == ITYPE_NPC_SPAWNER ) {
 		pChar npc=npcs::addNpc( spawn->morex, spawn->getPosition().x, spawn->getPosition().y, spawn->getPosition().z );
 		if( npc ) {
-			this->current++;
-			this->npc_spawned.insert( npc->getSerial() );
-			npc->spawnserial=this->item;
+			current++;
+			npc_spawned.insert( npc->getSerial() );
+			npc->spawnserial=item;
 			npc->MoveTo( spawn->getPosition() );
 			npc->teleport();
 		}
 
-		this->nextspawn=uiCurrentTime+ (60*RandomNum( spawn->morey, spawn->morez)*MY_CLOCKS_PER_SEC);
+		nextspawn=uiCurrentTime+ (60*RandomNum( spawn->morey, spawn->morez)*MY_CLOCKS_PER_SEC);
 	}
 
 }

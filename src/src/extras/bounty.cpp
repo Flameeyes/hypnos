@@ -83,7 +83,7 @@ void BountyAskVictim( int nVictimSerial, int nMurdererSerial )
 //////////////////////////////////////////////////////////////////////////////
 bool BountyCreate( pChar pc, int nRewardAmount )
 {
-	VALIDATEPCR(pc,false);
+	if ( ! pc ) return false;
 
   int   nPostSerial = 0;
 
@@ -125,7 +125,7 @@ bool BountyCreate( pChar pc, int nRewardAmount )
 
 bool BountyDelete( pChar pc)
 {
-	VALIDATEPCR(pc,false);
+	if ( ! pc ) return false;
 	bool  bReturn = true;
 	cMsgBoard::removeQuestMessage(questBountyPostSerial);
 

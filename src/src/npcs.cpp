@@ -42,9 +42,7 @@ void SpawnGuard(pChar pc, pChar pc_i, Location where)
 void SpawnGuard(pChar pc, pChar pc_i, int x, int y, signed char z)
 {
 
-	VALIDATEPC(pc);
-
-	VALIDATEPC(pc_i);
+	if ( ! pc || ! pc_i ) return;
 
 	int t;
 	if (!(region[pc_i->region].priv&0x01)) return;
@@ -79,10 +77,10 @@ void SpawnGuard(pChar pc, pChar pc_i, int x, int y, signed char z)
 
 pItem AddRandomLoot(pItem pack, char * lootlist)
 {
-	VALIDATEPIR(pack, NULL);
-	std::string	value( lootlist );
-	std::string 	loot( cObject::getRandomScriptValue( "LOOTLIST", value ) );
-	pItem 		pi = item::CreateFromScript( (SCRIPTID) str2num( loot ), pack );
+	if ( ! pack ) return NULL;
+	std::string value( lootlist );
+	std::string loot( cObject::getRandomScriptValue( "LOOTLIST", value ) );
+	pItem pi = item::CreateFromScript( (SCRIPTID) str2num( loot ), pack );
 	return pi;
 }
 
@@ -110,13 +108,13 @@ int AddRandomNPC(NXWSOCKET s, char * npclist)
 pChar AddRespawnNPC(pItem pi, int npcNum)
 {
         //type 1 remember
-        VALIDATEPIR(pi, NULL);
+	if ( ! pi ) return;
         return AddNPC(INVALID, pi, npcNum, 0,0,0);
 }
 
 pChar AddRespawnNPC(pChar pc, int npcNum)
 {
-        VALIDATEPCR(pc, NULL);
+	if ( ! pc ) return NULL;
         return AddNPC(pc->getSocket(), NULL, npcNum, 0,0,0);
 }
 

@@ -565,7 +565,7 @@ pChar NxwCharWrapper::getChar()
 */
 void NxwCharWrapper::insertChar( pChar pc )
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	insertSerial( pc->getSerial() );
 };
 
@@ -580,7 +580,7 @@ void NxwCharWrapper::insertChar( pChar pc )
 void NxwCharWrapper::fillOwnedNpcs( pChar pc, bool bIncludeStabled, bool bOnlyFollowing )
 {
 
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	std::map< uint32_t, std::vector< pChar > >::iterator vect( pointers::pOwnCharMap.find( pc->getSerial() ) );
 	if( ( vect!=pointers::pOwnCharMap.end() ) && !vect->second.empty() ) {
@@ -761,7 +761,7 @@ void NxwCharWrapper::fillNpcsNearXY( uint16_t x, uint16_t y, int nDistance )
 */
 void NxwCharWrapper::fillNpcsNear( pChar pc, int nDistance )
 {
-	VALIDATEPC(pc)
+	if ( ! pc ) return;
 	fillNpcsNearXY(pc->getPosition().x, pc->getPosition().y, nDistance );
 }
 
@@ -775,7 +775,7 @@ void NxwCharWrapper::fillNpcsNear( pChar pc, int nDistance )
 */
 void NxwCharWrapper::fillNpcsNear( pItem pi, int nDistance )
 {
-	VALIDATEPI(pi)
+	if ( ! pi ) return;
 
 	pItem out=pi->getOutMostCont();
 	if( out->isInWorld() ) {
@@ -800,7 +800,7 @@ void NxwCharWrapper::fillNpcsNear( pItem pi, int nDistance )
 */
 void NxwCharWrapper::fillPartyFriend( pChar pc, uint32_t nDistance, bool bExcludeThis )
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	if( pc->party != INVALID )
 	{
 		NxwCharWrapper sc;
@@ -888,7 +888,7 @@ pItem NxwItemWrapper::getItem()
 */
 void NxwItemWrapper::insertItem( pItem pi )
 {
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 	insertSerial( pi->getSerial() );
 };
 
@@ -901,7 +901,7 @@ void NxwItemWrapper::insertItem( pItem pi )
 */
 void NxwItemWrapper::fillItemsInContainer( pItem pi, bool bIncludeSubContained, bool bIncludeOnlyFirstSubcont )
 {
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 	fillSerialInContainer( pi, bIncludeSubContained, bIncludeOnlyFirstSubcont );
 }
 
@@ -1026,7 +1026,7 @@ void NxwItemWrapper::fillItemsNearXYZ ( Location location, int nDistance, bool b
 void NxwItemWrapper::fillItemWeared( pChar pc, bool bIncludeLikeHair, bool bIncludeProtectedLayer, bool bExcludeIllegalLayer )
 {
 	
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	std::map< uint32_t , vector<pItem> >::iterator cont( pointers::pContMap.find( pc->getSerial() ) );
 	if( cont==pointers::pContMap.end() || cont->second.empty() )
@@ -1221,7 +1221,7 @@ void NxwSocketWrapper::fillOnline( Location location, int nDistance )
 */
 void NxwSocketWrapper::fillOnline( pItem onlyNearThis, int nDistance )
 {
-	VALIDATEPI(onlyNearThis);
+	if ( ! onlyNearThis ) return;
 
 	pItem out=onlyNearThis->getOutMostCont();
 	if( out->isInWorld() ) {

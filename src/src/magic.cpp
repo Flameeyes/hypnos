@@ -258,7 +258,7 @@ static inline bool checkMana(pChar pc, SpellId num)
 // Changes			 : none yet
 static inline void subtractMana(pChar pc, SpellId spellnumber)
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	if ( pc->dontUseMana() ) return;
 
@@ -740,7 +740,7 @@ bool checkReagents(pChar pc, reag_st reagents)
 // Changes			 : none yet
 void spellFailFX(pChar pc)
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	if ((pc->spell < 0)||( pc->spell>89)) return;
 
 	pc->staticFX(0x3735, 0, 30);
@@ -1025,7 +1025,7 @@ bool checkRequiredTargetType(SpellId spellnum, TargetLocation& t)
 // Changes			 : none yet
 void consumeReagents( pChar pc, reag_st reags )
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	if ( pc->dontUseReagents() ) return;
 	pc->delItems(0x0F7A, reags.pearl);
 	pc->delItems(0x0F7B, reags.moss);
@@ -1184,7 +1184,7 @@ pChar summon (pChar owner, int npctype, int duration, bool bTamed, int x, int y,
 
 void castFieldSpell( pChar pc, int x, int y, int z, int spellnumber)
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	int /*snr,*/ j = 0, fieldLen = 4/*, i*/;
 	int fx[5], fy[5]; // bugfix LB, was fx[4] ...
 	short id;
@@ -1252,7 +1252,7 @@ void castFieldSpell( pChar pc, int x, int y, int z, int spellnumber)
 
 static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, int param)
 {
-	VALIDATEPC(src);
+	if ( ! src ) return;
 
 	pChar pd = dest.getChar();
 	pItem pi = dest.getItem();
@@ -1896,7 +1896,7 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 
 	if (!checkRequiredTargetType(spellnumber, dest)) return;
 
-	VALIDATEPC(src);
+	if ( ! src ) return;
 
 	// initial checks and unhide/unfreeze/disturbmed
 	if (src->dead) return;
@@ -2054,7 +2054,7 @@ bool beginCasting (SpellId num, NXWCLIENT s, CastingType type)
 */
 cPolymorphMenu::cPolymorphMenu( pChar pc ) : cIconListMenu()
 {
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 	if ( pc->getTempfx( tempfx::SPELL_POLYMORPH ) != NULL )
 		addIcon( 0x2106, 0, pc->getOldId(), string("Undo polymorph") );
 	addIcon( 0x20CF, 0, 0xd3, string("Black Bear") );
@@ -2085,7 +2085,7 @@ cPolymorphMenu::cPolymorphMenu( pChar pc ) : cIconListMenu()
 void cPolymorphMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 {
 	pChar pc = ps->currChar();
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
 	std::map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
@@ -2159,7 +2159,7 @@ void cPolymorphMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 */
 cCreateFoodMenu::cCreateFoodMenu( pChar pc ) : cIconListMenu()
 {
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	addIcon( 0x9D0, 0, xss::getIntFromDefine("$item_apples"), string("Apple") );
 	addIcon( 0x103C, 0, xss::getIntFromDefine("$item_bread_loaves"), string("Bread") );
@@ -2181,7 +2181,7 @@ cCreateFoodMenu::cCreateFoodMenu( pChar pc ) : cIconListMenu()
 void cCreateFoodMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 {
 	pChar pc = ps->currChar();
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
 	std::map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
@@ -2198,7 +2198,7 @@ void cCreateFoodMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 */
 cSummonCreatureMenu::cSummonCreatureMenu( pChar pc ) : cIconListMenu()
 {
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	addIcon( 0x211E, 0, xss::getIntFromDefine("$npc_a_brown_bear"), string("Bear") );
 	addIcon( 0x211A, 0, xss::getIntFromDefine("$npc_forest_bird"), string("Bird") );
@@ -2223,7 +2223,7 @@ cSummonCreatureMenu::cSummonCreatureMenu( pChar pc ) : cIconListMenu()
 void cSummonCreatureMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 {
 	pChar pc = ps->currChar();
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
 	std::map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );

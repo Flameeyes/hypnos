@@ -323,7 +323,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 
 void WalkingHandleRainSnow(pChar pc)
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	NXWSOCKET s = pc->getSocket();
 
 	int i;
@@ -355,7 +355,7 @@ void WalkingHandleRainSnow(pChar pc)
 
 /*void WalkingHandleGlowingItems(pChar pc)
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	int i;
 	if (pc->IsOnline())
@@ -382,7 +382,7 @@ void WalkingHandleRainSnow(pChar pc)
 void walking(pChar pc, int dir, int sequence)
 {
 	int newx, newy;
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	NXWSOCKET  s = pc->getSocket();
 
@@ -653,7 +653,7 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 */
 void handleCharsAtNewPos( pChar pc )
 {
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	NxwCharWrapper sc;
 	pChar pc_curr;
@@ -726,7 +726,7 @@ bool handleItemsAtNewPos(pChar pc, int oldx, int oldy, int newx, int newy)
 */
 void sendToPlayers( pChar pc, int8_t dir )
 {
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	NXWCLIENT ps = NULL;
 	NXWCLIENT cli = pc->getClient();

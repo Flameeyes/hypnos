@@ -46,12 +46,10 @@ static std::string trimString( const std::string &str );
 int response(NXWSOCKET  s)
 {
 	pChar pc= MAKE_CHAR_REF( currchar[s] );
-	VALIDATEPCR( pc, 0 );
-
-	if( !pc->IsOnline() ) return 0;
+	if ( ! pc || ! pc->IsOnline() ) return 0;
 
 	//Araknesh I morti non vengono cagati :)
-	//SPARHAWK --- Hmmm but what about ghost speak????? MUST CHECK THIS OUT
+	//!\todo SPARHAWK --- Hmmm but what about ghost speak????? MUST CHECK THIS OUT
 	if ( pc->dead ) return 0;
 
 	Location charpos= pc->getPosition();
@@ -284,7 +282,7 @@ int response(NXWSOCKET  s)
 					// lets make the deed and place in your pack and delete vendor.
 					strcpy( temp, "Employment deed" );
 					pItem pDeed = item::CreateFromScript( "$item_employment_deed", pc->getBackpack() );
-					VALIDATEPIR(pDeed, true);
+					if ( ! pDeed ) return true;
 					pvDeed= DEREF_pItem(pDeed);
 
 					pDeed->Refresh();
@@ -862,9 +860,9 @@ void PlVGetgold(NXWSOCKET s, CHARACTER v)//PlayerVendors
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 	pChar pc_currchar = MAKE_CHAR_REF( currchar[s] );
-	VALIDATEPC( pc_currchar );
 	pChar pc_vendor = MAKE_CHAR_REF(v);
-	VALIDATEPC( pc_vendor );
+	
+	if ( ! pc_currchar || ! pc_vendor ) return;
 
 	unsigned int pay=0, give=pc_vendor->holdg, t=0;
  	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
@@ -916,9 +914,8 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 //	CHARACTER cc=currchar[s];
 
 	pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc_currchar);
 	pChar pc_vendor = MAKE_CHAR_REF(vendor);
-	VALIDATEPC(pc_vendor);
+	if ( ! pc_currChar || ! pc_vendor ) return;
 
 	static char buffer1[MAXBUFFER_REAL]; // static becasue maxbuffer_ral close to stack limit of win-machines
 	int i;
@@ -1865,7 +1862,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 		return;
 
 	pChar pc = MAKE_CHAR_REF( currchar[socket] );
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	uint32_t i, j;
 	int match;

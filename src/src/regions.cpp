@@ -53,7 +53,7 @@ void cRegion::add( pChar pc )
 void cRegion::add( pItem pi )
 {
 
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 	if( !pi || !pi->isInWorld() )
 		return;
 	if(!isValidCoord( pi->getPosition().x, pi->getPosition().y )) {
@@ -68,7 +68,7 @@ void cRegion::add( pItem pi )
 void cRegion::remove( pChar pc )
 {
 
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	if(!isValidCoord( pc->getPosition().x, pc->getPosition().y ) )
 		return;
@@ -80,7 +80,7 @@ void cRegion::remove( pChar pc )
 void cRegion::remove( pItem pi )
 {
 
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	if(!isValidCoord( pi->getPosition().x, pi->getPosition().y ) )
 		return;

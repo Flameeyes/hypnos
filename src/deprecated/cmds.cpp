@@ -200,7 +200,8 @@ void Command(NXWSOCKET  s, char* speech) // Client entred a command like 'ADD
 		
 		
 		pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
-		VALIDATEPC( pc_currchar );
+		if ( ! pc_currchar )
+			return;
 
 		strcpy((char*)nonuni, speech);
 		strcpy((char*)tbuffer, (char*)nonuni);

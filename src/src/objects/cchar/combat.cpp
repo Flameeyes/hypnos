@@ -945,7 +945,7 @@ int cChar::calcAtt()
 	pItem pi = getWeapon();
 	//if(pi==NULL)
 	//	return 0;
-	VALIDATEPIR(pi, skill[WRESTLING]/100);
+	if ( ! pi ) return skill[WRESTLING]/100;
 
 	return RandomNum(pi->lodamage, pi->hidamage);
 }
@@ -1096,7 +1096,7 @@ void cChar::combatOnHorse()
 
 void cChar::attackStuff(pChar victim)
 {
-	VALIDATEPC( victim );
+	if ( ! victim ) return;
 
 	if( getSerial() == victim->getSerial32() )
 		return;

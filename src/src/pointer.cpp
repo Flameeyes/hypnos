@@ -527,7 +527,7 @@ namespace pointers {
 	*/
 	void updContMap(pItem pi)
 	{
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 		vector<pItem>::iterator contIter;
 		int32_t ser;
 
@@ -557,7 +557,8 @@ namespace pointers {
 	*/
 	void addToStableMap(pChar pet)
 	{
-		VALIDATEPC(pet);
+		if ( ! pet ) return;
+		
 		uint32_t stablemaster=pet->getStablemaster();
 		if( stablemaster !=INVALID ) {
 
@@ -572,7 +573,7 @@ namespace pointers {
 	*/
 	void delFromStableMap(pChar pet)
 	{
-		VALIDATEPC(pet);
+		if ( ! pet ) return;
 		uint32_t stablemaster=pet->getStablemaster();
 		if( stablemaster != INVALID ) {
 
@@ -592,7 +593,8 @@ namespace pointers {
 	*/
 	void addToOwnerMap(pChar pet)
 	{
-		VALIDATEPC(pet);
+		if ( ! pet ) return;
+		
 		uint32_t own=pet->getOwnerSerial32();
 		if ( own!=INVALID ) {
 
@@ -607,7 +609,8 @@ namespace pointers {
 	*/
 	void delFromOwnerMap(pChar pet)
 	{
-		VALIDATEPC(pet);
+		if ( ! pet ) return;
+		
 		uint32_t own=pet->getOwnerSerial32();
 		if ( own!=INVALID ) {
 
@@ -630,7 +633,7 @@ namespace pointers {
 	*/
 	void addToOwnerMap(pItem pi)
 	{
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 		uint32_t own=pi->getOwnerSerial32();
 		if ( own!=INVALID ) {
 
@@ -645,7 +648,7 @@ namespace pointers {
 	*/
 	void delFromOwnerMap(pItem pi)
 	{
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 		uint32_t own=pi->getOwnerSerial32();
 		if ( own!=INVALID ) {
 
@@ -667,7 +670,7 @@ namespace pointers {
 	*/
 	void addToMultiMap( pChar pc )
 	{
-		VALIDATEPC(pc);
+		if ( ! pc ) return;
 		uint32_t multi=pc->getMultiSerial32();
 		if ( multi!=INVALID ) {
 
@@ -683,7 +686,7 @@ namespace pointers {
 	*/
 	void delFromMultiMap( pChar pc )
 	{
-		VALIDATEPC(pc);
+		if ( ! pc ) return;
 		uint32_t multi=pc->getMultiSerial32();
 		if ( multi!=INVALID ) {
 
@@ -707,7 +710,7 @@ namespace pointers {
 	*/
 	void addToMultiMap( pItem pi )
 	{
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 		uint32_t multi=pi->getMultiSerial32();
 		if ( multi!=INVALID ) {
 
@@ -724,7 +727,7 @@ namespace pointers {
 	*/
 	void delFromMultiMap( pItem pi )
 	{
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 		uint32_t multi=pi->getMultiSerial32();
 		if ( multi!=INVALID ) {
 
@@ -774,7 +777,7 @@ namespace pointers {
 	*/
 	void delChar(pChar pc)
 	{
-		VALIDATEPC(pc);
+		if ( ! pc ) return;
 
 		delFromStableMap(pc);
 		delFromOwnerMap(pc);
@@ -797,7 +800,7 @@ namespace pointers {
 	*/
 	void delItem(pItem pi)
 	{
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 
 		if (pi->isInWorld())
 		{
@@ -933,7 +936,6 @@ namespace pointers {
 		pChar pet = 0;
 		pet = pStableMap[serial][*index];
 		(*index)++;
-		VALIDATEPCR(pet, 0);
 		return pet;
 	}
 

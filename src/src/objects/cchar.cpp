@@ -612,7 +612,8 @@ void cChar::unHide()
 */
 void cChar::fight(pChar other)
 {
-	VALIDATEPC(other);
+	if ( ! other ) return;
+	
 	//if (!war) toggleCombat(); //Luxor
 	targserial=other->getSerial();
 	unHide();
@@ -853,7 +854,8 @@ void cChar::addGold(uint16_t totgold)
 */
 uint32_t cChar::distFrom(pChar pc)
 {
-	VALIDATEPCR(pc, VERY_VERY_FAR); //Endymion, fix: if not valid very far :P
+	if ( ! pc ) return VERY_VERY_FAR;
+	
 	return (uint32_t)dist(getPosition(),pc->getPosition());
 }
 
@@ -866,9 +868,9 @@ uint32_t cChar::distFrom(pChar pc)
 */
 uint32_t cChar::distFrom(pItem pi)
 {
-	VALIDATEPIR(pi, VERY_VERY_FAR);
+	if ( ! pi ) return VERY_VERY_FAR;
 	pItem cont=pi->getOutMostCont(); //return at least itself
-	VALIDATEPIR(cont, VERY_VERY_FAR);
+	if ( ! cont ) return VERY_VERY_FAR;
 
 	if(cont->isInWorld())
 	{
@@ -1561,7 +1563,7 @@ void cChar::possess(pChar pc)
 	if ( !IsOnline() )
 		return;
 
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	bool bSwitchBack = false;
 
 	NXWSOCKET socket = getSocket();
@@ -2166,7 +2168,8 @@ void cChar::checkEquipement()
 
 void cChar::showLongName( pChar showToWho, bool showSerials )
 {
-	VALIDATEPC( showToWho );
+	if ( ! showToWho ) return;
+	
 	NXWSOCKET socket = showToWho->getSocket();
 	if (socket < 0 || socket > now) return;
 

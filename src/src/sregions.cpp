@@ -272,7 +272,7 @@ short calcRegionFromXY(int x, int y)
 void checkregion(pChar pc)
 {
 //	pChar pc = MAKE_CHAR_REF( i );
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	NXWSOCKET s;
 	int calcreg, j;

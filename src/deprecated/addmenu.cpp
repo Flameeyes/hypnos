@@ -65,13 +65,13 @@ std::string cMakeMenu::cleanString( std::string s )
 
 void cMakeMenu::loadFromScript( pChar pc )
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	NXWCLIENT ps = pc->getClient();
 	if( ps==NULL ) return;
 
-    cScpIterator* iter = Scripts::Create->getNewIterator("SECTION MAKEMENU %i", section);
-    if (iter==NULL) return;
+	cScpIterator* iter = Scripts::Create->getNewIterator("SECTION MAKEMENU %i", section);
+	if (iter==NULL) return;
 
 	std::vector<std::string> names; //name
 	std::vector<std::string> models; //models
@@ -376,7 +376,8 @@ void cMakeMenu::execMake( NXWCLIENT ps, uint32_t item )
 
 	if( !failed ) {
 		pItem pi = item::CreateFromScript( str2num( script ), pc->getBackpack(), (amount!="")? str2num( amount ) : INVALID );
-		VALIDATEPI(pi);
+		if ( ! pi )
+			return;
 
 		ps->sysmsg(TRANSLATE("You create the item and place it in your backpack."));
 
@@ -448,7 +449,8 @@ void Skills::MakeMenu( pChar pc, int m, int skill, uint16_t firstId, COLOR first
 	if( ( skill < 0 ) || ( skill >= TRUESKILLS ) )	//Luxor
 		return;
 	
-	VALIDATEPC(pc);
+	if ( ! pc )
+		return;
 
 	if( pc->custmenu!=INVALID ) {
 		Menus.removeMenu( pc->custmenu, pc );
@@ -479,7 +481,8 @@ cAddMenu::~cAddMenu(  )
 
 void cAddMenu::loadFromScript( pChar pc )
 {
-	VALIDATEPC(pc);
+	if ( !pc )
+		return;
 	
 	int nOpt = 0;
 	bool bIcons = false;
@@ -618,20 +621,6 @@ cMakeItem::~cMakeItem()
 		delete command;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*!
 \brief Shows the add menus
 \author Endymion
@@ -640,7 +629,8 @@ cMakeItem::~cMakeItem()
 */
 void showAddMenu( pChar pc, int menu )
 {
-	VALIDATEPC( pc );
+	if ( !pc )
+		return;
 	
 	if( pc->custmenu!=INVALID )
 		Menus.removeMenu( pc->custmenu, pc );
@@ -650,9 +640,3 @@ void showAddMenu( pChar pc, int menu )
 	pm->show( pc );
 
 }
-
-
-
-
-
-

@@ -28,8 +28,7 @@ namespace npcs {
 */
 static void npcBeginCasting( pChar pc, pChar target, magic::SpellId spell )
 {
-	VALIDATEPC( pc );
-	VALIDATEPC( target );
+	if ( ! pc || ! target ) return;
 	if ( pc->spellTL != NULL )
 		safedelete( pc->spellTL );
 	pc->spellTL = new TargetLocation( target );
@@ -54,8 +53,9 @@ int spherespells[256][256];
 
 void npcMagicAttack(pChar pc_att, pChar pc_def)
 {
-	VALIDATEPC(pc_att);
-	VALIDATEPC(pc_def);
+	if ( ! pc_att || ! pc_def )
+		return;
+	
 	int spattackbit, spattacks, currenttime = uiCurrentTime;
 	// early return if prerequisites for spellcasting aren't true!
 	// dirty,but helps losing some KG of code later :)
@@ -206,8 +206,9 @@ void initNpcSpells ()
 
 void npcCastSpell(pChar pc_att, pChar pc_def)
 {
-	VALIDATEPC(pc_att);
-	VALIDATEPC(pc_def);
+	if ( ! pc_att || ! pc_def )
+		return;
+	
 	int sphere = (pc_att->magicsphere) % 255;
 	int spell = (rand()%pc_att->spattack) % 255;
 
@@ -324,7 +325,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 */
 void checkAI(pChar pc) //Lag Fix -- Zippy
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	pChar pc_att = pc;	//Dirty... but now we can use NPC_CASTSPELL macro :P
 	if ( !pc->npc ) return;
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
@@ -703,7 +704,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				if (pc->getOwnerSerial32() == pj->getSerial()) {
 					if (pj->IsOnline()) {
 						pChar pc_attacker = pointers::findCharBySerial(pj->attackerserial);
-						VALIDATEPC(pc_attacker);
+						if ( ! pc_attacker ) return;
 						if (pc->distFrom(pc_attacker) <= 10) {
 							npcattacktarget(pc, pc_attacker);
 							return;

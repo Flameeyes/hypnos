@@ -200,7 +200,7 @@ void bgsound(CHARACTER s)
 
 void soundeffect3(pItem pi, uint16_t sound)
 {
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	Location pos = pi->getPosition();
 
@@ -222,7 +222,7 @@ void soundeffect3(pItem pi, uint16_t sound)
 
 void soundeffect4(NXWSOCKET s, pItem pi, uint16_t sound)
 {
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	Location pos = pi->getPosition();
 
@@ -248,7 +248,7 @@ void weather(NXWSOCKET  s, unsigned char bolt)
 void pweather(NXWSOCKET  s)
 {
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	uint8_t packet[4] = { 0x65, 0xFF, 0x40, 0x20 };
 
@@ -369,7 +369,7 @@ void itemmessage(NXWSOCKET  s, char *txt, int serial, short color)
 	uint16_t ucl = ( strlen ( txt ) * 2 ) + 2 ;
 
 	pItem pi=pointers::findItemBySerial(serial);
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	if ((pi->type == ITYPE_CONTAINER && color == 0x0000)||
 		(pi->type == ITYPE_SPELLBOOK && color == 0x0000)||
@@ -501,10 +501,10 @@ pos1.z=0;
 
 void senditem(NXWSOCKET  s, pItem pi) // Send items (on ground)
 {
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	bool pack;
 	uint16_t len;
@@ -636,10 +636,10 @@ void senditem(NXWSOCKET  s, pItem pi) // Send items (on ground)
 void senditem_lsd(NXWSOCKET  s, ITEM i,char color1, char color2, int x, int y, signed char z)
 {
 	const pItem pi=MAKE_ITEM_REF(i);
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	uint16_t color = (color1<<8)|(color2%256);
 	uint16_t len;
@@ -1002,7 +1002,7 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 //Modified by N6 to use UNICODE packets
 {
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	int i;
 	char nonuni[512];
@@ -1068,7 +1068,7 @@ void itemtalk(pItem pi, char *txt)
 //Modified by N6 to use UNICODE packets
 {
 
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	NxwSocketWrapper sw;
 	sw.fillOnline( pi );
@@ -1103,7 +1103,7 @@ void itemtalk(pItem pi, char *txt)
 void staticeffect(CHARACTER player, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop,  bool UO3DonlyEffekt, ParticleFx *sta, bool skip_old)
 {
 	pChar pc=MAKE_CHAR_REF(player);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	uint16_t eff = (eff1<<8)|(eff2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
@@ -1185,7 +1185,7 @@ void movingeffect(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned
 {
 
 	pChar src=MAKE_CHAR_REF(source);
-	VALIDATEPC(src);
+	if ( ! src ) return;
 	pChar dst=MAKE_CHAR_REF(dest);
 	VALIDATEPC(dst);
 
@@ -1251,7 +1251,7 @@ MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial(), dst->getSerial32(), eff,
 // staticeffect2 is for effects on items
 void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt,  ParticleFx *str, bool skip_old )
 {
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	uint16_t eff = (eff1<<8)|(eff2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
@@ -1313,7 +1313,7 @@ void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned ch
 void bolteffect2(CHARACTER player,char a1,char a2)	// experimenatal, lb
 {
 	pChar pc=MAKE_CHAR_REF(player);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	uint16_t eff = (a1<<8)|(a2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
@@ -1357,7 +1357,7 @@ void movingeffect3(CHARACTER source, unsigned short x, unsigned short y, signed 
 {
 
 	pChar src=MAKE_CHAR_REF(source);
-	VALIDATEPC(src);
+	if ( ! src ) return;
 
 	uint16_t eff = (eff1<<8)|(eff2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
@@ -1408,7 +1408,7 @@ pos.z = 0;
 void movingeffect3(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode,unsigned char unk1,unsigned char unk2,unsigned char ajust,unsigned char type)
 {
 	pChar src=MAKE_CHAR_REF(source);
-	VALIDATEPC(src);
+	if ( ! src ) return;
 	pChar dst=MAKE_CHAR_REF(dest);
 	VALIDATEPC(dst);
 
@@ -1444,7 +1444,7 @@ void movingeffect2(CHARACTER source, int dest, unsigned char eff1, unsigned char
 	//0x0f 0x42 = arrow 0x1b 0xfe=bolt
 
 	const pItem pi=MAKE_ITEM_REF(dest);
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 	pChar pc_source = MAKE_CHAR_REF(source);
 	VALIDATEPC(pc_source);
 
@@ -1674,7 +1674,7 @@ void impowncreate(NXWSOCKET s, pChar pc, int z) //socket, player to send
 
 void sendshopinfo(int s, int c, pItem pi)
 {
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	char cFoundItems=0;
 	int k, m1t, m2t, value,serial;
@@ -1864,7 +1864,7 @@ void tellmessage(int i, int s, char *txt)
 {
 
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	uint8_t unicodetext[512];
  	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
@@ -2081,7 +2081,7 @@ void itemeffectUO3D(pItem pi, ParticleFx *sta)
 {
 	// please no optimization of p[...]=0's yet :)
 
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	unsigned char particleSystem[49];
 	particleSystem[0]=0xc7;
@@ -2181,7 +2181,7 @@ void sysmessageflat(NXWSOCKET  s, short color, const char *txt)
 
 void wornitems(NXWSOCKET  s, pChar pc) // Send worn items of player
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	NxwItemWrapper si;
 	si.fillItemWeared( pc, true, true, false );

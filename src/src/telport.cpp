@@ -80,15 +80,14 @@ void read_in_teleport()
 
 int validtelepos(pChar pc)
 {
-	VALIDATEPCR(pc,INVALID);
+	if ( ! pc ) return INVALID;
 	int z=INVALID;
-	Location charpos= pc->getPosition();
 
-	if ((charpos.x>=1397)&&(charpos.x<=1400)&&
-		(charpos.y>=1622)&&(charpos.y<=1630))
+	if ( pc->getPosition().x >= 1397 && pc->getPosition().x <= 1400 &&
+		pc->getPosition().y >= 1622 && pc->getPosition().y <= 1630 )
 		z=28;
-	if ((charpos.x>=1510)&&(charpos.x<=1537)&&
-		(charpos.y>=1455)&&(charpos.y<=1456))
+	if ( pc->getPosition().x >= 1510 && pc->getPosition().x <= 1537 &&
+		pc->getPosition().y >= 1455 && pc->getPosition().y<=1456 )
 		z=15;
 	return z;
 
@@ -97,7 +96,7 @@ int validtelepos(pChar pc)
 void advancementobjects(CHARACTER s, int x, int allways)
 {
 	pChar pc = MAKE_CHAR_REF( s );
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 	char sect[512];
 	int loopexit=0;
 	std::string script1, script2;
@@ -352,7 +351,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 
 void objTeleporters(pChar pc)
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	Location charpos= pc->getPosition();
 	
@@ -423,7 +422,7 @@ void objTeleporters(pChar pc)
 
 void teleporters(pChar pc)
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	Location charpos= pc->getPosition();
 

@@ -1397,7 +1397,7 @@ void CWorldMain::SaveChar( pChar pc )
 {
 	char valid=0;
 	int j;
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	static cChar dummy(false);
 
@@ -1819,8 +1819,7 @@ void CWorldMain::SaveChar( pChar pc )
 
 void CWorldMain::SaveItem( pItem pi )
 {
-
-	VALIDATEPI( pi );
+	if ( ! pi ) return;
 
 	static cItem dummy( false );
 

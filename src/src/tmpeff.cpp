@@ -648,41 +648,41 @@ void cTempfx::executeExpireCode()
 	switch(m_nNum)
 	{
 		case SPELL_PARALYZE:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			if (dest->isFrozen())
 				dest->unfreeze( true );
 			break;
 
 		case SPELL_LIGHT:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->fixedlight = 0xFF;
 			if (dest->getClient())
 				dolight(dest->getClient()->toInt(), worldbrightlevel);
 			break;
 
 		case SPELL_CLUMSY:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->dx += m_nMore1;
 			if (dest->getClient())
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_FEEBLEMIND:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->in += m_nMore1;
 			if (dest->getClient())
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_WEAKEN:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->modifyStrength(m_nMore1);
 			if (dest->getClient())
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_AGILITY:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->dx -= m_nMore1;
 			dest->stm = min(dest->stm, dest->dx);
 			if (dest->getClient())
@@ -690,7 +690,7 @@ void cTempfx::executeExpireCode()
 			break;
 
 		case SPELL_STRENGHT:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->modifyStrength(-m_nMore1);
 			dest->hp = min(dest->hp, (int32_t)dest->getStrength());
 			if (dest->getClient())
@@ -698,7 +698,7 @@ void cTempfx::executeExpireCode()
 			break;
 
 		case SPELL_CUNNING:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->in -= m_nMore1;
 			dest->mn = min(dest->mn, dest->in);
 			if (dest->getClient())
@@ -706,7 +706,7 @@ void cTempfx::executeExpireCode()
 			break;
 
 		case SPELL_BLESS:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->modifyStrength(-m_nMore1);
 			dest->dx -= m_nMore2;
 			dest->in -= m_nMore3;
@@ -718,7 +718,7 @@ void cTempfx::executeExpireCode()
 			break;
 
 		case SPELL_CURSE:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->modifyStrength(m_nMore1);
 			dest->dx += m_nMore2;
 			dest->in += m_nMore3;
@@ -727,7 +727,7 @@ void cTempfx::executeExpireCode()
 			break;
 
 		case SPELL_INVISIBILITY:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			if (dest->IsHiddenBySpell()) {
 				dest->hidden = UNHIDDEN;
 				dest->morph();
@@ -737,7 +737,7 @@ void cTempfx::executeExpireCode()
 
 
 		case ALCHEMY_GRIND:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			if (m_nMore1 == 0)
 			{
 				if (m_nMore2 != 0)
@@ -749,7 +749,7 @@ void cTempfx::executeExpireCode()
 
 
 		case ALCHEMY_END:
-			VALIDATEPC(src);
+			if ( ! src ) return;
 			VALIDATEPI(pi_dest);
 			Skills::CreatePotion(DEREF_pChar(src), m_nMore1, m_nMore2, DEREF_pItem(pi_dest));
 			break;
@@ -779,30 +779,30 @@ void cTempfx::executeExpireCode()
 			break;
 
 		case SPELL_REACTARMOR:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->ra = 0;
 			break;
 
 		case EXPLOTIONMSG:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->sysmsg("%i", m_nMore3);
 			break;
 
 		case EXPLOTIONEXP:
-			VALIDATEPC(src);
+			if ( ! src ) return;
 			VALIDATEPI(pi_dest);
 			if (src->getClient())
 				pi_dest->explode(src->getClient()->toInt());
 			break;
 
 		case SPELL_POLYMORPH:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->morph();
 			dest->polymorph = false;
 			break;
 
 		case SPELL_INCOGNITO:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->morph();
 			dest->incognito = false;
 			break;
@@ -826,23 +826,23 @@ void cTempfx::executeExpireCode()
 			break;
 
 		case SPELL_PROTECTION:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->nxwflags[0] &= ~cChar::flagSpellProtection;
 			break;
 
 		case DRINK_EMOTE:
-			VALIDATEPC(src);
+			if ( ! src ) return;
 			src->emote(src->getSocket(),"*glu*",1);
 			break;
 
 		case DRINK_FINISHED:
-			VALIDATEPC(src);
+			if ( ! src ) return;
 			VALIDATEPI(pi_dest);
 			usepotion(src, pi_dest);
 			break;
 
 		case GM_HIDING:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->sysmsg(TRANSLATE("You have hidden yourself well."));
 			//dest->hideBySkill();
 			dest->hidden = HIDDEN_BYSKILL;
@@ -850,14 +850,14 @@ void cTempfx::executeExpireCode()
 			break;
 
 		case GM_UNHIDING:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->unHide();
 			dest->sysmsg(TRANSLATE("You are now visible."));
 			break;
 
 		case HEALING_DELAYHEAL:
-			VALIDATEPC(src);
-			VALIDATEPC(dest);
+			if ( ! src ) return;
+			if ( ! dest ) return;
 			if (src->war) {
 				src->sysmsg("You cannot heal while you are in a fight.");
 				return;
@@ -870,13 +870,13 @@ void cTempfx::executeExpireCode()
 			break;
 
 		case AMXCUSTOM:
-			VALIDATEPC(src);
-			VALIDATEPC(dest);
+			if ( ! src ) return;
+			if ( ! dest ) return;
 			callCustomTempFx(src, dest, MODE_END, m_nAmxcback, m_nMore1, m_nMore2, m_nMore3);
 			break;
 
 		case GREY:
-			VALIDATEPC(dest);
+			if ( ! dest ) return;
 			dest->nxwflags[0] &= ~cChar::flagGrey;
 			break;
 

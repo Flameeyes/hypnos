@@ -234,7 +234,7 @@ void cItem::doubleClick(pClient client);
 
 	if (client==NULL) return;
 	pChar pc = client->currChar();
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	if (amxevents[EVENT_IONDBLCLICK]!=NULL) {
 		g_bByPass = false;
@@ -916,7 +916,7 @@ void cItem::doubleClick(pClient client);
 void target_selectdyevat( pClient client, P_TARGET t )
 {
     pItem pi=pointers::findItemBySerial(t->getClicked());
-    VALIDATEPI(pi);
+    if ( ! pi ) return;
 
     if( pi->getId()==0x0FAB ||                     //dye vat
         pi->getId()==0x0EFF || pi->getId()==0x0E27 )  //hair dye
@@ -928,10 +928,10 @@ void target_selectdyevat( pClient client, P_TARGET t )
 void target_dyevat( pClient client, P_TARGET t )
 {
 	pChar curr = client->currChar();
-	VALIDATEPC(curr);
+	if ( ! curr ) return;
 
 	pItem pi=pointers::findItemBySerial( t->getClicked() );
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	if( pi->dye )//if dyeable
 	{

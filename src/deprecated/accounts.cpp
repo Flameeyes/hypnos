@@ -587,7 +587,7 @@ uint32_t cAccounts::GetInWorld( ACCOUNT acctnum )
 */
 void cAccounts::SetOnline( ACCOUNT acctnum, pChar pc )
 {
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	ACCOUNT_LIST::iterator iter( this->acctlist.find(pc->account) );
 	if (iter != this->acctlist.end())
 	{

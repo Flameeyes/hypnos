@@ -100,7 +100,7 @@ void cOldMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 {
 	
 	pChar pc = ps->currChar();
-	VALIDATEPC( pc )
+	if ( ! pc ) return;
 
 	uint32_t button;
 	if( isIconList( pkg->cmd ) )

@@ -153,7 +153,7 @@ void cChar::walkNextStep()
 */
 void cChar::flee( pChar pc, int32_t seconds )
 {
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	if( seconds!=INVALID )
 		fleeTimer=uiCurrentTime +MY_CLOCKS_PER_SEC*seconds;

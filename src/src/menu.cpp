@@ -125,8 +125,7 @@ bool cMenus::handleMenu( NXWCLIENT ps )
 		return false;
 
 	pChar pc=ps->currChar();
-	VALIDATEPCR( pc, false );
-
+	if ( ! pc ) return false;
 	
 	cClientPacket* p =  NULL;
 
@@ -144,7 +143,7 @@ bool cMenus::handleMenu( NXWCLIENT ps )
 
 
 	P_MENU menu = Menus.getMenu( serial );
-	VALIDATEPMR( menu, false );
+	if ( ! menu ) return false;
 
 	uint32_t menu_serial = menu->serial;
 
@@ -199,7 +198,7 @@ void cBasicMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 
 void cBasicMenu::show( pChar pc )
 {
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 
 	NXWCLIENT ps=pc->getClient();
 	if( ps==NULL ) return;
@@ -432,7 +431,7 @@ void cMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 	cPacketMenuSelection* p = (cPacketMenuSelection*)pkg;
 
 	pChar pc = ps->currChar();
-	VALIDATEPC( pc )
+	if ( ! pc ) return;
 
 	uint32_t button = p->buttonId.get();
 
@@ -492,14 +491,14 @@ bool cMenu::getPropertyFieldBool( uint32_t type, SERIAL obj, SERIAL prop, SERIAL
 	
 		case PROpCharACTER: {
 			pChar pc = pointers::findCharBySerial( obj );
-			VALIDATEPCR( pc, false );
+			if ( ! pc ) return false;
 
 			return getCharBoolProperty( pc, prop, subProp );
 
 		}
 		case PROpItem : {
 			pItem pi = pointers::findItemBySerial( obj );
-			VALIDATEPIR( pi, false );
+			if ( ! pi ) return false;
 
 			return getItemBoolProperty( pi, prop, subProp );
 
@@ -518,14 +517,14 @@ void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL sub
 	
 		case PROpCharACTER: {
 			pChar pc = pointers::findCharBySerial( obj );
-			VALIDATEPC(pc);
+			if ( ! pc ) return;
 			if( data!=getCharBoolProperty( pc, prop, subProp ) )
 				setCharBoolProperty( pc, prop, subProp, subProp2, data );
 			}
 			break;
 		case PROpItem : {
 			pItem pi = pointers::findItemBySerial( obj );
-			VALIDATEPI(pi);
+			if ( ! pi ) return;
 			if( data!=getItemBoolProperty( pi, prop, subProp ) )
 				setItemBoolProperty( pi, prop, subProp, data );
 			}
@@ -545,7 +544,7 @@ void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL sub
 	
 		case PROpCharACTER: {
 			pChar pc = pointers::findCharBySerial( obj );
-			VALIDATEPC(pc);
+			if ( ! pc ) return;
 
 			switch( t ) {
 				case T_CHAR : {
@@ -583,7 +582,7 @@ void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL sub
 		break;
 		case PROpItem : {
 			pItem pi = pointers::findItemBySerial( obj );
-			VALIDATEPI(pi);
+			if ( ! pi ) return;
 
 			switch( t ) {
 				case T_CHAR : {
@@ -656,7 +655,7 @@ std::wstring cMenu::getPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SE
 	
 		case PROpCharACTER: {
 			pChar pc = pointers::findCharBySerial( obj );
-			VALIDATEPCR(pc, std::wstring());
+			if ( ! pc ) return std::wstring();
 
 			switch( t ) {
 				case T_CHAR :
@@ -674,7 +673,7 @@ std::wstring cMenu::getPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SE
 		break;
 		case PROpItem : {
 			pItem pi = pointers::findItemBySerial( obj );
-			VALIDATEPIR(pi, std::wstring());
+			if ( ! pi ) return std::wstring();
 
 			switch( t ) {
 				case T_CHAR :
@@ -846,7 +845,7 @@ void cIconListMenu::handleButton( NXWCLIENT ps,  cClientPacket* pkg  )
 {
 
 	pChar pc = ps->currChar();
-	VALIDATEPC( pc )
+	if ( !pc ) return;
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
 

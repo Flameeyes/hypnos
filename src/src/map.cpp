@@ -463,7 +463,7 @@ int8_t getHeight( Location pos )
 */
 void getMultiCorners( pItem pi, uint32_t &x1, uint32_t &y1, uint32_t &x2, uint32_t &y2 )
 {
-	VALIDATEPI( pi );
+	if ( !pi ) return;
 
 	multiVector m;
 	data::seekMulti( pi->getId() - 0x4000, m );

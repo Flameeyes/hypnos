@@ -27,8 +27,7 @@
 // this is a q&d fix for 'sell price higher than buy price' bug (Duke, 30.3.2001)
 static bool items_match(pItem pi1,pItem pi2)
 {
-	VALIDATEPIR(pi1,false);
-	VALIDATEPIR(pi2,false);
+	if ( ! pi1 || ! pi2 ) return false;
 
 	if (pi1->getId()==pi2->getId() &&
 		pi1->type==pi2->type &&
@@ -46,7 +45,7 @@ void sellaction(NXWSOCKET s)
 		return;
 
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	pItem npa=NULL, npb=NULL, npc=NULL;
 	int i, amt, value=0, totgold=0;
@@ -54,7 +53,7 @@ void sellaction(NXWSOCKET s)
 	if (buffer[s][8]!=0)
 	{
 		pChar pc_n=pointers::findCharBySerPtr(buffer[s]+3);
-		VALIDATEPC(pc_n);
+		if ( ! pc_n ) return;
 
 		NxwItemWrapper si;
 		si.fillItemWeared( pc_n, true, true, false );
@@ -425,7 +424,7 @@ void cRestockMng::doRestockAll()
 
 void cRestockMng::addNewRestock( pItem pi )
 {
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 	this->needrestock.push( pi->getSerial() );
 }
 

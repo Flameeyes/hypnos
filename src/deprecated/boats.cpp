@@ -106,7 +106,8 @@ pItem findmulti(Location where)
 bool inmulti(Location where, pItem pi)//see if they are in the multi at these chords (Z is NOT checked right now)
 // PARAM WARNING: z is unreferenced
 {
-	VALIDATEPIR(pi,false);
+	if ( ! pi )
+		return false;
 
 	multiVector m;
 
@@ -123,7 +124,8 @@ bool inmulti(Location where, pItem pi)//see if they are in the multi at these ch
 
 void cBoat::PlankStuff(pChar pc , pItem pi)//If the plank is opened, double click Will send them here
 {
-	VALIDATEPC(pc);
+	if ( ! pc )
+		return;
 
 	pItem boat =GetBoat(pc->getPosition());
 	if (boat!=NULL) //we are on boat
@@ -175,7 +177,8 @@ void cBoat::PlankStuff(pChar pc , pItem pi)//If the plank is opened, double clic
 
 void cBoat::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open plank while on the boat.
 {
-	VALIDATEPC(pc);
+	if ( ! pc )
+		return;
 
 	//long int pos, pos2, length;
 	uint32_t x,x2= pi->getPosition("x");
@@ -242,8 +245,8 @@ void cBoat::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open p
 
 void cBoat::TurnStuff_i(pItem p_b, pItem pi, int dir, int type)//Turn an item that was on the boat when the boat was turned.
 {
-	VALIDATEPI(p_b);
-	VALIDATEPI(pi);
+	if ( ! p_b || ! pi )
+		return;
 
 	int dx, dy;
 
@@ -277,9 +280,9 @@ void cBoat::TurnStuff_i(pItem p_b, pItem pi, int dir, int type)//Turn an item th
 
 void cBoat::TurnStuff_c(pItem p_b, pChar pc, int dir, int type)//Turn an item that was on the boat when the boat was turned.
 {
-	VALIDATEPI(p_b);
-	VALIDATEPC(pc);
-
+	if ( ! p_b || ! pc )
+		return;
+	
 	int dx, dy;
 	Location bpos= p_b->getPosition();
 	Location charpos= pc->getPosition();
@@ -311,7 +314,8 @@ void cBoat::TurnStuff_c(pItem p_b, pChar pc, int dir, int type)//Turn an item th
 
 void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the people/items on the boat to turnboatstuff()
 {
-	VALIDATEPI(pi);
+	if ( ! pi )
+		return;
 
 	NXWSOCKET 	Send[MAXCLIENT];
 	int32_t	id1,
@@ -338,19 +342,23 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 #if 0
 	itiller = calcItemFromSer( serial | 0x40000000 );
 	tiller = MAKE_ITEM_REF( itiller );
-	VALIDATEPI(tiller);
+	if ( ! tiller )
+		return;
 
 	i1 = calcItemFromSer( pi->morex | 0x40000000);
 	p1 = MAKE_ITEM_REF( i1 );
-	VALIDATEPI(p1);
+	if ( ! tiller )
+		return;
 
 	i2 = calcItemFromSer( pi->morey | 0x40000000);
 	p2 = MAKE_ITEM_REF( i2 );
-	VALIDATEPI(p2);
+	if ( ! tiller )
+		return;
 
 	ihold = calcItemFromSer( pi->morez | 0x40000000);
 	hold = MAKE_ITEM_REF( ihold );
-	VALIDATEPI(hold);
+	if ( ! hold )
+		return;
 #endif
 
 	NxwSocketWrapper sw;
@@ -673,8 +681,6 @@ bool cBoat::Speech(pChar pc, NXWSOCKET socket, std::string &talk)//See if they s
 		pc & socket validation done in talking()
 	*/
 	pItem pBoat=GetBoat(pc->getPosition());
-	//
-	// As we don't want a message logged when not on a boat we cannot use VALIDATEPIR
 	if( ! pBoat )
 		return false;
 	//
@@ -689,7 +695,8 @@ bool cBoat::Speech(pChar pc, NXWSOCKET socket, std::string &talk)//See if they s
 		return  false;
 
 	pItem tiller=boat->p_tiller;
-	VALIDATEPIR(tiller,false); // get the tiller man
+	if ( ! tiller )
+		return false;
 	//
 	// Sparhawk: talk has allready been capitalized in talking
 	//
@@ -945,7 +952,7 @@ bool cBoat::Build(NXWSOCKET  s, pItem pBoat, char id2)
 	if ( s < 0 || s >= now )
 		return false;
 	pChar pc_cs=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPCR( pc_cs, false );
+	if ( ! pc_cs return false;
 
 	int nid2=id2;
 
@@ -1473,7 +1480,8 @@ boat_db* search_boat(int32_t ser)
 
 pItem search_boat_by_plank(pItem pl)
 {
-	VALIDATEPIR(pl,NULL);
+	if ( ! pl )
+		return NULL;
 	Serial ser;
 	ser.ser1=pl->more1;
 	ser.ser2=pl->more2;
@@ -1482,4 +1490,3 @@ pItem search_boat_by_plank(pItem pl)
 	boat_db*  boat=search_boat(ser.serial32);
 	return boat->p_serial;
 }
- 

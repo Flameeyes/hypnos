@@ -552,7 +552,7 @@ void cItem::explode(NXWSOCKET  s)
 	unsigned int dmg=0,len=0;
 
 	pChar pc_current=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc_current);
+	if ( ! pc_current ) return;
 
 	if(!isInWorld())
 		return;

@@ -28,10 +28,10 @@ void profileStuff( NXWCLIENT ps, cPacketCharProfileReq& p )
 
 	if( ps==NULL ) return;
 	pChar pc= ps->currChar();
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 	
 	pChar who=pointers::findCharBySerial( p.chr.get() );
-	VALIDATEPC( who );
+	if ( ! who ) return;
 
 	if( p.update ) { //update profile
 		if( ( who->getSerial()!=pc->getSerial32() ) && !pc->IsGMorCounselor() ) 

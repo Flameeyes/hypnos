@@ -121,7 +121,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 	}
 
 	const pItem pi = pointers::findItemBySerial( target_serial );
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	//steal a pickpocket, a steal training dummy
 	if( pi->getId() == 0x1E2D || pi->getId() == 0x1E2C )
@@ -362,7 +362,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 
 
 		//Endy can't be not valid after this -^ loop, else error
-		VALIDATEPI(pi);
+		if ( ! pi ) return;
 
 		if( pi->isNewbie() )
 		{//newbie
@@ -466,7 +466,7 @@ void Skills::target_lockpick( NXWCLIENT ps, P_TARGET t )
 {
 
 	pChar pc = ps->currChar();
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	pItem chest=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(chest);
 	pItem pick=MAKE_ITEM_REF( t->buffer[0] );

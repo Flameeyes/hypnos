@@ -34,7 +34,7 @@ namespace Commands
 	void MakeShop(int c)
 	{
 		pChar pc = MAKE_CHAR_REF( c );
-		VALIDATEPC( pc );
+		if ( ! pc ) return;
 
 		pc->shopkeeper = true;
 
@@ -126,7 +126,7 @@ namespace Commands
 	void RegSpawnMax (NXWSOCKET s, int r ) // rewrite LB
 	{
 		pChar pc=MAKE_CHAR_REF(currchar[s]);
-		VALIDATEPC(pc);
+		if ( ! pc ) return;
 
 	//	unsigned int currenttime=uiCurrentTime;
 
@@ -211,7 +211,7 @@ namespace Commands
 		char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
 		pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
-		VALIDATEPC( pc_currchar );
+		if ( !pc_currchar ) return;
 
 		a = pc_currchar->getSerial();
 
@@ -276,7 +276,7 @@ namespace Commands
 		uint16_t color, body;
 
 		pChar Me = MAKE_CHAR_REF(currchar[s]);
-		VALIDATEPC(Me);
+		if ( ! Me ) return;
 
 		pItem pi = pointers::findItemBySerPtr(buffer[s] +1);
 		if( pi )
@@ -364,7 +364,7 @@ namespace Commands
 		if (tile.flags&TILEFLAG_STACKABLE) pileable=true;
 
 		pItem pi = item::CreateFromScript( "$item_hardcoded" );
-		VALIDATEPI( pi );
+		if ( !pi ) return;
 		pi->setId( id );
 		pi->pileable = pileable;
 
@@ -417,7 +417,7 @@ namespace Commands
 			return;
 
 		pChar pc = pointers::findCharBySerial(currchar[s]);
-		VALIDATEPC(pc);
+		if ( ! pc ) return;
 		InfoOut( "%s has initiated an item wipe\n", pc->getCurrentNameC() );
 		cAllObjectsIter objs;
 		pItem pi = NULL;
@@ -440,9 +440,9 @@ namespace Commands
 	void Possess(NXWSOCKET s)
 	{
 		pChar pc = MAKE_CHAR_REF(currchar[s]);
-		VALIDATEPC(pc);
+		if ( ! pc ) return;
 		pChar pcPos = pointers::findCharBySerPtr(buffer[s]+7);
-		VALIDATEPC(pcPos);
+		if ( ! pcPos ) return;
 
 		pc->possess(pcPos);
 

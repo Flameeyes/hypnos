@@ -273,7 +273,7 @@ void cChar::updateSkill(uint16_t skill)
 
 void cPC::deadAttack (pChar victim)
 {
-	VALIDATEPC( victim );
+	if ( ! victim ) return;
 	if(victim->npc)
 	{
 		if(victim->npcaitype==NPCAI_HEALER)

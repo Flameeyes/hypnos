@@ -418,10 +418,10 @@ void cTriggerContext::exec()
 */
 void triggerItem(NXWSOCKET  ts, pItem pi, int eventType)
 {
-	VALIDATEPI(pi);
+	if ( ! pi ) return;
 
 	pChar pc=MAKE_CHAR_REF(currchar[ts]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	if ( (pi->disabled>0)&&(!TIMEOUT(pi->disabled))) {
 		if(pi->disabledmsg!=NULL)

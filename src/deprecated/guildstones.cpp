@@ -36,7 +36,7 @@ void cGuilds::StonePlacement(int s)
 	//unsigned int k; // lb, msvc++ 5.0 didnt like the guild(int x,inty) ...
 	char stonename[60];
 	pChar pc = MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	Location charpos= pc->getPosition();
 	/*if (CheckValidPlace(s)!=1)
@@ -147,12 +147,12 @@ void cGuilds::Menu(int s, int page)
 	static char mygump[MAXMEMRECWAR][257];
 
 	pChar pc	= MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 	pItem pStone	= MAKE_ITEM_REF( pc->fx1 );
-	VALIDATEPI(pStone);
+	if ( ! pStone ) return;
 
-	//VALIDATEPC(pc);
-	//VALIDATEPI(pStone);
+	//if ( ! pc ) return;
+	//if ( ! pStone ) return;
 
 	int guildnumber=Guilds->SearchByStone(s);
 	
@@ -210,7 +210,7 @@ void cGuilds::Menu(int s, int page)
 	case 1:
 		gumpnum=9;
 		ShortToCharPtr(8001, gmprefix +7);
-		VALIDATEPC(pguildmaster);
+		if ( ! pguildmaster ) return;
 		lentext=sprintf(mygump[0], "%s (%s %s)",guilds[guildnumber].name, pguildmaster->GetGuildTitle(),pguildmaster->getCurrentNameC());
 		strcpy(mygump[1],TRANSLATE("Recruit someone into the guild."));
 		strcpy(mygump[2],TRANSLATE("View the current roster."));
@@ -536,7 +536,7 @@ void cGuilds::EraseGuild(int guildnumber)
 	if (guildnumber<0 || guildnumber >=MAXGUILDS) return;
 
 	pItem pi_stone = pointers::findItemBySerial(guilds[guildnumber].stone);
-	VALIDATEPI(pi_stone);
+	if ( ! pi_stone ) return;
 
 	int war;
 	int counter;
@@ -576,7 +576,7 @@ static void RemoveShields(pChar pc)
 void cGuilds::EraseMember(int c)
 {
 	pChar pc = MAKE_CHAR_REF(c);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	int guildnumber = pc->GetGuildNumber();
 
@@ -617,7 +617,7 @@ void cGuilds::EraseMember(int c)
 void cGuilds::ToggleAbbreviation(int s)
 {
 	pChar pc = MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	int guildnumber = pc->GetGuildNumber();
 
@@ -655,7 +655,7 @@ void cGuilds::ToggleAbbreviation(int s)
 void cGuilds::Recruit(int s)
 {
 	pChar Me=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(Me);
+	if ( ! Me ) return;
 
 	int slot, dummy;
 	int guildnumber = SearchByStone(s);
@@ -712,7 +712,7 @@ void cGuilds::Recruit(int s)
 void cGuilds::TargetWar(int s)
 {
 	pChar Me=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(Me);
+	if ( ! Me ) return;
 
 	int slot, dummy;
 	int guildnumber = Guilds->SearchByStone(s);
@@ -772,12 +772,12 @@ void cGuilds::StoneMove(int s)
 	if ( s < 0 || s >= now )
 		return;
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	int guildnumber=Guilds->SearchByStone(s);
 	if (guildnumber==-1) return;
 	pItem stone = pointers::findItemBySerial( guilds[guildnumber].stone );
-	VALIDATEPI(stone);
+	if ( ! stone ) return;
 	// Get stone
 
 	pItem pNewstone;		// For the new stone
@@ -799,17 +799,20 @@ void cGuilds::StoneMove(int s)
 	pc->sysmsg(TRANSLATE("Take care of that stone!"));	// And tell him also
 }
 
-// guildsearch() Okay this is for highlighting/guards and other stuff, so you know what relation
-// player 1 and player 2 have. results are:
-// 1= both in same guild (so fighting is okay, green hightlighting)
-// 2= both in opposite guilds/guildtypes (so fighting is okay, orange highlighting)
-// 0= no guildwarfare, or no guild relation (so no fighting, normal highlighting)
-// Oh, Order/Order or Chaos/Chaos guilds (in different guilds) may not war eachother!
-
+/*!
+\brief for highlighting/guards and other stuff, so you know what relation player 1 and player 2 have
+\param player1 first player to test
+\param player2 second player to test
+\return 1= both in same guild (so fighting is okay, green hightlighting)
+	2= both in opposite guilds/guildtypes (so fighting is okay, orange highlighting)
+	0= no guildwarfare, or no guild relation (so no fighting, normal highlighting)
+\note Order/Order or Chaos/Chaos guilds (in different guilds) may not war eachother!
+*/
 int cGuilds::Compare(pChar player1,pChar player2)
 {
-	VALIDATEPCR(player1,0);
-	VALIDATEPCR(player2,0);
+	if ( ! player1 || ! player2 )
+		return 0;
+	
 	int counter;
 	int guildnumber=player1->GetGuildNumber();
 	int guildnumber2=player2->GetGuildNumber();
@@ -873,7 +876,7 @@ void cGuilds::GumpInput(int s, int type, int index, char *text)
 void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 {
 	pChar pc = MAKE_CHAR_REF( currchar[socket] );
-	VALIDATEPC( pc );
+	if ( ! pc ) return;
 	
 	int member, recruit, war, guild, counter, slot;
 	//int members[MAXGUILDMEMBERS];
@@ -1208,7 +1211,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 void cGuilds::ChangeName(NXWSOCKET s, char *text)
 {
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	int guildnumber=Guilds->SearchByStone(s);
 
@@ -1253,7 +1256,7 @@ void cGuilds::ChangeName(NXWSOCKET s, char *text)
 void cGuilds::ChangeAbbreviation(int s, char *text)
 {
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	int guildnumber=Guilds->SearchByStone(s);
 
@@ -1288,7 +1291,7 @@ void cGuilds::ChangeAbbreviation(int s, char *text)
 void cGuilds::ChangeTitle(int s, char *text)
 {
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	int guildnumber=Guilds->SearchByStone(s);
 	
@@ -1303,7 +1306,7 @@ void cGuilds::ChangeTitle(int s, char *text)
 	guilds[guildnumber].priv=0;
 
 	pChar membr=pointers::findCharBySerial(member);
-	VALIDATEPC(membr);
+	if ( ! membr ) return;
 	membr->SetGuildTitle( text );
 
 	if (member==s) 
@@ -1320,7 +1323,7 @@ void cGuilds::ChangeTitle(int s, char *text)
 void cGuilds::ChangeCharter(int s, char *text)
 {
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	int guildnumber=Guilds->SearchByStone(s);
 
@@ -1338,7 +1341,7 @@ void cGuilds::ChangeCharter(int s, char *text)
 void cGuilds::ChangeWebpage(int s, char *text)
 {
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	if ( ! pc ) return;
 
 	int guildnumber = Guilds->SearchByStone(s);
 
@@ -1461,7 +1464,7 @@ int cGuilds::SearchByStone(int s)
 	int guildnumber;
 
 	pChar pc = MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPCR(pc, INVALID );
+	if ( ! pc ) return INVALID;
 
 	pItem pStone=MAKE_ITEM_REF(pc->fx1);
 	if(!pStone)
@@ -1622,7 +1625,7 @@ void cGuilds::Title(int s,int player2)
 	char guildtype[10];
 
 	pChar pc2= pointers::findCharBySerial( player2 );
-	VALIDATEPC(pc2);
+	if ( ! pc2 ) return;
 
 	if (pc2->GetGuildNumber()<0 || pc2->GetGuildNumber()>=MAXGUILDS) return;
 
@@ -1758,7 +1761,7 @@ int cGuilds::CheckValidPlace(int s)
 	pItem pack;
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	pItem house=findmulti( pc->getPosition() );
-	VALIDATEPIR(house, 0);
+	if ( ! house ) return 0;
 
 	if (!house->IsHouse()) 
 		return 0;
