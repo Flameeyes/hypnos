@@ -545,6 +545,27 @@ namespace nPackets {
 		};
 
 		/*!
+		\brief empties buy window (i.e. just like pressing the clear button on client, but this is from server side)
+		\author Chronodt
+		\note packet 0x3b
+		*/
+		class ClearBuyWindow : public cPacketSend
+		{
+		protected:
+			const pNPC npc;	        //!< Vendor
+
+		public:
+			/*!
+			\param n npc vendor
+			*/
+			inline ClearBuyWindow(pNPC n) :
+				cPacketSend(NULL, 0), npc(n)
+			{ }
+			void prepare();
+		};
+
+
+		/*!
 		\brief tells client which items are in the given container
 		\author Flameeyes
 		\note packet 0x3c
@@ -571,6 +592,32 @@ namespace nPackets {
 
 			void prepare();
 		};
+
+		/*!
+		\brief tells client which items are in the given container (msgboard version)
+		\author Flameeyes & Chronodt
+		\note packet 0x3c
+
+		\note This functions holds and releases the cMsgBoard::globalMutex and cMsgBloard::boardMutex mutexes
+		*/
+		class MsgBoardItemsinContainer : public cPacketSend
+		{
+		protected:
+		
+			const pMsgBoard msgboard;
+		
+		public:
+			/*!
+			\note constructor for msgboards
+			\param aMsgboard msgboard used. This is called only on msgboard first opening
+			*/
+			inline MsgBoardItemsinContainer(pMsgBoard aMsgboard) :
+				cPacketSend(NULL, 0), msgboard (aMsgboard)
+			{ }
+		
+			void prepare();
+		};
+
 
 		/*!
 		\brief Personal Light Level
@@ -743,17 +790,100 @@ namespace nPackets {
 		\brief Send Weather
 		\author Chronodt
 		\note packet 0x65
+
+		\remarks maximum number of weather effects on screen is 70
+		\remarks If it is raining, you can add snow by setting the num
+		to the num of rain currently going, plus the number of snow you want
+		\attention Weather messages are only displayed when weather starts
+		\note Weather will end automatically after 6 minutes without any weather change packets
+		\remarks You can totally end weather (to display a new message) by teleporting
+
+		weather type:
+		0x00="It starts to rain"
+		0x01="A fierce storm approaches."
+		0x02="It begins to snow"
+		0x03="A storm is brewing.",
+		0xFF=None (turns off sound effects),
+		0xFE=(no effect?? Set temperature?)
+		0x78,0x20,0x4F,0x4E = reset, never tested
 		*/
 		class Weather : public cPacketSend
 		{
 		protected:
-			uint8_t cregion;	//!< current region (to which weather effect is sent)
+			uint8_t weather;	//!< weather effect (0x00 - rain, 0x02- snow, 0xff - nothing)
+			uint8_t intensity;	//!< number of simultaneous weather effects on screen
 		public:
-			inline Weather(uint8_t aCregion) :
-				cPacketSend(NULL, 0), cregion(aCregion)
+			inline Weather(uint8_t aWeather, uint8_t aIntensity) :
+				cPacketSend(NULL, 0), weather(aWeather), intensity(aIntensity)
 			{ }
 			void prepare();
 		};
+
+		/*!
+		\brief Send Book Page (Read-Write book version)
+		\author Flameeyes
+		\note packet 0x66
+
+		\note Sends the pages of a writable book
+		*/
+		class BookPagesReadWrite : public cPacketSend
+		{
+		protected:
+			pBook book;
+			
+			void preparePagesReadOnly();
+			void preparePagesReadWrite();
+		public:
+			inline BookPagesReadWrite(pBook abook) :
+				cPacketSend(NULL, 0), book(abook)
+			{ }
+		
+			void prepare();
+		};
+
+		/*!
+		\brief Send Book Page (Read-only book version)
+		\author Flameeyes
+		\note packet 0x66
+
+		Sends the requested page of a readonly book
+		*/
+		class BookPageReadOnly : public cPacketSend
+		{
+		protected:
+			pBook book;
+			uint16_t p;	//!< Index of the page to send
+			
+			void preparePagesReadOnly();
+			void preparePagesReadWrite();
+		public:
+			inline BookPageReadOnly(pBook abook, uint16_t page) :
+				cPacketSend(NULL, 0), book(abook), p(page)
+			{ }
+		
+			void prepare();
+		};
+
+
+		/*!
+		\brief Send targeting cursor to client
+		\author Chronodt
+		\note packet 0x6C
+
+		\todo targeting has to be remade almost completely -_-
+		*/
+		class TargetingCursor : public cPacketSend
+		{
+		protected:
+			uint8_t type;		//!< 0 = creature/item target, 1 = xyz(location) target
+			uint32_t cursorid;	//!< I SUPPOSE it is something related to the animation id of the targeting cursor
+		public:
+			inline TargetingCursor(uint8_t aType, uint32_t aCursorId) :
+				cPacketSend(NULL, 0), type(aType), cursorid(aCursorId)
+			{ }
+			void prepare();
+		};
+
 
 
 		/*!
@@ -876,29 +1006,6 @@ namespace nPackets {
 		};
 
 
-
-		/*!
-		\brief Packet to confirm processing of buy (or sell) window
-		\author Chronodt
-		*/
-		
-		class ClearBuyWindow : public cPacketSend
-		{
-		protected:
-			const pNPC npc;	        //!< Vendor
-		
-		public:
-			/*!
-			\param n npc vendor
-			*/
-			inline ClearBuyWindow(pNPC n) :
-				cPacketSend(NULL, 0), npc(n)
-			{ }
-
-			void prepare();
-		};
-		
-
 		/*!
 		\brief Opens map gump with data from map
 		\author Chronodt
@@ -945,23 +1052,7 @@ namespace nPackets {
 		};
 		
 		
-		class MsgBoardItemsinContainer : public cPacketSend
-		{
-		protected:
-		
-			const pMsgBoard msgboard;
-		
-		public:
-			/*!
-			\note constructor for msgboards
-			\param m msgboard used. This is called only on msgboard first opening
-			*/
-			inline MsgBoardItemsinContainer(pMsgBoard m) :
-				cPacketSend(NULL, 0), msgboard (m)
-			{ }
-		
-			void prepare();
-		};
+
 		
 		class SecureTrading : public cPacketSend
 		{
@@ -1104,39 +1195,7 @@ namespace nPackets {
 			void prepare();
 		};
 		
-		//! Sends the pages of a writable book
-		class BookPagesReadWrite : public cPacketSend
-		{
-		protected:
-			pBook book;
-			
-			void preparePagesReadOnly();
-			void preparePagesReadWrite();
-		public:
-			inline BookPagesReadWrite(pBook abook) :
-				cPacketSend(NULL, 0), book(abook)
-			{ }
-		
-			void prepare();
-		};
-		
-		//! Sends the requested page of a readonly book
-		class BookPageReadOnly : public cPacketSend
-		{
-		protected:
-			pBook book;
-			uint16_t p;	//!< Index of the page to send
-			
-			void preparePagesReadOnly();
-			void preparePagesReadWrite();
-		public:
-			inline BookPageReadOnly(pBook abook, uint16_t page) :
-				cPacketSend(NULL, 0), book(abook), p(page)
-			{ }
-		
-			void prepare();
-		};
-		
+
 	} // Sent
 	
 	/*!

@@ -148,34 +148,6 @@ void bgsound(pChar pc_curr)
 	}
 }
 
-//xan : fast weather function.. maybe we should find a more complete system like the
-//old one below!
-void weather(pClient client, unsigned char bolt)
-{
-	uint8_t packet[4] = { 0x65, 0xFF, 0x40, 0x20 };
-
-	if (wtype==0) packet[2] = 0x00;
-	if (wtype==1) packet[1] = 0x00;
-	if (wtype==2) { packet[1] = 0x02; packet[3] = 0xEC; }
-
-	Xsend(s, packet, 4);
-//AoS/	Network->FlushBuffer(s);
-}
-
-void pweather(pClient client)
-{
-	pChar pc = client->currChar();
-	if (!pc) return;
-
-	uint8_t packet[4] = { 0x65, 0xFF, 0x40, 0x20 };
-
-	if (region[pc->region].wtype==0) packet[2] = 0x00;
-	if (region[pc->region].wtype==1) packet[1] = 0x00;
-	if (region[pc->region].wtype==2) { packet[1] = 0x02; packet[3] = 0xEC; }
-
-	Xsend(s, packet, 4);
-//AoS/	Network->FlushBuffer(s);
-}
 
 void itemmessage(pClient client, char *txt, int serial, short color)
 {

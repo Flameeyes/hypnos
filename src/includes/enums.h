@@ -185,7 +185,8 @@ enum Climates {
 	clNormal = 1,		//!< Temperate
 	clArtic,		//!< frigid and should have high snow probability
 	clTropical,		//!< hot and humid areas. Should have a high rain probability
-	clDry			//!< deserts (or generally warm low-raining areas)
+	clDry,			//!< deserts (or generally warm low-raining areas)
+	clNone			//!< dungeons, underground and other no-weather areas
 };
 
 //! types of weather

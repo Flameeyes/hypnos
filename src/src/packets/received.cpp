@@ -640,6 +640,23 @@ void nPackets::Sent::SendSkills::prepare()
 }
 
 /*!
+\brief empties buy window (i.e. just like pressing the clear button on client, but this is from server side)
+\author Chronodt
+\note packet 0x3b
+*/
+
+void nPackets::Sent::ClearBuyWindow::prepare()
+{
+	length = 8;
+	buffer = new uint8_t[8];
+	buffer[0] = 0x3B;
+	ShortToCharPtr(0x08, buffer +1);			// Packet len
+	LongToCharPtr( npc->getSerial(), buffer + 3);		// vendorID
+	buffer[7]=0x00;						// Flag:  0 => no more items  0x02 items following ...
+}
+
+
+/*!
 \brief tells client which items are in the given container
 \author Flameeyes
 \note packet 0x3c
@@ -681,6 +698,69 @@ void nPackets::Sent::ContainerItem::prepare()
 		ptrItem += 19;
 	}
 }
+
+
+/*!
+\brief tells client which items are in the given msgboard
+\author Flameeyes & Chronodt
+\note packet 0x3c
+
+msgboard version of this packet requires special handling so it is separate from the other 0x3c above
+
+\note This functions holds and releases the cMsgBoard::globalMutex and cMsgBloard::boardMutex mutexes
+*/
+void nPackets::Sent::MsgBoardItemsinContainer::prepare()
+{
+ 	static const uint8_t templ1[5] = {
+		0x3C, 0x00, 0x05, 0x00, 0x00
+		};
+
+	static const uint8_t templ2[19] = {
+		0x00, 0x00, 0x00, 0x00, 0x0E, 0xB0, 0x00,
+		0x00, 0x00, 0x00, 0x3A, 0x00, 0x3A, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00
+		};
+
+	cMsgBoard::globalMutex.lock();
+	msgboard->boardMutex.lock();
+	
+	uint16_t count = msgboard->boardMsgs.size() + cMsgBoard::globalMsgs.size();
+		//! \todo We need to add support for regional posts here!
+
+	length = 5 + count*19;
+
+	buffer = new uint8_t[length];
+	memcpy(buffer, templ1, 5);
+
+	ShortToCharPtr(length, buffer+1);
+	ShortToCharPtr(count, buffer+3);
+
+	uint8_t *ptrItem = buffer+5;
+
+	for( cMsgBoard::MessageList iterator it = msgboard->boardMsgs.begin(); it != msgboard->boardMsgs.end(); it++ )
+	{ // First of all, local messages
+		memcpy(ptrItem, templ2, 19);
+		LongToCharPtr( (*it)->getSerial(), ptrItem);
+		LongToCharPtr( msgboard->getSerial(), ptrItem+13);
+		//all other parts are invaried in msgboards messages and are defaulted in templ2
+		ptrItem += 19;
+	}
+	
+	//! \todo We need to add support for regional posts here!
+	
+	for( cMsgBoard::MessageList iterator it = cMsgBoard::glboalMsgs.begin(); it != cMsgBoard::glboalMsgs.end(); it++ )
+	{ // At last, global messages
+		memcpy(ptrItem, templ2, 19);
+		LongToCharPtr( (*it)->getSerial(), ptrItem);
+		LongToCharPtr( msgboard->getSerial(), ptrItem+13);
+		//all other parts are invaried in msgboards messages and are defaulted in templ2
+		ptrItem += 19;
+	}
+	
+	cMsgBoard::globalMutex.unlock();
+	msgboard->boardMutex.unlock();
+}
+
 
 /*!
 \brief Personal Light Level
@@ -810,7 +890,111 @@ void nPackets::Sent::Weather::prepare()
 	length = 4;
 	buffer = new uint8_t[4];
 	buffer[0] = 0x65;
+	buffer[1] = weather;
+	buffer[2] = intensity;
+	buffer[3] = 0;		// maybe temperature, but it is unused for now
+}
 
+/*!
+\brief Send Book Page (ReadWrite book version)
+\author Flameeyes
+\note packet 0x66
+*/
+
+void nPackets::Send::BookPagesReadWrite::prepare()
+{
+	cBook::tpages pages = book->getPages(pages);
+	
+	length = 9;
+	for( cBook::tpages::iterator it = pages.begin(); it != pages.end(); it++ )
+	{
+		bytes += 4;
+		uint16_t j = 0;
+		for ( stringVector::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++)
+			length += (*it2).size() + 1; // null-terminated string
+		
+		if ( j < 8 )
+			length += 2 * (j-8)
+	}
+	
+	buffer = new uint8_t[length];
+	
+	buffer[0] = 0x66;
+	ShortToCharPtr(length, buffer+1);
+	LongToCharPtr(book->getSerial(), buffer+3);
+	ShortToCharPtr(page.size(), buffer+7);
+	
+	uint8_t *page = 9;
+	uint16_t i = 1;
+	for( cBook::tpages::iterator it = pages.begin(); it != pages.end(); it++ )
+	{
+		ShortToCharPtr(i, page);
+		ShortToCharPtr(8, page+2);
+		
+		uint8_t *line = page+4;
+		int j = 0;
+		for( stringVector::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++)
+		{
+			strcpy( page, (*it2).c_str() );
+			page += (*it2).size() +1;
+		}
+		while ( j++ < 8 )
+		{
+			strcpy( page, " " );
+			page += 2;
+		}
+	}
+}
+
+/*!
+\brief Send Book Page (Readonly book version)
+\author Flameeyes
+\note packet 0x66
+*/
+
+void nPackets::Send::BookPageReadOnly::prepare()
+{
+	stringVector page = book->getPage(p);
+	
+	length = 13;
+	for ( stringVector::iterator it = page.begin(); it != page.end(); it++)
+		length += (*it2).size() + 1; // null-terminated string
+	
+	buffer = new uint8_t[length];
+	
+	buffer[0] = 0x66;
+	ShortToCharPtr(length, buffer+1);
+	LongToCharPtr(book->getSerial(), buffer+3);
+	ShortToCharPtr(page.size(), buffer+7);
+	ShortToCharPtr(p, bookpage+9);
+	ShortToCharPtr(page.size(), bookpage+11);
+	
+	uint8_t *line = buffer+13;
+	
+	for( stringVector::iterator it = page.begin(); it != page.end(); it++)
+	{
+		strcpy( line, (*it2).c_str() );
+		line += (*it2).size() +1;
+	}
+}
+
+/*!
+\brief Send Targeting cursor to client
+\author Chronodt
+\note packet 0x6C
+
+\todo targeting has to be remade almost completely -_-
+*/
+
+void nPackets::Sent::TargetingCursor::prepare()
+{
+	buffer = new uint8_t[19];
+	length = 19;
+	buffer[0] = 0x6c;
+	buffer[1] = type;
+	LongToCharPtr(cursorid, buffer+2);
+	buffer[6] = 0;
+	memset(buffer + 7, 0, 12);	//the remaining bytes are useless in sent message
 }
 
 
@@ -884,15 +1068,6 @@ void nPackets::Sent::PlayMidi::prepare()
 	ShortToCharPtr(id, buffer+1);
 }
 
-void nPackets::Sent::ClearBuyWindow::prepare()
-{
-	length = 8;
-	buffer = new uint8_t[8];
-	buffer[0] = 0x3B;
-	ShortToCharPtr(0x08, buffer +1);			// Packet len
-	LongToCharPtr( npc->getSerial(), buffer + 3);		// vendorID
-	buffer[7]=0x00;						// Flag:  0 => no more items  0x02 items following ...
-}
 
 void nPackets::Sent::OpenMapGump::prepare()
 {
@@ -1006,60 +1181,6 @@ void nPackets::Sent::BBoardCommand::prepare()
         }
 }
 
-/*!
-\note This functions holds and releases the cMsgBoard::globalMutex and cMsgBloard::boardMutex mutexes
-*/
-void nPackets::Sent::MsgBoardItemsinContainer::prepare()
-{
- 	static const uint8_t templ1[5] = {
-		0x3C, 0x00, 0x05, 0x00, 0x00
-		};
-
-	static const uint8_t templ2[19] = {
-		0x00, 0x00, 0x00, 0x00, 0x0E, 0xB0, 0x00,
-		0x00, 0x00, 0x00, 0x3A, 0x00, 0x3A, 0x00,
-		0x00, 0x00, 0x00, 0x00, 0x00
-		};
-
-	cMsgBoard::globalMutex.lock();
-	msgboard->boardMutex.lock();
-	
-	uint16_t count = msgboard->boardMsgs.size() + cMsgBoard::globalMsgs.size();
-		//! \todo We need to add support for regional posts here!
-
-	length = 5 + count*19;
-
-	buffer = new uint8_t[length];
-	memcpy(buffer, templ1, 5);
-
-	ShortToCharPtr(length, buffer+1);
-	ShortToCharPtr(count, buffer+3);
-
-	uint8_t *ptrItem = buffer+5;
-
-	for( cMsgBoard::MessageList iterator it = msgboard->boardMsgs.begin(); it != msgboard->boardMsgs.end(); it++ )
-	{ // First of all, local messages
-		memcpy(ptrItem, templ2, 19);
-		LongToCharPtr( (*it)->getSerial(), ptrItem);
-		LongToCharPtr( msgboard->getSerial(), ptrItem+13);
-		//all other parts are invaried in msgboards messages and are defaulted in templ2
-		ptrItem += 19;
-	}
-	
-	//! \todo We need to add support for regional posts here!
-	
-	for( cMsgBoard::MessageList iterator it = cMsgBoard::glboalMsgs.begin(); it != cMsgBoard::glboalMsgs.end(); it++ )
-	{ // At last, global messages
-		memcpy(ptrItem, templ2, 19);
-		LongToCharPtr( (*it)->getSerial(), ptrItem);
-		LongToCharPtr( msgboard->getSerial(), ptrItem+13);
-		//all other parts are invaried in msgboards messages and are defaulted in templ2
-		ptrItem += 19;
-	}
-	
-	cMsgBoard::globalMutex.unlock();
-	msgboard->boardMutex.unlock();
-}
 
 
 void nPackets::Sent::SecureTrading::prepare()
@@ -1205,76 +1326,7 @@ void nPackets::Sent::BookHeader::prepare()
 	strncpy( buffer+69, book->getAuthor().c_str(), 30 );
 }
 
-void nPackets::Send::BookPagesReadWrite::prepare()
-{
-	cBook::tpages pages = book->getPages(pages);
-	
-	length = 9;
-	for( cBook::tpages::iterator it = pages.begin(); it != pages.end(); it++ )
-	{
-		bytes += 4;
-		uint16_t j = 0;
-		for ( stringVector::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++)
-			length += (*it2).size() + 1; // null-terminated string
-		
-		if ( j < 8 )
-			length += 2 * (j-8)
-	}
-	
-	buffer = new uint8_t[length];
-	
-	buffer[0] = 0x66;
-	ShortToCharPtr(length, buffer+1);
-	LongToCharPtr(book->getSerial(), buffer+3);
-	ShortToCharPtr(page.size(), buffer+7);
-	
-	uint8_t *page = 9;
-	uint16_t i = 1;
-	for( cBook::tpages::iterator it = pages.begin(); it != pages.end(); it++ )
-	{
-		ShortToCharPtr(i, page);
-		ShortToCharPtr(8, page+2);
-		
-		uint8_t *line = page+4;
-		int j = 0;
-		for( stringVector::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++)
-		{
-			strcpy( page, (*it2).c_str() );
-			page += (*it2).size() +1;
-		}
-		while ( j++ < 8 )
-		{
-			strcpy( page, " " );
-			page += 2;
-		}
-	}
-}
 
-void nPackets::Send::BookPageReadOnly::prepare()
-{
-	stringVector page = book->getPage(p);
-	
-	length = 13;
-	for ( stringVector::iterator it = page.begin(); it != page.end(); it++)
-		length += (*it2).size() + 1; // null-terminated string
-	
-	buffer = new uint8_t[length];
-	
-	buffer[0] = 0x66;
-	ShortToCharPtr(length, buffer+1);
-	LongToCharPtr(book->getSerial(), buffer+3);
-	ShortToCharPtr(page.size(), buffer+7);
-	ShortToCharPtr(p, bookpage+9);
-	ShortToCharPtr(page.size(), bookpage+11);
-	
-	uint8_t *line = buffer+13;
-	
-	for( stringVector::iterator it = page.begin(); it != page.end(); it++)
-	{
-		strcpy( line, (*it2).c_str() );
-		line += (*it2).size() +1;
-	}
-}
 
 pPacketReceive nPackets::Received::cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
 {
