@@ -577,12 +577,11 @@ namespace nPackets {
 		\author Chronodt
 		\note packet 0x4e
 		*/
-
 		class PersonalLight : public cPacketSend
 		{
 		protected:
 			pChar pc;	//!< Character
-			uint8_t light	//!< light level
+			uint8_t light;	//!< light level
 		public:
 			/*!
 			\param aPc Character to send the light level of
@@ -681,7 +680,7 @@ namespace nPackets {
 		protected:
 		public:
 			inline StartGame() :
-				cPacketSend(NULL, 0), model(m), loc(l)
+				cPacketSend(NULL, 0)
 			{ }
 
 			void prepare();
