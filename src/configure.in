@@ -29,7 +29,7 @@ AC_EXEEXT
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([fcntl.h limits.h memory.h signal.h stdlib.h sys/time.h sys/timeb.h sys/mman.h sys/utsname.h unistd.h netinet/in.h])
+AC_CHECK_HEADERS([fcntl.h limits.h memory.h signal.h stdlib.h sys/time.h sys/timeb.h sys/mman.h sys/utsname.h unistd.h netinet/in.h sys/byteorder.h])
 
 AC_LANG_CPLUSPLUS
 # Those are all stl headers... checking both for standard and deprecated header (and gcc extension when needed)
