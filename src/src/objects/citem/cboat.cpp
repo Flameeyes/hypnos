@@ -350,16 +350,12 @@ bool cBoat::tileCheck(multi_st multi, map_st map, sPoint w, int8_t dir)
 	data::collectStatics( dx, dy, s );
 	for( register int i = 0; i < s.size(); i++ )
 	{
-		tile_st tile;
-		if( ! data::seekTile( s[i].id, tile ) )
-			continue;
-			
-		if(strstr((char *) tile.name, "water") || strstr((char *) tile.name, "lava"))
+		std::string tilename = tiledataStatic->getName( s[i].id );
+		
+		if ( strstr( tilename.c_str(), "water" ) || strstr( tilename.c_str(), "water" ) )
 			return true;
-			
-		land_st land;
-		if( data::seekLand( map.id, land ) )
-			return !(land.flags&TILEFLAG_WET);	//not a "wet" tile
+		
+		return tiledataLand->getFlags(map.id) & nMULFiles::flagTileWet;
 	}
 	return false;
 }

@@ -90,6 +90,10 @@ extern "C" int g_nTraceMode;
 
 RemoteAdmin TelnetInterface;	//!< remote administration
 
+nMULFiles::fTiledataLand *tiledataLand = NULL;
+nMULFiles::fTiledataStatic *tiledataStatic = NULL;
+
+
 /*!
 \todo clean and broke up
 */
@@ -441,6 +445,12 @@ int main(int argc, char *argv[])
 	ConOut("\n");
 	SetGlobalVars();
 
+	// Load MULs
+	nMULFiles::setMULpath("./muls"); //!\todo need to fix this
+	tiledataStatic = new nMULFiles::fTiledataStatic();
+	tiledataLand = new nMULFiles::fTiledataLand();
+	
+	// Load datafiles
 	nNewbies::loadStartLocations();
 	nNewbies::loadNewbieItems();
 	nSkills::loadSkills();

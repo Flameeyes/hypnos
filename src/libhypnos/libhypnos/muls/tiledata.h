@@ -61,6 +61,39 @@ public:
 } PACK_NEEDED;
 
 /*!
+\class fTiledataLand tiledata.h "libhypmul/tiledata.h"
+\brief Access class to tiledata.mul land blocks
+
+This class handles the access to the tiledata.mul file, restricted to the 512 
+land blocks.
+
+*/
+class nMULFiles::fTiledataLand : public tMMappedFile<cTiledataLand>
+{
+protected:
+	cTiledataLand &tile(uint16_t id) const
+	{ return array[id/32].entries[id%32]; }
+public:
+	fTiledataLand();
+	~fTiledataLand();
+	
+	uint32_t getFlags(uint16_t id) const
+	{
+		return tile(id).getFlags();
+	}
+	
+	uint16_t getTextureID(uint16_t id) const
+	{
+		return tile(id).getTextureID();
+	}
+	
+	std::string getString(uint16_t id) const
+	{
+		return tile(id).getString();
+	}
+};
+
+/*!
 \brief Internal structure for a tiledata's static block
 
 A tiledata static block has a structure like that:
@@ -128,36 +161,43 @@ public:
 } PACK_NEEDED;
 
 /*!
-\class fTiledataLand tiledata.h "libhypmul/tiledata.h"
-\brief Access class to tiledata.mul land blocks
+\class fTiledataStatic tiledata.h "libhypmul/tiledata.h"
+\brief Access class to tiledata.mul static blocks
 
-This class handles the access to the tiledata.mul file, restricted to the 512 
-land blocks.
+This class handles the access to the tiledata.mul file, restricted to the 
+variables static blocks.
 
 */
-class nMULFiles::fTiledataLand : public tMMappedFile<cTiledataLand>
+class nMULFiles::fTiledataStatic : public tMMappedFile<cTiledataStatic>
 {
 protected:
-	cTiledataLand &tile(uint16_t id) const
+	cTiledataStatic &tile(uint16_t id) const
 	{ return array[id/32].entries[id%32]; }
 public:
-	fTiledataLand();
-	~fTiledataLand();
+	fTiledataStatic();
+	~fTiledataStatic();
 	
 	uint32_t getFlags(uint16_t id) const
-	{
-		return tile(id).getFlags();
-	}
+	{ return tile(id).getFlags(); }
 	
-	uint16_t getTextureID(uint16_t id) const
-	{
-		return tile(id).getTextureID();
-	}
+	uint8_t getWeight(uint16_t id) const
+	{ return tile(id).getWeight(); }
 	
-	std::string getString(uint16_t id) const
-	{
-		return tile(id).getString();
-	}
+	uint16_t getQuantity(uint16_t id) const
+	{ return tile(id).getQuantity(); }
+	
+	uint16_t getAnimID(uint16_t id) const
+	{ return tile(id).getAnimID(); }
+	
+	uint8_t getHue(uint16_t id) const
+	{ return tile(id).getHue(); }
+	
+	uint8_t getHeight(uint16_t id) const
+	{ return tile(id).getHeight(); }
+	
+	std::string getName(uint16_t id) const
+	{ return tile(id).getName(); }
 };
+
 
 #endif

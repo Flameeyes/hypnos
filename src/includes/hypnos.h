@@ -14,6 +14,7 @@
 #define __HYPNOS_H_
 
 #include "typedefs.h"
+#include "libhypmul/mulfiles.h"
 
 void StartClasses();
 void SetGlobalVars();
@@ -30,5 +31,8 @@ unsigned long CheckMilliTimer(unsigned long &Seconds, unsigned long &Millisecond
 
 void newScriptsInit();
 void deleteNewScripts();
+
+extern nMULFiles::fTiledataLand *tiledataLand;
+extern nMULFiles::fTiledataStatic *tiledataStatic;
 
 #endif

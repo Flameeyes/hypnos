@@ -34,17 +34,5 @@ nMULFiles::fTiledataStatic::fTiledataStatic()
 {
 	open(nMULFiles::getMULpath() + "tiledata.mul");
 	
-	struct stat info;
-	int ret = fstat(fd, &info);
-	if ( ret == -1 )
-	{
-		/*!
-		\todo Here we should check for which error is set in
-		errno and then throw the right exception to the
-		exception handler
-		*/
-		return;
-	}
-	
 	mmap(512*sizeOf(cTiledataLand));
 }
