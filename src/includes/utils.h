@@ -27,7 +27,6 @@ int calcGoodValue(pChar npc, pItem pi, int value,int goodtype); // by Magius(CHE
 int whichbit( int number, int bit );
 int numbitsset( int number );
 
-void getSextantCoords(int32_t x, int32_t y, bool t2a, char *sextant);
-void splitline();
+std::string getSextantCoords(sPoint p, sPoint center)
 
 #endif

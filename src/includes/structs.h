@@ -16,6 +16,13 @@
 #ifndef __STRUCTS_H__
 #define __STRUCTS_H__
 
+//! Point in the map
+struct sPoint {
+	uint16_t x;
+	uint16_t y;
+	sPoint(uint16_t X, uint16_t Y) : x(X), y(Y) { }
+};
+
 //! Represent a location on one map
 struct Location {
 	uint16_t x;		//!< X-Coordinate of the location
@@ -45,6 +52,9 @@ struct Location {
 	inline bool operator !=(const Location &b)
 	{ return x != b.x || y != b.y || z != b.z; }
 
+	//! Converts a location (x,y,z) into a point (x,y)
+	inline const sPoint operator sPoint() const
+	{ return sPoint(x, y); }
 };
 
 /*!
@@ -63,13 +73,6 @@ struct sContainerItem
 	uint16_t amount;	//!< Amount of items
 	uint16_t x, y;		//!< Position of the item
 	uint16_t color;		//!< Color of the item
-};
-
-//! Point in the map
-struct sPoint {
-	uint16_t x;
-	uint16_t y;
-	sPoint(uint16_t X, uint16_t Y) : x(X), y(Y) { }
 };
 
 struct location_st

@@ -323,24 +323,21 @@ Central coords for standard map are 1323,1624 (LB's throne) for Sosaria and 5936
 T2A.
 New maps can redefine these values.
 */
-std::string getSextantCoords(uint16_t x, uint16_t y, uint16_t cx, uint16_t cy)
+std::string getSextantCoords(sPoint p, sPoint center)
 {
 	float Tx, Ty, Dx, Dy, Wx, Wy, Mx, My, Hx, Hy;
 	int16_t xH, xM, yH, yM;
 	
+	//! \todo This is not always true! Should we pass it as a parameter maybe?
 	//  map dimensions
 	Wx = 5120.0;
 	Wy = 4096.0;
 
-	// convert input ints to float;
-	Tx = x;
-	Ty = y;
-
 	// main calculation
-	Dx = ( (Tx - cx) * 360.0 ) / Wx;
-	Dy = ( (Ty - cy) * 360.0 ) / Wy;
+	Dx = ( (p.x - center.x) * 360.0 ) / Wx;
+	Dy = ( (p.y - center.y) * 360.0 ) / Wy;
 	
-	////// now let's get minutes, hours & directions from it
+	// now let's get minutes, hours & directions from it
 	Hx = (int16_t) Dx; // get hours (cut off digits after comma, no idea if there's a cleaner/better way)
 
 	Mx = Dx - Hx; // get minutes

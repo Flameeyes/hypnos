@@ -1115,9 +1115,8 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			return;
 		case 0x1057:
 		case 0x1058: // sextants
-			{
-// \todo !			client->sysmessage("You are at: %s", getSextantCoords( pc->getPosition().x, pc->getPosition().y, (pc->getPosition().x >= 5121)).c_str() );
-			}
+			//!\todo Need to find out the center of the outer region.. waiting for new region system
+			client->sysmessage( "You are at: %s", getSextantCoords(pc->getPosition(), ));
 			return;
 		case 0x0E27:
 		case 0x0EFF:   // Hair Dye
