@@ -6,8 +6,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypmul/gumpidx.h"
+#include "libhypnos/muls/gumpidx.h"
 #include "structs.h"
+
+namespace nLibhypnos {
+namespace nMULFiles {
 
 /*!
 \brief Constructor
@@ -16,12 +19,12 @@ This function simply calls the tMMappedFile constructor with the path given by
 getMULpath() function and the filename \c gumpidx.mul .
 
 */
-nMULFiles::fGumpIDX::fGumpIDX()
+fGumpIDX::fGumpIDX()
 	: tMMappedFile<cGumpIDX>( nMULFiles::getMULpath() + "gumpidx.mul" )
 {
 }
 
-nMULFiles::fGumpIDX::~fGumpIDX()
+fGumpIDX::~fGumpIDX()
 {
 }
 
@@ -30,11 +33,12 @@ nMULFiles::fGumpIDX::~fGumpIDX()
 \param index ID of the gump (index to search for). Zero-based.
 \return A point with the maximum dimensions of the gump.
 */
-sPoint nMULFiles::fGumpIDX::getDimensions(uint16_t index)
+sPoint fGumpIDX::getDimensions(uint16_t index)
 {
 	if ( index >= getCount() )
-		throw nLibhypmul::eOutOfBound(getCount()-1, index);
+		throw eOutOfBound(getCount()-1, index);
 	
 	return sPoint(array[index].getHeight(), array[index].getWidth());
 }
 
+}}

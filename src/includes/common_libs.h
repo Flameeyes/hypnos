@@ -152,7 +152,7 @@ and not by external libraries).
 */
 class eException {
 protected:		
-	Exception() { }
+	eException() { }
 };
 
 #endif //__COMMON_LIBS_H__

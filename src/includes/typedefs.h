@@ -31,11 +31,7 @@ typedef std::slist<uint32_t> uint32_slist;	//!< Singly-linked list of uint32_t
 typedef std::vector<std::string> stringVector;	//!< A vector of strings
 
 typedef std::basic_string<uint16_t> unistring;	//!< Unicode string
-
-typedef void (*processTarget)( pClient, const struct &sTarget );	//! Target callback
 //@}
-
-
 
 typedef class cSocket *pSocket;			//!< Pointer to a cSocket
 typedef class cPacketSend *pPacketSend;		//!< Pointer to a cPacketSend
@@ -66,6 +62,8 @@ typedef std::list<struct sLocation> LocationList;
 						//!< List of locations (used for jails)
 
 typedef class cParty *pParty;			//!< Pointer to a cParty instances
+
+typedef void (*processTarget)( pClient, const struct sTarget& );	//! Target callback
 
 //@{
 /*!

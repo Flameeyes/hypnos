@@ -10,7 +10,7 @@
 #include "objects/cchar.h"
 #include "objects/citem.h"
 #include "hypnos.h"
-#include "libhypmul/tiledata.h"
+#include "libhypnos/muls/tiledata.h"
 
 /*!
 \brief makes an npc attacking someone

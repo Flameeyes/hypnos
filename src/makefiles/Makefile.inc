@@ -1,4 +1,4 @@
-CXXFLAGS	= -I $(PWD)/includes/ -pipe
+CXXFLAGS	= -I $(PWD)/includes/ -I $(PWD)/libhypnos/ -pipe
 LIBADD		= -lpthread -lmxmlplus -lwefts 
 
 .cpp.o:

@@ -9,8 +9,8 @@
 #ifndef __LIBHYPMUL_TILEDATA_H__
 #define __LIBHYPMUL_TILEDATA_H__
 
-#include "libhypmul/mulfiles.h"
-#include "libhypmul/mmappedfile.h"
+#include "libhypnos/muls/mulfiles.h"
+#include "libhypnos/muls/mmappedfile.h"
 
 namespace nMULFiles {
 	//! Is a background
@@ -128,7 +128,7 @@ public:
 } PACK_NEEDED;
 
 /*!
-\class fTiledataLand tiledata.h "libhypmul/tiledata.h"
+\class fTiledataLand tiledata.h "libhypnos/muls/tiledata.h"
 \brief Access class to tiledata.mul land blocks
 
 This class handles the access to the tiledata.mul file, restricted to the 512 
@@ -231,7 +231,7 @@ public:
 } PACK_NEEDED;
 
 /*!
-\class fTiledataStatic tiledata.h "libhypmul/tiledata.h"
+\class fTiledataStatic tiledata.h "libhypnos/muls/tiledata.h"
 \brief Access class to tiledata.mul static blocks
 
 This class handles the access to the tiledata.mul file, restricted to the 

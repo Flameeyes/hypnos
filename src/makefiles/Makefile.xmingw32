@@ -1,5 +1,6 @@
 CC		=@/opt/xmingw/bin/i386-mingw32msvc-gcc
 CXX		=@/opt/xmingw/bin/i386-mingw32msvc-g++
+AR		=@/opt/xmingw/bin/i386-mingw32msvc-ar
 LINK		=@/opt/xmingw/bin/i386-mingw32msvc-g++
 STRIP		=@/opt/xmingw/bin/i386-mingw32msvc-strip
 
@@ -11,7 +12,11 @@ TARGET		= hypnos.exe
 ${TARGET}: ${OBJECTS}
 	@echo -e "\tLD    $@"
 	$(LINK) $(LIBADD) $(LDFLAGS) $(OBJECTS) -o $(TARGET)
-	@echo -e "\tSTRIP $@"
-	$(STRIP) --strip-all $(TARGET)
+#	@echo -e "\tSTRIP $@"
+#	$(STRIP) --strip-all $(TARGET)
+
+libhypnos/libhypnos.a: ${LIBOBJS}
+	@echo -e "\tLD    $@"
+	$(AR) r libhypnos/libhypnos.a $(LIBOBJS)
 
 include makefiles/Makefile.inc

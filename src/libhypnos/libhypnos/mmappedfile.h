@@ -12,7 +12,7 @@
 #include "common_libs.h"
 
 /*!
-\class tMMappedFile mmappedfile.h "libhypmul/mmappedfile.h"
+\class tMMappedFile mmappedfile.h "libhypnos/muls/mmappedfile.h"
 \brief Memory Mapped File
 \author Flameeyes
 

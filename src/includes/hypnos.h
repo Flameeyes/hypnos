@@ -14,7 +14,7 @@
 #define __HYPNOS_H_
 
 #include "typedefs.h"
-#include "libhypmul/mulfiles.h"
+#include "libhypnos/muls/mulfiles.h"
 
 void StartClasses();
 void SetGlobalVars();

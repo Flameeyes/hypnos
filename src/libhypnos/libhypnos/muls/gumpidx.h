@@ -9,8 +9,8 @@
 #ifndef __LIBHYPMUL_GUMPIDX_H__
 #define __LIBHYPMUL_GUMPIDX_H__
 
-#include "libhypmul/mulfiles.h"
-#include "libhypmul/mmappedfile.h"
+#include "libhypnos/muls/mulfiles.h"
+#include "libhypnos/muls/mmappedfile.h"
 
 /*!
 \brief Internal structure of gumpidx.mul file
@@ -38,7 +38,7 @@ public:
 } PACK_NEEDED;
 
 /*!
-\class fGumpIDX gumpidx.h "libhypmul/cgumpidx.h"
+\class fGumpIDX gumpidx.h "libhypnos/muls/cgumpidx.h"
 \brief Access class to gumpidx.mul file
 
 This class handles the access to the gumpidx.mul file, which contains not only

@@ -14,7 +14,7 @@
 namespace nLibhypmul
 {
 	/*!
-	\class eOutOfBound exceptions.h "libhypmul/exceptions.h"
+	\class eOutOfBound exceptions.h "libhypnos/muls/exceptions.h"
 	\brief Exception thrown when trying to access an index out of the bound
 		of a vector (or a file)
 		

@@ -6,8 +6,12 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypmul/tiledata.h"
+#include "libhypnos/muls/tiledata.h"
 
+namespace nLibhypnos {
+namespace nMULFiles {
+
+//! Gets the name of the entry
 std::string nMULFiles::cTiledataLand::cEntry::getName()
 {
 	char tmp[21];
@@ -16,6 +20,7 @@ std::string nMULFiles::cTiledataLand::cEntry::getName()
 	return std::string(tmp);
 }
 
+//! Gets the name of the entry
 std::string nMULFiles::cTiledataStatic::cEntry::getName()
 {
 	char tmp[21];
@@ -36,3 +41,5 @@ nMULFiles::fTiledataStatic::fTiledataStatic()
 	
 	mmap(512*sizeOf(cTiledataLand));
 }
+
+}}

@@ -6,13 +6,14 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypmul/mmappedfile.h"
+#include "libhypnos/muls/mmappedfile.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
 
+namespace nLibhypnos {
 template<class MUL> {
 
 	/*!
@@ -116,3 +117,4 @@ template<class MUL> {
 		array = (MUL*)mmap(NULL, length, PROT_READ, MAP_SHARED, fd, offset);
 	}
 };
+}
