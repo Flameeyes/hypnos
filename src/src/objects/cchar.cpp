@@ -18,7 +18,6 @@
 #include "race.h"
 #include "npcai.h"
 #include "network.h"
-#include "extras/jail.h"
 #include "boats.h"
 #include "walking.h"
 #include "map.h"
@@ -69,6 +68,8 @@ void cChar::resetData()
 {
 	client = NULL;
 	hidden = htUnhidden;
+	jailInfo = NULL;
+	jailPositions = NULL;
 	// Hypnos OK!
 
 	setMultiSerial32Only(INVALID);//Multi serial
@@ -286,7 +287,6 @@ void cChar::resetData()
 
 	setGuild( NULL, NULL );
 
-	jailed=false;
 	morphed=0;
 	resetLockSkills();
 

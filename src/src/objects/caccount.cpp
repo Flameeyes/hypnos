@@ -83,11 +83,11 @@ cAccount::cAccount(std::string aName, std::string aPassword)
 	
 	banAuthor = NULL;
 	banReleaseTime = 0;
-	jailtime = 0;
 	lastConnIP = 0;
 	lastConnTime = 0;
 	
 	client = NULL;
+	jailInfo = NULL;
 }
 
 /*!
@@ -107,7 +107,6 @@ cAccount::cAccount(cSQLite::cSQLiteQuery::tRow r)
 	
 	banAuthor       = dynamic_cast<pPC>( cSerializable::findBySerial(atoi(r["banAuthor"])) );
 	banReleaseTime  = atoi(r["banReleaseTime"]);
-	jailtime	= atoi(r["jailtime"]);
 	lastConnIP      = atoi(r["lastConnIP"]);
 	lastConnTime    = atoi(r["lastConnTime"]);
 	
@@ -151,14 +150,13 @@ void cAccount::save(uint32_t id)
 	char *buffer;
 	asprintf(&buffer, "INSERT INTO accounts VALUES("
 			"%u, '%s', '%s', %u, %u, %u,"
-			"%u, %u, %u, %u, %u, %u)",
+			"%u, %u, %u, %u, %u)",
 		name.c_str(),
 		password.c_str(),
 		ctype,
 		creationdate,
 		banAuthor ? banAuthor->getSerial() : 0,
 		banReleaseTime,
-		jailtime,
 		lastConnIP,
 		lastConnTime,
 		lastchar

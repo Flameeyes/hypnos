@@ -56,11 +56,6 @@ private:
 	void loadItem();
 
 	void realworldsave();
-
-	void loadjailed();
-	void loadPrison();
-	void savePrison();
-
 public:
 
 	CWorldMain();

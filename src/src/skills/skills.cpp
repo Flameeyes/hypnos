@@ -6,11 +6,12 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include <fstream>
-#include "common_libs.h"
 #include "skills/skills.h"
+#include "common_libs.h"
 #include "settings.h"
 #include "backend/strconstants.h"
+#include "extras/jails.h"
+#include <fstream>
 
 //int goldsmithing;
 //1=iron, 2=golden, 3=agapite, 4=shadow, 5=mythril, 6=bronze, 7=verite, 8=merkite, 9=copper, 10=silver
@@ -777,7 +778,7 @@ void Skills::SkillUse(pClient client, int x)
 		return;
 	}
 
-	if ( client->currAccount()->isJailed() )
+	if ( nJails::isJailed(pc) )
 	{
 		client->sysmessage("you are in jail and cant gain skills here!");
 		return;

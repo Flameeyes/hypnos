@@ -20,6 +20,7 @@
 #include "objects/citem/cbook.h"
 #include "objects/citem/cmap.h"
 #include "extras/motd.h"
+#include "extras/jails.h"
 
 /*!
 \brief Status window
@@ -1665,9 +1666,12 @@ bool nPackets::Received::AttackRequest::execute (pClient client)
 	pChar victim = cSerializable::findCharBySerial(LongFromCharPtr(buffer + 1));  //victim may be an npc too, so it is a pChar
 	if(!victim) return false;
 
-	if( pc->dead ) pc->deadAttack(victim);
-	else	if( pc->jailed ) client->sysmessage("There is no fighting in the jail cells!");
-		else pc->attackStuff(victim);
+	if( pc->isDead() )
+		pc->deadAttack(victim);
+	else if( nJails::isJailed(pc) )
+		client->sysmessage("There is no fighting in the jail cells!");
+	else
+		pc->attackStuff(victim);
 	return true;
 }
 

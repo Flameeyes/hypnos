@@ -16,20 +16,16 @@
 #include "common_libs.h"
 #include "backend/sqlite.h"
 #include "enums.h"
-#include <zthread/FastMutex.h>
+#include <wefts_mutex.h>
 
 /*!
 \class cAccount caccount.h "objects/caccount.h"
 \brief This class represent an account for game
-
-In database we should store:
-name password cryptotype privlevel creationdate ban_author banReleaseTime
-jailtime lastconn_ip lastconn_time char1 char2 char3 char4 char5 lastchar
 */
 class cAccount
 {
 protected:
-	static ZThread::FastMutex global_mt;
+	static Wefts::Mutex global_mt;
 		//!< Global mutex used while saving or loading
 
 	static cAccounts accounts;			//!< All the accounts [Hash-map]

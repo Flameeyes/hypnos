@@ -16,7 +16,6 @@
 #include "sregions.h"
 #include "version.h"
 #include "tmpeff.h"
-#include "jail.h"
 #include "data.h"
 #include "boats.h"
 #include "spawn.h"

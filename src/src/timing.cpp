@@ -19,7 +19,6 @@
 #include "magic.h"
 #include "tmpeff.h"
 #include "house.h"
-#include "extras/jail.h"
 #include "timers.h"
 #include "boats.h"
 #include "spawn.h"

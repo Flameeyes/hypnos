@@ -15,7 +15,7 @@
 #include "data.h"
 #include "map.h"
 #include "inlines.h"
-#include "utils.h"
+#include "extras/jails.h"
 
 namespace magic {
 
@@ -75,7 +75,7 @@ void loadSpellsFromScript()
 	cScpIterator* iter = NULL;
 	char script1[1024], script2[1024];
 
-	for (int curspell = 0; curspell < MAX_SPELLS; curspell++) {
+	for (register int curspell = 0; curspell < MAX_SPELLS; curspell++) {
 		// in XSS script, numeration starts from 1 :[
 		g_Spells[curspell].attackSpell = false;
 		g_Spells[curspell].areasize = INVALID;
@@ -1949,21 +1949,22 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 /*!
 \brief Prepares spell casting
 \author Xanatar
-\param client caster
-\param type type of casting
+\param num Spell to cast
+\param s Client of the caster
+\param type Type of casting
 */
 bool beginCasting (SpellId num, pClient s, CastingType type)
 {
 	if (!s) return true;
 
 	// override for spellcasting (?)
-	pChar pc = s->currChar();
+	pPC pc = s->currChar();
 	if(!pc) retun false;
 
-	if (pc->dead) return false;
+	if ( pc->isDead() ) return false;
 
 	// caster jailed ?
-	if ((pc->jailed) && (!pc->IsGM()))
+	if ( nJails::isJailed(pc) && !pc->isGM() )
 	{
 		s->sysmessage("You are in jail and cannot cast spells");
 		return false;
@@ -1976,7 +1977,7 @@ bool beginCasting (SpellId num, pClient s, CastingType type)
 		return false;
 	}
 
-	if ( pc->IsHiddenBySpell() ) {	//Luxor: cannot do magic gestures if under invisible spell
+	if ( pc->isHiddenBySpell() ) {	//Luxor: cannot do magic gestures if under invisible spell
 		pc->sysmessage("You cannot cast by invisible.");
 		return false;
 	}
@@ -1985,12 +1986,11 @@ bool beginCasting (SpellId num, pClient s, CastingType type)
 		return false;
 	}
 
-
-	pFunctionHandle evt = src->getEvent(cChar::evtChrOnCastSpell);
+	pFunctionHandle evt = pc->getEvent(cChar::evtChrOnCastSpell);
 	if ( evt )
 	{
 		tVariantVector params = tVariantVector(4);
-		params[0] = src->getSerial(); params[1] = num;
+		params[0] = pc->getSerial(); params[1] = num;
 		params[2] = type; params[3] = INVALID;
 		evt->setParams(params);
 		evt->execute();
@@ -2020,8 +2020,7 @@ bool beginCasting (SpellId num, pClient s, CastingType type)
 }
 
 
-
-/*
+/*!
 \brief Constructor
 \author Luxor
 */
@@ -2125,7 +2124,7 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 }
 
 
-/*
+/*!
 \brief Constructor
 \author Luxor
 \since 0.82
@@ -2164,7 +2163,7 @@ void cCreateFoodMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	spellFX( SPELL_CREATEFOOD, pc, pc );
 }
 
-/*
+/*!
 \brief Constructor
 \author Luxor
 \since 0.82
