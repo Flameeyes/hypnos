@@ -392,11 +392,16 @@ void walking(pChar pc, int dir, int sequence)
 		if( !WalkHandleBlocking(pc,sequence,dir, oldx, oldy) )
 			return;
 
-	if ( pc->amxevents[EVENT_CHR_ONWALK] ) {
-		g_bByPass = false;
-		pc->amxevents[EVENT_CHR_ONWALK]->Call( pc->getSerial(), dir, sequence );
-		if ( g_bByPass==true )
+	pFunctionHandle evt = pc->getEvent(evtChrOnWalk);
+	if( evt ) {
+		tVariantVector params = tVariantVector(3);
+		params[0] = pc->getSerial(); params[1] = dir; params[2] = sequence;
+		evt->setParams(params);
+		evt->execute();
+		if( evt->bypassed() )
 			return;
+
+		free(evt);
 	}
 
 	WalkingHandleHiding(pc,dir);
@@ -616,22 +621,18 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 			}
 		}
 
-
-		if ( (!valid || !move) && pc_i->amxevents[EVENT_CHR_ONBLOCK] )
+		pFunctionHandle evt = pc_i->getEvent(evtChrOnBlock);
+		if ( (!valid || !move) && evt )
 		{
-			g_bByPass = false;
-			pc_i->amxevents[EVENT_CHR_ONBLOCK]->Call( pc_i->getSerial(), newX, newY, charpos.z);
-			if (g_bByPass==true)
+			tVariantVector params = tVariantVector(4);
+			params[0] = pc_i->getSerial(); params[1] = newX; params[2] = newY; params[3] = charpos.z;
+			evt->setParams(params);
+			evt->execute();
+			if( evt->bypassed() )
 				return;
+ 
+			free(evt);
 		}
-		/*
-		if ( (!valid || !move) && pc_i->getAmxEvent( EVENT_CHR_ONBLOCK ) )
-		{
-			pc_i->runAmxEvent( EVENT_CHR_ONBLOCK, pc_i->getSerial(), newX, newY, charpos.z);
-			if (g_bByPass==true)
-				return;
-		}
-		*/
 	}
 	else	// Change direction
 	{
