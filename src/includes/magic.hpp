@@ -13,9 +13,9 @@
 #ifndef __MAGIC_H__
 #define __MAGIC_H__
 
-#include "common_libs.h"
-#include "menu.h"
-#include "enums.h"
+#include "common_libs.hpp"
+#include "menu.hpp"
+#include "enums.hpp"
 
 /*!
 \brief Magic related stuff

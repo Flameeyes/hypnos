@@ -13,7 +13,7 @@
 #ifndef NPCS_INCLUDE
 #define NPCS_INCLUDE
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 
 char* getRandomName(char * namelist);
 void setrandomname(pChar pc, char * namelist);

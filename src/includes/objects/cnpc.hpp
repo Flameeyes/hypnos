@@ -9,7 +9,7 @@
 #ifndef __OBJECTS_CNPC_H__
 #define __OBJECTS_CNPC_H__
 
-#include "objects/cchar.h"
+#include "objects/cchar.hpp"
 
 /*!
 \brief This class represent a non-playing character.

@@ -9,10 +9,10 @@
 #ifndef __OBJECTS_CBODY_H__
 #define __OBJECTS_CBODY_H__
 
-#include "common_libs.h"
-#include "objects/cobject.h"
-#include "objects/citem/cequippablecontainer.h"
-#include "enums.h"
+#include "common_libs.hpp"
+#include "objects/cobject.hpp"
+#include "objects/citem/cequippablecontainer.hpp"
+#include "enums.hpp"
 
 /*!
 \brief This class represent a body of a character

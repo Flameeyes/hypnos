@@ -8,7 +8,7 @@
 #ifndef _SPAWN_H
 #define _SPAWN_H
 
-#include "area.h"
+#include "area.hpp"
 
 class cSpawnArea {
 

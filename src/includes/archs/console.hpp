@@ -12,8 +12,8 @@
 #ifndef __ARCHS_CONSOLE_H__
 #define __ARCHS_CONSOLE_H__
 
-#include "archs/tinterface.h"
-#include "archs/tinterface.h"
+#include "archs/tinterface.hpp"
+#include "archs/tinterface.hpp"
 
 /*!
 \brief Console handling thread

@@ -13,8 +13,8 @@
 #ifndef __CBOOKS_H__
 #define __CBOOKS_H__
 
-#include "common_libs.h"
-#include "objects/citem.h"
+#include "common_libs.hpp"
+#include "objects/citem.hpp"
 
 /*!
 \brief Item class for books

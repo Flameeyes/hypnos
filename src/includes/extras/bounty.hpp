@@ -15,7 +15,7 @@
 #ifndef __BOUNTY_H__
 #define __BOUNTY_H__
 
-#include "objects/citem/cmsgboard.h"
+#include "objects/citem/cmsgboard.hpp"
 
 // Ask victim if they want to post a bounty on the
 // murderer, and if so, then return the amount of the

@@ -13,9 +13,9 @@
 #ifndef __SCRIPTING_H__
 #define __SCRIPTING_H__
 
-#include "common_libs.h"
-#include "typedefs.h"
-#include "libhypnos/cvariant.h"
+#include "common_libs.hpp"
+#include "typedefs.hpp"
+#include "libhypnos/cvariant.hpp"
 
 /*!
 \class cScriptingEngine scripting.h "backend/scripting.h"

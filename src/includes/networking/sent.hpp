@@ -9,11 +9,11 @@
 #ifndef __PACKETS_SENT_H__
 #define __PACKETS_SENT_H__
 
-#include "common_libs.h"
-#include "enums.h"
-#include "structs.h"
-#include "speech.h"
-#include "objects/cserializable.h"
+#include "common_libs.hpp"
+#include "enums.hpp"
+#include "structs.hpp"
+#include "speech.hpp"
+#include "objects/cserializable.hpp"
 
 /*!
 \author Flameeyes
@@ -1864,7 +1864,7 @@ namespace nPackets {
 	} // Sent
 } // nPackets
 
-#include "networking/misccommand.h"
+#include "networking/misccommand.hpp"
 
 #endif
 

@@ -9,7 +9,7 @@
 #ifndef __NETWORK_H__
 #define __NETWORK_H__
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 
 class ClientCrypt;
 

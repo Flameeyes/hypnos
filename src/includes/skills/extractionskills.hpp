@@ -14,7 +14,7 @@
 #ifndef __EXTRACTION_SKILLS_H
 #define __EXTRACTION_SKILLS_H
 
-#include "sndpkg.h"
+#include "sndpkg.hpp"
 
 class cResource {
 public:

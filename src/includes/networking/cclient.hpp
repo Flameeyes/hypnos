@@ -9,9 +9,9 @@
 #ifndef __OBJECTS_CCLIENT_H__
 #define __OBJECTS_CCLIENT_H__
 
-#include "common_libs.h"
-#include "structs.h"
-#include "speech.h"
+#include "common_libs.hpp"
+#include "structs.hpp"
+#include "speech.hpp"
 
 #include <cabal_tcpsocket.h>
 #include <iosfwd>

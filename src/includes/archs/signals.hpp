@@ -19,7 +19,7 @@ similar.
 #ifndef __ARCHS_SIGNALS_H__
 #define __ARCHS_SIGNALS_H__
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 
 #ifdef HAVE_SIGNAL_H
 

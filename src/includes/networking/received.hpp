@@ -9,10 +9,10 @@
 #ifndef __PACKETS_RECEIVED_H__
 #define __PACKETS_RECEIVED_H__
 
-#include "common_libs.h"
-#include "enums.h"
-#include "structs.h"
-#include "speech.h"
+#include "common_libs.hpp"
+#include "enums.hpp"
+#include "structs.hpp"
+#include "speech.hpp"
 
 /*!
 \brief Base class for a received packet

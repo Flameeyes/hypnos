@@ -9,9 +9,9 @@
 #ifndef __OBJECTS_CITEM_CBOAT_H__
 #define __OBJECTS_CITEM_CBOAT_H__
 
-#include "common_libs.h"
-#include "objects/citem/cmulti.h"
-#include "libhypnos/muls/multi.h"
+#include "common_libs.hpp"
+#include "objects/citem/cmulti.hpp"
+#include "libhypnos/muls/multi.hpp"
 
 /*!
 \class cBoat cboat.h "objects/citem/cboat.h"

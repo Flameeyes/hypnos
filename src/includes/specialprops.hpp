@@ -21,8 +21,8 @@ of them are always present in items.
 #ifndef __SPECIALPROPS_H__
 #define __SPECIALPROPS_H__
 
-#include "common_libs.h"
-#include "enums.h"
+#include "common_libs.hpp"
+#include "enums.hpp"
 
 /*!
 \brief Resistances

@@ -13,8 +13,8 @@
 #ifndef __CEQUIPPABLE_H__
 #define __CEQUIPPABLE_H__
 
-#include "common_libs.h"
-#include "objects/citem.h"
+#include "common_libs.hpp"
+#include "objects/citem.hpp"
 
 /*!
 \brief Class for equippable items

@@ -13,10 +13,10 @@
 #ifndef __CACCOUNT_H__
 #define __CACCOUNT_H__
 
-#include "common_libs.h"
-#include "extras/jails.h"
-#include "enums.h"
-#include "inlines.h"
+#include "common_libs.hpp"
+#include "extras/jails.hpp"
+#include "enums.hpp"
+#include "inlines.hpp"
 
 #include <wefts_mutex.h>
 

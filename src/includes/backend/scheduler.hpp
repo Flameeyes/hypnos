@@ -9,8 +9,8 @@
 #ifndef __SCHEDULER_H__
 #define __SCHEDULER_H__
 
-#include "backend/scripting.h"
-#include "common_libs.h"
+#include "backend/scripting.hpp"
+#include "common_libs.hpp"
 #include <wefts_thread.h>
 
 /*!

@@ -13,8 +13,8 @@
 #ifndef _CWEAPON_H__
 #define _CWEAPON_H__
 
-#include "common_libs.h"
-#include "objects/citem/cequippable.h"
+#include "common_libs.hpp"
+#include "objects/citem/cequippable.hpp"
 
 /*!
 \brief Weapon Items

@@ -9,11 +9,11 @@
 #ifndef __OBJECTS_COBJECT_H__
 #define __OBJECTS_COBJECT_H__
 
-#include "common_libs.h"
-#include "tmpeff.h"
-#include "structs.h"
-#include "objects/ceventthrower.h"
-#include "inlines.h"
+#include "common_libs.hpp"
+#include "tmpeff.hpp"
+#include "structs.hpp"
+#include "objects/ceventthrower.hpp"
+#include "inlines.hpp"
 
 typedef slist< tempfx::cTempfx > TempfxVector;
 

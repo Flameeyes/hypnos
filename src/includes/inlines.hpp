@@ -13,8 +13,8 @@
 #ifndef __INLINES_H__
 #define __INLINES_H__
 
-#include "common_libs.h"
-#include "data.h"
+#include "common_libs.hpp"
+#include "data.hpp"
 
 #ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>

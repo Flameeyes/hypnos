@@ -8,9 +8,9 @@
 
 #ifndef __CLIENTCRYPT_H__
 #define __CLIENTCRYPT_H__
-#include "../common_libs.h"
-#include "../constants.h"
-#include "crypt.h"
+#include "../common_libs.hpp"
+#include "../constants.hpp"
+#include "crypt.hpp"
 
 enum { CRYPT_NONE, CRYPT_LOGIN, CRYPT_GAME } ;
 

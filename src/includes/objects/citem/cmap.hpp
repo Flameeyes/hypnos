@@ -12,8 +12,8 @@
 #ifndef __CMAP_H__
 #define __CMAP_H__
 
-#include "objects/citem.h"
-#include "typedefs.h"
+#include "objects/citem.hpp"
+#include "typedefs.hpp"
 
 /*!
 \brief Map item

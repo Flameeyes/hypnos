@@ -13,8 +13,8 @@
 #ifndef __SETTINGS_H__
 #define __SETTINGS_H__
 
-#include "common_libs.h"
-#include "enums.h"
+#include "common_libs.hpp"
+#include "enums.hpp"
 
 /*!
 \author Flameeyes

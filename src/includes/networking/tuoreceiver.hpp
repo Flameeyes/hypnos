@@ -15,8 +15,8 @@
 #ifndef __NETWORKING_TRECEIVING_H__
 #define __NETWORKING_TRECEIVING_H__
 
-#include "common_libs.h"
-#include "networking/tpllistener.h"
+#include "common_libs.hpp"
+#include "networking/tpllistener.hpp"
 
 #include <wefts_thread.h>
 #include <cabal_tcpsocket.h>

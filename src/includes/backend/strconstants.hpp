@@ -9,10 +9,10 @@
 #ifndef __STRCONSTANTS_H__
 #define __STRCONSTANTS_H__
 
-#include "common_libs.h"
-#include "constants.h"
-#include "typedefs.h"
-#include "enums.h"
+#include "common_libs.hpp"
+#include "constants.hpp"
+#include "typedefs.hpp"
+#include "enums.hpp"
 
 /*!
 \namespace nStrConstants

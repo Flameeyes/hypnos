@@ -9,11 +9,11 @@
 #ifndef __OBJECTS_CITEM_H__
 #define __OBJECTS_CITEM_H__
 
-#include "common_libs.h"
-#include "objects/cobject.h"
-#include "objects/cserializable.h"
-#include "magic.h"
-#include "settings.h"
+#include "common_libs.hpp"
+#include "objects/cobject.hpp"
+#include "objects/cserializable.hpp"
+#include "magic.hpp"
+#include "settings.hpp"
 
 //! Item class
 class cItem : public cObject, public cSerializable

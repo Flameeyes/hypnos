@@ -14,7 +14,7 @@
 #ifndef _MENU_H_
 #define _MENU_H_
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 
 #define MENUSTYLE_LARGE 128
 

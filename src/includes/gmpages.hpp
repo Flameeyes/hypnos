@@ -13,7 +13,7 @@
 #ifndef __GMPAGES_H__
 #define __GMPAGES_H__
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 
 class cGMPage {
 public:

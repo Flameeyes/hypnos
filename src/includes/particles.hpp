@@ -12,7 +12,7 @@
 #ifndef __PARTICLES_H__
 #define __PARTICLES_H__
 
-#include "magic.h"
+#include "magic.hpp"
 
 /*!
 \brief Handling of ParticleFX

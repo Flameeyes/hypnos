@@ -13,8 +13,8 @@
 #ifndef __POINTERS_H__
 #define __POINTERS_H__
 
-//#include "objects/cchar.h"
-//#include "objects/citem.h"
+//#include "objects/cchar.hpp"
+//#include "objects/citem.hpp"
 
 /*!
 \brief Pointer related stuff

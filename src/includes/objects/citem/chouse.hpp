@@ -9,8 +9,8 @@
 #ifndef __OBJECTS_CITEM_CHOUSE_H__
 #define __OBJECTS_CITEM_CHOUSE_H__
 
-#include "common_libs.h"
-#include "objects/citem/cmulti.h"
+#include "common_libs.hpp"
+#include "objects/citem/cmulti.hpp"
 
 #include <wefts_mutex.h>
 

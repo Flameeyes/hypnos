@@ -11,8 +11,8 @@
 #ifndef __MAINLOOP_H__
 #define __MAINLOOP_H__
 
-#include "common_libs.h"
-#include "libhypnos/cvariant.h"
+#include "common_libs.hpp"
+#include "libhypnos/cvariant.hpp"
 
 #include <wefts_thread.h>
 #include <wefts_queue.h>

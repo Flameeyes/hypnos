@@ -15,7 +15,7 @@
 #ifndef __CLOCK_H__
 #define __CLOCK_H__
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 
 extern uint32_t initialServerSecs;
 extern uint32_t initialServermSecs;

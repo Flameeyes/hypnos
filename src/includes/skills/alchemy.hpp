@@ -12,8 +12,8 @@
 #ifndef __SKILLS_ALCHEMY_H__
 #define __SKILLS_ALCHEMY_H__
 
-#include "common_libs.h"
-#include "skills.h"
+#include "common_libs.hpp"
+#include "skills.hpp"
 
 namespace nSkills {
 	//@{

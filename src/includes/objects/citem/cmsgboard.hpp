@@ -15,10 +15,10 @@
 #ifndef __CMSGBOARD_H__
 #define __CMSGBOARD_H__
 
-#include "common_libs.h"
-#include "enums.h"
-#include "objects/citem.h"
-#include "networking/sent.h"
+#include "common_libs.hpp"
+#include "enums.hpp"
+#include "objects/citem.hpp"
+#include "networking/sent.hpp"
 #include <wefts_mutex.h>
 
 

@@ -14,7 +14,7 @@
 #ifndef _AREA_H
 #define _AREA_H
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 
 typedef struct {
 	uint16_t x1;

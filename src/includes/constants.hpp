@@ -13,7 +13,7 @@
 #ifndef __CONSTANTS_H__
 #define __CONSTANTS_H__
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 
 static const uint32_t DAYSECONDS = 86400;	//!< Number of seconds in a day. To don't repeat it
 static const uint32_t DAYMSECONDS = 86400000;	//!< Number of milliseconds in a day. To don't repeat it

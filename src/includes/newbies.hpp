@@ -9,8 +9,8 @@
 #ifndef __NEWBIE_H__
 #define __NEWBIE_H__
 
-#include "common_libs.h"
-#include "structs.h"
+#include "common_libs.hpp"
+#include "structs.hpp"
 
 /*!
 \namespace nNewbies

@@ -15,8 +15,8 @@
 #ifndef __STRUCTS_H__
 #define __STRUCTS_H__
 
-#include "common_libs.h"
-#include "enums.h"
+#include "common_libs.hpp"
+#include "enums.hpp"
 
 //! Represent a location on one map
 struct sLocation {

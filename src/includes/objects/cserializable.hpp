@@ -13,8 +13,8 @@
 #ifndef __CSERIALIZABLE_H__
 #define __CSERIALIZABLE_H__
 
-#include "common_libs.h"
-#include "inlines.h"
+#include "common_libs.hpp"
+#include "inlines.hpp"
 
 /*!
 \class cSerializable cserializable.h "objects/cserializable.h"

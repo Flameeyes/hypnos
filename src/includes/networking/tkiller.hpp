@@ -15,7 +15,7 @@
 #ifndef __NETWORKING_TKILLING_H__
 #define __NETWORKING_TKILLING_H__
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 #include <wefts_thread.h>
 #include <wefts_queue.h>
 

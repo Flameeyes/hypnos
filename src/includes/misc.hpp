@@ -9,9 +9,9 @@
 #ifndef __MISC_H__
 #define __MISC_H__
 
-#include "common_libs.h"
-#include "structs.h"
-#include "constants.h"
+#include "common_libs.hpp"
+#include "structs.hpp"
+#include "constants.hpp"
 
 void npcattacktarget(pChar npc, pChar target);
 void callguards( int p );

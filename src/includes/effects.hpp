@@ -9,8 +9,8 @@
 #ifndef __EFFECTS_H__
 #define __EFFECTS_H__
 
-#include "common_libs.h"
-#include "inlines.h"
+#include "common_libs.hpp"
+#include "inlines.hpp"
 
 /*!
 \brief Graphical effects function

@@ -9,8 +9,8 @@
 #ifndef __EXTRAS_JAILS_H__
 #define __EXTRAS_JAILS_H__
 
-#include "common_libs.h"
-#include "structs.h"
+#include "common_libs.hpp"
+#include "structs.hpp"
 
 /*!
 \brief Jails access

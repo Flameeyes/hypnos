@@ -16,7 +16,7 @@
 #ifndef __LOGSYSTEM_H__
 #define __LOGSYSTEM_H__
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 #include <iosfwd>
 
 /*!

@@ -9,9 +9,9 @@
 #ifndef __CCONTAINER_H__
 #define __CCONTAINER_H__
 
-#include "common_libs.h"
-#include "objects/citem.h"
-#include "objects/citem/cequippable.h"
+#include "common_libs.hpp"
+#include "objects/citem.hpp"
+#include "objects/citem/cequippable.hpp"
 #include <wefts_mutex.h>
 
 /*!

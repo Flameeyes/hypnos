@@ -13,9 +13,9 @@
 #ifndef __CEQUIPPABLECONTAINER_H__
 #define __CEQUIPPABLECONTAINER_H__
 
-#include "common_libs.h"
-#include "objects/citem/ccontainer.h"
-#include "objects/citem/cequippable.h"
+#include "common_libs.hpp"
+#include "objects/citem/ccontainer.hpp"
+#include "objects/citem/cequippable.hpp"
 
 /*!
 \brief Class for equippable containers

@@ -9,8 +9,8 @@
 #ifndef __CEVENTTHROWER_H__
 #define __CEVENTTHROWER_H__
 
-#include "common_libs.h"
-#include "backend/scripting.h"
+#include "common_libs.hpp"
+#include "backend/scripting.hpp"
 
 /*!
 \class cEventThrower ceventthrower.h "objects/ceventthrower.h"

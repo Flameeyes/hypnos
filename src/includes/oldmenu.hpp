@@ -13,8 +13,8 @@
 #ifndef _OLDMENU_H_
 #define _OLDMENU_H_
 
-#include "common_libs.h"
-#include "menu.h"
+#include "common_libs.hpp"
+#include "menu.hpp"
 
 /*!
 \brief an Old type menu

@@ -9,8 +9,8 @@
 #ifndef __OBJECTS_CITEM_CMULTI_H__
 #define __OBJECTS_CITEM_CMULTI_H__
 
-#include "common_libs.h"
-#include "objects/citem.h"
+#include "common_libs.hpp"
+#include "objects/citem.hpp"
 
 /*!
 \class cMulti cmulti.h "objects/citem/cmulti.h"

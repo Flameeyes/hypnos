@@ -9,8 +9,8 @@
 #ifndef __OBJECTS_CPC_H__
 #define __OBJECTS_CPC_H__
 
-#include "objects/cchar.h"
-#include "extras/jails.h"
+#include "objects/cchar.hpp"
+#include "extras/jails.hpp"
 
 /*!
 \brief This class represent a playing character.

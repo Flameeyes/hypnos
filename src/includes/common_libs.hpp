@@ -18,7 +18,7 @@ warnings/errors/issues.
 #define __COMMON_LIBS_H__
 
 // First of all, include the config.h and then libhypnos commons
-#include "libhypnos/commons.h"
+#include "libhypnos/commons.hpp"
 
 #if defined(__GNUC__) && ( __GNUC__ < 3 || ( __GNUC__ == 3 && __GNUC_MINOR__ < 1 ) )
 	#error You need at least GCC 3.2 to compile this!
@@ -57,9 +57,9 @@ warnings/errors/issues.
 
 #include <ctype.h>
 
-#include "typedefs.h"
-#include "constants.h"
-#include "clock.h"
+#include "typedefs.hpp"
+#include "constants.hpp"
+#include "clock.hpp"
 
 using namespace nLibhypnos;
 

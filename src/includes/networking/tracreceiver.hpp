@@ -15,8 +15,8 @@
 #ifndef __NETWORKING_TRACRECEIVER_H__
 #define __NETWORKING_TRACRECEIVER_H__
 
-#include "common_libs.h"
-#include "networking/tpllistener.h"
+#include "common_libs.hpp"
+#include "networking/tpllistener.hpp"
 #include <cabal_tcpsocket.h>
 
 /*!

@@ -9,17 +9,17 @@
 #ifndef __OBJECTS_CCHAR_H__
 #define __OBJECTS_CCHAR_H__
 
-#include "common_libs.h"
-#include "objects/cbody.h"
-#include "objects/ceventthrower.h"
-#include "magic.h"
-#include "npcs.h"
-#include "constants.h"
-#include "menu.h"
-#include "logsystem.h"
-#include "map.h"
-#include "settings.h"
-#include "enums.h"
+#include "common_libs.hpp"
+#include "objects/cbody.hpp"
+#include "objects/ceventthrower.hpp"
+#include "magic.hpp"
+#include "npcs.hpp"
+#include "constants.hpp"
+#include "menu.hpp"
+#include "logsystem.hpp"
+#include "map.hpp"
+#include "settings.hpp"
+#include "enums.hpp"
 
 enum StatCap
 {

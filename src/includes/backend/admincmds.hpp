@@ -12,7 +12,7 @@
 #ifndef __BACKEND_ADMINCMDS_H__
 #define __BACKEND_ADMINCMDS_H__
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 #include <iosfwd>
 
 /*!

@@ -13,12 +13,12 @@
 #ifndef __HYPNOS_H_
 #define __HYPNOS_H_
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 
-#include "libhypnos/muls/mulfiles.h"
-#include "libhypnos/muls/tiledata.h"
-#include "libhypnos/muls/multiidx.h"
-#include "libhypnos/muls/multi.h"
+#include "libhypnos/muls/mulfiles.hpp"
+#include "libhypnos/muls/tiledata.hpp"
+#include "libhypnos/muls/multiidx.hpp"
+#include "libhypnos/muls/multi.hpp"
 
 extern nMULFiles::fTiledataLand *tiledataLand;
 extern nMULFiles::fTiledataStatic *tiledataStatic;
