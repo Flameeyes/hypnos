@@ -12,8 +12,7 @@
 #define __LIBHYPNOS_MULS_CLILOC_H__
 
 #include "libhypnos/muls/mulfiles.h"
-#include "libhypnos/muls/indexedfile.h"
-#include "libhypnos/muls/multiidx.h"
+#include "libhypnos/muls/mmappedfile.h"
 #include "libhypnos/types.h"
 
 namespace nLibhypnos {

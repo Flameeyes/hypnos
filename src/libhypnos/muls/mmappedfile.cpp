@@ -8,7 +8,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypnos/mmappedfile.h"
+#include "libhypnos/muls/mmappedfile.h"
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>

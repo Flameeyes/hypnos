@@ -107,7 +107,7 @@ INCLUDES = $(all_includes)
 
 # the library search path.
 lib_LTLIBRARIES = libhypnos.la
-libhypnos_la_SOURCES = cvariant.cpp mmappedfile.cpp strings.cpp prefix.c
+libhypnos_la_SOURCES = cvariant.cpp strings.cpp prefix.c
 SUBDIRS = muls
 libhypnos_la_LIBADD = $(top_builddir)/libhypnos/muls/libhypmul.la
 libhypnos_la_LDFLAGS = -module -no-undefined -static
@@ -118,8 +118,7 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libhypnos_la_DEPENDENCIES = $(top_builddir)/libhypnos/muls/libhypmul.la
-am_libhypnos_la_OBJECTS = cvariant.lo mmappedfile.lo strings.lo \
-	prefix.lo
+am_libhypnos_la_OBJECTS = cvariant.lo strings.lo prefix.lo
 libhypnos_la_OBJECTS = $(am_libhypnos_la_OBJECTS)
 
 DEFS = @DEFS@
@@ -128,8 +127,7 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/cvariant.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/mmappedfile.Plo ./$(DEPDIR)/prefix.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/cvariant.Plo ./$(DEPDIR)/prefix.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/strings.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -203,7 +201,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvariant.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mmappedfile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prefix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strings.Plo@am__quote@
 

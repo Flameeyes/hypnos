@@ -12,7 +12,7 @@
 #define __LIBHYPNOS_MULS_INDEXEDFILE_H__
 
 #include "libhypnos/muls/mulfiles.h"
-#include "libhypnos/mmappedfile.h"
+#include "libhypnos/muls/mmappedfile.h"
 #include "libhypnos/types.h"
 
 namespace nLibhypnos {
