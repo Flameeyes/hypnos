@@ -14,28 +14,19 @@
 namespace nLibhypnos {
 namespace nMULFiles {
 
-	template<class cData> tplIndexFile<cData>::tplIndexFile<cData>(std::string filename)
-		: tplMMappedFile<cData>(filename)
-	{
-	}	
-
-	template<class cData> tplIndexedFile<cData>::tplIndexedFile<cData>(tplIndexFile<cData> *aIdx, std::string filename)
-		: tplMMappedFile<cData>(filename), idx(aIdx)
-	{
-	}
-	
 	/*!
 	\brief Gets the offset of the given record in the indexed file
 	\param index ID of the record (index to search for). Zero-based.
 	\return The offset of the requested record in the indexed file
 	\throw eOutOfBound If the requested index is greater than the count of records
 	*/
-	template<class cData> uint32_t tplIndexFile<cData>::getLookup(uint16_t index) const
+	template <class T>
+	uint32_t tplIndexFile<T>::getLookup(uint16_t index) const
 	{
-		if ( index >= tplMMappedFile<cData>::getCount() )
-			throw eOutOfBound(tplMMappedFile<cData>::getCount()-1, index);
+		if ( index >= file.getCount() )
+			throw eOutOfBound(file.getCount()-1, index);
 		
-		return tplMMappedFile<cData>::array[index].getLookup();
+		return getArray()[index].getLookup();
 	}
 	
 	/*!
@@ -44,12 +35,13 @@ namespace nMULFiles {
 	\return The length of the requested record in the indexed file
 	\throw eOutOfBound If the requested index is greater than the count of records
 	*/
-	template<class cData> uint32_t tplIndexFile<cData>::getSize(uint16_t index) const
+	template <class T>
+	uint32_t tplIndexFile<T>::getSize(uint16_t index) const
 	{
-		if ( index >= tplMMappedFile<cData>::getCount() )
-			throw eOutOfBound(tplMMappedFile<cData>::getCount()-1, index);
+		if ( index >= file.getCount() )
+			throw eOutOfBound(file.getCount()-1, index);
 		
-		return tplMMappedFile<cData>::array[index].getSize();
+		return getArray()[index].getSize();
 	}
 	
 } }
