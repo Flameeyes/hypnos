@@ -498,7 +498,6 @@ void cNetwork::Relay(pClient client) // Relay player to a certain IP
 
 void cNetwork::ActivateFeatures(pClient client)
 {
-	uint8_t feat[3] = {0xB9, 0x00, 0x00};
 	uint16_t features = 0;  //<-- BitMask ?
 	// 0x0001 => Button Chat ( T2A ??? )
 	// 0x0003 => LBR (+ T2A)
@@ -518,9 +517,8 @@ void cNetwork::ActivateFeatures(pClient client)
 			break;
 	}
 
-	ShortToCharPtr(features, feat+1);
-	Xsend(s, feat, 3);
-//AoS/	Network->FlushBuffer(client);
+	nPackets::Sent::Features pk(features);
+	client->sendPacket(&pk);
 }
 
 void cNetwork::GoodAuth(pClient client)
@@ -708,10 +706,6 @@ void cNetwork::enterchar(pClient client)
 	uint8_t modeset[5]={0x72, 0x00, 0x00, 0x32, 0x00};
 
 	if (map_height<300) world[5]=0x02;
-
-	cPacketFeatures features;
-	features.feature= FEATURE_T2A | FEATURE_LBR;
-	features.send( pc->getClient() );
 
 	clientInfo[s]->ingame=true;
 

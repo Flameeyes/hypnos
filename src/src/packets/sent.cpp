@@ -1756,6 +1756,16 @@ void nPackets::Sent::CharProfile::prepare()
 	memcpy(offset, who->getProfile().rawBytes(), who->getProfile().size() * 2 + 2);
 }
 
+void nPackets::Sent::Features::prepare()
+{
+	buffer = new uint8_t[3];
+	length = 2;
+
+	buffer[0] = 0xB9;
+	ShortToCharPtr(features, buffer+1);
+}
+
+
 void nPackets::Sent::ClientViewRange::prepare()
 {
 	buffer = new uint8_t[2];

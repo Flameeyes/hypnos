@@ -1515,7 +1515,6 @@ namespace nPackets {
 			void prepare();
 		};
 
-
 		class CharProfile : public cPacketSend
 		{
 		protected:
@@ -1530,6 +1529,36 @@ namespace nPackets {
 			void prepare();
 		};
 		
+		/*!
+		\brief Enable locked client features [Packet 0xB9]
+		\param features to set.
+
+		if (MSB not set)
+			Bit#1 T2A upgrade, enables chatbutton,
+			Bit#2 enables LBR update. (of course LBR installation is required)
+				(plays MP3 instead of midis, 2D LBR client shows new LBR monsters,)
+		if (MSB set)
+			Bit#3 T2A upgrade, enables chatbutton,
+			Bit#4 enables LBR update.
+			Bit#5 enables AOS update (Aos monsters/map (AOS installation required for that) ,
+				AOS skills/necro/paladin/fight book stuff - works for ALL clients 4.0 and above)
+		
+		\note This packet enables various client-side features, and should be sent before the  \ref nPackets::Sent::CharList packet.
+ 		\note Note that in order to create a Paladin or Necromancer or use the 6th character slot, the corresponding flags in the \ref nPackets::Sent::CharList packet must be set.
+		
+		*/	
+		class Features : public cPacketSend
+		{
+		protected:
+			uint16_t features;
+
+		public:
+			inline Features(uint16_t Features) :
+				cPacketSend(NULL, 0), features(Features)
+			{ }
+
+			void prepare();
+		};	
 		
 		class LogoutStatus : public cPacketSend
 		{
