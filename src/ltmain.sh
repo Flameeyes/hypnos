@@ -560,8 +560,12 @@ if test -z "$show_help"; then
 	  if grep "^# ### BEGIN LIBTOOL TAG CONFIG: $z$" < "$0" > /dev/null; then
 	    # Evaluate the configuration.
 	    eval "`${SED} -n -e '/^# ### BEGIN LIBTOOL TAG CONFIG: '$z'$/,/^# ### END LIBTOOL TAG CONFIG: '$z'$/p' < $0`"
+	    # user sometimes does CC=<HOST>-gcc so we need to match that to 'gcc'
+	    trimedcc="${CC/${host}-}"
 	    case "$base_compile " in
-	    "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*)
+	    "gcc "* | " gcc "*) tagname=CC ; break ;;
+	    "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*|\
+	    "$trimedcc "* | " $trimedcc "* | "`$echo $trimedcc` "* | " `$echo $trimedcc` "*)
 	      # The compiler in the base compile command matches
 	      # the one in the tagged configuration.
 	      # Assume this is the tagged configuration we want.
@@ -947,8 +951,12 @@ EOF
 	  if grep "^# ### BEGIN LIBTOOL TAG CONFIG: $z$" < "$0" > /dev/null; then
 	    # Evaluate the configuration.
 	    eval "`${SED} -n -e '/^# ### BEGIN LIBTOOL TAG CONFIG: '$z'$/,/^# ### END LIBTOOL TAG CONFIG: '$z'$/p' < $0`"
-	    case $base_compile in
-	    "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*)
+	    # user sometimes does CC=<HOST>-gcc so we need to match that to 'gcc'
+	    trimedcc="${CC/${host}-}"
+	    case "$base_compile " in
+	    "gcc "* | " gcc "*) tagname=CC ; break ;;
+	    "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*|\
+	    "$trimedcc "* | " $trimedcc "* | "`$echo $trimedcc` "* | " `$echo $trimedcc` "*)
 	      # The compiler in $compile_command matches
 	      # the one in the tagged configuration.
 	      # Assume this is the tagged configuration we want.

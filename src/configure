@@ -19288,7 +19288,7 @@ fi
     { echo "$as_me:$LINENO: WARNING: output file \`$ofile' does not exist" >&5
 echo "$as_me: WARNING: output file \`$ofile' does not exist" >&2;}
   fi
-  if test -z `grep -e 'shared_ext.*shrext' $ofile`; then
+  if test -z "`grep -e 'shared_ext.*shrext' $ofile`"; then
     # Make sure $shared_ext gets set to $shrext
     if sed -e 's/shared_ext/shrext/g' "$ofile" > "${ofile}T"; then
       mv "${ofile}T" "$ofile"
@@ -20390,7 +20390,8 @@ if test "$is_win" == "yes"; then
 
 
 
-for ac_header in conio.h windows.h winnt.h winsock2.h winbase.h winreg.h wincon.h
+
+for ac_header in conio.h windows.h winnt.h winsock2.h winbase.h winreg.h wincon.h shlwapi.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 echo "$as_me:$LINENO: checking for $ac_header" >&5

@@ -91,6 +91,9 @@
 /* Define to 1 if you have the <ostream> header file. */
 #undef HAVE_OSTREAM
 
+/* Define to 1 if you have the <shlwapi.h> header file. */
+#undef HAVE_SHLWAPI_H
+
 /* Define to 1 if you have the `sigaction' function. */
 #undef HAVE_SIGACTION
 
