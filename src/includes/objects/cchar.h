@@ -157,47 +157,35 @@ public:
 public:
 	static const UI64 flagGrey		= 0x0000000000000001ull; //!< Char is grey
 	static const UI64 flagPermaGrey		= 0x0000000000000002ull; //!< Char is permanent grey
-	static const UI64 flagResistFire	= 0x0000000000000004ull; //!< Char resists to fire (unused)
-	static const UI64 flagResistParalisys	= 0x0000000000000008ull; //!< Char resists to paralisys (unused)
-	static const UI64 flagResistPoison	= 0x0000000000000010ull; //!< Char resists to poison (unused)
-	static const UI64 flagWaterWalk		= 0x0000000000000020ull; //!< Char walks on water (npc only)
-	static const UI64 flagSpellTelekinesys	= 0x0000000000000040ull; //!< Char under telekinesys spell (Luxor)
-	static const UI64 flagSpellProtection	= 0x0000000000000080ull; //!< Char under protection spell (Luxor)
+	static const UI64 flagResistParalisys	= 0x0000000000000004ull; //!< Char resists to paralisys (unused)
+	static const UI64 flagWaterWalk		= 0x0000000000000008ull; //!< Char walks on water (npc only)
+	static const UI64 flagSpellTelekinesys	= 0x0000000000000010ull; //!< Char under telekinesys spell (Luxor)
+	static const UI64 flagSpellProtection	= 0x0000000000000020ull; //!< Char under protection spell (Luxor)
 
-	static const UI64 flagKarmaInnocent	= 0x0000000000000100ull; //!< Char is innocent
-	static const UI64 flagKarmaMurderer	= 0x0000000000000200ull; //!< Char is murderer
-	static const UI64 flagKarmaCriminal	= 0x0000000000000400ull; //!< Char is criminal
+	static const UI64 flagKarmaInnocent	= 0x0000000000000040ull; //!< Char is innocent
+	static const UI64 flagKarmaMurderer	= 0x0000000000000080ull; //!< Char is murderer
+	static const UI64 flagKarmaCriminal	= 0x0000000000000100ull; //!< Char is criminal
 
-	static const UI64 flagInvulnerable	= 0x0000000000000800ull; //!< Char is invulnerable
-	static const UI64 flagCanViewSerials	= 0x0000000000001000ull; //!< Char can view serial codes
-	static const UI64 flagNoSkillTitle	= 0x0000000000002000ull; //!< Char hasn't skill title
-	static const UI64 flagPageAble		= 0x0000000000004000ull;
-	static const UI64 flagCanSnoopAll	= 0x0000000000008000ull;
+	static const UI64 flagInvulnerable	= 0x0000000000000200ull; //!< Char is invulnerable
+	static const UI64 flagNoSkillTitle	= 0x0000000000000400ull; //!< Char hasn't skill title
 
-	static const UI64 flagAllMove		= 0x0000000000010000ull;
-	static const UI64 flagFrozen		= 0x0000000000020000ull;
-	static const UI64 flagViewHouseIcon	= 0x0000000000040000ull;
-	static const UI64 flagPermaHidden	= 0x0000000000080000ull;
-	static const UI64 flagNoUseMana		= 0x0000000000100000ull;
-	static const UI64 flagDispellable	= 0x0000000000200000ull;
-	static const UI64 flagReflection	= 0x0000000000400000ull;
-	static const UI64 flagNoUseReagents	= 0x0000000000800000ull;
+	static const UI64 flagFrozen		= 0x0000000000000800ull;
+	static const UI64 flagPermaHidden	= 0x0000000000001000ull;
+	static const UI64 flagNoUseMana		= 0x0000000000002000ull;
+	static const UI64 flagReflection	= 0x0000000000004000ull;
+	static const UI64 flagNoUseReagents	= 0x0000000000008000ull;
 
-	static const UI64 flagIncognito		= 0x0000000001000000ull;
-	static const UI64 flagPolymorphed	= 0x0000000002000000ull;
-	static const UI64 flagDead		= 0x0000000004000000ull;
+	static const UI64 flagIncognito		= 0x0000000000010000ull;
+	static const UI64 flagPolymorphed	= 0x0000000000020000ull;
+	static const UI64 flagDead		= 0x0000000000040000ull;
 
-	static const UI64 flagAttackFirst	= 0x0000000008000000ull;
-	static const UI64 flagDoorUse		= 0x0000000010000000ull;
+	static const UI64 flagAttackFirst	= 0x0000000000080000ull;
+	static const UI64 flagDoorUse		= 0x0000000000100000ull;
 
-	static const UI64 flagOnHorse		= 0x0000000040000000ull;
-	static const UI64 flagIsCasting		= 0x0000000080000000ull;
+	static const UI64 flagIsCasting		= 0x0000000000200000ull;
+	static const UI64 flagIsGuarded		= 0x0000000000400000ull;
 
-	static const UI64 flagMounted		= 0x0000000100000000ull;
-	static const UI64 flagCanTrain		= 0x0000000200000000ull;
-	static const UI64 flagShopKeeper	= 0x0000000400000000ull;
-	static const UI64 flagIsTamed		= 0x0000000800000000ull;
-	static const UI64 flagIsGuarded		= 0x0000001000000000ull;
+	static const UI64 flagWarMode		= 0x0000000000800000ull; //!< Char is in war mode
 //@}
 
 //@}
@@ -206,7 +194,6 @@ public:
 */
 protected:
 	UI64 flags;	//!< Flags for the character
-	UI08 privLevel; //!< privilege level
 
 	SI32 karma;	//!< karma of the char
 	SI32 fame;	//!< fame of the char
@@ -239,9 +226,6 @@ public:
 	inline const bool isPermaHidden() const
 	{ return flags & flagPermaHidden; }
 
-	inline const bool isDispellable() const
-	{ return flags & flagDispellable; }
-
 	inline const bool isInnocent() const
 	{ return (flags & flagKarmaInnocent); }
 
@@ -260,23 +244,8 @@ public:
 	inline const bool isHiddenBySkill() const
 	{ return (hidden & HIDDEN_BYSKILL); }
 
-	inline const bool canAllMove() const
-	{ return flags & flagAllMove; }
-
 	inline const bool canUseDoor() const
 	{ return flags & flagDoorUse; }
-
-	inline const bool canShopKeeper() const
-	{ return flags2 & flagShopKeeper; }
-
-	inline const bool canSnoop() const
-	{ return flags & flagCanSnoopAll; }
-
-	inline const bool canBroadcast() const
-	{ return flags & flagBroadcast; }
-
-	inline const bool canSeeSerials() const
-	{ return flags & flagCanViewSerials; }
 
 	inline const bool dontUseMana() const
 	{ return flags & flagNoUseMana; }
@@ -305,12 +274,6 @@ public:
 	inline void setFrozen(bool set = true)
 	{ setFlag(flagFrozen, set); }
 
-	inline void setAllMove(bool set = true)
-	{ setFlag(flagAllMove, set); }
-
-	inline void setViewHouseIcon(bool set = true)
-	{ setFlag(flagViewHouseIcon, set); }
-
 	inline void setPermaHidden(bool set = true)
 	{ setFlag(flagPermaHidden, set); }
 
@@ -323,15 +286,23 @@ public:
 	inline void setCanUseDoor(bool set = true)
 	{ setFlag(flagDoorUse, set); }
 
-	inline void setShopKeeper(bool set = true)
-	{ setFlag(flagShopKeeper, set); }
-
 	inline void makeInvulnerable(bool set = true)
 	{ setFlag(flagInvulnerable, set); }
 
 	//! Makes a character temporary grey
 	inline void setGrey()
 	{ if (!npc) tempfx::add(this, this, tempfx::GREY, 0, 0, 0, 0x7FFF); }
+
+	inline const bool inWarMode() const
+	{ return flags & flagWarMode; }
+
+	inline void setWarMode(bool set = true)
+	{ setFlag(flagWarMode, set); }
+
+	inline void toggleWarMode()
+	{ flags ^= flagWarMode; warUpdate(); }
+
+	void warUpdate();
 
 	/*!
 	\brief Sets criminal or grey depending on a server.cfg setting
@@ -365,15 +336,14 @@ public:
 \name Races
 \brief Race related functions and attributes
 */
-	public:
-		SI32 			race;				//!< Race index
+public:
+	SI32 			race;				//!< Race index
 //@}
 
 
-	void			checkSafeStats();
-
 public:
-	void			heartbeat();
+	void			checkSafeStats();
+	virtual void		heartbeat();
 
 private:
 	void			generic_heartbeat();
@@ -455,7 +425,8 @@ public:
 	void		walk();			//!< execute walk code <Luxor>
 	void		follow( P_CHAR pc ); //!< follow pc
 	void 		flee( P_CHAR pc, SI32 seconds=INVALID ); //!< flee from pc
-	void		pathFind( Location pos, bool bOverrideCurrentPath = true );	//!< Walk to position
+	void		pathFind( Location pos, bool bOverrideCurrentPath = true );
+	UI08		getDirFromXY( UI16 targetX, UI16 targetY );
 //@}
 
 //@{
@@ -498,18 +469,6 @@ public:
 	UI32 getRegenRate( StatType stat, VarType type );
 	bool regenTimerOk( StatType stat );
 	void updateRegenTimer( StatType stat );
-//@}
-
-//@{
-/*!
-\name Npc Vendor
-\note fist draft.. need to make map with id used in recive for make faster
-*/
-
-public:
-	std::vector<vendor_item>*	vendorItemsSell; //!< all items sell by vendor
-	std::vector<vendor_item>*	vendorItemsBuy; //!< all items sell by vendor
-
 //@}
 
 public:
@@ -590,7 +549,6 @@ public:
 		SI32			weight; //Total weight
 		UI32			att; // Intrinsic attack (For monsters that cant carry weapons)
 		UI32			def; // Intrinsic defense
-		char			war; // War Mode
 		char			wresmove; // Luxor: for Wrestling's special moves
 
 		TIMERVAL		timeout; // Combat timeout (For hitting)
@@ -693,10 +651,6 @@ public:
 
 		// COORDINATE	previousLocation;
 
-		SI32 			prevX; // fix for looping gate travel bug (bounce back problem)
-		SI32 			prevY;
-		signed char 		prevZ;
-
 		TIMERVAL 		time_unused;
 		TIMERVAL 		timeused_last;
 
@@ -743,12 +697,11 @@ public:
 		void                    drink(P_ITEM pi);       //Luxor: delayed drinking
 		void 			hideBySkill();
 		void 			hideBySpell(SI32 timer = INVALID);
-		UI32  			CountItems(UI16 ID, UI16 col= INVALID);
+		UI32  			countItems(UI16 ID, UI16 col= 0xFFFF);
 
 		inline const UI32 CountGold()
-		{ return CountItems(ITEMID_GOLD); }
+		{ return countItems(ITEMID_GOLD); }
 
-		SI32  			countBankGold();
 		bool			isInBackpack( P_ITEM pi );
 		void			addGold(UI16 totgold);
 

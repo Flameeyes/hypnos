@@ -1,12 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| PyUO Server Emulator                                                     |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in pyuo.cpp file.              |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
 */
@@ -34,89 +32,6 @@
 #include "basics.h"
 #include "range.h"
 #include "utils.h"
-
-
-
-/*!
-\brief Calculates the adjacent direction (counterclockwise)
-\author Duke
-\param dir initial direction
-\return the adjacent direction
-*/
-int getLeftDir(int dir)
-{
-	dir &= 7;	// make sure it's valid
-	return dir==0 ? 7 : dir-1;
-}
-/*!
-\brief Calculates the adjacent direction (clockwise)
-\author Duke
-\param dir initial direction
-\return the adjacent direction
-*/
-int getRightDir(int dir)
-{
-	dir &= 7;
-	return dir==7 ? 0 : dir+1;
-}
-
-/*!
-\brief Calculats and changes the given coords one step into the given direction
-\author Duke
-\param dir the direction
-\param x pointer to the x coord
-\param y pointer to the y coord
-\todo use reference instead of pointer?
-*/
-void getXYfromDir(int dir, int *x, int *y)
-{
-	switch(dir&0x07)
-	{
-	case 0: (*y)--;		break;
-	case 1: (*x)++; (*y)--;	break;
-	case 2: (*x)++;		break;
-	case 3: (*x)++; (*y)++;	break;
-	case 4: (*y)++;		break;
-	case 5: (*x)--; (*y)++;	break;
-	case 6: (*x)--;		break;
-	case 7: (*x)--; (*y)--;	break;
-	}
-}
-
-/*!
-\brief Return direction to target coordinate
-\param pc pointer to the char
-\param targetX the target X-coordinate
-\param targetY the target Y-coordinate
-\return the direction to the coordinats
-*/
-int getDirFromXY( P_CHAR pc, UI32 targetX, UI32 targetY )
-{
-	int direction = pc->dir;
-	Location pcpos= pc->getPosition();
-
-	if ( targetX < pcpos.x )
-		if ( targetY < pcpos.y )
-			direction = NORTHWEST;
-		else if ( targetY > pcpos.y )
-			direction = SOUTHWEST;
-		else
-			direction = WEST;
-	else
-		if ( targetX > pcpos.x )
-			if ( targetY < pcpos.y )
-				direction = NORTHEAST;
-			else if ( targetY > pcpos.y )
-				direction = SOUTHEAST;
-			else
-				direction = EAST;
-		else if ( targetY < pcpos.y )
-			direction = NORTH;
-		else
-			direction = SOUTH;
-	return direction;
-}
-
 
 /*!
 \brief Checks if the Char is allowed to move at all (not frozen, overloaded...)
@@ -551,99 +466,6 @@ void walking(P_CHAR pc, int dir, int sequence)
 
 }
 
-
-
-void walking2(P_CHAR pc_s) // Only for switching to combat mode
-{
-	VALIDATEPC(pc_s);
-	int sendit;
-
-	Location charpos= pc_s->getPosition();
-
-	NxwSocketWrapper sw;
-	sw.fillOnline( pc_s, false );
-	for( sw.rewind(); !sw.isEmpty(); sw++ )
-	{
-		NXWCLIENT ps_i=sw.getClient();
-		if( ps_i==NULL ) continue;
-
-		P_CHAR pc_i=ps_i->currChar();
-		if (ISVALIDPC(pc_i) )
-		{
-			{
-				if ((pc_s->IsHidden() || (pc_s->dead && !pc_s->war)) && pc_s->getSerial32() != pc_i->getSerial32() && !pc_i->IsGM())
-				{
-					if (!pc_i->dead)
-					{
-						SendDeleteObjectPkt(ps_i->toInt(), pc_s->getSerial32());
-					 	sendit = 0;
-					}
-					else
-						sendit = 1;
-				}
-				else
-					sendit = 1; // LB 9-12-99 client 1.26.2 fix
-
-				if (sendit)
-				{
-					NXWSOCKET s = ps_i->toInt();
-					UI08 dir = pc_s->dir & 0x7F, flag, hi_color;
-
-					// running stuff
-
-					if (pc_s->npc && pc_s->war) // Skyfire
-					{
-						dir |= 0x80;
-					}
-					if (pc_s->npc && pc_s->ftargserial!=INVALID)
-					{
-						dir |= 0x80;
-					}
-
-
-					if (pc_s->war)
-						flag = 0x40;
-					else
-						flag = 0x00;
-					if (pc_s->IsHidden())
-						flag |= 0x80;
-					if (pc_s->poisoned)
-						flag |= 0x04; // AntiChrist -- thnx to SpaceDog
-
-					if (pc_s->kills >= 4)
-						hi_color = 6; // ripper
-
-					int guild;
-					guild = Guilds->Compare(pc_s, pc_i);
-					if (guild == 1)// Same guild (Green)
-						hi_color = 2;
-					else if (guild == 2) // Enemy guild.. set to orange
-						hi_color = 5;
-					else if (pc_s->IsMurderer())      // show red
-						hi_color = 6;
-					else if (pc_s->IsInnocent()) // show blue
-						hi_color = 1;
-					else if (pc_s->flag == 0x08) // show green
-						hi_color = 2;
-					else if (pc_s->flag == 0x10) // show orange
-						hi_color = 5;
-					else
-						hi_color = 3;            // show grey
-
-					// end of if sendit
-
-					if (!pc_s->war) // we have to execute this no matter if invisble or not LB
-					{
-						pc_s->attackerserial=INVALID;
-						pc_s->targserial=INVALID;
-					}
-
-					SendUpdatePlayerPkt(s, pc_s->getSerial32(), pc_s->getId(), charpos, dir, pc_s->getColor(), flag, hi_color);
-				}
-			}
-		}
-	}
-}
 //</XAN>
 int npcSelectDir(P_CHAR pc_i, int j)
 {
@@ -687,257 +509,6 @@ int npcSelectDirWarOld(P_CHAR pc_i, int j)
 	return j;
 }
 
-/*!
-\author Luxor
-\brief Calls the pathfinding algorithm and creates a new path
-*/
-void cChar::pathFind( Location pos, LOGICAL bOverrideCurrentPath )
-{
-	if ( hasPath() ) {
-		if ( bOverrideCurrentPath )
-			safedelete( path );
-		else
-			return;
-	}
-
-        LOGICAL bOk = true;
-	Location loc = pos;
-	if ( isWalkable( pos, WALKFLAG_ALL, this ) == illegal_z ) { // If it isn't walkable, we can only reach the nearest tile
-		bOk = false;
-		for ( UI32 i = 1; i < 4; i++ ) {
-                        // East
-			loc = Loc( pos.x + i, pos.y, pos.z );
-			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
-				bOk = true;
-				break;
-			}
-
-			// West
-			loc = Loc( pos.x - i, pos.y, pos.z );
-			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
-				bOk = true;
-				break;
-			}
-
-			// South
-			loc = Loc( pos.x, pos.y + i, pos.z );
-			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
-				bOk = true;
-				break;
-			}
-
-			// North
-			loc = Loc( pos.x, pos.y - i, pos.z );
-			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
-				bOk = true;
-				break;
-			}
-
-			// North-East
-			loc = Loc( pos.x + i, pos.y - i, pos.z );
-			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
-				bOk = true;
-				break;
-			}
-
-			// North-West
-			loc = Loc( pos.x - i, pos.y - i, pos.z );
-			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
-				bOk = true;
-				break;
-			}
-
-			// South-East
-			loc = Loc( pos.x + i, pos.y + i, pos.z );
-			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
-				bOk = true;
-				break;
-			}
-
-			// South-West
-			loc = Loc( pos.x - i, pos.y + i, pos.z );
-			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
-				bOk = true;
-				break;
-			}
-		}
-	}
-
-        if ( bOk )
-		path = new cPath( getPosition(), loc, this );
-}
-
-/*!
-\author Luxor
-*/
-void cChar::walkNextStep()
-{
-	if ( isFrozen() )
-		return;
-	if ( !hasPath() )
-		return;
-	if ( !path->pathFound() )
-		path->exec();
-
-	Location pos = path->getNextPos();
-
-	if ( pos == getPosition() )
-		return;
-
-	if ( isWalkable( pos, WALKFLAG_DYNAMIC|WALKFLAG_CHARS, this ) == illegal_z ) {
-                safedelete( path );
-		return;
-	}
-
-
-	P_CREATURE_INFO creature = creatures.getCreature( getId() );
-	if( creature!=NULL ) {
-		if( creature->canFly() && ( fly_steps>0 ) )
-			if ( chance( 20 ) )
-				playAction( 0x13 ); // Flying animation
-	}
-
-	SI08 dirXY = getDirFromXY( this, pos.x, pos.y );
-	dir = dirXY & 0x0F;
-	MoveTo( pos );
-	sendToPlayers( this, dirXY );
-	setNpcMoveTime();
-}
-
-/*!
-\brief Flee from target
-\author Endymion
-\param pc the character
-\param seconds the seconds or INVALID if is hp fear
-*/
-void cChar::flee( P_CHAR pc, SI32 seconds )
-{
-	VALIDATEPC( pc );
-
-	if( seconds!=INVALID )
-		fleeTimer=uiCurrentTime +MY_CLOCKS_PER_SEC*seconds;
-	else
-		fleeTimer=INVALID;
-
-	oldnpcWander = npcWander;
-	npcWander = WANDER_FLEE;
-	targserial=pc->getSerial32();
-
-}
-
-
-/*!
-\author Luxor
-*/
-void cChar::follow( P_CHAR pc )
-{
-	if ( isFrozen() ) {
-		if ( hasPath() )
-			safedelete( path );
-		return;
-	}
-	if ( dist( getPosition(), pc->getPosition() ) <= 1.0f ) { // Target reached
-		if ( hasPath() )
-			safedelete( path );
-		facexy( pc->getPosition().x, pc->getPosition().y );
-		return;
-	}
-	if ( !hasPath() || path->targetReached() ) { // We haven't got a right path, call the pathfinding.
-		pathFind( pc->getPosition(), true );
-		walkNextStep();
-		return;
-	}
-
-	R64 distance = dist( path->getFinalPos(), pc->getPosition() );
-	if ( distance <= 3.0 ) { // Path finalPos is pretty near... let's not overhead the processor
-		walkNextStep();
-	} else { // Path finalPos is too far, call the pathfinding.
-		pathFind( pc->getPosition(), true );
-		walkNextStep();
-	}
-}
-
-/*!
-\author Luxor
-*/
-void cChar::walk()
-{
-	P_CHAR pc_att = pointers::findCharBySerial( attackerserial );
-	if ( !ISVALIDPC( pc_att ) )
-		pc_att = pointers::findCharBySerial( targserial );
-	if ( !ISVALIDPC( pc_att ) )
-		war = 0;
-
-	if ( war && npcWander != WANDER_FLEE && ( pc_att->IsOnline() || pc_att->npc ) ) { //We are following a combat target
-                follow( pc_att );
-                return;
-        }
-
-	switch( npcWander )
-	{
-		case WANDER_NOMOVE: //No movement
-			break;
-		case WANDER_FOLLOW: //Follow the follow target
-		{
-			P_CHAR pc = pointers::findCharBySerial( ftargserial );
-			if ( !ISVALIDPC( pc ) )
-				break;
-			if ( pc->dead )
-				break;
-			if ( pc->questDestRegion == region )
-				MsgBoards::MsgBoardQuestEscortArrive( this, pc );
-			follow( pc );
-		}
-			break;
-		case WANDER_FREELY_CIRCLE: // Wander freely, in a defined circle
-			npcwalk( this, (chance( 20 ) ? rand()%8 : dir), 2 );
-			break;
-		case WANDER_FREELY_BOX: // Wander freely, within a defined box
-			npcwalk( this, (chance( 20 ) ? rand()%8 : dir), 1 );
-			break;
-		case WANDER_FREELY: // Wander freely, avoiding obstacles
-			npcwalk( this, (chance( 20 ) ? rand()%8 : dir), 0 );
-			break;
-		case WANDER_FLEE: //FLEE!!!!!!
-		{
-			P_CHAR target = pointers::findCharBySerial( targserial );
-			if (ISVALIDPC(target)) {
-				if ( distFrom( target ) < VISRANGE )
-					getDirFromXY( this, target->getPosition().x, target->getPosition().y );
-				npcwalk( this, npcSelectDir( this, (  getDirFromXY( this, target->getPosition().x, target->getPosition().y ) +4 )%8 )%8,0);
-			}
-		}
-			break;
-		case WANDER_AMX: // Sparhawk: script controlled movement
-		{
-			UI32 l = dir;
-			if (amxevents[EVENT_CHR_ONWALK])
-			{
-				g_bByPass = false;
-				amxevents[EVENT_CHR_ONWALK]->Call(getSerial32(), dir, dir);
-				if (g_bByPass==true)
-					return;
-			}
-			/*
-			pc_i->runAmxEvent( EVENT_CHR_ONWALK, pc_i->getSerial32(), pc_i->dir, pc_i->dir);
-			if (g_bByPass==true)
-				return;
-			*/
-			int k = dir;
-			dir = l;
-			l = npcmovetime;
-			npcwalk( this, k, 0);
-			if ( l != npcmovetime ) // it's been changed through small
-				return;
-		}
-			break;
-		default:
-			ErrOut("cChar::walk() unknown npcwander [%i] serial %u\n", npcWander, getSerial32() );
-			break;
-	}
-	setNpcMoveTime();
-}
-
 int checkBounds(P_CHAR pc, int newX, int newY, int type)
 {
 	VALIDATEPCR(pc, 0);
@@ -952,7 +523,7 @@ int checkBounds(P_CHAR pc, int newX, int newY, int type)
 	return move;
 }
 
-void npcwalk( P_CHAR pc_i, int newDirection, int type)   //type is npcwalk mode (0 for normal, 1 for box, 2 for circle) // Sparhawk should be changed to npcwander
+void npcwalk( P_CHAR pc_i, UI08 newDirection, int type)   //type is npcwalk mode (0 for normal, 1 for box, 2 for circle) // Sparhawk should be changed to npcwander
 {
 	VALIDATEPC(pc_i);
 
@@ -975,7 +546,7 @@ void npcwalk( P_CHAR pc_i, int newDirection, int type)   //type is npcwalk mode 
 	{
 		int newX = charpos.x;
 		int newY = charpos.y;
-		getXYfromDir( pc_i->dir, &newX, &newY );	// get coords of the location we want to walk
+		getXYfromDir( pc_i->dir, newX, newY );	// get coords of the location we want to walk
                 //<Luxor>
 		Location newpos = Loc( newX, newY, charpos.z );
 		valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
@@ -989,8 +560,8 @@ void npcwalk( P_CHAR pc_i, int newDirection, int type)   //type is npcwalk mode 
 			}
 			else 	// We're out of the boundary, so we need to get back
 			{
-				int direction = getDirFromXY( pc_i, pc_i->fx1, pc_i->fy1 );
-				getXYfromDir( direction, &newX, &newY );
+				UI08 direction = pc_i->getDirFromXY(pc_i->fx1, pc_i->fy1);
+				getXYfromDir( direction, newX, newY );
 				//<Luxor>
 				newpos = Loc( newX, newY, charpos.z );
 				valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
@@ -998,7 +569,7 @@ void npcwalk( P_CHAR pc_i, int newDirection, int type)   //type is npcwalk mode 
 				if ( !valid ) // try to bounce around obstacle
 				{
 					direction = pc_i->dir;
-					getXYfromDir( pc_i->dir, &newX, &newY );
+					getXYfromDir( pc_i->dir, newX, newY );
 					//<Luxor>
 					newpos = Loc( newX, newY, charpos.z );
 					valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
@@ -1010,7 +581,7 @@ void npcwalk( P_CHAR pc_i, int newDirection, int type)   //type is npcwalk mode 
 							direction = getRightDir( direction );
 						else
 							direction = getLeftDir( direction );
-						getXYfromDir( pc_i->dir, &newX, &newY );
+						getXYfromDir( pc_i->dir, newX, newY );
 						//<Luxor>
 						newpos = Loc( newX, newY, charpos.z );
 						valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
@@ -1034,7 +605,7 @@ void npcwalk( P_CHAR pc_i, int newDirection, int type)   //type is npcwalk mode 
 				direction = getLeftDir( pc_i->dir );
 			while( !valid && direction != pc_i->dir )
 			{
-				getXYfromDir( direction, &newX, &newY );
+				getXYfromDir( direction, newX, newY );
 				//<Luxor>
 				newpos = Loc( newX, newY, charpos.z );
 				valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );

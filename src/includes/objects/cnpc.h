@@ -54,6 +54,48 @@ public:
 
 //@{
 /*!
+\name Npc Vendor
+\note fist draft.. need to make map with id used in recive for make faster
+*/
+
+public:
+	std::vector<vendor_item>*	vendorItemsSell; //!< all items sell by vendor
+	std::vector<vendor_item>*	vendorItemsBuy; //!< all items sell by vendor
+
+//@}
+
+//@{
+/*!
+\name Flags
+*/
+
+public:
+	static const UI64 flagCanTrain		= 0x0000000100000000ull;
+	static const UI64 flagShopKeeper	= 0x0000000200000000ull;
+	static const UI64 flagDispellable	= 0x0000000400000000ull;
+
+	inline const bool canTrain() const
+	{ return flags & flagCanTrain; }
+
+	inline void setCanTrain(bool on = true)
+	{ setFlag(flagCanTrain, on); }
+
+	inline const bool isShopKeeper() const
+	{ return flags & flagShopKeeper; }
+
+	inline void setShopKeeper(bool on = true)
+	{ setFlag(flagShopKeeper, on); }
+
+	inline const bool isDispellable() const
+	{ return flags & flagDispellable; }
+
+	inline void setDispellable(bool on = true)
+	{ setFlag(flagDispellable, on); }
+
+//@}
+
+//@{
+/*!
 \name Stabling
 */
 protected:

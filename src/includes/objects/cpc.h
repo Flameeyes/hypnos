@@ -38,7 +38,7 @@ public:
 \name Trainer
 */
 public:
-	pChar	trainer;		//!< NPC training the char
+	pNPC	trainer;		//!< NPC training the char
 	UI08	trainingplayerin;	//!< Index in skillname of the skill the NPC is training the player in
 
 public:
@@ -50,6 +50,51 @@ public:
 
 	inline const UI08	getSkillTaught() const
 	{ return trainingplayerin; }
+//@}
+
+//@{
+/*!
+\name Flags
+*/
+
+public:
+	static const UI64 flagCanViewSerials	= 0x0000000100000000ull; //!< Char can view serial codes
+	static const UI64 flagPageAble		= 0x0000000200000000ull;
+	static const UI64 flagViewHouseIcon	= 0x0000000400000000ull;
+	static const UI64 flagAllMove		= 0x0000000800000000ull;
+	static const UI64 flagCanSnoopAll	= 0x0000001000000000ull;
+	static const UI64 flagBroadcast		= 0x0000002000000000ull;
+
+	inline const bool canBroadcast() const
+	{ return flags & flagBroadcast; }
+
+	inline void flagBroadcast(bool set = true)
+	{ setFlag(flagBroadcast, set); }
+
+	inline const bool canViewHouseIcon() const
+	{ return flags & flagViewHouseIcon; }
+
+	inline void setViewHouseIcon(bool set = true)
+	{ setFlag(flagViewHouseIcon, set); }
+
+	inline const bool canSeeSerials() const
+	{ return flags & flagCanViewSerials; }
+
+	inline void setCanSeeSerials(bool set = true)
+	{ setFlag(flagCanViewSerials, set); }
+
+	inline const bool canSnoop() const
+	{ return flags & flagCanSnoopAll; }
+
+	inline void setSnoopAll(bool set = true)
+	{ setFlag(flagCanSnoopAll, set); }
+
+	inline const bool canAllMove() const
+	{ return flags & flagAllMove; }
+
+	inline void setAllMove(bool set = true)
+	{ setFlag(flagAllMove, set); }
+
 //@}
 
 //@{
@@ -69,6 +114,19 @@ public:
 	inline const TIMERVAL getCreationDay() const
 	{ return creationday; }
 //@}
+
+//@{
+//! \name Bank
+
+	//! Counts the gold in the bankbox
+	inline UI32 countBankGold()
+	{
+		return  getBankBox(bankGold) ?
+			getBankBox(bankGold)->countItems(ITEMID_GOLD)
+			: 0;
+	}
+//@}
+
 };
 
 #endif

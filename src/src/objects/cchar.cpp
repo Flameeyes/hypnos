@@ -298,7 +298,6 @@ cChar::cChar( SERIAL ser ) : cObject()
 	setNpcMoveTime();
 	resetNxwFlags();
 	resetAmxEvents();
-	prevX = prevY = prevZ = 0;
 	ResetGuildTraitor();
 	SetGuildType( INVALID );
 	magicsphere = 0;
@@ -313,20 +312,6 @@ cChar::cChar( SERIAL ser ) : cObject()
 	jailed=false;
 	morphed=0;
 	resetLockSkills();
-
-	beardserial=INVALID;
-	oldbeardcolor=0;
-	oldbeardstyle=0;
-
-	hairserial=INVALID;
-	oldhaircolor=0;
-	oldhairstyle=0;
-
-	possessorSerial = INVALID; //Luxor
-	possessedSerial = INVALID; //Luxor
-
-	mounted=false;
-	lootVector.clear();
 
 	SetInnocent(); //Luxor
 	targetcallback = INVALID;
@@ -594,7 +579,7 @@ void cChar::SetGuildType(short newGuildType)
 \since 0.82
 \return bool: true is traitor
 */
-LOGICAL cChar::IsGuildTraitor()
+bool cChar::IsGuildTraitor()
 {
 	return guildTraitor;
 }
@@ -628,7 +613,7 @@ void cChar::ResetGuildTraitor()
 \since 0.82
 \return true is show title
 */
-LOGICAL	cChar::HasGuildTitleToggle()
+bool	cChar::HasGuildTitleToggle()
 {
 	return guildToggle;
 }
@@ -863,7 +848,7 @@ void cChar::disturbMed()
 \brief Reveals the char if he was hidden
 \author Duke
 \date 17/03/2001
-\date 20/03/2003 ported unhidesendchar into the function code - Akron
+\date 20/03/2003 ported unhidesendchar into the function code - Flameeyes
 */
 void cChar::unHide()
 {
@@ -946,40 +931,32 @@ void cChar::npcSimpleAttack(pChar pc_target)
 
 /*!
 \brief count items of given id and color
-\author Duke
-\date 26/03/2001
-\param ID id of items to count
-\param col color of the items to count
+\author Flameeyes (based on Duke)
+\param matchId id of items to count
+\param matchColor color of the items to count
 
 Searches the character recursively, counting the items of the given ID and (if given) color
 */
-UI32 cChar::CountItems(short ID, short col)
+UI32 cChar::CountItems(UI16 matchId, UI16 matchColor)
 {
-	P_ITEM pi= getBackpack();
-	return (ISVALIDPI(pi))? pi->CountItems(ID, col) : 0 ;
+	if ( ! body ) return;
+	pContainer bp = body->getBackpack();
+	return bp ? bp->countItems(matchId, matchColor) : 0;
 }
 
-SI32 cChar::countBankGold()
+/*!
+\brief Check if an item is in the char's backpack
+\author Flameeyes
+\param pi item to check
+*/
+bool cChar::isInBackpack( pItem pi )
 {
-	P_ITEM pi = GetBankBox(BANK_GOLD);
-	return (ISVALIDPI(pi)) ? pi->CountItems(ITEMID_GOLD) : 0;
+	if ( ! pi || !body || !body->getBackpack() ) return false;
+
+	return pi->getOutMostCont() == body->getBackpack();
 }
 
-LOGICAL cChar::isInBackpack( P_ITEM pi )
-{
-	VALIDATEPIR(pi, false);
-	P_ITEM pack = getBackpack();
-	VALIDATEPIR( pack, false);
-	P_ITEM pCont;
-
-	pCont = pi->getOutMostCont();
-	VALIDATEPIR(pCont, false);
-
-	return (pCont->getSerial32() == pack->getSerial32());
-
-}
-
-void cChar::setMultiSerial(long mulser)
+void cChar::setMultiSerial(UI32 mulser)
 {
 	if (getMultiSerial32() != INVALID) // if it was set, remove the old one
 		pointers::delFromMultiMap(this);
@@ -1060,25 +1037,6 @@ void cChar::sysmsg(const TEXT *txt, ...)
 }
 
 /*!
-\author Luxor
-\brief gets the character current socket
-\return the socket
-*/
-NXWSOCKET cChar::getSocket() const
-{
-        if ( npc )
-		return INVALID;
-
-	NXWCLIENT cli = getClient();
-	if (cli != NULL) {
-		if ( cli->toInt() >= 0 && cli->toInt() < now )
-			return cli->toInt();
-	}
-
-	return INVALID;
-}
-
-/*!
 \brief wrapper for AttackStuff()
 \param pc as default
 \author Xanathar
@@ -1148,7 +1106,7 @@ void cChar::applyPoison(PoisonType poisontype, SI32 secs )
 \author Xanathar
 \brief unfreezes the char
 */
-void cChar::unfreeze( LOGICAL calledByTempfx )
+void cChar::unfreeze( bool calledByTempfx )
 {
     if( !calledByTempfx )
 		delTempfx( tempfx::SPELL_PARALYZE, false ); //Luxor
@@ -1330,7 +1288,7 @@ void cChar::impAction(UI16 action)
 */
 void cChar::addGold(UI16 totgold)
 {
-	P_ITEM pi = item::CreateFromScript( "$item_gold_coin", getBackpack(), totgold );
+	pItem pi = item::CreateFromScript( "$item_gold_coin", getBackpack(), totgold );
 	if ( pi != 0 )
 		pi->Refresh();
 }
@@ -1341,7 +1299,7 @@ void cChar::addGold(UI16 totgold)
 \param txt the speech
 \param antispam use or not antispam
 */
-void cChar::talkAll(TEXT *txt, LOGICAL antispam)
+void cChar::talkAll(TEXT *txt, bool antispam)
 {
 	NxwSocketWrapper sw;
 	sw.fillOnline( this, false );
@@ -1361,12 +1319,12 @@ void cChar::talkAll(TEXT *txt, LOGICAL antispam)
 \param txt the speech
 \param antispam use or not antispam
 */
-void cChar::talk(NXWSOCKET s, TEXT *txt, LOGICAL antispam)
+void cChar::talk(NXWSOCKET s, TEXT *txt, bool antispam)
 {
 	if( s < 0 || s >= now )
 		return;
 
-	LOGICAL machwas= true;
+	bool machwas= true;
 
 	if( antispam )
 	{
@@ -1404,9 +1362,9 @@ void cChar::talk(NXWSOCKET s, TEXT *txt, LOGICAL antispam)
 \param antispam use or not antispam
 \todo document extra parameters
 */
-void cChar::emote( NXWSOCKET socket, TEXT *txt, LOGICAL antispam, ... )
+void cChar::emote( NXWSOCKET socket, TEXT *txt, bool antispam, ... )
 {
-	LOGICAL sendEmote = true;
+	bool sendEmote = true;
 	emotecolor = 0x0026;
 
 	if ( antispam )
@@ -1438,9 +1396,9 @@ void cChar::emote( NXWSOCKET socket, TEXT *txt, LOGICAL antispam, ... )
 \param antispam use or not antispam
 \todo document extra parameters
 */
-void cChar::emoteall( char *txt, LOGICAL antispam, ... )
+void cChar::emoteall( char *txt, bool antispam, ... )
 {
-	LOGICAL sendEmote = true;
+	bool sendEmote = true;
 
 	if ( antispam )
 	{
@@ -1477,9 +1435,9 @@ void cChar::emoteall( char *txt, LOGICAL antispam, ... )
 \param txt speech
 \param antispam use or not antispam
 */
-void cChar::talkRunic(NXWSOCKET s, TEXT *txt, LOGICAL antispam)
+void cChar::talkRunic(NXWSOCKET s, TEXT *txt, bool antispam)
 {
-	LOGICAL machwas;
+	bool machwas;
 
 	if (s<0) return;
 
@@ -1511,7 +1469,7 @@ void cChar::talkRunic(NXWSOCKET s, TEXT *txt, LOGICAL antispam)
 \param txt the speech
 \param antispam use or not antispam
 */
-void cChar::talkAllRunic(TEXT *txt, LOGICAL antispam)
+void cChar::talkAllRunic(TEXT *txt, bool antispam)
 {
 
 	NxwSocketWrapper sw;
@@ -1565,7 +1523,7 @@ UI32 cChar::distFrom(P_ITEM pi)
 \author Luxor
 \brief Tells if the char can see the given object
 */
-LOGICAL cChar::canSee( cObject &obj )
+bool cChar::canSee( cObject &obj )
 {
 	//
 	// Check if the object is in visRange
@@ -1792,16 +1750,6 @@ void cChar::facexy(SI32 facex, SI32 facey)
 
 /*!
 \author Luxor
-\brief Toggle war mode
-*/
-void cChar::toggleCombat()
-{
-	war=( !(war) );
-	walking2( this );
-}
-
-/*!
-\author Luxor
 \brief returns char's combat skill
 \return the index of the char's combat skill
 */
@@ -1851,17 +1799,17 @@ SI32 cChar::getCombatSkill()
 \param pc pointer to the char to check line of sight from
 \return true if is in line of sight
 */
-LOGICAL cChar::losFrom(P_CHAR pc)
+bool cChar::losFrom(P_CHAR pc)
 {
 	VALIDATEPCR(pc, false );
 	return lineOfSight( getPosition(), pc->getPosition() );
 }
 
 /*!
-\author Akron (port)
+\author Flameeyes (port)
 \brief Plays a monster sound effect
 \param sfx sound effect
-\note ported from sndpkg.cpp, i'm not the original author - Akron
+\note ported from sndpkg.cpp, i'm not the original author - Flameeyes
 */
 void cChar::playMonsterSound(MonsterSound sfx)
 {
@@ -1877,7 +1825,7 @@ void cChar::playMonsterSound(MonsterSound sfx)
 }
 
 
-LOGICAL const cChar::CanDoGestures() const
+bool const cChar::CanDoGestures() const
 {
 	if (!IsGM())
 	{
@@ -1913,7 +1861,7 @@ LOGICAL const cChar::CanDoGestures() const
 \param high high bound
 \param bRaise should be raised?
 */
-LOGICAL cChar::checkSkill(Skill sk, SI32 low, SI32 high, LOGICAL bRaise)
+bool cChar::checkSkill(Skill sk, SI32 low, SI32 high, bool bRaise)
 {
 	NXWCLIENT ps = getClient();;
 	NXWSOCKET s=INVALID;
@@ -2022,7 +1970,7 @@ SI32 cChar::delItems(UI16 id, SI32 amount, UI16 color)
 \param id the id ( INVALID if no used )
 \param col the color ( INVALID if no used )
 \param onlyPrimaryBackpack false if search also in th subpack
-\note changed to UI32 by Akron on 2003-03-18
+\note changed to UI32 by Flameeyes on 2003-03-18
 */
 UI32 cChar::getAmount(short id, short col, bool onlyPrimaryBackpack)
 {
@@ -2062,7 +2010,7 @@ void cChar::Delete()
 \author Luxor
 \brief Tells if a char sees an object for the first time
 */
-LOGICAL cChar::seeForFirstTime( cObject &obj )
+bool cChar::seeForFirstTime( cObject &obj )
 {
 	SERIAL objser = obj.getSerial32();
 
@@ -2099,7 +2047,7 @@ LOGICAL cChar::seeForFirstTime( cObject &obj )
 \author Luxor
 \brief Tells if a char sees an object for the last time
 */
-LOGICAL cChar::seeForLastTime( cObject &obj )
+bool cChar::seeForLastTime( cObject &obj )
 {
 	SERIAL objser = obj.getSerial32();
 
@@ -2142,7 +2090,7 @@ LOGICAL cChar::seeForLastTime( cObject &obj )
 \param explode true if should do a final explosion
 \param part particle effects structure
 */
-void cChar::movingFX(P_CHAR destination, short id, SI32 speed, SI32 loop, LOGICAL explode, ParticleFx* part)
+void cChar::movingFX(P_CHAR destination, short id, SI32 speed, SI32 loop, bool explode, ParticleFx* part)
 {
 	movingeffect(DEREF_P_CHAR(this), DEREF_P_CHAR(destination), id >> 8, id & 0xFF,
 		speed & 0xFF, loop & 0xFF, explode ? '\1' : '\0', part!=NULL, part);
@@ -2173,7 +2121,7 @@ void cChar::staticFX(short id, SI32 speed, SI32 loop, ParticleFx* part)
 \param bNoParticles true if NOT to use particles
 \todo backport
 */
-void cChar::boltFX(LOGICAL bNoParticles)
+void cChar::boltFX(bool bNoParticles)
 {
 	UI08 effect[28]={ 0x70, 0x00, };
 
@@ -2382,7 +2330,7 @@ void cChar::resurrect( NXWCLIENT healer )
 \note this function modify the class variable, very bad...
 \return true if the char is over weight
 */
-LOGICAL const cChar::IsOverWeight()
+bool const cChar::IsOverWeight()
 {
 	if (IsGM()) return false;
 	return weights::CheckWeight2(this)!=0;
@@ -2457,7 +2405,7 @@ P_ITEM cChar::getHairItem()
 \todo document parameters
 */
 void cChar::morph ( short bodyid, short skincolor, short hairstyle, short haircolor,
-    short beardstyle, short beardcolor, const char* newname, LOGICAL bBackup)
+    short beardstyle, short beardcolor, const char* newname, bool bBackup)
 {
 	if ((bodyid==INVALID)&&(skincolor==INVALID)&&(hairstyle==INVALID)&&
 	    (haircolor==INVALID)&&(beardstyle==INVALID)&&(beardcolor==INVALID)&& (newname==NULL))
@@ -2657,7 +2605,7 @@ void cChar::goPlace(SI32 loc)
 \param spellnumber spell identifier to check
 \return true if the char know the spell
 */
-LOGICAL cChar::knowsSpell(magic::SpellId spellnumber)
+bool cChar::knowsSpell(magic::SpellId spellnumber)
 {
 
     NxwItemWrapper sw;
@@ -3176,7 +3124,7 @@ void cChar::checkEquipement()
 	}
 }
 
-const LOGICAL cChar::IsGrey() const
+const bool cChar::IsGrey() const
 {
 	if ( npc || IsMurderer() || IsCriminal() )
 		return false;
@@ -3457,7 +3405,7 @@ void cChar::doGmEffect()
 	return;
 }
 
-void cChar::showLongName( P_CHAR showToWho, LOGICAL showSerials )
+void cChar::showLongName( P_CHAR showToWho, bool showSerials )
 {
 	VALIDATEPC( showToWho );
 	NXWSOCKET socket = showToWho->getSocket();
@@ -3730,7 +3678,7 @@ void cChar::heartbeat()
 
 void cChar::generic_heartbeat()
 {
-	LOGICAL update[3] = { false, false, false };
+	bool update[3] = { false, false, false };
 
 	if (hp > getStrength()) {
 		hp = getStrength();
@@ -4488,7 +4436,7 @@ void cChar::IncreaseKarma( SI32 value, P_CHAR pKilled )
 		SI32 	nKarma			= value,
 			nChange			= 0;
 
-		LOGICAL	positiveKarmaEffect	= false;
+		bool	positiveKarmaEffect	= false;
 
 		if	( nCurKarma < nKarma && nKarma > 0 )
 		{
@@ -4662,7 +4610,7 @@ void cChar::modifyFame( SI32 value )
 \todo document pcd parameter
 \todo backport from Skills::
 */
-const LOGICAL cChar::checkSkillSparrCheck(Skill sk, SI32 low, SI32 high, P_CHAR pcd)
+const bool cChar::checkSkillSparrCheck(Skill sk, SI32 low, SI32 high, P_CHAR pcd)
 {
 	return Skills::CheckSkillSparrCheck(DEREF_P_CHAR(this),sk, low, high, pcd);
 }
@@ -4716,4 +4664,83 @@ const bool cChar::inDungeon() const
 			return x1 < 2;
 	}
 	return false;
+}
+
+//! Only for switching to combat mode
+void cChar::warUpdate()
+{
+	bool sendit;
+
+	Location charpos= getPosition();
+
+	if (!inWarMode())
+	// we have to execute this no matter if invisble or not LB
+	{
+		attacker = NULL;
+		target = NULL;
+	}
+
+	bool hidden = (IsHidden() || (isDead() && !inWarMode()));
+	const bool npc = rtti() == rtti::cNPC;
+
+	NxwSocketWrapper sw;
+	sw.fillOnline( pc_s, false );
+	for( sw.rewind(); !sw.isEmpty(); sw++ )
+	{
+		pClient cl = NULL; //! \todo TODO!! The client sets!
+		if( ! cl ) continue;
+
+		pPC pc_i = cl->currChar();
+		if ( ! pc_i ) continue;
+
+		if ( hidden && this != pc_i && !pc_i->isGM() )
+		{
+			if (!pc_i->isDead())
+			{
+				SendDeleteObjectPkt(ps_i->toInt(), getSerial32());
+				sendit = false;
+			}
+			else
+				sendit = true;
+		}
+		else
+			sendit = true; // LB 9-12-99 client 1.26.2 fix
+
+		if (sendit)
+		{
+			UI08 ndir = dir&0x7f, flag, hi_color, guild;
+
+			// running stuff
+
+			if (npc && (inWarMode() || ftarget)) // Skyfire
+				dir |= 0x80;
+
+			flag =  inWarMode() ? 0x40 : 0 |
+				isHidden() ? 0x80 : 0 |
+				isPoisoned() ? 0x04 : 0;
+
+			if (kills >= 4)
+				hi_color = 6; // ripper
+
+			guild = Guilds->Compare(pc_s, pc_i);
+			if (guild == 1)        // Same guild (Green)
+				hi_color = 2;
+			else if (guild == 2)   // Enemy guild.. set to orange
+				hi_color = 5;
+			else if (isMurderer()) // show red
+				hi_color = 6;
+			else if (isInnocent()) // show blue
+				hi_color = 1;
+			else if (flag == 0x08) // show green
+				hi_color = 2;
+			else if (flag == 0x10) // show orange
+				hi_color = 5;
+			else
+				hi_color = 3;  // show grey
+
+			// end of if sendit
+
+			SendUpdatePlayerPkt(s, getSerial32(), getId(), charpos, dir, getColor(), flag, hi_color);
+		}
+	}
 }
