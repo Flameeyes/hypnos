@@ -16,7 +16,7 @@
 #include "settings.h"
 #include "inlines.h"
 
-ZThread::FastMutex cAccount::global_mt;
+Wefts::Mutex cAccount::global_mt;
 cAccounts cAccount::accounts;
 
 /*!
@@ -25,17 +25,17 @@ cAccounts cAccount::accounts;
 This function iterates on cAccount::accounts and run cAccount::save()
 function for all the accounts, saving them into the SQLite database.
 
-\note This function acquires cAccount::global_mt
+\note This function locks cAccount::global_mt
 */
 void cAccount::saveAll()
 {
-	global_mt.acquire();
+	global_mt.lock();
 
 	uint32_t id = 0;
 	for(cAccounts::iterator it = accounts.begin(); it != accounts.end(); it++)
 		(*it).second->save(id++);
 
-	global_mt.release();
+	global_mt.unlock();
 }
 
 /*!
@@ -44,11 +44,11 @@ void cAccount::saveAll()
 This function load all the accounts from the SQLite database and create the
 cAccount objects in the cAccount::accounts hashmap.
 
-\note This function acquires cAccount::global_mt
+\note This function locks cAccount::global_mt
 */
 void cAccount::loadAll()
 {
-	global_mt.acquire();
+	global_mt.lock();
 	
 	cSQLite::pSQLiteQuery q = globalDB->execQuery("SELECT * FROM accounts");
 
@@ -60,7 +60,7 @@ void cAccount::loadAll()
 	
 	delete q;
 	
-	global_mt.release();
+	global_mt.unlock();
 }
 
 /*!
@@ -143,7 +143,7 @@ cAccount::cAccount(cSQLite::cSQLiteQuery::tRow r)
 
 This function insert into the database the needed row for the account.
 
-\note This function acquires Database::dbMutex
+\note This function locks Database::dbMutex
 */
 void cAccount::save(uint32_t id)
 {

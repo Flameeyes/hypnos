@@ -15,6 +15,7 @@
 
 #include "common_libs.h"
 #include "backend/sqlite.h"
+#include "extras/jails.h"
 #include "enums.h"
 #include <wefts_mutex.h>
 
