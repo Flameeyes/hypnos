@@ -129,6 +129,20 @@ used to reload all the server's data.
 */
 void loadServer()
 {
+#if 0
+// Old load...
+	loadserverdefaults();
+	preloadSections("config/server.cfg");
+	preloadSections("custom/server.cfg");
+
+	//XAN : moved here 'cos nxw needs early initialization
+	//(has vital data in server.cfg, needed for proper "bootstrap" :))
+	loadserverscript();
+#endif
+	// old things
+	commitserverscript(); // second phase setup
+	SetGlobalVars();
+	
 	srand(getclock()); // initial randomization call
 	
 	// Load MULs
@@ -367,24 +381,12 @@ int main(int argc, char *argv[])
 
 	initclock() ;
 
-	loadServer();
-
 	serverstarttime=getclock();
 
-#if 0
-// Old load...
-	loadserverdefaults();
-	preloadSections("config/server.cfg");
-	preloadSections("custom/server.cfg");
-
 	initConsole();
-
 	ConOut("Starting Hypnos...\n\n");
 
-	//XAN : moved here 'cos nxw needs early initialization
-	//(has vital data in server.cfg, needed for proper "bootstrap" :))
-	loadserverscript();
-#endif
+	loadServer();
 
 #ifdef USE_SIGNALS
 	//thx to punt and Plastique :]
@@ -402,26 +404,6 @@ int main(int argc, char *argv[])
 	ConOut("[ OK ]\n");
 
 	openings = 0;
-
-#if 0
-// old things
-	exitOnError(error);
-
-	commitserverscript(); // second phase setup
-		
-	ConOut("\nLoading scripts with new method...\n");
-	newScriptsInit();
-
-
-	//Now lets load the custom scripts, if they have them defined...
-	i=0;
-
-	exitOnError(error); // errors here crashes further startup process. so stop insted of crash
-
-	ConOut("\n");
-	SetGlobalVars();
-#endif
-	
 
 	keeprun=(Network->kr); //LB. for some technical reasons global varaibles CANT be changed in constructors in c++.
 	error=Network->faul; // i hope i can find a cleaner solution for that, but this works !!!

@@ -4,10 +4,14 @@
 | This software is free software released under GPL2 license.              |
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
+| Copyright (c) 2003 - NoX-Wizard Project                                  |
+| Copyright (c) 2004 - Hypnos Project                                      |
+|                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+
 #include "common_libs.h"
 #include "version.h"
-#include "console.h"
+#include "arch/console.h"
 
 static FILE *s_fileStdOut = NULL;
 
@@ -23,9 +27,8 @@ void setWinTitle(char *str, ...)
 	va_end( argptr );
 	
 	#ifdef __unix__
-	    ConOut("\033]0;%s\007", temp); // xterm code
-	#endif
-	#ifdef WIN32
+		ConOut("\033]0;%s\007", temp); // xterm code
+	#elif defined(WIN32)
 		SetConsoleTitle(temp);
 	#endif
 	
@@ -35,8 +38,7 @@ void setWinTitle(char *str, ...)
 void constart( void )
 {
 	setWinTitle("Hypnos %s", strVersion);
-	#ifndef __unix__
-	#ifndef _WINDOWS
+	#ifdef WIN32
 	if (ServerScp::g_nDeamonMode==0) {
 		HANDLE Buff = GetStdHandle(STD_OUTPUT_HANDLE);
 		COORD coord; coord.X = 80; coord.Y = (short)ServerScp::g_nLineBuffer;
@@ -61,9 +63,7 @@ void constart( void )
 
 	}
 	#endif
-	#endif
 }
-
 
 void initConsole()
 {
@@ -95,50 +95,9 @@ extern "C" void ConOut(char *txt, ...)
 
 extern void setWinTitle(char *str, ...);
 
-extern "C" void STraceOut(char *txt, ...)
-{
-	va_list argptr;
-
-	char *temp;
-	va_start( argptr, txt );
-	vsnprintf( &temp, txt, argptr );
-	va_end( argptr );
-
-#ifndef _WINDOWS
-
-#ifdef _CONSOLE
-	if (ServerScp::g_nDeamonMode==0) {
-		HANDLE Buff = GetStdHandle(STD_OUTPUT_HANDLE);
-		unsigned short color;
-		color=FOREGROUND_BLUE|FOREGROUND_INTENSITY;
-		SetConsoleTextAttribute(Buff,color);
-	}
-#endif
-
-	fprintf(s_fileStdOut, "%s", temp);
-	fflush(s_fileStdOut);
-
-#ifdef _CONSOLE
-	if (ServerScp::g_nDeamonMode==0) {
-		HANDLE Buff = GetStdHandle(STD_OUTPUT_HANDLE);
-		unsigned short color;
-		color=FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE;
-		SetConsoleTextAttribute(Buff,color);
-	}
-#endif
-
-
-#else
-	xwprintf("\x81%s", temp);
-#endif
-
-	free(temp);
-
-}
-
 static char s_szErrMsg[2048];
 
-const std::string &getNoXDate()
+const std::string &getDate()
 {
 	time_t TIME;
 	tm* T;
@@ -158,18 +117,14 @@ const std::string &getNoXDate()
 /*******************************************************
  ** NEW GEN Console Functions                         **
  *******************************************************/
-#define USEANSICODES
-extern "C" void AnsiOut(char *txt)
+void AnsiOut(char *txt)
 {
-    #ifdef __unix__
-    #ifdef USEANSICODES
-        ConOut(txt);
-    #endif
-    #endif
+	#if defined(__unix__)
+		ConOut(txt);
+	#endif
 }
 
-
-extern "C" void ErrOut(char *txt, ...)
+void ErrOut(char *txt, ...)
 {
 	va_list argptr;
 
@@ -177,13 +132,12 @@ extern "C" void ErrOut(char *txt, ...)
 	vsnprintf( s_szErrMsg, sizeof(s_szErrMsg)-1, txt, argptr );
 	va_end( argptr );
 
-    AnsiOut("\x1B[1;31m");
-	ConOut("E %s - %s", getNoXDate().c_str(), s_szErrMsg);
-    AnsiOut("\x1B[0m");
+	AnsiOut("\x1B[1;31m");
+	ConOut("E %s - %s", getDate().c_str(), s_szErrMsg);
+	AnsiOut("\x1B[0m");
 }
 
-
-extern "C" void WarnOut(char *txt, ...)
+void WarnOut(char *txt, ...)
 {
 	va_list argptr;
 
@@ -191,39 +145,26 @@ extern "C" void WarnOut(char *txt, ...)
 	vsnprintf( s_szErrMsg, sizeof(s_szErrMsg)-1, txt, argptr );
 	va_end( argptr );
 
-    AnsiOut("\x1B[1;33m");
-	ConOut("W %s - %s", getNoXDate().c_str(), s_szErrMsg);
-    AnsiOut("\x1B[0m");
+	AnsiOut("\x1B[1;33m");
+	ConOut("W %s - %s", getDate().c_str(), s_szErrMsg);
+	AnsiOut("\x1B[0m");
 }
 
 
-extern "C" void InfoOut(char *txt, ...)
+void InfoOut(char *txt, ...)
 {
 	va_list argptr;
 
 	va_start( argptr, txt );
 	vsnprintf( s_szErrMsg, sizeof(s_szErrMsg)-1, txt, argptr );
 	va_end( argptr );
-    AnsiOut("\x1B[1;34m");
-	ConOut("i %s - %s", getNoXDate().c_str(), s_szErrMsg);
-    AnsiOut("\x1B[0m");
+	
+	AnsiOut("\x1B[1;34m");
+	ConOut("i %s - %s", getDate().c_str(), s_szErrMsg);
+	AnsiOut("\x1B[0m");
 }
 
-extern "C" void PanicOut(char *txt, ...)
-{
-	va_list argptr;
-
-	va_start( argptr, txt );
-	vsnprintf( s_szErrMsg, sizeof(s_szErrMsg)-1, txt, argptr );
-	va_end( argptr );
-
-    AnsiOut("\x1B[1;31m");
-	ConOut("! %s - %s", getNoXDate().c_str(), s_szErrMsg);
-    AnsiOut("\x1B[0m");
-}
-
-
-extern "C" void DmpOut(char *txt, ...)
+void PanicOut(char *txt, ...)
 {
 	va_list argptr;
 
@@ -231,8 +172,22 @@ extern "C" void DmpOut(char *txt, ...)
 	vsnprintf( s_szErrMsg, sizeof(s_szErrMsg)-1, txt, argptr );
 	va_end( argptr );
 
-    AnsiOut("\x1B[33m");
+	AnsiOut("\x1B[1;31m");
+	ConOut("! %s - %s", getDate().c_str(), s_szErrMsg);
+	AnsiOut("\x1B[0m");
+}
+
+
+void DmpOut(char *txt, ...)
+{
+	va_list argptr;
+
+	va_start( argptr, txt );
+	vsnprintf( s_szErrMsg, sizeof(s_szErrMsg)-1, txt, argptr );
+	va_end( argptr );
+
+	AnsiOut("\x1B[33m");
 	ConOut("--> %s", s_szErrMsg);
-    AnsiOut("\x1B[0m");
+	AnsiOut("\x1B[0m");
 }
 

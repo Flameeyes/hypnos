@@ -27,9 +27,6 @@ void loadmetagm();
 void StartMilliTimer(unsigned long &Seconds, unsigned long &Milliseconds);
 unsigned long CheckMilliTimer(unsigned long &Seconds, unsigned long &Milliseconds);
 
-void newScriptsInit();
-void deleteNewScripts();
-
 extern nMULFiles::fTiledataLand *tiledataLand;
 extern nMULFiles::fTiledataStatic *tiledataStatic;
 
