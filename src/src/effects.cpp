@@ -24,7 +24,7 @@ void nEffects::staticFX(pSerializable source, uint16_t eff, uint8_t speed, uint8
 	if (part)
 	{
 		if (eff == 0xFFFF)
-			eff = (part->effect[0] << 8) + part->effect[1];
+			eff = ShortFromCharPtr( part->effect );
 		if (speed == 0xFF)
 			speed = part->effect[2];
 		if (loop == 0xFF)
@@ -33,7 +33,7 @@ void nEffects::staticFX(pSerializable source, uint16_t eff, uint8_t speed, uint8
 
 	int a0,a1,a2,a3,a4;
 
-	nPackets::Sent::GraphicalEffect pk(etFollowObject, source, NULL, effect, speed, loop, true, false);
+	nPackets::Sent::GraphicalEffect pk(etFollowObject, source, NULL, eff, speed, loop, true, false);
 
 
 	if (!part) // no UO3D effect ? lets send old effect to all clients
