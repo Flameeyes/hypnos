@@ -14,7 +14,7 @@ AM_PROG_LIBTOOL
 
 AM_DL()
 AM_PATH_WEFTS()
-
+AM_BINRELOC()
 AC_ICC_COMPILER()
 
 if test "$is_icc" == "yes"; then

@@ -1,5 +1,11 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
 
+/* Include pthread support for binary relocation? */
+#undef BR_PTHREAD
+
+/* Use binary relocation? */
+#undef ENABLE_BINRELOC
+
 /* Define to 1 if you have the `asprintf' function. */
 #undef HAVE_ASPRINTF
 
@@ -44,6 +50,9 @@
 
 /* Define to 1 if you have the `kbhit' function. */
 #undef HAVE_KBHIT
+
+/* Define to 1 if you have the `pthread' library (-lpthread). */
+#undef HAVE_LIBPTHREAD
 
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H

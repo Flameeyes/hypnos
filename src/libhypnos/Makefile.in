@@ -69,6 +69,8 @@ AMTAR = @AMTAR@
 AR = @AR@
 AS = @AS@
 AWK = @AWK@
+BINRELOC_CFLAGS = @BINRELOC_CFLAGS@
+BINRELOC_LIBS = @BINRELOC_LIBS@
 CC = @CC@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
@@ -105,7 +107,7 @@ INCLUDES = $(all_includes)
 
 # the library search path.
 lib_LTLIBRARIES = libhypnos.la
-libhypnos_la_SOURCES = cvariant.cpp mmappedfile.cpp strings.cpp
+libhypnos_la_SOURCES = cvariant.cpp mmappedfile.cpp strings.cpp prefix.c
 SUBDIRS = muls
 libhypnos_la_LIBADD = $(top_builddir)/libhypnos/muls/libhypmul.la
 subdir = libhypnos
@@ -116,7 +118,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libhypnos_la_LDFLAGS =
 libhypnos_la_DEPENDENCIES = $(top_builddir)/libhypnos/muls/libhypmul.la
-am_libhypnos_la_OBJECTS = cvariant.lo mmappedfile.lo strings.lo
+am_libhypnos_la_OBJECTS = cvariant.lo mmappedfile.lo strings.lo \
+	prefix.lo
 libhypnos_la_OBJECTS = $(am_libhypnos_la_OBJECTS)
 
 DEFS = @DEFS@
@@ -126,7 +129,15 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/cvariant.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/mmappedfile.Plo ./$(DEPDIR)/strings.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/mmappedfile.Plo ./$(DEPDIR)/prefix.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/strings.Plo
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
+	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -148,7 +159,7 @@ SOURCES = $(libhypnos_la_SOURCES)
 all: all-recursive
 
 .SUFFIXES:
-.SUFFIXES: .cpp .lo .o .obj
+.SUFFIXES: .c .cpp .lo .o .obj
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
 	  $(AUTOMAKE) --gnu  libhypnos/Makefile
@@ -193,10 +204,30 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvariant.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mmappedfile.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prefix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strings.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
+
+.c.o:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c `test -f '$<' || echo '$(srcdir)/'`$<
+
+.c.obj:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c `cygpath -w $<`
+
+.c.lo:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(LTCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+CCDEPMODE = @CCDEPMODE@
 
 .cpp.o:
 @AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
