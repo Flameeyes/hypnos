@@ -635,7 +635,7 @@ class cPacketReceiveLoginRequest        : public cPacketReceive;
 class cPacketReceiveDeleteCharacter     : public cPacketReceive;        //!< client tries to delete a char from login window
 class cPacketReceiveGameServerLogin     : public cPacketReceive;
 class cPacketReceiveBookUpdateTitle     : public cPacketReceive;	//!< change title of book
-class cPacketReceiveDyeItem             : public cPacketReceive;	//!< dye item (opens dye dialog)
+class cPacketReceiveDyeItem             : public cPacketReceive;	//!< dye item (returns color selected in dye menu)
 class cPacketReceiveRequestHelp	        : public cPacketReceive;        //!< gm/conselor page request
 class cPacketReceiveSellItems           : public cPacketReceive;        //!< receive list of items selected from a sell list of vendor
 class cPacketReceiveSelectServer        : public cPacketReceive;

@@ -1520,6 +1520,8 @@ bool cPacketReceiveSecureTrade::execute(pClient client)
 \brief Receive bullettin board message
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x71
+
 \note Packets flow is:
 1) client doubleclicks the board (received 0x06 packets and doubleclick routine works with that)
 2) server sends 0x71 command 0 to tell client to open the bulletin board gump and await message data
@@ -1542,8 +1544,8 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 	// so we need to get the type of message from the client first.
 
 	int msgType = buffer[3];
-        pMsgBoard msgboard = (pMsgBoard)cSerializable::findItemBySerial(LongFromCharPtr(buffer + 4));
-        pMsgBoardMessage message = (pMsgBoardMessage)cSerializable::findItemBySerial(LongFromCharPtr(buffer + 8));
+        pMsgBoard msgboard = dynamic_cast<pMsgBoard>(cSerializable::findItemBySerial(LongFromCharPtr(buffer + 4)));
+        pMsgBoardMessage message = dynamic_cast<pMsgBoardMessage>(cSerializable::findItemBySerial(LongFromCharPtr(buffer + 8)));
         //for msgtypes 3, 4, 6 message is the message on which operate, on message 5 it is parent message (message reply)
         VALIDATEPIR( msgboard, false);
 	// message is validated inside the switch because subcommand 5 does not need it and may me invalid without consequences
@@ -1561,7 +1563,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                                 // no longer available and remove it from his/her list.
                                 cPacketSendDeleteObj pk(LongFromCharPtr(buffer + 8));
                                 client->sendPacket(&pk);
-                                client->sysmsg(tr("This message has just been deleted by someone else")); //TODO add this to translation files
+                                client->sysmsg(TRANSLATE("This message has just been deleted by someone else"));
                         }
                         else
                         {
@@ -1618,8 +1620,8 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                         newmessage->poster = pc->getSerial();
                         newmessage->availability = pc->postType;
                         if (pc->postType == REGIONALPOST) newmessage->region = msgboard->getRegion();
-                       	newmessage->subject = string(buffer + 10);
-                        newmessage->body = string(buffer + 10 + subjectlen, length - 11 - subjectlen);
+                       	newmessage->subject = std::string(buffer + 10);
+                        newmessage->body = std::string(buffer + 10 + subjectlen, length - 11 - subjectlen);
                         // We need to use this string constructor because there may be many null-terminated strings, and since no
                	        // process is needed by the server, it is much easier to copy the bulk of the body in a string and just
                        	// give it back to a client that asks for it :D
@@ -1657,8 +1659,6 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 	                        VALIDATEPIR( message, false);
 				pChar pc= client->currChar();
 				VALIDATEPCR(pc, false);
-				//             |p#|s1|s2|mt|b1|b2|b3|b4|m1|m2|m3|m4|
-				// Client sends 71  0  c  6 40  0  0 18  1  0  0  4
 				if ( (pc->IsGM()) || (SrvParms->msgpostremove) )
 	                        {
                                 	if ( global::onlyPosterCanDeleteMsgBoardMessage() && (pc->getSerial() != message->poster && !pc->IsGM() && (pc->getSerial() != msgboard->getOwner() || message->availability != LOCALPOST )))
@@ -1685,6 +1685,12 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
         return true;
 }
 
+/*!
+\brief Receive warmode change request
+\author Chronodt
+\param client client who sent the packet
+\note packet 0x72
+*/
 
 bool cPacketReceiveWarModeChange::execute(pClient client)
 {
@@ -1710,6 +1716,12 @@ bool cPacketReceiveWarModeChange::execute(pClient client)
         return false;
 }
 
+/*!
+\brief client Ping
+\author Chronodt
+\param client client who sent the packet
+\note packet 0x73
+*/
 
 bool cPacketReceivePing::execute(pClient client)
 {
@@ -1720,6 +1732,12 @@ bool cPacketReceivePing::execute(pClient client)
         return true;
 }
 
+/*!
+\brief Character rename
+\author Chronodt
+\param client client who sent the packet
+\note packet 0x75
+*/
 
 bool cPacketReceiveRenameCharacter::execute(pClient client)
 {
@@ -1733,17 +1751,34 @@ bool cPacketReceiveRenameCharacter::execute(pClient client)
         return false;
 }
 
+/*!
+\brief dialog callback
+\author Chronodt
+\param client client who sent the packet
+\note packet 0x7d
+*/
+
 
 bool cPacketReceiveDialogResponse::execute(pClient client)
 {
 	if (length != 13) return false;
 
-        //!\TODO check menus
+        //!\todo check menus
 
 	Menus.handleMenu( client );
 
         return true;
 }
+
+/*!
+\brief Login request
+\author Chronodt
+\param client client who sent the packet
+\note packet 0x80
+
+\todo another login sequence packet, still to do
+*/
+
 
 bool cPacketReceiveLoginRequest::execute(pClient client)
 {
@@ -1758,9 +1793,16 @@ bool cPacketReceiveLoginRequest::execute(pClient client)
 	clientInfo[s]->firstpacket=false;
 	LoginMain(s);
 */
-	//!\TODO: Add code from loginmain in network.cpp and update it
+	//!\todo Add code from loginmain in network.cpp and update it
         return true;
 }
+
+/*!
+\brief Player tries to delete his char (in the login menu)
+\author Chronodt
+\param client client who sent the packet
+\note packet 0x83
+*/
 
 bool cPacketReceiveDeleteCharacter::execute(pClient client)
 {
@@ -1826,13 +1868,20 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
 			return true; // All done ;]
 		}
 	}
-        // sending message "0x05 => Couldn't carry out your request" ???????
+        // sending message "0x05 => Couldn't carry out your request"
  	cPacketSendCharDeleteError pk(0x5);
 	client->sendPacket(&pk);
         return true;
 }
 
+/*!
+\brief game server login (?)
+\author Chronodt
+\param client client who sent the packet
+\note packet 0x91
 
+\todo another login sequence packet. Still to do
+*/
 
 bool cPacketReceiveGameServerLogin::execute(pClient client)
 {
@@ -1846,6 +1895,15 @@ bool cPacketReceiveGameServerLogin::execute(pClient client)
 	CharList(s);  */
         return true;
 }
+
+/*!
+\brief (old packet) Update title and author of book
+\author Chronodt
+\param client client who sent the packet
+\note packet 0x93
+
+\note still sent by old clients, but usually it sends packet 0xd4 instead
+*/
 
 bool cPacketReceiveBookUpdateTitle::execute(pClient client)
 {
@@ -1865,7 +1923,12 @@ bool cPacketReceiveBookUpdateTitle::execute(pClient client)
 	return true;
 }
 
-
+/*!
+\brief color selected from dye menu
+\author Chronodt
+\param client client who sent the packet
+\note packet 0x95
+*/
 
 
 bool cPacketReceiveDyeItem::execute(pClient client)
@@ -1876,14 +1939,29 @@ bool cPacketReceiveDyeItem::execute(pClient client)
 	return true;
 }
 
+/*!
+\brief GM page request
+\author Chronodt
+\param client client who sent the packet
+\note packet 0x9b
+*/
+
 
 bool cPacketReceiveRequestHelp::execute(pClient client)
 {
 	if (length != 258) return false;
-        //! \todo whem menu's are revised, look at this...
+        //bytes from buffer + 1 to buffer + 257 i believe are the page text... i hope ...
+        //but 257 bytes is a STRANGE number. Check if there isn't a 2byte length or something in it
 	gmmenu(s, 1);
         return true;
 }
+
+/*!
+\brief Receive list of to-be-sold items
+\author Chronodt
+\param client client who sent the packet
+\note packet 0x9f
+*/
 
 bool cPacketReceiveSellItems::execute(pClient client)
 {
@@ -1914,6 +1992,14 @@ bool cPacketReceiveSellItems::execute(pClient client)
         return true;
 }
 
+/*!
+\brief Server selected
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xa0
+
+\todo still another login packet. They begin to tire me.... :D
+*/
 
 bool cPacketReceiveSelectServer::execute(pClient client)
 {
@@ -1923,7 +2009,12 @@ bool cPacketReceiveSelectServer::execute(pClient client)
         return true;
 }
 
-
+/*!
+\brief Tips request
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xa7
+*/
 
 bool cPacketReceiveTipsRequest::execute(pClient client)
 {
@@ -1931,7 +2022,7 @@ bool cPacketReceiveTipsRequest::execute(pClient client)
 	uint16_t i = ShortFromCharPtr(buffer + 1);
 	uint8_t want_next = buffer[3];
 
-        //!Script searching, redo when xml scripting done
+        //!\todo Script searching, redo when xml scripting done
 #if 0
 	int x, y, j;
 	char temp[512];
@@ -2005,6 +2096,12 @@ bool cPacketReceiveTipsRequest::execute(pClient client)
 	return true;
 }
 
+/*!
+\brief Text edit change in gump callback
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xac
+*/
 
 bool cPacketReceiveGumpTextDialogReply::execute(pClient client)
 {
@@ -2013,6 +2110,13 @@ bool cPacketReceiveGumpTextDialogReply::execute(pClient client)
         //!\todo gump remake -_-
         return true;
 }
+
+/*!
+\brief Unicode speech from player
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xad
+*/
 
 bool cPacketReceiveUnicodeSpeechReq::execute(pClient client)
 {
@@ -2032,32 +2136,24 @@ bool cPacketReceiveUnicodeSpeechReq::execute(pClient client)
 	if ( mode >=0xc0 )
 	{
 		mode &= 0x0F;	// set to normal (cutting off the speech.mul indicator)
-        	int num_words = ((int)buffer[12] << 4) & ((int)buffer[13] >> 4);
-        	int speech_mul_index = (((int) buffer[13] & 0xf) << 8) & (int)buffer[14];
+        	int num_words = ((uint16_t)buffer[12] << 4) & ((uint16_t)buffer[13] >> 4);
+        	int speech_mul_index = (((uint16_t) buffer[13] & 0xf) << 8) & (uint16_t)buffer[14];
         	//I suspect these [num_unknown] bytes here are also speech.mul keyword indexes (12 bits each index)
 		int num_unknown = ( num_words / 2 ) * 3 + (num_words & 1) - 2;
 	       	offset += 3 + num_unknown; //in the remainder of code we can ignore these bytes
 	}
-	std::string text = "";
-
-
-
-
-
-        //!\todo implement cSpeech here and complete
-
-
-	//Unicode to ascii "truncation"
-	//Remember that it is a BIG ENDIAN unicode indifferently from machine endian (due to packet protocol)
-	//so the ascii byte is the second one
-	++offset;	//This places the offset on the first "second byte" of text
-	for (;buffer[offset] && offset<size;offset +=2) text += buffer[offset];
-	client->talking(text, mode, color, font);
-
-
+	cSpeech text = cSpeech(buffer + offset);
+        text.assignPacketByteOrder(true);
+	client->talking(text);
         return true;
 }
 
+/*!
+\brief Generic/custom gump callback
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xb1
+*/
 
 bool cPacketReceiveGumpResponse::execute(pClient client)
 {
@@ -2068,6 +2164,13 @@ bool cPacketReceiveGumpResponse::execute(pClient client)
         return true;
 }
 
+/*!
+\brief text to send in chatroom
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xb2
+*/
+
 bool cPacketReceiveChatMessage::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
@@ -2077,6 +2180,13 @@ bool cPacketReceiveChatMessage::execute(pClient client)
         return true;
 }
 
+/*!
+\brief Opens chat window
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xb5
+*/
+
 bool cPacketReceiveChatWindowOpen::execute(pClient client)
 {
        	if (length != 64) return false;
@@ -2085,6 +2195,12 @@ bool cPacketReceiveChatWindowOpen::execute(pClient client)
         return true;
 }
 
+/*!
+\brief Popup Help Request
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xb6
+*/
 
 bool cPacketReceivePopupHelpRequest::execute(pClient client)
 {
@@ -2133,6 +2249,13 @@ bool cPacketReceivePopupHelpRequest::execute(pClient client)
 	return true;
 }
 
+/*!
+\brief Character profile request
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xb8
+*/
+
 bool cPacketReceiveCharProfileRequest::execute(pClient client)
 {
 	//NOTE: this packet is poorly documented -_-
@@ -2163,7 +2286,12 @@ bool cPacketReceiveCharProfileRequest::execute(pClient client)
         return true;
 }
 
-
+/*!
+\brief receive client version
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xbd
+*/
 
 bool cPacketReceiveClientVersion::execute(pClient client)
 {
@@ -2201,6 +2329,12 @@ bool cPacketReceiveClientVersion::execute(pClient client)
 	return true;
 }
 
+/*!
+\brief Assist version check
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xbe
+*/
 
 bool cPacketReceiveAssistVersion::execute(pClient client)
 {
@@ -2224,6 +2358,13 @@ bool cPacketReceiveAssistVersion::execute(pClient client)
         }
         return true;
 }
+
+/*!
+\brief Miscellaneous packet
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xbf
+*/
 
 bool cPacketReceiveMiscCommand::execute(pClient client)
 {
@@ -2288,6 +2429,15 @@ bool cPacketReceiveMiscCommand::execute(pClient client)
 	return true;
 }
 
+/*!
+\brief  receive text entry unicode
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xbe
+
+\note I totally have NO IDEA on what this packet does or when it is sent
+*/
+
 bool cPacketReceiveTextEntryUnicode::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
@@ -2302,8 +2452,15 @@ bool cPacketReceiveTextEntryUnicode::execute(pClient client)
         memcpy(language, buffer +15, 3);
 	cSpeech text = cSpeech(buffer + 18);
         //!\todo finish this packet (and undestand when and why it is sent -_-)
+        return true;
 }
 
+/*!
+\brief client view range
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xc8
+*/
 
 bool cPacketReceiveClientViewRange::execute(pClient client)
 {
@@ -2314,6 +2471,15 @@ bool cPacketReceiveClientViewRange::execute(pClient client)
         return true;
 }
 
+/*!
+\brief Logout status
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xd1
+
+\note since this packet can only be used with an almost useless and almost totally undocumented packet..
+\note and this packet itself is totally useless...
+*/
 
 bool cPacketReceiveLogoutStatus::execute(pClient client)
 {
@@ -2322,6 +2488,13 @@ bool cPacketReceiveLogoutStatus::execute(pClient client)
         client->sendPacket(&pk);
         return true;
 }
+
+/*!
+\brief new book header
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xd4
+*/
 
 bool cPacketReceiveNewBookHeader::execute(pClient client)
 {
@@ -2347,6 +2520,13 @@ bool cPacketReceiveNewBookHeader::execute(pClient client)
 
 	return true;
 }
+
+/*!
+\brief Fight book icon selected
+\author Chronodt
+\param client client who sent the packet
+\note packet 0xd7
+*/
 
 bool cPacketReceiveFightBookSelection::execute(pClient client)
 {
