@@ -460,7 +460,7 @@ namespace nPackets {
 
 
 		/*!
-		\brief Pause/resume client [Packet 0x33]
+		\brief Pause/resume client (Packet 0x33)
 		\author Chronodt
 		
 		This packet is sent by the functions cClient::pause() and
@@ -974,7 +974,7 @@ namespace nPackets {
 
 
 		/*!
-		\brief Sends bulletin boards commands [packet 0x71]
+		\brief Sends bulletin boards commands (Packet 0x71)
 		\author Chronodt
 
 		Server-side Bulletin board commands
@@ -1003,7 +1003,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Sends war mode actual status to client [packet 0x72]
+		\brief Sends war mode actual status to client (Packet 0x72)
 		\author Chronodt
 		*/
 		class WarModeStatus : public cPacketSend
@@ -1020,7 +1020,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Ping reply [packet 0x73]
+		\brief Ping reply (Packet 0x73)
 		\author Chronodt
 
 		Reply to client ping
@@ -1037,7 +1037,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Open Buy Window [packet 0x74]
+		\brief Open Buy Window (Packet 0x74)
 		\author Chronodt
 		*/
 		class BuyWindow : public cPacketSend
@@ -1052,7 +1052,7 @@ namespace nPackets {
 
 
 		/*!
-		\brief Updates player [packet 0x77]
+		\brief Updates player (Packet 0x77)
 		\author Chronodt
 
 		Sent whenever player is modified
@@ -1074,7 +1074,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Draws a player [packet 0x78]
+		\brief Draws a player (Packet 0x78)
 		\author Chronodt
 		\note this packet must be personalized for each client who receives it, since it calculates guild status between receiver and drawn char
 		*/
@@ -1093,7 +1093,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Opens dialog box [packet 0x7c]
+		\brief Opens dialog box (Packet 0x7c)
 		\author Chronodt
 		\todo this function
 
@@ -1117,7 +1117,7 @@ namespace nPackets {
 
 
 		/*!
-		\brief Login Denied [packet 0x82]
+		\brief Login Denied (Packet 0x82)
 		\author Kheru
 
 		0x00 = unknown user
@@ -1142,7 +1142,7 @@ namespace nPackets {
 
 
 		/*!
-		\brief Char deletion error [packet 0x85]
+		\brief Char deletion error (Packet 0x85)
 		\author Chronodt
 
 		reason:
@@ -1169,7 +1169,7 @@ namespace nPackets {
 
 
 		/*!
-		\brief Resends character list to client after a succesful deletion [packet 0x86]
+		\brief Resends character list to client after a succesful deletion (Packet 0x86)
 		\author Chronodt
 		*/
 		class CharAfterDelete : public cPacketSend
@@ -1184,7 +1184,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Opens Paperdoll [packet 0x88]
+		\brief Opens Paperdoll (Packet 0x88)
 		\author Chronodt
 		*/
 		class OpenPaperdoll : public cPacketSend
@@ -1199,7 +1199,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Corpse Clothing [packet 0x89]
+		\brief Corpse Clothing (Packet 0x89)
 		\author Chronodt
 
 		dressing of corpse with ex-equipped item
@@ -1220,7 +1220,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Connect to game server [packet 0x8c]
+		\brief Connect to game server (Packet 0x8c)
 		\author Chronodt
 		*/
 		class ConnectToGameServer : public cPacketSend
@@ -1237,7 +1237,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Opens map gump on client [packet 0x90]
+		\brief Opens map gump on client (Packet 0x90)
 		\author Chronodt
 		\todo use something better than the mores for map placement data
 		*/
@@ -1256,7 +1256,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Sends book header data [packet 0x93]
+		\brief Sends book header data (Packet 0x93)
 		\author Flameeyes
 		*/
 		class BookHeader : public cPacketSend
@@ -1273,7 +1273,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Sends Dye window [packet 0x95]
+		\brief Sends Dye window (Packet 0x95)
 		\author Chronodt
 		*/
 		class DyeWindow : public cPacketSend
@@ -1288,7 +1288,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Sends Move player [packet 0x97]
+		\brief Sends Move player (Packet 0x97)
 		\author Chronodt
 
 		\note this packet seems to be unused by old nox O_o
@@ -1331,7 +1331,7 @@ namespace nPackets {
 		*/
 
 		/*!
-		\brief Sends Sell list [packet 0x9e]
+		\brief Sends Sell list (Packet 0x9e)
 		\author Chronodt
 
 		sends list of selling items list
@@ -1353,7 +1353,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Sends new Hp value of a char to client [packet 0xa1]
+		\brief Sends new Hp value of a char to client (Packet 0xa1)
 		\author Chronodt
 		*/
 		class UpdateHp : public cPacketSend
@@ -1368,7 +1368,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Sends new Mana value of a char to client [packet 0xa2]
+		\brief Sends new Mana value of a char to client (Packet 0xa2)
 		\author Chronodt
 		*/
 		class UpdateMana : public cPacketSend
@@ -1383,7 +1383,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Sends new Stamina value of a char to client [packet 0xa3]
+		\brief Sends new Stamina value of a char to client (Packet 0xa3)
 		\author Chronodt
 		*/
 		class UpdateStamina : public cPacketSend
@@ -1399,7 +1399,7 @@ namespace nPackets {
 
 
 		/*!
-		\brief Opens web browser [packet 0xa5]
+		\brief Opens web browser (Packet 0xa5)
 		\author Flameeyes
 		*/
 		class OpenBrowser : public cPacketSend
@@ -1417,7 +1417,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Send Tips or MOTD/Server notice window [packet 0xa6]
+		\brief Send Tips or MOTD/Server notice window (Packet 0xa6)
 		\author Kheru
 		\note Packet 0xA6
 		*/
@@ -1507,7 +1507,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Display death action [packet 0xaf]
+		\brief Display death action (Packet 0xaf)
 		\author Chronodt
 		*/
 
@@ -1524,7 +1524,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Opens Gump Menu Dialog [packet 0xb0]
+		\brief Opens Gump Menu Dialog (Packet 0xb0)
 		\author Chronodt
 
 		This packet sends a gump to the client. This is the most
@@ -1547,7 +1547,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Chat Message [packet 0xb2]
+		\brief Chat Message (Packet 0xb2)
 		\author Chronodt
 
 		\todo awaiting chat implementation
@@ -1563,7 +1563,7 @@ namespace nPackets {
 
 
 		/*!
-		\brief Chat Message [packet 0xb5]
+		\brief Chat Message (Packet 0xb5)
 		\author Chronodt
 
 		\todo awaiting chat implementation
@@ -1580,7 +1580,7 @@ namespace nPackets {
 
 
 		/*!
-		\brief Sends popup help [packet 0xb7]
+		\brief Sends popup help (Packet 0xb7)
 		\author Chronodt
 		*/
 		class PopupHelp : public cPacketSend
@@ -1596,7 +1596,7 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief sends character profile [packet 0xb8]
+		\brief sends character profile (Packet 0xb8)
 		\author Chronodt
 		*/
 		class CharProfile : public cPacketSend
@@ -1612,7 +1612,8 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Enable locked client features [Packet 0xB9]
+		\brief Enable locked client features (Packet 0xB9)
+		\author Kheru
 		\param features to set.
 
 		if (MSB not set)
@@ -1641,18 +1642,80 @@ namespace nPackets {
 
 			void prepare();
 		};
-		
+
+		/*!
+		\brief sends quest arrow (Packet 0xba)
+		\author Chronodt
+		*/
+		class QuestArrow : public cPacketSend
+		{
+		protected:
+			bool enable;
+			sPoint where;
+		public:
+			inline QuestArrow(bool aEnable, sPoint aWhere = InvalidCoord) :
+				enable(aEnable), where(aWhere)
+			{ }
+			void prepare();
+		};
+
+		/*!
+		\todo packet 0xbb: Ultima messenger, if needed
+		*/
+
+		/*!
+		\brief sends cuurrent season (Packet 0xbc)
+		\author Chronodt
+
+		season:
+
+		0 spring, 1 summer, 2 fall, 3 winter, 4 dead, 5 unknown (rotating?)
+		*/
+
+		class Season : public cPacketSend
+		{
+		protected:
+			uint8_t season;
+		public:
+			inline Season(uint8_t aSeason) :
+				season(aSeason)
+			{ }
+			void prepare();
+		};
+
+
+		/*!
+		\todo packet 0xbd: client version request. But client already sends client version of 0xbd at login without needing a request, so it is useless creating a sendversion...
+		*/
+
+
+		/*!
+		\brief Assist version check (packet 0xbe)
+		\author Chronodt
+		*/
+		class AssistAllowedVersion : public cPacketSend
+		{
+		public:
+			inline AssistAllowedVersion()
+			{ }
+			void prepare();
+		};
+
+
+		//! packet 0xbf is a family of misc commands, all ported for readability pourpose in misccommands.h/cpp
+
+
 		class LogoutStatus : public cPacketSend
 		{
 		protected:
-		
+
 		public:
 			inline LogoutStatus()
 			{ }
-		
+
 			void prepare();
 		};
-		
+
 		class ClientViewRange : public cPacketSend
 		{
 		protected:
@@ -1661,10 +1724,10 @@ namespace nPackets {
 			inline ClientViewRange(uint8_t r) :
 				range(r)
 			{ }
-		
+
 			void prepare();
 		};
-		
+
 
 	} // Sent
 } // nPackets

@@ -95,20 +95,23 @@ void commitSeason(pChar pc)
 	if ( ! pc )
 		return;
 	
-	pClient client = pc->getSocket();
+	pClient client = pc->getClient();
 
-	uint8_t setseason[3]={ 0xBC, 0x00, 0x01 };
-	
-	if (region[pc->region].forcedseason>=0) 
-		setseason[1] = region[pc->region].forcedseason;
-	else {
-		setseason[1] = ::season;
-		if (::season==3) {
-			setseason[1] = g_nWinterOverride;
-		}
+
+
+	if (region[pc->region].forcedseason>=0)
+	{
+		nPackets::Sent::Season pk(region[pc->region].forcedseason);
+		client->sendPacket(&pk);
 	}
-	Xsend(s,setseason,3);
-//AoS/	Network->FlushBuffer(s);
+	else
+	{
+		uint8_t currseason = ::season;
+		if (::season==3) currseason = g_nWinterOverride;
+		else currseason = ::season;
+		nPackets::Sent::Season pk(currseason);
+		client->sendPacket(&pk);
+	}
 }
 
 

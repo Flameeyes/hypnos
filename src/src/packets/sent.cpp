@@ -1854,15 +1854,74 @@ void nPackets::Sent::CharProfile::prepare()
 
 /*!
 \brief Enable locked client features [packet 0xb9]
+\author Kheru
 */
 void nPackets::Sent::Features::prepare()
 {
 	buffer = new uint8_t[3];
-	length = 2;
+	length = 3;
 
 	buffer[0] = 0xB9;
 	ShortToCharPtr(features, buffer+1);
 }
+
+/*!
+\brief sends quest arrow (Packet 0xba)
+\author Chronodt
+*/
+
+void nPackets::Sent::QuestArrow::prepare()
+{
+	buffer = new uint8_t[6];
+	length = 6;
+	buffer[0] = 0xBA;
+	if (enable && where != InvalidCoord) buffer[1] = 1;
+	else buffer [1] = 0;
+	ShortToCharPtr(where.x, buffer + 2);
+	ShortToCharPtr(where.y, buffer + 4);
+}
+
+/*!
+\todo packet 0xbb: Ultima messenger, if needed
+*/
+
+/*!
+\brief sends cuurrent season (Packet 0xbc)
+\author Chronodt
+*/
+
+void nPackets::Sent::Season::prepare()
+{
+	buffer = new uint8_t[3];
+	length = 3;
+	buffer[0] = 0xBC;
+	buffer[1] = season;
+	buffer[2] = 0x1;	//indicating season change
+}
+
+/*!
+\todo packet 0xbd: client version request. But client already sends client version of 0xbd at login without needing a request, so it is useless creating a sendversion...
+*/
+
+
+/*!
+\brief Assist version check (packet 0xbe)
+\author Chronodt
+*/
+
+void nPackets::Sent::AssistAllowedVersion::prepare()
+{
+	buffer = new uint8_t[7];
+	length = 7;
+	buffer[0] = 0xBE;
+	ShortToCharPtr(7, buffer + 1);
+	LongToCharPtr(nSettings::Server::getAllowedAssistVersion(), buffer + 3)
+}
+
+
+
+
+
 
 void nPackets::Sent::ClientViewRange::prepare()
 {
