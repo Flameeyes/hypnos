@@ -139,7 +139,7 @@ void cNPC::checkAI()
 				if ( chance( 50 ) )
 				{
 					if (hp < getStrength()/2)
-						beginCasting(this, magic::SPELL_GREATHEAL);
+						beginCasting(this, magic::spellGreatHeal);
 				}
 				else
 					if (poisoned > 0)
@@ -460,7 +460,7 @@ void cNPC::checkAI()
 					switch(RandomNum(0, 6))
 					{
 						case 0:
-							beginCasting(pj, magic::SPELL_CURSE);
+							beginCasting(pj, magic::spellCurse);
 							talkAll("You are ridiculous", 1);
 							break;
 						case 1:
@@ -472,11 +472,11 @@ void cNPC::checkAI()
 							talkAll("What are you doing? Come here and Die!", 1);
 							break;
 						case 3:
-							beginCasting(pj, magic::SPELL_LIGHTNING);
+							beginCasting(pj, magic::spellLightning);
 							talkAll("Stupid Mortal I'll crush you as a fly", 1);
 							break;
 						case 4:
-							beginCasting(pj, magic::SPELL_LIGHTNING);
+							beginCasting(pj, magic::spellLightning);
 							talkAll("Stupid Mortal I'll crush you as a fly", 1);
 							break;
 						case 5:
@@ -491,7 +491,7 @@ void cNPC::checkAI()
 				}
 				if (hp < getStrength()/2) {
 					talkAll("In Vas Mani", 1);
-					beginCasting(this, magic::SPELL_GREATHEAL );
+					beginCasting(this, magic::spellGreatHeal );
 				}
 				if (poisoned > 0) {
 					talkAll("An Nox", 1);

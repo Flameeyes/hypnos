@@ -324,7 +324,7 @@ static bool checkReflection(pChar &pa, pChar &pd)
 static inline bool isFieldSpell(SpellId spell)
 {
 	switch (spell) {
-		case SPELL_FIREFIELD:
+		case spellFireField:
 		case spellPoisonFIELD:
 		case SPELL_PARALYZEFIELD:
 		case SPELL_ENERGYFIELD:
@@ -487,27 +487,27 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 		case spellWallStone:
 			pcfrom->playSFX( 0x1F6 );
 			break;
-		case SPELL_ARCHCURE:
+		case spellArchCure:
 			pcto->playSFX( 0x1E8 );
 			staticFX(pcto, 0x376A, 0, 10, &spfx );
 			break;
-		case SPELL_ARCHPROTECTION:
+		case spellArchProtection:
 			pcto->playSFX( 0x1F7 );
 			staticFX(pcto, 0x373A, 0, 10, &spfx );
 			break;
-		case SPELL_CURSE:
+		case spellCurse:
 			pcto->playSFX( 0x1E1 );
 			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
-		case SPELL_FIREFIELD:
+		case spellFireField:
 		case spellPoisonFIELD:
 			pcfrom->playSFX( 0x20C );
 			break;
-		case SPELL_GREATHEAL:
+		case spellGreatHeal:
 			pcto->playSFX( 0x202 );
 			staticFX(pcto, 0x376A, 0, 10, &spfx );
 			break;
-		case SPELL_LIGHTNING:
+		case spellLightning:
 			if ( pcfrom->skill[skMagery] < 500 )	// First level lightning
 				pcto->playSFX( 0x28 );
 			else if ( pcfrom->skill[skMagery] < 800 )	// Second level lightning
@@ -516,10 +516,10 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 				pcto->playSFX( 0x206 );
 			boltFX(pcto, false );
 			break;
-		case SPELL_MANADRAIN:
+		case spellManaDrain:
 			pcto->playSFX( 0x1F8 );
 			break;
-		case SPELL_RECALL:
+		case spellRecall:
 			pcfrom->playSFX( 0x1FC );
 			break;
 		case SPELL_BLADESPIRITS:
@@ -695,7 +695,7 @@ static void damage(pChar pa, pChar pd, SpellId spellnum, uint16_t spellflags = 0
 	if ( p_realattacker ) p_realattacker->attackStuff(p_realdefender);
 
 	StatType stattodamage = STAT_HP;
-	if ((spellnum==SPELL_MANADRAIN)||(spellnum==SPELL_MANAVAMPIRE)) stattodamage = STAT_MANA;
+	if ((spellnum==spellManaDrain)||(spellnum==SPELL_MANAVAMPIRE)) stattodamage = STAT_MANA;
 	pd->damage(amount, spellsData[spellnum].damagetype, stattodamage);
 }
 
@@ -829,31 +829,31 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellWeaken:
 		case SPELL_PARALYZE:
 		case SPELL_DISPEL:
-		case SPELL_CURSE:
+		case spellCurse:
 		case spellPoison:
 		case spellCunning:
 		case spellAgility:
 		case spellStrenght:
 		case spellBless:
 		case spellHeal:
-		case SPELL_GREATHEAL:
+		case spellGreatHeal:
 		case spellCure:
-		case SPELL_ARCHCURE:
+		case spellArchCure:
 		case SPELL_RESURRECTION:
 		case spellMagicArrow:
 		case SPELL_FLAMESTRIKE:
 		case SPELL_EXPLOSION:
-		case SPELL_LIGHTNING:
+		case spellLightning:
 		case SPELL_ENERGYBOLT:
 		case spellHarm:
 		case SPELL_MINDBLAST:
-		case SPELL_MANADRAIN:
+		case spellManaDrain:
 		case SPELL_MANAVAMPIRE:
 			return TARGTYPE_CHAR;
 
 		case spellReactiveArmour:
 		case spellProtection:
-		case SPELL_ARCHPROTECTION:
+		case spellArchProtection:
 		case SPELL_INCOGNITO:
 		case SPELL_REFLECTION:
 		case spellNightSight:
@@ -879,7 +879,7 @@ static inline int spellTargetType(SpellId spellnum)
 
 		case SPELL_GATE:
 		case SPELL_MARK:
-		case SPELL_RECALL:
+		case spellRecall:
 			return TARGTYPE_RUNE;
 
 		case SPELL_BLADESPIRITS:
@@ -889,7 +889,7 @@ static inline int spellTargetType(SpellId spellnum)
 		case SPELL_MASSDISPEL:
 		case SPELL_MASSCURSE:
 		case SPELL_REVEAL:
-		case SPELL_FIREFIELD:
+		case spellFireField:
 		case SPELL_DISPELFIELD:
 		case spellPoisonFIELD:
 		case SPELL_PARALYZEFIELD:
@@ -1100,9 +1100,9 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 6;
 			tempfx::add(pa, pd, tempfx::spellWeaken, bonus, 0, 0, duration);
 			break;
-		case SPELL_CURSE:
+		case spellCurse:
 			duration = int( pa->skill[skMagery] * 0.12 );
-			tempfx::add(pa, pd, tempfx::SPELL_CURSE, bonus, bonus, bonus, duration);
+			tempfx::add(pa, pd, tempfx::spellCurse, bonus, bonus, bonus, duration);
 			break;
 		case spellCunning:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
@@ -1183,7 +1183,7 @@ void castFieldSpell( pChar pc, sPosition pos, int spellnumber)
 	{
 		case spellWallStone:
 			id = 0x0080; fieldLen = 2; break;
-		case SPELL_FIREFIELD:
+		case spellFireField:
 			id = (j) ? 0x3996 : 0x398c; break;
 		case spellPoisonFIELD:
 			id = (j) ? 0x3920 : 0x3915; break;
@@ -1282,7 +1282,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case spellClumsy:
 		case spellFeebleMind:
 		case spellWeaken:
-		case SPELL_CURSE:
+		case spellCurse:
 			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
@@ -1311,7 +1311,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case spellMagicArrow:
 		case spellFireball:
 		case SPELL_FLAMESTRIKE:
-		case SPELL_LIGHTNING:
+		case spellLightning:
 		case SPELL_EXPLOSION:
 		case SPELL_ENERGYBOLT:
 		case spellHarm:
@@ -1346,7 +1346,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_MANADRAIN:
+		case spellManaDrain:
 			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
@@ -1545,7 +1545,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				pChar pd = sc.getChar();
 				if ( pd && pd->getSerial()!=src->getSerial()) {
 					spellFX(spellnumber, src, pd);
-					castStatPumper(SPELL_CURSE, dest, src, flags, param);
+					castStatPumper(spellCurse, dest, src, flags, param);
 				}
 			}
 			break;
@@ -1574,7 +1574,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			tempfx::add(src,src, tempfx::spellProtection, nValue, 0, 0, nTime);
 			break;
 
-		case SPELL_ARCHPROTECTION:
+		case spellArchProtection:
 			{
 			if (src) {
 				if (nTime==INVALID) nTime = 12;
@@ -1622,7 +1622,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			break;
 
 		case spellHeal:
-		case SPELL_GREATHEAL:
+		case spellGreatHeal:
 			if ( !pd ) pd = src;
 			if (pd) {
                                 CHECKDISTANCE(src, pd);
@@ -1649,7 +1649,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			spellFX(spellnumber, src, pd);
 			break;
 
-		case SPELL_ARCHCURE: {
+		case spellArchCure: {
 			CHECKDISTANCE(src, pd);
             		spellFX(spellnumber, src, pd);
 			NxwCharWrapper sc;
@@ -1693,7 +1693,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			break;
 
 
-		case SPELL_FIREFIELD:
+		case spellFireField:
 		case spellPoisonFIELD:
 		case SPELL_PARALYZEFIELD:
 		case SPELL_ENERGYFIELD:
@@ -1792,7 +1792,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_RECALL:
+		case spellRecall:
 			if ((src!=NULL)&&(pi!=NULL)) {
 				if (src->isOverWeight()) {
 					client->sysmessage("You're too heavy!");
@@ -2068,7 +2068,7 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	pc->delTempfx( tempfx::spellAgility );
 	pc->delTempfx( tempfx::spellFeebleMind );
 	pc->delTempfx( tempfx::spellClumsy );
-	pc->delTempfx( tempfx::SPELL_CURSE );
+	pc->delTempfx( tempfx::spellCurse );
 	pc->delTempfx( tempfx::spellBless);
 	pc->delTempfx( tempfx::spellWeaken );
 
@@ -2087,7 +2087,7 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 		case 0xd4:
 		case 0xd5:
 			pc->addTempfx( *pc, tempfx::spellStrenght, 40, 0, 0, polyduration );
-			pc->addTempfx( *pc, tempfx::SPELL_CURSE, 0, 15, 20, polyduration );
+			pc->addTempfx( *pc, tempfx::spellCurse, 0, 15, 20, polyduration );
 			break;
 		case 0xd0:
 			pc->delTempfx( tempfx::spellWeaken );

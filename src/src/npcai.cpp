@@ -68,10 +68,10 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 				pc_att->beginCasting(pc_def, magic::spellFireball );
 				break;
 			case 7:
-				pc_att->beginCasting(pc_def, magic::SPELL_CURSE );
+				pc_att->beginCasting(pc_def, magic::spellCurse );
 				break;
 			case 8:
-				pc_att->beginCasting(pc_def, magic::SPELL_LIGHTNING );
+				pc_att->beginCasting(pc_def, magic::spellLightning );
 				break;
 			case 9:
 				pc_att->beginCasting(pc_def, magic::SPELL_PARALYZE );
@@ -225,10 +225,10 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::spellFireball );
 			break;
 		case 7:
-			pc_att->beginCasting(pc_def, magic::SPELL_CURSE );
+			pc_att->beginCasting(pc_def, magic::spellCurse );
 			break;
 		case 8:
-			pc_att->beginCasting(pc_def, magic::SPELL_LIGHTNING );
+			pc_att->beginCasting(pc_def, magic::spellLightning );
 			break;
 		case 9:
 			pc_att->beginCasting(pc_def, magic::SPELL_PARALYZE );
@@ -246,7 +246,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::SPELL_FLAMESTRIKE );
 			break;
 		case 14:
-			pc_att->beginCasting(pc_def, magic::SPELL_FIREFIELD );
+			pc_att->beginCasting(pc_def, magic::spellFireField );
 			break;
 		case 15:
 			pc_att->beginCasting(pc_def, magic::spellPoisonFIELD );
@@ -258,7 +258,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_att, magic::spellHeal );
 			break;
 		case 18:
-			pc_att->beginCasting(pc_att, magic::SPELL_GREATHEAL );
+			pc_att->beginCasting(pc_att, magic::spellGreatHeal );
 			break;
 		case 19:
 			pc_att->beginCasting(pc_att, magic::spellCure );
@@ -267,7 +267,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::spellPoison );
 			break;
 		case 23:
-			pc_att->beginCasting(pc_def, magic::SPELL_MANADRAIN );
+			pc_att->beginCasting(pc_def, magic::spellManaDrain );
 			break;
 		case 24:
 			pc_att->beginCasting(pc_def, magic::SPELL_MANAVAMPIRE );

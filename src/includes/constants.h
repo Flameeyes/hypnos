@@ -258,7 +258,7 @@ namespace tempfx {
 		ALCHEMY_GRIND,
 		ALCHEMY_END,
 		spellBless,
-		SPELL_CURSE,
+		spellCurse,
 		AUTODOOR,
 		TRAINDUMMY,
 		SPELL_REACTARMOR,
