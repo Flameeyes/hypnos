@@ -173,53 +173,22 @@ static void item_char_test()
 	ConOut("[DONE]\n");
 }
 
-int validhair(int a, int b) // Is selected hair type valid
+//! Is selected hair type valid
+inline const bool validhair(UI08 a, UI08 b)
 {
-
-	if( a != 0x20 )
-		return 0;
-	switch( b )
-	{
-	case 0x3B:
-	case 0x3C:
-	case 0x3D:
-	case 0x44:
-	case 0x45:
-	case 0x46:
-	case 0x47:
-	case 0x48:
-	case 0x49:
-	case 0x4A:
-		return 1;
-	default:
-		return 0;
-	}
+	return (a == 0x20) && ( ( b >= 0x3b && b <= 0x3d ) ||
+		( b >= 0x44 && b <= 0x4a ) );
 }
 
-int validbeard(int a, int b) // Is selected beard type valid
+//! Is selected beard type valid
+inline const bool validbeard(UI08 a, UI08 b)
 {
-	if( a != 0x20 )
-		return 0;
-	switch( b )
-	{
-	case 0x3E:
-	case 0x3F:
-	case 0x40:
-	case 0x41:
-	case 0x4B:
-	case 0x4C:
-	case 0x4D:
-		return 1;
-	default:
-		return 0;
-	}
+	return (a == 0x20) && ( (b >= 0x3e && b <= 0x41) ||
+		( b >= 0x4b && b <= 0x4d ) );
 }
-
-
 
 /*!
 \brief called when a player creates a new character
-\author ?
 \param s the player's socket
 */
 void charcreate( NXWSOCKET  s ) // All the character creation stuff
@@ -479,6 +448,9 @@ void charcreate( NXWSOCKET  s ) // All the character creation stuff
 }
 
 //taken from 6904t2(5/10/99) - AntiChrist
+/*!
+\todo backport into cChar
+*/
 void callguards( CHARACTER p )
 {
 	P_CHAR	caller = MAKE_CHAR_REF( p );
@@ -614,7 +586,7 @@ void checkkey ()
 			case 'B':
 			case 'b':
 				if (ServerScp::g_nLoadDebugger==0) {
-					InfoOut("You must enable debugger starting NoX-Wizard with the -debug option.\n");
+					InfoOut("You must enable debugger starting PyUo with the -debug option.\n");
 					break;
 				}
 				breakOnFirstFuncz();
@@ -623,7 +595,7 @@ void checkkey ()
 			case 'C':
 			case 'c':
 				if (ServerScp::g_nLoadDebugger==0) {
-					InfoOut("You must enable debugger starting NoX-Wizard with the -debug option.\n");
+					InfoOut("You must enable debugger starting PyUO with the -debug option.\n");
 					break;
 				}
 				g_bStepInTriggers = true;
@@ -632,7 +604,7 @@ void checkkey ()
 			case 'N':
 			case 'n':
 				if (ServerScp::g_nLoadDebugger==0) {
-					InfoOut("You must enable debugger starting NoX-Wizard with the -debug option.\n");
+					InfoOut("You must enable debugger starting PyUO with the -debug option.\n");
 					break;
 				}
 				g_nTraceMode=1-g_nTraceMode;
@@ -685,9 +657,9 @@ void checkkey ()
 			case 'H':
 			case 'h':				// Enable/Disable heartbeat
 				if (heartbeat)
-					InfoOut("NoX-Wizard: Heartbeat Disabled\n");
+					InfoOut("PyUO: Heartbeat Disabled\n");
 				else
-					InfoOut("NoX-Wizard: Heartbeat Enabled\n");
+					InfoOut("PyUO: Heartbeat Enabled\n");
 				heartbeat = !heartbeat;
 				break;
 			case 'P':
@@ -734,7 +706,7 @@ void checkkey ()
 			case 'R':
 				InfoOut("Command is disabled\n");
 				break;
-/*				ConOut("NoX-Wizard: Reloading server.cfg, spawn.scp, and regions.scp...\n");
+/*				ConOut("PyUO: Reloading server.cfg, spawn.scp, and regions.scp...\n");
 				loadspawnregions();
 				loadregions();
 				ConOut("Loading vital scripts... ");
@@ -742,7 +714,7 @@ void checkkey ()
 				loadmenuprivs();
 				ConOut("[DONE]\n");
 				loadserverscript();
-				ConOut("NoX-Wizard: Reloading IP Blocking rules...");
+				ConOut("PyUO: Reloading IP Blocking rules...");
 				Network->LoadHosts_deny();
 				ConOut("[DONE]\n");
 				break;
@@ -786,7 +758,6 @@ void checkkey ()
 #if defined(__unix__)
 /*!
 \brief signal handlers
-\author ?
 \param signal the signal received
 */
 void signal_handler(int signal)
@@ -1010,7 +981,7 @@ int main(int argc, char *argv[])
 	ConOut("Loading vital scripts... ");
 	loadmetagm();
 	ConOut("[DONE]\n");
-//	ConOut("Loading NoX-Wizard extensions...\n");
+//	ConOut("Loading PyUO extensions...\n");
 
 	npcs::initNpcSpells();
 
@@ -1090,16 +1061,14 @@ int main(int argc, char *argv[])
 	clearscreen();
 
 	ConOut("%s %s %s.%s [%s] compiled by %s\nProgrammed by: %s", PRODUCT, VER, VERNUMB, HOTFIX, OS, NAME, PROGRAMMERS);
-	ConOut("\nBased on Wolfpack 12.5b1 (http://www.wpdev.org)");
-	ConOut("\nWeb-site : http://nox-wizard.sunsite.dk/\n");
+	ConOut("\nBased on NoX-Wizard 20031228");
+	ConOut("\nWeb-site : \n");
 	ConOut("\n");
 	ConOut("Copyright (C) 1997, 98 Marcus Rating (Cironian)\n\n");
 	ConOut("This program is free software; you can redistribute it and/or modify\n");
 	ConOut("it under the terms of the GNU General Public License as published by\n");
 	ConOut("the Free Software Foundation; either version 2 of the License, or\n");
 	ConOut("(at your option) any later version.\n\n");
-	ConOut("Uses a modified version of scripting technologies from ITB CompuPhase\n");
-	ConOut("see http://www.compuphase.com/small.htm for further details\n\n");
 	ConOut("Running on %s\n", getOSVersionString());
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1109,7 +1078,7 @@ int main(int argc, char *argv[])
 //InitKbThread();
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	//ConOut("NoX-Wizard: Startup Complete.\n\n");
+	//ConOut("PyUO: Startup Complete.\n\n");
 
 
 	if (SrvParms->server_log)
@@ -1363,7 +1332,7 @@ int main(int argc, char *argv[])
 			ServerLog.Write("Server Shutdown by Error!\n=======================================================================\n\n\n");
 
 	} else {
-		ConOut("NoX-Wizard: Server shutdown complete!\n");
+		ConOut("PyUO: Server shutdown complete!\n");
 		if (SrvParms->server_log)
 			ServerLog.Write("Server Shutdown!\n=======================================================================\n\n\n");
 
@@ -1536,11 +1505,11 @@ int fielddir(CHARACTER s, int x, int y, int z)
 			return 1;
 
 		default:
-			LogError("Switch fallout. NoX-Wizard.cpp, fielddir()\n"); //Morrolan
+			LogError("Switch fallout. pyuo.cpp, fielddir()\n"); //Morrolan
 			return 0;
 		}
 	default:
-		LogError("Switch fallout. NoX-Wizard.cpp, fielddir()\n"); //Morrolan
+		LogError("Switch fallout. pyuo.cpp, fielddir()\n"); //Morrolan
 		return 0;
 	}
 }
@@ -1711,7 +1680,7 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 			pc->sysmsg(TRANSLATE("You feel much more agile!"));
 			break;
 		default:
-			ErrOut("Switch fallout. NoX-Wizard.cpp, usepotion()\n");
+			ErrOut("Switch fallout. pyuo.cpp, usepotion()\n");
 			return;
 		}
 		pc->playSFX(0x01E7);
@@ -1748,7 +1717,7 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 				if (pc->poisoned==POISON_DEADLY && x<61) pc->poisoned=POISON_NONE;
 				break;
 			default:
-				ErrOut("Switch fallout. NoX-Wizard.cpp, usepotion()\n"); //Morrolan
+				ErrOut("Switch fallout. pyuo.cpp, usepotion()\n"); //Morrolan
 				return;
 			}
 			if (pc->poisoned)
@@ -1799,7 +1768,7 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 			break;
 
 		default:
-			ErrOut("Switch fallout. NoX-Wizard.cpp, usepotion()\n"); //Morrolan
+			ErrOut("Switch fallout. pyuo.cpp, usepotion()\n"); //Morrolan
 			return;
 		}
 
@@ -1841,7 +1810,7 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 				break;
 
 			default:
-				ErrOut("Switch fallout. NoX-Wizard.cpp, usepotion()\n"); //Morrolan
+				ErrOut("Switch fallout. pyuo.cpp, usepotion()\n"); //Morrolan
 				return;
 		}
 		if (s!=INVALID)
@@ -1863,7 +1832,7 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 			pc->sysmsg(TRANSLATE("You feel much more strong!"));
 			break;
 		default:
-			ErrOut("Switch fallout. NoX-Wizard.cpp, usepotion()\n");
+			ErrOut("Switch fallout. pyuo.cpp, usepotion()\n");
 			return;
 		}
 		pc->playSFX(0x01EE);
@@ -1881,7 +1850,7 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 			break;
 
 		default:
-			ErrOut("Switch fallout. NoX-Wizard.cpp, usepotion()\n");
+			ErrOut("Switch fallout. pyuo.cpp, usepotion()\n");
 			return;
 		}
 		if (s!=INVALID)
@@ -1904,7 +1873,7 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 		break;
 
 	default:
-		ErrOut("Switch fallout. NoX-Wizard.cpp, usepotion()\n"); //Morrolan
+		ErrOut("Switch fallout. pyuo.cpp, usepotion()\n"); //Morrolan
 		return;
 	}
 
