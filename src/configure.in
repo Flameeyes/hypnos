@@ -16,9 +16,35 @@ AM_PROG_LIBTOOL
 AM_DL()
 AM_PATH_WEFTS()
 
+AC_OBJEXT
+AC_EXEEXT
+
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([fcntl.h limits.h memory.h stdint.h stdlib.h sys/time.h sys/timeb.h unistd.h winbase.h winreg.h wincon.h netinet/in.h signal.h])
+AC_CHECK_HEADERS([fcntl.h limits.h memory.h signal.h stdint.h stdlib.h sys/time.h sys/timeb.h unistd.h netinet/in.h ])
+
+AC_EGREP_CPP(yes,
+[#ifdef WIN32
+  yes
+#endif
+], is_win=yes, is_win=no)
+
+# Check for windows headers only under windows
+# And check for fork() or ntoh/hton functions only if not under windows
+# (Windows defines these in winsock library, so we are sure they are present)
+# Fork is used to daemonize on unix environments, on Windows we use the service stuff
+
+if test "$is_win" == "yes"; then
+	AC_CHECK_HEADERS([winsock2.h winbase.h winreg.h wincon.h])
+
+	if test "$ac_cv_header_winsock2_h" != "yes"; then
+		AC_CHECK_HEADERS([winsock.h])
+	fi
+else
+	AC_FUNC_FORK
+	AC_CHECK_FUNCS([ntohl ntohs htonl htons])
+fi
+
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_CONST
@@ -31,12 +57,11 @@ AC_STRUCT_TM
 AC_TYPE_SIZE_T
 
 # Checks for library functions.
-AC_FUNC_FORK
 AC_FUNC_MALLOC
-AC_FUNC_MMAP
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([basename ftime gettimeofday memset munmap strchr strstr strtol strtoul strtoull strlwr strupr uname asprintf strcmpi strcasecmp strncmpi strncasecmp kbhit getch ntohl ntohs htons htonl sigaction])
+AC_FUNC_MMAP
+AC_CHECK_FUNCS([basename ftime gettimeofday memset munmap strchr strstr strtol strtoul strtoull strlwr strupr uname asprintf strcmpi strcasecmp strncmpi strncasecmp kbhit getch sigaction])
 
 # Adding include dirs and WEFTS_ variables
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'

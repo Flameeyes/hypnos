@@ -13,7 +13,15 @@
 #ifndef __INLINES_H__
 #define __INLINES_H__
 
+#ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
+#endif
+
+#ifdef HAVE_WINSOCK2_H
+#include <winsock2.h>
+#elif defined (HAVE_WINSOCK_H)
+#include <winsock.h>
+#endif
 
 template<typename T> inline T qmax(T a, T b) { return a > b ? a : b; }
 template<typename T> inline T qmin(T a, T b) { return a < b ? a : b; }

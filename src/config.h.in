@@ -160,6 +160,12 @@
 /* Define to 1 if you have the <winreg.h> header file. */
 #undef HAVE_WINREG_H
 
+/* Define to 1 if you have the <winsock2.h> header file. */
+#undef HAVE_WINSOCK2_H
+
+/* Define to 1 if you have the <winsock.h> header file. */
+#undef HAVE_WINSOCK_H
+
 /* Define to 1 if `fork' works. */
 #undef HAVE_WORKING_FORK
 
