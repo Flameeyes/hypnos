@@ -6,7 +6,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypnos/muls/mmappedfile.h"
+#include "libhypnos/mmappedfile.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>

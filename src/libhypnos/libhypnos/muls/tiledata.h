@@ -10,7 +10,7 @@
 #define __LIBHYPMUL_TILEDATA_H__
 
 #include "libhypnos/muls/mulfiles.h"
-#include "libhypnos/muls/mmappedfile.h"
+#include "libhypnos/mmappedfile.h"
 #include "libhypnos/exceptions.h"
 
 namespace nLibhypnos {

@@ -14,7 +14,7 @@
 namespace nLibhypnos {
 
 /*!
-\class tMMappedFile mmappedfile.h "libhypnos/muls/mmappedfile.h"
+\class tMMappedFile mmappedfile.h "libhypnos/mmappedfile.h"
 \brief Memory Mapped File
 \author Flameeyes
 
