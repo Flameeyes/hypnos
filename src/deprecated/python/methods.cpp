@@ -4,7 +4,6 @@
 | This software is free software released under GPL2 license.              |
 | You can find detailed license information in pyuo.cpp file.              |
 |                                                                          |
-| PyUO Server Emulator                                                     |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file

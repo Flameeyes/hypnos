@@ -1,0 +1,48 @@
+These are the standards used in the new code wrote for PyUO (and the ones
+we'll follow when editing old code). Are all suggestions, there is no
+imposition, but we hope we can follow them.
+
+For tabulations we use the regular tab character ('\t'), with width of 8
+spaces.
+
+For word wraps, 76 is the maximum numbers of character in a line, so set
+the static word wrap to 76.
+
+For indentation, we should use this form
+
+void func(...)
+{
+	<code>
+}
+
+for functions, and then for if (and cycles)
+
+if (...) {
+	<code>
+} else {
+	<code>
+}
+
+when we haven't too many nested cycles or if. In this case, we can use this
+form:
+
+if (...)
+{
+	<code>
+} else {
+	<code>
+}
+
+without problems.
+
+All the files should have this header:
+
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| PyUO Server Emulator                                                     |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in pyuo.cpp file.              |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+
+and must contain a doxygen file documentation block with at least a brief.
