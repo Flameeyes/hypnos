@@ -1938,68 +1938,37 @@ bool cPacketReceiveUnicodeSpeechReq::execute(pClient client)
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
 
-        pPC pc = client->currChar;
-	if(pc)
-        {
-        	uint8_t mode   = buffer[3];	//0=say,2=emote,8=whisper,9=yell
-		uint16_t color = ShortFromCharPtr(buffer + 4);
-		uint16_t font  = ShortFromCharPtr(buffer + 6);
-		char[4] language;
-                strncpy(language, buffer + 8, 4); language[3] = 0;
-                int offset = 12;
-        	pc->unicode=true;
-    		// Check for command word versions of this packet
-		if ( mode >=0xc0 )
-		{
-			mode &= 0x0F;	// set to normal (cutting off the ascii indicator since we are converting back to unicode)
+        pPC pc = client->currChar();
+	if(!pc) return false;
+       	uint8_t mode   = buffer[3];	//0=say,2=emote,8=whisper,9=yell
+	uint16_t color = ShortFromCharPtr(buffer + 4);
+	uint16_t font  = ShortFromCharPtr(buffer + 6);
+	char[4] language;
+	strncpy(language, buffer + 8, 4); language[3] = 0;
+	int offset = 12;
+       	pc->unicode=true;
+    	// Check for command word versions of this packet
+	if ( mode >=0xc0 )
+	{
+		mode &= 0x0F;	// set to normal (cutting off the speech.mul indicator)
+        	int num_words = ((int)buffer[12] << 4) & ((int)buffer[13] >> 4);
+        	int speech_mul_index = (((int) buffer[13] & 0xf) << 8) & (int)buffer[14];
+        	//I suspect these [num_unknown] bytes here are also speech.mul keyword indexes (12 bits each index)
+		int num_unknown = ( num_words / 2 ) * 3 + (num_words & 1) - 2;
+	       	offset += 3 + num_unknown; //in the remainder of code we can ignore these bytes
+	}
+	std::string text = "";
 
-			int num_words = (buffer[12] << 4) & (buffer[13] >> 4);
-                        int speech_mul_index = ((buffer[13] & 0xf) << 8) & buffer[14];
-			int num_unknown = ( num_words / 2 ) * 3 + (num_words & 1) - 2;
-
-		       	offset += 3 + num_unknown; //in the remainder of code we can ignore these bytes
-		}
-
+	//Unicode to ascii "truncation"
+	//Remember that it is a BIG ENDIAN unicode indifferently from machine endian (due to packet protocol)
+	//so the ascii byte is the second one
+	++offset;	//This places the offset on the first "second byte" of text
+	for (;buffer[offset] && offset<size;offset +=2) text += buffer[offset];
 
 
 
-                //TODO: revise from here
+	client->talking(text, mode, color, font);
 
-
-                
-                        //
-			//	Now adjust the buffer
-
-			//int iTempBuf ;
-			int iWord = buffer[1] << 8 + buffer[2];
-			myj = 12 ;
-
-			//cout << "Max length characters will be " << dec << (iWord - myoffset) << endl ;
-			mysize = iWord - myoffset ;
-
-			for (i=0; i < mysize ; i++)
-							mytempbuf[i] = buffer[s][i+myoffset] ;
-
-			for (i=0; i < mysize ; i++)
-			{
-				myj++ ;
-				buffer[s][myj] = mytempbuf[i] ;
-				//iTempBuf = static_cast<int> (mytempbuf[i]) ;
-				//cout << "Copying value of " << hex << iTempBuf << endl ;
-				myj++;
-				buffer[s][myj] = 0 ;
-			}
-
-						iWord = (((iWord - myoffset ) * 2) + 12) ;
-						//cout << "Setting buffer size to " << dec << iWord << endl ;
-						buffer[s][1] = static_cast<unsigned char> ( ( ( iWord & 0xFF00 ) >>8 ) ) ;
-						buffer[s][2] = static_cast<unsigned char> ( iWord & 0x00FF ) ;
-					}
-
-					wchar2char((char*)&buffer[s][13]);
-					strncpy((char*)nonuni, Unicode::temp, ((buffer[s][1]<<8)+buffer[s][2])/2);
-					talking(s, (char*)nonuni);
-					}
 
 
         return true;

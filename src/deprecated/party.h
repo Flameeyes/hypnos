@@ -75,7 +75,7 @@ class cPartys {
 		P_PARTY	createParty( );
 		P_PARTY	getParty( uint32_t serial );
 		void removeParty( uint32_t serial );
-		void recive( NXWCLIENT ps );
+		void receive( NXWCLIENT ps );
 
 		cPartys();
 		~cPartys();

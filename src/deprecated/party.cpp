@@ -209,7 +209,7 @@ void cPartys::removeParty( uint32_t serial )
 }
 
 
-void cPartys::recive( NXWCLIENT ps )
+void cPartys::receive( NXWCLIENT ps )
 {
 
 	static AmxFunction* addMem, *delMem, *lootMode, *accept, *decline = NULL;

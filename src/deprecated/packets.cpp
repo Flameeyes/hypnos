@@ -38,7 +38,7 @@ char* cPacket::getBeginValid() {
 \param size the number of byte to read
 \param from offset
 */
-inline void reciveFromSocket( NXWSOCKET socket, char* b, int size, int& from )
+inline void receiveFromSocket( NXWSOCKET socket, char* b, int size, int& from )
 {
 	memcpy( b, &buffer[socket][from], size );
 	from+=size;
@@ -53,7 +53,7 @@ inline void reciveFromSocket( NXWSOCKET socket, char* b, int size, int& from )
 \param lenght the length of need to read
 \param from offset
 */
-inline void reciveStringFromSocket( NXWSOCKET socket, string& s, int lenght, int& from ) {
+inline void receiveStringFromSocket( NXWSOCKET socket, string& s, int lenght, int& from ) {
 	from-=1;
 	while( buffer[socket][++from]!=0 ) {
 		s+=buffer[socket][from];
@@ -69,7 +69,7 @@ inline void reciveStringFromSocket( NXWSOCKET socket, string& s, int lenght, int
 \param from offset
 \param size read until NULL termination if INVALID, else read size char
 */
-inline void reciveUnicodeStringFromSocket( NXWSOCKET s, wstring& c, int& from, int size )
+inline void receiveUnicodeStringFromSocket( NXWSOCKET s, wstring& c, int& from, int size )
 {
 	int32_t chSize = sizeof( uint16_t );
 	uint16_t* w=(uint16_t*)( &buffer[s][from] );
@@ -115,7 +115,7 @@ char* cClientPacket::getBeginValidForReceive() {
 */
 void cClientPacket::getFromSocket( NXWSOCKET socket, char* b, int size )
 {
-	reciveFromSocket( socket, b, size, offset );
+	receiveFromSocket( socket, b, size, offset );
 };
 
 /*!
@@ -129,7 +129,7 @@ void cClientPacket::getFromSocket( NXWSOCKET socket, char* b, int size )
 */
 void cClientPacket::getStringFromSocket( NXWSOCKET socket, string& s, int length ) 
 {
-	reciveStringFromSocket( socket, s, length, offset );
+	receiveStringFromSocket( socket, s, length, offset );
 }
 
 /*!
@@ -143,7 +143,7 @@ void cClientPacket::getStringFromSocket( NXWSOCKET socket, string& s, int length
 */
 void cClientPacket::getUnicodeStringFromSocket( NXWSOCKET socket, wstring& c, int size )
 {
-	reciveUnicodeStringFromSocket( socket, c, offset, size );
+	receiveUnicodeStringFromSocket( socket, c, offset, size );
 }
 
 /*!

@@ -7,19 +7,30 @@
     || For any question post to NoX-Wizard forums.                             ||
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
-#if !defined(AFX_SPEECH_H__93559DDF_35B6_4DCC_BC04_4F7CECA54BB3__INCLUDED_)
-#define AFX_SPEECH_H__93559DDF_35B6_4DCC_BC04_4F7CECA54BB3__INCLUDED_
+#ifndef __SPEECH_H__
+#define __SPEECH_H__
 
-#if _MSC_VER >= 1000
-#pragma once
-#endif // _MSC_VER >= 1000
+//! Used in speech methods
+class cSpeech
+{
+	std::wstring unicode_text;	//warning: wchar is not guaranteed to be a 16 bit char in all systems
+        uint8_t mode;	//0=say,2=emote,8=whisper,9=yell
+	uint16_t color;
+	uint16_t font;
+        char[4] language;
+        pChar speaker;
+        inline char operator[](int i)
+        { return unicode_text[i] & 0xff; }
+        cSpeech(char* buffer); //Only from packet buffer, because it updates endian from packet to machine
+        std::string toString();	//!< returns a normal char-based string obtained truncating unicode to ascii values
+        std::string toGhost();	//!< returns a randomized "ooooOOoo" based on current string content (not unicode)
+}
+
 
 void responsevendor(NXWSOCKET  s, int vendor);
-void talking(int s, string);
 
 
-void wchar2char (const char* str);
 void char2wchar (const char* str);
 
 
-#endif // !defined(AFX_SPEECH_H__93559DDF_35B6_4DCC_BC04_4F7CECA54BB3__INCLUDED_)
+#endif

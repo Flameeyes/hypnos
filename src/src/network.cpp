@@ -2318,7 +2318,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						case 5: break; // unknown, sent once on login
 
 				   		case GEN_INFO_SUBCMD_PARTY:
-							Partys.recive( ps );
+							Partys.receive( ps );
 							break;
 
 						case 9:	//Luxor: Wrestling Disarm Macro support

@@ -13,12 +13,15 @@
 #ifndef __CCLIENT_H__
 #define __CCLIENT_H__
 
-//!< Used in trading methods
-struct sBoughtItem {
+//! Used in trading methods
+struct sBoughtItem
+{
 	int layer;
 	pItem item;
 	int amount;
 };
+
+
 
 #include "common_libs.h"
 
@@ -113,6 +116,16 @@ public:
         static void sendtradestatus(pContainer cont1, pContainer cont2);  	//!< updates secure trade window
         static void dotrade(pContainer cont1,pContainer cont2);			//!< concludes trade (either swapping items or returning them)
 	static void endtrade(uint32_t serial);					//!< closing trade window : called when one client ends the transaction (either accepted or canceled)
+//@}
+
+//@{
+/*!
+\name Speech, message & communication stuff
+*/
+
+public:
+	void talking(std::string &speech)	//!< The PC talks, and this finds out who will hear (and send it to them)
+
 //@}
 
 //@{

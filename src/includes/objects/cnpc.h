@@ -52,12 +52,12 @@ public:
 //@{
 /*!
 \name Npc Vendor
-\note fist draft.. need to make map with id used in recive for make faster
+\note fist draft.. need to make map with id used in receive for make faster
 */
 
 public:
-	std::vector<vendor_item>*	vendorItemsSell; //!< all items sell by vendor
-	std::vector<vendor_item>*	vendorItemsBuy; //!< all items sell by vendor
+	std::vector<vendor_item>*	vendorItemsSell; //!< all items sold by vendor
+	std::vector<vendor_item>*	vendorItemsBuy; //!< all items sold by vendor
 
 //@}
 
