@@ -88,7 +88,7 @@ private:
 \brief cChar::action() packet
 \author Flameeyes
 */
-class cPacketSendAction
+class cPacketSendAction : cPacketSend
 {
 protected:
 	const UI32 serial;	//!< Serial of the char which do the action
@@ -111,7 +111,7 @@ public:
 \brief Draws a container on the user script
 \author Flameeyes
 */
-class cPacketSendDrawContainer
+class cPacketSendDrawContainer : cPacketSend
 {
 protected:
 	const UI32 serial;	//!< Serial of the container to draw
@@ -134,7 +134,7 @@ public:
 \brief Send an item in container
 \author Flameeyes
 */
-class cPacketSendContainerItem
+class cPacketSendContainerItem : cPacketSend
 {
 protected:
 	std::list<sContainerItem> items;
@@ -155,7 +155,7 @@ public:
 };
 
 //! Add item to container
-class cPacketSendAddContainerItem
+class cPacketSendAddContainerItem : cPacketSend
 {
 protected:
 	pItem item;
@@ -172,7 +172,7 @@ public:
 };
 
 //! Work item
-class cPacketSendWornItem
+class cPacketSendWornItem : cPacketSend
 {
 protected:
 	pItem item;
@@ -185,7 +185,7 @@ public:
 };
 
 //! Sound FX
-class cPacketSendSoundFX
+class cPacketSendSoundFX : cPacketSend
 {
 protected:
 	UI16 model;	//!< Sound model
@@ -203,7 +203,7 @@ public:
 };
 
 //! Delete object
-class cPacketSendDeleteObj
+class cPacketSendDeleteObj : cPacketSend
 {
 protected:
 	UI32 serial;
@@ -219,7 +219,7 @@ public:
 };
 
 //! Send skill status
-class cPacketSendSkillState
+class cPacketSendSkillState : cPacketSend
 {
 protected:
 	pChar pc;
@@ -235,7 +235,7 @@ public:
 };
 
 //! Update a skill
-class cPacketSendUpdateSkill
+class cPacketSendUpdateSkill : cPacketSend
 {
 protected:
 	pChar pc;
@@ -253,7 +253,7 @@ public:
 };
 
 //! Open Web Browser
-class cPacketSendOpenBrowser
+class cPacketSendOpenBrowser : cPacketSend
 {
 protected:
 	std::string url;
@@ -269,7 +269,7 @@ public:
 };
 
 //! Play midi file
-class cPacketSendPlayMidi
+class cPacketSendPlayMidi : cPacketSend
 {
 protected:
 	UI16 id;
@@ -285,7 +285,7 @@ public:
 };
 
 //! Overall Light Level
-class cPacketSendOverallLight
+class cPacketSendOverallLight : cPacketSend
 {
 protected:
 	UI08 level;
