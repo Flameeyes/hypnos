@@ -191,34 +191,36 @@ void cChar::circleFX(short id)
 */
 void cChar::doGmEffect()
 {
-	if( !isPermaHidden() )
+	if ( isPermaHidden() )
+		return;
+	
+	switch( gmMoveEff )
 	{
-		Location charpos= getPosition();
+	case 1:	// flamestrike
+		staticeffect3( Location(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x3709, 9, 25, 0);
+		client->playSFX( 0x0802);
+		break;
 
-		switch( gmMoveEff )
-		{
-		case 1:	// flamestrike
-			staticeffect3(charpos.x+1, charpos.y+1, charpos.z+10, 0x37, 0x09, 0x09, 0x19, 0);
-			client->playSFX( 0x0802);
-			break;
+	case 2: // sparklie (fireworks wand style)
+		staticeffect3( Location(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x373A, 9, 25, 0);
+		break;
 
-		case 2: // sparklie (fireworks wand style)
-			staticeffect3(charpos.x+1, charpos.y+1, charpos.z+10, 0x37, 0x3A, 0x09, 0x19, 0); break;
+	case 3: // sparklie (fireworks wand style)
+		staticeffect3( Location(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x374A, 9, 25, 0);
+		break;
 
-		case 3: // sparklie (fireworks wand style)
-			staticeffect3(charpos.x+1, charpos.y+1, charpos.z+10, 0x37, 0x4A, 0x09, 0x19, 0); break;
+	case 4: // sparklie (fireworks wand style)
+		staticeffect3( Location(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x375A, 9, 25, 0);
+		break;
 
-		case 4: // sparklie (fireworks wand style)
-			staticeffect3(charpos.x+1, charpos.y+1, charpos.z+10, 0x37, 0x5A, 0x09, 0x19, 0); break;
+	case 5: // sparklie (fireworks wand style)
+		staticeffect3( Location(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x376A, 9, 25, 0);
+		break;
 
-		case 5: // sparklie (fireworks wand style)
-			staticeffect3(charpos.x+1, charpos.y+1, charpos.z+10, 0x37, 0x6A, 0x09, 0x19, 0); break;
-
-		case 6: // sparklie (fireworks wand style)
-			staticeffect3(charpos.x+1, charpos.y+1, charpos.z+10, 0x37, 0x7A, 0x09, 0x19, 0); break;
-		}
+	case 6: // sparklie (fireworks wand style)
+		staticeffect3( Location(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x377A, 9, 25, 0);
+		break;
 	}
-	return;
 }
 
 /*!

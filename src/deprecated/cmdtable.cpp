@@ -2275,7 +2275,7 @@ void target_hide( pClient client, pTarget t )
 	}
 	else {
 		pc->setPermaHidden(true);
-		staticeffect3( pcpos.x+1, pcpos.y+1, pcpos.z+10, 0x37, 0x09, 0x09, 0x19, 0);
+		staticeffect3( Location(pcpos.x+1, pcpos.y+1, pcpos.z+10), 0x3709, 9, 25, 0);
 		pc->playSFX(0x0208);
 		tempfx::add(pc, pc, tempfx::GM_HIDING, 1, 0, 0);
 	}
@@ -2297,7 +2297,7 @@ void target_unhide( pClient client, pTarget t )
 	}
 	else {
 		pc->setPermaHidden(false);
-		staticeffect3( pcpos.x+1, pcpos.y+1, pcpos.z+10, 0x37, 0x09, 0x09, 0x19, 0);
+		staticeffect3( Location(pcpos.x+1, pcpos.y+1, pcpos.z+10), 0x3709, 9, 25, 0);
 		pc->playSFX(0x0208);
 		tempfx::add(pc, pc, tempfx::GM_UNHIDING, 1, 0, 0);
 	}

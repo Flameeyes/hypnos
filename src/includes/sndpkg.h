@@ -64,7 +64,7 @@ void staticeffect (int/*CHARACTER*/ player, unsigned char eff1, unsigned char ef
 void movingeffect(int/*CHARACTER*/ source, int/*CHARACTER*/ dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false);
 void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false);
 
-void staticeffect3(uint16_t x, uint16_t y, int8_t z, unsigned char eff1, unsigned char eff2, char speed, char loop, char explode);
+void staticeffect3(Location pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode);
 void movingeffect3(int/*CHARACTER*/ source, unsigned short x, unsigned short y, signed char z, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode);
 void movingeffect3(int/*CHARACTER*/ source, int/*CHARACTER*/ dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode,unsigned char unk1,unsigned char unk2,unsigned char ajust,unsigned char type);
 void movingeffect2(int/*CHARACTER*/ source, int/*CHARACTER*/ dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode);

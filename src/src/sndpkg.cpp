@@ -1237,7 +1237,7 @@ void movingeffect3(CHARACTER source, unsigned short x, unsigned short y, signed 
 
 	Location srcpos= src->getPosition(), pos2 = { x, y, z, 0};
 
-MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial(), 0, eff, srcpos, pos2, speed, loop, 0, explode);
+	MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial(), 0, eff, srcpos, pos2, speed, loop, 0, explode);
 
 	 NxwSocketWrapper sw;
 	 sw.fillOnline( src );
@@ -1253,22 +1253,23 @@ MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial(), 0, eff, srcpos, pos2, sp
 
 }
 
-// staticeffect3 is for effects on items
-void staticeffect3(uint16_t x, uint16_t y, int8_t z, unsigned char eff1, unsigned char eff2, char speed, char loop, char explode)
+/*!
+\brief Item effects
+\param pos Location where to send the effect
+\param eff ID of the effect
+\todo Replace with a cPacketSend class, maybe move it in a better place
+*/
+void staticeffect3(Location pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode)
 {
-	uint16_t eff = (eff1<<8)|(eff2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
 
-Location pos = { x, y, z, 0};
+	MakeGraphicalEffectPkt_(effect, 0x02, 0, 0, eff, pos, pos, speed, loop, 1, explode);
+	pos.z = 0; //!< \todo verify this...
 
-MakeGraphicalEffectPkt_(effect, 0x02, 0, 0, eff, pos, pos, speed, loop, 1, explode);
-
-pos.z = 0;
-
-	 NxwSocketWrapper sw;
-	 sw.fillOnline( pos );
-	 for( sw.rewind(); !sw.isEmpty(); sw++ )
-	 {
+	NxwSocketWrapper sw;
+	sw.fillOnline( pos );
+	for( sw.rewind(); !sw.isEmpty(); sw++ )
+	{
 		NXWSOCKET j=sw.getSocket();
 		if( j!=INVALID )
 		{
