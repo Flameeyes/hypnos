@@ -173,15 +173,15 @@ void command_post( pClient client )
 
 	switch( pc->postType )
 	{
-		case MsgBoards::LOCALPOST:
+		case cMsgBoard::LOCALPOST:
 			t += "a message to a single board [LOCAL].";
 			break;
 
-		case MsgBoards::REGIONALPOST:
+		case cMsgBoard::REGIONALPOST:
 			t += "a message to all boards in this area [REGIONAL].";
 			break;
 
-		case MsgBoards::GLOBALPOST:
+		case cMsgBoard::GLOBALPOST:
 			t += "a message to all boards in the world [GLOBAL].";
 			break;
 
@@ -196,7 +196,7 @@ void command_gpost( pClient client )
 {
 	pChar pc = client->currChar();
 
-	pc->postType = MsgBoards::GLOBALPOST;
+	pc->postType = cMsgBoard::GLOBALPOST;
 	pc->sysmsg("Now posting GLOBAL messages." );
 }
 
@@ -207,7 +207,7 @@ void command_rpost( pClient client )
 {
 	pChar pc = client->currChar();
 
-	pc->postType = MsgBoards::REGIONALPOST;
+	pc->postType = cMsgBoard::REGIONALPOST;
 	pc->sysmsg("Now posting REGIONAL messages." );
 }
 
@@ -217,7 +217,7 @@ void command_lpost( pClient client );
 {
 	pChar pc = client->currChar();
 
-	pc->postType = MsgBoards::LOCALPOST;
+	pc->postType = cMsgBoard::LOCALPOST;
 	pc->sysmsg("Now posting LOCAL messages." );
 }
 

@@ -54,7 +54,7 @@ protected:
 
 public:
 	inline virtual ~cPacketSend
-	{ if ( buffer ) delete buffer; }
+	{ if ( buffer ) safedeletearray(buffer); }
 
 	//! Prepare the buffer to be sent
 	virtual void prepare() = 0;
@@ -309,7 +309,9 @@ protected:
 	bool canrename;	//!< Can be renamed
 public:
 	/*!
-	\brief p Character
+	\param p Character
+      	\param t type of window
+        \param canrename client who receives this packet can rename char p
 	*/
 	inline cPacketSendStatus(pChar p, UI08 t, bool r) :
 		pc(p), type(t), canrename(r)
@@ -333,8 +335,7 @@ protected:
 
 public:
 	/*!
-	\param s serial of the container
-	\param g gump of the container
+	\param n npc vendor
 	*/
 	inline cPacketSendClearBuyWindow(pNpc n) :
 		npc(n),
@@ -352,10 +353,6 @@ public:
 class cPacketSendPaperdollClothingUpdated : cPacketSend
 {
 public:
-	/*!
-	\param s serial of the container
-	\param g gump of the container
-	*/
 	inline cPacketSendPaperdollClothingUpdated() :
 		buffer(NULL), length(1)
 	{ }
@@ -375,8 +372,7 @@ protected:
 	const pMap map;
 public:
 	/*!
-	\param s serial of the container
-	\param g gump of the container
+	\param m map
 	*/
 	inline cPacketSendOpenMapGump(pMap m) :
         	map (m),
@@ -422,8 +418,11 @@ protected:
         const int y;
 public:
 	/*!
-	\param s serial of the container
-	\param g gump of the container
+	\param m map used
+	\param comm command to be sent to client
+        \param p pin modified (or writeability status if comm == 6)
+        \param xx x position of pin (map relative)
+        \param yy y position of pin (map relative)
 	*/
 	inline cPacketSendMapPlotCourse(pMap m, PlotCourseCommands comm, short int p = 0, int xx = 0, int yy = 0) :
         	map (m), command (comm), pin (p),  x (xx), y (yy),
@@ -433,6 +432,25 @@ public:
 	void prepare();
 };
 
+class cPacketSendBBoardOpen : cPacketSend
+{
+public:
+
+protected:
+
+	const pMsgBoard msgboard;
+
+public:
+	/*!
+	\param m message board opened
+	*/
+	inline cPacketSendMapPlotCourse(pMsgBoard m) :
+        	msgboard (m),
+		buffer(NULL), length(38)
+	{ }
+
+	void prepare();
+};
 
 
 

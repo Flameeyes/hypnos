@@ -175,7 +175,7 @@ cChar::cChar( SERIAL ser ) : cObject()
 	att=0; // Intrinsic attack (For monsters that cant carry weapons)
 	def=0; // Intrinsic defense
 	war=0; // War Mode
-	questType = MsgBoards::QTINVALID; //xan - was not initialized!
+	questType = cMsgBoard::QTINVALID; //xan - was not initialized!
 	targserial=INVALID; // Current combat target
 	timeout=0; // Combat timeout (For hitting)
 	timeout2=0;
@@ -282,7 +282,7 @@ cChar::cChar( SERIAL ser ) : cObject()
 	polymorph=false;//polymorph - AntiChrist
 	incognito=false;//incognito - AntiChrist
 	namedeedserial=INVALID;
-	postType = MsgBoards::LOCALPOST;
+	postType = cMsgBoard::LOCALPOST;
 	questDestRegion = 0;
 	questOrigRegion= 0;
 	questBountyReward= 0;

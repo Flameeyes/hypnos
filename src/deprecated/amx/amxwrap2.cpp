@@ -1396,7 +1396,7 @@ void setCharIntProperty( P_CHAR pc, int property, int subproperty, int subsubpro
 					pc->setPosition("z",value);
 			} break;
 		case NXW_CP_I_POSTTYPE :			  			//dec value: 263;
-			pc->postType = (MsgBoards::PostType)value;
+			pc->postType = (cMsgBoard::PostType)value;
 			break;
 		case NXW_CP_I_PREVPOS:						//dec value: 264
 			switch( subproperty )

@@ -83,10 +83,10 @@ void cNPC::heartbeat()
 		// too long without every having its quest accepted by a player so we have to remove
 		// its posting from the message board before icing the NPC
 		// Only need to remove the post if the NPC does not have a follow target set
-		if ( questType == MsgBoards::ESCORTQUEST && ftargserial == INVALID )
+		if ( questType == cMsgBoard::ESCORTQUEST && ftargserial == INVALID )
 		{
-			MsgBoards::MsgBoardQuestEscortRemovePost( DEREF_P_CHAR(this) );
-			MsgBoards::MsgBoardQuestEscortDelete( DEREF_P_CHAR(this) );
+			cMsgBoard::MsgBoardQuestEscortRemovePost( DEREF_P_CHAR(this) );
+			cMsgBoard::MsgBoardQuestEscortDelete( DEREF_P_CHAR(this) );
 		}
 		else
 		{

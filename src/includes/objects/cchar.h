@@ -667,8 +667,8 @@ public:
 		SI32			carve; //AntiChrist - for new carve system
 
 		TIMERVAL		begging_timer;
-		MsgBoards::PostType	postType;
-		MsgBoards::QuestType	questType;
+		cMsgBoard::PostType	postType;
+		cMsgBoard::QuestType	questType;
 		SI32			questDestRegion;
 		SI32			questOrigRegion;
 		SI32			questBountyReward;		// The current reward amount for the return of this chars head

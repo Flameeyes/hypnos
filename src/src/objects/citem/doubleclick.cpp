@@ -1092,7 +1092,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			return;
 		case 0x1E5E:
 		case 0x1E5F: // Message board opening
-			MsgBoards::MsgBoardOpen( client );
+			((pMsgBoard)this)->MsgBoardOpen( client );
 			return;
 		case 0x0DE1:
 		case 0x0DE2: // camping

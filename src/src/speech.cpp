@@ -339,7 +339,7 @@ int response(NXWSOCKET  s)
 				// 	Handle Accept Escort
 				//		Sparhawk	Need to take into account whether pc is allready engaged in escort quest
 				//
-				if ( requestAcceptEscort && pc_map->questType == MsgBoards::ESCORTQUEST )
+				if ( requestAcceptEscort && pc_map->questType == cMsgBoard::ESCORTQUEST )
 				{
 					if ( pc_map->ftargserial == INVALID )
 					{
@@ -357,7 +357,7 @@ int response(NXWSOCKET  s)
 						pc_map->talkAll(temp, 0);
 
 						// Remove post from message board (Mark for deletion only - will be cleaned during cleanup)
-						MsgBoards::MsgBoardQuestEscortRemovePost( DEREF_P_CHAR(pc_map) );
+						cMsgBoard::MsgBoardQuestEscortRemovePost( DEREF_P_CHAR(pc_map) );
 
 						// Return 1 so that we indicate that we handled the message
 						return 1;
@@ -370,7 +370,7 @@ int response(NXWSOCKET  s)
 				//
 				if ( requestDestination )
 				{
-					if ( pc_map->questType==MsgBoards::ESCORTQUEST )
+					if ( pc_map->questType==cMsgBoard::ESCORTQUEST )
 					{
 						if ( pc_map->ftargserial == pc->getSerial32() )
 						{

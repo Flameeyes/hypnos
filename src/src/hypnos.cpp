@@ -616,7 +616,7 @@ int main(int argc, char *argv[])
 		loadregions();
 		ConOut("[DONE]\n");
 
-		MsgBoards::MsgBoardMaintenance();
+		cMsgBoard::MsgBoardMaintenance();
 
 		CIAO_IF_ERROR;
 

@@ -27,6 +27,7 @@ typedef struct {
 
 
 #include "cchar.h"
+#include "cmsgboard.h"
 
 /*!
 \author Flameeyes
@@ -113,16 +114,6 @@ public:
 
 public:
         void buyaction(pNpc npc, std::vector< buyeditem > &allitemsbought);      //!< Getting purchased item and gold/availability check
-
-        //! Message boards properties
-public:
-	UI08 postAcked[MAXPOSTS][5];
-        UI32 postCount;
-	UI32 postAckCount;
-
-
-
-
 
         //! packet methods
 

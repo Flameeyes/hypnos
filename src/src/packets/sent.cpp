@@ -354,12 +354,30 @@ void cPacketSendMapPlotCourse::prepare()
         buffer[0] = 0x56;
 	LongToCharPtr(map->getSerial32(), buffer +1);
 	buffer[5]  = command;
-	if (command == WriteableStatus) buffer[6] = (pin) ? 1 : 0;  // not sure if the values needed by client are exactly 1 and 0, but better safe than sorry 	
+	if (command == WriteableStatus) buffer[6] = (pin) ? 1 : 0;  // not sure if the values needed by client are exactly 1 and 0, but better safe than sorry
         else buffer[6] = pin;
         ShortToCharPtr(x, buffer + 7);
         ShortToCharPtr(y, buffer + 9);
 }
 
+void cPacketSendBBoardOpen::prepare()
+{
+//	length = 38;
+        buffer = new UI08[38];
+        buffer[0] = 0x71;
+        ShortToCharPtr(38, buffer +1); 	//message length
+        buffer[3] = 0; 			//subcommand 0
+        LongToCharPtr(msgboard->getSerial32(), buffer +4);	//board serial
+        memset(buffer + 8, 0, 22);				//filling boardname with 22 zeroes
+        LongToCharPtr(0x402000FF, buffer + 30);			//gump id, i believe
+        LongToCharPtr(0x0, buffer + 34);			//zero
+
+	// If the name the item (Bulletin Board) has been defined, display it
+	// instead of the default "Bulletin Board" title.
+	if ( strncmp(msgboard->getCurrentNameC(), "#", 1) )
+		strncpy( buffer + 8, msgboard->getCurrentNameC(), 20);  //Copying just the first 20 chars or we go out of bounds in the gump
+        else    strcpy( buffer + 8, "Bulletin Board");
+}
 
 
 static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
@@ -409,7 +427,7 @@ static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
                 case 0x9b: length = 258; break; // Request Help
                 case 0x9f: length = ???; break; // Sell Reply
                 case 0xa0: length =   3; break; // Select Server
-//                case 0xa4: length =   5; break; // Client Machine info (Apparently was a sort of lame spyware command .. unknown if it still works)
+                case 0xa4: length =   5; break; // Client Machine info (Apparently was a sort of lame spyware command .. unknown if it still works)
                 case 0xa7: length =   4; break; // Request Tips/Notice
                 case 0xaa: length =   5; break; // Attack Request Reply
                 case 0xac: length = ???; break; // Gump Text Entry Dialog Reply
@@ -421,7 +439,7 @@ static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
 
                 case 0xb5: length =  64; break; // Open Chat window
                 case 0xb6: length =   9; break; // Send Help/Tip Request
-                case 0xb8: length = ???; break; // Request Char Profil
+                case 0xb8: length = ???; break; // Request Char Profile
                 case 0xbb: length =   9; break; // Ultima Messenger (do we need this?)
                 case 0xbd: length = ???; break; // Client Version Message
                 case 0xbe: length = ???; break; // Assist Version
@@ -1175,6 +1193,14 @@ bool cPacketReceiveTargetSelected::execute(pClient client)
 \brief Receive bullettin board message
 \author Chronodt
 \param client client who sent the packet
+\note Packets flow is:
+1) client doubleclicks the board (received 0x06 packets and doubleclick routine works with that)
+2) server sends 0x71 command 0 to tell client to open the bulletin board
+3) server sends 0x25 (add items to container) to tell to the client the serial numbers of all messages in the board
+4) the client replies to 0x25 sending a 0x71 message 4 for each post in the board to get the details of each (poster, date and topic)
+5) server replies to each 0x71 message 4 sent with a 0x71 message 1 with the required details
+
+if the clients doubleclicks on a message, it sends 0x71 command 3 and the server replies with 0x71 command 2 with the body of the message
 */
 
 
@@ -1200,49 +1226,51 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 		}
 
 		case 4:  // Client->Server: Client has ACK'ed servers download of posting serial numbers
+                	 // and requires the summary of (buffer + 8) message (topic, poster id and date)
 		{
       	                msgSN = LongFromCharPtr(buffer + 8);
 			// Check to see whether client has ACK'd all of our message ID's before proceeding
+
 			client->postAckCount++;
 			//ConOut(" pstAckCont=%d        postCount=%d\n", postAckCount[s], postCount[s]);
-			if ( postAckCount[s] != postCount[s] )
+			if ( client->postAckCount != client->postCount )
 				return;
 
 			// Server needs to handle ACK from client that contains the posting serial numbers
-			MsgBoardList( s );
+			msgboard->MsgBoardList( client );
 			break;
 		}
 
 	case 5:  // Client->Server: Client clicked on Post button (either from the main board or after pressing the Reply)
 		{        //                 Reply just switches to the Post item.
 
-			P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-			VALIDATEPC(pc);
+			pChar pc = client->currChar();
+			VALIDATEPCR(pc, false);
 			// Check privledge level against server.cfg msgpostaccess
 
 			if ( (pc->IsGM()) || (SrvParms->msgpostaccess) )
-				MsgBoardPost( s, pc->postType, 0 );
+				msgboard->MsgBoardPost( client, pc->postType, 0 );
 			else
-				pc->sysmsg(TRANSLATE("Thou art not allowed to post messages."));
+				client->sysmsg(TRANSLATE("Thou art not allowed to post messages."));
 
 			break;
 		}
 
 	case 6:  // Remove post from Bulletin board
 		{
-			P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-			VALIDATEPC(pc);
+			pChar pc= client->currChar();
+			VALIDATEPCR(pc, false);
 			//             |p#|s1|s2|mt|b1|b2|b3|b4|m1|m2|m3|m4|
 			// Client sends 71  0  c  6 40  0  0 18  1  0  0  4
 			if ( (pc->IsGM()) || (SrvParms->msgpostremove) )
-				MsgBoardRemovePost( s );
+				msgboard->MsgBoardRemovePost( client );
 			break;
 		}
 
 
 	default:
 		{
-			ErrOut("MsgBoardEvent() Unknown msgType:%x for message: %x\n", buffer[s][3], buffer[s][0]);
+			ErrOut("MsgBoardEvent() Unknown msgType:%x for message: %x\n", buffer[3], buffer[0]);
 			break;
 		}
 	}

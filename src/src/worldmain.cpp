@@ -532,7 +532,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 
 		case 'Q':
 		case 'q':
-			if (!strcmp(script1, "QUESTTYPE"))			  pc->questType=(MsgBoards::QuestType)str2num(script2);
+			if (!strcmp(script1, "QUESTTYPE"))			  pc->questType=(cMsgBoard::QuestType)str2num(script2);
 			else if (!strcmp(script1, "QUESTDESTREGION"))  pc->questDestRegion=str2num(script2);
 			else if (!strcmp(script1, "QUESTORIGREGION"))  pc->questOrigRegion=str2num(script2);
 			else if (!strcmp(script1, "QUESTBOUNTYPOSTSERIAL")) pc->questBountyPostSerial=str2num(script2);
