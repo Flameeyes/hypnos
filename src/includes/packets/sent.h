@@ -778,6 +778,31 @@ namespace nPackets {
 			void prepare();
 		};
 
+		/*!
+		\brief Login Denied
+		\author Kheru
+		\note packet 0x82
+
+		0x00 = unknown user
+		0x01 = account already in use
+		0x02 = account disabled
+		0x03 = password bad
+		0x04 and higher = communications failed 
+		*/
+
+		class LoginDenied : public cPacketSend
+		{
+		protected:
+			uint8_t reason;
+
+		public:
+			inline LoginDenied(uint8_t aReason) :
+				cPacketSend(NULL, 0), reason(aReason)
+			{ }
+
+			void prepare();
+		};
+
 		//! Open Web Browser
 		class OpenBrowser : public cPacketSend
 		{

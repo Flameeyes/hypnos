@@ -829,6 +829,15 @@ void nPackets::Sent::Action::prepare()
 }
 
 
+void nPackets::Send::LoginDenied::prepare()
+{
+	buffer = new uint8_t[2];
+	length = 2;
+
+	buffer[0] = 0x82;
+	buffer[1] = reason;
+}
+
 void nPackets::Sent::OpenBrowser::prepare()
 {
 	length = url.size() + 3;

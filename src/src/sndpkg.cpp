@@ -1359,22 +1359,4 @@ void wornitems(pClient client, pChar pc) // Send worn items of player
 	}
 }
 
-/*!
-\brief Send "Login Denied" packet.
-\param s socket
-\param why reason because Login was denied.
-
- 0x00 = unknown user
- 0x01 = account already in use
- 0x02 = account disabled
- 0x03 = password bad
- 0x04 and higher = communications failed 
-*/
-void SendLoginDeniedPkt(int s, uint8_t why)
-{
-	uint8_t nologin[2]={0x82, 0x00};
-	nologin[1] = why;
-	Xsend(s, nologin, 2);
-//AoS/	Network->FlushBuffer(s);
-}
 

@@ -538,17 +538,20 @@ void cNetwork::LoginMain(int s)
 		{
 		case BAD_PASSWORD:
 			loginchars[s] = NULL;
-			SendLoginDeniedPkt(s, 3);
+			nPackets::Sent::LoginDenied pk(0x03);
+			client->sendPacket(&pk);
 			return;
 		case ACCOUNT_BANNED:
 			loginchars[s] = NULL;
-			SendLoginDeniedPkt(s, 2);
+			nPackets::Sent::LoginDenied pk(0x02);
+			client->sendPacket(&pk);
 			return;
 		case LOGIN_NOT_FOUND:
 			if( !SrvParms->auto_a_create )
 			{
 				loginchars[s] = NULL;
-				SendLoginDeniedPkt(s, 0);
+				nPackets::Sent::LoginDenied pk(0x00);
+				client->sendPacket(&pk);
 				return;
 			} else {
 				// Auto create is enable, let's create the new account.
@@ -558,7 +561,8 @@ void cNetwork::LoginMain(int s)
 				if (dummypass.empty())
 				{
 					// User forgot password, let's send a message and return
-					Xsend(s, nopass, 2);
+					nPackets::Sent::LoginDenied pk(0x03);
+					client->sendPacket(&pk);
 					return;
 				}
 				acctno[s] = Accounts->CreateAccount(dummylogin, dummypass);
@@ -569,7 +573,8 @@ void cNetwork::LoginMain(int s)
 	pAccount acc = cAccount::findAccount(name);
 	if ( acc->currClient() )
 	{
-		SendLoginDeniedPkt(s, 1);
+		nPackets::Sent::LoginDenied pk(0x01);
+		client->sendPacket(&pk);
 		//<Luxor>: Let's kick the current player
 		
 		//!\todo We actually want to kick already logged in player or not?
@@ -799,15 +804,18 @@ void cNetwork::CharList(int s) // Gameserver login and character listing
 		{
 		case BAD_PASSWORD:
 			loginchars[s] = NULL;
-			SendLoginDenied(s, 3);
+			nPackets::Sent::LoginDenied pk(0x03);
+			client->sendPacket(&pk);
 			return;
 		case ACCOUNT_BANNED:
 			loginchars[s] = NULL;
-			SendLoginDenied(s, 2);
+			nPackets::Sent::LoginDenied pk(0x02);
+			client->sendPacket(&pk);
 			return;
 		case LOGIN_NOT_FOUND:
 			loginchars[s] = NULL;
-			SendLoginDenied(s, 0);
+			nPackets::Sent::LoginDenied pk(0x00);
+			client->sendPacket(&pk);
 			return;
 		}
 	}
