@@ -11,12 +11,25 @@
 \brief Python methods declaration
 */
 
+#ifndef __PY_METHODS__
+#define __PY_METHODS__
 
 /*!
-\brief Methods for PyUO module
+\brief Contains all Python related methods, and variables.
 
-This variable contains the list of methods that are passed to python
+Used because if in the future we'll add a new scripting language, we won't
+need to rename the function to avoid names' collisions.
 */
-static PyMethodDef PyUOMethods[] = {
-	{NULL, NULL, 0, NULL}
+namespace PythonInterface
+{
+	/*!
+	\brief Methods for PyUO module
+
+	This variable contains the list of methods that are passed to python
+	*/
+	static PyMethodDef PyUOMethods[] = {
+		{NULL, NULL, 0, NULL}
+	};
 };
+
+#endif
