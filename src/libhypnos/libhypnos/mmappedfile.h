@@ -76,7 +76,7 @@ public:
 	tplMMappedFile(std::string filename, uint32_t offset = 0, uint32_t length = 0);
 	virtual ~tplMMappedFile();
 	
-	uint32_t getCount() const
+	virtual uint32_t getCount() const
 	{ return size / sizeof(MUL); }
 };
 

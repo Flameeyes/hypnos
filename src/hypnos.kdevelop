@@ -31,6 +31,7 @@
       <directoryradio>executable</directoryradio>
       <runarguments>
         <hypnos/>
+        <clilist></clilist>
       </runarguments>
     </run>
     <configurations>

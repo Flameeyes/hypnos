@@ -15,6 +15,7 @@
 #include "networking/cclient.h"
 
 #include <ostream>
+#include <iomanip>
 
 static ClientSList cClient::clients;
 static ClientSList cClient::cGMs;

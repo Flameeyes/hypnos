@@ -91,15 +91,18 @@ AC_CHECK_FUNCS([basename ftime gettimeofday memset munmap strchr strstr strtol s
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
 CXXFLAGS="$CXXFLAGS $INCLUDES $WEFTS_CXXFLAGS -Wall $WARNS $DEFDIRS"
 CFLAGS="$CXXFLAGS"
-LDFLAGS="$LDFLAGS $WEFTS_LIBS"
+LDFLAGS="$LDFLAGS"
 
 AC_SUBST(CXXFLAGS)
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
+AC_SUBST(WEFTS_LIBS)
 
 AC_CONFIG_FILES([Makefile
                  libhypnos/Makefile
                  libhypnos/muls/Makefile
+                 utils/Makefile
+                 utils/clilist/Makefile
                  src/Makefile
                  src/archetypes/Makefile
                  src/archs/Makefile
