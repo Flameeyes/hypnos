@@ -18,7 +18,7 @@
 #include "common_libs.h"
 #include "enums.h"
 #include "objects/citem.h"
-#include "objects/cpacket.h"
+#include "packets/send.h"
 #include <wefts_mutex.h>
 
 

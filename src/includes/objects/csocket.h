@@ -5,21 +5,11 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Declaration of cSocket class
-*/
 
-#ifndef __CSOCKET_H__
-#define __CSOCKET_H__
+#ifndef __OBJECTS_CSOCKET_H__
+#define __OBJECTS_CSOCKET_H__
 
-#include <zthread/Thread.h>
-#include <zthread/BlockingQueue.h>
-
-class cSocket;
-typedef cSocket *pSocket;
-
-#include "cclient.h"
+#include "objects/cclient.h"
 
 //! Raw Packet
 struct sRawPacket
@@ -35,6 +25,8 @@ struct sRawPacket
 This class integrate all functions to be used with socket, so read, write
 and other.
 It also contains the buffer read from the socket
+
+\todo This should be reprojected
 */
 class cSocket
 {
@@ -53,40 +45,6 @@ protected:
 	cReceiver receiver;
 	//! Sending task
 	cSender sender;
-
-	/*!
-	\brief Class for receiving task
-
-	Used by ZThread::Thread as Runnable object.
-	*/
-	class cReceiver : public Runnable
-	{
-	private:
-		pSocket sock;
-	public:
-		inline cReceiver(pSocket s) :
-			sock(s)
-		{ }
-
-		void run();
-	};
-
-	/*!
-	\brief Class for sending task
-
-	Used by ZThread::Thread as Runnable object.
-	*/
-	class cSender : public Runnable
-	{
-	private:
-		pSocket sock;
-	public:
-		inline cSender(pSocket s) :
-			sock(s)
-		{ }
-
-		void run();
-	};
 
 public:
 	cSocket(int32_t sd, struct sockaddr_in *addr);

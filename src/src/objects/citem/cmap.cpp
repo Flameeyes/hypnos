@@ -9,7 +9,7 @@
 #include "enums.h"
 #include "skills/skills.h"
 #include "objects/citem/cmap.h"
-#include "objects/cpacket.h"
+#include "packets/send.h"
 #include "objects/cclient.h"
 
 cMap::cMap() : cItem()

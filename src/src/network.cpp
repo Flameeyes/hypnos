@@ -573,8 +573,8 @@ void cNetwork::GoodAuth(pClient client)
 		memset(login04d, 0, 63);
 		login04d[0]=i;
 		
-		strncpy(login04d+1, startLocations[i]->city.c_str(), 30);
-		strncpy(login04d+32, startLocations[i]->place.c_str(), 30);
+		strncpy(login04d+1, nNewbies::startLocations[i]->city.c_str(), 30);
+		strncpy(login04d+32, nNewbies::startLocations[i]->place.c_str(), 30);
 		Xsend(s, login04d, 63);
 	}
 

@@ -10,7 +10,8 @@
 \brief Implementation of cSocket class
 */
 
-#include "csocket.h"
+#include "objects/csocket.h"
+#include "packets/received.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>

@@ -7,7 +7,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "effects.h"
-#include "objects/cpacket.h"
+#include "packets/send.h"
 #include "logsystem.h"	
 
 /*!
