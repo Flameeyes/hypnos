@@ -181,10 +181,10 @@ void amxCallback( NXWCLIENT ps, P_TARGET t )
 	/// targ_serial, chr, obj, x, y, z, model, param
 
 	pObject po = objects.findObject( t->getClicked() );
-	if( ISVALIDPO(po) ) {
-        t->amx_callback->Call( t->serial, ps->currCharIdx(), po->getSerial(), INVALID, INVALID, INVALID, model, t->buffer[0] );
-        return;
-    }
+	if( po ) {
+		t->amx_callback->Call( t->serial, ps->currCharIdx(), po->getSerial(), INVALID, INVALID, INVALID, model, t->buffer[0] );
+		return;
+	}
 	else {
 	    Location loc = t->getLocation();
         t->amx_callback->Call( t->serial, ps->currCharIdx(), INVALID, loc.x, loc.y, loc.z, model, t->buffer[0] );
@@ -276,37 +276,32 @@ void TargetLocation::init(int x, int y, int z)
 	m_piSerial = m_pcSerial = INVALID;
 }
 
-
-///////////////////////////////////////////////////////////////////
-// Function name     : TargetLocation::revalidate
-// Description       : recalculates item & char from their serial :)
-// Return type       : void
-// Author            : Xanathar
-// Changes           : none yet
+/*!
+\brief Recalculate item & char from their serial
+\author Xanathar
+\todo Is really needed? BTW is actually right?
+*/
 void TargetLocation::revalidate()
 {
 	m_pi=pointers::findItemBySerial(m_piSerial);
 
 	m_pc=pointers::findCharBySerial(m_piSerial);
 
-	if (ISVALIDPI(m_pi)) {
+	if ( m_pi ) {
 		m_pi = NULL;
 		m_piSerial = INVALID;
 	}
 
-	if (ISVALIDPC(m_pc)) {
+	if ( m_pc ) {
 		m_pc = NULL;
 		m_pcSerial = INVALID;
 	}
 }
 
-
-///////////////////////////////////////////////////////////////////
-// Function name     : TargetLocation::extendItemTarget
-// Description       : extends item data to x,y,z and eventually owner char
-// Return type       : void
-// Author            : Xanathar
-// Changes           : none yet
+/*!
+\brief extends item data to x,y,z and eventually owner char
+\brief Xanathar
+*/
 void TargetLocation::extendItemTarget()
 {
 	if (m_pc!=NULL)
@@ -322,7 +317,7 @@ void TargetLocation::extendItemTarget()
 		int it, ch;
 		getWorldCoordsFromSerial (m_pi->getSerial(), m_x, m_y, m_z, ch, it);
 		m_pc=MAKE_CHAR_REF(ch);
-		m_pcSerial = (ISVALIDPC(m_pc))? m_pc->getSerial() : INVALID;
+		m_pcSerial = m_pc ? m_pc->getSerial() : INVALID;
 	}
 	revalidate();
 }

@@ -1,4 +1,4 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+   /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
     ||                                                                         ||
     || This software is free software released under GPL2 license.             ||
@@ -86,7 +86,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	pItem weapon=getWeapon();
 
-	(ISVALIDPI(weapon)) ? fightskill = weapon->getCombatSkill() : fightskill=WRESTLING;
+	fightskill = weapon ? weapon->getCombatSkill() : WRESTLING;
 	dist = distFrom(pc_def);
 
 	if((dist > 1 && fightskill != ARCHERY) || !los) return;
@@ -95,7 +95,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		if ( pc_def->IsInvul() )
 			return;
 		pChar pc_target = pc_def->target;
-		if ( ISVALIDPC( pc_target ) ) {
+		if ( pc_target ) {
                         int32_t att_value = pc_target->hp/10 + pc_def->distFrom( pc_target ) / 2;
                         int32_t this_value = hp/10 + distFrom( pc_def ) / 2;
                         if ( this_value < att_value ) {
@@ -192,7 +192,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		if (g_bByPass==true) return;
 	}
 
-	if (ISVALIDPI(weapon)) {
+	if ( weapon ) {
 		if (chance(5) && weapon->type != ITYPE_SPELLBOOK) {
 			weapon->hp--;
 			if(weapon->hp <= 0) {
@@ -266,7 +266,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	}
 
 	pItem pShield=pc_def->getShield();
-	if(ISVALIDPI(pShield)) {
+	if( pShield ) {
 		if ( chance(pc_def->skill[PARRYING]/20) ) { // chance to block with shield
 			pc_def->checkSkill(PARRYING, 0, 1000);
 			//pc_def->emoteall( "*Parries the attack*", 1 );
@@ -293,7 +293,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	if (!pc_def->npc) damage = (int)(damage / float(SrvParms->npcdamage));
 	if (damage<0) damage=0;
 
-	if (damage>0 && ISVALIDPI(weapon) ) {
+	if (damage>0 && weapon ) {
 		if ((weapon->amxevents[EVENT_IONDAMAGE]!=NULL)) {
 			g_bByPass = false;
 			damage = weapon->amxevents[EVENT_IONDAMAGE]->Call(weapon->getSerial(), pc_def->getSerial32(), damage, getSerial32());
@@ -320,19 +320,19 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 			dmgtype = damagetype;
 			damage = int(damage / 3.5);
 		}
-		(ISVALIDPI(weapon)) ? dmgtype = weapon->damagetype : dmgtype = DAMAGE_PURE;
+		dmgtype = weapon ? weapon->damagetype : DAMAGE_PURE;
 
 		if (pc_def->ra) {	 // Reactive Armor
 			//80% to defender, 10-20% to attacker
 			this->damage(int((damage/10.0) + (damage/100.0)*float(RandomNum(1,10))));
-            		if ((ISVALIDPI(weapon))&&(weapon->auxdamage)) {
+            		if ( weapon && weapon->auxdamage ) {
                 		pc_def->damage(weapon->auxdamage, weapon->auxdamagetype);
             		}
 			pc_def->damage(int(damage - (damage/100.0)*20.0), dmgtype);
 			pc_def->staticFX(0x374A, 0, 15);
 		} else {
 			pc_def->damage(damage, dmgtype);
-		        if ((ISVALIDPI(weapon))&&(weapon->auxdamage)) {
+		        if ( weapon && weapon->auxdamage ) {
 	                	pc_def->damage(weapon->auxdamage, weapon->auxdamagetype);
             		}
 		}
@@ -391,7 +391,6 @@ void cChar::doCombat()
 		j = 0,
 		arrowsquant = 0;
 	pItem	weapon = getWeapon();
-	bool	validWeapon = ISVALIDPI( weapon );
 
 	if( !target )
 	{
@@ -413,7 +412,7 @@ void cChar::doCombat()
 
 	if ( amxevents[EVENT_CHR_ONDOCOMBAT] ) {
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONDOCOMBAT]->Call( getSerial(), pc_def->getSerial32(), dist, validWeapon ? weapon->getSerial32() : INVALID );
+		amxevents[EVENT_CHR_ONDOCOMBAT]->Call( getSerial(), pc_def->getSerial32(), dist, weapon ? weapon->getSerial32() : INVALID );
 		if( g_bByPass == true )
 		{
 			return;
@@ -440,7 +439,7 @@ void cChar::doCombat()
 	}
 	else if ( combatTimerOk() )
 	{
-		validWeapon ? fightskill = weapon->getCombatSkill() : fightskill = WRESTLING;
+		fightskill = weapon ? weapon->getCombatSkill() : WRESTLING;
 
 		if (fightskill==ARCHERY)
 		{
@@ -474,7 +473,7 @@ void cChar::doCombat()
 				if((SrvParms->attackstamina < 0) &&( stm < abs(SrvParms->attackstamina)))
 				{
        					sysmsg(TRANSLATE("You are too tired to attack."));
-					if ( validWeapon )
+					if ( weapon )
 					{
 						if (weapon->spd==0)
 							weapon->spd=35;
@@ -513,7 +512,7 @@ void cChar::doCombat()
 			//
 			// Calculate combat delay
 			//
-			if ( validWeapon )
+			if ( weapon )
 			{
 	    			if (weapon->spd==0)
 					weapon->spd=35;
@@ -623,7 +622,7 @@ void cChar::checkPoisoning(pChar pc_def)
 		}
 	} else { //PC poisoning
 		pItem weapon = getWeapon();
-		if ( ISVALIDPI(weapon) && weapon->poisoned > 0 && pc_def->poisoned < weapon->poisoned ) {
+		if ( weapon && weapon->poisoned > 0 && pc_def->poisoned < weapon->poisoned ) {
 			if ( chance(33) ) {
 				pc_def->applyPoison( static_cast<PoisonType>(weapon->poisoned) );
 				if ( chance(80) ) {
@@ -745,7 +744,7 @@ int cChar::combatHitMessage(int32_t damage)
 		}
 	}
 	pChar pc_attacker = pointers::findCharBySerial(attackerserial);
-	if (ISVALIDPC(pc_attacker)) {
+	if ( pc_attacker) {
 		sysmsg("%s %s",pc_attacker->getCurrentNameC(), temp);
 	}
 
@@ -963,7 +962,7 @@ void cChar::doCombatSoundEffect(uint16_t fightskill, pItem weapon)
 	int a=RandomNum(0,3);
 
 	//check for heavy weapon
-	if (ISVALIDPI(weapon) && weapon->IsAxe())
+	if (weapon && weapon->IsAxe())
 		heavy=true;
 
 	if(heavy)
@@ -1008,7 +1007,7 @@ void cChar::combatOnFoot()
 	pItem weapon = getWeapon();
 	int m = RandomNum(0,3);
 
-	if (ISVALIDPI(weapon)) {
+	if (weapon) {
 //		short weapId = weapon->id(); // unused variable
 
 		if (weapon->IsBow()) {
@@ -1068,7 +1067,7 @@ void cChar::combatOnFoot()
 void cChar::combatOnHorse()
 {
 	pItem weapon = getWeapon();
-	if (ISVALIDPI(weapon)) {
+	if (weapon) {
 		short weapId = weapon->getId();
 
 		if (weapon->IsBow()) {
@@ -1137,7 +1136,7 @@ void cChar::attackStuff(pChar victim)
 		return;
 	}
 
-        //TODO: modify this to send a packet
+        //!\TODO: modify this to send a packet
 	SndAttackOK(s, victim->getSerial());	//keep the target highlighted
 
 
@@ -1150,7 +1149,7 @@ void cChar::attackStuff(pChar victim)
 	attackerserial=victim->getSerial();
 
 
-        //TODO once set are done revise this
+        //!\TODO once set are done revise this
 	if( victim->guarded )
 	{
 		NxwCharWrapper sc;
@@ -1158,7 +1157,7 @@ void cChar::attackStuff(pChar victim)
 		for ( sc.rewind(); !sc.isEmpty(); sc++ )
 		{
 			pChar guard = sc.getChar();
-			if ( ISVALIDPC( guard ) )
+			if ( guard )
 				if ( guard->npcaitype == NPCAI_PETGUARD && ( distFrom( guard )<= 10 ) )
 					npcattacktarget(pc, guard);
 		}

@@ -200,7 +200,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 							for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 							{
 								pItem pii_i=pointers::pContMap[serial][ci];
-								if (ISVALIDPI(pii_i))
+								if ( pii_i )
 									if ((pii_i->layer==LAYER_HAIR) && (pii_i->getContSerial()==serial))
 									{
 										hairobject=pii_i;
@@ -208,7 +208,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 									}
 							}
 						pItem phair= hairobject;
-						if(ISVALIDPI(phair)) {
+						if( phair ) {
 
 							phair->setColor( hex2num(script2) );
 							phair->Refresh();
@@ -224,7 +224,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 						{
 							pItem pii_i=pointers::pContMap[serial][ci];
-							if (ISVALIDPI(pii_i))
+							if ( pii_i )
 								if ((pii_i->layer==LAYER_BEARD) && (pii_i->getContSerial()==serial))
 								{
 									beardobject=pii_i;
@@ -234,7 +234,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 						if (true)
 						{
 							pItem pbeard= beardobject;
-							if(ISVALIDPI(pbeard)) {
+							if( pbeard ) {
 								pbeard->setColor( hex2num(script2) );
 								pbeard->Refresh();
 								pc->teleport();
@@ -250,7 +250,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 						{
 							pItem pii_i=pointers::pContMap[serial][ci];
-							if (ISVALIDPI(pii_i))
+							if ( pii_i )
 								if ((pii_i->layer==LAYER_HAIR) && (pii_i->getContSerial()==serial))
 								{
 									pii_i->Delete();
@@ -267,7 +267,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 						{
 							pItem pii_i=pointers::pContMap[serial][ci];
-							if (ISVALIDPI(pii_i))
+							if ( pii_i )
 								if ((pii_i->layer==LAYER_BEARD) && (pii_i->getContSerial()==serial))
 								{
 									pii_i->Delete();
@@ -284,7 +284,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 						{
 							pItem pii_i=pointers::pContMap[serial][ci];
-							if (ISVALIDPI(pii_i))
+							if ( pii_i )
 								if ((pii_i->layer==LAYER_BACKPACK) && (pii_i->getContSerial()==serial))
 								{
 									pii_i->Delete();
@@ -311,7 +311,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 							}
 							else
 							{
-								if(ISVALIDPI(packnum)) 
+								if( packnum ) 
 									packnum->AddItem( pi );
 							}
 							pi->Refresh();//AntiChrist
@@ -361,11 +361,11 @@ void objTeleporters(pChar pc)
 	si.fillItemsAtXY( charpos );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 		pItem pmi=si.getItem();
-		if(!ISVALIDPI(pmi))
+		if(! pmi )
 			continue;
 
-		if (((uint32_t)pmi->getPosition("x") == charpos.x) && ((uint32_t)pmi->getPosition("y") == charpos.y) &&
-			((abs(pmi->getPosition("z")) + 10) >= abs(charpos.z)) &&((abs(pmi->getPosition("z")) - 10) <= abs(charpos.z)))
+		if (pmi->getPosition().x == charpos.x && pmi->getPosition().y == charpos.y &&
+			(abs(pmi->getPosition().z) + 10) >= abs(charpos.z) && (abs(pmi->getPosition().z) - 10) <= abs(charpos.z))
 			{
 				if ((pmi->type == 60) && (pmi->morex + pmi->morey + pmi->morez >0))
 				{

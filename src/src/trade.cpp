@@ -24,9 +24,6 @@
 #include "nox-wizard.h"
 #include "utils.h"
 
-
-
-
 // this is a q&d fix for 'sell price higher than buy price' bug (Duke, 30.3.2001)
 static bool items_match(pItem pi1,pItem pi2)
 {
@@ -93,7 +90,7 @@ void sellaction(NXWSOCKET s)
 		for (i=0;i<buffer[s][8];i++)
 		{
 			pItem pSell=pointers::findItemBySerPtr(buffer[s]+9+(6*i));	// the item to sell
-			if (!ISVALIDPI(pSell))
+			if (! pSell )
 				continue;
 			amt=ShortFromCharPtr(buffer[s]+9+(6*i)+4);
 
@@ -105,7 +102,7 @@ void sellaction(NXWSOCKET s)
 			}
 
 			// Search the buy restock Container
-			if( ISVALIDPI(npa) ) {
+			if( npa ) {
 				NxwItemWrapper si2;
 				si2.fillItemsInContainer( npa, false );
 				for( si2.rewind(); !si2.isEmpty(); si2++ )
@@ -117,7 +114,7 @@ void sellaction(NXWSOCKET s)
 			}
 
 			// Search the sell Container to determine the price
-			if( ISVALIDPI(npc) ) {
+			if( npc ) {
 				NxwItemWrapper si2;
 				si2.fillItemsInContainer( npc, false );
 				for( si2.rewind(); !si2.isEmpty(); si2++ )
@@ -145,7 +142,7 @@ void sellaction(NXWSOCKET s)
 			}
 			else
 			{
-				if(ISVALIDPI(npb)) {
+				if( npb ) {
 					NxwSocketWrapper sw;
 					sw.fillOnline( pSell );
 

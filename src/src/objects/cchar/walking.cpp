@@ -16,7 +16,7 @@
 /*!
 \brief Changes the orientation of a player
 \author Flameeyes
-\param facex X-coord to face to
+\param facex X-coord to face to	
 \param faxey Y-coord to face to
 */
 void cChar::facexy(uint16_t facex, uint16_t facey)
@@ -204,9 +204,9 @@ void cChar::follow( pChar pc )
 void cChar::walk()
 {
 	pChar pc_att = pointers::findCharBySerial( attackerserial );
-	if ( !ISVALIDPC( pc_att ) )
+	if ( !pc_att )
 		pc_att = pointers::findCharBySerial( targserial );
-	if ( !ISVALIDPC( pc_att ) )
+	if ( !pc_att )
 		war = 0;
 
 	if ( war && npcWander != WANDER_FLEE && ( pc_att->IsOnline() || pc_att->npc ) ) { //We are following a combat target
@@ -242,7 +242,7 @@ void cChar::walk()
 		case WANDER_FLEE: //FLEE!!!!!!
 		{
 			pChar target = pointers::findCharBySerial( targserial );
-			if (ISVALIDPC(target)) {
+			if ( target ) {
 				if ( distFrom( target ) < VISRANGE )
 					getDirFromXY( target->getPosition().x, target->getPosition().y );
 				npcwalk( this, npcSelectDir( this, (  getDirFromXY( target->getPosition().x, target->getPosition().y ) +4 )%8 )%8,0);

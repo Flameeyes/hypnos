@@ -156,7 +156,7 @@ static void item_char_test()
 			if (p_pet->isStabled())
 			{
 				pChar stablemaster=pointers::findCharBySerial(p_pet->getStablemaster());
-				if (!ISVALIDPC(stablemaster))
+				if (! stablemaster )
 				{
 					p_pet->unStable();
 #ifdef SPAR_C_LOCATION_MAP
@@ -185,7 +185,7 @@ void callguards( CHARACTER p )
 {
 	pChar	caller = MAKE_CHAR_REF( p );
 
-	if ( !ISVALIDPC( caller ) )
+	if ( !caller )
 		return;
 
 	if( !(region[caller->region].priv&0x01 ) || !SrvParms->guardsactive || !TIMEOUT( caller->antiguardstimer ) || caller->dead )
@@ -207,7 +207,7 @@ void callguards( CHARACTER p )
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
 		pChar character=sc.getChar();
-		if(!ISVALIDPC(character))
+		if(! character )
 			continue;
 		if( caller->getSerial() != character->getSerial32() && caller->distFrom( character )  <= 15 && !character->dead && !character->IsHidden())
 		{
@@ -224,7 +224,7 @@ void callguards( CHARACTER p )
 		{
 			pChar  guard = npcs::AddNPCxyz( caller->getSocket(), region[caller->region].guardnum[(rand()%10)+1], caller->getPosition());
 
-			if ( ISVALIDPC( guard ) )
+			if ( guard )
 			{
 				guard->npcaitype=NPCAI_TELEPORTGUARD;
 				guard->npcWander=WANDER_FREELY_CIRCLE;
@@ -809,13 +809,13 @@ int main(int argc, char *argv[])
 		pChar pc = NULL;
 		pItem pi = NULL;
 		for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
-			if ( isCharSerial( objs.getSerial() ) && ISVALIDPC( ( pc=static_cast<pChar>(objs.getObject())) ) ) {
+			if ( isCharSerial( objs.getSerial() ) && ( pc=static_cast<pChar>(objs.getObject())) ) {
 				if( pc->npc )
 					checkNpcs.Call( pc->getSerial() );
 				else
 					checkPlayers.Call( pc->getSerial() );
 			}
-			else if ( isItemSerial( objs.getSerial() ) && ISVALIDPI( ( pi=static_cast<pItem>(objs.getObject())) ) ) {
+			else if ( isItemSerial( objs.getSerial() ) && ( pi=static_cast<pItem>(objs.getObject())) ) {
 				checkItems.Call( pi->getSerial() );
 			}
 		}
@@ -892,7 +892,7 @@ int main(int argc, char *argv[])
 			for (r=0;r<now;r++)
 			{
 				pChar pc_r=MAKE_CHAR_REF(currchar[r]);
-				if(!ISVALIDPC(pc_r))
+				if(! pc_r )
 					continue;
 				if (!pc_r->IsGM()
 					&& pc_r->clientidletime<uiCurrentTime
@@ -1192,7 +1192,7 @@ void npcattacktarget(pChar pc, pChar pc_target)
 	pc->setNpcMoveTime();
 
 	pChar pc_target_targ = pointers::findCharBySerial(pc_target->targserial);
-	if ( !ISVALIDPC(pc_target_targ) || pc_target_targ->dead || pc_target->distFrom(pc_target_targ) > 15 ) {
+	if ( !pc_target_targ || pc_target_targ->dead || pc_target->distFrom(pc_target_targ) > 15 ) {
 		if (!pc_target->npc && pc_target->war) {
 			pc_target->targserial = pc->getSerial();
 			pc_target->attackerserial = pc->getSerial();
@@ -1690,7 +1690,7 @@ void InitMultis()
 			continue;
 
 		pItem multi=findmulti( pc_i->getPosition() );
-		if (ISVALIDPI(multi))
+		if( multi )
 		{
 			if (multi->type==117)
 				//setserial(i,DEREF_pItem(multi),8);
@@ -1714,7 +1714,7 @@ void InitMultis()
 		if (pi->isInWorld() && (pi->getSerial()!=INVALID))
 		{
 			pItem multi=findmulti( pi->getPosition() );
-			if (ISVALIDPI(multi))
+			if ( multi )
 				if (multi->getSerial()!=pi->getSerial32())
 					//setserial(DEREF_pItem(pi),DEREF_pItem(multi),7);
 					pi->SetMultiSerial(multi->getSerial());
@@ -1806,7 +1806,7 @@ void checkGarbageCollect () // Remove items which were in deleted containers
 					pChar pc=(pChar)(objs.getObject());
 					if( pc->getOwnerSerial32()!=INVALID ) {
 						pChar own=pointers::findCharBySerial( pc->getOwnerSerial32() );
-						if(!ISVALIDPC(own)) {
+						if(!own) {
 							pc->setOwnerSerial32( INVALID );
 							++corrected;
 						}

@@ -397,7 +397,7 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 			for (cClients::iterator i = cClient::clients.begin(); cClient::clients.end(); i++ )
 			{
                                 pChar pi = i->CurrChar();
-				if (ISVALIDPC(pi))
+				if ( pi )
 					if( pc != i && pc->hasInRange(pi) )
 					{
 						i->SendDeleteObjectPkt(pc_serial);
@@ -768,7 +768,7 @@ void cNetwork::GoodAuth(int s)
 	for ( sc.rewind(); !sc.isEmpty(); sc++ )
 	{
 		pChar pc_a=sc.getChar();
-		if(!ISVALIDPC(pc_a) )
+		if( ! pc_a )
 			continue;
 
 		strcpy((char*)login04b, pc_a->getCurrentNameC());
@@ -884,7 +884,7 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 			j++;
 		}
 
-		if (ISVALIDPC(pc_k))
+		if ( pc_k )
 		{
 			pc_k->setClient(NULL);
 			int32_t nSer = pc_k->getSerial();
@@ -1014,7 +1014,7 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	//<Luxor>: possess stuff
 	if (pc->possessedSerial != INVALID) {
 		pChar pcPos = pointers::findCharBySerial(pc->possessedSerial);
-		if (ISVALIDPC(pcPos)) {
+		if ( pcPos ) {
 			currchar[s] = pcPos->getSerial();
 			pcPos->setClient(new cNxwClientObj(s));
 #ifdef ENCRYPTION
@@ -1167,7 +1167,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 	else
 		p_multi = pointers::findItemBySerial( pc->getMultiSerial32() );
 
-	if (ISVALIDPI(p_multi) && !valid)//It they are in a multi... and it's not already valid (if it is why bother checking?)
+	if ( p_multi && !valid)//It they are in a multi... and it's not already valid (if it is why bother checking?)
 	{
 		pack= pc->getBackpack();
 		if( pack)
@@ -1177,7 +1177,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 			for( si.rewind(); !si.isEmpty(); si++ ) {
 
 				pItem p_ci=si.getItem();
-				if (!ISVALIDPI(p_ci))
+				if (! p_ci )
 					if (p_ci->type==ITYPE_KEY &&
 						(p_multi->getSerial() == calcserial(p_ci->more1, p_ci->more2, p_ci->more3, p_ci->more4)) )
 					{//a key to this multi
@@ -1748,16 +1748,16 @@ void cNetwork::GetMsg(int s) // Receive message from client
 
 			if (readstat > SOCKET_ERROR)
 			{
-				if (ISVALIDPC(pc_currchar) && packet !=0x73 && packet!=0x80 && packet!=0xA4 && packet!=0xA0 && packet!=0x90 && packet!=0x91 ) {
+				if (pc_currchar && packet !=0x73 && packet!=0x80 && packet!=0xA4 && packet!=0xA0 && packet!=0x90 && packet!=0x91 ) {
 					pc_currchar->clientidletime=SrvParms->inactivitytimeout*MY_CLOCKS_PER_SEC+uiCurrentTime;
 				}
         		    // LB, client activity-timestamp !!! to detect client crashes, ip changes etc and disconnect in that case
         		    // 0x73 (idle packet) also counts towards client idle time
 
-				if (ISVALIDPC(pc_currchar))
+				if (pc_currchar)
 					AMXEXECSV(pc_currchar->getSerial(),AMXT_NETRCV, packet, AMX_BEFORE);
 
-				//if (packet != PACKET_FIRSTLOGINREQUEST && !ISVALIDPC(pc_currchar)) return;
+				//if (packet != PACKET_FIRSTLOGINREQUEST && !pc_currchar) return;
 #ifdef ENCRYPTION
 				if ( packet == PACKET_LOGINREQUEST && clientCrypter[s] != NULL )
 				{
@@ -2090,7 +2090,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 				case PACKET_RENAMECHARACTER: ///Lag Fix -- Zippy //Bug Fix -- Zippy
 					{
 						pChar pc_t=pointers::findCharBySerPtr(buffer[s]+1);
-						if(ISVALIDPC(pc_t) && ( pc_currchar->IsGMorCounselor() || pc_currchar->isOwnerOf( pc_t ) ) )
+						if( pc_t && ( pc_currchar->IsGMorCounselor() || pc_currchar->isOwnerOf( pc_t ) ) )
 							pc_t->setCurrentName( (char*)&buffer[s][5] );
 
 					break;
@@ -2101,7 +2101,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					int size;
 					size=dyn_length;
 					pItem pBook=pointers::findItemBySerPtr(buffer[s]+3);
-					if(ISVALIDPI(pBook))
+					if( pBook )
 					{
 						if (pBook->morez == 0)
 							Books::addNewBook(pBook);
@@ -2110,8 +2110,6 @@ void cNetwork::GetMsg(int s) // Receive message from client
 							pBook->morex = 666;
 
 						if (pBook->morex==666) // writeable book -> copy page data send by client to the class-page buffer
-//							Books::books[pBook->morez].ChangePages((char*)buffer[s]+13, size-13, ShortFromCharPtr(buffer[s]+11) );
-//							Books::books[pBook->morez].ChangePages((char*)buffer[s]+13, ShortFromCharPtr(buffer[s]+9), ShortFromCharPtr(buffer[s]+11) );
 							Books::books[pBook->morez].ChangePages((char*)buffer[s]+13, ShortFromCharPtr(buffer[s]+9), ShortFromCharPtr(buffer[s]+11), size-13 );
 						else if (pBook->morex==999)
 							Books::books[pBook->morez].SendPageReadOnly(s, pBook, ShortFromCharPtr(buffer[s]+9));
@@ -2127,7 +2125,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						char author[31],title[61],ch= 1;
 
 						pItem pBook=pointers::findItemBySerPtr(buffer[s]+1);
-						if(!ISVALIDPI(pBook))
+						if(!pBook))
 							break;
 
 						while(ch!=0)
@@ -2157,7 +2155,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 								// -> 0,1,2,3 -> ignore them
 								// -> 4 = skill number
 								// -> 5 = 0 raising (up), 1 falling=candidate for atrophy, 2 = locked
-                                        if ( ISVALIDPC( pc_currchar ) )
+                                        if ( pc_currchar )
 						pc_currchar->lockSkill[buffer[s][4]]=buffer[s][5]; // save skill managment changes
 					break;
 
@@ -2191,7 +2189,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					if(buffer[s][1]==0x02)
 					{
 						pChar murderer=pointers::findCharBySerial(pc_currchar->murdererSer);
-						if( ( ISVALIDPC(murderer) ) && SrvParms->bountysactive )
+						if( murderer && SrvParms->bountysactive )
 						{
 							sysmessage( s,TRANSLATE("To place a bounty on %s, use the command BOUNTY <Amount>."),
 								murderer->getCurrentNameC()  );
@@ -2223,7 +2221,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 
 						int len = 0;
 						uint8_t packet[4000]; packet[0] = '\0';
-						if ( ISVALIDPC(pc_currchar) && pc_currchar->IsGM()) {
+						if ( pc_currchar && pc_currchar->IsGM()) {
 							if (pc )
 								sprintf((char *)packet, "char n°%d serial : %x", DEREF_pChar(pc), pc->getSerial());
 							if (pi )
@@ -2324,11 +2322,11 @@ void cNetwork::GetMsg(int s) // Receive message from client
 							break;
 
 						case 9:	//Luxor: Wrestling Disarm Macro support
-                                                        if ( ISVALIDPC( pc_currchar ) )
+                                                        if ( pc_currchar )
                                                         	pc_currchar->setWresMove(WRESDISARM);
 							break;
 						case 10: //Luxor: Wrestling Stun punch Macro support
-                                                        if ( ISVALIDPC( pc_currchar ) )
+                                                        if ( pc_currchar )
 								pc_currchar->setWresMove(WRESSTUNPUNCH);
 							break;
 
@@ -2346,7 +2344,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						case 12: break; // close gumps, client message
 
 				   		case 14: // UO:3D menus
-                                                        if ( ISVALIDPC( pc_currchar ) )
+                                                        if ( pc_currchar )
 								pc_currchar->playAction(buffer[s][8]);
 					  		break;
 
@@ -2362,7 +2360,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					break;
 
     				} // end switch
-				if (ISVALIDPC(pc_currchar))
+				if (pc_currchar)
 					AMXEXECSV(pc_currchar->getSerial(),AMXT_NETRCV, packet, AMX_AFTER);
 
 			}

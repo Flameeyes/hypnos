@@ -573,7 +573,7 @@ void cTempfx::start()
 			break;
 
 		case HEALING_DELAYHEAL:
-			if (ISVALIDPC(src)) {
+			if ( src ) {
 				if (src->war)
 					src->sysmsg("You cannot heal while you are in a fight.");
 				if (!m_nMore2)
@@ -630,7 +630,7 @@ int8_t cTempfx::checkForExpire()
 	executeExpireCode();
 
         pObject po = objects.findObject( m_nDest );
-	if ( !ISVALIDPO( po ) )
+	if ( !po )
 		return INVALID;
 
 	return 1;
@@ -1083,7 +1083,7 @@ bool cTempfx::isValid()
 	pObject src = objects.findObject(m_nSrc);
 	pObject dest = objects.findObject(m_nDest);
 
-	if ( !ISVALIDPO(src) || !ISVALIDPO(dest) )
+	if ( !src || !dest )
 		return false;
 
 	return true;
@@ -1112,22 +1112,22 @@ cTempfx::cTempfx( uint32_t nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t
 	//	Set serials
 	//
 	if ( isCharSerial(nSrc) ) {
-		if ( !ISVALIDPC(pointers::findCharBySerial(nSrc)) )
+		if ( !pointers::findCharBySerial(nSrc)
 			return;
 	}
 
 	if ( isItemSerial(nSrc) ) {
-		if ( !ISVALIDPI(pointers::findItemBySerial(nSrc)) )
+		if ( !pointers::findItemBySerial(nSrc) )
 			return;
 	}
 
 	if ( isCharSerial(nDest) ) {
-		if ( !ISVALIDPC(pointers::findCharBySerial(nDest)) )
+		if ( !pointers::findCharBySerial(nDest) )
 			return;
 	}
 
 	if ( isItemSerial(nDest) ) {
-		if ( !ISVALIDPI(pointers::findItemBySerial(nDest)) )
+		if ( !pointers::findItemBySerial(nDest) )
 			return;
 	}
 

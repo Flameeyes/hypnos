@@ -251,7 +251,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 				} //else ConOut("DEBUG: Valid at %i,%i [%i,%i]\n",k,l,x+k,y+l);
 
 				pItem pi_ii=findmulti(loc);
-				if (ISVALIDPI(pi_ii) && !(norealmulti))
+				if ( pi_ii && !(norealmulti))
 				{
 					sysmessage(s,TRANSLATE("You cant build structures inside structures"));
 					return;
@@ -410,7 +410,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 						{
 							pi_l=item::CreateScriptItem(s,str2num(script2),0);//This opens the item script... so we gotta keep track of where we are with the other script.
 
-							if(ISVALIDPI(pi_l))
+							if(pi_l)
 							{
 
 
@@ -433,26 +433,26 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 						}
 						if (!(strcmp(script1,"DECAY")))
 						{
-							if (ISVALIDPI(pi_l)) pi_l->setDecay();
+							if (pi_l) pi_l->setDecay();
 						}
 						if (!(strcmp(script1,"NODECAY")))
 						{
-							if (ISVALIDPI(pi_l)) pi_l->setDecay( false );
+							if (pi_l) pi_l->setDecay( false );
 						}
 						if (!(strcmp(script1,"PACK")))//put the item in the Builder's Backpack
 						{
-							if (ISVALIDPI(pi_l)) pi_l->setContainer(pc->getBackpack());
-							if (ISVALIDPI(pi_l)) pi_l->setPosition("x", rand()%90+31);
-							if (ISVALIDPI(pi_l)) pi_l->setPosition("y", rand()%90+31);
-							if (ISVALIDPI(pi_l)) pi_l->setPosition("z", 9);
+							if (pi_l) pi_l->setContainer(pc->getBackpack());
+							if (pi_l) pi_l->setPosition("x", rand()%90+31);
+							if (pi_l) pi_l->setPosition("y", rand()%90+31);
+							if (pi_l) pi_l->setPosition("z", 9);
 						}
 						if (!(strcmp(script1,"MOVEABLE")))
 						{
-							if (ISVALIDPI(pi_l)) pi_l->magic=1;
+							if (pi_l) pi_l->magic=1;
 						}
 						if (!(strcmp(script1,"LOCK")))//lock it with the house key
 						{
-							if (ISVALIDPI(pi_l)) {
+							if (pi_l) {
 								pi_l->more1=pHouse->getSerial().ser1;
 								pi_l->more2=pHouse->getSerial().ser2;
 								pi_l->more3=pHouse->getSerial().ser3;
@@ -461,21 +461,21 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 						}
 						if (!(strcmp(script1,"X")))//offset + or - from the center of the house:
 						{
-							if (ISVALIDPI(pi_l)) pi_l->setPosition("x", x+str2num(script2));
+							if (pi_l) pi_l->setPosition("x", x+str2num(script2));
 						}
 						if (!(strcmp(script1,"Y")))
 						{
-							if (ISVALIDPI(pi_l)) pi_l->setPosition("y", y+str2num(script2));
+							if (pi_l) pi_l->setPosition("y", y+str2num(script2));
 						}
 						if (!(strcmp(script1,"Z")))
 						{
-							if (ISVALIDPI(pi_l)) pi_l->setPosition("z", z+str2num(script2));
+							if (pi_l) pi_l->setPosition("z", z+str2num(script2));
 						}
 					}
 				}
 				while ( (strcmp(script1,"}")) && (++loopexit < MAXLOOPS) );
 
-				if (ISVALIDPI(pi_l))
+				if (pi_l)
 					if (pi_l->isInWorld())
 					{
 						mapRegions->add(pi_l);
@@ -539,7 +539,7 @@ void deedhouse(NXWSOCKET s, pItem pi)
 		sc.fillCharsNearXYZ( charpos, BUILDRANGE, true, false );
 		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 			pChar p_index=sc.getChar();
-			if( ISVALIDPC(p_index) ) {
+			if( p_index ) {
 
 				Location charpos2= p_index->getPosition();
 				if( (charpos2.x >= (uint32_t)x1) && (charpos2.y >= (uint32_t)y1) && (charpos2.x <= (uint32_t)x2) && (charpos2.y <= (uint32_t)y2) )
@@ -567,7 +567,7 @@ void deedhouse(NXWSOCKET s, pItem pi)
 		for( si.rewind(); !si.isEmpty(); si++ ) {
 		{
 			pItem p_item=si.getItem();
-			if(ISVALIDPI(p_item)) {
+			if( p_item ) {
 				if( (p_item->getPosition().x >= (uint32_t)x1) &&
 					(p_item->getPosition().x <= (uint32_t)x2) &&
 					(p_item->getPosition().y >= (uint32_t)y1) &&
@@ -715,7 +715,7 @@ void killkeys(uint32_t serial) // Crackerjack 8/11/99
 		if ( !isItemSerial( objs.getSerial() ) )
 			continue;
 
-		if ( ISVALIDPI( (pi=static_cast<pItem>(objs.getObject())) ) ) {
+		if ( (pi=static_cast<pItem>(objs.getObject())) ) {
 			if ( pi->type == ITYPE_KEY && calcserial(pi->more1, pi->more2, pi->more3, pi->more4) == serial )
 				pi->Delete();
 		}
@@ -747,7 +747,7 @@ int on_hlist(pItem pi, unsigned char s1, unsigned char s2, unsigned char s3, uns
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 
 		p_ci=si.getItem();
-		if(ISVALIDPI(p_ci)) {
+		if( p_ci ) {
 
 			if((p_ci->morey== (uint32_t)pi->getSerial())&&
 			   (p_ci->more1== s1)&&(p_ci->more2==s2)&&
@@ -862,7 +862,7 @@ int del_hlist(int c, int h)
 	hl=on_hlist(pi, pc->getSerial().ser1, pc->getSerial().ser2, pc->getSerial().ser3, pc->getSerial().ser4, &li);
 	if(hl) {
 		pItem pli=MAKE_ITEM_REF(li);
-		if(ISVALIDPI(pli)) {
+		if( pli ) {
 #ifdef SPAR_I_LOCATION_MAP
 			//
 			// Hmmm....this is handled by pointers::delItem()....must remove it later
@@ -1123,7 +1123,7 @@ void target_houseFriend( NXWCLIENT ps, P_TARGET t )
 
 	pItem pi=pointers::findItemBySerial( t->buffer[0] );
 
-	if(ISVALIDPC(Friend) && pi)
+	if( Friend && pi)
 	{
 		if(Friend->getSerial() == curr->getSerial32())
 		{
@@ -1200,7 +1200,7 @@ void target_houseLockdown( NXWCLIENT ps, P_TARGET t )
         }
 
         pItem multi = findmulti( pi->getPosition() );
-        if( ISVALIDPI(multi))
+        if( multi )
         {
             if(pi->magic==4)
             {
@@ -1256,7 +1256,7 @@ void target_houseSecureDown( NXWCLIENT ps, P_TARGET t )
         }
 
         pItem multi = findmulti( pi->getPosition() );
-        if( ISVALIDPI(multi) && pi->type==1)
+        if( multi && pi->type==1)
         {
             pi->magic = 4;  // LOCKED DOWN!
             pi->secureIt = 1;
@@ -1315,14 +1315,14 @@ void target_houseRelease( NXWCLIENT ps, P_TARGET t )
         }
         // time to lock it down!
         pItem multi = findmulti( pi->getPosition() );
-        if( ISVALIDPI(multi) && pi->magic==4 || pi->type==1)
+        if( multi && pi->magic==4 || pi->type==1)
         {
             pi->magic = 1;  // Default as stored by the client, perhaps we should keep a backup?
             pi->secureIt = 0;
             pi->Refresh();
             return;
         }
-        else if( !ISVALIDPI(multi) )
+        else if( !multi )
         {
             // not in a multi!
             sysmessage( s, TRANSLATE("That item is not in your house!" ));

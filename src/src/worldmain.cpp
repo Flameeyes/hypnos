@@ -522,7 +522,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 			else if (!strcmp(script1, "POISON"))			{ pc->poison=str2num(script2);}
 			else if (!strcmp(script1, "POISONED"))		{ pc->poisoned=(PoisonType)str2num(script2);}
 
-			else if (!strcmp( script1, "PC_FTARG" ) )   { pChar temp=MAKE_CHAR_REF(str2num(script2)); pc->ftargserial = ISVALIDPC(temp)? temp->getSerial() : INVALID;} //legacy code
+			else if (!strcmp( script1, "PC_FTARG" ) )   { pChar temp=MAKE_CHAR_REF(str2num(script2)); pc->ftargserial = temp ? temp->getSerial() : INVALID;} //legacy code
 			else if (!strcmp( script1, "PC_FTARGSER" ) )   {pc->ftargserial=str2num(script2); }
 			else if (!strcmp( script1, "POSSESSEDuint32_t" ) )   {pc->possessedSerial=str2num(script2); }
 			else if (!(strcmp(script1, "PROFILE"))) {
@@ -1241,11 +1241,11 @@ void CWorldMain::loadNewWorld() // Load world from NXW*.WSC
 	pChar pc = NULL;
 	pItem pi = NULL;
 	for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
-		if ( isCharSerial( objs.getSerial() ) && ISVALIDPC( (pc=static_cast<pChar>(objs.getObject())) ) ) {
+		if ( isCharSerial( objs.getSerial() ) && (pc=static_cast<pChar>(objs.getObject())) ) {
 			if( pc->dead && pc->HasHumanBody() )
 				pc->morph( ((pc->getId() == BODY_FEMALE) ? BODY_DEADFEMALE : BODY_DEADMALE ), 0, 0, 0, 0, 0, NULL, true);
 		}
-		if ( isItemSerial( objs.getSerial() ) && ISVALIDPI( (pi=static_cast<pItem>(objs.getObject())) ) ) {
+		if ( isItemSerial( objs.getSerial() ) && (pi=static_cast<pItem>(objs.getObject())) ) {
 			if ( pi->isSpawner() )
 				Spawns->loadFromItem(pi);
 		}
@@ -1853,7 +1853,7 @@ void CWorldMain::SaveItem( pItem pi )
 		//<Luxor>: if the item is beard or hair of a morphed char, we must save the original ID and COLOR value
 		if ( (pi->layer == LAYER_BEARD || pi->layer == LAYER_HAIR) && isCharSerial( pi->getContSerial() ) ) {
 			pChar pc_morphed = (pChar)(pi->getContainer());
-			if (ISVALIDPC(pc_morphed)) {
+			if ( pc_morphed ) {
 				if (pc_morphed->morphed) {
 					if (pi->layer == LAYER_BEARD) { //beard
 						fprintf(iWsc, "ID %i\n", pc_morphed->oldbeardstyle);

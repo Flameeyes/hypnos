@@ -233,7 +233,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 	{
 		pItem pi_multi=findmulti( pc->getPosition() );
 
-		if((!ISVALIDPI(pi_multi))&&(pc->getMultiSerial32() != INVALID))
+		if( !pi_multi &&(pc->getMultiSerial32() != INVALID))
 		{
 			pc->setMultiSerial(INVALID); // Elcabesa bug-fix  we MUST use setmultiserial  NOT pc->multis = -1;
 			//xan : probably the plr has exited the boat walking!
@@ -241,7 +241,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 			pc->setMultiSerial32Only(-1);
 		}
 
-		if(ISVALIDPI(pi_multi))
+		if(pi_multi)
 		{
 			if (pc->getMultiSerial32() < 0)
 			{
@@ -256,7 +256,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 					for( pets.rewind(); !pets.isEmpty(); pets++ ) {
 
 						pChar pc_b=pets.getChar();
-						if(ISVALIDPC(pc_b)) {
+						if( pc_b ) {
 							pc->MoveTo( boat->getPosition("x")+1, boat->getPosition("y")+1, boat->getPosition("z")+2 );
 							pc->setMultiSerial( boat->getSerial() );
 							pc_b->teleport();
@@ -265,7 +265,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 				}
 			}
 
-			if ( ISVALIDPI(pi_multi) && (pi_multi->IsHouse()) )
+			if pi_multi && pi_multi->IsHouse() )
 			{
 				uint32_t sx, sy, ex, ey;
 				j=on_hlist(pi_multi, pc->getSerial().ser1, pc->getSerial().ser2, pc->getSerial().ser3, pc->getSerial().ser4, NULL);
@@ -661,7 +661,7 @@ void handleCharsAtNewPos( pChar pc )
 
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pc_curr = sc.getChar();
-		if ( !ISVALIDPC( pc_curr ) )
+		if ( !pc_curr )
 			continue;
 		if ( pc->IsGMorCounselor() || pc_curr->getSerial() == pc->getSerial32() )
 			continue;
@@ -735,7 +735,7 @@ void sendToPlayers( pChar pc, int8_t dir )
 
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pChar pc_curr = sc.getChar();
-		if( !ISVALIDPC(pc_curr) )
+		if( !pc_curr )
 			continue;
 
 		if ( pc->seeForLastTime( *pc_curr ) ) {

@@ -7,8 +7,8 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 /*!
- \file dblclick.cpp
- \brief Item use
+\file
+\brief Item use
 */
 
 #include "common_libs.h"
@@ -126,7 +126,7 @@ void cItem::singleClick(pClient client )
 	if (!isInWorld() && isItemSerial(getContSerial()))
 	{
 		pItem cont = getContainer();
-		if( ISVALIDPI(cont) ) {
+		if( cont ) {
 			pj = cont->getPackOwner();
 			if( pj )
 			{
@@ -374,14 +374,14 @@ void cItem::doubleClick(pClient client);
 		if (isItemSerial(getContSerial()) && type != ITYPE_CONTAINER)
 		{// Cant use stuff that isn't in your pack.
 
-			if ( ISVALIDPC(itmowner) && (itmowner->getSerial()!=pc->getSerial32()) )
+			if ( itmowner && tmowner->getSerial()!=pc->getSerial() )
 					return;
 		}
 		else
 			if (isCharSerial(getContSerial()) && type!=(uint32_t)INVALID)
 			{// in a character.
 				pChar wearedby = pointers::findCharBySerial(getContSerial());
-				if (ISVALIDPC(wearedby))
+				if ( wearedby )
 					if (wearedby->getSerial()!=pc->getSerial32() && layer!=LAYER_UNUSED_BP && type!=ITYPE_CONTAINER)
 						return;
 			}
@@ -527,12 +527,12 @@ void cItem::doubleClick(pClient client);
 				return;
 			}
 		}
-		if(ISVALIDPC(itmowner))
-			snooping(pc, pi );  //TODO: revise when snooping redone or updated
+		if( itmowner )
+			snooping(pc, pi );  //!\TODO: revise when snooping redone or updated
 		return;
 	case ITYPE_TELEPORTRUNE:
 
-        //TODO: REVISE WHEN TARGETS REDONE!!
+        //!\TODO: REVISE WHEN TARGETS REDONE!!
 
 		targ = clientInfo[s]->newTarget( new cLocationTarget() );
 		targ->code_callback = target_tele;
@@ -541,7 +541,7 @@ void cItem::doubleClick(pClient client);
 		return;
 	case ITYPE_KEY:
 
-        //TODO: REVISE WHEN TARGETS REDONE!!
+        //!\TODO: REVISE WHEN TARGETS REDONE!!
 
 		targ = clientInfo[s]->newTarget( new cItemTarget() );
 		targ->code_callback = target_key;
@@ -788,12 +788,12 @@ void cItem::doubleClick(pClient client);
 			return;
 	case ITYPE_GUILDSTONE:
 
-                //TODO: redo when guilds fixed
+                //!\TODO: redo when guilds fixed
 
 			if ( getId() == 0x14F0  ||  getId() == 0x1869 )	// Check for Deed/Teleporter + Guild Type
 			{
-				pc->fx1 = DEREF_pItem(pi);   //TODO: <- check this
-				Guilds->StonePlacement(s);    //TODO: <- and this
+				pc->fx1 = DEREF_pItem(pi);   //!\TODO: <- check this
+				Guilds->StonePlacement(s);    //!\TODO: <- and this
 				return;
 			}
 			else if (getId() == 0x0ED5)	// Check for Guildstone + Guild Type
@@ -808,7 +808,7 @@ void cItem::doubleClick(pClient client);
 	case ITYPE_PLAYER_VENDOR_DEED:			// PlayerVendors deed
 			{
 			pNpc vendor = npcs::AddNPCxyz(-1, 2117, charpos.x, charpos.y, charpos.z);
-			if ( !ISVALIDPC(vendor) )
+			if ( !vendor )
 			{
 				WarnOut("npc-script couldnt find vendor !\n");
 				return;
@@ -1107,7 +1107,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			if (pc->checkSkill(  CAMPING, 0, 500)) // Morrolan TODO: insert logout code for campfires here
 			{
 				pItem pFire = item::CreateFromScript( "$item_a_campfire" );
-				if(ISVALIDPI(pFire))
+				if(pFire)
 				{
 					pFire->type = 45;
 					pFire->dir = 2;
@@ -1297,7 +1297,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 					pc->playAction(0x1D);
 				pc->playSFX(0x013E);
 				pItem itm = item::CreateFromScript( "$item_bales_of_cotton", pc->getBackpack() );
-				if (ISVALIDPI(itm)) {
+				if (itm) {
 					pc->sysmsg(TRANSLATE("You reach down and pick some cotton."));
 				}
 			}
@@ -1340,7 +1340,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			{
 				pc->sysmsg(TRANSLATE("You create the sextant."));
 				pItem pi_c = item::CreateFromScript( "$item_sextant", pc->getBackpack() );
-				if (ISVALIDPI(pi_c))
+				if (pi_c)
 					pi_c->setDecay();
 				pi->ReduceAmount(1);
 			}

@@ -491,11 +491,11 @@ int BuyShop(NXWSOCKET s, uint32_t c)
         if( pi->layer==LAYER_TRADE_NORESTOCK )
             buyNoRestockContainer=pi;
 
-		if( ISVALIDPI(buyRestockContainer) && ISVALIDPI(buyNoRestockContainer) )
+		if( buyRestockContainer && buyNoRestockContainer )
 			break;
     }
 
-    if (!ISVALIDPI(buyRestockContainer) || !ISVALIDPI(buyNoRestockContainer) )
+    if (!buyRestockContainer || !buyNoRestockContainer )
         return 0;
 
     impowncreate(s, pc, 0); // Send the NPC again to make sure info is current. (OSI does this we might not have to)
@@ -780,7 +780,7 @@ void target_guard( NXWCLIENT ps, P_TARGET t )
     VALIDATEPC(pPet);
 
     pChar pToGuard = pointers::findCharBySerial( t->getClicked() );
-    if( !ISVALIDPC(pToGuard) || pToGuard->getSerial() != pPet->getOwnerSerial32() )
+    if( !pToGuard || pToGuard->getSerial() != pPet->getOwnerSerial32() )
     {
         ps->sysmsg( TRANSLATE("Currently can't guard anyone but yourself!" ));
         return;
@@ -883,7 +883,7 @@ void target_telestuff( NXWCLIENT ps, P_TARGET t )
 
 	pObject po = objects.findObject( t->getClicked() );
 
-	if( ISVALIDPO(po) ) { //clicked on obj to move
+	if( po ) { //clicked on obj to move
 		P_TARGET targ=clientInfo[s]->newTarget( new cLocationTarget() );
 		targ->code_callback=target_telestuff;
 		targ->buffer[0]=po->getSerial();
@@ -931,7 +931,7 @@ void target_allAttack( NXWCLIENT ps, P_TARGET t )
     pc->attackStuff(pc_target);
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pChar pet=sc.getChar();
-		if( ISVALIDPC(pet))
+		if( pet )
 			npcattacktarget(pet, pc_target);
     }
 
@@ -947,7 +947,7 @@ void target_xTeleport( NXWCLIENT ps, P_TARGET t )
 	uint32_t serial = t->getClicked();
 	if( isCharSerial( serial ) ) {
 		pChar pc_i = pointers::findCharBySerial( serial );
-		if( ISVALIDPC( pc_i ) )
+		if( pc_i )
 		{
 			pc_i->MoveTo( pc->getPosition() );
 			pc_i->teleport();

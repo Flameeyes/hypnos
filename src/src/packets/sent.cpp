@@ -934,7 +934,7 @@ bool cPacketReceiveDoubleclick::execute(pClient client)
 	if (isCharSerial(serial))
 	{
 		pChar pd = pointers::findCharBySerial(serial);
-		if (ISVALIDPC(pd))
+		if (pd)
                 {
                         pd->doubleClick(client, buffer[1] & 0x80);
 		        return true;
@@ -1157,7 +1157,7 @@ bool cPacketReceiveRessChoice::execute(pClient client)
         if(buffer[1]==0x02)
 	{
 		pChar murderer=pointers::findCharBySerial(client->currChar()->murdererSer);
-		if( ( ISVALIDPC(murderer) ) && SrvParms->bountysactive )
+		if( murderer && SrvParms->bountysactive )
 		{
 			client->sysmessage(TRANSLATE("To place a bounty on %s, use the command BOUNTY <Amount>."), murderer->getCurrentNameC() );
 		}
@@ -1198,7 +1198,7 @@ bool cPacketReceiveSetSkillLock::execute(pClient client)
         // -> 0,1,2,3 -> ignore them
 	// -> 4 = skill number
 	// -> 5 = 0 raising (up), 1 falling=candidate for atrophy, 2 = locked
-        if ( ISVALIDPC( client->currChar()) ) client->currChar()->lockSkill[buffer[4]] = buffer[5]; // save skill managment changes
+        if ( client->currChar() ) client->currChar()->lockSkill[buffer[4]] = buffer[5]; // save skill managment changes
         return true;
 }
 
@@ -1231,7 +1231,7 @@ bool cPacketReceiveBuyItems::execute(pClient client)
 
 		b.layer=buffer[pos];
 		b.item=pointers::findItemBySerPtr(buffer + pos + 1);
-		if(!ISVALIDPI(b.item))
+		if(!b.item)
 			continue;
 		b.amount=ShortFromCharPtr(buffer + pos + 5);
 		allitemsbought.push_back( b );
@@ -1310,7 +1310,7 @@ bool cPacketReceiveLoginChar::execute(pClient client)
 			j++;
 		}
 
-		if (ISVALIDPC(pc_k))
+		if (pc_k)
 		{
 			pc_k->setClient(NULL);
 			int32_t nSer = pc_k->getSerial();
@@ -1356,7 +1356,7 @@ bool cPacketReceiveBookPage::execute(pClient client)
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
 	pItem book=pointers::findItemBySerPtr(buffer+3);
-	if(ISVALIDPI(book))
+	if(book)
 	{
 		if (book->morez == 0)	Books::addNewBook(book);
 		if (book->morex!=666 && book->morex!=999)
@@ -1720,7 +1720,7 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
                         return true;
 		}
 
-		if (ISVALIDPC(TrashMeUp))
+		if (TrashMeUp)
 		{
 			if( SrvParms->checkcharage && (getclockday() < TrashMeUp->getCreationDay() + 7) )
                         {

@@ -56,7 +56,7 @@ void SpawnGuard(pChar pc, pChar pc_i, int x, int y, signed char z)
 		t=region[pc_i->region].guardnum[(rand()%10)+1];
 		pChar pc_c = npcs::AddNPCxyz(pc->getSocket(), t, x, y, z);
 
-		if (ISVALIDPC(pc_c))
+		if ( pc_c )
 		{
 		  pc_c->npcaitype=NPCAI_TELEPORTGUARD;
 		  pc_c->SetAttackFirst();
@@ -273,7 +273,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									pc->baseskill[ALCHEMY] = getRangedValue(script2);
 								else if ( "AMOUNT" == script1 )
 								{
-									if( ISVALIDPI( pi_n ) )
+									if( pi_n )
 										pi_n->amount = str2num( script2 );
 								}
 								//
@@ -366,10 +366,10 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 							case 'B':
 								if	( "BACKPACK" == script1 )
 								{
-									if (!ISVALIDPI(mypack))
+									if (!mypack)
 									{
 										pi_n=item::CreateFromScript( "$item_backpack" );
-										if( ISVALIDPI(pi_n) )
+										if( pi_n )
 										{
 											pc->packitemserial=pi_n->getSerial();
 											pi_n->setPosition(0, 0, 0);
@@ -391,7 +391,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 							case 'C':
 								if	( "COLOR" == script1 )
 								{
-									if( ISVALIDPI(pi_n) )
+									if( pi_n )
 									{
 										pi_n->setColor( hex2num(script2) );
 									}
@@ -408,14 +408,14 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									pc->baseskill[CARTOGRAPHY] = getRangedValue(script2);
 								else if ( "COLORMATCHHAIR" == script1 )
 								{
-									if (ISVALIDPI(pi_n) && haircolor != INVALID )
+									if (pi_n && haircolor != INVALID )
 									{
 										pi_n->setColor( haircolor );
 									}
 								}
 								else if ( "COLORLIST" == script1 )
 								{
-									if (ISVALIDPI(pi_n))
+									if (pi_n)
 									{
 										std::string value( cObject::getRandomScriptValue("RANDOMCOLOR", script2)  );
 										pi_n->setColor( hex2num( value ) );
@@ -509,7 +509,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 							case 'G':
 								if	("GOLD" == script1 )
 								{
-									if (ISVALIDPI(mypack))
+									if (mypack)
 									{
 										std::string 	lo,
 												hi;
@@ -518,7 +518,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 										int amt = RandomNum( str2num(lo), str2num(hi) );
 
 										pItem pi_sp = item::CreateFromScript( "$item_gold_coin", mypack, amt );
-										if( ISVALIDPI( pi_sp ) )
+										if( pi_sp )
 										{
 											pi_sp->priv|=0x01;
 										}
@@ -532,7 +532,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 							case 'H':
 								if	( "HAIRCOLOR" == script1 )
 								{
-									if (ISVALIDPI(pi_n))
+									if (pi_n)
 									{
 										std::string value( cObject::getRandomScriptValue("RANDOMCOLOR", script2) );
 										haircolor = hex2num( value );
@@ -576,7 +576,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 								{
 									storeval=str2num(script2);
 									pi_n=item::CreateScriptItem( INVALID, storeval, 0, pc );
-									if (ISVALIDPI(pi_n))
+									if (pi_n)
 									{
 										if (pi_n->layer==0)
 											WarnOut("Bad NPC Script %d with problem item %d executed!\n", npcNum, storeval);
@@ -714,7 +714,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 							case 'P':
 								if	( "PACKITEM" == script1)
 								{
-									if (ISVALIDPI(mypack))
+									if (mypack)
 									{
 										storeval=str2num(script2);
 										pi_n=item::CreateFromScript( storeval, mypack);
@@ -776,7 +776,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									{
 
 										pItem pi_z=pc->GetItemOnLayer(LAYER_TRADE_RESTOCK);
-										if (ISVALIDPI(pi_z))
+										if (pi_z)
 										{
 											buyRestockContainer = pi_z->getSerial();
 										}
@@ -793,7 +793,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 											amt=server_data.defaultSelledItem;
 
 										pi_n=item::CreateFromScript( str2num(itmnum), MAKE_ITEM_REF( buyRestockContainer ), amt );
-										if (ISVALIDPI(pi_n))
+										if (pi_n)
 										{
 											if (pi_n->getSecondaryNameC() && (strcmp(pi_n->getSecondaryNameC(),"#")))
 												pi_n->setCurrentName(pi_n->getSecondaryNameC()); // Item identified! -- by Magius(CHE) 				}
@@ -822,7 +822,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									{
 										storeval=str2num(script2);
 										pi_n=item::CreateFromScript( storeval, MAKE_ITEM_REF(sellContainer));
-										if (ISVALIDPI(pi_n))
+										if (pi_n)
 										{
 											pi_n->value=pi_n->value/2;
 											if (pi_n->getSecondaryNameC() && (strncmp(pi_n->getSecondaryNameC(),"#", 1)))
@@ -838,7 +838,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									if ( buyNoRestockContainer == INVALID )
 									{
 										pItem pi_z=pc->GetItemOnLayer(0x1B);
-										if (ISVALIDPI(pi_z))
+										if (pi_z)
 										{
 											buyNoRestockContainer = DEREF_pItem(pi_z);
 										}
@@ -847,7 +847,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									{
 										storeval=str2num(script2);
 										pi_n=item::CreateFromScript( storeval, MAKE_ITEM_REF(buyNoRestockContainer));
-										if (ISVALIDPI(pi_n))
+										if (pi_n)
 										{
 											if (pi_n->getSecondaryNameC() && (strcmp(pi_n->getSecondaryNameC(),"#")))
 												pi_n->setCurrentName(pi_n->getSecondaryNameC()); // Item identified! -- by Magius(CHE) 				}
@@ -947,7 +947,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 							case 'V':
 								if	( "VALUE" == script1 )
 								{
-									if ( ISVALIDPI( pi_n ) )
+									if ( pi_n )
 										pi_n->value=(str2num(script2));
 								}
 								else if ( "VETERINARY" == script1 )
@@ -988,7 +988,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 							the NPC will be placed directly on the spawner and the server op will be warned. */
 
 							pItem pi_i=pi;
-							if (ISVALIDPI(pi_i) && ((pi_i->type==69 || pi_i->type==125)&& pi_i->isInWorld()) )
+							if (pi_i && ((pi_i->type==69 || pi_i->type==125)&& pi_i->isInWorld()) )
 							{
 								if (pi_i->more3==0) pi_i->more3=10;
 								if (pi_i->more4==0) pi_i->more4=10;
@@ -1112,7 +1112,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 					if (postype==1) // lb crashfix
 					{
 							pItem pi_i=pi;
-							if ( ISVALIDPI(pi_i) && pi_i->type == 125 )
+							if ( pi_i && pi_i->type == 125 )
 							{
 								pc->createEscortQuest();
 							}

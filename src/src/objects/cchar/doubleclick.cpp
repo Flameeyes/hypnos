@@ -7,10 +7,9 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 /*!
- \file dblclick.cpp
- \brief Character click & doubleclick (mount/unmount and paperdolls)
+\file
+\brief Character click & doubleclick (mount/unmount and paperdolls)
 */
-
 
 #include "ai.h"
 #include "objects/cobject.h"

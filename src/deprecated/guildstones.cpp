@@ -46,7 +46,7 @@ void cGuilds::StonePlacement(int s)
 		sysmessage(s,TRANSLATE("You cannot place guildstones at any other location than your house")); return;
 	} */
 	pItem pi_fx1=MAKE_ITEM_REF(pc->fx1);
-	if(ISVALIDPI(pi_fx1))
+	if( pi_fx1 )
 	{
 		if (pi_fx1->getId()==0x14F0)
 		{
@@ -63,7 +63,7 @@ void cGuilds::StonePlacement(int s)
 			}
 			pc->SetGuildNumber( guildnumber );
 			pStone = item::CreateFromScript( "$item_hardcoded" );
-			if (!ISVALIDPI(pStone))
+			if (!pStone)
 			{//AntiChrist - to prevent crashes				
 				pc->sysmsg(TRANSLATE("Cannot create guildstone"));
 				return;
@@ -106,7 +106,7 @@ void cGuilds::StonePlacement(int s)
 			{
 				sprintf(stonename, TRANSLATE("Guildstone for %s"), guilds[guildnumber].name);
 				pStone = item::CreateFromScript( "$item_hardcoded" );
-				if ( !ISVALIDPI(pStone) )
+				if ( !pStone )
 				{//AntiChrist - to preview crashes
 					pc->sysmsg(TRANSLATE("Cannot create guildstone"));
 					return;
@@ -177,7 +177,7 @@ void cGuilds::Menu(int s, int page)
 			if (pc->GetGuildFealty() == guilds[guildnumber].member[member])
 			{
 				pChar pcm=pointers::findCharBySerial( guilds[guildnumber].member[member] );
-				if(ISVALIDPC(pcm))
+				if( pcm )
 					strcpy(guildfealty, pcm->getCurrentNameC());
 				break;
 			}
@@ -293,7 +293,7 @@ void cGuilds::Menu(int s, int page)
 			{
 				counter++;
 				pChar recr=pointers::findCharBySerial(guilds[guildnumber].recruit[recruit]);
-				if(ISVALIDPC(recr))
+				if(recr)
 					strcpy(mygump[counter],recr->getCurrentNameC());
 			}
 		}
@@ -307,7 +307,7 @@ void cGuilds::Menu(int s, int page)
 		for (member=1;member<MAXGUILDMEMBERS; ++member)
 		{
 			pChar memb=pointers::findCharBySerial(guilds[guildnumber].member[member]);
-			if (ISVALIDPC(memb))
+			if (memb)
 			{
 				counter++;
 				strcpy(mygump[counter], memb->getCurrentNameC());
@@ -323,7 +323,7 @@ void cGuilds::Menu(int s, int page)
 		for (member=1;member<MAXGUILDMEMBERS; ++member )
 		{
 			pChar memb=pointers::findCharBySerial(guilds[guildnumber].member[member]);
-			if (ISVALIDPC(memb))
+			if (memb)
 			{
 				counter++;
 				strcpy(mygump[counter],memb->getCurrentNameC());
@@ -339,7 +339,7 @@ void cGuilds::Menu(int s, int page)
 		for (recruit=1;recruit<MAXGUILDRECRUITS; ++recruit)
 		{
 			pChar recr = pointers::findCharBySerial(guilds[guildnumber].recruit[recruit]);
-			if (ISVALIDPC(recr))
+			if (recr)
 			{
 				counter++;
 				strcpy(mygump[counter], recr->getCurrentNameC());
@@ -355,7 +355,7 @@ void cGuilds::Menu(int s, int page)
 		for (recruit=1;recruit<MAXGUILDRECRUITS; ++recruit)
 		{
 			pChar recr = pointers::findCharBySerial(guilds[guildnumber].recruit[recruit]);
-			if (ISVALIDPC(recr))
+			if (recr)
 			{
 				counter++;
 				strcpy(mygump[counter],recr->getCurrentNameC());
@@ -386,7 +386,7 @@ void cGuilds::Menu(int s, int page)
 		for (member=1;member<MAXGUILDMEMBERS; ++member)
 		{
 			pChar membr=pointers::findCharBySerial(guilds[guildnumber].member[member]);
-			if(ISVALIDPC(membr))
+			if(membr)
 			{
 				counter++;
 				strcpy(mygump[counter],membr->getCurrentNameC());
@@ -402,7 +402,7 @@ void cGuilds::Menu(int s, int page)
 		for (member=1;member<MAXGUILDMEMBERS; ++member)
 		{
 			pChar membr=pointers::findCharBySerial(guilds[guildnumber].member[member]);
-			if(ISVALIDPC(membr))
+			if(membr)
 			{
 				counter++;
 				strcpy(mygump[counter],membr->getCurrentNameC());
@@ -588,7 +588,7 @@ void cGuilds::EraseMember(int c)
 			if (guilds[guildnumber].member[j] == pc->getSerial())
 			{
 				pChar hold = pointers::findCharBySerial(guilds[guildnumber].member[j]);
-				if (ISVALIDPC(hold))
+				if (hold)
 				{
 					RemoveShields(hold);
 				}
@@ -789,7 +789,7 @@ void cGuilds::StoneMove(int s)
 	// Spawn the stone in the masters backpack
 	pNewstone = item::CreateFromScript( "$item_hardcoded", pc->getBackpack() );
 
-	if (!ISVALIDPI(pNewstone)) return; //AntiChrist
+	if (! pNewstone ) return; //AntiChrist
 	pNewstone->setCurrentName( stonename );
 	pNewstone->setId( 0x1869 );
 
@@ -1019,7 +1019,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 					else
 					{
 						pChar pc_member = pointers::findCharBySerial( guilds[guildnumber].member[member] );
-						if( ISVALIDPC( pc_member ) )
+						if( pc_member )
 						{
 							pc->sysmsg(TRANSLATE("Kicked %s out of the guild."), pc_member->getCurrentNameC());
 							if( pc_member->IsOnline() )
@@ -1048,7 +1048,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 				if (sub==counter)
 				{
 					pChar pc_recruit = pointers::findCharBySerial( guilds[guildnumber].recruit[recruit] );
-					if( ISVALIDPC( pc_recruit ) )
+					if( pc_recruit )
 						pc->sysmsg(TRANSLATE("Removed candidate %s from the list."), pc_recruit->getCurrentNameC());
 					else
 					{
@@ -1072,7 +1072,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 				if (sub==counter)
 				{
 					pChar pc_recruit = pointers::findCharBySerial( guilds[guildnumber].recruit[recruit] );
-					if ( ISVALIDPC(pc_recruit) )
+					if ( pc_recruit )
 						if (pc_recruit->GetGuildNumber()==0)
 						{
 							slot = Guilds->SearchSlot(guildnumber,2);
@@ -1217,7 +1217,7 @@ void cGuilds::ChangeName(NXWSOCKET s, char *text)
 	
 	pItem pStone = pointers::findItemBySerial( guilds[guildnumber].stone );
 
-	if (!ISVALIDPI(pStone)) 
+	if (!pStone) 
 		return;
 
 	int guild;
@@ -1383,7 +1383,7 @@ void cGuilds::SetType(int guildnumber, int type)
 			for(j=0;j<=guilds[guildnumber].members;j++)
 			{
 				pChar hold = pointers::findCharBySerial(guilds[guildnumber].member[j]);
-				if (ISVALIDPC(hold))
+				if (hold)
 				{
 					RemoveShields(hold);
 					item::CreateFromScript( "$item_order_shield", hold->getBackpack() );	// will not work for offline chars (Duke)
@@ -1396,7 +1396,7 @@ void cGuilds::SetType(int guildnumber, int type)
 			for(j=0;j<=guilds[guildnumber].members;j++)
 			{
 				pChar hold = pointers::findCharBySerial(guilds[guildnumber].member[j]);
-				if (ISVALIDPC(hold))
+				if (hold)
 				{
 					RemoveShields(hold);
 					item::CreateFromScript( "$item_chaos_shield", hold->getBackpack() );	// will not work for offline chars (Duke)
@@ -1411,7 +1411,7 @@ void cGuilds::SetType(int guildnumber, int type)
 			for(j = 0;j <= guilds[guildnumber].members; j++)
 			{
 				pChar hold = pointers::findCharBySerial(guilds[guildnumber].member[j]);
-				if (ISVALIDPC(hold))
+				if (hold)
 				{
 					RemoveShields(hold);
 				}
@@ -1464,7 +1464,7 @@ int cGuilds::SearchByStone(int s)
 	VALIDATEPCR(pc, INVALID );
 
 	pItem pStone=MAKE_ITEM_REF(pc->fx1);
-	if(!ISVALIDPI(pStone))
+	if(!pStone)
 		return -1;
 
 	int stone= pStone->getSerial();
@@ -1535,7 +1535,7 @@ void cGuilds::CalcMaster(int guildnumber)
 	{
 		pChar pCurrentMember = pointers::findCharBySerial( guild->member[member] );
 
-		if( ISVALIDPC( pCurrentMember) )
+		if( pCurrentMember )
 			currentfealty = pCurrentMember->GetGuildFealty();
 		else
 			currentfealty = 0;

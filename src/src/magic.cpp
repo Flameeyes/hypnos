@@ -160,14 +160,14 @@ bool checkGateCollision( pChar pc )
 	si.fillItemsNearXYZ( charpos, 0, false );
 	for ( si.rewind(); !si.isEmpty(); si++ ) {
 		pgate = si.getItem();
-		if ( !ISVALIDPI( pgate ) )
+		if ( !pgate )
 			return false;
 
 		if ( pgate->type != 51 )
 			pgate = NULL;
 	}
 
-        if ( !ISVALIDPI( pgate ) )
+        if ( !pgate )
 		return false;
 
 	Location gatepos = pgate->getPosition();
@@ -179,7 +179,7 @@ bool checkGateCollision( pChar pc )
         NxwCharWrapper sc;
         sc.fillOwnedNpcs( pc, false, true );
         for ( sc.rewind(); !sc.isEmpty(); sc++ ) {
-		if ( !ISVALIDPC( (pnpc=sc.getChar()) ) )
+		if ( !(pnpc=sc.getChar()) )
 			continue;
 
 		pnpc->MoveTo( pgate->morex, pgate->morey, pgate->morez );
@@ -217,7 +217,7 @@ static inline bool checkTownLimits(SpellId spellnum, pChar pa, pChar pd, int spe
 		if (areaspell) return false; // do *NOT* change order of these lines!! :]
 		if ((pd->npc)&&(pd->npcaitype==NPCAI_EVIL)) return false;
 		if (pa==pd) return false;
-		if (ISVALIDPC(pa)) {
+		if (pa) {
 			if (Guilds->Compare(pa,pd)!=0) return false;
 		}
 		if (pd->IsCriminal()) return false;
@@ -341,7 +341,7 @@ static bool checkResist(pChar pa, pChar pd, SpellId spellnumber)
 	int resist = pd->skill[MAGICRESISTANCE] / 10;
 	int resistchance = resist / 5;
 
-	if (ISVALIDPC(pa)) {
+	if (pa) {
 		int magery = pa->skill[MAGERY]/10;
 		int secondresist = (resist) - ( (magery/2) + (circle*5));
 		resistchance = qmax(resistchance, secondresist);
@@ -364,11 +364,11 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 {
 	pChar pcfrom = pcaster;
 	pChar pcto = pctarget;
-	if ( !ISVALIDPC( pcfrom ) && !ISVALIDPC( pcto ) )
+	if ( !pcfrom && !pcto )
 		return;
-	if ( !ISVALIDPC( pcfrom ) && ISVALIDPC( pcto ) )
+	if ( !pcfrom && pcto )
 		pcfrom = pcto;
-	if ( ISVALIDPC( pcfrom ) && !ISVALIDPC( pcto ) )
+	if ( pcfrom && !pcto )
 		pcto = pcfrom;
 
 	ParticleFx spfx, mpfx;
@@ -620,7 +620,7 @@ static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int
 	pChar p_realdefender = pd;
 
 	// check resistances :)
-	if ((ISVALIDPC(pa))&&(!(spellflags&SPELLFLAG_DONTREFLECT)))
+	if ((pa)&&(!(spellflags&SPELLFLAG_DONTREFLECT)))
 		if (g_Spells[spellnum].reflect)
 			checkReflection(pa, pd);
 
@@ -642,7 +642,7 @@ static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int
 	double resist = static_cast<double>(pd->skill[MAGICRESISTANCE]) / 10.0;
 	double evint = resist; //no bonus/malus if no attacker
 
-	if (ISVALIDPC(pa)) {
+	if (pa) {
 		evint = static_cast<double>(pd->skill[EVALUATINGINTEL]) / 10.0;
 	}
 
@@ -667,7 +667,7 @@ static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int
 
 	if (pd->npc) amount *= 4;		   // double damage against non-players
 
-	if (ISVALIDPC(p_realattacker)) p_realattacker->attackStuff(p_realdefender);
+	if ( p_realattacker ) p_realattacker->attackStuff(p_realdefender);
 
 	StatType stattodamage = STAT_HP;
 	if ((spellnum==SPELL_MANADRAIN)||(spellnum==SPELL_MANAVAMPIRE)) stattodamage = STAT_MANA;
@@ -773,7 +773,7 @@ void castAreaAttackSpell (int x, int y, SpellId spellnum, pChar pcaster)
 	int divider = (sc.size() / 4) + 1;
 	if (divider!=0) damagetobedone /= divider;
 
-	if (ISVALIDPC(pcaster)) {
+	if ( pcaster ) {
 		if ( spellnum == SPELL_EARTHQUAKE )
 			pcaster->playSFX( 0x20D );
 		if (checkTownLimits(spellnum, pcaster, pcaster, 0, 0, true)) return;
@@ -781,8 +781,8 @@ void castAreaAttackSpell (int x, int y, SpellId spellnum, pChar pcaster)
 
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pChar pd = sc.getChar();
-		if ( ISVALIDPC(pd) ) {
-			if ( ISVALIDPC( pcaster ) ) {
+		if ( pd ) {
+			if ( pcaster ) {
 				if ( spellnum == SPELL_EARTHQUAKE || spellnum == SPELL_CHAINLIGHTNING ) {
 					if ( pd->getSerial() == pcaster->getSerial32() )
 						continue;
@@ -1067,7 +1067,7 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 	pChar pd = NULL;
 	int duration = 60; // one minute default
 
-	if (ISVALIDPC(pa)) {
+	if (pa) {
 		int skilltouse = MAGERY;
 		if (flags&SPELLFLAG_PARAMISSKILLTOUSE) skilltouse = param;
 		bonus = pa->skill[skilltouse] / 50;
@@ -1469,7 +1469,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			tempfx::add(src,src, tempfx::SPELL_REACTARMOR, 0, 0, 0, nTime);
 			break;
 		case SPELL_DISPEL:	//Luxor
-			if ( ISVALIDPC(pd) && pd->summontimer > 0 ) { //Only if it's a summoned creature
+			if ( pd && pd->summontimer > 0 ) { //Only if it's a summoned creature
 				pd->emoteall( "%s begins disappearing", true, pd->getCurrentNameC() );
 				//3 seconds left
 				if ( pd->summontimer > (uiCurrentTime + 3*MY_CLOCKS_PER_SEC) )
@@ -1478,7 +1478,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 		case SPELL_MASSDISPEL:{ // Luxor
-			if ( ISVALIDPC( pd ) ) {
+			if ( pd ) {
 				x = pd->getPosition().x;
 				y = pd->getPosition().y;
 			} else if ( pi ) {
@@ -1490,7 +1490,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			sc.fillCharsNearXYZ( x, y, src->skill[MAGERY] / 100, true, false );
 			for ( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pc_curr = sc.getChar();
-				if ( !ISVALIDPC( pc_curr ) )
+				if ( !pc_curr )
 					continue;
 				if ( pc_curr->summontimer > 0 ) {
 					pc_curr->emoteall( "%s begins disappearing", true, pc_curr->getCurrentNameC() );
@@ -1513,7 +1513,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			break;
 
 		case SPELL_GATE: //Luxor
-			if ( ISVALIDPC( src ) && pi ) {
+			if ( src && pi ) {
 				if ( pi->type == ITYPE_RUNE ) {
 					if ((pi->morex < 10)&&(pi->morey < 10)) {
 						src->sysmsg("The rune is not marked yet.");
@@ -1554,7 +1554,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
-				if ( ISVALIDPC(pd) && pd->getSerial()!=src->getSerial32()) {
+				if ( pd && pd->getSerial()!=src->getSerial32()) {
 					spellFX(spellnumber, src, pd);
 					castStatPumper(SPELL_CURSE, dest, src, flags, param);
 				}
@@ -1568,7 +1568,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			sc.fillCharsNearXYZ( x, y, src->skill[MAGERY] / 100, true);
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
-				if (ISVALIDPC(pd) && pd->IsHidden() && !checkResist(src, pd, SPELL_REVEAL)) {
+				if ( pd && pd->IsHidden() && !checkResist(src, pd, SPELL_REVEAL)) {
 					if ( pd->IsHiddenBySpell() )
 						pd->delTempfx( tempfx::SPELL_INVISIBILITY );
 					else
@@ -1600,7 +1600,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
-				if(ISVALIDPC(pd)) {
+				if( pd ) {
 					tempfx::add(pd,pd, tempfx::SPELL_PROTECTION, nValue, 0, 0, nTime);
 					spellFX(spellnumber, src, pd);
 				}
@@ -1672,7 +1672,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
-				if(ISVALIDPC(pd))
+				if( pd )
 					pd->curePoison();
 			}
 			}
