@@ -17,8 +17,12 @@
 #include "structs.h"
 #include "inlines.h"
 
-typedef void ( *processTarget ) ( pClient, sTarget );
+/*!
+\brief Struct for a target callback
 
+This struct is used as parameter of a target callback. It contains the data 
+about what was targeted by the client.
+*/
 struct sTarget
 {
 	sLocation loc;			//!< xyz clicked
@@ -28,6 +32,8 @@ struct sTarget
 	TargetType type;		//!< item, char or location target?
 };
 
+//! Target callback
+typedef void ( *processTarget ) ( pClient, sTarget );
 
 // OLD TARGETS BEGIN HERE
 #if 0

@@ -165,7 +165,7 @@ enum
 	static const uint16_t ITYPE_TELEPORTRUNE = 6;
 	static const uint16_t ITYPE_KEY = 7;
 	static const uint16_t ITYPE_LOCKED_ITEM_SPAWNER = 8;
-	static const uint16_t ITYPE_SPELLBOOK = 9
+	static const uint16_t ITYPE_SPELLBOOK = 9;
 	static const uint16_t ITYPE_MAP = 10;
 	static const uint16_t ITYPE_DOOR = 12;
 	static const uint16_t ITYPE_LOCKED_DOOR = 13;
