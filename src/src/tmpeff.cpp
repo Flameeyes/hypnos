@@ -114,7 +114,7 @@ void checktempeffects()
 \author Luxor
 \brief Calls a custom tempfx defined in small code
 */
-static void callCustomTempFx(pObject poSrc, P_OBJECT poDest, int mode, int amxcallback, int more1, int more2, int more3)
+static void callCustomTempFx(pObject poSrc, pObject poDest, int mode, int amxcallback, int more1, int more2, int more3)
 {
 	VALIDATEPO(poSrc);
 	VALIDATEPO(poDest);
@@ -1153,7 +1153,7 @@ cTempfx::cTempfx( uint32_t nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t
 \author Luxor
 \brief	Adds a temp effect
 */
-bool add(pObject src, P_OBJECT dest, int num, unsigned char more1, unsigned char more2, unsigned char more3, short dur, int amxcback)
+bool add(pObject src, pObject dest, int num, unsigned char more1, unsigned char more2, unsigned char more3, short dur, int amxcback)
 {
 	VALIDATEPOR(src, false);
 	VALIDATEPOR(dest, false);

@@ -45,7 +45,7 @@ uint64_t cResources::getBlocks( Location location  )
 }
 
 
-P_RESOURCE cResources::getResource( Location location )
+pResource cResources::getResource( Location location )
 {
 
 	uint64_t p = this->getBlocks( location );
@@ -57,7 +57,7 @@ P_RESOURCE cResources::getResource( Location location )
 		return &(iter->second); 
 }
 
-P_RESOURCE cResources::createBlock( Location location )
+pResource cResources::createBlock( Location location )
 {
 	uint64_t p = this->getBlocks( location );
 	
@@ -66,7 +66,7 @@ P_RESOURCE cResources::createBlock( Location location )
 	return &iter->second;
 }
 
-void cResources::checkResource( Location location, P_RESOURCE& res )
+void cResources::checkResource( Location location, pResource& res )
 {
 
 	if( res==NULL )
@@ -79,7 +79,7 @@ void cResources::checkResource( Location location, P_RESOURCE& res )
 
 }
 
-void cResources::decreaseResource( Location location, P_RESOURCE res )
+void cResources::decreaseResource( Location location, pResource res )
 {
 	if( res == NULL ) { //create it!
 		res = this->createBlock( location );
@@ -88,13 +88,13 @@ void cResources::decreaseResource( Location location, P_RESOURCE res )
 }
 
 
-bool cResources::thereAreSomething( P_RESOURCE res )
+bool cResources::thereAreSomething( pResource res )
 {
 	return ( res==NULL ) || ( res->consumed<=this->n );
 }
 
 
-bool cResources::checkRes( P_RESOURCE res )
+bool cResources::checkRes( pResource res )
 {
 
 	if( TIMEOUT( res->timer ) )
@@ -277,7 +277,7 @@ void Skills::target_mine( NXWCLIENT ps, pTarget t )
 		return;
 	}
 
-	P_RESOURCE res = ores.getResource( target );
+	pResource res = ores.getResource( target );
 
 	ores.checkResource( target, res );
 

@@ -2104,7 +2104,7 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 			si2.fillItemsInContainer( np_a, false );
 			for( si2.rewind(); !si2.isEmpty(); si2++ )
 			{
-				P_ITEM pi=si2.getItem();
+				pItem pi=si2.getItem();
 				if( ISVALIDPI(pi) && items_match(pi,pSell)) join=pi;
 			}
 		}
@@ -2150,7 +2150,7 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 
 				pSell->setContainer( np_b );
 				if (pSell->amount!=amt)
-					Commands::DupeItem(s, DEREF_P_ITEM(pSell), pSell->amount-amt);
+					Commands::DupeItem(s, DEREF_pItem(pSell), pSell->amount-amt);
                         }
                 }
         }

@@ -28,7 +28,7 @@ public:
 
 };
 
-typedef cResource* P_RESOURCE;
+typedef cResource* pResource;
 
 typedef std::map< uint64_t, cResource > RESOURCE_MAP;
 
@@ -40,9 +40,9 @@ private:
 	RESOURCE_MAP resources; //!< all resources
 
 	uint64_t getBlocks( Location location  );
-	P_RESOURCE createBlock( Location location );
+	pResource createBlock( Location location );
 	void deleteBlock( Location Location );
-	bool checkRes( P_RESOURCE res );
+	bool checkRes( pResource res );
 
 public:
 
@@ -59,10 +59,10 @@ public:
 
 	void setDimArea( uint32_t areawidth, uint32_t areaheight );
 	
-	P_RESOURCE getResource( Location location );
-	void checkResource( Location location, P_RESOURCE& res );
-	void decreaseResource( Location location, P_RESOURCE res = NULL );
-	bool thereAreSomething( P_RESOURCE res );
+	pResource getResource( Location location );
+	void checkResource( Location location, pResource& res );
+	void decreaseResource( Location location, pResource res = NULL );
+	bool thereAreSomething( pResource res );
 
 	void checkAll();
 

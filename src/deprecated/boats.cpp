@@ -432,7 +432,7 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 	}
 }
 
-void cBoat::TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, P_ITEM pTiller, P_ITEM pHold )
+void cBoat::TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, pItem pTiller, pItem pHold )
 {
 	Location itmpos;
 	signed short int *pShipOffsets;
