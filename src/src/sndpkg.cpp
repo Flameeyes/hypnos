@@ -49,16 +49,6 @@ void gmyell(char *txt)
 }
 
 
-//keep the target highlighted so that we know who we're attacking =)
-//26/10/99//new packet
-void SndAttackOK(pClient client, int serial)
-{
-	uint8_t attackok[5]={ 0xAA, 0x00, };
-	LongToCharPtr(serial, attackok +1);
-	Xsend(s, attackok, 5);
-//AoS/	Network->FlushBuffer(s);
-}
-
 void SndDyevat(pClient client, int serial, short id)
 {
 	uint8_t dyevat[9] ={ 0x95, 0x00, };

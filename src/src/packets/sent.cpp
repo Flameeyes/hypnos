@@ -779,10 +779,6 @@ void nPackets::Sent::MapPlotCourse::prepare()
 	ShortToCharPtr(y, buffer + 9);
 }
 
-
-
-
-
 void nPackets::Sent::Action::prepare()
 {
 	static const uint8_t templ[14] = {
@@ -809,6 +805,17 @@ void nPackets::Sent::OpenBrowser::prepare()
 	memcpy(buffer+3, url.c_str(), length-3);
 }
 
+void nPackets::Sent::AttackAck::prepare()
+{
+	length = 5;
+	buffer = new buffer[5];
+	buffer[0] = 0xAA;
+	if ( victim )
+		LongToCharPtr(victim->getSerial(), buffer+1);
+	else
+		LongToCharPtr(0, buffer+1);
+}
+
 void nPackets::Sent::PlayMidi::prepare()
 {
 	length = 3;
@@ -816,9 +823,6 @@ void nPackets::Sent::PlayMidi::prepare()
 	buffer[0] = 0x6D;
 	ShortToCharPtr(id, buffer+1);
 }
-
-
-
 
 void nPackets::Sent::ClearBuyWindow::prepare()
 {
@@ -829,9 +833,6 @@ void nPackets::Sent::ClearBuyWindow::prepare()
 	LongToCharPtr( npc->getSerial(), buffer + 3);	        // vendorID
 	buffer[7]=0x00;						// Flag:  0 => no more items  0x02 items following ...
 }
-
-
-
 
 void nPackets::Sent::OpenMapGump::prepare()
 {

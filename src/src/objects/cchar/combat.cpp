@@ -1120,9 +1120,8 @@ void cChar::attackStuff(pChar victim)
 		return;
 	}
 
-        //!\todo: modify this to send a packet
-	SndAttackOK(s, victim->getSerial());	//keep the target highlighted
-
+	nPackets::Sent::AttackAck pk(victim);
+	s->sendPacket(&pk);
 
 	if (!( victim->targserial== INVALID))
 	{

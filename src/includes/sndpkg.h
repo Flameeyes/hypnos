@@ -17,7 +17,6 @@
 #include "common_libs.h"
 #include "particles.h"
 
-void SndAttackOK(pClient client, pClient clienterial);
 void SndDyevat(pClient client, pClient clienterial, short id);
 void SndUpdscroll(pClient client, short txtlen, const char* txt);
 

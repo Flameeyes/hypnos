@@ -747,11 +747,6 @@ namespace nPackets {
 			void prepare();
 		};
 
-
-
-
-
-		
 		//! Open Web Browser
 		class OpenBrowser : public cPacketSend
 		{
@@ -765,6 +760,25 @@ namespace nPackets {
 				cPacketSend(NULL, 0), url(str)
 			{ }
 		
+			void prepare();
+		};
+		
+		/*!
+		\brief Sends the OK/Not OK for an attack
+		\note Packet 0xAA
+		*/
+		class AttackAck : public cPacketSend
+		{
+		protected:
+			pChar victim;	//!< Character attacked
+		public:
+			/*!
+			\param v Character attacked (should be NULL to undo an attack)
+			*/
+			void AttackAck(pChar v) :
+				cPacketSend(NULL, 0), victim(v)
+			{ }
+			
 			void prepare();
 		};
 		
