@@ -118,11 +118,12 @@ UI32 cContainer::countItems(UI32 scriptID, bool total/*= false*/)
 \brief Removes the given amount of items with given scriptID
 \param scriptID scriptID of the items to remove
 \param amount amount of items to remove
+\param recurse if true will recures in all sub-containers
 \return how many items can't be removed (because not present)
 */
-UI32 cContainer::removeItems(UI32 scriptID, UI32 amount)
+UI32 cContainer::removeItems(UI32 scriptID, UI32 delAmount, bool recurse)
 {
-	UI32 rest = amount;
+	UI32 rest = delAmount;
 
 	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
 	{
@@ -134,6 +135,44 @@ UI32 cContainer::removeItems(UI32 scriptID, UI32 amount)
 
 		if ( (*it)->getScriptID() == scriptID )
 			rest = (*it)->reduceAmount(rest);
+
+		if ( recurse && rest && (*it)->rtti() == rtti::cContainer )
+			rest = (reinterpret_cast<pContainer>(*it))->removeItems(scriptID, delAmount, true);
+
+		if ( rest == 0 )
+			break;
+	}
+
+	return rest;
+}
+
+/*!
+\author Flameeyes
+\brief Removes the give amount of item with given id and color (if not invalid)
+\param delAmount amount of items to remove
+\param matchId id to match for the remove
+\param matchColor color to match for the remove (if not invalid 0xFFFF)
+\param recurse if true, it will recurse in all the sub-containers
+\return how many items can't be removed (because not presents)
+*/
+UI32 cContainer::removeItems(UI32 delAmount, UI16 matchId, UI16 matchColor, bool recures)
+{
+	UI32 rest = amount;
+
+	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
+	{
+		if ( ! *it ) {
+			LogWarning("NULL item!");
+			items.erase(it);
+			continue;
+		}
+
+		if ( (*it)->getId() == matchId && ( matchColor != 0xFFFF || matchColor == (*it)->getColor() ) )
+			rest = (*it)->reduceAmount(rest);
+
+		if ( recurse && rest && (*it)->rtti() == rtti::cContainer )
+			rest = (reinterpret_cast<pContainer>(*it))->
+				removeItems(delAmount, matchId, matchColor, true);
 
 		if ( rest == 0 )
 			break;
@@ -184,3 +223,70 @@ void cContainer::addItem(pItem item, UI16 xx, UI16 yy)
 	if ( item )
 		item->refresh();
 }
+
+/*!
+\brief Count spells
+\author Flameeyes (based on Xanathar)
+\param stdOnly If true, count only standard spells
+\return The number of spells in the spellbook
+\note This function is here, because a spellbook is handled like a container
+	with spells as items inside it
+\todo Improve stdOnly support
+*/
+UI32 cContainer::countSpellsInSpellBook(bool stdOnly)
+{
+	UI32 spellcount=0;
+
+	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
+	{
+		if ( ! *it ) {
+			LogWarning("NULL item!");
+			items.erase(it);
+			continue;
+		}
+
+		if ( (*it)->getId() == 0x1F6D ) //! \todo Should be constantized?
+		{
+			if ( stdOnly )
+				return 64;
+			else
+				spellcount += 64;
+		} else
+			spellcount++;
+	}
+
+	if ( stdOnly && spellcount > 64 )
+		return 64;
+	else
+		return spellcount;
+}
+
+/*!
+\author Flameeyes (based on Xanathar)
+\brief Check if a spellbook contains a given spell
+\param spellnum Spell identifier
+\return true if the spell is present
+\todo not using hardcoded ids... in this case we are
+	using an extended spellbook... that can have
+	only the base spells...
+*/
+bool cContainer::containsSpell(magic::SpellId spellnum)
+{
+	bool raflag = false;
+
+	if (spellnum==magic::SPELL_REACTIVEARMOUR)
+		raflag = true;
+	if ((spellnum>=magic::SPELL_CLUMSY) && (spellnum < magic::SPELL_REACTIVEARMOUR))
+			spellnum = static_cast<magic::SpellId>(static_cast<int>(spellnum)+1);
+	if (raflag)
+		spellnum=static_cast<magic::SpellId>(0);
+
+	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
+	{
+		if ( (*it)->getId() == ( 0x1F2D + spellnum ) || (*it)->getId() == 0x1F6D )
+			return true;
+	}
+
+	return false;
+}
+

@@ -23,7 +23,7 @@ const UI16 bodyFemale	= 0x191;
 /*!
 \brief This class represent a body of a character
 */
-class cBody
+class cBody : cObject
 {
 protected:
 	//! The next serial to be used
@@ -158,9 +158,6 @@ public:
 \name Flags
 \brief Flags used by the body
 */
-protected:
-	UI32 flags;		//!< Flags of the character
-
 public:
 	//! Character is Female
 	static const UI32 flagFemale		= 0x00000001;

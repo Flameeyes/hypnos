@@ -5,6 +5,7 @@
 | You can find detailed license information in pyuo.cpp file.              |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+
 #include "nxwcommn.h"
 #include "sndpkg.h"
 #include "amx/amxcback.h"
@@ -23,21 +24,6 @@
 #include "inlines.h"
 #include "basics.h"
 #include "utils.h"
-
-/*!
-\author Duke
-\brief minimum of free slots that should be left in the array.
-
-otherwise, more memory will be allocated in the mainloop (Duke)
-*/
-#define ITEM_RESERVE 3000
-
-/*!
-\brief Base constructor for cWeapon class
-*/
-cWeapon::cWeapon(SERIAL serial) : cItem (serial)
-{
-}
 
 /*!
 \brief Add item by ID
@@ -124,8 +110,7 @@ static void cItem::loadWeaponsInfo()
 		while ( (script1[0]!='}') && (++loopexit < MAXLOOPS) );
 
 		type++;
-	}
-	while ( (strcmp("EOF", script1)) && (++loopexit < MAXLOOPS) );
+	}while ( (strcmp("EOF", script1)) && (++loopexit < MAXLOOPS) );
 
 	safedelete(iter);
 }
@@ -142,6 +127,124 @@ static const bool cItem::isWeaponLike( UI16 id, UI16 type )
 		return false;
 	else
 		return ( iter->second & type );
+}
+
+/*!
+\brief the weight of the item ( * number of piled item if there are )
+\author Endymion
+\return the weigth actual
+\todo make return value float
+*/
+cItem::cItem( SERIAL ser )
+{
+
+	setSerial32( ser );
+	setOwnerSerial32Only(INVALID);
+	setMultiSerial32Only(INVALID);//Multi serial
+
+	setCurrentName("#");
+	setSecondaryName("#");
+	setScriptID( 0 );
+	murderer = string("");
+	creator = string("");
+	incognito=false;//AntiChrist - incognito
+	madewith=0; // Added by Magius(CHE)
+	rank=0; // Magius(CHE)
+	good=-1; // Magius(CHE)
+	rndvaluerate=0; // Magius(CHE) (2)
+	setId( 0x0001 ); // Item visuals as stored in the client
+	setPosition(100, 100, 0);
+	setOldPosition( getPosition() );
+	setColor( 0x0000 ); // Hue
+	cont = NULL;
+	oldcont = NULL;
+	layer=oldlayer=0; // Layer if equipped on paperdoll
+	scriptlayer=0;	//Luxor
+	itmhand=0; // Layer if equipped on paperdoll
+	type=0; // For things that do special things on doubleclicking
+	type2=0;
+	offspell=0;
+	weight=0;
+	more1=0; // For various stuff
+	more2=0;
+	more3=0;
+	more4=0;
+	moreb1=0;
+	moreb2=0;
+	moreb3=0;
+	moreb4=0;
+	morex=0;
+	morey=0;
+	morez=0;
+	amount=1; // Amount of items in pile
+	amount2=0; //Used to track things like number of yards left in a roll of cloth
+	doordir=0; // Reserved for doors
+	dooropen=0;
+	pileable=0; // Can item be piled
+	dye=0; // Reserved: Can item be dyed by dye kit
+	corpse=0; // Is item a corpse
+	carve=-1;//AntiChrist-for new carving system
+	att=0; // Item attack
+	def=0; // Item defense
+	fightskill=INVALID_SKILL; //Luxor: skill used by item
+	reqskill[0]=0; //Luxor: skill value required by item (skillnum = fightskill)
+	reqskill[1]=0;
+	damagetype=DAMAGE_PURE; //Luxor: damage types system
+	auxdamagetype=DAMAGE_PURE; //Luxor: damage types system
+	auxdamage=0;
+	lodamage=0; //Minimum Damage weapon inflicts
+	hidamage=0; //Maximum damage weapon inflicts
+	smelt=0; // for smelting items
+	secureIt=0; // secured chests
+	wpsk=0; //The skill needed to use the item
+	hp=0; //Number of hit points an item has.
+	maxhp=0; // Max number of hit points an item can have.
+	st=0; // The strength needed to equip the item
+	st2=0; // The strength the item gives
+	dx=0; // The dexterity needed to equip the item
+	dx2=0; // The dexterity the item gives
+	in=0; // The intelligence needed to equip the item
+	in2=0; // The intelligence the item gives
+	spd=0; //The speed of the weapon
+	wipe=0; //Should this item be wiped with the /wipe command
+	magic=0; // 0=Default as stored in client, 1=Always movable, 2=Never movable, 3=Owner movable.
+	gatetime=0;
+	gatenumber=INVALID;
+
+	visible=0; // 0=Normally Visible, 1=Owner & GM Visible, 2=GM Visible
+	spawnserial=INVALID;
+	spawnregion=INVALID;
+	dir=0; // Direction, or light source type.
+	priv=0; // Bit 0, decay off/on.  Bit 1, newbie item off/on.  Bit 2 Dispellable
+	decaytime = 0;
+	value=0; // Price shopkeeper sells item at.
+	restock=0; // Number up to which shopkeeper should restock this item
+	trigger=0; //Trigger number that item activates
+	trigtype=0; //Type of trigger
+	tuses=0;    //Number of uses for trigger
+	poisoned=POISON_NONE; //AntiChrist -- for poisoning skill
+	murdertime=0; //AntiChrist -- for corpse -- when the people has been killed
+//	glow=0;
+//	glow_effect=0;
+//	glow_c1=0;
+//	glow_c2=0;
+	time_unused=0;
+	timeused_last=getclock();
+	animSetId(0x0000); // elcabesa animation
+	ammo=0;
+	ammoFx=0;
+
+	/* Luxor: damage resistances */
+	int i;
+	for (i=0;i<MAX_RESISTANCE_INDEX;i++)
+		resists[i]=0;
+
+	for (int X=0; X<ALLITEMEVENTS; X++)
+		amxevents[X] = NULL;
+	//desc[0]=0x00;
+	vendorDescription = std::string("");
+	setDecayTime(); //Luxor
+
 }
 
 /*!
@@ -190,7 +293,6 @@ cItem& cItem::operator=(cItem& b)
         amount2 = b.amount2;
         doordir = b.doordir;
         dooropen = b.dooropen;
-        pileable = b.pileable;
         dye = b.dye;
         corpse = b.corpse;
         carve = b.carve;
@@ -300,60 +402,6 @@ void cItem::safeoldsave()
 
 //
 // Object methods
-//
-/*
-void setserial(int nChild, int nParent, int nType)
-{ // Sets the serial #'s and adds to pointer arrays
-  // types: 1-item container, 2-item spawn, 3-Item's owner 4-container is PC/NPC
-  //        5-NPC's owner, 6-NPC spawned
-
-	if (nChild == -1 || nParent == -1) return;
-	switch(nType)
-	{
-	case 1:
-	    items[nChild].setContSerial(items[nParent].getSerial32());	//Luxor
-		//setptr(&contsp[items[nChild].contserial%HASHMAX], nChild);
-		break;
-	case 2:				// Set the Item's Spawner
-	    items[nChild].spawnserial=items[nParent].getSerial32();
-		setptr(&spawnsp[items[nChild].spawnserial%HASHMAX], nChild);
-		break;
-	case 3:				// Set the Item's Owner
-	    items[nChild].setOwnSerialOnly(chars[nParent].getSerial32());
-		setptr(&ownsp[items[nChild].ownserial%HASHMAX], nChild);
-		break;
-	case 4:
-	    items[nChild].setContSerial(chars[nParent].getSerial32());	//Luxor
-		//setptr(&contsp[items[nChild].contserial%HASHMAX], nChild);
-		break;
-	case 5:				// Set the Character's Owner
-		chars[nChild].setOwnerSerial32Only(chars[nParent].getSerial32());
-		setptr(&cownsp[chars[nChild].getOwnerSerial32()%HASHMAX], nChild);
-		//taken from 6904t2(5/10/99) - AntiChrist
-		if( nChild != nParent )
-			chars[nChild].tamed = true;
-		else
-			chars[nChild].tamed = false;
-		break;
-	case 6:				// Set the character's spawner
-	    chars[nChild].spawnserial=items[nParent].getSerial32();
-		setptr(&cspawnsp[chars[nChild].spawnserial%HASHMAX], nChild);
-		break;
-	case 7:				// Set the Item in a multi
-		items[nChild].setMultiSerial32Only( items[nParent].getSerial32() );
-		setptr(&imultisp[items[nChild].getMultiSerial32()%HASHMAX], nChild);
-		break;
-	case 8:				//Set the CHARACTER in a multi
-		chars[nChild].setMultiSerial32Only(items[nParent].getSerial32());
-		setptr(&cmultisp[chars[nChild].getMultiSerial32()%HASHMAX], nChild);
-		break;
-	default:
-		WarnOut("No handler for nType (%08x) in setserial()", nType);
-		break;
-	}
-}
-*/
-
 cItem::~cItem()
 {
 
@@ -388,6 +436,9 @@ void cItem::getPopupHelp(char *str)
 */
 void cItem::setContainer(pObject obj)
 {
+	if ( obj->rtti() != rtti::cContainer && obj->rtti() != rtti::cBody )
+		return;
+
 	oldcont = cont;
 	cont = obj;
 
@@ -396,16 +447,6 @@ void cItem::setContainer(pObject obj)
 
 	if ( update )
 		pointers::updContMap(this);
-}
-
-/*!
-\brief Set the item's container
-\param obj New (saved) container
-\param update Update the container map?
-*/
-void cItem::setOldContainer(pObject obj)
-{
-		oldcont = obj;
 }
 
 /*!
@@ -556,7 +597,7 @@ If the request could not be fully satisfied, the remainder is returned
 */
 SI32 cItem::ReduceAmount(const SI16 amt)
 {
-	long rest=0;
+	UI32 rest=0;
 	if( amount > amt )
 	{
 		amount-=amt;
@@ -600,7 +641,6 @@ void cItem::SetMultiSerial(SI32 mulser)
 
 	if (getMultiSerial32()!=INVALID)		// if there is multi, add it
 		pointers::addToMultiMap(this);
-
 }
 
 /*!
@@ -618,43 +658,6 @@ void cItem::MoveTo(Location newloc)
 #endif
 }
 
-/*!
-\brief Add item to container
-\author Endymion
-\param item the item to add
-\param xx the x location or INVALID if use rand pos
-\param yy the y location or INVALID if use rand pos
-*/
-bool cItem::AddItem(pItem item, short xx, short yy)
-{
-	if ( ! item )
-		return false;
-
-	NxwSocketWrapper sw;
-	sw.fillOnline( item );
-	for( sw.rewind(); !sw.isEmpty(); sw++ )
-		SendDeleteObjectPkt(sw.getSocket(), item->getSerial32() );
-
-
-	if (xx!=-1)	// use the given position
-	{
-		item->setContainer( this );
-		item->setPosition(xx, yy, 9);
-	}
-	else		// no pos given
-	{
-		if( !ContainerPileItem(item) )	{ // try to pile
-			item->SetRandPosInCont(this);		// not piled, random pos
-			item->setContainer(this);
-		}
-		else
-			return true; //Luxor: we cannot do a refresh because item was piled
-	}
-	item->Refresh();
-	return true;
-
-}
-
 /*
 \brief Check if two item are similar so pileable
 \author Endymion
@@ -662,12 +665,12 @@ bool cItem::AddItem(pItem item, short xx, short yy)
 \note if same item is compared, false is returned
 */
 inline bool operator ==( cItem& a, cItem& b ) {
-	return  ( a.pileable && b.pileable ) &&
-			( a.getSerial32() != b.getSerial32() ) &&
-			( a.getScriptID() == b.getScriptID() ) &&
-			( a.getId() == b.getId() ) &&
-			( a.getColor() == b.getColor() ) &&
-			( a.poisoned == b.poisoned );
+	return  a.isPileable() && b.isPileable()  &&
+		( a.getSerial32() != b.getSerial32() ) &&
+		( a.getScriptID() == b.getScriptID() ) &&
+		( a.getId() == b.getId() ) &&
+		( a.getColor() == b.getColor() ) &&
+		( a.poisoned == b.poisoned );
 }
 
 /*
@@ -693,125 +696,62 @@ int cItem::handleEvent(UI08 code, UI08 nParams, UI32 *params)
 		);
 }
 
-#define MAX_ITEM_AMOUNT 65535
-
 /*!
-\brief Pile two items
-\return true if piled, false else
-\note refresh is done if piled
+\author Xanathar
+\brief gets the real name of an item (removing #'s)
+\return the real name of an item
+\note See also cItem::getName
 */
-bool cItem::PileItem( P_ITEM item )
+const std::string cItem::getRealItemName()
 {
-	VALIDATEPIR( item, false )
-	if( (*this) != (*item) )
-		return false;	//cannot stack.
-
-	if( amount+ item->amount> 65535  )
+	if ( current_name == "#" 0
 	{
-		if( cont )
-			item->SetRandPosInCont( cont );
-		else
-			item->setPosition( getPosition().x+1, getPosition().y, getPosition().z );
-
-		item->setContainer( cont );
-
-		item->amount=(amount+item->amount)-MAX_ITEM_AMOUNT;
-		amount=MAX_ITEM_AMOUNT;
-		item->Refresh();
-	}
-	else
-	{
-		item->setPosition( getPosition() );
-		item->setContainer( cont );
-		item->amount+=amount;
-		item->Refresh();
-		Delete();
-	}
-
-	return true;
-
+		tile_st tile;
+		data::seekTile(getId(), tile);
+		return std::string(tile.name);
+	} else
+		return current_name;
 }
 
 /*!
-\brief try to find an item in the container to stack with
-\todo port to cContainer.... GHISHAAAAAAAAAA! :P
+\brief Gets the actual name of the item
+\return The true name of the item, also if the current_name is #
 */
-bool cItem::ContainerPileItem( P_ITEM item)
+const std::string cItem::getName()
 {
-	VALIDATEPIR(item, false );
-	NxwItemWrapper si;
-	si.fillItemsInContainer( this, false );
-	for( si.rewind(); !si.isEmpty(); si++ )
+	tile_st tile;
+	int len, mode, used, ok, namLen;
+	std::string name;
+
+	if ( current_name != "#" )
+		return current_name;
+
+	data::seekTile(getId(), tile);
+	if (tile.flags&TILEFLAG_PREFIX_AN)
+		name = "an ";
+	else if (tile.flags&TILEFLAG_PREFIX_A)
+		name = "a ";
+
+	mode=0;
+	used=0;
+	len=strlen((char *) tile.name);
+	for(register int j = 0; j < len; j++)
 	{
-		P_ITEM pi=si.getItem();
-		if( ISVALIDPI(pi) ) {
-			if( pi->PileItem(item) )
-				return true;
-		}
-	}
-	return false;
-
-}
-
-/*!
-\author Juliunus
-\brief delete a determined amount of an item with determined color
-
-Recurses through the container given by serial and deletes items of the given id and color (if given)
-until the given amount is reached
-*/
-int cItem::DeleteAmount(int amount, short id, short color)
-{
-	int rest=amount;
-
-	NxwItemWrapper si;
-	si.fillItemsInContainer( this );
-	for( si.rewind(); !si.isEmpty(); si++ ) {
-		P_ITEM pi=si.getItem();
-		if(ISVALIDPI(pi) && (rest > 0) )
+		ok=0;
+		if ((tile.name[j]=='%')&&(mode==0)) mode=2;
+		else if ((tile.name[j]=='%')&&(mode!=0)) mode=0;
+		else if ((tile.name[j]=='/')&&(mode==2)) mode=1;
+		else if (mode==0) ok=1;
+		else if ((mode==1)&&(pi->amount==1)) ok=1;
+		else if ((mode==2)&&(pi->amount>1)) ok=1;
+		if (ok)
 		{
-			if (pi->getId()==id && (color==INVALID || (pi->getColor()==color)))
-				rest=pi->ReduceAmount(rest);
+			name += tile.name[j];
+			if (mode) used=1;
 		}
 	}
-	return rest;
 
-}
-
-/*!
-\author Anthalir
-*/
-int cItem::DeleteAmountByID(int amount, unsigned int scriptID)
-{
-	int rest= amount;
-
-	NxwItemWrapper si;
-	si.fillItemsInContainer( this, false );
-	for( si.rewind(); !si.isEmpty(); si++ ) {
-
-		P_ITEM pi=si.getItem();
-		if( !ISVALIDPI(pi)) continue;
-
-		if (pi->type == ITYPE_CONTAINER)
-			rest= pi->DeleteAmountByID(amount, scriptID);
-
-		if (pi->getScriptID() == scriptID)
-			rest= pi->ReduceAmount(rest);
-
-		if (rest<= 0)
-			break;
-
-	}
-	return rest;
-
-}
-
-/*!
-\todo backport
-*/
-int cItem::getName(char* itemname)
-{
-	return item::getname(DEREF_P_ITEM(this),itemname);
+	return name;
 }
 
 /*!
@@ -851,125 +791,6 @@ R32 cItem::getWeight()
 	return itemweight;
 }
 
-
-/*!
-\brief the weight of the item ( * number of piled item if there are )
-\author Endymion
-\return the weigth actual
-\todo make return value float
-*/
-cItem::cItem( SERIAL ser )
-{
-
-	setSerial32( ser );
-	setOwnerSerial32Only(INVALID);
-	setMultiSerial32Only(INVALID);//Multi serial
-
-	setCurrentName("#");
-	setSecondaryName("#");
-	setScriptID( 0 );
-	murderer = string("");
-	creator = string("");
-	incognito=false;//AntiChrist - incognito
-	madewith=0; // Added by Magius(CHE)
-	rank=0; // Magius(CHE)
-	good=-1; // Magius(CHE)
-	rndvaluerate=0; // Magius(CHE) (2)
-	setId( 0x0001 ); // Item visuals as stored in the client
-	setPosition(100, 100, 0);
-	setOldPosition( getPosition() );
-	setColor( 0x0000 ); // Hue
-	cont = NULL;
-	oldcont = NULL;
-	layer=oldlayer=0; // Layer if equipped on paperdoll
-	scriptlayer=0;	//Luxor
-	itmhand=0; // Layer if equipped on paperdoll
-	type=0; // For things that do special things on doubleclicking
-	type2=0;
-	offspell=0;
-	weight=0;
-	more1=0; // For various stuff
-	more2=0;
-	more3=0;
-	more4=0;
-	moreb1=0;
-	moreb2=0;
-	moreb3=0;
-	moreb4=0;
-	morex=0;
-	morey=0;
-	morez=0;
-	amount=1; // Amount of items in pile
-	amount2=0; //Used to track things like number of yards left in a roll of cloth
-	doordir=0; // Reserved for doors
-	dooropen=0;
-	pileable=0; // Can item be piled
-	dye=0; // Reserved: Can item be dyed by dye kit
-	corpse=0; // Is item a corpse
-	carve=-1;//AntiChrist-for new carving system
-	att=0; // Item attack
-	def=0; // Item defense
-	fightskill=INVALID_SKILL; //Luxor: skill used by item
-	reqskill[0]=0; //Luxor: skill value required by item (skillnum = fightskill)
-	reqskill[1]=0;
-	damagetype=DAMAGE_PURE; //Luxor: damage types system
-	auxdamagetype=DAMAGE_PURE; //Luxor: damage types system
-	auxdamage=0;
-	lodamage=0; //Minimum Damage weapon inflicts
-	hidamage=0; //Maximum damage weapon inflicts
-	smelt=0; // for smelting items
-	secureIt=0; // secured chests
-	wpsk=0; //The skill needed to use the item
-	hp=0; //Number of hit points an item has.
-	maxhp=0; // Max number of hit points an item can have.
-	st=0; // The strength needed to equip the item
-	st2=0; // The strength the item gives
-	dx=0; // The dexterity needed to equip the item
-	dx2=0; // The dexterity the item gives
-	in=0; // The intelligence needed to equip the item
-	in2=0; // The intelligence the item gives
-	spd=0; //The speed of the weapon
-	wipe=0; //Should this item be wiped with the /wipe command
-	magic=0; // 0=Default as stored in client, 1=Always movable, 2=Never movable, 3=Owner movable.
-	gatetime=0;
-	gatenumber=INVALID;
-
-	visible=0; // 0=Normally Visible, 1=Owner & GM Visible, 2=GM Visible
-	spawnserial=INVALID;
-	spawnregion=INVALID;
-	dir=0; // Direction, or light source type.
-	priv=0; // Bit 0, decay off/on.  Bit 1, newbie item off/on.  Bit 2 Dispellable
-	decaytime = 0;
-	value=0; // Price shopkeeper sells item at.
-	restock=0; // Number up to which shopkeeper should restock this item
-	trigger=0; //Trigger number that item activates
-	trigtype=0; //Type of trigger
-	tuses=0;    //Number of uses for trigger
-	poisoned=POISON_NONE; //AntiChrist -- for poisoning skill
-	murdertime=0; //AntiChrist -- for corpse -- when the people has been killed
-//	glow=0;
-//	glow_effect=0;
-//	glow_c1=0;
-//	glow_c2=0;
-	time_unused=0;
-	timeused_last=getclock();
-	animSetId(0x0000); // elcabesa animation
-	ammo=0;
-	ammoFx=0;
-
-	/* Luxor: damage resistances */
-	int i;
-	for (i=0;i<MAX_RESISTANCE_INDEX;i++)
-		resists[i]=0;
-
-	for (int X=0; X<ALLITEMEVENTS; X++)
-		amxevents[X] = NULL;
-	//desc[0]=0x00;
-	vendorDescription = std::string("");
-	setDecayTime(); //Luxor
-
-}
-
 bool LoadItemEventsFromScript (P_ITEM pi, char *script1, char *script2)
 {
 
@@ -1002,23 +823,6 @@ bool LoadItemEventsFromScript (P_ITEM pi, char *script1, char *script2)
 }
 
 /*!
-\author Xanathar
-\brief gets the real name of an item (removing #'s)
-\return the real name of an item
-*/
-const char* cItem::getRealItemName()
-{
-	if ( strncmp(getCurrentNameC(), "#", 1) )
-		return getCurrentNameC();
-	else
-	{
-		tile_st tile;
-		data::seekTile(getId(), tile);
-        	return reinterpret_cast<char*>(tile.name);
-	}
-}
-
-/*!
 \author Luxor
 \brief gets the combat skill of an item
 \return the combat skill used by the object
@@ -1034,65 +838,8 @@ Skill cItem::getCombatSkill()
 }
 
 /*!
-\author AXanathar
-\brief counts the spells in a spellbook
-\return the number of spells in the spellbook
-*/
-int cItem::countSpellsInSpellBook()
-{
-
-	int spellcount=0;
-
-	NxwItemWrapper si;
-	si.fillItemsInContainer( this, false );
-	for( si.rewind(); !si.isEmpty(); si++ ) {
-
-		P_ITEM pj=si.getItem();
-		if(!ISVALIDPI(pj)) continue;
-		if (pj->getId() == 0x1F6D)
-            spellcount = 64;
-        else
-            spellcount++;
-    }
-
-	return (spellcount < 64) ? spellcount : 64;
-}
-
-
-/*!
-\author Xanathar
-\brief returns if or not a spellbook contains a spell
-\param spellnum spell identifier
-\return true if the spell is in the spellbook else false
-*/
-bool cItem::containsSpell(magic::SpellId spellnum)
-{
-    bool raflag = false;
-
-    if (spellnum==magic::SPELL_REACTIVEARMOUR) raflag = true;
-    if ((spellnum>=magic::SPELL_CLUMSY) && (spellnum < magic::SPELL_REACTIVEARMOUR))
-		spellnum = static_cast<magic::SpellId>(static_cast<int>(spellnum)+1);
-    if (raflag) spellnum=static_cast<magic::SpellId>(0);
-
-	NxwItemWrapper si;
-	si.fillItemsInContainer( this, false );
-	for( si.rewind(); !si.isEmpty(); si++ )
-    {
-		P_ITEM pj=si.getItem();
-		if(!ISVALIDPI(pj)) continue;
-
-        if((pj->getId()==(0x1F2D+spellnum) || pj->getId()==0x1F6D) || pj->getId() == 0x1F6D)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-/*!
 \author Luxor
 \brief deletes the item
-\todo backport
 */
 void cItem::Delete()
 {
@@ -1193,204 +940,6 @@ void cItem::Refresh()
 	}
 }
 
-cContainerItem::cContainerItem(bool ser/*= true*/) : cItem(ser)
-{
-	ItemList.empty();
-}
-
-/*!
-\author Lord Binary
-\brief Return the type of pack to handle its x, y coord system correctly
-\return see table
-
-<b>Interpretation of the result</b>
-<ul>
-	<li>type -1: no pack</li>
-	<li>type 1: y-range 50 .. 100</li>
-	<li>type 2: y-range 30 .. 80</li>
-	<li>type 3: y-range 100 .. 150</li>
-	<li>type 4: y-range 40 .. 140</li>
-</ul>
-x-range 18 .. 118 for 1,2,3; 40 for 4
-*/
-SI16 cContainerItem::getGumpType()
-{
-	switch( getId() )
-	{
-	case 0x09b0:
-	case 0x09aa:
-	case 0x09a8:
-	case 0x0e79:
-	case 0x0e7a:
-	case 0x0e76:
-	case 0x0e7d:
-	case 0x0e80:
-		return 1;
-
-	case 0x09a9:
-	case 0x0e3c:
-	case 0x0e3d:
-	case 0x0e3e:
-	case 0x0e3f:
-	case 0x0e78:
-	case 0x0e7e:
-		return 2;
-
-	case 0x09ab:
-	case 0x0e40:
-	case 0x0e41:
-	case 0x0e42:
-	case 0x0e43:
-	case 0x0e7c:
-		return 3;
-
-	case 0x0e75:
-	case 0x09b2:
-	case 0x0e77:
-	case 0x0e7f:
-	case 0x0e83:
-	case 0x0EFA: 	// spellbook. Position shouldn't matter, but as it can be opened like a backpack...(Duke)
-		return 4;
-
-	case 0x2006:
-		return 5;	// a corpse/coffin
-
-	default:
-		return -1;
-	}
-}
-
-bool cContainerItem::pileItem( P_ITEM item)	// try to find an item in the container to stack with
-{
-
-	NxwItemWrapper si;
-	si.fillItemsInContainer( this, false );
-	for( si.rewind(); !si.isEmpty(); si++ )
-	{
-		P_ITEM pi=si.getItem();
-		if(!ISVALIDPI(pi)) continue;
-
-		if (!(pileable && item->pileable &&
-			getId()==item->getId() &&
-			getColor()==item->getColor() ))
-			return false;	//cannot stack.
-
-		if (amount+item->amount>65535)
-		{
-			item->setPosition( getPosition("x"), getPosition("y"), 9);
-			item->amount=(amount+item->amount)-65535;
-			amount=65535;
-			item->Refresh();
-		}
-		else
-		{
-			amount+=item->amount;
-			item->Delete();
-		}
-		Refresh();
-		return true;
-	}
-	return false;
-
-}
-
-void cContainerItem::setRandPos(P_ITEM item)
-{
-	item->setPosition("x", RandomNum(18, 118));
-	item->setPosition("z", 9);
-
-	switch( getGumpType() )
-	{
-	case 1:
-		item->setPosition("y", RandomNum(50, 100));
-		break;
-
-	case 2:
-		item->setPosition("y", RandomNum(30, 80));
-		break;
-
-	case 3:
-		item->setPosition("y", RandomNum(100, 140));
-		break;
-
-	case 4:
-		item->setPosition("y", RandomNum(60, 140));
-		item->setPosition("x", RandomNum(60, 140));
-		break;
-
-	case 5:
-		item->setPosition("y", RandomNum(85, 160));
-		item->setPosition("x", RandomNum(20, 70));
-		break;
-
-	default:
-		item->setPosition("y", RandomNum(30, 80));
-		break;
-	}
-}
-
-UI32 cContainerItem::countItems(UI32 scriptID, bool bAddAmounts/*= false*/)
-{
-	UI32 count= 0;
-	vector<SI32>::iterator it= ItemList.begin();
-
-	do
-	{
-		P_ITEM pi= pointers::findItemBySerial(*it);
-		if( !ISVALIDPI(pi) )
-		{
-			LogWarning("item's serial not valid: %d", *it);
-			continue;
-		}
-
-		if( bAddAmounts )
-			count+= pi->amount;
-		else
-			count++;
-	}
-	while( ++it != ItemList.end() );
-
-	return count;
-}
-
-UI32 cContainerItem::removeItems(UI32 scriptID, UI32 amount/*= 1*/)
-{
-	UI32 rest= amount;
-	vector<SI32>::iterator it= ItemList.begin();
-
-	do
-	{
-		P_ITEM pi= pointers::findItemBySerial(*it);
-		VALIDATEPIR(pi, 0);
-
-		if( pi->getScriptID()==scriptID )
-			rest= pi->ReduceAmount(rest);
-
-		if (rest<= 0)
-			break;
-
-	}
-	while( ++it!=ItemList.end() );
-
-	return rest;
-}
-
-/*!
-\brief remove item from container but don't delete it from world
-*/
-void cContainerItem::droitem(P_ITEM pi)
-{
-	int ser= pi->getSerial32();
-	vector<SI32>::iterator it= ItemList.begin();
-
-	do
-	{
-		if( *it==ser )	// item found
-			ItemList.erase(it);
-	}
-	while( ++it!=ItemList.end() );
-}
-
 /*!
 \brief Get the out most container
 \author Endymion
@@ -1398,11 +947,11 @@ void cContainerItem::droitem(P_ITEM pi)
 \param rec not need to use, only internal for have a max number or recursion
 \note max recursion = 50
 */
-pItem cItem::getOutMostCont( short rec )
+pItem cItem::getOutMostCont( SI16 rec )
 {
 	if ( rec<0	// too many recursions
-		|| (isCharSerial(cont->getSerial()))	//weared
-		|| (isInWorld()) )	// in the world
+		|| (isInWorld()) // in the world
+		|| (cont->rtti() == rtti::cBody ) )//weared
 		return this;
 
 	return cont->getOutMostCont( --rec );
@@ -1413,9 +962,9 @@ pItem cItem::getOutMostCont( short rec )
 \author Flameeyes
 \return pointer to pack owner
 */
-pChar cItem::getPackOwner()
+pBody cItem::getPackOwner()
 {
-	P_ITEM omcont = getOutMostCont();
+	pItem omcont = getOutMostCont();
 
 	if(omcont->isInWorld())
 		return NULL;
@@ -1485,30 +1034,6 @@ UI32 cItem::distFrom( pItem pi )
 		else return VERY_VERY_FAR;
 
 	}
-}
-
-void cItem::setDecay( const bool on )
-{
-	if( on )
-		priv |= 0x01;
-	else
-		priv &= ~0x01;
-}
-
-void cItem::setNewbie( const bool on )
-{
-	if( on )
-		priv |= 0x02;
-	else
-		priv &= ~0x02;
-}
-
-void cItem::setDispellable( const bool on )
-{
-	if( on )
-		priv |= 0x04;
-	else
-		priv &= ~0x04;
 }
 
 /*!

@@ -1,12 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| PyUO Server Emulator                                                     |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in pyuo.cpp file.              |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file object.h
 \brief Declaration of class cObject
@@ -16,16 +14,17 @@
 #ifndef __OBJECT_H
 #define __OBJECT_H
 
+class cObject;
+typedef cObject *pObject;
+
 #include <stdarg.h>
 #include "constants.h"
 #include "typedefs.h"
-#include "amx/amxcback.h"
 #include "tmpeff.h"
 #include "basics.h"
 
 class cScpIterator;
 
-typedef map< UI32, AmxEvent* > AmxEventMap;
 
 typedef slist< tempfx::cTempfx > TempfxVector;
 
@@ -50,44 +49,45 @@ class cObject
 */
 public:
 	inline bool operator> (const cObject& obj) const
-	{ return(getSerial32() >  obj.getSerial32()); }
+	{ return(getSerial() >  obj.getSerial()); }
 
 	inline bool operator< (const cObject& obj) const
-	{ return(getSerial32() <  obj.getSerial32()); }
+	{ return(getSerial() <  obj.getSerial()); }
 
 	inline bool operator>=(const cObject& obj) const
-	{ return(getSerial32() >= obj.getSerial32()); }
+	{ return(getSerial() >= obj.getSerial()); }
 
 	inline bool operator<=(const cObject& obj) const
-	{ return(getSerial32() <= obj.getSerial32()); }
+	{ return(getSerial() <= obj.getSerial()); }
 
 	inline bool operator==(const cObject& obj) const
-	{ return(getSerial32() == obj.getSerial32()); }
+	{ return(getSerial() == obj.getSerial()); }
 
 	inline bool operator!=(const cObject& obj) const
-	{ return(getSerial32() != obj.getSerial32()); }
+	{ return(getSerial() != obj.getSerial()); }
 //@}
 
 public:
 	static std::string	getRandomScriptValue( std::string section, std::string& sectionId );
-private:
+protected:
 	static cScpIterator*	getScriptIterator( std::string section, std::string& sectionId );
 
 public:
 	cObject();
 	virtual ~cObject();
+	virtual void Delete() = 0;
 //@{
 /*!
 \name Serials
 \brief functions for handle serials stuff
 */
-private:
+protected:
 	UI32		serial;		//!< serial of the object
 	UI32		multi_serial;	//!< multi serial of the object (don't know what it is used for)
 
 public:
 	//! return the serial of the object
-	inline const UI32 getSerial32() const
+	inline const UI32 getSerial() const
 	{ return serial; }
 
 	void setSerial32(SI32 newserial);
@@ -109,7 +109,7 @@ public:
 \name Positions
 \brief Position related stuff
 */
-private:
+protected:
 	Location		old_position;		//!< old position of object
 	Location		position;		//!< current position of object
 
@@ -139,10 +139,18 @@ public:
 \name Appearence
 */
 protected:
-/*!
-Real name of the char, 30 chars max + '\\0'<br>
-Also used to store the secondary name of items.
-*/
+	UI32 ScriptID;	//!< Object's ScriptID
+
+	UI16 id;	//!< Object's ID
+	UI16 id_old;	//!< Object's old ID
+
+	UI16 color;	//!< Object's color
+	UI16 color_old;	//!< Object's old color
+
+	/*!
+	Real name of the char, 30 chars max + '\\0'<br>
+	Also used to store the secondary name of items.
+	*/
 	std::string	secondary_name;
 	//! Name displayed everywhere for this object, 30 char max + '\\0'
 	std::string	current_name;
@@ -175,25 +183,6 @@ public:
 	{ secondary_name = s; }
 
 	void setSecondaryName(const char *format, ...);
-//@}
-
-//@{
-/*!
-\name Temp - Fx
-*/
-private:
-	UI32			ScriptID;
-	TempfxVector		*tempfx;
-
-public:
-	LOGICAL			addTempfx( cObject& src, SI32 num, SI32 more1 = 0, SI32 more2 = 0, SI32 more3 = 0, SI32 dur = 0, SI32 amxcback = INVALID );
-	void			delTempfx( SI32 num, LOGICAL executeExpireCode = true, SERIAL funcidx = INVALID );
-	void			checkTempfx();
-	void			tempfxOn();
-	void			tempfxOff();
-	LOGICAL			hasTempfx();
-	tempfx::cTempfx*	getTempfx( SI32 num, SERIAL funcidx = INVALID );
-//@}
 
 	//! return the object's script number
 	inline const UI32 getScriptID() const
@@ -203,18 +192,6 @@ public:
 	inline void setScriptID(UI32 sid)
 	{ ScriptID = sid; }
 
-	UI32	disabled;	//!< Disabled object timer, cant trigger.
-	std::string*	disabledmsg; //!< Object is disabled, so display this message.
-
-public:
-	virtual void Delete() = 0;
-
-private:
-	UI16 id;	//!< Object's ID
-	UI16 id_old;	//!< Object's old ID
-	UI16 color;	//!< Object's color
-	UI16 color_old;	//!< Object's old color
-public:
 	inline void setId( UI16 newId )
 	{ id = newId; }
 
@@ -237,8 +214,52 @@ public:
 	{ color_old = oldColor; }
 
 	inline const UI16 getOldColor() const
-	{ return this->color_old; }
+	{ return color_old; }
 
+//@}
+
+//@{
+/*!
+\name Flags
+*/
+
+protected:
+	UI64 flags;
+
+	inline void setFlag(UI64 flag, bool set)
+	{
+		if ( set ) flags |= flag;
+		else flags &= ~flag;
+	}
+
+public:
+	inline const UI64 getFlags() const
+	{ return flags; }
+
+	inline void setFlags(UI64 newFlags)
+	{ flags = newFlags; }
+
+//@}
+
+//@{
+/*!
+\name Temp - Fx
+*/
+protected:
+	TempfxVector		*tempfx;
+
+public:
+	LOGICAL			addTempfx( cObject& src, SI32 num, SI32 more1 = 0, SI32 more2 = 0, SI32 more3 = 0, SI32 dur = 0, SI32 amxcback = INVALID );
+	void			delTempfx( SI32 num, LOGICAL executeExpireCode = true, SERIAL funcidx = INVALID );
+	void			checkTempfx();
+	void			tempfxOn();
+	void			tempfxOff();
+	LOGICAL			hasTempfx();
+	tempfx::cTempfx*	getTempfx( SI32 num, SERIAL funcidx = INVALID );
+//@}
+
+	UI32	disabled;	//!< Disabled object timer, cant trigger.
+	std::string*	disabledmsg; //!< Object is disabled, so display this message.
 } PACK_NEEDED;
 
 #endif	// __OBJECT_H

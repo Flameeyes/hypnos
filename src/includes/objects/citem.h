@@ -104,22 +104,34 @@ protected:
 //@}
 
 protected:
-	UI32		flags; //!< Item flags
 
 //@{
 /*!
 \name Who is
 */
-	Event		*events[ALLITEMEVENTS];
-	int		handleEvent(UI08 code, UI08 nParams, UI32 *params);
+protected:
+	Event			*events[ALLITEMEVENTS];
+	int			handleEvent(UI08 code, UI08 nParams, UI32 *params);
 
-	SI32		hp;	//!< Number of hit points an item has.
-	SI32		maxhp;	//!< Max number of hit points an item can have.
+	SI32			hp;	//!< Number of hit points an item has.
+	SI32			maxhp;	//!< Max number of hit points an item can have.
+public:
+	void			Refresh();
+	const std::string	getName();
+	const std::string	getRealItemName();
+	void			getPopupHelp(char *str);
 
-	void		Refresh();
-	SI32		getName(char* itemname);
-	const char*	getRealItemName();
-	void		getPopupHelp(char *str);
+	inline const SI32 getHP() const
+	{ return hp; }
+
+	inline void setHP(SI32 newhp) const
+	{ hp = newhp; }
+
+	inline const SI32 getMaxHP() const
+	{ return maxhp; }
+
+	inline void setMaxHP(SI32 newhp) const
+	{ maxhp = newhp; }
 //@}
 
 //@{
@@ -401,9 +413,45 @@ public:
 
 //@{
 /*!
+\name flags
+*/
+protected:
+	static const UI64 flagPileable		= 0x0000000000000001ull; //!< Can the item be piled?
+	static const UI64 flagCanDecay		= 0x0000000000000002ull; //!< Can the item decay?
+	static const UI64 flagNewbie		= 0x0000000000000004ull; //!< Is the item newbie?
+	static const UI64 flagDispellable	= 0x0000000000000004ull; //!< Can the item be dispelled?
+
+public:
+	inline const bool isPileable() const
+	{ return flags & flagPileable; }
+
+	inline void setPileable(bool set = true)
+	{ setFlag(flagPileable, set); }
+
+	inline const bool canDecay() const
+	{ return flags & flagCanDecay; }
+
+	inline void setDecay(bool set = true)
+	{ setFlag(flagCanDecay, set); }
+
+	inline const bool isNewbie() const
+	{ return flags & flagNewbie; }
+
+	inline void setNewbie(bool set = true)
+	{ setFlag(flagNewbie, set); }
+
+	inline const bool isDispellable() const
+	{ return flags & flagDispellable; }
+
+	inline void setDispellable(bool set = true)
+	{ setFlag(flagDispellable, set); }
+//@}
+
+//@{
+/*!
 \name Container
 */
-private:
+protected:
 	pObject		cont;
 	pObject		oldcont;
 
@@ -416,7 +464,8 @@ public:
 	inline const pObject getOldContainer() const
 	{ return oldcont; }
 
-	void setOldContainer(pObject obj);
+	inline void setOldContainer(pObject obj)
+	{ oldcont = obj; }
 
 	//! check if item is a container
 	inline const bool isContainer() const
@@ -425,14 +474,7 @@ public:
 	inline const bool isSecureContainer() const
 	{ return type==8 || type==13 || type==64; }
 
-	//SI16		GetContGumpType();
-	void		SetRandPosInCont(P_ITEM pCont);
-	//! try to find an item in the container to stack with
-	bool		ContainerPileItem( P_ITEM item );
 	SI32		secureIt; // secured chests
-	bool		AddItem(P_ITEM item, short xx=-1, short yy=-1);	// Add Item to container
-	SI32		DeleteAmountByID(int amount, unsigned int scriptID);
-	SI16		getContGump();
 	void		putInto( P_ITEM pi );
 //@}
 
@@ -538,8 +580,6 @@ public:
 /*!
 \name Magic Related
 */
-	SI32		countSpellsInSpellBook();
-	bool		containsSpell(magic::SpellId spellnumber);
 	UI32		gatetime;
 	SI32		gatenumber;
 	SI08		offspell;
@@ -655,18 +695,11 @@ public:
 
 	bool		dye;		//!< Reserved: Can item be dyed by dye kit
 
-	SI08		priv;		//!< Bit 0, decay off/on.  Bit 1, newbie item off/on.  Bit 2 Dispellable
-
-private:
+protected:
 	TIMERVAL	decaytime;
 
 public:
 	bool		doDecay();
-
-	inline const bool canDecay() const
-	{ return priv&0x01; }
-
-	void		setDecay( const bool on = true );
 
 	inline const void setDecayTime( const TIMERVAL delay = uiCurrentTime+(SrvParms->decaytimer*MY_CLOCKS_PER_SEC) )
 	{ decaytime = delay; }
@@ -674,21 +707,8 @@ public:
 	inline const TIMERVAL getDecayTime() const
 	{ return decaytime; }
 
-	inline const bool isNewbie() const
-	{ return priv&0x02; }
-
-	void		setNewbie( const bool on = true );
-
-	inline const bool isDispellable() const
-	{ return priv&0x04; }
-
-	void		setDispellable( const bool on = true );
-
-	bool		pileable; // Can item be piled
-	bool		PileItem( P_ITEM pItem );
-
-	P_ITEM		getOutMostCont( short rec=50 );
-	P_CHAR		getPackOwner();
+	pItem		getOutMostCont( UI16 rec=50 );
+	pBody		getPackOwner();
 
 	UI32		distFrom( P_CHAR pc );
 	UI32		distFrom( P_ITEM pi );

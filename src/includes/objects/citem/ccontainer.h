@@ -5,7 +5,6 @@
 | You can find detailed license information in pyuo.cpp file.              |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-
 /*!
 \file
 \brief Header defining cContainer class
@@ -20,14 +19,10 @@ typedef cContainer* pContainer;
 #include "rtti.h"
 #include "typedefs.h"
 
-// will be fully implemented in 0.83
-// Anthalir
-/*
-
-  properties of containers:
-	- one or more key(s)
-	- a list of items stored in it
-	- a gump
+/*!
+\brief Container item
+\note This class must be identified via rtti() method to be sure
+that the item is a Container
 */
 class cContainer : public cItem
 {
@@ -46,11 +41,13 @@ public:
 	{ return rtti::cContainer; }
 
 	UI16		getGump();
-	bool		addItem(pItem item, UI16 xx=-1, UI16 yy=-1);	// Add Item to container
-	UI32		removeItems(UI32 scriptID, UI32 amount/*= 1*/);
+	bool		addItem(pItem item, UI16 xx=-1, UI16 yy=-1);
+	UI32		removeItems(UI32 amount, UI16 id, UI16 color);
+	UI32		removeItems(UI32 amount, UI32 scriptID);
 	void		dropItem(pItem pi);
 	UI32		countItems(UI32 scriptID, bool total = false);
-
+	UI32		countSpellsInSpellBook(bool stdOnly = true);
+	bool		containsSpell(magic::SpellId spellnum);
 } PACK_NEEDED;
 
 #endif
