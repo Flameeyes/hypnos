@@ -27,14 +27,11 @@ namespace data {
 std::vector < cMULFile< map_st >* > maps; // Maps (map0.mul map1.mul...)
 cMULFile< staticIdx_st >* staticIdx; // staidx0.mul
 cMULFile< static_st >* statics; // statics.mul
-cMULFile< land_st >* tdLand; // tiledata.mul
-cMULFile< tile_st >* tdTile; // tiledata.mul
 cMULFile< multiIdx_st >* multiIdx; // multi.idx
 cMULFile< multi_st >* multi; // multi.mul
 
 cMULFile< verdata_st >* verIdx; // verdata.mul
 cMULFile< land_st >* verLand; // verdata.mul
-cMULFile< tile_st >* verTile; // verdata.mul
 
 static int32_t verdataEntries;
 
@@ -137,56 +134,6 @@ static void cacheStatics()
 
 /*!
 \author Luxor
-\brief Caches tiledata mul files, trying to maintain a sequential reading to get the best speed.
-*/
-static void cacheTileData()
-{
-	if ( !tdLand->isReady() || !tdTile->isReady() )
-		return;
-
-	uint32_t pos;
-	tile_st t;
-	land_st l;
-	std::map< uint32_t, land_st > *land_cache = new std::map< uint32_t, land_st >;
-	std::map< uint32_t, tile_st > *tile_cache = new std::map< uint32_t, tile_st >;
-
-	uint32_t block;
-	uint8_t index;
-	ConOut( "\nCaching land data ( tiledata.mul )\t\t" );
-	for ( block = 0; block < 512; block++ ) {
-		for ( index = 0; index < 32; index++ ) {
-			pos =
-				// Each block contains 32 land_st.
-				( (block + 1) * TILE_HEADER_SIZE ) + ( land_st_size * (index + block * 32) );
-			if ( verLand->getData( pos, l ) )
-				land_cache->insert( std::pair< uint32_t, land_st >( pos, l ) );
-			else if ( tdLand->getData( pos, l ) )
-				land_cache->insert( std::pair< uint32_t, land_st >( pos, l ) );
-		}
-	}
-	ConOut( "[Done]" );
-	tdLand->setCache( land_cache );
-
-	ConOut( "\nCaching tiles data ( tiledata.mul ) \t\t" );
-	for ( block = 0; !tdTile->eof(); block++ ) {
-		for ( index = 0; index < 32; index++ ) {
-			pos =
-				// Go beyond the land_st dedicated space.
-				TILEDATA_LAND_SIZE +
-				// Each block contains 32 tile_st.
-				( (block + 1) * TILE_HEADER_SIZE ) + ( tile_st_size * (index + block * 32) );
-			if ( verTile->getData( pos, t ) )
-				tile_cache->insert( std::pair< uint32_t, tile_st >( pos, t ) );
-			else if ( tdTile->getData( pos, t ) )
-				tile_cache->insert( std::pair< uint32_t, tile_st >( pos, t ) );
-		}
-	}
-	ConOut( "[Done]" );
-	tdTile->setCache( tile_cache );
-}
-
-/*!
-\author Luxor
 \brief Caches the verdata index, trying to maintain a sequential reading to get the best speed.
 */
 static void cacheVerdataIndex()
@@ -279,10 +226,6 @@ void init()
 
 	statics = new cMULFile< static_st > ( statics_path, "rb" );
 	CHECKMUL( statics, statics_path.c_str() );
-
-	tdLand = new cMULFile< land_st > ( tiledata_path, "rb" );
-	CHECKMUL( tdLand, tiledata_path.c_str() );
-	tdTile = new cMULFile< tile_st > ( tiledata_path, "rb" );
 
 	multiIdx = new cMULFile< multiIdx_st > ( multiIdx_path, "rb" );
 	CHECKMUL( multiIdx, multiIdx_path.c_str() );
@@ -473,48 +416,6 @@ bool collectStatics( uint32_t x, uint32_t y, staticVector& s_vec )
 			s_vec.push_back( s );
 	}
 	return ( s_vec.size() > 0 );
-}
-
-/*!
-\author Luxor
-*/
-bool seekLand( uint16_t id, land_st& land )
-{
-	if ( !tdLand->isCached() && seekVerLand( id, land ) )
-		return true;
-
-	if ( !tdLand->isReady() )
-		return false;
-
-	uint16_t block = id / 32;
-
-	uint32_t pos =
-		// Each block contains 32 land_st.
-		( (block + 1) * TILE_HEADER_SIZE ) + ( land_st_size * id );
-
-	return tdLand->getData( pos, land );
-}
-
-/*!
-\author Luxor
-*/
-bool seekTile( uint16_t id, tile_st& tile )
-{
-	if ( !tdTile->isCached() && seekVerTile( id, tile ) )
-		return true;
-
-	if ( !tdTile->isReady() )
-		return false;
-
-	uint16_t block = id / 32;
-
-	uint32_t pos =
-		// Go beyond the land_st dedicated space.
-		TILEDATA_LAND_SIZE +
-		// Each block contains 32 tile_st.
-		( (block + 1) * TILE_HEADER_SIZE ) + ( tile_st_size * id );
-
-	return tdTile->getData( pos, tile );
 }
 
 /*!

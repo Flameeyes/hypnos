@@ -191,8 +191,6 @@ std::string getPath( MulFileId id );
 
 bool seekMap( uint32_t x, uint32_t y, map_st& m, uint8_t nMap = 0 ); //<! Luxor: nMap will be used for future multiple maps support.
 bool collectStatics( uint32_t x, uint32_t y, staticVector& s_vec );
-bool seekLand( uint16_t id, land_st& land );
-bool seekTile( uint16_t id, tile_st& tile );
 bool seekMulti( uint16_t id, multiVector& m_vec );
 bool seekVerTile( uint16_t id, tile_st& tile );
 bool seekVerLand( uint16_t id, land_st& land );
@@ -223,4 +221,3 @@ private:
 } // namespace data
 
 #endif // __DATA_H__
-
