@@ -1704,6 +1704,53 @@ namespace nPackets {
 
 		//! packet 0xbf is a family of misc commands, all ported for readability pourpose in misccommands.h/cpp
 
+		/*!
+		\brief Sends a visual effect (Packet 0xc0)
+		\author Chronodt
+		\note second 2d graphical effect packet. the other one is the 0x70. This includes a customizable effect color
+		*/
+		class ColoredGraphicalEffect : public cPacketSend
+		{
+		protected:
+
+			EffectType type;		//!< movement type
+			pSerializable src, dst;		//!< source and destination of effect
+			uint16_t effect;		//!< visual id of effect
+			sLocation src_pos, dst_pos;	//!< souce and destination position of effect
+			uint8_t speed;			//!< speed of effect (SPPED OF ANIMATION)
+			uint8_t duration;		//!< travel speed of effect (update: maybe number of loops of the effects: should investigate)
+			bool fixeddir;  		//!< if true animation direction does not change during effect
+			bool explode;			//!< explosion once effect reaches target
+			uint32_t color;			//!< color to use for effect
+			uint32_t renderMode;		//!< ??? i dont know, but nox always set it to zero, so i let that as default
+		public:
+			//! object to object constructor
+			inline ColoredGraphicalEffect(EffectType aType, pSerializable aSrc, pSerializable aDst, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode, uint32_t aColor, uint32_t aRenderMode = 0) :
+				type(aType), src(aSrc), dst(aDst), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode), color(aColor), renderMode(aRenderMode)
+			{
+				src_pos = src->getWorldLocation();
+				dst_pos = (dst) ? dst->getWorldLocation() : sLocation(0,0,0);
+			}
+			//! object to position constructor
+			inline ColoredGraphicalEffect(EffectType aType, pSerializable aSrc, sLocation aDst_pos, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode, uint32_t aColor, uint32_t aRenderMode = 0) :
+				type(aType), src(aSrc), dst(NULL), dst_pos(aDst_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode), color(aColor), renderMode(aRenderMode)
+			{
+				src_pos = src->getWorldLocation();
+			}
+			//! position to object constructor
+			inline ColoredGraphicalEffect(EffectType aType, sLocation aSrc_pos, pSerializable aDst, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode, uint32_t aColor, uint32_t aRenderMode = 0) :
+				type(aType), src(NULL), dst(aDst), src_pos(aSrc_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode), color(aColor), renderMode(aRenderMode)
+			{
+				dst_pos = dst->getWorldLocation();
+			}
+			//! position to position constructor
+			inline ColoredGraphicalEffect(EffectType aType, sLocation aSrc_pos, sLocation aDst_pos, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode, uint32_t aColor, uint32_t aRenderMode = 0) :
+				type(aType), src(NULL), dst(NULL), src_pos(aSrc_pos), dst_pos(aDst_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode), color(aColor), renderMode(aRenderMode)
+			{ }
+			void prepare();
+		};
+
+
 
 		class LogoutStatus : public cPacketSend
 		{

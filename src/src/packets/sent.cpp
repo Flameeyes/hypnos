@@ -1918,7 +1918,35 @@ void nPackets::Sent::AssistAllowedVersion::prepare()
 	LongToCharPtr(nSettings::Server::getAllowedAssistVersion(), buffer + 3)
 }
 
+/*!
+\brief Sends a visual effect (Packet 0xc0)
+\author Chronodt
+\note packet 0xc0
+*/
 
+void nPackets::Sent::ColoredGraphicalEffect::prepare()
+{
+	length = 36;
+	buffer = new uint8_t[36];
+	buffer[0] = 0xc0;
+	buffer[1] = type;
+	LongToCharPtr(src ? src->getSerial() : 0, buffer +2);
+	LongToCharPtr(dst ? dst->getSerial() : 0, buffer +6);
+	ShortToCharPtr(effect, buffer + 10);
+	ShortToCharPtr(src_pos.x, buffer + 12);
+	ShortToCharPtr(src_pos.y, buffer + 14);
+	buffer[16]=src_pos.z;
+	ShortToCharPtr(dst_pos.x, buffer + 17);
+	ShortToCharPtr(dst_pos.y, buffer + 19);
+	buffer[21]=dst_pos.z;
+	buffer[22]=speed;
+	buffer[23]=duration;
+	ShortToCharPtr(0, buffer + 24); 	//unknown bytes, apparently 0
+	buffer[26]=fixeddir ? 0x01 : 0x00;
+	buffer[27]=explode ? 0x01 : 0x00;
+	LongToCharPtr(color, buffer + 28);
+	LongToCharPtr(renderMode, buffer + 32);
+}
 
 
 

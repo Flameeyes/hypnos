@@ -170,29 +170,6 @@ void itemmessage(pClient client, char *txt, pItem pi, short color)
 
 
 
-void SendUnicodeSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint32_t lang, uint8_t sysname[30], uint8_t *unicodetext, uint16_t unicodelen)
-{
-	uint16_t tl;
-	uint8_t talk2[18]={ 0xAE, 0x00, };
-
-	tl = 18 + 30 + unicodelen;
-
-	ShortToCharPtr(tl, talk2 +1);
-	LongToCharPtr(id, talk2 +3);
-	ShortToCharPtr(model, talk2 +7);
-	talk2[9]=type;
-	ShortToCharPtr(color, talk2 +10);
-	ShortToCharPtr(fonttype, talk2 +12);
-	LongToCharPtr(lang, talk2 +14);
-
-	Xsend(s, talk2, 18);
-	Xsend(s, sysname, 30);
-	Xsend(s, unicodetext, unicodelen);
-//AoS/	Network->FlushBuffer(s);
-}
-
-
-
 //! \todo this funcion is called apparently only by a function in the deprecated cmdtable.cpp. Delete or update it when that command is revised
 void tellmessage(int i, int s, char *txt)
 //Modified by N6 to use UNICODE packets

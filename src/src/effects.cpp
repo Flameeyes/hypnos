@@ -59,11 +59,11 @@ void nEffects::staticFX(pSerializable source, uint16_t eff, uint8_t speed, uint8
 	{
 		pClient j =sw.getSocket();
 		if(!j) continue;
-		if (clientDimension[j]==2) // 2D client, send old style'd
+		if (j->clientDimension==2) // 2D client, send old style'd
 		{
 			j->sendPacket(&pk);
 		}
-		else if (clientDimension[j]==3) // 3d client, send 3d-Particles
+		else if (j->clientDimension==3) // 3d client, send 3d-Particles
 		{
 			//!\todo packet 0xc7
 			
