@@ -589,8 +589,7 @@ public:
 	skilled!
 	*/
 	int32_t		madewith;
-	//char		desc[100];	//!< vendor description
-	std::string	vendorDescription;
+	std::string	vendorDescription;//!< vendor description
 //@}
 
 //@{
@@ -599,7 +598,6 @@ public:
 */
 	uint32_t	spawnserial;
 	uint32_t	spawnregion;
-	void		SetMultiSerial(int32_t mulser);
 //@}
 
 //@{

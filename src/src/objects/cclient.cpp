@@ -680,7 +680,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 			}
 		} // corpse stuff
 
-		container->SetMultiSerial(INVALID);
+		container->setMulti(NULL);
 
 		//at end reset decay of container
 		container->setDecayTime();
@@ -754,11 +754,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 				pi->setAmount(amount);
 
 			} // end if not corpse
-#ifdef SPAR_I_LOCATION_MAP
-			pointezs::delFromLocationMap( pi );
-#else
-			mapRegions->remove( pi );
-#endif
+			pointers::delFromLocationMap( pi );
 			if (!pc_currchar->isGM() && !pc_currchar->isHidden() && owner != pc_currchar)
 			{
 				//the dragging of the item should not be shown if pc is a gm, is invisible or is trying to get an item on his person (or bank)
@@ -788,8 +784,6 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 void cClient::drop_item(pItem pi, sLocation &loc, pSerializable dest) // Item is dropped
 {
 
-    //#define debug_dragg
-
 	if (clientDimension==3)
 	{
 	// UO:3D clients send SOMETIMES two dragg packets for a single dragg action.
@@ -797,44 +791,25 @@ void cClient::drop_item(pItem pi, sLocation &loc, pSerializable dest) // Item is
 	// if UO:3D specific item loss problems are reported, this is probably the code to blame :)
 	// LB
 
-	#ifdef debug_dragg
-		if ( pi ) sysmessage("%04x %02x %02x %01x %04x i-name: %s EVILDRAG-old: %i\n",pi->getSerial(), loc->x, loc->y, loc->z, cont ? cont->getSerial(): -1, pi->name, evilDrag);
-		else sysmessage("blocked: %04x %02x %02x %01x %04x i-name: invalid item EVILDRAG-old: %i\n",pi->getSerial(), loc->x, loc->y, loc->z, cont ? cont->getSerial(): -1, evilDrag);
-	#endif
-
-		if  ( (loc.x==0xffff) && (loc.y==0xffff) && (loc.z==0)  && (evilDrag) )
+		if ( loc == (0xFFFF, 0xFFFF, 0) && evilDrag )
 		{
 			evilDrag=false;
-		#ifdef debug_dragg
-			sysmessage("Swallow only\n");
-		#endif
 			return;
 		}	 // swallow! note: previous evildrag !
 
-		else if ( (loc.x==0xffff) && (loc.y==0xffff) && (loc.z==0)  && (!evilDrag) )
+		if ( loc == (0xFFFF, 0xFFFF, 0) && !evilDrag )
 		{
-	#ifdef debug_dragg
-			sysmessage("Bounce & Swallow\n");
-	#endif
 			item_bounce6( pi);
 			return;
 		}
-		else if ( ( (loc.x!=0xffff) && (loc.y!=0xffff) &&  !cont) || ( (pi->getSerial()>=0x40000000) && (cont && cont->getSerial()>=0x40000000) ) )
+		if ( ( loc != (0xFFFF, 0xFFFF, 0) && !cont ) || ( (pi->getSerial()>=0x40000000) && (cont && cont->getSerial()>=0x40000000) ) )
 			evilDrag=true; // calc new evildrag value
-		     else evilDrag=false;
-		}
-
-	#ifdef debug_dragg
-	else
-	{
-		if ( pi ) sysmessage("blocked: %04x %02x %02x %01x %04x i-name: %s EVILDRAG-old: %i\n",pi->getSerial(), loc->x, loc->y, loc->z, cont ? cont->getSerial() : -1, pi->name, evilDrag);
+		else evilDrag=false;
 	}
-	#endif
-
 
 	if ( !dest) dump_item(pi, loc); // Invalid target => invalid container => put inWorld !!!
-	else if (isChar(dest)) droppedOnChar(pi, loc, dynamic_cast<pChar> dest);
-	else if (isItem(dest)) pack_item(pi, dynamic_cast<pItem> dest);
+	else if (dynamic_cast<pChar>(dest)) droppedOnChar(pi, loc, dynamic_cast<pChar>(dest));
+	else if (dynamic_cast<pItem>(dest)) pack_item(pi, dynamic_cast<pItem>(dest));
 }
 
 /*!
