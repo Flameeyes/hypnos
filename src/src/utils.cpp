@@ -309,20 +309,6 @@ int checkBoundingCircle(int xPos, int yPos, int fx1, int fy1, int fz1, int radiu
 		return 0;
 }
 
-void setabovelight(uint8_t lightchar)
-{
-	if (lightchar == worldcurlevel)
-		return;
-	
-	worldcurlevel=lightchar;
-	NxwSocketWrapper sw;
-	sw.fillOnline();
-	for( sw.rewind(); !sw.isEmpty(); sw++ )
-	{
-		client->light(worldcurlevel);
-	}
-}
-
 /*!
 \brief converts x,y coords to sextant coords
 \author LB

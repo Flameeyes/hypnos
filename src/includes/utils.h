@@ -20,9 +20,6 @@ int checkBoundingCircle(int xPos, int yPos, int fx1, int fy1, int fz1, int radiu
 int fielddir(pChar pc, int x, int y, int z);
 void npcsimpleattacktarget(int target2, int target);
 
-// Day and Night related prototypes
-void setabovelight(unsigned char);
-
 void endmessage(int x);
 void dooruse(pClient client, pItem pi/*int item*/);
 int calcGoodValue(pChar npc, pItem pi, int value,int goodtype); // by Magius(CHE) for trade system
