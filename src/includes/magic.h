@@ -17,9 +17,9 @@
 
 #include "common_libs.h"
 #include "targeting.h"
+#include "objects/cchar.h"
 
 #include "menu.h"
-
 
 //! dont use up mana
 #define SPELLFLAG_NOUSEMANA 0x1

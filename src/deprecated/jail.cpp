@@ -105,7 +105,7 @@ void prison::checkForFree()
 		next=j; next++;
 		if( TIMEOUT( (*j).timer ) ) {
 			pChar pc = pointers::findCharBySerial( (*j).serial );
-			if( ISVALIDPC( pc ) ) {
+			if( pc ) {
 				prison::release( NULL, pc );
 			}
 			else { //invalid char in jail.. so remove it
@@ -132,7 +132,7 @@ void prison::release( pChar releaser, pChar pc )
 	JAILEDVECTOR::iterator j = prison::jailed.begin();
 	while(  j!=prison::jailed.end() && (*j).serial!=pc->getSerial() )	j++;
 	if(j==prison::jailed.end()) {
-		if( ISVALIDPC( releaser ) )
+		if( releaser )
 			releaser->sysmsg( "The player isn't jailed" );
 		return;
 	}
@@ -145,10 +145,8 @@ void prison::release( pChar releaser, pChar pc )
 	pc->jailed=false;
 	pc->teleport();
 
-	if( !ISVALIDPC( releaser ) ) {
-		char temp[TEMP_STR_SIZE];
-		sprintf( temp, "%s is auto-released from jail \n", pc->getCurrentNameC() );
-		ServerLog.Write("%s", temp);
+	if( ! releaser ) {
+		ServerLog.Write("%s is auto-released from jail \n", pc->getCurrentNameC());
 		pc->sysmsg(TRANSLATE( "Your jail time is over!" ));
 	}
 	else {

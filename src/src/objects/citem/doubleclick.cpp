@@ -128,7 +128,7 @@ void cItem::singleClick(pClient client )
 		pItem cont = getContainer();
 		if( ISVALIDPI(cont) ) {
 			pj = cont->getPackOwner();
-			if( ISVALIDPC(pj) )
+			if( pj )
 			{
 				if( pj->npcaitype==NPCAI_PLAYERVENDOR )
 				{
@@ -296,7 +296,7 @@ void cItem::doubleClick(pClient client);
 			{
 
 				pItem pj=wea.getItem();
-				if(!ISVALIDPI(pj))
+				if(!pj)
 					continue;
 				if ((item.quality == LAYER_1HANDWEAPON) || (item.quality == LAYER_2HANDWEAPON))// weapons
 				{
@@ -573,7 +573,7 @@ void cItem::doubleClick(pClient client);
  			return;
 		}
 	case ITYPE_SPELLBOOK:
-		if (ISVALIDPI(pack)) // morrolan
+		if (pack) // morrolan
 			if(getContSerial()==pack->getSerial() || pc->IsWearing(this))
 				client->sendSpellBook(this);
 			else
@@ -619,7 +619,7 @@ void cItem::doubleClick(pClient client);
  			return;
  		}
 
-		if (ISVALIDPI(pack))
+		if (pack)
 		{
                 //TODO: redo when sets updated
 			NxwItemWrapper si;
@@ -627,7 +627,7 @@ void cItem::doubleClick(pClient client);
 			for( si.rewind(); !si.isEmpty(); si++ )
 			{
 				pItem pj = si.getItem();
-				if (ISVALIDPI(pj) && pj->type==ITYPE_KEY)
+				if (pj && pj->type==ITYPE_KEY)
 					if (((pj->more1 == more1) && (pj->more2 == more2) &&
 						 (pj->more3 == more3) && (pj->more4 == more4)) )
 					{
@@ -682,7 +682,7 @@ void cItem::doubleClick(pClient client);
 		return;
 	case ITYPE_WAND: // -Fraz- Modified and tuned up, Wands must now be equipped or in pack
 	case ITYPE_MANAREQ_WAND: // magic items requiring mana (xan)
-		if (ISVALIDPI(pack))
+		if (pack)
 		{
 			if (getContSerial() == pack->getSerial() || pc->IsWearing(this))
 			{
@@ -867,7 +867,7 @@ void cItem::doubleClick(pClient client);
 	///BEGIN IDENTIFICATION BY ID
 	if (IsSpellScroll())
 	{
-		if (ISVALIDPI(pack))
+		if (pack)
 			if( getContSerial()==pack->getSerial()) {
 				magic::SpellId spn = magic::spellNumberFromScrollId(getId());	// avoid reactive armor glitch
 				if ((spn>=0)&&(magic::beginCasting(spn, client, magic::CASTINGTYPE_SCROLL)))
@@ -938,7 +938,7 @@ void target_dyevat( pClient client, P_TARGET t )
 
 		pChar pc = pi->getPackOwner();
 
-		if( !ISVALIDPC(pc) || ( pc->getSerial()==curr->getSerial32() ) ) //in world or owned
+		if( !pc || ( pc->getSerial()==curr->getSerial32() ) ) //in world or owned
 		{
 			pi->setColor( t->buffer[0] );
 			pi->Refresh();

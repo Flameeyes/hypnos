@@ -72,7 +72,7 @@ void Skills::Hide(NXWSOCKET s)
 	sc.fillCharsNearXYZ( pc->getPosition(), 4 );
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pj = sc.getChar();
-		if ( ISVALIDPC(pj) && pj->getSerial() != pc->getSerial32() && !pj->IsHidden() && pc->losFrom(pj) ) {
+		if ( pj && pj->getSerial() != pc->getSerial32() && !pj->IsHidden() && pc->losFrom(pj) ) {
 			pc->sysmsg( TRANSLATE("There is someone nearby who prevents you to hide.") );
 			return;
 		}
@@ -171,7 +171,7 @@ void Skills::PeaceMaking(NXWSOCKET s)
 		sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
 		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 			pChar pcm = sc.getChar();
-			if( ISVALIDPC( pcm ) ) {
+			if( pcm ) {
 				if (pcm->war && pc->getSerial()!=pcm->getSerial32())
                 {
                     pcm->sysmsg(TRANSLATE("You hear some lovely music, and forget about fighting."));
@@ -259,7 +259,7 @@ int Skills::GetInstrument(NXWSOCKET s)
 	si.fillItemsInContainer( pack, false );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
         pItem pi=si.getItem();
-		if ( ISVALIDPI(pi) && pi->IsInstrument() )
+		if ( pi && pi->IsInstrument() )
             return DEREF_pItem(pi);
 	}
 
@@ -1288,7 +1288,7 @@ void Skills::TDummy(NXWSOCKET s)
 
 	pItem pWeapon = pc->getWeapon();
 
-	if (ISVALIDPI(pWeapon))
+	if (pWeapon)
 	{
 		if (pc->getWeapon()->IsBowType())
 		{
@@ -1324,7 +1324,7 @@ void Skills::TDummy(NXWSOCKET s)
 
 	pItem pj = pointers::findItemBySerial( LongFromCharPtr(buffer[s] +1) & 0x7FFFFFFF );
 
-	if (ISVALIDPI(pj))
+	if (pj)
 	{
 		if (pj->getId()==0x1070)
 			pj->setId( 0x1071 );
@@ -1530,7 +1530,7 @@ void Skills::Meditation (NXWSOCKET  s)
 	}
 
 	pi = pc->getWeapon();
-	if ( (ISVALIDPI(pi) && !pi->IsStave()) || pc->getShield() ) {
+	if ( (pi && !pi->IsStave()) || pc->getShield() ) {
 		pc->sysmsg( TRANSLATE("You cannot meditate with a weapon or shield equipped!") );
 		return;
 	}
@@ -1758,7 +1758,7 @@ int Skills::GetAntiMagicalArmorDefence(CHARACTER p)
 		for( si.rewind(); !si.isEmpty(); si++ )
         {
             pItem pi=si.getItem();
-			if( ISVALIDPI(pi) && pi->layer>1 && pi->layer < 25)
+			if( pi && pi->layer>1 && pi->layer < 25)
             {
                 if (!(strstr(pi->getCurrentNameC(), "leather") || strstr(pi->getCurrentNameC(), "magic") ||
                     strstr(pi->getCurrentNameC(), "boot")|| strstr(pi->getCurrentNameC(), "mask")))
@@ -1812,7 +1812,7 @@ bool Skills::HasEmptyMap(CHARACTER cc)
 	pItem pi;
 	while (((pi = ContainerSearch(pack->getSerial(), &ci)) != NULL) &&(++loopexit < MAXLOOPS))
 	{
-        if(!ISVALIDPI(pi))
+        if(!pi)
 			continue;
 
         if (pi->type == 300)  // Is it the right type
@@ -1842,7 +1842,7 @@ bool Skills::DelEmptyMap(CHARACTER cc)
 	pItem cand=NULL;
 	while (((cand = ContainerSearch(pack->getSerial(), &ci)) != NULL) &&(++loopexit < MAXLOOPS))
 	{
-        if(!ISVALIDPI(cand))
+        if(!cand)
 			continue;
 
         if (cand->type == 300)  // Is it the right type
@@ -1885,7 +1885,7 @@ void Skills::Decipher(pItem tmap, NXWSOCKET s)
         {
             // Stores the new map
             pItem nmap=item::CreateFromScript( 70025, pc->getBackpack() );
-            if (!ISVALIDPI(nmap))
+            if (!nmap)
             {
                 LogWarning("bad script item # 70025(Item Not found).");
                 return; //invalid script item

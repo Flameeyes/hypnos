@@ -82,7 +82,7 @@ void cGuild::load( cStringFile& file )
 				{
 					uint32_t memberSerial = str2num( r );
 					pChar pc = pointers::findCharBySerial( memberSerial );
-					if( ISVALIDPC( pChar ) )
+					if( pChar )
 					{
 						P_GUILD_MEMBER member = addMember( pc );
 						member->load( file );
@@ -108,7 +108,7 @@ void cGuild::load( cStringFile& file )
 					pChar re = pointers::findCharBySerial( str2num( f ) );
 					pChar by = pointers::findCharBySerial( str2num( s ) ); 
 
-					if( ISVALIDPC( re ) && ISVALIDPC( by ) )
+					if( re && by )
 					{
 						P_GUILD_RECRUIT recruit = this->addNewRecruit( re, by );
 						recruit->load( file );

@@ -231,7 +231,7 @@ inline void NxwSocketWrapper2NxwCharWrapper( NxwSocketWrapper& sw, NxwCharWrappe
 		NXWCLIENT ps = sw.getClient();
 		if( ps != 0 ) {
 			pChar pc=ps->currChar();
-			if(ISVALIDPC(pc))
+			if(pc)
 				sc->insert( pc->getSerial() );
 		}
 	}
@@ -438,7 +438,7 @@ void NxwWrapper::copyQ( const NxwWrapper& from )
 */
 void NxwWrapper::insert( uint32_t s )
 {
-	uint32_t_VECTOR::const_iterator i = std::find( vect.begin(), vect.end(), s);
+	uint32_vector::const_iterator i = std::find( vect.begin(), vect.end(), s);
 	if( i==vect.end() ) //unique
 		vect.push_back( s );
 };
@@ -590,7 +590,7 @@ void NxwCharWrapper::fillOwnedNpcs( pChar pc, bool bIncludeStabled, bool bOnlyFo
 		for( ; iter != end; ++iter ) {
 			poOwnedChr = (*iter);
 
-			if(ISVALIDPC(poOwnedChr))
+			if( poOwnedChr )
 			{
 				if ((poOwnedChr->ftargserial==pc->getSerial()) ||
 					( !bOnlyFollowing && bIncludeStabled && ( poOwnedChr->isStabled() ) ) ) {
@@ -808,7 +808,7 @@ void NxwCharWrapper::fillPartyFriend( pChar pc, uint32_t nDistance, bool bExclud
 		pChar pj;
 		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 			pj=sc.getChar();
-			if( ISVALIDPC(pj) )
+			if( pj )
 				if( pc->party==pj->party ) {
 					if( pc->distFrom( pj ) <= nDistance ) {
 						if( !bExcludeThis || ( pc->getSerial()!=pj->getSerial32() ) )
@@ -1038,7 +1038,7 @@ void NxwItemWrapper::fillItemWeared( pChar pc, bool bIncludeLikeHair, bool bIncl
 	{
 	
 		pItem pi_j=(*iter);
-		if(!ISVALIDPI(pi_j) )			// just to be sure ;-)
+		if(! pi_j )			// just to be sure ;-)
 			continue;
 		
 		switch( pi_j->layer ) {
@@ -1172,13 +1172,13 @@ void NxwSocketWrapper::insertClient( NXWCLIENT ps )
 void NxwSocketWrapper::fillOnline( pChar onlyNearThis, bool bExcludeThis, uint32_t nDistance )
 {
 	pChar	pc;
-	bool	validOnlyNearThis = ISVALIDPC(onlyNearThis);
+	bool	validOnlyNearThis = onlyNearThis;
 
 	for (int32_t i = 0; i < now; ++i )
 	{
 		pc = pointers::findCharBySerial( currchar[i] );
 		//
-		//	Sparhawk ISVALIDPC(pc) checking unnecessary here, is done by findCharBySerial
+		//	Sparhawk pc checking unnecessary here, is done by findCharBySerial
 		//
 		if ( pc != 0 )
 			if ( !validOnlyNearThis )
@@ -1204,7 +1204,7 @@ void NxwSocketWrapper::fillOnline( Location location, int nDistance )
 	{
 		pc = pointers::findCharBySerial( currchar[i] );
 		//
-		//	Sparhawk ISVALIDPC(pc) checking unnecessary here, is done by findCharBySerial
+		//	Sparhawk pc checking unnecessary here, is done by findCharBySerial
 		//
 		if ( pc != 0 )
 			if (dist(location, pc->getPosition()) <= nDistance)
@@ -1229,7 +1229,7 @@ void NxwSocketWrapper::fillOnline( pItem onlyNearThis, int nDistance )
 	}
 	else {
 		pChar own=pointers::findCharBySerial( out->getContSerial() );
-		if( ISVALIDPC( own ) )
+		if( own )
 			fillOnline( own->getPosition(), nDistance );
 		else
 			fillOnline( );

@@ -54,10 +54,10 @@ public:
 
 	TIMERVAL mintime; //!< min time value	
 	TIMERVAL maxtime; //!< max time value
-	uint32_t_VECTOR npclists; //!< npclist to spawn
-	uint32_t_VECTOR npcs; //!< npc to spawn
-	uint32_t_VECTOR itemlists; //!< itemlist to spawn
-	uint32_t_VECTOR itms; //!< item to spawn
+	uint32_vector npclists; //!< npclist to spawn
+	uint32_vector npcs; //!< npc to spawn
+	uint32_vector itemlists; //!< itemlist to spawn
+	uint32_vector itms; //!< item to spawn
 	std::string name; //!< region name
 	uint32_t max; //!< max number of spanwed
 

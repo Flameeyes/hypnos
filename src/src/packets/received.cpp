@@ -1039,7 +1039,7 @@ bool cPacketReceiveActionRequest::execute(pClient client)
 		pItem p_j = NULL;
 		pItem pack= pc->getBackpack();
                 int book = 0;
-		if(ISVALIDPI(pack)) //lb
+		if(pack) //lb
 		{
 			NxwItemWrapper gri;
 			gri.fillItemsInContainer( pack, false );
@@ -1047,7 +1047,7 @@ bool cPacketReceiveActionRequest::execute(pClient client)
 			for( gri.rewind(); !gri.isEmpty(); gri++ )
 			{
 				pItem pj=gri.getItem();
-				if (ISVALIDPI(pj))
+				if (pj)
 					if (pj->type==ITYPE_SPELLBOOK)
 					{
 						p_j=pj;
@@ -1301,7 +1301,7 @@ bool cPacketReceiveLoginChar::execute(pClient client)
 		Accounts->GetAllChars( acctno[s], sc );
 		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 			pChar pc_i=sc.getChar();
-			if(!ISVALIDPC(pc_i))
+			if(!pc_i)
 				continue;
 			if (j==buffer[s][0x44]) {
 				pc_k=pc_i;
@@ -1642,7 +1642,7 @@ bool cPacketReceiveRenameCharacter::execute(pClient client)
 {
 	if (length != 35) return false;
 	pChar pc = pointers::findCharBySerPtr(buffer + 1);
-        if(ISVALIDPC(pc) && ( client->currChar()->IsGMorCounselor() || client->currChar()->isOwnerOf( pc ) ) )
+        if(pc && ( client->currChar()->IsGMorCounselor() || client->currChar()->isOwnerOf( pc ) ) )
         {
         	pc->setCurrentName( buffer + 5 );
                 return true;

@@ -36,7 +36,7 @@
 void cChar::singleClick( pClient client )
 {
         pPC clickedBy = client->currChar();
-	if ( ISVALIDPC(clickedBy) )
+	if ( clickedBy )
 	{
                 if ( amxevents[EVENT_CHR_ONCLICK] != NULL )
 	        {
@@ -80,7 +80,7 @@ void cChar::doubleClick(pClient client, int keyboard)
 			{
 				if ( getOwnerSerial32() == clicker->getSerial() || clicker->IsGMorCounselor() )
 				{
-					if (ISVALIDPI(pack)) {
+					if (pack) {
 						clicker->showContainer(pack);
 						SetTimerSec( &(clicker->objectdelay), SrvParms->objectdelay );
 					}
@@ -91,7 +91,7 @@ void cChar::doubleClick(pClient client, int keyboard)
 				{
 					if ( clicker->checkSkill( SNOOPING, 0, 1000 ) )
 					{
-						if (ISVALIDPI(pack) )
+						if (pack )
 						{
 							clicker->showContainer(pack);
 							clicker->sysmsg(TRANSLATE("You successfully snoop the pack animal.") );
@@ -122,7 +122,7 @@ void cChar::doubleClick(pClient client, int keyboard)
 			if (npc && npcaitype==NPCAI_PLAYERVENDOR)//PlayerVendors
 			{
 				talk(client,TRANSLATE("Take a look at my goods."),0);
-				if ( ISVALIDPI(pack))
+				if ( pack)
                                         clicker->showContainer(pack);
 			}
 			else if ( clicker->getSerial() == getSerial32() )

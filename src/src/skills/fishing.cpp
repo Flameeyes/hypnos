@@ -363,7 +363,7 @@ void Fishing::Fish(CHARACTER i)
 			fish->setColor(color);
 			fish->setId( fish->getId() | idnum );
 		
-			if (ISVALIDPI(pc_bp))
+			if (pc_bp)
 				pc_bp->AddItem( fish );
 			else {
 				fish->MoveTo( charpos ); //Luxor bug fix

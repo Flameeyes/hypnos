@@ -157,7 +157,7 @@ static bool canMine( pChar pc, pItem weapon )
 
 	VALIDATEPCR(pc,false);
 	
-	if( !ISVALIDPI(weapon) )
+	if( !weapon )
 		pc->sysmsg("You can't mine with nothing in your hand !!");
 	else
 		switch( weapon->getId() )

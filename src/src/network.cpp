@@ -178,7 +178,7 @@ NXWCLIENT getClientFromSocket( NXWSOCKET socket )
 	if( socket >= now )
 		return NULL;
 	pChar pc = loginchars[socket];
-	if( ISVALIDPC( pc ) )
+	if( pc )
 		return pc->getClient();
 	else
 		return NULL;
@@ -375,11 +375,11 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 	if (SrvParms->server_log)
 		ServerLog.Write( (char*)msgDisconnect, clientnumber , cClient::clients.size() - 1);
 
-	if ( ISVALIDPC(pc) )
+	if ( pc )
 		if (SrvParms->partmsg && pc != NULL && !pc->npc )
 			sysbroadcast( (char*)msgPart, pc->getCurrentNameC() );
 
-	if( ISVALIDPC( pc ) )
+	if( pc )
 		if ( pc->IsOnline() )
 		{
 			LogOut( client );
@@ -426,7 +426,7 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 	NetThread* NT = g_NT[ socket ];
 #endif
 
-	if( ISVALIDPC(pc) )
+	if( pc )
 	{
 		pc->setClient( NULL );
 
@@ -473,7 +473,7 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 	pChar pj = NULL;
 	for ( i = 0; i < MAXCLIENT; ++i ) {
 		pj = loginchars[i];
-		if ( ISVALIDPC(pj) )
+		if ( pj )
 			pj->setClient(NULL);
 
 		if ( i >= now )
@@ -484,7 +484,7 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 
 	for ( i = 0; i < now; ++i ) {
 		pj = loginchars[i];
-		if( ISVALIDPC(pj) )
+		if( pj )
 			pj->setClient(new cNxwClientObj(i));
 	}
 }
@@ -875,7 +875,7 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 		Accounts->GetAllChars( acctno[s], sc );
 		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 			pChar pc_i=sc.getChar();
-			if(!ISVALIDPC(pc_i))
+			if(!pc_i)
 				continue;
 			if (j==buffer[s][0x44]) {
 				pc_k=pc_i;
@@ -1170,7 +1170,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 	if (ISVALIDPI(p_multi) && !valid)//It they are in a multi... and it's not already valid (if it is why bother checking?)
 	{
 		pack= pc->getBackpack();
-		if( ISVALIDPI(pack))
+		if( pack)
 		{
 			NxwItemWrapper si;
 			si.fillItemsInContainer( pack, false );
@@ -2010,7 +2010,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					{
 						pItem p_j = NULL;
 						pItem pack= pc_currchar->getBackpack();
-						if(ISVALIDPI(pack)) //lb
+						if(pack) //lb
 						{
 							NxwItemWrapper gri;
 							gri.fillItemsInContainer( pack, false );
@@ -2018,7 +2018,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 							for( gri.rewind(); !gri.isEmpty(); gri++ )
 							{
 								pItem pj=gri.getItem();
-								if (ISVALIDPI(pj))
+								if (pj)
 									if (pj->type==ITYPE_SPELLBOOK)
 									{
 										p_j=pj;
@@ -2224,20 +2224,20 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						int len = 0;
 						uint8_t packet[4000]; packet[0] = '\0';
 						if ( ISVALIDPC(pc_currchar) && pc_currchar->IsGM()) {
-							if (ISVALIDPC(pc) )
+							if (pc )
 								sprintf((char *)packet, "char n°%d serial : %x", DEREF_pChar(pc), pc->getSerial());
-							if (ISVALIDPI(pi) )
+							if (pi )
 								sprintf((char *)packet, "item n°%d serial : %x", DEREF_pItem(pi), pi->getSerial());
 						}
 						else
 						{
-							if (ISVALIDPC(pc))
+							if (pc)
 								pc->getPopUpHelp((char *)packet);
-							if (ISVALIDPI(pi))
+							if (pi)
 								pi->getPopUpHelp((char *)packet);
 						}
 
-						if ( !ISVALIDPC(pc) && !ISVALIDPI(pi))
+						if ( !pc && !pi)
 							break;
 
 						if (packet[0]=='\0') break;

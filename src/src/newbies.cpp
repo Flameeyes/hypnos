@@ -101,7 +101,7 @@ void newbieitems(pChar pc)
 					splitLine( script2, itemnum, amount );
 					int amt = ( amount != "" )? str2num( amount ) : INVALID; //ndEndy defined amount
 					pItem pi_n = item::CreateFromScript( str2num( itemnum ), pc->getBackpack(), amt );
-					if (ISVALIDPI(pi_n)) {
+					if ( pi_n ) {
 						pi_n->priv |= 0x02; // Mark as a newbie item
 					}
 					strcpy(script1, "DUMMY");
@@ -112,7 +112,7 @@ void newbieitems(pChar pc)
 					splitLine( script2, itemnum, amount );
 					int amt= (amount!="")? str2num( amount ) : INVALID;
 					pItem pi = item::CreateFromScript( str2num( itemnum ), pc->GetBankBox(), amt );
-					if (ISVALIDPI(pi)) {
+					if (pi) {
 						pi->priv |= 0x02; // Mark as a newbie item
 					}
 					strcpy(script1, "DUMMY");
@@ -120,7 +120,7 @@ void newbieitems(pChar pc)
 				else if (!strcmp("EQUIPITEM", script1))
 				{
 					pItem pi = item::CreateFromScript( script2 );
-					if (ISVALIDPI(pi))
+					if (pi)
 					{
 						pi->priv |= 0x02; // Mark as a newbie item
 						pi->setContainer(pc);

@@ -15,7 +15,6 @@
 #ifndef __TARGET_H__
 #define __TARGET_H__
 
-
 #include "objects/cchar.h"
 #include "objects/citem.h"
 
@@ -163,9 +162,5 @@ public:
 	//!extends a pItem data to pChar and x,y,z
 	void extendItemTarget();
 };
-
-
-
-
 
 #endif

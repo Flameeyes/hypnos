@@ -61,7 +61,7 @@ void checkFieldEffects( uint32_t currenttime, pChar pc, char timecheck )
 	{
 		pItem pi=si.getItem();
 #endif
-		if(ISVALIDPI(pi) ) {
+		if(pi ) {
 
 			if ( pi->getPosition().x == pc->getPosition().x && pi->getPosition().y == pc->getPosition().y )
 
@@ -258,7 +258,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 			continue;
 
 		pChar pc=ps->currChar();
-		if( !ISVALIDPC( pc ) )
+		if( !pc )
 			continue;
 
 		if( lightChanged )
@@ -292,7 +292,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 			{
 				pChar npc=sc.getChar();
 
-				if(!ISVALIDPC(npc) || !npc->npc )
+				if(! npc || !npc->npc )
 					continue;
 
 				if( npc->lastNpcCheck != uiCurrentTime &&
@@ -315,7 +315,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 			{
 				pItem pi=si.getItem();
 
-				if( !ISVALIDPI( pi ) )
+				if( !pi )
 					continue;
 
 				pi->doDecay();

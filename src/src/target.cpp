@@ -154,13 +154,13 @@ void amxCallbackOld( NXWCLIENT ps, P_TARGET t )
 		return;
 	
 	pChar pc = pointers::findCharBySerial( t->getClicked() );
-	if( ISVALIDPC(pc) ) {
+	if( pc ) {
         t->amx_callback->Call( ps->currCharIdx(), pc->getSerial(), INVALID, INVALID, INVALID, INVALID );
         return;
     }
 
     pItem pi = pointers::findItemBySerial( t->getClicked() );
-    if( ISVALIDPI(pi) ) {
+    if( pi ) {
 		t->amx_callback->Call( ps->currCharIdx(), INVALID, pi->getSerial(), INVALID, INVALID, INVALID );
         return;
     }
@@ -340,13 +340,13 @@ TargetLocation::TargetLocation( P_TARGET pp )
 	if( pp->type==0 ) {
 
 		pChar pc= pointers::findCharBySerial( pp->getClicked() );
-		if(ISVALIDPC(pc)) {
+		if(pc) {
 			init(pc);
 			return;
 		}
 
 		pItem pi= pointers::findItemBySerial( pp->getClicked() );
-		if (ISVALIDPI(pi))  {
+		if (pi)  {
 			init(pi);
 			return;
 		}

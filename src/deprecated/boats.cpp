@@ -79,7 +79,7 @@ pItem findmulti(Location where)
 	si.fillItemsNearXYZ( where );
 	for( ; !si.isEmpty(); si++ ) {
 		pItem pi=si.getItem();
-		if(!ISVALIDPI(pi))
+		if(!pi)
 			continue;
 
 		if (pi->id1>=0x40)
@@ -151,7 +151,7 @@ void cBoat::PlankStuff(pChar pc , pItem pi)//If the plank is opened, double clic
 		{
 			pChar pc_b=sc.getChar();
 
-			if( ISVALIDPC( pc_b ))
+			if( pc_b )
 			{
 				Location boatpos= boat2->getPosition();
 				pc_b->MoveTo( boatpos.x+1, boatpos.y+1, boatpos.z+2 );
@@ -208,7 +208,7 @@ void cBoat::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open p
 				{
 
 					pChar pc_b=sc.getChar();
-					if( ISVALIDPC(pc_b))
+					if( pc_b )
 					{
 							
 						pc_b->MoveTo( x,y, typ ? sz : mz );
@@ -675,7 +675,7 @@ bool cBoat::Speech(pChar pc, NXWSOCKET socket, std::string &talk)//See if they s
 	pItem pBoat=GetBoat(pc->getPosition());
 	//
 	// As we don't want a message logged when not on a boat we cannot use VALIDATEPIR
-	if( !ISVALIDPI( pBoat ) )
+	if( ! pBoat )
 		return false;
 	//
 	// if the pc is not the boat owner..we don't care what he says
@@ -949,7 +949,7 @@ bool cBoat::Build(NXWSOCKET  s, pItem pBoat, char id2)
 
 	int nid2=id2;
 
-	if( !ISVALIDPI(pBoat) )
+	if( ! pBoat )
 	{
 		pc_cs->sysmsg(TRANSLATE("There was an error creating that boat."));
 		return false;
@@ -1223,7 +1223,7 @@ pItem cBoat::GetBoat(Location pos)
 
 		boat_db boat=iter->second;
 		pItem pBoat=boat.p_serial;
-		if(!ISVALIDPI(pBoat))
+		if( ! pBoat )
 			continue;
 		if( dist( pos, pBoat->getPosition() ) < 10.0 )
 		{

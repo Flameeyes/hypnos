@@ -254,7 +254,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 				if(ps_i==NULL ) continue;
 
 				pChar pc_i=ps_i->currChar();
-				if ( ISVALIDPC(pc_i) )
+				if ( pc_i )
 					if( (rand()%10+10==17) || ( (rand()%2==1) && (pc_i->in>=thief->in)))
 						pc_i->sysmsg(temp2);
 			}
@@ -326,7 +326,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 	}
 
 	pItem pack= victim->getBackpack();
-	if ( !ISVALIDPI(pack))
+	if ( !pack)
 	{
 		thief->sysmsg(TRANSLATE("bad luck, your victim doesn't have a backpack"));
 		return;
@@ -442,7 +442,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 				if( ps_i==NULL ) continue;
 
 				pChar pc_i=ps_i->currChar();
-				if ( ISVALIDPC(pc_i) )
+				if ( pc_i )
 					if( (rand()%10+10==17) || ( (rand()%2==1) && (pc_i->in>=thief->in)))
 						sysmessage(ps_i->toInt(),temp2);
 			}

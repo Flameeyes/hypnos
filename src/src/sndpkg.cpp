@@ -55,7 +55,7 @@ void gmyell(char *txt)
 		if(ps_i==NULL) continue;
 		pChar pc=ps_i->currChar();
 		NXWSOCKET s = ps_i->toInt();
-		if( ISVALIDPC(pc) && pc->IsGM())
+		if( pc && pc->IsGM())
 		{
 			SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 1, 0x0040, 0x0003, lang, sysname, unicodetext,  ucl);
 		}
@@ -213,7 +213,7 @@ void soundeffect3(pItem pi, uint16_t sound)
 		NXWCLIENT ps_i=sw.getClient();
 		if(ps_i==NULL) continue;
 		pChar pc_j=ps_i->currChar();
-		if( ISVALIDPC(pc_j))
+		if( pc_j )
 		{
 			SendPlaySoundEffectPkt(ps_i->toInt(), 0x01, sound, 0x0000, pos);
 		}
@@ -309,7 +309,7 @@ void sysmessage(NXWSOCKET  s, const char *txt, ...) // System message (In lower 
 	uint32_t spyTo = clientInfo[s]->spyTo;
 	if( spyTo!=INVALID ) { //spy client
 		pChar pc=pointers::findCharBySerial( spyTo );
-		if( ISVALIDPC( pc ) ) {
+		if( pc ) {
 			NXWCLIENT gm = pc->getClient();
 			if( gm!=NULL )
 				gm->sysmsg( "spy %s : %s", pc->getCurrentNameC(), msg );
@@ -403,7 +403,7 @@ void backpack2(NXWSOCKET s, uint32_t serial) // Send corpse stuff
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pi=si.getItem();
-		if( ISVALIDPI(pi) && (pi->layer!=0) )
+		if( pi && (pi->layer!=0) )
 		{
 			count++;
 		}
@@ -416,7 +416,7 @@ void backpack2(NXWSOCKET s, uint32_t serial) // Send corpse stuff
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pi=si.getItem();
-		if( ISVALIDPI(pi) && (pi->layer!=0) )
+		if( pi && (pi->layer!=0) )
 		{
 			display2[0]= pi->layer;
 			LongToCharPtr(pi->getSerial(), display2+1);
@@ -437,7 +437,7 @@ void backpack2(NXWSOCKET s, uint32_t serial) // Send corpse stuff
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pi=si.getItem();
-		if( ISVALIDPI(pi) && (pi->layer!=0) )
+		if( pi && (pi->layer!=0) )
 		{
 			LongToCharPtr(pi->getSerial(), bpitem);
 			ShortToCharPtr(pi->animid(), bpitem +4);
@@ -524,7 +524,7 @@ void senditem(NXWSOCKET  s, pItem pi) // Send items (on ground)
 		if (isCharSerial(pi->getContSerial()))
 		{
 			pChar pj=pointers::findCharBySerial(pi->getContSerial());
-			if (ISVALIDPC(pj))
+			if (pj)
 				pack=false;
 		}
 		if (pack)
@@ -744,7 +744,7 @@ void chardel (NXWSOCKET  s) // Deletion of character
 	for ( i=0, sc.rewind(); !sc.isEmpty(); sc++)
 	{
 		pChar pc_a=sc.getChar();
-		if(!ISVALIDPC(pc_a))
+		if(! pc_a )
 			continue;
 
 		if(i == buffer[s][0x22])
@@ -762,7 +762,7 @@ void chardel (NXWSOCKET  s) // Deletion of character
 			return;
 		}
 
-		if (ISVALIDPC(TrashMeUp))
+		if ( TrashMeUp )
 		{
 			if( SrvParms->checkcharage &&
 			   (getclockday() < TrashMeUp->GetCreationDay() + 7) ) {
@@ -789,7 +789,7 @@ void chardel (NXWSOCKET  s) // Deletion of character
 
 			for ( i=0, sc.rewind(); !sc.isEmpty(); sc++) {
 				pChar pc_a=sc.getChar();
-				if(!ISVALIDPC(pc_a))
+				if(! pc_a )
 					continue;
 
 				strcpy((char *)delete_resend_char_2, pc_a->getCurrentNameC());
@@ -1554,7 +1554,7 @@ void SendDrawObjectPkt(NXWSOCKET s, pChar pc, int z)
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 
 		pItem pj=si.getItem();
-		if (ISVALIDPI(pj))
+		if (pj)
 			if ( layers[pj->layer] == 0 )
 			{
 				LongToCharPtr(pj->getSerial(), oc+k+0);
@@ -1697,7 +1697,7 @@ void sendshopinfo(int s, int c, pItem pi)
 	for( si.rewind(); !si.isEmpty(); si++, ++loopexit )
 	{
 		pItem pj=si.getItem();
-		if (ISVALIDPI(pj))
+		if (pj)
 			if ((m2[7]!=255) && (pj->amount!=0) ) // 255 items max per shop container
 			{
 				uint8_t namelen;
@@ -1788,7 +1788,7 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pj=si.getItem();
-		if (ISVALIDPI(pj))
+		if (pj)
 		{
 
 			for( s_pack.rewind(); !s_pack.isEmpty(); s_pack++ )
@@ -1796,7 +1796,7 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 				if (m1[8] >= 50) continue;
 
 				pItem pj1 = s_pack.getItem();
-				if (ISVALIDPI(pj1)) // LB crashfix
+				if ( pj1 ) // LB crashfix
 				{
 					sprintf(ciname,"'%s'",pj1->getCurrentNameC()); // Added by Magius(CHE)
 					sprintf(cinam2,"'%s'",pj->getCurrentNameC()); // Added by Magius(CHE)
@@ -2188,7 +2188,7 @@ void wornitems(NXWSOCKET  s, pChar pc) // Send worn items of player
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pi=si.getItem();
-		if(ISVALIDPI(pi))
+		if(pi)
 			wearIt(s,pi);
 	}
 }

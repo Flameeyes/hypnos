@@ -100,8 +100,9 @@ public:
 	inline void setMultiSerial(uint32_t newserial)
 	{ multi_serial = newserial; }
 
-	inline void setOwnerSerial32Only(uint32_t newserial)
-	{ owner_serial = newserial; }
+//!\todo Need to reactive this
+//	inline void setOwnerSerial32Only(uint32_t newserial)
+//	{ owner_serial = newserial; }
 //@}
 
 //@{

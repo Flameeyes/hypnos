@@ -333,7 +333,7 @@ void cTempfx::start()
 	pChar src = pointers::findCharBySerial(m_nSrc);
 	pChar dest = pointers::findCharBySerial(m_nDest);
 
-	if ( !ISVALIDPC(dest) )
+	if ( !dest )
 		return;
 
 	switch(m_nNum)
@@ -616,7 +616,7 @@ void cTempfx::start()
 			break;
 	}
 
-	//if (ISVALIDPC(dest)) item::CheckEquipment(DEREF_pChar(dest));
+	//if (dest) item::CheckEquipment(DEREF_pChar(dest));
 }
 
 /*!
@@ -897,7 +897,7 @@ void cTempfx::executeExpireCode()
 
 
 
-	if (ISVALIDPC(dest))
+	if (dest)
 		dest->checkEquipement();
 }
 
@@ -910,7 +910,7 @@ void cTempfx::activate()
 	pChar src = pointers::findCharBySerial(m_nSrc);
 	pChar dest = pointers::findCharBySerial(m_nDest);
 
-	if ( !ISVALIDPC(dest) ) return;
+	if ( !dest ) return;
 
 	switch(m_nNum)
 	{
@@ -992,7 +992,7 @@ void cTempfx::deactivate()
 	pChar src = pointers::findCharBySerial(m_nSrc);
 	pChar dest = pointers::findCharBySerial(m_nDest);
 
-	if ( !ISVALIDPC(dest) )
+	if ( !dest )
 		return;
 
 	switch(m_nNum)

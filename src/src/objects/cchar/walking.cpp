@@ -221,7 +221,7 @@ void cChar::walk()
 		case WANDER_FOLLOW: //Follow the follow target
 		{
 			pChar pc = pointers::findCharBySerial( ftargserial );
-			if ( !ISVALIDPC( pc ) )
+			if ( !pc )
 				break;
 			if ( pc->dead )
 				break;

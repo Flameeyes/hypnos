@@ -47,9 +47,6 @@
 #include "nox-wizard.h"
 #include "utils.h"
 
-
-
-
 void CarveTarget(NXWSOCKET s, int feat, int ribs, int hides, int fur, int wool, int bird)
 {
         if ( s < 0 || s >= now )
@@ -282,7 +279,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 					if( amt == 0 )
 						amt=INVALID;
 					pItem pi = item::CreateFromScript( (char*)itemnum.c_str(), pi3, amt );
-					if( ISVALIDPI(pi) ) {
+					if( pi ) {
 						pi->layer=0;
 						pi->Refresh();//let's finally refresh the item
 					}
@@ -303,7 +300,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		for( si.rewind(); !si.isEmpty(); si++ )
         {
             pItem pj=si.getItem();
-			if(ISVALIDPI(pj)) {
+			if(pj) {
 				pj->setContainer(0);
 				pj->MoveTo( pi3->getPosition() );
 				pj->setDecayTime();
@@ -323,7 +320,7 @@ static void CorpseTarget(const NXWCLIENT pC)
     uint32_t serial=LongFromCharPtr(buffer[s]+7);
     pItem pi = pointers::findItemBySerial( serial );
     pChar pc=MAKE_CHAR_REF(currchar[s]);
-    if(ISVALIDPI(pi))
+    if(pi)
     {
         if( pc->hasInRange(pi, 1) )
         {
@@ -486,7 +483,7 @@ int BuyShop(NXWSOCKET s, uint32_t c)
 	for( si.rewind(); !si.isEmpty(); si++ )
     {
         pItem pi=si.getItem();
-		if(!ISVALIDPI(pi)) continue;
+		if(!pi) continue;
 
 		if( pi->layer==LAYER_TRADE_RESTOCK )
             buyRestockContainer=pi;
@@ -839,7 +836,7 @@ void target_expPotion( NXWCLIENT ps, P_TARGET t )
     if(line_of_sight(s, pc->getPosition(), loc, WALLS_CHIMNEYS + DOORS + ROOFING_SLANTED))
     {
         pItem pi=pointers::findItemBySerial( t->buffer[0] );
-        if (ISVALIDPI(pi)) // crashfix LB
+        if (pi) // crashfix LB
         {
             pi->MoveTo( loc );
             pi->setContainer(0);
@@ -958,7 +955,7 @@ void target_xTeleport( NXWCLIENT ps, P_TARGET t )
 	}
 	else if( isItemSerial( serial ) ) {
 		pItem pi = pointers::findItemBySerial( serial );
-		if( ISVALIDPI( pi ) ) {
+		if( pi ) {
 			pi->MoveTo( pc->getPosition() );
 			pi->Refresh();
 		}

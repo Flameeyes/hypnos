@@ -73,7 +73,7 @@ NATIVE2(_getItemProperty)
 {
 	pItem pi = pointers::findItemBySerial(params[1]);
 
-	if( ISVALIDPI( pi ) )
+	if( pi )
 	{
 		VAR_TYPE tp = getPropertyType(params[2]);
 
@@ -133,7 +133,7 @@ NATIVE2(_setItemProperty)
 	// params[4] = value to set property to
 
 	pItem pi = pointers::findItemBySerial(params[1]);
-	if (!ISVALIDPI( pi ) )
+	if (!pi )
 		return 0;
 
 	cell* cptr;
@@ -778,7 +778,7 @@ NATIVE2(_getCharProperty)
 {
 	pChar pc = pointers::findCharBySerial(params[1]);
 
-	if ( ISVALIDPC( pc ) )
+	if ( pc )
 	{
 		VAR_TYPE tp = getPropertyType( params[2] );
 		switch( tp ) {
@@ -839,7 +839,7 @@ NATIVE2(_setCharProperty)
 
 
 	pChar pc = pointers::findCharBySerial(params[1]);
-	if (!ISVALIDPC( pc ))
+	if (!pc)
 		return INVALID;
 
 	cell *cptr;

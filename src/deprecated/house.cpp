@@ -491,7 +491,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 			if(ps_i==NULL)
 				continue;
 			pChar pc_i=ps_i->currChar();
-			if(ISVALIDPC(pc_i))
+			if(pc_i)
 				pc_i->teleport();
 		}
                 //</Luxor>
@@ -887,7 +887,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 	//
 	// As we don't want a error logged when not in a house we cannot use VALIDATEPIR here
 	//
-	if( !ISVALIDPI( pi ) )
+	if( !pi )
 		return false;
 
 	//
@@ -1093,7 +1093,7 @@ void target_houseBan( NXWCLIENT ps, P_TARGET t )
 	NXWSOCKET s = ps->toInt();
 
 	pItem pi=pointers::findItemBySerial( t->buffer[0] );
-	if(ISVALIDPI(pi))
+	if(pi)
 	{
 		if(pc->getSerial() == curr->getSerial32())
 			return;
@@ -1123,7 +1123,7 @@ void target_houseFriend( NXWCLIENT ps, P_TARGET t )
 
 	pItem pi=pointers::findItemBySerial( t->buffer[0] );
 
-	if(ISVALIDPC(Friend) && ISVALIDPI(pi))
+	if(ISVALIDPC(Friend) && pi)
 	{
 		if(Friend->getSerial() == curr->getSerial32())
 		{
@@ -1150,7 +1150,7 @@ void target_houseUnlist( NXWCLIENT ps, P_TARGET t )
 	pChar pc = pointers::findCharBySerial( t->getClicked() );
     pItem pi= pointers::findItemBySerial( t->buffer[0] );
 	NXWSOCKET s = ps->toInt();
-    if(ISVALIDPC(pc) && ISVALIDPI(pi))
+    if(pc && pi)
     {
         int r=del_hlist(DEREF_pChar(pc), DEREF_pItem(pi));
         if(r>0)
@@ -1173,7 +1173,7 @@ void target_houseLockdown( NXWCLIENT ps, P_TARGET t )
 	NXWSOCKET s = ps->toInt();
 
     pItem pi=pointers::findItemBySerial( t->getClicked() );
-    if(ISVALIDPI(pi))
+    if(pi)
     {
 
         // time to lock it down!
@@ -1235,7 +1235,7 @@ void target_houseSecureDown( NXWCLIENT ps, P_TARGET t )
 	NXWSOCKET s = ps->toInt();
 
     pItem pi=pointers::findItemBySerial( t->getClicked() );
-    if(ISVALIDPI(pi))
+    if(pi)
     {
         // time to lock it down!
 
@@ -1296,7 +1296,7 @@ void target_houseRelease( NXWCLIENT ps, P_TARGET t )
 	NXWSOCKET s = ps->toInt();
 
     pItem pi=pointers::findItemBySerial( t->getClicked() );
-    if(ISVALIDPI(pi))
+    if(pi)
     {
         if(pi->getOwnerSerial32() != pc->getSerial())
         {

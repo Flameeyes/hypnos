@@ -119,14 +119,14 @@ void cNxwClientObj::sendSpellBook(pItem pi)
 
 
 	if (!pi )
-		if( ISVALIDPI(p_back))
+		if( p_back )
 		{
 			NxwItemWrapper si;
 			si.fillItemsInContainer( p_back, false );
 			for( si.rewind(); !si.isEmpty(); si++ )
 			{
 	            pItem pj=si.getItem();
-				if( ISVALIDPI(pj) && pj->type==ITYPE_SPELLBOOK)
+				if( pj && pj->type==ITYPE_SPELLBOOK)
 				{
 	                pi=pj;
 					break;
@@ -140,7 +140,7 @@ void cNxwClientObj::sendSpellBook(pItem pi)
 			for( si.rewind(); !si.isEmpty(); si++ )
 			{
 	            pItem pj=si.getItem();
-	            if( ISVALIDPI(pj) && pj->type==ITYPE_SPELLBOOK )
+	            if( pj && pj->type==ITYPE_SPELLBOOK )
 				{
 	                pi=pj;
 					break;
@@ -152,7 +152,7 @@ void cNxwClientObj::sendSpellBook(pItem pi)
     // reason: just have a look at the loop above ...
 
     if (!pi ||  // no book at all
-        ((ISVALIDPI(p_back)) && (pi->getContSerial()!=p_back->getSerial()) &&    // not in primary pack
+        ( p_back && (pi->getContSerial()!=p_back->getSerial()) &&    // not in primary pack
                 !pc_currchar->IsWearing(pi)))       // not equipped
     {
         this->sysmsg(TRANSLATE("In order to open spellbook, it must be equipped in your hand or in the first layer of your backpack."));
@@ -176,7 +176,7 @@ void cNxwClientObj::sendSpellBook(pItem pi)
 	for( gri.rewind(); !gri.isEmpty(); gri++ )
     {
 		pItem pj=gri.getItem(); //Luxor: added support for all-spell scroll
-		if(ISVALIDPI(pj))
+		if(pj)
 			if( pj->IsSpellScroll() || pi->CountItems(0x1F6D,-1,false) > 0)
 			{
 				if (((pj->getId()-0x1F2D)>=0)&&((pj->getId()-0x1F2D)<70)) spells[(pj->getId()-0x1F2D)]=1;

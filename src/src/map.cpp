@@ -106,7 +106,7 @@ int8_t isWalkable( Location pos, uint8_t flags, pChar pc )
 
 		for( si.rewind(); !si.isEmpty(); si++ )	{
 			pi = si.getItem();
-			if( !ISVALIDPI(pi) )
+			if( !pi )
 				continue;
 
 			tile_st tile;
@@ -165,7 +165,7 @@ int8_t isWalkable( Location pos, uint8_t flags, pChar pc )
 			)
 			return illegal_z;
 
-		if ( !ISVALIDPC( pc ) || !(pc->nxwflags[0] & cChar::flagWaterWalk) ) {
+		if ( !pc || !(pc->nxwflags[0] & cChar::flagWaterWalk) ) {
 			if ( mapid >= 0x0A8 && mapid <= 0x0AB) 	// Water
 				return illegal_z;
 		}
@@ -212,7 +212,7 @@ int8_t isWalkable( Location pos, uint8_t flags, pChar pc )
 
 		for( sc.rewind(); !sc.isEmpty(); sc++ )	{
 			pc_curr = sc.getChar();
-			if ( !ISVALIDPC( pc_curr ) )
+			if ( ! pc_curr )
 				continue;
 
 			if ( abs( pc_curr->getPosition().z - zRes ) < MaxZstep )

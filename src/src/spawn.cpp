@@ -129,7 +129,7 @@ void cSpawnScripted::doSpawn( cSpawnArea& c ) {
 			if( c.findValidLocation( location ) )
 			{
 				pChar npc = npcs::AddNPCxyz( INVALID, npclists[counter], location );
-				if(ISVALIDPC(npc))
+				if( npc )
 				{
 					safeCreate( npc, c );
 					return;
@@ -150,7 +150,7 @@ void cSpawnScripted::doSpawn( cSpawnArea& c ) {
 				sprintf( list, "%i", itemlists[counter] ); // morrolan
 				int num = item::CreateRandomItem( list );
 				pItem item = item::CreateScriptItem( INVALID, num, 0 );
-				if( ISVALIDPI( item ) ) {
+				if( item ) {
 					safeCreate( item, c );
 					return;
 				}
@@ -166,7 +166,7 @@ void cSpawnScripted::doSpawn( cSpawnArea& c ) {
 			if( c.findValidLocation( location ) )
 			{
 				pChar npc = npcs::AddNPCxyz( INVALID, npcs[counter], location  );
-				if (ISVALIDPC(npc))
+				if ( npc )
 				{
 					safeCreate( npc, c );
 					return;
@@ -485,7 +485,7 @@ void cSpawnDinamic::doSpawn()
 	if( spawn->type == ITYPE_ITEM_SPAWNER ) {
 		
 		pItem pi=item::CreateFromScript( spawn->morex );
-		if( ISVALIDPI( pi ) ) {
+		if( pi ) {
 			this->current++;
 			this->item_spawned.insert( pi->getSerial() );
 			pi->spawnserial=this->item;
@@ -497,7 +497,7 @@ void cSpawnDinamic::doSpawn()
 	}
 	else if( spawn->type == ITYPE_NPC_SPAWNER ) {
 		pChar npc=npcs::addNpc( spawn->morex, spawn->getPosition().x, spawn->getPosition().y, spawn->getPosition().z );
-		if(ISVALIDPC( npc )) {
+		if( npc ) {
 			this->current++;
 			this->npc_spawned.insert( npc->getSerial() );
 			npc->spawnserial=this->item;

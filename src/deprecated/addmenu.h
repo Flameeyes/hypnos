@@ -114,10 +114,8 @@ void showAddMenu( pChar pc, int menu );
 inline void itemmenu( NXWSOCKET s, int32_t m )
 {
 	pChar pc = MAKE_CHAR_REF( currchar[s] );
-	if( ISVALIDPC( pc ) )
-	{
-		showAddMenu( pc, m ); 
-	}
+	if ( pc )
+		showAddMenu(pc, m);
 }
 
 /*!

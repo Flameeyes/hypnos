@@ -315,7 +315,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 	int i, db, x;//, z;
 	char changed=0;
 
-	/*if (ISVALIDPC(pc) && ( !pc->hasInRange(pi, 2) ) && s>INVALID) {
+	/*if (pc && ( !pc->hasInRange(pi, 2) ) && s>INVALID) {
 		sysmessage(s, TRANSLATE("You cannot reach the handle from here"));
 		return;
 	}*/
@@ -473,7 +473,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		}
 	}
 
-	if (changed && ISVALIDPC(pc))
+	if (changed && pc)
 	{
 
 		pc->objectdelay=uiCurrentTime+ (server_data.objectdelay/4)*MY_CLOCKS_PER_SEC;
@@ -481,7 +481,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 
 		int j, houseowner_serial,ds;
 		pItem pi_house=findmulti( pi->getPosition() );
-		if(ISVALIDPI(pi_house))
+		if( pi_house )
 		{
 			const pItem pi2=pi_house;
 			if ( pi_house->IsHouse() )

@@ -42,7 +42,7 @@ void getWorldCoordsFromSerial (int sr, int& px, int& py, int& pz, int& ch, int& 
 		ch = DEREF_pChar(pc);
 		pi=pointers::findItemBySerial(serial);
         it = DEREF_pItem(pi);
-        if (ISVALIDPI(pi)) {
+        if (pi) {
             if (pi->getContSerial()!=INVALID) {
                 serial = pi->getContSerial();
                 continue;
@@ -51,12 +51,12 @@ void getWorldCoordsFromSerial (int sr, int& px, int& py, int& pz, int& ch, int& 
         break;
     }
 
-    if (ISVALIDPC(pc)) {
+    if (pc) {
 		Location charpos= pc->getPosition();
         px = charpos.x;
         py = charpos.y;
         pz = charpos.z;
-    } else if ( ISVALIDPI(pi) && (pi->getContSerial()==INVALID)) {
+    } else if ( pi && (pi->getContSerial()==INVALID)) {
         px = pi->getPosition("x");
         py = pi->getPosition("y");
         pz = pi->getPosition("z");
@@ -234,7 +234,7 @@ namespace pointers {
 		{
 			x = it->first >> 16;
 			y = it->first & 0x0000FFFF;
-			if( ISVALIDPC( it->second ) )
+			if( it->second )
 				serial = it->second->getSerial();
 			else
 			{
@@ -452,7 +452,7 @@ namespace pointers {
 		{
 			x = it->first >> 16;
 			y = it->first & 0x0000FFFF;
-			if( ISVALIDPI( it->second ) )
+			if( it->second )
 				serial = it->second->getSerial();
 			else
 			{
@@ -515,7 +515,7 @@ namespace pointers {
 		for( ; iter!=end; iter++)
 		{
 			pc = pointers::findCharBySerial(iter->first);
-			if(ISVALIDPC(pc))
+			if(pc)
 				pc->setOnHorse();
 		}
 	}
@@ -908,7 +908,7 @@ namespace pointers {
 
 			pi = pcm[*index];
 
-			if (!(ISVALIDPI(pi)))
+			if (!(pi))
 			{
 				if ((uint32_t)(*index)+1 < pcm.size() && !pcm.empty())
 					pcm[*index] = pcm[pcm.size()-1];
@@ -917,7 +917,7 @@ namespace pointers {
 			pcm.pop_back();
 		}
 
-		if ( !ISVALIDPI(pi) )
+		if ( !pi )
 			return 0;
 
 		return pi;
@@ -954,7 +954,7 @@ namespace pointers {
 		while ( ((pi = containerSearch(serial,index)) != 0) && (++loopexit < MAXLOOPS) )
 		{
 			if (pi->getId()==id  &&
-				(color==-1 || pi->getColor()==color) && ISVALIDPI(pi))
+				(color==-1 || pi->getColor()==color) && pi)
 			return pi;
 		}
 		return 0;

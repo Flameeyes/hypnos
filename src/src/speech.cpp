@@ -199,7 +199,7 @@ int response(NXWSOCKET  s)
 	for( sc.rewind(); !sc.isEmpty(); sc++ )
 	{
 		pChar pc_map = sc.getChar();
-		if(ISVALIDPC(pc_map)) {
+		if( pc_map ) {
 		
 			//
 			// Sparhawk	char_dist() should be a configurable audiorange
@@ -388,7 +388,7 @@ int response(NXWSOCKET  s)
 						{
 							// Send out a message saying we are already being escorted
 							pChar pc_ftarg=pointers::findCharBySerial(pc_map->ftargserial);
-							if(ISVALIDPC(pc_ftarg)) {
+							if( pc_ftarg ) {
 								sprintf(temp, TRANSLATE("I am already being escorted to %s by %s."), region[pc_map->questDestRegion].name, pc_ftarg->getCurrentNameC() );
 								pc_map->talkAll(temp, 0);
 							}
@@ -1039,7 +1039,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 			sc.fillCharsNearXYZ( pc_currchar->getPosition(), 2, true, false );
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pc = sc.getChar();
-				if(!ISVALIDPC(pc))
+				if(!pc)
 					continue;
 				strcpy(search3, pc->getCurrentNameC());
 				strupr(search3);
@@ -1076,7 +1076,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 			for( sc.rewind(); !sc.isEmpty(); sc++ )
 			{
 				pChar pc = sc.getChar();
-				if(!ISVALIDPC(pc))
+				if(!pc)
 					continue;
 
 				strcpy(search3, pc->getCurrentNameC());
@@ -1106,7 +1106,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 			for( sc.rewind(); !sc.isEmpty(); sc++ )
 			{
 				pChar pc = sc.getChar();
-				if(!ISVALIDPC(pc))
+				if(!pc)
 					continue;
 				strcpy(search3, pc->getCurrentNameC());
 				strupr(search3);
@@ -1149,7 +1149,7 @@ static bool pricePlayerVendorItem( pChar pc, NXWSOCKET socket, string &price )
 	{
 		int i = str2num( const_cast<char*>(price.c_str()) );
 		pItem pi = MAKE_ITEM_REF( pc->fx1 );
-		if( ISVALIDPI( pi ) )
+		if( pi )
 		{
 			if (i>0)
 			{
@@ -1182,7 +1182,7 @@ static bool describePlayerVendorItem( pChar pc, NXWSOCKET socket, string &descri
 	if( pc->fx2 == 18 )
 	{
 		pItem pi = MAKE_ITEM_REF( pc->fx1 );
-		if( ISVALIDPI( pi ) )
+		if( pi )
 		{
 			//strcpy( pi->desc, description.c_str() );
 			pi->vendorDescription = description;
@@ -1201,7 +1201,7 @@ static bool renameRune( pChar pc, NXWSOCKET socket, string &name )
 {
 	bool success = false;
 	pItem pi = pointers::findItemBySerial( pc->runeserial );
-	if( ISVALIDPI( pi ) )
+	if( pi )
 	{
 		pi->setCurrentName( TRANSLATE("Rune to %s"), name.c_str() );
 		sysmessage( socket, TRANSLATE("Rune renamed to: Rune to %s"), name.c_str() );
@@ -1217,7 +1217,7 @@ static bool renameSelf( pChar pc, NXWSOCKET socket, string &name )
 	if( pc->namedeedserial != INVALID )
 	{
 		pItem pi = pointers::findItemBySerial( pc->namedeedserial );
-		if( ISVALIDPI( pi ) )
+		if( pi )
 		{
 			pi->setCurrentName( name.c_str());
 			pc->setCurrentName( name.c_str());
@@ -1235,7 +1235,7 @@ static bool renameKey( pChar pc, NXWSOCKET socket, string &name )
 {
 	bool success = false;
 	pItem pi = pointers::findItemBySerial( pc->keyserial );
-	if( ISVALIDPI( pi ) )
+	if( pi )
 	{
 		pi->setCurrentName( name.c_str() );
 		sysmessage( socket, TRANSLATE("Key renamed to: %s"), name.c_str() );
@@ -1266,12 +1266,11 @@ static bool pageCouncillor( pChar pc, NXWSOCKET socket, string &reason )
 				continue;
 			
 			councillor = ps->currChar();
-			if( ISVALIDPC( councillor ) )
-				if ( councillor->IsCounselor() )
-				{
-					foundCons = true;
-					sysmessage(ps->toInt(), temp);
-				}
+			if( councillor && councillor->IsCounselor() )
+			{
+				foundCons = true;
+				sysmessage(ps->toInt(), temp);
+			}
 		}
 		if (foundCons)
 			sysmessage(socket, TRANSLATE("Available Counselors have been notified of your request."));
@@ -1707,7 +1706,7 @@ static bool requestChaosShield( pChar pc, NXWSOCKET socket, std::string &speech,
 					if( !pc->getAmount(0x1BC3) )
 					{
 						pItem pi =  pc->GetItemOnLayer( 2 );
-						if( ISVALIDPI( pi ) )
+						if( pi )
 						{
 							if( pi->getId() != 0x1BC3 )
 								success = true;
@@ -1762,7 +1761,7 @@ static bool requestOrderShield( pChar pc, NXWSOCKET socket, std::string &speech,
 					if( !pc->getAmount(0x1BC4) )
 					{
 						pItem pi =  pc->GetItemOnLayer( 2 );
-						if( ISVALIDPI( pi ) )
+						if( pi )
 						{
 							if( pi->getId() != 0x1BC4 )
 								success = true;
@@ -2017,7 +2016,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 		if( ps==NULL )
 			continue;
 		pChar a_pc= ps->currChar();
-		if(!ISVALIDPC(a_pc))
+		if(! a_pc )
 			continue;
 
 		if( a_pc->unicode )			// language
@@ -2094,7 +2093,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 			if(ps==NULL)
 				continue;
 			pChar pc_new_char = ps->currChar();
-			if( ISVALIDPC( pc_new_char ) )
+			if( pc_new_char )
 			{
 				namelist+= "[" + string( pc_new_char->getCurrentNameC() ) + "] ";
 				++n;
@@ -2175,7 +2174,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 	//pChar pj = (*scIt);
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pChar pj=sc.getChar();
-		if(ISVALIDPC(pj)) {
+		if(pj) {
 			if ((pc->getSerial() != pj->getSerial32()) && (pj->npc) )
 			{
 				pc_found = pj;
@@ -2184,7 +2183,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 		}
 	}
 
-	if ( ISVALIDPC(pc_found) &&(pc_found->speech) )
+	if ( pc_found &&(pc_found->speech) )
 	{
 
 		if(abs(pc_found->getPosition("z")-pc->getPosition("z")) >3 ) return;

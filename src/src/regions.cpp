@@ -38,7 +38,7 @@ bool cRegion::isValidCoord( uint16_t x, uint16_t y )
 void cRegion::add( pChar pc )
 {
 
-	if(!ISVALIDPC(pc) )
+	if(!pc )
 		return;
 	if(!isValidCoord( pc->getPosition().x, pc->getPosition().y )) {
 		//move to safe location? boh
@@ -54,7 +54,7 @@ void cRegion::add( pItem pi )
 {
 
 	VALIDATEPI(pi);
-	if( !ISVALIDPI(pi) || !pi->isInWorld() )
+	if( !pi || !pi->isInWorld() )
 		return;
 	if(!isValidCoord( pi->getPosition().x, pi->getPosition().y )) {
 		//move to safe location? boh

@@ -17,6 +17,7 @@ typedef cItem*			pItem;		//!< Pointer to an item
 typedef std::list<pItem>	ItemList;	//!< List of items
 
 #include "objects/cobject.h"
+#include "objects/cchar.h"
 #include "magic.h"
 #include "item.h"
 #include "globals.h"
@@ -516,10 +517,10 @@ public:
 	int32_t			DeleteAmount(int amount, short id, short color=-1);
 
 	inline const int32_t	CountItems(short ID=-1, short col= -1,bool bAddAmounts = true) const
-	{ return pointers::containerCountItems(getSerial(), ID, col, bAddAmounts); }
+	{ return pointers::containerCountItems(getSerial32(), ID, col, bAddAmounts); }
 
 	inline const int32_t	CountItemsByID(unsigned int scriptID, bool bAddAmounts) const
-	{ return pointers::containerCountItemsByID(getSerial(), scriptID, bAddAmounts); }
+	{ return pointers::containerCountItemsByID(getSerial32(), scriptID, bAddAmounts); }
 //@}
 
 //@{

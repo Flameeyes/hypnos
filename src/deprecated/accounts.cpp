@@ -62,7 +62,7 @@ void cAccount::setEntering( )
 */
 void cAccount::setOnline( pChar pc )
 {
-	if(!ISVALIDPC(pc))
+	if(!pc)
 		setOffline();
 	else {
 		pc_online=pc->getSerial();
@@ -695,7 +695,7 @@ void cAccounts::GetAllChars( ACCOUNT acctnum, NxwCharWrapper& sc )
 */
 void cAccounts::AddCharToAccount( ACCOUNT acctnum, pChar pc )
 {
-	if(!ISVALIDPC(pc)  || pc->npc || acctnum==INVALID ) {
+	if(!pc  || pc->npc || acctnum==INVALID ) {
 		pc->account=INVALID;
 		return;
 	}
@@ -750,7 +750,7 @@ bool cAccounts::RemoveAccount(std::string name)
 	for( acc_chars.rewind(); !acc_chars.isEmpty(); acc_chars++ )
 	{
 		pChar pc = acc_chars.getChar();
-		if(ISVALIDPC(pc))
+		if(pc)
 			pc->Delete();
 	}
 

@@ -125,7 +125,7 @@ void cParty::talkToAll( std::wstring& s, COLOR color )
 	std::vector<P_PARTY_MEMBER>::iterator iter( members.begin() ), end( members.end() );
 	for ( ; iter!=end; ++iter ) {
 		pChar pc = pointers::findCharBySerial( (*iter)->serial );
-		if( ISVALIDPC(pc) ) {
+		if( pc ) {
 			NXWCLIENT ps = pc->getClient();
 			if( ps!=NULL )
 				ps->sysmsg( color, (char*)m.c_str() );

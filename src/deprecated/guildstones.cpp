@@ -1427,7 +1427,7 @@ void cGuilds::SetType(int guildnumber, int type)
 			if (guilds[guildnumber].member[member]!=0)
 			{
 				pChar pj = pointers::findCharBySerial(guilds[guildnumber].member[member]);
-				if (ISVALIDPC(pj))
+				if (pj)
 					pj->SetGuildTitleToggle();
 			}
 		}
@@ -1765,7 +1765,7 @@ int cGuilds::CheckValidPlace(int s)
 	
 	pack= pc->getBackpack();
 
-	if(ISVALIDPI(pack))
+	if(pack)
 	{
 		los=0;
 
@@ -1775,7 +1775,7 @@ int cGuilds::CheckValidPlace(int s)
 		
 			pi=si.getItem();
 
-			if (ISVALIDPI(pi))
+			if (pi)
 				if (pi->type==ITYPE_KEY && calcserial(pi->more1,pi->more2,pi->more3,pi->more4)==house->getSerial())
 				{
 					return 1;
@@ -1833,7 +1833,7 @@ void cGuilds::CheckConsistancy(void )
 				for (members=1; members<MAXGUILDMEMBERS; members++)
 				{
 					pc = pointers::findCharBySerial(guilds[guildnumber].member[members]);
-					if (!ISVALIDPC( pc ) )
+					if (!pc )
 					{
 						ok=0;
 						LogWarning("guild: %s had an member that didnt exist anymore, removed\n",guilds[guildnumber].name);

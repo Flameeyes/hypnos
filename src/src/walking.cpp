@@ -699,7 +699,7 @@ bool handleItemsAtNewPos(pChar pc, int oldx, int oldy, int newx, int newy)
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 
 		pItem pi=si.getItem();
-		if(!ISVALIDPI(pi))
+		if(!pi)
 			continue;
 			if( pi->getId()>=0x407C && pi->getId()<=0x407E )
 			{

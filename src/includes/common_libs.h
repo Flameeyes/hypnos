@@ -61,12 +61,8 @@ warnings/errors/issues.
 #include <vector>
 
 #ifdef __GNUC__
-	#if (__GNUC__ == 2)
-		#include <slist.h>
-	#else
-		#include <ext/slist>
-		using __gnu_cxx::slist;
-	#endif
+	#include <ext/slist>
+	using __gnu_cxx::slist;
 #else
 	#include <slist>
 #endif
@@ -94,7 +90,8 @@ extern OSVersion getOSVersion();
     #define MSG_NOSIGNAL 0
 #endif
 
-#define USE_THREADS
+#include <zthread/FastMutex.h>
+#include <xercesc/parsers/XercesDOMParser.hpp>
 
 #include "typedefs.h"
 #include "constants.h"

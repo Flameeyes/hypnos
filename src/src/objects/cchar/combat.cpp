@@ -169,7 +169,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 				} else {
 					pi = item::CreateFromScript( "$item_crossbow_bolt" );
 				}
-				if(ISVALIDPI(pi)) {
+				if(pi) {
 
 					pi->MoveTo( pc_def->getPosition() );
 					pi->setDecay();
@@ -773,7 +773,7 @@ int cChar::calcDef(int32_t x)
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pi=si.getItem();
-		if (!ISVALIDPI(pi)) continue;
+		if (!pi) continue;
 		if (pi->layer > LAYER_1HANDWEAPON && pi->layer < LAYER_MOUNT) {
 			if (pi->def>0)
 			{
@@ -836,7 +836,7 @@ int cChar::calcDef(int32_t x)
 
 	if (x==0) return total;
 
-	if (ISVALIDPI(pj)) {
+	if (pj) {
 		/*
 		//	Sparhawk:	TODO implement scriptable cChar static function isDamageProneLayer()
 		//			function checks wether item on layer can be damaged

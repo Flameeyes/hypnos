@@ -64,7 +64,7 @@ void sellaction(NXWSOCKET s)
 		for( si.rewind(); !si.isEmpty(); si++ )
 		{
 			pItem pi=si.getItem();
-			if(ISVALIDPI(pi)) {
+			if(pi) {
 				if (pi->layer == LAYER_TRADE_RESTOCK) npa=pi;	// Buy Restock container
 				if (pi->layer == LAYER_TRADE_NORESTOCK) npb=pi;	// Buy no restock container
 				if (pi->layer == LAYER_TRADE_BOUGHT) npc=pi;	// Sell container
@@ -111,7 +111,7 @@ void sellaction(NXWSOCKET s)
 				for( si2.rewind(); !si2.isEmpty(); si2++ )
 				{
 					pItem pi=si2.getItem();
-					if( ISVALIDPI(pi) && items_match(pi,pSell))
+					if( pi && items_match(pi,pSell))
 						join=pi;
 				}
 			}
@@ -123,7 +123,7 @@ void sellaction(NXWSOCKET s)
 				for( si2.rewind(); !si2.isEmpty(); si2++ )
 				{
 					pItem pi=si2.getItem();
-					if( ISVALIDPI(pi) && items_match(pi,pSell))
+					if( pi && items_match(pi,pSell))
 					{
 						value = pi->value;
 						value = pSell->calcValue(value);
@@ -265,19 +265,19 @@ void clearalltrades()
         uint32_t i = 0;
         for (i = 0; i < itemcount; i++) {
                 pi = MAKE_ITEM_REF(i);
-                if (!ISVALIDPI(pi)) continue;
+                if (!pi) continue;
                 if ((pi->type==1) && (pi->getPosition("x")==26) && (pi->getPosition("y")==0) && (pi->getPosition("z")==0) &&
 			(pi->id()==0x1E5E))
 		{
                         pc = pointers::findCharBySerial(pi->getContSerial());
-                        if (ISVALIDPC(pc)) {
+                        if (pc) {
                                 pack = pc->getBackpack();
-                                if (ISVALIDPI(pack)) {
+                                if (pack) {
                                     NxwItemWrapper si;
 									si.fillItemsInContainer( pi );
 									for( si.rewind(); !si.isEmpty(); si++ ) {
 										pj = si.getItem();
-                                        if( ISVALIDPI(pj)) {
+                                        if( pj) {
                        						pj->setContainer(pack);
                         				}
 									}
@@ -305,14 +305,14 @@ void restock(bool total)
 
 		pi = (pItem)(objs.getObject());
 
-		if(!ISVALIDPI(pi) || pi->layer!=0x1A )
+		if(!pi || pi->layer!=0x1A )
 			continue;
 
 		NxwItemWrapper si;
 		si.fillItemsInContainer( pi, false ); //ndEndy We don't need subcontainer right?
 		for( si.rewind(); !si.isEmpty(); si++ ) {
 			pItem pj=si.getItem();
-			if( !ISVALIDPI(pj) || !pj->restock )
+			if( !pj || !pj->restock )
 				continue;
 
 			if (total==true)
@@ -365,14 +365,14 @@ void cRestockMng::doRestock()
 
 		pItem pi= pointers::findItemBySerial( needrestock.front() );
 		this->needrestock.pop();
-		if( ISVALIDPI(pi) && pi->layer==LAYER_TRADE_RESTOCK  ) {
+		if( pi && pi->layer==LAYER_TRADE_RESTOCK  ) {
 
 			NxwItemWrapper si;
 			si.fillItemsInContainer( pi, false ); //ndEndy We don't need subcontainer right?
 			for( si.rewind(); !si.isEmpty(); si++ ) {
 
 				pItem pj=si.getItem();
-				if( !ISVALIDPI(pj) || ( pj->restock <= 0 ) )
+				if( !pj || ( pj->restock <= 0 ) )
 					continue;
 
 				int a=qmin(pj->restock, (pj->restock/2)+1);
@@ -401,14 +401,14 @@ void cRestockMng::doRestockAll()
 
 		pItem pi= pointers::findItemBySerial( needrestock.front() );
 		this->needrestock.pop();
-		if( ISVALIDPI(pi) && pi->layer==LAYER_TRADE_RESTOCK ) {
+		if( pi && pi->layer==LAYER_TRADE_RESTOCK ) {
 
 			NxwItemWrapper si;
 			si.fillItemsInContainer( pi, false ); //ndEndy We don't need subcontainer right?
 			for( si.rewind(); !si.isEmpty(); si++ ) {
 
 				pItem pj=si.getItem();
-				if( !ISVALIDPI(pj) || ( pj->restock <= 0 ) )
+				if( !pj || ( pj->restock <= 0 ) )
 					continue;
 
 				pj->amount+=pj->restock;

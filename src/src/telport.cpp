@@ -302,7 +302,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 						pItem pi= item::CreateFromScript( itmnum, NULL, amt );
 						packnum= pc->getBackpack();
 
-						if (ISVALIDPI(pi))
+						if (pi)
 						{
 							pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
 							if(pi->layer==LAYER_HAIR || pi->layer==LAYER_BEARD)

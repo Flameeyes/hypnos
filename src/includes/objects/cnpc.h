@@ -16,6 +16,9 @@
 class cNPC;
 typedef cNPC *pNPC;
 
+#include "objects/cchar.h"
+#include "objects/cpc.h"
+
 /*!
 \brief This class represent a non-playing character.
 

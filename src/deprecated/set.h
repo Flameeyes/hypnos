@@ -21,8 +21,8 @@
 class NxwWrapper {
 
 private:
-	uint32_t_VECTOR vect;
-	uint32_t_VECTOR::iterator current;
+	uint32_vector vect;
+	uint32_vector::iterator current;
 
 protected:
 	void next();

@@ -76,9 +76,11 @@ cAccount::cAccount(cSQLite::cSQLiteQuery::tRow r)
 	lastConnIP      = atoi(r["lastConnIP"]);
 	lastConnTime    = atoi(r["lastConnTime"]);
 	
-	static char buffer[512];
-	sprintf(buffer, "SELECT char FROM charAccounts WHERE account = %d", r["id"]);
+	char *buffer;
+	asprintf(buffer, "SELECT char FROM charAccounts WHERE account = %d", r["id"]);
 	cSQLite::pSQLiteQuery q = globalDB->execQuery(buffer);
+	free(buffer);
+	
 	if ( ! q )
 		LogError("Error executing query %s, no char loaded for account %s", buffer, r["name"]);
 	else

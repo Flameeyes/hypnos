@@ -89,7 +89,7 @@ void command_bounty( pClient client )
 			pChar pc_murderer = pointers::findCharBySerial(pc->murdererSer);
 			if( BountyCreate( pc_murderer, nAmount ) )
 			{
-				if(ISVALIDPC(pc_murderer))
+				if( pc_murderer )
 					pc->sysmsg(TRANSLATE("You have placed a bounty of %d gold coins on %s."),
 						nAmount, pc_murderer->getCurrentNameC() );
 			} else
@@ -347,7 +347,7 @@ void command_gochar( pClient client )
 			return;
 	}
 
-	if( ISVALIDPC(pc_i) ) {
+	if( pc_i ) {
 
 		pc->doGmEffect();
 
@@ -384,7 +384,7 @@ void command_fix( pClient client )
 void target_xgo( P_TARGET t )
 {
 	pChar pc = pointers::findCharBySerial( t->getClicked() );
-	if(ISVALIDPC(pc))
+	if(pc)
 	{
 		pc->MoveTo( t->buffer[0], t->buffer[1], t->buffer[2] );
 		pc->teleport();
@@ -423,7 +423,7 @@ void command_showids( pClient client )
 	sc.fillCharsNearXYZ( pc->getPosition() );
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pChar pc_sc=sc.getChar();
-		if(ISVALIDPC(pc_sc)) {
+		if( pc_sc ) {
 			pc_sc->showLongName( pc, true );
 		}
 	}
@@ -1096,7 +1096,7 @@ void target_dupe( pClient client, P_TARGET t )
 	if( n>=1)
     {
         pItem pi=pointers::findItemBySerial( t->getClicked() );
-        if (ISVALIDPI(pi))
+        if (pi)
         {
             for (int j=0; j<n; j++ )
             {
@@ -1659,7 +1659,7 @@ void command_gy( pClient client )
 			continue;
 
 		pChar pc_i = ps_i->currChar();
-		if (ISVALIDPC(pc_i) && pc_i->IsGM())
+		if (pc_i && pc_i->IsGM())
 		{
 			NXWSOCKET allz = ps_i->toInt();
 			SendSpeechMessagePkt(allz, id, model, 1, color, font, name, (char*)message.c_str() );
@@ -1700,7 +1700,7 @@ void command_yell( pClient client )
 			continue;
 
 		pChar pc_i = ps_i->currChar();
-		if (ISVALIDPC(pc_i) )
+		if (pc_i )
 		{
 			NXWSOCKET allz = ps_i->toInt();
 			SendSpeechMessagePkt(allz, id, model, 1, color, font, name, (char*)message.c_str() );
@@ -1713,7 +1713,7 @@ void target_squelch( pClient client, P_TARGET t )
 	pChar curr = client->currChar();
 
 	pChar pc =pointers::findCharBySerial( t->getClicked() );
-	if(ISVALIDPC(pc))
+	if(pc)
 	{
 
         if(pc->IsGM())
@@ -1853,7 +1853,7 @@ void command_who( pClient client )
 		if(ps_i!=NULL)
 		{
 			pChar pc_i=ps_i->currChar();
-			if(ISVALIDPC(pc_i)) {
+			if(pc_i) {
 				j++;
 				sprintf(s_szCmdTableTemp, "%i) %s [%x]", (j-1), pc_i->getCurrentNameC(), pc_i->getSerial());
 				pc->sysmsg(s_szCmdTableTemp);
@@ -1884,7 +1884,7 @@ void command_gms( pClient client )
 		if(ps_i!=NULL)
 		{
 			pChar pc_i=ps_i->currChar();
-			if(ISVALIDPC(pc_i) && pc_i->IsGMorCounselor() ) {
+			if(pc_i && pc_i->IsGMorCounselor() ) {
 				j++;
 				pc->sysmsg("%s", pc_i->getCurrentNameC());
 			}
@@ -2067,7 +2067,7 @@ void target_dye( pClient client, P_TARGET t )
 
 	if( isItemSerial(serial) ) {
 		pItem pi=pointers::findItemBySerial(serial);
-		if (ISVALIDPI(pi))
+		if (pi)
 		{
 			if( color==UINVALID16 ) //open dye vat
 			{
@@ -2089,7 +2089,7 @@ void target_dye( pClient client, P_TARGET t )
 		}
 	} else {
 		pChar pc=pointers::findCharBySerial(serial);
-		if(ISVALIDPC(pc))
+		if(pc)
 		{
 			if( color==UINVALID16 ) //open dye vat
 			{
@@ -2254,12 +2254,12 @@ void target_emptypack( pClient client, P_TARGET t )
 		pack=pi;
 	}
 
-	if( ISVALIDPI(pack) ) {
+	if( pack ) {
 		NxwItemWrapper si;
 		si.fillItemsInContainer( pack, false );
 		for( si.rewind(); !si.isEmpty(); si++ ) {
 			pItem item=si.getItem();
-			if( ISVALIDPI(item) )
+			if( item )
 				item->Delete();
 		}
 	}
@@ -2323,7 +2323,7 @@ void target_unhide( pClient client, P_TARGET t )
 void target_fullstats( pClient client, P_TARGET t )
 {
     pChar pc = pointers::findCharBySerial( t->getClicked() );
-    if (ISVALIDPC(pc))
+    if (pc)
     {
         pc->playSFX( 0x01F2);
         staticeffect( pc->getSerial(), 0x37, 0x6A, 0x09, 0x06);
@@ -2339,7 +2339,7 @@ void target_fullstats( pClient client, P_TARGET t )
 void target_heal( pClient client, P_TARGET t )
 {
     pChar pc = pointers::findCharBySerial( t->getClicked() );
-    if (ISVALIDPC(pc))
+    if (pc)
     {
         pc->playSFX( 0x01F2);
         staticeffect( pc->getSerial(), 0x37, 0x6A, 0x09, 0x06);
@@ -2351,7 +2351,7 @@ void target_heal( pClient client, P_TARGET t )
 void target_mana( pClient client, P_TARGET t )
 {
     pChar pc = pointers::findCharBySerial( t->getClicked() );
-    if (ISVALIDPC(pc))
+    if (pc)
     {
         pc->playSFX( 0x01F2);
         staticeffect( pc->getSerial(), 0x37, 0x6A, 0x09, 0x06);
@@ -2363,7 +2363,7 @@ void target_mana( pClient client, P_TARGET t )
 void target_stamina( pClient client, P_TARGET t )
 {
     pChar pc = pointers::findCharBySerial( t->getClicked() );
-    if( ISVALIDPC(pc) )
+    if( pc )
     {
         pc->playSFX( 0x01F2);
         staticeffect( pc->getSerial(), 0x37, 0x6A, 0x09, 0x06);
@@ -2416,7 +2416,7 @@ void target_tiledata( pClient client, P_TARGET t )
 void target_freeze( pClient client, P_TARGET t )
 {
 	pChar pc=pointers::findCharBySerial( t->getClicked() );
-	if( ISVALIDPC(pc) ) {
+	if( pc ) {
 		pc->freeze();
 		pc->teleport();
 	};
@@ -2425,7 +2425,7 @@ void target_freeze( pClient client, P_TARGET t )
 void target_unfreeze( pClient client, P_TARGET t )
 {
 	pChar pc=pointers::findCharBySerial( t->getClicked() );
-	if( ISVALIDPC(pc) ) {
+	if( pc ) {
 		pc->unfreeze();
 		pc->teleport();
 	}
@@ -2453,7 +2453,7 @@ void target_npcaction( pClient client, P_TARGET t )
 void target_kick( pClient client, P_TARGET t )
 {
 	pChar pc=pointers::findCharBySerial( t->getClicked() );
-    if( ISVALIDPC(pc) )
+    if( pc )
     {
 		ps->sysmsg( TRANSLATE("Kicking player"));
         pc->kick();
@@ -2463,7 +2463,7 @@ void target_kick( pClient client, P_TARGET t )
 void target_kill( pClient client, P_TARGET t )
 {
     pChar pc = pointers::findCharBySerial( t->getClicked() );
-    if(ISVALIDPC(pc) )
+    if(pc )
     {
         if(!pc->dead)
         {
@@ -2481,7 +2481,7 @@ void target_kill( pClient client, P_TARGET t )
 void target_bolt( pClient client, P_TARGET t )
 {
     pChar pc=pointers::findCharBySerial( t->getClicked() );
-	if( ISVALIDPC(pc) ) {
+	if( pc ) {
         pc->boltFX(true);
     }
 }
@@ -2489,16 +2489,16 @@ void target_bolt( pClient client, P_TARGET t )
 void target_resurrect( pClient client, P_TARGET t )
 {
     pChar pc = pointers::findCharBySerial( t->getClicked() );
-	if(ISVALIDPC(pc) && pc->dead)
+	if(pc && pc->dead)
 		pc->resurrect();
 }
 
 void target_killhair( pClient client, P_TARGET t )
 {
 	pChar pc=pointers::findCharBySerial( t->getClicked() );
-	if( ISVALIDPC(pc) ) {
+	if( pc ) {
 		pItem pi = pc->getHairItem();
-		if( ISVALIDPI(pi) )
+		if( pi )
 			pi->Delete();
 	}
 }
@@ -2506,9 +2506,9 @@ void target_killhair( pClient client, P_TARGET t )
 void target_killbeard( pClient client, P_TARGET t )
 {
 	pChar pc=pointers::findCharBySerial( t->getClicked() );
-	if( ISVALIDPC(pc) ) {
+	if( pc ) {
 		pItem pi = pc->getBeardItem();
-		if( ISVALIDPI(pi) )
+		if( pi )
 			pi->Delete();
 	}
 }
@@ -2564,9 +2564,9 @@ void target_makegm( pClient client, P_TARGET t )
 	si.fillItemWeared( pc, true, true, true );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 		pItem pi=si.getItem();
-		if( ISVALIDPI(pi) ) {
+		if( pi ) {
 			if( pi->layer!=LAYER_BEARD && pi->layer!=LAYER_HAIR ) {
-				if( ISVALIDPI(pack) )
+				if( pack )
 					pack->AddItem( pi );
 				else {
 					pi->MoveTo( pc->getPosition() );
@@ -2610,9 +2610,9 @@ void target_makecns( pClient client, P_TARGET t )
 	si.fillItemWeared( pc, true, true, true );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 		pItem pi=si.getItem();
-		if( ISVALIDPI(pi) ) {
+		if( pi ) {
 			if( pi->layer!=LAYER_BEARD && pi->layer!=LAYER_HAIR ) {
-				if( ISVALIDPI(pack) )
+				if( pack )
 					pack->AddItem( pi );
 				else {
 					pi->MoveTo( pc->getPosition() );

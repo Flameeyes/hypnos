@@ -1010,7 +1010,7 @@ NATIVE(_itm_createByDef)
 
 	pi = item::CreateFromScript( g_cAmxPrintBuffer, po, params[3] );
 	g_nAmxPrintPtr = 0;
-	if ( ISVALIDPI( pi ) )
+	if ( pi )
 		return pi->getSerial();
 
 	return INVALID;
@@ -1031,7 +1031,7 @@ NATIVE(_itm_createInBp)
 
 	pItem pi = item::CreateFromScript( params[1], pc->getBackpack(), params[3] );
 
-	return ISVALIDPI( pi )? pi->getSerial() : INVALID;
+	return pi? pi->getSerial() : INVALID;
 
 }
 
@@ -1055,7 +1055,7 @@ NATIVE(_itm_createInBpDef)
 
 	pItem pi = item::CreateFromScript( g_cAmxPrintBuffer, pc->getBackpack(), params[3] );
 	g_nAmxPrintPtr = 0;
-	return ISVALIDPI( pi )? pi->getSerial() : INVALID;
+	return pi? pi->getSerial() : INVALID;
 
 }
 
@@ -1074,7 +1074,7 @@ NATIVE(_itm_createInBank)
 
 	pItem pi = item::CreateFromScript( params[1], pc->GetBankBox(), params[3] );
 
-	return ISVALIDPI( pi )? pi->getSerial() : INVALID;
+	return pi? pi->getSerial() : INVALID;
 
 }
 
@@ -1098,7 +1098,7 @@ NATIVE(_itm_createInBankDef)
 
 	pItem pi = item::CreateFromScript( g_cAmxPrintBuffer, pc->GetBankBox(), params[3] );
 	g_nAmxPrintPtr = 0;
-	return ISVALIDPI( pi )? pi->getSerial() : INVALID;
+	return pi? pi->getSerial() : INVALID;
 
 }
 
@@ -1129,7 +1129,7 @@ NATIVE(_chr_getBackpack)
 	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR( pc, INVALID );
 	pItem pi= pc->getBackpack();
-	if( !ISVALIDPI( pi ) ) {
+	if( !pi ) {
 		pItem bp = item::CreateFromScript( "$item_backpack", pc );
 		if( ISVALIDPI(bp) )
 		{
@@ -2342,7 +2342,7 @@ NATIVE( _set_get )
 NATIVE( _set_getChar )
 {
 	pChar pc=pointers::findCharBySerial( amxSet::get( params[1] ) );
-	return ISVALIDPC(pc)? pc->getSerial() : INVALID;
+	return pc? pc->getSerial() : INVALID;
 }
 
 /*
@@ -2356,7 +2356,7 @@ NATIVE( _set_getChar )
 NATIVE( _set_getItem )
 {
 	pItem pi=pointers::findItemBySerial( amxSet::get( params[1] ) );
-	return ISVALIDPI(pi)? pi->getSerial() : INVALID;
+	return pi? pi->getSerial() : INVALID;
 }
 
 /*

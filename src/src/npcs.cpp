@@ -151,15 +151,15 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 
 	if	(x1 > 0 && y1 > 0)
 		postype = 3;	// take position from parms
-	else if ( s > INVALID && !ISVALIDPI(pi) )
+	else if ( s > INVALID && !pi )
 		postype = 2;	// take position from socket's buffer
-	else if ( s == INVALID && ISVALIDPI(pi) )
+	else if ( s == INVALID && pi )
 		postype = 1;	// take position from items[i]
 
 	if ( !postype )
 	{
 		ErrOut("AddNPC: bad parms in call (socket [%d], item[%d], npcNum[%d], x1[%d], y1[%d]\n",
-			s, ((ISVALIDPI(pi))? pi->getSerial() : INVALID), npcNum, x1, y1);
+			s, ((pi)? pi->getSerial() : INVALID), npcNum, x1, y1);
 	}
 	else
 	{

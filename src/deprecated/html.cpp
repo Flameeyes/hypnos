@@ -119,7 +119,7 @@ void updatehtml()//HTML
 		{
 			pChar pc= MAKE_CHAR_REF(currchar[n]);
 			//if(online(currchar[n])) //bugfix LB
-			if( ISVALIDPC(pc) && pc->IsOnline() )
+			if( pc && pc->IsOnline() )
 			{
 				fprintf(html,pc->getCurrentNameC());
 				n++;
@@ -133,7 +133,7 @@ void updatehtml()//HTML
 				pChar pc= MAKE_CHAR_REF(currchar[n]);
 
 				//if (online(currchar[n])) // bugfix, LB
-				if( ISVALIDPC(pc) && pc->IsOnline() )
+				if( pc && pc->IsOnline() )
 				{
 					a++;
 					fprintf(html,"%i) %s <BR>\n",a,pc->getCurrentNameC()); // bugfix lb
@@ -152,7 +152,7 @@ void updatehtml()//HTML
 				/*for(a=0;a<charcount;a++)
 				{
 					pChar pc_a=MAKE_CHAR_REF(a);
-					if(ISVALIDPC(pc_a)) {
+					if( pc_a ) {
 						if(!pc_a->free) ccount++;
 						if(pc_a->npc && !pc_a->free) npccount++;
 					}
@@ -168,7 +168,7 @@ void updatehtml()//HTML
 				/*for(a=0;a<charcount;a++)
 				{
 					pChar pc_a=MAKE_CHAR_REF(a);
-					if(ISVALIDPC(pc_a)) {
+					if( pc_a ) {
 						if(!pc_a->free) ccount++;
 						if(pc_a->npc && !pc_a->free) npccount++; //bugfix LB
 					}
@@ -209,7 +209,7 @@ void updatehtml()//HTML
 				for(a=0;a<now;a++)
 				{
 					pChar pc_a=MAKE_CHAR_REF(currchar[a]);
-					if(ISVALIDPC(pc_a) && clientInfo[a]->ingame ) {
+					if( pc_a && clientInfo[a]->ingame ) {
 						if( pc_a->IsGM() ) gm++;
 						else if( pc_a->IsCounselor() ) cns++;
 					}
@@ -224,7 +224,7 @@ void updatehtml()//HTML
 				for(a=0;a<now;a++)
 				{
 					pChar pc_a=MAKE_CHAR_REF(currchar[a]);
-					if(ISVALIDPC(pc_a) && clientInfo[a]->ingame ) {
+					if( pc_a && clientInfo[a]->ingame ) {
 						if( pc_a->IsGM() ) gm++;
 						else if( pc_a->IsCounselor() ) cns++; //bugfix LB
 					}

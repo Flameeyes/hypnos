@@ -188,7 +188,7 @@ void cChar::IncreaseKarma( int32_t value, pChar pKilled )
 		}
 		else if ( nCurKarma > nKarma )
 		{
-			if ( !ISVALIDPC( pKilled) )
+			if ( ! pKilled )
 			{
 				nChange=((nCurKarma-nKarma)/50);
 				SetKarma( GetKarma() + nChange );

@@ -411,7 +411,7 @@ void checkkey ()
 				for (i=0;i<now;i++)
 				{
 					pChar pc_i=MAKE_CHAR_REF(currchar[i]);
-					if(ISVALIDPC(pc_i) && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
+					if(pc_i && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
 					{
 						ConOut("%i) %s [ %08x ]\n", j, pc_i->getCurrentNameC(), pc_i->getSerial());
 						j++;
@@ -1479,7 +1479,7 @@ void usepotion(pChar pc, pItem pi)
 		pi->pileable=1;
 
 		pItem pack=pc->getBackpack();
-		if (ISVALIDPI(pack)) {
+		if (pack) {
 			pack->AddItem( pi );
 		}
 		else {
@@ -1686,7 +1686,7 @@ void InitMultis()
 	{*/
 		if ( !isCharSerial(objs.getSerial()) ) continue;
 		pChar pc_i = (pChar)(objs.getObject());
-		if(!ISVALIDPC(pc_i))
+		if(!pc_i)
 			continue;
 
 		pItem multi=findmulti( pc_i->getPosition() );
@@ -1707,7 +1707,7 @@ void InitMultis()
 	{*/
 		if ( isCharSerial(objs.getSerial()) ) continue;
 		pi=(pItem)(objs.getObject());
-		if(!ISVALIDPI(pi))
+		if(!pi)
 			continue;
 
 		//Endymion modified from !pi->isInWorld() to pi->isInWorld()

@@ -311,7 +311,7 @@ int cChar::unmountHorse()
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pi=si.getItem();
-		if( ISVALIDPI(pi) && pi->layer == LAYER_MOUNT)
+		if( pi && pi->layer == LAYER_MOUNT)
 		{
 
 			onhorse = false;
@@ -324,7 +324,7 @@ int cChar::unmountHorse()
 				pChar p_pet=iter->second;
 				pointers::pMounted.erase( iter );
 
-				if( ISVALIDPC( p_pet ) ) {
+				if( p_pet ) {
 
 
 					p_pet->timeused_last = getclock();

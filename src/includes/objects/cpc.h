@@ -14,7 +14,8 @@
 #define __CPC_H__
 
 class cPC;
-typedef cPC *pPC;
+typedef cPC *pPC;		//!< Pointer to a playing character
+typedef std::list<pPC> PCList;	//!< List of pointers to PCs
 
 /*!
 \brief This class represent a playing character.

@@ -173,7 +173,7 @@ void cTriggerContext::parseIAddCommand(char* par)
 	if (!InBackpack) 
 	{
 		pi=item::CreateFromScript( itmNumber, NULL, itmamount );
-		if( ISVALIDPI(pi) ) {
+		if( pi ) {
 			pi->MoveTo(triggerx, triggery, triggerz);
 			pi->Refresh();
 		}
@@ -184,7 +184,7 @@ void cTriggerContext::parseIAddCommand(char* par)
 	}
 
     // Added colormem token here! by Magius(CHE) §
-    if( ISVALIDPI(pi) ) {
+    if( pi ) {
 		if( m_nColor1!=0xFF ) {
 			pi->setColor( Duint8_t2WORD( m_nColor1, m_nColor2 ) );
 			pi->Refresh();
@@ -326,7 +326,7 @@ cTriggerContext::cTriggerContext(int number, NXWSOCKET  s, pChar pc, int trigtyp
 	m_pcNpc = pc;
 	if (trigtype==TRIGMODE_NPCENVOKE) {
 		pItem pi = pointers::findItemBySerial(m_pcCurrChar->envokeitem);
-		if (ISVALIDPI(pi)) {
+		if (pi) {
 			m_piEnvoked = pi;
 		} else { //panic
 			sysmessage(s, TRANSLATE("That didn't seem to work."));
@@ -761,7 +761,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 
 				if( ISVALIDPC( m_pcCurrChar ) ) {
 					pItem pack=m_pcCurrChar->getBackpack();
-					if( ISVALIDPI(pack) )
+					if( pack )
 						pack->AddItem( pc );
 					else {
 						pc->MoveTo( m_pcCurrChar->getPosition() );

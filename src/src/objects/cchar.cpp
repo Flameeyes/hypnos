@@ -456,7 +456,7 @@ void cChar::checkSafeStats()
 	si.fillItemWeared( this, true, true, false );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 		pi = si.getItem();
-		if ( !ISVALIDPI(pi) )
+		if ( !pi )
 			continue;
 
 		if ( pi->st2 != 0 )
@@ -484,7 +484,7 @@ void cChar::checkSafeStats()
 	//
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 		pi = si.getItem();
-		if ( !ISVALIDPI(pi) )
+		if ( ! pi )
 			continue;
 
 		if ( pi->st2 != 0 )
@@ -589,7 +589,7 @@ void cChar::unHide()
 			if( ps_i==NULL ) continue;
 
 			pChar pj=ps_i->currChar();
-			if (ISVALIDPC(pj))
+			if ( pj )
 			{
 				if (pj->getSerial() != my_serial) { //to other players : recreate player object
 					SendDeleteObjectPkt(i, my_serial);
@@ -763,10 +763,10 @@ void cChar::damage(int32_t amount, DamageType typeofdamage, StatType stattobedam
 	if (!npc && !IsOnline())
 		return;
 	pChar myself=pointers::findCharBySerial(getSerial());
-	if ( ! ISVALIDPC(myself) )
+	if ( ! myself )
 		return;
 	pChar pc_att=pointers::findCharBySerial(attackerserial);
-	uint32_t serial_att= ISVALIDPC(pc_att)? pc_att->getSerial() : INVALID;
+	uint32_t serial_att= pc_att ? pc_att->getSerial() : INVALID;
 
 	if (amxevents[EVENT_CHR_ONWOUNDED]) {
 		g_bByPass = false;
@@ -826,7 +826,7 @@ int32_t cChar::calcResist(DamageType typeofdamage)
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pi=si.getItem();
-		if (ISVALIDPI(pi)) {
+		if( pi ) {
 			total += pi->resists[typeofdamage];
 		}
 	}
@@ -926,7 +926,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 
 
 	pItem p_boat = Boats->GetBoat(getPosition());
-	if( ISVALIDPI(p_boat) ) {
+	if( p_boat ) {
 		setMultiSerial(p_boat->getSerial());
 		Location boatpos = getPosition();
 		boatpos.z = p_boat->getPosition().z +3;
@@ -971,7 +971,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 			if ( ps_w == NULL )
 				continue;
 			pChar pc = ps_w->currChar();
-            if ( ISVALIDPC( pc ) )
+            if ( pc )
 	            if ( distFrom( pc ) > VISRANGE || !canSee( *pc ) )
 					ps_w->sendRemoveObject(static_cast<pObject>(this));
 		}
@@ -1014,7 +1014,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 				for( sc.rewind(); !sc.isEmpty(); sc++ )
 				{
 					pChar pc=sc.getChar();
-					if( ISVALIDPC( pc ) )
+					if( pc )
 					{
 						if( getSerial() != pc->getSerial32() )
 						{
@@ -1040,7 +1040,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 					for( si.rewind(); !si.isEmpty(); si++ )
 					{
 						pItem pi = si.getItem();
-						if( ISVALIDPI( pi ) )
+						if( pi )
 							senditem( socket, pi );
 					}
 				}
@@ -1078,7 +1078,7 @@ int32_t cChar::getCombatSkill()
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 
 		pItem pi = si.getItem();
-		if( ISVALIDPI( pi ) )
+		if( pi )
 		{
 			if( pi->layer == LAYER_1HANDWEAPON || pi->layer == LAYER_2HANDWEAPON )
 			{
@@ -1122,7 +1122,7 @@ bool const cChar::CanDoGestures() const
 
 			pItem pj=si.getItem();
 
-			if( ISVALIDPI( pj ) )
+			if( pj )
 			{
 				if ( pj->layer == LAYER_2HANDWEAPON || ( pj->layer == LAYER_1HANDWEAPON && pj->type!=ITYPE_SPELLBOOK ) )
 				{
@@ -1325,7 +1325,7 @@ void cChar::hideBySkill()
 {
 	pChar pc_att=pointers::findCharBySerial(attackerserial);
 
-	if ( ISVALIDPC(pc_att) && hasInRange(pc_att) )
+	if ( pc_att && hasInRange(pc_att) )
     	{
     		if ( !npc )
         		sysmsg( TRANSLATE("You cannot hide while fighting.") );
@@ -1430,7 +1430,7 @@ void cChar::resurrect( NXWCLIENT healer )
 		for( si.rewind(); !si.isEmpty(); si++ )
 		{
 			pItem pj=si.getItem();
-			if(!ISVALIDPI(pj))
+			if( ! pj )
 				continue;
 			if( pj->layer == LAYER_NECK )
 			{
@@ -1440,11 +1440,11 @@ void cChar::resurrect( NXWCLIENT healer )
 		}
 
 		pItem pj= pointers::findItemBySerial(robe);
-		if( ISVALIDPI(pj))
+		if( pj )
 			pj->Delete();
 
 		pItem pi = item::CreateFromScript( "$item_robe_1", this );
-		if(ISVALIDPI(pi)) {
+		if( pi ) {
 			pi->setCurrentName( "a resurrect robe" );
 			pi->layer = LAYER_OUTER_TORSO;
 			pi->setContainer(this);
@@ -1508,12 +1508,12 @@ void cChar::morph ( short bodyid, short skincolor, short hairstyle, short hairco
 		setOldColor( getColor() );
 
 		setRealName( getCurrentNameC() );
-		if(ISVALIDPI(pbeard))
+		if( pbeard )
 		{
 			oldbeardstyle = pbeard->getId();
 			oldbeardcolor = pbeard->getColor();
 		}
-		if(ISVALIDPI(phair))
+		if( phair )
 		{
 			oldhairstyle = phair->getId();
 			oldhaircolor = phair->getColor();
@@ -1529,7 +1529,7 @@ void cChar::morph ( short bodyid, short skincolor, short hairstyle, short hairco
 	if (newname!=NULL)
 		setCurrentName(newname);
 
-	if(ISVALIDPI(pbeard))
+	if( pbeard )
 	{
 		if (beardstyle!=INVALID)
 			pbeard->setId( beardstyle );
@@ -1537,7 +1537,7 @@ void cChar::morph ( short bodyid, short skincolor, short hairstyle, short hairco
 			pbeard->setColor( beardcolor );
 	}
 
-	if(ISVALIDPI(phair))
+	if( phair )
 	{
 		if (hairstyle!=INVALID)
 			phair->setId( hairstyle );
@@ -1570,7 +1570,7 @@ void cChar::possess(pChar pc)
 
 	if ( possessorSerial != INVALID ) { //We're in a possessed Char! Switch back to possessor
 		pChar pcPossessor = pointers::findCharBySerial( possessorSerial );
-		if ( ISVALIDPC( pcPossessor ) ) {
+		if ( pcPossessor ) {
 			bSwitchBack = true;
 			pc = pcPossessor;
 			possessorSerial = INVALID;
@@ -1834,7 +1834,7 @@ void cChar::Kill()
 	for( sc.rewind(); !sc.isEmpty(); sc++ )
 	{
 		pk = sc.getChar();
-		if(!ISVALIDPC(pk) || pk->targserial!=getSerial() )
+		if(! pk || pk->targserial!=getSerial() )
 			continue;
 
 		if (pk->npcaitype==NPCAI_TELEPORTGUARD)
@@ -1849,7 +1849,7 @@ void cChar::Kill()
 		pk->timeout=0;
 
 		pChar pk_att=pointers::findCharBySerial(pk->attackerserial);
-		if (ISVALIDPC(pk_att))
+		if ( pk_att )
 		{
 			pk_att->ResetAttackFirst();
 			pk_att->attackerserial=INVALID; // lb crashfix
@@ -1867,7 +1867,7 @@ void cChar::Kill()
 			for( party.rewind(); !party.isEmpty(); party++ )
 			{
 				pChar fr=party.getChar();
-				if( ISVALIDPC(fr) )
+				if( fr )
 				{
 					fr->IncreaseKarma( (0-(karma)), this  );
 					fr->modifyFame( fame );
@@ -1931,7 +1931,7 @@ void cChar::Kill()
 
 		pItem pi_j=weared.getItem();
 
-		if(!ISVALIDPI(pi_j))
+		if(! pi_j )
 			continue;
 
 		if ((pi_j->type==ITYPE_CONTAINER) && (pi_j->getPosition().x==26) && (pi_j->getPosition().y==0) &&
@@ -1970,7 +1970,7 @@ void cChar::Kill()
 	sprintf(szCorpseName, "corpse of %s", getCurrentNameC());
 
 	pItem pCorpse = cItem::addByID( ITEMID_CORPSEBASE, 1, szCorpseName, getOldColor(), getPosition());
-	if (!ISVALIDPI(pCorpse))
+	if ( !pCorpse )
 	{
 	    // panic
 	    PanicOut("cChar::Kill() failed to create corpse.\n");
@@ -2014,7 +2014,7 @@ void cChar::Kill()
 	//--------------------- dropping items to corpse
 
 	pItem pBackPack = getBackpack();
-	if (!ISVALIDPI(pBackPack))
+	if (! pBackPack )
 		pBackPack = pCorpse;
 	//
 	//	Sparhawk:	new just in time loot handling
@@ -2043,7 +2043,7 @@ void cChar::Kill()
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 
 		pItem pi_j=si.getItem();
-		if( !ISVALIDPI(pi_j) )
+		if( !pi_j )
 			continue;
 
 		//the backpack
@@ -2127,7 +2127,7 @@ void cChar::checkEquipement()
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 
 		pi=si.getItem();
-		if(!ISVALIDPI(pi))
+		if( ! pi )
 			continue;
 		if (((pi->st > getStrength()) || !pi->checkItemUsability(this, ITEM_USE_CHECKEQUIP)) && !pi->isNewbie())//if strength required > character's strength, and the item is not newbie
 		{
@@ -2548,7 +2548,7 @@ void cChar::do_lsd()
 		for( si.rewind(); !si.isEmpty(); si++ ) {
 
 			pItem pi=si.getItem();
-			if(!ISVALIDPI(pi))
+			if( ! pi )
 				continue;
 
 			uint16_t color=pi->getColor(); // fetch item's color and covert to 16 bit

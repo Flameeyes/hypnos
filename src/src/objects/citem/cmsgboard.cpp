@@ -230,7 +230,7 @@ void cMsgBoardMessage::refreshQuestMessage()
         switch (qtype)
         {
 	case ESCORTQUEST:
-		if (ISVALIDPC(pc))
+		if (pc)
 		{
 			if ( pc->rtti() == rtti::cNPC &&  pc->questType == ESCORTQUEST  )
 			{
@@ -251,7 +251,7 @@ void cMsgBoardMessage::refreshQuestMessage()
 		break;
 
 	case BOUNTYQUEST:
-		if (ISVALIDPC(pc))
+		if (pc)
 		{
 			if ( pc->rtti() == rtti::cNPC &&  pc->questType == BOUNTYQUEST )
 			{

@@ -42,7 +42,7 @@ namespace Commands
 		if (pc->GetItemOnLayer(LAYER_TRADE_RESTOCK) == NULL)
 		{
 			pi = item::CreateFromScript( "$item_restock", pc );
-			if( ISVALIDPI( pi ) )//AntiChrist - to preview crashes
+			if( pi )//AntiChrist - to preview crashes
 			{
 				pi->setContainer(pc);
 				pi->layer=LAYER_TRADE_RESTOCK;
@@ -54,7 +54,7 @@ namespace Commands
 		if (pc->GetItemOnLayer(LAYER_TRADE_NORESTOCK) == NULL)
 		{
 			pi = item::CreateFromScript( "$item_restock", pc );
-			if( ISVALIDPI( pi ) )
+			if( pi )
 			{
 				pi->setContainer(pc);
 				pi->layer=LAYER_TRADE_NORESTOCK;
@@ -66,7 +66,7 @@ namespace Commands
 		if (pc->GetItemOnLayer(LAYER_TRADE_BOUGHT) == NULL)
 		{
 			pi = item::CreateFromScript( "$item_restock", pc );
-			if( ISVALIDPI( pi ) )
+			if( pi )
 			{
 				pi->setContainer(pc);
 				pi->layer=LAYER_TRADE_BOUGHT;
@@ -91,7 +91,7 @@ namespace Commands
 		for(i=0;i<charcount;i++)
 		{
 			pChar pc_i=MAKE_CHAR_REF(i);
-			if(ISVALIDPC(pc_i)) {
+			if(pc_i) {
 
 				if(pc_i->spawnregion==r && !pc_i->free)
 				{
@@ -107,7 +107,7 @@ namespace Commands
 		for(i=0;i<itemcount;i++)
 		{
 			pItem pi =MAKE_ITEM_REF(i);
-			if(ISVALIDPI(pi))
+			if(pi)
 			{
 				if(pi->spawnregion==r && !pi->free)
 				{
@@ -180,7 +180,7 @@ namespace Commands
 		for(i=0;i<charcount;i++)
 		{
 			pChar pj=MAKE_CHAR_REF(i);
-			if(!ISVALIDPC(pj))
+			if(!pj)
 				continue;
 
 			if(!pj->IsGM())
@@ -255,7 +255,7 @@ namespace Commands
 					if(ps_i==NULL)
 						continue;
 					pChar pj=ps_i->currChar();
-					if ( ISVALIDPC(pj) && pj->IsCounselor() )
+					if ( pj && pj->IsCounselor() )
 					{
 						found=true;
 						ps_i->sysmsg( temp);
@@ -279,7 +279,7 @@ namespace Commands
 		VALIDATEPC(Me);
 
 		pItem pi = pointers::findItemBySerPtr(buffer[s] +1);
-		if( ISVALIDPI(pi) )
+		if( pi )
 		{
 
 			if( !Me->IsGMorCounselor() ) {
@@ -295,7 +295,7 @@ namespace Commands
 				}
 				else if( isItemSerial( cont ) ) {
 					pItem backpack = Me->getBackpack();
-					if( ISVALIDPI( backpack ) && ( cont!=backpack->getSerial() ) )
+					if( backpack && ( cont!=backpack->getSerial() ) )
 						return;
 				}
 				else { //on ground
@@ -330,7 +330,7 @@ namespace Commands
 		}
 
 		pChar pc = pointers::findCharBySerPtr(buffer[s] +1);
-		if( ISVALIDPC(pc) && Me->IsGMorCounselor() )
+		if( pc && Me->IsGMorCounselor() )
 		{
 			color = ShortFromCharPtr(buffer[s] +7);
 
@@ -368,7 +368,7 @@ namespace Commands
 		pi->setId( id );
 		pi->pileable = pileable;
 
-		if(ISVALIDPI(pi))//AntiChrist - to preview crashes
+		if(pi)//AntiChrist - to preview crashes
 		{
 			pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
 			Location charpos= pc_currchar->getPosition();
@@ -423,7 +423,7 @@ namespace Commands
 		pItem pi = NULL;
 		for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
 			pi = pointers::findItemBySerial( objs.getSerial() );
-			if ( ISVALIDPI(pi) && pi->isInWorld() && pi->wipe == 0 )
+			if ( pi && pi->isInWorld() && pi->wipe == 0 )
 				pi->Delete();
 		}
 

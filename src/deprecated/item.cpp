@@ -159,9 +159,9 @@ namespace item
 									if ( itemAmount < 1 )
 										itemAmount = 1;
 
-									pItem pItem = CreateFromScript( scriptId, pi, itemAmount );
+									pItem newpi = CreateFromScript( scriptId, pi, itemAmount );
 
-									if( !ISVALIDPI( pItem ) )
+									if( ! newpi )
 										WarnOut( "CreateFromScript: invalid attribute %s %s", lha.c_str(), rha.c_str() );
 								}
 								break;
@@ -236,7 +236,7 @@ namespace item
 						pi->Delete();
 						pi=item::CreateScriptRandomItem( const_cast<char*>(rha.c_str()), cont);
 						/*
-						if( ISVALIDPI(pi) )
+						if( pi )
 							if( strcmp( script3, "") ) //ndEndy defined amount, 1 by default
 								pi->amount=str2num( script3 );
 						*/
@@ -398,7 +398,7 @@ namespace item
 			pi->amount=amount;
 
 		//Luxor: put it in the container
-		if ( ISVALIDPO( cont ) )
+		if ( cont )
 			if( isItemSerial( cont->getSerial() ) )
 			{
 				((pItem)cont)->AddItem(pi);
@@ -485,7 +485,7 @@ namespace item
 	{
 		pItem pi= NULL;
 		pi = item::CreateFromScript( itemnum,cont);
-		if (!ISVALIDPI(pi))
+		if (!pi)
 		{
 			LogWarning("ITEM <%i> not found in the scripts",itemnum);
 			return NULL;

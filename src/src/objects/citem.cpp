@@ -503,7 +503,7 @@ bool cItem::doDecay()
 			if ( getMultiSerial32() == INVALID )
 			{
 				pItem pi_multi = findmulti(getPosition());
-				if ( ISVALIDPI(pi_multi) )
+				if ( pi_multi )
 				{
 					if ( pi_multi->more4 == 0 )
 					{
@@ -528,7 +528,7 @@ bool cItem::doDecay()
 			for( si.rewind(); !si.isEmpty(); si++ )
 			{
 				pItem pj = si.getItem();
-				if( ISVALIDPI(pj) )
+				if( pj )
 				{
 					pj->setContainer(0);
 					pj->MoveTo( getPosition() );
@@ -564,7 +564,7 @@ void cItem::explode(NXWSOCKET  s)
 	si.fillItemsNearXYZ( getPosition(), 5, true );
     for( si.rewind(); !si.isEmpty(); si++ ) {
 		pItem p_nearbie=si.getItem();
-		if(ISVALIDPI(p_nearbie) && p_nearbie->type == ITYPE_POTION && p_nearbie->morey == 3) { //It's an explosion potion!
+		if( p_nearbie && p_nearbie->type == ITYPE_POTION && p_nearbie->morey == 3) { //It's an explosion potion!
 			p_nearbie->explode(s);
     	}
     }
@@ -592,7 +592,7 @@ void cItem::explode(NXWSOCKET  s)
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
 		pChar pc=sc.getChar();
-		if( ISVALIDPC(pc) ) {
+		if( pc ) {
 			pc->damage( dmg+(2-pc->distFrom(this)), DAMAGE_FIRE );
 		}
 	}

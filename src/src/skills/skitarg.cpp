@@ -240,7 +240,7 @@ static bool ForgeInRange(NXWSOCKET s)
 	si.fillItemsNearXYZ( pc->getPosition(), 3, false );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
         pItem pi=si.getItem();
-		if( ISVALIDPI(pi) && pi->IsForge())
+		if( pi && pi->IsForge())
 			return true;
     }
     return false;
@@ -439,7 +439,7 @@ void Skills::target_tree( NXWCLIENT ps, P_TARGET t )
     }
 
 	pItem weapon = pc->getWeapon();
-	if( !( ISVALIDPI(weapon) && ( weapon->IsAxe() || weapon->IsSword() ) ) )
+	if( !( weapon && ( weapon->IsAxe() || weapon->IsSword() ) ) )
 	{
 		pc->sysmsg(TRANSLATE("You must have a weapon in hand in order to chop."));
 		return;
@@ -503,7 +503,7 @@ void Skills::target_tree( NXWCLIENT ps, P_TARGET t )
     }
 
     pItem packnum = pc->getBackpack();
-    if( !ISVALIDPI(packnum) ) {
+    if( ! packnum ) {
     	pc->sysmsg(TRANSLATE("No backpack to store logs"));
 		return;
 	}
@@ -558,7 +558,7 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
     case 4:
 		{
 			pItem pi=item::SpawnRandomItem(s,"ITEMLIST","1001"); // Armor and shields - Random
-			if(ISVALIDPI(pi))
+			if(pi)
 				if((pi->getId()>=7026)&&(pi->getId()<=7035))
 					pc->sysmsg(TRANSLATE("You unearthed an old shield and placed it in your pack"));
 				else
@@ -571,7 +571,7 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
         if(nRandnum)
         { // randomly create a gem and place in backpack
             pItem pi=item::SpawnRandomItem(s,"ITEMLIST","999");
-            if(ISVALIDPI(pi))
+            if(pi)
 				pc->sysmsg(TRANSLATE("You place a gem in your pack."));
         }
         else
@@ -595,7 +595,7 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
     case 8:
 		{
 			pItem pi=item::SpawnRandomItem(s,"ITEMLIST","1000");
-			if(ISVALIDPI(pi))
+			if(pi)
 				pc->sysmsg(TRANSLATE("You unearthed a old weapon and placed it in your pack."));
 		}
         break;
@@ -893,7 +893,7 @@ void Skills::target_detectHidden( NXWCLIENT ps, P_TARGET t )
 
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
 		pc_curr = sw.getChar();
-		if ( !ISVALIDPC(pc_curr) )
+		if ( !pc_curr )
 			continue;
 
 		if ( pc_curr->IsHiddenBySkill() && !pc->isPermaHidden() )
@@ -1127,13 +1127,13 @@ void Skills::target_alchemy( NXWCLIENT ps, P_TARGET t )
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem piii=si.getItem();
-		if( ISVALIDPI(piii) && piii->type==0) {
+		if( piii && piii->type==0) {
 			pfbottle=pi;
 			break;
 		}
 	}
 
-	if (!ISVALIDPI(pfbottle))
+	if (!pfbottle)
 	{
 		sysmessage(s,TRANSLATE("There is no bottle in your pack"));
 		return;
@@ -1176,7 +1176,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, P_TARGET t )
 
     if (!SrvParms->bandageincombat ) {
 		//pChar pc_att=pointers::findCharBySerial(ph->attackerserial);
-		if( ph->war/* || pp->war || ( ISVALIDPC(pc_att) && pc_att->war)*/)
+		if( ph->war/* || pp->war || ( pc_att && pc_att->war)*/)
 		{
 			ph->sysmsg(TRANSLATE("You can't heal while in a fight!"));
 			return;
@@ -1690,7 +1690,7 @@ void target_poisoning2( NXWCLIENT ps, P_TARGET t )
 
 
     const pItem pi=pointers::findItemBySerial( t->getClicked() );
-    if( !ISVALIDPI(pi) ) {
+    if( !pi ) {
         pc->sysmsg(TRANSLATE("You can't poison that item."));
 		pc->objectdelay = 0;
         return;

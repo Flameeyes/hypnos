@@ -65,7 +65,7 @@ public:
 	void sendPacket(pPacketSend ps);
 
 	//! Gets the current char owned by the client
-	inline pChar currChar() const
+	inline pPC currChar() const
 	{ return pc; }
 
 	inline pAccount currAccount() const

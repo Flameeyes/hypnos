@@ -524,7 +524,7 @@ static void exec_whologow(char *dummy)
 			continue;
 		
 		pChar pj=ps->currChar();
-		if( ISVALIDPC(pj) ) //Keeps NPC's from appearing on the list
+		if( pj ) //Keeps NPC's from appearing on the list
 		{
 			j++;
 			fprintf(File, "%i) %s [%x]\n", (j-1), pj->getCurrentNameC(), pj->getSerial());
@@ -561,7 +561,7 @@ static void exec_wholog(char *dummy)
 		if( ps==NULL )
 			continue;
 		pChar pj=ps->currChar();
-		if( ISVALIDPC(pj) ) //Keeps NPC's from appearing on the list
+		if( pj ) //Keeps NPC's from appearing on the list
 		{
 			j++;
 			fprintf(File, "%i) %s [%x ]\n", (j-1), pj->getCurrentNameC(), pj->getSerial());
@@ -671,7 +671,7 @@ static void exec_gy(char *txt)
 		if( ps==NULL )
 			continue;
 		pChar pj=ps->currChar();
-		if (ISVALIDPC(pj) && pj->IsGM())
+		if (pj && pj->IsGM())
 		{
 			SendSpeechMessagePkt(ps->toInt(), 0x01010101, 0x0101, 1, 0x0040, 0x0003, name, txt);
 		}
@@ -718,7 +718,7 @@ static void exec_resetdailylimit(char *params)
 			continue;
 
 		pChar pc = static_cast<pChar>(objs.getObject());
-		if(ISVALIDPC(pc))
+		if(pc)
 			pc->statGainedToday = 0;
 	}
 	ConOut("[ OK ]\n");

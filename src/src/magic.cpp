@@ -993,10 +993,10 @@ bool checkRequiredTargetType(SpellId spellnum, TargetLocation& t)
 		case TARGTYPE_NONE :
 			return true;
 		case TARGTYPE_CONTAINER:
-			if (!(ISVALIDPI(pi))) return false;
+			if (!(pi)) return false;
 			return pi->isContainer();
 		case TARGTYPE_CONTAINERORDOOR:
-			if (!(ISVALIDPI(pi))) return false;
+			if (!(pi)) return false;
 			return( (pi->isContainer() || ( pi->type == ITYPE_DOOR ) || ( pi->type == ITYPE_LOCKED_DOOR ) ) );
 		case TARGTYPE_XYZ :
 			return ((x>0)&&(y>0));
@@ -1005,10 +1005,10 @@ bool checkRequiredTargetType(SpellId spellnum, TargetLocation& t)
 		case TARGTYPE_ITEM:
 			return (pi!=NULL);
 		case TARGTYPE_RUNE:
-			if (!(ISVALIDPI(pi))) return false;
+			if (!(pi)) return false;
 			return (pi->type == ITYPE_RUNE);
 		default:
-			return (ISVALIDPI(pi)); // needz to be changed
+			return (pi); // needz to be changed
 	}
 }
 
@@ -1420,7 +1420,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 
 		case SPELL_TRAP:
-        if (ISVALIDPI(pi)) {
+        if (pi) {
             if((pi->type==ITYPE_DOOR || pi->type==ITYPE_CONTAINER || pi->type==ITYPE_LOCKED_ITEM_SPAWNER ||
                pi->type==ITYPE_LOCKED_CONTAINER || pi->type==ITYPE_UNLOCKED_CONTAINER) && pi->getId()!=0x0E75)
             {
@@ -1481,7 +1481,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if ( ISVALIDPC( pd ) ) {
 				x = pd->getPosition().x;
 				y = pd->getPosition().y;
-			} else if ( ISVALIDPI( pi ) ) {
+			} else if ( pi ) {
 				x = pi->getPosition().x;
 				y = pi->getPosition().y;
 			}
@@ -1513,7 +1513,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			break;
 
 		case SPELL_GATE: //Luxor
-			if ( ISVALIDPC( src ) && ISVALIDPI( pi ) ) {
+			if ( ISVALIDPC( src ) && pi ) {
 				if ( pi->type == ITYPE_RUNE ) {
 					if ((pi->morex < 10)&&(pi->morey < 10)) {
 						src->sysmsg("The rune is not marked yet.");

@@ -14,13 +14,12 @@
 #define __CACCOUNT_H__
 
 class cAccount;
-typedef cAccount *pAccount;
+typedef cAccount *pAccount;				//!< Pointer to an account
 
-typedef std::hash_map<std::list, cAccount> cAccounts;
+typedef std::hash_map<std::list, cAccount> cAccounts;	//!< Hashed map of accounts
 
-#include <zthread/FastMutex.h>
-#include <string>
-#include <xercesc/parsers/XercesDOMParser.hpp>
+#include "common_libs.h"
+#include "objecs/cpc.h"
 
 /*!
 \brief This class represent an account for game
@@ -58,18 +57,18 @@ protected:
 	std::string name; 		//!< Account name
 	std::string password;		//!< Account password (crypted)
 	CryptoType ctype;		//!< Type of crypted password
-	uint8_t privlevel;			//!< Priviledge level
+	uint8_t privlevel;		//!< Priviledge level
 	int32_t creationdate;		//!< Epoch of creation date
-	pChar banAuthor;		//!< Ban Author (if banned)
+	pPC banAuthor;			//!< Ban Author (if banned)
 	int32_t banReleaseTime;		//!< Epoch of release time of ban
 	int32_t jailtime;			//!< Epoch of jail's release time
 	uint32_t lastConnIP;		//!< Last connection IP
 	int32_t lastConnTime;		//!< Last connection epoch
 
-	std::list<pChar> chars;		//!< Characters of the account
-	pChar lastchar;			//!< Last character used
+	PCList chars;			//!< Characters of the account
+	pPC lastchar;			//!< Last character used
 
-	pChar currentChar;		//!< Current char used ingame
+	pPC currentChar;		//!< Current char used ingame
 	
 	uint8_t flags;			//!< Flags of the account
 	

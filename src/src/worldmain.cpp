@@ -2119,7 +2119,7 @@ void CWorldMain::loadjailed()
 
 	}  while (strcmp(script1, "}"));
 	pChar pc = pointers::findCharBySerial( j.serial );
-	if(ISVALIDPC(pc) && (j.sec > 0)) {
+	if(pc && (j.sec > 0)) {
 		j.timer=uiCurrentTime+(MY_CLOCKS_PER_SEC * j.sec );
 		prison::jailed.push_back( j );
 		pc->jailed=true;

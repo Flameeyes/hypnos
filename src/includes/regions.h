@@ -10,16 +10,18 @@
 #ifndef __REGIONS_H
 #define __REGIONS_H
 
-#define MAX_MAP_CELLS 33000
+static const uint16_t MAX_MAP_CELLS = 0xFFFF;	//!< Maximum count of cells
 
-#define REGION_GRIDSIZE 32
-#define REGION_COLSIZE  32
+static const uint8_t REGION_GRIDSIZE = 32;	//!< Horizontal size of the grid
+static const uint8_t REGION_COLSIZE = 32;	//!< Vertical size of the grid
 
-#define MAP_WIDTH 6144
-#define MAP_HEIGHT 4096
+static const uint16_t MAP_WIDTH = 6144;		//!< Width of the UO Map
+static const uint16_t MAP_HEIGHT = 4096;	//!< Height of the UO Map
 
-#define REGION_X_CELLS MAP_WIDTH/REGION_GRIDSIZE
-#define REGION_Y_CELLS MAP_HEIGHT/REGION_COLSIZE
+static const uint16_t REGION_X_CELLS = MAP_WIDTH/REGION_GRIDSIZE;
+						//!< Count of X Cells
+static const uint16_t REGION_Y_CELLS = MAP_HEIGHT/REGION_COLSIZE;
+						//!< Count of Y Cells
 
 #include "objects/cchar.h"
 #include "objects/citem.h"
