@@ -43,7 +43,7 @@ void Skills::Hide(NXWSOCKET s)
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pj = sc.getChar();
 		if ( pj && pj->getSerial() != pc->getSerial() && !pj->IsHidden() && pc->losFrom(pj) ) {
-			pc->sysmsg( TRANSLATE("There is someone nearby who prevents you to hide.") );
+			pc->sysmsg("There is someone nearby who prevents you to hide.");
 			return;
 		}
 	}
@@ -64,18 +64,18 @@ void Skills::Stealth(NXWSOCKET s)
 	if ( ! pc ) return;
 
     if ( pc->isMounting() && ! nSettings::Skills::canStealthOnHorse() ) {
-        sysmessage(s,TRANSLATE("You can't stealth on horse!"));
+        sysmessage(s,"You can't stealth on horse!");
         return;
     }
 
     if (pc->hidden==0) {
-        sysmessage(s,TRANSLATE("You must hide first."));
+        sysmessage(s,"You must hide first.");
         return;
     }
 
     if (pc->skill[HIDING]<800)
     {
-        sysmessage(s,TRANSLATE("You are not hidden well enough. Become better at hiding."));
+        sysmessage(s,"You are not hidden well enough. Become better at hiding.");
         pc->stealth = INVALID;
 	pc->unHide();
         return;
@@ -112,7 +112,7 @@ void Skills::Stealth(NXWSOCKET s)
         return;
     }
 
-    sysmessage(s,TRANSLATE("You can move %i steps unseen."), ((SrvParms->maxstealthsteps*pc->skill[skStealth])/1000) );
+    sysmessage(s,"You can move %i steps unseen.", ((SrvParms->maxstealthsteps*pc->skill[skStealth])/1000) );
     pc->stealth = 0; //AntiChrist -- init. steps already done
     pc->hideBySkill();
 }
@@ -128,14 +128,14 @@ void Skills::PeaceMaking(NXWSOCKET s)
     int inst = Skills::GetInstrument( s );
     if( inst == INVALID )
     {
-        pc->sysmsg( TRANSLATE("You do not have an instrument to play on!"));
+        pc->sysmsg( "You do not have an instrument to play on!");
         return;
     }
 
     if ( pc->checkSkill( skPeacemaking, 0, 1000) && pc->checkSkill( skMusicianship, 0, 1000) )
     {
 		Skills::PlayInstrumentWell(s, inst);
-        pc->sysmsg( TRANSLATE("You play your hypnotic music, stopping the battle."));
+		pc->sysmsg("You play your hypnotic music, stopping the battle.");
 
 		NxwCharWrapper sc;
 		sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
@@ -144,7 +144,7 @@ void Skills::PeaceMaking(NXWSOCKET s)
 			if( pcm ) {
 				if (pcm->war && pc->getSerial()!=pcm->getSerial())
                 {
-                    pcm->sysmsg(TRANSLATE("You hear some lovely music, and forget about fighting."));
+                    pcm->sysmsg("You hear some lovely music, and forget about fighting.");
 					if (pcm->war)
 						pcm->toggleCombat();
                     pcm->targserial = INVALID;
@@ -157,7 +157,7 @@ void Skills::PeaceMaking(NXWSOCKET s)
 	else
     {
 		Skills::PlayInstrumentPoor(s, inst);
-        pc->sysmsg( TRANSLATE("You attempt to calm everyone, but fail."));
+        pc->sysmsg("You attempt to calm everyone, but fail.");
     }
 
 }
@@ -258,7 +258,7 @@ static bool DoOnePotion(NXWSOCKET s, uint16_t regid, uint32_t regamount, char* r
 
 	if (pc->getAmount(regid) < regamount)
 	{
-		sysmessage(s, TRANSLATE("You do not have enough reagents for that potion."));
+		sysmessage(s, "You do not have enough reagents for that potion.");
 		return false;
 	}
 	
@@ -374,7 +374,7 @@ void Skills::CreatePotion(pChar pc, char type, char sub, int mortar)
 
 	if (success==0 && !pc->IsGM()) // AC bugfix
 	{
-		pc->emoteall(TRANSLATE("*%s tosses the failed mixture from the mortar, unable to create a potion from it.*"),0, pc->getCurrentName().c_str());
+		pc->emoteall("*%s tosses the failed mixture from the mortar, unable to create a potion from it.*", false, pc->getCurrentName().c_str());
 		return;
 	}
 
@@ -389,12 +389,12 @@ void Skills::CreatePotion(pChar pc, char type, char sub, int mortar)
 		targ->code_callback=Skills::target_bottle;
 		targ->buffer[0]=pi_mortar->getSerial();
 		targ->send( ps );
-		ps->sysmsg( TRANSLATE("Where is an empty bottle for your potion?"));
+		ps->sysmsg("Where is an empty bottle for your potion?");
 	}
 	else
 	{
 		pc->playSFX(0x0240); // Liquid sfx
-		pc->emoteall(TRANSLATE("*%s pours the completed potion into a bottle.*"), 0, pc->getCurrentName().c_str());
+		pc->emoteall("*%s pours the completed potion into a bottle.*", 0, pc->getCurrentName().c_str());
 		pc->delItems(0x0F0E);
 		Skills::PotionToBottle(pc, pi_mortar);
 	}
@@ -428,12 +428,12 @@ void Skills::target_bottle( NXWCLIENT ps, pTarget t )
 
 		if (pi_mortar->type==17)
 		{
-			pc->emoteall(TRANSLATE("*%s pours the completed potion into a bottle.*"), 0, pc->getCurrentName().c_str());
+			pc->emoteall("*%s pours the completed potion into a bottle.*", false, pc->getCurrentName().c_str());
 			Skills::PotionToBottle(pc, pi_mortar);
 		}
 	}
 	else
-		sysmessage(s,TRANSLATE("This is not an appropriate container for a potion."));
+		sysmessage(s,"This is not an appropriate container for a potion.");
 }
 
 #define CREATEINBACKPACK( ITEM ) pi = item::CreateFromScript( ITEM, pc->getBackpack() );
@@ -568,7 +568,7 @@ bool Skills::AdvanceSkill(pChar pc /*uint32_t s*/, int sk, char skillused)
 
         if (ges>skillcap && c==0) // skill capped and no skill is marked as fall down.
         {
-            pc->sysmsg(TRANSLATE("You have reached the skill-cap of %i and no skill can fall!"), skillcap);
+            pc->sysmsg("You have reached the skill-cap of %i and no skill can fall!", skillcap);
             return 0;
         }
 
@@ -963,7 +963,7 @@ void Skills::AdvanceStats(pChar pc, int sk)
 				updateSkillLevel(pc,i );     // update client's skill window
 
 			if ( atCap && !pc->IsGM() )
-				pc->sysmsg(TRANSLATE("You have reached the stat-cap of %i!") ,statcap );
+				pc->sysmsg("You have reached the stat-cap of %i!", statcap );
 
 		}
 	}
@@ -983,13 +983,13 @@ void Skills::SpiritSpeak(NXWSOCKET s)
 	
 	if(!pc->checkSkill(SPIRITSPEAK, 0, 1000))
 	{
-		sysmessage(s,TRANSLATE("You fail your attempt at contacting the netherworld."));
+		sysmessage(s,"You fail your attempt at contacting the netherworld.");
 		return;
 	}
 	
 	pc->impAction(0x11);   // I heard there is no action...but I decided to add one
 	pc->playSFX(0x024A);   // only get the sound if you are successful
-	sysmessage(s,TRANSLATE("You establish a connection to the netherworld."));
+	sysmessage(s,"You establish a connection to the netherworld.");
 	SetTimerSec(&(pc->spiritspeaktimer),spiritspeak_data.spiritspeaktimer+pc->in);
 }
 
@@ -1012,19 +1012,19 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 
 	if( (pc->skilldelay>uiCurrentTime) && (!pc->IsGM()) )
 	{
-		sysmessage(s, TRANSLATE("You must wait a few moments before using another skill."));
+		sysmessage(s, "You must wait a few moments before using another skill.");
 		return;
 	}
 
 	if ( pc->jailed )
 	{
-		sysmessage(s,TRANSLATE("you are in jail and cant gain skills here!"));
+		sysmessage(s,"you are in jail and cant gain skills here!");
 		return;
 	}
 
 	if ( pc->dead )
 	{
-		sysmessage(s,TRANSLATE("You cannot do that as a ghost."));
+		sysmessage(s,"You cannot do that as a ghost.");
 		return;
 	}
 
@@ -1040,7 +1040,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 
 	if( pc->casting )
 	{
-		sysmessage( s, TRANSLATE("You can't do that while you are casting" ));
+		sysmessage( s, "You can't do that while you are casting" );
 		return;
 	}
 
@@ -1052,7 +1052,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 
 	if( Race::isRaceSystemActive() && !(Race::getRace( pc->race )->getCanUseSkill( (uint32_t) x )) )
 	{
-		sysmessage(s, TRANSLATE("Your race cannot use that skill") );
+		sysmessage(s, "Your race cannot use that skill");
 		setSkillDelay = false;
 	}
 	else
@@ -1064,7 +1064,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=target_armsLore;
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("What item do you wish to get information about?"));
+				ps->sysmsg( "What item do you wish to get information about?");
 				break;
 
 			case skAnatomy:
@@ -1074,7 +1074,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_itemId;
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("What do you wish to appraise and identify?"));
+				ps->sysmsg( "What do you wish to appraise and identify?");
 				break;
 
 			case skEvaluatingIntelligence:
@@ -1084,7 +1084,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=target_tame;
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("Tame which animal?"));
+				ps->sysmsg( "Tame which animal?");
 				break;
 
 			case HIDING:
@@ -1099,7 +1099,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				targ=clientInfo[s]->newTarget( new cLocationTarget() );
 				targ->code_callback=target_detectHidden;
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("Where do you wish to search for hidden characters?"));
+				ps->sysmsg( "Where do you wish to search for hidden characters?");
 				break;
 
 			case skPeacemaking:
@@ -1110,14 +1110,14 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=target_provocation1;
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("Whom do you wish to incite?"));
+				ps->sysmsg( "Whom do you wish to incite?");
 				break;
 
 			case skEnticement:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=target_enticement1;
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("Whom do you wish to entice?"));
+				ps->sysmsg( "Whom do you wish to entice?");
 				break;
 
 			case SPIRITSPEAK:
@@ -1129,11 +1129,11 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 					targ=clientInfo[s]->newTarget( new cObjectTarget() );
 					targ->code_callback=target_stealing;
 					targ->send( ps );
-					ps->sysmsg( TRANSLATE("What do you wish to steal?"));
+					ps->sysmsg( "What do you wish to steal?");
 				}
 				else
 				{
-					sysmessage(s, TRANSLATE("That skill has been disabled."));
+					sysmessage(s, "That skill has been disabled.");
 					setSkillDelay = false;
 				}
 				break;
@@ -1148,28 +1148,28 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback = Begging::target;
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("Whom do you wish to annoy?"));
+				ps->sysmsg( "Whom do you wish to annoy?");
 				break;
 
 			case skAnimalLore:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=Skills::target_animalLore;
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("What animal do you wish to get information about?"));
+				ps->sysmsg( "What animal do you wish to get information about?");
 				break;
 
 			case skForensics:
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_forensics;
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("What corpse do you want to examine?"));
+				ps->sysmsg( "What corpse do you want to examine?");
 				break;
 
 			case skPoisoning:
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_poisoning;
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("What poison do you want to apply?"));
+				ps->sysmsg( "What poison do you want to apply?");
 				break;
 
 			case skTasteID:
@@ -1180,7 +1180,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 					Skills::Meditation(s);
 				/*else
 				{
-					sysmessage(s, TRANSLATE("Meditation is turned off.  Tell your GM to enable ARMOR_AFFECT_MANA_REGEN in server.cfg to enable it."));
+					sysmessage(s, "Meditation is turned off.  Tell your GM to enable ARMOR_AFFECT_MANA_REGEN in server.cfg to enable it.");
 					setSkillDelay = false;
 				}*/
 				break;
@@ -1189,7 +1189,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=target_removeTraps;
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("What do you want to untrap?"));
+				ps->sysmsg( "What do you want to untrap?");
 				break;
 
 			case skCartography:
@@ -1197,7 +1197,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				break;
 
 			default:
-				sysmessage(s, TRANSLATE("That skill has not been implemented yet."));
+				sysmessage(s, "That skill has not been implemented yet.");
 				setSkillDelay = false;
 				break;
 		}
@@ -1251,7 +1251,7 @@ void Skills::TDummy(NXWSOCKET s)
 	{
 		if (pc->getWeapon()->IsBowType())
 		{
-			sysmessage(s, TRANSLATE("Practice archery on archery buttes !"));
+			sysmessage(s, "Practice archery on archery buttes !");
 			return;
 		}
 	}
@@ -1303,7 +1303,7 @@ void Skills::TDummy(NXWSOCKET s)
 			pc->checkSkill(skTactics, 0, 250);  //Dupois - Increase tactics but only by a fraction of the normal rate
 	}
 	else
-		sysmessage(s, TRANSLATE("You feel you would gain no more from using that."));
+		sysmessage(s, "You feel you would gain no more from using that.");
 
 }
 
@@ -1357,16 +1357,16 @@ void Skills::AButte(NXWSOCKET s1, pItem pButte)
 		switch(i)
 		{
 			case 0:
-				pc->getClient()->sysmessage(TRANSLATE("This target is empty"));
+				pc->getClient()->sysmessage("This target is empty");
 				break;
 			case 1:
-				pc->getClient()->sysmessage(TRANSLATE("You pull %d arrows from the target"),pButte->more1/2);
+				pc->getClient()->sysmessage("You pull %d arrows from the target",pButte->more1/2);
 				break;
 			case 2:
-				pc->getClient()->sysmessage(TRANSLATE("You pull %d bolts from the target"),pButte->more2/2);
+				pc->getClient()->sysmessage("You pull %d bolts from the target",pButte->more2/2);
 				break;
 			case 3:
-				pc->getClient()->sysmessage(TRANSLATE("You pull %d arrows and %d bolts from the target"),pButte->more1,pButte->more2/2);
+				pc->getClient()->sysmessage("You pull %d arrows and %d bolts from the target",pButte->more1,pButte->more2/2);
 				break;
 			default:
 				LogError("switch reached default");
@@ -1380,12 +1380,12 @@ void Skills::AButte(NXWSOCKET s1, pItem pButte)
     {
         if (!pc->getWeapon()->IsBowType())
         {
-            pc->sysmsg( TRANSLATE("You need to equip a bow to use this."));
+            pc->sysmsg( "You need to equip a bow to use this.");
             return;
         }
         if ((pButte->more1+pButte->more2)>99)
         {
-            pc->sysmsg( TRANSLATE("You should empty the butte first!"));
+            pc->sysmsg( "You should empty the butte first!");
             return;
         }
 		if (pc->getWeapon()->IsBow())
@@ -1395,7 +1395,7 @@ void Skills::AButte(NXWSOCKET s1, pItem pButte)
 
         if (arrowsquant==0)
         {
-            pc->sysmsg( TRANSLATE("You have nothing to fire!"));
+            pc->sysmsg( "You have nothing to fire!");
             return;
         }
 
@@ -1419,36 +1419,36 @@ void Skills::AButte(NXWSOCKET s1, pItem pButte)
         if( pc->skill[skArchery] < 350 )
             pc->checkSkill( skArchery, 0, 1000 );
         else
-            pc->sysmsg( TRANSLATE("You learn nothing from practicing here") );
+            pc->sysmsg( "You learn nothing from practicing here");
 
         switch( ( pc->skill[skArchery]+ ( (rand()%200) -100) ) /100 )
         {
 		case -1:
 		case 0:
 		case 1:
-			pc->sysmsg( TRANSLATE("You miss the target"));
+			pc->sysmsg( "You miss the target");
 			pc->playSFX(0x0238);
 			break;
 		case 2:
 		case 3:
-			pc->sysmsg( TRANSLATE("You hit the outer ring!"));
+			pc->sysmsg( "You hit the outer ring!");
 			pc->playSFX(0x0234);
 			break;
 		case 4:
 		case 5:
 		case 6:
-			pc->sysmsg( TRANSLATE("You hit the middle ring!"));
+			pc->sysmsg( "You hit the middle ring!");
 			pc->playSFX(0x0234);
 			break;
 		case 7:
 		case 8:
 		case 9:
-			pc->sysmsg( TRANSLATE("You hit the inner ring!"));
+			pc->sysmsg( "You hit the inner ring!");
 			pc->playSFX(0x0234);
 			break;
 		case 10:
 		case 11:
-			pc->sysmsg( TRANSLATE("You hit the bullseye!!"));
+			pc->sysmsg( "You hit the bullseye!!");
 			pc->playSFX(0x0234);
 			break;
 		default:
@@ -1456,7 +1456,7 @@ void Skills::AButte(NXWSOCKET s1, pItem pButte)
 		}
     }
     if ( (v1>1)&&(v1<5) || (v1>8))
-		pc->sysmsg( TRANSLATE("You cant use that from here."));
+		pc->sysmsg( "You cant use that from here.");
 
 }
 
@@ -1477,23 +1477,23 @@ void Skills::Meditation (NXWSOCKET  s)
 	pc->setMeditating(false);
 
 	if ( pc->war ) {
-		pc->sysmsg( TRANSLATE("Your mind is too busy with the war thoughts.") );
+		pc->sysmsg( "Your mind is too busy with the war thoughts.");
 		return;
 	}
 
 	if ( SrvParms->armoraffectmana && Skills::GetAntiMagicalArmorDefence(pc) > 15 ) {
-		pc->sysmsg( TRANSLATE("Regenerative forces cannot penetrate your armor.") );
+		pc->sysmsg( "Regenerative forces cannot penetrate your armor.");
 		return;
 	}
 
 	pi = pc->getWeapon();
 	if ( (pi && !pi->IsStave()) || pc->getShield() ) {
-		pc->sysmsg( TRANSLATE("You cannot meditate with a weapon or shield equipped!") );
+		pc->sysmsg( "You cannot meditate with a weapon or shield equipped!");
 		return;
 	}
 
 	if ( pc->mn == pc->in ) {
-		pc->sysmsg( TRANSLATE("You are at peace.") );
+		pc->sysmsg( "You are at peace.");
 		return;
 	}
 
@@ -1502,11 +1502,11 @@ void Skills::Meditation (NXWSOCKET  s)
 	// Meditation check
 	//
 	if ( !pc->checkSkill(skMeditation, 0, 1000) ) {
-		pc->sysmsg( TRANSLATE("You cannot focus your concentration.") );
+		pc->sysmsg( "You cannot focus your concentration.");
 		return;
 	}
 
-	pc->sysmsg( TRANSLATE("You enter a meditative trance.") );
+	pc->sysmsg( "You enter a meditative trance.");
 	pc->setMeditating(true);
 	pc->playSFX(0x00F9);
 }
@@ -1542,13 +1542,13 @@ void Skills::Persecute (NXWSOCKET  s)
 	
 	if( pc->skilldelay > uiCurrentTime && !pc->IsGM() )
 	{
-		pc->sysmsg(TRANSLATE("You are unable to persecute him now...rest a little..."));
+		pc->sysmsg("You are unable to persecute him now...rest a little...");
 		return;
 	}
 	
 	if ( (rand()%20 + pc->in) <= 45 )
 	{
-		pc->sysmsg(TRANSLATE("Your mind is not strong enough to disturb the enemy."));
+		pc->sysmsg("Your mind is not strong enough to disturb the enemy.");
 		return;
 	}
 	
@@ -1557,8 +1557,8 @@ void Skills::Persecute (NXWSOCKET  s)
 	else
 		pc_targ->mn-=decrease;//decrease mana
 	pc_targ->updateStats(1);//update
-	pc->sysmsg(TRANSLATE("Your spiritual forces disturb the enemy!"));
-	pc_targ->sysmsg(TRANSLATE("A damned soul is disturbing your mind!"));
+	pc->sysmsg("Your spiritual forces disturb the enemy!");
+	pc_targ->sysmsg("A damned soul is disturbing your mind!");
 	SetSkillDelay(pc);
 
 	pc_targ->emoteall("%s is persecuted by a ghost!!", true, pc_targ->getCurrentName().c_str());
@@ -1734,7 +1734,7 @@ void Skills::Cartography(NXWSOCKET s)
 		//Skills::MakeMenu(s, 1200, skCartography);
     }
     else
-        sysmessage(s, TRANSLATE("You don't have an empty map to draw on"));
+        sysmessage(s, "You don't have an empty map to draw on");
 }
 
 /*!
@@ -1914,12 +1914,12 @@ void Skills::Decipher(pItem tmap, NXWSOCKET s)
             tmap->Delete();    // Delete the tattered map
         }
         else
-            pc->sysmsg(TRANSLATE("You fail to decipher the map"));      // Nope :P
+            pc->sysmsg("You fail to decipher the map");      // Nope :P
         // Set the skill delay, no matter if it was a success or not
         SetTimerSec(&pc->skilldelay,SrvParms->skilldelay);
         pc->playSFX(0x0249); // Do some inscription sound regardless of success or failure
-        pc->sysmsg(TRANSLATE("You put the deciphered tresure map in your pack"));       // YAY
+        pc->sysmsg("You put the deciphered tresure map in your pack");       // YAY
     }
     else
-        pc->sysmsg(TRANSLATE("You must wait to perform another action"));       // wait a bit
+        pc->sysmsg("You must wait to perform another action");       // wait a bit
 }

@@ -1561,12 +1561,12 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 		}
 		else
 		{
-			pc->talkAll(TRANSLATE("Thou dont posses nothing of interest to me."),0);
+			pc->talkAll("Thou dont posses nothing of interest to me.", false);
 		}
 	}
 	else
 	{
-			pc->talkAll( TRANSLATE("Sorry i cannot take so many items.."),0);
+			pc->talkAll("Sorry i cannot take so many items.."), false);
 	}
 
 	SendPauseResumePkt(s, 0x00);

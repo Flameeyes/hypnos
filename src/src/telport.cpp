@@ -334,7 +334,7 @@ void advancementobjects(pChar pc, int x, int allways)
 			while ((script1[0]!='}') && (++loopexit < MAXLOOPS) );
 			safedelete(iter);
 	}
-	else pc->sysmsg(TRANSLATE("You have already used an advancement object with this character."));
+	else pc->sysmsg("You have already used an advancement object with this character.");
 }
 
 

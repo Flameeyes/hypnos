@@ -37,7 +37,7 @@ static bool checkForCastingLoss(pChar pc, int damage)
 	if ( ! pc ) return false;
 	int chanceToResist = qmin(10, int((pc->body->getSkill(skillMeditation)/10.0)-(damage*2.0)));
 	if (chance(chanceToResist)) return false;
-	pc->sysmsg(TRANSLATE("You break your concentration."));
+	pc->sysmsg("You break your concentration.");
 	return true;
 }
 
@@ -205,7 +205,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		if (chance(5) && weapon->type != ITYPE_SPELLBOOK) {
 			weapon->hp--;
 			if(weapon->hp <= 0) {
-				sysmsg(TRANSLATE("Your weapon has been destroyed"));
+				sysmsg("Your weapon has been destroyed");
 				//XAN TO-DO : Insert event handler here ? :)
 				weapon->Delete();
 			}
@@ -244,7 +244,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 				}
 			} else {
 				wresmove = 0;
-				sysmsg( TRANSLATE("You failed to disarm your opponent!") );
+				sysmsg("You failed to disarm your opponent!");
 			}
 		}
 
@@ -256,7 +256,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 				tempfx::add(this, pc_def, tempfx::SPELL_PARALYZE, 0, 0, 0, 7); //paralyze for 7 secs
 			} else {
 				wresmove = 0;
-				sysmsg( TRANSLATE("You failed to stun your opponent!") );
+				sysmsg("You failed to stun your opponent!");
 			}
 		}
 		//Luxor <End>
@@ -283,7 +283,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 			if (pShield->def!=0 && fightskill==skArchery) damage -= pShield->def; // damage absorbed by shield
 			if (chance(5)) pShield->hp--;
 			if (pShield->hp<=0) {
-				pc_def->sysmsg(TRANSLATE("Your shield has been destroyed"));
+				pc_def->sysmsg("Your shield has been destroyed");
 				pShield->Delete();
 			}
 		}
@@ -459,14 +459,14 @@ void cChar::doCombat()
 				if (arrowsquant>0)
 					x=1;
 				else
-					sysmsg(TRANSLATE("You are out of ammunitions!"));
+					sysmsg("You are out of ammunitions!");
 			}
 			else   //new ammo system
 			{
 				if ((getBackpack())->CountItemsByID(weapon->ammo, true))
 					x=1;
 				else
-					sysmsg(TRANSLATE("You are out of ammunitions!"));
+					sysmsg("You are out of ammunitions!");
 			}
 		}
 		else if (dist < 2 )
@@ -481,7 +481,7 @@ void cChar::doCombat()
 			{
 				if((SrvParms->attackstamina < 0) &&( stm < abs(SrvParms->attackstamina)))
 				{
-       					sysmsg(TRANSLATE("You are too tired to attack."));
+       					sysmsg("You are too tired to attack.");
 					if ( weapon )
 					{
 						if (weapon->spd==0)
@@ -601,9 +601,9 @@ void cChar::doCombat()
 			if(pc_def->IsInnocent() && Guilds->Compare(this,pc_def) == 0 )
 			{
 				++kills;
-				sysmsg(TRANSLATE("You have killed %i innocent people."), kills);
+				sysmsg("You have killed %i innocent people.", kills);
 				if (kills == repsys.maxkills+1)
-					sysmsg(TRANSLATE("You are now a murderer!"));
+					sysmsg("You are now a murderer!");
 			}
 			if (SrvParms->pvp_log)
 			{
@@ -639,7 +639,7 @@ void cChar::checkPoisoning(pChar pc_def)
 						weapon->poisoned = static_cast<PoisonType>(weapon->poisoned -1);
 					else {
 						weapon->poisoned = poisonNone;
-						sysmsg( TRANSLATE("The poison you put on the weapon went out.") );
+						sysmsg("The poison you put on the weapon went out.");
 					}
 					(poison > 1) ? poison = static_cast<PoisonType>(poison-1) : poison = 0;
 				}
@@ -679,16 +679,16 @@ int cChar::combatHitMessage(int32_t damage)
 		{
 			case 1:
 				//later take into account dir facing attacker during battle
-				if (damage < 10) strcpy(temp, TRANSLATE("hits you in your Chest!"));
-				if (damage >=10) strcpy(temp, TRANSLATE("lands a terrible blow to your Chest!"));
+				if (damage < 10) strcpy(temp, "hits you in your Chest!");
+				if (damage >=10) strcpy(temp, "lands a terrible blow to your Chest!");
 				break;
 			case 2:
-				if (damage < 10) strcpy(temp, TRANSLATE("lands a blow to your Stomach!"));
-				if (damage >=10) strcpy(temp, TRANSLATE("knocks the wind out of you!"));
+				if (damage < 10) strcpy(temp, "lands a blow to your Stomach!");
+				if (damage >=10) strcpy(temp, "knocks the wind out of you!");
 				break;
 			default:
-				if (damage < 10) strcpy(temp, TRANSLATE("hits you in your Ribs!"));
-				if (damage >=10) strcpy(temp, TRANSLATE("broken your Rib?!"));
+				if (damage < 10) strcpy(temp, "hits you in your Ribs!");
+				if (damage >=10) strcpy(temp, "broken your Rib?!");
 		}
 	}
 	else if (x<=58)
@@ -698,9 +698,9 @@ int cChar::combatHitMessage(int32_t damage)
 			x=2;  // arms
 			switch (hitin)
 			{
-				case 1:	strcpy(temp, TRANSLATE("hits you in Left Arm!"));	break;
-				case 2:	strcpy(temp, TRANSLATE("hits you in Right Arm!"));	break;
-				default:strcpy(temp, TRANSLATE("hits you in Right Arm!"));
+				case 1:	strcpy(temp, "hits you in Left Arm!");	break;
+				case 2:	strcpy(temp, "hits you in Right Arm!");	break;
+				default:strcpy(temp, "hits you in Right Arm!");
 			}
 		}
 	}
@@ -710,16 +710,16 @@ int cChar::combatHitMessage(int32_t damage)
 		switch (hitin)
 		{
 		case 1:
-			if (damage < 10) strcpy(temp, TRANSLATE("hits you you straight in the Face!"));
-			if (damage >=10) strcpy(temp, TRANSLATE("lands a stunning blow to your Head!"));
+			if (damage < 10) strcpy(temp, "hits you you straight in the Face!");
+			if (damage >=10) strcpy(temp, "lands a stunning blow to your Head!");
 			break;
 		case 2:
-			if (damage < 10) strcpy(temp, TRANSLATE("hits you to your Head!")); //kolours - (09/19/98)
-			if (damage >=10) strcpy(temp, TRANSLATE("smashed a blow across your Face!"));
+			if (damage < 10) strcpy(temp, "hits you to your Head!"); //kolours - (09/19/98)
+			if (damage >=10) strcpy(temp, "smashed a blow across your Face!");
 			break;
 		default:
-			if (damage < 10) strcpy(temp, TRANSLATE("hits you you square in the Jaw!"));
-			if (damage >=10) strcpy(temp, TRANSLATE("lands a terrible hit to your Temple!"));
+			if (damage < 10) strcpy(temp, "hits you you square in the Jaw!");
+			if (damage >=10) strcpy(temp, "lands a terrible hit to your Temple!");
 		}
 	}
 	else if (x<=86)
@@ -727,15 +727,15 @@ int cChar::combatHitMessage(int32_t damage)
 		x=4;  // legs
 		switch (hitin)
 		{
-			case 1:	strcpy(temp, TRANSLATE("hits you in Left Thigh!"));	break;
-			case 2:	strcpy(temp, TRANSLATE("hits you in Right Thigh!"));	break;
-			default:strcpy(temp, TRANSLATE("hits you in Groin!"));
+			case 1:	strcpy(temp, "hits you in Left Thigh!");	break;
+			case 2:	strcpy(temp, "hits you in Right Thigh!");	break;
+			default:strcpy(temp, "hits you in Groin!");
 		}
 	}
 	else if (x<=93)
 	{
 		x=5;  // neck
-		strcpy(temp, TRANSLATE("hits you to your Throat!"));
+		strcpy(temp, "hits you to your Throat!");
 	}
 	else
 	{
@@ -743,13 +743,13 @@ int cChar::combatHitMessage(int32_t damage)
 		switch (hitin)
 		{
 			case 1:
-				if (damage > 1) strcpy(temp, TRANSLATE("hits you in Left Hand!"));
+				if (damage > 1) strcpy(temp, "hits you in Left Hand!");
 				break;
 			case 2:
-				if (damage > 1) strcpy(temp, TRANSLATE("hits you in Right Hand!"));
+				if (damage > 1) strcpy(temp, "hits you in Right Hand!");
 				break;
 			default:
-				if (damage > 1) strcpy(temp, TRANSLATE("hits you in Right Hand!"));
+				if (damage > 1) strcpy(temp, "hits you in Right Hand!");
 		}
 	}
 	pChar pc_attacker = cSerializable::findCharBySerial(attackerserial);
@@ -769,8 +769,6 @@ int cChar::combatHitMessage(int32_t damage)
 int cChar::calcDef(int32_t x)
 {
 	if (npc) return def;
-
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
 	pItem pj = NULL;
 	int total = 0;
@@ -859,17 +857,16 @@ int cChar::calcDef(int32_t x)
 				{
 					if ( strncmp(pj->getCurrentName().c_str(), "#", 1) )
 					{
-						sprintf(temp,TRANSLATE("Your %s has been destroyed"),pj->getCurrentName().c_str());
+						sysmsg("Your %s has been destroyed", pj->getCurrentName().c_str());
 					} else
 					{
 						tile_st tile;
 						Map->SeekTile(pj->id(), &tile);
-						sprintf(temp,TRANSLATE("Your %s has been destroyed"),tile.name);
+						sysmsg("Your %s has been destroyed", tile.name);
 					}
 					modifyStrength(-pj->st2);
 					dx -= pj->dx2;
 					in -= pj->in2;
-					sysmsg( temp );
 					pj->deleteItem();
 				}
 			}
@@ -882,18 +879,17 @@ int cChar::calcDef(int32_t x)
 				pj->hp--; //Take off a hit point
 			if(pj->hp<=0) {
 				if ( strncmp(pj->getCurrentName().c_str(), "#", 1) ) {
-					sprintf(temp,TRANSLATE("Your %s has been destroyed"),pj->getCurrentName().c_str());
+					sysmsg("Your %s has been destroyed", pj->getCurrentName().c_str());
 				} else {
 					tile_st tile;
 					data::seekTile(pj->getId(), tile);
-					sprintf(temp,TRANSLATE("Your %s has been destroyed"),tile.name);
+					sysmsg("Your %s has been destroyed", tile.name);
 				}
 				//LB bugfix !!! -- remove BONUS STATS given by equipped special items
 				// LB, lets pray st2,dx2,in2 values are set correctly :)
 				modifyStrength(-pj->st2);
 				dx -= pj->dx2;
 				in -= pj->in2;
-				sysmsg(temp);
 				pj->Delete();
 			}
 		}
@@ -917,7 +913,7 @@ void cChar::setWresMove(int32_t move)
 	{
 		case WRESDISARM:
 			if (skill[skWrestling] >= 800 && skill[skArmsLore] >= 800) {
-				sysmsg(TRANSLATE("You prepare yourself for a disarm move."));
+				sysmsg("You prepare yourself for a disarm move.");
 				wresmove = 1;	//set wresmove to disarm
 			} else {
 				wresmove = 0;
@@ -926,7 +922,7 @@ void cChar::setWresMove(int32_t move)
 
 		case WRESSTUNPUNCH:
 			if (skill[skWrestling] >= 800 && skill[skAnatomy] >= 800) {
-				sysmsg(TRANSLATE("You prepare yourself for a stunning punch."));
+				sysmsg("You prepare yourself for a stunning punch.");
 				wresmove = 2;	//set wresmove to stun punch
 			} else {
 				wresmove = 0;
@@ -1139,13 +1135,13 @@ void cChar::attackStuff(pChar victim)
 
 	if( victim->dead || victim->hp <= 0 )//AntiChrist
 	{
-		sysmsg( TRANSLATE("That person is already dead!") );
+		sysmsg("That person is already dead!");
 		return;
 	}
 
 	if ( victim->npcaitype==NPCAI_PLAYERVENDOR)
 	{
-		sysmsg( TRANSLATE("%s cannot be harmed."), victim->getCurrentName().c_str() );
+		sysmsg("%s cannot be harmed.", victim->getCurrentName().c_str() );
 		return;
 	}
 
@@ -1195,7 +1191,7 @@ void cChar::attackStuff(pChar victim)
 		}
 		else if( victim->npc && victim->isInnocent() && victim->HasHumanBody() && victim->npcaitype!=NPCAI_TELEPORTGUARD )
 		{
-			victim->talkAll( TRANSLATE("Help! Guards! I've been attacked!"), 1);
+			victim->talkAll("Help! Guards! I've been attacked!", true);
 			criminal( victim );
 			callguards(victim); // Sparhawk must check if npcs can call guards
 		}
@@ -1235,11 +1231,9 @@ void cChar::attackStuff(pChar victim)
 				npcattacktarget(victim, pc);
 				if (victim->HasHumanBody() )
 				{
-					victim->talkAll(TRANSLATE("Help! Guards! Tis a murder being commited!"), 1);
+					victim->talkAll("Help! Guards! Tis a murder being commited!", true);
 				}
 			}
 		}
 	}
-
 }
-

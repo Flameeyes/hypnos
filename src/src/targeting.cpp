@@ -58,14 +58,14 @@ void CarveTarget(NXWSOCKET s, int feat, int ribs, int hides, int fur, int wool, 
 		pItem pi=item::CreateFromScript( "$item_feathers", pc->getBackpack(), feat );
 		if ( ! pi ) return;
 		pi->Refresh();
-		sysmessage(s,TRANSLATE("You pluck the bird and get some feathers."));
+		sysmessage(s,"You pluck the bird and get some feathers.");
 	}
 	if(ribs>0)
 	{
 		pItem pi=item::CreateFromScript( "$item_cuts_of_raw_ribs", pc->getBackpack(), ribs );
 		if ( ! pi ) return;
 		pi->Refresh();
-		pc->sysmsg(TRANSLATE("You carve away some meat."));
+		pc->sysmsg("You carve away some meat.");
 	}
 
 	if(hides>0)
@@ -73,28 +73,28 @@ void CarveTarget(NXWSOCKET s, int feat, int ribs, int hides, int fur, int wool, 
 		pItem pi=item::CreateFromScript( "$item_hide", pc->getBackpack(), hides );
 		if ( ! pi ) return;
 		pi->Refresh();
-		pc->sysmsg(TRANSLATE("You skin the corpse and get the hides."));
+		pc->sysmsg("You skin the corpse and get the hides.");
 	}
 	if(fur>0)
 	{
 		pItem pi=item::CreateFromScript( "$item_hide", pc->getBackpack(), fur );
 		if ( ! pi ) return;
 		pi->Refresh();
-		pc->sysmsg(TRANSLATE("You skin the corpse and get the hides."));
+		pc->sysmsg("You skin the corpse and get the hides.");
 	}
 	if(wool>0)
 	{
 		pItem pi=item::CreateFromScript( "$item_piles_of_wool", pc->getBackpack(), wool );
 		if ( ! pi ) return;
 		pi->Refresh();
-		pc->sysmsg(TRANSLATE("You skin the corpse and get some unspun wool."));
+		pc->sysmsg("You skin the corpse and get some unspun wool.");
 	}
 	if(bird>0)
 	{
 		pItem pi = item::CreateFromScript( "$item_raw_bird", pc->getBackpack(), bird );
 		if ( ! pi ) return;
 		pi->Refresh();
-		pc->sysmsg(TRANSLATE("You carve away some raw bird."));
+		pc->sysmsg("You carve away some raw bird.");
 	}
 
 	pc->getBody()->calcWeight();
@@ -135,7 +135,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 	{
 		pc->modifyFame(ServerScp::g_nChopFameLoss); // Ripper..lose fame and karma and criminal.
 		pc->IncreaseKarma(+ServerScp::g_nChopKarmaLoss);
-		pc->sysmsg(TRANSLATE("You lost some fame and karma!"));
+		pc->sysmsg(("You lost some fame and karma!");
 		pc->setCrimGrey(ServerScp::g_nChopWillCriminal);//Blue and not attacker and not guild
 
 		char *temp;
@@ -450,12 +450,12 @@ static void CorpseTarget(const NXWCLIENT pC)
                     }// switch
                 }//if morey || carve>-1
             } else {
-                 sysmessage(s, TRANSLATE("You carve the corpse but find nothing usefull."));
+                 sysmessage(s, "You carve the corpse but find nothing usefull.");
             }// if more1==0
         //break;
         }
     }// if i!=-1
-    if (!n) sysmessage(s, TRANSLATE("That is too far away."));
+    if (!n) sysmessage(s, "That is too far away.");
 }
 
 
@@ -515,7 +515,7 @@ void target_playerVendorBuy( NXWCLIENT ps, pTarget t )
 	NXWSOCKET s = ps->toInt();
 
     pItem pBackpack= pc_currchar->getBackpack();
-    if (!pBackpack) {sysmessage(s,TRANSLATE("Time to buy a backpack")); return; } //LB
+    if (!pBackpack) {sysmessage(s,"Time to buy a backpack"); return; } //LB
 
     uint32_t serial=LongFromCharPtr(buffer[s]+7);
     pItem pi=cSerializable::findItemBySerial(serial);     // the item
@@ -532,19 +532,19 @@ void target_playerVendorBuy( NXWCLIENT ps, pTarget t )
 
     if (pc_currchar->isOwnerOf(pc))
     {
-        pc->talk(s, TRANSLATE("I work for you, you need not buy things from me!"),0);
+        pc->talk(s, "I work for you, you need not buy things from me!",0);
         return;
     }
 
     int gleft=pc_currchar->CountGold();
     if (gleft<pi->value)
     {
-        pc->talk(s, TRANSLATE("You cannot afford that."),0);
+        pc->talk(s, "You cannot afford that.",0);
         return;
     }
     pBackpack->DeleteAmount(price,0x0EED);  // take gold from player
 
-    pc->talk(s, TRANSLATE("Thank you."),0);
+    pc->talk(s, "Thank you.",0);
     pc->holdg+=pi->value; // putting the gold to the vendor's "pocket"
 
     // sends item to the proud new owner's pack
@@ -597,7 +597,7 @@ void target_key( NXWCLIENT ps, pTarget t )
             {
                 if (!pc->checkSkill(skTinkering, 400, 1000))
                 {
-                    sysmessage(s,TRANSLATE("You fail and destroy the key blank."));
+                    sysmessage(s,"You fail and destroy the key blank.");
                     // soundeffect3( pi, <whatever> );
                     pi->Delete();
                 }
@@ -608,7 +608,7 @@ void target_key( NXWCLIENT ps, pTarget t )
                     pi->more3=t->buffer[2];
                     pi->more4=t->buffer[3];
                     // soundeffect3( pi, <whatever> );
-                    sysmessage(s, TRANSLATE("You copy the key.")); //Morrolan can copy keys
+                    sysmessage(s, "You copy the key."); //Morrolan can copy keys
                 }
             }
             return;
@@ -622,13 +622,13 @@ void target_key( NXWCLIENT ps, pTarget t )
                 if(pi->type==ITYPE_CONTAINER) pi->type=ITYPE_LOCKED_ITEM_SPAWNER;
                 if(pi->type==ITYPE_UNLOCKED_CONTAINER) pi->type=ITYPE_LOCKED_CONTAINER;
                 // soundeffect3( pi, <whatever> );
-                sysmessage(s, TRANSLATE("You lock the container."));
+                sysmessage(s, "You lock the container.");
                 return;
             }
             else if ((pi->type==ITYPE_KEY)&&(pc->hasInRange(pi, 2)))
             {
                 pc->keyserial=pi->getSerial();
-                sysmessage(s,TRANSLATE("Enter new name for key."));//morrolan rename keys
+                sysmessage(s,"Enter new name for key.");//morrolan rename keys
                 return;
             }
             else if ((pi->type==ITYPE_LOCKED_ITEM_SPAWNER)||(pi->type==ITYPE_LOCKED_CONTAINER)&& pc->hasInRange(pi, 2) )
@@ -636,26 +636,26 @@ void target_key( NXWCLIENT ps, pTarget t )
                 if(pi->type==ITYPE_LOCKED_ITEM_SPAWNER) pi->type=ITYPE_CONTAINER;
                 if(pi->type==ITYPE_LOCKED_CONTAINER) pi->type=ITYPE_UNLOCKED_CONTAINER;
                 // soundeffect3( pi, <whatever> );
-                sysmessage(s, TRANSLATE("You unlock the container."));
+                sysmessage(s, "You unlock the container.")
                 return;
             }
             else if ((pi->type==ITYPE_DOOR)&& pc->hasInRange(pi, 2) )
             {
                 pi->type=ITYPE_LOCKED_DOOR;
                 // soundeffect3( pi, <whatever> );
-                sysmessage(s, TRANSLATE("You lock the door."));
+                sysmessage(s, "You lock the door.");
                 return;
             }
             else if ((pi->type==ITYPE_LOCKED_DOOR)&& pc->hasInRange(pi, 2) )
             {
                 pi->type=ITYPE_DOOR;
                 // soundeffect3( pi, <whatever> );
-                sysmessage(s, TRANSLATE("You unlock the door."));
+                sysmessage(s, "You unlock the door.");
                 return;
             }
             else if (pi->getId()==0x0BD2)
             {
-                sysmessage(s, TRANSLATE("What do you wish the sign to say?"));
+                sysmessage(s, "What do you wish the sign to say?");
                 pc->keyserial=pi->getSerial(); //Morrolan sign kludge
                 return;
             }
@@ -670,9 +670,9 @@ void target_key( NXWCLIENT ps, pTarget t )
         }//else if
         else
         {
-            if (pi->type==ITYPE_KEY) sysmessage (s, TRANSLATE("That key is not blank!"));
-            else if (pi->more1==0x00) sysmessage(s, TRANSLATE("That does not have a lock."));
-            else sysmessage(s, TRANSLATE("The key does not fit into that lock."));
+            if (pi->type==ITYPE_KEY) sysmessage (s, "That key is not blank!");
+            else if (pi->more1==0x00) sysmessage(s, "That does not have a lock.");
+            else sysmessage(s, "The key does not fit into that lock.");
             return;
         }//else
 }
@@ -726,7 +726,7 @@ void target_sword( NXWCLIENT ps, pTarget t )
 
 		if( dist( location, pcpos )>5 )
 		{
-			pc->sysmsg(TRANSLATE("You are to far away to reach that"));
+			pc->sysmsg("You are to far away to reach that");
 			return;
 		}
 
@@ -740,7 +740,7 @@ void target_sword( NXWCLIENT ps, pTarget t )
 		mapRegions->add(pi);
 
 		pi->Refresh();
-		pc->sysmsg(TRANSLATE("You hack at the tree and produce some kindling."));
+		pc->sysmsg("You hack at the tree and produce some kindling.");
 	}
 	else if(itemById::IsLog(id)) // vagrant
 	{
@@ -751,12 +751,12 @@ void target_sword( NXWCLIENT ps, pTarget t )
 		CorpseTarget(ps);
 	}
 	else
-		pc->sysmsg(TRANSLATE("You can't think of a way to use your blade on that."));
+		pc->sysmsg("You can't think of a way to use your blade on that.");
 }
 
 void target_fetch( NXWCLIENT ps, pTarget t )
 {
-    ps->sysmsg( TRANSLATE("Fetch is not available at this time.") );
+    ps->sysmsg( "Fetch is not available at this time.");
 }
 
 void target_guard( NXWCLIENT ps, pTarget t )
@@ -768,13 +768,13 @@ void target_guard( NXWCLIENT ps, pTarget t )
 	pChar pToGuard = cSerializable::findCharBySerial( t->getClicked() );
 	if( !pToGuard || pToGuard->getSerial() != pPet->getOwnerSerial32() )
 	{
-		ps->sysmsg( TRANSLATE("Currently can't guard anyone but yourself!" ));
+		ps->sysmsg( "Currently can't guard anyone but yourself!" );
 		return;
 	}
 	pPet->npcaitype = NPCAI_PETGUARD;
 	pPet->ftargserial=pc->getSerial();
 	pPet->npcWander=WANDER_FOLLOW;
-	ps->sysmsg( TRANSLATE("Your pet is now guarding you."));
+	ps->sysmsg( "Your pet is now guarding you.");
 	pc->guarded = true;
 }
 
@@ -816,7 +816,7 @@ void target_expPotion( NXWCLIENT ps, pTarget t )
 
 	if(!line_of_sight(s, pc->getPosition(), loc, WALLS_CHIMNEYS + DOORS + ROOFING_SLANTED))
 	{
-		pc->sysmsg(TRANSLATE("You cannot throw the potion there!"));
+		pc->sysmsg("You cannot throw the potion there!");
 		return;
 	}
 		
@@ -865,7 +865,7 @@ void target_telestuff( NXWCLIENT ps, pTarget t )
 		targ->code_callback=target_telestuff;
 		targ->buffer[0]=po->getSerial();
 		targ->send(ps);
-		ps->sysmsg( TRANSLATE("Select location to put this object.") );
+		ps->sysmsg( "Select location to put this object.");
 	} else { //on ground.. so move it
 
 		Location loc=t->getLocation();

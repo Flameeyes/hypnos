@@ -568,24 +568,7 @@ void command_zerokills( pClient client )
 //! Shows character appetite
 void command_appetite( pClient client )
 {
-	pChar pc = client->currChar();
-
-	switch( pc->IsGMorCounselor()? 6 : pc->hunger )
-	{
-		case 6:
-		case 5: pc->sysmsg("You are still stuffed from your last meal");
-			break;
-		case 4: pc->sysmsg("You are not very hungry but could eat more");
-			break;
-		case 3: pc->sysmsg("You are feeling fairly hungry");
-			break;
-		case 2: pc->sysmsg("You are extremely hungry");
-			break;
-		case 1: pc->sysmsg("You are very weak from starvation");
-			break;
-		case 0:	pc->sysmsg("You must eat very soon or you will die!");
-			break;
-	}
+	client->currChar()->sayHunger();
 }
 
 //! Adds an item when using 'add # #

@@ -131,6 +131,9 @@ public:
 	inline const TIMERVAL getCreationDay() const
 	{ return creationday; }
 //@}
+
+public:
+	void sayHunger();
 };
 
 #endif

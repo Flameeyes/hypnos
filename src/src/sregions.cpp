@@ -290,11 +290,11 @@ void checkregion(pChar pc)
 			Calendar::commitSeason(pc);
 			if (region[ pc->region ].name[0]!=0)
 			{
-				pc->sysmsg(TRANSLATE("You have left %s."), region[ pc->region].name);
+				pc->sysmsg("You have left %s.", region[ pc->region].name);
 			}
 			if (region[calcreg].name[0]!=0)
 			{
-				pc->sysmsg(TRANSLATE("You have entered %s."), region[calcreg].name);
+				pc->sysmsg("You have entered %s.", region[calcreg].name);
 			}
 			j=strcmp(region[calcreg].guardowner, region[pc->region].guardowner);
 			if ( (region[calcreg].priv & RGNPRIV_GUARDED)!=(region[pc->region].priv & RGNPRIV_GUARDED) ||
@@ -304,22 +304,22 @@ void checkregion(pChar pc)
 				{
 					if (region[calcreg].guardowner[0]==0)
 					{
-						pc->sysmsg(TRANSLATE("You are now under the protection of the guards."));
+						pc->sysmsg("You are now under the protection of the guards.");
 					}
 					else
 					{
-						pc->sysmsg(TRANSLATE("You are now under the protection of %s guards."), region[calcreg].guardowner);
+						pc->sysmsg("You are now under the protection of %s guards.", region[calcreg].guardowner);
 					}
 				}
 				else
 				{
 					if (region[pc->region].guardowner[0]==0)
 					{
-						pc->sysmsg(TRANSLATE("You are no longer under the protection of the guards."));
+						pc->sysmsg("You are no longer under the protection of the guards.");
 					}
 					else
 					{
-						pc->sysmsg(TRANSLATE("You are no longer under the protection of %s guards."), region[pc->region].guardowner);
+						pc->sysmsg("You are no longer under the protection of %s guards.", region[pc->region].guardowner);
 					}
 				}
 			}

@@ -120,20 +120,20 @@ void cNPC::heartbeat()
 			switch( hunger )
 			{
 				case 6: break;
-				case 5: emoteall( TRANSLATE( "* %s looks a little hungry *" ), 1, getCurrentName().c_str() );
+				case 5: emoteall("* %s looks a little hungry *", true, getCurrentName().c_str() );
 					break;
-				case 4: emoteall( TRANSLATE( "* %s looks fairly hungry *" ), 1, getCurrentName().c_str() );
+				case 4: emoteall("* %s looks fairly hungry *", true, getCurrentName().c_str() );
 					break;
-				case 3: emoteall( TRANSLATE( "* %s looks extremely hungry *" ), 1, getCurrentName().c_str() );
+				case 3: emoteall("* %s looks extremely hungry *", true, getCurrentName().c_str() );
 					break;
-				case 2: emoteall( TRANSLATE( "* %s looks weak from starvation *"), 1, getCurrentName().c_str() );
+				case 2: emoteall("* %s looks weak from starvation *", true, getCurrentName().c_str() );
 					break;
-				case 1: emoteall( TRANSLATE("* %s must eat very soon or he will die! *"), 1, getCurrentName().c_str() );
+				case 1: emoteall("* %s must eat very soon or he will die! *", true, getCurrentName().c_str() );
 					break;
 				case 0:	ftargserial = INVALID;
 					npcWander = WANDER_FREELY_CIRCLE;
 					setOwnerSerial32( INVALID );
-					emoteall( TRANSLATE("* %s appears to have decided that it is better off without a master *"), 0, getCurrentName().c_str());
+					emoteall("* %s appears to have decided that it is better off without a master *", false, getCurrentName().c_str());
 					playSFX( 0x01FE);
 					if( SrvParms->tamed_disappear )
 					{
@@ -447,7 +447,7 @@ void cNPC::clearedEscordQuest(pPC pc)
 	}
 
 	// Inform the PC of what he has just been given as payment
-	pc->getClient()->sysmessage(TRANSLATE("You have just received %d gold coins from %s %s"), servicePay, getCurrentName().c_str(), title.c_str() );
+	pc->getClient()->sysmessage("You have just received %d gold coins from %s %s", servicePay, getCurrentName().c_str(), title.c_str() );
 
 	// Take the NPC out of quest mode
 	npcWander = WANDER_FREELY_CIRCLE;         // Wander freely

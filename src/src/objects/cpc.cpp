@@ -56,49 +56,31 @@ void cPC::heartbeat()
 	if( g_bByPass == true )
 		return;
 	*/
-	if( dead )	// Killed as result of script action
+	if( isDead() )	// Killed as result of script action
 		return;
 	generic_heartbeat();
-	if( dead )	// Killed as result of generic heartbeat action
+	if( isDead() )	// Killed as result of generic heartbeat action
 		return;
 
-	if ( SrvParms->hunger_system && TIMEOUT( hungertime ) && SrvParms->hungerrate > 1 )
+	if ( nSettings::Server::isEnabledHungerSystem() && TIMEOUT( hungertime ) && SrvParms->hungerrate > 1 && !IsGMorCounselor() )
 	{
-		if ( !IsGMorCounselor() && hunger )
-		{
-			--hunger;
-
-			switch( hunger )
-			{
-				case 6:
-				case 5: sysmsg( TRANSLATE("You are still stuffed from your last meal") );
-					break;
-				case 4: sysmsg( TRANSLATE("You are not very hungry but could eat more") );
-					break;
-				case 3: sysmsg( TRANSLATE("You are feeling fairly hungry") );
-					break;
-				case 2: sysmsg( TRANSLATE("You are extremely hungry") );
-					break;
-				case 1: sysmsg( TRANSLATE("You are very weak from starvation") );
-					break;
-				case 0:	sysmsg( TRANSLATE("You must eat very soon or you will die!") );
-					break;
-			}
-			hungertime = uiCurrentTime+(SrvParms->hungerrate*MY_CLOCKS_PER_SEC); // Bookmark
-		}
+		--hunger;
+		sayHunger();
+		hungertime = uiCurrentTime+(SrvParms->hungerrate*MY_CLOCKS_PER_SEC); // Bookmark
 	}
-	if ( SrvParms->hunger_system && TIMEOUT( hungerdamagetimer ) && SrvParms->hungerdamage > 0 ) // Damage them if they are very hungry
+	if ( nSettings::Server::isEnabledHungerSystem() && TIMEOUT( hungerdamagetimer ) && SrvParms->hungerdamage > 0 )
+	// Damage them if they are very hungry
 	{
 		hungerdamagetimer=uiCurrentTime+(SrvParms->hungerdamagerate*MY_CLOCKS_PER_SEC); /** set new hungertime **/
 		if (hp > 0 && hunger<2 && !IsCounselor() && !dead)
 		{
-			sysmsg( TRANSLATE("You are starving !") );
+			sysmsg("You are starving !");
 			hp -= SrvParms->hungerdamage;
 			updateStats(0);
 			if(hp<=0)
 			{
 				Kill();
-				sysmsg(TRANSLATE("You have died of starvation"));
+				sysmsg("You have died of starvation");
 			}
 		}
 	}
@@ -133,13 +115,13 @@ void cPC::heartbeat()
 			playSFX( 0x002B );
 			switch( RandomNum( 0, 6 ) )
 			{
-			 case 0:	emote(socket,TRANSLATE("*Drags in deep*") ,1);		break;
-			 case 1:	emote(socket,TRANSLATE("*Coughs*"),1);				break;
-			 case 2:	emote(socket,TRANSLATE("*Retches*"),1);				break;
-			 case 3:	emote(socket,TRANSLATE("*Hacking cough*"),1);		break;
-			 case 4:	emote(socket,TRANSLATE("*Sighs in contentment*"),1 );break;
-			 case 5:	emote(socket,TRANSLATE("*Puff puff*") ,1);			break;
-			 case 6:	emote(socket,TRANSLATE("Wheeeee!!! Smoking!"),1);	break;
+			 case 0:	emote(socket,"*Drags in deep*" ,1);		break;
+			 case 1:	emote(socket,"*Coughs*",1);				break;
+			 case 2:	emote(socket,"*Retches*",1);				break;
+			 case 3:	emote(socket,"*Hacking cough*",1);		break;
+			 case 4:	emote(socket,"*Sighs in contentment*",1 );break;
+			 case 5:	emote(socket,"*Puff puff*",1);			break;
+			 case 6:	emote(socket,"Wheeeee!!! Smoking!",1);	break;
 			 default:	break;
 			}
 		}
@@ -152,12 +134,12 @@ void cPC::heartbeat()
 	{
 		squelched = 0;
 		mutetime  = 0;
-		sysmsg( TRANSLATE("You are no longer squelched!") );
+		sysmsg("You are no longer squelched!");
 	}
 
 /*	if ( IsCriminal() && ( crimflag <= uiCurrentTime  ) )
 	{
-		sysmsg( TRANSLATE("You are no longer a criminal.") );
+		sysmsg("You are no longer a criminal.");
 		crimflag = 0;
 		SetInnocent();
 	}*/ //Luxor: now criminal flag is handled by CRIMINAL tempfx
@@ -168,7 +150,7 @@ void cPC::heartbeat()
 			--kills;
 		if ( kills == repsys.maxkills && repsys.maxkills > 0 )
 		{
-			sysmsg( TRANSLATE( "You are no longer a murderer." ) );
+			sysmsg("You are no longer a murderer.");
 			SetInnocent();
 		}
 		murderrate = ( repsys.murderdecay * MY_CLOCKS_PER_SEC ) + uiCurrentTime;
@@ -185,7 +167,7 @@ void cPC::heartbeat()
 				targ->code_callback = target_castSpell;
 				targ->buffer[0]=spell;
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("Select your target") );
+				ps->sysmsg("Select your target");
 			}
 			else
 			{
@@ -303,21 +285,21 @@ void cPC::deadAttack (pChar victim)
 					victim->staticFX(0x376A, 9, 6);
 					switch(RandomNum(0, 4))
 					{
-					case 0: victim->talkAll( TRANSLATE("Thou art dead, but 'tis within my power to resurrect thee.  Live!"),0); break;
-					case 1: victim->talkAll( TRANSLATE("Allow me to resurrect thee ghost.  Thy time of true death has not yet come."),0); break;
-					case 2: victim->talkAll( TRANSLATE("Perhaps thou shouldst be more careful.  Here, I shall resurrect thee."),0); break;
-					case 3: victim->talkAll( TRANSLATE("Live again, ghost!  Thy time in this world is not yet done."),0); break;
-					case 4: victim->talkAll( TRANSLATE("I shall attempt to resurrect thee."),0); break;
+					case 0: victim->talkAll("Thou art dead, but 'tis within my power to resurrect thee.  Live!", false); break;
+					case 1: victim->talkAll("Allow me to resurrect thee ghost.  Thy time of true death has not yet come.", false); break;
+					case 2: victim->talkAll("Perhaps thou shouldst be more careful.  Here, I shall resurrect thee.", false); break;
+					case 3: victim->talkAll("Live again, ghost!  Thy time in this world is not yet done.", false); break;
+					case 4: victim->talkAll("I shall attempt to resurrect thee.", false); break;
 					}
 				}
 				else
 				{//if dist>3
-					victim->talkAll( TRANSLATE("Come nearer, ghost, and i'll give you life!"),1);
+					victim->talkAll("Come nearer, ghost, and i'll give you life!",1);
 				}
 			}
 			else
 			{//if a bad guy
-				victim->talkAll( TRANSLATE("I will not give life to a scoundrel like thee!"),1);
+				victim->talkAll("I will not give life to a scoundrel like thee!",1);
 			}
 		}
 		else if( victim->npcaitype == NPCAI_EVILHEALER )
@@ -331,26 +313,26 @@ void cPC::deadAttack (pChar victim)
 					victim->staticFX(0x3709, 9, 25); //Flamestrike effect
 					switch(rand()%5)
 					{
-						case 0: victim->talkAll( TRANSLATE("Fellow minion of Mondain, Live!!"),0); break;
-						case 1: victim->talkAll( TRANSLATE("Thou has evil flowing through your vains, so I will bring you back to life."),0); break;
-						case 2: victim->talkAll( TRANSLATE("If I res thee, promise to raise more hell!."),0); break;
-						case 3: victim->talkAll( TRANSLATE("From hell to Britannia, come alive!."),0); break;
-						case 4: victim->talkAll( TRANSLATE("Since you are Evil, I will bring you back to consciouness."),0); break;
+						case 0: victim->talkAll("Fellow minion of Mondain, Live!!", false); break;
+						case 1: victim->talkAll("Thou has evil flowing through your vains, so I will bring you back to life.", false); break;
+						case 2: victim->talkAll("If I res thee, promise to raise more hell!.", false); break;
+						case 3: victim->talkAll("From hell to Britannia, come alive!.", false); break;
+						case 4: victim->talkAll("Since you are Evil, I will bring you back to consciouness.", false); break;
 					}
 				}
 				else
 				{//if dist >3
-					victim->talkAll( TRANSLATE("Come nearer, evil soul, and i'll give you life!"),1);
+					victim->talkAll("Come nearer, evil soul, and i'll give you life!", true);
 				}
 			}
 			else
 			{//if player is a good guy
-				victim->talkAll( TRANSLATE("I dispise all things good. I shall not give thee another chance!"),1);
+				victim->talkAll("I dispise all things good. I shall not give thee another chance!"), true);
 			}
 		}
 		else
 		{
-			sysmessage(s,TRANSLATE("You are dead and cannot do that."));
+			sysmessage(s,"You are dead and cannot do that.");
 		}//npcaitype check
 	}
 	else
@@ -362,7 +344,33 @@ void cPC::deadAttack (pChar victim)
 		}
 		else
 		{
-			sysmessage(s,TRANSLATE("You are dead and cannot do that."));
+			sysmessage(s, "You are dead and cannot do that.");
 		}
 	}//if npc
+}
+
+/*!
+\brief Tells the user his hunger state
+\author Flameeyes
+*/
+void cPC::sayHunger()
+{
+	if ( isGMorCounselor() )
+		return;
+	switch( hunger )
+	{
+		case 6:
+		case 5: sysmsg("You are still stuffed from your last meal");
+			break;
+		case 4: sysmsg("You are not very hungry but could eat more");
+			break;
+		case 3: sysmsg("You are feeling fairly hungry");
+			break;
+		case 2: sysmsg("You are extremely hungry");
+			break;
+		case 1: sysmsg("You are very weak from starvation");
+			break;
+		case 0:	sysmsg("You must eat very soon or you will die!");
+			break;
+	}
 }

@@ -219,7 +219,7 @@ void callguards( pChar caller )
 				guard->staticFX(0x372A, 9, 6);
 
 				guard->teleport();
-				guard->talkAll( TRANSLATE("Don't fear, help is near"), 0 );
+				guard->talkAll("Don't fear, help is near", false );
 			}
 		}
 		else
@@ -232,7 +232,7 @@ void callguards( pChar caller )
 				guard->npcWander = WANDER_FOLLOW;
 				guard->ftargserial = caller->getSerial();
 				guard->antiguardstimer=uiCurrentTime+(MY_CLOCKS_PER_SEC*10); // Sparhawk this should become server configurable
-				guard->talkAll( TRANSLATE("Don't fear, help is on the way"), 0 );
+				guard->talkAll("Don't fear, help is on the way", false );
 				//guard->antispamtimer = uiCurrentTime+MY_CLOCKS_PER_SEC*5;
 				guards.pop_back();
 			}
@@ -945,7 +945,7 @@ int main(int argc, char *argv[])
 
 	cwmWorldState->saveNewWorld();
 
-	sysbroadcast(TRANSLATE("The server is shutting down."));
+	sysbroadcast("The server is shutting down.");
 	ConOut("Closing sockets...");
 
 	Network->SockClose();
@@ -984,6 +984,7 @@ int main(int argc, char *argv[])
 
 void telltime( NXWCLIENT ps )
 {
+	//!\todo Here we can use static const char* instead of these strcpy, and asprintf instead of sprintf
 
 	NXWSOCKET s = ps->toInt();
 
@@ -996,47 +997,47 @@ void telltime( NXWCLIENT ps )
 	int lhour;
 	lhour=hour;
 
-	if ((minute>=0)&&(minute<=14)) strcpy(tstring,TRANSLATE("It is"));
-	else if ((minute>=15)&&(minute<=30)) strcpy(tstring,TRANSLATE("It is a quarter past"));
-	else if ((minute>=30)&&(minute<=45)) strcpy(tstring,TRANSLATE("It is half past"));
+	if ((minute>=0)&&(minute<=14)) strcpy(tstring,"It is");
+	else if ((minute>=15)&&(minute<=30)) strcpy(tstring,"It is a quarter past");
+	else if ((minute>=30)&&(minute<=45)) strcpy(tstring,"It is half past");
 	else
 	{
-		strcpy(tstring,TRANSLATE("It is a quarter till"));
+		strcpy(tstring,"It is a quarter till");
 		lhour++;
 		if (lhour==0) lhour=12;
 	}
 	switch( lhour )
 	{
-	case 1: sprintf( tstring2, TRANSLATE("%s one o'clock"), tstring );	   break;
-	case 2: sprintf( tstring2, TRANSLATE("%s two o'clock"), tstring );	   break;
-	case 3: sprintf( tstring2, TRANSLATE("%s three o'clock"), tstring );	   break;
-	case 4: sprintf( tstring2, TRANSLATE("%s four o'clock"), tstring );	   break;
-	case 5: sprintf( tstring2, TRANSLATE("%s five o'clock"), tstring );	   break;
-	case 6: sprintf( tstring2, TRANSLATE("%s six o'clock"), tstring );	   break;
-	case 7: sprintf( tstring2, TRANSLATE("%s seven o'clock"), tstring );	   break;
-	case 8: sprintf( tstring2, TRANSLATE("%s eight o'clock"), tstring );	   break;
-	case 9: sprintf( tstring2, TRANSLATE("%s nine o'clock"), tstring );	   break;
-	case 10: sprintf( tstring2, TRANSLATE("%s ten o'clock"), tstring );	   break;
-	case 11: sprintf( tstring2, TRANSLATE("%s eleven o'clock"), tstring );	   break;
+	case 1: sprintf( tstring2, "%s one o'clock", tstring );	   break;
+	case 2: sprintf( tstring2, "%s two o'clock", tstring );	   break;
+	case 3: sprintf( tstring2, "%s three o'clock", tstring );	   break;
+	case 4: sprintf( tstring2, "%s four o'clock", tstring );	   break;
+	case 5: sprintf( tstring2, "%s five o'clock", tstring );	   break;
+	case 6: sprintf( tstring2, "%s six o'clock", tstring );	   break;
+	case 7: sprintf( tstring2, "%s seven o'clock", tstring );	   break;
+	case 8: sprintf( tstring2, "%s eight o'clock", tstring );	   break;
+	case 9: sprintf( tstring2, "%s nine o'clock", tstring );	   break;
+	case 10: sprintf( tstring2, "%s ten o'clock", tstring );	   break;
+	case 11: sprintf( tstring2, "%s eleven o'clock", tstring );	   break;
 	case 12:
 		if( ampm )
-			sprintf( tstring2, TRANSLATE("%s midnight."), tstring );
+			sprintf( tstring2, "%s midnight.", tstring );
 		else
-			sprintf( tstring2, TRANSLATE("%s noon."), tstring );
+			sprintf( tstring2, "%s noon.", tstring );
 		break;
 	}
 
 	if (lhour==12) strcpy(tstring, tstring2);
 	else if (ampm)
 	{
-		if ((lhour>=1)&&(lhour<6)) sprintf(tstring,TRANSLATE("%s in the afternoon."),tstring2);
-		else if ((lhour>=6)&&(lhour<9)) sprintf(tstring,TRANSLATE("%s in the evening."),tstring2);
-		else sprintf(tstring,TRANSLATE("%s at night."),tstring2);
+		if ((lhour>=1)&&(lhour<6)) sprintf(tstring,"%s in the afternoon.",tstring2);
+		else if ((lhour>=6)&&(lhour<9)) sprintf(tstring,"%s in the evening.",tstring2);
+		else sprintf(tstring,"%s at night.",tstring2);
 	}
 	else
 	{
-		if ((lhour>=1)&&(lhour<5)) sprintf(tstring,TRANSLATE("%s at night."),tstring2);
-		else sprintf(tstring,TRANSLATE("%s in the morning."),tstring2);
+		if ((lhour>=1)&&(lhour<5)) sprintf(tstring,"%s at night.",tstring2);
+		else sprintf(tstring,"%s in the morning.",tstring2);
 	}
 
 	sysmessage(s,tstring);
@@ -1227,11 +1228,11 @@ void usepotion(pChar pc, pItem pi)
 		{
 		case 1:
 			tempfx::add(pc, pc, tempfx::SPELL_AGILITY, 5+RandomNum(1,10), 0, 0, 120);
-			pc->sysmsg(TRANSLATE("You feel more agile!"));
+			pc->sysmsg("You feel more agile!");
 			break;
 		case 2:
 			tempfx::add(pc, pc, tempfx::SPELL_AGILITY, 10+RandomNum(1,20), 0, 0, 120);
-			pc->sysmsg(TRANSLATE("You feel much more agile!"));
+			pc->sysmsg("You feel much more agile!");
 			break;
 		default:
 			ErrOut("Switch fallout. pyuo.cpp, usepotion()\n");
@@ -1244,7 +1245,7 @@ void usepotion(pChar pc, pItem pi)
 
 	case 2: // Cure Potion
 		if ( pc->getBody()->getPoisoned() == poisonNone )
-			pc->sysmsg(TRANSLATE("The potion had no effect."));
+			pc->sysmsg("The potion had no effect.");
 		else
 		{
 			switch(pi->morez)
@@ -1275,12 +1276,12 @@ void usepotion(pChar pc, pItem pi)
 				return;
 			}
 			if (pc->poisoned)
-				pc->sysmsg(TRANSLATE("The potion was not able to cure this poison."));
+				pc->sysmsg("The potion was not able to cure this poison.");
 			else
 			{
 				pc->staticFX(0x373A, 0, 15);
 				pc->playSFX(0x01E0); //cure sound - SpaceDog
-				pc->sysmsg(TRANSLATE("The poison was cured."));
+				pc->sysmsg("The poison was cured.");
 			}
 		}
 		impowncreate(s,pc,1); //Lb, makes the green bar blue or the blue bar blue !
@@ -1289,10 +1290,10 @@ void usepotion(pChar pc, pItem pi)
 	case 3: {// Explosion Potion
 		if (region[pc->region].priv&0x01) // Ripper 11-14-99
 		{
-			pc->sysmsg(TRANSLATE(" You cant use that in town!"));
+			pc->sysmsg(" You cant use that in town!");
 			return;
 		}
-		pc->sysmsg(TRANSLATE("Now would be a good time to throw it!"));
+		pc->sysmsg("Now would be a good time to throw it!");
 		tempfx::add(pc, pc, tempfx::EXPLOTIONMSG, 0, 1, 3);
 		tempfx::add(pc, pc, tempfx::EXPLOTIONMSG, 0, 2, 2);
 		tempfx::add(pc, pc, tempfx::EXPLOTIONMSG, 0, 3, 1);
@@ -1310,15 +1311,15 @@ void usepotion(pChar pc, pItem pi)
 		{
 		case 1:
 			pc->hp=qmin(pc->hp+5+RandomNum(1,5)+pc->skill[17]/100,pc->getStrength());
-			pc->sysmsg(TRANSLATE("You feel better!"));
+			pc->sysmsg("You feel better!");
 			break;
 		case 2:
 			pc->hp=qmin(pc->hp+15+RandomNum(1,10)+pc->skill[17]/50,pc->getStrength());
-			pc->sysmsg(TRANSLATE("You feel more healty!"));
+			pc->sysmsg("You feel more healty!");
 			break;
 		case 3:
 			pc->hp=qmin(pc->hp+20+RandomNum(1,20)+pc->skill[17]/40, pc->getStrength());
-			pc->sysmsg(TRANSLATE("You feel much more healty!"));
+			pc->sysmsg("You feel much more healty!");
 			break;
 
 		default:
@@ -1347,7 +1348,7 @@ void usepotion(pChar pc, pItem pi)
 		pc->poisonwearofftime=uiCurrentTime+(MY_CLOCKS_PER_SEC*SrvParms->poisontimer); // lb, poison wear off timer setting
 		impowncreate(s,pc,1); //Lb, sends the green bar !
 		pc->playSFX(0x0246); //poison sound - SpaceDog
-		pc->sysmsg(TRANSLATE("You poisoned yourself! *sigh*")); //message -SpaceDog
+		pc->sysmsg("You poisoned yourself! *sigh*"); //message -SpaceDog
 		break;
 
 	case 7: // Refresh Potion
@@ -1355,12 +1356,12 @@ void usepotion(pChar pc, pItem pi)
 		{
 			case 1:
 				pc->stm=qmin(pc->stm+20+RandomNum(1,10), pc->dx);
-				pc->sysmsg(TRANSLATE("You feel more energetic!"));
+				pc->sysmsg("You feel more energetic!");
 				break;
 
 			case 2:
 				pc->stm=qmin(pc->stm+40+RandomNum(1,30), pc->dx);
-				pc->sysmsg(TRANSLATE("You feel much more energetic!"));
+				pc->sysmsg("You feel much more energetic!");
 				break;
 
 			default:
@@ -1380,11 +1381,11 @@ void usepotion(pChar pc, pItem pi)
 		{
 		case 1:
 			tempfx::add(pc, pc, tempfx::SPELL_STRENGHT, 5+RandomNum(1,10), 0, 0, 120);
-			pc->sysmsg(TRANSLATE("You feel more strong!"));
+			pc->sysmsg("You feel more strong!");
 			break;
 		case 2:
 			tempfx::add(pc, pc, tempfx::SPELL_STRENGHT, 10+RandomNum(1,20), 0, 0, 120);
-			pc->sysmsg(TRANSLATE("You feel much more strong!"));
+			pc->sysmsg("You feel much more strong!");
 			break;
 		default:
 			ErrOut("Switch fallout. pyuo.cpp, usepotion()\n");
@@ -1419,7 +1420,7 @@ void usepotion(pChar pc, pItem pi)
 		if (s==INVALID) return;
 		if( clientInfo[s]->lsd )
 		{
-			pc->sysmsg(TRANSLATE("no,no,no,cant you get enough ?"));
+			pc->sysmsg("no,no,no,cant you get enough ?");
 			return;
 		}
 		tempfx::add(pc, pc, tempfx::LSD, 60+RandomNum(1,120), 0, 0); // trigger effect

@@ -41,7 +41,7 @@ void snooping( pPC snooper, pItem cont )
 		return;
 	}
 	if ( ! snooper->hasInRange(owner, 2) && ! snooper->hasInRange(cont, 2) ) {
-		snooper->sysmsg(TRANSLATE("You are too far away!"));
+		snooper->sysmsg("You are too far away!");
 		return;
 	}
 	if ( owner->HasHumanBody() && owner->getOwner() == snooper ) {
@@ -70,22 +70,22 @@ void snooping( pPC snooper, pItem cont )
 	snooper->objectdelay=SrvParms->snoopdelay * MY_CLOCKS_PER_SEC + uiCurrentTime;
 	if ( owner->IsGMorCounselor())
 	{
-		snooper->sysmsg( TRANSLATE("You can't peek into that container or you'll be jailed."));// AntiChrist
-		owner->sysmsg(TRANSLATE("%s is trying to snoop you!"), snooper->getCurrentName().c_str());
+		snooper->sysmsg("You can't peek into that container or you'll be jailed.");// AntiChrist
+		owner->sysmsg("%s is trying to snoop you!", snooper->getCurrentName().c_str());
 		return;
 	}
 	else if (snooper->checkSkill( skSnooping, 0, 1000))
 	{
 		snooper->showContainer(cont);
-		snooper->sysmsg( TRANSLATE("You successfully peek into that container."));
+		snooper->sysmsg("You successfully peek into that container.");
 	}
 	else
 	{
-		snooper->sysmsg( TRANSLATE("You failed to peek into that container."));
+		snooper->sysmsg("You failed to peek into that container.");
 		if ( owner->npc )
-			owner->talk(s, TRANSLATE("Art thou attempting to disturb my privacy?"), 0);
+			owner->talk(s, "Art thou attempting to disturb my privacy?", 0);
 		else {
-			owner->sysmsg( TRANSLATE("You notice %s trying to peek into your pack!"), snooper->getCurrentName().c_str());
+			owner->sysmsg("You notice %s trying to peek into your pack!", snooper->getCurrentName().c_str());
 		}
 		snooper->IncreaseKarma( - nSettings::Skills::getSnoopKarmaLoss() );
 		snooper->modifyFame( - nSettings::Skills::getSnoopFameLoss() );
@@ -127,7 +127,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 	//no stealing for items on layers other than 0 (equipped!) , newbie items, and items not being in containers allowed !
 	if ( pi->layer!=0 || pi->isNewbie() || pi->isInWorld() )
 	{
-       	thief->sysmsg(TRANSLATE("You cannot steal that."));
+       	thief->sysmsg("You cannot steal that.");
        	return;
 	}
 
@@ -136,19 +136,19 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 
 	if (victim->npcaitype == NPCAI_PLAYERVENDOR)
 	{
-		thief->sysmsg(TRANSLATE("You cannot steal from player vendors."));
+		thief->sysmsg("You cannot steal from player vendors.");
        	return;
 	}
 
 	if ( (thief->getSerial() == victim->getSerial()) || (thief->getSerial()==victim->getOwnerSerial32()) )
 	{
-		thief->sysmsg(TRANSLATE("You catch yourself red handed."));
+		thief->sysmsg("You catch yourself red handed.");
 		return;
 	}
 
 	if (thief->distFrom( victim ) > 1)
 	{
-		thief->sysmsg(TRANSLATE("You are too far away to steal that item."));
+		thief->sysmsg("You are too far away to steal that item.");
 		return;
 	}
 	
@@ -163,7 +163,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 
 		if ( we > cansteal )
 		{
-		thief->sysmsg(TRANSLATE("That is too heavy."));
+		thief->sysmsg("That is too heavy.");
 		return;
 		}
 
@@ -195,7 +195,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 
 		pi->setContainer( pack );
 
-		thief->sysmsg(TRANSLATE("You successfully steal the item."));
+		thief->sysmsg("You successfully steal the item.");
 		pi->Refresh();
 
 		result=+200;
@@ -203,7 +203,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 	}
 	else
 	{
-		thief->sysmsg( TRANSLATE("You failed to steal the item."));
+		thief->sysmsg("You failed to steal the item.");
 		result=-200;
 		//Only onhide when player is caught!
 	}
@@ -212,7 +212,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 		return;
 	
 	thief->unHide();
-	thief->sysmsg(TRANSLATE("You have been caught!"));
+	thief->sysmsg("You have been caught!");
 	thief->increaseKarma( - nSettings::Skills::getStealKarmaLoss() );
 	thief->modifyFame( - nSettings::Skills::getStealFameLoss() );
 
@@ -275,7 +275,7 @@ void Skills::PickPocketTarget(NXWCLIENT ps)
 		// rustling sound..dont know if right but it works :)
 	}
 	else
-        Me->sysmsg(TRANSLATE("You learn nothing from practicing here"));
+        Me->sysmsg("You learn nothing from practicing here");
         	// if over 30 Stealing..dont learn.
 }
 
@@ -296,34 +296,34 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 
 	if (thief->getSerial() == victim->getSerial() || thief->getSerial()==victim->getOwnerSerial32())
 	{
-		thief->sysmsg(TRANSLATE("You catch yourself red handed."));
+		thief->sysmsg("You catch yourself red handed.");
 		return;
 	}
 
 	if (victim->npcaitype == NPCAI_PLAYERVENDOR)
 	{
-		thief->sysmsg(TRANSLATE("You cannot steal from player vendors."));
+		thief->sysmsg("You cannot steal from player vendors.");
 		return;
 	}
 
 	if (victim->IsGMorCounselor() )
 	{
-		thief->sysmsg( TRANSLATE("You can't steal from gods."));
+		thief->sysmsg( "You can't steal from gods.");
 		return;
 	}
 
 	pItem pack= victim->getBackpack();
 	if ( !pack)
 	{
-		thief->sysmsg(TRANSLATE("bad luck, your victim doesn't have a backpack"));
+		thief->sysmsg("bad luck, your victim doesn't have a backpack");
 		return;
 	}
 
-	thief->sysmsg(TRANSLATE("You reach into %s's pack to steal something ..."), victim->getCurrentName().c_str() );
+	thief->sysmsg("You reach into %s's pack to steal something ...", victim->getCurrentName().c_str() );
 
 	if ( !thief->hasInRange(victim, 1) )
 	{
-		thief->sysmsg( TRANSLATE("... and realise you're too far away."));
+		thief->sysmsg( "... and realise you're too far away.");
 		return;
 	}
 	pItem pi = NULL;
@@ -343,7 +343,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 	}
 
 	if( pi==NULL ) {
-		thief->sysmsg(TRANSLATE("... and discover your victim doesn't have any posessions"));
+		thief->sysmsg("... and discover your victim doesn't have any posessions");
 		return;
 	}
 
@@ -353,13 +353,13 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 
 	if( pi->isNewbie() )
 	{//newbie
-		thief->sysmsg(TRANSLATE("... and fail because it is of no value to you."));
+		thief->sysmsg("... and fail because it is of no value to you.");
 		return;
 	}
 
 	if(pi->isSecureContainer())
 	{
-		thief->sysmsg(TRANSLATE("... and fail because it's a locked container."));
+		thief->sysmsg("... and fail because it's a locked container.");
 		return;
 	}
 
@@ -369,7 +369,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 		int cansteal = thief->skill[skStealing] > 999 ? 1700 : thief->skill[skStealing] + 200;
 
 		if ( pi->getWeightActual() > cansteam )
-			thief->sysmsg(TRANSLATE("... and fail because it is too heavy."));
+			thief->sysmsg("... and fail because it is too heavy.");
 		else
 		{
 			pFunctionHandle evt = victim->getEvent(evtChrOnStolen);
@@ -387,19 +387,19 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 			pItem thiefpack = thief->getBackpack();
 			if ( ! thiefpack ) return;
 			pi->setContainer( thiefpack );
-			thief->sysmsg(TRANSLATE("... and you succeed."));
+			thief->sysmsg("... and you succeed.");
 			pi->Refresh();
 			//all_items(s);
 		}
 	}
 	else
-		thief->sysmsg(TRANSLATE(".. and fail because you're not good enough."));
+		thief->sysmsg(".. and fail because you're not good enough.");
 
 	if ( thief->skill[skStealing] >= rand()%1001 )
 		return;
 	
 	thief->unHide();
-	thief->sysmsg(TRANSLATE("You have been caught!"));
+	thief->sysmsg("You have been caught!");
 	thief->IncreaseKarma( - nSettings::Skills::getStealKarmaLoss() );
 	thief->modifyFame( - nSettings::Skills::getStealFameLoss() );
 
@@ -413,12 +413,12 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 		itmname = pi->getName();
 
 	if ( victim->npc)
-		victim->talkAll(TRANSLATE( "Guards!! A thief is amoung us!"),0);
+		victim->talkAll( "Guards!! A thief is amoung us!",0);
 	else
-		victim->sysmsg(TRANSLATE("You notice %s trying to steal %s from you!"), thief->getCurrentName().c_str(), itmname.c_str());
+		victim->sysmsg("You notice %s trying to steal %s from you!", thief->getCurrentName().c_str(), itmname.c_str());
 
 	char *temp;
-	asprintf(&temp,TRANSLATE("You notice %s trying to steal %s from %s!"), thief->getCurrentName().c_str(), itmname.c_str(), victim->getCurrentName().c_str());
+	asprintf(&temp,"You notice %s trying to steal %s from %s!", thief->getCurrentName().c_str(), itmname.c_str(), victim->getCurrentName().c_str());
 	
 	//send to all player temp = thief are stealing victim if are more intelligent and a bonus of luck :D
 	NxwSocketWrapper sw;
@@ -469,7 +469,7 @@ void Skills::target_lockpick( NXWCLIENT ps, pTarget t )
 	
 	if( !pc->hasInRange(pick, 1) )
 	{
-		pc->sysmsg(TRANSLATE("You are too far away!"));
+		pc->sysmsg("You are too far away!");
 		return;
 	}
 
@@ -480,7 +480,7 @@ void Skills::target_lockpick( NXWCLIENT ps, pTarget t )
 
 	if(!chest->isSecureContainer())
 	{
-		pc->sysmsg(TRANSLATE("That is not locked."));
+		pc->sysmsg("That is not locked.");
 		return;
 	}
 
@@ -502,15 +502,15 @@ void Skills::target_lockpick( NXWCLIENT ps, pTarget t )
 				return;
 		}
 		soundeffect3(chest, 0x0241);
-		pc->sysmsg(TRANSLATE("You manage to pick the lock."));
+		pc->sysmsg("You manage to pick the lock.");
 	} else {
 		if((rand()%100)>50)
 		{
-			pc->sysmsg( TRANSLATE("You broke your lockpick!"));
+			pc->sysmsg( "You broke your lockpick!");
 			pick->ReduceAmount(1);
 		}
 		else
-			pc->sysmsg(TRANSLATE( "You fail to open the lock."));
+			pc->sysmsg( "You fail to open the lock.");
 	}
 
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skLockPicking,AMX_AFTER);

@@ -55,9 +55,11 @@ namespace nSettings {
 		bool isEnabledBookSystem();		//!< Is the book system enabled? [Default: true]
 		bool isEnabledTradeSystem();		//!< Is the trade system enabled? [Default: true]
 		bool isEnabledBountySystem();		//!< Is the bounty system enabled? [Default: true]
+		bool isEnabledHungerSystem();		//!< is the hunger system enabled? [Default: true]
+		
 		bool isEnabledPopupHelp();		//!< popup help (since T2A) is enabled [Default:true]
 		bool isEnabledUOAssist();		//!< UO Assist enabled? [Default: true]
-                uint32_t getAllowedAssistVersion();	//!< Returns allowed version of UO assist [Default: \b missing]
+                uint32_t getAllowedAssistVersion();	//!< Returns allowed version of UO assist [Default: \b missing ]
 
 		uint8_t getMaximumPCs();		//!< Maximum characters for account [Default: 5]
 		bool canPlayersDeletePCs();		//!< Can a player delete one of his characters? [Default: true]
