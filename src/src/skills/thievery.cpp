@@ -70,7 +70,7 @@ void snooping( pChar snooper, pItem cont )
 				if ( owner->IsGMorCounselor())
 				{
 					snooper->sysmsg( TRANSLATE("You can't peek into that container or you'll be jailed."));// AntiChrist
-					sprintf( temp, TRANSLATE("%s is trying to snoop you!"), snooper->getCurrentNameC());
+					sprintf( temp, TRANSLATE("%s is trying to snoop you!"), snooper->getCurrentName().c_str());
 					owner->sysmsg(temp);
 					return;
 				}
@@ -85,7 +85,7 @@ void snooping( pChar snooper, pItem cont )
 					if ( owner->npc )
 						owner->talk(s, TRANSLATE("Art thou attempting to disturb my privacy?"), 0);
 					else {
-						sprintf( temp, TRANSLATE("You notice %s trying to peek into your pack!"), snooper->getCurrentNameC());
+						sprintf( temp, TRANSLATE("You notice %s trying to peek into your pack!"), snooper->getCurrentName().c_str());
 						owner->sysmsg( temp );
 					}
 					snooper->IncreaseKarma(-ServerScp::g_nSnoopKarmaLoss);//AntiChrist
@@ -236,8 +236,8 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 				pi->getName( temp );
 				itmname = temp;
 			}
-			sprintf(temp,TRANSLATE("You notice %s trying to steal %s from you!"), thief->getCurrentNameC(), itmname.c_str());
-			sprintf(temp2,TRANSLATE("You notice %s trying to steal %s from %s!"), thief->getCurrentNameC(), itmname.c_str(), victim->getCurrentNameC());
+			sprintf(temp,TRANSLATE("You notice %s trying to steal %s from you!"), thief->getCurrentName().c_str(), itmname.c_str());
+			sprintf(temp2,TRANSLATE("You notice %s trying to steal %s from %s!"), thief->getCurrentName().c_str(), itmname.c_str(), victim->getCurrentName().c_str());
 
 			if ( victim->npc )
 				if( victim->HasHumanBody() )
@@ -334,7 +334,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	sprintf(temp, TRANSLATE("You reach into %s's pack to steal something ..."), victim->getCurrentNameC() );
+	sprintf(temp, TRANSLATE("You reach into %s's pack to steal something ..."), victim->getCurrentName().c_str() );
 	thief->sysmsg(temp);
 
 	if ( thief->hasInRange(victim, 1) )
@@ -423,8 +423,8 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 				itmname = temp;
 			}
 
-			sprintf(temp,TRANSLATE("You notice %s trying to steal %s from you!"), thief->getCurrentNameC(), itmname.c_str());
-			sprintf(temp2,TRANSLATE("You notice %s trying to steal %s from %s!"), thief->getCurrentNameC(), itmname.c_str(), victim->getCurrentNameC());
+			sprintf(temp,TRANSLATE("You notice %s trying to steal %s from you!"), thief->getCurrentName().c_str(), itmname.c_str());
+			sprintf(temp2,TRANSLATE("You notice %s trying to steal %s from %s!"), thief->getCurrentName().c_str(), itmname.c_str(), victim->getCurrentName().c_str());
 
 			if ( victim->npc)
 				victim->talkAll(TRANSLATE( "Guards!! A thief is amoung us!"),0);

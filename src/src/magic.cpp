@@ -1467,7 +1467,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			break;
 		case SPELL_DISPEL:	//Luxor
 			if ( pd && pd->summontimer > 0 ) { //Only if it's a summoned creature
-				pd->emoteall( "%s begins disappearing", true, pd->getCurrentNameC() );
+				pd->emoteall( "%s begins disappearing", true, pd->getCurrentName().c_str() );
 				//3 seconds left
 				if ( pd->summontimer > (uiCurrentTime + 3*MY_CLOCKS_PER_SEC) )
 					pd->summontimer = uiCurrentTime + 3*MY_CLOCKS_PER_SEC;
@@ -1490,7 +1490,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				if ( !pc_curr )
 					continue;
 				if ( pc_curr->summontimer > 0 ) {
-					pc_curr->emoteall( "%s begins disappearing", true, pc_curr->getCurrentNameC() );
+					pc_curr->emoteall( "%s begins disappearing", true, pc_curr->getCurrentName().c_str() );
 					if ( pc_curr->summontimer > (uiCurrentTime + 3*MY_CLOCKS_PER_SEC) )
 						pc_curr->summontimer = uiCurrentTime + 3*MY_CLOCKS_PER_SEC;
 				}

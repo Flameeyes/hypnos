@@ -926,7 +926,7 @@ void loaditem()
 					data::seekMulti( i-0x4000, m_vec );
 					if( m_vec.empty() )
 					{
-						LogWarning("bad item, serial: %i name: %s\n",pi->getSerial(), pi->getCurrentNameC());
+						LogWarning("bad item, serial: %i name: %s\n",pi->getSerial(), pi->getCurrentName().c_str());
 						bad=1;
 					}
 				}
@@ -1439,7 +1439,7 @@ void CWorldMain::SaveChar( pChar pc )
 			} else
 			{
 #ifndef DESTROY_REFERENCES
-				fprintf(cWsc, "NAME %s\n", pc->getCurrentNameC());
+				fprintf(cWsc, "NAME %s\n", pc->getCurrentName().c_str());
 #else
 				if (pc->npc)
 					fprintf(cWsc, "NAME %s\n", pc->name);
@@ -1848,7 +1848,7 @@ void CWorldMain::SaveItem( pItem pi )
 		fprintf(iWsc, "SECTION WORLDITEM %i\n", this->itm_curr++);
 		fprintf(iWsc, "{\n");
 		fprintf(iWsc, "uint32_t %i\n", pi->getSerial());
-		fprintf(iWsc, "NAME %s\n", pi->getCurrentNameC());
+		fprintf(iWsc, "NAME %s\n", pi->getCurrentName().c_str());
 		//<Luxor>: if the item is beard or hair of a morphed char, we must save the original ID and COLOR value
 		if ( (pi->layer == LAYER_BEARD || pi->layer == LAYER_HAIR) && isCharSerial( pi->getContSerial() ) ) {
 			pChar pc_morphed = (pChar)(pi->getContainer());

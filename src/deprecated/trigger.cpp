@@ -447,7 +447,7 @@ void triggerItem(NXWSOCKET  ts, pItem pi, int eventType)
 			t = TRIGMODE_TARGET;
 			break;
 		default:
-			WarnOut("triggerItem(ts=%d, pi=%s, ttype=%d) -> unknown type\n", ts,pi->getCurrentNameC(), eventType);
+			WarnOut("triggerItem(ts=%d, pi=%s, ttype=%d) -> unknown type\n", ts,pi->getCurrentName().c_str(), eventType);
 			return;
 	}
 
@@ -1024,7 +1024,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 		}
 		if (m_pcAdded!=0)
 		{
-			//strcpy(m_pcAdded->getCurrentNameC(), par);
+			//strcpy(m_pcAdded->getCurrentName().c_str(), par);
 					m_pcAdded->setCurrentName(par);
 		}
 		}

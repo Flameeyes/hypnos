@@ -527,7 +527,7 @@ static void exec_whologow(char *dummy)
 		if( pj ) //Keeps NPC's from appearing on the list
 		{
 			j++;
-			fprintf(File, "%i) %s [%x]\n", (j-1), pj->getCurrentNameC(), pj->getSerial());
+			fprintf(File, "%i) %s [%x]\n", (j-1), pj->getCurrentName().c_str(), pj->getSerial());
 		}
 	}
 	fprintf(File,"Total Users Online: %d\n", j);
@@ -564,7 +564,7 @@ static void exec_wholog(char *dummy)
 		if( pj ) //Keeps NPC's from appearing on the list
 		{
 			j++;
-			fprintf(File, "%i) %s [%x ]\n", (j-1), pj->getCurrentNameC(), pj->getSerial());
+			fprintf(File, "%i) %s [%x ]\n", (j-1), pj->getCurrentName().c_str(), pj->getSerial());
 		}
 	}
 	fprintf(File,"Total Users Online: %d\n", j);

@@ -1699,7 +1699,7 @@ void cChar::morph ( short bodyid, short skincolor, short hairstyle, short hairco
 		setOldId( getId() );
 		setOldColor( getColor() );
 
-		setRealName( getCurrentNameC() );
+		setRealName( getCurrentName().c_str() );
 		if( pbeard )
 		{
 			oldbeardstyle = pbeard->getId();
@@ -1964,7 +1964,7 @@ void cChar::Kill()
 
 		if( !pKiller->npc )
 		{
-			strncpy(murderername, pKiller->getCurrentNameC(), 48);
+			strncpy(murderername, pKiller->getCurrentName().c_str(), 48);
 
 			if( pKiller->party != INVALID )
 			{
@@ -1999,7 +1999,7 @@ void cChar::Kill()
 				if (SrvParms->pvp_log)
 				{
 						LogFile pvplog("PvP.log");
-						pvplog.Write("%s was killed by %s!\n",getCurrentNameC(), pKiller->getCurrentNameC());
+						pvplog.Write("%s was killed by %s!\n",getCurrentName().c_str(), pKiller->getCurrentName().c_str());
 				}
 			}   // was innocent
 
@@ -2052,7 +2052,7 @@ void cChar::Kill()
 
 		if (!pk->npc)
 		{
-			strncpy(murderername, pk->getCurrentNameC(), 48);
+			strncpy(murderername, pk->getCurrentName().c_str(), 48);
 
 			NxwCharWrapper party;
 			party.fillPartyFriend( pk, VISRANGE, true );
@@ -2085,7 +2085,7 @@ void cChar::Kill()
 				if (SrvParms->pvp_log)
 				{
 						LogFile pvplog("PvP.log");
-						pvplog.Write("%s was killed by %s!\n",getCurrentNameC(), pk->getCurrentNameC());
+						pvplog.Write("%s was killed by %s!\n",getCurrentName().c_str(), pk->getCurrentName().c_str());
 				}
 			}   // was innocent
 
@@ -2159,7 +2159,7 @@ void cChar::Kill()
 	}
 
 	char szCorpseName[128];
-	sprintf(szCorpseName, "corpse of %s", getCurrentNameC());
+	sprintf(szCorpseName, "corpse of %s", getCurrentName().c_str());
 
 	pItem pCorpse = cItem::addByID( ITEMID_CORPSEBASE, 1, szCorpseName, getOldColor(), getPosition());
 	if ( !pCorpse )
@@ -2189,7 +2189,7 @@ void cChar::Kill()
 
 	pCorpse->carve=carve;               //store carve section - AntiChrist
 
-	pCorpse->setSecondaryName(getCurrentNameC());
+	pCorpse->setSecondaryName(getCurrentName().c_str());
 
 	pCorpse->type = ITYPE_CONTAINER;
 
@@ -2323,10 +2323,10 @@ void cChar::checkEquipement()
 			continue;
 		if (((pi->st > getStrength()) || !pi->checkItemUsability(this, ITEM_USE_CHECKEQUIP)) && !pi->isNewbie())//if strength required > character's strength, and the item is not newbie
 		{
-			if( strncmp(pi->getCurrentNameC(), "#", 1) )
+			if( strncmp(pi->getCurrentName().c_str(), "#", 1) )
 				pi->getName(temp2);
 			else
-				strcpy(temp2,pi->getCurrentNameC());
+				strcpy(temp2,pi->getCurrentName().c_str());
 
 			if( pi->st > getStrength()) sysmsg(TRANSLATE("You are not strong enough to keep %s equipped!"), temp2);
 			playSFX( itemsfx(pi->getId()) );
@@ -2393,11 +2393,11 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 
 	if ( !npc && !IsOnline() && strcmp(::title[8].other,"") )
 	{
-		sprintf( temp, "%s (%s)",::title[8].other, getCurrentNameC());
+		sprintf( temp, "%s (%s)",::title[8].other, getCurrentName().c_str());
 		strcat( temp1, temp );
 	}
 	else
-		strcat( temp1, getCurrentNameC() );
+		strcat( temp1, getCurrentName().c_str() );
 
 	if ( showToWho->CanSeeSerials() || showSerials )
 	{
@@ -2698,16 +2698,16 @@ void cChar::checkPoisoning()
 						switch ( poisoned )
 						{
 						case POISON_WEAK:
-							emoteall( TRANSLATE("* %s looks a bit nauseous *"), 1, getCurrentNameC() );
+							emoteall( TRANSLATE("* %s looks a bit nauseous *"), 1, getCurrentName().c_str() );
 							break;
 						case POISON_NORMAL:
-							emoteall( TRANSLATE("* %s looks disoriented and nauseous! *"), 1, getCurrentNameC());
+							emoteall( TRANSLATE("* %s looks disoriented and nauseous! *"), 1, getCurrentName().c_str());
 							break;
 						case POISON_GREATER:
-							emoteall( TRANSLATE("* %s is in severe pain! *"), 1, getCurrentNameC());
+							emoteall( TRANSLATE("* %s is in severe pain! *"), 1, getCurrentName().c_str());
 							break;
 						case POISON_DEADLY:
-							emoteall( TRANSLATE("* %s looks extremely weak and is wrecked in pain! *"), 1, getCurrentNameC());
+							emoteall( TRANSLATE("* %s looks extremely weak and is wrecked in pain! *"), 1, getCurrentName().c_str());
 							break;
 						}
 						poisontxt = uiCurrentTime + ( 10 * MY_CLOCKS_PER_SEC );

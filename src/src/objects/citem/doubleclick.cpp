@@ -161,7 +161,7 @@ void cItem::singleClick(pClient client )
 
 	if (type == ITYPE_WAND) // Fraz
 	{
-		if (!(strcmp(getSecondaryNameC(), getCurrentNameC())))
+		if (!(strcmp(getSecondaryNameC(), getCurrentName().c_str())))
 		{
 			sprintf( temp, TRANSLATE("%s %i charge"), temp, morez);
 			if (morez != 1)
@@ -170,7 +170,7 @@ void cItem::singleClick(pClient client )
 	}
 	else if (type == ITYPE_ITEMID_WAND || type == ITYPE_FIREWORKS_WAND)
 	{
-			if (!(strcmp(getSecondaryNameC(), getCurrentNameC())))
+			if (!(strcmp(getSecondaryNameC(), getCurrentName().c_str())))
 			{
 				sprintf( temp, TRANSLATE("%s %i charge"), temp, morex);
 				if (morex != 1)
@@ -804,7 +804,7 @@ void cItem::doubleClicked(pClient client)
 				return;
 			}
 			else
-				WarnOut("Unhandled guild item type named: %s with ID of: %X\n", getCurrentNameC(), getId());
+				WarnOut("Unhandled guild item type named: %s with ID of: %X\n", getCurrentName().c_str(), getId());
 			return;
 	case ITYPE_PLAYER_VENDOR_DEED:			// PlayerVendors deed
 			{
@@ -828,7 +828,7 @@ void cItem::doubleClicked(pClient client)
 			Delete();
 			vendor->teleport();
 			char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-			sprintf( temp, TRANSLATE("Hello sir! My name is %s and i will be working for you."), vendor->getCurrentNameC());
+			sprintf( temp, TRANSLATE("Hello sir! My name is %s and i will be working for you."), vendor->getCurrentName().c_str());
 			vendor->talk(client, temp, 0);
 
 			return;
@@ -1451,7 +1451,7 @@ bool cItem::ToolWearOut(pClient client)
 	if( chance(5) ) { // has item been destroyed ??
 		hp--;
 		if ( hp <= 0 ) {
-			pc->sysmsg("Your %s has been destroyed", getCurrentNameC());
+			pc->sysmsg("Your %s has been destroyed", getCurrentName().c_str());
 			Delete();
 			return true;
 		}

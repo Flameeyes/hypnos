@@ -91,7 +91,7 @@ void command_bounty( pClient client )
 			{
 				if( pc_murderer )
 					pc->sysmsg(TRANSLATE("You have placed a bounty of %d gold coins on %s."),
-						nAmount, pc_murderer->getCurrentNameC() );
+						nAmount, pc_murderer->getCurrentName().c_str() );
 			} else
 				pc->sysmsg(TRANSLATE("You were not able to place a bounty (System Error)") );
 
@@ -736,7 +736,7 @@ void target_setpriv( pClient client, P_TARGET t )
 	if( !pc_t ) return;
 
 	if (SrvParms->gm_log)   //Logging
-		WriteGMLog(curr, "%s as given %s Priv [%x][%x]\n", pc->getCurrentNameC(), pc_t->getCurrentNameC(), t->buffer[0], t->buffer[1] );
+		WriteGMLog(curr, "%s as given %s Priv [%x][%x]\n", pc->getCurrentName().c_str(), pc_t->getCurrentName().c_str(), t->buffer[0], t->buffer[1] );
 
     pc->SetPriv( t->buffer[0] );
     pc->SetPriv2( t->buffer[1] );
@@ -1455,7 +1455,7 @@ void command_respawn( pClient client )
 	pChar pc = client->currChar();
 
 	sysbroadcast(TRANSLATE("World is now respawning, expect some lag!"));
-	LogMessage("Respawn command called by %s.\n", pc->getCurrentNameC());
+	LogMessage("Respawn command called by %s.\n", pc->getCurrentName().c_str());
 	//Respawn->Start();
 }
 
@@ -1470,7 +1470,7 @@ void command_regspawnmax( pClient client )
 
 	if (tnum==2)
 	{
-		LogMessage("MAX Region Respawn command called by %s.\n", pc->getCurrentNameC());//AntiChrist
+		LogMessage("MAX Region Respawn command called by %s.\n", pc->getCurrentName().c_str());//AntiChrist
 		Commands::RegSpawnMax(s, strtonum(1));
 	}
 }
@@ -1487,7 +1487,7 @@ void command_regspawn( pClient client )
 
 	if (tnum==3)
 	{
-		LogMessage("Specific Region Respawn command called by %s.\n", pc->getCurrentNameC());
+		LogMessage("Specific Region Respawn command called by %s.\n", pc->getCurrentName().c_str());
 		Commands::RegSpawnNum(s, strtonum(1), strtonum(2));
 	}
 }
@@ -1496,7 +1496,7 @@ void command_regedit( pClient client ) // O_o" to rewrite/trash ?
 {
 	pChar pc = client->currChar();
 
-	LogMessage("Region edit command called by %s.\n", pc->getCurrentNameC());
+	LogMessage("Region edit command called by %s.\n", pc->getCurrentName().c_str());
 	//newAmxEvent("gui_rgnList")->Call( pc->getSerial(), 0 );
 }
 
@@ -1648,7 +1648,7 @@ void command_gy( pClient client )
 	font = (buffer[s][6]<<8)|(pc->fonttype%256);
 
 	uint8_t name[30]={ 0x00, };
-	strcpy((char *)name, pc->getCurrentNameC());
+	strcpy((char *)name, pc->getCurrentName().c_str());
 
 #error ///FLAME!
 	NxwSocketWrapper sw;
@@ -1689,7 +1689,7 @@ void command_yell( pClient client )
 	font = (buffer[s][6]<<8)|(pc->fonttype%256);
 
 	uint8_t name[30]={ 0x00, };
-	strcpy((char *)name, pc->getCurrentNameC());
+	strcpy((char *)name, pc->getCurrentName().c_str());
 
 #error ///FLAME! (come sopra -.-')
 	NxwSocketWrapper sw;
@@ -1855,7 +1855,7 @@ void command_who( pClient client )
 			pChar pc_i=ps_i->currChar();
 			if(pc_i) {
 				j++;
-				sprintf(s_szCmdTableTemp, "%i) %s [%x]", (j-1), pc_i->getCurrentNameC(), pc_i->getSerial());
+				sprintf(s_szCmdTableTemp, "%i) %s [%x]", (j-1), pc_i->getCurrentName().c_str(), pc_i->getSerial());
 				pc->sysmsg(s_szCmdTableTemp);
 			}
 		}
@@ -1886,7 +1886,7 @@ void command_gms( pClient client )
 			pChar pc_i=ps_i->currChar();
 			if(pc_i && pc_i->IsGMorCounselor() ) {
 				j++;
-				pc->sysmsg("%s", pc_i->getCurrentNameC());
+				pc->sysmsg("%s", pc_i->getCurrentName().c_str());
 			}
 		}
 	}
@@ -2526,7 +2526,7 @@ void target_makegm( pClient client, P_TARGET t )
 	if ( ! curr ) return;
 
     if (SrvParms->gm_log)
-		WriteGMLog(curr, "%s [ serial %i ] as made %s [ serial %i ] a GM.\n", curr->getCurrentNameC(), curr->getSerial(), pc->getCurrentNameC(), pc->getSerial32() );
+		WriteGMLog(curr, "%s [ serial %i ] as made %s [ serial %i ] a GM.\n", curr->getCurrentName().c_str(), curr->getSerial(), pc->getCurrentName().c_str(), pc->getSerial32() );
 
     pc->unmountHorse();
     pc->gmrestrict = 0;
@@ -2555,7 +2555,7 @@ void target_makegm( pClient client, P_TARGET t )
     pc->dx  = 100;
     pc->dx2 = 100;
 
-	pc->setCurrentName( "GM %s", pc->getCurrentNameC() );
+	pc->setCurrentName( "GM %s", pc->getCurrentName().c_str() );
 
 	pItem pack=pc->getBackpack();
 
@@ -2592,7 +2592,7 @@ void target_makecns( pClient client, P_TARGET t )
 	if ( ! curr ) return;
 
     if (SrvParms->gm_log)
-		WriteGMLog(curr, "%s [ serial %i ] as made %s [ serial %i ] a Counselor.\n", curr->getCurrentNameC(), curr->getSerial(), pc->getCurrentNameC(), pc->getSerial32() );
+		WriteGMLog(curr, "%s [ serial %i ] as made %s [ serial %i ] a Counselor.\n", curr->getCurrentName().c_str(), curr->getSerial(), pc->getCurrentName().c_str(), pc->getSerial32() );
 
     pc->setId(BODY_GMSTAFF);
     pc->setOldId(BODY_GMSTAFF);
@@ -2601,7 +2601,7 @@ void target_makecns( pClient client, P_TARGET t )
     pc->SetPriv(0xB6);
     pc->SetPriv2(0x008D);
     pc->gmrestrict = 0;
-	pc->setCurrentName("Counselor %s", pc->getCurrentNameC());
+	pc->setCurrentName("Counselor %s", pc->getCurrentName().c_str());
 
 	pItem pack=pc->getBackpack();
 

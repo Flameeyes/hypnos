@@ -210,7 +210,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 			break;
 		default:
 			ErrOut("Switch fallout. walking.cpp, walking()\n"); //Morrolan
-			ErrOut("\tcaused by chr %s. dir: %i dir&0x0f: %i dir-passed : %i dp&0x0f : %i\n", pc->getCurrentNameC(), pc->dir, pc->dir&0x0f, dir, dir&0x0f);
+			ErrOut("\tcaused by chr %s. dir: %i dir&0x0f: %i dir-passed : %i dp&0x0f : %i\n", pc->getCurrentName().c_str(), pc->dir, pc->dir&0x0f, dir, dir&0x0f);
 			if (pc->getSocket() != INVALID) deny(pc->getSocket(), pc, sequence); // lb, crashfix
 			return false;
 	}
@@ -670,7 +670,7 @@ void handleCharsAtNewPos( pChar pc )
 		if ( pc_curr->IsHidden() )
 			pc->sysmsg( TRANSLATE("You shoved something invisible aside.") );
 		else
-			pc->sysmsg( TRANSLATE("Being perfectly rested, you shove %s out of the way."), pc_curr->getCurrentNameC() );
+			pc->sysmsg( TRANSLATE("Being perfectly rested, you shove %s out of the way."), pc_curr->getCurrentName().c_str() );
 
 		pc->stm = qmax( pc->stm-ServerScp::g_nShoveStmDamage, 0 );
 		pc->updateStats( STAT_STAMINA );

@@ -40,7 +40,7 @@ void BountyAskVictim( int nVictimSerial, int nMurdererSerial )
 
   // Indicate that the victim is being asked if they want to place a bounty
   sprintf((char*)temp, "BountyAskVictim():  %s is attempting to place a bounty of %i on %s\n",
-          pcc_nVictimIdx->getCurrentNameC(), nAmount, pcc_nMurderIdx->getCurrentNameC() );
+          pcc_nVictimIdx->getCurrentName().c_str(), nAmount, pcc_nMurderIdx->getCurrentName().c_str() );
   LogMessage((char*)temp);
 
   // If the amount of the bounty is larger than zero, create a bounty posting
@@ -49,18 +49,18 @@ void BountyAskVictim( int nVictimSerial, int nMurdererSerial )
      if( BountyCreate( pcc_nMurderIdx, nAmount ) )
 	 {
          sprintf((char*)temp, "BountyAskVictim():  %s has placed a bounty of %i on %s\n",
-                pcc_nVictimIdx->getCurrentNameC(),
+                pcc_nVictimIdx->getCurrentName().c_str(),
                 nAmount,
-                pcc_nMurderIdx->getCurrentNameC() );
+                pcc_nMurderIdx->getCurrentName().c_str() );
 		 LogMessage((char*)temp);
 	 }
 
      else
 	 {
        sprintf((char*)temp, "BountyAskVictim():  %s FAILED to place a bounty of %i on %s\n",
-               pcc_nVictimIdx->getCurrentNameC(),
+               pcc_nVictimIdx->getCurrentName().c_str(),
                nAmount,
-               pcc_nMurderIdx->getCurrentNameC() );
+               pcc_nMurderIdx->getCurrentName().c_str() );
 	   LogMessage((char*)temp);
 	 }
   }
@@ -115,7 +115,7 @@ bool BountyCreate( pChar pc, int nRewardAmount )
   // Failed to post bounty
   LogWarning("BountyCreate():  FAILED to place a bounty of %i on %s (PostSerial=%x)\n",
           nRewardAmount,
-          pc->getCurrentNameC(),
+          pc->getCurrentName().c_str(),
           nPostSerial );
 
   // Post must have failed

@@ -682,7 +682,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
                         	       	// Item Name
 			case 'i':
 				{
-                                	script1.replace(flagpos, 2, item->getCurrentNameC());
+                                	script1.replace(flagpos, 2, item->getCurrentName().c_str());
 					break;
 				}
                                 	// Item region (actual)
@@ -694,7 +694,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 					// NPC Name
 			case 'n':
 				{
-                                	script1.replace(flagpos, 2, npc->getCurrentNameC());
+                                	script1.replace(flagpos, 2, npc->getCurrentName().c_str());
 					break;
 				}
 					// LOCATION in X, Y coords

@@ -816,7 +816,7 @@ void cItem::Refresh()
 
 	if( cont == this )
 	{
-		ErrOut("item %s [serial: %i] has dangerous container value, autocorrecting...\n", getCurrentNameC(), getSerial());
+		ErrOut("item %s [serial: %i] has dangerous container value, autocorrecting...\n", getCurrentName().c_str(), getSerial());
 		setContainer(NULL);
 	}
 

@@ -312,7 +312,7 @@ void sysmessage(NXWSOCKET  s, const char *txt, ...) // System message (In lower 
 		if( pc ) {
 			NXWCLIENT gm = pc->getClient();
 			if( gm!=NULL )
-				gm->sysmsg( "spy %s : %s", pc->getCurrentNameC(), msg );
+				gm->sysmsg( "spy %s : %s", pc->getCurrentName().c_str(), msg );
 			else
 				clientInfo[s]->spyTo=INVALID;
 		}
@@ -621,7 +621,7 @@ void senditem(NXWSOCKET  s, pItem pi) // Send items (on ground)
 		ShortToCharPtr(len, itmput +1);
 		Xsend(s, itmput, len);
 //AoS/		Network->FlushBuffer(s);
-		//pc->sysmsg( "sent item %s %i", pi->getCurrentNameC(), pi->magic );
+		//pc->sysmsg( "sent item %s %i", pi->getCurrentName().c_str(), pi->magic );
 
 		if (pi->IsCorpse())
 		{
@@ -792,7 +792,7 @@ void chardel (NXWSOCKET  s) // Deletion of character
 				if(! pc_a )
 					continue;
 
-				strcpy((char *)delete_resend_char_2, pc_a->getCurrentNameC());
+				strcpy((char *)delete_resend_char_2, pc_a->getCurrentName().c_str());
 				Xsend(s, delete_resend_char_2, 60);
 
 				i++;
@@ -1023,7 +1023,7 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 			font = (buffer[s][6]<<8)|(pc->fonttype%256);	// use font ("not only") from  client
 
 			uint8_t name[30]={ 0x00, };
-			strcpy((char *)name, pc->getCurrentNameC());
+			strcpy((char *)name, pc->getCurrentName().c_str());
 
 			NxwSocketWrapper sw;
 			sw.fillOnline();
@@ -1051,7 +1051,7 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 
 			uint32_t lang =  LongFromCharPtr(buffer[s] +9);
 			uint8_t name[30]={ 0x00, };
-			strcpy((char *)name, pc->getCurrentNameC());
+			strcpy((char *)name, pc->getCurrentName().c_str());
 
 			NxwSocketWrapper sw;
 			sw.fillOnline();
@@ -1085,7 +1085,7 @@ void itemtalk(pItem pi, char *txt)
 
 		uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
 		uint8_t name[30]={ 0x00, };
-		strcpy((char *)name, pi->getCurrentNameC());
+		strcpy((char *)name, pi->getCurrentName().c_str());
 
 		SendUnicodeSpeechMessagePkt(s, pi->getSerial(), pi->getId(), 0, 0x0481, 0x0003, lang, name, unicodetext,  ucl);
 
@@ -1669,7 +1669,7 @@ void impowncreate(NXWSOCKET s, pChar pc, int z) //socket, player to send
 		return;
 
 	SendDrawObjectPkt(s, pc, z);
-	//pc_currchar->sysmsg( "sended %s", pc->getCurrentNameC() );
+	//pc_currchar->sysmsg( "sended %s", pc->getCurrentName().c_str() );
 }
 
 void sendshopinfo(int s, int c, pItem pi)
@@ -1798,8 +1798,8 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 				pItem pj1 = s_pack.getItem();
 				if ( pj1 ) // LB crashfix
 				{
-					sprintf(ciname,"'%s'",pj1->getCurrentNameC()); // Added by Magius(CHE)
-					sprintf(cinam2,"'%s'",pj->getCurrentNameC()); // Added by Magius(CHE)
+					sprintf(ciname,"'%s'",pj1->getCurrentName().c_str()); // Added by Magius(CHE)
+					sprintf(cinam2,"'%s'",pj->getCurrentName().c_str()); // Added by Magius(CHE)
 					strupr(ciname); // Added by Magius(CHE)
 					strupr(cinam2); // Added by Magius(CHE)
 
@@ -1869,7 +1869,7 @@ void tellmessage(int i, int s, char *txt)
 	uint8_t unicodetext[512];
  	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
-	sprintf(temp, TRANSLATE("GM tells %s: %s"), pc->getCurrentNameC(), txt);
+	sprintf(temp, TRANSLATE("GM tells %s: %s"), pc->getCurrentName().c_str(), txt);
 
 	uint16_t ucl = ( strlen ( temp ) * 2 ) + 2 ;
 	char2wchar(temp);

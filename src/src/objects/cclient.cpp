@@ -830,10 +830,10 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 				return;
 			}
 
-			if( strncmp(pi->getCurrentNameC(), "#", 1) )
+			if( strncmp(pi->getCurrentName().c_str(), "#", 1) )
 				pi->getName(temp2);
 			else
-				strcpy(temp2,pi->getCurrentNameC());
+				strcpy(temp2,pi->getCurrentName().c_str());
 
 			NxwItemWrapper sii;
 			sii.fillItemsInContainer( cont, false );
@@ -843,11 +843,11 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 
 					if ( pi_ci )
 					{
-						if( strncmp(pi_ci->getCurrentNameC(), "#", 1) )
+						if( strncmp(pi_ci->getCurrentName().c_str(), "#", 1) )
 
 							pi_ci->getName(temp);
 						else
-							strcpy(temp,pi_ci->getCurrentNameC());
+							strcpy(temp,pi_ci->getCurrentName().c_str());
 
 						if(!(strcmp(temp,temp2)) || !(strcmp(temp,"All-Spell Scroll")))
 						{
@@ -1265,7 +1265,7 @@ bool cClient::droppedOnPet(pItem pi, Location &loc, pItem cont)
 		else itmname = pi->getCurrentName();
 
 		pet->emotecolor = 0x0026;
-		pet->emoteall(TRANSLATE("* You see %s eating %s *"), 1, pet->getCurrentNameC(), itmname.c_str() );
+		pet->emoteall(TRANSLATE("* You see %s eating %s *"), 1, pet->getCurrentName().c_str(), itmname.c_str() );
 		pet->hunger++;
 	} else
 	{
@@ -1302,7 +1302,7 @@ bool cClient::droppedOnGuard(pItem pi, Location &loc, pItem cont)
 	VALIDATEPCR(pc_t,false);
 	// Search for the key word "the head of"
         //! \todo change check for text to check for id
-	if( strstr( pi->getCurrentNameC(), "the head of" ) ) //!!! Wrong! it must check the ItemID, not the name :(
+	if( strstr( pi->getCurrentName().c_str(), "the head of" ) ) //!!! Wrong! it must check the ItemID, not the name :(
 	{
 		// This is a head of someone, see if the owner has a bounty on them
 		pChar own=pointers::findCharBySerial(pi->getOwnerSerial32());
@@ -1320,7 +1320,7 @@ bool cClient::droppedOnGuard(pItem pi, Location &loc, pItem cont)
 
 				// Now thank them for their hard work
 				sprintf( temp, TRANSLATE("Excellent work! You have brought us the head of %s. Here is your reward of %d gold coins."),
-					own->getCurrentNameC(), own->questBountyReward );
+					own->getCurrentName().c_str(), own->questBountyReward );
 				pc_t->talk( this, temp, 0);
 
 				// Delete the Bounty from the bulletin board
@@ -1365,7 +1365,7 @@ bool cClient::droppedOnBeggar(pItem pi, Location &loc, pItem cont)
 
 	if(pi->getId()!=ITEMID_GOLD)
 	{
-		sprintf(temp,TRANSLATE("Sorry %s i can only use gold"), pc->getCurrentNameC());
+		sprintf(temp,TRANSLATE("Sorry %s i can only use gold"), pc->getCurrentName().c_str());
 		pc_t->talk(this,temp,0);
                 //! \todo the sendpacket stuff here
 		Sndbounce5(s);
@@ -1378,7 +1378,7 @@ bool cClient::droppedOnBeggar(pItem pi, Location &loc, pItem cont)
 	}
 	else
 	{
-		sprintf(temp,TRANSLATE("Thank you %s for the %i gold!"), pc->getCurrentNameC(), pi->amount);
+		sprintf(temp,TRANSLATE("Thank you %s for the %i gold!"), pc->getCurrentName().c_str(), pi->amount);
 		pc_t->talk(this,temp,0);
 		if(pi->amount<=100)
 		{
@@ -1929,19 +1929,19 @@ void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 		{
 			if (pc->IsGM())
 			{
-				sprintf(temp, TRANSLATE("Here you are, %s. Someone as special as thee will receive my wares for free of course."), pc->getCurrentNameC());
+				sprintf(temp, TRANSLATE("Here you are, %s. Someone as special as thee will receive my wares for free of course."), pc->getCurrentName().c_str());
 			}
 			else
 			{
 				if(useBank)
 				{
 					sprintf(temp, TRANSLATE("Here you are, %s. %d gold coin%s will be deducted from your bank account.  I thank thee for thy business."),
-					pc->getCurrentNameC(), goldtotal, (goldtotal==1) ? "" : "s");
+					pc->getCurrentName().c_str(), goldtotal, (goldtotal==1) ? "" : "s");
 				}
 			    else
 				{
 				    sprintf(temp, TRANSLATE("Here you are, %s.  That will be %d gold coin%s.  I thank thee for thy business."),
-					pc->getCurrentNameC(), goldtotal, (goldtotal==1) ? "" : "s");
+					pc->getCurrentName().c_str(), goldtotal, (goldtotal==1) ? "" : "s");
 				}
 			    pc->playSFX( goldsfx(goldtotal) );
 			}
@@ -2063,7 +2063,7 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 	if (maxsell>SrvParms->sellmaxitem)
 	{
 		char tmpmsg[256];
-		sprintf(tmpmsg,TRANSLATE("Sorry %s but i can buy only %i items at time!"), currChar()->getCurrentNameC(), SrvParms->sellmaxitem);
+		sprintf(tmpmsg,TRANSLATE("Sorry %s but i can buy only %i items at time!"), currChar()->getCurrentName().c_str(), SrvParms->sellmaxitem);
 		npc->talkAll(tmpmsg,0);
 		return;
 	}

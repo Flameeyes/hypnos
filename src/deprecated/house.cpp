@@ -261,7 +261,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 
 		//Boats ->
 		if((id % 256)>=18)
-			sprintf(temp,"%s's house",pc->getCurrentNameC());//This will make the little deed item you see when you have showhs on say the person's name, thought it might be helpful for GMs.
+			sprintf(temp,"%s's house",pc->getCurrentName().c_str());//This will make the little deed item you see when you have showhs on say the person's name, thought it might be helpful for GMs.
 		else
 			strcpy(temp, "a mast");
 		if(norealmulti)
@@ -326,20 +326,20 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 		//Altered key naming to include pc's name. Integrated backpack and bankbox handling (Sparhawk)
 		if ((id%256 >=0x70) && (id%256 <=0x73))
 		{
-			sprintf(temp,"%s's tent key",pc->getCurrentNameC());
+			sprintf(temp,"%s's tent key",pc->getCurrentName().c_str());
 			pKey = item::CreateFromScript( "$item_iron_key", pBackPack ); //iron key for tents
 			pKey2= item::CreateFromScript( "$item_iron_key", pBackPack );
 		}
 		else if(id%256 <=0x18)
 		{
-			sprintf(temp,"%s's ship key",pc->getCurrentNameC());
+			sprintf(temp,"%s's ship key",pc->getCurrentName().c_str());
 			pKey= item::CreateFromScript( "$item_bronze_key", pBackPack ); //Boats -Rusty Iron Key
 			pKey2= item::CreateFromScript( "$item_bronze_key", pBackPack );
 
 		}
 		else
 		{
-			sprintf(temp,"%s's house key",pc->getCurrentNameC());
+			sprintf(temp,"%s's house key",pc->getCurrentName().c_str());
 			pKey= item::CreateFromScript( "$item_gold_key", pBackPack ); //gold key for everything else;
 			pKey2= item::CreateFromScript( "$item_gold_key", pBackPack );
 		}
@@ -422,11 +422,11 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 							// SPARHAWK 2001-01-28 Added House sign naming
 							if (pi_l->IsSign())
 								if ((id%256 >=0x70) && (id%256<=0x73))
-									pi_l->setCurrentName("%s's tent",pc->getCurrentNameC());
+									pi_l->setCurrentName("%s's tent",pc->getCurrentName().c_str());
 								else if (id%256<=0x18)
-									pi_l->setCurrentName("%s's ship",pc->getCurrentNameC());
+									pi_l->setCurrentName("%s's ship",pc->getCurrentName().c_str());
 								else
-									pi_l->setCurrentName("%s's house",pc->getCurrentNameC());
+									pi_l->setCurrentName("%s's house",pc->getCurrentName().c_str());
 
 							}
 						}
@@ -529,9 +529,9 @@ void deedhouse(NXWSOCKET s, pItem pi)
 		pItem pi_ii=item::CreateFromScript( pi->morex, pc->getBackpack() ); // need to make before delete
 		if ( ! pi_ii ) return;
 
-		sysmessage( s, TRANSLATE("Demolishing House %s"), pi->getCurrentNameC());
+		sysmessage( s, TRANSLATE("Demolishing House %s"), pi->getCurrentName().c_str());
 		pi->Delete();
-		sysmessage(s, TRANSLATE("Converted into a %s."), pi_ii->getCurrentNameC());
+		sysmessage(s, TRANSLATE("Converted into a %s."), pi_ii->getCurrentName().c_str());
 		// door/sign delete
 
 		NxwCharWrapper sc;
@@ -547,7 +547,7 @@ void deedhouse(NXWSOCKET s, pItem pi)
 					if( p_index->npcaitype == NPCAI_PLAYERVENDOR )
 					{
 						char *temp;
-						asprintf( &temp, TRANSLATE("A vendor deed for %s"), p_index->getCurrentNameC() );
+						asprintf( &temp, TRANSLATE("A vendor deed for %s"), p_index->getCurrentName().c_str() );
 						pItem pDeed = item::CreateFromScript( "$item_employment_deed", pc->getBackpack() );
 						if ( ! pDeed ) return;
 						free(temp);
@@ -674,7 +674,7 @@ int check_house_decay()
 			if (pi->time_unused>SrvParms->housedecay_secs) // not used longer than max_unused time ? delete the house
 			{
 				decayed_houses++;
-				sprintf(temp,"%s decayed! not refreshed for > %i seconds!\n",pi->getCurrentNameC(),SrvParms->housedecay_secs);
+				sprintf(temp,"%s decayed! not refreshed for > %i seconds!\n",pi->getCurrentName().c_str(),SrvParms->housedecay_secs);
 				LogMessage(temp);
 				killhouse(i);
 			}
@@ -1029,9 +1029,9 @@ void target_houseOwner( NXWCLIENT ps, P_TARGET t )
 	pi3->more4= pHouse->getSerial().ser4;
 	pi3->type=7;
 
-	sysmessage(s, "You have transferred your house to %s.", pc->getCurrentNameC());
+	sysmessage(s, "You have transferred your house to %s.", pc->getCurrentName().c_str());
 	char temp[520];
-	sprintf(temp, "%s has transferred a house to %s.", curr->getCurrentNameC(), pc->getCurrentNameC());
+	sprintf(temp, "%s has transferred a house to %s.", curr->getCurrentName().c_str(), pc->getCurrentName().c_str());
 
 	NxwSocketWrapper sw;
 	sw.fillOnline( pc, false );
@@ -1088,7 +1088,7 @@ void target_houseBan( NXWCLIENT ps, P_TARGET t )
 		int r=add_hlist(DEREF_pChar(pc), DEREF_pItem(pi), H_BAN);
 		if(r==1)
 		{
-			sysmessage(s, "%s has been banned from this house.", pc->getCurrentNameC());
+			sysmessage(s, "%s has been banned from this house.", pc->getCurrentName().c_str());
 		}
 		else if(r==2)
 		{
@@ -1121,7 +1121,7 @@ void target_houseFriend( NXWCLIENT ps, P_TARGET t )
 		int r=add_hlist(DEREF_pChar(Friend), DEREF_pItem(pi), H_FRIEND);
 		if(r==1)
 		{
-			sysmessage(s, "%s has been made a friend of the house.", Friend->getCurrentNameC());
+			sysmessage(s, "%s has been made a friend of the house.", Friend->getCurrentName().c_str());
 		}
 		else if(r==2)
 		{
@@ -1143,7 +1143,7 @@ void target_houseUnlist( NXWCLIENT ps, P_TARGET t )
         int r=del_hlist(DEREF_pChar(pc), DEREF_pItem(pi));
         if(r>0)
         {
-            sysmessage(s, TRANSLATE("%s has been removed from the house registry."), pc->getCurrentNameC());
+            sysmessage(s, TRANSLATE("%s has been removed from the house registry."), pc->getCurrentName().c_str());
         }
         else
             sysmessage(s, TRANSLATE("That player is not on the house registry."));

@@ -292,7 +292,7 @@ static bool DoOnePotion(NXWSOCKET s, uint16_t regid, uint32_t regamount, char* r
     if (pc->getAmount(regid) >= regamount)
     {
         success=true;
-        sprintf(temp, TRANSLATE("*%s starts grinding some %s in the mortar.*"), pc->getCurrentNameC(), regname);
+        sprintf(temp, TRANSLATE("*%s starts grinding some %s in the mortar.*"), pc->getCurrentName().c_str(), regname);
         pc->emoteall( temp,1); // LB, the 1 stops stupid alchemy spam
 	pc->delItems(regid, regamount);
     }
@@ -409,7 +409,7 @@ void Skills::CreatePotion(CHARACTER s, char type, char sub, int mortar)
 
 	if (success==0 && !pc->IsGM()) // AC bugfix
 	{
-		pc->emoteall(TRANSLATE("*%s tosses the failed mixture from the mortar, unable to create a potion from it.*"),0, pc->getCurrentNameC());
+		pc->emoteall(TRANSLATE("*%s tosses the failed mixture from the mortar, unable to create a potion from it.*"),0, pc->getCurrentName().c_str());
 		return;
 	}
 
@@ -429,7 +429,7 @@ void Skills::CreatePotion(CHARACTER s, char type, char sub, int mortar)
 	else
 	{
 		pc->playSFX(0x0240); // Liquid sfx
-		pc->emoteall(TRANSLATE("*%s pours the completed potion into a bottle.*"), 0, pc->getCurrentNameC());
+		pc->emoteall(TRANSLATE("*%s pours the completed potion into a bottle.*"), 0, pc->getCurrentName().c_str());
 		pc->delItems(0x0F0E);
 		Skills::PotionToBottle(pc, pi_mortar);
 	}
@@ -463,7 +463,7 @@ void Skills::target_bottle( NXWCLIENT ps, P_TARGET t )
 
 		if (pi_mortar->type==17)
 		{
-			pc->emoteall(TRANSLATE("*%s pours the completed potion into a bottle.*"), 0, pc->getCurrentNameC());
+			pc->emoteall(TRANSLATE("*%s pours the completed potion into a bottle.*"), 0, pc->getCurrentName().c_str());
 			Skills::PotionToBottle(pc, pi_mortar);
 		}
 	}
@@ -1599,7 +1599,7 @@ void Skills::Persecute (NXWSOCKET  s)
 		pc_targ->sysmsg(TRANSLATE("A damned soul is disturbing your mind!"));
             SetSkillDelay(DEREF_pChar(pc));
 
-            sprintf(temp, TRANSLATE("%s is persecuted by a ghost!!"), pc_targ->getCurrentNameC());
+            sprintf(temp, TRANSLATE("%s is persecuted by a ghost!!"), pc_targ->getCurrentName().c_str());
 
             // Dupois pointed out the for loop was changing i which would drive stuff nuts later
 
@@ -1760,8 +1760,8 @@ int Skills::GetAntiMagicalArmorDefence(CHARACTER p)
             pItem pi=si.getItem();
 			if( pi && pi->layer>1 && pi->layer < 25)
             {
-                if (!(strstr(pi->getCurrentNameC(), "leather") || strstr(pi->getCurrentNameC(), "magic") ||
-                    strstr(pi->getCurrentNameC(), "boot")|| strstr(pi->getCurrentNameC(), "mask")))
+                if (!(strstr(pi->getCurrentName().c_str(), "leather") || strstr(pi->getCurrentName().c_str(), "magic") ||
+                    strstr(pi->getCurrentName().c_str(), "boot")|| strstr(pi->getCurrentName().c_str(), "mask")))
                     ar += pi->def;
             }
         }

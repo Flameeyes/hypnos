@@ -35,7 +35,7 @@ void WriteGMLog(pChar pc, char *msg, ...)
 		vsnprintf(tmp, sizeof(tmp)-1, msg, vargs);
 	va_end(vargs);
 
-	LogFile gmlog("GM/%s.log", pc->getCurrentNameC());
+	LogFile gmlog("GM/%s.log", pc->getCurrentName().c_str());
 	gmlog.Write("%s", tmp);
 }
 
@@ -150,7 +150,7 @@ string SpeechLogFile::MakeFilename(pChar pc)
 
 	if( !pc ) return "bad npc";
 
-	sprintf(tmp, "speech/speech_[%d][%d][%s].txt", pc->account, pc->getSerial(), pc->getCurrentNameC());
+	sprintf(tmp, "speech/speech_[%d][%d][%s].txt", pc->account, pc->getSerial(), pc->getCurrentName().c_str());
 	string str(tmp);
 
 	return str;

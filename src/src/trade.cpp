@@ -105,7 +105,7 @@ pItem tradestart(pChar pc1, pChar pc2)
 	LongToCharPtr(cont1->getSerial(), msg+8);
 	LongToCharPtr(cont2->getSerial(), msg+12);
 	msg[16]=1;
-	strcpy((char*)&(msg[17]), pc2->getCurrentNameC());
+	strcpy((char*)&(msg[17]), pc2->getCurrentName().c_str());
 	Xsend(s1, msg, 47);
 
         uint8_t msg2[90];
@@ -117,7 +117,7 @@ pItem tradestart(pChar pc1, pChar pc2)
 	LongToCharPtr(cont2->getSerial(), msg2+8);
 	LongToCharPtr(cont1->getSerial(), msg2+12);
 	msg2[16]=1;
-	strcpy((char*)&(msg2[17]), pc1->getCurrentNameC());
+	strcpy((char*)&(msg2[17]), pc1->getCurrentName().c_str());
 	Xsend(s2, msg2, 47);
 
         return cont1;

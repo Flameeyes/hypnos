@@ -242,7 +242,7 @@ int response(NXWSOCKET  s)
 						{
 							case BODY_MALE		:
 							case BODY_FEMALE	:
-								sprintf( temp, TRANSLATE("I am %s."), pc_map->getCurrentNameC());
+								sprintf( temp, TRANSLATE("I am %s."), pc_map->getCurrentName().c_str());
 								pc_map->talkAll( temp, 0);
 								break;
 							default		:
@@ -257,7 +257,7 @@ int response(NXWSOCKET  s)
 						{
 							case BODY_MALE		:
 							case BODY_FEMALE	:
-								sprintf( temp, TRANSLATE("I %s will kill you."), pc_map->getCurrentNameC());
+								sprintf( temp, TRANSLATE("I %s will kill you."), pc_map->getCurrentName().c_str());
 								pc_map->talkAll( temp, 0);
 								break;
 							default		:
@@ -286,7 +286,7 @@ int response(NXWSOCKET  s)
 					pvDeed= DEREF_pItem(pDeed);
 
 					pDeed->Refresh();
-					sprintf(temp, TRANSLATE("Packed up vendor %s."), pc_map->getCurrentNameC());
+					sprintf(temp, TRANSLATE("Packed up vendor %s."), pc_map->getCurrentName().c_str());
 					pc_map->playMonsterSound(SND_DIE);
 					pc_map->Delete();
 					sysmessage(s, temp);
@@ -387,7 +387,7 @@ int response(NXWSOCKET  s)
 							// Send out a message saying we are already being escorted
 							pChar pc_ftarg=pointers::findCharBySerial(pc_map->ftargserial);
 							if( pc_ftarg ) {
-								sprintf(temp, TRANSLATE("I am already being escorted to %s by %s."), region[pc_map->questDestRegion].name, pc_ftarg->getCurrentNameC() );
+								sprintf(temp, TRANSLATE("I am already being escorted to %s by %s."), region[pc_map->questDestRegion].name, pc_ftarg->getCurrentName().c_str() );
 								pc_map->talkAll(temp, 0);
 							}
 						}
@@ -422,7 +422,7 @@ int response(NXWSOCKET  s)
 				{
 					if ( pc_map->npcaitype == NPCAI_BANKER )
 					{
-						sprintf(temp, TRANSLATE("%s's balance as of now is %i."), pc->getCurrentNameC(), pc->countBankGold());
+						sprintf(temp, TRANSLATE("%s's balance as of now is %i."), pc->getCurrentName().c_str(), pc->countBankGold());
 						pc_map->talkAll( temp, 1);
 						return 1;
 					}
@@ -536,7 +536,7 @@ int response(NXWSOCKET  s)
 				{
 					if (pc->isOwnerOf(pc_map) || (pc->IsGM())) //owner of the char || a GM
 					{
-						strcpy( search1, pc_map->getCurrentNameC() );
+						strcpy( search1, pc_map->getCurrentName().c_str() );
 						strupr( search1 );
 						bool requestPetname = ( strstr( comm, search1) != NULL );
 						if ( requestPetname )
@@ -602,7 +602,7 @@ int response(NXWSOCKET  s)
 					if ( pc->isOwnerOf( pc_map ) || ( pc->IsGM() ) )
 					{
 						pc->guarded = false;
-						strcpy(search1, pc_map->getCurrentNameC() );
+						strcpy(search1, pc_map->getCurrentName().c_str() );
 						strupr( search1 );
 						bool requestPetname = ( strstr( comm, search1) != NULL );
 						if ( requestPetname )
@@ -633,7 +633,7 @@ int response(NXWSOCKET  s)
 				{
 					if (pc->isOwnerOf(pc_map) || (pc->IsGM()))
 					{
-						strcpy(search1, pc_map->getCurrentNameC());
+						strcpy(search1, pc_map->getCurrentName().c_str());
 						strupr(search1);
 						bool requestPetname = ( strstr( comm, search1) != NULL );
 						if ( requestPetname )
@@ -656,7 +656,7 @@ int response(NXWSOCKET  s)
 				{
 					if ( pc_map->npcaitype != NPCAI_PLAYERVENDOR && (pc->isOwnerOf(pc_map) || pc->IsGM()))
 					{
-						strcpy(search1, pc_map->getCurrentNameC());
+						strcpy(search1, pc_map->getCurrentName().c_str());
 						strupr(search1);
 						bool requestPetname = (strstr( comm, search1) != NULL);
 						if ( requestPetname )
@@ -677,7 +677,7 @@ int response(NXWSOCKET  s)
 				{
 					if ( pc_map->npcaitype != NPCAI_PLAYERVENDOR && (pc->isOwnerOf(pc_map) || pc->IsGM()))
 					{
-						strcpy(search1, pc_map->getCurrentNameC());
+						strcpy(search1, pc_map->getCurrentName().c_str());
 						strupr(search1);
 						bool requestPetname = ( strstr( comm, search1) != NULL);
 						if (requestPetname)
@@ -705,7 +705,7 @@ int response(NXWSOCKET  s)
 				{
 					if (pc_map->npcaitype !=NPCAI_PLAYERVENDOR && (pc->isOwnerOf(pc_map) || pc->IsGM()))
 					{
-						strcpy( search1, pc_map->getCurrentNameC());
+						strcpy( search1, pc_map->getCurrentName().c_str());
 						strupr( search1 );
 						if ( strstr( comm, search1) != NULL ) //if petname is in
 						{
@@ -729,7 +729,7 @@ int response(NXWSOCKET  s)
 				{
 					if ( pc_map->npcaitype != NPCAI_PLAYERVENDOR && (pc->isOwnerOf(pc_map) || pc->IsGM()) )
 					{
-						strcpy( search1, pc_map->getCurrentNameC() );
+						strcpy( search1, pc_map->getCurrentName().c_str() );
 						strupr( search1 );
 						if ( strstr( comm, search1 ) != NULL )
 						{
@@ -765,7 +765,7 @@ int response(NXWSOCKET  s)
 				{
 					if ( pc_map->npcaitype != NPCAI_PLAYERVENDOR && (pc->isOwnerOf(pc_map) || pc->IsGM() ))
 					{
-						strcpy(search1, pc_map->getCurrentNameC());
+						strcpy(search1, pc_map->getCurrentName().c_str());
 						strupr(search1);
 						if ( strstr( comm, search1) != NULL )
 						{
@@ -781,7 +781,7 @@ int response(NXWSOCKET  s)
 							pc_map->taming=2000;//he cannot be retamed	Sparhawk	This is bullshit!!!
 							//taken from 6904t2(5/10/99) - AntiChrist
 							pc_map->tamed = false;
-							sprintf(temp, TRANSLATE("*%s appears to have decided that it is better off without a master *"), pc_map->getCurrentNameC());
+							sprintf(temp, TRANSLATE("*%s appears to have decided that it is better off without a master *"), pc_map->getCurrentName().c_str());
 							pc_map->talkAll(temp,0);
 							pc_map->playSFX( 0x01FE );
 							if(SrvParms->tamed_disappear==1)
@@ -808,7 +808,7 @@ int response(NXWSOCKET  s)
 						pc_map->setOwnerSerial32(INVALID);
 						pc_map->taming=2000;//he cannot be retamed
 						pc_map->tamed = false;
-						sprintf(temp, TRANSLATE("*%s appears to have decided that it is better off without a master *"), pc_map->getCurrentNameC());
+						sprintf(temp, TRANSLATE("*%s appears to have decided that it is better off without a master *"), pc_map->getCurrentName().c_str());
 						pc_map->talkAll(temp,0);
 						pc_map->playSFX( 0x01FE);
 						if(SrvParms->tamed_disappear==1)
@@ -1038,7 +1038,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 				pChar pc = sc.getChar();
 				if(!pc)
 					continue;
-				strcpy(search3, pc->getCurrentNameC());
+				strcpy(search3, pc->getCurrentName().c_str());
 				strupr(search3);
 				response3=(strstr( comm, search3));
 				if (response3)
@@ -1076,7 +1076,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 				if(!pc)
 					continue;
 
-				strcpy(search3, pc->getCurrentNameC());
+				strcpy(search3, pc->getCurrentName().c_str());
 				strupr(search3);
 				response3=(strstr( comm, search3));
 				if (response3)
@@ -1105,7 +1105,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 				pChar pc = sc.getChar();
 				if(!pc)
 					continue;
-				strcpy(search3, pc->getCurrentNameC());
+				strcpy(search3, pc->getCurrentName().c_str());
 				strupr(search3);
 				response3=(strstr( comm, search3));
 				if (response3)
@@ -1152,7 +1152,7 @@ static bool pricePlayerVendorItem( pChar pc, NXWSOCKET socket, string &price )
 			{
 				pi->value = i;
 				pc->fx2 = 18;
-				sysmessage( socket, TRANSLATE("The price of item %s has been set to %i."), pi->getCurrentNameC(), i);
+				sysmessage( socket, TRANSLATE("The price of item %s has been set to %i."), pi->getCurrentName().c_str(), i);
 				sysmessage( socket, TRANSLATE("Enter a description for this item."));
 			}
 			else
@@ -1249,7 +1249,7 @@ static bool pageCouncillor( pChar pc, NXWSOCKET socket, string &reason )
 	{
 		char temp[TEMP_STR_SIZE];
 		strcpy( counspages[pc->playercallnum].reason, reason.c_str() );
-		sprintf(temp, TRANSLATE("Counselor Page from %s [%08x]: %s"),pc->getCurrentNameC(), pc->getSerial(), counspages[pc->playercallnum].reason);
+		sprintf(temp, TRANSLATE("Counselor Page from %s [%08x]: %s"),pc->getCurrentName().c_str(), pc->getSerial(), counspages[pc->playercallnum].reason);
 		bool foundCons = false;
 		pChar councillor;
 		
@@ -1381,7 +1381,7 @@ static bool stablePet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharW
 		{
 			pc_a_npc = nearbyStablemasters.getChar();
 			if( (!findStablemasterByName ||
-			    (findStablemasterByName && !strcasecmp(stablemasterName.c_str(), pc_a_npc->getCurrentNameC()))))
+			    (findStablemasterByName && !strcasecmp(stablemasterName.c_str(), pc_a_npc->getCurrentName().c_str()))))
 			{
 				if( !pc_stablemaster )
 					pc_stablemaster = pc_a_npc;
@@ -1399,7 +1399,7 @@ static bool stablePet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharW
 				pc_a_npc = nearbyNpcs->getChar();
 				if( pc->isOwnerOf( pc_a_npc ) && !pc_a_npc->isStabled() && !pc_a_npc->mounted )
 				{
-					if( (!findPetByName) || (findPetByName && !strcasecmp( petName.c_str(), pc_a_npc->getCurrentNameC())))
+					if( (!findPetByName) || (findPetByName && !strcasecmp( petName.c_str(), pc_a_npc->getCurrentName().c_str())))
 						if( pc->distFrom( pc_stablemaster ) <= 8 )
 							if( stableAllPets )
 							{
@@ -1461,7 +1461,7 @@ static bool stablePet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharW
 				}
 				char temp[TEMP_STR_SIZE];
 				if( petsToStable.size() == 1 )
-					sprintf(temp,TRANSLATE("I have stabled %s"), pc_pet->getCurrentNameC());
+					sprintf(temp,TRANSLATE("I have stabled %s"), pc_pet->getCurrentName().c_str());
 				else
 					sprintf(temp,TRANSLATE("I have stabled %d pets"), petsToStable.size() );
 				pc_stablemaster->talk(socket,temp,0);
@@ -1506,7 +1506,7 @@ static bool claimPet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWr
 		{
 			pc_a_npc = nearbyStablemasters.getChar();
 			if( (!findStablemasterByName ||
-			    (findStablemasterByName && !strcasecmp( stablemasterName.c_str(), pc_a_npc->getCurrentNameC()))))
+			    (findStablemasterByName && !strcasecmp( stablemasterName.c_str(), pc_a_npc->getCurrentName().c_str()))))
 			{
 				if( !pc_stablemaster )
 					pc_stablemaster = pc_a_npc;
@@ -1524,7 +1524,7 @@ static bool claimPet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWr
 						if( pc->isOwnerOf( pc_a_npc ) )
 							if(findPetByName)
 							{
-								if(!strcasecmp(petName.c_str(),pc_a_npc->getCurrentNameC()))
+								if(!strcasecmp(petName.c_str(),pc_a_npc->getCurrentName().c_str()))
 								{
 									found = true;
 									stabledPets.insertChar( pc_a_npc );
@@ -1689,7 +1689,7 @@ static bool requestChaosShield( pChar pc, NXWSOCKET socket, std::string &speech,
 			for( nearbyChaosGuards.rewind(); !nearbyChaosGuards.isEmpty(); nearbyChaosGuards++  )
 			{
 				pc_a_npc = nearbyChaosGuards.getChar();
-				if( (!findGuardByName) || findGuardByName && !strcasecmp( guardName.c_str(), pc_a_npc->getCurrentNameC() ) )
+				if( (!findGuardByName) || findGuardByName && !strcasecmp( guardName.c_str(), pc_a_npc->getCurrentName().c_str() ) )
 					if( !chaosGuard )
 						chaosGuard = pc_a_npc;
 					else
@@ -1744,7 +1744,7 @@ static bool requestOrderShield( pChar pc, NXWSOCKET socket, std::string &speech,
 			for( nearbyOrderGuards.rewind(); !nearbyOrderGuards.isEmpty(); nearbyOrderGuards++  )
 			{
 				pc_a_npc = nearbyOrderGuards.getChar();
-				if( (!findGuardByName) || findGuardByName && !strcasecmp( guardName.c_str(), pc_a_npc->getCurrentNameC() ) )
+				if( (!findGuardByName) || findGuardByName && !strcasecmp( guardName.c_str(), pc_a_npc->getCurrentName().c_str() ) )
 					if( !orderGuard )
 						orderGuard = pc_a_npc;
 					else
@@ -1869,7 +1869,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 	char sect[512];
 
 	char name[30] = {0,};	// it **IS** important to 0 out the remaining gaps
-	strcpy(name, pc->getCurrentNameC());
+	strcpy(name, pc->getCurrentName().c_str());
 
 	// len+font+color+type = same postion for non unicode and unicode speech packets
 	// but 8 ... x DIFFER a lot for unicode and non unicode packets !!!
@@ -2074,7 +2074,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 	if (SrvParms->speech_log)
 	{
 		SpeechLogFile logfile(pc);
-		logfile.Write("%s [%08x] [%i] said: %s\n", pc->getCurrentNameC(), pc->getSerial(), pc->account, speech.c_str());
+		logfile.Write("%s [%08x] [%i] said: %s\n", pc->getCurrentName().c_str(), pc->getSerial(), pc->account, speech.c_str());
 
 		int n= 0;
 		string namelist= "to: ";
@@ -2092,7 +2092,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 			pChar pc_new_char = ps->currChar();
 			if( pc_new_char )
 			{
-				namelist+= "[" + string( pc_new_char->getCurrentNameC() ) + "] ";
+				namelist+= "[" + string( pc_new_char->getCurrentName().c_str() ) + "] ";
 				++n;
 			}
 		}

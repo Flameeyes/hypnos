@@ -377,7 +377,7 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 
 	if ( pc )
 		if (SrvParms->partmsg && pc != NULL && !pc->npc )
-			sysbroadcast( (char*)msgPart, pc->getCurrentNameC() );
+			sysbroadcast( (char*)msgPart, pc->getCurrentName().c_str() );
 
 	if( pc )
 		if ( pc->IsOnline() )
@@ -771,7 +771,7 @@ void cNetwork::GoodAuth(int s)
 		if( ! pc_a )
 			continue;
 
-		strcpy((char*)login04b, pc_a->getCurrentNameC());
+		strcpy((char*)login04b, pc_a->getCurrentName().c_str());
 		Xsend(s, login04b, 60);
 		j++;
 	}
@@ -1054,12 +1054,12 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 
 	if (SrvParms->joinmsg)
 	{
-		if (!strcmp(pc->getCurrentNameC(), "pty Slot --")) pc->setCurrentName("A new Character");//AntiChrist
-		sprintf((char*)temp,TRANSLATE("%s entered the realm"),pc->getCurrentNameC());//message upon entering a server
+		if (!strcmp(pc->getCurrentName().c_str(), "pty Slot --")) pc->setCurrentName("A new Character");//AntiChrist
+		sprintf((char*)temp,TRANSLATE("%s entered the realm"),pc->getCurrentName().c_str());//message upon entering a server
 		sysbroadcast((char*)temp);//message upon entering a server
 	}
 
-	sprintf(zbuf,"%s Logged in the game",pc->getCurrentNameC()); //for logging to UOXmon
+	sprintf(zbuf,"%s Logged in the game",pc->getCurrentName().c_str()); //for logging to UOXmon
 
 	// very stupid stuff
 	//pc->murderrate=uiCurrentTime+repsys.murderdecay*MY_CLOCKS_PER_SEC; // LB, bugfix for murder-count getting --'ed each start
@@ -1783,13 +1783,13 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						{
 							Xsend(s, packet, 2);
 //AoS/							Network->FlushBuffer(s);
-							LogMessage("%s connected in with God Client!\n", pc_currchar->getCurrentNameC());
+							LogMessage("%s connected in with God Client!\n", pc_currchar->getCurrentName().c_str());
 						}
 						else
 						{
 							sysmessage(s, TRANSLATE("Access Denied!!!"));
 							Disconnect(s);
-							LogWarning("%s tried connecting in with God Client but has no priviledges!\n", pc_currchar->getCurrentNameC());
+							LogWarning("%s tried connecting in with God Client but has no priviledges!\n", pc_currchar->getCurrentName().c_str());
 						}
 
 					}
@@ -2192,7 +2192,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						if( murderer && SrvParms->bountysactive )
 						{
 							sysmessage( s,TRANSLATE("To place a bounty on %s, use the command BOUNTY <Amount>."),
-								murderer->getCurrentNameC()  );
+								murderer->getCurrentName().c_str()  );
 						}
 						sysmessage(s, TRANSLATE("You are now a ghost."));
 					}

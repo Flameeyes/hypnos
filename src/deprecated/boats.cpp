@@ -1213,7 +1213,7 @@ void cBoat::OpenPlank(pItem pi)
 		case 0xD5: pi->setId( 0xD5B1 ); break;
 		case 0xD4: pi->setId( 0xD4B2 ); break;
 		case 0x89: pi->setId( 0x898A ); break;
-		default: LogWarning("WARNING: Invalid plank ID called! Plank %i '%s' [ %04x ]\n",DEREF_pItem(pi),pi->getCurrentNameC(),pi->getId()); break;
+		default: LogWarning("WARNING: Invalid plank ID called! Plank %i '%s' [ %04x ]\n",DEREF_pItem(pi),pi->getCurrentName().c_str(),pi->getId()); break;
 	}
 }
 

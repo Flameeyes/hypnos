@@ -220,7 +220,7 @@ namespace Commands
 			if(counspages[i].handled==1)
 			{
 				counspages[i].handled=0;
-				strcpy(counspages[i].name,pc_currchar->getCurrentNameC());
+				strcpy(counspages[i].name,pc_currchar->getCurrentName().c_str());
 				strcpy(counspages[i].reason,reason.c_str());
 				counspages[i].serial.serial32 = a;
 				time_t current_time = time(0);
@@ -244,7 +244,7 @@ namespace Commands
 			{
 				pc_currchar->pagegm=0;
 				sprintf(temp, "Counselor Page from %s [ %08x ]: %s",
-				pc_currchar->getCurrentNameC(), a, reason.c_str());
+				pc_currchar->getCurrentName().c_str(), a, reason.c_str());
 				bool found=false;
 
 				NxwSocketWrapper sw;
@@ -418,7 +418,7 @@ namespace Commands
 
 		pChar pc = pointers::findCharBySerial(currchar[s]);
 		if ( ! pc ) return;
-		InfoOut( "%s has initiated an item wipe\n", pc->getCurrentNameC() );
+		InfoOut( "%s has initiated an item wipe\n", pc->getCurrentName().c_str() );
 		cAllObjectsIter objs;
 		pItem pi = NULL;
 		for( objs.rewind(); !objs.IsEmpty(); objs++ ) {

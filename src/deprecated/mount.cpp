@@ -273,7 +273,7 @@ jump_mountevent:
 		}
 	}
 
-	sysmsg( "Now you are riding %s", mount->getCurrentNameC());
+	sysmsg( "Now you are riding %s", mount->getCurrentName().c_str());
 
 	mount->war = 0;
 	mount->attackerserial=INVALID;

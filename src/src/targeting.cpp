@@ -814,7 +814,7 @@ void target_transfer( NXWCLIENT ps, P_TARGET t )
 		return ;
 	*/
     char bb[120];
-    sprintf(bb,TRANSLATE("* %s will now take %s as his master *"), pc1->getCurrentNameC(), pc2->getCurrentNameC());
+    sprintf(bb,TRANSLATE("* %s will now take %s as his master *"), pc1->getCurrentName().c_str(), pc2->getCurrentName().c_str());
     pc1->talkAll(bb,0);
 
     pc1->setOwner( pc2 );

@@ -754,7 +754,7 @@ const char* getItemStrProperty( pItem pi, int property, int prop2)
 		CHECK(NXW_IP_STR_DESCRIPTION, pi->vendorDescription.c_str() )   //dec value :  451;
 		CHECK(NXW_IP_STR_DISABLEDMSG, (pi->disabledmsg!=NULL)? (char*)pi->disabledmsg->c_str() : "" )   //dec value :  452;
 		CHECK(NXW_IP_STR_MURDERER, pi->murderer.c_str() )   //dec value :  453;
-		CHECK(NXW_IP_STR_NAME, pi->getCurrentNameC() )   //dec value :  454;
+		CHECK(NXW_IP_STR_NAME, pi->getCurrentName().c_str() )   //dec value :  454;
 		CHECK(NXW_IP_STR_NAME2, pi->getSecondaryNameC() )   //dec value :  455;
 		default:
 			ErrOut("itm_getProperty called with invalid property %d!\n", property );
@@ -1908,7 +1908,7 @@ const char* getCharStrProperty( pChar pc, int property, int prop2 )
 		CHECK(  NXW_CP_STR_DISABLEDMSG , (pc->disabledmsg!=NULL)? pc->disabledmsg->c_str() : emptyString )  		//dec value: 450;
 		CHECK(  NXW_CP_STR_GUILDTITLE , pc->GetGuildTitle() )  		//dec value: 451;
 		CHECK(  NXW_CP_STR_LASTON , "<obsolete>" )  			//dec value: 452;
-		CHECK(  NXW_CP_STR_NAME, pc->getCurrentNameC() )  //dec value: 453;
+		CHECK(  NXW_CP_STR_NAME, pc->getCurrentName().c_str() )  //dec value: 453;
 		CHECK(  NXW_CP_STR_ORGNAME , "<obsolete>" )  			//dec value: 454;
 		CHECK(  NXW_CP_STR_TITLE , pc->title.c_str() )  			//dec value: 455;
 		CHECK(  NXW_CP_STR_TRIGWORD , pc->trigword.c_str() )  			//dec value: 456;

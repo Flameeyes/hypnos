@@ -178,7 +178,7 @@ void cGuilds::Menu(int s, int page)
 			{
 				pChar pcm=pointers::findCharBySerial( guilds[guildnumber].member[member] );
 				if( pcm )
-					strcpy(guildfealty, pcm->getCurrentNameC());
+					strcpy(guildfealty, pcm->getCurrentName().c_str());
 				break;
 			}
 		}
@@ -211,7 +211,7 @@ void cGuilds::Menu(int s, int page)
 		gumpnum=9;
 		ShortToCharPtr(8001, gmprefix +7);
 		if ( ! pguildmaster ) return;
-		lentext=sprintf(mygump[0], "%s (%s %s)",guilds[guildnumber].name, pguildmaster->GetGuildTitle(),pguildmaster->getCurrentNameC());
+		lentext=sprintf(mygump[0], "%s (%s %s)",guilds[guildnumber].name, pguildmaster->GetGuildTitle(),pguildmaster->getCurrentName().c_str());
 		strcpy(mygump[1],TRANSLATE("Recruit someone into the guild."));
 		strcpy(mygump[2],TRANSLATE("View the current roster."));
 		strcpy(mygump[3],TRANSLATE("View the guild's charter."));
@@ -294,7 +294,7 @@ void cGuilds::Menu(int s, int page)
 				counter++;
 				pChar recr=pointers::findCharBySerial(guilds[guildnumber].recruit[recruit]);
 				if(recr)
-					strcpy(mygump[counter],recr->getCurrentNameC());
+					strcpy(mygump[counter],recr->getCurrentName().c_str());
 			}
 		}
 		ShortToCharPtr(8006, gmprefix +7);
@@ -310,7 +310,7 @@ void cGuilds::Menu(int s, int page)
 			if (memb)
 			{
 				counter++;
-				strcpy(mygump[counter], memb->getCurrentNameC());
+				strcpy(mygump[counter], memb->getCurrentName().c_str());
 			}
 		}
 		ShortToCharPtr(8007, gmprefix +7);
@@ -326,7 +326,7 @@ void cGuilds::Menu(int s, int page)
 			if (memb)
 			{
 				counter++;
-				strcpy(mygump[counter],memb->getCurrentNameC());
+				strcpy(mygump[counter],memb->getCurrentName().c_str());
 			}
 		}
 		ShortToCharPtr(8008, gmprefix +7);
@@ -342,7 +342,7 @@ void cGuilds::Menu(int s, int page)
 			if (recr)
 			{
 				counter++;
-				strcpy(mygump[counter], recr->getCurrentNameC());
+				strcpy(mygump[counter], recr->getCurrentName().c_str());
 			}
 		}
 		ShortToCharPtr(8009, gmprefix +7);
@@ -358,7 +358,7 @@ void cGuilds::Menu(int s, int page)
 			if (recr)
 			{
 				counter++;
-				strcpy(mygump[counter],recr->getCurrentNameC());
+				strcpy(mygump[counter],recr->getCurrentName().c_str());
 			}
 		}
 		ShortToCharPtr(8010, gmprefix +7);
@@ -389,7 +389,7 @@ void cGuilds::Menu(int s, int page)
 			if(membr)
 			{
 				counter++;
-				strcpy(mygump[counter],membr->getCurrentNameC());
+				strcpy(mygump[counter],membr->getCurrentName().c_str());
 			}
 		}
 		ShortToCharPtr(8012, gmprefix +7);
@@ -405,7 +405,7 @@ void cGuilds::Menu(int s, int page)
 			if(membr)
 			{
 				counter++;
-				strcpy(mygump[counter],membr->getCurrentNameC());
+				strcpy(mygump[counter],membr->getCurrentName().c_str());
 			}
 		}
 		ShortToCharPtr(8013, gmprefix +7);
@@ -1024,7 +1024,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 						pChar pc_member = pointers::findCharBySerial( guilds[guildnumber].member[member] );
 						if( pc_member )
 						{
-							pc->sysmsg(TRANSLATE("Kicked %s out of the guild."), pc_member->getCurrentNameC());
+							pc->sysmsg(TRANSLATE("Kicked %s out of the guild."), pc_member->getCurrentName().c_str());
 							if( pc_member->IsOnline() )
 								pc_member->sysmsg(TRANSLATE("You got kicked out of your guild."));
 						}
@@ -1052,7 +1052,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 				{
 					pChar pc_recruit = pointers::findCharBySerial( guilds[guildnumber].recruit[recruit] );
 					if( pc_recruit )
-						pc->sysmsg(TRANSLATE("Removed candidate %s from the list."), pc_recruit->getCurrentNameC());
+						pc->sysmsg(TRANSLATE("Removed candidate %s from the list."), pc_recruit->getCurrentName().c_str());
 					else
 					{
 						pc->sysmsg(TRANSLATE("Invalid candidate %d\n"), guilds[guildnumber].recruit[recruit] );
@@ -1088,7 +1088,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 								guilds[guildnumber].recruits--;
 								if (guilds[guildnumber].type!=0) 
 									pc->SetGuildTitleToggle();
-								pc->sysmsg(TRANSLATE("Candidate %s is now a guildmember."), pc_recruit->getCurrentNameC());
+								pc->sysmsg(TRANSLATE("Candidate %s is now a guildmember."), pc_recruit->getCurrentName().c_str());
 								if ( guilds[guildnumber].type == 1 )
 									item::CreateFromScript( "$item_order_shield", pc_recruit->getBackpack() );
 							    if ( guilds[guildnumber].type == 2 )
@@ -1099,7 +1099,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 						}
 						else
 						{
-							pc->sysmsg(TRANSLATE("Candidate %s is already in another guild, I'll remove him from your list now."), pc_recruit->getCurrentNameC());
+							pc->sysmsg(TRANSLATE("Candidate %s is already in another guild, I'll remove him from your list now."), pc_recruit->getCurrentName().c_str());
 							if( pc_recruit->IsOnline() )
 									pc_recruit->sysmsg(TRANSLATE("You've been removed as candidate from guild %s as you are in another guild"),
 									guilds[guildnumber].name );

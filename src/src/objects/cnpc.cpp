@@ -110,20 +110,20 @@ void cNPC::heartbeat()
 			switch( hunger )
 			{
 				case 6: break;
-				case 5: emoteall( TRANSLATE( "* %s looks a little hungry *" ), 1, getCurrentNameC() );
+				case 5: emoteall( TRANSLATE( "* %s looks a little hungry *" ), 1, getCurrentName().c_str() );
 					break;
-				case 4: emoteall( TRANSLATE( "* %s looks fairly hungry *" ), 1, getCurrentNameC() );
+				case 4: emoteall( TRANSLATE( "* %s looks fairly hungry *" ), 1, getCurrentName().c_str() );
 					break;
-				case 3: emoteall( TRANSLATE( "* %s looks extremely hungry *" ), 1, getCurrentNameC() );
+				case 3: emoteall( TRANSLATE( "* %s looks extremely hungry *" ), 1, getCurrentName().c_str() );
 					break;
-				case 2: emoteall( TRANSLATE( "* %s looks weak from starvation *"), 1, getCurrentNameC() );
+				case 2: emoteall( TRANSLATE( "* %s looks weak from starvation *"), 1, getCurrentName().c_str() );
 					break;
-				case 1: emoteall( TRANSLATE("* %s must eat very soon or he will die! *"), 1, getCurrentNameC() );
+				case 1: emoteall( TRANSLATE("* %s must eat very soon or he will die! *"), 1, getCurrentName().c_str() );
 					break;
 				case 0:	ftargserial = INVALID;
 					npcWander = WANDER_FREELY_CIRCLE;
 					setOwnerSerial32( INVALID );
-					emoteall( TRANSLATE("* %s appears to have decided that it is better off without a master *"), 0, getCurrentNameC());
+					emoteall( TRANSLATE("* %s appears to have decided that it is better off without a master *"), 0, getCurrentName().c_str());
 					playSFX( 0x01FE);
 					if( SrvParms->tamed_disappear )
 					{
@@ -400,8 +400,8 @@ void cNPC::createEscortQuest()
         questEscortPostSerial = createQuestMessage(ESCORTQUEST,getSerial(), NULL, region);
 	if ( !questEscortPostSerial )
 	{
-		ConOut( "createEscortQuest() Failed to add quest post for %s\n", getCurrentNameC() );
-		ConOut( "createEscortQuest() Deleting NPC %s\n", getCurrentNameC() );
+		ConOut( "createEscortQuest() Failed to add quest post for %s\n", getCurrentName().c_str() );
+		ConOut( "createEscortQuest() Deleting NPC %s\n", getCurrentName().c_str() );
 		Delete();
 		return;
 	}
@@ -428,7 +428,7 @@ void cNPC::clearedEscordQuest(pPC pc)
 	// If they have no money, well, oops!
 	if ( servicePay == 0 )
 	{
-		sprintf( temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Alas, I seem to be a little short on gold. I have nothing to pay you with."), pc->getCurrentNameC(), region[questDestRegion].name );
+		sprintf( temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Alas, I seem to be a little short on gold. I have nothing to pay you with."), pc->getCurrentName().c_str(), region[questDestRegion].name );
 		talk( pc->getClient(), temp, 0 );
 	}
 	else // Otherwise pay the poor sod for his time
@@ -437,12 +437,12 @@ void cNPC::clearedEscordQuest(pPC pc)
 		if ( servicePay < 75 ) servicePay += RandomNum(75, 100);
 		pc->addGold(servicePay);
 		pc->playSFX( goldsfx(servicePay) );
-		sprintf( temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Here is thy pay as promised."), pc->getCurrentNameC(), region[questDestRegion].name );
+		sprintf( temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Here is thy pay as promised."), pc->getCurrentName().c_str(), region[questDestRegion].name );
 		talk( pc->getClient(), temp, 0 );
 	}
 
 	// Inform the PC of what he has just been given as payment
-	pc->getClient()->sysmsg(TRANSLATE("You have just received %d gold coins from %s %s"), servicePay, getCurrentNameC(), title.c_str() );
+	pc->getClient()->sysmsg(TRANSLATE("You have just received %d gold coins from %s %s"), servicePay, getCurrentName().c_str(), title.c_str() );
 
 	// Take the NPC out of quest mode
 	npcWander = WANDER_FREELY_CIRCLE;         // Wander freely

@@ -129,23 +129,23 @@ static void item_char_test()
 			pItem pi=(pItem)(objs.getObject() );
 
 			if (pi->getSerial()==INVALID) {
-				WarnOut("item %s [serial: %i] has invalid serial!",pi->getCurrentNameC(),pi->getSerial());
-				LogWarning("ALERT ! item %s [serial: %i] has invalid serial!",pi->getCurrentNameC(),pi->getSerial());
+				WarnOut("item %s [serial: %i] has invalid serial!",pi->getCurrentName().c_str(),pi->getSerial());
+				LogWarning("ALERT ! item %s [serial: %i] has invalid serial!",pi->getCurrentName().c_str(),pi->getSerial());
 			}
 
 			// item is contained in himself
 			if (pi == pi->getContainer())
 			{
-				WarnOut("item %s [serial: %i] has dangerous container value, autocorrecting",pi->getCurrentNameC(),pi->getSerial());
-				LogWarning("ALERT ! item %s [serial: %i] has dangerous container value, autocorrecting",pi->getCurrentNameC(),pi->getSerial());
+				WarnOut("item %s [serial: %i] has dangerous container value, autocorrecting",pi->getCurrentName().c_str(),pi->getSerial());
+				LogWarning("ALERT ! item %s [serial: %i] has dangerous container value, autocorrecting",pi->getCurrentName().c_str(),pi->getSerial());
 				pi->setContainer(0);
 			}
 
 			// item is owned by himself
 			if (pi->getSerial() == pi->getOwnerSerial32())
 			{
-				WarnOut("item %s [serial: %i] has dangerous owner value",pi->getCurrentNameC(),pi->getSerial());
-				LogWarning("ALERT ! item %s [serial: %i] has dangerous owner value",pi->getCurrentNameC(),pi->getSerial());
+				WarnOut("item %s [serial: %i] has dangerous owner value",pi->getCurrentName().c_str(),pi->getSerial());
+				LogWarning("ALERT ! item %s [serial: %i] has dangerous owner value",pi->getCurrentName().c_str(),pi->getSerial());
 				pi->setOwnerSerial32(INVALID);
 			}
 
@@ -413,7 +413,7 @@ void checkkey ()
 					pChar pc_i=MAKE_CHAR_REF(currchar[i]);
 					if(pc_i && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
 					{
-						ConOut("%i) %s [ %08x ]\n", j, pc_i->getCurrentNameC(), pc_i->getSerial());
+						ConOut("%i) %s [ %08x ]\n", j, pc_i->getCurrentName().c_str(), pc_i->getSerial());
 						j++;
 					}
 				}
@@ -899,7 +899,7 @@ int main(int argc, char *argv[])
 					&& clientInfo[r]->ingame
 					)
 				{
-					ConOut("Player %s disconnected due to inactivity !\n", pc_r->getCurrentNameC());
+					ConOut("Player %s disconnected due to inactivity !\n", pc_r->getCurrentName().c_str());
 					//sysmessage(r,"you have been idle for too long and have been disconnected!");
 					char msg[3];
 					msg[0]=0x53;
@@ -1199,7 +1199,7 @@ void npcattacktarget(pChar pc, pChar pc_target)
 		}
 	}
 
-	pc->emoteall( "You see %s attacking %s!", 1, pc->getCurrentNameC(), pc_target->getCurrentNameC() );
+	pc->emoteall( "You see %s attacking %s!", 1, pc->getCurrentName().c_str(), pc_target->getCurrentName().c_str() );
 
 	return;
 }

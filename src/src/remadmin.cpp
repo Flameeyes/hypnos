@@ -504,7 +504,7 @@ void RemoteAdmin::ProcessInput(int s)
 				if( pc_i && clientInfo[i]->ingame ) //Keeps NPC's from appearing on the list
 				{
 					j++;
-					Printf(s, "    %i) %s [%08x]\r\n", j, pc_i->getCurrentNameC(), pc_i->getSerial());
+					Printf(s, "    %i) %s [%08x]\r\n", j, pc_i->getCurrentName().c_str(), pc_i->getSerial());
 				}
 			}
 			Printf(s, "Total Users Online: %d\r\n", j);

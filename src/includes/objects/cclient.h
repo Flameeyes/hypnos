@@ -26,8 +26,9 @@ typedef struct {
 } boughtitem;                    // Used in trading methods
 
 
-#include "cchar.h"
-#include "cmsgboard.h"
+#include "objects/cchar.h"
+#include "objects/citem/cmsgboard.h"
+#include "objects/citem/ccontainer.h"
 
 /*!
 \author Flameeyes

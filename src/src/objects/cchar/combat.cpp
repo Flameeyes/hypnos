@@ -599,7 +599,7 @@ void cChar::doCombat()
 			if (SrvParms->pvp_log)
 			{
 				LogFile pvplog("PvP.log");
-				pvplog.Write("%s was killed by %s!\n", pc_def->getCurrentNameC(), getCurrentNameC());
+				pvplog.Write("%s was killed by %s!\n", pc_def->getCurrentName().c_str(), getCurrentName().c_str());
 			}
 		}
 		if (npc)
@@ -745,7 +745,7 @@ int cChar::combatHitMessage(int32_t damage)
 	}
 	pChar pc_attacker = pointers::findCharBySerial(attackerserial);
 	if ( pc_attacker) {
-		sysmsg("%s %s",pc_attacker->getCurrentNameC(), temp);
+		sysmsg("%s %s",pc_attacker->getCurrentName().c_str(), temp);
 	}
 
 	return x;
@@ -848,9 +848,9 @@ int cChar::calcDef(int32_t x)
 				--pj->hp; //Take off a hit point
 				if( pj->hp <= 0 )
 				{
-					if ( strncmp(pj->getCurrentNameC(), "#", 1) )
+					if ( strncmp(pj->getCurrentName().c_str(), "#", 1) )
 					{
-						sprintf(temp,TRANSLATE("Your %s has been destroyed"),pj->getCurrentNameC());
+						sprintf(temp,TRANSLATE("Your %s has been destroyed"),pj->getCurrentName().c_str());
 					} else
 					{
 						tile_st tile;
@@ -872,8 +872,8 @@ int cChar::calcDef(int32_t x)
 			if(chance(5))
 				pj->hp--; //Take off a hit point
 			if(pj->hp<=0) {
-				if ( strncmp(pj->getCurrentNameC(), "#", 1) ) {
-					sprintf(temp,TRANSLATE("Your %s has been destroyed"),pj->getCurrentNameC());
+				if ( strncmp(pj->getCurrentName().c_str(), "#", 1) ) {
+					sprintf(temp,TRANSLATE("Your %s has been destroyed"),pj->getCurrentName().c_str());
 				} else {
 					tile_st tile;
 					data::seekTile(pj->getId(), tile);
@@ -1132,7 +1132,7 @@ void cChar::attackStuff(pChar victim)
 
 	if ( victim->npcaitype==NPCAI_PLAYERVENDOR)
 	{
-		sysmsg( TRANSLATE("%s cannot be harmed."), victim->getCurrentNameC() );
+		sysmsg( TRANSLATE("%s cannot be harmed."), victim->getCurrentName().c_str() );
 		return;
 	}
 
@@ -1199,7 +1199,7 @@ void cChar::attackStuff(pChar victim)
 		{
 			victim->setNpcMoveTime();
 		}
-		//emoteall( "You see %s attacking %s!", 1, getCurrentNameC(), victim->getCurrentNameC() );
+		//emoteall( "You see %s attacking %s!", 1, getCurrentName().c_str(), victim->getCurrentName().c_str() );
 	}
 	else	// not a guarded area
 	{

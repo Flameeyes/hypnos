@@ -741,7 +741,7 @@ void cTempfx::executeExpireCode()
 			if (m_nMore1 == 0)
 			{
 				if (m_nMore2 != 0)
-					dest->emoteall(TRANSLATE("*%s continues grinding.*"), 1, dest->getCurrentNameC());
+					dest->emoteall(TRANSLATE("*%s continues grinding.*"), 1, dest->getCurrentName().c_str());
 
 				dest->playSFX(0x242);
 			}

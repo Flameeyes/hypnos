@@ -381,8 +381,8 @@ void cPacketSendBBoardCommand::prepare()
 
 		// If the name the item (Bulletin Board) has been defined, display it
 		// instead of the default "Bulletin Board" title.
-		if ( strncmp(msgboard->getCurrentNameC(), "#", 1) )
-			strncpy( buffer + 8, msgboard->getCurrentNameC(), 20);  //Copying just the first 20 chars or we go out of bounds in the gump
+		if ( strncmp(msgboard->getCurrentName().c_str(), "#", 1) )
+			strncpy( buffer + 8, msgboard->getCurrentName().c_str(), 20);  //Copying just the first 20 chars or we go out of bounds in the gump
 	        else    strcpy( buffer + 8, "Bulletin Board");
                 break;
         case SendMessageSummary:
@@ -390,7 +390,7 @@ void cPacketSendBBoardCommand::prepare()
         	length = 16; //BASE length, the length of fixed-length components
                 pChar poster = pointers::findCharBySerPtr(message->poster);
                 std::string timestring = message->getTimeString();
-                length += poster->getCurrentNameC().size() + 2;
+                length += poster->getCurrentName().c_str().size() + 2;
                 length += message->subject.size() + 2;
                 length += timestring.size() + 2;
                 buffer = new uint8_t[length];
@@ -401,9 +401,9 @@ void cPacketSendBBoardCommand::prepare()
  	        LongToCharPtr(message->getSerial(), buffer + 8);	//message serial
                 LongToCharPtr(message->replyof, buffer + 12);		//parent message serial
                 int offset = 16;
-                buffer[16] = poster->getCurrentNameC().size() + 1;	//size() does not count the endstring 0
-		strcpy( buffer + 17, poster->getCurrentNameC().c_str());
-                offset += poster->getCurrentNameC().size() + 2;
+                buffer[16] = poster->getCurrentName().c_str().size() + 1;	//size() does not count the endstring 0
+		strcpy( buffer + 17, poster->getCurrentName().c_str().c_str());
+                offset += poster->getCurrentName().c_str().size() + 2;
                 buffer[offset] = message->subject.size() + 1;
                 strcpy( buffer + offset + 1, message->subject.c_str());
                 offset += message->subject.size() + 2;
@@ -421,7 +421,7 @@ void cPacketSendBBoardCommand::prepare()
         	length = 12; //BASE length, the length of fixed-length components
                 pChar poster = pointers::findCharBySerPtr(message->poster);
                 std::string timestring = message->getTimeString();
-                length += poster->getCurrentNameC().size() + 2;
+                length += poster->getCurrentName().c_str().size() + 2;
                 length += message->subject.size() + 2;
                 length += timestring.size() + 2;
                 buffer = new uint8_t[length];
@@ -431,9 +431,9 @@ void cPacketSendBBoardCommand::prepare()
 	        LongToCharPtr(msgboard->getSerial(), buffer + 4);	//board serial
  	        LongToCharPtr(message->getSerial(), buffer + 8);	//message serial
                 int offset = 12;
-                buffer[12] = poster->getCurrentNameC().size() + 1;	//size() does not count the endstring \0 :)
-		strcpy( buffer + 17, poster->getCurrentNameC().c_str());
-                offset += poster->getCurrentNameC().size() + 2;
+                buffer[12] = poster->getCurrentName().c_str().size() + 1;	//size() does not count the endstring \0 :)
+		strcpy( buffer + 17, poster->getCurrentName().c_str().c_str());
+                offset += poster->getCurrentName().c_str().size() + 2;
                 buffer[offset] = message->subject.size() + 1;
                 strcpy( buffer + offset + 1, message->subject.c_str());
                 offset += message->subject.size() + 2;
@@ -563,7 +563,7 @@ void cPacketSendCharAfterDelete::prepare()
         buffer[3] = account->getCharsNumber();
         for(int i = 0;i<5; ++i)
                 if (i<= buffer[3])
-                	strcpy(buffer + (i*60) + 4, account->getChar(i)->getCurrentNameC());
+                	strcpy(buffer + (i*60) + 4, account->getChar(i)->getCurrentName().c_str());
 }
 
 
@@ -1160,7 +1160,7 @@ bool cPacketReceiveRessChoice::execute(pClient client)
 		pChar murderer=pointers::findCharBySerial(client->currChar()->murdererSer);
 		if( murderer && SrvParms->bountysactive )
 		{
-			client->sysmessage(TRANSLATE("To place a bounty on %s, use the command BOUNTY <Amount>."), murderer->getCurrentNameC() );
+			client->sysmessage(TRANSLATE("To place a bounty on %s, use the command BOUNTY <Amount>."), murderer->getCurrentName().c_str() );
 		}
 		client->sysmessage(TRANSLATE("You are now a ghost."));
 	}

@@ -121,7 +121,7 @@ void updatehtml()//HTML
 			//if(online(currchar[n])) //bugfix LB
 			if( pc && pc->IsOnline() )
 			{
-				fprintf(html,pc->getCurrentNameC());
+				fprintf(html,pc->getCurrentName().c_str());
 				n++;
 			}
 		}
@@ -136,7 +136,7 @@ void updatehtml()//HTML
 				if( pc && pc->IsOnline() )
 				{
 					a++;
-					fprintf(html,"%i) %s <BR>\n",a,pc->getCurrentNameC()); // bugfix lb
+					fprintf(html,"%i) %s <BR>\n",a,pc->getCurrentName().c_str()); // bugfix lb
 				}
 			}
 		}

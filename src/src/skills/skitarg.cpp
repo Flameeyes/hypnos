@@ -907,7 +907,7 @@ void Skills::target_detectHidden( NXWCLIENT ps, P_TARGET t )
 			if ( pc->checkSkill(DETECTINGHIDDEN, nLow, 1000) ) {
 				pc_curr->unHide();
 				pc_curr->sysmsg( TRANSLATE("You have been revealed!") );
-				pc->sysmsg( TRANSLATE("You revelaled %s"), pc_curr->getCurrentNameC() );
+				pc->sysmsg( TRANSLATE("You revelaled %s"), pc_curr->getCurrentName().c_str() );
 				bFound = true;
 			}
 		}
@@ -1047,7 +1047,7 @@ void target_provocation2( NXWCLIENT ps, P_TARGET t )
 		Victim2->ResetAttackFirst();
 
 		char temp[500];
-		sprintf(temp, TRANSLATE("* You see %s attacking %s *"), Victim1->getCurrentNameC(), Victim2->getCurrentNameC());
+		sprintf(temp, TRANSLATE("* You see %s attacking %s *"), Victim1->getCurrentName().c_str(), Victim2->getCurrentName().c_str());
 
 		NxwSocketWrapper sw;
 		sw.fillOnline( Victim1, false );
@@ -1435,10 +1435,10 @@ void Skills::target_itemId( NXWCLIENT ps, P_TARGET t )
             if (pc->checkSkill( ITEMID, 250, 500))
                 if (pi->getSecondaryNameC() && (strcmp(pi->getSecondaryNameC(),"#"))) pi->setCurrentName(pi->getSecondaryNameC()); // Item identified! -- by Magius(CHE)
 
-            if( ! strncmp(pi->getCurrentNameC(), "#", 1) )
+            if( ! strncmp(pi->getCurrentName().c_str(), "#", 1) )
 				pi->getName(temp2);
             else
-				strcpy(temp2, pi->getCurrentNameC());
+				strcpy(temp2, pi->getCurrentName().c_str());
 
             pc->sysmsg(TRANSLATE("You found that this item appears to be called: %s"), temp2);
 
@@ -1536,8 +1536,8 @@ void Skills::target_tame( NXWCLIENT ps, P_TARGET t )
 			{
 				case 0: pc->talkAll( TRANSLATE("I've always wanted a pet like you."),0); break;
 				case 1: pc->talkAll( TRANSLATE("Will you be my friend?"),0); break;
-				case 2: sprintf(temp, TRANSLATE("Here %s."), target->getCurrentNameC()); pc->talkAll( temp,0); break;
-				case 3: sprintf(temp, TRANSLATE("Good %s."), target->getCurrentNameC()); pc->talkAll( temp,0); break;
+				case 2: sprintf(temp, TRANSLATE("Here %s."), target->getCurrentName().c_str()); pc->talkAll( temp,0); break;
+				case 3: sprintf(temp, TRANSLATE("Good %s."), target->getCurrentName().c_str()); pc->talkAll( temp,0); break;
 				default:
 					LogError("switch reached default");
 			}
@@ -1605,7 +1605,7 @@ void Skills::target_animalLore( NXWCLIENT ps, P_TARGET t )
 			pChar target_owner = pointers::findCharBySerial( target->getOwnerSerial32() );
 			VALIDATEPC(target_owner);
 
-			sprintf(temp, TRANSLATE("Attack [%i] Defense [%i] Taming [%i] Hit Points [%i] Is Loyal to: [%s]"), target->att, target->def, target->taming/10, target->hp, (target->tamed)? target_owner->getCurrentNameC() : "himself" );
+			sprintf(temp, TRANSLATE("Attack [%i] Defense [%i] Taming [%i] Hit Points [%i] Is Loyal to: [%s]"), target->att, target->def, target->taming/10, target->hp, (target->tamed)? target_owner->getCurrentName().c_str() : "himself" );
 			target->emote(s,temp,1);
         	}
         	else
@@ -1635,7 +1635,7 @@ void Skills::target_forensics( NXWCLIENT ps, P_TARGET t )
 	}
 
 	if(pc->IsGM()) {
-    		pc->sysmsg(TRANSLATE("The %s is %i seconds old and the killer was %s."), pi->getCurrentNameC(), (curtim-pi->murdertime)/MY_CLOCKS_PER_SEC, pi->murderer.c_str());
+    		pc->sysmsg(TRANSLATE("The %s is %i seconds old and the killer was %s."), pi->getCurrentName().c_str(), (curtim-pi->murdertime)/MY_CLOCKS_PER_SEC, pi->murderer.c_str());
 	} else {
 		if (!pc->checkSkill( FORENSICS, 0, 500)) pc->sysmsg(TRANSLATE("You are not certain about the corpse.")); else
     		{
@@ -1645,7 +1645,7 @@ void Skills::target_forensics( NXWCLIENT ps, P_TARGET t )
 			if(((curtim-pi->murdertime)/MY_CLOCKS_PER_SEC)>60) strcpy(temp2,TRANSLATE("many"));
 			if(((curtim-pi->murdertime)/MY_CLOCKS_PER_SEC)>180) strcpy(temp2,TRANSLATE("many many"));
 
-			pc->sysmsg(TRANSLATE("The %s is %s seconds old."), pi->getCurrentNameC(), temp2);
+			pc->sysmsg(TRANSLATE("The %s is %s seconds old."), pi->getCurrentName().c_str(), temp2);
 
 			if (!pc->checkSkill( FORENSICS, 500, 1000) || pi->murderer.empty())
 				pc->sysmsg(TRANSLATE("You can't say who was the killer."));
