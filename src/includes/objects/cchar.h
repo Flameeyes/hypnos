@@ -453,7 +453,7 @@ public:
 	inline bool canDoSkillAction() const
 	{ return TIMEOUT( skilldelay ); }
 
-	inline void setObjectDelay( uint32_t seconds = nSettings::Server::getDelayObjects() )
+	inline void setObjectDelay( uint32_t seconds = nSettings::Actions::getObjectsDelay() )
 	{ objectdelay = getClockmSecs() + seconds * SECS; }
 
 	inline bool canDoObjectAction() const
