@@ -2751,12 +2751,22 @@ void cChar::updateRegenTimer( StatType stat )
 \param sk skill
 \param low low bound
 \param high high bound
-\todo document pcd parameter
-\todo backport from Skills::
+\param defend defending player
 */
-const bool cChar::checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, pChar pcd)
+bool cChar::checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, pChar defend)
 {
-	return Skills::CheckSkillSparrCheck(DEREF_pChar(this),sk, low, high, pcd);
+	bool bRaise = false;
+
+	if (dynamc_cast<pNPC>(defend))
+		bRaise = true;
+
+	if (nSettings::Skills::getLimitPlayerSparring() == 0)
+		bRaise = true;
+
+	if (defend->skill[sk] > (skill[sk] + nSettings::Skills::getLimitPlayerSparring()))
+		bRaise = true;
+
+	return checkSkill(sk, low, high, bRaise);
 }
 
 /*!

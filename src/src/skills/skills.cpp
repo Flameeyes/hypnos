@@ -516,19 +516,6 @@ void Skills::PotionToBottle( pChar pc, pItem pi_mortar )
     pi_mortar->type=0;
 }
 
-char Skills::CheckSkillSparrCheck(int c, unsigned short int sk, int low, int high, pChar pcd)
-{
-    pChar pc=MAKE_CHAR_REF(c);
-	VALIDATEPCR(pc, 0);
-
-    bool bRaise = false;
-    if (pcd->npc) bRaise = true;
-    if (ServerScp::g_nLimitPlayerSparring==0) bRaise = true;
-    if (pcd->skill[sk] > (pc->skill[sk]+ServerScp::g_nLimitPlayerSparring)) bRaise = true;
-
-    return pc->checkSkill( static_cast<Skill>(sk), low, high, bRaise);
-}
-
 char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 {
 	if ( sk < 0 || sk >= skTrueSkills ) //Luxor

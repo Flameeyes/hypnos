@@ -27,7 +27,6 @@ namespace Skills {
 	*/
 	char AdvanceSkill(CHARACTER s, int sk, char skillused);
 	void AdvanceStats(CHARACTER s, int sk);
-	char CheckSkillSparrCheck(int c, unsigned short int sk, int low, int high, pChar pcd);
 	void SkillUse(NXWSOCKET s, int x);
 	void updateSkillLevel(pChar pc, int s);
 	//@}

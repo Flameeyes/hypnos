@@ -89,6 +89,8 @@ namespace nSettings {
 	namespace Skills {
 		bool canStealthOnHorse();		//!< Can a character stealth on an horse? [Default: \b missing ]
 		uint16_t getStatDailyLimit();		//!< Maximum stat gain in a (real) day [Default: \b missing ]
+
+		uint16_t getLimitPlayerSparring();	//!< Defending player must have N skill points more than the attacker for the attacker to gain skill (in PvP only). [Default: 0]
 		
 		//@{
 		/*!

@@ -843,6 +843,7 @@ public:
 	void			playMonsterSound(MonsterSound sfx);
 
 	bool			checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise = true);
+	bool			checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, pChar defend);
 
 	/*!
 	\author Xanathar
@@ -856,7 +857,6 @@ public:
 	inline const uint32_t delItems(uint16_t id, uint32_t amount = 1, uint16_t color = 0xFFFF)
 	{ return body->getBackpack() ? /*body->getBackpack()->removeItems(amount, id, color)*/ amount : amount; }
 
-	const bool	checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, pChar pcd);
 
 	/*!
 	\brief Get the amount of the given id, color
