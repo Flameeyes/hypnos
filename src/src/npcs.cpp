@@ -543,7 +543,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 								else if ( "HIDING" == script1 )
 									pc->baseskill[HIDING] = getRangedValue(script2);
 								else if ( "HOLYDAMAGED" == script1 )
-									pc->holydamaged = true;
+									pc->setHolyDamaged(true);
 								break;
 							case 'I':
 								if	( "ID" == script1 )
@@ -583,7 +583,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 								break;
 							case 'L':
 								if	( "LIGHTDAMAGED" == script1 )
-									pc->lightdamaged = true;
+									pc->setLightDamaged(true);
 								else if ( "LOCKPICKING" == script1 )
 									pc->baseskill[LOCKPICKING] = getRangedValue(script2);
 								else if ( "LODAMAGE" == script1 )

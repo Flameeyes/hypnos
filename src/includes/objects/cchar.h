@@ -168,39 +168,40 @@ public:
 
 //@{
 /*!
-\name char_flags
-\brief Flags used for the char
+\name Character's Flag
 */
 public:
-	static const uint64_t flagGrey		= 0x0000000000000001ull; //!< Char is grey
+	static const uint64_t flagGrey			= 0x0000000000000001ull; //!< Char is grey
 	static const uint64_t flagPermaGrey		= 0x0000000000000002ull; //!< Char is permanent grey
 	static const uint64_t flagResistParalisys	= 0x0000000000000004ull; //!< Char resists to paralisys (unused)
 	static const uint64_t flagWarMode		= 0x0000000000000008ull; //!< Char is in war mode
 	static const uint64_t flagSpellTelekinesys	= 0x0000000000000010ull; //!< Char under telekinesys spell (Luxor)
 	static const uint64_t flagSpellProtection	= 0x0000000000000020ull; //!< Char under protection spell (Luxor)
 
-	static const uint64_t flagKarmaInnocent	= 0x0000000000000040ull; //!< Char is innocent
-	static const uint64_t flagKarmaMurderer	= 0x0000000000000080ull; //!< Char is murderer
-	static const uint64_t flagKarmaCriminal	= 0x0000000000000100ull; //!< Char is criminal
+	static const uint64_t flagKarmaInnocent		= 0x0000000000000040ull; //!< Char is innocent
+	static const uint64_t flagKarmaMurderer		= 0x0000000000000080ull; //!< Char is murderer
+	static const uint64_t flagKarmaCriminal		= 0x0000000000000100ull; //!< Char is criminal
 
-	static const uint64_t flagInvulnerable	= 0x0000000000000200ull; //!< Char is invulnerable
-	static const uint64_t flagNoSkillTitle	= 0x0000000000000400ull; //!< Char hasn't skill title
+	static const uint64_t flagInvulnerable		= 0x0000000000000200ull; //!< Char is invulnerable
+	static const uint64_t flagNoSkillTitle		= 0x0000000000000400ull; //!< Char hasn't skill title
 
 	static const uint64_t flagFrozen		= 0x0000000000000800ull;
-	static const uint64_t flagPermaHidden	= 0x0000000000001000ull;
+	static const uint64_t flagPermaHidden		= 0x0000000000001000ull;
 	static const uint64_t flagNoUseMana		= 0x0000000000002000ull;
-	static const uint64_t flagReflection	= 0x0000000000004000ull;
-	static const uint64_t flagNoUseReagents	= 0x0000000000008000ull;
+	static const uint64_t flagReflection		= 0x0000000000004000ull;
+	static const uint64_t flagNoUseReagents		= 0x0000000000008000ull;
 
-	static const uint64_t flagIncognito		= 0x0000000000010000ull;
-	static const uint64_t flagPolymorphed	= 0x0000000000020000ull;
-	static const uint64_t flagDead		= 0x0000000000040000ull;
+	static const uint64_t flagPolymorphed		= 0x0000000000010000ull;
+	static const uint64_t flagDead			= 0x0000000000020000ull;
 
-	static const uint64_t flagAttackFirst	= 0x0000000000080000ull;
-	static const uint64_t flagDoorUse		= 0x0000000000100000ull;
+	static const uint64_t flagAttackFirst		= 0x0000000000040000ull;
+	static const uint64_t flagDoorUse		= 0x0000000000080000ull;
 
-	static const uint64_t flagIsCasting		= 0x0000000000200000ull;
-	static const uint64_t flagIsGuarded		= 0x0000000000400000ull;
+	static const uint64_t flagIsCasting		= 0x0000000000100000ull;
+	static const uint64_t flagIsGuarded		= 0x0000000000200000ull;
+	
+	static const uint64_t flagHolyDamaged		= 0x0000000000400000ull;
+	static const uint64_t flagLightDamaged		= 0x0000000000800000ull;
 //@}
 
 //@{
@@ -285,6 +286,12 @@ public:
 
 	const bool isGrey() const;
 	
+	inline const bool holyDamaged() const
+	{ return flags & flagHolyDamaged; }
+	
+	inline const bool lightDamaged() const
+	{ return flags & flagLightDamaged; }
+	
 	/*!
 	\author Xanathar
 	\brief Checks char weight
@@ -332,6 +339,12 @@ public:
 	inline void toggleWarMode()
 	{ flags ^= flagWarMode; warUpdate(); }
 
+	inline void setHolyDamaged(bool set = true)
+	{ setFlag(flagHolyDamaged, set); }
+	
+	inline void setLightDamaged(bool set = true)
+	{ setFlag(flagLightDamaged, set); }
+	
 	void warUpdate();
 
 
@@ -638,8 +651,6 @@ public:
 
 		//<Luxor>
 		int32_t			resists[MAX_RESISTANCE_INDEX];
-		bool			holydamaged;
-		bool			lightdamaged;
 		DamageType		damagetype;
 		//</Luxor>
 		int32_t			advobj;		//!< Has used advance gate?
@@ -890,8 +901,8 @@ public:
 		NxwItemWrapper*		nearbyItems;
 	#endif
 
-		std::vector< uint32_t >	lootVector;
-		virtual void		Delete();
+	uint32_vector lootVector;
+	virtual void Delete();
 } PACK_NEEDED;
 
 #endif

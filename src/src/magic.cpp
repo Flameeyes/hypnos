@@ -1631,7 +1631,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if (pd!=NULL) {
                                 CHECKDISTANCE(src, pd);
                                 spellFX(spellnumber, src, pd);
-				if (pd->holydamaged) {
+				if (pd->isHolyDamaged()) {
 					damage(src, pd, spellnumber, flags|SPELLFLAG_DONTCRIMINAL, param);
 				} else {
 					if (nValue==INVALID) {
@@ -1672,7 +1672,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
                         CHECKDISTANCE(src, pd);
                         if (pd!=NULL) {
 				spellFX(spellnumber, src, pd);
-				if (pd->holydamaged) {
+				if (pd->isHolyDamaged()) {
 					damage(src, pd, spellnumber, flags|SPELLFLAG_DONTCRIMINAL, param);
 				} else {
 					if ((pd->dead)&&(pd->IsOnline())) pd->resurrect();

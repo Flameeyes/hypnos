@@ -268,7 +268,6 @@ void cChar::resetData()
 	carve=-1; // AntiChrist - for new carving system
 	antiguardstimer=0; // AntiChrist - for "GUARDS" call-spawn
 	polymorph=false;//polymorph - AntiChrist
-	incognito=false;//incognito - AntiChrist
 	namedeedserial=INVALID;
 	postType = cMsgBoard::LOCALPOST;
 	questDestRegion = 0;
@@ -291,8 +290,6 @@ void cChar::resetData()
 	SetGuildType( INVALID );
 	magicsphere = 0;
 	resetResists();
-	lightdamaged = false;
-	holydamaged = false;
 	damagetype = DAMAGE_BLUDGEON;
 	fstm=0.0f;
 

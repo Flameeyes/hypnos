@@ -459,7 +459,7 @@ void cTempfx::start()
 			//Luxor's incognito code :)
 			if (dest->morphed)
 				dest->morph();	//if the char is morphed, unmorph him
-			dest->incognito = true;
+			dest->setIncognito(true);
 			uint16_t body, skincolor, hairstyle, haircolor, beardstyle, beardcolor, x;
 
 			//--Sex--
@@ -798,7 +798,7 @@ void cTempfx::executeExpireCode()
 		case SPELL_INCOGNITO:
 			if ( ! dest ) return;
 			dest->morph();
-			dest->incognito = false;
+			dest->setIncognito(false);
 			break;
 
 		case LSD:

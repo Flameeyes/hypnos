@@ -126,7 +126,6 @@ cItem::resetData()
 	setSecondaryName("#");
 	murderer = string("");
 	creator = string("");
-	incognito=false;//AntiChrist - incognito
 	madewith=0; // Added by Magius(CHE)
 	rank=0; // Magius(CHE)
 	good=-1; // Magius(CHE)
@@ -239,7 +238,6 @@ cItem& cItem::operator=(const cItem& b)
         setRealName(b.getRealName());
 	
         creator = b.creator;
-        incognito = b.incognito;
         madewith = b.madewith;
         rank = b.rank;
         good = b.good;

@@ -68,9 +68,9 @@ public:
 public:
 	static const uint64_t flagCanViewSerials	= 0x0000000100000000ull; //!< Char can view serial codes
 	static const uint64_t flagPageAble		= 0x0000000200000000ull;
-	static const uint64_t flagViewHouseIcon	= 0x0000000400000000ull;
+	static const uint64_t flagViewHouseIcon		= 0x0000000400000000ull;
 	static const uint64_t flagAllMove		= 0x0000000800000000ull;
-	static const uint64_t flagCanSnoopAll	= 0x0000001000000000ull;
+	static const uint64_t flagCanSnoopAll		= 0x0000001000000000ull;
 	static const uint64_t flagBroadcast		= 0x0000002000000000ull;
 
 	inline const bool canBroadcast() const

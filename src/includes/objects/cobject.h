@@ -171,6 +171,8 @@ public:
 protected:
 	uint64_t flags;	//!< Common flags for objects
 
+	static const uint64_t flagIncognito	= 0x8000000000000000ull; //!< Is under incognito effect?
+	
 	/*!
 	\brief Set a given flag on or off
 	\param flag Flag to set
@@ -191,6 +193,11 @@ public:
 	inline void setFlags(uint64_t newFlags)
 	{ flags = newFlags; }
 
+	inline const bool isIncognito() const
+	{ return flags & flagIncognito; }
+	
+	inline void setIncognito(bool set = true)
+	{ setFlag(flagIncognito, set); }
 //@}
 
 //@{

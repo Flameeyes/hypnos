@@ -618,7 +618,6 @@ public:
 	uint32_t		type;		//!< For things that do special things on doubleclicking
 	uint32_t		type2;
 	int32_t		carve;		//!< for new carve system
-	bool		incognito;	//!< for items under incognito effect
 	int32_t		wipe;		//!< Should this item be wiped with the /wipe command
 	uint32_t		time_unused;	//!< used for house decay and possibly for more in future, gets saved
 	uint32_t		timeused_last;	//!< helper attribute for time_unused, doesnt get saved
