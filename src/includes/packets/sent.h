@@ -32,7 +32,7 @@ namespace nPackets {
 	
 	public:
 		inline virtual ~cPacketSend()
-		{ if ( buffer ) delete[] buffer; }
+		{ delete[] buffer; }
 	
 		//! Prepare the buffer to be sent
 		virtual void prepare() = 0;

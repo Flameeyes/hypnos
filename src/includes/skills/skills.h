@@ -5,10 +5,6 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Skill related functions
-*/
 
 #ifndef __SKILLS_H__
 #define __SKILLS_H__
@@ -69,18 +65,6 @@ namespace nSkills {
 	*/
 	void Hide(pClient client);
 	void Stealth(pClient client);
-	//@}
-
-	//@{
-	/*!
-	\name Musicianship stuff
-	*/
-	void PeaceMaking(pClient client);
-	void PlayInstrumentWell(pClient client, pItem pi);
-	void PlayInstrumentPoor(pClient client, pItem pi);
-	pItem getInstrument(pClient client);
-	void target_provocation1( pClient client, pTarget t );
-	void target_enticement1( pClient client, pTarget t );
 	//@}
 
 	void Meditation(pClient client);

@@ -10,16 +10,21 @@
 \brief Musicianship, Provocation, Enticement, and so on
 */
 
+#include "logsystem.h"
 #include "skills/skills.h"
 #include "skills/music.h"
+#include "objects/cclient.h"
+#include "objects/cpc.h"
+#include "objects/cbody.h"
+#include "ojbects/ccontainer.h"
 
-void Skills::target_enticement2(pClient client, pTarget t )
+void nSkills::target_enticement2(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pChar pc_ftarg = dynamic_cast<pChar>( t->getClicked() );
 	if ( ! pc || ! pc_ftarg ) return;
 
-	pItem inst = Skills::getInstrument(client);
+	pItem inst = client->currChar()->getBody()->getBackpack()->getInstrument();
 	if ( ! inst )
 	{
 		client->sysmessage("You do not have an instrument to play on!");
@@ -33,28 +38,28 @@ void Skills::target_enticement2(pClient client, pTarget t )
 		pc_target->ftargserial = pc_ftarg->getSerial();
 		pc_target->npcWander = WANDER_FOLLOW;
 		client->sysmessage("You play your hypnotic music, luring them near your target.");
-		Skills::PlayInstrumentWell(client, inst);
+		nSkills::PlayInstrumentWell(client, inst);
 	}
 	else
 	{
 		client->sysmessage("Your music fails to attract them.");
-		Skills::PlayInstrumentPoor(client, inst);
+		nSkills::PlayInstrumentPoor(client, inst);
 	}
 }
 
-void Skills::target_enticement1(pClient client, pTarget t )
+void nSkills::target_enticement1(pClient client, pTarget t )
 {
 	pChar current=client->currChar();
-	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
+	pChar pc = dynamic_cast<pChar>( t->getClicked() );
 	if ( !current || !pc ) return;
 
-	pItem inst = Skills::getInstrument(client);
+	pItem inst = client->currChar()->getBody()->getBackpack()->getInstrument();
 	if (!inst)
 	{
 		client->sysmessage("You do not have an instrument to play on!");
 		return;
 	}
-	if ( pc->IsInvul() || pc->shopkeeper )
+	if ( pc->isInvul() || pc->shopkeeper )
 	{
 		client->sysmessage(" You cant entice that npc!");
 		return;
@@ -69,7 +74,7 @@ void Skills::target_enticement1(pClient client, pTarget t )
 	else
 	{
 		pTarget targ= clientInfo[s]->newTarget( new cCharTarget() );
-		targ->code_callback = Skills::target_enticement2;
+		targ->code_callback = nSkills::target_enticement2;
 		targ->buffer[0]= pc->getSerial();
 		targ->send( ps );
 		client->sysmessage("You play your music, luring them near. Whom do you wish them to follow?");
@@ -77,16 +82,16 @@ void Skills::target_enticement1(pClient client, pTarget t )
 	}
 }
 
-void target_provocation2(pClient client, pTarget t )
+void nSkills::target_provocation2(pClient client, pTarget t )
 {
-	pChar Victim2 = cSerializable::findCharBySerial( t->getClicked() );
+	pChar Victim2 = dynamic_cast<pChar>( t->getClicked() );
 	pChar Victim1 = cSerializable::findCharBySerial( t->buffer[0] );
 	if( !Victim1 || !Victim2 ) return;
 
 	pChar Player = client->currChar();
 	if(!Player) return;
 
-	Location charpos= Player->getPosition();
+	Location charpos= Player->getBody()->getPosition();
 
 	if (Victim2->InGuardedArea())
 	{
@@ -99,7 +104,7 @@ void target_provocation2(pClient client, pTarget t )
 		return;
 	}
 
-	pItem inst = Skills::getInstrument(client);
+	pItem inst = client->currChar()->getBody()->getBackpack()->getInstrument();
 	if (!inst)
 	{
 		client->sysmessage("You do not have an instrument to play on!");
@@ -107,7 +112,7 @@ void target_provocation2(pClient client, pTarget t )
 	}
 	if (Player->checkSkill( skMusicianship, 0, 1000))
 	{
-		Skills::PlayInstrumentWell(client, inst);
+		nSkills::PlayInstrumentWell(client, inst);
 		if (Player->checkSkill( skProvocation, 0, 1000))
 		{
 			if (Player->InGuardedArea() && ServerScp::g_nInstantGuard == 1) //Luxor
@@ -141,19 +146,19 @@ void target_provocation2(pClient client, pTarget t )
 	}
 	else
 	{
-		Skills::PlayInstrumentPoor(client, inst);
+	nSkills::PlayInstrumentPoor(client, inst);
 		client->sysmessage("You play rather poorly and to no effect.");
 	}
 }
 
-void Skills::target_provocation1(pClient client, pTarget t )
+void nSkills::target_provocation1(pClient client, pTarget t )
 {
 	pChar current = client->currChar();
-	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
+	pChar pc = dynamic_cast<pChar>( t->getClicked() );
 
 	if(!current || !pc ) return;
 
-	pItem inst = Skills::getInstrument(client);
+	pItem inst = client->currChar()->getBody()->getBackpack()->getInstrument();
 	if (!inst)
 	{
 		client->sysmessage("You do not have an instrument to play on!");
@@ -173,13 +178,13 @@ void Skills::target_provocation1(pClient client, pTarget t )
 	}
 }
 
-void Skills::PeaceMaking(pClient client)
+void nSkills::PeaceMaking(pClient client)
 {
 	pChar pc = NULL;
 	if ( !client || ! (pc = client->currChar()) ) //Luxor
 		return;
 
-	pItem inst = Skills::getInstrument(client);
+	pItem inst = client->currChar()->getBody()->getBackpack()->getInstrument();
 	if( !inst )
 	{
 		client->sysmessage( "You do not have an instrument to play on!");
@@ -188,16 +193,16 @@ void Skills::PeaceMaking(pClient client)
 	
 	if ( !pc->checkSkill( skPeacemaking, 0, 1000) || !pc->checkSkill( skMusicianship, 0, 1000) )
 	{
-		Skills::PlayInstrumentPoor(client, inst);
+	nSkills::PlayInstrumentPoor(client, inst);
 		client->sysmessage("You attempt to calm everyone, but fail.");
 		return;
 	}
 
-	Skills::PlayInstrumentWell(client, inst);
+nSkills::PlayInstrumentWell(client, inst);
 	client->sysmessage("You play your hypnotic music, stopping the battle.");
 
 	NxwCharWrapper sc;
-	sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
+	sc.fillCharsNearXYZ( pc->getBody()->getPosition(), VISRANGE, true, false );
 	for( sc.rewind(); !sc.isEmpty(); sc++ )
 	{
 		pChar pcm = sc.getChar();
@@ -225,7 +230,7 @@ void Skills::PeaceMaking(pClient client)
 \param client Client who's playing (so the one who effectly play the SFX)
 \param pi Instrument to play
 */
-void Skills::PlayInstrumentWell(pClient client, pItem pi)
+void nSkills::PlayInstrumentWell(pClient client, pItem pi)
 {
 	pChar pc = NULL;
 	if ( !client || ! (pc = client->currChar()) || ! pi ) //Luxor
@@ -250,7 +255,7 @@ void Skills::PlayInstrumentWell(pClient client, pItem pi)
 \param client Client who's playing (so the one who effectly play the SFX)
 \param pi Instrument to play
 */
-void Skills::PlayInstrumentPoor(pClient client, pItem pi)
+void nSkills::PlayInstrumentPoor(pClient client, pItem pi)
 {
 	pChar pc = NULL;
 	if ( ! client || ! (pc = client->currChar()) || ! pi ) //Luxor
@@ -268,21 +273,4 @@ void Skills::PlayInstrumentPoor(pClient client, pItem pi)
 	default:
 		LogError("switch reached default");
 	}
-}
-
-/*!
-\brief Gets the instrument for a client
-\author Flameeyes
-\param client Client to get the instrument from
-\return A pointer to the first instrument found or NULL if not found
-*/
-pItem Skills::getInstrument(pClient client)
-{
-	pChar pc = NULL;
-	if ( ! client || ! client->currChar() ||
-		! client->currChar()->getBody() ||
-		! client->currChar()->getBody()->getBackpack() )
-			return NULL;
-
-	return client->currChar()->getBody()->getBackpack()->getInstrument();
 }
