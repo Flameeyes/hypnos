@@ -54,10 +54,6 @@
 
 static int loadnxwoptions (char *script1, char *script2);
 
-#ifdef __BEOS__
-#define INADDR_NONE 0xffffffff
-#endif
-
 static char temp_map[120];
 static char temp_statics[120];
 static char temp_staidx[120];
@@ -66,40 +62,10 @@ static char temp_tiledata[120];
 static char temp_multimul[120];
 static char temp_multiidx[120];
 
-// Xanathar : parses a server.cfg section
-static int parseSection(int (*parseLine)(char *s1, char *s2 ) ) // by Xanathar qsort
-{
-	int loopexit=0;
-	int errors = 0;
-	do
-	{
-		readw2();
-		if ((parseLine(script1, script2)<0)&&(strcmp(script1, "}")))
-		{
-			ConOut("\nERROR : Syntax error, can't parse %s\n", script1);
-			errors++;
-		}
-	}
-	while ( (strcmp(script1, "}")) && (++loopexit < MAXLOOPS) );
-	return -errors;
-}
-
-// Xanathar : parses a CFG command line. As it is now it's useless, but provides
-// room for other improvements in future (err maybe.. booh ;))
-static char *gprop, *gval;
-
-static int parseCfgLine(int (*parseLine)(char *s1, char *s2 ) ) // by Xanathar qsort
-{
-	return parseLine(gprop, gval);
-}
-
-static int chooseSection(char *section,  int (*parseSec)(int (*parseLine)(char *s1, char *s2 )));
-
 //NoX-Wizard defaults, ripped from NXWCFG
 //[Reputation]
 namespace ServerScp {
 
-int g_nInstantGuard=0;
 int g_nAllowMagicInTown=0;
 int g_nSnoopWillCriminal=1;
 int g_nStealWillCriminal=2;
@@ -143,8 +109,6 @@ int g_nLineBuffer=50;
 
 int g_nAutoDetectIP=1;
 int g_nBehindNat=0;
-bool g_bEnableInternalCompiler = true;
-int g_nStealthOnHorse = 0;
 int g_nStealthArLimit = 1;
 int g_nLoadDebugger = 0;
 int g_nCheckBySmall = 0;
@@ -340,7 +304,6 @@ void loadserverdefaults()
 	speed.npcaitime=(float)1.2;
 	speed.tamednpctime=(float)0.9;//AntiChrist
 	speed.npcfollowtime=(float)0.5; //Ripper
-	speed.nice=2;
 
 	resource.logs=3;
 	resource.logtime=600;
@@ -361,7 +324,7 @@ void loadserverdefaults()
 	spiritspeak_data.spiritspeaktimer=SPIRITSPEAKTIMER;
 
 	server_data.blockaccbadpass=0;		//elcabesa tempblock
-    server_data.n_badpass=0;			//elcabesa tempblock
+	server_data.n_badpass=0;			//elcabesa tempblock
 	server_data.time_badpass=0;			//elcabesa tempblock
 	server_data.always_add_hex=0;	//endymion add command stuff
 	server_data.staminaonhorse=0.50; 
@@ -376,36 +339,6 @@ void loadserverdefaults()
 	server_data.bookWorldfile="nxwbook";
 }
 
-static int loadspeed(char *script1, char *script2)//Lag Fix -- Zippy -- NEW FUNCTION
-{
-        if(!(strcmp(script1,"NICE"))) speed.nice=str2num(script2);
-		else if(!(strcmp(script1,"CHECK_ITEMS"))) speed.itemtime=(float)atof(script2);
-		else if(!(strcmp(script1,"CHECK_SPAWNREGIONS"))) speed.srtime=str2num(script2);
-		else if(!(strcmp(script1,"CHECK_NPCS"))) speed.npctime=(float)atof(script2);
-        else if(!(strcmp(script1,"CHECK_NPCAI"))) speed.npcaitime=(float)atof(script2);
-        else if(!(strcmp(script1,"CHECK_TAMEDNPCS"))) speed.tamednpctime=(float)atof(script2);//AntiChrist
-		else if(!(strcmp(script1,"CHECK_NPCFOLLOW"))) speed.npcfollowtime=(float)atof(script2);//Ripper
-		else return -1;
-		return 0;
-}
-
-
-static int loadcombat(char *script1, char *script2) // By Magius(CHE)
-{
-		if(!(strcmp(script1,"COMBAT_HIT_MESSAGE"))) server_data.combathitmessage=str2num(script2);
-		else if(!(strcmp(script1,"MAX_ABSORBTION"))) server_data.maxabsorbtion=str2num(script2); //MAgius(CHE)
-		else if(!(strcmp(script1,"MAX_NON_HUMAN_ABSORBTION"))) server_data.maxnohabsorbtion=str2num(script2); //MAgius(CHE) (2)
-		else if(!(strcmp(script1,"NPC_DAMAGE_RATE"))) server_data.npcdamage=str2num(script2); //MAgius(CHE) (3)
-		else if(!(strcmp(script1,"MONSTERS_VS_ANIMALS"))) server_data.monsters_vs_animals=str2num(script2);
-		else if(!(strcmp(script1,"ANIMALS_ATTACK_CHANCE"))) server_data.animals_attack_chance=str2num(script2);
-		else if(!(strcmp(script1,"ANIMALS_GUARDED"))) server_data.animals_guarded=str2num(script2);
-		else if(!(strcmp(script1,"NPC_BASE_FLEEAT"))) server_data.npc_base_fleeat=str2num(script2);
-		else if(!(strcmp(script1,"NPC_BASE_REATTACKAT"))) server_data.npc_base_reattackat=str2num(script2);
-		else if(!(strcmp(script1,"ATTACKSTAMINA"))) server_data.attackstamina=str2num(script2); // antichrist (6) - for ATTACKSTAMINA
-		else return -1;
-		return 0;
-}
-
 static int block_acc(char *script1, char *script2) // elcabesa tempblock
 {													// elcabesa tempblock
 		if(!(strcmp(script1,"BLOCKACCBADPASS"))) server_data.blockaccbadpass=str2num(script2);		// elcabesa tempblock
@@ -414,36 +347,6 @@ static int block_acc(char *script1, char *script2) // elcabesa tempblock
 		else return -1;																						// elcabesa tempblock
 		return 0;																							// elcabesa tempblock
 }																											// elcabesa tempblock
-
-static int loadvendor(char *script1, char *script2) // by Magius(CHE)
-{
-		if(!(strcmp(script1,"SELLBYNAME"))) {
-			server_data.sellbyname=str2num(script2);
-			if (server_data.sellbyname!=0) server_data.sellbyname=1;  //MAgius(CHE)
-		}
-		else if(!(strcmp(script1,"SELLMAXITEM"))) {
-			server_data.sellmaxitem=str2num(script2);
-		}
-		else if(!(strcmp(script1,"RESTOCKRATE"))) {
-			ServerScp::g_nRestockTimeRate=str2num(script2);
-		}
-		else if(!(strcmp(script1,"TRADESYSTEM"))) {
-			server_data.trade_system=str2num(script2); //Magius(CHE)
-			if (server_data.trade_system!=0) server_data.trade_system=1; // Magiu(CHE)
-		}
-		else if(!(strcmp(script1,"RANKSYSTEM"))) {
-			server_data.rank_system=str2num(script2);
-			if (server_data.rank_system!=0) server_data.rank_system=1; //Magius(CHE)
-		}
-		else if(!(strcmp( script1,"CHECKBANK"))) {
-            server_data.CheckBank=str2num(script2);
-		}
-		else if(!(strcmp( script1,"SELLFORITEM"))) {
-            server_data.defaultSelledItem=str2num(script2);
-		}
-		else return -1;
-		return 0;
-}
 
 extern bool g_bInMainCycle;
 
@@ -721,21 +624,11 @@ void commitserverscript() // second phase setup
 
 void saveserverscript()
 {
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	FILE *file;
 	file=fopen("config/server.cfg", "w");
 	if(!file) return; //only write can be..
 	const char * t;
 	std::vector<std::string>::const_iterator vis( clientsAllowed.begin() ), vis_end( clientsAllowed.end() );
-
-	fprintf(file, "// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
-	fprintf(file, "// || NoX-Wizard settings (server.cfg)                                    ||\n");
-	fprintf(file, "// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
-	fprintf(file, "// || Generated by NoX-Wizard version %s %s               ||\n", VERNUMB, OSFIX);
-	fprintf(file, "// || Requires NoX-Wizard version %s to be read correctly              ||\n", SCPREQVER);
-	fprintf(file, "// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
-	fprintf(file, "// || This script is NOT compatible with 0.70 script format               ||\n");
-	fprintf(file, "// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n\n\n");
 
 	fprintf(file, "SECTION SHARD\n");
 	fprintf(file, "{\n");
@@ -840,14 +733,10 @@ void saveserverscript()
 
 	fprintf(file, "SECTION SKILLS\n");
 	fprintf(file, "{\n");
-	fprintf(file, "// Sets the amount of steps a character can make with stealth until he becomes visible again \n");
-	fprintf(file, "MAXSTEALTHSTEPS %i\n",server_data.maxstealthsteps);//Instalog
-	fprintf(file, "// Allow stealth on horse \n");
-	fprintf(file, "STEALTHONHORSE %i\n",ServerScp::g_nStealthOnHorse);//Instalog
 	fprintf(file, "// Limit stealthwith AR \n");
 	fprintf(file, "STEALTHARLIMIT %i\n",ServerScp::g_nStealthArLimit);//Instalog
 	fprintf(file, "// 1= casting from scrolls requires less skill than casting from spellbook, 0 = no difference \n");
-    fprintf(file, "CUT_SCROLL_REQUIREMENTS %i\n",server_data.cutscrollreq);//AntiChrist
+	fprintf(file, "CUT_SCROLL_REQUIREMENTS %i\n",server_data.cutscrollreq);//AntiChrist
 	fprintf(file, "// 1= Allow using bandages while fighting, 0=Forbid usage of bandages while fighting \n");
 	fprintf(file, "BANDAGEINCOMBAT %i\n",server_data.bandageincombat);
 	fprintf(file, "// 0=Let skill raise freely with sparring otherwise defending player must have N skill points\n");
@@ -885,7 +774,7 @@ void saveserverscript()
 	fprintf(file, "// Defines how long (seconds) a character stays in the game when he logs out \n");
 	fprintf(file, "CHAR_TIME_OUT %i\n",server_data.quittime);//Instalog
 	fprintf(file, "// Define how often a boat moves \n");
-    fprintf(file, "BOAT_SPEED %f\n",server_data.boatspeed);//Boats
+	fprintf(file, "BOAT_SPEED %f\n",server_data.boatspeed);//Boats
 	fprintf(file, "// Fee payed for stabled animals \n");
 	fprintf(file, "STABLING_FEE %f\n",server_data.stablingfee);//Boats
 	fprintf(file, "// Length of time (INGAME seconds) until a player house will decay - counter is cpu intensitive\n");
@@ -1011,8 +900,6 @@ void saveserverscript()
 
 	fprintf(file, "SECTION SPEED\n"); //Lag Fix -- Zippy
 	fprintf(file, "{\n");
-	fprintf(file, "// accepts 0 to 3, 0 is most processor intensive, 2 is default (and nice) \n");
-    fprintf(file, "NICE %i\n",speed.nice);
 	fprintf(file, "// How often items are checked for action (in seconds) \n");
 	fprintf(file, "CHECK_ITEMS %f\n",speed.itemtime);
 	fprintf(file, "// How often NPCs are checked for action (in seconds)  \n");
@@ -1142,10 +1029,6 @@ void saveserverscript()
 	fprintf(file, "POLYMORPHWILLCRIMINAL %d\n", ServerScp::g_nPolymorphWillCriminal);
 	fprintf(file, "// Sets how the player become after looting a blue : 0:remains blue, 1:goes grey, 2:goes criminal\n");
 	fprintf(file, "LOOTINGWILLCRIMINAL %d\n", ServerScp::g_nLootingWillCriminal);
-	//Arakensh guard
-	fprintf (file, "//When attack in town 1:the guard respawn instantanely 0:someone must call guards or if guard is near go to criminal or murderer\n");
-	fprintf (file, "INSTANTGUARD %i\n",ServerScp::g_nInstantGuard);
-	//end arakensh guard
 	fprintf(file, "// Sets how the player become helping a grey : 0:remains blue, 1:goes grey, 2:goes criminal\n");
 	fprintf(file, "HELPINGGREYWILLCRIMINAL %d\n", ServerScp::g_nHelpingGreyWillCriminal);
 	fprintf(file, "// Sets how the player become helping a criminal : 0:remains blue, 1:goes grey, 2:goes criminal\n");
@@ -1216,38 +1099,9 @@ void saveserverscript()
 
 	fprintf(file, "SECTION NOXWIZARD_SYSTEM\n");
 	fprintf(file, "{\n");
-	fprintf(file, "// Set to 0 to disable Small (AMX) scripts, 1 to enable them (default) \n");
-	fprintf(file, "ENABLEAMX %i\n", ServerScp::g_nEnableAMXScripts); // lb
-/*#ifndef _WINDOWS
-	fprintf(file, "// Set to 1 to enable the internal debugger for amx programs. If you use \n");
-	fprintf(file, "// an external compiler, remember to include debug symbols.\n");
-	fprintf(file, "DEBUGAMX %i\n", ServerScp::g_nLoadDebugger);
-#endif //_WINDOWS*/
-	fprintf(file, "// Set to 0 to disable the integrated Small compiler \n");
-	fprintf(file, "USEINTERNALCOMPILER %i\n", (ServerScp::g_bEnableInternalCompiler ? 1 : 0)); // lb
-	fprintf(file, "// Set to 1 to enable check of all object with scripted small function ( checkItem, checkNpc, checkPl in checks.sma )\n");
-	fprintf(file, "CHECKBYSMALL 0\n" ); //ndEndy executed ONLY A TIME
-	fprintf(file, "// Set to 1 enables Salted DES 56bit account encryption \n");
-	fprintf(file, "USEACCOUNTENCRYPTION %i\n", ServerScp::g_nUseAccountEncryption); // lb
-	fprintf(file, "// Set to 1 enables verbose comments on crontab tasks execution \n");
-	fprintf(file, "VERBOSECRONTAB %i\n", ServerScp::g_nVerboseCrontab);
 	fprintf(file, "// Set to 1 enables enhanced npc magic \n");
 	fprintf(file, "NEWNPCMAGIC %i\n", ServerScp::g_nUseNewNpcMagic);
-/*    if (ADVENTUREMODE) {
-    	fprintf(file, "// Sets adventure mode on/off [Dangerous!] \n");
-	    fprintf(file, "ADVENTUREMODE %i\n", ServerScp::g_nAdventureMode);
-    }*/
 	fprintf(file, "}\n\n");
-
-	fprintf(file, "SECTION PRELOAD\n");
-	fprintf(file, "{\n");
-	fprintf(file, "// Set to 1 copy all console command to a file. For deamon mode or \n");
-	fprintf(file, "// NT service mode, this is always true \n");
-	fprintf(file, "CONSOLEONFILE %i\n", ServerScp::g_nRedirectOutput);
-	fprintf(file, "// File that will get console output \n");
-	fprintf(file, "STDOUTFILE %s\n", ServerScp::g_szOutput);
-	fprintf(file, "}\n\n");
-
 
 	fprintf(file, "SECTION LINUX\n");
 	fprintf(file, "{\n");

@@ -394,7 +394,7 @@ namespace Skills {
 	bool isEnabledSkillBySkillCap()
 	{ return flags & flagSkillBySkillCap; }
 	
-	//! Maximum number of stealth steps to perform
+	//! Amount of steps a character can make with stealth until he becomes visible again
 	SETTING(uint32_t, MaxStealthSteps, 10);
 
 	//! Prevents permanent skill usage.
