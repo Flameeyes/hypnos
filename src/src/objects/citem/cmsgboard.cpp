@@ -10,8 +10,7 @@
 /*!
 \file
 \brief Message board functions
-\author Dupois and Akron (rewrite and cleanup)
-\note using namespaces and c++ style
+\author Chronodt (almost total rewrite)
 */
 
 #include "nxwcommn.h"
@@ -50,6 +49,9 @@ static uint32_t cMsgBoardMessage::nextSerial()
 void cMsgBoardMessage::Delete()
 {
 /*
+
+All in this comment range is done by cItem::Delete() at the bottom of this method...
+
 	cPacketSendDeleteObject pk(serial);
 
         //! \todo replace this when sets redone
@@ -69,22 +71,22 @@ void cMsgBoardMessage::Delete()
         case LOCALPOST: //Here we need only to disconnect local MsgBoard
                 // Disconnecting relations from bullettin board which was linked to
         	cBBRelations::iterator it = find(cMsgBoards::BBRelations.begin(),cMsgBoards::BBRelations.end(), cBBRelations::pair(getContainer()->getSerial32(), serial));
-	        if ((it != cMsgBoards::BBRelations.end()) || (*it == cBBRelations::pair(getContainer()->getSerial32(), serial)) cMsgBoards::BBRelations.erase(it);
+	        if (it != cMsgBoards::BBRelations.end()) cMsgBoards::BBRelations.erase(it);
                 break;
-        case REGIONALPOST: //Here, instead, we have to disconnect ALL msgBoard in the same region as the board in which post was originally posted
+        case REGIONALPOST: //Here, instead, we have to disconnect ALL msgBoard in the same region as the board in which the message was originally posted to
 
         	pair<cMsgBoards::iterator, cMsgBoards::iterator> it = cMsgBoard::getBoardsinRegion(region);
                 if (it.first == cMsgBoards::MsgBoards.end()) break;	//If no msgboards in region, bail out
                 /*
-                We now have a range it.first-it.second of msgBoards that are in the same region as the message to be deleted. (they may even be
-                the same)
+                We now have a range it.first-it.second of msgBoards that are in the same region as the message to be deleted. (they are returned
+                as first in region - first in next region, so they are never the same unless they are both end(), and it means no msgboards in region)
                 Since they are all in the same region, due to RegionSort, this range is sorted by serial number now, and we use this fact:
-                BBrelations key are the serials and sorted in the same way, so the find algorithm will NOT need to research from the beginning
+                BBrelations key is the serial and sorted in the same way, so the find algorithm will NOT need to research from the beginning
                 each time. In addition, find algorithm looks for the first (and should be the only) occurrence of the pair, so the search is much
                 more time efficient than a whole search from the beginning for each msgboard in region
                 */
                 cBBRelations::iterator bbit = cMsgBoards::BBRelations.begin();
-                for(; (it.first != it.second) || (bbit == cMsgBoards::BBRelations.end()); ++it.first)
+                for(; (it.first != it.second) && (bbit != cMsgBoards::BBRelations.end()); ++it.first)
                 {
                         //finding the current serial and set it for next search, since it will be only on following serials
 			bbit = find(bbit,cMsgBoards::BBRelations.end(), cBBRelations::pair((*itbegin)->getSerial32(), serial));
@@ -196,7 +198,7 @@ bool cMsgBoardMessage::expired()
                 {
                         pChar pc = pointers::findCharBySerial(targetnpc);
                         // If it is an npc created just for the bounty (function not yet implemented) but it has not yet
-                        // disappeared, but the serial is still the right npc (the serial may have been reused!!) we delete it
+                        // disappeared and the serial is still the right npc (the serial may have been reused!!) we delete it
                         if (!pc && pc->rtti() == rtti::cNPC && pc->questBountyPostSerial == getSerial32()) pc->Delete();
 			if (!pc && pc->rtti() == rtti::cPC && pc->questBountyPostSerial == getSerial32())
                         {
@@ -284,16 +286,6 @@ void cMsgBoardMessage::refreshQuestMessage()
 //				cMsgBoard Methods
 //-----------------------------------------------------------------------------------------
 
-/*!
-\brief Char array for messages to client.
-Message body (when entering body of post) can hold a maximum of 1975 chars (approx)
-*/
-//uint8_t msg[MAXBUFFER];
-
-//! Buffer to be used when posting messages
-//uint8_t msg2Post[MAXBUFFER] = "\x71\xFF\xFF\x05\x40\x00\x00\x19\x00\x00\x00\x00";
-//                                     |Pid|sz1|sz2|mTy|b1 |b2 |b3 |b4 |m1 |m2 |m3 |m4 |
-
 cMsgBoard::cMsgBoard()
 {
 	cMsgBoard(nextSerial());
@@ -315,7 +307,7 @@ cMsgBoard::~cMsgBoard()
 Used to retrieve the current post type in order to tell the user what type of
 mode they are in.
 */
-static void cMsgBoard::getPostType( pClient client )
+void cMsgBoard::getPostType( pClient client )
 {
 	pPC pc = client->currChar();
 	VALIDATEPC(pc);
@@ -344,12 +336,12 @@ static void cMsgBoard::getPostType( pClient client )
 \param nPostType type of post
 
 Used to set the postType for the current user (Typically a GM)
-There is a local array that holds each players curreny posting
+There is a local array that holds each players current posting
 type.  Using the command to set the post type updates the
 value in the array for that player so that they can post
 different types of messages.
 */
-static void cMsgBoard::setPostType( pClient client, PostType nPostType )
+void cMsgBoard::setPostType( pClient client, PostType nPostType )
 {
 	pChar pc=client->currChar();
 	VALIDATEPC(pc);
@@ -401,11 +393,6 @@ and this function is then called to send them
 */
 void cMsgBoard::sendMessageSummary( pClient client, pMsgBoardMessage message)
 {
-/*
-        cMsgBoardMessages::iterator it = cMsgBoardMessage::MsgBoardMessages.begin();
-	for(;(it != cMsgBoardMessage::MsgBoardMessages.end()) && ((*it)->getSerial32() != messageserial), ++it) {}
-	if ((*it)->getSerial32() != messageserial) return; //if not found, something is wrong, so we do nothing else
-*/
 	cPacketSendBBoardCommand pk(this, SendMessageSummary, message);
 	client->sendPacket(&pk);
 }
@@ -454,7 +441,7 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
 \return serial of message posted 
 */
 
-static uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem item, int region )
+uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem item, int region )
 {
 	static const char subjectEscort[]     = "Escort: Needed for the day.";  // Default escort message
 	static const char subjectBounty[]     = "Bounty: Reward for capture.";  // Default bounty message
@@ -529,7 +516,7 @@ static uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pI
 
 	if (MsgBoard == NULL)
         {
-        	message->Delete;
+        	message->Delete();
 		return 0;
 	}
 
@@ -538,7 +525,6 @@ static uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pI
 
 	int loopexit=0;
 
-//	safedelete(iter);
 	switch ( questType )
 	{
 	case ESCORTQUEST:
@@ -546,7 +532,7 @@ static uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pI
 		iter = Scripts::MsgBoard->getNewIterator("SECTION ESCORTS");
 		if (iter==NULL)
                 {
-                	message->Delete;
+                	message->Delete();
                         return 0;
                 }
 
@@ -574,7 +560,7 @@ static uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pI
 		if ( listCount == 0 )
 		{
 			ConOut( "cMsgBoard::createQuestMessage() No msgboard.scp entries found for ESCORT quests\n" );
-		       	message->Delete;
+		       	message->Delete();
 			return 0;
 		}
 
@@ -592,7 +578,7 @@ static uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pI
 		if (iter==NULL)
 		{
 			ConOut( "cMsgBoard::createQuestMessage() Couldn't find entry %s for ESCORT quest\n", temp );
-                      	message->Delete;
+                      	message->Delete();
 			return 0;
 		}
 		break;
@@ -602,7 +588,7 @@ static uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pI
 		iter = Scripts::MsgBoard->getNewIterator("SECTION BOUNTYS");
 		if (iter==NULL)
 		{
-        	   	message->Delete;
+        	   	message->Delete();
                 	return 0;
 	        }
 
@@ -630,7 +616,7 @@ static uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pI
 		if ( listCount == 0 )
 		{
 			ConOut( "cMsgBoard::createQuestMessage() No msgboard.scp entries found for BOUNTY quests\n" );
-	       		message->Delete;
+	       		message->Delete();
 			return 0;
 		}
 
@@ -649,13 +635,13 @@ static uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pI
 		if (iter==NULL)
 		{
 			ConOut( "cMsgBoard::createQuestMessage() Couldn't find entry %s for BOUNTY quest\n", temp );
-	       		message->Delete;
+	       		message->Delete();
 			return 0;
 		}
 	      	break;
 	default:
 		ConOut( "cMsgBoard::createQuestMessage() Invalid questType %d\n", questType );
-	    	message->Delete;
+	    	message->Delete();
 		return 0;
 	}
 
@@ -668,14 +654,14 @@ static uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pI
 	message->body = '\0';  //we start with 0 lines
 	if (iter==NULL)
         {
-               	message->Delete;
+               	message->Delete();
         	return 0;
         }
 	script1 = iter->getEntry()->getFullLine();		//discards {
 
 	loopexit=0;
 	int loopexit2=0;
-	// Read in the random post message choosen above and fill in buffer body for posting
+	// Read in the random post message choosen above and fill in message body
 	while ( (++loopexit < MAXLOOPS)  )
 	{
 		script1 = iter->getEntry()->getFullLine();
@@ -769,7 +755,7 @@ static uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pI
 
 	if (!MsgBoard->addMessage( message ))
         {
-        	message->Delete;
+        	message->Delete();
         	return 0;
         }
         return message->getSerial32();
@@ -782,7 +768,7 @@ static uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pI
 \param messageserial serial of the message to delete
 */
 
-static void cMsgBoard::removeQuestMessage(uint32_t messageserial)
+void cMsgBoard::removeQuestMessage(uint32_t messageserial)
 {
 	cMsgBoardMessages::iterator it = MsgBoardMessages.begin();
         for (; (*it)->getSerial32() != messageserial && it != MsgBoardMessages.end(); ++it) {}
@@ -794,10 +780,11 @@ static void cMsgBoard::removeQuestMessage(uint32_t messageserial)
 
 /*!
 \brief Message board mainteinance
-\note Message retention check, link consistency check and refreshing of quests 
+\note Message retention check, link consistency check and refreshing of quests
+\todo check if moving msgboards with regional posts outside its region causes trouble, and if so do a region check and relink here 
 */
 
-static void cMsgBoard::MsgBoardMaintenance()
+void cMsgBoard::MsgBoardMaintenance()
 {
 	// Display progress message
 	InfoOut("Bulletin board maintenance... \n");
@@ -883,7 +870,7 @@ static void cMsgBoard::MsgBoardMaintenance()
 \returns if any msgboard is found, returns as range [first,second[ , else both iterators point to MsgBoards.end()
 */
 
-static pair<cMsgBoards::iterator, cMsgBoards::iterator> cMsgBoard::getBoardsinRegion(int region)
+pair<cMsgBoards::iterator, cMsgBoards::iterator> cMsgBoard::getBoardsinRegion(int region)
 {
         	cMsgBoards::iterator it = MsgBoards.begin();
                 //With this we find the first board in which region number is the same as the message to be deleted
@@ -895,5 +882,12 @@ static pair<cMsgBoards::iterator, cMsgBoards::iterator> cMsgBoard::getBoardsinRe
                 return pair<cMsgBoards::iterator, cMsgBoards::iterator> (itbegin, it);
 }
 
+/*!
+\brief returns the region of msgboard
+\returns region number of msgboard
+*/
 
-
+int cMsgBoard::getRegion()
+{
+	return calcRegionFromXY(position);
+}

@@ -480,6 +480,19 @@ cPacketSendMsgBoardItemsinContainer::prepare()
 
 }
 
+
+cPacketSendSecureTradingStatus::prepare()
+{
+        buffer = new uint8_t[17];
+	buffer[0] = 0x6F;
+        ShortToCharPtr(17, buffer+1); 	//Size - no name in this message -  so length is fixed
+	buffer[3]=action;	      	//State
+	LongToCharPtr(id1, buffer +4);
+	LongToCharPtr(id2, buffer +8);
+	LongToCharPtr(id3, buffer +12);
+	buffer[16]=0; 			// No name in this message
+}
+
 static pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
 {
        switch(buffer[0])
@@ -509,7 +522,7 @@ static pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t lengt
                 case 0x66: return new cPacketReceiveBookPage(buffer, length); 	 	// Books - Page (receive version)
                 case 0x69: return NULL; 						// (Obsolete) Change Text/Emote Color
                 case 0x6c: return new cPacketReceiveTargetSelected(buffer, length);	// Targeting Cursor Commands
-                case 0x6f: 								// Secure Trading
+                case 0x6f: return new cPacketReceiveSecureTrade(buffer,length);		// Secure Trading
                 case 0x71: return new cPacketReceiveBBoardMessage(buffer, length); 	// Bulletin Board Message
                 case 0x72: length =   5; break; // Request War Mode Change/Send War Mode status
                 case 0x73: length =   2; break; // Ping message
@@ -1300,6 +1313,60 @@ bool cPacketReceiveTargetSelected::execute(pClient client)
 						target->code_callback( ps, target );
 }
 
+/*!
+\brief Receive secure trading message
+\param client client who sent the packet
+*/
+
+bool cPacketReceiveSecureTrade::execute(pClient client)
+{
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+
+	pContainer cont1, cont2;
+
+	switch(buffer+3) //Buffer + 3 = Action byte
+	{
+	case 0://Start trade - Never happens, sent out by the server only.
+		break;
+	case 2://Change check marks. Possibly conclude trade
+		cont1 = pointers::findItemBySerPtr(buffer + 4);
+                //cont1 is now this client's secure trading container (a temporary container wich holds the trade items)
+
+		if (cont1) cont2 = pointers::findItemBySerial(calcserial(cont1->moreb1, cont1->moreb2, cont1->moreb3, cont1->moreb4));
+		else cont2=NULL;
+
+		if (cont2)
+		{
+			cont1->morez=buffer[11];
+			client->sendtradestatus(cont1, cont2);
+			if (cont1->morez && cont2->morez)
+			{
+
+
+//Continue revision from here
+
+
+
+
+
+
+
+
+
+
+				dotrade(cont1, cont2);
+				endtrade( LongFromCharPtr(buffer + 4) );
+			}
+		}
+		break;
+	case 1://Cancel trade. Send each person cancel messages, move items.
+		endtrade( LongFromCharPtr(buffer +4) );
+		break;
+	default:
+		ErrOut("Switch fallout. trade.cpp, trademsg()\n"); //Morrolan
+	}
+}
 
 
 /*!
@@ -1308,7 +1375,7 @@ bool cPacketReceiveTargetSelected::execute(pClient client)
 \param client client who sent the packet
 \note Packets flow is:
 1) client doubleclicks the board (received 0x06 packets and doubleclick routine works with that)
-2) server sends 0x71 command 0 to tell client to open the bulletin board
+2) server sends 0x71 command 0 to tell client to open the bulletin board gump and await message data
 3) server sends 0x25 (add items to container) to tell to the client the serial numbers of all messages in the board
 4) the client replies to 0x25 sending a 0x71 message 4 for each post in the board to get the details of each
    (poster, date and topic)
@@ -1470,3 +1537,5 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 	}
         return true;
 }
+
+

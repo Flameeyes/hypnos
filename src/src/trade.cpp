@@ -288,40 +288,6 @@ void clearalltrades()
         }*/
 }
 
-
-void trademsg(int s)
-{
-	P_ITEM cont1, cont2;
-
-	switch(buffer[s][3])
-	{
-	case 0://Start trade - Never happens, sent out by the server only.
-		break;
-	case 2://Change check marks. Possibly conclude trade
-		cont1 = pointers::findItemBySerPtr(buffer[s] +4);
-
-		if (cont1) cont2 = pointers::findItemBySerial(calcserial(cont1->moreb1, cont1->moreb2, cont1->moreb3, cont1->moreb4));
-		else cont2=NULL;
-
-		if (cont2)
-		{
-			cont1->morez=buffer[s][11];
-			sendtradestatus(cont1, cont2);
-			if (cont1->morez && cont2->morez)
-			{
-				dotrade(cont1, cont2);
-				endtrade( LongFromCharPtr(buffer[s] +4) );
-			}
-		}
-		break;
-	case 1://Cancel trade. Send each person cancel messages, move items.
-		endtrade( LongFromCharPtr(buffer[s] +4) );
-		break;
-	default:
-		ErrOut("Switch fallout. trade.cpp, trademsg()\n"); //Morrolan
-	}
-}
-
 void dotrade(P_ITEM cont1, P_ITEM cont2)
 {
         VALIDATEPI(cont1);

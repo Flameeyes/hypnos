@@ -497,7 +497,6 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 			if ( ISVALIDPI( piz ) )
 				if ( piz->morez || container->morez )
 				{
-                                //! \todo the sendpacket stuff here
 					piz->morez = 0;
 					container->morez = 0;
 					sendtradestatus( piz, container );
@@ -799,7 +798,6 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 			{
 				pi_z->morez=0;
 				cont->morez=0;
-                                //! \todo the sendpacket stuff here
 				sendtradestatus( pi_z, cont );
 			}
 	}
@@ -1934,7 +1932,7 @@ void cClient::item_bounce6(const pItem pi)
 ------------------------------------------------------------------------------*/
 
 /*!
-\brief holds some statements that were COPIED some 50 times
+\brief concludes buying of items
 \author Unknown, updated to pyuo Chronodt (24/2/04)
 \param npc vendor whose goods player is buying
 \param allitemsbought vector of items selected from player (layer, pItem and amount for each item)
@@ -2100,3 +2098,21 @@ void cClient::buyaction(pNpc npc, std::vector< buyeditem > &allitemsbought)
 	statusWindow(pc,true);  //!< \todo check second argument
 }
 
+
+void sendtradestatus(pContainer cont1, pContainer cont2)  //takes clients from containers' owners
+{
+	VALIDATEPI(cont1);
+	VALIDATEPI(cont2);
+
+	pChar p1, p2;
+
+	p1 = pointers::findCharBySerial(cont1->getContSerial());
+	VALIDATEPC(p1);
+	p2 = pointers::findCharBySerial(cont2->getContSerial());
+	VALIDATEPC(p2);
+
+	cPacketSendSecureTradingStatus pk1(0x02, cont1->getSerial32(), (uint32_t) (cont1->morez%256), (uint32_t) (cont2->morez%256));
+      	cPacketSendSecureTradingStatus pk1(0x02, cont2->getSerial32(), (uint32_t) (cont2->morez%256), (uint32_t) (cont1->morez%256));
+	p1->getClient()->sendPacket(&pk1);
+	p2->getClient()->sendPacket(&pk2);
+}

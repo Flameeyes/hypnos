@@ -1601,23 +1601,7 @@ void SendDrawObjectPkt(NXWSOCKET s, P_CHAR pc, int z)
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SendSecureTradingPkt(NXWSOCKET s, uint8_t action, uint32_t id1, uint32_t id2, uint32_t id3)
-{
-	uint16_t len;
-	uint8_t msg[17]={ 0x6F, 0x00, };
 
-
-	len = 17;		//Size - no name in this message -  so len is fixed
-	msg[3]=action;		//State
-	LongToCharPtr(id1, msg +4);
-	LongToCharPtr(id2, msg +8);
-	LongToCharPtr(id3, msg +12);
-	msg[16]=0; 		// No name in this message
-
-	ShortToCharPtr(len, msg +1);
-	Xsend(s, msg, len);
-//AoS/	Network->FlushBuffer(s);
-}
 
 void SendSpeechMessagePkt(NXWSOCKET s, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint8_t sysname[30],  char *text)
 {
@@ -1891,27 +1875,6 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 	return 1;
 }
 
-void sendtradestatus(P_ITEM c1, P_ITEM c2)
-{
-	VALIDATEPI(c1);
-	VALIDATEPI(c2);
-
-	NXWSOCKET s1, s2;
-
-	P_CHAR p1, p2;
-
-	p1 = pointers::findCharBySerial(c1->getContSerial());
-	VALIDATEPC(p1);
-	p2 = pointers::findCharBySerial(c2->getContSerial());
-	VALIDATEPC(p2);
-
-	s1 = p1->getSocket();
-	s2 = p2->getSocket();
-
-	SendSecureTradingPkt(s1, 0x02, c1->getSerial32(), (uint32_t) (c1->morez%256), (uint32_t) (c2->morez%256));
-	SendSecureTradingPkt(s2, 0x02, c2->getSerial32(), (uint32_t) (c2->morez%256), (uint32_t) (c1->morez%256));
-
-}
 
 void endtrade(SERIAL serial)
 {

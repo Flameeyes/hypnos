@@ -470,7 +470,22 @@ public:
 		buffer(NULL), length(NULL)
 	{ }
 
+	void prepare();
+};
 
+class cPacketSendSecureTradingStatus : cPacketSend
+{
+protected:
+
+//	const pContainer cont1,cont2;
+        const uint8_t action;
+        const uint32_t id1,id2,id3;
+
+public:
+	inline cPacketSendSecureTradingStatus(uint8_t act, uint32_t i1, uint32_t i2, uint32_t i3) :
+        	action(act), id1(i1), id2(i2), id3(i3),
+		buffer(NULL), length(NULL)
+	{ }
 
 	void prepare();
 };
@@ -524,7 +539,7 @@ class cPacketReceiveLoginChar       	: public cPacketReceive;
 class cPacketReceiveBookPage		: public cPacketReceive;
 class cPacketReceiveTargetSelected      : public cPacketReceive;
 class cPacketReceiveBBoardMessage       : public cPacketReceive;
-class        : public cPacketReceive;
+class cPacketReceiveSecureTrade         : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;

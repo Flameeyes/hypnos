@@ -85,7 +85,6 @@ void MakeGraphicalEffectPkt_(uint8_t pkt[28], uint8_t type, uint32_t src_serial,
 void SendPauseResumePkt(NXWSOCKET s, uint8_t flag);
 void SendDeleteObjectPkt(NXWSOCKET s, SERIAL serial);
 void SendDrawObjectPkt(NXWSOCKET s, P_CHAR pc, int z);
-void SendSecureTradingPkt(NXWSOCKET s, uint8_t action, uint32_t id1, uint32_t id2, uint32_t id3);
 void SendSpeechMessagePkt(NXWSOCKET s, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint8_t sysname[30], char *text);
 void SendUnicodeSpeechMessagePkt(NXWSOCKET s, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint32_t lang, uint8_t sysname[30], uint8_t *unicodetext, uint16_t unicodelen);
 void SendUpdatePlayerPkt(NXWSOCKET s, uint32_t player_id, uint16_t model, Location pos, uint8_t dir, uint16_t color, uint8_t flag, uint8_t hi_color);
@@ -95,7 +94,7 @@ void impowncreate(NXWSOCKET s, P_CHAR pc, int z);
 	//!< socket, player to send
 void sendshopinfo(int s, int c, P_ITEM pi);
 int sellstuff(int s, int i);
-void sendtradestatus(P_ITEM cont1, P_ITEM cont2);
+
 void endtrade(SERIAL serial);
 void tellmessage(int i, int s, char *txt);
 void gmyell(char *txt);

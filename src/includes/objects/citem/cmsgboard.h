@@ -142,11 +142,7 @@ public:
         bool    	addMessage( pMsgBoardMessage message );
 	static uint32_t 	createQuestMessage(QuestType questType, pChar npc = NULL, pItem item = NULL, int region = -1);
 	static void	removeQuestMessage(uint32_t messageserial);
-
-
         static bool     relinkQuestMessage(pMsgBoardMessage message);
-
-        
       	static void	MsgBoardMaintenance();
 
         int getRegion();

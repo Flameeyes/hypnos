@@ -128,6 +128,7 @@ public:
         void updateStatusWindow(pItem item);
         void skillWindow();
         void updatePaperdoll();
+        static void sendtradestatus(pContainer cont1, pContainer cont2);  //takes clients from containers' owners
 };
 
 #endif
