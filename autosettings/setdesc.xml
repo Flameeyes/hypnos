@@ -76,4 +76,22 @@ The weight a character can carry with one strenght point.
 The amount of gold pieces a new character get.
   </setting>
  </group>
+ 
+ <group name="MsgBoards">
+  <setting name="MaxPosts" type="uint16" default="128" flag="get">
+The maximum possible posts on a message board.
+  </setting>
+  <setting name="MaxEntries" type="uint16" default="256" flag="get">
+The maximum number of entries in ESCORTS.
+  </setting>
+  <setting name="MessageRetention" type="uint8" default="30" flag="get">
+The maximum number of days a post remains on the board.
+  </setting>
+  <setting name="EscortInitExpire" type="uint32" default="86400" flag="get">
+The number of seconds until an escorting quest expires. (Default: 1 day)
+  </setting>
+  <setting name="EscortActiveExpire" type="uint32" default="1800" flag="get">
+Don't know actually (Default: 1/2 hour)
+  </setting>
+ </group>
 </autosettings>
