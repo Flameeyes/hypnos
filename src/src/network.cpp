@@ -538,20 +538,20 @@ void cNetwork::LoginMain(int s)
 		{
 		case BAD_PASSWORD:
 			loginchars[s] = NULL;
-			nPackets::Sent::LoginDenied pk(0x03);
-			client->sendPacket(&pk);
+			nPackets::Sent::LoginDenied pkNoPass(0x03);
+			client->sendPacket(&pkNoPass);
 			return;
 		case ACCOUNT_BANNED:
 			loginchars[s] = NULL;
-			nPackets::Sent::LoginDenied pk(0x02);
-			client->sendPacket(&pk);
+			nPackets::Sent::LoginDenied pkAcctBlk(0x02);
+			client->sendPacket(&pkAcctBlk);
 			return;
 		case LOGIN_NOT_FOUND:
 			if( !SrvParms->auto_a_create )
 			{
 				loginchars[s] = NULL;
-				nPackets::Sent::LoginDenied pk(0x00);
-				client->sendPacket(&pk);
+				nPackets::Sent::LoginDenied pkNoAcct(0x00);
+				client->sendPacket(&pkNoAcct);
 				return;
 			} else {
 				// Auto create is enable, let's create the new account.
@@ -561,8 +561,8 @@ void cNetwork::LoginMain(int s)
 				if (dummypass.empty())
 				{
 					// User forgot password, let's send a message and return
-					nPackets::Sent::LoginDenied pk(0x03);
-					client->sendPacket(&pk);
+					nPackets::Sent::LoginDenied pkNoPass(0x03);
+					client->sendPacket(&pkNoPass);
 					return;
 				}
 				acctno[s] = Accounts->CreateAccount(dummylogin, dummypass);
@@ -573,8 +573,8 @@ void cNetwork::LoginMain(int s)
 	pAccount acc = cAccount::findAccount(name);
 	if ( acc->currClient() )
 	{
-		nPackets::Sent::LoginDenied pk(0x01);
-		client->sendPacket(&pk);
+		nPackets::Sent::LoginDenied pkAcctUsed(0x01);
+		client->sendPacket(&pkAcctUsed);
 		//<Luxor>: Let's kick the current player
 		
 		//!\todo We actually want to kick already logged in player or not?
@@ -668,6 +668,8 @@ void cNetwork::Relay(int s) // Relay player to a certain IP
 #endif
 
 	uint8_t login03[11]={ 0x8C, 0x00, };
+	uint32_t key = calcserial('a', 'K', 'E', 'Y');
+
 	ip = htonl(ip);			// host order -> network order !!!!
 	LongToCharPtr(ip, login03 +1);
 	ShortToCharPtr(port, login03 +5);
@@ -677,20 +679,17 @@ void cNetwork::Relay(int s) // Relay player to a certain IP
 	{
 		ClientCrypt *crypter = clientCrypter[s];
 		// unsigned int loginseed = clientip[s][3] + ( clientip[s][2] << 8) + (clientip[s][1] << 16) + ( clientip[s][0] << 24);
-		unsigned long loginseed = 1 + ( 127 << 24 )  ;
+		key = 1 + ( 127 << 24 );
 		crypter->setCryptSeed(loginseed);
 		crypter->setCryptMode(CRYPT_GAME);
 		crypter->setEntering(true);
 		// memcpy(login03 +7, &clientip[s][0],4);
-		LongToCharPtr (loginseed, login03 +7); // set crypt key
+//		LongToCharPtr (loginseed, login03 +7); // set crypt key
 		// if ( clientCrypter[s]->getCryptVersion() < CRYPT_3_0_0c )
-		LongToCharPtr (ip, login03 +1); // set game server ip
-
-
+//		LongToCharPtr (ip, login03 +1); // set game server ip
 	}
-	else
 #endif
-		LongToCharPtr( calcserial('a', 'K', 'E', 'Y'), login03 +7);	// New Server Key!
+	LongToCharPtr(key, login03 +7);	// New Server Key!
 	Xsend(s, login03, 11);
 	Network->FlushBuffer(s);
 }
@@ -804,18 +803,18 @@ void cNetwork::CharList(int s) // Gameserver login and character listing
 		{
 		case BAD_PASSWORD:
 			loginchars[s] = NULL;
-			nPackets::Sent::LoginDenied pk(0x03);
-			client->sendPacket(&pk);
+			nPackets::Sent::LoginDenied pkNoPass(0x03);
+			client->sendPacket(&pkNoPass);
 			return;
 		case ACCOUNT_BANNED:
 			loginchars[s] = NULL;
-			nPackets::Sent::LoginDenied pk(0x02);
-			client->sendPacket(&pk);
+			nPackets::Sent::LoginDenied pkAcctBlk(0x02);
+			client->sendPacket(&pkAcctBlk);
 			return;
 		case LOGIN_NOT_FOUND:
 			loginchars[s] = NULL;
-			nPackets::Sent::LoginDenied pk(0x00);
-			client->sendPacket(&pk);
+			nPackets::Sent::LoginDenied pkNoAcct(0x00);
+			client->sendPacket(&pkNoAcct);
 			return;
 		}
 	}

@@ -819,7 +819,26 @@ namespace nPackets {
 			void prepare();
 		};
 
-		
+		/*!
+		\brief Send Tips window also used for server notice (MOTD) ...
+		\note Packet 0xA6
+		*/
+		class TipsWindow : public cPacketSend
+		{
+		protected:
+			uint8_t	type;		//!< Type: 0x00 tip, 0x02 updates
+			uint16_t tip_num;	//!< #Tip number
+			std::string message;	//!< Message (tip/notice) to send
+
+		public:
+			inline TipsWindow(uint8_t TipType, uint16_t TipNum, std::string aMessage) :
+				cPacketSend(NULL, 0), type(TipType), tip_num(TipNum), message(aMessage)
+			{ }
+
+			void prepare();
+		};
+
+	
 		/*!
 		\brief Sends the OK/Not OK for an attack
 		\note Packet 0xAA

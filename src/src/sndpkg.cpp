@@ -59,19 +59,6 @@ void SndDyevat(pClient client, int serial, short id)
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SndUpdscroll(pClient client, short txtlen, const char* txt)
-{
-	uint8_t updscroll[10]={ 0xA6, };
-
-	ShortToCharPtr(txtlen+10, updscroll +1);
-	updscroll[3]=2;				// type: 0x00 tips window, 0x01 ignored, 0x02 updates
-	LongToCharPtr(0 , updscroll +4);	// Tip numb.
-	ShortToCharPtr(txtlen, updscroll +8);
-	Xsend(s, updscroll, 10);
-	Xsend(s, txt, txtlen);
-//AoS/	Network->FlushBuffer(s);
-}
-
 /*!
 \brief play a sound based on item id
 
@@ -388,6 +375,8 @@ void cChar::updateStats(int32_t stat)
 
 void updates(pClient client) // Update Window
 {
+	std::string msg;
+#if 0
 	int x, y, j;
 	char temp[512];
 	cScpIterator* iter = NULL;
@@ -427,6 +416,10 @@ void updates(pClient client) // Update Window
 	safedelete(iter);
 
 //AoS/	Network->FlushBuffer(s);
+#endif
+
+	nPackets::Sent::TipsWindow pkMOTD(0x02, 0x0000, msg);
+	client->sendPacket(&pkMOTD);
 }
 
 

@@ -849,6 +849,22 @@ void nPackets::Sent::OpenBrowser::prepare()
 	memcpy(buffer+3, url.c_str(), length-3);
 }
 
+
+void nPackets::Sent::TipsWindow::prepare()
+{
+	uint16_t msg_size = message.size();
+	length = msg_size + 10;
+	buffer = new uint8_t[length];
+
+	buffer[0] = 0xA6;
+	ShortToCharPtr(length, buffer +1);
+	buffer[3] = type;
+	ShortToCharPtr(0x0000, buffer +4);
+	ShortToCharPtr(tip_num, buffer +6);
+	ShortToCharPtr(msg_size, buffer +8);
+	memcpy(buffer, message.c_str(), msg_size);
+}
+
 void nPackets::Sent::AttackAck::prepare()
 {
 	length = 5;
@@ -2660,8 +2676,14 @@ bool nPackets::Received::SelectServer::execute(pClient client)
 bool nPackets::Received::TipsRequest::execute(pClient client)
 {
 	if (length != 4) return false;
-	uint16_t i = ShortFromCharPtr(buffer + 1);
-	uint8_t want_next = buffer[3];
+	uint16_t i = ShortFromCharPtr(buffer + 1);	// tip index
+	uint8_t want_next = buffer[3];			// tip next/prev flag
+	std::string msg;				// message to send
+
+	if(want_next) i = i+1;
+	else i = i-1;
+
+	if (i==0) i=1;
 
 	//!\todo Script searching, redo when xml scripting done
 #if 0
@@ -2672,10 +2694,6 @@ bool nPackets::Received::TipsRequest::execute(pClient client)
 	char script1[1024];
 	char script2[1024];
 
-	if(want_next) i = i+1;
-	else i = i-1;
-
-	if (i==0) i=1;
 
 	iter = Scripts::Misc->getNewIterator("SECTION TIPS");
 	if (iter==NULL) return;
@@ -2731,9 +2749,11 @@ bool nPackets::Received::TipsRequest::execute(pClient client)
 		Xsend(s, temp, strlen(temp)); // Send the rest
 	}
 	safedelete(iter);
-
 //AoS/	Network->FlushBuffer(s);
 #endif
+
+	nPackets::Sent::TipsWindow pkTips(0x00, i, msg);
+	client->sendPacket(&pkTips);
 	return true;
 }
 

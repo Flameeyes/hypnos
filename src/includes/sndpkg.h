@@ -18,7 +18,6 @@
 #include "particles.h"
 
 void SndDyevat(pClient client, pClient clienterial, short id);
-void SndUpdscroll(pClient client, short txtlen, const char* txt);
 
 void itemmessage(pClient client, char *txt, pClient clienterial, short color=0x0000);
 void backpack2(pClient client, uint32_t serial);
