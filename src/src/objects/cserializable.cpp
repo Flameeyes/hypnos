@@ -5,10 +5,6 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file 
-\brief Implementation of class cSerializable
-*/
 
 #include "objects/cserializable.h"
 #include "objects/cchar.h"
@@ -23,6 +19,10 @@ SerializableMap cSerializable::objects;
 */
 pSerializable cSerializable::findBySerial(uint32_t serial)
 {
+	/*! \note This function checks if serial has the MSB set, and if so
+	 *  returns null without check into the cSerializable::objects map.
+	 */
+	if ( serial & 0x80000000 ) return NULL;
 	SerializableMap::iterator it = objects.find(serial);
 	
 	return (it == objects.end()) ? NULL : (*it).second;
@@ -30,11 +30,23 @@ pSerializable cSerializable::findBySerial(uint32_t serial)
 
 pChar cSerializable::findCharBySerial(uint32_t serial)
 {
+	/*! \note The function calls isCharSerial() function to check if the
+	 *  given serial is valid, this is a quicker check than a search
+	 *  into the map and a dynamic_cast to NULL if item (or invalid) serial
+	 *  :)
+	 */
+	if ( ! isCharSerial(serial) ) return NULL;
 	return dynamic_cast<pChar>(findBySerial(serial));
 }
 
 pItem cSerializable::findItemBySerial(uint32_t serial)
 {
+	/*! \note The function calls isItemSerial() function to check if the
+	 *  given serial is valid, this is a quicker check than a search
+	 *  into the map and a dynamic_cast to NULL if char (or invalid) serial
+	 *  :)
+	 */
+	if ( ! isItemSerial(serial) ) return NULL;
 	return dynamic_cast<pItem>(findBySerial(serial));
 }
 
@@ -72,7 +84,6 @@ cSerializable::~cSerializable()
 	if ( it != objects.end() )
 		objects.erase(it);
 }
-
 
 
 /*!
@@ -120,11 +131,10 @@ void cSerializable::movingFX(pSerializable destination, uint16_t eff, uint8_t sp
 					j->sendPacket(&pk);
 				} else if (clientDimension[j]==3) // 3d client, send 3d-Particles
 				{
-					//!\ todo packet 0xc7
+					//! \todo packet 0xc7
 					movingeffectUO3D(source, dest, part);
 					unsigned char particleSystem[49];
 					Xsend(j, particleSystem, 49);
-//AoS/					Network->FlushBuffer(j);
 				}
 				else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
 					LogError"Invalid Client Dimension: %i\n", clientDimension[j]);
@@ -154,9 +164,7 @@ void cChar::staticFX(uint16_t id, uint8_t speed, uint8_t loop, ParticleFx* part)
 
 /*!
 \brief Bolts a char
-\author Xanathar
 \param bNoParticles true if NOT to use particles
-\todo backport
 */
 void cChar::boltFX(bool bNoParticles)
 {
@@ -212,9 +220,7 @@ void cChar::boltFX(bool bNoParticles)
 
 /*!
 \brief Plays <i>circle of blood</i> or similar effect
-\author Xanathar
 \param id effect id
-\todo backport
 */
 void cChar::circleFX(short id)
 {

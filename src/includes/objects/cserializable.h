@@ -17,6 +17,7 @@
 #include "inlines.h"
 
 /*!
+\class cSerializable cserializable.h "objects/cserializable.h"
 \brief Serializable object
 
 This class is an abstraction of a serializable object, like an item or a char.
@@ -29,21 +30,61 @@ use this class to register the instances.
 The abstract method getNewSerial() \b must be implemented by the derived classes,
 and \b must return an unique serial, so it should check if there's already an
 object with the same serial.
+
+\section about About Serials
+
+UO's serials are unsigned 32-bit integers (ie: uint32_t), which represents what
+the client is seeing in the window, so the charactes and non-static items.
+
+The serials are not identical between items and characters, and there are also
+some special serials:
+	
+	\li Serial #0: is an \b invalid serial, and it's used for example to 
+	tell the client to stop attack a char.
+	\li Serials between 1 and 0x3FFFFFFF: are characters' serials, and are
+	used for all characters (PCs and NPCs)
+	\li Serials between 0x4000000 and 0x7FFFFFFF: are items' serials, and
+	are used for all the non-static items
+
+The MSB (0x80000000) is not used for serial (and so the serials are actually
+31-bit integers), but is used when sending data about an item to the client,
+stating that the item has an amount (or, for corpses, the corpse id).
+
+\see nPackets::Sent::ObjectInformation
+
+\section when When use Serials?
+
+Serials are used mainly to send packets to the UO Client (which in fact knows
+only about serials), and with the scripts (we don't want the scripts to mess up
+with the pointers, do we?).
+
+Also, we need the serials to save nad restore the savegames, because obviously
+the pointers aren't consistent between different runs.
+
+Least time we need to use serials to store informations in the cItem::more
+value for a small variable. This is used, for example, by the
+cBoat::searchByPlank() function which search for the boat's serial in the more
+attribute.
+
+For any other use inside the emulator we should always use the pointers.
+
 */
 class cSerializable
 {
 //@{
 /*!
 \name Searching functions
+\brief Functions to search for a serializable instance
+
+These functions allow sto find the pointer starting from a serial, and are used
+usually when parsing data from the 'external' system (like savegames, scripts
+or the network protocol).
+The main function for this all is the findBySerial() function, which is called
+by findCharBySerial() and findItemBySerial() to get a specific type instance.
 */
 private:
 	static SerializableMap objects;	//!< Map of all serialized object
-	uint32_t	serial;		//!< Serial of the object
 	
-	static const uint32_t minCharSerial = 1;
-	static const uint32_t maxCharSerial = 0x3FFFFFFF;
-	static const uint32_t minItemSerial = 0x40000000;
-	static const uint32_t maxItemSerial = 0x7FFFFFFF;
 public:
 	static pChar findCharBySerial(uint32_t serial);
 	static pItem findItemBySerial(uint32_t serial);
@@ -51,12 +92,24 @@ public:
 
 	//! Tells if a serial is of a character
 	inline static bool isCharSerial( uint32_t ser )
-	{ return between(ser, minCharSerial, maxCharSerial); }
+	{
+		// We don't want to export these constants...
+		static const uint32_t minCharSerial = 1;
+		static const uint32_t maxCharSerial = 0x3FFFFFFF;
+		return between(ser, minCharSerial, maxCharSerial);
+	}
 	
 	//! Tells if a serial is of an item
 	inline static bool isItemSerial( uint32_t ser )
-	{ return between(ser, minItemSerial, maxItemSerial); }
+	{
+		static const uint32_t minItemSerial = 0x40000000;
+		static const uint32_t maxItemSerial = 0x7FFFFFFF;
+		return between(ser, minItemSerial, maxItemSerial);
+	}
 //@}
+
+private:
+	uint32_t serial;		//!< Serial of the object
 
 public:
 	cSerializable();
@@ -75,7 +128,10 @@ protected:
 /*!
 \name Extras
 \brief Functions and attributes which are shared by all the serializable objects
-	but doesn't derive directly by the serialization
+
+The members here defined are usually used by the UO Protocol, and so are related
+to the serial, so are registered here also if aren't relative to the serializable
+class.
 */
 public:
 	//! Gets the popup help for the instance
@@ -91,22 +147,22 @@ public:
 */
 public:
 	inline bool operator> (const cSerializable& obj) const
-	{ return getSerial() >  obj.getSerial(); }
+	{ return serial >  obj.serial; }
 
 	inline bool operator< (const cSerializable& obj) const
-	{ return getSerial() <  obj.getSerial(); }
+	{ return serial <  obj.serial; }
 
 	inline bool operator>=(const cSerializable& obj) const
-	{ return getSerial() >= obj.getSerial(); }
+	{ return serial >= obj.serial; }
 
 	inline bool operator<=(const cSerializable& obj) const
-	{ return getSerial() <= obj.getSerial(); }
+	{ return serial <= obj.serial; }
 
 	inline bool operator==(const cSerializable& obj) const
-	{ return getSerial() == obj.getSerial(); }
+	{ return serial == obj.serial; }
 
 	inline bool operator!=(const cSerializable& obj) const
-	{ return getSerial() != obj.getSerial(); }
+	{ return serial != obj.serial; }
 //@}
 };
 
