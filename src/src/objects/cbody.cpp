@@ -48,8 +48,6 @@ uint32_t cBody::getSkillSum()
 */
 const uint8_t cBody::equip(pEquippable pi, bool drag)
 {
-	tile_st item;
-
 	cVariantVector params(2);
 	param[0] = pi;
 	param[1] = getChar();
@@ -70,18 +68,15 @@ const uint8_t cBody::equip(pEquippable pi, bool drag)
 	if (drag)
 		return 0;
 
-#if 0
-	data::seekTile( pi->getId(), item );
-
-	if (
-		layers[item.quality] ||
-		( item.quality == layWeapon2H && (layers[layWeapon1H] || layers[layWeapon2H]) ) ||
-		( item.quality == layWeapon1H && layers[layWeapon1H] )
+	Layer lay = tiledataStatic->getQuality(pi->getId());
+	if (	layers[lay] ||
+		lay == layWeapon2H && (layers[layWeapon1H] || layers[layWeapon2H]) ||
+		lay == layWeapon1H && layers[layWeapon1H]
 	   )
-		return 1
+	   	return 1;
+	
+	pi->setLayer(lay);
 
-	pi->layer = item.quality;
-#endif
 	pi->setContainer(this);
 
 	checkSafeStats();
