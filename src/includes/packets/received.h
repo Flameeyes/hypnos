@@ -527,17 +527,12 @@ class cPacketSendCharProfile : public cPacketSend
 {
 protected:
 	uint32_t serial;
-        cSpeech speech;
         pChar who;
-        bool update;
 
 public:
-	inline cPacketSendCharProfile(uint32_t se, cSpeech& sp, pChar w) :
-        	cPacketSend(NULL, 0), serial(se), speech(sp), who(w), update(false)
-	{ }
-	
-	inline cPacketSendCharProfile(uint32_t se, pChar w) :		//Update Profile constructor
-        	cPacketSend(NULL, 0), serial(se), who(w), update(true)
+	inline cPacketSendCharProfile(uint32_t s, pChar w) :
+        	serial(s), who(w),
+		buffer(NULL), length(NULL)
 	{ }
 
 	void prepare();
@@ -610,8 +605,12 @@ class cPacketReceiveGumpResponse        : public cPacketReceive;
 class cPacketReceiveChatMessage       	: public cPacketReceive;
 class cPacketReceiveChatWindowOpen      : public cPacketReceive;
 class cPacketReceivePopupHelpRequest    : public cPacketReceive;
-class cPacketReceiveCharProfileRequest  : public cPacketReceive;
-class        : public cPacketReceive;
+class cPacketReceiveCharProfileRequest  : public cPacketReceive;	//!< update or asks for character profile and title (char profile is the one on the paperdoll's scroll)
+class cPacketReceiveClientVersion       : public cPacketReceive;        //!< during login, client sends its version
+class cPacketReceiveAssistVersion       : public cPacketReceive;
+class cPacketReceiveMiscCommand         : public cPacketReceive;	//!< multipurpouse packet. It ranges from party commands to fastwalk prevention, gumps and menu
+class cPacketReceiveTextEntryUnicode    : public cPacketReceive;
+class cPacketReceiveClientViewRange     : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;

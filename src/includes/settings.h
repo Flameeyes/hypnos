@@ -44,47 +44,49 @@ namespace nSettings {
 	REASONABLE sized packet to send (Chronodt 10/3/04)
 	*/
 	namespace MsgBoards {
-		uint32_t getMaxPosts();		//!< Maximum post possible [Default: 128]
-		uint32_t getMaxEntries();	//!< Maximum entries in ESCORTS [Default: 256]
+		uint32_t getMaxPosts();			//!< Maximum post possible [Default: 128]
+		uint32_t getMaxEntries();		//!< Maximum entries in ESCORTS [Default: 256]
 	}
 	
 	/*!
 	\brief Server related settings
 	*/
 	namespace Server {
-		bool isEnabledBookSystem();	//!< Is the book system is enabled or not? [Default: true]
-                bool isEnabledPopupHelp();	//!< popup help (since T2A) is enabled [Default:true]
+		bool isEnabledBookSystem();		//!< Is the book system is enabled or not? [Default: true]
+                bool isEnabledPopupHelp();		//!< popup help (since T2A) is enabled [Default:true]
+                bool isEnabledUOAssist();		//!< UO Assist enabled? [Default: true]
+                uint32_t getAllowedAssistVersion();	//!< Returns allowed version of UO assist [Default: \b missing]
+
+		uint8_t getMaximumPCs();		//!< Maximum characters for account [Default: 5]
+		bool canPlayersDeletePCs();		//!< Can a player delete one of his characters? [Default: true]
+
+		uint16_t getBankMaxItems();		//!< Maximum items a player can put in a bank. 0 = Unlimited [Default: 0]
 		
-		uint8_t getMaximumPCs();	//!< Maximum characters for account [Default: 5]
-		bool canPlayersDeletePCs();	//!< Can a player delete one of his characters? [Default: true]
+		bool hasInstantGuards();		//!< Should guards instantly teleport over new criminals? [Default: false]
 		
-		uint16_t getBankMaxItems();	//!< Maximum items a player can put in a bank. 0 = Unlimited [Default: 0]
+		bool shouldShowPCNames();		//!< Should the playing characters' names be shown on single click? [Default: true]
 		
-		bool hasInstantGuards();	//!< Should guards instantly teleport over new criminals? [Default: false]
-		
-		bool shouldShowPCNames();	//!< Should the playing characters' names be shown on single click? [Default: true]
-		
-		uint32_t getDelaySkills();	//!< Delay between two skill uses
-		uint32_t getDelayObjects();	//!< Delay between two object uses
-		uint32_t getDecayTimer();	//!< Decay timer
+		uint32_t getDelaySkills();		//!< Delay between two skill uses
+		uint32_t getDelayObjects();		//!< Delay between two object uses
+		uint32_t getDecayTimer();		//!< Decay timer
 	}
 	
 	/*!
 	\brief Actions related settings
 	*/
 	namespace Actions {
-		bool shouldEquipOnDClick();	//!< Should an item be equipped on double click? [Default: true]
-                bool canUseItemsWhenInvisible();//!< When invisible (by spell) can a player use items? [Default: \b missing]
-		uint16_t getBountyKarmaGain();	//!< How much karma is gained for bounty hunting? [Default: \b missing ]
-		uint16_t getBountyFameGain();	//!< How much fame is gained for bounty hunting? [Default: \b missing ]
+		bool shouldEquipOnDClick();		//!< Should an item be equipped on double click? [Default: true]
+                bool canUseItemsWhenInvisible();	//!< When invisible (by spell) can a player use items? [Default: \b missing]
+		uint16_t getBountyKarmaGain();		//!< How much karma is gained for bounty hunting? [Default: \b missing ]
+		uint16_t getBountyFameGain();		//!< How much fame is gained for bounty hunting? [Default: \b missing ]
 	}
 	
 	/*!
 	\brief Skill related settings
 	*/
 	namespace Skills {
-		bool canStealthOnHorse();	//!< Can a character stealth on an horse? [Default: \b missing ]
-		uint16_t getStatDailyLimit();	//!< Maximum stat gain in a (real) day [Default: \b missing ]
+		bool canStealthOnHorse();		//!< Can a character stealth on an horse? [Default: \b missing ]
+		uint16_t getStatDailyLimit();		//!< Maximum stat gain in a (real) day [Default: \b missing ]
 		
 		//@{
 		/*!

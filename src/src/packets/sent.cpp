@@ -570,7 +570,7 @@ void cPacketSendCharAfterDelete::prepare()
 void cPacketSendCharProfile::prepare()
 {
 // packet documentation is sketchy at best. Expect many implemetation errors here -_-
-        length = 6;
+        length = 7;
 	length += who->getCurrentName().size() + 1;	//null terminator included
         length += who->getTitle().size() * 2;		//unicode title, so double characters of title
         length +=2; //unicode null terminator for title
@@ -579,12 +579,16 @@ void cPacketSendCharProfile::prepare()
         buffer[0] = 0xb8;
         ShortToCharPtr(length, buffer + 1);
         LongToCharPtr(serial, buffer + 3);
-        if (update)
-        {
-        }
-        else
-        {
-        }
+        char* offset = buffer +7;
+        strcpy(offset, who->getCurrentName().c_str());	// Copy charname as a null-terminated string
+        cSpeech title = cSpeech(who->getTitle());		// Using cSpeech string constructor
+        title.setPacketByteOrder();				// "unicode" conversion of title
+        offset += who->getCurrentName().size() + 1;
+        // here we cannot use wchar version of strcpy (wcscpy) because wchar is not guaranteed to be the 16bit char that uo protocol requires
+        // so we use memcpy (to copy even the "0" higher bytes)
+        memcpy(offset, title.c_str(), title.size() * 2 + 2);		// the "+2" guarantees the copy of the 16 bit null terminator
+        offset += title.size() * 2 + 2;
+        memcpy(offset, who->getProfile().c_str(), who->getProfile().size() * 2 + 2);
 }
 
 pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
@@ -646,16 +650,14 @@ pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
                 case 0xb5: return new cPacketReceiveChatWindowOpen(buffer, length); 	// Open Chat window
                 case 0xb6: return new cPacketReceivePopupHelpRequest(buffer, length); 	// Send Help/Tip Request (popup help)
                 case 0xb8: return new cPacketReceiveCharProfileRequest(buffer, length);	// Request Char Profile
-                case 0xbb: length =   9; break; // Ultima Messenger (do we need this?)
-                case 0xbd: length = ???; break; // Client Version Message
-                case 0xbe: length = ???; break; // Assist Version
-                case 0xbf: length = ???; break; // Misc. Commands Packet
-                case 0xc2: length = ???; break; // Textentry Unicode
-                case 0xc8: length =   2; break; // Client view range
-//                case 0xc9: length =   6; break; // Get area server ping (OSI GM clients only)
-//                case 0xca: length =   6; break; // Get user server ping (OSI GM clients only)
-                case 0xcc: length = ???; break; // Localized Message Affix
+                case 0xbb: return NULL; 						// Ultima Messenger (do we need this?)
+                case 0xbd: return new cPacketReceiveClientVersion(buffer, length); 	// Client Version Message
+                case 0xbe: return new cPacketReceiveAssistVersion(buffer, length);	// Assist Version.... does this packet really exist?
+                case 0xbf: return new cPacketReceiveMiscCommand(buffer, length); 	// Misc. Commands Packet
+                case 0xc2: return new cPacketReceiveTextEntryUnicode(buffer, length); 	// Textentry Unicode
+                case 0xc8: return new cPacketReceiveClientViewRange(buffer, length); 	// Client view range
                 case 0xd1: length =   2; break; // Logout Status
+		case 0xd7: 								// Fight Book: move selected
                 case 0xd4: length = ???; break; // new Book Header
                 default: return NULL;	// Discard received packet
        }
@@ -2048,7 +2050,7 @@ bool cPacketReceivePopupHelpRequest::execute(pClient client)
 	}
 
 	if (packet[0]=='\0') return true; //We have parsed the packet, but nothing had to return... :D
-
+#if 0
         //!\todo cspeech implementation here, for unicode "conversion" and then use it for packet sending
 
 						char2wchar((char *)packet);
@@ -2066,6 +2068,8 @@ bool cPacketReceivePopupHelpRequest::execute(pClient client)
 						ShortToCharPtr(len, packet +1);
 						Xsend(s, packet, len);
 //AoS/						Network->FlushBuffer(s);
+#endif
+	return true;
 }
 
 bool cPacketReceiveCharProfileRequest::execute(pClient client)
@@ -2074,36 +2078,175 @@ bool cPacketReceiveCharProfileRequest::execute(pClient client)
 
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
+        uint32_t serial = LongCharFromPtr(buffer + 4);
 	pPC pc = client->currChar();
 	VALIDATEPCR(pc, false );
 
-	pPC who= dynamic_cast<pPC>(cSerializable::findCharBySerial(LongCharFromPtr(buffer + 4)));
+	pPC who= dynamic_cast<pPC>(cSerializable::findCharBySerial(serial));
 	VALIDATEPCR( who, false );
 
 	if( buffer[3])
         { //update profile
-		if( ( who->getSerial32()!=pc->getSerial32() ) && !pc->IsGMorCounselor() )
+		if( ( serial!=pc->getSerial32() ) && !pc->IsGMorCounselor() )
 			return true; //lamer fix, but packet still processed
                 int profilesize = ShortFromCharPtr(buffer + 10);
                 cSpeech profile(buffer + 12, profilesize);
+                profile.clearPackeByteOrder();
 		who->setProfile(profile);
 	}
-
-
-
-
-
-
-
-
-	else { //only send
-		cPacketCharProfile resp;
-		resp.chr=p.chr;
-		resp.title+= who->getCurrentName();
-		resp.staticProfile = who->staticProfile;
-		resp.profile = &who->profile;
-		resp.send( ps );
-
+	else
+	{ //only send
+		cPacketSendCharProfile pk(serial, who);
+		client->sendPacket(&pk)
 	}
+        return true;
+}
 
+
+
+bool cPacketReceiveClientVersion::execute(pClient client)
+{
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+
+	std::string clientNumber(buffer + 3); //char* constructor of std::string, takes the null-terminated string
+	if ( clientNumber.size() > 10) client->clientDimension = 3;
+        			  else client->clientDimension = 2;
+	client->sysmessage(TRANSLATE("You are using a %iD client, version %s"), client->clientDimension, clientNumber.c_str());
+
+	std::vestor<std::string>::const_iterator viter = find(clientsAllowed.begin(), clientsAllowed.end(), "ALL");
+	if ( viter != clientsAllowed.end() ) return true; // ALL mode found/activated -> quit
+
+	viter = find(clientsAllowed.begin(), clientsAllowed.end(), "SERVER_DEFAULT");
+	if ( viter != clientsAllowed.end() )  // server_default mode ?
+	{
+		if ( strcmp( clientNumber.c_str(), SUPPORTED_CLIENT) ) // check if client version matches
+		{
+			client->disconnect();
+			return true;
+		}
+		return true;
+	}
+	else
+	{
+   		viter = find(clientsAllowed.begin(), clientsAllowed.end(), clientNumber);
+   		if (viter == clientsAllowed.end() )
+		{
+                	//!\todo find a better InfoOut than socket number :D
+//			InfoOut("client %i disconnected by Client Version Control System\n", s);
+			client->disconnect();
+		}
+	}
+	return true;
+}
+
+
+bool cPacketReceiveAssistVersion::execute(pClient client)
+{
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+        uint32_t version = LongFromCharPtr(buffer + 3);
+        std::string stringversion = std::string(buffer + 7);
+        if (!nSettings::Server::isEnabledUOAssist() && !version)
+        {
+        	//! \todo verify if client is able to read message before being disconnected (or while the popup window about disconnection is onscreen)
+                client->sysmessage(TRANSLATE("UO Assist is not allowed here!");
+        	client->disconnect();
+                return true;
+        }
+        else if (nSettings::Server::isEnabledUOAssist() && !version && version != nSettings::Server::getAllowedAssistVersion())
+        {
+        	//! \todo verify if client is able to read message before being disconnected (or while the popup window about disconnection is onscreen)
+                client->sysmessage(TRANSLATE("Wrong version of UO Assist in use. You used version %s", stringversion.c_str()));
+        	client->disconnect();
+                return true;
+        }
+        return true;
+}
+
+bool cPacketReceiveMiscCommand::execute(pClient client)
+{
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+	uint16_t subcommand = ShortFromCharPtr(buffer + 3);
+        pPC = client->currChar();
+	// please don't remove the // unknowns ... want to have them as dokumentation
+	switch (subcommand)
+	{
+        case 0x04: // documentation tells me this is "Close generic gump". unverified (Chronodt 5/8/04)
+		break;
+	case 0x05: // Screen size
+	        uint16_t x = ShortFromCharPtr(buffer + 7);
+                uint16_t y = ShortFromCharPtr(buffer + 9);
+                //! \todo should we use this somehow?? Maybe in addition of viewrange?
+		break;
+       	case 0x06: //party subcommand
+        	//!\todo verify party
+        	Partys.receive( ps );
+		break;
+
+	case 0x09:	//Luxor: Wrestling Disarm Macro support
+		if ( pc ) pc->setWresMove(WRESDISARM);
+		break;
+	case 0x0a: //Luxor: Wrestling Stun punch Macro support
+		if ( pc ) pc->setWresMove(WRESSTUNPUNCH);
+		break;
+
+	case 0x0b: // client language, might be used for server localisation
+
+		// please no strcpy or memcpy optimization here, because the input ain't 0-termianted and memcpy might be overkill
+		client_lang[0]=buffer[5];
+		client_lang[1]=buffer[6];
+		client_lang[2]=buffer[7];
+		client_lang[3]=0;
+		// do dometihng with language information from client
+		// ...
+	   	break;
+
+        case 0x0e: // UO:3D menus
+		if ( pc ) pc->playAction(buffer[8]);
+		break;
+        case 0x0f: // unknown, sent once on login
+        	break;
+        case 0x13: // documentation tells me this is a "Request popup menu". unverified (Chronodt 5/8/04)
+                uint32_t character_id = LongFromCharPtr(buffer + 5);
+                //!\todo this subcommand..... but what does it do?? :D
+                break;
+	case 0x1a: // Extended stats (statlocks)
+		uint8_t  stat = buffer[5];
+		uint8_t  status = buffer[6]; // 0: up, 1:down, 2: locked
+                //!\todo this is the new client's statlock similar to skill locks, so link this in the statlimit
+                break;
+	case 0x1c: //Spell selected, client side
+		uint32_t serial = LongFromCharPtr(buffer + 5); // player
+		uint16_t selected_spell = ShortFromCharPtr(buffer + 9); // 4=heal, 5=magic arrow etc
+                //!\todo call magic stuff here. Obiously this packets sends necro & paladin stuff too (clients 4 and above)
+		break;
+	default:
+	}
+	return true;
+}
+
+bool cPacketReceiveTextEntryUnicode::execute(pClient client)
+{
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+        // I totally have NO IDEA on what this packet does or when it is sent
+        // i hope someone does and completes this packet
+
+	uint32_t player_id = LongFromCharPtr(buffer + 3);
+	uint32_t message_id = LongFromCharPtr(buffer + 7);
+	uint32_t unknown = LongFromCharPtr(buffer + 11);	//always 1
+	char[3] language;
+        memcpy(language, buffer +15, 3);
+	cSpeech text = cSpeech(buffer + 18);
+        //!\todo finish this packet (and undestand when and why it is sent -_-)
+}
+
+
+bool cPacketReceiveClientViewRange::execute(pClient client)
+{
+       	if (length != 2) return false;
+        client->setViewRange(buffer[1]); //!<\todo verify if this packet is really sent :)
+        return true;
 }

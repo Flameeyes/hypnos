@@ -16,7 +16,7 @@
 class cSpeech
 {
 private:
-	std::wstring unicode_text;	//warning: wchar is not guaranteed to be a 16 bit char on all systems
+	std::basic_string<uint16_t> unicode_text;	//wchar was not guaranteed to be a 16 bit char on all systems
         uint8_t mode;	//0=say,2=emote,8=whisper,9=yell
 	uint16_t color;
 	uint16_t font;
@@ -32,10 +32,14 @@ public:
         	{ packet_byteorder = byteorder; }
         char operator[](int i);                           	//!< gets 8-bit ascii char in location "i" in either byteorder
         cSpeech& operator= (std::string s);     //!< Assignment operator from a non unicode string. Converts to unicode and stores it
-        cSpeech& operator= (cSpeech& s);
-        cSpeech(char* buffer, int size = 0); 	//!< Size is used only for not null-terminated strings, if it is 0 is ignored, else reads size bytes wherever \\0 is present or not
-        std::string toString();	//!< returns a normal char-based string obtained truncating unicode to ascii values
-        std::string toGhost();	//!< returns a randomized "ooooOOoo" based on current string content (not unicode)
+        cSpeech& operator= (cSpeech& s);        //!< assignment operator (copy operator)
+        cSpeech(char* buffer, int size = 0); 	//!< Size is used only for not null-terminated strings, if it is 0 is ignored, else reads size bytes wherever \0 is present or not
+        std::string toString();			//!< returns a normal char-based string obtained truncating unicode to ascii values
+        std::string toGhost();			//!< returns a randomized "ooooOOoo" based on current string content (not unicode)
+        inline const char* c_str() const	//!< returns a read-only char* pointer to internal unicode_text, as a null-terminated 16bit-char string
+        	{ return unicode_text.c_str(); }
+        inline const int size()
+        	{ return unicode_text.size(); }
 }
 
 
