@@ -13,7 +13,9 @@
 #ifndef __SKILLS_H__
 #define __SKILLS_H__
 
+#include "common_libs.h"
 #include "target.h"
+#include "enums.h"
 
 /*!
 \brief Skill related stuff
@@ -151,7 +153,7 @@ namespace nSkills {
 	void target_carpentry( pClient client, pTarget t );
 
 	void MakeMenu( pChar pc, int m, int skill, pItem first, pItem second = NULL );
-	void MakeMenu( pChar pc, int m, int skill, uint16_t firstId=0, COLOR firstColor=0, uint16_t secondId=0, COLOR secondColor=0 );
+	void MakeMenu( pChar pc, int m, int skill, uint16_t firstId=0, uint16_t firstColor=0, uint16_t secondId=0, uint16_t secondColor=0 );
 
 	//@{
 	/*!

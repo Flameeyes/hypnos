@@ -829,7 +829,6 @@ void SendPauseResumePkt(pClient client, uint8_t flag)
 //AoS/	Network->FlushBuffer(s);
 }
 
-
 void SendDrawObjectPkt(pClient client, pChar pc, int z)
 {
 	pChar pc_currchar=cSerializable::findCharBySerial(currchar[s]);
@@ -1166,8 +1165,6 @@ int sellstuff(pClient client, pChar pc)
 	return 1;
 }
 
-
-
 void tellmessage(int i, int s, char *txt)
 //Modified by N6 to use UNICODE packets
 {
@@ -1192,8 +1189,6 @@ void tellmessage(int i, int s, char *txt)
 	
 	free(temp);
 }
-
-
 
 // particleSystem core functions, LB 2-April 2001
 

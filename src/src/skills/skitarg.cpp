@@ -15,26 +15,19 @@
 #include "skills.h"
 #include "basics.h"
 #include "inlines.h"
-
-pItem Check4Pack(pClient client)
-{
-	pChar pc = client->currChar();
-	pItem packnum= pc->getBackpack();
-	if ( ! packnum )
-	{
-		client->sysmessage("Time to buy a backpack");
-		return NULL;
-	}
-	else
-		return packnum;
-}
+#include "backend/scripting.h"
+#include "objects/cclient.h"
+#include "objects/cchar.h"
+#include "objects/cpc.h"
+#include "objects/cbody.h"
+#include "objects/citem.h"
 
 bool CheckInPack(pClient client, pItem pi)
 {
-	pItem pPack=Check4Pack(client);
+	pItem pPack = client->currChar()->getBody()->getBackpack(true);
 	if ( ! pPack ) return false;
 	
-	if (pi->getContSerial()!=pPack->getSerial())
+	if ( pi->getContainer() != pPack )
 	{
 		client->sysmessage("You can't use material outside your backpack");
 		return false;
@@ -42,14 +35,13 @@ bool CheckInPack(pClient client, pItem pi)
 	return true;
 }
 
-
-void Skills::target_removeTraps(pClient client, pTarget t )
+void nSkills::target_removeTraps(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
 	if ( !pc || !pi ) return;
 
-	pFunctionHandle evt = pi->getEvent(evtChrOnCastSpell);
+	pFunctionHandle evt = pi->getEvent(cItem::evtItmOnRemoveTrap);
 	if ( evt )
 	{
 		tVariantVector params = tVariantVector(2);
@@ -63,7 +55,7 @@ void Skills::target_removeTraps(pClient client, pTarget t )
 	}
 }
 
-void Skills::target_tailoring(pClient client, pTarget t )
+void nSkills::target_tailoring(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
@@ -75,7 +67,7 @@ void Skills::target_tailoring(pClient client, pTarget t )
     if( pi->magic==4)
 		return;
 
-	if( pi->IsCutLeather() || pi->IsCutCloth() || pi->IsHide() )
+	if( pi->isCutLeather() || pi->isCutCloth() || pi->isHide() )
     {
 		if (CheckInPack(client, pi))
         {
@@ -85,7 +77,7 @@ void Skills::target_tailoring(pClient client, pTarget t )
 				return;
 			}
 
-            if(	pi->IsCutLeather()  ) {
+            if(	pi->isCutLeather()  ) {
 				if( tannering == NULL )
 					tannering = new AmxFunction( AMXTANNERING );
 				if( tannering != NULL )
@@ -106,7 +98,7 @@ void Skills::target_tailoring(pClient client, pTarget t )
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skTailoring,AMX_AFTER);
 }
 
-void Skills::target_fletching(pClient client, pTarget t )
+void nSkills::target_fletching(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
@@ -127,7 +119,7 @@ void Skills::target_fletching(pClient client, pTarget t )
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skBowcraft,AMX_AFTER);
 }
 
-void Skills::target_bowcraft(pClient client, pTarget t )
+void nSkills::target_bowcraft(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	if ( !pc ) return;
@@ -143,7 +135,7 @@ void Skills::target_bowcraft(pClient client, pTarget t )
 	if ( pi->magic!=4) // Ripper
 	{
 
-		if( pi->IsLog() || pi->IsBoard() )
+		if( pi->isLog() || pi->isBoard() )
 		{
 			if (CheckInPack(client,pi))
 			{
@@ -164,7 +156,7 @@ void Skills::target_bowcraft(pClient client, pTarget t )
 //          If logs are targetted, Makemenu 19 is called to produce boards
 //          If boards, MM 20 is called for furniture etc.
 //
-void Skills::target_carpentry(pClient client, pTarget t )
+void nSkills::target_carpentry(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
@@ -175,11 +167,11 @@ void Skills::target_carpentry(pClient client, pTarget t )
 
 	if ( pi->magic!=4)
 	{
-		if( pi->IsLog() || pi->IsBoard() ) // logs or boards
+		if( pi->isLog() || pi->isBoard() ) // logs or boards
 		{
 			if (CheckInPack(client,pi))
 			{
-				short mm = pi->IsLog() ? 19 : 20; // 19 = Makemenu to create boards from logs
+				short mm = pi->isLog() ? 19 : 20; // 19 = Makemenu to create boards from logs
 				MakeMenu(pc,mm,skCarpentry,pi);
 			}
 		}
@@ -199,11 +191,11 @@ static bool ForgeInRange(pClient client)
 	if ( !pc ) return false;
 	
 	NxwItemWrapper si;
-	si.fillItemsNearXYZ( pc->getPosition(), 3, false );
+	si.fillItemsNearXYZ( pc->getBody()->getPosition(), 3, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pi=si.getItem();
-		if( pi && pi->IsForge())
+		if( pi && pi->isForge())
 			return true;
 	}
 	return false;
@@ -219,7 +211,7 @@ static bool AnvilInRange(pClient client)
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pi=si.getItem();
-		if(pi->IsAnvil())
+		if(pi->isAnvil())
 			return true;
 	}
 	return false;
@@ -228,7 +220,7 @@ static bool AnvilInRange(pClient client)
 /*!
 \author Duke
 \date 28/03/2000
-\brief Little helper function for cSkills::target_smith()
+\brief Little helper function for nSkills::target_smith()
 \param s socket number
 \param pi pointer to material item
 \param ma maximum amount
@@ -248,7 +240,7 @@ static void AnvilTarget( pClient client, pItem pi, int ma, int mm, char* matname
     
 	else {
 		if (CheckInPack(client,pi))
-			Skills::MakeMenu(pc,mm,skBlacksmithing,pi);
+			nSkills::MakeMenu(pc,mm,skBlacksmithing,pi);
 	}
 }
 
@@ -264,7 +256,7 @@ static void AnvilTarget( pClient client, pItem pi, int ma, int mm, char* matname
 //
 extern int ingottype;
 
-void Skills::target_smith(pClient client, pTarget t )
+void nSkills::target_smith(pClient client, pTarget t )
 {
     pItem pi = cSerializable::findItemBySerial( t->getClicked() );
 	if ( !pi ) return;
@@ -336,7 +328,7 @@ const short NumberOfOres = sizeof(OreTable)/sizeof(Ore);
 /////////////////
 // name:    TryToMine
 // history: by Duke, 31 March 2000
-// Purpose: helper function for cSkills::Mine()
+// Purpose: helper function for nSkills::Mine()
 //          checks if the player's mining skill meets the requirements
 //          if yes, he'll get the specified ore
 //          There's a *second* CheckSkill done here. It was like this,
@@ -364,7 +356,7 @@ const short NumberOfOres = sizeof(OreTable)/sizeof(Ore);
 }
 */ // XAN : SEEMS UNUSED
 
-void Skills::target_tree(pClient client, pTarget t )
+void nSkills::target_tree(pClient client, pTarget t )
 {
     pChar pc = client->currChar();
 
@@ -392,7 +384,7 @@ void Skills::target_tree(pClient client, pTarget t )
     }
 
 	pItem weapon = pc->getWeapon();
-	if( !( weapon && ( weapon->IsAxe() || weapon->IsSword() ) ) )
+	if( !( weapon && ( weapon->isAxe() || weapon->isSword() ) ) )
 	{
 		client->sysmessage("You must have a weapon in hand in order to chop.");
 		return;
@@ -480,7 +472,7 @@ void Skills::target_tree(pClient client, pTarget t )
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skLumberjacking,AMX_AFTER);
 }
 
-void Skills::GraveDig(pClient client) // added by Genesis 11-4-98
+void nSkills::GraveDig(pClient client) // added by Genesis 11-4-98
 {
 	pChar pc = client->currChar();
 	if ( ! pc ) return;
@@ -611,7 +603,7 @@ void Skills::GraveDig(pClient client) // added by Genesis 11-4-98
 //              minskill and ingot type
 // Remarks:     NOTE: ingot color is different from ore color for gold, silver & copper!
 //
-void Skills::target_smeltOre(pClient client, pTarget t )
+void nSkills::target_smeltOre(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
@@ -620,7 +612,7 @@ void Skills::target_smeltOre(pClient client, pTarget t )
 
 	if ( pi->magic!=4) // Ripper
 	{
-		if( pi->IsForge() )
+		if( pi->isForge() )
 		{
 			if( !pc->hasInRange(pi, 3) )        //Check if the forge is in range
 				client->sysmessage("You cant smelt here.");
@@ -638,7 +630,7 @@ void Skills::target_smeltOre(pClient client, pTarget t )
 	client->statusWindow(pc,true);  //!< \todo check second argument
 }
 
-void Skills::target_wheel(pClient client, pTarget t )	//Spinning wheel
+void nSkills::target_wheel(pClient client, pTarget t )	//Spinning wheel
 {
 	pChar pc = client->currChar();
 	pItem pi = dynamic_cast<pItem>( t->getClicked() );
@@ -671,7 +663,7 @@ void Skills::target_wheel(pClient client, pTarget t )	//Spinning wheel
 	pti->Refresh();
 }
 
-void Skills::target_loom(pClient client, pTarget t )
+void nSkills::target_loom(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pItem pi = dynamic_cast<pItem>( t->getClicked() );
@@ -730,7 +722,7 @@ void Skills::target_loom(pClient client, pTarget t )
 // By:      Ripper & Duke, 07/20/00
 // Purpose: so you can use raw meat on fire
 //
-void Skills::target_cookOnFire(pClient client, pTarget t )
+void nSkills::target_cookOnFire(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pItem pi = dynamic_cast<pItem>( t->getClicked() );
@@ -743,7 +735,7 @@ void Skills::target_cookOnFire(pClient client, pTarget t )
 		return;
 
         pItem piRaw = cSerializable::findItemBySerial( t->buffer[1] );
-	if ( !piRaw || !pc->isInBackpack(piRaw) || !pi->IsCookingPlace() || !pc->hasInRange(pi, 3) )
+	if ( !piRaw || !pc->isInBackpack(piRaw) || !pi->isCookingPlace() || !pc->hasInRange(pi, 3) )
 	{
 		client->sysmessage("You cannot cook here");
 		return;
@@ -770,17 +762,19 @@ void Skills::target_cookOnFire(pClient client, pTarget t )
 
 
 /*
-* I decided to base this on how OSI will be changing detect hidden.
-* The greater your skill, the more of a range you can detect from target position.
-* Hiders near the center of the detect circle are easier to detect than ones near
-* the edges of the detect circle. Also low skill detecters cannot find high skilled
-* hiders as easily as low skilled hiders.
+
 */
 
 /*!
 \author Luxor
+
+I decided to base this on how OSI will be changing detect hidden.
+The greater your skill, the more of a range you can detect from target position.
+Hiders near the center of the detect circle are easier to detect than ones near
+the edges of the detect circle. Also low skill detecters cannot find high skilled
+hiders as easily as low skilled hiders.
 */
-void Skills::target_detectHidden(pClient client, pTarget t )
+void nSkills::target_detectHidden(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	if ( !pc ) return;
@@ -811,7 +805,7 @@ void Skills::target_detectHidden(pClient client, pTarget t )
 		if ( !pc_curr )
 			continue;
 
-		if ( pc_curr->IsHiddenBySkill() && !pc->isPermaHidden() )
+		if ( pc_curr->isHiddenBySkill() && !pc->isPermaHidden() )
 		{
 			nDist = int32_t( dist(lCharPos, pc_curr->getPosition()) );
 			nLow = int32_t( (nDist * 20.0) + (pc_curr->skill[HIDING] / 2.0) );
@@ -844,7 +838,7 @@ void Skills::target_detectHidden(pClient client, pTarget t )
 // name:    HealingSkillTarget
 // history: unknown, revamped by Duke, 4.06.2000
 //
-void Skills::target_healingSkill(pClient client, pTarget t )
+void nSkills::target_healingSkill(pClient client, pTarget t )
 {
 	pChar ph = client->currChar();
 	pChar pp = cSerializable::findCharBySerial( t->getClicked() );
@@ -966,18 +960,17 @@ void Skills::target_healingSkill(pClient client, pTarget t )
 	AMXEXECSVTARGET( ph->getSerial(),AMXT_SKITARGS,HEALING,AMX_AFTER);
 }
 
-void Skills::target_armsLore(pClient client, pTarget t )
+void nSkills::target_armsLore(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
 	if ( !pc || !pi ) return;
 
-    char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-    int total;
-    float totalhp;
-    char p2[100];
-
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skArmsLore,AMX_BEFORE);
+	int total;
+	float totalhp;
+	char p2[100];
+	
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skArmsLore,AMX_BEFORE);
 
     
 	if ( (pi->def==0 || pi->pileable)
@@ -987,7 +980,7 @@ void Skills::target_armsLore(pClient client, pTarget t )
 		return;
 	}
 
-	if(pc->IsGM())
+	if(pc->isGM())
 	{
 		client->sysmessage("Attack [%i] Defense [%i] Lodamage [%i] Hidamage [%i]", pi->att, pi->def, pi->lodamage, pi->hidamage);
 		return;
@@ -1043,9 +1036,9 @@ void Skills::target_armsLore(pClient client, pTarget t )
             }
             else
             {
-                if  (pi->def> 12) strcpy(p2, " Is superbly crafted to provide maximum protection.");
+                if  (pi->def> 12) strcpy(p2, " is superbly crafted to provide maximum protection.");
                 else if (pi->def> 10) strcpy(p2, " Offers excellent protection.");
-                else if (pi->def> 8 ) strcpy(p2, " Is a superior defense against attack.");
+                else if (pi->def> 8 ) strcpy(p2, " is a superior defense against attack.");
                 else if (pi->def> 6 ) strcpy(p2, " Serves as a sturdy protection.");
                 else if (pi->def> 4 ) strcpy(p2, " Offers some protection against blows.");
                 else if (pi->def> 2 ) strcpy(p2, " Provides very little protection.");
@@ -1082,14 +1075,12 @@ void Skills::target_armsLore(pClient client, pTarget t )
 
 }
 
-void Skills::target_itemId(pClient client, pTarget t )
+void nSkills::target_itemId(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
 
 	if ( !pc || !pi ) return;
-
-    char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ITEMID,AMX_BEFORE);
     
@@ -1163,7 +1154,7 @@ void Skills::target_itemId(pClient client, pTarget t )
 }
 
 
-void Skills::target_tame(pClient client, pTarget t )
+void nSkills::target_tame(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pChar target = dynamic_cast<pChar>( t->getClicked() );
@@ -1237,16 +1228,14 @@ void Skills::target_tame(pClient client, pTarget t )
 }
 
 
-void Skills::target_animalLore(pClient client, pTarget t )
+void nSkills::target_animalLore(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pChar target = dynamic_cast<pChar>( t->getClicked() );
 
 	if ( !pc || !target ) return;
 
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-
-    // blackwind distance fix
+	// blackwind distance fix
 	if( target->distFrom(pc) >= 10 )
 	{
 		client->sysmessage("You need to be closer to find out more about them" );
@@ -1255,7 +1244,7 @@ void Skills::target_animalLore(pClient client, pTarget t )
 
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skAnimalLore,AMX_BEFORE);
 
-	if (target->IsGMorCounselor())
+	if (target->isGMorCounselor())
 	{
 		client->sysmessage("Little is known of these robed gods.");
 		return;
@@ -1271,7 +1260,7 @@ void Skills::target_animalLore(pClient client, pTarget t )
 			pChar target_owner = cSerializable::findCharBySerial( target->getOwnerSerial32() );
 			if(!target_owner) return;
 
-			sprintf(temp, "Attack [%i] Defense [%i] Taming [%i] Hit Points [%i] Is Loyal to: [%s]", target->att, target->def, target->taming/10, target->hp, (target->tamed)? target_owner->getCurrentName().c_str() : "himself" );
+			sprintf(temp, "Attack [%i] Defense [%i] Taming [%i] Hit Points [%i] is Loyal to: [%s]", target->att, target->def, target->taming/10, target->hp, (target->tamed)? target_owner->getCurrentName().c_str() : "himself" );
 			target->emote(s,temp,1);
         	}
         	else
@@ -1283,7 +1272,7 @@ void Skills::target_animalLore(pClient client, pTarget t )
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skAnimalLore,AMX_AFTER);
 }
 
-void Skills::target_forensics(pClient client, pTarget t )
+void nSkills::target_forensics(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pItem pi = dynamic_cast<pItem>( t->getClicked() );
@@ -1299,7 +1288,7 @@ void Skills::target_forensics(pClient client, pTarget t )
     		return;
 	}
 
-	if(pc->IsGM()) {
+	if(pc->isGM()) {
     		client->sysmessage("The %s is %i seconds old and the killer was %s.", pi->getCurrentName().c_str(), (curtim-pi->murdertime)/MY_CLOCKS_PER_SEC, pi->murderer.c_str());
 	} else {
 		if (!pc->checkSkill( skForensics, 0, 500)) client->sysmessage("You are not certain about the corpse.");
@@ -1372,14 +1361,14 @@ void target_poisoning2(pClient client, pTarget t )
 		return;
 	}
 
-	if (!pi->IsFencing1H() && !pi->IsSword() && !pi->IsArrow() && !pi->IsBolt())
+	if (!pi->isFencing1H() && !pi->isSword() && !pi->isArrow() && !pi->isBolt())
 	{
 		client->sysmessage("You cannot poison that item");
 		pc->objectdelay = 0;
 		return;
 	}
 
-	if ( (pi->IsArrow()||pi->IsBolt()) && pi->amount>5)
+	if ( (pi->isArrow()||pi->isBolt()) && pi->amount>5)
 	{
 		client->sysmessage("Too many items you can poison at least 5 items");
 		pc->objectdelay = 0;
@@ -1464,7 +1453,7 @@ void target_poisoning2(pClient client, pTarget t )
 
 /*!
 */
-void Skills::target_poisoning(pClient client, pTarget t )
+void nSkills::target_poisoning(pClient client, pTarget t )
 {
 	pItem poison = dynamic_cast<pItem>( t->getClicked() );
 	if(!poison) return;
@@ -1478,7 +1467,7 @@ void Skills::target_poisoning(pClient client, pTarget t )
 }
 
 
-void Skills::target_tinkering(pClient client, pTarget t )
+void nSkills::target_tinkering(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pItem pi = dynamic_cast<pItem>( t->getClicked() );
@@ -1488,7 +1477,7 @@ void Skills::target_tinkering(pClient client, pTarget t )
 
 	if ( pi->magic!=4) // Ripper
 	{
-		if(pi->getId()==0x1BEF || pi->getId()==0x1BF2 || pi->IsLog() )
+		if(pi->getId()==0x1BEF || pi->getId()==0x1BF2 || pi->isLog() )
 		{
 			if (CheckInPack(client,pi))
 			{
@@ -1499,7 +1488,7 @@ void Skills::target_tinkering(pClient client, pTarget t )
 					client->sysmessage("You don't have enough ingots to make anything.");
 					return;
 				}
-				if ( pi->IsLog() )
+				if ( pi->isLog() )
 				{
 					if (amt<4)
 					{
@@ -1507,9 +1496,9 @@ void Skills::target_tinkering(pClient client, pTarget t )
 						return;
 					}
 					else 
-						Skills::MakeMenu(pc,70,skTinkering,pi);
+						MakeMenu(pc,70,skTinkering,pi);
 				} else {
-					Skills::MakeMenu(pc,80,skTinkering,pi);
+					MakeMenu(pc,80,skTinkering,pi);
 				}
 			}
 			return;
@@ -1705,25 +1694,25 @@ cTinkerCombine* cTinkerCombine::factory(short combinetype)
     }
 }
 
-void Skills::target_tinkerAxel(pClient client, pTarget t )
+void nSkills::target_tinkerAxel(pClient client, pTarget t )
 {
     cTinkerCombine *ptc = cTinkerCombine::factory(cTC_AwG);
     ptc->DoIt(client, t);
 }
 
-void Skills::target_tinkerAwg(pClient client, pTarget t )
+void nSkills::target_tinkerAwg(pClient client, pTarget t )
 {
     cTinkerCombine *ptc = cTinkerCombine::factory(cTC_Parts);
     ptc->DoIt(client, t);
 }
 
-void Skills::target_tinkerClock(pClient client, pTarget t )
+void nSkills::target_tinkerClock(pClient client, pTarget t )
 {
     cTinkerCombine *ptc = cTinkerCombine::factory(cTC_Clock);
     ptc->DoIt(client, t);
 }
 
-void Skills::target_repair(pClient client, pTarget t )
+void nSkills::target_repair(pClient client, pTarget t )
 {
 	pChar pc = ps->currChar();
 	pItem pi = dynamic_cast<pItem>( t->getClicked() );

@@ -146,4 +146,10 @@ enum Skill {
 	skRemoveTraps, skTrueSkills
 };
 
+/*!
+\brief Types of variaibles
+\author Endymion
+*/
+enum VarType { VAR_EFF =0, VAR_DEC, VAR_REAL, VAR_ACT, };
+
 #endif
