@@ -509,6 +509,9 @@ public:
 	inline void setAmount(const UI16 amt)
 	{ amount = amt; Refresh(); }
 
+        inline const UI16 getAmount()
+	{ return amt; }
+
 	SI32			DeleteAmount(int amount, short id, short color=-1);
 
 	inline const SI32	CountItems(short ID=-1, short col= -1,bool bAddAmounts = true) const

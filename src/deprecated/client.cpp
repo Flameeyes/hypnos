@@ -101,20 +101,7 @@ void cNxwClientObj::sysmsg(char* txt, ...)
 //AoS/	Network->FlushBuffer(m_sck);
 }
 
-bool cNxwClientObj::isDragging()
-{
-	return clientInfo[m_sck]->dragging;
-}
 
-void cNxwClientObj::setDragging()
-{
-	clientInfo[m_sck]->dragging=true;
-}
-
-void cNxwClientObj::resetDragging()
-{
-	clientInfo[m_sck]->dragging=false;
-}
 
 bool cNxwClientObj::inGame()
 {

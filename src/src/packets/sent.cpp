@@ -317,7 +317,7 @@ static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
                 case 0x05: return new cPacketReceiveAttackRequest(buffer, length);      // Attack Request
                 case 0x06: return new cPacketReceiveDoubleclick(buffer, length);        // Double click
                 case 0x07: return new cPacketReceivePickUp(buffer, length);             // Pick Up Item(s)
-                case 0x08: length =  14; break; // Drop Item(s)
+                case 0x08: return new cPacketReceiveDropItem(buffer, length);           // Drop Item(s)
                 case 0x09: return new cPacketReceiveSingleclick(buffer, length);        // Single click
                 case 0x12: length = ???; break; // Request Skill/Action/Magic Usage
                 case 0x13: length =  10; break; // Drop - Wear Item
@@ -701,8 +701,30 @@ virtual bool cPacketReceiveDoubleclick::execute(pClient client)
 virtual bool cPacketReceivePickUp::execute(pClient client)
 {
         if (length != 7) return false;
-        
+	pItem pi = pointers::findItemBySerPtr(LongFromCharPtr(buffer+1));
+        UI16 amount = ShortFromCharPtr(buffer+5);
+      	VALIDATEPIR(pi, false);
+        client->get_item(pi, amount);  //!< if refused, the get_item automatically bounces the item back
+        return true;
+
 }
+
+/*!
+\brief Pickup Item Packet
+\author Chronodt
+\param client client who sent the packet
+*/
+
+virtual bool cPacketReceiveDropItem::execute(pClient client)
+{
+        if (length != 14) return false;
+	pItem pi = pointers::findItemBySerPtr(LongFromCharPtr(buffer+1));
+        Location drop_at = Loc(ShortFromCharPtr(buffer+5), ShortFromCharPtr(buffer+7), buffer[9]);
+        pItem container = pointers::findItemBySerial(LongFromCharPtr(buffer+10));
+        client->drop_item(pi, drop_at, container);  //!< if refused, the drop_item automatically bounces the item back
+        return true;
+}
+
 
 /*!
 \brief Singleclick Packet

@@ -46,7 +46,7 @@ protected:
 	pSocket sock;	//!< Current socket used by the client
 
 	UI32 flags;	//!< Flags of capabilities of the client
-
+        short int clientDimension;      //!< 2d or 3d client? (must contain 2 or 3) 
 public:
 	cClient(SI32 sd, struct sockaddr_in* addr);
 	~cClient();
@@ -64,8 +64,29 @@ public:
 	void compress(char &*);
 	void encrypt(char &*);
 
+        //! drag & drop methods
+protected:
+       	bool dragging; //!< true if is dragging
+	bool evilDrag; //!< evil dragging, we need this for UO3D clients to save dragging history
+
+        void pack_item(pItem pi, Location &loc, pItem cont);    //!< put dropped item into a container 
+
+public:
+        inline bool isDragging() const
+        { return dragging; }
+
+        inline void setDragging()
+        { dragging=true; }
+        
+        inline void resetDragging()
+        { dragging=false; }
+
+        void get_item(pItem pi, UI16 amount);                   //!< Client grabs an item
+        void drop_item(pItem pi, Location &loc, pItem cont);    //!< Item is dropped on ground, char or item
+void wear_item(NXWCLIENT ps);	//!< Item is dropped on paperdoll
 
         //! packet methods
+public:
 	void showContainer(pItem pCont);
 	void playMidi();
 	void playSFX(UI16 sound, bool onlyMe = false);

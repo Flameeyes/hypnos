@@ -354,6 +354,7 @@ class cPacketReceiveMoveRequest         : public cPacketReceive;
 class cPacketReceiveTalkRequest         : public cPacketReceive;
 class cPacketReceiveAttackRequest       : public cPacketReceive;
 class cPacketReceiveDoubleclick         : public cPacketReceive;
-class cPacketReceiveSingleclick         : public cPacketReceive;
 class cPacketReceivePickUp              : public cPacketReceive;
+class cPacketReceiveDropItem            : public cPacketReceive;
+class cPacketReceiveSingleclick         : public cPacketReceive;
 #endif

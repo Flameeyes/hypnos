@@ -35,9 +35,7 @@ public:
 	/*!
 	\name Client Status
 	*/
-	bool isDragging();
-	void setDragging();
-	void resetDragging();
+
 	bool inGame();
 	P_CHAR currChar();
 	int currCharIdx();
@@ -73,8 +71,7 @@ public:
 	bool compressOut; //!< compress output with huffman coding
 	bool noweather; //!< not weather
 	bool lsd; //!< lsd stuff
-	bool dragging; //!< true if is dragging
-	bool evilDrag; //!< evil dragging, we need this for UO3D clients to save dragging history
+
 	bool newclient; //!< is a new client
 	bool firstpacket; //!< fist packet sended
 	bool ingame; //!< is ingame
