@@ -189,6 +189,22 @@ namespace Skills {
 	
 	//! How much fame is lost stealing? \todo Set the default
 	SETTING(uint16_t, StealFameLoss, 0);
+	
+	//! Stealth necessary to pick up an item and remain hidden.
+	//! If INVALID pc is always unhid while picking up items from the ground
+	SETTING(uint16_t, StealthToTakeItemsWhileHid, 960);
+	
+	//! Stealth necessary to drop an item and remain hidden.
+	//! If INVALID pc is always unhid while dropping items on the ground
+	SETTING(uint16_t, StealthToDropItemsWhileHid, 960);
+
+	//! Maximum skill an npc trainer can teach to a PC
+	SETTING(uint16_t, MaximumSkillTraining, 250);
+}
+
+namespace Logging {
+	//! Gets the absolute path of the logs directory
+	SETTING(std::string, LogPath, "");
 }
 
 } // namespace nSettings
