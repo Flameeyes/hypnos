@@ -18,7 +18,7 @@
 #include "basics.h"
 #include "inlines.h"
 #include "skills/skills.h"
-#include "utils.h"
+#include "misc.h"
 #include "fishing.h"
 
 bool cItem::usableWhenLockedDown(pPc pc)

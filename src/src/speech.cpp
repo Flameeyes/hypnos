@@ -14,7 +14,7 @@
 #include "commands.h"
 #include "boats.h"
 #include "inlines.h"
-#include "utils.h"
+#include "misc.h"
 
 #define MAXBUFFER_REAL MAXBUFFER
 

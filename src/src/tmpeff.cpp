@@ -10,7 +10,7 @@
 #include "sndpkg.h"
 #include "inlines.h"
 #include "skills/skills.h"
-#include "utils.h"
+#include "misc.h"
 
 namespace tempfx {
 

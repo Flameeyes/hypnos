@@ -17,7 +17,7 @@
 #include "map.h"
 #include "inlines.h"
 #include "basics.h"
-#include "utils.h"
+#include "misc.h"
 
 /*!
 \brief Checks if the Char is allowed to move at all (not frozen, overloaded...)

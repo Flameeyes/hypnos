@@ -9,7 +9,7 @@
 #include "common_libs.h"
 #include "objects/cobject.h"
 #include "inlines.h"
-#include "utils.h"
+#include "misc.h"
 
 std::string cObject::getRandomScriptValue( std::string section, std::string& sectionId )
 {

@@ -9,7 +9,7 @@
 #include "magic.h"
 #include "npcai.h"
 #include "basics.h"
-#include "utils.h"
+#include "misc.h"
 #include "inlines.h"
 
 namespace npcs {

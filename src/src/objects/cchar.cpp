@@ -21,7 +21,7 @@
 #include "basics.h"
 #include "magic.h"
 #include "skills/skills.h"
-#include "utils.h"
+#include "misc.h"
 #include "targeting.h"
 
 #include <wefts_mutex.h>
