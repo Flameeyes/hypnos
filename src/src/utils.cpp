@@ -255,7 +255,7 @@ void dooruse(pChar pc, pItem pi)
 		return;
 	
 	houseowner_serial=pi2->getOwnerSerial32();
-	j=on_hlist(pi_house, pc->getSerial().ser1,  pc->getSerial().ser2,  pc->getSerial().ser3,  pc->getSerial().ser4, NULL);
+	j=on_hlist(pi_house, pc->getSerial(), NULL);
 	
 	if ( j != H_FRIEND && ( pi->getOwner() != pc ) )
 		return;

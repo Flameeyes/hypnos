@@ -408,14 +408,30 @@ public:
 /********************************
 	Extra info
 ********************************/
-	uint8_t		more1;		// For various stuff
+/*	uint8_t		more1;		// For various stuff
 	uint8_t		more2;
 	uint8_t		more3;
 	uint8_t		more4;
 	int8_t		moreb1;
 	int8_t		moreb2;
 	int8_t		moreb3;
-	int8_t		moreb4;
+	int8_t		moreb4;   */
+
+	union tMore {
+		uint32_t more;
+
+		struct {
+		uint8_t more1, more2, more3, more4;
+		}
+	}
+
+	union tMoreB {
+		uint32_t moreb;
+
+		struct {
+		uint8_t moreb1, moreb2, moreb3, moreb4;
+		}
+	}
 	uint32_t	morex;
 	uint32_t	morey;
 	uint32_t	morez;

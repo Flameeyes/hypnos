@@ -349,16 +349,11 @@ void buildhouse( NXWCLIENT ps, pTarget t )
 														// all world items (Sparhawk)
 
 
-		pKey->more1=pHouse->getSerial().ser1;//use the house's serial for the more on the key to keep it unique
-		pKey->more2=pHouse->getSerial().ser2;
-		pKey->more3=pHouse->getSerial().ser3;
-		pKey->more4=pHouse->getSerial().ser4;
+		pKey->more = pHouse->getSerial();	//use the house's serial for the more on the key to keep it unique
 		pKey->type=ITYPE_KEY;
 		pKey->setNewbie();
-		pKey2->more1=pHouse->getSerial().ser1;//use the house's serial for the more on the key to keep it unique
-		pKey2->more2=pHouse->getSerial().ser2;
-		pKey2->more3=pHouse->getSerial().ser3;
-		pKey2->more4=pHouse->getSerial().ser4;
+
+		pKey2->more = pHouse->getSerial();	//use the house's serial for the more on the key to keep it unique
 		pKey2->type=ITYPE_KEY;
 		pKey2->setNewbie();
 
@@ -369,10 +364,7 @@ void buildhouse( NXWCLIENT ps, pTarget t )
 			pItem p_key3=item::CreateFromScript( "$item_gold_key" );
 			if ( ! p_key3 ) return;
 			p_key3->setCurrentName( "a house key" );
-			p_key3->more1=pHouse->getSerial().ser1;
-			p_key3->more2=pHouse->getSerial().ser2;
-			p_key3->more3=pHouse->getSerial().ser3;
-			p_key3->more4=pHouse->getSerial().ser4;
+			p_key3->more = pHouse->getSerial();
 			p_key3->type=ITYPE_KEY;
 			p_key3->setNewbie();
 			bankbox->AddItem(p_key3);
@@ -446,12 +438,7 @@ void buildhouse( NXWCLIENT ps, pTarget t )
 						}
 						if (!(strcmp(script1,"LOCK")))//lock it with the house key
 						{
-							if (pi_l) {
-								pi_l->more1=pHouse->getSerial().ser1;
-								pi_l->more2=pHouse->getSerial().ser2;
-								pi_l->more3=pHouse->getSerial().ser3;
-								pi_l->more4=pHouse->getSerial().ser4;
-							}
+							if (pi_l) pi_l->more = pHouse->getSerial();
 						}
 						if (!(strcmp(script1,"X")))//offset + or - from the center of the house:
 						{
@@ -709,7 +696,7 @@ void killkeys(uint32_t serial) // Crackerjack 8/11/99
 			continue;
 
 		if ( (pi=static_cast<pItem>(objs.getObject())) ) {
-			if ( pi->type == ITYPE_KEY && calcserial(pi->more1, pi->more2, pi->more3, pi->more4) == serial )
+			if ( pi->type == ITYPE_KEY && pi->more == serial )
 				pi->Delete();
 		}
 	}
@@ -739,8 +726,7 @@ int on_hlist(pItem pi, uint32_t serial, int *li)
 		p_ci=si.getItem();
 		if( p_ci ) {
 
-			if((p_ci->morey== (uint32_t)pi->getSerial())&&
-			   (calcserial( p_ci->more1, p_ci->more2, p_ci->more3, p_ci->more4) == serial) )
+			if((p_ci->morey == (uint32_t)pi->getSerial())&& ( p_ci->more == serial) )
 				{
 				    if(li!=NULL) *li=p_ci->getSerial();
 						return p_ci->morex;
@@ -777,10 +763,7 @@ int add_hlist(pChar pc, pItem pi_h, int t)
 		pItem pi = new cItem(cItem::nextSerial());
 
 		pi->morex= t;
-		pi->more1= pc->getSerial().ser1;
-		pi->more2= pc->getSerial().ser2;
-		pi->more3= pc->getSerial().ser3;
-		pi->more4= pc->getSerial().ser4;
+		pi->more = pc->getSerial();
 		pi->morey= pi_h->getSerial();
 
 		pi->setDecay( false );
@@ -952,7 +935,7 @@ void target_houseOwner( NXWCLIENT ps, pTarget t )
 	pItem pSign=cSerializable::findItemBySerial( t->buffer[0] );
 	if ( ! pSign ) return;
 
-	pItem pHouse=cSerializable::findItemBySerial(calcserial(pSign->more1, pSign->more2, pSign->more3, pSign->more4));
+	pItem pHouse=cSerializable::findItemBySerial( pSign->more );
 	if ( ! pHouse ) return;
 
 	NXWSOCKET s = ps->toInt();
@@ -985,10 +968,7 @@ void target_houseOwner( NXWCLIENT ps, pTarget t )
 		pi3->MoveTo( pc->getPosition() );
 	}
 	pi3->Refresh();
-	pi3->more1= pHouse->getSerial().ser1;
-	pi3->more2= pHouse->getSerial().ser2;
-	pi3->more3= pHouse->getSerial().ser3;
-	pi3->more4= pHouse->getSerial().ser4;
+	pi3->more = pHouse->getSerial();
 	pi3->type=7;
 
 	sysmessage(s, "You have transferred your house to %s.", pc->getCurrentName().c_str());

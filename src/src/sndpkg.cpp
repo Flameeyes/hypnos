@@ -1224,15 +1224,9 @@ void staticeffectUO3D(SERIAL player, ParticleFx *sta)
    particleSystem[0]= 0xc7;
    particleSystem[1]= 0x3;
 
-   particleSystem[2]= pc_cs->getSerial().ser1;
-   particleSystem[3]= pc_cs->getSerial().ser2;
-   particleSystem[4]= pc_cs->getSerial().ser3;
-   particleSystem[5]= pc_cs->getSerial().ser4;
+   LongToCharPtr( pc_cs->getSerial(), particleSystem +2);
 
-   particleSystem[6]= 0x0; // always 0 for this type
-   particleSystem[7]= 0x0;
-   particleSystem[8]= 0x0;
-   particleSystem[9]= 0x0;
+   LongToCharPtr( 0x00000000, particleSystem +6); // always 0 for this type
 
    particleSystem[10]= sta->effect[4]; // tileid1
    particleSystem[11]= sta->effect[5]; // tileid2
@@ -1276,10 +1270,7 @@ void staticeffectUO3D(SERIAL player, ParticleFx *sta)
    particleSystem[40]=0x00;
    particleSystem[41]=0x00;
 
-   particleSystem[42]=pc_cs->getSerial().ser1;
-   particleSystem[43]=pc_cs->getSerial().ser2;
-   particleSystem[44]=pc_cs->getSerial().ser3;
-   particleSystem[45]=pc_cs->getSerial().ser4;
+   LongToCharPtr( pc_cs->getSerial(), particleSystem +42);
 
    particleSystem[46]=0; // layer, gets set afterwards for multi layering
 
@@ -1321,15 +1312,9 @@ void movingeffectUO3D(SERIAL source, SERIAL dest, ParticleFx *sta)
    particleSystem[0]=0xc7;
    particleSystem[1]=0x0;
 
-   particleSystem[2]=pc_cs->getSerial().ser1;
-   particleSystem[3]=pc_cs->getSerial().ser2;
-   particleSystem[4]=pc_cs->getSerial().ser3;
-   particleSystem[5]=pc_cs->getSerial().ser4;
+   LongToCharPtr( pc_cs->getSerial(), particleSystem +2);
 
-   particleSystem[6]=pc_cd->getSerial().ser1;
-   particleSystem[7]=pc_cd->getSerial().ser2;
-   particleSystem[8]=pc_cd->getSerial().ser3;
-   particleSystem[9]=pc_cd->getSerial().ser4;
+   LongToCharPtr( pc_cd->getSerial(), particleSystem +6);
 
    particleSystem[10]=sta->effect[5]; // tileid1
    particleSystem[11]=sta->effect[6]; // tileid2
@@ -1372,10 +1357,7 @@ void movingeffectUO3D(SERIAL source, SERIAL dest, ParticleFx *sta)
    particleSystem[40]=sta->effect[13]; // ??
    particleSystem[41]=sta->effect[14];
 
-   particleSystem[42]=0x00;
-   particleSystem[43]=0x00;
-   particleSystem[44]=0x00;
-   particleSystem[45]=0x00;
+   LongToCharPtr( 0x00000000, particleSystem +42);
 
    particleSystem[46]=0xff; // layer, has to be 0xff in that modus
 
@@ -1397,24 +1379,11 @@ void itemeffectUO3D(pItem pi, ParticleFx *sta)
 	particleSystem[1]=0x2;
 
 	if ( !sta->effect[11] )
-	{
-		particleSystem[2]= pi->getSerial().ser1;
-		particleSystem[3]= pi->getSerial().ser2;
-		particleSystem[4]= pi->getSerial().ser3;
-		particleSystem[5]= pi->getSerial().ser4;
-	}
+		LongToCharPtr( pi->getSerial(), particleSystem +2);
 	else
-	{
-		particleSystem[2]=0x00;
-		particleSystem[3]=0x00;
-		particleSystem[4]=0x00;
-		particleSystem[5]=0x00;
-	}
+		LongToCharPtr( 0x00000000, particleSystem +2);
 
-	particleSystem[6]=0x0; // always 0 for this type
-	particleSystem[7]=0x0;
-	particleSystem[8]=0x0;
-	particleSystem[9]=0x0;
+	LongToCharPtr( 0x00000000, particleSystem +6); // always 0 for this type
 
 	particleSystem[10]=sta->effect[4]; // tileid1
 	particleSystem[11]=sta->effect[5]; // tileid2
@@ -1454,10 +1423,7 @@ void itemeffectUO3D(pItem pi, ParticleFx *sta)
 	particleSystem[40]=0x00;
 	particleSystem[41]=0x00;
 
-	particleSystem[42]= pi->getSerial().ser1;
-	particleSystem[43]= pi->getSerial().ser2;
-	particleSystem[44]= pi->getSerial().ser3;
-	particleSystem[45]= pi->getSerial().ser4;
+	LongToCharPtr(pi->getSerial(), particleSystem +42);
 
 	particleSystem[46]=0xff;
 

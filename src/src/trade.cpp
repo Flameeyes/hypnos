@@ -76,16 +76,9 @@ pItem tradestart(pPC pc1, pPC pc2)
         pc1->getClient()->showItemInContainer(cont2);
         pc2->getClient()->showItemInContainer(cont2);
 
-	//!\todo Need to remplace these with a decent version..
-        cont2->moreb1= cont1->getSerial().ser1;
-	cont2->moreb2= cont1->getSerial().ser2;
-	cont2->moreb3= cont1->getSerial().ser3;
-	cont2->moreb4= cont1->getSerial().ser4;
-	cont1->moreb1= cont2->getSerial().ser1;
-	cont1->moreb2= cont2->getSerial().ser2;
-	cont1->moreb3= cont2->getSerial().ser3;
-	cont1->moreb4= cont2->getSerial().ser4;
+        cont2->moreb = cont1->getSerial();
 	cont2->morez=0;
+	cont1->moreb = cont2->getSerial();
 	cont1->morez=0;
 
         uint8_t msg[90];

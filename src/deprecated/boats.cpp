@@ -959,10 +959,7 @@ bool cBoat::Build(pClient client, pItem pBoat, char id2)
 	if( !pPlankR ) return false;
 	pPlankR->type=ITYPE_BOATS;
 	pPlankR->type2=3;
-	pPlankR->more1= pBoat->getSerial().ser1;//Lock this item!
-	pPlankR->more2= pBoat->getSerial().ser2;
-	pPlankR->more3= pBoat->getSerial().ser3;
-	pPlankR->more4= pBoat->getSerial().ser4;
+	pPlankR->more = pBoat->getSerial();	//Lock this item!
 	pPlankR->setPosition("z", -5);
 	pPlankR->priv=0;//Nodecay
 
@@ -970,30 +967,21 @@ bool cBoat::Build(pClient client, pItem pBoat, char id2)
 	if( !pPlankL ) return false;
 	pPlankL->type=ITYPE_BOATS;//Boat type
 	pPlankL->type2=3;//Plank sub type
-	pPlankL->more1= pBoat->getSerial().ser1;
-	pPlankL->more2= pBoat->getSerial().ser2;//Lock this
-	pPlankL->more3= pBoat->getSerial().ser3;
-	pPlankL->more4= pBoat->getSerial().ser4;
+	pPlankL->more = pBoat->getSerial();
 	pPlankL->setPosition("z", -5);
 	pPlankL->priv=0;
 
 	pItem pHold=item::CreateFromScript( "$item_hold1" );
 	if( !pHold ) return false;
-	pHold->more1= pBoat->getSerial().ser1;//Lock this too :-)
-	pHold->more2= pBoat->getSerial().ser2;
-	pHold->more3= pBoat->getSerial().ser3;
-	pHold->more4= pBoat->getSerial().ser4;
+	pHold->more = pBoat->getSerial();	//Lock this too :-)
 
 	pHold->type=ITYPE_CONTAINER;//Container
 	pHold->setPosition("z", -5);
 	pHold->priv=0;
 	pHold->setContainer(0);
 
-	pBoat->moreb1= pTiller->getSerial().ser1;//Tiller ser stored in boat's Moreb
-	pBoat->moreb2= pTiller->getSerial().ser2;
-	pBoat->moreb3= pTiller->getSerial().ser3;
-	pBoat->moreb4= pTiller->getSerial().ser4;
-	pBoat->morex= pPlankL->getSerial();//Store the other stuff anywhere it will fit :-)
+	pBoat->moreb = pTiller->getSerial();	//Tiller ser stored in boat's Moreb
+	pBoat->morex= pPlankL->getSerial();	//Store the other stuff anywhere it will fit :-)
 	pBoat->morey= pPlankR->getSerial();
 	pBoat->morez= pHold->getSerial();
 
@@ -1433,11 +1421,7 @@ pItem search_boat_by_plank(pItem pl)
 {
 	if ( ! pl )
 		return NULL;
-	Serial ser;
-	ser.ser1=pl->more1;
-	ser.ser2=pl->more2;
-	ser.ser3=pl->more3;
-	ser.ser4=pl->more4;
-	boat_db*  boat=search_boat(ser.serial32);
+
+	boat_db*  boat=search_boat(pl->more);
 	return boat->p_serial;
 }

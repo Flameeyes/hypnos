@@ -270,10 +270,10 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 				}
 			}
 
-			if pi_multi && pi_multi->IsHouse() )
+			if ( pi_multi && pi_multi->IsHouse() )
 			{
 				uint32_t sx, sy, ex, ey;
-				j=on_hlist(pi_multi, pc->getSerial().ser1, pc->getSerial().ser2, pc->getSerial().ser3, pc->getSerial().ser4, NULL);
+				j=on_hlist(pi_multi, pc->getSerial(), NULL);
 
 				if(j==H_BAN)
 				{

@@ -307,13 +307,10 @@ void command_gochar( pClient client )
 
 	switch( tnum ) {
 		case 5:	{
-			Serial serial;
-			serial.ser1=strtonum(1);
-			serial.ser2=strtonum(2);
-			serial.ser3=strtonum(3);
-			serial.ser4=strtonum(4);
+			uint32_t serial;
 
-			pc_i = cSerializable::findCharBySerial( serial.serial32 );
+			serial = calcserial( strtonum(1), strtonum(2), strtonum(3), strtonum(4) );
+			pc_i = cSerializable::findCharBySerial( serial );
 			break;
 		}
 		case 2: {

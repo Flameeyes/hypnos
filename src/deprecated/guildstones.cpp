@@ -84,7 +84,7 @@ void cGuilds::StonePlacement(int s)
 			guilds[guildnumber].stone= pStone->getSerial();
 			guilds[guildnumber].master= pc->getSerial();
 //guild will be rewrited tomorrow so np
-//			entrygump(s, pc->getSerial().ser1, pc->getSerial().ser2, pc->getSerial().ser3, pc->getSerial().ser4,100,1,40,"Enter a name for the guild.");
+//			entrygump(s, pc->getSerial(), 100, 1, 40, "Enter a name for the guild.");
 		}
 		else
 		{
@@ -1779,7 +1779,7 @@ int cGuilds::CheckValidPlace(int s)
 			pi=si.getItem();
 
 			if (pi)
-				if (pi->type==ITYPE_KEY && calcserial(pi->more1,pi->more2,pi->more3,pi->more4)==house->getSerial())
+				if (pi->type==ITYPE_KEY && pi->more == house->getSerial())
 				{
 					return 1;
 					break;

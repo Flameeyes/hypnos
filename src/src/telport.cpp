@@ -366,19 +366,19 @@ void objTeleporters(pChar pc)
 
 				// advancement objects
 				if ((pmi->type == 80) && !pc->npc)
-				if (pmi->more1 != 0 || pmi->more2 != 0 || pmi->more3 != 0 || pmi->more4 != 0)
+				if (pmi->more != 0)
 				{
-					if (pc->getSerial().ser1 == pmi->more1 && pc->getSerial().ser2 == pmi->more2 && pc->getSerial().ser3 == pmi->more3 && pc->getSerial().ser4 == pmi->more4)
+					if (pc->getSerial() == pmi->more )
 						advancementobjects(pc, pmi->morex, 0);
 				}
 				else
 					advancementobjects(pc, pmi->morex, 0);
 
 				if ((pmi->type == 81)&&!(pc->npc))
-					if (pmi->more1 != 0 || pmi->more2 != 0 || pmi->more3 != 0 || pmi->more4 != 0)
+					if ( pmi->more != 0 )
 					{
-						if (pc->getSerial().ser1 == pmi->more1 && pc->getSerial().ser2 == pmi->more2 && pc->getSerial().ser3 == pmi->more3 && pc->getSerial().ser4 == pmi->more4)
-						advancementobjects(pc, pmi->morex, 1);
+						if (pc->getSerial() == pmi->more)
+							advancementobjects(pc, pmi->morex, 1);
 					}
 					else
 						advancementobjects(pc, pmi->morex, 1);

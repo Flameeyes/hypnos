@@ -161,11 +161,8 @@ void cNxwClientObj::sendSpellBook(pItem pi)
 
     if (pi->layer!=1) senditem(m_sck,pi); // prevents crash if pack not open
 
-    char sbookstart[8]="\x24\x40\x01\x02\x03\xFF\xFF";
-    sbookstart[1]= pi->getSerial().ser1;
-    sbookstart[2]= pi->getSerial().ser2;
-    sbookstart[3]= pi->getSerial().ser3;
-    sbookstart[4]= pi->getSerial().ser4;
+    uint8_t sbookstart[8]="\x24\x40\x01\x02\x03\xFF\xFF";
+    LongToCharPtr(pi->getSerial(), sbookstart +1);
     send(sbookstart, 7);
 
     int spells[70] = {0,};
@@ -207,14 +204,14 @@ void cNxwClientObj::sendSpellBook(pItem pi)
     {
         if (spells[i]) scount++;
     }
-    char sbookinit[6]="\x3C\x00\x3E\x00\x03";
+    uint8_t sbookinit[6]="\x3C\x00\x3E\x00\x03";
     sbookinit[1]=((scount*19)+5)>>8;
     sbookinit[2]=((scount*19)+5)%256;
     sbookinit[3]=scount>>8;
     sbookinit[4]=scount%256;
     if (scount>0) send(sbookinit, 5);
 
-    char sbookspell[20]="\x40\x01\x02\x03\x1F\x2E\x00\x00\x01\x00\x48\x00\x7D\x40\x01\x02\x03\x00\x00";
+    uint8_t sbookspell[20]="\x40\x01\x02\x03\x1F\x2E\x00\x00\x01\x00\x48\x00\x7D\x40\x01\x02\x03\x00\x00";
     for (i=0;i<70;i++)
     {
         if (spells[i])
@@ -224,10 +221,7 @@ void cNxwClientObj::sendSpellBook(pItem pi)
             sbookspell[2]=0x00;
             sbookspell[3]=i+1;
             sbookspell[8]=i+1;
-            sbookspell[13]= pi->getSerial().ser1;
-            sbookspell[14]= pi->getSerial().ser2;
-            sbookspell[15]= pi->getSerial().ser3;
-            sbookspell[16]= pi->getSerial().ser4;
+            LongToCharPtr(pi->getSerial(), sbookspell +13);
             send(sbookspell, 19);
         }
     }
