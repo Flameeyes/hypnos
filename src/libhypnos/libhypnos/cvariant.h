@@ -273,7 +273,7 @@ All these functions return a bool which represent the success or not of the conv
 
 //@}
 
-	inline const bool isNull() const
+	inline bool isNull() const
 	{ return assignedType == vtNull; }
 	
 	void clear();

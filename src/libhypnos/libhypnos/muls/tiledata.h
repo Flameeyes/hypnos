@@ -125,7 +125,7 @@ public:
 		uint32_t getFlags() const
 		{ return mtohl(flags); }
 		
-		uint32_t getTextureID() const
+		uint16_t getTextureID() const
 		{ return mtohs(flags); }
 		
 		std::string getName() const;

@@ -287,6 +287,6 @@ namespace tempfx {
 		tmpfxSpellTelekinesys,		//!< telekinesys tmpfxSpell
 		MAX_TEMPFX_INDEX
 	};
-};
+}
 
 #endif

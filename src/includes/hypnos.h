@@ -15,6 +15,7 @@
 
 #include "typedefs.h"
 #include "libhypnos/muls/mulfiles.h"
+#include "libhypnos/muls/tiledata.h"
 
 void loadServer();
 void shutdownServer();

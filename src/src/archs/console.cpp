@@ -13,13 +13,14 @@
 #include "hypnos.h"
 #include "version.h"
 #include "clock.h"
-#include "arch/console.h"
-#include "arch/signals.h"
+#include "archs/console.h"
+#include "archs/signals.h"
 
 #ifdef HAVE_WINCON_H
 #include <wincon.h>
 #endif
 
+#include <stdarg.h>
 #include <iostream>
 
 /*!

@@ -24,6 +24,7 @@ namespace nLibhypnos {
 	class eException {
 	protected:		
 		eException() { }
+		virtual ~eException() { }
 	};
 
 	/*!

@@ -30,7 +30,7 @@ namespace nNotify {
 	void output(Level lev, const std::string str);
 	
 	void getDate();
-};
+}
 
 #define outPlain(x) nNotify::output(nNotify::levPlain, x)
 #define outPlainf(...) nNotify::outputf(nNotify::levPlain, __VA_ARGS__)

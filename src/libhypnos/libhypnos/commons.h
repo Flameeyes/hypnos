@@ -18,6 +18,10 @@
 #undef malloc
 #endif
 
+#if defined __GNUC__ && ! defined(__ICC)
+#define __GNUC_LIBRARY__
+#endif
+
 /*!
 \file
 \brief Common abstraction for libhypnos
@@ -48,7 +52,8 @@ suite to access the common defines without need of complete hypnos sources.
 	//! \see http://gcc.gnu.org/onlinedocs/gcc-3.3.3/gcc/Function-Attributes.html#Function%20Attributes
 	#define PRINTF_LIKE(A,B) ;
 
-#elif defined( __GNUC__ )
+#elif defined( __GNUC__ ) || defined(__ICC)
+// Intel C++ Compiler supports attributes (seems)
 	#define PACK_NEEDED __attribute__ ((packed))
 	#define DEPRECATED __attribute__ ((deprecated))
 	#define PURE __attribute__ ((pure))
@@ -75,7 +80,7 @@ suite to access the common defines without need of complete hypnos sources.
 #include <utility>
 #include <set>
 
-#ifdef __GNUC__
+#ifdef __GNUC_LIBRARY__
 	#include <ext/slist>
 	#include <ext/hash_map>
 	namespace std {

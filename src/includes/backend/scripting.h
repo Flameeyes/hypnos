@@ -47,7 +47,7 @@ public:
 			//! Executes the function
 			virtual cVariant execute() = 0;
 			
-			const bool isBypassed() const
+			inline bool isBypassed() const
 			{ return bypassed; }
 			
 			virtual ~cFunctionHandle();
