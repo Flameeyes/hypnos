@@ -27,7 +27,7 @@ tListening::tListening() : Wefts::Thread()
 	instance = this;
 	
 	// Create the socket
-	new Cabal::ServerSocket(nSettings::Server::getLocalHostname(), nSettings::Server::getLocalPort(), 2000);
+	sock = new Cabal::ServerSocket(nSettings::Server::getLocalHostname(), nSettings::Server::getLocalPort(), 2000);
 	
 	new tKilling();
 }

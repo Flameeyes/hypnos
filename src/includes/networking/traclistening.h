@@ -12,53 +12,36 @@
 \brief Listening server loop
 */
 
-#ifndef __NETWORKING_TLISTENING_H__
-#define __NETWORKING_TLISTENING_H__
+#ifndef __NETWORKING_TRACLISTENING_H__
+#define __NETWORKING_TRACLISTENING_H__
 
 #include "common_libs.h"
 #include <wefts_thread.h>
 #include <cabal_ssocket.h>
 
-class tReceiving;
+class tRemoteAdmin;
 
 /*!
-\class tListening tlistening.h "networking/tlistening.h"
-\brief Listening server loop
+\class tRACListening traclistening.h "networking/traclistening.h"
+\brief Listening remote administration console loop
 
-This class is used to accept the incoming connections of the clients, spawning
-a new receiving thread for every client connected.
-
-The creation of an instance of this class will request to nSettings the values
-for local hostname and local port for the server, and then creates the socket,
-but only the running thread can accept connections.
-
-Please also note that this thread will spawn in parallel a tKilling which
-deletes threads instances for already closed sockets (see cReceiveThread).
-
-tKilling must be killed by the server only when all the rest of the server
-is completely shutdown.
-
-\note This is a singleton.
+This thread listens for new requests for remote access, then spawns a new
+tRemoteAdmin thread which takes care of parsing user input.
 */
-class tListening : public Wefts::Thread
+class tRACListening : public Wefts::Thread
 {
-friend class tReceiving;
+friend class tRemoteAdmin;
 
 private:
 	Cabal::ServerSocket *sock;	//!< Server socket for the loop
 	std::set<tReceiving *> threads;	//!< List of currently operating receiving thredas
 	Wefts::Mutex threads_m;		//!< Mutex which prevents double access to cListenLoop::threads
 public:
-	static tListening *instance;	//!< Instance of the singleton
+	static tRACListening *instance;
 
-	tListening();
+	tRACListening();
 	
 	void *run();
-	
-	//! Closes the listening socket
-	void closeServer()
-	{ sock->close(); }
 };
 
 #endif
-

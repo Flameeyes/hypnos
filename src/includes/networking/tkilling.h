@@ -40,7 +40,7 @@ friend class tReceiving;
 protected:
 	Wefts::Queue<tReceiving *> deadSockets;	//!< Sockets to delete
 public:
-	tKilling *instance;			//!< Instance of the thread (is a singleton)
+	static tKilling *instance;		//!< Instance of the thread (is a singleton)
 
 	tKilling();
 	
