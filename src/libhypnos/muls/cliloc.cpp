@@ -30,6 +30,12 @@ fCliloc::fCliloc(std::string filename)
 		assert(ptr[4] == 0x00); // If it's not, need to check the format
 		uint16_t size = mtohs( *reinterpret_cast<uint16_t*>(ptr+5) );
 		
+		if ( ! size )
+		{
+			ptr += 7;
+			continue;
+		}
+		
 		char *buff = new char[size+1];
 		memcpy(buff, ptr+7, size);
 		buff[size] = '\0';
