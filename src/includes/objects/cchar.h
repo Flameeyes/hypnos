@@ -312,8 +312,7 @@ public:
 
 	void warUpdate();
 
-        void deadAttack (pChar pc_other);
-        void attackStuff (pChar victim);
+
 
 	/*!
 	\brief Sets criminal or grey depending on a server.cfg setting
@@ -735,7 +734,8 @@ public:
 		{ return flags & n; }
 
 		void			sysmsg(const TEXT *txt, ...);
-		void			attackStuff(P_CHAR pc);
+
+                void                    attackStuff (pChar victim);
 		void			helpStuff(P_CHAR pc_i);
 		void			applyPoison(PoisonType poisontype, SI32 secs = INVALID);
 		void			setOwner(P_CHAR owner);

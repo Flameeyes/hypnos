@@ -688,6 +688,7 @@ void target_key( NXWCLIENT ps, P_TARGET t )
         }//else
 }
 
+//TODO modify the parameter to get client instead of socket
 void target_attack( NXWCLIENT ps, P_TARGET t )
 {
 
@@ -697,8 +698,7 @@ void target_attack( NXWCLIENT ps, P_TARGET t )
 	VALIDATEPC(pc_t2);
 
 	NXWSOCKET s = ps->toInt();
-
-    AttackStuff(s,pc_t2); //xan : flag them all!
+    client->currChar()->attackStuff(pc_t2); //this will (eventually) flag the owner if ordering to attack an innocent
     npcattacktarget(pc_t1, pc_t2);
 }
 

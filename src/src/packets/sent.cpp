@@ -313,13 +313,8 @@ static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
                 case 0x00: return new cPacketReceiveCreateChar(buffer, length);         // Create Character
                 case 0x01: return new cPacketReceiveDisconnectNotify(buffer, length);   // Disconnect Notification
                 case 0x02: return new cPacketReceiveMoveRequest(buffer, length);        // Move Request
-<<<<<<< cpacket.cpp
                 case 0x03: return new cPacketReceiveTalkRequest(buffer, length);        // Talk Request
                 case 0x05: return new cPacketReceiveAttackRequest(buffer, length);      // Attack Request
-=======
-                case 0x03: return new cPacketReceiveTalkRequest(buffer, length);        // Talk Request
-                case 0x05: length =   5; break; // Attack Request
->>>>>>> 1.8
                 case 0x06: length =   5; break; // Double click
                 case 0x07: length =   7; break; // Pick Up Item(s)
                 case 0x08: length =  14; break; // Drop Item(s)
@@ -396,7 +391,8 @@ static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
 /*!
 \brief Character creation packet
 \author Chronodt
-\todo if needed add to all return NULL stantement a disconnect packet sending, and all Network-> stantement
+\param client client who sent the packet
+
 Mostly taken from old noxwizard.cpp and (vastly :) ) modified to pyuo object system
 */
 
@@ -404,7 +400,6 @@ Mostly taken from old noxwizard.cpp and (vastly :) ) modified to pyuo object sys
 virtual bool cPacketReceiveCreateChar::execute(pClient client)
 {
         // Disconnect-level encryption or transfer error check
-        //!< now packet integrity check :D
         if ((length !=104) ||                                           // packet length check
            (LongFromCharPtr(buffer+1) != 0xedededed) ||                 // pattern checking
            (LongFromCharPtr(buffer+5) != 0xffffffff) ||
@@ -412,7 +407,7 @@ virtual bool cPacketReceiveCreateChar::execute(pClient client)
            (buffer[10] != 0x00) ||                                      // at least one "letter" in character name
            (buffer[40] != 0x00))                                        // at least one "letter" in character password
         {
-                Network->Disconnect(client);
+                client->disconnect();
 	        return false;
 	}
 
@@ -441,8 +436,8 @@ virtual bool cPacketReceiveCreateChar::execute(pClient client)
 
         // Disconnect-level protocol error check (possible client hack or too many chars already present in account)
         if (
-                !(client->currAccount()->GetPassword()->compare(buffer+40)) ||                  //!< Password check
-                (client->currAccount()->getCharsNumber() >= ServerScp::g_nLimitRoleNumbers) ||  //!< Max user per account check
+                !(client->currAccount()->getPassword()->compare(buffer+40)) ||                  //!< Password check
+                (client->currAccount()->getCharsNumber() >= ServerScp::g_nLimitRoleNumbers) ||  //!< Max PCs per account check
                 ((sex !=1) && (sex != 0)) ||                                                    //!< Sex validity check
                 (strength + dexterity + intelligence > 80) ||                                   //!< Stat check: stat sum must be <=80
                 (strength < 10)     || (strength > 60)     ||                                   //!< each stat must be >= 10 and <= 60
@@ -453,7 +448,7 @@ virtual bool cPacketReceiveCreateChar::execute(pClient client)
                 (skill1 == skill2)  || (skill2 == skill3)  || (skill3 == skill1)                //!< 3 different skills must be selected
            )
         {
-                Network->Disconnect(client);
+                client->disconnect();
 	        return false;
 	}
 
@@ -514,7 +509,7 @@ virtual bool cPacketReceiveCreateChar::execute(pClient client)
 
 	P_ITEM pi;
 
-      	if (HairStyle)  //If HairStyle was invalid, is now 0, so baldy pg :D
+      	if (HairStyle)  // If HairStyle was invalid, is now 0, so baldy pg :D
 	{
 		pi = item::CreateFromScript( "$item_short_hair" );
 		VALIDATEPIR(pi, false);
@@ -525,7 +520,7 @@ virtual bool cPacketReceiveCreateChar::execute(pClient client)
                 charbody->setLayerItem(layHair, pi);
 	}
 
-	if (FacialHair)
+	if (FacialHair) // if FacialHair was invalid (or unselected) or pg is female, no beard is added
 	{
 		pi = item::CreateFromScript( "$item_short_beard" );
 		VALIDATEPIR(pi, false);
@@ -593,18 +588,29 @@ virtual bool cPacketReceiveCreateChar::execute(pClient client)
         return true;
 }
 
+/*!
+\brief Disconnection Request packet
+\param client client who sent the packet
+\author Chronodt
+*/
+
 virtual bool cPacketReceiveDisconnectNotify::execute(pClient client)
 {
         if ((length != 5) || (LongFromCharPtr(buffer+1) != 0xffffffff)) return false;
-        Network->Disconnect(client);
+        client->disconnect();
         return true;
 }
 
+/*!
+\brief Move Request packet: client trying to move PC
+\author Chronodt
+\param client client who sent the packet
+
+Mostly taken from old network.cpp and modified to pyuo object system
+*/
 
 virtual bool cPacketReceiveMoveRequest::execute (pClient client)
 {
-<<<<<<< cpacket.cpp
-
         if( (length == 7) && (client->currChar()!= NULL ))
         {
 	        walking(client->currChar(), buffer[1], buffer[2]); // buffer[1] = direction, buffer[2] = sequence number
@@ -612,6 +618,14 @@ virtual bool cPacketReceiveMoveRequest::execute (pClient client)
                 return true;
         } else return false;
 }
+
+/*!
+\brief Talk Request packet (NOT unicode!)
+\author Chronodt
+\param client client who sent the packet
+
+Mostly taken from old network.cpp and modified to pyuo object system
+*/
 
 virtual bool cPacketReceiveTalkRequest::execute (pClient client)
 {
@@ -627,48 +641,31 @@ virtual bool cPacketReceiveTalkRequest::execute (pClient client)
 	} else return false;
 }
 
+/*!
+\brief Attack Request Packet
+\author Chronodt
+\param client client who sent the packet
 
-
+Mostly taken from old network.cpp and rcvpkg.cpp and modified to pyuo object system
+*/
 virtual bool cPacketReceiveAttackRequest::execute (pClient client)
 {
         if (length != 5) return false;
 	pPC pc = client->currChar();
 	VALIDATEPCR( pc, false );
-	pChar victim = pointers::findCharBySerPtr(buffer[s] +1);
+	pChar victim = pointers::findCharBySerPtr(buffer + 1);
 	VALIDATEPCR( victim, false );
 
-	if( pc->dead )
-                        pc->deadattack(victim);
-	else
-		if( pc->jailed )
-			sysmessage(s,TRANSLATE("There is no fighting in the jail cells!"));
-		else
-			pc->attackStuff(victim);
-
-
-
+	if( pc->dead ) pc->deadAttack(victim);
+	else    if( pc->jailed ) sysmessage(s,TRANSLATE("There is no fighting in the jail cells!"));
+	        else pc->attackStuff(victim);
         return true;
-=======
-
-        if( (length == 7) && (client->currChar()!= NULL ))
-        {
-	        walking(client->currChar(), buffer[1], buffer[2]); // buffer[1] = direction, buffer[2] = sequence number
-	        client->currChar()->disturbMed();
-                return true;
-        } else return false;
 }
 
-virtual bool cPacketReceiveTalkRequest::execute (pClient client)
-{
-	if( (client->currChar()!=NULL) && (length != ShortFromCharPtr(buffer + 1)))
-        {
-        	unsigned char nonuni[512];
-		client->currChar()->unicode = false;
-	        strcpy((char*)nonuni, (char*)&buffer[8]);
-		talking(client, (char*)nonuni);
-                return true;
-	} else return false;
->>>>>>> 1.8
-}
+/*!
+\brief
+\author Chronodt
+\param client client who sent the packet
 
-
+Mostly taken from old network.cpp and modified to pyuo object system
+*/

@@ -37,6 +37,7 @@ public:
 	//! Makes a character temporary grey
 	inline void setGrey()
 	{ tempfx::add(this, this, tempfx::GREY, 0, 0, 0, 0x7FFF); }
+        void deadAttack (pChar victim);  //if dead and trying to attack someone...
 
 //@{
 /*!
@@ -131,7 +132,6 @@ public:
 			: 0;
 	}
 //@}
-
 };
 
 #endif

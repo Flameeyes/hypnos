@@ -1289,7 +1289,7 @@ void dbl_click_character(NXWCLIENT ps, P_CHAR target)
 	NXWSOCKET s = ps->toInt();
 
 	if( pc->war && (pc->getSerial32()!=target->getSerial32()) )
-		AttackStuff( s, target );
+		pc->attackStuff(target);
 
 	int keyboard = buffer[s][1]&0x80;
 

@@ -270,3 +270,85 @@ void cChar::updateSkill(UI16 skill)
 
 	client->sendPackage(&pk);
 }
+
+void cPC::deadAttack (pChar victim)
+{
+	VALIDATEPC( victim );
+	if(victim->npc)
+	{
+		if(victim->npcaitype==NPCAI_HEALER)
+		{
+			if( isInnocent() )
+			{
+				if ( distFrom( victim ) <= 3 )
+				{//let's resurrect him!
+					victim->playAction(0x10);
+					resurrect();
+					staticeffect(cc, 0x37, 0x6A, 0x09, 0x06);
+					switch(RandomNum(0, 4))
+					{
+					case 0: victim->talkAll( TRANSLATE("Thou art dead, but 'tis within my power to resurrect thee.  Live!"),0); break;
+					case 1: victim->talkAll( TRANSLATE("Allow me to resurrect thee ghost.  Thy time of true death has not yet come."),0); break;
+					case 2: victim->talkAll( TRANSLATE("Perhaps thou shouldst be more careful.  Here, I shall resurrect thee."),0); break;
+					case 3: victim->talkAll( TRANSLATE("Live again, ghost!  Thy time in this world is not yet done."),0); break;
+					case 4: victim->talkAll( TRANSLATE("I shall attempt to resurrect thee."),0); break;
+					}
+				}
+				else
+				{//if dist>3
+					victim->talkAll( TRANSLATE("Come nearer, ghost, and i'll give you life!"),1);
+				}
+			}
+			else
+			{//if a bad guy
+				victim->talkAll( TRANSLATE("I will not give life to a scoundrel like thee!"),1);
+			}
+		}
+		else if( victim->npcaitype == NPCAI_EVILHEALER )
+		{
+			if( isMurderer())
+			{
+				if ( distFrom( victim ) <=3 )
+				{//let's resurrect him!
+					victim->playAction(0x10);
+					resurrect();
+					staticeffect(cc, 0x37, 0x09, 0x09, 0x19); //Flamestrike effect
+					switch(rand()%5)
+					{
+						case 0: victim->talkAll( TRANSLATE("Fellow minion of Mondain, Live!!"),0); break;
+						case 1: victim->talkAll( TRANSLATE("Thou has evil flowing through your vains, so I will bring you back to life."),0); break;
+						case 2: victim->talkAll( TRANSLATE("If I res thee, promise to raise more hell!."),0); break;
+						case 3: victim->talkAll( TRANSLATE("From hell to Britannia, come alive!."),0); break;
+						case 4: victim->talkAll( TRANSLATE("Since you are Evil, I will bring you back to consciouness."),0); break;
+					}
+				}
+				else
+				{//if dist >3
+					victim->talkAll( TRANSLATE("Come nearer, evil soul, and i'll give you life!"),1);
+				}
+			}
+			else
+			{//if player is a good guy
+				victim->talkAll( TRANSLATE("I dispise all things good. I shall not give thee another chance!"),1);
+			}
+		}
+		else
+		{
+			sysmessage(s,TRANSLATE("You are dead and cannot do that."));
+		}//npcaitype check
+	}
+	else
+	{//if this not a npc but a player
+		if(SrvParms->persecute)
+		{//start persecute stuff - AntiChrist
+			targserial = victim->getSerial32();
+			Skills::Persecute(getClient());
+		}
+		else
+		{
+			sysmessage(s,TRANSLATE("You are dead and cannot do that."));
+		}
+	}//if npc
+
+}
+
