@@ -49,13 +49,10 @@ cBoat::cBoat(uint32_t nserial) : cItem(nserial)
 void cBoat::step(pClient client, uint8_t dir)
 {
 	static sRect navigable( XBORDER, YBORDER, (map_width*8)-XBORDER, (map_height*8)-YBORDER );
+	
+	client->pause();
 
 	if ( dir == 0xFF ) dir = getDirection();
-	
-	// This packet pauses the client before move the board
-	nPackets::Sent::PauseClient pk(0x01);
-	client->sendPacket(&pk);
-
 	sLocation boatpos = getPosition();
 	
 	// Direction where the boat is moving
@@ -96,8 +93,7 @@ void cBoat::step(pClient client, uint8_t dir)
 	{
 		type2=0;
 		itemtalk(tillerMan,"Arr, Sir, we've hit rough waters!");
-		nPackets::Sent::PauseClient pk(0x00);
-		client->sendPacket(&pk);
+		client->resume();
 		return;
 	}
 
@@ -105,26 +101,21 @@ void cBoat::step(pClient client, uint8_t dir)
 	{
 		type2=0;
 		itemtalk(tillerMan, "Arr, somethings in the way!");
-		nPackets::Sent::PauseClient pk(0x00);
-		client->sendPacket(&pk);
+		client->resume();
 		return;
 	}
 	if( collision(this, boatpos,0) )
 	{
 		type2=0;
 		itemtalk(tillerMan, "Arr, another ship in the way");
-		nPackets::Sent::PauseClient pk(0x00);
-		client->sendPacket(&pk);
-
+		client->resume();
 		return;
 	}
 
 	// The special items are also multi's items, so this moves all
 	MoveTo( boatpos );
 
-	// Removes the pause in the client
-	nPackets::Sent::PauseClient pk(0x00);
-	client->sendPacket(&pk);
+	client->resume();
 }
 
 /*!

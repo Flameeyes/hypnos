@@ -496,6 +496,12 @@ namespace nPackets {
 			uint8_t pausestatus;	//!< 0 = pause, 1 = resume
 
 		public:
+			/*!
+			\brief Constructor
+			\param aPauseStatus value to set pausestatus to. 0 for pause, 1 for resume
+			\note The constructor also calls prepare() because the packet doesn't
+				depends on other things other than that.
+			*/
 			inline PauseClient(uint8_t aPauseStatus) :
 				cPacketSend(NULL, 0), pausestatus(aPauseStatus)
 			{ prepare(); }

@@ -878,7 +878,7 @@ void sendshopinfo(int s, pChar pc, pItem pi)
 	}
 }
 
-int sellstuff(pClient client, pChar pc)
+bool sellstuff(pClient client, pChar pc)
 {
 	if (s < 0 || s >= now) return 0; //Luxor
 
@@ -898,14 +898,14 @@ int sellstuff(pClient client, pChar pc)
 	//<Luxor>
 
 	pItem pp=pc->GetItemOnLayer(LAYER_TRADE_BOUGHT);
-	if(!pp) return 0;
-
-	nPackets::Sent::PauseClient pk(0x01);
-	client->sendPacket(&pk);
-
+	if(!pp) return false;
 
 	pItem pack= pcs->getBackpack();
-	if(!pack) return 0;
+	if(!pack) return false;
+
+	// Pause the client only after the validity tests are completed
+	// else we can have a deadlock on the client
+	client->pause();
 
 	uint8_t m1[2048]={ 0x9E, 0x00, };
 
@@ -925,47 +925,44 @@ int sellstuff(pClient client, pChar pc)
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pj=si.getItem();
-		if (pj)
+		if ( ! pj ) continue;
+			
+		for( s_pack.rewind(); !s_pack.isEmpty(); s_pack++ )
 		{
+			if (m1[8] >= 50) continue;
 
-			for( s_pack.rewind(); !s_pack.isEmpty(); s_pack++ )
+			pItem pj1 = s_pack.getItem();
+			if ( ! pj1 ) continue;
+			
+			sprintf(ciname,"'%s'",pj1->getCurrentName().c_str()); // Added by Magius(CHE)
+			sprintf(cinam2,"'%s'",pj->getCurrentName().c_str()); // Added by Magius(CHE)
+			strupr(ciname); // Added by Magius(CHE)
+			strupr(cinam2); // Added by Magius(CHE)
+
+			if (pj1->getId()==pj->getId()  &&
+				pj1->type==pj->type &&
+				((SrvParms->sellbyname==0)||(SrvParms->sellbyname==1 && (!strcmp(ciname,cinam2))))) // If the names are the same! --- Magius(CHE)
 			{
-				if (m1[8] >= 50) continue;
-
-				pItem pj1 = s_pack.getItem();
-				if ( pj1 ) // LB crashfix
+				uint8_t namelen;
+				LongToCharPtr(pj1->getSerial(), m1+m1t+0);
+				ShortToCharPtr(pj1->getId(),m1+m1t+4);
+				ShortToCharPtr(pj1->getColor(),m1+m1t+6);
+				ShortToCharPtr(pj1->amount,m1+m1t+8);
+				value=pj->value;
+				value = pj1->calcValue(value);
+				if ( nSettings::Server::isEnabledTradeSystem() )
+					value=calcGoodValue(pc, pj1,value,1); // by Magius(CHE)
+				ShortToCharPtr(value, m1+m1t+10);
+				namelen = pj1->getName(itemname);
+				m1[m1t+12]=0;// Unknown... 2nd length byte for string?
+				m1[m1t+13] = namelen;
+				m1t += 14;
+				for(z=0;z<namelen;z++)
 				{
-					sprintf(ciname,"'%s'",pj1->getCurrentName().c_str()); // Added by Magius(CHE)
-					sprintf(cinam2,"'%s'",pj->getCurrentName().c_str()); // Added by Magius(CHE)
-					strupr(ciname); // Added by Magius(CHE)
-					strupr(cinam2); // Added by Magius(CHE)
-
-					if (pj1->getId()==pj->getId()  &&
-						pj1->type==pj->type &&
-						((SrvParms->sellbyname==0)||(SrvParms->sellbyname==1 && (!strcmp(ciname,cinam2))))) // If the names are the same! --- Magius(CHE)
-					{
-						uint8_t namelen;
-						LongToCharPtr(pj1->getSerial(), m1+m1t+0);
-						ShortToCharPtr(pj1->getId(),m1+m1t+4);
-						ShortToCharPtr(pj1->getColor(),m1+m1t+6);
-						ShortToCharPtr(pj1->amount,m1+m1t+8);
-						value=pj->value;
-						value = pj1->calcValue(value);
-						if ( nSettings::Server::isEnabledTradeSystem() )
-							value=calcGoodValue(pc, pj1,value,1); // by Magius(CHE)
-						ShortToCharPtr(value, m1+m1t+10);
-						namelen = pj1->getName(itemname);
-						m1[m1t+12]=0;// Unknown... 2nd length byte for string?
-						m1[m1t+13] = namelen;
-						m1t += 14;
-						for(z=0;z<namelen;z++)
-						{
-							m1[m1t+z]=itemname[z];
-						}
-						m1t += namelen;
-						m1[8]++;
-					}
+					m1[m1t+z]=itemname[z];
 				}
+				m1t += namelen;
+				m1[8]++;
 			}
 		}
 	}
@@ -989,10 +986,9 @@ int sellstuff(pClient client, pChar pc)
 			pc->talkAll("Sorry i cannot take so many items.."), false);
 	}
 
-	nPackets::Sent::PauseClient pk(0x00);
-	client->sendPacket(&pk);
+	client->resume();
 
-	return 1;
+	return true;
 }
 
 void tellmessage(int i, int s, char *txt)
