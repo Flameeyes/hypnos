@@ -67,12 +67,10 @@ bool checkMagicalSpeech( pChar pc, char* speech )
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////
-// Function name	 : loadSpellsFromScript
-// Description		 : load spells data from file
-// Return type		 : static void
-// Author			 : Xanathar
-// Changes			 : none yet
+/*!
+\brief Load spells data from file
+\author Xanatar
+*/
 void loadSpellsFromScript()
 {
 	cScpIterator* iter = NULL;
@@ -183,19 +181,16 @@ bool checkGateCollision( pChar pc )
 	return true;
 }
 
-
-///////////////////////////////////////////////////////////////////
-// Function name	 : inline bool checkTownLimits
-// Description		 : check if a spell can be casted (considering town limits)
-// Return type		 : static
-// Author			 : Xanathar
-// Argument 		 : int spellnum -> the spell number
-// Argument 		 : pChar pa -> attacker, can be NULL
-// Argument 		 : pChar pd -> defender
-// Argument 		 : int spellflags -> spell flags
-// Argument 		 : int param -> spell param
-// Argument 		 : bool areaspell = false -> is an area spell ?
-// Changes			 : none yet
+/*!
+\brief Check if a spell can be casted (considering town limits)
+\author Xanatar
+\param spellnum the spell number
+\param pa attacker (can be NULL)
+\param pd defender
+\param spellflags spell flags
+\param param spell param
+\param areaspell Is an spell area?
+*/
 static inline bool checkTownLimits(SpellId spellnum, pChar pa, pChar pd, int spellflags, int param, bool areaspell = false)
 {
 	//VALIDATEPCR(pa, false);
@@ -216,6 +211,7 @@ static inline bool checkTownLimits(SpellId spellnum, pChar pa, pChar pd, int spe
 	}
 	return false;
 }
+
 
 /*!
 \brief Checks if char has enough mana
@@ -238,14 +234,12 @@ static inline bool checkMana(pChar pc, SpellId num)
 }
 
 
-///////////////////////////////////////////////////////////////////
-// Function name	 : inline void subtractMana
-// Description		 : subtracts mana from char
-// Return type		 : static
-// Author			 : Xanathar
-// Argument 		 : pChar pc -> -- as default --
-// Argument 		 : int mana -> -- as default --
-// Changes			 : none yet
+/*!
+\brief Subtracts mana from char
+\author Xanatar
+\param pc caster
+\param spellnumber
+*/
 static inline void subtractMana(pChar pc, SpellId spellnumber)
 {
 	if ( ! pc ) return;
@@ -259,16 +253,13 @@ static inline void subtractMana(pChar pc, SpellId spellnumber)
 }
 
 
-
-///////////////////////////////////////////////////////////////////
-// Function name	 : checkReflection
-// Description		 : checks (recursively) magic reflection and
-//					   eventually changes attacker/defender roles
-// Return type		 : bool (true if roles changed)
-// Author			 : Xanathar
-// Argument 		 : pChar pa -> attacker
-// Argument 		 : pChar pd -> defender
-// Changes			 : none yet
+/*!
+\brief Checks (recursively) magic reflection and eventually changes attacker/defender roles
+\author Xanatar
+\param pa attacker
+\param pd defender
+\return true if role has changed
+*/
 static bool checkReflection(pChar &pa, pChar &pd)
 {
 	VALIDATEPCR(pa, false);
@@ -281,6 +272,7 @@ static bool checkReflection(pChar &pa, pChar &pd)
 	}
 	return false;
 }
+
 
 /*!
 \brief Checks if a spell is a field
@@ -302,25 +294,38 @@ static inline bool isFieldSpell(SpellId spell)
 	}
 }
 
+
+/*!
+\brief Checks if a spell is a box cast
+\author Xanathar
+\param spell Spell to check
+\return true if the spell is a box cast
+*/
 static inline bool isBoxSpell(SpellId spell)
 {
 	return (g_Spells[spell].areasize==0);
 }
 
+
+/*!
+\brief Checks if a spell is a area cast 
+\author Xanathar
+\param spell Spell to check
+\return true if the spell is a area cast
+*/
 static inline bool isAreaSpell(SpellId spell)
 {
 	return (g_Spells[spell].areasize>0);
 }
 
-///////////////////////////////////////////////////////////////////
-// Function name	 : checkResist
-// Description		 : check if defender can resist a spell
-// Return type		 : bool
-// Author			 : Xanathar
-// Argument 		 : pChar pa -> attacker
-// Argument 		 : pChar pd -> defender
-// Argument 		 : int spellnumber -> spell
-// Changes			 : none yet
+
+/*!
+\brief Check if defender can resist a spell
+\author Xanatar
+\param pa attacker
+\param pd defender
+\param spellnumber spell to check
+*/
 static bool checkResist(pChar pa, pChar pd, SpellId spellnumber)
 {	// This function uses informations found at http://uo.stratics.com !
 
@@ -349,7 +354,10 @@ static bool checkResist(pChar pa, pChar pd, SpellId spellnumber)
 /*!
 \author Luxor
 \brief Plays the spell effect
-\note Completely rewritten in 12 sep 2003
+\param spellnum
+\param pcaster
+\param pctarget
+\param pitarget
 */
 static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NULL, pItem pitarget = NULL )
 {
@@ -591,18 +599,15 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 }
 
 
-
-///////////////////////////////////////////////////////////////////
-// Function name	 : damage
-// Description		 : inflicts magic damage from a spell
-// Return type		 : void
-// Author			 : Xanathar
-// Argument 		 : pChar pa -> attacker
-// Argument 		 : pChar pd -> defender
-// Argument 		 : int spellnum -> spell number
-// Argument 		 : int spellflags = 0 -> spell flags
-// Argument 		 : int param = 0 -> optional parameter for some spellflags
-// Changes			 : none yet
+/*!
+\brief Inflicts magic damage from a spell
+\author Xanatar
+\param pa attacker
+\param pd defender
+\param spellnum Spell casted
+\param spellflags spell flags
+\param param optional parameter for some spellflags
+*/
 static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int param = 0)
 {
 	VALIDATEPC(pd);
@@ -666,17 +671,12 @@ static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int
 }
 
 
-
-
-
-///////////////////////////////////////////////////////////////////
-// Function name	 : checkReagents
-// Description		 : check reagents for presence
-// Return type		 : bool
-// Author			 : Xanathar
-// Argument 		 : pChar pc -> -- as default --
-// Argument 		 : reag_st reagents -> -- as default --
-// Changes			 : none yet
+/*!
+\brief Check presence of reagents
+\author Xanatar
+\param pc caster
+\param reagents reagents
+*/
 bool checkReagents(pChar pc, reag_st reagents)
 {
 	VALIDATEPCR(pc, false);
@@ -721,14 +721,11 @@ bool checkReagents(pChar pc, reag_st reagents)
 }
 
 
-
-///////////////////////////////////////////////////////////////////
-// Function name	 : spellFailFX
-// Description		 : plays failure effects
-// Return type		 : void
-// Author			 : Xanathar
-// Argument 		 : pChar pc -> wannabe caster
-// Changes			 : none yet
+/*!
+\brief Plays failure effects
+\author Xanatar
+\param pc Little happy caster
+*/
 void spellFailFX(pChar pc)
 {
 	if ( ! pc ) return;
@@ -740,17 +737,14 @@ void spellFailFX(pChar pc)
 }
 
 
-
-///////////////////////////////////////////////////////////////////
-// Function name	 : castAreaAttackSpell
-// Description		 : casts an area attack spell like eartquake or chain lightning
-// Return type		 : void
-// Author			 : Xanathar
-// Argument 		 : int x -> x coord of epicenter
-// Argument 		 : int y -> y coord of epicenter
-// Argument 		 : int spellnum -> spell number
-// Argument 		 : pChar pcaster -> caster (can be NULL)
-// Changes			 : none yet
+/*!
+\brief Casts an area attack spell like eartquake or chain lightning
+\author Xanatar
+\param x x coord of epicenter
+\param y y coord of epicenter
+\param spellnum Spell casted
+\param pcaster caster (can be NULL)
+*/
 void castAreaAttackSpell (int x, int y, SpellId spellnum, pChar pcaster)
 {
 	NxwCharWrapper sc;
@@ -792,37 +786,12 @@ void castAreaAttackSpell (int x, int y, SpellId spellnum, pChar pcaster)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-///////////////////////////////////////////////////////////////////
-// Function name	 : spellTargetType
-// Description		 : returns target type
-// Return type		 : int
-// Author			 : Xanathar
-// Argument 		 : int spellnum -> -- as default --
-// Changes			 : none yet
+/*!
+\brief Returns target type
+\author Xanatar
+\param spellnum Spell casted
+\return target type
+*/
 static inline int spellTargetType(SpellId spellnum)
 {
 	switch(spellnum) {
@@ -907,32 +876,23 @@ static inline int spellTargetType(SpellId spellnum)
 }
 
 
-
-
-
-
-///////////////////////////////////////////////////////////////////
-// Function name	 : spellRequiresTarget
-// Description		 : returns if spell requires a target
-// Return type		 : bool
-// Author			 : Xanathar
-// Argument 		 : int spellnum -> -- as default --
-// Changes			 : none yet
+/*!
+\brief Returns if spell requires a target
+\author Xanatar
+\param spellnum Spell to cast
+*/
 bool spellRequiresTarget(SpellId spellnum)
 {
 	return (spellTargetType(spellnum)!=TARGTYPE_NONE);
 }
 
 
-
-///////////////////////////////////////////////////////////////////
-// Function name	 : checkDistance
-// Description		 : check if the target is too far from the caster
-// Return type		 : bool
-// Author			 : Luxor
-// Argument 		 : pChar caster -> the caster
-// Argument 		 : pChar target -> the target
-// Changes			 : none yet
+/*!
+\brief Check if the target is too far from the caster
+\author Luxor
+\param caster Little wannabe caster
+\param target a poor guinea pig ;]
+*/
 static bool checkDistance(pChar caster, pChar target)
 {
 	VALIDATEPCR(caster, false);
@@ -949,12 +909,12 @@ static bool checkDistance(pChar caster, pChar target)
 }
 
 
-///////////////////////////////////////////////////////////////////
-// Function name	 : checkLos
-// Description		 : check if there's something between the caster and the target
-// Return type		 : bool
-// Author                : Luxor
-// Changes		 : none yet
+/*!
+\brief Check if there's something between the caster and the target
+\author Luxor
+\param caster a Little poor boy
+\param destpos position of a little crazy girl ;]
+*/
 static bool checkLos(pChar caster, Location destpos)
 {
 	VALIDATEPCR(caster, false);
@@ -998,14 +958,13 @@ bool checkRequiredTargetType(SpellId spellnum, TargetLocation& t)
 	}
 }
 
-///////////////////////////////////////////////////////////////////
-// Function name	 : consumeReagents
-// Description		 : delete reagents
-// Return type		 : void
-// Author			 : Xanathar
-// Argument 		 :	pChar pc -> -- as default --
-// Argument 		 : reag_st reags -> -- as default --
-// Changes			 : none yet
+
+/*!
+\brief Delete reagents
+\author Xanatar
+\param pc caster
+\param reags reagents
+*/
 void consumeReagents( pChar pc, reag_st reags )
 {
 	if ( ! pc ) return;
@@ -1021,28 +980,29 @@ void consumeReagents( pChar pc, reag_st reags )
 }
 
 
-
-///////////////////////////////////////////////////////////////////
-// Function name	 : spellNumberFromScrollId
-// Description		 : get spell number from scroll item id
-// Return type		 : int
-// Author			 : Xanathar
-// Argument 		 : int id -> item id of a scroll
-// Changes			 : none yet
+/*!
+\brief Get spell number from scroll itemID
+\author Xanatar
+\param id Scroll ItemID
+\return spell number
+*/
 SpellId spellNumberFromScrollId(int id)
 {
-	if (id==0x1F2D) 				return SPELL_REACTIVEARMOUR;		   // Reactive Armor
-	if (id>=0x1F2E && id<=0x1F33)	return static_cast<SpellId>(id-0x1F2D-1); // first circle without weaken
-	if (id>=0x1F34 && id<=0x1F6C)	return static_cast<SpellId>(id-0x1F2D);    // 2 to 8 circle spell scrolls plus weaken
+	if (id==0x1F2D) 		return SPELL_REACTIVEARMOUR;			// Reactive Armor
+	if (id>=0x1F2E && id<=0x1F33)	return static_cast<SpellId>(id-0x1F2D-1);	// first circle without weaken
+	if (id>=0x1F34 && id<=0x1F6C)	return static_cast<SpellId>(id-0x1F2D);		// 2 to 8 circle spell scrolls plus weaken
 	return SPELL_INVALID;
 }
-
-
 
 
 /*!
 \author Xanathar & Luxor
 \brief Casting function for stat pumping spells
+\param spellnumber Spell to cast
+\param dest target position
+\param pa attacker mage
+\param flags
+\param param
 */
 static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, int flags, int param)
 {
@@ -1129,12 +1089,20 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 }
 
 
-///////////////////////////////////////////////////////////////////
-// Function name	 : summon
-// Description		 : summons an npc for the caster :]
-// Return type		 : pChar
-// Author			 : Xanathar & Luxor
-// Changes			 : Luxor -> added code for uncontrollable npcs. added code for xyz target.
+/*!
+\brief Summon a NPC for the master ;]
+\author Xanatar and Luxor
+\param owner Master of NPC
+\param npctype NPC type
+\param duration How long NPC will be "under pressure"
+\param bTamed Tamed or uncontrollable one
+\param x
+\param y
+\param z
+
+	Changes:  
+		Luxor: added code for uncontrollable npcs. added code for xyz target.
+*/
 pChar summon (pChar owner, int npctype, int duration, bool bTamed, int x, int y, int z)
 {
 	VALIDATEPCR(owner, NULL);
@@ -1158,13 +1126,14 @@ pChar summon (pChar owner, int npctype, int duration, bool bTamed, int x, int y,
 }
 
 
-
-
-
-
-
-
-
+/*!
+\brief Cast a Field
+\param pc HarryPotter wannabe
+\param x x position of mighty caster
+\param y y position of mighty caster
+\param z z position of mighty caster
+\param spellnumber spell to cast
+*/
 void castFieldSpell( pChar pc, int x, int y, int z, int spellnumber)
 {
 	if ( ! pc ) return;
@@ -1224,15 +1193,18 @@ void castFieldSpell( pChar pc, int x, int y, int z, int spellnumber)
 }
 
 
-
-///////////////////////////////////////////////////////////////////
-// Function name	 : void applySpell
-// Description		 : the function which really does spell effects :]
-// Return type		 : static
-// Author			 : Xanathar & Luxor
-// Changes			 : none yet.
 #define CHECKDISTANCE(A,B) if(!checkDistance(A,B) || !A->losFrom(B)) return; //Luxor
 
+
+/*!
+\brief the function which really does spell effects :]
+\author Xanatar and Luxor
+\param spellnumber Spell to Cast
+\param dest Target location
+\param src caster
+\param flags spell flags
+\param param spell param
+*/
 static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, int param)
 {
 	if ( ! src ) return;
@@ -1366,6 +1338,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				}
 			}
 			break;
+
 		case SPELL_LOCK:
 			if (pi!=NULL) {
 				if( pi->toContainer() && !pi->toSecureContainer() )
@@ -1387,69 +1360,61 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 						src->sysmsg("You cannot lock this!!!");
 			}
 			break;
+
 		case SPELL_UNLOCK:
 			if ( ( pi != 0 )&&(pi->more1==0)&&(pi->more2==0)&&(pi->more3==0)&&(pi->more4==0)) {
 				if(pi->isSecureContainer()) {
 					switch(pi->type)
 					{
-					case ITYPE_LOCKED_ITEM_SPAWNER: pi->type=ITYPE_CONTAINER; break;
-					case ITYPE_LOCKED_CONTAINER: pi->type=ITYPE_UNLOCKED_CONTAINER; break;
+						case ITYPE_LOCKED_ITEM_SPAWNER: pi->type=ITYPE_CONTAINER; break;
+						case ITYPE_LOCKED_CONTAINER: pi->type=ITYPE_UNLOCKED_CONTAINER; break;
 					}
 					if (src!=NULL) {
-					src->playSFX( 0x1FF ); //Luxor
-					src->sysmsg("You unlocked it!");
+						src->playSFX( 0x1FF ); //Luxor
+						src->sysmsg("You unlocked it!");
 					}
 				}
 				else src->sysmsg("You cannot unlock this!!!");
 			} else src->sysmsg("You cannot unlock this!!!");
 			break;
 
-
-
-
 		case SPELL_TRAP:
-        if (pi) {
-            if((pi->type==ITYPE_DOOR || pi->type==ITYPE_CONTAINER || pi->type==ITYPE_LOCKED_ITEM_SPAWNER ||
-               pi->type==ITYPE_LOCKED_CONTAINER || pi->type==ITYPE_UNLOCKED_CONTAINER) && pi->getId()!=0x0E75)
-            {
-                pi->moreb1=1;
-                if (nValue!=-1) {
-                    pi->moreb2=nValue/2;
-                    pi->moreb3=nValue;
-                } else if (src!=NULL) {
-                    pi->moreb2=src->skill[nSkill]/20;
-                    pi->moreb3=src->skill[nSkill]/10;
-                    src->playSFX( 0x1E9 ); //Luxor
-                    src->sysmsg("It's trapped!");
-                } else {
-                    pi->moreb2=13;
-                    pi->moreb3=26;
-                }
-            } else if (src!=NULL) src->sysmsg("You cannot trap this!!!");
-        }
-        break;
+			if (pi) {
+				if(( pi->type==ITYPE_DOOR || pi->type==ITYPE_CONTAINER || pi->type==ITYPE_LOCKED_ITEM_SPAWNER ||
+				     pi->type==ITYPE_LOCKED_CONTAINER || pi->type==ITYPE_UNLOCKED_CONTAINER) && pi->getId()!=0x0E75 )
+				{
+					pi->moreb1=1;
+					if (nValue!=-1) {
+                    				pi->moreb2=nValue/2;
+						pi->moreb3=nValue;
+					} else if (src!=NULL) {
+						pi->moreb2=src->skill[nSkill]/20;
+						pi->moreb3=src->skill[nSkill]/10;
+						src->playSFX( 0x1E9 ); //Luxor
+						src->sysmsg("It's trapped!");
+					} else {
+						pi->moreb2=13;
+						pi->moreb3=26;
+					}
+				} else if (src!=NULL) src->sysmsg("You cannot trap this!!!");
+			}
+			break;
 
-
-
-         case SPELL_UNTRAP:
-         if (pi!=NULL) {
-             if((pi->type==ITYPE_DOOR || pi->type==ITYPE_CONTAINER || pi->type==ITYPE_LOCKED_ITEM_SPAWNER ||
-                pi->type==ITYPE_LOCKED_CONTAINER || pi->type==ITYPE_UNLOCKED_CONTAINER))
-         	{
-               if(pi->moreb1==1) {
-                   pi->moreb1=0;
-                   pi->moreb2=0;
-                   pi->moreb3=0;
-                   src->playSFX( 0x1F0 ); //Luxor
-                   src->sysmsg("You successfully untrap this item!");
-               } else if (src!=NULL) src->sysmsg("This item doesn't seem to be trapped!");
-           } else if (src!=NULL) src->sysmsg("This item cannot be untrapped!");
-        }
-        break;
-
-
-
-
+		case SPELL_UNTRAP:
+			if (pi) {
+				if((  pi->type==ITYPE_DOOR || pi->type==ITYPE_CONTAINER || pi->type==ITYPE_LOCKED_ITEM_SPAWNER ||
+				      pi->type==ITYPE_LOCKED_CONTAINER || pi->type==ITYPE_UNLOCKED_CONTAINER))
+				{
+					if(pi->moreb1==1) {
+						pi->moreb1=0;
+						pi->moreb2=0;
+						pi->moreb3=0;
+						src->playSFX( 0x1F0 ); //Luxor
+						src->sysmsg("You successfully untrap this item!");
+					} else if (src!=NULL) src->sysmsg("This item doesn't seem to be trapped!");
+				} else if (src!=NULL) src->sysmsg("This item cannot be untrapped!");
+			}
+			break;
 
 		case SPELL_REACTIVEARMOUR:
 			if (nTime==INVALID) nTime = src->skill[nSkill]/15;
@@ -1465,7 +1430,9 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				spellFX( spellnumber, pd );
 			}
 			break;
-		case SPELL_MASSDISPEL:{ // Luxor
+
+		case SPELL_MASSDISPEL: //Luxor
+			{
 			if ( pd ) {
 				x = pd->getPosition().x;
 				y = pd->getPosition().y;
@@ -1486,14 +1453,17 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 						pc_curr->summontimer = getclock() + 3*MY_CLOCKS_PER_SEC;
 				}
 				spellFX( SPELL_DISPEL, pc_curr );
-			}}
+			}
+			}
 			break;
+
 		case SPELL_TELEKINESYS: // Luxor
 			tempfx::add( src, src, tempfx::SPELL_TELEKINESYS, 0, 0, 0, 10 );
 			spellFX( spellnumber, src );
 			break;
-		case SPELL_POLYMORPH:
-			{ // Luxor
+
+		case SPELL_POLYMORPH: //Luxor
+			{
 			P_MENU menu = Menus.insertMenu( new cPolymorphMenu( src ) );
 			VALIDATEPM( menu );
 			menu->show( src );
@@ -1535,7 +1505,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_MASSCURSE: {
+		case SPELL_MASSCURSE:
+			{
 
 			NxwCharWrapper sc;
 			sc.fillCharsNearXYZ( x, y, src->skill[skMagery] / 100, true);
@@ -1547,10 +1518,10 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					castStatPumper(SPELL_CURSE, dest, src, flags, param);
 				}
 			}
-			}
 			break;
 
-		case SPELL_REVEAL: { //Luxor
+		case SPELL_REVEAL: //Luxor
+			{
 			spellFX(spellnumber, src);
 			NxwCharWrapper sc;
 			sc.fillCharsNearXYZ( x, y, src->skill[skMagery] / 100, true);
@@ -1566,8 +1537,6 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-
-
 		case SPELL_PROTECTION:
 			spellFX(spellnumber, src, pd);
 			if (nTime==INVALID) nTime = src->skill[nSkill]/15;
@@ -1575,7 +1544,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			tempfx::add(src,src, tempfx::SPELL_PROTECTION, nValue, 0, 0, nTime);
 			break;
 
-		case SPELL_ARCHPROTECTION: {
+		case SPELL_ARCHPROTECTION:
+			{
 			if (src!=NULL) {
 			  if (nTime==INVALID) nTime = 12;
 			  if (nValue==INVALID) nValue = 80;
@@ -1594,9 +1564,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				}
 			}
 			}
-		break;
-
-
+			break;
 
 		case SPELL_INCOGNITO:
 			spellFX(spellnumber, src, pd);
@@ -1612,7 +1580,6 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if ((pd==NULL)&&(src!=NULL)) pd = src;
 			if (pd!=NULL) pd->setReflection(true);
 			break;
-
 
 		case SPELL_INVISIBILITY:
 			spellFX(spellnumber, src, pd);
@@ -1716,8 +1683,6 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-
-
 		case SPELL_SUMMON:
 			if (src!=NULL) { // Luxor
 				P_MENU menu = Menus.insertMenu( new cSummonCreatureMenu( src ) );
@@ -1733,6 +1698,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				summon (src, xss::getIntFromDefine("$npc_summoned_air_elemental"), nTime, true, x, y, z);
 			}
 			break;
+
 		case SPELL_SUMMON_DEAMON:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
@@ -1740,6 +1706,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				summon (src, xss::getIntFromDefine("$npc_summoned_deamon"), nTime, true, x, y, z);
 			}
 			break;
+
 		case SPELL_SUMMON_EARTH:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
@@ -1747,6 +1714,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
     			summon (src, xss::getIntFromDefine("$npc_summoned_earth_elemental"), nTime, true, x, y, z);
 			}
 			break;
+
 		case SPELL_SUMMON_FIRE:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
@@ -1754,6 +1722,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
     			summon (src, xss::getIntFromDefine("$npc_summoned_fire_elemental"), nTime, true, x, y, z);
 			}
 			break;
+		
 		case SPELL_SUMMON_WATER:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
@@ -1761,6 +1730,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				summon (src, xss::getIntFromDefine("$npc_summoned_water_elemental"), nTime, true, x, y, z);
 			}
 			break;
+		
 		case SPELL_BLADESPIRITS:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
@@ -1768,6 +1738,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				summon (src, xss::getIntFromDefine("$npc_summoned_blade_spirit"), nTime, false, x, y, z);
 			}
 			break;
+		
 		case SPELL_ENERGYVORTEX:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
@@ -1775,7 +1746,6 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				summon (src, xss::getIntFromDefine("$npc_summoned_energy_vortex"), nTime, false, x, y, z);
 			}
 			break;
-
 
 		case SPELL_MARK:
 			if ((src!=NULL)&&(pi!=NULL)) {
@@ -1819,9 +1789,6 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-
-
-
 		case SPELL_TELEPORT:
 			//Luxor: now a mage cannot teleport to water
 			/*bool isWater = false;
@@ -1859,26 +1826,15 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 }
 
 
-
-
-
-
-
-
-
-
-
-///////////////////////////////////////////////////////////////////
-// Function name	 : castSpell
-// Description		 : casts a spell (direct action)
-// Return type		 : void
-// Author			 : Xanathar
-// Argument 		 : int spellnumber -> the spell number
-// Argument 		 : TargetLocation& dest -> the target
-// Argument 		 : pChar src = NULL -> the caster, if any
-// Argument 		 : int flags = 0 -> spell flags, if any
-// Argument 		 : int param = 0 -> optional parameters, if any
-// Changes			 : Luxor -> some checks to improve stability
+/*!
+\brief Cast a spell (direct action)
+\author Xanatar
+\param spellnumber Spell to cast
+\param dest Target destination
+\param src the caster
+\param flags spell flags
+\param param param
+*/
 void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, int param)
 {
 
@@ -1957,15 +1913,13 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 	applySpell(spellnumber, dest, src, flags, param);
 }
 
-///////////////////////////////////////////////////////////////////
-// Function name	 : beginCasting
-// Description		 : prepares spell casting from a char :)
-// Return type		 : bool
-// Author			 : Xanathar
-// Argument 		 : int num -> the spell number
-// Argument 		 : NXWCLIENT s -> client which is casting
-// Argument 		 : int type -> type of spell casting
-// Changes			 : none yet
+
+/*!
+\brief Prepares spell casting
+\author Xanatar
+\param client caster
+\param type type of casting
+*/
 bool beginCasting (SpellId num, NXWCLIENT s, CastingType type)
 {
 	if (s == NULL) return true;
@@ -2036,7 +1990,6 @@ bool beginCasting (SpellId num, NXWCLIENT s, CastingType type)
 /*
 \brief Constructor
 \author Luxor
-\since 0.82
 */
 cPolymorphMenu::cPolymorphMenu( pChar pc ) : cIconListMenu()
 {
