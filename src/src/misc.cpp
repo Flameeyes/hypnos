@@ -9,35 +9,6 @@
 #include "misc.h"
 
 /*!
-\brief direction from character a to position x,y
-\return int direction
-\param pc first character
-\param x X-coordinate
-\param y Y-coordinate
-*/
-int chardirxyz(pChar pc, int x, int y)
-{
-	if ( !pc ) return INVALID;
-
-	int dir,xdif,ydif;
-
-	xdif = x - pc->getPosition().x;
-	ydif = y - pc->getPosition().y;
-
-	if ((xdif==0)&&(ydif<0)) dir=0;
-	else if ((xdif>0)&&(ydif<0)) dir=1;
-	else if ((xdif>0)&&(ydif==0)) dir=2;
-	else if ((xdif>0)&&(ydif>0)) dir=3;
-	else if ((xdif==0)&&(ydif>0)) dir=4;
-	else if ((xdif<0)&&(ydif>0)) dir=5;
-	else if ((xdif<0)&&(ydif==0)) dir=6;
-	else if ((xdif<0)&&(ydif<0)) dir=7;
-	else dir=INVALID;
-
-	return dir;
-}
-
-/*!
 \brief Gets the direction for a field magic
 \param pc Caster character
 \param p Point where the field should be summoned
