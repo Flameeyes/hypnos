@@ -3,3 +3,5 @@ include makefiles/Makefile.linux.inc
 ${TARGET}: ${OBJECTS}
 	@echo -e "\tLD    $@"
 	$(LINK) $(LIBADD) $(OBJECTS) -o $(TARGET)
+
+include makefiles/Makefile.inc

@@ -9,13 +9,13 @@
 #
 ###############################################################################
 
-export SOURCES := $(foreach dir, $(SUBDIRS), $(wildcard $(dir)/*.cpp))
-export OBJECTS := $(SOURCES:.cpp=.o)
-
 CXXFLAGS	= -I $(PWD)/includes/ -pipe
 export LIBADD	= -lpthread -lmxmlplus -lwefts 
 
 export SUBDIRS  = src src/abstraction src/archs src/backend src/encryption src/extras src/objects src/objects/cchar src/objects/citem src/objects/cnpc src/races src/skills
+
+export SOURCES := $(foreach dir, $(SUBDIRS), $(wildcard $(dir)/*.cpp))
+export OBJECTS := $(SOURCES:.cpp=.o)
 
 ifndef COMSPEC
 	default=linux
@@ -42,22 +42,22 @@ nodebug: $(default)
 debug: $(default)-debug
 
 linux: #$(TARGET)
-	@make -f makefiles/Makefile.linux all CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums"
+	@make -f makefiles/Makefile.linux $(TARGET) CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums"
 
 linux-debug: #$(TARGET)
-	@make -f makefiles/Makefile.linux all CXXFLAGS="$(CXXFLAGS) -O0 -g -Wall"
+	@make -f makefiles/Makefile.linux $(TARGET) CXXFLAGS="$(CXXFLAGS) -O0 -g -Wall"
 
 mingw: #$(TARGET).exe
-	@make -f makefiles/Makefile.mingw all CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums"
+	@make -f makefiles/Makefile.mingw $(TARGET) CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums"
 
 mingw-debug: #$(TARGET).exe
-	@make -f makefiles/Makefile.mingw all CXXFLAGS="$(CXXFLAGS) -O0 -g -Wall"
+	@make -f makefiles/Makefile.mingw $(TARGET) CXXFLAGS="$(CXXFLAGS) -O0 -g -Wall"
 
 xmingw: #$(TARGET).exe
-	@make -f makefiles/Makefile.xmingw32 all CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums"
+	@make -f makefiles/Makefile.xmingw32 $(TARGET) CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums"
 
 xmingw-debug: #$(TARGET).exe
-	@make -f makefiles/Makefile.xmingw32 all CXXFLAGS="$(CXXFLAGS) -O0 -g -Wall"
+	@make -f makefiles/Makefile.xmingw32 $(TARGET) CXXFLAGS="$(CXXFLAGS) -O0 -g -Wall"
 
 clean:
 	@echo -e "\tCLEAN"

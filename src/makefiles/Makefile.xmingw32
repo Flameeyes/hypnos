@@ -8,10 +8,10 @@ LDFLAGS		:= $(LDFLAGS) -mno-cygwin
 
 TARGET		= hypnos.exe
 
-include makefiles/Makefile.inc
-
 ${TARGET}: ${OBJECTS}
 	@echo -e "\tLD    $@"
 	$(LINK) $(LIBADD) $(LDFLAGS) $(OBJECTS) -o $(TARGET)
 	@echo -e "\tSTRIP $@"
 	$(STRIP) --strip-all $(TARGET)
+
+include makefiles/Makefile.inc
