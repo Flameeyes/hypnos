@@ -56,6 +56,8 @@ public:
 	
 	const sRect &getArea() const
 	{ return area; }
+	
+	static pMulti cMulti::getAt(sPoint p);
 };
 
 #endif

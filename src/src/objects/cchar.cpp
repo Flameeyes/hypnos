@@ -847,7 +847,7 @@ bool cChar::canSee( pObject obj )
 */
 void cChar::teleport( uint8_t flags, pClient cli )
 {
-	setMulti(GetBoat(getPosition()));
+	setMulti( cMulti::getAt(getPosition()) );
 	
 	updateFlag();	//AntiChrist - Update highlight color
 

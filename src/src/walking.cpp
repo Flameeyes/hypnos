@@ -321,8 +321,11 @@ void WalkingHandleRainSnow(pChar pc)
 		i=staticTop( pc->getPosition() ); // static check
 
 	// dynamics-check
-		int x=dynamicElevation( pc->getPosition() );
-		if (x!=-127) if (Boats->GetBoat(pc->getPosition())!=NULL) x=-127; // check for dynamic buildings except boats
+		int x = dynamicElevation( pc->getPosition() );
+		
+		if ( dynamic_cast<pHouse>( cMulti::getAt(pc->getPosition()) ) )
+			x = invalid_z;
+		
 		if (x==1 || x==0) x=-127; // 1 seems to be the multi-borders
 	// bugfix LB
 

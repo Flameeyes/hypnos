@@ -104,3 +104,19 @@ bool cMulti::remove(pSerializable obj)
 	
 	return false;
 }
+
+/*!
+\brief Search for a multi in the given point of the map
+\param p Coords of the point to check for multi
+\return The pointer to the multi in the place, or NULL if not found
+*/
+pMulti cMulti::getAt(sPoint p)
+{
+	for( ; ; ) //!\todo Need to be changed when the new region stuff is done
+		if( !(*it) ) continue;
+		
+		if ( (*it)->getArea().isInside(p) )
+			return (*it);
+	}
+	return NULL;
+}

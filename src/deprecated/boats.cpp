@@ -108,7 +108,7 @@ void PlankStuff(pChar pc , pItem pi)//If the plank is opened, double click Will 
 	if ( ! pc )
 		return;
 
-	pItem boat =GetBoat(pc->getBody()->getPosition());
+	pBoat boat = dynamic_cast<pBoat>(cMulti::getAt(pc->getBody()->getPosition()));
 	if ( ! boat ) //we are on boat
 	{
 		boat->type2 = 0; //STOP the BOAT
@@ -160,10 +160,9 @@ void LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open plank wh
 	uint16_t y,y2= pi->getPosition().y;
 	int8_t z= pi->getPosition().z;
 	int8_t mz,sz,typ;
-	pItem pb=GetBoat(pc->getBody()->getPosition());
+	pBoat pb = dynamic_cast<pBoat>(cMulti::getAt(pc->getBody()->getPosition()));
 
-
-	if (pb==NULL) return;
+	if ( !pb ) return;
 	
 	for(x=x2-6;x<=x2+6;x++)
 	{
@@ -382,7 +381,7 @@ void TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, pItem p
 bool Speech(pClient client, std::string &talk)
 {
 	pPC pc = client->currChar();
-	pBoat pb = GetBoat(pc->getPosition());
+	pBoat pb = dynamic_cast<pBoat>(cMulti::getAt(pc->getBody()->getPosition()));
 	if( ! pb )
 		return false;
 	
@@ -698,25 +697,25 @@ bool Build(pClient client, pItem pb, char id2)
 /*!
 \author Elcabesa
 \brief Check if there is another boat at these coord
+\param pi First boat
+\param where Point where to search for colliding boats
+\param dir Unknown, passed to boat_collision() function
 \return true if collided, else false
 */
-bool collision(pItem pi,sLocation where,int dir)
+bool collision(pBoat pi, sPoint where, uint8_t dir)
 {
-	int x= where.x, y= where.y;
-	std::map<int,boat_db>::iterator iter_boat;
-	for(iter_boat=s_boat.begin();iter_boat!=s_boat.end();iter_boat++)
+	for( ; ; ) //!\todo Need to be changed when the new region stuff is done
 	{
-		boat_db coll=iter_boat->second;
-		if ( coll.serial == pi->getSerial() )
-			continue;
+		// (*it) must be of pBoat type
+		if ( (*it) == pi ) continue;
 		
-		int xx=abs(x - coll.p_serial->getPosition().x);
-		int yy=abs(y - coll.p_serial->getPosition().y);
+		uint16_t xx=abs(where.x - coll.p_serial->getPosition().x);
+		uint16_t yy=abs(where.y - coll.p_serial->getPosition().y);
 		double dist=hypot(xx, yy);
 		if ( dist >= 10 )
 			continue;
 			
-		if(boat_collision(pi,x,y,dir,coll.p_serial))
+		if(boat_collision(pi, where, dir, (*it)))
 			return true;
 	}
 	return false;
@@ -725,10 +724,13 @@ bool collision(pItem pi,sLocation where,int dir)
 /*!
 \brief check if 2 boat are collided
 \author Elcabesa
+\param pb1 First boat
+\param pb2 Second boat
+\param w Point where the collision can be
 \return true if collided, else false
 \see collision()
 */
-bool boat_collision(pItem pb1,int x1, int y1,int dir,pItem pb2)
+bool boat_collision(pBoat pb1, pBoat pb2, sPoint w, uint8_t dir)
 {
 	uint32_t i1, i2;
 	int x,y;
@@ -746,7 +748,7 @@ bool boat_collision(pItem pb1,int x1, int y1,int dir,pItem pb2)
 
 			switch(dir)
 			{
-			case -1:
+			case -1: //!\todo Fix this: can't be -1 the direction
 				x=x1-m1[i1].y;
 				y=y1+m1[i1].x;
 				break;
@@ -799,34 +801,4 @@ void OpenPlank(pItem pi)
 		case 0x89: pi->setId( 0x898A ); break;
 		default: LogWarning("WARNING: Invalid plank ID called! Plank %i '%s' [ %04x ]\n", pi->getSerial(), pi->getCurrentName().c_str(), pi->getId()); break;
 	}
-}
-
-/*!
-\brief check if there is a boat at this position and return the boat
-\return the pointer to the boat or NULL
-\author Elcabesa
-*/
-pItem GetBoat(sLocation pos)
-{
-	uint32_t i;
-	BOATS::iterator iter( s_boat.begin() ), end( s_boat.end() );
-	for( ; iter!=end; iter++) {
-
-		boat_db boat=iter->second;
-		pItem pb=boat.p_serial;
-		if( ! pb )
-			continue;
-		
-		if( dist( pos, pb->getPosition() ) >= 10.0 )
-			continue;
-		multiVector m;
-		data::seekMulti( pb->getId()-0x4000, m );
-
-		for( i = 0; i < m.size(); i++ )
-		{
-			if( ((m[i].x + pb->getPosition().x) == pos.x) && ((m[i].y + pb->getPosition().y) == pos.y) )
-				return  pb;
-		}
-	}
-	return NULL;
 }

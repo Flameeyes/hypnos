@@ -1284,21 +1284,14 @@ void cClient::dump_item(pItem pi, sLocation &loc) // Item is dropped on the grou
 	updateStatusWindow(pi);
 	pc->playSFX( itemsfx(pi->getId()) );
 
-
         pi->MoveTo(Loc);
         pi->setContainer(NULL);
 	dragItem = NULL;
 	resetDragging();
+	
+	pi->setMulti( cMulti::getAt(Loc) );
 
-        pItem p_boat = Boats->GetBoat(Loc);
-
-        if( p_boat )
-        {
-        	pi->SetMultiSerial(p_boat->getSerial());
-        }
-
-
-        pi->Refresh();
+	pi->Refresh();
 }
 
 /*!
@@ -1307,9 +1300,7 @@ void cClient::dump_item(pItem pi, sLocation &loc) // Item is dropped on the grou
 \param pi item to be dropped (already in dragging mode)
 \param loc position to drop item at (eventually in cont)
 \param cont container into which *pi has to be dropped (-1 = world)
-\return bool
 */
-
 void cClient::droppedOnChar(pItem pi, pChar dest)
 {
 	if(!pi) return false;
@@ -1639,8 +1630,6 @@ void cClient::droppedOnTrainer(pItem pi, pNPC npc)
 \author Unknown, moved here by Chronodt (4/2/2004)
 \param pi item to be dropped (already in dragging mode)
 */
-
-
 void cClient::droppedOnSelf(pItem pi)
 {
 	if(!pi) return;
@@ -1684,7 +1673,6 @@ void cClient::droppedOnSelf(pItem pi)
 \param pck char to "dressup" :)
 \param pi item to be put on pc
 */
-
 void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 {
 	pChar pc = currChar();
@@ -1910,7 +1898,6 @@ void cClient::item_bounce4(const pItem pi)
 \brief holds some statements that were COPIED some 50 times
 \param pi item to be bounced back (already in dragging mode)
 */
-
 void cClient::item_bounce5( const pItem pi)
 {
 	if ( ! pi ) return;
@@ -1922,7 +1909,6 @@ void cClient::item_bounce5( const pItem pi)
 \brief holds some statements that were COPIED some 50 times
 \param pi item to be bounced back (already in dragging mode)
 */
-
 void cClient::item_bounce6(const pItem pi)
 {
 	if ( ! pi ) return;
