@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE hypnoscommands SYSTEM "http://flameeyes.is-a-geek.org/uodtds/commands.dtd">
 <hypnoscommands>
   <bcommand name="where" level="0" disabled="true" />

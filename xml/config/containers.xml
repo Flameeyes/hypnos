@@ -1,4 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE containers SYSTEM "http://hypnos.berlios.de/dtds/containers.dtd">
 <containers>
   <gump id="0x3c" x1="40" y1="40" x2="140" y2="140" >
     <!--Box/Punch-->
