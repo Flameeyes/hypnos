@@ -1269,7 +1269,7 @@ void nPackets::Sent::UpdatePlayer::prepare()
 }
 
 
-void nPackets::Send::LoginDenied::prepare()
+void nPackets::Sent::LoginDenied::prepare()
 {
 	buffer = new uint8_t[2];
 	length = 2;
