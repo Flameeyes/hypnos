@@ -1,0 +1,8 @@
+<!-- elements in schedules -->
+<!ELEMENT schedules (schedule*)>
+
+<!-- data inside schedules is the name of the function to call -->
+<!ELEMENT schedules (#PCDATA)>
+<!ATTLIST schedules
+	interval CDATA #REQUIRED
+>

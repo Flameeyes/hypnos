@@ -1,0 +1,20 @@
+<!-- elements in schedules -->
+<!ELEMENT skills (skill*)>
+
+<!-- data inside schedules is the name of the function to call -->
+<!ELEMENT skill (skillpoint*)>
+<!ATTLIST skill
+	name CDATA #REQUIRED
+	str CDATA "0"
+	dex CDATA "0"
+	int CDATA "0"
+	unhideOnUse (true|false) "true"
+	unhideOnFail (true|false) "true"
+>
+
+<!ELEMENT skillpoint EMPTY>
+<!ATTLIST skillpoint
+	base CDATA #REQUIRED
+	success CDATA #REQUIRED
+	failire CDATA #REQUIRED
+>

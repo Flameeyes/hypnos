@@ -1,11 +1,11 @@
 <!-- elements in hypnoscommands -->
-<!ELEMENT hypnoscommands (bcommand+, ucommand*)>
+<!ELEMENT hypnoscommands (bcommand+ ucommand*)>
 
 <!ELEMENT bcommand EMPTY>
 <!ATTLIST bcommand
     name CDATA #REQUIRED
     level CDATA #REQUIRED
-    disabled CDATA "false"
+    disabled (true|false) "false"
 >
 
 <!ELEMENT ucommand EMPTY>
