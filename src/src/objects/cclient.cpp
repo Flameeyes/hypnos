@@ -408,7 +408,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
  	data::seekTile( pi->getId(), item );
 
 	// Check if item is equipped
-       	pItem container=pi->getOutMostCont();
+       	pContainer container=pi->getOutMostCont();
         pEquippable equipcont = dynamic_cast<pEquippable> container;
 	pEquippable equipitem = dynamic_cast<pEquippable> pi;
         pBody body = pc_currchar->getBody();
@@ -465,12 +465,15 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 
                 }
 		//<Luxor>
-		if (pi->amxevents[EVENT_ITAKEFROMCONTAINER]!=NULL)
+		pFunctionHandle evt = pi->getEvent(cItem::evtItmOnTakeFromContainer);
+		if ( evt )
 		{
-			g_bByPass = false;
-                        //!\todo adding another event using container instead of pi as sender, you can create event ontakefromthiscontainer, a CONTAINER event, instead of an item one. Also rename this as ONREMOVEFROMCONTAINER, to differentiate them further and avoid confusion
-			pi->amxevents[EVENT_ITAKEFROMCONTAINER]->Call( pi->getSerial(), pi->getContSerial(), pc_currchar->getSerial() );
-			if (g_bByPass)
+			tVariantVector params = tVariantVector(3);
+			params[0] = pi->getSerial(); params[1] = container->getSerial();
+			params[2] = pc_currchar->getSerial();
+			evt->setParams(params);
+			evt->execute();
+			if ( evt->isBypassed() )
 			{
 				cPacketSendBounceItem pk(5);
 				sendPacket(&pk);
@@ -484,10 +487,34 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 				if (equipitem) equipitem->setLayer(equipitem->getOldLayer());
 				pi->Refresh();
 				return;
-               		}
+			}
 		}
-
-
+		
+		evt = src->getEvent(cContainer::evtCntOnTakeItem);
+		if ( evt )
+		{
+			tVariantVector params = tVariantVector(3);
+			params[0] = container->getSerial(); params[1] = pi->getSerial();
+			params[2] = pc_currchar->getSerial();
+			evt->setParams(params);
+			evt->execute();
+			if ( evt->isBypassed() )
+			{
+				cPacketSendBounceItem pk(5);
+				sendPacket(&pk);
+				if (isDragging())
+				{
+					resetDragging();
+					updateStatusWindow(pi);
+				}
+				pi->setContainer( pi->getOldContainer() );
+				pi->setPosition( pi->getOldPosition() );
+				if (equipitem) equipitem->setLayer(equipitem->getOldLayer());
+				pi->Refresh();
+				return;
+			}
+		}
+	
 		if ( container->isCorpse() )
 		{
 			if ( container->getOwner() != pc_currchar)
@@ -499,10 +526,10 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
                                         //!\todo check when party redone
 					if( dead && dead->party==pc_currchar->party )
                                         {
-						P_PARTY party = Partys.getParty( pc_currchar->party );
+						pParty party = Partys.getParty( pc_currchar->party );
 						if( !party )
                                                 {
-							P_PARTY_MEMBER member = party->getMember( pc_currchar->getSerial() );
+							pPartyMember member = party->getMember( pc_currchar->getSerial() );
 							if( member!=NULL ) bCanLoot = member->canLoot;
 						}
 					}
@@ -721,17 +748,37 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 			return;
 		}
 	}
-        //!\todo if copying this using pi instead of dest, we can create an item version of onputin (maybe called ONSTOREITEM??) while ONPUTITEM may be renamed as ONFILLCONTAINER to differentiate them better
-	if (dest->amxevents[EVENT_IONPUTITEM]!=NULL)
-        {
-		g_bByPass = false;
-		dest->amxevents[EVENT_IONPUTITEM]->Call( dest->getSerial(), pi->getSerial(), pc->getSerial() );
-		if (g_bByPass)
+	
+	pFunctionHandle evt = dest->getEvent(cItem::evtItmOnPutInContainer);
+	if ( evt )
+	{
+		tVariantVector params = tVariantVector(3);
+		params[0] = dest->getSerial(); params[1] = pi->getSerial();
+		params[2] = pc->getSerial();
+		evt->setParams(params);
+		evt->execute();
+		if ( evt->isBypassed() )
 		{
 			item_bounce6(pi);
 			return;
 		}
 	}
+	
+	pContainer destcont = dynamic_cast<pContainer>(dest);
+	if ( destcont && ( evt = destcont->getEvent(cContainer::evtCntOnPutItem) ) )
+	{
+		tVariantVector params = tVariantVector(3);
+		params[0] = destcont->getSerial(); params[1] = pi->getSerial();
+		params[2] = pc->getSerial();
+		evt->setParams(params);
+		evt->execute();
+		if ( evt->isBypassed() )
+		{
+			item_bounce6(pi);
+			return;
+		}
+	}
+		
         //!\todo update trade windows to a more functional mode 
 	if (dest->layer==0 && dest->getId() == 0x1E5E && dest->getContainer() == pc->getBody())
 	{
@@ -1036,17 +1083,21 @@ void cClient::dump_item(pItem pi, Location &loc) // Item is dropped on the groun
 		return;
 	}
 
-	if (pi->amxevents[EVENT_IDROPINLAND]!=NULL)
+	pFunctionHandle evt = pi->getEvent(cItem::evtItmOnDropInLand);
+	if ( evt )
 	{
-       	        g_bByPass = false;
-       	        pi->amxevents[EVENT_IDROPINLAND]->Call( pi->getSerial(), pc->getSerial() );
-	        if (g_bByPass)
+		tVariantVector params = tVariantVector(2);
+		params[0] = pi->getSerial(); params[1] = pc->getSerial();
+		evt->setParams(params);
+		evt->execute();
+		if ( evt->isBypassed() )
 		{
 			item_bounce6(pi);
 		        pi->Refresh();                        
 		        return;
 	        }
-        }
+	}
+	
 	if ( !lineOfSight( pc->getPosition(), loc ) )
         {
                 sysmessage("You cannot place an item there!");
@@ -1859,7 +1910,7 @@ void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 
 	int playergoldtotal;
 
-	int tmpvalue=0; // Fixed for adv trade system -- Magius(CHE) §
+	int tmpvalue=0; // Fixed for adv trade system -- Magius(CHE) 
 
 	pChar pc = currChar();
 	if ( ! pc ) return;
@@ -1879,13 +1930,13 @@ void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 	for (; iter!=end; iter++)
 	{
 		iter.item->rank=10;     //Just to be on the safe side... :)
-		// Fixed for adv trade system -- Magius(CHE) §
+		// Fixed for adv trade system -- Magius(CHE) 
 		tmpvalue = iter.item->value;
 		tmpvalue = iter.item->calcValue(tmpvalue);
 		if (SrvParms->trade_system==1)
 			tmpvalue=calcGoodValue(this,iter.item,tmpvalue,0);
 		goldtotal+=iter.amount*tmpvalue;
-		// End Fix for adv trade system -- Magius(CHE) §
+		// End Fix for adv trade system -- Magius(CHE) 
                 if (iter->item->amount < iter->amount) soldout=1;
 	}
 
@@ -2079,7 +2130,7 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 					value = pi->value;
 					value = pSell->calcValue(value);
 					if (SrvParms->trade_system==1)
-						value=calcGoodValue(this,pSell,value,1); // Fixed for adv trade --- by Magius(CHE) §
+						value=calcGoodValue(this,pSell,value,1); // Fixed for adv trade --- by Magius(CHE) 
 					break;	// let's take the first match
 				}
                         }
@@ -2175,19 +2226,25 @@ void dotrade(pContainer cont1, pContainer cont2)
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pi = si.getItem();
-		if( pi)
+		if ( ! pi )
+			continue;
+			
+		pFunctionHandle evt = pi->getEvent(cItem::evtItmOnTransfer);
+		if ( evt )
 		{
-
-			if (pi->amxevents[EVENT_IONTRANSFER]!=NULL) {
-				g_bByPass = false;
-				pi->amxevents[EVENT_IONTRANSFER]->Call(pi->getSerial(), pc1->getSerial(), pc2->getSerial());
-				if (g_bByPass==true) continue; //skip item, I hope
-			}
-			pi->setContainer( bp2 );
-			pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
-			pc2->getClient()->showItemInContainer(pi);
-			pi->Refresh();
+			tVariantVector params = tVariantVector(3);
+			params[0] = pi->getSerial(); params[1] = pc1->getSerial();
+			params[2] = pc2->getSerial();
+			evt->setParams(params);
+			evt->execute();
+			if ( evt->isBypassed() )
+				continue;
 		}
+	
+		pi->setContainer( bp2 );
+		pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
+		pc2->getClient()->showItemInContainer(pi);
+		pi->Refresh();
 	}
 
 
@@ -2196,21 +2253,25 @@ void dotrade(pContainer cont1, pContainer cont2)
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pi = si.getItem();
-		if( pi)
+		if ( ! pi )
+			continue;
+			
+		pFunctionHandle evt = pi->getEvent(cItem::evtItmOnTransfer);
+		if ( evt )
 		{
-
-			if (pi->amxevents[EVENT_IONTRANSFER]!=NULL)
-                        {
-        			g_bByPass = false;
-        			pi->amxevents[EVENT_IONTRANSFER]->Call(pi->getSerial(), pc2->getSerial(), pc1->getSerial());
-        			if (g_bByPass==true) continue; //skip item, I hope
-			}
-
-			pi->setContainer( bp1 );
-			pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
-			pc1->getClient()->showItemInContainer(pi);
-			pi->Refresh();
+			tVariantVector params = tVariantVector(3);
+			params[0] = pi->getSerial(); params[1] = pc2->getSerial();
+			params[2] = pc1->getSerial();
+			evt->setParams(params);
+			evt->execute();
+			if ( evt->isBypassed() )
+				continue;
 		}
+	
+		pi->setContainer( bp1 );
+		pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
+		pc1->getClient()->showItemInContainer(pi);
+		pi->Refresh();
 	}
 }
 
@@ -2252,28 +2313,27 @@ void endtrade(uint32_t serial)
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		pItem pj=si.getItem(); //</Luxor>
-		if (pj)
-		{
-			bp1->AddItem(pj);
+		if ( ! pj )
+			continue;
+			
+		bp1->AddItem(pj);
 
-			if (s1!=INVALID)
-				pj->Refresh();
-		}
+		if (s1!=INVALID)
+			pj->Refresh();
 	}
 
 	NxwItemWrapper si2;
 	si2.fillItemsInContainer( c2, false );
 	for( si2.rewind(); !si2.isEmpty(); si2++ )
 	{
-
 		pItem pj=si2.getItem();
-		if (pj)
-		{
-			bp2->AddItem(pj);
+		if ( ! pj )
+			continue;
+		
+		bp2->AddItem(pj);
 
-			if (s2!=INVALID)
-				pj->Refresh();
-		}
+		if (s2!=INVALID)
+			pj->Refresh();
 	}
 
 	c1->Delete();
@@ -2293,7 +2353,6 @@ void endtrade(uint32_t serial)
 */
 void cClient::playMidi()
 {
-
 	pPC pc = currChar();
 	if ( ! pc ) return;
 	cScpIterator* iter = NULL;
@@ -2408,24 +2467,16 @@ void cClient::talking(cSpeech &speech) // PC speech
 		return;
 
 	//<Luxor>
-	
-	if ( pc->amxevents[EVENT_CHR_ONSPEECH] ) {
-		g_bByPass = false;
-		strcpy( script2, speech.c_str() );
-		pc->amxevents[EVENT_CHR_ONSPEECH]->Call( pc->getSerial() );
-		if( g_bByPass == true )
+	pFunctionHandle evt = pc->getEvent(cChar::evtChrOnSpeech);
+	if ( evt )
+	{
+		tVariantVector params = tVariantVector(3);
+		params[0] = pc->getSerial(); params[1] = speech;
+		evt->setParams(params);
+		evt->execute();
+		if ( evt->isBypassed() )
 			return;
 	}
-	/*
-        if ( pc->getAmxEvent( EVENT_CHR_ONSPEECH ) != NULL ) {
-                strcpy( script2, speech.c_str() );
-                pc->runAmxEvent( EVENT_CHR_ONSPEECH, pc->getSerial() );
-
-                if( g_bByPass == true )
-                        return;
-        }
-	*/
-
 	//</Luxor>
 
 	//
@@ -2551,10 +2602,16 @@ void cClient::talking(cSpeech &speech) // PC speech
 
 		pc->setSpeechCurrent( &speechUni );
 
-		if( a_pc->amxevents[EVENT_CHR_ONHEARPLAYER]!=NULL )
-			a_pc->amxevents[EVENT_CHR_ONHEARPLAYER]->Call( a_pc->getSerial(), pc->getSerial(), ghost );
-		//a_pc->runAmxEvent( EVENT_CHR_ONHEARPLAYER, a_pc->getSerial(), pc->getSerial(), ghost );
-
+		pFunctionHandle evt = a_pc->getEvent(evtChrOnHearPlayer);
+		if ( evt )
+		{
+			tVariantVector params = tVariantVector(2);
+			params[0] = a_pc->getSerial(); params[1] = pc->getSerial();
+			params[2] = ghost;
+			evt->setParams(params);
+			evt->execute();
+		}
+	
 		bool modifiedInEvent = false;
 		if( pc->getSpeechCurrent()==&speechUni ) { //so not was modified in event
 			modifiedInEvent=false;
@@ -2736,7 +2793,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 					}
 				}
 
-				if (!(strcmp("TRG", script1))) // Added by Magius(CHE) §
+				if (!(strcmp("TRG", script1))) // Added by Magius(CHE) 
 				{
 					if (match == 1)
 					{

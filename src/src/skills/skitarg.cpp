@@ -19,20 +19,20 @@
 #include "inlines.h"
 #include "range.h"
 
-pItem Check4Pack(NXWSOCKET  s)
+pItem Check4Pack(pClient client)
 {
 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-    pItem packnum= pc->getBackpack();
-    if (packnum==NULL)
-    {
-        sysmessage(s,"Time to buy a backpack");
-        return NULL;
-    }
-    else
-        return packnum;
+	pItem packnum= pc->getBackpack();
+	if ( ! packnum )
+	{
+		sysmessage(s,"Time to buy a backpack");
+		return NULL;
+	}
+	else
+		return packnum;
 }
 
-bool CheckInPack(NXWSOCKET  s, pItem pi)
+bool CheckInPack(pClient client, pItem pi)
 {
     pItem pPack=Check4Pack(s);
     VALIDATEPIR(pPack, false);
@@ -45,27 +45,30 @@ bool CheckInPack(NXWSOCKET  s, pItem pi)
 }
 
 
-void Skills::target_removeTraps( NXWCLIENT ps, pTarget t )
+void Skills::target_removeTraps(pClient client, pTarget t )
 {
 
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
 	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
-	if (pi->amxevents[EVENT_IONREMOVETRAP]==NULL)
+	pFunctionHandle evt = pi->getEvent(evtChrOnCastSpell);
+	if ( evt )
 	{
-		sysmessage(s, "There are no traps on this object");
+		tVariantVector params = tVariantVector(2);
+		params[0] = pi->getSerial(); params[1] = pc->getSerial();
+		evt->setParams(params);
+		evt->execute();
+	} else {
+		client->sysmessage("There are no traps on this object");
 		if ((rand()%3)==0)
 			pc->checkSkill( skRemoveTraps, 0, 750); //ndEny is good?
 	}
-	else
-		pi->amxevents[EVENT_IONREMOVETRAP]->Call(pi->getSerial(), pc->getSerial() );
-
 }
 
-void Skills::target_tailoring( NXWCLIENT ps, pTarget t )
+void Skills::target_tailoring(pClient client, pTarget t )
 {
 
 	pChar pc=ps->currChar();
@@ -74,7 +77,7 @@ void Skills::target_tailoring( NXWCLIENT ps, pTarget t )
 	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skTailoring,AMX_BEFORE);
 
@@ -112,12 +115,12 @@ void Skills::target_tailoring( NXWCLIENT ps, pTarget t )
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skTailoring,AMX_AFTER);
 }
 
-void Skills::target_fletching( NXWCLIENT ps, pTarget t )
+void Skills::target_fletching(pClient client, pTarget t )
 {
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
 	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
@@ -136,12 +139,12 @@ void Skills::target_fletching( NXWCLIENT ps, pTarget t )
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skBowcraft,AMX_AFTER);
 }
 
-void Skills::target_bowcraft( NXWCLIENT ps, pTarget t )
+void Skills::target_bowcraft(pClient client, pTarget t )
 {
 	pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
 	pc_currchar->playAction(pc_currchar->isMounting() ? 0x1C : 0x0D);
 
@@ -175,7 +178,7 @@ void Skills::target_bowcraft( NXWCLIENT ps, pTarget t )
 //          If logs are targetted, Makemenu 19 is called to produce boards
 //          If boards, MM 20 is called for furniture etc.
 //
-void Skills::target_carpentry( NXWCLIENT ps, pTarget t )
+void Skills::target_carpentry(pClient client, pTarget t )
 {
 
 	pChar pc=ps->currChar();
@@ -205,7 +208,7 @@ void Skills::target_carpentry( NXWCLIENT ps, pTarget t )
 /*!
 \todo use or remove it!
 */
-static bool ForgeInRange(NXWSOCKET s)
+static bool ForgeInRange(pClient client)
 {
     pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	VALIDATEPCR(pc, false);
@@ -220,7 +223,7 @@ static bool ForgeInRange(NXWSOCKET s)
     return false;
 }
 
-static bool AnvilInRange(NXWSOCKET s)
+static bool AnvilInRange(pClient client)
 {
     pChar pc = cSerializable::findCharBySerial( currchar[s]);
 	VALIDATEPCR(pc, false);
@@ -247,7 +250,7 @@ static bool AnvilInRange(NXWSOCKET s)
 
 checks for anvil in reach and enough material and invokes appropriate makemenu
 */
-static void AnvilTarget( NXWSOCKET s, pItem pi, int ma, int mm, char* matname)
+static void AnvilTarget( pClient client, pItem pi, int ma, int mm, char* matname)
 {
 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
@@ -278,7 +281,7 @@ static void AnvilTarget( NXWSOCKET s, pItem pi, int ma, int mm, char* matname)
 //
 extern int ingottype;
 
-void Skills::target_smith( NXWCLIENT ps, pTarget t )
+void Skills::target_smith(pClient client, pTarget t )
 {
     pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
@@ -381,12 +384,12 @@ const short NumberOfOres = sizeof(OreTable)/sizeof(Ore);
 #define max_res_x 610
 #define max_res_y 410
 
-void Skills::target_tree( NXWCLIENT ps, pTarget t )
+void Skills::target_tree(pClient client, pTarget t )
 {
 
     pChar pc = ps->currChar();
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skLumberjacking,AMX_BEFORE);
 
@@ -500,7 +503,7 @@ void Skills::target_tree( NXWCLIENT ps, pTarget t )
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skLumberjacking,AMX_AFTER);
 }
 
-void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
+void Skills::GraveDig(pClient client) // added by Genesis 11-4-98
 {
     pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
@@ -631,7 +634,7 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
 //              minskill and ingot type
 // Remarks:     NOTE: ingot color is different from ore color for gold, silver & copper!
 //
-void Skills::target_smeltOre( NXWCLIENT ps, pTarget t )
+void Skills::target_smeltOre(pClient client, pTarget t )
 {
     pChar pc = ps->currChar();
 	if ( ! pc ) return;
@@ -658,7 +661,7 @@ void Skills::target_smeltOre( NXWCLIENT ps, pTarget t )
     client->statusWindow(pc,true);  //!< \todo check second argument
 }
 
-void Skills::target_wheel( NXWCLIENT ps, pTarget t )	//Spinning wheel
+void Skills::target_wheel(pClient client, pTarget t )	//Spinning wheel
 {
     pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
@@ -708,7 +711,7 @@ void Skills::target_wheel( NXWCLIENT ps, pTarget t )	//Spinning wheel
 		pc_currchar->sysmsg("You cant tailor here.");
 }
 
-void Skills::target_loom( NXWCLIENT ps, pTarget t )
+void Skills::target_loom(pClient client, pTarget t )
 {
     pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
@@ -778,7 +781,7 @@ void Skills::target_loom( NXWCLIENT ps, pTarget t )
 // By:      Ripper & Duke, 07/20/00
 // Purpose: so you can use raw meat on fire
 //
-void Skills::target_cookOnFire( NXWCLIENT ps, pTarget t )
+void Skills::target_cookOnFire(pClient client, pTarget t )
 {
 
 	pChar pc=ps->currChar();
@@ -838,7 +841,7 @@ void Skills::target_cookOnFire( NXWCLIENT ps, pTarget t )
 /*!
 \author Luxor
 */
-void Skills::target_detectHidden( NXWCLIENT ps, pTarget t )
+void Skills::target_detectHidden(pClient client, pTarget t )
 {
 
 	pChar pc = ps->currChar();
@@ -892,7 +895,7 @@ void Skills::target_detectHidden( NXWCLIENT ps, pTarget t )
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skDetectingHidden,AMX_AFTER);
 }
 
-void target_enticement2( NXWCLIENT ps, pTarget t )
+void target_enticement2(pClient client, pTarget t )
 {
 
 	pChar pc=ps->currChar();
@@ -901,7 +904,7 @@ void target_enticement2( NXWCLIENT ps, pTarget t )
 	pChar pc_ftarg=cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc_ftarg);
 
-	NXWSOCKET s= ps->toInt();
+	pClient client= ps->toInt();
 
 	ITEM inst = Skills::GetInstrument(s);
 	if (inst==INVALID)
@@ -926,7 +929,7 @@ void target_enticement2( NXWCLIENT ps, pTarget t )
 	}
 }
 
-void Skills::target_enticement1( NXWCLIENT ps, pTarget t )
+void Skills::target_enticement1(pClient client, pTarget t )
 {
 
 	pChar current=ps->currChar();
@@ -935,7 +938,7 @@ void Skills::target_enticement1( NXWCLIENT ps, pTarget t )
 	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
 	ITEM inst = Skills::GetInstrument(s);
 	if (inst==INVALID)
@@ -967,7 +970,7 @@ void Skills::target_enticement1( NXWCLIENT ps, pTarget t )
 }
 
 
-void target_provocation2( NXWCLIENT ps, pTarget t )
+void target_provocation2(pClient client, pTarget t )
 {
 	pChar Victim2 = cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(Victim2);
@@ -979,7 +982,7 @@ void target_provocation2( NXWCLIENT ps, pTarget t )
 	pChar Victim1 = cSerializable::findCharBySerial( t->buffer[0] );
 	VALIDATEPC(Victim1);
 
-	NXWSOCKET s =ps->toInt();
+	pClient client =ps->toInt();
 
 	if (Victim2->InGuardedArea())
 	{
@@ -1040,7 +1043,7 @@ void target_provocation2( NXWCLIENT ps, pTarget t )
 	}
 }
 
-void Skills::target_provocation1( NXWCLIENT ps, pTarget t )
+void Skills::target_provocation1(pClient client, pTarget t )
 {
 	pChar current=ps->currChar();
 	VALIDATEPC(current);
@@ -1048,7 +1051,7 @@ void Skills::target_provocation1( NXWCLIENT ps, pTarget t )
 	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
-	NXWSOCKET s =ps->toInt();
+	pClient client =ps->toInt();
 
 	int inst = Skills::GetInstrument(s);
 	if (inst==INVALID)
@@ -1078,7 +1081,7 @@ void Skills::target_provocation1( NXWCLIENT ps, pTarget t )
 // Purpose: checks for valid reg and brings up gumpmenu to select potion
 //          This is called after the user dblclicked a mortar and targeted a reg
 //
-void Skills::target_alchemy( NXWCLIENT ps, pTarget t )
+void Skills::target_alchemy(pClient client, pTarget t )
 {
 
 	pChar pc_currchar = ps->currChar();
@@ -1090,7 +1093,7 @@ void Skills::target_alchemy( NXWCLIENT ps, pTarget t )
 	pItem pack= pc_currchar->getBackpack();    // Get the packitem
 	VALIDATEPI(pack);
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
 
 	pItem pfbottle=NULL; //candidate of the bottle
@@ -1133,7 +1136,7 @@ void Skills::target_alchemy( NXWCLIENT ps, pTarget t )
 // name:    HealingSkillTarget
 // history: unknown, revamped by Duke, 4.06.2000
 //
-void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
+void Skills::target_healingSkill(pClient client, pTarget t )
 {
 
     pChar ph = ps->currChar();   // points to the healer
@@ -1263,7 +1266,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
     AMXEXECSVTARGET( ph->getSerial(),AMXT_SKITARGS,HEALING,AMX_AFTER);
 }
 
-void Skills::target_armsLore( NXWCLIENT ps, pTarget t )
+void Skills::target_armsLore(pClient client, pTarget t )
 {
     pChar pc = ps->currChar();
 	if ( ! pc ) return;
@@ -1380,7 +1383,7 @@ void Skills::target_armsLore( NXWCLIENT ps, pTarget t )
 
 }
 
-void Skills::target_itemId( NXWCLIENT ps, pTarget t )
+void Skills::target_itemId(pClient client, pTarget t )
 {
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
@@ -1464,14 +1467,14 @@ void Skills::target_itemId( NXWCLIENT ps, pTarget t )
 }
 
 
-void Skills::target_tame( NXWCLIENT ps, pTarget t )
+void Skills::target_tame(pClient client, pTarget t )
 {
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
 	pChar target = cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(target);
 
-	NXWSOCKET s=ps->toInt();
+	pClient client=ps->toInt();
 
 	int tamed=0;
 
@@ -1540,7 +1543,7 @@ void Skills::target_tame( NXWCLIENT ps, pTarget t )
 }
 
 
-void Skills::target_animalLore( NXWCLIENT ps, pTarget t )
+void Skills::target_animalLore(pClient client, pTarget t )
 {
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
@@ -1548,7 +1551,7 @@ void Skills::target_animalLore( NXWCLIENT ps, pTarget t )
 	pChar target = cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(target);
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
@@ -1589,7 +1592,7 @@ void Skills::target_animalLore( NXWCLIENT ps, pTarget t )
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skAnimalLore,AMX_AFTER);
 }
 
-void Skills::target_forensics( NXWCLIENT ps, pTarget t )
+void Skills::target_forensics(pClient client, pTarget t )
 {
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
@@ -1644,11 +1647,11 @@ void Skills::target_forensics( NXWCLIENT ps, pTarget t )
 \param ps the client
 \note pi->morez is the poison type
 */
-void target_poisoning2( NXWCLIENT ps, pTarget t )
+void target_poisoning2(pClient client, pTarget t )
 {
 	pChar pc = ps->currChar();
     if ( ! pc ) return;
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skPoisoning,AMX_BEFORE);
     pItem poison=cSerializable::findItemBySerial(t->buffer[0]);
@@ -1695,21 +1698,20 @@ void target_poisoning2( NXWCLIENT ps, pTarget t )
 		return;
 	}
 
-	if (pi->amxevents[EVENT_IONPOISONED]!=NULL) {
-		g_bByPass = false;
-		poison->morez = pi->amxevents[EVENT_IONPOISONED]->Call(pi->getSerial(), s, poison->morez);
-		if (g_bByPass==true) return;
-	}
-	/*
-	if ( pi->getAmxEvent(EVENT_IONPOISONED) != NULL ) {
-		poison->morez = pi->runAmxEvent( EVENT_IONPOISONED, pi->getSerial(), s, poison->morez );
-		if (g_bByPass==true)
+	pFunctionHandle evt = pi->getEvent(cItem::evtItmOnPoisoned);
+	if ( evt )
+	{
+		tVariantVector params = tVariantVector(3);
+		params[0] = pi->getSerial(); params[1] = client;
+		params[2] = poison->morez;
+		evt->setParams(params);
+		evt->execute();
+		if ( evt->isBypassed() )
 			return;
 	}
-	*/
-
+	
 	int success=0;
-    switch(poison->morez)
+	switch(poison->morez)
 	{
         case 0: break;
         case 1: success=pc->checkSkill( skPoisoning, 0, 500);	break; //lesser poison
@@ -1772,7 +1774,7 @@ void target_poisoning2( NXWCLIENT ps, pTarget t )
 }
 
 
-void Skills::target_poisoning( NXWCLIENT ps, pTarget t )
+void Skills::target_poisoning(pClient client, pTarget t )
 {
 	pItem poison = cSerializable::findItemBySerial( t->getClicked() );
 	VALIDATEPI(poison);
@@ -1786,14 +1788,14 @@ void Skills::target_poisoning( NXWCLIENT ps, pTarget t )
 }
 
 
-void Skills::target_tinkering( NXWCLIENT ps, pTarget t )
+void Skills::target_tinkering(pClient client, pTarget t )
 {
     pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
     pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
     AMXEXECSVTARGET( pc_currchar->getSerial(),AMXT_SKITARGS,skTinkering,AMX_BEFORE);
 
@@ -1869,11 +1871,11 @@ public:
     virtual void playgood(pClient client)        {client->playSFX(0x002A);}
     virtual void checkPartID(short id)  {;}
     virtual bool decide()               {return (itembits == 3) ? true : false;}
-    virtual void createIt(NXWSOCKET s)        {;}
+    virtual void createIt(pClient client)        {;}
     static cTinkerCombine* factory(short combinetype);
-    virtual void DoIt( NXWCLIENT ps, pTarget t )
+    virtual void DoIt(pClient client, pTarget t )
     {
-        NXWSOCKET s = ps->toInt();
+        pClient client = ps->toInt();
 
 		pItem piClick = cSerializable::findItemBySerial( t->buffer[0] );
         if( piClick == NULL )
@@ -1941,7 +1943,7 @@ public:
         if (id==0x105B || id==0x105C) itembits |= 0x01; // axles
         if (id==0x1053 || id==0x1054) itembits |= 0x02; // gears
     }
-    virtual void createIt(NXWSOCKET s)
+    virtual void createIt(pClient client)
     {
 		pChar pc=cSerializable::findCharBySerial( currchar[s] );
 		if ( ! pc ) return;
@@ -1965,7 +1967,7 @@ public:
         if (itembits == 5) {id2=0x4F; minskill=400; return true;}   // clock parts
         return false;
     }
-    virtual void createIt(NXWSOCKET s)
+    virtual void createIt(pClient client)
     {
 	            if ( s < 0 || s >= now )
 		return;
@@ -1990,7 +1992,7 @@ public:
         if (id==0x104F || id==0x1050) itembits |= 0x02; // clock parts
     }
     virtual bool decide()   {minskill=600; return cTinkerCombine::decide();}
-    virtual void createIt(NXWSOCKET s)
+    virtual void createIt(pClient client)
     {
         if ( s < 0 || s >= now )
 		return;
@@ -2015,25 +2017,25 @@ cTinkerCombine* cTinkerCombine::factory(short combinetype)
     }
 }
 
-void Skills::target_tinkerAxel( NXWCLIENT ps, pTarget t )
+void Skills::target_tinkerAxel(pClient client, pTarget t )
 {
     cTinkerCombine *ptc = cTinkerCombine::factory(cTC_AwG);
     ptc->DoIt(ps, t);
 }
 
-void Skills::target_tinkerAwg( NXWCLIENT ps, pTarget t )
+void Skills::target_tinkerAwg(pClient client, pTarget t )
 {
     cTinkerCombine *ptc = cTinkerCombine::factory(cTC_Parts);
     ptc->DoIt(ps, t);
 }
 
-void Skills::target_tinkerClock( NXWCLIENT ps, pTarget t )
+void Skills::target_tinkerClock(pClient client, pTarget t )
 {
     cTinkerCombine *ptc = cTinkerCombine::factory(cTC_Clock);
     ptc->DoIt(ps, t);
 }
 
-void Skills::target_repair( NXWCLIENT ps, pTarget t )
+void Skills::target_repair(pClient client, pTarget t )
 {
 
     pChar pc = ps->currChar();
@@ -2042,7 +2044,7 @@ void Skills::target_repair( NXWCLIENT ps, pTarget t )
     pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
     short smithing=pc->baseskill[skBlacksmithing];
 
