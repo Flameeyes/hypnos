@@ -207,7 +207,7 @@ bool cBody::overloadedWalking()
 			stm=0;
 			ret = false;
 		}
-		updateStats(2);
+		updateStamina();
 	}
 	
 	return ret;

@@ -249,7 +249,7 @@ static inline void subtractMana(pChar pc, SpellId spellnumber)
 	if (pc->mn >= g_Spells[spellnumber].mana) pc->mn -= g_Spells[spellnumber].mana;
 	else pc->mn = 0;
 
-	pc->updateStats(STAT_MANA);//AntiChrist - bugfix
+	pc->updateMana();//AntiChrist - bugfix
 }
 
 
@@ -1329,7 +1329,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					manabogus -= pd->mn;
 					src->mn+=manabogus/2;
 					if (src->mn > src->in) src->mn = src->in;
-					src->updateStats(STAT_MANA);
+					src->updateMana();
 				}
 			}
 			break;
@@ -1602,7 +1602,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					}
 					pd->hp = min(pd->hp+nValue, pd->getStrength());
 					src->helpStuff(pd);
-					pd->updateStats(STAT_HP);
+					pd->updateHp();
 				} // if !should damage
 			} //pd!=NULL
 			break;

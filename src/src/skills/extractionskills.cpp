@@ -198,7 +198,7 @@ void Skills::target_mine( pClient client, pTarget t )
 		pc->stm=0;
 	if(pc->stm>pc->dx) 
 		pc->stm=pc->dx;
-	pc->updateStats(2);
+	pc->updateStamina();
 
 	
 

@@ -169,63 +169,6 @@ void itemmessage(pClient client, char *txt, int serial, short color)
 }
 
 
-/*!
-\author Xanathar
-\brief Updates stats to nearbye players
-\param stat stat which changed
-*/
-void cChar::updateStats(int32_t stat)
-{
-	checkSafeStats();
-
-	int a = 0, b = 0;
-
-	uint8_t updater[9]={ 0xA1, 0x00, };
-
-	switch (stat)
-	{
-	case 0:
-		a=getStrength();
-		b=hp;
-		break;
-	case 1:
-		a=in;
-		b=mn;
-		break;
-	case 2:
-		a=dx;
-		b=stm;
-		break;
-	}
-
-	updater[0]=0xA1+stat;
-	LongToCharPtr(getSerial(), updater +1);
-	ShortToCharPtr(a, updater +5);
-	ShortToCharPtr(b, updater +7);
-
-	if (stat == 0)  //Send to all, only if it's Health change
-	{
-		NxwSocketWrapper sw;
-		sw.fillOnline( this, false );
-		for( sw.rewind(); !sw.isEmpty(); sw++ )
-		{
-			pClient i=sw.getSocket();
-			if( i!=INVALID )
-			{
-				Xsend(i, updater, 9);
-//AoS/				Network->FlushBuffer(i);
-			}
-		}
-	} else {
-		pClient client = getSocket();
-		if (s != INVALID)
-		{
-			Xsend(s, updater, 9);
-//AoS/			Network->FlushBuffer(s);
-		}
-	}
-}
-
 void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 //Modified by N6 to use UNICODE packets
 {

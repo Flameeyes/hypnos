@@ -354,7 +354,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	if (pc_def->hp < 0) {
 		pc_def->hp=0;
-		pc_def->updateStats(0);
+		pc_def->updateHp();
 	}
 
 	if( pc_def->HasHumanBody() ) {
@@ -517,7 +517,7 @@ void cChar::doCombat()
 
 				if (stm < 0)
 					stm = 0;
-        			updateStats(2);
+        			updateStamina();
 			}	//End stamina maths -----------------------
 
 

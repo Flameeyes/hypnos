@@ -710,16 +710,16 @@ void cChar::damage(int32_t amount, DamageType typeofdamage, StatType stattobedam
 	{
 		case STAT_MANA:
 			mn = qmax(0, mn - amount);
-			updateStats(STAT_MANA);
+			updateMana();
 			break;
 		case STAT_STAMINA:
 			stm = qmax(0, stm - amount);
-			updateStats(STAT_STAMINA);
+			updateStamina();
 			break;
 		case STAT_HP:
 		default:
 			hp = qmax(0, hp - amount);
-			updateStats(STAT_HP);
+			updateHp();
 			if (hp<=0) Kill();
 	}
 }
@@ -2496,9 +2496,57 @@ void cChar::generic_heartbeat()
 	if ( hp <= 0 )
 		Kill();
 	else
-		for( register int i = 0; i < 3; i++ )
-			if( update[i] )
-				updateStats( i );
+	{
+		updateHp();
+		updateMana();
+		updateStamina();
+	}
+}
+
+/*!
+\brief Updates Hp to nearby players
+*/
+
+void cChar::updateHp()
+{
+	checkSafeStats();
+
+	nPackets::Sent::UpdateHp pk(this);
+
+	NxwSocketWrapper sw;
+	sw.fillOnline( this, false );
+	for( sw.rewind(); !sw.isEmpty(); sw++ )
+	{
+		pClient i=sw.getSocket();
+		if( i ) i->sendPacket(&pk);
+	}
+}
+
+/*!
+\brief Updates Statmina to this player and party members
+*/
+void cChar::updateStamina()
+{
+	checkSafeStats();
+
+	nPackets::Sent::UpdateStamina pk(this);
+
+	pClient client = getClient();
+	if (client) sendPacket(&pk);
+	//! \todo when party updated, add a sendPacket for each party member in visual range
+}
+/*!
+\brief Updates Mana to this player and party members
+*/
+void cChar::updateMana()
+{
+	checkSafeStats();
+
+	nPackets::Sent::UpdateMana pk(this);
+
+	pClient client = getClient();
+	if (client) sendPacket(&pk);
+	//! \todo when party updated, add a sendPacket for each party member in visual range
 }
 
 void checkFieldEffects(uint32_t currenttime, pChar pc, char timecheck );
@@ -2552,7 +2600,7 @@ void cChar::checkPoisoning()
 					// between 15% and 20% of player's hp reduced by racial combat poison resistance
 					if ( hp <= (getStrength()/4) ) {
 						stm = qmax( stm - 6, 0 );
-						updateStats( STAT_STAMINA );
+						updateStamina();
 					}
 					hp -= int32_t(
 							qmax( ( ( hp ) * RandomNum( 15, 20 ) ) / 100, 6) *
@@ -2572,7 +2620,7 @@ void cChar::checkPoisoning()
 				}
 				else
 				{
-					updateStats( STAT_HP );
+					updateHp();
 					if ( poisontxt <= getclock()  )
 					{
 						emotecolor = 0x0026;

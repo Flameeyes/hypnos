@@ -668,7 +668,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 					m_pcCurrChar->hp += j;
 					if (m_pcCurrChar->hp > m_pcCurrChar->getStrength())
 					m_pcCurrChar->hp = m_pcCurrChar->getStrength();
-					m_pcCurrChar->updateStats(0);
+					m_pcCurrChar->updateHp();
 				}
 			} else if (!(strcmp("HUNGER", cmd))) { // Do math on players hunger from 0 to 6 - Magius(CHE)
 				int j = str2num(par);
@@ -868,7 +868,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 				m_pcCurrChar->mn += j;
 				if (m_pcCurrChar->mn>m_pcCurrChar->in)
 					m_pcCurrChar->mn = m_pcCurrChar->in;
-				m_pcCurrChar->updateStats(1);
+				m_pcCurrChar->updateMana();
 			} else if (!(strcmp("MEMCOLOR", cmd))) { // Store the item color in memory by Magius(CHE) §
 				UNSUPPORTED;
 			}
@@ -889,7 +889,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 					m_pcNpc->hp += j;
 					if (m_pcNpc->hp > m_pcNpc->getStrength())
 						m_pcNpc->hp = m_pcNpc->getStrength();
-						m_pcNpc->updateStats(0);
+						m_pcNpc->updateHp();
 				}
 			} else if (! (strcmp("NEWNPCHEA", cmd) && strcmp("NEWNPCHEAL", cmd)) ) {
 				int j = str2num(par);
@@ -902,7 +902,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 					m_pcAdded->hp += j;
 					if (m_pcAdded->hp > m_pcAdded->getStrength())
 						m_pcAdded->hp = m_pcAdded->getStrength();
-					m_pcAdded->updateStats(0);
+					m_pcAdded->updateHp();
 				}
 			} else if (!(strcmp("NPCBOLT", cmd))) { // bolts the player
 				if ( m_pcNpc==0) return;
@@ -1282,7 +1282,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 					m_pcCurrChar->stm += j;
 					if (m_pcCurrChar->stm>m_pcCurrChar->dx)
 						m_pcCurrChar->stm = m_pcCurrChar->dx;
-					m_pcCurrChar->updateStats(1);
+					m_pcCurrChar->updateStamina();
 		}
 		//////////////////////////////////////////////////////////////////////////
 			// STR

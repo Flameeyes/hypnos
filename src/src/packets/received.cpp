@@ -1615,19 +1615,70 @@ void nPackets::Sent::SellList::prepare()
 }
 
 
+/*!
+\brief Sends new Hp value of a char to client [packet 0xa1]
+\author Chronodt
+\note packet 0xa1
+*/
+void nPackets::Sent::UpdateHp::prepare()
+{
+	length = 9;
+	buffer = new uint8_t[9];
+	buffer[0] = 0xA1;
+	LongToCharPtr(pc->getSerial(), buffer + 1);
+	ShortToCharPtr(pc->getMaxHp(), buffer + 5);
+	ShortToCharPtr(pc->getHp(), buffer + 7);
+}
 
+/*!
+\brief Sends new Mana value of a char to client [packet 0xa2]
+\author Chronodt
+\note packet 0xa2
+*/
+void nPackets::Sent::UpdateMana::prepare()
+{
+	length = 9;
+	buffer = new uint8_t[9];
+	buffer[0] = 0xA2;
+	LongToCharPtr(pc->getSerial(), buffer + 1);
+	ShortToCharPtr(pc->getMaxMana(), buffer + 5);
+	ShortToCharPtr(pc->getMana(), buffer + 7);
+}
+
+/*!
+\brief Sends new Stamina value of a char to client [packet 0xa3]
+\author Chronodt
+\note packet 0xa3
+*/
+void nPackets::Sent::UpdateStamina::prepare()
+{
+	length = 9;
+	buffer = new uint8_t[9];
+	buffer[0] = 0xA3;
+	LongToCharPtr(pc->getSerial(), buffer + 1);
+	ShortToCharPtr(pc->getMaxStamina(), buffer + 5);
+	ShortToCharPtr(pc->getStamina(), buffer + 7);
+}
+
+/*!
+\brief Opens web browser [packet 0xa5]
+\author Flameeyes
+\note packet 0xa5
+*/
 void nPackets::Sent::OpenBrowser::prepare()
 {
 	length = url.size() + 3;
 	buffer = new uint8_t[length];
-
 	buffer[0] = 0xA5;
 	ShortToCharPtr(length, buffer+1);
-
 	memcpy(buffer+3, url.c_str(), length-3);
 }
 
-
+/*!
+\brief Send Tips or MOTD/Server notice window [packet 0xa6]
+\author Kheru
+\note Packet 0xA6
+*/
 void nPackets::Sent::TipsWindow::prepare()
 {
 	uint16_t msg_size = message.size();
@@ -1643,6 +1694,19 @@ void nPackets::Sent::TipsWindow::prepare()
 	memcpy(buffer, message.c_str(), msg_size);
 }
 
+/*!
+\todo packet 0xa8: Game Server List... login packet (strictly linked with Login2 in network.cpp and a global variable)
+*/
+
+/*!
+\todo packet 0xa9: Characters / Starting Locations... login packet (strictly linked with GoodAuth in network.cpp and a global variable)
+*/
+
+/*!
+\brief Sends attack request reply [packet 0xaa]
+\author Flameeyes
+\note packet 0xaa
+*/
 void nPackets::Sent::AttackAck::prepare()
 {
 	length = 5;
@@ -1654,7 +1718,16 @@ void nPackets::Sent::AttackAck::prepare()
 		LongToCharPtr(0, buffer+1);
 }
 
+/*!
+\brief Opens Gump Text Entry Dialog [packet 0xab]
+\author Chronodt
+\note packet 0xab
+*/
 
+void nPackets::Sent::OpenTextEntryDialog::prepare()
+{
+	//! \todo this function (awaiting gump remake)
+}
 
 
 
@@ -2015,6 +2088,10 @@ bool nPackets::Received::TalkRequest::execute (pClient client)
 	if(!pc) return false;
 
 	cSpeech speech = cSpeech(std::string(buffer + 8));
+	speech.setSpeaker(pc);
+	speech.setMode(buffer[3]);
+	speech.setColor(ShortFromCharPtr(buffer + 4));
+	speech.setFont(ShortFromCharPtr(buffer + 6));
 	client->talking(speech);
 	return true;
 }
@@ -3170,8 +3247,12 @@ bool nPackets::Received::UnicodeSpeechReq::execute(pClient client)
 		offset += 3 + num_unknown; //in the remainder of code we can ignore these bytes
 	}
 	cSpeech text = cSpeech(buffer + offset);
-	text.assignPacketByteOrder(true);
-	//! \todo set the other cSpeech parameters
+	text.setMode(mode);
+	text.setColor(color);
+	text.setFont(font);
+	text.setLanguage(language);
+	text.setSpeaker(pc);
+	text.setMode(mode);
 	client->talking(text);
 	return true;
 }
@@ -3414,7 +3495,7 @@ bool nPackets::Received::MiscCommand::execute(pClient client)
 		}
 		case 0x06: //party subcommand
 			//!\todo verify party
-			Partys.receive( ps );
+			Partys.receive( client );
 			break;
 
 		case 0x09:	//Luxor: Wrestling Disarm Macro support
@@ -3424,7 +3505,7 @@ bool nPackets::Received::MiscCommand::execute(pClient client)
 			if ( pc ) pc->setWresMove(WRESSTUNPUNCH);
 			break;
 
-		case 0x0b: // client language, might be used for server localisation
+		case 0x0b: // client language, might be used for server localization
 
 			// please no strcpy or memcpy optimization here, because the input ain't 0-termianted and memcpy might be overkill
 			client_lang[0]=buffer[5];
@@ -3468,7 +3549,7 @@ bool nPackets::Received::MiscCommand::execute(pClient client)
 \brief  receive text entry unicode
 \author Chronodt
 \param client client who sent the packet
-\note packet 0xbe
+\note packet 0xc2
 
 \note I totally have NO IDEA on what this packet does or when it is sent
 */
@@ -3511,7 +3592,7 @@ bool nPackets::Received::ClientViewRange::execute(pClient client)
 \note packet 0xd1
 
 \note since this packet can only be used with an almost useless and almost totally undocumented packet..
-\note and this packet itself is totally useless...
+\note this packet is totally useless...
 */
 
 bool nPackets::Received::LogoutStatus::execute(pClient client)

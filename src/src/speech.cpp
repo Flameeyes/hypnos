@@ -26,6 +26,87 @@ extern void checkAmxSpeech(int s, char *speech);
 void wchar2char (const char* str);
 void char2wchar (const char* str);
 
+//! Size is used only for not null-terminated strings, if it is 0 is ignored, else reads size bytes wherever \\0 is present or not
+cSpeech::cSpeech(char* buffer, uint16_t size)
+{
+	unicodeText.clear();
+	if (size) for(uint16_t i = 0;i<size;i+=2) unicodeText += *(reinterpret_cast<const uint16_t *>(buffer +i);
+	else for(uint16_t i = 0;!*(reinterpret_cast<const uint16_t *>(buffer +i));i+=2) unicodeText += *(reinterpret_cast<const uint16_t *>(buffer +i);
+	packetByteOrder = true;
+	mode = 0;	// normal speech
+}
+
+cSpeech::cSpeech(std:string& s)
+{
+	unicodeText.clear();
+	for(uint16_t i = 0; i < s.size(); ++i) unicodeText += (uint16_t) s[i];	//expands ascii text to a "16bit char" to add into cSpeech
+	packetByteOrder = false;
+	mode = 0;	// normal speech
+}
+
+cSpeech& cSpeech::operator= (std::string& s)
+{
+	unicodeText.clear();
+	for(uint16_t i = 0; i < s.size(); ++i) unicodeText += (uint16_t) s[i];	//expands ascii text to a "16bit char" to add into cSpeech
+	packetByteOrder = false;	//resets packetbyte order (whatever was there before, now it is host order)
+	return *this;
+}
+
+cSpeech& cSpeech::operator= (cSpeech& s)
+{
+	unicodeText = unistring(s.c_str());
+	mode = s.getMode();
+	color = s.getColor();
+	font = s.getFont();
+	setLanguage(s.getLanguage());
+	pSerializable speaker = s.getSpeaker();
+	packetByteOrder = s.isPacketByteOrder();
+	return *this;
+}
+
+
+char cSpeech::operator[](int i)
+{
+	if(packetByteOrder) return ntohs(unicodeText[i]) & 0xff;
+	return unicodeText[i] & 0xff;
+}
+
+void cSpeech::setPacketByteOrder()
+{
+	if (isPacketByteOrder()) return;
+	for(uint16_t i = 0;i<unicodeText.size();++i) unicodeText[i] = htons(unicodeText[i]);
+	packetByteOrder = true;
+}
+
+void cSpeech::clearPackeByteOrder()
+{
+	if (!isPacketByteOrder()) return;
+	for(uint16_t i = 0;i<unicodeText.size();++i) unicodeText[i] = ntohs(unicodeText[i]);
+	packetByteOrder = false;
+}
+
+std::string cSpeech::toString()
+{
+	std::string text;
+	if(packetByteOrder) for(uint16_t i = 0; i<unicodeText.size();++i) text+= (char)((ntohs(unicodeText[i]) & 0xff);
+	else for(uint16_t i = 0; i<unicodeText.size();++i) text+= (char)(unicodeText[i] & 0xff);
+	return text;
+}
+
+std::string cSpeech::toGhost()
+{
+	std::string text = toString();
+	for(uint16_t i = 0; i<text.size(); ++i) if (text[i] != ' ') text[i] = rand()&1 ? 'O' : 'o';
+	return text;
+}
+
+
+
+
+
+
+
+
 static int32_t findKeyword( const std::string &str, const std::string &keyword );
 static std::string trimString( const std::string &str );
 

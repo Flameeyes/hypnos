@@ -195,6 +195,9 @@ namespace Server {
 	
 	//! Maximum items on a single tile \todo Set the default
 	SETTING(uint8_t, MaximumItemsOnTile, 0);
+
+	//! Maximum items sellable in a single sell session
+	Setting(uint16_t, MaximumSoldItems, 50);
 	
 	//! Delay between two skill uses \todo Set the default
 	SETTING(uint32_t, DelaySkills, 0);
@@ -216,6 +219,7 @@ namespace Server {
 			else XMLSETTING(MaximumPCs, uint8_t, UInt8)
 			else XMLSETTING(BankMaxItems, uint16_t, UInt16)
 			else XMLSETTING(MaximumItemsOnTile, uint8_t, UInt8)
+			else XMLSETTING(MaximumSoldItems, uint16_t, UInt16)
 			else XMLSETTING(DelaySkills, uint32_t, UInt32)
 			else XMLSETTING(DelayObjects, uint32_t, UInt32)
 			else XMLSETTING(DecayTimer, uint32_t, UInt32)

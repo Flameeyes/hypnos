@@ -1848,9 +1848,9 @@ NATIVE (_send_statUpdate)
 {
     pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
-    pc->updateStats(STAT_HP);
-    pc->updateStats(STAT_MANA);
-    pc->updateStats(STAT_STAMINA);
+    pc->updateHp();
+    pc->updateStamina();
+    pc->updateMana();
     return 0;
 }
 

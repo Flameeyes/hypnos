@@ -96,7 +96,7 @@ void nEffects::staticFX(pSerializable source, uint16_t eff, uint8_t speed, uint8
 \param eff Effect's ID
 \param speed Effect's speed
 */
-void nEffects::locationFX(sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode)
+void nEffects::locationFX(sLocation &pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode)
 {
 
 	nPackets::Sent::GraphicalEffect pk(etStayInPlace, pos, pos, eff, speed, loop, true, explode);
@@ -173,7 +173,7 @@ void nEffects::movingFX(pSerializable source, pSerializable destination, uint16_
 \param eff Effect's ID
 \param speed Effect's speed
 */
-void nEffects::throwFX(pSerializable source, sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
+void nEffects::throwFX(pSerializable source, sLocation &pos, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
 {
 	if ( ! source ) return;
 
@@ -217,7 +217,7 @@ void nEffects::pullFX(sLocation src_pos, pSerializable destination, uint16_t eff
 \param eff Effect's ID
 \param speed Effect's speed
 */
-void nEffects::locationTolocationFX(sLocation src, sLocation dst, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
+void nEffects::locationTolocationFX(sLocation &src, sLocation &dst, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
 {
 
 	nPackets::Sent::GraphicalEffect pk(etBolt, src, dst, eff, speed, loop, false, explode);
@@ -239,6 +239,54 @@ void nEffects::locationTolocationFX(sLocation src, sLocation dst, uint16_t eff, 
 void nEffects::boltFX(pSerializable target, bool bNoParticles)
 {
 	nPackets::Sent::GraphicalEffect pk(etLightning, target, NULL, 0, 0, 0, true, false);
+
+	if (bNoParticles) // no UO3D effect ? lets send old effect to all clients
+	{
+		NxwSocketWrapper sw;
+		sw.fillOnline( target, false );
+		for( sw.rewind(); !sw.isEmpty(); sw++ )
+		{
+			pClient j =sw.getSocket();
+			if( j ) j->sendPacket(&pk);
+		}
+		return;
+	}
+
+	NxwSocketWrapper sw;
+	sw.fillOnline( target, false );
+	for( sw.rewind(); !sw.isEmpty(); sw++ )
+	{
+		pClient j =sw.getSocket();
+		if( j )
+		{
+			if (clientDimension[j]==2) // 2D client, send old style'd
+			{
+				j->sendPacket(&pk);
+			}
+			else if (clientDimension[j]==3) // 3d client, send 3d-Particles
+			{
+			//!\todo!!!! fix it!
+				//Magic->doStaticEffect(DEREF_pChar(this), 30);
+				unsigned char particleSystem[49];
+				Xsend(j, particleSystem, 49);
+//AoS/				Network->FlushBuffer(j);
+			}
+			else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
+			{
+				sprintf(temp, "Invalid Client Dimension: %i\n",clientDimension[j]); LogError(temp);
+			}
+		}
+	}
+}
+
+/*!
+\brief Sends a lighning bolt to a sLocation
+\param target Target of the effect
+\param bNoParticles If true \b not use particles
+*/
+void nEffects::lightningFX(sLocation &target_pos, bool bNoParticles)
+{
+	nPackets::Sent::GraphicalEffect pk(etLightning, target_pos, NULL, 0, 0, 0, true, false);
 
 	if (bNoParticles) // no UO3D effect ? lets send old effect to all clients
 	{

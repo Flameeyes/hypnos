@@ -398,7 +398,7 @@ void nSkills::target_tree(pClient client, pTarget t )
     pc->stm+=resource.logstamina;
     if(pc->stm<0) pc->stm=0;
     if(pc->stm>pc->dx) pc->stm=pc->dx;
-    pc->updateStats(2);
+    pc->updateStamina();
 
     if(resource.logarea<10) resource.logarea=10; //New -- Zippy
 
@@ -947,7 +947,7 @@ void nSkills::target_healingSkill(pClient client, pTarget t )
 		{
 			j=((3*ph->skill[skVeterinary])/100) + rand()%6;
 			pp->hp=qmin(pp->getStrength(), j+pp->hp);
-			pp->updateStats(0);
+			pp->updateHp();
 			client->sysmessage("You apply the bandages and the creature looks a bit healthier.");
 		}
 	}

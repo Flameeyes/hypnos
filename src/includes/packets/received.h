@@ -1133,7 +1133,7 @@ namespace nPackets {
 		This packet sends a dialog to the client. No checkbox, id or anything except buttons and text and their respective return code is sent
 		Useful for menus and (obiously) dialog box where multiple choices (or even a single ok button) have to be selected
 
-		This is the shortest of the "open gump" packets (the other one is the 0xb0 packet)
+		This is the first of the "open gump" packets (the other ones are the 0xab and the 0xb0 packets)
 		*/
 		class OpenDialogBox : public cPacketSend
 		{
@@ -1382,8 +1382,56 @@ namespace nPackets {
 			void prepare();
 		};
 
+		/*!
+		\brief Sends new Hp value of a char to client [packet 0xa1]
+		\author Chronodt
+		*/
+		class UpdateHp : public cPacketSend
+		{
+		protected:
+			pChar pc;
+		public:
+			inline UpdateHp(pChar aPc) :
+				cPacketSend(NULL, 0), pc(aPc)
+			{ }
+			void prepare();
+		};
 
-		//! Open Web Browser
+		/*!
+		\brief Sends new Mana value of a char to client [packet 0xa2]
+		\author Chronodt
+		*/
+		class UpdateMana : public cPacketSend
+		{
+		protected:
+			pChar pc;
+		public:
+			inline UpdateMana(pChar aPc) :
+				cPacketSend(NULL, 0), pc(aPc)
+			{ }
+			void prepare();
+		};
+
+		/*!
+		\brief Sends new Stamina value of a char to client [packet 0xa3]
+		\author Chronodt
+		*/
+		class UpdateStamina : public cPacketSend
+		{
+		protected:
+			pChar pc;
+		public:
+			inline UpdateStamina(pChar aPc) :
+				cPacketSend(NULL, 0), pc(aPc)
+			{ }
+			void prepare();
+		};
+
+
+		/*!
+		\brief Opens web browser [packet 0xa5]
+		\author Flameeyes
+		*/
 		class OpenBrowser : public cPacketSend
 		{
 		protected:
@@ -1399,7 +1447,8 @@ namespace nPackets {
 		};
 
 		/*!
-		\brief Send Tips or MOTD/Server notice window
+		\brief Send Tips or MOTD/Server notice window [packet 0xa6]
+		\author Kheru
 		\note Packet 0xA6
 		*/
 		class TipsWindow : public cPacketSend
@@ -1418,7 +1467,17 @@ namespace nPackets {
 		};
 
 		/*!
+		\todo packet 0xa8: Game Server List... login packet (strictly linked with Login2 in network.cpp and a global variable)
+		*/
+
+		/*!
+		\todo packet 0xa9: Characters / Starting Locations... login packet (strictly linked with GoodAuth in network.cpp and a global variable)
+		*/
+
+
+		/*!
 		\brief Sends the OK/Not OK for an attack
+		\author Flameeyes
 		\note Packet 0xAA
 		*/
 		class AttackAck : public cPacketSend
@@ -1432,17 +1491,37 @@ namespace nPackets {
 			AttackAck(pChar v) :
 				cPacketSend(NULL, 0), victim(v)
 			{ }
-			
+
 			void prepare();
 		};
-		
+
+		/*!
+		\brief Opens Gump Text Entry Dialog [packet 0xab]
+		\author Chronodt
+
+		This packet sends a text entry dialog to the client. No checkbox, id or anything except a single button, a description and a text entry to be filled
+		Useful for name request popups, and similar dialogs
+
+		This is the second "open gump" packet (the other ones are the 0x7c and the 0xb0 packets)
+		\todo awaiting gump remake
+		*/
+		class OpenTextEntryDialog : public cPacketSend
+		{
+		protected:
+		public:
+			inline OpenTextEntryDialog() :		//!< \todo finish this function
+				cPacketSend(NULL, 0)
+			{ }
+			void prepare();
+		};
+
 
 		class CharProfile : public cPacketSend
 		{
 		protected:
 			uint32_t serial;
 			pChar who;
-		
+
 		public:
 			inline CharProfile(uint32_t s, pChar w) :
 				cPacketSend(NULL, 0), serial(s), who(w)

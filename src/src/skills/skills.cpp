@@ -1286,7 +1286,7 @@ void Skills::Persecute (pClient client)
 		pc_targ->mn = 0;
 	else
 		pc_targ->mn-=decrease;//decrease mana
-	pc_targ->updateStats(1);//update
+	pc_targ->updateMana();//update
 	client->sysmessage("Your spiritual forces disturb the enemy!");
 	
 	if ( dynamic_cast<pPC>(pc_targ) )

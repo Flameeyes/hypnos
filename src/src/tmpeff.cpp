@@ -856,7 +856,7 @@ void cTempfx::executeExpireCode()
 			}
 			dest->hp = min(dest->hp + m_nMore1, (int32_t)dest->getStrength());
 			dest->sysmsg("After receiving some healing, you feel better.");
-			dest->updateStats(STAT_HP);
+			dest->updateHp();
 			if (!m_nMore2)
 				add(src, dest, m_nNum, m_nMore1 +1, 1, m_nMore3);
 			break;

@@ -179,7 +179,7 @@ void usepotion(pChar pc, pItem pi)
 		}
 		pc->playSFX(0x01E7);
 		if (s!=INVALID)
-			pc->updateStats(2);
+			pc->updateStamina();
 		break;
 
 	case 2: // Cure Potion
@@ -267,7 +267,7 @@ void usepotion(pChar pc, pItem pi)
 		}
 
 		if (client)
-			pc->updateStats(0);
+			pc->updateHp();
 
 		staticFX(pc, 0x376A, 9, 6); // Sparkle effect
 		pc->playSFX(0x01F2); //Healing Sound - SpaceDog
@@ -308,7 +308,7 @@ void usepotion(pChar pc, pItem pi)
 				return;
 		}
 		if (s!=INVALID)
-			pc->updateStats(2);
+			pc->updateStamina();
 		
 		staticFX(pc, 0x376A, 9, 6);
 		pc->playSFX(0x01F2); //Healing Sound
@@ -349,7 +349,7 @@ void usepotion(pChar pc, pItem pi)
 			return;
 		}
 		if (client)
-			pc->updateStats(1);
+			pc->updateMana();
 		staticFX(pc, 0x376A, 9, 6); // Sparkle effect
 		pc->playSFX(0x01E7); //agility sound - SpaceDog
 		break;

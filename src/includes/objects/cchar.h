@@ -119,9 +119,9 @@ public:
 	void doGmEffect();
 	
 protected:
-	pClient client;	//!< Client connected with the character
-	pBody body;     //! The body the character is currently "using"
-	pBody truebody;  //! true body. Holds native character body at all times. Used for reversion of polimorph-type effects
+	pClient client;		//!< Client connected with the character
+	pBody body;		//! The body the character is currently "using"
+	pBody truebody;		//! true body. Holds native character body at all times. Used for reversion of polimorph-type effects
 
 public:
 	inline pClient getClient() const
@@ -481,6 +481,9 @@ public:
 	uint32_t getRegenRate( StatType stat, VarType type );
 	bool regenTimerOk( StatType stat );
 	void updateRegenTimer( StatType stat );
+	void updateHp();	//!< tells all char sorrounding this the current hp level
+	void updateStamina();	//!< tells this player AND other party members (only) current stamina level
+	void updateMana();	//!< tells this player AND other party members (only) current mana level
 //@}
 
 //@{
@@ -726,8 +729,6 @@ public:
 
 	inline void setRunning()
 	{ lastRunning = getclock(); }
-
-	void 			updateStats(int32_t stat);
 
 	void 			setNextMoveTime(short tamediv=1);
 	void 			disturbMed();

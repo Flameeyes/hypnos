@@ -71,7 +71,7 @@ void cPC::heartbeat()
 		{
 			client->sysmessage("You are starving !");
 			hp -= nSettings::Hunger::getDamage();
-			updateStats(0);
+			updateHp();
 			if(hp<=0)
 			{
 				Kill();

@@ -142,7 +142,7 @@ bool WalkHandleRunning(pChar pc, int dir)
 			{ //The first *2 it's because i noticed that a step(animation) correspond to 2 walking calls
 				pc->running=0;
 				--pc->stm;
-				pc->updateStats(2);
+				pc->updateStamina();
 			}
 		}
 	}
@@ -659,7 +659,7 @@ void handleCharsAtNewPos( pChar pc )
 			pc->sysmsg("Being perfectly rested, you shove %s out of the way.", pc_curr->getCurrentName().c_str() );
 
 		pc->stm = qmax( pc->stm-ServerScp::g_nShoveStmDamage, 0 );
-		pc->updateStats( STAT_STAMINA );
+		pc->updateStamina();
 		if ( pc->IsHidden() && !pc->IsHiddenBySpell() )
 			pc->unHide(); //xan, shoving in stealth will unhide
 	}

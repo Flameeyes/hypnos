@@ -1184,7 +1184,7 @@ void setCharIntProperty( pChar pc, int property, int subproperty, int subsubprop
 					pc->dx = value;
 					break;
 			}
-			pc->updateStats(2);
+			pc->updateStamina();
 			break;
 		case NXW_CP_I_DISABLED :		  			//dec value: 217;
 			pc->disabled = value;
@@ -1298,7 +1298,7 @@ void setCharIntProperty( pChar pc, int property, int subproperty, int subsubprop
 					pc->in = value;
 					break;
 			}
-			pc->updateStats(1);
+			pc->updateMana();
 			break;
 		case NXW_CP_I_KARMA : 				 			//dec value: 237;
 			pc->SetKarma( value );
@@ -1506,7 +1506,7 @@ void setCharIntProperty( pChar pc, int property, int subproperty, int subsubprop
 					pc->setStrength(value);
 					break;
 			}
-			pc->updateStats(0);
+			pc->updateHp();
 			break;
 		case NXW_CP_I_SUMMONTIMER :				  		//dec value: 296;
 			pc->summontimer = value;

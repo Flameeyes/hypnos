@@ -425,6 +425,7 @@ void cNetwork::LoginMain(pClient client)
 
 void cNetwork::Login2(pClient client)
 {
+	//! \todo outbound packet 0xa8 
 	static const char msgLogin[] = "Client [%s] connected [first] using Account '%s'.\n";
 
 	uint16_t i, tlen;

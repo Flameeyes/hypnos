@@ -2293,9 +2293,9 @@ void target_fullstats( pClient client, pTarget t )
 		pc->mn=pc->in;
 		pc->hp=pc->getStrength();
 		pc->stm=pc->dx;
-		pc->updateStats(0);
-		pc->updateStats(1);
-		pc->updateStats(2);
+		pc->updateHp();
+		pc->updateStamina();
+		pc->updateMana();
 	}
 }
 
@@ -2307,7 +2307,7 @@ void target_heal( pClient client, pTarget t )
 		pc->playSFX(0x01F2);
 		staticFX(pc, 0x376A, 9, 6);
 		pc->hp=pc->getStrength();
-		pc->updateStats(0);
+		pc->updateHp();
 	}
 }
 
@@ -2319,7 +2319,7 @@ void target_mana( pClient client, pTarget t )
 		pc->playSFX(0x01F2);
 		staticFX(pc, 0x376A, 9, 6);
 		pc->mn=pc->in;
-		pc->updateStats(1);
+		pc->updateMana();
 	}
 }
 
@@ -2331,7 +2331,7 @@ void target_stamina( pClient client, pTarget t )
 		pc->playSFX( 0x01F2);
 		staticFX(pc, 0x376A, 9, 6);
 		pc->stm=pc->dx;
-		pc->updateStats(2);
+		pc->updateStamina();
 	}
 }
 
