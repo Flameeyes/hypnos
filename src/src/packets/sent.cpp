@@ -999,6 +999,25 @@ void nPackets::Sent::TargetingCursor::prepare()
 	memset(buffer + 7, 0, 12);	//the remaining bytes are useless in sent message
 }
 
+/*!
+\brief Send music code to client
+\author Flameeyes
+\note packet 0x6D
+*/
+
+void nPackets::Sent::PlayMidi::prepare()
+{
+	length = 3;
+	buffer = new uint8_t[3];
+	buffer[0] = 0x6D;
+	ShortToCharPtr(id, buffer+1);
+}
+
+/*!
+\brief Send action code to client (character performs the requested action)
+\author Flameeyes
+\note packet 0x6E
+*/
 
 void nPackets::Sent::Action::prepare()
 {
@@ -1010,8 +1029,32 @@ void nPackets::Sent::Action::prepare()
 	buffer = new uint8_t[14];
 	length = 14;
 	memcpy(buffer, templ, 14);
-	LongToCharPtr(serial, buffer+1);
+	LongToCharPtr(chr->getSerial(), buffer+1);
 	ShortToCharPtr(action, buffer+5);
+}
+
+/*!
+\brief Secure trade commands
+\author Chronodt
+\note packet 0x6f
+*/
+void nPackets::Sent::SecureTrading::prepare()
+{
+	if (action) length = 17;
+	else length = 47;
+	buffer = new uint8_t[length];
+	buffer[0] = 0x6F;
+	ShortToCharPtr(length, buffer+1);
+	buffer[3]=action;
+	LongToCharPtr(tradePartner->getSerial(), buffer +4);
+	LongToCharPtr(id1, buffer +8);
+	LongToCharPtr(id2, buffer +12);
+	if (action) buffer[16]=0; 			// No name in this message
+	else
+	{
+		buffer[16] = 1;
+		strncpy(buffer + 17, tradePartner->getCurrentName().c_str(), 30);
+	}
 }
 
 
@@ -1060,14 +1103,6 @@ void nPackets::Sent::AttackAck::prepare()
 		LongToCharPtr(victim->getSerial(), buffer+1);
 	else
 		LongToCharPtr(0, buffer+1);
-}
-
-void nPackets::Sent::PlayMidi::prepare()
-{
-	length = 3;
-	buffer = new uint8_t[3];
-	buffer[0] = 0x6D;
-	ShortToCharPtr(id, buffer+1);
 }
 
 
@@ -1182,26 +1217,6 @@ void nPackets::Sent::BBoardCommand::prepare()
 	}
 }
 
-
-
-void nPackets::Sent::SecureTrading::prepare()
-{
-	if (action) length = 17;
-	else length = 47;
-	buffer = new uint8_t[length];
-	buffer[0] = 0x6F;
-	ShortToCharPtr(length, buffer+1);
-	buffer[3]=action;
-	LongToCharPtr(tradepPartner->getSerial(), buffer +4);
-	LongToCharPtr(id1, buffer +8);
-	LongToCharPtr(id2, buffer +12);
-	if (action) buffer[16]=0; 			// No name in this message
-	else
-	{
-		buffer[16] = 1;
-		strncpy(buffer + 17, tradePartner->getCurrentName().c_str(), 30);
-	}
-}
 
 void nPackets::Sent::UpdatePlayer::prepare()
 {
