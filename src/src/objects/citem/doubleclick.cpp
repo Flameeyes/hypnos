@@ -8,10 +8,7 @@
 
 #include "common_libs.h"
 #include "magic.h"
-#include "house.h"
-#include "npcai.h"
 #include "mount.h"
-#include "boats.h"
 #include "map.h"
 #include "inlines.h"
 #include "fishing.h"
@@ -22,7 +19,7 @@
 #include "objects/cchar/cpc.h"
 #include "skills/skills.h"
 
-bool cItem::usableWhenLockedDown(pPc pc)
+bool cItem::usableWhenLockedDown(pPC pc)
 {
 //! \todo this function
 	switch(type)
