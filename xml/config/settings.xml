@@ -45,7 +45,7 @@
 		<setting name="rogue">1</setting>
 		<setting name="max_stealth_steps">10</setting>
 		<setting name="stealth_on_horse">0</setting>
-		<setting name="stealth_ar_limit">1</stting>
+		<setting name="stealth_ar_limit">1</setting>
 
 		<setting name="cut_scroll_requirements">1</setting>
 
