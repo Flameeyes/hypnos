@@ -1154,7 +1154,7 @@ NATIVE(_chr_CheckEquipment)
 {
     pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
-    pc->checkEquipement();
+    pc->checkEquipment();
     return 0;
 }
 

@@ -21,6 +21,7 @@ cClient::cClient(int32_t sd, struct sockaddr_in* addr)
 	sock = new cSocket(sd, addr);
 	pc = NULL;
 	acc = NULL:
+        visualRange = VISRANGE;
         clients.push_back(this);
 }
 
@@ -102,7 +103,7 @@ uint32_t new_len=0, tmp_len=out_len;
 /*!
 \brief Show a container to player
 \author Kheru - rewrote by Flameeyes
-\param pCont the container
+\param cont the container
 */
 void cClient::showContainer(pCont cont)
 {
@@ -320,6 +321,128 @@ void sendMidi(char num1, char num2)
 	sendPacket(&pk);
 }
 
+void senditem(pItem pi) // Shows items to client (on the ground or inside containers)
+{
+	if ( ! pi ) return;
+
+	pChar pc= currChar();
+	if ( ! pc ) return;
+
+	uint16_t len;
+	uint8_t itmput[20]={ 0x1A, 0x00, };
+
+	if ( pi->visible>=1 && !(pc->IsGM()) ) return;
+
+	// meaning of the item's attribute visible
+	// Visible 0 -> visible to everyone
+	// Visible 1 -> only visible to owner and gm's (for owners normal for gm's grayish/hidden color)
+	// visible 2 -> only visble to gm's (greyish/hidden color)
+
+	if (!pi->isInWorld())
+	{
+         	// If flow arrives here, item is not in world. Now we must check if its container is a true container
+		pContainer container = dynamic_cast<pContainer> pi->getContainer();
+                if (container && pi->getId()<0x4000)
+		{
+                        // LB client crashfix, dont show multis in BP
+			// we should better move it out of pack, but thats
+			// only a first bannaid
+			addItemToContainer(pi);
+			return;
+		}
+	}
+	else
+	if( pc->hasInRange(pi, visualRange) ) //we must check on client's selected visual range for items to send (see packet 0xc8
+	{
+		Location pos = pi->getPosition();
+
+		LongToCharPtr(pi->getSerial() | 0x80000000, itmput +3);
+
+		//if player is a gm, this item
+		//is shown like a candle (so that he can move it),
+		//....if not, the item is a normal
+		//invisible light source!
+		if(pc->IsGM() && pi->getId()==0x1647)
+		{///let's show the lightsource like a candle
+			ShortToCharPtr(0x0A0F, itmput +7);
+		} else
+		{//else like a normal item
+			ShortToCharPtr(pi->animid(), itmput +7); // elcabesa animation tryyy
+		}
+
+		ShortToCharPtr(pi->amount, itmput +9);
+		ShortToCharPtr(pos.x, itmput +11);
+		ShortToCharPtr(pos.y | 0xC000, itmput +13);
+		itmput[15]= pos.z;
+
+		if(pc->IsGM() && pi->getId()==0x1647)
+		{///let's show the lightsource like a blue item
+			ShortToCharPtr(0x00C6, itmput +16);
+		} else
+		{
+			ShortToCharPtr(pi->getColor(), itmput +16);
+		}
+
+		itmput[18]=0;
+
+		bool dontsendcandidate=0;
+		if (pi->visible==1)
+		{
+			if (pc->getSerial()!=pi->getOwnerSerial32())
+			{
+				dontsendcandidate=1;
+				itmput[18]|=0x80;
+			}
+		}
+
+		if (dontsendcandidate && !pc->IsGM())
+			return; // LB 9-12-99, client 1.26.2 visibility correction
+
+		if (pi->visible==2)
+		{
+			itmput[18]|=0x80;
+		}
+
+
+		if (pi->magic==1)
+			itmput[18]|=0x20;
+		if (pc->canAllMove())
+			itmput[18]|=0x20;
+		if ((pi->magic==3 || pi->magic==4) && pc->getSerial()==pi->getOwnerSerial32())
+			itmput[18]|=0x20;
+
+		if (pc->canViewHouseIcon())
+		{
+			if (pi->getId()>=0x4000 && pi->getId()<=0x40FF) // LB, 25-dec-1999 litle bugfix for treasure multis, ( == changed to >=)
+			{
+				ShortToCharPtr(0x14F0, itmput +7);
+			}
+		}
+
+		len = 19;
+		if (pi->dir)
+		{
+			itmput[19]=itmput[18];
+			itmput[18]=itmput[17];
+			itmput[17]=itmput[16];
+			itmput[16]=itmput[15];
+			itmput[15]=static_cast<unsigned char>(pi->dir);
+			itmput[11]|=0x80;
+			len = 20;
+		}
+
+		ShortToCharPtr(len, itmput +1);
+		Xsend(s, itmput, len);
+//AoS/		Network->FlushBuffer(s);
+		//pc->sysmsg( "sent item %s %i", pi->getCurrentName().c_str(), pi->magic );
+
+		if (pi->IsCorpse())
+		{
+			backpack2(s, pi->getSerial());
+		}
+	}
+
+}
 
 /*------------------------------------------------------------------------------
                         DRAG & DROP METHODS

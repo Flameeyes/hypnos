@@ -89,7 +89,7 @@ public:
 	int32_t equip(pEquippable pi, bool drag = false);
 	int32_t unEquip(pEquippable pi, bool drag = false);
 
-	void checkEquipement();
+	void checkEquipment();
 //@}
 
 //@{

@@ -58,6 +58,31 @@ public:
 	virtual void fixForClient(ClientType ct) = 0;
 };
 
+
+/*!
+\brief Status window
+\author Flameeyes
+\note packet 0x11
+*/
+class cPacketSendStatus : public cPacketSend
+{
+protected:
+	pChar pc;	//!< Character
+	uint8_t type;	//!< Type
+	bool canrename;	//!< Can be renamed
+public:
+	/*!
+	\param p Character
+      	\param t type of window
+        \param canrename client who receives this packet can rename char p
+	*/
+	inline cPacketSendStatus(pChar p, uint8_t t, bool r) :
+		cPacketSend(NULL, 0), pc(p), type(t), canrename(r)
+	{ }
+
+	void prepare();
+};
+
 /*!
 \brief cChar::action() packet
 \author Flameeyes
@@ -276,28 +301,7 @@ public:
 	void prepare();
 };
 
-//! Status window
-class cPacketSendStatus : public cPacketSend
-{
-protected:
-	pChar pc;	//!< Character
-	uint8_t type;	//!< Type
-	bool canrename;	//!< Can be renamed
-public:
-	/*!
-	\param p Character
-      	\param t type of window
-        \param canrename client who receives this packet can rename char p
-	*/
-	inline cPacketSendStatus(pChar p, uint8_t t, bool r) :
-		cPacketSend(NULL, 0), pc(p), type(t), canrename(r)
-	{ }
 
-	void prepare();
-	void prepare1();
-	void prepare3();
-	void prepare4();
-};
 
 /*!
 \brief Packet to confirm processing of buy (or sell) window
@@ -531,8 +535,7 @@ protected:
 
 public:
 	inline cPacketSendCharProfile(uint32_t s, pChar w) :
-        	serial(s), who(w),
-		buffer(NULL), length(NULL)
+        	cPacketSend(NULL, 0), serial(s), who(w)
 	{ }
 
 	void prepare();
@@ -545,7 +548,7 @@ protected:
 
 public:
 	inline cPacketSendLogoutStatus() :
-		buffer(NULL), length(NULL)
+		cPacketSend(NULL, 0)
 	{ }
 
 	void prepare();
@@ -557,8 +560,7 @@ protected:
 	uint8_t range;
 public:
 	inline cPacketSendClientViewRange(uint8_t r) :
-        	range(r),
-		buffer(NULL), length(NULL)
+        	cPacketSend(NULL, 0), range(r)
 	{ }
 
 	void prepare();
@@ -571,8 +573,7 @@ protected:
 	uint8_t notoriety;
 public:
 	inline cPacketSendMoveAcknowdledge(uint8_t s, uint8_t n) :
-        	sequence(s), notoriety(n),
-		buffer(NULL), length(NULL)
+        	cPacketSend(NULL, 0), sequence(s), notoriety(n)
 	{ }
 
 	void prepare();

@@ -891,7 +891,7 @@ void cTempfx::executeExpireCode()
 
 
 	if (dest)
-		dest->checkEquipement();
+		dest->checkEquipment();
 }
 
 

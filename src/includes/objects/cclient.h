@@ -51,6 +51,8 @@ protected:
 	pAccount acc;	//!< Current account logged in by the client
 	pSocket sock;	//!< Current socket used by the client
 
+        uint8_t visualRange;	//!< holds number of "squares" clients can see. Default is 18, but it can be changed (\see cPacketReceiveClientViewRange)
+
 	uint32_t flags;			//!< Flags of capabilities of the client
         short int clientDimension;	//!< 2d or 3d client? (must contain 2 or 3)
 public:
@@ -140,7 +142,8 @@ public:
 	void updateStatusWindow(pItem item);
 	void skillWindow();
 	void updatePaperdoll();
-	void sendMidi(char num1, char num2);
+	void sendMidi(char num1, char num2);			//!< plays midi on client (note: if client disabled music it will not play :D)
+        void sendItem(pItem pi);				//!< Shows items to client (on the ground or inside containers)
 
 	//! audio packets (sound effects & music)
 	void playMidi();

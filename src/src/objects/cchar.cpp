@@ -453,7 +453,7 @@ void cChar::setStrength(uint32_t val, bool check/*= true*/)
 {
 	str.value= val;
 	if( check )
-		checkEquipement();
+		checkEquipment();
 }
 
 /*!
@@ -968,7 +968,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 					{
 						pItem pi = si.getItem();
 						if( pi )
-							senditem( socket, pi );
+							cli->senditem( pi );
 					}
 				}
 			}
@@ -2206,7 +2206,7 @@ void cChar::setNpcMoveTime()
 \brief unequip items that you can nop longer wear/use
 \author LB
 */
-void cChar::checkEquipement()
+void cChar::checkEquipment()
 {
 	char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	pItem pi;
