@@ -2,7 +2,7 @@
 | Hypnos UO Server Emulator                                                |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in pyuo.cpp file.              |
+| You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
@@ -341,7 +341,7 @@ void cNetwork::xSend(NXWSOCKET socket, wstring& p, bool alsoTermination )
 /*!
 \brief Disconnects client
 
-Updated to pyuo (Chronodt 29/1/04)
+Updated to hypnos (Chronodt 29/1/04)
 \todo find something to replace socket number output with
 */
 

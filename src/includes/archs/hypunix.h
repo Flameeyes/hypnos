@@ -2,7 +2,7 @@
 | Hypnos UO Server Emulator                                                |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in pyuo.cpp file.              |
+| You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
@@ -10,8 +10,8 @@
 \brief Unix Architecture specific
 */
 
-#ifndef _PYUO_UNIX_
-#define _PYUO_UNIX_
+#ifndef _HYPNOS_UNIX_
+#define _HYPNOS_UNIX_
 
 #include <netinet/in.h>
 #include <sys/socket.h>

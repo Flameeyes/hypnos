@@ -2,7 +2,7 @@
 | Hypnos UO Server Emulator                                                |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in pyuo.cpp file.              |
+| You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
@@ -915,7 +915,7 @@ pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
 \param client client who sent the packet
 \note packet 0x00
 
-Mostly taken from old noxwizard.cpp and (vastly :) ) modified to pyuo object system
+Mostly taken from old noxwizard.cpp and (vastly :) ) modified to hypnos object system
 */
 bool cPacketReceiveCreateChar::execute(pClient client)
 {

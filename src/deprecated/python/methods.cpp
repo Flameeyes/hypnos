@@ -2,7 +2,7 @@
 | Hypnos UO Server Emulator                                                |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in pyuo.cpp file.              |
+| You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
@@ -33,11 +33,11 @@ namespace PythonInterface
 #include "characters.cpp"
 
 	/*!
-	\brief Methods for PyUO module
+	\brief Methods for Hypnos module
 
 	This variable contains the list of methods that are passed to python
 	*/
-	static PyMethodDef PyUOMethods[] = {
+	static PyMethodDef HypnosMethods[] = {
 		{"getCurrentTime", getCurrentTime, METH_VARARGS,
 			"Returns the current time"},
 		{NULL, NULL, 0, NULL}

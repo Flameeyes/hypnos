@@ -1,7 +1,7 @@
 /*!
-\mainpage PyUO documentation
+\mainpage Hypnos documentation
 
-	<h1>PyUO Emulator</h1>
+	<h1>Hypnos Emulator</h1>
 	UO Server Emulation Program
 	<i>Work based on NoX-Wizard project.</i>
 
@@ -76,7 +76,7 @@
 #include "containers.h"
 #include "classes.h"
 #include "map.h"
-#include "pyuo.h"
+#include "hypnos.h"
 
 #ifdef WIN32
 	#include "archs/pywin32.h"
@@ -300,7 +300,7 @@ void checkkey ()
 			case 'B':
 			case 'b':
 				if (ServerScp::g_nLoadDebugger==0) {
-					InfoOut("You must enable debugger starting PyUo with the -debug option.\n");
+					InfoOut("You must enable debugger starting Hypnos with the -debug option.\n");
 					break;
 				}
 				breakOnFirstFuncz();
@@ -309,7 +309,7 @@ void checkkey ()
 			case 'C':
 			case 'c':
 				if (ServerScp::g_nLoadDebugger==0) {
-					InfoOut("You must enable debugger starting PyUO with the -debug option.\n");
+					InfoOut("You must enable debugger starting Hypnos with the -debug option.\n");
 					break;
 				}
 				g_bStepInTriggers = true;
@@ -318,7 +318,7 @@ void checkkey ()
 			case 'N':
 			case 'n':
 				if (ServerScp::g_nLoadDebugger==0) {
-					InfoOut("You must enable debugger starting PyUO with the -debug option.\n");
+					InfoOut("You must enable debugger starting Hypnos with the -debug option.\n");
 					break;
 				}
 				g_nTraceMode=1-g_nTraceMode;
@@ -371,9 +371,9 @@ void checkkey ()
 			case 'H':
 			case 'h':				// Enable/Disable heartbeat
 				if (heartbeat)
-					InfoOut("PyUO: Heartbeat Disabled\n");
+					InfoOut("Hypnos: Heartbeat Disabled\n");
 				else
-					InfoOut("PyUO: Heartbeat Enabled\n");
+					InfoOut("Hypnos: Heartbeat Enabled\n");
 				heartbeat = !heartbeat;
 				break;
 			case 'P':
@@ -420,7 +420,7 @@ void checkkey ()
 			case 'R':
 				InfoOut("Command is disabled\n");
 				break;
-/*				ConOut("PyUO: Reloading server.cfg, spawn.scp, and regions.scp...\n");
+/*				ConOut("Hypnos: Reloading server.cfg, spawn.scp, and regions.scp...\n");
 				loadspawnregions();
 				loadregions();
 				ConOut("Loading vital scripts... ");
@@ -428,7 +428,7 @@ void checkkey ()
 				loadmenuprivs();
 				ConOut("[DONE]\n");
 				loadserverscript();
-				ConOut("PyUO: Reloading IP Blocking rules...");
+				ConOut("Hypnos: Reloading IP Blocking rules...");
 				Network->LoadHosts_deny();
 				ConOut("[DONE]\n");
 				break;
@@ -500,7 +500,7 @@ int main(int argc, char *argv[])
 
 	initConsole();
 
-	ConOut("Starting PyUO...\n\n");
+	ConOut("Starting Hypnos...\n\n");
 
 	//XAN : moved here 'cos nxw needs early initialization
 	//(has vital data in server.cfg, needed for proper "bootstrap" :))
@@ -623,7 +623,7 @@ int main(int argc, char *argv[])
 	ConOut("Loading vital scripts... ");
 	loadmetagm();
 	ConOut("[DONE]\n");
-//	ConOut("Loading PyUO extensions...\n");
+//	ConOut("Loading Hypnos extensions...\n");
 
 	npcs::initNpcSpells();
 
@@ -720,7 +720,7 @@ int main(int argc, char *argv[])
 //InitKbThread();
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	//ConOut("PyUO: Startup Complete.\n\n");
+	//ConOut("Hypnos: Startup Complete.\n\n");
 
 
 	if (SrvParms->server_log)
@@ -974,7 +974,7 @@ int main(int argc, char *argv[])
 			ServerLog.Write("Server Shutdown by Error!\n=======================================================================\n\n\n");
 
 	} else {
-		ConOut("PyUO: Server shutdown complete!\n");
+		ConOut("Hypnos: Server shutdown complete!\n");
 		if (SrvParms->server_log)
 			ServerLog.Write("Server Shutdown!\n=======================================================================\n\n\n");
 
@@ -1111,11 +1111,11 @@ int fielddir(pChar pc, int x, int y, int z)
 			return 1;
 
 		default:
-			LogError("Switch fallout. pyuo.cpp, fielddir()\n"); //Morrolan
+			LogError("Switch fallout. hypnos.cpp, fielddir()\n"); //Morrolan
 			return 0;
 		}
 	default:
-		LogError("Switch fallout. pyuo.cpp, fielddir()\n"); //Morrolan
+		LogError("Switch fallout. hypnos.cpp, fielddir()\n"); //Morrolan
 		return 0;
 	}
 }
@@ -1235,7 +1235,7 @@ void usepotion(pChar pc, pItem pi)
 			pc->sysmsg("You feel much more agile!");
 			break;
 		default:
-			ErrOut("Switch fallout. pyuo.cpp, usepotion()\n");
+			ErrOut("Switch fallout. hypnos.cpp, usepotion()\n");
 			return;
 		}
 		pc->playSFX(0x01E7);
@@ -1272,7 +1272,7 @@ void usepotion(pChar pc, pItem pi)
 				if (pc->getBody()->getPoisoned() == poisonDeadly && x<61) pc->getBody()->setPoisoned(poisonNone);
 				break;
 			default:
-				ErrOut("Switch fallout. pyuo.cpp, usepotion()\n"); //Morrolan
+				ErrOut("Switch fallout. hypnos.cpp, usepotion()\n"); //Morrolan
 				return;
 			}
 			if (pc->poisoned)
@@ -1323,7 +1323,7 @@ void usepotion(pChar pc, pItem pi)
 			break;
 
 		default:
-			ErrOut("Switch fallout. pyuo.cpp, usepotion()\n"); //Morrolan
+			ErrOut("Switch fallout. hypnos.cpp, usepotion()\n"); //Morrolan
 			return;
 		}
 
@@ -1365,7 +1365,7 @@ void usepotion(pChar pc, pItem pi)
 				break;
 
 			default:
-				ErrOut("Switch fallout. pyuo.cpp, usepotion()\n"); //Morrolan
+				ErrOut("Switch fallout. hypnos.cpp, usepotion()\n"); //Morrolan
 				return;
 		}
 		if (s!=INVALID)
@@ -1388,7 +1388,7 @@ void usepotion(pChar pc, pItem pi)
 			pc->sysmsg("You feel much more strong!");
 			break;
 		default:
-			ErrOut("Switch fallout. pyuo.cpp, usepotion()\n");
+			ErrOut("Switch fallout. hypnos.cpp, usepotion()\n");
 			return;
 		}
 		pc->playSFX(0x01EE);
@@ -1406,7 +1406,7 @@ void usepotion(pChar pc, pItem pi)
 			break;
 
 		default:
-			ErrOut("Switch fallout. pyuo.cpp, usepotion()\n");
+			ErrOut("Switch fallout. hypnos.cpp, usepotion()\n");
 			return;
 		}
 		if (s!=INVALID)
@@ -1429,7 +1429,7 @@ void usepotion(pChar pc, pItem pi)
 		break;
 
 	default:
-		ErrOut("Switch fallout. pyuo.cpp, usepotion()\n"); //Morrolan
+		ErrOut("Switch fallout. hypnos.cpp, usepotion()\n"); //Morrolan
 		return;
 	}
 

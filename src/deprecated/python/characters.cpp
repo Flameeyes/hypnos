@@ -2,12 +2,12 @@
 | Hypnos UO Server Emulator                                                |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in pyuo.cpp file.              |
+| You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
-\brief PyUO natives for Python - Character Management
+\brief Hypnos natives for Python - Character Management
 
 \note If nothing specified, the function accepts only 1 params and is the
 	character to use the function on.

@@ -2,7 +2,7 @@
 | Hypnos UO Server Emulator                                                |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in pyuo.cpp file.              |
+| You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
@@ -117,7 +117,7 @@ cItem::cItem( uint32_t ser )
 cItem::resetData()
 {
 	flags = 0ull;
-	// PyUO OK
+	// Hypnos OK
 
 	setOwnerSerial32Only(INVALID);
 	setMultiSerial32Only(INVALID);//Multi serial
@@ -230,7 +230,7 @@ cItem& cItem::operator=(const cItem& b)
 {
 	flags = b.flags;
 	cEventThrower::operator=(b);
-	// PyUO OK!
+	// Hypnos OK!
         
 	// NAMES
         setCurrentName(b.getCurrentName());

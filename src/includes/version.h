@@ -2,7 +2,7 @@
 | Hypnos UO Server Emulator                                                |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in pyuo.cpp file.              |
+| You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
@@ -100,7 +100,7 @@
 #define PLATFORMID 5
 #endif
 
-#define PRODUCT (("PyUO"))
+#define PRODUCT (("Hypnos"))
 
 
 #define SUPPORTED_CLIENT "3.0.3a"
@@ -118,7 +118,7 @@
 
 #define NAME "Official Dev Team"
 
-//NOTE: In order to modify this, please ask to the PyUO staff. Remember to do not remove any developer from PROGRAMMERS without PyUO staff permission
+//NOTE: In order to modify this, please ask to the Hypnos staff. Remember to do not remove any developer from PROGRAMMERS without Hypnos staff permission
 #define PROGRAMMERS "Kheru and Flameeyes"
 
 #define EMAIL ""

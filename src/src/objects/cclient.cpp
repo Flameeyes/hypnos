@@ -2,7 +2,7 @@
 | Hypnos UO Server Emulator                                                |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in pyuo.cpp file.              |
+| You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
@@ -1900,7 +1900,7 @@ void cClient::item_bounce6(const pItem pi)
 
 /*!
 \brief concludes buying of items
-\author Unknown, updated to pyuo Chronodt (24/2/04)
+\author Unknown, updated to hypnos Chronodt (24/2/04)
 \param npc vendor whose goods player is buying
 \param allitemsbought list of items selected from player (layer, pItem and amount for each item)
 */

@@ -2,7 +2,7 @@
 | Hypnos UO Server Emulator                                                |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in pyuo.cpp file.              |
+| You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
@@ -23,7 +23,7 @@ bool g_bNTService = false;
 #include <stdlib.h>
 #include "nxw_utils.h"
 
-char *SERVICE_NAME = "PyUO Server Emulator";
+char *SERVICE_NAME = "Hypnos Server Emulator";
 extern bool keeprun;
 
 #define serviceRunning keeprun
