@@ -18,20 +18,20 @@ libhypnos library and are common to different applications of the suite.
 #define __LIBHYPNOS_TYPES_H__
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+# include "config.h"
 #endif
 
 #ifdef HAVE_STDINT_H
-	#define __STDC_LIMIT_MACROS
-	#include <stdint.h>
+# define __STDC_LIMIT_MACROS
+# include <stdint.h>
 #elif defined HAVE_INTTYPES_H
-	#include <inttypes.h>
+# include <inttypes.h>
 #elif defined HAVE_SYS_TYPES_H
-	#includ <sys/types.h>
+# includ <sys/types.h>
 #else
-	#error "Hypnos needs standard integer types, to avoid errors on types' lenghts." \
-		"Your platform or your compiler seems not to support them. Please report " \
-		"this to Hypnos development team."
+# error "Hypnos needs standard integer types, to avoid errors on types' lenghts." \
+	"Your platform or your compiler seems not to support them. Please report " \
+	"this to Hypnos development team."
 #endif
 
 namespace nLibhypnos {

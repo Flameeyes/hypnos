@@ -21223,7 +21223,8 @@ fi
 
 
 
-for ac_header in fcntl.h limits.h memory.h signal.h stdlib.h sys/time.h sys/timeb.h sys/mman.h sys/utsname.h unistd.h netinet/in.h
+
+for ac_header in fcntl.h limits.h memory.h signal.h stdlib.h sys/time.h sys/timeb.h sys/mman.h sys/utsname.h unistd.h netinet/in.h sys/byteorder.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then
@@ -24351,7 +24352,9 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
-CPPFLAGS="$INCLUDES $CPPFLAGS $WEFTS_CXXFLAGS $MXML_CXXFLAGS $DEFDIRS $BINRELOC_CFLAGS -DHAVE_CONFIG_H -DHYPNOS_SOURCES"
+# __STDC__ and _XPG4_2 are needed to make Solaris work in a standard way.
+
+CPPFLAGS="$INCLUDES $CPPFLAGS $WEFTS_CXXFLAGS $MXML_CXXFLAGS $DEFDIRS $BINRELOC_CFLAGS -DHAVE_CONFIG_H -DHYPNOS_SOURCES -D__STDC__ -D_XPG4_2"
 CFLAGS="$CFLAGS $WORKING_CFLAGS $PCHINCLUDES $CPPFLAGS"
 CXXFLAGS="$CXXFLAGS $WORKING_CXXFLAGS $PCHINCLUDES $CPPFLAGS"
 

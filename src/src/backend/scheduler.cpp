@@ -14,11 +14,11 @@
 #include <mxml.h>
 
 #ifdef HAVE_FSTREAM
-#	include <fstream>
-	using std::ifstream;
+# include <fstream>
+using std::ifstream;
 #elif defined HAVE_FSTREAM_H
-#	include <fstream.h>
-	using std::ifstream;
+# include <fstream.h>
+using std::ifstream;
 #endif
 
 cScheduler *cScheduler::scheduler = NULL;
@@ -81,7 +81,6 @@ cScheduler::sEvent::sEvent(string funcName, uint32_t nInterval, cScheduler *pare
 
 /*!
 \brief Scheduler constructor
-\\param in Input stream to read the XML datafile from
 
 This functions loads the XML datafile from the given stream and creates all
 the instances for the scheduled events to run.
@@ -131,10 +130,10 @@ cScheduler::cScheduler()
 
 cScheduler::~cScheduler()
 {
-	outPlain("Closing scheduler...");
+	outPlain("Closing scheduler...\t\t");
 	for(EventsList::iterator it = events.begin(); it != events.end(); it++)
 		delete (*it);
-	outPlain("\t\t[   OK   ]");
+	outPlain("[   OK   ]\n");
 }
 
 /*!

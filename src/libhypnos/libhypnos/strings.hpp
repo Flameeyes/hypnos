@@ -27,6 +27,39 @@ more of them.
 #include "libhypnos/hypstl/string.hpp"
 #include "libhypnos/hypstl/vector.hpp"
 
+#ifndef HAVE_ASPRINTF
+int asprintf(char **strp, const char *fmt, ...) PRINTF_LIKE(2,3);
+int vasprintf(char **strp, const char *fmt, va_list ap);
+#endif
+
+#ifndef HAVE_STRLWR
+char *strlwr(char *);
+#endif
+
+#ifndef HAVE_STRUPR
+char *strupr(char *);
+#endif
+
+#ifndef HAVE_STRNCASECMP
+# ifdef HAVE_STRNICMP
+#  define strncasecmp strnicmp
+# else
+int strncasecmp(const char *str1, const char *str2, size_t n);
+# endif
+#endif // !defined(HAVE_STRNCASECMP)
+
+#ifndef HAVE_STRCASECMP
+# ifdef HAVE_STRICMP
+#  define strcasecmp stricmp
+# else
+int strcasecmp(const char *str1, const char *str2);
+# endif
+#endif // !defined(HAVE_STRCASECMP)
+
+#ifndef HAVE_BASENAME
+char *basename(char *path);
+#endif
+
 namespace nLibhypnos {
 
 inline string toString(int value)
@@ -158,38 +191,5 @@ int strtonum(int countx, int base= 0);
 string getDateString();
 
 }
-
-#ifndef HAVE_ASPRINTF
-int asprintf(char **strp, const char *fmt, ...) PRINTF_LIKE(2,3);
-int vasprintf(char **strp, const char *fmt, va_list ap);
-#endif
-
-#ifndef HAVE_STRLWR
-char *strlwr(char *);
-#endif
-
-#ifndef HAVE_STRUPR
-char *strupr(char *);
-#endif
-
-#ifndef HAVE_STRNCASECMP
-# ifdef HAVE_STRNICMP
-#  define strncasecmp strnicmp
-# else
-int strncasecmp(const char *str1, const char *str2, size_t n);
-# endif
-#endif // !defined(HAVE_STRNCASECMP)
-
-#ifndef HAVE_STRCASECMP
-# ifdef HAVE_STRICMP
-#  define strcasecmp stricmp
-# else
-int strcasecmp(const char *str1, const char *str2);
-# endif
-#endif // !defined(HAVE_STRCASECMP)
-
-#ifndef HAVE_BASENAME
-char *basename(char *path);
-#endif
 
 #endif
