@@ -15,9 +15,6 @@
 #include "objects/cbody.h"
 #include "objects/cobject.h"
 
-#define X 0
-#define Y 1
-
 //============================================================================================
 //UooS Item translations - You guys are the men! :o)
 

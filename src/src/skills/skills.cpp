@@ -456,9 +456,6 @@ and cuts it down to 100 if necessary
 \param sk skill identifier
 \param stat stat identifier
 \param pc pointer to character to advance the stats to
-\param i /todo
-\param type /todo
-\param update /todo
 \todo document missing paramteres
 */
 static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type, pChar pc)
@@ -1301,29 +1298,31 @@ int Skills::GetAntiMagicalArmorDefence(pChar pc)
 {
 	if(!pc) return 0;
 
-    int ar = 0;
-    if (pc->HasHumanBody())
-    {
-        NxwItemWrapper si;
+	int ar = 0;
+	if (pc->HasHumanBody())
+	{
+		NxwItemWrapper si;
 		si.fillItemWeared( pc, false, true, true );
 		for( si.rewind(); !si.isEmpty(); si++ )
-        {
-            pItem pi=si.getItem();
+		{
+			pItem pi=si.getItem();
 			if( pi && pi->layer>1 && pi->layer < 25)
-            {
-                if (!(strstr(pi->getCurrentName().c_str(), "leather") || strstr(pi->getCurrentName().c_str(), "magic") ||
-                    strstr(pi->getCurrentName().c_str(), "boot")|| strstr(pi->getCurrentName().c_str(), "mask")))
-                    ar += pi->def;
-            }
-        }
-    }
-    return ar;
+			{
+				if (!(strstr(pi->getCurrentName().c_str(), "leather") || strstr(pi->getCurrentName().c_str(), "magic") ||
+				strstr(pi->getCurrentName().c_str(), "boot")|| strstr(pi->getCurrentName().c_str(), "mask")))
+					ar += pi->def;
+			}
+		}
+	}
+	return ar;
 }
 /*!
 \brief Builds the cartography menu
 \param client Client of the crafter
 
 Function is called when clicked on the \em Cartography button
+
+\todo Complete write
 */
 void Skills::Cartography(pClient client)
 {
@@ -1333,7 +1332,7 @@ void Skills::Cartography(pClient client)
 	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
-	if ( ! Skills::getEmptyMap(pc) )
+	if ( ! pc->getBody()->getBackpack()->getEmptyMap(true) )
 	{
 		client->sysmessage("You don't have an empty map to draw on");
 		return;
@@ -1341,37 +1340,4 @@ void Skills::Cartography(pClient client)
 	
 	//itemmake[s].has = 1;
 	//Skills::MakeMenu(s, 1200, skCartography);
-}
-
-/*!
-\brief Check if the player carries an empty map
-\author Flameeyes
-\param pc Character to check for an empty map
-\return NULL if not found a map, else the pointer to the found map
-\note This function doesn't search recursively inside the container
-*/
-pMap nSkills::getEmptyMap(pChar pc)
-{
-	if ( ! pc ) return false;
-	
-	pContainer pack = pc->getBackpack();
-	if ( ! pack ) return false;
-	
-	pack->lockItemsMutex();
-	
-	pMap pm = NULL;
-	for(ItemSList::const_iterator it = pack->getItems().begin(); it != pack->getItems().end(); it++)
-	{
-		if ( ! (pm = dynamic_cast<pMap>(*it)) ) continue;
-		
-		if ( pm->isBlankMap() )
-		{ // Remember to unlock the mutex else we have a deadlock :)
-			pack->unlockItemsMutex();
-			return pm;
-		}
-	}
-	
-	pack->unlockItemsMutex();
-	
-	return false;
 }

@@ -83,8 +83,6 @@ public:
 	pItem findItem(const std::string &id, bool recurse = false);
 	pItem findFirstType(uint16_t type, bool recurse = false);
 
-	pItem getInstrument() const;
-	
 	//! Gets the items' list
 	const ItemSList &getItems() const
 	{ return items; }
@@ -96,6 +94,23 @@ public:
 	//! Unlocks the mutex for items' list to resume concurrency
 	void unlockItemsMutex()
 	{ itemsMutex.unlock(); }
+//@}
+
+//@{
+/*!
+\name Special search stuff
+\brief Functions used by skills stuff or similar.
+
+The functions in this section are used by skills or script to find out specific
+items, like empty maps, instruments and so on.
+
+They were implemented as non-member functions, but they needed to lock the
+items' list from outside while searching so it wasn't a good choice. The new
+member functions are now used instead of the old ones.
+*/
+public:
+	pMap getEmptyMap(bool recurse = false) const;
+	pItem getInstrument(bool recurse = false) const;
 //@}
 
 	uint32_t countSpellsInSpellBook(bool stdOnly = true);

@@ -409,20 +409,6 @@ bool cContainer::doDecay(bool dontDelete = false)
 	return true;
 }
 
-/*!
-\author Flameeyes
-\brief Gets the first instrument found in the container
-\return A pointer to the first instrument found or NULL if not found
-*/
-pItem cContainer::getInstrument()
-{
-	for ( ItemSList::iterator it = items.begin(); it != items.end(); it++ )
-		if ( (*it)->isInstument() )
-			return (*it);
-	
-	return NULL;
-}
-
 void cContainer::doubleClicked()
 {
 	// Wintermute: GMs or Counselors should be able to open trapped containers always
@@ -432,4 +418,56 @@ void cContainer::doubleClicked()
 	}
 	//Magic->MagicTrap(currchar[s], pi); // added by AntiChrist
 	// only 1 and 63 can be trapped, so pleaz leave it here :) - Anti
+}
+
+/*!
+\author Flameeyes
+\brief Gets the first instrument found in the container
+\param recurse If true will search also in subcontainers
+\return A pointer to the first instrument found or NULL if not found
+
+This function is called by all the musicianship-related functions inside the
+nSkills namespace.
+*/
+pItem cContainer::getInstrument(bool recurse = false)
+{
+	for ( ItemSList::const_iterator it = items.begin(); it != items.end(); it++ )
+	{
+		if ( (*it)->isInstument() )
+			return (*it);
+		
+		pContainer cont = NULL; pItem itm = NULL;
+		if (	recurse &&
+			(cont = dynamic_cast<pContainer>(*it)) &&
+			(itm = cont->getInstrument(recurse)) )
+				return itm;
+	}
+	
+	return NULL;
+}
+
+/*!
+\author Flameeyes
+\brief Searches for an empty map
+\param recurse If true will search also in subcontainers
+\return Pointer to the first empty map found or NULL if not found
+
+This function is called by nSkills::Cartography() function.
+*/
+pMap cContainer::getEmptyMap(bool recurse = false)
+{
+	for ( ItemSList::const_iterator it = items.begin(); it != items.end(); it++ )
+	{
+		pMap m = dynamic_cast<pMap>(*it);
+		if ( m && m->isBlankMap() )
+			return m;
+		
+		pContainer cont = NULL; pItem itm = NULL;
+		if (	recurse &&
+			(cont = dynamic_cast<pContainer>(*it)) &&
+			(itm = cont->getEmptyMap(recurse)) )
+				return itm;
+	}
+	
+	return NULL;
 }
