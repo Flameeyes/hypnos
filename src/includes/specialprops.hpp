@@ -23,6 +23,7 @@ of them are always present in items.
 
 #include "common_libs.hpp"
 #include "enums.hpp"
+#include "libhypnos/hypstl/slist.hpp"
 
 /*!
 \brief Resistances
@@ -182,9 +183,9 @@ struct sWeaponModifiers {
 	
 	The constructor is needed to initialize the tristate variables.
 	*/
-	sWeaponModifiers()
+	sWeaponModifiers() :
+		mageWeapon(NULL)
 	{
-		mageWeapon = NULL;
 	}
 	
 	/*!

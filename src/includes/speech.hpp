@@ -9,6 +9,7 @@
 #define __SPEECH_H__
 
 #include "common_libs.hpp"
+#include "libhypnos/hypstl/string.hpp"
 
 /*!
 \brief Unicode text container and converter.

@@ -11,6 +11,7 @@
 
 #include "common_libs.hpp"
 #include "structs.hpp"
+#include "libhypnos/hypstl/slist.hpp"
 
 /*!
 \namespace nNewbies

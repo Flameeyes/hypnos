@@ -15,6 +15,7 @@
 
 #include "common_libs.hpp"
 #include "particles.hpp"
+#include "structs.hpp"
 
 void itemmessage(pClient client, char *txt, pItem pi, short color=0x0000);
 void chardel (pClient client);

@@ -9,6 +9,7 @@
 #define _SREGIONS_H
 
 #include "common_libs.hpp"
+#include "structs.hpp"
 
 void loadregions();
 void checkregion(pChar pc);

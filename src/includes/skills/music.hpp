@@ -9,6 +9,8 @@
 #ifndef __MUSIC_H__
 #define __MUSIC_H__
 
+#include "common_libs.hpp"
+
 namespace nSkills {
 //@{
 /*!

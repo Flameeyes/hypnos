@@ -12,6 +12,7 @@
 #define __LIBHYPNOS_MULS_MULFILES_H__
 
 #include "libhypnos/commons.hpp"
+#include "libhypnos/hypstl/string.hpp"
 
 namespace nLibhypnos {
 

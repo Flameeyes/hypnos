@@ -13,6 +13,8 @@
 #ifndef __FISHING_H__
 #define __FISHING_H__
 
+#include "common_Libs.hpp"
+
 namespace Fishing
 {
 	extern uint32_t basetime;

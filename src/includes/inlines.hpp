@@ -16,6 +16,7 @@
 #include "common_libs.hpp"
 #include "data.hpp"
 #include "constants.hpp"
+#include "clock.hpp"
 
 #ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>

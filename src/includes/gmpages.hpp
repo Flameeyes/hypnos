@@ -14,6 +14,8 @@
 #define __GMPAGES_H__
 
 #include "common_libs.hpp"
+#include "libhypnos/hypstl/list.hpp"
+#include "libhypnos/hypstl/string.hpp"
 
 class cGMPage {
 public:

@@ -14,6 +14,7 @@
 #define _MOUNT_H
 
 #include "common_libs.hpp"
+#include "libhypnos/hypstl/map.hpp"
 
 void loadmounts();
 extern map<int32_t,int32_t> mountinfo;

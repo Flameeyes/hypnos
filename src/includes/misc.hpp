@@ -32,7 +32,7 @@ string getSextantCoords(sPoint p, sPoint center);
 
 double dist( sLocation a, sLocation b, bool countZ = true);
 
-int fillIntArray(char* str, int *array, int maxsize, int defval = -1, int base = baseAuto);
+int fillIntArray(char* str, int *array, int maxsize, int defval = -1, int base = -1);
 int RandomNum(int nLowNum, int nHighNum);
 
 bool isWaterTile(sPoint pt);

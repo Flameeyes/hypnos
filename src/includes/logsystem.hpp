@@ -17,7 +17,15 @@
 #define __LOGSYSTEM_H__
 
 #include "common_libs.hpp"
-#include "libhypnos/hypstl/iosfwd.hpp"
+
+#ifdef HAVE_IOSTREAM
+	#include <iostream>
+	using std::ostream;
+#elif defined HAVE_IOSTREAM_H
+	#include <iostream.h>
+#endif
+
+#include "libhypnos/hypstl/string.hpp"
 
 /*!
 \brief Manage a log file

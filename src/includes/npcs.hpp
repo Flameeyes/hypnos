@@ -14,6 +14,9 @@
 #define NPCS_INCLUDE
 
 #include "common_libs.hpp"
+#include "structs.hpp"
+#include "constants.hpp"
+#include "libhypnos/hypstl/vector.hpp"
 
 char* getRandomName(char * namelist);
 void setrandomname(pChar pc, char * namelist);
