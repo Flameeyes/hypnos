@@ -13,12 +13,10 @@
 #ifndef __HYPNOS_H_
 #define __HYPNOS_H_
 
-#include "typedefs.h"
+#include "common_libs.h"
+
 #include "libhypnos/muls/mulfiles.h"
 #include "libhypnos/muls/tiledata.h"
-
-void loadServer();
-void shutdownServer();
 
 extern nMULFiles::fTiledataLand *tiledataLand;
 extern nMULFiles::fTiledataStatic *tiledataStatic;
