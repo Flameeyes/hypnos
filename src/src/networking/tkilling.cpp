@@ -11,13 +11,13 @@
 #include "networking/tkilling.h"
 #include "networking/treceiving.h"
 
-tKilling *tKilling::instance = NULL;
+tKiller *tKiller::instance = NULL;
 
 /*!
-\brief Constructor for tKilling thread
+\brief Constructor for tKiller thread
 \todo Throw an exception of there's already an instance
 */
-tKilling::tKilling() : Wefts::Thread()
+tKiller::tKiller() : Wefts::Thread()
 {
 	instance = this;
 }
@@ -25,10 +25,10 @@ tKilling::tKilling() : Wefts::Thread()
 /*!
 \brief Loop function for killing thread
 
-This function does the dirt work for tKilling thread, deleting the dead socket-
+This function does the dirt work for tKiller thread, deleting the dead socket-
 handling threads.
 */
-void *tKilling::run()
+void *tKiller::run()
 {
 	tUOReceiver *dead = NULL;
 	

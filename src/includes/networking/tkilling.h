@@ -21,7 +21,7 @@
 class tReceiver;
 
 /*!
-\class tKilling tkilling.h "networking/tkilling.h"
+\class tKiller tkilling.h "networking/tkilling.h"
 \brief Thread killing dead sockets
 
 This class is used to cleanup the sockets which are closed by the server (for
@@ -33,16 +33,16 @@ deletions).
 
 \note This class is a singleton
 */
-class tKilling : public Wefts::Thread
+class tKiller : public Wefts::Thread
 {
 friend class tUOReceiver;
 
 protected:
 	Wefts::Queue<tReceiver *> deadSockets;	//!< Sockets to delete
 public:
-	static tKilling *instance;		//!< Instance of the thread (is a singleton)
+	static tKiller *instance;		//!< Instance of the thread (is a singleton)
 
-	tKilling();
+	tKiller();
 	
 	void *run();
 };

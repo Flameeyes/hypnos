@@ -37,7 +37,7 @@ This function does all the dirt work for tUOReceiver thread, looping until the
 socket is closed, receiving data in the buffer and transforming it into
 packets to be executed.
 
-This function also register the socket as dead in tKilling after the socket is
+This function also register the socket as dead in tKiller after the socket is
 closed.
 
 \todo Missing all the work in this :)
@@ -59,5 +59,5 @@ void *tUOReceiver::run()
 	tListening::instance->threads_m.unlock();
 	// Unlock the threads set
 	
-	tKilling::instance->deadSockets->push(this);
+	tKiller::instance->deadSockets->push(this);
 }

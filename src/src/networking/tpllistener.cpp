@@ -51,7 +51,7 @@ template <class tHandler> void *tplListener<tHandler>::run()
 \brief Desctructor for tplListener thread
 
 This function closes all the sockets in the tplListener::threads sets to be
-deleted by tKilling, and then destroy itself.
+deleted by tKiller, and then destroy itself.
 */
 template <class tHandler> tplListener<tHandler>::~tplListener()
 {

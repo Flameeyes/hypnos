@@ -26,7 +26,7 @@
 This class is spawned by tListening when a new connection is accepted, and
 takes care of receive the buffer and then call the right functions to mangle
 it.
-Instances of this class are deleted by tKilling thread, see tListening::run()
+Instances of this class are deleted by tKiller thread, see tListening::run()
 method for more information.
 */
 class tUOReceiver : public Wefts::Thread
