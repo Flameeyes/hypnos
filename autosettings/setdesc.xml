@@ -63,9 +63,6 @@ Set this on if you want the characters' names to be shown on single click.
   <setting name="DelaySkills" type="uint32" default="5" flag="get">
 Delay between the use of two skills.
   </setting>
-  <setting name="DelayObjects" type="uint32" default="2" flag="get">
-Delay between the use of two objects.
-  </setting>
   <setting name="DecayTimer" type="uint32" default="300" flag="get">
 The time before a corpse is removed.
   </setting>
@@ -108,4 +105,20 @@ The number of HP a character loses when is starving.
 The rate a character loses HP when starving. (in seconds)
   </setting>
  </group>
+ 
+ <group name="Actions">
+  <setting name="EquipOnDClick" type="flag" default="on" flag="should">
+Set this on if you want items to be equipped on double click.
+  </setting>
+  <setting name="UseItemsWhenInvisible" type="flag" default="off" flag="can">
+Set this on to allow people to use items while they are invisible (due to a spell). 
+  </setting>
+  <setting name="ObjectsDelay" type="uint32" default="2" flag="get">
+Delay between the use of two objects. (in seconds)
+  </setting>
+  <setting name="BandageDelay" type="uint32" default="6" flag="get">
+Delay between the use of two bandages. (in seconds)
+  </setting>
+ </group>
+ 
 </autosettings>
