@@ -101,8 +101,6 @@ void cBook::changePages(char *packet, uint16_t p, uint16_t l, uint16_t size)
 */
 void cBook::doubleClicked(pClient client)
 {
-	pPC pc = client->currChar();
-
 	if ( ! nSettings::Server::isEnabledBookSystem() )
 	{
 		client->sysmessage("Books are currently disabled, sorry.");
@@ -113,9 +111,6 @@ void cBook::doubleClicked(pClient client)
 		openBookReadOnly(client);
 	else
 		openBookReadWrite(client);
-
-	// Should we update this? not sure..
-	morey = getNumPages();
 }
 
 /*!
