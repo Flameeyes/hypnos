@@ -24,43 +24,70 @@
 #include "extras/jails.h"
 #include "newbies.h"
 
-pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
+cPacketReceive::cPacketReceive(uint8_t *buf, uint16_t len, uint8_t *&newbuf, uint16_t &newlen) throw eBufferIncomplete
+{
+	if ( getLenght() )
+	{
+		if ( len < getLenght() )
+			throw eBufferIncomplete();
+		
+		if ( len > getLenght() )
+		{
+			newbuf = buf + getLenght();
+			newlen = len - getLenght();
+		}
+	} else { // variable-lenght, read the lenght from bytes 2 and 3
+		uint16_t actuallen = ShortFromCharPtr(buf+1);
+		if ( actuallen > len )
+			throw eBufferIncomplete();
+		
+		if ( actuallen < len )
+		{
+			newbuf = buf + actuallen;
+			newlen = len - actuallen;
+		}
+	}
+}
+
+#define PACKET_PARAMETERS buffer, length, newbuf, newlen
+
+pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length, uint8_t *&newbuf, uint16_t &newlen) throw eBufferIncomplete
 {
 	switch(buffer[0])
 	{
-		case 0x00: return new nPackets::Received::CreateChar(buffer, length);      	// Create Character
-		case 0x01: return new nPackets::Received::DisconnectNotify(buffer, length);	// Disconnect Notification
-		case 0x02: return new nPackets::Received::MoveRequest(buffer, length);		// Move Request
-		case 0x03: return new nPackets::Received::TalkRequest(buffer, length);		// Talk Request
+		case 0x00: return new nPackets::Received::CreateChar(PACKET_PARAMETERS);      	// Create Character
+		case 0x01: return new nPackets::Received::DisconnectNotify(PACKET_PARAMETERS);	// Disconnect Notification
+		case 0x02: return new nPackets::Received::MoveRequest(PACKET_PARAMETERS);		// Move Request
+		case 0x03: return new nPackets::Received::TalkRequest(PACKET_PARAMETERS);		// Talk Request
 		case 0x04: return NULL;								// God mode toggle
-		case 0x05: return new nPackets::Received::AttackRequest(buffer, length);	// Attack Request
-		case 0x06: return new nPackets::Received::Doubleclick(buffer, length);		// Double click
-		case 0x07: return new nPackets::Received::PickUp(buffer, length);		// Pick Up Item(s)
-		case 0x08: return new nPackets::Received::DropItem(buffer, length);		// Drop Item(s)
-		case 0x09: return new nPackets::Received::Singleclick(buffer, length);		// Single click
-		case 0x12: return new nPackets::Received::ActionRequest(buffer, length);	// Request Skill/Action/Magic Usage
-		case 0x13: return new nPackets::Received::WearItem(buffer, length);		// Drop - Wear Item
-		case 0x22: return new nPackets::Received::MoveACK_ResyncReq(buffer, length);	// when received, this packet is a Resync Request
-		case 0x2c: return new nPackets::Received::RessChoice(buffer, length);		// (Obsolete) Resurrection Menu Choice
-		case 0x34: return new nPackets::Received::StatusRequest(buffer, length);	// Get Player Status
-		case 0x3a: return new nPackets::Received::SetSkillLock(buffer, length);		// Set Skill Lock (receive version of packet 0x3a)
-		case 0x3b: return new nPackets::Received::BuyItems(buffer, length);		// Buy Item(s)
-		case 0x56: return new nPackets::Received::MapPlotCourse(buffer, length);	// Map Related
-		case 0x5d: return new nPackets::Received::LoginChar(buffer, length);		// Login Character
-		case 0x66: return new nPackets::Received::BookPage(buffer, length); 		// Books - Page (receive version)
+		case 0x05: return new nPackets::Received::AttackRequest(PACKET_PARAMETERS);	// Attack Request
+		case 0x06: return new nPackets::Received::Doubleclick(PACKET_PARAMETERS);		// Double click
+		case 0x07: return new nPackets::Received::PickUp(PACKET_PARAMETERS);		// Pick Up Item(s)
+		case 0x08: return new nPackets::Received::DropItem(PACKET_PARAMETERS);		// Drop Item(s)
+		case 0x09: return new nPackets::Received::Singleclick(PACKET_PARAMETERS);		// Single click
+		case 0x12: return new nPackets::Received::ActionRequest(PACKET_PARAMETERS);	// Request Skill/Action/Magic Usage
+		case 0x13: return new nPackets::Received::WearItem(PACKET_PARAMETERS);		// Drop - Wear Item
+		case 0x22: return new nPackets::Received::MoveACK_ResyncReq(PACKET_PARAMETERS);	// when received, this packet is a Resync Request
+		case 0x2c: return new nPackets::Received::RessChoice(PACKET_PARAMETERS);		// (Obsolete) Resurrection Menu Choice
+		case 0x34: return new nPackets::Received::StatusRequest(PACKET_PARAMETERS);	// Get Player Status
+		case 0x3a: return new nPackets::Received::SetSkillLock(PACKET_PARAMETERS);		// Set Skill Lock (receive version of packet 0x3a)
+		case 0x3b: return new nPackets::Received::BuyItems(PACKET_PARAMETERS);		// Buy Item(s)
+		case 0x56: return new nPackets::Received::MapPlotCourse(PACKET_PARAMETERS);	// Map Related
+		case 0x5d: return new nPackets::Received::LoginChar(PACKET_PARAMETERS);		// Login Character
+		case 0x66: return new nPackets::Received::BookPage(PACKET_PARAMETERS); 		// Books - Page (receive version)
 		case 0x69: return NULL; 							// (Obsolete) Change Text/Emote Color
-		case 0x6c: return new nPackets::Received::TargetSelected(buffer, length);	// Targeting Cursor Commands
-		case 0x6f: return new nPackets::Received::SecureTrade(buffer,length);		// Secure Trading
-		case 0x71: return new nPackets::Received::BBoardMessage(buffer, length);	// Bulletin Board Message
-		case 0x72: return new nPackets::Received::WarModeChange(buffer, length);	// Request War Mode Change/Send War Mode status
-		case 0x73: return new nPackets::Received::Ping(buffer, length); 		// Ping message
-		case 0x75: return new nPackets::Received::RenameCharacter(buffer, length);	// New name for a character
-		case 0x7d: return new nPackets::Received::DialogResponse(buffer, length);	// Client Response To Dialog
-		case 0x80: return new nPackets::Received::LoginRequest(buffer, length);		// Login Request
-		case 0x83: return new nPackets::Received::DeleteCharacter(buffer, length);	// Delete Character
-		case 0x91: return new nPackets::Received::GameServerLogin(buffer, length);	// Game Server Login (Server to play selected)
-		case 0x93: return new nPackets::Received::BookUpdateTitle(buffer, length);	// Books  Update Title Page (receive version of packet 0x93)
-		case 0x95: return new nPackets::Received::DyeItem(buffer, length); 		// Dye item
+		case 0x6c: return new nPackets::Received::TargetSelected(PACKET_PARAMETERS);	// Targeting Cursor Commands
+		case 0x6f: return new nPackets::Received::SecureTrade(PACKET_PARAMETERS);		// Secure Trading
+		case 0x71: return new nPackets::Received::BBoardMessage(PACKET_PARAMETERS);	// Bulletin Board Message
+		case 0x72: return new nPackets::Received::WarModeChange(PACKET_PARAMETERS);	// Request War Mode Change/Send War Mode status
+		case 0x73: return new nPackets::Received::Ping(PACKET_PARAMETERS); 		// Ping message
+		case 0x75: return new nPackets::Received::RenameCharacter(PACKET_PARAMETERS);	// New name for a character
+		case 0x7d: return new nPackets::Received::DialogResponse(PACKET_PARAMETERS);	// Client Response To Dialog
+		case 0x80: return new nPackets::Received::LoginRequest(PACKET_PARAMETERS);		// Login Request
+		case 0x83: return new nPackets::Received::DeleteCharacter(PACKET_PARAMETERS);	// Delete Character
+		case 0x91: return new nPackets::Received::GameServerLogin(PACKET_PARAMETERS);	// Game Server Login (Server to play selected)
+		case 0x93: return new nPackets::Received::BookUpdateTitle(PACKET_PARAMETERS);	// Books  Update Title Page (receive version of packet 0x93)
+		case 0x95: return new nPackets::Received::DyeItem(PACKET_PARAMETERS); 		// Dye item
 
 		//Does this have to be implemented?
 		case 0x98: return NULL; 							// All-names 3D (3d clients only packet, receive version 7 bytes long)
@@ -68,27 +95,27 @@ pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
 		// in old nox is not implemented. Do we need it?
 		case 0x9a: return NULL; 							// Console Entry Prompt
 
-		case 0x9b: return new nPackets::Received::RequestHelp(buffer, length);		// Request Help
-		case 0x9f: return new nPackets::Received::SellItems(buffer, length); 		// Sell Reply
-		case 0xa0: return new nPackets::Received::SelectServer(buffer, length); 	// Select Server
+		case 0x9b: return new nPackets::Received::RequestHelp(PACKET_PARAMETERS);		// Request Help
+		case 0x9f: return new nPackets::Received::SellItems(PACKET_PARAMETERS); 		// Sell Reply
+		case 0xa0: return new nPackets::Received::SelectServer(PACKET_PARAMETERS); 	// Select Server
 		case 0xa4: return NULL; 							// Client Machine info (It was a sort of lame spyware command .. we have no need for it :D)
-		case 0xa7: return new nPackets::Received::TipsRequest(buffer, length);		// Request Tips/Notice
-		case 0xac: return new nPackets::Received::GumpTextDialogReply(buffer, length);	// Gump Text Entry Dialog Reply
-		case 0xad: return new nPackets::Received::UnicodeSpeechReq(buffer, length);	// Unicode speech request
-		case 0xb1: return new nPackets::Received::GumpResponse(buffer, length);		// Gump Menu Selection
-		case 0xb2: return new nPackets::Received::ChatMessage(buffer, length);		// Chat Message
-		case 0xb5: return new nPackets::Received::ChatWindowOpen(buffer, length);	// Open Chat window
-		case 0xb6: return new nPackets::Received::PopupHelpRequest(buffer, length);	// Send Help/Tip Request (popup help)
-		case 0xb8: return new nPackets::Received::CharProfileRequest(buffer, length);	// Request Char Profile
+		case 0xa7: return new nPackets::Received::TipsRequest(PACKET_PARAMETERS);		// Request Tips/Notice
+		case 0xac: return new nPackets::Received::GumpTextDialogReply(PACKET_PARAMETERS);	// Gump Text Entry Dialog Reply
+		case 0xad: return new nPackets::Received::UnicodeSpeechReq(PACKET_PARAMETERS);	// Unicode speech request
+		case 0xb1: return new nPackets::Received::GumpResponse(PACKET_PARAMETERS);		// Gump Menu Selection
+		case 0xb2: return new nPackets::Received::ChatMessage(PACKET_PARAMETERS);		// Chat Message
+		case 0xb5: return new nPackets::Received::ChatWindowOpen(PACKET_PARAMETERS);	// Open Chat window
+		case 0xb6: return new nPackets::Received::PopupHelpRequest(PACKET_PARAMETERS);	// Send Help/Tip Request (popup help)
+		case 0xb8: return new nPackets::Received::CharProfileRequest(PACKET_PARAMETERS);	// Request Char Profile
 		case 0xbb: return NULL; 							// Ultima Messenger (do we need this?)
-		case 0xbd: return new nPackets::Received::ClientVersion(buffer, length);	// Client Version Message
-		case 0xbe: return new nPackets::Received::AssistVersion(buffer, length);	// Assist Version.... does this packet really exist?
-		case 0xbf: return new nPackets::Received::MiscCommand(buffer, length);		// Misc. Commands Packet
-		case 0xc2: return new nPackets::Received::TextEntryUnicode(buffer, length);	// Textentry Unicode
-		case 0xc8: return new nPackets::Received::ClientViewRange(buffer, length);	// Client view range
-		case 0xd1: return new nPackets::Received::LogoutStatus(buffer, length);		// Logout Status
-		case 0xd4: return new nPackets::Received::NewBookHeader(buffer, length);	// new Book Header
-		case 0xd7: return new nPackets::Received::FightBookSelection(buffer, length);	// Fight Book: move selected
+		case 0xbd: return new nPackets::Received::ClientVersion(PACKET_PARAMETERS);	// Client Version Message
+		case 0xbe: return new nPackets::Received::AssistVersion(PACKET_PARAMETERS);	// Assist Version.... does this packet really exist?
+		case 0xbf: return new nPackets::Received::MiscCommand(PACKET_PARAMETERS);		// Misc. Commands Packet
+		case 0xc2: return new nPackets::Received::TextEntryUnicode(PACKET_PARAMETERS);	// Textentry Unicode
+		case 0xc8: return new nPackets::Received::ClientViewRange(PACKET_PARAMETERS);	// Client view range
+		case 0xd1: return new nPackets::Received::LogoutStatus(PACKET_PARAMETERS);		// Logout Status
+		case 0xd4: return new nPackets::Received::NewBookHeader(PACKET_PARAMETERS);	// new Book Header
+		case 0xd7: return new nPackets::Received::FightBookSelection(PACKET_PARAMETERS);	// Fight Book: move selected
 		default: return NULL;	// Discard received packet
 	}
 }

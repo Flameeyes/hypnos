@@ -17,9 +17,9 @@
 static ClientSList cClient::clients;
 static ClientSList cClient::cGMs;
 
-cClient::cClient(int32_t sd, struct sockaddr_in* addr)
+cClient::cClient(Cabal::TCPSocket *aSock)
 {
-	sock = new cSocket(sd, addr);
+	sock = aSock;
 	pc = NULL;
 	acc = NULL:
 	visualRange = VISRANGE;
@@ -54,6 +54,26 @@ cClient::~cClient()
 
 	delete sock;
 	clients.erase(find(clients.begin(), clients.end(), this));
+}
+
+/*!
+\brief Sends a packet to a client
+\param ps Packet to send
+
+This function prepares the packed, compress it and sends it to the client,
+using Cabal's backend.
+*/
+void cClient::sendPacket(pPacketSend ps)
+{
+	ps->prepare();
+	
+	uint8_t *buffToSend = ps->getBuffer();
+	uint32_t lenght = ps->getLength();
+	
+	compress(buffToSend, lenght);
+	
+	if ( sock->sendAll(buffToSend, lenght) != lenght )
+		LogError("Error sending packet to client, timeout on sending");
 }
 
 /*!

@@ -13,12 +13,14 @@
 #include "structs.h"
 #include "speech.h"
 
+#include <cabal_tcpsocket.h>
+
 //! Used in trading methods
 struct sBoughtItem
 {
 	int layer;
-	pItem item;
-	int amount;
+	pItem item;	//!< item to trade
+	uint16_t amount;//!< amount of item to trade
 };
 
 /*!
@@ -35,7 +37,7 @@ class cClient
 friend class cGMPage;
 protected:
 	static ClientSList clients;	//!< All the clients
-	static ClientSList cGMs;		//!< GMs' clients \todo Need to be used
+	static ClientSList cGMs;	//!< GMs' clients \todo Need to be used
 
 public:
 	static const uint32_t clientHasCrypto		= 0x00000001;
@@ -46,19 +48,19 @@ public:
 protected:
 	pPC pc;	        //!< Current char used by the client
 	pAccount acc;	//!< Current account logged in by the client
-	pSocket sock;	//!< Current socket used by the client
+	Cabal::TCPSocket *sock; //!< Socket used by the client
 
-	/*!< holds number of "squares" clients can see. Default is 18, but it can be changed 
+	/*!
+	\brief Number of \i squares a client can see.
+	\note Default is 18, but it can be changed 
  	\see cPacketReceiveClientViewRange
   	*/	
-	uint8_t visualRange;				   
-                                   
- 
-
+	uint8_t visualRange;
+	
 	uint32_t flags;			//!< Flags of capabilities of the client
         short int clientDimension;	//!< 2d or 3d client? (must contain 2 or 3)
 public:
-	cClient(int32_t sd, struct sockaddr_in* addr);
+	cClient(Cabal::TCPSocket *aSock);
 	~cClient();
 	
 	void disconnect();
@@ -122,11 +124,11 @@ public:
 protected:
 	struct sSecureTradeSession
 	{
-		pClient tradepartner;   //there will be a copy of this structure in both clients, so only the other one is really needed
+		pClient tradepartner;   //!< there will be a copy of this structure in both clients, so only the other one is really needed
 		pContainer container1;
 		pContainer container2;
-		bool status1;		//status of the secure trade: flagged or not
-		bool status2;		//status of the secure trade: flagged or not
+		bool status1;		//!< status of the secure trade: flagged or not
+		bool status2;		//!< status of the secure trade: flagged or not
 
 		inline bool operator==(const sSecureTradeSession& session2) const
 		{
@@ -138,7 +140,7 @@ protected:
 		}
 	};
 
-	std::list<sSecureTradeSession> SecureTrade;	//!< Holds the secure trade session of this client (begun and received both)
+	std::slist<sSecureTradeSession> SecureTrade;	//!< Holds the secure trade session of this client (begun and received both)
 
 public:
 	//! Adds a session to this client's list of open secure trading sessions
