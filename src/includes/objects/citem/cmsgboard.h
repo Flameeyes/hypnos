@@ -76,8 +76,9 @@ public:
 	QuestType qtype;     	// type of quest
         UI32 replyof;		// serial of post of whom this is reply of. If 0 this is a new post
         bool autopost;		// true if autoposted by server
+        UI32 targetserial;      // if LOCAL post it is unused, if quest contains the serial of the target of the quest
 
-        static cMsgBoardMessages MsgBoardMessages; //This will contain serial numbers of all messages. It is a set to use with set_difference in an MsgBoard integrity check routine (at startup)
+        static cMsgBoardMessages MsgBoardMessages; //This will contain all messages
         cMsgBoardMessage();
         cMsgBoardMessage(UI32 serial);
         ~cMsgBoardMessage();
@@ -146,10 +147,6 @@ public:
 
         int getRegion();
         static pair<cMsgBoards::iterator, cMsgBoards::iterator> getBoardsinRegion(int region);
-
-	#if defined(__unix__)
-	std::vector<std::string> MsgBoardGetFile( char* pattern, char* path) ;
-	#endif
 };
 
 #endif

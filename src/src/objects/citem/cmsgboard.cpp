@@ -52,9 +52,9 @@ void cMsgBoardMessage::Delete() : cItem::Delete()
 	cPacketSendDeleteObject pk(serial);
 
         //! \todo replace this when sets redone
-        //TODO: if regional or global post it may be necessary to send packet to other pgs too,
-        // 	other people near other msgboards that may have been modified
-/*
+
+
+
         NxwSocketWrapper sc;
         sc.fillOnline( this );
 	for ( sc.rewind(); !sc.isEmpty(); sc++ ) {
@@ -62,7 +62,7 @@ void cMsgBoardMessage::Delete() : cItem::Delete()
 		if ( ps != NULL )
 			ps->sendPacket(&pk);
 	}
-*/
+
         switch (availability)
         {
         case LOCALPOST: //Here we need only to disconnect local MsgBoard
@@ -121,24 +121,24 @@ cMsgBoardMessage::cMsgBoardMessage()
 cMsgBoardMessage::cMsgBoardMessage(UI32 serial) : cItem(serial)
 {
 //	setSerial(serial);
-        region = 0;
+        region = -1;
 
         availability = LOCALPOST;
         poster = -1;
         replyof = 0;
         qtype = QTINVALID;
 	autopost = false;
+        targetserial = -1;
 
         time_t now;
         time( &now );
 	posttime = *localtime( &now );
         //With these last 3 lines, creating a post sets also automatically the current time, so when it is not startup, there is no need to set it :D
 
+        setAnimId(0xeb0): //Model ID for msgboards items
+
         MsgBoardMessages.push_back(this)
 
-
-
-        setAnimId(0xeb0): //Model ID for msgboards items
 }
 
 cMsgBoardMessage::~cMsgBoardMessage()
@@ -355,56 +355,47 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 	static const char subjectBounty[]     = "Bounty: Reward for capture.";  // Default bounty message
 	static const char subjectItem[]       = "Lost valuable item.";          // Default item message
 
+        pMsgBoardMessage message = new cMsgBoardMessage();
 
-
+	message->qtype = questType;
+	message->autopost = true;
+	message->targetserial = targetserial;
+        message->region = region;	//if questtype does not need to use a regional post, this is simply ignored :D 
         
-	TEXT	subject[50]         = "";                             // String that will hold the default subject
 	SI32	sectionEntrys[MAXENTRIES];                            // List of SECTION items to store for randomizing
 
 	UI32	listCount           = 0;  // Number of entries under the ESCORTS section, used to randomize selection
 	SI32	entryToUse          = 0;  // Entry of the list that will be used to create random message
 
-	SI32	linesInBody         = 0;  // Count of number of lines in body of post
-	SI32	lineLength          = 0;  // Length of the line just read in including terminating NULL
-	SI32	offset              = 0;  // Offset to next line in buffer
-	SI32	numLinesOffset      = 0;  // Offset to the number of lines in body field
 
-	// msg2Post[] Buffer initialization
-	msg2Post[0]   = 0x71;   // Packet ID
-	msg2Post[1]   = 0x00;   // Size of packet (High byte)
-	msg2Post[2]   = 0x00;   // Size of packet (Low byte)
-
-	// This is the type of quest being posted:
-	// The value will start arbitrarily at 0xFF and count down
-	//    ESCORT = 0xFF (defined in msgboard.h)
-	//    BOUNTY = 0xFE
-	//    ITEM   = 0xFD
 	switch ( questType )
 	{
-		case ESCORTQUEST:
-			msg2Post[3]   = ESCORTQUEST;
+		case ITEMQUEST:
+                	message->subject = string(subjectItem);
+			message->availability = REGIONALPOST;
 			break;
 
 		case BOUNTYQUEST:
-			msg2Post[3]   = BOUNTYQUEST;
-			break;
+	                message->subject = string(subjectBounty);
+			message->availability = GLOBALPOST;
+                        break;
 
-		case ITEMQUEST:
-			msg2Post[3]   = ITEMQUEST;
+		case ESCORTQUEST:
+	                message->subject = string(subjectEscort);
+			message->availability = REGIONALPOST;
 			break;
+		default:
+			ErrOut("cMsgBoard::createQuest() invalid quest type\n");
+			return 0;
 	}
 
-	// Since quest posts can only be regional or global, can use the BullBoard SN fields as CHAR or ITEM fields
-	LongToCharPtr(serial, msg2Post +4);  // Normally Bulletin Board SN but used for quests as CHAR or ITEM SN
-	LongToCharPtr(0x0000, msg2Post +8);  // Reply to message serial number ( 00 00 00 00 for base post )
 
-    cScpIterator* iter = NULL;
-    char script1[1024];
-    char script2[1024];
+    	cScpIterator* iter = NULL;
+    	std::string script1, script2;
 
 	int loopexit=0;
 
-	safedelete(iter);
+//	safedelete(iter);
 	switch ( questType )
 	{
 	case ESCORTQUEST:
@@ -418,15 +409,15 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			do
 			{
 				iter->parseLine(script1, script2);
-				if ( !(strcmp("ESCORT", script1)) )
+				if ( !script1.compare("ESCORT") )
 				{
 					if ( listCount >= MAXENTRIES )
 					{
-						ErrOut("MsgBoardPostQuest() Too many entries in ESCORTS list [MAXENTRIES=%d]\n", MAXENTRIES );
+						ErrOut("cMsgBoard::createQuest() Too many entries in ESCORTS list [MAXENTRIES=%d]\n", MAXENTRIES );
 						break;
 					}
 
-					sectionEntrys[listCount] = str2num(script2);
+					sectionEntrys[listCount] = str2num(script2.c_str());
 					listCount++;
 				}
 			} while ( script1[0]!='}' && script1[0]!=0 	&& (++loopexit < MAXLOOPS) );
@@ -436,14 +427,14 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			// If no entries are found in the list, then there must be no entries at all.
 			if ( listCount == 0 )
 			{
-				ConOut( "NoX-Wizard: MsgBoardPostQuest() No msgboard.scp entries found for ESCORT quests\n" );
+				ConOut( "cMsgBoard::createQuest() No msgboard.scp entries found for ESCORT quests\n" );
 				return 0;
 			}
 
 			// Choose a random number between 1 and listCount to use as a message
 			entryToUse = RandomNum( 1, listCount );
 #ifdef DEBUG
-			ErrOut("MsgBoardPostQuest() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
+			ErrOut("cMsgBoard::createQuest() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
 #endif
 			// Open the script again and find the section choosen by the randomizer
 			char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
@@ -453,7 +444,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 
 			if (iter==NULL)
 			{
-				ConOut( "NoX-Wizard: MsgBoardPostQuest() Couldn't find entry %s for ESCORT quest\n", temp );
+				ConOut( "cMsgBoard::createQuest() Couldn't find entry %s for ESCORT quest\n", temp );
 				return 0;
 			}
 			break;
@@ -462,7 +453,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
   case BOUNTYQUEST:
     {
 			// Find the list section in order to count the number of entries in the list
-			safedelete(iter);
+			// safedelete(iter);
 			iter = Scripts::MsgBoard->getNewIterator("SECTION BOUNTYS");
 			if (iter==NULL) return 0;
 
@@ -471,15 +462,15 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			do
 			{
 				iter->parseLine(script1, script2);
-				if ( !(strcmp("BOUNTY", script1)) )
+				if ( !script1.compare("BOUNTY") )
 				{
 					if ( listCount >= MAXENTRIES )
 					{
-						ErrOut("MsgBoardPostQuest() Too many entries in BOUNTYS list [MAXENTRIES=%d]\n", MAXENTRIES );
+						ErrOut("cMsgBoard::createQuest() Too many entries in BOUNTYS list [MAXENTRIES=%d]\n", MAXENTRIES );
 						break;
 					}
 
-					sectionEntrys[listCount] = str2num(script2);
+					sectionEntrys[listCount] = str2num(script2.c_str());
 					listCount++;
 				}
 			} while ( script1[0]!='}' && script1[0]!=0 	&& (++loopexit < MAXLOOPS)  );
@@ -489,14 +480,14 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			// If no entries are found in the list, then there must be no entries at all.
 			if ( listCount == 0 )
 			{
-				ConOut( "NoX-Wizard: MsgBoardPostQuest() No msgboard.scp entries found for BOUNTY quests\n" );
+				ConOut( "cMsgBoard::createQuest() No msgboard.scp entries found for BOUNTY quests\n" );
 				return 0;
 			}
 
 			// Choose a random number between 1 and listCount to use as a message
 			entryToUse = RandomNum( 1, listCount );
 #ifdef DEBUG
-			ErrOut("MsgBoardPostQuest() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
+			ErrOut("cMsgBoard::createQuest() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
 #endif
 			// Open the script again and find the section choosen by the randomizer
  			char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
@@ -507,7 +498,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			iter = Scripts::MsgBoard->getNewIterator(temp);
 			if (iter==NULL)
 			{
-				ConOut( "NoX-Wizard: MsgBoardPostQuest() Couldn't find entry %s for BOUNTY quest\n", temp );
+				ConOut( "cMsgBoard::createQuest() Couldn't find entry %s for BOUNTY quest\n", temp );
 				return 0;
 			}
       break;
@@ -515,7 +506,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 
 	default:
 		{
-			ConOut( "NoX-Wizard: MsgBoardPostQuest() Invalid questType %d\n", questType );
+			ConOut( "cMsgBoard::createQuest() Invalid questType %d\n", questType );
 			return 0;
 		}
 	}
@@ -524,177 +515,95 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 	//  Randomly picked a message, now get the message data and fill in up the buffer //
 	////////////////////////////////////////////////////////////////////////////////////
 
-	char  *flagPos = NULL;
-	char  flag;
-	char  tempString[64];
-
+	int flagPos = 0;
+	message->body = '\0';  //we start with 0 lines
 	if (iter==NULL) return 0;
-	strcpy(script1, iter->getEntry()->getFullLine().c_str());		//discards {
-
-	// Insert the default subject line depending on the type of quest selected
-	switch ( questType )
-	{
-	case ESCORTQUEST:
-		// Copy the default subject to the generic subject string
-		strncpy( subject, subjectEscort, sizeof(subject) );
-		break;
-
-	case BOUNTYQUEST:
-		// Copy the default subject to the generic subject string
-		strncpy( subject, subjectBounty, sizeof(subject) );
-		break;
-
-	case ITEMQUEST:
-		// Copy the default subject to the generic subject string
-		strncpy( subject, subjectItem, sizeof(subject) );
-		break;
-
-	default:
-		ErrOut("MsgBoardPostQuest() invalid quest type\n");
-		return 0;
-	}
-
-	// Set the SizeOfSubject field in the buffer and copy the subject string to the buffer
-	msg2Post[12] = strlen(subject) + 1;
-	strncpy( (char*)&msg2Post[13], subject, msg2Post[12] );
-
-	// Set the offset to one past linesInBody count value of the buffer
-	// Point to the Size of the line segment
-	offset += ( msg2Post[12] + 13 + 1 );
-
-	// Set the subject
-	numLinesOffset = offset - 1;
+	script1 = iter->getEntry()->getFullLine();		//discards {
 
 	loopexit=0;
 	int loopexit2=0;
 	// Read in the random post message choosen above and fill in buffer body for posting
-	char *temp = script1; //xan -> holy shit those globals :(
 	while ( (++loopexit < MAXLOOPS)  )
 	{
-		strcpy(script1, iter->getEntry()->getFullLine().c_str());
+		script1 = iter->getEntry()->getFullLine();
 		// If we reached the ending curly brace, exit the loop
-		if ( !strcmp(script1, "}") ) break;
+		if ( !script1.compare("}") ) break;
 
-		flagPos = strchr( script1, '%' );
+		flagPos = script1.find( '%' );
+
 
 		// Loop until we don't find anymore replaceable parameters
 		loopexit2=0;
-		while ( flagPos && (++loopexit2 < MAXLOOPS)  )
+		while ( flagPos < script1.size() && (++loopexit2 < MAXLOOPS)  )
 		{
-			if ( flagPos )
+			// Replace the flag with the requested text
+			pChar pc_s=pointers::findCharBySerial(serial);
+			VALIDATEPCR(pc_s,0);
+			switch ( script1[flagPos + 1] )
 			{
-				// Move the the letter indicating what text to insert
-				flag = *(flagPos + 1);
-
-				// Save the remainder of the original string temporarily
-				strcpy( tempString, (flagPos+2) );
-
-				// Replace the flag with the requested text
-				P_CHAR pc_s=pointers::findCharBySerial(serial);
-				VALIDATEPCR(pc_s,0);
-				switch ( flag )
+				// NPC Name
+			case 'n':
 				{
-					// NPC Name
-				case 'n':
-					{
-						strcpy( flagPos, pc_s->getCurrentNameC() );
-						strcat( temp, tempString );
-						break;
-					}
-
-					// LOCATION in X, Y coords
-				case 'l':
-					{
-						Location charpos= pc_s->getPosition();
-						sprintf( flagPos, "%d, %d", charpos.x, charpos.y );
-						strcat( temp, tempString );
-						break;
-					}
-
-					// NPC title
-				case 't':
-					{
-						strcpy( flagPos, pc_s->title.c_str() );
-						strcat( temp, tempString );
-						break;
-					}
-
-					// Destination Region Name
-				case 'r':
-					{
-						strcpy( flagPos, region[pc_s->questDestRegion].name );
-						strcat( temp, tempString );
-						break;
-					}
-
-					// Region Name
-				case 'R':
-					{
-						strcpy( flagPos, region[pc_s->region].name );
-						strcat( temp, tempString );
-						break;
-					}
-
-					// Gold amount
-				case 'g':
-					{
-
-
-						char szBounty[32] = "";
-
-						sprintf(szBounty,"%d",pc_s->questBountyReward) ;
-						strcpy( flagPos, szBounty );
-						strcat( temp, tempString );
-						break;
-					}
-
-				default:
-					{
-						break;
-					}
+                                	script1.replace(flagpos, 2, pc_s->getCurrentNameC());
+					break;
 				}
+					// LOCATION in X, Y coords
+			case 'l':
+				{
+                                	char tempString[32] = "";
+					Location charpos= pc_s->getPosition();
+					sprintf( tempString, "%d, %d", charpos.x, charpos.y );
+					script1.replace(flagpos, 2, tempString);
+					break;
+				}
+					// NPC title
+			case 't':
+				{
+					script1.replace(flagpos, 2, pc_s->title);
+					break;
+				}
+					// Destination Region Name
+			case 'r':
+				{
+					script1.replace(flagpos, 2, region[pc_s->questDestRegion].name);
+					break;
+				}
+				// Region Name
+			case 'R':
+				{
+					script1.replace(flagpos, 2, region[pc_s->region].name);
+					break;
+				}
+					// Gold amount
+			case 'g':
+				{
 
-				// Look for another replaceable parameter
-				flagPos = strchr( flagPos, '%' );
+					char tempString[32] = "";
+					sprintf(tempString,"%d",pc_s->questBountyReward) ;
+					script1.replace(flagpos, 2, tempString);
+					break;
+				}
+			default:
+				{
+					break;
+				}
 			}
+			// Look for another replaceable parameter
+			flagPos = script1.find( '%' );
 		}
-		// Get the length of the line read into 'temp'
-		// after being modified with any extra info due to flags (plus one for the terminating NULL)
-		lineLength = ( strlen(temp) + 1 );
 
-		msg2Post[offset] = lineLength;
-		offset++;
+                (message->body[0])++;	//increasing number of lines in message
 
-		// Append the string in the msg2Post buffer
-		memcpy( &msg2Post[offset], temp, (lineLength+1) );
-		offset += lineLength;
-
-		// Increment the total number of lines read in
-		linesInBody++;
+		//Adding line size and line body in body of message
+                message->body += script1.size() +1 ; // the +1 is added to include \0 terminator
+                message->body += script1;
+                message->body += '\0';
 	}
 
 	safedelete(iter);
 
-	ShortToCharPtr(offset, msg2Post +1);
-	msg2Post[numLinesOffset] = linesInBody;
-
-	// If the message is posted to the message board successfully
-	// RETURN 1 otherwise RETURN 0 to indicate a failure of some sort
-	// Insert the default subject line depending on the type of quest selected
-  switch ( questType )
-	{
-	case ESCORTQUEST:
-    // return the value of the new message serial number ( 0 = failed post )
-		return addMessage( 0, REGIONALPOST, 1 );
-	case BOUNTYQUEST:
-    // return the value of the new message serial number ( 0 = failed post )
-		return addMessage( 0, GLOBALPOST, 1 );
-	default:
-		ErrOut("MsgBoardPostQuest() invalid quest type or quest not implemented\n");
-	}
-
-	// Post failed
-	return 0;
+	if (!addMessage( 0, REGIONALPOST, 1 )) return 0;
+        return message->getSerial32();
 
 }
 
@@ -1411,48 +1320,6 @@ void MsgBoardMaintenance( void )
 
 
 
-#if defined(__unix__)
-
-std::vector<std::string> MsgBoardGetFile( char* pattern, char* path)
-{
-
-	// Vector of matching files
-	std::vector<std::string>   vecFile ;
-
-#ifndef __BEOS__
-		long  count ;
-
-		std::string sFilename ;
-		std::string sPattern(pattern) ;
-		std::string sPath(path) ;
-
-		dirent  **stDirectory ;
-		count = scandir(path,&stDirectory,0,alphasort) ;
-		if (count > -1)
-		{
-			while (count--)
-			{
-				sFilename = sFilename.assign(stDirectory[count]->d_name) ;
-				// Was the pattern found?
-				if (sFilename.rfind(sPattern) != string::npos)
-				{
-			 	    // add the file path to it (NO, windows version doesn't either
-				    //sFilename = sPath + sFilename ;
-				    vecFile.push_back(sFilename) ;
-				}
-				free(stDirectory[count]) ;
-			}
-			free(stDirectory) ;
-	}
-
-#endif //__BEOS__
-
-
-	return vecFile ;
-
-}
-
-
 /*!
 \brief gets all MsgBoards in region.
 \note the first iterator in the pair is the first of the range, but the second is the first of NEXT board or end()
@@ -1470,6 +1337,6 @@ static pair<cMsgBoards::iterator, cMsgBoards::iterator> cMsgBoard::getBoardsinRe
        	        for(;((it) != MsgBoards.end() && ((*(it))->getRegion() == region)); ++it) {} //it at the end of the cycle contains the iterator to the first Msgboard in next region or end() if it was already the last
                 return pair<cMsgBoards::iterator, cMsgBoards::iterator> (itbegin, it);
 }
-#endif
+
 
 
