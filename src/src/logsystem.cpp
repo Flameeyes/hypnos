@@ -59,11 +59,11 @@ LogFile::LogFile(char *format, ...)
 	filename = nSettings::Logging::getLogPath() + "/" + tmp2;
 	free(tmp2);
 
-	file = fopen(tmp, "a");
+	file = fopen(filename.c_str(), "a");
 
 	if( file==NULL )
 	{
-		ErrOut("unable to open/create log file %s", tmp);
+		ErrOut("unable to open/create log file %s", filename.c_str());
 		return;
 	}
 }
