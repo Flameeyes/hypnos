@@ -52,14 +52,20 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		swingtarget = NULL;
 		return;
 	}
+	pFunctionHandle evt = NULL;
 
-	if ( amxevents[EVENT_CHR_ONCOMBATHIT] ) {
-		g_bByPass = false;
-		amxevents[EVENT_CHR_ONCOMBATHIT]->Call( getSerial(), pc_def->getSerial() );
-		if( g_bByPass == true )
+	evt = getEvent(evtChrOnCombatHit);
+	if ( evt ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = pc_def->getSerial();
+		evt->setParams(params);
+		evt->execute();
+		if( evt->bypassed() )
 			return;
-		if( dead )	// Killed as result of script action
+		if( isDead() )	// Killed as result of script action
 			return;
+
+		free(evt);
 	}
 
 	if( isDead() )	// Killed as result of script action
@@ -142,10 +148,16 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	if (!hit) {
 
-		if (amxevents[EVENT_CHR_ONHITMISS]) {
-			g_bByPass = false;
-			amxevents[EVENT_CHR_ONHITMISS]->Call(getSerial(), pc_def->getSerial());
-			if (g_bByPass==true) return;
+		evt = getEvent(evtChrOnHitMiss);
+		if ( evt ) {
+			tVariantVector params = tVariantVector(2);
+			params[0] = getSerial(); params[1] = pc_def->getSerial();
+			evt->setParams(params);
+			evt->execute();
+			if ( evt->bypassed() )
+				return;
+
+			free(evt);
 		}
 
 		if (!npc) {
@@ -175,16 +187,28 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		return;
 	}
 
-	if (amxevents[EVENT_CHR_ONHIT]) {
-		g_bByPass = false;
-		amxevents[EVENT_CHR_ONHIT]->Call(getSerial(), pc_def->getSerial());
-		if (g_bByPass==true) return;
+	evt = getEvent(evtChrOnHit);
+	if( evt ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = pc_def->getSerial();
+		evt->setParams(params);
+		evt->execute();
+		if ( evt->bypassed() )
+			return;
+
+		free(evt);
 	}
 
-	if (pc_def->amxevents[EVENT_CHR_ONGETHIT]) {
-		g_bByPass = false;
-		pc_def->amxevents[EVENT_CHR_ONGETHIT]->Call(pc_def->getSerial(), getSerial());
-		if (g_bByPass==true) return;
+	evt = getEvent(evtChrOnGetHit);
+	if( evt ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = pc_def->getSerial(); params[1] = getSerial();
+		evt->setParams(params);
+		evt->execute();
+		if ( evt->bypassed() )
+			return;
+
+		free(evt);
 	}
 
 	if ( weapon ) {
@@ -405,18 +429,20 @@ void cChar::doCombat()
 
 	dist = distFrom(pctarget);
 
-	if ( amxevents[EVENT_CHR_ONDOCOMBAT] ) {
-		g_bByPass = false;
-		amxevents[EVENT_CHR_ONDOCOMBAT]->Call( getSerial(), pc_def->getSerial(), dist, weapon ? weapon->getSerial() : INVALID );
-		if( g_bByPass == true )
-		{
+	pFunctionHandle evt = getEvent(evtChrOnDoCombat);
+	if ( evt ) {
+		tVariantVector params = tVariantVector(4);
+		params[0] = getSerial(); params[1] = pc_def->getSerial(); params[2] = dist; params[3] =  weapon ? weapon->getSerial() : INVALID;
+		evt->setParams(params);
+		evt->execute();
+		if( evt->bypassed() )
 			return;
-		}
-		if( dead )	// Killed as result of script action
-		{
+		if( isDead() ) {	// Killed as result of script action
 			undoCombat();
 			return;
 		}
+
+		free(evt);
 	}
 
 	if ( npc )
@@ -1096,25 +1122,33 @@ void cChar::attackStuff(pChar victim)
 	if( getSerial() == victim->getSerial() )
 		return;
 
-	if ( amxevents[EVENT_CHR_ONBEGINATTACK]) {
-		g_bByPass = false;
-		amxevents[EVENT_CHR_ONBEGINATTACK]->Call( getSerial(), victim->getSerial() );
-		if (g_bByPass==true) return;
+	pFunctionHandle evt = NULL;
+	
+	evt = getEvent(evtChrOnBeginAttack);
+	if ( evt ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = victim->getSerial();
+		evt->setParams(params);
+		evt->execute();
+		if( evt->bypassed() )
+			return;
+
+		free(evt);
 	}
 
-	if ( victim->amxevents[EVENT_CHR_ONBEGINDEFENSE]) {
-		g_bByPass = false;
-		victim->amxevents[EVENT_CHR_ONBEGINDEFENSE]->Call( victim->getSerial(), getSerial() );
-		if (g_bByPass==true) return;
+
+	evt = victim->getEvent(evtChrOnBeginDefense);
+	if ( evt ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = victim->getSerial(); params[1] = getSerial();
+		evt->setParams(params);
+		evt->execute();
+		if( evt->bypassed() )
+			return;
+
+		free(evt);
 	}
-	/*
-	runAmxEvent( EVENT_CHR_ONBEGINATTACK, getSerial(), victim->getSerial() );
-	if (g_bByPass==true)
-		return;
-	victim->runAmxEvent( EVENT_CHR_ONBEGINDEFENSE, victim->getSerial(), getSerial() );
-	if (g_bByPass==true)
-		return;
-	*/
+
 	targserial=victim->getSerial();
 	unHide();
 	disturbMed();
