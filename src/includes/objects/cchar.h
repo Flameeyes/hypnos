@@ -1040,7 +1040,8 @@ public:
 		void			resurrect(NXWCLIENT healer = NULL);
 		void			unfreeze( LOGICAL calledByTempfx = false );
 		void			damage(SI32 amount, DamageType typeofdamage = DAMAGE_PURE, StatType stattobedamaged = STAT_HP);
-		void			playAction(SI32 action);
+		void			playAction(UI16 action);
+		void			impAction(UI16 action);
 
 //@{
 /*!

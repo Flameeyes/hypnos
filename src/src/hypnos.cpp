@@ -45,7 +45,6 @@
 #include "sregions.h"
 #include "remadmin.h"
 #include "srvparms.h"
-#include "amx/amxcback.h"
 #include "crontab.h"
 #include "version.h"
 #include "calendar.h"
@@ -87,20 +86,23 @@
 #include "inlines.h"
 #include "basics.h"
 #include "skills.h"
-#include "nox-wizard.h"
 #include "containers.h"
 #include "classes.h"
 #include "map.h"
 #include "scripts.h"
+#include "pyuo.h"
+
+#ifdef WIN32
+	#include "archs/pywin32.h"
+#elif defined (__unix__)
+	#include "archs/pyunix.h"
+#endif
 
 extern void initSignalHandlers();
 
 extern void checkGarbageCollect(); //!< Remove items which were in deleted containers
 
-
-
 bool g_bInMainCycle = false;
-char INKEY; //xan, used for wingui menus :) [gui mode under Win32 :)]
 void LoadOverrides ();
 extern "C" int g_nTraceMode;
 
@@ -755,79 +757,6 @@ void checkkey ()
 	}
 }
 
-#if defined(__unix__)
-/*!
-\brief signal handlers
-\param signal the signal received
-*/
-void signal_handler(int signal)
-{
-//	ConOut("In signal handler\n") ;
-	switch (signal)
-	{
-	case SIGHUP:
-		//loadspawnregions();
-		loadregions();
-		loadmetagm();
-		loadserverscript();
-		Network->LoadHosts_deny();
-		break ;
-
-	case SIGUSR1:
-		Accounts->LoadAccounts();
-		break ;
-	case SIGUSR2:
-		cwmWorldState->saveNewWorld();
-		saveserverscript();
-		break ;
-	case SIGTERM:
-		keeprun = false ;
-		break ;
-	default:
-		break ;
-	}
-}
-#endif
-
-//! initialize daemon
-void init_deamon()
-{
-#if defined(__unix__)
-
-	int i ;
-	pid_t pid ;
-
-	if ((pid = fork() ) != 0)
-		exit(0) ; //
-	setsid() ;
-	signal(SIGHUP, SIG_IGN) ;
-	if ((pid=fork()) != 0)
-	{
-		fstream fPid ;
-		fPid.open("nxwpid",ios::out) ;
-		fPid << pid <<endl;
-		fPid.close() ;
-		exit(0) ;
-
-	}
-	// We should close any dangling descriptors we have
-	for (i=0 ; i < 64 ; i++)
-		close(i) ;
-
-	// Ok, we are a true deamon now, so we should setup our signal handler
-	// We can use SIGHUP, SIGINT, and SIGWINCH as we should never receive them
-	// So we will use SIGHUP to reload our scripts (kinda a standard for sighup to be reload)
-	// We will use a SIGUSR2 to be world save
-	// and SIGUSR1 for an Account reload
-	/*
-	signal(SIGUSR2,&signal_handler);
-	signal(SIGHUP,&signal_handler);
-	signal(SIGUSR1,&signal_handler);
-	signal(SIGTERM,&signal_handler);
-	*/
-#endif
-}
-
 int main(int argc, char *argv[])
 {
 #define CIAO_IF_ERROR if (error==1) { Network->SockClose();  \
@@ -869,11 +798,12 @@ int main(int argc, char *argv[])
 #ifdef __unix__
 	//thx to punt and Plastique :]
 	signal(SIGPIPE, SIG_IGN);
+#endif
+
 	if (ServerScp::g_nDeamonMode!=0) {
 		ConOut("Going into deamon mode... bye...\n");
 		init_deamon();
 	}
-#endif
 	if (ServerScp::g_nDeamonMode!=0)	// if in daemon mode => disable debugger
 		ServerScp::g_nLoadDebugger = 0;
 
@@ -1102,14 +1032,14 @@ int main(int argc, char *argv[])
 	}
 	//	ConOut("\nServer waiting connections on all interfaces at TCP port %s\n", serv[0][2]);
 
-    // print allowed clients
-    std::string t;
-    std::vector<std::string>::const_iterator vis( clientsAllowed.begin() ), vis_end( clientsAllowed.end() );
+	// print allowed clients
+	std::string t;
+	std::vector<std::string>::const_iterator vis( clientsAllowed.begin() ), vis_end( clientsAllowed.end() );
 
-    ConOut("\nAllowed clients : ");
-    for ( ; vis != vis_end;  ++vis)
-    {
-    t = (*vis);  // a bit pervert to store c++ strings and operate with c strings, admitably
+	ConOut("\nAllowed clients : ");
+	for ( ; vis != vis_end;  ++vis)
+	{
+	t = (*vis);  // a bit pervert to store c++ strings and operate with c strings, admitably
 
 	  if ( t == "SERVER_DEFAULT" )
 	  {
@@ -1340,25 +1270,6 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-// clock() is supposed to return CPU time used - it doesn't on Windows, but
-// does on Linux. Thus it doesn't go up on Linux, and time seems to stand
-// still. This function emulates clock()
-
-void initclock()
-{
-#if defined(__unix__)
-	timeval t ;
-	gettimeofday(&t,NULL) ; // ftime has been obseloated
-	initialserversec = t.tv_sec ;
-	initialservermill = t.tv_usec/ 1000 ;
-#else
-	timeb t ;
-	::ftime(&t) ;
-	initialserversec = t.time ;
-	initialservermill = t.millitm ;
-#endif
-}
-
 void telltime( NXWCLIENT ps )
 {
 
@@ -1417,22 +1328,6 @@ void telltime( NXWCLIENT ps )
 	}
 
 	sysmessage(s,tstring);
-}
-
-void impaction(int s, int act)
-{
-	if ( s < 0 || s >= now ) //Luxor
-		return;
-	P_CHAR pc = MAKE_CHAR_REF( currchar[s] );
-	VALIDATEPC( pc );
-	if ( pc->isMounting() && (act==0x10 || act==0x11))
-	{
-		pc->playAction(0x1b);
-		return;
-	}
-	if ( pc->isMounting() || ( pc->getId() < 0x190 ) && act == 0x22 )
-		return;
-	pc->playAction(act);
 }
 
 /*!

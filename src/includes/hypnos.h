@@ -21,7 +21,6 @@ void BuildPointerArray();
 void InitMultis();
 void DeleteClasses();
 void telltime( NXWCLIENT ps );
-void impaction(int s, int act);
 void npcattacktarget(P_CHAR npc, P_CHAR target);
 void enlist(int s, int listnum);		//!< For enlisting in army
 void gcollect();

@@ -46,8 +46,8 @@
 //1=iron, 2=golden, 3=agapite, 4=shadow, 5=mythril, 6=bronze, 7=verite, 8=merkite, 9=copper, 10=silver
 int ingottype=0;//will hold number of ingot type to be deleted
 
-inline void SetSkillDelay(CHARACTER cc) 
-{ 
+inline void SetSkillDelay(CHARACTER cc)
+{
 	P_CHAR pc_cc=MAKE_CHAR_REF(cc);
 	VALIDATEPC(pc_cc);
 	SetTimerSec(&pc_cc->skilldelay,SrvParms->skilldelay);
@@ -102,7 +102,7 @@ void Skills::Stealth(NXWSOCKET s)
         sysmessage(s,TRANSLATE("You must hide first."));
         return;
     }
-    
+
     if (pc->skill[HIDING]<800)
     {
         sysmessage(s,TRANSLATE("You are not hidden well enough. Become better at hiding."));
@@ -141,7 +141,7 @@ void Skills::Stealth(NXWSOCKET s)
 	pc->teleport( TELEFLAG_SENDWORNITEMS );
         return;
     }
-    
+
     sysmessage(s,TRANSLATE("You can move %i steps unseen."), ((SrvParms->maxstealthsteps*pc->skill[STEALTH])/1000) );
     pc->stealth = 0; //AntiChrist -- init. steps already done
     pc->hideBySkill();
@@ -175,7 +175,7 @@ void Skills::PeaceMaking(NXWSOCKET s)
 				if (pcm->war && pc->getSerial32()!=pcm->getSerial32())
                 {
                     pcm->sysmsg(TRANSLATE("You hear some lovely music, and forget about fighting."));
-					if (pcm->war) 
+					if (pcm->war)
 						pcm->toggleCombat();
                     pcm->targserial = INVALID;
 					pcm->attackerserial = INVALID;
@@ -183,7 +183,7 @@ void Skills::PeaceMaking(NXWSOCKET s)
                 }
             }
         }
-    } 
+    }
 	else
     {
 		Skills::PlayInstrumentPoor(s, inst);
@@ -251,7 +251,7 @@ int Skills::GetInstrument(NXWSOCKET s)
 
 	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPCR(pc,INVALID);
-    
+
 	P_ITEM pack= pc->getBackpack();
     VALIDATEPIR(pack,INVALID);
 
@@ -285,7 +285,7 @@ static bool DoOnePotion(NXWSOCKET s, UI16 regid, UI32 regamount, char* regname)
 
 	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPCR(pc,false);
-    
+
     bool success=false;
     char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
@@ -345,7 +345,7 @@ void Skills::DoPotion(NXWSOCKET s, SI32 type, SI32 sub, P_ITEM pi_mortar)
 			 LogError("switch reached default",(type*10)+sub);
 			 return;
 	}
-    
+
 	if (success)
 	{
 		tempfx::add(pc, pc, tempfx::ALCHEMY_GRIND, 0, 0, 0); // make grinding sound for a while
@@ -450,14 +450,14 @@ void Skills::target_bottle( NXWCLIENT ps, P_TARGET t )
 	VALIDATEPI(pi);
 
 	NXWSOCKET s = ps->toInt();
-    
-	if(pi->magic==4) 
+
+	if(pi->magic==4)
 		return;    // Ripper
 
 	if (pi->getId()==0x0F0E)   // an empty potion bottle ?
 	{
 		pi->ReduceAmount(1);
-		
+
 		P_ITEM pi_mortar=pointers::findItemBySerial( t->buffer[0] );
 		VALIDATEPI(pi_mortar);
 
@@ -520,24 +520,24 @@ void Skills::PotionToBottle( P_CHAR pc, P_ITEM pi_mortar )
 
 		case 81: CREATEINBACKPACK( "$normal_strength_potion" )		break;
 		case 82: CREATEINBACKPACK( "$greater_strength_potion" )		break;
-		default: 
+		default:
 			LogError("switch reached default into PotionToBottle");
 			return;
 	}
 
 	VALIDATEPI(pi);
 
-    
+
 	if(!pc->IsGM())
-    
+
 	{
 		pi->creator = pc->getCurrentName();
 
-		if (pc->skill[ALCHEMY]>950) 
+		if (pc->skill[ALCHEMY]>950)
 			pi->madewith=ALCHEMY+1;
-		else 
+		else
 			pi->madewith=0-ALCHEMY-1;
-    
+
 	} else  {
 		pi->creator = "";
 		pi->madewith=0;
@@ -575,7 +575,7 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
     int atrophy_candidates[ALLSKILLS+1];
 
 
-    
+
     if (pc->amxevents[EVENT_CHR_ONGETSKILLCAP])
         skillcap = pc->amxevents[EVENT_CHR_ONGETSKILLCAP]->Call(pc->getSerial32(), pc->getSocket() );
 	/*
@@ -632,9 +632,9 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 		if ( skillused )
 		{
 			Race* r = Race::getRace( (UI32) pc->race );
-			if( r!=NULL ) 
+			if( r!=NULL )
 				incval = r->getSkillAdvanceSuccess( (UI32) sk, (UI32) pc->baseskill[sk] );
-			else 
+			else
 				incval=0;
 			//SDbgOut("Race advance success for skill %d with base %d is %d\n", sk, pc->baseskill[sk], incval * 10 );
 		}
@@ -643,7 +643,7 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 			Race* r = Race::getRace( (UI32) pc->race );
 			if( r!=NULL )
 				incval = r->getSkillAdvanceFailure( (UI32) sk, (UI32) pc->baseskill[sk] );
-			else 
+			else
 				incval =0;
 
 			//SDbgOut("Race advance failure for skill %d with base %d is %d\n", sk, pc->baseskill[sk], incval * 10 );
@@ -651,7 +651,7 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 		incval *= 10;
     }
     else {
-    
+
 	int i = 0;
 	int loopexit=0;
     	while ( (wpadvance[1+i+skillinfo[sk].advance_index].skill == sk &&
@@ -670,7 +670,7 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
         retval=1;
     }
 
-    
+
     if(pc->amxevents[EVENT_CHR_ONADVANCESKILL]!=NULL) {
         g_bByPass = false;
         retval = pc->amxevents[EVENT_CHR_ONADVANCESKILL]->Call(pc->getSerial32(), sk, skillused, retval);
@@ -696,7 +696,7 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
             {
                 d = (pc->baseskill[atrophy_candidates[0]]>=2)? 2 : 1; // avoid value below 0 (=65535 cause unsigned)
                 {
-                    if (d==1 && pc->baseskill[atrophy_candidates[0]]==0) 
+                    if (d==1 && pc->baseskill[atrophy_candidates[0]]==0)
 						d=0; // should never happen ...
                     pc->baseskill[atrophy_candidates[0]]-=d;
 					Skills::updateSkillLevel(pc, atrophy_candidates[0]);         // we HAVE to correct the skill-value
@@ -805,13 +805,13 @@ static int AdvanceOneStat(UI32 sk, int i, char stat, bool *update, int type, P_C
 		}
  //       *stat2 -= 1000;                     // then change it
 
- 	
+
     if (pc->amxevents[EVENT_CHR_ONADVANCESTAT]) {
         g_bByPass = false;
         pc->amxevents[EVENT_CHR_ONADVANCESTAT]->Call(pc->getSerial32(), type, sk, tmp);
         if (g_bByPass==true) return false;
 	}
-	
+
 	//pc->runAmxEvent( EVENT_CHR_ONADVANCESTAT, pc->getSerial32(), type, sk, tmp);
  	if (g_bByPass==true)
 		return false;
@@ -845,7 +845,7 @@ static int AdvanceOneStat(UI32 sk, int i, char stat, bool *update, int type, P_C
 
     if (pc->amxevents[EVENT_CHR_ONGETSTATCAP]!=NULL)
        	limit = pc->amxevents[EVENT_CHR_ONGETSTATCAP]->Call(pc->getSerial32(), type, limit);
-	
+
 	/*
 	if ( pc->getAmxEvent(EVENT_CHR_ONGETSTATCAP) != NULL )
 		limit = pc->runAmxEvent( EVENT_CHR_ONGETSTATCAP, pc->getSerial32(), type, limit);
@@ -858,7 +858,7 @@ static int AdvanceOneStat(UI32 sk, int i, char stat, bool *update, int type, P_C
 						break;
 
 			case 'D':	pc->dx++;
-						pc->dx3++;						
+						pc->dx3++;
 						break;
 
 			case 'I':	pc->in++;
@@ -926,7 +926,7 @@ void Skills::AdvanceStats(CHARACTER s, int sk)
 		statcap = Race::getRace( pc->race )->getStatCap();
 
 
-	
+
 	if (pc->amxevents[EVENT_CHR_ONGETSTATCAP]!=NULL)
 		statcap = pc->amxevents[EVENT_CHR_ONGETSTATCAP]->Call(pc->getSerial32(), STATCAP_CAP, statcap);
 	/*
@@ -988,24 +988,24 @@ void Skills::AdvanceStats(CHARACTER s, int sk)
 			}
 
 
-    	
+
 		if ( update )
 		{
-  			
+
 			NXWSOCKET socket = pc->getSocket();
 
 			++pc->statGainedToday;
-  
+
 			if ( socket != INVALID )
 				statwindow( pc, pc);              // update client's status window
 
-        	
+
 			for ( i = 0;  i < ALLSKILLS; i++ )
 				updateSkillLevel(pc,i );     // update client's skill window
 
 			if ( atCap && !pc->IsGM() )
 				pc->sysmsg(TRANSLATE("You have reached the stat-cap of %i!") ,statcap );
-	        
+
 		}
 	}
 }
@@ -1028,7 +1028,7 @@ void Skills::SpiritSpeak(NXWSOCKET s)
         return;
     }
 
-    impaction(s,0x11);          // I heard there is no action...but I decided to add one
+    pc->impAction(0x11);   // I heard there is no action...but I decided to add one
     pc->playSFX(0x024A);   // only get the sound if you are successful
     sysmessage(s,TRANSLATE("You establish a connection to the netherworld."));
     SetTimerSec(&(pc->spiritspeaktimer),spiritspeak_data.spiritspeaktimer+pc->in);
@@ -1047,7 +1047,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
     NXWCLIENT ps=getClientFromSocket(s);
 	if( ps==NULL )
 		return;
-    
+
 	P_CHAR pc = ps->currChar();
 	VALIDATEPC(pc);
 
@@ -1068,17 +1068,17 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 		sysmessage(s,TRANSLATE("You cannot do that as a ghost."));
 		return;
 	}
-    
+
 	if (pc->IsHiddenBySpell())
 		return; //Luxor: cannot use skills if under invisible spell
     /*  chars[cc].unHide();*/
-    
+
 	//<Luxor> 7 dec 2001
 	if (skillinfo[x].unhide_onuse == 1)
 		pc->unHide();
 	//</Luxor>
-    
-	
+
+
 	if( pc->casting )
 	{
 		sysmessage( s, TRANSLATE("You can't do that while you are casting" ));
@@ -1086,9 +1086,9 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 	}
 
 	pc->disturbMed(); // Meditation
-	
+
 	AMXEXECSV( pc->getSerial32(),AMXT_SKILLS, x, AMX_BEFORE);
-	
+
 	bool setSkillDelay = true;
 
 	if( Race::isRaceSystemActive() && !(Race::getRace( pc->race )->getCanUseSkill( (UI32) x )) )
@@ -1096,7 +1096,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 		sysmessage(s, TRANSLATE("Your race cannot use that skill") );
 		setSkillDelay = false;
 	}
-	else 
+	else
 	{
 		P_TARGET targ=NULL;
 		switch(x)
@@ -1117,54 +1117,54 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("What do you wish to appraise and identify?"));
 				break;
-			
+
 			case EVALUATINGINTEL:
 				break;
-			
+
 			case TAMING:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=target_tame;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("Tame which animal?"));
 				break;
-			
+
 			case HIDING:
 				Skills::Hide(s);
 				break;
-			
+
 			case STEALTH:
 				Skills::Stealth(s);
 				break;
-			
+
 			case DETECTINGHIDDEN:
 				targ=clientInfo[s]->newTarget( new cLocationTarget() );
 				targ->code_callback=target_detectHidden;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("Where do you wish to search for hidden characters?"));
 				break;
-			
+
 			case PEACEMAKING:
 				Skills::PeaceMaking(s);
 				break;
-			
+
 			case PROVOCATION:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=target_provocation1;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("Whom do you wish to incite?"));
 				break;
-			
+
 			case ENTICEMENT:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=target_enticement1;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("Whom do you wish to entice?"));
 				break;
-			
+
 			case SPIRITSPEAK:
 				Skills::SpiritSpeak(s);
 				break;
-			
+
 			case STEALING:
 				if (SrvParms->rogue) {
 					targ=clientInfo[s]->newTarget( new cObjectTarget() );
@@ -1178,44 +1178,44 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 					setSkillDelay = false;
 				}
 				break;
-			
+
 			case INSCRIPTION:
 				break;
-			
+
 			case TRACKING:
 				break;
-			
+
 			case BEGGING:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=Skills::target_begging;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("Whom do you wish to annoy?"));
 				break;
-			
+
 			case ANIMALLORE:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=Skills::target_animalLore;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("What animal do you wish to get information about?"));
 				break;
-			
+
 			case FORENSICS:
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_forensics;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("What corpse do you want to examine?"));
 				break;
-			
+
 			case POISONING:
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_poisoning;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("What poison do you want to apply?"));
 				break;
-			
+
 			case TASTEID:
 				break;
-			
+
 			case MEDITATION:  //Morrolan - Meditation
 				//if(SrvParms->armoraffectmana)
 					Skills::Meditation(s);
@@ -1225,18 +1225,18 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 					setSkillDelay = false;
 				}*/
 				break;
-			
+
 			case REMOVETRAPS:
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=target_removeTraps;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("What do you want to untrap?"));
 				break;
-			
+
 			case CARTOGRAPHY:
 				Skills::Cartography(s);
 				break;
-			
+
 			default:
 				sysmessage(s, TRANSLATE("That skill has not been implemented yet."));
 				setSkillDelay = false;
@@ -1246,7 +1246,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 		AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMX_SKILLS_MAIN), s, x);
         //</Luxor>
 	}
-	
+
 	if ( setSkillDelay )
 		SetSkillDelay(pc->getSerial32());
 
@@ -1298,7 +1298,7 @@ void Skills::TDummy(NXWSOCKET s)
 	}
 
 	int skillused = pc->getCombatSkill();
-	
+
 	if (pc->isMounting())
 		pc->combatOnHorse();
 	else
@@ -1310,7 +1310,7 @@ void Skills::TDummy(NXWSOCKET s)
 	{
 		case 0: pc->playSFX(0x013B);
 			break;
-    
+
 		case 1: pc->playSFX(0x013C);
 			break;
 
@@ -1321,21 +1321,21 @@ void Skills::TDummy(NXWSOCKET s)
 			LogError("switch reached default");
 			return;
 	}
-	
+
 	P_ITEM pj = pointers::findItemBySerial( LongFromCharPtr(buffer[s] +1) & 0x7FFFFFFF );
 
 	if (ISVALIDPI(pj))
 	{
 		if (pj->getId()==0x1070)
 			pj->setId( 0x1071 );
-        
+
 		if (pj->getId()==0x1074)
 			pj->setId( 0x1075 );
-	
+
 		tempfx::add(pc, pj, tempfx::TRAINDUMMY, 0, 0, 0); //Luxor
 		pj->Refresh();
 	}
-	
+
 	if(pc->skill[skillused] < 300)
 	{
 		pc->checkSkill( static_cast<Skill>(skillused), 0, 1000);
@@ -1354,7 +1354,7 @@ void Skills::AButte(NXWSOCKET s1, P_ITEM pButte)
 		return;
 	P_CHAR pc = MAKE_CHAR_REF( currchar[s1] );
 	VALIDATEPC(pc);
-	
+
 
 
 	int v1;
@@ -1377,7 +1377,7 @@ void Skills::AButte(NXWSOCKET s1, P_ITEM pButte)
 
         if(pButte->more1>0)
         {
-            
+
 			P_ITEM pi = item::CreateFromScript( "$item_arrow", pc->getBackpack(), pButte->more1/2 );
 			VALIDATEPI(pi);
             pi->Refresh();
@@ -1431,9 +1431,9 @@ void Skills::AButte(NXWSOCKET s1, P_ITEM pButte)
             pc->sysmsg( TRANSLATE("You should empty the butte first!"));
             return;
         }
-		if (pc->getWeapon()->IsBow()) 
+		if (pc->getWeapon()->IsBow())
 			arrowsquant=pc->getAmount(0x0F3F); // Sabrewulf
-        else 
+        else
 			arrowsquant=pc->getAmount(0x1BFB);
 
         if (arrowsquant==0)
@@ -1441,8 +1441,8 @@ void Skills::AButte(NXWSOCKET s1, P_ITEM pButte)
             pc->sysmsg( TRANSLATE("You have nothing to fire!"));
             return;
         }
-		
-		if (pc->getWeapon()->IsBow()) 
+
+		if (pc->getWeapon()->IsBow())
         {
             pc->delItems( 0x0F3F, 1);
             pButte->more1++;
@@ -1454,9 +1454,9 @@ void Skills::AButte(NXWSOCKET s1, P_ITEM pButte)
             pButte->more2++;
             //add moving effect here to item, not character
         }
-        if (pc->isMounting()) 
+        if (pc->isMounting())
 			pc->combatOnHorse();
-        else 
+        else
 			pc->combatOnFoot();
 
         if( pc->skill[ARCHERY] < 350 )
@@ -1604,14 +1604,14 @@ void Skills::Persecute (NXWSOCKET  s)
             // Dupois pointed out the for loop was changing i which would drive stuff nuts later
 
 			pc_targ->emoteall( temp, 1);
-            
+
         } else
         {
 		pc->sysmsg(TRANSLATE("Your mind is not strong enough to disturb the enemy."));
         }
     } else
     {
-        
+
 	pc->sysmsg(TRANSLATE("You are unable to persecute him now...rest a little..."));
     }
 
@@ -1779,7 +1779,7 @@ void Skills::Cartography(NXWSOCKET s)
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
-    
+
 	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
@@ -1804,17 +1804,17 @@ bool Skills::HasEmptyMap(CHARACTER cc)
 
 	/*P_CHAR pc=MAKE_CHAR_REF(cc);
 	VALIDATEPCR(pc,false);
-    
+
     P_ITEM pack = pc->getBackpack();    // Get the packitem
 	VALIDATEPIR(pack,false);
-	
+
 	int ci = 0, loopexit = 0;
 	P_ITEM pi;
 	while (((pi = ContainerSearch(pack->getSerial32(), &ci)) != NULL) &&(++loopexit < MAXLOOPS))
 	{
         if(!ISVALIDPI(pi))
 			continue;
-		
+
         if (pi->type == 300)  // Is it the right type
             return true;    // Yay, go on with carto
     }
@@ -1833,7 +1833,7 @@ bool Skills::DelEmptyMap(CHARACTER cc)
 
  	/*P_CHAR pc=MAKE_CHAR_REF(cc);
 	VALIDATEPCR(pc,false);
-    
+
     P_ITEM pack = pc->getBackpack();    // Get the packitem
 	VALIDATEPIR(pack,false);
 

@@ -24,8 +24,7 @@
 #include "constants.h"
 #include "pointer.h"
 #include "console.h"
-#include "amx/amxscript.h"
-#include "srvparms.h" 
+#include "srvparms.h"
 
 
 #endif // __NXWCOMMON_H

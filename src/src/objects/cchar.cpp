@@ -1356,7 +1356,7 @@ SI32 cChar::calcResist(DamageType typeofdamage)
 \brief Makes the char doing an action
 \author Luxor
 */
-void cChar::playAction(SI32 action)
+void cChar::playAction(UI16 action)
 {
 	switch (action)
 	{
@@ -1423,6 +1423,18 @@ void cChar::playAction(SI32 action)
 //AoS/			Network->FlushBuffer(ps->toInt());
 		}
 	}
+}
+
+void cChar::impAction(UI16 action)
+{
+	if ( isMounting() && (action==0x10 || action==0x11))
+	{
+		playAction(0x1b);
+		return;
+	}
+	if ( isMounting() || ( getId() < 0x190 ) && action == 0x22 )
+		return;
+	playAction(action);
 }
 
 /*!

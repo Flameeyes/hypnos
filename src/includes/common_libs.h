@@ -55,10 +55,6 @@ warnings/errors/issues.
 	#define strcasecmp strcmpi
 #endif
 
-#if defined(__BEOS__) && !defined(__unix__)
-	#define __unix__
-#endif
-
 #ifdef __GNUC__
 	#define PACK_NEEDED __attribute__ ((packed))
 #else
@@ -102,46 +98,6 @@ warnings/errors/issues.
 #include <sys/timeb.h>
 #include <ctype.h>
 
-#ifdef WIN32
-	#include <winsock.h>
-	#include <winbase.h>
-	#include <io.h>
-	#include <dos.h>
-	#include <limits.h>
-	#include <conio.h>
-	#include <process.h>
-#endif
-
-#ifdef __unix__
-	#include <netinet/in.h>
-	#include <sys/socket.h>
-	#include <sys/types.h>
-	#include <sys/time.h>
-	#include <netdb.h>
-	#include <unistd.h>
-	#include <termios.h>
-	#include <fcntl.h>
-	#include <unistd.h>
-	#include <sys/ioctl.h>
-	#include <libgen.h>
-
-	#define ioctlsocket ioctl
-
-	#ifndef __BEOS__
-		#include <signal.h>
-		#include <sys/errno.h>
-		#include <arpa/inet.h>
-		#define closesocket(s)	close(s)
-	#else
-		#include <be/NetKit.h>
-		#include <be/NetworkKit.h>
-		#include <be/net/socket.h>
-		typedef int socklen_t;
-	#endif
-    #include <sys/utsname.h>
-#endif
-
-
 #ifdef  _MSC_VER
 	#pragma pack(pop)
 	#ifndef STLPORT
@@ -149,21 +105,6 @@ warnings/errors/issues.
 		#pragma warning(disable: 4786)
 		#define vsnprintf _vsnprintf
 	#endif
-#endif
-
-#ifdef __unix__
-	typedef unsigned char BYTE ;
-	#define SOCKET_ERROR -1
-	char *strlwr(char *);
-	char *strupr(char *);
-#endif
-
-#if !defined WIN32 && !defined _WIN32
-    void Sleep(unsigned long msec);
-#endif
-
-#ifdef __BEOS__
-	extern int errno;
 #endif
 
 extern char* getOSVersionString();
@@ -180,7 +121,6 @@ using namespace std;
     #define MSG_NOSIGNAL 0
 #endif
 
-#ifdef USE_THREADS
 /***************************************************
  T-THREADs (Trivial Threads), by Xanathar 2001, 2002
  This is a simple simple simple and trivial thread
@@ -188,18 +128,6 @@ using namespace std;
  Posix threads in Linux and *BSDs.
  Signal handling of *nix thread code by AnomCwrd
  ***************************************************/
-
-#if defined(__OpenBSD__) || defined(__FreeBSD__)
-    #include <pthread.h>
-#endif
-
-#if defined __unix__ && !defined __BEOS__
-    #define PTHREADS
-#endif
-
-#if !defined WIN32 && !defined PTHREADS
-    #error Your platform is not supported by Trivial Threads :[
-#endif
 
 namespace tthreads {
 
@@ -348,20 +276,6 @@ public :
 int startTThread( TTHREAD ( *funk )( void * ), void* param = NULL );
 
 };
-
-#ifdef WIN32
-    inline bool pollHUPStatus () { return false; }
-    inline bool pollCloseRequests () { return false; }
-    inline void setup_signals (){ return; }
-    inline void start_signal_thread() {return;}
-#elif defined PTHREADS
-    extern bool pollHUPStatus ();
-    extern bool pollCloseRequests ();
-    extern void setup_signals ();
-    extern void start_signal_thread();
-#endif
-
-#endif // USE THREADS
 
 #endif //__COMMON_LIBS_H__
 
