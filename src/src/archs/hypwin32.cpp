@@ -161,4 +161,48 @@ char* getOSVersionString()
 	return g_szOSVerBuffer;
 }
 
+uint32_t getclockday()
+{
+	uint32_t seconds;
+	uint32_t days ;
+	timeb buffer ;
+	::ftime(&buffer) ;
+	seconds = buffer.time ;
+	days = seconds/86400 ;  // (60secs/minute * 60 minute/hour * 24 hour/day)
+	return days ;
+}
+
+uint32_t getclock()
+{
+	uint32_t milliseconds;
+	uint32_t seconds ;
+	timeb buffer ;
+	::ftime(&buffer) ;
+	seconds = buffer.time ;
+	milliseconds = buffer.millitm ;
+	if (milliseconds < initialservermill)
+	{
+		milliseconds = milliseconds + 1000 ;
+		seconds  = seconds - 1 ;
+	}
+	milliseconds = ((seconds - initialserversec) * 1000) + (milliseconds -initialservermill ) ;
+	return milliseconds ;
+}
+
+/*!
+\author Keldan
+\since 0.82r3
+\brief get current system clock time
+
+used by getSystemTime amx function
+*/
+uint32_t getsysclock()
+{
+   uint32_t seconds ;
+   timeb buffer ;
+   ::ftime(&buffer) ;
+   seconds = buffer.time ;
+   return seconds ;
+}
+
 #endif

@@ -13,175 +13,7 @@
 */
 
 #include "common_libs.h"
-#include "sndpkg.h"
-#include "sregions.h"
-#include "house.h"
-#include "commands.h"
-#include "tmpeff.h"
-#include "boats.h"
-#include "map.h"
-#include "skills.h"
-#include "inlines.h"
-#include "range.h"
-#include "network.h"
-
-cScriptCommand::cScriptCommand( )
-{
-}
-
-cScriptCommand::cScriptCommand( std::string command, std::string param )
-{
-	this->command=command;
-	this->param=param;
-}
-
-cScriptCommand::~cScriptCommand( )
-{
-
-}
-
-void cScriptCommand::execute( pClient client )
-{
-	pChar pc = client->currChar();
-	if ( ! pc ) return;
-
-	strupr(command);
-	strupr(param);
-
-	if ( command == "GMMENU" ) {
-		gmmenu(s, str2num(param));
-		return;
-	} else if ( command == "MAKEMENU" ) {
-		//ndEndy PDFARE
-		//Skills::MakeMenu(s, str2num(param), pc->making );
-		return;
-	} else if ( (int32_t)command.find("MENU") != -1 ) {
-		itemmenu( s, str2num(param) );
-		return;
-	} else if ( command == "WEBLINK" ) {
-		cPacketSendOpenBrowser pk(param);
-		client->sendPacket(&pk);
-		return;
-	} else if ( command == "SYSMESSAGE" ) {
-		sysmessage(s, param.c_str());
-		return;
-	} else if ( command == "GMPAGE" ) {
-		new cGMPage(this, std::string(param));
-		return;
-	} else if ( command == "CPAGE" ) {
-		Commands::CPage(s, param);
-		return;
-	} else if ( command == "VERSION" ) {
-		sysmessage(s, idname);
-		return;
-	} else if ( command == "ADDITEM" ) {
-
-		std::string itemnum, amount;
-		splitLine( param, itemnum, amount );
-		int am = ( amount != "" )?  str2num( amount ) : INVALID; //ndEndy defined amount
-
-		item::CreateFromScript( (char*)itemnum.c_str(), pc->getBackpack(), am );
-		return;
-	} else if ( command == "INFORMATION" ) {
-		sysmessage(s, "Connected players [%i out of %i accounts] Items [] Characters []",
-			now,Accounts->Count());
-		return;
-	} else if ( command == "NPC" ) {
-		pTarget targ= clientInfo[s]->newTarget( new cLocationTarget() );
-		targ->code_callback = target_npcMenu;
-		targ->buffer[0]=str2num(param);
-		targ->send( getClientFromSocket(s) );
-		sysmessage( s, "Select location for NPC. [Number: %i]", targ->buffer[0]);
-		return;
-	} else if ( command == "NOP" ) {
-	    return;
-	} else if ( command == "POLY" ) {
-		int tmp=hex2num(param);
-		pc->setId(tmp);
-		pc->setOldId(tmp);
-		pc->teleport();
-		return;
-	} else if ( command == "SKIN" ) {
-		int tmp=hex2num(param);
-		pc->setColor(tmp);
-		pc->setOldColor(tmp);
-		pc->teleport();
-		return;
-	} else if ( command == "LIGHT" ) {
-		worldfixedlevel=hex2num(param);
-		if (worldfixedlevel!=255) setabovelight(worldfixedlevel);
-		else setabovelight(worldcurlevel);
-
-		return;
-
-	} else if ( command == "GCOLLECT" ) {
-		gcollect();
-		return;
-	} else if ( command == "GOPLACE" ) {
-		int x, y, z;
-		location2xyz( str2num(param), x, y, z );
-		if( x>0 ) {
-			pc->MoveTo( x, y, z );
-			pc->teleport();
-		}
-	} else if ( command == "ADDBYID" ) {
-		if (s<=INVALID) return;
-		pItem pb = pc->getBackpack();
-		if (!pb) return;
-
-		uint32_t i = param.find(' ');
-		if ( i == (uint32_t)-1 )
-			return;
-
-		std::string p(param.begin()+i+1, param.end());
-		param.erase(param.begin()+i, param.end());
-
-		pItem pi = cItem::addByID(str2num(param), 1, p.c_str(), 0, Location(100, 100, 100));
-		if (!pi) return;
-		pb->AddItem(pi);
-		pi->refresh();
-	} else if ( command == "@CALL" ) {
-		AmxFunction::g_prgOverride->CallFn(param.c_str());
-	} else {
-	    ErrOut("script command syntax error : unknown command %s", command.c_str());
-	}
-}
-
-void location2xyz(int loc, int& x, int& y, int& z)
-{
-#if 0
-	int  loopexit=0;
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	char script1[1024];
-	char script2[1024];
-
-
-	sprintf(temp, "SECTION LOCATION %i", loc);
-	iter = Scripts::Location->getNewIterator(temp);
-
-	if ((iter!=NULL))
-	{
-		do
-		{
-			iter->parseLine(script1, script2);
-			if (!(strcmp(script1,"X")))
-			{
-				x=str2num(script2);
-			}
-			else if (!(strcmp(script1,"Y")))
-			{
-				y=str2num(script2);
-			}
-			else if (!(strcmp(script1,"Z")))
-			{
-				z=str2num(script2);
-			}
-		}
-		while ( (strcmp(script1,"}")) && (++loopexit < MAXLOOPS) );
-	}
-	safedelete(iter);
-#endif
-}
+#include "utils.h"
 
 /*!
 \brief for putting single worlds of cline into comm array
@@ -204,7 +36,7 @@ void splitline()
 	tnum=i;
 }
 
-int strtonum(int countx, int base/*= 0*/)
+int strtonum(int countx, int base)
 {
 	char *err= NULL;
 	int n;
@@ -515,19 +347,6 @@ void endmessage(int x) // If shutdown is initialized
 		((endtime-igetclock)/MY_CLOCKS_PER_SEC)/60);
 }
 
-/*!
-\brief Execute command from script
-\author Unknown, ported to std::string by Akron
-\param s the socket of the executer
-\param script1 the command
-\param script2 parameters of the command
-*/
-void scriptcommand (NXWSOCKET s, std::string script1, std::string script2) // Execute command from script
-{
-	cScriptCommand command( script1, script2 );
-	command.execute( s );
-}
-
 int checkBoundingBox(int xPos, int yPos, int fx1, int fy1, int fz1, int fx2, int fy2)
 {
 	if (xPos>=((fx1<fx2)?fx1:fx2) && xPos<=((fx1<fx2)?fx2:fx1))
@@ -545,81 +364,17 @@ int checkBoundingCircle(int xPos, int yPos, int fx1, int fy1, int fz1, int radiu
 		return 0;
 }
 
-uint32_t getclockday()
-{
-	uint32_t seconds;
-	uint32_t days ;
-#ifdef __unix__
-	timeval buffer ;
-	gettimeofday(&buffer,NULL) ;
-	seconds = buffer.tv_sec ;
-#else
-	timeb buffer ;
-	::ftime(&buffer) ;
-	seconds = buffer.time ;
-#endif
-	days = seconds/86400 ;  // (60secs/minute * 60 minute/hour * 24 hour/day)
-	return days ;
-}
-
-uint32_t getclock()
-{
-	uint32_t milliseconds;
-	uint32_t seconds ;
-#ifdef __unix__
-	timeval buffer ;
-	gettimeofday(&buffer,NULL) ;
-	seconds = buffer.tv_sec ;
-	milliseconds = buffer.tv_usec/1000 ;
-#else
-	timeb buffer ;
-	::ftime(&buffer) ;
-	seconds = buffer.time ;
-	milliseconds = buffer.millitm ;
-#endif
-	if (milliseconds < initialservermill)
-	{
-		milliseconds = milliseconds + 1000 ;
-		seconds  = seconds - 1 ;
-	}
-	milliseconds = ((seconds - initialserversec) * 1000) + (milliseconds -initialservermill ) ;
-	return milliseconds ;
-}
-
-/*!
-\author Keldan
-\since 0.82r3
-\brief get current system clock time
-
-used by getSystemTime amx function
-*/
-uint32_t getsysclock()
-{
-   uint32_t seconds ;
-#ifdef __unix__
-   timeval buffer ;
-   gettimeofday(&buffer,NULL) ;
-   seconds = buffer.tv_sec ;
-#else
-   timeb buffer ;
-   ::ftime(&buffer) ;
-   seconds = buffer.time ;
-#endif
-   return seconds ;
-}
-
 void setabovelight(uint8_t lightchar)
 {
-
-	if (lightchar != worldcurlevel)
+	if (lightchar == worldcurlevel)
+		return;
+	
+	worldcurlevel=lightchar;
+	NxwSocketWrapper sw;
+	sw.fillOnline();
+	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		worldcurlevel=lightchar;
-		NxwSocketWrapper sw;
-		sw.fillOnline();
-		for( sw.rewind(); !sw.isEmpty(); sw++ )
-		{
-			client->light(worldcurlevel);
-		}
+		client->light(worldcurlevel);
 	}
 }
 
@@ -628,78 +383,59 @@ void setabovelight(uint8_t lightchar)
 \author LB
 \param x X-coord of object
 \param y Y-coord of object
-\param sextant sextant coords as string (char *)
-\param t2a are in lost lands?
-\warning memory for output string sextant has to be reserved by callee !
-		 if not -> crash (has to be >=36 bytes !)
+\param cx Central x-coord
+\param cy Central y-coord
 \note thanks goes to Balxan / UOAM for the basic alogithm
-	  could be optimized a lot, but the freuqency of being called is probably very low
+	could be optimized a lot, but the freuqency of being called is probably very low
+
+Central coords for standard map are 1323,1624 (LB's throne) for Sosaria and 5936,3112 for
+T2A.
+New maps can redefine these values.
 */
-void getSextantCoords(int32_t x, int32_t y, bool t2a, char *sextant)
+std::string getSextantCoords(uint16_t x, uint16_t y, uint16_t cx, uint16_t cy)
 {
-   double Tx, Ty, Dx, Dy, Cx, Cy, Wx, Wy, Mx, My, Hx, Hy;
-   signed int xH, xM, yH, yM;
-   char xHs[20], yHs[20], xMs[20], yMs[20];
+	float Tx, Ty, Dx, Dy, Wx, Wy, Mx, My, Hx, Hy;
+	int16_t xH, xM, yH, yM;
+	
+	//  map dimensions
+	Wx = 5120.0;
+	Wy = 4096.0;
 
-   if (t2a) // for t2a the center is in the middle
-   {
-	   Cy = 3112.0;
-	   Cx = 5936.0;
-   } else
-   {
-	  // center, LB's throne *g*
-      Cx = 1323.0;
-      Cy = 1624.0;
-   }
+	// convert input ints to float;
+	Tx = x;
+	Ty = y;
 
-   //  map dimensions
-   Wx = 5120.0;
-   Wy = 4096.0;
+	// main calculation
+	Dx = ( (Tx - cx) * 360.0 ) / Wx;
+	Dy = ( (Ty - cy) * 360.0 ) / Wy;
+	
+	////// now let's get minutes, hours & directions from it
+	Hx = (int16_t) Dx; // get hours (cut off digits after comma, no idea if there's a cleaner/better way)
 
-   // convert input ints to float;
-   Tx = (double) x;
-   Ty = (double) y;
+	Mx = Dx - Hx; // get minutes
+	Mx *= 60;
 
-   // main calculation
-   Dx = ( (Tx - Cx) * 360.0 ) / Wx;
-   Dy = ( (Ty - Cy) * 360.0 ) / Wy;
+	Hy = (int16_t) Dy;
+	My = Dy - Hy;
+	My *= 60;
 
-   ////// now let's get minutes, hours & directions from it
-   Hx = (signed int) Dx; // get hours (cut off digits after comma, no idea if there's a cleaner/better way)
+	// convert the results to ints;
+	xH = (signed int) Hx;
+	xM = (signed int) Mx;
+	yH = (signed int) Hy;
+	yM = (signed int) My;
 
-   Mx = Dx - Hx; // get minutes
-   Mx = Mx * 60;
-
-   Hy = (signed int) Dy;
-   My = Dy - Hy;
-   My = My * 60;
-
-   // convert the results to ints;
-   xH = (signed int) Hx;
-   xM = (signed int) Mx;
-   yH = (signed int) Hy;
-   yM = (signed int) My;
-
-   // now compose result string
-
-   numtostr(abs(xH),xHs);
-   numtostr(abs(xM),xMs);
-   numtostr(abs(yH),yHs);
-   numtostr(abs(yM),yMs);
-
-   strcpy(sextant, xHs);
-   strcat(sextant,"o ");
-   strcat(sextant, xMs);
-   strcat(sextant,"' ");
-
-   if (xH>=0) strcat(sextant,"E"); else strcat(sextant,"W");
-
-   strcat(sextant, "  ");
-   strcat(sextant, yHs);
-   strcat(sextant,"o ");
-   strcat(sextant, yMs);
-   strcat(sextant,"' ");
-   if (yH>=0) strcat(sextant,"S"); else strcat(sextant,"N");
+	char *temp;
+	asprintf(&temp, "%u° %u' %c  %u° %u' %c",
+		abs( (int16_t)Hx ), abs( (int16_t)Mx ), Hx > 0 ? 'E' : 'W',
+		abs( (int16_t)Hy ), abs( (int16_t)My ), Hy > 0 ? 'S' : 'M'
+		);
+	
+	std::string ret(temp);
+	free(temp);
+	
+	return ret;
+	
 }
 
 /*!

@@ -29,20 +29,20 @@ namespace Commands
 {
 	extern int32_t cmd_offset;					//!< Command Offset
 
-	void KillSpawn(NXWSOCKET s, int r);
-	void RegSpawnMax(NXWSOCKET s, int r);
-	void RegSpawnNum(NXWSOCKET s, int r, int n);
-	void KillAll(NXWSOCKET s, int percent, char * sysmsg);
-	void AddHere(NXWSOCKET s, uint16_t id, char z);
-	void ShowGMQue(NXWSOCKET s, int type);
-	void Wipe(NXWSOCKET s);
-	void CPage(NXWSOCKET s, std::string reason);
-	void GMPage(NXWSOCKET s, std::string reason);
-	void Command( NXWSOCKET , char * );
+	void KillSpawn(pClient client, int r);
+	void RegSpawnMax(pClient client, int r);
+	void RegSpawnNum(pClient client, int r, int n);
+	void KillAll(pClient client, int percent, char * sysmsg);
+	void AddHere(pClient client, uint16_t id, char z);
+	void ShowGMQue(pClient client, int type);
+	void Wipe(pClient client);
+	void CPage(pClient client, std::string reason);
+	void GMPage(pClient client, std::string reason);
+	void Command(pClient client, char * );
 	void MakeShop(int c);
-	void DyeItem(NXWSOCKET s);
-	void DupeItem(NXWSOCKET s, int i, int amount);
-	void Possess(NXWSOCKET s);
+	void DyeItem(pClient client);
+	void DupeItem(pClient client, int i, int amount);
+	void Possess(pClient client);
 };
 
 #endif
