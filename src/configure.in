@@ -69,6 +69,8 @@ else
 	AC_CHECK_FUNCS([ntohl ntohs htonl htons])
 fi
 
+AM_CONDITIONAL(WIN32, test x$is_win = "xyes")
+
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_CONST
@@ -101,6 +103,8 @@ AC_SUBST(WEFTS_LIBS)
 AC_CONFIG_FILES([Makefile
                  libhypnos/Makefile
                  libhypnos/muls/Makefile
+		 libhypnos/libhypnos/Makefile
+		 libhypnos/libhypnos/muls/Makefile
                  utils/Makefile
                  utils/clilist/Makefile
                  src/Makefile
