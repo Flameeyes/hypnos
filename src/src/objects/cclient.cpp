@@ -141,12 +141,12 @@ void cClient::showContainer(pCont cont)
 \author Flameeyes
 \param item item to show
 */
-void cClient::addItemToContainer(pItem item)
+void cClient::showItemInContainer(pItem item)
 {
 	if ( ! item || pc->distFrom(pi) > VISRANGE )
 		return;
 
-	cPacketSendAddItemtoContainer pk( item );
+	cPacketSendShowItemInContainer pk( item );
 
 	sendPacket(&pk);
 
@@ -347,7 +347,7 @@ void senditem(pItem pi) // Shows items to client (on the ground or inside contai
                         // LB client crashfix, dont show multis in BP
 			// we should better move it out of pack, but thats
 			// only a first bannaid
-			addItemToContainer(pi);
+			showItemInContainer(pi);
 			return;
 		}
 	}
@@ -1922,7 +1922,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 			pc->playSFX( itemsfx(pi->getId()) );
 			pi->layer= 0;
 			pi->setContainer( pack );
-			addItemToContainer(pi);
+			showItemInContainer(pi);
 			return;
 		}
 
@@ -2323,7 +2323,7 @@ void dotrade(pContainer cont1, pContainer cont2)
 			}
 			pi->setContainer( bp2 );
 			pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
-			pc2->getClient()->addItemToContainer(pi);
+			pc2->getClient()->showItemInContainer(pi);
 			pi->Refresh();
 		}
 	}
@@ -2346,7 +2346,7 @@ void dotrade(pContainer cont1, pContainer cont2)
 
 			pi->setContainer( bp1 );
 			pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
-			pc1->getClient()->addItemToContainer(pi);
+			pc1->getClient()->showItemInContainer(pi);
 			pi->Refresh();
 		}
 	}

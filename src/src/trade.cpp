@@ -77,10 +77,10 @@ pItem tradestart(pChar pc1, pChar pc2)
 	cont2->setDyeable(false);
         
 	//!\todo find client1 & client2
-        client1->addItemToContainer(cont1);
-        client2->addItemToContainer(cont1);
-        client1->addItemToContainer(cont2);
-        client2->addItemToContainer(cont2);
+        client1->showItemInContainer(cont1);
+        client2->showItemInContainer(cont1);
+        client1->showItemInContainer(cont2);
+        client2->showItemInContainer(cont2);
 
 	//!\todo Need to remplace these with a decent version..
         cont2->moreb1= cont1->getSerial().ser1;

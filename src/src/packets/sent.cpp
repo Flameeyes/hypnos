@@ -160,7 +160,7 @@ void cPacketSendContainerItem::prepare()
 
 
 
-void cPacketSendAddItemtoContainer::prepare()
+void cPacketSendShowItemInContainer::prepare()
 {
 	length = 20;
 	buffer = new uint8_t[20];
@@ -1633,7 +1633,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                         else
                         {
 				// Send "Add Item to Container" message to client
-		                cPacketSendAddItemtoContainer pk(newmessage);
+		                cPacketSendShowItemInContainer pk(newmessage);
 		                client->sendPacket(&pk);
                 	}
 

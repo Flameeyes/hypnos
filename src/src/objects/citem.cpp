@@ -834,8 +834,8 @@ void cItem::Refresh()
 			NXWSOCKET a=sw.getSocket();
 			if(a!=INVALID)
                         //TODO: calculate client
-				client->addItemToContainer(this);	//NOTE: there's already the inrange check
-									//in the addItemToContainer() function, so it's unuseful
+				client->showItemInContainer(this);	//NOTE: there's already the inrange check
+									//in the showItemInContainer() function, so it's unuseful
 									//to do a double check!!
 		}
 	}
