@@ -1866,7 +1866,6 @@ void nPackets::Sent::Features::prepare()
 	ShortToCharPtr(features, buffer+1);
 }
 
-
 void nPackets::Sent::ClientViewRange::prepare()
 {
 	buffer = new uint8_t[2];

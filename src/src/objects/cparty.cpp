@@ -25,15 +25,136 @@ void cParty::deleteParties()
 }
 
 /*!
+\brief Function used to actually parse the packet 0xBF, subcommand 0x06 for
+	parties' commands
+\author Flameeyes
+\param client Client which are receiving the command from
+\param buffer Pointer to the actual package received
+\param size Size of the received package
+
+This function is here because there is too many things in the 0xBF packet, and
+adding a new switch inside it is a true suicide.
+
+This isn't a clean way to do this, but it's the better one to have all the
+party related stuff inside this file.          
+
+\see nPackets::Received::MiscCommand
+*/
+void cParty::executeCommand(pClient client, char *buffer, uint16_t size)
+{
+	assert(buffer[0] == '0xBF'); // make sure this is a 0xBF package.
+	// Maybe we should also add an assert for make sure it's the true 0x06
+	// subcommand
+	
+	pPC pc = client->currChar();
+	if ( ! pc ) return; // MiscCommand doesn't validate it, so we do
+	
+	char *partyPkg = buffer+5; // Here we are at the start of the party
+				   // Subpackage.
+	
+	switch( partyPkg[0] )
+	{
+	case 0x01: // Add a member
+		{
+			uint32_t newMemberSerial = LongFromCharPtr(partyPkg+1);
+			if ( ! newMemberSerial )
+			{
+				// Now we should show to the client a target to select
+				// the player to add
+			} else {
+				pPC newMember = dynamic_cast<pPC>(cSerializable::findBySerial(newMemberSerial));
+			
+				// If invalid serial
+				if ( ! newMember ) return;
+			
+				if ( ! pc->getParty() )
+					new cParty(pc);
+			
+				pc->getParty()->inviteMember(client, newMember);
+			}                          
+		}
+			break;
+		
+	case 0x02: // Remove a member
+		{
+			uint32_t removedSerial = LongFromCharPtr(partyPkg+1);
+			if ( ! removedSerial )
+			{
+			} else {
+				pPC removed = dynamic_cast<pPC>(cSerializable::findBySerial(removedSerial));
+				
+				if (	! removed || // If invalid serial
+					! pc->getParty() || // If the requester isn't in a party
+					! removed->getParty() || // If the target isn't in a party
+					pc->getParty() != removed->getParty() || // If requester and target is in different packets
+					pc->getParty()->getLeader() != pc ) // If not the party leader
+						return;
+				
+				pc->getParty()->removeMember(pc);
+			}
+		}
+		break;
+		
+	case 0x03: // Party Private Message
+		{
+			uint32_t targetSerial = LongFromCharPtr(partyPkg+1);
+			pPC target = dynamic_cast<pPC>(cSerializable::findBySerial(targetSerial));
+			if ( ! target ) return;
+			
+			if ( ! target->getClient() ) return;
+			
+			//! \todo Load the unicode string from the received packet..
+			
+			nPackets::Sent::PartyPrivateMessage pk(target, unicodeStr);
+			//! \todo And then resend it to the party
+			target->getClient()->sendPacket(&pk);
+		}
+		break;
+		
+	case 0x04: // Party broadcast (needs unicode support)
+		{
+			
+		}
+		break;
+	
+	case 0x06: // Party can loot me
+		{
+			pPC pc = client->currChar();
+			pc->getParty()->setCanLootMe(pc, partyPkg[1]);
+		}
+		break;
+	case 0x08: // Accept join party invitation
+		{
+			uint32_t leaderSerial = LongFromCharPtr(partyPkg+1);
+			pPC leader = dynamic_cast<pPC>(cSerializable::findBySerial(leaderSerial));
+			if ( ! leader ) pc->setParty(NULL);
+			
+			leader->getParty()->addMember(pc);
+		}
+		break;
+	case 0x09: // Decline join party invitation
+		{
+			uint32_t leaderSerial = LongFromCharPtr(partyPkg+1);
+			pPC leader = dynamic_cast<pPC>(cSerializable::findBySerial(leaderSerial));
+			if ( ! leader ) pc->setParty(NULL);
+			
+			leader->getParty()->removeMember(pc);
+		}
+		break;
+	}
+}
+
+/*!
 \brief Constructor
 \note cParty can only be created having a leader and the first member
 \param leader Leader (creator) of the party
-\param member First member invited to the party. The party can't be constructed
-	without having a member             
+\note After creating a new party, immediatly invite a member, else we have an
+	invalid party.
 \note Constructor register the party in the \ref parties list
 */
-void cParty::cParty(pPC leader, pPC member)
+void cParty::cParty(pPC leader)
 {
+	leader->setParty(this);
 	
 	parties.push_front(this);
 }
@@ -84,7 +205,9 @@ void cParty::inviteMember(pClient client, pPC member)
 		client->sysmessage("%s is already invited to join the party", name.c_str());
 		return;
 	}
-	                
+	
+	member->setParty(this);
+	
 	invclient->sysmessage("%s has just invited you to join his party.", client->currChar()->getBody()->getCurrentName().c_str());
 	invclient->sysmessage("Type /accept to join the party, or /decline to decline the invitation");
 	                              
@@ -133,7 +256,8 @@ bool cParty::removeMember(pPC member)
 		disband();
 		return true;              
 	}
-	                        
+	
+	member->setParty(NULL);
 	//! \todo Send the remove from the party status to the player
 }                                      
 
@@ -151,6 +275,7 @@ void cParty::disband()
 {                                       
 	for( PCSList::iterator it = invited.begin(); it != invited.end(); it++)
 	{
+		(*it)->setParty(NULL);
 		//! \todo Here we should make the invites timeout and fail
 		
 		if ( (*it)->getClient() )    
@@ -165,12 +290,28 @@ void cParty::disband()
 		(*it).player->setParty(NULL);
 		//! \todo Here we should send the client the disband status of the party itself
 		
-		if ( (*it)->getClient() )         
-			(*it)->getClient()->sysmessage("The party you were in is now disbanded.");
+		if ( (*it).player->getClient() )         
+			(*it).player->getClient()->sysmessage("The party you were in is now disbanded.");
 	}
 	
 	// Last thing to do.. suicide :)
 	delete this;
 }
-                                                                            
 
+/*!
+\brief Gets a simple list of PCs in the party
+
+This function fills a list with the pointers of the party's members to be used
+by packets which needs to send the members' list.
+
+\see nPackets::Sent::PartyAddMember
+\see nPackets::Sent::PartyRemoveMember
+*/
+PCSList cParty::getMembersList()
+{
+	PCSList ret;
+	for( MemberSList::iterator it = members.begin(); it != members.end(); it++)
+			ret.push_front( (*it).player );
+
+	return ret;
+}

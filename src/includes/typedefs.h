@@ -6,7 +6,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
-\file typedefs.h
+\file
 \brief contains typedefs for integer values and common structures.
 \todo complete the documentation of types
 */
@@ -61,6 +61,8 @@ typedef std::list<pAccount> AccountList;	//!< List of accounts
 typedef std::vector<struct sPoint> PointVector;	//!< Vector of (x,y) points (uint16_t coords)
 typedef std::list<struct sLocation> LocationList;
 						//!< List of locations (used for jails)
+
+typedef class cParty *pParty;			//!< Pointer to a cParty instances
 
 //@{
 /*!

@@ -1643,7 +1643,7 @@ bool nPackets::Received::MiscCommand::execute(pClient client)
 	if (length != size) return false;
 	uint16_t subcommand = ShortFromCharPtr(buffer + 3);
 	pPC pc = client->currChar();
-	// please don't remove the // unknowns ... want to have them as dokumentation
+	// please don't remove the // unknowns ... want to have them as documentation
 	switch (subcommand)
 	{
 		case 0x04: // documentation tells me this is "Close generic gump". unverified (Chronodt 5/8/04)
@@ -1654,13 +1654,17 @@ bool nPackets::Received::MiscCommand::execute(pClient client)
 			uint16_t y = ShortFromCharPtr(buffer + 9);
 			//! \todo should we use this somehow?? Maybe in addition of viewrange?
 			break;
-		}
-		case 0x06: //party subcommand
-			//!\todo verify party
-			Partys.receive( client );
+		}                                           
+		case 0x06: //party subcommand             
+			// Now we have more subcommands.. so what we are doing
+			// is to pass the complete packet to a party-system
+			// function to parse it.
+			// Obviously we pass to that function also the needed
+			// information to work on the data.
+			cParty::executeCommand(client, buffer, size);
 			break;
 
-		case 0x09:	//Luxor: Wrestling Disarm Macro support
+		case 0x09: //Luxor: Wrestling Disarm Macro support
 			if ( pc ) pc->setWresMove(WRESDISARM);
 			break;
 		case 0x0a: //Luxor: Wrestling Stun punch Macro support
@@ -1674,8 +1678,7 @@ bool nPackets::Received::MiscCommand::execute(pClient client)
 			client_lang[1]=buffer[6];
 			client_lang[2]=buffer[7];
 			client_lang[3]=0;
-			// do dometihng with language information from client
-			// ...
+			//! \todo do dometihng with language information from client
 			break;
 
 		case 0x0e: // UO:3D menus

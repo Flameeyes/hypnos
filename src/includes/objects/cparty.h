@@ -41,7 +41,10 @@ remain in the party for a configurable time (it can be 0, so an admin can
 disable the maintaining of disconnetted players).
 
 \todo Add a tempfx to invited for timeout on accept, and one on both invited and
-	members after a disconnection to remove them fromt he party.
+	members after a disconnection to remove them fromt he party
+
+This class takes also to parse the party commands from the 0xBF/0x06 packet.
+\see nPackets::Received::MiscCommand
 */
 class cParty {
 protected:
@@ -65,6 +68,7 @@ protected:
 	typedef std::<sPartyMember> MemberSList;
 public:
 	static void deleteParties();
+	static void executeCommand(pClient, char *buffer, uint16_t size);        
 
 public:
 	cParty(pPC leader, pPC member);
@@ -75,6 +79,7 @@ public:
 	bool removeMember(pPC member);
 	void disband();
 
+	PCSList getMembersList();
 //@{
 /*!
 \name Talk and notices
