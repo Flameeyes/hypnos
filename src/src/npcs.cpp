@@ -10,7 +10,6 @@
 #include "sregions.h"
 #include "sndpkg.h"
 #include "commands.h"
-#include "npcai.h"
 #include "data.h"
 #include "map.h"
 #include "inlines.h"

@@ -7,7 +7,6 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
 #include "sndpkg.h"
-#include "npcai.h"
 #include "inlines.h"
 #include "settings.h"
 #include "backend/scripting.h"

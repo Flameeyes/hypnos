@@ -48,7 +48,6 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "common_libs.h"
 #include "sndpkg.h"
 #include "sregions.h"
-#include "calendar.h"
 #include "magic.h"
 #include "party.h"
 #include "npcai.h"

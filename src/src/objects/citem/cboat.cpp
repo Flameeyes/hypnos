@@ -8,7 +8,7 @@
 
 #include "objects/citem/cboat.h"
 #include "objects/citem/ccontainer.h"
-#include "objects/cchar/cpc.h"
+#include "objects/cpc.h"
 #include "networking/cclient.h"
 #include "misc.h"
 

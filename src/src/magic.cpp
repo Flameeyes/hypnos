@@ -10,7 +10,6 @@
 #include "tmpeff.h"
 #include "particles.h"
 #include "sndpkg.h"
-#include "npcai.h"
 #include "data.h"
 #include "map.h"
 #include "inlines.h"

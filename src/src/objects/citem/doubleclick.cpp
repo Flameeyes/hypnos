@@ -11,12 +11,12 @@
 #include "mount.h"
 #include "map.h"
 #include "inlines.h"
-#include "fishing.h"
 #include "networking/cclient.h"
 #include "objects/cchar.h"
 #include "objects/citem.h"
 #include "objects/cpc.h"
 #include "objects/citem/ccontainer.h"
+#include "skills/fishing.h"
 #include "skills/skills.h"
 
 bool cItem::usableWhenLockedDown(pPC pc)

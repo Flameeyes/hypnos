@@ -11,7 +11,6 @@
 #include "sndpkg.h"
 #include "magic.h"
 #include "tmpeff.h"
-#include "npcai.h"
 #include "networking/network.h"
 #include "boats.h"
 #include "walking.h"

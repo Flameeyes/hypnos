@@ -7,7 +7,6 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
 #include "magic.h"
-#include "npcai.h"
 #include "misc.h"
 #include "inlines.h"
 

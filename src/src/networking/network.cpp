@@ -9,7 +9,6 @@
 #include "networking/network.h"
 #include "commands.h"
 #include "menu.h"
-#include "dragdrop.h"
 #include "speech.h"
 #include "data.h"
 #include "trade.h"

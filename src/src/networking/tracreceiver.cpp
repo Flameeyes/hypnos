@@ -10,7 +10,7 @@
 
 #include "backend/admincmds.h"
 #include "networking/tracreceiver.h"
-#include "networking/tkilling.h"
+#include "networking/tkiller.h"
 #include "networking/exception.h"
 #include <sstream>
 

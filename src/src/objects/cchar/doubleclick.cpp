@@ -10,14 +10,13 @@
 \brief Character click & doubleclick (mount/unmount and paperdolls)
 */
 
-#include "ai.h"
-#include "objects/cobject.h"
 #include "magic.h"
 #include "npcs.h"
 #include "constants.h"
 #include "menu.h"
 #include "logsystem.h"
 #include "settings.h"
+#include "objects/cobject.h"
 
 /*!
 \brief single clicks over PC/NPCs

@@ -65,11 +65,11 @@ public:
 	std::string toGhost();			//!< returns a randomized "ooooOOoo" based on current string content (not unicode)
 
 	//! Returns a read-only char* pointer to internal unicode_text, as a rawmode 8 bit-char buffer with a double 0 terminator
-	inline char* rawBytes() const
+	inline const char* rawBytes() const
 	{ return reinterpret_cast<const char*>(unicodeText.c_str()); }
 
 	//! Returns a read-only char* pointer to internal unicode_text, as a null-terminated 16bit-char pointer. WARNING: remember to check for byteorder first
-	inline uint16_t* c_str() const
+	inline const uint16_t* c_str() const
 	{ return unicodeText.c_str(); }
 
 	inline int size()

@@ -45,12 +45,12 @@ public:
 	static const uint16_t weaponHXBow	= 0x2000; //!< Heavy Crossbow
 
 	static void loadWeaponsInfo();
-	static const bool isWeaponLike(uint16_t id, uint16_t type);
+	static bool isWeaponLike(uint16_t id, uint16_t type);
 
-	const bool isWeaponLike(uint16_t type) const
+	inline bool isWeaponLike(uint16_t type) const
 	{ return isWeaponLike(getId(), type); }
 	
-	const Skill getCombatSkill() const;
+	Skill getCombatSkill() const;
 protected:
 	typedef std::map<uint16_t,uint16_t> WeaponMap;
 	//! Map with types of weapons

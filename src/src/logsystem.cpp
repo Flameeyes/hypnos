@@ -5,6 +5,7 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+
 #include "logsystem.h"
 #include "inlines.h"
 #include "settings.h"
@@ -15,6 +16,7 @@
 #include "networking/cclient.h"
 
 #include <stdarg.h>
+#include <sstream>
 
 int32_t entries_e=0, entries_c=0, entries_w=0, entries_m=0;
 LogFile ServerLog("server.log");
@@ -140,45 +142,34 @@ Insert access to your log in this function.
 */
 static void MessageReady(char logType, char *OutputMessage)
 {
-	std::string fileName;
-	char b1[16],b2[16],b3[16],b4[16];
+	std::ostringstream filename;
+
 //	unsigned long int ip=inet_addr(serv[0][1]);
 	uint32_t ip = 0;
-	char i1,i2,i3,i4;
-
-	i1=(char) (ip>>24);
-	i2=(char) (ip>>16);
-	i3=(char) (ip>>8);
-	i4=(char) (ip%256);
-
-	numtostr(i4 , b1);
-	numtostr(i3 , b2);
-	numtostr(i2, b3);
-	numtostr(i1, b4);
 
 	switch (logType)
 	{
 	case 'E':
-		fileName = "errors_log_";
+		filename << "errors_log_";
 		entries_e++;
 		break;
 	case 'C':
-		fileName = "critical_errors_log_";
+		filename << "critical_errors_log_";
 		entries_c++;
 		break;
 	case 'W':
-		fileName = "warnings_log_";
+		filename << "warnings_log_";
 		entries_w++;
 		break;
 	case 'M':
-		fileName = "messages_log_";
+		filename << "messages_log_";
 		entries_m++;
 		break;
 	}
 
-	fileName += std::string(b1) + "_" + std::string(b2) + "_" + std::string(b3) + "_" + std::string(b4) + ".txt";
+	filename << (ip>>24)&0xFF << "_" << (ip>>16)&0xFF << "_" << (ip>>8)&0xFF << "_" ip&0xFF << ".txt"
 
-	LogFile logerr(fileName);
+	LogFile logerr(filename.c_str());
 
 	if (entries_c == 1 && logType == 'C') // @serverstart, write out verison# !!!
 	{

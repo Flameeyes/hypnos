@@ -89,17 +89,6 @@ namespace nSkills {
 
 	//@{
 	/*!
-	\name Alchemy stuff
-	*/
-	void CreatePotion(pChar pc, uint8_t type, uint8_t sub, pItem mortar);
-	void DoPotion(pClient client, uint8_t type, uint8_t sub, pItem mortar);
-	void target_alchemy( pClient client, pTarget t );
-	void target_bottle( pClient client, pTarget t );
-	void PotionToBottle(pChar pc, pItem mortar);
-	//@}
-
-	//@{
-	/*!
 	\name Tinkering stuff
 	*/
 	void target_tinkerAxel( pClient client, pTarget t );

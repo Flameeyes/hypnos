@@ -106,7 +106,7 @@ public:
 	void playSFX(uint16_t sound);
 
 	//! Gets the direction of the item (?)
-	const uint8_t getDirection() const
+	uint8_t getDirection() const
 	{ return dir; }
 	
 	void setDirection(uint8_t newdir);
@@ -157,7 +157,7 @@ public:
 	inline static bool isFeather(uint16_t id)
 	{ return ( id>=0x1BD1 && id<=0x1BD3 ); }
 
-	static const bool isHouse(uint16_t id);
+	const bool isHouse(uint16_t id);
 
 // Non-static ItemID functions
 
@@ -482,11 +482,11 @@ public:
 \name Weight
 */
 protected:
-	uint32_t		weight;
+	uint32_t weight;
 
 public:
-	float			getWeight();
-	virtual const float	getWeightActual();
+	float getWeight();
+	virtual float getWeightActual();
 //@}
 
 //@{
@@ -625,7 +625,7 @@ protected:
 	int32_t		value;		//!< Price shopkeeper sells item at.
 	int32_t		restock;	//!< Number up to which shopkeeper should restock this item
 public:
-	const int32_t calcValue(int32_t bvalue);
+	int32_t calcValue(int32_t bvalue);
 //@}
 
 //@{
@@ -668,22 +668,22 @@ public:
         { return minUsingIntelligence; }
 
 	inline Skill getMinUsingSkill1()
-        { return minUsingSkill[1]; }
+        { return minUsingSkill[0]; }
 
         inline uint16_t getMinUsingSkillValue1()
-	{ return minUsingSkillValue[1]; }
+	{ return minUsingSkillValue[0]; }
 
 	inline Skill getMinUsingSkill2()
-        { return minUsingSkill[2]; }
+        { return minUsingSkill[1]; }
 
         inline uint16_t getMinUsingSkillValue2()
-	{ return minUsingSkillValue[2]; }
+	{ return minUsingSkillValue[1]; }
 
 	inline Skill getMinUsingSkill3()
-        { return minUsingSkill[3]; }
+        { return minUsingSkill[2]; }
 
         inline uint16_t getMinUsingSkillValue3()
-	{ return minUsingSkillValue[3]; }
+	{ return minUsingSkillValue[2]; }
 
 
 //@}

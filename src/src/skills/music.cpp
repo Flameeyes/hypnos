@@ -11,13 +11,13 @@
 */
 
 #include "logsystem.h"
-#include "skills/skills.h"
-#include "skills/music.h"
+#include "settings.h"
 #include "networking/cclient.h"
 #include "objects/cpc.h"
 #include "objects/cbody.h"
-#include "ojbects/ccontainer.h"
-#include "settings.h"
+#include "ojbects/citem/ccontainer.h"
+#include "skills/skills.h"
+#include "skills/music.h"
 
 void nSkills::target_enticement2(pClient client, pTarget t )
 {

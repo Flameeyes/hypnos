@@ -8,7 +8,6 @@
 #include "common_libs.h"
 #include "tmpeff.h"
 #include "constants.h"
-#include "npcai.h"
 #include "map.h"
 #include "skills/skills.h"
 #include "inlines.h"

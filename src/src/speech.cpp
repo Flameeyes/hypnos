@@ -7,7 +7,6 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
 #include "sndpkg.h"
-#include "calendar.h"
 #include "house.h"
 #include "npcai.h"
 #include "commands.h"

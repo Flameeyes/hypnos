@@ -11,7 +11,6 @@
 #include "magic.h"
 #include "pointer.h"
 #include "data.h"
-#include "boats.h"
 #include "inlines.h"
 
 #include <wefts_mutex.h>

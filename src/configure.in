@@ -18,7 +18,10 @@ AM_PATH_WEFTS()
 AC_ICC_COMPILER()
 
 if test "$is_icc" == "yes"; then
+	# Disable warnings in specific way for Intel C++ Compiler
+	# and prevents wefts from linking to -lstdc++ (which is gcc specific)
 	WARNS="-wd383 -wd981"
+	WEFTS_LIBS=$(echo $WEFTS_LIBS | sed -e 's/-lstdc++//')
 else
 	WARNS="-Wno-reorder -Wno-switch-enum "
 fi

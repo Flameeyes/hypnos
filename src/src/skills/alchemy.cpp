@@ -81,8 +81,8 @@ void nSkills::DoPotion(pClient client, uint8_t type, uint8_t sub, pItem mortar)
 	case 81: success = DoOnePotion(client, 0x0F86, 2,"mandrake");       break;//strength
 	case 82: success = DoOnePotion(client, 0x0F86, 5,"mandrake");       break;//greater strength
 	default:
-			LogError("Unknown type/subtype combination in nSkills::DoPotion(): type %d subtype %d", type, sub);
-			return;
+		LogError("Unknown type/subtype combination in nSkills::DoPotion(): type %d subtype %d", type, sub);
+		return;
 	}
 
 	if (success)

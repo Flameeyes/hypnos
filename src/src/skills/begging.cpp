@@ -10,6 +10,8 @@
 \brief Begging methods implementation
 */
 
+#include "common_libs.h"
+
 uint32_t Begging::timer;
 uint32_t Begging::range;
 std::string Begging::text[3];
@@ -35,13 +37,13 @@ void Begging::target(pClient client, pTarget t)
 	
 	if(pc->IsOnline())
 	{
-		client->sysmessage(tr("Maybe you should just ask."));
+		client->sysmessage("Maybe you should just ask.");
 		return;
 	}
 	
 	if( pc->distFrom(pcc) >= Begging::range)
 	{
-		client->sysmessage(tr("You are not close enough to beg."));
+		client->sysmessage("You are not close enough to beg.");
 		return;
         }
 

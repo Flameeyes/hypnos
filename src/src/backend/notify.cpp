@@ -8,6 +8,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#include "archs/console.h"
 #include "backend/notify.h"
 
 #include <wefts_mutex.h>
@@ -16,7 +17,7 @@
 /*!
 \brief Gets a string representing the current date and time for the log
 */
-const std::string getDate()
+const std::string nNotify::getDate()
 {
 	time_t TIME;
 	tm* T;

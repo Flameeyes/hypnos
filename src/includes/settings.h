@@ -157,6 +157,6 @@ namespace nSettings {
 	namespace Jails {
 		bool isJailAccountLevel();		//!< Is the jail valid account-level, or character-level? [Default: true]
 	}
-};
+}
 
 #endif

@@ -48,33 +48,6 @@ inline std::string toString(double value)
 
 //@{
 /*!
-\author Lord Binary
-\name Wrappers for stdlib num-2-str functions
-*/
-
-/*!
-\brief convert the integer into a string in decimal base
-\param i integer to convert
-\param ourstring string to write the number to
-*/
-inline void numtostr(uint32_t i, char *ourstring)
-{
-	sprintf(ourstring,"%d",i);
-}
-
-/*!
-\brief convert the integer into a string in hexadecimal base
-\param i integer to convert
-\param ourstring string to write the number to
-*/
-inline void hextostr(uint32_t i, char *ourstring)
-{
-	sprintf (ourstring, "%x",i);
-}
-//@}
-
-//@{
-/*!
 \name Bases
 \brief bases for conversion from string to number
 */
