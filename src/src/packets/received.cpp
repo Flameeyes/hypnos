@@ -19,6 +19,7 @@
 #include "objects/cclient.h"
 #include "objects/citem/cbook.h"
 #include "objects/citem/cmap.h"
+#include "extras/motd.h"
 
 /*!
 \brief Status window
@@ -2737,72 +2738,7 @@ bool nPackets::Received::TipsRequest::execute(pClient client)
 
 	if (i==0) i=1;
 
-	//!\todo Script searching, redo when xml scripting done
-#if 0
-	int x, y, j;
-	char temp[512];
-
-	cScpIterator* iter = NULL;
-	char script1[1024];
-	char script2[1024];
-
-
-	iter = Scripts::Misc->getNewIterator("SECTION TIPS");
-	if (iter==NULL) return;
-
-	x=i;
-	int loopexit=0;
-	do
-	{
-		iter->parseLine(script1, script2);
-		if (!(strcmp("TIP", script1))) x--;
-	}
-	while ((x>0)&&script1[0]!='}'&&script1[0]!=0 && (++loopexit < MAXLOOPS) );
-
-	safedelete(iter);
-
-	if (!(strcmp("}", script1)))
-	{
-		tips(s, 1, want_next);
-		return;
-	}
-
-	sprintf(temp, "SECTION TIP %i", str2num(script2));
-    iter = Scripts::Misc->getNewIterator(temp);
-
-	if (iter==NULL) return;
-	strcpy(script1, iter->getEntry()->getFullLine().c_str());//discards the {
-
-	x=-1;
-	y=-2;
-	loopexit=0;
-	do
-	{
-		strcpy(script1, iter->getEntry()->getFullLine().c_str());
-		x++;
-		y+=strlen(script1)+1;
-	}
-	while ( (strcmp(script1, "}")) && (++loopexit < MAXLOOPS) );
-	y+=10;
-	iter->rewind();
-	strcpy(script1, iter->getEntry()->getFullLine().c_str());//discards the {
-
-	uint8_t updscroll[10]={ 0xA6, 0x00, };
-	ShortToCharPtr(y, updscroll +1); 		// len of pkt.
-	updscroll[3]=0; 				// Type: 0x00 tips, 0x02 updates
-	LongToCharPtr(i, updscroll +4);			// tip num.
-	ShortToCharPtr(y-10, updscroll +8);		// len of only mess.
-	Xsend(s, updscroll, 10); 		// Send 1st part (header)
-
-	for (j=0;j<x;j++)
-	{
-		strcpy(script1, iter->getEntry()->getFullLine().c_str());//discards the {
-		sprintf(temp, "%s ", script1);
-		Xsend(s, temp, strlen(temp)); // Send the rest
-	}
-	safedelete(iter);
-//AoS/	Network->FlushBuffer(s);
-#endif
+	msg = getTip(i);
 
 	nPackets::Sent::TipsWindow pkTips(0x00, i, msg);
 	client->sendPacket(&pkTips);

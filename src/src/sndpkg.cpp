@@ -347,55 +347,11 @@ void cChar::updateStats(int32_t stat)
 
 void updates(pClient client) // Update Window
 {
-	std::string msg;
-#if 0
-	int x, y, j;
-	char temp[512];
-	cScpIterator* iter = NULL;
-	char script1[1024];
-	
-	iter = Scripts::Misc->getNewIterator("SECTION MOTD");
-	if (iter==NULL) return;
-	strcpy(script1, iter->getEntry()->getFullLine().c_str()); //discard the {
-
-	x=-1;
-	y=-2;
-	int loopexit=0;
-	do
-	{
-		strcpy(script1, iter->getEntry()->getFullLine().c_str());
-		x++;
-		y+=strlen(script1)+1;
-	}
-	while ( (strcmp(script1, "}")) && (++loopexit < MAXLOOPS) );
-	y+=10;
-	iter->rewind();
-	strcpy(script1, iter->getEntry()->getFullLine().c_str());
-
-	uint8_t updscroll[10]={ 0xA6, 0x00, };
-	ShortToCharPtr(y, updscroll +1); 		// len of pkt.
-	updscroll[3]=2; 				// MOTD ? Type: 0x00 tips, 0x02 updates
-	LongToCharPtr(0, updscroll +4);			// tip num.
-	ShortToCharPtr(y-10, updscroll +8);		// len of only mess.
-	Xsend(s, updscroll, 10); 		// Send 1st part (header)
-
-	for (j=0;j<x;j++)
-	{
-		strcpy(script1, iter->getEntry()->getFullLine().c_str());
-		sprintf(temp, "%s ", script1);
-		Xsend(s, temp, strlen(temp)); 	// Send the rest
-	}
-	safedelete(iter);
-
-//AoS/	Network->FlushBuffer(s);
-#endif
+	std::string msg = nMOTD::getMOTD();
 
 	nPackets::Sent::TipsWindow pkMOTD(0x02, 0x0000, msg);
 	client->sendPacket(&pkMOTD);
 }
-
-
-
 
 void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 //Modified by N6 to use UNICODE packets
