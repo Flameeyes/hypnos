@@ -1,0 +1,8 @@
+This temporary directory is used to case-study the possibility to auto-generate
+the settings-handling code at build time, using a simple python script.
+
+The setdesc.xml file describes all the settings, naming, typing and givin an
+help for them.
+
+The setcompile.py script parses the setdesc.xml file and converts the .xml file
+into autoset.cpp and autoset.h files.
