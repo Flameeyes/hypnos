@@ -254,23 +254,18 @@ static bool DoOnePotion(NXWSOCKET s, uint16_t regid, uint32_t regamount, char* r
 		return false;
 
 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-	VALIDATEPCR(pc,false);
+	if ( ! pc ) return false;
 
-	bool success=false;
-	
-	if (pc->getAmount(regid) >= regamount)
+	if (pc->getAmount(regid) < regamount)
 	{
-		success=true;
-		char *temp;
-		asprintf(&temp, TRANSLATE("*%s starts grinding some %s in the mortar.*"), pc->getCurrentName().c_str(), regname);
-		pc->emoteall( temp,1); // LB, the 1 stops stupid alchemy spam
-		pc->delItems(regid, regamount);
-		free(temp);
-	}
-	else
 		sysmessage(s, TRANSLATE("You do not have enough reagents for that potion."));
+		return false;
+	}
 	
-	return success;
+	pc->emoteall("*%s starts grinding some %s in the mortar.*", true, pc->getCurrentName().c_str(), regname);
+		// LB, the true stops stupid alchemy spam
+	pc->delItems(regid, regamount);
+	return true;
 }
 
 /*!
@@ -1566,10 +1561,7 @@ void Skills::Persecute (NXWSOCKET  s)
 	pc_targ->sysmsg(TRANSLATE("A damned soul is disturbing your mind!"));
 	SetSkillDelay(pc);
 
-	char *temp;
-	asprintf(&temp, TRANSLATE("%s is persecuted by a ghost!!"), pc_targ->getCurrentName().c_str());
-	pc_targ->emoteall( temp, 1);
-	free(temp);
+	pc_targ->emoteall("%s is persecuted by a ghost!!", true, pc_targ->getCurrentName().c_str());
 }
 
 void loadskills()

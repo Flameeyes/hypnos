@@ -436,10 +436,7 @@ void cNPC::clearedEscordQuest(pPC pc)
 	// If they have no money, well, oops!
 	if ( servicePay == 0 )
 	{
-		char *temp;
-		asprintf( &temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Alas, I seem to be a little short on gold. I have nothing to pay you with."), pc->getCurrentName().c_str(), region[questDestRegion].name );
-		talk( pc->getClient(), temp, 0 );
-		free(temp);
+		talk( pc->getClient(), "Thank you %s for thy service. We have made it safely to %s. Alas, I seem to be a little short on gold. I have nothing to pay you with.", false, pc->getCurrentName().c_str(), region[questDestRegion].name );
 	}
 	else // Otherwise pay the poor sod for his time
 	{
@@ -447,10 +444,7 @@ void cNPC::clearedEscordQuest(pPC pc)
 		if ( servicePay < 75 ) servicePay += RandomNum(75, 100);
 		pc->addGold(servicePay);
 		pc->playSFX( goldsfx(servicePay) );
-		char *temp;
-		asprintf( &temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Here is thy pay as promised."), pc->getCurrentName().c_str(), region[questDestRegion].name );
-		talk( pc->getClient(), temp, 0 );
-		free(temp);
+		talk( pc->getClient(), "Thank you %s for thy service. We have made it safely to %s. Here is thy pay as promised.", false, pc->getCurrentName().c_str(), region[questDestRegion].name );
 	}
 
 	// Inform the PC of what he has just been given as payment

@@ -138,13 +138,13 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pc->sysmsg(TRANSLATE("You lost some fame and karma!"));
 		pc->setCrimGrey(ServerScp::g_nChopWillCriminal);//Blue and not attacker and not guild
 
+		char *temp;
+		
 		//create the Head
 		pItem pi = item::CreateFromScript( "$item_hardcoded" );
 		if ( ! pi ) return;
-		
-		char *temp;
-		asprintf(temp,"the head of %s",pi3->getSecondaryNameC());
-		
+		asprintf(&temp,"the head of %s",pi3->getSecondaryNameC());
+		pi->setCurrentName( temp );
 		pi->setId( 0x1DA0 );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
@@ -153,7 +153,6 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		//AntiChrist & Magius(CHE) - store item's owner, so that lately
 		//if we want to know the owner we can do it
 		pi->setSameOwnerAs(pi3);
-		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
 		free(temp);
