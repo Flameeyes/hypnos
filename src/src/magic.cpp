@@ -602,24 +602,24 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			pcto->playSFX( 0x11B );
 			staticFX(pcto, 0x36B0, 0, 10, &spfx );
 			break;
-		case SPELL_EARTHQUAKE:
+		case spellEarthquake:
 			pcto->playSFX( 0x20D );
 			if ( pcto->HasHumanBody() && !pcto->isMounting() )
 				pcto->playAction( (rand()%2 == 1) ? 0x15 : 0x16 );
 			break;
-		case SPELL_ENERGYVORTEX:
+		case spellEnergyVortex:
 			pcfrom->playSFX( 0x212 );
 			break;
-		case SPELL_RESURRECTION:
+		case spellResurrection:
 			pcfrom->playSFX( 0x214 );
 			break;
-		case spellSummon_AIR:
-		case spellSummon_EARTH:
-		case spellSummon_FIRE:
-		case spellSummon_WATER:
+		case spellSummonElemAir:
+		case spellSummonElemEarth:
+		case spellSummonElemFire:
+		case spellSummonElemWater:
 			pcfrom->playSFX( 0x217 );
 			break;
-		case spellSummon_DEAMON:
+		case spellSummonDaemon:
 			pcfrom->playSFX( 0x216 );
 			break;
 		default:
@@ -789,7 +789,7 @@ void castAreaAttackSpell (sPoint epi, SpellId spellnum, pChar pcaster)
 
 	if ( pcaster )
 	{
-		if ( spellnum == SPELL_EARTHQUAKE )
+		if ( spellnum == spellEarthquake )
 			pcaster->playSFX( 0x20D );
 		
 		if (checkTownLimits(spellnum, pcaster, pcaster, 0, 0, true))
@@ -801,11 +801,11 @@ void castAreaAttackSpell (sPoint epi, SpellId spellnum, pChar pcaster)
 		pChar pd = sc.getChar();
 		if ( ! pd ) return;
 			
-		if ( (spellnum == SPELL_EARTHQUAKE || spellnum == spellChainLighting)
+		if ( (spellnum == spellEarthquake || spellnum == spellChainLighting)
 			&& ( pd == pcaster ) )
 				return;
 		
-		if ( spellnum == SPELL_EARTHQUAKE && pd->isMounting() )
+		if ( spellnum == spellEarthquake && pd->isMounting() )
 				pd->unmountHorse();
 		
 		spellFX(spellnum, pcaster, pd);
@@ -839,7 +839,7 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellGreatHeal:
 		case spellCure:
 		case spellArchCure:
-		case SPELL_RESURRECTION:
+		case spellResurrection:
 		case spellMagicArrow:
 		case spellFlameStrike:
 		case spellExplosion:
@@ -859,12 +859,12 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellNightSight:
 		case spellInvisibility:
 		case spellSummon:
-		case spellSummon_AIR:
-		case spellSummon_DEAMON:
-		case spellSummon_EARTH:
-		case spellSummon_FIRE:
-		case spellSummon_WATER:
-		case SPELL_EARTHQUAKE:
+		case spellSummonElemAir:
+		case spellSummonDaemon:
+		case spellSummonElemEarth:
+		case spellSummonElemFire:
+		case spellSummonElemWater:
+		case spellEarthquake:
 		case spellCreateFood:
 		case spellPolymorph:
 			return TARGTYPE_NONE;
@@ -883,7 +883,7 @@ static inline int spellTargetType(SpellId spellnum)
 			return TARGTYPE_RUNE;
 
 		case spellBladeSpirit:
-		case SPELL_ENERGYVORTEX:
+		case spellEnergyVortex:
 		case spellWallStone:
 		case spellTeleport:
 		case spellMassDispel:
@@ -1317,7 +1317,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case spellHarm:
 		case spellMeteorSwarm:
 		case spellChainLighting:
-		case SPELL_EARTHQUAKE:
+		case spellEarthquake:
 			if (pd) {
 				if (spellsData[spellnumber].areasize<=0 && (spellnumber!=spellExplosion || src->skill[skMagery] < 800)) //Luxor
 				{
@@ -1327,7 +1327,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				}
 				else
 				{
-					if ( spellnumber == SPELL_EARTHQUAKE ) {  //Luxor
+					if ( spellnumber == spellEarthquake ) {  //Luxor
 						pos = sPoint(srcpos);
 					} else if ( spellnumber == spellExplosion ) {
 						pos = sPoint(pd->getPosition());
@@ -1663,7 +1663,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_RESURRECTION:
+		case spellResurrection:
 			if (pd==NULL) pd = src;
                         CHECKDISTANCE(src, pd);
                         if (pd!=NULL) {
@@ -1722,7 +1722,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case spellSummon_AIR:
+		case spellSummonElemAir:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				nTime = (nTime==INVALID) ? (int)(src->skill[nSkill] * 0.4) : nTime;
@@ -1730,7 +1730,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case spellSummon_DEAMON:
+		case spellSummonDaemon:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
@@ -1738,7 +1738,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case spellSummon_EARTH:
+		case spellSummonElemEarth:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
@@ -1746,7 +1746,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case spellSummon_FIRE:
+		case spellSummonElemFire:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
@@ -1754,7 +1754,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 		
-		case spellSummon_WATER:
+		case spellSummonElemWater:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
@@ -1770,7 +1770,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 		
-		case SPELL_ENERGYVORTEX:
+		case spellEnergyVortex:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);

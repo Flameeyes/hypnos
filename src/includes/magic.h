@@ -179,14 +179,14 @@ namespace magic {
 		spellMeteorSwarm,
 		spellPolymorph,
 		// Level 8
-		SPELL_EARTHQUAKE,
-		SPELL_ENERGYVORTEX,
-		SPELL_RESURRECTION,
-		spellSummon_AIR,
-		spellSummon_DEAMON,
-		spellSummon_EARTH,
-		spellSummon_FIRE,
-		spellSummon_WATER,
+		spellEarthquake,
+		spellEnergyVortex,
+		spellResurrection,
+		spellSummonElemAir,
+		spellSummonDaemon,
+		spellSummonElemEarth,
+		spellSummonElemFire,
+		spellSummonElemWater,
 
 		MAX_SPELLS
 	};
