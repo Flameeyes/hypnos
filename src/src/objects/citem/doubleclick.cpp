@@ -312,13 +312,10 @@ void cItem::doubleClick(pClient client)
 		client->sysmessage("You may not do that as a ghost.");
 		return;
 	}
-	else if (!pc->IsGMorCounselor() && layer!=0 && !pc->IsWearing(this))
+	else if (!pc->IsGMorCounselor() && layer!=0 && !pc->IsWearing(this) && layer != LAYER_BACKPACK)
 	{// can't use other people's things!
-		if (!(layer==LAYER_BACKPACK  && SrvParms->rogue==1)) // bugfix for snooping not working, LB
-		{
-			client->sysmessage("You cannot use items equipped by other players.");
-			return;
-		}
+		client->sysmessage("You cannot use items equipped by other players.");
+		return;
 	}
 
 

@@ -294,7 +294,6 @@ void loadserverdefaults()
 	server_data.speech_log=0;
 	server_data.server_log=0;
 
-	server_data.rogue=1;
 	server_data.quittime=300;//Instalog
 
 	strcpy(server_data.msgboardpath, "save/msgboard/");	   // Dupois - Added Dec 20, 1999 for message boards (current dir)
@@ -853,8 +852,6 @@ void saveserverscript()
 
 	fprintf(file, "SECTION SKILLS\n");
 	fprintf(file, "{\n");
-	fprintf(file, "// 1= Enables Thievery, 2=Disables Thievery \n");
-	fprintf(file, "ROGUE %i\n",server_data.rogue);
 	fprintf(file, "// Sets the amount of steps a character can make with stealth until he becomes visible again \n");
 	fprintf(file, "MAXSTEALTHSTEPS %i\n",server_data.maxstealthsteps);//Instalog
 	fprintf(file, "// Allow stealth on horse \n");

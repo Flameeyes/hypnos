@@ -883,17 +883,10 @@ void Skills::SkillUse(pClient client, int x)
 				break;
 
 			case skStealing:
-				if (SrvParms->rogue) {
-					targ=clientInfo[s]->newTarget( new cObjectTarget() );
-					targ->code_callback=target_stealing;
-					targ->send( ps );
-					client->sysmessage( "What do you wish to steal?");
-				}
-				else
-				{
-					client->sysmessage(s, "That skill has been disabled.");
-					setSkillDelay = false;
-				}
+				targ=clientInfo[s]->newTarget( new cObjectTarget() );
+				targ->code_callback=target_stealing;
+				targ->send( ps );
+				client->sysmessage( "What do you wish to steal?");
 				break;
 
 			case skInscription:
