@@ -6,10 +6,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "objects/cparty.h"
+#include "common_libs.h"
 #include "networking/cclient.h"
-#include "objects/cpc.h"
 #include "networking/sent.h"
+#include "objects/cparty.h"
+#include "objects/cpc.h"
 
 /*!
 \brief Delete the pointers of the parties.
@@ -45,7 +46,7 @@ party related stuff inside this file.
 */
 void cParty::executeCommand(pClient client, const uint8_t *buffer, uint16_t size)
 {
-	assert(buffer[0] == '0xBF'); // make sure this is a 0xBF package.
+	assert(buffer[0] == 0xBF); // make sure this is a 0xBF package.
 	// Maybe we should also add an assert for make sure it's the true 0x06
 	// subcommand
 	
@@ -235,7 +236,7 @@ cParty::cParty(pPC leader)
 
 cParty::~cParty()
 {
-	PartySList::iterator it = std::find(this, parties.begin(), parties.end());
+	PartySList::iterator it = std::find(parties.begin(), parties.end(), this);
 	if  ( it != parties.end() )
 		parties.erase(it);
 }
@@ -273,7 +274,7 @@ void cParty::inviteMember(pClient client, pPC member)
 		return;
 	}
 	
-	PCSList::iterator it = std::find(member, invited.begin(), invited.end());
+	PCSList::iterator it = std::find(invited.begin(), invited.end(), member);
 	if ( it != invited.end() )
 	{
 		client->sysmessage("%s is already invited to join the party", name.c_str());
@@ -293,28 +294,26 @@ void cParty::inviteMember(pClient client, pPC member)
 
 void cParty::addMember(pPC member)
 {
-	sPartyMember pm;
-	pm.player = member;
-	pm.canloot = true;
+	sPartyMember pm(member);
 	
-	PCSList::iterator it = find(member, invited.begin(); invited.end();
+	PCSList::iterator it = std::find(invited.begin(), invited.end(), member);
 	if ( it == invited.end() )
 	{
-		if ( ! pc->getClient() ) return;
-		pc->getClient()->sysmessage("You aren't invited to join the party");
+		if ( ! member->getClient() ) return;
+		member->getClient()->sysmessage("You aren't invited to join the party");
 		
 		return;
 	}
 	
-	inbited.erase(it);
+	invited.erase(it);
 	members.push_front(pm);
 	
 	nPackets::Sent::PartyAddMember pk(this);
-	for( PCSList::iterator it = members.begin(); it != members.end(); it++)
+	for( MemberSList::iterator it = members.begin(); it != members.end(); it++)
 	{
 		if ( ! (*it).player->getClient() ) continue;
 		
-		(*it)->getClient()->sendPacket(*pk);
+		(*it).player->getClient()->sendPacket(&pk);
 	}
 }
 
@@ -343,13 +342,13 @@ bool cParty::removeMember(pPC member)
 		return true;
 	}
 	
-	MemberSList::iterator it = find(member, members.begin(), members.end()); 
+	MemberSList::iterator it = std::find(members.begin(), members.end(), member); 
 	if ( it != members.end() )
-		members.delete(it);
+		members.erase(it);
 	                                                    
-	PCSList::iterator it2 = find(member, invited.begin(), invited.end());
+	PCSList::iterator it2 = std::find(invited.begin(), invited.end(), member);
 	if  ( it2 != invited.end() )
-		invited.delete(it2);
+		invited.erase(it2);
 
 	uint8_t totalmembers = invited.size() + members.size() + 1; // (+1 = leader)
 	if ( totalmembers <= 1 ) // Should never be zero for the +1, but test for it :)
@@ -361,18 +360,20 @@ bool cParty::removeMember(pPC member)
 	member->setParty(NULL);
 	//! \todo Send the remove from the party status to the player
 
-	nPackets::Sent::PartyRemoveMember pk(this);
-	for( PCSList::iterator it = members.begin(); it != members.end(); it++)
+	nPackets::Sent::PartyRemoveMember pk(member, this);
+	for( MemberSList::iterator it = members.begin(); it != members.end(); it++)
 	{
 		if ( ! (*it).player->getClient() ) continue;
 		
-		(*it)->getClient()->sendPacket(&pk);
+		(*it).player->getClient()->sendPacket(&pk);
 	}
 	
 	if ( ! member->getClient() ) return false;
 	
 	member->getClient()->sendPacket(&pk);
-}                                      
+	
+	return true;
+}
 
 /*!
 \brief Disbands a party
@@ -395,8 +396,7 @@ void cParty::disband()
 			(*it)->getClient()->sysmessage("The party you were invited to join is now disbanded");
 	}
 	
-	if ( leader )
-		members.push_front(leader); // Lets use the leader as any other member from here
+	members.push_front(leader); // Lets use the leader as any other member from here
 	                
 	for( MemberSList::iterator it = members.begin(); it != members.end(); it++)
 	{
@@ -431,7 +431,7 @@ PCSList cParty::getMembersList()
 
 void cParty::setCanLootMe(pPC member, bool setting)
 {
-	MemberSList::iterator it = std::find(member, members.begin(), members.end());
+	MemberSList::iterator it = std::find(members.begin(), members.end(), member);
 	assert( it != members.end() );
 	
 	(*it).allowLoot = setting;

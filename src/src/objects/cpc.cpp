@@ -10,6 +10,7 @@
 \brief Implementation of cPC class
 */
 
+#include "networking/cclient.h"
 #include "objects/cpc.h"
 #include "objects/caccount.h"
 
@@ -98,25 +99,22 @@ void cPC::heartbeat()
 		combatHit( cSerializable::findCharBySerial( swingtargserial ) );
 
 
-	if ( !TIMEOUT( smoketimer ) )
+	if ( !TIMEOUT( smoketimer ) && TIMEOUT( smokedisplaytimer ))
 	{
-		if ( TIMEOUT( smokedisplaytimer ) )
-		{
-			smokedisplaytimer = getClockmSecs() + 5 * SECS;
-			staticFX(this, 0x3735, 0, 30);
-			playSFX( 0x002B );
-			switch( RandomNum( 0, 6 ) )
-			{
-			 case 0:	emote(socket,"*Drags in deep*" ,1);		break;
-			 case 1:	emote(socket,"*Coughs*",1);				break;
-			 case 2:	emote(socket,"*Retches*",1);				break;
-			 case 3:	emote(socket,"*Hacking cough*",1);		break;
-			 case 4:	emote(socket,"*Sighs in contentment*",1 );break;
-			 case 5:	emote(socket,"*Puff puff*",1);			break;
-			 case 6:	emote(socket,"Wheeeee!!! Smoking!",1);	break;
-			 default:	break;
-			}
-		}
+		static const char *smokeEmotes[7] = {
+			"*Drags in deep*",
+			"*Coughs*",
+			"*Retches*",
+			"*Hacking cough*",
+			"*Sighs in contentment*",
+			"*Puff puff*",
+			"Wheeeee!!! Smoking!"
+			};
+	
+		smokedisplaytimer = getClockmSecs() + 5 * SECS;
+		staticFX(this, 0x3735, 0, 30);
+		playSFX( 0x002B );
+		socket->emote(smokeEmotes[RandomNum(0, 6)], 1);
 	}
 
 	if ( clientInfo[socket]->lsd )

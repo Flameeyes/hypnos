@@ -12,6 +12,7 @@
 #include "libhypnos/strings.h"
 #include "libhypnos/exceptions.h"
 #include <sstream>
+#include <iomanip>
 
 namespace nLibhypnos {
 
@@ -49,7 +50,7 @@ uint32_t ip2long(std::string ip)
 \param l long value
 \return The String representing the given IP address value.
 */
-std::string long2ip(int l)
+std::string long2ip(uint32_t l)
 {
 	uint8_t a = l >> 24, b = ( l >> 16 ) & 0xFF,
 		c = ( l >> 8 ) & 0xFF, d = l & 0xFF;
@@ -121,12 +122,12 @@ std::string getDateString()
 	
 	std::ostringstream sout;
 	
-	sout 	<< "["	<< std::setw(2) << std::setfill(0) << T->tm_mday
-		<< "/"	<< std::setw(2) << std::setfill(0) << T->tm_mon + 1
-		<< "/"	<< std::setw(4) << std::setfill(0) << T->tm_year + 1900
-		<< " "	<< std::setw(2) << std::setfill(0) << T->tm_hour 
-		<< ":"	<< std::setw(2) << std::setfill(0) << T->tm_min
-		<< ":"	<< std::setw(2) << std::setfill(0) << T->tm_sec
+	sout 	<< "["	<< std::setw(2) << std::setfill('0') << T->tm_mday
+		<< "/"	<< std::setw(2) << std::setfill('0') << T->tm_mon + 1
+		<< "/"	<< std::setw(4) << std::setfill('0') << T->tm_year + 1900
+		<< " "	<< std::setw(2) << std::setfill('0') << T->tm_hour 
+		<< ":"	<< std::setw(2) << std::setfill('0') << T->tm_min
+		<< ":"	<< std::setw(2) << std::setfill('0') << T->tm_sec
 		<< "]";
 
 	return sout.str();

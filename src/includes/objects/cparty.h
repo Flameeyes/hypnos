@@ -64,6 +64,18 @@ protected:
 		bool allowLoot;	//!< If true, the player allow other party
 				//!< members to loot his corpse without making
 				//!< them criminals
+		
+		sPartyMember()
+		{ player = NULL; allowLoot = true; }
+		
+		sPartyMember(pPC pc)
+		{ player = pc; allowLoot = true; }
+		
+		bool operator ==(sPartyMember b)
+		{ return b.player == player; }
+		
+		bool operator ==(pPC pc)
+		{ return pc == player; }
 	};
 	typedef std::slist<sPartyMember> MemberSList;
 public:

@@ -44,6 +44,8 @@ namespace nPackets { namespace Sent {
 		PartyAddMember(pParty p)
 			: party(p)
 		{ }
+		
+		void prepare();
 	};
 	
 	/*!
@@ -67,6 +69,8 @@ namespace nPackets { namespace Sent {
 		PartyRemoveMember(pPC r, pParty p)
 			: removed(r), party(p)
 		{ }
+		
+		void prepare();
 	};
 	
 	/*!

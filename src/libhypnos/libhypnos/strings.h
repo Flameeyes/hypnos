@@ -154,8 +154,8 @@ inline int32_t atoi(std::string str)
 	return atoi(str.c_str());
 }
 
-bool ip2long(std::string ip, int &ris);
-std::string long2ip(int l);
+uint32_t ip2long(std::string ip);
+std::string long2ip(uint32_t l);
 
 void strupr(std::string &str);
 void strlwr(std::string &str);
