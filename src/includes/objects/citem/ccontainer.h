@@ -16,13 +16,11 @@ class cContainer;
 typedef cContainer* pContainer;
 
 #include "objects/citem.h"
-#include "rtti.h"
 #include "typedefs.h"
 
 /*!
 \brief Container item
-\note This class must be identified via rtti() method to be sure
-that the item is a Container
+\note This class must be referred using cItem::toContainer() function
 */
 class cContainer : public cItem
 {
@@ -34,30 +32,26 @@ protected:
 	void		setRandPos(pItem Item);
 
 public:
-			cContainer(bool ser= true);
+	cContainer(bool ser= true);
 
-	//! Return the right rtti
-	inline const uint32_t rtti() const
-	{ return rtti::cContainer; }
+	bool addItem(pItem item, uint16_t xx=-1, uint16_t yy=-1);
+	void insertItem(pItem itm);
 
-	bool		addItem(pItem item, uint16_t xx=-1, uint16_t yy=-1);
-	void		insertItem(pItem itm);
+	uint16_t getGump();
 
-	uint16_t		getGump();
+	uint32_t removeItems(uint32_t amount, uint16_t id, uint16_t color = 0);
+	uint32_t removeItems(uint32_t amount, uint32_t scriptID);
+	void dropItem(pItem pi);
 
-	uint32_t		removeItems(uint32_t amount, uint16_t id, uint16_t color = 0);
-	uint32_t		removeItems(uint32_t amount, uint32_t scriptID);
-	void		dropItem(pItem pi);
+	uint32_t countItems(uint32_t scriptID, bool total = false);
+	uint32_t countItems(uint16_t id, uint16_t color = 0, bool recurse = false);
 
-	uint32_t		countItems(uint32_t scriptID, bool total = false);
-	uint32_t		countItems(uint16_t id, uint16_t color = 0, bool recurse = false);
+	pItem findFirstType(uint16_t type, bool recurse = false);
 
-	pItem		findFirstType(uint16_t type, bool recurse = false);
-
-	uint32_t		countSpellsInSpellBook(bool stdOnly = true);
-	bool		containsSpell(magic::SpellId spellnum);
+	uint32_t countSpellsInSpellBook(bool stdOnly = true);
+	bool containsSpell(magic::SpellId spellnum);
 	
-	const float       getWeightActual();
+	const float getWeightActual();
 } PACK_NEEDED;
 
 #endif

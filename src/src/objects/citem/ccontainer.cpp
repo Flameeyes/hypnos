@@ -11,8 +11,15 @@
 */
 
 #include "ccontainer.h"
-cContainer::cContainer(bool ser/*= true*/) : cItem(ser)
+cContainer::cContainer()
 {
+	cContainer(nextSerial());
+}
+
+cContainer::cContainer(uint32_t serial)
+	: cItem(serial)
+{
+	classType = itContainer;
 }
 
 //! Gets the container's gump

@@ -304,25 +304,21 @@ void TargetLocation::revalidate()
 */
 void TargetLocation::extendItemTarget()
 {
-	if (m_pc!=NULL)
+	if ( ! m_pc || ! m_pi )
 		return;
-	if (m_pi==NULL)
-		return;
-	if (m_pi->isInWorld()) {
-		m_x = m_pi->getPosition("x");
-		m_y = m_pi->getPosition("y");
-		m_z = m_pi->getPosition("z");
-	}
-	else {
-		int it, ch;
-		getWorldCoordsFromSerial (m_pi->getSerial(), m_x, m_y, m_z, ch, it);
-		m_pc=MAKE_CHAR_REF(ch);
-		m_pcSerial = m_pc ? m_pc->getSerial() : INVALID;
-	}
+	
+	pObject outmost = m_pi->getOutMostContainer();
+	if ( ! m_pi->getOutMostContainer()->isInWorld() )
+		outmost = m_pi->getOutMostContainer()->getContainer();
+	
+	m_x = outmost->getPosition().x;
+	m_y = outmost->getPosition().y;
+	m_z = outmost->getPosition().z
+	
+	m_pcSerial = outmost->toBody() ? outmost->toBody()->getChar()->getSerial() : INVALID;
+	
 	revalidate();
 }
-
-
 
 ///////////////////////////////////////////////////////////////////
 // Function name     : TargetLocation::TargetLocation

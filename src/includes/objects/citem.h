@@ -29,11 +29,7 @@ class cItem : public cObject
 {
 public:
 	static pItem addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, Location where);
-
 	static uint32_t	nextSerial();
-
-        static void	archive();
-	static void	safeoldsave();
 //@{
 /*!
 \name Constructors and Operators
@@ -110,35 +106,6 @@ public:
 		EVENT_ITAKEFROMCONTAINER,
 		ALLITEMEVENTS
 	};
-
-//@{
-/*!
-\name Weapon Types
-*/
-	static const uint16_t weaponInvalid = 0x0000; //!< Not a weapon
-	static const uint16_t weaponSword1H = 0x0001; //!< Sword 1 hand
-	static const uint16_t weaponSword2H = 0x0002; //!< Sword 2 hands
-	static const uint16_t weaponAxe1H	= 0x0004; //!< Axe 1 hand
-	static const uint16_t weaponAxe2H	= 0x0008; //!< Axe 2 hands
-	static const uint16_t weaponMace1H	= 0x0010; //!< Mace 1 hand
-	static const uint16_t weaponMace2H	= 0x0020; //!< Mace 2 hands
-	static const uint16_t weaponFenc1H	= 0x0040; //!< Fencing 1 hand
-	static const uint16_t weaponFenc2H	= 0x0080; //!< Fencing 2 hands
-	static const uint16_t weaponStave1H = 0x0100; //!< Staff 1 hand
-	static const uint16_t weaponStave2H = 0x0200; //!< Staff 2 hands
-	static const uint16_t weaponBow	= 0x0400; //!< Bow
-	static const uint16_t weaponXBow	= 0x1000; //!< Crossbow
-	static const uint16_t weaponHXBow	= 0x2000; //!< Heavy Crossbow
-
-	static void loadWeaponsInfo();
-	static const bool isWeaponLike(uint16_t id, uint16_t type);
-
-protected:
-	typedef std::map<uint16_t,uint16_t> WeaponMap;
-	//! Map with types of weapons
-	static WeaponMap weaponinfo;
-
-//@}
 
 //@{
 /*!
@@ -260,57 +227,11 @@ public:
 			getId()==0x0EB4);
 	}
 
-	inline const bool IsAxe() const
-	{ return isWeaponLike( this->getId(), AXE1H); }
-
-	inline const bool IsSword() const
-	{ return isWeaponLike( getId(), SWORD1H ); }
-
-	inline const bool IsSwordType() const
-	{ return isWeaponLike( getId(), SWORD1H, AXE1H ); }
-
-	inline const bool IsMace1H() const
-	{ return isWeaponLike( getId(), MACE1H); }
-
-	inline const bool IsMace2H() const
-	{ return isWeaponLike( getId(), MACE2H); }
-
-	inline const bool IsMaceType() const
-	{ return isWeaponLike( getId(), MACE1H, MACE2H ); }
-
-	inline const bool IsFencing1H() const
-	{ return isWeaponLike( getId(), FENCING1H); }
-
-	inline const bool IsFencing2H() const
-	{ return isWeaponLike( getId(), FENCING2H); }
-
-	inline const bool IsFencingType() const
-	{ return isWeaponLike( getId(), FENCING1H, FENCING2H ); }
-
-	inline const bool IsBow() const
-	{ return isWeaponLike( getId(), BOW ); }
-
-	inline const bool IsCrossbow() const
-	{ return isWeaponLike( getId(), CROSSBOW ); }
-
-	inline const bool IsHeavyCrossbow() const
-	{ return isWeaponLike( getId(), HEAVYCROSSBOW ); }
-
-	inline const bool IsBowType() const
-	{ return isWeaponLike( getId(), BOW, CROSSBOW, HEAVYCROSSBOW ); }
-
 	inline const bool isArrow() const
 	{ return (getId()==0x0F3F||getId()==0x0F42); }
 
 	inline const bool isBolt() const
 	{ return (getId()==0x1BFB||getId()==0x1BFE); }
-
-	inline const bool IsStave() const
-	{ return isWeaponLike( getId(), STAVE1H, STAVE2H ); }
-
-	//! -Fraz- The OSI macing weapons that do stamina and armor damage 2handed only
-	inline const bool IsSpecialMace() const
-	{ return isWeaponLike( getId(), STAVE1H, STAVE2H, MACE2H ); }
 
 	inline const bool isChaosOrOrderShield() const
 	{ return (getId()>=0x1BC3 && getId()<=0x1BC5); }
@@ -509,10 +430,6 @@ public:
 	inline void setOldContainer(pObject obj)
 	{ oldcont = obj; }
 
-	//! check if item is a container
-	inline const bool isContainer() const
-	{ return type==1 || type==12 || type==63 || type==8 || type==13 || type==64; }
-
 	inline const bool isSecureContainer() const
 	{ return type==8 || type==13 || type==64; }
 
@@ -531,9 +448,9 @@ public:
 	int8_t		moreb2;
 	int8_t		moreb3;
 	int8_t		moreb4;
-	uint32_t		morex;
-	uint32_t		morey;
-	uint32_t		morez;
+	uint32_t	morex;
+	uint32_t	morey;
+	uint32_t	morez;
 
 //@{
 /*!
@@ -555,12 +472,6 @@ public:
 	{ return amt; }
 
 	int32_t			DeleteAmount(int amount, short id, short color=-1);
-
-	inline const int32_t	CountItems(short ID=-1, short col= -1,bool bAddAmounts = true) const
-	{ return pointers::containerCountItems(getSerial32(), ID, col, bAddAmounts); }
-
-	inline const int32_t	CountItemsByID(unsigned int scriptID, bool bAddAmounts) const
-	{ return pointers::containerCountItemsByID(getSerial32(), scriptID, bAddAmounts); }
 //@}
 
 //@{
@@ -568,7 +479,7 @@ public:
 \name Weight
 */
 protected:
-	uint32_t			weight;
+	uint32_t		weight;
 
 public:
 	float			getWeight();
@@ -623,7 +534,7 @@ public:
 /*!
 \name Magic Related
 */
-	uint32_t		gatetime;
+	uint32_t	gatetime;
 	int32_t		gatenumber;
 	int8_t		offspell;
 //@}
@@ -632,7 +543,6 @@ public:
 /*!
 \name Corpse related
 */
-	bool		corpse;		//!< Is item a corpse
 	string		murderer;	//!< char's name who kille the char (forensic ev.)
 	int32_t		murdertime;	//!< when the people has been killed
 //@}
@@ -780,15 +690,6 @@ public:
 	virtual void	Delete();
 } PACK_NEEDED;
 
-class cWeapon : public cItem
-{
-public:
-        cWeapon(uint32_t serial);
-} PACK_NEEDED;
-
 extern bool LoadItemEventsFromScript (pItem pi, char *script1, char *script2);
-
-
-#define MAKE_ITEM_REF(i) pointers::findItemBySerial(i)
 
 #endif

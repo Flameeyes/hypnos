@@ -78,58 +78,6 @@ static const bool cItem::isHouse(uint16_t id)
 }
 
 /*!
-\todo rewrite it, this will not work!
-*/
-static void cItem::loadWeaponsInfo()
-{
-	cScpIterator* iter = NULL;
-	char script1[1024];
-	char script2[1024];
-	uint16_t id=0xFFFF;
-	uint16_t type=weaponSword1H;
-
-	int loopexit=0;
-	do
-	{
-		safedelete(iter);
-		iter = Scripts::WeaponInfo->getNewIterator("SECTION WEAPONTYPE %i", type );
-		if( iter==NULL ) continue;
-
-		do
-		{
-			iter->parseLine(script1, script2);
-			if ((script1[0]!='}')&&(script1[0]!='{'))
-			{
-				if (!strcmp("ID", script1)) {
-					id = str2num(script2);
-					weaponinfo[id]=type;
-				}
-			}
-
-		}
-		while ( (script1[0]!='}') && (++loopexit < MAXLOOPS) );
-
-		type++;
-	}while ( (strcmp("EOF", script1)) && (++loopexit < MAXLOOPS) );
-
-	safedelete(iter);
-}
-
-/*!
-\brief Say if an ID is a weapon of the specified type
-\param id id of the weapon
-\param type mask of weapon types to tests
-*/
-static const bool cItem::isWeaponLike( uint16_t id, uint16_t type )
-{
-	WeaponMap::iterator iter( weaponinfo.find( id ) );
-	if( iter==weaponinfo.end() )
-		return false;
-	else
-		return ( iter->second & type );
-}
-
-/*!
 \brief Constructor for new item
 */
 
@@ -137,7 +85,6 @@ cItem::cItem()
 {
 	cItem(nextSerial());
 }
-
 
 /*!
 \brief Constructor with serial known
@@ -370,43 +317,6 @@ cItem& cItem::operator=(cItem& b)
 	amxVS.copyVariable(getSerial(), b.getSerial32());
 
         return *this;
-}
-
-
-//
-// Class methods
-//
-void cItem::archive()
-{
-	std::string saveFileName( SrvParms->savePath + SrvParms->itemWorldfile + SrvParms->worldfileExtension );
-	std::string timeNow( getNoXDate() );
-	for( int i = timeNow.length() - 1; i >= 0; --i )
-		switch( timeNow[i] )
-		{
-			case '/' :
-			case ' ' :
-			case ':' :
-				timeNow[i]= '-';
-		}
-	std::string archiveFileName( SrvParms->archivePath + SrvParms->itemWorldfile + timeNow + SrvParms->worldfileExtension );
-
-
-	if( rename( saveFileName.c_str(), archiveFileName.c_str() ) != 0 )
-	{
-		LogWarning("Could not rename/move file '%s' to '%s'\n", saveFileName.c_str(), archiveFileName.c_str() );
-	}
-	else
-	{
-		InfoOut("Renamed/moved file '%s' to '%s'\n", saveFileName.c_str(), archiveFileName.c_str() );
-	}
-}
-
-void cItem::safeoldsave()
-{
-	std::string oldFileName( SrvParms->savePath + SrvParms->itemWorldfile + SrvParms->worldfileExtension );
-	std::string newFileName( SrvParms->savePath + SrvParms->itemWorldfile + SrvParms->worldfileExtension + "$" );
-	remove( newFileName.c_str() );
-	rename( oldFileName.c_str(), newFileName.c_str() );
 }
 
 //
@@ -973,11 +883,11 @@ void cItem::Refresh()
 \param rec not need to use, only internal for have a max number or recursion
 \note max recursion = 50
 */
-pItem cItem::getOutMostCont( int16_t rec )
+pItem cItem::getOutMostCont( uint16_t rec )
 {
 	if ( rec<0	// too many recursions
-		|| (isInWorld()) // in the world
-		|| (cont->rtti() == rtti::cBody ) )//weared
+		|| isInWorld() // in the world
+		|| cont->toBody() )//weared
 		return this;
 
 	return cont->getOutMostCont( --rec );

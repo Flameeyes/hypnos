@@ -15,61 +15,6 @@
 
 #include "inlines.h"
 
-
-/*!
-\brief gets world coordinates from a serial
-\author Xanathar
-\param sr serial
-\param px x coordinate
-\param py y coordinate
-\param pz z coordinate
-\param ch eventual index to char
-\param it eventual index to item
-*/
-void getWorldCoordsFromSerial (int sr, int& px, int& py, int& pz, int& ch, int& it)
-{
-    int serial = sr;
-    int loop = 0;
-    it = ch = INVALID;
-
-	pChar pc=0;
-	pItem pi=0;
-
-    while ((++loop) < 500)
-    {
-
-		pc=pointers::findCharBySerial(serial);
-		ch = DEREF_pChar(pc);
-		pi=pointers::findItemBySerial(serial);
-        it = DEREF_pItem(pi);
-        if (pi) {
-            if (pi->getContSerial()!=INVALID) {
-                serial = pi->getContSerial();
-                continue;
-            }
-        }
-        break;
-    }
-
-    if (pc) {
-		Location charpos= pc->getPosition();
-        px = charpos.x;
-        py = charpos.y;
-        pz = charpos.z;
-    } else if ( pi && (pi->getContSerial()==INVALID)) {
-        px = pi->getPosition("x");
-        py = pi->getPosition("y");
-        pz = pi->getPosition("z");
-    } else {
-        px = 0;
-        py = 0;
-        pz = 0;
-    }
-}
-
-
-
-
 namespace pointers {
 
 	std::map<uint32_t, CharList> pStableMap;
@@ -704,7 +649,6 @@ namespace pointers {
 
 	}
 
-
 	/*!
 	\author Endymion
 	*/
@@ -720,7 +664,6 @@ namespace pointers {
 		}
 
 	}
-
 
 	/*!
 	\author Endymion
@@ -744,11 +687,6 @@ namespace pointers {
 		}
 
 	}
-
-
-
-
-
 
 	void eraseContainerInfo( uint32_t ser )
 	{
@@ -884,49 +822,6 @@ namespace pointers {
 		return findItemBySerial(serial);
 	}
 
-	/*!
-	\brief returns the *index element of the vector of a container (identified by serial)
-	\author Luxor
-	\param serial the serial of the container
-	\index the pointer to the integer which we're using for the search
-	\note *index should be 0 at the beginning of the search
-	\return pItem of the item found
-	*/
-	pItem containerSearch(int serial, int *index)
-	{
-		if (serial < 0 || (*index) < 0)
-			return 0;
-
-		pItem pi = 0;
-
-		vector<pItem> &pcm = pContMap[serial];
-
-		for (pi = 0; pi == 0; (*index)++)
-		{
-			if ( pcm.empty())
-				return 0;
-
-			if ((uint32_t)(*index) >= pcm.size())
-				return 0;
-
-			pi = pcm[*index];
-
-			if (!(pi))
-			{
-				if ((uint32_t)(*index)+1 < pcm.size() && !pcm.empty())
-					pcm[*index] = pcm[pcm.size()-1];
-			}
-			pi = 0;
-			pcm.pop_back();
-		}
-
-		if ( !pi )
-			return 0;
-
-		return pi;
-	}
-
-
 	pChar stableSearch(int serial, int *index)
 	{
 		if (serial < 0 || (*index) < 0)
@@ -939,97 +834,4 @@ namespace pointers {
 		return pet;
 	}
 
-	/*!
-	\author Luxor
-	\brief returns the *index element with the given id and color of the vector of a container(identified by serial)
-	\param serial the serial of the container
-	\param index the pointer to the integer which we're using for the search
-	\param id the id which we're searching for
-	\param color the color which we're searching for
-	\return the item we're searching for
-	\note *index should be 0 at the beginning of the search
-	*/
-	pItem containerSearchFor(const int serial, int *index, short id, short color)
-	{
-		pItem pi;
-		int loopexit=0;
-		while ( ((pi = containerSearch(serial,index)) != 0) && (++loopexit < MAXLOOPS) )
-		{
-			if (pi->getId()==id  &&
-				(color==-1 || pi->getColor()==color) && pi)
-			return pi;
-		}
-		return 0;
-	}
-
-	/*!
-	\brief returns the number of elements with the given id and color of the vector of a container (identified by serial)
-	\author Luxor
-	\return the number of elements found
-	\param serial the serial of the container
-	\param id the id which we're searching for
-	\param color the color which we're searching for
-	\param bAddAmounts if true we want to add the amount of the items to the return value
-	\param recurseSubpack if true we search also in subpack
-	*/
-	uint32_t containerCountItems(uint32_t serial, short id, short color, bool bAddAmounts, bool recurseSubpack)
-	{
-
-		std::map< uint32_t , vector<pItem> >::iterator cont( pointers::pContMap.find( serial ) );
-		if( cont==pointers::pContMap.end() || cont->second.empty() )
-			return 0;
-
-		uint32_t total=0;
-
-		std::vector<pItem>::iterator iter( cont->second.begin() );
-		for( ; iter!=cont->second.end(); iter++ )
-		{
-
-			pItem pi=(*iter);
-			if (pi->isContainer() && recurseSubpack) {
-				total += containerCountItems(pi->getSerial(), id, color, bAddAmounts, true);
-				continue;
-			}
-			if ((pi->getId()==id && (color==-1 || pi->getColor()==color))||(id==-1)) {
-				if (bAddAmounts) total += pi->amount;
-				else total++;
-			}
-		}
-		return total;
-	}
-
-	/*!
-	\brief returns the number of elements with the given scriptid of the vector of a container (identified by serial)
-	\author Luxor
-	\return the number of elements found
-	\param serial the serial of the container
-	\param scriptID the scriptID which we're searching for
-	\param bAddAmounts if true we want to add the amount of the items to the return value
-	*/
-	uint32_t containerCountItemsByID(uint32_t serial, uint32_t scriptID, bool bAddAmounts)
-	{
-		std::map< uint32_t , vector<pItem> >::iterator cont( pointers::pContMap.find( serial ) );
-		if( cont==pointers::pContMap.end() || cont->second.empty() )
-			return 0;
-
-		uint32_t total=0;
-
-		std::vector<pItem>::iterator iter( cont->second.begin() );
-		for( ; iter!=cont->second.end(); iter++ )
-		{
-
-			pItem pi=(*iter);
-			if (pi->type == 1)	// container
-			{
-				total += containerCountItemsByID(pi->getSerial(), scriptID, bAddAmounts);
-				continue;
-			}
-			if ( pi->getScriptID() == scriptID ) {
-				if (bAddAmounts) total += pi->amount;
-				else total++;
-			}
-		}
-
-		return total;
-	}
 } //namespace

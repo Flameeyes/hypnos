@@ -974,14 +974,12 @@ static bool checkLos(pChar caster, Location destpos)
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////
-// Function name	 : checkRequiredTargetType
-// Description		 : check if target is correct
-// Return type		 : bool
-// Author			 : Xanathar & Luxor
-// Argument 		 : int spellnum -> spell number
-// Argument 		 : TargetLocation& t -> target location
-// Changes			 : none yet
+/*!
+\brief Checks if target is correct
+\author Xanathar & Luxor
+\param spellnum Spell number
+\param t Target location
+*/
 bool checkRequiredTargetType(SpellId spellnum, TargetLocation& t)
 {
 			// 0:none,1:xyz,2:item,3:char,4:container or door,6:rune,5:container
@@ -993,27 +991,21 @@ bool checkRequiredTargetType(SpellId spellnum, TargetLocation& t)
 		case TARGTYPE_NONE :
 			return true;
 		case TARGTYPE_CONTAINER:
-			if (!(pi)) return false;
-			return pi->isContainer();
+			return pi && pi->toContainer();
 		case TARGTYPE_CONTAINERORDOOR:
-			if (!(pi)) return false;
-			return( (pi->isContainer() || ( pi->type == ITYPE_DOOR ) || ( pi->type == ITYPE_LOCKED_DOOR ) ) );
+			return pi && ( pi->toContainer() || pi->toDoor() );
 		case TARGTYPE_XYZ :
 			return ((x>0)&&(y>0));
 		case TARGTYPE_CHAR:
-			return (t.getChar()!=NULL);
+			return t.getChar();
 		case TARGTYPE_ITEM:
-			return (pi!=NULL);
+			return pi;
 		case TARGTYPE_RUNE:
-			if (!(pi)) return false;
-			return (pi->type == ITYPE_RUNE);
+			return pi && pi->toRune();
 		default:
-			return (pi); // needz to be changed
+			return pi; //!\todo needz to be changed
 	}
 }
-
-
-
 
 ///////////////////////////////////////////////////////////////////
 // Function name	 : consumeReagents
@@ -1385,18 +1377,23 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			break;
 		case SPELL_LOCK:
 			if (pi!=NULL) {
-				if(pi->isContainer() && !pi->isSecureContainer()) {
-				switch(pi->type)
+				if( pi->toContainer() && !pi->toSecureContainer() )
 				{
-				case ITYPE_CONTAINER: pi->type=ITYPE_LOCKED_ITEM_SPAWNER; break;
-				case ITYPE_UNLOCKED_CONTAINER: pi->type=ITYPE_LOCKED_CONTAINER; break;
+					//!\todo What the fuck is that?!?
+					switch(pi->type)
+					{
+						case ITYPE_CONTAINER: pi->type=ITYPE_LOCKED_ITEM_SPAWNER; break;
+						case ITYPE_UNLOCKED_CONTAINER: pi->type=ITYPE_LOCKED_CONTAINER; break;
+					}
+					if (src!=NULL)
+					{
+						src->playSFX( 0x1F4 ); //Luxor
+						src->sysmsg(TRANSLATE("It's locked!"));
+					}
 				}
-				if (src!=NULL) {
-				src->playSFX( 0x1F4 ); //Luxor
-				src->sysmsg(TRANSLATE("It's locked!"));
-				}
-			}
-			else if (src!=NULL) src->sysmsg(TRANSLATE("You cannot lock this!!!"));
+				else
+					if (src!=NULL)
+						src->sysmsg(TRANSLATE("You cannot lock this!!!"));
 			}
 			break;
 		case SPELL_UNLOCK:

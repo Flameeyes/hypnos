@@ -18,8 +18,6 @@
 #include "objects/cchar.h"
 #include "objects/citem.h"
 
-void getWorldCoordsFromSerial (int sr, int& px, int& py, int& pz, int& ch, int& it);
-
 /*!
 \brief Pointer related stuff
 */
@@ -65,10 +63,6 @@ namespace pointers {
 	pItem findItemBySerial(int serial);
 	pChar findCharBySerPtr(unsigned char *p);
 	pItem findItemBySerPtr(unsigned char *p);
-	pItem containerSearch(int serial, int *index);
-	pItem containerSearchFor(const int serial, int *index, short id, short color);
-	uint32_t containerCountItems(uint32_t serial, short id, short color, bool bAddAmounts = true, bool recurseSubpack=true);
-	uint32_t containerCountItemsByID(uint32_t serial, uint32_t scriptID, bool bAddAmounts);
 	pChar stableSearch(int serial, int *index);
 #ifdef SPAR_LOCATION_MAP
 	//
