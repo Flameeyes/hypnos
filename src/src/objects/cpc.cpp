@@ -32,7 +32,7 @@ void cPC::heartbeat()
 {
 	if ( dead )
 		return;
-	if ( Accounts->GetInWorld( account ) == getSerial() && logout > 0 && ( logout <= (int32_t)getClock()  ) )
+	if ( Accounts->GetInWorld( account ) == getSerial() && logout > 0 && ( logout <= (int32_t)getclock()  ) )
 	{
 		Accounts->SetOffline( account);
 		logout = INVALID;
@@ -45,14 +45,14 @@ void cPC::heartbeat()
 	if ( amxevents[EVENT_CHR_ONHEARTBEAT] )
 	{
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONHEARTBEAT]->Call( getSerial(), getClock() );
+		amxevents[EVENT_CHR_ONHEARTBEAT]->Call( getSerial(), getclock() );
 		if( g_bByPass == true ) return;
 		if( dead )	// Killed as result of script action
 			return;
 	}
 	/*
 	g_bByPass = false;
-	runAmxEvent( EVENT_CHR_ONHEARTBEAT, getSerial(), getClock() );
+	runAmxEvent( EVENT_CHR_ONHEARTBEAT, getSerial(), getclock() );
 	if( g_bByPass == true )
 		return;
 	*/
@@ -66,12 +66,12 @@ void cPC::heartbeat()
 	{
 		--hunger;
 		sayHunger();
-		hungertime = getClock()+(SrvParms->hungerrate*MY_CLOCKS_PER_SEC); // Bookmark
+		hungertime = getclock()+(SrvParms->hungerrate*MY_CLOCKS_PER_SEC); // Bookmark
 	}
 	if ( nSettings::Server::isEnabledHungerSystem() && TIMEOUT( hungerdamagetimer ) && SrvParms->hungerdamage > 0 )
 	// Damage them if they are very hungry
 	{
-		hungerdamagetimer=getClock()+(SrvParms->hungerdamagerate*MY_CLOCKS_PER_SEC); /** set new hungertime **/
+		hungerdamagetimer=getclock()+(SrvParms->hungerdamagerate*MY_CLOCKS_PER_SEC); /** set new hungertime **/
 		if (hp > 0 && hunger<2 && !IsCounselor() && !dead)
 		{
 			sysmsg("You are starving !");
@@ -87,7 +87,7 @@ void cPC::heartbeat()
 	if( dead )	// Starved to death
 		return;
 
-	checkFieldEffects( getClock(), this, 1 );
+	checkFieldEffects( getclock(), this, 1 );
 	if( dead )
 		return;
 
@@ -110,7 +110,7 @@ void cPC::heartbeat()
 	{
 		if ( TIMEOUT( smokedisplaytimer ) )
 		{
-			smokedisplaytimer = getClock() + 5 * MY_CLOCKS_PER_SEC;
+			smokedisplaytimer = getclock() + 5 * MY_CLOCKS_PER_SEC;
 			staticFX(0x3735, 0, 30);
 			playSFX( 0x002B );
 			switch( RandomNum( 0, 6 ) )
@@ -137,7 +137,7 @@ void cPC::heartbeat()
 		sysmsg("You are no longer squelched!");
 	}
 
-/*	if ( IsCriminal() && ( crimflag <= getClock()  ) )
+/*	if ( IsCriminal() && ( crimflag <= getclock()  ) )
 	{
 		sysmsg("You are no longer a criminal.");
 		crimflag = 0;
@@ -153,7 +153,7 @@ void cPC::heartbeat()
 			sysmsg("You are no longer a murderer.");
 			SetInnocent();
 		}
-		murderrate = ( repsys.murderdecay * MY_CLOCKS_PER_SEC ) + getClock();
+		murderrate = ( repsys.murderdecay * MY_CLOCKS_PER_SEC ) + getclock();
 	}
 
 	updateFlag();
@@ -179,7 +179,7 @@ void cPC::heartbeat()
 		}
 		else if ( TIMEOUT( nextact ) ) //redo the spell action
 		{ //<Luxor>
-			nextact = getClock() + uint32_t(MY_CLOCKS_PER_SEC*1.5);
+			nextact = getclock() + uint32_t(MY_CLOCKS_PER_SEC*1.5);
 			if ( isMounting() )
 				playAction( 0x1b );
 			else
@@ -293,7 +293,7 @@ bool cPC::updateFlag()
 		//! \todo - TODO check out logic of next 2 statements (Sparhawk)
 		//
 		SetMurderer();
-		murderrate = (repsys.murderdecay*MY_CLOCKS_PER_SEC)+getClock();
+		murderrate = (repsys.murderdecay*MY_CLOCKS_PER_SEC)+getclock();
 	}
 	/*else
 
@@ -441,7 +441,7 @@ void cPC::setMurderer()
 		params[0] = getSerial(); params[1] = karmaMurderer;
 		events[evtPcOnFlagChange]->setParams(params);
 		events[evtPcOnFlagChange]->execute();
-		if ( events[evtPcOnFlagChange]->bypassed() )
+		if ( events[evtPcOnFlagChange]->isBypassed() )
 			return;
 	}
 
@@ -455,7 +455,7 @@ void cPC::setInnocent()
 		params[0] = getSerial(); params[1] = karmaInnocent;
 		events[evtPcOnFlagChange]->setParams(params);
 		events[evtPcOnFlagChange]->execute();
-		if ( events[evtPcOnFlagChange]->bypassed() )
+		if ( events[evtPcOnFlagChange]->isBypassed() )
 			return;
 	}
 
@@ -469,7 +469,7 @@ void cPC::setCriminal()
 		params[0] = getSerial(); params[1] = karmaCriminal;
 		events[evtPcOnFlagChange]->setParams(params);
 		events[evtPcOnFlagChange]->execute();
-		if ( events[evtPcOnFlagChange]->bypassed() )
+		if ( events[evtPcOnFlagChange]->isBypassed() )
 			return;
 	}
 	

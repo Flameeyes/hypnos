@@ -54,7 +54,7 @@ void Begging::target(NXWCLIENT ps, pTarget t)
 		return;
 	}
 
-	if (pc->begging_timer >= getClock())
+	if (pc->begging_timer >= getclock())
 	{
 		pc->talk(s,"Annoy someone else!",1);
 		return;

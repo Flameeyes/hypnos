@@ -22,7 +22,6 @@
 #include "menu.h"
 #include "logsystem.h"
 #include "basics.h"
-#include "cmds.h"
 #include "map.h"
 #include "settings.h"
 #include "enums.h"
@@ -351,7 +350,7 @@ public:
 	inline void cChar::setCrimGrey(int mode)
 	{
 		/*if ( mode == 1 ) setGrey();
-		else*/ makeCriminal();
+		else makeCriminal();*/
 	}
 
 	void increaseKarma(int32_t value, pChar pKilled = 0 );
@@ -398,6 +397,8 @@ public:
 /*!
 \name Combat
 */
+private:
+	bool checkForCastingLoss(int damage);
 protected:
 	//! Check for combat timeout
 	inline const bool combatTimerOk()
@@ -520,13 +521,13 @@ public:
         void singleClick(pClient client);	//!< "this" is the clicked char, client is the client of the clicker
         void doubleClick(pClient client);	//!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
 	inline void setSkillDelay( uint32_t seconds = nSettings::Server::getDelaySkills() )
-	{ skilldelay = getClock() + seconds * MY_CLOCKS_PER_SEC; }
+	{ skilldelay = getclock() + seconds * MY_CLOCKS_PER_SEC; }
 
 	inline const bool canDoSkillAction() const
 	{ return TIMEOUT( skilldelay ); }
 
 	inline void setObjectDelay( uint32_t seconds = nSettings::Server::getDelayObjects() )
-	{ objectdelay = getClock() + seconds * MY_CLOCKS_PER_SEC; }
+	{ objectdelay = getclock() + seconds * MY_CLOCKS_PER_SEC; }
 
 	inline const bool canDoObjectAction() const
 	{ return TIMEOUT( objectdelay ); }
@@ -735,10 +736,10 @@ private:
 public:
 	//! tells if a character is running
 	inline const bool isRunning() const
-	{ return ( (getClock() - lastRunning) <= 100 ); }
+	{ return ( (getclock() - lastRunning) <= 100 ); }
 
 	inline void setRunning()
-	{ lastRunning = getClock(); }
+	{ lastRunning = getclock(); }
 
 	void 			updateStats(int32_t stat);
 

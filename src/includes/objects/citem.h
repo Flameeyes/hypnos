@@ -41,11 +41,11 @@ public:
         cItem();
 	~cItem();
 //@}
-	//! Events for securable items
+/*	//! Events for securable items
 	enum {
 		evtSecOnLockPick = evtCntMax,
 		evtSecMax
-	};
+	};*/
 
 	//! Events for items
 	enum {
@@ -641,7 +641,7 @@ protected:
 public:
 	virtual bool doDecay(bool dontDelete = false);
 
-	inline const void setDecayTime( const TIMERVAL delay = /*getClock()+*/(nSettings::Server::getDecayTimer()*MY_CLOCKS_PER_SEC) )
+	inline const void setDecayTime( const TIMERVAL delay = /*getclock()+*/(nSettings::Server::getDecayTimer()*MY_CLOCKS_PER_SEC) )
 	{ decaytime = delay; }
 
 	inline const TIMERVAL getDecayTime() const

@@ -87,7 +87,7 @@ void cItem::singleClick(pClient client )
 		params[0] = getSerial(); params[1] = client->currChar()->getSerial();
 		events[evtItmOnClick]->setParams(params);
 		events[evtItmOnClick]->execute();
-		if ( events[evtItmOnClick]->bypassed() )
+		if ( events[evtItmOnClick]->isBypassed() )
 			return;
 	}
 	
@@ -232,7 +232,7 @@ void cItem::doubleClick(pClient client)
 		params[0] = getSerial(); params[1] = pc->getSerial();
 		events[evtItmOnDoubleClick]->setParams(params);
 		events[evtItmOnDoubleClick]->execute();
-		if ( events[evtItmOnDoubleClick]->bypassed() )
+		if ( events[evtItmOnDoubleClick]->isBypassed() )
 			return;
 	}
 	
@@ -245,13 +245,13 @@ void cItem::doubleClick(pClient client)
         // Chronodt: 1/2/2004 added a server parameter check to allow servers to let items be used when invisible
         if (pc->IsHiddenBySpell() && !nSettings::Actions::canUseItemsWhenInvisible()) return;
 
-	if ( !pc->IsGM() && pc->objectdelay >= getClock() )
+	if ( !pc->IsGM() && pc->objectdelay >= getclock() )
 	{
 		pc->sysmsg("You must wait to perform another action.");
 		return;
 	}
 	else
-		pc->objectdelay = SrvParms->objectdelay * MY_CLOCKS_PER_SEC + getClock();
+		pc->objectdelay = SrvParms->objectdelay * MY_CLOCKS_PER_SEC + getclock();
 
 	///MODIFY, CANT CLICK ITEM AT DISTANCE >2//////////////
 	if ( (pc->distFrom(pi)>2) && !pc->IsGM() && !(pc->hasTelekinesis()) ) //Luxor: let's check also for the telekinesys spell
@@ -1126,7 +1126,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			telltime(ps);
 			return;
 		case 0x0E9B: // Mortar for Alchemy
-			pc->objectdelay = ((SrvParms->objectdelay * MY_CLOCKS_PER_SEC)*3) + getClock();
+			pc->objectdelay = ((SrvParms->objectdelay * MY_CLOCKS_PER_SEC)*3) + getclock();
 			if (pi->type == ITYPE_MANAREQ_WAND)
 			{
 				targ = clientInfo[s]->newTarget( new cItemTarget() );

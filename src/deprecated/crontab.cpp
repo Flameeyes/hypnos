@@ -189,7 +189,7 @@ void checkCronTab()
 
 	today = localtime( &ltime );
 
-	if ((s_nSaveTime!=0)&&((getClock()>=s_nSaveTime)||(overflow))) {
+	if ((s_nSaveTime!=0)&&((getclock()>=s_nSaveTime)||(overflow))) {
 		exec_isave(NULL);
 		s_nSaveTime = 0;
 	}
@@ -465,7 +465,7 @@ static void exec_save(char *dummy)
 {
    sysbroadcast("World will be saved in 30 seconds..");
 
-   s_nSaveTime = getClock()+30*MY_CLOCKS_PER_SEC;
+   s_nSaveTime = getclock()+30*MY_CLOCKS_PER_SEC;
    if (s_nSaveTime==0) s_nSaveTime++; //just in case...
 }
 
@@ -481,7 +481,7 @@ static void exec_isave(char *dummy)
 static void exec_shutdown(char *dummy)
 {
 	int n = atoi(dummy);
-	endtime=getClock()+(CLOCKS_PER_SEC*n);
+	endtime=getclock()+(CLOCKS_PER_SEC*n);
 }
 
 static void exec_whologow(char *dummy)

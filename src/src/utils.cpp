@@ -241,7 +241,7 @@ void dooruse(pChar pc, pItem pi)
 	if ( ! changed || ! pc )
 		return;
 
-	pc->objectdelay=getClock()+ (server_data.objectdelay/4)*MY_CLOCKS_PER_SEC;
+	pc->objectdelay=getclock()+ (server_data.objectdelay/4)*MY_CLOCKS_PER_SEC;
 	// house refreshment when a house owner or friend of a houe opens the house door
 
 	int j, houseowner_serial,ds;
@@ -281,7 +281,7 @@ void dooruse(pChar pc, pItem pi)
 
 void endmessage(int x) // If shutdown is initialized
 {
-	uint32_t igetclock = getClock();
+	uint32_t igetclock = getclock();
 
 	if (endtime<igetclock)
 		endtime=igetclock;

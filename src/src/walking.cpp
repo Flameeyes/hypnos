@@ -413,7 +413,7 @@ void walking(pChar pc, int dir, int sequence)
 		params[0] = pc->getSerial(); params[1] = dir; params[2] = sequence;
 		evt->setParams(params);
 		evt->execute();
-		if( evt->bypassed() )
+		if( evt->isBypassed() )
 			return;
 	}
 
@@ -452,7 +452,7 @@ void walking(pChar pc, int dir, int sequence)
 		if (s!=INVALID)
 		{
 			handleCharsAtNewPos( pc );
-			pc->LastMoveTime = getClock();
+			pc->LastMoveTime = getclock();
 		}
 
 		if( !pc->npc || pc->questType || pc->tamed )
@@ -471,8 +471,8 @@ void walking(pChar pc, int dir, int sequence)
     {                                        //  possibly weapon speed?? maybe not, cause crossbows notta running shooting
 		if ( pc->targserial!= INVALID)
         {
-            if( pc->timeout>= getClock())
-               pc->timeout= getClock() + (3*CLOCKS_PER_SEC);
+            if( pc->timeout>= getclock())
+               pc->timeout= getclock() + (3*CLOCKS_PER_SEC);
 
 		}
     }
@@ -646,7 +646,7 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 		params[0] = pc_i->getSerial(); params[1] = newX; params[2] = newY; params[3] = charpos.z;
 		evt->setParams(params);
 		evt->execute();
-		if( evt->bypassed() )
+		if( evt->isBypassed() )
 			return;
 	}
 }

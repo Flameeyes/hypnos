@@ -60,11 +60,11 @@ void snooping( pPC snooper, pItem cont )
 		params[0] = owner->getSerial(); params[1] = snooper->getSerial();
 		evt->setParams(params);
 		evt->execute();
-		if ( evt->bypassed() )
+		if ( evt->isBypassed() )
 			return;
 	}
 	
-	snooper->objectdelay=SrvParms->snoopdelay * MY_CLOCKS_PER_SEC + getClock();
+	snooper->objectdelay=SrvParms->snoopdelay * MY_CLOCKS_PER_SEC + getclock();
 	if ( owner->IsGMorCounselor())
 	{
 		snooper->sysmsg("You can't peek into that container or you'll be jailed.");// AntiChrist
@@ -172,7 +172,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 			params[2] = victim->getSerial();
 			evt->setParams(params);
 			evt->execute();
-			if ( evt->bypassed() )
+			if ( evt->isBypassed() )
 				return;
 		}
 	
@@ -183,7 +183,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 			params[0] = victim->getSerial(); params[1] = thief->getSerial();
 			evt->setParams(params);
 			evt->execute();
-			if ( evt->bypassed() )
+			if ( evt->isBypassed() )
 				return;
 		}
 	
@@ -376,7 +376,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 				params[0] = victim->getSerial(); params[1] = thief->getSerial();
 				evt->setParams(params);
 				evt->execute();
-				if ( evt->bypassed() )
+				if ( evt->isBypassed() )
 					return;
 			}
 	
@@ -460,7 +460,7 @@ void Skills::target_lockpick( NXWCLIENT ps, pTarget t )
 		params[0] = chest->getSerial(); params[1] = pc->getSerial();
 		evt->setParams(params);
 		evt->execute();
-		if ( evt->bypassed() )
+		if ( evt->isBypassed() )
 			return;
 	}
 	

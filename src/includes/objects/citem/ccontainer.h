@@ -14,6 +14,7 @@
 
 #include "common_libs.h"
 #include "objects/citem.h"
+#include "objects/citem/cequippable.h"
 
 /*!
 \brief Container item
@@ -58,7 +59,7 @@ public:
 	
 	//! Events for containers
 	enum {
-		evtCntOnTakeItem = evtEqpMax,
+		evtCntOnTakeItem = cEquippable::evtEqpMax,
 		evtCntOnPutItem,
 		evtCntMax
 	};

@@ -22,7 +22,7 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 	if ( ! pc_att || ! pc_def )
 		return;
 	
-	int spattackbit, spattacks, currenttime = getClock();
+	int spattackbit, spattacks, currenttime = getclock();
 	// early return if prerequisites for spellcasting aren't true!
 	// dirty,but helps losing some KG of code later :)
 
@@ -189,7 +189,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 		params[2] = -1; params[3] = sphere;
 		evt->setParams(params);
 		evt->execute();
-		if ( evt->bypassed() )
+		if ( evt->isBypassed() )
 			return;
 	}
 	

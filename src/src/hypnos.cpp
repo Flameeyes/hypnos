@@ -175,7 +175,7 @@ void callguards( pChar caller )
 	if( !(region[caller->region].priv&0x01 ) || !SrvParms->guardsactive || !TIMEOUT( caller->antiguardstimer ) || caller->dead )
 		return;
 
-	caller->antiguardstimer=getClock()+(MY_CLOCKS_PER_SEC*10);
+	caller->antiguardstimer=getclock()+(MY_CLOCKS_PER_SEC*10);
 
 	/*
 	Sparhawk:	1. when instant guard is set and offender nearby caller spawn guard near caller and leave attacking to checkAI
@@ -213,7 +213,7 @@ void callguards( pChar caller )
 				guard->npcaitype=NPCAI_TELEPORTGUARD;
 				guard->npcWander=WANDER_FREELY_CIRCLE;
 				guard->setNpcMoveTime();
-				guard->summontimer = getClock() + MY_CLOCKS_PER_SEC * 25 ;
+				guard->summontimer = getclock() + MY_CLOCKS_PER_SEC * 25 ;
 
 				guard->playSFX( 0x01FE );
 				guard->staticFX(0x372A, 9, 6);
@@ -231,9 +231,9 @@ void callguards( pChar caller )
 				guard->oldnpcWander = guard->npcWander;
 				guard->npcWander = WANDER_FOLLOW;
 				guard->ftargserial = caller->getSerial();
-				guard->antiguardstimer=getClock()+(MY_CLOCKS_PER_SEC*10); // Sparhawk this should become server configurable
+				guard->antiguardstimer=getclock()+(MY_CLOCKS_PER_SEC*10); // Sparhawk this should become server configurable
 				guard->talkAll("Don't fear, help is on the way", false );
-				//guard->antispamtimer = getClock()+MY_CLOCKS_PER_SEC*5;
+				//guard->antispamtimer = getclock()+MY_CLOCKS_PER_SEC*5;
 				guards.pop_back();
 			}
 		}
@@ -331,7 +331,7 @@ void checkkey ()
 				break;
 			case 'T':
 			case 't':
-				endtime=getClock()+(MY_CLOCKS_PER_SEC*60*2);
+				endtime=getclock()+(MY_CLOCKS_PER_SEC*60*2);
 				endmessage(0);
 				break;
 			case '#':
@@ -491,7 +491,7 @@ int main(int argc, char *argv[])
 	if ((argc>1)&&(strstr(argv[1], "-check")))	// activate check if requested
 		ServerScp::g_nCheckBySmall = 1;
 
-	getClock()=getclock();
+	getclock()=getclock();
 	serverstarttime=getclock();
 
 	loadserverdefaults();
@@ -619,7 +619,7 @@ int main(int argc, char *argv[])
 
 	ConOut("Initializing random number seed... [ OK ]\n");
 
-	srand(getClock()); // initial randomization call
+	srand(getclock()); // initial randomization call
 	ConOut("Loading vital scripts... ");
 	loadmetagm();
 	ConOut("[DONE]\n");
@@ -664,7 +664,7 @@ int main(int argc, char *argv[])
 //	start_glow();
 //	ConOut(" [DONE]\n"); // Magius(CHE) (1)
 	FD_ZERO(&conn);
-	starttime=getClock();
+	starttime=getclock();
 	endtime=0;
 	lclock=0;
 	ConOut("Initializing Que System...");
@@ -726,7 +726,7 @@ int main(int argc, char *argv[])
 	if (SrvParms->server_log)
 		ServerLog.Write("-=Server Startup=-\n=======================================================================\n");
 
-	getClock()=getclock();
+	getclock()=getclock();
 	serverstarttime=getclock(); // dont remove, its absolutly necassairy that its 3 times in the startup sequence for several timing reasons.
 
 	CIAO_IF_ERROR;
@@ -871,7 +871,7 @@ int main(int argc, char *argv[])
 
 		if ( TIMEOUT( CheckClientIdle ) )
 		{
-			CheckClientIdle=((SrvParms->inactivitytimeout/2)*MY_CLOCKS_PER_SEC)+getClock();
+			CheckClientIdle=((SrvParms->inactivitytimeout/2)*MY_CLOCKS_PER_SEC)+getclock();
 
 			for (r=0;r<now;r++)
 			{
@@ -879,7 +879,7 @@ int main(int argc, char *argv[])
 				if(! pc_r )
 					continue;
 				if (!pc_r->IsGM()
-					&& pc_r->clientidletime<getClock()
+					&& pc_r->clientidletime<getclock()
 					&& clientInfo[r]->ingame
 					)
 				{
@@ -898,7 +898,7 @@ int main(int argc, char *argv[])
 		{
 			Network->CheckConn();
 			TelnetInterface.CheckConn();
-			uiNextCheckConn = (unsigned int)( getClock() + 250 );
+			uiNextCheckConn = (unsigned int)( getclock() + 250 );
 		}
 
 		Network->CheckMessage();
@@ -919,7 +919,7 @@ int main(int argc, char *argv[])
 
 		checktimers();
 
-		getClock()=getclock();//getclock() only once
+		getclock()=getclock();//getclock() only once
 		tempTime = CheckMilliTimer(tempSecs, tempMilli);
 		timerTime += tempTime;
 		timerTimeCount++;
@@ -1143,7 +1143,7 @@ void npcattacktarget(pChar pc, pChar pc_target)
 		params[0] = pc->getSerial(); params[1] = pc_target->getSerial();
 		evt->setParams(params);
 		evt->execute();
-		if( evt->bypassed() )
+		if( evt->isBypassed() )
 			return;
 	}
 
@@ -1153,7 +1153,7 @@ void npcattacktarget(pChar pc, pChar pc_target)
 		params[0] = pc->getSerial(); params[1] = pc_target->getSerial();
 		evt->setParams(params);
 		evt->execute();
-		if( evt->bypassed() )
+		if( evt->isBypassed() )
 			return;
 	}
 
@@ -1345,7 +1345,7 @@ void usepotion(pChar pc, pItem pi)
 			pc->poisoned=(PoisonType)pi->morez;
 		if(pi->morez>4)
 			pi->morez=4;
-		pc->poisonwearofftime=getClock()+(MY_CLOCKS_PER_SEC*SrvParms->poisontimer); // lb, poison wear off timer setting
+		pc->poisonwearofftime=getclock()+(MY_CLOCKS_PER_SEC*SrvParms->poisontimer); // lb, poison wear off timer setting
 		impowncreate(s,pc,1); //Lb, sends the green bar !
 		pc->playSFX(0x0246); //poison sound - SpaceDog
 		pc->sysmsg("You poisoned yourself! *sigh*"); //message -SpaceDog

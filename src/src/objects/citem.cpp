@@ -402,7 +402,7 @@ bool cItem::doDecay(bool dontDelete = false)
 		params[0] = getSerial(); params[1] = deleteDecay;
 		events[evtItmOnDecay]->setParams(params);
 		events[evtItmOnDecay]->execute();
-		if ( events[evtItmOnDecay]->bypassed() )
+		if ( events[evtItmOnDecay]->isBypassed() )
 			return;
 	}
 
@@ -1015,7 +1015,7 @@ void cPC::setMurderer()
 		params[0] = getSerial(); params[1] = karmaMurderer;
 		events[evtPcOnFlagChange]->setParams(params);
 		events[evtPcOnFlagChange]->execute();
-		if ( events[evtPcOnFlagChange]->bypassed() )
+		if ( events[evtPcOnFlagChange]->isBypassed() )
 			return;
 	}
 
@@ -1030,7 +1030,7 @@ void cChar::setInnocent()
 		params[0] = getSerial(); params[1] = karmaInnocent;
 		events[evtPcOnFlagChange]->setParams(params);
 		events[evtPcOnFlagChange]->execute();
-		if ( events[evtPcOnFlagChange]->bypassed() )
+		if ( events[evtPcOnFlagChange]->isBypassed() )
 			return;
 	}
 
@@ -1045,7 +1045,7 @@ void cChar::setCriminal()
 		params[0] = getSerial(); params[1] = karmaCriminal;
 		events[evtPcOnFlagChange]->setParams(params);
 		events[evtPcOnFlagChange]->execute();
-		if ( events[evtPcOnFlagChange]->bypassed() )
+		if ( events[evtPcOnFlagChange]->isBypassed() )
 			return;
 	}
 	

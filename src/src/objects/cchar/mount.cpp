@@ -28,7 +28,7 @@ void cChar::mountHorse( pNPC mount )
 		params[0] = getSerial(); params[1] = mount->getSerial();
 		events[eventCharOnMount]->setParams(params);
 		events[eventCharOnMount]->execute();
-		if ( events[eventCharOnMount]->bypassed() )
+		if ( events[eventCharOnMount]->isBypassed() )
 			return;
 	}
 
@@ -189,7 +189,7 @@ void cChar::mountHorse( pNPC mount )
 	mount->attackerserial=INVALID;
 
 	mount->time_unused = 0;
-	mount->timeused_last = getClock();
+	mount->timeused_last = getclock();
 }
 
 /*!
@@ -206,7 +206,7 @@ bool cChar::unmountHorse()
 		params[0] = getSerial(); params[1] = INVALID;
 		evt->setParams(params);
 		evt->execute();
-		if ( evt->bypassed() )
+		if ( evt->isBypassed() )
 			return;
 	}
 	

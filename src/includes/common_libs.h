@@ -104,7 +104,7 @@ warnings/errors/issues.
 	#include "archs/hypwin32.h"
 #endif
 
-//#define TIMEOUT(X) (((X) <= getClock()) || overflow)
+//#define TIMEOUT(X) (((X) <= getclock()) || overflow)
 #define TIMEOUT(X) false
 
 extern char* getOSVersionString();

@@ -78,7 +78,7 @@ void cChar::modifyFame( int32_t value )
 		params[3] = REPUTATION_FAME;
 		events[evtChrOnReputationChange]->setParams(params);
 		events[evtChrOnReputationChange]->execute();
-		if ( events[evtChrOnReputationChange]->bypassed() )
+		if ( events[evtChrOnReputationChange]->isBypassed() )
 			return;
 	}
 	
@@ -168,7 +168,7 @@ void cChar::IncreaseKarma( int32_t value, pChar pKilled )
 		params[3] = REPUTATION_KARMA;
 		events[evtChrOnReputationChange]->setParams(params);
 		events[evtChrOnReputationChange]->execute();
-		if ( events[evtChrOnReputationChange]->bypassed() )
+		if ( events[evtChrOnReputationChange]->isBypassed() )
 			return;
 	}
 	

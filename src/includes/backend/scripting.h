@@ -39,12 +39,17 @@ public:
 			
 			//! Executes the function
 			virtual tVariant execute() = 0;
+			
+			const bool isBypassed() const
+			{ return bypassed; }
+			
 		protected:
 			cFunctionHandle();
 			tVariantVector params;
+			bool bypassed;
 	};
 
-	pFunctionHandle getFunction(std::string funcName);
+	cFunctionHandle *getFunction(std::string funcName);
 	
 protected:
 	cScriptingEngine();

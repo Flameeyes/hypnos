@@ -769,7 +769,7 @@ void target_transfer( NXWCLIENT ps, pTarget t )
 		params[0] = pc1->getSerial(); params[1] = pc2->getSerial();
 		evt->setParams(params);
 		evt->execute();
-		if ( evt->bypassed() )
+		if ( evt->isBypassed() )
 			return;
 	}
 

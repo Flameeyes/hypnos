@@ -31,6 +31,8 @@ public:
 	virtual ~cEquippableContainer();
 
 protected:
+	virtual uint16_t eventsNumber() const
+	{ return evtCntMax; }
 };
 
 #endif

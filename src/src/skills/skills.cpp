@@ -608,7 +608,7 @@ bool Skills::AdvanceSkill(pChar pc /*uint32_t s*/, int sk, char skillused)
 		evt->setParams(params);
 		tVariant ret = evt->execute();
 		retval = ret.toBoolean();
-		if ( evt->bypassed() )
+		if ( evt->isBypassed() )
 			return;
 	}
 	
@@ -741,7 +741,7 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
 			params[2] = sk; params[3] = tmp;
 			evt->setParams(params);
 			evt->execute();
-			if ( evt->bypassed() )
+			if ( evt->isBypassed() )
 				return false;
 		}
 		
@@ -990,7 +990,7 @@ void Skills::SkillUse(pClient client, int x)
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
 
-	if( (pc->skilldelay>getClock()) && (!pc->IsGM()) )
+	if( (pc->skilldelay>getclock()) && (!pc->IsGM()) )
 	{
 		sysmessage(s, "You must wait a few moments before using another skill.");
 		return;
@@ -1520,7 +1520,7 @@ void Skills::Persecute (pClient client)
 	
 	int decrease=(pc->in/10)+3;
 	
-	if( pc->skilldelay > getClock() && !pc->IsGM() )
+	if( pc->skilldelay > getclock() && !pc->IsGM() )
 	{
 		pc->sysmsg("You are unable to persecute him now...rest a little...");
 		return;
@@ -1802,7 +1802,7 @@ void Skills::Decipher(pItem tmap, pClient client)
     cScpIterator* iter = NULL;
     char script1[1024];
 
-    if(pc->skilldelay<=getClock() || pc->IsGM()) // Char doin something?
+    if(pc->skilldelay<=getclock() || pc->IsGM()) // Char doin something?
     {
         if (pc->checkSkill( skCartography, tmap->morey * 10, 1000)) // Is the char skilled enaugh to decipher the map
         {

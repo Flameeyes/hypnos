@@ -86,16 +86,16 @@ void cChar::resetData()
 	title[0]=0x00;
 
 	///TIMERS
-	antiguardstimer=getClock();
-	antispamtimer=getClock();
-	begging_timer=getClock();
-	fishingtimer=getClock();
-	hungertime=getClock();
-	invistimeout=getClock();
-	nextact=getClock();
-	nextAiCheck=getClock();
-	npcmovetime=getClock();
-	skilldelay=getClock();
+	antiguardstimer=getclock();
+	antispamtimer=getclock();
+	begging_timer=getclock();
+	fishingtimer=getclock();
+	hungertime=getclock();
+	invistimeout=getclock();
+	nextact=getclock();
+	nextAiCheck=getclock();
+	npcmovetime=getclock();
+	skilldelay=getclock();
 	//
 
 	gmMoveEff=0;
@@ -181,9 +181,9 @@ void cChar::resetData()
 
 	runeserial=INVALID; // Used for naming runes
 	attackerserial=INVALID; // Character who attacked this character
-	nextAiCheck=getClock();
+	nextAiCheck=getclock();
 
-	npcmovetime=getClock(); // Next time npc will walk
+	npcmovetime=getclock(); // Next time npc will walk
 	npcWander=WANDER_NOMOVE; // NPC Wander Mode
 	fleeTimer=INVALID;
 	oldnpcWander=WANDER_NOMOVE; // Used for fleeing npcs
@@ -486,7 +486,7 @@ void cChar::disturbMed()
 	if ( events[evtChrOnBreakMeditation] && getClient() ) {
 		events[evtChrOnBreakMeditation]->setParams(tVariantVector(1, getSerial()));
 		events[evtChrOnBreakMeditation]->execute();
-		if ( events[evtChrOnBreakMeditation]->bypassed() )
+		if ( events[evtChrOnBreakMeditation]->isBypassed() )
 			return;
 	}
 
@@ -657,9 +657,9 @@ void cChar::applyPoison(PoisonType poisontype, int32_t secs )
 	if ( poisontype>=poisoned ) {
 		poisoned=poisontype;
 		if( secs == INVALID )
-			poisonwearofftime=getClock()+(MY_CLOCKS_PER_SEC*SrvParms->poisontimer); // lb
+			poisonwearofftime=getclock()+(MY_CLOCKS_PER_SEC*SrvParms->poisontimer); // lb
 		else
-			poisonwearofftime=getClock()+(MY_CLOCKS_PER_SEC*secs);
+			poisonwearofftime=getclock()+(MY_CLOCKS_PER_SEC*secs);
 
 		NXWSOCKET s = getSocket();
 		if (s != -1) impowncreate(s, this, 1); //Lb, sends the green bar !
@@ -707,7 +707,7 @@ void cChar::damage(int32_t amount, DamageType typeofdamage, StatType stattobedam
 		params[2] = serial_att;
 		events[evtChrOnWounded]->setParams(params);
 		tVariant ret = events[evtChrOnWounded]->execute();
-		if ( events[evtChrOnWounded]->bypassed() )
+		if ( events[evtChrOnWounded]->isBypassed() )
 			return;
 		amount = ret.toSInt();
 	}
@@ -1467,7 +1467,7 @@ void cChar::hideBySpell(int32_t timer)
 void cChar::curePoison()
 {
 	poisoned = poisonNone;
-	poisonwearofftime = getClock();
+	poisonwearofftime = getclock();
 	if (getClient() != NULL) impowncreate(getClient()->toInt(), this, 1);
 }
 
@@ -1499,7 +1499,7 @@ void cChar::resurrect( pClient healer )
 		params[0] = getSerial(); params[1] = healer ? healer->currChar()->getSerial() : INVALID;
 		events[evtChrOnResurrect]->setParams(params);
 		events[evtChrOnResurrect]->execute();
-		if ( events[evtChrOnResurrect]->bypassed() )
+		if ( events[evtChrOnResurrect]->isBypassed() )
 			return;
 	}
 
@@ -1760,7 +1760,7 @@ void cChar::Kill()
 		params[0] = getSerial(); params[1] = INVALID;
 		events[evtChrBeforeDeath]->setParams(params);
 		events[evtChrBeforeDeath]->execute();
-		if ( events[evtChrBeforeDeath]->bypassed() )
+		if ( events[evtChrBeforeDeath]->isBypassed() )
 			return;
 	}
 
@@ -1815,7 +1815,7 @@ void cChar::Kill()
 		pKiller = (*it);
 		if( pKiller->npcaitype==NPCAI_TELEPORTGUARD )
 		{
-			pKiller->summontimer=(getClock()+(MY_CLOCKS_PER_SEC*20));
+			pKiller->summontimer=(getclock()+(MY_CLOCKS_PER_SEC*20));
 			pKiller->npcWander=WANDER_FREELY_CIRCLE;
 			pKiller->setNpcMoveTime();
 			pKiller->talkAll("Thou have suffered thy punishment, scoundrel.",0);
@@ -1919,7 +1919,7 @@ void cChar::Kill()
 
 		if (pk->npcaitype==NPCAI_TELEPORTGUARD)
 		{
-			pk->summontimer=(getClock()+(MY_CLOCKS_PER_SEC*20));
+			pk->summontimer=(getclock()+(MY_CLOCKS_PER_SEC*20));
 			pk->npcWander=WANDER_FREELY_CIRCLE;
 			pk->setNpcMoveTime();
 			pk->talkAll("Thou have suffered thy punishment, scoundrel.", false);
@@ -2093,7 +2093,7 @@ void cChar::Kill()
 	pCorpse->setDecayTime();
 
 	pCorpse->murderer = string(murderername);
-	pCorpse->murdertime = getClock();
+	pCorpse->murdertime = getclock();
 	pCorpse->Refresh();
 
 
@@ -2189,11 +2189,11 @@ void cChar::Kill()
 */
 void cChar::setNpcMoveTime()
 {
-//	npcmovetime = getClock();
+//	npcmovetime = getclock();
 	if ( npcWander == WANDER_FOLLOW )
-		npcmovetime = uint32_t( getClock() + ( float( npcFollowSpeed * MY_CLOCKS_PER_SEC ) ) );
+		npcmovetime = uint32_t( getclock() + ( float( npcFollowSpeed * MY_CLOCKS_PER_SEC ) ) );
 	else
-		npcmovetime = uint32_t( getClock() + ( float( npcMoveSpeed * MY_CLOCKS_PER_SEC ) ) );
+		npcmovetime = uint32_t( getclock() + ( float( npcMoveSpeed * MY_CLOCKS_PER_SEC ) ) );
 }
 
 /*!
@@ -2542,7 +2542,7 @@ void cChar::checkPoisoning()
 				switch ( poisoned )
 				{
 				case poisonWeak:
-					poisontime= getClock() + ( 15 * MY_CLOCKS_PER_SEC );
+					poisontime= getclock() + ( 15 * MY_CLOCKS_PER_SEC );
 					// between 0% and 5% of player's hp reduced by racial combat poison resistance
 					hp -= int32_t(
 							qmax( ( ( hp ) * RandomNum( 0, 5 ) ) / 100, 3 ) *
@@ -2550,7 +2550,7 @@ void cChar::checkPoisoning()
 						     );
 					break;
 				case poisonNormal:
-					poisontime = getClock() + ( 10 * MY_CLOCKS_PER_SEC );
+					poisontime = getclock() + ( 10 * MY_CLOCKS_PER_SEC );
 					// between 5% and 10% of player's hp reduced by racial combat poison resistance
 					hp -= int32_t(
 							qmax( ( ( hp ) * RandomNum( 5, 10 ) ) / 100, 5 ) *
@@ -2558,7 +2558,7 @@ void cChar::checkPoisoning()
 						      );
 					break;
 				case poisonGreater:
-					poisontime = getClock()+( 10 * MY_CLOCKS_PER_SEC );
+					poisontime = getclock()+( 10 * MY_CLOCKS_PER_SEC );
 					// between 10% and 15% of player's hp reduced by racial combat poison resistance
 					hp -= int32_t(
 							qmax( ( ( hp ) * RandomNum( 10,15 ) ) / 100, 7 ) *
@@ -2566,7 +2566,7 @@ void cChar::checkPoisoning()
 						     );
 					break;
 				case poisonDeadly:
-					poisontime = getClock() + ( 5 * MY_CLOCKS_PER_SEC );
+					poisontime = getclock() + ( 5 * MY_CLOCKS_PER_SEC );
 					// between 15% and 20% of player's hp reduced by racial combat poison resistance
 					if ( hp <= (getStrength()/4) ) {
 						stm = qmax( stm - 6, 0 );
@@ -2591,7 +2591,7 @@ void cChar::checkPoisoning()
 				else
 				{
 					updateStats( STAT_HP );
-					if ( poisontxt <= getClock()  )
+					if ( poisontxt <= getclock()  )
 					{
 						emotecolor = 0x0026;
 						switch ( poisoned )
@@ -2609,7 +2609,7 @@ void cChar::checkPoisoning()
 							emoteall("* %s looks extremely weak and is wrecked in pain! *", true, getCurrentName().c_str());
 							break;
 						}
-						poisontxt = getClock() + ( 10 * MY_CLOCKS_PER_SEC );
+						poisontxt = getclock() + ( 10 * MY_CLOCKS_PER_SEC );
 					}
 				}
 			}
@@ -2670,7 +2670,7 @@ bool cChar::regenTimerOk( StatType stat )
 void cChar::updateRegenTimer( StatType stat )
 {
 	if( stat>=ALL_STATS ) return;
-	regens[stat].timer= getClock()+ regens[stat].rate_eff*MY_CLOCKS_PER_SEC;
+	regens[stat].timer= getclock()+ regens[stat].rate_eff*MY_CLOCKS_PER_SEC;
 }
 
 /*!

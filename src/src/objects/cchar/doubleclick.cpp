@@ -42,7 +42,7 @@ void cChar::singleClick( pClient client )
 		params[0] = getSerial(); params[1] = clickedBy->getSerial();
 		events[evtChrOnClick]->setParams(params);
 		events[evtChrOnClick]->execute();
-		if ( events[evtChrOnClick]->bypassed() )
+		if ( events[evtChrOnClick]->isBypassed() )
 			return;
 	}
 	

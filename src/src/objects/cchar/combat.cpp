@@ -11,31 +11,30 @@
 \note Completely rewritten by Luxor in January 2002
 */
 
+#include "objects/cchar.h"
+#include "objects/cpc.h"
+#include "objects/cclient.h"
 #include "common_libs.h"
-#include "itemid.h"
-#include "sndpkg.h"
 #include "tmpeff.h"
-#include "npcai.h"
-#include "data.h"
-#include "set.h"
-#include "basics.h"
 #include "inlines.h"
-#include "utils.h"
 #include "settings.h"
 
 /*!
 \author Luxor
 \brief Check if caster loss his concetration
-\param pc the caster
 \param damage the damage applied to the char
 \return true if the caster has loss his concentration, false if not
 */
-static bool checkForCastingLoss(pChar pc, int damage)
+inline bool cChar::checkForCastingLoss(int damage)
 {
-	if ( ! pc ) return false;
-	int chanceToResist = qmin(10, int((pc->body->getSkill(skillMeditation)/10.0)-(damage*2.0)));
-	if (chance(chanceToResist)) return false;
-	pc->sysmsg("You break your concentration.");
+	int chanceToResist = qmin(10, int((body->getSkill(skMeditation)/10.0)-(damage*2.0)));
+	if (chance(chanceToResist))
+		return false;
+	
+	pPC tpc = NULL; // This PC
+	if ( (tpc = dynamic_cast<pPC>(this)) && tpc->getClient() )
+		tpc->getClient()->sysmessage("You break your concentration.");
+	
 	return true;
 }
 
@@ -52,13 +51,12 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	}
 	pFunctionHandle evt = NULL;
 
-	evt = getEvent(cChar::evtChrOnCombatHit);
-	if ( evt ) {
+	if ( events[evtChrOnCombatHit] ) {
 		tVariantVector params = tVariantVector(2);
 		params[0] = getSerial(); params[1] = pc_def->getSerial();
-		evt->setParams(params);
-		evt->execute();
-		if( evt->bypassed() )
+		events[evtChrOnCombatHit]->setParams(params);
+		events[evtChrOnCombatHit]->execute();
+		if ( events[evtChrOnCombatHit]->isBypassed() )
 			return;
 		if( isDead() )	// Killed as result of script action
 			return;
@@ -148,7 +146,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 			params[0] = getSerial(); params[1] = pc_def->getSerial();
 			evt->setParams(params);
 			evt->execute();
-			if ( evt->bypassed() )
+			if ( evt->isBypassed() )
 				return;
 		}
 
@@ -185,7 +183,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		params[0] = getSerial(); params[1] = pc_def->getSerial();
 		evt->setParams(params);
 		evt->execute();
-		if ( evt->bypassed() )
+		if ( evt->isBypassed() )
 			return;
 	}
 
@@ -195,7 +193,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		params[0] = pc_def->getSerial(); params[1] = getSerial();
 		evt->setParams(params);
 		evt->execute();
-		if ( evt->bypassed() )
+		if ( evt->isBypassed() )
 			return;
 	}
 
@@ -310,9 +308,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	//when hit and damage >1, defender fails if casting a spell!
 	if (damage > 1 && !pc_def->npc) {
-		int sd = 0;
-		if (pc_def->getClient() != NULL) sd = pc_def->getClient()->toInt();
-		if (pc_def->casting && checkForCastingLoss(pc_def, damage)) {
+		if (pc_def->casting && pc_def->checkForCastingLoss(damage)) {
 			pc_def->spell = magic::SPELL_INVALID;
 			pc_def->casting = 0;
 			pc_def->spelltime = 0;
@@ -356,7 +352,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		if (!pc_def->onhorse) pc_def->playAction(0x14);
 	}
         if (nTimeOut != 0) {
-                timeout = getClock() + nTimeOut;
+                timeout = getclock() + nTimeOut;
         }
 }
 
@@ -423,7 +419,7 @@ void cChar::doCombat()
 		params[0] = getSerial(); params[1] = pc_def->getSerial(); params[2] = dist; params[3] =  weapon ? weapon->getSerial() : INVALID;
 		evt->setParams(params);
 		evt->execute();
-		if( evt->bypassed() )
+		if( evt->isBypassed() )
 			return;
 		if( isDead() ) {	// Killed as result of script action
 			undoCombat();
@@ -502,7 +498,7 @@ void cChar::doCombat()
 
 						x = (15000 / ((stm+100) * j)*MY_CLOCKS_PER_SEC);
 					}
-					timeout = getClock()+x;
+					timeout = getclock()+x;
        				}
 
         			stm += SrvParms->attackstamina;
@@ -550,7 +546,7 @@ void cChar::doCombat()
 				}
 				x = (15000 / ((dx+100) * j)*MY_CLOCKS_PER_SEC);
 			}
-       			timeout = getClock()+x;
+       			timeout = getclock()+x;
 			timeout2 = timeout;
 			x = j = 0;
 
@@ -1112,7 +1108,7 @@ void cChar::attackStuff(pChar victim)
 		params[0] = getSerial(); params[1] = victim->getSerial();
 		evt->setParams(params);
 		evt->execute();
-		if( evt->bypassed() )
+		if( evt->isBypassed() )
 			return;
 	}
 
@@ -1123,7 +1119,7 @@ void cChar::attackStuff(pChar victim)
 		params[0] = victim->getSerial(); params[1] = getSerial();
 		evt->setParams(params);
 		evt->execute();
-		if( evt->bypassed() )
+		if( evt->isBypassed() )
 			return;
 	}
 

@@ -64,7 +64,7 @@ void cChar::talk(NXWSOCKET s, char *txt, bool antispam)
 	if( antispam )
 	{
 		if( TIMEOUT(antispamtimer) )
-			antispamtimer=getClock()+MY_CLOCKS_PER_SEC*10;
+			antispamtimer=getclock()+MY_CLOCKS_PER_SEC*10;
 		else
 			machwas = false;
 	}
@@ -108,7 +108,7 @@ void cChar::emote( NXWSOCKET socket, char *txt, bool antispam, ... )
 	if ( antispam )
 	{
 		if ( TIMEOUT( antispamtimer ) )
-			antispamtimer=getClock()+MY_CLOCKS_PER_SEC*10;
+			antispamtimer=getclock()+MY_CLOCKS_PER_SEC*10;
 		else
 			sendEmote = false;
 	}
@@ -145,7 +145,7 @@ void cChar::emoteall( char *txt, bool antispam, ... )
 	if ( antispam )
 	{
 		if ( TIMEOUT( antispamtimer ) )
-			antispamtimer=getClock()+MY_CLOCKS_PER_SEC*10;
+			antispamtimer=getclock()+MY_CLOCKS_PER_SEC*10;
 		else
 			sendEmote = false;
 	}
@@ -187,7 +187,7 @@ void cChar::talkRunic(NXWSOCKET s, char *txt, bool antispam)
 	{
 		if (TIMEOUT(antispamtimer))
 		{
-			antispamtimer=getClock()+MY_CLOCKS_PER_SEC*10;
+			antispamtimer=getclock()+MY_CLOCKS_PER_SEC*10;
 			machwas = true;
 		}
 		else

@@ -42,10 +42,10 @@ void cNPC::heartbeat()
 
 	if ( events[evtChrOnHeartBeat] ) {
 		tVariantVector params = tVariantVector(2);
-		params[0] = getSerial(); params[1] = getClock();
+		params[0] = getSerial(); params[1] = getclock();
 		events[evtChrOnHeartBeat]->setParams(params);
 		events[evtChrOnHeartBeat]->execute();
-		if ( events[evtChrOnHeartBeat]->bypassed() )
+		if ( events[evtChrOnHeartBeat]->isBypassed() )
 			return;
 		
 		if ( isDead() )
@@ -69,7 +69,7 @@ void cNPC::heartbeat()
 	checkPoisoning();
 	if ( isDead() )
 		return;
-	checkFieldEffects( getClock(), this, 0 );
+	checkFieldEffects( getclock(), this, 0 );
 	if ( isDead() )
 		return;
 	//
@@ -83,7 +83,7 @@ void cNPC::heartbeat()
 			params[2] = dispelTimeout;
 			events[evtNpcOnDispel]->setParams(params);
 			events[evtNpcOnDispel]->execute();
-			if ( events[evtNpcOnDispel]->bypassed() )
+			if ( events[evtNpcOnDispel]->isBypassed() )
 				return;
 		}
 
@@ -143,7 +143,7 @@ void cNPC::heartbeat()
 					break;
 			}
 		}
-		hungertime = getClock() + ( SrvParms->hungerrate * MY_CLOCKS_PER_SEC );
+		hungertime = getclock() + ( SrvParms->hungerrate * MY_CLOCKS_PER_SEC );
 	}
 
 	if( npcWander!=WANDER_FLEE ) {
@@ -197,7 +197,7 @@ void cNPC::heartbeat()
 				safedelete( spellTL );
 			}
 		} else if ( TIMEOUT( nextact ) ) {
-			nextact = getClock() + uint32_t(MY_CLOCKS_PER_SEC*1.5);
+			nextact = getclock() + uint32_t(MY_CLOCKS_PER_SEC*1.5);
 			if ( isMounting() )
 				playAction( 0x1b );
 			else
@@ -396,7 +396,7 @@ void cNPC::createEscortQuest()
 
 	// Set the expirey time on the NPC if no body accepts the quest
 	if ( SrvParms->escortinitexpire )
-		summontimer = ( getClock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortinitexpire ) );
+		summontimer = ( getclock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortinitexpire ) );
 
 	// Make sure the questDest is valid otherwise don't post and delete the NPC
 	if ( !questDestRegion )
@@ -456,7 +456,7 @@ void cNPC::clearedEscordQuest(pPC pc)
 	questDestRegion = 0;   // Reset quest destination region
 
 	// Set a timer to automatically delete the NPC
-	summontimer = ( getClock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortdoneexpire ) );
+	summontimer = ( getclock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortdoneexpire ) );
 
     	setOwnerSerial32Only(-1);
 

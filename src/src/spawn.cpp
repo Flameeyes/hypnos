@@ -16,7 +16,7 @@ cSpawns* Spawns=NULL;
 cSpawnArea::cSpawnArea( AREA_ITER area )
 {
 	disabled = false;
-	nextspawn=getClock();
+	nextspawn=getclock();
 	where=area;
 	current=0;
 	items_spawned.clear();
@@ -74,7 +74,7 @@ void cSpawnScripted::safeCreate( pChar npc, cSpawnArea& single  )
 		npc->fy2 = single.where->second.y2;
 		npc->fz1 = INVALID;
 		single.current++;
-		single.nextspawn=getClock()+ (60*RandomNum( mintime, maxtime)*MY_CLOCKS_PER_SEC);
+		single.nextspawn=getclock()+ (60*RandomNum( mintime, maxtime)*MY_CLOCKS_PER_SEC);
 		npc->spawnregion=this->serial;
 		single.npcs_spawned.insert( npc->getSerial() );
 		npc->MoveTo( location );
@@ -94,7 +94,7 @@ void cSpawnScripted::safeCreate( pItem pi, cSpawnArea& single  )
 	if( single.findValidLocation( location ) ) {
 		pi->MoveTo(location);
 		single.current++;
-		single.nextspawn=getClock()+ (60*RandomNum( mintime, maxtime)*MY_CLOCKS_PER_SEC);
+		single.nextspawn=getclock()+ (60*RandomNum( mintime, maxtime)*MY_CLOCKS_PER_SEC);
 		pi->spawnregion=this->serial;
 		single.items_spawned.insert( pi->getSerial() );
 		pi->MoveTo( location );
@@ -108,11 +108,11 @@ void cSpawnScripted::safeCreate( pItem pi, cSpawnArea& single  )
 
 void cSpawnScripted::doSpawn( cSpawnArea& c ) {
 	if ( c.disabled ) {
-		c.nextspawn=getClock()+ (60*RandomNum( mintime, maxtime)*MY_CLOCKS_PER_SEC);
+		c.nextspawn=getclock()+ (60*RandomNum( mintime, maxtime)*MY_CLOCKS_PER_SEC);
 		return;
 	}
 	if( c.current >= max ) {
-		c.nextspawn=getClock()+ (60*RandomNum( mintime, maxtime)*MY_CLOCKS_PER_SEC);
+		c.nextspawn=getclock()+ (60*RandomNum( mintime, maxtime)*MY_CLOCKS_PER_SEC);
 		return;
 	}
 
@@ -236,7 +236,7 @@ cSpawns::cSpawns()
 {
 	this->dinamic.clear();
 	this->scripted.clear();
-	this->check=getClock();
+	this->check=getclock();
 }
 
 cSpawns::~cSpawns()
@@ -377,9 +377,9 @@ void cSpawns::doSpawn()
 	}
 
 	if( speed.srtime!=UINVALID )
-		check = getClock()+ speed.srtime*MY_CLOCKS_PER_SEC; //Don't check them TOO often (Keep down the lag)
+		check = getclock()+ speed.srtime*MY_CLOCKS_PER_SEC; //Don't check them TOO often (Keep down the lag)
 	else
-		check = getClock()+ 30*MY_CLOCKS_PER_SEC;
+		check = getclock()+ 30*MY_CLOCKS_PER_SEC;
 }
 
 void cSpawns::doSpawnAll()
@@ -395,9 +395,9 @@ void cSpawns::doSpawnAll()
 	}
 
 	if( speed.srtime!=UINVALID )
-		check = getClock()+ speed.srtime*MY_CLOCKS_PER_SEC; //Don't check them TOO often (Keep down the lag)
+		check = getclock()+ speed.srtime*MY_CLOCKS_PER_SEC; //Don't check them TOO often (Keep down the lag)
 	else
-		check = getClock()+ 30*MY_CLOCKS_PER_SEC;
+		check = getclock()+ 30*MY_CLOCKS_PER_SEC;
 }
 
 void cSpawns::doSpawnAll( uint32_t spawn )
@@ -459,7 +459,7 @@ cSpawnDinamic::cSpawnDinamic( pItem pi )
 	this->item_spawned.clear();
 	this->npc_spawned.clear();
 	this->current=0;
-	this->nextspawn=getClock()+ (60*RandomNum( pi->morey, pi->morez)*MY_CLOCKS_PER_SEC);
+	this->nextspawn=getclock()+ (60*RandomNum( pi->morey, pi->morez)*MY_CLOCKS_PER_SEC);
 }
 
 cSpawnDinamic::~cSpawnDinamic()
@@ -488,7 +488,7 @@ void cSpawnDinamic::doSpawn()
 			pi->Refresh();
 		}
 
-		this->nextspawn=getClock()+ (60*RandomNum( spawn->morey, spawn->morez)*MY_CLOCKS_PER_SEC);
+		this->nextspawn=getclock()+ (60*RandomNum( spawn->morey, spawn->morez)*MY_CLOCKS_PER_SEC);
 	}
 	else if( spawn->type == ITYPE_NPC_SPAWNER ) {
 		pChar npc=npcs::addNpc( spawn->morex, spawn->getPosition().x, spawn->getPosition().y, spawn->getPosition().z );
@@ -500,7 +500,7 @@ void cSpawnDinamic::doSpawn()
 			npc->teleport();
 		}
 
-		nextspawn=getClock()+ (60*RandomNum( spawn->morey, spawn->morez)*MY_CLOCKS_PER_SEC);
+		nextspawn=getclock()+ (60*RandomNum( spawn->morey, spawn->morez)*MY_CLOCKS_PER_SEC);
 	}
 
 }

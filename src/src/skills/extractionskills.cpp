@@ -102,7 +102,7 @@ bool cResources::checkRes( pResource res )
 			if(( TIMEOUT( res->timer+(c* ores.time*MY_CLOCKS_PER_SEC)) ) && res->consumed>=ores.rate )
 				res->consumed-=ores.rate;//AntiChrist
 		}
-		res->timer= getClock() + ores.time*MY_CLOCKS_PER_SEC;
+		res->timer= getclock() + ores.time*MY_CLOCKS_PER_SEC;
 		if( res->consumed == 0)
 			return true; // delete itself because FULL
 	}
@@ -114,7 +114,7 @@ bool cResources::checkRes( pResource res )
 void cResources::checkAll()
 {
 
-	static TIMERVAL timer=getClock()+2*60*MY_CLOCKS_PER_SEC;
+	static TIMERVAL timer=getclock()+2*60*MY_CLOCKS_PER_SEC;
 
 	if(TIMEOUT( timer ) ) {
 
@@ -125,7 +125,7 @@ void cResources::checkAll()
 				this->resources.erase( iter );
 			}
 		}
-		timer=getClock()+2*60*MY_CLOCKS_PER_SEC;
+		timer=getclock()+2*60*MY_CLOCKS_PER_SEC;
 	}
 }
 

@@ -156,7 +156,7 @@ void cChar::flee( pChar pc, int32_t seconds )
 	if ( ! pc ) return;
 
 	if( seconds!=INVALID )
-		fleeTimer=getClock() +MY_CLOCKS_PER_SEC*seconds;
+		fleeTimer=getclock() +MY_CLOCKS_PER_SEC*seconds;
 	else
 		fleeTimer=INVALID;
 
@@ -259,7 +259,7 @@ void cChar::walk()
 				params[0] = pc->getSerial(); params[1] = dir; params[2] = dir;
 				evt->setParams(params);
 				evt->execute();
-				if( evt->bypassed() )
+				if( evt->isBypassed() )
 					return;
 			}
 
