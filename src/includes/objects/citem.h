@@ -17,6 +17,7 @@
 #include "objects/cserializable.h"
 #include "magic.h"
 #include "globals.h"
+#include "settings.h"
 
 //! Item class
 class cItem : public cObject, public cSerializable
@@ -641,7 +642,7 @@ protected:
 public:
 	bool		doDecay();
 
-	inline const void setDecayTime( const TIMERVAL delay = uiCurrentTime+(SrvParms->decaytimer*MY_CLOCKS_PER_SEC) )
+	inline const void setDecayTime( const TIMERVAL delay = uiCurrentTime+(nSettings::Server::getDecayTimer()*MY_CLOCKS_PER_SEC) )
 	{ decaytime = delay; }
 
 	inline const TIMERVAL getDecayTime() const

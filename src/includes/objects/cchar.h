@@ -122,7 +122,7 @@ class ClientCrypt;
 /*!
 \brief Character class
 */
-class cChar
+class cChar : public cSerializable
 {
 protected:
 	static uint32_t nextSerial;

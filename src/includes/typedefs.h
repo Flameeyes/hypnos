@@ -53,7 +53,7 @@ typedef class cMenu *pMenu;			//!< Pointer to a cMenu
 typedef std::map<uint32_t, pMenu> MenuMap;	//!< Map of menus
 
 typedef class cAccount *pAccount;		//!< Pointer to a cAccount
-typedef std::hash_map<std::string, pAccount> cAccounts;
+typedef std::map<std::string, pAccount> cAccounts;
 						//!< Hashed-map of accounts
 //@{
 /*!

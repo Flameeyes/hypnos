@@ -19,7 +19,7 @@
 \brief Container item
 \note This class must be referred using cItem::toContainer() function
 */
-class cContainer : public cItem
+class cContainer : virtual public cItem
 {
 protected:
 	//! Items in the container

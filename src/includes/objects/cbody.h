@@ -15,6 +15,7 @@
 
 #include "common_libs.h"
 #include "objects/cobject.h"
+#include "objects/citem/cequippablecontainer.h"
 #include "enums.h"
 
 static const uint16_t bodyMale		= 0x190;
@@ -349,6 +350,22 @@ private:
 	void calcWeight();
 	bool overloadedWalking();
 	bool overloadedTeleport();
+//@}
+
+//@{
+//! \name Bank
+public:
+	//! Gets the body bank box
+	inline pEquippableContainer getBankBox() const
+	{ return dynamic_cast<pEquippableContainer>(layers[layBank]); }
+	
+	//! Counts the gold in the bankbox
+	inline uint32_t countBankGold()
+	{
+		return  getBankBox() ?
+			getBankBox()->countItems(ITEMID_GOLD)
+			: 0;
+	}
 //@}
 };
 

@@ -58,10 +58,10 @@ protected:
 
 	pClient client;					//!< Client in use
 public:
-	inline const uint8_t getCharsNumber() const;
+	const uint8_t getCharsNumber() const;
 
 	inline uint8_t addCharToAccount(pPC pc);
-	void save();
+	void save(uint32_t id);
         pPC getChar(uint8_t index);
 
 	//! Returns the current client connected or NULL if not connected

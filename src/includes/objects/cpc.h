@@ -21,7 +21,7 @@
 
 In this class there are members used only for PCs, and not for NPCs.
 */
-class cPC : cChar
+class cPC : public cChar
 {
 public:
 	inline cPC() : cChar()
@@ -123,17 +123,6 @@ public:
 	{ return creationday; }
 //@}
 
-//@{
-//! \name Bank
-
-	//! Counts the gold in the bankbox
-	inline uint32_t countBankGold()
-	{
-		return  getBankBox(bankGold) ?
-			getBankBox(bankGold)->countItems(ITEMID_GOLD)
-			: 0;
-	}
-//@}
 };
 
 #endif

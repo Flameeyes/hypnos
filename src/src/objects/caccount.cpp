@@ -31,8 +31,9 @@ void cAccount::saveAll()
 {
 	global_mt.acquire();
 
+	uint32_t id = 0;
 	for(cAccounts::iterator it = accounts.begin(); it != accounts.end(); it++)
-		(*it).second->save();
+		(*it).second->save(id++);
 
 	global_mt.release();
 }
@@ -113,30 +114,27 @@ cAccount::cAccount(cSQLite::cSQLiteQuery::tRow r)
 	chars = PCVector( nSettings::Server::getMaximumPCs(), NULL );
 	
 	char *buffer;
-	asprintf(&buffer, "SELECT char FROM charAccounts WHERE account = %d", r["id"]);
+	asprintf(&buffer, "SELECT char FROM charAccounts WHERE account = %d", r["id"].c_str());
 	cSQLite::pSQLiteQuery q = globalDB->execQuery(buffer);
 	free(buffer);
 	
 	if ( ! q )
-		LogError("Error executing query %s, no char loaded for account %s", buffer, r["name"]);
-	else
 	{
+		LogError("Error executing query %s, no char loaded for account %s", buffer, r["name"].c_str());
+	} else {
 		int i = 0;
 		pPC pc;
 		while(q->fetchRow())
 		{
 			cSQLite::cSQLiteQuery::tRow c = q->getLastRow();
-			chars[i++] = dynamic_cast<pPC>( findCharBySerial( atoi(c["char"]) ) );
+			chars[i++] = dynamic_cast<pPC>( cSerializable::findCharBySerial( atoi(c["char"]) ) );
 		}
 		
 		delete q;
 	}
 	
-	pPC pc = dynamic_cast<pPC>( findCharBySerial( atoi(r["lastchar"]) ) );
-	if ( pc && chars.find(pc) != chars.end() )
-		lastchar = pc;
-	else
-		lastchar = NULL;
+	pPC pc = dynamic_cast<pPC>( cSerializable::findCharBySerial( atoi(r["lastchar"]) ) );
+	lastchar = pc;
 	
 	client = NULL;
 }
@@ -148,15 +146,15 @@ This function insert into the database the needed row for the account.
 
 \note This function acquires Database::dbMutex
 */
-void cAccount::save(int id)
+void cAccount::save(uint32_t id)
 {
-	static char buffer[512];
-	sprintf(buffer, "INSERT INTO accounts VALUES("
+	char *buffer;
+	asprintf(&buffer, "INSERT INTO accounts VALUES("
 			"%u, '%s', '%s', %u, %u, %u,"
-			"%u, %u, %u, %u, %u, %u)"
+			"%u, %u, %u, %u, %u, %u)",
 		name.c_str(),
 		password.c_str(),
-		cryptotype,
+		ctype,
 		creationdate,
 		banAuthor ? banAuthor->getSerial() : 0,
 		banReleaseTime,
@@ -167,6 +165,7 @@ void cAccount::save(int id)
 		);
 	
 	cSQLite::pSQLiteQuery q = globalDB->execQuery(buffer);
+	free(buffer);
 	if ( q )
 		delete q;
 	
@@ -220,4 +219,17 @@ uint8_t cAccount::addCharToAccount(pPC pc)
 	}
 	
 	return 255;
+}
+
+/*!
+\brief Gets the count of the charactes in the account
+\return The number of actual charactes in account
+*/
+const uint8_t cAccount::getCharsNumber() const
+{
+	uint8_t count = 0;
+	for(PCVector::const_iterator it = chars.begin(); it != chars.end(); it++)
+		if ( (*it) )
+			count++;
+	return count;
 }

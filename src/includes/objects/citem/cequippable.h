@@ -25,7 +25,7 @@ This is an abstract class, thus no direct instance of this is possible.
 Some special classes (like bankboxes and backpacks) can derive both from this
 and from cContainer class.
 */
-class cEquippable : public cItem
+class cEquippable : virtual public cItem
 {
 public:
 	cEquippable();
@@ -40,8 +40,8 @@ public:
 	void doubleClicked(pClient client);
 
 protected:
-	Layers layer;
-	static Layers findLayerFromID(uint16_t id);
+	Layer layer;
+	static Layer findLayerFromID(uint16_t id);
 };
 
 #endif

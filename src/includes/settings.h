@@ -65,6 +65,7 @@ namespace nSettings {
 		
 		uint32_t getDelaySkills();	//!< Delay between two skill uses
 		uint32_t getDelayObjects();	//!< Delay between two object uses
+		uint32_t getDecayTimer();	//!< Decay timer
 	}
 	
 	/*!
