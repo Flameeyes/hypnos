@@ -10,7 +10,7 @@
 #include "network.h"
 #include "debug.h"
 #include "sndpkg.h"
-#include "crontab.h"
+#include "backend/scheduler.h"
 #include "remadmin.h"
 #include "worldmain.h"
 #include "inlines.h"
@@ -111,9 +111,7 @@ void RemoteAdmin::Init()
 	unsigned long nonzero = 1;
 
 	#if defined(__unix__)
-		#ifndef __BEOS__
 		ioctl(racSocket,FIONBIO,&nonzero) ;
-		#endif
 	#else
 		ioctlsocket(racSocket,FIONBIO,&nonzero) ;
 	#endif
@@ -158,8 +156,6 @@ void RemoteAdmin::CheckConn ()
 		return;
 	}
 
-
-
 	ConOut("[ OK ]\n");
 
 	status[racnow]=RACST_CHECK_USR;
@@ -175,8 +171,6 @@ void RemoteAdmin::CheckConn ()
 	Printf(racnow, "\r\n");
 	Printf(racnow, "INFO: character typed for login and password\r\n");
 	Printf(racnow, "are not echoed, this is not a bug.\r\n");
-/*	Printf(racnow, "%.4f Native Rate, %.4f AMX Rate\r\n\r\n", g_fNatRate, g_fAmxRate);
-*/
 
 	Printf(racnow, "\r\nLogin : ");
 	racnow++;
@@ -352,22 +346,6 @@ void RemoteAdmin::Printf(int s, char *txt, ...) // System message (In lower left
 	free(msg);
 }
 
-
-extern "C" { 
-
-/*!
-\brief Compiles a SMALL(scripting language) file
-\author ITB Compuphase
-\param argc number of command line parameters to compiler
-\param argv array of cmd line parameters
-
-	Changes:
-		Adapted by Xanathar
-*/
-int compiler_main(int argc, char **argv);
-}
-
-
 /*!
 \brief Processes input from socket s
 \author Xanatar, Anthalir
@@ -454,20 +432,6 @@ void RemoteAdmin::ProcessInput(int s)
 
 	if (status[s]!=RACST_STDIN) return;
 
-	if (!strcmp(inp,"PDUMP")) 
-	{
-		Printf(s, "Performace Dump:\r\n");
-
-		Printf(s, "Network code: %fmsec [%i]", (float)((float)networkTime/(float)networkTimeCount), networkTimeCount);
-		Printf(s,"Timer code: %fmsec [%i]" , (float)((float)timerTime/(float)timerTimeCount) , timerTimeCount);
-		Printf(s,"Auto code: %fmsec [%i]" , (float)((float)autoTime/(float)autoTimeCount) , autoTimeCount);
-		Printf(s,"Loop Time: %fmsec [%i]" , (float)((float)loopTime/(float)loopTimeCount) , loopTimeCount);
-		Printf(s,"Simulation Cycles/Sec: %f" , (1000.0*(1.0/(float)((float)loopTime/(float)loopTimeCount))));
-		return;
-	}
-
-
-
 	if (!strcmp(inp,"WHO")) 
 	{
 			if(now==0) 
@@ -513,10 +477,7 @@ void RemoteAdmin::ProcessInput(int s)
 		Printf(s,"ADDACCT <name>,<pwd> : creates a new account\r\n");
 		Printf(s,"REMACCT <name> : remove an account\r\n");
 		Printf(s,"CHANGEACCTPWD <name>,<pwd> : change an account password\r\n");
-		Printf(s,"RELOADCRON : reloads the crontab.scp file\r\n");
-		Printf(s,"AMXCALL <function> : executes a function of override.sma\r\n");
-		Printf(s,"AMXRUN <program> : executes an external AMX program\r\n");
-		Printf(s,"AMXBUILD <sourcefile> <outputprogram> : compiles a Small program\r\n");
+		Printf(s,"RELOADSCHED : reloads the schedules.xml file\r\n");
 		Printf(s,"RELOADBLOCKS : reload hosts_deny.scp\r\n");
 
 		return;
@@ -558,30 +519,6 @@ void RemoteAdmin::ProcessInput(int s)
 		return;
 	}
 
-	if (!strcmp(tkn,"AMXCALL")) 
-	{
-		if ((cmd==NULL)) 
-		{
-			Printf(s,"Syntax is : AMXCALL <function>\r\nExample : AMXCALL foo\r\n");
-			return;
-		}
-		AmxFunction::g_prgOverride->CallFn(cmd);
-		return;
-	}
-
-	if (!strcmp(tkn,"AMXRUN")) 
-	{
-		if ((cmd==NULL)) 
-		{
-			Printf(s,"Syntax is : AMXRUN <program>\r\nExample : AMXRUN myprog.amx\r\n");
-			return;
-		}
-		AmxProgram *prg = new AmxProgram(cmd);
-		prg->CallFn(-1);
-		safedelete(prg);
-		return;
-	}
-
 	if (cmd!=NULL) {
 		for (i=0; i< strlen(cmd); i++)
 		{
@@ -614,52 +551,42 @@ void RemoteAdmin::ProcessInput(int s)
 			return;
 	}
 
-#ifdef DEBUG
-	if (!strcmp(inp,"---CRASH")) { //this command is usefull to test crash recovery :)
-			char *p = NULL;
-			p[0] = 'X';
-			Printf(s, "OK.\r\n");
-			return;
-	}
-#endif
-
 	if (!strcmp(inp,"ABORT")) 
 	{
 		exit(3);
 		return;
 	}
 
-	if (!strcmp(inp,"RELOADCRON")) 
+	if (!strcmp(inp,"RELOADSCHEDULER")) 
 	{
-			killCronTab();
-			initCronTab();
-			return;
+		cScheduler::restart();
+		return;
 	}
 
 
 	if (!strcmp(inp,"RELOADBLOCKS")) 
 	{
-			Network->LoadHosts_deny();
-			Printf(s,"hosts_deny.scp reloaded.");
-			return;
-	}									//wad }
+		Network->LoadHosts_deny();
+		Printf(s,"hosts_deny.scp reloaded.");
+		return;
+	}
 
 
 	if ((!strcmp(tkn,"BROADCAST"))||(!strcmp(tkn,"BC"))||(!strcmp(tkn,"!"))) 
 	{
-			if ((cmd==NULL)) 
-			{
-				Printf(s,"Syntax is : BROADCAST <message>\r\nExample : BROADCAST Warning restarting server!\r\n");
-				return;
-			}
-
-			if (par2!=NULL) 
-				sysbroadcast("%s %s", cmd, par2);
-			else 
-				sysbroadcast("%s", cmd);
-
-			Printf(s, "OK.\r\n");
+		if ((cmd==NULL)) 
+		{
+			Printf(s,"Syntax is : BROADCAST <message>\r\nExample : BROADCAST Warning restarting server!\r\n");
 			return;
+		}
+
+		if (par2!=NULL) 
+			sysbroadcast("%s %s", cmd, par2);
+		else 
+			sysbroadcast("%s", cmd);
+
+		Printf(s, "OK.\r\n");
+		return;
 	}
 
 	if (!strcmp(tkn,"ADDACCT")) 
@@ -722,41 +649,6 @@ void RemoteAdmin::ProcessInput(int s)
 			Printf(s, "Password of account %s not changed. Username not existant.\r\n", cmd);
 			Printf(s, "[ERRORS]\r\n");
 		}
-		return;
-	}
-
-	if (!strcmp(tkn,"AMXBUILD")) 
-	{
-		if ((cmd==NULL)||(par2==NULL)) 
-		{
-			Printf(s,"Syntax is : AMXBUILD <source> <output>\r\nExample : AMXBUILD myprog.sma myprog.amx\r\n");
-			return;
-		}
-		Printf(s,"Initializing build : NOTE that output will go to the main console. Sorry for that :(\r\n");
-		Printf(s,"Building...");
-		char *argv[4];
-		
-		argv[0] = "hypnos.small.internal.compiler";
-		argv[1] = new char[50];
-		argv[2] = new char[50];
-		argv[3] = new char[50];
-
-		strncpy(argv[1], cmd, 49);
-		strncpy(argv[2], par2, 49);
-		strncpy(argv[3], "", 49);
-
-		int ret = compiler_main(3, (char **)argv);
-
-		if (ret==0) 
-			Printf(s,"[ OK ]\r\n");
-		else if (ret==1) 
-			Printf(s,"[WARNINGS]\r\n");
-		else if (ret>1) 
-			Printf(s,"[ERRORS]\r\n");
-
-		delete argv[1];
-		delete argv[2];
-		delete argv[3];
 		return;
 	}
 

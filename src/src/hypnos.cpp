@@ -44,7 +44,7 @@
 #include "sndpkg.h"
 #include "sregions.h"
 #include "remadmin.h"
-#include "crontab.h"
+#include "backend/scheduler.h"
 #include "version.h"
 #include "calendar.h"
 #include "ntservice.h"
@@ -631,7 +631,7 @@ int main(int argc, char *argv[])
 
 	initAmxEvents();
 	LoadOverrides ();
-	initCronTab();
+	cScheduler::init();
 	Calendar::loadCalendarScp();
 
 	Translation::init_translation(); //belli marco
@@ -835,7 +835,6 @@ int main(int argc, char *argv[])
 		// Uncomment by Dupois July 18, 2000! see note above about InitKbThread()
 		//g_MenuCollector.cleanup();
 		checkkey();
-		checkCronTab();
 		//OnLoop
 		AMXEXEC(AMXT_SPECIALS,2,0,AMX_AFTER);
 

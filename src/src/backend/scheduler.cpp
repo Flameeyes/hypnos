@@ -12,6 +12,28 @@
 
 #include <mxml.h>
 
+cScheduler *cScheduler::scheduler = NULL;
+
+void cScheduler::init()
+{
+	scheduler = new cScheduler();
+	scheduler->start(false, true);
+}
+
+void cScheduler::close()
+{
+	scheduler->stop();
+	safedelete(scheduler);
+}
+
+void cScheduler::restart()
+{
+	scheduler->stop();
+	delete scheduler;
+	scheduler = new cScheduler();
+	scheduler->start(false, true);
+}
+
 /*!
 \brief Constructor for new scheduled events
 \param funcName name of the scripts' function to call
@@ -53,11 +75,18 @@ cScheduler::cEvent::cEvent(std::string funcName, uint32_t nInterval)
 
 This functions loads the XML datafile from the given stream and creates all
 the instances for the scheduled events to run.
+
+\todo We open here the file, but we don't know exactly which is the program and
+	the execution directory, so we should fix this adding a wrapper to the
+	directories.
 */
-cScheduler::cScheduler(std::istream &in)
+cScheduler::cScheduler()
 {
+	std::istream xmlfile("config/scheduler.xml");
+	
 	minInterval = UINT32_MAX;
 	try {
+		LogMessage("Loading scheduler...")
 		MXML::Document doc(xmlfile);
 		
 		MXML::Node *n = doc.main()->child();
@@ -75,15 +104,20 @@ cScheduler::cScheduler(std::istream &in)
 				continue;
 			}
 		} while((n = n->next()));
+		
+		LogMessage("\t\t[   OK   ]");
 	} catch ( MXML::MalformedError e) {
+		LogMessage("\t\t[ Failed ]");
 		LogCritical("schedules.xml file not well formed. Default loading");
 	}
 }
 
 cScheduler::~cScheduler()
 {
+	LogMessage("Closing scheduler...");
 	for(EventList::iterator it = events.begin(); it != events.end(); it++)
 		delete (*it);
+	LogMessage("\t\t[   OK   ]");
 }
 
 /*!

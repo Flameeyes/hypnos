@@ -54,10 +54,15 @@ protected:
 	EventsList events;	//!< Scheduled events
 	
 	uint32_t minInterval;	//!< Minimum interval for the scheduled events
+	
+	static cScheduler *scheduler;
 public:
 	cScheduler(std::istream &in);
-	
 	void *run();
+	
+	static void init();
+	static void close();
+	static void restart();
 };
 
 #endif
