@@ -1174,7 +1174,7 @@ void castFieldSpell( pChar pc, int x, int y, int z, int spellnumber)
 	int fx[5], fy[5]; // bugfix LB, was fx[4] ...
 	short id;
 
-	if (pc!=NULL) j=fielddir(DEREF_pChar(pc), x, y, z); // lb bugfix, socket char# confusion
+	if (pc!=NULL) j=fielddir(pc, x, y, z); // lb bugfix, socket char# confusion
 
 	if (j)
 	{	fx[0]=fx[1]=fx[2]=fx[3]=fx[4]=x; fy[0]=y; fy[1]=y+1; fy[2]=y-1; fy[3]=y+2; fy[4]=y-2;}

@@ -1197,7 +1197,7 @@ void cChar::attackStuff(pChar victim)
 		{
 			victim->talkAll( TRANSLATE("Help! Guards! I've been attacked!"), 1);
 			criminal( victim );
-			callguards(DEREF_pChar(victim)); // Sparhawk must check if npcs can call guards
+			callguards(victim); // Sparhawk must check if npcs can call guards
 		}
 		else if( victim->npc && victim->npcaitype==NPCAI_TELEPORTGUARD)
 		{

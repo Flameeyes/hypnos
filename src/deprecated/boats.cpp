@@ -943,12 +943,13 @@ bool cBoat::Build(NXWSOCKET  s, pItem pBoat, char id2)
 {
 	if ( s < 0 || s >= now )
 		return false;
-	pChar pc_cs=MAKE_CHAR_REF(currchar[s]);
-	if ( ! pc_cs return false;
+
+	pChar pc_cs = cSerializable::findCharBySerial(currchar[s]);
+	if ( !pc_cs ) return false;
 
 	int nid2=id2;
 
-	if( ! pBoat )
+	if( !pBoat )
 	{
 		pc_cs->sysmsg(TRANSLATE("There was an error creating that boat."));
 		return false;

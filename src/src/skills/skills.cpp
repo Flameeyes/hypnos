@@ -15,11 +15,12 @@
 //1=iron, 2=golden, 3=agapite, 4=shadow, 5=mythril, 6=bronze, 7=verite, 8=merkite, 9=copper, 10=silver
 int ingottype=0;//will hold number of ingot type to be deleted
 
-inline void SetSkillDelay(CHARACTER cc)
+inline void SetSkillDelay(pChar pc)
 {
-	pChar pc_cc=MAKE_CHAR_REF(cc);
-	VALIDATEPC(pc_cc);
-	SetTimerSec(&pc_cc->skilldelay,SrvParms->skilldelay);
+	if(!pc)
+		return;
+
+	SetTimerSec(&pc->skilldelay,SrvParms->skilldelay);
 }
 
 
@@ -33,7 +34,7 @@ void Skills::Hide(NXWSOCKET s)
 	if ( s < 0 || s >= now )
 		return;
 
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	NxwCharWrapper sc;
@@ -59,7 +60,7 @@ void Skills::Stealth(NXWSOCKET s)
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
     if ( pc->isMounting() && ! nSettings::Skills::canStealthOnHorse() ) {
@@ -121,7 +122,7 @@ void Skills::PeaceMaking(NXWSOCKET s)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
     int inst = Skills::GetInstrument( s );
@@ -169,7 +170,7 @@ void Skills::PlayInstrumentWell(NXWSOCKET s, int i)
 	pItem pi=MAKE_ITEM_REF(i);
 	if ( ! pi ) return;
 
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
     switch(pi->getId())
@@ -195,7 +196,7 @@ void Skills::PlayInstrumentPoor(NXWSOCKET s, int i)
 	pItem pi=MAKE_ITEM_REF(i);
 	if ( ! pi ) return;
 
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
     switch(pi->getId())
@@ -218,7 +219,7 @@ int Skills::GetInstrument(NXWSOCKET s)
 	if ( s < 0 || s >= now ) //Luxor
 		return INVALID;
 
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	VALIDATEPCR(pc,INVALID);
 
 	pItem pack= pc->getBackpack();
@@ -252,7 +253,7 @@ static bool DoOnePotion(NXWSOCKET s, uint16_t regid, uint32_t regamount, char* r
 	if ( s < 0 || s >= now ) //Luxor
 		return false;
 
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	VALIDATEPCR(pc,false);
 
 	bool success=false;
@@ -281,7 +282,7 @@ void Skills::DoPotion(NXWSOCKET s, int32_t type, int32_t sub, pItem pi_mortar)
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	VALIDATEPI(pi_mortar);
@@ -329,14 +330,14 @@ void Skills::DoPotion(NXWSOCKET s, int32_t type, int32_t sub, pItem pi_mortar)
 \author Duke
 \brief Does the appropriate skillcheck for the potion, creats it
 in the mortar on success and tries to put it into a bottle
-\param s pointer to the character crafter
+\param pc character crafter
 \param type type of potion
 \param sub subtype of potion
 \param mortar serial of the mortar
 */
-void Skills::CreatePotion(CHARACTER s, char type, char sub, int mortar)
+void Skills::CreatePotion(pChar pc, char type, char sub, int mortar)
 {
-	pChar pc=MAKE_CHAR_REF(s);
+//	pChar pc=cSerializable::findCharBySerial(s);
 	if ( ! pc ) return;
 
 	NXWCLIENT ps=pc->getClient();
@@ -516,12 +517,12 @@ void Skills::PotionToBottle( pChar pc, pItem pi_mortar )
     pi_mortar->type=0;
 }
 
-bool Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
+bool Skills::AdvanceSkill(pChar pc /*uint32_t s*/, int sk, char skillused)
 {
 	if ( sk < 0 || sk >= skTrueSkills ) //Luxor
 		return 0;
 
-	pChar pc = MAKE_CHAR_REF(s);
+//	pChar pc = cSerializable::findCharBySerial(s);
 	if ( ! pc ) return 0;
 	
 	int a,ges=0,d=0;
@@ -530,11 +531,11 @@ bool Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 	uint32_t incval;
 	int atrophy_candidates[ALLSKILLS+1];
 
-	pFunctionHandle evt = src->getEvent(evtChrOnGetSkillCap);
+	pFunctionHandle evt = pc->getEvent(evtChrOnGetSkillCap);
 	if ( evt )
 	{
 		tVariantVector params = tVariantVector(4);
-		params[0] = src->getSerial(); params[1] = pc->getClient();
+		params[0] = pc->getSerial(); params[1] = pc->getClient();
 		evt->setParams(params);
 		tVariant ret = evt->execute();
 		skillcap = ret.toSInt32();
@@ -674,10 +675,10 @@ bool Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 			}
 		}
 		if (ServerScp::g_nStatsAdvanceSystem == 0)
-				Skills::AdvanceStats(s, sk);
+				Skills::AdvanceStats(pc, sk);
 	}
 	if (ServerScp::g_nStatsAdvanceSystem == 1)
-		Skills::AdvanceStats(s, sk);
+		Skills::AdvanceStats(pc, sk);
 	
 	return retval;
 }
@@ -859,20 +860,18 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
 \author Duke
 \date 21/03/2000
 \brief Advance STR, DEX and INT after use of a skill
-\param s crafter character
+\param pc crafter character
 \param sk skill identifier
 
 checks if STR+DEX+INT are higher than statcap from server.cfg
 gives all three stats the chance (from skills.scp & server.cfg) to rise
 and reduces the two other stats if necessary
 */
-void Skills::AdvanceStats(CHARACTER s, int sk)
+void Skills::AdvanceStats(pChar pc, int sk)
 {
 	if ( sk < 0 || sk >= skTrueSkills ) //Luxor
 		return;
 
-
-	pChar pc = MAKE_CHAR_REF(s);
 	if ( ! pc ) return;
 
     	// Begin: Determine statcap
@@ -983,7 +982,7 @@ void Skills::SpiritSpeak(NXWSOCKET s)
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	//  Unsure if spirit speaking should they attempt again?
 	//  Suggestion: If they attempt the skill and the timer is !0 do not have it raise the skill
 	
@@ -1213,7 +1212,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 	}
 
 	if ( setSkillDelay )
-		SetSkillDelay(pc->getSerial());
+		SetSkillDelay(pc);
 
 	AMXEXECSV( pc->getSerial(),AMXT_SKILLS, x, AMX_AFTER);
 }
@@ -1246,7 +1245,7 @@ void Skills::TDummy(NXWSOCKET s)
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
-	pChar pc = MAKE_CHAR_REF(currchar[s]);
+	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	int hit;
@@ -1317,7 +1316,7 @@ void Skills::AButte(NXWSOCKET s1, pItem pButte)
 {
 	if ( s1 < 0 || s1 >= now ) //Luxor
 		return;
-	pChar pc = MAKE_CHAR_REF( currchar[s1] );
+	pChar pc = cSerializable::findCharBySerial( currchar[s1] );
 	if ( ! pc ) return;
 
 
@@ -1487,7 +1486,7 @@ void Skills::Meditation (NXWSOCKET  s)
 		return;
 	}
 
-	if ( SrvParms->armoraffectmana && Skills::GetAntiMagicalArmorDefence(pc->getSerial()) > 15 ) {
+	if ( SrvParms->armoraffectmana && Skills::GetAntiMagicalArmorDefence(pc) > 15 ) {
 		pc->sysmsg( TRANSLATE("Regenerative forces cannot penetrate your armor.") );
 		return;
 	}
@@ -1536,7 +1535,7 @@ void Skills::Persecute (NXWSOCKET  s)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 
-	pChar pc = MAKE_CHAR_REF(currchar[s]);
+	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	pChar pc_targ = pc->getTarget();
@@ -1565,7 +1564,7 @@ void Skills::Persecute (NXWSOCKET  s)
 	pc_targ->updateStats(1);//update
 	pc->sysmsg(TRANSLATE("Your spiritual forces disturb the enemy!"));
 	pc_targ->sysmsg(TRANSLATE("A damned soul is disturbing your mind!"));
-	SetSkillDelay(DEREF_pChar(pc));
+	SetSkillDelay(pc);
 
 	char *temp;
 	asprintf(&temp, TRANSLATE("%s is persecuted by a ghost!!"), pc_targ->getCurrentName().c_str());
@@ -1700,11 +1699,9 @@ void SkillVars()
 
 }
 
-int Skills::GetAntiMagicalArmorDefence(CHARACTER p)
-{// blackwind
-
-	pChar pc= MAKE_CHAR_REF( p );
-	VALIDATEPCR( pc, 0 );
+int Skills::GetAntiMagicalArmorDefence(pChar pc)
+{
+	if(!pc) return 0;
 
     int ar = 0;
     if (pc->HasHumanBody())
@@ -1736,7 +1733,7 @@ void Skills::Cartography(NXWSOCKET s)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
     if( Skills::HasEmptyMap(pc->getSerial()) )
@@ -1755,11 +1752,10 @@ void Skills::Cartography(NXWSOCKET s)
 \return always false (?)
 \todo write it
 */
-bool Skills::HasEmptyMap(CHARACTER cc)
+bool Skills::HasEmptyMap(pChar pc)
 {
-
-	/*pChar pc=MAKE_CHAR_REF(cc);
-	VALIDATEPCR(pc,false);
+	/*
+	if(!pc) return false;
 
     pItem pack = pc->getBackpack();    // Get the packitem
 	VALIDATEPIR(pack,false);
@@ -1784,11 +1780,10 @@ bool Skills::HasEmptyMap(CHARACTER cc)
 \return always false (?)
 \todo write it
 */
-bool Skills::DelEmptyMap(CHARACTER cc)
+bool Skills::DelEmptyMap(pChar pc)
 {
-
- 	/*pChar pc=MAKE_CHAR_REF(cc);
-	VALIDATEPCR(pc,false);
+ 	/*
+	if(!pc) return false;
 
     pItem pack = pc->getBackpack();    // Get the packitem
 	VALIDATEPIR(pack,false);
@@ -1823,7 +1818,7 @@ void Skills::Decipher(pItem tmap, NXWSOCKET s)
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
- 	pChar pc=MAKE_CHAR_REF(currchar[s]);
+ 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
     char sect[512];         // Needed for script search

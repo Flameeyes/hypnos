@@ -19,7 +19,7 @@
 
 int checkBoundingBox(int xPos, int yPos, int fx1, int fy1, int fz1, int fx2, int fy2);
 int checkBoundingCircle(int xPos, int yPos, int fx1, int fy1, int fz1, int radius);
-int fielddir(int s, int x, int y, int z);
+int fielddir(pChar pc, int x, int y, int z);
 void npcsimpleattacktarget(int target2, int target);
 
 // Day and Night related prototypes

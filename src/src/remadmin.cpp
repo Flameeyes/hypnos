@@ -496,7 +496,7 @@ void RemoteAdmin::ProcessInput(int s)
 			Printf(s,"Current Users in the World:\r\n");
 			for (i=0;i<now;i++)
 			{
-				pChar pc_i=MAKE_CHAR_REF(currchar[i]);				
+				pChar pc_i=cSerializable::findCharBySerial(currchar[i]);				
 				if( pc_i && clientInfo[i]->ingame ) //Keeps NPC's from appearing on the list
 				{
 					j++;

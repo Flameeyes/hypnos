@@ -142,7 +142,7 @@ uint16_t itemsfx(uint16_t item)
 */
 void bgsound(CHARACTER s)
 {
-    pChar pc_curr=MAKE_CHAR_REF(s);
+    pChar pc_curr=cSerializable::findCharBySerial(s);
 	VALIDATEPC(pc_curr);
 
 	pChar inrange[15];
@@ -237,7 +237,7 @@ void weather(NXWSOCKET  s, unsigned char bolt)
 
 void pweather(NXWSOCKET  s)
 {
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	uint8_t packet[4] = { 0x65, 0xFF, 0x40, 0x20 };
@@ -493,7 +493,7 @@ void senditem(NXWSOCKET  s, pItem pi) // Send items (on ground)
 {
 	if ( ! pi ) return;
 
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	bool pack;
@@ -628,7 +628,7 @@ void senditem_lsd(NXWSOCKET  s, ITEM i,char color1, char color2, int x, int y, s
 	const pItem pi=MAKE_ITEM_REF(i);
 	if ( ! pi ) return;
 
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	uint16_t color = (color1<<8)|(color2%256);
@@ -921,7 +921,7 @@ void deny(NXWSOCKET  s, pChar pc, int sequence)
 void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 //Modified by N6 to use UNICODE packets
 {
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	int i;
@@ -1022,7 +1022,7 @@ void itemtalk(pItem pi, char *txt)
 
 void staticeffect(CHARACTER player, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop,  bool UO3DonlyEffekt, ParticleFx *sta, bool skip_old)
 {
-	pChar pc=MAKE_CHAR_REF(player);
+	pChar pc=cSerializable::findCharBySerial(player);
 	if ( ! pc ) return;
 
 	uint16_t eff = (eff1<<8)|(eff2%256);
@@ -1097,6 +1097,77 @@ MakeGraphicalEffectPkt_(effect, 0x03, pc->getSerial(), 0, eff, charpos, pos2, sp
 	// I think it's too infrequnet to consider this as optimization.
 }
 
+<<<<<<< sndpkg.cpp
+
+void movingeffect(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt, ParticleFx *str, bool skip_old )
+{
+
+	pChar src=cSerializable::findCharBySerial(source);
+	if ( ! src ) return;
+	pChar dst=cSerializable::findCharBySerial(dest);
+	VALIDATEPC(dst);
+
+	uint16_t eff = (eff1<<8)|(eff2%256);
+	uint8_t effect[28]={ 0x70, 0x00, };
+
+	Location srcpos= src->getPosition();
+	Location destpos= dst->getPosition();
+
+	if (!skip_old)
+	{
+MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial(), dst->getSerial(), eff, srcpos, destpos, speed, loop, 0, explode);
+	}
+
+	 if (!UO3DonlyEffekt) // no UO3D effect ? lets send old effect to all clients
+	 {
+
+		 NxwSocketWrapper sw;
+		 sw.fillOnline( );
+		 for( sw.rewind(); !sw.isEmpty(); sw++ )
+		 {
+			 NXWSOCKET j=sw.getSocket();
+			 pChar pj = cSerializable::findCharBySerial(currchar[j]);
+			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
+			 {
+				Xsend(j, effect, 28);
+//AoS/				Network->FlushBuffer(j);
+			 }
+		 }
+	   return;
+	}
+	else
+	{
+		// UO3D effect -> let's check which client can see it
+
+		NxwSocketWrapper sw;
+		sw.fillOnline();
+		 for( sw.rewind(); !sw.isEmpty(); sw++ )
+		 {
+			 NXWSOCKET j=sw.getSocket();
+			 pChar pj = cSerializable::findCharBySerial(currchar[j]);
+			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
+			 {
+				 if (clientDimension[j]==2 && !skip_old) // 2D client, send old style'd
+				 {
+					 Xsend(j, effect, 28);
+//AoS/					Network->FlushBuffer(j);
+				 } else if (clientDimension[j]==3) // 3d client, send 3d-Particles
+				 {
+
+					movingeffectUO3D(source, dest, str);
+					unsigned char particleSystem[49];
+					Xsend(j, particleSystem, 49);
+//AoS/					Network->FlushBuffer(j);
+				}
+				else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
+					LogError"Invalid Client Dimension: %i\n", clientDimension[j]);
+			}
+		}
+	}
+}
+
+=======
+>>>>>>> 1.27
 // staticeffect2 is for effects on items
 void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt,  ParticleFx *str, bool skip_old )
 {
@@ -1161,7 +1232,7 @@ void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned ch
 void movingeffect3(CHARACTER source, unsigned short x, unsigned short y, signed char z, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode)
 {
 
-	pChar src=MAKE_CHAR_REF(source);
+	pChar src=cSerializable::findCharBySerial(source);
 	if ( ! src ) return;
 
 	uint16_t eff = (eff1<<8)|(eff2%256);
@@ -1213,9 +1284,9 @@ void staticeffect3(Location pos, uint16_t eff, uint8_t speed, uint8_t loop, uint
 
 void movingeffect3(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode,unsigned char unk1,unsigned char unk2,unsigned char ajust,unsigned char type)
 {
-	pChar src=MAKE_CHAR_REF(source);
+	pChar src=cSerializable::findCharBySerial(source);
 	if ( ! src ) return;
-	pChar dst=MAKE_CHAR_REF(dest);
+	pChar dst=cSerializable::findCharBySerial(dest);
 	VALIDATEPC(dst);
 
 
@@ -1280,7 +1351,7 @@ void SendDrawGamePlayerPkt(NXWSOCKET s, uint32_t player_id, uint16_t model, uint
 
 void SendDrawObjectPkt(NXWSOCKET s, pChar pc, int z)
 {
-	pChar pc_currchar=MAKE_CHAR_REF(currchar[s]);
+	pChar pc_currchar=cSerializable::findCharBySerial(currchar[s]);
 	VALIDATEPC(pc_currchar);
 	uint32_t k;
 	uint8_t oc[1024]={ 0x78, 0x00, };
@@ -1422,7 +1493,7 @@ void impowncreate(NXWSOCKET s, pChar pc, int z) //socket, player to send
 {
         if ( s < 0 || s > now ) // Luxor
 		return;
-	pChar pc_currchar=MAKE_CHAR_REF(currchar[s]);
+	pChar pc_currchar=cSerializable::findCharBySerial(currchar[s]);
 	VALIDATEPC(pc_currchar);
 
 	if (pc->isStabled() || pc->mounted)
@@ -1522,9 +1593,9 @@ void sendshopinfo(int s, int c, pItem pi)
 int sellstuff(NXWSOCKET s, CHARACTER i)
 {
 	if (s < 0 || s >= now) return 0; //Luxor
-    pChar pc = MAKE_CHAR_REF(i);
+    pChar pc = cSerializable::findCharBySerial(i);
 	VALIDATEPCR(pc, 0);
-	pChar pcs = MAKE_CHAR_REF(currchar[s]);
+	pChar pcs = cSerializable::findCharBySerial(currchar[s]);
 	VALIDATEPCR(pcs,0);
 
 	char itemname[256];
@@ -1638,7 +1709,7 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 void tellmessage(int i, int s, char *txt)
 //Modified by N6 to use UNICODE packets
 {
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	uint8_t unicodetext[512];
@@ -1681,7 +1752,7 @@ void tellmessage(int i, int s, char *txt)
 void staticeffectUO3D(CHARACTER player, ParticleFx *sta)
 {
 
-   PC_CHAR pc_cs=MAKE_CHAR_REF(player);
+   PC_CHAR pc_cs=cSerializable::findCharBySerial(player);
    VALIDATEPC(pc_cs);
    Location charpos= pc_cs->getPosition();
 
@@ -1776,9 +1847,9 @@ void movingeffectUO3D(CHARACTER source, CHARACTER dest, ParticleFx *sta)
 {
 
 
-   PC_CHAR pc_cs=MAKE_CHAR_REF(source);
+   PC_CHAR pc_cs=cSerializable::findCharBySerial(source);
    VALIDATEPC(pc_cs);
-   PC_CHAR pc_cd=MAKE_CHAR_REF(dest);
+   PC_CHAR pc_cd=cSerializable::findCharBySerial(dest);
    VALIDATEPC(pc_cd);
 
    Location srcpos= pc_cs->getPosition();

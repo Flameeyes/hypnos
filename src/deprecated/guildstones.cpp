@@ -31,7 +31,7 @@ void cGuilds::StonePlacement(int s)
 	pItem pStone;
 	//unsigned int k; // lb, msvc++ 5.0 didnt like the guild(int x,inty) ...
 	char stonename[60];
-	pChar pc = MAKE_CHAR_REF(currchar[s]);
+	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	Location charpos= pc->getPosition();
@@ -142,7 +142,7 @@ void cGuilds::Menu(int s, int page)
 		toggle[6];
 	static char mygump[MAXMEMRECWAR][257];
 
-	pChar pc	= MAKE_CHAR_REF(currchar[s]);
+	pChar pc	= cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 	pItem pStone	= MAKE_ITEM_REF( pc->fx1 );
 	if ( ! pStone ) return;
@@ -571,7 +571,7 @@ static void RemoveShields(pChar pc)
 
 void cGuilds::EraseMember(int c)
 {
-	pChar pc = MAKE_CHAR_REF(c);
+	pChar pc = cSerializable::findCharBySerial(c);
 	if ( ! pc ) return;
 
 	int guildnumber = pc->GetGuildNumber();
@@ -612,7 +612,7 @@ void cGuilds::EraseMember(int c)
 
 void cGuilds::ToggleAbbreviation(int s)
 {
-	pChar pc = MAKE_CHAR_REF(currchar[s]);
+	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	int guildnumber = pc->GetGuildNumber();
@@ -650,7 +650,7 @@ void cGuilds::ToggleAbbreviation(int s)
 
 void cGuilds::Recruit(int s)
 {
-	pChar Me=MAKE_CHAR_REF(currchar[s]);
+	pChar Me=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! Me ) return;
 
 	int slot, dummy;
@@ -708,7 +708,7 @@ void cGuilds::Recruit(int s)
 
 void cGuilds::TargetWar(int s)
 {
-	pChar Me=MAKE_CHAR_REF(currchar[s]);
+	pChar Me=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! Me ) return;
 
 	int slot, dummy;
@@ -770,7 +770,7 @@ void cGuilds::StoneMove(int s)
 {
 	if ( s < 0 || s >= now )
 		return;
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	int guildnumber=Guilds->SearchByStone(s);
@@ -874,7 +874,7 @@ void cGuilds::GumpInput(int s, int type, int index, char *text)
 
 void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 {
-	pChar pc = MAKE_CHAR_REF( currchar[socket] );
+	pChar pc = cSerializable::findCharBySerial( currchar[socket] );
 	if ( ! pc ) return;
 	
 	int member, recruit, war, guild, counter, slot;
@@ -908,7 +908,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 			break;
 		case 5: ToggleAbbreviation(socket);
 			break;
-		case 6: Resign( MAKE_CHAR_REF( currchar[socket] ), socket );
+		case 6: Resign( cSerializable::findCharBySerial( currchar[socket] ), socket );
 			break;
 		case 7: Menu(socket,6);
 			break;
@@ -1209,7 +1209,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 
 void cGuilds::ChangeName(NXWSOCKET s, char *text)
 {
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	int guildnumber=Guilds->SearchByStone(s);
@@ -1254,7 +1254,7 @@ void cGuilds::ChangeName(NXWSOCKET s, char *text)
 
 void cGuilds::ChangeAbbreviation(int s, char *text)
 {
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	int guildnumber=Guilds->SearchByStone(s);
@@ -1289,7 +1289,7 @@ void cGuilds::ChangeAbbreviation(int s, char *text)
 // private field (as backup buffer) and notifies editing player about the change.
 void cGuilds::ChangeTitle(int s, char *text)
 {
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	int guildnumber=Guilds->SearchByStone(s);
@@ -1321,7 +1321,7 @@ void cGuilds::ChangeTitle(int s, char *text)
 // gets calculated from the double clicked guildstones), and notifies editing player about the change.
 void cGuilds::ChangeCharter(int s, char *text)
 {
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	int guildnumber=Guilds->SearchByStone(s);
@@ -1339,7 +1339,7 @@ void cGuilds::ChangeCharter(int s, char *text)
 // gets calculated from the double clicked guildstones), and notifies editing player about the change.
 void cGuilds::ChangeWebpage(int s, char *text)
 {
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	int guildnumber = Guilds->SearchByStone(s);
@@ -1462,7 +1462,7 @@ int cGuilds::SearchByStone(int s)
 {
 	int guildnumber;
 
-	pChar pc = MAKE_CHAR_REF(currchar[s]);
+	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return INVALID;
 
 	pItem pStone=MAKE_ITEM_REF(pc->fx1);
@@ -1758,7 +1758,7 @@ int cGuilds::CheckValidPlace(int s)
 	int los;
 	pItem pi;
 	pItem pack;
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	pItem house=findmulti( pc->getPosition() );
 	if ( ! house ) return 0;
 

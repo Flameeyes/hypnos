@@ -167,10 +167,8 @@ static void item_char_test()
 /*!
 \todo backport into cChar
 */
-void callguards( CHARACTER p )
+void callguards( pChar caller )
 {
-	pChar	caller = MAKE_CHAR_REF( p );
-
 	if ( !caller )
 		return;
 
@@ -396,7 +394,7 @@ void checkkey ()
 				j = 0;  //Fix bug counting ppl online.
 				for (i=0;i<now;i++)
 				{
-					pChar pc_i=MAKE_CHAR_REF(currchar[i]);
+					pChar pc_i=cSerializable::findCharBySerial(currchar[i]);
 					if(pc_i && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
 					{
 						ConOut("%i) %s [ %08x ]\n", j, pc_i->getCurrentName().c_str(), pc_i->getSerial());
@@ -877,7 +875,7 @@ int main(int argc, char *argv[])
 
 			for (r=0;r<now;r++)
 			{
-				pChar pc_r=MAKE_CHAR_REF(currchar[r]);
+				pChar pc_r=cSerializable::findCharBySerial(currchar[r]);
 				if(! pc_r )
 					continue;
 				if (!pc_r->IsGM()
@@ -1048,14 +1046,13 @@ void telltime( NXWCLIENT ps )
 \brief direction from character a to position x,y
 \author ?
 \return int direction
-\param a first character
+\param pc first character
 \param x X-coordinate
 \param y Y-coordinate
 */
-int chardirxyz(int a, int x, int y)
+int chardirxyz(pChar pc, int x, int y)
 {
-	pChar pc = MAKE_CHAR_REF( a );
-	if ( ! pc ) return INVALID;
+	if ( !pc ) return INVALID;
 
 	int dir,xdif,ydif;
 
@@ -1076,14 +1073,13 @@ int chardirxyz(int a, int x, int y)
 }
 
 
-int fielddir(CHARACTER s, int x, int y, int z)
+int fielddir(pChar pc, int x, int y, int z)
 {
 //WARNING: unreferenced formal parameter z
 
-	pChar pc=MAKE_CHAR_REF(s);
-	if ( ! pc ) return 0;
+	if ( !pc ) return 0;
 
-	int dir=chardirxyz(s, x, y);
+	int dir=chardirxyz(pc, x, y);
 	switch (dir)
 	{
 	case 0:
@@ -1544,7 +1540,7 @@ unsigned long CheckMilliTimer(unsigned long &Seconds, unsigned long &Millisecond
 
 void enlist(int s, int listnum) // listnum is stored in items morex
 {
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	int x,j;

@@ -908,7 +908,7 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 void cNetwork::enterchar(int s)
 {
 	if (s < 0 || s >= now) return; //Luxor
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	uint8_t startup[38]="\x1B\x00\x05\xA8\x90\x00\x00\x00\x00\x01\x90\x06\x08\x06\x49\x00\x0A\x04\x00\x00\x00\x7F\x00\x00\x00\x00\x00\x07\x80\x09\x60\x00\x00\x00\x00\x00\x00";
@@ -993,7 +993,7 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 
 	if ( s < 0 || s >= now ) //Luxor
 		return;
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 #ifdef ENCRYPTION
 	pc->setCrypter(clientCrypter[s]);

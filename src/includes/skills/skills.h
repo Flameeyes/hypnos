@@ -25,8 +25,8 @@ namespace Skills {
 	/*!
 	\name General Skill stuff
 	*/
-	bool AdvanceSkill(CHARACTER s, int sk, char skillused);
-	void AdvanceStats(CHARACTER s, int sk);
+	bool AdvanceSkill(pChar pc, int sk, char skillused);
+	void AdvanceStats(pChar pc, int sk);
 	void SkillUse(NXWSOCKET s, int x);
 	void updateSkillLevel(pChar pc, int s);
 	//@}
@@ -77,7 +77,7 @@ namespace Skills {
 	/*!
 	\name Alchemy stuff
 	*/
-	void CreatePotion(CHARACTER s, char type, char sub, int mortar);
+	void CreatePotion(pChar pc, char type, char sub, int mortar);
 	void DoPotion(NXWSOCKET s, int32_t type, int32_t sub, pItem mortar);
 	void target_alchemy( NXWCLIENT ps, pTarget t );
 	void target_bottle( NXWCLIENT ps, pTarget t );
@@ -183,7 +183,7 @@ namespace Skills {
 	void Decipher(pItem tmap, NXWSOCKET s); //!< By Polygon - attempt to decipher a tattered treasure map
 	//@}
 
-	int GetAntiMagicalArmorDefence(CHARACTER p); //!< blackwind meditation armor stuff
+	int GetAntiMagicalArmorDefence(pChar pc); //!< blackwind meditation armor stuff
 };
 void snooping( pChar snooper, pItem cont );
 

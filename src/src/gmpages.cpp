@@ -151,7 +151,7 @@ void cmdNextCall(pClient cli)
 	int i;
 	int x=0;
 	
-	pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
+	pChar pc_currchar = cSerializable::findCharBySerial(currchar[s]);
 	
 	if(pc_currchar->callnum!=0)
 	{

@@ -513,7 +513,7 @@ void deedhouse(NXWSOCKET s, pItem pi)
 {
 	uint32_t x1, y1, x2, y2;
 	if ( ! pi ) return;
-	pChar pc = MAKE_CHAR_REF(currchar[s]);
+	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 	Location charpos= pc->getPosition();
 
@@ -607,7 +607,7 @@ void killhouse(ITEM i)
 	int a;
 	for (a = 0; a < charcount; a++) // deleting npc-vendors attched to the decying house
 	{
-		pc = MAKE_CHAR_REF(a);
+		pc = cSerializable::findCharBySerial(a); /// !!!!!!!!!!!!!!
 		Location charpos= pc->getPosition();
 
 		if ((charpos.x >= x1) && (charpos.y >= y1) && (charpos.x <= x2) && (charpos.y <= y2) && !pc->free)
@@ -790,7 +790,7 @@ int add_hlist(int c, int h, int t)
 {
 	uint32_t sx, sy, ex, ey;
 
-	pChar pc=MAKE_CHAR_REF(c);
+	pChar pc=cSerializable::findCharBySerial(c);
 	pItem pi_h=MAKE_ITEM_REF(h);
 	if ( ! pc || ! pi_h ) return 3;
 
@@ -841,7 +841,7 @@ int del_hlist(int c, int h)
 {
 	int hl, li;
 
-	pChar pc=MAKE_CHAR_REF(c);
+	pChar pc=cSerializable::findCharBySerial(c);
 	pItem pi=MAKE_ITEM_REF(h);
 	
 	if ( ! pc || ! pi ) return 0;
@@ -1042,7 +1042,7 @@ void target_houseOwner( NXWCLIENT ps, pTarget t )
 // buffer[0] house
 void target_houseEject( NXWCLIENT ps, pTarget t )
 {
-	pChar pc = MAKE_CHAR_REF(t->getClicked());
+	pChar pc = cSerializable::findCharBySerial(t->getClicked());
 	if ( ! pc ) return;
 	pItem pi_h=MAKE_ITEM_REF(t->buffer[0]);
 	if ( ! pi_h ) return;

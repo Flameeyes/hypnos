@@ -1288,7 +1288,7 @@ static bool callGuards( pChar pc, NXWSOCKET socket, string &helpcall )
 		//
 		// TODO Check if not part of another word or part of not help call related speech
 		//
-		callguards(currchar[socket]);
+		callguards(cSerializable::findCharBySerial(currchar[socket]));
 		success = true;
 	}
 	return success;

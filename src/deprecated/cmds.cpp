@@ -179,7 +179,7 @@ void Command(NXWSOCKET  s, char* speech) // Client entred a command like 'ADD
 		//cCallCommandMap* callcommands = new cCallCommandMap()
 		
 		
-		pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
+		pChar pc_currchar =  cSerializable::findCharBySerial(currchar[s]);
 		if ( ! pc_currchar )
 			return;
 
