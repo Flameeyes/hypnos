@@ -14,7 +14,6 @@
 #ifndef _HYPNOS_UNIX_
 #define _HYPNOS_UNIX_
 
-#include <unistd.h>
 #include <termios.h>
 #include <unistd.h>
 

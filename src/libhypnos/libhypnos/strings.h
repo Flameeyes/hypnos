@@ -4,6 +4,9 @@
 | This software is free software released under GPL2 license.              |
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
+| Copyright (c) 2004 - Hypnos Project                                      |
+| str(n)casecmp (c) 1996 Alexandre Julliard - Wine Project                 |
+|                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
@@ -203,20 +206,20 @@ char *strlwr(char *);
 char *strupr(char *);
 #endif
 
-#if !defined(HAVE_STRCASECMP) && !defined(HAVE_STRCMPI)
-	#warning You miss both strcasecmp() and strcmpi() functions. \
-		Using case-sensitive functions
-	#define strcasecmp strcmp
-	
-	//!\todo Write a stub for strcasecmp
-#endif
+#ifndef HAVE_STRNCASECMP
+# ifdef HAVE_STRNICMP
+#  define strncasecmp strnicmp
+# else
+int strncasecmp(const char *str1, const char *str2, size_t n);
+# endif
+#endif // !defined(HAVE_STRNCASECMP)
 
-#if !defined(HAVE_STRNCASECMP) && !defined(HAVE_STRNCMPI)
-	#warning You miss both strncasecmp() and strncmpi() functions. \
-		Using case-sensitive functions
-	#define strncasecmp strncmp
-
-	//!\todo Write a stub for strncasecmp
-#endif
+#ifndef HAVE_STRCASECMP
+# ifdef HAVE_STRICMP
+#  define strcasecmp stricmp
+# else
+int strcasecmp(const char *str1, const char *str2);
+# endif
+#endif // !defined(HAVE_STRCASECMP)
 
 #endif

@@ -4,6 +4,9 @@
 | This software is free software released under GPL2 license.              |
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
+| Copyright (c) 2004 - Hypnos Project                                      |
+| str(n)casecmp (c) 1996 Alexandre Julliard - Wine Project                 |
+|                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "libhypnos/strings.h"
@@ -195,3 +198,35 @@ char *strupr(char *str) {
   return str;
 }
 #endif
+
+#ifndef HAVE_STRNCASECMP
+int strncasecmp( const char *str1, const char *str2, size_t n )
+{
+    const unsigned char *ustr1 = (const unsigned char *)str1;
+    const unsigned char *ustr2 = (const unsigned char *)str2;
+    int res;
+
+    if (!n) return 0;
+    while ((--n > 0) && *ustr1)
+    {
+        if ((res = toupper(*ustr1) - toupper(*ustr2))) return res;
+        ustr1++;
+        ustr2++;
+    }
+    return toupper(*ustr1) - toupper(*ustr2);
+}
+#endif // HAVE_STRNCASECMP
+
+#ifndef HAVE_STRCASECMP
+int strcasecmp( const char *str1, const char *str2 )
+{
+    const unsigned char *ustr1 = (const unsigned char *)str1;
+    const unsigned char *ustr2 = (const unsigned char *)str2;
+
+    while (*ustr1 && toupper(*ustr1) == toupper(*ustr2)) {
+        ustr1++;
+        ustr2++;
+    }
+    return toupper(*ustr1) - toupper(*ustr2);
+}
+#endif // HAVE_STRCASECMP
