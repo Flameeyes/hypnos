@@ -243,7 +243,7 @@ void cChar::resetData()
 
 	crimflag=0; //Time when No longer criminal
 	spelltime=0; //Time when they are done casting....
-	spell=magic::SPELL_INVALID; //current spell they are casting....
+	spell=magic::spellInvalid; //current spell they are casting....
 	spellaction=0; //Action of the current spell....
 	nextact=0; //time to next spell action....
 	squelched=0; // zippy  - squelching
@@ -591,7 +591,7 @@ void cChar::MoveTo(sLocation newloc)
 	if ( newloc != getPosition() && (flags & flagIsCasting) && (dynamic_cast<pPC>(this)) ) {
 		getClient()->sysmessage( "You stop casting the spell." );
 		flags &= ~flagIsCasting;
-		spell = magic::SPELL_INVALID;
+		spell = magic::spellInvalid;
 		spelltime = 0;
 	}
 	// </Luxor>

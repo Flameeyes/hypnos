@@ -154,9 +154,9 @@ bool isDestRepeatable(int num)
 		case spellClumsy:
 		case spellFeebleMind:
 		case spellWeaken:
-		case SPELL_AGILITY:
-		case SPELL_STRENGHT:
-		case SPELL_CUNNING:
+		case spellAgility:
+		case spellStrenght:
+		case spellCunning:
 		case SPELL_BLESS:
 		case SPELL_CURSE:
 		case SPELL_INCOGNITO:
@@ -202,13 +202,13 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 		case spellClumsy:
 		case spellFeebleMind:
 		case spellWeaken:
-		case SPELL_AGILITY:
-		case SPELL_STRENGHT:
-		case SPELL_CUNNING:
+		case spellAgility:
+		case spellStrenght:
+		case spellCunning:
 		case SPELL_BLESS:
 		case SPELL_CURSE:
 		case SPELL_REACTARMOR:
-		case SPELL_PROTECTION:
+		case spellProtection:
 			if(!src) return 0;
 			dur = src->skill[skMagery]/10;
 			break;
@@ -367,21 +367,21 @@ void cTempfx::start()
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_AGILITY:
+		case spellAgility:
 			dest->dx += m_nMore1;
 			dest->stm += m_nMore1;
 			if (dest->getClient())
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_STRENGHT:
+		case spellStrenght:
 			dest->modifyStrength(m_nMore1);
 			dest->hp += m_nMore1;
 			if (dest->getClient())
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_CUNNING:
+		case spellCunning:
 			dest->in += m_nMore1;
 			dest->mn += m_nMore1;
 			if (dest->getClient())
@@ -553,7 +553,7 @@ void cTempfx::start()
 			dest->getClient()->sendchar(dest, false);*/
 			break;
 
-		case SPELL_PROTECTION:
+		case spellProtection:
 			dest->nxwflags[0] |= cChar::flagSpellProtection;
 			break;
 
@@ -672,7 +672,7 @@ void cTempfx::executeExpireCode()
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_AGILITY:
+		case spellAgility:
 			if ( ! dest ) return;
 			dest->dx -= m_nMore1;
 			dest->stm = min(dest->stm, dest->dx);
@@ -680,7 +680,7 @@ void cTempfx::executeExpireCode()
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_STRENGHT:
+		case spellStrenght:
 			if ( ! dest ) return;
 			dest->modifyStrength(-m_nMore1);
 			dest->hp = min(dest->hp, (int32_t)dest->getStrength());
@@ -688,7 +688,7 @@ void cTempfx::executeExpireCode()
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_CUNNING:
+		case spellCunning:
 			if ( ! dest ) return;
 			dest->in -= m_nMore1;
 			dest->mn = min(dest->mn, dest->in);
@@ -818,7 +818,7 @@ void cTempfx::executeExpireCode()
 			} nextIndex(p_nearchar);*/
 			break;
 
-		case SPELL_PROTECTION:
+		case spellProtection:
 			if ( ! dest ) return;
 			dest->nxwflags[0] &= ~cChar::flagSpellProtection;
 			break;
@@ -926,15 +926,15 @@ void cTempfx::activate()
 			dest->modifyStrength(-m_nMore1);
 			break;
 
-		case SPELL_AGILITY:
+		case spellAgility:
 			dest->dx += m_nMore1;
 			break;
 
-		case SPELL_STRENGHT:
+		case spellStrenght:
 			dest->modifyStrength(m_nMore1);
 			break;
 
-		case SPELL_CUNNING:
+		case spellCunning:
 			dest->in += m_nMore1;
 			break;
 
@@ -1010,15 +1010,15 @@ void cTempfx::deactivate()
 			dest->modifyStrength(m_nMore1);
 			break;
 
-		case SPELL_AGILITY:
+		case spellAgility:
 			dest->dx -= m_nMore1;
 			break;
 
-		case SPELL_STRENGHT:
+		case spellStrenght:
 			dest->modifyStrength(-m_nMore1);
 			break;
 
-		case SPELL_CUNNING:
+		case spellCunning:
 			dest->in -= m_nMore1;
 			break;
 

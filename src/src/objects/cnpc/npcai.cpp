@@ -143,7 +143,7 @@ void cNPC::checkAI()
 				}
 				else
 					if (poisoned > 0)
-						beginCasting(this, magic::SPELL_CURE);
+						beginCasting(this, magic::spellCure);
 			}
 #ifdef SPAR_NEW_WR_SYSTEM
 			pointers::pCharVector *pcv = pointers::getCharsNearLocation( this, VISRANGE, pointers::NPC );
@@ -495,7 +495,7 @@ void cNPC::checkAI()
 				}
 				if (poisoned > 0) {
 					talkAll("An Nox", 1);
-					beginCasting(this, magic::SPELL_CURE );
+					beginCasting(this, magic::spellCure );
 				}
 				if ( pj->isDispellable() ) {
 					talkAll("An Ort", 1);

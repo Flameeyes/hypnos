@@ -115,7 +115,8 @@ namespace magic {
 	*/
 	enum SpellId {
 		// Level 1
-		spellClumsy = 0,
+		spellInvalid = -1,
+		spellClumsy,
 		spellCreateFood,
 		spellFeebleMind,
 		spellHeal,
@@ -124,14 +125,14 @@ namespace magic {
 		spellReactiveArmour,
 		spellWeaken,
 		// Level 2
-		SPELL_AGILITY,
-		SPELL_CUNNING,
-		SPELL_CURE,
-		SPELL_HARM,
-		SPELL_TRAP,
-		SPELL_UNTRAP,
-		SPELL_PROTECTION,
-		SPELL_STRENGHT,
+		spellAgility,
+		spellCunning,
+		spellCure,
+		spellHarm,
+		spellTrap,
+		spellUntrap,
+		spellProtection,
+		spellStrenght,
 		// Level 3
 		SPELL_BLESS,
 		SPELL_FIREBALL,
@@ -187,8 +188,7 @@ namespace magic {
 		SPELL_SUMMON_FIRE,
 		SPELL_SUMMON_WATER,
 
-		MAX_SPELLS,
-		SPELL_INVALID = -1
+		MAX_SPELLS
 	};
 
 	enum CastingType {

@@ -53,7 +53,7 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 				pc_att->beginCasting(pc_def, magic::spellMagicArrow );
 				break;
 			case 2:
-				pc_att->beginCasting(pc_def, magic::SPELL_HARM );
+				pc_att->beginCasting(pc_def, magic::spellHarm );
 				break;
 			case 3:
 				pc_att->beginCasting(pc_def, magic::spellClumsy );
@@ -210,7 +210,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::spellMagicArrow );
 			break;
 		case 2:
-			pc_att->beginCasting(pc_def, magic::SPELL_HARM );
+			pc_att->beginCasting(pc_def, magic::spellHarm );
 			break;
 		case 3:
 			pc_att->beginCasting(pc_def, magic::spellClumsy );
@@ -261,7 +261,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_att, magic::SPELL_GREATHEAL );
 			break;
 		case 19:
-			pc_att->beginCasting(pc_att, magic::SPELL_CURE );
+			pc_att->beginCasting(pc_att, magic::spellCure );
 			break;
 		case 22:
 			pc_att->beginCasting(pc_def, magic::SPELL_POISON );

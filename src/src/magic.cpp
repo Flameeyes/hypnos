@@ -436,27 +436,27 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			pcto->playSFX( 0x1E6 );
 			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
-		case SPELL_AGILITY:
+		case spellAgility:
 			pcto->playSFX( 0x1E7 );
 			staticFX(pcto, 0x375A, 0, 10, &spfx );
 			break;
-		case SPELL_CUNNING:
+		case spellCunning:
 			pcto->playSFX( 0x1EB );
 			staticFX(pcto, 0x375A, 0, 10, &spfx );
 			break;
-		case SPELL_CURE:
+		case spellCure:
 			pcto->playSFX( 0x1E0 );
 			staticFX(pcto, 0x376A, 0, 10, &spfx );
 			break;
-		case SPELL_HARM:
+		case spellHarm:
 			pcto->playSFX( 0x1F1 );
 			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
-		case SPELL_PROTECTION:
+		case spellProtection:
 			pcto->playSFX( 0x1ED );
 			staticFX(pcto, 0x373A, 0, 10, &spfx );
 			break;
-		case SPELL_STRENGHT:
+		case spellStrenght:
 			pcto->playSFX( 0x1EE );
 			staticFX(pcto, 0x375A, 0, 10, &spfx );
 			break;
@@ -831,13 +831,13 @@ static inline int spellTargetType(SpellId spellnum)
 		case SPELL_DISPEL:
 		case SPELL_CURSE:
 		case SPELL_POISON:
-		case SPELL_CUNNING:
-		case SPELL_AGILITY:
-		case SPELL_STRENGHT:
+		case spellCunning:
+		case spellAgility:
+		case spellStrenght:
 		case SPELL_BLESS:
 		case spellHeal:
 		case SPELL_GREATHEAL:
-		case SPELL_CURE:
+		case spellCure:
 		case SPELL_ARCHCURE:
 		case SPELL_RESURRECTION:
 		case spellMagicArrow:
@@ -845,14 +845,14 @@ static inline int spellTargetType(SpellId spellnum)
 		case SPELL_EXPLOSION:
 		case SPELL_LIGHTNING:
 		case SPELL_ENERGYBOLT:
-		case SPELL_HARM:
+		case spellHarm:
 		case SPELL_MINDBLAST:
 		case SPELL_MANADRAIN:
 		case SPELL_MANAVAMPIRE:
 			return TARGTYPE_CHAR;
 
 		case spellReactiveArmour:
-		case SPELL_PROTECTION:
+		case spellProtection:
 		case SPELL_ARCHPROTECTION:
 		case SPELL_INCOGNITO:
 		case SPELL_REFLECTION:
@@ -869,8 +869,8 @@ static inline int spellTargetType(SpellId spellnum)
 		case SPELL_POLYMORPH:
 			return TARGTYPE_NONE;
 
-		case SPELL_TRAP:
-		case SPELL_UNTRAP:
+		case spellTrap:
+		case spellUntrap:
 			return TARGTYPE_CONTAINER;
 
 		case SPELL_LOCK:
@@ -1030,7 +1030,7 @@ SpellId spellNumberFromScrollId(int id)
 	if (id==0x1F2D) 		return spellReactiveArmour;			// Reactive Armor
 	if (id>=0x1F2E && id<=0x1F33)	return static_cast<SpellId>(id-0x1F2D-1);	// first circle without weaken
 	if (id>=0x1F34 && id<=0x1F6C)	return static_cast<SpellId>(id-0x1F2D);		// 2 to 8 circle spell scrolls plus weaken
-	return SPELL_INVALID;
+	return spellInvalid;
 }
 
 
@@ -1104,17 +1104,17 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 			duration = int( pa->skill[skMagery] * 0.12 );
 			tempfx::add(pa, pd, tempfx::SPELL_CURSE, bonus, bonus, bonus, duration);
 			break;
-		case SPELL_CUNNING:
+		case spellCunning:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
-			tempfx::add(pa, pd, tempfx::SPELL_CUNNING, bonus, 0, 0, duration);
+			tempfx::add(pa, pd, tempfx::spellCunning, bonus, 0, 0, duration);
 			break;
-		case SPELL_AGILITY:
+		case spellAgility:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
-			tempfx::add(pa, pd, tempfx::SPELL_AGILITY, bonus, 0, 0, duration);
+			tempfx::add(pa, pd, tempfx::spellAgility, bonus, 0, 0, duration);
 			break;
-		case SPELL_STRENGHT:
+		case spellStrenght:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
-			tempfx::add(pa, pd, tempfx::SPELL_STRENGHT, bonus, 0, 0, duration);
+			tempfx::add(pa, pd, tempfx::spellStrenght, bonus, 0, 0, duration);
 			break;
 		case SPELL_BLESS:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
@@ -1269,9 +1269,9 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 	switch (spellnumber)
 	{
-		case SPELL_CUNNING:
-		case SPELL_AGILITY:
-		case SPELL_STRENGHT:
+		case spellCunning:
+		case spellAgility:
+		case spellStrenght:
 		case SPELL_BLESS:
 			if (pd) {
 				CHECKDISTANCE(src, pd);
@@ -1314,7 +1314,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_LIGHTNING:
 		case SPELL_EXPLOSION:
 		case SPELL_ENERGYBOLT:
-		case SPELL_HARM:
+		case spellHarm:
 		case SPELL_METEORSWARM:
 		case SPELL_CHAINLIGHTNING:
 		case SPELL_EARTHQUAKE:
@@ -1406,7 +1406,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				client->sysmessage("You cannot unlock this!!!");
 			break;
 
-		case SPELL_TRAP:
+		case spellTrap:
 			if (pi) {
 				if(( pi->type==ITYPE_DOOR || pi->type==ITYPE_CONTAINER || pi->type==ITYPE_LOCKED_ITEM_SPAWNER ||
 				     pi->type==ITYPE_LOCKED_CONTAINER || pi->type==ITYPE_UNLOCKED_CONTAINER) && pi->getId()!=0x0E75 )
@@ -1428,7 +1428,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_UNTRAP:
+		case spellUntrap:
 			if (pi) {
 				if((  pi->type==ITYPE_DOOR || pi->type==ITYPE_CONTAINER || pi->type==ITYPE_LOCKED_ITEM_SPAWNER ||
 				      pi->type==ITYPE_LOCKED_CONTAINER || pi->type==ITYPE_UNLOCKED_CONTAINER))
@@ -1567,11 +1567,11 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_PROTECTION:
+		case spellProtection:
 			spellFX(spellnumber, src, pd);
 			if (nTime==INVALID) nTime = src->skill[nSkill]/15;
 			if (nValue==INVALID) nValue = src->skill[nSkill]/10;
-			tempfx::add(src,src, tempfx::SPELL_PROTECTION, nValue, 0, 0, nTime);
+			tempfx::add(src,src, tempfx::spellProtection, nValue, 0, 0, nTime);
 			break;
 
 		case SPELL_ARCHPROTECTION:
@@ -1589,7 +1589,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
 				if( pd ) {
-					tempfx::add(pd,pd, tempfx::SPELL_PROTECTION, nValue, 0, 0, nTime);
+					tempfx::add(pd,pd, tempfx::spellProtection, nValue, 0, 0, nTime);
 					spellFX(spellnumber, src, pd);
 				}
 			}
@@ -1642,7 +1642,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			} //pd!=NULL
 			break;
 
-		case SPELL_CURE:
+		case spellCure:
 			if (pd==NULL) pd = src;
                         CHECKDISTANCE(src, pd);
                         if (pd!=NULL) pd->curePoison();
@@ -2063,9 +2063,9 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	std::map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
 	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
-	pc->delTempfx( tempfx::SPELL_STRENGHT );
-	pc->delTempfx( tempfx::SPELL_CUNNING );
-	pc->delTempfx( tempfx::SPELL_AGILITY );
+	pc->delTempfx( tempfx::spellStrenght );
+	pc->delTempfx( tempfx::spellCunning );
+	pc->delTempfx( tempfx::spellAgility );
 	pc->delTempfx( tempfx::spellFeebleMind );
 	pc->delTempfx( tempfx::spellClumsy );
 	pc->delTempfx( tempfx::SPELL_CURSE );
@@ -2086,7 +2086,7 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 		case 0xd3:
 		case 0xd4:
 		case 0xd5:
-			pc->addTempfx( *pc, tempfx::SPELL_STRENGHT, 40, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::spellStrenght, 40, 0, 0, polyduration );
 			pc->addTempfx( *pc, tempfx::SPELL_CURSE, 0, 15, 20, polyduration );
 			break;
 		case 0xd0:
@@ -2103,19 +2103,19 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 		case 0x23:
 		case 0x1:
 		case 0x10:
-			pc->addTempfx( *pc, tempfx::SPELL_STRENGHT, 30, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::spellStrenght, 30, 0, 0, polyduration );
 			break;
 		case 0xe:
-			pc->addTempfx( *pc, tempfx::SPELL_STRENGHT, 50, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::spellStrenght, 50, 0, 0, polyduration );
 			break;
 		case 0xc8:
-			pc->addTempfx( *pc, tempfx::SPELL_AGILITY, 50, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::spellAgility, 50, 0, 0, polyduration );
 			break;
 		case 0x3a:
-			pc->addTempfx( *pc, tempfx::SPELL_CUNNING, 40, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::spellCunning, 40, 0, 0, polyduration );
 			break;
 		case 0x32:
-			pc->addTempfx( *pc, tempfx::SPELL_STRENGHT, 10, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::spellStrenght, 10, 0, 0, polyduration );
 			pc->addTempfx( *pc, tempfx::spellFeebleMind, 20, 0, 0, polyduration );
 			break;
 	}

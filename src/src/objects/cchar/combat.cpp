@@ -318,7 +318,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	//when hit and damage >1, defender fails if casting a spell!
 	if (damage > 1 && !pc_def->npc) {
 		if (pc_def->casting && pc_def->checkForCastingLoss(damage)) {
-			pc_def->spell = magic::SPELL_INVALID;
+			pc_def->spell = magic::spellInvalid;
 			pc_def->casting = 0;
 			pc_def->spelltime = 0;
 			pc_def->unfreeze();
