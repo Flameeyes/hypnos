@@ -19,7 +19,7 @@ cBody::cBody()
 {
 	memset( layers, 0, sizeof(layers) );
 	memset( skills, 0, sizeof(skills) );
-	mouinting = NULL;
+	mounting = NULL;
 }
 
 /*!
