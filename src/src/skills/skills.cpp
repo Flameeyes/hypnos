@@ -5,9 +5,12 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+
+#include <fstream>
 #include "common_libs.h"
-#include "skills.h"
+#include "skills/skills.h"
 #include "settings.h"
+#include "backend/strconstants.h"
 
 //int goldsmithing;
 //1=iron, 2=golden, 3=agapite, 4=shadow, 5=mythril, 6=bronze, 7=verite, 8=merkite, 9=copper, 10=silver
@@ -33,68 +36,6 @@ nSkills::sSkillInfo::sSkillInfo()
 }
 
 /*!
-\brief Translate a sk??? string into the c++ constant
-\param str String representing the skill
-\return The skill constant or skInvalid if invalid string
-\note The function is case sensitive
-\todo Make it case insensitive, maybe?
-*/
-Skill nSkills::string2Constant(std::string str)
-{
-	if ( str == "skAlchemy" ) return skAlchemy;
-	else if ( str == "skAnatomy" ) return skAnatomy;
-	else if ( str == "skAnimalLore" ) return skAnimalLore;
-	else if ( str == "skItemID" ) return skItemID;
-	else if ( str == "skArmsLore" ) return skArmsLore;
-	else if ( str == "skParrying" ) return skParrying;
-	else if ( str == "skBegging" ) return skBegging;
-	else if ( str == "skBlacksmithing" ) return skBlacksmithing;
-	else if ( str == "skBowcraft" ) return skBowcraft;
-	else if ( str == "skPeacemaking" ) return skPeacemaking;
-	else if ( str == "skCamping" ) return skCamping;
-	else if ( str == "skCarpentry" ) return skCarpentry;
-	else if ( str == "skCartography" ) return skCartography;
-	else if ( str == "skCooking" ) return skCooking;
-	else if ( str == "skDetectingHidden" ) return skDetectingHidden;
-	else if ( str == "skEnticement" ) return skEnticement;
-	else if ( str == "skEvaluatingIntelligence" ) return skEvaluatingIntelligence;
-	else if ( str == "skHealing" ) return skHealing;
-	else if ( str == "skFishing" ) return skFishing;
-	else if ( str == "skForensics" ) return skForensics;
-	else if ( str == "skHerding" ) return skHerding;
-	else if ( str == "skHiding" ) return skHiding;
-	else if ( str == "skProvocation" ) return skProvocation;
-	else if ( str == "skInscription" ) return skInscription;
-	else if ( str == "skLockPicking" ) return skLockPicking;
-	else if ( str == "skMagery" ) return skMagery;
-	else if ( str == "skMagicResistance" ) return skMagicResistance;
-	else if ( str == "skTactics" ) return skTactics;
-	else if ( str == "skSnooping" ) return skSnooping;
-	else if ( str == "skMusicianship" ) return skMusicianship;
-	else if ( str == "skPoisoning" ) return skPoisoning;
-	else if ( str == "skArchery" ) return skArchery;
-	else if ( str == "skSpiritSpeak" ) return skSpiritSpeak;
-	else if ( str == "skStealing" ) return skStealing;
-	else if ( str == "skTailoring" ) return skTailoring;
-	else if ( str == "skTaming" ) return skTaming;
-	else if ( str == "skTasteID" ) return skTasteID;
-	else if ( str == "skTinkering" ) return skTinkering;
-	else if ( str == "skTracking" ) return skTracking;
-	else if ( str == "skVeterinary" ) return skVeterinary;
-	else if ( str == "skSwordsmanship" ) return skSwordsmanship;
-	else if ( str == "skMacefighting" ) return skMacefighting;
-	else if ( str == "skFencing" ) return skFencing;
-	else if ( str == "skWrestling" ) return skWrestling;
-	else if ( str == "skLumberjacking" ) return skLumberjacking;
-	else if ( str == "skMining" ) return skMining;
-	else if ( str == "skMeditation" ) return skMeditation;
-	else if ( str == "skStealth" ) return skStealth;
-	else if ( str == "skRemoveTraps" ) return skRemoveTraps;
-	else if ( str == "skTrueSkills" ) return skTrueSkills;
-	else return skInvalid;
-}
-
-/*!
 \brief Loads the skills from skills.xml
 
 This function loads the skills' infos from skills.xml datafile, and stores them
@@ -106,9 +47,9 @@ into nSkill::infos array.
 */
 void nSkills::loadSkills()
 {
-	ConOut("Loading skills information...\t\t")
+	ConOut("Loading skills information...\t\t");
 	
-	std::istream xmlfile("config/skills.xml");
+	std::ifstream xmlfile("config/skills.xml");
 	if ( ! xmlfile )
 	{
 		ConOut("[ Failed ]\n");
@@ -130,7 +71,7 @@ void nSkills::loadSkills()
 			}
 			
 			try {
-				Skill sk = n->getAttribute("name");
+				Skill sk = nStrConstants::skill(n->getAttribute("name"));
 				if ( sk == skInvalid )
 				{
 					LogWarning("Unknown skill name in skills.xml, ignoring");

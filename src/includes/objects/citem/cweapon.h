@@ -47,11 +47,15 @@ public:
 	static void loadWeaponsInfo();
 	static const bool isWeaponLike(uint16_t id, uint16_t type);
 
-	Skill getCombatSkill();
+	const bool isWeaponLike(uint16_t type) const
+	{ return isWeaponLike(getId(), type); }
+	
+	const Skill getCombatSkill() const;
 protected:
 	typedef std::map<uint16_t,uint16_t> WeaponMap;
 	//! Map with types of weapons
-	static WeaponMap weaponinfo;
+	static WeaponMap weaponinfo;		//!< Weapon's information
+	Skill combatSkill;			//!< Combat skill used by the weapon
 //@}
 
 //@{

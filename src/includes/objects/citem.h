@@ -23,7 +23,7 @@ class cItem : public cObject, public cSerializable
 {
 protected:
 	static uint32_t nextSerial;
-	uint32_t newSerial();
+	uint32_t getNewSerial();
 
 	virtual uint16_t eventsNumber() const
 	{ return evtItmMax; }

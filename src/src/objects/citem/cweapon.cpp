@@ -5,24 +5,23 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief cWeapon implementation
-*/
 
+#include <fstream>
+#include <mxml.h>
 #include "objects/citem/cweapon.h"
+#include "backend/strconstants.h"
+#include "logsystem.h"
 
 cWeapon::WeaponMap cWeapon::weaponinfo;
 
-cWeapon::cWeapon()
+cWeapon::cWeapon() : cItem()
 {
-	cWeapon(nextSerial());
 }
 
 cWeapon::cWeapon(uint32_t serial) :
 	cItem(serial)
 {
-	classType = cItem::itWeapon;
+	combatSkill = skInvalid;
 }
 
 /*!
@@ -40,42 +39,91 @@ const bool cWeapon::isWeaponLike( uint16_t id, uint16_t type )
 }
 
 /*!
+\brief Tells the combat skill used by the weapon
+
+This function check the combatSkill attribute and, if skInvalid, checks
+againts the ID of the weapon
+*/
+const Skill cWeapon::getCombatSkill() const
+{
+	if ( combatSkill != skInvalid )
+		return combatSkill;
+	
+	if ( isWeaponLike(weaponSword1H|weaponSword2H|weaponAxe1H|weaponAxe2H) )
+		return skSwordsmanship;
+	
+	if ( isWeaponLike(weaponFenc1H|weaponFenc2H) )
+		return skFencing;
+	
+	if ( isWeaponLike(weaponMace1H|weaponMace2H|weaponStave1H|weaponStave2H) )
+		return skMacefighting;
+	
+	if ( isWeaponLike(weaponBow|weaponXBow|weaponHXBow) )
+		return skArchery;
+}
+
+/*!
 \brief Loads data about weapons from scripts
 \todo rewrite it via xml, this will not work!
 */
 void cWeapon::loadWeaponsInfo()
 {
-#if 0
-	cScpIterator* iter = NULL;
-	char script1[1024];
-	char script2[1024];
-	uint16_t id=0xFFFF;
-	uint16_t type=weaponSword1H;
-
-	int loopexit=0;
-	do
+	ConOut("Loading weapons information...\t\t");
+	
+	std::ifstream xmlfile("config/weapons.xml");
+	if ( ! xmlfile )
 	{
-		safedelete(iter);
-		iter = Scripts::WeaponInfo->getNewIterator("SECTION WEAPONTYPE %i", type );
-		if( iter==NULL ) continue;
-
-		do
-		{
-			iter->parseLine(script1, script2);
-			if ((script1[0]!='}')&&(script1[0]!='{'))
+		ConOut("[ Failed ]\n");
+		LogCritical("Unable to open weapons.xml file.");
+		return;
+	}
+	
+	try {
+		MXML::Document doc(xmlfile);
+		
+		MXML::Node *n = doc.main()->child();
+		if ( ! n ) return;
+		
+		do {
+			if ( n->name() != "weapon" )
 			{
-				if (!strcmp("ID", script1)) {
-					id = str2num(script2);
-					weaponinfo[id]=type;
-				}
+				LogWarning("Unknown node %s in weapons.xml, ignoring", n->name().c_str() );
+				continue;
 			}
 
-		}
-		while ( (script1[0]!='}') && (++loopexit < MAXLOOPS) );
-
-		type++;
-	}while ( (strcmp("EOF", script1)) && (++loopexit < MAXLOOPS) );
-
-	safedelete(iter);
-#endif
+			uint16_t type = nStrConstants::weaponsTypes( n->data() );
+			if ( ! type )
+			{
+				LogWarning("Incomplete node in weapons.xml, ignoring");
+				continue;
+			}
+			
+			try {
+				MXML::Node *p = n->child();
+				
+				if ( ! p )
+					continue;
+				
+				do {
+					uint16_t id = tVariant(n->data()).toUInt16();
+					if ( ! id )
+					{
+						LogWarning("Incomplete node in weapons.xml, ignoring");
+						continue;
+					}
+				
+					weaponinfo[id] = type;
+				} while ( (p = p->next()) );
+				
+			} catch ( MXML::NotFoundError e ) {
+				LogWarning("Incomplete node in weapons.xml, ignoring");
+				continue;
+			}
+		} while((n = n->next()));
+		
+		ConOut("[   OK   ]\n");
+	} catch ( MXML::MalformedError e) {
+		ConOut("[ Failed ]\n");
+		LogCritical("weapons.xml file not well formed.");
+	}
 }
