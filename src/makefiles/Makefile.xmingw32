@@ -1,29 +1,32 @@
-	CC		=@/opt/xmingw/bin/i386-mingw32msvc-gcc
-	CXX		=@/opt/xmingw/bin/i386-mingw32msvc-g++
-	LINK		=@/opt/xmingw/bin/i386-mingw32msvc-g++
+CC		=@/opt/xmingw/bin/i386-mingw32msvc-gcc
+CXX		=@/opt/xmingw/bin/i386-mingw32msvc-g++
+LINK		=@/opt/xmingw/bin/i386-mingw32msvc-g++
+STRIP		=@/opt/xmingw/bin/i386-mingw32msvc-strip
 
-export	CXXFLAGS	=-Wall -I $(PWD)/includes/ -pipe -D_REENTRANT -O3 -fshort-enums -mno-cygwin
-export	LDFLAGS		=-lpthread -lmxmlplus -lwefts -mno-cygwin
+CXXFLAGS	=-Wall -I $(PWD)/includes/ -pipe -D_REENTRANT -O3 -fshort-enums -mno-cygwin
+LDFLAGS		=-lpthread -lmxmlplus -lwefts -mno-cygwin
 
-	TARGET		= hypnos
+TARGET		= hypnos
 
-	SUBDIRS		= src src/abstraction src/archs src/backend src/encryption src/extras src/objects src/objects/cchar src/objects/citem src/objects/cnpc src/races src/skills
-	
+SUBDIRS		= src src/abstraction src/archs src/backend src/encryption src/extras src/objects src/objects/cchar src/objects/citem src/objects/cnpc src/races src/skills
 
 SOURCES	:=	$(foreach dir, $(SUBDIRS), $(wildcard $(dir)/*.cpp))
 OBJECTS	:=	$(SOURCES:.cpp=.o)
+BACKUPS :=	$(SOURCES:.cpp=.cpp~)
 
 .SUFFIXES: .cpp
 
 all: ${TARGET}
 
 ${TARGET}: ${OBJECTS}
+	@echo -e "\tLD    $@"
 	$(LINK) $(LDFLAGS) $(OBJECTS) -o $(TARGET)
+	@echo -e "\tSTRIP $@"
+	$(STRIP) --strip-all $(TARGET)
 
 .cpp.o:
-	@echo -e "\tCXX $@"
+	@echo -e "\tCXX   $@"
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 clean:
-	-rm -f $(OBJECTS) $(TARGET) $(SUBOBJS)
-	-rm -f *~ core
+	-rm -f $(OBJECTS) $(TARGET) $(BACKUPS)
