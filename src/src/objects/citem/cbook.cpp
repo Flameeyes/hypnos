@@ -32,13 +32,8 @@ cBook::cBook(uint32_t serial) : cItem(serial)
 {
 	setReadOnly(false);
 
-	std::string tmp("");
-	std::vector<std::string> tmppage;
-	for(int i = 0; i < 8; i++)
-		tmppage.push_back(tmp);
-
-	while( pages.size() < book->morey )
-		pages.push_back(tmppage);
+	std::string("");
+	pages = std::vector<std::vector<std::string>>(pages.size(), <std::vector<std::string>(8, std::string("")));
 	
 	classType = cItem::itBook;
 }
