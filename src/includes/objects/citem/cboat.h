@@ -27,6 +27,9 @@ public:
 
 	void MoveTo(sLocation newloc);
 	void step(pClient client, uint8_t dir = 0xFF);
+	void turn(bool turnRight);
+	
+	static pBoat searchByPlank(pItem pl);
 	
 protected:
 	pItem plankRight;	//!< Right plank
@@ -49,6 +52,17 @@ public:
 	//! Gets the hold
 	pContainer getHold() const
 	{ return hold; }
+
+private:
+	enum Item {
+		idPortPlankClosed,	//!< Port Plank Closed
+		idPortPlankOpen,	//!< Port Planl Opened
+		idStarPlankClosed,	//!< Starboard Plank Closed
+		idStarPlankOpen,	//!< Starb Plank Open
+		idTiller,		//!< Tiller
+		idHold			//!< Hold
+	};
+	static const uint8_t ShipItems[4][6];
 };
 
 #endif

@@ -50,6 +50,7 @@ typedef std::list<pGMPage> GMPageList;		//!< List of GM Pages
 
 typedef class cClient *pClient;			//!< Pointer to a cClient
 typedef std::list<pClient> ClientList;		//!< List of connected clients
+typedef std::slist<PClietn ClientSList;		//!< Singly list of connected clients
 
 typedef class cMenu *pMenu;			//!< Pointer to a cMenu
 typedef std::map<uint32_t, pMenu> MenuMap;	//!< Map of menus
@@ -97,9 +98,11 @@ typedef class cContainer *pContainer;		//!< Pointer to a cContainer
 typedef class cMap *pMap;			//!< Pointer to a cMap
 typedef class cEquippableContainer *pEquippableContainer;
 						//!< Pointer to a cEquippableContainer (backpacks, bank boxes)
+typedef class cMulti *pMulti;			//!< Pointer to a cMulti
+typedef class cBoat *pBoat;			//!< Pointer to a cBoat
 
 typedef class cMsgBoard *pMsgBoard;		//!< Pointer to a cMsgBoard
-typedef class cMessage* pMessage;
+typedef class cMessage* pMessage;		//!< Pointer to a message board message
 typedef std::list<pMessage> MessageList;	//!< List of messages
 typedef std::list<pMsgBoard> BoardsList;	//!< List of message boards
 //@}

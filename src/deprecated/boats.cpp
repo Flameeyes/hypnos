@@ -15,10 +15,6 @@
 #include "objects/cbody.h"
 #include "objects/cobject.h"
 
-BOATS	s_boat;
-
-cBoatOLD* Boats=NULL;
-
 #define X 0
 #define Y 1
 
@@ -49,16 +45,6 @@ static const int16_t iLargeShipOffsets[4][4][2]=
   { {1,-2}, {1, 2}, {5, 0},{-5, 0} },
   { {2, 1}, {-2, 1}, {0, 5}, {0,-5} },
   { {-1, 2}, {-1,-2}, {-5, 0}, {5, 0} }
-};
-//Ship Items
-//[4] = direction
-//[6] = Which Item (PT Plank Up,PT Plank Down, SB Plank Up, SB Plank Down, Hatch, TMan)
-static const uint8_t cShipItems[4][6]=
-{
- {0xB1,0xD5,0xB2,0xD4,0xAE,0x4E},
- {0x8A,0x89,0x85,0x84,0x65,0x53},
- {0xB2,0xD4,0xB1,0xD5,0xB9,0x4B},
- {0x85,0x84,0x8A,0x89,0x93,0x50}
 };
 //============================================================================================
 
@@ -100,7 +86,6 @@ pItem findmulti(sLocation where)
 }
 
 bool inmulti(sLocation where, pItem pi)//see if they are in the multi at these chords (Z is NOT checked right now)
-// PARAM WARNING: z is unreferenced
 {
 	if ( ! pi )
 		return false;
@@ -124,17 +109,16 @@ void cBoatOLD::PlankStuff(pChar pc , pItem pi)//If the plank is opened, double c
 		return;
 
 	pItem boat =GetBoat(pc->getBody()->getPosition());
-	if (boat!=NULL) //we are on boat
+	if ( ! boat ) //we are on boat
 	{
 		boat->type2 = 0; //STOP the BOAT
 		LeaveBoat(pc,pi);//get of form boat
 		return;
 	}
 
-	pItem boat2;
+	pBoat boat2 = cBoat::searchByPlank(pi);
 
-	boat2=search_boat_by_plank(pi);
-	if (boat2 == NULL)
+	if ( ! boat2 )
 	{
 		WarnOut("Can't find boats!\n");
 		return;
@@ -278,128 +262,6 @@ void cBoatOLD::TurnStuff_c(pItem p_b, pChar pc, int dir, int type)//Turn an item
 	pc->setPosition( charpos );
 	pointers::updateLocationMap(pc);
 	pc->teleport();
-}
-
-void cBoatOLD::Turn(pItem pi, int turn)//Turn the boat item, and send all the people/items on the boat to turnboatstuff()
-{
-	if ( ! pi )
-		return;
-
-	uint32_t	serial,
-			itiller,
-			i1,
-			i2,
-			ihold,
-			d=0;
-	uint8_t dir;
-	pItem	tiller,
-			p1,
-			p2,
-			hold;
-
-	//Of course we need the boat items!
-	serial = pi->more2;  //calcserial(pi->moreb1,pi->moreb2,pi->moreb3,pi->moreb4);
-	if(serial<0)
-		return;
-//!\todo Find a better way to handle this
-#if 0
-	itiller = calcItemFromSer( serial | 0x40000000 );
-	tiller = MAKE_ITEM_REF( itiller );
-	if ( ! tiller )
-		return;
-
-	i1 = calcItemFromSer( pi->morex | 0x40000000);
-	p1 = MAKE_ITEM_REF( i1 );
-	if ( ! tiller )
-		return;
-
-	i2 = calcItemFromSer( pi->morey | 0x40000000);
-	p2 = MAKE_ITEM_REF( i2 );
-	if ( ! tiller )
-		return;
-
-	ihold = calcItemFromSer( pi->morez | 0x40000000);
-	hold = MAKE_ITEM_REF( ihold );
-	if ( ! hold )
-		return;
-#endif
-
-	NxwSocketWrapper sw;
-	sw.fillOnline();
-	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-
-		pClient ps_i=sw.getClient();
-		
-		if ( ! ps_i )
-			continue;
-		
-		if( pi->distFrom(ps_i->currChar()) > BUILDRANGE)
-			continue;
-			
-		Send[d]=ps_i->toInt();
-
-		//////////////FOR ELCABESA VERY WARNING BY ENDYMION
-		//////THIS PACKET PAUSE THE CLIENT
-		nPackets::Sent::PauseClient pk(0x01);
-		ps_i->sendPacket(&pk);
-		d++;
-	}
-
-	if(turn)//Right
-	{
-		pi->setDirection(pi->getDirection()+2);
-		id2++;
-	}
-	else
-	{//Left
-		pi->setDirection(pi->getDirection()-2);
-		id2--;
-	}
-	
-	if(id2 < pi->more1.moreb1)
-		id2+=4;//make sure we don't have any id errors either
-	if(id2 > pi->more1.moreb2)
-		id2-=4;//Now you know what the min/max id is for :-)
-
-	pi->setId( Duint8_t2WORD( id1, id2 ) );//set the id
-
-	if(id2==pi->more1.moreb1)
-		pi->setDirection(0);//extra DIR error checking
-	if(id2==pi->more1.moreb2)
-		pi->setDirection(6);
-
-	//Set the DIR for use in the Offsets/IDs array
-	dir=(pi->getDirection() &0x0F)/2;
-
-	char *pShipItems = cShipItems[ dir ];
-
-	//set it's Z to 0,0 inside the boat
-	sLocation bpos= pi->getPosition();
-
-	p1->MoveTo( bpos.x, bpos.y, p1->getPosition().z );
-	p1->setId( p1->getId() | pShipItems[PORT_P_C] );//change the ID
-
-	p2->MoveTo( bpos.x, bpos.y, p2->getPosition().z );
-	p2->setId( p2->getId() | pShipItems[STAR_P_C] );
-
-	tiller->MoveTo( bpos.x, bpos.y, tiller->getPosition().z );
-	tiller->setId( tiller->getId() | pShipItems[TILLERID] );
-
-	hold->MoveTo(bpos.x, bpos.y, hold->getPosition().z );
-	hold->setId( hold->getId() | pShipItems[HOLDID] );
-
-	TurnShip( pi->more1, dir, p1, p2, tiller, hold );
-
-	p1->Refresh();
-	p2->Refresh();
-	hold->Refresh();
-	tiller->Refresh();
-
-	for ( int a=0; a<d; ++a)
-	{
-		nPackets::Sent::PauseClient pk(0x00);
-		Send[a]->sendPacket(&pk);
-	}
 }
 
 void cBoatOLD::TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, pItem pTiller, pItem pHold )
@@ -570,7 +432,7 @@ bool cBoatOLD::Speech(pClient client, std::string &talk)
 		if (good_position(pb, pb->getPosition(), -1) && !collision(pb,pb->getPosition(),-1))
 		{
 			itemtalk(tiller, "Aye, sir.");
-			Turn(pb,0);
+			pb->turn(false);
 		} else {
 			pb->type2=0;
 			itemtalk(tiller, "Arr, somethings in the way");
@@ -580,7 +442,7 @@ bool cBoatOLD::Speech(pClient client, std::string &talk)
 		if (good_position(pb, pb->getPosition(), 1) && !collision(pb,pb->getPosition(),1))
 		{
 			itemtalk(tiller, "Aye, sir.");
-			Turn(pb,1);
+			pb->turn(true);
 		} else {
 			pb->type2=0;
 			itemtalk(tiller, "Arr, somethings in the way");
@@ -591,8 +453,8 @@ bool cBoatOLD::Speech(pClient client, std::string &talk)
 		if (good_position(pb, pb->getPosition(), 2) && !collision(pb,pb->getPosition(),2))
 		{
 			itemtalk(tiller, "Aye, sir.");
-			Turn(pb,1);
-			Turn(pb,1);
+			pb->turn(true);
+			pb->turn(true);
 		} else {
 			pb->type2=0;
 			itemtalk(tiller, "Arr, somethings in the way");
@@ -830,8 +692,7 @@ bool cBoatOLD::Build(pClient client, pItem pb, char id2)
 	boatpos.dispz=boatpos.z;
 
 	pc_cs->MoveTo(boatpos);
-	pc_cs->setMultiSerial( pb->getSerial() );
-	insert_boat(pb); // insert the boat in the boat_database
+	pc_cs->setMulti(pb);
 	return true;
 }
 
@@ -969,45 +830,4 @@ pItem cBoatOLD::GetBoat(sLocation pos)
 		}
 	}
 	return NULL;
-}
-
-/*!
-\brief insert a boat inside boat_db struct and add it to the s_boat map
-\author Elcabesa
-\param pi pointer to the boat to be inserted
-*/
-void insert_boat(pItem pi)
-{
-	boat_db boat;
-	boat.serial = pi->getSerial();
-	boat.tiller_serial = pi->more2.more;
-	boat.l_plank_serial = pi->morex;
-	boat.r_plank_serial = pi->morey;
-	boat.container = pi->morez;
-	boat.p_serial = pi;
-	boat.p_l_plank = cSerializable::findItemBySerial(boat.l_plank_serial);
-	boat.p_r_plank = cSerializable::findItemBySerial(boat.r_plank_serial);
-	boat.p_tiller = cSerializable::findItemBySerial(boat.tiller_serial);
-	boat.p_container = cSerializable::findItemBySerial(boat.container);
-	s_boat.insert(std::make_pair(pi->getSerial(), boat)); // insert a boat in the boat search tree
-}
-
-boat_db* search_boat(int32_t ser)
-{
-	std::map<int,boat_db>::iterator iter_boat;
-	iter_boat= s_boat.find(ser);
-	if (iter_boat == s_boat.end())
-		return 0;
-	else
-		return &iter_boat->second;
-}
-
-
-pItem search_boat_by_plank(pItem pl)
-{
-	if ( ! pl )
-		return NULL;
-
-	boat_db*  boat=search_boat(pl->more1.more);
-	return boat->p_serial;
 }

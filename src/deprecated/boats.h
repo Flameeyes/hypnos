@@ -28,14 +28,6 @@ static const uint16_t YBORDER = 200;	//!< Border from y-limit
 #define HOLD 2
 #define TILLER 3
 
-//For iShipitem::
-#define PORT_P_C 0//Port Plank Closed
-#define PORT_P_O 1//Port Planl Opened
-#define STAR_P_C 2//Starboard Plank Closed
-#define STAR_P_O 3//Starb Plank Open
-#define TILLERID 5//Tiller
-#define HOLDID 4//Hold
-
 extern signed short int iSmallShipOffsets[4][4][2];
 extern signed short int iMediumShipOffsets[4][4][2];
 extern signed short int iLargeShipOffsets[4][4][2];
@@ -45,27 +37,8 @@ extern char cShipItems[4][6];
 
 //bool check_boat_position(pClient client,pItem pBoat);
 
-struct boat_db
-{
-	uint32_t serial;
-	uint32_t tiller_serial;
-	uint32_t l_plank_serial;
-	uint32_t r_plank_serial;
-	uint32_t container;
-	pItem p_serial;
-	pItem p_tiller;
-	pItem p_l_plank;
-	pItem p_r_plank;
-	pItem p_container;
-
-};
-
-
 pItem findmulti(sLocation where);
 bool inmulti(sLocation where,pItem pi);
-void insert_boat(pItem pi);
-boat_db* search_boat(int32_t ser);
-pItem search_boat_by_plank(pItem pl);
 
 class cBoatOLD
 {
