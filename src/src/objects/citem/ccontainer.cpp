@@ -13,21 +13,65 @@
 #include "objects/citem/ccontainer.h"
 #include "logsystem.h"
 #include "basics.h"
+#include <mxml.h>
 
-mapGumpsInfo cContainer::info;
-mapContainerGumps cContainer::containers;
+cContainer::mapGumpsInfo cContainer::gumpinfos;
+cContainer::mapContainerGumps cContainer::containers;
 
 /*!
 \brief Loads the containers' gumps' data
+\param in Stream where to read the XML from
 
 This funciton replaces the old loadcontainers() function which loaded from
 containers.xss, instead reads from containers.xml.
 
 \todo Actually write it
 */
-void cContainer::loadContainersData()
+void cContainer::loadContainersData(std::istream &in)
 {
-	
+	try {
+		MXML::Document doc(in);
+		
+		MXML::Node *n = doc.main()->child();
+		do {
+			if ( n->name() != "gump" )
+			{
+				LogWarning("Unknown element in containers.xml: %s", n->name().c_str());
+				continue;
+			}
+			
+			try {
+				sContainerGump g;
+				g.gump = tVariant( n->getAttribute("id") ).toUInt16();
+				g.upperleft.x = tVariant( n->getAttribute("x1") ).toUInt16();
+				g.upperleft.y = tVariant( n->getAttribute("y1") ).toUInt16();
+				g.downright.x = tVariant( n->getAttribute("x2") ).toUInt16();
+				g.downright.y = tVariant( n->getAttribute("y2") ).toUInt16();
+				
+				gumpinfos[g.gump] = g;
+				mapGumpsInfo::iterator it = gumpinfos.find(g);
+				
+				MXML::Node *id = n->child();
+				do {
+					if ( id->name() != "id" )
+					{
+						LogWarning("Unknown element in containers.xml: %s", id->name().c_str());
+						continue;
+					}
+					
+					uint16_t valId = tVariant( id->getDat() ).toUInt16();
+					if ( valId )
+						containers[valId] = it;
+				} while ( (id = id->next() );
+				
+			} catch ( MXML::NotFoundError e ) {
+				LogWarning("Incomplete element in containers.xml");
+			}
+			
+		} while( (n = n->next()) );
+	} catch ( MXML::MalformedError e) {
+		LogCritical("containers.xml file not well formed. Default loading");
+	}
 }
 
 cContainer::cContainer()
@@ -44,7 +88,7 @@ cContainer::cContainer(uint32_t serial)
 uint16_t cContainer::getGump()
 {
 	mapContainerGumps::iterator iter = containers.find( getId() );
-	if ( iter == containers.end() || iter->second == info.end() )
+	if ( iter == containers.end() || iter->second == gumpinfos.end() )
 		return 0x47;
 	else
 		return iter->second->second.gump;
@@ -96,7 +140,7 @@ void cContainer::setRandPos(pItem item)
 	p.z = 9;
 
 	mapContainerGumps::iterator iter = containers.find( getId() );
-	if ( iter == containers.end() || iter->second == info.end() ) {
+	if ( iter == containers.end() || iter->second == gumpinfos.end() ) {
 		p.x = RandomNum(18, 118);
 		p.y = RandomNum(50, 100);
 		LogWarning("trying to put something INTO a non container, id=0x%X", getId() );
@@ -212,7 +256,6 @@ uint32_t cContainer::removeItems(uint32_t delAmount, uint16_t matchId, uint16_t 
 void cContainer::dropitem(pItem pi)
 {
 	int ser= pi->getSerial();
-	vector<int32_t>::iterator it= ItemList.begin();
 
 	ItemList::iterator it = items.find(pi);
 

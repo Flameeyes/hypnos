@@ -37,13 +37,13 @@ protected:
 	//! Containers' gumps' info [index is Gump's ID]
 	typedef std::map< uint16_t, sContainerGump > mapGumpsInfo;
 	//! Containers' ID map [index is Item's ID]
-	typedef std::map< uint16_t, mapGumpsInfo::iterator > mapContainerGumps
+	typedef std::map< uint16_t, mapGumpsInfo::iterator > mapContainerGumps;
 	
-	static mapGumpsInfo info;	//!< Gumps' information
+	static mapGumpsInfo gumpinfos;	//!< Gumps' information
 	static mapContainerGumps containers;
 					//!< Containers' gumps
 	
-	static void loadContainersData();
+	static void loadContainersData(std::istream &in);
 //@}
 
 protected:
