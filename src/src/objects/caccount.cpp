@@ -10,11 +10,6 @@
 \brief Implementation of cAccount class
 */
 
-#include <xercesc/dom/DOM.hpp>
-#include <xercesc/sax/HandlerBase.hpp>
-#include <xercesc/util/XMLString.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-
 #include <iostream>
 
 static ZThread::FastMutex cAccount::global_mt;
@@ -41,6 +36,8 @@ static void cAccount::loadAll()
 	SQLQUERY(r, query, &pzTail, &VM, &errmsg);
 	if ( r != SQLITE_OK )
 		Database::logQuery(r, query, errmsg);
+
+
 
 	SQLFINALIZE(r, VM, &errmsg);
 	if ( r != SQLITE_OK )

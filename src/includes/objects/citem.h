@@ -410,7 +410,7 @@ public:
 	inline const pObject getContainer() const
 	{ return cont; }
 
-	void setContainer(pOjbect obj);
+	void setContainer(pOjbect obj, bool old = true);
 
 	//! check if item is a container
 	inline const bool isContainer() const
@@ -419,10 +419,14 @@ public:
 	inline const bool isSecureContainer() const
 	{ return type==8 || type==13 || type==64; }
 
+	//SI16		GetContGumpType();
+	void		SetRandPosInCont(P_ITEM pCont);
 	//! try to find an item in the container to stack with
 	bool		ContainerPileItem( P_ITEM item );
 	SI32		secureIt; // secured chests
+	bool		AddItem(P_ITEM item, short xx=-1, short yy=-1);	// Add Item to container
 	SI32		DeleteAmountByID(int amount, unsigned int scriptID);
+	SI16		getContGump();
 	void		putInto( P_ITEM pi );
 //@}
 
@@ -697,6 +701,32 @@ public:
 */
 } PACK_NEEDED;
 
+// will be fully implemented in 0.83
+// Anthalir
+/*
+
+  properties of containers:
+	- one or more key(s)
+	- a list of items stored in it
+	- a gump
+*/
+class cContainerItem : public cItem
+{
+private:
+	vector<SI32>		ItemList;
+
+	SI16				getGumpType();
+	bool				pileItem(P_ITEM pItem);
+	void				setRandPos(P_ITEM pItem);
+
+public:
+						cContainerItem(bool ser= true);
+	UI32				removeItems(UI32 scriptID, UI32 amount/*= 1*/);
+	void				dropItem(P_ITEM pi);
+	UI32				countItems(UI32 scriptID, bool bAddAmounts= false);
+
+} PACK_NEEDED;
+
 class cWeapon : public cItem
 {
 public:
@@ -718,4 +748,3 @@ extern bool LoadItemEventsFromScript (P_ITEM pi, char *script1, char *script2);
 
 
 #endif
-
