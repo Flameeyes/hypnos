@@ -1,0 +1,31 @@
+<!ELEMENT accounts accounts+>
+
+<!ELEMENT account password, ban, lastconn, character+>
+<!ATTLIST account
+	name CDATA #REQUIRED
+	creationdate CDATA #REQUIRED
+	lastchar CDATA #REQUIRED
+>
+
+<!ELEMENT password>
+<!ATTLIST password
+	cryptpass CDATA #REQUIRED
+	cryptalgo CDATA #REQUIRED
+>
+
+<!ELEMENT ban>
+<!ATTLIST ban
+	author CDATA #REQUIRED
+	releasetime CDATA #REQUIRED
+>
+
+<!ELEMENT lastconn>
+<!ATTLIST lastconn
+	ip CDATA #REQUIRED
+	time CDATA #REQUIRED
+>
+
+<!ELEMENT character>
+<!ATTLIST character
+	serial CDATA #REQUIRED
+>
