@@ -509,32 +509,44 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 				return;
 			}
 		}
-		
-		evt = src->getEvent(cContainer::evtCntOnTakeItem);
-		if ( evt )
-		{
-			tVariantVector params = tVariantVector(3);
-			params[0] = container->getSerial(); params[1] = pi->getSerial();
-			params[2] = pc_currchar->getSerial();
-			evt->setParams(params);
-			evt->execute();
-			if ( evt->isBypassed() )
+		pContainer pi_cont = dynamic_cast<pContainer> pi->getContainer();
+		if ( pi_cont ) //pi_cont could have been a body if it was the player's backpack
+                {
+                	evt = picont->getEvent(cContainer::evtCntOnTakeItem);
+			if ( evt )
 			{
-				cPacketSendBounceItem pk(5);
-				sendPacket(&pk);
-				if (isDragging())
+				tVariantVector params = tVariantVector(3);
+				params[0] = pi_cont->getSerial(); params[1] = pi->getSerial();
+				params[2] = pc_currchar->getSerial();
+				evt->setParams(params);
+				evt->execute();
+				if ( evt->isBypassed() )
 				{
-					resetDragging();
-					updateStatusWindow(pi);
+					cPacketSendBounceItem pk(5);
+					sendPacket(&pk);
+					if (isDragging())
+					{
+						resetDragging();
+						updateStatusWindow(pi);
+					}
+					if (equipitem && !equipitem->getOldLayer())
+	                                {
+	                                	if ((body->equip(equipitem, true) == 1)
+	                                        {
+	                                        	equipitem->setOldLayer(0);
+	                                        	pack_item(pi, pc_currchar->getBackpack()); // If reequip canceled due to script bypass, dump item to the backpack
+	                                        }
+	                                }
+	                                else
+	                                {
+						pi->setContainer( pi->getOldContainer() );
+						pi->setPosition( pi->getOldPosition() );
+	                                }
+					pi->Refresh();
+					return;
 				}
-				pi->setContainer( pi->getOldContainer() );
-				pi->setPosition( pi->getOldPosition() );
-				if (equipitem) equipitem->setLayer(equipitem->getOldLayer());
-				pi->Refresh();
-				return;
 			}
-		}
-	
+                }
 		if ( container->isCorpse() )
 		{
 			if ( container->getOwner() != pc_currchar)
@@ -769,11 +781,11 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 		}
 	}
 	
-	pFunctionHandle evt = dest->getEvent(cItem::evtItmOnPutInContainer);
+	pFunctionHandle evt = pi->getEvent(cItem::evtItmOnPutInContainer);
 	if ( evt )
 	{
 		tVariantVector params = tVariantVector(3);
-		params[0] = dest->getSerial(); params[1] = pi->getSerial();
+		params[0] = pi->getSerial(); params[1] = dest->getSerial();
 		params[2] = pc->getSerial();
 		evt->setParams(params);
 		evt->execute();
