@@ -111,7 +111,7 @@ bool cNxwClientObj::inGame()
 void cNxwClientObj::sendSpellBook(pItem pi)
 {
 	if (pi==NULL) // item number send by client?
-		pi=pointers::findItemBySerPtr(getRcvBuffer()+1);
+		pi=pointers::findItemBySerial(LongCharFromPtr(getRcvBuffer()+1));
 
 	pChar pc_currchar = this->currChar();
 

@@ -388,7 +388,7 @@ void cPacketSendBBoardCommand::prepare()
         case SendMessageSummary:
         	//calculating length of packet  before building buffer
         	length = 16; //BASE length, the length of fixed-length components
-                pChar poster = pointers::findCharBySerPtr(message->poster);
+                pChar poster = message->getPoster();
                 std::string timestring = message->getTimeString();
                 length += poster->getCurrentName().c_str().size() + 2;
                 length += message->subject.size() + 2;
@@ -419,7 +419,7 @@ void cPacketSendBBoardCommand::prepare()
                                                   0x0e, 0x75, 0x00, 0x00};
                 //calculating length of packet  before building buffer
         	length = 12; //BASE length, the length of fixed-length components
-                pChar poster = pointers::findCharBySerPtr(message->poster);
+                pChar poster = message->getPoster();
                 std::string timestring = message->getTimeString();
                 length += poster->getCurrentName().c_str().size() + 2;
                 length += message->subject.size() + 2;

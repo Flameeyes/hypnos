@@ -2080,7 +2080,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 				case PACKET_STATUS_REQUEST:
                                         if ( pc_currchar != NULL ) {
 						if (buffer[s][5]==4)
-							statwindow(pc_currchar, pointers::findCharBySerPtr(buffer[s] +6));
+							statwindow(pc_currchar, pointers::findCharBySerial(LongFromCharPtr(buffer[s] +6)));
 
 						if (buffer[s][5]==5)
 							skillwindow(s);
@@ -2089,7 +2089,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 
 				case PACKET_RENAMECHARACTER: ///Lag Fix -- Zippy //Bug Fix -- Zippy
 					{
-						pChar pc_t=pointers::findCharBySerPtr(buffer[s]+1);
+						pChar pc_t=pointers::findCharBySerial( LongCharFromPtr(buffer[s] +1));
 						if( pc_t && ( pc_currchar->IsGMorCounselor() || pc_currchar->isOwnerOf( pc_t ) ) )
 							pc_t->setCurrentName( (char*)&buffer[s][5] );
 
@@ -2100,7 +2100,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					{
 					int size;
 					size=dyn_length;
-					pItem pBook=pointers::findItemBySerPtr(buffer[s]+3);
+					pItem pBook=pointers::findItemBySerial(LongCharFromPtr(buffer[s] +3));
 					if( pBook )
 					{
 						if (pBook->morez == 0)
@@ -2124,8 +2124,8 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						int j= 9;
 						char author[31],title[61],ch= 1;
 
-						pItem pBook=pointers::findItemBySerPtr(buffer[s]+1);
-						if(!pBook))
+						pItem pBook=pointers::findItemBySerial(LongCharFromPtr(buffer[s]+1));
+						if(!pBook)
 							break;
 
 						while(ch!=0)
@@ -2216,8 +2216,9 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					{
 						if (ServerScp::g_nPopUpHelp==0) break;
 
-						pChar pc=pointers::findCharBySerPtr(buffer[s]+1);
-						pItem pi=pointers::findItemBySerPtr(buffer[s]+1);
+						uint32_t serial = LongCharFromPtr(buffer[s] +1);
+						pChar pc=pointers::findCharBySerial(serial);
+						pItem pi=pointers::findItemBySerial(serial);
 
 						int len = 0;
 						uint8_t packet[4000]; packet[0] = '\0';

@@ -666,10 +666,11 @@ void cGuilds::Recruit(int s)
 		return;
 	}
 
-	if( LongFromCharPtr(buffer[s] +11) == INVALID ) return; // check if user canceled operation - Morrolan
-//	int serial = calcserial(buffer[s][7],buffer[s][8],buffer[s][9],buffer[s][10]);
-//	pChar pc = pointers::findCharBySerial( serial );
-	pChar pc = pointers::findCharBySerPtr(buffer[s]+7);
+	if( LongFromCharPtr(buffer[s] +11) == INVALID )
+		return; // check if user canceled operation - Morrolan
+
+	uint32_t serial = LongCharFromPtr(buffer[s] +7);
+	pChar pc = pointers::findCharBySerial( serial );
 
 	if(pc != NULL)
 	{
@@ -717,6 +718,7 @@ void cGuilds::TargetWar(int s)
 	int slot, dummy;
 	int guildnumber = Guilds->SearchByStone(s);
 	char text [200];
+
 	if (guildnumber==-1)
 	{
 		Me->sysmsg(TRANSLATE("you are in no guild"));
@@ -725,9 +727,10 @@ void cGuilds::TargetWar(int s)
 
 	if( LongFromCharPtr(buffer[s] +11) == INVALID )
 		return; // check if user canceled operation - Morrolan
-//	uint32_t serial=calcserial(buffer[s][7],buffer[s][8],buffer[s][9],buffer[s][10]);
-//	pChar pc = pointers::findCharBySerial( serial );
-	pChar pc = pointers::findCharBySerPtr(buffer[s] +7);
+
+	uint32_t serial = LongCharFromPtr(buffer[s] +7);
+	pChar pc = pointers::findCharBySerial( serial );
+
 	if( pc != NULL)
 	{
 			if (pc->GetGuildNumber()==0)

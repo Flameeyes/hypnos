@@ -278,7 +278,7 @@ namespace Commands
 		pChar Me = MAKE_CHAR_REF(currchar[s]);
 		if ( ! Me ) return;
 
-		pItem pi = pointers::findItemBySerPtr(buffer[s] +1);
+		pItem pi = pointers::findItemBySerial(LongCharFromPtr(buffer[s] +1));
 		if( pi )
 		{
 
@@ -332,7 +332,7 @@ namespace Commands
 			return;
 		}
 
-		pChar pc = pointers::findCharBySerPtr(buffer[s] +1);
+		pChar pc = pointers::findCharBySerial(LongCharFromPtr(buffer[s] +1));
 		if( pc && Me->IsGMorCounselor() )
 		{
 			color = ShortFromCharPtr(buffer[s] +7);
@@ -444,7 +444,7 @@ namespace Commands
 	{
 		pChar pc = MAKE_CHAR_REF(currchar[s]);
 		if ( ! pc ) return;
-		pChar pcPos = pointers::findCharBySerPtr(buffer[s]+7);
+		pChar pcPos = pointers::findCharBySerial(LongCharFromPtr(buffer[s]+7));
 		if ( ! pcPos ) return;
 
 		pc->possess(pcPos);
