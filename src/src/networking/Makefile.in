@@ -99,7 +99,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 noinst_LTLIBRARIES = libnetworking.la
-libnetworking_la_SOURCES = misccommand.cpp received.cpp sent.cpp cclient.cpp remadmin.cpp network.cpp tkilling.cpp tlistening.cpp treceiving.cpp
+libnetworking_la_SOURCES = misccommand.cpp received.cpp sent.cpp cclient.cpp remadmin.cpp network.cpp tkilling.cpp tlistening.cpp treceiving.cpp huffman.cpp
 subdir = src/networking
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -110,7 +110,7 @@ libnetworking_la_LDFLAGS =
 libnetworking_la_LIBADD =
 am_libnetworking_la_OBJECTS = misccommand.lo received.lo sent.lo \
 	cclient.lo remadmin.lo network.lo tkilling.lo tlistening.lo \
-	treceiving.lo
+	treceiving.lo huffman.lo
 libnetworking_la_OBJECTS = $(am_libnetworking_la_OBJECTS)
 
 DEFS = @DEFS@
@@ -119,7 +119,7 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/cclient.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/cclient.Plo ./$(DEPDIR)/huffman.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/misccommand.Plo ./$(DEPDIR)/network.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/received.Plo ./$(DEPDIR)/remadmin.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/sent.Plo ./$(DEPDIR)/tkilling.Plo \
@@ -165,6 +165,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cclient.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/huffman.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misccommand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/network.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/received.Plo@am__quote@

@@ -52,3 +52,15 @@ void *tListening::run()
 			new tReceiving(accepted);
 	}
 }
+
+/*!
+\brief Desctructor for tListening thread
+
+This function closes all the sockets in the tListening::threads sets to be
+deleted by tKilling, and then destroy itself.
+*/
+tListening::~tListening()
+{
+	for(std::set<tReceiving*>::iterator it = threads.begin(): it != threads.end(); it++)
+		(*it)->close();
+}

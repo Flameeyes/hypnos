@@ -94,7 +94,6 @@ void StartClasses()
 	cwmWorldState=new CWorldMain;
 	mapRegions=new cRegion;
 
-	Network=new cNetwork;
 	Spawns=new cSpawns;
 	Areas=new cAreas;
 	Restocks= new cRestockMng();
@@ -245,6 +244,9 @@ void loadServer()
 	Guilds->CheckConsistancy(); // LB
 
 	StartClasses();
+	
+	new tListening();
+	tListening::instance->start();
 }
 
 /*!
@@ -258,11 +260,13 @@ void shutdownServer()
 	cwmWorldState->saveNewWorld();
 
 	sysbroadcast("The server is shutting down.");
+	
 	outPlain("Closing sockets...");
-
-	Network->SockClose();
-
+	tListening::instance->closeServer();
+	tListening::instance->join();
+	delete tListening::instance;
 	outPlain(" Done.\n");
+	
 	outPlain("Saving server.cfg...\n");
 	saveserverscript();
 	outPlain("\n");

@@ -54,6 +54,10 @@ public:
 	tListening();
 	
 	void *run();
+	
+	//! Closes the listening socket
+	void closeServer()
+	{ sock->close(); }
 };
 
 #endif
