@@ -526,18 +526,21 @@ void cTempfx::start()
 				case 5:	beardcolor = 0x83FB; break;
 				default: beardcolor = 0x83FB;break;
 			}
-			std::string* newname;
-			if( body == BODY_MALE )
+			
 			{
-				std::string value("1");
-				newname = new std::string( cObject::getRandomScriptValue( std::string("RANDOMNAME"), value ) );
+				std::string newname;
+				if( body == BODY_MALE )
+				{
+					std::string value("1");
+					newname = cObject::getRandomScriptValue( std::string("RANDOMNAME"), value );
+				}
+				else
+				{
+					std::string value("2");
+					newname = cObject::getRandomScriptValue( std::string("RANDOMNAME"), value );
+				}
+				dest->morph(body, skincolor, hairstyle, haircolor, beardstyle, beardcolor, newname.c_str(), true);
 			}
-			else
-			{
-				std::string value("2");
-				newname = new std::string( cObject::getRandomScriptValue( std::string("RANDOMNAME"), value ) );
-			}
-			dest->morph(body, skincolor, hairstyle, haircolor, beardstyle, beardcolor, newname->c_str(), true);
 			break;
 
 		case LSD:

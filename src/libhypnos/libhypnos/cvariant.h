@@ -5,10 +5,6 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Declaration of tVariant type
-*/
 
 #ifndef __TVARIANT_H__
 #define __TVARIANT_H__
@@ -16,10 +12,23 @@
 #include "common_libs.h"
 
 /*!
+\class tVariant tvariant.h "abstraction/tvariant.h"
 \brief Variant type class
 \author Flameeyes
 
-This class is used both by commands and by 
+The tVariant type is, as the name states, a variant type. An instance of this
+class can contain different types of pointers, as well as integers (signed or
+unsigned) of any size, booleans, strings and vectors.
+
+The way this use to accomplish the above features is to save the stored type
+identifier AND the cctual content of the value passed, using the
+tVariant::ptr union to share the memory between the different pointers, and
+pointers for other types (bools, integers and compound types).
+
+tVariant instances can take their content and transform it into other types
+in a very simple way. And then, can return a translated type on-the-fly without
+change the actual data inside them.
+
 */
 class tVariant
 {
@@ -35,16 +44,16 @@ public:
 		vtPItem,	//!< pItem (and derived) value
 		vtPClient,	//!< pClient value
 		vtPVoid,	//!< void pointer value
-		vtVector	//!< Vector value
+		vtVector	//!< tVariantVector value
 	};
 	
 	//! Integer types sizes
 	enum IntegerSizes {
 		isNotInt,	//!< The variable is not an integer
-		isBool,		//!< The variable is a boolean
 		is8,		//!< 8-bit integer
 		is16,		//!< 16-bit integer
-		is32		//!< 32-bit integer
+		is32,		//!< 32-bit integer
+		is64		//!< 64-bit integer
 	};
 
 //@{
@@ -52,6 +61,7 @@ public:
 \name Constructors and operators
 */
 	tVariant();
+	~tVariant();
 	
 	/*!
 	\brief Constructor with value
@@ -209,10 +219,17 @@ private:
 protected:
 	VariantTypes assignedType;	//!< Type assigned to the variant
 	IntegerSizes integerSize;	//!< Size of integer variant
-	std::string stringvalue;	//!< Used when the variant is a string
-	uint32_t uintvalue;		//!< Used when the variant is an unsigned int (any size) or a boolean
-	int32_t sintvalue;		//!< Used when the variant is a signed int (any size)
-	void *ptrvalue;			//!< Used when the variant is a pointer (any type)
+	
+	void *pointer;			//!< Pointer to the store value
+	
+	union {
+		uint32_t uintvalue,		//!< Value of unsigned integers (any size) or boolean
+		int32_t sintvalue,		//!< Value of signed integers (any size)
+		std::string *strpointer,	//!< Pointer to the string object
+		tVariantVector *vectorptr,	//!< Pointer to the vector object
+		void *ptrvalue,			//!< Value of the void pointers
+	} value;
+	
 };
 
 #endif
