@@ -26,28 +26,28 @@ static const uint16_t LBR = 0x0002;
 
 //@{
 //! \name Colors
-static const uint16_t COLOR_LIGHTBLUE	= 0x0489;
-static const uint16_t COLOR_VIOLET	= 0x000D;
-static const uint16_t COLOR_WHITE	= 0x0481;
-static const uint16_t COLOR_BLACK	= 0x0001;
-static const uint16_t COLOR_NONE	= 0x0000;
+	static const uint16_t COLOR_LIGHTBLUE	= 0x0489;
+	static const uint16_t COLOR_VIOLET	= 0x000D;
+	static const uint16_t COLOR_WHITE	= 0x0481;
+	static const uint16_t COLOR_BLACK	= 0x0001;
+	static const uint16_t COLOR_NONE	= 0x0000;
 //@}
 
 //@{
 //! \name Human bodies
-static const uint16_t bodyMale		= 0x0190;	//!< Male human body
-static const uint16_t bodyFemale	= 0x0191;	//!< Female body
-static const uint16_t bodyMaleDead	= 0x0192;	//!< Dead male body
-static const uint16_t bodyFemaleDead	= 0x0193;	//!< Dead female body
-static const uint16_t bodyGM		= 0x03DB;	//!< GM Staff body
+	static const uint16_t bodyMale		= 0x0190;	//!< Male human body
+	static const uint16_t bodyFemale	= 0x0191;	//!< Female body
+	static const uint16_t bodyMaleDead	= 0x0192;	//!< Dead male body
+	static const uint16_t bodyFemaleDead	= 0x0193;	//!< Dead female body
+	static const uint16_t bodyGM		= 0x03DB;	//!< GM Staff body
 //@}
 
 //@{
 //! \name Some items
-static const uint16_t ITEMID_DEATHSHROUD= 0x204E;
-static const uint16_t ITEMID_CORPSEBASE	= 0x2006;
-static const uint16_t ITEMID_BANKBOX	= 0x09AB;
-static const uint16_t ITEMID_GOLD	= 0x0EED;
+	static const uint16_t ITEMID_DEATHSHROUD= 0x204E;
+	static const uint16_t ITEMID_CORPSEBASE	= 0x2006;
+	static const uint16_t ITEMID_BANKBOX	= 0x09AB;
+	static const uint16_t ITEMID_GOLD	= 0x0EED;
 //@}
 
 static const uint16_t SPIRITSPEAKTIMER	= 30;
@@ -199,19 +199,16 @@ enum ItemType {
 //! Bank Type
 enum { BANK_GOLD = 1, BANK_ITEM = 0, MOREY_GOLDONLYBANK = 123, MOREX_BANK = 1 };
 
-//! House list type
-enum { H_FRIEND = 1, H_BAN };
-
 //@{
 /*!
 \name Line of sight
 */
-static const uint8_t losTreesBushes	= 0x01; //!< Trees and other large vegetaion in the way
-static const uint8_t losWallsChimneys	= 0x02; //!< Walls, chimineys, ovens, etc... in the way
-static const uint8_t losDoors		= 0x04; //!< Doors in the way
-static const uint8_t losRoofingSlanted	= 0x08; //!< So can't tele onto slanted roofs, basically
-static const uint8_t losRoofingFlat	= 0x10; //!< So can't tele onto flat roofs, basically
-static const uint8_t losLavaWater	= 0x20; //!< Don't know what all to use this for yet
+	static const uint8_t losTreesBushes	= 0x01; //!< Trees and other large vegetaion in the way
+	static const uint8_t losWallsChimneys	= 0x02; //!< Walls, chimineys, ovens, etc... in the way
+	static const uint8_t losDoors		= 0x04; //!< Doors in the way
+	static const uint8_t losRoofingSlanted	= 0x08; //!< So can't tele onto slanted roofs, basically
+	static const uint8_t losRoofingFlat	= 0x10; //!< So can't tele onto flat roofs, basically
+	static const uint8_t losLavaWater	= 0x20; //!< Don't know what all to use this for yet
 //@}
 
 /*!
