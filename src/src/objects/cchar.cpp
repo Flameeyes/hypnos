@@ -506,46 +506,44 @@ void cChar::disturbMed()
 
 /*!
 \brief Reveals the char if he was hidden
-\author Duke
-\date 17/03/2001
-\date 20/03/2003 ported unhidesendchar into the function code - Flameeyes
+\author Duke and Flameeyes
 */
 void cChar::unHide()
 {
 	//if hidden but not permanently or forced unhide requested
-	if ( isHiddenBySkill() && isPermaHidden() )
+	if ( ! ( isHiddenBySkill() || isPermaHidden() ) )
+		return;
+
+	stealth=-1;
+	hidden = htUnhidden;
+
+	updateFlag();//AntiChrist - bugfix for highlight color not being updated
+
+	uint32_t my_serial = getSerial();
+	Location my_pos = getPosition();
+
+	NxwSocketWrapper sw;
+	sw.fillOnline( this, false );
+	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		stealth=-1;
-		hidden = htUnhidden;
+		NXWSOCKET i = sw.getSocket();
+		NXWCLIENT ps_i = sw.getClient();
+		if( ps_i==NULL ) continue;
 
-		updateFlag();//AntiChrist - bugfix for highlight color not being updated
-
-		uint32_t my_serial = getSerial();
-		Location my_pos = getPosition();
-
-		NxwSocketWrapper sw;
-		sw.fillOnline( this, false );
-		for( sw.rewind(); !sw.isEmpty(); sw++ )
+		pChar pj=ps_i->currChar();
+		if ( pj )
 		{
-			NXWSOCKET i = sw.getSocket();
-			NXWCLIENT ps_i = sw.getClient();
-			if( ps_i==NULL ) continue;
-
-			pChar pj=ps_i->currChar();
-			if ( pj )
-			{
-				if (pj->getSerial() != my_serial) { //to other players : recreate player object
-					SendDeleteObjectPkt(i, my_serial);
-					impowncreate(i, this, 0);
-				} else {
-					SendDrawGamePlayerPkt(i, my_serial, getId(), 0x00, getColor(), (poisoned ? 0x04 : 0x00), my_pos, 0x0000, dir|0x80);
-				}
+			if (pj != *this) { //to other players : recreate player object
+				SendDeleteObjectPkt(i, my_serial);
+				impowncreate(i, this, 0);
+			} else {
+				SendDrawGamePlayerPkt(i, my_serial, getId(), 0x00, getColor(), (poisoned ? 0x04 : 0x00), my_pos, 0x0000, dir|0x80);
 			}
 		}
-
-		if (IsGM())
-			tempfx::add(this, this, tempfx::GM_UNHIDING, 3, 0, 0);
 	}
+
+	if (IsGM())
+		tempfx::add(this, this, tempfx::GM_UNHIDING, 3, 0, 0);
 }
 
 /*!
@@ -659,22 +657,22 @@ void cChar::helpStuff(pPC pc_i)
 void cChar::applyPoison(PoisonType poisontype, int32_t secs )
 {
         unfreeze();
-	if ( !IsInvul() && (::region[region].priv&0x40)) // LB magic-region change
-	{
-		if (poisontype>poisonDeadly) poisontype = poisonDeadly;
-		else if (poisontype<poisonWeak) poisontype = poisonWeak;
-		if ( poisontype>=poisoned ) {
-			poisoned=poisontype;
-			if( secs == INVALID )
-				poisonwearofftime=uiCurrentTime+(MY_CLOCKS_PER_SEC*SrvParms->poisontimer); // lb
-			else
-				poisonwearofftime=uiCurrentTime+(MY_CLOCKS_PER_SEC*secs);
+	if ( IsInvul() || ! (::region[region].priv&0x40) )
+		return;
+		
+	if (poisontype>poisonDeadly) poisontype = poisonDeadly;
+	else if (poisontype<poisonWeak) poisontype = poisonWeak;
+	if ( poisontype>=poisoned ) {
+		poisoned=poisontype;
+		if( secs == INVALID )
+			poisonwearofftime=uiCurrentTime+(MY_CLOCKS_PER_SEC*SrvParms->poisontimer); // lb
+		else
+			poisonwearofftime=uiCurrentTime+(MY_CLOCKS_PER_SEC*secs);
 
-			NXWSOCKET s = getSocket();
-			if (s != -1) impowncreate(s, this, 1); //Lb, sends the green bar !
-			sysmsg( TRANSLATE("You have been poisoned!"));
-			playSFX( 0x0246 ); //poison sound - SpaceDog
-		}
+		NXWSOCKET s = getSocket();
+		if (s != -1) impowncreate(s, this, 1); //Lb, sends the green bar !
+		sysmsg( TRANSLATE("You have been poisoned!"));
+		playSFX( 0x0246 ); //poison sound - SpaceDog
 	}
 }
 
@@ -686,13 +684,12 @@ void cChar::unfreeze( bool calledByTempfx )
 {
 	if( !calledByTempfx )
 		delTempfx( tempfx::SPELL_PARALYZE, false ); //Luxor
+	
+	if ( ! isFrozen() ) return;
 
-	if ( isFrozen() )
-	{
-		setFrozen(false);
-		if (!isCasting()) //Luxor
-			sysmsg(TRANSLATE("You are no longer frozen."));
-	}
+	setFrozen(false);
+	if (!isCasting()) //Luxor
+		sysmsg(TRANSLATE("You are no longer frozen."));
 }
 
 /*!
@@ -728,9 +725,9 @@ void cChar::damage(int32_t amount, DamageType typeofdamage, StatType stattobedam
 
 	if (amount <= 0) return;
 	// typeofdamage is ignored till now
-    if (typeofdamage!=damPure) {
-    	amount -= int32_t((amount/100.0)*float(calcResist(typeofdamage)));
-    }
+	if (typeofdamage!=damPure) {
+		amount -= int32_t((amount/100.0)*float(calcResist(typeofdamage)));
+	}
 	if (amount <= 0) return;
 
 	switch (stattobedamaged)
@@ -785,7 +782,7 @@ int32_t cChar::calcResist(DamageType typeofdamage)
 void cChar::addGold(uint16_t totgold)
 {
 	pItem pi = item::CreateFromScript( "$item_gold_coin", getBackpack(), totgold );
-	if ( pi != 0 )
+	if ( pi )
 		pi->Refresh();
 }
 
@@ -816,27 +813,25 @@ uint32_t cChar::distFrom(pItem pi)
 	if ( ! cont ) return VERY_VERY_FAR;
 
 	if(cont->isInWorld())
-	{
 		return (uint32_t)dist(getPosition(),cont->getPosition());
-	}
+	else if(isCharSerial(cont->getContSerial())) //can be weared
+		return distFrom( cSerializable::findCharBySerial(cont->getContSerial()) );
 	else
-		if(isCharSerial(cont->getContSerial())) //can be weared
-			return distFrom( cSerializable::findCharBySerial(cont->getContSerial()) );
-		else
-			return VERY_VERY_FAR; //not world, not weared.. and another cont can't be
+		return VERY_VERY_FAR; //not world, not weared.. and another cont can't be
 
 }
 
 /*!
 \author Luxor
 \brief Tells if the char can see the given object
+\todo Rewrite this
 */
-bool cChar::canSee( cObject &obj )
+bool cChar::canSee( pObject obj )
 {
 	//
 	// Check if the object is in visRange
 	//
-	double distance = dist( obj.getPosition(), getPosition(), false );
+	double distance = dist( obj->getPosition(), getPosition(), false );
 	if ( distance > VISRANGE ) // We cannot see it!
 		return false;
 
@@ -868,8 +863,6 @@ bool cChar::canSee( cObject &obj )
 */
 void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 {
-
-
 	pItem p_boat = Boats->GetBoat(getPosition());
 	if( p_boat ) {
 		setMultiSerial(p_boat->getSerial());
@@ -1018,7 +1011,7 @@ uint8_t cChar::bestSkill() const
 {
 	uint8_t a=0;
 
-	for(uint8_t i=0; i < skTrueSkills; i++)
+	for(register int i=0; i < skTrueSkills; i++)
 		if ( baseskill[i] > baseskill[a] )
 			a = i;
 	
@@ -1034,7 +1027,7 @@ uint8_t cChar::nextBestSkill(uint8_t previous) const
 {
 	uint8_t a = previous ? 0 : 1; // if previous == 0 skip it
 
-	for(uint8_t i = a; i < skTrueSkills; i++)
+	for(register int i = a; i < skTrueSkills; i++)
 		if ( baseskill[i] > baseskill[a] && i != previous )
 			a = i;
 	
@@ -1201,76 +1194,48 @@ std::string cChar::getCompleteTitle() const
 }
 
 /*!
-\author Luxor
+\author Luxor and Flameeyes
 \brief returns char's combat skill
 \return the index of the char's combat skill
 */
 int32_t cChar::getCombatSkill()
 {
-
-	NxwItemWrapper si;
-	si.fillItemWeared( this, false, false, true );
-	for( si.rewind(); !si.isEmpty(); si++ ) {
-
-		pItem pi = si.getItem();
-		if( pi )
-		{
-			if( pi->layer == LAYER_1HANDWEAPON || pi->layer == LAYER_2HANDWEAPON )
-			{
-				if (pi->fightskill != 0)
-				{
-					return pi->fightskill;
-				}
-				else if (pi->IsSwordType() )
-				{
-					return skSwordsmanship;
-				}
-				else if (pi->IsMaceType() )
-				{
-					return skMacefighting;
-				}
-				else if (pi->IsFencingType() )
-				{
-					return FENCING;
-				}
-				else if (pi->IsBowType() )
-				{
-					return skArchery;
-				}
-			}
-		}
-	}
-
+	pWeapon pw = dynamic_cast<pWeapon>(getBody()->getLayerItem(layWeapon1H));
+	if ( ! pw )
+		pw = dynamic_cast<pWeapon>(getBody()->getLayerItem(layWeapon2H));
+	if ( ! pw )
+		return skWrestling;
+	
+	if ( pw->fightskill != 0 )
+		return pw->fightskill;
+	else if ( pw->isSwordType() )
+		return skSwordsmanship;
+	else if ( pw->isMaceType() )
+		return skMacefighting;
+	else if ( pw->isBowType() )
+		return skArchery;
+	
 	return skWrestling;
-
 }
 
 bool const cChar::CanDoGestures() const
 {
-	if (!IsGM())
-	{
-		if ( isHiddenBySpell() ) return false;	//Luxor: cannot do magic gestures if under invisible spell
+	if ( IsGM() )
+		return true;
+	
+	if ( isHiddenBySpell() ) return false;	//Luxor: cannot do magic gestures if under invisible spell
 
-		NxwItemWrapper si;
-		si.fillItemWeared( (pChar)this, false, false, true );
-		for( si.rewind(); !si.isEmpty(); si++ ) {
+	pEquippable pe = getBody()->getLayerItem(layWeapon1H);
+	if ( ! (pe->getId()==0x13F9 || pe->getId()==0x0E8A || pe->getId()==0x0DF0 || pe->getId()==0x0DF2
+		|| pe->IsChaosOrOrderShield() ))
+		return false;
+	
+	pe = getBody()->getLayerItem(layWeapon2H);
+	if ( ! (pe->getId()==0x13F9 || pe->getId()==0x0E8A || pe->getId()==0x0DF0 || pe->getId()==0x0DF2
+		|| pe->IsChaosOrOrderShield() ))
+		return false;
 
-			pItem pj=si.getItem();
-
-			if( pj )
-			{
-				if ( pj->layer == LAYER_2HANDWEAPON || ( pj->layer == LAYER_1HANDWEAPON && pj->type!=ITYPE_SPELLBOOK ) )
-				{
-					if (!(pj->getId()==0x13F9 || pj->getId()==0x0E8A || pj->getId()==0x0DF0 || pj->getId()==0x0DF2
-						|| pj->IsChaosOrOrderShield() ))
-					{
-						return false;
-					}
-				}
-			}
-		}
-	}
-	return true;
+	return true;	
 }
 
 /*!
@@ -1280,6 +1245,7 @@ bool const cChar::CanDoGestures() const
 \param low low bound
 \param high high bound
 \param bRaise should be raised?
+\todo Rewrite
 */
 bool cChar::checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise)
 {
@@ -1524,72 +1490,59 @@ void cChar::curePoison()
 \author Xanather
 \brief Resurrects a char
 \param healer Player that resurrected the char
+\todo Reverify
 */
-void cChar::resurrect( NXWCLIENT healer )
+void cChar::resurrect( pClient healer )
 {
-	NXWCLIENT ps=getClient();
-	if( ps==NULL )
-		return;
-
-	if (dead)
+	if ( ! isDead() )
 	{
-		dead=false;
-		if(!npc || morphed)
-			morph();
-		hp= getStrength();
-		stm= dx;
-		mn=in;
-
-		if (amxevents[EVENT_CHR_ONRESURRECT]) {
-			g_bByPass = false;
-			amxevents[EVENT_CHR_ONRESURRECT]->Call(getSerial(), (healer!=NULL)? healer->currCharIdx() : INVALID );
-			if (g_bByPass==true) return;
-		}
-		/*
-		g_bByPass = false;
-		runAmxEvent( EVENT_CHR_ONRESURRECT, getSerial(), (healer!=NULL)? healer->toInt() : INVALID );
-		if (g_bByPass==true)
-			return;
-		*/
-		modifyFame(0);
-		playSFX( 0x0214);
-		setId( getOldId() );
-		setColor( getOldColor() );
-		attackerserial=INVALID;
-		ResetAttackFirst();
-		war=0;
-		hunger=6;
-
-		NxwItemWrapper si;
-		si.fillItemWeared( this, false, false, true );
-		for( si.rewind(); !si.isEmpty(); si++ )
-		{
-			pItem pj=si.getItem();
-			if( ! pj )
-				continue;
-			if( pj->layer == LAYER_NECK )
-			{
-				pj->layer = LAYER_BACKPACK;
-				packitemserial=pj->getSerial(); //Tauriel packitem speedup
-			}
-		}
-
-		pItem pj= cSerializable::findItemBySerial(robe);
-		if( pj )
-			pj->Delete();
-
-		pItem pi = item::CreateFromScript( "$item_robe_1", this );
-		if( pi ) {
-			pi->setCurrentName( "a resurrect robe" );
-			pi->layer = LAYER_OUTER_TORSO;
-			pi->setContainer(this);
-			pi->setDyeable(true);
-		}
-		teleport( TELEFLAG_SENDWORNITEMS | TELEFLAG_SENDLIGHT );
+		if( healer )
+			healer->sysmessage("That person isn't dead");
+		return;
 	}
-		else
-			if( healer!=NULL )
-				healer->sysmsg( TRANSLATE("That person isn't dead") );
+	
+	setDead(false);
+	
+	if(!npc || morphed)
+		morph();
+	hp= getStrength();
+	stm= dx;
+	mn=in;
+
+	if ( events[evtChrOnResurrect] && getClient() ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = healer ? healer->currChar()->getSerial() : INVALID;
+		events[evtChrOnResurrect]->setParams(params);
+		events[evtChrOnResurrect]->execute();
+		if ( events[evtChrOnResurrect]->bypassed() )
+			return;
+	}
+
+	modifyFame(0);
+	playSFX( 0x0214);
+	setId( getOldId() );
+	setColor( getOldColor() );
+	attacker = NULL;
+	ResetAttackFirst();
+	war=0;
+	hunger=6;
+
+	pEquippable pe = getBody()->getLayerItem(layNeck);
+	getBody()->setLayerItem(layNeck, NULL);
+	getBody()->setLayerItem(layBackpack, pe);
+	packitemserial = pe->getSerial();
+	
+	if( robe )
+		robe->Delete();
+
+	pItem pi = item::CreateFromScript( "$item_robe_1", this );
+	if( pi ) {
+		pi->setCurrentName( "a resurrect robe" );
+		pi->layer = LAYER_OUTER_TORSO;
+		pi->setContainer(this);
+		pi->setDyeable(true);
+	}
+	teleport( TELEFLAG_SENDWORNITEMS | TELEFLAG_SENDLIGHT );
 }
 
 /*!
@@ -1780,9 +1733,9 @@ void cChar::possess(pChar pc)
 */
 void cChar::goPlace(int32_t loc)
 {
-    int32_t xx,yy,zz;
-    location2xyz(loc, xx,yy,zz);
-    MoveTo( xx,yy,zz );
+	uint16_t xx,yy,zz;
+	location2xyz(loc, xx,yy,zz);
+	MoveTo( xx,yy,zz );
 }
 
 /*!
@@ -1796,7 +1749,7 @@ bool cChar::knowsSpell(magic::SpellId spellnumber)
 	if ( ! body->getBackpack() )
 		return false;
 
-	pContainer sb = reinterpret_cast<pContainer>(body->getBackpack()->findFirstType(ITYPE_SPELLBOOK));
+	pContainer sb = dynamic_cast<pContainer>(body->getBackpack()->findFirstType(ITYPE_SPELLBOOK));
 
 	return sb && sb->containsSpell(spellnumber);
 }
@@ -2742,7 +2695,7 @@ void cChar::do_lsd()
 
 }
 
-/*
+/*!
 \brief Delete current speech
 \author Endymion
 \warning DELETE older speech string

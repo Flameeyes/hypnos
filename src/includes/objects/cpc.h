@@ -74,7 +74,6 @@ public:
 /*!
 \name Flags
 */
-
 public:
 	static const uint64_t flagCanViewSerials	= 0x0000000100000000ull; //!< Char can view serial codes
 	static const uint64_t flagPageAble		= 0x0000000200000000ull;
