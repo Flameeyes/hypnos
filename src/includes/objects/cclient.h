@@ -69,7 +69,16 @@ protected:
        	bool dragging; //!< true if is dragging
 	bool evilDrag; //!< evil dragging, we need this for UO3D clients to save dragging history
 
-        void pack_item(pItem pi, Location &loc, pItem cont);    //!< put dropped item into a container 
+        // internally used by drop_item:
+        void pack_item(pItem pi, Location &loc, pItem cont);            //!< put dropped item into a container
+        void dump_item(pItem pi, Location &loc, pItem cont);            //!< Item is dropped on ground or a character
+        bool droppedOnChar(pItem pi, Location &loc, pItem cont);        //!< Item is dropped on a character
+        bool droppedOnPet(pItem pi, Location &loc, pItem cont);         //!< Item is dropped on a pet
+        bool droppedOnGuard(pItem pi, Location &loc, pItem cont);       //!< Item is dropped on a guard
+        bool droppedOnBeggar(pItem pi, Location &loc, pItem cont);      //!< Item is dropped on a beggar
+        bool droppedOnTrainer(pItem pi, Location &loc, pItem cont);     //!< Item is dropped on a trainer
+        bool droppedOnSelf(pItem pi, Location &loc, pItem cont);        //!< Item is dropped on self
+
 
 public:
         inline bool isDragging() const
@@ -93,7 +102,7 @@ public:
 	void light();
 	void showBankBox(pChar dest);
 	void showSpecialBankBox(pChar dest);
-	void statusWindow(pChar sorg, bool extended, bool canrename);
+	void statusWindow(pChar target, bool extended = true); //, bool canrename);  canrename will be "calculated" within the method
 };
 
 #endif

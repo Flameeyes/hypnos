@@ -59,7 +59,7 @@ const UI08 cBody::equip(pItem pi, bool drag)
 	}
 
 	if ( client )
-		client->statusWindow(this, true, false);
+		client->statusWindow(this, true);
 
 	if (drag)
 		return 0;
@@ -106,7 +106,7 @@ const UI08 cBody::unEquip(pItem pi, bool drag)
 	}
 
 	if ( client )
-		client->statusWindow(this, true, false);
+		client->statusWindow(this, true);
 
 	if (drag)
 		return 0;

@@ -245,8 +245,9 @@ void cPacketSendStatus::prepare()
 	memset(buffer+7, 0, 30);
 	strncpy(buffer+7, body->getName().c_str(), 30);
 
-	ShortToCharPtr(body->getHitPoints(), buffer+37);
-	ShortToCharPtr(body->getMaxHitPoints(), buffer+39);
+
+        ShortToCharPtr(body->getHitPoints(), buffer+37);
+        ShortToCharPtr(body->getMaxHitPoints(), buffer+39);
 
 	buffer[41] = canrename ? 0xFF : 0x00;
 	buffer[42] = type;
@@ -397,7 +398,7 @@ Mostly taken from old noxwizard.cpp and (vastly :) ) modified to pyuo object sys
 */
 
 
-virtual bool cPacketReceiveCreateChar::execute(pClient client)
+bool cPacketReceiveCreateChar::execute(pClient client)
 {
         // Disconnect-level encryption or transfer error check
         if ((length !=104) ||                                           // packet length check
@@ -594,7 +595,7 @@ virtual bool cPacketReceiveCreateChar::execute(pClient client)
 \author Chronodt
 */
 
-virtual bool cPacketReceiveDisconnectNotify::execute(pClient client)
+bool cPacketReceiveDisconnectNotify::execute(pClient client)
 {
         if ((length != 5) || (LongFromCharPtr(buffer+1) != 0xffffffff)) return false;
         client->disconnect();
@@ -609,7 +610,7 @@ virtual bool cPacketReceiveDisconnectNotify::execute(pClient client)
 Mostly taken from old network.cpp and modified to pyuo object system
 */
 
-virtual bool cPacketReceiveMoveRequest::execute (pClient client)
+bool cPacketReceiveMoveRequest::execute (pClient client)
 {
         if( (length == 7) && (client->currChar()!= NULL ))
         {
@@ -627,7 +628,7 @@ virtual bool cPacketReceiveMoveRequest::execute (pClient client)
 Mostly taken from old network.cpp and modified to pyuo object system
 */
 
-virtual bool cPacketReceiveTalkRequest::execute (pClient client)
+bool cPacketReceiveTalkRequest::execute (pClient client)
 {
 	if( (client->currChar()!=NULL) && (length != ShortFromCharPtr(buffer + 1)))
         {
@@ -648,7 +649,7 @@ virtual bool cPacketReceiveTalkRequest::execute (pClient client)
 
 Mostly taken from old network.cpp and rcvpkg.cpp and modified to pyuo object system
 */
-virtual bool cPacketReceiveAttackRequest::execute (pClient client)
+bool cPacketReceiveAttackRequest::execute (pClient client)
 {
         if (length != 5) return false;
 	pPC pc = client->currChar();
@@ -668,7 +669,7 @@ virtual bool cPacketReceiveAttackRequest::execute (pClient client)
 \param client client who sent the packet
 */
 
-virtual bool cPacketReceiveDoubleclick::execute(pClient client)
+bool cPacketReceiveDoubleclick::execute(pClient client)
 {
         if (length != 5) return false;
 	pPC pc = client->currChar();
@@ -698,7 +699,7 @@ virtual bool cPacketReceiveDoubleclick::execute(pClient client)
 \param client client who sent the packet
 */
 
-virtual bool cPacketReceivePickUp::execute(pClient client)
+bool cPacketReceivePickUp::execute(pClient client)
 {
         if (length != 7) return false;
 	pItem pi = pointers::findItemBySerPtr(LongFromCharPtr(buffer+1));
@@ -710,12 +711,12 @@ virtual bool cPacketReceivePickUp::execute(pClient client)
 }
 
 /*!
-\brief Pickup Item Packet
+\brief Drop Item Packet
 \author Chronodt
 \param client client who sent the packet
 */
 
-virtual bool cPacketReceiveDropItem::execute(pClient client)
+bool cPacketReceiveDropItem::execute(pClient client)
 {
         if (length != 14) return false;
 	pItem pi = pointers::findItemBySerPtr(LongFromCharPtr(buffer+1));
@@ -731,7 +732,7 @@ virtual bool cPacketReceiveDropItem::execute(pClient client)
 \author Chronodt
 \param client client who sent the packet
 */
-virtual bool cPacketReceiveSingleclick::execute(pClient client)
+bool cPacketReceiveSingleclick::execute(pClient client)
 {
         if (length != 5) return false;
         SERIAL serial = LongFromCharPtr(buffer + 1);

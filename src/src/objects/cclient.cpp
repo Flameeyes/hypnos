@@ -284,13 +284,28 @@ void cClient::showSpecialBankBox(pPC dest)
 	showClient(bank);
 }
 
-void cClient::statusWindow(pChar sorg, bool extended, bool canrename)
+void cClient::statusWindow(pChar target, bool extended) //, bool canrename)  will be calculated from client data
 {
-	UI08 ext = 0x01;
-	if ( flags & flagClientIsUO3D )
-		ext = 0x03;
-	if ( flags & flagClientIsAoS )
-		ext = 0x04;
+
+	VALIDATEPC(target);
+        cChar pc = currChar();  // pc who will get the status window
+
+        bool canrename;
+
+	if ((pc->IsGM() || (target->getOwnerSerial32()==pc->getSerial32())) && (target!=pc)) canrename = true;
+	else canrename = false;
+
+	if ((pc->getBody()->getId() == BODY_DEADMALE) || (pc->getBody()->getId() == BODY_DEADFEMALE)) canrename = false;
+       	UI08 ext;
+        if (extended)
+        {
+                ext = 0x01;
+	        if ( flags & flagClientIsUO3D )
+		        ext = 0x03;
+        	if ( flags & flagClientIsAoS )
+	        	ext = 0x04;
+        }
+        else ext = 0x0;
 
 	cPacketSendStatus pk(sorg, ext, canrename);
 	sendPacket(&pk);
@@ -637,7 +652,7 @@ void cClient::drop_item(pItem pi, Location &loc, pItem cont) // Item is dropped
 	if ( isItemSerial(cont->getSerial32()) && (cont->getSerial32() != INVALID)  ) // Invalid target => invalid container => put inWorld !!!
 		pack_item(pi, loc, cont);
 	else
-		dump_item(ps,pp);
+		dump_item(pi, loc, cont);
 }
 
 /*!
@@ -684,7 +699,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 			Sndbounce5(s);
 			if (isDragging()) {
 				resetDragging();
-				item_bounce3(pItem);
+				item_bounce3(pi);
 				if (cont->getId() >= 0x4000)
 					senditem(s, cont);
 			}
@@ -694,11 +709,11 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 
 	if (cont->amxevents[EVENT_IONPUTITEM]!=NULL) {
 		g_bByPass = false;
-		cont->amxevents[EVENT_IONPUTITEM]->Call( cont->getSerial32(), pItem->getSerial32(), pc->getSerial32() );
+		cont->amxevents[EVENT_IONPUTITEM]->Call( cont->getSerial32(), pi->getSerial32(), pc->getSerial32() );
 		if (g_bByPass)
 		{
                 //! \todo the sendpacket stuff here
-			item_bounce6(ps,pItem);
+			item_bounce6(ps,pi);
 			return;
 		}
 	}
@@ -725,7 +740,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 	{
 		if(cont->morey==MOREY_GOLDONLYBANK && cont->morex==MOREX_BANK && cont->type==ITYPE_CONTAINER)
 		{
-			if ( pItem->getId() == ITEMID_GOLD )
+			if ( pi->getId() == ITEMID_GOLD )
 			{//if they're gold ok
 				pc->playSFX( goldsfx(2) );
 			} else
@@ -735,7 +750,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 				pi->setContainer(0);
 				pi->MoveTo( charpos );
 				pi->Refresh();
-				pc->playSFX( itemsfx(pItem->getId()) );
+				pc->playSFX( itemsfx(pi->getId()) );
 				return;
 			}
 		}
@@ -749,13 +764,13 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 			int n = contOutMost->CountItems( INVALID, INVALID, false);
 			n -= contOutMost->CountItems( ITEMID_GOLD, INVALID, false);
 			if( pi->type == ITYPE_CONTAINER )
-				n += pItem->CountItems( INVALID, INVALID, false);
+				n += pi->CountItems( INVALID, INVALID, false);
 			else
 				++n;
 			if( n > ServerScp::g_nBankLimit ) {
 				sysmsg(TRANSLATE("You exceeded the number of maximimum items in bank of %d"), ServerScp::g_nBankLimit);
                                 //! \todo the sendpacket stuff here
-				item_bounce6(ps,pItem);
+				item_bounce6(ps,pi);
 				return;
 			}
 
@@ -768,7 +783,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 	if (!pi->isInWorld())
 	{
         //! \todo the sendpacket stuff here
-		item_bounce6(ps,pItem);
+		item_bounce6(ps,pi);
 		return;
 	}
 
@@ -781,7 +796,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 		if (isDragging())
 		{
 			resetDragging();
-			item_bounce3(pItem);
+			item_bounce3(pi);
 			if (cont->getId() >= 0x4000)
 				senditem(s, cont);
 		}
@@ -805,7 +820,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 			if (isDragging())
 			{
 				resetDragging();
-				item_bounce3(pItem);
+				item_bounce3(pi);
 			}
 			if (cont->getId() >= 0x4000)
 				senditem(s, cont);
@@ -818,7 +833,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 			{
 				sysmsg(TRANSLATE("You cannot place spells in other peoples spellbooks."));
                                 //! \todo the sendpacket stuff here
-				item_bounce6(ps,pItem);
+				item_bounce6(ps,pi);
 				return;
 			}
 
@@ -845,7 +860,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 						{
 							sysmsg(TRANSLATE("You already have that spell!"));
                                                         //! \todo the sendpacket stuff here
-							item_bounce6(ps,pItem);
+							item_bounce6(ps,pi);
 							return;
 						}
 					}
@@ -854,12 +869,12 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 				{
 					sysmsg(TRANSLATE("You can't put more than one scroll at a time in your book."));
                                         //! \todo the sendpacket stuff here
-					item_bounce6(ps,pItem);
+					item_bounce6(ps,pi);
 					return;
 				}
 			}
 		}
-		cont->AddItem( pItem );
+		cont->AddItem( pi );
 		sendSpellBook(cont);
 		return;
 	}
@@ -927,5 +942,590 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 }
 
 
+/*!
+\brief drop dragged item on the ground or a character
+\author Unknown, moved here by Chronodt (4/2/2004)
+\param pi item to be dropped (already in dragging mode)
+\param loc position to drop item at (eventually in cont)
+\param cont container into which *pi has to be dropped (-1 = world)
+*/
 
+void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped on ground or a character
+{
+
+	tile_st tile;
+
+	pChar pc=currChar();
+	VALIDATEPC(pc);
+
+	if ( isCharSerial(pi->getContainer()->getSerial()) && pi->getContainer() != pc ) {
+		pChar pc_i = (pChar) pi->getContainer();
+		if (ISVALIDPC(pc_i))
+			pc_i->sysmsg("Warning, backpack disappearing bug located!");
+
+		if (isDragging()) {
+                        resetDragging();
+                        //! \todo the sendpacket stuff here
+                        UpdateStatusWindow(s,pi);
+                }
+		pi->setContainer( pi->getOldContainer() );
+                pi->setPosition( pi->getOldPosition() );
+                pi->layer = pi->oldlayer;
+                pi->Refresh();
+	}
+
+	if (pi->magic == 2) { //Luxor -- not movable objects
+		if (isDragging()) {
+                        resetDragging();
+                        //! \todo the sendpacket stuff here
+                        UpdateStatusWindow(s,pi);
+                }
+		pi->setContainer( pi->getOldContainer() );
+		pi->MoveTo( pi->getOldPosition() );
+		pi->layer = pi->oldlayer;
+		pi->Refresh();
+		return;
+	}
+
+
+
+
+        if(pi!=NULL)
+	{
+		weights::NewCalc(pc);
+                //! \todo the sendpacket stuff here
+		statwindow(pc,pc);
+	}
+
+
+	//Ripper...so order/chaos shields disappear when on ground.
+	if( pi->getId()==0x1BC3 || pi->getId()==0x1BC4 )
+	{
+		pc->playSFX( 0x01FE);
+		staticeffect(DEREF_P_CHAR(pc), 0x37, 0x2A, 0x09, 0x06);
+		pi->Delete();
+		return;
+	}
+
+
+	//test UOP blocking Tauriel 1-12-99
+	if (!pi->isInWorld())
+	{
+        //! \todo the sendpacket stuff here
+		item_bounce6(ps,pi);
+		return;
+	}
+
+
+
+
+	data::seekTile(pi->getId(), tile);
+	if (!pc->IsGM() && ((pi->magic==2 || (tile.weight==255 && pi->magic!=1))&&!pc->canAllMove()) ||
+		( (pi->magic==3 || pi->magic==4) && !(pi->getOwnerSerial32()==pc->getSerial32())))
+	{
+        //! \todo the sendpacket stuff here
+		item_bounce6(ps,pi);
+		return;
+	}
+
+	if (loc->x != 0xffff)  // WAS buffer[s][5] != unsigned char '0xff'
+        {
+               if (pi->amxevents[EVENT_IDROPINLAND]!=NULL) {
+	       	        g_bByPass = false;
+        	        pi->amxevents[EVENT_IDROPINLAND]->Call( pi->getSerial32(), pc->getSerial32() );
+			        if (g_bByPass) {
+				        pi->Refresh();
+				        return;
+			        }
+		        }
+                NxwSocketWrapper sw;
+	        sw.fillOnline( pi );
+        	for( sw.rewind(); !sw.isEmpty(); sw++ )
+        	{
+                        //! \todo the sendpacket stuff here
+        		SendDeleteObjectPkt( sw.getSocket(), pi->getSerial32() );
+        	}
+
+        	pi->MoveTo(Loc);
+                pi->setContainer(0);
+
+                pItem p_boat = Boats->GetBoat(pi->getPosition());
+
+        	if(ISVALIDPI(p_boat))
+        	{
+        		pi->SetMultiSerial(p_boat->getSerial32());
+        	}
+
+
+        	pi->Refresh();
+	}
+	else
+	{
+		if ( !droppedOnChar(pi, loc, cont) ) {
+			//<Luxor>: Line of sight check
+			//This part avoids the circle of transparency walls bug
+
+			//-----
+			if ( !lineOfSight( pc->getPosition(), loc ) ) {
+		                ps->sysmsg(TRANSLATE("You cannot place an item there!"));
+                                //! \todo the sendpacket stuff here
+        	        	Sndbounce5(s);
+	                	if (isDragging()) {
+	                        	resetDragging();
+                        		UpdateStatusWindow(s,pi);
+                		}
+                		pi->setContainer( pi->getOldContainer() );
+                		pi->setPosition( pi->getOldPosition() );
+                		pi->layer = pi->oldlayer;
+                		pi->Refresh();
+                		return;
+        		}
+        		//</Luxor>
+
+	        	//<Luxor> Items count check
+	        	if (!pc->IsGM()) {
+				NxwItemWrapper si;
+				si.fillItemsAtXY( loc->x, loc->y );
+				if (si.size() >= 2) { //Only 2 items permitted
+					ps->sysmsg(TRANSLATE("There is not enough space there!"));
+                                        //! \todo the sendpacket stuff here
+					Sndbounce5(s);
+					if (isDragging()) {
+						resetDragging();
+						UpdateStatusWindow(s,pi);
+					}
+					if (ISVALIDPI(pc->getBackpack())) {
+						pc->getBackpack()->AddItem(pi);
+					} else {
+						pi->setContainer( pi->getOldContainer() );
+						pi->setPosition( pi->getOldPosition() );
+					}
+					pi->layer = pi->oldlayer;
+					pi->Refresh();
+					return;
+				}
+			}
+        		//</Luxor>
+		}
+
+		weights::NewCalc(pc);  // Ison 2-20-99
+                //! \todo the sendpacket stuff here
+		statwindow(pc,pc);
+		pc->playSFX( itemsfx(pi->getId()) );
+
+		//Boats !
+		if (pc->getMultiSerial32() > 0) //How can they put an item in a multi if they aren't in one themselves Cut lag by not checking everytime something is put down
+		{
+			pItem multi = pointers::findItemBySerial( pc->getMultiSerial32() );
+			if (ISVALIDPI(multi))
+			{
+				multi=findmulti( pi->getPosition() );
+				if (ISVALIDPI(multi))
+					//setserial(DEREF_P_ITEM(pi),DEREF_P_ITEM(multi),7);
+					pi->SetMultiSerial(multi->getSerial32());
+			}
+		}
+		//End Boats
+	}
+}
+
+/*!
+\brief verifies if item has been dropped on a char and if so executes necessary code
+\author Unknown, moved here by Chronodt (4/2/2004)
+\param pi item to be dropped (already in dragging mode)
+\param loc position to drop item at (eventually in cont)
+\param cont container into which *pi has to be dropped (-1 = world)
+\return bool
+*/
+
+bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
+{
+	VALIDATEPIR(pi, false);
+
+
+	pChar pTC = pointers::findCharBySerial(cont->getSerial32());	// the targeted character
+	VALIDATEPCR(pTC, false);
+	pChar pc_currchar = currChar();
+	VALIDATEPCR(pc_currchar, false);
+	Location charpos = pc_currchar->getPosition();
+
+	if (!pTC) return true;
+
+	if (pc_currchar->getSerial32() != pTC->getSerial32() /*DEREF_P_CHAR(pTC)!=cc*/)
+	{
+		if (pTC->npc)
+		{
+			if(!pTC->HasHumanBody())
+			{
+				droppedOnPet( ps, pp, pi);
+			}
+			else	// Item dropped on a Human character
+			{
+				// Item dropped on a Guard (possible bounty quest)
+				if( ( pTC->npc == 1 ) && ( pTC->npcaitype == NPCAI_TELEPORTGUARD ) )
+				{
+					droppedOnGuard(pi, loc, cont);
+				}
+				if ( pTC->npcaitype == NPCAI_BEGGAR )
+				{
+					droppedOnBeggar(pi, loc, cont);
+				}
+
+				//This crazy training stuff done by Anthracks (fred1117@tiac.net)
+				if(pc_currchar->trainer != pTC->getSerial32())
+
+				{
+					pTC->talk(this, TRANSLATE("Thank thee kindly, but I have done nothing to warrant a gift."),0);
+                                        //! \todo the sendpacket stuff here
+					Sndbounce5(s);
+					if (isDragging())
+					{
+						resetDragging();
+						item_bounce5(s,pi);
+					}
+					return true;
+				}
+				else // The player is training from this NPC
+				{
+					droppedOnTrainer( pi, loc, cont);
+				}
+			}//if human or not
+		}
+		else // dropped on another player
+		{
+			// By Polygon: Avoid starting the trade if GM drops item on logged on char (crash fix)
+			if ((pc_currchar->IsGM()) && !pTC->IsOnline())
+			{
+				// Drop the item in the players pack instead
+				// Get the pack
+				pItem pack = pTC->getBackpack();
+				if (pack != NULL)	// Valid pack?
+				{
+					pack->AddItem(pi);	// Add it
+					weights::NewCalc(pTC);
+				}
+				else	// No pack, give it back to the GM
+				{
+					pack = pc_currchar->getBackpack();
+					if (pack != NULL)	// Valid pack?
+					{
+						pack->AddItem(pi);	// Add it
+						weights::NewCalc(pc_currchar);
+					}
+					else	// Even GM has no pack?
+					{
+						// Drop it to it's feet
+						pi->MoveTo( charpos );
+						pi->Refresh();
+					}
+				}
+			}
+			else
+			{
+                                //<Luxor>: secure trade
+                //! \todo the sendpacket stuff here
+                 pItem tradeCont = tradestart(pc_currchar, pTC);
+                 if (ISVALIDPI(tradeCont)) {
+                    tradeCont->AddItem( pi, 30, 30 );
+                 } else {
+                    Sndbounce5(s);
+                    if (isDragging()) {
+                 		resetDragging();
+                 		UpdateStatusWindow(s,pi);
+                   	}
+                 }
+                 //</Luxor>
+		        }
+	        }
+	}
+	else // dumping stuff to his own backpack !
+	{
+		droppedOnSelf( pi, loc, cont);
+	}
+	return true;
+
+}
+
+/*!
+\brief item has been dropped on a pet and verifies if correct item given
+\author Unknown, moved here by Chronodt (4/2/2004)
+\param pi item to be dropped (already in dragging mode)
+\param loc position to drop item at (eventually in cont)
+\param cont container into which *pi has to be dropped (-1 = world)
+\return bool
+*/
+
+
+bool cClient::droppedOnPet(pItem pi, Location &loc, pItem cont)
+{
+	pChar pet = pointers::findCharBySerial(cont->getSerial32());
+	VALIDATEPCR(pet, false);
+	pChar pc = currChar();
+	VALIDATEPCR(pc, false);
+
+	if((pet->hunger<6) && (pi->type==ITYPE_FOOD))//AntiChrist new hunger code for npcs
+	{
+		pc->playSFX( 0x3A+(rand()%3) );	//0x3A - 0x3C three different sounds
+
+		if(pi->poisoned)
+		{
+			pet->applyPoison(PoisonType(pi->poisoned));
+		}
+
+		std::string itmname;
+		if( pi->getCurrentName() == "#" )
+		{
+			char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+			pi->getName(temp2);
+			itmname = temp2;
+		}
+		else itmname = pi->getCurrentName();
+
+		pet->emotecolor = 0x0026;
+		pet->emoteall(TRANSLATE("* You see %s eating %s *"), 1, pet->getCurrentNameC(), itmname.c_str() );
+		pet->hunger++;
+	} else
+	{
+		ps->sysmsg(TRANSLATE("It doesn't appear to want the item"));
+                //! \todo the sendpacket stuff here
+		Sndbounce5(s);
+		if (isDragging())
+		{
+			resetDragging();
+			item_bounce5(s,pi);
+
+		}
+	}
+	return true;
+}
+
+/*!
+\brief item has been dropped on a guard and verifies if correct item given
+\author Unknown, moved here by Chronodt (4/2/2004)
+\param pi item to be dropped (already in dragging mode)
+\param loc position to drop item at (eventually in cont)
+\param cont container into which *pi has to be dropped (-1 = world)
+\return bool
+*/
+
+
+bool cClient::droppedOnGuard(pItem pi, Location &loc, pItem cont)
+{
+	VALIDATEPIR(pi, false);
+	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+	pChar pc = currChar();
+	VALIDATEPCR(pc,false);
+	pChar pc_t=pointers::findCharBySerial(cont->getSerial32()); //the guard
+	VALIDATEPCR(pc_t,false);
+	// Search for the key word "the head of"
+        //! \todo change check for text to check for id
+	if( strstr( pi->getCurrentNameC(), "the head of" ) ) //!!! Wrong! it must check the ItemID, not the name :(
+	{
+		// This is a head of someone, see if the owner has a bounty on them
+		pChar own=pointers::findCharBySerial(pi->getOwnerSerial32());
+		VALIDATEPCR(own,false);
+
+		if( own->questBountyReward > 0 )
+		{
+			// Give the person the bounty assuming that they are not the
+			// same person as the reward is for
+			if( pc->getSerial32() != own->getSerial32() )
+			{
+				// give them the gold for bringing the villan to justice
+				pc->addGold(own->questBountyReward);
+				pc->playSFX( goldsfx( own->questBountyReward ) );
+
+				// Now thank them for their hard work
+				sprintf( temp, TRANSLATE("Excellent work! You have brought us the head of %s. Here is your reward of %d gold coins."),
+					own->getCurrentNameC(), own->questBountyReward );
+				pc_t->talk( this, temp, 0);
+
+				// Delete the Bounty from the bulletin board
+				BountyDelete(own );
+
+				// xan : increment fame & karma :)
+				pc->modifyFame( ServerScp::g_nBountyFameGain );
+				pc->IncreaseKarma(ServerScp::g_nBountyKarmaGain);
+			}
+			else
+				pc_t->talk(this, TRANSLATE("You can not claim that prize scoundrel. You are lucky I don't strike you down where you stand!"),0);
+
+			// Delete the item
+			pi->Delete();
+		}
+	}
+	return true;
+}
+
+/*!
+\brief item has been dropped on a beggar and verifies if correct item given
+\author Unknown, moved here by Chronodt (4/2/2004)
+\param pi item to be dropped (already in dragging mode)
+\param loc position to drop item at (eventually in cont)
+\param cont container into which *pi has to be dropped (-1 = world)
+\return bool
+*/
+
+bool cClient::droppedOnBeggar(pItem pi, Location &loc, pItem cont)
+{
+
+	VALIDATEPIR(pi, false);
+
+	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+
+
+	pChar pc=currChar();
+	VALIDATEPCR(pc,false);
+
+	pChar pc_t=pointers::findCharBySerial(cont->getSerial32()); //beggar
+	VALIDATEPCR(pc_t,false);
+
+	if(pi->getId()!=ITEMID_GOLD)
+	{
+		sprintf(temp,TRANSLATE("Sorry %s i can only use gold"), pc->getCurrentNameC());
+		pc_t->talk(this,temp,0);
+                //! \todo the sendpacket stuff here
+		Sndbounce5(s);
+		if (isDragging())
+		{
+		        resetDragging();
+			item_bounce5(s,pi);
+			return true;
+		}
+	}
+	else
+	{
+		sprintf(temp,TRANSLATE("Thank you %s for the %i gold!"), pc->getCurrentNameC(), pi->amount);
+		pc_t->talk(this,temp,0);
+		if(pi->amount<=100)
+		{
+			pc->IncreaseKarma(10);
+			ps->sysmsg(TRANSLATE("You have gain a little karma!"));
+		}
+		else if(pi->amount>100)
+		{
+			pc->IncreaseKarma(50);
+			ps->sysmsg(TRANSLATE("You have gain some karma!"));
+		}
+		pi->Delete();
+		return true;
+	}
+	return true;
+}
+
+/*!
+\brief item has been dropped on a trainer and verifies if correct item given
+\author Unknown, moved here by Chronodt (4/2/2004)
+\param pi item to be dropped (already in dragging mode)
+\param loc position to drop item at (eventually in cont)
+\param cont container into which *pi has to be dropped (-1 = world)
+\return bool
+*/
+
+
+bool cClient::droppedOnTrainer(pItem pi, Location &loc, pItem cont)
+{
+	VALIDATEPIR(pi, false);
+
+	pChar pc = currChar();
+	VALIDATEPCR(pc,false);
+	pChar pc_t = pointers::findCharBySerial(cont->getSerial32());
+	VALIDATEPCR(pc_t,false);
+
+	if( pi->getId() == ITEMID_GOLD )
+	{ // They gave the NPC gold
+		UI08 sk=pc_t->trainingplayerin;
+		pc_t->talk(this, TRANSLATE("I thank thee for thy payment. That should give thee a good start on thy way. Farewell!"),0);
+
+		int sum = pc->getSkillSum();
+		int delta = pc_t->getTeachingDelta(pc, sk, sum);
+
+		if(pi->amount>delta) // Paid too much
+		{
+			pi->amount-=delta;
+                        //! \todo the sendpacket stuff here
+			Sndbounce5(s);
+			if (isDragging())
+			{
+			        resetDragging();
+				item_bounce5(s,pi);
+			}
+		}
+		else
+		{
+			if(pi->amount < delta)		// Gave less gold
+				delta = pi->amount;		// so adjust skillgain
+			pi->Delete();
+		}
+		pc->baseskill[sk]+=delta;
+		Skills::updateSkillLevel(pc, sk);
+		pc->updateSkill(sk);
+
+		pc->trainer=-1;
+		pc_t->trainingplayerin=0xFF;
+		pc->playSFX( itemsfx(pi->getId()) );
+	}
+	else // Did not give gold
+	{
+		pc_t->talk(this, TRANSLATE("I am sorry, but I can only accept gold."),0);
+                //! \todo the sendpacket stuff here
+		Sndbounce5(s);
+		if (isDragging())
+		{
+			resetDragging();
+			item_bounce5(s,pi);
+		}
+	}//if items[i]=gold
+	return true;
+}
+
+/*!
+\brief item has been dropped on self and verifies if it was a correct item
+\author Unknown, moved here by Chronodt (4/2/2004)
+\param pi item to be dropped (already in dragging mode)
+\param loc position to drop item at (eventually in cont)
+\param cont container into which *pi has to be dropped (-1 = world)
+\return bool
+*/
+
+
+bool cClient::droppedOnSelf(pItem pi, Location &loc, pItem cont)
+{
+
+	VALIDATEPIR(pi, false);
+	pChar pc = currChar();
+	VALIDATEPCR(pc, false);
+
+	Location charpos = pc->getPosition();
+
+	if (pi->getId() >= 0x4000 ) // crashfix , prevents putting multi-objects ni your backback
+	{
+		sysmsg(TRANSLATE("Hey, putting houses in your pack crashes your back and client !"));
+		pi->MoveTo( charpos );
+		pi->Refresh();//AntiChrist
+		return true;
+	}
+
+//	if (pi->glow>0) // glowing items
+//	{
+//		pc->addHalo(pi);
+//		pc->glowHalo(pi);
+//	}
+
+	pItem pack = pc->getBackpack();
+	if (pack==NULL) // if player has no pack, put it at its feet
+	{
+		pi->MoveTo( charpos );
+		pi->Refresh();
+	}
+	else
+	{
+		pack->AddItem(pi); // player has a pack, put it in there
+
+		weights::NewCalc(pc);//AntiChrist bugfixes
+		statwindow(pc,pc);
+		pc->playSFX( itemsfx(pi->getId()) );
+	}
+	return true;
+}
 
