@@ -9,7 +9,6 @@
 #define __TRADE_H__
 
 void sellaction(int s);
-pItem tradestart(pChar pc1, pChar pc2);
 void clearalltrades();
 void trademsg(int s);
 

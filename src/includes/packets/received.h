@@ -653,16 +653,18 @@ namespace nPackets {
 			void prepare();
 		};
 		
-		class SecureTradingStatus : public cPacketSend
+		class SecureTrading : public cPacketSend
 		{
 		protected:
 		
-			const uint8_t action;
-			const uint32_t id1,id2,id3;
-		
+			const uint8_t action;		//!< 0 = initiate, 1 = close window (end trade), 2 = change status (the button)
+			const pPC tradePartner;		//!< trade partner of receiving client
+			const uint32_t id1;		//!< if trade opening, must contains serial of trade container for this client, else its tradestatus (the button status: 1 checked 0 unchecked)
+			const uint32_t id2;		//!< if trade opening, must contains serial of trade container for partner client, else its tradestatus (the button status: 1 checked 0 unchecked)
+
 		public:
-			inline SecureTradingStatus(uint8_t act, uint32_t i1, uint32_t i2, uint32_t i3) :
-				cPacketSend(NULL, 0), action(act), id1(i1), id2(i2), id3(i3)
+			inline SecureTrading(uint8_t aAction, pPC aTradePartner, uint32_t aId1, uint32_t aId2) :
+				cPacketSend(NULL, 0), action(aAction), tradePartner(aTradePartner), id1(aId1), id2(aId2)
 			{ }
 		
 			void prepare();

@@ -757,17 +757,23 @@ void nPackets::Sent::MsgBoardItemsinContainer::prepare()
 }
 
 
-void nPackets::Sent::SecureTradingStatus::prepare()
+void nPackets::Sent::SecureTrading::prepare()
 {
-        buffer = new uint8_t[17];
-        length = 17;
+	if (action) length = 17;
+	else length = 47;
+	buffer = new uint8_t[length];
 	buffer[0] = 0x6F;
-        ShortToCharPtr(17, buffer+1); 	//Size - no name in this message -  so length is fixed
-	buffer[3]=action;	      	//State
-	LongToCharPtr(id1, buffer +4);
-	LongToCharPtr(id2, buffer +8);
-	LongToCharPtr(id3, buffer +12);
-	buffer[16]=0; 			// No name in this message
+	ShortToCharPtr(length, buffer+1);
+	buffer[3]=action;
+	LongToCharPtr(tradepPartner->getSerial(), buffer +4);
+	LongToCharPtr(id1, buffer +8);
+	LongToCharPtr(id2, buffer +12);
+	if (action) buffer[16]=0; 			// No name in this message
+	else
+	{
+		buffer[16] = 1;
+		strncpy(buffer + 17, tradePartner->getCurrentName().c_str(), 30);
+	}
 }
 
 void nPackets::Sent::UpdatePlayer::prepare()

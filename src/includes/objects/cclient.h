@@ -38,7 +38,7 @@ class cClient
 {
 friend class cGMPage;
 protected:
-      	static ClientList clients;	//!< All the clients
+	static ClientList clients;	//!< All the clients
 	static ClientList cGMs;		//!< GMs' clients \todo Need to be used
 
 public:
@@ -52,7 +52,7 @@ protected:
 	pAccount acc;	//!< Current account logged in by the client
 	pSocket sock;	//!< Current socket used by the client
 
-        uint8_t visualRange;	//!< holds number of "squares" clients can see. Default is 18, but it can be changed (\see cPacketReceiveClientViewRange)
+	uint8_t visualRange;	//!< holds number of "squares" clients can see. Default is 18, but it can be changed (\see cPacketReceiveClientViewRange)
 
 	uint32_t flags;			//!< Flags of capabilities of the client
         short int clientDimension;	//!< 2d or 3d client? (must contain 2 or 3)
@@ -77,53 +77,67 @@ public:
 	static ClientList getOnlineGMs()
 	{ return cGMs; }
 public:
-        void get_item(pItem pi, uint16_t amount);                   	//!< Client grabs an item
-        void drop_item(pItem pi, Location &loc, pSerializable dest);   	//!< Item is dropped on ground, char or item
+	void get_item(pItem pi, uint16_t amount);                   	//!< Client grabs an item
+	void drop_item(pItem pi, Location &loc, pSerializable dest);   	//!< Item is dropped on ground, char or item
 
 protected:
-       	bool dragging; 	//!< true if is dragging
+	bool dragging; 	//!< true if is dragging
 	bool evilDrag; 	//!< evil dragging, we need this for UO3D clients to save dragging history
-        pItem dragItem;	//!< to use as safekeeping against client disconnection
-        // internally used by drop_item:
-        void pack_item(pItem pi, pItem dest);				//!< Item is dropped on another item
-        void dump_item(pItem pi, Location &loc); 			//!< Item is dropped on the ground
-        void droppedOnChar(pItem pi, pChar dest);      			//!< Item is dropped on a character
-        // internally used by droppedOnChar
-        void droppedOnPet(pItem pi, pNPC pet);				//!< Item is dropped on a pet
-        void droppedOnGuard(pItem pi, pNPC npc);			//!< Item is dropped on a guard
-        void droppedOnBeggar(pItem pi, pNPC npc);			//!< Item is dropped on a beggar
-        void droppedOnTrainer(pItem pi, pNPC npc);     			//!< Item is dropped on a trainer
-        void droppedOnSelf(pItem pi);        				//!< Item is dropped on self
-
-
-        void wear_item(pChar pck, pItem pi);				//!< Item is dropped on paperdoll
-        void item_bounce3(const pItem pi);                              //!< simple bouncing
-        void item_bounce4(const pItem pi);                              //!< bounce & checkid before resending item
-        void item_bounce5(const pItem pi);                              //!< bounce & resend item
-        void item_bounce6(const pItem pi);                              //!< advanced bouncing
+	pItem dragItem;	//!< to use as safekeeping against client disconnection
+	// internally used by drop_item:
+	void pack_item(pItem pi, pItem dest);				//!< Item is dropped on another item
+	void dump_item(pItem pi, Location &loc);			//!< Item is dropped on the ground
+	void droppedOnChar(pItem pi, pChar dest);			//!< Item is dropped on a character
+	// internally used by droppedOnChar
+	void droppedOnPet(pItem pi, pNPC pet);				//!< Item is dropped on a pet
+	void droppedOnGuard(pItem pi, pNPC npc);			//!< Item is dropped on a guard
+	void droppedOnBeggar(pItem pi, pNPC npc);			//!< Item is dropped on a beggar
+	void droppedOnTrainer(pItem pi, pNPC npc);			//!< Item is dropped on a trainer
+	void droppedOnSelf(pItem pi);					//!< Item is dropped on self
+	void wear_item(pChar pck, pItem pi);				//!< Item is dropped on paperdoll
+	// bouncing
+	void item_bounce3(const pItem pi);				//!< simple bouncing
+	void item_bounce4(const pItem pi);				//!< bounce & checkid before resending item
+	void item_bounce5(const pItem pi);				//!< bounce & resend item
+	void item_bounce6(const pItem pi);				//!< advanced bouncing
 
 public:
-        inline bool isDragging() const
-        { return dragging; }
+	inline bool isDragging() const
+	{ return dragging; }
 
-        inline void setDragging()
-        { dragging=true; }
+	inline void setDragging()
+	{ dragging=true; }
         
-        inline void resetDragging()
-        { dragging=false; }
+	inline void resetDragging()
+	{ dragging=false; }
 
 
 //@{
 /*!
 \name Trading stuff
 */
+protected:
+	struct sSecureTradeSession
+	{
+		pClient tradepartner;   //there will be a copy of this structure in both clients, so only the other one is really needed
+		pContainer container1;
+		pContainer container2;
+		bool status1;		//status of the secure trade: flagged or not
+		bool status2;		//status of the secure trade: flagged or not
+	}
+
+	std::list<sSecureTradeSession> SecureTrade;	//!< Holds the secure trade session of this client (begun and received both)
+
 public:
-        void buyaction(pNPC npc, std::list< sBoughtItem > &allitemsbought);    	//!< Getting purchased item and gold/availability check
-        void sellaction(pNPC npc, std::list< sBoughtItem > &allitemssold);	//!< Sellig of items. Moving from char and getting paid :D
-        static void sendtradestatus(pContainer cont1, pContainer cont2);  	//!< updates secure trade window
-        static void dotrade(pContainer cont1,pContainer cont2);			//!< concludes trade (either swapping items or returning them)
+	void addTradeSession(sSecureTradeSession &session);
+	sSecureTradeSession findTradeSession(pClient targetClient);
+	pContainer tradestart(pClient targetClient);				//!< Opens a secure trade windows between this and targetClient. returns this client's ctrade container
+	static void sendtradestatus(pContainer cont1, pContainer cont2);	//!< updates secure trade window
+	static void dotrade(pContainer cont1,pContainer cont2);			//!< concludes trade (either swapping items or returning them)
 	static void endtrade(uint32_t serial);					//!< closing trade window : called when one client ends the transaction (either accepted or canceled)
-//@}
+	void buyaction(pNPC npc, std::list< sBoughtItem > &allitemsbought);	//!< Getting purchased item and gold/availability check
+	void sellaction(pNPC npc, std::list< sBoughtItem > &allitemssold);	//!< Sellig of items. Moving from char and getting paid :D
+	//@}
 
 //@{
 /*!
@@ -133,9 +147,9 @@ public:
 	void talking(cSpeech &speech);				//!< The PC talks, and this finds out who will hear (and send it to them)
 	void sysmessage(uint16_t color, std::string txt);	//!< System message (compiled)
 	void sysmessage(const char *txt, ...);			//!< System message (In lower left corner)
-        void sysmessage(uint16_t color, const char *txt, ...);	//!< Colored system message (In lower left corner)
-        void sysbroadcast(char *txt, ...);					//!< System broadcast in bold text
-	void sysbroadcast(std::string txt);					//!< System broadcast (compiled)
+	void sysmessage(uint16_t color, const char *txt, ...);	//!< Colored system message (In lower left corner)
+	void sysbroadcast(char *txt, ...);			//!< System broadcast in bold text
+	void sysbroadcast(std::string txt);			//!< System broadcast (compiled)
 //@}
 
 //@{
@@ -152,8 +166,8 @@ public:
 	void skillWindow();
 	void updatePaperdoll();
 	void sendMidi(char num1, char num2);			//!< plays midi on client (note: if client disabled music it will not play :D)
-        void sendItem(pItem pi);				//!< Shows items to client (on the ground or inside containers)
-        void senditem_lsd(pItem pi, uint16_t color, Location position);	//!< warps item in world for hallucinatory effect (sets new color and location) 	
+	void sendItem(pItem pi);				//!< Shows items to client (on the ground or inside containers)
+	void senditem_lsd(pItem pi, uint16_t color, Location position);	//!< warps item in world for hallucinatory effect (sets new color and location) 	
 
 	//! audio packets (sound effects & music)
 	void playMidi();

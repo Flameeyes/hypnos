@@ -1280,7 +1280,7 @@ void cClient::droppedOnChar(pItem pi, pChar dest)
 			else
 			{
                                 //<Luxor>: secure trade
-				pItem tradeCont = tradestart(pc_currchar, dest);
+				pContainer tradeCont = tradestart((dynamic_cast<pPC>dest)->getClient());
 				if ( tradeCont )
 				{
 					tradeCont->AddItem( pi, 30, 30 );
@@ -2100,15 +2100,13 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 				pSell->setContainer( np_b );
 				if (pSell->amount!=amt)
 					Commands::DupeItem(this, pSell, pSell->amount-amt);
-                        }
-                }
-        }
+			}
+		}
+	}
 	currChar()->addGold(totgold);
 	playSFX( goldsfx(totgold) );
 
 
-
-        
 
 	uint8_t clearmsg[8] = { 0x3B, 0x00, };
 	ShortToCharPtr(0x08, clearmsg +1); 				// Packet len
@@ -2118,6 +2116,56 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 //AoS/	Network->FlushBuffer(s);
 }
 
+
+
+
+/*!
+\brief The Trade must go on ... 
+\author Chronodt (14/8/04)
+*/
+
+pContainer tradestart(pClient targetClient)
+{
+	if ( ! targetClient) return NULL;
+	pPC pc1 = currChar();
+	pPC pc2 = targetClient->currChar();
+	if ( ! pc1 || ! pc2 || pc1->isDead() || pc2->isDead() ||  pc1->distFrom( pc2 ) > 5 ) return NULL;
+
+	//We just need 2 containers with bullettin board visual id, not a real bulletin board
+	pContainer cont1 = item::CreateFromScript( "$item_a_bulletin_board" );
+	pContainer cont2 = item::CreateFromScript( "$item_a_bulletin_board" );
+	if ( ! cont1 || ! cont2 ) return NULL;
+
+	cont1->setPosition(26, 0, 0);
+	cont2->setPosition(26, 0, 0);
+	cont1->setContainer(pc1->getBody());
+	cont2->setContainer(pc2->getBody());
+	cont1->setDyeable(false);
+	cont2->setDyeable(false);
+
+	sSecureTradeSession session;
+	session.tradepartner = targetClient;
+	session.container1 = cont1;
+	session.container2 = cont2;
+	session.status1 = false;
+	session.status2 = false;
+
+
+	//Now showing container to both clients
+	showItemInContainer(cont1);
+	showItemInContainer(cont2);
+	targetClient->showItemInContainer(cont1);
+	targetClient->showItemInContainer(cont2);
+
+	addTradeSession(session);
+
+	nPackets::Sent::SecureTrading pk1(0, pc2, cont1->getSerial(), cont2->getSerial());
+	sendPacket(&pk1);
+
+	nPackets::Sent::SecureTrading pk2(0, pc1, cont2->getSerial(), cont1->getSerial());
+	targetClient->sendPacket(&pk2);
+	return cont1;
+}
 
 void sendtradestatus(pContainer cont1, pContainer cont2)  //takes clients from containers' owners
 {
@@ -2132,8 +2180,8 @@ void sendtradestatus(pContainer cont1, pContainer cont2)  //takes clients from c
 	if(!p1) return;
 	if(!p2) return;
 
-	nPackets::Sent::SecureTradingStatus pk1(0x02, cont1->getSerial(), (uint32_t) (cont1->morez%256), (uint32_t) (cont2->morez%256));
-      	nPackets::Sent::SecureTradingStatus pk2(0x02, cont2->getSerial(), (uint32_t) (cont2->morez%256), (uint32_t) (cont1->morez%256));
+	nPackets::Sent::SecureTrading pk1(0x02, cont1->getSerial(), (uint32_t) (cont1->morez%256), (uint32_t) (cont2->morez%256));
+	nPackets::Sent::SecureTrading pk2(0x02, cont2->getSerial(), (uint32_t) (cont2->morez%256), (uint32_t) (cont1->morez%256));
 	p1->getClient()->sendPacket(&pk1);
 	p2->getClient()->sendPacket(&pk2);
 }
@@ -2143,14 +2191,14 @@ void dotrade(pContainer cont1, pContainer cont2)
 	if(!cont1) return;
 	if(!cont2) return;
 
-        pPC pc1 = cSerializable::findCharBySerial(cont1->getContSerial());
-        pPC pc2 = cSerializable::findCharBySerial(cont2->getContSerial());
+	pPC pc1 = cSerializable::findCharBySerial(cont1->getContSerial());
+	pPC pc2 = cSerializable::findCharBySerial(cont2->getContSerial());
 
 	if(!pc1) return;
 	if(!pc2) return;
 
-        pContainer bp1 = pc1->getBackpack();
-        pContainer bp2 = pc2->getBackpack();
+	pContainer bp1 = pc1->getBackpack();
+	pContainer bp2 = pc2->getBackpack();
 
 	if(!bp1) return;
 	if(!bp2) return;
@@ -2245,12 +2293,12 @@ void endtrade(pContainer c1)
 
 	if (c1)	// player may have been disconnected (Duke)
         {
-        	nPackets::Sent::SecureTradingStatus pk1(0x01, cont1->getSerial(), 0, 0);
+		nPackets::Sent::SecureTrading pk1(0x01, cont1->getSerial(), 0, 0);
 		c1->sendPacket(&pk1);
 	}
 	if (c2)	// player may have been disconnected (Duke)
         {
-              	nPackets::Sent::SecureTradingStatus pk2(0x01, cont2->getSerial(), 0, 0);
+              	nPackets::Sent::SecureTrading pk2(0x01, cont2->getSerial(), 0, 0);
               	c2->sendPacket(&pk2);
         }
 
