@@ -1484,7 +1484,7 @@ void Skills::Meditation (NXWSOCKET  s)
 
 	pItem pi = NULL;
 
-	pc->med = 0;
+	pc->setMeditating(false);
 
 	if ( pc->war ) {
 		pc->sysmsg( TRANSLATE("Your mind is too busy with the war thoughts.") );
@@ -1517,7 +1517,7 @@ void Skills::Meditation (NXWSOCKET  s)
 	}
 
 	pc->sysmsg( TRANSLATE("You enter a meditative trance.") );
-	pc->med = 1;
+	pc->setMeditating(true);
 	pc->playSFX(0x00F9);
 }
 

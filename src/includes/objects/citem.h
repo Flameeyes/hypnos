@@ -40,14 +40,6 @@ public:
 	~cItem();
 //@}
 
-	//! deletion type
-	enum DelType
-	{
-		DELTYPE_UNKNOWN,
-		DELTYPE_DECAY,
-		DELTYPE_GMREMOVE
-	};
-
 	//! Events for items
 	enum Event {
 		EVENT_IONSTART = 0,
@@ -638,7 +630,7 @@ protected:
 	TIMERVAL	decaytime;
 
 public:
-	bool		doDecay();
+	virtual bool doDecay(bool dontDelete = false);
 
 	inline const void setDecayTime( const TIMERVAL delay = uiCurrentTime+(nSettings::Server::getDecayTimer()*MY_CLOCKS_PER_SEC) )
 	{ decaytime = delay; }

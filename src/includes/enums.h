@@ -119,4 +119,14 @@ enum HideType {
 	htBySpell	//!< Hidden by invisible spell
 };
 
+//! deletion type
+enum DelType {
+	deleteUnknown, deleteDecay, deleteGMRemove
+};
+
+//! Type of dispel
+enum DispelType {
+	dispelUnknwon, dispelDispel, dispelTimeout, dispelGMRemove
+};
+
 #endif

@@ -90,14 +90,6 @@ enum AmxCharEvents
 	ALLCHAREVENTS			= 38
 };
 
-enum DispelType
-{
-	DISPELTYPE_UNKNOWN		= 0,
-	DISPELTYPE_DISPEL,
-	DISPELTYPE_TIMEOUT,
-	DISPELTYPE_GMREMOVE
-};
-
 enum StatCap
 {
 	STATCAP_CAP			= 0,

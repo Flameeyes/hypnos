@@ -49,7 +49,9 @@ public:
 	bool containsSpell(magic::SpellId spellnum);
 	
 	const float getWeightActual();
-} PACK_NEEDED;
+
+	virtual bool doDecay(bool dontDelete = false);
+};
 
 #endif
 

@@ -86,18 +86,16 @@ void cNPC::heartbeat()
 	//
 	if ( TIMEOUT( summontimer ) && summontimer > 0 )
 	{
-
-		if ( amxevents[EVENT_CHR_ONDISPEL] )
-		{
-			g_bByPass = false;
-			amxevents[EVENT_CHR_ONDISPEL]->Call( getSerial(), INVALID, DISPELTYPE_TIMEOUT );
-			if ( g_bByPass == true ) return;
+		if ( events[evtNpcOnDispel] && getClient() ) {
+			tVariantVector params = tVariantVector(3);
+			params[0] = getSerial(); params[1] = INVALID;
+			params[2] = dispelTimeout;
+			events[evtNpcOnDispel]->setParams(params);
+			events[evtNpcOnDispel]->execute();
+			if ( events[evtNpcOnDispel]->bypassed() )
+				return;
 		}
-		/*
-		g_bByPass = false;
-		runAmxEvent( EVENT_CHR_ONDISPEL, getSerial(), INVALID, DISPELTYPE_TIMEOUT );
-		if ( g_bByPass == true ) return;
-		*/
+
 		// Dupois - Added Dec 20, 1999
 		// QUEST expire check - after an Escort quest is created a timer is set
 		// so that the NPC will be deleted and removed from the game if it hangs around

@@ -388,11 +388,12 @@ void cItem::setContainer(pObject obj)
 }
 
 /*!
-\author Luxor
+\author Luxor & Flameeyes
 \brief execute decay on the item
+\param dontDelete Should be called by inherited classes to not delete the item.
 \return true if decayed (so deleted), false else
 */
-bool cItem::doDecay()
+bool cItem::doDecay(bool dontDelete = false)
 {
 	if ( !canDecay() )
 		return false;
@@ -403,71 +404,47 @@ bool cItem::doDecay()
 	if ( !isInWorld() )
 		return false;
 
-	if ( TIMEOUT( decaytime ) )
-	{
-
-
-		if ( amxevents[EVENT_IONDECAY] !=NULL )
-		{
-			g_bByPass = false;
-			amxevents[EVENT_IONDECAY]->Call(getSerial(), DELTYPE_DECAY);
-			if ( g_bByPass == true )
-				return false;
-		}
-		/*
-		g_bByPass = false;
-		runAmxEvent( EVENT_IONDECAY, getSerial(), DELTYPE_DECAY );
-		if ( g_bByPass == true )
-			return false;
-		*/
-
-		//Multis
-		if ( !isFieldSpellItem() && !corpse )
-		{
-			if ( getMultiSerial32() == INVALID )
-			{
-				pItem pi_multi = findmulti(getPosition());
-				if ( pi_multi )
-				{
-					if ( pi_multi->more4 == 0 )
-					{
-						setDecayTime();
-						SetMultiSerial(pi_multi->getSerial());
-						return false;
-					}
-				}
-			}
-			else
-			{
-				setDecayTime();
-				return false;
-			}
-		}
-		//End Multis
-
-		if( type == ITYPE_CONTAINER || ( !SrvParms->lootdecayswithcorpse && corpse ) )
-		{
-			NxwItemWrapper si;
-			si.fillItemsInContainer( this, false );
-			for( si.rewind(); !si.isEmpty(); si++ )
-			{
-				pItem pj = si.getItem();
-				if( pj )
-				{
-					pj->setContainer(0);
-					pj->MoveTo( getPosition() );
-					pj->setDecayTime();
-					pj->Refresh();
-				}
-			}
-		}
-		Delete();
-		return true;
-	}
-	else
+	if ( ! TIMEOUT( decaytime ) )
 		return false;
-}
 
+
+	if ( events[evtItmOnDecay] && getClient() ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = deleteDecay;
+		events[evtItmOnDecay]->setParams(params);
+		events[evtItmOnDecay]->execute();
+		if ( events[evtItmOnDecay]->bypassed() )
+			return;
+	}
+
+	//Multis
+	if ( !isFieldSpellItem() && !corpse )
+	{
+		if ( getMultiSerial32() == INVALID )
+		{
+			pItem pi_multi = findmulti(getPosition());
+			if ( pi_multi )
+			{
+				if ( pi_multi->more4 == 0 )
+				{
+					setDecayTime();
+					SetMultiSerial(pi_multi->getSerial());
+					return false;
+				}
+			}
+		}
+		else
+		{
+			setDecayTime();
+			return false;
+		}
+	}
+	//End Multis
+
+	if ( ! dontDelete )
+		Delete();
+	return true;
+}
 
 void cItem::explode(NXWSOCKET  s)
 {

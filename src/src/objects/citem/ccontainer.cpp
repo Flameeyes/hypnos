@@ -329,3 +329,27 @@ const float cContainer::getWeightActual()
 	
 	return totalWeight;
 }
+
+/*!
+\author Flameeyes
+\brief execute decay on the container
+\param dontDelete Should be called by inherited classes to not delete the item.
+\return true if decayed (so deleted), false else
+\see cItem::doDecay()
+*/
+bool cContainer::doDecay(bool dontDelete = false)
+{
+	if ( ! cItem::doDecay(true) )
+		return false;
+	
+	for ( ItemList::iterator it = items.begin(); it != items.end(); it++ )
+	{
+		(*it)->setContainer(NULL);
+		(*it)->MoveTo( getPosition() );
+		(*it)->setDecayTime();
+		(*it)->Refresh();
+	}
+	
+	Delete();
+	return true;
+}

@@ -2009,37 +2009,33 @@ void target_tele( pClient client, pTarget t )
 
 void target_remove( pClient client, pTarget t )
 {
-
-	uint32_t serial = t->getClicked();
-
-	if( isCharSerial( serial ) )	{
-		pChar pc=cSerializable::findCharBySerial( serial );
-		if ( ! pc ) return;
-
-		if (pc->amxevents[EVENT_CHR_ONDISPEL]) {
-			pc->amxevents[EVENT_CHR_ONDISPEL]->Call( pc->getSerial(), INVALID, DISPELTYPE_GMREMOVE );
-		}
-
-        if (pc->account>INVALID && !pc->npc)
-        {
-            ps->sysmsg( TRANSLATE("You cant delete players") );
-            return;
-        }
-
-        ps->sysmsg( TRANSLATE("Removing character.") );
+	pChar pc = NULL; pItem pi = NULL;
+	
+	if ( reinterpret_cast<pPC>(t->getClicked()) )
+	{
+		client->sysmessage("You can't delete players");
+		return;
+	} else if ( ( pc = reinterpret_cast<pNPC>(t->getClicked()) ) ) {
+	
+		pFunctionHandler fh = pc->getEvent(evtNpcOnDispel);
+		tVariantVector params = tVariantVector(3);
+		params[0] = pc->getSerial(); params[1] = INVALID;
+		params[2] = dispelGMRemove;
+		fh->setParams(params);
+		fh->execute();
+		
+		client->sysmessage("Removing character.");
 		pc->Delete();
+	} else if ( ( pi = reinterpret_cast<pItem>(t->getClicked()) ) ) {
+		pFunctionHandler fh = pi->getEvent(evtItmOnDecay);
+		tVariantVector params = tVariantVector(2);
+		params[0] = pc->getSerial(); params[1] = deleteGMRemove;
+		fh->setParams(params);
+		fh->execute();
+	
+		client->sysmessage("Removing item.");
+		pi->Delete();
 	}
-	else {
-		pItem pi=cSerializable::findItemBySerial( serial );
-		if ( ! pi ) return;
-
-		ps->sysmsg( TRANSLATE("Removing item.") );
-        if( pi->amxevents[EVENT_IONDECAY] )
-			pi->amxevents[EVENT_IONDECAY]->Call( pi->getSerial(), DELTYPE_GMREMOVE );
-        ps->sysmsg( TRANSLATE("Removing item.") );
-        pi->Delete();
-	}
-
 }
 
 
