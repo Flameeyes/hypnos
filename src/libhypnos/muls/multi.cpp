@@ -8,7 +8,6 @@
 
 #include "libhypnos/muls/multi.h"
 #include "libhypnos/exceptions.h"
-#include "structs.h"
 
 namespace nLibhypnos {
 namespace nMULFiles {

@@ -82,7 +82,7 @@ bool cMenus::removeFromView( P_MENU menu, uint32_t chr )
 	
 	menu->whoSeeThis.erase( chr );
 
-	std::map<uint32_t, std::set<SERIAL> >::iterator i( whoSeeWhat.find( menu->serial ) );
+	map<uint32_t, set<SERIAL> >::iterator i( whoSeeWhat.find( menu->serial ) );
 	if( i!=whoSeeWhat.end() ) {
 		i->second.erase( chr );
 
@@ -170,7 +170,7 @@ cBasicMenu::~cBasicMenu()
 }
 
 
-void cBasicMenu::setCallBack( std::string arg )
+void cBasicMenu::setCallBack( string arg )
 {
 	if( callback!=NULL )
 		safedelete( callback );
@@ -248,7 +248,7 @@ cMenu::~cMenu()
 {
 }
 
-void cMenu::addCommand( std::string command )
+void cMenu::addCommand( string command )
 {
 	commands.push_back( command );
 }
@@ -261,13 +261,13 @@ void cMenu::addCommand( char* formatStr, ... )
 	vasprintf( &temp, formatStr, vargs);
 	va_end(vargs);
 
-	addCommand( std::string( temp ) );
+	addCommand( string( temp ) );
 	free(temp);
 }
 
-void cMenu::removeCommand( std::string command )
+void cMenu::removeCommand( string command )
 {
-	std::vector< std::string >::iterator iter( commands.begin() ), end( commands.end() );
+	vector< string >::iterator iter( commands.begin() ), end( commands.end() );
 	for( ; iter!=end; iter++ ) {
 		if( (*iter)==command ) {
 			commands.erase( iter );
@@ -277,7 +277,7 @@ void cMenu::removeCommand( std::string command )
 }
 
 
-uint32_t cMenu::addString( wstring u )
+uint32_t cMenu::addString( unistring u )
 {
 	texts.push_back( u );
 	return texts.size()-1;
@@ -306,12 +306,12 @@ void cMenu::addTiledGump( uint32_t x, uint32_t y, uint32_t width, uint32_t heigh
 	addCommand( "{gumppictiled %d %d %d %d %d %d}", x, y, width, height, gump, hue );
 }
 
-void cMenu::addHtmlGump( uint32_t x, uint32_t y, uint32_t width, uint32_t height, wstring html, uint32_t hasBack, uint32_t canScroll )
+void cMenu::addHtmlGump( uint32_t x, uint32_t y, uint32_t width, uint32_t height, unistring html, uint32_t hasBack, uint32_t canScroll )
 {
 	addCommand( "{htmlgump %d %d %d %d %d %d %d}", x, y, width, height, addString(html), hasBack, canScroll );
 }
 
-void cMenu::addXmfHtmlGump( uint32_t x, uint32_t y, uint32_t width, uint32_t height, wstring clilocid, uint32_t hasBack , uint32_t canScroll )
+void cMenu::addXmfHtmlGump( uint32_t x, uint32_t y, uint32_t width, uint32_t height, unistring clilocid, uint32_t hasBack , uint32_t canScroll )
 {
 	addCommand( "{xmfhtmlgump %d %d %d %d %s %d %d}", x, y, width, height, addString(clilocid), hasBack, canScroll );
 }
@@ -321,12 +321,12 @@ void cMenu::addCheckertrans( uint32_t x, uint32_t y, uint32_t width, uint32_t he
 	addCommand( "{checkertrans %d %d %d %d}", x, y, width, height );
 }
 
-void cMenu::addCroppedText( uint32_t x, uint32_t y, uint32_t width, uint32_t height, wstring text, uint32_t hue )
+void cMenu::addCroppedText( uint32_t x, uint32_t y, uint32_t width, uint32_t height, unistring text, uint32_t hue )
 {
 	addCommand( "{croppedtext %d %d %d %d %d %d}", x, y, width, height, hue, addString(text) );
 }
 
-void cMenu::addText( uint32_t x, uint32_t y, wstring data, uint32_t hue )
+void cMenu::addText( uint32_t x, uint32_t y, unistring data, uint32_t hue )
 {
 	addCommand( "{text %d %d %d %d}", x, y, hue, addString(data) ); //text <Spaces from Left> <Space from top> <Length, Color?> <# in order>
 }
@@ -346,7 +346,7 @@ void cMenu::addTilePic( uint32_t x, uint32_t y, uint32_t tile, uint32_t hue )
 	addCommand( "{tilepic %d %d %d %d}", x, y, tile, hue );
 }
 
-void cMenu::addInputField( uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t textId, wstring data, uint32_t hue )
+void cMenu::addInputField( uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t textId, unistring data, uint32_t hue )
 {
 	rc_edit.insert( make_pair( textId, rc_serialCurrent ) );
 	addCommand( "{textentry %d %d %d %d %d %d %d}", x, y, width, height, hue, rc_serialCurrent++, addString(data) );
@@ -437,7 +437,7 @@ void cMenu::handleButton( pClient ps, cClientPacket* pkg  )
 
 		buttonReturnCode = getButton( button );
 
-		std::map< uint32_t, FUNCIDX >::iterator iter( buttonCallbacks.find( button ) );
+		map< uint32_t, FUNCIDX >::iterator iter( buttonCallbacks.find( button ) );
 		if( iter!=buttonCallbacks.end() ) {
 
 			AmxFunction func( iter->second );
@@ -453,7 +453,7 @@ void cMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	//set property if there are
 
 	if( ( buttonReturnCode!=MENU_CLOSE ) && ( buttonReturnCode==buffer[3] ) ) { 
-		std::map< uint32_t, int32_t >::iterator propIter( editProps.begin() ), lastProp( editProps.end() );
+		map< uint32_t, int32_t >::iterator propIter( editProps.begin() ), lastProp( editProps.end() );
 		for( ; propIter!=lastProp; ++propIter ) {
 
 			int32_t props = propIter->first;
@@ -461,7 +461,7 @@ void cMenu::handleButton( pClient ps, cClientPacket* pkg  )
 			getPropsFromInt( props, prop, prop2, prop3 );  
 
 			if( getPropertyType( prop )!=T_BOOL ) {
-				std::wstring* data = getText( propIter->second, true );
+				unistring* data = getText( propIter->second, true );
 				if( data!=NULL )
 					setPropertyField( buffer[0], buffer[1], prop, prop2, prop3, *data );
 			}
@@ -531,7 +531,7 @@ void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL sub
 		
 }
 
-void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL subProp, SERIAL subProp2, std::wstring data )
+void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL subProp, SERIAL subProp2, unistring data )
 {
 	VAR_TYPE t = getPropertyType( prop );
 	switch( type ) {
@@ -560,9 +560,9 @@ void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL sub
 					}
 					break;
 				case T_STRING: {
-					std::string value;
-					wstring2string( data, value );
-					if( value!=std::string( getCharStrProperty( pc, prop, subProp ) ) )
+					string value;
+					unistring2string( data, value );
+					if( value!=string( getCharStrProperty( pc, prop, subProp ) ) )
 						setCharStrProperty( pc, prop, subProp, subProp2, const_cast<char*>(value.c_str()) );
 					}
 					break;
@@ -598,9 +598,9 @@ void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL sub
 					}
 					break;
 				case T_STRING: {
-					std::string value;
-					wstring2string( data, value );
-					if( value!=std::string( getItemStrProperty( pi, prop, subProp ) ) )
+					string value;
+					unistring2string( data, value );
+					if( value!=string( getItemStrProperty( pi, prop, subProp ) ) )
 						setItemStrProperty( pi, prop, subProp, const_cast<char*>(value.c_str()) );
 					}
 					break;
@@ -621,7 +621,7 @@ void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL sub
 }
 
 template< typename T >
-std::wstring toWstr( T num )
+unistring toWstr( T num )
 {
 	wchar_t buffer[TEMP_STR_SIZE];
 #ifdef WIN32
@@ -630,18 +630,18 @@ std::wstring toWstr( T num )
 	swprintf( buffer, TEMP_STR_SIZE, L"%i", num );
 #endif
 
-	return std::wstring( buffer );
+	return unistring( buffer );
 }
 
-std::wstring toWstr( const char* s )
+unistring toWstr( const char* s )
 {
-	std::wstring data;
-	string2wstring( std::string(s), data );
+	unistring data;
+	string2unistring( string(s), data );
 	return data;
 }
 
 
-std::wstring cMenu::getPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL subProp, SERIAL subProp2 )
+unistring cMenu::getPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL subProp, SERIAL subProp2 )
 {
 	
 	VAR_TYPE t = getPropertyType( prop );
@@ -649,7 +649,7 @@ std::wstring cMenu::getPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SE
 	
 		case PROpCharACTER: {
 			pChar pc = cSerializable::findCharBySerial( obj );
-			if ( ! pc ) return std::wstring();
+			if ( ! pc ) return unistring();
 
 			switch( t ) {
 				case T_CHAR :
@@ -667,7 +667,7 @@ std::wstring cMenu::getPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SE
 		break;
 		case PROpItem : {
 			pItem pi = cSerializable::findItemBySerial( obj );
-			if ( ! pi ) return std::wstring();
+			if ( ! pi ) return unistring();
 
 			switch( t ) {
 				case T_CHAR :
@@ -686,11 +686,11 @@ std::wstring cMenu::getPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SE
 		case PROP_CALENDAR:
 		case PROP_GUILD:
 		default:
-			return std::wstring(L"Not implemented yet");
+			return unistring(L"Not implemented yet");
 	}
 
 
-	return std::wstring( L"Error" );
+	return unistring( L"Error" );
 }
 
 void cMenu::setMoveable( bool canMove )
@@ -699,7 +699,7 @@ void cMenu::setMoveable( bool canMove )
 		addCommand("{nomove}");
 	else 
 		if( !moveable )
-			removeCommand( std::string("{nomove}") );
+			removeCommand( string("{nomove}") );
 	moveable=canMove;
 }
 
@@ -714,7 +714,7 @@ void cMenu::setCloseable( bool canClose )
 		addCommand("{noclose}");
 	else
 		if( !closeable )
-			removeCommand( std::string("{noclose}") );
+			removeCommand( string("{noclose}") );
 	closeable=canClose;
 }
 
@@ -729,7 +729,7 @@ void cMenu::setDisposeable( bool canDispose )
 		addCommand("{nodispose}");
 	else
 		if( !disposeable )
-			removeCommand( std::string("{nodispose}") );
+			removeCommand( string("{nodispose}") );
 	disposeable=canDispose;
 }
 
@@ -754,9 +754,9 @@ bool cMenu::getRadio( uint32_t radio, bool raw )
 		return find( switchs->begin(), switchs->end(), rc_radio[radio] )!=switchs->end();
 }
 
-std::wstring* cMenu::getText( uint32_t text, bool raw )
+unistring* cMenu::getText( uint32_t text, bool raw )
 {
-	std::map< uint32_t, std::wstring >::iterator iter;
+	map< uint32_t, unistring >::iterator iter;
 	if( raw )
 		iter= textResp->find( text );
 	else {
@@ -818,7 +818,7 @@ cServerPacket* cIconListMenu::createPacket()
 	return p;
 }
 
-void cIconListMenu::addIcon( uint16_t model, COLOR color, std::string response )
+void cIconListMenu::addIcon( uint16_t model, COLOR color, string response )
 {
 	pkg_icon_list_menu_st icon;
 	icon.color=color;
@@ -828,7 +828,7 @@ void cIconListMenu::addIcon( uint16_t model, COLOR color, std::string response )
 	icons.push_back( icon );
 }
 
-void cIconListMenu::addIcon( uint16_t model, COLOR color, int32_t data, std::string response )
+void cIconListMenu::addIcon( uint16_t model, COLOR color, int32_t data, string response )
 {
 	iconData.insert( make_pair( icons.size(), data ) );
 	addIcon( model, color, response );

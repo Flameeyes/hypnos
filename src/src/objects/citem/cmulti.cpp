@@ -113,11 +113,11 @@ bool cMulti::remove(pSerializable obj)
 	
 	if ( pc )
 	{
-		CharSList::iterator it = std::find(chars.begin(), chars.end(), pc);
+		CharSList::iterator it = find(chars.begin(), chars.end(), pc);
 		if ( it != chars.end() )
 			chars.erase(it);
 	} else {
-		MultiItemSList::iterator it = std::find(items.begin(), items.end(), pi);
+		MultiItemSList::iterator it = find(items.begin(), items.end(), pi);
 		if ( it == items.end() )
 			return false;
 		

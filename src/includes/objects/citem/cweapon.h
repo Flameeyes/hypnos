@@ -52,7 +52,7 @@ public:
 	
 	Skill getCombatSkill() const;
 protected:
-	typedef std::map<uint16_t,uint16_t> WeaponMap;
+	typedef map<uint16_t,uint16_t> WeaponMap;
 	//! Map with types of weapons
 	static WeaponMap weaponinfo;		//!< Weapon's information
 	Skill combatSkill;			//!< Combat skill used by the weapon

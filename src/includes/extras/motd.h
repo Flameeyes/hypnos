@@ -23,8 +23,8 @@ emulator.
 namespace nMOTD {
 	void loadMOTD();
 	
-	const std::string &getMOTD();
-	const std::string &getTip(uint16_t index);
+	const string &getMOTD();
+	const string &getTip(uint16_t index);
 	uint16_t getTipsCount();
 }
 

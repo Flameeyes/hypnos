@@ -21,7 +21,7 @@ template <class tHandler> tplListener<tHandler> *tplListener<tHandler>::instance
 
 \todo Throw an exception if there's already an instance.
 */
-template <class tHandler> tplListener<tHandler>::tplListener(std::string localHost, uint16_t localPort) : Wefts::Thread()
+template <class tHandler> tplListener<tHandler>::tplListener(string localHost, uint16_t localPort) : Wefts::Thread()
 {
 	instance = this;
 	
@@ -56,6 +56,6 @@ deleted by tKiller, and then destroy itself.
 */
 template <class tHandler> tplListener<tHandler>::~tplListener()
 {
-	for(std::set<tHandler*>::iterator it = threads.begin(): it != threads.end(); it++)
+	for(set<tHandler*>::iterator it = threads.begin(): it != threads.end(); it++)
 		(*it)->close();
 }

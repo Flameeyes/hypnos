@@ -46,7 +46,7 @@ public:
 	static const uint32_t clientIsUO3D		= 0x00000004;
 	static const uint32_t clientIsAoS		= 0x00000008;
 	
-	static void listConnected(std::ostream &);
+	static void listConnected(ostream &);
 
 protected:
 	pPC pc;	        //!< Current char used by the client
@@ -143,7 +143,7 @@ protected:
 		}
 	};
 
-	std::slist<sSecureTradeSession> SecureTrade;	//!< Holds the secure trade session of this client (begun and received both)
+	slist<sSecureTradeSession> SecureTrade;	//!< Holds the secure trade session of this client (begun and received both)
 
 public:
 	//! Adds a session to this client's list of open secure trading sessions
@@ -156,7 +156,7 @@ public:
 
 	//! removing trade session between this and another client
 	inline void removeTradeSession(sSecureTradeSession &session)
-	{ SecureTrade.erase(std::find(SecureTrade.begin(), SecureTrade.end(), session)); }
+	{ SecureTrade.erase(find(SecureTrade.begin(), SecureTrade.end(), session)); }
 
 	sSecureTradeSession findTradeSession(pContainer tradecontainer);	//!< Finds the trade session between "this" and another client knowing "this" tradecontainer
 	sSecureTradeSession findTradeSession(pClient tradeclient);		//!< Finds the trade session between "this" and another client knowing the other client
@@ -165,9 +165,9 @@ public:
 	void dotrade(sSecureTradeSession &session);				//!< concludes trade (either swapping items or returning them)
 	void endtrade(sSecureTradeSession &session);				//!< closing trade window : called when one client ends the transaction (closing the trade window) or one client crashes (client destruction)
 	bool buyShop(pNPC vendor);						//!< sends list of buyable items to client (opens buy gump)
-	void buyaction(pNPC npc, std::list< sBoughtItem > &allitemsbought);	//!< Getting purchased item and gold/availability check
+	void buyaction(pNPC npc, list< sBoughtItem > &allitemsbought);	//!< Getting purchased item and gold/availability check
 	void sellShop(pNPC npc);						//!< compares current player items with the list of npc's sell layer to see items that can be sold (opens sell gump)
-	void sellaction(pNPC npc, std::list< sBoughtItem > &allitemssold);	//!< Sellig of items. Moving from char and getting paid :D
+	void sellaction(pNPC npc, list< sBoughtItem > &allitemssold);	//!< Sellig of items. Moving from char and getting paid :D
 	
 	void telltime();
 //@}
@@ -179,12 +179,12 @@ public:
 public:
 	void talking(cSpeech &speech);				//!< The PC talks, and this finds out who will hear (and send it to them)
 	void broadcast(cSpeech &speech);			//!< GM Broadcast (Done if a GM yells something)
-	void sysmessage(uint16_t color, std::string txt);	//!< System message (compiled)
+	void sysmessage(uint16_t color, string txt);	//!< System message (compiled)
 	void sysmessage(const char *txt, ...) PRINTF_LIKE(2,3);	//!< System message (In lower left corner)
 	void sysmessage(uint16_t color, const char *txt, ...) PRINTF_LIKE(3,4);
 								//!< Colored system message (In lower left corner)
 	void sysbroadcast(char *txt, ...) PRINTF_LIKE(2,3);	//!< System broadcast in bold text
-	void sysbroadcast(std::string txt);			//!< System broadcast (compiled)
+	void sysbroadcast(string txt);			//!< System broadcast (compiled)
 //@}
 
 //@{

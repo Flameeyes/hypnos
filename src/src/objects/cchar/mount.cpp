@@ -44,7 +44,7 @@ void cBody::mount(pNPC mount)
 		return;
 	}
 
-	std::map<int32_t,int32_t>::iterator iter = mountinfo.find(mount->getId());
+	map<int32_t,int32_t>::iterator iter = mountinfo.find(mount->getId());
 	if( iter==mountinfo.end() ) { //not mountable creature
 		sysmsg("This is not a mountable creature");
 		return;
@@ -215,7 +215,7 @@ bool cChar::unmountHorse()
 	setOnHorse(false);
 
 #if 0
-	std::map< uint32_t, pChar >::iterator iter( pointers::pMounted.find( getSerial() ) );
+	map< uint32_t, pChar >::iterator iter( pointers::pMounted.find( getSerial() ) );
 
 	if( ( iter!=pointers::pMounted.end() ) ) {
 

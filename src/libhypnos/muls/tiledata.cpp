@@ -15,21 +15,21 @@ namespace nLibhypnos {
 namespace nMULFiles {
 
 //! Gets the name of the entry
-std::string cTiledataLand::cEntry::getName() const
+string cTiledataLand::cEntry::getName() const
 {
 	char tmp[21];
 	strncpy(tmp, name, 20);
 	
-	return std::string(tmp);
+	return string(tmp);
 }
 
 //! Gets the name of the entry
-std::string cTiledataStatic::cEntry::getName() const
+string cTiledataStatic::cEntry::getName() const
 {
 	char tmp[21];
 	strncpy(tmp, name, 20);
 	
-	return std::string(tmp);
+	return string(tmp);
 }
 
 fTiledataLand::fTiledataLand()
@@ -37,7 +37,7 @@ fTiledataLand::fTiledataLand()
 {
 }
 
-fTiledataLand::fTiledataLand(const std::string &filepath)
+fTiledataLand::fTiledataLand(const string &filepath)
 	: file(sizeof(cTiledataLand), filepath, 0, 512*sizeof(cTiledataLand))
 {
 }
@@ -49,7 +49,7 @@ fTiledataStatic::fTiledataStatic()
 	file.mmap(512*sizeof(cTiledataLand));
 }
 
-fTiledataStatic::fTiledataStatic(const std::string &filepath)
+fTiledataStatic::fTiledataStatic(const string &filepath)
 	: file(sizeof(cTiledataStatic))
 {
 	file.open(filepath);

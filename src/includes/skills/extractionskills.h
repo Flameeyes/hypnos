@@ -28,7 +28,7 @@ public:
 
 typedef cResource* pResource;
 
-typedef std::map< uint64_t, cResource > RESOURCE_MAP;
+typedef map< uint64_t, cResource > RESOURCE_MAP;
 
 class cResources {
 

@@ -63,7 +63,7 @@ public:
 	
 protected:
 	//! Serial-indexed players' status map
-	typedef std::map<uint32_t, PlayerStatus> PSMap;
+	typedef map<uint32_t, PlayerStatus> PSMap;
 	
 	pPC owner;		//!< Owner of the house
 	PSMap playerStatus;	//!< Status of registered players
@@ -72,7 +72,7 @@ protected:
 	\brief House's deed's identifier
 	\todo Change this to an archetype pointer
 	*/
-	std::string deedID;
+	string deedID;
 	
 	uint32_t decaytimer;
 	
@@ -94,7 +94,7 @@ public:
 	void redeed(pClient client);
 	void killKeys();
 	
-	bool doSpeech(pClient client, const std::string &speech);
+	bool doSpeech(pClient client, const string &speech);
 
 protected:
 	static HouseSList houses;	//!< All the houses in the world

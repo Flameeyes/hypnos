@@ -28,7 +28,7 @@ int calcGoodValue(pChar npc, pItem pi, int value,int goodtype); // by Magius(CHE
 
 int whichbit( int number, int bit );
 
-std::string getSextantCoords(sPoint p, sPoint center);
+string getSextantCoords(sPoint p, sPoint center);
 
 double dist( sLocation a, sLocation b, bool countZ = true);
 

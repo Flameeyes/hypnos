@@ -27,7 +27,7 @@
 class cLogFile
 {
 private:
-	std::ostream file;	//!< Log file opened for output
+	ostream file;	//!< Log file opened for output
 
 public:
 	//! Type of message to log
@@ -38,10 +38,10 @@ public:
 		logCritical	//!< Critical error
 	};
 
-	cLogFile(const std::string &str);
+	cLogFile(const string &str);
 	~cLogFile();
 	
-	void Write(const std::string &str);
+	void Write(const string &str);
 	void Write(char *format, ...) PRINTF_LIKE(2,3);
 	
 	static cLogFile *serverLog;	//!< Global log object

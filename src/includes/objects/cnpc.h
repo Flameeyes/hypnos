@@ -63,7 +63,7 @@ public:
 	cNPC(uint32_t serial);
 	virtual ~cNPC();
 
-	virtual const std::string getPopupHelp() const;
+	virtual const string getPopupHelp() const;
 	uint16_t calcAtt();
 
 protected:
@@ -93,8 +93,8 @@ public:
 */
 
 public:
-	std::vector<vendor_item>*	vendorItemsSell; //!< all items sold by vendor
-	std::vector<vendor_item>*	vendorItemsBuy; //!< all items sold by vendor
+	vector<vendor_item>*	vendorItemsSell; //!< all items sold by vendor
+	vector<vendor_item>*	vendorItemsBuy; //!< all items sold by vendor
 
 //@}
 

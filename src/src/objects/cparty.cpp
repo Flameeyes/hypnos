@@ -236,7 +236,7 @@ cParty::cParty(pPC leader)
 
 cParty::~cParty()
 {
-	PartySList::iterator it = std::find(parties.begin(), parties.end(), this);
+	PartySList::iterator it = find(parties.begin(), parties.end(), this);
 	if  ( it != parties.end() )
 		parties.erase(it);
 }
@@ -255,7 +255,7 @@ void cParty::inviteMember(pClient client, pPC member)
 	assert(client); // We are quite sure we'll never call it with a NULL client
 	if ( ! member ) return;	// This can be a bug, just ignore it
 	
-	std::string name = member->getBody()->getCurrentName();
+	string name = member->getBody()->getCurrentName();
 	
 	pClient invclient = NULL;
 	if ( ! (invclient = member->getClient()) )
@@ -274,7 +274,7 @@ void cParty::inviteMember(pClient client, pPC member)
 		return;
 	}
 	
-	PCSList::iterator it = std::find(invited.begin(), invited.end(), member);
+	PCSList::iterator it = find(invited.begin(), invited.end(), member);
 	if ( it != invited.end() )
 	{
 		client->sysmessage("%s is already invited to join the party", name.c_str());
@@ -296,7 +296,7 @@ void cParty::addMember(pPC member)
 {
 	sPartyMember pm(member);
 	
-	PCSList::iterator it = std::find(invited.begin(), invited.end(), member);
+	PCSList::iterator it = find(invited.begin(), invited.end(), member);
 	if ( it == invited.end() )
 	{
 		if ( ! member->getClient() ) return;
@@ -342,11 +342,11 @@ bool cParty::removeMember(pPC member)
 		return true;
 	}
 	
-	MemberSList::iterator it = std::find(members.begin(), members.end(), member); 
+	MemberSList::iterator it = find(members.begin(), members.end(), member); 
 	if ( it != members.end() )
 		members.erase(it);
 	                                                    
-	PCSList::iterator it2 = std::find(invited.begin(), invited.end(), member);
+	PCSList::iterator it2 = find(invited.begin(), invited.end(), member);
 	if  ( it2 != invited.end() )
 		invited.erase(it2);
 
@@ -431,7 +431,7 @@ PCSList cParty::getMembersList()
 
 void cParty::setCanLootMe(pPC member, bool setting)
 {
-	MemberSList::iterator it = std::find(members.begin(), members.end(), member);
+	MemberSList::iterator it = find(members.begin(), members.end(), member);
 	assert( it != members.end() );
 	
 	(*it).allowLoot = setting;

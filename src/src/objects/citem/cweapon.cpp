@@ -74,7 +74,7 @@ void cWeapon::loadWeaponsInfo()
 {
 	outPlain("Loading weapons information...\t\t");
 	
-	std::ifstream xmlfile("config/weapons.xml");
+	ifstream xmlfile("config/weapons.xml");
 	if ( ! xmlfile )
 	{
 		outPlain("[ Failed ]\n");

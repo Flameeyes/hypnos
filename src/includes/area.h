@@ -23,7 +23,7 @@ typedef struct {
 	uint16_t y2;
 } Area;
 
-typedef std::map< uint32_t, Area > AREA_DB;
+typedef map< uint32_t, Area > AREA_DB;
 typedef AREA_DB::iterator AREA_ITER;
 
 

@@ -26,16 +26,16 @@ namespace pointers {
 	\name Maps declarations
 	\author Luxor
 	*/
-	extern std::map<uint32_t, CharList> pStableMap;
-	extern std::map<uint32_t, pChar> pMounted;
+	extern map<uint32_t, CharList> pStableMap;
+	extern map<uint32_t, pChar> pMounted;
 
-	extern std::map<uint32_t, CharList> pOwnCharMap;
-	extern std::map<uint32_t, ItemList> pOwnItemMap;
+	extern map<uint32_t, CharList> pOwnCharMap;
+	extern map<uint32_t, ItemList> pOwnItemMap;
 
-	extern std::map<uint32_t, ItemList> pContMap;
+	extern map<uint32_t, ItemList> pContMap;
 
-	extern std::map<uint32_t, CharList> pMultiCharMap;
-	extern std::map<uint32_t, ItemList> pMultiItemMap;
+	extern map<uint32_t, CharList> pMultiCharMap;
+	extern map<uint32_t, ItemList> pMultiItemMap;
 	//@}
 
 	void init();

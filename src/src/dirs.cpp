@@ -29,7 +29,7 @@
 /*!
 \brief Gets the directory in which the executable is
 */
-static std::string getExePath()
+static string getExePath()
 {
 	static Wefts::Mutex m;
 	static char *buffer[MAX_PATH];
@@ -41,7 +41,7 @@ static std::string getExePath()
 	strncpy(buffer, _pgmptr, MAX_PATH);
 	
 	PathRemoveFileSpec(buffer);
-	std::string retstr(buffer);
+	string retstr(buffer);
 	
 	m.unlock();
 	return retstr;
@@ -50,8 +50,8 @@ static std::string getExePath()
 #endif
 
 
-std::string mulsDir;	//!< User directory for MUL files
-std::string logsDir;	//!< User directory for log files
+string mulsDir;	//!< User directory for MUL files
+string logsDir;	//!< User directory for log files
 
 /*!
 \brief Gets the path for the file where to store the pid of the program.
@@ -61,7 +61,7 @@ std::string logsDir;	//!< User directory for log files
 	cleaner move it around if needed.
 \note You should have /var/run accessible to use that :)
 */
-std::string nDirs::getPidFilePath()
+string nDirs::getPidFilePath()
 {
 	return "/var/run/hypnos.pid";
 }
@@ -82,7 +82,7 @@ This function behave in many different ways:
 
 \todo Windows support is still missing...
 */
-std::string nDirs::getMulsDir()
+string nDirs::getMulsDir()
 {
 	if ( !mulsDir.empty() )
 		return *mulsDir;
@@ -95,7 +95,7 @@ std::string nDirs::getMulsDir()
 	char *s = getHKLMRegistryString( "SOFTWARE\\Origin Worlds Online\\Ultima Online\\1.0", "ExePath" );
 	if ( s ) {
 		PathRemoveFileSpec(s);
-		std::string strret = s;
+		string strret = s;
 		delete[] s;
 		return strret;
 	} else {
@@ -110,7 +110,7 @@ std::string nDirs::getMulsDir()
 This function is provided to allow the developers to call directly
 nDirs::getMulsDir() instead of manage an external source for directories.
 */
-void nDirS::setMulsDir(const std::string &newdir)
+void nDirS::setMulsDir(const string &newdir)
 {
 	mulsDir = newdir;
 }
@@ -127,7 +127,7 @@ This function behave mainly in two ways:
 \note You should have permission to write to /var/log/hypnos for the user
 	which is running Hypnos.
 */
-std::string nDirs::getLogsDir()
+string nDirs::getLogsDir()
 {
 	if ( !logsDir.empty() )
 		return *logsDir;
@@ -145,7 +145,7 @@ std::string nDirs::getLogsDir()
 This function is provided to allow the developers to call directly
 nDirs::getLogsDir() instead of manage an external source for directories.
 */
-void nDirS::setLogsDir(const std::string &newdir)
+void nDirS::setLogsDir(const string &newdir)
 {
 	logsDir = newdir;
 }

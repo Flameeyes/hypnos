@@ -35,12 +35,12 @@ friend class tReceiver;
 
 private:
 	Cabal::ServerSocket *sock;	//!< Server socket for the loop
-	std::set<tHandler *> threads;	//!< List of currently operating receiving threads
+	set<tHandler *> threads;	//!< List of currently operating receiving threads
 	Wefts::Mutex threads_m;		//!< Mutex which prevents double access to tplListener::threads
 public:
 	static tplListener *instance;
 
-	tplListener(std::string localHost, uint16_t localPort);
+	tplListener(string localHost, uint16_t localPort);
 	~tplListener();
 	
 	void *run();

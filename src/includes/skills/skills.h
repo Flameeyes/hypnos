@@ -34,7 +34,7 @@ namespace nSkills {
 		uint16_t in_;			//!< Intelligence component of the skill
 		uint8_t flags;			//!< Flags of the skill
 		
-		std::vector<sSkillAdvance> advances;
+		vector<sSkillAdvance> advances;
 						//!< Advance levels
 		
 		const char *madeword;		//!< Word for items/char prepared with that skill

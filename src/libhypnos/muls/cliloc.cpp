@@ -17,7 +17,7 @@ namespace nMULFiles {
 \brief Constructor for fCliloc class
 \param filename File path and name of the cliloc file to open.
 */
-fCliloc::fCliloc(std::string filename)
+fCliloc::fCliloc(string filename)
 	: file(1, filename)
 {
 	char *ptr = reinterpret_cast<char*>(file.getArray())+6;
@@ -40,7 +40,7 @@ fCliloc::fCliloc(std::string filename)
 		memcpy(buff, ptr+7, size);
 		buff[size] = '\0';
 		
-		entries[index] = std::string(buff);
+		entries[index] = string(buff);
 		delete[] buff;
 		
 		ptr += 7+size;

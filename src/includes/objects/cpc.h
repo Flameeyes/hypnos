@@ -51,7 +51,7 @@ protected:
 	*/
 	uint8_t gmMoveEff;
 public:
-	virtual const std::string getPopupHelp() const;
+	virtual const string getPopupHelp() const;
 	
 	bool updateFlag();
 

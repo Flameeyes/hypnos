@@ -57,16 +57,16 @@ static void SpawnGuard(pChar pc, pChar pc_i, sLocation where)
 static pItem AddRandomLoot(pItem pack, char * lootlist)
 {
 	if ( ! pack ) return NULL;
-	std::string value( lootlist );
-	std::string loot( cObject::getRandomScriptValue( "LOOTLIST", value ) );
+	string value( lootlist );
+	string loot( cObject::getRandomScriptValue( "LOOTLIST", value ) );
 	pItem pi = item::CreateFromScript( (SCRIPTID) str2num( loot ), pack );
 	return pi;
 }
 
 static int AddRandomNPC(pClient client, char * npclist)
 {
-	std::string list( npclist );
-	std::string sNpc = cObject::getRandomScriptValue( "NPCLIST", list );
+	string list( npclist );
+	string sNpc = cObject::getRandomScriptValue( "NPCLIST", list );
 	int npc = str2num( sNpc );
 	return (npc!=0)? npc : INVALID;
 }
@@ -168,7 +168,7 @@ static pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t 
 			//char 		script1[1024],
 			//		script2[1024];
 
-			std::string	script1,
+			string	script1,
 					script2,
 					script3;
 
@@ -291,8 +291,8 @@ static pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t 
 								//
 								else if ( "AMXINT" == script1 )
 								{
-									std::string rha1;
-									std::string rha2;
+									string rha1;
+									string rha2;
 									splitLine( script2, rha1, rha2 );
 									amxVS.insertVariable( pc->getSerial(), str2num( rha1 ), str2num( rha2 ) );
 								}
@@ -324,8 +324,8 @@ static pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t 
 								}
 								else if ( "AMXSTR" == script1 )
 								{
-									std::string rha1;
-									std::string rha2;
+									string rha1;
+									string rha2;
 									splitLine( script2, rha1, rha2 );
 									amxVS.insertVariable( pc->getSerial(), str2num( rha1 ), rha2 );
 								}
@@ -392,7 +392,7 @@ static pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t 
 								{
 									if (pi_n)
 									{
-										std::string value( cObject::getRandomScriptValue("RANDOMCOLOR", script2)  );
+										string value( cObject::getRandomScriptValue("RANDOMCOLOR", script2)  );
 										pi_n->setColor( hex2num( value ) );
 									}
 									script1 = "DUMMY";
@@ -486,7 +486,7 @@ static pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t 
 								{
 									if (mypack)
 									{
-										std::string 	lo,
+										string 	lo,
 												hi;
 
 										splitLine( script2, lo, hi );
@@ -509,7 +509,7 @@ static pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t 
 								{
 									if (pi_n)
 									{
-										std::string value( cObject::getRandomScriptValue("RANDOMCOLOR", script2) );
+										string value( cObject::getRandomScriptValue("RANDOMCOLOR", script2) );
 										haircolor = hex2num( value );
 										if (haircolor!=-1)
 										{
@@ -595,7 +595,7 @@ static pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t 
 									//			}
 									//
 									/*
-									std::string strLootItem = script2;
+									string strLootItem = script2;
 									do
 									{
 										iter->parseLine(script1, script2);
@@ -758,7 +758,7 @@ static pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t 
 									}
 									if ( buyRestockContainer != INVALID )
 									{
-										std::string	itmnum,
+										string	itmnum,
 												amount;
 
 										splitLine( script2, itmnum, amount );
@@ -849,7 +849,7 @@ static pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t 
 								}
 								else if ( "SKINLIST" == script1 )
 								{
-									std::string value( cObject::getRandomScriptValue("RANDOMCOLOR", script2 ) );
+									string value( cObject::getRandomScriptValue("RANDOMCOLOR", script2 ) );
 									pc->setColor( hex2num( value ) );
 									pc->setOldColor( pc->getColor() );
 									script1 = "DUMMY";
@@ -1107,7 +1107,7 @@ pChar addNpc(int npcNum, int x, int y, int z) {
 
 pChar SpawnRandomMonster(pChar pc, char* cList, char* cNpcID)
 {
-	std::string	section( cList ),
+	string	section( cList ),
 			sectionId( cNpcID ),
 			value( cObject::getRandomScriptValue( section, sectionId ) );
 
@@ -1146,7 +1146,7 @@ SOUND cCreatureInfo::getSound( MonsterSound type )
 void cCreatureInfo::addSound( MonsterSound type, SOUND sound )
 {
 	if( sounds[ type ]==NULL )
-		sounds[ type ] = new std::vector<SOUND>;
+		sounds[ type ] = new vector<SOUND>;
 
 	sounds[ type ]->push_back( sound );
 }
@@ -1169,7 +1169,7 @@ cAllCreatures::~cAllCreatures()
 void cAllCreatures::load()
 {
 	cScpIterator*	iter = 0;
-	std::string	rha, lha;
+	string	rha, lha;
 	int id=0;
 
 	do

@@ -299,7 +299,7 @@ bool nPackets::Received::TalkRequest::execute (pClient client)
 	pPC pc = client->currChar();
 	if(!pc) return false;
 
-	cSpeech speech = cSpeech(std::string(buffer + 8));
+	cSpeech speech = cSpeech(string(buffer + 8));
 	speech.setSpeaker(pc);
 	speech.setMode(buffer[3]);
 	speech.setColor(ShortFromCharPtr(buffer + 4));
@@ -652,7 +652,7 @@ bool nPackets::Received::BuyItems::execute(pClient client)
 	uint16_t size = ShortFromCharPtr(buffer + 1);
 	if (length != size) return false;
 
-	std::list< sBoughtItem > allitemsbought;
+	list< sBoughtItem > allitemsbought;
 
 	pNpc npc = dynamic_cast<pNpc>(cSerializable::findCharBySerial(LongFromCharPtr(buffer +3)));  //only npc can sell you items with a menu :D
 	if(!npc) return false;
@@ -1019,8 +1019,8 @@ bool nPackets::Received::BBoardMessage::execute(pClient client)
 			newmessage->poster = pc->getSerial();
 			newmessage->availability = pc->postType;
 			if (pc->postType == REGIONALPOST) newmessage->region = msgboard->getRegion();
-			newmessage->subject = std::string(buffer + 10);
-			newmessage->body = std::string(buffer + 10 + subjectlen, length - 11 - subjectlen);
+			newmessage->subject = string(buffer + 10);
+			newmessage->body = string(buffer + 10 + subjectlen, length - 11 - subjectlen);
 			// We need to use this string constructor because there may be many null-terminated strings, and since no
 			// process is needed by the server, it is much easier to copy the bulk of the body in a string and just
 			// give it back to a client that asks for it :D
@@ -1376,7 +1376,7 @@ bool nPackets::Received::SellItems::execute(pClient client)
 	uint16_t size = ShortFromCharPtr(buffer + 1);
 	if (length != size) return false;
 
-	std::list< sBoughtItem > allitemssold;
+	list< sBoughtItem > allitemssold;
 
 	pNpc npc = (pNpc)cSerializable::findCharBySerial(LongFromCharPtr(buffer + 3));
 	if(!npc) return false;
@@ -1429,7 +1429,7 @@ bool nPackets::Received::TipsRequest::execute(pClient client)
 	if (length != 4) return false;
 	uint16_t i = ShortFromCharPtr(buffer + 1);	// tip index
 	uint8_t want_next = buffer[3];			// tip next/prev flag
-	std::string msg;				// message to send
+	string msg;				// message to send
 
 	if(want_next) i = i+1;
 	else i = i-1;
@@ -1564,12 +1564,12 @@ bool nPackets::Received::PopupHelpRequest::execute(pClient client)
 	pSerializable p = cSerializable::findBySerial(serial);
 	if ( ! p ) return false;
 
-	std::string descr;
+	string descr;
 	if ( client->currChar() && client->currChar()->canSeeSerials() )
 	{
 		char *temp;
 		asprintf(&temp, "serial : %x", p->getSerial());
-		descr = std::string(temp);
+		descr = string(temp);
 		free(temp);
 	} else {
 		descr = p->getPopupHelp();
@@ -1628,12 +1628,12 @@ bool nPackets::Received::ClientVersion::execute(pClient client)
 	uint16_t size = ShortFromCharPtr(buffer + 1);
 	if (length != size) return false;
 
-	std::string clientNumber((char*)(buffer + 3)); //char* constructor of std::string, takes the null-terminated string
+	string clientNumber((char*)(buffer + 3)); //char* constructor of string, takes the null-terminated string
 	if ( clientNumber.size() > 10) client->clientDimension = 3;
 				  else client->clientDimension = 2;
 	client->sysmessage("You are using a %iD client, version %s", client->clientDimension, clientNumber.c_str());
 
-	stringVector::const_iterator viter = std::find(clientsAllowed.begin(), clientsAllowed.end(), "ALL");
+	stringVector::const_iterator viter = find(clientsAllowed.begin(), clientsAllowed.end(), "ALL");
 	if ( viter != clientsAllowed.end() ) return true; // ALL mode found/activated -> quit
 
 	viter = find(clientsAllowed.begin(), clientsAllowed.end(), "SERVER_DEFAULT");
@@ -1671,7 +1671,7 @@ bool nPackets::Received::AssistVersion::execute(pClient client)
 	uint16_t size = ShortFromCharPtr(buffer + 1);
 	if (length != size) return false;
 	uint32_t version = LongFromCharPtr(buffer + 3);
-	std::string stringversion = std::string(buffer + 7);
+	string stringversion = string(buffer + 7);
 	if (!nSettings::Server::isEnabledUOAssist() && !version)
 	{
 		//! \todo verify if client is able to read message before being disconnected (or while the popup window about disconnection is onscreen)
@@ -1846,11 +1846,11 @@ bool nPackets::Received::NewBookHeader::execute(pClient client)
 //        uint16_t pagenumber = ShortFromCharPtr(buffer + 9);	//we don't really need this information (for now)
 
 	uint16_t authorsize = ShortFromCharPtr(buffer + 11);
-	std::string author  = std::string((char*)(buffer + 13));
+	string author  = string((char*)(buffer + 13));
 	if (author.size() != authorsize) return false;
 
 	uint16_t titlesize  = ShortFromCharPtr(buffer + 13 + authorsize);
-	std::string title   = std::string((char*)(buffer + 15 + authorsize));
+	string title   = string((char*)(buffer + 15 + authorsize));
 	if (title.size() != titlesize) return false;
 
 	book->setAuthor(author);

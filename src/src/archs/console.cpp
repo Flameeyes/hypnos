@@ -26,8 +26,25 @@
 #include <wincon.h>
 #endif
 
+#ifdef HAVE_STDARG_H
 #include <stdarg.h>
-#include <iostream>
+#endif
+
+#ifdef HAVE_IOSTREAM
+	#include <iostream>
+	using std::endl;
+	using std::cout;
+	using std::cerr;
+#elif defined HAVE_IOSTREAM_H
+	#include <iostream.h>
+#endif
+
+#ifdef HAVE_IOS
+	#include <ios>
+	using std::sync_with_stdio;
+#elif defined HAVE_IOS_H
+	#include <ios.h>
+#endif
 
 // Only on unix-es we do colored output
 #if defined(__unix__)
@@ -44,17 +61,17 @@ by console interface, and preparing to expect orders from standard input.
 */
 tConsoleInterface::tConsoleInterface() : tInterface()
 {
-	std::ios::sync_with_stdio(false);
+	ios::sync_with_stdio(false);
 	
-	std::cout << "Starting Hypnos..." << std::endl << std::endl;
+	cout << "Starting Hypnos..." << endl << endl;
 	
-	outputHypnosIntro(std::cout);
+	outputHypnosIntro(cout);
 	
 	// sets the window title
 	#ifdef __unix__
-		std::cout << "\033]0;Hypnos " << strVersion << "\007";
+		cout << "\033]0;Hypnos " << strVersion << "\007";
 	#elif defined(HAVE_WINCON_H)
-		std::string tmp = "Hypnos " + strVersion;
+		string tmp = "Hypnos " + strVersion;
 		SetConsoleTitle(tmp.c_str());
 	#endif
 	
@@ -93,12 +110,12 @@ stderr for other).
 \note This function is thread-safe, a Mutex prevent that the console is
 	accessed more than one time.
 */
-void tConsoleInterface::output(tInterface::Level lev, const std::string &str)
+void tConsoleInterface::output(tInterface::Level lev, const string &str)
 {
 	static Wefts::Mutex m;
 	m.lock();
 	
-	std::ostream *outs = &std::cout;
+	ostream *outs = &cout;
 	
 	// Set the color
 	switch(lev)
@@ -106,12 +123,12 @@ void tConsoleInterface::output(tInterface::Level lev, const std::string &str)
 	case tInterface::levPlain:
 		break;
 	case tInterface::levError:
-		outs = &std::cerr;
+		outs = &cerr;
 		AnsiOut(*outs, "\x1B[1;31m");
 		*outs << "E " << getDateString() << " - ";
 		break;
 	case tInterface::levWarning:
-		outs = &std::cerr;
+		outs = &cerr;
 		AnsiOut(*outs, "\x1B[1;33m");
 		*outs << "W " << getDateString() << " - ";
 		break;
@@ -120,7 +137,7 @@ void tConsoleInterface::output(tInterface::Level lev, const std::string &str)
 		*outs << "i " << getDateString() << " - ";
 		break;
 	case tInterface::levPanic:
-		outs = &std::cerr;
+		outs = &cerr;
 		AnsiOut(*outs, "\x1B[1;31m");
 		*outs << "! " << getDateString() << " - ";
 		break;
@@ -148,20 +165,20 @@ the getline.
 void *tConsoleInterface::run()
 {
 	static bool secure = true;
-	std::string str;
+	string str;
 	
 	while(true)
 	{
-		getline(std::cin, str);
+		getline(cin, str);
 		
 		if ( ! str.length() ) continue;
 	
 		if ( str == "S" )
 		{
 			if (secure)
-				std::cout << "Secure mode disabled. Press ? for a commands list." << std::endl;
+				cout << "Secure mode disabled. Press ? for a commands list." << endl;
 			else
-				std::cout << "Secure mode re-enabled." << std::endl;
+				cout << "Secure mode re-enabled." << endl;
 			
 			secure = ! secure;
 			continue;
@@ -169,11 +186,11 @@ void *tConsoleInterface::run()
 		
 		if (secure && str != "?")  //Allows help in secure mode.
 		{
-			std::cout << "Secure mode prevents keyboard commands! Press 'S' to disable." << std::endl;
+			cout << "Secure mode prevents keyboard commands! Press 'S' to disable." << endl;
 			continue;
 		}
 		
-		nAdminCommands::parseCommand(str, std::cout);
+		nAdminCommands::parseCommand(str, cout);
 	}
 }
 
@@ -189,7 +206,7 @@ int main(int argc, char *argv[])
 
 	if ( daemon )
 	{
-		std::cout << "Going into daemon mode." << std::endl;
+		cout << "Going into daemon mode." << endl;
 		new tNullInterface();
 	} else
 		new tConsoleInterface();

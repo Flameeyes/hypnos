@@ -106,7 +106,7 @@ void nNewbies::loadStartLocations()
 	
 	outPlain("Loading start locations...\t\t");
 	
-	std::ifstream xmlfile("config/start.xml");
+	ifstream xmlfile("config/start.xml");
 	if ( ! xmlfile )
 	{
 		outPlain("[ Failed ]\n");
@@ -197,7 +197,7 @@ void nNewbies::loadNewbieItems()
 	//!\todo Add code to cleanup the items' lists
 	outPlain("Loading newbies' items...\t\t");
 	
-	std::ifstream xmlfile("config/newbies.xml");
+	ifstream xmlfile("config/newbies.xml");
 	if ( ! xmlfile )
 	{
 		outPlain("[ Failed ]\n");

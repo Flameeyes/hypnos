@@ -28,7 +28,7 @@ void cMessage::Delete()
 			
 			board->boardMutex.lock();
 			
-			MessageList::iterator it = std::find(this, board->boardMsgs.begin(); board->boardMsgs.end());
+			MessageList::iterator it = find(this, board->boardMsgs.begin(); board->boardMsgs.end());
 			
 			if ( it != board->boardMsgs.end() )
 				board->boardMsgs.erase(it);
@@ -44,7 +44,7 @@ void cMessage::Delete()
 			cMsgBoard::globalMutex.lock();
 			
 			// Here we need only to remove it from the global message list
-			MessageList::iterator it = std::find(this, cMsgBoard::globalMsgs.begin(); cMsgBoard::globalMsgs.end());
+			MessageList::iterator it = find(this, cMsgBoard::globalMsgs.begin(); cMsgBoard::globalMsgs.end());
 			if ( it != cMsgBoard::globalMsgs.end() )
 				cMsgBoard::globalMsgs.erase(it);
 			
@@ -88,12 +88,12 @@ cMessage::~cMessage()
 \todo check if there is space for a full time string comprehensive of date in letters rather than "day xxx"
 \author Chronodt
 */
-std::string cMessage::getTimeString()
+string cMessage::getTimeString()
 {
 	char *result;
         struct tm timest = localtime( &posttime);
         asprintf( &result, "Day %i @ %i:%02i", timest.tm_yday + 1, timest.tm_hour, timest.tm_min );
-        std::string ret = result;
+        string ret = result;
 	free(result);
 	return ret;
 }
@@ -441,7 +441,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 	}
 
     	cScpIterator* iter = NULL;
-    	std::string script1, script2;
+    	string script1, script2;
 
 	int loopexit=0;
 

@@ -18,13 +18,13 @@ This namespace is used to allow Hypnos to accomply with FHS specifications
 under Unix, and still manage the directories under Windows in a Windows-way.
 */
 namespace nDirs {
-	std::string getPidFilePath();
+	string getPidFilePath();
 	
-	std::string getMulsDir();
-	void setMulsDir(std::string newdir);
+	string getMulsDir();
+	void setMulsDir(string newdir);
 	
-	std::string getLogsDir();
-	void setLogsDir(std::string newdir);
+	string getLogsDir();
+	void setLogsDir(string newdir);
 }
 
 #endif

@@ -26,7 +26,7 @@ void cContainer::loadContainersData()
 {
 	outPlain("Loading constants information...\t\t");
 	
-	std::ifstream xmlfile("config/containers.xml");
+	ifstream xmlfile("config/containers.xml");
 	try {
 		MXML::Document doc(xmlfile);
 		
@@ -368,7 +368,7 @@ bool cContainer::containsSpell(SpellId spellnum)
 */
 void cContainer::insertItem(pItem itm)
 {
-	if ( std::find(itm, items.begin(), items.end()) != items.end() )
+	if ( find(itm, items.begin(), items.end()) != items.end() )
 		return;
 	items.push_front(itm);
 }

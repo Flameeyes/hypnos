@@ -58,13 +58,13 @@ namespace nLibhypnos {
 	*/
 	class eInvalidIP : public eException {
 	public:
-		const std::string invalidIP; //!< String which isn't a valid IP
+		const string invalidIP; //!< String which isn't a valid IP
 		
 		/*!
 		\brief Constructor
 		\param aInvalidIP Value to assign to \c invalidIP attribute
 		*/
-		eInvalidIP(std::string aInvalidIP)
+		eInvalidIP(string aInvalidIP)
 			: invalidIP(aInvalidIP)
 		{ }
 	};

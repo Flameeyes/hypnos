@@ -392,7 +392,7 @@ void check_region_weatherchange ()
 		if (newintensity < 0) newintensity = 0;
 
 		bool snow = false;
-		std::string message = "";
+		string message = "";
 
 		//! \todo insert a maxlight to limit light in bad beather (but nightvision should counter this)
 

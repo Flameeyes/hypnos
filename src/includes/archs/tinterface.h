@@ -35,7 +35,7 @@ public:
 	};
 	
 	void outputf(Level lev, char *txt, ...) PRINTF_LIKE(3, 4);
-	virtual void output(Level lev, const std::string &str) = 0;
+	virtual void output(Level lev, const string &str) = 0;
 	
 	virtual ~tInterface()
 	{ }
@@ -57,7 +57,7 @@ public:
 	tNullInterface() : tInterface()
 	{ }
 	
-	void output(tInterface::Level lev, const std::string &str)
+	void output(tInterface::Level lev, const string &str)
 	{ assert(lev >= 0 && (str != "" || str == "")); }
 	
 	void *run()

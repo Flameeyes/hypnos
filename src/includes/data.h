@@ -54,7 +54,7 @@ struct static_st {
 	uint16_t unknown;
 } PACK_NEEDED;
 
-typedef std::vector< static_st > staticVector;
+typedef vector< static_st > staticVector;
 
 const uint8_t static_st_size = sizeof( static_st );
 const uint8_t staticIdx_st_size = sizeof( staticIdx_st );
@@ -67,8 +67,8 @@ namespace data {
 
 void init();
 void shutdown();
-void setPath( MulFileId id, std::string path );
-std::string getPath( MulFileId id );
+void setPath( MulFileId id, string path );
+string getPath( MulFileId id );
 
 bool seekMap( uint32_t x, uint32_t y, map_st& m, uint8_t nMap = 0 ); //<! Luxor: nMap will be used for future multiple maps support.
 bool collectStatics( uint32_t x, uint32_t y, staticVector& s_vec );
@@ -78,7 +78,7 @@ bool collectStatics( uint32_t x, uint32_t y, staticVector& s_vec );
 */
 template <typename T> class cMULFile {
 public:
-	cMULFile( std::string path, std::string mode );
+	cMULFile( string path, string mode );
 	~cMULFile() {
 		if ( m_file != NULL )
 			fclose( m_file );
@@ -87,13 +87,13 @@ public:
 	}
 	bool getData( uint32_t index, T& data );
 	bool getData( uint32_t index, uint8_t* ptr, uint32_t size );
-	void setCache( std::map< uint32_t, T > *cache );
+	void setCache( map< uint32_t, T > *cache );
 	bool eof();
 	inline bool isReady() { return ( m_file != NULL ); }
 	inline bool isCached() { return ( m_cache != NULL ); }
 private:
 	FILE	*m_file;
-	std::map< uint32_t, T > *m_cache;
+	map< uint32_t, T > *m_cache;
 };
 
 } // namespace data

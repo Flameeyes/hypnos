@@ -216,7 +216,7 @@ void Skills::target_mine( pClient client, pTarget t )
 		// mountains are "map0's" and no statics !!!
 		data::seekMap( target.x, target.y, map );
 
-		std::string name = tiledataLand->getName(map.id);
+		string name = tiledataLand->getName(map.id);
 		if ( !strcmp(name.c_str(),"rock") || !(strcmp(name.c_str(), "mountain")) || !(strcmp(name.c_str(), "cave")))
 			mountain = true;
 	}

@@ -15,9 +15,23 @@
 #include "version.h"
 #include "archs/tinterface.h"
 
-#include <stdarg.h>
-#include <fstream>
-#include <sstream>
+#ifdef HAVE_STDARG_H
+	#include <stdarg.h>
+#endif
+
+#ifdef HAVE_SSTREAM
+	#include <sstream>
+	using std::ostringstream;
+#elif HAVE_SSTREAM_H
+	#include <sstream.h>
+#endif
+
+#ifdef HAVE_FSTREAM
+	#include <fstream>
+	using std::endl;
+#elif defined HAVE_FSTREAM_H
+	#include <fstream.h>
+#endif
 
 cLogFile *cLogFile::serverLog = NULL;
 uint32_t cLogFile::logCounts[4] = {0,0,0,0};
@@ -28,7 +42,7 @@ uint32_t cLogFile::logCounts[4] = {0,0,0,0};
 
 \todo Should throw exception instead of only output an error
 */
-cLogFile::cLogFile(const std::string &str)
+cLogFile::cLogFile(const string &str)
 {
 	filename = nDirs::getLogsPath() + "/" + name;
 
@@ -69,11 +83,11 @@ void cLogFile::Write(char *format, ...)
 	free(tmp);
 }
 
-void cLogFile::Write(std::string str)
+void cLogFile::Write(string str)
 {
 	if( !file ) return;
 
-	file << getDateString() << " " << str << std::endl;
+	file << getDateString() << " " << str << endl;
 }
 
 /*!

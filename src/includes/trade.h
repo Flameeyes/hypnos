@@ -11,15 +11,13 @@
 #define RESTOCK_PER_TIME 20
 #define CHECK_RESTOCK_EVERY 3
 
-#include <queue>
-
 class cRestockMng {
 
 private:
 
 	uint32_t timer;
-	std::queue< uint32_t > needrestock;
-	std::queue< uint32_t > restocked;
+	queue< uint32_t > needrestock;
+	queue< uint32_t > restocked;
 
 	void rewindList();
 	void updateTimer();

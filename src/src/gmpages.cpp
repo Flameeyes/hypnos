@@ -27,7 +27,7 @@ uint32_t cGMPage::nextID = 0;
 \param onlyGM if true only complete GMs will be paged
 \note This function already add the page to the list
 */
-cGMPage::cGMPage(pPC pc, std::string &pageReason, bool onlyGM)
+cGMPage::cGMPage(pPC pc, string &pageReason, bool onlyGM)
 {
 	reason = pageReason;
 	

@@ -26,7 +26,7 @@ class cOldMenu : public cBasicMenu
 	friend class cPartyMenu;
 
 protected:
-	std::map< uint8_t, std::map< uint32_t, std::wstring >  > allPages; //!< all pages
+	map< uint8_t, map< uint32_t, unistring >  > allPages; //!< all pages
 
 	virtual void /*cServerPacket*/* build();
 	void buildClassic();
@@ -36,7 +36,7 @@ public:
 
 	pMenu type;
 	
-	std::wstring title; //!< title
+	unistring title; //!< title
 	uint32_t style; //!< style
 	uint32_t color; //!< color
 	uint32_t width; //!< width
@@ -46,7 +46,7 @@ public:
 	~cOldMenu();
 
 	void setParameters( int rowForPage, int pageCount );
-	virtual void addMenuItem( int page, int idx, std::wstring desc );
+	virtual void addMenuItem( int page, int idx, unistring desc );
 
 	virtual void handleButton(pClient client, /*cClientPacket*/void* pkg  );
 

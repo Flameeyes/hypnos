@@ -17,7 +17,7 @@ This file contains Begging namespace with begging functions and paramters
 namespace Begging {
 	extern uint32_t timer;
 	extern uint32_t range;
-	extern std::string text[3];
+	extern string text[3];
 	
 	void initialize();
 	void target(pClient ps, pTarget t);

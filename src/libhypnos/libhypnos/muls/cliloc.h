@@ -15,7 +15,7 @@
 #include "libhypnos/muls/mmappedfile.h"
 #include "libhypnos/commons.h"
 
-typedef std::map<uint32_t, std::string>::const_iterator constCliIterator;
+typedef map<uint32_t, string>::const_iterator constCliIterator;
 
 namespace nLibhypnos {
 namespace nMULFiles {
@@ -45,25 +45,25 @@ class fCliloc
 {
 protected:
 	cMMappedFile file;
-	std::map<uint32_t, std::string> entries;
+	map<uint32_t, string> entries;
 public:
-	fCliloc(std::string filepath);
+	fCliloc(string filepath);
 	
 	/*!
 	\brief Gets the entry for the given index
 	\param index Index of the entry to read
 	\return The entry read from the cliloc file
 	*/
-	const std::string getEntry(uint32_t index) const
+	const string getEntry(uint32_t index) const
 	{
 		constCliIterator it = entries.find(index);
 		if ( it != entries.end() )
 			return (*it).second;
 		else
-			return std::string("");
+			return string("");
 	}
 	
-	const std::map<uint32_t, std::string> &getEntries() const
+	const map<uint32_t, string> &getEntries() const
 	{
 		return entries;
 	}

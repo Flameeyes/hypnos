@@ -14,6 +14,6 @@
 #define _MOUNT_H
 
 void loadmounts();
-extern std::map<int32_t,int32_t> mountinfo;
+extern map<int32_t,int32_t> mountinfo;
 
 #endif

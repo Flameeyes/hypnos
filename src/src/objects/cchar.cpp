@@ -972,7 +972,7 @@ void cChar::teleport( uint8_t flags, pClient cli )
 \brief Paperdoll title for character [1]
 \return A string with the title
 */
-std::string cChar::getTitle1() const
+string cChar::getTitle1() const
 {
 	int titlenum = 0;
 	uint16_t x = baseskill[bestSkill()];
@@ -986,14 +986,14 @@ std::string cChar::getTitle1() const
 	else if (x>=400) titlenum=2;
 	else if (x>=300) titlenum=1;
 
-	return std::string(title[titlenum].prowess);
+	return string(title[titlenum].prowess);
 }
 
 /*!
 \brief Paperdoll title for the character [3]
 \return a string with the paperdoll title
 */
-std::string cChar::getTitle3() // Paperdoll title for character p (3)
+string cChar::getTitle3() // Paperdoll title for character p (3)
 {
 	int titlenum=0;
 
@@ -1082,27 +1082,27 @@ std::string cChar::getTitle3() // Paperdoll title for character p (3)
 		if ( pc->kills >= repsys.maxkills )
 		{
 			if ( pc->getId() == bodyFemale )
-				return std::string("The Murderous Lady ");
+				return string("The Murderous Lady ");
 			else
-				return std::string("The Murderer Lord ");
+				return string("The Murderer Lord ");
 		} else {
 			if ( pc->getId() == bodyFemale )
-				return std::string("The ") + title[titlenum].fame + std::string(" Lady ");
+				return string("The ") + title[titlenum].fame + string(" Lady ");
 			else
-				return std::string("The ") + title[titlenum].fame + std::string(" Lord ");
+				return string("The ") + title[titlenum].fame + string(" Lord ");
 		}
 	} else {
 		if ( pc->kills >= repsys.maxkills )
-			return std::string("The Murderer ");
+			return string("The Murderer ");
 		else
-			return std::string("The ") + title[titlenum].fame;
+			return string("The ") + title[titlenum].fame;
 	}
 }
 
 /*!
 \brief Generates the entire title plus criminal stuff
 */
-std::string cChar::getCompleteTitle() const
+string cChar::getCompleteTitle() const
 {
 	//!\todo The gm stuff needs to be changed here
 	if (/*IsGM() && account!=0*/ false)
@@ -1120,7 +1120,7 @@ std::string cChar::getCompleteTitle() const
 		else if ( kills >= 5 )
 			titleindex = 1
 		
-		return std::string(title[titleindex].other) + " " + getCurrentName() + ", " + title + getTitle1() + " " + getTitle2();
+		return string(title[titleindex].other) + " " + getCurrentName() + ", " + title + getTitle1() + " " + getTitle2();
 	} else 
 		return getTitle3() + getCurrentName() + 
 			(title.lenght() > 0 ? " " + title : title) +
@@ -2063,7 +2063,7 @@ void cChar::Kill()
 	//
 	if( !lootVector.empty() )
 	{
-		std::vector< uint32_t >::iterator it( lootVector.begin() ), end( lootVector.end() );
+		vector< uint32_t >::iterator it( lootVector.begin() ), end( lootVector.end() );
 		while( it != end )
 		{
 			char lootItem[32];
@@ -2378,7 +2378,7 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 		}
 	}
 
-	cSpeech speech(std::string(temp1));	//we must use string constructor or else it is supposed to be an unicode packet
+	cSpeech speech(string(temp1));	//we must use string constructor or else it is supposed to be an unicode packet
 	speech.setColor(color);
 	speech.setFont(0x0003);		// Normal font
 	speech.setMode(0x06);		// Label

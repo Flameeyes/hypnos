@@ -45,10 +45,10 @@ protected:
 		uint32_t lastrun;
 			//!< Time at the call of the last run of the schedule
 		
-		sEvent(std::string funcName, uint32_t interval, cScheduler *parent);
+		sEvent(string funcName, uint32_t interval, cScheduler *parent);
 	};
 	
-	typedef std::list<sEvent*> EventsList;
+	typedef list<sEvent*> EventsList;
 				//!< List of scheduled events
 	
 	EventsList events;	//!< Scheduled events

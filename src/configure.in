@@ -23,7 +23,11 @@ AC_EXEEXT
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([fcntl.h limits.h memory.h signal.h stdint.h stdlib.h sys/time.h sys/timeb.h sys/mman.h sys/utsname.h unistd.h netinet/in.h sstream iosfwd iostream ostream])
+AC_CHECK_HEADERS([fcntl.h limits.h memory.h signal.h stdint.h stdlib.h sys/time.h sys/timeb.h sys/mman.h sys/utsname.h unistd.h netinet/in.h])
+
+AC_LANG_CPLUSPLUS
+# Those are all stl headers... checking both for standard and deprecated header (and gcc extension when needed)
+AC_CHECK_HEADERS([ios ios.h sstream sstream.h iosfwd iosfwd.h iostream iostream.h ostream ostream.h fstream fstream.h iomanip iomanip.h set set.h vector vector.h slist ext/slist slist.h cassert assert.h string string.h hash_map ext/hash_map hash_map.h map map.h list list.h])
 
 # Check for windows headers only under windows
 # And check for fork() or ntoh/hton functions only if not under windows
@@ -90,7 +94,7 @@ fi
 # Adding include dirs and WEFTS_ variables
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
 
-TMPFLAGS="$WEFTS_CXXFLAGS -Wall -fno-implicit-templates"
+TMPFLAGS="$WEFTS_CXXFLAGS -Wall"
 AC_TEST_CFLAGS($TMPFLAGS)
 AC_TEST_CXXFLAGS($TMPFLAGS)
 

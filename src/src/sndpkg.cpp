@@ -37,7 +37,7 @@ void gmyell(char *txt)
 		pClient client = ps_i->toInt();
 		if( pc && pc->IsGM())
 		{
-			cSpeech speech(std::string(txt));	//we must use string constructor or else it is supposed to be an unicode packet
+			cSpeech speech(string(txt));	//we must use string constructor or else it is supposed to be an unicode packet
 			speech.setColor(0x40);
 			speech.setFont(0x03);		// normal font
 			speech.setMode(0x01);		// broadcast
@@ -155,7 +155,7 @@ void itemmessage(pClient client, char *txt, pItem pi, short color)
 	color = 0x0481; // UOLBR patch to prevent client crash by Juliunus
 
 
-	cSpeech speech(std::string(txt));	//we must use string constructor or else it is supposed to be an unicode packet
+	cSpeech speech(string(txt));	//we must use string constructor or else it is supposed to be an unicode packet
 	speech.setColor(color);
 	speech.setFont(0x03);		// normal font
 	speech.setMode(0x06);		// label
@@ -178,7 +178,7 @@ void tellmessage(int i, int s, char *txt)
 
 	asprintf(&temp, "GM tells %s: %s", pc->getCurrentName().c_str(), txt);
 
-	cSpeech speech(std::string(temp));	//we must use string constructor or else it is supposed to be an unicode packet
+	cSpeech speech(string(temp));	//we must use string constructor or else it is supposed to be an unicode packet
 	speech.setColor(0x35);
 	speech.setFont(0x03);		// normal font
 	speech.setMode(0x00);		// normal speech

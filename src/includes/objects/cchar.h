@@ -86,7 +86,7 @@ protected:
 public:
 	~cChar();
 
-	virtual const std::string getPopupHelp() const = 0;
+	virtual const string getPopupHelp() const = 0;
 	void MoveTo(sLocation newloc);
 	void loadEventFromScript(char *script1, char *script2);
 	
@@ -460,20 +460,20 @@ public:
 	{ return TIMEOUT( objectdelay ); }
 	
 /*	//! Gets the overridden title 
-	inline std::string getTitle() const
+	inline string getTitle() const
 	{ return title; }
 */	
-	std::string getTitle1() const;
+	string getTitle1() const;
 
 	/*!
 	\brief Gets the paperdoll title [2]
 	\return A string with the character's title
 	*/
-	inline std::string getTitle2() const
-	{ return std::string(/*title[ bestSkill()+1 ].skill*/ ""); }
+	inline string getTitle2() const
+	{ return string(/*title[ bestSkill()+1 ].skill*/ ""); }
 	
-	std::string getTitle3() const;
-	std::string getCompleteTitle() const;
+	string getTitle3() const;
+	string getCompleteTitle() const;
 
 //@}
 
@@ -489,17 +489,17 @@ public:
 	pAccount		account;
 
 public:
-	std::wstring profile; //!< player profile
+	unistring profile; //!< player profile
 
 protected:
-	std::wstring* speechCurrent;
+	unistring* speechCurrent;
 public:
 	//! Return current speech
-	inline std::wstring* getSpeechCurrent() const
+	inline unistring* getSpeechCurrent() const
 	{ return speechCurrent; }
 
 	//! Set current speech
-	inline void setSpeechCurrent( std::wstring* speech )
+	inline void setSpeechCurrent( unistring* speech )
 	{ speechCurrent=speech; }
 
 	//! Reset current speech
@@ -567,7 +567,7 @@ public:
 
 	uint32_t		tempflagtime;
 
-	std::wstring* staticProfile;			//!< player static profile
+	unistring* staticProfile;			//!< player static profile
 
 
 	uint32_t		murderrate; //!< # of ticks until one murder decays

@@ -179,7 +179,7 @@ void cBoat::turn(bool turnRight)
 \todo Change this to use a regexp capture using the pcreplus library when
 	available
 */
-bool cBoat::doSpeech(pClient client, const std::string &speech)
+bool cBoat::doSpeech(pClient client, const string &speech)
 {
 	assert(client); assert(client->currChar());
 	pPC pc = client->currChar();

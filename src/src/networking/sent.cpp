@@ -231,7 +231,7 @@ void nPackets::Sent::LoginConfirmation::prepare()
 
 void nPackets::Sent::Speech::prepare()
 {
-	std::string text;
+	string text;
 	if (ghost) text = speech.toGhost()
 	else text = speech.toString();	// reducing unicode string to simple text
 	length = 44 + text.size() + 1;
@@ -694,7 +694,7 @@ void nPackets::Sent::ContainerItem::prepare()
 
 	uint8_t *ptrItem = buffer+5;
 
-	for(std::list<sContainerItem>::iterator it = items.begin(); it != items.end(); it++)
+	for(list<sContainerItem>::iterator it = items.begin(); it != items.end(); it++)
 	{
 		memcpy(ptrItem, templ2, 19);
 		LongToCharPtr((*it).serial, ptrItem);
@@ -1162,7 +1162,7 @@ void nPackets::Sent::BBoardCommand::prepare()
 			//calculating length of packet  before building buffer
 			length = 16; //BASE length, the length of fixed-length components
 			pChar poster = message->getPoster();
-			std::string timestring = message->getTimeString();
+			string timestring = message->getTimeString();
 			length += poster->getCurrentName().size() + 2;
 			length += message->subject.size() + 2;
 			length += timestring.size() + 2;
@@ -1195,7 +1195,7 @@ void nPackets::Sent::BBoardCommand::prepare()
 			//calculating length of packet  before building buffer
 			length = 12; //BASE length, the length of fixed-length components
 			pChar poster = message->getPoster();
-			std::string timestring = message->getTimeString();
+			string timestring = message->getTimeString();
 			length += poster->getCurrentName().c_str().size() + 2;
 			length += message->subject.size() + 2;
 			length += timestring.size() + 2;
@@ -1490,7 +1490,7 @@ void nPackets::Sent::CorpseClothing::prepare()
 	LongToCharPtr(corpse->getSerial(), buffer + 3);
 
 	uint8_t* offset = buffer + 7;
-	for( std::slist<pEquippable>::iterator it = items.begin(); it!= items.end(); ++it)
+	for( slist<pEquippable>::iterator it = items.begin(); it!= items.end(); ++it)
 	{
 		offset[0]= (*it)->getLayer();
 		LongToCharPtr((*it)->getSerial(), offset + 1);
@@ -1624,7 +1624,7 @@ void nPackets::Sent::TargetMulti::prepare()
 void nPackets::Sent::SellList::prepare()
 {
 	length = 9; 		// 9 header + (14+namelength) for each item 
-	for( std::slist<pEquippable>::iterator it = items.begin(); it!= items.end(); ++it)
+	for( slist<pEquippable>::iterator it = items.begin(); it!= items.end(); ++it)
 	{
 		length+= 14 + (*it)->getCurrentName().size();
 	}
@@ -1634,7 +1634,7 @@ void nPackets::Sent::SellList::prepare()
 	LongToCharPtr(vendor->getSerial(), buffer + 3);
 	ShortToCharPtr(items.size(), buffer + 7);	// number of items to be sent to gump
 	uint8_t* offset = buffer + 9;
-	for( std::slist<pEquippable>::iterator it = items.begin(); it!= items.end(); ++it)
+	for( slist<pEquippable>::iterator it = items.begin(); it!= items.end(); ++it)
 	{
 		LongToCharPtr((*it)->getSerial(), offset);
 		ShortToCharPtr((*it)->getId(), offset + 4);

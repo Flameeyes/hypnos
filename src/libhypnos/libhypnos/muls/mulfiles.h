@@ -86,8 +86,8 @@ namespace nMULFiles {
 	#define mtohs(x) x
 #endif
 	
-	void setMULpath(std::string path);
-	std::string getMULpath();
+	void setMULpath(string path);
+	string getMULpath();
 
 }}
 

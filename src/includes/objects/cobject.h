@@ -15,7 +15,7 @@
 #include "objects/ceventthrower.h"
 #include "inlines.h"
 
-typedef std::slist< tempfx::cTempfx > TempfxVector;
+typedef slist< tempfx::cTempfx > TempfxVector;
 
 /*!
 \class cObject cobject.h "objects/cobject.h"
@@ -89,35 +89,35 @@ protected:
 	\brief Real name of the char, 30 chars max + '\\0'<br>
 	Also used to store the secondary name of items.
 	*/
-	std::string	secondary_name;
+	string	secondary_name;
 	//! Name displayed everywhere for this object, 30 char max + '\\0'
-	std::string	current_name;
+	string	current_name;
 
 public:
 	//! return the real name of object
-	inline const std::string &getRealName() const
+	inline const string &getRealName() const
 	{ return secondary_name; }
 
 	//! Set the real name of object
-	inline void setRealName(std::string s)
+	inline void setRealName(string s)
 	{ secondary_name = s; }
 
 	//! return the current name of object
-	inline const std::string &getCurrentName() const
+	inline const string &getCurrentName() const
 	{ return current_name;  }
 
 	//! Set the current name of object
-	inline void setCurrentName(std::string s)
+	inline void setCurrentName(string s)
 	{ current_name = s; }
 
 	void setCurrentName(const char *format, ...) PRINTF_LIKE(2,3);
 
 	//! Get the secondary name of the object
-	inline std::string getSecondaryName() const
+	inline string getSecondaryName() const
 	{ return secondary_name; }
 
 	//! Set the secondary name of object
-	inline void setSecondaryName( std::string s )
+	inline void setSecondaryName( string s )
 	{ secondary_name = s; }
 
 	void setSecondaryName(const char *format, ...) PRINTF_LIKE(2,3);
@@ -215,7 +215,7 @@ public:
 //@}
 
 	uint32_t disabled;		//!< Disabled object timer, cant trigger.
-	std::string disabledmsg;	//!< Object is disabled, so display this message.
+	string disabledmsg;	//!< Object is disabled, so display this message.
 };
 
 #endif

@@ -92,7 +92,7 @@ void advancementobjects(pChar pc, int x, int allways)
 
 	char sect[512];
 	int loopexit=0;
-	std::string script1, script2;
+	string script1, script2;
 	cScpIterator* iter = NULL;
 	int i;
 

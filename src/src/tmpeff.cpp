@@ -530,16 +530,16 @@ void cTempfx::start()
 			}
 			
 			{
-				std::string newname;
+				string newname;
 				if( body == bodyMale )
 				{
-					std::string value("1");
-					newname = cObject::getRandomScriptValue( std::string("RANDOMNAME"), value );
+					string value("1");
+					newname = cObject::getRandomScriptValue( string("RANDOMNAME"), value );
 				}
 				else
 				{
-					std::string value("2");
-					newname = cObject::getRandomScriptValue( std::string("RANDOMNAME"), value );
+					string value("2");
+					newname = cObject::getRandomScriptValue( string("RANDOMNAME"), value );
 				}
 				dest->morph(body, skincolor, hairstyle, haircolor, beardstyle, beardcolor, newname.c_str(), true);
 			}

@@ -22,8 +22,18 @@
 #include "archs/signal.h"
 #endif
 
-#include <fstream>
-#include <sstream>
+#ifdef HAVE_FSTREAM
+	#include <fstream>
+#elif defined HAVE_FSTREAM_H
+	#include <fstream.h>
+#endif
+
+#ifdef HAVE_SSTREAM
+	#include <sstream>
+	using std::ostringstream;
+#elif HAVE_SSTREAM_H
+	#include <sstream.h>
+#endif
 
 tMainLoop *tMainLoop::instance = NULL;
 
@@ -195,7 +205,7 @@ void *tMainLoop::run()
 		case cmdShutdown:
 			{
 				shutdowntime = comm.param.toUInt32()*MINS;
-				std::ostringstream sout;
+				ostringstream sout;
 				sout << "Server shutting down in " << comm.param.toUInt32() << "minutes"
 				doBroadcast(sout.str());
 				break;

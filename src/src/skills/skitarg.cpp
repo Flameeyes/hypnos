@@ -715,7 +715,7 @@ void nSkills::target_cookOnFire(pClient client, pTarget t )
 	if ( !pc || !pi ) return;
 
 	uint16_t id = t->buffer[0];
-	std::string matname = t->buffer_str[0];
+	string matname = t->buffer_str[0];
 	
 	if ( pi->magic == 4 )
 		return;

@@ -36,12 +36,12 @@ public:
 	static void saveAll();			//!< Globally save accounts
 	static void loadAll();			//!< Globally load accounts
 
-	static pAccount findAccount(std::string name);
+	static pAccount findAccount(string name);
 
 protected:
 	Wefts::Mutex local_mt;			//!< Local mutex, used for logins and other things
-	std::string name; 			//!< Account name
-	std::string password;			//!< Account password (crypted)
+	string name; 			//!< Account name
+	string password;			//!< Account password (crypted)
 	CryptoType ctype;			//!< Type of crypted password
 	uint8_t privlevel;			//!< Priviledge level
 	int32_t creationdate;			//!< Epoch of creation date
@@ -66,7 +66,7 @@ public:
 	{ return client; }
 
 	//! Gets the account name
-	inline const std::string &getName() const
+	inline const string &getName() const
 	{ return name; }
 	
 	//! Gets the account priviledge level
@@ -100,7 +100,7 @@ public:
 	{ setFlag(flags, flagSeeConsPages, on); }
 //@}
 
-	cAccount(std::string aName, std::string aPassword);
+	cAccount(string aName, string aPassword);
 		//!< Default constructor
 	~cAccount();
 		//!< Default destructor

@@ -37,7 +37,7 @@ protected:
 	};
 	
 	//! A singly-linked list of multi items
-	typedef std::slist<sMultiItem> MultiItemSList;
+	typedef slist<sMultiItem> MultiItemSList;
 	
 	//! The items component of the multi
 	MultiItemSList items;

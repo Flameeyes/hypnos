@@ -8,7 +8,6 @@
 
 #include "libhypnos/muls/multiidx.h"
 #include "libhypnos/exceptions.h"
-#include "structs.h"
 
 namespace nLibhypnos {
 namespace nMULFiles {
@@ -25,7 +24,7 @@ fMultiIDX::fMultiIDX()
 {
 }
 
-fMultiIDX::fMultiIDX(const std::string &filepath)
+fMultiIDX::fMultiIDX(const string &filepath)
 	: tplIndexFile<cMultiIDX>( filepath )
 {
 }

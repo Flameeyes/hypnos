@@ -33,9 +33,9 @@ protected:
 	};
 	
 	//! Containers' gumps' info [index is Gump's ID]
-	typedef std::map< uint16_t, sContainerGump > mapGumpsInfo;
+	typedef map< uint16_t, sContainerGump > mapGumpsInfo;
 	//! Containers' ID map [index is Item's ID]
-	typedef std::map< uint16_t, mapGumpsInfo::iterator > mapContainerGumps;
+	typedef map< uint16_t, mapGumpsInfo::iterator > mapContainerGumps;
 	
 	static mapGumpsInfo gumpinfos;	//!< Gumps' information
 	static mapContainerGumps containers;
@@ -80,7 +80,7 @@ public:
 	\param id ID of the item to search for
 	\param recurse If true, search in subcontainers
 	*/
-	pItem findItem(const std::string &id, bool recurse = false);
+	pItem findItem(const string &id, bool recurse = false);
 	pItem findFirstType(uint16_t type, bool recurse = false);
 
 	//! Gets the items' list

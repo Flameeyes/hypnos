@@ -20,7 +20,14 @@
 #include <winbase.h>
 #endif
 
-std::string getOSVersionString()
+#ifdef HAVE_OSTREAM
+	#include <ostream>
+	using std::endl;
+#elif HAVE_OSTREAM_H
+	#include <ostream.h>
+#endif
+
+string getOSVersionString()
 {
 #ifdef HAVE_UNAME
 	char *temp;
@@ -28,7 +35,7 @@ std::string getOSVersionString()
 	uname(&info);
 	asprintf(&temp, "%s %s on a %s", info.sysname, info.release, info.machine);
 	
-	std::string s(temp);
+	string s(temp);
 	free(temp);
 	
 	return s;
@@ -67,7 +74,7 @@ std::string getOSVersionString()
 			vi.szCSDVersion, vi.dwBuildNumber & 0xFFFF );
 	}
 
-	std::string ret(temp);
+	string ret(temp);
 	free(temp);
 	
 	return ret;
@@ -78,20 +85,20 @@ std::string getOSVersionString()
 #endif
 }
 
-void outputHypnosIntro(std::ostream &outs)
+void outputHypnosIntro(ostream &outs)
 {
-	outs << "Hypnos UO Server Emulator " << strVersion << std::endl
-		<< "Programmed by: " << strDevelopers << std::endl
-		<< "Based on NoX-Wizard 20031228" << std::endl
-		<< "Website: http://hypnos.berlios.de/" << std::endl
-		<< std::endl
-		<< "Original copyright (C) 1997, 98 Marcus Rating (Cironian)" << std::endl
-		<< std::endl
-		<< "This program is free software; you can redistribute it and/or modify" << std::endl
-		<< "it under the terms of the GNU General Public License as published by" << std::endl
-		<< "the Free Software Foundation; either version 2 of the License, or" << std::endl
-		<< "(at your option) any later version." << std::endl
-		<< "See LICENSE file for more information" << std::endl
-		<< std::endl
-		<< "Running on " << getOSVersionString().c_str() << std::endl;
+	outs << "Hypnos UO Server Emulator " << strVersion << endl
+		<< "Programmed by: " << strDevelopers << endl
+		<< "Based on NoX-Wizard 20031228" << endl
+		<< "Website: http://hypnos.berlios.de/" << endl
+		<< endl
+		<< "Original copyright (C) 1997, 98 Marcus Rating (Cironian)" << endl
+		<< endl
+		<< "This program is free software; you can redistribute it and/or modify" << endl
+		<< "it under the terms of the GNU General Public License as published by" << endl
+		<< "the Free Software Foundation; either version 2 of the License, or" << endl
+		<< "(at your option) any later version." << endl
+		<< "See LICENSE file for more information" << endl
+		<< endl
+		<< "Running on " << getOSVersionString().c_str() << endl;
 }

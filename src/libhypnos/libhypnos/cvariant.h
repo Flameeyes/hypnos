@@ -81,7 +81,7 @@ public:
 	{ cVariant(); *this = aval; }
 
 	//! \copydoc cVariant::cVariant(const bool&)
-	inline cVariant(const std::string &aval)
+	inline cVariant(const string &aval)
 	{ cVariant(); *this = aval; }
 	
 	//! \copydoc cVariant::cVariant(const bool&)
@@ -108,7 +108,7 @@ public:
 	inline cVariant(pClient aval)
 	{ cVariant(); *this = aval; }
 	
-	cVariant &operator =(const std::string &astr);
+	cVariant &operator =(const string &astr);
 	cVariant &operator =(const bool &aval);
 	cVariant &operator =(const uint64_t &aval);
 	cVariant &operator =(const int64_t &aval);
@@ -196,7 +196,7 @@ to false.
 In this section you can also find the operators used for the automatic cast of
 a cVariant to one of his usable types.
 */
-	std::string toString(bool *result = NULL) const;
+	string toString(bool *result = NULL) const;
 	bool toBoolean(bool *result = NULL) const;
 	pChar toPChar(bool *result = NULL) const;
 	pItem toPItem(bool *result = NULL) const;
@@ -211,7 +211,7 @@ a cVariant to one of his usable types.
 	int16_t toSInt16(bool *result = NULL) const;
 	int8_t toSInt8(bool *result = NULL) const;
 
-	operator std::string() const
+	operator string() const
 	{ return toString(); }
 	
 	operator bool() const

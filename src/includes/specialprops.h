@@ -139,7 +139,7 @@ struct sWeaponModifiers {
 	
 	\see sHitSpell
 	*/
-	std::slist<sHitSpell> spellEffects;
+	slist<sHitSpell> spellEffects;
 	
 	/*!
 	\brief Hit area damage chance
@@ -151,7 +151,7 @@ struct sWeaponModifiers {
 	
 	\see sHitAreaDamage
 	*/
-	std::slist<sHitAreaDamage> areaDamages;
+	slist<sHitAreaDamage> areaDamages;
 	
 	/*!
 	\brief Use best weapon skill

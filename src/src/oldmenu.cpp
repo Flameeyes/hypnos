@@ -78,7 +78,7 @@ void cOldMenu::setParameters( int rowForPage, int pageCount )
 \param idx the index number
 \param desc the text
 */
-void cOldMenu::addMenuItem( int page, int idx, std::wstring desc )
+void cOldMenu::addMenuItem( int page, int idx, unistring desc )
 {
 //	mnu_addItem(s, 0, 2, "Concedi la grazia divina");
 	allPages[ page ][ idx ] = desc;
@@ -190,12 +190,12 @@ void cOldMenu::buildClassic()
 
 	int buttonnum=1; //button number
 
-	std::map< uint8_t, std::map< uint32_t, std::wstring >  >::iterator curr_page( allPages.begin() ), last_page( allPages.end() );
+	map< uint8_t, map< uint32_t, unistring >  >::iterator curr_page( allPages.begin() ), last_page( allPages.end() );
 	int page_count = allPages.size();
 
 	for( int page=1; curr_page!=last_page; ++curr_page, ++page ) {
 
-		std::map< uint32_t, std::wstring >::iterator iter( curr_page->second.begin() ), end( curr_page->second.end() );
+		map< uint32_t, unistring >::iterator iter( curr_page->second.begin() ), end( curr_page->second.end() );
 	
 		menu->addPage( page );
 
@@ -236,20 +236,20 @@ void cOldMenu::buildIconList()
 	
 	cIconListMenu* menu = (cIconListMenu*)this->type;
 	
-	wstring2string( title, menu->question );
+	unistring2string( title, menu->question );
 
-	std::map< uint8_t, std::map< uint32_t, std::wstring >  >::iterator page( allPages.begin() ), last_page( allPages.end() );
+	map< uint8_t, map< uint32_t, unistring >  >::iterator page( allPages.begin() ), last_page( allPages.end() );
 	if( page!=last_page ) { //not support multiple pages
 		
-		std::map< uint32_t, std::wstring >::iterator iter( page->second.begin() ), end( page->second.end() );
+		map< uint32_t, unistring >::iterator iter( page->second.begin() ), end( page->second.end() );
 		for( ; iter!=end; ++iter ) {
 
 			string s;
-			wstring2string( iter->second, s );
+			unistring2string( iter->second, s );
 	
 			char num[5] = { 0x00, };
 			memcpy( num, s.c_str(), 4 );
-			menu->addIcon( hex2num( num ), 0x0000, std::string( s.c_str() +5 ) );
+			menu->addIcon( hex2num( num ), 0x0000, string( s.c_str() +5 ) );
 
 		}
 	}

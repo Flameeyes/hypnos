@@ -68,7 +68,7 @@ void cChar::talk(pClient client, char *txt, bool antispam)
 		{
 			saycolor=0x005B;
 		}
-		cSpeech speech(std::string(txt));	//we must use string constructor or else it is supposed to be an unicode packet
+		cSpeech speech(string(txt));	//we must use string constructor or else it is supposed to be an unicode packet
 		speech.setColor(saycolor);
 		speech.setFont(fonttype);
 		speech.setMode(0x00);		// normal speech
@@ -112,7 +112,7 @@ void cChar::emote( pClient client, char *txt, bool antispam, ... )
 	uint8_t name[30]={ 0x00, };
 	strcpy((char *)name, getCurrentName().c_str());
 
-	cSpeech speech(std::string(msg));	//we must use string constructor or else it is supposed to be an unicode packet
+	cSpeech speech(string(msg));	//we must use string constructor or else it is supposed to be an unicode packet
 	speech.setColor(emotecolor);
 	speech.setFont(fonttype);
 	speech.setMode(0x02);		// Emote
@@ -182,7 +182,7 @@ void cChar::talkRunic(pClient client, char *txt, bool antispam)
 		else return;
 	}
 
-	cSpeech speech(std::string(txt));	//we must use string constructor or else it is supposed to be an unicode packet
+	cSpeech speech(string(txt));	//we must use string constructor or else it is supposed to be an unicode packet
 	speech.setColor(0x1);
 	speech.setFont(0x0008);		// runic font
 	speech.setMode(0x00);		// normal speech

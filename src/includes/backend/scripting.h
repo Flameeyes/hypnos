@@ -58,7 +58,7 @@ public:
 			bool bypassed;
 	};
 
-	cFunctionHandle *getFunction(std::string funcName);
+	cFunctionHandle *getFunction(string funcName);
 	
 protected:
 	cScriptingEngine();
@@ -66,7 +66,7 @@ protected:
 };
 
 typedef cScriptingEngine::cFunctionHandle *pFunctionHandle;
-typedef std::vector<pFunctionHandle> FunctionVector;
+typedef vector<pFunctionHandle> FunctionVector;
 
 extern "C" {
 	cScriptingEngine *initEngine();

@@ -11,8 +11,21 @@
 
 #include "libhypnos/strings.h"
 #include "libhypnos/exceptions.h"
-#include <sstream>
-#include <iomanip>
+
+#ifdef HAVE_SSTREAM
+	#include <sstream>
+	using std::ostringstream;
+#elif HAVE_SSTREAM_H
+	#include <sstream.h>
+#endif
+
+#ifdef HAVE_IOMANIP
+	#include <iomanip>
+	using std::setw;
+	using std::setfill;
+#elif HAVE_IOMANIP_H
+	#include <iomanip.h>
+#endif
 
 namespace nLibhypnos {
 
@@ -23,7 +36,7 @@ namespace nLibhypnos {
 \return The long value of the IP passed (in host endian)
 \throw eInvalidIP If the \c ip string is not a valid dotted decimal IP
 */
-uint32_t ip2long(std::string ip)
+uint32_t ip2long(string ip)
 {
 	char buffer[16], *a = NULL, *b = NULL, *c = NULL;
 	strncpy(buffer, ip.c_str(), 15);
@@ -50,12 +63,12 @@ uint32_t ip2long(std::string ip)
 \param l long value
 \return The String representing the given IP address value.
 */
-std::string long2ip(uint32_t l)
+string long2ip(uint32_t l)
 {
 	uint8_t a = l >> 24, b = ( l >> 16 ) & 0xFF,
 		c = ( l >> 8 ) & 0xFF, d = l & 0xFF;
 	
-	std::ostringstream sout;
+	ostringstream sout;
 	
 	sout << a << "." << b << "." << c << "." << d;
 	return sout.str();
@@ -66,9 +79,9 @@ std::string long2ip(uint32_t l)
 \brief capitalize a c++ string
 \param str the string to capitalize
 */
-void strupr(std::string &str)
+void strupr(string &str)
 {
-	for(std::string::iterator it = str.begin(); it != str.end(); it++)
+	for(string::iterator it = str.begin(); it != str.end(); it++)
 		*it = tolower(*it);
 }
 
@@ -77,9 +90,9 @@ void strupr(std::string &str)
 \brief lowerize a c++ string
 \param str the string to lowerize
 */
-void strlwr(std::string &str)
+void strlwr(string &str)
 {
-	for(std::string::iterator it = str.begin(); it != str.end(); it++)
+	for(string::iterator it = str.begin(); it != str.end(); it++)
 		*it = toupper(*it);
 }
 
@@ -89,7 +102,7 @@ void strlwr(std::string &str)
 \param str String to split
 \return a stringVector with the tokens in it
 */
-stringVector tokenize(std::string str)
+stringVector tokenize(string str)
 {
 	stringVector ret;
 	char *tmp = new char[str.size() +1];
@@ -99,7 +112,7 @@ stringVector tokenize(std::string str)
 	
 	while ( s != NULL )
 	{
-		ret.push_back( std::string(s) );
+		ret.push_back( string(s) );
 		s=strtok(NULL, " ");
 	}
 	
@@ -112,21 +125,21 @@ stringVector tokenize(std::string str)
 \brief Gets a string representing the current date and time for the log
 \return a [dd/mm/yyyy hh:mm:ss] formatted string.
 */
-std::string getDateString()
+string getDateString()
 {
 	time_t TIME;
 	tm* T;
 	time(&TIME);
 	T = localtime(&TIME);
 	
-	std::ostringstream sout;
+	ostringstream sout;
 	
-	sout 	<< "["	<< std::setw(2) << std::setfill('0') << T->tm_mday
-		<< "/"	<< std::setw(2) << std::setfill('0') << T->tm_mon + 1
-		<< "/"	<< std::setw(4) << std::setfill('0') << T->tm_year + 1900
-		<< " "	<< std::setw(2) << std::setfill('0') << T->tm_hour 
-		<< ":"	<< std::setw(2) << std::setfill('0') << T->tm_min
-		<< ":"	<< std::setw(2) << std::setfill('0') << T->tm_sec
+	sout 	<< "["	<< setw(2) << setfill('0') << T->tm_mday
+		<< "/"	<< setw(2) << setfill('0') << T->tm_mon + 1
+		<< "/"	<< setw(4) << setfill('0') << T->tm_year + 1900
+		<< " "	<< setw(2) << setfill('0') << T->tm_hour 
+		<< ":"	<< setw(2) << setfill('0') << T->tm_min
+		<< ":"	<< setw(2) << setfill('0') << T->tm_sec
 		<< "]";
 
 	return sout.str();

@@ -57,7 +57,7 @@ class fMultiIDX : public tplIndexFile<cMultiIDX>
 protected:
 public:
 	fMultiIDX();
-	fMultiIDX(const std::string &);
+	fMultiIDX(const string &);
 };
 
 }}

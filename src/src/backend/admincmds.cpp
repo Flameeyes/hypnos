@@ -13,12 +13,19 @@
 #include "backend/admincmds.h"
 #include "networking/cclient.h"
 
+#ifdef HAVE_OSTREAM
+	#include <ostream>
+	using std::endl;
+#elif defined HAVE_OSTREAM_H
+	#include <ostream.h>
+#endif
+
 /*!
 \brief Parses an administrative command
 \param str Command to parse
 \param outs Stream where to output the command's... output!
 */
-void nAdminCommands::parseCommand(const std::string &str, std::ostream &outs)
+void nAdminCommands::parseCommand(const string &str, ostream &outs)
 {
 	switch(str[0])
 	{
@@ -31,7 +38,7 @@ void nAdminCommands::parseCommand(const std::string &str, std::ostream &outs)
 		break;
 	case 'W':
 	case 'w':				// Display logged in chars
-		outs	<< "----------------------------------------------------------------" << std::endl;
+		outs	<< "----------------------------------------------------------------" << endl;
 		
 		cClient::listConnected(outs);
 		break;
@@ -40,16 +47,16 @@ void nAdminCommands::parseCommand(const std::string &str, std::ostream &outs)
 		tMainLoop::instance->requestResync();
 		break;
 	case '?':
-		outs	<< "Console commands:" << std::endl
-			<< "\tQ - Shutdown the server (in 2 minutes, with broadcast)." << std::endl
-			<< "\t# - Save world" << std::endl
-			<< "\tW - Display logged in characters" << std::endl
-			<< "\tR - Total server reload" << std::endl
-			<< "\t? - Commands list (this)" << std::endl
-			<< "End of commands list." << std::endl;
+		outs	<< "Console commands:" << endl
+			<< "\tQ - Shutdown the server (in 2 minutes, with broadcast)." << endl
+			<< "\t# - Save world" << endl
+			<< "\tW - Display logged in characters" << endl
+			<< "\tR - Total server reload" << endl
+			<< "\t? - Commands list (this)" << endl
+			<< "End of commands list." << endl;
 		break;
 	default:
-		outs << "Command " << str << " does not perform a function." << std::endl;
+		outs << "Command " << str << " does not perform a function." << endl;
 		break;
 	}
 }

@@ -20,7 +20,7 @@ cBook::cBook()
 {
 	setReadOnly(false);
 
-	pages = tpages(pages.size(), std::vector<std::string>(8, std::string("")));
+	pages = tpages(pages.size(), vector<string>(8, string("")));
 }
 
 //! Constructor when serial is known
@@ -29,7 +29,7 @@ cBook::cBook(uint32_t serial)
 {
 	setReadOnly(false);
 
-	pages = tpages(pages.size(), std::vector<std::string>(8, std::string("")));
+	pages = tpages(pages.size(), vector<string>(8, string("")));
 }
 
 /*!

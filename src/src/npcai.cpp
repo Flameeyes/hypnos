@@ -113,7 +113,7 @@ static void initNpcSpells ()
 			spherespells[i][j] = 0;
 
 	cScpIterator*	iter = NULL;
-	std::string	script1,
+	string	script1,
 			script2;
 
 	for (int section=0; section<256; ++section )

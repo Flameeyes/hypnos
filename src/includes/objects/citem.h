@@ -72,9 +72,9 @@ protected:
 	int32_t			maxhp;	//!< Max number of hit points an item can have.
 public:
 	void			Refresh();
-	const std::string getName();
-	const std::string getRealItemName();
-	virtual const std::string getPopupHelp() const;
+	const string getName();
+	const string getRealItemName();
+	virtual const string getPopupHelp() const;
 
 	inline int32_t getHP() const
 	{ return hp; }
@@ -111,7 +111,7 @@ public:
 	
 	void setDirection(uint8_t newdir);
 
-	void talk(const std::string &msg);
+	void talk(const string &msg);
 
 	void dyeItem(pClient client, uint16_t color); //!< Rehue an item
 //@{
@@ -549,13 +549,13 @@ public:
 \deprecated Move them to cContainer at least, or create cCorpse
 */
 protected:
-	std::string	murderer;	//!< char's name who killed the char (forensic ev.)
+	string	murderer;	//!< char's name who killed the char (forensic ev.)
 	int32_t		murdertime;	//!< when the people has been killed \todo Should be moved to time_t?
 public:
-	inline std::string getMurderer() const
+	inline string getMurderer() const
 	{ return murderer; }
 	
-	inline void setMurderer(const std::string &newmurderer)
+	inline void setMurderer(const string &newmurderer)
 	{ murderer = newmurderer; }
 //@}
 
@@ -580,7 +580,7 @@ public:
 	*/
 	int32_t		rank;
 
-	std::string	creator;	//!< Store the name of the player made this item
+	string	creator;	//!< Store the name of the player made this item
 	int32_t		good;		//!< Store type of GOODs to trade system! (Plz not set as UNSIGNED)
 	int32_t		rndvaluerate;	//!< Store the value calculated base on RANDOMVALUE in region.scp.
 
@@ -602,7 +602,7 @@ public:
 	skilled!
 	*/
 	int32_t		madewith;
-	std::string	vendorDescription;//!< vendor description
+	string	vendorDescription;//!< vendor description
 //@}
 
 //@{

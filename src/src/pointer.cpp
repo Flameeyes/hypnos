@@ -10,16 +10,16 @@
 
 namespace pointers {
 
-	static std::map<uint32_t, CharList> pStableMap;
-	static std::map<uint32_t, pChar> pMounted;
+	static map<uint32_t, CharList> pStableMap;
+	static map<uint32_t, pChar> pMounted;
 
-	static std::map<uint32_t, CharList> pOwnCharMap;
-	static std::map<uint32_t, ItemList> pOwnItemMap;
+	static map<uint32_t, CharList> pOwnCharMap;
+	static map<uint32_t, ItemList> pOwnItemMap;
 
-	static std::map<uint32_t, ItemList> pContMap;
+	static map<uint32_t, ItemList> pContMap;
 
-	static std::map<uint32_t, CharList> pMultiCharMap;
-	static std::map<uint32_t, ItemList> pMultiItemMap;
+	static map<uint32_t, CharList> pMultiCharMap;
+	static map<uint32_t, ItemList> pMultiItemMap;
 
 #ifdef SPAR_LOCATION_MAP
 	//
@@ -436,7 +436,7 @@ namespace pointers {
 			}
 		}
 
-		std::map< uint32_t, pChar >::iterator iter( pMounted.begin() ), end( pMounted.end() );
+		map< uint32_t, pChar >::iterator iter( pMounted.begin() ), end( pMounted.end() );
 		for( ; iter!=end; iter++)
 		{
 			pc = cSerializable::findCharBySerial(iter->first);
@@ -502,7 +502,7 @@ namespace pointers {
 		uint32_t stablemaster=pet->getStablemaster();
 		if( stablemaster != INVALID ) {
 
-			std::map<uint32_t, vector <pChar> >::iterator vect( pStableMap.find( stablemaster ) );
+			map<uint32_t, vector <pChar> >::iterator vect( pStableMap.find( stablemaster ) );
 			if( ( vect!=pStableMap.end() ) && !vect->second.empty() ) {
 
 				vector<pChar>::iterator stableIter;
@@ -539,7 +539,7 @@ namespace pointers {
 		uint32_t own=pet->getOwnerSerial32();
 		if ( own!=INVALID ) {
 
-			std::map<uint32_t, vector <pChar> >::iterator vect( pOwnCharMap.find( own ) );
+			map<uint32_t, vector <pChar> >::iterator vect( pOwnCharMap.find( own ) );
 			if( ( vect!=pOwnCharMap.end() ) && !vect->second.empty() )
 			{
 
@@ -577,7 +577,7 @@ namespace pointers {
 		uint32_t own=pi->getOwnerSerial32();
 		if ( own!=INVALID ) {
 
-			std::map<uint32_t, vector <pItem> >::iterator vect( pOwnItemMap.find( own ) );
+			map<uint32_t, vector <pItem> >::iterator vect( pOwnItemMap.find( own ) );
 			if( ( vect!=pOwnItemMap.end() ) && !vect->second.empty() )
 			{
 
@@ -615,7 +615,7 @@ namespace pointers {
 		uint32_t multi=pc->getMultiSerial32();
 		if ( multi!=INVALID ) {
 
-			std::map<uint32_t, vector <pChar> >::iterator vect( pMultiCharMap.find( multi ) );
+			map<uint32_t, vector <pChar> >::iterator vect( pMultiCharMap.find( multi ) );
 			if( ( vect!=pMultiCharMap.end() ) && !vect->second.empty() )
 			{
 
@@ -654,7 +654,7 @@ namespace pointers {
 		uint32_t multi=pi->getMultiSerial32();
 		if ( multi!=INVALID ) {
 
-			std::map<uint32_t, vector <pItem> >::iterator vect( pMultiItemMap.find( multi ) );
+			map<uint32_t, vector <pItem> >::iterator vect( pMultiItemMap.find( multi ) );
 			if( ( vect!=pMultiItemMap.end() ) && !vect->second.empty() )
 			{
 
@@ -671,7 +671,7 @@ namespace pointers {
 	void eraseContainerInfo( uint32_t ser )
 	{
 
-		std::map<uint32_t, vector <pItem> >::iterator vect( pContMap.find( ser ) );
+		map<uint32_t, vector <pItem> >::iterator vect( pContMap.find( ser ) );
 		if( vect!=pContMap.end() ) {
 
 			if( !vect->second.empty() ) {
@@ -728,7 +728,7 @@ namespace pointers {
 		uint32_t cont=pi->getContSerial();
 		if ( cont > INVALID ) {
 
-			std::map<uint32_t, vector <pItem> >::iterator vect( pContMap.find( cont ) );
+			map<uint32_t, vector <pItem> >::iterator vect( pContMap.find( cont ) );
 			if( ( vect!=pContMap.end() ) && !vect->second.empty() ) {
 
 				vector<pItem>::iterator contIter;

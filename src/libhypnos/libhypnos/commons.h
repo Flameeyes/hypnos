@@ -18,10 +18,6 @@
 #undef malloc
 #endif
 
-#if defined __GNUC__ && ! defined(__ICC)
-#define __GNUC_LIBRARY__
-#endif
-
 /*!
 \file
 \brief Common abstraction for libhypnos
@@ -65,31 +61,29 @@ suite to access the common defines without need of complete hypnos sources.
 	#define PRINTF_LIKE(A,B) ;
 #endif
 
-#include <assert.h>
-
-// STL includes
-#include <string>
-#include <vector>
-#include <map>
-#include <queue>
-#include <list>
-#include <iterator>
-#include <algorithm>
-#include <stack>
-#include <fstream>
-#include <utility>
-#include <set>
-
-#ifdef __GNUC_LIBRARY__
-	#include <ext/slist>
-	#include <ext/hash_map>
-	namespace std {
-		using __gnu_cxx::slist;
-		using __gnu_cxx::hash_map;
-	}
+#ifdef HAVE_CASSERT
+	#include <cassert>
 #else
-	#include <slist>
-	#include <hash_map>
+	#include <assert.h>
+#endif
+
+#ifdef HAVE_IOSFWD
+	#include <iosfwd>
+	using std::istream;
+	using std::ostream;
+	using std::ifstream;
+	using std::ofstream;
+#elif defined HAVE_IOSFWD_H
+	#include <iosfwd.h>
+#endif
+
+#ifdef HAVE_ALGORITHM
+	#include <algorithm>
+	using std::find;
+#elif defined HAVE_ALGORITHM_H
+	#include <algorithm.h>
+#elif defined HAVE_ALGO_H
+	#include <algo.h>
 #endif
 
 #include "libhypnos/types.h"

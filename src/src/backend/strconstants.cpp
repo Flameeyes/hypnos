@@ -20,7 +20,7 @@ and then calls the right function to get the C++ constant.
 
 \note The tests must be done from the shortest to the longest.
 */
-uint32_t nStrConstants::generic(std::string str)
+uint32_t nStrConstants::generic(string str)
 {
 	if ( strncmp(str.c_str(), "ip", 2) == 0 )
 		return itemPlace(str);
@@ -41,7 +41,7 @@ uint32_t nStrConstants::generic(std::string str)
 \param str String representing the skill
 \return The skill constant or skInvalid if invalid string
 */
-Skill nStrConstants::skills(std::string str)
+Skill nStrConstants::skills(string str)
 {
 	if ( str == "skAlchemy" ) return skAlchemy;
 	if ( str == "skAnatomy" ) return skAnatomy;
@@ -102,7 +102,7 @@ Skill nStrConstants::skills(std::string str)
 \param str String representing the weapon type
 \return The weapon type constant or weaponInvalid if invalid string
 */
-uint16_t nStrConstants::weaponsTypes(std::string str)
+uint16_t nStrConstants::weaponsTypes(string str)
 {
 	if ( str == "weaponSword1H" ) return cWeapon::weaponSword1H;
 	if ( str == "weaponSword2H" ) return cWeapon::weaponSword2H;
@@ -127,7 +127,7 @@ uint16_t nStrConstants::weaponsTypes(std::string str)
 \return The SuspectAction enum value represented by the string, or saNormal if
 	not a valid string
 */
-SuspectAction nStrConstants::suspectAction(std::string str)
+SuspectAction nStrConstants::suspectAction(string str)
 {
 	if ( str == "saCriminal" ) return saCriminal;
 	if ( str == "saGrey" ) return saGrey;
@@ -142,7 +142,7 @@ SuspectAction nStrConstants::suspectAction(std::string str)
 \return The ItemPlace enum value represented by the string, or ipBackpack if
 	not a valid string
 */
-ItemPlace nStrConstants::itemPlace(std::string str)
+ItemPlace nStrConstants::itemPlace(string str)
 {
 	if ( str == "ipBankbox" ) return ipBankbox;
 	if ( str == "ipEquip" ) return ipEquip;
@@ -157,7 +157,7 @@ ItemPlace nStrConstants::itemPlace(std::string str)
 \return The SpellId enum value represented by the string, or spellInvalid if
 	not a valid spell identifier
 */
-SpellId nStrConstants::spellId(std::string str)
+SpellId nStrConstants::spellId(string str)
 {
 	if ( str == "spellClumsy" ) return spellClumsy;
 	if ( str == "spellCreateFood" ) return spellCreateFood;

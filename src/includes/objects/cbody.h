@@ -29,25 +29,25 @@ friend class cChar;
 public:
 	cBody();
 protected:
-	std::string name;
-	std::string title;
+	string name;
+	string title;
 	uint16_t id;
 
 public:
 	//! Gets the character's name
-	inline const std::string& getName() const
+	inline const string& getName() const
 	{ return name; }
 
 	//! Sets the character's name
-	inline void setName(const std::string value)
+	inline void setName(const string value)
 	{ name = value; }
 
 	//! Gets the character's title
-	inline const std::string& getTitle() const
+	inline const string& getTitle() const
 	{ return title; }
 
 	//! Sets the character's title
-	inline void setTitle(const std::string value)
+	inline void setTitle(const string value)
 	{ title = value; }
 
 	//! Gets the character's id

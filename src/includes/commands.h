@@ -36,7 +36,7 @@ namespace nCommands {
 		quite resource-spending, but will allow us to not reload
 		the emulator to reload the commands.
 	*/
-	bool registerScriptedCommand(std::string command, pFunctionHandle handler, bool force = false);
+	bool registerScriptedCommand(string command, pFunctionHandle handler, bool force = false);
 	
 	/*!
 	\brief Unregister a user-defined command in the hash map
@@ -47,7 +47,7 @@ namespace nCommands {
 		over-owner in commands.xml or disable it also in commands.xml or
 		override it with a null comamnd
 	*/
-	bool unregisterScriptedCommand(std::string command);
+	bool unregisterScriptedCommand(string command);
 	
 	/*!
 	\brief Calls a command, either user-defined or system
@@ -60,7 +60,7 @@ namespace nCommands {
 	The parameter quiet can be used by scripts to avoid the user to see
 	eventual errors in the script.
 	*/
-	void callCommand(std::string command, bool quiet = false);
+	void callCommand(string command, bool quiet = false);
 
 	/*!
 	\brief Base class for all commands
@@ -80,7 +80,7 @@ namespace nCommands {
 			privLevel (plevel)
 		{ }
 		
-		virtual bool parseParams(pClient client, std::string command) = 0;
+		virtual bool parseParams(pClient client, string command) = 0;
 		virtual void execute(pClient client) = 0;
 	protected:
 		cVariantVector params;	//!< Params used by the command
@@ -108,7 +108,7 @@ namespace nCommands {
 		the parameters list the scripted function needs to parse the string
 		by itself.
 		*/
-		void parserParams(pClient client, std::string command)
+		void parserParams(pClient client, string command)
 		{ params[0] = client; params[1] = cVariant(command);
 		  return true; }
 		

@@ -58,7 +58,7 @@ private:
 	
 	void doSavegame();
 	void doResync();
-	void doBroadcast(std::string bcast);
+	void doBroadcast(string bcast);
 public:
 	tMainLoop();
 	
@@ -67,7 +67,7 @@ public:
 	void requestSave();
 	void requestResync();
 	void requestShutdown(uint16_t min);
-	void broadcast(std::string bcast);
+	void broadcast(string bcast);
 	
 	static tMainLoop *instance;
 };

@@ -19,7 +19,7 @@
 \brief Functions for string constants translation
 
 When loading datafiles, or when receiving parameters from the scripts, we often
-need to translate a string constant (which can be a char* or an std::string
+need to translate a string constant (which can be a char* or an string
 object) and translate it to an integer constant (or more often an enum entry).
 
 To do that, we should compare the string with other strings (constants) until
@@ -47,13 +47,13 @@ watching at its prefix.
 \todo Add the entire list of constant prefixes
 */
 namespace nStrConstants {
-	uint32_t generic(std::string str);
+	uint32_t generic(string str);
 	
-	Skill skills(std::string str);
-	uint16_t weaponsTypes(std::string str);
-	SuspectAction suspectAction(std::string str);
-	ItemPlace itemPlace(std::string str);
-	SpellId spellId(std::string str);
+	Skill skills(string str);
+	uint16_t weaponsTypes(string str);
+	SuspectAction suspectAction(string str);
+	ItemPlace itemPlace(string str);
+	SpellId spellId(string str);
 }
 
 #endif

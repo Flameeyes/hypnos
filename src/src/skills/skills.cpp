@@ -47,7 +47,7 @@ void nSkills::loadSkills()
 {
 	outPlain("Loading skills information...\t\t");
 	
-	std::ifstream xmlfile("config/skills.xml");
+	ifstream xmlfile("config/skills.xml");
 	if ( ! xmlfile )
 	{
 		outPlain("[ Failed ]\n");

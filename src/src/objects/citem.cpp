@@ -193,7 +193,7 @@ cItem::resetData()
 		resists[i]=0;
 
 	//desc[0]=0x00;
-	vendorDescription = std::string("");
+	vendorDescription = string("");
 	setDecayTime(); //Luxor
 }
 
@@ -303,26 +303,26 @@ cItem::~cItem()
 
 }
 
-const std::string cItem::getPopupHelp() const
+const string cItem::getPopupHelp() const
 {
 	if (isInstrument())
-		return std::string("This item is a musical instrument. You can use it for bardic skills like enticement or provocation");
+		return string("This item is a musical instrument. You can use it for bardic skills like enticement or provocation");
 	else if (type == ITYPE_DOOR)
-		return std::string("This a door. To open or close it, double click on it.");
+		return string("This a door. To open or close it, double click on it.");
 	else if (type == ITYPE_LOCKED_DOOR)
-		return std::string("This a locked door. To open or close it, click on the proper key and target it.");
+		return string("This a locked door. To open or close it, click on the proper key and target it.");
 	else if (type == ITYPE_FOOD)
-		return std::string("This food you can eat when you're hungry. To eat, double click the food, but beware poisoned food!");
+		return string("This food you can eat when you're hungry. To eat, double click the food, but beware poisoned food!");
 	else if (type == ITYPE_RUNE)
-		return std::string("This is a rune for use with recall, mark and gate travel spells");
+		return string("This is a rune for use with recall, mark and gate travel spells");
 	else if (type == ITYPE_RESURRECT)
-		return std::string("If you die (or are dead) you can double click this item to be resurrected!");
+		return string("If you die (or are dead) you can double click this item to be resurrected!");
 	else if (type == ITYPE_KEY)
-		return std::string("This is a key you can use (double click) to open doors");
+		return string("This is a key you can use (double click) to open doors");
 	else if (type == ITYPE_SPELLBOOK)
-		return std::string("This is the spellbook, where you can write down your own spells for later use");
+		return string("This is the spellbook, where you can write down your own spells for later use");
 	else if (type == ITYPE_POTION)
-		return std::string("This is a potion! You can drink that when you need its effects... but beware of poison potions!");
+		return string("This is a potion! You can drink that when you need its effects... but beware of poison potions!");
 }
 
 /*!
@@ -558,7 +558,7 @@ inline bool operator !=( cItem& a, cItem& b ) {
 \return the real name of an item
 \note See also cItem::getName
 */
-const std::string cItem::getRealItemName()
+const string cItem::getRealItemName()
 {
 	try {
 		if ( !current_name.length() )
@@ -576,9 +576,9 @@ const std::string cItem::getRealItemName()
 \brief Gets the actual name of the item
 \return The true name of the item, also if the current_name is #
 */
-const std::string cItem::getName()
+const string cItem::getName()
 {
-	std::string name;
+	string name;
 
 	if ( current_name.length() )
 		return current_name;
@@ -597,10 +597,10 @@ const std::string cItem::getName()
 	int mode=0, used=0;
 	bool ok = false;
 	
-	std::string tileName = tiledataStatic->getName(getId());
+	string tileName = tiledataStatic->getName(getId());
 	
 	//! \todo Change this to a better regexp
-	for( std::string::iterator = tileName.begin(); it != tileName.end(); it++)
+	for( string::iterator = tileName.begin(); it != tileName.end(); it++)
 	{
 		ok = false;
 		if ((*it=='%')&&(mode==0)) mode=2;
@@ -981,7 +981,7 @@ It's used by cBoat for tillerman and to implement the communication crystals
 
 \todo Change to the new region system when done
 */
-void talk(const std::string &msg)
+void talk(const string &msg)
 {
 	cSpeech speech(msg);
 	speech.setSpeaker(this);

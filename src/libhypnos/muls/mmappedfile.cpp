@@ -58,7 +58,7 @@ namespace nLibhypnos {
 		offset before the file can be mmapped, \b must call the default
 		constructor which does nothing.
 	*/
-	cMMappedFile::cMMappedFile(uint16_t recordsize, std::string filename, uint32_t offset, uint32_t length)
+	cMMappedFile::cMMappedFile(uint16_t recordsize, string filename, uint32_t offset, uint32_t length)
 		: recSize(recordsize), array(NULL)
 	{
 		open(filename);
@@ -87,7 +87,7 @@ namespace nLibhypnos {
 	
 	\note The mmapped files are all opened read only.
 	*/
-	void cMMappedFile::open(std::string filename)
+	void cMMappedFile::open(string filename)
 	{
 		fd = ::open(filename.c_str(), O_RDONLY);
 		if ( fd == -1 )

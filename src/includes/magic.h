@@ -144,11 +144,11 @@ namespace magic {
 		uint16_t hiskill;	//!< high magery skill req.
 		uint16_t sclo;		//!< low magery skill req. if using scroll
 		uint16_t schi;		//!< high magery skill req. if using scroll
-		std::string mantra;	//!< Words of power
+		string mantra;	//!< Words of power
 		uint16_t action;	//!< character action
 		uint16_t delay;		//!< spell delay
 		sReagents reagents;	//!< reagents req.
-		std::string strToSay;	//!< string visualized with targ. system
+		string strToSay;	//!< string visualized with targ. system
 		uint16_t lodamage;
 		uint16_t hidamage;
 		int areasize;
@@ -159,7 +159,7 @@ namespace magic {
 	enum {	TARGTYPE_NONE = 0, TARGTYPE_XYZ, TARGTYPE_ITEM, TARGTYPE_CHAR,
 		TARGTYPE_CONTAINERORDOOR, TARGTYPE_CONTAINER, TARGTYPE_RUNE };
 
-	extern std::vector<sSpell> spellsData;
+	extern vector<sSpell> spellsData;
 	void loadSpells();
 	
 	bool checkMagicalSpeech( pChar pc, char* speech );

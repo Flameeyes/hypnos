@@ -139,10 +139,10 @@ struct spiritspeak_st
 */
 struct sTitle
 {
-	std::string fame;
-	std::string skill;
-	std::string prowess;
-	std::string other;
+	string fame;
+	string skill;
+	string prowess;
+	string other;
 };
 
 struct sTeleLocations {

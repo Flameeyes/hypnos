@@ -48,7 +48,7 @@ void cScheduler::restart()
 \note This function also set the minimum interval time for the scheduler to
 	sleep.
 */
-cScheduler::sEvent::sEvent(std::string funcName, uint32_t nInterval, cScheduler *parent)
+cScheduler::sEvent::sEvent(string funcName, uint32_t nInterval, cScheduler *parent)
 {
 	if ( funcName.length() == 0 || ! nInterval )
 	{
@@ -89,7 +89,7 @@ cScheduler::cScheduler()
 {
 	outPlain("Loading scheduler...\t\t");
 	
-	std::ifstream xmlfile("config/scheduler.xml");
+	ifstream xmlfile("config/scheduler.xml");
 	if ( ! xmlfile )
 	{
 		outPlain("[ Failed ]\n");

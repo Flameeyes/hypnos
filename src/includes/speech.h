@@ -45,9 +45,9 @@ public:
 \brief Constructors and operators
 */
 	char operator[](int i); 			//!< gets 8-bit ascii char in location "i" in either byteorder
-	cSpeech& operator= (std::string& s);		//!< Assignment operator from a non unicode string. Converts to 16bit-char and stores it
+	cSpeech& operator= (string& s);		//!< Assignment operator from a non unicode string. Converts to 16bit-char and stores it
 	cSpeech& operator= (cSpeech& s);		//!< assignment operator (copy operator)
-	cSpeech(std::string& s); 			//!< non-unicode fill from string (defaults to packetByteorder = false)
+	cSpeech(string& s); 			//!< non-unicode fill from string (defaults to packetByteorder = false)
 	cSpeech(char* buffer, uint16_t size = 0);	//!< Unicode fill from packet buffer. Size is used only for not null-terminated strings, if it is 0 is ignored, else reads size bytes wherever \\0 is present or not. (defaults to packetByteorder = true)
 //@}
 
@@ -61,8 +61,8 @@ public:
 	inline void assignPacketByteOrder(bool byteorder)
 	{ packetByteOrder = byteorder; }
 
-	std::string toString();			//!< returns a normal char-based string obtained truncating unicode to ascii values
-	std::string toGhost();			//!< returns a randomized "ooooOOoo" based on current string content (not unicode)
+	string toString();			//!< returns a normal char-based string obtained truncating unicode to ascii values
+	string toGhost();			//!< returns a randomized "ooooOOoo" based on current string content (not unicode)
 
 	//! Returns a read-only char* pointer to internal unicode_text, as a rawmode 8 bit-char buffer with a double 0 terminator
 	inline const char* rawBytes() const

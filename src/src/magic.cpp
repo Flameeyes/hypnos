@@ -17,8 +17,8 @@
 
 namespace magic {
 
-std::vector<sSpell> spellsData;
-static std::map< std::string, uint16_t> speechMap;
+vector<sSpell> spellsData;
+static map< string, uint16_t> speechMap;
 
 /*!
 \brief Gets the direction for a field magic
@@ -89,8 +89,8 @@ bool checkMagicalSpeech( pChar pc, char* speech )
 	if(!client) return false;
 
 	strupr( speech );
-	std::string sSpeech( speech );
-	std::map< std::string, SpellId >::iterator it( speechMap.find( sSpeech ) );
+	string sSpeech( speech );
+	map< string, SpellId >::iterator it( speechMap.find( sSpeech ) );
 	if ( it == speechMap.end() )
 		return false;
 	SpellId spell = it->second;
@@ -140,7 +140,7 @@ static void loadSpellsFromScript()
 			else if (!strcmp("MANTRA", script1)) 	{ spellsData[curspell].mantra += script2;
 				//Luxor: speech cast
 				strupr( script2 );
-				speechMap.insert( pair< std::string, SpellId >( std::string( script2 ), static_cast<SpellId>(curspell) ) );
+				speechMap.insert( pair< string, SpellId >( string( script2 ), static_cast<SpellId>(curspell) ) );
 			}
 			else if (!strcmp("ACTION", script1)) 	spellsData[curspell].action = hex2num(script2);
 			else if (!strcmp("DELAY", script1))		spellsData[curspell].delay = str2num(script2);
@@ -726,7 +726,7 @@ bool checkReagents(pChar pc, sReagents reagents)
 	if (reagents.shade!=0 && pc->CountItems(0x0F88)<reagents.shade) fail.shade=1;
 	if (reagents.silk!=0 && pc->CountItems(0x0F8D)<reagents.silk) fail.silk=1;
 
-	std::string str("You do not have enough reagents to cast that spell.[ ");
+	string str("You do not have enough reagents to cast that spell.[ ");
 
 	if (fail.ash)	  str += "Sa ";
 	if (fail.drake)   str += "Mr ";
@@ -2002,27 +2002,27 @@ cPolymorphMenu::cPolymorphMenu( pChar pc ) : cIconListMenu()
 {
 	if ( ! pc ) return;
 	if ( pc->getTempfx( tempfx::tmpfxSpellPolymorph ) != NULL )
-		addIcon( 0x2106, 0, pc->getOldId(), std::string("Undo polymorph") );
-	addIcon( 0x20CF, 0, 0xd3, std::string("Black Bear") );
-	addIcon( 0x20DB, 0, 0xd4, std::string("Grizzly Bear") );
-	addIcon( 0x20E1, 0, 0xd5, std::string("Polar Bear") );
-	addIcon( 0x20D1, 0, 0xd0, std::string("Chicken") );
-	addIcon( 0x20D3, 0, 0x9, std::string("Daemon") );
-	addIcon( 0x20D8, 0, 0x2, std::string("Ettin") );
-	addIcon( 0x20D9, 0, 0x4, std::string("Gargoyle") );
-	addIcon( 0x20D6, 0, 0xc, std::string("Dragon") );
-	addIcon( 0x20C9, 0, 0x1d, std::string("Gorilla") );
-	addIcon( 0x20CA, 0, 0x23, std::string("Lizardman") );
-	addIcon( 0x20DF, 0, 0x1, std::string("Ogre") );
-	addIcon( 0x20D0, 0, 0xd7, std::string("Rat") );
-	addIcon( 0x20D4, 0, 0xed, std::string("Deer") );
-	addIcon( 0x20D7, 0, 0xe, std::string("Earth Elemental") );
-	addIcon( 0x20E7, 0, 0x32, std::string("Skeleton") );
-	addIcon( 0x2100, 0, 0x3a, std::string("Wisp") );
-	addIcon( 0x211F, 0, 0xc8, std::string("Horse") );
-	addIcon( 0x210B, 0, 0x10, std::string("Water Elemental") );
+		addIcon( 0x2106, 0, pc->getOldId(), string("Undo polymorph") );
+	addIcon( 0x20CF, 0, 0xd3, string("Black Bear") );
+	addIcon( 0x20DB, 0, 0xd4, string("Grizzly Bear") );
+	addIcon( 0x20E1, 0, 0xd5, string("Polar Bear") );
+	addIcon( 0x20D1, 0, 0xd0, string("Chicken") );
+	addIcon( 0x20D3, 0, 0x9, string("Daemon") );
+	addIcon( 0x20D8, 0, 0x2, string("Ettin") );
+	addIcon( 0x20D9, 0, 0x4, string("Gargoyle") );
+	addIcon( 0x20D6, 0, 0xc, string("Dragon") );
+	addIcon( 0x20C9, 0, 0x1d, string("Gorilla") );
+	addIcon( 0x20CA, 0, 0x23, string("Lizardman") );
+	addIcon( 0x20DF, 0, 0x1, string("Ogre") );
+	addIcon( 0x20D0, 0, 0xd7, string("Rat") );
+	addIcon( 0x20D4, 0, 0xed, string("Deer") );
+	addIcon( 0x20D7, 0, 0xe, string("Earth Elemental") );
+	addIcon( 0x20E7, 0, 0x32, string("Skeleton") );
+	addIcon( 0x2100, 0, 0x3a, string("Wisp") );
+	addIcon( 0x211F, 0, 0xc8, string("Horse") );
+	addIcon( 0x210B, 0, 0x10, string("Water Elemental") );
 
-	question = std::string( "Choose a creature" );
+	question = string( "Choose a creature" );
 }
 
 /*!
@@ -2034,7 +2034,7 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	if ( ! pc ) return;
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
-	std::map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
+	map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
 	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
 	pc->delTempfx( tempfx::tmpfxSpellStrength );
@@ -2106,18 +2106,18 @@ cCreateFoodMenu::cCreateFoodMenu( pChar pc ) : cIconListMenu()
 {
 	if ( ! pc ) return;
 
-	addIcon( 0x9D0, 0, xss::getIntFromDefine("$item_apples"), std::string("Apple") );
-	addIcon( 0x103C, 0, xss::getIntFromDefine("$item_bread_loaves"), std::string("Bread") );
-	addIcon( 0x97C, 0, xss::getIntFromDefine("$item_wedges_of_cheese"), std::string("Cheese") );
-	addIcon( 0x9F2, 0, xss::getIntFromDefine("$item_cuts_of_ribs"), std::string("Cut of ribs") );
-	addIcon( 0x97B, 0, xss::getIntFromDefine("$item_fish_steaks"), std::string("Fish steak") );
-	addIcon( 0x9D1, 0, xss::getIntFromDefine("$item_grape_bunches"), std::string("Grape bunch") );
-	addIcon( 0x9C9, 0, xss::getIntFromDefine("$item_hams"), std::string("Ham") );
-	addIcon( 0x9EA, 0, xss::getIntFromDefine("$item_muffins"), std::string("Muffin") );
-	addIcon( 0x9D2, 0, xss::getIntFromDefine("$item_peaches"), std::string("Peach") );
-	addIcon( 0x9C0, 0, xss::getIntFromDefine("$item_sausages"), std::string("Sausage") );
+	addIcon( 0x9D0, 0, xss::getIntFromDefine("$item_apples"), string("Apple") );
+	addIcon( 0x103C, 0, xss::getIntFromDefine("$item_bread_loaves"), string("Bread") );
+	addIcon( 0x97C, 0, xss::getIntFromDefine("$item_wedges_of_cheese"), string("Cheese") );
+	addIcon( 0x9F2, 0, xss::getIntFromDefine("$item_cuts_of_ribs"), string("Cut of ribs") );
+	addIcon( 0x97B, 0, xss::getIntFromDefine("$item_fish_steaks"), string("Fish steak") );
+	addIcon( 0x9D1, 0, xss::getIntFromDefine("$item_grape_bunches"), string("Grape bunch") );
+	addIcon( 0x9C9, 0, xss::getIntFromDefine("$item_hams"), string("Ham") );
+	addIcon( 0x9EA, 0, xss::getIntFromDefine("$item_muffins"), string("Muffin") );
+	addIcon( 0x9D2, 0, xss::getIntFromDefine("$item_peaches"), string("Peach") );
+	addIcon( 0x9C0, 0, xss::getIntFromDefine("$item_sausages"), string("Sausage") );
 
-	question = std::string( "Choose a food type" );
+	question = string( "Choose a food type" );
 }
 
 /*!
@@ -2129,7 +2129,7 @@ void cCreateFoodMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	if ( ! pc ) return;
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
-	std::map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
+	map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
 	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
 	item::CreateFromScript( data, pc->getBackpack() );
@@ -2144,21 +2144,21 @@ cSummonCreatureMenu::cSummonCreatureMenu( pChar pc ) : cIconListMenu()
 {
 	if ( ! pc ) return;
 
-	addIcon( 0x211E, 0, xss::getIntFromDefine("$npc_a_brown_bear"), std::string("Bear") );
-	addIcon( 0x211A, 0, xss::getIntFromDefine("$npc_forest_bird"), std::string("Bird") );
-	addIcon( 0x20EF, 0, xss::getIntFromDefine("$npc_a_bull"), std::string("Bull") );
-	addIcon( 0x211B, 0, xss::getIntFromDefine("$npc_a_cat"), std::string("Cat") );
-	addIcon( 0x20D1, 0, xss::getIntFromDefine("$npc_a_chicken"), std::string("Chicken") );
-	addIcon( 0x2102, 0, xss::getIntFromDefine("$npc_a_cougar"), std::string("Cougar") );
-	addIcon( 0x2103, 0, xss::getIntFromDefine("$npc_a_cow"), std::string("Cow") );
-	addIcon( 0x20D5, 0, xss::getIntFromDefine("$npc_a_dog"), std::string("Dog") );
-	addIcon( 0x20F5, 0, xss::getIntFromDefine("$npc_a_gorilla"), std::string("Gorilla") );
-	addIcon( 0x2124, 0, xss::getIntFromDefine("$npc_a_horse"), std::string("Horse") );
-	addIcon( 0x20F6, 0, xss::getIntFromDefine("$npc_a_llama"), std::string("Lama") );
-	addIcon( 0x2125, 0, xss::getIntFromDefine("$npc_a_rabbit"), std::string("Rabbit") );
-	addIcon( 0x2108, 0, xss::getIntFromDefine("$npc_a_sheep"), std::string("Sheep") );
+	addIcon( 0x211E, 0, xss::getIntFromDefine("$npc_a_brown_bear"), string("Bear") );
+	addIcon( 0x211A, 0, xss::getIntFromDefine("$npc_forest_bird"), string("Bird") );
+	addIcon( 0x20EF, 0, xss::getIntFromDefine("$npc_a_bull"), string("Bull") );
+	addIcon( 0x211B, 0, xss::getIntFromDefine("$npc_a_cat"), string("Cat") );
+	addIcon( 0x20D1, 0, xss::getIntFromDefine("$npc_a_chicken"), string("Chicken") );
+	addIcon( 0x2102, 0, xss::getIntFromDefine("$npc_a_cougar"), string("Cougar") );
+	addIcon( 0x2103, 0, xss::getIntFromDefine("$npc_a_cow"), string("Cow") );
+	addIcon( 0x20D5, 0, xss::getIntFromDefine("$npc_a_dog"), string("Dog") );
+	addIcon( 0x20F5, 0, xss::getIntFromDefine("$npc_a_gorilla"), string("Gorilla") );
+	addIcon( 0x2124, 0, xss::getIntFromDefine("$npc_a_horse"), string("Horse") );
+	addIcon( 0x20F6, 0, xss::getIntFromDefine("$npc_a_llama"), string("Lama") );
+	addIcon( 0x2125, 0, xss::getIntFromDefine("$npc_a_rabbit"), string("Rabbit") );
+	addIcon( 0x2108, 0, xss::getIntFromDefine("$npc_a_sheep"), string("Sheep") );
 
-	question = std::string( "Choose a creature" );
+	question = string( "Choose a creature" );
 }
 
 /*!
@@ -2170,7 +2170,7 @@ void cSummonCreatureMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	if ( ! pc ) return;
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
-	std::map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
+	map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
 	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
 	sLocation pos = pc->getPosition();

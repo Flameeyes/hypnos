@@ -67,15 +67,15 @@ protected:
 	int fd;		//!< Descriptor of the mmapped file
 	uint16_t recSize;//!< Size of a single mmapped record
 #ifdef WIN32
-	std::string fn;	//!< Name of the file (needed for Windows mmapping)
+	string fn;	//!< Name of the file (needed for Windows mmapping)
 #endif
 	
 public:
 	cMMappedFile(uint16_t recordsize = 1);
-	cMMappedFile(uint16_t recordsize, std::string filename, uint32_t offset = 0, uint32_t length = 0);
+	cMMappedFile(uint16_t recordsize, string filename, uint32_t offset = 0, uint32_t length = 0);
 	virtual ~cMMappedFile();
 	
-	void open(std::string filename);
+	void open(string filename);
 	void mmap(uint32_t offset = 0, uint32_t length = 0);
 	
 	uint32_t getSize() const

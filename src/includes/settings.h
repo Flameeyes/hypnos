@@ -38,11 +38,11 @@ namespace nSettings {
 	\brief Server related settings
 	*/
 	namespace Server {
-		std::string getLocalHostname();		//!< Gets the server local's hostname to bind the socket to [Default: localhost]
-		std::string getLocalPort();		//!< Gets the server local's port to bind the socket to [Default: 2593]
-		std::string getRACPort();		//!< Gets the server local's port to bind the socket of rac to [Default: 2594]
+		string getLocalHostname();		//!< Gets the server local's hostname to bind the socket to [Default: localhost]
+		string getLocalPort();		//!< Gets the server local's port to bind the socket to [Default: 2593]
+		string getRACPort();		//!< Gets the server local's port to bind the socket of rac to [Default: 2594]
 		
-		std::string getMULFilesPath();		//!< Gets the path for mul files to load.
+		string getMULFilesPath();		//!< Gets the path for mul files to load.
 	
 		bool isEnabledBookSystem();		//!< Is the book system enabled? [Default: true]
 		bool isEnabledTradeSystem();		//!< Is the trade system enabled? [Default: true]
@@ -155,7 +155,7 @@ namespace nSettings {
 	
 	//! Log system settings
 	namespace Logging {
-		std::string getLogPath();		//!< Gets the absolute path of the logs directory
+		string getLogPath();		//!< Gets the absolute path of the logs directory
 	}
 	
 	//! Jails related stuff

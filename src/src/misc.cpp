@@ -719,7 +719,7 @@ Central coords for standard map are 1323,1624 (LB's throne) for Sosaria and 5936
 T2A.
 New maps can redefine these values.
 */
-std::string getSextantCoords(sPoint p, sPoint center)
+string getSextantCoords(sPoint p, sPoint center)
 {
 	float Tx, Ty, Dx, Dy, Wx, Wy, Mx, My, Hx, Hy;
 	
@@ -890,7 +890,7 @@ bool isWaterTile(sPoint pt)
 	try {
 		for( register int i = 0; i < s.size(); i++ )
 		{
-			std::string tilename = tiledataStatic->getName( s[i].id );
+			string tilename = tiledataStatic->getName( s[i].id );
 			
 			if ( strstr( tilename.c_str(), "water" ) || strstr( tilename.c_str(), "water" ) )
 				return true;

@@ -15,7 +15,7 @@
 #include <mxml.h>
 
 namespace nMOTD {
-	static std::string motd;	//!< Message of the day
+	static string motd;	//!< Message of the day
 	static stringVector tips;	//!< Tips for the players
 }
 
@@ -28,7 +28,7 @@ void nMOTD::loadMOTD()
 
 	outPlain("Loading MOTD and Tips data...\t\t");
 	
-	std::ifstream xmlfile("config/motd.xml");
+	ifstream xmlfile("config/motd.xml");
 	try {
 		MXML::Document doc(xmlfile);
 		
@@ -64,7 +64,7 @@ void nMOTD::loadMOTD()
 \brief Gets the Message of the Day for the server
 \return The string load from motd.xml
 */
-const std::string &nMOTD::getMOTD()
+const string &nMOTD::getMOTD()
 {
 	return motd;
 }
@@ -74,7 +74,7 @@ const std::string &nMOTD::getMOTD()
 \param index Index of the tip to get
 \return The index-tip load from motd.xml
 */
-const std::string &nMOTD::getTip(uint16_t index)
+const string &nMOTD::getTip(uint16_t index)
 {
 	return tips[index];
 }

@@ -41,7 +41,7 @@ void nJails::loadJails()
 
 	outPlain("Loading jails data...\t\t");
 	
-	std::ifstream xmlfile("config/jails.xml");
+	ifstream xmlfile("config/jails.xml");
 	try {
 		MXML::Document doc(xmlfile);
 
@@ -238,7 +238,7 @@ static void nJails::release(pPC pc)
 	
 	pc->setJail(NULL, NULL);
 	
-	PCList::iterator it = std::find(jailedPlayers.begin(), jailedPlayers.end(), pc);
+	PCList::iterator it = find(jailedPlayers.begin(), jailedPlayers.end(), pc);
 	if ( it != jailedPlayers.end() )
 		jailedPlayers.erase(it);
 	
@@ -275,7 +275,7 @@ static void nJails::release(pAccount acc)
 	if ( acc->currClient() )
 		acc->currClient()->sysmessage("You're now free");
 	
-	AccountList::iterator it = std::find(jailedAccounts.begin(), jailedAccounts.end(), acc);
+	AccountList::iterator it = find(jailedAccounts.begin(), jailedAccounts.end(), acc);
 	if ( it != jailedAccounts.end() )
 		jailedAccounts.erase(it);
 }

@@ -49,7 +49,7 @@ This class takes also to parse the party commands from the 0xBF/0x06 packet.
 class cParty {
 protected:
 	//! Singly-linked list of parties
-	typedef std::slist<pParty> PartySList; 
+	typedef slist<pParty> PartySList; 
 	
 	static PartySList parties;	//!< List of all parties formed in the
 					//!< Server
@@ -77,7 +77,7 @@ protected:
 		bool operator ==(pPC pc)
 		{ return pc == player; }
 	};
-	typedef std::slist<sPartyMember> MemberSList;
+	typedef slist<sPartyMember> MemberSList;
 public:
 	static void deleteParties();
 	static void executeCommand(pClient, const uint8_t *buffer, uint16_t size);

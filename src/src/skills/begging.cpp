@@ -14,7 +14,7 @@
 
 uint32_t Begging::timer;
 uint32_t Begging::range;
-std::string Begging::text[3];
+string Begging::text[3];
 
 void Begging::initialize()
 {

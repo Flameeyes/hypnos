@@ -185,7 +185,7 @@ void cHouse::killKeys()
 \note Socket and pc checking already done in cClient::talking() so here we
 	assert them
 */
-bool cHouse::doSpeech(pClient client, const std::string &speech)
+bool cHouse::doSpeech(pClient client, const string &speech)
 {
 	assert(client); assert(client->currChar());
 	pPC pc = client->currChar();

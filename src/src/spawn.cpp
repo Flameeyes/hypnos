@@ -247,8 +247,8 @@ void cSpawns::loadFromScript()
 {
 
 	cScpIterator*	iter = NULL;
-	std::string script1;
-	std::string script2;
+	string script1;
+	string script2;
 
 	int idxspawn=0;
 

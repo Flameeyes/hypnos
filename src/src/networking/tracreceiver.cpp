@@ -12,7 +12,13 @@
 #include "networking/tracreceiver.h"
 #include "networking/tkiller.h"
 #include "networking/exception.h"
-#include <sstream>
+
+#ifdef HAVE_SSTREAM
+	#include <sstream>
+	using std::ostringstream;
+#elif HAVE_SSTREAM_H
+	#include <sstream.h>
+#endif
 
 /*!
 \brief Constructor for tRACReceiver thread
@@ -57,7 +63,7 @@ void *tRACReceiver::run()
 			
 			sock->send("# ", 2);
 			
-			std::ostringstream sout;
+			ostringstream sout;
 			nAdminCommands::parseCommand(sock->recvLine(), sout);
 			
 			sock->send(sout.str(), sout.str().lenght());
@@ -118,11 +124,11 @@ void tRACReceiver::doLogin()
 	     "Login: ",
 	     strVersion, getOSVersionString().c_str(), strDevelopers);
 
-	std::string loginName = sock->recvLine();
+	string loginName = sock->recvLine();
 	
 	outf("Password: ");
 	
-	std::string loginPass = sock->recvLine();
+	string loginPass = sock->recvLine();
 	
 	if ( !Accounts->AuthenticateRAS(loginName, loginPass) )
 	{

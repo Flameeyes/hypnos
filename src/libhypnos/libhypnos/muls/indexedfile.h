@@ -27,7 +27,7 @@ protected:
 	cData *getArray() const
 	{ return reinterpret_cast<cData*>(file.getArray()); }
 public:
-	tplIndexFile(std::string filename)
+	tplIndexFile(string filename)
 		: file(sizeof(cData), filename)
 	{ }
 	
@@ -76,7 +76,7 @@ protected:
 	cMMappedFile file;
 	tplIndexFile<cData> *idx;	//!< Index file to use
 public:
-	tplIndexedFile(tplIndexFile<cData> *aIdx, std::string filename)
+	tplIndexedFile(tplIndexFile<cData> *aIdx, string filename)
 		: file(1, filename), idx(aIdx)
 	{ }
 	

@@ -130,7 +130,7 @@ public:
 		uint16_t getTextureID() const
 		{ return mtohs(textId); }
 		
-		std::string getName() const;
+		string getName() const;
 	} PACK_NEEDED;
 
 	uint32_t unknown;
@@ -161,7 +161,7 @@ protected:
 	{ return reinterpret_cast<cTiledataLand *>(file.getArray()); }
 public:
 	fTiledataLand();
-	fTiledataLand(const std::string &filename);
+	fTiledataLand(const string &filename);
 	~fTiledataLand();
 	
 	uint32_t getFlags(uint16_t id) const
@@ -174,7 +174,7 @@ public:
 		return tile(id).getTextureID();
 	}
 	
-	std::string getName(uint16_t id) const
+	string getName(uint16_t id) const
 	{
 		return tile(id).getName();
 	}
@@ -240,7 +240,7 @@ public:
 		uint8_t getHeight() const
 		{ return height; }
 		
-		std::string getName() const;
+		string getName() const;
 	} PACK_NEEDED;
 	
 	uint32_t unknown;
@@ -273,7 +273,7 @@ protected:
 	{ return reinterpret_cast<cTiledataStatic *>(file.getArray()); }
 public:
 	fTiledataStatic();
-	fTiledataStatic(const std::string &);
+	fTiledataStatic(const string &);
 	~fTiledataStatic();
 	
 	uint32_t getFlags(uint16_t id) const
@@ -294,7 +294,7 @@ public:
 	uint8_t getHeight(uint16_t id) const
 	{ return tile(id).getHeight(); }
 	
-	std::string getName(uint16_t id) const
+	string getName(uint16_t id) const
 	{ return tile(id).getName(); }
 };
 

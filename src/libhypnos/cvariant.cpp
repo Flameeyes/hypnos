@@ -71,7 +71,7 @@ void cVariant::clear()
 	switch(assignedType)
 	{
 	case vtString:
-		delete reinterpret_cast<std::string*>(pointer);
+		delete reinterpret_cast<string*>(pointer);
 		pointer = NULL;
 		break;
 	
@@ -148,10 +148,10 @@ void cVariant::clear()
 \return A reference to the instance itself
 \note This method create a new pointer instance
 */
-cVariant &cVariant::operator =(const std::string &astr)
+cVariant &cVariant::operator =(const string &astr)
 {
 	clear();
-	pointer = new std::string(astr);
+	pointer = new string(astr);
 
 	assignedType = vtString;
 	integerSize = isNotInt;
@@ -314,7 +314,7 @@ cVariant cVariant::operator +(const cVariant &param) const
 	case vtNull:
 		return param;
 	case vtString:
-		return cVariant(std::string(*this) + std::string(param));
+		return cVariant(string(*this) + string(param));
 	case vtUInt:
 		return cVariant(uint64_t(*this) + uint64_t(param));
 	case vtSInt:
@@ -366,7 +366,7 @@ bool cVariant::operator ==(const cVariant &param) const
 	case vtSInt:
 		return int64_t(*this) == int64_t(param);
 	case vtString:
-		return std::string(*this) == std::string(param);
+		return string(*this) == string(param);
 	case vtPVoid:
 	case vtPChar:
 	case vtPItem:
@@ -386,7 +386,7 @@ bool cVariant::operator <(const cVariant &param) const
 	case vtSInt:
 		return int64_t(*this) < int64_t(param);
 	case vtString:
-		return strcmp( std::string(*this).c_str(), std::string(param).c_str()) < 0;
+		return strcmp( string(*this).c_str(), string(param).c_str()) < 0;
 	default:
 		return false;
 	}
@@ -401,7 +401,7 @@ bool cVariant::operator >(const cVariant &param) const
 		case vtSInt:
 			return int64_t(*this) > int64_t(param);
 		case vtString:
-			return strcmp( std::string(*this).c_str(), std::string(param).c_str()) > 0;
+			return strcmp( string(*this).c_str(), string(param).c_str()) > 0;
 		default:
 			return false;
 	}
@@ -410,7 +410,7 @@ bool cVariant::operator >(const cVariant &param) const
 bool cVariant::convertInString()
 {
 	bool conv;
-	std::string temp = toString(&conv);
+	string temp = toString(&conv);
 	
 	if ( ! conv )
 		return false;
@@ -515,13 +515,13 @@ converted in \em truc or \em false strings. \b Pointers value are converted to
 strings as defined by %p format of printf. \b Null values are returned as
 \em [nil] string.
 */
-std::string cVariant::toString(bool *result) const
+string cVariant::toString(bool *result) const
 {
 	if ( result ) *result = true;
 	switch( assignedType )
 	{
 	case vtString:
-		return *(reinterpret_cast<std::string*>(pointer));
+		return *(reinterpret_cast<string*>(pointer));
 	case vtSInt:
 	{
 		char *tmp;
@@ -542,7 +542,7 @@ std::string cVariant::toString(bool *result) const
 		
 		throw_if_not_int
 		}
-		std::string ret(tmp);
+		string ret(tmp);
 		free(tmp);
 		return ret;
 	}
@@ -566,12 +566,12 @@ std::string cVariant::toString(bool *result) const
 		
 		throw_if_not_int
 		}
-		std::string ret(tmp);
+		string ret(tmp);
 		free(tmp);
 		return ret;
 	}
 	case vtBoolean:
-		return *(reinterpret_cast<bool*>(pointer)) ? std::string("true") : std::string("false");
+		return *(reinterpret_cast<bool*>(pointer)) ? string("true") : string("false");
 	
 	case vtPChar:
 	case vtPItem:
@@ -580,15 +580,15 @@ std::string cVariant::toString(bool *result) const
 		{
 			char *tmp;
 			asprintf(&tmp, "%p", pointer);
-			std::string ret(tmp);
+			string ret(tmp);
 			free(tmp);
 			return ret;
 		}
 	case vtNull:
-		return std::string("[nil]");
+		return string("[nil]");
 	default:
 		if ( result ) *result = false;
-		return std::string("[Undefined]");
+		return string("[Undefined]");
 	}
 }
 
@@ -634,8 +634,8 @@ bool cVariant::toBoolean(bool *result) const
 	case vtPVoid:
 		return pointer;
 	case vtString:
-		if ( *(reinterpret_cast<std::string*>(pointer)) == "true" ) return true;
-		if ( *(reinterpret_cast<std::string*>(pointer)) == "false" ) return false;
+		if ( *(reinterpret_cast<string*>(pointer)) == "true" ) return true;
+		if ( *(reinterpret_cast<string*>(pointer)) == "false" ) return false;
 	default:
 		// If not true or false
 		if ( result ) *result = false;
@@ -708,8 +708,8 @@ uint64_t cVariant::toUInt64(bool *result) const
 	case vtString:
 	{
 		char *end;
-		uint64_t tmp = strtoull( (*reinterpret_cast<std::string*>(pointer)).c_str(), &end, 0);
-		if ( end == (*reinterpret_cast<std::string*>(pointer)).c_str() )
+		uint64_t tmp = strtoull( (*reinterpret_cast<string*>(pointer)).c_str(), &end, 0);
+		if ( end == (*reinterpret_cast<string*>(pointer)).c_str() )
 		{
 			if ( result ) *result = false;
 			return 0;
@@ -766,8 +766,8 @@ uint32_t cVariant::toUInt32(bool *result) const
 	case vtString:
 	{
 		char *end;
-		uint32_t tmp = strtoul( (*reinterpret_cast<std::string*>(pointer)).c_str(), &end, 0);
-		if ( end == (*reinterpret_cast<std::string*>(pointer)).c_str() )
+		uint32_t tmp = strtoul( (*reinterpret_cast<string*>(pointer)).c_str(), &end, 0);
+		if ( end == (*reinterpret_cast<string*>(pointer)).c_str() )
 		{
 			if ( result ) *result = false;
 			return 0;
@@ -830,8 +830,8 @@ uint16_t cVariant::toUInt16(bool *result) const
 	case vtString:
 	{
 		char *end;
-		uint32_t tmp = strtoul( (*reinterpret_cast<std::string*>(pointer)).c_str(), &end, 0);
-		if ( end == (*reinterpret_cast<std::string*>(pointer)).c_str() )
+		uint32_t tmp = strtoul( (*reinterpret_cast<string*>(pointer)).c_str(), &end, 0);
+		if ( end == (*reinterpret_cast<string*>(pointer)).c_str() )
 		{
 			if ( result ) *result = false;
 			return 0;
@@ -904,8 +904,8 @@ uint8_t cVariant::toUInt8(bool *result) const
 	case vtString:
 	{
 		char *end;
-		uint32_t tmp = strtoul( (*reinterpret_cast<std::string*>(pointer)).c_str(), &end, 0);
-		if ( end == (*reinterpret_cast<std::string*>(pointer)).c_str() )
+		uint32_t tmp = strtoul( (*reinterpret_cast<string*>(pointer)).c_str(), &end, 0);
+		if ( end == (*reinterpret_cast<string*>(pointer)).c_str() )
 		{
 			if ( result ) *result = false;
 			return 0;
@@ -984,8 +984,8 @@ int64_t cVariant::toSInt64(bool *result) const
 	case vtString:
 	{
 		char *end;
-		uint64_t tmp = strtoll( (*reinterpret_cast<std::string*>(pointer)).c_str(), &end, 0);
-		if ( end == (*reinterpret_cast<std::string*>(pointer)).c_str() )
+		uint64_t tmp = strtoll( (*reinterpret_cast<string*>(pointer)).c_str(), &end, 0);
+		if ( end == (*reinterpret_cast<string*>(pointer)).c_str() )
 		{
 			if ( result ) *result = false;
 			return 0;
@@ -1045,8 +1045,8 @@ int32_t cVariant::toSInt32(bool *result) const
 	case vtString:
 	{
 		char *end;
-		uint64_t tmp = strtol( (*reinterpret_cast<std::string*>(pointer)).c_str(), &end, 0);
-		if ( end == (*reinterpret_cast<std::string*>(pointer)).c_str() )
+		uint64_t tmp = strtol( (*reinterpret_cast<string*>(pointer)).c_str(), &end, 0);
+		if ( end == (*reinterpret_cast<string*>(pointer)).c_str() )
 		{
 			if ( result ) *result = false;
 			return 0;
@@ -1112,8 +1112,8 @@ int16_t cVariant::toSInt16(bool *result) const
 	case vtString:
 	{
 		char *end;
-		uint64_t tmp = strtol( (*reinterpret_cast<std::string*>(pointer)).c_str(), &end, 0);
-		if ( end == (*reinterpret_cast<std::string*>(pointer)).c_str() )
+		uint64_t tmp = strtol( (*reinterpret_cast<string*>(pointer)).c_str(), &end, 0);
+		if ( end == (*reinterpret_cast<string*>(pointer)).c_str() )
 		{
 			if ( result ) *result = false;
 			return 0;
@@ -1186,8 +1186,8 @@ int8_t cVariant::toSInt8(bool *result) const
 	case vtString:
 	{
 		char *end;
-		uint64_t tmp = strtol( (*reinterpret_cast<std::string*>(pointer)).c_str(), &end, 0);
-		if ( end == (*reinterpret_cast<std::string*>(pointer)).c_str() )
+		uint64_t tmp = strtol( (*reinterpret_cast<string*>(pointer)).c_str(), &end, 0);
+		if ( end == (*reinterpret_cast<string*>(pointer)).c_str() )
 		{
 			if ( result ) *result = false;
 			return 0;

@@ -68,13 +68,13 @@ using namespace nLibhypnos;
 \param filename Relative path of the file to check
 \return true if the file exists, else false
 */
-bool fileExists(std::string filename);
+bool fileExists(string filename);
 
 /*!
 \brief Check if the directory of the given file exists, and if not, create it
 \param dirname Relative path of the file to check the directory of
 \return false if unable to create the directory, else true
 */
-bool ensureDirectory(std::string filename);
+bool ensureDirectory(string filename);
 
 #endif //__COMMON_LIBS_H__

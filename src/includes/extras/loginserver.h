@@ -31,14 +31,14 @@ namespace nLoginServer {
 	clients can connect to after had their account authenticated.
 	*/
 	struct sServer {
-		std::string title;	//!< Title of the server
-		std::string hostname;	//!< Hostname of the server
+		string title;	//!< Title of the server
+		string hostname;	//!< Hostname of the server
 		uint16_t port;		//!< TCP/IP port of the server
 		
 		uint32_t getIPAddress() const;
 	};
 	
-	typedef std::vector<sServer> ServerVector;	//!< Vector of server (type)
+	typedef vector<sServer> ServerVector;	//!< Vector of server (type)
 	
 	extern ServerVector servers;	//!< Servers which clients can login to
 	

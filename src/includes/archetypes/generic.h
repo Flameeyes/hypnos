@@ -26,10 +26,10 @@ XML datafile identifier (a string).
 */
 
 	pItem createItem(uint16_t baseid);
-	pItem createItem(std::string id);
+	pItem createItem(string id);
 	
-	pPC createPlayer(std::string id);
-	pNPC createCharacter(std::string id);
+	pPC createPlayer(string id);
+	pNPC createCharacter(string id);
 
 //@}
 };

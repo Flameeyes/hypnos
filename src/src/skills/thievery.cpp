@@ -225,7 +225,7 @@ void Skills::target_stealing( pClient client, pTarget t )
 	if ( victim->IsInnocent() && thief->attackerserial != victim->getSerial() && Guilds->Compare(thief,victim)==0)
 		thief->setCrimGrey( nSettings::Reputation::getStealAction() ); //Blue and not attacker and not same guild
 
-	std::string itmname;
+	string itmname;
 	
 	if ( pi->getCurrentName().length() )
 		itmname = pi->getCurrentName();
@@ -409,7 +409,7 @@ void Skills::target_randomSteal( pClient client, pTarget t )
 	if (victim->IsInnocent() && thief->attackerserial!=victim->getSerial() && Guilds->Compare(thief,victim)==0)//AntiChrist
 		thief->setCrimGrey( nSettings::Reputation::getStealAction() ); //Blue and not attacker and not guild
 
-	std::string itmname = pi->getRealName();
+	string itmname = pi->getRealName();
 
 	if (dynamic_cast<pNPC>(victim))
 		victim->talkAll( "Guards!! A thief is amoung us!",0);

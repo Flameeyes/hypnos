@@ -17,7 +17,7 @@
 
 class cGMPage {
 public:
-	cGMPage(pPC pc, std::string &pageReason, bool onlyGM = false);
+	cGMPage(pPC pc, string &pageReason, bool onlyGM = false);
 	cGMPage(pGMPage old);
 	~cGMPage();
 	
@@ -30,7 +30,7 @@ public:
 	inline bool getGMOnly() const
 	{ return gm; }
 	
-	inline std::string getReason() const
+	inline string getReason() const
 	{ return reason; }
 	
 	void moveToCaller();
@@ -39,7 +39,7 @@ public:
 	static pGMPage findPage(pClient handler);
 	static void showQueue(pClient viewer);
 protected:
-	std::string reason;		//!< Reason of the page (from the user)
+	string reason;		//!< Reason of the page (from the user)
 	pPC caller;			//!< Player who requested the page
 	pClient handler;		//!< GM who's responding at the page
 	bool gm;			//!< If trye is only for GM, else is in main queue

@@ -31,8 +31,8 @@ class cMessage : public cItem
 friend class nPackets::Sent::BBoardCommand;
 protected:
 	pPC poster;		//!< Poster pc, NULL if autoposted
-	std::string subject;	//!< Subject of message (title)
-	std::string body;	//!< body of message
+	string subject;	//!< Subject of message (title)
+	string body;	//!< body of message
 	time_t posttime;	//!< time of posting
 	PostType availability;  //!< local/regional/general post
 	QuestType qtype;	//!< type of quest
@@ -45,7 +45,7 @@ public:
 	cMessage(uint32_t serial, pMsgBoard board);
 	~cMessage();
 	
-	std::string getTimeString();
+	string getTimeString();
 	
 	bool isExpired();	//!< expiration time check & delete. Returns true if post has been deleted for reaching expiration time
 	void refreshQuestMessage();

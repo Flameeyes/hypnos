@@ -24,7 +24,7 @@ checks if player has enough regs for selected potion and delets them
 
 \note DoPotion() should check client and character, so we here will assert them
 */
-static bool DoOnePotion(pClient client, uint16_t regid, uint16_t regamount, std::string regname)
+static bool DoOnePotion(pClient client, uint16_t regid, uint16_t regamount, string regname)
 {
 	pChar pc = NULL;
 	assert(client);
@@ -276,8 +276,8 @@ void nSkills::PotionToBottle( pPC pc, pItem pi_mortar )
 	}
 	
 	pi = nArchetypes::createItem(
-		std::string( potionMainTypes[pi_mortar->more1.moreb1] ) +
-		std::string( potionGrades[pi_mortar->more1.moreb2] )
+		string( potionMainTypes[pi_mortar->more1.moreb1] ) +
+		string( potionGrades[pi_mortar->more1.moreb2] )
 		);
 	
 	if ( ! pi ) return;

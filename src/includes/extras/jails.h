@@ -35,7 +35,7 @@ namespace nJails {
 	{
 	protected:
 		pPC author;
-		std::string reason;
+		string reason;
 		uint32_t releasetime;
 	public:
 		//! Gets the jail's author
@@ -43,14 +43,14 @@ namespace nJails {
 		{ return author; }
 		
 		//! Gets the jail's reason
-		inline const std::string &getReason() const
+		inline const string &getReason() const
 		{ return reason; }
 		
 		//! Gets the jail's release time
 		inline uint32_t getReleaseTime() const
 		{ return releasetime; }
 		
-		cJailInfo(pPC auth, std::string &reas, uint32_t release) :
+		cJailInfo(pPC auth, string &reas, uint32_t release) :
 			author(auth), reason(reas), releasetime(release)
 		{ }
 	};

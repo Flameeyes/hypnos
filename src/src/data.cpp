@@ -23,14 +23,14 @@ uint16_t map_height = 512;
 
 namespace data {
 
-std::vector < cMULFile< map_st >* > maps; // Maps (map0.mul map1.mul...)
+vector < cMULFile< map_st >* > maps; // Maps (map0.mul map1.mul...)
 cMULFile< staticIdx_st >* staticIdx; // staidx0.mul
 cMULFile< static_st >* statics; // statics.mul
 
-static std::string map_path;
-static std::string staIdx_path;
-static std::string statics_path;
-static std::string tiledata_path;
+static string map_path;
+static string staIdx_path;
+static string statics_path;
+static string tiledata_path;
 
 /*!
 \author Luxor
@@ -44,7 +44,7 @@ static void cacheMap()
 		if ( !maps[i]->isReady() )
 			continue;
 		map_st m;
-		std::map< uint32_t, map_st > *map_cache = new std::map< uint32_t, map_st >;
+		map< uint32_t, map_st > *map_cache = new map< uint32_t, map_st >;
 		outPlain( "\nCaching map %i data ( map0.mul )\t\t", i );
 		uint16_t blockX;
 		uint8_t xOffset;
@@ -87,10 +87,10 @@ static void cacheStatics()
 		return;
 
 	static_st s;
-	std::map< uint32_t, static_st > *statics_cache = new std::map< uint32_t, static_st >;
+	map< uint32_t, static_st > *statics_cache = new map< uint32_t, static_st >;
 
 	staticIdx_st staidx;
-	std::map< uint32_t, staticIdx_st > *staidx_cache = new std::map< uint32_t, staticIdx_st >;
+	map< uint32_t, staticIdx_st > *staidx_cache = new map< uint32_t, staticIdx_st >;
 
 	uint16_t blockX;
 	int16_t blockY;
@@ -175,7 +175,7 @@ void shutdown()
 /*!
 \author Luxor
 */
-void setPath( MulFileId id, std::string path )
+void setPath( MulFileId id, string path )
 {
 	switch ( id )
 	{
@@ -196,7 +196,7 @@ void setPath( MulFileId id, std::string path )
 /*!
 \author Luxor
 */
-std::string getPath( MulFileId id )
+string getPath( MulFileId id )
 {
 	switch ( id )
 	{
@@ -212,7 +212,7 @@ std::string getPath( MulFileId id )
 		default:
 			break;
 	}
-	return std::string( " " );
+	return string( " " );
 }
 
 

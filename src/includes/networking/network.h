@@ -43,7 +43,7 @@ class cNetwork
 
 	private:
 
-		std::vector<ip_block_st> hosts_deny;
+		vector<ip_block_st> hosts_deny;
 
 		void DoStreamCode(pClient client);
 		int  Pack(void *pvIn, void *pvOut, int len);

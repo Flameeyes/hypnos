@@ -45,7 +45,7 @@ public:
 \name Static members and Typedefs
 */
 	//! List of pages (vector of vectors of strings)
-	typedef std::vector< stringVector > tpages;
+	typedef vector< stringVector > tpages;
 //@}
 	
 
@@ -82,25 +82,25 @@ public:
 	void changePages(char *packet, uint16_t p, uint16_t l, uint16_t s);
 
 	//! Returns the author of the book
-	inline std::string getAuthor() const
+	inline string getAuthor() const
 	{ return author; }
 	
 	/*!
 	\brief Change the book author
 	\param auth new author of the book
 	*/
-	inline void setAuthor(std::string auth)
+	inline void setAuthor(string auth)
 	{ author = auth; }
 	
 	//! Returns the title of the book
-	inline std::string getTitle() const
+	inline string getTitle() const
 	{ return title; }
 	
 	/*!
 	\brief Change the book title
 	\param titl new title of the book
 	*/
-	void setTitle(std::string titl)
+	void setTitle(string titl)
 	{ title = titl; }
 
 	//! Passes the pages of the book
@@ -121,8 +121,8 @@ public:
 	{ return pages.size(); }
 
 protected:
-	std::string author;		//!< author of the book
-	std::string title;		//!< title of the book
+	string author;		//!< author of the book
+	string title;		//!< title of the book
 	tpages pages;			//!< pages of the book
 };
 

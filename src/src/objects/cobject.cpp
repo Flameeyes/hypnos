@@ -11,12 +11,12 @@
 #include "inlines.h"
 #include "misc.h"
 
-std::string cObject::getRandomScriptValue( std::string section, std::string& sectionId )
+string cObject::getRandomScriptValue( string section, string& sectionId )
 {
-	std::string 	script1;
+	string 	script1;
 	int 		i	= 0,
 			j	= 0;
-	std::string	value;
+	string	value;
 
 	cScpIterator*	iter	= getScriptIterator( section, sectionId );
 	if (iter == 0)

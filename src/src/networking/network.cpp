@@ -97,7 +97,7 @@ void cNetwork::LoginMain(pClient client)
 				return;
 			} else {
 				// Auto create is enable, let's create the new account.
-				std::string dummylogin = (char*)&buffer[s][1], dummypass = (char*)&buffer[s][31];
+				string dummylogin = (char*)&buffer[s][1], dummypass = (char*)&buffer[s][31];
 
 				// Let's check if password isn't blank:
 				if (dummypass.empty())

@@ -13,14 +13,14 @@
 namespace nLibhypnos {
 namespace nMULFiles {
 
-	static std::string mulPath;
+	static string mulPath;
 	
-	void setMULpath(std::string path)
+	void setMULpath(string path)
 	{
 		mulPath = path;
 	}
 	
-	std::string getMULpath()
+	string getMULpath()
 	{
 		return mulPath;
 	}

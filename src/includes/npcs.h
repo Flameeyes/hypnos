@@ -89,7 +89,7 @@ class cCreatureInfo {
 
 private:
 
-	std::vector<uint16_t>* sounds[ALL_MONSTER_SOUND];
+	vector<uint16_t>* sounds[ALL_MONSTER_SOUND];
 
 public:
 

@@ -465,13 +465,13 @@ namespace Skills {
 
 namespace Logging {
 	//! Gets the absolute path of the logs directory
-	SETTING(std::string, LogPath, "");
+	SETTING(string, LogPath, "");
 	
 	void load(MXML::Node *s)
 	{
 		MXML::Node *n = s->child();
 		do {
-			XMLSETTING(LogPath, std::string, String)
+			XMLSETTING(LogPath, string, String)
 			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
 			n = n->next();
 		} while(n);
@@ -497,7 +497,7 @@ namespace Jails {
 void nSettings::load()
 {
 	//! \todo Need do define a better way to find out the default settings file.
-	std::ifstream xmlfile("xmls/settings.xml");
+	ifstream xmlfile("xmls/settings.xml");
 	
 	try {
 		MXML::Document doc(xmlfile);

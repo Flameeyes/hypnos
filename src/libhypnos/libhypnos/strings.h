@@ -27,21 +27,21 @@ more of them.
 
 namespace nLibhypnos {
 
-inline std::string toString(int value)
+inline string toString(int value)
 {
 	char *s;
 	asprintf(&s, "%d", value);
-	std::string ret(s);
+	string ret(s);
 	free(s);
 	
 	return ret;
 }
 
-inline std::string toString(double value)
+inline string toString(double value)
 {
 	char *s;
 	asprintf(&s, "%f", value);
-	std::string ret(s);
+	string ret(s);
 	free(s);
 	
 	return ret;
@@ -74,21 +74,9 @@ static const int baseHex = 16;
 \param base base in which the number is (see Bases)
 \return the number represented by the string
 */
-inline int str2num ( std::string& s, int base = baseAuto )
+inline int str2num ( string& s, int base = baseAuto )
 {
 	return strtol( const_cast< char* >( s.c_str() ), NULL, base );
-}
-
-/*!
-\brief Wrapper to str2num function
-\author Endymion
-\param s wstring that represent the number
-\param base base in which the number is (see Bases)
-\return the number represented by the string
-*/
-inline int str2num ( std::wstring& s, int base = baseAuto )
-{
-	return wcstol( const_cast< wchar_t* >(s.c_str()), NULL, base );
 }
 
 /*!
@@ -136,36 +124,36 @@ inline int hex2num (char *sz)
 \param s the hexstring
 \return the number represented by the string
 */
-inline int hex2num ( std::string& s )
+inline int hex2num ( string& s )
 {
 	return strtol( const_cast< char* >( s.c_str() ), NULL, baseHex );
 }
 //@}
 
 /*!
-\brief Converts an std::string to a number
+\brief Converts an string to a number
 \param str string to convert
 \return the number represented by the string or 0 if error
 \author Flameeyes
 
 This is a mere overload for atoi(char*) function
 */
-inline int32_t atoi(std::string str)
+inline int32_t atoi(string str)
 {
 	return atoi(str.c_str());
 }
 
-uint32_t ip2long(std::string ip);
-std::string long2ip(uint32_t l);
+uint32_t ip2long(string ip);
+string long2ip(uint32_t l);
 
-void strupr(std::string &str);
-void strlwr(std::string &str);
+void strupr(string &str);
+void strlwr(string &str);
 
-stringVector tokenize(std::string str);
+stringVector tokenize(string str);
 
 int strtonum(int countx, int base= 0);
 
-std::string getDateString();
+string getDateString();
 
 }
 

@@ -560,7 +560,7 @@ namespace nPackets {
 		class ContainerItem : public cPacketSend
 		{
 		protected:
-			std::list<sContainerItem> items;
+			list<sContainerItem> items;
 		public:
 			inline ContainerItem()
 			{ }
@@ -1448,12 +1448,12 @@ namespace nPackets {
 		class OpenBrowser : public cPacketSend
 		{
 		protected:
-			std::string url;	//!< Url to open the browser to
+			string url;	//!< Url to open the browser to
 		public:
 			/*!
 			\param str Url to open the browser to
 			*/
-			inline OpenBrowser(std::string str) :
+			inline OpenBrowser(string str) :
 				url(str)
 			{ }
 			void prepare();
@@ -1469,10 +1469,10 @@ namespace nPackets {
 		protected:
 			uint8_t	type;		//!< Type: 0x00 tip, 0x02 MOTD
 			uint16_t tip_num;	//!< #Tip number (no use if MOTD)
-			std::string message;	//!< Tip (or MOTD) to send
+			string message;	//!< Tip (or MOTD) to send
 
 		public:
-			inline TipsWindow(std::string aMessage, uint8_t TipType = 0x02, uint16_t TipNum = 0x0000) :
+			inline TipsWindow(string aMessage, uint8_t TipType = 0x02, uint16_t TipNum = 0x0000) :
 				type(TipType), tip_num(TipNum), message(aMessage)
 			{ }
 
@@ -1654,10 +1654,10 @@ namespace nPackets {
 		class PopupHelp : public cPacketSend
 		{
 		protected:
-			std::string text;	// text to be sent (will be converted in unicode)
+			string text;	// text to be sent (will be converted in unicode)
 			pSerializable object;	// since this packet is only sent immediately after the request
 		public:
-			inline PopupHelp(std::string &aText, pSerializable aObject) :
+			inline PopupHelp(string &aText, pSerializable aObject) :
 				text(aText), object(aObject)
 			{ }
 			void prepare();

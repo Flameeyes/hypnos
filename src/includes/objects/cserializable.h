@@ -130,7 +130,7 @@ class.
 */
 public:
 	//! Gets the popup help for the instance
-	virtual const std::string getPopupHelp() const = 0;
+	virtual const string getPopupHelp() const = 0;
 	
 	//! Gets the location of the instance
 	virtual sLocation getWorldLocation() const = 0;

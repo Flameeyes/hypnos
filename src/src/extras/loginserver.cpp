@@ -26,7 +26,7 @@ void nLoginServer::loadServers()
 	servers.clear();
 	outPlain("Loading login server data...\t\t");
 	
-	std::ifstream xmlfile("config/loginserver.xml");
+	ifstream xmlfile("config/loginserver.xml");
 	try {
 		MXML::Document doc(xmlfile);
 		

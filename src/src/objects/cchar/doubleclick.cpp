@@ -139,7 +139,7 @@ void cChar::doubleClick(pClient client)i
 		case 0x031a	:	//	swamp dragon
 		case 0x031f	:	//	armor dragon*/
 
-	std::map<int32_t,int32_t>::iterator iter = mountinfo.find(getId());
+	map<int32_t,int32_t>::iterator iter = mountinfo.find(getId());
 
 	if ( iter == mountinfo.end() )
 	{

@@ -13,9 +13,23 @@
 #include "misc.h"
 #include "settings.h"
 #include "networking/cclient.h"
+#include "common_libs.h"
 
-#include <ostream>
-#include <iomanip>
+#ifdef HAVE_IOMANIP
+	#include <iomanip>
+	using std::setw;
+	using std::setfill;
+	using std::hex;
+#elif HAVE_IOMANIP_H
+	#include <iomanip.h>
+#endif
+
+#ifdef HAVE_OSTREAM
+	#include <ostream>
+	using std::endl;
+#elif HAVE_OSTREAM_H
+	#include <ostream.h>
+#endif
 
 static ClientSList cClient::clients;
 static ClientSList cClient::cGMs;
@@ -46,7 +60,7 @@ cClient::~cClient()
 		clear all open secure trade sessions before destroying this client, automatically canceling it
 		and putting all items back on respective backpacks
 		*/
-		std::list<sSecureTradeSession>::iterator it = SecureTrade.begin();
+		list<sSecureTradeSession>::iterator it = SecureTrade.begin();
 		for(;it!=SecureTrade.end(); ++it) endtrade(*it);
 	}
 
@@ -1009,7 +1023,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 			item_bounce6(pi);
 			return;
 		}
-                std::string temp1, temp2;
+                string temp1, temp2;
 		if( pi->getCurrentName()[0] == "#") temp2 = pi->getName();   //!<\todo tile search for default name
 		else temp2 = pi->getCurrentName();
 
@@ -1382,7 +1396,7 @@ void cClient::droppedOnPet(pItem pi, pNPC pet)
 			pet->applyPoison(PoisonType(pi->poisoned));
 		}
 
-		std::string itmname;
+		string itmname;
 		if( pi->getCurrentName() == "#" ) itmname = pi->getName();	//!\todo get default itemname from tile
 		else itmname = pi->getCurrentName();
 
@@ -1922,7 +1936,7 @@ bool buyShop(pNPC npc)
 \param npc vendor whose goods player is buying
 \param allitemsbought list of items selected from player (layer, pItem and amount for each item)
 */
-void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
+void cClient::buyaction(pNpc npc, list< boughtitem > &allitemsbought)
 {
 	int i, j;
 
@@ -1944,7 +1958,7 @@ void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 	int goldtotal=0;
 	int soldout=0;
 
-        std::list<boughtitem>::iterator iter( allitemsbought.begin()), end( allitemsbought.end() );
+        list<boughtitem>::iterator iter( allitemsbought.begin()), end( allitemsbought.end() );
 	for (; iter!=end; iter++)
 	{
 		iter.item->rank=10;     //Just to be on the safe side... :)
@@ -2129,7 +2143,7 @@ void cClient::sellShop(pNPC npc)
 	return;
 }
 
-void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
+void cClient::sellaction(pNpc npc, list< boughtitem > &allitemssold)
 {
 	if(!npc) return;
 
@@ -2158,7 +2172,7 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 	uint32_t maxsell=0;
 	int nitems=allitemssold.size();
 	if (nitems>256) return;
-        std::list< boughtitem >::iterator it = allitemssold.begin();
+        list< boughtitem >::iterator it = allitemssold.begin();
 	for (;it!=allitemssold.end();it++) maxsell+=it->amount;
 
 	if (maxsell>SrvParms->sellmaxitem)
@@ -2253,7 +2267,7 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 
 sSecureTradeSession cClient::findTradeSession(pContainer tradecontainer)
 {
-	std::list<sSecureTradeSession>::iterator it = SecureTrade.begin();
+	list<sSecureTradeSession>::iterator it = SecureTrade.begin();
 	for(;it!= SecureTrade.end(); ++it) if (it->container1 == tradecontainer) return *it;
 	sSecureTradeSession session;
 	session.tradepartner = NULL;
@@ -2267,7 +2281,7 @@ sSecureTradeSession cClient::findTradeSession(pContainer tradecontainer)
 
 sSecureTradeSession cClient::findTradeSession(pClient tradeclient)
 {
-	std::list<sSecureTradeSession>::iterator it = SecureTrade.begin();
+	list<sSecureTradeSession>::iterator it = SecureTrade.begin();
 	for(;it!= SecureTrade.end(); ++it) if (it->tradepartner == tradeclient) return *it;
 	sSecureTradeSession session;
 	session.tradepartner = NULL;
@@ -2713,10 +2727,10 @@ void cClient::talking(cSpeech &speech) // PC speech
 	talk.font = ShortFromCharPtr(buffer[socket]+6);
 	talk.name+=pc->getCurrentName();
 
-	wstring speechUni;
-	string2wstring( speech, speechUni );
+	unistring speechUni;
+	string2unistring( speech, speechUni );
 
-	wstring* speechGhostUni=NULL;
+	unistring* speechGhostUni=NULL;
 
 	int range;
 	switch ( buffer[socket][3] ) {
@@ -2753,7 +2767,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 		bool ghost;
 		if( pc->dead && !a_pc->dead && !a_pc->IsGMorCounselor() && a_pc->spiritspeaktimer == 0 ) {
 			if( speechGhostUni==NULL ) {
-				speechGhostUni=new wstring();
+				speechGhostUni=new unistring();
 				makeGhost( pc->getSpeechCurrent(), speechGhostUni );
 			}
 			//ndEndy not set speechGhostUni because want send true speech to event
@@ -2919,7 +2933,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 						for(i=0; i < strlen(script2); i++)
 							script2[i] = toupper( script2[i] );
 
-						match = (speech.find( script2 ) != std::string::npos);
+						match = (speech.find( script2 ) != string::npos);
 					}
 				}
 				if (!(strcmp("SAY", script1)))
@@ -3011,7 +3025,7 @@ void cClient::sysmessage(const char *txt, ...) // System message (In lower left 
 			clientInfo[s]->spyTo=INVALID;
 	}
 
-	cSpeech speech(std::string(msg));	//we must use string constructor or else it is supposed to be an unicode packet
+	cSpeech speech(string(msg));	//we must use string constructor or else it is supposed to be an unicode packet
 	speech.setColor(0x387);
 	speech.setFont(0x03);		// normal font
 	speech.setMode(0x06);		// label
@@ -3031,7 +3045,7 @@ void cClient::sysmessage(uint16_t color, const char *txt, ...) // System message
 	va_end( argptr );
 	uint16_t ucl = ( strlen ( msg ) * 2 ) + 2 ;
 
-	cSpeech speech(std::string(msg));	//we must use string constructor or else it is supposed to be an unicode packet
+	cSpeech speech(string(msg));	//we must use string constructor or else it is supposed to be an unicode packet
 	speech.setColor(color);
 	speech.setFont(0x03);		// normal font
 	speech.setMode(0x06);		// label
@@ -3050,7 +3064,7 @@ void cClient::sysbroadcast(char *txt, ...) // System broadcast in bold text
 	vasprintf( msg, txt, argptr );
 	va_end( argptr );
 
-	cSpeech speech(std::string(msg));	//we must use string constructor or else it is supposed to be an unicode packet
+	cSpeech speech(string(msg));	//we must use string constructor or else it is supposed to be an unicode packet
 	speech.setColor(0x084d);
 	speech.setFont(0x00);		// bold text
 	speech.setMode(0x06);		// label
@@ -3243,18 +3257,18 @@ void cClient::sendLocationTarget(processTarget callback)
 	sendPacket(&pk);
 }
 
-void cClient::listConnected(std::ostream &out)
+void cClient::listConnected(ostream &out)
 {
-	out << "Current Users in the World:" << std::endl;
+	out << "Current Users in the World:" << endl;
 	
 	uint16_t count = 0;
 	for(ClientSList::iterator it = clients.begin(); it != clients.end(); it++)
 	{
 		pChar pc = (*it)->currChar();
 		out	<< count++ << ") " << pc->getBody()->getCurrentName()
-			<< " [ " << std::setw(8) << std::setfill('0') << std::hex
-			<< pc->getSerial() << " ]" << std::endl;
+			<< " [ " << setw(8) << setfill('0') << hex
+			<< pc->getSerial() << " ]" << endl;
 	}
 	
-	out << "Total users online: " << count << std::endl;
+	out << "Total users online: " << count << endl;
 }

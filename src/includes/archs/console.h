@@ -26,7 +26,7 @@ public:
 	
 	void *run();
 	
-	void output(tInterface::Level lev, const std::string &str);
+	void output(tInterface::Level lev, const string &str);
 };
 
 #endif

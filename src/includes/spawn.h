@@ -33,7 +33,7 @@ public:
 
 };
 
-typedef std::vector< cSpawnArea > SPAWNAREA_VECTOR;
+typedef vector< cSpawnArea > SPAWNAREA_VECTOR;
 
 class cSpawnScripted {
 
@@ -56,7 +56,7 @@ public:
 	uint32_vector npcs; //!< npc to spawn
 	uint32_vector itemlists; //!< itemlist to spawn
 	uint32_vector itms; //!< item to spawn
-	std::string name; //!< region name
+	string name; //!< region name
 	uint32_t max; //!< max number of spanwed
 
 	SPAWNAREA_VECTOR singles; //!< spawn areas
@@ -88,8 +88,8 @@ public:
 	void remove( uint32_t serial );
 };
 
-typedef std::map< uint32_t, cSpawnScripted > SPAWN_SCRIPTED_DB;
-typedef std::map< uint32_t, cSpawnDinamic  > SPAWN_DINAMIC_DB;
+typedef map< uint32_t, cSpawnScripted > SPAWN_SCRIPTED_DB;
+typedef map< uint32_t, cSpawnDinamic  > SPAWN_DINAMIC_DB;
 
 class cSpawns {
 private:

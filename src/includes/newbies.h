@@ -36,8 +36,8 @@ namespace nNewbies {
 	*/
 	struct sStartLocation
 	{
-		std::string city;	//!< City of the start location
-		std::string place;	//!< Name of the place inside the city (Inn usually)
+		string city;	//!< City of the start location
+		string place;	//!< Name of the place inside the city (Inn usually)
 		sLocation position;	//!< Coordinates of the exat start location
 	};
 	
@@ -52,10 +52,10 @@ namespace nNewbies {
 		which at the moment aren't actually implemented.
 	*/
 	struct sNewbieItem {
-		std::string item;	//!< String code of the item to add
+		string item;	//!< String code of the item to add
 		ItemPlace place;	//!< Place where to add the item
 		uint16_t amount;	//!< Amount of items to add
-		std::string color;	//!< Color of the items to add
+		string color;	//!< Color of the items to add
 		
 		sNewbieItem()
 		{ place = ipBackpack; amount = 1; color = "colorNeutral"; }
@@ -64,7 +64,7 @@ namespace nNewbies {
 	};
 	
 	//! Singly-linked list of sNewbieItem's
-	typedef std::slist<sNewbieItem> NBItemSList;
+	typedef slist<sNewbieItem> NBItemSList;
 	
 	void loadNewbieItems();
 	

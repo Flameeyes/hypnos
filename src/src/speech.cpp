@@ -46,7 +46,7 @@ cSpeech::cSpeech(std:string& s)
 	language = server_data.Unicodelanguage & 0xffffff00;	//Sets default language to server language
 }
 
-cSpeech& cSpeech::operator= (std::string& s)
+cSpeech& cSpeech::operator= (string& s)
 {
 	unicodeText.clear();
 	for(uint16_t i = 0; i < s.size(); ++i) unicodeText += (uint16_t) s[i];	//expands ascii text to a "16bit char" to add into cSpeech
@@ -87,17 +87,17 @@ void cSpeech::clearPackeByteOrder()
 	packetByteOrder = false;
 }
 
-std::string cSpeech::toString()
+string cSpeech::toString()
 {
-	std::string text;
+	string text;
 	if(packetByteOrder) for(uint16_t i = 0; i<unicodeText.size();++i) text+= (char)((ntohs(unicodeText[i]) & 0xff));
 	else for(uint16_t i = 0; i<unicodeText.size();++i) text+= (char)(unicodeText[i] & 0xff);
 	return text;
 }
 
-std::string cSpeech::toGhost()
+string cSpeech::toGhost()
 {
-	std::string text = toString();
+	string text = toString();
 	for(uint16_t i = 0; i<text.size(); ++i) if (text[i] != ' ') text[i] = rand()&1 ? 'O' : 'o';
 	return text;
 }
@@ -107,8 +107,8 @@ std::string cSpeech::toGhost()
 
 
 
-static int32_t findKeyword( const std::string &str, const std::string &keyword );
-static std::string trimString( const std::string &str );
+static int32_t findKeyword( const string &str, const string &keyword );
+static string trimString( const string &str );
 
 int response(pClient client)
 {
@@ -1339,7 +1339,7 @@ static bool resignFromGuild( pChar pc, pClient client, string &resign )
 static bool callGuards( pChar pc, pClient client, string &helpcall )
 {
 	bool success = false;
-	if( helpcall.find("GUARDS") != std::string::npos )
+	if( helpcall.find("GUARDS") != string::npos )
 	{
 		//
 		// TODO Check if not part of another word or part of not help call related speech
@@ -1354,11 +1354,11 @@ namespace Speech
 {
 namespace Stablemaster
 {
-static bool respond( pChar pc, pClient client, std::string &speech );
-static bool stablePet( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyStablemasters );
-static bool claimPet( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyStablemasters );
+static bool respond( pChar pc, pClient client, string &speech );
+static bool stablePet( pChar pc, pClient client, string &speech, NxwCharWrapper &nearbyStablemasters );
+static bool claimPet( pChar pc, pClient client, string &speech, NxwCharWrapper &nearbyStablemasters );
 
-static bool respond( pChar pc, pClient client, std::string &speech )
+static bool respond( pChar pc, pClient client, string &speech )
 {
 	bool 	success = false;
 	NxwCharWrapper	nearbyStablemasters;
@@ -1381,7 +1381,7 @@ static bool respond( pChar pc, pClient client, std::string &speech )
 	return success;
 }
 
-static bool stablePet( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyStablemasters )
+static bool stablePet( pChar pc, pClient client, string &speech, NxwCharWrapper &nearbyStablemasters )
 {
 /*
 	command					action
@@ -1406,9 +1406,9 @@ static bool stablePet( pChar pc, pClient client, std::string &speech, NxwCharWra
 	int32_t tokenPosition = findKeyword( speech, "STABLE");
 	if( tokenPosition != INVALID )
 	{
-		std::string 	stablemasterName( trimString( speech.substr( 0, tokenPosition ) ) );
+		string 	stablemasterName( trimString( speech.substr( 0, tokenPosition ) ) );
 		bool 	findStablemasterByName = (stablemasterName.length() != 0);
-		std::string 	petName( trimString( speech.substr( tokenPosition + 6) ) );
+		string 	petName( trimString( speech.substr( tokenPosition + 6) ) );
 		tokenPosition = findKeyword( petName, "ALL");
 		bool stableAllPets = (tokenPosition == 0 );
 		if( stableAllPets )
@@ -1521,7 +1521,7 @@ static bool stablePet( pChar pc, pClient client, std::string &speech, NxwCharWra
 	return success;
 }
 
-static bool claimPet( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyStablemasters )
+static bool claimPet( pChar pc, pClient client, string &speech, NxwCharWrapper &nearbyStablemasters )
 {
 	/*
 		command					Action
@@ -1538,9 +1538,9 @@ static bool claimPet( pChar pc, pClient client, std::string &speech, NxwCharWrap
 	int32_t tokenPosition = findKeyword( speech, "CLAIM");
 	if( tokenPosition != INVALID )
 	{
-		std::string 	stablemasterName( trimString( speech.substr( 0, tokenPosition ) ) );
+		string 	stablemasterName( trimString( speech.substr( 0, tokenPosition ) ) );
 		bool 	findStablemasterByName = (stablemasterName.length() != 0);
-		std::string 	petName( trimString( speech.substr( tokenPosition + 5) ) );
+		string 	petName( trimString( speech.substr( tokenPosition + 5) ) );
 		tokenPosition = findKeyword( petName, "ALL");
 		bool 	claimAllPets = (tokenPosition == 0 );
 		if( claimAllPets )
@@ -1670,12 +1670,12 @@ stabledPets.rewind();	// GH!
 
 namespace Guard
 {
-static bool respond( pChar pc, pClient client, std::string &speech );
-static bool requestChaosShield( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyGuards );
-static bool requestOrderShield( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyGuards );
-static bool requestHelp( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyGuards );
+static bool respond( pChar pc, pClient client, string &speech );
+static bool requestChaosShield( pChar pc, pClient client, string &speech, NxwCharWrapper &nearbyGuards );
+static bool requestOrderShield( pChar pc, pClient client, string &speech, NxwCharWrapper &nearbyGuards );
+static bool requestHelp( pChar pc, pClient client, string &speech, NxwCharWrapper &nearbyGuards );
 
-static bool respond( pChar pc, pClient client, std::string &speech )
+static bool respond( pChar pc, pClient client, string &speech )
 {
 	bool success = false;
 	NxwCharWrapper	nearbyGuards;
@@ -1719,16 +1719,16 @@ nearbyChaosGuards.rewind();
 	return success;
 }
 
-static bool requestChaosShield( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyChaosGuards )
+static bool requestChaosShield( pChar pc, pClient client, string &speech, NxwCharWrapper &nearbyChaosGuards )
 {
 	bool success = false;
 	int32_t tokenPosition = findKeyword( speech, "SHIELD");
 	if( tokenPosition != INVALID )
 	{
-		std::string 	objectName( trimString( speech.substr( tokenPosition + 6) ) );
+		string 	objectName( trimString( speech.substr( tokenPosition + 6) ) );
 		if( objectName.empty() )
 		{
-			std::string 	guardName( trimString( speech.substr( 0, tokenPosition ) ) );
+			string 	guardName( trimString( speech.substr( 0, tokenPosition ) ) );
 			bool 	findGuardByName = (guardName.length() != 0);
 			pChar		pc_a_npc;
 			pChar		chaosGuard = 0;
@@ -1774,16 +1774,16 @@ static bool requestChaosShield( pChar pc, pClient client, std::string &speech, N
 	return success;
 }
 
-static bool requestOrderShield( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyOrderGuards )
+static bool requestOrderShield( pChar pc, pClient client, string &speech, NxwCharWrapper &nearbyOrderGuards )
 {
 	bool success = false;
 	int32_t tokenPosition = findKeyword( speech, "SHIELD");
 	if( tokenPosition != INVALID )
 	{
-		std::string 	objectName( trimString( speech.substr( tokenPosition + 6) ) );
+		string 	objectName( trimString( speech.substr( tokenPosition + 6) ) );
 		if( objectName.empty() )
 		{
-			std::string 	guardName( trimString( speech.substr( 0, tokenPosition ) ) );
+			string 	guardName( trimString( speech.substr( 0, tokenPosition ) ) );
 			bool 	findGuardByName = (guardName.length() != 0);
 			pChar		pc_a_npc;
 			pChar		orderGuard = 0;
@@ -1829,7 +1829,7 @@ static bool requestOrderShield( pChar pc, pClient client, std::string &speech, N
 	return success;
 }
 
-static bool requestHelp( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyGuards )
+static bool requestHelp( pChar pc, pClient client, string &speech, NxwCharWrapper &nearbyGuards )
 {
 	bool success = false;
 	//if( region[pc->region].priv&0x01 && SrvParms->guardsactive || !TIMEOUT( pc->antiguardstimer ) )
@@ -1884,7 +1884,7 @@ static bool buyFromVendor( pChar pc, pClient client, string &speech, NxwCharWrap
 }// namespace Speech
 
 
-static int32_t findKeyword( const std::string &str, const std::string &keyword )
+static int32_t findKeyword( const string &str, const string &keyword )
 {
 	int32_t tokenPosition = str.find( keyword );
 	if( tokenPosition != INVALID )
@@ -1896,7 +1896,7 @@ static int32_t findKeyword( const std::string &str, const std::string &keyword )
 	return tokenPosition;
 }
 
-static std::string trimString( const std::string &str )
+static string trimString( const string &str )
 {
 	uint32_t i = 0;
 	uint32_t j = str.length();

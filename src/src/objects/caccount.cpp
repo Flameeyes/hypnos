@@ -68,12 +68,12 @@ void cAccount::loadAll()
 \param name Name of the account to find
 \return Pointer to the found account or NULL if not found
 */
-pAccount cAccount::findAccount(std::string name)
+pAccount cAccount::findAccount(string name)
 {
 	return accounts[name];
 }
 
-cAccount::cAccount(std::string aName, std::string aPassword)
+cAccount::cAccount(string aName, string aPassword)
 {
 	chars = PCVector( nSettings::Server::getMaximumPCs(), NULL );
 	name = aName;
