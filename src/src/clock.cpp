@@ -29,12 +29,16 @@ void getClock(uint32_t &secs, uint32_t &msecs)
 	
 	secs = t.tv_sec;
 	msec = t.tv_usec/1000;
-#else
+#elif defined(HAVE_FTIME)
 	timeb t;
 	::ftime(&t);
 	
 	secs = t.time;
 	msec = t.millitm;
+#else
+	secs = 0;
+	msecs = 0;
+	LogError("Can't find a way to have clock data in this platformi, please report this.");
 #endif
 }
 

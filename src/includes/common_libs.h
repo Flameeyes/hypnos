@@ -29,9 +29,6 @@ warnings/errors/issues.
 	#define WIN32
 	#define _CONSOLE
 	#include <stlport/hash_map>
-
-	#define strncasecmp strncmpi
-	#define strcasecmp strcmpi
 #endif
 
 #ifdef __APPLE__

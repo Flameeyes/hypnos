@@ -39,7 +39,7 @@ AC_FUNC_SELECT_ARGTYPES
 AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(floor ftime gethostbyname gettimeofday inet_ntoa memset munmap select socket strcasecmp strchr strdup strerror strrchr strstr strtol strtoul strtoull strlwr strupr uname)
+AC_CHECK_FUNCS(floor ftime gethostbyname gettimeofday inet_ntoa memset munmap select socket strcasecmp strchr strdup strerror strrchr strstr strtol strtoul strtoull strlwr strupr uname asprintf strcmpi strncmpi strncasecmp kbhit getch)
 
 # Adding include dirs and WEFTS_ variables
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'

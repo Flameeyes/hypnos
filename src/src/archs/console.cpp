@@ -12,6 +12,7 @@
 #include "common_libs.h"
 #include "hypnos.h"
 #include "version.h"
+#include "clock.h"
 #include "arch/console.h"
 #include "arch/signals.h"
 
@@ -98,40 +99,11 @@ void consoleOutput(nNotify::Level lev, const std::string str)
 	m.unlock();
 }
 
-static inline void StartMilliTimer(unsigned long &Seconds, unsigned long &Milliseconds)
+static inline uint32_t CheckMilliTimer(uint32_t &Seconds, uint32_t &Milliseconds)
 {
-#if defined(__unix__)
-	timeval t ;
-	gettimeofday(&t,NULL) ;
-	Seconds = t.tv_sec ;
-	Milliseconds = t.tv_usec/1000 ;
-#else
+	uint32_t newSec, newMill;
+	getClock(newSec, newMill);
 
-	timeb t;
-	::ftime( &t );
-	Seconds = t.time;
-	Milliseconds = t.millitm;
-#endif
-}
-
-static inline unsigned long CheckMilliTimer(unsigned long &Seconds, unsigned long &Milliseconds)
-{
-	unsigned long newSec ;
-	unsigned long newMill ;
-
-	#ifdef __unix__
-	timeval t ;
-	gettimeofday(&t,NULL) ;
-	newSec = t.tv_sec ;
-	newMill = t.tv_usec/1000 ;
-
-	#else
-	struct timeb t;
-	::ftime( &t );
-	newSec = t.time ;
-	newMill = t.millitm ;
-
-	#endif
 	return( 1000 * ( newSec - Seconds ) + ( newMill - Milliseconds ) );
 }
 
@@ -216,22 +188,21 @@ void checkkey ()
 	// Flameeyes: borland c++ builder doesn't accept kbhit() in windows mode
 	// Also to force only remote admin under unix, we can remove the kbhit() test
 
-#if !defined __BORLANDC__ && !defined __unix__
-	if ((kbhit())||(INKEY!='\0'))
-#else
-	if ( INKEY != '\0' )
+	if ( INKEY != '\0'
+#if defined(HAVE_KBHIT) && defined(HAVE_GETCH)
+		|| kbhit()
 #endif
-	{
+	) {
 		if (INKEY!='\0') {
 			c = toupper(INKEY);
 			INKEY = '\0';
 			secure = 0;
 		}
-	#if !defined __BORLANDC__ && !defined __unix__
+		#if defined(HAVE_KBHIT) && defined(HAVE_GETCH)
 		else {
 			c = toupper(getch());
 		}
-	#endif
+		#endif
 
 		if (c=='S')
 		{
@@ -487,7 +458,7 @@ int main(int argc, char *argv[])
 		}
 		loopTimeCount++;
 
-		StartMilliTimer(loopSecs, loopMilli);
+		getClock(loopSecs, loopMilli);
                 //testAI();
 		if(networkTimeCount >= 1000)
 		{
@@ -495,7 +466,7 @@ int main(int argc, char *argv[])
 			networkTime = 0;
 		}
 
-		StartMilliTimer(tempSecs, tempMilli);
+		getClock(tempSecs, tempMilli);
 
 		if ( TIMEOUT( CheckClientIdle ) )
 		{
@@ -541,7 +512,7 @@ int main(int argc, char *argv[])
 			timerTime = 0;
 		}
 
-		StartMilliTimer(tempSecs, tempMilli);
+		getClock(tempSecs, tempMilli);
 
 		checktimers();
 
@@ -554,7 +525,7 @@ int main(int argc, char *argv[])
 			autoTimeCount = 0;
 			autoTime = 0;
 		}
-		StartMilliTimer(tempSecs, tempMilli);
+		getClock(tempSecs, tempMilli);
 
 		checkauto();
 

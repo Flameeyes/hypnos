@@ -108,7 +108,7 @@ stringVector tokenize(std::string str)
 
 }
 
-#ifdef WIN32
+#ifndef HAVE_ASPRINTF
 
 #include "wefts_mutex.h"
 

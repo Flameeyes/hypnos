@@ -190,7 +190,7 @@ inline int32_t atoi(std::string str)
 	return atoi(str.c_str());
 }
 
-#ifdef WIN32
+#ifndef HAVE_ASPRINTF
 int asprintf(char **strp, const char *fmt, ...) PRINTF_LIKE(2,3)
 int vasprintf(char **strp, const char *fmt, va_list ap);
 #endif
@@ -201,6 +201,22 @@ char *strlwr(char *);
 
 #ifndef HAVE_STRUPR
 char *strupr(char *);
+#endif
+
+#if !defined(HAVE_STRCASECMP) && !defined(HAVE_STRCMPI)
+	#warning You miss both strcasecmp() and strcmpi() functions. \
+		Using case-sensitive functions
+	#define strcasecmp strcmp
+	
+	//!\todo Write a stub for strcasecmp
+#endif
+
+#if !defined(HAVE_STRNCASECMP) && !defined(HAVE_STRNCMPI)
+	#warning You miss both strncasecmp() and strncmpi() functions. \
+		Using case-sensitive functions
+	#define strncasecmp strncmp
+
+	//!\todo Write a stub for strncasecmp
 #endif
 
 #endif

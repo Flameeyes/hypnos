@@ -22734,7 +22734,13 @@ done
 
 
 
-for ac_func in floor ftime gethostbyname gettimeofday inet_ntoa memset munmap select socket strcasecmp strchr strdup strerror strrchr strstr strtol strtoul strtoull strlwr strupr uname
+
+
+
+
+
+
+for ac_func in floor ftime gethostbyname gettimeofday inet_ntoa memset munmap select socket strcasecmp strchr strdup strerror strrchr strstr strtol strtoul strtoull strlwr strupr uname asprintf strcmpi strncmpi strncasecmp kbhit getch
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 echo "$as_me:$LINENO: checking for $ac_func" >&5
