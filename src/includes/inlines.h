@@ -45,7 +45,7 @@ inline bool isItemSerial( long ser ) { return ( /*ser >= 0 && */ser >= 0x4000000
 inline std::string toString(int value)
 {
 	char *s;
-	snprintf(&s, "%d", value);
+	asprintf(&s, "%d", value);
 	std::string ret(s)
 	free(s);
 	
@@ -55,7 +55,7 @@ inline std::string toString(int value)
 inline std::string toString(double value)
 {
 	char *s;
-	snprintf(&s, "%f", value);
+	asprintf(&s, "%f", value);
 	std::string ret(s)
 	free(s);
 	

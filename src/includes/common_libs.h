@@ -41,7 +41,6 @@ warnings/errors/issues.
 	#endif
 	#pragma pack(1)
 
-	#define snprintf _snprintf
 	typedef int socklen_t;
 #endif
 
@@ -78,15 +77,16 @@ warnings/errors/issues.
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
-#include <netinet/in.h>
-#include <ctype.h>
-#include <stdint.h>
-#include <unistd.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/signal.h>
 #include <sys/errno.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
+
+#include <ctype.h>
+#include <stdint.h>
+#include <unistd.h>
 
 #ifndef MSG_NOSIGNAL
     #define MSG_NOSIGNAL 0

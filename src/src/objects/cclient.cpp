@@ -2840,9 +2840,9 @@ void sysmessage(pClient client, const char *txt, ...) // System message (In lowe
 	uint8_t unicodetext[512];
 
 	va_list argptr;
-	char msg[512];
+	char *msg;
 	va_start( argptr, txt );
-    vsprintf( msg, txt, argptr );
+	vsprintf( &msg, txt, argptr );
 	va_end( argptr );
 
 	uint32_t spyTo = clientInfo[s]->spyTo;
@@ -2869,7 +2869,8 @@ void sysmessage(pClient client, const char *txt, ...) // System message (In lowe
 	strcpy((char *)sysname, "System");
 
 	SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 6, 0x0387 /* Color - Previous default was 0x0040 - 0x03E9*/, 0x0003, lang, sysname, unicodetext,  ucl);
-
+	
+	free(msg);
 }
 
 void sysmessage(pClient client, short color, const char *txt, ...) // System message (In lower left corner)
