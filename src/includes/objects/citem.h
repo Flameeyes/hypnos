@@ -541,6 +541,10 @@ public:
 	uint32_t	gatetime;
 	int32_t		gatenumber;
 	int8_t		offspell;
+	
+	virtual bool getMarkedLocation(sLocation &loc);
+	virtual bool recallOn(pClient client);
+	virtual bool gateOn(pClient client);
 //@}
 
 //@{

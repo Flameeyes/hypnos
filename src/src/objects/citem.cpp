@@ -1036,3 +1036,41 @@ void cItem::DyeItem(pClient client, uint16_t color) // Rehue an item
 
 	Me->playSFX(0x023E);
 }
+
+/*!
+\brief Gets the location marked for the given item.
+\param[out] loc Location where the item should point to
+\retval true The item is has a marked location, so we can travel by it.
+\retval false The item isn't marked, or the item isn't markable at all
+\see cItem::recallOn() cItem::gateOn()
+\note If it's a simple cItem it will set loc to invalid coords and return false.
+*/
+bool cItem::getMarkedLocation(sLocation &loc)
+{
+	loc = sLocation(0xFFFF, 0xFFFF, -128);
+	return false;
+}
+
+/*!
+\brief Do a recall on the item
+\param client Client who requested the recall
+\retval true The item is recallable, so the recall can be done.
+\retval false The item isn't recallable or hasn't a location marked.
+\note If it's a simple cItem it will return false and do nothing
+*/
+bool cItem::recallOn(pClient client)
+{
+	return false;
+}
+
+/*!
+\brief Do a gate travel on the item
+\param client Client who requested the gate travel
+\retval true The item is gateable, so the gate travel can be done
+\retval false The item isn't gateable or hasn't a location marked
+\note If it's a simple cItem it will set loc to invalid coords and return false.
+*/
+bool cItem::gateOn(pClient client)
+{
+	return false;
+}
