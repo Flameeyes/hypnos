@@ -31,7 +31,6 @@ static const uint16_t YBORDER = 200;	//!< Border from y-limit
 extern signed short int iSmallShipOffsets[4][4][2];
 extern signed short int iMediumShipOffsets[4][4][2];
 extern signed short int iLargeShipOffsets[4][4][2];
-extern char cShipItems[4][6];
 
 //NEW BOAT SYSTEM
 
@@ -40,36 +39,24 @@ extern char cShipItems[4][6];
 pItem findmulti(sLocation where);
 bool inmulti(sLocation where,pItem pi);
 
-class cBoatOLD
-{
-	protected:
-		bool boat_collision(pItem pBoat1,int x1, int y1,int dir,pItem pBoat2);
-		bool collision(pItem pi, sLocation where,int dir);
-		bool good_position(pItem pBoat, sLocation where, int dir);
-		bool tile_check(multi_st multi,pItem pBoat,map_st map,int x, int y ,int dir);
-		void LeaveBoat(pChar pc, pItem pi);
-		void TurnStuff_i(pItem, pItem, int, int);
+bool boat_collision(pItem pBoat1,int x1, int y1,int dir,pItem pBoat2);
+bool collision(pItem pi, sLocation where,int dir);
+bool good_position(pItem pBoat, sLocation where, int dir);
+bool tile_check(multi_st multi,pItem pBoat,map_st map,int x, int y ,int dir);
+void LeaveBoat(pChar pc, pItem pi);
+void TurnStuff_i(pItem, pItem, int, int);
 
-		void TurnStuff_c(pItem, pChar, int, int);
-		void iMove(pClient client, int dir, pItem pBoat, bool forced = true);
+void TurnStuff_c(pItem, pChar, int, int);
+void iMove(pClient client, int dir, pItem pBoat, bool forced = true);
 
-		void TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, pItem pTiller, pItem pHold );
-	public:
+void TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, pItem pTiller, pItem pHold );
 
-		cBoatOLD();
-		pItem GetBoat(sLocation pos);
-		virtual ~cBoatOLD();
-		bool Speech(pChar pc, pClient clientocket, std::string &talk );
-		void OpenPlank(pItem pi);
-		void PlankStuff(pChar pc, pItem pi);
-		bool Build(pClient client, pItem pBoat, char);
-		void Move(pClient client, int dir, pItem pBoat);
-		void Turn(pItem, int);
-};
-
-typedef std::map<int,boat_db> BOATS;
-extern BOATS	s_boat;
-
-extern cBoatOLD* Boats;
+pItem GetBoat(sLocation pos);
+bool Speech(pChar pc, pClient clientocket, std::string &talk );
+void OpenPlank(pItem pi);
+void PlankStuff(pChar pc, pItem pi);
+bool Build(pClient client, pItem pBoat, char);
+void Move(pClient client, int dir, pItem pBoat);
+void Turn(pItem, int);
 
 #endif

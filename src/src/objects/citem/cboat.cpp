@@ -251,7 +251,7 @@ void cBoat::turn(bool turnRight)
 	//Set the DIR for use in the Offsets/IDs array
 	uint8_t dir = (pi->getDirection() &0x07)/2;
 
-	const uint8_t *pShipItems = cShipItems[ dir ];
+	const uint8_t *pShipItems = ShipItems[ dir ];
 
 	//set it's Z to 0,0 inside the boat
 	sLocation bpos= getPosition();

@@ -103,7 +103,7 @@ bool inmulti(sLocation where, pItem pi)//see if they are in the multi at these c
 	return false;
 }
 
-void cBoatOLD::PlankStuff(pChar pc , pItem pi)//If the plank is opened, double click Will send them here
+void PlankStuff(pChar pc , pItem pi)//If the plank is opened, double click Will send them here
 {
 	if ( ! pc )
 		return;
@@ -152,7 +152,7 @@ void cBoatOLD::PlankStuff(pChar pc , pItem pi)//If the plank is opened, double c
 	// pc->setMultiSerial( boat2->getSerial() ); it's has just been called by pc->teleport, so wee need it not
 }
 
-void cBoatOLD::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open plank while on the boat.
+void LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open plank while on the boat.
 {
 	if ( ! pc )
 		return;
@@ -207,7 +207,7 @@ void cBoatOLD::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an ope
 }
 
 
-void cBoatOLD::TurnStuff_i(pItem p_b, pItem pi, int dir, int type)//Turn an item that was on the boat when the boat was turned.
+void TurnStuff_i(pItem p_b, pItem pi, int dir, int type)//Turn an item that was on the boat when the boat was turned.
 {
 	if ( ! p_b || ! pi )
 		return;
@@ -236,7 +236,7 @@ void cBoatOLD::TurnStuff_i(pItem p_b, pItem pi, int dir, int type)//Turn an item
 }
 
 
-void cBoatOLD::TurnStuff_c(pItem p_b, pChar pc, int dir, int type)//Turn an item that was on the boat when the boat was turned.
+void TurnStuff_c(pItem p_b, pChar pc, int dir, int type)//Turn an item that was on the boat when the boat was turned.
 {
 	if ( ! p_b || ! pc )
 		return;
@@ -264,7 +264,7 @@ void cBoatOLD::TurnStuff_c(pItem p_b, pChar pc, int dir, int type)//Turn an item
 	pc->teleport();
 }
 
-void cBoatOLD::TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, pItem pTiller, pItem pHold )
+void TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, pItem pTiller, pItem pHold )
 {
 	sLocation itmpos;
 	int16_t *pShipOffsets;
@@ -380,7 +380,7 @@ void cBoatOLD::TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboar
 \note pc and client validation is done in talking()
 \todo Should it be checked into talking directly?
 */
-bool cBoatOLD::Speech(pClient client, std::string &talk)
+bool Speech(pClient client, std::string &talk)
 {
 	pPC pc = client->currChar();
 	pBoat pb = GetBoat(pc->getPosition());
@@ -471,7 +471,7 @@ bool cBoatOLD::Speech(pClient client, std::string &talk)
 \author Elcabesa
 \brief Check if all the boats tile are in water
 */
-bool cBoatOLD::tile_check(multi_st multi,pItem pb,map_st map,int x, int y,int dir)
+bool tile_check(multi_st multi,pItem pb,map_st map,int x, int y,int dir)
 {
 	int dx,dy;
 	switch(dir)
@@ -523,7 +523,7 @@ bool cBoatOLD::tile_check(multi_st multi,pItem pb,map_st map,int x, int y,int di
 \author Elcabesa
 \brief Check if this is a good position for building or moving a boat
 */
-bool cBoatOLD::good_position(pItem pb, sLocation where, int dir)
+bool good_position(pItem pb, sLocation where, int dir)
 {
 	uint32_t x= where.x, y= where.y, i;
 	bool good_pos = false;
@@ -583,7 +583,7 @@ bool cBoatOLD::good_position(pItem pb, sLocation where, int dir)
 \author Elcabesa
 \brief Build a boat
 */
-bool cBoatOLD::Build(pClient client, pItem pb, char id2)
+bool Build(pClient client, pItem pb, char id2)
 {
 	pPC pc_cs = NULL
 	if ( ! client || ! ( pc_cs = client->currChar() ) )
@@ -701,7 +701,7 @@ bool cBoatOLD::Build(pClient client, pItem pb, char id2)
 \brief Check if there is another boat at these coord
 \return true if collided, else false
 */
-bool cBoatOLD::collision(pItem pi,sLocation where,int dir)
+bool collision(pItem pi,sLocation where,int dir)
 {
 	int x= where.x, y= where.y;
 	std::map<int,boat_db>::iterator iter_boat;
@@ -727,9 +727,9 @@ bool cBoatOLD::collision(pItem pi,sLocation where,int dir)
 \brief check if 2 boat are collided
 \author Elcabesa
 \return true if collided, else false
-\see cBoatOLD::collision()
+\see collision()
 */
-bool cBoatOLD::boat_collision(pItem pb1,int x1, int y1,int dir,pItem pb2)
+bool boat_collision(pItem pb1,int x1, int y1,int dir,pItem pb2)
 {
 	uint32_t i1, i2;
 	int x,y;
@@ -783,7 +783,7 @@ bool cBoatOLD::boat_collision(pItem pb1,int x1, int y1,int dir,pItem pb2)
 /*!
 \brief Open, or close the plank
 */
-void cBoatOLD::OpenPlank(pItem pi)
+void OpenPlank(pItem pi)
 {
 	switch(pi->getId()&0xFF)
 	{
@@ -807,7 +807,7 @@ void cBoatOLD::OpenPlank(pItem pi)
 \return the pointer to the boat or NULL
 \author Elcabesa
 */
-pItem cBoatOLD::GetBoat(sLocation pos)
+pItem GetBoat(sLocation pos)
 {
 	uint32_t i;
 	BOATS::iterator iter( s_boat.begin() ), end( s_boat.end() );
