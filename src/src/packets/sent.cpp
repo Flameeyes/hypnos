@@ -270,7 +270,7 @@ void cPacketSendDrawGamePlayer::prepare()
 	ShortToCharPtr(body->getId(), buffer +5);
 	buffer[7] = unk1;
 	ShortToCharPtr(body->getSkinColor(), buffer +8);
-        
+
 	uint8_t flag = 0;
 	if ( pc->poisoned )   flag |= 0x04;
 	if ( pc->isHidden() ) flag |= 0x80;
@@ -285,6 +285,25 @@ void cPacketSendDrawGamePlayer::prepare()
         //!\todo verify if using pos.dispz or pos.z changes anything here
 	buffer[18]= pos.dispz;
 }
+
+/*!
+\brief Move reject
+\author Chronodt
+\note packet 0x21
+*/
+
+void cPacketSendMoveReject::prepare()
+{
+	length = 8;
+	buffer = new uint8_t[8];
+        buffer[0] = 0x21;
+	buffer[1] = sequence;
+	ShortToCharPtr(pc->getPosition().x, buffer + 2);
+	ShortToCharPtr(pc->getPosition().y, buffer + 4);
+        buffer[6] = pc->direction;
+        buffer[7] = pc->getPosition().z;
+}
+
 
 
 void cPacketSendAction::prepare()

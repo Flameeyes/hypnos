@@ -45,7 +45,6 @@ void skillwindow(pClient client);
 	//!< Opens the skills list, updated for client 1.26.2b by LB
 void updates(pClient client);
 	//!< Update Window
-void deny(pClient client,pChar pc, pClient clientequence);
 void weblaunch(pClient client, const char *txt);
 	//!< Direct client to a web page
 void broadcast(pClient client);

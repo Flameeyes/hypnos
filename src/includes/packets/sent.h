@@ -211,10 +211,32 @@ protected:
 	pPC pc;		//! Current player
 public:
 	/*!
-	\param s serial of the object to remove
+	\param pc current player
 	*/
 	inline cPacketSendDrawGamePlayer(pPC player) :
 		cPacketSend(NULL, 0), pc(player)
+	{ }
+
+	void prepare();
+};
+
+/*!
+\brief Move reject
+\author Chronodt
+\note packet 0x21
+*/
+
+class cPacketSendMoveReject : public cPacketSend
+{
+protected:
+	pPC pc;			//! Current player
+        uint8_t sequence;       //! Sequence number of move rejected
+public:
+	/*!
+	\param pc current player
+	*/
+	inline cPacketSendMoveReject(pPC player, uint8_t seq) :
+		cPacketSend(NULL, 0), pc(player), sequence(seq)
 	{ }
 
 	void prepare();

@@ -44,7 +44,9 @@ bool WalkHandleAllowance(pChar pc, int sequence)
 	{
 		if ((walksequence[s]+1!=sequence)&&(sequence!=256))
 		{
-			deny(s, pc, sequence);
+			cPacketSendMoveReject(pc, sequence);
+                        pc->getClient()->sendPacket(&pk);
+                       	walksequence[s]=INVALID;
 			return false;
 		}
 	}
@@ -55,11 +57,13 @@ bool WalkHandleAllowance(pChar pc, int sequence)
 		{
 			if (s!=INVALID)
 			{
-			  pc->sysmsg("You are too fatigued to move.");
-			  walksequence[s]=INVALID;
-			  pc->teleport( TELEFLAG_NONE );
-			  deny(s, pc, sequence); // !!!
-			  return false;
+				pc->sysmsg("You are too fatigued to move.");
+			  	walksequence[s]=INVALID;
+			  	pc->teleport( TELEFLAG_NONE );
+				cPacketSendMoveReject(pc, sequence);
+        	                pc->getClient()->sendPacket(&pk);
+	                       	walksequence[s]=INVALID;
+			  	return false;
 			}
 		}
 	}
@@ -73,7 +77,9 @@ bool WalkHandleAllowance(pChar pc, int sequence)
 				pc->sysmsg("You cannot move while casting.");
 			else
 				pc->sysmsg("You are frozen and cannot move.");
-			deny(s, pc, sequence); // !!!
+			cPacketSendMoveReject(pc, sequence);
+                        pc->getClient()->sendPacket(&pk);
+                       	walksequence[s]=INVALID;
 		}
 		return false;
 	}
@@ -205,7 +211,12 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 		default:
 			ErrOut("Switch fallout. walking.cpp, walking()\n"); //Morrolan
 			ErrOut("\tcaused by chr %s. dir: %i dir&0x0f: %i dir-passed : %i dp&0x0f : %i\n", pc->getCurrentName().c_str(), pc->dir, pc->dir&0x0f, dir, dir&0x0f);
-			if (pc->getSocket() != INVALID) deny(pc->getSocket(), pc, sequence); // lb, crashfix
+			if (pc->getSocket() != INVALID)
+                        {
+				cPacketSendMoveReject(pc, sequence);
+                        	pc->getClient()->sendPacket(&pk);
+                       		walksequence[s]=INVALID;
+                        }
 			return false;
 	}
 
@@ -290,7 +301,11 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 		pc->setPosition( pcpos );
 		NXWSOCKET socket = pc->getSocket();
 		if ( socket != INVALID )
-			deny( socket, pc, sequence );
+                {
+			cPacketSendMoveReject(pc, sequence);
+                        pc->getClient()->sendPacket(&pk);
+                       	walksequence[s]=INVALID;
+		}
 		else
 			pc->blocked = 1;
 		return false;

@@ -500,18 +500,6 @@ void updates(NXWSOCKET  s) // Update Window
 
 
 
-void deny(NXWSOCKET  s, pChar pc, int sequence)
-{
-	cPacketWalkReject walkdeny;
-	walkdeny.sequence= sequence;
-	walkdeny.x= pc->getPosition().x;
-	walkdeny.y= pc->getPosition().y;
-	walkdeny.direction=pc->dir;
-	walkdeny.z= pc->getPosition().dispz;
-	walkdeny.send( pc->getClient() );
-	walksequence[s]=INVALID;
-}
-
 void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 //Modified by N6 to use UNICODE packets
 {
