@@ -12,7 +12,7 @@
 #ifndef __ARCHS_CONSOLE_H__
 #define __ARCHS_CONSOLE_H__
 
-#include "backend/notify.h"
+#include "archs/tinterface.h"
 #include "archs/tinterface.h"
 
 /*!

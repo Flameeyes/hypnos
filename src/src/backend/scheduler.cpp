@@ -12,7 +12,7 @@
 #include "logsystem.h"
 #include "inlines.h"
 #include "backend/scheduler.h"
-#include "backend/notify.h"
+#include "archs/tinterface.h"
 
 #include <mxml.h>
 
