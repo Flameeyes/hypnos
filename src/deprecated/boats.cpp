@@ -787,22 +787,16 @@ bool cBoat::Speech(pChar pc, pClient clientocket, std::string &talk)//See if the
 	return false;
 }
 
-
-////////////////////////////////////////////////////////////////
-////						NEW BOAT-SYSTEM					////
-////////////////////////////////////////////////////////////////
-
-
-
-///////////////////////////////////////////////////////////////////
-// Function name     : tile_check ( helper function for good_position )
-// Description       : check if all the boats tile are in water
-// Return type       : bool
-// Author            : Elcabesa
-// Changes           : none yet
-// Called form		 : cBoat:good_position()
-
-
+/*!
+\author Elcabesa
+\brief Check if all the boats tile are in water
+\param multi
+\param pBoat
+\param map
+\param x
+\param y
+\param dir
+*/
 bool cBoat::tile_check(multi_st multi,pItem pBoat,map_st map,int x, int y,int dir)
 {
 	int dx,dy;
@@ -851,14 +845,13 @@ bool cBoat::tile_check(multi_st multi,pItem pBoat,map_st map,int x, int y,int di
 
 
 
-///////////////////////////////////////////////////////////////////
-// Function name     : good_position
-// Description       : check if this is a good position for building or moving a boat
-// Return type       : void
-// Author            : Elcabesa
-// Changes           : none yet
-// Called form		 : cBoat:build()
-
+/*!
+\author Elcabesa
+\brief Check if this is a good position for building or moving a boat
+\param pBoat
+\param where
+\param dir
+*/
 bool cBoat::good_position(pItem pBoat, Location where, int dir)
 {
 	uint32_t x= where.x, y= where.y, i;
@@ -920,15 +913,13 @@ bool cBoat::good_position(pItem pBoat, Location where, int dir)
 	return good_pos;
 }
 
-
-
-///////////////////////////////////////////////////////////////////
-// Function name     : Build
-// Description       : build a boat
-// Return type       : void
-// Author            : Elcabesa
-// Changes           : none yet
-// Called form	     : buildhouse()
+/*!
+\author Elcabesa
+\brief Build a boat
+\param pClient
+\param pBoat
+\param id2
+*/
 bool cBoat::Build(pClient client, pItem pBoat, char id2)
 {
 	if ( s < 0 || s >= now )
@@ -1008,9 +999,6 @@ bool cBoat::Build(pClient client, pItem pBoat, char id2)
 	pHold->priv=0;
 	pHold->setContainer(0);
 
-
-
-
 	pBoat->moreb1= pTiller->getSerial().ser1;//Tiller ser stored in boat's Moreb
 	pBoat->moreb2= pTiller->getSerial().ser2;
 	pBoat->moreb3= pTiller->getSerial().ser3;
@@ -1020,8 +1008,6 @@ bool cBoat::Build(pClient client, pItem pBoat, char id2)
 	pBoat->morez= pHold->getSerial();
 
 	Location boatpos= pBoat->getPosition();
-
-
 
 	switch(id2)//Give everything the right Z for it size boat
 	{
@@ -1084,11 +1070,14 @@ bool cBoat::Build(pClient client, pItem pBoat, char id2)
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////
-// Function name     : collision
-// Description       : handle if at these coord there is another boat
-// Return type       : bool TRUE boat collision,FALSE not obat collision
-// Author            : Elcabesa
+/*!
+\author Elcabesa
+\brief Check if there is another boat at these coord
+\param pi
+\param where
+\param dir
+\return true if collided, else false
+*/
 bool cBoat::collision(pItem pi,Location where,int dir)
 {
 	int x= where.x, y= where.y;
@@ -1168,13 +1157,10 @@ bool cBoat::boat_collision(pItem pBoat1,int x1, int y1,int dir,pItem pBoat2)
 	return false;
 }
 
-///////////////////////////////////////////////////////////////////
-// Function name     : OpenPlank
-// Description       : Open, or close the plank (called from keytarget() )
-// Return type       : void
-// Author            : unknow
-// Changes           : none yet
-
+/*!
+\brief Open, or close the plank
+\param pi
+*/
 void cBoat::OpenPlank(pItem pi)
 {
 	switch(pi->getId()&0xFF)
@@ -1196,6 +1182,7 @@ void cBoat::OpenPlank(pItem pi)
 
 /*!
 \brief check if there is a boat at this position and return the boat
+\param pos
 \return the pointer to the boat or NULL
 \author Elcabesa
 */
@@ -1224,27 +1211,29 @@ pItem cBoat::GetBoat(Location pos)
 	return NULL;
 }
 
-///////////////////////////////////////////////////////////////////
-// Function name     : Move
-// Description       : move a boat, not turn it
-// Return type       : int
-// Author            : unknow
-// Changes           : none yet
-
+/*!
+\brief Move a boat, not turn it
+\param client
+\param dir
+\param pBoat
+*/
 void cBoat::Move(pClient client, int dir, pItem pBoat)
 {
 	iMove(s,dir,pBoat,false);
 }
 
+/*!
+\brief Really move a boat, not turn it, and move all the items on a boat
+\author Elcabesa
+\param client
+\param dir
+\param pBoat
+\param forced
+\return true if boat is forced to go
 
-///////////////////////////////////////////////////////////////////
-// Function name     : iMove
-// Description       : really move a boat, not turn it, and move all the items on a boat
-// Return type       : int
-// Parameter		 : bool forced TRUE the boat is forced to go, it doesn't check block
-// Author            : Elcabesa
-// Changes           : none yet
+	it doesn't check block
 
+*/
 void cBoat::iMove(pClient client, int dir, pItem pBoat, bool forced)
 {
 	int tx=0,ty=0;
@@ -1260,7 +1249,6 @@ void cBoat::iMove(pClient client, int dir, pItem pBoat, bool forced)
 	pItem p2=boat->p_r_plank;
 	pItem hold=boat->p_container;
 
-	//////////////FOR ELCABESA VERY WARNING BY ENDYMION
 	//////THIS PACKET PAUSE THE CLIENT
 	SendPauseResumePkt(s, 0x01);
 
@@ -1422,9 +1410,8 @@ cBoat::~cBoat()//Destructor
 
 /*!
 \brief insert a boat inside boat_db struct and add it to the s_boat map
-\author elcabesa
+\author Elcabesa
 \param pi pointer to the boat to be inserted
-\since 0.8
 */
 void insert_boat(pItem pi)
 {
