@@ -38,7 +38,7 @@ using namespace std ;
 #include "client.h"
 
 void initAmxEvents(void);
-bool checkItemUsability(P_CHAR pc, P_ITEM pi, int type);
+
 
 
 

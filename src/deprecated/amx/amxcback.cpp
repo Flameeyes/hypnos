@@ -45,63 +45,6 @@ extern int g_nTriggerType;
 static int g_nType;
 
 
-/*!
-\brief wrap for check usability
-\author Xanathar
-\return bool
-\param pc player trying using
-\param pi pointer to item to be used
-\param type type of usability
-\remarks Luxor - Added REQSKILL command support, three bug fix applied 
-*/
-bool checkItemUsability(P_CHAR pc, P_ITEM pi, int type)
-{
-	g_nType = type;
-	VALIDATEPIR(pi, false);
-	VALIDATEPCR(pc, false);
-
-	NXWSOCKET s = pc->getSocket();
-
-	if( !pi->isNewbie() )
-	{
-		if ( pi->st > pc->getStrength() ) 
-		{
-			pc->sysmsg(TRANSLATE("You are not strong enough to use that."));
-			return false;
-		}
-		if ( pi->dx > pc->dx )
-		{
-			pc->sysmsg(TRANSLATE("You are not quick enough to use that."));
-			return false;
-		}
-		if ( pi->in > pc->in )
-		{
-			pc->sysmsg(TRANSLATE("You are not intelligent enough to use that."));
-			return false;
-		}
-		//Luxor: REQSKILL command support
-		if (pi->reqskill[0] > 0 && pi->reqskill[1] > 0 )
-		{
-			if (pi->reqskill[1] > pc->skill[pi->reqskill[0]]) {
-				pc->sysmsg(TRANSLATE("You are not skilled enough to use that."));
-				return false;
-			}
-		}
-	}
-
-	if (s >-1 && s < now) //Luxor
-	{
-		
-		if (pi->amxevents[EVENT_IONCHECKCANUSE]==NULL) return true;
-		return (0!=pi->amxevents[EVENT_IONCHECKCANUSE]->Call(pi->getSerial32(), pc->getSerial32(), g_nType));
-		/*
-		AmxEvent* event = pi->getAmxEvent( EVENT_IONCHECKCANUSE );
-		if ( !event ) return true;
-		return ( 0 != event->Call(pi->getSerial32(), s, g_nType ) );
-		*/
-	}
-	return true;
-}
 
 
 /*!

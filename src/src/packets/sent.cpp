@@ -315,7 +315,7 @@ static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
                 case 0x02: return new cPacketReceiveMoveRequest(buffer, length);        // Move Request
                 case 0x03: return new cPacketReceiveTalkRequest(buffer, length);        // Talk Request
                 case 0x05: return new cPacketReceiveAttackRequest(buffer, length);      // Attack Request
-                case 0x06: length =   5; break; // Double click
+                case 0x06: return new cPacketReceiveDoubleclick(buffer, length);        // Double click
                 case 0x07: length =   7; break; // Pick Up Item(s)
                 case 0x08: length =  14; break; // Drop Item(s)
                 case 0x09: length =   5; break; // Single click
@@ -653,7 +653,7 @@ virtual bool cPacketReceiveAttackRequest::execute (pClient client)
         if (length != 5) return false;
 	pPC pc = client->currChar();
 	VALIDATEPCR( pc, false );
-	pChar victim = pointers::findCharBySerPtr(buffer + 1);
+	pChar victim = pointers::findCharBySerPtr(buffer + 1);  //victim may be an npc too, so it is a cChar
 	VALIDATEPCR( victim, false );
 
 	if( pc->dead ) pc->deadAttack(victim);
@@ -663,9 +663,28 @@ virtual bool cPacketReceiveAttackRequest::execute (pClient client)
 }
 
 /*!
-\brief
+\brief Doubleclick Packet
 \author Chronodt
 \param client client who sent the packet
-
-Mostly taken from old network.cpp and modified to pyuo object system
 */
+
+virtual bool cPacketReceiveDoubleclick::execute(cClient client)
+{
+        if (length != 5) return false;
+	pPC pc = client->currChar();
+	VALIDATEPCR( pc, false );
+
+	// the 0x80 bit in the first byte is used later for "keyboard" and should be ignored
+	SERIAL serial = LongFromCharPtr(buffer +1) & 0x7FFFFFFF;
+
+	if (isCharSerial(serial))
+	{
+		pChar pd = pointers::findCharBySerial(serial);
+		ISVALIDPCR(pd, false)
+		pd->doubleClick(client);
+		return true;
+	}
+	pItem pi = pointers::findItemBySerial(serial);
+	VALIDATEPIR(pi, false);  //If it's neither a char nor an item, then it's invalid
+        pi->doubleClick(client);
+}

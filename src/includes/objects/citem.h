@@ -661,6 +661,14 @@ public:
 
 //@{
 /*!
+\name Item Use
+*/
+
+        bool checkItemUsability(pChar pc, int type);    //!< If item can be used with a doubleclick
+        void doubleClick(cClient client);               //!< Use of item
+
+//@{
+/*!
 \name Trigger
 */
 	SI32		trigger;	//!< Trigger number that item activates

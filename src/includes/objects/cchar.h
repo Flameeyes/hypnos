@@ -268,13 +268,19 @@ public:
 	inline const bool hasReflection() const
 	{ return flags & flagReflection; }
 
+        inline const bool hasTelekinesis() const
+        { return flags & flagSpellTelekinesys }
+
 	inline const bool inGuardedArea() const
 	{ return ::region[region].priv & RGNPRIV_GUARDED; }
+
+
 
 	const bool isGrey() const;
 	const bool isOverWeight();
 	const bool canDoGestures() const;
 	const bool inDungeon() const;
+
 
 	//! Sets char's karma
 	inline void setKarma(SI32 newkarma)

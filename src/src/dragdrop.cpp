@@ -490,7 +490,7 @@ void wear_item(NXWCLIENT ps) // Item is dropped on paperdoll
 			ps->sysmsg(TRANSLATE("You are not strong enough to use that."));
 			resetDragging = true;
 		}
-		else if ( !pc->IsGM() && !checkItemUsability(pc, pi, ITEM_USE_WEAR) )
+		else if ( !pc->IsGM() && !pi->checkItemUsability(pc, ITEM_USE_WEAR) )
 		{
 			resetDragging = true;
 		}

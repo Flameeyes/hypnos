@@ -15,7 +15,7 @@
 #ifndef __DBL_SINGLE_CLICK_H__
 #define __DBL_SINGLE_CLICK_H__
 
-void doubleclick(NXWCLIENT ps);
+
 void dbl_click_character(NXWCLIENT ps, P_CHAR target);
 void singleclick(NXWSOCKET  s);
 

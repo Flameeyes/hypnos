@@ -353,6 +353,6 @@ class cPacketReceiveDisconnectNotify    : public cPacketReceive;
 class cPacketReceiveMoveRequest         : public cPacketReceive;
 class cPacketReceiveTalkRequest         : public cPacketReceive;
 class cPacketReceiveAttackRequest       : public cPacketReceive;
-
+class cPacketReceiveDoubleclick         : public cPacketReceive;
 
 #endif
