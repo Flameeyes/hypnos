@@ -749,11 +749,11 @@ pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
                 case 0x80: return new cPacketReceiveLoginRequest(buffer, length); 	// Login Request
                 case 0x83: return new cPacketReceiveDeleteCharacter(buffer, length); 	// Delete Character
                 case 0x91: return new cPacketReceiveGameServerLogin(buffer, length);	// Game Server Login (Server to play selected)
-                case 0x93: return new cPacketReceiveBookUpdateTitle(buffer, length);	// Books – Update Title Page (receive version of packet 0x93)
+                case 0x93: return new cPacketReceiveBookUpdateTitle(buffer, length);	// Books  Update Title Page (receive version of packet 0x93)
                 case 0x95: return new cPacketReceiveDyeItem(buffer, length); 		// Dye item
 
                 //Does this have to be implemented?
-                case 0x98: return NULL; 						// All-names “3D” (3d clients only packet, receive version 7 bytes long)
+                case 0x98: return NULL; 						// All-names 3D (3d clients only packet, receive version 7 bytes long)
 
                 // in old nox is not implemented. Do we need it?
                 case 0x9a: return NULL; 						// Console Entry Prompt
@@ -1050,7 +1050,7 @@ bool cPacketReceiveAttackRequest::execute (pClient client)
 	VALIDATEPCR( victim, false );
 
 	if( pc->dead ) pc->deadAttack(victim);
-	else    if( pc->jailed ) client->sysmessage(TRANSLATE("There is no fighting in the jail cells!"));
+	else    if( pc->jailed ) client->sysmessage("There is no fighting in the jail cells!");
 	        else pc->attackStuff(victim);
         return true;
 }
@@ -1206,14 +1206,14 @@ bool cPacketReceiveActionRequest::execute(pClient client)
 			}
 			if (pc->dead)
                         {
-			        pc->sysmsg(TRANSLATE("Ethereal souls really can't cast spells"));
+			        pc->sysmsg("Ethereal souls really can't cast spells");
        			}
                         else
                         {
 			        if (pc->isFrozen())
                                 {
-				        if (pc->casting) client->sysmsg(TRANSLATE("You are already casting a spell."));
-				        else client->sysmsg(TRANSLATE("You cannot cast spells while frozen."));
+				        if (pc->casting) client->sysmsg("You are already casting a spell.");
+				        else client->sysmsg("You cannot cast spells while frozen.");
         		        }
                                 else
                                 {
@@ -1300,12 +1300,12 @@ bool cPacketReceiveRessChoice::execute(pClient client)
 		pChar murderer=cSerializable::findCharBySerial(client->currChar()->murdererSer);
 		if( murderer && SrvParms->bountysactive )
 		{
-			client->sysmessage(TRANSLATE("To place a bounty on %s, use the command BOUNTY <Amount>."), murderer->getCurrentName().c_str() );
+			client->sysmessage("To place a bounty on %s, use the command BOUNTY <Amount>.", murderer->getCurrentName().c_str() );
 		}
-		client->sysmessage(TRANSLATE("You are now a ghost."));
+		client->sysmessage("You are now a ghost.");
 	}
 	if(buffer[1]==0x01)
-	client->sysmessage(TRANSLATE("The connection between your spirit and the world is too weak."));
+	client->sysmessage("The connection between your spirit and the world is too weak.");
         return true;
 }
 
@@ -1646,7 +1646,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                                 // no longer available and remove it from his/her list.
                                 cPacketSendDeleteObj pk(LongFromCharPtr(buffer + 8));
                                 client->sendPacket(&pk);
-                                client->sysmsg(TRANSLATE("This message has just been deleted by someone else"));
+                                client->sysmsg("This message has just been deleted by someone else");
                         }
                         else
                         {
@@ -1674,7 +1674,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 			// Check privledge level against server.cfg msgpostaccess
 	                if ( !(pc->IsGM()) && !(SrvParms->msgpostaccess) )
                         {
-				client->sysmsg(TRANSLATE("Thou art not allowed to post messages."));
+				client->sysmsg("Thou art not allowed to post messages.");
                                 return false;
                         }
 
@@ -1689,7 +1689,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 					#ifdef DEBUG
 					ErrOut("MsgBoard: Attempted reply to a global or regional post\n");
 					#endif
-					client->sysmessage( TRANSLATE("You can not reply to global or regional posts") );
+					client->sysmessage( "You can not reply to global or regional posts");
 					return false;
                                 }
 			}
@@ -2384,7 +2384,7 @@ bool cPacketReceiveClientVersion::execute(pClient client)
 	std::string clientNumber(buffer + 3); //char* constructor of std::string, takes the null-terminated string
 	if ( clientNumber.size() > 10) client->clientDimension = 3;
         			  else client->clientDimension = 2;
-	client->sysmessage(TRANSLATE("You are using a %iD client, version %s"), client->clientDimension, clientNumber.c_str());
+	client->sysmessage("You are using a %iD client, version %s", client->clientDimension, clientNumber.c_str());
 
 	std::vestor<std::string>::const_iterator viter = find(clientsAllowed.begin(), clientsAllowed.end(), "ALL");
 	if ( viter != clientsAllowed.end() ) return true; // ALL mode found/activated -> quit
@@ -2428,14 +2428,14 @@ bool cPacketReceiveAssistVersion::execute(pClient client)
         if (!nSettings::Server::isEnabledUOAssist() && !version)
         {
         	//! \todo verify if client is able to read message before being disconnected (or while the popup window about disconnection is onscreen)
-                client->sysmessage(TRANSLATE("UO Assist is not allowed here!");
+                client->sysmessage("UO Assist is not allowed here!";
         	client->disconnect();
                 return true;
         }
         else if (nSettings::Server::isEnabledUOAssist() && !version && version != nSettings::Server::getAllowedAssistVersion())
         {
         	//! \todo verify if client is able to read message before being disconnected (or while the popup window about disconnection is onscreen)
-                client->sysmessage(TRANSLATE("Wrong version of UO Assist in use. You used version %s", stringversion.c_str()));
+                client->sysmessage("Wrong version of UO Assist in use. You used version %s", stringversion.c_str());
         	client->disconnect();
                 return true;
         }

@@ -124,30 +124,30 @@ void cChar::modifyFame( int32_t value )
 				if(nChange<=25)
 				{
 					if(nEffect)
-						sysmsg( TRANSLATE("You have gained a little fame."));
+						sysmsg( "You have gained a little fame.");
 					else
-						sysmsg( TRANSLATE("You have lost a little fame."));
+						sysmsg( "You have lost a little fame.");
 				}
 				else if(nChange<=75)
 				{
 					if(nEffect)
-						sysmsg( TRANSLATE("You have gained some fame."));
+						sysmsg( "You have gained some fame.");
 					else
-						sysmsg( TRANSLATE("You have lost some fame."));
+						sysmsg( "You have lost some fame.");
 				}
 				else if(nChange<=100)
 				{
 					if(nEffect)
-						sysmsg( TRANSLATE("You have gained alot of fame."));
+						sysmsg( "You have gained alot of fame.");
 					else
-						sysmsg( TRANSLATE("You have lost alot of fame."));
+						sysmsg( "You have lost alot of fame.");
 				}
 				else if(nChange>100)
 				{
 					if(nEffect)
-						sysmsg( TRANSLATE("You have gained a huge amount of fame."));
+						sysmsg( "You have gained a huge amount of fame.");
 					else
-						sysmsg( TRANSLATE("You have lost a huge amount of fame."));
+						sysmsg( "You have lost a huge amount of fame.");
 				}
 			}
 		}
@@ -220,30 +220,30 @@ void cChar::IncreaseKarma( int32_t value, pChar pKilled )
 				if(nChange<=25)
 				{
 					if(positiveKarmaEffect)
-						sysmsg( TRANSLATE("You have gained a little karma."));
+						sysmsg( "You have gained a little karma.");
 					else
-						sysmsg( TRANSLATE("You have lost a little karma."));
+						sysmsg( "You have lost a little karma.");
 				}
 				else if(nChange<=75)
 				{
 					if(positiveKarmaEffect)
-						sysmsg( TRANSLATE("You have gained some karma."));
+						sysmsg( "You have gained some karma.");
 					else
-						sysmsg( TRANSLATE("You have lost some karma."));
+						sysmsg( "You have lost some karma.");
 				}
 				else if(nChange<=100)
 				{
 					if(positiveKarmaEffect)
-						sysmsg( TRANSLATE("You have gained alot of karma."));
+						sysmsg( "You have gained alot of karma.");
 					else
-						sysmsg( TRANSLATE("You have lost alot of karma."));
+						sysmsg( "You have lost alot of karma.");
 				}
 				else if(nChange>100)
 				{
 					if(positiveKarmaEffect)
-						sysmsg( TRANSLATE("You have gained a huge amount of karma."));
+						sysmsg( "You have gained a huge amount of karma.");
 					else
-						sysmsg( TRANSLATE("You have lost a huge amount of karma."));
+						sysmsg( "You have lost a huge amount of karma.");
 				}
 			}
 		}

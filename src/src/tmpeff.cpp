@@ -549,7 +549,7 @@ void cTempfx::start()
 		case LSD:
 			/*if (dest->getClient() == NULL) return;
 			index = dest->getClient()->toInt();
-			dest->sysmsg(TRANSLATE("Hmmm, tasty, LSD"));
+			dest->sysmsg("Hmmm, tasty, LSD");
 			clientInfo[index]->lsd = true;
 			dest->hp = dest->st;
 			dest->mn = dest->in;
@@ -571,9 +571,9 @@ void cTempfx::start()
 				if (src->war)
 					src->sysmsg("You cannot heal while you are in a fight.");
 				if (!m_nMore2)
-					src->sysmsg(TRANSLATE("You start healing..."));
+					src->sysmsg("You start healing...");
 				else
-					src->sysmsg(TRANSLATE("You continue to heal..."));
+					src->sysmsg("You continue to heal...");
 			}
 			break;
 
@@ -599,7 +599,7 @@ void cTempfx::start()
 
 		case CRIMINAL:
 			dest->SetCriminal();
-			dest->sysmsg( TRANSLATE("You are now a criminal!") );
+			dest->sysmsg( "You are now a criminal!");
 			break;
 
 		case SPELL_TELEKINESYS:
@@ -735,7 +735,7 @@ void cTempfx::executeExpireCode()
 			if (m_nMore1 == 0)
 			{
 				if (m_nMore2 != 0)
-					dest->emoteall(TRANSLATE("*%s continues grinding.*"), 1, dest->getCurrentName().c_str());
+					dest->emoteall("*%s continues grinding.*", 1, dest->getCurrentName().c_str());
 
 				dest->playSFX(0x242);
 			}
@@ -805,7 +805,7 @@ void cTempfx::executeExpireCode()
 			/*if (dest->getClient() == NULL) return;
 			index = dest->getClient()->toInt();
 			clientInfo[index]->lsd = false;
-			dest->sysmsg(TRANSLATE("LSD has worn off"));
+			dest->sysmsg("LSD has worn off");
 			dest->stm = 3;
 			dest->mn = 3;
 			dest->hp /= 7;
@@ -837,7 +837,7 @@ void cTempfx::executeExpireCode()
 
 		case GM_HIDING:
 			if ( ! dest ) return;
-			dest->sysmsg(TRANSLATE("You have hidden yourself well."));
+			dest->sysmsg("You have hidden yourself well.");
 			dest->setHidden(htBySkill);
 			dest->teleport( TELEFLAG_NONE );
 			break;
@@ -845,7 +845,7 @@ void cTempfx::executeExpireCode()
 		case GM_UNHIDING:
 			if ( ! dest ) return;
 			dest->unHide();
-			dest->sysmsg(TRANSLATE("You are now visible."));
+			dest->sysmsg("You are now visible.");
 			break;
 
 		case HEALING_DELAYHEAL:
@@ -856,7 +856,7 @@ void cTempfx::executeExpireCode()
 				return;
 			}
 			dest->hp = min(dest->hp + m_nMore1, (int32_t)dest->getStrength());
-			dest->sysmsg(TRANSLATE("After receiving some healing, you feel better."));
+			dest->sysmsg("After receiving some healing, you feel better.");
 			dest->updateStats(STAT_HP);
 			if (!m_nMore2)
 				add(src, dest, m_nNum, m_nMore1 +1, 1, m_nMore3);
@@ -876,7 +876,7 @@ void cTempfx::executeExpireCode()
 		case CRIMINAL:
 			VALIDATEPC( dest );
 			dest->SetInnocent();
-			dest->sysmsg(TRANSLATE("You are no longer a criminal."));
+			dest->sysmsg("You are no longer a criminal.");
 			break;
 
 		case SPELL_TELEKINESYS:

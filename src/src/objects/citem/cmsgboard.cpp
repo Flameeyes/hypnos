@@ -298,15 +298,15 @@ void cMsgBoard::getPostType( pClient client )
 	switch ( type )
 	{
 		case LOCALPOST: // LOCAL post
-			client->sysmessage( TRANSLATE("Currently posting LOCAL messages") );
+			client->sysmessage("Currently posting LOCAL messages");
 			break;
 
 		case REGIONALPOST: // REGIONAL post
-			client->sysmessage( TRANSLATE("Currently posting REGIONAL messages") );
+			client->sysmessage("Currently posting REGIONAL messages");
 			break;
 
 		case GLOBALPOST: // GLOBAL POST
-			client->sysmessage( TRANSLATE("Currently posting GLOBAL messages" ));
+			client->sysmessage("Currently posting GLOBAL messages");
 			break;
 	}
 	return;
@@ -332,15 +332,15 @@ void cMsgBoard::setPostType( pClient client, PostType nPostType )
 	switch ( nPostType )
 	{
 		case LOCALPOST: // LOCAL post
-			client->sysmessage( TRANSLATE("Post type set to LOCAL" ));
+			client->sysmessage("Post type set to LOCAL");
 			break;
 
 		case REGIONALPOST: // REGIONAL post
-			client->sysmessage( TRANSLATE("Post type set to REGIONAL") );
+			client->sysmessage("Post type set to REGIONAL");
 			break;
 
 		case GLOBALPOST: // GLOBAL POST
-			client->sysmessage( TRANSLATE("Post type set to GLOBAL") );
+			client->sysmessage("Post type set to GLOBAL");
 			break;
 	}
 	return;

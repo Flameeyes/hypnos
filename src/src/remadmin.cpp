@@ -70,7 +70,7 @@ RemoteAdmin::~RemoteAdmin()
 void RemoteAdmin::Init()
 {
 	int bcode;
-	ConOut( TRANSLATE("Initializing remote administration server..."));
+	ConOut( "Initializing remote administration server...");
 	
 	rac_port = ServerScp::g_nRacTCPPort;
 	

@@ -172,13 +172,13 @@ void Fishing::target_fish( NXWCLIENT ps, pTarget t )
 
 	if( dist( charpos, whereFish )>6.0 )	// too far away from target
 	{
-		ps->sysmsg(TRANSLATE("You are too far away to reach that"));
+		ps->sysmsg("You are too far away to reach that");
 		return;
 	}
 
 	if( !isWaterTarget(s) )	// target is not a water tile
 	{
-		ps->sysmsg(TRANSLATE("You can only fish in water !!"));
+		ps->sysmsg("You can only fish in water !!");
 		return;
 	}
 	
@@ -214,7 +214,7 @@ void Fishing::Fish(CHARACTER i)
 	if(pc->stm<=2) //Luxor bug fix
 	{
 		pc->stm=0;
-		pc->sysmsg( TRANSLATE("You are too tired to fish, you need to rest!"));
+		pc->sysmsg("You are too tired to fish, you need to rest!");
 		return;
 	}
 
@@ -222,7 +222,7 @@ void Fishing::Fish(CHARACTER i)
 		
 	if(!pc->checkSkill( FISHING, 0, 1000))
 	{
-		pc->sysmsg( TRANSLATE("You fish for a while, but fail to catch anything."));
+		pc->sysmsg("You fish for a while, but fail to catch anything.");
 		return;
 	}
 
@@ -236,86 +236,86 @@ void Fishing::Fish(CHARACTER i)
             if(skill>=200) 
 			{ 
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "5" ); // random boots
-				pc->sysmsg(  TRANSLATE("You fished up an old pair of boots!") ); 
+				pc->sysmsg("You fished up an old pair of boots!");
 			} 
             break;
 		case 1:
             if(skill>=970) 
 			{ 
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "1" ); // random paintings 
-				pc->sysmsg(  TRANSLATE("You fished up an ancient painting!") ); 
+				pc->sysmsg("You fished up an ancient painting!"); 
 			} 
             break;
 		case 2:
             if(skill>=950) 
 			{ 
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "2" ); // random weapons 
-				pc->sysmsg(  TRANSLATE("You fished up an ancient weapon!") ); 
+				pc->sysmsg(("You fished up an ancient weapon!");
 			} 
             break;
 		case 3:
             if(skill>=950) 
 			{ 
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "3" ); // random armor 
-				pc->sysmsg(  TRANSLATE("You fished up an ancient armor!") ); 
+				pc->sysmsg("You fished up an ancient armor!");
 			} 
             break;
 		case 4:
             if(skill>=700) 
 			{ 
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "4" ); // random treasure
-				pc->sysmsg(  TRANSLATE("You fished up some treasure!") ); 
+				pc->sysmsg("You fished up some treasure!");
 			} 
             break;
 		case 5:
             if(skill>=400) 
 			{ 
 				if (SpawnFishingMonster( pc, "fishing.scp", "MONSTERLIST", "7" ) != -1) // random monsters 
-					pc->sysmsg(  TRANSLATE("You fished up a hughe fish!") );
+					pc->sysmsg("You fished up a hughe fish!");
 				else
-					pc->sysmsg(  TRANSLATE("You wait for a while, but nothing happens"));
+					pc->sysmsg("You wait for a while, but nothing happens");
 			} 
             break;
 		case 6:
             if(skill>=800) 
 			{
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "6" ); // random chests
-				pc->sysmsg(  TRANSLATE("You fished up an old chest!") );
+				pc->sysmsg("You fished up an old chest!");
 			} 
             break;
 		case 7:
             if(skill>=700) 
 			{
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "8" ); // random seashells
-				pc->sysmsg(  TRANSLATE("You fished up a seashell!") );
+				pc->sysmsg("You fished up a seashell!");
 			} 
             break;
 		case 8:
             if(skill>=700) 
 			{
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "9" ); // random skulls
-				pc->sysmsg(  TRANSLATE("You fished up a skull!") );
+				pc->sysmsg("You fished up a skull!");
 			} 
             break;
 		case 9:
             if(skill>=900) 
 			{
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "10" ); // random nets
-				pc->sysmsg(  TRANSLATE("You fished up a net!") );
+				pc->sysmsg("You fished up a net!");
 			} 
             break;
 		case 10:
             if(skill>=900) 
 			{
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "11" ); // random gold
-				pc->sysmsg(  TRANSLATE("You fished up some gold!") );
+				pc->sysmsg("You fished up some gold!");
 			} 
             break;
 		case 11:
             if(skill>=400) 
 			{
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "12" ); // random bones
-				pc->sysmsg(  TRANSLATE("You fished up some bones!") );
+				pc->sysmsg("You fished up some bones!");
 			} 
             break;
 		default: {
@@ -364,13 +364,8 @@ void Fishing::Fish(CHARACTER i)
 		}
 	}
 
-	if(color>0)
-	{
-		pc->sysmsg(TRANSLATE("You pull out an exotic fish!"));
-	}
+	if(color)
+		pc->sysmsg("You pull out an exotic fish!");
 	else
-	{
-		pc->sysmsg(TRANSLATE("You pull out a fish!"));
-	}
+		pc->sysmsg("You pull out a fish!");
 }
-

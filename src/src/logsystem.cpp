@@ -62,7 +62,7 @@ LogFile::LogFile(char *format, ...)
 
 	if( file==NULL )
 	{
-		ErrOut(TRANSLATE("unable to open/create log file %s"), tmp);
+		ErrOut("unable to open/create log file %s", tmp);
 		return;
 	}
 }
@@ -81,7 +81,7 @@ LogFile::LogFile(string name)
 
 	if( file==NULL )
 	{
-		ErrOut(TRANSLATE("unable to open/create log file %s"), tmp.c_str());
+		ErrOut("unable to open/create log file %s", tmp.c_str());
 		return;
 	}
 }
@@ -120,7 +120,7 @@ void LogFile::Write(char *format, ...)
 
 	if( fwrite(tmp, strlen(tmp), 1, file)==0 )
 	{
-		ErrOut(TRANSLATE("Unable to write to log file %s"), filename);
+		ErrOut("Unable to write to log file %s", filename);
 	}
 }
 
@@ -138,7 +138,7 @@ void LogFile::Write(string str)
 
 	if( fwrite(tmp, strlen(tmp), 1, file)==0 )
 	{
-		ErrOut(TRANSLATE("Unable to write to log file %s"), filename);
+		ErrOut("Unable to write to log file %s", filename);
 	}
 }
 

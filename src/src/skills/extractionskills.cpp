@@ -156,15 +156,15 @@ static bool canMine( pChar pc, pItem weapon )
 			case 0x0F39	:
 			case 0x0F3A	:
 				if (pc->isMounting())
-					pc->sysmsg( TRANSLATE("You cant mine while on a horse!"));
+					pc->sysmsg( "You cant mine while on a horse!");
 				else
 					if( !pc->IsGM() && (ores.stamina<0) && (abs( ores.stamina )>pc->stm) )
-						pc->sysmsg( TRANSLATE("You are too tired to mine."));
+						pc->sysmsg( "You are too tired to mine.");
 					else
 						return true;
 				break;
 			default :
-				pc->sysmsg( TRANSLATE("You must have a pickaxe or shovel in hand in order to mine."));
+				pc->sysmsg( "You must have a pickaxe or shovel in hand in order to mine.");
 		}
 
 	return false;
@@ -213,7 +213,7 @@ void Skills::target_mine( NXWCLIENT ps, pTarget t )
 
 	if( (cx>5) || (cy>5) )
 	{
-		pc->sysmsg(TRANSLATE("You are to far away to reach that"));
+		pc->sysmsg("You are to far away to reach that");
 		return;
 	}
 
@@ -273,7 +273,7 @@ void Skills::target_mine( NXWCLIENT ps, pTarget t )
 
 	if ((SrvParms->minecheck!=0)&&(!floor)&&(!mountain))//Mine only mountains & floors
 	{
-		pc->sysmsg(TRANSLATE("You can't mine that!"));
+		pc->sysmsg("You can't mine that!");
 		return;
 	}
 
@@ -283,7 +283,7 @@ void Skills::target_mine( NXWCLIENT ps, pTarget t )
 
 	if( !ores.thereAreSomething( res ) )
 	{
-		pc->sysmsg(TRANSLATE("There is no metal here to mine."));
+		pc->sysmsg("There is no metal here to mine.");
 		return;
 	}
 
@@ -296,7 +296,7 @@ void Skills::target_mine( NXWCLIENT ps, pTarget t )
 
 	if(!pc->checkSkill(skMining, 0, 1000))
 	{
-		pc->sysmsg(TRANSLATE("You sifted thru the dirt and rocks, but found nothing useable."));
+		pc->sysmsg("You sifted thru the dirt and rocks, but found nothing useable.");
 		if( rand()%2==1)
 			return; //Randomly deplete resources even when they fail 1/2 chance you'll loose ore.
 	}

@@ -146,7 +146,7 @@ void prison::release( pChar releaser, pChar pc )
 
 	if( ! releaser ) {
 		ServerLog.Write("%s is auto-released from jail \n", pc->getCurrentName().c_str());
-		pc->sysmsg(TRANSLATE( "Your jail time is over!" ));
+		pc->sysmsg("Your jail time is over!");
 	}
 	else {
 		releaser->sysmsg("%s is now free", pc->getCurrentName().c_str());

@@ -1266,7 +1266,7 @@ void CWorldMain::saveNewWorld()
 
 	Accounts->SaveAccounts();
 
-	sysbroadcast(TRANSLATE("World data saving..."));
+	sysbroadcast("World data saving...");
 
 
 	InfoOut("World data saving..." );
@@ -1345,7 +1345,7 @@ void CWorldMain::saveNewWorld()
 	Books::safeoldsave();
 	Books::SaveBooks();
 
-	sysbroadcast(TRANSLATE("Worldsave Done!\n"));
+	sysbroadcast("Worldsave Done!\n");
 
 	ConOut(" [DONE]\n");
 

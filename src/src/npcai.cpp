@@ -200,7 +200,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 	if (spherespells[sphere][spell]<0) {
 		//summon an NPC
 		if (pc_att->mn>=40) {
-			pc_att->emoteall(TRANSLATE("*Doing a summoning ritual.*"),1);
+			pc_att->emoteall("*Doing a summoning ritual.*",1);
 			AddNPC(INVALID, NULL, -spherespells[sphere][spell], pc_def->getPosition());
 			pc_att->mn -= 40;
 		}

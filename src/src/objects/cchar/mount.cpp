@@ -34,19 +34,19 @@ void cChar::mountHorse( pNPC mount )
 
 	if ( client->currAccount()->getPrivLevel() < cAccount::privCounselor && mount->getOwner() != this )
 	{
-		sysmsg(TRANSLATE("You dont own that creature."));
+		sysmsg("You dont own that creature.");
 		return;
 	}
 
 	if ( body->isMounted() )
 	{
-		sysmsg( TRANSLATE("You are already on a mount."));
+		sysmsg("You are already on a mount.");
 		return;
 	}
 
 	std::map<int32_t,int32_t>::iterator iter = mountinfo.find(mount->getId());
 	if( iter==mountinfo.end() ) { //not mountable creature
-		sysmsg( "This is not a mountable creature" );
+		sysmsg("This is not a mountable creature");
 		return;
 	}
 

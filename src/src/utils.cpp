@@ -83,7 +83,7 @@ void cScriptCommand::execute( pClient client )
 		item::CreateFromScript( (char*)itemnum.c_str(), pc->getBackpack(), am );
 		return;
 	} else if ( command == "INFORMATION" ) {
-		sysmessage(s, TRANSLATE("Connected players [%i out of %i accounts] Items [] Characters []"),
+		sysmessage(s, "Connected players [%i out of %i accounts] Items [] Characters []",
 			now,Accounts->Count());
 		return;
 	} else if ( command == "NPC" ) {
@@ -311,7 +311,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 	char changed=0;
 
 	/*if (pc && ( !pc->hasInRange(pi, 2) ) && s>INVALID) {
-		sysmessage(s, TRANSLATE("You cannot reach the handle from here"));
+		sysmessage(s, "You cannot reach the handle from here");
 		return;
 	}*/
 
@@ -484,9 +484,9 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 						if (ds>=50) // sysmessage iff decay status >=50%
 						{
 							if (houseowner_serial!= pc->getSerial())
-								sysmessage(s,TRANSLATE("You refreshed your friend's house"));
+								sysmessage(s,"You refreshed your friend's house");
 							else
-								sysmessage(s,TRANSLATE("You refreshed the house"));
+								sysmessage(s,"You refreshed the house");
 						}
 					}
 
@@ -499,7 +499,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 	}
 
 	if (changed==0 && s>INVALID)
-		sysmessage(s, TRANSLATE("This doesnt seem to be a valid door type. Contact a GM."));
+		sysmessage(s, "This doesnt seem to be a valid door type. Contact a GM.");
 }
 
 void endmessage(int x) // If shutdown is initialized

@@ -120,7 +120,7 @@ namespace Commands
 
 	//	unsigned int currenttime=uiCurrentTime;
 
-		sysbroadcast(TRANSLATE("Spawn %d is spawning all items/NPCs, this will cause some lag."), r);
+		sysbroadcast("Spawn %d is spawning all items/NPCs, this will cause some lag.", r);
 
 		Spawns->doSpawnAll( r );
 
@@ -145,7 +145,7 @@ namespace Commands
 				sysmessage(s, temps);
 				n=spawn;
 			}
-			sprintf(temps, TRANSLATE("Region %d is Spawning %d NPCs/items, this will cause some lag."), r-1, spawn);
+			sprintf(temps, "Region %d is Spawning %d NPCs/items, this will cause some lag.", r-1, spawn);
 			sysbroadcast(temps);
 
 			for(i=1;i<spawn;i++)
@@ -165,7 +165,7 @@ namespace Commands
 	{
 	return;
 	/*	int i;
-		sysmessage(s,TRANSLATE("Killing all characters, this may cause some lag..."));
+		sysmessage(s,"Killing all characters, this may cause some lag...");
 		sysbroadcast(sysmsg);
 		for(i=0;i<charcount;i++)
 		{
@@ -223,8 +223,8 @@ namespace Commands
 		}
 		if(x2==0)
 		{
-			pc_currchar->sysmsg(TRANSLATE("The Counselor Queue is currently full. Contact the shard operator"));
-			pc_currchar->sysmsg(TRANSLATE("and ask them to increase the size of the queue."));
+			pc_currchar->sysmsg("The Counselor Queue is currently full. Contact the shard operator");
+			pc_currchar->sysmsg("and ask them to increase the size of the queue.");
 		}
 		else
 		{
@@ -253,11 +253,11 @@ namespace Commands
 				free(temp);
 				
 				if (found)
-					pc_currchar->sysmsg(TRANSLATE("Available Counselors have been notified of your request."));
+					pc_currchar->sysmsg("Available Counselors have been notified of your request.");
 				else
-					pc_currchar->sysmsg(TRANSLATE("There was no Counselor available to take your call."));
+					pc_currchar->sysmsg("There was no Counselor available to take your call.");
 			}
-			else pc_currchar->sysmsg(TRANSLATE("Please enter the reason for your Counselor request"));
+			else pc_currchar->sysmsg("Please enter the reason for your Counselor request");
 		}
 	}
 
@@ -420,7 +420,7 @@ namespace Commands
 				pi->Delete();
 		}
 
-		sysbroadcast( TRANSLATE("All items have been wiped") );
+		sysbroadcast("All items have been wiped");
 	}
 
 

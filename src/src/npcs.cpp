@@ -62,7 +62,7 @@ void SpawnGuard(pChar pc, pChar pc_i, int x, int y, signed char z)
 		  pc_c->staticFX(0x372A, 9, 6);
 
 		  pc_c->teleport();
-		  pc_c->talkAll(TRANSLATE("Thou shalt regret thine actions, swine!"),1);
+		  pc_c->talkAll("Thou shalt regret thine actions, swine!",1);
 		}
 	}
 

@@ -66,29 +66,24 @@ void cNPC::checkAI()
 
 			if( npcWander == WANDER_FLEE )
 				return;
+				
+			if ( ! shopkeeper )
+				break;
 
-			if( shopkeeper )
-			{
-				NxwCharWrapper sc;
-				sc.fillCharsNearXYZ( getPosition(), 3, true, true );
-				for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-					pChar pj=sc.getChar();
-					if (pj->getSerial() == getSerial()) continue; //Luxor
+			NxwCharWrapper sc;
+			sc.fillCharsNearXYZ( getPosition(), 3, true, true );
+			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
+				pChar pj=sc.getChar();
+				if (pj->getSerial() == getSerial()) continue; //Luxor
 
-					if( pj->dead )
-						continue;
+				if( pj->dead )
+					continue;
 
-					if( pj->hidden )
-						continue;
-					// Stop talking npcs to each other
-					if( pj->IsInnocent() && !pj->npc )
-					{
-						char *temp;
-						asprintf(&temp,TRANSLATE("Hello %s, Welcome to my shop, How may i help thee?."), pj->getCurrentName().c_str());
-						talkAll( temp, 1);
-						free(temp);
-					}
-				}
+				if( pj->hidden )
+					continue;
+				// Stop talking npcs to each other
+				if( pj->IsInnocent() && !pj->npc )
+					talkAll("Hello %s, Welcome to my shop, How may i help thee?.", true, pj->getCurrentName().c_str());
 			}
 			break;
 		case NPCAI_HEALER: // good healers
@@ -110,9 +105,9 @@ void cNPC::checkAI()
 			  	if ( !pj->IsInnocent() || pj->IsCriminal() || pj->IsMurderer())
 			  	{
 			  		if (pj->IsMurderer())
-			  			talkAll(TRANSLATE("I will nay give life to a scoundrel like thee!"), 1);
+			  			talkAll("I will nay give life to a scoundrel like thee!", 1);
 			  		else if (pj->IsCriminal())
-						talkAll(TRANSLATE("I will nay give life to thee for thou art a criminal!"), 1);
+						talkAll("I will nay give life to thee for thou art a criminal!", 1);
 
 			  		continue;
 			  	}
@@ -122,11 +117,11 @@ void cNPC::checkAI()
 				pj->staticFX(0x376A, 1, 0, NULL);
 				switch(RandomNum(0, 4))
 				{
-					case 0: talkAll(TRANSLATE("Thou art dead, but 'tis within my power to resurrect thee.	Live!"), 1); break;
-					case 1: talkAll(TRANSLATE("Allow me to resurrect thee ghost.  Thy time of true death has not yet come."), 1); break;
-					case 2: talkAll(TRANSLATE("Perhaps thou shouldst be more careful.	Here, I shall resurrect thee."), 1); break;
-					case 3: talkAll(TRANSLATE("Live again, ghost!	Thy time in this world is not yet done."), 1); break;
-					case 4: talkAll(TRANSLATE("I shall attempt to resurrect thee."), 1); break;
+					case 0: talkAll("Thou art dead, but 'tis within my power to resurrect thee. Live!", 1); break;
+					case 1: talkAll("Allow me to resurrect thee ghost.  Thy time of true death has not yet come.", 1); break;
+					case 2: talkAll("Perhaps thou shouldst be more careful.	Here, I shall resurrect thee.", 1); break;
+					case 3: talkAll("Live again, ghost!	Thy time in this world is not yet done.", 1); break;
+					case 4: talkAll("I shall attempt to resurrect thee.", 1); break;
 				}
 
 			}
@@ -242,7 +237,7 @@ void cNPC::checkAI()
 					continue;
 				if (pj->getSerial() == getSerial()) continue; //Luxor
 				if ( pj->IsInnocent() ) {
-					talkAll(TRANSLATE("I despise all things good. I shall not give thee another chance!"), 1);
+					talkAll("I despise all things good. I shall not give thee another chance!", 1);
 					continue;
 				}
 				playAction(0x10);
@@ -250,11 +245,11 @@ void cNPC::checkAI()
 				pj->staticFX(0x3709, 1, 0, NULL);
 				switch (RandomNum(0,4))
 				{
-					case 0:	talkAll(TRANSLATE("Fellow minion of Mondain, Live!!"), 1); break;
-					case 1:	talkAll(TRANSLATE("Thou has evil flowing through your vains, so I will bring you back to life."), 1); break;
-					case 2:	talkAll(TRANSLATE("If I res thee, promise to raise more hell!."), 1); break;
-					case 3:	talkAll(TRANSLATE("From hell to Britannia, come alive!."), 1); break;
-					case 4:	talkAll(TRANSLATE("Since you are Evil, I will bring you back to consciouness."), 1); break;
+					case 0:	talkAll("Fellow minion of Mondain, Live!!", 1); break;
+					case 1:	talkAll("Thou has evil flowing through your vains, so I will bring you back to life.", 1); break;
+					case 2:	talkAll("If I res thee, promise to raise more hell!.", 1); break;
+					case 3:	talkAll("From hell to Britannia, come alive!.", 1); break;
+					case 4:	talkAll("Since you are Evil, I will bring you back to consciouness.", 1); break;
 
 				}
 			}
@@ -279,9 +274,9 @@ void cNPC::checkAI()
 
 				switch (RandomNum(0,2))
 				{
-					case 0: talkAll(TRANSLATE("Could thou spare a few coins?"), 1); break;
-					case 1: talkAll(TRANSLATE("Hey buddy can you spare some gold?"), 1); break;
-					case 2: talkAll(TRANSLATE("I have a family to feed, think of the children."), 1); break;
+					case 0: talkAll("Could thou spare a few coins?", 1); break;
+					case 1: talkAll("Hey buddy can you spare some gold?", 1); break;
+					case 2: talkAll("I have a family to feed, think of the children.", 1); break;
 					default: break;
 				}
 			}
@@ -353,7 +348,7 @@ void cNPC::checkAI()
 								ftargserial = INVALID;
 							}
 
-							talkAll(TRANSLATE("Thou shalt regret thine actions, swine!"), 1);
+							talkAll("Thou shalt regret thine actions, swine!", 1);
 							fight( character );
 							return;
 						}
@@ -467,31 +462,31 @@ void cNPC::checkAI()
 					{
 						case 0:
 							beginCasting(pj, magic::SPELL_CURSE);
-							talkAll(TRANSLATE("You are ridiculous"), 1);
+							talkAll("You are ridiculous", 1);
 							break;
 						case 1:
 							beginCasting(pj, magic::SPELL_FLAMESTRIKE);
-							talkAll(TRANSLATE("Die unusefull mortal!"), 1);
+							talkAll("Die unusefull mortal!", 1);
 							break;
 						case 2:
 							beginCasting(pj, magic::SPELL_PARALYZE);
-							talkAll(TRANSLATE("What are you doing? Come here and Die!"), 1);
+							talkAll("What are you doing? Come here and Die!", 1);
 							break;
 						case 3:
 							beginCasting(pj, magic::SPELL_LIGHTNING);
-							talkAll(TRANSLATE("Stupid Mortal I'll crush you as a fly"), 1);
+							talkAll("Stupid Mortal I'll crush you as a fly", 1);
 							break;
 						case 4:
 							beginCasting(pj, magic::SPELL_LIGHTNING);
-							talkAll(TRANSLATE("Stupid Mortal I'll crush you as a fly"), 1);
+							talkAll("Stupid Mortal I'll crush you as a fly", 1);
 							break;
 						case 5:
 							beginCasting(pj, magic::SPELL_EXPLOSION);
-							talkAll(TRANSLATE("Die unusefull mortal!"), 1);
+							talkAll("Die unusefull mortal!", 1);
 							break;
 						case 6:
 							beginCasting(pj, magic::SPELL_EXPLOSION);
-							talkAll(TRANSLATE("Die unusefull mortal!"), 1);
+							talkAll("Die unusefull mortal!", 1);
 							break;
 					}
 				}

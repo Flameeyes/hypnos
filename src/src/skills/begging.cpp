@@ -50,13 +50,13 @@ void Begging::target(NXWCLIENT ps, pTarget t)
 	// Not used on human
 	if( !pc->getBody()->isHuman() || !pc->getBody()->getIntelligence() )
 	{
-		sysmessage(s, TRANSLATE("That would be foolish."));
+		sysmessage(s, "That would be foolish.");
 		return;
 	}
 
 	if (pc->begging_timer >= uiCurrentTime)
 	{
-		pc->talk(s,TRANSLATE("Annoy someone else!"),1);
+		pc->talk(s,"Annoy someone else!",1);
 		return;
 	}
 	
@@ -64,7 +64,7 @@ void Begging::target(NXWCLIENT ps, pTarget t)
 	
 	if (!pcc->checkSkill( skiBegging, 0, 1000))
 	{
-		sysmessage(s,TRANSLATE("They seem to ignore your begging plees."));
+		sysmessage(s,"They seem to ignore your begging plees.");
 		return;
 	}
 	
@@ -91,13 +91,13 @@ void Begging::target(NXWCLIENT ps, pTarget t)
 	
 	if (!gold)
 	{
-		pc->talk(s,TRANSLATE("Sorry, I'm poor myself"),1);
+		pc->talk(s,"Sorry, I'm poor myself",1);
 		return;
 	}
 	
-	pc->talkAll(TRANSLATE("Ohh thou lookest so poor, Here is some gold I hope this will assist thee."),0); // zippy
+	pc->talkAll("Ohh thou lookest so poor, Here is some gold I hope this will assist thee.",0); // zippy
 	pcc->addGold(gold);
-	sysmessage(s,TRANSLATE("Some gold is placed in your pack."));
+	sysmessage(s,"Some gold is placed in your pack.");
 
 	// TODO need to update to new event system
 //	AMXEXECSVTARGET( pcc->getSerial(),AMXT_SKITARGS,skBegging,AMX_AFTER);

@@ -90,7 +90,7 @@ void cChar::doubleClick(pClient client)
 						if (pack )
 						{
 							clicker->showContainer(pack);
-							clicker->sysmsg(TRANSLATE("You successfully snoop the pack animal.") );
+							clicker->sysmsg("You successfully snoop the pack animal.");
 							SetTimerSec( &(clicker->objectdelay), SrvParms->objectdelay+SrvParms->snoopdelay );
 						}
 						else
@@ -98,7 +98,7 @@ void cChar::doubleClick(pClient client)
 					}
 					else
 					{
-						clicker->sysmsg( TRANSLATE("You failed to snoop the pack animal.") );
+						clicker->sysmsg("You failed to snoop the pack animal.");
 						clicker->IncreaseKarma( - nSettings::Skills::getSnoopKarmaLoss() );
 						clicker->modifyFame( - nSettings::Skills::getSnoopFameLoss() );
 						//!\todo should investigate
@@ -118,7 +118,7 @@ void cChar::doubleClick(pClient client)
 		case BODY_GMSTAFF	:
 			if (npc && npcaitype==NPCAI_PLAYERVENDOR)//PlayerVendors
 			{
-				talk(client,TRANSLATE("Take a look at my goods."),0);
+				talk(client,"Take a look at my goods.",0);
 				if ( pack)
                                         clicker->showContainer(pack);
 			}
@@ -164,28 +164,25 @@ void cChar::doubleClick(pClient client)
 				{
 					//cannot ride animals under polymorph effect
 					if ( clicker->polymorph) {
-						pc->sysmsg( TRANSLATE("You cannot ride anything under polymorph effect."));
+						pc->sysmsg("You cannot ride anything under polymorph effect.");
 					}
 					else
 						if ( clicker->dead) {
-							pc->sysmsg(TRANSLATE("You are dead and cannot do that."));
+							pc->sysmsg("You are dead and cannot do that.");
 						}
 						else
 							if (war) {
-								clicker->sysmsg(TRANSLATE("Your pet is in battle right now!"));
+								clicker->sysmsg("Your pet is in battle right now!");
 							}
 							else
 								clicker->mounthorse( this);
-
-
 				}
 				else  {
-					clicker->sysmsg( TRANSLATE("You need to get closer."));
+					clicker->sysmsg("You need to get closer.");
 				}
 			}
 		return;
 	}
 
-	clicker->sysmsg(TRANSLATE("You cannot open monsters paperdolls."));
+	clicker->sysmsg("You cannot open monsters paperdolls.");
 }
-
