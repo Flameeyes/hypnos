@@ -45,7 +45,7 @@ cCommand::cCommand(std::string& name, int8_t number ,AmxFunction* callback) {
 }
 
 
-int8_t cCommand::getCommandLevel(P_COMMAND cmd) {
+int8_t cCommand::getCommandLevel(pCommand cmd) {
 	return cmd->cmd_level;
 }
 
@@ -78,9 +78,9 @@ cCommandMap::cCommandMap() {
 }
 
 
-P_COMMAND cCommandMap::addGmCommand(std::string name, int8_t priv, AmxFunction* callback) {
+pCommand cCommandMap::addGmCommand(std::string name, int8_t priv, AmxFunction* callback) {
 
-	P_COMMAND cmd= new cCommand(name, priv, callback);
+	pCommand cmd= new cCommand(name, priv, callback);
     command_map[name]= cmd;
  	return cmd;
 }
@@ -90,7 +90,7 @@ P_COMMAND cCommandMap::addGmCommand(std::string name, int8_t priv, AmxFunction* 
 
 bool cCommandMap::Check( string& text ){
 
-	std::map< std::string, P_COMMAND >::iterator iter( command_map.find( text ) );
+	std::map< std::string, pCommand >::iterator iter( command_map.find( text ) );
 
 	if ( iter == command_map.end() )	//command not exists
 		return false;
@@ -103,10 +103,10 @@ bool cCommandMap::Check( string& text ){
 
 
 
-P_COMMAND cCommandMap::findCommand(std::string name){
+pCommand cCommandMap::findCommand(std::string name){
 
 		
-	std::map< std::string, P_COMMAND >::iterator iter( command_map.find( "name" ) );
+	std::map< std::string, pCommand >::iterator iter( command_map.find( "name" ) );
 
 	if ( iter != command_map.end() )	//command exists
 		return iter->second;
@@ -194,7 +194,7 @@ void Command(NXWSOCKET  s, char* speech) // Client entred a command like 'ADD
 		// Let's ignore the command prefix;
 		comm = nonuni + 1;
 
-		P_COMMAND p_cmd= commands->findCommand((char*)comm);
+		pCommand p_cmd= commands->findCommand((char*)comm);
 		
 		
 		NXWCLIENT client= getClientFromSocket(s);

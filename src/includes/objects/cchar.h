@@ -6,9 +6,9 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
- \file chars.h
- \brief Declaration of cChar class
- */
+\file
+\brief Declaration of cChar class
+*/
 #ifndef __CHARS_H
 #define __CHARS_H
 
@@ -119,6 +119,7 @@ class cPath;
 class ClientCrypt;
 
 /*!
+\class cChar cchar.h "objects/cchar.h"
 \brief Character class
 */
 class cChar : public cSerializable
@@ -202,12 +203,13 @@ public:
 	static const uint64_t flagIsGuarded		= 0x0000000000400000ull;
 //@}
 
-//@}
+//@{
 /*!
 \name Char Status
 */
 protected:
-	HideType hidden; //!< Hide status of the char \see HideType
+	HideType hidden; //!< Hide status of the char
+			 //!< \see HideType
 	
 	uint64_t flags;	//!< Flags for the character
 

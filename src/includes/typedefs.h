@@ -66,6 +66,16 @@ typedef class cSerializable *pSerializable;	//!< Pointer to cSerializable
 typedef std::map<uint32_t, pSerializable> SerializableMap;
 						//!< Map of serializable objects (items, chars..)
 
+typedef class cBody* pBody;			//!< Pointer to a cBody
+
+typedef class cChar *pChar;			//!< Pointer to a cChar (character)
+typedef std::list<pChar> CharList;		//!< List of characters
+typedef class cPC *pPC;				//!< Pointer to a pPC (playing character)
+typedef std::vector<pPC> PCVector;		//!< Vector of playing characters
+typedef class cNPC *pNPC;			//!< Pointer to a pNPC (non playing character)
+
+//@}
+
 //@{
 /*!
 \name Items and subclasses
@@ -81,16 +91,6 @@ typedef class cMsgBoard *pMsgBoard;		//!< Pointer to a cMsgBoard
 typedef class cMap *pMap;			//!< Pointer to a cMap
 typedef class cEquippableContainer *pEquippableContainer;
 						//!< Pointer to a cEquippableContainer (backpacks, bank boxes)
-//@}
-
-typedef class cBody* pBody;			//!< Pointer to a cBody
-
-typedef class cChar *pChar;			//!< Pointer to a cChar (character)
-typedef std::list<pChar> CharList;		//!< List of characters
-typedef class cPC *pPC;				//!< Pointer to a pPC (playing character)
-typedef std::vector<pPC> PCVector;		//!< Vector of playing characters
-typedef class cNPC *pNPC;			//!< Pointer to a pNPC (non playing character)
-
 //@}
 
 //@{
