@@ -21,10 +21,10 @@ namespace nDirs {
 	std::string getPidFilePath();
 	
 	std::string getMulsDir();
-	void setMulsDir(std::string);
+	void setMulsDir(std::string newdir);
 	
 	std::string getLogsDir();
-	void setLogsDir(std::string);
+	void setLogsDir(std::string newdir);
 }
 
 #endif

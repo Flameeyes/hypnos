@@ -29,13 +29,13 @@ namespace nNewbies {
 	items to add to the newbies.
 	*/
 	//! Items common to all the newbies
-	NBItemSList NewbiesAll;
+	static NBItemSList NewbiesAll;
 	//! Items common to all the male newbies
-	NBItemSList NewbiesMale;
+	static NBItemSList NewbiesMale;
 	//! Items common to all the female newbies
-	NBItemSList NewbiesFemale;
+	static NBItemSList NewbiesFemale;
 	//! Items for skills' newbies
-	NBItemSList NewbiesSkills[skTrueSkills];
+	static NBItemSList NewbiesSkills[skTrueSkills];
 	//@}
 	
 	static void padMissingLocations();

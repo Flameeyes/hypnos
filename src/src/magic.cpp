@@ -18,7 +18,7 @@
 namespace magic {
 
 std::vector<sSpell> spellsData;
-std::map< std::string, uint16_t> speechMap;
+static std::map< std::string, uint16_t> speechMap;
 
 /*!
 \brief Gets the direction for a field magic
@@ -106,7 +106,7 @@ bool checkMagicalSpeech( pChar pc, char* speech )
 \brief Load spells data from file
 \author Xanatar
 */
-void loadSpellsFromScript()
+static void loadSpellsFromScript()
 {
 	cScpIterator* iter = NULL;
 	char script1[1024], script2[1024];

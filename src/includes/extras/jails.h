@@ -27,8 +27,6 @@ namespace nJails {
 	void checkJailed();
 	
 	void release(pClient client);
-	void release(pPC pc);
-	void release(pAccount acc);
 	
 	/*!
 	\brief Info about a jail for an account or a player

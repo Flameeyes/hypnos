@@ -31,13 +31,13 @@ fMulti::fMulti(fMultiIDX *aIdx)
 \return A pointer to the multi block item class
 \throw eOutOfBound If the requested index is greater than the count of items
 */
-const cMultiItem *getItem(uint16_t id) const
+const cMultiItem *cMultiBlock::getItem(uint16_t index) const
 {
 	if ( index >= getCount() )
 		throw eOutOfBound(getCount()-1, index);
 	
-	return items[index];
-}}
+	return &items[index];
+}
 
 /*!
 \brief Gets the item id for the given multi block item

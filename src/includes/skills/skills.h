@@ -42,7 +42,7 @@ namespace nSkills {
 		sSkillInfo();
 	};
 
-	sSkillInfo infos[skTrueSkills];
+	extern sSkillInfo infos[skTrueSkills];
 
 	inline void loadSkillVars();
 	void loadskills();

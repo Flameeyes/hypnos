@@ -17,6 +17,8 @@
 
 #include "libhypnos/muls/mulfiles.h"
 #include "libhypnos/muls/tiledata.h"
+#include "libhypnos/muls/multiidx.h"
+#include "libhypnos/muls/multi.h"
 
 extern nMULFiles::fTiledataLand *tiledataLand;
 extern nMULFiles::fTiledataStatic *tiledataStatic;

@@ -18,7 +18,7 @@
 #include "objects/cbody.h"
 #include "objects/citem.h"
 
-bool CheckInPack(pClient client, pItem pi)
+static bool CheckInPack(pClient client, pItem pi)
 {
 	pItem pPack = client->currChar()->getBody()->getBackpack(true);
 	if ( ! pPack ) return false;

@@ -30,6 +30,8 @@ namespace nJails {
 	
 	static void checkJailedPlayers();
 	static void checkJailedAccounts();
+	static void release(pAccount acc);
+	static void release(pPC pc);
 }
 
 //! Loads the jails data from the jails.xml file
@@ -64,7 +66,7 @@ void nJails::loadJails()
 				
 				if ( loc == sLocation(0,0,0) || ! isValidCoord(loc) )
 				{
-					LogWarning("Invalid jail location (%hu,%hu,%hhi)", loc.x, loc.y, loc.z);
+					LogWarning("Invalid jail location (%hu,%hu,%hhd)", loc.x, loc.y, loc.z);
 					continue;
 				}
 				
@@ -224,7 +226,7 @@ void nJails::release(pClient client)
 
 \note This function also sysmessage the player if it's online
 */
-void nJails::release(pPC pc)
+static void nJails::release(pPC pc)
 {
 	if ( nSettings::Jails::isJailAccountLevel() )
 		return;
@@ -253,7 +255,7 @@ void nJails::release(pPC pc)
 
 \note This function also sysmessage the player if it's online
 */
-void nJails::release(pAccount acc)
+static void nJails::release(pAccount acc)
 {
 	if ( ! nSettings::Jails::isJailAccountLevel() )
 		return;

@@ -12,9 +12,9 @@
 
 namespace npcs {
 
-int spherespells[256][256];
+static int spherespells[256][256];
 
-void npcMagicAttack(pChar pc_att, pChar pc_def)
+static void npcMagicAttack(pChar pc_att, pChar pc_def)
 {
 	if ( ! pc_att || ! pc_def )
 		return;
@@ -102,7 +102,7 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 }
 
 #define CHECKSPELL(NAME,VALUE) { if ( script1 == NAME ) { spherespells[section][ptr++] = VALUE; continue;	} }
-void initNpcSpells ()
+static void initNpcSpells ()
 {
 	int ptr = 0;
 
@@ -167,7 +167,7 @@ void initNpcSpells ()
 }
 #undef CHECKSPELL
 
-void npcCastSpell(pChar pc_att, pChar pc_def)
+static void npcCastSpell(pChar pc_att, pChar pc_def)
 {
 	if ( ! pc_att || ! pc_def )
 		return;

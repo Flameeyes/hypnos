@@ -19,7 +19,7 @@
 
 //int goldsmithing;
 //1=iron, 2=golden, 3=agapite, 4=shadow, 5=mythril, 6=bronze, 7=verite, 8=merkite, 9=copper, 10=silver
-int ingottype=0;//will hold number of ingot type to be deleted
+static int ingottype=0;//will hold number of ingot type to be deleted
 
 inline void SetSkillDelay(pChar pc)
 {

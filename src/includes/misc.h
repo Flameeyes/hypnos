@@ -17,8 +17,9 @@ void npcattacktarget(pChar npc, pChar target);
 void callguards( int p );
 void usepotion(pChar pc, pItem pi);
 
-int checkBoundingBox(int xPos, int yPos, int fx1, int fy1, int fz1, int fx2, int fy2);
-int checkBoundingCircle(int xPos, int yPos, int fx1, int fy1, int fz1, int radius);
+bool checkBoundingBox(sPoint p, int fx1, int fy1, int fz1, int fx2, int fy2);
+bool checkBoundingCircle(sPoint p, int fx1, int fy1, int fz1, int radius);
+
 void npcsimpleattacktarget(int target2, int target);
 
 void endmessage(int x);

@@ -10,16 +10,16 @@
 
 namespace pointers {
 
-	std::map<uint32_t, CharList> pStableMap;
-	std::map<uint32_t, pChar> pMounted;
+	static std::map<uint32_t, CharList> pStableMap;
+	static std::map<uint32_t, pChar> pMounted;
 
-	std::map<uint32_t, CharList> pOwnCharMap;
-	std::map<uint32_t, ItemList> pOwnItemMap;
+	static std::map<uint32_t, CharList> pOwnCharMap;
+	static std::map<uint32_t, ItemList> pOwnItemMap;
 
-	std::map<uint32_t, ItemList> pContMap;
+	static std::map<uint32_t, ItemList> pContMap;
 
-	std::map<uint32_t, CharList> pMultiCharMap;
-	std::map<uint32_t, ItemList> pMultiItemMap;
+	static std::map<uint32_t, CharList> pMultiCharMap;
+	static std::map<uint32_t, ItemList> pMultiItemMap;
 
 #ifdef SPAR_LOCATION_MAP
 	//
@@ -402,7 +402,7 @@ namespace pointers {
 	\brief initializes pointer maps
 	\author Luxor
 	*/
-	void init()
+	static void init()
 	{
 
 

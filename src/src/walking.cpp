@@ -16,6 +16,7 @@
 #include "networking/network.h"
 #include "libhypnos/cvariant.h"
 #include "objects/cchar.h"
+#include "objects/cpc.h"
 
 /*!
 \brief Checks if the Char is allowed to move at all (not frozen, overloaded...)
@@ -164,15 +165,13 @@ bool WalkHandleRunning(pChar pc, int dir)
 
 }
 
-
-
-///////////////
-// Name:	WalkHandleBlocking
-// history:	cut from walking() by Duke, 27.10.2000
-// Purpose:	Handles a 'real move' if the Char is not only changing direction
-//
-
-bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
+/*!
+\brief Handles a 'real move' if the char is not only changing direction
+\param pc Walking character
+\param dir Direction in which the character is moving to
+\param oldp Previous position of the char (in the same map)
+*/
+static bool WalkHandleBlocking(pChar pc, int sequence, uint8_t dir, sPoint oldp)
 {
 	if(!pc) return false;
 
@@ -249,95 +248,67 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 
 	sPoint now2 = pc->getPosition();
 
-	pc->setPositionX(oldx);
-	pc->setPositionY(oldy);
+	pc->setPositionX(oldp.x);
+	pc->setPositionY(oldp.y);
 	pc->MoveTo( nowx2, nowy2, z );
 	return true;
 }
 
 
-void WalkingHandleRainSnow(pChar pc)
+void WalkingHandleRainSnow(pPC pc)
 {
 	if (!pc) return;
 
-	pClient client = pc->getSocket();
+	pClient client = pc->getClient();
 
 	int i;
 	int wtype = region[pc->region].wtype;
+	// LB's no rain & snow in buildings stuff
+	// check for being in buildings (for weather) only for PC's, check only neccasairy if it rains or snows ...
+	if ( ! wtype )
+		return;
 
-  /********* LB's no rain & snow in buildings stuff ***********/
-	if (!pc->npc && pc->IsOnline() && wtype!=0 ) // check for being in buildings (for weather) only for PC's, check only neccasairy if it rains or snows ...
-	{
-		int j=indungeon(pc); // dung-check
-		i=staticTop( pc->getPosition() ); // static check
+	int j=indungeon(pc); // dung-check
+	i=staticTop( pc->getPosition() ); // static check
 
 	// dynamics-check
-		int x = dynamicElevation( pc->getPosition() );
-		
-		if ( dynamic_cast<pHouse>( cMulti::getAt(pc->getPosition()) ) )
-			x = invalid_z;
-		
-		if (x==1 || x==0) x=-127; // 1 seems to be the multi-borders
+	int x = dynamicElevation( pc->getPosition() );
+	
+	if ( dynamic_cast<pHouse>( cMulti::getAt(pc->getPosition()) ) )
+		x = invalid_z;
+	
+	if (x==1 || x==0) x=-127; // 1 seems to be the multi-borders
 	// bugfix LB
 
-		bool old_weather=clientInfo[s]->noweather;
-		if (j || i || x!=-127 )
-			clientInfo[s]->noweather=true;
-		else
-			clientInfo[s]->noweather=false; // no rain & snow in static buildings+dungeons;
-		if( old_weather != clientInfo[s]->noweather )
-			weather(s, 0); // iff outside-inside changes resend weather ...
+	bool old_weather=clientInfo[s]->noweather;
+	if (j || i || x!=-127 )
+		clientInfo[s]->noweather=true;
+	else
+		clientInfo[s]->noweather=false; // no rain & snow in static buildings+dungeons;
+	if( old_weather != clientInfo[s]->noweather )
+		weather(s, 0); // iff outside-inside changes resend weather ...
 	// needs to be de-rem'd if weather is available again
-  }
 }
 
-
-/*void WalkingHandleGlowingItems(pChar pc)
+void walking(pPC pc, uint8_t dir, int sequence)
 {
+	sPoint oldp, newp;
 	if ( ! pc ) return;
 
-	int i;
-	if (pc->IsOnline())
-	{
-		int serial,serhash,ci;
-		serial=pc->getSerial();
-		serhash=serial%HASHMAX;
-		for (ci=0;ci<glowsp[serhash].max;ci++)
-		{
-			i=glowsp[serhash].pointer[ci];
-			if (i!=INVALID)
-			{
-				if (items[i].free==0)
-				{
-					pc->glowHalo(&items[i]);
-				}
-			}
-		}
-	}
-
-}*/
-
-
-void walking(pChar pc, int dir, int sequence)
-{
-	int newx, newy;
-	if ( ! pc ) return;
-
-	pClient client = pc->getSocket();
+	pClient client = pc->getClient();
 
 	if (!WalkHandleAllowance(pc,sequence))		// check sequence, frozen, weight etc.
 		return;
 
 	WalkHandleRunning(pc,dir);
 
-	int oldx= pc->getPosition().x;
-	int oldy= pc->getPosition().y;
+	oldp = pc->getBody()->getPosition();
 
-	if ((dir&0x0F)==pc->dir )
-		if( !WalkHandleBlocking(pc,sequence,dir, oldx, oldy) )
+	if ((dir&0x0F)==pc->getBody()->getDirection() )
+		if( !WalkHandleBlocking(pc, sequence, dir, oldp) )
 			return;
 
-	pFunctionHandle evt = pc->getEvent(evtChrOnWalk);
+	pFunctionHandle evt = pc->getEvent(cChar::evtChrOnWalk);
 	if( evt ) {
 		cVariantVector params = cVariantVector(3);
 		params[0] = pc->getSerial(); params[1] = dir; params[2] = sequence;
@@ -364,21 +335,16 @@ void walking(pChar pc, int dir, int sequence)
 	}
 
 
-	newx= pc->getPosition().x;
-	newy= pc->getPosition().y;
+	newp = pc->getBody()->getPosition();
 
 	sendToPlayers( pc, dir );
 
-	if (dir>INVALID && (dir&0x0F)<8)
-		pc->dir=(dir&0x0F);
-	else
-		outPlain("dir-screwed : %i\n",dir);
+	pc->setDirection(pc->getDirection()&0x0F);
 
-
-	if( oldx!=newx || oldy!=newy )
+	if( oldp != newp )
 	{
 		//Luxor: moved WalkHandleItemsAtNewPos before socket check.
-		handleItemsAtNewPos( pc, oldx, oldy, newx, newy );
+		handleItemsAtNewPos( pc, oldp.x, oldp.y, newp.x, newp.y );
 		if (s!=INVALID)
 		{
 			handleCharsAtNewPos( pc );
@@ -397,16 +363,11 @@ void walking(pChar pc, int dir, int sequence)
 	}
 
 
-	if(pc->getCombatSkill() ==skArchery)  // -Frazurbluu- add in changes for archery skill, and dexterity
-    {                                        //  possibly weapon speed?? maybe not, cause crossbows notta running shooting
-		if ( pc->targserial!= INVALID)
-        {
-            if( pc->timeout>= getClockmSecs())
-               pc->timeout= getClockmSecs() + (3*CLOCKS_PER_SEC);
-
-		}
-    }
-
+	// -Frazurbluu- add in changes for archery skill, and dexterity
+	//  possibly weapon speed?? maybe not, cause crossbows notta running shooting
+	
+	if ( pc->getCombatSkill() == skArchery && pc->getTarget() && TIMEOUT(pc->timeout) )
+		pc->timeout= getClockmSecs() + (3*CLOCKS_PER_SEC);
 }
 
 //</XAN>
@@ -454,19 +415,17 @@ int npcSelectDirWarOld(pChar pc_i, int j)
 	return j;
 }
 
-int checkBounds(pChar pc, int newX, int newY, int type)
+bool checkBounds(pChar pc, sPoint newp, uint8_t type)
 {
 	if(!pc) return 0;
 
-	int move=0;
 	switch (type)
 	{
-	case 0: move=1;break;
-	case 1: move=checkBoundingBox(newX, newY, pc->fx1, pc->fy1, pc->fz1, pc->fx2, pc->fy2);break;
-	case 2: move=checkBoundingCircle(newX, newY, pc->fx1, pc->fy1, pc->fz1, pc->fx2);break;
-	default: move=0;	// invalid type given
+	case 0: return true;
+	case 1: return checkBoundingBox(newp, pc->fx1, pc->fy1, pc->fz1, pc->fx2, pc->fy2);
+	case 2: return checkBoundingCircle(newp, pc->fx1, pc->fy1, pc->fz1, pc->fx2);
+	default: return false;	// invalid type given
 	}
-	return move;
 }
 
 void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mode (0 for normal, 1 for box, 2 for circle) // Sparhawk should be changed to npcwander
@@ -500,7 +459,7 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 	
 	if ( valid )
 	{
-		move = checkBounds( pc_i, newX, newY, type );
+		move = checkBounds( pc_i, newpos, type );
 		if ( move )
 		{
 			walking(  pc_i , newDirection, 256 );
@@ -610,7 +569,7 @@ void handleCharsAtNewPos( pChar pc )
 // history:	cut from walking() by Duke, 27.10.2000
 // Purpose:	sends the newly visible items to the screen and checks for item effects
 //
-bool handleItemsAtNewPos(pChar pc, int oldx, int oldy, int newx, int newy)
+bool handleItemsAtNewPos(pChar pc, sPoint oldp, sPoint newp)
 {
 	if ( ! pc ) return false;
 
@@ -618,7 +577,7 @@ bool handleItemsAtNewPos(pChar pc, int oldx, int oldy, int newx, int newy)
 	if ( ps == NULL ) //Luxor
 		return false;
 
-	sLocation pcpos=pc->getPosition();
+	sLocation pcpos=pc->getBody()->getPosition();
 
 	NxwItemWrapper si;
 	si.fillItemsNearXYZ( pcpos, VISRANGE + 1, false );

@@ -14,6 +14,10 @@
 #include "hypnos.h"
 #include "libhypnos/muls/tiledata.h"
 
+#ifdef HAVE_OSTRINGSTREAM
+#include <ostringstream>
+#endif
+
 /*!
 \brief makes an npc attacking someone
 \author Luxor
@@ -686,21 +690,21 @@ void endmessage(int x) // If shutdown is initialized
 	outInfof("server going down in %i minutes.\n", ((endtime-igetClockmSecs)/SECS)/60);
 }
 
-int checkBoundingBox(int xPos, int yPos, int fx1, int fy1, int fz1, int fx2, int fy2)
+bool checkBoundingBox(sPoint p, int fx1, int fy1, int fz1, int fx2, int fy2)
 {
-	if (xPos>=((fx1<fx2)?fx1:fx2) && xPos<=((fx1<fx2)?fx2:fx1))
-		if (yPos>=((fy1<fy2)?fy1:fy2) && yPos<=((fy1<fy2)?fy2:fy1))
-			if (fz1==INVALID || abs(fz1-getHeight(sLocation(xPos, yPos, fz1)))<=5)
-				return 1;
-			return 0;
+	if (p.x>=((fx1<fx2)?fx1:fx2) && p.x<=((fx1<fx2)?fx2:fx1))
+		if (p.y>=((fy1<fy2)?fy1:fy2) && p.y<=((fy1<fy2)?fy2:fy1))
+			if (fz1==INVALID || abs(fz1-getHeight(sLocation(p.x, p.y, fz1)))<=5)
+				return true;
+	return false;
 }
 
-int checkBoundingCircle(int xPos, int yPos, int fx1, int fy1, int fz1, int radius)
+bool checkBoundingCircle(sPoint p, int fx1, int fy1, int fz1, int radius)
 {
-	if ( (xPos-fx1)*(xPos-fx1) + (yPos-fy1)*(yPos-fy1) <= radius * radius)
-		if (fz1==INVALID || abs(fz1-getHeight(sLocation(xPos, yPos, fz1)))<=5)
-			return 1;
-		return 0;
+	if ( (p.x-fx1)*(xPos-fx1) + (p.y-fy1)*(p.y-fy1) <= radius * radius)
+		if (fz1==INVALID || abs(fz1-getHeight(sLocation(p.x, p.y, fz1)))<=5)
+			return true;
+	return false;
 }
 
 /*!
@@ -737,16 +741,12 @@ std::string getSextantCoords(sPoint p, sPoint center)
 	Hy = (int16_t) Dy;
 	My = (Dy - Hy) *60;
 
-	char *temp;
-	asprintf(&temp, "%uo %u' %c  %uo %u' %c",
-		abs( (int16_t)Hx ), abs( (int16_t)Mx ), Hx > 0 ? 'E' : 'W',
-		abs( (int16_t)Hy ), abs( (int16_t)My ), Hy > 0 ? 'S' : 'N'
-		);
+	std::ostringstream sout;
 	
-	std::string ret(temp);
-	free(temp);
+	sout	<< abs( (int16_t)Hx ) << "o " << abs( (int16_t)Mx ) << "' " << Hx > 0 ? 'E' : 'W' << "  "
+		<< abs( (int16_t)Hy ) << "o " << abs( (int16_t)My ) << "' " << Hy > 0 ? 'S' : 'N';
 	
-	return ret;
+	return sout.str();
 }
 
 /*!

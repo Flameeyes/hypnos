@@ -300,7 +300,7 @@ int8_t mapElevation( sPoint p )
 /*!
 \author Luxor
 */
-int8_t mapAverageElevation( sPoint p )
+static int8_t mapAverageElevation( sPoint p )
 {
 	int8_t map1_z = mapElevation( p );
 	if ( map1_z == illegal_z )

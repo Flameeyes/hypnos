@@ -21,7 +21,7 @@
 \param snooper the snooper
 \param cont the contanier
 */
-void snooping( pPC snooper, pItem cont )
+static void snooping( pPC snooper, pItem cont )
 {
 	pChar owner;
 	pClient client_snoop, client_owner;

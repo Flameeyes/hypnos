@@ -42,7 +42,7 @@ namespace nNewbies {
 	};
 	
 	//! Start locations
-	sStartLocation *startLocations[9];
+	extern sStartLocation *startLocations[9];
 	
 	void loadStartLocations();
 	

@@ -20,7 +20,7 @@ namespace npcs {	//Luxor
 
 
 //<Anthalir>
-void SpawnGuard(pChar pc, pChar pc_i, sLocation where)
+static void SpawnGuard(pChar pc, pChar pc_i, sLocation where)
 {
 	if ( ! pc || ! pc_i ) return;
 
@@ -54,7 +54,7 @@ void SpawnGuard(pChar pc, pChar pc_i, sLocation where)
 }
 //</Anthalir>
 
-pItem AddRandomLoot(pItem pack, char * lootlist)
+static pItem AddRandomLoot(pItem pack, char * lootlist)
 {
 	if ( ! pack ) return NULL;
 	std::string value( lootlist );
@@ -63,7 +63,7 @@ pItem AddRandomLoot(pItem pack, char * lootlist)
 	return pi;
 }
 
-int AddRandomNPC(pClient client, char * npclist)
+static int AddRandomNPC(pClient client, char * npclist)
 {
 	std::string list( npclist );
 	std::string sNpc = cObject::getRandomScriptValue( "NPCLIST", list );
@@ -84,43 +84,41 @@ int AddRandomNPC(pClient client, char * npclist)
 //| Remarks    : This function was created from the former AddRespawnNPC() and
 //| 			 AddNPCxyz() that were 95% identical
 //o---------------------------------------------------------------------------o
-pChar AddRespawnNPC(pItem pi, int npcNum)
+static pChar AddRespawnNPC(pItem pi, int npcNum)
 {
         //type 1 remember
 	if ( ! pi ) return;
         return AddNPC(INVALID, pi, npcNum, 0,0,0);
 }
 
-pChar AddRespawnNPC(pChar pc, int npcNum)
+static pChar AddRespawnNPC(pChar pc, int npcNum)
 {
 	if ( ! pc ) return NULL;
         return AddNPC(pc->getSocket(), NULL, npcNum, 0,0,0);
 }
 
 //<Anthalir>
-pChar AddNPCxyz(pClient client, int npcNum, sLocation where)
+static pChar AddNPCxyz(pClient client, int npcNum, sLocation where)
 {
 	return AddNPCxyz(s, npcNum, where.x, where.y, where.dispz);
 }
 //</Anthalir>
 
-pChar AddNPCxyz(pClient client, int npcNum, int x1, int y1, signed char z1) //Morrolan - replacement for old npcs::AddNPCxyz(), fixes a LOT of problems.
+static pChar AddNPCxyz(pClient client, int npcNum, int x1, int y1, signed char z1) //Morrolan - replacement for old npcs::AddNPCxyz(), fixes a LOT of problems.
 {
-
 	return AddNPC(s, NULL, npcNum, x1,y1,z1);
-
 }
 
 
 //<Anthalir>
-pChar AddNPC(pClient client, pItem pi, int npcNum, sLocation where)
+static pChar AddNPC(pClient client, pItem pi, int npcNum, sLocation where)
 {
 	return AddNPC(s, pi, npcNum, where.x, where.y, where.z);
 }
 //</Anthalir>
 
 // Xan -> compatible with new style scripts!! :D
-pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t z1)
+static pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t z1)
 {
 	int32_t	npcNumSave	= npcNum;
 	short	postype		= 0;	// determines how xyz of the new NPC are set
