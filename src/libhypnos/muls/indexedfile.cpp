@@ -14,12 +14,12 @@
 namespace nLibhypnos {
 namespace nMULFiles {
 
-	template<class cData> tplIndexFile<cData>::tplIndexFile(std::string filename)
+	template<class cData> tplIndexFile<cData>::tplIndexFile<cData>(std::string filename)
 		: tplMMappedFile<cData>(filename)
 	{
 	}	
 
-	template<class cData> tplIndexedFile<cData>::tplIndexedFile(tplIndexFile<cData> *aIdx, std::string filename)
+	template<class cData> tplIndexedFile<cData>::tplIndexedFile<cData>(tplIndexFile<cData> *aIdx, std::string filename)
 		: tplMMappedFile<cData>(filename), idx(aIdx)
 	{
 	}
