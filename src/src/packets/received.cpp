@@ -1937,63 +1937,57 @@ bool cPacketReceiveUnicodeSpeechReq::execute(pClient client)
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
 
-        pPC pc_currchar = client->currChar;
-	if(pc_currchar)
+        pPC pc = client->currChar;
+	if(pc)
         {
-        	pc_currchar->unicode=true;
+        	uint8_t mode   = buffer[3];	//0=say,2=emote,8=whisper,9=yell
+		uint16_t color = ShortFromCharPtr(buffer + 4);
+		uint16_t font  = ShortFromCharPtr(buffer + 6);
+		char[4] language;
+                strncpy(language, buffer + 8, 4); language[3] = 0;
+                int offset = 12;
+        	pc->unicode=true;
     		// Check for command word versions of this packet
-		if ( (buffer[3]) >=0xc0 )
+		if ( mode >=0xc0 )
 		{
-			buffer[3] = buffer[3] & 0x0F ; // set to normal (cutting off the ascii indicator since we are converting back to unicode)
+			mode &= 0x0F;	// set to normal (cutting off the ascii indicator since we are converting back to unicode)
 
-			int num_words,/*idx=0,*/ num_unknown;
+			int num_words = (buffer[12] << 4) & (buffer[13] >> 4);
+                        int speech_mul_index = ((buffer[13] & 0xf) << 8) & buffer[14];
+			int num_unknown = ( num_words / 2 ) * 3 + (num_words & 1) - 2;
 
-			// number of distict trigger words
-			num_words = ( buffer[12] << 24 ) + ( buffer[13] << 16 );
-			num_words = (num_words >> 20);
-
-			/*************************************/
-			// plz dont delete yet
-			// trigger word index in/from speech.mul, not required [yet]
-			/*idx = ( (static_cast<int>(buffer[s][13])) << 24 ) + ( (static_cast<int>(buffer[s][14])) << 16);
-			idx = idx & 0x0fff0000;
-			idx = ( (idx << 4) >> 20) ;*/
-			//cout << "#keywords was " << hex << num_words << "\n" << hex << static_cast<int>(buffer[s][12]) << " " << hex << static_cast<int> (buffer[s][13]) << " " << static_cast<int> (buffer[s][14]) << " " << static_cast<int> (buffer[s][15]) << endl ;
-			// cout << "idx: " << idx << endl;
-			/*************************************/
-
-		       	if ((num_words %2) == 1)  // odd number ?
-		       		num_unknown = ( num_words / 2 ) * 3;
-		       	else
-		       		num_unknown = ((num_words / 2 ) * 3 ) - 1 ;
-
-		       	myoffset = 15 + num_unknown;
-
-                        //TODO: revise from here
+		       	offset += 3 + num_unknown; //in the remainder of code we can ignore these bytes
+		}
 
 
-						//
-						//	Now adjust the buffer
-						int iWord ;
-						//int iTempBuf ;
-						iWord = static_cast<int> ((buffer[s][1] << 8)) + static_cast<int> (buffer[s][2]) ;
-						myj = 12 ;
 
-						//cout << "Max length characters will be " << dec << (iWord - myoffset) << endl ;
-						mysize = iWord - myoffset ;
 
-						for (i=0; i < mysize ; i++)
+                //TODO: revise from here
+
+
+                
+                        //
+			//	Now adjust the buffer
+
+			//int iTempBuf ;
+			int iWord = buffer[1] << 8 + buffer[2];
+			myj = 12 ;
+
+			//cout << "Max length characters will be " << dec << (iWord - myoffset) << endl ;
+			mysize = iWord - myoffset ;
+
+			for (i=0; i < mysize ; i++)
 							mytempbuf[i] = buffer[s][i+myoffset] ;
 
-						for (i=0; i < mysize ; i++)
-						{
-							myj++ ;
-							buffer[s][myj] = mytempbuf[i] ;
-							//iTempBuf = static_cast<int> (mytempbuf[i]) ;
-							//cout << "Copying value of " << hex << iTempBuf << endl ;
-							myj++;
-							buffer[s][myj] = 0 ;
-						}
+			for (i=0; i < mysize ; i++)
+			{
+				myj++ ;
+				buffer[s][myj] = mytempbuf[i] ;
+				//iTempBuf = static_cast<int> (mytempbuf[i]) ;
+				//cout << "Copying value of " << hex << iTempBuf << endl ;
+				myj++;
+				buffer[s][myj] = 0 ;
+			}
 
 						iWord = (((iWord - myoffset ) * 2) + 12) ;
 						//cout << "Setting buffer size to " << dec << iWord << endl ;
