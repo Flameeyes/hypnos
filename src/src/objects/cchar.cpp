@@ -1929,7 +1929,7 @@ void cChar::playSFX(SI16 sound, LOGICAL onlyToMe)
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
 		NXWCLIENT ps=sw.getClient();
 		if(ps!=NULL)
-			client->send(&pk);
+			ps->send(&pk);
 	}
 }
 
