@@ -53,7 +53,7 @@ bool checkMagicalSpeech( pChar pc, char* speech )
 	if(!client) return false;
 
 	strupr( speech );
-	string sSpeech( speech );
+	std::string sSpeech( speech );
 	std::map< std::string, SpellId >::iterator it( speechMap.find( sSpeech ) );
 	if ( it == speechMap.end() )
 		return false;
@@ -104,7 +104,7 @@ void loadSpellsFromScript()
 			else if (!strcmp("MANTRA", script1)) 	{ g_Spells[curspell].mantra += script2;
 				//Luxor: speech cast
 				strupr( script2 );
-				speechMap.insert( pair< std::string, SpellId >( string( script2 ), static_cast<SpellId>(curspell) ) );
+				speechMap.insert( pair< std::string, SpellId >( std::string( script2 ), static_cast<SpellId>(curspell) ) );
 			}
 			else if (!strcmp("ACTION", script1)) 	g_Spells[curspell].action = hex2num(script2);
 			else if (!strcmp("DELAY", script1))		g_Spells[curspell].delay = str2num(script2);
@@ -159,7 +159,7 @@ bool checkGateCollision( pChar pc )
 
 	sLocation gatepos = pgate->getPosition();
 
-	if ( charpos.x != gatepos.x || charpos.y != gatepos.y || uint32_t(charpos.z - gatepos.z) > 2 )
+	if ( sPoint(charpos) != sPoint(gatepos) || uint32_t(charpos.z - gatepos.z) > 2 )
 		return false;
 
         pChar pnpc = NULL;
@@ -317,7 +317,7 @@ static inline bool isBoxSpell(SpellId spell)
 */
 static inline bool isAreaSpell(SpellId spell)
 {
-	return (g_Spells[spell].areasize>0);
+	return g_Spells[spell].areasize;
 }
 
 
@@ -750,48 +750,46 @@ void spellFailFX(pChar pc)
 /*!
 \brief Casts an area attack spell like eartquake or chain lightning
 \author Xanatar
-\param x x coord of epicenter
-\param y y coord of epicenter
+\param epi Epicenter of the spell
 \param spellnum Spell casted
-\param pcaster caster (can be NULL)
+\param pcaster Caster (can be NULL)
 */
-void castAreaAttackSpell (int x, int y, SpellId spellnum, pChar pcaster)
+void castAreaAttackSpell (sPoint epi, SpellId spellnum, pChar pcaster)
 {
 	NxwCharWrapper sc;
 	uint32_t range = VISRANGE -2;
 	if ( spellnum == SPELL_EXPLOSION )
 		range = 4;
 
-	sc.fillCharsNearXYZ( x, y, range );
+	sc.fillCharsNearXYZ( epi.x, epi.y, range );
 
 	int damagetobedone = RandomNum(g_Spells[spellnum].lodamage, g_Spells[spellnum].hidamage);
 	int divider = (sc.size() / 4) + 1;
 	if (divider!=0) damagetobedone /= divider;
 
-	if ( pcaster ) {
+	if ( pcaster )
+	{
 		if ( spellnum == SPELL_EARTHQUAKE )
 			pcaster->playSFX( 0x20D );
-		if (checkTownLimits(spellnum, pcaster, pcaster, 0, 0, true)) return;
+		
+		if (checkTownLimits(spellnum, pcaster, pcaster, 0, 0, true))
+			return;
 	}
 
-	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
+	for( sc.rewind(); !sc.isEmpty(); sc++ )
+	{
 		pChar pd = sc.getChar();
-		if ( pd ) {
-			if ( pcaster ) {
-				if ( spellnum == SPELL_EARTHQUAKE || spellnum == SPELL_CHAINLIGHTNING ) {
-					if ( pd->getSerial() == pcaster->getSerial() )
-						continue;
-				}
-			}
-			//<Luxor>
-			if ( spellnum == SPELL_EARTHQUAKE ) {
-				if ( pd->isMounting() )
-					pd->unmountHorse();
-			}
-			//</Luxor>
-			spellFX(spellnum, pcaster, pd);
-			damage(pcaster, pd, spellnum, SPELLFLAG_PARAMISDAMAGE, damagetobedone);
-		}
+		if ( ! pd ) return;
+			
+		if ( (spellnum == SPELL_EARTHQUAKE || spellnum == SPELL_CHAINLIGHTNING)
+			&& ( pd == pcaster ) )
+				return;
+		
+		if ( spellnum == SPELL_EARTHQUAKE && pd->isMounting() )
+				pd->unmountHorse();
+		
+		spellFX(spellnum, pcaster, pd);
+		damage(pcaster, pd, spellnum, SPELLFLAG_PARAMISDAMAGE, damagetobedone);
 	}
 }
 
@@ -935,10 +933,10 @@ static bool checkLos(pChar caster, sLocation destpos)
 {
 	if(!caster) return false;
 
-	pPC tmp;
-	pClient caster_client;
+	pPC tmp = NULL;
+	pClient caster_client = NULL;
 
-	caster_client = (tmp = dynamic_cast<pPC>(caster))? tmp ->getClient() : NULL;
+	caster_client = (tmp = dynamic_cast<pPC>(caster))? tmp->getClient() : NULL;
 
         if (!line_of_sight(INVALID, caster->getPosition(), destpos, INVALID)) {
 		caster_client->sysmessage("There is something between you and your target that makes the casting impossible.");
@@ -955,20 +953,19 @@ static bool checkLos(pChar caster, sLocation destpos)
 */
 bool checkRequiredTargetType(SpellId spellnum, TargetLocation& t)
 {
-			// 0:none,1:xyz,2:item,3:char,4:container or door,6:rune,5:container
+	// 0:none,1:xyz,2:item,3:char,4:container or door,6:rune,5:container
 	pItem pi = t.getItem();
-	int x,y,z;
-	t.getXYZ(x,y,z);
+	sLocation loc = t.getLocation();
 
 	switch(spellTargetType(spellnum)) {
 		case TARGTYPE_NONE :
 			return true;
 		case TARGTYPE_CONTAINER:
-			return pi && pi->toContainer();
+			return pi && dynamic_cast<pContainer>(pi);
 		case TARGTYPE_CONTAINERORDOOR:
-			return pi && ( pi->toContainer() || pi->toDoor() );
+			return pi && ( dynamic_cast<pContainer>(pi) || pi->toDoor() );
 		case TARGTYPE_XYZ :
-			return ((x>0)&&(y>0));
+			return loc != sPoint(0,0);
 		case TARGTYPE_CHAR:
 			return t.getChar();
 		case TARGTYPE_ITEM:
@@ -976,7 +973,7 @@ bool checkRequiredTargetType(SpellId spellnum, TargetLocation& t)
 		case TARGTYPE_RUNE:
 			return pi && pi->toRune();
 		default:
-			return pi; //!\todo needz to be changed
+			return pi; //!\todo need to be changed
 	}
 }
 
@@ -1023,8 +1020,6 @@ SpellId spellNumberFromScrollId(int id)
 \param spellnumber Spell to cast
 \param dest target position
 \param pa attacker mage
-\param flags
-\param param
 */
 static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, int flags, int param)
 {
@@ -1118,31 +1113,23 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 \param npctype NPC type
 \param duration How long NPC will be "under pressure"
 \param bTamed Tamed or uncontrollable one
-\param x
-\param y
-\param z
 
 	Changes:  
 		Luxor: added code for uncontrollable npcs. added code for xyz target.
 */
-pChar summon (pChar owner, int npctype, int duration, bool bTamed, int x, int y, int z)
+pChar summon (pChar owner, int npctype, int duration, bool bTamed, sLocation pos)
 {
 	if(!owner) return NULL;
 
-	if (x == INVALID || y == INVALID || z == INVALID)
-	{
-		sLocation charpos= owner->getPosition();
-		x = charpos.x;
-		y = charpos.y;
-		z = charpos.z;
-	}
-
-	pChar pc = npcs::addNpc(npctype, x, y, z);
+	if ( pos == sLocation(0,0,0) || ! isValidCoord(pos) )
+		pos = owner->getPosition();
+	
+	pChar pc = npcs::addNpc(npctype, pos);
 	if(!pc) return NULL;
 
 	if (bTamed) {
 		pc->setOwner(owner);
-		pc->tamed = true;
+		pc->setTamed(true);
 	} else {
 		pc->npcaitype = NPCAI_MADNESS; //Blade spirit, E-Vortex
 	}
@@ -1154,24 +1141,22 @@ pChar summon (pChar owner, int npctype, int duration, bool bTamed, int x, int y,
 /*!
 \brief Cast a Field
 \param pc HarryPotter wannabe
-\param x x position of mighty caster
-\param y y position of mighty caster
-\param z z position of mighty caster
+\param pos position of mighty caster
 \param spellnumber spell to cast
 */
-void castFieldSpell( pChar pc, int x, int y, int z, int spellnumber)
+void castFieldSpell( pChar pc, sPosition pos, int spellnumber)
 {
 	if ( ! pc ) return;
-	int /*snr,*/ j = 0, fieldLen = 4/*, i*/;
+	int j = 0, fieldLen = 4;
 	int fx[5], fy[5]; // bugfix LB, was fx[4] ...
-	short id;
+	uint16_t id;
 
-	if (pc!=NULL) j=fielddir(pc, x, y, z); // lb bugfix, socket char# confusion
+	if (pc!=NULL) j=fielddir(pc, pos); // lb bugfix, socket char# confusion
 
 	if (j)
-	{	fx[0]=fx[1]=fx[2]=fx[3]=fx[4]=x; fy[0]=y; fy[1]=y+1; fy[2]=y-1; fy[3]=y+2; fy[4]=y-2;}
+	{	fx[0]=fx[1]=fx[2]=fx[3]=fx[4]=pos.x; fy[0]=pos.y; fy[1]=pos.y+1; fy[2]=pos.y-1; fy[3]=pos.y+2; fy[4]=pos.y-2;}
 	else
-	{	fy[0]=fy[1]=fy[2]=fy[3]=fy[4]=y; fx[0]=x; fx[1]=x+1; fx[2]=x-1; fx[3]=x+2; fx[4]=x-2;}	// end else
+	{	fy[0]=fy[1]=fy[2]=fy[3]=fy[4]=pos.y; fx[0]=pos.x; fx[1]=pos.x+1; fx[2]=pos.x-1; fx[3]=pos.x+2; fx[4]=pos.x-2;}	// end else
 
 
 	switch(spellnumber)
@@ -1201,7 +1186,7 @@ void castFieldSpell( pChar pc, int x, int y, int z, int spellnumber)
 
 	for( j=0; j<=fieldLen; j++ )
 	{
-		int8_t nz=getHeight( sLocation( fx[j], fy[j], z ) );
+		int8_t nz=getHeight( sLocation( fx[j], fy[j], pos.z ) );
 		pItem pi = cItem::addByID(id, 1, "#", 0, sLocation(fx[j], fy[j], nz));
 
 		if (pi)
@@ -1239,8 +1224,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 	pChar pd = dest.getChar();
 	pItem pi = dest.getItem();
-	int x,y,z;
-	dest.getXYZ(x,y,z);
+	sLocation loc = dest.getLocation();
 
         sLocation srcpos= src->getPosition();
 
@@ -1250,7 +1234,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 	//Sparhawk:	Don't check los for spells on items in containers
 	//
 	if( ( ( pi != 0 ) && pi->isInWorld() ) || pd != 0 )
-		if (!checkLos(src, sLocation(x,y,z)))
+		if (!checkLos(src, loc))
 			return;
 
 	int nSkill = skMagery;
@@ -1324,13 +1308,11 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				else
 				{
 					if ( spellnumber == SPELL_EARTHQUAKE ) {  //Luxor
-						x = srcpos.x;
-						y = srcpos.y;
+						pos = sPoint(srcpos);
 					} else if ( spellnumber == SPELL_EXPLOSION ) {
-						x = pd->getPosition().x;
-						y = pd->getPosition().y;
+						pos = sPoint(pd->getPosition());
 					}
-					castAreaAttackSpell(x, y, spellnumber, src);
+					castAreaAttackSpell(pos, spellnumber, src);
 				}
 			}
 			break;
@@ -1461,15 +1443,13 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_MASSDISPEL: //Luxor
 			{
 			if ( pd ) {
-				x = pd->getPosition().x;
-				y = pd->getPosition().y;
+				pos = sPoint(pd->getPosition());
 			} else if ( pi ) {
-				x = pi->getPosition().x;
-				y = pi->getPosition().y;
+				pos = sPoint(pi->getPosition());
 			}
 			NxwCharWrapper sc;
 			pChar pc_curr;
-			sc.fillCharsNearXYZ( x, y, src->skill[skMagery] / 100, true, false );
+			sc.fillCharsNearXYZ( loc.x, loc.y, src->skill[skMagery] / 100, true, false );
 			for ( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pc_curr = sc.getChar();
 				if ( !pc_curr )
@@ -1539,7 +1519,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			{
 
 			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( x, y, src->skill[skMagery] / 100, true);
+			sc.fillCharsNearXYZ( loc.x, loc.y, src->skill[skMagery] / 100, true);
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
@@ -1554,7 +1534,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			{
 			spellFX(spellnumber, src);
 			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( x, y, src->skill[skMagery] / 100, true);
+			sc.fillCharsNearXYZ( loc.x, loc.y, src->skill[skMagery] / 100, true);
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
 				if ( pd && pd->IsHidden() && !checkResist(src, pd, SPELL_REVEAL)) {
@@ -1584,7 +1564,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				if (nValue==INVALID) nValue = src->skill[nSkill]/10;
 			}
 			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( x, y, src->skill[skMagery] / 100, true);
+			sc.fillCharsNearXYZ( loc.x, loc.y, src->skill[skMagery] / 100, true);
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
@@ -1653,7 +1633,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			CHECKDISTANCE(src, pd);
             		spellFX(spellnumber, src, pd);
 			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( x, y, src->skill[skMagery] / 100, true);
+			sc.fillCharsNearXYZ( loc.x, loc.y, src->skill[skMagery] / 100, true);
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
@@ -1699,7 +1679,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_ENERGYFIELD:
 		case SPELL_WALLSTONE:
 			spellFX(spellnumber, src, src);
-			castFieldSpell( src, x, y, z, spellnumber);
+			castFieldSpell( src, loc, spellnumber);
 			break;
 
 		case SPELL_DISPELFIELD:
@@ -1726,7 +1706,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				nTime = (nTime==INVALID) ? (int)(src->skill[nSkill] * 0.4) : nTime;
-				summon (src, xss::getIntFromDefine("$npc_summoned_air_elemental"), nTime, true, x, y, z);
+				summon (src, xss::getIntFromDefine("$npc_summoned_air_elemental"), nTime, true, loc);
 			}
 			break;
 
@@ -1734,7 +1714,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
-				summon (src, xss::getIntFromDefine("$npc_summoned_deamon"), nTime, true, x, y, z);
+				summon (src, xss::getIntFromDefine("$npc_summoned_deamon"), nTime, true, loc);
 			}
 			break;
 
@@ -1742,7 +1722,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
-    			summon (src, xss::getIntFromDefine("$npc_summoned_earth_elemental"), nTime, true, x, y, z);
+    			summon (src, xss::getIntFromDefine("$npc_summoned_earth_elemental"), nTime, true, loc);
 			}
 			break;
 
@@ -1750,7 +1730,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
-    			summon (src, xss::getIntFromDefine("$npc_summoned_fire_elemental"), nTime, true, x, y, z);
+    			summon (src, xss::getIntFromDefine("$npc_summoned_fire_elemental"), nTime, true, loc);
 			}
 			break;
 		
@@ -1758,7 +1738,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
-				summon (src, xss::getIntFromDefine("$npc_summoned_water_elemental"), nTime, true, x, y, z);
+				summon (src, xss::getIntFromDefine("$npc_summoned_water_elemental"), nTime, true, loc);
 			}
 			break;
 		
@@ -1766,7 +1746,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
-				summon (src, xss::getIntFromDefine("$npc_summoned_blade_spirit"), nTime, false, x, y, z);
+				summon (src, xss::getIntFromDefine("$npc_summoned_blade_spirit"), nTime, false, loc);
 			}
 			break;
 		
@@ -1774,7 +1754,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
-				summon (src, xss::getIntFromDefine("$npc_summoned_energy_vortex"), nTime, false, x, y, z);
+				summon (src, xss::getIntFromDefine("$npc_summoned_energy_vortex"), nTime, false, loc);
 			}
 			break;
 
@@ -1825,7 +1805,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			//Luxor: now a mage cannot teleport to water
 			/*bool isWater = false;
 			map_st map;
-			data::seekMap(x, y, map);
+			data::seekMap(loc.x, loc.y, map);
 			switch(map.id)
 			{
 				//water tiles:
@@ -1848,7 +1828,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			data::seekLand(map.id, land);
 			if (land.flags&TILEFLAG_WET) isWater = true;*/
 			//if (!isWater) {
-				src->MoveTo( x,y,z );
+				src->MoveTo(loc);
 	                        src->teleport();
                         	spellFX(spellnumber, src, pd);
 			//}
@@ -2028,27 +2008,27 @@ cPolymorphMenu::cPolymorphMenu( pChar pc ) : cIconListMenu()
 {
 	if ( ! pc ) return;
 	if ( pc->getTempfx( tempfx::SPELL_POLYMORPH ) != NULL )
-		addIcon( 0x2106, 0, pc->getOldId(), string("Undo polymorph") );
-	addIcon( 0x20CF, 0, 0xd3, string("Black Bear") );
-	addIcon( 0x20DB, 0, 0xd4, string("Grizzly Bear") );
-	addIcon( 0x20E1, 0, 0xd5, string("Polar Bear") );
-	addIcon( 0x20D1, 0, 0xd0, string("Chicken") );
-	addIcon( 0x20D3, 0, 0x9, string("Daemon") );
-	addIcon( 0x20D8, 0, 0x2, string("Ettin") );
-	addIcon( 0x20D9, 0, 0x4, string("Gargoyle") );
-	addIcon( 0x20D6, 0, 0xc, string("Dragon") );
-	addIcon( 0x20C9, 0, 0x1d, string("Gorilla") );
-	addIcon( 0x20CA, 0, 0x23, string("Lizardman") );
-	addIcon( 0x20DF, 0, 0x1, string("Ogre") );
-	addIcon( 0x20D0, 0, 0xd7, string("Rat") );
-	addIcon( 0x20D4, 0, 0xed, string("Deer") );
-	addIcon( 0x20D7, 0, 0xe, string("Earth Elemental") );
-	addIcon( 0x20E7, 0, 0x32, string("Skeleton") );
-	addIcon( 0x2100, 0, 0x3a, string("Wisp") );
-	addIcon( 0x211F, 0, 0xc8, string("Horse") );
-	addIcon( 0x210B, 0, 0x10, string("Water Elemental") );
+		addIcon( 0x2106, 0, pc->getOldId(), std::string("Undo polymorph") );
+	addIcon( 0x20CF, 0, 0xd3, std::string("Black Bear") );
+	addIcon( 0x20DB, 0, 0xd4, std::string("Grizzly Bear") );
+	addIcon( 0x20E1, 0, 0xd5, std::string("Polar Bear") );
+	addIcon( 0x20D1, 0, 0xd0, std::string("Chicken") );
+	addIcon( 0x20D3, 0, 0x9, std::string("Daemon") );
+	addIcon( 0x20D8, 0, 0x2, std::string("Ettin") );
+	addIcon( 0x20D9, 0, 0x4, std::string("Gargoyle") );
+	addIcon( 0x20D6, 0, 0xc, std::string("Dragon") );
+	addIcon( 0x20C9, 0, 0x1d, std::string("Gorilla") );
+	addIcon( 0x20CA, 0, 0x23, std::string("Lizardman") );
+	addIcon( 0x20DF, 0, 0x1, std::string("Ogre") );
+	addIcon( 0x20D0, 0, 0xd7, std::string("Rat") );
+	addIcon( 0x20D4, 0, 0xed, std::string("Deer") );
+	addIcon( 0x20D7, 0, 0xe, std::string("Earth Elemental") );
+	addIcon( 0x20E7, 0, 0x32, std::string("Skeleton") );
+	addIcon( 0x2100, 0, 0x3a, std::string("Wisp") );
+	addIcon( 0x211F, 0, 0xc8, std::string("Horse") );
+	addIcon( 0x210B, 0, 0x10, std::string("Water Elemental") );
 
-	question = string( "Choose a creature" );
+	question = std::string( "Choose a creature" );
 }
 
 /*!
@@ -2133,18 +2113,18 @@ cCreateFoodMenu::cCreateFoodMenu( pChar pc ) : cIconListMenu()
 {
 	if ( ! pc ) return;
 
-	addIcon( 0x9D0, 0, xss::getIntFromDefine("$item_apples"), string("Apple") );
-	addIcon( 0x103C, 0, xss::getIntFromDefine("$item_bread_loaves"), string("Bread") );
-	addIcon( 0x97C, 0, xss::getIntFromDefine("$item_wedges_of_cheese"), string("Cheese") );
-	addIcon( 0x9F2, 0, xss::getIntFromDefine("$item_cuts_of_ribs"), string("Cut of ribs") );
-	addIcon( 0x97B, 0, xss::getIntFromDefine("$item_fish_steaks"), string("Fish steak") );
-	addIcon( 0x9D1, 0, xss::getIntFromDefine("$item_grape_bunches"), string("Grape bunch") );
-	addIcon( 0x9C9, 0, xss::getIntFromDefine("$item_hams"), string("Ham") );
-	addIcon( 0x9EA, 0, xss::getIntFromDefine("$item_muffins"), string("Muffin") );
-	addIcon( 0x9D2, 0, xss::getIntFromDefine("$item_peaches"), string("Peach") );
-	addIcon( 0x9C0, 0, xss::getIntFromDefine("$item_sausages"), string("Sausage") );
+	addIcon( 0x9D0, 0, xss::getIntFromDefine("$item_apples"), std::string("Apple") );
+	addIcon( 0x103C, 0, xss::getIntFromDefine("$item_bread_loaves"), std::string("Bread") );
+	addIcon( 0x97C, 0, xss::getIntFromDefine("$item_wedges_of_cheese"), std::string("Cheese") );
+	addIcon( 0x9F2, 0, xss::getIntFromDefine("$item_cuts_of_ribs"), std::string("Cut of ribs") );
+	addIcon( 0x97B, 0, xss::getIntFromDefine("$item_fish_steaks"), std::string("Fish steak") );
+	addIcon( 0x9D1, 0, xss::getIntFromDefine("$item_grape_bunches"), std::string("Grape bunch") );
+	addIcon( 0x9C9, 0, xss::getIntFromDefine("$item_hams"), std::string("Ham") );
+	addIcon( 0x9EA, 0, xss::getIntFromDefine("$item_muffins"), std::string("Muffin") );
+	addIcon( 0x9D2, 0, xss::getIntFromDefine("$item_peaches"), std::string("Peach") );
+	addIcon( 0x9C0, 0, xss::getIntFromDefine("$item_sausages"), std::string("Sausage") );
 
-	question = string( "Choose a food type" );
+	question = std::string( "Choose a food type" );
 }
 
 /*!
@@ -2172,21 +2152,21 @@ cSummonCreatureMenu::cSummonCreatureMenu( pChar pc ) : cIconListMenu()
 {
 	if ( ! pc ) return;
 
-	addIcon( 0x211E, 0, xss::getIntFromDefine("$npc_a_brown_bear"), string("Bear") );
-	addIcon( 0x211A, 0, xss::getIntFromDefine("$npc_forest_bird"), string("Bird") );
-	addIcon( 0x20EF, 0, xss::getIntFromDefine("$npc_a_bull"), string("Bull") );
-	addIcon( 0x211B, 0, xss::getIntFromDefine("$npc_a_cat"), string("Cat") );
-	addIcon( 0x20D1, 0, xss::getIntFromDefine("$npc_a_chicken"), string("Chicken") );
-	addIcon( 0x2102, 0, xss::getIntFromDefine("$npc_a_cougar"), string("Cougar") );
-	addIcon( 0x2103, 0, xss::getIntFromDefine("$npc_a_cow"), string("Cow") );
-	addIcon( 0x20D5, 0, xss::getIntFromDefine("$npc_a_dog"), string("Dog") );
-	addIcon( 0x20F5, 0, xss::getIntFromDefine("$npc_a_gorilla"), string("Gorilla") );
-	addIcon( 0x2124, 0, xss::getIntFromDefine("$npc_a_horse"), string("Horse") );
-	addIcon( 0x20F6, 0, xss::getIntFromDefine("$npc_a_llama"), string("Lama") );
-	addIcon( 0x2125, 0, xss::getIntFromDefine("$npc_a_rabbit"), string("Rabbit") );
-	addIcon( 0x2108, 0, xss::getIntFromDefine("$npc_a_sheep"), string("Sheep") );
+	addIcon( 0x211E, 0, xss::getIntFromDefine("$npc_a_brown_bear"), std::string("Bear") );
+	addIcon( 0x211A, 0, xss::getIntFromDefine("$npc_forest_bird"), std::string("Bird") );
+	addIcon( 0x20EF, 0, xss::getIntFromDefine("$npc_a_bull"), std::string("Bull") );
+	addIcon( 0x211B, 0, xss::getIntFromDefine("$npc_a_cat"), std::string("Cat") );
+	addIcon( 0x20D1, 0, xss::getIntFromDefine("$npc_a_chicken"), std::string("Chicken") );
+	addIcon( 0x2102, 0, xss::getIntFromDefine("$npc_a_cougar"), std::string("Cougar") );
+	addIcon( 0x2103, 0, xss::getIntFromDefine("$npc_a_cow"), std::string("Cow") );
+	addIcon( 0x20D5, 0, xss::getIntFromDefine("$npc_a_dog"), std::string("Dog") );
+	addIcon( 0x20F5, 0, xss::getIntFromDefine("$npc_a_gorilla"), std::string("Gorilla") );
+	addIcon( 0x2124, 0, xss::getIntFromDefine("$npc_a_horse"), std::string("Horse") );
+	addIcon( 0x20F6, 0, xss::getIntFromDefine("$npc_a_llama"), std::string("Lama") );
+	addIcon( 0x2125, 0, xss::getIntFromDefine("$npc_a_rabbit"), std::string("Rabbit") );
+	addIcon( 0x2108, 0, xss::getIntFromDefine("$npc_a_sheep"), std::string("Sheep") );
 
-	question = string( "Choose a creature" );
+	question = std::string( "Choose a creature" );
 }
 
 /*!
@@ -2208,7 +2188,7 @@ void cSummonCreatureMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	pc_monster->setOwner( pc );
 	pc_monster->tamed = true;
 	pc_monster->summontimer = getclock() + uint32_t(pc->skill[skMagery] * 0.4) * SECS;
-	pc_monster->MoveTo( pos.x, pos.y, pos.z );
+	pc_monster->MoveTo(pos);
 	pc_monster->teleport();
 	spellFX( SPELL_SUMMON, pc, pc );
 }

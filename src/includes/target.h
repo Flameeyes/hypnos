@@ -118,10 +118,8 @@ private:
 	int	m_pcSerial;
 	pItem	m_pi;
 	int	m_piSerial;
-	int	m_x;
-	int	m_y;
-	int	m_z;
-	void   init(int x, int y, int z);
+	sLocation loc;
+	void   init(sLocation l);
 	void   init(pChar pc);
 	void   init(pItem pi);
 
@@ -133,17 +131,24 @@ public:
 	//!creates a target loc from a target net packet
 	TargetLocation( pTarget pp );
 	//!creates a target loc from a xyz position in the map
-	TargetLocation(int x, int y, int z) { init(x,y,z); }
+	TargetLocation(sLocation l) { init(l); }
 
 	//!recalculates item&char from their serial
 	void revalidate();
 
 	//!gets the targetted char if any, NULL otherwise
 	inline pChar getChar() { return m_pc; }
+	
 	//!gets the targetted item if any, NULL otherwise
 	inline pItem getItem() { return m_pi; }
+	
+	//! Gets the location of this target
+	inline sLocation getLocation() const
+	{ return loc; }
+	
 	//!gets the XYZ location of this target location
-	inline void getXYZ(int& x, int& y, int& z) { x = m_x; y = m_y; z = m_z; }
+	inline void getXYZ(uint16_t& x, uint16_t& y, int8_t& z) { x = loc.x; y = loc.y; z = loc.z; }
+	
 	//!extends a pItem data to pChar and x,y,z
 	void extendItemTarget();
 };
