@@ -740,7 +740,7 @@ int cChar::combatHitMessage(int32_t damage)
 				if (damage > 1) strcpy(temp, TRANSLATE("hits you in Right Hand!"));
 		}
 	}
-	pChar pc_attacker = pointers::findCharBySerial(attackerserial);
+	pChar pc_attacker = cSerializable::findCharBySerial(attackerserial);
 	if ( pc_attacker) {
 		sysmsg("%s %s",pc_attacker->getCurrentName().c_str(), temp);
 	}

@@ -140,7 +140,7 @@ void clearalltrades()
                 if ((pi->type==1) && (pi->getPosition("x")==26) && (pi->getPosition("y")==0) && (pi->getPosition("z")==0) &&
 			(pi->id()==0x1E5E))
 		{
-                        pc = pointers::findCharBySerial(pi->getContSerial());
+                        pc = cSerializable::findCharBySerial(pi->getContSerial());
                         if (pc) {
                                 pack = pc->getBackpack();
                                 if (pack) {
@@ -234,7 +234,7 @@ void cRestockMng::doRestock()
 
 	while( ( --count>0 ) && ( !needrestock.empty() ) ) {
 
-		pItem pi= pointers::findItemBySerial( needrestock.front() );
+		pItem pi= cSerializable::findItemBySerial( needrestock.front() );
 		this->needrestock.pop();
 		if( pi && pi->layer==LAYER_TRADE_RESTOCK  ) {
 
@@ -270,7 +270,7 @@ void cRestockMng::doRestockAll()
 
 	while( !needrestock.empty() ) {
 
-		pItem pi= pointers::findItemBySerial( needrestock.front() );
+		pItem pi= cSerializable::findItemBySerial( needrestock.front() );
 		this->needrestock.pop();
 		if( pi && pi->layer==LAYER_TRADE_RESTOCK ) {
 

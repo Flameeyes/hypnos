@@ -339,7 +339,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 	//Luxor: not-movable items
 	/*if (pi->magic == 2 || (isCharSerial(pi->getContSerial()) && pi->getContSerial() != pc_currchar->getSerial32()) ) {
 		if (isCharSerial(pi->getContSerial())) {
-			pChar pc_i = pointers::findCharBySerial(pi->getContSerial());
+			pChar pc_i = cSerializable::findCharBySerial(pi->getContSerial());
 			if ( pc_i )
 				pc_i->sysmsg("Warning, backpack bug located!");
 		}
@@ -424,7 +424,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 			if ( serial == INVALID )
 				return;
 
-			pItem piz = pointers::findItemBySerial(serial );
+			pItem piz = cSerializable::findItemBySerial(serial );
 			if ( piz )
 				if ( piz->morez || container->morez )
 				{
@@ -486,7 +486,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 					pc_currchar->unHide();
 					bool bCanLoot = false;
 					if( pc_currchar->party!=INVALID ) {
-						pChar dead = pointers::findCharBySerial( container->getOwnerSerial32() ) ;
+						pChar dead = cSerializable::findCharBySerial( container->getOwnerSerial32() ) ;
 						if( dead && dead->party==pc_currchar->party ) {
 							P_PARTY party = Partys.getParty( pc_currchar->party );
 							if( party!=NULL ) {
@@ -688,7 +688,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 
 	//ndEndy recurse only a time
 	pItem contOutMost = cont->getOutMostCont();
-//	pChar contOwner = ( !contOutMost->isInWorld() )? pointers::findCharBySerial( contOutMost->getContainer()->getSerial() ) : NULL;
+//	pChar contOwner = ( !contOutMost->isInWorld() )? cSerializable::findCharBySerial( contOutMost->getContainer()->getSerial() ) : NULL;
 	pChar contOwner = (pChar) contOutMost->getContainer();
 
 	if( contOwner ) {
@@ -723,7 +723,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 		serial=calcserial(cont->moreb1, cont->moreb2, cont->moreb3, cont->moreb4);
 		if(serial==-1) return;
 
-		pItem pi_z = pointers::findItemBySerial(serial);
+		pItem pi_z = cSerializable::findItemBySerial(serial);
 
 		if ( pi_z )
 			if ((pi_z->morez || cont->morez))
@@ -1101,7 +1101,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 		//Boats !
 		if (pc->getMultiSerial32() > 0) //How can they put an item in a multi if they aren't in one themselves Cut lag by not checking everytime something is put down
 		{
-			pItem multi = pointers::findItemBySerial( pc->getMultiSerial32() );
+			pItem multi = cSerializable::findItemBySerial( pc->getMultiSerial32() );
 			if ( multi )
 			{
 				multi=findmulti( pi->getPosition() );
@@ -1128,7 +1128,7 @@ bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
 	VALIDATEPIR(pi, false);
 
 
-	pChar pTC = pointers::findCharBySerial(cont->getSerial32());	// the targeted character
+	pChar pTC = cSerializable::findCharBySerial(cont->getSerial32());	// the targeted character
 	VALIDATEPCR(pTC, false);
 	pChar pc_currchar = currChar();
 	VALIDATEPCR(pc_currchar, false);
@@ -1243,7 +1243,7 @@ bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
 
 bool cClient::droppedOnPet(pItem pi, Location &loc, pItem cont)
 {
-	pChar pet = pointers::findCharBySerial(cont->getSerial32());
+	pChar pet = cSerializable::findCharBySerial(cont->getSerial32());
 	VALIDATEPCR(pet, false);
 	pChar pc = currChar();
 	VALIDATEPCR(pc, false);
@@ -1300,14 +1300,14 @@ bool cClient::droppedOnGuard(pItem pi, Location &loc, pItem cont)
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	pChar pc = currChar();
 	VALIDATEPCR(pc,false);
-	pChar pc_t=pointers::findCharBySerial(cont->getSerial32()); //the guard
+	pChar pc_t=cSerializable::findCharBySerial(cont->getSerial32()); //the guard
 	VALIDATEPCR(pc_t,false);
 	// Search for the key word "the head of"
         //! \todo change check for text to check for id
 	if( strstr( pi->getCurrentName().c_str(), "the head of" ) ) //!!! Wrong! it must check the ItemID, not the name :(
 	{
 		// This is a head of someone, see if the owner has a bounty on them
-		pChar own=pointers::findCharBySerial(pi->getOwnerSerial32());
+		pChar own=cSerializable::findCharBySerial(pi->getOwnerSerial32());
 		VALIDATEPCR(own,false);
 
 		if( own->questBountyReward > 0 )
@@ -1362,7 +1362,7 @@ bool cClient::droppedOnBeggar(pItem pi, Location &loc, pItem cont)
 	pChar pc=currChar();
 	VALIDATEPCR(pc,false);
 
-	pChar pc_t=pointers::findCharBySerial(cont->getSerial32()); //beggar
+	pChar pc_t=cSerializable::findCharBySerial(cont->getSerial32()); //beggar
 	VALIDATEPCR(pc_t,false);
 
 	if(pi->getId()!=ITEMID_GOLD)
@@ -1414,7 +1414,7 @@ bool cClient::droppedOnTrainer(pItem pi, Location &loc, pItem cont)
 
 	pChar pc = currChar();
 	VALIDATEPCR(pc,false);
-	pChar pc_t = pointers::findCharBySerial(cont->getSerial32());
+	pChar pc_t = cSerializable::findCharBySerial(cont->getSerial32());
 	VALIDATEPCR(pc_t,false);
 
 	if( pi->getId() == ITEMID_GOLD )
@@ -2155,9 +2155,9 @@ void sendtradestatus(pContainer cont1, pContainer cont2)  //takes clients from c
 
 	pChar p1, p2;
 
-	p1 = pointers::findCharBySerial(cont1->getContSerial());
+	p1 = cSerializable::findCharBySerial(cont1->getContSerial());
 	VALIDATEPC(p1);
-	p2 = pointers::findCharBySerial(cont2->getContSerial());
+	p2 = cSerializable::findCharBySerial(cont2->getContSerial());
 	VALIDATEPC(p2);
 
 	cPacketSendSecureTradingStatus pk1(0x02, cont1->getSerial32(), (uint32_t) (cont1->morez%256), (uint32_t) (cont2->morez%256));
@@ -2170,8 +2170,8 @@ void dotrade(pContainer cont1, pContainer cont2)
 {
         VALIDATEPI(cont1);
         VALIDATEPI(cont2);
-        pPC pc1 = pointers::findCharBySerial(cont1->getContSerial());
-        pPC pc2 = pointers::findCharBySerial(cont2->getContSerial());
+        pPC pc1 = cSerializable::findCharBySerial(cont1->getContSerial());
+        pPC pc2 = cSerializable::findCharBySerial(cont2->getContSerial());
         VALIDATEPC(pc1);
         VALIDATEPC(pc2);
         pContainer bp1 = pc1->getBackpack();
@@ -2236,15 +2236,15 @@ void dotrade(pContainer cont1, pContainer cont2)
 
 void endtrade(uint32_t serial)
 {
-	pItem c1=pointers::findItemBySerial(serial);
+	pItem c1=cSerializable::findItemBySerial(serial);
 	VALIDATEPI(c1);
-	pItem c2=pointers::findItemBySerial(calcserial(c1->moreb1, c1->moreb2, c1->moreb3, c1->moreb4));
+	pItem c2=cSerializable::findItemBySerial(calcserial(c1->moreb1, c1->moreb2, c1->moreb3, c1->moreb4));
 	VALIDATEPI(c2);
 
-	pChar pc1=pointers::findCharBySerial(c1->getContSerial());
+	pChar pc1=cSerializable::findCharBySerial(c1->getContSerial());
 	VALIDATEPC(pc1);
 
-	pChar pc2=pointers::findCharBySerial(c2->getContSerial());
+	pChar pc2=cSerializable::findCharBySerial(c2->getContSerial());
 	VALIDATEPC(pc2);
 
 

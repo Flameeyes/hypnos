@@ -176,7 +176,7 @@ void cGuilds::Menu(int s, int page)
 		{
 			if (pc->GetGuildFealty() == guilds[guildnumber].member[member])
 			{
-				pChar pcm=pointers::findCharBySerial( guilds[guildnumber].member[member] );
+				pChar pcm=cSerializable::findCharBySerial( guilds[guildnumber].member[member] );
 				if( pcm )
 					strcpy(guildfealty, pcm->getCurrentName().c_str());
 				break;
@@ -203,7 +203,7 @@ void cGuilds::Menu(int s, int page)
 
 	uint8_t gmprefix[9] = { 0x7C, 0x00, };
 
-	pChar pguildmaster=pointers::findCharBySerial( guilds[guildnumber].master );
+	pChar pguildmaster=cSerializable::findCharBySerial( guilds[guildnumber].master );
 
 	switch(page)
 	{
@@ -292,7 +292,7 @@ void cGuilds::Menu(int s, int page)
 			if (guilds[guildnumber].recruit[recruit]!=0)
 			{
 				counter++;
-				pChar recr=pointers::findCharBySerial(guilds[guildnumber].recruit[recruit]);
+				pChar recr=cSerializable::findCharBySerial(guilds[guildnumber].recruit[recruit]);
 				if(recr)
 					strcpy(mygump[counter],recr->getCurrentName().c_str());
 			}
@@ -306,7 +306,7 @@ void cGuilds::Menu(int s, int page)
 		counter=1;
 		for (member=1;member<MAXGUILDMEMBERS; ++member)
 		{
-			pChar memb=pointers::findCharBySerial(guilds[guildnumber].member[member]);
+			pChar memb=cSerializable::findCharBySerial(guilds[guildnumber].member[member]);
 			if (memb)
 			{
 				counter++;
@@ -322,7 +322,7 @@ void cGuilds::Menu(int s, int page)
 		counter=1;
 		for (member=1;member<MAXGUILDMEMBERS; ++member )
 		{
-			pChar memb=pointers::findCharBySerial(guilds[guildnumber].member[member]);
+			pChar memb=cSerializable::findCharBySerial(guilds[guildnumber].member[member]);
 			if (memb)
 			{
 				counter++;
@@ -338,7 +338,7 @@ void cGuilds::Menu(int s, int page)
 		counter=1;
 		for (recruit=1;recruit<MAXGUILDRECRUITS; ++recruit)
 		{
-			pChar recr = pointers::findCharBySerial(guilds[guildnumber].recruit[recruit]);
+			pChar recr = cSerializable::findCharBySerial(guilds[guildnumber].recruit[recruit]);
 			if (recr)
 			{
 				counter++;
@@ -354,7 +354,7 @@ void cGuilds::Menu(int s, int page)
 		counter=1;
 		for (recruit=1;recruit<MAXGUILDRECRUITS; ++recruit)
 		{
-			pChar recr = pointers::findCharBySerial(guilds[guildnumber].recruit[recruit]);
+			pChar recr = cSerializable::findCharBySerial(guilds[guildnumber].recruit[recruit]);
 			if (recr)
 			{
 				counter++;
@@ -385,7 +385,7 @@ void cGuilds::Menu(int s, int page)
 		counter=1;
 		for (member=1;member<MAXGUILDMEMBERS; ++member)
 		{
-			pChar membr=pointers::findCharBySerial(guilds[guildnumber].member[member]);
+			pChar membr=cSerializable::findCharBySerial(guilds[guildnumber].member[member]);
 			if(membr)
 			{
 				counter++;
@@ -401,7 +401,7 @@ void cGuilds::Menu(int s, int page)
 		counter=1;
 		for (member=1;member<MAXGUILDMEMBERS; ++member)
 		{
-			pChar membr=pointers::findCharBySerial(guilds[guildnumber].member[member]);
+			pChar membr=cSerializable::findCharBySerial(guilds[guildnumber].member[member]);
 			if(membr)
 			{
 				counter++;
@@ -535,7 +535,7 @@ void cGuilds::EraseGuild(int guildnumber)
 {
 	if (guildnumber<0 || guildnumber >=MAXGUILDS) return;
 
-	pItem pi_stone = pointers::findItemBySerial(guilds[guildnumber].stone);
+	pItem pi_stone = cSerializable::findItemBySerial(guilds[guildnumber].stone);
 	if ( ! pi_stone ) return;
 
 	int war;
@@ -587,7 +587,7 @@ void cGuilds::EraseMember(int c)
 		{
 			if (guilds[guildnumber].member[j] == pc->getSerial())
 			{
-				pChar hold = pointers::findCharBySerial(guilds[guildnumber].member[j]);
+				pChar hold = cSerializable::findCharBySerial(guilds[guildnumber].member[j]);
 				if (hold)
 				{
 					RemoveShields(hold);
@@ -670,7 +670,7 @@ void cGuilds::Recruit(int s)
 		return; // check if user canceled operation - Morrolan
 
 	uint32_t serial = LongCharFromPtr(buffer[s] +7);
-	pChar pc = pointers::findCharBySerial( serial );
+	pChar pc = cSerializable::findCharBySerial( serial );
 
 	if(pc != NULL)
 	{
@@ -729,7 +729,7 @@ void cGuilds::TargetWar(int s)
 		return; // check if user canceled operation - Morrolan
 
 	uint32_t serial = LongCharFromPtr(buffer[s] +7);
-	pChar pc = pointers::findCharBySerial( serial );
+	pChar pc = cSerializable::findCharBySerial( serial );
 
 	if( pc != NULL)
 	{
@@ -779,7 +779,7 @@ void cGuilds::StoneMove(int s)
 
 	int guildnumber=Guilds->SearchByStone(s);
 	if (guildnumber==-1) return;
-	pItem stone = pointers::findItemBySerial( guilds[guildnumber].stone );
+	pItem stone = cSerializable::findItemBySerial( guilds[guildnumber].stone );
 	if ( ! stone ) return;
 	// Get stone
 
@@ -1024,7 +1024,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 					}
 					else
 					{
-						pChar pc_member = pointers::findCharBySerial( guilds[guildnumber].member[member] );
+						pChar pc_member = cSerializable::findCharBySerial( guilds[guildnumber].member[member] );
 						if( pc_member )
 						{
 							pc->sysmsg(TRANSLATE("Kicked %s out of the guild."), pc_member->getCurrentName().c_str());
@@ -1053,7 +1053,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 				++counter;
 				if (sub==counter)
 				{
-					pChar pc_recruit = pointers::findCharBySerial( guilds[guildnumber].recruit[recruit] );
+					pChar pc_recruit = cSerializable::findCharBySerial( guilds[guildnumber].recruit[recruit] );
 					if( pc_recruit )
 						pc->sysmsg(TRANSLATE("Removed candidate %s from the list."), pc_recruit->getCurrentName().c_str());
 					else
@@ -1077,7 +1077,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 				counter++;
 				if (sub==counter)
 				{
-					pChar pc_recruit = pointers::findCharBySerial( guilds[guildnumber].recruit[recruit] );
+					pChar pc_recruit = cSerializable::findCharBySerial( guilds[guildnumber].recruit[recruit] );
 					if ( pc_recruit )
 						if (pc_recruit->GetGuildNumber()==0)
 						{
@@ -1221,7 +1221,7 @@ void cGuilds::ChangeName(NXWSOCKET s, char *text)
 	if (guildnumber==-1) 
 		return;
 	
-	pItem pStone = pointers::findItemBySerial( guilds[guildnumber].stone );
+	pItem pStone = cSerializable::findItemBySerial( guilds[guildnumber].stone );
 
 	if (!pStone) 
 		return;
@@ -1308,7 +1308,7 @@ void cGuilds::ChangeTitle(int s, char *text)
 
 	guilds[guildnumber].priv=0;
 
-	pChar membr=pointers::findCharBySerial(member);
+	pChar membr=cSerializable::findCharBySerial(member);
 	if ( ! membr ) return;
 	membr->SetGuildTitle( text );
 
@@ -1388,7 +1388,7 @@ void cGuilds::SetType(int guildnumber, int type)
 		case 1:	//	Convert into a order guild
 			for(j=0;j<=guilds[guildnumber].members;j++)
 			{
-				pChar hold = pointers::findCharBySerial(guilds[guildnumber].member[j]);
+				pChar hold = cSerializable::findCharBySerial(guilds[guildnumber].member[j]);
 				if (hold)
 				{
 					RemoveShields(hold);
@@ -1401,7 +1401,7 @@ void cGuilds::SetType(int guildnumber, int type)
 		case 2:	//	Convert guild into an choas guild
 			for(j=0;j<=guilds[guildnumber].members;j++)
 			{
-				pChar hold = pointers::findCharBySerial(guilds[guildnumber].member[j]);
+				pChar hold = cSerializable::findCharBySerial(guilds[guildnumber].member[j]);
 				if (hold)
 				{
 					RemoveShields(hold);
@@ -1416,7 +1416,7 @@ void cGuilds::SetType(int guildnumber, int type)
 			//	Idea is to remove the items from this guilds members(Im gonna use your item loop for clarity)
 			for(j = 0;j <= guilds[guildnumber].members; j++)
 			{
-				pChar hold = pointers::findCharBySerial(guilds[guildnumber].member[j]);
+				pChar hold = cSerializable::findCharBySerial(guilds[guildnumber].member[j]);
 				if (hold)
 				{
 					RemoveShields(hold);
@@ -1432,7 +1432,7 @@ void cGuilds::SetType(int guildnumber, int type)
 		{
 			if (guilds[guildnumber].member[member]!=0)
 			{
-				pChar pj = pointers::findCharBySerial(guilds[guildnumber].member[member]);
+				pChar pj = cSerializable::findCharBySerial(guilds[guildnumber].member[member]);
 				if (pj)
 					pj->SetGuildTitleToggle();
 			}
@@ -1453,7 +1453,7 @@ void cGuilds::Broadcast(int guildnumber, char *text)
 	{
 		if (guilds[guildnumber].member[member]!=0)
 		{
-			pChar pc = pointers::findCharBySerial(guilds[guildnumber].member[member]);
+			pChar pc = cSerializable::findCharBySerial(guilds[guildnumber].member[member]);
 			if( pc->IsOnline() )
 				pc->sysmsg(text);
 		}
@@ -1539,7 +1539,7 @@ void cGuilds::CalcMaster(int guildnumber)
 
 	for ( member = 1; member < MAXGUILDMEMBERS; ++member )
 	{
-		pChar pCurrentMember = pointers::findCharBySerial( guild->member[member] );
+		pChar pCurrentMember = cSerializable::findCharBySerial( guild->member[member] );
 
 		if( pCurrentMember )
 			currentfealty = pCurrentMember->GetGuildFealty();
@@ -1627,7 +1627,7 @@ void cGuilds::Title(int s,int player2)
 	char abbreviation[5];
 	char guildtype[10];
 
-	pChar pc2= pointers::findCharBySerial( player2 );
+	pChar pc2= cSerializable::findCharBySerial( player2 );
 	if ( ! pc2 ) return;
 
 	if (pc2->GetGuildNumber()<0 || pc2->GetGuildNumber()>=MAXGUILDS) return;
@@ -1815,7 +1815,7 @@ void cGuilds::CheckConsistancy(void )
 		{
 			// is the guildmaster still alive ?
 			ok=1;
-			pc = pointers::findCharBySerial(guilds[guildnumber].master);
+			pc = cSerializable::findCharBySerial(guilds[guildnumber].master);
 			if (!pc) // if not, erase the guild !
 			{
 				ok=0;
@@ -1825,7 +1825,7 @@ void cGuilds::CheckConsistancy(void )
 			// guildstone deleted ? yes -> erase guild !
 			if (ok) // don't erease twice ;)
 			{
-				stone = pointers::findItemBySerial(guilds[guildnumber].stone);
+				stone = cSerializable::findItemBySerial(guilds[guildnumber].stone);
 				if (!stone)
 				{
 					ok=0;
@@ -1838,7 +1838,7 @@ void cGuilds::CheckConsistancy(void )
 			 // check for guildmembers that don't exist anymore and remove from guild structure if so
 				for (members=1; members<MAXGUILDMEMBERS; members++)
 				{
-					pc = pointers::findCharBySerial(guilds[guildnumber].member[members]);
+					pc = cSerializable::findCharBySerial(guilds[guildnumber].member[members]);
 					if (!pc )
 					{
 						ok=0;

@@ -278,7 +278,7 @@ namespace Commands
 		pChar Me = MAKE_CHAR_REF(currchar[s]);
 		if ( ! Me ) return;
 
-		pItem pi = pointers::findItemBySerial(LongCharFromPtr(buffer[s] +1));
+		pItem pi = cSerializable::findItemBySerial(LongCharFromPtr(buffer[s] +1));
 		if( pi )
 		{
 
@@ -332,7 +332,7 @@ namespace Commands
 			return;
 		}
 
-		pChar pc = pointers::findCharBySerial(LongCharFromPtr(buffer[s] +1));
+		pChar pc = cSerializable::findCharBySerial(LongCharFromPtr(buffer[s] +1));
 		if( pc && Me->IsGMorCounselor() )
 		{
 			color = ShortFromCharPtr(buffer[s] +7);
@@ -419,13 +419,13 @@ namespace Commands
 		if (s < 0 || s >= now)
 			return;
 
-		pChar pc = pointers::findCharBySerial(currchar[s]);
+		pChar pc = cSerializable::findCharBySerial(currchar[s]);
 		if ( ! pc ) return;
 		InfoOut( "%s has initiated an item wipe\n", pc->getCurrentName().c_str() );
 		cAllObjectsIter objs;
 		pItem pi = NULL;
 		for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
-			pi = pointers::findItemBySerial( objs.getSerial() );
+			pi = cSerializable::findItemBySerial( objs.getSerial() );
 			if ( pi && pi->isInWorld() && pi->wipe == 0 )
 				pi->Delete();
 		}
@@ -444,7 +444,7 @@ namespace Commands
 	{
 		pChar pc = MAKE_CHAR_REF(currchar[s]);
 		if ( ! pc ) return;
-		pChar pcPos = pointers::findCharBySerial(LongCharFromPtr(buffer[s]+7));
+		pChar pcPos = cSerializable::findCharBySerial(LongCharFromPtr(buffer[s]+7));
 		if ( ! pcPos ) return;
 
 		pc->possess(pcPos);

@@ -24,10 +24,10 @@ JAILEDVECTOR prison::jailed;
 */
 cJailed::cJailed()
 {
-	this->sec = 0;
-	this->timer = 0;
-	this->why = "";
-	this->cell=INVALID;
+	sec = 0;
+	timer = 0;
+	why = "";
+	cell=INVALID;
 };
 
 /*!
@@ -40,11 +40,10 @@ cJailed::~cJailed() { };
 \brief Constructor of cPrisonCell
 \author Endymion
 */
-cPrisonCell::cPrisonCell()
+cPrisonCell::cPrisonCell() : pos(0, 0, 0, 0)
 {
-	this->pos.x=0; this->pos.y=0; this->pos.z=0; this->pos.dispz=0;
-	this->serial=INVALID;
-	this->free=true;
+	serial=INVALID;
+	free=true;
 };
 
 /*!
@@ -104,7 +103,7 @@ void prison::checkForFree()
 	{
 		next=j; next++;
 		if( TIMEOUT( (*j).timer ) ) {
-			pChar pc = pointers::findCharBySerial( (*j).serial );
+			pChar pc = cSerializable::findCharBySerial( (*j).serial );
 			if( pc ) {
 				prison::release( NULL, pc );
 			}

@@ -28,7 +28,7 @@
 	the version used by you available or provide people with a location to
 	download it.</b>
 
-<hr />
+<hr>
 
 	You can find info about the authors in the AUTHORS file.
 
@@ -152,7 +152,7 @@ static void item_char_test()
 
 			if (p_pet->isStabled())
 			{
-				pChar stablemaster=pointers::findCharBySerial(p_pet->getStablemaster());
+				pChar stablemaster=cSerializable::findCharBySerial(p_pet->getStablemaster());
 				if (! stablemaster )
 				{
 					p_pet->unStable();
@@ -1181,7 +1181,7 @@ void npcattacktarget(pChar pc, pChar pc_target)
 		pc->toggleCombat();
 	pc->setNpcMoveTime();
 
-	pChar pc_target_targ = pointers::findCharBySerial(pc_target->targserial);
+	pChar pc_target_targ = cSerializable::findCharBySerial(pc_target->targserial);
 	if ( !pc_target_targ || pc_target_targ->dead || pc_target->distFrom(pc_target_targ) > 15 ) {
 		if (!pc_target->npc && pc_target->war) {
 			pc_target->targserial = pc->getSerial();
@@ -1496,7 +1496,7 @@ void StoreItemRandomValue(pItem pi,int tmpreg)
 			tmpreg=calcRegionFromXY( pio->getPosition() );
 		else
 		{
-			pChar pc=pointers::findCharBySerial(pio->getContSerial());
+			pChar pc=cSerializable::findCharBySerial(pio->getContSerial());
 			if (!pc) return;
 			tmpreg=calcRegionFromXY( pc->getPosition() );
 		}
@@ -1794,7 +1794,7 @@ void checkGarbageCollect () // Remove items which were in deleted containers
 				if( first ) {
 					pChar pc=(pChar)(objs.getObject());
 					if( pc->getOwnerSerial32()!=INVALID ) {
-						pChar own=pointers::findCharBySerial( pc->getOwnerSerial32() );
+						pChar own=cSerializable::findCharBySerial( pc->getOwnerSerial32() );
 						if(!own) {
 							pc->setOwnerSerial32( INVALID );
 							++corrected;
@@ -1810,8 +1810,8 @@ void checkGarbageCollect () // Remove items which were in deleted containers
 					continue;
 
 				// find the container if theres one.
-				pChar pc_j= pointers::findCharBySerial(pi->getContSerial());
-				pItem pi_j= pointers::findItemBySerial(pi->getContSerial());
+				pChar pc_j= cSerializable::findCharBySerial(pi->getContSerial());
+				pItem pi_j= cSerializable::findItemBySerial(pi->getContSerial());
 
 				// if container serial is invalid
 				if( ((pc_j==NULL) ) &&

@@ -164,7 +164,7 @@ void cmdNextCall(pClient cli)
 		{
 			if(gmpages[i].handled==0)
 			{
-				pChar pj=pointers::findCharBySerial( gmpages[i].serial.serial32 );
+				pChar pj=cSerializable::findCharBySerial( gmpages[i].serial.serial32 );
 				if(pj)
 				{
 					Location dest= pj->getPosition();
@@ -192,7 +192,7 @@ void cmdNextCall(pClient cli)
 		{
 			if(counspages[i].handled==0)
 			{
-				pChar pj=pointers::findCharBySerial( counspages[i].serial.serial32 );
+				pChar pj=cSerializable::findCharBySerial( counspages[i].serial.serial32 );
 				if(pj)
 				{
 					Location dest= pj->getPosition();

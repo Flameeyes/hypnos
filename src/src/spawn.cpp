@@ -21,11 +21,11 @@ cSpawns* Spawns=NULL;
 cSpawnArea::cSpawnArea( AREA_ITER area )
 {
 	disabled = false;
-	this->nextspawn=uiCurrentTime;
-	this->where=area;
-	this->current=0;
-	this->items_spawned.clear();
-	this->npcs_spawned.clear();
+	nextspawn=uiCurrentTime;
+	where=area;
+	current=0;
+	items_spawned.clear();
+	npcs_spawned.clear();
 }
 
 cSpawnArea::~cSpawnArea()
@@ -474,7 +474,7 @@ cSpawnDinamic::~cSpawnDinamic()
 
 void cSpawnDinamic::doSpawn()
 {
-	pItem spawn=pointers::findItemBySerial( item );
+	pItem spawn=cSerializable::findItemBySerial( item );
 	if ( ! spawn ) return;
 
 	if( current>=spawn->getAmount() || spawn->morex == 0)

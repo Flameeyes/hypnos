@@ -318,7 +318,7 @@ static void CorpseTarget(const NXWCLIENT pC)
     NXWSOCKET  s = pC->toInt();
 
     uint32_t serial=LongFromCharPtr(buffer[s]+7);
-    pItem pi = pointers::findItemBySerial( serial );
+    pItem pi = cSerializable::findItemBySerial( serial );
     pChar pc=MAKE_CHAR_REF(currchar[s]);
     if(pi)
     {
@@ -525,7 +525,7 @@ void target_playerVendorBuy( NXWCLIENT ps, P_TARGET t )
     if (!pBackpack) {sysmessage(s,TRANSLATE("Time to buy a backpack")); return; } //LB
 
     uint32_t serial=LongFromCharPtr(buffer[s]+7);
-    pItem pi=pointers::findItemBySerial(serial);     // the item
+    pItem pi=cSerializable::findItemBySerial(serial);     // the item
     if (pi==NULL) return;
     if (pi->isInWorld()) return;
     int price=pi->value;
@@ -594,7 +594,7 @@ void target_key( NXWCLIENT ps, P_TARGET t )
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
 
-	pItem pi = pointers::findItemBySerial( t->getClicked() );
+	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
 	NXWSOCKET s = ps->toInt();
@@ -690,9 +690,9 @@ void target_key( NXWCLIENT ps, P_TARGET t )
 void target_attack( NXWCLIENT ps, P_TARGET t )
 {
 
-    pChar pc_t1= pointers::findCharBySerial( t->buffer[0] );
+    pChar pc_t1= cSerializable::findCharBySerial( t->buffer[0] );
     VALIDATEPC(pc_t1);
-	pChar pc_t2=pointers::findCharBySerial( t->getClicked() );
+	pChar pc_t2=cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc_t2);
 
 	NXWSOCKET s = ps->toInt();
@@ -703,10 +703,10 @@ void target_attack( NXWCLIENT ps, P_TARGET t )
 void target_follow( NXWCLIENT ps, P_TARGET t )
 {
 
-    pChar pc = pointers::findCharBySerial( t->buffer[0] );
+    pChar pc = cSerializable::findCharBySerial( t->buffer[0] );
     if ( ! pc ) return;
 
-	pChar pc2 = pointers::findCharBySerial( t->getClicked() );
+	pChar pc2 = cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc2);
 
     pc->ftargserial=pc2->getSerial();
@@ -776,10 +776,10 @@ void target_guard( NXWCLIENT ps, P_TARGET t )
     pChar pc=ps->currChar();
 	if ( ! pc ) return;
 
-	pChar pPet = pointers::findCharBySerial(t->buffer[0]);
+	pChar pPet = cSerializable::findCharBySerial(t->buffer[0]);
     VALIDATEPC(pPet);
 
-    pChar pToGuard = pointers::findCharBySerial( t->getClicked() );
+    pChar pToGuard = cSerializable::findCharBySerial( t->getClicked() );
     if( !pToGuard || pToGuard->getSerial() != pPet->getOwnerSerial32() )
     {
         ps->sysmsg( TRANSLATE("Currently can't guard anyone but yourself!" ));
@@ -795,9 +795,9 @@ void target_guard( NXWCLIENT ps, P_TARGET t )
 void target_transfer( NXWCLIENT ps, P_TARGET t )
 {
 
-    pChar pc1 = pointers::findCharBySerial( t->buffer[0] );
+    pChar pc1 = cSerializable::findCharBySerial( t->buffer[0] );
 	VALIDATEPC(pc1);
-    pChar pc2 = pointers::findCharBySerial( t->getClicked() );
+    pChar pc2 = cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc2);
 
 	//Araknesh Call OnTransfer Event Passing Animal,NewOwner
@@ -835,7 +835,7 @@ void target_expPotion( NXWCLIENT ps, P_TARGET t )
 
     if(line_of_sight(s, pc->getPosition(), loc, WALLS_CHIMNEYS + DOORS + ROOFING_SLANTED))
     {
-        pItem pi=pointers::findItemBySerial( t->buffer[0] );
+        pItem pi=cSerializable::findItemBySerial( t->buffer[0] );
         if (pi) // crashfix LB
         {
             pi->MoveTo( loc );
@@ -896,13 +896,13 @@ void target_telestuff( NXWCLIENT ps, P_TARGET t )
 
 		uint32_t serial = t->buffer[0];
 		if( isCharSerial(serial) ) {
-			pChar pt = pointers::findCharBySerial( serial );
+			pChar pt = cSerializable::findCharBySerial( serial );
 			VALIDATEPC(pt);
 
 			pt->MoveTo( loc );
 			pt->teleport();
 		} else if ( isItemSerial(serial) ) {
-			pItem pi = pointers::findItemBySerial( serial );
+			pItem pi = cSerializable::findItemBySerial( serial );
 			if ( ! pi ) return;
 
 			pi->MoveTo(loc);
@@ -922,7 +922,7 @@ void target_allAttack( NXWCLIENT ps, P_TARGET t )
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
 
-    pChar pc_target = pointers::findCharBySerial( t->getClicked() );
+    pChar pc_target = cSerializable::findCharBySerial( t->getClicked() );
     VALIDATEPC(pc_target);
 
 
@@ -946,7 +946,7 @@ void target_xTeleport( NXWCLIENT ps, P_TARGET t )
 
 	uint32_t serial = t->getClicked();
 	if( isCharSerial( serial ) ) {
-		pChar pc_i = pointers::findCharBySerial( serial );
+		pChar pc_i = cSerializable::findCharBySerial( serial );
 		if( pc_i )
 		{
 			pc_i->MoveTo( pc->getPosition() );
@@ -954,7 +954,7 @@ void target_xTeleport( NXWCLIENT ps, P_TARGET t )
 		}
 	}
 	else if( isItemSerial( serial ) ) {
-		pItem pi = pointers::findItemBySerial( serial );
+		pItem pi = cSerializable::findItemBySerial( serial );
 		if( pi ) {
 			pi->MoveTo( pc->getPosition() );
 			pi->Refresh();

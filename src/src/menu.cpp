@@ -490,14 +490,14 @@ bool cMenu::getPropertyFieldBool( uint32_t type, SERIAL obj, SERIAL prop, SERIAL
 	switch( type ) {
 	
 		case PROpCharACTER: {
-			pChar pc = pointers::findCharBySerial( obj );
+			pChar pc = cSerializable::findCharBySerial( obj );
 			if ( ! pc ) return false;
 
 			return getCharBoolProperty( pc, prop, subProp );
 
 		}
 		case PROpItem : {
-			pItem pi = pointers::findItemBySerial( obj );
+			pItem pi = cSerializable::findItemBySerial( obj );
 			if ( ! pi ) return false;
 
 			return getItemBoolProperty( pi, prop, subProp );
@@ -516,14 +516,14 @@ void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL sub
 	switch( type ) {
 	
 		case PROpCharACTER: {
-			pChar pc = pointers::findCharBySerial( obj );
+			pChar pc = cSerializable::findCharBySerial( obj );
 			if ( ! pc ) return;
 			if( data!=getCharBoolProperty( pc, prop, subProp ) )
 				setCharBoolProperty( pc, prop, subProp, subProp2, data );
 			}
 			break;
 		case PROpItem : {
-			pItem pi = pointers::findItemBySerial( obj );
+			pItem pi = cSerializable::findItemBySerial( obj );
 			if ( ! pi ) return;
 			if( data!=getItemBoolProperty( pi, prop, subProp ) )
 				setItemBoolProperty( pi, prop, subProp, data );
@@ -543,7 +543,7 @@ void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL sub
 	switch( type ) {
 	
 		case PROpCharACTER: {
-			pChar pc = pointers::findCharBySerial( obj );
+			pChar pc = cSerializable::findCharBySerial( obj );
 			if ( ! pc ) return;
 
 			switch( t ) {
@@ -581,7 +581,7 @@ void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL sub
 		}
 		break;
 		case PROpItem : {
-			pItem pi = pointers::findItemBySerial( obj );
+			pItem pi = cSerializable::findItemBySerial( obj );
 			if ( ! pi ) return;
 
 			switch( t ) {
@@ -654,7 +654,7 @@ std::wstring cMenu::getPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SE
 	switch( type ) {
 	
 		case PROpCharACTER: {
-			pChar pc = pointers::findCharBySerial( obj );
+			pChar pc = cSerializable::findCharBySerial( obj );
 			if ( ! pc ) return std::wstring();
 
 			switch( t ) {
@@ -672,7 +672,7 @@ std::wstring cMenu::getPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SE
 		}
 		break;
 		case PROpItem : {
-			pItem pi = pointers::findItemBySerial( obj );
+			pItem pi = cSerializable::findItemBySerial( obj );
 			if ( ! pi ) return std::wstring();
 
 			switch( t ) {

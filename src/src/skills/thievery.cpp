@@ -119,7 +119,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
         	return;
 	}
 
-	const pItem pi = pointers::findItemBySerial( target_serial );
+	const pItem pi = cSerializable::findItemBySerial( target_serial );
 	if ( ! pi ) return;
 
 	//steal a pickpocket, a steal training dummy
@@ -303,7 +303,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 
 	pChar thief=ps->currChar();
 	VALIDATEPC(thief);
-	pChar victim = pointers::findCharBySerial( t->getClicked() );
+	pChar victim = cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(victim);
 
 
@@ -467,7 +467,7 @@ void Skills::target_lockpick( NXWCLIENT ps, P_TARGET t )
 
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
-	pItem chest=pointers::findItemBySerial( t->getClicked() );
+	pItem chest=cSerializable::findItemBySerial( t->getClicked() );
 	VALIDATEPI(chest);
 	pItem pick=MAKE_ITEM_REF( t->buffer[0] );
 	VALIDATEPI(pick);

@@ -203,9 +203,9 @@ void cChar::follow( pChar pc )
 */
 void cChar::walk()
 {
-	pChar pc_att = pointers::findCharBySerial( attackerserial );
+	pChar pc_att = cSerializable::findCharBySerial( attackerserial );
 	if ( !pc_att )
-		pc_att = pointers::findCharBySerial( targserial );
+		pc_att = cSerializable::findCharBySerial( targserial );
 	if ( !pc_att )
 		war = 0;
 
@@ -220,7 +220,7 @@ void cChar::walk()
 			break;
 		case WANDER_FOLLOW: //Follow the follow target
 		{
-			pChar pc = pointers::findCharBySerial( ftargserial );
+			pChar pc = cSerializable::findCharBySerial( ftargserial );
 			if ( !pc )
 				break;
 			if ( pc->dead )
@@ -241,7 +241,7 @@ void cChar::walk()
 			break;
 		case WANDER_FLEE: //FLEE!!!!!!
 		{
-			pChar target = pointers::findCharBySerial( targserial );
+			pChar target = cSerializable::findCharBySerial( targserial );
 			if ( target ) {
 				if ( distFrom( target ) < VISRANGE )
 					getDirFromXY( target->getPosition().x, target->getPosition().y );

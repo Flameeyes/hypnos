@@ -10,7 +10,6 @@
 #include "common_libs.h"
 #include "sndpkg.h"
 #include "debug.h"
-#include "amx/amxcback.h"
 #include "calendar.h"
 #include "set.h"
 #include "trigger.h"
@@ -385,7 +384,7 @@ int response(NXWSOCKET  s)
 						else // They must be enroute
 						{
 							// Send out a message saying we are already being escorted
-							pChar pc_ftarg=pointers::findCharBySerial(pc_map->ftargserial);
+							pChar pc_ftarg=cSerializable::findCharBySerial(pc_map->ftargserial);
 							if( pc_ftarg ) {
 								sprintf(temp, TRANSLATE("I am already being escorted to %s by %s."), region[pc_map->questDestRegion].name, pc_ftarg->getCurrentName().c_str() );
 								pc_map->talkAll(temp, 0);
@@ -1197,7 +1196,7 @@ static bool describePlayerVendorItem( pChar pc, NXWSOCKET socket, string &descri
 static bool renameRune( pChar pc, NXWSOCKET socket, string &name )
 {
 	bool success = false;
-	pItem pi = pointers::findItemBySerial( pc->runeserial );
+	pItem pi = cSerializable::findItemBySerial( pc->runeserial );
 	if( pi )
 	{
 		pi->setCurrentName( TRANSLATE("Rune to %s"), name.c_str() );
@@ -1213,7 +1212,7 @@ static bool renameSelf( pChar pc, NXWSOCKET socket, string &name )
 	bool success = false;
 	if( pc->namedeedserial != INVALID )
 	{
-		pItem pi = pointers::findItemBySerial( pc->namedeedserial );
+		pItem pi = cSerializable::findItemBySerial( pc->namedeedserial );
 		if( pi )
 		{
 			pi->setCurrentName( name.c_str());
@@ -1231,7 +1230,7 @@ static bool renameSelf( pChar pc, NXWSOCKET socket, string &name )
 static bool renameKey( pChar pc, NXWSOCKET socket, string &name )
 {
 	bool success = false;
-	pItem pi = pointers::findItemBySerial( pc->keyserial );
+	pItem pi = cSerializable::findItemBySerial( pc->keyserial );
 	if( pi )
 	{
 		pi->setCurrentName( name.c_str() );

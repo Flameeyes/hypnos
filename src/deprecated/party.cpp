@@ -69,7 +69,7 @@ void cParty::sendToAllMember( P_SERVER_PACKET pkg )
 {
 	std::vector<P_PARTY_MEMBER>::iterator iter( members.begin() ), end( members.end() );
 	for( ; iter!=end; ++iter) {
-		pChar pc = pointers::findCharBySerial( (*iter)->serial );
+		pChar pc = cSerializable::findCharBySerial( (*iter)->serial );
 		pkg->send( pc );
 	}
 }
@@ -124,7 +124,7 @@ void cParty::talkToAll( std::wstring& s, COLOR color )
 	
 	std::vector<P_PARTY_MEMBER>::iterator iter( members.begin() ), end( members.end() );
 	for ( ; iter!=end; ++iter ) {
-		pChar pc = pointers::findCharBySerial( (*iter)->serial );
+		pChar pc = cSerializable::findCharBySerial( (*iter)->serial );
 		if( pc ) {
 			NXWCLIENT ps = pc->getClient();
 			if( ps!=NULL )
@@ -138,7 +138,7 @@ void cParty::privateMessage( uint32_t from, SERIAL to, std::wstring& s, COLOR co
 	csPacketPartyTellMessage pkg;
 	pkg.member=from;
 	pkg.message=&s;
-	pChar pc = pointers::findCharBySerial( to );
+	pChar pc = cSerializable::findCharBySerial( to );
 	if ( ! pc ) return;
 	pkg.send( pc->getClient() );	
 }
@@ -151,7 +151,7 @@ void cParty::talkToOthers( uint32_t from, std::wstring& s, COLOR color )
 	
 	std::vector<P_PARTY_MEMBER>::iterator iter( members.begin() ), end( members.end() );
 	for ( ; iter!=end; ++iter ) {
-		pChar pc = pointers::findCharBySerial( (*iter)->serial );
+		pChar pc = cSerializable::findCharBySerial( (*iter)->serial );
 		if ( ! pc ) return;
 			pkg.send( pc->getClient() );	
 	}
@@ -242,7 +242,7 @@ void cPartys::receive( NXWCLIENT ps )
 				delMem->Call( ps->currCharIdx(), INVALID );
 			}
 			else {
-				pChar pc = pointers::findCharBySerial( toRemove );
+				pChar pc = cSerializable::findCharBySerial( toRemove );
 				if ( ! pc ) return;
 
 				delMem->Call( ps->currCharIdx(), pc->getSerial() );

@@ -76,7 +76,7 @@ void Skills::target_removeTraps( NXWCLIENT ps, P_TARGET t )
 
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
-	pItem pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 	NXWSOCKET s = ps->toInt();
 
@@ -97,7 +97,7 @@ void Skills::target_tailoring( NXWCLIENT ps, P_TARGET t )
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
 
-	pItem pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
 	NXWSOCKET s = ps->toInt();
@@ -145,7 +145,7 @@ void Skills::target_fletching( NXWCLIENT ps, P_TARGET t )
 
 	NXWSOCKET s = ps->toInt();
 
-	pItem pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,BOWCRAFT,AMX_BEFORE);
@@ -153,7 +153,7 @@ void Skills::target_fletching( NXWCLIENT ps, P_TARGET t )
     {
         if (CheckInPack(s,pi))
         {
-            MakeMenu(pc,60,BOWCRAFT, pointers::findItemBySerial( t->buffer[0] ), pi );
+            MakeMenu(pc,60,BOWCRAFT, cSerializable::findItemBySerial( t->buffer[0] ), pi );
         }
     }
 	else
@@ -171,7 +171,7 @@ void Skills::target_bowcraft( NXWCLIENT ps, P_TARGET t )
 
 	pc_currchar->playAction(pc_currchar->isMounting() ? 0x1C : 0x0D);
 
-	const pItem pi=pointers::findItemBySerial( t->getClicked() );
+	const pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
 	AMXEXECSVTARGET(pc_currchar->getSerial(),AMXT_SKITARGS,BOWCRAFT,AMX_BEFORE);
@@ -207,7 +207,7 @@ void Skills::target_carpentry( NXWCLIENT ps, P_TARGET t )
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
 
-	pItem pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,CARPENTRY,AMX_BEFORE);
@@ -307,7 +307,7 @@ extern int ingottype;
 
 void Skills::target_smith( NXWCLIENT ps, P_TARGET t )
 {
-    pItem pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
     if (pi->magic!=4) // Ripper
@@ -662,7 +662,7 @@ void Skills::target_smeltOre( NXWCLIENT ps, P_TARGET t )
 {
     pChar pc = ps->currChar();
 	if ( ! pc ) return;
-    pItem pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
     if ( pi->magic!=4) // Ripper
@@ -673,7 +673,7 @@ void Skills::target_smeltOre( NXWCLIENT ps, P_TARGET t )
                 pc->sysmsg(TRANSLATE("You cant smelt here."));
             else
             {
-                pItem pix=pointers::findItemBySerial( t->buffer[0] );
+                pItem pix=cSerializable::findItemBySerial( t->buffer[0] );
 				VALIDATEPI( pix );
 
                 AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMXSMELTORE), pc->getSerial(), pix->getColor(), pix->getSerial32());
@@ -689,7 +689,7 @@ void Skills::target_wheel( NXWCLIENT ps, P_TARGET t )	//Spinning wheel
 {
     pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
-    pItem pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=cSerializable::findItemBySerial( t->getClicked() );
     if ( ! pi ) return;
 
 	int mat = t->buffer[0];
@@ -707,7 +707,7 @@ void Skills::target_wheel( NXWCLIENT ps, P_TARGET t )	//Spinning wheel
                 return;
             }
 
-            pItem pti=pointers::findItemBySerial( t->buffer[1] );   // on error return
+            pItem pti=cSerializable::findItemBySerial( t->buffer[1] );   // on error return
 			VALIDATEPI(pti);
 
             pc_currchar->sysmsg(TRANSLATE("You have successfully spun your material."));
@@ -739,7 +739,7 @@ void Skills::target_loom( NXWCLIENT ps, P_TARGET t )
 {
     pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
-	pItem pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
 	int tailme=0;
@@ -750,7 +750,7 @@ void Skills::target_loom( NXWCLIENT ps, P_TARGET t )
 		{
 			if( pc_currchar->hasInRange(pi, 3) )
 			{
-				pItem pti=pointers::findItemBySerial( t->buffer[0] );
+				pItem pti=cSerializable::findItemBySerial( t->buffer[0] );
 				VALIDATEPI(pti);
 
 				if(pti->amount<5)
@@ -811,7 +811,7 @@ void Skills::target_cookOnFire( NXWCLIENT ps, P_TARGET t )
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
 
-	pItem pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
 	short id = t->buffer[0];
@@ -925,7 +925,7 @@ void target_enticement2( NXWCLIENT ps, P_TARGET t )
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
 
-	pChar pc_ftarg=pointers::findCharBySerial( t->getClicked() );
+	pChar pc_ftarg=cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc_ftarg);
 
 	NXWSOCKET s= ps->toInt();
@@ -939,7 +939,7 @@ void target_enticement2( NXWCLIENT ps, P_TARGET t )
 
 	if (pc->checkSkill( ENTICEMENT, 0, 1000) && pc->checkSkill( MUSICIANSHIP, 0, 1000) )
 	{
-		pChar pc_target = pointers::findCharBySerial( t->buffer[0] );
+		pChar pc_target = cSerializable::findCharBySerial( t->buffer[0] );
 		VALIDATEPC(pc_target);
 		pc_target->ftargserial = pc_ftarg->getSerial();
 		pc_target->npcWander = WANDER_FOLLOW;
@@ -959,7 +959,7 @@ void Skills::target_enticement1( NXWCLIENT ps, P_TARGET t )
 	pChar current=ps->currChar();
 	VALIDATEPC(current);
 
-	pChar pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
 	NXWSOCKET s = ps->toInt();
@@ -996,14 +996,14 @@ void Skills::target_enticement1( NXWCLIENT ps, P_TARGET t )
 
 void target_provocation2( NXWCLIENT ps, P_TARGET t )
 {
-	pChar Victim2 = pointers::findCharBySerial( t->getClicked() );
+	pChar Victim2 = cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(Victim2);
 
 	pChar Player = ps->currChar();
 	VALIDATEPC(Player);
 	Location charpos= Player->getPosition();
 
-	pChar Victim1 = pointers::findCharBySerial( t->buffer[0] );
+	pChar Victim1 = cSerializable::findCharBySerial( t->buffer[0] );
 	VALIDATEPC(Victim1);
 
 	NXWSOCKET s =ps->toInt();
@@ -1072,7 +1072,7 @@ void Skills::target_provocation1( NXWCLIENT ps, P_TARGET t )
 	pChar current=ps->currChar();
 	VALIDATEPC(current);
 
-	pChar pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
 	NXWSOCKET s =ps->toInt();
@@ -1111,7 +1111,7 @@ void Skills::target_alchemy( NXWCLIENT ps, P_TARGET t )
 	pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
 
-	pItem pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
 	pItem pack= pc_currchar->getBackpack();    // Get the packitem
@@ -1165,7 +1165,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, P_TARGET t )
 
     pChar ph = ps->currChar();   // points to the healer
 	VALIDATEPC(ph);
-    pChar pp = pointers::findCharBySerial( t->getClicked() );; // pointer to patient
+    pChar pp = cSerializable::findCharBySerial( t->getClicked() );; // pointer to patient
 	VALIDATEPC(pp);
 
     int j;
@@ -1175,7 +1175,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, P_TARGET t )
     AMXEXECSVTARGET( ph->getSerial(),AMXT_SKITARGS,HEALING,AMX_BEFORE);
 
     if (!SrvParms->bandageincombat ) {
-		//pChar pc_att=pointers::findCharBySerial(ph->attackerserial);
+		//pChar pc_att=cSerializable::findCharBySerial(ph->attackerserial);
 		if( ph->war/* || pp->war || ( pc_att && pc_att->war)*/)
 		{
 			ph->sysmsg(TRANSLATE("You can't heal while in a fight!"));
@@ -1297,7 +1297,7 @@ void Skills::target_armsLore( NXWCLIENT ps, P_TARGET t )
 
     char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
-    pItem pi = pointers::findItemBySerial( t->getClicked() );
+    pItem pi = cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
     int total;
@@ -1411,7 +1411,7 @@ void Skills::target_itemId( NXWCLIENT ps, P_TARGET t )
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
 
-    const pItem pi=pointers::findItemBySerial( t->getClicked() );
+    const pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
     char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
@@ -1494,7 +1494,7 @@ void Skills::target_tame( NXWCLIENT ps, P_TARGET t )
 {
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
-	pChar target = pointers::findCharBySerial( t->getClicked() );
+	pChar target = cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(target);
 
 	NXWSOCKET s=ps->toInt();
@@ -1573,7 +1573,7 @@ void Skills::target_animalLore( NXWCLIENT ps, P_TARGET t )
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
 
-	pChar target = pointers::findCharBySerial( t->getClicked() );
+	pChar target = cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(target);
 
 	NXWSOCKET s = ps->toInt();
@@ -1602,7 +1602,7 @@ void Skills::target_animalLore( NXWCLIENT ps, P_TARGET t )
 	{
         	if (target->checkSkill( ANIMALLORE, 0, 1000))
         	{
-			pChar target_owner = pointers::findCharBySerial( target->getOwnerSerial32() );
+			pChar target_owner = cSerializable::findCharBySerial( target->getOwnerSerial32() );
 			VALIDATEPC(target_owner);
 
 			sprintf(temp, TRANSLATE("Attack [%i] Defense [%i] Taming [%i] Hit Points [%i] Is Loyal to: [%s]"), target->att, target->def, target->taming/10, target->hp, (target->tamed)? target_owner->getCurrentName().c_str() : "himself" );
@@ -1621,7 +1621,7 @@ void Skills::target_forensics( NXWCLIENT ps, P_TARGET t )
 {
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
-	pItem pi = pointers::findItemBySerial( t->getClicked() );
+	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,FORENSICS,AMX_BEFORE);
@@ -1672,7 +1672,7 @@ void target_poisoning2( NXWCLIENT ps, P_TARGET t )
 	NXWSOCKET s = ps->toInt();
 
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,POISONING,AMX_BEFORE);
-    pItem poison=pointers::findItemBySerial(t->buffer[0]);
+    pItem poison=cSerializable::findItemBySerial(t->buffer[0]);
     VALIDATEPI(poison);
 
     if(poison->type!=ITYPE_POTION || poison->morey!=6)
@@ -1689,7 +1689,7 @@ void target_poisoning2( NXWCLIENT ps, P_TARGET t )
     }
 
 
-    const pItem pi=pointers::findItemBySerial( t->getClicked() );
+    const pItem pi=cSerializable::findItemBySerial( t->getClicked() );
     if( !pi ) {
         pc->sysmsg(TRANSLATE("You can't poison that item."));
 		pc->objectdelay = 0;
@@ -1795,7 +1795,7 @@ void target_poisoning2( NXWCLIENT ps, P_TARGET t )
 
 void Skills::target_poisoning( NXWCLIENT ps, P_TARGET t )
 {
-	pItem poison = pointers::findItemBySerial( t->getClicked() );
+	pItem poison = cSerializable::findItemBySerial( t->getClicked() );
 	VALIDATEPI(poison);
 
 	P_TARGET targ = clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
@@ -1811,7 +1811,7 @@ void Skills::target_tinkering( NXWCLIENT ps, P_TARGET t )
 {
     pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
-    pItem pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
 	NXWSOCKET s = ps->toInt();
@@ -1896,14 +1896,14 @@ public:
     {
         NXWSOCKET s = ps->toInt();
 
-		pItem piClick = pointers::findItemBySerial( t->buffer[0] );
+		pItem piClick = cSerializable::findItemBySerial( t->buffer[0] );
         if( piClick == NULL )
         {
             sysmessage( s,TRANSLATE("Original part no longer exists" ));
             return;
         }
 
-        const pItem piTarg=pointers::findItemBySerial( t->getClicked() );
+        const pItem piTarg=cSerializable::findItemBySerial( t->getClicked() );
         if (piTarg==NULL || piTarg->magic==4)
         {
             sysmessage(s,TRANSLATE("You can't combine these."));
@@ -1964,7 +1964,7 @@ public:
     }
     virtual void createIt(NXWSOCKET s)
     {
-		pChar pc=pointers::findCharBySerial( currchar[s] );
+		pChar pc=cSerializable::findCharBySerial( currchar[s] );
 		if ( ! pc ) return;
 		item::CreateFromScript( "$item_axles_with_gears", pc->getBackpack() );
     }
@@ -1990,7 +1990,7 @@ public:
     {
 	            if ( s < 0 || s >= now )
 		return;
-	pChar pc = pointers::findCharBySerial( currchar[s] );
+	pChar pc = cSerializable::findCharBySerial( currchar[s] );
 	if ( ! pc ) return;
 
 
@@ -2015,7 +2015,7 @@ public:
     {
         if ( s < 0 || s >= now )
 		return;
-	pChar pc = pointers::findCharBySerial( currchar[s] );
+	pChar pc = cSerializable::findCharBySerial( currchar[s] );
 	if ( ! pc ) return;
         item::CreateFromScript( "$item_clock", pc->getBackpack() );
     }
@@ -2060,7 +2060,7 @@ void Skills::target_repair( NXWCLIENT ps, P_TARGET t )
     pChar pc = ps->currChar();
 	if ( ! pc ) return;
 
-    pItem pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
 	NXWSOCKET s = ps->toInt();

@@ -81,7 +81,7 @@ void cGuild::load( cStringFile& file )
 				if( l=="MEMBER" )
 				{
 					uint32_t memberSerial = str2num( r );
-					pChar pc = pointers::findCharBySerial( memberSerial );
+					pChar pc = cSerializable::findCharBySerial( memberSerial );
 					if( pChar )
 					{
 						pGuildMember member = addMember( pc );
@@ -105,8 +105,8 @@ void cGuild::load( cStringFile& file )
 				{
 					std::string f, s;
 					split( r, f, s );
-					pChar re = pointers::findCharBySerial( str2num( f ) );
-					pChar by = pointers::findCharBySerial( str2num( s ) ); 
+					pChar re = cSerializable::findCharBySerial( str2num( f ) );
+					pChar by = cSerializable::findCharBySerial( str2num( s ) ); 
 
 					if( re && by )
 					{

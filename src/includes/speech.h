@@ -33,7 +33,7 @@ public:
         char operator[](int i);                           	//!< gets 8-bit ascii char in location "i" in either byteorder
         cSpeech& operator= (std::string s);     //!< Assignment operator from a non unicode string. Converts to unicode and stores it
         cSpeech& operator= (cSpeech& s);
-        cSpeech(char* buffer, int size = 0); 	//!< Size is used only for not null-terminated strings, if it is 0 is ignored, else reads size bytes wherever \0 is present or not
+        cSpeech(char* buffer, int size = 0); 	//!< Size is used only for not null-terminated strings, if it is 0 is ignored, else reads size bytes wherever \\0 is present or not
         std::string toString();	//!< returns a normal char-based string obtained truncating unicode to ascii values
         std::string toGhost();	//!< returns a randomized "ooooOOoo" based on current string content (not unicode)
 }

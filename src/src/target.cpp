@@ -19,30 +19,30 @@ uint32_t cTarget::serial_current = 0;
 
 cTarget::cTarget( bool selectLocation )
 {
-	this->type = selectLocation;
-	this->serial= ++serial_current;
+	type = selectLocation;
+	serial= ++serial_current;
 }
 
 cTarget::~cTarget()
 {
 }
 
-void cTarget::send( NXWCLIENT ps )
+void cTarget::send(pClient client)
 {
 	cPacketTargetingCursor< cServerPacket > pkg;
-	pkg.type = this->type;
-	pkg.cursor = this->serial;
+	pkg.type = type;
+	pkg.cursor = serial;
 	pkg.send( ps );
 }
 
-void cTarget::receive( NXWCLIENT ps )
+void cTarget::receive(pClient client)
 {
 	cPacketTargetingCursor<cClientPacket> pkg;
 	pkg.receive( ps );
 
-	this->clicked = pkg.clicked.get();
-	this->model= pkg.model.get();
-	this->loc = Location( pkg.x.get(), pkg.y.get(), pkg.z );
+	clicked = pkg.clicked.get();
+	model= pkg.model.get();
+	loc = Location( pkg.x.get(), pkg.y.get(), pkg.z );
 }
 
 bool cTarget::isValid()
@@ -54,7 +54,7 @@ bool cTarget::isValid()
 	return true;
 }
 
-void cTarget::error( NXWCLIENT ps )
+void cTarget::error(pClient client)
 {
 }
 
@@ -87,7 +87,7 @@ bool cObjectTarget::isValid()
 	return ( type==0 );
 }
 
-void cObjectTarget::error( NXWCLIENT ps )
+void cObjectTarget::error(pClient client)
 {
 	ps->sysmsg( "Invalid object" );
 }
@@ -105,7 +105,7 @@ bool cCharTarget::isValid()
 	return ( type==0 ) && ( isCharSerial( clicked ) && ( MAKE_CHAR_REF( clicked )!=NULL ) );
 }
 
-void cCharTarget::error( NXWCLIENT ps )
+void cCharTarget::error(pClient client)
 {
 	ps->sysmsg( "Invalid character" );
 }
@@ -123,7 +123,7 @@ bool cItemTarget::isValid()
 	return ( type==0 ) && ( isItemSerial( clicked ) && MAKE_ITEM_REF( clicked )!=NULL );
 }
 
-void cItemTarget::error( NXWCLIENT ps )
+void cItemTarget::error(pClient client)
 {
 	ps->sysmsg( "Invalid item" );
 }
@@ -141,25 +141,25 @@ bool cLocationTarget::isValid()
 	return ( type==1 ) && ( ( loc.x!=UINVALID16 ) && ( loc.y!=UINVALID16 ) );
 }
 
-void cLocationTarget::error( NXWCLIENT ps )
+void cLocationTarget::error(pClient client)
 {
 	ps->sysmsg( "Invalid location" );
 }
 
 
 /*
-void amxCallbackOld( NXWCLIENT ps, P_TARGET t )
+void amxCallbackOld(pClient client, pTarget t )
 {
 	if( t->amx_callback==NULL) 
 		return;
 	
-	pChar pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if( pc ) {
         t->amx_callback->Call( ps->currCharIdx(), pc->getSerial(), INVALID, INVALID, INVALID, INVALID );
         return;
     }
 
-    pItem pi = pointers::findItemBySerial( t->getClicked() );
+    pItem pi = cSerializable::findItemBySerial( t->getClicked() );
     if( pi ) {
 		t->amx_callback->Call( ps->currCharIdx(), INVALID, pi->getSerial(), INVALID, INVALID, INVALID );
         return;
@@ -169,7 +169,7 @@ void amxCallbackOld( NXWCLIENT ps, P_TARGET t )
 	t->amx_callback->Call( ps->currCharIdx(), INVALID, INVALID, loc.x, loc.y, loc.z );
 }*/
 
-void amxCallback( NXWCLIENT ps, P_TARGET t )
+void amxCallback(pClient client, pTarget t )
 {
 	if( t->amx_callback==NULL) 
 		return;
@@ -192,7 +192,7 @@ void amxCallback( NXWCLIENT ps, P_TARGET t )
 }
 
 
-P_TARGET createTarget( TARG_TYPE type )
+pTarget createTarget( TARG_TYPE type )
 {
 	switch( type ) {
 		case TARG_CHAR:
@@ -283,9 +283,9 @@ void TargetLocation::init(int x, int y, int z)
 */
 void TargetLocation::revalidate()
 {
-	m_pi=pointers::findItemBySerial(m_piSerial);
+	m_pi=cSerializable::findItemBySerial(m_piSerial);
 
-	m_pc=pointers::findCharBySerial(m_piSerial);
+	m_pc=cSerializable::findCharBySerial(m_piSerial);
 
 	if ( m_pi ) {
 		m_pi = NULL;
@@ -324,19 +324,19 @@ void TargetLocation::extendItemTarget()
 // Function name     : TargetLocation::TargetLocation
 // Author            : Xanathar
 // Changes           : none yet
-TargetLocation::TargetLocation( P_TARGET pp )
+TargetLocation::TargetLocation( pTarget pp )
 {
 	Location loc = pp->getLocation();
 	init( loc.x, loc.y, loc.z );
 	if( pp->type==0 ) {
 
-		pChar pc= pointers::findCharBySerial( pp->getClicked() );
+		pChar pc= cSerializable::findCharBySerial( pp->getClicked() );
 		if(pc) {
 			init(pc);
 			return;
 		}
 
-		pItem pi= pointers::findItemBySerial( pp->getClicked() );
+		pItem pi= cSerializable::findItemBySerial( pp->getClicked() );
 		if (pi)  {
 			init(pi);
 			return;
@@ -346,14 +346,14 @@ TargetLocation::TargetLocation( P_TARGET pp )
 		return;
 	}
 // Wintermute: Always return a valid location, or spells can't target ground
-	this->m_pc=NULL;
-	this->m_pcSerial=INVALID;
-	this->m_pi=NULL;
-	this->m_piSerial=INVALID;
+	m_pc=NULL;
+	m_pcSerial=INVALID;
+	m_pi=NULL;
+	m_piSerial=INVALID;
 /*
-	this->m_x=0;
-	this->m_y=0;
-	this->m_z=0;
+	m_x=0;
+	m_y=0;
+	m_z=0;
 */
 }
 

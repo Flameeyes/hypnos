@@ -750,10 +750,10 @@ void cChar::damage(int32_t amount, DamageType typeofdamage, StatType stattobedam
 {
 	if (!npc && !IsOnline())
 		return;
-	pChar myself=pointers::findCharBySerial(getSerial());
+	pChar myself=cSerializable::findCharBySerial(getSerial());
 	if ( ! myself )
 		return;
-	pChar pc_att=pointers::findCharBySerial(attackerserial);
+	pChar pc_att=cSerializable::findCharBySerial(attackerserial);
 	uint32_t serial_att= pc_att ? pc_att->getSerial() : INVALID;
 
 	if (amxevents[EVENT_CHR_ONWOUNDED]) {
@@ -865,7 +865,7 @@ uint32_t cChar::distFrom(pItem pi)
 	}
 	else
 		if(isCharSerial(cont->getContSerial())) //can be weared
-			return distFrom( pointers::findCharBySerial(cont->getContSerial()) );
+			return distFrom( cSerializable::findCharBySerial(cont->getContSerial()) );
 		else
 			return VERY_VERY_FAR; //not world, not weared.. and another cont can't be
 
@@ -1502,7 +1502,7 @@ bool cChar::seeForLastTime( cObject &obj )
 */
 void cChar::hideBySkill()
 {
-	pChar pc_att=pointers::findCharBySerial(attackerserial);
+	pChar pc_att=cSerializable::findCharBySerial(attackerserial);
 
 	if ( pc_att && hasInRange(pc_att) )
     	{
@@ -1618,7 +1618,7 @@ void cChar::resurrect( NXWCLIENT healer )
 			}
 		}
 
-		pItem pj= pointers::findItemBySerial(robe);
+		pItem pj= cSerializable::findItemBySerial(robe);
 		if( pj )
 			pj->Delete();
 
@@ -1748,7 +1748,7 @@ void cChar::possess(pChar pc)
 		return;
 
 	if ( possessorSerial != INVALID ) { //We're in a possessed Char! Switch back to possessor
-		pChar pcPossessor = pointers::findCharBySerial( possessorSerial );
+		pChar pcPossessor = cSerializable::findCharBySerial( possessorSerial );
 		if ( pcPossessor ) {
 			bSwitchBack = true;
 			pc = pcPossessor;
@@ -1933,7 +1933,7 @@ void cChar::Kill()
 		pKiller->targserial=INVALID;
 		pKiller->timeout=0;
 
-		pChar pk_att = pointers::findCharBySerial( pKiller->attackerserial );
+		pChar pk_att = cSerializable::findCharBySerial( pKiller->attackerserial );
 		if ( pk_att )
 		{
 			pk_att->ResetAttackFirst();
@@ -2027,7 +2027,7 @@ void cChar::Kill()
 		pk->targserial=INVALID;
 		pk->timeout=0;
 
-		pChar pk_att=pointers::findCharBySerial(pk->attackerserial);
+		pChar pk_att=cSerializable::findCharBySerial(pk->attackerserial);
 		if ( pk_att )
 		{
 			pk_att->ResetAttackFirst();

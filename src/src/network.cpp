@@ -1012,7 +1012,7 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 #endif
 	//<Luxor>: possess stuff
 	if (pc->possessedSerial != INVALID) {
-		pChar pcPos = pointers::findCharBySerial(pc->possessedSerial);
+		pChar pcPos = cSerializable::findCharBySerial(pc->possessedSerial);
 		if ( pcPos ) {
 			currchar[s] = pcPos->getSerial();
 			pcPos->setClient(new cNxwClientObj(s));
@@ -1138,7 +1138,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 {
 	if (s < 0 || s >= now) return 0; //Luxor
 
-	pChar pc = pointers::findCharBySerial(currchar[s]);
+	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return 0;
 
 	uint32_t a, valid=0;
@@ -1164,7 +1164,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 	if (pc->getMultiSerial32() == INVALID )
 		p_multi=findmulti( pc->getPosition() );
 	else
-		p_multi = pointers::findItemBySerial( pc->getMultiSerial32() );
+		p_multi = cSerializable::findItemBySerial( pc->getMultiSerial32() );
 
 	if ( p_multi && !valid)//It they are in a multi... and it's not already valid (if it is why bother checking?)
 	{
@@ -2079,7 +2079,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 				case PACKET_STATUS_REQUEST:
                                         if ( pc_currchar != NULL ) {
 						if (buffer[s][5]==4)
-							statwindow(pc_currchar, pointers::findCharBySerial(LongFromCharPtr(buffer[s] +6)));
+							statwindow(pc_currchar, cSerializable::findCharBySerial(LongFromCharPtr(buffer[s] +6)));
 
 						if (buffer[s][5]==5)
 							skillwindow(s);
@@ -2088,7 +2088,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 
 				case PACKET_RENAMECHARACTER: ///Lag Fix -- Zippy //Bug Fix -- Zippy
 					{
-						pChar pc_t=pointers::findCharBySerial( LongCharFromPtr(buffer[s] +1));
+						pChar pc_t=cSerializable::findCharBySerial( LongCharFromPtr(buffer[s] +1));
 						if( pc_t && ( pc_currchar->IsGMorCounselor() || pc_currchar->isOwnerOf( pc_t ) ) )
 							pc_t->setCurrentName( (char*)&buffer[s][5] );
 
@@ -2099,7 +2099,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					{
 					int size;
 					size=dyn_length;
-					pItem pBook=pointers::findItemBySerial(LongCharFromPtr(buffer[s] +3));
+					pItem pBook=cSerializable::findItemBySerial(LongCharFromPtr(buffer[s] +3));
 					if( pBook )
 					{
 						if (pBook->morez == 0)
@@ -2123,7 +2123,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						int j= 9;
 						char author[31],title[61],ch= 1;
 
-						pItem pBook=pointers::findItemBySerial(LongCharFromPtr(buffer[s]+1));
+						pItem pBook=cSerializable::findItemBySerial(LongCharFromPtr(buffer[s]+1));
 						if(!pBook)
 							break;
 
@@ -2187,7 +2187,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 				case PACKET_RESURRECT_CHOICE:
 					if(buffer[s][1]==0x02)
 					{
-						pChar murderer=pointers::findCharBySerial(pc_currchar->murdererSer);
+						pChar murderer=cSerializable::findCharBySerial(pc_currchar->murdererSer);
 						if( murderer && SrvParms->bountysactive )
 						{
 							sysmessage( s,TRANSLATE("To place a bounty on %s, use the command BOUNTY <Amount>."),
@@ -2216,8 +2216,8 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						if (ServerScp::g_nPopUpHelp==0) break;
 
 						uint32_t serial = LongCharFromPtr(buffer[s] +1);
-						pChar pc=pointers::findCharBySerial(serial);
-						pItem pi=pointers::findItemBySerial(serial);
+						pChar pc=cSerializable::findCharBySerial(serial);
+						pItem pi=cSerializable::findItemBySerial(serial);
 
 						int len = 0;
 						uint8_t packet[4000]; packet[0] = '\0';

@@ -603,7 +603,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 			}
 			else if (!strcmp(script1, "STABLEMASTER"))
 			{
-				pc->stable( pointers::findCharBySerial( str2num(script2) ) );
+				pc->stable( cSerializable::findCharBySerial( str2num(script2) ) );
 			}
 		break;
 
@@ -2117,7 +2117,7 @@ void CWorldMain::loadjailed()
 		}
 
 	}  while (strcmp(script1, "}"));
-	pChar pc = pointers::findCharBySerial( j.serial );
+	pChar pc = cSerializable::findCharBySerial( j.serial );
 	if(pc && (j.sec > 0)) {
 		j.timer=uiCurrentTime+(MY_CLOCKS_PER_SEC * j.sec );
 		prison::jailed.push_back( j );

@@ -171,7 +171,7 @@ bool cMsgBoardMessage::expired()
         case ESCORTQUEST:
                	if (!SrvParms->escortinitexpire && messagelife > SrvParms->escortinitexpire)	//escortinitexpire is expressed in seconds
                 {
-                	pNPC npc = pointers::findCharBySerial(targetnpc);
+                	pNPC npc = cSerializable::findCharBySerial(targetnpc);
                         if (!npc && npc->questEscortPostSerial == getSerial()) npc->Delete();	//If it has not yet disappeared, but the serial is still the right escort npc (the serial may have been reused!!) we delete it
                         Delete();
                         return true;
@@ -180,7 +180,7 @@ bool cMsgBoardMessage::expired()
 	case BOUNTYQUEST:
         	if (!SrvParms->bountysexpire && messagelife > (SrvParms->bountysexpire * 86400))	//86400 = 24 * 60 * 60 -> bountysexpire is expressed in days while messagelife in seconds
                 {
-                        pChar pc = pointers::findCharBySerial(targetnpc);
+                        pChar pc = cSerializable::findCharBySerial(targetnpc);
                         // If it is an npc created just for the bounty (function not yet implemented) but it has not yet
                         // disappeared and the serial is still the right npc (the serial may have been reused!!) we delete it
                         if (!pc && pc->rtti() == rtti::cNPC && pc->questBountyPostSerial == getSerial()) pc->Delete();
@@ -209,8 +209,8 @@ bool cMsgBoardMessage::expired()
 */
 void cMsgBoardMessage::refreshQuestMessage()
 {
-	pChar pc=pointers::findCharBySerial(targetnpc);
-        pItem item = pointers::findItemBySerial(targetitem);
+	pChar pc=cSerializable::findCharBySerial(targetnpc);
+        pItem item = cSerializable::findItemBySerial(targetitem);
         switch (qtype)
         {
 	case ESCORTQUEST:

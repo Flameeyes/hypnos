@@ -592,7 +592,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 			int x, y;
 			if ( pc->npcWander == WANDER_FOLLOW )
 			{
-				pChar guardcaller = pointers::findCharBySerial( pc->ftargserial );
+				pChar guardcaller = cSerializable::findCharBySerial( pc->ftargserial );
 
 				if ( ! guardcaller || TIMEOUT( pc->antiguardstimer ) || pc->distFrom( guardcaller ) <= 1 )
 				{
@@ -703,7 +703,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				if (pj->npc || pj->dead || pj->guarded == false) continue;
 				if (pc->getOwnerSerial32() == pj->getSerial()) {
 					if (pj->IsOnline()) {
-						pChar pc_attacker = pointers::findCharBySerial(pj->attackerserial);
+						pChar pc_attacker = cSerializable::findCharBySerial(pj->attackerserial);
 						if ( ! pc_attacker ) return;
 						if (pc->distFrom(pc_attacker) <= 10) {
 							npcattacktarget(pc, pc_attacker);

@@ -308,7 +308,7 @@ void sysmessage(NXWSOCKET  s, const char *txt, ...) // System message (In lower 
 
 	uint32_t spyTo = clientInfo[s]->spyTo;
 	if( spyTo!=INVALID ) { //spy client
-		pChar pc=pointers::findCharBySerial( spyTo );
+		pChar pc=cSerializable::findCharBySerial( spyTo );
 		if( pc ) {
 			NXWCLIENT gm = pc->getClient();
 			if( gm!=NULL )
@@ -368,7 +368,7 @@ void itemmessage(NXWSOCKET  s, char *txt, int serial, short color)
 	uint8_t unicodetext[512];
 	uint16_t ucl = ( strlen ( txt ) * 2 ) + 2 ;
 
-	pItem pi=pointers::findItemBySerial(serial);
+	pItem pi=cSerializable::findItemBySerial(serial);
 	if ( ! pi ) return;
 
 	if ((pi->type == ITYPE_CONTAINER && color == 0x0000)||
@@ -396,7 +396,7 @@ void backpack2(NXWSOCKET s, uint32_t serial) // Send corpse stuff
 	uint8_t display2[5]={ 0x00, };
 	uint8_t bpopen2[5]={ 0x3C, 0x00, };
 
-	pItem cont=pointers::findItemBySerial( serial );
+	pItem cont=cSerializable::findItemBySerial( serial );
 
 	NxwItemWrapper si;
 	si.fillItemsInContainer( cont, false );
@@ -523,7 +523,7 @@ void senditem(NXWSOCKET  s, pItem pi) // Send items (on ground)
 		pack=true;
 		if (isCharSerial(pi->getContSerial()))
 		{
-			pChar pj=pointers::findCharBySerial(pi->getContSerial());
+			pChar pj=cSerializable::findCharBySerial(pi->getContSerial());
 			if (pj)
 				pack=false;
 		}

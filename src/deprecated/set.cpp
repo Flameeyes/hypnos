@@ -466,7 +466,7 @@ uint32_t NxwSerialWrapper::getSerial()
 };
 
 /*!
-\bref Insert a new serial
+\brief Insert a new serial
 \author Endymion
 \param s the serial
 */
@@ -477,7 +477,7 @@ void NxwSerialWrapper::insertSerial( uint32_t s )
 };
 
 /*!
-\bref Insert a new serial
+\brief Insert a new serial
 \author Endymion
 \param obj the object
 */
@@ -489,7 +489,7 @@ void NxwSerialWrapper::insertSerial( cObject* obj )
 
 
 /*!
-\bref Fills with serial in a container
+\brief Fills with serial in a container
 \author Endymion
 \param serial the serial
 \param bIncludeSubContained if true recurse subcontainers
@@ -520,7 +520,7 @@ void NxwSerialWrapper::fillSerialInContainer( uint32_t serial, bool bIncludeSubC
 }
 
 /*!
-\bref Fills with serial in a container
+\brief Fills with serial in a container
 \author Endymion
 \param obj the object
 \param bIncludeSubContained if true recurse subcontainers
@@ -555,7 +555,7 @@ NxwCharWrapper::~NxwCharWrapper() { };
 */
 pChar NxwCharWrapper::getChar()
 {
-	return pointers::findCharBySerial( getSerial() );
+	return cSerializable::findCharBySerial( getSerial() );
 };
 
 /*!
@@ -619,7 +619,7 @@ void NxwCharWrapper::fillCharsAtXY( uint16_t x, uint16_t y, bool bExcludeOffline
 			uint32_set::iterator	it( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
 						end( mapRegions->regions[nowx][nowy].charsInRegions.end() );
 			for( ; it != end; ++it ) {
-				pChar pc = pointers::findCharBySerial( *it );
+				pChar pc = cSerializable::findCharBySerial( *it );
 				if ( pc == 0 )
 					continue;
 				if ( pc->getPosition().x != x || pc->getPosition().y != y )
@@ -674,7 +674,7 @@ void NxwCharWrapper::fillCharsNearXYZ ( uint16_t x, uint16_t y, int nDistance, b
 						uint32_set::iterator	iter( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
 									end( mapRegions->regions[nowx][nowy].charsInRegions.end() );
 						for( ; iter != end; ++iter ) {
-							pChar pc=pointers::findCharBySerial( *iter );
+							pChar pc=cSerializable::findCharBySerial( *iter );
 							if( pc == 0 )
 								continue;
 							if( pc->isStabled() || pc->mounted )
@@ -735,7 +735,7 @@ void NxwCharWrapper::fillNpcsNearXY( uint16_t x, uint16_t y, int nDistance )
 						uint32_set::iterator iter( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
 									end( mapRegions->regions[nowx][nowy].charsInRegions.end() );
 						for( ; iter != end; ++iter ) {
-							pChar pc=pointers::findCharBySerial( *iter );
+							pChar pc=cSerializable::findCharBySerial( *iter );
 							if( pc == 0 )
 								continue;
 							if( !pc->npc )
@@ -782,7 +782,7 @@ void NxwCharWrapper::fillNpcsNear( pItem pi, int nDistance )
 		fillNpcsNearXY( out->getPosition().x, out->getPosition().y, nDistance );
 	}
 	else {
-		fillNpcsNear( pointers::findCharBySerial( out->getContSerial() ), nDistance );
+		fillNpcsNear( cSerializable::findCharBySerial( out->getContSerial() ), nDistance );
 	}
 
 }
@@ -878,7 +878,7 @@ NxwItemWrapper::~NxwItemWrapper() { };
 */
 pItem NxwItemWrapper::getItem()
 {
-	return pointers::findItemBySerial( getSerial() );
+	return cSerializable::findItemBySerial( getSerial() );
 };
 
 /*!
@@ -893,7 +893,7 @@ void NxwItemWrapper::insertItem( pItem pi )
 };
 
 /*!
-\bref Fills with item in a container
+\brief Fills with item in a container
 \author Endymion
 \param pi the container
 \param bIncludeSubContained if true recurse subcontainers
@@ -931,7 +931,7 @@ void NxwItemWrapper::fillItemsAtXY( uint16_t x, uint16_t y, int32_t type, int32_
 
 	for( ; iter != end; ++iter ) {
 		// <Luxor bug fix>
-		pItem pi=pointers::findItemBySerial( *iter );
+		pItem pi=cSerializable::findItemBySerial( *iter );
 		if ( pi == 0 )
 			continue;
 		if ( !pi->isInWorld() )
@@ -983,7 +983,7 @@ void NxwItemWrapper::fillItemsNearXYZ ( uint16_t x, uint16_t y, int nDistance, b
 						uint32_set::iterator	iter( mapRegions->regions[nowx][nowy].itemsInRegions.begin() ),
 									end( mapRegions->regions[nowx][nowy].itemsInRegions.end() );
 						for( ; iter != end; ++iter ) {
-							pItem pi=pointers::findItemBySerial( *iter );
+							pItem pi=cSerializable::findItemBySerial( *iter );
 							if( pi != 0 )
 								if( pi->isInWorld() ) {
 									int iDist=(int)dist(Location(x,y,0), pi->getPosition(), false);
@@ -1176,7 +1176,7 @@ void NxwSocketWrapper::fillOnline( pChar onlyNearThis, bool bExcludeThis, uint32
 
 	for (int32_t i = 0; i < now; ++i )
 	{
-		pc = pointers::findCharBySerial( currchar[i] );
+		pc = cSerializable::findCharBySerial( currchar[i] );
 		//
 		//	Sparhawk pc checking unnecessary here, is done by findCharBySerial
 		//
@@ -1202,7 +1202,7 @@ void NxwSocketWrapper::fillOnline( Location location, int nDistance )
 	pChar pc;
 	for (int32_t i = 0; i < now; ++i )
 	{
-		pc = pointers::findCharBySerial( currchar[i] );
+		pc = cSerializable::findCharBySerial( currchar[i] );
 		//
 		//	Sparhawk pc checking unnecessary here, is done by findCharBySerial
 		//
@@ -1228,7 +1228,7 @@ void NxwSocketWrapper::fillOnline( pItem onlyNearThis, int nDistance )
 		fillOnline(onlyNearThis->getPosition(), nDistance );
 	}
 	else {
-		pChar own=pointers::findCharBySerial( out->getContSerial() );
+		pChar own=cSerializable::findCharBySerial( out->getContSerial() );
 		if( own )
 			fillOnline( own->getPosition(), nDistance );
 		else

@@ -86,7 +86,7 @@ void command_bounty( pClient client )
 		int nAmount = strtonum(1);
 		if( BountyWithdrawGold( pc, nAmount ) )
 		{
-			pChar pc_murderer = pointers::findCharBySerial(pc->murdererSer);
+			pChar pc_murderer = cSerializable::findCharBySerial(pc->murdererSer);
 			if( BountyCreate( pc_murderer, nAmount ) )
 			{
 				if( pc_murderer )
@@ -223,9 +223,9 @@ void command_lpost( pClient client );
 
 
 
-void target_setMurderCount( P_TARGET t )
+void target_setMurderCount( pTarget t )
 {
-    pChar pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
 	pc->kills = t->buffer[0];
@@ -237,7 +237,7 @@ void command_setmurder( pClient client )
 {
 	if( tnum == 2 )
 	{
-		P_TARGET targ = clientInfo[ ps->toInt() ]->newTarget( new cCharTarget() );
+		pTarget targ = clientInfo[ ps->toInt() ]->newTarget( new cCharTarget() );
 		targ->buffer[0]=strtonum(1);
 		targ->send( ps );
 		ps->sysmsg( "Select the person to set the murder count of: ");
@@ -332,7 +332,7 @@ void command_gochar( pClient client )
 			serial.ser3=strtonum(3);
 			serial.ser4=strtonum(4);
 
-			pc_i = pointers::findCharBySerial( serial.serial32 );
+			pc_i = cSerializable::findCharBySerial( serial.serial32 );
 			break;
 		}
 		case 2: {
@@ -381,9 +381,9 @@ void command_fix( pClient client )
 	pc_cs->setPosition(pos);
 }
 
-void target_xgo( P_TARGET t )
+void target_xgo( pTarget t )
 {
-	pChar pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if(pc)
 	{
 		pc->MoveTo( t->buffer[0], t->buffer[1], t->buffer[2] );
@@ -402,7 +402,7 @@ void command_xgoplace( pClient client )
 		if( x>0 )
 		{
 			NXWSOCKET s = ps->toInt();
-			P_TARGET targ = clientInfo[s]->newTarget( new cCharTarget() );
+			pTarget targ = clientInfo[s]->newTarget( new cCharTarget() );
 			targ->code_callback = target_xgo;
 			targ->buffer[0]=x;
 			targ->buffer[1]=y;
@@ -525,10 +525,10 @@ void command_setseason( pClient client )
 		pc->sysmsg("Setseason takes one argument.");
 }
 
-void target_xtele( pClient client, P_TARGET t )
+void target_xtele( pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
-	pChar pc_t = pointers::findCharBySerial( t->getClicked() );
+	pChar pc_t = cSerializable::findCharBySerial( t->getClicked() );
 
 
 	pc_t->MoveTo( pc->getPosition() );
@@ -539,7 +539,7 @@ void target_xtele( pClient client, P_TARGET t )
 void command_xtele( pClient client )
 {
 #error ///FLAMEEEE !!!!!! ^.^"
-	P_TARGET targ = clientInfo[ps->toInt()]->newTarget( new cCharTarget() );
+	pTarget targ = clientInfo[ps->toInt()]->newTarget( new cCharTarget() );
 	targ->code_callback = target_xtele;
 	targ->send( ps );
 	ps->sysmsg( "Select char to teleport to your position." );
@@ -606,7 +606,7 @@ void command_appetite( pClient client )
 }
 
 //! Adds an item when using 'add # #
-void target_addTarget( P_TARGET t )
+void target_addTarget( pTarget t )
 {
 	pItem pi = item::CreateFromScript( "$item_hardcoded" );
 	if ( ! pi ) return;
@@ -651,7 +651,7 @@ void command_add( pClient client )
 #error ///FLAMEEEEEEE !!!!!!!!!!! gh
 		clientInfo[ps->toInt()]->resetTarget();
 
-		P_TARGET trg = clientInfo[ps->toInt()]->newTarget( new cLocationTarget() );
+		pTarget trg = clientInfo[ps->toInt()]->newTarget( new cLocationTarget() );
 		ps->sysmsg( "Select location for item..." );
 		trg->buffer[0]=a;
 		trg->buffer[1]=b;
@@ -679,7 +679,7 @@ void command_addx( pClient client )
 }
 
 
-void target_rename( P_TARGET t )
+void target_rename( pTarget t )
 {
 	pObject po = objects.findObject( t->getClicked() );
 	if ( !po ) return;
@@ -695,7 +695,7 @@ void command_rename( pClient client )
 	{
 #error ///FLAMEEEEEEE !!!!!!!!!!! gh
 //	NXWSOCKET s = ps->toInt();
-		P_TARGET targ = clientInfo[ps->toInt()]->newTarget( new cObjectTarget() );
+		pTarget targ = clientInfo[ps->toInt()]->newTarget( new cObjectTarget() );
 		targ->buffer_str[0] = &tbuffer[Commands::cmd_offset+7];
 		targ->code_callback = target_rename;
 		targ->send( ps );
@@ -727,12 +727,12 @@ void command_save()
 	cwmWorldState->saveNewWorld();
 }
 
-void target_setpriv( pClient client, P_TARGET t )
+void target_setpriv( pClient client, pTarget t )
 {
 	pChar pc, pc_t;
 
 	pc = ps->currChar();
-	pc_t = pointers::findCharBySerial( t->getClicked() );
+	pc_t = cSerializable::findCharBySerial( t->getClicked() );
 	if( !pc_t ) return;
 
 	if (SrvParms->gm_log)   //Logging
@@ -742,9 +742,9 @@ void target_setpriv( pClient client, P_TARGET t )
     pc->SetPriv2( t->buffer[1] );
 }
 
-void target_setprivItem( P_TARGET t )
+void target_setprivItem( pTarget t )
 {
-	pItem pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
 	switch( t->buffer[0] )
@@ -770,7 +770,7 @@ void command_setpriv( pClient client )
 	if (tnum==3)
 	{
 #error //FLAMEEEEEEEEE!
-		P_TARGET targ = clientInfo[ ps->toInt() ]->newTarget( new cCharTarget() );
+		pTarget targ = clientInfo[ ps->toInt() ]->newTarget( new cCharTarget() );
 		targ->code_callback = target_setpriv;
 		targ->buffer[0]=strtonum(1);
 		targ->buffer[1]=strtonum(2);
@@ -779,7 +779,7 @@ void command_setpriv( pClient client )
 	}
 	else if (tnum==2)
 	{
-		P_TARGET targ = clientInfo[ ps->toInt() ]->newTarget( new cItemTarget() );
+		pTarget targ = clientInfo[ ps->toInt() ]->newTarget( new cItemTarget() );
 		targ->code_callback = target_setprivItem;
 		targ->buffer[0]=3;
 		targ->buffer[1]=strtonum(1);
@@ -792,7 +792,7 @@ void command_nodecay( pClient client )
 // Prevents an object from ever decaying.
 {
 #error //FLAMEEEEEEEEE!
-	P_TARGET targ = clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
+	pTarget targ = clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
 	targ->code_callback=target_setprivItem;
 	targ->buffer[0]=0;
 	targ->send( ps );
@@ -1016,7 +1016,7 @@ void command_itemmenu( pClient client )
 
 }
 
-void target_additem( pClient client, P_TARGET t )
+void target_additem( pClient client, pTarget t )
 {
 	Location loc=t->getLocation();
 
@@ -1070,7 +1070,7 @@ void command_additem( pClient client )
 			item = strtonum(1);
 		}
 
-		P_TARGET targ=clientInfo[s]->newTarget( new cLocationTarget() );
+		pTarget targ=clientInfo[s]->newTarget( new cLocationTarget() );
 		targ->buffer[0]=item;
 		targ->code_callback=target_additem;
 		targ->send( getClientFromSocket(s) );
@@ -1090,12 +1090,12 @@ void command_additem( pClient client )
 	}
 }
 
-void target_dupe( pClient client, P_TARGET t )
+void target_dupe( pClient client, pTarget t )
 {
     int n = t->buffer[0];
 	if( n>=1)
     {
-        pItem pi=pointers::findItemBySerial( t->getClicked() );
+        pItem pi=cSerializable::findItemBySerial( t->getClicked() );
         if (pi)
         {
             for (int j=0; j<n; j++ )
@@ -1111,7 +1111,7 @@ void command_dupe( pClient client )
 // (d / nothing) Duplicates an item. If a parameter is specified, it's how many copies to make.
 {
 #error ///FLAME
-	P_TARGET targ = clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
+	pTarget targ = clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
 	targ->buffer[0] = (tnum==2)? strtonum(1) : 1;
 	targ->code_callback=target_dupe;
 	targ->send( ps );
@@ -1193,10 +1193,10 @@ void command_hidehs( pClient client )
 }
 
 
-void target_allSet( pClient client, P_TARGET t )
+void target_allSet( pClient client, pTarget t )
 {
 #error ///FLAMEEEE
-	pChar pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
 	NXWSOCKET k = ps->toInt();
@@ -1272,7 +1272,7 @@ void command_set( pClient client )
 		splitLine( prop, propName, propValue );
 
 #error ///FLAMEEE
-		P_TARGET targ=clientInfo[s]->newTarget( new cCharTarget() );
+		pTarget targ=clientInfo[s]->newTarget( new cCharTarget() );
 		targ->buffer_str[0]=propName;
 		targ->buffer[0]=str2num( propValue );
 		targ->code_callback=target_allSet;
@@ -1283,7 +1283,7 @@ void command_set( pClient client )
 }
 
 
-void target_addNpc( pClient client, P_TARGET t )
+void target_addNpc( pClient client, pTarget t )
 {
 	if( t->buffer[0]==0 ) {
 
@@ -1315,7 +1315,7 @@ void command_addnpc( pClient client )
 #error ///FLAME
 	NXWSOCKET s = ps->toInt();
 
-	P_TARGET targ = clientInfo[s]->newTarget( new cLocationTarget() );
+	pTarget targ = clientInfo[s]->newTarget( new cLocationTarget() );
 	if (tnum==3)
 	{
 		targ->buffer[0]=0;
@@ -1548,9 +1548,9 @@ void command_minecheck( pClient client )
 
 
 #error ///FLAMEEE
-void target_invul( pClient client, P_TARGET t )
+void target_invul( pClient client, pTarget t )
 {
-	pChar pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
 	if( t->buffer[0]==1 )
@@ -1565,7 +1565,7 @@ void command_invul( pClient client )
 
 	NXWSOCKET s = ps->toInt();
 
-	P_TARGET targ=clientInfo[s]->newTarget( new cCharTarget() );
+	pTarget targ=clientInfo[s]->newTarget( new cCharTarget() );
 	targ->code_callback=target_invul;
 	targ->buffer[0]=1;
 	targ->send( getClientFromSocket(s) );
@@ -1578,7 +1578,7 @@ void command_noinvul( pClient client )
 
 	NXWSOCKET s = ps->toInt();
 
-	P_TARGET targ=clientInfo[s]->newTarget( new cCharTarget() );
+	pTarget targ=clientInfo[s]->newTarget( new cCharTarget() );
 	targ->code_callback=target_invul;
 	targ->buffer[0]=0;
 	targ->send( getClientFromSocket(s) );
@@ -1604,7 +1604,7 @@ void command_guardsoff( pClient client )
 // Enables decay on an object.
 void command_decay( pClient client )
 {
-	P_TARGET targ=clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
+	pTarget targ=clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
 	targ->code_callback=target_setprivItem;
 	targ->buffer[0]=1;
 	targ->send( ps );
@@ -1708,11 +1708,11 @@ void command_yell( pClient client )
 	}
 }
 
-void target_squelch( pClient client, P_TARGET t )
+void target_squelch( pClient client, pTarget t )
 {
 	pChar curr = client->currChar();
 
-	pChar pc =pointers::findCharBySerial( t->getClicked() );
+	pChar pc =cSerializable::findCharBySerial( t->getClicked() );
 	if(pc)
 	{
 
@@ -1751,7 +1751,7 @@ void command_squelch( pClient client )
 // (d / nothing) Squelchs specified player. (Makes them unnable to speak.)
 {
 
-	P_TARGET targ = clientInfo[ ps->toInt() ]->newTarget( new cCharTarget() );
+	pTarget targ = clientInfo[ ps->toInt() ]->newTarget( new cCharTarget() );
 
     if (tnum==2)
 	{
@@ -1920,9 +1920,9 @@ void command_sysm( pClient client )
 	sysbroadcast(&tbuffer[Commands::cmd_offset + 5]);
 }
 
-void target_jail( pClient client, P_TARGET t )
+void target_jail( pClient client, pTarget t )
 {
-	pChar pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
 	prison::jail( ps->currChar(), pc, t->buffer[0] );
@@ -1931,7 +1931,7 @@ void target_jail( pClient client, P_TARGET t )
 void command_jail( pClient client )
 // (d) Jails the target with given secs.
 {
-	P_TARGET targ=clientInfo[ ps->toInt() ]->newTarget( new cCharTarget() );
+	pTarget targ=clientInfo[ ps->toInt() ]->newTarget( new cCharTarget() );
 	targ->code_callback=target_jail;
 
 	if (tnum==2 )
@@ -1998,7 +1998,7 @@ void command_password( pClient client )
 		return;
 }
 
-void target_tele( pClient client, P_TARGET t )
+void target_tele( pClient client, pTarget t )
 {
 
 	pChar pc= ps->currChar();
@@ -2019,13 +2019,13 @@ void target_tele( pClient client, P_TARGET t )
 
 }
 
-void target_remove( pClient client, P_TARGET t )
+void target_remove( pClient client, pTarget t )
 {
 
 	uint32_t serial = t->getClicked();
 
 	if( isCharSerial( serial ) )	{
-		pChar pc=pointers::findCharBySerial( serial );
+		pChar pc=cSerializable::findCharBySerial( serial );
 		if ( ! pc ) return;
 
 		if (pc->amxevents[EVENT_CHR_ONDISPEL]) {
@@ -2042,7 +2042,7 @@ void target_remove( pClient client, P_TARGET t )
 		pc->Delete();
 	}
 	else {
-		pItem pi=pointers::findItemBySerial( serial );
+		pItem pi=cSerializable::findItemBySerial( serial );
 		if ( ! pi ) return;
 
 		ps->sysmsg( TRANSLATE("Removing item.") );
@@ -2055,7 +2055,7 @@ void target_remove( pClient client, P_TARGET t )
 }
 
 
-void target_dye( pClient client, P_TARGET t )
+void target_dye( pClient client, pTarget t )
 {
 	uint32_t serial = t->getClicked();
 
@@ -2065,7 +2065,7 @@ void target_dye( pClient client, P_TARGET t )
 	if ( ! curr ) return;
 
 	if( isItemSerial(serial) ) {
-		pItem pi=pointers::findItemBySerial(serial);
+		pItem pi=cSerializable::findItemBySerial(serial);
 		if (pi)
 		{
 			if( color==UINVALID16 ) //open dye vat
@@ -2087,7 +2087,7 @@ void target_dye( pClient client, P_TARGET t )
 			}
 		}
 	} else {
-		pChar pc=pointers::findCharBySerial(serial);
+		pChar pc=cSerializable::findCharBySerial(serial);
 		if(pc)
 		{
 			if( color==UINVALID16 ) //open dye vat
@@ -2122,7 +2122,7 @@ void command_dye( pClient client )
 // (h h/nothing) Dyes an item a specific color, or brings up a dyeing menu if no color is specified.
 {
 
-	P_TARGET targ = clientInfo[ ps->toInt() ]->newTarget( new cObjectTarget() );
+	pTarget targ = clientInfo[ ps->toInt() ]->newTarget( new cObjectTarget() );
 
 
 	if (tnum==3)
@@ -2145,13 +2145,13 @@ void command_dye( pClient client )
 
 }
 
-void target_newz( pClient client, P_TARGET t )
+void target_newz( pClient client, pTarget t )
 {
 
     uint32_t serial = t->getClicked();
 
 	if( isCharSerial( serial ) ) {
-		pChar pc=pointers::findCharBySerial( serial );
+		pChar pc=cSerializable::findCharBySerial( serial );
 		if ( ! pc ) return;
 
 		Location location = pc->getPosition();
@@ -2160,7 +2160,7 @@ void target_newz( pClient client, P_TARGET t )
 		pc->teleport();
 	}
 	else {
-		pItem pi=pointers::findItemBySerial( serial );
+		pItem pi=cSerializable::findItemBySerial( serial );
 		if ( ! pi ) return;
 
 		Location location = pi->getPosition();
@@ -2174,7 +2174,7 @@ void target_newz( pClient client, P_TARGET t )
 void command_newz( pClient client )
 {
 	if (tnum==2) {
-		P_TARGET targ = clientInfo[ ps->toInt() ]->newTarget( new cObjectTarget() );
+		pTarget targ = clientInfo[ ps->toInt() ]->newTarget( new cObjectTarget() );
 		targ->buffer[0] = strtonum(1);
 		targ->code_callback = target_newz;
 		targ->send( ps );
@@ -2184,14 +2184,14 @@ void command_newz( pClient client )
 }
 
 
-void target_setid( pClient client, P_TARGET t )
+void target_setid( pClient client, pTarget t )
 {
 
     uint32_t serial = t->getClicked();
 	uint16_t value = Duint8_t2WORD( t->buffer[0], t->buffer[1] );
 
 	if( isCharSerial( serial ) ) {
-		pChar pc=pointers::findCharBySerial( serial );
+		pChar pc=cSerializable::findCharBySerial( serial );
 		if ( ! pc ) return;
 
 		pc->setId( value );
@@ -2199,7 +2199,7 @@ void target_setid( pClient client, P_TARGET t )
 		pc->teleport();
 	}
 	else {
-		pItem pi=pointers::findItemBySerial( serial );
+		pItem pi=cSerializable::findItemBySerial( serial );
 		if ( ! pi ) return;
 
 		pi->setId( value );
@@ -2207,11 +2207,11 @@ void target_setid( pClient client, P_TARGET t )
 	}
 }
 
-void target_spy( pClient client, P_TARGET t )
+void target_spy( pClient client, pTarget t )
 {
 	pChar curr= ps->currChar();
 
-	pChar pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
 	if( pc->getSerial()!=curr->getSerial32() ) {
@@ -2227,18 +2227,18 @@ void target_spy( pClient client, P_TARGET t )
 	}
 }
 
-void target_ban( pClient client, P_TARGET t )
+void target_ban( pClient client, pTarget t )
 {
 	//todo
 }
 
-void target_emptypack( pClient client, P_TARGET t )
+void target_emptypack( pClient client, pTarget t )
 {
 	uint32_t serial = t->getClicked();
 	pItem pack=NULL;
 
 	if( isCharSerial( serial ) ) {
-		pChar pc=pointers::findCharBySerial( serial );
+		pChar pc=cSerializable::findCharBySerial( serial );
 		if ( ! pc ) return;
 
 		pItem backpack=pc->getBackpack();
@@ -2247,7 +2247,7 @@ void target_emptypack( pClient client, P_TARGET t )
 		pack=backpack;
 	}
 	else if( isItemSerial( serial ) ) {
-		pItem pi=pointers::findItemBySerial( serial );
+		pItem pi=cSerializable::findItemBySerial( serial );
 		if ( ! pi ) return;
 
 		pack=pi;
@@ -2264,9 +2264,9 @@ void target_emptypack( pClient client, P_TARGET t )
 	}
 }
 
-void target_possess( pClient client, P_TARGET t )
+void target_possess( pClient client, pTarget t )
 {
-	pChar pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
 	pChar curr=client->currChar();
@@ -2275,7 +2275,7 @@ void target_possess( pClient client, P_TARGET t )
 }
 
 
-void target_hide( pClient client, P_TARGET t )
+void target_hide( pClient client, pTarget t )
 {
 	pChar pc = MAKE_CHAR_REF(t->getClicked());
 	if ( ! pc ) return;
@@ -2297,7 +2297,7 @@ void target_hide( pClient client, P_TARGET t )
 	}
 }
 
-void target_unhide( pClient client, P_TARGET t )
+void target_unhide( pClient client, pTarget t )
 {
 	pChar pc = MAKE_CHAR_REF( t->getClicked() );
 	if ( ! pc ) return;
@@ -2319,9 +2319,9 @@ void target_unhide( pClient client, P_TARGET t )
 	}
 }
 
-void target_fullstats( pClient client, P_TARGET t )
+void target_fullstats( pClient client, pTarget t )
 {
-    pChar pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = cSerializable::findCharBySerial( t->getClicked() );
     if (pc)
     {
         pc->playSFX( 0x01F2);
@@ -2335,9 +2335,9 @@ void target_fullstats( pClient client, P_TARGET t )
     }
 }
 
-void target_heal( pClient client, P_TARGET t )
+void target_heal( pClient client, pTarget t )
 {
-    pChar pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = cSerializable::findCharBySerial( t->getClicked() );
     if (pc)
     {
         pc->playSFX( 0x01F2);
@@ -2347,9 +2347,9 @@ void target_heal( pClient client, P_TARGET t )
     }
 }
 
-void target_mana( pClient client, P_TARGET t )
+void target_mana( pClient client, pTarget t )
 {
-    pChar pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = cSerializable::findCharBySerial( t->getClicked() );
     if (pc)
     {
         pc->playSFX( 0x01F2);
@@ -2359,9 +2359,9 @@ void target_mana( pClient client, P_TARGET t )
     }
 }
 
-void target_stamina( pClient client, P_TARGET t )
+void target_stamina( pClient client, pTarget t )
 {
-    pChar pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = cSerializable::findCharBySerial( t->getClicked() );
     if( pc )
     {
         pc->playSFX( 0x01F2);
@@ -2371,7 +2371,7 @@ void target_stamina( pClient client, P_TARGET t )
     }
 }
 
-void target_tiledata( pClient client, P_TARGET t )
+void target_tiledata( pClient client, pTarget t )
 {
 
 	Location loc = t->getLocation();
@@ -2412,25 +2412,25 @@ void target_tiledata( pClient client, P_TARGET t )
 	ps->sysmsg( TRANSLATE("Item info has been dumped to the console.") );
 }
 
-void target_freeze( pClient client, P_TARGET t )
+void target_freeze( pClient client, pTarget t )
 {
-	pChar pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
 	if( pc ) {
 		pc->freeze();
 		pc->teleport();
 	};
 }
 
-void target_unfreeze( pClient client, P_TARGET t )
+void target_unfreeze( pClient client, pTarget t )
 {
-	pChar pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
 	if( pc ) {
 		pc->unfreeze();
 		pc->teleport();
 	}
 }
 
-void target_setamount( pClient client, P_TARGET t )
+void target_setamount( pClient client, pTarget t )
 {
 
 	pItem pi= MAKE_ITEM_REF( t->getClicked() );
@@ -2441,17 +2441,17 @@ void target_setamount( pClient client, P_TARGET t )
 
 }
 
-void target_npcaction( pClient client, P_TARGET t )
+void target_npcaction( pClient client, pTarget t )
 {
-	pChar pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
 	pc->playAction( t->buffer[0] );
 }
 
-void target_kick( pClient client, P_TARGET t )
+void target_kick( pClient client, pTarget t )
 {
-	pChar pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
     if( pc )
     {
 		ps->sysmsg( TRANSLATE("Kicking player"));
@@ -2459,9 +2459,9 @@ void target_kick( pClient client, P_TARGET t )
     }
 }
 
-void target_kill( pClient client, P_TARGET t )
+void target_kill( pClient client, pTarget t )
 {
-    pChar pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = cSerializable::findCharBySerial( t->getClicked() );
     if(pc )
     {
         if(!pc->dead)
@@ -2477,24 +2477,24 @@ void target_kill( pClient client, P_TARGET t )
 }
 
 
-void target_bolt( pClient client, P_TARGET t )
+void target_bolt( pClient client, pTarget t )
 {
-    pChar pc=pointers::findCharBySerial( t->getClicked() );
+    pChar pc=cSerializable::findCharBySerial( t->getClicked() );
 	if( pc ) {
         pc->boltFX(true);
     }
 }
 
-void target_resurrect( pClient client, P_TARGET t )
+void target_resurrect( pClient client, pTarget t )
 {
-    pChar pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if(pc && pc->dead)
 		pc->resurrect();
 }
 
-void target_killhair( pClient client, P_TARGET t )
+void target_killhair( pClient client, pTarget t )
 {
-	pChar pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
 	if( pc ) {
 		pItem pi = pc->getHairItem();
 		if( pi )
@@ -2502,9 +2502,9 @@ void target_killhair( pClient client, P_TARGET t )
 	}
 }
 
-void target_killbeard( pClient client, P_TARGET t )
+void target_killbeard( pClient client, pTarget t )
 {
-	pChar pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
 	if( pc ) {
 		pItem pi = pc->getBeardItem();
 		if( pi )
@@ -2513,10 +2513,10 @@ void target_killbeard( pClient client, P_TARGET t )
 }
 
 
-void target_makegm( pClient client, P_TARGET t )
+void target_makegm( pClient client, pTarget t )
 {
 
-	pChar pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
     if (pc->dead)
@@ -2582,10 +2582,10 @@ void target_makegm( pClient client, P_TARGET t )
 
 }
 
-void target_makecns( pClient client, P_TARGET t )
+void target_makecns( pClient client, pTarget t )
 {
 
-	pChar pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
 	pChar curr=ps->currChar();
@@ -2627,10 +2627,10 @@ void target_makecns( pClient client, P_TARGET t )
 	pc->teleport();
 }
 
-void target_xbank( pClient client, P_TARGET t )
+void target_xbank( pClient client, pTarget t )
 {
 
-	pChar pc2 = pointers::findCharBySerial( t->getClicked() );
+	pChar pc2 = cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc2 ) return;
 
 	pChar pc = ps->currChar();
@@ -2638,10 +2638,10 @@ void target_xbank( pClient client, P_TARGET t )
 	pc->openBankBox(pc2);
 }
 
-void target_xsbank( pClient client, P_TARGET t )
+void target_xsbank( pClient client, pTarget t )
 {
 
-	pChar pc2 = pointers::findCharBySerial( t->getClicked() );
+	pChar pc2 = cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc2 ) return;
 
 	pChar pc = ps->currChar();
@@ -2649,10 +2649,10 @@ void target_xsbank( pClient client, P_TARGET t )
 	pc->openSpecialBank(pc2);
 }
 
-void target_release( pClient client, P_TARGET t )
+void target_release( pClient client, pTarget t )
 {
 
-	pChar pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
 	pChar rel = ps->currChar();
@@ -2660,10 +2660,10 @@ void target_release( pClient client, P_TARGET t )
 	prison::release( rel, pc  );
 }
 
-void target_title( pClient client, P_TARGET t )
+void target_title( pClient client, pTarget t )
 {
 
-	pChar pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
 	pc->title = t->buffer_str[0];

@@ -441,7 +441,7 @@ namespace pointers {
 					if( pc->mounted )
 						pMounted[pc->getOwnerSerial32()]=pc;
 
-					pChar own=pointers::findCharBySerial(pc->getOwnerSerial32());
+					pChar own=cSerializable::findCharBySerial(pc->getOwnerSerial32());
 					pc->setOwnerSerial32( DEREF_pChar(own), true );
 				}
 			}
@@ -451,7 +451,7 @@ namespace pointers {
 
 				updContMap(pi);
 
-				pChar own=pointers::findCharBySerial(pi->getOwnerSerial32());
+				pChar own=cSerializable::findCharBySerial(pi->getOwnerSerial32());
 				pi->setOwnerSerial32( DEREF_pChar(own), true );
 			}
 		}
@@ -459,7 +459,7 @@ namespace pointers {
 		std::map< uint32_t, pChar >::iterator iter( pMounted.begin() ), end( pMounted.end() );
 		for( ; iter!=end; iter++)
 		{
-			pc = pointers::findCharBySerial(iter->first);
+			pc = cSerializable::findCharBySerial(iter->first);
 			if(pc)
 				pc->setOnHorse();
 		}

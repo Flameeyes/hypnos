@@ -293,7 +293,7 @@ void cItem::doubleClick(pClient client)
 	if(cont->isInWorld()) {
 		dst = cont->getPosition();
 	} else {
-		pChar pg_dst = pointers::findCharBySerial( cont->getContSerial() );  //TODO: verify if doing a getContSerial to a body returns a char
+		pChar pg_dst = cSerializable::findCharBySerial( cont->getContSerial() );  //TODO: verify if doing a getContSerial to a body returns a char
 		VALIDATEPC(pg_dst);
 		dst = pg_dst->getPosition();
 	}
@@ -320,7 +320,7 @@ void cItem::doubleClick(pClient client)
 		else
 			if (isCharSerial(getContSerial()) && type!=(uint32_t)INVALID)
 			{// in a character.
-				pChar wearedby = pointers::findCharBySerial(getContSerial());
+				pChar wearedby = cSerializable::findCharBySerial(getContSerial());
 				if ( wearedby )
 					if (wearedby->getSerial()!=pc->getSerial32() && layer!=LAYER_UNUSED_BP && type!=ITYPE_CONTAINER)
 						return;
@@ -852,7 +852,7 @@ void cItem::doubleClicked(pClient client)
 
 void target_selectdyevat( pClient client, P_TARGET t )
 {
-    pItem pi=pointers::findItemBySerial(t->getClicked());
+    pItem pi=cSerializable::findItemBySerial(t->getClicked());
     if ( ! pi ) return;
 
     if( pi->getId()==0x0FAB ||                     //dye vat
@@ -867,7 +867,7 @@ void target_dyevat( pClient client, P_TARGET t )
 	pChar curr = client->currChar();
 	if ( ! curr ) return;
 
-	pItem pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
 	if( pi->isDyeable() )

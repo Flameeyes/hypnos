@@ -105,7 +105,7 @@ void cPC::heartbeat()
 	if     ( swingtargserial == INVALID )
 		doCombat();
 	else //if( TIMEOUT( timeout ) )
-		combatHit( pointers::findCharBySerial( swingtargserial ) );
+		combatHit( cSerializable::findCharBySerial( swingtargserial ) );
 
 
 	if ( !TIMEOUT( smoketimer ) )

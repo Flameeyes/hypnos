@@ -150,7 +150,7 @@ void cNPC::heartbeat()
 
 	if( npcWander!=WANDER_FLEE ) {
 		if( hp < getStrength() * fleeat / 100 ) {
-			flee( pointers::findCharBySerial( ftargserial ) );
+			flee( cSerializable::findCharBySerial( ftargserial ) );
 			setNpcMoveTime();
 		}
 	}
@@ -183,7 +183,7 @@ void cNPC::heartbeat()
 		doCombat();
 	else
 		if( TIMEOUT( timeout )  )
-			combatHit( pointers::findCharBySerial( swingtargserial ) );
+			combatHit( cSerializable::findCharBySerial( swingtargserial ) );
 
 	updateFlags();
 

@@ -330,8 +330,8 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 */
 void cTempfx::start()
 {
-	pChar src = pointers::findCharBySerial(m_nSrc);
-	pChar dest = pointers::findCharBySerial(m_nDest);
+	pChar src = cSerializable::findCharBySerial(m_nSrc);
+	pChar dest = cSerializable::findCharBySerial(m_nDest);
 
 	if ( !dest )
 		return;
@@ -641,9 +641,9 @@ int8_t cTempfx::checkForExpire()
 */
 void cTempfx::executeExpireCode()
 {
-	pChar src = pointers::findCharBySerial(m_nSrc);
-	pChar dest = pointers::findCharBySerial(m_nDest);
-	pItem pi_dest = pointers::findItemBySerial(m_nDest);
+	pChar src = cSerializable::findCharBySerial(m_nSrc);
+	pChar dest = cSerializable::findCharBySerial(m_nDest);
+	pItem pi_dest = cSerializable::findItemBySerial(m_nDest);
 
 	switch(m_nNum)
 	{
@@ -906,8 +906,8 @@ void cTempfx::executeExpireCode()
 */
 void cTempfx::activate()
 {
-	pChar src = pointers::findCharBySerial(m_nSrc);
-	pChar dest = pointers::findCharBySerial(m_nDest);
+	pChar src = cSerializable::findCharBySerial(m_nSrc);
+	pChar dest = cSerializable::findCharBySerial(m_nDest);
 
 	if ( !dest ) return;
 
@@ -988,8 +988,8 @@ void cTempfx::activate()
 */
 void cTempfx::deactivate()
 {
-	pChar src = pointers::findCharBySerial(m_nSrc);
-	pChar dest = pointers::findCharBySerial(m_nDest);
+	pChar src = cSerializable::findCharBySerial(m_nSrc);
+	pChar dest = cSerializable::findCharBySerial(m_nDest);
 
 	if ( !dest )
 		return;
@@ -1111,22 +1111,22 @@ cTempfx::cTempfx( uint32_t nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t
 	//	Set serials
 	//
 	if ( isCharSerial(nSrc) ) {
-		if ( !pointers::findCharBySerial(nSrc)
+		if ( !cSerializable::findCharBySerial(nSrc)
 			return;
 	}
 
 	if ( isItemSerial(nSrc) ) {
-		if ( !pointers::findItemBySerial(nSrc) )
+		if ( !cSerializable::findItemBySerial(nSrc) )
 			return;
 	}
 
 	if ( isCharSerial(nDest) ) {
-		if ( !pointers::findCharBySerial(nDest) )
+		if ( !cSerializable::findCharBySerial(nDest) )
 			return;
 	}
 
 	if ( isItemSerial(nDest) ) {
-		if ( !pointers::findItemBySerial(nDest) )
+		if ( !cSerializable::findItemBySerial(nDest) )
 			return;
 	}
 
@@ -1144,7 +1144,7 @@ cTempfx::cTempfx( uint32_t nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t
 	if ( dur > 0 )
 		m_nExpireTime = uiCurrentTime + (dur*MY_CLOCKS_PER_SEC);
 	else
-		m_nExpireTime = uiCurrentTime + (getTempFxTime(pointers::findCharBySerial(m_nSrc), num, more1, more2, more3)*MY_CLOCKS_PER_SEC);
+		m_nExpireTime = uiCurrentTime + (getTempFxTime(cSerializable::findCharBySerial(m_nSrc), num, more1, more2, more3)*MY_CLOCKS_PER_SEC);
 
 	if ( m_nNum == AMXCUSTOM && amxcback <= INVALID )
 		return;

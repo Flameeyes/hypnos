@@ -984,13 +984,13 @@ void target_houseOwner( NXWCLIENT ps, P_TARGET t )
 	pChar curr=ps->currChar();
 	if ( ! curr ) return;
 
-	pChar pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
-	pItem pSign=pointers::findItemBySerial( t->buffer[0] );
+	pItem pSign=cSerializable::findItemBySerial( t->buffer[0] );
 	if ( ! pSign ) return;
 
-	pItem pHouse=pointers::findItemBySerial(calcserial(pSign->more1, pSign->more2, pSign->more3, pSign->more4));
+	pItem pHouse=cSerializable::findItemBySerial(calcserial(pSign->more1, pSign->more2, pSign->more3, pSign->more4));
 	if ( ! pHouse ) return;
 
 	NXWSOCKET s = ps->toInt();
@@ -1072,7 +1072,7 @@ void target_houseBan( NXWCLIENT ps, P_TARGET t )
 {
 	target_houseEject(ps, t);	// first, eject the player
 
-	pChar pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
 	pChar curr=ps->currChar();
@@ -1080,7 +1080,7 @@ void target_houseBan( NXWCLIENT ps, P_TARGET t )
 
 	NXWSOCKET s = ps->toInt();
 
-	pItem pi=pointers::findItemBySerial( t->buffer[0] );
+	pItem pi=cSerializable::findItemBySerial( t->buffer[0] );
 	if(pi)
 	{
 		if(pc->getSerial() == curr->getSerial32())
@@ -1102,14 +1102,14 @@ void target_houseBan( NXWCLIENT ps, P_TARGET t )
 // buffer[0] the house
 void target_houseFriend( NXWCLIENT ps, P_TARGET t )
 {
-	pChar Friend = pointers::findCharBySerial( t->getClicked() );
+	pChar Friend = cSerializable::findCharBySerial( t->getClicked() );
 
 	pChar curr=ps->currChar();
 	if ( ! curr ) return;
 
 	NXWSOCKET s = ps->toInt();
 
-	pItem pi=pointers::findItemBySerial( t->buffer[0] );
+	pItem pi=cSerializable::findItemBySerial( t->buffer[0] );
 
 	if( Friend && pi)
 	{
@@ -1135,8 +1135,8 @@ void target_houseFriend( NXWCLIENT ps, P_TARGET t )
 // bugffer[0] the hose
 void target_houseUnlist( NXWCLIENT ps, P_TARGET t )
 {
-	pChar pc = pointers::findCharBySerial( t->getClicked() );
-    pItem pi= pointers::findItemBySerial( t->buffer[0] );
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
+    pItem pi= cSerializable::findItemBySerial( t->buffer[0] );
 	NXWSOCKET s = ps->toInt();
     if(pc && pi)
     {
@@ -1160,7 +1160,7 @@ void target_houseLockdown( NXWCLIENT ps, P_TARGET t )
 	if ( ! pc ) return;
 	NXWSOCKET s = ps->toInt();
 
-    pItem pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=cSerializable::findItemBySerial( t->getClicked() );
     if(pi)
     {
 
@@ -1222,7 +1222,7 @@ void target_houseSecureDown( NXWCLIENT ps, P_TARGET t )
 	if ( ! pc ) return;
 	NXWSOCKET s = ps->toInt();
 
-    pItem pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=cSerializable::findItemBySerial( t->getClicked() );
     if(pi)
     {
         // time to lock it down!
@@ -1283,7 +1283,7 @@ void target_houseRelease( NXWCLIENT ps, P_TARGET t )
 	if ( ! pc ) return;
 	NXWSOCKET s = ps->toInt();
 
-    pItem pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=cSerializable::findItemBySerial( t->getClicked() );
     if(pi)
     {
         if(pi->getOwnerSerial32() != pc->getSerial())

@@ -415,7 +415,7 @@ void Skills::target_bottle( NXWCLIENT ps, P_TARGET t )
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
 
-	pItem pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
 	NXWSOCKET s = ps->toInt();
@@ -427,7 +427,7 @@ void Skills::target_bottle( NXWCLIENT ps, P_TARGET t )
 	{
 		pi->ReduceAmount(1);
 
-		pItem pi_mortar=pointers::findItemBySerial( t->buffer[0] );
+		pItem pi_mortar=cSerializable::findItemBySerial( t->buffer[0] );
 		VALIDATEPI(pi_mortar);
 
 		if (pi_mortar->type==17)
@@ -1291,7 +1291,7 @@ void Skills::TDummy(NXWSOCKET s)
 			return;
 	}
 
-	pItem pj = pointers::findItemBySerial( LongFromCharPtr(buffer[s] +1) & 0x7FFFFFFF );
+	pItem pj = cSerializable::findItemBySerial( LongFromCharPtr(buffer[s] +1) & 0x7FFFFFFF );
 
 	if (pj)
 	{
@@ -1481,7 +1481,7 @@ void Skills::Meditation (NXWSOCKET  s)
 	if ( s < 0 || s >= now )
 		return;
 
-	pChar pc = pointers::findCharBySerial(currchar[s]);
+	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	pItem pi = NULL;
@@ -1546,7 +1546,7 @@ void Skills::Persecute (NXWSOCKET  s)
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	if ( ! pc ) return;
 
-	pChar pc_targ=pointers::findCharBySerial(pc->targserial);
+	pChar pc_targ=cSerializable::findCharBySerial(pc->targserial);
 	VALIDATEPC(pc_targ);
 
     char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
