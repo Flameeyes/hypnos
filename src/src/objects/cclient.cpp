@@ -407,7 +407,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 	tile_st item;
  	data::seekTile( pi->getId(), item );
 
-	// Check if item is equiped
+	// Check if item is equipped
         pEquippable ei = dynamic_cast<pEquippable> pi;
         pBody body = pc_currchar->getBody();
 
@@ -425,50 +425,33 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
  	}
 
 
-	pChar owner=NULL;
-	pItem container=NULL;
-	if ( !pi->isInWorld() ) { // Find character owning item
+	pChar owner=pi->getCurrentOwner();
+	pItem container=pi->getOutMostCont();
 
-		if ( isCharSerial(pi->getOutMostCont()->getContainer()getSerial()) )
-		{
-			owner = (pChar) pi->getContainer()->getChar();
-		}
-		else  // its an item
-		{
-			//Endymion Bugfix:
-			//before check the container.. but if this cont is a subcont?
-			//so get the outmostcont and check it else:
-			//can loot without lose karma in subcont
-			//can steal in trade ecc
-			//not very good :P
-			container = pi->getOutMostCont();
-			if( isCharSerial( container->getContainer()->getSerial() ) ) //see above ...
-				owner = (pChar) container->getContainer();
-		}
-
-		if ( owner && (owner != pc_currchar) )
-		{
-			if ( !pc_currchar->IsGM() && owner->getOwnerSerial32() != pc_currchar->getSerial() )
-			{// Own serial stuff by Zippy -^ Pack aniamls and vendors.
-                        //! \todo the sendpacket stuff here
-				uint8_t bounce[2]= { 0x27, 0x00 };
-				Xsend(s, bounce, 2);
-//AoS/				Network->FlushBuffer(s);
-				if (isDragging())
-				{
-					resetDragging();
-					pi->setOldContainer(pi->getContainer());
-					item_bounce3(pi);
-				}
-				return;
+	if ( owner && (owner != pc_currchar) )
+	{
+		if ( !pc_currchar->IsGM() && !pc_currchar->isOwnerOf(owner))
+		{// Own serial stuff by Zippy -^ Pack aniamls and vendors.
+                 //! \todo the sendpacket stuff here
+			uint8_t bounce[2]= { 0x27, 0x00 };
+			Xsend(s, bounce, 2);
+//AoS/			Network->FlushBuffer(s);
+			if (isDragging())
+			{
+				resetDragging();
+				//pi->setOldContainer(pi->getContainer());
+				item_bounce3(pi);
 			}
+			return;
 		}
 	}
+
+        pEquippable equipcont = dynamic_cast<pEquippable> container;
 
 	if ( container )
 	{
 
-		if ( container->layer == 0 && container->getId() == 0x1E5E)
+		if ( (!equipcont || equipcont->getLayer()== 0) && container->getId() == 0x1E5E)
 		{
 			// Trade window???
 			uint32_t serial = calcserial( pi->moreb1, pi->moreb2, pi->moreb3, pi->moreb4);
@@ -489,6 +472,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 			if (pi->amxevents[EVENT_ITAKEFROMCONTAINER]!=NULL)
 			{
 				g_bByPass = false;
+                                //!\todo adding another event using container instead of pi as sender, you can create event ontakefromthiscontainer, a CONTAINER event, instead of an item one. Also rename this as ONREMOVEFROMCONTAINER, to differentiate them further and avoid confusion 
 				pi->amxevents[EVENT_ITAKEFROMCONTAINER]->Call( pi->getSerial(), pi->getContSerial(), pc_currchar->getSerial() );
 				if (g_bByPass)
 				{
@@ -502,6 +486,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 					pi->setContainer( pi->getOldContainer() );
 					pi->setPosition( pi->getOldPosition() );
 					pi->layer = pi->oldlayer;
+                                        //!\todo add packet 0x23 to send to surrounding clients drag of item from oldlocation to pc location
 					pi->Refresh();
 					return;
                 		}

@@ -904,7 +904,7 @@ pChar getCurrentOwner(bool searchBank)
         pEquippableContainer econt = dynamic_cast<pEquippableContainer> cont;
        	if (!econt) return NULL;   //I have no idea of what "this" is if at this point econt is NULL :)
         if (!searchBank && econt->getLayer() == layBank) return NULL;
-	return (dynamic_cast<pBody> cont->getContainer())->getChar();;
+	return (dynamic_cast<pBody> cont->getContainer())->getChar();
 }
 
 /*!
