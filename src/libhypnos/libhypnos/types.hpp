@@ -21,6 +21,7 @@ libhypnos library and are common to different applications of the suite.
 #endif
 
 #ifdef HAVE_STDINT_H
+	#define __STDC_LIMIT_MACROS
 	#include <stdint.h>
 #elif defined HAVE_INTTYPES_H
 	#include <inttypes.h>
@@ -88,19 +89,36 @@ struct sRect {
 	bool isInside(sPoint p) const;
 };
 
-static const uint8_t maxU8 = 255u;
-static const uint16_t maxU16 = 65535u;
-static const uint32_t maxU32 = 4294967295ul;
-static const uint64_t maxU64 = 18446744073709551615ull;
-
-static const int8_t minS8 = -128;
-static const int16_t minS16 = -32768;
-static const int32_t minS32 = -2147483648l;
-static const int64_t minS64 = -9223372036854775808ll;
-
-static const int8_t maxS8 = 127;
-static const int16_t maxS16 = 32767;
-static const int32_t maxS32 = 2147483647ll;
-static const int64_t maxS64 = 9223372036854775807ll;
+#ifdef UINT64_MAX // take this as its defined with every else..
+	static const uint8_t maxU8 = UINT8_MAX;
+	static const uint16_t maxU16 = UINT16_MAX;
+	static const uint32_t maxU32 = UINT32_MAX;
+	static const uint64_t maxU64 = UINT64_MAX;
+	
+	static const int8_t minS8 = -128;
+	static const int16_t minS16 = -32768;
+	static const int32_t minS32 = -2147483648l;
+	static const int64_t minS64 = -9223372036854775808ll;
+	
+	static const int8_t maxS8 = 127;
+	static const int16_t maxS16 = 32767;
+	static const int32_t maxS32 = 2147483647ll;
+	static const int64_t maxS64 = 9223372036854775807ll;
+#else
+	static const uint8_t maxU8 = 255u;
+	static const uint16_t maxU16 = 65535u;
+	static const uint32_t maxU32 = 4294967295ul;
+	static const uint64_t maxU64 = 18446744073709551615ull;
+	
+	static const int8_t minS8 = -128;
+	static const int16_t minS16 = -32768;
+	static const int32_t minS32 = -2147483648l;
+	static const int64_t minS64 = -9223372036854775808ll;
+	
+	static const int8_t maxS8 = 127;
+	static const int16_t maxS16 = 32767;
+	static const int32_t maxS32 = 2147483647ll;
+	static const int64_t maxS64 = 9223372036854775807ll;
+#endif
 
 #endif

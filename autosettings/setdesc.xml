@@ -13,7 +13,7 @@ change the default from 2593.
 Local port to bind the rac listening socket to. Quite everytime you don't need to
 change the default from 2594.
   </setting>
-  <setting name="MULFilesPath" type="string" default="">
+  <setting name="MULFilesPath" type="string">
 Path where the MUL files are. If set to an empty string (default) it will be
 read from the registry (under windows) or it will use the Hypnos' share
 directory (under unix-like environments).
