@@ -22,7 +22,7 @@
 This function is used by consoleOutput to actually do an output. Must \b not
 be accessed in other ways!
 */
-void lowlevelOutput(const char *str, ...)
+void lowlevelOutput(int fd, const char *str, ...)
 {
 	static char buffer[2048];
 	va_list argptr;
@@ -31,16 +31,12 @@ void lowlevelOutput(const char *str, ...)
 	vsnprintf( buffer, sizeof(buffer)-1, str, argptr );
 	va_end( argptr );
 
-#ifndef _WINDOWS
-	fprintf(s_fileStdOut, buffer);
-#else
-	xwprintf("%s", buffer);
-#endif
+	fprintf(fd, buffer);
 }
 
 // Only on unix-es we do colored output
 #if defined(__unix__)
-#define AnsiOut lowlevelOutput
+#define AnsiOut(x) lowlevelOutput(stdout, x)
 #else
 #define AnsiOut(x)
 #endif
@@ -50,6 +46,10 @@ void lowlevelOutput(const char *str, ...)
 \param lev Level to output the string at
 \param str String to output
 
+This function outputs a message at the given level, setting te color of the
+text and changing the output stream (stdout for plain and info messages,
+stderr for other).
+
 \note This function is thread-safe, a Mutex prevent that the console is
 	accessed more than one time.
 */
@@ -58,6 +58,8 @@ void consoleOutput(nNotify::Level lev, const std::string str)
 	static Wefts::Mutex;
 	m.lock();
 	
+	int outfd = stdout;
+	
 	// Set the color
 	switch(lev)
 	{
@@ -65,32 +67,33 @@ void consoleOutput(nNotify::Level lev, const std::string str)
 		break;
 	case levError:
 		AnsiOut("\x1B[1;31m");
-		lowlevelOutput("E %s - ", nNotify::getDate().c_str());
+		lowlevelOutput(stderr, "E %s - ", nNotify::getDate().c_str());
+		outfd = stderr;
 		break;
 	case levWarning:
 		AnsiOut("\x1B[1;33m");
-		lowlevelOutput("W %s - ", nNotify::getDate().c_str());
+		lowlevelOutput(stderr, "W %s - ", nNotify::getDate().c_str());
+		outfd = stderr;
 		break;
 	case levInformation:
 		AnsiOut("\x1B[1;34m");
-		lowlevelOutput("i %s - ", nNotify::getDate().c_str());
+		lowlevelOutput(stdout, "i %s - ", nNotify::getDate().c_str());
 		break;
 	case levPanic:
 		AnsiOut("\x1B[1;31m");
-		lowlevelOutput("! %s - ", nNotify::getDate().c_str());
+		lowlevelOutput(stderr, "! %s - ", nNotify::getDate().c_str());
+		outfd = stderr;
 		break;
 	}
 	
-	lowlevelOutput(str.c_str());
+	lowlevelOutput(outfd, str.c_str());
 	
 	// Close the colored part
 	if ( lev != levPlain )
 		AnsiOut("\x1B[0m");
 	
-#ifndef _WINDOWS
 	// This flushes the output only when all the output is actually done
 	fflush(s_fileStdOut);
-#endif
 	
 	m.unlock();
 }
@@ -234,20 +237,20 @@ void checkkey ()
 		{
 			if (secure)
 			{
-				lowlevelOutput("Secure mode disabled. Press ? for a commands list.\n");
+				lowlevelOutput(stdout, "Secure mode disabled. Press ? for a commands list.\n");
 				secure=0;
 				return;
 			}
 			else
 			{
-				lowlevelOutput("Secure mode re-enabled.\n");
+				lowlevelOutput(stdout, "Secure mode re-enabled.\n");
 				secure=1;
 				return;
 			}
 		} else {
 			if (secure && c != '?')  //Allows help in secure mode.
 			{
-				lowlevelOutput("Secure mode prevents keyboard commands! Press 'S' to disable.\n");
+				lowlevelOutput(stdout, "Secure mode prevents keyboard commands! Press 'S' to disable.\n");
 				return;
 			}
 
@@ -258,7 +261,7 @@ void checkkey ()
 				break;
 			case 'Q':
 			case 'q':
-				lowlevelOutput("Immediate Shutdown initialized!\n");
+				lowlevelOutput(stdout, "Immediate Shutdown initialized!\n");
 				keeprun=false;
 				break;
 			case 'T':
@@ -276,7 +279,7 @@ void checkkey ()
 			case 'd':
 				{
 					int found = 0;
-					lowlevelOutput( "Disconnecting account 0 players... ");
+					lowlevelOutput(stdout, "Disconnecting account 0 players... ");
 					for (i=0;i<now;i++)
 						if (acctno[i]==0 && clientInfo[i]->ingame)
 						{
@@ -284,48 +287,48 @@ void checkkey ()
 							Network->Disconnect(i);
 						}
 					if (found>0)
-						lowlevelOutput( "[ OK ] (%d disconnected)\n", found);
+						lowlevelOutput(stdout, "[ OK ] (%d disconnected)\n", found);
 					else	
-						lowlevelOutput( "[FAIL] (no account 0 players online)\n", found);
+						lowlevelOutput(stdout, "[FAIL] (no account 0 players online)\n", found);
 				}
 				break;
 			case 'W':
 			case 'w':				// Display logged in chars
-				lowlevelOutput("----------------------------------------------------------------\n");
-				lowlevelOutput("Current Users in the World:\n");
+				lowlevelOutput(stdout, "----------------------------------------------------------------\n");
+				lowlevelOutput(stdout, "Current Users in the World:\n");
 				j = 0;  //Fix bug counting ppl online.
 				for (i=0;i<now;i++)
 				{
 					pChar pc_i=cSerializable::findCharBySerial(currchar[i]);
 					if(pc_i && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
 					{
-						lowlevelOutput("%i) %s [ %08x ]\n", j, pc_i->getCurrentName().c_str(), pc_i->getSerial());
+						lowlevelOutput(stdout, "%i) %s [ %08x ]\n", j, pc_i->getCurrentName().c_str(), pc_i->getSerial());
 						j++;
 					}
 				}
-				lowlevelOutput("Total Users Online: %d\n", j);
+				lowlevelOutput(stdout, "Total Users Online: %d\n", j);
 				break;
 			case 'r':
 			case 'R':
-				lowlevelOutput("Hypnos: Total server reload!");
+				lowlevelOutput(stdout, "Hypnos: Total server reload!");
 				//! \todo Need to freeze and unfreeze all the clients here for the resync
 				//! \todo Need to call a function exported by hypnos.h
 				loadServer();
 				break;
 			case '?':
-				lowlevelOutput("Console commands:\n");
-				lowlevelOutput("	<Esc> or Q: Shutdown the server.\n");
-				lowlevelOutput("	T - System Message: The server is shutting down in 2 minutes.\n");
-				lowlevelOutput("	# - Save world\n");
-				lowlevelOutput("	D - Disconnect Account 0\n");
-				lowlevelOutput("	W - Display logged in characters\n");
-				lowlevelOutput("	R - Total server reload\n");
-				lowlevelOutput("	S - Toggle Secure mode %s\n", secure ? "[enabled]" : "[disabled]" );
-				lowlevelOutput("	? - Commands list (this)\n");
-				lowlevelOutput("End of commands list.\n");
+				lowlevelOutput(stdout, "Console commands:\n");
+				lowlevelOutput(stdout, "\t<Esc> or Q: Shutdown the server.\n");
+				lowlevelOutput(stdout, "\tT - System Message: The server is shutting down in 2 minutes.\n");
+				lowlevelOutput(stdout, "\t# - Save world\n");
+				lowlevelOutput(stdout, "\tD - Disconnect Account 0\n");
+				lowlevelOutput(stdout, "\tW - Display logged in characters\n");
+				lowlevelOutput(stdout, "\tR - Total server reload\n");
+				lowlevelOutput(stdout, "\tS - Toggle Secure mode %s\n", secure ? "[enabled]" : "[disabled]" );
+				lowlevelOutput(stdout, "\t? - Commands list (this)\n");
+				lowlevelOutput(stdout, "End of commands list.\n");
 				break;
 			default:
-				lowlevelOutput("Key %c [%x] does not preform a function.\n",c,c);
+				lowlevelOutput(stdout, "Key %c [%x] does not preform a function.\n",c,c);
 				break;
 			}
 		}
@@ -349,7 +352,7 @@ int main(int argc, char *argv[])
 	serverstarttime=getclock();
 
 	initConsole();
-	lowlevelOutput("Starting Hypnos...\n\n");
+	lowlevelOutput(stdout, "Starting Hypnos...\n\n");
 
 	loadServer();
 
@@ -360,13 +363,13 @@ int main(int argc, char *argv[])
 #endif
 
 	if (ServerScp::g_nDeamonMode!=0) {
-		lowlevelOutput("Going into deamon mode... bye...\n");
+		lowlevelOutput(stdout, "Going into deamon mode... bye...\n");
 		init_deamon();
 	}
 
-	lowlevelOutput("Applying interface settings... ");
+	lowlevelOutput(stdout, "Applying interface settings... ");
 	constart();
-	lowlevelOutput("[ OK ]\n");
+	lowlevelOutput(stdout, "[ OK ]\n");
 
 	openings = 0;
 
@@ -378,84 +381,91 @@ int main(int argc, char *argv[])
 
 	exitOnError(error);
 
-	lowlevelOutput("\n");
+	lowlevelOutput(stdout, "\n");
 	cwmWorldState->loadNewWorld();
 
 	exitOnError(error); // LB prevents file corruption
 
-	lowlevelOutput("Clearing all trades...");
+	lowlevelOutput(stdout, "Clearing all trades...");
 	clearalltrades();
-	lowlevelOutput(" [DONE]\n");
+	lowlevelOutput(stdout, " [DONE]\n");
 
 	FD_ZERO(&conn);
 	starttime=getclock();
 	endtime=0;
 	lclock=0;
 
-	lowlevelOutput("\n\n");
+	lowlevelOutput(stdout, "\n\n");
 
 	clearscreen();
 
-	lowlevelOutput("Hypnos %s [%s]\nProgrammed by: %s", strVersion, OS, strDevelopers);
-	lowlevelOutput("\nBased on NoX-Wizard 20031228");
-	lowlevelOutput("\nWeb-site : http://hypnos.berlios.de/\n");
-	lowlevelOutput("\n");
-	lowlevelOutput("Original copyright (C) 1997, 98 Marcus Rating (Cironian)\n\n");
-	lowlevelOutput("This program is free software; you can redistribute it and/or modify\n");
-	lowlevelOutput("it under the terms of the GNU General Public License as published by\n");
-	lowlevelOutput("the Free Software Foundation; either version 2 of the License, or\n");
-	lowlevelOutput("(at your option) any later version.\n\n");
-	lowlevelOutput("Running on %s\n", getOSVersionString().c_str() );
-
+	lowlevelOutput(stdout,
+		"Hypnos UO Server Emulator %s\n
+		"Programmed by: %s\n"
+		"Based on NoX-Wizard 20031228\n"
+		"Website: http://hypnos.berlios.de/\n"
+		"\n"
+		"Original copyright (C) 1997, 98 Marcus Rating (Cironian)\n\n"
+		"This program is free software; you can redistribute it and/or modify\n"
+		"it under the terms of the GNU General Public License as published by\n"
+		"the Free Software Foundation; either version 2 of the License, or\n"
+		"(at your option) any later version.\n
+		"See LICENSE file for more information\n"
+		"\n"
+		"Running on %s\n",
+		strVersion, strDevelopers,
+		getOSVersionString().c_str() );
 	
 	if (SrvParms->server_log)
-		ServerLog.Write("-=Server Startup=-\n=======================================================================\n");
+		ServerLog.Write(
+			"-=Server Startup=-\n"
+			"=======================================================================\n");
 
 	serverstarttime=getclock(); // dont remove, its absolutly necassairy that its 3 times in the startup sequence for several timing reasons.
 
 	exitOnError(error);
 
-	lowlevelOutput("\nMap size : %dx%d", map_width, map_height);
+	lowlevelOutput(stdout, "\nMap size : %dx%d", map_width, map_height);
 
 	if ((map_width==768)&&(map_height==512))
-		lowlevelOutput(" [standard Britannia/Sosaria map size]\n");
+		lowlevelOutput(stdout, " [standard Britannia/Sosaria map size]\n");
 	else if ((map_width==288)&&(map_height==200))
-		lowlevelOutput(" [standard Ilshenar map size]\n");
-	else lowlevelOutput(" [custom map size]\n");
+		lowlevelOutput(stdout, " [standard Ilshenar map size]\n");
+	else lowlevelOutput(stdout, " [custom map size]\n");
 
 	if (ServerScp::g_nAutoDetectIP==1)  {
-		lowlevelOutput("\nServer waiting connections on all interfaces at TCP port %i\n", g_nMainTCPPort);
+		lowlevelOutput(stdout, "\nServer waiting connections on all interfaces at TCP port %i\n", g_nMainTCPPort);
 	} else {
-		lowlevelOutput("\nServer waiting connections at IP %s, TCP port %i\n", serv[0][1], g_nMainTCPPort);
+		lowlevelOutput(stdout, "\nServer waiting connections at IP %s, TCP port %i\n", serv[0][1], g_nMainTCPPort);
 	}
 
 	// print allowed clients
 	std::string t;
 	std::vector<std::string>::const_iterator vis( clientsAllowed.begin() ), vis_end( clientsAllowed.end() );
 
-	lowlevelOutput("\nAllowed clients : ");
+	lowlevelOutput(stdout, "\nAllowed clients : ");
 	for ( ; vis != vis_end;  ++vis)
 	{
 		t = (*vis);  // a bit pervert to store c++ strings and operate with c strings, admitably
 
 		if ( t == "SERVER_DEFAULT" )
 		{
-			lowlevelOutput("%s : %s\n", t.c_str(), strSupportedClient);
+			lowlevelOutput(stdout, "%s : %s\n", t.c_str(), strSupportedClient);
 			break;
 		}
 		else if ( t == "ALL" )
 		{
-			lowlevelOutput("ALL\n");
+			lowlevelOutput(stdout, "ALL\n");
 			break;
 		}
 
-		lowlevelOutput("%s,", t.c_str());
+		lowlevelOutput(stdout, "%s,", t.c_str());
 	}
-	lowlevelOutput("\n");
+	lowlevelOutput(stdout, "\n");
 	
 	pointers::init(); //Luxor
 
-	lowlevelOutput("Server started\n");
+	lowlevelOutput(stdout, "Server started\n");
 
 	Spawns->doSpawnAll();
 
@@ -501,7 +511,7 @@ int main(int argc, char *argv[])
 					&& clientInfo[r]->ingame
 					)
 				{
-					lowlevelOutput("Player %s disconnected due to inactivity !\n", pc_r->getCurrentName().c_str());
+					lowlevelOutput(stdout, "Player %s disconnected due to inactivity !\n", pc_r->getCurrentName().c_str());
 					//sysmessage(r,"you have been idle for too long and have been disconnected!");
 					nPackets::Sent::IdleWarning pk(0x7);
 					client->sendPacket(&pk);
@@ -561,18 +571,18 @@ int main(int argc, char *argv[])
 	shutdownServer();
 
 	if (NewErrorsLogged())
-		lowlevelOutput("New ERRORS have been logged. Please send the logs/error*.log and logs/critical*.log files to the dev team !\n");
+		lowlevelOutput(stderr, "New ERRORS have been logged. Please send the logs/error*.log and logs/critical*.log files to the dev team !\n");
 	if (NewWarningsLogged())
-		lowlevelOutput("New WARNINGS have been logged. Probably scripting errors. See the logs/warnings*.log for details !\n");
+		lowlevelOutput(stderr, "New WARNINGS have been logged. Probably scripting errors. See the logs/warnings*.log for details !\n");
 
 	if (error) {
-		lowlevelOutput("ERROR: Server terminated by error!\n");
+		lowlevelOutput(stderr, "ERROR: Server terminated by error!\n");
 
 		if (SrvParms->server_log)
 			ServerLog.Write("Server Shutdown by Error!\n");
 
 	} else {
-		lowlevelOutput("Hypnos: Server shutdown complete!\n");
+		lowlevelOutput(stdout, "Hypnos: Server shutdown complete!\n");
 		if (SrvParms->server_log)
 			ServerLog.Write("Server Shutdown!\n");
 
