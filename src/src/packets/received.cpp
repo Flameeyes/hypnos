@@ -1322,7 +1322,7 @@ void nPackets::Sent::DrawObject::prepare()
 	}
 
 	uint8_t *offset = buffer + 19;
-	si.fillItemWeared( pc, true, true, false );	//! \todo i suppose fillItemWeared will be updated correctly (with only the equipped items on pc's body))
+
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		//! \todo when sets remade, verify if all these checks are still necessary
@@ -1347,7 +1347,22 @@ void nPackets::Sent::DrawObject::prepare()
 	LongToCharPtr(0, offset);	// adding the 4-bytes 0-terminator
 }
 
+/*!
+\brief Opens dialog box [packet 0x7c]
+\author Chronodt
+\note packet 0x7c
+*/
 
+void nPackets::Sent::OpenDialogBox::prepare()
+{
+	//! \todo this function (awaiting gump remake)
+}
+
+/*!
+\brief Login refused for some reason [packet 0x82]
+\author Kheru
+\note packet 0x82
+*/
 void nPackets::Sent::LoginDenied::prepare()
 {
 	buffer = new uint8_t[2];
@@ -1356,6 +1371,115 @@ void nPackets::Sent::LoginDenied::prepare()
 	buffer[0] = 0x82;
 	buffer[1] = reason;
 }
+
+/*!
+\brief Char deletion error [packet 0x85]
+\author Chronodt
+\note packet 0x85
+
+reason:
+
+0x00 => That character password is invalid.
+0x01 => That character doesn't exist.
+0x02 => That character is being played right now.
+0x03 => That charater is not old enough to delete.
+	The character must be 7 days old before it can be deleted.
+0x04 => That character is currently queued for backup and cannot be
+	deleted.
+0x05 => Couldn't carry out your request.
+*/
+void nPackets::Sent::CharDeleteError::prepare()
+{
+	buffer = new uint8_t[2];
+	length = 2;
+	buffer[0] = 0x85;
+	buffer[1] = reason;
+}
+
+/*!
+\brief Resends character list to client after a succesful deletion [packet 0x86]
+\author Chronodt
+\note packet 0x86
+*/
+void nPackets::Sent::CharAfterDelete::prepare()
+{
+	buffer = new uint8_t[304];
+	length = 304;
+	memset(buffer, 304,0); //filling the buffer with zeroes
+	buffer[0] = 0x86;
+	ShortToCharPtr(304, buffer + 1);
+	buffer[3] = account->getCharsNumber();
+	for(int i = 0;i<5; ++i)
+		if (i<= buffer[3])
+			strcpy(buffer + (i*60) + 4, account->getChar(i)->getCurrentName().c_str());
+}
+
+/*!
+\brief Opens Paperdoll [packet 0x88]
+\author Chronodt
+\note packet 0x88
+*/
+void nPackets::Sent::OpenPaperdoll::prepare()
+{
+	buffer = new uint8_t[66];
+	length = 66;
+	buffer[0] = 0x88;
+	LongToCharPtr(pc->getSerial(), buffer + 1);
+	strncpy(buffer + 5, pc->getCompleteTitle().c_str(), 60);
+	// in documentation there is a flag byte here. i THINK it is a unicode/ascii flag (0 ascii, 1 unicode), but i'm not sure
+	buffer[65] = 0x0
+}
+
+/*!
+\brief Corpse Clothing [packet 0x89]
+\author Chronodt
+\note packet 0x89
+*/
+void nPackets::Sent::CorpseClothing::prepare()
+{
+	length = 8; //7 header + 1 terminator for minimum packet length
+	NxwItemWrapper si;
+	si.fillItemsInContainer( corpse, false );
+	std::slist<pEquippable> itemstosend;
+	for( si.rewind(); !si.isEmpty(); si++ )
+	{
+		pEquippable pi=dynamic_cast<pEquippable> si.getItem();
+		if( pi && (pi->getLayer()) )
+		{
+			length+=5;
+			itemstosend.push_back(pi);
+		}
+	}
+
+	buffer = new uint8_t[length];
+	ShortToCharPtr(length, buffer + 1);
+	LongToCharPtr(corpse->getSerial(), buffer + 3);
+
+	uint8_t* offset = buffer + 7;
+	for( std::slist<pEquippable>::iterator it = itemstosend.begin(); it!= itemstosend.end(); ++it)
+	{
+		offset[0]= (*it)->getLayer();
+		LongToCharPtr((*it)->getSerial(), offset + 1);
+		offset+=5;
+	}
+	offset[0] = 0;	//terminator
+}
+
+/*!
+\brief Connect to game server [packet 0x8c]
+\author Chronodt
+\note packet 0x8c
+*/
+void nPackets::Sent::ConnectToGameServer::prepare()
+{
+	length = 11;
+	buffer = new uint8_t[11];
+	buffer[0] = 0x8c;
+	LongToCharPtr(ip, buffer + 1);
+	ShortToCharPtr(port, buffer + 5);
+	LongToCharPtr(newkey, buffer + 7);
+}
+
 
 void nPackets::Sent::TargetMulti::prepare()
 {
@@ -1432,39 +1556,6 @@ void nPackets::Sent::OpenMapGump::prepare()
 }
 
 
-/* PkG 0x85: Char Delete Error
- *	reason:
- *      0x00 => That character password is invalid.
- *      0x01 => That character doesn't exist.
- *      0x02 => That character is being played right now.
- *      0x03 => That charater is not old enough to delete.
-		The character must be 7 days old before it can be deleted.
- *      0x04 => That character is currently queued for backup and cannot be
- *              deleted.
- *      0x05 => Couldn't carry out your request.
- */
-
-void nPackets::Sent::CharDeleteError::prepare()
-{
-	buffer = new uint8_t[2];
-	length = 2;
-	buffer[0] = 0x85;
-	buffer[1] = reason;
-}
-
-
-void nPackets::Sent::CharAfterDelete::prepare()
-{
-	buffer = new uint8_t[304];
-	length = 304;
-	memset(buffer, 304,0); //filling the buffer with zeroes
-	buffer[0] = 0x86;
-	ShortToCharPtr(304, buffer + 1);
-	buffer[3] = account->getCharsNumber();
-	for(int i = 0;i<5; ++i)
-		if (i<= buffer[3])
-			strcpy(buffer + (i*60) + 4, account->getChar(i)->getCurrentName().c_str());
-}
 
 void nPackets::Sent::CharProfile::prepare()
 {

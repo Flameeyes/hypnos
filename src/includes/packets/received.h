@@ -1003,7 +1003,7 @@ namespace nPackets {
 
 
 		/*!
-		\brief Sends bulletin boards commands [packet 0x71)
+		\brief Sends bulletin boards commands [packet 0x71]
 		\author Chronodt
 
 		Server-side Bulletin board commands
@@ -1125,11 +1125,30 @@ namespace nPackets {
 			void prepare();
 		};
 
+		/*!
+		\brief Opens dialog box [packet 0x7c]
+		\author Chronodt
+		\todo this function
+
+		This packet sends a dialog to the client. No checkbox, id or anything except buttons and text and their respective return code is sent
+		Useful for menus and (obiously) dialog box where multiple choices (or even a single ok button) have to be selected
+
+		This is the shortest of the "open gump" packets (the other one is the 0xb0 packet)
+		*/
+		class OpenDialogBox : public cPacketSend
+		{
+		protected:
+		public:
+			inline OpenDialogBox() :		//!< \todo finish this function
+				cPacketSend(NULL, 0)
+			{ }
+			void prepare();
+		};
+
 
 		/*!
-		\brief Login Denied
+		\brief Login Denied [packet 0x82]
 		\author Kheru
-		\note packet 0x82
 
 		0x00 = unknown user
 		0x01 = account already in use
@@ -1153,7 +1172,101 @@ namespace nPackets {
 
 
 		/*!
+		\brief Char deletion error [packet 0x85]
+		\author Chronodt
+
+		reason:
+
+		0x00 => That character password is invalid.
+		0x01 => That character doesn't exist.
+		0x02 => That character is being played right now.
+		0x03 => That charater is not old enough to delete.
+			The character must be 7 days old before it can be deleted.
+		0x04 => That character is currently queued for backup and cannot be
+			deleted.
+		0x05 => Couldn't carry out your request.
+		*/
+		class CharDeleteError : public cPacketSend
+		{
+		protected:
+			uint8_t reason;
+		public:
+			inline CharDeleteError(uint8_t r) :
+				cPacketSend(NULL, 0), reason(r)
+			{ }
+			void prepare();
+		};
+
+
+		/*!
+		\brief Resends character list to client after a succesful deletion [packet 0x86]
+		\author Chronodt
+		*/
+		class CharAfterDelete : public cPacketSend
+		{
+		protected:
+			pAccount account;
+		public:
+			inline CharAfterDelete(pAccount aAccount) :
+				cPacketSend(NULL, 0), account(aAccount)
+			{ }
+			void prepare();
+		};
+
+		/*!
+		\brief Opens Paperdoll [packet 0x88]
+		\author Chronodt
+		*/
+		class OpenPaperdoll : public cPacketSend
+		{
+		protected:
+			pChar pc;
+		public:
+			inline CharAfterDelete(pChar aPc) :
+				cPacketSend(NULL, 0), pc(aPc)
+			{ }
+			void prepare();
+		};
+
+		/*!
+		\brief Corpse Clothing [packet 0x89]
+		\author Chronodt
+
+		dressing of corpse with ex-equipped item
+		*/
+		class CorpseClothing : public cPacketSend
+		{
+		protected:
+			pContainer corpse;
+		public:
+			inline CorpseClothing(pContainer aCorpse) :
+				cPacketSend(NULL, 0), corpse(aCorpse)
+			{ }
+			void prepare();
+		};
+
+		/*!
+		\brief Connect to game server [packet 0x8c]
+		\author Chronodt
+		*/
+		class ConnectToGameServer : public cPacketSend
+		{
+		protected:
+			uint32_t ip;		//!< ip of game server
+			uint16_t port;		//!< port of game server
+			uint32_t newkey;	//!< new crypt key to use
+		public:
+			inline ConnectToGameServer(uint32_t aIp, uint16_t sPort, uint32_t aNewkey) :
+				cPacketSend(NULL, 0), ip(aIp), port(aPort), newkey(aNewKey)
+			{ }
+			void prepare();
+		};
+
+
+
+		/*!
 		\brief This is sent to bring up a house-placing target
+		\author Kheru
 		\param multi_serial The serial of the multi deed
 		\param multi_model The house's multi number (item model - 0x4000)
 		\param radius The object's tile radius. [Default: 0 ??]
@@ -1164,12 +1277,10 @@ namespace nPackets {
 			uint32_t multi_serial;
 			uint16_t multi_model;
 			uint32_t radius;
-
 		public:
 			inline TargetMulti(uint32_t aSerial, uint16_t aModelID, uint32_t aRadius = 0x00000000) :
 				cPacketSend(NULL, 0), multi_serial(aSerial), multi_model(aModelID), radius(aRadius)
 			{ }
-
 			prepare();
 		};
 
@@ -1186,7 +1297,6 @@ namespace nPackets {
 			inline OpenBrowser(std::string str) :
 				cPacketSend(NULL, 0), url(str)
 			{ }
-
 			void prepare();
 		};
 
@@ -1252,32 +1362,6 @@ namespace nPackets {
 		};
 
 
-		class CharDeleteError : public cPacketSend
-		{
-		protected:
-			uint8_t reason;
-		
-		public:
-			inline CharDeleteError(uint8_t r) :
-				cPacketSend(NULL, 0), reason(r)
-			{ }
-		
-			void prepare();
-		};
-		
-		class CharAfterDelete : public cPacketSend
-		{
-		protected:
-			pAccount account;
-		
-		public:
-			inline CharAfterDelete(pAccount a) :
-				cPacketSend(NULL, 0), account(a)
-			{ }
-		
-			void prepare();
-		};
-		
 		class CharProfile : public cPacketSend
 		{
 		protected:

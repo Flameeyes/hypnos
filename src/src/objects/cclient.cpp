@@ -253,7 +253,7 @@ void cClient::showContainer(pContainer cont)
 	
 	nPackets::Sent::OpenGump pk(cont->getSerial(), cont->getGump());
 	sendPacket(&pk);
-	
+
 	nPackets::Sent::ContainerItem pk2;
 	
 	cont->lockItemsMutex();
@@ -453,7 +453,7 @@ void cClient::senditem(pItem pi) // Shows items to client (on the ground or insi
 
 	nPackets::Sent::ObjectInformation pk(pi, pc);
 	sendPacket(&pk);
-	if (pi->isCorpse()) backpack2(pi);
+	if (pi->isCorpse()) dressCorpse((pContainer)pi);
 }
 
 // sends item in differnt color and position than it actually is
@@ -470,6 +470,31 @@ void cClient::senditem_lsd(pItem pi, uint16_t color, sLocation position)
 	nPackets::Sent::LSDObject pk(pi, pc, color, position);
 	sendPacket(&pk);
 }
+
+
+//! Sends items worn on corpse for display on client
+void cClient::dressCorpse(pContainer corpse)
+{
+	int count=0, count2;
+	uint8_t bpopen2[5]={ 0x3C, 0x00, };
+
+	nPackets::Sent::CorpseClothing pk(corpse);
+	sendPacket(&pk);
+
+	nPackets::Sent::ContainerItem pk2;
+	
+	corpse->lockItemsMutex();
+	for(ItemSList::const_iterator it = corpse->getItems().begin(); it != corpse->getItems().end() )
+	{
+		if ( ! (*it) ) continue;
+		pEquippable pi = dynamic_cast<pEquippable> *it;
+		if (pi && pi->getLayer()) pk2.addItem(*it);
+	}
+	corpse->unlockItemsMutex();
+
+	sendPacket(&pk2);
+}
+
 
 /*!
 \brief shows char to client

@@ -204,7 +204,8 @@ public:
 	void sendItem(pItem pi);				//!< Shows items to client (on the ground or inside containers)
 	void senditem_lsd(pItem pi, uint16_t color, sLocation position);
 								//!< warps item in world for hallucinatory effect (sets new color and location)
-	void cClient::sendchar(pChar pc, bool z = true);	//!< Shows char to client. Checks for gm and invisibility too
+	void dressCorpse(pContainer corpse);			//!< Sends items worn on corpse for display on client
+	void sendchar(pChar pc, bool z = true);			//!< Shows char to client. Checks for gm and invisibility too
 
 	//! audio packets (sound effects & music)
 	void playMidi();

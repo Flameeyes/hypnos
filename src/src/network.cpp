@@ -490,12 +490,12 @@ void cNetwork::Relay(pClient client) // Relay player to a certain IP
 			InfoOut("client %d relayed to IP %d.%d.%d.%d instead of %d.%d.%d.%d\n", s, IPPRINTF(ip), IPPRINTF(oldip));
         }
 
-	uint8_t login03[11]={ 0x8C, 0x00, };
+
 	uint32_t key = calcserial('a', 'K', 'E', 'Y');
 
-	ip = htonl(ip);			// host order -> network order !!!!
-	LongToCharPtr(ip, login03 +1);
-	ShortToCharPtr(port, login03 +5);
+	nPackets::Sent::ConnectToGameServer pk(ip, port, key);
+	client->sendPacket(&pk);
+
 	srand(ip+acctno[s]+now+getclock()); // Perform randomize
 #ifdef ENCRYPTION
 	if ( clientCrypter[s] != NULL )
