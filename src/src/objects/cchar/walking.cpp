@@ -252,18 +252,19 @@ void cChar::walk()
 		case WANDER_AMX: // Sparhawk: script controlled movement
 		{
 			uint32_t l = dir;
-			if (amxevents[EVENT_CHR_ONWALK])
-			{
-				g_bByPass = false;
-				amxevents[EVENT_CHR_ONWALK]->Call(getSerial(), dir, dir);
-				if (g_bByPass==true)
+
+			pFunctionHandle evt = getEvent(evtChrOnWalk);
+			if( evt ) {
+				tVariantVector params = tVariantVector(3);
+				params[0] = pc->getSerial(); params[1] = dir; params[2] = dir;
+				evt->setParams(params);
+				evt->execute();
+				if( evt->bypassed() )
 					return;
+
+				free(evt);
 			}
-			/*
-			pc_i->runAmxEvent( EVENT_CHR_ONWALK, pc_i->getSerial(), pc_i->dir, pc_i->dir);
-			if (g_bByPass==true)
-				return;
-			*/
+
 			int k = dir;
 			dir = l;
 			l = npcmovetime;
