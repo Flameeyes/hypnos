@@ -95,7 +95,7 @@ am__quote = @am__quote@
 install_sh = @install_sh@
 bin_PROGRAMS = hypnos
 hypnos_LDADD = $(top_builddir)/src/skills/libskills.la \
-	$(top_builddir)/libhypnos/libhypnos.la $(top_builddir)/src/packets/libpackets.la \
+	$(top_builddir)/libhypnos/libhypnos.la $(top_builddir)/src/networking/libnetworking.la \
 	$(top_builddir)/src/objects/cnpc/libcnpc.la $(top_builddir)/src/objects/citem/libcitem.la \
 	$(top_builddir)/src/objects/cchar/libcchar.la $(top_builddir)/src/objects/libobjects.la \
 	$(top_builddir)/src/extras/libextras.la $(top_builddir)/src/encryption/libencryption.la \
@@ -103,14 +103,13 @@ hypnos_LDADD = $(top_builddir)/src/skills/libskills.la \
 
 hypnos_SOURCES = area.cpp calendar.cpp console.cpp data.cpp effects.cpp\
 	gamedate.cpp gmpages.cpp hypnos.cpp logsystem.cpp magic.cpp map.cpp\
-	menu.cpp misc.cpp network.cpp newbies.cpp npcai.cpp npcs.cpp oldmenu.cpp\
-	particles.cpp pointer.cpp regions.cpp remadmin.cpp settings.cpp\
-	sndpkg.cpp spawn.cpp speech.cpp sregions.cpp structs.cpp target.cpp\
-	targeting.cpp telport.cpp timing.cpp tmpeff.cpp trade.cpp walking.cpp\
-	worldmain.cpp
+	menu.cpp misc.cpp newbies.cpp npcai.cpp npcs.cpp oldmenu.cpp\
+	particles.cpp pointer.cpp settings.cpp\
+	sndpkg.cpp spawn.cpp speech.cpp sregions.cpp structs.cpp\
+	targeting.cpp telport.cpp timing.cpp tmpeff.cpp trade.cpp walking.cpp
 
 
-SUBDIRS = archs backend encryption extras objects skills packets archetypes
+SUBDIRS = archs backend encryption extras objects skills networking archetypes
 subdir = src
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -122,18 +121,16 @@ am_hypnos_OBJECTS = area.$(OBJEXT) calendar.$(OBJEXT) console.$(OBJEXT) \
 	data.$(OBJEXT) effects.$(OBJEXT) gamedate.$(OBJEXT) \
 	gmpages.$(OBJEXT) hypnos.$(OBJEXT) logsystem.$(OBJEXT) \
 	magic.$(OBJEXT) map.$(OBJEXT) menu.$(OBJEXT) misc.$(OBJEXT) \
-	network.$(OBJEXT) newbies.$(OBJEXT) npcai.$(OBJEXT) \
-	npcs.$(OBJEXT) oldmenu.$(OBJEXT) particles.$(OBJEXT) \
-	pointer.$(OBJEXT) regions.$(OBJEXT) remadmin.$(OBJEXT) \
+	newbies.$(OBJEXT) npcai.$(OBJEXT) npcs.$(OBJEXT) \
+	oldmenu.$(OBJEXT) particles.$(OBJEXT) pointer.$(OBJEXT) \
 	settings.$(OBJEXT) sndpkg.$(OBJEXT) spawn.$(OBJEXT) \
 	speech.$(OBJEXT) sregions.$(OBJEXT) structs.$(OBJEXT) \
-	target.$(OBJEXT) targeting.$(OBJEXT) telport.$(OBJEXT) \
-	timing.$(OBJEXT) tmpeff.$(OBJEXT) trade.$(OBJEXT) \
-	walking.$(OBJEXT) worldmain.$(OBJEXT)
+	targeting.$(OBJEXT) telport.$(OBJEXT) timing.$(OBJEXT) \
+	tmpeff.$(OBJEXT) trade.$(OBJEXT) walking.$(OBJEXT)
 hypnos_OBJECTS = $(am_hypnos_OBJECTS)
 hypnos_DEPENDENCIES = $(top_builddir)/src/skills/libskills.la \
 	$(top_builddir)/libhypnos/libhypnos.la \
-	$(top_builddir)/src/packets/libpackets.la \
+	$(top_builddir)/src/networking/libnetworking.la \
 	$(top_builddir)/src/objects/cnpc/libcnpc.la \
 	$(top_builddir)/src/objects/citem/libcitem.la \
 	$(top_builddir)/src/objects/cchar/libcchar.la \
@@ -157,18 +154,16 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/gmpages.Po ./$(DEPDIR)/hypnos.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/logsystem.Po ./$(DEPDIR)/magic.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/map.Po ./$(DEPDIR)/menu.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/misc.Po ./$(DEPDIR)/network.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/newbies.Po ./$(DEPDIR)/npcai.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/npcs.Po ./$(DEPDIR)/oldmenu.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/particles.Po ./$(DEPDIR)/pointer.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/regions.Po ./$(DEPDIR)/remadmin.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/settings.Po ./$(DEPDIR)/sndpkg.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/spawn.Po ./$(DEPDIR)/speech.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/sregions.Po ./$(DEPDIR)/structs.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/target.Po ./$(DEPDIR)/targeting.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/misc.Po ./$(DEPDIR)/newbies.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/npcai.Po ./$(DEPDIR)/npcs.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/oldmenu.Po ./$(DEPDIR)/particles.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/pointer.Po ./$(DEPDIR)/settings.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/sndpkg.Po ./$(DEPDIR)/spawn.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/speech.Po ./$(DEPDIR)/sregions.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/structs.Po ./$(DEPDIR)/targeting.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/telport.Po ./$(DEPDIR)/timing.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/tmpeff.Po ./$(DEPDIR)/trade.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/walking.Po ./$(DEPDIR)/worldmain.Po
+@AMDEP_TRUE@	./$(DEPDIR)/walking.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -248,29 +243,24 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/menu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/network.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/newbies.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npcai.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npcs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/oldmenu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/particles.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pointer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/regions.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/remadmin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/settings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sndpkg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spawn.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/speech.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sregions.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/structs.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/target.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/targeting.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/telport.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tmpeff.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/trade.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walking.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/worldmain.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)

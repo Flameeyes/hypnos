@@ -3,4 +3,3 @@
 AUTOMAKE_OPTIONS = foreign 1.4
 
 SUBDIRS = src libhypnos
-_SOURCES = autogen.sh

@@ -93,18 +93,19 @@ VERSION = @VERSION@
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
-lib_LTLIBRARIES = libpackets.la
-libpackets_la_SOURCES = misccommand.cpp received.cpp sent.cpp
-subdir = src/packets
+noinst_LTLIBRARIES = libnetworking.la
+libnetworking_la_SOURCES = misccommand.cpp received.cpp sent.cpp cclient.cpp csocket.cpp remadmin.cpp network.cpp
+subdir = src/networking
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-LTLIBRARIES = $(lib_LTLIBRARIES)
+LTLIBRARIES = $(noinst_LTLIBRARIES)
 
-libpackets_la_LDFLAGS =
-libpackets_la_LIBADD =
-am_libpackets_la_OBJECTS = misccommand.lo received.lo sent.lo
-libpackets_la_OBJECTS = $(am_libpackets_la_OBJECTS)
+libnetworking_la_LDFLAGS =
+libnetworking_la_LIBADD =
+am_libnetworking_la_OBJECTS = misccommand.lo received.lo sent.lo \
+	cclient.lo csocket.lo remadmin.lo network.lo
+libnetworking_la_OBJECTS = $(am_libnetworking_la_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -113,8 +114,10 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/misccommand.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/received.Plo ./$(DEPDIR)/sent.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/cclient.Plo ./$(DEPDIR)/csocket.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/misccommand.Plo ./$(DEPDIR)/network.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/received.Plo ./$(DEPDIR)/remadmin.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/sent.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -123,9 +126,9 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libpackets_la_SOURCES)
+DIST_SOURCES = $(libnetworking_la_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libpackets_la_SOURCES)
+SOURCES = $(libnetworking_la_SOURCES)
 
 all: all-am
 
@@ -133,39 +136,20 @@ all: all-am
 .SUFFIXES: .cpp .lo .o .obj
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  src/packets/Makefile
+	  $(AUTOMAKE) --gnu  src/networking/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-libLTLIBRARIES_INSTALL = $(INSTALL)
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    f="`echo $$p | sed -e 's|^.*/||'`"; \
-	    echo " $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$f"; \
-	    $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$f; \
-	  else :; fi; \
-	done
 
-uninstall-libLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	    p="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p"; \
-	  $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
-	done
-
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
+	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
 	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
 	  test -z "$dir" && dir=.; \
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libpackets.la: $(libpackets_la_OBJECTS) $(libpackets_la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(libdir) $(libpackets_la_LDFLAGS) $(libpackets_la_OBJECTS) $(libpackets_la_LIBADD) $(LIBS)
+libnetworking.la: $(libnetworking_la_OBJECTS) $(libnetworking_la_DEPENDENCIES) 
+	$(CXXLINK)  $(libnetworking_la_LDFLAGS) $(libnetworking_la_OBJECTS) $(libnetworking_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -173,8 +157,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cclient.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csocket.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misccommand.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/network.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/received.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/remadmin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sent.Plo@am__quote@
 
 distclean-depend:
@@ -275,7 +263,6 @@ check: check-am
 all-am: Makefile $(LTLIBRARIES)
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
 
 install: install-am
 install-exec: install-exec-am
@@ -303,7 +290,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
+clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -321,7 +308,7 @@ info-am:
 
 install-data-am:
 
-install-exec-am: install-libLTLIBRARIES
+install-exec-am:
 
 install-info: install-info-am
 
@@ -338,19 +325,19 @@ mostlyclean: mostlyclean-am
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES
+uninstall-am: uninstall-info-am
 
 .PHONY: GTAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool distclean distclean-compile \
-	distclean-depend distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am info info-am install \
-	install-am install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool tags uninstall \
-	uninstall-am uninstall-info-am uninstall-libLTLIBRARIES
+	clean-libtool clean-noinstLTLIBRARIES distclean \
+	distclean-compile distclean-depend distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am info \
+	info-am install install-am install-data install-data-am \
+	install-exec install-exec-am install-info install-info-am \
+	install-man install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool tags uninstall uninstall-am \
+	uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

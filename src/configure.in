@@ -14,4 +14,4 @@ AC_SUBST(CXXFLAGS)
 
 AM_DL()
 
-AC_OUTPUT(Makefile libhypnos/Makefile libhypnos/muls/Makefile src/Makefile src/archs/Makefile src/backend/Makefile src/encryption/Makefile src/extras/Makefile src/objects/cchar/Makefile src/objects/citem/Makefile src/objects/cnpc/Makefile src/objects/Makefile src/skills/Makefile src/networking/Makefile src/archetypes/Makefile src/Makefile)
+AC_OUTPUT(Makefile libhypnos/Makefile libhypnos/muls/Makefile src/archs/Makefile src/backend/Makefile src/encryption/Makefile src/extras/Makefile src/objects/cchar/Makefile src/objects/citem/Makefile src/objects/cnpc/Makefile src/objects/Makefile src/skills/Makefile src/networking/Makefile src/archetypes/Makefile src/Makefile)
