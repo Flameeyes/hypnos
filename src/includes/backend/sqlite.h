@@ -27,9 +27,9 @@ public:
 	class cSQLiteQuery
 	{
 	protected:
-		static const UI08 flagArchiving = 0x01;
+		static const uint8_t flagArchiving = 0x01;
 			//!< Should we archive the read records?
-		static const UI08 flagStarted   = 0x02;
+		static const uint8_t flagStarted   = 0x02;
 			//!< We already started fetching rows?
 		
 		void cleanArchive();
@@ -88,7 +88,7 @@ public:
 		}
 	protected:
 		sqlite_vm *vm;		//!< SQLite compiled VM
-		UI08 flags;		//!< Flags for the query
+		uint8_t flags;		//!< Flags for the query
 		
 		tRow thisRow;		//!< Current row
 		tRow columnNames;       //!< Name of the columns
@@ -99,7 +99,7 @@ public:
 	//! Pointer to a SQLite Query
 	typedef cSQLiteQuery* pSQLiteQuery;
 
-	static const UI32 flagAborted = 0x00000001;
+	static const uint32_t flagAborted = 0x00000001;
 		//!< There was a fatal error?
 	
 	cSQLite(std::string name);
@@ -111,7 +111,7 @@ public:
 	
 	pSQLiteQuery execQuery(std::string query);
 protected:
-	inline void setFlag(UI32 flag, bool on = true)
+	inline void setFlag(uint32_t flag, bool on = true)
 	{
 		if ( on )
 			flags |= flag;
@@ -120,7 +120,7 @@ protected:
 	}
 	
 	cSQLite *litedb;
-	UI32 flags;
+	uint32_t flags;
 	ZThread::Mutex mutex;
 };
 

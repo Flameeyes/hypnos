@@ -37,7 +37,7 @@ class cTriggerContext
 		void parseMaxDurCommand(P_ITEM pi, char* par);
 		void parseDurCommand(P_ITEM pi, char* par);
 		void parseLine(char* cmd, char* par);
-		void init(int number, NXWSOCKET  s, int trigtype, UI16 id = 0);
+		void init(int number, NXWSOCKET  s, int trigtype, uint16_t id = 0);
 		void checkPtrsValidity();
 
 	public:
@@ -49,7 +49,7 @@ class cTriggerContext
 
 //Trigger routines
 void triggernpc(NXWSOCKET  ts,int ti, int ttype);  // trigger.cpp --- Changed by Magius(CHE) §
-bool checkenvoke( UI16 eid );
+bool checkenvoke( uint16_t eid );
 
 #define TRIGTYPE_DBLCLICK 1
 #define TRIGTYPE_WALKOVER 2

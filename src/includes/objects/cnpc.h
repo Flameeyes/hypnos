@@ -33,7 +33,7 @@ public:
 
 	virtual ~cNPC();
 
-	virtual UI32 rtti()
+	virtual uint32_t rtti()
 	{ return rtti::cNPC; }
 
 protected:
@@ -71,10 +71,10 @@ public:
 */
 
 public:
-	static const UI64 flagCanTrain		= 0x0000000100000000ull;
-	static const UI64 flagShopKeeper	= 0x0000000200000000ull;
-	static const UI64 flagDispellable	= 0x0000000400000000ull;
-	static const UI64 flagWaterWalk		= 0x0000000800000000ull; //!< Char walks on water
+	static const uint64_t flagCanTrain		= 0x0000000100000000ull;
+	static const uint64_t flagShopKeeper	= 0x0000000200000000ull;
+	static const uint64_t flagDispellable	= 0x0000000400000000ull;
+	static const uint64_t flagWaterWalk		= 0x0000000800000000ull; //!< Char walks on water
 
 	inline const bool canTrain() const
 	{ return flags & flagCanTrain; }

@@ -74,7 +74,7 @@ void sellaction(NXWSOCKET s)
 		// Pre Calculate Total Amount of selling items to STOPS if the items if greater than SELLMAXITEM - Magius(CHE)
 
 		P_ITEM join=NULL;
-		UI32 maxsell=0;
+		uint32_t maxsell=0;
 		i=buffer[s][8];
 		if (i>256) return;
 		for (i=0;i<buffer[s][8];i++)
@@ -164,7 +164,7 @@ void sellaction(NXWSOCKET s)
 		pc->playSFX( goldsfx(totgold) );
 	}
 
-	UI08 clearmsg[8] = { 0x3B, 0x00, };
+	uint8_t clearmsg[8] = { 0x3B, 0x00, };
 	ShortToCharPtr(0x08, clearmsg +1); 				// Packet len
 	LongToCharPtr( LongFromCharPtr(buffer[s] +3), clearmsg +3);	// vendorID
 	clearmsg[7]=0x00;						// Flag:  0 => no more items  0x02 items following ... 
@@ -227,7 +227,7 @@ pItem tradestart(pChar pc1, pChar pc2)
 	cont2->morez=0;
 	cont1->morez=0;
 
-        UI08 msg[90];
+        uint8_t msg[90];
         msg[0]=0x6F;    //Header Byte
 	msg[1]=0;       //Size
 	msg[2]=47;      //Size
@@ -239,7 +239,7 @@ pItem tradestart(pChar pc1, pChar pc2)
 	strcpy((char*)&(msg[17]), pc2->getCurrentNameC());
 	Xsend(s1, msg, 47);
 
-        UI08 msg2[90];
+        uint8_t msg2[90];
         msg2[0]=0x6F;   //Header Byte
 	msg2[1]=0;      //Size
 	msg2[2]=47;     //Size
@@ -261,7 +261,7 @@ void clearalltrades()
         P_ITEM pj = NULL;
         P_CHAR pc = NULL;
         P_ITEM pack = NULL;
-        UI32 i = 0;
+        uint32_t i = 0;
         for (i = 0; i < itemcount; i++) {
                 pi = MAKE_ITEM_REF(i);
                 if (!ISVALIDPI(pi)) continue;
@@ -334,7 +334,7 @@ void dotrade(P_ITEM cont1, P_ITEM cont2)
         P_ITEM bp2 = pc2->getBackpack();
         VALIDATEPI(bp1);
         VALIDATEPI(bp2);
-        SI32 s1, s2;
+        int32_t s1, s2;
         if (pc1->getClient() == NULL || pc2->getClient() == NULL) return;
         s1 = pc1->getClient()->toInt();
         s2 = pc2->getClient()->toInt();

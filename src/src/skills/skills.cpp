@@ -278,7 +278,7 @@ int Skills::GetInstrument(NXWSOCKET s)
 
 checks if player has enough regs for selected potion and delets them
 */
-static bool DoOnePotion(NXWSOCKET s, UI16 regid, UI32 regamount, char* regname)
+static bool DoOnePotion(NXWSOCKET s, uint16_t regid, uint32_t regamount, char* regname)
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return false;
@@ -308,7 +308,7 @@ static bool DoOnePotion(NXWSOCKET s, UI16 regid, UI32 regamount, char* regname)
 \brief Determines regs and quantity, creates working sound
 indirectly calls CreatePotion() on success
 */
-void Skills::DoPotion(NXWSOCKET s, SI32 type, SI32 sub, P_ITEM pi_mortar)
+void Skills::DoPotion(NXWSOCKET s, int32_t type, int32_t sub, P_ITEM pi_mortar)
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
@@ -571,7 +571,7 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
     int a,ges=0,d=0;
     unsigned char lockstate;
     int skillcap = SrvParms->skillcap;
-    UI32 incval;
+    uint32_t incval;
     int atrophy_candidates[ALLSKILLS+1];
 
 
@@ -631,18 +631,18 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
     {
 		if ( skillused )
 		{
-			Race* r = Race::getRace( (UI32) pc->race );
+			Race* r = Race::getRace( (uint32_t) pc->race );
 			if( r!=NULL )
-				incval = r->getSkillAdvanceSuccess( (UI32) sk, (UI32) pc->baseskill[sk] );
+				incval = r->getSkillAdvanceSuccess( (uint32_t) sk, (uint32_t) pc->baseskill[sk] );
 			else
 				incval=0;
 			//SDbgOut("Race advance success for skill %d with base %d is %d\n", sk, pc->baseskill[sk], incval * 10 );
 		}
 		else
 		{
-			Race* r = Race::getRace( (UI32) pc->race );
+			Race* r = Race::getRace( (uint32_t) pc->race );
 			if( r!=NULL )
-				incval = r->getSkillAdvanceFailure( (UI32) sk, (UI32) pc->baseskill[sk] );
+				incval = r->getSkillAdvanceFailure( (uint32_t) sk, (uint32_t) pc->baseskill[sk] );
 			else
 				incval =0;
 
@@ -745,14 +745,14 @@ and cuts it down to 100 if necessary
 \param pc pointer to character to advance the stats to
 \todo document missing paramteres
 */
-static int AdvanceOneStat(UI32 sk, int i, char stat, bool *update, int type, P_CHAR pc)
+static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type, P_CHAR pc)
 {
 	if ( sk < 0 || sk >= TRUESKILLS ) //Luxor
 		return 0;
 
 	int loopexit=0, limit=1000;
 	*update = false;
-	SI32 tmp;
+	int32_t tmp;
 
 	int stat2update1, stat2update2;
 	int stat2update;
@@ -765,7 +765,7 @@ static int AdvanceOneStat(UI32 sk, int i, char stat, bool *update, int type, P_C
 	}
 
 	if( Race::isRaceSystemActive() )
-		stat2update1 = Race::getRace( (UI32) pc->race )->getSkillAdvanceSuccess( sk, tmp*10 );
+		stat2update1 = Race::getRace( (uint32_t) pc->race )->getSkillAdvanceSuccess( sk, tmp*10 );
 
 	while ((wpadvance[i+1].skill==sk) &&     // if NEXT line is for same skill and is not higher than our stat then proceed to it !
      		(wpadvance[i+1].base<=(tmp*10)) && (++loopexit < MAXLOOPS) )
@@ -821,19 +821,19 @@ static int AdvanceOneStat(UI32 sk, int i, char stat, bool *update, int type, P_C
 			switch( type )
 			{
 				case STATCAP_CAP:
-					limit = Race::getRace( (UI32) pc->race )->getStatCap();
+					limit = Race::getRace( (uint32_t) pc->race )->getStatCap();
 					SDbgOut("AdvanceOneStat() race %d %s statcap %d\n", pc->race, Race::getName( pc->race )->c_str(), limit );
 					break;
 				case STATCAP_STR:
-					limit = Race::getRace( (UI32) pc->race )->getStrCap();
+					limit = Race::getRace( (uint32_t) pc->race )->getStrCap();
 					SDbgOut("AdvanceOneStat() race %d %s strcap %d\n", pc->race, Race::getName( pc->race )->c_str(), limit );
 					break;
 				case STATCAP_DEX:
-					limit = Race::getRace( (UI32) pc->race )->getDexCap();
+					limit = Race::getRace( (uint32_t) pc->race )->getDexCap();
 					SDbgOut("AdvanceOneStat() race %d %s dexcap %d\n", pc->race, Race::getName( pc->race )->c_str(), limit );
 					break;
 				case STATCAP_INT:
-					limit = Race::getRace( (UI32) pc->race )->getIntCap();
+					limit = Race::getRace( (uint32_t) pc->race )->getIntCap();
 					SDbgOut("AdvanceOneStat() race %d %s intcap %d\n", pc->race, Race::getName( pc->race )->c_str(), limit );
 					break;
 			}
@@ -944,9 +944,9 @@ void Skills::AdvanceStats(CHARACTER s, int sk)
 
 	if ( pc->statGainedToday <= ServerScp::g_nStatDailyLimit )
 	{
-		bool strCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceStrength( sk ) : skillinfo[sk].st ) > (UI32)(rand() % mod);
-    	bool dexCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceDexterity( sk ) : skillinfo[sk].dx ) > (UI32)(rand() % mod);
-    	bool intCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceIntelligence( sk ) : skillinfo[sk].in ) > (UI32)(rand() % mod);
+		bool strCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceStrength( sk ) : skillinfo[sk].st ) > (uint32_t)(rand() % mod);
+    	bool dexCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceDexterity( sk ) : skillinfo[sk].dx ) > (uint32_t)(rand() % mod);
+    	bool intCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceIntelligence( sk ) : skillinfo[sk].in ) > (uint32_t)(rand() % mod);
 
        	if ( strCheck )
        		if ( AdvanceOneStat( sk, i, 'S', &update, STATCAP_STR, pc ) && atCap && !pc->IsGM() )
@@ -1091,7 +1091,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 
 	bool setSkillDelay = true;
 
-	if( Race::isRaceSystemActive() && !(Race::getRace( pc->race )->getCanUseSkill( (UI32) x )) )
+	if( Race::isRaceSystemActive() && !(Race::getRace( pc->race )->getCanUseSkill( (uint32_t) x )) )
 	{
 		sysmessage(s, TRANSLATE("Your race cannot use that skill") );
 		setSkillDelay = false;

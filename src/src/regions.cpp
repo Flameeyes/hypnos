@@ -28,7 +28,7 @@ cRegion::~cRegion()
 
 }
 
-bool cRegion::isValidCoord( UI16 x, UI16 y )
+bool cRegion::isValidCoord( uint16_t x, uint16_t y )
 {
 	return ( x<MAP_WIDTH && y<MAP_HEIGHT );
 

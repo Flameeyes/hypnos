@@ -25,21 +25,21 @@ struct region_st
 {
 	LOGICAL inUse;
  	TEXT name[50];
- 	SI32 midilist;
- 	UI08 priv;	// 0x01 guarded, 0x02, mark allowed, 0x04, gate allowed, 0x08, recall
+ 	int32_t midilist;
+ 	uint8_t priv;	// 0x01 guarded, 0x02, mark allowed, 0x04, gate allowed, 0x08, recall
 			// 0x10 raining, 0x20, snowing, 0x40 magic damage reduced to 0
 	TEXT guardowner[50];
-	UI08 snowchance;
-	UI08 rainchance;
-	UI08 drychance;
-	UI08 keepchance;
-	UI08 wtype;
-	SI32 guardnum[10];
-	SI32 goodsell[256]; // Magius(CHE)
-	SI32 goodbuy[256]; // Magius(CHE)
-	SI32 goodrnd1[256]; // Magius(CHE) (2)
-	SI32 goodrnd2[256]; // Magius(CHE) (2)
-	SI32 forcedseason;
+	uint8_t snowchance;
+	uint8_t rainchance;
+	uint8_t drychance;
+	uint8_t keepchance;
+	uint8_t wtype;
+	int32_t guardnum[10];
+	int32_t goodsell[256]; // Magius(CHE)
+	int32_t goodbuy[256]; // Magius(CHE)
+	int32_t goodrnd1[256]; // Magius(CHE) (2)
+	int32_t goodrnd2[256]; // Magius(CHE) (2)
+	int32_t forcedseason;
 	LOGICAL ignoreseason;
 };
 
@@ -50,7 +50,7 @@ typedef struct {
 	SERIAL_SET itemsInRegions;
 } region_db_st;
 
-class RegCoordPoint : public cPoint< UI16 > {
+class RegCoordPoint : public cPoint< uint16_t > {
 public:
 	
 	RegCoordPoint( Location location );
@@ -71,7 +71,7 @@ private:
 
 	region_db_st regions[REGION_X_CELLS][REGION_Y_CELLS];
 
-	bool isValidCoord( UI16 x, UI16 y );
+	bool isValidCoord( uint16_t x, uint16_t y );
 
 public:
 

@@ -65,7 +65,7 @@ struct boat_db
 P_ITEM findmulti(Location where);
 bool inmulti(Location where,P_ITEM pi);
 void insert_boat(P_ITEM pi);
-boat_db* search_boat(SI32 ser);
+boat_db* search_boat(int32_t ser);
 P_ITEM search_boat_by_plank(P_ITEM pl);
 
 class cBoat
@@ -81,7 +81,7 @@ class cBoat
 		void TurnStuff_c(P_ITEM, P_CHAR, int, int);
 		void iMove(NXWSOCKET  s, int dir, P_ITEM pBoat, LOGICAL forced = true);
 
-		void TurnShip( UI08 size, SI32 dir, P_ITEM pPort, P_ITEM pStarboard, P_ITEM pTiller, P_ITEM pHold );
+		void TurnShip( uint8_t size, int32_t dir, P_ITEM pPort, P_ITEM pStarboard, P_ITEM pTiller, P_ITEM pHold );
 	public:
 
 		cBoat();

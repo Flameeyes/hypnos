@@ -17,10 +17,10 @@
 #define _AREA_H
 
 typedef struct {
-	UI16 x1;
-	UI16 y1;
-	UI16 x2;
-	UI16 y2;
+	uint16_t x1;
+	uint16_t y1;
+	uint16_t x2;
+	uint16_t y2;
 } Area;
 
 typedef std::map< SERIAL, Area > AREA_DB;

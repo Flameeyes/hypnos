@@ -20,7 +20,7 @@
 
 namespace Books
 {
-	std::map<UI32, cBook> books;
+	std::map<uint32_t, cBook> books;
 	LOGICAL shouldsave = false;
 
 	/*!
@@ -66,7 +66,7 @@ namespace Books
 		std::string fileName = SrvParms->savePath + SrvParms->bookWorldfile + SrvParms->worldfileExtension;
 		std::ofstream file(fileName.c_str(), std::ios::out|std::ios::trunc);
 
-		for(std::map<UI32, cBook>::iterator it = books.begin(); it != books.end(); it++)
+		for(std::map<uint32_t, cBook>::iterator it = books.begin(); it != books.end(); it++)
 			(*it).second.DumpTo(file);
 	}
 
@@ -150,7 +150,7 @@ namespace Books
 
 		if ( book->morez )
 		{
-			std::map<UI32, cBook>::iterator it = books.find(book->morez);
+			std::map<uint32_t, cBook>::iterator it = books.find(book->morez);
 			if ( it == books.end() )
 				book->morez = 0;
 		}
@@ -258,8 +258,8 @@ namespace Books
 		bool readheader = false;
 		std::vector<std::string> tmppage;
 		std::string line;
-		UI32 numpages = 0;
-		SI32 np = -1;
+		uint32_t numpages = 0;
+		int32_t np = -1;
 
 		while(s)
 		{
@@ -302,7 +302,7 @@ namespace Books
 					books_index = index;
 				else
 				{
-					std::map<UI32, cBook>::iterator it = books.find(index);
+					std::map<uint32_t, cBook>::iterator it = books.find(index);
 					if ( it != books.end() )
 					{
 						WarnOut("Book index already in use (%s)\n", truebuffer);
@@ -393,7 +393,7 @@ namespace Books
 			<< "AUTHOR " << author << std::endl
 			<< "TITLE " << title << std::endl
 			<< "NUMPAGES " << pageStr << std::endl;
-		UI32 i=0;
+		uint32_t i=0;
 		for(tpages::iterator it = pages.begin(); it != pages.end(); it++)
 		{
 			numtostr(i++,pageStr);
@@ -419,10 +419,10 @@ namespace Books
 	\param l lines to process
 	\param size size of the packet buffer
 	*/
-	void cBook::ChangePages(char *packet, UI16 p, UI16 l, UI16 size)
+	void cBook::ChangePages(char *packet, uint16_t p, uint16_t l, uint16_t size)
 	{
 		p--; l--;
-		UI16 bp = 0, lin = 0, lp = 0;
+		uint16_t bp = 0, lin = 0, lp = 0;
 		char ch;
 		char s[34];
 		if ( p >= pages.size() )
@@ -491,14 +491,14 @@ namespace Books
 	*/
 	void cBook::OpenBookReadWrite(NXWSOCKET s, P_ITEM book)
 	{
-		UI08 bookopen[10]=   "\x93\x40\x01\x02\x03\x01\x01\x00\x02";
+		uint8_t bookopen[10]=   "\x93\x40\x01\x02\x03\x01\x01\x00\x02";
 
-		UI16 bytes;
+		uint16_t bytes;
 
 		char booktitle[60];
 		char bookauthor[30];
 
-		UI16 i;
+		uint16_t i;
 		for(i = 0; i < author.size() && i < 30; i++)
 			bookauthor[i] = author[i];
 		for(; i < 30; i++)
@@ -525,8 +525,8 @@ namespace Books
 		// lots of data has to be send.                              /
 		//////////////////////////////////////////////////////////////
 
-		UI08 bookpage_pre[9] = { 0x66, 0x01, 0x02, 0x40, 0x01, 0x02, 0x03, 0x00, 0x01 };
-		UI08 bookpage[4] = { 0x00, 0x00, 0x00, 0x08 };
+		uint8_t bookpage_pre[9] = { 0x66, 0x01, 0x02, 0x40, 0x01, 0x02, 0x03, 0x00, 0x01 };
+		uint8_t bookpage[4] = { 0x00, 0x00, 0x00, 0x08 };
 
 		bytes=9;
 
@@ -536,7 +536,7 @@ namespace Books
 		for ( ; it != pages.end(); it++ )
 		{
 			bytes += 4; // 4 bytes for each page
-			UI16 j = 0;
+			uint16_t j = 0;
 			for( std::vector<std::string>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++ )
 				bytes += (*it2).size() + 1;
 			while ( j++ < 8 )
@@ -555,7 +555,7 @@ namespace Books
 
 			Xsend(s, bookpage, 4);
 
-			UI16 j = 0;
+			uint16_t j = 0;
 			for( std::vector<std::string>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++ )
 				Xsend(s, (*it2).c_str(), (*it2).size()+1);
 			while ( j++ < 8 )
@@ -565,12 +565,12 @@ namespace Books
 
 	void cBook::OpenBookReadOnly(NXWSOCKET s, P_ITEM book)
 	{
-		UI08 bookopen[9] = { 0x93, 0x40, 0x01, 0x02, 0x03, 0x00, 0x01, 0x00, 0x02 };
+		uint8_t bookopen[9] = { 0x93, 0x40, 0x01, 0x02, 0x03, 0x00, 0x01, 0x00, 0x02 };
 
 		char booktitle[61];
 		char bookauthor[31];
 
-		UI16 i;
+		uint16_t i;
 		for(i = 0; i < author.size() && i < 31; i++)
 			bookauthor[i] = author[i];
 		for(; i < 31; i++)
@@ -597,13 +597,13 @@ namespace Books
 	\param book pointer to book item
 	\param p index of page to send
 	*/
-	void cBook::SendPageReadOnly(NXWSOCKET  s, P_ITEM book, UI16 p)
+	void cBook::SendPageReadOnly(NXWSOCKET  s, P_ITEM book, uint16_t p)
 	{
-		UI08 bookpage[13] =
+		uint8_t bookpage[13] =
 		//	  cmd   -blocksize  --------book id-------  --pages---  --pagenum-  -linenum--
 			{ 0x66, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08 };
 		//	   0     1     2     3     4     5     6     7     8     9     10    11    12
-		UI16 bytes=13;
+		uint16_t bytes=13;
 
 		if ( p >= pages.size() )
 			return;
@@ -620,11 +620,11 @@ namespace Books
 
 		Xsend(s, bookpage, 13);
 
-		UI16 j = 0;
+		uint16_t j = 0;
 		for(std::vector<std::string>::iterator its = selpage.begin(); its != selpage.end(); its++, j++)
 			Xsend(s, (*its).c_str(), (*its).size()+1);
 	}
 
-	UI32 cBook::books_index = 0;
+	uint32_t cBook::books_index = 0;
 
 };

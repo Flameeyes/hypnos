@@ -123,7 +123,7 @@ class ClientCrypt;
 class cChar : public cObject
 {
 public:
-	static UI32 nextSerial();
+	static uint32_t nextSerial();
 
 	cChar( SERIAL ser );
 	~cChar();
@@ -169,35 +169,35 @@ public:
 \brief Flags used for the char
 */
 public:
-	static const UI64 flagGrey		= 0x0000000000000001ull; //!< Char is grey
-	static const UI64 flagPermaGrey		= 0x0000000000000002ull; //!< Char is permanent grey
-	static const UI64 flagResistParalisys	= 0x0000000000000004ull; //!< Char resists to paralisys (unused)
-	static const UI64 flagWarMode		= 0x0000000000000008ull; //!< Char is in war mode
-	static const UI64 flagSpellTelekinesys	= 0x0000000000000010ull; //!< Char under telekinesys spell (Luxor)
-	static const UI64 flagSpellProtection	= 0x0000000000000020ull; //!< Char under protection spell (Luxor)
+	static const uint64_t flagGrey		= 0x0000000000000001ull; //!< Char is grey
+	static const uint64_t flagPermaGrey		= 0x0000000000000002ull; //!< Char is permanent grey
+	static const uint64_t flagResistParalisys	= 0x0000000000000004ull; //!< Char resists to paralisys (unused)
+	static const uint64_t flagWarMode		= 0x0000000000000008ull; //!< Char is in war mode
+	static const uint64_t flagSpellTelekinesys	= 0x0000000000000010ull; //!< Char under telekinesys spell (Luxor)
+	static const uint64_t flagSpellProtection	= 0x0000000000000020ull; //!< Char under protection spell (Luxor)
 
-	static const UI64 flagKarmaInnocent	= 0x0000000000000040ull; //!< Char is innocent
-	static const UI64 flagKarmaMurderer	= 0x0000000000000080ull; //!< Char is murderer
-	static const UI64 flagKarmaCriminal	= 0x0000000000000100ull; //!< Char is criminal
+	static const uint64_t flagKarmaInnocent	= 0x0000000000000040ull; //!< Char is innocent
+	static const uint64_t flagKarmaMurderer	= 0x0000000000000080ull; //!< Char is murderer
+	static const uint64_t flagKarmaCriminal	= 0x0000000000000100ull; //!< Char is criminal
 
-	static const UI64 flagInvulnerable	= 0x0000000000000200ull; //!< Char is invulnerable
-	static const UI64 flagNoSkillTitle	= 0x0000000000000400ull; //!< Char hasn't skill title
+	static const uint64_t flagInvulnerable	= 0x0000000000000200ull; //!< Char is invulnerable
+	static const uint64_t flagNoSkillTitle	= 0x0000000000000400ull; //!< Char hasn't skill title
 
-	static const UI64 flagFrozen		= 0x0000000000000800ull;
-	static const UI64 flagPermaHidden	= 0x0000000000001000ull;
-	static const UI64 flagNoUseMana		= 0x0000000000002000ull;
-	static const UI64 flagReflection	= 0x0000000000004000ull;
-	static const UI64 flagNoUseReagents	= 0x0000000000008000ull;
+	static const uint64_t flagFrozen		= 0x0000000000000800ull;
+	static const uint64_t flagPermaHidden	= 0x0000000000001000ull;
+	static const uint64_t flagNoUseMana		= 0x0000000000002000ull;
+	static const uint64_t flagReflection	= 0x0000000000004000ull;
+	static const uint64_t flagNoUseReagents	= 0x0000000000008000ull;
 
-	static const UI64 flagIncognito		= 0x0000000000010000ull;
-	static const UI64 flagPolymorphed	= 0x0000000000020000ull;
-	static const UI64 flagDead		= 0x0000000000040000ull;
+	static const uint64_t flagIncognito		= 0x0000000000010000ull;
+	static const uint64_t flagPolymorphed	= 0x0000000000020000ull;
+	static const uint64_t flagDead		= 0x0000000000040000ull;
 
-	static const UI64 flagAttackFirst	= 0x0000000000080000ull;
-	static const UI64 flagDoorUse		= 0x0000000000100000ull;
+	static const uint64_t flagAttackFirst	= 0x0000000000080000ull;
+	static const uint64_t flagDoorUse		= 0x0000000000100000ull;
 
-	static const UI64 flagIsCasting		= 0x0000000000200000ull;
-	static const UI64 flagIsGuarded		= 0x0000000000400000ull;
+	static const uint64_t flagIsCasting		= 0x0000000000200000ull;
+	static const uint64_t flagIsGuarded		= 0x0000000000400000ull;
 //@}
 
 //@}
@@ -205,16 +205,16 @@ public:
 \name Char Status
 */
 protected:
-	UI64 flags;	//!< Flags for the character
+	uint64_t flags;	//!< Flags for the character
 
-	SI32 karma;	//!< karma of the char
-	SI32 fame;	//!< fame of the char
+	int32_t karma;	//!< karma of the char
+	int32_t fame;	//!< fame of the char
 
-	UI16 kills;	//!< PvP Kills
-	UI16 deaths;	//!< Number of deaths
+	uint16_t kills;	//!< PvP Kills
+	uint16_t deaths;	//!< Number of deaths
 	R32  fstm;	//!< Unavowed - stamina to remove the next step
 
-	inline void setFlag(UI64 flag, bool set)
+	inline void setFlag(uint64_t flag, bool set)
 	{
 		if ( set ) flags |= flag;
 		else flags &= ~flag;
@@ -222,11 +222,11 @@ protected:
 
 public:
 	//! Return the karma of the char
-	inline const SI32 getKarma() const
+	inline const int32_t getKarma() const
 	{ return karma; }
 
 	//! Return the fame of the char
-	inline const SI32 getFame() const
+	inline const int32_t getFame() const
 	{ return fame; }
 
 	inline const bool isInvul() const
@@ -291,10 +291,10 @@ public:
 
 
 	//! Sets char's karma
-	inline void setKarma(SI32 newkarma)
+	inline void setKarma(int32_t newkarma)
 	{ karma = newkarma; }
 
-	inline void setFame(SI32 newfame)
+	inline void setFame(int32_t newfame)
 	{ fame=newfame; }
 
 	inline void setFrozen(bool set = true)
@@ -342,8 +342,8 @@ public:
 	void setInnocent();
 	void setCriminal();
 	void makeCriminal();
-	void increaseKarma(SI32 value, P_CHAR pKilled = 0 );
-	void modifyFame( SI32 value );
+	void increaseKarma(int32_t value, P_CHAR pKilled = 0 );
+	void modifyFame( int32_t value );
 
 	void unHide();
 
@@ -361,7 +361,7 @@ public:
 \brief Race related functions and attributes
 */
 public:
-	SI32 			race;				//!< Race index
+	int32_t 			race;				//!< Race index
 //@}
 
 
@@ -394,8 +394,8 @@ protected:
 
 	void			checkPoisoning(P_CHAR pc_def);
 	void			doMissedSoundEffect();
-	SI32			combatHitMessage(SI32 damage);
-	void			doCombatSoundEffect(SI32 fightskill, P_ITEM pWeapon);
+	int32_t			combatHitMessage(int32_t damage);
+	void			doCombatSoundEffect(int32_t fightskill, P_ITEM pWeapon);
 	void			undoCombat();
 
 public:
@@ -407,17 +407,17 @@ public:
 
 	void			checkPoisoning();
 	void 			fight(P_CHAR pOpponent);
-	void			combatHit( P_CHAR pc_def, SI32 nTimeOut = 0 );
+	void			combatHit( P_CHAR pc_def, int32_t nTimeOut = 0 );
 	void			doCombat();
 	void			combatOnHorse();
 	void			combatOnFoot();
 	void			playCombatAction();
-	SI32			calcAtt();
-	SI32			calcDef(SI32 x = 0);
-	void			setWresMove(SI32 move = 0);
-	SI32			calcResist(DamageType typeofdamage);
+	int32_t			calcAtt();
+	int32_t			calcDef(int32_t x = 0);
+	void			setWresMove(int32_t move = 0);
+	int32_t			calcResist(DamageType typeofdamage);
 	void			toggleCombat();
-	SI32			getCombatSkill();
+	int32_t			getCombatSkill();
 
 	/*!
 	\author Luxor
@@ -426,7 +426,7 @@ public:
 	\param dest target location of the spell
 	\todo Document parameters
 	*/
-	inline void castSpell(magic::SpellId spellnumber, TargetLocation& dest, SI32 flags = 0, SI32 param = 0)
+	inline void castSpell(magic::SpellId spellnumber, TargetLocation& dest, int32_t flags = 0, int32_t param = 0)
 	{ magic::castSpell(spellnumber, dest, this, flags, param); }
 //@}
 
@@ -438,8 +438,8 @@ protected:
 	cPath*		path;			//!< current path
 	void		walkNextStep();		//!< walk next path step
 	SERIAL_SLIST	sentObjects;
-	SI08		dir;			//!< &0F=Direction
-	UI32		LastMoveTime;		//!< server time of last move
+	int8_t		dir;			//!< &0F=Direction
+	uint32_t		LastMoveTime;		//!< server time of last move
 
 public:
 	//! has a path set?
@@ -451,9 +451,9 @@ public:
 	bool		seeForLastTime( cObject &obj ); //!< does it see the object for the first time?
 	void		walk();			//!< execute walk code <Luxor>
 	void		follow( P_CHAR pc ); //!< follow pc
-	void 		flee( P_CHAR pc, SI32 seconds=INVALID ); //!< flee from pc
+	void 		flee( P_CHAR pc, int32_t seconds=INVALID ); //!< flee from pc
 	void		pathFind( Location pos, bool bOverrideCurrentPath = true );
-	UI08		getDirFromXY( UI16 targetX, UI16 targetY );
+	uint8_t		getDirFromXY( uint16_t targetX, uint16_t targetY );
 //@}
 
 //@{
@@ -461,7 +461,7 @@ public:
 \name Mount
 */
 public:
-	SI32			unmountHorse();
+	int32_t			unmountHorse();
 	void			mounthorse( pChar mount );
 	pChar			getHorse();
 	void			setOnHorse();
@@ -492,8 +492,8 @@ public:
 private:
 	regen_st 	regens[ALL_STATS]; //!< stats regen info
 public:
-	void setRegenRate( StatType stat, UI32 rate, VarType type );
-	UI32 getRegenRate( StatType stat, VarType type );
+	void setRegenRate( StatType stat, uint32_t rate, VarType type );
+	uint32_t getRegenRate( StatType stat, VarType type );
 	bool regenTimerOk( StatType stat );
 	void updateRegenTimer( StatType stat );
 //@}
@@ -508,13 +508,13 @@ public:
 public:
         void singleClick(pClient client);  // "this" is the clicked char, client is the client of the clicker
         void doubleClick(pClient client, int keyboard);       //!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
-	inline void setSkillDelay( UI32 seconds = server_data.skilldelay )
+	inline void setSkillDelay( uint32_t seconds = server_data.skilldelay )
 	{ skilldelay = uiCurrentTime + seconds * MY_CLOCKS_PER_SEC; }
 
 	inline const bool canDoSkillAction() const
 	{ return TIMEOUT( skilldelay ); }
 
-	inline void setObjectDelay( UI32 seconds = server_data.objectdelay )
+	inline void setObjectDelay( uint32_t seconds = server_data.objectdelay )
 	{ objectdelay = uiCurrentTime + seconds * MY_CLOCKS_PER_SEC; }
 
 	inline const bool canDoObjectAction() const
@@ -567,71 +567,71 @@ public:
 	public:
 		SERIAL oldmenu; //!< old menu serial
 
-		SI32			stat3crc; // xan : future use to keep safe stats
+		int32_t			stat3crc; // xan : future use to keep safe stats
 		class			AmxEvent *amxevents[ALLCHAREVENTS];
-		SI32			hp;  // HitpoSI32s
-		SI32			stm; // Stamina
-		SI32			mn;  // Mana
-		SI32			mn2; // Reserved for calculation
-		UI16			baseskill[ALLSKILLS+1]; // Base skills without stat modifiers
-		UI16			skill[ALLSKILLS+1]; // List of skills (with stat modifiers)
+		int32_t			hp;  // Hitpoint32_ts
+		int32_t			stm; // Stamina
+		int32_t			mn;  // Mana
+		int32_t			mn2; // Reserved for calculation
+		uint16_t			baseskill[ALLSKILLS+1]; // Base skills without stat modifiers
+		uint16_t			skill[ALLSKILLS+1]; // List of skills (with stat modifiers)
 
 
 		SERIAL			robe; // Serial number of generated death robe (If char is a ghost)
-		UI08			fixedlight; // Fixed lighting level (For chars in dungeons, where they dont see the night)
+		uint8_t			fixedlight; // Fixed lighting level (For chars in dungeons, where they dont see the night)
 		char			speech; // For NPCs: Number of the assigned speech block
-		UI32			att; // Intrinsic attack (For monsters that cant carry weapons)
-		UI32			def; // Intrinsic defense
+		uint32_t			att; // Intrinsic attack (For monsters that cant carry weapons)
+		uint32_t			def; // Intrinsic defense
 		char			wresmove; // Luxor: for Wrestling's special moves
 
 		TIMERVAL		timeout; // Combat timeout (For hitting)
 		TIMERVAL		timeout2; // memory of last shot timeout
 
-		UI08			hidden; // 0 = not hidden, 1 = hidden, 2 = invisible spell
+		uint8_t			hidden; // 0 = not hidden, 1 = hidden, 2 = invisible spell
 		TIMERVAL		invistimeout;
-		SI32			hunger;  // Level of hungerness, 6 = full, 0 = "empty"
+		int32_t			hunger;  // Level of hungerness, 6 = full, 0 = "empty"
 		TIMERVAL		hungertime; // Timer used for hunger, one point is dropped every 20 min
-		SI32			callnum; //GM Paging
-		SI32			playercallnum; //GM Paging
-		SI32			pagegm; //GM Paging
+		int32_t			callnum; //GM Paging
+		int32_t			playercallnum; //GM Paging
+		int32_t			pagegm; //GM Paging
 		//char region;
-		UI08			region;
+		uint8_t			region;
 
-		SI32			combathitmessage;
-		SI32			making; // skill number of skill using to make item, 0 if not making anything.
+		int32_t			combathitmessage;
+		int32_t			making; // skill number of skill using to make item, 0 if not making anything.
 		char			blocked;
 		char			dir2;
 		TIMERVAL		spiritspeaktimer; // Timer used for duration of spirit speak
-		SI32			spattack;
+		int32_t			spattack;
 		TIMERVAL		spadelay;
 		TIMERVAL		spatimer;
-		SI32			taming; //Skill level required for taming
+		int32_t			taming; //Skill level required for taming
 		TIMERVAL		summontimer; //Timer for summoned creatures.
 		TIMERVAL		fishingtimer; // Timer used to delay the catching of fish
 
 		//<Luxor>
-		SI32			resists[MAX_RESISTANCE_INDEX];
+		int32_t			resists[MAX_RESISTANCE_INDEX];
 		bool			holydamaged;
 		bool			lightdamaged;
 		DamageType		damagetype;
 		//</Luxor>
-		SI32			advobj;		//!< Has used advance gate?
+		int32_t			advobj;		//!< Has used advance gate?
 
-		SI32			poison;		//!< used for poison skill
+		int32_t			poison;		//!< used for poison skill
 		PoisonType		poisoned;	//!< type of poison
 		TIMERVAL		poisontime;	//!< poison damage timer
 		TIMERVAL		poisontxt;	//!< poision text timer
 		TIMERVAL		poisonwearofftime; //!< LB, makes poision wear off ...
 
-		SI32			fleeat;
-		SI32			reattackat;
-		SI32			trigger;	//!< Trigger number that character activates
+		int32_t			fleeat;
+		int32_t			reattackat;
+		int32_t			trigger;	//!< Trigger number that character activates
 		std::string		trigword;	//!< Word that character triggers on.
-		UI16			envokeid;
-		SI32			envokeitem;
-		SI32			split;
-		SI32			splitchnc;
-		SI32			targtrig;	//!< Stores the number of the trigger the character for targeting
+		uint16_t			envokeid;
+		int32_t			envokeitem;
+		int32_t			split;
+		int32_t			splitchnc;
+		int32_t			targtrig;	//!< Stores the number of the trigger the character for targeting
 		char			ra;		//!< Reactive Armor spell
 
 		TIMERVAL		tempflagtime;
@@ -645,24 +645,24 @@ public:
 		TIMERVAL		crimflag; //!< Time when No longer criminal -1=Not Criminal
 		TIMERVAL		spelltime; //Time when they are done casting....
 		magic::SpellId		spell; //current spell they are casting....
-		SI32			spellaction; //Action of the current spell....
+		int32_t			spellaction; //Action of the current spell....
 		magic::CastingType	spelltype;
 		TIMERVAL		nextact; //time to next spell action....
 		TargetLocation*		spellTL; //Luxor: npc spell targetlocation
 
-		SI32			squelched; // zippy  - squelching
+		int32_t			squelched; // zippy  - squelching
 		TIMERVAL		mutetime; //Time till they are UN-Squelched.
-		SI32			med; // 0=not meditating, 1=meditating //Morrolan - Meditation
-		//SI32 statuse[3]; //Morrolan - stat/skill cap STR/INT/DEX in that order
-		//SI32 skilluse[TRUESKILLS][1]; //Morrolan - stat/skill cap
-		UI08			lockSkill[ALLSKILLS+1]; // LB, client 1.26.2b skill managment
-		SI32			stealth; //AntiChrist - stealth ( steps already done, -1=not using )
-		UI32			running; //AntiChrist - Stamina Loose while running
-		UI32			lastRunning; //Luxor
-		SI32			logout; //Time till logout for this char -1 means in the world or already logged out //Instalog
-		//UI32 swing;
+		int32_t			med; // 0=not meditating, 1=meditating //Morrolan - Meditation
+		//int32_t statuse[3]; //Morrolan - stat/skill cap STR/INT/DEX in that order
+		//int32_t skilluse[TRUESKILLS][1]; //Morrolan - stat/skill cap
+		uint8_t			lockSkill[ALLSKILLS+1]; // LB, client 1.26.2b skill managment
+		int32_t			stealth; //AntiChrist - stealth ( steps already done, -1=not using )
+		uint32_t			running; //AntiChrist - Stamina Loose while running
+		uint32_t			lastRunning; //Luxor
+		int32_t			logout; //Time till logout for this char -1 means in the world or already logged out //Instalog
+		//uint32_t swing;
 
-		UI32			holdg; // Gold a player vendor is holding for Owner
+		uint32_t			holdg; // Gold a player vendor is holding for Owner
 		char			fly_steps; // number of step the creatures flies if it can fly
 		TIMERVAL		smoketimer; // LB
 		TIMERVAL		smokedisplaytimer;
@@ -671,14 +671,14 @@ public:
 
 		TIMERVAL		antiguardstimer;//AntiChrist - anti "GUARDS" spawn
 
-		SI32			carve; //AntiChrist - for new carve system
+		int32_t			carve; //AntiChrist - for new carve system
 
 		TIMERVAL		begging_timer;
 		cMsgBoard::PostType	postType;
 		cMsgBoard::QuestType	questType;
-		SI32			questDestRegion;
-		SI32			questOrigRegion;
-		SI32			questBountyReward;		// The current reward amount for the return of this chars head
+		int32_t			questDestRegion;
+		int32_t			questOrigRegion;
+		int32_t			questBountyReward;		// The current reward amount for the return of this chars head
 		SERIAL			questBountyPostSerial;	// The global posting serial number of the bounty message
                 SERIAL			questEscortPostSerial;	// The global posting serial number of the escort message
 		SERIAL			murdererSer;			// Serial number of last person that murdered this char
@@ -717,60 +717,60 @@ public:
 		inline void setRunning()
 		{ lastRunning = uiCurrentTime; }
 
-		void 			updateStats(SI32 stat);
+		void 			updateStats(int32_t stat);
 
 		void 			setNextMoveTime(short tamediv=1);
 		void 			disturbMed();
 
 		void                    drink(P_ITEM pi);       //Luxor: delayed drinking
 		void 			hideBySkill();
-		void 			hideBySpell(SI32 timer = INVALID);
-		UI32  			countItems(UI16 ID, UI16 col= 0xFFFF);
+		void 			hideBySpell(int32_t timer = INVALID);
+		uint32_t  			countItems(uint16_t ID, uint16_t col= 0xFFFF);
 
-		inline const UI32 CountGold()
+		inline const uint32_t CountGold()
 		{ return countItems(ITEMID_GOLD); }
 
 		bool			isInBackpack( P_ITEM pi );
-		void			addGold(UI16 totgold);
+		void			addGold(uint16_t totgold);
 
 		// The bit for setting what effect gm movement
 		// commands shows
 		// 0 = off
 		// 1 = FlameStrike
 		// 2-6 = Sparkles
-		SI32			gmMoveEff;
+		int32_t			gmMoveEff;
 
-		UI32			getSkillSum();
-		SI32			getTeachingDelta(P_CHAR pPlayer, SI32 skill, SI32 sum);
+		uint32_t			getSkillSum();
+		int32_t			getTeachingDelta(P_CHAR pPlayer, int32_t skill, int32_t sum);
 		void			removeItemBonus(cItem* pi);
 		inline const bool	isSameAs(pChar pc) const
 		{ return this == pc; }
 
 		//! Return the resistance for a defined type
-		inline const bool resist(UI32 n) const
+		inline const bool resist(uint32_t n) const
 		{ return flags & n; }
 
 		void			sysmsg(const TEXT *txt, ...);
 
                 void                    attackStuff (pChar victim);
 		void			helpStuff(P_CHAR pc_i);
-		void			applyPoison(PoisonType poisontype, SI32 secs = INVALID);
+		void			applyPoison(PoisonType poisontype, int32_t secs = INVALID);
 		void			setOwner(P_CHAR owner);
 		void			curePoison();
 		void			resurrect(NXWCLIENT healer = NULL);
 		void			unfreeze( bool calledByTempfx = false );
-		void			damage(SI32 amount, DamageType typeofdamage = DAMAGE_PURE, StatType stattobedamaged = STAT_HP);
-		void			playAction(UI16 action);
-		void			impAction(UI16 action);
+		void			damage(int32_t amount, DamageType typeofdamage = DAMAGE_PURE, StatType stattobedamaged = STAT_HP);
+		void			playAction(uint16_t action);
+		void			impAction(uint16_t action);
 
 //@{
 /*!
 \name Talk and Emote stuff
 */
 protected:
-	UI16			emotecolor;		//!< Color for emote messages
-	UI08			fonttype;		//!< Speech font to use
-	UI16			saycolor;		//!< Color for say messages
+	uint16_t			emotecolor;		//!< Color for emote messages
+	uint8_t			fonttype;		//!< Speech font to use
+	uint16_t			saycolor;		//!< Color for say messages
 public:
 	void			talkAll(TEXT *txt, bool antispam = 1);
 	void			talk(NXWSOCKET s, TEXT *txt, bool antispam = 1);
@@ -780,15 +780,15 @@ public:
 	void			talkAllRunic(TEXT *txt, bool antispam = 0);
 //@}
 
-	UI16			distFrom(pChar pc);
-	UI16			distFrom(pItem pi);
+	uint16_t			distFrom(pChar pc);
+	uint16_t			distFrom(pItem pi);
 	
 	/*!
 	\brief Check if a specified char is in range from this char
 	\param pc Char to check if in range
 	\param range Maximum distance from this char
 	*/
-	inline const bool       hasInRange(pChar pc, UI16 range = VISRANGE)
+	inline const bool       hasInRange(pChar pc, uint16_t range = VISRANGE)
 	{ return pc && distFrom( pc ) <= range; }
 	
 	/*!
@@ -796,11 +796,11 @@ public:
 	\param pc Char to check if in range
 	\param range Maximum distance from this char
 	*/
-	inline const bool       hasInRange(pItem pc, UI16 range = VISRANGE)
+	inline const bool       hasInRange(pItem pc, uint16_t range = VISRANGE)
 	{ return pi && distFrom( pi ) <= range; }
 	
-	void			teleport( UI08 flags = TELEFLAG_SENDALL, NXWCLIENT cli = NULL );
-	void			facexy(UI16 facex, UI16 facey);
+	void			teleport( uint8_t flags = TELEFLAG_SENDALL, NXWCLIENT cli = NULL );
+	void			facexy(uint16_t facex, uint16_t facey);
 
 	/*!
 	\author Luxor
@@ -811,10 +811,10 @@ public:
 	inline const bool losFrom(const pChar pc) const
 	{ return pc ? lineOfSight( getPosition(), pc->getPosition() ) : false; }
 
-	void			playSFX(SI16 sound, bool onlyToMe = false);
+	void			playSFX(int16_t sound, bool onlyToMe = false);
 	void			playMonsterSound(MonsterSound sfx);
 
-	bool			checkSkill(Skill sk, SI32 low, SI32 high, bool bRaise = true);
+	bool			checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise = true);
 
 	/*!
 	\author Xanathar
@@ -824,10 +824,10 @@ public:
 	\param color color of item to delete
 	\return number of items deleted
 	*/
-	inline const UI32 delItems(UI16 id, UI32 amount = 1, UI16 color = 0xFFFF)
+	inline const uint32_t delItems(uint16_t id, uint32_t amount = 1, uint16_t color = 0xFFFF)
 	{ return body->getBackpack() ? body->getBackpack()->removeItems(amount,id, color) : amount; }
 
-	const bool	checkSkillSparrCheck(Skill sk, SI32 low, SI32 high, P_CHAR pcd);
+	const bool	checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, P_CHAR pcd);
 
 	/*!
 	\brief Get the amount of the given id, color
@@ -837,11 +837,11 @@ public:
 	\param col the color ( 0xFFFF for all colors )
 	\param onlyPrimaryBackpack false if search also in th subpack
 	*/
-	inline const bool UI32 getAmount(UI16 id, UI16 col=0xFFFF, bool onlyPrimaryBackpack=false )
+	inline const bool uint32_t getAmount(uint16_t id, uint16_t col=0xFFFF, bool onlyPrimaryBackpack=false )
 	{ return body->getBackpack() ? body->getBackpack()->countItems(id, col, !onlyPrimaryBackpack); }
 
-	void			movingFX(P_CHAR destination, short id, SI32 speed, SI32 loop, bool explode, class ParticleFx* part = NULL);
-	void			staticFX(short id, SI32 speed, SI32 loop, class ParticleFx* part = NULL);
+	void			movingFX(P_CHAR destination, short id, int32_t speed, int32_t loop, bool explode, class ParticleFx* part = NULL);
+	void			staticFX(short id, int32_t speed, int32_t loop, class ParticleFx* part = NULL);
 	void			boltFX(bool bNoParticles);
 	void			circleFX(short id);
 
@@ -853,7 +853,7 @@ public:
 
 
 	void		Kill();
-	void		goPlace(SI32);
+	void		goPlace(int32_t);
 	bool		knowsSpell(magic::SpellId spellnumber);
 
 	public:
@@ -862,7 +862,7 @@ public:
 		NxwItemWrapper*		nearbyItems;
 	#endif
 
-		std::vector< UI32 >	lootVector;
+		std::vector< uint32_t >	lootVector;
 		virtual void		Delete();
 } PACK_NEEDED;
 

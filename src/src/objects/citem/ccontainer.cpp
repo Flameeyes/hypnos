@@ -16,7 +16,7 @@ cContainer::cContainer(bool ser/*= true*/) : cItem(ser)
 }
 
 //! Gets the container's gump
-UI16 cContainer::getGump()
+uint16_t cContainer::getGump()
 {
 	CONTINFOMAP::iterator iter( contInfo.find( getId() ) );
 	if( iter==contInfo.end() || iter->second==contInfoGump.end() )
@@ -88,9 +88,9 @@ void cContainer::setRandPos(pItem item)
 	else, it will be the number of instances of the items
 \return the number of items counted (see total parameter)
 */
-UI32 cContainer::countItems(UI32 scriptID, bool total/*= false*/)
+uint32_t cContainer::countItems(uint32_t scriptID, bool total/*= false*/)
 {
-	UI32 count = 0;
+	uint32_t count = 0;
 
 	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
 	{
@@ -120,9 +120,9 @@ UI32 cContainer::countItems(UI32 scriptID, bool total/*= false*/)
 \param recurse If true, recurse into subcontainers
 \return the number of items counted
 */
-UI32 cContainer::countItems(UI16 matchId, UI16 matchColor, bool recurse)
+uint32_t cContainer::countItems(uint16_t matchId, uint16_t matchColor, bool recurse)
 {
-	UI32 count = 0;
+	uint32_t count = 0;
 
 	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
 	{
@@ -148,7 +148,7 @@ UI32 cContainer::countItems(UI16 matchId, UI16 matchColor, bool recurse)
 \param recurse if true will recurse in all sub-containers
 \return pointer to the first item found or NULL
 */
-pItem cContainer::findFirstType(UI16 type, bool recurse = false)
+pItem cContainer::findFirstType(uint16_t type, bool recurse = false)
 {
 	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
 	{
@@ -179,9 +179,9 @@ pItem cContainer::findFirstType(UI16 type, bool recurse = false)
 \param recurse if true will recures in all sub-containers
 \return how many items can't be removed (because not present)
 */
-UI32 cContainer::removeItems(UI32 scriptID, UI32 delAmount, bool recurse)
+uint32_t cContainer::removeItems(uint32_t scriptID, uint32_t delAmount, bool recurse)
 {
-	UI32 rest = delAmount;
+	uint32_t rest = delAmount;
 
 	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
 	{
@@ -213,9 +213,9 @@ UI32 cContainer::removeItems(UI32 scriptID, UI32 delAmount, bool recurse)
 \param recurse if true, it will recurse in all the sub-containers
 \return how many items can't be removed (because not presents)
 */
-UI32 cContainer::removeItems(UI32 delAmount, UI16 matchId, UI16 matchColor, bool recures)
+uint32_t cContainer::removeItems(uint32_t delAmount, uint16_t matchId, uint16_t matchColor, bool recures)
 {
-	UI32 rest = amount;
+	uint32_t rest = amount;
 
 	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
 	{
@@ -247,7 +247,7 @@ UI32 cContainer::removeItems(UI32 delAmount, UI16 matchId, UI16 matchColor, bool
 void cContainer::dropitem(pItem pi)
 {
 	int ser= pi->getSerial32();
-	vector<SI32>::iterator it= ItemList.begin();
+	vector<int32_t>::iterator it= ItemList.begin();
 
 	ItemList::iterator it = items.find(pi);
 
@@ -262,7 +262,7 @@ void cContainer::dropitem(pItem pi)
 \param xx the x location or UINVALID16 if use rand pos
 \param yy the y location or UINVALID16 if use rand pos
 */
-void cContainer::addItem(pItem item, UI16 xx, UI16 yy)
+void cContainer::addItem(pItem item, uint16_t xx, uint16_t yy)
 {
 	if ( ! item )
 		return;
@@ -291,9 +291,9 @@ void cContainer::addItem(pItem item, UI16 xx, UI16 yy)
 	with spells as items inside it
 \todo Improve stdOnly support
 */
-UI32 cContainer::countSpellsInSpellBook(bool stdOnly)
+uint32_t cContainer::countSpellsInSpellBook(bool stdOnly)
 {
-	UI32 spellcount=0;
+	uint32_t spellcount=0;
 
 	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
 	{

@@ -123,7 +123,7 @@ void cSpawnScripted::doSpawn( cSpawnArea& c ) {
 
 	if( npclists.size() > 0 )
 	{
-		UI32 counter = rand()%npclists.size();
+		uint32_t counter = rand()%npclists.size();
 		{
 			Location location;
 			if( c.findValidLocation( location ) )
@@ -141,7 +141,7 @@ void cSpawnScripted::doSpawn( cSpawnArea& c ) {
 	if( itemlists.size() > 0 )
 	{
 
-		UI32 counter = rand()%itemlists.size();
+		uint32_t counter = rand()%itemlists.size();
 		{
 			Location location;
 			if( c.findValidLocation( location) )
@@ -160,7 +160,7 @@ void cSpawnScripted::doSpawn( cSpawnArea& c ) {
 
 	if( npcs.size()>0 )
 	{
-		UI32 counter = rand()%npcs.size();
+		uint32_t counter = rand()%npcs.size();
 		{
 			Location location;
 			if( c.findValidLocation( location ) )
@@ -266,7 +266,7 @@ void cSpawns::loadFromScript()
 		if( iter==NULL ) continue;
 
 		Area area;
-		UI16 check=0;
+		uint16_t check=0;
 
 		cSpawnScripted* dummy=new cSpawnScripted(current);
 

@@ -24,10 +24,10 @@ void loadcontainers()
 	cScpIterator*	iter = NULL;
 	std::string	script1,
 			script2;
-	SI32 		gump = INVALID;
+	int32_t 		gump = INVALID;
 	BasicPosition	uprleft = {INVALID,INVALID};
 	BasicPosition	dwnrght = {INVALID,INVALID};
-	UI32VECTOR	*vet = new UI32VECTOR;
+	uint32_tVECTOR	*vet = new uint32_tVECTOR;
 
 	int cont=0;
 
@@ -82,7 +82,7 @@ void loadcontainers()
 			CONTINFOGUMPMAP::iterator iter( contInfoGump.find(gump) );
 			if( iter != contInfoGump.end() )
 			{
-				UI32VECTOR::iterator ids( vet->begin() ), end( vet->end() );
+				uint32_tVECTOR::iterator ids( vet->begin() ), end( vet->end() );
 				for(; ids != end; ++ids )
 					contInfo[(*ids)] = iter;
 			}

@@ -475,7 +475,7 @@ void command_skin( pClient client )
 {
 	if (tnum == 3)
 	{
-		UI16 k, body;
+		uint16_t k, body;
 
 		pChar pc = client->currChar();
 
@@ -513,7 +513,7 @@ void command_setseason( pClient client )
 	pChar pc = client->currChar();
 
 #warn ///FLAME? 
-	UI08 setseason[3]={ 0xBC, 0x00, 0x01 };
+	uint8_t setseason[3]={ 0xBC, 0x00, 0x01 };
 
 	pc->sysmsg("Plz, notice that setseason may or may not work correctly depending on current calendar status");
 
@@ -618,7 +618,7 @@ void target_addTarget( P_TARGET t )
 	P_ITEM pi = item::CreateFromScript( "$item_hardcoded" );
 	VALIDATEPI(pi);
 
-	UI16 id = DBYTE2WORD( t->buffer[0], t->buffer[1] );
+	uint16_t id = DBYTE2WORD( t->buffer[0], t->buffer[1] );
 
 	tile_st tile;
 	data::seekTile( id, tile );
@@ -645,8 +645,8 @@ void command_add( pClient client )
 	}
 	else if( tnum==3 )
 	{
-		UI32 a;
-		UI32 b;
+		uint32_t a;
+		uint32_t b;
 		if ( server_data.always_add_hex ) {
 			a=hexnumber(1);
 			b=hexnumber(2);
@@ -826,7 +826,7 @@ void command_showtime( pClient client )
 // (d d) Sets the current UO time in hours and minutes.
 void command_settime()
 {
-UI32 newhours, newminutes;
+uint32_t newhours, newminutes;
 
 	if (tnum==3)
 	{
@@ -1448,7 +1448,7 @@ void command_setshoprestockrate( pClient client )
 void command_midi( pClient client )
 {
 	pChar pc = client->currChar();
-	UI16 midi = DBYTE2WORD(strtonum(1), strtonum(2));
+	uint16_t midi = DBYTE2WORD(strtonum(1), strtonum(2));
 
 	cPacketSendPlayMidi pkt_midi(midi);
 	client->sendPacket(&pkt_midi);	
@@ -1644,15 +1644,15 @@ void command_gy( pClient client )
 	std::string message( "(GM ONLY): " );
 	message += &tbuffer[Commands::cmd_offset+3];
 
-	UI32 id;
-	UI16 model, color, font;
+	uint32_t id;
+	uint16_t model, color, font;
 
 	id = pc->getSerial32();
 	model = pc->getId();
 	color = ShortFromCharPtr(buffer[s] +4);
 	font = (buffer[s][6]<<8)|(pc->fonttype%256);
 
-	UI08 name[30]={ 0x00, };
+	uint8_t name[30]={ 0x00, };
 	strcpy((char *)name, pc->getCurrentNameC());
 
 #error ///FLAME!
@@ -1685,15 +1685,15 @@ void command_yell( pClient client )
 	std::string message( "(GM MSG): " );
 	message += &tbuffer[Commands::cmd_offset+3];
 
-	UI32 id;
-	UI16 model, color, font;
+	uint32_t id;
+	uint16_t model, color, font;
 
 	id = pc->getSerial32();
 	model = pc->getId();
 	color = ShortFromCharPtr(buffer[s] +4);
 	font = (buffer[s][6]<<8)|(pc->fonttype%256);
 
-	UI08 name[30]={ 0x00, };
+	uint8_t name[30]={ 0x00, };
 	strcpy((char *)name, pc->getCurrentNameC());
 
 #error ///FLAME! (come sopra -.-')
@@ -2135,7 +2135,7 @@ void target_dye( pClient client, P_TARGET t )
 {
 	SERIAL serial = t->getClicked();
 
-	UI16 color = t->buffer[0];
+	uint16_t color = t->buffer[0];
 
 	pChar curr = client->currChar();
 	VALIDATEPC(curr);
@@ -2172,7 +2172,7 @@ void target_dye( pClient client, P_TARGET t )
 			}
 			else {
 
-				UI16 body = pc->getId();
+				uint16_t body = pc->getId();
 
 				if( color < 0x8000 && body >= BODY_MALE && body <= BODY_DEADFEMALE )
 					color |= 0x8000; // why 0x8000 ?! ^^;
@@ -2264,7 +2264,7 @@ void target_setid( pClient client, P_TARGET t )
 {
 
     SERIAL serial = t->getClicked();
-	UI16 value = DBYTE2WORD( t->buffer[0], t->buffer[1] );
+	uint16_t value = DBYTE2WORD( t->buffer[0], t->buffer[1] );
 
 	if( isCharSerial( serial ) ) {
 		P_CHAR pc=pointers::findCharBySerial( serial );
@@ -2451,7 +2451,7 @@ void target_tiledata( pClient client, P_TARGET t )
 {
 
 	Location loc = t->getLocation();
-	UI16 tilenum=t->getModel();
+	uint16_t tilenum=t->getModel();
 
     if( tilenum==0 )   // damn osi not me why the tilenum is only send for static tiles
     {   // manually calculating the ID's if it's a maptype

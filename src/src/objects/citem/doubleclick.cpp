@@ -89,7 +89,7 @@ bool cItem::usableWhenLockedDown(pPc pc)
 void cItem::singleClick(pClient client )
 {
 	char temp[TEMP_STR_SIZE];
-	SI32 amt = 0, wgt;
+	int32_t amt = 0, wgt;
 	char itemname[100];
 	char temp2[100];
 //	extern skill_st skill[SKILLS + 1]; // unused variable
@@ -202,7 +202,7 @@ void cItem::singleClick(pClient client )
 	// Send the item/weight as the last line in case of containers
 	if (type == ITYPE_CONTAINER || type == ITYPE_UNLOCKED_CONTAINER || type == ITYPE_NODECAY_ITEM_SPAWNER || type == ITYPE_TRASH)
 	{
-		wgt = (SI32) weights::LockeddownWeight(this, &amt); // get stones and item #, LB
+		wgt = (int32_t) weights::LockeddownWeight(this, &amt); // get stones and item #, LB
 		if (amt>0)
 		{
 			sprintf( temp2, TRANSLATE("[%i items, %i stones]"), amt, wgt);
@@ -378,7 +378,7 @@ void cItem::doubleClick(pClient client);
 					return;
 		}
 		else
-			if (isCharSerial(getContSerial()) && type!=(UI32)INVALID)
+			if (isCharSerial(getContSerial()) && type!=(uint32_t)INVALID)
 			{// in a character.
 				pChar wearedby = pointers::findCharBySerial(getContSerial());
 				if (ISVALIDPC(wearedby))
@@ -845,8 +845,8 @@ void cItem::doubleClick(pClient client);
 			client->sendPacket(&pk2);
         
 			// Generate message to add a map point
-			SI16 posx, posy;					// tempoary storage for map point
-			SI16 tlx, tly, lrx, lry;				// tempoary storage for map extends
+			int16_t posx, posy;					// tempoary storage for map point
+			int16_t tlx, tly, lrx, lry;				// tempoary storage for map extends
 			tlx = (more1 << 8)  | more2;
 			tly = (more3 << 8)  | more4;
 			lrx = (moreb1 << 8) | moreb2;

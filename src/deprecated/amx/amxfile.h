@@ -3,7 +3,7 @@
 
 #include "nxwcommn.h"
 
-typedef map< UI32, FILE* >	mAmxFile;
+typedef map< uint32_t, FILE* >	mAmxFile;
 typedef mAmxFile::iterator	miAmxFile;
 
 
@@ -11,16 +11,16 @@ class amxFiles
 {
 	private:
 		mAmxFile	files;
-		UI32		lastHandleIssued;
+		uint32_t		lastHandleIssued;
 	public:
 				amxFiles();
 				~amxFiles();
 	public:
-		SI32		open( const std::string &name, const std::string &mode );
-		LOGICAL		close( const SI32 handle );
-		LOGICAL		eof( const SI32 handle );
-		LOGICAL		write( const SI32 handle, const std::string &line );
-		std::string	read( const SI32 handle );
+		int32_t		open( const std::string &name, const std::string &mode );
+		LOGICAL		close( const int32_t handle );
+		LOGICAL		eof( const int32_t handle );
+		LOGICAL		write( const int32_t handle, const std::string &line );
+		std::string	read( const int32_t handle );
 };
 
 extern amxFiles amxFileServer;

@@ -331,7 +331,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 	if ( !TIMEOUT( pc->nextAiCheck ) )
 		return;
 
-	pc->nextAiCheck = (UI32) ((R64)uiCurrentTime + (speed.npcaitime*MY_CLOCKS_PER_SEC));
+	pc->nextAiCheck = (uint32_t) ((R64)uiCurrentTime + (speed.npcaitime*MY_CLOCKS_PER_SEC));
 
 	if( pc->amxevents[ EVENT_CHR_ONCHECKNPCAI ]!=NULL ) {
 
@@ -444,7 +444,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 			pointers::pCharVectorIt it( pcv->begin() ), end( pcv->end() );
 			P_CHAR	pj = 0;
 			P_CHAR	pc_target = NULL;
-			SI32	att_value = 0, curr_value = 0;
+			int32_t	att_value = 0, curr_value = 0;
 			while( it != end )
 			{
 				pj = (*it);
@@ -483,7 +483,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 			NxwCharWrapper sc;
 			sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
 			P_CHAR pc_target = NULL;
-			SI32 att_value = 0, curr_value = 0;
+			int32_t att_value = 0, curr_value = 0;
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
 				P_CHAR pj=sc.getChar();

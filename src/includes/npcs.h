@@ -40,7 +40,7 @@ namespace npcs
 	void npcCastSpell(P_CHAR pc_att, P_CHAR pc_def);
 	void npcMagicAttack(P_CHAR pc_att, P_CHAR pc_def);
 
-	P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, UI16 x1, UI16 y1, SI08 z1);
+	P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8_t z1);
 	P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, Location where);	// added by Anthalir
 	P_CHAR addNpc(int npcNum, int x, int y, int z);
 
@@ -65,8 +65,8 @@ namespace npcs
 typedef struct {
 	SERIAL script;
 	COLOR color;
-	UI32 amount;
-	UI32 id;
+	uint32_t amount;
+	uint32_t id;
 } vendor_item;
 
 
@@ -96,7 +96,7 @@ private:
 
 public:
 
-	UI08 flag;
+	uint8_t flag;
 	SERIAL icon;
 
 	cCreatureInfo();
@@ -123,7 +123,7 @@ public:
 	~cAllCreatures();
 
 	void load();
-	P_CREATURE_INFO getCreature( UI16 id );
+	P_CREATURE_INFO getCreature( uint16_t id );
 
 };
 

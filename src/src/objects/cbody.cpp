@@ -13,7 +13,7 @@
 #include "objects/cbody.h"
 #include "python/events.h"
 
-static UI32 cBody::nextSerial = 1;
+static uint32_t cBody::nextSerial = 1;
 
 cBody::cBody()
 {
@@ -26,9 +26,9 @@ cBody::cBody()
 \brief Gets the skill sum
 \return the sum of the skills, including the deciaml digit
 */
-UI32 cBody::getSkillSum()
+uint32_t cBody::getSkillSum()
 {
-	UI32 sum = 0;
+	uint32_t sum = 0;
 	for ( register int i = 0; i < 49; i++)
 		sum += skills[i];
 
@@ -43,11 +43,11 @@ UI32 cBody::getSkillSum()
 \param pi item to equip
 \param drag true if called in wear_item
 */
-const UI08 cBody::equip(pItem pi, bool drag)
+const uint8_t cBody::equip(pItem pi, bool drag)
 {
 	tile_st item;
 
-	UI32 params[2] = { (UI32)pi, (UI32)this };
+	uint32_t params[2] = { (uint32_t)pi, (uint32_t)this };
 	if ( !pi->handleEvent( eventItemOnEquip, 2, params ) )
 		return 2;
 
@@ -89,11 +89,11 @@ const UI08 cBody::equip(pItem pi, bool drag)
 \param pi item to unequip
 \param drag true when function called in get_item
 */
-const UI08 cBody::unEquip(pItem pi, bool drag)
+const uint8_t cBody::unEquip(pItem pi, bool drag)
 {
 	checkSafeStats();
 
-	UI32 params[2] = { (UI32)pi, (UI32)this };
+	uint32_t params[2] = { (uint32_t)pi, (uint32_t)this };
 	if ( !pi->handleEvent( eventItemOnUnEquip, 2, params ) )
 		return 2;
 
@@ -166,7 +166,7 @@ bool cBody::overloadedWalking()
 		percelt = int(((float)pc->weight/(float)limit)*100.0f),
 		result;
 	bool ret = true;
-	UI08 index,x;
+	uint8_t index,x;
 	float amount;
 	
 	if(getWeight() > limit) index=5; //overweight

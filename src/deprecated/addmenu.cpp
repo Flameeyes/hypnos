@@ -23,7 +23,7 @@ cMakeMenu::cMakeMenu( SERIAL section ) : cBasicMenu( MENUTYPE_CUSTOM )
 	this->section=section;
 }
 
-cMakeMenu::cMakeMenu( SERIAL section, P_CHAR pc, int skill, UI16 firstId, COLOR firstColor, UI16 secondId, COLOR secondColor ) : cBasicMenu( MENUTYPE_CUSTOM )
+cMakeMenu::cMakeMenu( SERIAL section, P_CHAR pc, int skill, uint16_t firstId, COLOR firstColor, uint16_t secondId, COLOR secondColor ) : cBasicMenu( MENUTYPE_CUSTOM )
 {
 	oldmenu = new cOldMenu();
 	this->section=section;
@@ -296,7 +296,7 @@ void cMakeMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 \param pc player who do make
 \param n item number
 */
-void cMakeMenu::execMake( NXWCLIENT ps, UI32 item )
+void cMakeMenu::execMake( NXWCLIENT ps, uint32_t item )
 {
     
 	P_CHAR pc = ps->currChar();
@@ -334,7 +334,7 @@ void cMakeMenu::execMake( NXWCLIENT ps, UI32 item )
 		cRawItem& raw = mi->reqitems[j];
 		if( raw.id!=0 ) {
 
-			UI16 matToDel = raw.number;
+			uint16_t matToDel = raw.number;
 			if( failed )
 				matToDel = ( matToDel/2>0 )? matToDel/2 : 1;
 
@@ -442,7 +442,7 @@ void Skills::MakeMenu( P_CHAR pc, int m, int skill, P_ITEM first, P_ITEM second 
 	
 }
 
-void Skills::MakeMenu( P_CHAR pc, int m, int skill, UI16 firstId, COLOR firstColor, UI16 secondId, COLOR secondColor )
+void Skills::MakeMenu( P_CHAR pc, int m, int skill, uint16_t firstId, COLOR firstColor, uint16_t secondId, COLOR secondColor )
 {
 
 	if( ( skill < 0 ) || ( skill >= TRUESKILLS ) )	//Luxor
@@ -594,7 +594,7 @@ cRawItem::cRawItem( std::string& s )
 		number = 1;
 }
 
-cRawItem::cRawItem( SI32 id, COLOR color, UI32 number )
+cRawItem::cRawItem( int32_t id, COLOR color, uint32_t number )
 {
 	this->id=id;
 	this->color=color;

@@ -101,7 +101,7 @@ void commitSeason(P_CHAR pc)
 	VALIDATEPC(pc);
 	NXWSOCKET s = pc->getSocket();
 
-	UI08 setseason[3]={ 0xBC, 0x00, 0x01 };
+	uint8_t setseason[3]={ 0xBC, 0x00, 0x01 };
 	
 	if (region[pc->region].forcedseason>=0) 
 		setseason[1] = region[pc->region].forcedseason;

@@ -23,7 +23,7 @@ public:
 	cSpawnArea( AREA_ITER area );
 	~cSpawnArea();
 
-	UI32 current; //!< currente number of spawned
+	uint32_t current; //!< currente number of spawned
 	TIMERVAL nextspawn; //!< next spawn
 
 	SERIAL_SET items_spawned;
@@ -59,7 +59,7 @@ public:
 	SERIAL_VECTOR itemlists; //!< itemlist to spawn
 	SERIAL_VECTOR itms; //!< item to spawn
 	std::string name; //!< region name
-	UI32 max; //!< max number of spanwed
+	uint32_t max; //!< max number of spanwed
 
 	SPAWNAREA_VECTOR singles; //!< spawn areas
 
@@ -82,7 +82,7 @@ public:
 	SERIAL_SET item_spawned; //!< spawned items
 	SERIAL_SET npc_spawned; //!< spawned npcs
 
-	UI32 current;
+	uint32_t current;
 	TIMERVAL nextspawn; //!< next spawn
 
 	void doSpawn();

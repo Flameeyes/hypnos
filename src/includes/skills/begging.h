@@ -16,7 +16,7 @@ This file contains Begging namespace with begging functions and paramters
 
 namespace Begging {
 	extern TIMERVAL timer;
-	extern UI32 range;
+	extern uint32_t range;
 	extern std::string text[3];
 	
 	void initialize();

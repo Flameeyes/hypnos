@@ -194,7 +194,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 					else if ("DYEHAIR" == script1 )
 					{
 						int serial;
-						UI32 ci;
+						uint32_t ci;
 						serial=pc->getSerial32();
 						if (serial > INVALID)
 							for (ci=0;ci<pointers::pContMap[serial].size();ci++)
@@ -218,7 +218,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 					else if ("DYEBEARD" == script1 )
 					{
 						int serial;
-						UI32 ci;
+						uint32_t ci;
 						serial=pc->getSerial32();
 						if (serial > INVALID)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
@@ -244,7 +244,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 					else if( "KILLHAIR" == script1 )
 					{
 						int serial;
-						UI32 ci;
+						uint32_t ci;
 						serial=pc->getSerial32();
 						if (serial > INVALID)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
@@ -261,7 +261,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 					else if ( "KILLBEARD" == script1 )
 					{
 						int serial;
-						UI32 ci;
+						uint32_t ci;
 						serial=pc->getSerial32();
 						if (serial > INVALID)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
@@ -278,7 +278,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 					else if ( "KILLPACK" == script1 )
 					{
 						int serial;
-						UI32 ci;
+						uint32_t ci;
 						serial=pc->getSerial32();
 						if (serial > INVALID)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
@@ -364,7 +364,7 @@ void objTeleporters(P_CHAR pc)
 		if(!ISVALIDPI(pmi))
 			continue;
 
-		if (((UI32)pmi->getPosition("x") == charpos.x) && ((UI32)pmi->getPosition("y") == charpos.y) &&
+		if (((uint32_t)pmi->getPosition("x") == charpos.x) && ((uint32_t)pmi->getPosition("y") == charpos.y) &&
 			((abs(pmi->getPosition("z")) + 10) >= abs(charpos.z)) &&((abs(pmi->getPosition("z")) - 10) <= abs(charpos.z)))
 			{
 				if ((pmi->type == 60) && (pmi->morex + pmi->morey + pmi->morez >0))
@@ -413,7 +413,7 @@ void objTeleporters(P_CHAR pc)
 				// sound objects
 				if (pmi->type == 86)
 				{
-					if ((UI32)RandomNum(1, 100) <= pmi->morez)
+					if ((uint32_t)RandomNum(1, 100) <= pmi->morez)
 						soundeffect3(pmi, (pmi->morex << 8) + pmi->morey);
 				}
 			}

@@ -201,7 +201,7 @@ void cGuilds::Menu(int s, int page)
 	else
 		strcpy(toggle, "Off");
 
-	UI08 gmprefix[9] = { 0x7C, 0x00, };
+	uint8_t gmprefix[9] = { 0x7C, 0x00, };
 
 	P_CHAR pguildmaster=pointers::findCharBySerial( guilds[guildnumber].master );
 
@@ -483,7 +483,7 @@ void cGuilds::Menu(int s, int page)
 	lentext = gumpnum;
 	Xsend(s, &lentext, 1);
 
-	UI08 gmmiddle[4] = {0x00, };
+	uint8_t gmmiddle[4] = {0x00, };
 	for (i = 1; i <= gumpnum; i++)
 	{
 		gmmiddle[0]=0;
@@ -1646,7 +1646,7 @@ void cGuilds::Title(int s,int player2)
 			else sprintf(title,"[%s]",abbreviation);
 		}
 
-		UI08 sysname[30]={ 0x00, };
+		uint8_t sysname[30]={ 0x00, };
 		strcpy((char *)sysname, "System");
 
 		SendSpeechMessagePkt(s, pc2->getSerial32(), 0x0101, 0, pc2->emotecolor, 0x0003, sysname, title);

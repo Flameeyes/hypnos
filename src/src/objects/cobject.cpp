@@ -128,7 +128,7 @@ cObject::~cObject()
 \since 0.82a
 \param newserial the new serial
 */
-void cObject::setSerial32(SI32 newserial)
+void cObject::setSerial32(int32_t newserial)
 {
 	serial.serial32= newserial;
 	if( newserial!=INVALID )
@@ -186,7 +186,7 @@ void cObject::setSecondaryName(const char *format, ...)
 \author Luxor
 \brief Adds a temp effect to the object
 */
-bool cObject::addTempfx( cObject& src, SI32 num, SI32 more1, SI32 more2, SI32 more3, SI32 dur, SI32 amxcback )
+bool cObject::addTempfx( cObject& src, int32_t num, int32_t more1, int32_t more2, int32_t more3, int32_t dur, int32_t amxcback )
 {
 	if ( num < 0 || num >= tempfx::MAX_TEMPFX_INDEX )
 		return false;
@@ -233,7 +233,7 @@ bool cObject::addTempfx( cObject& src, SI32 num, SI32 more1, SI32 more2, SI32 mo
 \author Luxor
 \brief Deletes every tempfx of the specified number
 */
-void cObject::delTempfx( SI32 num, LOGICAL executeExpireCode, SERIAL funcidx )
+void cObject::delTempfx( int32_t num, LOGICAL executeExpireCode, SERIAL funcidx )
 {
 	if ( num < 0 || num >= tempfx::MAX_TEMPFX_INDEX )
 		return;
@@ -298,7 +298,7 @@ void cObject::checkTempfx()
 
 	TempfxVector::iterator it( tempfx->begin() );
 	for ( ; it != tempfx->end(); ) {
-		SI08 result = it->checkForExpire();
+		int8_t result = it->checkForExpire();
 		if ( result == 1 ) { // Tempfx has been executed
 			it = tempfx->erase( it );
 			continue;
@@ -330,7 +330,7 @@ LOGICAL cObject::hasTempfx()
 \brief Get the tempfx from given num and funcidx
 \author Luxor
 */
-tempfx::cTempfx* cObject::getTempfx( SI32 num, SERIAL funcidx )
+tempfx::cTempfx* cObject::getTempfx( int32_t num, SERIAL funcidx )
 {
 	if ( num < 0 || num >= tempfx::MAX_TEMPFX_INDEX )
 		return NULL;

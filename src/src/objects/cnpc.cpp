@@ -187,7 +187,7 @@ void cNPC::heartbeat()
 				safedelete( spellTL );
 			}
 		} else if ( TIMEOUT( nextact ) ) {
-			nextact = uiCurrentTime + UI32(MY_CLOCKS_PER_SEC*1.5);
+			nextact = uiCurrentTime + uint32_t(MY_CLOCKS_PER_SEC*1.5);
 			if ( isMounting() )
 				playAction( 0x1b );
 			else
@@ -204,9 +204,9 @@ void cNPC::heartbeat()
 \param skill index of skill to teach
 \return how much the given player can learn
 */
-SI32 cNPC::getTeachingDelta(pPC pPlayer, SI32 skill, SI32 sum)
+int32_t cNPC::getTeachingDelta(pPC pPlayer, int32_t skill, int32_t sum)
 {
-	UI32 delta = qmin(250,baseskill[skill]/2); 	// half the trainers skill, but not more than 250
+	uint32_t delta = qmin(250,baseskill[skill]/2); 	// half the trainers skill, but not more than 250
 	delta -= pPlayer->baseskill[skill]; 				// calc difference
 	if (delta <= 0)
 		return 0;

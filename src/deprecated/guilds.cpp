@@ -175,7 +175,7 @@ void cChar::SetGuildFealty(SERIAL newGuildFealty)
 \since 0.82
 \return guild number
 */
-SI32 cChar::GetGuildNumber()
+int32_t cChar::GetGuildNumber()
 {
 	return guildNumber;
 }
@@ -187,7 +187,7 @@ SI32 cChar::GetGuildNumber()
 \since 0.82
 \param newGuildNumber guild number to set to the char
 */
-void cChar::SetGuildNumber(SI32 newGuildNumber)
+void cChar::SetGuildNumber(int32_t newGuildNumber)
 {
 	guildNumber = newGuildNumber;
 }

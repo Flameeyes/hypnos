@@ -27,7 +27,7 @@ cNxwClientObj::cNxwClientObj( NXWSOCKET s ) {
 
 void cNxwClientObj::sysmsg(short color, char* txt, ...)
 {
-	UI08 talk2[18]={ 0xAE, 0x00, };
+	uint8_t talk2[18]={ 0xAE, 0x00, };
 	char unicodetext[512];
 
 	va_list argptr;
@@ -62,7 +62,7 @@ void cNxwClientObj::sysmsg(short color, char* txt, ...)
 
 void cNxwClientObj::sysmsg(char* txt, ...)
 {
-	UI08 talk2[19]={ 0xAE, 0x00, };
+	uint8_t talk2[19]={ 0xAE, 0x00, };
 	char unicodetext[512];
 
 	va_list argptr;

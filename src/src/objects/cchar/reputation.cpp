@@ -69,14 +69,14 @@ void cChar::makeCriminal()
 \param value positive or negative value to add to fame
 \note every increase of karma have an event and stuff related
 */
-void cChar::modifyFame( SI32 value )
+void cChar::modifyFame( int32_t value )
 {
 	if( GetFame() > 10000 )
 		SetFame( 10000 );
 
 	if ( value != 0 )
 	{
-		SI32	nFame	= value;
+		int32_t	nFame	= value;
 		int	nChange	= 0,
 			nEffect	= 0;
 		int	nCurFame= fame;
@@ -163,9 +163,9 @@ void cChar::modifyFame( SI32 value )
 \note every increase of karma has a related event
 \note Sparhawk: karma increase now can also be applied to npc's
 */
-void cChar::IncreaseKarma( SI32 value, P_CHAR pKilled )
+void cChar::IncreaseKarma( int32_t value, P_CHAR pKilled )
 {
-	SI32 nCurKarma		= GetKarma();
+	int32_t nCurKarma		= GetKarma();
 
 	if( nCurKarma > 10000 )
 		SetKarma( 10000 );
@@ -175,7 +175,7 @@ void cChar::IncreaseKarma( SI32 value, P_CHAR pKilled )
 
 	if( value != 0 )
 	{
-		SI32 	nKarma			= value,
+		int32_t 	nKarma			= value,
 			nChange			= 0;
 
 		bool	positiveKarmaEffect	= false;
@@ -205,7 +205,7 @@ void cChar::IncreaseKarma( SI32 value, P_CHAR pKilled )
 			if ( amxevents[EVENT_CHR_ONREPUTATIONCHG] )
 			{
 				g_bByPass = false;
-				SI32 n = nChange;
+				int32_t n = nChange;
 				if (!positiveKarmaEffect)
 					n = -nChange;
 				amxevents[EVENT_CHR_ONREPUTATIONCHG]->Call( getSerial32(), n, REPUTATION_KARMA );

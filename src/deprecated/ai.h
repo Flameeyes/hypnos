@@ -65,7 +65,7 @@ private:
 	SERIAL m_pc;
 	cAction *currAction;
 public:
-	cAI( cChar &pc, SI32 type );
+	cAI( cChar &pc, int32_t type );
 	virtual void run();
 	cAction* getAction()
 	void setAction();
@@ -95,7 +95,7 @@ public:
 \author Luxor
 */
 struct path_node {
-	UI32 cost;
+	uint32_t cost;
 	Location pos;
 	path_node *parentNode;
 };
@@ -117,15 +117,15 @@ public:
 	inline LOGICAL pathFound() { return m_pathFound; }
 private:
 	LOGICAL m_pathFound;
-	UI32 m_loops;
+	uint32_t m_loops;
 	SERIAL pc_serial;
 	path_node* currNode;
 	path_node* nextNode;
-	path_node* create_node( Location pos, path_node* parentNode, UI32 cost );
+	path_node* create_node( Location pos, path_node* parentNode, uint32_t cost );
         queue<path_node> nodes_vector;
-	UI08 addReachableNodes( path_node* node );
+	uint8_t addReachableNodes( path_node* node );
 	void dropToClosedList( path_node* node );
-	void addToOpenList( Location pos, path_node* parentNode, UI32 cost = STRAIGHT_COST );
+	void addToOpenList( Location pos, path_node* parentNode, uint32_t cost = STRAIGHT_COST );
 	void addToOpenList( path_node* node );
 	void addToClosedList( path_node* node );
 	Location m_startPos;

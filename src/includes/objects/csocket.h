@@ -24,8 +24,8 @@ typedef cSocket *pSocket;
 //! Raw Packet
 struct sRawPacket
 {
-	UI08 *buffer;	//!< Pointer to the raw packet
-	UI16 length;	//!< Length of the packet
+	uint8_t *buffer;	//!< Pointer to the raw packet
+	uint16_t length;	//!< Length of the packet
 };
 
 /*!
@@ -40,7 +40,7 @@ class cSocket
 {
 protected:
 	//! Actual socket
-	SI32 s;
+	int32_t s;
 	//! Queue of the packets to be sent to the client
 	ZThread::BlockingQueue<sRawPacket> sendQueue;
 	//! List of received packets
@@ -89,7 +89,7 @@ protected:
 	};
 
 public:
-	cSocket(SI32 sd, struct sockaddr_in *addr);
+	cSocket(int32_t sd, struct sockaddr_in *addr);
 	~cSocket();
 
 	//! Gets the current character owned by the socket
@@ -97,7 +97,7 @@ public:
 	{ return pc; }
 
 	//! Gets the socket descriptor
-	inline const SI32 getSocket() const
+	inline const int32_t getSocket() const
 	{ return s; }
 
 	//! Gets the client

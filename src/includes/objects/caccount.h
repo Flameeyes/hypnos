@@ -58,13 +58,13 @@ protected:
 	std::string name; 		//!< Account name
 	std::string password;		//!< Account password (crypted)
 	CryptoType ctype;		//!< Type of crypted password
-	UI08 privlevel;			//!< Priviledge level
-	SI32 creationdate;		//!< Epoch of creation date
+	uint8_t privlevel;			//!< Priviledge level
+	int32_t creationdate;		//!< Epoch of creation date
 	pChar banAuthor;		//!< Ban Author (if banned)
-	SI32 banReleaseTime;		//!< Epoch of release time of ban
-	SI32 jailtime;			//!< Epoch of jail's release time
-	UI32 lastConnIP;		//!< Last connection IP
-	SI32 lastConnTime;		//!< Last connection epoch
+	int32_t banReleaseTime;		//!< Epoch of release time of ban
+	int32_t jailtime;			//!< Epoch of jail's release time
+	uint32_t lastConnIP;		//!< Last connection IP
+	int32_t lastConnTime;		//!< Last connection epoch
 
 	std::list<pChar> chars;		//!< Characters of the account
 	pChar lastchar;			//!< Last character used
@@ -79,7 +79,7 @@ public:
 	~cAccount();
 		//!< Default destructor
 
-        inline const UI08 getCharsNumber() const                //!< Returns number of characters in account
+        inline const uint8_t getCharsNumber() const                //!< Returns number of characters in account
         { return chars.size() }
 
         inline void addChartoAccount(pPC pc) const              //!< Adds pc to account

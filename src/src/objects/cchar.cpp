@@ -51,7 +51,7 @@ void cChar::archive()
 {
 	std::string saveFileName( SrvParms->savePath + SrvParms->characterWorldfile + SrvParms->worldfileExtension );
 	std::string timeNow( getNoXDate() );
-	for( SI32 i = timeNow.length() - 1; i >= 0; --i )
+	for( int32_t i = timeNow.length() - 1; i >= 0; --i )
 		switch( timeNow[i] )
 		{
 			case '/' :
@@ -441,7 +441,7 @@ void cChar::getPopupHelp(char *str)
 */
 void cChar::checkSafeStats()
 {
-	SI32 nHP, nMN, nSTM;
+	int32_t nHP, nMN, nSTM;
 
 	nHP = qmin( getStrength(), hp );
 	nSTM = qmin( dx, stm );
@@ -502,7 +502,7 @@ void cChar::checkSafeStats()
 	mn = qmin( in, nMN );
 }
 
-void cChar::setStrength(UI32 val, bool check/*= true*/)
+void cChar::setStrength(uint32_t val, bool check/*= true*/)
 {
 	str.value= val;
 	if( check )
@@ -517,7 +517,7 @@ void cChar::setStrength(UI32 val, bool check/*= true*/)
 	BANK_ITEM (only if specialbank) are the bank region of player
 \todo make sure that the bank exists
 */
-P_ITEM cChar::getBankBox( UI08 banktype )
+P_ITEM cChar::getBankBox( uint8_t banktype )
 {
 	if ( ! SrvParms->usespecialbank || banktype == BANK_GOLD )
 		return bank
@@ -637,7 +637,7 @@ void cChar::fight(pChar other)
 
 Searches the character recursively, counting the items of the given ID and (if given) color
 */
-UI32 cChar::CountItems(UI16 matchId, UI16 matchColor)
+uint32_t cChar::CountItems(uint16_t matchId, uint16_t matchColor)
 {
 	if ( ! body ) return;
 	pContainer bp = body->getBackpack();
@@ -712,7 +712,7 @@ void cChar::helpStuff(pPC pc_i)
 \param poisontype the poison
 \param secs the duration of poison ( if INVALID ( default ) default duration is used )
 */
-void cChar::applyPoison(PoisonType poisontype, SI32 secs )
+void cChar::applyPoison(PoisonType poisontype, int32_t secs )
 {
         unfreeze();
 	if ( !IsInvul() && (::region[region].priv&0x40)) // LB magic-region change
@@ -758,7 +758,7 @@ void cChar::unfreeze( bool calledByTempfx )
 \param typeofdamage type of damage to use
 \param stattobedamaged stat to be damaged
 */
-void cChar::damage(SI32 amount, DamageType typeofdamage, StatType stattobedamaged)
+void cChar::damage(int32_t amount, DamageType typeofdamage, StatType stattobedamaged)
 {
 	if (!npc && !IsOnline())
 		return;
@@ -785,7 +785,7 @@ void cChar::damage(SI32 amount, DamageType typeofdamage, StatType stattobedamage
 	if (amount <= 0) return;
 	// typeofdamage is ignored till now
     if (typeofdamage!=DAMAGE_PURE) {
-    	amount -= SI32((amount/100.0)*float(calcResist(typeofdamage)));
+    	amount -= int32_t((amount/100.0)*float(calcResist(typeofdamage)));
     }
 	if (amount <= 0) return;
 
@@ -813,12 +813,12 @@ void cChar::damage(SI32 amount, DamageType typeofdamage, StatType stattobedamage
 \param typeofdamage type of damage to use
 \return the resistance
 */
-SI32 cChar::calcResist(DamageType typeofdamage)
+int32_t cChar::calcResist(DamageType typeofdamage)
 {
 	if (typeofdamage == DAMAGE_PURE || typeofdamage > MAX_RESISTANCE_INDEX)
 		return 0;
 
-	SI32 total = 0;
+	int32_t total = 0;
 	total += resists[typeofdamage];
 
 	NxwItemWrapper si;
@@ -838,7 +838,7 @@ SI32 cChar::calcResist(DamageType typeofdamage)
 \brief add gold to the char
 \param totgold amount of gold to add
 */
-void cChar::addGold(UI16 totgold)
+void cChar::addGold(uint16_t totgold)
 {
 	pItem pi = item::CreateFromScript( "$item_gold_coin", getBackpack(), totgold );
 	if ( pi != 0 )
@@ -851,10 +851,10 @@ void cChar::addGold(UI16 totgold)
 \return distance ( if invalid is returned VERY_VERY_FAR )
 \param pc the char
 */
-UI32 cChar::distFrom(P_CHAR pc)
+uint32_t cChar::distFrom(P_CHAR pc)
 {
 	VALIDATEPCR(pc, VERY_VERY_FAR); //Endymion, fix: if not valid very far :P
-	return (UI32)dist(getPosition(),pc->getPosition());
+	return (uint32_t)dist(getPosition(),pc->getPosition());
 }
 
 /*!
@@ -864,7 +864,7 @@ UI32 cChar::distFrom(P_CHAR pc)
 \param pi the item
 \note it check also if is subcontainer, or weared. so np call freely
 */
-UI32 cChar::distFrom(P_ITEM pi)
+uint32_t cChar::distFrom(P_ITEM pi)
 {
 	VALIDATEPIR(pi, VERY_VERY_FAR);
 	P_ITEM cont=pi->getOutMostCont(); //return at least itself
@@ -872,7 +872,7 @@ UI32 cChar::distFrom(P_ITEM pi)
 
 	if(cont->isInWorld())
 	{
-		return (UI32)dist(getPosition(),cont->getPosition());
+		return (uint32_t)dist(getPosition(),cont->getPosition());
 	}
 	else
 		if(isCharSerial(cont->getContSerial())) //can be weared
@@ -921,7 +921,7 @@ bool cChar::canSee( cObject &obj )
 \author Luxor
 \brief Teleports character to its current set coordinates.
 */
-void cChar::teleport( UI08 flags, NXWCLIENT cli )
+void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 {
 
 
@@ -943,7 +943,7 @@ void cChar::teleport( UI08 flags, NXWCLIENT cli )
     // Send the draw player packet
     //
 	if ( socket != INVALID ) {
-		UI08 flag = 0x00;
+		uint8_t flag = 0x00;
 		Location pos = getPosition();
 
 		if( poisoned )
@@ -1070,7 +1070,7 @@ void cChar::teleport( UI08 flags, NXWCLIENT cli )
 \brief returns char's combat skill
 \return the index of the char's combat skill
 */
-SI32 cChar::getCombatSkill()
+int32_t cChar::getCombatSkill()
 {
 
 	NxwItemWrapper si;
@@ -1146,7 +1146,7 @@ bool const cChar::CanDoGestures() const
 \param high high bound
 \param bRaise should be raised?
 */
-bool cChar::checkSkill(Skill sk, SI32 low, SI32 high, bool bRaise)
+bool cChar::checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise)
 {
 	NXWCLIENT ps = getClient();;
 	NXWSOCKET s=INVALID;
@@ -1169,7 +1169,7 @@ bool cChar::checkSkill(Skill sk, SI32 low, SI32 high, bool bRaise)
 	if(high>1200)
 		high=1200;
 
-	SI32 charrange=skill[sk]-low;    // how far is the player's skill above the required minimum ?
+	int32_t charrange=skill[sk]-low;    // how far is the player's skill above the required minimum ?
 
 	if(charrange<0)
 		charrange=0;
@@ -1368,7 +1368,7 @@ void cChar::hideBySkill()
 \author Xanathar & Luxor
 \brief Hides a player by spell
 */
-void cChar::hideBySpell(SI32 timer)
+void cChar::hideBySpell(int32_t timer)
 {
 	if (timer == INVALID) timer = SrvParms->invisibiliytimer;
 	tempfx::add(this, this, tempfx::SPELL_INVISIBILITY, 0,0,0, timer);
@@ -1591,8 +1591,8 @@ void cChar::possess(P_CHAR pc)
 		}
 	}
 
-	UI08 usTemp;
-	SI08 sTemp;
+	uint8_t usTemp;
+	int8_t sTemp;
 
 	//PRIV
 	usTemp = GetPriv();
@@ -1643,9 +1643,9 @@ void cChar::possess(P_CHAR pc)
 \brief Teleports char to a goplace location
 \param loc goplace location
 */
-void cChar::goPlace(SI32 loc)
+void cChar::goPlace(int32_t loc)
 {
-    SI32 xx,yy,zz;
+    int32_t xx,yy,zz;
     location2xyz(loc, xx,yy,zz);
     MoveTo( xx,yy,zz );
 }
@@ -1944,7 +1944,7 @@ void cChar::Kill()
 	//--------------------- corpse & ghost stuff
 
 	bool hadHumanBody=HasHumanBody();
-	SI32 corpseid = (getId() == BODY_FEMALE)? BODY_DEADFEMALE : BODY_DEADMALE;
+	int32_t corpseid = (getId() == BODY_FEMALE)? BODY_DEADFEMALE : BODY_DEADMALE;
 
 	if( ps!=NULL )
 		morph( corpseid, 0, 0, 0, 0, 0, NULL, true);
@@ -2021,7 +2021,7 @@ void cChar::Kill()
 	//
 	if( !lootVector.empty() )
 	{
-		std::vector< UI32 >::iterator it( lootVector.begin() ), end( lootVector.end() );
+		std::vector< uint32_t >::iterator it( lootVector.begin() ), end( lootVector.end() );
 		while( it != end )
 		{
 			char lootItem[32];
@@ -2104,9 +2104,9 @@ void cChar::setNpcMoveTime()
 {
 //	npcmovetime = uiCurrentTime;
 	if ( npcWander == WANDER_FOLLOW )
-		npcmovetime = UI32( uiCurrentTime + ( float( npcFollowSpeed * MY_CLOCKS_PER_SEC ) ) );
+		npcmovetime = uint32_t( uiCurrentTime + ( float( npcFollowSpeed * MY_CLOCKS_PER_SEC ) ) );
 	else
-		npcmovetime = UI32( uiCurrentTime + ( float( npcMoveSpeed * MY_CLOCKS_PER_SEC ) ) );
+		npcmovetime = uint32_t( uiCurrentTime + ( float( npcMoveSpeed * MY_CLOCKS_PER_SEC ) ) );
 }
 
 /*!
@@ -2296,10 +2296,10 @@ void cChar::showLongName( P_CHAR showToWho, bool showSerials )
 
 	Guilds->Title( socket, DEREF_P_CHAR(this) );
 
-	UI16 color;
-	SI32 guild = Guilds->Compare(showToWho,this);
+	uint16_t color;
+	int32_t guild = Guilds->Compare(showToWho,this);
 
-	UI08 sysname[30]={ 0x00, };
+	uint8_t sysname[30]={ 0x00, };
 	strcpy((char *)sysname, "System");
 
 	if (guild==1) //Same guild (Green)
@@ -2401,18 +2401,18 @@ void cChar::generic_heartbeat()
 			med = 0;
 		}
 
-		UI32 manarate = this->getRegenRate( STAT_MANA, VAR_REAL );
+		uint32_t manarate = this->getRegenRate( STAT_MANA, VAR_REAL );
 		if(SrvParms->armoraffectmana)
 		{
 			if (med)
-				manarate += UI32( calcDef(0) / 10.0 ) - UI32( skill[MEDITATION]/222.2 );
+				manarate += uint32_t( calcDef(0) / 10.0 ) - uint32_t( skill[MEDITATION]/222.2 );
 			else
-				manarate += UI32( calcDef(0) / 5.0 );
+				manarate += uint32_t( calcDef(0) / 5.0 );
 		}
 		else
 		{
 			if(med)
-				manarate -= UI32( skill[MEDITATION]/222.2 );
+				manarate -= uint32_t( skill[MEDITATION]/222.2 );
 		}
                 manarate = qmax( 1, manarate );
 		this->setRegenRate( STAT_MANA, manarate, VAR_EFF );
@@ -2422,12 +2422,12 @@ void cChar::generic_heartbeat()
 	if ( hp <= 0 )
 		Kill();
 	else
-		for( UI32 i = 0; i < 3; i++ )
+		for( uint32_t i = 0; i < 3; i++ )
 			if( update[ i ] )
 				updateStats( i );
 }
 
-void checkFieldEffects(UI32 currenttime, P_CHAR pc, char timecheck );
+void checkFieldEffects(uint32_t currenttime, P_CHAR pc, char timecheck );
 
 void target_castSpell( NXWCLIENT ps, P_TARGET t )
 {
@@ -2452,7 +2452,7 @@ void cChar::checkPoisoning()
 				case POISON_WEAK:
 					poisontime= uiCurrentTime + ( 15 * MY_CLOCKS_PER_SEC );
 					// between 0% and 5% of player's hp reduced by racial combat poison resistance
-					hp -= SI32(
+					hp -= int32_t(
 							qmax( ( ( hp ) * RandomNum( 0, 5 ) ) / 100, 3 ) *
 							( (100 - Race::getPoisonResistance( race, POISON_WEAK ) ) / 100 )
 						     );
@@ -2460,7 +2460,7 @@ void cChar::checkPoisoning()
 				case POISON_NORMAL:
 					poisontime = uiCurrentTime + ( 10 * MY_CLOCKS_PER_SEC );
 					// between 5% and 10% of player's hp reduced by racial combat poison resistance
-					hp -= SI32(
+					hp -= int32_t(
 							qmax( ( ( hp ) * RandomNum( 5, 10 ) ) / 100, 5 ) *
 							( (100 - Race::getPoisonResistance( race, POISON_NORMAL ) ) / 100 )
 						      );
@@ -2468,7 +2468,7 @@ void cChar::checkPoisoning()
 				case POISON_GREATER:
 					poisontime = uiCurrentTime+( 10 * MY_CLOCKS_PER_SEC );
 					// between 10% and 15% of player's hp reduced by racial combat poison resistance
-					hp -= SI32(
+					hp -= int32_t(
 							qmax( ( ( hp ) * RandomNum( 10,15 ) ) / 100, 7 ) *
 							( (100 - Race::getPoisonResistance( race, POISON_GREATER ) ) / 100 )
 						     );
@@ -2480,7 +2480,7 @@ void cChar::checkPoisoning()
 						stm = qmax( stm - 6, 0 );
 						updateStats( STAT_STAMINA );
 					}
-					hp -= SI32(
+					hp -= int32_t(
 							qmax( ( ( hp ) * RandomNum( 15, 20 ) ) / 100, 6) *
 							( (100 - Race::getPoisonResistance( race, POISON_DEADLY ) ) / 100 )
 						     );
@@ -2539,7 +2539,7 @@ void cChar::do_lsd()
 		NXWSOCKET socket = getSocket();
 
 		int c1 = 0,c2 = 0,ctr = 0,xx,yy,icnt=0;
-		SI08 zz;
+		int8_t zz;
 
 		Location charpos = getPosition();
 
@@ -2551,7 +2551,7 @@ void cChar::do_lsd()
 			if(!ISVALIDPI(pi))
 				continue;
 
-			UI16 color=pi->getColor(); // fetch item's color and covert to 16 bit
+			uint16_t color=pi->getColor(); // fetch item's color and covert to 16 bit
 			if (rand()%44==0)
 				color+= pi->getPosition().x  - pi->getPosition().y;
 			else
@@ -2617,7 +2617,7 @@ void cChar::deleteSpeechCurrent()
 		safedelete(speechCurrent);
 }
 
-void cChar::setRegenRate( StatType stat, UI32 rate, VarType type )
+void cChar::setRegenRate( StatType stat, uint32_t rate, VarType type )
 {
 	if( stat>=ALL_STATS ) return;
 	switch( type ) {
@@ -2630,7 +2630,7 @@ void cChar::setRegenRate( StatType stat, UI32 rate, VarType type )
 	}
 }
 
-UI32 cChar::getRegenRate( StatType stat, VarType type )
+uint32_t cChar::getRegenRate( StatType stat, VarType type )
 {
 	if( stat>=ALL_STATS ) return 0;
 	switch( type ) {
@@ -2665,7 +2665,7 @@ void cChar::updateRegenTimer( StatType stat )
 \todo document pcd parameter
 \todo backport from Skills::
 */
-const bool cChar::checkSkillSparrCheck(Skill sk, SI32 low, SI32 high, P_CHAR pcd)
+const bool cChar::checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, P_CHAR pcd)
 {
 	return Skills::CheckSkillSparrCheck(DEREF_P_CHAR(this),sk, low, high, pcd);
 }
@@ -2763,7 +2763,7 @@ void cChar::warUpdate()
 
 		if (sendit)
 		{
-			UI08 ndir = dir&0x7f, flag, hi_color, guild;
+			uint8_t ndir = dir&0x7f, flag, hi_color, guild;
 
 			// running stuff
 

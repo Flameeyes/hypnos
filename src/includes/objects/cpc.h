@@ -45,7 +45,7 @@ public:
 */
 public:
 	pNPC	trainer;		//!< NPC training the char
-	UI08	trainingplayerin;	//!< Index in skillname of the skill the NPC is training the player in
+	uint8_t	trainingplayerin;	//!< Index in skillname of the skill the NPC is training the player in
 
 public:
 	inline const bool	isBeingTrained() const
@@ -54,7 +54,7 @@ public:
 	inline const pChar	getTrainer() const
 	{ return trainer; }
 
-	inline const UI08	getSkillTaught() const
+	inline const uint8_t	getSkillTaught() const
 	{ return trainingplayerin; }
 //@}
 
@@ -64,12 +64,12 @@ public:
 */
 
 public:
-	static const UI64 flagCanViewSerials	= 0x0000000100000000ull; //!< Char can view serial codes
-	static const UI64 flagPageAble		= 0x0000000200000000ull;
-	static const UI64 flagViewHouseIcon	= 0x0000000400000000ull;
-	static const UI64 flagAllMove		= 0x0000000800000000ull;
-	static const UI64 flagCanSnoopAll	= 0x0000001000000000ull;
-	static const UI64 flagBroadcast		= 0x0000002000000000ull;
+	static const uint64_t flagCanViewSerials	= 0x0000000100000000ull; //!< Char can view serial codes
+	static const uint64_t flagPageAble		= 0x0000000200000000ull;
+	static const uint64_t flagViewHouseIcon	= 0x0000000400000000ull;
+	static const uint64_t flagAllMove		= 0x0000000800000000ull;
+	static const uint64_t flagCanSnoopAll	= 0x0000001000000000ull;
+	static const uint64_t flagBroadcast		= 0x0000002000000000ull;
 
 	inline const bool canBroadcast() const
 	{ return flags & flagBroadcast; }
@@ -125,7 +125,7 @@ public:
 //! \name Bank
 
 	//! Counts the gold in the bankbox
-	inline UI32 countBankGold()
+	inline uint32_t countBankGold()
 	{
 		return  getBankBox(bankGold) ?
 			getBankBox(bankGold)->countItems(ITEMID_GOLD)

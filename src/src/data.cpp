@@ -22,8 +22,8 @@
 LOGICAL statics_cache = false;
 LOGICAL map_cache = false;
 
-UI16 map_width = 768;
-UI16 map_height = 512;
+uint16_t map_width = 768;
+uint16_t map_height = 512;
 
 namespace data {
 
@@ -40,7 +40,7 @@ cMULFile< verdata_st >* verIdx; // verdata.mul
 cMULFile< land_st >* verLand; // verdata.mul
 cMULFile< tile_st >* verTile; // verdata.mul
 
-static SI32 verdataEntries;
+static int32_t verdataEntries;
 
 static std::string map_path;
 static std::string staIdx_path;
@@ -56,18 +56,18 @@ static std::string multiIdx_path;
 */
 static void cacheMap()
 {
-	UI32 i, pos;
+	uint32_t i, pos;
 
 	for ( i = 0; i < maps.size(); i++ ) {
 		if ( !maps[i]->isReady() )
 			continue;
 		map_st m;
-		std::map< UI32, map_st > *map_cache = new std::map< UI32, map_st >;
+		std::map< uint32_t, map_st > *map_cache = new std::map< uint32_t, map_st >;
 		ConOut( "\nCaching map %i data ( map0.mul )\t\t", i );
-		UI16 blockX;
-		UI08 xOffset;
-		SI08 yOffset;
-		SI16 blockY;
+		uint16_t blockX;
+		uint8_t xOffset;
+		int8_t yOffset;
+		int16_t blockY;
 		for ( blockX = 0; blockX < map_width; blockX++ ) {
 			for ( blockY = map_height - 1; blockY >= 0; blockY-- ) {
 				for ( yOffset = 7; yOffset >= 0; yOffset-- ) {
@@ -83,7 +83,7 @@ static void cacheMap()
 							( yOffset * 8 * map_st_size ) + ( xOffset * map_st_size );
 
 						if ( maps[i]->getData( pos, m ) )
-							map_cache->insert( pair< UI32, map_st >( pos, m ) );
+							map_cache->insert( pair< uint32_t, map_st >( pos, m ) );
 					}
 				}
 			}
@@ -99,20 +99,20 @@ static void cacheMap()
 */
 static void cacheStatics()
 {
-	UI32 i, pos;
+	uint32_t i, pos;
 
 	if ( !statics->isReady() || !staticIdx->isReady() )
 		return;
 
 	static_st s;
-	std::map< UI32, static_st > *statics_cache = new std::map< UI32, static_st >;
+	std::map< uint32_t, static_st > *statics_cache = new std::map< uint32_t, static_st >;
 
 	staticIdx_st staidx;
-	std::map< UI32, staticIdx_st > *staidx_cache = new std::map< UI32, staticIdx_st >;
+	std::map< uint32_t, staticIdx_st > *staidx_cache = new std::map< uint32_t, staticIdx_st >;
 
-	UI16 blockX;
-	SI16 blockY;
-	UI32 num;
+	uint16_t blockX;
+	int16_t blockY;
+	uint32_t num;
 	ConOut( "\nCaching statics data ( staidx0.mul, statics0.mul )\t\t" );
 	for ( blockX = 0; blockX < map_width; blockX++ ) {
 		for ( blockY = map_height -1; blockY >= 0; blockY-- ) {
@@ -123,14 +123,14 @@ static void cacheStatics()
 
 			if ( !staticIdx->getData( pos, staidx ) || staidx.start < 0 || staidx.length <= 0 )
 				continue;
-			staidx_cache->insert( pair< UI32, staticIdx_st >( pos, staidx ) );
+			staidx_cache->insert( pair< uint32_t, staticIdx_st >( pos, staidx ) );
 
 			num = staidx.length / static_st_size;
 
 			for ( i = 0; i < num; i++ ) {
 				pos = staidx.start + ( i * static_st_size );
 				if ( statics->getData( pos, s ) )
-					statics_cache->insert( pair< UI32, static_st >( pos, s ) );
+					statics_cache->insert( pair< uint32_t, static_st >( pos, s ) );
 			}
 		}
 	}
@@ -148,14 +148,14 @@ static void cacheTileData()
 	if ( !tdLand->isReady() || !tdTile->isReady() )
 		return;
 
-	UI32 pos;
+	uint32_t pos;
 	tile_st t;
 	land_st l;
-	std::map< UI32, land_st > *land_cache = new std::map< UI32, land_st >;
-	std::map< UI32, tile_st > *tile_cache = new std::map< UI32, tile_st >;
+	std::map< uint32_t, land_st > *land_cache = new std::map< uint32_t, land_st >;
+	std::map< uint32_t, tile_st > *tile_cache = new std::map< uint32_t, tile_st >;
 
-	UI32 block;
-	UI08 index;
+	uint32_t block;
+	uint8_t index;
 	ConOut( "\nCaching land data ( tiledata.mul )\t\t" );
 	for ( block = 0; block < 512; block++ ) {
 		for ( index = 0; index < 32; index++ ) {
@@ -163,9 +163,9 @@ static void cacheTileData()
 				// Each block contains 32 land_st.
 				( (block + 1) * TILE_HEADER_SIZE ) + ( land_st_size * (index + block * 32) );
 			if ( verLand->getData( pos, l ) )
-				land_cache->insert( pair< UI32, land_st >( pos, l ) );
+				land_cache->insert( pair< uint32_t, land_st >( pos, l ) );
 			else if ( tdLand->getData( pos, l ) )
-				land_cache->insert( pair< UI32, land_st >( pos, l ) );
+				land_cache->insert( pair< uint32_t, land_st >( pos, l ) );
 		}
 	}
 	ConOut( "[Done]" );
@@ -180,9 +180,9 @@ static void cacheTileData()
 				// Each block contains 32 tile_st.
 				( (block + 1) * TILE_HEADER_SIZE ) + ( tile_st_size * (index + block * 32) );
 			if ( verTile->getData( pos, t ) )
-				tile_cache->insert( pair< UI32, tile_st >( pos, t ) );
+				tile_cache->insert( pair< uint32_t, tile_st >( pos, t ) );
 			else if ( tdTile->getData( pos, t ) )
-				tile_cache->insert( pair< UI32, tile_st >( pos, t ) );
+				tile_cache->insert( pair< uint32_t, tile_st >( pos, t ) );
 		}
 	}
 	ConOut( "[Done]" );
@@ -198,18 +198,18 @@ static void cacheVerdataIndex()
 	if ( !verIdx->isReady() )
 		return;
 
-	std::map< UI32, verdata_st >* verIdx_cache = new std::map< UI32, verdata_st >;
+	std::map< uint32_t, verdata_st >* verIdx_cache = new std::map< uint32_t, verdata_st >;
 	verIdx->getData( 0, (BYTE*)(&verdataEntries), 4 );
 
 	verdata_st v;
-	SI32 i;
-	UI32 pos;
+	int32_t i;
+	uint32_t pos;
 
 	ConOut( "\nCaching verdata index ( verdata.mul ) \t\t" );
 	for ( i = 0; i < verdataEntries; i++ ) {
 		pos = VERDATA_HEADER_SIZE + ( i * verdata_st_size );
 		if ( verIdx->getData( pos, v ) )
-			verIdx_cache->insert( pair< UI32, verdata_st >( pos, v ) );
+			verIdx_cache->insert( pair< uint32_t, verdata_st >( pos, v ) );
 	}
 	ConOut( "[Done]" );
 	verIdx->setCache( verIdx_cache );
@@ -224,14 +224,14 @@ static void cacheVerdata()
 	if ( !verIdx->isReady() && !verTile->isReady() && !verLand->isReady() )
 		return;
 
-	std::map< UI32, tile_st >* verTile_cache = new std::map< UI32, tile_st >;
-	std::map< UI32, land_st >* verLand_cache = new std::map< UI32, land_st >;
+	std::map< uint32_t, tile_st >* verTile_cache = new std::map< uint32_t, tile_st >;
+	std::map< uint32_t, land_st >* verLand_cache = new std::map< uint32_t, land_st >;
 	verdata_st v;
 	tile_st t;
 	land_st l;
-	UI32 block, pos;
-	UI08 index;
-	SI32 i;
+	uint32_t block, pos;
+	uint8_t index;
+	int32_t i;
 
 	ConOut( "\nCaching verdata tiledata info ( verdata.mul ) \t\t" );
 	for ( i = 0; i < verdataEntries; i++ ) {
@@ -247,13 +247,13 @@ static void cacheVerdata()
 			for ( index = 0; index < 32; index++ ) {
 				pos = TILE_HEADER_SIZE + v.pos + index * tile_st_size;
 				if ( verTile->getData( pos, t ) )
-					verTile_cache->insert( pair< UI32, tile_st >( pos, t ) );
+					verTile_cache->insert( pair< uint32_t, tile_st >( pos, t ) );
 			}
 		} else {
 			for ( index = 0; index < 32; index++ ) {
 				pos = TILE_HEADER_SIZE + v.pos + index * land_st_size;
 				if ( verLand->getData( pos, l ) )
-					verLand_cache->insert( pair< UI32, land_st >( pos, l ) );
+					verLand_cache->insert( pair< uint32_t, land_st >( pos, l ) );
 			}
 		}
 	}
@@ -334,7 +334,7 @@ void init()
 */
 void shutdown()
 {
-	UI32 i;
+	uint32_t i;
 	for ( i = 0; i < maps.size(); i++ )
 		if ( maps[i] != NULL )
 			safedelete( maps[i] );
@@ -430,15 +430,15 @@ std::string getPath( MulFileId id )
 /*!
 \author Luxor
 */
-LOGICAL seekMap( UI32 x, UI32 y, map_st& m, UI08 nMap )
+LOGICAL seekMap( uint32_t x, uint32_t y, map_st& m, uint8_t nMap )
 {
 	if ( nMap >= maps.size() )
 		return false;
 	if ( !maps[ nMap ]->isReady() )
 		return false;
 
-	UI32 pos;
-	UI16 blockX = x / 8, blockY = y / 8, cellX = x % 8, cellY = y % 8;
+	uint32_t pos;
+	uint16_t blockX = x / 8, blockY = y / 8, cellX = x % 8, cellY = y % 8;
 	pos =
 		// Block position - A block contains 8x8 cells. Blocks are registered in file by top to bottom columns from left to right.
 		( blockX * map_height * MAP_BLOCK_SIZE ) + ( blockY * MAP_BLOCK_SIZE ) +
@@ -453,14 +453,14 @@ LOGICAL seekMap( UI32 x, UI32 y, map_st& m, UI08 nMap )
 /*!
 \author Luxor
 */
-LOGICAL collectStatics( UI32 x, UI32 y, staticVector& s_vec )
+LOGICAL collectStatics( uint32_t x, uint32_t y, staticVector& s_vec )
 {
 	if ( !staticIdx->isReady() || !statics->isReady() )
 		return false;
 
 
-	UI16 blockX = x / 8, blockY = y / 8;
-	UI32 pos =
+	uint16_t blockX = x / 8, blockY = y / 8;
+	uint32_t pos =
 		// Block position - A block contains (staticIdx_st.length / static_st_size ) statics.
 		// Blocks are registered in file by top to bottom columns from left to right.
 		( blockX * map_height * staticIdx_st_size ) + ( blockY * staticIdx_st_size );
@@ -469,10 +469,10 @@ LOGICAL collectStatics( UI32 x, UI32 y, staticVector& s_vec )
 	if ( !staticIdx->getData( pos, staidx ) || staidx.start < 0 || staidx.length <= 0 )
 		return false;
 
-	UI32 num = staidx.length / static_st_size;
+	uint32_t num = staidx.length / static_st_size;
 	static_st s;
-	UI08 xOffset = x % 8, yOffset = y % 8;
-	for ( UI32 i = 0; i < num; i++ ) {
+	uint8_t xOffset = x % 8, yOffset = y % 8;
+	for ( uint32_t i = 0; i < num; i++ ) {
 		pos = staidx.start + ( i * static_st_size );
 		if ( !statics->getData( pos, s ) )
 			continue;
@@ -485,7 +485,7 @@ LOGICAL collectStatics( UI32 x, UI32 y, staticVector& s_vec )
 /*!
 \author Luxor
 */
-LOGICAL seekLand( UI16 id, land_st& land )
+LOGICAL seekLand( uint16_t id, land_st& land )
 {
 	if ( !tdLand->isCached() && seekVerLand( id, land ) )
 		return true;
@@ -493,9 +493,9 @@ LOGICAL seekLand( UI16 id, land_st& land )
 	if ( !tdLand->isReady() )
 		return false;
 
-	UI16 block = id / 32;
+	uint16_t block = id / 32;
 
-	UI32 pos =
+	uint32_t pos =
 		// Each block contains 32 land_st.
 		( (block + 1) * TILE_HEADER_SIZE ) + ( land_st_size * id );
 
@@ -505,7 +505,7 @@ LOGICAL seekLand( UI16 id, land_st& land )
 /*!
 \author Luxor
 */
-LOGICAL seekTile( UI16 id, tile_st& tile )
+LOGICAL seekTile( uint16_t id, tile_st& tile )
 {
 	if ( !tdTile->isCached() && seekVerTile( id, tile ) )
 		return true;
@@ -513,9 +513,9 @@ LOGICAL seekTile( UI16 id, tile_st& tile )
 	if ( !tdTile->isReady() )
 		return false;
 
-	UI16 block = id / 32;
+	uint16_t block = id / 32;
 
-	UI32 pos =
+	uint32_t pos =
 		// Go beyond the land_st dedicated space.
 		TILEDATA_LAND_SIZE +
 		// Each block contains 32 tile_st.
@@ -527,19 +527,19 @@ LOGICAL seekTile( UI16 id, tile_st& tile )
 /*!
 \author Luxor
 */
-LOGICAL seekMulti( UI16 id, multiVector& m_vec )
+LOGICAL seekMulti( uint16_t id, multiVector& m_vec )
 {
 	if ( !multiIdx->isReady() || !multi->isReady() )
 		return false;
 
 	multiIdx_st idx;
-	UI32 pos = id * multiIdx_st_size;
+	uint32_t pos = id * multiIdx_st_size;
 	if ( !multiIdx->getData( pos, idx ) || idx.start < 0 || idx.length <= 0 )
 		return false;
 
 	multi_st m;
-	UI32 num = idx.length / multi_st_size;
-	for ( UI32 i = 0; i < num; i++ ) {
+	uint32_t num = idx.length / multi_st_size;
+	for ( uint32_t i = 0; i < num; i++ ) {
 		pos = idx.start + ( i * multi_st_size );
 		if ( !multi->getData( pos, m ) )
 			continue;
@@ -551,14 +551,14 @@ LOGICAL seekMulti( UI16 id, multiVector& m_vec )
 /*!
 \author Luxor
 */
-LOGICAL seekVerTile( UI16 id, tile_st& tile )
+LOGICAL seekVerTile( uint16_t id, tile_st& tile )
 {
 	if ( !verIdx->isReady() || !verTile->isReady() )
 		return false;
 
-	SI32 i, block = id / 32 + 512;
+	int32_t i, block = id / 32 + 512;
 	verdata_st v;
-	UI32 pos;
+	uint32_t pos;
 
 	for ( i = 0; i < verdataEntries; i++ ) {
 		pos = VERDATA_HEADER_SIZE + ( i * verdata_st_size );
@@ -579,14 +579,14 @@ LOGICAL seekVerTile( UI16 id, tile_st& tile )
 /*!
 \author Luxor
 */
-LOGICAL seekVerLand( UI16 id, land_st& land )
+LOGICAL seekVerLand( uint16_t id, land_st& land )
 {
 	if ( !verIdx->isReady() || !verLand->isReady() )
 		return false;
 
-	UI32 pos;
+	uint32_t pos;
 	verdata_st v;
-	SI32 i, block = id / 32;
+	int32_t i, block = id / 32;
 
 	for ( i = 0; i < verdataEntries; i++ ) {
 		pos = VERDATA_HEADER_SIZE + ( i * verdata_st_size );
@@ -643,7 +643,7 @@ cMULFile<T>::cMULFile( std::string path, std::string mode )
 \author Luxor
 */
 template <typename T>
-LOGICAL cMULFile<T>::getData( UI32 index, T& data )
+LOGICAL cMULFile<T>::getData( uint32_t index, T& data )
 {
 	if ( !isReady() )
 		return false;
@@ -652,7 +652,7 @@ LOGICAL cMULFile<T>::getData( UI32 index, T& data )
 		return ( fread( &data, sizeof( T ), 1, m_file ) != 0 );
 	}
 
-	typename std::map< UI32, T >::iterator it = m_cache->find( index );
+	typename std::map< uint32_t, T >::iterator it = m_cache->find( index );
 	if ( it == m_cache->end() )
 		return false;
 
@@ -664,7 +664,7 @@ LOGICAL cMULFile<T>::getData( UI32 index, T& data )
 \author Luxor
 */
 template <typename T>
-LOGICAL cMULFile<T>::getData( UI32 index, BYTE* ptr, UI32 size )
+LOGICAL cMULFile<T>::getData( uint32_t index, BYTE* ptr, uint32_t size )
 {
 	if ( !isReady() )
 		return false;
@@ -676,7 +676,7 @@ LOGICAL cMULFile<T>::getData( UI32 index, BYTE* ptr, UI32 size )
 \author Luxor
 */
 template <typename T>
-void cMULFile<T>::setCache( typename std::map< UI32, T > *cache )
+void cMULFile<T>::setCache( typename std::map< uint32_t, T > *cache )
 {
 	if ( m_cache != NULL )
 		safedelete( m_cache );

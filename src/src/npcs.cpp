@@ -143,9 +143,9 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, Location where)
 //</Anthalir>
 
 // Xan -> compatible with new style scripts!! :D
-P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, UI16 x1, UI16 y1, SI08 z1)
+P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8_t z1)
 {
-	SI32	npcNumSave	= npcNum;
+	int32_t	npcNumSave	= npcNum;
 	short	postype		= 0;	// determines how xyz of the new NPC are set
 	P_CHAR	pc		= 0;
 
@@ -324,10 +324,10 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, UI16 x1, UI16 y1, SI08 z1)
 								else if ( "AMXINTVEC" == script1 )
 								{
 									splitLine( script2, script1, script3 );
-									SI32 vectorId = str2num( script1 );
-									SI32 vectorSize = str2num( script3 );
+									int32_t vectorId = str2num( script1 );
+									int32_t vectorSize = str2num( script3 );
 									amxVS.insertVariable( pc->getSerial32(), vectorId, vectorSize, 0 );
-									SI32 vectorIndex = 0;
+									int32_t vectorIndex = 0;
 									do
 									{
 										iter->parseLine(script1, script2);
@@ -745,19 +745,19 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, UI16 x1, UI16 y1, SI08 z1)
 									pc->reattackat=str2num(script2);
 								else if ( "REGEN_HP" == script1 )
 								{
-									UI32 v=str2num(script2);
+									uint32_t v=str2num(script2);
 									pc->setRegenRate( STAT_HP, v, VAR_REAL );
 									pc->setRegenRate( STAT_HP, v, VAR_EFF );
 								}
 								else if ( "REGEN_ST" == script1 )
 								{
-									UI32 v=str2num(script2);
+									uint32_t v=str2num(script2);
 									pc->setRegenRate( STAT_STAMINA, v, VAR_REAL );
 									pc->setRegenRate( STAT_STAMINA, v, VAR_EFF );
 								}
 								else if ( "REGEN_MN" == script1 )
 								{
-									UI32 v=str2num(script2);
+									uint32_t v=str2num(script2);
 									pc->setRegenRate( STAT_MANA, v, VAR_REAL );
 									pc->setRegenRate( STAT_MANA, v, VAR_EFF );
 								}
@@ -1021,7 +1021,7 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, UI16 x1, UI16 y1, SI08 z1)
 
 									staticVector s;
 									data::collectStatics( pi_i->getPosition().x+xos, pi_i->getPosition().y+yos, s );
-									UI32 i;
+									uint32_t i;
 									for( i = 0; i < s.size(); i++ ) {
 										tile_st tile;
 										data::seekTile( s[i].id, tile );
@@ -1286,7 +1286,7 @@ void cAllCreatures::load()
 
 }
 
-P_CREATURE_INFO cAllCreatures::getCreature( UI16 id )
+P_CREATURE_INFO cAllCreatures::getCreature( uint16_t id )
 {
 	if( id>=CREATURE_COUNT )
 		return NULL;

@@ -39,17 +39,17 @@ void cPoll::setQuestion( const std::string &question )
 	this->question = question;
 }
 
-UI32 cPoll::getRunForDays()
+uint32_t cPoll::getRunForDays()
 {
 	return runForDays;
 }
 
-void cPoll::setRunForDays( UI32 days )
+void cPoll::setRunForDays( uint32_t days )
 {
 	this->runForDays = days;
 }
 
-std::string cPoll::getPollOption( const UI32 option )
+std::string cPoll::getPollOption( const uint32_t option )
 {
 	if( !pollOptions.empty() )
 	{
@@ -61,12 +61,12 @@ std::string cPoll::getPollOption( const UI32 option )
 	return "";
 }
 
-void cPoll::setPollOption( const UI32 option, const std::string &optionText )
+void cPoll::setPollOption( const uint32_t option, const std::string &optionText )
 {
 	pollOptions[ option ] = optionText;
 }
 
-LOGICAL cPoll::castVote( const SERIAL voterSerial, const UI32 option )
+LOGICAL cPoll::castVote( const SERIAL voterSerial, const uint32_t option )
 {
 	if( pollVoters.find( voterSerial ) != pollVoters.end() )
 	{

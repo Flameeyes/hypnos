@@ -29,8 +29,8 @@ class cMap : public cItem
 	protected:
         	struct pindataobject		        //!< this structure will hold x and y positions of a single pin in map
                 {
-                	UI16 x;
-                        UI16 y;
+                	uint16_t x;
+                        uint16_t y;
                 }
                 std::vector<pindataobject> pinData;    	//!< this vector will hold all the pins data (= their placement in the map)
                 bool writeable;				//!< map pins can be altered?
@@ -40,21 +40,21 @@ class cMap : public cItem
         	cMap(SERIAL ser);
                 cMap &operator = (const cMap &oldmap); 	//!< assignment operator = (for duping maps)
 
-               	inline const UI32 rtti() const          //!< returns the right rtti
+               	inline const uint32_t rtti() const          //!< returns the right rtti
 		{ return rtti::cMap; }
 
 
-                bool addPin(UI16 x, UI16 y);		//!< Adds a new pin to the map
-                bool insertPin(UI16 x,UI16 y, int pin); //!< Inserts a pin between 2 existing ones. existing pins >= pin get shifted by one
-                bool changePin(UI16 x,UI16 y, int pin);	//!< Moves pin to another position
+                bool addPin(uint16_t x, uint16_t y);		//!< Adds a new pin to the map
+                bool insertPin(uint16_t x,uint16_t y, int pin); //!< Inserts a pin between 2 existing ones. existing pins >= pin get shifted by one
+                bool changePin(uint16_t x,uint16_t y, int pin);	//!< Moves pin to another position
                 bool removePin(int pin);		//!< Removes pin
                 bool clearAllPins();			//!< Removes all pins
                 bool toggleWritable();			//!< Toggle pin addability and replies to client actual writeability status
 
 
-                inline UI16 getX(int pin)               //!< Gets x "coordinate" for pin number "pin" (1<= pin <= 50)
+                inline uint16_t getX(int pin)               //!< Gets x "coordinate" for pin number "pin" (1<= pin <= 50)
 			{ return pinData[pin - 1].x; }
-                inline UI16 getY(int pin)               //!< Gets y "coordinate" for pin number "pin" (1<= pin <= 50)
+                inline uint16_t getY(int pin)               //!< Gets y "coordinate" for pin number "pin" (1<= pin <= 50)
 			{ return pinData[pin - 1].y; }
 		inline int getPinsNumber()              //!< Returns number of pins in map
                 	{ return pinData.size(); }

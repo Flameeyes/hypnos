@@ -23,7 +23,7 @@
 /*!
 \author Luxor
 */
-path_node* cPath::create_node( Location pos, path_node* parentNode, UI32 cost )
+path_node* cPath::create_node( Location pos, path_node* parentNode, uint32_t cost )
 {
 	path_node *node, newnode;
 
@@ -76,7 +76,7 @@ cPath::cPath( Location startPos, Location finalPos, P_CHAR pc )
 void cPath::exec()
 {
 	P_CHAR pc = pointers::findCharBySerial( pc_serial );
-	UI32 min_cost, curr_cost, heuristic, loops = 0;
+	uint32_t min_cost, curr_cost, heuristic, loops = 0;
 	NODE_LIST::iterator it;
 
 	while( loops < MAX_PATH_INTERNAL_LOOPS ) {
@@ -98,16 +98,16 @@ void cPath::exec()
 		for ( it = open_list.begin(); it != open_list.end(); it++ ) {
 			loops++;
 			if ( it == open_list.begin() ) {
-				min_cost = (*it)->cost + ( UI32( dist( (*it)->pos, m_finalPos ) ) * OBLIQUE_COST );
+				min_cost = (*it)->cost + ( uint32_t( dist( (*it)->pos, m_finalPos ) ) * OBLIQUE_COST );
 				if ( (*it)->pos.z != m_finalPos.z )
-					min_cost += Z_COST * (abs( SI16((*it)->pos.z - m_finalPos.z )) / 2);
+					min_cost += Z_COST * (abs( int16_t((*it)->pos.z - m_finalPos.z )) / 2);
 				nextNode = (*it);
 				continue;
 			}
 
-			curr_cost = (*it)->cost + UI32( dist( (*it)->pos, m_finalPos ) ) * OBLIQUE_COST;
+			curr_cost = (*it)->cost + uint32_t( dist( (*it)->pos, m_finalPos ) ) * OBLIQUE_COST;
 			if ( (*it)->pos.z != m_finalPos.z )
-				curr_cost += Z_COST * (abs( SI16((*it)->pos.z - m_finalPos.z) ) / 2);
+				curr_cost += Z_COST * (abs( int16_t((*it)->pos.z - m_finalPos.z) ) / 2);
 			if ( curr_cost < min_cost ) {
 				min_cost = curr_cost;
 				nextNode = (*it);
@@ -117,19 +117,19 @@ void cPath::exec()
 		//
                 // Heuristic and possible path improvement
                 //
-                heuristic = UI32( dist( currNode->parentNode->pos, nextNode->pos, false ) );
+                heuristic = uint32_t( dist( currNode->parentNode->pos, nextNode->pos, false ) );
                 if ( heuristic == 1 ) { // The nodes are adjacent
 			heuristic = 0;
                         Location parent = currNode->parentNode->pos;
                         Location next = nextNode->pos;
                         LOGICAL bOk = false;
 
-			if ( abs( SI16(parent.x - next.x) ) + abs( SI16(parent.y - next.y) ) == 1 )
+			if ( abs( int16_t(parent.x - next.x) ) + abs( int16_t(parent.y - next.y) ) == 1 )
 				heuristic = STRAIGHT_COST;
 			else
 				heuristic = OBLIQUE_COST;
 
-			if ( heuristic < abs( SI16(nextNode->cost - currNode->parentNode->cost) ) )
+			if ( heuristic < abs( int16_t(nextNode->cost - currNode->parentNode->cost) ) )
 				bOk = true;
                         if ( parent.z != next.z ) {
 				next.z = parent.z;
@@ -165,14 +165,14 @@ void cPath::exec()
 \author Luxor
 \brief Looks for every tile reachable walking by pos, and adds them to the open list
 */
-UI08 cPath::addReachableNodes( path_node* node )
+uint8_t cPath::addReachableNodes( path_node* node )
 {
 	P_CHAR pc = pointers::findCharBySerial( pc_serial );
 
 	LOGICAL bWalkable[ 4 ];
 
-	UI08 num = 0;
-	SI08 zAdd = 0;
+	uint8_t num = 0;
+	int8_t zAdd = 0;
 	Location loc;
 	Location pos = node->pos;
 
@@ -264,7 +264,7 @@ UI08 cPath::addReachableNodes( path_node* node )
 \author Luxor
 \brief Adds an element to the open list
 */
-void cPath::addToOpenList( Location pos, path_node* parentNode, UI32 cost )
+void cPath::addToOpenList( Location pos, path_node* parentNode, uint32_t cost )
 {
 	path_node* node = create_node( pos, parentNode, cost );
 	addToOpenList( node );

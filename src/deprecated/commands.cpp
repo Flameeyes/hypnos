@@ -29,7 +29,7 @@
 
 namespace Commands
 {
-	SI32 cmd_offset;
+	int32_t cmd_offset;
 
 	void MakeShop(int c)
 	{
@@ -346,7 +346,7 @@ namespace Commands
 
 	void DyeItem(NXWSOCKET s) // Rehue an item
 	{
-		UI16 color, body;
+		uint16_t color, body;
 
 		P_CHAR Me = MAKE_CHAR_REF(currchar[s]);
 		VALIDATEPC(Me);
@@ -426,7 +426,7 @@ namespace Commands
 	}
 
 
-	void AddHere(NXWSOCKET s, UI16 id, char z)
+	void AddHere(NXWSOCKET s, uint16_t id, char z)
 	{
 		if ( s < 0 || s >= now )
 			return;
@@ -456,7 +456,7 @@ namespace Commands
 
 	}
 
-	void DupeItem(pClient client, pItem pi_from, UI16 amount)
+	void DupeItem(pClient client, pItem pi_from, uint16_t amount)
 	{
 		pChar pc = client->currChar();
 		if ( ! pc ) return;

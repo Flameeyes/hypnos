@@ -36,14 +36,14 @@
 
 void gmyell(char *txt)
 {
-	UI08 unicodetext[512];
+	uint8_t unicodetext[512];
 	int ucl = ( strlen ( txt ) * 2 ) + 2 ;
 
 	char2wchar(txt);
 	memcpy(unicodetext, Unicode::temp, ucl);
 
-	UI32 lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	UI08 sysname[30]={ 0x00, };
+	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
+	uint8_t sysname[30]={ 0x00, };
 	strcpy((char *)sysname, "[WebAdmin - GM Only]");
 
 
@@ -69,7 +69,7 @@ void gmyell(char *txt)
 //26/10/99//new packet
 void SndAttackOK(NXWSOCKET  s, int serial)
 {
-	UI08 attackok[5]={ 0xAA, 0x00, };
+	uint8_t attackok[5]={ 0xAA, 0x00, };
 	LongToCharPtr(serial, attackok +1);
 	Xsend(s, attackok, 5);
 //AoS/	Network->FlushBuffer(s);
@@ -77,7 +77,7 @@ void SndAttackOK(NXWSOCKET  s, int serial)
 
 void SndDyevat(NXWSOCKET  s, int serial, short id)
 {
-	UI08 dyevat[9] ={ 0x95, 0x00, };
+	uint8_t dyevat[9] ={ 0x95, 0x00, };
 	LongToCharPtr(serial, dyevat +1);
 	ShortToCharPtr(0x0000, dyevat +5);	// ignored on send ....
 	ShortToCharPtr(id, dyevat +7);		// def. on send 0x0FAB
@@ -87,7 +87,7 @@ void SndDyevat(NXWSOCKET  s, int serial, short id)
 
 void SndUpdscroll(NXWSOCKET  s, short txtlen, const char* txt)
 {
-	UI08 updscroll[10]={ 0xA6, };
+	uint8_t updscroll[10]={ 0xA6, };
 
 	ShortToCharPtr(txtlen+10, updscroll +1);
 	updscroll[3]=2;				// type: 0x00 tips window, 0x01 ignored, 0x02 updates
@@ -100,7 +100,7 @@ void SndUpdscroll(NXWSOCKET  s, short txtlen, const char* txt)
 
 void SndShopgumpopen(NXWSOCKET  s, SERIAL serial)	//it's really necessary ? It is used 1 time, perhaps replace it with the scriptable vers. :/
 {
-	UI08 shopgumpopen[7]={ 0x24, 0x00, };
+	uint8_t shopgumpopen[7]={ 0x24, 0x00, };
 	LongToCharPtr(serial, shopgumpopen +1);		// ItemID
 	ShortToCharPtr(0x0030, shopgumpopen +5);	// GumpID
 	Xsend(s, shopgumpopen, 7);
@@ -125,9 +125,9 @@ with the proper sound function to play for a certain item as shown.
 			\li ingot dropping (makes a big thump - used the heavy gem sound)
 			\li gems dropping (two type broke them in half to make some sound different then others)
 */
-UI16 itemsfx(UI16 item)
+uint16_t itemsfx(uint16_t item)
 {
-	UI16 sound = 0x0042;				// play default item move sfx // 00 48
+	uint16_t sound = 0x0042;				// play default item move sfx // 00 48
 
 	if( item == ITEMID_GOLD )
 		sound = goldsfx(2);
@@ -198,7 +198,7 @@ void bgsound(CHARACTER s)
 	}
 }
 
-void soundeffect3(P_ITEM pi, UI16 sound)
+void soundeffect3(P_ITEM pi, uint16_t sound)
 {
 	VALIDATEPI(pi);
 
@@ -220,7 +220,7 @@ void soundeffect3(P_ITEM pi, UI16 sound)
 	}
 }
 
-void soundeffect4(NXWSOCKET s, P_ITEM pi, UI16 sound)
+void soundeffect4(NXWSOCKET s, P_ITEM pi, uint16_t sound)
 {
 	VALIDATEPI(pi);
 
@@ -235,7 +235,7 @@ void soundeffect4(NXWSOCKET s, P_ITEM pi, UI16 sound)
 //old one below!
 void weather(NXWSOCKET  s, unsigned char bolt)
 {
-	UI08 packet[4] = { 0x65, 0xFF, 0x40, 0x20 };
+	uint8_t packet[4] = { 0x65, 0xFF, 0x40, 0x20 };
 
 	if (wtype==0) packet[2] = 0x00;
 	if (wtype==1) packet[1] = 0x00;
@@ -250,7 +250,7 @@ void pweather(NXWSOCKET  s)
 	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
-	UI08 packet[4] = { 0x65, 0xFF, 0x40, 0x20 };
+	uint8_t packet[4] = { 0x65, 0xFF, 0x40, 0x20 };
 
 	if (region[pc->region].wtype==0) packet[2] = 0x00;
 	if (region[pc->region].wtype==1) packet[1] = 0x00;
@@ -263,7 +263,7 @@ void pweather(NXWSOCKET  s)
 void sysbroadcast(char *txt, ...) // System broadcast in bold text
 //Modified by N6 to use UNICODE packets
 {
-	UI08 unicodetext[512];
+	uint8_t unicodetext[512];
 
 	va_list argptr;
 	char msg[512];
@@ -276,8 +276,8 @@ void sysbroadcast(char *txt, ...) // System broadcast in bold text
 	char2wchar(msg);
 	memcpy(unicodetext, Unicode::temp, ucl);
 
-	UI32 lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	UI08 sysname[30]={ 0x00, };
+	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
+	uint8_t sysname[30]={ 0x00, };
 	strcpy((char *)sysname, "System");
 
 	NxwSocketWrapper sw;
@@ -298,7 +298,7 @@ void sysmessage(NXWSOCKET  s, const char *txt, ...) // System message (In lower 
 	if(s < 0)
 		return;
 
-	UI08 unicodetext[512];
+	uint8_t unicodetext[512];
 
 	va_list argptr;
 	char msg[512];
@@ -325,8 +325,8 @@ void sysmessage(NXWSOCKET  s, const char *txt, ...) // System message (In lower 
 	char2wchar(msg);
 	memcpy(unicodetext, Unicode::temp, ucl);
 
-	UI32 lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	UI08 sysname[30]={ 0x00, };
+	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
+	uint8_t sysname[30]={ 0x00, };
 	strcpy((char *)sysname, "System");
 
 	SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 6, 0x0387 /* Color - Previous default was 0x0040 - 0x03E9*/, 0x0003, lang, sysname, unicodetext,  ucl);
@@ -339,7 +339,7 @@ void sysmessage(NXWSOCKET  s, short color, const char *txt, ...) // System messa
 	if( s < 0)
 		return;
 
-	UI08 unicodetext[512];
+	uint8_t unicodetext[512];
 
 	va_list argptr;
 	char msg[512];
@@ -347,13 +347,13 @@ void sysmessage(NXWSOCKET  s, short color, const char *txt, ...) // System messa
 	//vsnprintf( msg, sizeof(msg)-1, txt, argptr );
         vsprintf( msg, txt, argptr );
 	va_end( argptr );
-	UI16 ucl = ( strlen ( msg ) * 2 ) + 2 ;
+	uint16_t ucl = ( strlen ( msg ) * 2 ) + 2 ;
 
 	char2wchar(msg);
 	memcpy(unicodetext, Unicode::temp, ucl);
 
-	UI32 lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	UI08 sysname[30]={ 0x00, };
+	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
+	uint8_t sysname[30]={ 0x00, };
 	strcpy((char *)sysname, "System");
 
 	SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 0, color, 0x0003, lang, sysname, unicodetext,  ucl);
@@ -365,8 +365,8 @@ void itemmessage(NXWSOCKET  s, char *txt, int serial, short color)
 // The message when an item is clicked (new interface, Duke)
 //Modified by N6 to use UNICODE packets
 
-	UI08 unicodetext[512];
-	UI16 ucl = ( strlen ( txt ) * 2 ) + 2 ;
+	uint8_t unicodetext[512];
+	uint16_t ucl = ( strlen ( txt ) * 2 ) + 2 ;
 
 	P_ITEM pi=pointers::findItemBySerial(serial);
 	VALIDATEPI(pi);
@@ -381,8 +381,8 @@ void itemmessage(NXWSOCKET  s, char *txt, int serial, short color)
 
 	color = 0x0481; // UOLBR patch to prevent client crash by Juliunus
 
-	UI32 lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	UI08 sysname[30]={ 0x00, };
+	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
+	uint8_t sysname[30]={ 0x00, };
 	strcpy((char *)sysname, "System");
 
 	SendUnicodeSpeechMessagePkt(s, serial, 0x0101, 6, color, 0x0003, lang, sysname, unicodetext,  ucl);
@@ -392,9 +392,9 @@ void itemmessage(NXWSOCKET  s, char *txt, int serial, short color)
 void backpack2(NXWSOCKET s, SERIAL serial) // Send corpse stuff
 {
 	int count=0, count2;
-	UI08 display1[7]={ 0x89, 0x00, };
-	UI08 display2[5]={ 0x00, };
-	UI08 bpopen2[5]={ 0x3C, 0x00, };
+	uint8_t display1[7]={ 0x89, 0x00, };
+	uint8_t display2[5]={ 0x00, };
+	uint8_t bpopen2[5]={ 0x3C, 0x00, };
 
 	P_ITEM cont=pointers::findItemBySerial( serial );
 
@@ -423,7 +423,7 @@ void backpack2(NXWSOCKET s, SERIAL serial) // Send corpse stuff
 			Xsend(s, display2, 5);
 		}
 	}
-	UI08 nul = 0;
+	uint8_t nul = 0;
 	Xsend(s, &nul, 1);	// Terminate with a 0
 //AoS/	Network->FlushBuffer(s);
 
@@ -432,7 +432,7 @@ void backpack2(NXWSOCKET s, SERIAL serial) // Send corpse stuff
 	ShortToCharPtr(count2, bpopen2+1);
 	Xsend(s, bpopen2, 5);
 
-	UI08 bpitem[20]={ 0x00, };
+	uint8_t bpitem[20]={ 0x00, };
 
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
@@ -454,7 +454,7 @@ void backpack2(NXWSOCKET s, SERIAL serial) // Send corpse stuff
 //AoS/	Network->FlushBuffer(s);
 }
 
-void MakeGraphicalEffectPkt_(UI08 pkt[28], UI08 type, UI32 src_serial, UI32 dst_serial, UI16 model_id, Location src_pos, Location dst_pos, UI08 speed, UI08 duration, UI08 adjust, UI08 explode )
+void MakeGraphicalEffectPkt_(uint8_t pkt[28], uint8_t type, uint32_t src_serial, uint32_t dst_serial, uint16_t model_id, Location src_pos, Location dst_pos, uint8_t speed, uint8_t duration, uint8_t adjust, uint8_t explode )
 {
 	pkt[1]=type;
 	LongToCharPtr(src_serial, pkt +2);
@@ -476,8 +476,8 @@ void MakeGraphicalEffectPkt_(UI08 pkt[28], UI08 type, UI32 src_serial, UI32 dst_
 void tileeffect(int x, int y, int z, char eff1, char eff2, char speed, char loop)
 {//AntiChrist
 
-	UI16 eff = (eff1<<8)|(eff2%256);
-	UI08 effect[28]={ 0x70, 0x00, };
+	uint16_t eff = (eff1<<8)|(eff2%256);
+	uint8_t effect[28]={ 0x70, 0x00, };
 
 Location pos1={ x, y, z, 0}, pos2={ 0, 0, 0, 0};
 
@@ -507,8 +507,8 @@ void senditem(NXWSOCKET  s, P_ITEM pi) // Send items (on ground)
 	VALIDATEPC(pc);
 
 	bool pack;
-	UI16 len;
-	UI08 itmput[20]={ 0x1A, 0x00, };
+	uint16_t len;
+	uint8_t itmput[20]={ 0x1A, 0x00, };
 
 	if ( pi->visible>=1 && !(pc->IsGM()) )
 	return;
@@ -641,9 +641,9 @@ void senditem_lsd(NXWSOCKET  s, ITEM i,char color1, char color2, int x, int y, s
 	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
-	UI16 color = (color1<<8)|(color2%256);
-	UI16 len;
-	UI08 itmput[20]={ 0x1A, 0x00, };
+	uint16_t color = (color1<<8)|(color2%256);
+	uint16_t len;
+	uint8_t itmput[20]={ 0x1A, 0x00, };
 
 	if ( pi->visible>=1 && !(pc->IsGM()) ) return; // workaround for missing gm-check client side for visibity since client 1.26.2
 	// for lsd we dont need extra work for type 1 as in send_item
@@ -732,9 +732,9 @@ void chardel (NXWSOCKET  s) // Deletion of character
  */
 
 	int i;
-	UI08 delete_error_msg[2] = {0x85, 0x05};
-	UI08 delete_resend_char_1[6]={0x86, 0x01, 0x30, 0x00}; // 1 + 2 + 1 + 5*60 = 304 = 0x0130
-	UI08 delete_resend_char_2[61];
+	uint8_t delete_error_msg[2] = {0x85, 0x05};
+	uint8_t delete_resend_char_1[6]={0x86, 0x01, 0x30, 0x00}; // 1 + 2 + 1 + 5*60 = 304 = 0x0130
+	uint8_t delete_resend_char_2[61];
 
 	P_CHAR TrashMeUp = NULL;
 	NxwCharWrapper sc;
@@ -818,13 +818,13 @@ void chardel (NXWSOCKET  s) // Deletion of character
 \brief Updates stats to nearbye players
 \param stat stat which changed
 */
-void cChar::updateStats(SI32 stat)
+void cChar::updateStats(int32_t stat)
 {
 	checkSafeStats();
 
 	int a = 0, b = 0;
 
-	UI08 updater[9]={ 0xA1, 0x00, };
+	uint8_t updater[9]={ 0xA1, 0x00, };
 
 	switch (stat)
 	{
@@ -895,7 +895,7 @@ void updates(NXWSOCKET  s) // Update Window
 	iter->rewind();
 	strcpy(script1, iter->getEntry()->getFullLine().c_str());
 
-	UI08 updscroll[10]={ 0xA6, 0x00, };
+	uint8_t updscroll[10]={ 0xA6, 0x00, };
 	ShortToCharPtr(y, updscroll +1); 		// len of pkt.
 	updscroll[3]=2; 				// MOTD ? Type: 0x00 tips, 0x02 updates
 	LongToCharPtr(0, updscroll +4);			// tip num.
@@ -913,7 +913,7 @@ void updates(NXWSOCKET  s) // Update Window
 //AoS/	Network->FlushBuffer(s);
 }
 
-void tips(NXWSOCKET s, UI16 i, UI08 want_next) // Tip of the day window
+void tips(NXWSOCKET s, uint16_t i, uint8_t want_next) // Tip of the day window
 {
 	int x, y, j;
 	char temp[512];
@@ -967,7 +967,7 @@ void tips(NXWSOCKET s, UI16 i, UI08 want_next) // Tip of the day window
 	iter->rewind();
 	strcpy(script1, iter->getEntry()->getFullLine().c_str());//discards the {
 
-	UI08 updscroll[10]={ 0xA6, 0x00, };
+	uint8_t updscroll[10]={ 0xA6, 0x00, };
 	ShortToCharPtr(y, updscroll +1); 		// len of pkt.
 	updscroll[3]=0; 				// Type: 0x00 tips, 0x02 updates
 	LongToCharPtr(i, updscroll +4);			// tip num.
@@ -1014,15 +1014,15 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 		}
 		if(!(pc->unicode))
 		{
-			UI32 id;
-			UI16 model,font, color;
+			uint32_t id;
+			uint16_t model,font, color;
 
 			id = pc->getSerial32();
 			model = pc->getId();
 			color = ShortFromCharPtr(buffer[s] +4);		// use color from client
 			font = (buffer[s][6]<<8)|(pc->fonttype%256);	// use font ("not only") from  client
 
-			UI08 name[30]={ 0x00, };
+			uint8_t name[30]={ 0x00, };
 			strcpy((char *)name, pc->getCurrentNameC());
 
 			NxwSocketWrapper sw;
@@ -1036,10 +1036,10 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 		} // end unicode IF
 		else
 		{
-			UI32 id;
-			UI16 model,font, color;
-			UI08 unicodetext[512];
-			UI16 ucl = ( strlen ( &nonuni[0] ) * 2 ) + 2 ;
+			uint32_t id;
+			uint16_t model,font, color;
+			uint8_t unicodetext[512];
+			uint16_t ucl = ( strlen ( &nonuni[0] ) * 2 ) + 2 ;
 
 			char2wchar(&nonuni[0]);
 			memcpy(unicodetext, Unicode::temp, ucl);
@@ -1049,8 +1049,8 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 			color = ShortFromCharPtr(buffer[s] +4);		// use color from client
 			font = (buffer[s][6]<<8)|(pc->fonttype%256);	// use font ("not only") from  client
 
-			UI32 lang =  LongFromCharPtr(buffer[s] +9);
-			UI08 name[30]={ 0x00, };
+			uint32_t lang =  LongFromCharPtr(buffer[s] +9);
+			uint8_t name[30]={ 0x00, };
 			strcpy((char *)name, pc->getCurrentNameC());
 
 			NxwSocketWrapper sw;
@@ -1077,14 +1077,14 @@ void itemtalk(P_ITEM pi, char *txt)
 		NXWSOCKET s=sw.getSocket();
 		if(s==INVALID) continue;
 
-		UI08 unicodetext[512];
-		UI16 ucl = ( strlen ( txt ) * 2 ) + 2 ;
+		uint8_t unicodetext[512];
+		uint16_t ucl = ( strlen ( txt ) * 2 ) + 2 ;
 
 		char2wchar(txt);
 		memcpy(unicodetext, Unicode::temp, ucl);
 
-		UI32 lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-		UI08 name[30]={ 0x00, };
+		uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
+		uint8_t name[30]={ 0x00, };
 		strcpy((char *)name, pi->getCurrentNameC());
 
 		SendUnicodeSpeechMessagePkt(s, pi->getSerial32(), pi->getId(), 0, 0x0481, 0x0003, lang, name, unicodetext,  ucl);
@@ -1105,8 +1105,8 @@ void staticeffect(CHARACTER player, unsigned char eff1, unsigned char eff2, unsi
 	P_CHAR pc=MAKE_CHAR_REF(player);
 	VALIDATEPC(pc);
 
-	UI16 eff = (eff1<<8)|(eff2%256);
-	UI08 effect[28]={ 0x70, 0x00, };
+	uint16_t eff = (eff1<<8)|(eff2%256);
+	uint8_t effect[28]={ 0x70, 0x00, };
 
     	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	 int a0,a1,a2,a3,a4;
@@ -1189,8 +1189,8 @@ void movingeffect(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned
 	P_CHAR dst=MAKE_CHAR_REF(dest);
 	VALIDATEPC(dst);
 
-	UI16 eff = (eff1<<8)|(eff2%256);
-	UI08 effect[28]={ 0x70, 0x00, };
+	uint16_t eff = (eff1<<8)|(eff2%256);
+	uint8_t effect[28]={ 0x70, 0x00, };
 
  	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	Location srcpos= src->getPosition();
@@ -1253,8 +1253,8 @@ void staticeffect2(P_ITEM pi, unsigned char eff1, unsigned char eff2, unsigned c
 {
 	VALIDATEPI(pi);
 
-	UI16 eff = (eff1<<8)|(eff2%256);
-	UI08 effect[28]={ 0x70, 0x00, };
+	uint16_t eff = (eff1<<8)|(eff2%256);
+	uint8_t effect[28]={ 0x70, 0x00, };
 
  	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
@@ -1315,8 +1315,8 @@ void bolteffect2(CHARACTER player,char a1,char a2)	// experimenatal, lb
 	P_CHAR pc=MAKE_CHAR_REF(player);
 	VALIDATEPC(pc);
 
-	UI16 eff = (a1<<8)|(a2%256);
-	UI08 effect[28]={ 0x70, 0x00, };
+	uint16_t eff = (a1<<8)|(a2%256);
+	uint8_t effect[28]={ 0x70, 0x00, };
 
 	int x,y;
 	Location charpos = pc->getPosition(), pos2;
@@ -1359,8 +1359,8 @@ void movingeffect3(CHARACTER source, unsigned short x, unsigned short y, signed 
 	P_CHAR src=MAKE_CHAR_REF(source);
 	VALIDATEPC(src);
 
-	UI16 eff = (eff1<<8)|(eff2%256);
-	UI08 effect[28]={ 0x70, 0x00, };
+	uint16_t eff = (eff1<<8)|(eff2%256);
+	uint8_t effect[28]={ 0x70, 0x00, };
 
 	Location srcpos= src->getPosition(), pos2 = { x, y, z, 0};
 
@@ -1381,10 +1381,10 @@ MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial32(), 0, eff, srcpos, pos2, 
 }
 
 // staticeffect3 is for effects on items
-void staticeffect3(UI16 x, UI16 y, SI08 z, unsigned char eff1, unsigned char eff2, char speed, char loop, char explode)
+void staticeffect3(uint16_t x, uint16_t y, int8_t z, unsigned char eff1, unsigned char eff2, char speed, char loop, char explode)
 {
-	UI16 eff = (eff1<<8)|(eff2%256);
-	UI08 effect[28]={ 0x70, 0x00, };
+	uint16_t eff = (eff1<<8)|(eff2%256);
+	uint8_t effect[28]={ 0x70, 0x00, };
 
 Location pos = { x, y, z, 0};
 
@@ -1414,8 +1414,8 @@ void movingeffect3(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigne
 
 
 	//0x0f 0x42 = arrow 0x1b 0xfe=bolt
-	UI16 eff = (eff1<<8)|(eff2%256);
-	UI08 effect[28]={ 0x70, 0x00, };
+	uint16_t eff = (eff1<<8)|(eff2%256);
+	uint8_t effect[28]={ 0x70, 0x00, };
 
 	Location srcpos= src->getPosition();
 	Location destpos= dst->getPosition();
@@ -1448,8 +1448,8 @@ void movingeffect2(CHARACTER source, int dest, unsigned char eff1, unsigned char
 	P_CHAR pc_source = MAKE_CHAR_REF(source);
 	VALIDATEPC(pc_source);
 
-	UI16 eff = (eff1<<8)|(eff2%256);
-	UI08 effect[28]={ 0x70, 0x00, };
+	uint16_t eff = (eff1<<8)|(eff2%256);
+	uint8_t effect[28]={ 0x70, 0x00, };
 
 	Location srcpos= pc_source->getPosition(), pos2 = pi->getPosition();
 
@@ -1468,10 +1468,10 @@ MakeGraphicalEffectPkt_(effect, 0x00, pc_source->getSerial32(), pi->getSerial32(
 	}
 }
 
-void SendPauseResumePkt(NXWSOCKET s, UI08 flag)
+void SendPauseResumePkt(NXWSOCKET s, uint8_t flag)
 {
 /* Flag: 0=pause, 1=resume */ // uhm.... O_o ... or viceversa ? -_-;
-	UI08 m2[2]={ 0x33, 0x00 };
+	uint8_t m2[2]={ 0x33, 0x00 };
 
 	m2[1]=flag;
 	Xsend(s, m2, 2);
@@ -1480,16 +1480,16 @@ void SendPauseResumePkt(NXWSOCKET s, UI08 flag)
 
 void SendDeleteObjectPkt(NXWSOCKET s, SERIAL serial)
 {
-	UI08 removeitem[5] = { 0x1D, 0x00, };
+	uint8_t removeitem[5] = { 0x1D, 0x00, };
 	LongToCharPtr(serial, removeitem +1);
 
 	Xsend(s, removeitem, 5);
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SendDrawGamePlayerPkt(NXWSOCKET s, UI32 player_id, UI16 model, UI08 unk1, UI16 color, UI08 flag, Location pos, UI16 unk2, UI08 dir, bool useDispZ)
+void SendDrawGamePlayerPkt(NXWSOCKET s, uint32_t player_id, uint16_t model, uint8_t unk1, uint16_t color, uint8_t flag, Location pos, uint16_t unk2, uint8_t dir, bool useDispZ)
 {
-	UI08 goxyz[19]={ 0x20, 0x00, };
+	uint8_t goxyz[19]={ 0x20, 0x00, };
 
 	LongToCharPtr(player_id, goxyz +1);
 	ShortToCharPtr(model, goxyz +5);
@@ -1505,9 +1505,9 @@ void SendDrawGamePlayerPkt(NXWSOCKET s, UI32 player_id, UI16 model, UI08 unk1, U
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SendUpdatePlayerPkt(NXWSOCKET s, UI32 player_id, UI16 model, Location pos, UI08 dir, UI16 color, UI08 flag, UI08 hi_color)
+void SendUpdatePlayerPkt(NXWSOCKET s, uint32_t player_id, uint16_t model, Location pos, uint8_t dir, uint16_t color, uint8_t flag, uint8_t hi_color)
 {
-	UI08 extmove[17]={ 0x77, 0x00 };
+	uint8_t extmove[17]={ 0x77, 0x00 };
 
 	LongToCharPtr(player_id, extmove +1);
 	ShortToCharPtr(model, extmove +5);
@@ -1527,8 +1527,8 @@ void SendDrawObjectPkt(NXWSOCKET s, P_CHAR pc, int z)
 {
 	P_CHAR pc_currchar=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc_currchar);
-	UI32 k;
-	UI08 oc[1024]={ 0x78, 0x00, };
+	uint32_t k;
+	uint8_t oc[1024]={ 0x78, 0x00, };
 
 	Location charpos = pc->getPosition();
 
@@ -1589,7 +1589,7 @@ void SendDrawObjectPkt(NXWSOCKET s, P_CHAR pc, int z)
 			}
 	}
 
-	UI32 ser = 0; 	// Not well understood. It's a serial number. I set this to my serial number,
+	uint32_t ser = 0; 	// Not well understood. It's a serial number. I set this to my serial number,
 			// and all of my messages went to my paperdoll gump instead of my character's
 			// head, when I was a character with serial number 0 0 0 1.
 	LongToCharPtr(ser, oc+k);
@@ -1601,10 +1601,10 @@ void SendDrawObjectPkt(NXWSOCKET s, P_CHAR pc, int z)
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SendSecureTradingPkt(NXWSOCKET s, UI08 action, UI32 id1, UI32 id2, UI32 id3)
+void SendSecureTradingPkt(NXWSOCKET s, uint8_t action, uint32_t id1, uint32_t id2, uint32_t id3)
 {
-	UI16 len;
-	UI08 msg[17]={ 0x6F, 0x00, };
+	uint16_t len;
+	uint8_t msg[17]={ 0x6F, 0x00, };
 
 
 	len = 17;		//Size - no name in this message -  so len is fixed
@@ -1619,10 +1619,10 @@ void SendSecureTradingPkt(NXWSOCKET s, UI08 action, UI32 id1, UI32 id2, UI32 id3
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SendSpeechMessagePkt(NXWSOCKET s, UI32 id, UI16 model, UI08 type, UI16 color, UI16 fonttype, UI08 sysname[30],  char *text)
+void SendSpeechMessagePkt(NXWSOCKET s, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint8_t sysname[30],  char *text)
 {
-        UI16 tl, len = strlen((char *)text) + 1;
-        UI08 talk[14]={ 0x1C, 0x00, };
+        uint16_t tl, len = strlen((char *)text) + 1;
+        uint8_t talk[14]={ 0x1C, 0x00, };
 
         tl = 14 + 30  + len;  // 44(header) + len + null term.
 
@@ -1640,10 +1640,10 @@ void SendSpeechMessagePkt(NXWSOCKET s, UI32 id, UI16 model, UI08 type, UI16 colo
 }
 
 
-void SendUnicodeSpeechMessagePkt(NXWSOCKET s, UI32 id, UI16 model, UI08 type, UI16 color, UI16 fonttype, UI32 lang, UI08 sysname[30], UI08 *unicodetext, UI16 unicodelen)
+void SendUnicodeSpeechMessagePkt(NXWSOCKET s, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint32_t lang, uint8_t sysname[30], uint8_t *unicodetext, uint16_t unicodelen)
 {
-	UI16 tl;
-	UI08 talk2[18]={ 0xAE, 0x00, };
+	uint16_t tl;
+	uint8_t talk2[18]={ 0xAE, 0x00, };
 
 	tl = 18 + 30 + unicodelen;
 
@@ -1661,10 +1661,10 @@ void SendUnicodeSpeechMessagePkt(NXWSOCKET s, UI32 id, UI16 model, UI08 type, UI
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SendPlaySoundEffectPkt(NXWSOCKET s, UI08 mode, UI16 sound_model, UI16 unkn, Location pos, bool useDispZ)
+void SendPlaySoundEffectPkt(NXWSOCKET s, uint8_t mode, uint16_t sound_model, uint16_t unkn, Location pos, bool useDispZ)
 {
-	UI08 sfx[12]={ 0x54, 0x00, };
-	SI16 Z;
+	uint8_t sfx[12]={ 0x54, 0x00, };
+	int16_t Z;
 
 	Z = (useDispZ)? pos.dispz : pos.z;
 
@@ -1713,11 +1713,11 @@ void sendshopinfo(int s, int c, P_ITEM pi)
 	char cFoundItems=0;
 	int k, m1t, m2t, value,serial;
 
-	UI08 itemname[256]={ 0x00, };
+	uint8_t itemname[256]={ 0x00, };
 
-	UI08 m1[6096]={ 0x3C, 0x00, };	// Container content message
+	uint8_t m1[6096]={ 0x3C, 0x00, };	// Container content message
 
-	UI08 m2[6096]={ 0x74, 0x00, };	// Buy window details message
+	uint8_t m2[6096]={ 0x74, 0x00, };	// Buy window details message
 
 	LongToCharPtr(pi->getSerial32(), m2+3); //Container serial number
 	m2[7]=0; // Count of items;
@@ -1734,7 +1734,7 @@ void sendshopinfo(int s, int c, P_ITEM pi)
 		if (ISVALIDPI(pj))
 			if ((m2[7]!=255) && (pj->amount!=0) ) // 255 items max per shop container
 			{
-				UI08 namelen;
+				uint8_t namelen;
 				if (m2t>6000 || m1t>6000) break;
 
 				LongToCharPtr(pj->getSerial32(), m1+m1t+0);//Item serial number
@@ -1804,7 +1804,7 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 	P_ITEM pack= pcs->getBackpack();
 	VALIDATEPIR(pack, 0);
 
-	UI08 m1[2048]={ 0x9E, 0x00, };
+	uint8_t m1[2048]={ 0x9E, 0x00, };
 
 	LongToCharPtr(pc->getSerial32(), m1 +3);
 	ShortToCharPtr(0, m1 +7);	// Num items  m1[7],m1[8]
@@ -1841,7 +1841,7 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 						pj1->type==pj->type &&
 						((SrvParms->sellbyname==0)||(SrvParms->sellbyname==1 && (!strcmp(ciname,cinam2))))) // If the names are the same! --- Magius(CHE)
 					{
-						UI08 namelen;
+						uint8_t namelen;
 						LongToCharPtr(pj1->getSerial32(), m1+m1t+0);
 						ShortToCharPtr(pj1->getId(),m1+m1t+4);
 						ShortToCharPtr(pj1->getColor(),m1+m1t+6);
@@ -1908,8 +1908,8 @@ void sendtradestatus(P_ITEM c1, P_ITEM c2)
 	s1 = p1->getSocket();
 	s2 = p2->getSocket();
 
-	SendSecureTradingPkt(s1, 0x02, c1->getSerial32(), (UI32) (c1->morez%256), (UI32) (c2->morez%256));
-	SendSecureTradingPkt(s2, 0x02, c2->getSerial32(), (UI32) (c2->morez%256), (UI32) (c1->morez%256));
+	SendSecureTradingPkt(s1, 0x02, c1->getSerial32(), (uint32_t) (c1->morez%256), (uint32_t) (c2->morez%256));
+	SendSecureTradingPkt(s2, 0x02, c2->getSerial32(), (uint32_t) (c2->morez%256), (uint32_t) (c1->morez%256));
 
 }
 
@@ -1982,17 +1982,17 @@ void tellmessage(int i, int s, char *txt)
 	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
-	UI08 unicodetext[512];
+	uint8_t unicodetext[512];
  	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
 	sprintf(temp, TRANSLATE("GM tells %s: %s"), pc->getCurrentNameC(), txt);
 
-	UI16 ucl = ( strlen ( temp ) * 2 ) + 2 ;
+	uint16_t ucl = ( strlen ( temp ) * 2 ) + 2 ;
 	char2wchar(temp);
 	memcpy(unicodetext, Unicode::temp, ucl);
 
-	UI32 lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	UI08 sysname[30]={ 0x00, };
+	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
+	uint8_t sysname[30]={ 0x00, };
 	strcpy((char *)sysname, "System");
 
 	SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 0, 0x0035, 0x0003, lang, sysname, unicodetext,  ucl);
@@ -2281,14 +2281,14 @@ void sysmessageflat(NXWSOCKET  s, short color, const char *txt)
 // System message (In lower left corner)
 //Modified by N6 to use UNICODE packets
 {
-	UI08 unicodetext[512];
-	UI16 ucl = ( strlen ( txt ) * 2 ) + 2 ;
+	uint8_t unicodetext[512];
+	uint16_t ucl = ( strlen ( txt ) * 2 ) + 2 ;
 
 	char2wchar(txt);
 	memcpy(unicodetext, Unicode::temp, ucl);
 
-	UI32 lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	UI08 sysname[30]={ 0x00, };
+	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
+	uint8_t sysname[30]={ 0x00, };
 	strcpy((char *)sysname, "System");
 
 	SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 6, color, 0x0003, lang, sysname, unicodetext,  ucl);

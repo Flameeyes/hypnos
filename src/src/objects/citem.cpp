@@ -34,7 +34,7 @@
 \param color color of the item
 \param where Location to add the item to
 */
-static pItem cItem::addByID(SI32 id, UI16 nAmount, const char *cName, UI16 color, Location where)
+static pItem cItem::addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, Location where)
 {
 	pItem pi = item::spawnItemByIdInternal(nAmount, cName, id, color);
 	if ( where.x != 0xFFFF )
@@ -50,7 +50,7 @@ static pItem cItem::addByID(SI32 id, UI16 nAmount, const char *cName, UI16 color
 \brief Tells if an id is a house
 \param id id to check
 */
-static const bool cItem::isHouse(UI16 id)
+static const bool cItem::isHouse(uint16_t id)
 {
 	if (id < 0x0040) return false;
 
@@ -85,8 +85,8 @@ static void cItem::loadWeaponsInfo()
 	cScpIterator* iter = NULL;
 	char script1[1024];
 	char script2[1024];
-	UI16 id=0xFFFF;
-	UI16 type=weaponSword1H;
+	uint16_t id=0xFFFF;
+	uint16_t type=weaponSword1H;
 
 	int loopexit=0;
 	do
@@ -120,7 +120,7 @@ static void cItem::loadWeaponsInfo()
 \param id id of the weapon
 \param type mask of weapon types to tests
 */
-static const bool cItem::isWeaponLike( UI16 id, UI16 type )
+static const bool cItem::isWeaponLike( uint16_t id, uint16_t type )
 {
 	WeaponMap::iterator iter( weaponinfo.find( id ) );
 	if( iter==weaponinfo.end() )
@@ -352,7 +352,7 @@ cItem& cItem::operator=(cItem& b)
 	ammo = b.ammo;
 	ammoFx = b.ammoFx;
 
-        UI32 i;
+        uint32_t i;
         for ( i = 0; i < MAX_RESISTANCE_INDEX; i++ )
                 resists[i] = b.resists[i];
 
@@ -609,9 +609,9 @@ void cItem::explode(NXWSOCKET  s)
 Reduces the given item's amount by 'amt' and deletes it if necessary and returns 0.
 If the request could not be fully satisfied, the remainder is returned
 */
-SI32 cItem::ReduceAmount(const SI16 amt)
+int32_t cItem::ReduceAmount(const int16_t amt)
 {
-	UI32 rest=0;
+	uint32_t rest=0;
 	if( amount > amt )
 	{
 		amount-=amt;
@@ -629,7 +629,7 @@ SI32 cItem::ReduceAmount(const SI16 amt)
 \brief increase the amount of piled items
 \param amt amount to add to item amount
 */
-SI32 cItem::IncreaseAmount(const SI16 amt)
+int32_t cItem::IncreaseAmount(const int16_t amt)
 {
 	amount+= amt;
 	Refresh();
@@ -646,7 +646,7 @@ const magic::FieldType cItem::isFieldSpellItem() const
 	return fieldInvalid;
 }
 
-void cItem::SetMultiSerial(SI32 mulser)
+void cItem::SetMultiSerial(int32_t mulser)
 {
 	if (getMultiSerial32()!=INVALID)	// if it was set, remove the old one
 		pointers::delFromMultiMap(this);
@@ -702,7 +702,7 @@ inline bool operator !=( cItem& a, cItem& b ) {
 \param nParams number of params for the event handler
 \param params params for the event handler
 */
-int cItem::handleEvent(UI08 code, UI08 nParams, UI32 *params)
+int cItem::handleEvent(uint8_t code, uint8_t nParams, uint32_t *params)
 {
 	return PythonInterface::handleEvent(
 		events[code], etItem, code,
@@ -971,7 +971,7 @@ void cItem::Refresh()
 \param rec not need to use, only internal for have a max number or recursion
 \note max recursion = 50
 */
-pItem cItem::getOutMostCont( SI16 rec )
+pItem cItem::getOutMostCont( int16_t rec )
 {
 	if ( rec<0	// too many recursions
 		|| (isInWorld()) // in the world
@@ -1002,7 +1002,7 @@ pBody cItem::getPackOwner()
 \return distance ( if error is returned VERY_VERY_FAR )
 \param pc the char
 */
-UI32 cItem::distFrom( pChar pc )
+uint32_t cItem::distFrom( pChar pc )
 {
 	if ( ! pc )
 		return VERY_VERY_FAR;
@@ -1017,7 +1017,7 @@ UI32 cItem::distFrom( pChar pc )
 \param pi the item
 \note it check also if is subcontainer, or weared. so np call freely
 */
-UI32 cItem::distFrom( pItem pi )
+uint32_t cItem::distFrom( pItem pi )
 {
 	if ( ! pi )
 		return VERY_VERY_FAR;
@@ -1032,7 +1032,7 @@ UI32 cItem::distFrom( pItem pi )
 
 	if(omc->isInWorld() ) {
 		if( myomc->isInWorld() )
-			return (UI32)dist(myomc->getPosition(),omc->getPosition());
+			return (uint32_t)dist(myomc->getPosition(),omc->getPosition());
 		else { //this is weared
 			if(isCharSerial(omc->getContainer()->getSerial()))
 			{ //can be weared
@@ -1040,7 +1040,7 @@ UI32 cItem::distFrom( pItem pi )
 				if ( ! pc )
 					return VERY_VERY_FAR;
 
-				return (UI32)dist(pc->getPosition(),omc->getPosition());
+				return (uint32_t)dist(pc->getPosition(),omc->getPosition());
 			}
 			else return VERY_VERY_FAR; //not world, not weared.. and another omc can't be
 		}
@@ -1051,7 +1051,7 @@ UI32 cItem::distFrom( pItem pi )
 			if ( ! pc_i )
 				return VERY_VERY_FAR;
 			if( myomc->isInWorld() )
-				return (UI32)dist(pc_i->getPosition(),myomc->getPosition());
+				return (uint32_t)dist(pc_i->getPosition(),myomc->getPosition());
 			else
 				return pc_i->distFrom(myomc);
 		}
@@ -1064,7 +1064,7 @@ UI32 cItem::distFrom( pItem pi )
 \brief Calculate the value of the item
 \param bvalue base value
 */
-const SI32 cItem::calcValue(SI32 bvalue)
+const int32_t cItem::calcValue(int32_t bvalue)
 {
 	int mod=10;
 

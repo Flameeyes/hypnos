@@ -35,16 +35,16 @@ string  Race::globalWebLink;
 short	Race::startLocation[3]	= { 0, 0, 0 };
 bool	Race::teleportOnEnlist	= false;
 bool	Race::withWebInterface	= false;
-std::map<UI32, class Race*> Race::raceMap;
+std::map<uint32_t, class Race*> Race::raceMap;
 cScpScript* Race::script ;
 
 //
 //	STATIC FUNCTIONS
 //
 
-Race* Race::getRace( UI32 raceId )
+Race* Race::getRace( uint32_t raceId )
 {
-	std::map<UI32, class Race*>::iterator raceIter = raceMap.find( raceId );
+	std::map<uint32_t, class Race*>::iterator raceIter = raceMap.find( raceId );
 	if ( raceIter != raceMap.end() )
 		return raceIter->second;
 	else
@@ -52,12 +52,12 @@ Race* Race::getRace( UI32 raceId )
 }
 
 
-RequiredType Race::getBeardPerm( UI32 raceId )
+RequiredType Race::getBeardPerm( uint32_t raceId )
 {
 	return raceMap[raceId]->beardPerm;
 }
 
-RequiredType Race::getHairPerm( UI32 raceId )
+RequiredType Race::getHairPerm( uint32_t raceId )
 {
 	return raceMap[raceId]->hairPerm;
 }
@@ -67,7 +67,7 @@ bool Race::isRaceSystemActive( void )
 	return activeRaceSystem;
 }
 
-bool Race::isPlayerRace( const UI32 raceId )
+bool Race::isPlayerRace( const uint32_t raceId )
 {
 	return raceMap[raceId]->isPlayerRace();
 }
@@ -90,7 +90,7 @@ void Race::parse( void )
 	parseRaceSection();
 
 //DEBUG
-//	map<UI32, class Race*>::iterator it(raceMap.begin()), end(raceMap.end());
+//	map<uint32_t, class Race*>::iterator it(raceMap.begin()), end(raceMap.end());
 //	for(;it!=end;++it)
 //		it->second->show();
 //	SDbgOut("Finished race parsing\n");
@@ -101,7 +101,7 @@ void Race::parse( void )
 void Race::parseGlobalSection( void )
 {
 	std::string	sectionName = "SECTION GLOBAL";
-	UI32 globalSectionCount = script->countSectionInStr( sectionName );
+	uint32_t globalSectionCount = script->countSectionInStr( sectionName );
 
 	if ( globalSectionCount != 1 )
 	{
@@ -113,7 +113,7 @@ void Race::parseGlobalSection( void )
 		return;
 	}
 
-	UI32		/*i,*/
+	uint32_t		/*i,*/
 			loopexit;
 	cScpIterator*	iter = NULL;
 	string		lha, rha;
@@ -155,7 +155,7 @@ void Race::parseGlobalSection( void )
 				{
 					// quick and dirty for now
 					// this will be fixed using a special class location
-					UI32 x, y, z;
+					uint32_t x, y, z;
 					sscanf( rha.c_str(), "%u %u %u", &x, &y, &z);
 					startLocation[0] = x;
 					startLocation[1] = y;
@@ -208,7 +208,7 @@ void Race::parseGlobalSection( void )
 void Race::parseRaceSection( void )
 {
 	std::string	sectionName = "SECTION RACE ";
-	UI32 raceCount = script->countSectionInStr( sectionName );
+	uint32_t raceCount = script->countSectionInStr( sectionName );
 
 	if ( raceCount <= 0 )
 	{
@@ -220,7 +220,7 @@ void Race::parseRaceSection( void )
 		return;
 	}
 
-	UI32		/*i,*/
+	uint32_t		/*i,*/
 //			raceId,
 			loopexit,
 			descriptionIndex;
@@ -280,7 +280,7 @@ void Race::parseRaceSection( void )
 					else if	( lha == "DEXSTART" )					race->dexStart = str2num( rha );
 					break;
 				case 'E':
-					if 			( lha == "ENEMY" )						race->m_mapRacialRelations[ (UI32) str2num( rha ) ] = ENEMY;
+					if 			( lha == "ENEMY" )						race->m_mapRacialRelations[ (uint32_t) str2num( rha ) ] = ENEMY;
 					else if ( lha == "ENTICEMENT" ||
 						  			lha == "EVALUATEINTELLECT")	race->parseSkill( rha );
 					break;
@@ -288,7 +288,7 @@ void Race::parseRaceSection( void )
 					if 			( lha == "FENCING" ||
 					     			lha == "FISHING" ||
 					     			lha == "FORENSICS")					race->parseSkill( rha );
-					else if ( lha == "FRIEND" ) 					race->m_mapRacialRelations[ (UI32) str2num( rha ) ] = FRIEND;
+					else if ( lha == "FRIEND" ) 					race->m_mapRacialRelations[ (uint32_t) str2num( rha ) ] = FRIEND;
 					break;
 				case 'G':
 					if 			( lha == "GENDER" ) 					race->gender = rha;
@@ -329,7 +329,7 @@ void Race::parseRaceSection( void )
 					break;
 				case 'N':
 					if 			( lha == "NAME" ) 						race->name = rha;
-					else if ( lha == "NEUTRAL" )					race->m_mapRacialRelations[ (UI32) str2num( rha ) ] = NEUTRAL;
+					else if ( lha == "NEUTRAL" )					race->m_mapRacialRelations[ (uint32_t) str2num( rha ) ] = NEUTRAL;
 					break;
 				case 'P':
 					if 			( lha == "PLURALNAME" ) 			race->pluralName = rha;
@@ -384,7 +384,7 @@ void Race::parseRaceSection( void )
 
 void Race::parseRaceDescription( const string& sectionName )
 {
-	UI32		loopexit,
+	uint32_t		loopexit,
 			descriptionIndex;
 	cScpIterator*	iter = NULL;
 	string		section("SECTION DESCRIPTION ");
@@ -411,7 +411,7 @@ void Race::parseRaceDescription( const string& sectionName )
 
 void Race::parsePoisonResistance( const string& sectionName )
 {
-	UI32		loopexit;
+	uint32_t		loopexit;
 	cScpIterator*	iter = NULL;
 	string		section("SECTION POISONRESISTANCE ");
 	section += sectionName;
@@ -497,7 +497,7 @@ void Race::parseBeardColor( const string& sectionName )
 	}
 	else
 	{
-		UI32 loopexit = 0;
+		uint32_t loopexit = 0;
 		string color;
 		this->beardColor.clear();
 		do
@@ -522,7 +522,7 @@ void Race::parseHairColor( const string& sectionName )
 	}
 	else
 	{
-		UI32 loopexit = 0;
+		uint32_t loopexit = 0;
 		string color;
 		this->hairColor.clear();
 		do
@@ -553,7 +553,7 @@ void Race::parseSkinColor( const string& sectionName )
 	}
 	else
 	{
-		UI32 loopexit = 0;
+		uint32_t loopexit = 0;
 		string color;
 		this->skinColor.clear();
 		do
@@ -644,7 +644,7 @@ void Race::parseStartItemDetails( const string& itemReference )
 
 void Race::scriptConOut( void )
 {
-	UI32 raceCount = script->countSectionInStr("SECTION");
+	uint32_t raceCount = script->countSectionInStr("SECTION");
 
 	if ( raceCount <= 0 )
 	{
@@ -655,7 +655,7 @@ void Race::scriptConOut( void )
 		return;
 	}
 
-	UI32		/*i,*/
+	uint32_t		/*i,*/
 			loopexit;
 	cScpIterator*	iter = NULL;
 	char 		sect[512], script1[512], script2[512];
@@ -689,7 +689,7 @@ void Race::reload( const char* fileName )
 	// delete all RaceInstances
 	// as there are no pointer references in cChar but only an numerical index no update of pc's or npc's is necessary
 	//
-	map<UI32, class Race*>::iterator raceIter( raceMap.begin() ), raceEnd( raceMap.end() );
+	map<uint32_t, class Race*>::iterator raceIter( raceMap.begin() ), raceEnd( raceMap.end() );
 
 	for(; raceIter != raceEnd; ++raceIter )	safedelete(raceIter->second);
 	load( fileName );
@@ -697,12 +697,12 @@ void Race::reload( const char* fileName )
 
 
 
-const std::string* Race::getName( const UI32 raceId )
+const std::string* Race::getName( const uint32_t raceId )
 {
 	return &raceMap[raceId]->name;
 }
 
-const std::string* Race::getPluralName( const UI32 raceId )
+const std::string* Race::getPluralName( const uint32_t raceId )
 {
 	return raceMap[raceId]->getPluralName();
 }
@@ -712,17 +712,17 @@ const std::string* Race::getPluralName( void )
 	return &pluralName;
 }
 
-void Race::setName( const UI32 raceId, const char *newName )
+void Race::setName( const uint32_t raceId, const char *newName )
 {
 //		raceMap[raceId]->Name = newName;
 }
 
-R32 Race::getPoisonResistance( const UI32 raceId, PoisonType poisonStrength )
+R32 Race::getPoisonResistance( const uint32_t raceId, PoisonType poisonStrength )
 {
 	R32 pr = 0.0;
 	if ( isRaceSystemActive() )
 	{
-		std::map<UI32, class Race*>::iterator raceIter = raceMap.find( raceId );
+		std::map<uint32_t, class Race*>::iterator raceIter = raceMap.find( raceId );
 		if ( raceIter != raceMap.end() )
 		{
 			if( raceIter->second->isRaceActive() )
@@ -763,23 +763,23 @@ bool Race::isPlayerRace( void )
 	return ( raceType == PCRACE || raceType == PCNPCRACE );
 }
 
-void Race::setRacialRelation( UI32 raceId, RACIALRELATION relation )
+void Race::setRacialRelation( uint32_t raceId, RACIALRELATION relation )
 {
 	m_mapRacialRelations[ raceId ] = relation;
 }
 
-RACIALRELATION Race::getRacialRelation( UI32 raceId1, UI32 raceId2 )
+RACIALRELATION Race::getRacialRelation( uint32_t raceId1, uint32_t raceId2 )
 {
-	std::map<UI32, class Race*>::iterator raceIter = raceMap.find( raceId1 );
+	std::map<uint32_t, class Race*>::iterator raceIter = raceMap.find( raceId1 );
 	if ( raceIter != raceMap.end() )
 		return raceIter->second->getRacialRelation( raceId2 );
 	else
 		return NEUTRAL;
 }
 
-RACIALRELATION Race::getRacialRelation( UI32 raceId )
+RACIALRELATION Race::getRacialRelation( uint32_t raceId )
 {
-	std::map<UI32, RACIALRELATION>::iterator relationIter = m_mapRacialRelations.find( raceId );
+	std::map<uint32_t, RACIALRELATION>::iterator relationIter = m_mapRacialRelations.find( raceId );
 
 	if ( relationIter != m_mapRacialRelations.end() )
 		return m_mapRacialRelations[ raceId ];
@@ -787,7 +787,7 @@ RACIALRELATION Race::getRacialRelation( UI32 raceId )
 		return NEUTRAL;
 }
 
-bool Race::isProtectedLayer( UI32 raceId, unsigned char layer )
+bool Race::isProtectedLayer( uint32_t raceId, unsigned char layer )
 {
 	if( activeRaceSystem && layer )
 	{
@@ -809,92 +809,92 @@ bool Race::isProtectedLayer( unsigned char layer )
 	return false;
 }
 
-UI32 Race::getSkillCap( void )
+uint32_t Race::getSkillCap( void )
 {
 	return this->skillCap;
 }
 
-void	Race::setSkillCap( UI32 newSkillCap )
+void	Race::setSkillCap( uint32_t newSkillCap )
 {
 	this->skillCap = newSkillCap;
 }
 
-UI32 Race::getSkillAdvanceSuccess( UI32 skillId, UI32 baseSkill )
+uint32_t Race::getSkillAdvanceSuccess( uint32_t skillId, uint32_t baseSkill )
 {
 	return this->skills.getSkill( skillId ).getAdvance( baseSkill ).getSuccess();
 }
 
-UI32 Race::getSkillAdvanceFailure( UI32 skillId, UI32 baseSkill )
+uint32_t Race::getSkillAdvanceFailure( uint32_t skillId, uint32_t baseSkill )
 {
 	return this->skills.getSkill( skillId ).getAdvance( baseSkill ).getFailure();
 }
 
-UI32 Race::getSkillAdvanceStrength( UI32 skillId )
+uint32_t Race::getSkillAdvanceStrength( uint32_t skillId )
 {
 	return this->skills.getSkill( skillId).getAdvanceStrength();
 }
 
-UI32 Race::getSkillAdvanceDexterity( UI32 skillId )
+uint32_t Race::getSkillAdvanceDexterity( uint32_t skillId )
 {
 	return this->skills.getSkill( skillId).getAdvanceDexterity();
 }
 
-UI32 Race::getSkillAdvanceIntelligence( UI32 skillId )
+uint32_t Race::getSkillAdvanceIntelligence( uint32_t skillId )
 {
 	return this->skills.getSkill( skillId).getAdvanceIntelligence();
 }
 
-UI32 Race::getStatCap( void )
+uint32_t Race::getStatCap( void )
 {
 	return this->statCap;
 }
 
-UI32 Race::getStrCap( void )
+uint32_t Race::getStrCap( void )
 {
 	return this->strCap;
 }
 
-int Race::getStrModifier( UI32 baseStr )
+int Race::getStrModifier( uint32_t baseStr )
 {
 	return this->strModifiers.getAbilityModifier( baseStr ).getModifier();
 }
 
-UI32 Race::getStrStart( void )
+uint32_t Race::getStrStart( void )
 {
 	return this->strStart;
 }
 
-UI32 Race::getDexCap( void )
+uint32_t Race::getDexCap( void )
 {
 	return this->dexCap;
 }
 
-int Race::getDexModifier( UI32 baseDex )
+int Race::getDexModifier( uint32_t baseDex )
 {
 	return this->dexModifiers.getAbilityModifier( baseDex ).getModifier();
 }
 
-UI32 Race::getDexStart( void )
+uint32_t Race::getDexStart( void )
 {
 	return this->dexStart;
 }
 
-UI32 Race::getIntCap( void )
+uint32_t Race::getIntCap( void )
 {
 	return this->strCap;
 }
 
-int Race::getIntModifier( UI32 baseInt )
+int Race::getIntModifier( uint32_t baseInt )
 {
 	return this->intModifiers.getAbilityModifier( baseInt ).getModifier();
 }
 
-UI32 Race::getIntStart( void )
+uint32_t Race::getIntStart( void )
 {
 	return this->strCap;
 }
 
-bool Race::getCanUseSkill( UI32 skillId )
+bool Race::getCanUseSkill( uint32_t skillId )
 {
 	return this->skills.getSkill( skillId ).getCanUseSkill();
 }

@@ -30,8 +30,8 @@ void SndUpdscroll(NXWSOCKET  s, short txtlen, const char* txt);
 
 void SndShopgumpopen(NXWSOCKET  s, int serial);
 
-void soundeffect3(P_ITEM pi, UI16 sound);
-void soundeffect4(NXWSOCKET s, P_ITEM pi, UI16 sound);
+void soundeffect3(P_ITEM pi, uint16_t sound);
+void soundeffect4(NXWSOCKET s, P_ITEM pi, uint16_t sound);
 void sysbroadcast(char *txt, ...);
 	//!< System broadcast in bold text
 void sysmessage(NXWSOCKET  s, const char *txt, ...);
@@ -56,7 +56,7 @@ void skillwindow(int s);
 	//!< Opens the skills list, updated for client 1.26.2b by LB
 void updates(NXWSOCKET  s);
 	//!< Update Window
-void tips(NXWSOCKET s, UI16 i, UI08 flag);
+void tips(NXWSOCKET s, uint16_t i, uint8_t flag);
 	//!< Tip of the day window
 void deny(NXWSOCKET  k,P_CHAR pc, int sequence);
 void weblaunch(int s, const char *txt);
@@ -71,7 +71,7 @@ void staticeffect (CHARACTER player, unsigned char eff1, unsigned char eff2, uns
 void movingeffect(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false);
 void staticeffect2(P_ITEM pi, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false);
 
-void staticeffect3(UI16 x, UI16 y, SI08 z, unsigned char eff1, unsigned char eff2, char speed, char loop, char explode);
+void staticeffect3(uint16_t x, uint16_t y, int8_t z, unsigned char eff1, unsigned char eff2, char speed, char loop, char explode);
 void movingeffect3(CHARACTER source, unsigned short x, unsigned short y, signed char z, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode);
 void movingeffect3(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode,unsigned char unk1,unsigned char unk2,unsigned char ajust,unsigned char type);
 void movingeffect2(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode);
@@ -80,17 +80,17 @@ void bolteffect2(CHARACTER player,char a1,char a2);	// experimenatal, lb
 void staticeffectUO3D(CHARACTER player, ParticleFx *sta);
 void movingeffectUO3D(CHARACTER source, CHARACTER dest, ParticleFx *sta);
 void itemeffectUO3D(P_ITEM pi, ParticleFx *sta);
-void MakeGraphicalEffectPkt_(UI08 pkt[28], UI08 type, UI32 src_serial, UI32 dst_serial, UI16 model_id, Location src_pos, Location dst_pos, UI08 speed, UI08 duration, UI08 adjust, UI08 explode );
+void MakeGraphicalEffectPkt_(uint8_t pkt[28], uint8_t type, uint32_t src_serial, uint32_t dst_serial, uint16_t model_id, Location src_pos, Location dst_pos, uint8_t speed, uint8_t duration, uint8_t adjust, uint8_t explode );
 
-void SendPauseResumePkt(NXWSOCKET s, UI08 flag);
+void SendPauseResumePkt(NXWSOCKET s, uint8_t flag);
 void SendDeleteObjectPkt(NXWSOCKET s, SERIAL serial);
 void SendDrawObjectPkt(NXWSOCKET s, P_CHAR pc, int z);
-void SendSecureTradingPkt(NXWSOCKET s, UI08 action, UI32 id1, UI32 id2, UI32 id3);
-void SendSpeechMessagePkt(NXWSOCKET s, UI32 id, UI16 model, UI08 type, UI16 color, UI16 fonttype, UI08 sysname[30], char *text);
-void SendUnicodeSpeechMessagePkt(NXWSOCKET s, UI32 id, UI16 model, UI08 type, UI16 color, UI16 fonttype, UI32 lang, UI08 sysname[30], UI08 *unicodetext, UI16 unicodelen);
-void SendUpdatePlayerPkt(NXWSOCKET s, UI32 player_id, UI16 model, Location pos, UI08 dir, UI16 color, UI08 flag, UI08 hi_color);
-void SendDrawGamePlayerPkt(NXWSOCKET s, UI32 player_id, UI16 model, UI08 unk1, UI16 color, UI08 flag, Location pos, UI16 unk2, UI08 dir, bool useDispZ = false);
-void SendPlaySoundEffectPkt(NXWSOCKET s, UI08 mode, UI16 sound_model, UI16 unkn, Location pos, bool useDispZ = false);
+void SendSecureTradingPkt(NXWSOCKET s, uint8_t action, uint32_t id1, uint32_t id2, uint32_t id3);
+void SendSpeechMessagePkt(NXWSOCKET s, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint8_t sysname[30], char *text);
+void SendUnicodeSpeechMessagePkt(NXWSOCKET s, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint32_t lang, uint8_t sysname[30], uint8_t *unicodetext, uint16_t unicodelen);
+void SendUpdatePlayerPkt(NXWSOCKET s, uint32_t player_id, uint16_t model, Location pos, uint8_t dir, uint16_t color, uint8_t flag, uint8_t hi_color);
+void SendDrawGamePlayerPkt(NXWSOCKET s, uint32_t player_id, uint16_t model, uint8_t unk1, uint16_t color, uint8_t flag, Location pos, uint16_t unk2, uint8_t dir, bool useDispZ = false);
+void SendPlaySoundEffectPkt(NXWSOCKET s, uint8_t mode, uint16_t sound_model, uint16_t unkn, Location pos, bool useDispZ = false);
 void impowncreate(NXWSOCKET s, P_CHAR pc, int z);
 	//!< socket, player to send
 void sendshopinfo(int s, int c, P_ITEM pi);
@@ -100,8 +100,8 @@ void endtrade(SERIAL serial);
 void tellmessage(int i, int s, char *txt);
 void gmyell(char *txt);
 
-UI16 goldsfx(int goldtotal);
-UI16 itemsfx(UI16 item);
+uint16_t goldsfx(int goldtotal);
+uint16_t itemsfx(uint16_t item);
 
 void weather(int s, unsigned char bolt);
 void dosocketmidi(int s);

@@ -122,9 +122,9 @@ void cTriggerContext::parseIAddCommand(char* par)
 	fillIntArray(par, array, 3, 0);
 	int triggerx, triggery, triggerz;
 
-	UI32 itmNumber = array[0];
-	UI32 InBackpack = array[1];
-	UI32 itmamount = (array[2]<=0)? INVALID : array[2];
+	uint32_t itmNumber = array[0];
+	uint32_t InBackpack = array[1];
+	uint32_t itmamount = (array[2]<=0)? INVALID : array[2];
     
 	Location charpos= m_pcCurrChar->getPosition();
 
@@ -200,7 +200,7 @@ void cTriggerContext::parseIAddCommand(char* par)
 \param eid2 id of the item
 \return true if the item is an envoker
 */
-bool checkenvoke( UI16 eid )
+bool checkenvoke( uint16_t eid )
 {
     char temp[100];
     char temp2[100];
@@ -237,7 +237,7 @@ bool checkenvoke( UI16 eid )
 \param trigtype the trigger type
 \param id the id for envoked/statics triggers
 */
-void cTriggerContext::init(int number, NXWSOCKET  s, int trigtype, UI16 id)
+void cTriggerContext::init(int number, NXWSOCKET  s, int trigtype, uint16_t id)
 {
 	m_nNumber = number;
 	m_iter = 0;
@@ -1404,11 +1404,11 @@ void cTriggerContext::parseDurCommand(P_ITEM pi, char *par)
 	if (pi == 0)
 		STOPTRIGGER;
 
-	SI32 array[2];
+	int32_t array[2];
 	fillIntArray( par, array, 2 );
-	SI32 j = array[0];
-	SI32 p = array[1];
-	SI32 c = pi->hp;
+	int32_t j = array[0];
+	int32_t p = array[1];
+	int32_t c = pi->hp;
 	if (p <= 0)
 		p = 100;
 	if (pi->maxhp>0)
@@ -1456,10 +1456,10 @@ void cTriggerContext::parseMaxDurCommand(P_ITEM pi, char *par)
 	if (pi == 0)
 		STOPTRIGGER;
 
-	SI32 array[2];
+	int32_t array[2];
 	fillIntArray(par, array, 2);
-	SI32 j = array[0];
-	SI32 p = array[1];
+	int32_t j = array[0];
+	int32_t p = array[1];
 
 	if (p <= 0)
 		p = 100;

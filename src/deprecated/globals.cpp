@@ -75,7 +75,7 @@ int gatecount=0;
 //Time variables
 int day=0, hour = 12, minute = 1, ampm = 0; //Initial time is noon.
 int secondsperuominute=5; //Number of seconds for a UO minute.
-UI32 uotickcount=1;
+uint32_t uotickcount=1;
 int moon1update=0;
 int moon2update=0;
 

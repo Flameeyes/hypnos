@@ -16,7 +16,7 @@ void cPC::heartbeat()
 {
 	if ( dead )
 		return;
-	if ( Accounts->GetInWorld( account ) == getSerial32() && logout > 0 && ( logout <= (SI32)uiCurrentTime  ) )
+	if ( Accounts->GetInWorld( account ) == getSerial32() && logout > 0 && ( logout <= (int32_t)uiCurrentTime  ) )
 	{
 		Accounts->SetOffline( account);
 		logout = INVALID;
@@ -181,7 +181,7 @@ void cPC::heartbeat()
 		}
 		else if ( TIMEOUT( nextact ) ) //redo the spell action
 		{ //<Luxor>
-			nextact = uiCurrentTime + UI32(MY_CLOCKS_PER_SEC*1.5);
+			nextact = uiCurrentTime + uint32_t(MY_CLOCKS_PER_SEC*1.5);
 			if ( isMounting() )
 				playAction( 0x1b );
 			else
@@ -261,7 +261,7 @@ bool cPC::updateFlag()
 \param skill Skill to update
 \author Flameeyes
 */
-void cChar::updateSkill(UI16 skill)
+void cChar::updateSkill(uint16_t skill)
 {
 	if ( ! client )
 		return;

@@ -40,9 +40,9 @@ private:
 	LoginCrypt loginCrypter;
 	GameCrypt *gameCrypter;
 	GameCrypt *crypt203;
-	UI08 crypt_mode;
+	uint8_t crypt_mode;
 	unsigned char clientSeed[4];
-	UI32 loginKey1, loginKey2;
+	uint32_t loginKey1, loginKey2;
 	int cryptVersion;
 //    NormalCopier m_copier;
 //    CompressingCopier m_compressor;
@@ -55,16 +55,16 @@ private:
 public:
 	void decrypt(unsigned char *in, unsigned char *out, int length);
 	void encrypt(unsigned char *in, unsigned char *out, int length);
-	void setLoginCryptKeys(UI32 key1, UI32 key2);
+	void setLoginCryptKeys(uint32_t key1, uint32_t key2);
 	void setGameEncryption(int version);
 	int getCryptVersion() { return cryptVersion; };
-	void setCryptMode(UI08 mode);
-	UI08 getCryptMode() { return crypt_mode; };
+	void setCryptMode(uint8_t mode);
+	uint8_t getCryptMode() { return crypt_mode; };
 	virtual ~ClientCrypt();
 	ClientCrypt();
 	void init (unsigned char seed[4]);
-	void setCryptSeed(UI08 pseed[4]);
-	void setCryptSeed(UI32 pseed);
+	void setCryptSeed(uint8_t pseed[4]);
+	void setCryptSeed(uint32_t pseed);
 	void setEntering(bool state);
 	bool getEntering();
 };

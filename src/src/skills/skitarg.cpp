@@ -418,7 +418,7 @@ void Skills::target_tree( NXWCLIENT ps, P_TARGET t )
     AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,LUMBERJACKING,AMX_BEFORE);
 
     static TIMERVAL logtime[max_res_x][max_res_y];//see mine for values...they were 1000 also here
-    static UI32 logamount[max_res_x][max_res_y];
+    static uint32_t logamount[max_res_x][max_res_y];
     int a, b;
     unsigned int c;
     unsigned long int curtime=uiCurrentTime;
@@ -785,7 +785,7 @@ void Skills::target_loom( NXWCLIENT ps, P_TARGET t )
 						pti->setCurrentName("#");
 						pti->setId( 0x0F95 );
 						pti->priv |= ITMPRIV_DECAY;
-						pti->amount=(UI16)(pti->amount*0.25);
+						pti->amount=(uint16_t)(pti->amount*0.25);
 						break;
 				}
 
@@ -875,12 +875,12 @@ void Skills::target_detectHidden( NXWCLIENT ps, P_TARGET t )
 
 	Location location = t->getLocation();
 
-	SI32 nSkill = pc->skill[DETECTINGHIDDEN];
-	SI32 nRange = SI32( VISRANGE * nSkill/2000.0 );
-	SI32 nLow = 0;
+	int32_t nSkill = pc->skill[DETECTINGHIDDEN];
+	int32_t nRange = int32_t( VISRANGE * nSkill/2000.0 );
+	int32_t nLow = 0;
 	Location lCharPos = pc->getPosition();
 
-	if ( SI32(dist(lCharPos, location)) > 15 ) {
+	if ( int32_t(dist(lCharPos, location)) > 15 ) {
 		pc->sysmsg( TRANSLATE("You cannot see for hidden objects so far.") );
 		return;
 	}
@@ -888,7 +888,7 @@ void Skills::target_detectHidden( NXWCLIENT ps, P_TARGET t )
 	NxwCharWrapper sw;
 	LOGICAL bFound = false;
 	P_CHAR pc_curr = NULL;
-	SI32 nDist = 0;
+	int32_t nDist = 0;
 	sw.fillCharsNearXYZ( location, nRange, true, true );
 
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
@@ -898,8 +898,8 @@ void Skills::target_detectHidden( NXWCLIENT ps, P_TARGET t )
 
 		if ( pc_curr->IsHiddenBySkill() && !pc->isPermaHidden() )
 		{
-			nDist = SI32( dist(lCharPos, pc_curr->getPosition()) );
-			nLow = SI32( (nDist * 20.0) + (pc_curr->skill[HIDING] / 2.0) );
+			nDist = int32_t( dist(lCharPos, pc_curr->getPosition()) );
+			nLow = int32_t( (nDist * 20.0) + (pc_curr->skill[HIDING] / 2.0) );
 			if ( nLow < 0 )
 				nLow = 0;
 			else if ( nLow > 999 )

@@ -68,7 +68,7 @@ SERIAL cTarget::getClicked()
 	return clicked;
 }
 
-UI16 cTarget::getModel()
+uint16_t cTarget::getModel()
 {
 	return model;
 }
@@ -174,7 +174,7 @@ void amxCallback( NXWCLIENT ps, P_TARGET t )
 	if( t->amx_callback==NULL) 
 		return;
 
-	SI16 model = t->getModel();
+	int16_t model = t->getModel();
 	if( model == 0 )
 		model = INVALID;
 

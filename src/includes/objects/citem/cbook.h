@@ -108,13 +108,13 @@ namespace Books
 
 			void OpenBookReadOnly(NXWSOCKET s, P_ITEM book);
 			void OpenBookReadWrite(NXWSOCKET s, P_ITEM book);
-			void SendPageReadOnly(NXWSOCKET s, P_ITEM book, UI16 p);
+			void SendPageReadOnly(NXWSOCKET s, P_ITEM book, uint16_t p);
 
 			void ChangeAuthor(char *auth);
 			void ChangeTitle(char *titl);
-			void ChangePages(char *packet, UI16 p, UI16 l, UI16 s);
+			void ChangePages(char *packet, uint16_t p, uint16_t l, uint16_t s);
 
-			UI32 GetIndex() const				//!< gets the book index
+			uint32_t GetIndex() const				//!< gets the book index
 				{ return index; }
 			inline LOGICAL IsReadOnly() const		//!< return true if books is readonly
 				{ return readonly; }
@@ -124,7 +124,7 @@ namespace Books
 				{ return author; }
 			inline std::string GetTitle() const		//!< return the title of the book
 				{ return title; }
-			inline UI32 GetNumPages() const			//!< return the number of pages of the book
+			inline uint32_t GetNumPages() const			//!< return the number of pages of the book
 				{ return pages.size(); }
 
 		private:
@@ -139,12 +139,12 @@ namespace Books
 
 			Needed for get informations about the book, also used for book indexing.
 			*/
-			UI32 index;
+			uint32_t index;
 
-			static UI32 books_index;			//!< 1-based books counter
+			static uint32_t books_index;			//!< 1-based books counter
 	};
 
-	extern std::map<UI32, cBook> books;
+	extern std::map<uint32_t, cBook> books;
 };
 
 #endif

@@ -397,7 +397,7 @@ void RemoteAdmin::ProcessInput(int s)
 {
 	char inp2[1024]= {'\0'};
 	char *inp= inp2;
-	UI32 i;
+	uint32_t i;
 
 
 	if (rac_port==0) return;

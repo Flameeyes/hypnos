@@ -328,19 +328,19 @@ void cNetwork::xSend(NXWSOCKET socket, wstring& p, bool alsoTermination )
 	}
 
 //Luxor: if we are in a system which uses 32bit wchar_t, we must truncate them because UO client supports only 16bit unicode chars.
-// So let's use UI16
+// So let's use uint16_t
 
-	SI32 size = sizeof( UI16 );
-	SI32 length = p.length() * size;
+	int32_t size = sizeof( uint16_t );
+	int32_t length = p.length() * size;
     if ( alsoTermination ) length += size;
 
     if ( boutlength[ socket ] + length > MAXBUFFER )
 		FlushBuffer( socket );
 
 	wstring::iterator point( p.begin() ), end( p.end() );
-	UI16* b = (UI16*)&outbuffer[ socket ][ boutlength[ socket ] ];
+	uint16_t* b = (uint16_t*)&outbuffer[ socket ][ boutlength[ socket ] ];
 
-	SI32 i = 0;
+	int32_t i = 0;
 	for( ; point!=end; point++, ++i )
 		b[i] = htons(*point);
 
@@ -616,10 +616,10 @@ void cNetwork::Login2(int s)
 {
 	const char msgLogin[] = "Client [%s] connected [first] using Account '%s'.\n";
 
-	UI16 i, tlen;
+	uint16_t i, tlen;
 	unsigned long int ip;
-	UI08 newlist1[6]={ 0xA8, 0x00, };
-	UI08 newlist2[40]={ 0x00, };
+	uint8_t newlist1[6]={ 0xA8, 0x00, };
+	uint8_t newlist2[40]={ 0x00, };
 
 	InfoOut( (char*)msgLogin, inet_ntoa(client_addr.sin_addr), &buffer[s][1] );
 	if (SrvParms->server_log)
@@ -685,7 +685,7 @@ void cNetwork::Relay(int s) // Relay player to a certain IP
 	WarnOut("relaying client to NoX-Sniffer!!!\n");
 #endif
 
-	UI08 login03[11]={ 0x8C, 0x00, };
+	uint8_t login03[11]={ 0x8C, 0x00, };
 	ip = htonl(ip);			// host order -> network order !!!!
 	LongToCharPtr(ip, login03 +1);
 	ShortToCharPtr(port, login03 +5);
@@ -715,8 +715,8 @@ void cNetwork::Relay(int s) // Relay player to a certain IP
 
 void cNetwork::ActivateFeatures(NXWSOCKET s)
 {
-	UI08 feat[3] = {0xB9, 0x00, 0x00};
-	UI16 features = 0;  //<-- BitMask ?
+	uint8_t feat[3] = {0xB9, 0x00, 0x00};
+	uint16_t features = 0;  //<-- BitMask ?
 	// 0x0001 => Button Chat ( T2A ??? )
 	// 0x0003 => LBR (+ T2A)
 	// 0x801F => AoS and previous .... (AoS + LBR + T2A)
@@ -742,9 +742,9 @@ void cNetwork::ActivateFeatures(NXWSOCKET s)
 
 void cNetwork::GoodAuth(int s)
 {
-	UI32 j;
-	UI16 tlen;
-	UI08 login04a[4]={ 0xA9, 0x09, 0x24, 0x02 }, n = startcount;
+	uint32_t j;
+	uint16_t tlen;
+	uint8_t login04a[4]={ 0xA9, 0x09, 0x24, 0x02 }, n = startcount;
 
 	tlen=4+(5*60)+1+(startcount*63) +4;
 
@@ -763,7 +763,7 @@ void cNetwork::GoodAuth(int s)
 
 	j=0;
 
-	UI08 login04b[60]={ 0, };
+	uint8_t login04b[60]={ 0, };
 
 	for ( sc.rewind(); !sc.isEmpty(); sc++ )
 	{
@@ -776,7 +776,7 @@ void cNetwork::GoodAuth(int s)
 		j++;
 	}
 
-	UI32 i=0;
+	uint32_t i=0;
 	memset(login04b, 0, 60);
 	for ( i=j;i<5;i++)
 	{
@@ -785,7 +785,7 @@ void cNetwork::GoodAuth(int s)
 
 	Xsend(s, &n, 1);  // startcount
 
-	UI08 login04d[63]= { 0, };
+	uint8_t login04d[63]= { 0, };
 
 	for (i=0;i<startcount;i++)
 	{
@@ -796,7 +796,7 @@ void cNetwork::GoodAuth(int s)
 		Xsend(s, login04d, 63);
 	}
 
-	UI08 tail[4]={0, }; //Fix for new clients, else it stuck on "Connecting ..."
+	uint8_t tail[4]={0, }; //Fix for new clients, else it stuck on "Connecting ..."
 
 	if(server_data.feature == 2) 	// LBR: NPC Popup Menu   (not currently impl.)
 		tail[3] = 0x08;
@@ -807,10 +807,10 @@ void cNetwork::GoodAuth(int s)
 void cNetwork::CharList(int s) // Gameserver login and character listing
 {
 
-	SI32 i;
-	UI08 noaccount[2]={0x82, 0x00};
-	UI08 nopass[2]={0x82, 0x03};
-	UI08 acctblock[2]={0x82, 0x02};
+	int32_t i;
+	uint8_t noaccount[2]={0x82, 0x00};
+	uint8_t nopass[2]={0x82, 0x03};
+	uint8_t acctblock[2]={0x82, 0x02};
 
 	acctno[s]=-1;
 
@@ -887,11 +887,11 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 		if (ISVALIDPC(pc_k))
 		{
 			pc_k->setClient(NULL);
-			SI32 nSer = pc_k->getSerial32();
-			for ( SI32 idx = 0; idx < now; idx++ ) {
+			int32_t nSer = pc_k->getSerial32();
+			for ( int32_t idx = 0; idx < now; idx++ ) {
 				if ( pc_k == loginchars[idx] ) {
 					// TODO We need to fix this!!!
-					UI08 msg2[2]={ 0x53, 0x05 };
+					uint8_t msg2[2]={ 0x53, 0x05 };
 					Xsend(s, msg2, 2);
 //AoS/					Network->FlushBuffer(s);
 					Disconnect(s);
@@ -910,7 +910,7 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 		}
 		else
 		{
-			UI08 msg[2]={ 0x53, 0x05 };
+			uint8_t msg[2]={ 0x53, 0x05 };
 			Xsend(s, msg, 2);
 //AoS/			Network->FlushBuffer(s);
 			Disconnect(s);
@@ -924,11 +924,11 @@ void cNetwork::enterchar(int s)
 	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
-	UI08 startup[38]="\x1B\x00\x05\xA8\x90\x00\x00\x00\x00\x01\x90\x06\x08\x06\x49\x00\x0A\x04\x00\x00\x00\x7F\x00\x00\x00\x00\x00\x07\x80\x09\x60\x00\x00\x00\x00\x00\x00";
-	UI08 techstuff[5]={ 0x69, 0x00, 0x05, 0x01, 0x00 };
-	UI08 world[6]={0xBF, 0x00, 0x06, 0x00, 0x08, 0x00};
-	UI08 modeset[5]={0x72, 0x00, 0x00, 0x32, 0x00};
-	UI08 LoginOK[1] = {0x55}, TimeZ[4]={0x5B, 0x0C, 0x13, 0x03};
+	uint8_t startup[38]="\x1B\x00\x05\xA8\x90\x00\x00\x00\x00\x01\x90\x06\x08\x06\x49\x00\x0A\x04\x00\x00\x00\x7F\x00\x00\x00\x00\x00\x07\x80\x09\x60\x00\x00\x00\x00\x00\x00";
+	uint8_t techstuff[5]={ 0x69, 0x00, 0x05, 0x01, 0x00 };
+	uint8_t world[6]={0xBF, 0x00, 0x06, 0x00, 0x08, 0x00};
+	uint8_t modeset[5]={0x72, 0x00, 0x00, 0x32, 0x00};
+	uint8_t LoginOK[1] = {0x55}, TimeZ[4]={0x5B, 0x0C, 0x13, 0x03};
 
 	if (map_height<300) world[5]=0x02;
 
@@ -1142,9 +1142,9 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 	P_CHAR pc = pointers::findCharBySerial(currchar[s]);
 	VALIDATEPCR(pc, 0);
 
-	UI32 a, valid=0;
+	uint32_t a, valid=0;
 	Location charpos= pc->getPosition();
-	UI32 x= charpos.x, y= charpos.y;
+	uint32_t x= charpos.x, y= charpos.y;
 
 
 	AMXEXECSVNR(pc->getSerial32(),AMXT_SPECIALS, 8, AMX_BEFORE);
@@ -1778,7 +1778,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 				case 0x04:
 					// Expermintal for God client
 					{
-						UI08 packet[2] = {0x2B, 0x01};
+						uint8_t packet[2] = {0x2B, 0x01};
 						if (pc_currchar->IsGM())
 						{
 							Xsend(s, packet, 2);
@@ -2222,7 +2222,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						P_ITEM pi=pointers::findItemBySerPtr(buffer[s]+1);
 
 						int len = 0;
-						UI08 packet[4000]; packet[0] = '\0';
+						uint8_t packet[4000]; packet[0] = '\0';
 						if ( ISVALIDPC(pc_currchar) && pc_currchar->IsGM()) {
 							if (ISVALIDPC(pc) )
 								sprintf((char *)packet, "char n°%d serial : %x", DEREF_P_CHAR(pc), pc->getSerial32());
@@ -2246,8 +2246,8 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						LongToCharPtr( LongFromCharPtr(buffer[s] +1), packet +3);
 						int p = 0;
 						while (p<600) {
-							packet[7+p] = (UI08) Unicode::temp[p];
-							packet[8+p] = (UI08) Unicode::temp[p+1];
+							packet[7+p] = (uint8_t) Unicode::temp[p];
+							packet[8+p] = (uint8_t) Unicode::temp[p+1];
 							if ((Unicode::temp[p]=='\0')&&(Unicode::temp[p+1]=='\0')) break;
 							p += 2;
 						}
@@ -2402,10 +2402,10 @@ void cNetwork::LoadHosts_deny()
 	if( iter != NULL )
 	{
 		ip_block_st	ip_block;
-		UI32		ip_address;
+		uint32_t		ip_address;
 		std::string	sScript1,
 				sToken1;
-		UI32 		siEnd ;
+		uint32_t 		siEnd ;
 
 		do
 		{

@@ -26,13 +26,13 @@ typedef cItem* pItem;
 class cItem : public cObject
 {
 public:
-	static pItem addByID(SI32 id, UI16 nAmount, const char *cName, UI16 color, Location where);
+	static pItem addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, Location where);
 
 
 	//! Redefinition of = operator for cItem class
         cItem& operator=(cItem& b);
 
-	static UI32	nextSerial();
+	static uint32_t	nextSerial();
 
         static void	archive();
 	static void	safeoldsave();
@@ -41,7 +41,7 @@ public:
         cItem();
 	~cItem();
 
-	static const UI32 flagUseAnimID		= 0x00000001;
+	static const uint32_t flagUseAnimID		= 0x00000001;
 		//!< The item uses animID
 
 	//! deletion type
@@ -79,26 +79,26 @@ public:
 /*!
 \name Weapon Types
 */
-	static const UI16 weaponInvalid = 0x0000; //!< Not a weapon
-	static const UI16 weaponSword1H = 0x0001; //!< Sword 1 hand
-	static const UI16 weaponSword2H = 0x0002; //!< Sword 2 hands
-	static const UI16 weaponAxe1H	= 0x0004; //!< Axe 1 hand
-	static const UI16 weaponAxe2H	= 0x0008; //!< Axe 2 hands
-	static const UI16 weaponMace1H	= 0x0010; //!< Mace 1 hand
-	static const UI16 weaponMace2H	= 0x0020; //!< Mace 2 hands
-	static const UI16 weaponFenc1H	= 0x0040; //!< Fencing 1 hand
-	static const UI16 weaponFenc2H	= 0x0080; //!< Fencing 2 hands
-	static const UI16 weaponStave1H = 0x0100; //!< Staff 1 hand
-	static const UI16 weaponStave2H = 0x0200; //!< Staff 2 hands
-	static const UI16 weaponBow	= 0x0400; //!< Bow
-	static const UI16 weaponXBow	= 0x1000; //!< Crossbow
-	static const UI16 weaponHXBow	= 0x2000; //!< Heavy Crossbow
+	static const uint16_t weaponInvalid = 0x0000; //!< Not a weapon
+	static const uint16_t weaponSword1H = 0x0001; //!< Sword 1 hand
+	static const uint16_t weaponSword2H = 0x0002; //!< Sword 2 hands
+	static const uint16_t weaponAxe1H	= 0x0004; //!< Axe 1 hand
+	static const uint16_t weaponAxe2H	= 0x0008; //!< Axe 2 hands
+	static const uint16_t weaponMace1H	= 0x0010; //!< Mace 1 hand
+	static const uint16_t weaponMace2H	= 0x0020; //!< Mace 2 hands
+	static const uint16_t weaponFenc1H	= 0x0040; //!< Fencing 1 hand
+	static const uint16_t weaponFenc2H	= 0x0080; //!< Fencing 2 hands
+	static const uint16_t weaponStave1H = 0x0100; //!< Staff 1 hand
+	static const uint16_t weaponStave2H = 0x0200; //!< Staff 2 hands
+	static const uint16_t weaponBow	= 0x0400; //!< Bow
+	static const uint16_t weaponXBow	= 0x1000; //!< Crossbow
+	static const uint16_t weaponHXBow	= 0x2000; //!< Heavy Crossbow
 
 	static void loadWeaponsInfo();
-	static const bool isWeaponLike(UI16 id, UI16 type);
+	static const bool isWeaponLike(uint16_t id, uint16_t type);
 
 protected:
-	typedef std::map<UI16,UI16> WeaponMap;
+	typedef std::map<uint16_t,uint16_t> WeaponMap;
 	//! Map with types of weapons
 	static WeaponMap weaponinfo;
 
@@ -112,26 +112,26 @@ protected:
 */
 protected:
 	Event			*events[ALLITEMEVENTS];
-	int			handleEvent(UI08 code, UI08 nParams, UI32 *params);
+	int			handleEvent(uint8_t code, uint8_t nParams, uint32_t *params);
 
-	SI32			hp;	//!< Number of hit points an item has.
-	SI32			maxhp;	//!< Max number of hit points an item can have.
+	int32_t			hp;	//!< Number of hit points an item has.
+	int32_t			maxhp;	//!< Max number of hit points an item can have.
 public:
 	void			Refresh();
 	const std::string	getName();
 	const std::string	getRealItemName();
 	void			getPopupHelp(char *str);
 
-	inline const SI32 getHP() const
+	inline const int32_t getHP() const
 	{ return hp; }
 
-	inline void setHP(SI32 newhp) const
+	inline void setHP(int32_t newhp) const
 	{ hp = newhp; }
 
-	inline const SI32 getMaxHP() const
+	inline const int32_t getMaxHP() const
 	{ return maxhp; }
 
-	inline void setMaxHP(SI32 newhp) const
+	inline void setMaxHP(int32_t newhp) const
 	{ maxhp = newhp; }
 //@}
 
@@ -140,14 +140,14 @@ public:
 \name Look
 */
 protected:
-	UI16		animid;		//!< animation id
-	SI08		layer;		//!< Layer if equipped on paperdoll
-	SI08		oldlayer;	//!< Old layer - used for bouncing bugfix - AntiChrist
-	SI08		scriptlayer;	//!< Luxor, for scripted setted Layer
+	uint16_t		animid;		//!< animation id
+	int8_t		layer;		//!< Layer if equipped on paperdoll
+	int8_t		oldlayer;	//!< Old layer - used for bouncing bugfix - AntiChrist
+	int8_t		scriptlayer;	//!< Luxor, for scripted setted Layer
 
-	SI08		magic;		//!< 0=Default as stored in client, 1=Always movable, 2=Never movable, 3=Owner movable.
-	SI08		visible;	//!< 0=Normally Visible, 1=Owner & GM Visible, 2=GM Visible
-	SI16		dir;
+	int8_t		magic;		//!< 0=Default as stored in client, 1=Always movable, 2=Never movable, 3=Owner movable.
+	int8_t		visible;	//!< 0=Normally Visible, 1=Owner & GM Visible, 2=GM Visible
+	int16_t		dir;
 
 
 public:
@@ -157,10 +157,10 @@ public:
 \brief Static funcions to identify items. Most inlines
 */
 
-	inline static const bool isCorpse(UI16 id)
+	inline static const bool isCorpse(uint16_t id)
 	{ return id==0x2006; }
 
-	inline static const bool isTree(UI16 id)
+	inline static const bool isTree(uint16_t id)
 	{
 		return (id==0x0CD0 || id==0x0CD3 || id==0x0CD6 ||
 			id==0x0CD8 || id==0x0CDA || id==0x0CDD ||
@@ -175,7 +175,7 @@ public:
 
 	//! this is used in SwordTarget() to give kindling.
 	//  Donno why it's different
-	inline static const bool isTree2(UI16 id)
+	inline static const bool isTree2(uint16_t id)
 	{
 		return (id==0x0CD0 || id==0x0CD3 || id==0x0CD6 ||
 			id==0x0CD8 || id==0x0CDA || id==0x0CDD ||
@@ -184,16 +184,16 @@ public:
 			(id>=0x12B8 && id<=0x12BB) );
 	}
 
-	inline static const bool isLog(UI16 id)
+	inline static const bool isLog(uint16_t id)
 	{ return ( id>=0x1BDD && id<=0x1BE2 ); }
 
-	inline static const bool isShaft(UI16 id)
+	inline static const bool isShaft(uint16_t id)
 	{ return ( id>=0x1BD4 && id<=0x1BD6 ); }
 
-	inline static const bool isFeather(UI16 id)
+	inline static const bool isFeather(uint16_t id)
 	{ return ( id>=0x1BD1 && id<=0x1BD3 ); }
 
-	static const bool isHouse(UI16 id);
+	static const bool isHouse(uint16_t id);
 
 // Non-static ItemID functions
 
@@ -417,10 +417,10 @@ public:
 \name flags
 */
 protected:
-	static const UI64 flagPileable		= 0x0000000000000001ull; //!< Can the item be piled?
-	static const UI64 flagCanDecay		= 0x0000000000000002ull; //!< Can the item decay?
-	static const UI64 flagNewbie		= 0x0000000000000004ull; //!< Is the item newbie?
-	static const UI64 flagDispellable	= 0x0000000000000004ull; //!< Can the item be dispelled?
+	static const uint64_t flagPileable		= 0x0000000000000001ull; //!< Can the item be piled?
+	static const uint64_t flagCanDecay		= 0x0000000000000002ull; //!< Can the item decay?
+	static const uint64_t flagNewbie		= 0x0000000000000004ull; //!< Is the item newbie?
+	static const uint64_t flagDispellable	= 0x0000000000000004ull; //!< Can the item be dispelled?
 
 public:
 	inline const bool isPileable() const
@@ -475,50 +475,50 @@ public:
 	inline const bool isSecureContainer() const
 	{ return type==8 || type==13 || type==64; }
 
-	SI32		secureIt; // secured chests
+	int32_t		secureIt; // secured chests
 	void		putInto( P_ITEM pi );
 //@}
 
 /********************************
 	Extra info
 ********************************/
-	UI08		more1;		// For various stuff
-	UI08		more2;
-	UI08		more3;
-	UI08		more4;
-	SI08		moreb1;
-	SI08		moreb2;
-	SI08		moreb3;
-	SI08		moreb4;
-	UI32		morex;
-	UI32		morey;
-	UI32		morez;
+	uint8_t		more1;		// For various stuff
+	uint8_t		more2;
+	uint8_t		more3;
+	uint8_t		more4;
+	int8_t		moreb1;
+	int8_t		moreb2;
+	int8_t		moreb3;
+	int8_t		moreb4;
+	uint32_t		morex;
+	uint32_t		morey;
+	uint32_t		morez;
 
 //@{
 /*!
 \name Amount
 */
 protected:
-	UI16		amount;		//!< Amount of items in pile
-	UI16		amount2;	//!< Used to track things like number of yards left in a roll of cloth
+	uint16_t		amount;		//!< Amount of items in pile
+	uint16_t		amount2;	//!< Used to track things like number of yards left in a roll of cloth
 
 public:
-	SI32		ReduceAmount(const SI16 amount);
-	SI32		IncreaseAmount(const SI16 amount);
+	int32_t		ReduceAmount(const int16_t amount);
+	int32_t		IncreaseAmount(const int16_t amount);
 
 	//! sets the amount of piled items
-	inline void setAmount(const UI16 amt)
+	inline void setAmount(const uint16_t amt)
 	{ amount = amt; Refresh(); }
 
-        inline const UI16 getAmount()
+        inline const uint16_t getAmount()
 	{ return amt; }
 
-	SI32			DeleteAmount(int amount, short id, short color=-1);
+	int32_t			DeleteAmount(int amount, short id, short color=-1);
 
-	inline const SI32	CountItems(short ID=-1, short col= -1,bool bAddAmounts = true) const
+	inline const int32_t	CountItems(short ID=-1, short col= -1,bool bAddAmounts = true) const
 	{ return pointers::containerCountItems(getSerial32(), ID, col, bAddAmounts); }
 
-	inline const SI32	CountItemsByID(unsigned int scriptID, bool bAddAmounts) const
+	inline const int32_t	CountItemsByID(unsigned int scriptID, bool bAddAmounts) const
 	{ return pointers::containerCountItemsByID(getSerial32(), scriptID, bAddAmounts); }
 //@}
 
@@ -527,7 +527,7 @@ public:
 \name Weight
 */
 protected:
-	UI32			weight;
+	uint32_t			weight;
 
 public:
 	R32			getWeight();
@@ -543,7 +543,7 @@ public:
 	inline const bool isInWorld() const
 	{ return cont; }
 
-	inline void MoveTo(SI32 x, SI32 y, SI08 z)
+	inline void MoveTo(int32_t x, int32_t y, int8_t z)
 	{ MoveTo( Location(x, y, z) ); }
 //@}
 
@@ -554,37 +554,37 @@ public:
 \author Xan & Luxor (mostly)
 */
 	Skill		getCombatSkill();
-	UI32		att;		//!< Item attack
-	UI32		def;		//!< Item defense
+	uint32_t		att;		//!< Item attack
+	uint32_t		def;		//!< Item defense
 	Skill		fightskill;	//!< skill used by item
-	SI32		reqskill[2];	//!< required skill by item
+	int32_t		reqskill[2];	//!< required skill by item
 	DamageType	damagetype;	//!< for different damage types system
 	DamageType	auxdamagetype;	//!< Additional damage :]
-	SI32		auxdamage;	//!< Additional damage :]
-	SI32		lodamage;	//!< Minimum Damage weapon inflicts
-	SI32		hidamage;	//!< Maximum damage weapon inflicts
-	SI32		wpsk;		//!< The skill needed to use the item
-	SI32		spd;		//!< The speed of the weapon
-	SI32		itmhand;	//!< ITEMHAND system - AntiChrist
-	SI32		resists[MAX_RESISTANCE_INDEX];	//!< for resists system
-	SI32		st;		//!< The strength needed to equip the item
-	SI32		st2;		//!< The strength the item gives
-	SI32		dx;		//!< The dexterity needed to equip the item
-	SI32		dx2;		//!< The dexterity the item gives
-	SI32		in;		//!< The intelligence needed to equip the item
-	SI32		in2;		//!< The intelligence the item gives
+	int32_t		auxdamage;	//!< Additional damage :]
+	int32_t		lodamage;	//!< Minimum Damage weapon inflicts
+	int32_t		hidamage;	//!< Maximum damage weapon inflicts
+	int32_t		wpsk;		//!< The skill needed to use the item
+	int32_t		spd;		//!< The speed of the weapon
+	int32_t		itmhand;	//!< ITEMHAND system - AntiChrist
+	int32_t		resists[MAX_RESISTANCE_INDEX];	//!< for resists system
+	int32_t		st;		//!< The strength needed to equip the item
+	int32_t		st2;		//!< The strength the item gives
+	int32_t		dx;		//!< The dexterity needed to equip the item
+	int32_t		dx2;		//!< The dexterity the item gives
+	int32_t		in;		//!< The intelligence needed to equip the item
+	int32_t		in2;		//!< The intelligence the item gives
 	PoisonType	poisoned;	//!< type of poison that poisoned item
-	UI32		ammo;		//!< Ammo used (firing weapon)
-	UI32		ammoFx;		//!< Flying ammo animation (firing weapon)
+	uint32_t		ammo;		//!< Ammo used (firing weapon)
+	uint32_t		ammoFx;		//!< Flying ammo animation (firing weapon)
 //@}
 
 //@{
 /*!
 \name Magic Related
 */
-	UI32		gatetime;
-	SI32		gatenumber;
-	SI08		offspell;
+	uint32_t		gatetime;
+	int32_t		gatenumber;
+	int8_t		offspell;
 //@}
 
 //@{
@@ -593,7 +593,7 @@ public:
 */
 	bool		corpse;		//!< Is item a corpse
 	string		murderer;	//!< char's name who kille the char (forensic ev.)
-	SI32		murdertime;	//!< when the people has been killed
+	int32_t		murdertime;	//!< when the people has been killed
 //@}
 
 //@{
@@ -601,7 +601,7 @@ public:
 \name Creation related
 \author Magius (CHE)
 */
-	SI32		smelt;		//!< for item smelting
+	int32_t		smelt;		//!< for item smelting
 	/*!
 	\brief for rank system, this value is the LEVEL of the item from 1 to 10.
 
@@ -612,12 +612,12 @@ public:
 	RANK 10 --> 10*10=100% this item has no malus! RANK 10 is automatically setted if you select RANKSYSTEM 0.<br>
 	Vars: LODAMAGE,HIDAMAGE,ATT,DEF,HP,MAXHP<br>
 	*/
-	SI32		rank;
+	int32_t		rank;
 
 	//char		creator[50];	//!< Store the name of the player made this item
 	std::string	creator;	//!< Store the name of the player made this item
-	SI32		good;		//!< Store type of GOODs to trade system! (Plz not set as UNSIGNED)
-	SI32		rndvaluerate;	//!< Store the value calculated base on RANDOMVALUE in region.scp.
+	int32_t		good;		//!< Store type of GOODs to trade system! (Plz not set as UNSIGNED)
+	int32_t		rndvaluerate;	//!< Store the value calculated base on RANDOMVALUE in region.scp.
 
 	/*!
 	\brief Store the skills used to make this item
@@ -636,7 +636,7 @@ public:
 	creator. A Negative value if the player is not enought
 	skilled!
 	*/
-	SI32		madewith;
+	int32_t		madewith;
 	//char		desc[100];	//!< vendor description
 	std::string	vendorDescription;
 //@}
@@ -647,7 +647,7 @@ public:
 */
 	SERIAL		spawnserial;
 	SERIAL		spawnregion;
-	void		SetMultiSerial(SI32 mulser);
+	void		SetMultiSerial(int32_t mulser);
 //@}
 
 //@{
@@ -655,10 +655,10 @@ public:
 \name Buy & Sell
 */
 protected:
-	SI32		value;		//!< Price shopkeeper sells item at.
-	SI32		restock;	//!< Number up to which shopkeeper should restock this item
+	int32_t		value;		//!< Price shopkeeper sells item at.
+	int32_t		restock;	//!< Number up to which shopkeeper should restock this item
 public:
-	const SI32 calcValue(SI32 bvalue);
+	const int32_t calcValue(int32_t bvalue);
 //@}
 
 //@{
@@ -678,32 +678,32 @@ public:
 /*!
 \name Trigger
 */
-	SI32		trigger;	//!< Trigger number that item activates
-	SI32		trigtype;	//!< Type of trigger
-	SI32		tuses;		//!< Number of uses for trigger
+	int32_t		trigger;	//!< Trigger number that item activates
+	int32_t		trigtype;	//!< Type of trigger
+	int32_t		tuses;		//!< Number of uses for trigger
 //@}
 
 //@{
 /*!
 \name Special Use
 */
-	UI32		type;		//!< For things that do special things on doubleclicking
-	UI32		type2;
-	SI32		carve;		//!< for new carve system
+	uint32_t		type;		//!< For things that do special things on doubleclicking
+	uint32_t		type2;
+	int32_t		carve;		//!< for new carve system
 	bool		incognito;	//!< for items under incognito effect
-	SI32		wipe;		//!< Should this item be wiped with the /wipe command
-	UI32		time_unused;	//!< used for house decay and possibly for more in future, gets saved
-	UI32		timeused_last;	//!< helper attribute for time_unused, doesnt get saved
+	int32_t		wipe;		//!< Should this item be wiped with the /wipe command
+	uint32_t		time_unused;	//!< used for house decay and possibly for more in future, gets saved
+	uint32_t		timeused_last;	//!< helper attribute for time_unused, doesnt get saved
 //@}
 
 /********************************
 	Effect related
 ********************************/
-//	SI32		glow; // LB identifies glowing objects
-//	SI08		glow_c1; // for backup of old color
-//	SI08		glow_c2;
-//	SI08		glow_effect;
-	SI08		doordir; // Reserved for doors
+//	int32_t		glow; // LB identifies glowing objects
+//	int8_t		glow_c1; // for backup of old color
+//	int8_t		glow_c2;
+//	int8_t		glow_effect;
+	int8_t		doordir; // Reserved for doors
 	bool		dooropen;
 	void		explode(NXWSOCKET  s);
 
@@ -722,16 +722,16 @@ public:
 	inline const TIMERVAL getDecayTime() const
 	{ return decaytime; }
 
-	pItem		getOutMostCont( UI16 rec=50 );
+	pItem		getOutMostCont( uint16_t rec=50 );
 	pBody		getPackOwner();
 
-	UI32		distFrom( P_CHAR pc );
-	UI32		distFrom( P_ITEM pi );
+	uint32_t		distFrom( P_CHAR pc );
+	uint32_t		distFrom( P_ITEM pi );
 
-	inline void setAnimid(UI16 id)
+	inline void setAnimid(uint16_t id)
 	{ animid = id; }
 
-	inline const UI16 getAnimid() const
+	inline const uint16_t getAnimid() const
 	{ return animid ? animid : getId(); }
 
 public:

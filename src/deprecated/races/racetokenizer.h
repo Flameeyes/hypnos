@@ -13,12 +13,12 @@
 class Tokenizer
 {
 	private:
-		map	<UI32, string*> tokens;
-		UI32	index;
+		map	<uint32_t, string*> tokens;
+		uint32_t	index;
 	public:
 		Tokenizer( const char* initialLine );
-		bool	setIndex( UI32 newValue );
-		UI32 	count( void );
+		bool	setIndex( uint32_t newValue );
+		uint32_t 	count( void );
 		string*	first( void );
 		string*	next( void );
 		string*	previous( void );

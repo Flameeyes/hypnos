@@ -51,7 +51,7 @@ static bool checkForCastingLoss(P_CHAR pc, int damage)
 \brief Attack a char
 \param pc_def defender char
 */
-void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
+void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 {
 	if ( !pc_def ) {
 		swingtarget = NULL;
@@ -96,8 +96,8 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 			return;
 		P_CHAR pc_target = pc_def->target;
 		if ( ISVALIDPC( pc_target ) ) {
-                        SI32 att_value = pc_target->hp/10 + pc_def->distFrom( pc_target ) / 2;
-                        SI32 this_value = hp/10 + distFrom( pc_def ) / 2;
+                        int32_t att_value = pc_target->hp/10 + pc_def->distFrom( pc_target ) / 2;
+                        int32_t this_value = hp/10 + distFrom( pc_def ) / 2;
                         if ( this_value < att_value ) {
 				pc_def->target = this;
 				pc_def->attacker = this;
@@ -120,7 +120,7 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
         //
         // Luxor: we must calculate the chance depending on which combat situation we are.
         //
-        SI32 chanceToHit = 0;
+        int32_t chanceToHit = 0;
         if ( fightskill != ARCHERY && def_fightskill != ARCHERY ) { //Melee VS Melee
 		chanceToHit = int( ( (fs1+500.0) / ((fs2+500.0)*2.0) )*100.0 - dex2/7.0 + dex1/7.0 );
 	} else if ( fightskill == ARCHERY && def_fightskill == ARCHERY ) { //Ranged VS Ranged
@@ -217,7 +217,7 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 	if (fightskill != WRESTLING || npc) {
 		basedamage = calcAtt();
 	} else {
-		basedamage = UI32( (skill[WRESTLING]/100.0)/2 + RandomNum(1,2) );
+		basedamage = uint32_t( (skill[WRESTLING]/100.0)/2 + RandomNum(1,2) );
 
 		//Luxor (6 dec 2001): Wrestling Disarm & Stun punch
 		if ( wresmove == WRESDISARM ) {
@@ -284,7 +284,7 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 	x = pc_def->combatHitMessage(damage);
 	def = pc_def->calcDef(x);
 	if (!pc_def->npc)
-		damage -= RandomNum(def, UI32(def*2.5)); //PC armor system
+		damage -= RandomNum(def, uint32_t(def*2.5)); //PC armor system
 	else
 		damage -= RandomNum(def/2, def); //NPC armor system
 	if (damage<0) damage=0;
@@ -646,7 +646,7 @@ void cChar::checkPoisoning(P_CHAR pc_def)
 \param damaage Damage inflicted
 \return part of body hit
 */
-int cChar::combatHitMessage(SI32 damage)
+int cChar::combatHitMessage(int32_t damage)
 {
 	char temp[TEMP_STR_SIZE];
 	int hitin;
@@ -758,7 +758,7 @@ int cChar::combatHitMessage(SI32 damage)
 \param x Body part hit
 \return defense of the part
 */
-int cChar::calcDef(SI32 x)
+int cChar::calcDef(int32_t x)
 {
 	if (npc) return def;
 
@@ -903,7 +903,7 @@ int cChar::calcDef(SI32 x)
 \author Luxor
 \param move Move's id
 */
-void cChar::setWresMove(SI32 move)
+void cChar::setWresMove(int32_t move)
 {
 	switch (move)
 	{
@@ -957,7 +957,7 @@ int cChar::calcAtt()
 \param fightskill fighting skill
 \param weapon weapon used
 */
-void cChar::doCombatSoundEffect(UI16 fightskill, pItem weapon)
+void cChar::doCombatSoundEffect(uint16_t fightskill, pItem weapon)
 {
 	bool heavy=false;
 	int a=RandomNum(0,3);

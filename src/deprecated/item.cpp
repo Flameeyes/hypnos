@@ -154,7 +154,7 @@ namespace item
 									splitLine( rha, str_scriptId, str_itemAmount );
 
 									SCRIPTID	scriptId = str2num( str_scriptId );
-									SI32		itemAmount = str2num( str_itemAmount );
+									int32_t		itemAmount = str2num( str_itemAmount );
 
 									if ( itemAmount < 1 )
 										itemAmount = 1;
@@ -481,7 +481,7 @@ namespace item
 	\param nSpawned is spawned?
 	\param cont container to add the item to
 	*/
-	P_ITEM CreateScriptItem(NXWSOCKET s, SI32 itemnum, LOGICAL nSpawned, cObject* cont )
+	P_ITEM CreateScriptItem(NXWSOCKET s, int32_t itemnum, LOGICAL nSpawned, cObject* cont )
 	{
 		P_ITEM pi= NULL;
 		pi = item::CreateFromScript( itemnum,cont);
@@ -497,7 +497,7 @@ namespace item
 			xx=(buffer[s][11]<<8)+buffer[s][12];
 			yy=(buffer[s][13]<<8)+buffer[s][14];
 			zz=buffer[s][16]+tileHeight((buffer[s][17]<<8)+buffer[s][18]);
-			pi->MoveTo(xx,yy,(SI08)zz);
+			pi->MoveTo(xx,yy,(int8_t)zz);
 		}
 		else
 		{
@@ -552,7 +552,7 @@ namespace item
 
 	*/
 	/*P_ITEM SpawnItem(NXWSOCKET  nSocket, int nAmount, char* cName, LOGICAL nStackable,
-						SI16 cItemId, SI16 cColorId,
+						int16_t cItemId, int16_t cColorId,
 						LOGICAL nPack, LOGICAL nSend)
 	{
 		if (nSocket < 0)
@@ -578,8 +578,8 @@ namespace item
 	\param nSend if true the item is sent to all clients
 */
 	/*P_ITEM SpawnItem(NXWSOCKET  nSocket, CHARACTER ch,
-						SI32 nAmount, char* cName, LOGICAL nStackable,
-						SI16 cItemId, SI16 cColorId,
+						int32_t nAmount, char* cName, LOGICAL nStackable,
+						int16_t cItemId, int16_t cColorId,
 						LOGICAL nPack, LOGICAL nSend)
 	{
 		P_ITEM pi= item::SpawnItem(ch, nAmount, cName, nStackable, cItemId, cColorId, nPack);

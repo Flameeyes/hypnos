@@ -19,9 +19,9 @@
 \param facex X-coord to face to
 \param faxey Y-coord to face to
 */
-void cChar::facexy(UI16 facex, UI16 facey)
+void cChar::facexy(uint16_t facex, uint16_t facey)
 {
-	UI08 olddir = dir;
+	uint8_t olddir = dir;
 	dir = getDirFromXY(facex, facey);
 
 	if ( dir != olddir )
@@ -45,7 +45,7 @@ void cChar::pathFind( Location pos, bool bOverrideCurrentPath )
 	Location loc = pos;
 	if ( isWalkable( pos, WALKFLAG_ALL, this ) == illegal_z ) { // If it isn't walkable, we can only reach the nearest tile
 		bOk = false;
-		for ( UI32 i = 1; i < 4; i++ ) {
+		for ( uint32_t i = 1; i < 4; i++ ) {
                         // East
 			loc = Location( pos.x + i, pos.y, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
@@ -138,7 +138,7 @@ void cChar::walkNextStep()
 				playAction( 0x13 ); // Flying animation
 	}
 
-	SI08 dirXY = getDirFromXY( pos.x, pos.y );
+	int8_t dirXY = getDirFromXY( pos.x, pos.y );
 	dir = dirXY & 0x0F;
 	MoveTo( pos );
 	sendToPlayers( this, dirXY );
@@ -151,7 +151,7 @@ void cChar::walkNextStep()
 \param pc the character
 \param seconds the seconds or INVALID if is hp fear
 */
-void cChar::flee( pChar pc, SI32 seconds )
+void cChar::flee( pChar pc, int32_t seconds )
 {
 	VALIDATEPC( pc );
 
@@ -251,7 +251,7 @@ void cChar::walk()
 			break;
 		case WANDER_AMX: // Sparhawk: script controlled movement
 		{
-			UI32 l = dir;
+			uint32_t l = dir;
 			if (amxevents[EVENT_CHR_ONWALK])
 			{
 				g_bByPass = false;
@@ -285,9 +285,9 @@ void cChar::walk()
 \param targetY the target Y-coordinate
 \return the direction to the coordinats
 */
-UI08 cChar::getDirFromXY( UI16 targetX, UI16 targetY )
+uint8_t cChar::getDirFromXY( uint16_t targetX, uint16_t targetY )
 {
-	UI08 direction = dir;
+	uint8_t direction = dir;
 	Location pcpos= getPosition();
 
 	if ( targetX < pcpos.x )

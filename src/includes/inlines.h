@@ -134,7 +134,7 @@ inline void wstring2string( wstring from, string& to )
 
 This is a mere overload for atoi(char*) function
 */
-inline SI32 atoi(std::string str)
+inline int32_t atoi(std::string str)
 { return atoi(str.c_str()); }
 
 /*!
@@ -142,9 +142,9 @@ inline SI32 atoi(std::string str)
 \param goldtotal Total of gold "moved"
 \return soundsfx to play
 */
-inline UI16 goldsfx(UI16 goldtotal)
+inline uint16_t goldsfx(uint16_t goldtotal)
 {
-	UI16 sound;
+	uint16_t sound;
 
 	if (goldtotal==1)
 		sound = 0x0035;

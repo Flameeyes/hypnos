@@ -2759,10 +2759,10 @@ NATIVE( _chr_showMessage )
 
 		NXWSOCKET s = pc1->getClient()->toInt();
 
-		UI08 sysname[30]={ 0x00, };
+		uint8_t sysname[30]={ 0x00, };
 		strcpy((char *)sysname, "System");
 
-		SendSpeechMessagePkt(s, pc2->getSerial32(), pc2->getId(), 6, params[4], (UI16)pc1->fonttype, sysname, g_cAmxPrintBuffer);
+		SendSpeechMessagePkt(s, pc2->getSerial32(), pc2->getId(), 6, params[4], (uint16_t)pc1->fonttype, sysname, g_cAmxPrintBuffer);
 		return 0;
 	}
 	return INVALID;
@@ -3079,7 +3079,7 @@ NATIVE( _chr_setGuildNumber )
     P_CHAR pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
-	pc->SetGuildNumber( static_cast<SI32>(params[2]) );
+	pc->SetGuildNumber( static_cast<int32_t>(params[2]) );
 	return 0;
 }
 
@@ -3238,7 +3238,7 @@ NATIVE(_itm_speech)
 		return 0;							// =>item speaks to all in range
 	}
 
-	UI08 sysname[30]={ 0x00, };
+	uint8_t sysname[30]={ 0x00, };
 	strcpy((char *)sysname, "System");
 
 	SendSpeechMessagePkt( pc->getSocket(), cur->getSerial32(), 0x0101, 6, 0x0481, 0x0003, sysname, g_cAmxPrintBuffer );
@@ -3577,7 +3577,7 @@ NATIVE(_chr_getLocalIntVar)
 {
 	P_CHAR pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
-	SI32 value;
+	int32_t value;
 	amxVS.selectVariable( pc->getSerial32(), params[2], value );
 	return value;
 }
@@ -3628,7 +3628,7 @@ NATIVE(_chr_getLocalIntVec)
 {
 	P_CHAR pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
-	SI32 value;
+	int32_t value;
 	amxVS.selectVariable( pc->getSerial32(), params[2], params[3], value );
 	return value;
 }
@@ -3825,7 +3825,7 @@ NATIVE(_itm_getLocalIntVar)
 {
     P_ITEM pi = pointers::findItemBySerial(params[1]);
     VALIDATEPIR(pi, INVALID);
-		SI32 value;
+		int32_t value;
 		amxVS.selectVariable( pi->getSerial32(), params[2], value );
 		return value;
 }
@@ -3929,7 +3929,7 @@ NATIVE(_itm_setLocalStrVar)
 */
 NATIVE(_map_canMoveHere)
 {
-	return canNpcWalkHere( Location( static_cast<UI32>(params[1]), static_cast<UI32>(params[2]), 0 ) );
+	return canNpcWalkHere( Location( static_cast<uint32_t>(params[1]), static_cast<uint32_t>(params[2]), 0 ) );
 }
 
 /*
@@ -3964,7 +3964,7 @@ NATIVE(_map_getTileName)
 
 	staticVector s;
 	data::collectStatics( params[1], params[2], s );
-    for( UI32 i = 0; i < s.size(); i++ ) {
+    for( uint32_t i = 0; i < s.size(); i++ ) {
 
 		tile_st tile;
         if( data::seekTile( s[i].id, tile ) ) {
@@ -3998,7 +3998,7 @@ NATIVE(_map_isUnderStatic)
 
 	staticVector s;
 	data::collectStatics( params[1], params[2], s );
-    for( UI32 i = 0; i < s.size(); i++ ) {
+    for( uint32_t i = 0; i < s.size(); i++ ) {
 
 		tile_st tile;
 		if( data::seekTile( s[i].id, tile ) )
@@ -4023,7 +4023,7 @@ NATIVE(_map_getTileID)
 
 	staticVector s;
 	data::collectStatics( params[1], params[2], s );
-    for( UI32 i = 0; i < s.size(); i++ ) {
+    for( uint32_t i = 0; i < s.size(); i++ ) {
 		if( s[i].z == params[3])
 			return s[i].id;
 	}

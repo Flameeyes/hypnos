@@ -61,7 +61,7 @@ void cScriptCommand::execute( pClient client )
 		//ndEndy PDFARE
 		//Skills::MakeMenu(s, str2num(param), pc->making );
 		return;
-	} else if ( (SI32)command.find("MENU") != -1 ) {
+	} else if ( (int32_t)command.find("MENU") != -1 ) {
 		itemmenu( s, str2num(param) );
 		return;
 	} else if ( command == "WEBLINK" ) {
@@ -135,8 +135,8 @@ void cScriptCommand::execute( pClient client )
 		P_ITEM pb = pc->getBackpack();
 		if (!pb) return;
 
-		UI32 i = param.find(' ');
-		if ( i == (UI32)-1 )
+		uint32_t i = param.find(' ');
+		if ( i == (uint32_t)-1 )
 			return;
 
 		std::string p(param.begin()+i+1, param.end());
@@ -519,7 +519,7 @@ void dooruse(NXWSOCKET  s, P_ITEM pi /* was ITEM item*/)
 
 void endmessage(int x) // If shutdown is initialized
 {
-	UI32 igetclock = uiCurrentTime;
+	uint32_t igetclock = uiCurrentTime;
 
 	if (endtime<igetclock)
 		endtime=igetclock;
@@ -561,10 +561,10 @@ int checkBoundingCircle(int xPos, int yPos, int fx1, int fy1, int fz1, int radiu
 		return 0;
 }
 
-UI32 getclockday()
+uint32_t getclockday()
 {
-	UI32 seconds;
-	UI32 days ;
+	uint32_t seconds;
+	uint32_t days ;
 #ifdef __unix__
 	timeval buffer ;
 	gettimeofday(&buffer,NULL) ;
@@ -578,10 +578,10 @@ UI32 getclockday()
 	return days ;
 }
 
-UI32 getclock()
+uint32_t getclock()
 {
-	UI32 milliseconds;
-	UI32 seconds ;
+	uint32_t milliseconds;
+	uint32_t seconds ;
 #ifdef __unix__
 	timeval buffer ;
 	gettimeofday(&buffer,NULL) ;
@@ -609,9 +609,9 @@ UI32 getclock()
 
 used by getSystemTime amx function
 */
-UI32 getsysclock()
+uint32_t getsysclock()
 {
-   UI32 seconds ;
+   uint32_t seconds ;
 #ifdef __unix__
    timeval buffer ;
    gettimeofday(&buffer,NULL) ;
@@ -624,7 +624,7 @@ UI32 getsysclock()
    return seconds ;
 }
 
-void setabovelight(UI08 lightchar)
+void setabovelight(uint8_t lightchar)
 {
 
 	if (lightchar != worldcurlevel)
@@ -651,7 +651,7 @@ void setabovelight(UI08 lightchar)
 \note thanks goes to Balxan / UOAM for the basic alogithm
 	  could be optimized a lot, but the freuqency of being called is probably very low
 */
-void getSextantCoords(SI32 x, SI32 y, LOGICAL t2a, char *sextant)
+void getSextantCoords(int32_t x, int32_t y, LOGICAL t2a, char *sextant)
 {
    double Tx, Ty, Dx, Dy, Cx, Cy, Wx, Wy, Mx, My, Hx, Hy;
    signed int xH, xM, yH, yM;

@@ -40,7 +40,7 @@ extern void checkAmxSpeech(int s, char *speech);
 void wchar2char (const char* str);
 void char2wchar (const char* str);
 
-static SI32 findKeyword( const std::string &str, const std::string &keyword );
+static int32_t findKeyword( const std::string &str, const std::string &keyword );
 static std::string trimString( const std::string &str );
 
 int response(NXWSOCKET  s)
@@ -56,7 +56,7 @@ int response(NXWSOCKET  s)
 
 	Location charpos= pc->getPosition();
 
-	SI32 i, j, skill=-1;
+	int32_t i, j, skill=-1;
 
 	char search1[50];
 
@@ -67,7 +67,7 @@ int response(NXWSOCKET  s)
 	int y=0;
 
 	char *comm;
-	static UI08 nonuni[MAXBUFFER_REAL];
+	static uint8_t nonuni[MAXBUFFER_REAL];
 	static char buffer1[MAXBUFFER];
 	if(pc->unicode)
 	{
@@ -509,7 +509,7 @@ int response(NXWSOCKET  s)
 							}
 							else
 							{
-								UI32 sum = pc->getSkillSum();
+								uint32_t sum = pc->getSkillSum();
 								if (sum >= SrvParms->skillcap * 10)
 									strcat(temp, TRANSLATE(" I can teach thee no more. Thou already knowest too much!"));
 								else
@@ -1126,8 +1126,8 @@ static LOGICAL respond( P_CHAR pc, NXWSOCKET socket, string &speech )
 {
 	LOGICAL success = false;
 	pCharVector	nearbyPlayerVendors;
-	UI32		i = 0;
-	UI32		j = nearbyNpcs->size();
+	uint32_t		i = 0;
+	uint32_t		j = nearbyNpcs->size();
 	while( i < j )
 	{
 		pc_a_npc = (*nearbyNpcs)[i];
@@ -1398,7 +1398,7 @@ static LOGICAL stablePet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwC
 	<stable master> stable all <pet>	stablemaster with name <stable master> stables all pets with name <pet>
 */
 	LOGICAL success = false;
-	SI32 tokenPosition = findKeyword( speech, "STABLE");
+	int32_t tokenPosition = findKeyword( speech, "STABLE");
 	if( tokenPosition != INVALID )
 	{
 		std::string 	stablemasterName( trimString( speech.substr( 0, tokenPosition ) ) );
@@ -1527,7 +1527,7 @@ static LOGICAL claimPet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCh
 		<stablemaster> claim all <pet>
 	*/
 	LOGICAL success = false;
-	SI32 tokenPosition = findKeyword( speech, "CLAIM");
+	int32_t tokenPosition = findKeyword( speech, "CLAIM");
 	if( tokenPosition != INVALID )
 	{
 		std::string 	stablemasterName( trimString( speech.substr( 0, tokenPosition ) ) );
@@ -1559,7 +1559,7 @@ static LOGICAL claimPet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCh
 				//
 				if( !pc_stablemaster->war )
 				{
-					SI32 ii = 0;
+					int32_t ii = 0;
 					while ( ( pc_a_npc = pointers::stableSearch( pc_stablemaster->getSerial32(), &ii ) ) != 0 )
 					{
 						if( pc->isOwnerOf( pc_a_npc ) )
@@ -1607,7 +1607,7 @@ stabledPets.rewind();	// GH!
 			// Calculate and display stabling fee = (fee per 10 minutes) * number of 10 minute blocks + 5 basefee
 			//
 			float 	f_fee	= 0.0f;
-			UI32	fee	= 0;
+			uint32_t	fee	= 0;
 			//
 			// Calculate fee. Game master stable for free, everyone else has to pay
 			//
@@ -1717,7 +1717,7 @@ nearbyChaosGuards.rewind();
 static LOGICAL requestChaosShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyChaosGuards )
 {
 	LOGICAL success = false;
-	SI32 tokenPosition = findKeyword( speech, "SHIELD");
+	int32_t tokenPosition = findKeyword( speech, "SHIELD");
 	if( tokenPosition != INVALID )
 	{
 		std::string 	objectName( trimString( speech.substr( tokenPosition + 6) ) );
@@ -1772,7 +1772,7 @@ static LOGICAL requestChaosShield( P_CHAR pc, NXWSOCKET socket, std::string &spe
 static LOGICAL requestOrderShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyOrderGuards )
 {
 	LOGICAL success = false;
-	SI32 tokenPosition = findKeyword( speech, "SHIELD");
+	int32_t tokenPosition = findKeyword( speech, "SHIELD");
 	if( tokenPosition != INVALID )
 	{
 		std::string 	objectName( trimString( speech.substr( tokenPosition + 6) ) );
@@ -1836,7 +1836,7 @@ static LOGICAL requestHelp( P_CHAR pc, NXWSOCKET socket, std::string &speech, Nx
 static LOGICAL buyFromVendor( P_CHAR pc, NXWSOCKET socket, string &speech, NxwCharWrapper &nearbyVendors )
 {
 	LOGICAL success = false;
-//	SI32 tokenPosition = INVALID;
+//	int32_t tokenPosition = INVALID;
 	/*
 	if(!speech.compare(0,10,"VENDOR BUY") || !speech.compare(0,14,"SHOPKEEPER BUY") )
 	{
@@ -1905,7 +1905,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 	P_CHAR pc = MAKE_CHAR_REF( currchar[socket] );
 	VALIDATEPC( pc );
 
-	UI32 i, j;
+	uint32_t i, j;
 	int match;
 	char sect[512];
 
@@ -2283,9 +2283,9 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 	}
 }
 
-static SI32 findKeyword( const std::string &str, const std::string &keyword )
+static int32_t findKeyword( const std::string &str, const std::string &keyword )
 {
-	SI32 tokenPosition = str.find( keyword );
+	int32_t tokenPosition = str.find( keyword );
 	if( tokenPosition != INVALID )
 		if( (tokenPosition != 0) && str[tokenPosition-1] != ' ' )
 			tokenPosition = INVALID;
@@ -2297,8 +2297,8 @@ static SI32 findKeyword( const std::string &str, const std::string &keyword )
 
 static std::string trimString( const std::string &str )
 {
-	UI32 i = 0;
-	UI32 j = str.length();
+	uint32_t i = 0;
+	uint32_t j = str.length();
 
 	while( (i < j) && str[i] == ' ' )
 		++i;
@@ -2325,12 +2325,12 @@ void wchar2char (const char* str)
 void char2wchar (const char* str)
 {
 	memset(&Unicode::temp[0], 0, 1024);
-	UI32 size = strlen(str);
+	uint32_t size = strlen(str);
 	// client wants to have a 0 as very fist byte.
 	// after that 0 the unicode text
 	// after it two(!) 0's as termintor
-	UI32 j=1;
-	for (UI32 i = 0; i < size; i++)
+	uint32_t j=1;
+	for (uint32_t i = 0; i < size; i++)
 	{
 		Unicode::temp[j] = str[i];
 		j+=2;

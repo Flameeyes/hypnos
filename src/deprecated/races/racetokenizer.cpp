@@ -18,11 +18,11 @@ Tokenizer::Tokenizer( const char* initialLine )
 	tokenStart = 0;
 	tokenLength = 0;
 */
-	UI32	currentTokenId	= 1;
-	UI32	tokenStart	= 0;
-	UI32	tokenLength	= 0;
+	uint32_t	currentTokenId	= 1;
+	uint32_t	tokenStart	= 0;
+	uint32_t	tokenLength	= 0;
 	string	line		= initialLine;
-	UI32	lineSize 	= line.size();
+	uint32_t	lineSize 	= line.size();
 	string* token		= 0;
 
 	while ( tokenStart != lineSize )
@@ -44,12 +44,12 @@ Tokenizer::Tokenizer( const char* initialLine )
 	index = 1;
 }
 
-UI32 Tokenizer::count( void )
+uint32_t Tokenizer::count( void )
 {
 	return tokens.size();
 }
 
-bool Tokenizer::setIndex( UI32 newValue )
+bool Tokenizer::setIndex( uint32_t newValue )
 {
 	bool returnValue = false;
 	if ( newValue > 1 && newValue <= tokens.size() )

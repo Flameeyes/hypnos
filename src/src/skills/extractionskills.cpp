@@ -19,7 +19,7 @@
 cResources ores;
 
 
-cResources::cResources( UI32 areawidth, UI32 areaheight )
+cResources::cResources( uint32_t areawidth, uint32_t areaheight )
 {
 	resources.clear();
 	setDimArea( areawidth, areaheight );
@@ -33,22 +33,22 @@ cResources::~cResources()
 {
 }
 
-void cResources::setDimArea( UI32 areawidth, UI32 areaheight )
+void cResources::setDimArea( uint32_t areawidth, uint32_t areaheight )
 {
 	area_width=areawidth;
 	area_height=areaheight;
 }
 
-UI64 cResources::getBlocks( Location location  )
+uint64_t cResources::getBlocks( Location location  )
 {
-	return (UI64)( (UI64)(location.x / this->area_width) <<32 ) + ( location.y / this->area_height );
+	return (uint64_t)( (uint64_t)(location.x / this->area_width) <<32 ) + ( location.y / this->area_height );
 }
 
 
 P_RESOURCE cResources::getResource( Location location )
 {
 
-	UI64 p = this->getBlocks( location );
+	uint64_t p = this->getBlocks( location );
 	
 	RESOURCE_MAP::iterator iter( this->resources.find( p ) );
 	if( iter==this->resources.end() )
@@ -59,7 +59,7 @@ P_RESOURCE cResources::getResource( Location location )
 
 P_RESOURCE cResources::createBlock( Location location )
 {
-	UI64 p = this->getBlocks( location );
+	uint64_t p = this->getBlocks( location );
 	
 	this->resources.insert( make_pair( p, cResource( ) ) );
 	RESOURCE_MAP::iterator iter( this->resources.find( p ) );
@@ -101,7 +101,7 @@ bool cResources::checkRes( P_RESOURCE res )
 	{
 		if( res->consumed>ores.n )
 			res->consumed=ores.n;
-		for( UI32 c=0; c<ores.n; c++ ) //Find howmany periods have been by, give 1 more ore for each period.
+		for( uint32_t c=0; c<ores.n; c++ ) //Find howmany periods have been by, give 1 more ore for each period.
 		{
 			if(( TIMEOUT( res->timer+(c* ores.time*MY_CLOCKS_PER_SEC)) ) && res->consumed>=ores.rate )
 				res->consumed-=ores.rate;//AntiChrist
@@ -135,7 +135,7 @@ void cResources::checkAll()
 
 void cResources::deleteBlock( Location location ) 
 {
-	UI64 p = this->getBlocks( location );
+	uint64_t p = this->getBlocks( location );
 	
 	RESOURCE_MAP::iterator iter( this->resources.find( p ) );
 	if( iter!=this->resources.end() )
@@ -228,7 +228,7 @@ void Skills::target_mine( NXWCLIENT ps, P_TARGET t )
 		return;
 	}
 
-	UI32 id = t->getModel();
+	uint32_t id = t->getModel();
 
 	if( SrvParms->minecheck > 0 && !id )
 	{

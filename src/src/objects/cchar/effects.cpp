@@ -16,7 +16,7 @@
 */
 void cChar::doMissedSoundEffect()
 {
-	UI08 a=RandomNum(0,2);
+	uint8_t a=RandomNum(0,2);
 
 	switch (a)
 	{
@@ -38,7 +38,7 @@ void cChar::playMonsterSound(MonsterSound sfx)
 	if( creature==NULL )
 		return;
 
-	UI16 s = creature->getSound( sfx );
+	uint16_t s = creature->getSound( sfx );
 	if( s != 0xFFFF )
 		client->playSFX( s );
 }
@@ -54,7 +54,7 @@ void cChar::playMonsterSound(MonsterSound sfx)
 \param part particle effects structure
 \todo backport
 */
-void cChar::movingFX(P_CHAR destination, short id, SI32 speed, SI32 loop, bool explode, ParticleFx* part)
+void cChar::movingFX(P_CHAR destination, short id, int32_t speed, int32_t loop, bool explode, ParticleFx* part)
 {
 	movingeffect(DEREF_P_CHAR(this), DEREF_P_CHAR(destination), id >> 8, id & 0xFF,
 		speed & 0xFF, loop & 0xFF, explode ? '\1' : '\0', part!=NULL, part);
@@ -69,7 +69,7 @@ void cChar::movingFX(P_CHAR destination, short id, SI32 speed, SI32 loop, bool e
 \param part optional particles data
 \note if part == NULL then id, speed and loop MUST be >= 0
 */
-void cChar::staticFX(short id, SI32 speed, SI32 loop, ParticleFx* part)
+void cChar::staticFX(short id, int32_t speed, int32_t loop, ParticleFx* part)
 {
 	if (part!=NULL) {
 		if (id<=-1) id = (part->effect[0] << 8) + part->effect[1];
@@ -87,7 +87,7 @@ void cChar::staticFX(short id, SI32 speed, SI32 loop, ParticleFx* part)
 */
 void cChar::boltFX(bool bNoParticles)
 {
-	UI08 effect[28]={ 0x70, 0x00, };
+	uint8_t effect[28]={ 0x70, 0x00, };
 
  	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
@@ -195,7 +195,7 @@ void cChar::doGmEffect()
 \brief Makes the char doing an action
 \author Luxor
 */
-void cChar::playAction(UI16 action)
+void cChar::playAction(uint16_t action)
 {
 	switch (action)
 	{
@@ -259,7 +259,7 @@ void cChar::playAction(UI16 action)
 		cs.sendPacket(&pa);
 }
 
-void cChar::impAction(UI16 action)
+void cChar::impAction(uint16_t action)
 {
 	if ( isMounting() && (action==0x10 || action==0x11))
 	{

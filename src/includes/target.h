@@ -29,7 +29,7 @@ private:
 protected:
 
 	Location loc;
-	UI16 model;
+	uint16_t model;
 	SERIAL clicked;
 
 public:
@@ -52,7 +52,7 @@ public:
 
 	Location getLocation();
 	SERIAL getClicked();
-	UI16 getModel();
+	uint16_t getModel();
 
 };
 

@@ -34,7 +34,7 @@ class Race
 		//
 		//	private static data
 		//
-		static	std::map<UI32, class Race*>
+		static	std::map<uint32_t, class Race*>
 					raceMap;
 		static	cScpScript* 	script;
 		static	bool		activeRaceSystem;
@@ -52,9 +52,9 @@ class Race
 		static	void		dialogChoosePlayerRace( const NXWSOCKET socket );	//	Select race
 		static	void		enlistDialog121( const NXWSOCKET socket );	//		Race parameter dialog
 
-		static	void		showRaceDescription( const NXWSOCKET socket, UI32 raceId );
-//		static	void		showRaceDescription( const NXWSOCKET socket, const UI32 raceId, short int gumpId, bool canClose, bool canMove, bool withOk );
-		static	void		showRaceDescription( const NXWSOCKET socket, const UI32 raceId, BYTE gumpId, bool canClose, bool canMove, bool withOk );
+		static	void		showRaceDescription( const NXWSOCKET socket, uint32_t raceId );
+//		static	void		showRaceDescription( const NXWSOCKET socket, const uint32_t raceId, short int gumpId, bool canClose, bool canMove, bool withOk );
+		static	void		showRaceDescription( const NXWSOCKET socket, const uint32_t raceId, BYTE gumpId, bool canClose, bool canMove, bool withOk );
 //		static	void		showRaceNameList( const NXWSOCKET socket, const RACETYPE raceType, short int gumpId, bool canClose, bool canMove, bool withOk ); // race list pc | npc | both
 		static	void		showRaceNameList( const NXWSOCKET socket, const RACETYPE raceType, BYTE gumpId, bool canClose, bool canMove, bool withOk ); // race list pc | npc | both
 
@@ -81,27 +81,27 @@ class Race
 		//static	void		resurrect( const P_CHAR pc );
 
 		static	bool		isRaceSystemActive( void );
-		static	const 	string*	getName( const UI32 raceId );
-		static	const 	string*	getPluralName( const UI32 raceId );
-		static	void		setName( const UI32 raceId, const char *newName )	;
+		static	const 	string*	getName( const uint32_t raceId );
+		static	const 	string*	getPluralName( const uint32_t raceId );
+		static	void		setName( const uint32_t raceId, const char *newName )	;
 
-		static	R32			getPoisonResistance( const UI32 raceId, PoisonType poisonStrength )	;
-		static	bool		isPlayerRace( const UI32 raceId );
-		static	RACIALRELATION	getRacialRelation( UI32 raceId1, UI32 raceId2 );
-		static	Race*		getRace( UI32 raceId );
-		static	RequiredType	getBeardPerm( UI32 raceId );
-		static	RequiredType	getHairPerm( UI32 raceId );
+		static	R32			getPoisonResistance( const uint32_t raceId, PoisonType poisonStrength )	;
+		static	bool		isPlayerRace( const uint32_t raceId );
+		static	RACIALRELATION	getRacialRelation( uint32_t raceId1, uint32_t raceId2 );
+		static	Race*		getRace( uint32_t raceId );
+		static	RequiredType	getBeardPerm( uint32_t raceId );
+		static	RequiredType	getHairPerm( uint32_t raceId );
 
-		static	bool		isProtectedLayer( UI32 raceId, unsigned char layer );
+		static	bool		isProtectedLayer( uint32_t raceId, unsigned char layer );
 
-		//static	UI32		getSkillCap( UI32 raceId );
-		//static	UI32		setSkillCap( UI32 raceId, newSkillCap );
+		//static	uint32_t		getSkillCap( uint32_t raceId );
+		//static	uint32_t		setSkillCap( uint32_t raceId, newSkillCap );
 
 	private:
 			//
 			// race id
 			//
-			UI32				id;
+			uint32_t				id;
 			//
 			// race name
 			//
@@ -126,18 +126,18 @@ class Race
 			//
 			// -- abilities
 			//
-			UI32				statCap;
+			uint32_t				statCap;
 
-			UI32				strStart;
-			UI32				strCap;
+			uint32_t				strStart;
+			uint32_t				strCap;
 			RaceAbilityModifiers		strModifiers;
 
-			UI32				dexStart;
-			UI32				dexCap;
+			uint32_t				dexStart;
+			uint32_t				dexCap;
 			RaceAbilityModifiers		dexModifiers;
 
-			UI32				intStart;
-			UI32				intCap;
+			uint32_t				intStart;
+			uint32_t				intCap;
 			RaceAbilityModifiers		intModifiers;
 			//
 			// -- resistances
@@ -147,7 +147,7 @@ class Race
 			//
 			// -- relations
 			//
-			std::map<UI32, RACIALRELATION>	m_mapRacialRelations;
+			std::map<uint32_t, RACIALRELATION>	m_mapRacialRelations;
 			//
 			// -- items gained when pc becomes race member
 			//
@@ -155,15 +155,15 @@ class Race
 			//
 			// -- skills
 			//
-			UI32				skillCap;
+			uint32_t				skillCap;
 			RaceSkills			skills;
 			//
 			// -- miscelaneous
 			//
-			UI32				tileId;
-			UI32				font;
-			UI32				say;
-			UI32				emote;
+			uint32_t				tileId;
+			uint32_t				font;
+			uint32_t				say;
+			uint32_t				emote;
 
 	private:
 			void				parseAbilityModifiers( const RACIALABILITY ability, const string& sectionName );
@@ -180,46 +180,46 @@ class Race
 							Race( void );
 			virtual				~Race( void );
 
-			bool				getCanUseSkill( UI32 skillId );
-			UI32				getDexCap( void );
-			int				getDexModifier( UI32 baseDex );
-			UI32				getDexStart( void );
-			UI32				getIntCap( void );
-			int				getIntModifier( UI32 baseDex );
-			UI32				getIntStart( void );
+			bool				getCanUseSkill( uint32_t skillId );
+			uint32_t				getDexCap( void );
+			int				getDexModifier( uint32_t baseDex );
+			uint32_t				getDexStart( void );
+			uint32_t				getIntCap( void );
+			int				getIntModifier( uint32_t baseDex );
+			uint32_t				getIntStart( void );
 			const string*			getPluralName( void );
-			RACIALRELATION			getRacialRelation( UI32 raceId );
-			UI32				getSkillAdvanceDexterity( UI32 skillId );
-			UI32				getSkillAdvanceIntelligence( UI32 skillId );
-			UI32				getSkillAdvanceStrength( UI32 skillId );
-			UI32				getSkillAdvanceSuccess( UI32 skillId, UI32 baseSkill );
-			UI32				getSkillAdvanceFailure( UI32 skillId, UI32 baseSkill );
-			UI32				getSkillCap( void );
-			UI32				getStatCap( void );
-			UI32				getStrCap( void );
-			int				getStrModifier( UI32 baseDex );
-			UI32				getStrStart( void );
+			RACIALRELATION			getRacialRelation( uint32_t raceId );
+			uint32_t				getSkillAdvanceDexterity( uint32_t skillId );
+			uint32_t				getSkillAdvanceIntelligence( uint32_t skillId );
+			uint32_t				getSkillAdvanceStrength( uint32_t skillId );
+			uint32_t				getSkillAdvanceSuccess( uint32_t skillId, uint32_t baseSkill );
+			uint32_t				getSkillAdvanceFailure( uint32_t skillId, uint32_t baseSkill );
+			uint32_t				getSkillCap( void );
+			uint32_t				getStatCap( void );
+			uint32_t				getStrCap( void );
+			int				getStrModifier( uint32_t baseDex );
+			uint32_t				getStrStart( void );
 
 			bool				isPlayerRace( void );
 			bool				isProtectedLayer( unsigned char layer );
 			bool				isRaceActive( void );
 
-			void				setRacialRelation( UI32 raceId, RACIALRELATION relation );
-			void				setSkillCap( UI32 newSkillCap );
+			void				setRacialRelation( uint32_t raceId, RACIALRELATION relation );
+			void				setSkillCap( uint32_t newSkillCap );
 			void				show( void );
 
-			vector< UI32 >			skinColor;
+			vector< uint32_t >			skinColor;
 			string				webLink;
 			std::vector< string >		description;
 			RaceType			raceType;
-			UI32				skin;
-			//UI32		skinColor;
+			uint32_t				skin;
+			//uint32_t		skinColor;
 			RequiredType			hairPerm;
-			UI32				hairStyle;
-			vector< UI32>			hairColor;
+			uint32_t				hairStyle;
+			vector< uint32_t>			hairColor;
 			RequiredType			beardPerm;
 			vector< BEARDSTYLE >		beardStyles;
-			vector< UI32 >			beardColor;
+			vector< uint32_t >			beardColor;
 			string				name;
 };
 

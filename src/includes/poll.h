@@ -29,19 +29,19 @@ class cPoll
 		std::string	getQuestion();
 		void		setQuestion( const std::string &question );
 	private:
-		UI32		runForDays;
+		uint32_t		runForDays;
 	public:
-		UI32		getRunForDays();
-		void		setRunForDays( const UI32 days );
+		uint32_t		getRunForDays();
+		void		setRunForDays( const uint32_t days );
 	
-	typedef map< UI32, std::string > mPollOption	;
+	typedef map< uint32_t, std::string > mPollOption	;
 	typedef mPollOption::iterator	 miPollOption	;
 	
 	private:
 		mPollOption	pollOptions;
 	public:
-		std::string	getPollOption( const UI32 option );
-		void		setPollOption( const UI32 option, const std::string &optionText );
+		std::string	getPollOption( const uint32_t option );
+		void		setPollOption( const uint32_t option, const std::string &optionText );
 	
 	typedef map< SERIAL, cGameDate > mPollVoter;
 	typedef mPollVoter::iterator miPollVoter;
@@ -49,7 +49,7 @@ class cPoll
 	private:
 		mPollVoter	pollVoters;
 	public:
-		LOGICAL		castVote( const SERIAL voterSerial, const UI32 option );
+		LOGICAL		castVote( const SERIAL voterSerial, const uint32_t option );
 };
 
 #endif

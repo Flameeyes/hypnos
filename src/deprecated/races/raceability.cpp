@@ -14,7 +14,7 @@ RaceAbilityModifier::RaceAbilityModifier( void )
 	base = modification = 0;
 }
 
-UI32 RaceAbilityModifier::getBase( void )
+uint32_t RaceAbilityModifier::getBase( void )
 {
 	return this->base;
 }
@@ -34,7 +34,7 @@ RaceAbilityModifiers::RaceAbilityModifiers( void )
 {
 }
 
-RaceAbilityModifier& RaceAbilityModifiers::getAbilityModifier( UI32 baseSkill )
+RaceAbilityModifier& RaceAbilityModifiers::getAbilityModifier( uint32_t baseSkill )
 {
 	RaceAbilityModifierMap::iterator it( modifiers.begin() ), end( modifiers.end() );
 	while( it != end && it->second.getBase() < baseSkill ) ++it;
@@ -58,7 +58,7 @@ RaceAbilityModifiers& RaceAbilityModifiers::operator=( RaceScriptEntry& that )
 		ErrOut( "RaceAbilityModifiers() no %s\n", that.section.c_str() );
 	else
 	{
-		UI32 								loopexit=0;
+		uint32_t 								loopexit=0;
 		string 							str;
 		RaceAbilityModifier	modifier;
 		do

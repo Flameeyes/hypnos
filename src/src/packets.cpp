@@ -71,12 +71,12 @@ inline void reciveStringFromSocket( NXWSOCKET socket, string& s, int lenght, int
 */
 inline void reciveUnicodeStringFromSocket( NXWSOCKET s, wstring& c, int& from, int size )
 {
-	SI32 chSize = sizeof( UI16 );
-	UI16* w=(UI16*)( &buffer[s][from] );
+	int32_t chSize = sizeof( uint16_t );
+	uint16_t* w=(uint16_t*)( &buffer[s][from] );
 
 	c.erase();
 
-	SI32 i=0;
+	int32_t i=0;
 	if( size==INVALID ) {//until termination
 		while ( w[i]!=0 ) {
 			c+=ntohs( w[i++] );
@@ -247,7 +247,7 @@ SEND( StatWindow ) {
 	this->sendBasic( ps );
 };
 
-void cPacketStatWindow::sendBasic( NXWCLIENT ps, UI08 flag  ) {
+void cPacketStatWindow::sendBasic( NXWCLIENT ps, uint8_t flag  ) {
 	if( ps == NULL ) return; //after error here
 	this->flag = flag;
 	Xsend( ps->toInt(), this->getBeginValid(), this->headerSize );
@@ -413,7 +413,7 @@ RECEIVE( DeleteCharacter ) {
 CREATE( UnicodeSpeech, PKG_UNICODE_SPEECH, 0x12 )
 SEND( UnicodeSpeech ) {
 	if( ps == NULL || msg == NULL ) return;
-	SI32 nSize = sizeof( UI16 );
+	int32_t nSize = sizeof( uint16_t );
 	this->size=this->headerSize +30 + msg->size()*nSize+nSize;
 	Xsend( ps->toInt(), this->getBeginValid(), this->headerSize );
 	this->name.resize( 30 );
@@ -471,10 +471,10 @@ SEND( Menu ) {
 	NXWSOCKET s = ps->toInt();
 
 	//calc of packet size
-	UI32 temp=this->headerSize;
+	uint32_t temp=this->headerSize;
 
 	//command string
-	UI32 size_of_commands=0;
+	uint32_t size_of_commands=0;
 	std::vector< std::string >::iterator its( commands->begin() ), ends( commands->end() );
 	for( ; its!=ends; its++ ) {
 		size_of_commands += its->length();
@@ -555,7 +555,7 @@ SEND( IconListMenu ) {
 	NXWSOCKET s = ps->toInt();
 
 	//calc of packet size
-	UI32 temp=this->headerSize;
+	uint32_t temp=this->headerSize;
 
 	//question string
 	temp+=question.size();
@@ -568,7 +568,7 @@ SEND( IconListMenu ) {
 	for( ; iter!=end; iter++ ) {
 		temp += sizeof( iter->model );
 		temp += sizeof( iter->color );
-		temp += sizeof( eUI08 ) + iter->response.size();
+		temp += sizeof( euint8_t ) + iter->response.size();
 	}
 	
 	this->size=temp;
@@ -585,7 +585,7 @@ SEND( IconListMenu ) {
 	iter = icons->begin();
 	for( ; iter!=end; iter++ ) {
 		Xsend( s, (char*)&iter->model, ( sizeof(iter->model) +sizeof(iter->color) ) );
-		eUI08 rl=iter->response.size();
+		euint8_t rl=iter->response.size();
 		Xsend( s, (char*)&rl, sizeof(rl) );
 		Xsend( s, iter->response.c_str(), iter->response.size() ); //not send null terminator
 	}
@@ -608,12 +608,12 @@ cPacketGeneralInfo<T>::cPacketGeneralInfo() {
 
 cSubPacketParty<cServerPacket>::cSubPacketParty() : cPacketGeneralInfo<cServerPacket>() {
 	this->subcmd = 6;
-	headerSize += sizeof( eUI08 );
+	headerSize += sizeof( euint8_t );
 }
 
 cSubPacketParty<cClientPacket>::cSubPacketParty() : cPacketGeneralInfo<cClientPacket>() {
 	this->subcmd = 6;
-	headerSize += sizeof( eUI08 );
+	headerSize += sizeof( euint8_t );
 }
 
 clPacketAddPartyMember::clPacketAddPartyMember()
@@ -633,7 +633,7 @@ void clPacketAddPartyMember::receive( NXWCLIENT ps )
 csPacketAddPartyMembers::csPacketAddPartyMembers()
 {
 	subsubcommand = 1;
-	headerSize += sizeof( eUI08 );
+	headerSize += sizeof( euint8_t );
 }
 
 void csPacketAddPartyMembers::send( NXWCLIENT ps )
@@ -670,7 +670,7 @@ void clPacketRemovePartyMember::receive( NXWCLIENT ps )
 csPacketRemovePartyMembers::csPacketRemovePartyMembers()
 {
 	subsubcommand = 2;
-	headerSize += sizeof( eUI08 ) +sizeof(eSERIAL);
+	headerSize += sizeof( euint8_t ) +sizeof(eSERIAL);
 }
 
 void csPacketRemovePartyMembers::send( NXWCLIENT ps )
@@ -717,7 +717,7 @@ void csPacketPartyTellMessage::send( NXWCLIENT ps )
 	if( ps==NULL ) return;
 	NXWSOCKET s = ps->toInt();
 
-	size = headerSize + message->size()*sizeof(UI16)+sizeof(UI16);
+	size = headerSize + message->size()*sizeof(uint16_t)+sizeof(uint16_t);
 	Xsend( s, getBeginValid(), headerSize );
 
 	Xsend( s, *message, true );
@@ -734,7 +734,7 @@ void csPacketPartyTellAllMessage::send( NXWCLIENT ps )
 	if( ps==NULL ) return;
 	NXWSOCKET s = ps->toInt();
 
-	size = headerSize + message->size()*sizeof(UI16)+sizeof(UI16);
+	size = headerSize + message->size()*sizeof(uint16_t)+sizeof(uint16_t);
 	Xsend( s, getBeginValid(), headerSize );
 
 	Xsend( s, *message, true );

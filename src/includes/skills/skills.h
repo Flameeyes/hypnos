@@ -79,7 +79,7 @@ namespace Skills {
 	\name Alchemy stuff
 	*/
 	void CreatePotion(CHARACTER s, char type, char sub, int mortar);
-	void DoPotion(NXWSOCKET s, SI32 type, SI32 sub, P_ITEM mortar);
+	void DoPotion(NXWSOCKET s, int32_t type, int32_t sub, P_ITEM mortar);
 	void target_alchemy( NXWCLIENT ps, P_TARGET t );
 	void target_bottle( NXWCLIENT ps, P_TARGET t );
 	void PotionToBottle(P_CHAR pc, P_ITEM mortar);
@@ -123,7 +123,7 @@ namespace Skills {
 	void target_carpentry( NXWCLIENT ps, P_TARGET t );
 
 	void MakeMenu( P_CHAR pc, int m, int skill, P_ITEM first, P_ITEM second = NULL );
-	void MakeMenu( P_CHAR pc, int m, int skill, UI16 firstId=0, COLOR firstColor=0, UI16 secondId=0, COLOR secondColor=0 );
+	void MakeMenu( P_CHAR pc, int m, int skill, uint16_t firstId=0, COLOR firstColor=0, uint16_t secondId=0, COLOR secondColor=0 );
 
 	//@{
 	/*!

@@ -662,7 +662,7 @@ string* cScpScript::getNextSectionParmsInStr(std::string& strIdentifier)
 \param strIdentifier the section id to be searched
 \return the number of objects
 */
-UI32 cScpScript::countSectionInStr(std::string& strIdentifier)
+uint32_t cScpScript::countSectionInStr(std::string& strIdentifier)
 {
 	std::map<std::string, class cScpSection>::iterator iter( m_mapSections.begin() ), end( m_mapSections.end() );
 	unsigned int	count = 0;
@@ -685,7 +685,7 @@ UI32 cScpScript::countSectionInStr(std::string& strIdentifier)
 \return the number of objects
 \note search as sub-string
 */
-UI32 cScpScript::countSectionInStr(char* szIdentifier)
+uint32_t cScpScript::countSectionInStr(char* szIdentifier)
 {
 	std::string str = szIdentifier;
 	return countSectionInStr(str);

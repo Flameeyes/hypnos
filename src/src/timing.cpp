@@ -39,9 +39,9 @@
 
 extern bool g_bMustExecAICode;
 
-static SI32 linInterpolation (SI32 ix1, SI32 iy1, SI32 ix2, SI32 iy2, SI32 ix);
+static int32_t linInterpolation (int32_t ix1, int32_t iy1, int32_t ix2, int32_t iy2, int32_t ix);
 
-void checkFieldEffects( UI32 currenttime, P_CHAR pc, char timecheck )
+void checkFieldEffects( uint32_t currenttime, P_CHAR pc, char timecheck )
 {
 
 	VALIDATEPC(pc);
@@ -71,7 +71,7 @@ void checkFieldEffects( UI32 currenttime, P_CHAR pc, char timecheck )
 					case 0x3996:
 					case 0x398C: //Fire Field
 						if (!pc->resistsFire())
-							tempfx::add(pc, pc, tempfx::FIELD_DAMAGE, SI32(pi->morex/100.0), DAMAGE_FIRE, 0, 1);
+							tempfx::add(pc, pc, tempfx::FIELD_DAMAGE, int32_t(pi->morex/100.0), DAMAGE_FIRE, 0, 1);
 						return;
 					case 0x3915:
 					case 0x3920: //Poison Field
@@ -146,16 +146,16 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 	//
 	if( TIMEOUT( lighttime ) )
 	{
-		SI32 lightLevel = worldcurlevel;
+		int32_t lightLevel = worldcurlevel;
 
-		SI32 timenow = (Calendar::g_nHour * 60) + Calendar::g_nMinute;
-		SI32 dawntime = (Calendar::g_nCurDawnHour * 60) + Calendar::g_nCurDawnMin;
-		SI32 sunsettime = (Calendar::g_nCurSunsetHour * 60) + Calendar::g_nCurSunsetMin;
-		SI32 nighttime = qmin((sunsettime+120), (1439));
-		SI32 morntime = qmax((dawntime-120), (0));
-		SI32 const middaytime = 750;
-//		SI32 const midnighttime = 0; // unused variable
-		SI32 dawnlight = (((worlddarklevel - worldbrightlevel))/3) + worldbrightlevel;
+		int32_t timenow = (Calendar::g_nHour * 60) + Calendar::g_nMinute;
+		int32_t dawntime = (Calendar::g_nCurDawnHour * 60) + Calendar::g_nCurDawnMin;
+		int32_t sunsettime = (Calendar::g_nCurSunsetHour * 60) + Calendar::g_nCurSunsetMin;
+		int32_t nighttime = qmin((sunsettime+120), (1439));
+		int32_t morntime = qmax((dawntime-120), (0));
+		int32_t const middaytime = 750;
+//		int32_t const midnighttime = 0; // unused variable
+		int32_t dawnlight = (((worlddarklevel - worldbrightlevel))/3) + worldbrightlevel;
 		//
 		// default lights at dawn and sunset
 		//
@@ -340,7 +340,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 					case  88	:
 						if( pi->morey >= 0 && pi->morey < 25 )
 							if (pc->distFrom(pi)<=pi->morey)
-								if( (UI32)RandomNum(1,100) <= pi->morez )
+								if( (uint32_t)RandomNum(1,100) <= pi->morez )
 									soundeffect4(ps->toInt(), pi, pi->morex);
 						break;
 					case 117	:	// Boats
@@ -391,7 +391,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 		checktempfx = (TIMERVAL)((R64) uiCurrentTime+(0.5*MY_CLOCKS_PER_SEC));
 }
 
-static SI32 linInterpolation (SI32 ix1, SI32 iy1, SI32 ix2, SI32 iy2, SI32 ix)
+static int32_t linInterpolation (int32_t ix1, int32_t iy1, int32_t ix2, int32_t iy2, int32_t ix)
 {
 	#define NSIN(X) ((static_cast<R32>(1.0+sin((2.0*X-1.0)*PI)))/2.0f)
 	#define NLIN(X) (X)
@@ -406,7 +406,7 @@ static SI32 linInterpolation (SI32 ix1, SI32 iy1, SI32 ix2, SI32 iy2, SI32 ix)
 	R32  X =  x - x1;
 	R32  Y = (NLIN((X/X2))*Y2)+y1;
 
-	SI32 y = static_cast<SI32>(Y);
+	int32_t y = static_cast<int32_t>(Y);
 
 	return y;
 }

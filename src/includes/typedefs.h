@@ -14,41 +14,21 @@
 
 #ifndef __TYPEDEFS_H__
 #define __TYPEDEFS_H__
+
+#include <stdint.h>
 #include <set>
 
 typedef double				R64;	//< 64 bits floating point
 typedef float				R32;	//< 32 bits floating point
 
-#if defined __GNUC__
-	#include <bits/types.h>
-	typedef uint8_t			UI08;
-	typedef uint16_t		UI16;
-	typedef uint32_t		UI32;
-	typedef uint64_t		UI64;
-	typedef int8_t			SI08;
-	typedef int16_t			SI16;
-	typedef int32_t			SI32;
-	typedef int64_t			SI64;
-#elif defined __BORLANDC__
-	typedef unsigned __int8		UI08;
-	typedef unsigned __int16	UI16;
-	typedef unsigned __int32	UI32;
-	typedef unsigned __int64	UI64;
-
-	typedef signed __int8 SI08;
-	typedef signed __int16 SI16;
-	typedef signed __int32 SI32;
-	typedef signed __int64 SI64;
-#endif
-
-typedef std::vector<pItem>	ItemList;
+#ypedef std::vector<pItem>	ItemList;
 
 
-typedef UI32				TIMERVAL;
-typedef SI32				ACCOUNT;
-typedef SI32				FUNCIDX;
+typedef uint32_t				TIMERVAL;
+typedef int32_t				ACCOUNT;
+typedef int32_t				FUNCIDX;
 
-// typedef std::vector<UI32>		UI32VECTOR;	//!< vector of unsigned 32 bits integers
+// typedef std::vector<uint32_t>		uint32_tVECTOR;	//!< vector of unsigned 32 bits integers
 // typedef std::vector<SERIAL>		SERIAL_VECTOR;	//!< vector of serials
 // typedef slist<SERIAL>                   SERIAL_SLIST;	//!< slist of serials
 
@@ -90,54 +70,54 @@ public:
 
 struct location_st
 {
- SI32 x1;
- SI32 y1;
- SI32 x2;
- SI32 y2;
+ int32_t x1;
+ int32_t y1;
+ int32_t x2;
+ int32_t y2;
  //char region;
- UI08 region;
+ uint8_t region;
 };
 
 struct logout_st//Instalog
 {
-        UI32 x1;
-        UI32 y1;
-        UI32 x2;
-        UI32 y2;
+        uint32_t x1;
+        uint32_t y1;
+        uint32_t x2;
+        uint32_t y2;
 };
 
 struct path_st {
-	UI32 x;
-	UI32 y;
+	uint32_t x;
+	uint32_t y;
 };
 
 
 //REPSYS
 struct repsys_st
 {
-	SI32	murderdecay;
-	UI32		maxkills;
-	SI32		crimtime;
+	int32_t	murderdecay;
+	uint32_t		maxkills;
+	int32_t		crimtime;
 };
 
 
 struct resource_st
 {
-	UI32		logs;
+	uint32_t		logs;
 	TIMERVAL	logtime;
 	TIMERVAL	lograte;//AntiChrist
-	UI32		logarea;
-	SI32		logtrigger;//AntiChrist
-	SI32		logstamina;//AntiChrist
+	uint32_t		logarea;
+	int32_t		logtrigger;//AntiChrist
+	int32_t		logstamina;//AntiChrist
 };
 
 
 struct creat_st
 {
-	SI32 basesound;
-	UI08 soundflag;
-	UI08 who_am_i;
-	SI32 icon;
+	int32_t basesound;
+	uint8_t soundflag;
+	uint8_t who_am_i;
+	int32_t icon;
 };
 
 /*!
@@ -145,15 +125,15 @@ struct creat_st
 */
 struct unitile_st
 {
- SI08 basez;
- UI08 type; // 0=Terrain, 1=Item
- UI16 id;
- UI08 flag1;
- UI08 flag2;
- UI08 flag3;
- UI08 flag4;
- SI08 height;
- UI08 weight;
+ int8_t basez;
+ uint8_t type; // 0=Terrain, 1=Item
+ uint16_t id;
+ uint8_t flag1;
+ uint8_t flag2;
+ uint8_t flag3;
+ uint8_t flag4;
+ int8_t height;
+ uint8_t weight;
 } PACK_NEEDED;
 
 /*!
@@ -162,25 +142,25 @@ struct unitile_st
 */
 struct skill_st
 {
- SI32 st;
- SI32 dx;
- SI32 in;
- SI32 unhide_onuse;
- SI32 unhide_onfail;
- SI32 advance_index;
+ int32_t st;
+ int32_t dx;
+ int32_t in;
+ int32_t unhide_onuse;
+ int32_t unhide_onfail;
+ int32_t advance_index;
  TEXT madeword[50]; // Added by Magius(CHE)
 };
 
 /*!
 \todo rename to sAdvance
-\todo verify if the SI32 are too much for the values
+\todo verify if the int32_t are too much for the values
 */
 struct advance_st
 {
- UI08 skill;
- SI32 base;
- SI32 success;
- SI32 failure;
+ uint8_t skill;
+ int32_t base;
+ int32_t success;
+ int32_t failure;
 };
 
 /*!
@@ -193,7 +173,7 @@ struct gmpage_st
 	Serial serial;
 	TEXT timeofcall[9];
 	TEXT name[20];
-	SI32 handled;
+	int32_t handled;
 } PACK_NEEDED;
 
 /*!
@@ -210,7 +190,7 @@ struct spiritspeak_st
 */
 struct sSpeed
 {
-	SI32 nice;
+	int32_t nice;
 	R32 itemtime;
 	TIMERVAL srtime;
 	R32 npctime;
@@ -237,11 +217,11 @@ struct sTitle
 \author Anthalir
 */
 struct Location {
-	UI16 x;		//!< X-Coordinate of the location
-	UI16 y;		//!< Y-Coordinate of the location
-	SI08 z;		//!< Z-Coordinate of the location
-	SI08 dispz;	//!< Displayed Z of the location
-	UI08 map;	//!< Map the location (if 255 -> every map)
+	uint16_t x;		//!< X-Coordinate of the location
+	uint16_t y;		//!< Y-Coordinate of the location
+	int8_t z;		//!< Z-Coordinate of the location
+	int8_t dispz;	//!< Displayed Z of the location
+	uint8_t map;	//!< Map the location (if 255 -> every map)
 	
 	/*!
 	\brief Constructor for Location structure
@@ -253,7 +233,7 @@ struct Location {
 	 
 	\note Replaces Loc() function
 	*/
-	inline Location(UI16 X, UI16 Y, SI08 Z, SI08 DISPZ = 0, UI08 MAP = 255)
+	inline Location(uint16_t X, uint16_t Y, int8_t Z, int8_t DISPZ = 0, uint8_t MAP = 255)
 	{
 		x = X; y = Y; z = Z; dispz = DISPZ ? DISPZ : z; map = MAP;
 	}
@@ -272,8 +252,8 @@ struct tele_locations_st {
 */
 typedef struct {
 	TIMERVAL timer; //!< the timer
-	UI32 rate_eff; //!< regeneration rate current
-	UI32 rate_real; //!< regeneration rate real
+	uint32_t rate_eff; //!< regeneration rate current
+	uint32_t rate_real; //!< regeneration rate real
 } regen_st;
 
 #endif //__TYPEDEFS_H__

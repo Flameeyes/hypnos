@@ -95,7 +95,7 @@ PYNATIVE(chr_disturbMeditation)
 PYNATIVE(chr_getBankBox)
 {
 	P_CHAR pc = NULL;
-	SI32 bank_type = BANK_GOLD;
+	int32_t bank_type = BANK_GOLD;
 	if ( !PyArg_ParseTuple(args, "i|i", &pc, &bank_type) )
 		return NULL;
 
@@ -143,7 +143,7 @@ PYNATIVE(chr_getWeapon)
 */
 PYNATIVE(chr_getItemOnLayer)
 {
-	SI32 layer;
+	int32_t layer;
 	P_CHAR pc = NULL;
 	if ( !PyArg_ParseTuple(args, "ii", &pc, &layer) )
 		return NULL;
@@ -265,8 +265,8 @@ PYNATIVE(chr_makeVulnerable)
 PYNATIVE(chr_moveTo)
 {
 	P_CHAR pc = NULL;
-	UI16 x, y;
-	SI08 z;
+	uint16_t x, y;
+	int8_t z;
 
 	if ( !PyArg_ParseTuple(args, "iHHb", &pc, &x, &y, &z) )
 		return NULL;

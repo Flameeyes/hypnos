@@ -48,7 +48,7 @@ std::map< std::string, SpellId > speechMap;
 /*!
 \author Luxor
 */
-UI32 getCastingTime( SpellId spell )
+uint32_t getCastingTime( SpellId spell )
 {
 	return ( ( (g_Spells[spell].delay/10) * MY_CLOCKS_PER_SEC ) + uiCurrentTime );
 }
@@ -172,7 +172,7 @@ bool checkGateCollision( P_CHAR pc )
 
 	Location gatepos = pgate->getPosition();
 
-	if ( charpos.x != gatepos.x || charpos.y != gatepos.y || UI32(charpos.z - gatepos.z) > 2 )
+	if ( charpos.x != gatepos.x || charpos.y != gatepos.y || uint32_t(charpos.z - gatepos.z) > 2 )
 		return false;
 
         P_CHAR pnpc = NULL;
@@ -763,7 +763,7 @@ void spellFailFX(P_CHAR pc)
 void castAreaAttackSpell (int x, int y, SpellId spellnum, P_CHAR pcaster)
 {
 	NxwCharWrapper sc;
-	UI32 range = VISRANGE -2;
+	uint32_t range = VISRANGE -2;
 	if ( spellnum == SPELL_EXPLOSION )
 		range = 4;
 
@@ -1224,7 +1224,7 @@ void castFieldSpell( P_CHAR pc, int x, int y, int z, int spellnumber)
 
 	for( j=0; j<=fieldLen; j++ )
 	{
-		SI08 nz=getHeight( Location( fx[j], fy[j], z ) );
+		int8_t nz=getHeight( Location( fx[j], fy[j], z ) );
 		pItem pi = cItem::addByID(id, 1, "#", 0, Location(fx[j], fy[j], nz));
 
 		if (pi)
@@ -2088,8 +2088,8 @@ void cPolymorphMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 	VALIDATEPC( pc );
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
-	std::map<SERIAL, SI32>::iterator iter( iconData.find( p->index.get()-1 ) );
-	UI16 data = ( iter!=iconData.end() )? iter->second : INVALID;
+	std::map<SERIAL, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
+	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
 	pc->delTempfx( tempfx::SPELL_STRENGHT );
 	pc->delTempfx( tempfx::SPELL_CUNNING );
@@ -2184,8 +2184,8 @@ void cCreateFoodMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 	VALIDATEPC( pc );
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
-	std::map<SERIAL, SI32>::iterator iter( iconData.find( p->index.get()-1 ) );
-	UI16 data = ( iter!=iconData.end() )? iter->second : INVALID;
+	std::map<SERIAL, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
+	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
 	item::CreateFromScript( data, pc->getBackpack() );
 	spellFX( SPELL_CREATEFOOD, pc, pc );
@@ -2226,8 +2226,8 @@ void cSummonCreatureMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 	VALIDATEPC( pc );
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
-	std::map<SERIAL, SI32>::iterator iter( iconData.find( p->index.get()-1 ) );
-	UI16 data = ( iter!=iconData.end() )? iter->second : INVALID;
+	std::map<SERIAL, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
+	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
 	Location pos = pc->getPosition();
 	P_CHAR pc_monster = npcs::addNpc( data, pos.x, pos.y, pos.z );
@@ -2235,7 +2235,7 @@ void cSummonCreatureMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 
 	pc_monster->setOwner( pc );
 	pc_monster->tamed = true;
-	pc_monster->summontimer = uiCurrentTime + UI32(pc->skill[MAGERY] * 0.4) * MY_CLOCKS_PER_SEC;
+	pc_monster->summontimer = uiCurrentTime + uint32_t(pc->skill[MAGERY] * 0.4) * MY_CLOCKS_PER_SEC;
 	pc_monster->MoveTo( pos.x, pos.y, pos.z );
 	pc_monster->teleport();
 	spellFX( SPELL_SUMMON, pc, pc );

@@ -84,7 +84,7 @@ void dispatchCommand(char *cmd, char *params);
 /*!
 \name Prototypes for internal use
 */
-static UI32 calcMask (char *str, bool isMinutes);
+static uint32_t calcMask (char *str, bool isMinutes);
 static void addTaskToCrontab(char *str);
 static char getFirstValidChar (char *str);
 static bool getToken (char **pstrSource, char **pstrRes);
@@ -97,11 +97,11 @@ static void exec_isave(char *dummy);
 // Internal data structures
 struct CronTab
 {
-	UI32				mskHour;
-	UI32				mskMinute;
-	UI32				mskMDay;
-	UI32				mskMonth;
-	UI32				mskWDay;
+	uint32_t				mskHour;
+	uint32_t				mskMinute;
+	uint32_t				mskMDay;
+	uint32_t				mskMonth;
+	uint32_t				mskWDay;
 	char*				strCommand;
 	char*				strParams;
 	struct CronTab*		next;
@@ -112,7 +112,7 @@ static bool s_bCronTabOK = false;
 
 static CronTab *TaskH = NULL, *TaskT = NULL;	//!< manages the Crontab list as a linked List
 static int s_nTasks = 0;			//!< just for statistics ;)
-static UI32 s_nSaveTime = 0;
+static uint32_t s_nSaveTime = 0;
 
 
 /*!
@@ -191,10 +191,10 @@ Function to be called every now and then... check to tasks ready to be scheduled
 void checkCronTab()
 {
 	CronTab *Cron = TaskH;
-	UI32 min,hour,month,wday,mday;
+	uint32_t min,hour,month,wday,mday;
 	time_t ltime;
 	struct tm *today;
-	static UI32 lastMinuteMask;
+	static uint32_t lastMinuteMask;
 
 	CHKCRONTABINIT; //if the test is ok then the data structures are safe
 
@@ -399,14 +399,14 @@ static void addTaskToCrontab(char *str)
 //------------------------------------------- calcMask -----------------------------------------
 //----------------------------------------------------------------------------------------------
 // calcMask : calculates a 32bit mask from a given string
-static UI32 calcMask (char *str, bool isMinutes)
+static uint32_t calcMask (char *str, bool isMinutes)
 {
 	bool bFlag[32];
 	int i;
 	int nLen = strlen(str);
 	char *tkn;
 	int nVal, nFrom, nTo, nStep, nShift;
-	UI32 mskRes;
+	uint32_t mskRes;
 
 	if (isCharInStr(str,'*')) return 0xFFFFFFFF;
 
@@ -639,7 +639,7 @@ static void exec_respawn (char *dummy)
 
 static void exec_broadcast(char *txt)
 {
-	UI08 sysname[30]={ 0x00, };
+	uint8_t sysname[30]={ 0x00, };
 	strcpy((char *)sysname, "System");
 /*
         ID: 0x01010101 // ???? why 1's ???
@@ -661,7 +661,7 @@ static void exec_broadcast(char *txt)
 
 static void exec_gy(char *txt)
 {
-	UI08 name[30]={ 0x00, };
+	uint8_t name[30]={ 0x00, };
 	strcpy((char *)name, "[CronTab Service - GM Only]");
 
 	NxwSocketWrapper sw;

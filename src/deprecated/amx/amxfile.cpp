@@ -21,7 +21,7 @@ amxFiles::~amxFiles()
 	}
 }
 
-SI32 amxFiles::open( const std::string &name, const std::string &mode )
+int32_t amxFiles::open( const std::string &name, const std::string &mode )
 {
 	FILE *pFile = fopen( name.c_str(), mode.c_str() );
 	if( !pFile )
@@ -30,7 +30,7 @@ SI32 amxFiles::open( const std::string &name, const std::string &mode )
 	return lastHandleIssued;
 }
 
-LOGICAL amxFiles::close( const SI32 handle )
+LOGICAL amxFiles::close( const int32_t handle )
 {
 	miAmxFile iter( files.find( handle ) );
 	if( iter == files.end() )
@@ -40,7 +40,7 @@ LOGICAL amxFiles::close( const SI32 handle )
 	return true;
 }
 
-LOGICAL	amxFiles::eof( const SI32 handle )
+LOGICAL	amxFiles::eof( const int32_t handle )
 {
 	miAmxFile iter( files.find( handle ) );
 	if( iter == files.end() )
@@ -48,7 +48,7 @@ LOGICAL	amxFiles::eof( const SI32 handle )
 	return feof( iter->second );
 }
 
-LOGICAL	amxFiles::write( const SI32 handle, const std::string &line )
+LOGICAL	amxFiles::write( const int32_t handle, const std::string &line )
 {
 	miAmxFile iter( files.find( handle ) );
 	if( iter == files.end() )
@@ -57,7 +57,7 @@ LOGICAL	amxFiles::write( const SI32 handle, const std::string &line )
 	return true;
 }
 /*
-std::string amxFiles::read( const SI32 handle )
+std::string amxFiles::read( const int32_t handle )
 {
 	miAmxFile iter( files.find( handle ) );
 	if( iter != files.end() )
@@ -69,7 +69,7 @@ std::string amxFiles::read( const SI32 handle )
 	return "";
 }
 */
-std::string amxFiles::read( const SI32 handle )
+std::string amxFiles::read( const int32_t handle )
 {
 	miAmxFile iter( files.find( handle ) );
 	if( iter != files.end() )

@@ -77,7 +77,7 @@ static void Sndbounce5( NXWSOCKET socket )
 {
 	if ( socket >= 0 && socket < now)
 	{
-		UI08 bounce[2]= { 0x27, 0x00 };
+		uint8_t bounce[2]= { 0x27, 0x00 };
 		bounce[1] = 5;
 		Xsend(socket, bounce, 2);
 	}

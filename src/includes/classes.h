@@ -27,21 +27,21 @@ cMapStuff, cFishing, cSkills, cNetworkStuff and a lot of structures
 */
 struct guild_st
 {
-	UI08	free;				//!< Guild slot used?
+	uint8_t	free;				//!< Guild slot used?
 	TEXT	name[41];			//!< Name of the guild
 	TEXT	abbreviation[4];		//!< Abbreviation of the guild
-	SI32	type;				//!< Type of guild (0=standard/1=chaos/2=order)
+	int32_t	type;				//!< Type of guild (0=standard/1=chaos/2=order)
 	TEXT	charter[51];			//!< Charter of guild
 	TEXT	webpage[51];			//!< Web url of guild
-	SI32	stone;				//!< The serial of the guildstone
-	SI32	master;				//!< The serial of the guildmaster
-	SI32	recruits;			//!< Amount of recruits
-	SI32	recruit[MAXGUILDRECRUITS+1];	//!< Serials of candidates
-	SI32	members;			//!< Amount of members
-	SI32	member[MAXGUILDMEMBERS+1];	//!< Serials of all the members
-	SI32	wars;				//!< Amount of wars
-	SI32	war[MAXGUILDWARS+1];		//!< Numbers of Guilds we have declared war to
-	SI32	priv;				//!< Some dummy to remember some values
+	int32_t	stone;				//!< The serial of the guildstone
+	int32_t	master;				//!< The serial of the guildmaster
+	int32_t	recruits;			//!< Amount of recruits
+	int32_t	recruit[MAXGUILDRECRUITS+1];	//!< Serials of candidates
+	int32_t	members;			//!< Amount of members
+	int32_t	member[MAXGUILDMEMBERS+1];	//!< Serials of all the members
+	int32_t	wars;				//!< Amount of wars
+	int32_t	war[MAXGUILDWARS+1];		//!< Numbers of Guilds we have declared war to
+	int32_t	priv;				//!< Some dummy to remember some values
 };
 
 /*!

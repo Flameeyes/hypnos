@@ -81,16 +81,16 @@ private:
 	ACCOUNT_LIST acctlist;	//!< All Account, with info
 	ACCOUNT_LIST_BY_NAME accbyname;	//!< All Account by name
 
-	UI32 lastusedacctnum, unsavedaccounts;
+	uint32_t lastusedacctnum, unsavedaccounts;
 
 public:
-	UI32 lasttimecheck;
+	uint32_t lasttimecheck;
 
 	cAccounts( void );
 	~cAccounts( void );
 
 private:
-	UI32 saveratio;
+	uint32_t saveratio;
 	void safeInsert( cAccount& acc );
 	void LoadAccount ( ACCOUNT acctnumb, FILE* F );
 
@@ -102,7 +102,7 @@ public:
 
 	int Count();
 
-	SI32 Authenticate(std::string username, std::string password);
+	int32_t Authenticate(std::string username, std::string password);
 	bool AuthenticateRAS(std::string username, std::string password);
 	ACCOUNT CreateAccount(std::string username, std::string password);
 
@@ -113,8 +113,8 @@ public:
 	void SetEntering( ACCOUNT acctnum );
 	void SetOffline( ACCOUNT acctnum );
 	void OnLogin( ACCOUNT acctnum, NXWSOCKET socket );
-	SI32 verifyPassword(std::string username, std::string password);
-	SI32 ChangePassword( ACCOUNT acctnum, std::string password);
+	int32_t verifyPassword(std::string username, std::string password);
+	int32_t ChangePassword( ACCOUNT acctnum, std::string password);
 	void AddCharToAccount( ACCOUNT acctnum, P_CHAR pc );
 	void GetAllChars( ACCOUNT acctnum, NxwCharWrapper& sc );
 	ACCOUNT GetAccountByName(std::string name);

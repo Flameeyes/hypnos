@@ -37,24 +37,24 @@ public:
 			cContainer(bool ser= true);
 
 	//! Return the right rtti
-	inline const UI32 rtti() const
+	inline const uint32_t rtti() const
 	{ return rtti::cContainer; }
 
-	bool		addItem(pItem item, UI16 xx=-1, UI16 yy=-1);
+	bool		addItem(pItem item, uint16_t xx=-1, uint16_t yy=-1);
 	void		insertItem(pItem itm);
 
-	UI16		getGump();
+	uint16_t		getGump();
 
-	UI32		removeItems(UI32 amount, UI16 id, UI16 color = 0);
-	UI32		removeItems(UI32 amount, UI32 scriptID);
+	uint32_t		removeItems(uint32_t amount, uint16_t id, uint16_t color = 0);
+	uint32_t		removeItems(uint32_t amount, uint32_t scriptID);
 	void		dropItem(pItem pi);
 
-	UI32		countItems(UI32 scriptID, bool total = false);
-	UI32		countItems(UI16 id, UI16 color = 0, bool recurse = false);
+	uint32_t		countItems(uint32_t scriptID, bool total = false);
+	uint32_t		countItems(uint16_t id, uint16_t color = 0, bool recurse = false);
 
-	pItem		findFirstType(UI16 type, bool recurse = false);
+	pItem		findFirstType(uint16_t type, bool recurse = false);
 
-	UI32		countSpellsInSpellBook(bool stdOnly = true);
+	uint32_t		countSpellsInSpellBook(bool stdOnly = true);
 	bool		containsSpell(magic::SpellId spellnum);
 	
 	const R32       getWeightActual();

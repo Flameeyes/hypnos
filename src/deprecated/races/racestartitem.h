@@ -16,7 +16,7 @@ class RaceStartItem
 //
 	public:
 		bool					itemlist;
-		UI32					itemReference;
+		uint32_t					itemReference;
 		bool					skinColor;
 		bool					protectedItem;
 		Gender				gender;

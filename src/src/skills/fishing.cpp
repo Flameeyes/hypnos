@@ -209,7 +209,7 @@ void Fishing::Fish(CHARACTER i)
 
 	int ii;
 	int idnum;
-	SI16 color;
+	int16_t color;
 
 	P_CHAR pc = MAKE_CHAR_REF(i);
 	VALIDATEPC(pc);

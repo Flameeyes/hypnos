@@ -22,7 +22,7 @@
 \return the value of the long found
 \note assuming 'normal' (big endian, ndAkron) byte order (NOT intel style)
 */
-inline SI32 LongFromCharPtr(const unsigned char *p)
+inline int32_t LongFromCharPtr(const unsigned char *p)
 {
 	return (*p<<24) | (*(p+1)<<16) | (*(p+2)<<8) | *(p+3);
 }
@@ -34,7 +34,7 @@ inline SI32 LongFromCharPtr(const unsigned char *p)
 \return the value of the short found
 \note assuming 'normal' (big endian, ndAkron) byte order (NOT intel style)
 */
-inline SI16 ShortFromCharPtr(const unsigned char *p)
+inline int16_t ShortFromCharPtr(const unsigned char *p)
 {
 	return static_cast<short>((*p<<8) | *(p+1));
 }
@@ -46,7 +46,7 @@ inline SI16 ShortFromCharPtr(const unsigned char *p)
 \param p pointer to the char array
 \note assuming 'normal' (big endian, ndAkron) byte order (NOT intel style)
 */
-inline void LongToCharPtr(const UI32 i, unsigned char *p)
+inline void LongToCharPtr(const uint32_t i, unsigned char *p)
 {
 	*p=static_cast<unsigned char>(i>>24); 
 	*(p+1)=static_cast<unsigned char>(i>>16); 
@@ -61,7 +61,7 @@ inline void LongToCharPtr(const UI32 i, unsigned char *p)
 \param p pointer to the char array
 \note assuming 'normal' (big endian, ndAkron) byte order (NOT intel style)
 */
-inline void ShortToCharPtr(const UI16 i, unsigned char *p)
+inline void ShortToCharPtr(const uint16_t i, unsigned char *p)
 {
 	*p=static_cast<unsigned char>(i>>8);
 	*(p+1)=static_cast<unsigned char>(i);	// no %256 for 2nd byte, truncation will occur anyway
@@ -78,7 +78,7 @@ inline void ShortToCharPtr(const UI16 i, unsigned char *p)
 \param i integer to convert
 \param ourstring string to write the number to
 */
-inline void numtostr(UI32 i, char *ourstring)
+inline void numtostr(uint32_t i, char *ourstring)
 {
 	sprintf(ourstring,"%d",i);
 }
@@ -88,7 +88,7 @@ inline void numtostr(UI32 i, char *ourstring)
 \param i integer to convert
 \param ourstring string to write the number to
 */
-inline void hextostr(UI32 i, char *ourstring)
+inline void hextostr(uint32_t i, char *ourstring)
 {
 	sprintf (ourstring, "%x",i);
 }
@@ -198,7 +198,7 @@ R64 dist( Location a, Location b, LOGICAL countZ = !server_data.disable_z_checki
 \param range range to use
 \deprecated No one is using it, maybe should be removed...
 */
-inline const bool inRange(const Location a, const Location b, const UI16 range = VISRANGE)
+inline const bool inRange(const Location a, const Location b, const uint16_t range = VISRANGE)
 {
 	return (dist(a,b)<= range);
 }

@@ -14,12 +14,12 @@
 
 void cPacketSendAction::prepare()
 {
-	static const UI08 templ[14] = {
+	static const uint8_t templ[14] = {
 		0x6E, 0x01, 0x02, 0x03, 0x04, 0x01, 0x02,
 		0x00, 0x05, 0x00, 0x01, 0x0, 0x00, 0x01
 		};
 
-	buffer = new UI08[14];
+	buffer = new uint8_t[14];
 	length = 14;
 	memcpy(buffer, templ, 14);
 	LongToCharPtr(serial, buffer+1);
@@ -28,11 +28,11 @@ void cPacketSendAction::prepare()
 
 void cPacketDrawContainer::prepare()
 {
-	static const UI08 templ[7] = {
+	static const uint8_t templ[7] = {
 		0x24, 0x40, 0x0B, 0x00, 0x1A, 0x00, 0x3C
 		};
 
-	buffer = new UI08[7];
+	buffer = new uint8_t[7];
 	length = 7;
 	memcpy(buffer, templ, 7);
 
@@ -42,26 +42,26 @@ void cPacketDrawContainer::prepare()
 
 void cPacketSendContainerItem::prepare()
 {
-	static const UI08 templ1[5] = {
+	static const uint8_t templ1[5] = {
 		0x3C, 0x00, 0x05, 0x00, 0x00
 		};
 
-	static const UI08 templ2[19] = {
+	static const uint8_t templ2[19] = {
 		0x40, 0x0D, 0x98, 0xF7, 0x0F, 0x4F, 0x00,
 		0x00, 0x09, 0x00, 0x30, 0x00, 0x52, 0x40,
 		0x0B, 0x00, 0x1A, 0x00, 0x00
 		};
 
-	UI16 count = items.count();
-	UI16 length = 5 + count*19;
+	uint16_t count = items.count();
+	uint16_t length = 5 + count*19;
 
-	buffer = new UI08[length];
+	buffer = new uint8_t[length];
 	memcpy(buffer, templ1, 5);
 
 	ShortToCharPtr(length, buffer+1);
 	ShortToCharPtr(count, buffer+3);
 
-	UI08 *ptrItem = buffer+5;
+	uint8_t *ptrItem = buffer+5;
 
 	for(std::list<sContainerItem>::iterator it = items.begin(); it != items.end(); it++)
 	{
@@ -81,7 +81,7 @@ void cPacketSendContainerItem::prepare()
 void cPacketSendAddContainerItem::prepare()
 {
 	length = 20;
-	buffer = new UI08[20];
+	buffer = new uint8_t[20];
 
 	buffer[0] = 0x25;
 	buffer[7] = 0x00;
@@ -109,7 +109,7 @@ void cPacketSendAddContainerItem::prepare()
 void cPacketSendWornItem::prepare()
 {
 	length = 15;
-	buffer = new UI08[15];
+	buffer = new uint8_t[15];
 
 	buffer[0] = 0x2E;
 	buffer[7] = 0x00;
@@ -123,16 +123,16 @@ void cPacketSendWornItem::prepare()
 
 void cPacketSendSoundFX::prepare()
 {
-	static const UI08 templ[12] = {
+	static const uint8_t templ[12] = {
 		0x54, 0x01, 0x12, 0x34, 0x00, 0x00,
 		0x06, 0x40, 0x05, 0x9A, 0x00, 0x00
 		};
 
-	buffer = new UI08[12];
+	buffer = new uint8_t[12];
 	length = 12;
 	memcpy(buffer, templ, 12);
 
-	SI16 z = loc.z;
+	int16_t z = loc.z;
 
 	ShortToCharPtr(model, buffer +2);
 	ShortToCharPtr(loc.x, buffer +6);
@@ -143,7 +143,7 @@ void cPacketSendSoundFX::prepare()
 void cPacketSendDeleteObj::prepare()
 {
 	length = 5;
-	buffer = new UI08[5];
+	buffer = new uint8_t[5];
 
 	buffer[0] = 0x1D;
 	LongToCharPtr(serial, buffer+1);
@@ -152,13 +152,13 @@ void cPacketSendDeleteObj::prepare()
 void cPacketSendSkillState::prepare()
 {
 	length = 4 + TRUESKILLS*7 + 2;
-	buffer = new UI08[length];
+	buffer = new uint8_t[length];
 
 	buffer[0] = 0x3A;
 	ShortToCharPtr(length, buffer+1);
 	buffer[3] = 0x00;
 
-	UI08 *skill = buffer+4;
+	uint8_t *skill = buffer+4;
 	for (int i=0; i<TRUESKILLS; i++)
 	{
 		Skills::updateSkillLevel(pc,i);
@@ -177,7 +177,7 @@ void cPacketSendSkillState::prepare()
 void cPacketSendUpdateSkill::prepare()
 {
 	length = 11;
-	buffer = new UI08[11];
+	buffer = new uint8_t[11];
 
 	buffer[0] = 0x3A;
 	ShortToCharPtr(11, buffer+1);
@@ -194,7 +194,7 @@ void cPacketSendUpdateSkill::prepare()
 void cPacketSendOpenBrowser::prepare()
 {
 	length = url.size() + 3;
-	buffer = new UI08[length];
+	buffer = new uint8_t[length];
 
 	buffer[0] = 0xA5;
 	ShortToCharPtr(length, buffer+1);
@@ -205,7 +205,7 @@ void cPacketSendOpenBrowser::prepare()
 void cPacketSendPlayMidi::prepare()
 {
 	length = 3;
-	buffer = new UI08[3];
+	buffer = new uint8_t[3];
 
 	buffer[0] = 0x6D;
 	ShortToCharPtr(id, buffer+1);
@@ -214,7 +214,7 @@ void cPacketSendPlayMidi::prepare()
 void cPacketSendOverallLight::prepare()
 {
 	length = 2;
-	buffer = new UI08[2];
+	buffer = new uint8_t[2];
 
 	buffer[0] = 0x4F;
 	buffer[1] = level;
@@ -237,7 +237,7 @@ void cPacketSendStatus::prepare()
 		default: return;
 	}
 
-	buffer = new UI08[length];
+	buffer = new uint8_t[length];
 	buffer[0] = 0x11;
 	ShortToCharPtr(length, buffer+1);
 	ShortToCharPtr(pc->getSerial(), buffer+3);
@@ -273,7 +273,7 @@ void cPacketSendStatus::prepare1()
 	ShortToCharPtr(body->getMana(), buffer+54);
 	ShortToCharPtr(body->getMaxMana(), buffer+56);
 
-	UI32 gold = pc->rtti() == rtti::rttiPC ? (reinterpret_cast<pPC*>pc)->getGold : 0;
+	uint32_t gold = pc->rtti() == rtti::rttiPC ? (reinterpret_cast<pPC*>pc)->getGold : 0;
 	LongToCharPtr(gold, buffer+58);
 
 	ShortToCharPtr(body->getArmor(), buffer+62);
@@ -310,7 +310,7 @@ void cPacketSendStatus::prepare4()
 void cPacketSendClearBuyWindow::prepare()
 {
 	length = 8;
-	buffer = new UI08[8];
+	buffer = new uint8_t[8];
 	buffer[0] = 0x3B;
 	ShortToCharPtr(0x08, buffer +1);			// Packet len
 	LongToCharPtr( npc->getSerial32(), buffer + 3);	        // vendorID
@@ -321,14 +321,14 @@ void cPacketSendClearBuyWindow::prepare()
 void cPacketSendPaperdollClothingUpdated::prepare()
 {
 	length = 1;
-	buffer = new UI08[1];
+	buffer = new uint8_t[1];
 	buffer[0] = 0x29;
 }
 
 void cPacketSendOpenMapGump::prepare()
 {
 	length = 19;
-	buffer = new UI08[19];
+	buffer = new uint8_t[19];
         buffer[0] = 0x90;
 	LongToCharPtr(map->getSerial32(), buffer +1);
         ShortToCharPtr(0x139D, buffer + 5);
@@ -350,7 +350,7 @@ void cPacketSendOpenMapGump::prepare()
 void cPacketSendMapPlotCourse::prepare()
 {
 	length = 11;
-	buffer = new UI08[11];
+	buffer = new uint8_t[11];
         buffer[0] = 0x56;
 	LongToCharPtr(map->getSerial32(), buffer +1);
 	buffer[5]  = command;
@@ -366,7 +366,7 @@ void cPacketSendBBoardCommand::prepare()
         {
         case DisplayBBoard: //Display bulletin board
 		length = 38;
-	        buffer = new UI08[38];
+	        buffer = new uint8_t[38];
 	        buffer[0] = 0x71;
 	        ShortToCharPtr(38, buffer +1); 	//message length
 	        buffer[3] = 0; 			//subcommand 0
@@ -389,7 +389,7 @@ void cPacketSendBBoardCommand::prepare()
                 length += poster->getCurrentNameC().size() + 2;
                 length += message->subject.size() + 2;
                 length += timestring.size() + 2;
-                buffer = new UI08[length];
+                buffer = new uint8_t[length];
 	        buffer[0] = 0x71;
 	        ShortToCharPtr(length, buffer +1); 	//message length
 	        buffer[3] = 1; 				//subcommand 1
@@ -420,7 +420,7 @@ void cPacketSendBBoardCommand::prepare()
                 length += poster->getCurrentNameC().size() + 2;
                 length += message->subject.size() + 2;
                 length += timestring.size() + 2;
-                buffer = new UI08[length];
+                buffer = new uint8_t[length];
 	        buffer[0] = 0x71;
 	        ShortToCharPtr(length, buffer +1); 	//message length
 	        buffer[3] = 2; 				//subcommand 2
@@ -444,11 +444,11 @@ void cPacketSendBBoardCommand::prepare()
 
 cPacketSendMsgBoardItemsinContainer::prepare()
 {
- 	static const UI08 templ1[5] = {
+ 	static const uint8_t templ1[5] = {
 		0x3C, 0x00, 0x05, 0x00, 0x00
 		};
 
-	static const UI08 templ2[19] = {
+	static const uint8_t templ2[19] = {
 		0x00, 0x00, 0x00, 0x00, 0x0E, 0xB0, 0x00,
 		0x00, 0x00, 0x00, 0x3A, 0x00, 0x3A, 0x00,
 		0x00, 0x00, 0x00, 0x00, 0x00
@@ -458,16 +458,16 @@ cPacketSendMsgBoardItemsinContainer::prepare()
         // Now the *(it.first.second) is the serial of a message to be sent. and incrementing it.first
         // until it reaches it.second we obtain all the serials
 
-	UI16 count = distance (it.first, it.second); //It HAS at least 1 message or else this packet would not be asked for
-	UI16 length = 5 + count*19;
+	uint16_t count = distance (it.first, it.second); //It HAS at least 1 message or else this packet would not be asked for
+	uint16_t length = 5 + count*19;
 
-	buffer = new UI08[length];
+	buffer = new uint8_t[length];
 	memcpy(buffer, templ1, 5);
 
 	ShortToCharPtr(length, buffer+1);
 	ShortToCharPtr(count, buffer+3);
 
-	UI08 *ptrItem = buffer+5;
+	uint8_t *ptrItem = buffer+5;
 
 	for(;it.first != it.second; ++(it.first))
 	{
@@ -480,7 +480,7 @@ cPacketSendMsgBoardItemsinContainer::prepare()
 
 }
 
-static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
+static pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
 {
        switch(buffer[0])
        {
@@ -577,27 +577,27 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 	        return false;
 	}
 
-        UI08 sex                = buffer[70];
-        UI16 strength           = buffer[71];
-        UI16 dexterity          = buffer[72];
-        UI16 intelligence       = buffer[73];
-        UI16 skill1             = buffer[74];
-        UI16 skill1value1       = buffer[75];
-        UI16 skill12            = buffer[76];
-        UI16 skill1value2       = buffer[77];
-        UI16 skill3             = buffer[78];
-        UI16 skill1value3       = buffer[79];
-        UI16 SkinColor          = ShortFromCharPtr(buffer + 80) | 0x8000;
-        UI16 HairStyle          = ShortFromCharPtr(buffer + 82);
-        UI16 HairColor          = ShortFromCharPtr(buffer + 84);
-        UI16 FacialHair         = ShortFromCharPtr(buffer + 86);
-        UI16 FacialHairColor    = ShortFromCharPtr(buffer + 88);
-        UI16 StartingLocation   = ShortFromCharPtr(buffer + 90);        // from starting list
-        // UI16 unknown         = ShortFromCharPtr(buffer + 92);
-        UI16 slot               = ShortFromCharPtr(buffer + 94);
-        UI32 clientIP           = LongFromCharPtr (buffer + 96);
-        UI16 shirt_color        = ShortFromCharPtr(buffer + 100);
-        UI16 pants_color        = ShortFromCharPtr(buffer + 102);
+        uint8_t sex                = buffer[70];
+        uint16_t strength           = buffer[71];
+        uint16_t dexterity          = buffer[72];
+        uint16_t intelligence       = buffer[73];
+        uint16_t skill1             = buffer[74];
+        uint16_t skill1value1       = buffer[75];
+        uint16_t skill12            = buffer[76];
+        uint16_t skill1value2       = buffer[77];
+        uint16_t skill3             = buffer[78];
+        uint16_t skill1value3       = buffer[79];
+        uint16_t SkinColor          = ShortFromCharPtr(buffer + 80) | 0x8000;
+        uint16_t HairStyle          = ShortFromCharPtr(buffer + 82);
+        uint16_t HairColor          = ShortFromCharPtr(buffer + 84);
+        uint16_t FacialHair         = ShortFromCharPtr(buffer + 86);
+        uint16_t FacialHairColor    = ShortFromCharPtr(buffer + 88);
+        uint16_t StartingLocation   = ShortFromCharPtr(buffer + 90);        // from starting list
+        // uint16_t unknown         = ShortFromCharPtr(buffer + 92);
+        uint16_t slot               = ShortFromCharPtr(buffer + 94);
+        uint32_t clientIP           = LongFromCharPtr (buffer + 96);
+        uint16_t shirt_color        = ShortFromCharPtr(buffer + 100);
+        uint16_t pants_color        = ShortFromCharPtr(buffer + 102);
 
 
         // Disconnect-level protocol error check (possible client hack or too many chars already present in account)
@@ -610,7 +610,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
                 (dexterity < 10)    || (dexterity > 60)    ||
                 (intelligence < 10) || (intelligence > 60) ||
                 (skillvalue1 + skillvalue2 + skillvalue3 != 100) ||                             //!< Skill check : sum of skills selected must be 100
-                (skillvalue1 > 50)  || (skillvalue2 > 50)  || (skillvalue3 > 50) ||             //!< each skill must be >= 0 and <= 50. Since the 3 variables are UI08, if they are negative they will be seen as a number surely bigger than 127 :)
+                (skillvalue1 > 50)  || (skillvalue2 > 50)  || (skillvalue3 > 50) ||             //!< each skill must be >= 0 and <= 50. Since the 3 variables are uint8_t, if they are negative they will be seen as a number surely bigger than 127 :)
                 (skill1 == skill2)  || (skill2 == skill3)  || (skill3 == skill1)                //!< 3 different skills must be selected
            )
         {
@@ -868,7 +868,7 @@ bool cPacketReceivePickUp::execute(pClient client)
 {
         if (length != 7) return false;
 	pItem pi = pointers::findItemBySerPtr(LongFromCharPtr(buffer+1));
-        UI16 amount = ShortFromCharPtr(buffer+5);
+        uint16_t amount = ShortFromCharPtr(buffer+5);
       	VALIDATEPIR(pi, false);
         client->get_item(pi, amount);  //!< if refused, the get_item automatically bounces the item back
         return true;
@@ -925,10 +925,10 @@ bool cPacketReceiveSingleclick::execute(pClient client)
 
 bool cPacketReceiveActionRequest::execute(pClient client)
 {
-        UI16 size = ShortFromCharPtr(buffer + 1);
+        uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
 
-        UI08 type = buffer[3];
+        uint8_t type = buffer[3];
         pChar pc = client->currChar();
         VALIDATEPCR(pc, false);
 	if (type==0xC7) // Action
@@ -1104,7 +1104,7 @@ bool cPacketReceiveStatusRequest::execute(pClient client)
 
 bool cPacketReceiveSetSkillLock::execute(pClient client)
 {
-        UI16 size = ShortFromCharPtr(buffer + 1);
+        uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
       	// client 1.26.2b+ skill managment packet
         // -> 0,1,2,3 -> ignore them
@@ -1124,7 +1124,7 @@ bool cPacketReceiveSetSkillLock::execute(pClient client)
 
 bool cPacketReceiveBuyItems::execute(pClient client)
 {
-        UI16 size = ShortFromCharPtr(buffer + 1);
+        uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
 
         std::vector< buyeditem > allitemsbought;
@@ -1168,8 +1168,8 @@ bool cPacketReceiveMapPlotCourse::execute(pClient client)
 
         PlotCourseCommands command     	= buffer[5];
         int pin 	 		= buffer[6];
-        UI16 x 				= ShortFromCharPtr(buffer + 7);
-        UI16 y 				= ShortFromCharPtr(buffer + 9);
+        uint16_t x 				= ShortFromCharPtr(buffer + 7);
+        uint16_t y 				= ShortFromCharPtr(buffer + 9);
 
         switch(command)
         {
@@ -1225,11 +1225,11 @@ bool cPacketReceiveLoginChar::execute(pClient client)
 		if (ISVALIDPC(pc_k))
 		{
 			pc_k->setClient(NULL);
-			SI32 nSer = pc_k->getSerial32();
-			for ( SI32 idx = 0; idx < now; idx++ ) {
+			int32_t nSer = pc_k->getSerial32();
+			for ( int32_t idx = 0; idx < now; idx++ ) {
 				if ( pc_k == loginchars[idx] ) {
 					// TODO We need to fix this!!!
-					UI08 msg2[2]={ 0x53, 0x05 };
+					uint8_t msg2[2]={ 0x53, 0x05 };
 					Xsend(s, msg2, 2);
 //AoS/					Network->FlushBuffer(s);
 					Disconnect(s);
@@ -1248,7 +1248,7 @@ bool cPacketReceiveLoginChar::execute(pClient client)
 		}
 		else
 		{
-			UI08 msg[2]={ 0x53, 0x05 };
+			uint8_t msg[2]={ 0x53, 0x05 };
 			Xsend(s, msg, 2);
 //AoS/			Network->FlushBuffer(s);
 			Disconnect(s);
@@ -1265,7 +1265,7 @@ bool cPacketReceiveLoginChar::execute(pClient client)
 
 bool cPacketReceiveBookPage::execute(pClient client)
 {
-        UI16 size = ShortFromCharPtr(buffer + 1);
+        uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
 	pItem book=pointers::findItemBySerPtr(buffer+3);
 	if(ISVALIDPI(book))
@@ -1321,7 +1321,7 @@ the body of the message
 
 bool cPacketReceiveBBoardMessage::execute(pClient client)
 {
-        UI16 size = ShortFromCharPtr(buffer + 1);
+        uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
 
 	// Message \x71 has numerous uses for the Bulletin Board
@@ -1379,7 +1379,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                                 return false;
                         }
 
-                        UI32 msgSN = LongFromCharPtr(buffer + 8);
+                        uint32_t msgSN = LongFromCharPtr(buffer + 8);
 
                 	// If this is a reply to anything other than a LOCAL post, abort
 			if ( msgSN>0))

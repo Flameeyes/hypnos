@@ -57,7 +57,7 @@
 
 //Implementation of cCommand Class
 
-cCommand::cCommand(std::string& name, SI08 number ,AmxFunction* callback) {
+cCommand::cCommand(std::string& name, int8_t number ,AmxFunction* callback) {
 
 	cmd_name=name;
 	cmd_level=number; 
@@ -65,7 +65,7 @@ cCommand::cCommand(std::string& name, SI08 number ,AmxFunction* callback) {
 }
 
 
-SI08 cCommand::getCommandLevel(P_COMMAND cmd) {
+int8_t cCommand::getCommandLevel(P_COMMAND cmd) {
 	return cmd->cmd_level;
 }
 
@@ -98,7 +98,7 @@ cCommandMap::cCommandMap() {
 }
 
 
-P_COMMAND cCommandMap::addGmCommand(std::string name, SI08 priv, AmxFunction* callback) {
+P_COMMAND cCommandMap::addGmCommand(std::string name, int8_t priv, AmxFunction* callback) {
 
 	P_COMMAND cmd= new cCommand(name, priv, callback);
     command_map[name]= cmd;

@@ -38,7 +38,7 @@ enum MENU_TYPE {
 
 #define MENU_CLOSE 0
 
-typedef void ( *menu_callback )	( P_MENU, NXWCLIENT, SI32 );
+typedef void ( *menu_callback )	( P_MENU, NXWCLIENT, int32_t );
 
 /*!
 \brief an Basic Menu
@@ -102,18 +102,18 @@ class cMenu : public cBasicMenu
 		bool disposeable;
 		
 		SERIAL rc_serialCurrent;	//!< current code serial current
-		std::map< SERIAL, SI32 > rc_button;	//!< return code for for button
-		std::map< SERIAL, SI32 > rc_radio;	//!< return code for for radio
-		std::map< SERIAL, SI32 > rc_checkbox;	//!< return code for for checkbox
-		std::map< SERIAL, SI32 > rc_edit;	//!< return code for for edit
+		std::map< SERIAL, int32_t > rc_button;	//!< return code for for button
+		std::map< SERIAL, int32_t > rc_radio;	//!< return code for for radio
+		std::map< SERIAL, int32_t > rc_checkbox;	//!< return code for for checkbox
+		std::map< SERIAL, int32_t > rc_edit;	//!< return code for for edit
 
 		std::map< SERIAL, FUNCIDX > buttonCallbacks;	//!< all callback for button
-		std::map< SERIAL, SI32 > editProps;	//!< all edit property
+		std::map< SERIAL, int32_t > editProps;	//!< all edit property
 
 		std::vector< SERIAL >* switchs; //!< switch ids on after menu selection
 		std::map< SERIAL, std::wstring >* textResp; //!< edit field response
 
-		UI32 addString( wstring s );
+		uint32_t addString( wstring s );
 
 		void removeCommand( std::string command );
 		void removeCommand( char* s, ... );
@@ -124,8 +124,8 @@ class cMenu : public cBasicMenu
 		bool getPropertyFieldBool( SERIAL type, SERIAL obj, int prop, int subProp, int subProp2 );
 		std::wstring getPropertyField( SERIAL type, SERIAL obj, int prop, int subProp, int subProp2 );
 
-		SI32 getIntFromProps( int prop, int prop2, int prop3 );
-		void getPropsFromInt( SI32 returnCode, int& prop, int& prop2, int& prop3 );
+		int32_t getIntFromProps( int prop, int prop2, int prop3 );
+		void getPropsFromInt( int32_t returnCode, int& prop, int& prop2, int& prop3 );
 
 	protected:
 		std::vector< std::string >	commands; //!< all commands
@@ -135,14 +135,14 @@ class cMenu : public cBasicMenu
 
 	public:
 				
-		UI32 x; //!< x coord where show
-		UI32 y; //!< y location where show
-		UI32 pageCount;	//!< page count
-		UI32 pageCurrent;	//!< current page
+		uint32_t x; //!< x coord where show
+		uint32_t y; //!< y location where show
+		uint32_t pageCount;	//!< page count
+		uint32_t pageCurrent;	//!< current page
 		SERIAL buffer[MENU_BUFF_COUNT];
 		std::string buffer_str[MENU_BUFF_COUNT];
 
-		cMenu( MENU_TYPE id, UI32 x, UI32 y, bool canMove, bool canClose, bool canDispose );
+		cMenu( MENU_TYPE id, uint32_t x, uint32_t y, bool canMove, bool canClose, bool canDispose );
 		~cMenu();
 
 		void setCloseable( bool canClose );
@@ -157,30 +157,30 @@ class cMenu : public cBasicMenu
 		void addCommand( std::string command );
 		void addCommand( char* s, ... );
 
-		void addBackground( UI32 gumpId, UI32 width, UI32 height );
-		void addButton( UI32 x, UI32 y, UI32 up, UI32 down, SI32 returnCode, bool pressable );
-		void addButtonFn( UI32 x, UI32 y, UI32 up, UI32 down, SI32 returnCode, bool pressable, FUNCIDX fn );
-		void addCheckbox( UI32 x, UI32 y, UI32 off, UI32 on, UI32 checked, SI32 result );
-		void addCheckertrans( UI32 x, UI32 y, UI32 width, UI32 height );
-		void addCroppedText( UI32 x, UI32 y, UI32 width, UI32 height, wstring text, UI32 hue );
-		void addGump( UI32 x, UI32 y, UI32 gump, UI32 hue );
-		void addHtmlGump( UI32 x, UI32 y, UI32 width, UI32 height, wstring html, UI32 hasBack, UI32 canScroll );
-		void addInputField( UI32 x, UI32 y, UI32 width, UI32 height, UI16 textId, wstring data, UI32 hue = 0 );
-		void addPropertyField( UI32 x, UI32 y, UI32 width, UI32 height, UI32 property, UI32 subProperty, UI32 hue = 0, UI32 subProperty2 = 0 );
-		void addRadioButton( UI32 x, UI32 y, UI32 off, UI32 on, UI32 checked, SI32 result  );
-		void addResizeGump( UI32 x, UI32 y, UI32 gumpId, UI32 width, UI32 height );
-		void addText( UI32 x, UI32 y, wstring data, UI32 hue = 0 );
-		void addTilePic( UI32 x, UI32 y, UI32 tile, UI32 hue = 0 );
-		void addTiledGump( UI32 x, UI32 y, UI32 width, UI32 height, UI32 gump, UI32 hue );
-		void addXmfHtmlGump( UI32 x, UI32 y, UI32 width, UI32 height, wstring clilocid, UI32 hasBack , UI32 canScroll );
-		//void 	addGroup( UI32 group = 0 );
-		void addPage( UI32 page );
-		void addPageButton( UI32 x, UI32 y, UI32 up, UI32 down, UI32 page );
+		void addBackground( uint32_t gumpId, uint32_t width, uint32_t height );
+		void addButton( uint32_t x, uint32_t y, uint32_t up, uint32_t down, int32_t returnCode, bool pressable );
+		void addButtonFn( uint32_t x, uint32_t y, uint32_t up, uint32_t down, int32_t returnCode, bool pressable, FUNCIDX fn );
+		void addCheckbox( uint32_t x, uint32_t y, uint32_t off, uint32_t on, uint32_t checked, int32_t result );
+		void addCheckertrans( uint32_t x, uint32_t y, uint32_t width, uint32_t height );
+		void addCroppedText( uint32_t x, uint32_t y, uint32_t width, uint32_t height, wstring text, uint32_t hue );
+		void addGump( uint32_t x, uint32_t y, uint32_t gump, uint32_t hue );
+		void addHtmlGump( uint32_t x, uint32_t y, uint32_t width, uint32_t height, wstring html, uint32_t hasBack, uint32_t canScroll );
+		void addInputField( uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t textId, wstring data, uint32_t hue = 0 );
+		void addPropertyField( uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t property, uint32_t subProperty, uint32_t hue = 0, uint32_t subProperty2 = 0 );
+		void addRadioButton( uint32_t x, uint32_t y, uint32_t off, uint32_t on, uint32_t checked, int32_t result  );
+		void addResizeGump( uint32_t x, uint32_t y, uint32_t gumpId, uint32_t width, uint32_t height );
+		void addText( uint32_t x, uint32_t y, wstring data, uint32_t hue = 0 );
+		void addTilePic( uint32_t x, uint32_t y, uint32_t tile, uint32_t hue = 0 );
+		void addTiledGump( uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t gump, uint32_t hue );
+		void addXmfHtmlGump( uint32_t x, uint32_t y, uint32_t width, uint32_t height, wstring clilocid, uint32_t hasBack , uint32_t canScroll );
+		//void 	addGroup( uint32_t group = 0 );
+		void addPage( uint32_t page );
+		void addPageButton( uint32_t x, uint32_t y, uint32_t up, uint32_t down, uint32_t page );
 
 		bool getCheckBox( SERIAL checkbox, bool raw=false );
 		bool getRadio( SERIAL radio, bool raw=false );
 		std::wstring* getText( SERIAL text, bool raw=false );
-		SI32 getButton( SI32 rawButton );
+		int32_t getButton( int32_t rawButton );
 };
 
 
@@ -191,7 +191,7 @@ class cIconListMenu : public cBasicMenu
 
 		virtual cServerPacket* createPacket();
 		std::vector< pkg_icon_list_menu_st > icons;
-		std::map< SERIAL, SI32 > iconData;
+		std::map< SERIAL, int32_t > iconData;
 
 	public:
 
@@ -201,16 +201,16 @@ class cIconListMenu : public cBasicMenu
 		~cIconListMenu();
 
 		virtual void handleButton( NXWCLIENT ps,  cClientPacket* pkg  );
-		void addIcon( UI16 model, COLOR color, std::string response );
-		void addIcon( UI16 model, COLOR color, SI32 data, std::string response );
+		void addIcon( uint16_t model, COLOR color, std::string response );
+		void addIcon( uint16_t model, COLOR color, int32_t data, std::string response );
 
 };
 
 
 bool isIconList( NXWSOCKET s );
-bool isIconList( UI08 cmd );
+bool isIconList( uint8_t cmd );
 
-typedef std::map< UI32, P_MENU > MENU_MAP;
+typedef std::map< uint32_t, P_MENU > MENU_MAP;
 
 /*!
 \brief all Menus

@@ -42,7 +42,7 @@ protected:
 	char* getBeginValid();
 
 public:
-	UI08 cmd;		//!< packet id
+	uint8_t cmd;		//!< packet id
 
 
 } PACK_NEEDED;
@@ -115,30 +115,30 @@ class cPacketCreateCharacter : public cClientPacket {
 
 public:
 
-	UI32	pattern1; //!< is 0xEDEDEDED 
-	UI32	pattern2; //!< is 0xFFFFFFFF 
-	UI08	pattern3; //!< is 0x00
+	uint32_t	pattern1; //!< is 0xEDEDEDED 
+	uint32_t	pattern2; //!< is 0xFFFFFFFF 
+	uint8_t	pattern3; //!< is 0x00
 	string	name; //!< name ( 30 character )
 	string	passwd; //!< password ( 30 character )
-	UI08	sex; //!< sex
-	UI08	st; //!< strenght
-	UI08	dx; //!< dexterity
-	UI08	in; //!< intelligence
-	UI08	skill1; //!< first skill
-	UI08	skill1value; //!< value of first skill
-	UI08	skill2; //!< second skill
-	UI08	skill2value; //!< value of second skill
-	UI08	skill3; //!< third skill
-	UI08	skill3value; //!< value of third skill
+	uint8_t	sex; //!< sex
+	uint8_t	st; //!< strenght
+	uint8_t	dx; //!< dexterity
+	uint8_t	in; //!< intelligence
+	uint8_t	skill1; //!< first skill
+	uint8_t	skill1value; //!< value of first skill
+	uint8_t	skill2; //!< second skill
+	uint8_t	skill2value; //!< value of second skill
+	uint8_t	skill3; //!< third skill
+	uint8_t	skill3value; //!< value of third skill
 	eCOLOR	skin; //!< skin color
-	UI16	hairstyle; //!< hair style
+	uint16_t	hairstyle; //!< hair style
 	eCOLOR	hair; //!< hair color
-	UI16	facialhairstyle; //!< facial hair style
+	uint16_t	facialhairstyle; //!< facial hair style
 	eCOLOR	facialhair; //!< facial hair color
-	UI16	location; //!<// starting location from starting list
-	UI16	unknown; //!< unknow
-	UI16	slot; //!< account slot
-	UI32	clientIP; //!< the IP of client
+	uint16_t	location; //!<// starting location from starting list
+	uint16_t	unknown; //!< unknow
+	uint16_t	slot; //!< account slot
+	uint32_t	clientIP; //!< the IP of client
 	eCOLOR	shirt; //!< shirt color
 	eCOLOR	pants; //!< pants color
 
@@ -160,7 +160,7 @@ class cPacketDisconnectNotification : public cClientPacket {
 
 public:
 
-	UI32	pattern; //!< is 0xFFFFFFFF
+	uint32_t	pattern; //!< is 0xFFFFFFFF
 
 	cPacketDisconnectNotification();
 
@@ -177,13 +177,13 @@ class cPacketTalkRequest : public cClientPacket {
 
 private:
 
-	UI16	size; //!< size of the packet
+	uint16_t	size; //!< size of the packet
 
 public:
 
-	UI08	type; //!< Text type
+	uint8_t	type; //!< Text type
 	eCOLOR	color; //!< Text color
-	UI16	font; //!< Text font
+	uint16_t	font; //!< Text font
 	string	msg; //!< Message ( Null Terminated String )
 
 	cPacketTalkRequest();
@@ -201,7 +201,7 @@ public:
 class cPacketGodModeToggle : public cClientPacket {
 public:
 
-	UI08	mode; //!< 0=off, 1=on
+	uint8_t	mode; //!< 0=off, 1=on
 
 	cPacketGodModeToggle();
 
@@ -254,7 +254,7 @@ class cPacketPickUpItem : public cClientPacket {
 public:
 
 	Serial	item;	//!< serial of the item
-	UI16	num;	//!< number of items in stack
+	uint16_t	num;	//!< number of items in stack
 
 	cPacketPickUpItem();
 
@@ -274,9 +274,9 @@ class cPacketDropItem : public cClientPacket {
 public:
 
 	Serial	item;	//!< serial of the item
-	UI16	x;	//!< x location
-	UI16	y;	//!< y location
-	SI08	z;	//!< z location
+	uint16_t	x;	//!< x location
+	uint16_t	y;	//!< y location
+	int8_t	z;	//!< z location
 	Serial	cont;	//!< moved into this container ( 0xFFFFFFFF if normal world ) 
 
 	cPacketDropItem();	
@@ -313,36 +313,36 @@ like a percentage
 class cPacketStatWindow : public cServerPacket {
 
 private:
-	UI16	size;			//!< lenght packet
+	uint16_t	size;			//!< lenght packet
 public:
 	Serial	player;			//!< serial of player
 	string	name;			//!< name ( 30 characters )
-	UI16	currhp;			//!< current Hit points
-	UI16	maxhp;			//!< max Hit points
-	UI08	canchangename;	//!< name change flag ( 0xFF = allowed, 0 = not allowed )
+	uint16_t	currhp;			//!< current Hit points
+	uint16_t	maxhp;			//!< max Hit points
+	uint8_t	canchangename;	//!< name change flag ( 0xFF = allowed, 0 = not allowed )
 private:
-	UI08	flag;			//!< flag ( 0x00 = no more data following ( end of packet here ), 0x01 = more data follow, 0x03 like 0x01 with extended info)
+	uint8_t	flag;			//!< flag ( 0x00 = no more data following ( end of packet here ), 0x01 = more data follow, 0x03 like 0x01 with extended info)
 public:
-	UI08	sex;			//!< sex ( 0=male, 1=female)
-	UI16	st;				//!< strenght
-	UI16	dx;				//!< dexterity
-	UI16	in;				//!< intelligence
-	UI16	currstamina;	//!< current Stamina
-	UI16	maxstamina;		//!< max Stamina
-	UI16	currmana;		//!< current Mana
-	UI16	maxmana;		//!< max Mana
-	UI32	gold;			//!< gold 
-	UI16	ac;				//!< armor class
-	UI16	weight;			//!< weight
+	uint8_t	sex;			//!< sex ( 0=male, 1=female)
+	uint16_t	st;				//!< strenght
+	uint16_t	dx;				//!< dexterity
+	uint16_t	in;				//!< intelligence
+	uint16_t	currstamina;	//!< current Stamina
+	uint16_t	maxstamina;		//!< max Stamina
+	uint16_t	currmana;		//!< current Mana
+	uint16_t	maxmana;		//!< max Mana
+	uint32_t	gold;			//!< gold 
+	uint16_t	ac;				//!< armor class
+	uint16_t	weight;			//!< weight
 
 	//extended info flah==0x03
-	UI16	statcap;		//!< stat cap
-	UI08	currpets;		//!< current pets
-	UI08	maxpets;		//!< max pets
+	uint16_t	statcap;		//!< stat cap
+	uint8_t	currpets;		//!< current pets
+	uint8_t	maxpets;		//!< max pets
 
 	cPacketStatWindow();
 	void send( NXWCLIENT ps );
-	void sendBasic( NXWCLIENT ps, UI08 flag = 0x00 );
+	void sendBasic( NXWCLIENT ps, uint8_t flag = 0x00 );
 	void sendStat( NXWCLIENT ps );
 	void sendExtended( NXWCLIENT ps );
 
@@ -360,7 +360,7 @@ class cPacketWear : public cClientPacket {
 public:
 
 	Serial	item;		//!< serial of item 
-	UI08	layer;		//!< layer
+	uint8_t	layer;		//!< layer
 	Serial	player;		//!< serial of the player ( ? who wear or where the item are weared? )
 
 	cPacketWear();	
@@ -381,19 +381,19 @@ class cPacketCharInfo : public cServerPacket {
 public:
 
 	Serial	player;		//!< serial of player 
-	UI32	unk1;		//!< Unknow 1 ( always 0 ) ( for boat?? )
-	UI16	bodyType;	//!< Body type
-	UI16	x;			//!< x Location
-	UI16	y;			//!< y Location
-	UI16	z;			//!< z Location
-	UI08	dir;		//!< direction
-	UI08	unk2;		//!< Unknow 2
-	UI32	unk3;		//!< Unknow 3
-	UI16	sbx;		//!< Server Boundry X
-	UI16	sby;		//!< Server Boundry Y
-	UI16	sbwidth;	//!< Server Boundry Width
-	UI16	sbheigth;	//!< Server Boundry Height
-	UI08	ignored[6];	//!< Ignored by standard client
+	uint32_t	unk1;		//!< Unknow 1 ( always 0 ) ( for boat?? )
+	uint16_t	bodyType;	//!< Body type
+	uint16_t	x;			//!< x Location
+	uint16_t	y;			//!< y Location
+	uint16_t	z;			//!< z Location
+	uint8_t	dir;		//!< direction
+	uint8_t	unk2;		//!< Unknow 2
+	uint32_t	unk3;		//!< Unknow 3
+	uint16_t	sbx;		//!< Server Boundry X
+	uint16_t	sby;		//!< Server Boundry Y
+	uint16_t	sbwidth;	//!< Server Boundry Width
+	uint16_t	sbheigth;	//!< Server Boundry Height
+	uint8_t	ignored[6];	//!< Ignored by standard client
 
 	cPacketCharInfo();
 
@@ -409,13 +409,13 @@ public:
 class cPacketSpeech : public cServerPacket {
 
 private:
-	UI16	size; 
+	uint16_t	size; 
 public:
 	Serial	obj;		//!< from ( 0xFFFFFFFF=system message)
-	UI16	model;		//!< item hex number | 0xFFFF=system
-	UI08	type;		//!< text type
+	uint16_t	model;		//!< item hex number | 0xFFFF=system
+	uint8_t	type;		//!< text type
 	eCOLOR	color;		//!< text color
-	UI16	font;		//!< text font
+	uint16_t	font;		//!< text font
 	string	name;		//!< name of who speech ( 30 character )
 	string*	msg;		//!< message  Null-Terminated Message (? = blockSize - 44)
 
@@ -453,15 +453,15 @@ class cPacketDrawPlayer : public cServerPacket {
 public:
 
 	Serial	chr;		//!< serial of the character
-	UI16	body;		//!< body type
-	UI08	unk1;		//!< unknow 1 ( is 0 )
+	uint16_t	body;		//!< body type
+	uint8_t	unk1;		//!< unknow 1 ( is 0 )
 	eCOLOR	skin;		//!< skin color
-	UI08	flag;		//!< flag
-	UI16	x;			//!< x Location
-	UI16	y;			//!< y Location
-	UI16	unk2;		//!< unknow 2 ( is 0 )
-	UI08	dir;		//!< direction
-	SI08	z;			//!< z Location
+	uint8_t	flag;		//!< flag
+	uint16_t	x;			//!< x Location
+	uint16_t	y;			//!< y Location
+	uint16_t	unk2;		//!< unknow 2 ( is 0 )
+	uint8_t	dir;		//!< direction
+	int8_t	z;			//!< z Location
 
 	cPacketDrawPlayer();	
 
@@ -478,11 +478,11 @@ class cPacketMoveReject : public cServerPacket {
 
 public:
 
-	UI08	seq;	//!< sequence number 
-	UI16	x;		//!< x Location
-	UI16	y;		//!< y Location
-	UI08	dir;	//!< direction
-	SI08	z;		//!< z Location
+	uint8_t	seq;	//!< sequence number 
+	uint16_t	x;		//!< x Location
+	uint16_t	y;		//!< y Location
+	uint8_t	dir;	//!< direction
+	int8_t	z;		//!< z Location
 
 	cPacketMoveReject();	
 
@@ -502,7 +502,7 @@ class cPacketMoveACK : public cServerPacket {
 
 public:
 
-	UI08	seq;		//!< sequence number (matches sent sequence)
+	uint8_t	seq;		//!< sequence number (matches sent sequence)
 /*!
 \brief notoriety flag
 
@@ -518,7 +518,7 @@ can be one of this:
 <li>7 = unknow, translucent like hue 0x4000 )</li>
 </ul>
 */
-	UI08	notoriety;	//!< notoriety
+	uint8_t	notoriety;	//!< notoriety
 
 	cPacketMoveACK();
 
@@ -535,17 +535,17 @@ class cPacketDragging : public cClientPacket {
 
 public:
 
-	UI16	model;		//!< model number
-	UI08	unk[3];		//!< unknown 1
-	UI16	stack;		//!< stack count
+	uint16_t	model;		//!< model number
+	uint8_t	unk[3];		//!< unknown 1
+	uint16_t	stack;		//!< stack count
 	Serial	from;		//!< serial of source
-	UI16	fromx;		//!< x Location of source
-	UI16	fromy;		//!< y Location of source
-	SI08	fromz;		//!< z Location of source
+	uint16_t	fromx;		//!< x Location of source
+	uint16_t	fromy;		//!< y Location of source
+	int8_t	fromz;		//!< z Location of source
 	Serial	to;			//!<  serial of target
-	UI16	tox;		//!< x Location of target
-	UI16	toy;		//!< y Location of target
-	SI08	toz;		//!< z Location of target
+	uint16_t	tox;		//!< x Location of target
+	uint16_t	toy;		//!< y Location of target
+	int8_t	toz;		//!< z Location of target
 
 	cPacketDragging();	
 
@@ -563,7 +563,7 @@ class cPacketDrawContainer : public cServerPacket {
 public:
 
 	Serial	item;		//!< serial of container
-	UI08	model;		//!< Gump of the container
+	uint8_t	model;		//!< Gump of the container
 
 	cPacketDrawContainer();	
 
@@ -581,11 +581,11 @@ class cPacketAddItemIntoCont : public cClientPacket {
 public:
 
 	Serial	item;		//!< serial of item to add
-	UI16	model;		//!< model
-	UI08	unk;		//!< unknown ( is 0 )
-	UI16	n;			//!< number of items
-	UI16	x;			//!< x Location in container
-	UI16	y;			//!< y Location in container
+	uint16_t	model;		//!< model
+	uint8_t	unk;		//!< unknown ( is 0 )
+	uint16_t	n;			//!< number of items
+	uint16_t	x;			//!< x Location in container
+	uint16_t	y;			//!< y Location in container
 	Serial	cont;		//!< serial of container
 	eCOLOR	color;		//!< color
 
@@ -621,7 +621,7 @@ class cPacketRejectMoveItem : public cServerPacket {
 
 public:
 
-	UI08 unk;	//!< unknow (0x00)
+	uint8_t unk;	//!< unknow (0x00)
 
 	cPacketRejectMoveItem();	
 
@@ -638,8 +638,8 @@ class cPacketClearSquare : public cServerPacket {
 
 public:
 
-	UI16	x;	//!< x Location
-	UI16	y;	//!< y Location
+	uint16_t	x;	//!< x Location
+	uint16_t	y;	//!< y Location
 
 	cPacketClearSquare();	
 
@@ -672,7 +672,7 @@ class cPacketRessMenu : public cClientPacket {
 
 public:
 
-	UI08	mode;		//!< action ( 2=ghost, 1=resurrect, 0=from server )
+	uint8_t	mode;		//!< action ( 2=ghost, 1=resurrect, 0=from server )
 
 	cPacketRessMenu();
 
@@ -690,12 +690,12 @@ class cPacketMobileAttributes : public cServerPacket {
 public:
 
 	Serial chr;		//!< the charatcer
-	UI16 maxhp;		//!< max hp
-	UI16 currhp;	//!< current hp
-	UI16 maxmana;	//!< max mana
-	UI16 currmana;	//!< current mana
-	UI16 maxstam;	//!< max stamina
-	UI16 currstam;	//!< current stamina
+	uint16_t maxhp;		//!< max hp
+	uint16_t currhp;	//!< current hp
+	uint16_t maxmana;	//!< max mana
+	uint16_t currmana;	//!< current mana
+	uint16_t maxstam;	//!< max stamina
+	uint16_t currstam;	//!< current stamina
 
 	cPacketMobileAttributes();	
 
@@ -713,9 +713,9 @@ class cPacketWornItem : public cClientPacket {
 public:
 
 	Serial	item;		//!< item id
-	UI16	model;		//!< item hex number
-	UI08	unk ;		//!< unknow (0x00)
-	UI08	layer;		//!< layer
+	uint16_t	model;		//!< item hex number
+	uint8_t	unk ;		//!< unknow (0x00)
+	uint8_t	layer;		//!< layer
 	Serial	player;		//!< player id
 	eCOLOR	color;		//!< color
 
@@ -734,7 +734,7 @@ class cPacketFightOccuring : public cServerPacket {
 
 public:
 
-	UI08	unk;	//!< unknown1 (0)
+	uint8_t	unk;	//!< unknown1 (0)
 	Serial	att;	//!< serial of attacker
 	Serial	def;	//!< serial of defender
 
@@ -755,7 +755,7 @@ public:
 class cPacketPauseResumeClient : public cServerPacket {
 public:
 
-	UI08	mode;	//!< action ( 0=pause, 1=resume )
+	uint8_t	mode;	//!< action ( 0=pause, 1=resume )
 
 	cPacketPauseResumeClient();	
 
@@ -772,7 +772,7 @@ class cPacketPlayerStatus : public cClientPacket {
 
 public:
 
-	UI32	pattern;	//!< pattern ( 0xEDEDEDED )
+	uint32_t	pattern;	//!< pattern ( 0xEDEDEDED )
 	BYTE	type;		//!< get type ( 4=Basic Stats (Packet 0x11 Response), 5=Request Skills (Packet 0x3A Response) )
 	Serial	player;		//!< serial of player
 
@@ -782,9 +782,9 @@ public:
 
 
 typedef struct {
-	UI08	flag;	//!< flag ( 0x1A )
+	uint8_t	flag;	//!< flag ( 0x1A )
 	Serial	item;	//!< serial of item (from 3C packet)
-	UI16	n;		//!< number of bought item
+	uint16_t	n;		//!< number of bought item
 } buyitem_st;
 
 #define PKG_BUY 0x3B;
@@ -797,11 +797,11 @@ typedef struct {
 class cPacketBuy : public cServerPacket {
 
 private:
-	UI16	size;		//!< packet size
+	uint16_t	size;		//!< packet size
 public:
 	Serial	vendor;		//!< serial of vendor
 private:
-	UI08	flag;		//!< flag ( 0=no items following, 2=items following ) 1=onlyoneitem?
+	uint8_t	flag;		//!< flag ( 0=no items following, 2=items following ) 1=onlyoneitem?
 public:
 	vector<buyitem_st> list;
 
@@ -815,11 +815,11 @@ public:
 */
 typedef struct {
 	Serial	item;		//!< serial of item
-	UI32	model;		//!< model
-	UI08	unk;		//!< unknown (0x00)
-	UI16	n;		//!< number of items in stack
-	UI16	x;		//!< x Location in container
-	UI16	y;		//!< y Location in container
+	uint32_t	model;		//!< model
+	uint8_t	unk;		//!< unknown (0x00)
+	uint16_t	n;		//!< number of items in stack
+	uint16_t	x;		//!< x Location in container
+	uint16_t	y;		//!< y Location in container
 	Serial	cont;		//!< serial of container
 	eCOLOR	color;		//!< color of item
 } itemincont_st;
@@ -834,8 +834,8 @@ typedef struct {
 class cPacketContainer : public cServerPacket {
 
 private: 
-	UI16	size;		//!< packet size
-	UI16	n;			//!< number of itemincont_st
+	uint16_t	size;		//!< packet size
+	uint16_t	n;			//!< number of itemincont_st
 public:
 	vector<itemincont_st> list;
 	
@@ -855,7 +855,7 @@ class cPacketPersonalLight : public cServerPacket {
 public:
 
 	Serial	chr;		//!< serial of character
-	UI08	level;		//!< light level
+	uint8_t	level;		//!< light level
 
 	cPacketPersonalLight();	
 
@@ -872,7 +872,7 @@ public:
 class cPacketOverallLight : public cServerPacket {
 public:
 
-	UI08	level;		//!< light level ( 0x00=day, 0x09=OSI night, 0x1F=Black )
+	uint8_t	level;		//!< light level ( 0x00=day, 0x09=OSI night, 0x1F=Black )
 
 	cPacketOverallLight();
 
@@ -898,7 +898,7 @@ class cPacketIdleWarning : public cServerPacket {
 
 public:
 
-	UI08	type;		//!< type ( see note )
+	uint8_t	type;		//!< type ( see note )
 
 	cPacketIdleWarning();	
 
@@ -915,12 +915,12 @@ class cPacketSound : public cServerPacket {
 
 public:
 
-	UI08	mode;		//!< mode ( 0=quiet repeating, 1=single normally played sound effect )
-	UI16	model;		//!< sound model
-	UI16	unk;		//!< unknown ( speed/volume modifier? Line of sight stuff? )
-	UI16	x;			//!< x Location
-	UI16	y;			//!< y Location
-	UI16	z;			//!< z Location
+	uint8_t	mode;		//!< mode ( 0=quiet repeating, 1=single normally played sound effect )
+	uint16_t	model;		//!< sound model
+	uint16_t	unk;		//!< unknown ( speed/volume modifier? Line of sight stuff? )
+	uint16_t	x;			//!< x Location
+	uint16_t	y;			//!< y Location
+	uint16_t	z;			//!< z Location
 
 	cPacketSound();
 
@@ -957,10 +957,10 @@ class cPacketLoginComplete : public cServerPacket {
 class cPacketPlotCourse : public cServerPacket {
 
 	Serial	serial;		//!< serial
-	UI08	type;		//!< type 
-	UI08	state;		//!< plotting state ( 1=on, 0=off, valid only if type 7 )
-	UI16	x;			//!< x pin ( relative to upper left corner of the map, inpixel, for points )
-	UI16	y;			//!< y pin ( relative to upper left corner of the map, inpixel, for points )
+	uint8_t	type;		//!< type 
+	uint8_t	state;		//!< plotting state ( 1=on, 0=off, valid only if type 7 )
+	uint16_t	x;			//!< x pin ( relative to upper left corner of the map, inpixel, for points )
+	uint16_t	y;			//!< y pin ( relative to upper left corner of the map, inpixel, for points )
 	
 	cPacketPlotCourse();	
 
@@ -975,9 +975,9 @@ class cPacketPlotCourse : public cServerPacket {
 */
 class cPacketTime : public cServerPacket {
 
-	UI08	hour;		//!< hour
-	UI08	minute;		//!< minute
-	UI08	second;		//!< second
+	uint8_t	hour;		//!< hour
+	uint8_t	minute;		//!< minute
+	uint8_t	second;		//!< second
 
 	cPacketTime();	
 
@@ -993,11 +993,11 @@ class cPacketTime : public cServerPacket {
 #define PKG_LOGIN 0x5D;
 class cPacketLogin : public cClientPacket {
 
-	UI32	pattern;	//!< pattern ( 0xEDEDEDED )
+	uint32_t	pattern;	//!< pattern ( 0xEDEDEDED )
 	string	name;		//!< name ( 30 characters )
 	string	passwd;		//!< password ( 30 characters )
-	UI32	slot;		//!< slot choosen ( 0 based )
-	UI32	ip;			//!< client ip
+	uint32_t	slot;		//!< slot choosen ( 0 based )
+	uint32_t	ip;			//!< client ip
 	
 	cPacketLogin();	
 	void receive( NXWCLIENT ps );
@@ -1048,7 +1048,7 @@ class cPacketMidi : public cServerPacket {
 
 public:
 
-	UI16	music;		//!< music id
+	uint16_t	music;		//!< music id
 
 	cPacketMidi();	
 
@@ -1104,13 +1104,13 @@ class cPacketAnim : public cServerPacket {
 public:
 
 	Serial	chr;		//!< serial of the character
-	UI16	mov;		//!< movement model ( see note )
-	UI08	unk;		//!< unknown ( 0x00 )
-	UI08	dir;		//!< direction
-	UI16	repeat;		//!<  ( 0=repeat forever, 1=once, 2=twice, ?n=n times? )
-	UI08	wards;		//!< forward/backwards ( 0=forward, 1=backwards )
-	UI08	flag;		//!< repeat flag ( 0=Don't repeat, 1=repeat )
-	UI08	deelay;		//!< frame delay ( 0x00=fastest, 0xFF=too slow to watch )
+	uint16_t	mov;		//!< movement model ( see note )
+	uint8_t	unk;		//!< unknown ( 0x00 )
+	uint8_t	dir;		//!< direction
+	uint16_t	repeat;		//!<  ( 0=repeat forever, 1=once, 2=twice, ?n=n times? )
+	uint8_t	wards;		//!< forward/backwards ( 0=forward, 1=backwards )
+	uint8_t	flag;		//!< repeat flag ( 0=Don't repeat, 1=repeat )
+	uint8_t	deelay;		//!< frame delay ( 0x00=fastest, 0xFF=too slow to watch )
 
 	cPacketAnim();	
 
@@ -1126,7 +1126,7 @@ class cPacketSecureTrading : public cServerPacket {
 
 private:
 
-	UI16 size; //!< packet size
+	uint16_t size; //!< packet size
 
 public:
 
@@ -1159,21 +1159,21 @@ class cPacketEffect : public cServerPacket {
 
 public:
 
-	UI08	dir;		//!< direction type ( see note )
+	uint8_t	dir;		//!< direction type ( see note )
 	Serial	chr;		//!< serial of source character
 	Serial	target;		//!< serial of target character
-	UI16	model;		//!< model of the first frame of the effect
-	UI16	sx;			//!< x Location of source
-	UI16	sy;			//!< y Location of source
-	SI08	sz;			//!< z Location of source
-	UI16	tx;			//!< x Location of target
-	UI16	ty;			//!< y Location of target
-	SI08	tz;			//!< z Location of target
-	UI08	speed;		//!< speed of the animation
-	UI08	duration;	//!< duration ( 0=really long, 1=shortest )
-	UI16	unk;		//!< unknown (0 works)
-	UI08	direct;		//!< no adjust direction during animation ( 0=yes, else no ) ( ?is bool?)
-	UI08	explode;	//!< explode on impact
+	uint16_t	model;		//!< model of the first frame of the effect
+	uint16_t	sx;			//!< x Location of source
+	uint16_t	sy;			//!< y Location of source
+	int8_t	sz;			//!< z Location of source
+	uint16_t	tx;			//!< x Location of target
+	uint16_t	ty;			//!< y Location of target
+	int8_t	tz;			//!< z Location of target
+	uint8_t	speed;		//!< speed of the animation
+	uint8_t	duration;	//!< duration ( 0=really long, 1=shortest )
+	uint16_t	unk;		//!< unknown (0 works)
+	uint8_t	direct;		//!< no adjust direction during animation ( 0=yes, else no ) ( ?is bool?)
+	uint8_t	explode;	//!< explode on impact
 
 	cPacketEffect();	
 
@@ -1193,7 +1193,7 @@ class cPacketWarMode : public cServerPacket /*CLIENTALSOPD*/ {
 public:
 
 	BYTE	flag;		//!< flag ( 0=Normal, 1=Fighting )
-	UI08	unk[3];		//!< unknown (always 00 32 00 in testing)
+	uint8_t	unk[3];		//!< unknown (always 00 32 00 in testing)
 
 	cPacketWarMode();
 
@@ -1220,8 +1220,8 @@ public:
 
 /*
 typedef struct {
-	UI32 price;
-	UI08 length; of text description
+	uint32_t price;
+	uint8_t length; of text description
 	BYTE[text length] item description
 } openbuyitem_st ;
 
@@ -1239,11 +1239,11 @@ number for the buy screen)
 class cPacketOpenBuy : public cServerPacket {
 
 private:
-	UI16 size; //!< packet size
+	uint16_t size; //!< packet size
 public:
 	Serial vendor; //!< serial of verndor | 0x40000000
 private:
-	UI08 n; //!< number of items of items
+	uint8_t n; //!< number of items of items
 public:
 	vector<openbuyitem_st> list;
 
@@ -1284,14 +1284,14 @@ class cPacketNewSubserver : public cServerPacket {
 
 public:
 
-	UI16	x;			//!< x location
-	UI16	y;			//!< y location
-	UI16	z;			//!< z location
-	UI08	unk;		//!< unknow ( always 0 )
-	UI16	sbx;		//!< server boundry x
-	UI16	sby;		//!< server boundry y
-	UI16	sbwithd;	//!< server boundry Width
-	UI16	sbheight;	//!< server boundry Height
+	uint16_t	x;			//!< x location
+	uint16_t	y;			//!< y location
+	uint16_t	z;			//!< z location
+	uint8_t	unk;		//!< unknow ( always 0 )
+	uint16_t	sbx;		//!< server boundry x
+	uint16_t	sby;		//!< server boundry y
+	uint16_t	sbwithd;	//!< server boundry Width
+	uint16_t	sbheight;	//!< server boundry Height
 
 	cPacketNewSubserver();
 
@@ -1309,14 +1309,14 @@ class cPacketUpdatePlayer : public cServerPacket {
 public:
 
 	Serial	player;		//!< the serial of player
-	UI16	model;		//!< the model id
-	UI16	x;			//!< x location
-	UI16	y;			//!< y location
-	SI08	z;			//!< z location
-	UI08	dir;		//!< direction
+	uint16_t	model;		//!< the model id
+	uint16_t	x;			//!< x location
+	uint16_t	y;			//!< y location
+	int8_t	z;			//!< z location
+	uint8_t	dir;		//!< direction
 	eCOLOR	color;		//!< color
-	UI08	flag;		//!< flag ( bitset )
-	UI08	highcolor;	//!< highlight color
+	uint8_t	flag;		//!< flag ( bitset )
+	uint8_t	highcolor;	//!< highlight color
 
 	cPacketUpdatePlayer();
 
@@ -1338,9 +1338,9 @@ class cPacketResponseToDialog : public cClientPacket {
 public:
 
 	eSERIAL	serial;		//!< the dialog serial ( echoed back from 7C packet )
-	eUI16	id;		//!< the model id ( echoed back from 7C packet )
-	eUI16	index;		//!< index of choice ( 1 based )
-	eUI16	model;		//!< model of choice
+	euint16_t	id;		//!< the model id ( echoed back from 7C packet )
+	euint16_t	index;		//!< index of choice ( 1 based )
+	euint16_t	model;		//!< model of choice
 	eCOLOR	color;		//!< color
 
 	cPacketResponseToDialog();
@@ -1364,7 +1364,7 @@ class cPacketLoginDenied : public cServerPacket {
 
 public:
 
-	UI08	why;		//!< why ( see note )
+	uint8_t	why;		//!< why ( see note )
 
 	cPacketLoginDenied();
 
@@ -1383,8 +1383,8 @@ class cPacketDeleteCharacter : public cClientPacket {
 public:
 
 	string	passwd;		//!< the password
-	UI32	idx;		//!< the char index
-	UI32	ip;			//!< the client ip
+	uint32_t	idx;		//!< the char index
+	uint32_t	ip;			//!< the client ip
 
 	cPacketDeleteCharacter();
 	void receive( NXWCLIENT ps );
@@ -1407,8 +1407,8 @@ typedef struct resaftdel_st {
 #define PKG_RESEND_CHARACHTER_AFTER_DELETE 0x86;
 class cPacketResendCharacterAfterDelete : public cServerPacket {
 private:
-	UI16	size;		//!< the size of packet
-	UI08	n;			//!< number of character resend
+	uint16_t	size;		//!< the size of packet
+	uint8_t	n;			//!< number of character resend
 
 public:
 
@@ -1442,13 +1442,13 @@ public:
 class cPacketUnicodeSpeech : public cServerPacket {
 
 private:
-	eUI16	size; 
+	euint16_t	size; 
 public:
 	eSERIAL	obj;		//!< from ( 0xFFFFFFFF=system message)
-	eUI16 model;		//!< item hex number | 0xFFFF=system
-	eUI08	type;		//!< text type
+	euint16_t model;		//!< item hex number | 0xFFFF=system
+	euint8_t	type;		//!< text type
 	eCOLOR	color;		//!< text color
-	eUI16	font;		//!< text font
+	euint16_t	font;		//!< text font
 	eSERIAL	language;   //!< language
 	string	name;		//!< name of who speech ( 30 character )
 	wstring*	msg;	//!< message
@@ -1485,10 +1485,10 @@ class cPacketMap : public cServerPacket {
 
 public:
 	eSERIAL	obj;		//!< the map
-	eUI08	command;	//!< command see note
-	eUI08	plotting;	//!< plotting state ( 1=on, 0=off only valid if command 7)
-	eUI16	x;		//!< x location (relative to upper left corner of the map, in pixels)
-	eUI16	y;		//!< y location (relative to upper left corner of the map, in pixels)
+	euint8_t	command;	//!< command see note
+	euint8_t	plotting;	//!< plotting state ( 1=on, 0=off only valid if command 7)
+	euint16_t	x;		//!< x location (relative to upper left corner of the map, in pixels)
+	euint16_t	y;		//!< y location (relative to upper left corner of the map, in pixels)
 
 	cPacketMap();
 
@@ -1505,13 +1505,13 @@ class cPacketMapMessage : public cServerPacket {
 
 public:
 	eSERIAL	key;	//!< the key used
-	eUI16	id;		//!< gump art id (0x139D)
-	eUI16	xa;		//!< x location (relative to upper left corner of the map, in pixels)
-	eUI16	ya;		//!< y location (relative to upper left corner of the map, in pixels)
-	eUI16	xb;		//!< x location (relative to upper left corner of the map, in pixels)
-	eUI16	yb;		//!< y location (relative to upper left corner of the map, in pixels)
-	eUI16   width;	//!< gump width in pixels
-	eUI16   height;	//!< gump height in pixels
+	euint16_t	id;		//!< gump art id (0x139D)
+	euint16_t	xa;		//!< x location (relative to upper left corner of the map, in pixels)
+	euint16_t	ya;		//!< y location (relative to upper left corner of the map, in pixels)
+	euint16_t	xb;		//!< x location (relative to upper left corner of the map, in pixels)
+	euint16_t	yb;		//!< y location (relative to upper left corner of the map, in pixels)
+	euint16_t   width;	//!< gump width in pixels
+	euint16_t   height;	//!< gump height in pixels
 
 	cPacketMapMessage();
 
@@ -1536,7 +1536,7 @@ public:
 class cPacketWalk : public cServerPacket {
 
 public:
-	eUI08   direction;	//!< direction
+	euint8_t   direction;	//!< direction
 	cPacketWalk();
 
 } PACK_NEEDED;
@@ -1555,8 +1555,8 @@ public:
 class cPacketWalkAck : public cServerPacket {
 
 public:
-	eUI08   sequence;	//!< sequence
-	eUI08   notoriety;	//!< notoriety ( see note and NOTORIETY )
+	euint8_t   sequence;	//!< sequence
+	euint8_t   notoriety;	//!< notoriety ( see note and NOTORIETY )
 	cPacketWalkAck();
 
 } PACK_NEEDED;
@@ -1582,11 +1582,11 @@ typedef enum {
 class cPacketWalkReject : public cServerPacket {
 
 public:
-	eUI08   sequence;	//!< sequence
-	eUI16   x;	//!< x location
-	eUI16   y;	//!< y location
-	eUI08   direction;	//!< direction
-	eUI08   z;	//!< z location
+	euint8_t   sequence;	//!< sequence
+	euint16_t   x;	//!< x location
+	euint16_t   y;	//!< y location
+	euint8_t   direction;	//!< direction
+	euint8_t   z;	//!< z location
 	cPacketWalkReject();
 
 } PACK_NEEDED;
@@ -1610,7 +1610,7 @@ public:
 */
 class cPacketCharProfileReqOnly : public cClientPacket {
 private:
-	eUI16	size; //!< size
+	euint16_t	size; //!< size
 public:
 	eBool	update; //!< update
 	eSERIAL chr; //!< character
@@ -1627,13 +1627,13 @@ public:
 */
 class cPacketCharProfileReq : public cClientPacket {
 private:
-	eUI16	size;	//!< size
+	euint16_t	size;	//!< size
 public:
 	eBool	update; //!< update
 	eSERIAL	chr;	//!< character
-    eUI16	type;	//!< type (0x0001 – Update)
+    euint16_t	type;	//!< type (0x0001 – Update)
 private:
-	eUI16	len;	//!< # of unicode characters
+	euint16_t	len;	//!< # of unicode characters
 public:
 	wstring profile;	//!< new profile, in unicode, not null terminated.
 
@@ -1650,7 +1650,7 @@ public:
 */
 class cPacketCharProfile : public cServerPacket {
 private:
-	eUI16 size;	//!< size
+	euint16_t size;	//!< size
 public:
 	eSERIAL chr;	//!< character
 
@@ -1685,7 +1685,7 @@ public:
 class cPacketFeatures : public cServerPacket {
 
 public:
-	eUI16 feature;
+	euint16_t feature;
 
 	cPacketFeatures();
 };
@@ -1697,7 +1697,8 @@ public:
 /*if (MSB not set)
 Bit# 1 T2A upgrade, enables chatbutton, 
 Bit# 2 enables LBR update.  (of course LBR installation is required)
-(plays MP3 instead of midis, 2D LBR client shows new LBR monsters,…)
+(plays MP3 instead of midis, 2D LBR client shows new LBR monsters,
+)
 
 if (MSB set)
 Bit# 3 T2A upgrade, enables chatbutton, 
@@ -1729,7 +1730,7 @@ Note3: a 3 doesn’t seem to “hurt” older (NON LBR) clients.
 */
 class cPacketWebBrowser : public cServerPacket {
 private:
-	eUI16 size; //<! size
+	euint16_t size; //<! size
 public:
 
 	std::string link;
@@ -1757,26 +1758,26 @@ public:
 */
 class cPacketMenu : public cServerPacket {
 private:
-	eUI16 size; //<! size
+	euint16_t size; //<! size
 public:
 
 	eSERIAL serial; //!< the serial
 	eSERIAL id; //!< gump serial
-	eUI32	x; //!< x location
-	eUI32	y; //!< x location
+	euint32_t	x; //!< x location
+	euint32_t	y; //!< x location
 
 private:
-	eUI16 cmd_length; //!< command section length
+	euint16_t cmd_length; //!< command section length
 public:
 	std::vector<std::string>* commands; //!< commands ( zero terminated )
 
 private:
-	 eUI16 numTextLines; //!<text lines number
+	 euint16_t numTextLines; //!<text lines number
 public:
 
 
 //	for everty vector item
-	eUI16 len; //!< text lenth for every unicode string	
+	euint16_t len; //!< text lenth for every unicode string	
 	std::vector< wstring >* texts; //!< text ( every string is NOT null terminated )
 //end
 
@@ -1786,8 +1787,8 @@ public:
 
 
 typedef struct {
-	eUI16	id; //!< textentries id
-	eUI16	textlength; //!< text length
+	euint16_t	id; //!< textentries id
+	euint16_t	textlength; //!< text length
 	wstring text; //!< text ( not nullterminated )
 } text_entry_st;
 
@@ -1804,19 +1805,19 @@ typedef struct {
 class cPacketMenuSelection : public cClientPacket {
 
 private:
-	eUI16	size;	//!< size
+	euint16_t	size;	//!< size
 public:
 
 	eSERIAL serial; //!< the serial ( first Id in PKG_MENU )
 	eSERIAL id; //!< gump serial (second Id in PKG_MENU )
-	eUI32	buttonId; //!< which button pressed or 0 if closed
+	euint32_t	buttonId; //!< which button pressed or 0 if closed
 
 private:
-	eUI32	switchcount; //!<  response info for radio buttons and checkboxes, any switches listed here are switched on
+	euint32_t	switchcount; //!<  response info for radio buttons and checkboxes, any switches listed here are switched on
 public:
 	std::vector<SERIAL> switchs; //!< switch ids
 private:
-	eUI32 textcount; //!< response info for textentries
+	euint32_t textcount; //!< response info for textentries
 public:
 //	std::vector<text_entry_st> text_entries; //!< text entries
 	std::map< SERIAL, std::wstring> text_entries; //!< text entries
@@ -1829,9 +1830,9 @@ public:
 
 typedef struct  {
 
-	eUI16	model; //!< model id number of shown icon ( if grey menu then always 0x00 as msb )
+	euint16_t	model; //!< model id number of shown icon ( if grey menu then always 0x00 as msb )
 	eCOLOR	color; //!< icon color
-//	eUI08 resp_length, //needed but managed into send, so not need var
+//	euint8_t resp_length, //needed but managed into send, so not need var
 	std::string response;	
 
 } pkg_icon_list_menu_st;
@@ -1846,18 +1847,18 @@ typedef struct  {
 */
 class cPacketIconListMenu : public cServerPacket {
 private:
-	eUI16 size; //<! size
+	euint16_t size; //<! size
 public:
 
 	eSERIAL serial; //!< the serial
-	eUI16 id; //!< the gump
+	euint16_t id; //!< the gump
 private:
-	eUI08 question_length; //!< question length
+	euint8_t question_length; //!< question length
 public:
 	std::string question; //!< question text
 
 private:
-	eUI08 icon_count; //!< icon number
+	euint8_t icon_count; //!< icon number
 public:
 	std::vector< pkg_icon_list_menu_st >* icons; //!< icons
 
@@ -1886,8 +1887,8 @@ class cPacketQuestArrow : public cServerPacket {
 public:
 
 	eBool active; //<! active
-	eUI16 x; //!< x location
-	eUI16 y; //!< y location
+	euint16_t x; //!< x location
+	euint16_t y; //!< y location
 
 	cPacketQuestArrow();
 
@@ -1907,17 +1908,17 @@ class cPacketTargetingCursor : public T {
 
 public:
 
-	eUI08	type;		//!< type ( 0=Select Object, 1=Select X, Y, Z )
-	eUI32	cursor;		//!< cursor id
-	eUI08	cursorType;	//!< cursor type
+	euint8_t	type;		//!< type ( 0=Select Object, 1=Select X, Y, Z )
+	euint32_t	cursor;		//!< cursor id
+	euint8_t	cursorType;	//!< cursor type
 
 	//The following are always sent but are only valid if sent by client
-	eUI32	clicked;	//!<  clicked on id
-	eUI16	x ;			//!< click x Location
-	eUI16	y ;			//!< click y Location
-	eUI08	unk;		//!< nown (0x00)
-	eSI08	z ;			//!< click z Location
-	eUI16	model;		//!< model number ( 0=map/landscape tile, else static tile )
+	euint32_t	clicked;	//!<  clicked on id
+	euint16_t	x ;			//!< click x Location
+	euint16_t	y ;			//!< click y Location
+	euint8_t	unk;		//!< nown (0x00)
+	eint8_t	z ;			//!< click z Location
+	euint16_t	model;		//!< model number ( 0=map/landscape tile, else static tile )
 	
 	cPacketTargetingCursor();
 
@@ -1944,8 +1945,8 @@ template< class T >
 class cPacketGeneralInfo : public T {
 
 protected:
-	eUI16 size;	//<! size
-	eUI16 subcmd;	//!< the subcmd
+	euint16_t size;	//<! size
+	euint16_t subcmd;	//!< the subcmd
 public:
 	cPacketGeneralInfo();
 
@@ -1962,7 +1963,7 @@ public:
 template< class T >
 class cSubPacketParty : public cPacketGeneralInfo<T> {
 public:
-	eUI08 subsubcommand;
+	euint8_t subsubcommand;
 
 	cSubPacketParty();
 };
@@ -1977,7 +1978,7 @@ public:
 */
 class clPacketAddPartyMember : public cSubPacketParty< cClientPacket > {
 public:
-	eUI32 member; //!< the member, if 0 the targeting cursor appears
+	euint32_t member; //!< the member, if 0 the targeting cursor appears
 
 	clPacketAddPartyMember();
 	void receive( NXWCLIENT ps );
@@ -1991,7 +1992,7 @@ public:
 */
 class csPacketAddPartyMembers : public cSubPacketParty< cServerPacket > {
 private:
-	eUI08 count;	//!< members count
+	euint8_t count;	//!< members count
 public:
 	std::vector<P_PARTY_MEMBER>* members;
 	void send( NXWCLIENT ps );
@@ -2010,7 +2011,7 @@ public:
 */
 class clPacketRemovePartyMember : public cSubPacketParty< cClientPacket > {
 public:
-	eUI32 member; //!< the member, if 0 the targeting cursor appears
+	euint32_t member; //!< the member, if 0 the targeting cursor appears
 
 	clPacketRemovePartyMember();
 	void receive( NXWCLIENT ps );
@@ -2024,9 +2025,9 @@ public:
 */
 class csPacketRemovePartyMembers : public cSubPacketParty< cServerPacket > {
 private:
-	eUI08 count;	//!< members count
+	euint8_t count;	//!< members count
 public:
-	eUI32 member; //!< the member removed
+	euint32_t member; //!< the member removed
 	std::vector<P_PARTY_MEMBER>* members; //!< all members
 
 	csPacketRemovePartyMembers();

@@ -35,11 +35,11 @@ struct sContainerItem
 		it.color	= item->getColor();
 	};
 
-	UI32 serial;
-	UI16 id;
-	UI16 amount;
-	UI16 x, y;
-	UI16 color;
+	uint32_t serial;
+	uint16_t id;
+	uint16_t amount;
+	uint16_t x, y;
+	uint16_t color;
 };
 
 /*!
@@ -49,8 +49,8 @@ struct sContainerItem
 class cPacketSend
 {
 protected:
-	UI08 *buffer;	//!< Pointer to the buffer
-	UI16 length;	//!< Length of the buffer
+	uint8_t *buffer;	//!< Pointer to the buffer
+	uint16_t length;	//!< Length of the buffer
 
 public:
 	inline virtual ~cPacketSend
@@ -60,7 +60,7 @@ public:
 	virtual void prepare() = 0;
 
 	//! Prepare the packet if not prepared and return the buffer
-	inline const UI08 *getBuffer()
+	inline const uint8_t *getBuffer()
 	{
 		if ( ! length )
 			prepare();
@@ -69,7 +69,7 @@ public:
 	}
 
 	//! Prepare the packet if not prepared and return the length of the buffer
-	inline const UI16 getLength()
+	inline const uint16_t getLength()
 	{
 		if ( ! length )
 			prepare();
@@ -91,15 +91,15 @@ private:
 class cPacketSendAction : cPacketSend
 {
 protected:
-	const UI32 serial;	//!< Serial of the char which do the action
-	const UI16 action;	//!< id of the action to execute
+	const uint32_t serial;	//!< Serial of the char which do the action
+	const uint16_t action;	//!< id of the action to execute
 
 public:
 	/*!
 	\param s serial of the char which do the action
 	\param a id of the action to execute
 	*/
-	inline cPacketSendAction(UI32 s, UI16 a) :
+	inline cPacketSendAction(uint32_t s, uint16_t a) :
 		serial(s), action(a),
 		buffer(NULL), length(NULL)
 	{ }
@@ -114,15 +114,15 @@ public:
 class cPacketSendDrawContainer : cPacketSend
 {
 protected:
-	const UI32 serial;	//!< Serial of the container to draw
-	const UI16 gump;	//!< Gump of the container to draw
+	const uint32_t serial;	//!< Serial of the container to draw
+	const uint16_t gump;	//!< Gump of the container to draw
 
 public:
 	/*!
 	\param s serial of the container
 	\param g gump of the container
 	*/
-	inline cPacketSendDrawContainer(UI32 s, UI16 g) :
+	inline cPacketSendDrawContainer(uint32_t s, uint16_t g) :
 		serial(s), gump(g),
 		buffer(NULL), length(NULL)
 	{ }
@@ -142,7 +142,7 @@ public:
 	/*!
 	\param s serial of the container (for all items)
 	*/
-	inline cPacketSendContainerItem(UI32 s)
+	inline cPacketSendContainerItem(uint32_t s)
 
 	/*!
 	\brief add an item to the list of items in the container
@@ -188,14 +188,14 @@ public:
 class cPacketSendSoundFX : cPacketSend
 {
 protected:
-	UI16 model;	//!< Sound model
+	uint16_t model;	//!< Sound model
 	Location loc;	//!< Location where the sound is played
 public:
 	/*!
 	\param m sound model
 	\param l where the sound will be played
 	*/
-	inline cPacketSendSoundFX(UI16 m, Location l) :
+	inline cPacketSendSoundFX(uint16_t m, Location l) :
 		model(m), loc(l)
 	{ }
 
@@ -206,12 +206,12 @@ public:
 class cPacketSendDeleteObj : cPacketSend
 {
 protected:
-	UI32 serial;
+	uint32_t serial;
 public:
 	/*!
 	\param s serial of the object to remove
 	*/
-	inline cPacketSendDeleteObj(UI32 s) :
+	inline cPacketSendDeleteObj(uint32_t s) :
 		serial(s)
 	{ }
 
@@ -239,13 +239,13 @@ class cPacketSendUpdateSkill : cPacketSend
 {
 protected:
 	pChar pc;
-	UI16 skill;
+	uint16_t skill;
 public:
 	/*!
 	\param c Character to send the skill of
 	\param sk Skill to update
 	*/
-	inline cPacketSendUpdateSkill(pChar c, UI16 sk) :
+	inline cPacketSendUpdateSkill(pChar c, uint16_t sk) :
 		pc(c), skill(sk)
 	{ }
 
@@ -272,12 +272,12 @@ public:
 class cPacketSendPlayMidi : cPacketSend
 {
 protected:
-	UI16 id;
+	uint16_t id;
 public:
 	/*!
 	\param midi Midi file id
 	*/
-	inline cPacketSendPlayMidi(UI16 midi) :
+	inline cPacketSendPlayMidi(uint16_t midi) :
 		id(midi)
 	{ }
 
@@ -288,12 +288,12 @@ public:
 class cPacketSendOverallLight : cPacketSend
 {
 protected:
-	UI08 level;
+	uint8_t level;
 public:
 	/*!
 	\param l Light level
 	*/
-	inline cPacketSendOverallLight(UI08 l) :
+	inline cPacketSendOverallLight(uint8_t l) :
 		level(l)
 	{ }
 
@@ -305,7 +305,7 @@ class cPacketSendStatus : cPacketSend
 {
 protected:
 	pChar pc;	//!< Character
-	UI08 type;	//!< Type
+	uint8_t type;	//!< Type
 	bool canrename;	//!< Can be renamed
 public:
 	/*!
@@ -313,7 +313,7 @@ public:
       	\param t type of window
         \param canrename client who receives this packet can rename char p
 	*/
-	inline cPacketSendStatus(pChar p, UI08 t, bool r) :
+	inline cPacketSendStatus(pChar p, uint8_t t, bool r) :
 		pc(p), type(t), canrename(r)
 	{ }
 
@@ -484,15 +484,15 @@ class cPacketReceive
 {
 protected:
 
-        UI08 *buffer;           // needed in all derived classes
-        UI16 length;
+        uint8_t *buffer;           // needed in all derived classes
+        uint16_t length;
 public:
 //	cPacketReceive();
-      	inline cPacketReceive(UI08 *buf, UI16 len) :
+      	inline cPacketReceive(uint8_t *buf, uint16_t len) :
 		buffer(buf), length(len)
 	{ } 
 //	~cPacketReceive();
-	static pPacketReceive fromBuffer(UI08 *buffer, UI16 length);
+	static pPacketReceive fromBuffer(uint8_t *buffer, uint16_t length);
 	inline virtual bool execute(pClient client)
 	{ }
 };

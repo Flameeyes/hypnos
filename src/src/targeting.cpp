@@ -720,7 +720,7 @@ void target_follow( NXWCLIENT ps, P_TARGET t )
 
 void target_axe( NXWCLIENT ps, P_TARGET t )
 {
-    UI16 id=t->getModel();
+    uint16_t id=t->getModel();
     if (itemById::IsTree(id))
 		Skills::target_tree( ps, t );
     else if (itemById::IsCorpse(id))
@@ -735,7 +735,7 @@ void target_sword( NXWCLIENT ps, P_TARGET t )
 	P_CHAR pc = ps->currChar();
 	VALIDATEPC(pc);
 
-	UI16 id = t->getModel();
+	uint16_t id = t->getModel();
 	if (itemById::IsTree2(id))
 	{
 		Location pcpos= pc->getPosition();

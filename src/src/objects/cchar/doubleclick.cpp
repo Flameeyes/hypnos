@@ -134,7 +134,7 @@ void cChar::doubleClick(pClient client, int keyboard)
 
                         //! \todo when paperdoll send packet done, rewrite this
 
-			UI08 pdoll[66] = { 0x88, 0x00, 0x05, 0xA8, 0x90, 0x00, };
+			uint8_t pdoll[66] = { 0x88, 0x00, 0x05, 0xA8, 0x90, 0x00, };
 
 			LongToCharPtr(getSerial32(), pdoll +1);
 
@@ -164,7 +164,7 @@ void cChar::doubleClick(pClient client, int keyboard)
 		case 0x0319	:	//	skeletal mount
 		case 0x031a	:	//	swamp dragon
 		case 0x031f	:	//	armor dragon*/
-	std::map<SI32,SI32>::iterator iter = mountinfo.find(getId());
+	std::map<int32_t,int32_t>::iterator iter = mountinfo.find(getId());
 	if( iter!=mountinfo.end() ) {
 		if ( npc )	// riding a morphed player char is not allowed
 			{

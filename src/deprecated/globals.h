@@ -180,7 +180,7 @@ extern int gatecount;
 //extern int day, hour, minute, ampm; //Initial time is noon.
 extern int day;
 extern int secondsperuominute; //Number of seconds for a UO minute.
-extern UI32 uotickcount;
+extern uint32_t uotickcount;
 extern int moon1update;
 extern int moon2update;
 

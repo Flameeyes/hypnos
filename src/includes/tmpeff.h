@@ -40,24 +40,24 @@ class cTempfx {
 private:
 	SERIAL m_nSrc;
 	SERIAL m_nDest;
-	SI32 m_nNum;
-	SI32 m_nMode;
-	UI32 m_nExpireTime;
-	SI32 m_nAmxcback;
-	SI32 m_nMore1;
-	SI32 m_nMore2;
-	SI32 m_nMore3;
+	int32_t m_nNum;
+	int32_t m_nMode;
+	uint32_t m_nExpireTime;
+	int32_t m_nAmxcback;
+	int32_t m_nMore1;
+	int32_t m_nMore2;
+	int32_t m_nMore3;
 	LOGICAL m_bDispellable;
 	LOGICAL m_bSrcRepeatable;
 	LOGICAL m_bDestRepeatable;
 public:
-	cTempfx( SERIAL nSrc, SERIAL nDest, SI32 num, SI32 dur, SI32 more1, SI32 more2, SI32 more3, SI32 amxcback );
+	cTempfx( SERIAL nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t more1, int32_t more2, int32_t more3, int32_t amxcback );
 	int getExpireTime() { return m_nExpireTime; }
 	bool isDispellable() { return m_bDispellable; }
 	void activate();
 	void deactivate();
 	bool isValid();
-	SI08 checkForExpire();
+	int8_t checkForExpire();
 	void executeExpireCode();
 	void start();
 	int getNum() { return m_nNum; }

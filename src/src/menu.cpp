@@ -73,7 +73,7 @@ bool isIconList( NXWSOCKET s )
 	return isIconList( buffer[s][0] );
 }
 
-bool isIconList( UI08 cmd )
+bool isIconList( uint8_t cmd )
 {
 	return cmd==PKG_RESPONSE_TO_DIALOG;
 }
@@ -230,7 +230,7 @@ cServerPacket* cBasicMenu::build()
 
 
 
-cMenu::cMenu( MENU_TYPE id, UI32 x, UI32 y, bool canMove, bool canClose, bool canDispose ) : cBasicMenu( id )
+cMenu::cMenu( MENU_TYPE id, uint32_t x, uint32_t y, bool canMove, bool canClose, bool canDispose ) : cBasicMenu( id )
 {
 	this->x = x;
 	this->y = y;
@@ -284,86 +284,86 @@ void cMenu::removeCommand( std::string command )
 }
 
 
-UI32 cMenu::addString( wstring u )
+uint32_t cMenu::addString( wstring u )
 {
 	texts.push_back( u );
 	return texts.size()-1;
 }
 
-void cMenu::addButton( UI32 x, UI32 y, UI32 up, UI32 down, SI32 returnCode, bool pressable )
+void cMenu::addButton( uint32_t x, uint32_t y, uint32_t up, uint32_t down, int32_t returnCode, bool pressable )
 {
 	rc_button.insert( make_pair( rc_serialCurrent, returnCode ) );
 	addCommand( "{button %d %d %d %d %d %d %d}", x, y, up, down, pressable, pageCurrent, rc_serialCurrent++ );
 }
 
-void cMenu::addButtonFn( UI32 x, UI32 y, UI32 up, UI32 down, SI32 returnCode, bool pressable, FUNCIDX fn )
+void cMenu::addButtonFn( uint32_t x, uint32_t y, uint32_t up, uint32_t down, int32_t returnCode, bool pressable, FUNCIDX fn )
 {
 	addButton( x, y, up, down, returnCode, pressable );
 	buttonCallbacks.insert( make_pair( rc_serialCurrent-1, fn ) );
 
 }
 
-void cMenu::addGump( UI32 x, UI32 y, UI32 gump, UI32 hue )
+void cMenu::addGump( uint32_t x, uint32_t y, uint32_t gump, uint32_t hue )
 {
 	addCommand( "{gumppic %d %d %d hue=%d}", x, y, gump, hue );
 }
 
-void cMenu::addTiledGump( UI32 x, UI32 y, UI32 width, UI32 height, UI32 gump, UI32 hue )
+void cMenu::addTiledGump( uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t gump, uint32_t hue )
 {
 	addCommand( "{gumppictiled %d %d %d %d %d %d}", x, y, width, height, gump, hue );
 }
 
-void cMenu::addHtmlGump( UI32 x, UI32 y, UI32 width, UI32 height, wstring html, UI32 hasBack, UI32 canScroll )
+void cMenu::addHtmlGump( uint32_t x, uint32_t y, uint32_t width, uint32_t height, wstring html, uint32_t hasBack, uint32_t canScroll )
 {
 	addCommand( "{htmlgump %d %d %d %d %d %d %d}", x, y, width, height, addString(html), hasBack, canScroll );
 }
 
-void cMenu::addXmfHtmlGump( UI32 x, UI32 y, UI32 width, UI32 height, wstring clilocid, UI32 hasBack , UI32 canScroll )
+void cMenu::addXmfHtmlGump( uint32_t x, uint32_t y, uint32_t width, uint32_t height, wstring clilocid, uint32_t hasBack , uint32_t canScroll )
 {
 	addCommand( "{xmfhtmlgump %d %d %d %d %s %d %d}", x, y, width, height, addString(clilocid), hasBack, canScroll );
 }
 
-void cMenu::addCheckertrans( UI32 x, UI32 y, UI32 width, UI32 height )
+void cMenu::addCheckertrans( uint32_t x, uint32_t y, uint32_t width, uint32_t height )
 {
 	addCommand( "{checkertrans %d %d %d %d}", x, y, width, height );
 }
 
-void cMenu::addCroppedText( UI32 x, UI32 y, UI32 width, UI32 height, wstring text, UI32 hue )
+void cMenu::addCroppedText( uint32_t x, uint32_t y, uint32_t width, uint32_t height, wstring text, uint32_t hue )
 {
 	addCommand( "{croppedtext %d %d %d %d %d %d}", x, y, width, height, hue, addString(text) );
 }
 
-void cMenu::addText( UI32 x, UI32 y, wstring data, UI32 hue )
+void cMenu::addText( uint32_t x, uint32_t y, wstring data, uint32_t hue )
 {
 	addCommand( "{text %d %d %d %d}", x, y, hue, addString(data) ); //text <Spaces from Left> <Space from top> <Length, Color?> <# in order>
 }
 
-void cMenu::addBackground( UI32 gump, UI32 width, UI32 height )
+void cMenu::addBackground( uint32_t gump, uint32_t width, uint32_t height )
 {
 	addResizeGump( 0, 0, gump, width, height );
 }
 
-void cMenu::addResizeGump( UI32 x, UI32 y, UI32 gump, UI32 width, UI32 height )
+void cMenu::addResizeGump( uint32_t x, uint32_t y, uint32_t gump, uint32_t width, uint32_t height )
 {
 	addCommand( "{resizepic %d %d %d %d %d}", x, y, gump, width, height );
 }
 
-void cMenu::addTilePic( UI32 x, UI32 y, UI32 tile, UI32 hue )
+void cMenu::addTilePic( uint32_t x, uint32_t y, uint32_t tile, uint32_t hue )
 {
 	addCommand( "{tilepic %d %d %d %d}", x, y, tile, hue );
 }
 
-void cMenu::addInputField( UI32 x, UI32 y, UI32 width, UI32 height, UI16 textId, wstring data, UI32 hue )
+void cMenu::addInputField( uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t textId, wstring data, uint32_t hue )
 {
 	rc_edit.insert( make_pair( textId, rc_serialCurrent ) );
 	addCommand( "{textentry %d %d %d %d %d %d %d}", x, y, width, height, hue, rc_serialCurrent++, addString(data) );
 }
 
-void cMenu::addPropertyField( UI32 x, UI32 y, UI32 width, UI32 height, UI32 property, UI32 subProperty, UI32 hue, UI32 subProperty2 )
+void cMenu::addPropertyField( uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t property, uint32_t subProperty, uint32_t hue, uint32_t subProperty2 )
 {
 	
 	VAR_TYPE t = getPropertyType( property );
-	SI32 props = getIntFromProps( property, subProperty, subProperty2 );
+	int32_t props = getIntFromProps( property, subProperty, subProperty2 );
 
 	if( t==T_BOOL ) 
 	{
@@ -377,20 +377,20 @@ void cMenu::addPropertyField( UI32 x, UI32 y, UI32 width, UI32 height, UI32 prop
 	
 }
 
-void cMenu::addCheckbox( UI32 x, UI32 y, UI32 off, UI32 on, UI32 checked, SI32 result )
+void cMenu::addCheckbox( uint32_t x, uint32_t y, uint32_t off, uint32_t on, uint32_t checked, int32_t result )
 {
 	rc_checkbox.insert( make_pair( result, rc_serialCurrent ) );
 	addCommand( "{checkbox %d %d %d %d %d %d}", x, y, off, on, checked, rc_serialCurrent++ );
 }
 
-void cMenu::addRadioButton( UI32 x, UI32 y, UI32 off, UI32 on, UI32 checked, SI32 result  )
+void cMenu::addRadioButton( uint32_t x, uint32_t y, uint32_t off, uint32_t on, uint32_t checked, int32_t result  )
 {
 	rc_radio.insert( make_pair( result, rc_serialCurrent ) );
 	addCommand( "{radio %d %d %d %d %d %d}", x, y, off, on, checked, rc_serialCurrent++ );
 }
 
 
-void cMenu::addPageButton( UI32 x, UI32 y, UI32 up, UI32 down, UI32 page )
+void cMenu::addPageButton( uint32_t x, uint32_t y, uint32_t up, uint32_t down, uint32_t page )
 {
 	addCommand( "{button %d %d %d %d 0 %d 0}", x, y, up, down, page );
 }
@@ -400,7 +400,7 @@ void cMenu::addPageButton( UI32 x, UI32 y, UI32 up, UI32 down, UI32 page )
 \author Endymion
 \param page the page num, if INVALID is used automatic page count
 */
-void cMenu::addPage( UI32 page )
+void cMenu::addPage( uint32_t page )
 {
 	pageCurrent=page;
 	if( page>=pageCount )
@@ -413,13 +413,13 @@ void cMenu::addPage( UI32 page )
 }
 
 /*
-void cMenu::addGroup( UI32 group )
+void cMenu::addGroup( uint32_t group )
 {
 	addCommand( "{group %d}", group );
 }
 */
 
-SI32 cMenu::getButton( SI32 rawButton )
+int32_t cMenu::getButton( int32_t rawButton )
 {
 	return rc_button[ rawButton ];
 }
@@ -434,12 +434,12 @@ void cMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 	P_CHAR pc = ps->currChar();
 	VALIDATEPC( pc )
 
-	UI32 button = p->buttonId.get();
+	uint32_t button = p->buttonId.get();
 
 	this->switchs = &p->switchs;
 	this->textResp = &p->text_entries;
 	
-	UI32 buttonReturnCode;
+	uint32_t buttonReturnCode;
 	if( button!=MENU_CLOSE ) { 
 
 		buttonReturnCode = getButton( button );
@@ -460,10 +460,10 @@ void cMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 	//set property if there are
 
 	if( ( buttonReturnCode!=MENU_CLOSE ) && ( buttonReturnCode==buffer[3] ) ) { 
-		std::map< SERIAL, SI32 >::iterator propIter( editProps.begin() ), lastProp( editProps.end() );
+		std::map< SERIAL, int32_t >::iterator propIter( editProps.begin() ), lastProp( editProps.end() );
 		for( ; propIter!=lastProp; ++propIter ) {
 
-			SI32 props = propIter->first;
+			int32_t props = propIter->first;
 			int prop, prop2, prop3;
 			getPropsFromInt( props, prop, prop2, prop3 );  
 
@@ -772,12 +772,12 @@ std::wstring* cMenu::getText( SERIAL text, bool raw )
 	return ( iter!=textResp->end() )? &iter->second : NULL;
 }
 
-SI32 cMenu::getIntFromProps( int prop, int prop2, int prop3 )
+int32_t cMenu::getIntFromProps( int prop, int prop2, int prop3 )
 {
 	return 0xF0000000 + ( (prop&0xFFF)<<16 ) + ( (prop2&0xFF)<<8 ) + ( prop3&0xFF );
 }
 
-void cMenu::getPropsFromInt( SI32 returnCode, int& prop, int& prop2, int& prop3 )
+void cMenu::getPropsFromInt( int32_t returnCode, int& prop, int& prop2, int& prop3 )
 {
 	prop =  (returnCode>>16)&0xFFF;
 	prop2 = (returnCode>>8)&0xFF;
@@ -825,7 +825,7 @@ cServerPacket* cIconListMenu::createPacket()
 	return p;
 }
 
-void cIconListMenu::addIcon( UI16 model, COLOR color, std::string response )
+void cIconListMenu::addIcon( uint16_t model, COLOR color, std::string response )
 {
 	pkg_icon_list_menu_st icon;
 	icon.color=color;
@@ -835,7 +835,7 @@ void cIconListMenu::addIcon( UI16 model, COLOR color, std::string response )
 	icons.push_back( icon );
 }
 
-void cIconListMenu::addIcon( UI16 model, COLOR color, SI32 data, std::string response )
+void cIconListMenu::addIcon( uint16_t model, COLOR color, int32_t data, std::string response )
 {
 	iconData.insert( make_pair( icons.size(), data ) );
 	addIcon( model, color, response );

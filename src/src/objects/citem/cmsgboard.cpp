@@ -35,7 +35,7 @@
 extern char g_strScriptTemp[TEMP_STR_SIZE];
 
 /*
-static UI32 cMsgBoardMessage::nextSerial()
+static uint32_t cMsgBoardMessage::nextSerial()
 {
 	//! Since the clients treats a message almost like an item, we use an item serial :D
 	return cItem::nextSerial();
@@ -119,7 +119,7 @@ cMsgBoardMessage::cMsgBoardMessage()
 	cMsgBoardMessage(nextSerial());
 }
 
-cMsgBoardMessage::cMsgBoardMessage(UI32 serial) : cItem(serial)
+cMsgBoardMessage::cMsgBoardMessage(uint32_t serial) : cItem(serial)
 {
 //	setSerial(serial);
         region = -1;
@@ -288,10 +288,10 @@ void cMsgBoardMessage::refreshQuestMessage()
 \brief Char array for messages to client.
 Message body (when entering body of post) can hold a maximum of 1975 chars (approx)
 */
-//UI08 msg[MAXBUFFER];
+//uint8_t msg[MAXBUFFER];
 
 //! Buffer to be used when posting messages
-//UI08 msg2Post[MAXBUFFER] = "\x71\xFF\xFF\x05\x40\x00\x00\x19\x00\x00\x00\x00";
+//uint8_t msg2Post[MAXBUFFER] = "\x71\xFF\xFF\x05\x40\x00\x00\x19\x00\x00\x00\x00";
 //                                     |Pid|sz1|sz2|mTy|b1 |b2 |b3 |b4 |m1 |m2 |m3 |m4 |
 
 cMsgBoard::cMsgBoard()
@@ -299,7 +299,7 @@ cMsgBoard::cMsgBoard()
 	cMsgBoard(nextSerial());
 }
 
-cMsgBoard::cMsgBoard(UI32 serial) : cItem(serial)
+cMsgBoard::cMsgBoard(uint32_t serial) : cItem(serial)
 {
         MsgBoards.push_back(this)
 }
@@ -454,7 +454,7 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
 \return serial of message posted 
 */
 
-static UI32 cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem item, int region )
+static uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem item, int region )
 {
 	static const char subjectEscort[]     = "Escort: Needed for the day.";  // Default escort message
 	static const char subjectBounty[]     = "Bounty: Reward for capture.";  // Default bounty message
@@ -469,10 +469,10 @@ static UI32 cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem 
         message->targetitem = (item) ? item->getSerial32() : 0;
         message->region = region;	//if questtype does not need to use a regional post, this is simply ignored :D
         
-	SI32	sectionEntrys[MAXENTRIES];                            // List of SECTION items to store for randomizing
+	int32_t	sectionEntrys[MAXENTRIES];                            // List of SECTION items to store for randomizing
 
-	UI32	listCount           = 0;  // Number of entries under the ESCORTS section, used to randomize selection
-	SI32	entryToUse          = 0;  // Entry of the list that will be used to create random message
+	uint32_t	listCount           = 0;  // Number of entries under the ESCORTS section, used to randomize selection
+	int32_t	entryToUse          = 0;  // Entry of the list that will be used to create random message
 
 
 	switch ( questType )
@@ -782,7 +782,7 @@ static UI32 cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem 
 \param messageserial serial of the message to delete
 */
 
-static void cMsgBoard::removeQuestMessage(UI32 messageserial)
+static void cMsgBoard::removeQuestMessage(uint32_t messageserial)
 {
 	cMsgBoardMessages::iterator it = MsgBoardMessages.begin();
         for (; (*it)->getSerial32() != messageserial && it != MsgBoardMessages.end(); ++it) {}
@@ -806,7 +806,7 @@ static void cMsgBoard::MsgBoardMaintenance()
         // to realize that, we create two sets: the first will contain all serials for the loaded messages,
         // the second all the serial linked by bsgboards. If the two are not identical, there are some unlinked
         // posts, to be deleted or moved, depending on the type of message
-        std::set<UI32> serialsm, serialsb, serialdiff;
+        std::set<uint32_t> serialsm, serialsb, serialdiff;
         cMsgBoardMessages::iterator it = MsgBoardMessages.begin();
 	ConOut("Message expiration check : ");
         //checking the expiration time while we insert the posts in the set
@@ -827,7 +827,7 @@ static void cMsgBoard::MsgBoardMaintenance()
 	// now the set serialsb is full of the serials of all messages linked to msgboards. On a set, multiple
         // insertions are ignored if value already present, so we don't need to check it
 
-	std::set<UI32>::iterator itdiff = serialdiff.begin();
+	std::set<uint32_t>::iterator itdiff = serialdiff.begin();
 
         // This will fill set serialdiff with the DIFFERENCE between the set containing the serials of
         // existing messages and a set containing all linked messages. If any difference exist, those posts

@@ -14,7 +14,7 @@
 
 #define MAXLINESIZE	200
 
-SI32 entries_e=0, entries_c=0, entries_w=0, entries_m=0;
+int32_t entries_e=0, entries_c=0, entries_w=0, entries_m=0;
 LogFile ServerLog("server.log");
 
 void ErrOut(char *txt, ...);

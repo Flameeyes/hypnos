@@ -17,8 +17,8 @@
 */
 const R64 dist( const Location a, const Location b, bool countZ )
 {
-        SI16 xDiff = a.x - b.x;
-        SI16 yDiff = a.y - b.y;
+        int16_t xDiff = a.x - b.x;
+        int16_t yDiff = a.y - b.y;
 	R64 distance = hypot( abs( xDiff ), abs( yDiff ) );
 	if ( !countZ || a.z == b.z )
 		return distance;

@@ -53,7 +53,7 @@ class cGuildMember
 		SERIAL serial;	//!< the member
 		std::string	title;	//!< title
 		GUILD_TITLE_TOGGLE toggle; //!< title toggle
-		UI32 rank; //!< the rank
+		uint32_t rank; //!< the rank
 
 		cGuildMember( SERIAL serial );
 		~cGuildMember();
@@ -91,7 +91,7 @@ class cGuildPolitics {
 
 		SERIAL serial; //!< the guild
 		GUILD_POLITICS_COLOR color; //!< guild member see member of this in this color
-		UI08 type; //!< the type, war or allied
+		uint8_t type; //!< the type, war or allied
 		bool forever;	//!< used for chaos or order guild
 
 		cGuildPolitics();

@@ -19,7 +19,7 @@
 \param dir initial direction
 \return the adjacent direction
 */
-inline const UI08 getLeftDir(UI08 dir)
+inline const uint8_t getLeftDir(uint8_t dir)
 {
 	dir &= 7;	// make sure it's valid
 	return dir==0 ? 7 : dir-1;
@@ -31,7 +31,7 @@ inline const UI08 getLeftDir(UI08 dir)
 \param dir initial direction
 \return the adjacent direction
 */
-inline const UI08 getRightDir(UI08 dir)
+inline const uint8_t getRightDir(uint8_t dir)
 {
 	dir &= 7;
 	return dir==7 ? 0 : dir+1;
@@ -45,7 +45,7 @@ inline const UI08 getRightDir(UI08 dir)
 \param y reference to the y coord
 \todo use reference instead of pointer?
 */
-inline void getXYfromDir(UI08 dir, UI16 &x, UI16 &y)
+inline void getXYfromDir(uint8_t dir, uint16_t &x, uint16_t &y)
 {
 	switch(dir&0x07)
 	{
@@ -61,11 +61,11 @@ inline void getXYfromDir(UI08 dir, UI16 &x, UI16 &y)
 }
 
 void handleCharsAtNewPos( P_CHAR pc );
-bool handleItemsAtNewPos(P_CHAR pc, UI16 oldx, UI16 oldy, UI16 newx, UI16 newy);
-void sendToPlayers( P_CHAR pc, SI08 dir );
+bool handleItemsAtNewPos(P_CHAR pc, uint16_t oldx, uint16_t oldy, uint16_t newx, uint16_t newy);
+void sendToPlayers( P_CHAR pc, int8_t dir );
 
-void walking(P_CHAR pc, UI08 dir, int sequence);
-void npcwalk( P_CHAR pc_i, UI08 newDirection, int type);
+void walking(P_CHAR pc, uint8_t dir, int sequence);
+void npcwalk( P_CHAR pc_i, uint8_t newDirection, int type);
 
 
 #endif

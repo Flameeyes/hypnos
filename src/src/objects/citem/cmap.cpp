@@ -39,21 +39,21 @@ cMap &operator = (const cMap &oldmap)
 */
 
 
-bool cMap::addPin(UI16 x, UI16 y)
+bool cMap::addPin(uint16_t x, uint16_t y)
 {
 	if ((pin > 50) || !writeable) return false;
 	pinData.push_back(pindataobject(x,y));
         return true;
 }
 
-bool cMap::insertPin(UI16 x,UI16 y, int pin) 	//!< Inserts a pin between 2 existing ones. existing pins >= pin get shifted by one
+bool cMap::insertPin(uint16_t x,uint16_t y, int pin) 	//!< Inserts a pin between 2 existing ones. existing pins >= pin get shifted by one
 {
 	if (pin >= pinData.size() || !writeable) return false;
 	pinData.insert(pin - 1, pindataobject(x,y));
         return true;
 }
 
-bool cMap::changePin(UI16 x,UI16 y, int pin)	//!< Moves pin to another position
+bool cMap::changePin(uint16_t x,uint16_t y, int pin)	//!< Moves pin to another position
 {
 	if (pin > pinData.size() || !writeable) return false;
 	pinData[pin - 1] = pindataobject(x,y);

@@ -28,12 +28,12 @@ class cRawItem {
 
 public:
 
-    SI32 id;
+    int32_t id;
     COLOR color;
-    UI32 number;
+    uint32_t number;
 
 	cRawItem( std::string& s );
-	cRawItem( SI32 id=0, COLOR color=0, UI32 number=0 );
+	cRawItem( int32_t id=0, COLOR color=0, uint32_t number=0 );
 	~cRawItem();
 
 };
@@ -47,9 +47,9 @@ class cMakeItem {
 public:
 
     cScriptCommand* command;
-    SI32 skillToCheck;
-    SI32 minskill;
-    SI32 maxskill;
+    int32_t skillToCheck;
+    int32_t minskill;
+    int32_t maxskill;
 	cRawItem reqitems[2];
 
     
@@ -71,7 +71,7 @@ class cMakeMenu : public cBasicMenu
 
 		virtual void loadFromScript( P_CHAR pc );
 		std::string cleanString( std::string s );
-		void execMake( NXWCLIENT ps, UI32 item );
+		void execMake( NXWCLIENT ps, uint32_t item );
 
 	protected:
 		virtual cServerPacket* build();
@@ -82,7 +82,7 @@ class cMakeMenu : public cBasicMenu
 		cRawItem mat[2];
 		
 		cMakeMenu( SERIAL section );
-		cMakeMenu( SERIAL section, P_CHAR pc, int skill, UI16 firstId=0, COLOR firstColor=0, UI16 secondId=0, COLOR secondColor=0 );
+		cMakeMenu( SERIAL section, P_CHAR pc, int skill, uint16_t firstId=0, COLOR firstColor=0, uint16_t secondId=0, COLOR secondColor=0 );
 
 		~cMakeMenu();
 
@@ -111,7 +111,7 @@ void showAddMenu( P_CHAR pc, int menu );
 \brief Open a scripted menu
 \author Endymion
 */
-inline void itemmenu( NXWSOCKET s, SI32 m )
+inline void itemmenu( NXWSOCKET s, int32_t m )
 {
 	P_CHAR pc = MAKE_CHAR_REF( currchar[s] );
 	if( ISVALIDPC( pc ) )
@@ -124,7 +124,7 @@ inline void itemmenu( NXWSOCKET s, SI32 m )
 \brief Open one of the gray GM Call menus
 \author Endymion
 */
-inline void gmmenu( NXWSOCKET s, SI32 m )
+inline void gmmenu( NXWSOCKET s, int32_t m )
 {
 	itemmenu( s, 7009+m );
 }

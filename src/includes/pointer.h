@@ -65,8 +65,8 @@ namespace pointers {
 	P_ITEM findItemBySerPtr(unsigned char *p);
 	P_ITEM containerSearch(int serial, int *index);
 	P_ITEM containerSearchFor(const int serial, int *index, short id, short color);
-	UI32 containerCountItems(SERIAL serial, short id, short color, LOGICAL bAddAmounts = true, LOGICAL recurseSubpack=true);
-	UI32 containerCountItemsByID(SERIAL serial, UI32 scriptID, LOGICAL bAddAmounts);
+	uint32_t containerCountItems(SERIAL serial, short id, short color, LOGICAL bAddAmounts = true, LOGICAL recurseSubpack=true);
+	uint32_t containerCountItemsByID(SERIAL serial, uint32_t scriptID, LOGICAL bAddAmounts);
 	P_CHAR stableSearch(int serial, int *index);
 #ifdef SPAR_LOCATION_MAP
 	//
@@ -92,14 +92,14 @@ namespace pointers {
 	void		showCharLocationMap();
 	void		addCharToLocationMap( const P_CHAR who );
 	void 		delCharFromLocationMap( const P_CHAR who );
-	PCHAR_VECTOR*	getNearbyChars( P_OBJECT pObject, UI32 range, UI32 flags = 0 );
-	PCHAR_VECTOR*	getNearbyChars( UI32 x, UI32 y, UI32 range, UI32 flags = 0, P_CHAR pSelf = 0 );
+	PCHAR_VECTOR*	getNearbyChars( P_OBJECT pObject, uint32_t range, uint32_t flags = 0 );
+	PCHAR_VECTOR*	getNearbyChars( uint32_t x, uint32_t y, uint32_t range, uint32_t flags = 0, P_CHAR pSelf = 0 );
 
 	void		showItemLocationMap();
 	void		addItemToLocationMap( const P_ITEM what );
 	void		delItemFromLocationMap( const P_ITEM what );
-	PITEM_VECTOR*	getNearbyItems( cObject* pObject, UI32 range, UI32 flags = 0 );
-	PITEM_VECTOR*	getNearbyItems( UI32 x, UI32 y, UI32 range, UI32 flags = 0, P_ITEM pSelf = 0 );
+	PITEM_VECTOR*	getNearbyItems( cObject* pObject, uint32_t range, uint32_t flags = 0 );
+	PITEM_VECTOR*	getNearbyItems( uint32_t x, uint32_t y, uint32_t range, uint32_t flags = 0, P_ITEM pSelf = 0 );
 #endif
 }
 

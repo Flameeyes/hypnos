@@ -29,11 +29,11 @@ namespace item
 	P_ITEM		CreateFromScript( char* itemname, cObject* cont=NULL, int amount = INVALID );
 	P_ITEM		CreateFromScript( SCRIPTID itemnum, cObject* cont=NULL, int amount = INVALID );
 	P_ITEM		CreateScriptRandomItem( char* sItemList, cObject* cont=NULL );
-	SI32		CreateRandomItem( char *sItemList );
+	int32_t		CreateRandomItem( char *sItemList );
 
 	void		GetScriptItemSetting(P_ITEM pi); // by Magius(CHE)
 
-	P_ITEM		CreateScriptItem(NXWSOCKET s, SI32 itemnum, LOGICAL nSpawned, cObject* cont=NULL );
+	P_ITEM		CreateScriptItem(NXWSOCKET s, int32_t itemnum, LOGICAL nSpawned, cObject* cont=NULL );
 
 	void		AddRespawnItem(int s, int x, int y);
 	P_ITEM		SpawnRandomItem(NXWSOCKET s, char* cList, char* cItemID);

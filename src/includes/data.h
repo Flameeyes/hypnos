@@ -16,8 +16,8 @@
 \brief Header of data files handling system
 */
 
-extern UI16 map_width;
-extern UI16 map_height;
+extern uint16_t map_width;
+extern uint16_t map_height;
 extern LOGICAL statics_cache;
 extern LOGICAL map_cache;
 
@@ -64,61 +64,61 @@ enum MulFileId {
 
 
 struct map_st {
-	UI16 id;
-	SI08 z;
+	uint16_t id;
+	int8_t z;
 } PACK_NEEDED;
 
 struct staticIdx_st {
-	SI32 start;
-	SI32 length;
-	SI32 unknown;
+	int32_t start;
+	int32_t length;
+	int32_t unknown;
 } PACK_NEEDED;
 
 struct static_st {
-	UI16 id;
-	UI08 xoff;
-	UI08 yoff;
-	SI08 z;
-	UI16 unknown;
+	uint16_t id;
+	uint8_t xoff;
+	uint8_t yoff;
+	int8_t z;
+	uint16_t unknown;
 } PACK_NEEDED;
 
 typedef std::vector< static_st > staticVector;
 
 struct land_st
 {
-	UI32 flags;
-	UI16 id;
+	uint32_t flags;
+	uint16_t id;
 	TEXT name[20];
 } PACK_NEEDED;
 
 struct tile_st
 {
-	UI32 flags;
-	UI08 weight;
-	UI08 quality; // if wearable, it's the layer. if it's a light source, it's the light id.
-	UI16 unknown;
-	UI08 unknown1;
-	UI08 quantity;
-	UI16 animid;
-	UI08 unknown2;
-	UI08 hue;
-	UI16 unknown3;
-	SI08 height;
+	uint32_t flags;
+	uint8_t weight;
+	uint8_t quality; // if wearable, it's the layer. if it's a light source, it's the light id.
+	uint16_t unknown;
+	uint8_t unknown1;
+	uint8_t quantity;
+	uint16_t animid;
+	uint8_t unknown2;
+	uint8_t hue;
+	uint16_t unknown3;
+	int8_t height;
 	TEXT name[20];
 } PACK_NEEDED;
 
 struct multiIdx_st {
-	SI32 start;
-	SI32 length;
-	SI32 unknown;
+	int32_t start;
+	int32_t length;
+	int32_t unknown;
 } PACK_NEEDED;
 
 struct multi_st {
-	SI16 block;
-	UI16 x;
-	UI16 y;
-	SI16 height;
-	UI32 flags;
+	int16_t block;
+	uint16_t x;
+	uint16_t y;
+	int16_t height;
+	uint32_t flags;
 } PACK_NEEDED;
 
 typedef std::vector< multi_st > multiVector;
@@ -128,11 +128,11 @@ typedef std::vector< multi_st > multiVector;
 */
 struct verdata_st
 {
-	SI32 fileid;
-	SI32 block;
-	SI32 pos;
-	SI32 size;
-	SI32 various;
+	int32_t fileid;
+	int32_t block;
+	int32_t pos;
+	int32_t size;
+	int32_t various;
 } PACK_NEEDED;
 
 /*!
@@ -171,14 +171,14 @@ enum {
 };
 
 
-const UI08 verdata_st_size = sizeof( verdata_st );
-const UI08 multi_st_size = sizeof( multi_st );
-const UI08 multiIdx_st_size = sizeof( multiIdx_st );
-const UI08 tile_st_size = sizeof( tile_st );
-const UI08 land_st_size = sizeof( land_st );
-const UI08 static_st_size = sizeof( static_st );
-const UI08 staticIdx_st_size = sizeof( staticIdx_st );
-const UI08 map_st_size = sizeof( map_st );
+const uint8_t verdata_st_size = sizeof( verdata_st );
+const uint8_t multi_st_size = sizeof( multi_st );
+const uint8_t multiIdx_st_size = sizeof( multiIdx_st );
+const uint8_t tile_st_size = sizeof( tile_st );
+const uint8_t land_st_size = sizeof( land_st );
+const uint8_t static_st_size = sizeof( static_st );
+const uint8_t staticIdx_st_size = sizeof( staticIdx_st );
+const uint8_t map_st_size = sizeof( map_st );
 
 
 /*!
@@ -191,13 +191,13 @@ void shutdown();
 void setPath( MulFileId id, std::string path );
 std::string getPath( MulFileId id );
 
-LOGICAL seekMap( UI32 x, UI32 y, map_st& m, UI08 nMap = 0 ); //<! Luxor: nMap will be used for future multiple maps support.
-LOGICAL collectStatics( UI32 x, UI32 y, staticVector& s_vec );
-LOGICAL seekLand( UI16 id, land_st& land );
-LOGICAL seekTile( UI16 id, tile_st& tile );
-LOGICAL seekMulti( UI16 id, multiVector& m_vec );
-LOGICAL seekVerTile( UI16 id, tile_st& tile );
-LOGICAL seekVerLand( UI16 id, land_st& land );
+LOGICAL seekMap( uint32_t x, uint32_t y, map_st& m, uint8_t nMap = 0 ); //<! Luxor: nMap will be used for future multiple maps support.
+LOGICAL collectStatics( uint32_t x, uint32_t y, staticVector& s_vec );
+LOGICAL seekLand( uint16_t id, land_st& land );
+LOGICAL seekTile( uint16_t id, tile_st& tile );
+LOGICAL seekMulti( uint16_t id, multiVector& m_vec );
+LOGICAL seekVerTile( uint16_t id, tile_st& tile );
+LOGICAL seekVerLand( uint16_t id, land_st& land );
 
 /*!
 \author Luxor
@@ -211,15 +211,15 @@ public:
 		if ( m_cache != NULL )
 			safedelete( m_cache );
 	}
-	LOGICAL getData( UI32 index, T& data );
-	LOGICAL getData( UI32 index, BYTE* ptr, UI32 size );
-	void setCache( std::map< UI32, T > *cache );
+	LOGICAL getData( uint32_t index, T& data );
+	LOGICAL getData( uint32_t index, BYTE* ptr, uint32_t size );
+	void setCache( std::map< uint32_t, T > *cache );
 	LOGICAL eof();
 	inline LOGICAL isReady() { return ( m_file != NULL ); }
 	inline LOGICAL isCached() { return ( m_cache != NULL ); }
 private:
 	FILE	*m_file;
-	std::map< UI32, T > *m_cache;
+	std::map< uint32_t, T > *m_cache;
 };
 
 } // namespace data

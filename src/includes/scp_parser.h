@@ -88,8 +88,8 @@ public:
 	class cScpIterator* getNewIteratorInStr(char* szIdentifier);
 
 	// Sparhawk	Additions for race script processing
-		UI32		countSectionInStr(std::string& strIdentifier);
-	    UI32		countSectionInStr(char* szIdentifier);
+		uint32_t		countSectionInStr(std::string& strIdentifier);
+	    uint32_t		countSectionInStr(char* szIdentifier);
   		string*		getFirstSectionParmsInStr(std::string& strIdentifier);
 		string*		getNextSectionParmsInStr(std::string& strIdentifier);
 };

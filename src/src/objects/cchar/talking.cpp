@@ -71,7 +71,7 @@ void cChar::talk(NXWSOCKET s, TEXT *txt, bool antispam)
 
 	if( machwas )
 	{
-		UI08 name[30]={ 0x00, };
+		uint8_t name[30]={ 0x00, };
 		strcpy((char *)name, getCurrentNameC());
 
 		saycolor=0x0481;
@@ -118,7 +118,7 @@ void cChar::emote( NXWSOCKET socket, TEXT *txt, bool antispam, ... )
 		vsnprintf( msg, sizeof( msg ) - 1, txt, argptr );
 		va_end( argptr );
 
-		UI08 name[30]={ 0x00, };
+		uint8_t name[30]={ 0x00, };
 		strcpy((char *)name, getCurrentNameC());
 
 		SendSpeechMessagePkt(socket, getSerial32(), getId(), 2, emotecolor, fonttype, name, msg);
@@ -191,7 +191,7 @@ void cChar::talkRunic(NXWSOCKET s, TEXT *txt, bool antispam)
 
 	if (machwas)
 	{
-		UI08 name[30]={ 0x00, };
+		uint8_t name[30]={ 0x00, };
 		strcpy((char *)name, getCurrentNameC());
 
 		SendSpeechMessagePkt(s, getSerial32(), getId(), 0, 0x0001, 0x0008, name, txt);

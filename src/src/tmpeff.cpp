@@ -189,7 +189,7 @@ LOGICAL isDestRepeatable(int num)
 /*!
 \author Luxor
 */
-SI32 getTempFxTime(P_CHAR src, int num, int more1, int more2, int more3)
+int32_t getTempFxTime(P_CHAR src, int num, int more1, int more2, int more3)
 {
 	int dur = 0;
 
@@ -466,7 +466,7 @@ void cTempfx::start()
 			if (dest->morphed)
 				dest->morph();	//if the char is morphed, unmorph him
 			dest->incognito = true;
-			UI16 body, skincolor, hairstyle, haircolor, beardstyle, beardcolor, x;
+			uint16_t body, skincolor, hairstyle, haircolor, beardstyle, beardcolor, x;
 
 			//--Sex--
 			(chance(50) == true)? body = BODY_MALE : body = BODY_FEMALE;
@@ -622,7 +622,7 @@ void cTempfx::start()
 /*!
 \author Luxor
 */
-SI08 cTempfx::checkForExpire()
+int8_t cTempfx::checkForExpire()
 {
 	if ( !TIMEOUT(m_nExpireTime) )
 		return 0;
@@ -692,7 +692,7 @@ void cTempfx::executeExpireCode()
 		case SPELL_STRENGHT:
 			VALIDATEPC(dest);
 			dest->modifyStrength(-m_nMore1);
-			dest->hp = min(dest->hp, (SI32)dest->getStrength());
+			dest->hp = min(dest->hp, (int32_t)dest->getStrength());
 			if (dest->getClient())
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
@@ -710,7 +710,7 @@ void cTempfx::executeExpireCode()
 			dest->modifyStrength(-m_nMore1);
 			dest->dx -= m_nMore2;
 			dest->in -= m_nMore3;
-			dest->hp = min(dest->hp, (SI32)dest->getStrength());
+			dest->hp = min(dest->hp, (int32_t)dest->getStrength());
 			dest->stm = min(dest->stm, dest->dx);
 			dest->mn = min(dest->mn, dest->in);
 			if (dest->getClient())
@@ -862,7 +862,7 @@ void cTempfx::executeExpireCode()
 				src->sysmsg("You cannot heal while you are in a fight.");
 				return;
 			}
-			dest->hp = min(dest->hp + m_nMore1, (SI32)dest->getStrength());
+			dest->hp = min(dest->hp + m_nMore1, (int32_t)dest->getStrength());
 			dest->sysmsg(TRANSLATE("After receiving some healing, you feel better."));
 			dest->updateStats(STAT_HP);
 			if (!m_nMore2)
@@ -1093,7 +1093,7 @@ bool cTempfx::isValid()
 \author Luxor
 \brief cTempfx constructor
 */
-cTempfx::cTempfx( SERIAL nSrc, SERIAL nDest, SI32 num, SI32 dur, SI32 more1, SI32 more2, SI32 more3, SI32 amxcback )
+cTempfx::cTempfx( SERIAL nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t more1, int32_t more2, int32_t more3, int32_t amxcback )
 {
 	m_nSrc = INVALID;
 	m_nDest = INVALID;

@@ -104,7 +104,7 @@ bool WalkingHandleHiding (P_CHAR pc, int dir)
 		if(pc->stealth>INVALID)
 		{ //AntiChrist - Stealth
 			pc->stealth++;
-			if( (UI32)pc->stealth >= (UI32)(((SrvParms->maxstealthsteps*pc->skill[STEALTH])/1000.0)) )
+			if( (uint32_t)pc->stealth >= (uint32_t)(((SrvParms->maxstealthsteps*pc->skill[STEALTH])/1000.0)) )
 				pc->unHide();
 		}
 		else
@@ -158,7 +158,7 @@ bool WalkHandleRunning(P_CHAR pc, int dir)
 		if( pc->stealth > INVALID )
 		{ //AntiChrist - Stealth
 			if( /*pc->stealth >= 0 &&*/		// give them at least one step, regardless of skill (Duke)
-				(UI32)pc->stealth > ((SrvParms->maxstealthsteps*pc->skill[STEALTH])/1000))
+				(uint32_t)pc->stealth > ((SrvParms->maxstealthsteps*pc->skill[STEALTH])/1000))
 			{
 				pc->unHide();
 			}
@@ -215,9 +215,9 @@ bool WalkHandleBlocking(P_CHAR pc, int sequence, int dir, int oldx, int oldy)
 			return false;
 	}
 
-	//UI32 blockers = WalkCollectBlockers(pc);
+	//uint32_t blockers = WalkCollectBlockers(pc);
 
-	SI08 z;
+	int8_t z;
 
 	if ( pc->npc )
 		z = isWalkable( pc->getPosition(), WALKFLAG_MAP + WALKFLAG_STATIC + WALKFLAG_DYNAMIC, pc );
@@ -267,7 +267,7 @@ bool WalkHandleBlocking(P_CHAR pc, int sequence, int dir, int oldx, int oldy)
 
 			if ( ISVALIDPI(pi_multi) && (pi_multi->IsHouse()) )
 			{
-				UI32 sx, sy, ex, ey;
+				uint32_t sx, sy, ex, ey;
 				j=on_hlist(pi_multi, pc->getSerial().ser1, pc->getSerial().ser2, pc->getSerial().ser3, pc->getSerial().ser4, NULL);
 
 				if(j==H_BAN)
@@ -523,7 +523,7 @@ int checkBounds(P_CHAR pc, int newX, int newY, int type)
 	return move;
 }
 
-void npcwalk( P_CHAR pc_i, UI08 newDirection, int type)   //type is npcwalk mode (0 for normal, 1 for box, 2 for circle) // Sparhawk should be changed to npcwander
+void npcwalk( P_CHAR pc_i, uint8_t newDirection, int type)   //type is npcwalk mode (0 for normal, 1 for box, 2 for circle) // Sparhawk should be changed to npcwander
 {
 	VALIDATEPC(pc_i);
 
@@ -560,7 +560,7 @@ void npcwalk( P_CHAR pc_i, UI08 newDirection, int type)   //type is npcwalk mode
 			}
 			else 	// We're out of the boundary, so we need to get back
 			{
-				UI08 direction = pc_i->getDirFromXY(pc_i->fx1, pc_i->fy1);
+				uint8_t direction = pc_i->getDirFromXY(pc_i->fx1, pc_i->fy1);
 				getXYfromDir( direction, newX, newY );
 				//<Luxor>
 				newpos = Location( newX, newY, charpos.z );
@@ -724,7 +724,7 @@ bool handleItemsAtNewPos(P_CHAR pc, int oldx, int oldy, int newx, int newy)
 /*!
 \author Luxor
 */
-void sendToPlayers( P_CHAR pc, SI08 dir )
+void sendToPlayers( P_CHAR pc, int8_t dir )
 {
 	VALIDATEPC( pc );
 
@@ -766,7 +766,7 @@ void sendToPlayers( P_CHAR pc, SI08 dir )
                 if ( !pc_curr->canSee( *pc ) )
 			continue;
 
-		UI08 flag, hi_color;
+		uint8_t flag, hi_color;
 
 		// If it's an npc, and it's fighting or following something let's show it running
 		if ( pc->npc && ( pc->war || pc->ftargserial != INVALID ) )
@@ -800,7 +800,7 @@ void sendToPlayers( P_CHAR pc, SI08 dir )
 		if ( pc->poisoned )
 			flag |= 0x04; // AntiChrist -- thnx to SpaceDog
 
-		SI32 guild = Guilds->Compare( pc, pc_curr );
+		int32_t guild = Guilds->Compare( pc, pc_curr );
 		if ( guild == 1 )		// Same guild (Green)
 			hi_color = 2;
 		else if ( guild == 2 )		// Enemy guild.. set to orange

@@ -32,7 +32,7 @@ class cOldMenu : public cBasicMenu
 
 protected:
 
-	std::map< UI08, std::map< UI32, std::wstring >  > allPages; //!< all pages
+	std::map< uint8_t, std::map< uint32_t, std::wstring >  > allPages; //!< all pages
 
 	virtual cServerPacket* build();
 	void buildClassic();
@@ -43,10 +43,10 @@ public:
 	P_MENU type;
 	
 	wstring title; //!< title
-	UI32 style; //!< style
-	UI32 color; //!< color
-	UI32 width; //!< width
-	UI32 rowForPage; //!< row for page
+	uint32_t style; //!< style
+	uint32_t color; //!< color
+	uint32_t width; //!< width
+	uint32_t rowForPage; //!< row for page
 
 	cOldMenu();
 	~cOldMenu();

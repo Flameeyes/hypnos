@@ -15,14 +15,14 @@ AMXVARSRV_DATATYPE amxVariable::getType()
 	return AMXVARSRV_UNDEFINED;
 }
 
-SI32 amxVariable::getSize( const SI32 index )
+int32_t amxVariable::getSize( const int32_t index )
 {
 	return 0;
 }
 //
 // amxIntegerVariable
 //
-amxIntegerVariable::amxIntegerVariable( const SI32 initialValue )
+amxIntegerVariable::amxIntegerVariable( const int32_t initialValue )
 {
 	value = initialValue;
 }
@@ -36,17 +36,17 @@ AMXVARSRV_DATATYPE	amxIntegerVariable::getType()
 	return AMXVARSRV_INTEGER;
 }
 
-SI32	amxIntegerVariable::getValue()
+int32_t	amxIntegerVariable::getValue()
 {
 	return value;
 }
 
-void	amxIntegerVariable::setValue( const SI32 newValue )
+void	amxIntegerVariable::setValue( const int32_t newValue )
 {
 	value = newValue;
 }
 
-SI32 amxIntegerVariable::getSize()
+int32_t amxIntegerVariable::getSize()
 {
 	return sizeof( value );
 }
@@ -54,7 +54,7 @@ SI32 amxIntegerVariable::getSize()
 //
 // amxIntegerVector
 //
-amxIntegerVector::amxIntegerVector( const SI32 size, const SI32 initialValue )
+amxIntegerVector::amxIntegerVector( const int32_t size, const int32_t initialValue )
 {
 	value.resize( size, initialValue );
 }
@@ -72,26 +72,26 @@ AMXVARSRV_DATATYPE amxIntegerVector::getType()
 	return AMXVARSRV_INTEGERVECTOR;
 }
 
-SI32 amxIntegerVector::getValue( const SERIAL index )
+int32_t amxIntegerVector::getValue( const SERIAL index )
 {
-	if( (UI32)index >= value.size() )
+	if( (uint32_t)index >= value.size() )
 		return -1;
 	return value[ index ];
 }
 
-void amxIntegerVector::setValue( const SERIAL index, const SI32 newValue )
+void amxIntegerVector::setValue( const SERIAL index, const int32_t newValue )
 {
-	if( (UI32)index >= value.size() )
+	if( (uint32_t)index >= value.size() )
 		return ;
 	value[ index ] = newValue;
 }
 
-SI32 amxIntegerVector::getSize( const SI32 index )
+int32_t amxIntegerVector::getSize( const int32_t index )
 {
 	if( index == INVALID )
 		return value.size();
 	else
-		return sizeof( SI32 );
+		return sizeof( int32_t );
 }
 
 //
@@ -121,7 +121,7 @@ void	amxStringVariable::setValue( const std::string& newValue )
 	value = newValue;
 }
 
-SI32 amxStringVariable::getSize()
+int32_t amxStringVariable::getSize()
 {
 	return value.size();
 }
@@ -201,7 +201,7 @@ void amxScriptIdVariable::setValue( SERIAL newValue )
 \brief
 \author Endymion
 */
-SI32 amxScriptIdVariable::getSize()
+int32_t amxScriptIdVariable::getSize()
 {
 	return sizeof( value );
 }
@@ -222,7 +222,7 @@ amxVariableServer::~amxVariableServer()
 {
 }
 
-SI32 amxVariableServer::getError()
+int32_t amxVariableServer::getError()
 {
 	return error;
 }
@@ -247,7 +247,7 @@ void amxVariableServer::setServerMode()
 	mode = false;
 }
 
-SI32 amxVariableServer::firstVariable( const SERIAL serial )
+int32_t amxVariableServer::firstVariable( const SERIAL serial )
 {
 	
 	amxObjectVariableMapIterator object = varMap.find( serial );
@@ -258,7 +258,7 @@ SI32 amxVariableServer::firstVariable( const SERIAL serial )
 	return -1;
 }
 
-SI32 amxVariableServer::nextVariable( const SERIAL serial, const SI32 previous )
+int32_t amxVariableServer::nextVariable( const SERIAL serial, const int32_t previous )
 {
 	amxObjectVariableMapIterator object = varMap.find( serial );
 
@@ -271,7 +271,7 @@ SI32 amxVariableServer::nextVariable( const SERIAL serial, const SI32 previous )
 	return -1;
 }
 
-AMXVARSRV_DATATYPE amxVariableServer::typeOfVariable( const SERIAL serial, const SI32 variable )
+AMXVARSRV_DATATYPE amxVariableServer::typeOfVariable( const SERIAL serial, const int32_t variable )
 {
 	amxObjectVariableMapIterator object = varMap.find( serial );
 
@@ -283,7 +283,7 @@ AMXVARSRV_DATATYPE amxVariableServer::typeOfVariable( const SERIAL serial, const
 	return AMXVARSRV_UNDEFINED;
 }
 
-LOGICAL amxVariableServer::insertVariable( const SERIAL serial, const SI32 variable, const SI32 value )
+LOGICAL amxVariableServer::insertVariable( const SERIAL serial, const int32_t variable, const int32_t value )
 {
 	if ( variable < 1000 && inUserMode() )
 	{
@@ -301,7 +301,7 @@ LOGICAL amxVariableServer::insertVariable( const SERIAL serial, const SI32 varia
 	return false;
 }
 
-LOGICAL amxVariableServer::insertVariable( const SERIAL serial, const SI32 variable, const std::string& value )
+LOGICAL amxVariableServer::insertVariable( const SERIAL serial, const int32_t variable, const std::string& value )
 {
 	if ( variable < 1000 && inUserMode() )
 	{
@@ -319,7 +319,7 @@ LOGICAL amxVariableServer::insertVariable( const SERIAL serial, const SI32 varia
 	return false;
 }
 
-LOGICAL amxVariableServer::insertVariable( const SERIAL serial, const SI32 variable, const SI32 size, const SI32 value )
+LOGICAL amxVariableServer::insertVariable( const SERIAL serial, const int32_t variable, const int32_t size, const int32_t value )
 {
 	if ( variable < 1000 && inUserMode() )
 	{
@@ -337,7 +337,7 @@ LOGICAL amxVariableServer::insertVariable( const SERIAL serial, const SI32 varia
 	return false;
 }
 
-LOGICAL amxVariableServer::deleteVariable( const SERIAL serial, const SI32 variable )
+LOGICAL amxVariableServer::deleteVariable( const SERIAL serial, const int32_t variable )
 {
 	if ( variable < 1000 && inUserMode() )
 	{
@@ -361,7 +361,7 @@ LOGICAL amxVariableServer::deleteVariable( const SERIAL serial )
 	return varMap.erase( serial );
 }
 
-LOGICAL amxVariableServer::updateVariable( const SERIAL serial, const SI32 variable, const SI32 value )
+LOGICAL amxVariableServer::updateVariable( const SERIAL serial, const int32_t variable, const int32_t value )
 {
 	if( existsVariable( serial, variable, AMXVARSRV_INTEGER ) )
 	{
@@ -382,7 +382,7 @@ LOGICAL amxVariableServer::updateVariable( const SERIAL serial, const SI32 varia
 	return false;
 }
 
-LOGICAL amxVariableServer::updateVariable( const SERIAL serial, const SI32 variable, const std::string& value )
+LOGICAL amxVariableServer::updateVariable( const SERIAL serial, const int32_t variable, const std::string& value )
 {
 	if( existsVariable( serial, variable, AMXVARSRV_STRING ) )
 	{
@@ -394,7 +394,7 @@ LOGICAL amxVariableServer::updateVariable( const SERIAL serial, const SI32 varia
 	return false;
 }
 
-LOGICAL	amxVariableServer::updateVariable( const SERIAL serial, const SI32 variable, const SI32 index, const SI32 value )
+LOGICAL	amxVariableServer::updateVariable( const SERIAL serial, const int32_t variable, const int32_t index, const int32_t value )
 {
 	if( existsVariable( serial, variable, AMXVARSRV_INTEGERVECTOR ) )
 	{
@@ -406,7 +406,7 @@ LOGICAL	amxVariableServer::updateVariable( const SERIAL serial, const SI32 varia
 	return false;
 }
 
-LOGICAL	amxVariableServer::selectVariable( const SERIAL serial, const SI32 variable, const SI32 index, SI32& value )
+LOGICAL	amxVariableServer::selectVariable( const SERIAL serial, const int32_t variable, const int32_t index, int32_t& value )
 {
 	if( existsVariable( serial, variable, AMXVARSRV_INTEGERVECTOR ) )
 	{
@@ -418,7 +418,7 @@ LOGICAL	amxVariableServer::selectVariable( const SERIAL serial, const SI32 varia
 	return false;
 }
 
-LOGICAL amxVariableServer::selectVariable( const SERIAL serial, const SI32 variable, SI32& value )
+LOGICAL amxVariableServer::selectVariable( const SERIAL serial, const int32_t variable, int32_t& value )
 {
 	if( existsVariable( serial, variable, AMXVARSRV_INTEGER ) )
 	{
@@ -437,7 +437,7 @@ LOGICAL amxVariableServer::selectVariable( const SERIAL serial, const SI32 varia
 	return false;
 }
 
-LOGICAL amxVariableServer::selectVariable( const SERIAL serial, const SI32 variable, std::string& value )
+LOGICAL amxVariableServer::selectVariable( const SERIAL serial, const int32_t variable, std::string& value )
 {
 	if( existsVariable( serial, variable, AMXVARSRV_STRING ) )
 	{
@@ -450,7 +450,7 @@ LOGICAL amxVariableServer::selectVariable( const SERIAL serial, const SI32 varia
 	return false;
 }
 
-LOGICAL amxVariableServer::existsVariable( const SERIAL serial, const SI32 variable, const SI32 type )
+LOGICAL amxVariableServer::existsVariable( const SERIAL serial, const int32_t variable, const int32_t type )
 {
 	amxObjectVariableMapIterator ovmIt( varMap.find( serial ) );
 	if( ovmIt == varMap.end() )
@@ -484,10 +484,10 @@ LOGICAL amxVariableServer::existsVariable( const SERIAL serial, const SI32 varia
 	return false;
 }
 
-SI32 amxVariableServer::countVariable()
+int32_t amxVariableServer::countVariable()
 {
 	amxObjectVariableMapIterator ovmItBegin( varMap.begin() ), ovmItEnd( varMap.end() );
-	SI32 count = 0;
+	int32_t count = 0;
 	while( ovmItBegin != ovmItEnd )
 	{
 		count += ovmItBegin->second.size();
@@ -496,7 +496,7 @@ SI32 amxVariableServer::countVariable()
 	return count;
 }
 
-SI32 amxVariableServer::countVariable( const SERIAL serial )
+int32_t amxVariableServer::countVariable( const SERIAL serial )
 {
 	amxObjectVariableMapIterator ovmItBegin( varMap.find( serial ) ), ovmItEnd( varMap.end() );
 	if( ovmItBegin != ovmItEnd )
@@ -504,9 +504,9 @@ SI32 amxVariableServer::countVariable( const SERIAL serial )
 	return 0;
 }
 
-SI32 amxVariableServer::countVariable( const SERIAL serial, const SERIAL type )
+int32_t amxVariableServer::countVariable( const SERIAL serial, const SERIAL type )
 {
-	SI32 count = 0;
+	int32_t count = 0;
 	amxObjectVariableMapIterator ovmItBegin( varMap.begin() ), ovmItEnd( varMap.end() );
 	if( ovmItBegin != ovmItEnd )
 	{
@@ -541,7 +541,7 @@ LOGICAL amxVariableServer::copyVariable( const SERIAL fromSerial, const SERIAL t
 	return true;
 }
 
-SI32	amxVariableServer::size( const SERIAL serial, const SI32 variable, const SI32 index )
+int32_t	amxVariableServer::size( const SERIAL serial, const int32_t variable, const int32_t index )
 {
 	if( existsVariable( serial, variable, AMXVARSRV_UNDEFINED ) )
 	{
@@ -577,9 +577,9 @@ void amxVariableServer::saveVariable( SERIAL serial, FILE * stream )
 					break;
 				case AMXVARSRV_INTEGERVECTOR	:
 					{
-					SI32 vectorSize = static_cast<amxIntegerVector*>(vmItBegin->second)->getSize();
+					int32_t vectorSize = static_cast<amxIntegerVector*>(vmItBegin->second)->getSize();
 					fprintf( stream, "AMXINTVEC %d %d\n{\n", vmItBegin->first, vectorSize );
-					for( SI32 vectorIndex = 0; vectorIndex < vectorSize; ++vectorIndex )
+					for( int32_t vectorIndex = 0; vectorIndex < vectorSize; ++vectorIndex )
 						fprintf( stream, "%d\n", static_cast<amxIntegerVector*>(vmItBegin->second)->getValue( vectorIndex ) );
 					fprintf( stream, "}\n" );
 					}

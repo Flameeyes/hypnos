@@ -93,34 +93,34 @@ namespace pointers {
 	//	1.	Add coded xy coordinate to cObject and always use that one
 	//	2.	if object not found, walk through the map until it is found then delete it
 	//
-	typedef std::multimap< UI32, P_CHAR >	PCHARLOCATIONMAP;
+	typedef std::multimap< uint32_t, P_CHAR >	PCHARLOCATIONMAP;
 	typedef PCHARLOCATIONMAP::iterator	PCHARLOCATIONMAPIT;
 
 	struct XY
 	{
-		UI32	x;
-		UI32	y;
+		uint32_t	x;
+		uint32_t	y;
 	};
 
 	static XY 		upperLeft	;
 	static XY 		lowerRight	;
 	PCHARLOCATIONMAP	pCharLocationMap;
 
-	static UI32 locationTokey( const Location& l );
-	static UI32 locationToKey( const UI32 x, const UI32 y );
-	static void calculateBoundary( const UI32 x, const UI32 y, const UI32 range );
+	static uint32_t locationTokey( const Location& l );
+	static uint32_t locationToKey( const uint32_t x, const uint32_t y );
+	static void calculateBoundary( const uint32_t x, const uint32_t y, const uint32_t range );
 
-	static UI32 locationToKey( const Location& l )
+	static uint32_t locationToKey( const Location& l )
 	{
 		return locationToKey( l.x, l.y );
 	}
 
-	static UI32 locationToKey( const UI32 x, const UI32 y )
+	static uint32_t locationToKey( const uint32_t x, const uint32_t y )
 	{
 		return (x << 16) + y;
 	}
 
-	static void calculateBoundary( const UI32 x, const UI32 y, const UI32 range )
+	static void calculateBoundary( const uint32_t x, const uint32_t y, const uint32_t range )
 	{
 		if( x <= range )
 			upperLeft.x = 1;
@@ -200,7 +200,7 @@ namespace pointers {
 	void addCharToLocationMap( const P_CHAR pWho )
 	{
 		pWho->setLocationKey();
-		pCharLocationMap.insert( pair< UI32, P_CHAR >( pWho->getLocationKey(), pWho ) );
+		pCharLocationMap.insert( pair< uint32_t, P_CHAR >( pWho->getLocationKey(), pWho ) );
 	}
 
 	void delCharFromLocationMap( const P_CHAR pWho )
@@ -226,9 +226,9 @@ namespace pointers {
 		ConOut( "|   Key   | X  | Y  |  SERIAL  |\n" );
 		ConOut( "--------------------------------\n" );
 
-		UI32 	invalidCount	=  0;
-		SI32 	x	  	=  0;
-		SI32 	y		=  0;
+		uint32_t 	invalidCount	=  0;
+		int32_t 	x	  	=  0;
+		int32_t 	y		=  0;
 		SERIAL	serial		= INVALID;
 		for( ; it != end; ++it )
 		{
@@ -249,7 +249,7 @@ namespace pointers {
 		ConOut( "--------------------------------\n" );
 	}
 
-	PCHAR_VECTOR* getNearbyChars( P_OBJECT pObject, SI32 range, UI32 flags )
+	PCHAR_VECTOR* getNearbyChars( P_OBJECT pObject, int32_t range, uint32_t flags )
 	{
 		PCHAR_VECTOR* 	pvCharsInRange	= 0;
 		LOGICAL		validCall	= false;
@@ -273,7 +273,7 @@ namespace pointers {
 		return pvCharsInRange;
 	}
 
-	PCHAR_VECTOR* getNearbyChars( UI32 x, UI32 y, UI32 range, UI32 flags, P_CHAR pSelf )
+	PCHAR_VECTOR* getNearbyChars( uint32_t x, uint32_t y, uint32_t range, uint32_t flags, P_CHAR pSelf )
 	{
 		PCHAR_VECTOR* pvCharsInRange = 0;
 
@@ -343,7 +343,7 @@ namespace pointers {
 		return pvCharsInRange;
 	}
 
-	typedef std::multimap< UI32, P_ITEM >	PITEMLOCATIONMAP;
+	typedef std::multimap< uint32_t, P_ITEM >	PITEMLOCATIONMAP;
 	typedef PITEMLOCATIONMAP::iterator	PITEMLOCATIONMAPIT;
 
 	PITEMLOCATIONMAP	pItemLocationMap;
@@ -352,7 +352,7 @@ namespace pointers {
 	void addItemToLocationMap( const P_ITEM pWhat )
 	{
 		pWhat->setLocationKey();
-		pItemLocationMap.insert( pair< UI32, P_ITEM >( pWhat->getLocationKey(), pWhat ) );
+		pItemLocationMap.insert( pair< uint32_t, P_ITEM >( pWhat->getLocationKey(), pWhat ) );
 	}
 
 	void delItemFromLocationMap( const P_ITEM pWhat )
@@ -369,7 +369,7 @@ namespace pointers {
 	}
 
 
-	PITEM_VECTOR* getNearbyItems( cObject* pObject, UI32 range, UI32 flags )
+	PITEM_VECTOR* getNearbyItems( cObject* pObject, uint32_t range, uint32_t flags )
 	{
 		PITEM_VECTOR* 	pvItemsInRange	= 0;
 		LOGICAL		validCall	= false;
@@ -395,7 +395,7 @@ namespace pointers {
 		return pvItemsInRange;
 	}
 
-	PITEM_VECTOR* getNearbyItems( UI32 x, UI32 y, UI32 range, UI32 flags, P_ITEM pSelf )
+	PITEM_VECTOR* getNearbyItems( uint32_t x, uint32_t y, uint32_t range, uint32_t flags, P_ITEM pSelf )
 	{
 		PITEM_VECTOR* pvItemsInRange = 0;
 
@@ -444,9 +444,9 @@ namespace pointers {
 		ConOut( "|   Key   | X  | Y  |  SERIAL  |\n" );
 		ConOut( "--------------------------------\n" );
 
-		UI32 	invalidCount	=  0;
-		SI32 	x	  	=  0;
-		SI32 	y		=  0;
+		uint32_t 	invalidCount	=  0;
+		int32_t 	x	  	=  0;
+		int32_t 	y		=  0;
 		SERIAL	serial		= INVALID;
 		for( ; it != end; ++it )
 		{
@@ -529,7 +529,7 @@ namespace pointers {
 	{
 		VALIDATEPI(pi);
 		vector<P_ITEM>::iterator contIter;
-		SI32 ser;
+		int32_t ser;
 
 		ser= pi->getContSerial(true);
 		if( ser > INVALID ) 
@@ -860,7 +860,7 @@ namespace pointers {
 	\author Luxor
 	\return the char we're looking for
 	*/
-	P_CHAR findCharBySerPtr(UI08 *p)
+	P_CHAR findCharBySerPtr(uint8_t *p)
 	{
 		int serial=LongFromCharPtr(p);
 		if (serial < 0) return 0;
@@ -903,14 +903,14 @@ namespace pointers {
 			if ( pcm.empty())
 				return 0;
 
-			if ((UI32)(*index) >= pcm.size())
+			if ((uint32_t)(*index) >= pcm.size())
 				return 0;
 
 			pi = pcm[*index];
 
 			if (!(ISVALIDPI(pi)))
 			{
-				if ((UI32)(*index)+1 < pcm.size() && !pcm.empty())
+				if ((uint32_t)(*index)+1 < pcm.size() && !pcm.empty())
 					pcm[*index] = pcm[pcm.size()-1];
 			}
 			pi = 0;
@@ -929,7 +929,7 @@ namespace pointers {
 		if (serial < 0 || (*index) < 0)
 			return 0;
 		if (pStableMap[serial].empty()) return 0;
-		if ((UI32)*index >= pStableMap[serial].size()) return 0;
+		if ((uint32_t)*index >= pStableMap[serial].size()) return 0;
 		P_CHAR pet = 0;
 		pet = pStableMap[serial][*index];
 		(*index)++;
@@ -970,14 +970,14 @@ namespace pointers {
 	\param bAddAmounts if true we want to add the amount of the items to the return value
 	\param recurseSubpack if true we search also in subpack
 	*/
-	UI32 containerCountItems(SERIAL serial, short id, short color, LOGICAL bAddAmounts, LOGICAL recurseSubpack)
+	uint32_t containerCountItems(SERIAL serial, short id, short color, LOGICAL bAddAmounts, LOGICAL recurseSubpack)
 	{
 
 		std::map< SERIAL , vector<P_ITEM> >::iterator cont( pointers::pContMap.find( serial ) );
 		if( cont==pointers::pContMap.end() || cont->second.empty() )
 			return 0;
 
-		UI32 total=0;
+		uint32_t total=0;
 
 		std::vector<P_ITEM>::iterator iter( cont->second.begin() );
 		for( ; iter!=cont->second.end(); iter++ )
@@ -1004,13 +1004,13 @@ namespace pointers {
 	\param scriptID the scriptID which we're searching for
 	\param bAddAmounts if true we want to add the amount of the items to the return value
 	*/
-	UI32 containerCountItemsByID(SERIAL serial, UI32 scriptID, LOGICAL bAddAmounts)
+	uint32_t containerCountItemsByID(SERIAL serial, uint32_t scriptID, LOGICAL bAddAmounts)
 	{
 		std::map< SERIAL , vector<P_ITEM> >::iterator cont( pointers::pContMap.find( serial ) );
 		if( cont==pointers::pContMap.end() || cont->second.empty() )
 			return 0;
 
-		UI32 total=0;
+		uint32_t total=0;
 
 		std::vector<P_ITEM>::iterator iter( cont->second.begin() );
 		for( ; iter!=cont->second.end(); iter++ )

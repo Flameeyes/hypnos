@@ -25,17 +25,17 @@ RaceSkillAdvancePoint& RaceSkillAdvancePoint::operator=( const string& that )
 	return *this;
 }
 
-UI32 RaceSkillAdvancePoint::getBase( void )
+uint32_t RaceSkillAdvancePoint::getBase( void )
 {
 	return this->base;
 }
 
-UI32 RaceSkillAdvancePoint::getSuccess( void )
+uint32_t RaceSkillAdvancePoint::getSuccess( void )
 {
 	return this->success;
 }
 
-UI32 RaceSkillAdvancePoint::getFailure( void )
+uint32_t RaceSkillAdvancePoint::getFailure( void )
 {
 	return this->failure;
 }
@@ -48,17 +48,17 @@ RaceSkillAdvancePoints::RaceSkillAdvancePoints( void )
 {
 }
 
-UI32 RaceSkillAdvancePoints::getStrength( void )
+uint32_t RaceSkillAdvancePoints::getStrength( void )
 {
 	return this->strength;
 }
 
-UI32 RaceSkillAdvancePoints::getDexterity( void )
+uint32_t RaceSkillAdvancePoints::getDexterity( void )
 {
 	return this->dexterity;
 }
 
-UI32 RaceSkillAdvancePoints::getIntelligence( void )
+uint32_t RaceSkillAdvancePoints::getIntelligence( void )
 {
 	return this->intelligence;
 }
@@ -68,11 +68,11 @@ bool RaceSkillAdvancePoints::getUnhideOnUse( void )
 	return this->unhideOnUse;
 }
 
-RaceSkillAdvancePoint& RaceSkillAdvancePoints::getSkillAdvancePoint( UI32 baseSkill )
+RaceSkillAdvancePoint& RaceSkillAdvancePoints::getSkillAdvancePoint( uint32_t baseSkill )
 {
 	if(skillAdvancePoints.empty()) return dummy;
 
-	map< UI32, RaceSkillAdvancePoint >::iterator it( skillAdvancePoints.end() ), begin( skillAdvancePoints.begin() );
+	map< uint32_t, RaceSkillAdvancePoint >::iterator it( skillAdvancePoints.end() ), begin( skillAdvancePoints.begin() );
 	do it--; while( it != begin && it->second.getBase() > baseSkill );
 	
 	return it->second;
@@ -81,7 +81,7 @@ RaceSkillAdvancePoint& RaceSkillAdvancePoints::getSkillAdvancePoint( UI32 baseSk
 void RaceSkillAdvancePoints::show( void )
 {
 	ConOut("  Advance       :\n");
-	map< UI32, RaceSkillAdvancePoint >::iterator it( skillAdvancePoints.begin() ), end( skillAdvancePoints.end() );
+	map< uint32_t, RaceSkillAdvancePoint >::iterator it( skillAdvancePoints.begin() ), end( skillAdvancePoints.end() );
 	for(; it != end; ++it )
 		ConOut("  %4d %4d %4d\n", it->second.getBase(), it->second.getSuccess(), it->second.getFailure());
 }
@@ -102,7 +102,7 @@ RaceSkillAdvancePoints& RaceSkillAdvancePoints::operator=( RaceScriptEntry& that
 	}
 	else
 	{
-		UI32 			loopexit = 0;
+		uint32_t 			loopexit = 0;
 		string			lha,
 					rha;
 		RaceSkillAdvancePoint	rsap;
@@ -159,7 +159,7 @@ RaceSkillModifier& RaceSkillModifier::operator=( const string& that )
 	return *this;
 }
 
-UI32 RaceSkillModifier::getBase( void )
+uint32_t RaceSkillModifier::getBase( void )
 {
 	return this->base;
 }
@@ -193,7 +193,7 @@ RaceSkillModifiers& RaceSkillModifiers::operator=( RaceScriptEntry& that )
 	}
 	else
 	{
-		UI32			loopexit = 0;
+		uint32_t			loopexit = 0;
 		string 			parms;
 		RaceSkillModifier	rsm;
 		do
@@ -272,7 +272,7 @@ RaceSkill::RaceSkill( void )
 	startValue = 0;
 }
 
-UI32 RaceSkill::getId( void )
+uint32_t RaceSkill::getId( void )
 {
 	return this->id;
 }
@@ -302,22 +302,22 @@ bool RaceSkill::getUnhideOnUse( void )
 	return this->unhideOnUse;
 }
 
-RaceSkillAdvancePoint& RaceSkill::getAdvance( UI32 baseSkill )
+RaceSkillAdvancePoint& RaceSkill::getAdvance( uint32_t baseSkill )
 {
 	return advance.getSkillAdvancePoint( baseSkill );
 }
 
-UI32 RaceSkill::getAdvanceStrength( void )
+uint32_t RaceSkill::getAdvanceStrength( void )
 {
 	return advance.getStrength();
 }
 
-UI32 RaceSkill::getAdvanceDexterity( void )
+uint32_t RaceSkill::getAdvanceDexterity( void )
 {
 	return advance.getDexterity();
 }
 
-UI32 RaceSkill::getAdvanceIntelligence( void )
+uint32_t RaceSkill::getAdvanceIntelligence( void )
 {
 	return advance.getIntelligence();
 }
@@ -343,7 +343,7 @@ RaceSkill& RaceSkill::operator=( RaceScriptEntry& that )
 	}
 	else
 	{
-		UI32		loopexit = 0;
+		uint32_t		loopexit = 0;
 		string  lha, rha;
 		bool		unhideOnUseSet = false;
 		do
@@ -425,9 +425,9 @@ RaceSkills::RaceSkills( void )
 {
 }
 
-RaceSkill&	RaceSkills::getSkill( UI32 skillId )
+RaceSkill&	RaceSkills::getSkill( uint32_t skillId )
 {
-	map< UI32, RaceSkill >::iterator it( skills.find( skillId ) );
+	map< uint32_t, RaceSkill >::iterator it( skills.find( skillId ) );
 
 	if ( it != skills.end() )
 		return it->second;
@@ -437,7 +437,7 @@ RaceSkill&	RaceSkills::getSkill( UI32 skillId )
 
 void RaceSkills::show( void )
 {
-	map< UI32, RaceSkill >::iterator it( skills.begin() ), end( skills.end() );
+	map< uint32_t, RaceSkill >::iterator it( skills.begin() ), end( skills.end() );
 	for(; it != end; ++it )
 		it->second.show();
 }

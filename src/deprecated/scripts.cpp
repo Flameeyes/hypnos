@@ -267,8 +267,8 @@ void splitLine( char* source, char *head, char *tail )
 
 void splitLine( const std::string& source, std::string& head, std::string& tail )
 {
-  SI32 index		= 0;
-  SI32 sourceEnd	= source.size();
+  int32_t index		= 0;
+  int32_t sourceEnd	= source.size();
 
   while ( (index < sourceEnd) && isspace(source[index]) )
     ++index;

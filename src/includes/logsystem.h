@@ -26,7 +26,7 @@
 
 class LogFile;
 
-extern SI32 entries_e, entries_c, entries_w;
+extern int32_t entries_e, entries_c, entries_w;
 extern LogFile ServerLog;	//! global log object
 
 void WriteGMLog(P_CHAR, char *msg, ...);

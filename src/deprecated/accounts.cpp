@@ -347,7 +347,7 @@ void cAccounts::SaveAccounts( void )
 \param password Password
 */
 
-SI32 cAccounts::verifyPassword(std::string username, std::string password)
+int32_t cAccounts::verifyPassword(std::string username, std::string password)
 {
 	ACCOUNT_LIST_BY_NAME::iterator iter_account_by_name(this->accbyname.find(username));
 
@@ -386,7 +386,7 @@ SI32 cAccounts::verifyPassword(std::string username, std::string password)
 \param username Username
 \param password Password
 */
-SI32 cAccounts::Authenticate(std::string username, std::string password)
+int32_t cAccounts::Authenticate(std::string username, std::string password)
 {
 
 	ACCOUNT_LIST_BY_NAME::iterator iter_account_by_name(this->accbyname.find(username));
@@ -649,11 +649,11 @@ void cAccounts::SetEntering( ACCOUNT acctnum )
 
 /*!
 \brief Change the Password
-\return SI32 0 if ok, INVALID else
+\return int32_t 0 if ok, INVALID else
 \param acctnum Account number
 \param password new Password
 */
-SI32 cAccounts::ChangePassword( ACCOUNT acctnum, std::string password)
+int32_t cAccounts::ChangePassword( ACCOUNT acctnum, std::string password)
 {
 
 	ACCOUNT_LIST::iterator iter( this->acctlist.find( acctnum ));
@@ -672,7 +672,7 @@ SI32 cAccounts::ChangePassword( ACCOUNT acctnum, std::string password)
 
 /*!
 \brief Get list of pg of this account
-\return SI32 0 if ok, INVALID else
+\return int32_t 0 if ok, INVALID else
 \param acctnum Account number
 \param sc the list
 */

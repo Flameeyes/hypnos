@@ -18,19 +18,19 @@
 void loadcontainers();
 
 typedef struct {
-	SI16 x;
-	SI16 y;
+	int16_t x;
+	int16_t y;
 } BasicPosition;
 
 
 typedef struct {
-	UI32 gump;
+	uint32_t gump;
 	BasicPosition upperleft;
 	BasicPosition downright;
 } cont_gump_st;
 
-typedef std::map< UI32, cont_gump_st > CONTINFOGUMPMAP;
-typedef std::map< UI32, CONTINFOGUMPMAP::iterator > CONTINFOMAP;
+typedef std::map< uint32_t, cont_gump_st > CONTINFOGUMPMAP;
+typedef std::map< uint32_t, CONTINFOGUMPMAP::iterator > CONTINFOMAP;
 
 extern CONTINFOGUMPMAP contInfoGump;
 extern CONTINFOMAP contInfo;

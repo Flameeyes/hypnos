@@ -29,13 +29,13 @@ public:
 	cResource( ) { this->consumed=0; timer=uiCurrentTime; }
 
 	TIMERVAL timer; //!< timer for respawn
-	UI32 consumed; //!< amount of resource consumed
+	uint32_t consumed; //!< amount of resource consumed
 
 };
 
 typedef cResource* P_RESOURCE;
 
-typedef std::map< UI64, cResource > RESOURCE_MAP;
+typedef std::map< uint64_t, cResource > RESOURCE_MAP;
 
 class cResources {
 
@@ -44,7 +44,7 @@ private:
 
 	RESOURCE_MAP resources; //!< all resources
 
-	UI64 getBlocks( Location location  );
+	uint64_t getBlocks( Location location  );
 	P_RESOURCE createBlock( Location location );
 	void deleteBlock( Location Location );
 	bool checkRes( P_RESOURCE res );
@@ -52,17 +52,17 @@ private:
 public:
 
 
-	UI32		n; //!< number of resource max
+	uint32_t		n; //!< number of resource max
 	TIMERVAL	time; //!< 
 	TIMERVAL	rate; //!< respawn rate
-	SI32		stamina; //!< stamina used
-	UI32		area_width; //!< resource area width
-	UI32		area_height; //!< resource area height
+	int32_t		stamina; //!< stamina used
+	uint32_t		area_width; //!< resource area width
+	uint32_t		area_height; //!< resource area height
 
-	cResources( UI32 areawidth = 10, UI32 areaheight = 10 );
+	cResources( uint32_t areawidth = 10, uint32_t areaheight = 10 );
 	~cResources();
 
-	void setDimArea( UI32 areawidth, UI32 areaheight );
+	void setDimArea( uint32_t areawidth, uint32_t areaheight );
 	
 	P_RESOURCE getResource( Location location );
 	void checkResource( Location location, P_RESOURCE& res );

@@ -42,33 +42,33 @@ class amxVariable
 	public:
 		virtual				~amxVariable() {}
 		virtual	AMXVARSRV_DATATYPE	getType();
-		virtual SI32			getSize( const SI32 index = -1 );
+		virtual int32_t			getSize( const int32_t index = -1 );
 };
 
 class amxIntegerVariable : public amxVariable
 {
 	private:
-		SI32				value;
+		int32_t				value;
 	public:
-						amxIntegerVariable( const SI32 initialValue = 0 );
+						amxIntegerVariable( const int32_t initialValue = 0 );
 						~amxIntegerVariable();
 		AMXVARSRV_DATATYPE		getType();
-		SI32				getValue();
-		void				setValue( const SI32 newValue );
-		SI32				getSize();
+		int32_t				getValue();
+		void				setValue( const int32_t newValue );
+		int32_t				getSize();
 };
 
 class amxIntegerVector : public amxVariable
 {
 	private:
-		vector< SI32 >			value;
+		vector< int32_t >			value;
 	public:
-						amxIntegerVector( const SI32 size, const SI32 initialValue = 0 );
+						amxIntegerVector( const int32_t size, const int32_t initialValue = 0 );
 						~amxIntegerVector();
 		AMXVARSRV_DATATYPE		getType();
-		SI32				getValue( const SERIAL index );
-		void				setValue( const SERIAL index, const SI32 newValue );
-		SI32				getSize( const SI32 index = -1 );
+		int32_t				getValue( const SERIAL index );
+		void				setValue( const SERIAL index, const int32_t newValue );
+		int32_t				getSize( const int32_t index = -1 );
 };
 
 class amxStringVariable : public amxVariable
@@ -81,7 +81,7 @@ class amxStringVariable : public amxVariable
 		AMXVARSRV_DATATYPE		getType();
 		std::string			getValue();
 		void				setValue( const std::string& newValue = "");
-		SI32				getSize();
+		int32_t				getSize();
 };
 
 class amxScriptIdVariable : public amxVariable
@@ -98,22 +98,22 @@ class amxScriptIdVariable : public amxVariable
 		SERIAL getValue();
 		void setValue( char* newValue );
 		void setValue( SERIAL initialValue = INVALID );
-		SI32 getSize();
+		int32_t getSize();
 };
 
-typedef pair< SI32, amxVariable* >		amxVariablePair;
-typedef map< SI32, amxVariable* > 		amxVariableMap;
+typedef pair< int32_t, amxVariable* >		amxVariablePair;
+typedef map< int32_t, amxVariable* > 		amxVariableMap;
 typedef amxVariableMap::iterator		amxVariableMapIterator;
 
-typedef pair< SI32, amxVariableMap >		amxObjectVariablePair;
-typedef map< SI32, amxVariableMap >		amxObjectVariableMap;
+typedef pair< int32_t, amxVariableMap >		amxObjectVariablePair;
+typedef map< int32_t, amxVariableMap >		amxObjectVariableMap;
 typedef amxObjectVariableMap::iterator		amxObjectVariableMapIterator;
 
 class amxVariableServer
 {
 	private:
 		amxObjectVariableMap		varMap;
-		SI32				error;
+		int32_t				error;
 		LOGICAL				mode;
 	public:
 						amxVariableServer();
@@ -122,41 +122,41 @@ class amxVariableServer
 		LOGICAL				inServerMode();
 		void				setUserMode();
 		void				setServerMode();
-		SI32				getError();
-		SI32				firstVariable( const SERIAL serial );
-		SI32				nextVariable( const SERIAL serial, const SI32 previous );
-		AMXVARSRV_DATATYPE		typeOfVariable( const SERIAL serial, const SI32 variable );
+		int32_t				getError();
+		int32_t				firstVariable( const SERIAL serial );
+		int32_t				nextVariable( const SERIAL serial, const int32_t previous );
+		AMXVARSRV_DATATYPE		typeOfVariable( const SERIAL serial, const int32_t variable );
 		//
 		//	Integer variable
 		//
-		LOGICAL				insertVariable( const SERIAL serial, const SI32 variable, const SI32 value );
-		LOGICAL				updateVariable( const SERIAL serial, const SI32 variable, const SI32 value );
-		LOGICAL				selectVariable( const SERIAL serial, const SI32 variable, SI32& value );
+		LOGICAL				insertVariable( const SERIAL serial, const int32_t variable, const int32_t value );
+		LOGICAL				updateVariable( const SERIAL serial, const int32_t variable, const int32_t value );
+		LOGICAL				selectVariable( const SERIAL serial, const int32_t variable, int32_t& value );
 		//
 		//	String variable
 		//
-		LOGICAL				insertVariable( const SERIAL serial, const SI32 variable, const std::string& value );
-		LOGICAL				updateVariable( const SERIAL serial, const SI32 variable, const std::string& value );
-		LOGICAL				selectVariable( const SERIAL serial, const SI32 variable, std::string& value );
+		LOGICAL				insertVariable( const SERIAL serial, const int32_t variable, const std::string& value );
+		LOGICAL				updateVariable( const SERIAL serial, const int32_t variable, const std::string& value );
+		LOGICAL				selectVariable( const SERIAL serial, const int32_t variable, std::string& value );
 		//
 		//	Integer vectors
 		//
-		LOGICAL 			insertVariable( const SERIAL serial, const SI32 variable, const SI32 size, const SI32 value );
-		LOGICAL				updateVariable( const SERIAL serial, const SI32 variable, const SI32 index, const SI32 value );
-		LOGICAL				selectVariable( const SERIAL serial, const SI32 variable, const SI32 index, SI32& value );
+		LOGICAL 			insertVariable( const SERIAL serial, const int32_t variable, const int32_t size, const int32_t value );
+		LOGICAL				updateVariable( const SERIAL serial, const int32_t variable, const int32_t index, const int32_t value );
+		LOGICAL				selectVariable( const SERIAL serial, const int32_t variable, const int32_t index, int32_t& value );
 		//
 		//	Type aspecific methods
 		//
 		LOGICAL				deleteVariable( const SERIAL serial );
-		LOGICAL				deleteVariable( const SERIAL serial, const SI32 variable );
-		LOGICAL				existsVariable( const SERIAL serial, const SI32 variable, const SI32 type );
-		SI32				countVariable();
-		SI32				countVariable( const SERIAL serial );
-		SI32				countVariable( const SERIAL serial, const SERIAL type );
+		LOGICAL				deleteVariable( const SERIAL serial, const int32_t variable );
+		LOGICAL				existsVariable( const SERIAL serial, const int32_t variable, const int32_t type );
+		int32_t				countVariable();
+		int32_t				countVariable( const SERIAL serial );
+		int32_t				countVariable( const SERIAL serial, const SERIAL type );
 		LOGICAL				copyVariable( const SERIAL fromSerial, const SERIAL toSerial );
 		LOGICAL				moveVariable( const SERIAL fromSerial, const SERIAL toSerial );
 		void				saveVariable( const SERIAL serial, FILE * stream );
-		SI32				size( const SERIAL serial, const SI32 variable, const SI32 index = -1 );
+		int32_t				size( const SERIAL serial, const int32_t variable, const int32_t index = -1 );
 };
 
 extern amxVariableServer amxVS;

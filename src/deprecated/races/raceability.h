@@ -17,15 +17,15 @@ class RaceAbilityModifier
 {
 	public:
 														RaceAbilityModifier( void );
-		UI32										getBase( void );
+		uint32_t										getBase( void );
 		int											getModifier( void );
 		RaceAbilityModifier& 		operator=( const string& );
 	private:
-		UI32										base;
+		uint32_t										base;
 		int											modification;
 };
 
-typedef map< UI32, class RaceAbilityModifier > RaceAbilityModifierMap;
+typedef map< uint32_t, class RaceAbilityModifier > RaceAbilityModifierMap;
 
 class RaceAbilityModifiers
 {
@@ -34,7 +34,7 @@ class RaceAbilityModifiers
 		RaceAbilityModifier			dummy;
 	public:
 														RaceAbilityModifiers( void );
-		RaceAbilityModifier&		getAbilityModifier( UI32 baseAbility );
+		RaceAbilityModifier&		getAbilityModifier( uint32_t baseAbility );
 		RaceAbilityModifiers&		operator+=( RaceAbilityModifier& that );
 		RaceAbilityModifiers&		operator=( RaceScriptEntry& rse );
 };

@@ -23,15 +23,15 @@
 \brief endian-independent unsigned int 16 bits
 \author Endymion
 */
-class eUI16 {
+class euint16_t {
 	private:
-		UI16 a;
+		uint16_t a;
 	public:
-		eUI16();
-		eUI16(UI16 v);
-		eUI16& operator =( UI16 v );
-		eUI16& operator=( eUI16 v );
-		UI16 get( );
+		euint16_t();
+		euint16_t(uint16_t v);
+		euint16_t& operator =( uint16_t v );
+		euint16_t& operator=( euint16_t v );
+		uint16_t get( );
 
 } PACK_NEEDED;
 
@@ -40,22 +40,22 @@ class eUI16 {
 \brief endian-independent unsigned int 32 bits
 \author Endymion
 */
-class eUI32 {
+class euint32_t {
 	private:
-		UI32 a;
+		uint32_t a;
 	public:
-		eUI32();
-		eUI32(UI32 v);
-		eUI32& operator =( UI32 v );
-		eUI32& operator=( eUI32 v );
-		UI32 get( );
+		euint32_t();
+		euint32_t(uint32_t v);
+		euint32_t& operator =( uint32_t v );
+		euint32_t& operator=( euint32_t v );
+		uint32_t get( );
 
 } PACK_NEEDED;
 
-typedef UI08 eUI08;		//!< fake endian-independent UI08
-typedef SI08 eSI08;		//!< fake endian-independent SI08
+typedef uint8_t euint8_t;		//!< fake endian-independent uint8_t
+typedef int8_t eint8_t;		//!< fake endian-independent int8_t
 typedef bool eBool;		//!< fake endian-independent bool
-typedef eUI16 eCOLOR;	//!< endian-independent color
-typedef eUI32 eSERIAL;	//!< endian-independent serial
+typedef euint16_t eCOLOR;	//!< endian-independent color
+typedef euint32_t eSERIAL;	//!< endian-independent serial
 
 #endif

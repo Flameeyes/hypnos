@@ -279,10 +279,10 @@ void CWorldMain::loadChar() // Load a character from WSC
 			else if ( !strcmp( "AMXINTVEC", script1 ) )
 			{
 				splitLine( script2, script1, script3 );
-				SI32 vectorId = str2num( script1 );
-				SI32 vectorSize = str2num( script3 );
+				int32_t vectorId = str2num( script1 );
+				int32_t vectorSize = str2num( script3 );
 				amxVS.insertVariable( INVALID, vectorId, vectorSize, 0 );
-				SI32 vectorIndex = 0;
+				int32_t vectorIndex = 0;
 				do
 				{
 					readw2();
@@ -336,7 +336,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 		case 'b':
 			if (!(strcmp(script1, "BODY")))
 			{
-				UI16 body = str2num(script2);
+				uint16_t body = str2num(script2);
 				pc->setId( body );
 				pc->setOldId( body );
 			}
@@ -544,9 +544,9 @@ void CWorldMain::loadChar() // Load a character from WSC
 			if (!strcmp(script1, "RACE"))				pc->race = str2num(script2);
 			else if (!strcmp(script1, "ROBE"))				pc->robe = str2num(script2);
 			else if (!strcmp(script1, "REATTACKAT"))		{ pc->reattackat=str2num(script2);}
-			else if (!strcmp(script1, "REGEN_HP"))		{ UI32 v=str2num(script2); pc->setRegenRate( STAT_HP, v, VAR_REAL ); pc->setRegenRate( STAT_HP, v, VAR_EFF ); }
-			else if (!strcmp(script1, "REGEN_ST"))		{ UI32 v=str2num(script2); pc->setRegenRate( STAT_STAMINA, v, VAR_REAL ); pc->setRegenRate( STAT_STAMINA, v, VAR_EFF ); }
-			else if (!strcmp(script1, "REGEN_MN"))		{ UI32 v=str2num(script2); pc->setRegenRate( STAT_MANA, v, VAR_REAL ); pc->setRegenRate( STAT_MANA, v, VAR_EFF ); }
+			else if (!strcmp(script1, "REGEN_HP"))		{ uint32_t v=str2num(script2); pc->setRegenRate( STAT_HP, v, VAR_REAL ); pc->setRegenRate( STAT_HP, v, VAR_EFF ); }
+			else if (!strcmp(script1, "REGEN_ST"))		{ uint32_t v=str2num(script2); pc->setRegenRate( STAT_STAMINA, v, VAR_REAL ); pc->setRegenRate( STAT_STAMINA, v, VAR_EFF ); }
+			else if (!strcmp(script1, "REGEN_MN"))		{ uint32_t v=str2num(script2); pc->setRegenRate( STAT_MANA, v, VAR_REAL ); pc->setRegenRate( STAT_MANA, v, VAR_EFF ); }
 			else if (!(strcmp("RESISTS", script1)))
 			{// Added by Luxor
 				int params[2];
@@ -698,8 +698,8 @@ void CWorldMain::loadChar() // Load a character from WSC
 
 	}
 
-	UI32 max_x = map_width  * 8;
-	UI32 max_y = map_height * 8;
+	uint32_t max_x = map_width  * 8;
+	uint32_t max_y = map_height * 8;
 	Location pcpos= pc->getPosition();
 
 	if( ((pcpos.x<100) && (pcpos.y<100)) || ((pcpos.x>max_x) || (pcpos.y>max_y) || (pcpos.x<0) || (pcpos.y<0)))
@@ -778,10 +778,10 @@ void loaditem()
 			else if ( !strcmp( "AMXINTVEC", script1 ) )
 			{
 				splitLine( script2, script1, script3 );
-				SI32 vectorId = str2num( script1 );
-				SI32 vectorSize = str2num( script3 );
+				int32_t vectorId = str2num( script1 );
+				int32_t vectorSize = str2num( script3 );
 				amxVS.insertVariable( INVALID, vectorId, vectorSize, 0 );
-				SI32 vectorIndex = 0;
+				int32_t vectorIndex = 0;
 				do
 				{
 					readw2();
@@ -918,7 +918,7 @@ void loaditem()
 				if( (i==0x1071) || (i==0x1075))
 					i--;
 				// elcabesa bugfigx end
-				pi->setId( static_cast<UI16>(i) );
+				pi->setId( static_cast<uint16_t>(i) );
 
 				if (i>=0x4000)
 				{
@@ -1120,7 +1120,7 @@ void loaditem()
 	if(pi->animid()==pi->getId()) //elcabesa animation bugfix..if we have not defined a animid use the id of object
 		pi->animSetId(0);
 
-	pi->weight=(UI32)pi->getWeight();
+	pi->weight=(uint32_t)pi->getWeight();
 
 	if (pi->maxhp==0) pi->maxhp=pi->hp;
 	// Tauriel adding region pointers
@@ -1176,7 +1176,7 @@ void CWorldMain::loadNewWorld() // Load world from NXW*.WSC
 		ConOut("Loading characters \n");
 
 		int loopexit=0;
-		UI32 ichar=0;
+		uint32_t ichar=0;
 
 		do
 		{
@@ -1204,7 +1204,7 @@ void CWorldMain::loadNewWorld() // Load world from NXW*.WSC
 		ConOut("Loading items \n");
 
 		int loopexit=0;
-		UI32 iitem=0;
+		uint32_t iitem=0;
 
 		do
 		{

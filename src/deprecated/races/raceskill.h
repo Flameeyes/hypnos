@@ -18,34 +18,34 @@
 class RaceSkillAdvancePoint
 {
 	private:
-		UI32			base;
-		UI32			success;
-		UI32			failure;
+		uint32_t			base;
+		uint32_t			success;
+		uint32_t			failure;
 	public:
 		RaceSkillAdvancePoint( void );
-		UI32			getBase( void );
-		UI32			getSuccess( void );
-		UI32			getFailure( void );
+		uint32_t			getBase( void );
+		uint32_t			getSuccess( void );
+		uint32_t			getFailure( void );
 		RaceSkillAdvancePoint& 	operator=( const string& );
 };
 
 class RaceSkillAdvancePoints
 {
 	private:
-		UI32	strength,
+		uint32_t	strength,
 			dexterity,
 			intelligence;
 		bool	unhideOnUse;	// also in RaceSkill, but here so scripts/skill.xss can be used
-		map< UI32, RaceSkillAdvancePoint > skillAdvancePoints; // Hmmm this could just be a vector
+		map< uint32_t, RaceSkillAdvancePoint > skillAdvancePoints; // Hmmm this could just be a vector
 		RaceSkillAdvancePoint dummy;
 	public:
 		RaceSkillAdvancePoints( void );
-		UI32	getStrength( void );
-		UI32	getDexterity( void );
-		UI32	getIntelligence( void );
+		uint32_t	getStrength( void );
+		uint32_t	getDexterity( void );
+		uint32_t	getIntelligence( void );
 		bool	getUnhideOnUse( void );
 		void	show( void );
-		RaceSkillAdvancePoint& getSkillAdvancePoint( UI32 baseSkill );
+		RaceSkillAdvancePoint& getSkillAdvancePoint( uint32_t baseSkill );
 		RaceSkillAdvancePoints& operator+=( RaceSkillAdvancePoint& rsap );
 		RaceSkillAdvancePoints&	operator=( RaceScriptEntry& rse );
 };
@@ -54,11 +54,11 @@ class RaceSkillAdvancePoints
 class RaceSkillModifier
 {
 	private:
-		UI32			base;
+		uint32_t			base;
 		R32				modifier;
 	public:
 		RaceSkillModifier( void );
-		UI32			getBase( void );
+		uint32_t			getBase( void );
 		R32				getModifier( void );
 		RaceSkillModifier&	operator=( const string& );
 };
@@ -66,7 +66,7 @@ class RaceSkillModifier
 class RaceSkillModifiers
 {
 	private:
-		map< UI32, RaceSkillModifier > skillModifiers;
+		map< uint32_t, RaceSkillModifier > skillModifiers;
 	public:
 		RaceSkillModifiers( void );
 		RaceSkillModifiers&	operator+=( RaceSkillModifier& rsm );
@@ -79,40 +79,40 @@ class RaceSkill
 	private:
 		static string		names[];
 	private:
-		UI32			id;
+		uint32_t			id;
 		bool			canUseSkill;
 		bool			canUseModifier;
 		bool			canUseAdvance;
 		bool			unhideOnUse;
-		UI32			startValue;
+		uint32_t			startValue;
 		RaceSkillModifiers	modifier;
 		RaceSkillAdvancePoints	advance;
 	public:
 		RaceSkill( void );
-		UI32			getId( void );
+		uint32_t			getId( void );
 		const string&		getName( void );
 		bool			getCanUseSkill( void );
 		bool			getCanUseModifier( void );
 		bool			getCanUseAdvance( void );
 		bool			getUnhideOnUse( void );
-		UI32			getStartValue( void );
+		uint32_t			getStartValue( void );
 		void			show( void );
-		RaceSkillAdvancePoint&	getAdvance( UI32 baseSkill );
-		UI32			getAdvanceStrength( void );
-		UI32			getAdvanceDexterity( void );
-		UI32			getAdvanceIntelligence( void );
+		RaceSkillAdvancePoint&	getAdvance( uint32_t baseSkill );
+		uint32_t			getAdvanceStrength( void );
+		uint32_t			getAdvanceDexterity( void );
+		uint32_t			getAdvanceIntelligence( void );
 		RaceSkill&		operator=( RaceScriptEntry& rse );
 };
 
 class RaceSkills
 {
 	private:
-		map< UI32, RaceSkill > 	skills;
+		map< uint32_t, RaceSkill > 	skills;
 		RaceSkill								dummy;
 	public:
 									RaceSkills( void );
 		void					show( void );
-		RaceSkill&		getSkill( UI32 skillId );
+		RaceSkill&		getSkill( uint32_t skillId );
 		RaceSkills&		operator+=( RaceSkill& );
 		RaceSkills&		operator+=( RaceScriptEntry& );
 };

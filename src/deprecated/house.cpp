@@ -41,7 +41,7 @@ LOGICAL CheckBuildSite(int x, int y, int z, int sx, int sy);
 */
 void mtarget(int s, int a1, int a2, int a3, int a4, char b1, char b2, char *txt)
 {
-	UI08 multitarcrs[26]= { 0x99, 0x01, 0x40, 0x01, 0x02, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+	uint8_t multitarcrs[26]= { 0x99, 0x01, 0x40, 0x01, 0x02, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 	multitarcrs[2]=a1;
 	multitarcrs[3]=a2;
@@ -69,7 +69,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 	int i = t->buffer[2];
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	int loopexit=0;//where they click, and the house/key items
-	UI32 x, y, k, sx = 0, sy = 0, icount=0;
+	uint32_t x, y, k, sx = 0, sy = 0, icount=0;
 	signed char z;
 	int hitem[100];//extra "house items" (up to 100)
 	char sect[512];                         //file reading
@@ -84,7 +84,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 	VALIDATEPC(pc);
 	Location charpos= pc->getPosition();
 
-	SI16 id = INVALID; //house ID
+	int16_t id = INVALID; //house ID
 
 
 
@@ -208,7 +208,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 #define YBORDER 200
 
 		//XAN : House placing fix :)
-		if ( (( x<XBORDER || y <YBORDER ) || ( x>(UI32)((map_width*8)-XBORDER) || y >(UI32)((map_height*8)-YBORDER) ))  )
+		if ( (( x<XBORDER || y <YBORDER ) || ( x>(uint32_t)((map_width*8)-XBORDER) || y >(uint32_t)((map_height*8)-YBORDER) ))  )
 		{
 			sysmessage(s, TRANSLATE("You cannot build your structure there!"));
 			return;
@@ -228,7 +228,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 
 		for (k=0;k<sx;k++)//check the SPACEX and SPACEY to make sure they are valid locations....
 		{
-			for (UI32 l=0;l<sy;l++)
+			for (uint32_t l=0;l<sy;l++)
 			{
 
 				Location loc;
@@ -516,7 +516,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 */
 void deedhouse(NXWSOCKET s, P_ITEM pi)
 {
-	UI32 x1, y1, x2, y2;
+	uint32_t x1, y1, x2, y2;
 	VALIDATEPI(pi);
 	P_CHAR pc = MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
@@ -542,7 +542,7 @@ void deedhouse(NXWSOCKET s, P_ITEM pi)
 			if( ISVALIDPC(p_index) ) {
 
 				Location charpos2= p_index->getPosition();
-				if( (charpos2.x >= (UI32)x1) && (charpos2.y >= (UI32)y1) && (charpos2.x <= (UI32)x2) && (charpos2.y <= (UI32)y2) )
+				if( (charpos2.x >= (uint32_t)x1) && (charpos2.y >= (uint32_t)y1) && (charpos2.x <= (uint32_t)x2) && (charpos2.y <= (uint32_t)y2) )
 				{
 
 					if( p_index->npcaitype == NPCAI_PLAYERVENDOR )
@@ -568,10 +568,10 @@ void deedhouse(NXWSOCKET s, P_ITEM pi)
 		{
 			P_ITEM p_item=si.getItem();
 			if(ISVALIDPI(p_item)) {
-				if( (p_item->getPosition().x >= (UI32)x1) &&
-					(p_item->getPosition().x <= (UI32)x2) &&
-					(p_item->getPosition().y >= (UI32)y1) &&
-					(p_item->getPosition().y <= (UI32)y2) )
+				if( (p_item->getPosition().x >= (uint32_t)x1) &&
+					(p_item->getPosition().x <= (uint32_t)x2) &&
+					(p_item->getPosition().y >= (uint32_t)y1) &&
+					(p_item->getPosition().y <= (uint32_t)y2) )
 					{
 							p_item->Delete();
 					}
@@ -749,7 +749,7 @@ int on_hlist(P_ITEM pi, unsigned char s1, unsigned char s2, unsigned char s3, un
 		p_ci=si.getItem();
 		if(ISVALIDPI(p_ci)) {
 
-			if((p_ci->morey== (UI32)pi->getSerial32())&&
+			if((p_ci->morey== (uint32_t)pi->getSerial32())&&
 			   (p_ci->more1== s1)&&(p_ci->more2==s2)&&
 			   (p_ci->more3== s3)&&(p_ci->more4==s4))
 				{
@@ -796,7 +796,7 @@ int on_hlist(int h, unsigned char s1, unsigned char s2, unsigned char s3, unsign
 */
 int add_hlist(int c, int h, int t)
 {
-	UI32 sx, sy, ex, ey;
+	uint32_t sx, sy, ex, ey;
 
 	P_CHAR pc=MAKE_CHAR_REF(c);
 	VALIDATEPCR(pc,3);
@@ -814,7 +814,7 @@ int add_hlist(int c, int h, int t)
 	// and put it "inside" the house item.
 	Location charpos= pc->getPosition();
 
-	if((charpos.x >= (UI32)sx) && (charpos.y >= (UI32)sy) && (charpos.x <= (UI32)ex) && (charpos.y <= (UI32)ey))
+	if((charpos.x >= (uint32_t)sx) && (charpos.y >= (uint32_t)sy) && (charpos.x <= (uint32_t)ex) && (charpos.y <= (uint32_t)ey))
 	{
 		pItem pi = new cItem(cItem::nextSerial());
 
@@ -1066,9 +1066,9 @@ void target_houseEject( NXWCLIENT ps, P_TARGET t )
 
 	Location pcpos= pc->getPosition();
 
-	UI32 sx, sy, ex, ey;
+	uint32_t sx, sy, ex, ey;
     getMultiCorners(pi_h, sx,sy,ex,ey);
-    if((pcpos.x>=(UI32)sx) && (pcpos.y>=(UI32)sy) && (pcpos.x<=(UI32)ex) && (pcpos.y<=(UI32)ey))
+    if((pcpos.x>=(uint32_t)sx) && (pcpos.y>=(uint32_t)sy) && (pcpos.x<=(uint32_t)ex) && (pcpos.y<=(uint32_t)ey))
     {
 		pc->MoveTo( ex, ey, pcpos.z );
         pc->teleport();

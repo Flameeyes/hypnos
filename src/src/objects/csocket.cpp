@@ -15,7 +15,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
-cSocket::cSocket(SI32 sd, struct sockaddr_in *addr) :
+cSocket::cSocket(int32_t sd, struct sockaddr_in *addr) :
 	receiver(this), sender(this)
 {
 	s = sd;
@@ -33,7 +33,7 @@ cSocket::clean()
 
 void cSocket::cReceiver::run()
 {
-	UI08 buf[1024];
+	uint8_t buf[1024];
 	size_t read;
 
 	while( (read = recv(sock, buf, 1024, 0)) > 0 )

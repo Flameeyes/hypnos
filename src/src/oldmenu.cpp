@@ -102,7 +102,7 @@ void cOldMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 	P_CHAR pc = ps->currChar();
 	VALIDATEPC( pc )
 
-	UI32 button;
+	uint32_t button;
 	if( isIconList( pkg->cmd ) )
 		button = ((cPacketResponseToDialog*)pkg)->index.get();
 	else {
@@ -202,12 +202,12 @@ void cOldMenu::buildClassic()
 
 	int buttonnum=1; //button number
 
-	std::map< UI08, std::map< UI32, std::wstring >  >::iterator curr_page( allPages.begin() ), last_page( allPages.end() );
+	std::map< uint8_t, std::map< uint32_t, std::wstring >  >::iterator curr_page( allPages.begin() ), last_page( allPages.end() );
 	int page_count = allPages.size();
 
 	for( int page=1; curr_page!=last_page; ++curr_page, ++page ) {
 
-		std::map< UI32, std::wstring >::iterator iter( curr_page->second.begin() ), end( curr_page->second.end() );
+		std::map< uint32_t, std::wstring >::iterator iter( curr_page->second.begin() ), end( curr_page->second.end() );
 	
 		menu->addPage( page );
 
@@ -250,10 +250,10 @@ void cOldMenu::buildIconList()
 	
 	wstring2string( title, menu->question );
 
-	std::map< UI08, std::map< UI32, std::wstring >  >::iterator page( allPages.begin() ), last_page( allPages.end() );
+	std::map< uint8_t, std::map< uint32_t, std::wstring >  >::iterator page( allPages.begin() ), last_page( allPages.end() );
 	if( page!=last_page ) { //not support multiple pages
 		
-		std::map< UI32, std::wstring >::iterator iter( page->second.begin() ), end( page->second.end() );
+		std::map< uint32_t, std::wstring >::iterator iter( page->second.begin() ), end( page->second.end() );
 		for( ; iter!=end; ++iter ) {
 
 			string s;

@@ -112,7 +112,7 @@ bool inmulti(Location where, P_ITEM pi)//see if they are in the multi at these c
 
 	data::seekMulti( pi->getId()-0x4000, m );
 	Location itmpos= pi->getPosition();
-	for( UI32 i = 0; i < m.size(); i++ ) {
+	for( uint32_t i = 0; i < m.size(); i++ ) {
 		if(/*(multi.visible)&&*/((itmpos.x+m[i].x) == where.x) && ((itmpos.y+m[i].y) == where.y))
 		{
 			return true;
@@ -178,10 +178,10 @@ void cBoat::LeaveBoat(P_CHAR pc, P_ITEM pi)//Get off a boat (dbl clicked an open
 	VALIDATEPC(pc);
 
 	//long int pos, pos2, length;
-	UI32 x,x2= pi->getPosition("x");
-	UI32 y,y2= pi->getPosition("y");
-	SI08 z= pi->getPosition("z");
-	SI08 mz,sz,typ;
+	uint32_t x,x2= pi->getPosition("x");
+	uint32_t y,y2= pi->getPosition("y");
+	int8_t z= pi->getPosition("z");
+	int8_t mz,sz,typ;
 	P_ITEM pBoat=GetBoat(pc->getPosition());
 
 
@@ -314,7 +314,7 @@ void cBoat::Turn(P_ITEM pi, int turn)//Turn the boat item, and send all the peop
 	VALIDATEPI(pi);
 
 	NXWSOCKET 	Send[MAXCLIENT];
-	SI32	id1,
+	int32_t	id1,
 			id2,
 			serial,
 			itiller,
@@ -429,7 +429,7 @@ void cBoat::Turn(P_ITEM pi, int turn)//Turn the boat item, and send all the peop
 	}
 }
 
-void cBoat::TurnShip( UI08 size, SI32 dir, P_ITEM pPort, P_ITEM pStarboard, P_ITEM pTiller, P_ITEM pHold )
+void cBoat::TurnShip( uint8_t size, int32_t dir, P_ITEM pPort, P_ITEM pStarboard, P_ITEM pTiller, P_ITEM pHold )
 {
 	Location itmpos;
 	signed short int *pShipOffsets;
@@ -841,7 +841,7 @@ LOGICAL cBoat::tile_check(multi_st multi,P_ITEM pBoat,map_st map,int x, int y,in
 
 	staticVector s;
 	data::collectStatics( dx, dy, s );
-	for( UI32 i = 0; i < s.size(); i++ ) {
+	for( uint32_t i = 0; i < s.size(); i++ ) {
 		tile_st tile;
 		if( data::seekTile( s[i].id, tile ) ) {
 			if(!(strstr((char *) tile.name, "water") || strstr((char *) tile.name, "lava")))
@@ -870,7 +870,7 @@ LOGICAL cBoat::tile_check(multi_st multi,P_ITEM pBoat,map_st map,int x, int y,in
 
 LOGICAL cBoat::good_position(P_ITEM pBoat, Location where, int dir)
 {
-	UI32 x= where.x, y= where.y, i;
+	uint32_t x= where.x, y= where.y, i;
 	LOGICAL good_pos=false;
 
 	multiVector m;
@@ -1133,7 +1133,7 @@ LOGICAL cBoat::collision(P_ITEM pi,Location where,int dir)
 
 LOGICAL cBoat::boat_collision(P_ITEM pBoat1,int x1, int y1,int dir,P_ITEM pBoat2)
 {
-	UI32 i1, i2;
+	uint32_t i1, i2;
 	int x,y;
 
 	multiVector m1, m2;
@@ -1215,7 +1215,7 @@ void cBoat::OpenPlank(P_ITEM pi)
 */
 P_ITEM cBoat::GetBoat(Location pos)
 {
-	UI32 i;
+	uint32_t i;
 	BOATS::iterator iter( s_boat.begin() ), end( s_boat.end() );
 	for( ; iter!=end; iter++) {
 
@@ -1459,7 +1459,7 @@ void insert_boat(P_ITEM pi)
 
 
 
-boat_db* search_boat(SI32 ser)
+boat_db* search_boat(int32_t ser)
 {
 	std::map<int,boat_db>::iterator iter_boat;
 	iter_boat= s_boat.find(ser);

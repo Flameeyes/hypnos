@@ -14,7 +14,7 @@
 
 static cClients cClient::clients;               //!< this keeps all online clients
 
-cClient::cClient(SI32 sd, struct sockaddr_in* addr)
+cClient::cClient(int32_t sd, struct sockaddr_in* addr)
 {
 	sock = new cSocket(sd, addr);
 	pc = NULL;
@@ -38,10 +38,10 @@ cClient::~cClient()
 \param out_buffer buffer to send
 \param out_len size of buffer to send
 */
-void cClient::compress(UI08& *out_buffer, UI32& out_len)
+void cClient::compress(uint8_t& *out_buffer, uint32_t& out_len)
 {
-UI08 *new_buffer = new UI08[out_len];
-UI32 new_len=0, tmp_len=out_len;
+uint8_t *new_buffer = new uint8_t[out_len];
+uint32_t new_len=0, tmp_len=out_len;
 
 	if(out_len <= 0)
 		return;
@@ -52,9 +52,9 @@ UI32 new_len=0, tmp_len=out_len;
 		value = bit_table[out_buffer[i]][1];
 
 		while(n_bits--) {
-//			new_buffer[new_len] = (new_buffer[new_len] << 1) | (UI08)((value >> n_bits) & 1);
+//			new_buffer[new_len] = (new_buffer[new_len] << 1) | (uint8_t)((value >> n_bits) & 1);
 			new_buffer[new_len] <<= 1;
-			new_buffer[new_len] |= (UI08)((value >> n_bits) & 1);
+			new_buffer[new_len] |= (uint8_t)((value >> n_bits) & 1);
 
 			bit_4_byte++;
 			if(bit_4_byte / 8) {
@@ -73,9 +73,9 @@ UI32 new_len=0, tmp_len=out_len;
 	}
 
 	while(n_bits--) {
-//		new_buffer[new_len] = (new_buffer[new_len] << 1) | (UI08)((value >> n_bits) & 1);
+//		new_buffer[new_len] = (new_buffer[new_len] << 1) | (uint8_t)((value >> n_bits) & 1);
 		new_buffer[new_len] <<= 1;
-		new_buffer[new_len] |= (UI08)((value >> n_bits) & 1);
+		new_buffer[new_len] |= (uint8_t)((value >> n_bits) & 1);
 
 		bit_4_byte++;
 		if(bit_4_byte / 8) {
@@ -109,7 +109,7 @@ void cClient::showContainer(pCont cont)
 
 	NxwItemWrapper si;
 	si.fillItemsInContainer( cont, false, false );
-	SI32 count=si.size();
+	int32_t count=si.size();
 
 	cPacketSendDrawContainer pk(cont->getSerial(), cont->getGump());
 	sendPacket(&pk);
@@ -204,7 +204,7 @@ void cClient::playMidi()
 \author Flameeyes
 \todo Fix the set support after get working new sets
 */
-void cClient::playSFX(UI16 sound, bool onlyMe)
+void cClient::playSFX(uint16_t sound, bool onlyMe)
 {
 	cPacketSendSoundFX pk(sound, pc->getPosition());
 
@@ -229,7 +229,7 @@ void cClient::playSFX(UI16 sound, bool onlyMe)
 \brief Set the light level
 \param level base light level
 */
-void cClient::light(UI08 level)
+void cClient::light(uint8_t level)
 {
 	if ( ! pc ) return;
 
@@ -311,7 +311,7 @@ void cClient::statusWindow(pChar target, bool extended) //, bool canrename)  wil
 	else canrename = false;
 
 	if ((pc->getBody()->getId() == BODY_DEADMALE) || (pc->getBody()->getId() == BODY_DEADFEMALE)) canrename = false;
-       	UI08 ext;
+       	uint8_t ext;
         if (extended)
         {
                 ext = 0x01;
@@ -360,10 +360,10 @@ void cClient::skillWindow() // Opens the skills list, updated for client 1.26.2b
 
 
 
-	UI08 skillstart[4]={ 0x3A, 0x00, };
-	UI08 skillmid[7]={ 0x00, };
-	UI08 skillend[2]={ 0x00, };
-	UI16 len;
+	uint8_t skillstart[4]={ 0x3A, 0x00, };
+	uint8_t skillmid[7]={ 0x00, };
+	uint8_t skillend[2]={ 0x00, };
+	uint16_t len;
 	char x;
 
 	len = 0x015D;					// Hardcoded -_-;  // hack for that 3 new skills+1.26.2 client, LB 4'th dec 1999
@@ -400,7 +400,7 @@ void cClient::skillWindow() // Opens the skills list, updated for client 1.26.2b
 \param  pi item to get
 \param amount amount of *pi to get
 */
-void cClient::get_item( pItem pi, UI16 amount ) // Client grabs an item
+void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 {
 	pChar pc_currchar = currChar();
 	VALIDATEPC( pc_currchar );
@@ -469,7 +469,7 @@ void cClient::get_item( pItem pi, UI16 amount ) // Client grabs an item
 			if ( !pc_currchar->IsGM() && owner->getOwnerSerial32() != pc_currchar->getSerial() )
 			{// Own serial stuff by Zippy -^ Pack aniamls and vendors.
                         //! \todo the sendpacket stuff here
-				UI08 bounce[2]= { 0x27, 0x00 };
+				uint8_t bounce[2]= { 0x27, 0x00 };
 				Xsend(s, bounce, 2);
 //AoS/				Network->FlushBuffer(s);
 				if (isDragging())
@@ -594,7 +594,7 @@ void cClient::get_item( pItem pi, UI16 amount ) // Client grabs an item
 			(( pi->magic == 3|| pi->magic == 4) && !pc_currchar->isOwnerOf( pi )))
 		{
                         //! \todo the sendpacket stuff here
-			UI08 bounce[2]={ 0x27, 0x00 };
+			uint8_t bounce[2]={ 0x27, 0x00 };
 			Xsend(s, bounce, 2);
 //AoS/			Network->FlushBuffer(s);
 			if (isDragging()) // only restore item if it got draggged before !!!
@@ -1489,7 +1489,7 @@ bool cClient::droppedOnTrainer(pItem pi, Location &loc, pItem cont)
 
 	if( pi->getId() == ITEMID_GOLD )
 	{ // They gave the NPC gold
-		UI08 sk=pc_t->trainingplayerin;
+		uint8_t sk=pc_t->trainingplayerin;
 		pc_t->talk(this, TRANSLATE("I thank thee for thy payment. That should give thee a good start on thy way. Farewell!"),0);
 
 		int sum = pc->getSkillSum();

@@ -44,9 +44,9 @@
 */
 cLine::cLine( Location A, Location B )
 {
-	m_xDist = SI32( A.x - B.x );
-	m_yDist = SI32( A.y - B.y );
-	m_zDist = SI32( A.z - B.z );
+	m_xDist = int32_t( A.x - B.x );
+	m_yDist = int32_t( A.y - B.y );
+	m_zDist = int32_t( A.z - B.z );
 	x1 = A.x;
 	y1 = A.y;
 	z1 = A.z;
@@ -55,20 +55,20 @@ cLine::cLine( Location A, Location B )
 /*!
 \author Luxor
 */
-SI08 cLine::calcZAtX( UI32 x )
+int8_t cLine::calcZAtX( uint32_t x )
 {
-	SI08 z;
-	z = SI08( ( R32( ( SI32(x - x1) * m_zDist ) + (z1 * m_xDist) ) / R32( m_xDist ) ) + 0.5);
+	int8_t z;
+	z = int8_t( ( R32( ( int32_t(x - x1) * m_zDist ) + (z1 * m_xDist) ) / R32( m_xDist ) ) + 0.5);
 	return z;
 }
 
 /*!
 \author Luxor
 */
-Location cLine::getPosAtX( UI32 x )
+Location cLine::getPosAtX( uint32_t x )
 {
 	Location pos = Location( x, 0, 0 );
-	pos.y = UI32( ( R32( ( SI32(x - x1) * m_yDist ) + ( SI32(y1) * m_xDist) ) / R32( m_xDist ) ) + 0.5);
+	pos.y = uint32_t( ( R32( ( int32_t(x - x1) * m_yDist ) + ( int32_t(y1) * m_xDist) ) / R32( m_xDist ) ) + 0.5);
 	pos.z = calcZAtX( pos.x );
 	return pos;
 }
@@ -76,10 +76,10 @@ Location cLine::getPosAtX( UI32 x )
 /*!
 \author Luxor
 */
-Location cLine::getPosAtY( UI32 y )
+Location cLine::getPosAtY( uint32_t y )
 {
 	Location pos = Location( 0, y, 0 );
-	pos.x = UI32( ( R32( ( SI32(y - y1) * m_xDist ) + ( SI32(x1) * m_yDist) ) / R32( m_yDist ) ) + 0.5);
+	pos.x = uint32_t( ( R32( ( int32_t(y - y1) * m_xDist ) + ( int32_t(x1) * m_yDist) ) / R32( m_yDist ) ) + 0.5);
 	pos.z = calcZAtX( pos.x );
 	return pos;
 }
@@ -91,10 +91,10 @@ Location cLine::getPosAtY( UI32 y )
 \brief Looks if a char can walk on the given Location
 \return The next z value of char position, illegal_z if the tile isn't walkable
 */
-SI08 isWalkable( Location pos, UI08 flags, P_CHAR pc )
+int8_t isWalkable( Location pos, uint8_t flags, P_CHAR pc )
 {
-	SI08 zRes = 0;
-	SI32 height = 0;
+	int8_t zRes = 0;
+	int32_t height = 0;
 
 	//
         // DYNAMIC ITEMS -- Check for dynamic items Z elevation and block flag
@@ -133,7 +133,7 @@ SI08 isWalkable( Location pos, UI08 flags, P_CHAR pc )
         // MAP -- Check for map Z elevation and denied textures (as water, mountains etc)
         //
 	if ( flags & WALKFLAG_MAP ) {
-		SI32 mapid = 0;
+		int32_t mapid = 0;
 		map_st map1;
 		data::seekMap( pos.x, pos.y, map1 );
 		mapid = map1.id;
@@ -179,7 +179,7 @@ SI08 isWalkable( Location pos, UI08 flags, P_CHAR pc )
 		staticVector s;
 		data::collectStatics( pos.x, pos.y, s );
 
-		for( UI32 i = 0; i < s.size(); i++ ) {
+		for( uint32_t i = 0; i < s.size(); i++ ) {
 			tile_st tile;
 			if( !data::seekTile( s[i].id, tile ) )
 				continue;
@@ -234,10 +234,10 @@ LOGICAL lineOfSight( Location A, Location B )
 {
 	cLine line( A, B );
 
-	UI32 max_x = max( A.x, B.x );
-	UI32 max_y = max( A.y, B.y );
-	UI32 max_i = max( max_x, max_y );
-	UI32 i = ( max_i == max_x ) ? min( A.x, B.x ) : min( A.y, B.y );
+	uint32_t max_x = max( A.x, B.x );
+	uint32_t max_y = max( A.y, B.y );
+	uint32_t max_i = max( max_x, max_y );
+	uint32_t i = ( max_i == max_x ) ? min( A.x, B.x ) : min( A.y, B.y );
 
 	Location pos;
 	for ( i++; i < max_i; i++ ) {
@@ -261,13 +261,13 @@ LOGICAL canNpcWalkHere( Location pos )
 /*!
 \author Luxor
 */
-SI08 staticTop( Location pos )
+int8_t staticTop( Location pos )
 {
-	SI08 max_z = illegal_z, temp_z;
+	int8_t max_z = illegal_z, temp_z;
 
 	staticVector s;
 	data::collectStatics( pos.x, pos.y, s );
-	for( UI32 i = 0; i < s.size(); i++ ) {
+	for( uint32_t i = 0; i < s.size(); i++ ) {
 		temp_z = s[i].z + tileHeight( s[i].id );
 		if ( temp_z < ( MaxZstep + pos.z ) && temp_z > max_z )
 			max_z = temp_z;
@@ -278,12 +278,12 @@ SI08 staticTop( Location pos )
 /*!
 \author Luxor
 */
-SI08 tileHeight( UI16 id )
+int8_t tileHeight( uint16_t id )
 {
 	tile_st tile;
 	if ( !data::seekTile( id, tile ) )
 		return 0;
-	SI08 height = tile.height;
+	int8_t height = tile.height;
 	if ( tile.flags & TILEFLAG_BRIDGE )
 		height /= 2;
 
@@ -293,7 +293,7 @@ SI08 tileHeight( UI16 id )
 /*!
 \author Luxor
 */
-SI08 mapElevation( UI32 x, UI32 y )
+int8_t mapElevation( uint32_t x, uint32_t y )
 {
 	map_st m;
 	if ( !data::seekMap( x, y, m ) )
@@ -304,28 +304,28 @@ SI08 mapElevation( UI32 x, UI32 y )
 /*!
 \author Luxor
 */
-SI08 mapAverageElevation( UI32 x, UI32 y )
+int8_t mapAverageElevation( uint32_t x, uint32_t y )
 {
-	SI08 map1_z = mapElevation( x, y );
+	int8_t map1_z = mapElevation( x, y );
 	if ( map1_z == illegal_z )
 		return illegal_z;
 
-	SI08 map2_z = mapElevation( x + 1, y );
-	SI08 map3_z = mapElevation( x, y + 1 );
-	SI08 map4_z = mapElevation( x + 1, y + 1 );
-	SI08 z;
+	int8_t map2_z = mapElevation( x + 1, y );
+	int8_t map3_z = mapElevation( x, y + 1 );
+	int8_t map4_z = mapElevation( x + 1, y + 1 );
+	int8_t z;
 
 	if ( abs( map1_z - map4_z ) <= abs( map2_z - map3_z ) ) {
 		if ( map4_z == illegal_z )
 			return map1_z;
-		z = (SI08)( ( map1_z + map4_z ) >> 1 );
+		z = (int8_t)( ( map1_z + map4_z ) >> 1 );
 		if ( z % 2 < 0 )
 			z--;
 		return z;
 	} else {
 		if ( map2_z == illegal_z || map3_z == illegal_z )
 			return map1_z;
-		z = (SI08)( ( map2_z + map3_z ) >> 1 );
+		z = (int8_t)( ( map2_z + map3_z ) >> 1 );
 		if ( z % 2 < 0 )
 			z--;
 		return z;
@@ -337,9 +337,9 @@ SI08 mapAverageElevation( UI32 x, UI32 y )
 /*!
 \author Luxor
 */
-SI08 dynamicElevation( Location pos )
+int8_t dynamicElevation( Location pos )
 {
-	SI08 max_z = illegal_z, temp_z;
+	int8_t max_z = illegal_z, temp_z;
 	NxwItemWrapper si;
 	si.fillItemsAtXY( pos.x, pos.y );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
@@ -356,10 +356,10 @@ SI08 dynamicElevation( Location pos )
 \author Luxor
 \brief Returns the estimated height of walker's position.
 */
-SI08 getHeight( Location pos )
+int8_t getHeight( Location pos )
 {
-	SI08 final_z = illegal_z, item_z = illegal_z, temp_z, base_z;
-	UI32 item_flags;
+	int8_t final_z = illegal_z, item_z = illegal_z, temp_z, base_z;
+	uint32_t item_flags;
 	tile_st tile;
 
 	NxwItemWrapper si;
@@ -404,7 +404,7 @@ SI08 getHeight( Location pos )
 
 	staticVector s;
 	data::collectStatics( pos.x, pos.y, s );
-	for( UI32 i = 0; i < s.size(); i++ ) {
+	for( uint32_t i = 0; i < s.size(); i++ ) {
 
 		if( !data::seekTile( s[i].id, tile ) )
 			continue;
@@ -442,7 +442,7 @@ SI08 getHeight( Location pos )
 		}
 	}
 
-	SI08 map_z = mapAverageElevation( pos.x, pos.y );
+	int8_t map_z = mapAverageElevation( pos.x, pos.y );
 	if (
 		// No Z value was found yet.
 		( item_z == illegal_z ) ||
@@ -461,13 +461,13 @@ SI08 getHeight( Location pos )
 /*!
 \author Luxor
 */
-void getMultiCorners( P_ITEM pi, UI32 &x1, UI32 &y1, UI32 &x2, UI32 &y2 )
+void getMultiCorners( P_ITEM pi, uint32_t &x1, uint32_t &y1, uint32_t &x2, uint32_t &y2 )
 {
 	VALIDATEPI( pi );
 
 	multiVector m;
 	data::seekMulti( pi->getId() - 0x4000, m );
-	for( UI32 i = 0; i < m.size(); i++ ) {
+	for( uint32_t i = 0; i < m.size(); i++ ) {
 		x1 = qmin( x1, m[i].x );
 		x2 = qmax( x2, m[i].x );
 		y1 = qmin( y1, m[i].y );

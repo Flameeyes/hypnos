@@ -27,13 +27,13 @@
 */
 namespace Commands
 {
-	extern SI32 cmd_offset;					//!< Command Offset
+	extern int32_t cmd_offset;					//!< Command Offset
 
 	void KillSpawn(NXWSOCKET s, int r);
 	void RegSpawnMax(NXWSOCKET s, int r);
 	void RegSpawnNum(NXWSOCKET s, int r, int n);
 	void KillAll(NXWSOCKET s, int percent, char * sysmsg);
-	void AddHere(NXWSOCKET s, UI16 id, char z);
+	void AddHere(NXWSOCKET s, uint16_t id, char z);
 	void ShowGMQue(NXWSOCKET s, int type);
 	void Wipe(NXWSOCKET s);
 	void CPage(NXWSOCKET s, std::string reason);

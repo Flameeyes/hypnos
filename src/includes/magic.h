@@ -198,14 +198,14 @@ namespace magic {
 
 	struct reag_st
 	{
-		UI32 ginseng;
-		UI32 moss;
-		UI32 drake;
-		UI32 pearl;
-		UI32 silk;
-		UI32 ash;
-		UI32 shade;
-		UI32 garlic;
+		uint32_t ginseng;
+		uint32_t moss;
+		uint32_t drake;
+		uint32_t pearl;
+		uint32_t silk;
+		uint32_t ash;
+		uint32_t shade;
+		uint32_t garlic;
 	};
 
 	struct g_Spell
@@ -248,7 +248,7 @@ namespace magic {
 	bool spellRequiresTarget(SpellId spellnum);
 	P_CHAR summon (P_CHAR owner, int npctype, int duration, bool bTamed = true, int x = INVALID, int y = INVALID, int z = INVALID);
 	bool checkGateCollision( P_CHAR pc );
-	UI32 getCastingTime( SpellId spell );
+	uint32_t getCastingTime( SpellId spell );
 
 
 } // namespace

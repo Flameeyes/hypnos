@@ -41,9 +41,9 @@ static const char** eventsBodies =
 	0 if the event is completed with bypass [returned by the handler]
 	or the return of the event handler
 */
-int handleEvent(PyObject *pFunc, eventType et, UI08 code, UI08 nParams, UI32 *params)
+int handleEvent(PyObject *pFunc, eventType et, uint8_t code, uint8_t nParams, uint32_t *params)
 {
-	UI08 err;
+	uint8_t err;
 	handleEvent(pFunc, nParams, params, err);
 
 	if ( err == -1 )
@@ -87,7 +87,7 @@ int handleEvent(PyObject *pFunc, eventType et, UI08 code, UI08 nParams, UI32 *pa
 	0 if the event is completed with bypass [returned by the handler]
 	or the return of the event handler
 */
-int execEvent(PyObject *pFunc, UI08 nParams, UI32 *params, UI08 &err)
+int execEvent(PyObject *pFunc, uint8_t nParams, uint32_t *params, uint8_t &err)
 {
 	if ( ! pFunc || ! PyCallable_Check(pFunc) )
 		return 1;

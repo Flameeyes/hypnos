@@ -10,30 +10,30 @@
 #include "nxwcommn.h"
 #include "abstraction/endian.h"
 
-eUI16::eUI16()
+euint16_t::euint16_t()
 {
 	a=0;
 }
 
-eUI16::eUI16(UI16 v)
+euint16_t::euint16_t(uint16_t v)
 {
 	a=htons( v );
 }
 
-eUI16& eUI16::operator =( UI16 v )
+euint16_t& euint16_t::operator =( uint16_t v )
 {
 	a=htons( v );
 	return (*this);
 }
 
-eUI16& eUI16::operator=( eUI16 v )
+euint16_t& euint16_t::operator=( euint16_t v )
 {
 	this->a=v.a;
 	return (*this);
 }
 
 
-UI16 eUI16::get(  )
+uint16_t euint16_t::get(  )
 {
 	return ntohs( this->a );
 	//return this->a;
@@ -44,29 +44,29 @@ UI16 eUI16::get(  )
 
 
 
-eUI32::eUI32()
+euint32_t::euint32_t()
 {
 	a=0;
 }
 
-eUI32::eUI32(UI32 v)
+euint32_t::euint32_t(uint32_t v)
 {
 	a=htonl( v );
 }
 
-eUI32& eUI32::operator =( UI32 v )
+euint32_t& euint32_t::operator =( uint32_t v )
 {
 	a=htonl( v );
 	return (*this);
 }
 
-eUI32& eUI32::operator=( eUI32 v )
+euint32_t& euint32_t::operator=( euint32_t v )
 {
 	this->a=v.a;
 	return (*this);
 }
 
-UI32 eUI32::get(  )
+uint32_t euint32_t::get(  )
 {
 	return ntohl( this->a );
 }

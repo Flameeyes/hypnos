@@ -11,7 +11,7 @@
 */
 
 TIMERVAL Begging::timer;
-UI32 Begging::range;
+uint32_t Begging::range;
 std::string Begging::text[3];
 
 void Begging::initialize()
@@ -70,13 +70,13 @@ void Begging::target(NXWCLIENT ps, pTarget t)
 	
 	SetTimerSec(&pc->begging_timer,Begging::timer);
 	
-	UI16 n = pc->getBody()->getSkill(skillBegging) / 50;	
+	uint16_t n = pc->getBody()->getSkill(skillBegging) / 50;	
 	n < 1 && n = 1;
 	
-	UI16 pregold = rand()%x + RandomNum(1,4);
+	uint16_t pregold = rand()%x + RandomNum(1,4);
 	pregold > 25 && pregold = 25;
 	
-	UI16 gold = 0;
+	uint16_t gold = 0;
 	
 	// pre-calculate the random amout of gold that is "targeted"
 	pContainer pack = pc->getBackpack();

@@ -82,25 +82,25 @@ public:
 \brief functions for handle serials stuff
 */
 protected:
-	UI32		serial;		//!< serial of the object
-	UI32		multi_serial;	//!< multi serial of the object (don't know what it is used for)
+	uint32_t		serial;		//!< serial of the object
+	uint32_t		multi_serial;	//!< multi serial of the object (don't know what it is used for)
 
 public:
 	//! return the serial of the object
-	inline const UI32 getSerial() const
+	inline const uint32_t getSerial() const
 	{ return serial; }
 
-	void setSerial32(SI32 newserial);
+	void setSerial32(int32_t newserial);
 
 	//! return the object's multi serial
-	inline const UI32 getMultiSerial() const
+	inline const uint32_t getMultiSerial() const
 	{ return multi_serial; }
 
 	//! Set the multi serial of the object
-	inline void setMultiSerial(UI32 newserial)
+	inline void setMultiSerial(uint32_t newserial)
 	{ multi_serial = newserial; }
 
-	inline void setOwnerSerial32Only(UI32 newserial)
+	inline void setOwnerSerial32Only(uint32_t newserial)
 	{ owner_serial = newserial; }
 //@}
 
@@ -121,7 +121,7 @@ public:
 	void			setPosition(Location where);
 
 	//! Set the position of the object
-	inline void		setPosition(UI32 x, UI32 y, SI08 z)
+	inline void		setPosition(uint32_t x, uint32_t y, int8_t z)
 	{ setPosition( Location( x, y, z ) ); }
 
 	inline const Location getOldPosition() const
@@ -130,7 +130,7 @@ public:
 	inline void setOldPosition(const Location where)
 	{ old_position = where; }
 
-	inline void setOldPosition(SI32 x, SI32 y, signed char z, signed char dispz)
+	inline void setOldPosition(int32_t x, int32_t y, signed char z, signed char dispz)
 	{ setOldPosition( Location(x, y, z, dispz) ); }
 //@}
 
@@ -139,13 +139,13 @@ public:
 \name Appearence
 */
 protected:
-	UI32 ScriptID;	//!< Object's ScriptID
+	uint32_t ScriptID;	//!< Object's ScriptID
 
-	UI16 id;	//!< Object's ID
-	UI16 id_old;	//!< Object's old ID
+	uint16_t id;	//!< Object's ID
+	uint16_t id_old;	//!< Object's old ID
 
-	UI16 color;	//!< Object's color
-	UI16 color_old;	//!< Object's old color
+	uint16_t color;	//!< Object's color
+	uint16_t color_old;	//!< Object's old color
 
 	/*!
 	Real name of the char, 30 chars max + '\\0'<br>
@@ -185,35 +185,35 @@ public:
 	void setSecondaryName(const char *format, ...);
 
 	//! return the object's script number
-	inline const UI32 getScriptID() const
+	inline const uint32_t getScriptID() const
 	{ return ScriptID; }
 
 	//! set the object's script number
-	inline void setScriptID(UI32 sid)
+	inline void setScriptID(uint32_t sid)
 	{ ScriptID = sid; }
 
-	inline void setId( UI16 newId )
+	inline void setId( uint16_t newId )
 	{ id = newId; }
 
-	inline const UI16 getId() const
+	inline const uint16_t getId() const
 	{ return id; }
 
-	inline void setOldId( UI16 oldId )
+	inline void setOldId( uint16_t oldId )
 	{ id_old = oldId; }
 
-	inline const UI16 getOldId() const
+	inline const uint16_t getOldId() const
 	{ return id_old; }
 
-	inline void setColor( UI16 newColor )
+	inline void setColor( uint16_t newColor )
 	{ color = newColor; }
 
-	inline const UI16 getColor() const
+	inline const uint16_t getColor() const
 	{ return color; }
 
-	inline void setOldColor( UI16 oldColor )
+	inline void setOldColor( uint16_t oldColor )
 	{ color_old = oldColor; }
 
-	inline const UI16 getOldColor() const
+	inline const uint16_t getOldColor() const
 	{ return color_old; }
 
 //@}
@@ -224,14 +224,14 @@ public:
 */
 
 protected:
-	UI64 flags;	//!< Common flags for objects
+	uint64_t flags;	//!< Common flags for objects
 
 	/*!
 	\brief Set a given flag on or off
 	\param flag Flag to set
 	\param set true if the flag must be set on, else false
 	*/
-	inline void setFlag(UI64 flag, bool set)
+	inline void setFlag(uint64_t flag, bool set)
 	{
 		if ( set ) flags |= flag;
 		else flags &= ~flag;
@@ -239,11 +239,11 @@ protected:
 
 public:
 	//! Gets the character flags
-	inline const UI64 getFlags() const
+	inline const uint64_t getFlags() const
 	{ return flags; }
 
 	//! Sets the character flags
-	inline void setFlags(UI64 newFlags)
+	inline void setFlags(uint64_t newFlags)
 	{ flags = newFlags; }
 
 //@}
@@ -256,16 +256,16 @@ protected:
 	TempfxVector		*tempfx;
 
 public:
-	LOGICAL			addTempfx( cObject& src, SI32 num, SI32 more1 = 0, SI32 more2 = 0, SI32 more3 = 0, SI32 dur = 0, SI32 amxcback = INVALID );
-	void			delTempfx( SI32 num, LOGICAL executeExpireCode = true, SERIAL funcidx = INVALID );
+	LOGICAL			addTempfx( cObject& src, int32_t num, int32_t more1 = 0, int32_t more2 = 0, int32_t more3 = 0, int32_t dur = 0, int32_t amxcback = INVALID );
+	void			delTempfx( int32_t num, LOGICAL executeExpireCode = true, SERIAL funcidx = INVALID );
 	void			checkTempfx();
 	void			tempfxOn();
 	void			tempfxOff();
 	LOGICAL			hasTempfx();
-	tempfx::cTempfx*	getTempfx( SI32 num, SERIAL funcidx = INVALID );
+	tempfx::cTempfx*	getTempfx( int32_t num, SERIAL funcidx = INVALID );
 //@}
 
-	UI32	disabled;	//!< Disabled object timer, cant trigger.
+	uint32_t	disabled;	//!< Disabled object timer, cant trigger.
 	std::string*	disabledmsg; //!< Object is disabled, so display this message.
 } PACK_NEEDED;
 

@@ -15,11 +15,11 @@
 
 //! Location on the map
 struct Location {
-	UI16 x;		//!< X-Coordinate of the location
-	UI16 y;		//!< Y-Coordinate of the location
-	SI08 z;		//!< Z-Coordinate of the location
-	SI08 dispz;	//!< Displayed Z of the location
-	UI08 map;	//!< Map the location (if 255 -> every map)
+	uint16_t x;		//!< X-Coordinate of the location
+	uint16_t y;		//!< Y-Coordinate of the location
+	int8_t z;		//!< Z-Coordinate of the location
+	int8_t dispz;	//!< Displayed Z of the location
+	uint8_t map;	//!< Map the location (if 255 -> every map)
 };
 
 //! == operator redefinition for Location

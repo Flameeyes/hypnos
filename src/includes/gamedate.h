@@ -35,22 +35,22 @@ class cGameDate
 					cGameDate( const cGameDate &copy );
 					~cGameDate();
 	private:
-		UI16			year;
-		UI08			month;
-		UI08			day;
-		UI08			hour;
-		UI08			minute;
+		uint16_t			year;
+		uint8_t			month;
+		uint8_t			day;
+		uint8_t			hour;
+		uint8_t			minute;
 	public:
-		UI16			getYear();
-		UI08			getMonth();
-		UI08			getDay();
-		UI08			getHour();
-		UI08			getMinute();
-		void			setYear( UI16 newYear );
-		void			setMonth( UI08 newMonth );
-		void			setDay( UI08 newDay );
-		void			setHour( UI08 newHour );
-		void			setMinute( UI08 newMinute );
+		uint16_t			getYear();
+		uint8_t			getMonth();
+		uint8_t			getDay();
+		uint8_t			getHour();
+		uint8_t			getMinute();
+		void			setYear( uint16_t newYear );
+		void			setMonth( uint8_t newMonth );
+		void			setDay( uint8_t newDay );
+		void			setHour( uint8_t newHour );
+		void			setMinute( uint8_t newMinute );
 		std::string		toDateString();
 		std::string		toDateString( eDateFormat format );
 		std::string		toTimeString();

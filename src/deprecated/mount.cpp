@@ -21,7 +21,7 @@
 #include "range.h"
 #include "scripts.h"
 
-std::map< SI32, SI32 > mountinfo;
+std::map< int32_t, int32_t > mountinfo;
 
 void loadmounts()
 {
@@ -29,8 +29,8 @@ void loadmounts()
 	cScpIterator* iter = NULL;
 	std::string script1;
 	std::string script2;
-	SI32 id=INVALID;
-	SI32 anim=INVALID;
+	int32_t id=INVALID;
+	int32_t anim=INVALID;
 	int mount=0;
 
 	do
@@ -131,7 +131,7 @@ jump_mountevent:
 		return;
 	}
 
-	std::map<SI32,SI32>::iterator iter = mountinfo.find(mount->getId());
+	std::map<int32_t,int32_t>::iterator iter = mountinfo.find(mount->getId());
 	if( iter==mountinfo.end() ) { //not mountable creature
 		sysmsg( "This is not a mountable creature" );
 		return;

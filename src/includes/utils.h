@@ -50,16 +50,16 @@ int calcGoodValue(int npcnum, int i, int value,int goodtype); // by Magius(CHE) 
 int whichbit( int number, int bit );
 int numbitsset( int number );
 
-void getSextantCoords(SI32 x, SI32 y, LOGICAL t2a, char *sextant);
+void getSextantCoords(int32_t x, int32_t y, LOGICAL t2a, char *sextant);
 void splitline();
 
 int hexnumber(int countx);
 
 void location2xyz(int loc, int& x, int& y, int& z);
 
-UI32 getclock();
-UI32 getsysclock();
-UI32 getclockday();
+uint32_t getclock();
+uint32_t getsysclock();
+uint32_t getclockday();
 void initclock();
 
 

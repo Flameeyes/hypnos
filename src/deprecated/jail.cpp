@@ -180,7 +180,7 @@ void prison::freePrisonCell( SERIAL cell )
 }
 
 
-void prison::addCell( SERIAL serial, UI32 x, UI32 y, UI32 z )
+void prison::addCell( SERIAL serial, uint32_t x, uint32_t y, uint32_t z )
 {
 	for( PRISONCELLVECTOR::iterator j = prison::cells.begin(); j!=prison::cells.end(); j++ )
 		if( (*j).serial == serial )

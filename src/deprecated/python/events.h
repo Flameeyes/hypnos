@@ -18,8 +18,8 @@
 namespace PythonInterface
 {
 	int handleEvent(
-		PyObject *pFunc, eventType et, UI08 code,
-		UI08 nParams, UI32 *params
+		PyObject *pFunc, eventType et, uint8_t code,
+		uint8_t nParams, uint32_t *params
 		);
 }
 

@@ -105,52 +105,52 @@ void	cGameDate::setDefaultMinute()
 	minute	= Calendar::g_nMinute;
 }
 
-UI16 cGameDate::getYear()
+uint16_t cGameDate::getYear()
 {
 	return year;
 }
 
-UI08 cGameDate::getMonth()
+uint8_t cGameDate::getMonth()
 {
 	return month;
 }
 
-UI08 cGameDate::getDay()
+uint8_t cGameDate::getDay()
 {
 	return day;
 }
 
-UI08 cGameDate::getHour()
+uint8_t cGameDate::getHour()
 {
 	return hour;
 }
 
-UI08 cGameDate::getMinute()
+uint8_t cGameDate::getMinute()
 {
 	return minute;
 }
 
-void cGameDate::setYear( UI16 newYear )
+void cGameDate::setYear( uint16_t newYear )
 {
 	year = newYear;
 }
 
-void cGameDate::setMonth( UI08 newMonth )
+void cGameDate::setMonth( uint8_t newMonth )
 {
 	month = newMonth;
 }
 
-void cGameDate::setDay( UI08 newDay )
+void cGameDate::setDay( uint8_t newDay )
 {
 	day = newDay;
 }
 
-void cGameDate::setHour( UI08 newHour )
+void cGameDate::setHour( uint8_t newHour )
 {
 	hour = newHour;
 }
 
-void cGameDate::setMinute( UI08 newMinute )
+void cGameDate::setMinute( uint8_t newMinute )
 {
 	minute = newMinute;
 }
@@ -203,32 +203,32 @@ void cGameDate::fromString( const std::string& arg, eDateFormat format )
 
 	if( !arg.empty() )
 	{
-		UI32 start = 0;
-		UI32 index = arg.find_first_of( dateSeparator );
+		uint32_t start = 0;
+		uint32_t index = arg.find_first_of( dateSeparator );
 
 		switch( format )
 		{
 			case YMD:
 				if( index == start + 4 )
 				{
-					setYear( (UI16) str2num( const_cast<char*>( arg.substr( start, 4 ).c_str() ) ) );
+					setYear( (uint16_t) str2num( const_cast<char*>( arg.substr( start, 4 ).c_str() ) ) );
 					start = index + 1;
 					index = arg.find_first_of( dateSeparator, start );
 					if( index == start + 2 )
 					{
-						setMonth( (UI08) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
+						setMonth( (uint8_t) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
 						start = index + 1;
 						index = arg.find_first_of( dateTimeSeparator, start );
 						if( index == start + 2 )
 						{
-							setDay( (UI08) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
+							setDay( (uint8_t) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
 							start = index + 1;
 							index = arg.find_first_of( timeSeparator, start );
 							if( index == start + 2 )
 							{
-								setHour( (UI08) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
+								setHour( (uint8_t) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
 								start = index + 1;
-								setMinute( (UI08) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
+								setMinute( (uint8_t) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
 								success = true;
 							}
 						}
@@ -238,24 +238,24 @@ void cGameDate::fromString( const std::string& arg, eDateFormat format )
 			case DMY:
 				if( index == start + 2 )
 				{
-					setDay( (UI08) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
+					setDay( (uint8_t) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
 					start = index + 1;
 					index = arg.find_first_of( dateSeparator, start );
 					if( index == start + 2 )
 					{
-						setMonth( (UI08) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
+						setMonth( (uint8_t) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
 						start = index + 1;
 						index = arg.find_first_of( dateTimeSeparator, start );
 						if( index == start + 4 )
 						{
-							setYear( (UI16) str2num( const_cast<char*>( arg.substr( start, 4 ).c_str() ) ) );
+							setYear( (uint16_t) str2num( const_cast<char*>( arg.substr( start, 4 ).c_str() ) ) );
 							start = index + 1;
 							index = arg.find_first_of( timeSeparator, start );
 							if( index == start + 2 )
 							{
-								setHour( (UI08) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
+								setHour( (uint8_t) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
 								start = index + 1;
-								setMinute( (UI08) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
+								setMinute( (uint8_t) str2num( const_cast<char*>( arg.substr( start, 2 ).c_str() ) ) );
 								success = true;
 							}
 						}

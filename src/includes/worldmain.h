@@ -49,7 +49,7 @@ private:
 
 	bool isSaving;
 
-	UI32 itm_curr, chr_curr;
+	uint32_t itm_curr, chr_curr;
 
 	void SaveChar( P_CHAR pc );
 	void loadChar();

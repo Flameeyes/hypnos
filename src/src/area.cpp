@@ -64,7 +64,7 @@ void cAreas::loadareas()
 		{
 
 			Area area;
-			UI16 check=0;
+			uint16_t check=0;
 
 			do
 			{
