@@ -123,7 +123,7 @@ void newbieitems(P_CHAR pc)
 					if (ISVALIDPI(pi))
 					{
 						pi->priv |= 0x02; // Mark as a newbie item
-						pi->setCont(pc);
+						pi->setContainer(pc);
 						storeval = pi->getScriptID();
 					}
 					strcpy(script1, "DUMMY");

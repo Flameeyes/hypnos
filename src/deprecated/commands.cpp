@@ -44,7 +44,7 @@ namespace Commands
 			pi = item::CreateFromScript( "$item_restock", pc );
 			if( ISVALIDPI( pi ) )//AntiChrist - to preview crashes
 			{
-				pi->setContSerial(pc->getSerial32());
+				pi->setContainer(pc);
 				pi->layer=LAYER_TRADE_RESTOCK;
 				pi->type=ITYPE_CONTAINER;
 				pi->setNewbie();
@@ -56,7 +56,7 @@ namespace Commands
 			pi = item::CreateFromScript( "$item_restock", pc );
 			if( ISVALIDPI( pi ) )
 			{
-				pi->setContSerial(pc->getSerial32());
+				pi->setContainer(pc);
 				pi->layer=LAYER_TRADE_NORESTOCK;
 				pi->type=ITYPE_CONTAINER;
 				pi->setNewbie();
@@ -68,7 +68,7 @@ namespace Commands
 			pi = item::CreateFromScript( "$item_restock", pc );
 			if( ISVALIDPI( pi ) )
 			{
-				pi->setContSerial(pc->getSerial32());
+				pi->setContainer(pc);
 				pi->layer=LAYER_TRADE_BOUGHT;
 				pi->type=ITYPE_CONTAINER;
 				pi->setNewbie();

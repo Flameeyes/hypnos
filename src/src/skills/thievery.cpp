@@ -200,7 +200,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 			P_ITEM pack= thief->getBackpack();
 			VALIDATEPI(pack);
 
-			pi->setContSerial( pack->getSerial32() );
+			pi->setContainer( pack );
 
 			thief->sysmsg(TRANSLATE("You successfully steal the item."));
 			pi->Refresh();
@@ -403,7 +403,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 					*/
 					P_ITEM thiefpack = thief->getBackpack();
 					VALIDATEPI(thiefpack);
-					pi->setContSerial( thiefpack->getSerial32() );
+					pi->setContainer( thiefpack );
 					thief->sysmsg(TRANSLATE("... and you succeed."));
 					pi->Refresh();
 					//all_items(s);

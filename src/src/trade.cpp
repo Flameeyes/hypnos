@@ -188,13 +188,13 @@ void buyaction(int s)
 							break;
 						case LAYER_TRADE_NORESTOCK:
 							if ((iter->item)->pileable)
-								(iter->item)->setContSerial( pack->getSerial32() );
+								(iter->item)->setContainer( pack );
 							else
 							{
 								for (j=0;j<iter->amount;j++)
 									item::CreateFromScript( iter->item->getScriptID(), pack );
 
-								(iter->item)->setContSerial( pack->getSerial32() );
+								(iter->item)->setContainer( pack );
 								(iter->item)->amount=1;
 							}
 							(iter->item)->Refresh();
@@ -209,19 +209,15 @@ void buyaction(int s)
 
 	if (clear)
 	{
-		clearmsg[0]=0x3B;
-		clearmsg[1]=0x00;
-		clearmsg[2]=0x08;
-		clearmsg[3]=buffer[s][3];
-		clearmsg[4]=buffer[s][4];
-		clearmsg[5]=buffer[s][5];
-		clearmsg[6]=buffer[s][6];
-		clearmsg[7]=0x00;
+		UI08 clearmsg[8] = { 0x3B, 0x00, };
+		ShortToCharPtr(0x08, clearmsg +1); 				// Packet len
+		LongToCharPtr( LongFromCharPtr(buffer[s] +3), clearmsg +3);	// vendorID
+		clearmsg[7]=0x00;						// Flag:  0 => no more items  0x02 items following ... 
 		Xsend(s, clearmsg, 8);
+//AoS/		Network->FlushBuffer(s);
 	}
 	weights::NewCalc(pc);	// Ison 2-20-99
 	statwindow(pc,pc);
-
 }
 
 
@@ -352,7 +348,7 @@ void sellaction(NXWSOCKET s)
 						SendDeleteObjectPkt( sw.getSocket(), pSell->getSerial32() );
 					}
 
-					pSell->setContSerial( npb->getSerial32() );
+					pSell->setContainer( npb );
 					if (pSell->amount!=amt)
 						Commands::DupeItem(s, DEREF_P_ITEM(pSell), pSell->amount-amt);
 				}
@@ -362,17 +358,12 @@ void sellaction(NXWSOCKET s)
 		pc->playSFX( goldsfx(totgold) );
 	}
 
-	char clearmsg[9];
-	clearmsg[0]=0x3B;
-	clearmsg[1]=0x00;
-	clearmsg[2]=0x08;
-	clearmsg[3]=buffer[s][3];
-	clearmsg[4]=buffer[s][4];
-	clearmsg[5]=buffer[s][5];
-	clearmsg[6]=buffer[s][6];
-	clearmsg[7]=0x00;
+	UI08 clearmsg[8] = { 0x3B, 0x00, };
+	ShortToCharPtr(0x08, clearmsg +1); 				// Packet len
+	LongToCharPtr( LongFromCharPtr(buffer[s] +3), clearmsg +3);	// vendorID
+	clearmsg[7]=0x00;						// Flag:  0 => no more items  0x02 items following ... 
 	Xsend(s, clearmsg, 8);
-
+//AoS/	Network->FlushBuffer(s);
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -480,7 +471,7 @@ void clearalltrades()
 									for( si.rewind(); !si.isEmpty(); si++ ) {
 										pj = si.getItem();
                                         if( ISVALIDPI(pj)) {
-                       						pj->setContSerial(pack->getSerial32());
+                       						pj->setContainer(pack);
                         				}
 									}
                                     pi->deleteItem();
@@ -571,7 +562,7 @@ void dotrade(P_ITEM cont1, P_ITEM cont2)
 			if (g_bByPass==true)
 				continue; //skip item, I hope
 			*/
-			pi->setCont( bp2 );
+			pi->setContainer( bp2 );
 			pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
 			sendbpitem(s2, pi);
 			pi->Refresh();
@@ -599,7 +590,7 @@ void dotrade(P_ITEM cont1, P_ITEM cont2)
 				continue; //skip item, I hope
 			*/
 
-			pi->setCont( bp1 );
+			pi->setContainer( bp1 );
 			pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
 			sendbpitem(s1, pi);
 			pi->Refresh();

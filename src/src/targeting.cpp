@@ -160,7 +160,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		P_ITEM pi = item::CreateFromScript( "$item_hardcoded" );
 		VALIDATEPI(pi);
 		pi->setId( 0x1DA0 );
-		pi->setContSerial(INVALID);
+		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
 		pi->att=5;
@@ -176,7 +176,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pi=item::CreateFromScript( "$item_a_heart" );
 		VALIDATEPI(pi);
 		pi->setCurrentName( temp );
-		pi->setContSerial(INVALID);
+		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
 		pi->att=5;
@@ -190,7 +190,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
         pi = item::CreateFromScript( "$item_hardcoded" );
         VALIDATEPI(pi);
         pi->setId( 0x1DAD );
-		pi->setContSerial(INVALID);
+		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
 		pi->att=5;
@@ -204,7 +204,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
         pi = item::CreateFromScript( "$item_hardcoded" );
         VALIDATEPI(pi);
         pi->setId( 0x1DA1 );
-		pi->setContSerial(INVALID);
+		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
 		pi->att=5;
@@ -218,7 +218,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
         pi = item::CreateFromScript( "$item_hardcoded" );
         VALIDATEPI(pi);
         pi->setId( 0x1DA2 );
-		pi->setContSerial(INVALID);
+		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
 		pi->att=5;
@@ -232,7 +232,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
         pi = item::CreateFromScript( "$item_hardcoded" );
         VALIDATEPI(pi);
         pi->setId( 0x1DAE );
-		pi->setContSerial(INVALID);
+		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
 		pi->att=5;
@@ -246,7 +246,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
         pi = item::CreateFromScript( "$item_hardcoded" );
         VALIDATEPI(pi);
         pi->setId( 0x1DA4 );
-		pi->setContSerial(INVALID);
+		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
 		pi->att=5;
@@ -304,7 +304,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
         {
             P_ITEM pj=si.getItem();
 			if(ISVALIDPI(pj)) {
-				pj->setContSerial(INVALID);
+				pj->setContainer(0);
 				pj->MoveTo( pi3->getPosition() );
 				pj->setDecayTime();
 				pj->Refresh();
@@ -557,7 +557,7 @@ void target_playerVendorBuy( NXWCLIENT ps, P_TARGET t )
     pc->holdg+=pi->value; // putting the gold to the vendor's "pocket"
 
     // sends item to the proud new owner's pack
-    pi->setContSerial( pBackpack->getSerial32() );
+    pi->setContainer( pBackpack );
     pi->Refresh();
 
 }
@@ -841,7 +841,7 @@ void target_expPotion( NXWCLIENT ps, P_TARGET t )
         if (ISVALIDPI(pi)) // crashfix LB
         {
             pi->MoveTo( loc );
-            pi->setContSerial(INVALID);
+            pi->setContainer(0);
             pi->magic=2; //make item unmovable once thrown
             movingeffect2(DEREF_P_CHAR(pc), DEREF_P_ITEM(pi), 0x0F, 0x0D, 0x11, 0x00, 0x00);
             pi->Refresh();

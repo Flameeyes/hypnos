@@ -79,7 +79,7 @@ void UpdateStatusWindow(NXWSOCKET socket, P_ITEM pi)
 	P_ITEM pack = pc->getBackpack();
 	VALIDATEPI( pack );
 
-	if( pi->getContSerial() != pack->getSerial32() || pi->getContSerial() == pc->getSerial32() )
+	if( pi->getContainer() != pack || pi->getContainer() == pc )
 		statwindow( pc, pc );
 }
 
@@ -87,7 +87,7 @@ static void Sndbounce5( NXWSOCKET socket )
 {
 	if ( socket >= 0 && socket < now)
 	{
-		unsigned char bounce[2]= { 0x27, 0x00 };
+		UI08 bounce[2]= { 0x27, 0x00 };
 		bounce[1] = 5;
 		Xsend(socket, bounce, 2);
 	}
@@ -100,14 +100,14 @@ static void Sndbounce5( NXWSOCKET socket )
 static void item_bounce3(const P_ITEM pi)
 {
 	VALIDATEPI( pi );
-	pi->setContSerial( pi->getContSerial(true) );
+	pi->setContainer( pi->getOldContainer() );
 	pi->setPosition( pi->getOldPosition() );
 	pi->layer=pi->oldlayer;
 
-	P_CHAR pc = pointers::findCharBySerial( pi->getContSerial(true) );
-	if(pc==NULL)
+	P_CHAR pc = (pChar) pi->getOldContainer();
+	if(pc)
 		return ;
-	VALIDATEPC( pc );
+
 	if ( pi->layer > 0 )
 	{
 		// Xanathar -- add BONUS STATS given by equipped special items
@@ -184,7 +184,7 @@ void get_item( NXWCLIENT client ) // Client grabs an item
         		client->resetDragging();
 			UpdateStatusWindow(s,pi);
         	}
-		pi->setContSerial( pi->getContSerial(true) );
+		pi->setContainer( pi->getOldContainer() );
 		pi->setPosition( pi->getOldPosition() );
 		pi->layer = pi->oldlayer;
 		pi->Refresh();
@@ -197,7 +197,7 @@ void get_item( NXWCLIENT client ) // Client grabs an item
  	data::seekTile( pi->getId(), item );
 
 	// Check if item is equiped
- 	if( pi->getContSerial() == pc_currchar->getSerial32() && pi->layer == item.quality )
+ 	if( pi->getContainer == pc_currchar && pi->layer == item.quality )
  	{
  		if( pc_currchar->UnEquip( pi, 1 ) == 1 )	// bypass called
  		{
@@ -217,9 +217,9 @@ void get_item( NXWCLIENT client ) // Client grabs an item
 	P_ITEM container=NULL;
 	if ( !pi->isInWorld() ) { // Find character owning item
 
-		if ( isCharSerial( pi->getContSerial()))
+		if ( isCharSerial(pi->getContainer()->getSerial()) )  // oppure: isChar(pi->getContainer()) -.^?
 		{
-			owner = pointers::findCharBySerial( pi->getContSerial());
+			owner = (pChar) pi->getContainer();
 		}
 		else  // its an item
 		{
@@ -230,13 +230,13 @@ void get_item( NXWCLIENT client ) // Client grabs an item
 			//can steal in trade ecc
 			//not very good :P
 			container = pi->getOutMostCont();
-			if( isCharSerial( container->getContSerial() ) )
-				owner=pointers::findCharBySerial( container->getContSerial() );
+			if( isCharSerial( container->getContainer()->getSerial() ) ) //vedere sopra ...
+				owner = (pChar) container->getContainer();
 		}
 
-		if ( ISVALIDPC( owner ) && owner->getSerial32()!=pc_currchar->getSerial32() )
+		if ( ISVALIDPC( owner ) && (owner != pc_currchar) )
 		{
-			if ( !pc_currchar->IsGM() && owner->getOwnerSerial32() != pc_currchar->getSerial32() )
+			if ( !pc_currchar->IsGM() && owner->getOwnerSerial32() != pc_currchar->getSerial() )
 			{// Own serial stuff by Zippy -^ Pack aniamls and vendors.
 				UI08 bounce[2]= { 0x27, 0x00 };
 				Xsend(s, bounce, 2);
@@ -244,7 +244,7 @@ void get_item( NXWCLIENT client ) // Client grabs an item
 				if (client->isDragging())
 				{
 					client->resetDragging();
-					pi->setContSerial(pi->getContSerial(),true,false);
+					pi->setOldContainer(pi->getContainer());
 					item_bounce3(pi);
 				}
 				return;
@@ -285,7 +285,7 @@ void get_item( NXWCLIENT client ) // Client grabs an item
 						client->resetDragging();
 						UpdateStatusWindow(s,pi);
 					}
-					pi->setContSerial( pi->getContSerial(true) );
+					pi->setContainer( pi->getOldContainer() );
 					pi->setPosition( pi->getOldPosition() );
 					pi->layer = pi->oldlayer;
 					pi->Refresh();
@@ -306,7 +306,7 @@ void get_item( NXWCLIENT client ) // Client grabs an item
 					client->resetDragging();
 					UpdateStatusWindow(s,pi);
 				}
-				pi->setContSerial( pi->getContSerial(true) );
+				pi->setContainer( pi->getOldContainer() );
 				pi->setPosition( pi->getOldPosition() );
 				pi->layer = pi->oldlayer;
 				pi->Refresh();
@@ -317,7 +317,7 @@ void get_item( NXWCLIENT client ) // Client grabs an item
 
 			if ( container->corpse )
 			{
-				if ( container->getOwnerSerial32() != pc_currchar->getSerial32())
+				if ( container->getOwnerSerial32() != pc_currchar->getSerial())
 				{ //Looter :P
 
 					pc_currchar->unHide();
@@ -397,7 +397,7 @@ void get_item( NXWCLIENT client ) // Client grabs an item
 					pin->setContainer(pi->getContainer());	//Luxor
 					pin->setPosition( pi->getPosition() );
 
-					/*if( !pin->isInWorld() && isItemSerial( pin->getContSerial() ) )
+					/*if( !pin->isInWorld() && isItemSerial( pin->getContainer()->getSerial() ) )
 						pin->SetRandPosInCont( (P_ITEM)pin->getContainer() );*/
 
 					statwindow(pc_currchar,pc_currchar);
@@ -421,7 +421,7 @@ void get_item( NXWCLIENT client ) // Client grabs an item
 			mapRegions->remove( pi );
 #endif
 			pi->setPosition( 0, 0, 0 );
-			pi->setContSerial( INVALID );
+			pi->setContainer(0);
 		}
 	}
 
@@ -464,12 +464,11 @@ void wear_item(NXWCLIENT ps) // Item is dropped on paperdoll
 	}
 	else {
 		P_ITEM outmost = pi->getOutMostCont();
-		P_CHAR vendor = pointers::findCharBySerial( outmost->getContSerial() );
-		if( ISVALIDPC( vendor ) && ( vendor->getOwnerSerial32() != pc->getSerial32() ) )
+		P_CHAR vendor = (pChar) outmost->getContainer();
+		if( ISVALIDPC( vendor ) && ( vendor->getOwnerSerial32() != pc->getSerial() ) )
 		{
 			resetDragging = true;
 		}
-
 	}
 
 	if( resetDragging ) {
@@ -483,7 +482,7 @@ void wear_item(NXWCLIENT ps) // Item is dropped on paperdoll
 		return;
 	}
 
-	if ( pck->getSerial32() == pc->getSerial32() || pc->IsGM() )
+	if ( pck == pc || pc->IsGM() )
 	{
 
 		if ( !pc->IsGM() && pi->st > pck->getStrength() && !pi->isNewbie() ) // now you can equip anything if it's newbie
@@ -501,7 +500,7 @@ void wear_item(NXWCLIENT ps) // Item is dropped on paperdoll
 			resetDragging = true;
 		}
 		else if ((((pi->magic==2)||((tile.weight==255)&&(pi->magic!=1))) && !pc->canAllMove()) ||
-				( (pi->magic==3|| pi->magic==4) && !(pi->getOwnerSerial32()==pc->getSerial32())))
+				( (pi->magic==3|| pi->magic==4) && !(pi->getOwnerSerial32() == pc->getSerial)) )
 		{
 			resetDragging = true;
 		}
@@ -540,7 +539,7 @@ void wear_item(NXWCLIENT ps) // Item is dropped on paperdoll
         			ps->resetDragging();
 					UpdateStatusWindow(s,pi);
 	        	}
-				pi->setContSerial( pi->getContSerial(true) );
+				pi->setContainer( pi->getOldContainer() );
 				pi->setPosition( pi->getOldPosition() );
 				pi->layer = pi->oldlayer;
 				pi->Refresh();
@@ -557,7 +556,7 @@ void wear_item(NXWCLIENT ps) // Item is dropped on paperdoll
 						ps->resetDragging();
 						UpdateStatusWindow(s,pi);
 					}
-					pi->setContSerial( pi->getContSerial(true) );
+					pi->setContainer( pi->getOldContainer() );
 					pi->setPosition( pi->getOldPosition() );
 					pi->layer = pi->oldlayer;
 					pi->Refresh();
@@ -685,7 +684,7 @@ void wear_item(NXWCLIENT ps) // Item is dropped on paperdoll
 			P_ITEM pack = pck->getBackpack();
 			pc->playSFX( itemsfx(pi->getId()) );
 			pi->layer= 0;
-			pi->setContSerial( pack->getSerial32() );
+			pi->setContainer( pack );
 			sendbpitem(s, pi);
 			return;
 		}
@@ -1060,8 +1059,8 @@ void dump_item(NXWCLIENT ps, PKGx08 *pp) // Item is dropped on ground or a chara
 		return;
 	}
 
-	if ( isCharSerial(pi->getContSerial()) && pi->getContSerial() != pc->getSerial32() ) {
-		P_CHAR pc_i = pointers::findCharBySerial(pi->getContSerial());
+	if ( isCharSerial(pi->getContainer()->getSerial()) && pi->getContainer() != pc ) {
+		P_CHAR pc_i = (pChar) pi->getContainer();
 		if (ISVALIDPC(pc_i))
 			pc_i->sysmsg("Warning, backpack disappearing bug located!");
 
@@ -1069,7 +1068,7 @@ void dump_item(NXWCLIENT ps, PKGx08 *pp) // Item is dropped on ground or a chara
                         ps->resetDragging();
                         UpdateStatusWindow(s,pi);
                 }
-		pi->setContSerial( pi->getContSerial(true) );
+		pi->setContainer( pi->getOldContainer() );
                 pi->setPosition( pi->getOldPosition() );
                 pi->layer = pi->oldlayer;
                 pi->Refresh();
@@ -1080,7 +1079,7 @@ void dump_item(NXWCLIENT ps, PKGx08 *pp) // Item is dropped on ground or a chara
                         ps->resetDragging();
                         UpdateStatusWindow(s,pi);
                 }
-		pi->setContSerial( pi->getContSerial(true) );
+		pi->setContainer( pi->getOldContainer() );
 		pi->MoveTo( pi->getOldPosition() );
 		pi->layer = pi->oldlayer;
 		pi->Refresh();
@@ -1156,7 +1155,7 @@ void dump_item(NXWCLIENT ps, PKGx08 *pp) // Item is dropped on ground or a chara
 		}
 
 		pi->MoveTo(pp->TxLoc,pp->TyLoc,pp->TzLoc);
-		pi->setContSerial(-1);
+		pi->setContainer(0);
 
 		P_ITEM p_boat = Boats->GetBoat(pi->getPosition());
 
@@ -1183,7 +1182,7 @@ void dump_item(NXWCLIENT ps, PKGx08 *pp) // Item is dropped on ground or a chara
 	                        	ps->resetDragging();
                         		UpdateStatusWindow(s,pi);
                 		}
-                		pi->setContSerial( pi->getContSerial(true) );
+                		pi->setContainer( pi->getOldContainer() );
                 		pi->setPosition( pi->getOldPosition() );
                 		pi->layer = pi->oldlayer;
                 		pi->Refresh();
@@ -1205,7 +1204,7 @@ void dump_item(NXWCLIENT ps, PKGx08 *pp) // Item is dropped on ground or a chara
 					if (ISVALIDPI(pc->getBackpack())) {
 						pc->getBackpack()->AddItem(pi);
 					} else {
-						pi->setContSerial( pi->getContSerial(true) );
+						pi->setContainer( pi->getOldContainer() );
 						pi->setPosition( pi->getOldPosition() );
 					}
 					pi->layer = pi->oldlayer;
@@ -1268,7 +1267,8 @@ void pack_item(NXWCLIENT ps, PKGx08 *pp) // Item is put into container
 
 	//ndEndy recurse only a time
 	P_ITEM contOutMost = pCont->getOutMostCont();
-	P_CHAR contOwner = ( !contOutMost->isInWorld() )? pointers::findCharBySerial( contOutMost->getContSerial() ) : NULL;
+//	P_CHAR contOwner = ( !contOutMost->isInWorld() )? pointers::findCharBySerial( contOutMost->getContainer()->getSerial() ) : NULL;
+	P_CHAR contOwner = (pChar) contOutMost->getContainer();
 
 	if( ISVALIDPC(contOwner) ) {
 		//if ((contOwner->npcaitype==NPCAI_PLAYERVENDOR) && (contOwner->npc) && (contOwner->getOwnerSerial32()!=pc->getSerial32()) )
@@ -1305,7 +1305,7 @@ void pack_item(NXWCLIENT ps, PKGx08 *pp) // Item is put into container
 	*/
 
 	if (pCont->layer==0 && pCont->getId() == 0x1E5E &&
-		pCont->getContSerial()==pc->getSerial32())
+		pCont->getContainer() == pc)
 	{
 		// Trade window???
 		serial=calcserial(pCont->moreb1, pCont->moreb2, pCont->moreb3, pCont->moreb4);
@@ -1333,7 +1333,7 @@ void pack_item(NXWCLIENT ps, PKGx08 *pp) // Item is put into container
 			{//if they're not gold..bounce on ground
 				ps->sysmsg(TRANSLATE("You can only put golds in this bank box!"));
 
-				pItem->setContSerial(-1);
+				pItem->setContainer(0);
 				pItem->MoveTo( charpos );
 				pItem->Refresh();
 				pc->playSFX( itemsfx(pItem->getId()) );
@@ -1411,8 +1411,7 @@ void pack_item(NXWCLIENT ps, PKGx08 *pp) // Item is put into container
 		pack= pc->getBackpack();
 		if(ISVALIDPI(pack))
 		{
-			if ((!(pCont->getContSerial()==pc->getSerial32())) &&
-				(!(pCont->getContSerial()==pack->getSerial32())) && (!(pc->CanSnoop())))
+			if ((pCont->getContainer() != pc ) && (pCont->getContainer()!=pack) && (!pc->CanSnoop()))
 			{
 				ps->sysmsg(TRANSLATE("You cannot place spells in other peoples spellbooks."));
 				item_bounce6(ps,pItem);
@@ -1500,7 +1499,7 @@ void pack_item(NXWCLIENT ps, PKGx08 *pp) // Item is put into container
 			}
 			else
 			{
-				if( pItem->getContSerial( true )==INVALID  ) //current cont serial is invalid because is dragging
+				if( !pItem->getOldContainer() ) //current cont serial is invalid because is dragging
 				{
 					NxwSocketWrapper sw;
 					sw.fillOnline( pItem->getPosition() );
@@ -1510,7 +1509,7 @@ void pack_item(NXWCLIENT ps, PKGx08 *pp) // Item is put into container
 				}
 
 				pItem->setPosition( pp->TxLoc, pp->TyLoc, pp->TzLoc);
-				pItem->setContSerial( pCont->getContSerial() );
+				pItem->setContainer( pCont->getContainer() );
 
 				pItem->Refresh();
 			}
@@ -1524,7 +1523,6 @@ void drop_item(NXWCLIENT ps) // Item is dropped
 	if (ps == NULL) return;
 
 	NXWSOCKET  s=ps->toInt();
-//	CHARACTER cc=ps->currCharIdx();
 
 	PKGx08 pkgbuf, *pp=&pkgbuf;
 

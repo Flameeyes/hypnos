@@ -441,7 +441,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 						}
 						if (!(strcmp(script1,"PACK")))//put the item in the Builder's Backpack
 						{
-							if (ISVALIDPI(pi_l)) pi_l->setContSerial((pc->getBackpack())->getSerial32());
+							if (ISVALIDPI(pi_l)) pi_l->setContainer(pc->getBackpack());
 							if (ISVALIDPI(pi_l)) pi_l->setPosition("x", rand()%90+31);
 							if (ISVALIDPI(pi_l)) pi_l->setPosition("y", rand()%90+31);
 							if (ISVALIDPI(pi_l)) pi_l->setPosition("z", 9);
@@ -1027,7 +1027,7 @@ void target_houseOwner( NXWCLIENT ps, P_TARGET t )
 	pi3->setCurrentName( "a house key" );
 	if(os!=INVALID)
 	{
-		pi3->setCont( pc->getBackpack() );
+		pi3->setContainer( pc->getBackpack() );
 	}
 	else
 	{

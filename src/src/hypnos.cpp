@@ -134,15 +134,15 @@ static void item_char_test()
 			}
 
 			// item is contained in himself
-			if (pi->getSerial32()==pi->getContSerial())
+			if (pi == pi->getContainer())
 			{
 				WarnOut("item %s [serial: %i] has dangerous container value, autocorrecting",pi->getCurrentNameC(),pi->getSerial32());
 				LogWarning("ALERT ! item %s [serial: %i] has dangerous container value, autocorrecting",pi->getCurrentNameC(),pi->getSerial32());
-				pi->setContSerial(INVALID);
+				pi->setContainer(0);
 			}
 
 			// item is owned by himself
-			if (pi->getSerial32()==pi->getOwnerSerial32())
+			if (pi->getSerial() == pi->getOwnerSerial32())
 			{
 				WarnOut("item %s [serial: %i] has dangerous owner value",pi->getCurrentNameC(),pi->getSerial32());
 				LogWarning("ALERT ! item %s [serial: %i] has dangerous owner value",pi->getCurrentNameC(),pi->getSerial32());
@@ -354,7 +354,7 @@ void charcreate( NXWSOCKET  s ) // All the character creation stuff
 		{
 			pi->setColor( 0x044E );
 		}
-		pi->setContSerial(pc->getSerial32());
+		pi->setContainer(pc);
 		pi->layer=LAYER_HAIR;
 	}
 
@@ -368,7 +368,7 @@ void charcreate( NXWSOCKET  s ) // All the character creation stuff
 		{
 			pi->setColor( 0x044E );
 		}
-		pi->setContSerial(pc->getSerial32());
+		pi->setContainer(pc);
 		pi->layer=LAYER_BEARD;
 	}
 
@@ -377,8 +377,8 @@ void charcreate( NXWSOCKET  s ) // All the character creation stuff
 // - create the backpack
 	pi= item::CreateFromScript( "$item_backpack");
 	VALIDATEPI(pi);
-	pc->packitemserial= pi->getSerial32();
-	pi->setCont(pc);
+	pc->packitemserial= pi->getSerial();
+	pi->setContainer(pc);
 
 // - create pants
 	if( RandomNum(0, 1)==0 )
@@ -400,7 +400,7 @@ void charcreate( NXWSOCKET  s ) // All the character creation stuff
 
 	// pant/skirt color -> old client code, random color
 	pi->setColor( ShortFromCharPtr(buffer[s] +102) );
-	pi->setCont(pc);
+	pi->setContainer(pc);
 
 	if( !(rand()%2) )
 		pi= item::CreateFromScript( "$item_fancy_shirt");
@@ -409,7 +409,7 @@ void charcreate( NXWSOCKET  s ) // All the character creation stuff
 
 	VALIDATEPI(pi);
 	pi->setColor( ShortFromCharPtr(buffer[s] +100) );
-	pi->setCont(pc);
+	pi->setContainer(pc);
 
 // what is this ??? (Anthalir)
 /*

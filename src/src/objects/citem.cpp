@@ -383,23 +383,29 @@ void cItem::getPopupHelp(char *str)
 
 /*!
 \brief Set the item's container
-\param obj New container
-\param old Set the saved container or the actual one
+\param obj New (actual) container
 \param update Update the container map?
 */
 void cItem::setContainer(pOjbect obj, bool old)
 {
-	if ( old )
-		oldcont = obj;
-	else {
-		oldcont = cont;
-		cont = obj;
-		if ( ! obj )
-			setDecayTime();
-	}
+	oldcont = cont;
+	cont = obj;
+
+	if ( ! obj )
+		setDecayTime();
 
 	if ( update )
 		pointers::updContMap(this);
+}
+
+/*!
+\brief Set the item's container
+\param obj New (saved) container
+\param update Update the container map?
+*/
+void cItem::setOldContainer(pOjbect obj)
+{
+		oldcont = obj;
 }
 
 /*!

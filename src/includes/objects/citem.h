@@ -412,6 +412,11 @@ public:
 
 	void setContainer(pOjbect obj, bool old = true);
 
+	inline const pObject getOldContainer() const
+	{ return oldcont; }
+
+	void setOldContainer(pOjbect obj);
+
 	//! check if item is a container
 	inline const bool isContainer() const
 	{ return type==1 || type==12 || type==63 || type==8 || type==13 || type==64; }

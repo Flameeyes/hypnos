@@ -757,16 +757,13 @@ namespace pointers {
 
 				vector<P_ITEM>::iterator iter( vect->second.begin() );
 				for( ; iter!=vect->second.end(); iter++ ) {
-
-					(*iter)->setContSerial( INVALID, true, false);
-					(*iter)->setContSerial( INVALID, false, false);
-
+					(*iter)->setContainer(0);
+					(*iter)->setOldContainer(0);
 				}
 			}
 
 			pContMap.erase( vect );
 		}
-
 	}
 
 

@@ -404,7 +404,7 @@ namespace item
 				((P_ITEM)cont)->AddItem(pi);
 			}
 			else
-				pi->setCont( cont );
+				pi->setContainer( cont );
 
 		return pi;
 
@@ -502,8 +502,8 @@ namespace item
 		else
 		{
 			if( cont ) {
-				pi->setCont( cont );
-				if( isItemSerial( cont->getSerial32() ) )
+				pi->setContainer( cont );
+				if( isItemSerial( cont->getSerial() ) )
 					cont->AddItem(pi);
 				pi->Refresh();
 			}

@@ -307,7 +307,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 							pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
 							if(pi->layer==LAYER_HAIR || pi->layer==LAYER_BEARD)
 							{
-								pi->setContSerial(pc->getSerial32());
+								pi->setContainer(pc);
 							}
 							else
 							{

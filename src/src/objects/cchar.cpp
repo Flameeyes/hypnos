@@ -2433,7 +2433,7 @@ void cChar::resurrect( NXWCLIENT healer )
 		if(ISVALIDPI(pi)) {
 			pi->setCurrentName( "a resurrect robe" );
 			pi->layer = LAYER_OUTER_TORSO;
-			pi->setContSerial(getSerial32());
+			pi->setContainer(this);
 			pi->dye=1;
 		}
 		teleport( TELEFLAG_SENDWORNITEMS | TELEFLAG_SENDLIGHT );
@@ -3126,24 +3126,27 @@ void cChar::Kill()
 			continue;
 
 		//the backpack
-		if (pi_j->getSerial32() == pBackPack->getSerial32() ) continue;
+		if (pi_j == pBackPack ) continue;
+
 		//not the death robe
-		if (pi_j->getSerial32() == robe) continue;
+		if (pi_j->getSerial() == robe) continue;
+
 		//weared so remove stat bonus ( MOVING IT TO CORPSE so not continue :] )
-		if (pi_j->getContSerial()==getSerial32())
+		if (pi_j->getContainer() == this)
 		{
 			if(pi_j->st2) modifyStrength(-pi_j->st2);
 			if(pi_j->dx2) dx-=pi_j->dx2;
 			if(pi_j->in2) in-=pi_j->in2;
 		}
+
 		//spell book or newbie are moved to backpack
 		if ( pi_j->type == ITYPE_SPELLBOOK || pi_j->isNewbie() ) {
-			pi_j->setContSerial( pBackPack->getSerial32() );
+			pi_j->setContainer( pBackPack );
 			pi_j->Refresh();
 			continue;
 		}
 
-		pi_j->setContSerial( pCorpse->getSerial32() );
+		pi_j->setContainer( pCorpse );
 		//General Lee
 		Location lj = pi_j->getPosition();
 		lj.y = RandomNum(85,160);
@@ -3151,7 +3154,6 @@ void cChar::Kill()
 		pi_j->setPosition( lj );
 		pi_j->Refresh();
 		//General Lee
-
 	}
 
         if ( !npc )
@@ -3223,8 +3225,9 @@ void cChar::checkEquipement()
 			if(poison && pi->poisoned) poison-=pi->poisoned;
 			if(poison<0) poison=0;
 
-			pi->setContSerial(INVALID);
-			pi->MoveTo(charpos.x, charpos.y, charpos.z);
+			pi->setContainer(o);
+//			pi->MoveTo( charpos.x, charpos.y, charpos.z );
+			pi->MoveTo( charpos );
 
 			NxwSocketWrapper sw;
 			sw.fillOnline( this, false );
@@ -3305,7 +3308,7 @@ SI32 cChar::Equip(P_ITEM pi, LOGICAL drag)
 	}
 
 	pi->layer= item.quality;
-	pi->setContSerial(getSerial32());
+	pi->setContainer(this);
 
 	checkSafeStats();
 	teleport( TELEFLAG_SENDWORNITEMS );
@@ -3355,7 +3358,7 @@ SI32 cChar::UnEquip(P_ITEM pi, LOGICAL drag)
 
 
 	pi->layer= 0;
-	pi->setContSerial( pack->getSerial32() );
+	pi->setContainer( pack );
 	sendbpitem(s, pi);
 
 	return 0;

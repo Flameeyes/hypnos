@@ -196,7 +196,7 @@ void cChar::mounthorse( P_CHAR mount )
 		***/
 
 		
-		pi->setContSerial(getSerial32());
+		pi->setContainer(this);
 		pi->layer = LAYER_MOUNT;
 
 		// v-- is not cheched for decay, so useless

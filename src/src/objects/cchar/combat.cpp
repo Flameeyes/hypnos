@@ -245,7 +245,7 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 					Location charpos = pc_def->getPosition();
 
 					wresmove = 0;
-					dWeapon->setContSerial( INVALID );
+					dWeapon->setContainer(0);
 					dWeapon->MoveTo( charpos );
 					dWeapon->Refresh();
 				}

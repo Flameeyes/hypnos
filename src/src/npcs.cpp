@@ -373,7 +373,7 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, UI16 x1, UI16 y1, SI08 z1)
 										{
 											pc->packitemserial=pi_n->getSerial32();
 											pi_n->setPosition(0, 0, 0);
-											pi_n->setContSerial(pc->getSerial32());
+											pi_n->setContainer(pc);
 											mypack=pi_n;
 										}
 										else
