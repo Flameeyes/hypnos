@@ -57,8 +57,6 @@ private:
 
 	void realworldsave();
 
-	void loadGuilds();
-	
 	void loadjailed();
 	void loadPrison();
 	void savePrison();

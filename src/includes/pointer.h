@@ -58,7 +58,6 @@ namespace pointers {
 	void delFromMultiMap( pItem pi );
 	
 	pChar stableSearch(int serial, int *index);
-#ifdef SPAR_LOCATION_MAP
 	//
 	// Sparhawk:	mapRegion replacement (work in progress)
 	//
@@ -71,7 +70,6 @@ namespace pointers {
 		EXCLUDESELF	=   8,
 		DEAD		=  16,
 		PARTYMEMBER	=  32,
-		GUILDMEMBER	=  64,
 		COMBATTARGET	= 128
 	};
 
@@ -90,7 +88,6 @@ namespace pointers {
 	void		delItemFromLocationMap( const pItem what );
 	ItemList*	getNearbyItems( cObject* pObject, uint32_t range, uint32_t flags = 0 );
 	ItemList*	getNearbyItems( uint32_t x, uint32_t y, uint32_t range, uint32_t flags = 0, pItem pSelf = 0 );
-#endif
 }
 
 #endif

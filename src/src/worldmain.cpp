@@ -16,13 +16,11 @@
 #include "sregions.h"
 #include "debug.h"
 #include "version.h"
-#include "nxw_utils.h"
 #include "tmpeff.h"
 #include "jail.h"
 #include "data.h"
 #include "boats.h"
 #include "spawn.h"
-#include "set.h"
 #include "trade.h"
 #include "basics.h"
 #include "inlines.h"
@@ -391,23 +389,6 @@ void CWorldMain::loadChar() // Load a character from WSC
 
 		case 'G':
   case 'g':
-   if (!strcmp(script1, "GUILDTYPE"))
-   {
-    i = str2num(script2);  // Get the guild type
-    if(i<INVALID||i>MAX_GUILDTYPE)
-     i=INVALID;     // Default to no guild type
-    pc->SetGuildType( static_cast<short>(i) );
-   }
-   else if (!strcmp(script1, "GUILDTRAITOR"))
-   {
-    if(!strcmp(script2, "YES"))
-     pc->SetGuildTraitor(); // yes this character has switch guilds
-   }
-   else if (!strcmp(script1, "GUILDTOGGLE")) { (str2num(script2) ? pc->SetGuildTitleToggle() : pc->ResetGuildTitleToggle() );}
-   else if (!strcmp(script1, "GUILDNUMBER")) { pc->SetGuildNumber( str2num(script2) );}
-   else if (!strcmp(script1, "GMRESTRICT"))  { pc->gmrestrict=str2num(script2); }
-   else if (!strcmp(script1, "GUILDTITLE"))  { pc->SetGuildTitle(script2);}
-   else if (!strcmp(script1, "GUILDFEALTY")) { pc->SetGuildFealty( str2num(script2) );}
    //////////////////////////////////
    // Reads in the Gm movement effect int
    //
@@ -1191,10 +1172,6 @@ void CWorldMain::loadNewWorld() // Load world from NXW*.WSC
 				{
 					loaditem();
 				}
-				else if (!strcmp(script2, "GUILD"))
-				{
-					Guilds->Read(str2num(script3));
-				}
 
 				iitem++;
 			}
@@ -1207,7 +1184,6 @@ void CWorldMain::loadNewWorld() // Load world from NXW*.WSC
 
 	Books::LoadBooks();
 
-	Guildz.load();
 	loadPrison();
 
 
@@ -1301,13 +1277,6 @@ void CWorldMain::saveNewWorld()
 	fprintf(iWsc, "// || Requires NoX-Wizard version %s to be read correctly              ||\n", WSCREQVER);
 	fprintf(iWsc, "// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n\n\n");
 	fprintf(iWsc, "//\n");
-////END
-
-////GUILDS SAVE
-	Guilds->Write( iWsc ); //Endymion to remove
-//Endymion Save new Guild System
-	Guildz.save();
-//Endymion End Save Guild System
 ////END
 
 ////JAIL SAVE
@@ -1435,11 +1404,7 @@ void CWorldMain::SaveChar( pChar pc )
 				fprintf(cWsc, "CREATIONDAY %i\n", pc->GetCreationDay());
 		    if (pc->gmMoveEff!=dummy.gmMoveEff)
                 fprintf(cWsc, "GMMOVEEFF %i\n", pc->gmMoveEff);
-			if(pc->GetGuildType()!=dummy.GetGuildType())
-				fprintf(cWsc,"GUILDTYPE %i\n",pc->GetGuildType());
-			if(pc->IsGuildTraitor())
-				fprintf(cWsc,"GUILDTRAITOR YES\n");
-
+			
 			// commented by Anthalir, we need to always save them
 //			if (pcpos.x)
 				fprintf(cWsc, "X %i\n", pcpos.x);
@@ -1653,22 +1618,6 @@ void CWorldMain::SaveChar( pChar pc )
 				fprintf(cWsc, "SPLIT %i\n", pc->split);
 			if (pc->splitchnc!=dummy.splitchnc)
 				fprintf(cWsc, "SPLITCHANCE %i\n", pc->splitchnc);
-// Begin of Guild related things (DasRaetsel)
-			if (pc->HasGuildTitleToggle()!=dummy.HasGuildTitleToggle())
-				fprintf(cWsc, "GUILDTOGGLE %i\n", 1);
-			if (pc->GetGuildNumber()!=dummy.GetGuildNumber())
-				fprintf(cWsc, "GUILDNUMBER %i\n", pc->GetGuildNumber());
-			if (strlen( pc->GetGuildTitle() ) )
-#ifndef DESTROY_REFERENCES
-				fprintf(cWsc, "GUILDTITLE %s\n", pc->GetGuildTitle());
-#else
-				fprintf(cWsc, "GUILDTITLE CG%x\n", pc->serial);
-#endif
-			if (pc->GetGuildFealty()!=dummy.GetGuildFealty())
-			{
-				fprintf(cWsc, "GUILDFEALTY %i\n", pc->GetGuildFealty());
-				fprintf(cWsc, "MURDERRATE %i\n",pc->murderrate);
-			}
 			if (pc->getRegenRate( STAT_HP, VAR_REAL ) != dummy.getRegenRate( STAT_HP, VAR_REAL ) )
 				fprintf(cWsc, "REGEN_HP %i\n", pc->getRegenRate( STAT_HP, VAR_REAL ));
 			if (pc->getRegenRate( STAT_STAMINA, VAR_REAL ) != dummy.getRegenRate( STAT_STAMINA, VAR_REAL ) )

@@ -22,7 +22,14 @@
 \brief Class for access to the dynamic loadded scripting engine
 */
 class cScriptingEngine {
+protected:
+	static cScriptingEngine *engine;	//!< Pointer to the scripting engine used
 public:
+	static void initialize();
+	
+	static cScriptingEngine *getEngine()
+	{ return engine; }
+
 	/*!
 	\class cFunctionHandle scripting.h "backend/scripting.h"
 	\brief Handle to a scripting function
