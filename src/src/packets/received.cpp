@@ -313,8 +313,13 @@ static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
                 case 0x00: return new cPacketReceiveCreateChar(buffer, length);         // Create Character
                 case 0x01: return new cPacketReceiveDisconnectNotify(buffer, length);   // Disconnect Notification
                 case 0x02: return new cPacketReceiveMoveRequest(buffer, length);        // Move Request
+<<<<<<< cpacket.cpp
+                case 0x03: return new cPacketReceiveTalkRequest(buffer, length);        // Talk Request
+                case 0x05: return new cPacketReceiveAttackRequest(buffer, length);      // Attack Request
+=======
                 case 0x03: return new cPacketReceiveTalkRequest(buffer, length);        // Talk Request
                 case 0x05: length =   5; break; // Attack Request
+>>>>>>> 1.8
                 case 0x06: length =   5; break; // Double click
                 case 0x07: length =   7; break; // Pick Up Item(s)
                 case 0x08: length =  14; break; // Drop Item(s)
@@ -512,7 +517,7 @@ virtual bool cPacketReceiveCreateChar::execute(pClient client)
       	if (HairStyle)  //If HairStyle was invalid, is now 0, so baldy pg :D
 	{
 		pi = item::CreateFromScript( "$item_short_hair" );
-		VALIDATEPI(pi);
+		VALIDATEPIR(pi, false);
 		pi->setId(HairStyle);
 		pi->setColor(HairColor);
 		pi->setContainer(pc);
@@ -523,7 +528,7 @@ virtual bool cPacketReceiveCreateChar::execute(pClient client)
 	if (FacialHair)
 	{
 		pi = item::CreateFromScript( "$item_short_beard" );
-		VALIDATEPI(pi);
+		VALIDATEPIR(pi, false);
 		pi->setId(FacialHair);
 		pi->setColor(FacialHairColor);
 		pi->setContainer(pc);
@@ -533,7 +538,7 @@ virtual bool cPacketReceiveCreateChar::execute(pClient client)
 
         // - create the backpack
 	pi= item::CreateFromScript( "$item_backpack");
-	VALIDATEPI(pi);
+	VALIDATEPIR(pi, false);
 	pc->packitemserial= pi->getSerial();
         pi->setContainer(pc);
 
@@ -556,7 +561,7 @@ virtual bool cPacketReceiveCreateChar::execute(pClient client)
 			pi= item::CreateFromScript( "$item_a_kilt");
 	}
 
-	VALIDATEPI(pi);
+	VALIDATEPIR(pi, false);
 
 	// pant/skirt color -> old client code, random color
 	pi->setColor(pants_color);
@@ -567,7 +572,7 @@ virtual bool cPacketReceiveCreateChar::execute(pClient client)
 	else
 		pi= item::CreateFromScript( "$item_shirt");
 
-	VALIDATEPI(pi);
+	VALIDATEPIR(pi, false);
 	pi->setColor(shirt_color);
 	pi->setContainer(pc);
 
@@ -598,6 +603,52 @@ virtual bool cPacketReceiveDisconnectNotify::execute(pClient client)
 
 virtual bool cPacketReceiveMoveRequest::execute (pClient client)
 {
+<<<<<<< cpacket.cpp
+
+        if( (length == 7) && (client->currChar()!= NULL ))
+        {
+	        walking(client->currChar(), buffer[1], buffer[2]); // buffer[1] = direction, buffer[2] = sequence number
+	        client->currChar()->disturbMed();
+                return true;
+        } else return false;
+}
+
+virtual bool cPacketReceiveTalkRequest::execute (pClient client)
+{
+	if( (client->currChar()!=NULL) && (length != ShortFromCharPtr(buffer + 1)))
+        {
+        // the buffer should be invalid only on the next packet reception by the same client....
+        // ... but is a copy really needed?
+        	unsigned char nonuni[512];
+		client->currChar()->unicode = false;
+	        strcpy((char*)nonuni, (char*)&buffer[8]);
+		talking(client, (char*)nonuni);
+                return true;
+	} else return false;
+}
+
+
+
+virtual bool cPacketReceiveAttackRequest::execute (pClient client)
+{
+        if (length != 5) return false;
+	pPC pc = client->currChar();
+	VALIDATEPCR( pc, false );
+	pChar victim = pointers::findCharBySerPtr(buffer[s] +1);
+	VALIDATEPCR( victim, false );
+
+	if( pc->dead )
+                        pc->deadattack(victim);
+	else
+		if( pc->jailed )
+			sysmessage(s,TRANSLATE("There is no fighting in the jail cells!"));
+		else
+			pc->attackStuff(victim);
+
+
+
+        return true;
+=======
 
         if( (length == 7) && (client->currChar()!= NULL ))
         {
@@ -617,4 +668,7 @@ virtual bool cPacketReceiveTalkRequest::execute (pClient client)
 		talking(client, (char*)nonuni);
                 return true;
 	} else return false;
+>>>>>>> 1.8
 }
+
+

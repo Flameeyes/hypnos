@@ -2989,3 +2989,228 @@ void cChar::warUpdate()
 		}
 	}
 }
+
+
+
+void cChar::deadAttack (pChar pc_other)
+{
+	VALIDATEPC( pc_other );
+	if(pc_other->npc)
+	{
+		if(pc_other->npcaitype==NPCAI_HEALER)
+		{
+			if( isInnocent() )
+			{
+				if ( distFrom( pc_other ) <= 3 )
+				{//let's resurrect him!
+					pc_other->playAction(0x10);
+					resurrect();
+					staticeffect(cc, 0x37, 0x6A, 0x09, 0x06);
+					switch(RandomNum(0, 4))
+					{
+					case 0: pc_other->talkAll( TRANSLATE("Thou art dead, but 'tis within my power to resurrect thee.  Live!"),0); break;
+					case 1: pc_other->talkAll( TRANSLATE("Allow me to resurrect thee ghost.  Thy time of true death has not yet come."),0); break;
+					case 2: pc_other->talkAll( TRANSLATE("Perhaps thou shouldst be more careful.  Here, I shall resurrect thee."),0); break;
+					case 3: pc_other->talkAll( TRANSLATE("Live again, ghost!  Thy time in this world is not yet done."),0); break;
+					case 4: pc_other->talkAll( TRANSLATE("I shall attempt to resurrect thee."),0); break;
+					}
+				}
+				else
+				{//if dist>3
+					pc_other->talkAll( TRANSLATE("Come nearer, ghost, and i'll give you life!"),1);
+				}
+			}
+			else
+			{//if a bad guy
+				pc_other->talkAll( TRANSLATE("I will not give life to a scoundrel like thee!"),1);
+			}
+		}
+		else if( pc_other->npcaitype == NPCAI_EVILHEALER )
+		{
+			if( isMurderer())
+			{
+				if ( distFrom( pc_other ) <=3 )
+				{//let's resurrect him!
+					pc_other->playAction(0x10);
+					resurrect();
+					staticeffect(cc, 0x37, 0x09, 0x09, 0x19); //Flamestrike effect
+					switch(rand()%5)
+					{
+						case 0: pc_other->talkAll( TRANSLATE("Fellow minion of Mondain, Live!!"),0); break;
+						case 1: pc_other->talkAll( TRANSLATE("Thou has evil flowing through your vains, so I will bring you back to life."),0); break;
+						case 2: pc_other->talkAll( TRANSLATE("If I res thee, promise to raise more hell!."),0); break;
+						case 3: pc_other->talkAll( TRANSLATE("From hell to Britannia, come alive!."),0); break;
+						case 4: pc_other->talkAll( TRANSLATE("Since you are Evil, I will bring you back to consciouness."),0); break;
+					}
+				}
+				else
+				{//if dist >3
+					pc_other->talkAll( TRANSLATE("Come nearer, evil soul, and i'll give you life!"),1);
+				}
+			}
+			else
+			{//if player is a good guy
+				pc_other->talkAll( TRANSLATE("I dispise all things good. I shall not give thee another chance!"),1);
+			}
+		}
+		else
+		{
+			sysmessage(s,TRANSLATE("You are dead and cannot do that."));
+		}//npcaitype check
+	}
+	else
+	{//if this not a npc but a player
+		if(SrvParms->persecute)
+		{//start persecute stuff - AntiChrist
+			targserial = pc_other->getSerial32();
+			Skills::Persecute(getClient());
+		}
+		else
+		{
+			sysmessage(s,TRANSLATE("You are dead and cannot do that."));
+		}
+	}//if npc
+
+}
+
+
+/*** Xan : this function is critical, and *SHOULD* be used everytime
+ *** an attack request is made, not only for dblclicks in war mode
+ ***/
+
+void cChar::attackStuff(pChar victim)
+{
+	VALIDATEPC( victim );
+
+	if( getSerial32() == victim->getSerial32() )
+		return;
+
+	if ( amxevents[EVENT_CHR_ONBEGINATTACK]) {
+		g_bByPass = false;
+		amxevents[EVENT_CHR_ONBEGINATTACK]->Call( getSerial32(), victim->getSerial32() );
+		if (g_bByPass==true) return;
+	}
+
+	if ( victim->amxevents[EVENT_CHR_ONBEGINDEFENSE]) {
+		g_bByPass = false;
+		victim->amxevents[EVENT_CHR_ONBEGINDEFENSE]->Call( victim->getSerial32(), getSerial32() );
+		if (g_bByPass==true) return;
+	}
+	/*
+	runAmxEvent( EVENT_CHR_ONBEGINATTACK, getSerial32(), victim->getSerial32() );
+	if (g_bByPass==true)
+		return;
+	victim->runAmxEvent( EVENT_CHR_ONBEGINDEFENSE, victim->getSerial32(), getSerial32() );
+	if (g_bByPass==true)
+		return;
+	*/
+	targserial=victim->getSerial32();
+	unHide();
+	disturbMed();
+
+	if( victim->dead || victim->hp <= 0 )//AntiChrist
+	{
+		sysmsg( TRANSLATE("That person is already dead!") );
+		return;
+	}
+
+	if ( victim->npcaitype==NPCAI_PLAYERVENDOR)
+	{
+		sysmsg( TRANSLATE("%s cannot be harmed."), victim->getCurrentNameC() );
+		return;
+	}
+
+        //TODO: modify this to send a packet
+	SndAttackOK(s, victim->getSerial32());	//keep the target highlighted
+
+
+	if (!( victim->targserial== INVALID))
+	{
+		victim->attackerserial=getSerial32();
+		victim->ResetAttackFirst();
+	}
+	SetAttackFirst();
+	attackerserial=victim->getSerial32();
+
+
+        //TODO once set are done revise this
+	if( victim->guarded )
+	{
+		NxwCharWrapper sc;
+		sc.fillOwnedNpcs( victim, false, false );
+		for ( sc.rewind(); !sc.isEmpty(); sc++ )
+		{
+			P_CHAR guard = sc.getChar();
+			if ( ISVALIDPC( guard ) )
+				if ( guard->npcaitype == NPCAI_PETGUARD && ( distFrom( guard )<= 10 ) )
+					npcattacktarget(pc, guard);
+		}
+	}
+
+	if ((region[ victim->region].priv & RGNPRIV_GUARDED) && (SrvParms->guardsactive))
+	{
+		if (isGrey())
+			setGrey();
+
+		if (victim->npc==0 && victim->isInnocent() && (!victim->IsGrey()) && Guilds->Compare( pc, victim )==0) //REPSYS
+		{
+			criminal( pc );
+			if (ServerScp::g_nInstantGuard==1)
+				npcs::SpawnGuard(pc, victim, getPosition() );
+		}
+		else if( victim->npc && victim->isInnocent() && !victim->HasHumanBody() && victim->npcaitype!=NPCAI_TELEPORTGUARD )
+		{
+			criminal( pc );
+			if (ServerScp::g_nInstantGuard==1)
+				npcs::SpawnGuard(pc, victim, getPosition() );
+		}
+		else if( victim->npc && victim->isInnocent() && victim->HasHumanBody() && victim->npcaitype!=NPCAI_TELEPORTGUARD )
+		{
+			victim->talkAll( TRANSLATE("Help! Guards! I've been attacked!"), 1);
+			criminal( victim );
+			callguards(DEREF_P_CHAR(victim)); // Sparhawk must check if npcs can call guards
+		}
+		else if( victim->npc && victim->npcaitype==NPCAI_TELEPORTGUARD)
+		{
+			criminal( pc );
+			npcattacktarget(victim, pc);
+		}
+		else if ((victim->npc || victim->tamed) && !victim->war && victim->npcaitype!=NPCAI_TELEPORTGUARD)
+		{
+			victim->fight( pc );
+		}
+		else
+		{
+			victim->setNpcMoveTime();
+		}
+		//emoteall( "You see %s attacking %s!", 1, getCurrentNameC(), victim->getCurrentNameC() );
+	}
+	else	// not a guarded area
+	{
+		if ( victim->IsInnocent())
+		{
+			if ( victim->IsGrey())
+				attacker->SetGrey();
+			if (!victim->npc && (!victim->IsGrey()) && Guilds->Compare(pc, victim )==0)
+			{
+				criminal( pc );
+			}
+			else if (victim->npc && victim->tamed)
+			{
+				criminal( pc );
+				npcattacktarget(victim, pc);
+			}
+			else if (victim->npc)
+			{
+				criminal( pc );
+				npcattacktarget(victim, pc);
+				if (victim->HasHumanBody() )
+				{
+					victim->talkAll(TRANSLATE("Help! Guards! Tis a murder being commited!"), 1);
+				}
+			}
+		}
+	}
+
+}
+

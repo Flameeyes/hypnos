@@ -312,6 +312,9 @@ public:
 
 	void warUpdate();
 
+        void deadAttack (pChar pc_other);
+        void attackStuff (pChar victim);
+
 	/*!
 	\brief Sets criminal or grey depending on a server.cfg setting
 	\param mode server.cfg setting to test (1 | 2)

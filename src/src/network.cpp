@@ -350,50 +350,39 @@ void cNetwork::xSend(NXWSOCKET socket, wstring& p, bool alsoTermination )
 	boutlength[ socket ] += length;
 }
 
+/*!
+\brief Disconnects client
 
+Updated to pyuo (Chronodt 29/1/04)
+\todo find something to replace socket number output with
+*/
 
-void cNetwork::Disconnect ( NXWSOCKET socket ) // Force disconnection of player //Instalog
+void cNetwork::Disconnect (cClient client)              // Force disconnection of player //Instalog
 {
 	const char msgDisconnect[]	= "Client %i disconnected. [Total online clients: %i]\n";
 	const char msgPart[]		= "%s has left the realm";
 
-        if ( socket < 0 || socket >= now )
-		return;
-
-	P_CHAR pc = loginchars[socket];
-
-	int j,i;
-
-	if ( now < 0 )
-	{
-		LogError("error in now-managment!\n");
-		now = 0;
-		return;
-	}
+	pChar pc = client->currChar();
 
 	time_t ltime;
 	time( &ltime );
 
-	InfoOut( (char*)msgDisconnect, socket, now - 1 );
+        int clientnumber = 0;
+	for (cClients::iterator i = cClient::clients.begin(); (i != client) || (cClient::clients.end()); i++ ) clientnumber++;
+
+	InfoOut( (char*)msgDisconnect, clientnumber , cClient::clients.size() - 1 );
 
 	if (SrvParms->server_log)
-		ServerLog.Write( (char*)msgDisconnect, socket, now - 1 );
+		ServerLog.Write( (char*)msgDisconnect, clientnumber , cClient::clients.size() - 1);
 
 	if ( ISVALIDPC(pc) )
-		if ( pc->account==acctno[ socket ] && SrvParms->partmsg && clientInfo[ socket ]->ingame && !pc->npc )
+		if (SrvParms->partmsg && pc != NULL && !pc->npc )
 			sysbroadcast( (char*)msgPart, pc->getCurrentNameC() );
-
-	if ( acctno[ socket ] != -1 )
-		Accounts->SetOffline( acctno[ socket ] ); //Bug clearing logged in accounts!
-	acctno[ socket ] = INVALID;
-
-//	char val=0;
 
 	if( ISVALIDPC( pc ) )
 		if ( pc->IsOnline() )
 		{
-
-			LogOut( socket );
+			LogOut( client );
 
 
 			if( pc->party!=INVALID ) {
@@ -405,20 +394,26 @@ void cNetwork::Disconnect ( NXWSOCKET socket ) // Force disconnection of player 
 
 			SERIAL pc_serial = pc->getSerial32();
 
-			for ( i = 0; i < now; ++i )
+			for (cClients::iterator i = cClient::clients.begin(); cClient::clients.end(); i++ )
 			{
-				P_CHAR pi= loginchars[i];
+                                pChar pi = i->CurrChar();
 				if (ISVALIDPC(pi))
-					if( pc != pi && char_inVisRange( pc, pi ) && clientInfo[ i ]->ingame )
+					if( pc != i && char_inVisRange( pc, pi ))
 					{
-						SendDeleteObjectPkt(i, pc_serial);
+						i->SendDeleteObjectPkt(pc_serial);
 					}
 			}
+
+
+
 		}
 
-	FlushBuffer( socket );
+	FlushBuffer( client );
+
+  // revise from here
 
 	closesocket( client[ socket ] ); //so it bombs and free the mutex :]
+
 #ifdef ENCRYPTION
 	if ( clientCrypter[socket] != NULL && !clientCrypter[socket]->getEntering())
 	{
@@ -493,6 +488,7 @@ void cNetwork::Disconnect ( NXWSOCKET socket ) // Force disconnection of player 
 			pj->setClient(new cNxwClientObj(i));
 	}
 }
+
 
 void cNetwork::LoginMain(int s)
 {
