@@ -16,8 +16,6 @@
 #include "network.h"
 #include "sndpkg.h"
 #include "debug.h"
-#include "itemid.h"
-#include "set.h"
 #include "house.h"
 #include "npcai.h"
 #include "data.h"
