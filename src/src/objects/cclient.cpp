@@ -1305,6 +1305,7 @@ bool cClient::droppedOnGuard(pItem pi, Location &loc, pItem cont)
 	// Search for the key word "the head of"
         //! \todo change check for text to check for id
 	if( strstr( pi->getCurrentName().c_str(), "the head of" ) ) //!!! Wrong! it must check the ItemID, not the name :(
+//	if( pi->getId() == 0x1DA0 ) //!!! RIGHT! uhm... siam sicuri che questa sia la versione corretta ?! -.^" [targeting.cpp:148]
 	{
 		// This is a head of someone, see if the owner has a bounty on them
 		pChar own=cSerializable::findCharBySerial(pi->getOwnerSerial32());
