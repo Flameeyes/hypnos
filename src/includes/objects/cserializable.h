@@ -19,6 +19,7 @@
 /*!
 \class cSerializable cserializable.h "objects/cserializable.h"
 \brief Serializable object
+\author Flameeyes (class skeleton and documentation)
 
 This class is an abstraction of a serializable object, like an item or a char.
 This was wrote becaues a body doesn't have a serial, but the char has, among

@@ -11,7 +11,9 @@
 
 /*!
 \brief Default constructor
-\param n Return of eventsNumber() abstract function
+\param n Return of eventsNumber() function (dimension of events array)
+
+This functions also initialize the events handle array to the given value.
 */
 cEventThrower::cEventThrower(uint16_t n) :
 	events(n)
