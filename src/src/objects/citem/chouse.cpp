@@ -14,6 +14,25 @@
 #include "map.h"
 
 /*!
+\brief Delets a house
+
+This function deletes the player's vendors from the house, removes all the
+house's keys and at the end calls the overloaded cMulti::Delete() function to
+delete the content of the multi.
+*/
+void cHouse::Delete()
+{
+	for(CharSLIst::iterator it = chars.begin(); it != chars.end(); it++)
+		if ( (*it)->getAIType() == cNPC::NPCAI_PLAYERVENDOR )
+			(*it)->Delete();
+		// cChar::Delete() takes care of removing the char from the multi
+	
+	killKeys();
+	
+	cMulti::Delete();
+}
+
+/*!
 \brief Checks if a player is a Co-Owner of the house
 \param pc Player to test
 \retval true The player is the owner, a character of the same account of the
@@ -232,4 +251,29 @@ bool cHouse::doSpeech(pClient client, const std::string &speech)
 		return true;
 	}
 	return false;
+}
+
+/*!
+\brief Checks for houses decay
+
+This function is called by the garbage collector thread to check the houses
+decay timer, and then delete them.
+
+This function uses the cHouse::houses list to find out which houses must decay
+and which not. For this, it acquires cHouse::housesMutex before checking the
+list: trying to add, remove or refresh an house while checking this will make
+something very awful.
+*/
+void cHouse::checkDecay()
+{
+	housesMutex.lock();
+	
+	for(HouseSList::iterator it = houses.begin(); it != houses.end())
+		if ( TIMEOUT((*it).decaytimer) )
+		{
+			(*it)->Delete();
+			houses.erase(it);
+		}
+	
+	housesMutex.unlock();
 }

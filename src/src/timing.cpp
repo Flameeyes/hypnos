@@ -18,12 +18,12 @@
 #include "calendar.h"
 #include "magic.h"
 #include "tmpeff.h"
-#include "house.h"
 #include "timers.h"
 #include "boats.h"
 #include "spawn.h"
 #include "trade.h"
 #include "inlines.h"
+#include "objects/citem/chouse.h"
 
 extern bool g_bMustExecAICode;
 
@@ -198,12 +198,10 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 	//
 	if ( TIMEOUT( housedecaytimer ) )
 	{
-		//////////////////////
-		///// check_houses
-		/////////////////////
+		// check_houses
 		if( SrvParms->housedecay_secs != UINVALID )
-			check_house_decay();
-		housedecaytimer = getclock()+SECS*60*60; // check only each hour
+			cHouse::checkDecay();
+		housedecaytimer = getclock()+HOURS; // check only each hour
 	}
 	//
 	// Spawns

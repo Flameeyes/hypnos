@@ -12,11 +12,7 @@
 #ifndef _HOUSE_H_
 #define _HOUSE_H_
 
-extern std::map< uint32_t, pChar > houses;
-
 void buildhouse( pClient client, pTarget t );
-int check_house_decay();
-void killkeys(uint32_t serial);
 
 void target_houseOwner( pClient client, pTarget t );
 void target_houseEject( pClient client, pTarget t );

@@ -100,6 +100,8 @@ typedef class cEquippableContainer *pEquippableContainer;
 						//!< Pointer to a cEquippableContainer (backpacks, bank boxes)
 typedef class cMulti *pMulti;			//!< Pointer to a cMulti
 typedef class cBoat *pBoat;			//!< Pointer to a cBoat
+typedef class cHouse *pHouse;			//!< Pointer to a cHouse
+typedef std::slist<pHouse> HouseSList;		//!< Singly-linked list of houses
 
 typedef class cMsgBoard *pMsgBoard;		//!< Pointer to a cMsgBoard
 typedef class cMessage* pMessage;		//!< Pointer to a message board message

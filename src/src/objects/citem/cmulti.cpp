@@ -35,6 +35,25 @@ void cMulti::MoveTo(sLocation newloc)
 }
 
 /*!
+\brief Deletes a multi object
+
+This function reimplements cItem::Delete() for multis, cleaning up the items
+and chars lists (removing the items and releasing the chars).
+
+cHouse reimplements this one more time deleting the npc vendors.
+*/
+void cMulti::Delete()
+{
+	for(MultiItemSList::iterator it = items.begin(); it != items.end(); it++)
+		(*it)->Delete();
+	
+	for(CharSList::iterator it = chars.begin(); it != chars.end(); it++)
+		(*it)->setMulti(NULL);
+		
+	cItem::Delete();
+}
+
+/*!
 \brief Adds an object to the list of multi's objects
 \param obj Object to add
 

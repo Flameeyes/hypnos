@@ -57,6 +57,7 @@ public:
 public:	
 	cHouse();
 	cHouse(uint32_t nserial);
+	virtual void Delete();
 	
 protected:
 	//! Serial-indexed players' status map
@@ -70,6 +71,8 @@ protected:
 	\todo Change this to an archetype pointer
 	*/
 	std::string deedID;
+	
+	uint32_t decaytimer;
 	
 public:
 	//! Gets the house's owner
@@ -90,6 +93,12 @@ public:
 	void killKeys();
 	
 	bool doSpeech(pClient client, const std::string &speech);
+
+protected:
+	static HouseSList houses;	//!< All the houses in the world
+	Wefts::Mutex housesMutex;	//!< Mutex for access cHouse::houses
+public:
+	checkDecay();
 };
 
 #endif

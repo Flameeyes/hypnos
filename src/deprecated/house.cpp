@@ -22,8 +22,6 @@
 #include "map.h"
 #include "inlines.h"
 
-std::map< uint32_t, pChar > houses;
-
 bool CheckBuildSite(int x, int y, int z, int sx, int sy);
 
 
@@ -466,136 +464,6 @@ void buildhouse( pClient client, pTarget t )
 	}
 }
 
-// removes houses - without regions. slow but necassairy for house decay
-// LB 19-September 2000
-/*!
-\brief Remove Houses, without regions, slow but necessariry for house decay
-\todo Need rewrite, now commented out
-*/
-void killhouse(ITEM i)
-{
-/*	pChar pc;
-	pItem pi;
-	int x1, y1, x2, y2;
-
-
-	pi = MAKE_ITEM_REF(i);
-
-	Map->MultiArea(pi, &x1, &y1, &x2, &y2);
-	uint32_t serial = pi->getSerial();
-
-	int a;
-	for (a = 0; a < charcount; a++) // deleting npc-vendors attched to the decying house
-	{
-		pc = cSerializable::findCharBySerial(a); /// !!!!!!!!!!!!!!
-		sLocation charpos= pc->getPosition();
-
-		if ((charpos.x >= x1) && (charpos.y >= y1) && (charpos.x <= x2) && (charpos.y <= y2) && !pc->free)
-		{
-			if (pc->npcaitype == NPCAI_PLAYERVENDOR) // player vendor in right place, delete !
-			{
-				pc->deleteChar();
-			}
-		}
-	}
-
-	for (a = 0; a < itemcount; a++) // deleting itmes inside house
-	{
-		pi = MAKE_ITEM_REF(a);
-		if ((pi->getPosition().x >= x1) &&
-			(pi->getPosition().y >= y1) &&
-			(pi->getPosition().x <= x2) &&
-			(pi->getPosition().y <= y2) &&
-			(!pi->free))
-		{
-			if (pi->type != ITYPE_GUILDSTONE) // dont delete guild stones !
-			{
-				pi->deleteItem();
-			}
-		}
-	}
-
-	// deleting house keys
-	killkeys(serial);
-	*/
-}
-
-/*!
-\brief does all the work for house decay
-
-checks all items if they are houses. if so, check its time stamp. if its too old remove it
-\todo need rewrite, now is commented out...
-*/
-int check_house_decay()
-{
-/*	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	pItem pi;
-	bool is_house;
-	int houses=0;
-	int decayed_houses=0;
-	unsigned long int timediff;
-	unsigned long int ct=getclock();
-
-	//CWatch *Watch=new CWatch();
-
-	for (int i=0; i<itemcount; i++)
-	{
-		pi=MAKE_ITEM_REF(i); // there shouldnt be an error here !
-		is_house=pi->IsHouse();
-		if (is_house && !pi->free)
-		{
-			// its a house -> check its unused time
-			//ConOut("id2: %x time_unused: %i max: %i\n",pi->id2,pi->time_unused,server_data.housedecay_secs);
-
-			if (pi->time_unused>SrvParms->housedecay_secs) // not used longer than max_unused time ? delete the house
-			{
-				decayed_houses++;
-				sprintf(temp,"%s decayed! not refreshed for > %i seconds!\n",pi->getCurrentName().c_str(),SrvParms->housedecay_secs);
-				LogMessage(temp);
-				killhouse(i);
-			}
-			else // house ok -> update unused-time-attribute
-			{
-				timediff=(ct-pi->timeused_last)/SECS;
-				pi->time_unused+=timediff; // might be over limit now, but it will be cought next check anyway
-				pi->timeused_last=ct;	// if we don't do that and housedecay is checked every 11 minutes,
-									// it would add 11,22,33,... minutes. So now timeused_last should in fact
-									// be called timeCHECKED_last. but as there is a new timer system coming up
-									// that will make things like this much easier, I'm too lazy now to rename
-									// it (Duke, 16.2.2001)
-			}
-			houses++;
-		}
-	}
-	//delete Watch;
-	return decayed_houses;
-*/
-	return 0;
-}
-
-
-/*!
-\author Luxor
-\note This function use a BAD method based on cAllObjects, will be substituted with a map system.
-*/
-void killkeys(uint32_t serial) // Crackerjack 8/11/99
-{
-	if ( serial <= INVALID )
-		return;
-
-	cAllObjectsIter objs;
-	pItem pi = NULL;
-	for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
-		if ( !cSerializable::isItemSerial( objs.getSerial() ) )
-			continue;
-
-		if ( (pi=static_cast<pItem>(objs.getObject())) ) {
-			if ( pi->type == ITYPE_KEY && pi->more == serial )
-				pi->Delete();
-		}
-	}
-}
-
 bool CheckBuildSite(int x, int y, int z, int sx, int sy)
 {
 	signed int checkz;
@@ -637,8 +505,8 @@ void target_houseOwner( pClient ps, pTarget t )
 	pItem pSign=cSerializable::findItemBySerial( t->buffer );
 	if ( ! pSign ) return;
 
-	pItem pHouse=cSerializable::findItemBySerial( pSign->more );
-	if ( ! pHouse ) return;
+	pHouse ph=cSerializable::findItemBySerial( pSign->more );
+	if ( ! ph ) return;
 
 	if(pc == curr)
 	{
@@ -648,9 +516,8 @@ void target_houseOwner( pClient ps, pTarget t )
 
 	pSign->setOwner(pc);
 
-	pHouse->setOwner(pc);
-
-	killkeys( pHouse->getSerial() );
+	ph->setOwner(pc);
+	ph->killKeys()
 
 
 	pClient osc=pc->getClient();
@@ -664,7 +531,7 @@ void target_houseOwner( pClient ps, pTarget t )
 	else
 		pi3->MoveTo( pc->getPosition() );
 	pi3->Refresh();
-	pi3->more = pHouse->getSerial();
+	pi3->more = ph->getSerial();
 	pi3->type=7;
 
 	client->sysmessage("You have transferred your house to %s.", pc->getCurrentName().c_str());

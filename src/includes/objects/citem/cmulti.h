@@ -58,6 +58,8 @@ public:
 	{ return area; }
 	
 	static pMulti cMulti::getAt(sPoint p);
+	
+	virtual void Delete();
 };
 
 #endif
