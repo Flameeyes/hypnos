@@ -121,6 +121,17 @@ public:
 	void unStable();
 //@}
 
+//@{
+/*!
+\name Quests
+*/
+	void createEscortQuest();		// Uses this npc to carry out an escort quest. Publishes it on regional msgboards
+        void clearedEscordQuest(pPC pc);        // pc has brought to destination this npc, so gets the reward :D
+        void removepostEscortQuest();		// quest was never accepted, so removing message
+        void deleteEscortQuest();		// deleting npc used for quest
+
+//@}
+
 };
 
 #endif

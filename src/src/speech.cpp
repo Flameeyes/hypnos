@@ -356,8 +356,8 @@ int response(NXWSOCKET  s)
 						sprintf(temp, TRANSLATE("Lead on! Payment shall be made when we arrive at %s."), region[pc_map->questDestRegion].name);
 						pc_map->talkAll(temp, 0);
 
-						// Remove post from message board (Mark for deletion only - will be cleaned during cleanup)
-						cMsgBoard::MsgBoardQuestEscortRemovePost( DEREF_P_CHAR(pc_map) );
+						// Remove post from message board
+						((pNPC)pc_map)->removepostEscortQuest();
 
 						// Return 1 so that we indicate that we handled the message
 						return 1;

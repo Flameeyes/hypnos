@@ -226,7 +226,7 @@ void cChar::walk()
 			if ( pc->dead )
 				break;
 			if ( pc->questDestRegion == region )
-				cMsgBoard::MsgBoardQuestEscortArrive( this, pc );
+				((pNPC)this)->clearedEscordQuest( (pPC) pc );
 			follow( pc );
 		}
 			break;

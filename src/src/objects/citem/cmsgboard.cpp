@@ -350,18 +350,20 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
 \return serial of message posted 
 */
 
-static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int region )
+static UI32 cMsgBoard::createQuestMessage(QuestType questType, pNPC npc, pItem item, int region )
 {
 	static const char subjectEscort[]     = "Escort: Needed for the day.";  // Default escort message
 	static const char subjectBounty[]     = "Bounty: Reward for capture.";  // Default bounty message
 	static const char subjectItem[]       = "Lost valuable item.";          // Default item message
 
+
         pMsgBoardMessage message = new cMsgBoardMessage();
 
 	message->qtype = questType;
 	message->autopost = true;
-	message->targetserial = targetserial;
-        message->region = region;	//if questtype does not need to use a regional post, this is simply ignored :D 
+	message->targetnpc = (npc) ? npc->getSerial32() : 0;
+        message->targetitem = (item) ? item->getSerial32() : 0;
+        message->region = region;	//if questtype does not need to use a regional post, this is simply ignored :D
         
 	SI32	sectionEntrys[MAXENTRIES];                            // List of SECTION items to store for randomizing
 
@@ -374,19 +376,39 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 		case ITEMQUEST:
                 	message->subject = string(subjectItem);
 			message->availability = REGIONALPOST;
+                        if (!npc || !item)
+                        {
+	                        ErrOut("cMsgBoard::createQuestMessage() missing valid npc or item for ITEMQUEST\n");
+              	        	message->Delete;
+				return 0;
+                        }
 			break;
 
 		case BOUNTYQUEST:
 	                message->subject = string(subjectBounty);
 			message->availability = GLOBALPOST;
+			if (!npc)
+                        {
+				ErrOut("cMsgBoard::createQuestMessage() missing valid npc for BOUNTYQUEST\n");
+              	        	message->Delete;
+				return 0;
+                        }
+
                         break;
 
 		case ESCORTQUEST:
 	                message->subject = string(subjectEscort);
 			message->availability = REGIONALPOST;
+                        if (!npc)
+                        {
+				ErrOut("cMsgBoard::createQuestMessage() missing valid npc for ESCORTQUEST\n");
+              	        	message->Delete;
+				return 0;
+                        }
+
 			break;
 		default:
-			ErrOut("cMsgBoard::createQuest() invalid quest type\n");
+			ErrOut("cMsgBoard::createQuestMessage() invalid quest type\n");
 	        	message->Delete;
 			return 0;
 	}
@@ -434,7 +456,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 				{
 					if ( listCount >= MAXENTRIES )
 					{
-						ErrOut("cMsgBoard::createQuest() Too many entries in ESCORTS list [MAXENTRIES=%d]\n", MAXENTRIES );
+						ErrOut("cMsgBoard::createQuestMessage() Too many entries in ESCORTS list [MAXENTRIES=%d]\n", MAXENTRIES );
 						break;
 					}
 
@@ -448,7 +470,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			// If no entries are found in the list, then there must be no entries at all.
 			if ( listCount == 0 )
 			{
-				ConOut( "cMsgBoard::createQuest() No msgboard.scp entries found for ESCORT quests\n" );
+				ConOut( "cMsgBoard::createQuestMessage() No msgboard.scp entries found for ESCORT quests\n" );
 		        	message->Delete;
 				return 0;
 			}
@@ -456,7 +478,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			// Choose a random number between 1 and listCount to use as a message
 			entryToUse = RandomNum( 1, listCount );
 #ifdef DEBUG
-			ErrOut("cMsgBoard::createQuest() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
+			ErrOut("cMsgBoard::createQuestMessage() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
 #endif
 			// Open the script again and find the section choosen by the randomizer
 			char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
@@ -466,7 +488,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 
 			if (iter==NULL)
 			{
-				ConOut( "cMsgBoard::createQuest() Couldn't find entry %s for ESCORT quest\n", temp );
+				ConOut( "cMsgBoard::createQuestMessage() Couldn't find entry %s for ESCORT quest\n", temp );
                                	message->Delete;
 				return 0;
 			}
@@ -493,7 +515,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 				{
 					if ( listCount >= MAXENTRIES )
 					{
-						ErrOut("cMsgBoard::createQuest() Too many entries in BOUNTYS list [MAXENTRIES=%d]\n", MAXENTRIES );
+						ErrOut("cMsgBoard::createQuestMessage() Too many entries in BOUNTYS list [MAXENTRIES=%d]\n", MAXENTRIES );
 						break;
 					}
 
@@ -507,7 +529,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			// If no entries are found in the list, then there must be no entries at all.
 			if ( listCount == 0 )
 			{
-				ConOut( "cMsgBoard::createQuest() No msgboard.scp entries found for BOUNTY quests\n" );
+				ConOut( "cMsgBoard::createQuestMessage() No msgboard.scp entries found for BOUNTY quests\n" );
 		        	message->Delete;
 				return 0;
 			}
@@ -515,7 +537,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			// Choose a random number between 1 and listCount to use as a message
 			entryToUse = RandomNum( 1, listCount );
 #ifdef DEBUG
-			ErrOut("cMsgBoard::createQuest() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
+			ErrOut("cMsgBoard::createQuestMessage() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
 #endif
 			// Open the script again and find the section choosen by the randomizer
  			char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
@@ -526,7 +548,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			iter = Scripts::MsgBoard->getNewIterator(temp);
 			if (iter==NULL)
 			{
-				ConOut( "cMsgBoard::createQuest() Couldn't find entry %s for BOUNTY quest\n", temp );
+				ConOut( "cMsgBoard::createQuestMessage() Couldn't find entry %s for BOUNTY quest\n", temp );
 		        	message->Delete;
 				return 0;
 			}
@@ -535,7 +557,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 
 	default:
 		{
-			ConOut( "cMsgBoard::createQuest() Invalid questType %d\n", questType );
+			ConOut( "cMsgBoard::createQuestMessage() Invalid questType %d\n", questType );
 		    	message->Delete;
 			return 0;
 		}
@@ -571,21 +593,32 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 		while ( flagPos < script1.size() && (++loopexit2 < MAXLOOPS)  )
 		{
 			// Replace the flag with the requested text
-			pChar pc_s=pointers::findCharBySerial(serial);
-			VALIDATEPCR(pc_s,0);
+
 			switch ( script1[flagPos + 1] )
 			{
+                        	       	// Item Name
+			case 'i':
+				{
+                                	script1.replace(flagpos, 2, item->getCurrentNameC());
+					break;
+				}
+                                	// Item region (actual)
+			case 'I':
+				{
+					script1.replace(flagpos, 2, region[item->region].name);
+					break;
+				}
 					// NPC Name
 			case 'n':
 				{
-                                	script1.replace(flagpos, 2, pc_s->getCurrentNameC());
+                                	script1.replace(flagpos, 2, npc->getCurrentNameC());
 					break;
 				}
 					// LOCATION in X, Y coords
 			case 'l':
 				{
                                 	char tempString[32] = "";
-					Location charpos= pc_s->getPosition();
+					Location charpos= npc->getPosition();
 					sprintf( tempString, "%d, %d", charpos.x, charpos.y );
 					script1.replace(flagpos, 2, tempString);
 					break;
@@ -593,19 +626,19 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 					// NPC title
 			case 't':
 				{
-					script1.replace(flagpos, 2, pc_s->title);
+					script1.replace(flagpos, 2, npc->title);
 					break;
 				}
 					// Destination Region Name
 			case 'r':
 				{
-					script1.replace(flagpos, 2, region[pc_s->questDestRegion].name);
+					script1.replace(flagpos, 2, region[npc->questDestRegion].name);
 					break;
 				}
 					// Region Name
 			case 'R':
 				{
-					script1.replace(flagpos, 2, region[pc_s->region].name);
+					script1.replace(flagpos, 2, region[npc->region].name);
 					break;
 				}
 					// Gold amount
@@ -613,7 +646,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 				{
 
 					char tempString[32] = "";
-					sprintf(tempString,"%d",pc_s->questBountyReward) ;
+					sprintf(tempString,"%d",npc->questBountyReward) ;
 					script1.replace(flagpos, 2, tempString);
 					break;
 				}
@@ -646,248 +679,13 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// FUNCTION:    MsgBoardQuestEscortCreate( int npcIndex )
-//
-// PURPOSE:     Used to generate an escort quest based on the currently
-//              NPC's serial number
-//
-// PARAMETERS:  npcIndex     NPC index value in chars[] array
-//
-// RETURNS:     void
-//////////////////////////////////////////////////////////////////////////////
-void MsgBoardQuestEscortCreate( int npcIndex )
+static void cMsgBoard::removeQuestMessage(UI32 messageserial)
 {
-	P_CHAR npc=MAKE_CHAR_REF(npcIndex);
-	VALIDATEPC(npc);
-
-	// Choose a random region as a destination for the escort quest (except for the same region as the NPC was spawned in)
-	int loopexit=0;
-	do
-	{
-		if ( escortRegions )  //escortRegions and validEscortRegion[] are global variables and are loaded in sregions.cpp 
-		{
-			// If the number of escort regions is 1, check to make sure that the only
-			// valid escort region is not the NPC's current location - if it is Abort
-			if ( (escortRegions==1) && (validEscortRegion[0]==npc->region) )
-			{
-				npc->questDestRegion = 0;
-				break;
-			}
-
-			npc->questDestRegion = validEscortRegion[RandomNum(0, (escortRegions-1))];
-		}
-		else
-		{
-			npc->questDestRegion = 0;  // If no escort regions have been defined in REGIONS.SCP then we can't do it!!
-			break;
-		}
-	} while ( (npc->questDestRegion == npc->region) 	&& (++loopexit < MAXLOOPS)  );
-
-	// Set quest type to escort
-	npc->questType = ESCORTQUEST;
-
-	// Make sure they don't move until an player accepts the quest
-	npc->npcWander       = WANDER_NOMOVE;                // Don't want our escort quest object to wander off.
-	npc->npcaitype = NPCAI_GOOD;                // Remove any AI from the escort (should be dumb, just follow please :)
-	npc->questOrigRegion = npc->region;  // Store this in order to remeber where the original message was posted
-
-	// Set the expirey time on the NPC if no body accepts the quest
-	if ( SrvParms->escortinitexpire )
-		npc->summontimer = ( uiCurrentTime + ( MY_CLOCKS_PER_SEC * SrvParms->escortinitexpire ) );
-
-	// Make sure the questDest is valid otherwise don't post and delete the NPC
-	if ( !npc->questDestRegion )
-	{
-		ErrOut("MsgBoardQuestEscortCreate() No valid regions defined for escort quests\n");
-		npc->Delete();
-		//deletechar( npcIndex );
-		return;
-	}
-
-	// Post the message to the message board in the same REGION as the NPC
-	if ( !createQuest(npc->getSerial32(), ESCORTQUEST, /* //TODO : add region*/) )
-	{
-		ConOut( "NoX-Wizard: MsgBoardQuestEscortCreate() Failed to add quest post for %s\n", npc->getCurrentNameC() );
-		ConOut( "NoX-Wizard: MsgBoardQuestEscortCreate() Deleting NPC %s\n", npc->getCurrentNameC() );
-		npc->Delete();
-		//deletechar( npcIndex );
-		return;
-	}
-
-	// Debugging messages
-#ifdef DEBUG
-	ErrOut("MsgBoardQuestEscortCreate() Escort quest for:\n       %s to be escorted to %s\n", npc->name, region[npc->questDestRegion].name );
-#endif
-
+        for (cMsgBoardMessages::iterator it = MsgBoardMessages.begin(); (*it)->getSerial32() != messageserial && it != MsgBoardMessages.end(); ++it) {}
+        if (it != MsgBoardMessages.end()) (*it)->Delete();
 }
 
 
-//////////////////////////////////////////////////////////////////////////////
-// FUNCTION:    MsgBoardQuestEscortArrive( int npcIndex, int pcIndex )
-//
-// PURPOSE:     Called when escorted NPC reaches its destination
-//
-// PARAMETERS:  npcIndex   Index number of the NPC in the chars[] array
-//              pcIndex    Index number of the player in the chars[] array
-//
-// RETURNS:     void
-//////////////////////////////////////////////////////////////////////////////
-void MsgBoardQuestEscortArrive( P_CHAR pc, P_CHAR pc_k)
-{
-
-
-
- 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	// Calculate payment for services rendered
-	int servicePay = ( RandomNum(0, 20) * RandomNum(1, 30) );  // Equals a range of 0 to 600 possible gold with a 5% chance of getting 0 gold
-
-	// If they have no money, well, oops!
-	if ( servicePay == 0 )
-	{
-		sprintf( temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Alas, I seem to be a little short on gold. I have nothing to pay you with."), pc_k->getCurrentNameC(), region[pc->questDestRegion].name );
-		pc->talk( pc_k->getSocket(), temp, 0 );
-	}
-	else // Otherwise pay the poor sod for his time
-	{
-		// Less than 75 gold for a escort is pretty cheesey, so if its between 1 and 75, add a randum amount of between 75 to 100 gold
-		if ( servicePay < 75 ) servicePay += RandomNum(75, 100);
-		pc_k->addGold(servicePay);
-		pc_k->playSFX( goldsfx(servicePay) );
-		sprintf( temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Here is thy pay as promised."), pc_k->getCurrentNameC(), region[pc->questDestRegion].name );
-		pc->talk( pc_k->getSocket(), temp, 0 );
-	}
-
-	// Inform the PC of what he has just been given as payment
-	pc_k->sysmsg(TRANSLATE("You have just received %d gold coins from %s %s"), servicePay, pc->getCurrentNameC(), pc->title.c_str() );
-
-	// Take the NPC out of quest mode
-	pc->npcWander = WANDER_FREELY_CIRCLE;         // Wander freely
-	pc->ftargserial = INVALID;            // Reset follow target
-	pc->questType = QTINVALID;         // Reset quest type
-	pc->questDestRegion = 0;   // Reset quest destination region
-
-	// Set a timer to automatically delete the NPC
-	pc->summontimer = ( uiCurrentTime + ( MY_CLOCKS_PER_SEC * SrvParms->escortdoneexpire ) );
-
-	//removefromptr(&cownsp[chars[k].ownserial%HASHMAX], k);
-    /*
-	pc->own1=255;
-	pc->own2=255;
-	pc->own3=255;
-	pc->own4=255;
-	pc->ownserial=-1;
-    */
-    pc->setOwnerSerial32Only(-1);
-
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// FUNCTION:    MsgBoardQuestEscortDelete( int npcIndex )
-//
-// PURPOSE:     Called when escorted NPC needs to be deleted from the world
-//              (just a wrapper in case some additional logic needs to be added)
-//
-// PARAMETERS:  npcIndex   Index number of the NPC in the chars[] array
-//
-// RETURNS:     void
-//////////////////////////////////////////////////////////////////////////////
-void MsgBoardQuestEscortDelete( int npcIndex )
-{
-	P_CHAR npc=MAKE_CHAR_REF(npcIndex);
-	VALIDATEPC(npc);
-	npc->Kill();
-	npc->Delete();
-
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// FUNCTION:    MsgBoardQuestEscortRemovePost( int npcIndex )
-//
-// PURPOSE:     Marks the posting for a specific NPC for deletion, thereby
-//              removing it from the bulletin boards viewable list.
-//
-// PARAMETERS:  npcIndex   Index number of the NPC in the chars[] array
-//
-// RETURNS:     void
-//////////////////////////////////////////////////////////////////////////////
-void MsgBoardQuestEscortRemovePost( int npcIndex )
-{
-	// Read bbi file to determine messages on boards list
-	// Find the post related to this NPC's quest and mark it for deletion
-	// thereby removing it from the bulletin boards list
-
-	P_CHAR npc=MAKE_CHAR_REF(npcIndex);
-	VALIDATEPC(npc);
-
-	SERIAL npc_serial = npc->getSerial32();
-
-	int loopexit=0;
-
-	FILE *file = NULL;
-	// 50 chars for prefix and 4 for the extension plus the ending NULL
-	char fileName[256] = "";
- 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-
-	// REGIONAL post file
-	sprintf( temp, "region%d.bbi", npc->questOrigRegion );
-
-	// If a MSBBOARDPATH has been define in the SERVER.cfg file, then use it
-	if (SrvParms->msgboardpath)
-		strcpy( fileName, SrvParms->msgboardpath );
-
-	// Set fileName to REGIONAL.bbi
-	//sysmessage( s, "Opening REGIONAL.bbi messages");
-	strcat( fileName, temp );
-	file = fopen( fileName, "rb+" );
-
-	// If the file exists continue, othewise abort with an error
-	if ( file != NULL )
-	{
-		// Ignore first 4 bytes of bbi file as this is reserverd for the current max message serial number being used
-		if ( fseek( file, 4, SEEK_SET ) )
-		{
-			ErrOut("MsgBoardQuestEscortRemovePost() failed to seek first message seg in bbi\n");
-			return;
-		}
-
-		// Loop until we have reached the end of the file
-		while ( !feof(file) 	&& (++loopexit < MAXLOOPS)  )
-		{
-			//  | 0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18     NS = NPC Serial
-			//  |mg1|mg2|mg3|mg4|mo1|mo2|DEL|sg1|sg2|xx1|xx2|yy1|yy2|NP1|NS2|NS3|NS4|co1|co2|
-			// "\x40\x1c\x53\xeb\x0e\xb0\x00\x00\x00\x00\x3a\x00\x3a\x40\x00\x00\x19\x00\x00";
-
-			// Fill up the msg with data from the bbi file
-			if ( fread( msg, sizeof(char), 19, file ) != 19 )
-			{
-				ErrOut("MsgBoardQuestEscortRemovePost() Could not find message to mark deleted\n");
-				if ( feof(file) ) break;
-			}
-
-			if ( LongFromCharPtr(msg +13)  == npc_serial )
-			{
-				// Jump back to the DEL segment in order to mark the post for deletion
-				fseek( file, -13, SEEK_CUR );
-
-				// Write out the mark for deletion value (0x00)
-				fputc( 0, file );
-
-				// We found the message we wanted so break out and close the file
-				break;
-			}
-
-		}
-	}
-
-	// Close bbi file
-	if ( file ) fclose( file );
-
-	return;
-
-}
 
 //////////////////////////////////////////////////////////////////////////////
 // FUNCTION:    MsgBoardMaintenance( void )
@@ -913,29 +711,10 @@ void MsgBoardQuestEscortRemovePost( int npcIndex )
 void MsgBoardMaintenance( void )
 {
 	int loopexit=0, loopexit2=0;
-	char                  filePath[256]   = "";
-	char                  fileName[256]   = "";
-	char                  fileBBITmp[256] = "";
-	char                  fileBBPTmp[256] = "";
 	UI08                  msg2[MAXBUFFER];
-
-	FILE                  *pBBINew        = NULL;
-	FILE                  *pBBIOld        = NULL;
-
-	FILE                  *pBBPNew        = NULL;
-	FILE                  *pBBPOld        = NULL;
 
 	// WINDOWS OS structure to be passed to _findfirst() and _findnext()
 	// too make this work with LINUX some #ifdef'ing will have to happen.
-#if defined(__unix__)
-	std::vector<std::string> vecFiles ;
-#else
-	struct _finddata_t    BBIFile;
-	struct _finddata_t    BBPFile;
-	long                  hBBIFile = 0;
-	long                  hBBPFile = 0;
-#endif
-
 
 	struct tm             currentDate;
 	time_t                now;
@@ -944,20 +723,10 @@ void MsgBoardMaintenance( void )
 	int                   postAge;
 	int                   count;
 
-	SERIAL                newPostSN  = 0;
-	SERIAL                basePostSN = 0;
-	unsigned int          sizeOfBBP  = 0;
-
-	UI32		      index = 0 ;
-
 	// Display progress message
-	//ErrOut("Bulletin Board Maintenace - Cleaning and compacting BBI & BBP files.\nNoX-Wizard: Progress");
 	InfoOut("Bulletin board maintenance... ");
 
-	// Load the MSGBOARDPATH into an array
-	// If a MSBBOARDPATH has been define in the SERVER.cfg file, then use it
-	if (SrvParms->msgboardpath)
-		strcpy( filePath, SrvParms->msgboardpath );
+        
 	ConOut("1\n");
 	// Set the Tmp file names
 	strcpy( fileBBITmp, filePath  );
@@ -1362,18 +1131,18 @@ void MsgBoardMaintenance( void )
 /*!
 \brief gets all MsgBoards in region.
 \note the first iterator in the pair is the first of the range, but the second is the first of NEXT board or end()
-\returns if any msgboard is found, returns range (even if both iterators are the same), else both iterators point to MsgBoards.end()
+\returns if any msgboard is found, returns as range [first,second[ , else both iterators point to MsgBoards.end()
 */
 
 static pair<cMsgBoards::iterator, cMsgBoards::iterator> cMsgBoard::getBoardsinRegion(int region)
 {
         	cMsgBoards::iterator it = MsgBoards.begin();
                 //With this we find the first board in which region number is the same as the message to be deleted
-                it = for(;((*it)->getRegion() != region) && (it != MsgBoards.end()); ++it) {}
+                for(;((*it)->getRegion() != region) && (it != MsgBoards.end()); ++it) {}
                 //check if the last msgboard is of the right region, else break out
                 if ((it == MsgBoards.end()) return pair<cMsgBoards::iterator, cMsgBoards::iterator>(it, it);
                 cMsgBoards::iterator itbegin = it;
-       	        for(;((it) != MsgBoards.end() && ((*(it))->getRegion() == region)); ++it) {} //it at the end of the cycle contains the iterator to the first Msgboard in next region or end() if it was already the last
+       	        for(;(it != MsgBoards.end() && ((*it)->getRegion() == region)); ++it) {} //it at the end of the cycle contains the iterator to the first Msgboard in next region or end() if it was already the last
                 return pair<cMsgBoards::iterator, cMsgBoards::iterator> (itbegin, it);
 }
 

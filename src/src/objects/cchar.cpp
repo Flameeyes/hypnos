@@ -287,6 +287,7 @@ cChar::cChar( SERIAL ser ) : cObject()
 	questOrigRegion= 0;
 	questBountyReward= 0;
 	questBountyPostSerial = 0;
+        questEscortPostSerial = 0;
 	murdererSer = 0;
 	spawnregion = INVALID;
 	npc_type = 0;

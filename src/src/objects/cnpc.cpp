@@ -86,7 +86,7 @@ void cNPC::heartbeat()
 		if ( questType == cMsgBoard::ESCORTQUEST && ftargserial == INVALID )
 		{
 			cMsgBoard::MsgBoardQuestEscortRemovePost( DEREF_P_CHAR(this) );
-			cMsgBoard::MsgBoardQuestEscortDelete( DEREF_P_CHAR(this) );
+			deleteEscortQuest();
 		}
 		else
 		{
@@ -344,3 +344,136 @@ void cChar::simpleAttack(pChar pc_target)
 	pc_target2->fight( this );
 	pc_target2->setAttackFirst(false);
 }
+
+
+
+/*!
+\brief Creates an escort quest with this npc. Publishes on regional msgboards
+*/
+
+void cNPC::createEscortQuest()
+{
+	// Choose a random region as a destination for the escort quest (except for the same region as the NPC was spawned in)
+	int loopexit=0;
+	do
+	{
+		if ( escortRegions )  //escortRegions and validEscortRegion[] are global variables and are loaded in sregions.cpp
+		{
+			// If the number of escort regions is 1, check to make sure that the only
+			// valid escort region is not the NPC's current location - if it is Abort
+			if ( (escortRegions==1) && (validEscortRegion[0]== region) )
+			{
+				questDestRegion = 0;
+				break;
+			}
+
+			questDestRegion = validEscortRegion[RandomNum(0, (escortRegions-1))];
+		}
+		else
+		{
+			questDestRegion = 0;  // If no escort regions have been defined in REGIONS.SCP then we can't do it!!
+			break;
+		}
+	} while ( (questDestRegion == region) 	&& (++loopexit < MAXLOOPS)  );
+
+	// Set quest type to escort
+	questType = cMsgBoards::ESCORTQUEST;
+
+	// Make sure they don't move until an player accepts the quest
+	npcWander       = WANDER_NOMOVE;	// Don't want our escort quest object to wander off.
+	npcaitype = NPCAI_GOOD;                	// Remove any AI from the escort (should be dumb, just follow please :)
+	questOrigRegion = region;  // Store this in order to remeber where the original message was posted
+
+	// Set the expirey time on the NPC if no body accepts the quest
+	if ( SrvParms->escortinitexpire )
+		summontimer = ( uiCurrentTime + ( MY_CLOCKS_PER_SEC * SrvParms->escortinitexpire ) );
+
+	// Make sure the questDest is valid otherwise don't post and delete the NPC
+	if ( !questDestRegion )
+	{
+		ErrOut("createEscortQuest() No valid regions defined for escort quests\n");
+		Delete();
+		return;
+	}
+
+	// Post the message to the message board in the same REGION as the NPC
+        questEscortPostSerial = createQuestMessage(ESCORTQUEST,getSerial32(), NULL, region);
+	if ( !questEscortPostSerial )
+	{
+		ConOut( "createEscortQuest() Failed to add quest post for %s\n", getCurrentNameC() );
+		ConOut( "createEscortQuest() Deleting NPC %s\n", getCurrentNameC() );
+		Delete();
+		return;
+	}
+
+	// Debugging messages
+#ifdef DEBUG
+	ErrOut("createEscortQuest() Escort quest for:\n       %s to be escorted to %s\n", name, region[questDestRegion].name );
+#endif
+
+}
+
+
+/*!
+\brief completed escort quest with this npc. Gets reward
+*/
+
+void cNPC::clearedEscordQuest(pPC pc)
+{
+
+ 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+	// Calculate payment for services rendered
+	int servicePay = ( RandomNum(0, 20) * RandomNum(1, 30) );  // Equals a range of 0 to 600 possible gold with a 5% chance of getting 0 gold
+
+	// If they have no money, well, oops!
+	if ( servicePay == 0 )
+	{
+		sprintf( temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Alas, I seem to be a little short on gold. I have nothing to pay you with."), pc->getCurrentNameC(), region[questDestRegion].name );
+		talk( pc->getClient(), temp, 0 );
+	}
+	else // Otherwise pay the poor sod for his time
+	{
+		// Less than 75 gold for a escort is pretty cheesey, so if its between 1 and 75, add a randum amount of between 75 to 100 gold
+		if ( servicePay < 75 ) servicePay += RandomNum(75, 100);
+		pc->addGold(servicePay);
+		pc->playSFX( goldsfx(servicePay) );
+		sprintf( temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Here is thy pay as promised."), pc->getCurrentNameC(), region[questDestRegion].name );
+		talk( pc->getClient(), temp, 0 );
+	}
+
+	// Inform the PC of what he has just been given as payment
+	pc->getClient()->sysmsg(TRANSLATE("You have just received %d gold coins from %s %s"), servicePay, getCurrentNameC(), title.c_str() );
+
+	// Take the NPC out of quest mode
+	npcWander = WANDER_FREELY_CIRCLE;         // Wander freely
+	ftargserial = INVALID;            // Reset follow target
+	questType = QTINVALID;         // Reset quest type
+	questDestRegion = 0;   // Reset quest destination region
+
+	// Set a timer to automatically delete the NPC
+	summontimer = ( uiCurrentTime + ( MY_CLOCKS_PER_SEC * SrvParms->escortdoneexpire ) );
+
+    	setOwnerSerial32Only(-1);
+
+}
+
+/*!
+\brief deletes msgboard post for this quest, since it has been accepted (or has expired)
+*/
+
+void cNPC::removepostEscortQuest()
+{
+	cMsgBoard::removeQuestMessage(questEscortPostSerial);
+}
+
+/*!
+\brief deletes npc used for quest
+\note it is mainly used as a wrapper, so if a particular necessity ever arises, it can be added here
+*/
+
+void cNPC::deleteEscortQuest()
+{
+	Kill();
+	Delete();
+}
+

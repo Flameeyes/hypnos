@@ -680,6 +680,7 @@ public:
 		SI32			questOrigRegion;
 		SI32			questBountyReward;		// The current reward amount for the return of this chars head
 		SERIAL			questBountyPostSerial;	// The global posting serial number of the bounty message
+                SERIAL			questEscortPostSerial;	// The global posting serial number of the escort message
 		SERIAL			murdererSer;			// Serial number of last person that murdered this char
 
 		// COORDINATE	previousLocation;

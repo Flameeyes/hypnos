@@ -102,7 +102,7 @@ bool BountyCreate( P_CHAR pc, int nRewardAmount )
 
     // Attempt to post the message first
     pc->questBountyReward = nRewardAmount;
-    nPostSerial = cMsgBoard::createQuest( pc->getSerial32(), cMsgBoard::BOUNTYQUEST );
+    nPostSerial = cMsgBoard::createQuestMessage( cMsgBoard::BOUNTYQUEST, pc->getSerial32());
 
     // If we received a valid serial number then the post was successfull
     if( nPostSerial > 0 )
@@ -127,15 +127,12 @@ bool BountyDelete( P_CHAR pc)
 {
 	VALIDATEPCR(pc,false);
 	bool  bReturn = true;
-	
-	// Find and mark the post associated with this bounty as deleted
-	// so that the bulletin board maintenance routine can clean it up
-	bReturn = cMsgBoard::MsgBoardRemoveGlobalPostBySerial( pc->questBountyPostSerial );
-	
+	cMsgBoard::removeQuestMessage(questBountyPostSerial);
+
 	// Reset all bounty values for this character
 	pc->questBountyReward     = 0;
 	pc->questBountyPostSerial = 0;
-	
+
 	return bReturn;
 } // BountyDelete()
 

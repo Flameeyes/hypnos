@@ -1114,7 +1114,7 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, UI16 x1, UI16 y1, SI08 z1)
 							P_ITEM pi_i=pi;
 							if ( ISVALIDPI(pi_i) && pi_i->type == 125 )
 							{
-								cMsgBoard::MsgBoardQuestEscortCreate( DEREF_P_CHAR(pc) );
+								pc->createEscortQuest();
 							}
 					}
 					// End - Dupois

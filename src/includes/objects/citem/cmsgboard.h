@@ -76,7 +76,8 @@ public:
 	QuestType qtype;     	// type of quest
         UI32 replyof;		// serial of post of whom this is reply of. If 0 this is a new post
         bool autopost;		// true if autoposted by server
-        UI32 targetserial;      // if LOCAL post it is unused, if quest contains the serial of the target of the quest
+        UI32 targetnpc;      	// if LOCAL post it is unused, if quest contains the serial of the target of the quest
+        UI32 targetitem		//
 
         static cMsgBoardMessages MsgBoardMessages; //This will contain all messages
         cMsgBoardMessage();
@@ -137,13 +138,9 @@ public:
         void		openBoard(pClient client);
 	void 		sendMessageSummary( pClient client, pMsgBoardMessage message );
         bool    	addMessage( pMsgBoardMessage message );
-	static UI32 	createQuest( UI32 targetserial, QuestType questType. int region = -1 );
+	static UI32 	createQuestMessage(QuestType questType, pNPC npc = NULL, pItem item = NULL, int region = -1);
+	static void	removeQuestMessage(UI32 messageserial);
 
-
-	void	MsgBoardQuestEscortCreate( pClient client );
-	void	MsgBoardQuestEscortArrive( P_CHAR pc, P_CHAR pc_k );
-	void	MsgBoardQuestEscortDelete( int nNPCIndex );
-	void	MsgBoardQuestEscortRemovePost( int nNPCIndex );
 	void	MsgBoardMaintenance();
 
         int getRegion();
