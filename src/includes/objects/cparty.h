@@ -29,7 +29,7 @@ To create a party a non-partied PC must ask another PC to join the party, then
 it can accept or decline the party. If it's accepted, the party is acknowledged
 and so it's isntance is sure. If the PC refuses to join the party, it will be
 removed from it.
-
+                                                                                   
 When removing a PC (invited or already member) from the party, we'll check for
 the content of the party: if the total members are less than 2, the party is
 disbanded and its instance deleted.

@@ -1,0 +1,95 @@
+/*!
+\page admtips Administrators Tips
+\author Flameeyes
+
+In this page I want to give some tips to the new Hypnos' Servers' Administrators
+hoping that they will listen to what the creator of Hypnos has to say.
+
+These tips are quite all not \b musts of the administration, but can help to
+avoit problems like a big memory usage or a high cpu requirement.
+
+\section items Items in the world
+
+Before I made myself a scripted (and then an emulator developer, and now an
+emulator project administrator, I helped my old shard (Dragons' Land) placing
+the items and spawns in the world.
+It was a quite hard work, because Britannia is a big map (and we had only one..
+now there are many emulators which supports all the four Origin's maps (I hope
+also Hypnos will support them all when we'll release the first public version)).
+
+What I noticed doing that work, and what I'm still noticing in the shard I'm now
+playing, is that some players have the bad habit to put the items they aren't
+interested to into containers found in cities, like barrels at the docs, crates
+in shops, or armoires in inns.
+
+I said that is this a bad habit because I think on the problems that an admin
+must fight with. Let's see what are these items doing bad on the emultor with a
+real life example: I recently found in the dresser of a shop 84 scissors,
+probably crafted by a tinker-player which was training itself in Tinkering.
+These items was quite a simple items, becaues they haven't special capabilities,
+but they were many, and they were into a container within a shop where few other
+players are going to take a look. I can trust that the objective to not destroy
+nor sell them is to help newbie players or other players who needs some scissors
+but doing that, the server has 84 items, inside a container, to take a look at
+every cycle.
+
+What I did with these scissors was selling them to a vendor (I always needs GPs
+:grin:), so the server was freed from those useless items.
+
+This is a thing an administrator must take in mind: when putting new items in
+the world, be careful placing containers. If you can, make a static version of
+the world with your items in it. If you can't, please use a decorative version
+of the containers, which uses the same ID, but aren't containers for Hypnos
+defining a new item object in the datafiles.
+
+\todo We should provide a datafile with the decorative version of the main
+	containers.
+
+\section npcs Vendors and NPCs
+
+As I said for items, also carrying too much NPCs can lead to waste memory and
+CPU time. This is particulary true for NPCs, because their check every cycle is
+a lot more difficult and heavy.
+Also, an NPC carry many different items, like their equipment, their loot, and
+for vendors, the items in their sell/buy layers.
+
+To avoid put useless NPCs in your game, you should always take a look to where
+you put them:
+
+\paragraph town Inside a town
+
+Inside a town we have a lot of different types of NPCs. Most of them are vendors
+so you should take a special care of them.
+Putting a spawn of NPCs wastes resources, so put a single NPC and make them
+invulnerable and unstealable. This avoid the need of two vedors for the same
+articles in a single shop.
+
+Guards are differente because they can be killed by the players they are hunting
+for (if you don't set them invulnerable, or with install kills).
+In the first case, you should use spawn, in the latter one you should make them
+invulnerable, without a spawn and set their maximum covered distance like for a
+spawn.
+
+When setting the maximum covered distance, at every heartbeat if the NPC isn't
+in the radius of the home point, it will be teleported there, only if it isn't
+talking with a player, attacking, or selling/buying something
+
+\paragraph world In the world
+
+Usually what we put in the world are wandering healers in places far from any
+city, or foes for the players, or animals.
+If you put animals you should certainly work with spawns, but you should use 
+some smarts tips when placing them:
+
+\li Use generic spawn when applicable, so a generic birds spawn will spawn one
+	of the birds' type NPC.
+\li Always set a maximum amount for spawns
+\li Always set the maximum covered distance of the spawned creatures (their home
+	will be the coordinates of the spawn).
+
+Note that the maximum covered distance doesn't disallow the spawned NPC to
+follow its target out of this distance, simply, as stated above for vendors,
+teleport them on the home point if they are too much distant and aren't
+targeting a player or another NPC.
+
+*/

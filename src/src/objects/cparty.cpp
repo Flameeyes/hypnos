@@ -18,10 +18,10 @@ of the parties if they aren't already deleted.
 \note The cParty::~cParty() function removes the instance from the list, but as
 	we are using lists, the interators aren't invalidated by this.
 */
-void cParty::deleteParties()
+void cParty::deleteParties()                
 {
 	for( PartySList::iterator it = parties.begin(); it != parties.end(); it++)
-		delete (*it);
+		delete (*it);                                                           
 }
 
 /*!
@@ -29,7 +29,7 @@ void cParty::deleteParties()
 \note cParty can only be created having a leader and the first member
 \param leader Leader (creator) of the party
 \param member First member invited to the party. The party can't be constructed
-	without having a member
+	without having a member             
 \note Constructor register the party in the \ref parties list
 */
 void cParty::cParty(pPC leader, pPC member)
@@ -111,6 +111,8 @@ in two cases:
 */
 bool cParty::removeMember(pPC member)
 {
+	notice("%s left the party", member->getBody()->getCurrentName().c_str());
+	
 	if ( leader == member )
 	{
 		disband();
@@ -131,7 +133,7 @@ bool cParty::removeMember(pPC member)
 		disband();
 		return true;              
 	}
-	
+	                        
 	//! \todo Send the remove from the party status to the player
 }                                      
 
