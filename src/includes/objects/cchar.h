@@ -115,7 +115,7 @@ public:
 	{ truebody = b; }
 
 	//! get online status
-	inline const bool isOnline() const
+	inline bool isOnline() const
 	{ return client; }
 
 	/*!
@@ -184,73 +184,73 @@ public:
 	inline void setHidden(HideType ht)
 	{ hidden = ht; }
 
-	inline const bool isHidden() const
+	inline bool isHidden() const
 	{ return hidden != htUnhidden; }
 
-	inline const bool isHiddenBySpell() const
+	inline bool isHiddenBySpell() const
 	{ return hidden == htBySpell; }
 
-	inline const bool isHiddenBySkill() const
+	inline bool isHiddenBySkill() const
 	{ return hidden == htBySkill; }
 
 	//! Return the karma of the char
-	inline const int32_t getKarma() const
+	inline int32_t getKarma() const
 	{ return karma; }
 
 	//! Return the fame of the char
-	inline const int32_t getFame() const
+	inline int32_t getFame() const
 	{ return fame; }
 
-	inline const bool isInvul() const
+	inline bool isInvul() const
 	{ return flags & flagInvulnerable; }
 
-	inline const bool isFrozen() const
+	inline bool isFrozen() const
 	{ return flags & flagFrozen; }
 
-	inline const bool isPermaHidden() const
+	inline bool isPermaHidden() const
 	{ return flags & flagPermaHidden; }
 
-	inline const bool isInnocent() const
+	inline bool isInnocent() const
 	{ return (flags & flagKarmaInnocent); }
 
-	inline const bool isMurderer() const
+	inline bool isMurderer() const
 	{ return (flags & flagKarmaMurderer); }
 
-	inline const bool isCriminal() const
+	inline bool isCriminal() const
 	{ return (flags & flagKarmaCriminal); }
 
-	inline const bool canUseDoor() const
+	inline bool canUseDoor() const
 	{ return flags & flagDoorUse; }
 
-	inline const bool dontUseMana() const
+	inline bool dontUseMana() const
 	{ return flags & flagNoUseMana; }
 
-	inline const bool dontUseReagents() const
+	inline bool dontUseReagents() const
 	{ return flags & flagNoUseReagents; }
 
-	inline const bool hasReflection() const
+	inline bool hasReflection() const
 	{ return flags & flagReflection; }
 
-	inline const bool hasTelekinesis() const
+	inline bool hasTelekinesis() const
 	{ return flags & flagSpellTelekinesys; }
 
-	inline const bool isDead() const
+	inline bool isDead() const
 	{ return flags & flagDead; }
 
-	inline const bool inGuardedArea() const
+	inline bool inGuardedArea() const
 	{ return false/*::region[region].priv & rgnFlagGuarded*/;
 	//!\todo change when new regions' system works
 	}
 
 	const bool isGrey() const;
 	
-	inline const bool holyDamaged() const
+	inline bool holyDamaged() const
 	{ return flags & flagHolyDamaged; }
 	
-	inline const bool lightDamaged() const
+	inline bool lightDamaged() const
 	{ return flags & flagLightDamaged; }
 	
-	inline const bool isMeditating() const
+	inline bool isMeditating() const
 	{ return flags & flagIsMeditating; }
 	
 	/*!
@@ -260,7 +260,7 @@ public:
 	\return true if the char is over weight
 	\todo Reactivate GM Support
 	*/
-	inline const bool isOverWeight()
+	inline bool isOverWeight()
 	{ return /*!isGM() &&*/ body->overloadedTeleport(); }
 	
 	const bool canDoGestures() const;
@@ -291,7 +291,7 @@ public:
 	inline void makeInvulnerable(bool set = true)
 	{ setFlag(flags, flagInvulnerable, set); }
 
-	inline const bool inWarMode() const
+	inline bool inWarMode() const
 	{ return flags & flagWarMode; }
 
 	inline void setWarMode(bool set = true)
@@ -353,7 +353,7 @@ private:
 	bool checkForCastingLoss(int damage);
 protected:
 	//! Check for combat timeout
-	inline const bool combatTimerOk()
+	inline bool combatTimerOk()
 	{ return TIMEOUT(timeout); }
 
 	void			checkPoisoning(pChar pc_def);
@@ -363,7 +363,7 @@ protected:
 	void			undoCombat();
 
 public:
-	inline const bool hasAttackedFirst() const
+	inline bool hasAttackedFirst() const
 	{ return flags & flagAttackFirst; }
 
 	inline void setAttackFirst(bool set = true)
@@ -450,13 +450,13 @@ public:
 	inline void setSkillDelay( uint32_t seconds = nSettings::Server::getDelaySkills() )
 	{ skilldelay = getClockmSecs() + seconds * SECS; }
 
-	inline const bool canDoSkillAction() const
+	inline bool canDoSkillAction() const
 	{ return TIMEOUT( skilldelay ); }
 
 	inline void setObjectDelay( uint32_t seconds = nSettings::Server::getDelayObjects() )
 	{ objectdelay = getClockmSecs() + seconds * SECS; }
 
-	inline const bool canDoObjectAction() const
+	inline bool canDoObjectAction() const
 	{ return TIMEOUT( objectdelay ); }
 	
 /*	//! Gets the overridden title 
@@ -495,7 +495,7 @@ protected:
 	std::wstring* speechCurrent;
 public:
 	//! Return current speech
-	inline const std::wstring* getSpeechCurrent() const
+	inline std::wstring* getSpeechCurrent() const
 	{ return speechCurrent; }
 
 	//! Set current speech
@@ -624,7 +624,7 @@ private:
 
 public:
 	//! tells if a character is running
-	inline const bool isRunning() const
+	inline bool isRunning() const
 	{ return ( (getClockmSecs() - lastRunning) <= 100 ); }
 
 	inline void setRunning()
@@ -638,7 +638,7 @@ public:
 	void 			hideBySpell(int32_t timer = INVALID);
 	uint32_t  		countItems(uint16_t ID, uint16_t col= 0xFFFF);
 
-	inline const uint32_t CountGold()
+	inline uint32_t CountGold()
 	{ return countItems(ITEMID_GOLD); }
 
 	bool			isInBackpack( pItem pi );
@@ -648,7 +648,7 @@ public:
 	void			removeItemBonus(pItem pi);
 
 	//! Return the resistance for a defined type
-	inline const bool resist(uint32_t n) const
+	inline bool resist(uint32_t n) const
 	{ return flags & n; }
 
 	void                    attackStuff (pChar victim);
@@ -692,7 +692,7 @@ public:
 	\param pc Char to check if in range
 	\param range Maximum distance from this char
 	*/
-	inline const bool hasInRange(pChar pc, uint16_t range = VISRANGE)
+	inline bool hasInRange(pChar pc, uint16_t range = VISRANGE)
 	{ return pc && distFrom( pc ) <= range; }
 	
 	/*!
@@ -700,7 +700,7 @@ public:
 	\param pi Char to check if in range
 	\param range Maximum distance from this char
 	*/
-	inline const bool hasInRange(pItem pi, uint16_t range = VISRANGE)
+	inline bool hasInRange(pItem pi, uint16_t range = VISRANGE)
 	{ return pi && distFrom( pi ) <= range; }
 	
 	void teleport( uint8_t flags = teleAll, pClient cli = NULL );
@@ -712,7 +712,7 @@ public:
 	\param pc pointer to the char to check line of sight from
 	\return true if is in line of sight
 	*/
-	inline const bool losFrom(const pChar pc) const
+	inline bool losFrom(const pChar pc) const
 	{ return pc && pc->getBody() ? lineOfSight( body->getPosition(), pc->getBody()->getPosition() ) : false; }
 
 	bool checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise = true);
@@ -727,7 +727,7 @@ public:
 	\return number of items deleted
 	\todo Use the new archetypes stuff
 	*/
-	inline const uint32_t delItems(uint16_t id, uint32_t amount = 1, uint16_t color = 0xFFFF)
+	inline uint32_t delItems(uint16_t id, uint32_t amount = 1, uint16_t color = 0xFFFF)
 	{ return body->getBackpack() ? /*body->getBackpack()->removeItems(amount, id, color)*/ amount : amount; }
 
 	/*!
@@ -739,7 +739,7 @@ public:
 	\param onlyPrimaryBackpack false if search also in th subpack
 	\todo Use the new archetypes stuff
 	*/
-	inline const uint32_t getAmount(uint16_t id, uint16_t col=0xFFFF, bool onlyPrimaryBackpack=false )
+	inline uint32_t getAmount(uint16_t id, uint16_t col=0xFFFF, bool onlyPrimaryBackpack=false )
 	{ return body->getBackpack() ? /*body->getBackpack()->countItems(id, col, !onlyPrimaryBackpack)*/ 0 : 0; }
 
 	void			useHairDye(pItem bottle);

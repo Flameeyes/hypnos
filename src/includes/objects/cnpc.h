@@ -108,25 +108,25 @@ public:
 	static const uint64_t flagDispellable	= 0x0000000400000000ull;
 	static const uint64_t flagWaterWalk	= 0x0000000800000000ull; //!< Char walks on water
 
-	inline const bool canTrain() const
+	inline bool canTrain() const
 	{ return flags & flagCanTrain; }
 
 	inline void setCanTrain(bool on = true)
 	{ setFlag(flags, flagCanTrain, on); }
 
-	inline const bool isShopKeeper() const
+	inline bool isShopKeeper() const
 	{ return flags & flagShopKeeper; }
 
 	inline void setShopKeeper(bool on = true)
 	{ setFlag(flags, flagShopKeeper, on); }
 
-	inline const bool isDispellable() const
+	inline bool isDispellable() const
 	{ return flags & flagDispellable; }
 
 	inline void setDispellable(bool on = true)
 	{ setFlag(flags, flagDispellable, on); }
 
-	inline const bool canWaterWalk() const
+	inline bool canWaterWalk() const
 	{ return flags & flagWaterWalk; }
 
 	inline void setCanWaterWalk(bool on = true)
@@ -142,11 +142,11 @@ protected:
 	pNPC stablemaster;	//!< The stablemaster
 public:
 	//! Check if char is stabled
-	inline const bool isStabled() const
+	inline bool isStabled() const
 	{ return stablemaster; }
 
 	//! Get the character's stablemaster
-	inline const pNPC getStablemaster() const
+	inline pNPC getStablemaster() const
 	{ return stablemaster; }
 
 	void stable( pNPC sm );
@@ -180,7 +180,7 @@ public:
 	{ return ai; }
 
 	//! has a path set?
-	inline const bool hasPath() const
+	inline bool hasPath() const
 	{ return path; }
 
 //@}

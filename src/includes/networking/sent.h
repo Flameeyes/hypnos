@@ -36,7 +36,7 @@ public:
 	virtual void prepare() = 0;
 
 	//! Prepare the packet if not prepared and return the buffer
-	inline const uint8_t *getBuffer()
+	inline uint8_t *getBuffer()
 	{
 		if ( ! length )
 			prepare();
@@ -45,7 +45,7 @@ public:
 	}
 
 	//! Prepare the packet if not prepared and return the length of the buffer
-	inline const uint16_t getLength()
+	inline uint16_t getLength()
 	{
 		if ( ! length )
 			prepare();

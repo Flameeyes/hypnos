@@ -66,11 +66,11 @@ public:
 	{ return client; }
 
 	//! Gets the account name
-	inline const std::string getName() const
+	inline std::string getName() const
 	{ return name; }
 	
 	//! Gets the account priviledge level
-	inline const int8_t getLevel() const
+	inline int8_t getLevel() const
 	{ return privlevel; }
 	
 //@{
@@ -84,7 +84,7 @@ protected:
 	static const uint8_t flagSeeConsPages	= 0x02;
 public:
 	//! Gets if the account can see GM Pages
-	inline const bool seeGMPages() const
+	inline bool seeGMPages() const
 	{ return flags & flagSeeGMPages; }
 	
 	//! (Un)sets the capability to see GM Pages
@@ -92,7 +92,7 @@ public:
 	{ setFlag(flags, flagSeeGMPages, on); }
 	
 	//! Gets if the account can see Cons pages
-	inline const bool seeConsPages() const
+	inline bool seeConsPages() const
 	{ return flags & flagSeeConsPages; }
 	
 	//! (Un)sets the capability to see Cons Pages

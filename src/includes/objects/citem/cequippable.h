@@ -35,11 +35,11 @@ public:
 	virtual void setContainer(pObject obj);
 	
 	//! Gets the layer where the item \b is equipped
-	inline const Layer getLayer() const
+	inline Layer getLayer() const
 	{ return layer; }
 	
 	//! Gets the layer where the item \b can be equipped
-	inline const Layer getPossibleLayer() const
+	inline Layer getPossibleLayer() const
 	{ return findLayerFromID(getId()); }
 	
 	void doubleClicked(pClient client);

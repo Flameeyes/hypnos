@@ -46,7 +46,7 @@ protected:
 
 public:
 	//! return the position of the object
-	inline const sLocation getPosition() const
+	inline sLocation getPosition() const
 	{ return position; }
 
 	void setPosition(sLocation where);
@@ -67,7 +67,7 @@ public:
 	void setPositionDZ(int8_t dz)
 	{ setPosition( sLocation(position.x, position.y, position.z, dz) ); }
 
-	inline const sLocation getOldPosition() const
+	inline sLocation getOldPosition() const
 	{ return old_position; }
 
 	inline void setOldPosition(const sLocation where)
@@ -95,7 +95,7 @@ protected:
 
 public:
 	//! return the real name of object
-	inline const std::string &getRealName() const
+	inline std::string &getRealName() const
 	{ return secondary_name; }
 
 	//! Set the real name of object
@@ -103,7 +103,7 @@ public:
 	{ secondary_name = s; }
 
 	//! return the current name of object
-	inline const std::string &getCurrentName() const
+	inline std::string &getCurrentName() const
 	{ return current_name;  }
 
 	//! Set the current name of object
@@ -113,7 +113,7 @@ public:
 	void setCurrentName(const char *format, ...) PRINTF_LIKE(2,3)
 
 	//! Get the secondary name of the object
-	inline const std::string getSecondaryName() const
+	inline std::string getSecondaryName() const
 	{ return secondary_name; }
 
 	//! Set the secondary name of object
@@ -125,25 +125,25 @@ public:
 	inline void setId( uint16_t newId )
 	{ id = newId; }
 
-	inline const uint16_t getId() const
+	inline uint16_t getId() const
 	{ return id; }
 
 	inline void setOldId( uint16_t oldId )
 	{ id_old = oldId; }
 
-	inline const uint16_t getOldId() const
+	inline uint16_t getOldId() const
 	{ return id_old; }
 
 	inline void setColor( uint16_t newColor )
 	{ color = newColor; }
 
-	inline const uint16_t getColor() const
+	inline uint16_t getColor() const
 	{ return color; }
 
 	inline void setOldColor( uint16_t oldColor )
 	{ color_old = oldColor; }
 
-	inline const uint16_t getOldColor() const
+	inline uint16_t getOldColor() const
 	{ return color_old; }
 
 //@}
@@ -159,14 +159,14 @@ protected:
 	static const uint64_t flagIncognito	= 0x8000000000000000ull; //!< Is under incognito effect?
 public:
 	//! Gets the object's flags
-	inline const uint64_t getFlags() const
+	inline uint64_t getFlags() const
 	{ return flags; }
 
 	//! Sets the object's flags
 	inline void setFlags(uint64_t newFlags)
 	{ flags = newFlags; }
 
-	inline const bool isIncognito() const
+	inline bool isIncognito() const
 	{ return flags & flagIncognito; }
 	
 	inline void setIncognito(bool set = true)

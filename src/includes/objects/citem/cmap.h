@@ -61,7 +61,7 @@ public:
 	\param pin Index of the pin (1-50)
 	\return The point for the given index or InvalidCoord if out-of-bound
 	*/
-	inline const sPoint getPin(uint32_t pin)
+	inline sPoint getPin(uint32_t pin)
 	{
 		if ( pin > pinData.size() )
 			return InvalidCoord;

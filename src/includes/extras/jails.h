@@ -45,7 +45,7 @@ namespace nJails {
 		{ return author; }
 		
 		//! Gets the jail's reason
-		inline const std::string &getReason() const
+		inline std::string &getReason() const
 		{ return reason; }
 		
 		//! Gets the jail's release time

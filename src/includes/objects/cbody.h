@@ -35,7 +35,7 @@ protected:
 
 public:
 	//! Gets the character's name
-	inline const std::string& getName() const
+	inline std::string& getName() const
 	{ return name; }
 
 	//! Sets the character's name
@@ -43,7 +43,7 @@ public:
 	{ name = value; }
 
 	//! Gets the character's title
-	inline const std::string& getTitle() const
+	inline std::string& getTitle() const
 	{ return title; }
 
 	//! Sets the character's title
@@ -51,7 +51,7 @@ public:
 	{ title = value; }
 
 	//! Gets the character's id
-	inline const uint16_t getId() const
+	inline uint16_t getId() const
 	{ return id; }
 
 	//! Sets the character's id
@@ -59,7 +59,7 @@ public:
 	{ id = value; }
 
 	//! Returns true if the char is human
-	inline const bool isHuman() const
+	inline bool isHuman() const
 	{ return id == bodyMale || id == bodyFemale; }
 
 //@{
@@ -110,7 +110,7 @@ protected:
 	uint16_t skills[50];
 
 public:
-	inline const uint16_t getSkill(Skill sk) const
+	inline uint16_t getSkill(Skill sk) const
 	{ return skills[sk]; }
 
 	inline void setSkill(Skill sk, uint16_t value)
@@ -159,83 +159,83 @@ protected:
 	uint16_t skinColor;	//!< Skin color of the character
 public:
 	//! Gets the character strength
-	inline const uint16_t getStrength() const
+	inline uint16_t getStrength() const
 	{ return strength; }
 
 	//! Gets the character hitpoints
-	inline const uint16_t getHitPoints() const
+	inline uint16_t getHitPoints() const
 	{ return hitPoints; }
 
 	//! Gets the character max hitpoints
-	inline const uint16_t getMaxHitPoints() const
+	inline uint16_t getMaxHitPoints() const
 	{ return maxHitPoints; }
 
 	//! Gets the character dextery
-	inline const uint16_t getDextery() const
+	inline uint16_t getDextery() const
 	{ return dextery; }
 
 	//! Gets the character stamina
-	inline const uint16_t getStamina() const
+	inline uint16_t getStamina() const
 	{ return stamina; }
 
 	//! Gets the character max stamina
-	inline const uint16_t getMaxStamina() const
+	inline uint16_t getMaxStamina() const
 	{ return maxStamina; }
 
 	//! Gets the character intelligence
-	inline const uint16_t getIntelligence() const
+	inline uint16_t getIntelligence() const
 	{ return intelligence; }
 
 	//! Gets the character mana
-	inline const uint16_t getMana() const
+	inline uint16_t getMana() const
 	{ return mana; }
 
 	//! Gets the character max mana
-	inline const uint16_t getMaxMana() const
+	inline uint16_t getMaxMana() const
 	{ return maxMana; }
 
 	//! Gets the character stat cap [UO3?]
-	inline const uint16_t getStatCap() const
+	inline uint16_t getStatCap() const
 	{ return statCap; }
 
 	//! Gets the character followers [UO3?]
-	inline const uint8_t getFollowers() const
+	inline uint8_t getFollowers() const
 	{ return followers; }
 
 	//! Gets the character max followers [UO3?]
-	inline const uint8_t getMaxFollowers() const
+	inline uint8_t getMaxFollowers() const
 	{ return maxFollowers; }
 
 	//! Gets the character luck [UO4]
-	inline const uint16_t getLuck() const
+	inline uint16_t getLuck() const
 	{ return luck; }
 
 	//! Gets the character resistance to fire [UO4]
-	inline const uint16_t getResistFire() const
+	inline uint16_t getResistFire() const
 	{ return resistFire; }
 
 	//! Gets the character resistance to cold [UO4]
-	inline const uint16_t getResistCold() const
+	inline uint16_t getResistCold() const
 	{ return resistCold; }
 
 	//! Gets the character resistance to poison [UO4]
-	inline const uint16_t getResistPoison() const
+	inline uint16_t getResistPoison() const
 	{ return resistPoison; }
 
 	//! Gets the character resistance to energy [UO4]
-	inline const uint16_t getResistEnergy() const
+	inline uint16_t getResistEnergy() const
 	{ return resistEnergy; }
 
 	//! Gets the character minimum damage [UO4]
-	inline const uint16_t getDamageMin() const
+	inline uint16_t getDamageMin() const
 	{ return damageMin; }
 
 	//! Gets the character maximum damage [UO4]
-	inline const uint16_t getDamageMax() const
+	inline uint16_t getDamageMax() const
 	{ return damageMax; }
 
 	//! Gets the skin color of the character
-	inline const uint16_t getSkinColor() const
+	inline uint16_t getSkinColor() const
 	{ return skinColor; }
 
 	void setStrength(uint16_t value);
@@ -275,10 +275,10 @@ public:
 	void mount(pNPC horse);
 	void unmount();
 
-	inline const bool isMounted() const
+	inline bool isMounted() const
 	{ return mounting; }
 
-	inline const bool isMounting(pNPC horse) const
+	inline bool isMounting(pNPC horse) const
 	{ return mounting == horse; }
 
 	inline pNPC getHorse() const
@@ -294,7 +294,7 @@ protected:
 	float weight; //!< Weight of the body (with all equipment and backpack)
 private:
 	//! Gets the weight of the body, calculating it when necessary
-	inline const float getWeight()
+	inline float getWeight()
 	{ if ( weight <= 0 ) calcWeight(); return weight; }
 	
 	void calcWeight();

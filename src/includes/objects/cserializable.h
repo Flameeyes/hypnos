@@ -110,7 +110,7 @@ public:
 	virtual ~cSerializable();
 	
 	//! Gets the current serial
-	inline const uint32_t getSerial() const
+	inline uint32_t getSerial() const
 	{ return serial; }
 	
 protected:

@@ -64,7 +64,7 @@ public:
 \name Flags
 */
 public:
-	inline const bool isReadOnly() const
+	inline bool isReadOnly() const
 	{ return flags & flagIsReadOnly; }
 
 	inline void setReadOnly(bool set = true)

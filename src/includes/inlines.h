@@ -86,7 +86,7 @@ inline uint16_t goldsfx(uint16_t goldtotal)
 \param number the number
 \todo is this really usefull ?
 */
-inline const int numbitsset( int number )
+inline int numbitsset( int number )
 {
 	int bitsset = 0;
 
@@ -162,7 +162,7 @@ inline bool isValidCoord( sPoint p )
 \param dir initial direction
 \return The adjacent direction
 */
-inline const uint8_t getLeftDir(uint8_t dir)
+inline uint8_t getLeftDir(uint8_t dir)
 {
 	dir &= 7;	// make sure it's valid
 	return dir==0 ? 7 : dir-1;
@@ -173,7 +173,7 @@ inline const uint8_t getLeftDir(uint8_t dir)
 \param dir initial direction
 \return The adjacent direction
 */
-inline const uint8_t getRightDir(uint8_t dir)
+inline uint8_t getRightDir(uint8_t dir)
 {
 	dir &= 7;
 	return dir==7 ? 0 : dir+1;

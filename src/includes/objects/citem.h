@@ -76,13 +76,13 @@ public:
 	const std::string getRealItemName();
 	virtual const std::string getPopupHelp() const;
 
-	inline const int32_t getHP() const
+	inline int32_t getHP() const
 	{ return hp; }
 
 	inline void setHP(int32_t newhp)
 	{ hp = newhp; }
 
-	inline const int32_t getMaxHP() const
+	inline int32_t getMaxHP() const
 	{ return maxhp; }
 
 	inline void setMaxHP(int32_t newhp)
@@ -163,26 +163,26 @@ public:
 
 //	const magic::FieldType isFieldSpellItem() const;
 
-	inline const bool isCorpse() const
+	inline bool isCorpse() const
 	{ return isCorpse( getId() ); }
 
 	//! predefined spells
-	inline const bool isSpellScroll() const
+	inline bool isSpellScroll() const
 	{ return (getId()>0x1F2C && getId()<0x1F6D); }
 
 	//! includes the scrolls with a variable name
-	inline const bool isSpellScroll72() const
+	inline bool isSpellScroll72() const
 	{ return (getId() >= 0x1F2D && getId() <= 0x1F72); }
 
 	//! this is used in AxeTarget()
-	inline const bool isTree() const
+	inline bool isTree() const
 	{ return isTree( getId() ); }
 
 	//! this is used in SwordTarget() to give kindling.
-	inline const bool isTree2() const
+	inline bool isTree2() const
 	{ return isTree2( getId() ); }
 
-	inline const bool isInstrument() const
+	inline bool isInstrument() const
 	{
 		return (getId()==0x0E9C || getId()==0x0E9D ||
 			getId()==0x0E9E || getId()==0x0EB1 ||
@@ -190,55 +190,55 @@ public:
 			getId()==0x0EB4);
 	}
 
-	inline const bool isArrow() const
+	inline bool isArrow() const
 	{ return (getId()==0x0F3F||getId()==0x0F42); }
 
-	inline const bool isBolt() const
+	inline bool isBolt() const
 	{ return (getId()==0x1BFB||getId()==0x1BFE); }
 
-	inline const bool isChaosOrOrderShield() const
+	inline bool isChaosOrOrderShield() const
 	{ return (getId()>=0x1BC3 && getId()<=0x1BC5); }
 
-	inline const bool isShield() const
+	inline bool isShield() const
 	{
 		return ((getId()>=0x1B72 && getId()<=0x1B7B) ||
 			isChaosOrOrderShield());
 	}
 
-	inline const bool isLog() const
+	inline bool isLog() const
 	{ return isLog(getId()); }
 
-	inline const bool isShaft() const
+	inline bool isShaft() const
 	{ return isShaft(getId()); }
 
-	inline const bool isBoard() const
+	inline bool isBoard() const
 	{ return between(getId(), (uint16_t)0x1BD7, (uint16_t)0x1BDC); }
 
-	inline const bool isFeather() const
+	inline bool isFeather() const
 	{ return isFeather(getId()); }
 
-	inline const bool isCutLeather() const
+	inline bool isCutLeather() const
 	{
 		return (getId()==0x1067 || getId()==0x1068 ||
 			getId()==0x1081 || getId()==0x1082 );
 	}
 
-	inline const bool isHide() const
+	inline bool isHide() const
 	{ return ( getId()==0x1078 || getId()==0x1079 ); }
 
-	inline const bool isBoltOfCloth() const
+	inline bool isBoltOfCloth() const
 	{ return between(getId(), (uint16_t)0x0F95, (uint16_t)0x0F9C); }
 
-	inline const bool isCutCloth() const
+	inline bool isCutCloth() const
 	{ return ( getId()>=0x1766 && getId()<=0x1768 ); }
 
-	inline const bool isCloth() const
+	inline bool isCloth() const
 	{
 		return ((getId()>=0x175D && getId()<=0x1765)
 			|| isCutCloth() );
 	}
 
-	inline const bool isChest() const
+	inline bool isChest() const
 	{
 		return (( getId()>=0x09A8 && getId()<=0x09AB) ||
 			( getId()>=0x0E40 && getId()<=0x0E43) ||
@@ -246,16 +246,16 @@ public:
 			( getId()==0x0E80));
 	}
 
-	inline const bool isForge() const
+	inline bool isForge() const
 	{
 		return  ( getId()==0x0FB1 ||
 			( getId()>=0x197A && getId()<=0x19A9 ) );
 	}
 
-	inline const bool isAnvil() const
+	inline bool isAnvil() const
 	{ return ( getId()==0x0FAF || getId()==0x0FB0 ); }
 
-	inline const bool isCookingPlace() const
+	inline bool isCookingPlace() const
 	{
 		return ((getId()>=0x0DE3 && getId()<=0x0DE9)||
 			(getId()==0x0FAC || getId()==0x0FB1)||
@@ -270,13 +270,13 @@ public:
 			(getId()>=0x0961 && getId()<=0x096C) );
 	}
 
-	inline const bool isDagger() const
+	inline bool isDagger() const
 	{ return ( getId()==0x0F51 || getId()==0x0F52 ); }
 
-	inline const bool isFish() const
+	inline bool isFish() const
 	{ return ( getId()>=0x09CC && getId()<=0x09CF ); }
 
-	inline const bool isFishWater() const
+	inline bool isFishWater() const
 	{
 		return ((getId()==0x1798) || (getId()==0x179B) ||
 			(getId()==0x179C) || (getId()==0x1799) ||
@@ -293,39 +293,39 @@ public:
 			(getId()>=0x34D1) && (getId()<=0x34D5));
 	}
 
-	inline const bool isSign() const
+	inline bool isSign() const
 	{
 		return ((getId()==0x0B95 || getId()==0x0B96) ||
 			(getId()>=0x0BA3 && getId()<=0x0C0E) ||
 			(getId()==0x0C43 || getId()==0x0C44));
 	}
 
-	inline const bool isBrassSign() const
+	inline bool isBrassSign() const
 	{ return ((getId()==0x0BD1 || getId()==0x0BD2)); }
 
-	inline const bool isWoodenSign() const
+	inline bool isWoodenSign() const
 	{ return ((getId()==0x0BCF || getId()==0x0BD0)); }
 
-	inline const bool isGuildSign() const
+	inline bool isGuildSign() const
 	{ return ((getId() >= 0x0BD3 && getId() <= 0x0C0A)); }
 
-	inline const bool isTradeSign() const
+	inline bool isTradeSign() const
 	{
 		return ((getId()==0x0B95 || getId()==0x0B96) ||
 			(getId() >= 0x0BA3 && getId() <= 0x0BCE));
 	}
 
-	inline const bool isBankSign() const
+	inline bool isBankSign() const
 	{ return ((getId() >= 0x0C0B && getId() <= 0x0C0C)); }
 
-	inline const bool isTheatreSign() const
+	inline bool isTheatreSign() const
 	{ return ((getId() >= 0x0C0D && getId() <= 0x0C0E)); }
 
-	inline const bool isHouse() const
+	inline bool isHouse() const
 	{ return isHouse( getId() ); }
 
 	//! Tells if an item is a dynamic spawner
-	inline const bool isSpawner() const
+	inline bool isSpawner() const
 	{ return ( type >= 61 && type <= 65 ) || type == 59 || type == 125; }
 
 //@}
@@ -343,37 +343,37 @@ protected:
 	static const uint64_t flagDyeable	= 0x0000000000000020ull; //!< Can an item be dyed with dyekit?
 
 public:
-	inline const bool isPileable() const
+	inline bool isPileable() const
 	{ return flags & flagPileable; }
 
 	inline void setPileable(bool set = true)
 	{ setFlag(flags, flagPileable, set); }
 
-	inline const bool canDecay() const
+	inline bool canDecay() const
 	{ return flags & flagCanDecay; }
 
 	inline void setDecay(bool set = true)
 	{ setFlag(flags, flagCanDecay, set); }
 
-	inline const bool isNewbie() const
+	inline bool isNewbie() const
 	{ return flags & flagNewbie; }
 
 	inline void setNewbie(bool set = true)
 	{ setFlag(flags, flagNewbie, set); }
 
-	inline const bool isDispellable() const
+	inline bool isDispellable() const
 	{ return flags & flagDispellable; }
 
 	inline void setDispellable(bool set = true)
 	{ setFlag(flags, flagDispellable, set); }
 	
-	inline const bool useAnimID() const
+	inline bool useAnimID() const
 	{ return flags & flagUseAnimID; }
 	
 	inline void setUseAnimID(bool set = true)
 	{ setFlag(flags, flagUseAnimID, set); }
 	
-	inline const bool isDyeable() const
+	inline bool isDyeable() const
 	{ return flags & flagDyeable; }
 	
 	inline void setDyeable(bool set = true)
@@ -400,18 +400,18 @@ public:
 	pBody getPackOwner();
 	pChar getCurrentOwner(bool searchBank = true);	//!< returns pChar to item who has item, either equipped or in the pack (and subcontainers too) else NULL
 
-	inline const pObject getContainer() const
+	inline pObject getContainer() const
 	{ return cont; }
 
 	virtual void setContainer(pObject obj);
 
-	inline const pObject getOldContainer() const
+	inline pObject getOldContainer() const
 	{ return oldcont; }
 
 	inline void setOldContainer(pObject obj)
 	{ oldcont = obj; }
 
-	inline const bool isSecureContainer() const
+	inline bool isSecureContainer() const
 	{ return type==8 || type==13 || type==64; }
 
 	int32_t	 secureIt; // secured chests
@@ -464,13 +464,13 @@ public:
 	inline void setAmount(const uint16_t amt)
 	{ amount = amt; Refresh(); }
 
-	inline const uint16_t getAmount()
+	inline uint16_t getAmount()
 	{ return amount; }
 
 	int32_t DeleteAmount(int amount, short id, short color=-1);
 
 	//! \todo maybe add quality check
-	inline const bool isCombinableWith(pItem it)
+	inline bool isCombinableWith(pItem it)
 	{ return isPileable() && it->isPileable() &&
 		 getId() == it->getId() &&
 		 getColor() == it->getColor(); }
@@ -496,7 +496,7 @@ public:
 public:
 	virtual void MoveTo(sLocation newloc) = 0;
 
-	inline const bool isInWorld() const
+	inline bool isInWorld() const
 	{ return !cont; }
 
 	inline void MoveTo(int32_t x, int32_t y, int8_t z)
@@ -555,7 +555,7 @@ protected:
 	std::string	murderer;	//!< char's name who killed the char (forensic ev.)
 	int32_t		murdertime;	//!< when the people has been killed \todo Should be moved to time_t?
 public:
-	inline const std::string getMurderer() const
+	inline std::string getMurderer() const
 	{ return murderer; }
 	
 	inline void setMurderer(const std::string &newmurderer)
@@ -721,10 +721,10 @@ protected:
 public:
 	virtual bool doDecay(bool dontDelete = false);
 
-	inline const void setDecayTime( const uint32_t delay = /*getClockmSecs()+*/(nSettings::Server::getDecayTimer()*SECS) )
+	inline void setDecayTime( const uint32_t delay = /*getClockmSecs()+*/(nSettings::Server::getDecayTimer()*SECS) )
 	{ decaytime = delay; }
 
-	inline const uint32_t getDecayTime() const
+	inline uint32_t getDecayTime() const
 	{ return decaytime; }
 
 	uint32_t distFrom( pChar pc );
@@ -733,7 +733,7 @@ public:
 	inline void setAnimid(uint16_t id)
 	{ animid = id; }
 
-	inline const uint16_t getAnimid() const
+	inline uint16_t getAnimid() const
 	{ return animid ? animid : getId(); }
 
 public:

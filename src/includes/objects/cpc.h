@@ -74,13 +74,13 @@ public:
 	uint8_t	trainingplayerin;	//!< Index in skillname of the skill the NPC is training the player in
 
 public:
-	inline const bool	isBeingTrained() const
+	inline bool	isBeingTrained() const
 	{ return trainer; }
 
-	inline const pNPC getTrainer() const
+	inline pNPC getTrainer() const
 	{ return trainer; }
 
-	inline const uint8_t	getSkillTaught() const
+	inline uint8_t	getSkillTaught() const
 	{ return trainingplayerin; }
 //@}
 
@@ -96,31 +96,31 @@ public:
 	static const uint64_t flagCanSnoopAll		= 0x0000001000000000ull;
 	static const uint64_t flagBroadcast		= 0x0000002000000000ull;
 
-	inline const bool canBroadcast() const
+	inline bool canBroadcast() const
 	{ return flags & flagBroadcast; }
 
 	inline void setBroadcast(bool set = true)
 	{ setFlag(flags, flagBroadcast, set); }
 
-	inline const bool canViewHouseIcon() const
+	inline bool canViewHouseIcon() const
 	{ return flags & flagViewHouseIcon; }
 
 	inline void setViewHouseIcon(bool set = true)
 	{ setFlag(flags, flagViewHouseIcon, set); }
 
-	inline const bool canSeeSerials() const
+	inline bool canSeeSerials() const
 	{ return flags & flagCanViewSerials; }
 
 	inline void setCanSeeSerials(bool set = true)
 	{ setFlag(flags, flagCanViewSerials, set); }
 
-	inline const bool canSnoop() const
+	inline bool canSnoop() const
 	{ return flags & flagCanSnoopAll; }
 
 	inline void setSnoopAll(bool set = true)
 	{ setFlag(flags, flagCanSnoopAll, set); }
 
-	inline const bool canAllMove() const
+	inline bool canAllMove() const
 	{ return flags & flagAllMove; }
 
 	inline void setAllMove(bool set = true)
@@ -142,7 +142,7 @@ public:
 	{ creationday = day; }
 
 	//! Get the creation day of a character
-	inline const uint32_t getCreationDay() const
+	inline uint32_t getCreationDay() const
 	{ return creationday; }
 //@}
 

@@ -65,35 +65,35 @@ public:
 	std::string toGhost();			//!< returns a randomized "ooooOOoo" based on current string content (not unicode)
 
 	//! Returns a read-only char* pointer to internal unicode_text, as a rawmode 8 bit-char buffer with a double 0 terminator
-	inline const char* rawBytes() const
+	inline char* rawBytes() const
 	{ return reinterpret_cast<const char*>(unicodeText.c_str()); }
 
 	//! Returns a read-only char* pointer to internal unicode_text, as a null-terminated 16bit-char pointer. WARNING: remember to check for byteorder first
-	inline const uint16_t* c_str() const
+	inline uint16_t* c_str() const
 	{ return unicodeText.c_str(); }
 
-	inline const int size()
+	inline int size()
 	{ return unicodeText.size(); }
 
-	inline const uint8_t getMode()
+	inline uint8_t getMode()
 	{ return mode; }
 
 	inline void setMode(const uint8_t newmode)
 	{ mode = newmode; }
 
-	inline const uint16_t getColor()
+	inline uint16_t getColor()
 	{ return color; }
 
 	inline void setColor(const uint16_t newcolor)
 	{ color = newcolor; }
 
-	inline const uint16_t getFont()
+	inline uint16_t getFont()
 	{ return font; }
 
 	inline void setFont(const uint16_t newfont)
 	{ font = newfont; }
 
-	inline const uint32_t getLanguage()
+	inline uint32_t getLanguage()
 	{ return language; }
 
 	inline void setLanguage(uint32_t newlanguage)
@@ -101,7 +101,7 @@ public:
 		language = newlanguage & 0xffffff00;	//ensure 0-termination (remeber, we are using this only when sending it back in network-endian, so the ending 0 is the lsb)
 	}
 
-	inline const pSerializable getSpeaker()
+	inline pSerializable getSpeaker()
 	{ return speaker; }
 
 	inline void setSpeaker(const pSerializable newSpeaker)

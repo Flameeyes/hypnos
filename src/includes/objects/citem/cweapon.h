@@ -63,50 +63,50 @@ protected:
 \name Test type of weapon
 */
 public:
-	inline const bool isAxe() const
+	inline bool isAxe() const
 	{ return isWeaponLike( getId(), weaponAxe1H); }
 
-	inline const bool isSword() const
+	inline bool isSword() const
 	{ return isWeaponLike( getId(), weaponSword1H ); }
 
-	inline const bool isSwordType() const
+	inline bool isSwordType() const
 	{ return isWeaponLike( getId(), weaponSword1H | weaponAxe1H ); }
 
-	inline const bool isMace1H() const
+	inline bool isMace1H() const
 	{ return isWeaponLike( getId(), weaponMace1H); }
 
-	inline const bool isMace2H() const
+	inline bool isMace2H() const
 	{ return isWeaponLike( getId(), weaponMace2H); }
 
-	inline const bool isMaceType() const
+	inline bool isMaceType() const
 	{ return isWeaponLike( getId(), weaponMace1H | weaponMace2H ); }
 
-	inline const bool isFencing1H() const
+	inline bool isFencing1H() const
 	{ return isWeaponLike( getId(), weaponFenc1H); }
 
-	inline const bool isFencing2H() const
+	inline bool isFencing2H() const
 	{ return isWeaponLike( getId(), weaponFenc2H); }
 
-	inline const bool isFencingType() const
+	inline bool isFencingType() const
 	{ return isWeaponLike( getId(), weaponFenc1H | weaponFenc2H ); }
 
-	inline const bool isBow() const
+	inline bool isBow() const
 	{ return isWeaponLike( getId(), weaponBow ); }
 
-	inline const bool isCrossbow() const
+	inline bool isCrossbow() const
 	{ return isWeaponLike( getId(), weaponXBow ); }
 
-	inline const bool isHeavyCrossbow() const
+	inline bool isHeavyCrossbow() const
 	{ return isWeaponLike( getId(), weaponHXBow ); }
 
-	inline const bool isBowType() const
+	inline bool isBowType() const
 	{ return isWeaponLike( getId(), weaponBow | weaponXBow | weaponHXBow ); }
 	
-	inline const bool isStaff() const
+	inline bool isStaff() const
 	{ return isWeaponLike( getId(), weaponStaff1H | weaponStaff2H ); }
 
 	//! -Fraz- The OSI macing weapons that do stamina and armor damage 2handed only
-	inline const bool IsSpecialMace() const
+	inline bool IsSpecialMace() const
 	{ return isWeaponLike( getId(), weaponStaff1H | weaponStaff2H | weaponMace2H ); }
 
 //@}
