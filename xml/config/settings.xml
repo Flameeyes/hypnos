@@ -1,59 +1,55 @@
-<?xml version="1.0"?>
-<!DOCTYPE settings SYSTEM "http://flameeyes.is-a-geek.org/uodtds/emusettings.dtd">
-<settings emulator="pyuo" buildnum="0">
-	<shard title="PyUO Shard" host="127.0.0.1" port="2593" />
-	<muls path="muls/" statics="statics0.mul" staidx="staidx0.mul"
-		verdata="verdata.mul" tiledata="tiledata.mul"
-		multi="multi.mul" multiidx="multi.idx"
-		caches="STATICS|TILEDATA|MULTI" />
-
-	<setting name="racport">2594</setting>
-	<group name="skills">
-		<setting name="skillcap">2700</setting>
-		<setting name="statcap">219</setting>
-		<setting name="dailystatcap">1999</setting>
-		<setting name="statsadvancesystem">0</setting>
-		<setting name="skilladvancemodifier">1000</setting>
-		<setting name="statsadvancemodifier">500</setting>
-		<setting name="skillevel">5</setting>
-
-		<setting name="base_traking_range">10</setting>
-		<setting name="max_tracking_targets">20</setting>
-		<setting name="base_tracking_time">30</setting>
-		<setting name="traking_message_redisplay_time">30</setting>
-
-		<setting name="begging_range">3</setting>
-		<setting name="begging_time">300</setting>
-		<setting name="begging_text0">Could thou spare a few coins?</setting>
-		<setting name="begging_text1">Hey buddy can you spare some gold?</setting>
-		<setting name="begging_text2">I have a family to feed, think of the children.</setting>
-
-		<setting name="base_fishing_time">10</setting>
-		<setting name="random_fishing_time">10</setting>
-
-		<setting name="spiritspeaktimer">30</setting>
-
-		<setting name="rogue">1</setting>
-		<setting name="max_stealth_steps">10</setting>
-		<setting name="stealth_on_horse">0</setting>
-		<setting name="stealth_ar_limit">1</setting>
-
-		<setting name="cut_scroll_requirements">1</setting>
-
-		<setting name="bandage_in_combat">1</setting>
-
-		<setting name="sparring_limit">0</setting>
-	</group>
-	<group name="bank">
-		<setting name="usespecialbank">0</setting>
-		<setting name="specialbanktrigger">ware</setting>
-		<setting name="bankitemlimit">0</setting>
-	</group>
-	<group name="stamina">
-		<setting name="running_stamina_steps">4</setting>
-		<setting name="shove_stamina_loss">3</setting>
-		<setting name="stamina_usage">0.002|0.008|0.018|0.018|0.025|0.25</setting>
-		<setting name="stamina_loss_on_horse">0.001</setting>
-		<setting name="gold_weight">0.005</setting>
-	</group>
+<?xml version='1.0' encoding='UTF-8'?>
+<settings>
+  <MsgBoards>
+    <MaxPosts>128</MaxPosts>
+    <MaxEntries>256</MaxEntries>
+  </MsgBoards>
+  <Server>
+    <BookSystem enabled="true" />
+    <TradeSystem enabled="true" />
+    <BountySystem enabled="true" />
+    <PopupHelp enabled="true" />
+    <UOAssist enabled="true" />
+    <AllowedAssistVersion>0</AllowedAssistVersion>
+    <MaximumPCs>5</MaximumPCs>
+    <PlayersDeletePCs enabled="true" />
+    <BankMaxItems>0</BankMaxItems>
+    <MaximumItemsOnTile>0</MaximumItemsOnTile>
+    <InstantGuards enabled="true" />
+    <ShowPCNames enabled="true" />
+    <DelaySkills>0</DelaySkills>
+    <DelayObjects>0</DelayObjects>
+    <DecayTimer>0</DecayTimer>
+    <WeightPerStr>4</WeightPerStr>
+  </Server>
+  <Hunger enabled="true" >
+    <HungerRate>6000</HungerRate>
+    <HungerDamage>2</HungerDamage>
+    <HungerDamageRate>10</HungerDamageRate>
+  </Hunger>
+  <Actions>
+    <EquipOnDClick enabled="true" />
+    <UseItemsWhenInvisible enabled="false" />
+    <BountyKarmaGain>0</BountyKarmaGain>
+    <BountyFameGain>0</BountyFameGain>
+  </Actions>
+  <Skills>
+    <Hiding>
+      <StealthOnHorse enabled="false" />
+      <StealthToTakeItemsWhileHid>960</StealthToTakeItemsWhileHid>
+      <StealthToDropItemsWhileHid>960</StealthToDropItemsWhileHid>
+    </Hiding>
+    <Thievery>
+      <SnoopKarmaLoss>0</SnoopKarmaLoss>
+      <SnoopFameLoss>0</SnoopFameLoss>
+      <StealKarmaLoss>0</StealKarmaLoss>
+      <StealFameLoss>0</StealFameLoss>
+    </Thievery>
+    <StatDailyLimit>0</StatDailyLimit>
+    <LimitPlayerSparring>0</LimitPlayerSparring>
+    <MaximumSkillTraining>250</MaximumSkillTraining>
+  </Skills>
+  <Logging>
+    <LogPath>/var/log/hypnos/</LogPath>
+  </Logging>
 </settings>

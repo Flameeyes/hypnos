@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<containers>
+  <gump id="0x3c" x1="40" y1="40" x2="140" y2="140" >
+    <!--Box/Punch-->
+    <id>0x0E75</id>
+    <id>0x0E79</id>
+    <id>0x0EB2</id>
+  </gump>
+  <gump id="0x3d" x1="18" y1="50" x2="118" y2="100" >
+    <!--Leather Bag-->
+    <id>0x0E76</id>
+  </gump>
+  <gump id="0x3e" x1="40" y1="40" x2="140" y2="140" >
+    <!--Keg-->
+    <id>0x0E77</id>
+    <id>0x0E7A</id>
+    <id>0x0E7F</id>
+    <id>0x0E83</id>
+  </gump>
+  <gump id="0x4A" x1="18" y1="100" x2="118" y2="150" >
+    <!--Silver Chest-->
+    <id>0x0E7C</id>
+    <id>0x09AB</id>
+    <id>0x0AB2</id>
+  </gump>
+  <gump id="0x43" x1="18" y1="50" x2="118" y2="100">
+    <!--Wooden Box-->
+    <id>0x0E7D</id>
+    <id>0x09AA</id>
+  </gump>
+  <gump id="0x44" x1="18" y1="30" x2="118" y2="80">
+    <!--Wooden Crate-->
+    <id>0x0E3D</id>
+    <id>0x0E3C</id>
+    <id>0x0E3F</id>
+    <id>0x0E3E</id>
+    <id>0x0E7E</id>
+    <id>0x09A9</id>
+  </gump>
+  <gump id="0x42" x1="18" y1="100" x2="118" y2="150">
+    <!--Metal and Gold Chest-->
+    <id>0x0E40</id>
+    <id>0x0E41</id>
+  </gump>
+  <gump id="0x49" x1="18" y1="100" x2="118" y2="150">
+    <!--Wooden and Gold Chest-->
+    <id>0x0E43</id>
+    <id>0x0E42</id>
+  </gump>
+  <gump id="0x41" x1="18" y1="30" x2="118" y2="80">
+    <!--Round Basket-->
+    <id>0x0990</id>
+  </gump>
+  <gump id="0x4B" x1="18" y1="50" x2="118" y2="100">
+    <!--Brass Box-->
+    <id>0x0E80</id>
+  </gump>
+  <gump id="0x40" x1="18" y1="50" x2="118" y2="100">
+    <!--Metal Box-->
+    <id>0x09A8</id>
+    <id>0x2AF8</id>
+  </gump>
+  <gump id="0x09" x1="20" y1="85" x2="70" y2="160">
+    <!--Coffin-->
+    <id>0x09</id>
+  </gump>
+  <gump id="0x4d" x1="18" y1="30" x2="118" y2="80">
+    <!--Bookcas-->
+    <id>0x0A97</id>
+    <id>0x0A98</id>
+    <id>0x0A99</id>
+    <id>0x0A9A</id>
+    <id>0x0A9B</id>
+    <id>0x0A9C</id>
+    <id>0x0A9D</id>
+    <id>0x0A9E</id>
+  </gump>
+  <gump id="0x4e" x1="18" y1="30" x2="118" y2="80">
+    <!--Fancy Armoire-->
+    <id>0x0A4D</id>
+    <id>0X0A51</id>
+    <id>0x0A4C</id>
+    <id>0x0A50</id>
+  </gump>
+  <gump id="0x4f" x1="18" y1="30" x2="118" y2="80">
+    <!--Wooden Armoire-->
+    <id>0x0A4f</id>
+    <id>0X0A53</id>
+    <id>0x0A4e</id>
+    <id>0x0A52</id>
+  </gump>
+  <gump id="0x48" x1="18" y1="30" x2="118" y2="80">
+    <!--Chest of drawers (fancy)-->
+    <id>0x0A30</id>
+    <id>0X0A38</id>
+  </gump>
+  <gump id="0x51" x1="18" y1="30" x2="118" y2="80">
+    <!--Dresser-->
+    <id>0x0A2C</id>
+    <id>0X0A34</id>
+    <id>0x0A3C</id>
+    <id>0x0A3D</id>
+    <id>0x0A44</id>
+    <id>0x0A35</id>
+  </gump>
+  <gump id="0x4c" x1="18" y1="30" x2="118" y2="80">
+    <!--Hatch-->
+    <id>0x3EB9</id>
+  </gump>
+</containers>
