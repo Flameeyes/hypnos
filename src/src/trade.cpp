@@ -8,16 +8,8 @@
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
 #include "common_libs.h"
-#include "network.h"
-#include "sndpkg.h"
-#include "itemid.h"
-#include "debug.h"
-#include "set.h"
-#include "trade.h"
-#include "commands.h"
-#include "weight.h"
-#include "inlines.h"
-#include "utils.h"
+#include "objects/citem.h"
+#include "objects/cpc.h"
 
 // this is a q&d fix for 'sell price higher than buy price' bug (Duke, 30.3.2001)
 static bool items_match(pItem pi1,pItem pi2)
@@ -27,7 +19,7 @@ static bool items_match(pItem pi1,pItem pi2)
 	if (pi1->getId()==pi2->getId() &&
 		pi1->type==pi2->type &&
 		!(pi1->getId()==0x14F0 && (pi1->morex!=pi2->morex)) &&	// house deeds only differ by morex
-		!(pi1->IsShield() && strcmp(pi1->getSecondaryNameC(),pi2->getSecondaryNameC())) &&	// magic shields only differ by secondary name
+		!(pi1->isShield() && pi1->getSecondaryName() == pi2->getSecondaryName()) &&	// magic shields only differ by secondary name
 		pi1->getColor()==pi2->getColor())		// this enables color checking for armour, but disables dyed clothes :)
 		return true;
 	return false;
@@ -39,48 +31,50 @@ static bool items_match(pItem pi1,pItem pi2)
 // Function name     : tradestart
 // Return type       : pItem
 // Author            : Luxor
-pItem tradestart(pChar pc1, pChar pc2)
+pItem tradestart(pPC pc1, pPC pc2)
 {
 	if (
 		( ! pc1 || ! pc2 ) ||
 		( !pc1->getClient() || ! pc2->getClient() ) ||
-		( pc1->dead || pc2->dead ) ||
+		( pc1->isDead() || pc2->isDead() ) ||
 		( pc1->distFrom( pc2 ) > 5 )
 	   )
 		return NULL;
 
-        pItem bp1 = pc1->getBackpack();
+        pItem bp1 = pc1->getBody()->getBackpack();
 	if ( ! bp1 )
 	{
 		pc1->sysmsg("Time to buy a backpack!");
 		return NULL;
 	}
-        pItem bp2 = pc2->getBackpack();
+        pItem bp2 = pc2->getBody()->getBackpack();
 	if ( ! bp2 )
 	{
 		pc1->sysmsg("Time to buy a backpack!");
 		return NULL;
 	}
 
-	pItem cont1 = item::CreateFromScript( "$item_a_bulletin_board" );
-	pItem cont2 = item::CreateFromScript( "$item_a_bulletin_board" );
+//!\todo Need to change this
+//	pItem cont1 = item::CreateFromScript( "$item_a_bulletin_board" );
+//	pItem cont2 = item::CreateFromScript( "$item_a_bulletin_board" );
+	pItem cont1 = NULL, cont2 = NULL;
 	if ( ! cont1 || ! cont2 )
 		return NULL;
 
 	cont1->setPosition(26, 0, 0);
 	cont2->setPosition(26, 0, 0);
-	cont1->setContainer(pc1);
-	cont2->setContainer(pc2);
+	cont1->setContainer(pc1->getBody());
+	cont2->setContainer(pc2->getBody());
 	cont1->layer = cont2->layer = 0;
 	cont1->type = cont2->type = 1;
 	cont1->setDyeable(false);
 	cont2->setDyeable(false);
         
 	//!\todo find client1 & client2
-        client1->showItemInContainer(cont1);
-        client2->showItemInContainer(cont1);
-        client1->showItemInContainer(cont2);
-        client2->showItemInContainer(cont2);
+        pc1->getClient()->showItemInContainer(cont1);
+        pc2->getClient()->showItemInContainer(cont1);
+        pc1->getClient()->showItemInContainer(cont2);
+        pc2->getClient()->showItemInContainer(cont2);
 
 	//!\todo Need to remplace these with a decent version..
         cont2->moreb1= cont1->getSerial().ser1;
@@ -103,7 +97,7 @@ pItem tradestart(pChar pc1, pChar pc2)
 	LongToCharPtr(cont1->getSerial(), msg+8);
 	LongToCharPtr(cont2->getSerial(), msg+12);
 	msg[16]=1;
-	strcpy((char*)&(msg[17]), pc2->getCurrentName().c_str());
+	strcpy((char*)&(msg[17]), pc2->getBody()->getCurrentName().c_str());
 	Xsend(s1, msg, 47);
 
         uint8_t msg2[90];
@@ -115,7 +109,7 @@ pItem tradestart(pChar pc1, pChar pc2)
 	LongToCharPtr(cont2->getSerial(), msg2+8);
 	LongToCharPtr(cont1->getSerial(), msg2+12);
 	msg2[16]=1;
-	strcpy((char*)&(msg2[17]), pc1->getCurrentName().c_str());
+	strcpy((char*)&(msg2[17]), pc1->getBody()->getCurrentName().c_str());
 	Xsend(s2, msg2, 47);
 
         return cont1;
@@ -202,13 +196,6 @@ void restock(bool total)
 }
 */
 
-
-
-
-
-
-
-
 cRestockMng::cRestockMng()
 {
 	timer=uiCurrentTime;
@@ -216,8 +203,6 @@ cRestockMng::cRestockMng()
 
 void cRestockMng::doRestock()
 {
-
-
 	if( !TIMEOUT( timer ) )
 		return;
 
@@ -254,8 +239,6 @@ void cRestockMng::doRestock()
 	}
 
 	updateTimer();
-
-
 }
 
 void cRestockMng::doRestockAll()
@@ -314,20 +297,4 @@ void cRestockMng::updateTimer()
 		timer=uiCurrentTime+CHECK_RESTOCK_EVERY*MY_CLOCKS_PER_SEC;
 }
 
-
-
 cRestockMng* Restocks = NULL;
-
-
-
-
-
-
-
-
-
-
-
-
-
-

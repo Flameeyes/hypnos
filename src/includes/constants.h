@@ -15,6 +15,9 @@
 
 #include "common_libs.h"
 
+static const uint16_t T2A = 0x0001;
+static const uint16_t LBR = 0x0002;
+
 //@{
 //! \name Colors
 static const uint16_t COLOR_LIGHTBLUE	= 0x0489;

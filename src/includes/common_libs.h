@@ -83,6 +83,12 @@ warnings/errors/issues.
 #include <netinet/in.h>
 #include <ctype.h>
 #include <stdint.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <sys/signal.h>
+#include <sys/errno.h>
+#include <arpa/inet.h>
 
 #ifndef MSG_NOSIGNAL
     #define MSG_NOSIGNAL 0
@@ -93,6 +99,12 @@ warnings/errors/issues.
 #include "typedefs.h"
 #include "constants.h"
 #include "console.h"
+
+#ifdef __unix__
+	#include "archs/pyunix.h"
+#else
+	#include "archs/pywin32.h"
+#endif
 
 extern char* getOSVersionString();
 enum OSVersion { OSVER_UNKNOWN, OSVER_WIN9X, OSVER_WINNT, OSVER_NONWINDOWS };

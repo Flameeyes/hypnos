@@ -160,4 +160,7 @@ int startTThread( TTHREAD ( *funk )( void * ), void* param = NULL );
 
 };
 
+#define closesocket(s)	close(s)
+#define ioctlsocket ioctl
+
 #endif
