@@ -2,7 +2,6 @@ AC_INIT(configure.in)
 
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(hypnos, 0.1)
-PACKAGE_BUGREPORT = flameeyes@users.berlios.de
 
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
@@ -18,19 +17,6 @@ AM_PATH_WEFTS()
 AC_ICC_COMPILER()
 AC_WINENV()
 AC_HYPNOSRELOC()
-
-if test "$is_icc" == "yes"; then
-	# Disable warnings in specific way for Intel C++ Compiler
-	# and prevents wefts from linking to -lstdc++ (which is gcc specific)
-	WARNS="-wd143 -wd177 -wd279 -wd383 -wd810 -wd981 "
-	WEFTS_LIBS=$(echo $WEFTS_LIBS | sed -e 's/-lstdc++//')
-	CPPLIB=""
-else
-	WARNS="-Wno-reorder -Wno-switch-enum "
-	CXXFLAGS="$CXXFLAGS -fno-implicit-templates"
-	CPPLIB="-lstdc++"
-fi
-AC_SUBST(CPPLIB)
 
 AC_OBJEXT
 AC_EXEEXT
@@ -74,7 +60,7 @@ else
 	AC_CHECK_FUNCS([ntohl ntohs htonl htons])
 fi
 
-AM_CONDITIONAL(WIN32, test x$is_win = "xyes")
+AM_CONDITIONAL(WIN32, test x$is_win == "xyes")
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -94,12 +80,34 @@ AC_FUNC_VPRINTF
 AC_FUNC_MMAP
 AC_CHECK_FUNCS([basename ftime gettimeofday memset munmap strchr strstr strtol strtoul strtoull strlwr strupr uname asprintf strcmpi strcasecmp strncmpi strncasecmp kbhit getch sigaction])
 
+if test "$is_icc" == "yes"; then
+	WEFTS_LIBS=$(echo $WEFTS_LIBS | sed -e 's/-lstdc++//')
+	CPPLIB=""
+else
+	CPPLIB="-lstdc++"
+fi
+
 # Adding include dirs and WEFTS_ variables
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
-CXXFLAGS="$CXXFLAGS $INCLUDES $WEFTS_CXXFLAGS -Wall $WARNS $DEFDIRS"
-CFLAGS="$CXXFLAGS"
-LDFLAGS="$LDFLAGS"
 
+TMPFLAGS="$WEFTS_CXXFLAGS -Wall -fno-implicit-templates"
+AC_TEST_CFLAGS($TMPFLAGS)
+AC_TEST_CXXFLAGS($TMPFLAGS)
+
+CFLAGS="$CFLAGS $INCLUDES $WORKING_CFLAGS $DEFDIRS"
+CXXFLAGS="$CXXFLAGS $INCLUDES $WORKING_CXXFLAGS $DEFDIRS"
+
+if test "x$is_icc" == "xyes"; then
+	CFLAGS="$CFLAGS -wd143 -wd177 -wd279 -wd383 -wd810 -wd981 "
+	CXXFLAGS="$CXXFLAGS -wd143 -wd177 -wd279 -wd383 -wd810 -wd981 "
+fi
+
+if test "x$GCC" == "xyes"; then
+	CFLAGS="$CFLAGS -Wno-switch-enum "
+	CXXFLAGS="$CXXFLAGS -Wno-switch-enum -Wno-reorder "
+fi
+
+AC_SUBST(CPPLIB)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)

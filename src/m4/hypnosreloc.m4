@@ -15,5 +15,7 @@ AC_DEFUN([AC_HYPNOSRELOC],
 		if test "x$br_cv_binreloc" != "xyes"; then
 			DEFDIRS="-DDATADIR=\"$datadir\" "
 		fi
+		
+		AM_CONDITIONAL(BINRELOC, test "x$br_cv_binreloc" = "xyes")
 	fi
 ])

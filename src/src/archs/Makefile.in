@@ -102,8 +102,9 @@ WEFTS_LIBS = @WEFTS_LIBS@
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
+
 noinst_LIBRARIES = libarchs.a
-libarchs_a_SOURCES = signals.cpp console.cpp tinterface.cpp
+libarchs_a_SOURCES = signals.cpp console.cpp tinterface.cpp $(WIN32SRCS)
 subdir = src/archs
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -113,7 +114,7 @@ LIBRARIES = $(noinst_LIBRARIES)
 libarchs_a_AR = $(AR) cru
 libarchs_a_LIBADD =
 am_libarchs_a_OBJECTS = signals.$(OBJEXT) console.$(OBJEXT) \
-	tinterface.$(OBJEXT)
+	tinterface.$(OBJEXT) $(am__objects_1)
 libarchs_a_OBJECTS = $(am_libarchs_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -336,8 +337,8 @@ uninstall-am: uninstall-info-am
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
 	tags uninstall uninstall-am uninstall-info-am
 
-
-@WIN32_TRUE@	libarchs_a_SOURCES += ntservice.cpp win32registry.cpp
+@WIN32_TRUE@	WIN32SRCS = ntservice.cpp win32registry.cpp
+@WIN32_FALSE@	WIN32SRCS = 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

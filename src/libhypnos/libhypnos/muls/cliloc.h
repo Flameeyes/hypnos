@@ -13,7 +13,7 @@
 
 #include "libhypnos/muls/mulfiles.h"
 #include "libhypnos/muls/mmappedfile.h"
-#include "libhypnos/types.h"
+#include "libhypnos/commons.h"
 
 typedef std::map<uint32_t, std::string>::const_iterator constCliIterator;
 

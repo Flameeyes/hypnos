@@ -1,6 +1,8 @@
-noinst_LIBRARIES = libarchs.a
-libarchs_a_SOURCES =  signals.cpp console.cpp tinterface.cpp
-
 if WIN32
-	libarchs_a_SOURCES += ntservice.cpp win32registry.cpp
+	WIN32SRCS = ntservice.cpp win32registry.cpp
+else
+	WIN32SRCS = 
 endif
+
+noinst_LIBRARIES = libarchs.a
+libarchs_a_SOURCES =  signals.cpp console.cpp tinterface.cpp $(WIN32SRCS)

@@ -6875,48 +6875,39 @@ dnl
 
 AC_DEFUN([AM_DL], [
 
-case "$host" in
-  *-*-mingw* | *-*-cygwin*)
-    dnl check if we are using the cygwin, mingw or cygwin with mno-cygwin mode
-    dnl in which case we are actually dealing with a mingw32 compiler
-    case "$host" in
-      *-*-mingw32*)
-        SYS=mingw32
-        ;;
-      *-*-cygwin*)
-        AC_EGREP_CPP(pattern, 
-                     [#ifdef WIN32
-                      yes
-                      #endif],
-                     SYS=mingw32, SYS=cygwin)
-        ;;
-    esac
+	AC_WINENV()
+	if test "$is_win" == "yes"; then
+		have_dl=yes
+		AC_MSG_RESULT(using WIN32 dinamic libraries)
+	else
+		AC_CHECK_LIB(c, dlopen, [DYNAMIC_LD_LIBS=""; have_dl=yes])
+	
+		if test x$have_dl != "xyes"; then
+			AC_CHECK_LIB(dl, dlopen, [DYNAMIC_LD_LIBS="-ldl"; have_dl=yes])
+		fi
+	
+		if test x$have_dl != "xyes"; then
+			AC_MSG_ERROR(dynamic linker needed)
+		fi
+	
+		AC_SUBST(DYNAMIC_LD_LIBS)
+	fi
 
-    if test "$SYS" = "mingw32"; then
-      have_dl=yes
-      AC_MSG_RESULT(using WIN32 dinamic libraries)
-    fi
-  ;;
-  
-  *)
-    AC_CHECK_LIB(c, dlopen,
-     [DYNAMIC_LD_LIBS=""
-      have_dl=yes])
+])
 
-    if test x$have_dl != "xyes"; then
-      AC_CHECK_LIB(dl, dlopen,
-       [DYNAMIC_LD_LIBS="-ldl"
-        have_dl=yes])
-    fi
+# Commodity file with check for Windows environment
+# This function is called whenever we need to check for Windows
+# caching the result.
 
-    if test x$have_dl != "xyes"; then
-      AC_MSG_ERROR(dynamic linker needed)
-    fi
-
-    AC_SUBST(DYNAMIC_LD_LIBS)
-  ;;
-esac
-
+AC_DEFUN([AC_WINENV], 
+[
+	AC_CACHE_CHECK([for Windows environment], [is_win], [
+		AC_EGREP_CPP(yes,
+		[#ifdef WIN32
+		yes
+		#endif
+		], is_win=yes, is_win=no)
+	])
 ])
 
 # Configure paths for Wefts
@@ -7059,20 +7050,6 @@ AC_DEFUN(AC_ICC_COMPILER,
 	])
 ])
 
-# Commodity file with check for Windows environment
-# This function is called whenever we need to check for Windows
-# caching the result.
-
-AC_DEFUN([AC_WINENV], 
-[
-	AC_CACHE_CHECK([for Windows environment], [is_win], [
-		AC_EGREP_CPP(yes,
-		[#ifdef WIN32
-		yes
-		#endif
-		], is_win=yes, is_win=no)
-	])
-])
 # Wrapper to binreloc function.
 # This function is a wrapper to the binreloc.m4 file which defines
 # the official function to check for binreloc.
@@ -7090,6 +7067,8 @@ AC_DEFUN([AC_HYPNOSRELOC],
 		if test "x$br_cv_binreloc" != "xyes"; then
 			DEFDIRS="-DDATADIR=\"$datadir\" "
 		fi
+		
+		AM_CONDITIONAL(BINRELOC, test "x$br_cv_binreloc" = "xyes")
 	fi
 ])
 
@@ -7169,5 +7148,56 @@ AC_DEFUN([AM_BINRELOC],
 	fi
 	AC_SUBST(BINRELOC_CFLAGS)
 	AC_SUBST(BINRELOC_LIBS)
+])
+
+dnl Commodity file with check for compiler's flags support
+dnl When calling this function the passed variables will be checked
+dnl to support for the required compiler, and then the WORKING_C(XX)FLAGS
+dnl variables will be used.
+
+AC_DEFUN(AC_TEST_CFLAGS, [
+	
+	AC_LANG_SAVE
+	
+	AC_LANG_C
+	# Checking for C support
+	for FLAG in $1; do
+		SAVE_CFLAGS="$CFLAGS"
+		CFLAGS="$CFLAGS $FLAG"
+		AC_MSG_CHECKING([whether $CC understands $FLAG])
+		AC_TRY_COMPILE([], [], has_option=yes, has_option=no)
+		CFLAGS="$SAVE_CFLAGS"
+		AC_MSG_RESULT($has_option)
+		if test $has_option = yes; then
+			WORKING_CFLAGS="$WORKING_CFLAGS $FLAG "
+		fi
+		unset has_option
+		unset SAVE_CFLAGS
+	done
+	
+	AC_LANG_RESTORE
+])
+
+AC_DEFUN(AC_TEST_CXXFLAGS, [
+	
+	AC_LANG_SAVE
+	
+	AC_LANG_CPLUSPLUS
+	# Checking for C++ support
+	for FLAG in $1; do
+		SAVE_CXXFLAGS="$CXXFLAGS"
+		CXXFLAGS="$CXXFLAGS $FLAG"
+		AC_MSG_CHECKING([whether $CXX understands $FLAG])
+		AC_TRY_COMPILE([], [], has_option=yes, has_option=no)
+		CXXFLAGS="$SAVE_CXXFLAGS"
+		AC_MSG_RESULT($has_option)
+		if test $has_option = yes; then
+			WORKING_CXXFLAGS="$WORKING_CXXFLAGS $FLAG "
+		fi
+		unset has_option
+		unset SAVE_CXXFLAGS
+	done
+	
+	AC_LANG_RESTORE
 ])
 
