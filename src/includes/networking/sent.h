@@ -1439,8 +1439,19 @@ namespace nPackets {
 		};
 
 		/*!
-		\todo packet 0xa8: Game Server List... login packet (strictly linked with Login2 in network.cpp and a global variable)
+		\brief Game Server List... login packet (Packet 0xa8)
+		\author Kheru
+		\note Packet 0xA8
 		*/
+		class GameServerList: public cPacketSend
+		{
+
+		public:
+			inline GameServerList()
+			{ }
+
+			void prepare();
+		};
 
 		/*!
 		\todo packet 0xa9: Characters / Starting Locations... login packet (strictly linked with GoodAuth in network.cpp and a global variable)

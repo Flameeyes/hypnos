@@ -314,37 +314,14 @@ void cNetwork::LoginMain(pClient client)
 
 void cNetwork::Login2(pClient client)
 {
-	//! \todo outbound packet 0xa8 
 	static const char msgLogin[] = "Client [%s] connected [first] using Account '%s'.\n";
-
-	uint16_t i, tlen;
-	uint32_t ip;
-	uint8_t newlist1[6]={ 0xA8, 0x00, };
-	uint8_t newlist2[40]={ 0x00, };
 
 	outInfof( (char*)msgLogin, inet_ntoa(client_addr.sin_addr), &buffer[s][1] );
 	if (SrvParms->server_log)
 		ServerLog.Write( (char*)msgLogin, inet_ntoa(client_addr.sin_addr), &buffer[s][1] );
 
-	tlen = 6 + (servcount*40);
-	ShortToCharPtr(tlen, newlist1 +1);
-	newlist1[3]=0xFF;			// System Info flag
-	ShortToCharPtr(servcount, newlist1 +4);
-	Xsend(s, newlist1, 6);
-
-	for( i = 0; i < servcount; ++i )
-	{
-		ShortToCharPtr(i+1, newlist2);
-
-		strcpy((char*)&newlist2[2], serv[i][0]);
-		newlist2[34]=0x12;		// %Full
-		newlist2[35]=0x01;		// Timezone
-		ip = inet_addr(serv[i][1]); 	  // Host-Order
-		ip = htonl(ip);			  // swap if needs
-		LongToCharPtr(ip, newlist2 +36);  //Network order ...
-		Xsend(s, newlist2, 40);
-	}
-//AoS/	Network->FlushBuffer(client);
+	nPackets::Sent::GameServerList pk();
+	client->sendPacket(&pk);
 }
 
 

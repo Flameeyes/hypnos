@@ -73,7 +73,7 @@ void nLoginServer::loadServers()
 
 /*!
 \brief Gets the IP address for the login server structure server.
-\return The IP-address in long form of the server, in network byte order.
+\return The IP-address in long form of the server, in host byte order.
 
 Please note, before call this function in a sequence, plese call
 \c sethostent(1) to use TCP connection instead of UDP when executing
@@ -130,6 +130,6 @@ uint32_t nLoginServer::sServer::getIPAddress() const
 	#warning Seems like your system's way to resolve hostnames isn't \
 		supported, you can only use IP-value
 	
-	ip2long(hostname);
+	return ip2long(hostname);
 #endif
 }

@@ -1692,8 +1692,36 @@ void nPackets::Sent::TipsWindow::prepare()
 }
 
 /*!
-\todo packet 0xa8: Game Server List... login packet (strictly linked with Login2 in network.cpp and a global variable)
+\brief  Game Server List [packet 0xa8]
+\author Kheru
+\note Packet 0xA8
 */
+void nPackets::Sent::GameServerList::prepare()
+{
+	uint16_t i, server_offset, servers_size = nLoginServer::servers.size();
+	uint8_t *buffer_server;
+	length = 6 + (servers_size * 40);
+	buffer = new uint8_t[length];
+	memset(buffer, 0, length);
+
+	buffer[0] = 0xA8;
+	ShortToCharPtr(length, buffer +1);
+	buffer[3] = 0xFF;			// System Info flag
+	ShortToCharPtr(servers_size, buffer +4);
+	
+	for( i = 0, server_offset = 6; i < servers_size; i++ , server_offset += 40)
+	{
+		buffer_server = buffer + server_offset;
+		ShortToCharPtr(i, buffer_server);
+
+		memcpy(buffer_server +2,
+			nLoginServer::servers[i].title.c_str(),
+			nLoginServer::servers[i].title.size() );		// Name
+		buffer_server[34]=0x12;						// %Full
+		buffer_server[35]=0x01;						// Timezone
+		LongToCharPtr(nLoginServer::servers[i].getIDAddress(), buffer_server +36);
+	}
+}
 
 /*!
 \todo packet 0xa9: Characters / Starting Locations... login packet (strictly linked with GoodAuth in network.cpp and a global variable)
