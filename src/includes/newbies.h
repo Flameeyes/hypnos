@@ -53,7 +53,6 @@ namespace nNewbies {
 	*/
 	struct sNewbieItem {
 		std::string item;	//!< String code of the item to add
-			//!\todo Should change to use directly the item archetype
 		ItemPlace place;	//!< Place where to add the item
 		uint16_t amount;	//!< Amount of items to add
 		std::string color;	//!< Color of the items to add

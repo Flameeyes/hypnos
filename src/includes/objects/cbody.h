@@ -111,67 +111,15 @@ public:
 \name Skills
 \brief Skill stuff
 */
-public:
-	static const uint16_t skillAlchemy		= 0x00;
-	static const uint16_t skillAnatomy		= 0x01;
-	static const uint16_t skillAnimalLore		= 0x02;
-	static const uint16_t skillItemID		= 0x03;
-	static const uint16_t skillArmsLore		= 0x04;
-	static const uint16_t skillParrying		= 0x05;
-	static const uint16_t skillBagging		= 0x06;
-	static const uint16_t skillBlacksmithing	= 0x07;
-	static const uint16_t skillBowcraft		= 0x08;
-	static const uint16_t skillPeacemaking		= 0x09;
-	static const uint16_t skillCamping		= 0x0a;
-	static const uint16_t skillCarpentry		= 0x0b;
-	static const uint16_t skillCartography		= 0x0c;
-	static const uint16_t skillCooking		= 0x0d;
-	static const uint16_t skillDetectHidden		= 0x0e;
-	static const uint16_t skillEnticement		= 0x0f;
-	static const uint16_t skillEvalutateIntell	= 0x10;
-	static const uint16_t skillHealing		= 0x11;
-	static const uint16_t skillFishing		= 0x12;
-	static const uint16_t skillForensic		= 0x13;
-	static const uint16_t skillHerding		= 0x14;
-	static const uint16_t skillHiding		= 0x15;
-	static const uint16_t skillProvocation		= 0x16;
-	static const uint16_t skillInscription		= 0x17;
-	static const uint16_t skillLockpicking		= 0x18;
-	static const uint16_t skillMagery		= 0x19;
-	static const uint16_t skillMagicResistance	= 0x1a;
-	static const uint16_t skillTactics		= 0x1b;
-	static const uint16_t skillSnooping		= 0x1c;
-	static const uint16_t skillMusicianship		= 0x1d;
-	static const uint16_t skillPoisoning		= 0x1e;
-	static const uint16_t skillArchery		= 0x1f;
-	static const uint16_t skillSpiritSpeak		= 0x20;
-	static const uint16_t skillStealing		= 0x21;
-	static const uint16_t skillTailoring		= 0x22;
-	static const uint16_t skillTaming		= 0x23;
-	static const uint16_t skillTasteID		= 0x24;
-	static const uint16_t skillTinkering		= 0x25;
-	static const uint16_t skillTracking		= 0x26;
-	static const uint16_t skillVeterinary		= 0x27;
-	static const uint16_t skillSwordsmanship	= 0x28;
-	static const uint16_t skillMaceFighting		= 0x29;
-	static const uint16_t skillFencing		= 0x2a;
-	static const uint16_t skillWrestling		= 0x2b;
-	static const uint16_t skillLumberjacking	= 0x2c;
-	static const uint16_t skillMining		= 0x2d;
-	static const uint16_t skillMeditation		= 0x2e;
-	static const uint16_t skillStealth		= 0x2f;
-	static const uint16_t skillRemoveTrap		= 0x30;
-	static const uint16_t skillNecromancy		= 0x31;
-
 protected:
 	uint16_t skills[50];
 
 public:
-	inline const uint16_t getSkill(uint16_t skill) const
-	{ return skills[skill]; }
+	inline const uint16_t getSkill(Skill sk) const
+	{ return skills[sk]; }
 
-	inline void setSkill(uint16_t skill, uint16_t value)
-	{ skills[skill] = value; }
+	inline void setSkill(Skill sk, uint16_t value)
+	{ skills[sk] = value; }
 
 	Skill bestSkill() const;
 	Skill nextBestSkill(uint8_t previous) const;
