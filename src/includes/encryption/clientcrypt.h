@@ -1,5 +1,13 @@
-#ifndef _CLIENTCRYPT_H_INCLUDED_
-#define _CLIENTCRYPT_H_INCLUDED_
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| Hypnos UO Server Emulator                                                |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in hypnos.cpp file.            |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+
+#ifndef __CLIENTCRYPT_H__
+#define __CLIENTCRYPT_H__
 #include "../common_libs.h"
 #include "../constants.h"
 #include "crypt.h"
