@@ -6,6 +6,10 @@
     ||                                                                         ||
     || For any question post to NoX-Wizard forums.                             ||
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
+/*!
+\file
+\deprecated Should be merged into a better placed file
+*/
 
 #ifndef __RANGE_H__
 #define __RANGE_H__
@@ -15,7 +19,7 @@
 
 #define VERY_VERY_FAR 50000;
 
-R64 dist( Location a, Location b, LOGICAL countZ = (server_data.disable_z_checking == 0) );
+R64 dist( Location a, Location b, LOGICAL countZ = !server_data.disable_z_checking);
 
 /*!
 \deprecated Too many parameters!!!
@@ -27,15 +31,14 @@ inline R64 dist( UI32 xa, UI32 ya, SI08 za, UI32 xb, UI32 yb, SI08 zb, LOGICAL c
 
 /*!
 \brief Check if a location is in the range of another one
- \param a Base location to check
- \param b Location to check if in range
- \param range range to use
- */
+\param a Base location to check
+\param b Location to check if in range
+\param range range to use
+\deprecated No one is using it, maybe should be removed...
+*/
 inline const bool inRange(const Location a, const Location b, const UI16 range = VISRANGE)
 {
 	return (dist(a,b)<= range);
 }
-
-LOGICAL inbankrange(int i);
 
 #endif

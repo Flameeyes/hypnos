@@ -1324,7 +1324,7 @@ void cChar::hideBySkill()
 {
 	P_CHAR pc_att=pointers::findCharBySerial(attackerserial);
 
-	if ( ISVALIDPC(pc_att) && inRange( this, pc_att ) )
+	if ( ISVALIDPC(pc_att) && hasInRange(pc_att) )
     	{
     		if ( !npc )
         		sysmsg( TRANSLATE("You cannot hide while fighting.") );

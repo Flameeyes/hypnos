@@ -29,28 +29,3 @@ const R64 dist( const Location a, const Location b, bool countZ )
 	R64 distZ = abs( a.z - b.z );
 	return hypot( distance, distZ );
 }
-
-/*!
-\brief Check if a char is near a banker
-\param i Character index
-\return true if in range, else false
-\todo Remove the index, use directly cChar
-*/
-LOGICAL inbankrange(int i)
-{
-	P_CHAR pc=MAKE_CHAR_REF(i);
-	VALIDATEPCR(pc,false);
-
-	NxwCharWrapper sc;
-	sc.fillCharsNearXYZ( pc->getPosition(), 6, true, false );
-	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-		P_CHAR pcm=sc.getChar();
-	
-		if (ISVALIDPC(pcm) && pcm->npcaitype==NPCAI_BANKER)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-

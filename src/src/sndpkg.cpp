@@ -539,7 +539,7 @@ void senditem(NXWSOCKET  s, P_ITEM pi) // Send items (on ground)
 		}
 	}
 	else
-	if(inRange(pc,pi) )
+	if( pc->hasInRange(pi) )
 	{
 		Location pos = pi->getPosition();
 
@@ -1209,7 +1209,8 @@ MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial32(), dst->getSerial32(), ef
 		 for( sw.rewind(); !sw.isEmpty(); sw++ )
 		 {
 			 NXWSOCKET j=sw.getSocket();
-			 if ( (inRange(src,MAKE_CHAR_REF(currchar[j])))&&(inRange(MAKE_CHAR_REF(currchar[j]),dst))&&(clientInfo[j]->ingame))
+			 pChar pj = MAKE_CHAR_REF(currchar[j]);
+			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
 			 {
 				Xsend(j, effect, 28);
 //AoS/				Network->FlushBuffer(j);
@@ -1226,7 +1227,8 @@ MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial32(), dst->getSerial32(), ef
 		 for( sw.rewind(); !sw.isEmpty(); sw++ )
 		 {
 			 NXWSOCKET j=sw.getSocket();
-			 if ( (inRange(src,MAKE_CHAR_REF(currchar[j])))&&(inRange(MAKE_CHAR_REF(currchar[j]),dst))&&(clientInfo[j]->ingame))
+			 pChar pj = MAKE_CHAR_REF(currchar[j]);
+			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
 			 {
 				 if (clientDimension[j]==2 && !skip_old) // 2D client, send old style'd
 				 {
