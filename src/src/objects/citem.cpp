@@ -130,10 +130,18 @@ static const bool cItem::isWeaponLike( UI16 id, UI16 type )
 }
 
 /*!
-\brief the weight of the item ( * number of piled item if there are )
-\author Endymion
-\return the weigth actual
-\todo make return value float
+\brief Constructor for new item
+*/
+
+cItem::cItem()
+{
+	cItem(nextSerial());
+}
+
+
+/*!
+\brief Constructor with serial known
+\todo a check to ensure nextSerial() will still be valid even after adding this one 
 */
 cItem::cItem( SERIAL ser )
 {
@@ -438,11 +446,13 @@ void cItem::getPopupHelp(char *str)
 */
 void cItem::setContainer(pObject obj)
 {
-	if ( obj && obj->rtti() != rtti::cContainer && obj->rtti() != rtti::cBody )
+	if ( obj && obj->rtti() != rtti::cContainer && obj->rtti() != rtti::cBody && obj->rtti() != rtti::cMsgBoard)
 		return;
 
 	oldcont = cont;
 	cont = obj;
+
+     	if ( cont && cont->rtti() == rtti::cMsgBoard ) return; //Only container addition is needed for msgboards
 
 	if ( ! obj )
 		setDecayTime();

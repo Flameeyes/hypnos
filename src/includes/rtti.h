@@ -15,11 +15,14 @@
 
 namespace rtti
 {
-	static const UI32 cObject 	= 0x00000000; //! cObject class
+	static const UI32 cObject 		= 0x00000000; //! cObject class
 
-	static const UI32 cItem		= 0x00000001; //! cItem class
-	static const UI32 cContainer	= 0x00000011; //! cContainer class
-        static const UI32 cMap		= 0x00000021; //! cMap class
+	static const UI32 cItem			= 0x00000001; //! cItem class
+	static const UI32 cContainer		= 0x00000011; //! cContainer class
+        static const UI32 cMap			= 0x00000021; //! cMap class
+        static const UI32 cMsgBoardMessage      = 0x00000031; //! cMsgBoardMessage class
+        static const UI32 cMsgBoard      	= 0x00000041; //! cMsgBoard class
+
 
 	static const UI32 cBody		= 0x00010000; //! cBody class
 

@@ -11,7 +11,7 @@
 \file
 \brief Message board functions
 \author Dupois and Akron (rewrite and cleanup)
-\note using namespaces and c++ style
+\note rewrite by Chronodt (march 2004)
 */
 
 #ifndef __CMSGBOARDS
@@ -26,6 +26,33 @@ typedef cMsgBoard *pMsgBoard;
 class cMsgBoardMessage;
 typedef cMsgBoardMessage *pMsgBoardMessage;
 
+struct RegionSort //Used for sorting MsgBoards by region # and as secondary sort serial #. We need to employ a < comparator
+{
+	inline bool operator()(const pMsgBoard s1, const pMsgBoard s2) const
+	{
+        	if (s1->getRegion() == s2->getRegion()) return s1->getSerial32() < s2->getSerial32();
+                else return s1->getRegion() < s2->getRegion();
+	}
+}
+struct SerialSort //Used for sorting Messages by serial #
+{
+	inline bool operator()(const pMsgBoardMessage s1, const pMsgBoardMessage s2) const
+	{
+        	return s1->getSerial32() < s2->getSerial32();
+	}
+}
+typedef std::set<pMsgBoardMessage, SerialSort> cMsgBoardMessages; //With SerialSort the messages are inserted in ascending serial order
+typedef std::set<pMsgBoard, RegionSort> cMsgBoards; //the set and the RegionSort comparator guarantees a set sorted by region number (and as secondary sort serial #)
+typedef std::multimap<UI32, UI32> cBBRelations;
+/*!
+In the multimap cBBrelations:
+first  UI32 - Key:  using bulletin board serial as key, allows us to "collect" the serials of messages contained therein
+second UI32 - Data: it will be the serial numbers of the messages within it. Since it is a MULTImap, to each
+		    bulletin board (key) can be associated multiple messages (Data)
+
+the relation map has to be saved in worldfile, so it needs serials and not pointers
+*/
+
 enum PostType { LOCALPOST = 0, REGIONALPOST, GLOBALPOST };
 enum QuestType { ESCORTQUEST = 0xFF, BOUNTYQUEST = 0xFE, ITEMQUEST = 0xFD, QTINVALID = 0x0 };
 
@@ -33,26 +60,33 @@ enum QuestType { ESCORTQUEST = 0xFF, BOUNTYQUEST = 0xFE, ITEMQUEST = 0xFD, QTINV
 /*!
 \brief Message board message
 \author Chronodt
-Since each message has a serial number similar to an item, but with far less detail needed,
-it needs only to be derived from cObject
 */
-class cMsgBoardMessage : public cObject
+class cMsgBoardMessage : public cItem
 {
 protected:
 
 public:
 
-      	SERIAL poster;		// Serial of poster pg. if -1 autopost
+      	UI32 poster;		// Serial of poster pg. if -1 autopost
         std::string subject;	// Subject of message (title)
-        std::string time;	// time of posting
         std::string body;	// body of message
+        struct tm posttime;	// time of posting
         PostType availability;  // local/regional/general post
-	QuestType type;		// type of quest
-        pMsgBoard board;	// board in which post has been posted. if general autopost it will be NULL
+        int region;		// if REGIONAL avalaibility, region contains a region number based on worlddata (see sregions.cpp/h)
+	QuestType qtype;     	// type of quest
+        UI32 replyof;		// serial of post of whom this is reply of. If 0 this is a new post
+        bool autopost;		// true if autoposted by server
 
+        static cMsgBoardMessages MsgBoardMessages; //This will contain serial numbers of all messages. It is a set to use with set_difference in an MsgBoard integrity check routine (at startup)
         cMsgBoardMessage();
+        cMsgBoardMessage(UI32 serial);
+        ~cMsgBoardMessage();
 	static UI32 nextSerial();
        	virtual void Delete();
+        std::string getTimeString();
+
+	inline const UI32 rtti() const
+	{ return rtti::cMsgBoardMessage; }
 }
 
 /*!
@@ -63,15 +97,18 @@ public:
 */
 class cMsgBoard : public cItem
 {
+
+protected:
+
 public:
 	/*!
 	\brief Maximum number of posts per board
 
         (obsolete calculation)
         --------------------------------------------------------------------------------
-	Buffer Size = 2560<br/>
-	Therefore 0x3c max size = 2560 - 5 (0x3c header info) = 2550<br/>
-	2550 / 19 (item segment size per msg) = 134<br/>
+	Buffer Size = 2560
+	Therefore 0x3c max size = 2560 - 5 (0x3c header info) = 2550
+	2550 / 19 (item segment size per msg) = 134
 	Round down to 128 messages allowable on a message board (better safe than sorry)
         --------------------------------------------------------------------------------
 
@@ -82,9 +119,8 @@ public:
 
 	static const UI32 MAXENTRIES = 256; //!< maximum number of entries in a ESCORTS list in the MSGBOARD.sSCP file
 
-	/*!
-	\brief different types of user posts
-	*/
+	static cBBRelations BBRelations; //This will associate a bb serial to the serial of all mesages therein contained
+	static cMsgBoards MsgBoards;
 
 
 	/*!
@@ -97,9 +133,18 @@ public:
 	of different quest types, I opted to start high and count down.
 	*/
 
-	void 	MsgBoardList( pClient client )
-	void	MsgBoardSetPostType( pClient client, PostType nPostType );
-	void	MsgBoardGetPostType( pClient client );
+        cMsgBoard();
+        cMsgBoard(UI32 serial);
+        ~cMsgBoard();
+
+
+      	void	getPostType( pClient client );
+	void	setPostType( pClient client, PostType nPostType );
+        void	openBoard(pClient client);
+	void 	sendMessageSummary( pClient client, pMsgBoardMessage message );
+        bool    addMessage( pMsgBoardMessage message, int msgType, bool autoPost );
+
+
 	int	MsgBoardPostQuest( pClient client, QuestType nQuestType );
 	void	MsgBoardQuestEscortCreate( pClient client );
 	void	MsgBoardQuestEscortArrive( P_CHAR pc, P_CHAR pc_k );
@@ -107,6 +152,11 @@ public:
 	void	MsgBoardQuestEscortRemovePost( int nNPCIndex );
 	void	MsgBoardMaintenance();
 	bool	MsgBoardRemoveGlobalPostBySerial( int nPostSerial );
+        inline const UI32 rtti() const
+	{ return rtti::cMsgBoard; }
+
+        int getRegion();
+        static pair<cMsgBoards::iterator, cMsgBoards::iterator> getBoardsinRegion(int region);
 	#if defined(__unix__)
 	std::vector<std::string> MsgBoardGetFile( char* pattern, char* path) ;
 	#endif

@@ -339,7 +339,7 @@ public:
 	*/
 	inline cPacketSendClearBuyWindow(pNpc n) :
 		npc(n),
-		buffer(NULL), length(8)
+		buffer(NULL), length(NULL)
 	{ }
 
 	void prepare();
@@ -354,7 +354,7 @@ class cPacketSendPaperdollClothingUpdated : cPacketSend
 {
 public:
 	inline cPacketSendPaperdollClothingUpdated() :
-		buffer(NULL), length(1)
+		buffer(NULL), length(NULL)
 	{ }
 
 	void prepare();
@@ -376,7 +376,7 @@ public:
 	*/
 	inline cPacketSendOpenMapGump(pMap m) :
         	map (m),
-		buffer(NULL), length(19)
+		buffer(NULL), length(NULL)
 	{ }
 
 	void prepare();
@@ -407,8 +407,6 @@ enum PlotCourseCommands (AddPin = 1, InsertPin, ChangePin, RemovePin, ClearAllPi
 
 class cPacketSendMapPlotCourse : cPacketSend
 {
-public:
-
 protected:
 
 	const pMap map;
@@ -426,32 +424,56 @@ public:
 	*/
 	inline cPacketSendMapPlotCourse(pMap m, PlotCourseCommands comm, short int p = 0, int xx = 0, int yy = 0) :
         	map (m), command (comm), pin (p),  x (xx), y (yy),
-		buffer(NULL), length(11)
+		buffer(NULL), length(NULL)
 	{ }
 
 	void prepare();
 };
 
-class cPacketSendBBoardOpen : cPacketSend
+enum BBoardCommands (DisplayBBoard = 0, SendMessageSummary = 1, SendMessageBody = 2);
+class cPacketSendBBoardCommand : cPacketSend
 {
-public:
+protected:
 
+	const pMsgBoard msgboard;
+        const BBoardCommands command;
+        const pMsgBoardMessage message;
+
+public:
+	/*!
+	\param m msgboard used
+	\param com command for the msgboard
+        \param mess message to be sent. May be omitted if command is DisplayBBoard
+	*/
+	inline cPacketSendMapPlotCourse(pMsgBoard m, BBoardCommands com, pMsgBoardMessage mess = NULL) :
+        	msgboard (m), command(com), message(mess),
+		buffer(NULL), length(NULL)
+	{ }
+
+	void prepare();
+};
+
+
+class cPacketSendMsgBoardItemsinContainer : cPacketSend
+{
 protected:
 
 	const pMsgBoard msgboard;
 
 public:
 	/*!
-	\param m message board opened
+        \note constructor for msgboards
+	\param m msgboard used. This is called only on msgboard first opening
 	*/
-	inline cPacketSendMapPlotCourse(pMsgBoard m) :
+	inline cPacketSendMsgBoardItemsinContainer(pMsgBoard m) :
         	msgboard (m),
-		buffer(NULL), length(38)
+		buffer(NULL), length(NULL)
 	{ }
+
+
 
 	void prepare();
 };
-
 
 
 /*!

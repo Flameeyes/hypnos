@@ -309,7 +309,7 @@ void cPacketSendStatus::prepare4()
 
 void cPacketSendClearBuyWindow::prepare()
 {
-//	length = 8;    //redundant. Constructor already sets length to 8
+	length = 8;
 	buffer = new UI08[8];
 	buffer[0] = 0x3B;
 	ShortToCharPtr(0x08, buffer +1);			// Packet len
@@ -320,14 +320,14 @@ void cPacketSendClearBuyWindow::prepare()
 
 void cPacketSendPaperdollClothingUpdated::prepare()
 {
-//	length = 1;    //redundant. Constructor already sets length to 1
+	length = 1;
 	buffer = new UI08[1];
 	buffer[0] = 0x29;
 }
 
 void cPacketSendOpenMapGump::prepare()
 {
-//	length = 19;
+	length = 19;
 	buffer = new UI08[19];
         buffer[0] = 0x90;
 	LongToCharPtr(map->getSerial32(), buffer +1);
@@ -349,7 +349,7 @@ void cPacketSendOpenMapGump::prepare()
 
 void cPacketSendMapPlotCourse::prepare()
 {
-//	length = 11;
+	length = 11;
 	buffer = new UI08[11];
         buffer[0] = 0x56;
 	LongToCharPtr(map->getSerial32(), buffer +1);
@@ -360,29 +360,101 @@ void cPacketSendMapPlotCourse::prepare()
         ShortToCharPtr(y, buffer + 9);
 }
 
-void cPacketSendBBoardOpen::prepare()
+void cPacketSendBBoardCommand::prepare()
 {
-//	length = 38;
-        buffer = new UI08[38];
-        buffer[0] = 0x71;
-        ShortToCharPtr(38, buffer +1); 	//message length
-        buffer[3] = 0; 			//subcommand 0
-        LongToCharPtr(msgboard->getSerial32(), buffer +4);	//board serial
-        memset(buffer + 8, 0, 22);				//filling boardname with 22 zeroes
-        LongToCharPtr(0x402000FF, buffer + 30);			//gump id, i believe
-        LongToCharPtr(0x0, buffer + 34);			//zero
+	switch (command)
+        {
+        case DisplayBBoard: //Display bulletin board
+		length = 38;
+	        buffer = new UI08[38];
+	        buffer[0] = 0x71;
+	        ShortToCharPtr(38, buffer +1); 	//message length
+	        buffer[3] = 0; 			//subcommand 0
+	        LongToCharPtr(msgboard->getSerial32(), buffer + 4);	//board serial
+	        memset(buffer + 8, 0, 22);				//filling boardname with 22 zeroes
+	        LongToCharPtr(0x402000FF, buffer + 30);			//gump id, i believe
+	        LongToCharPtr(0x0, buffer + 34);			//zero
 
-	// If the name the item (Bulletin Board) has been defined, display it
-	// instead of the default "Bulletin Board" title.
-	if ( strncmp(msgboard->getCurrentNameC(), "#", 1) )
-		strncpy( buffer + 8, msgboard->getCurrentNameC(), 20);  //Copying just the first 20 chars or we go out of bounds in the gump
-        else    strcpy( buffer + 8, "Bulletin Board");
+		// If the name the item (Bulletin Board) has been defined, display it
+		// instead of the default "Bulletin Board" title.
+		if ( strncmp(msgboard->getCurrentNameC(), "#", 1) )
+			strncpy( buffer + 8, msgboard->getCurrentNameC(), 20);  //Copying just the first 20 chars or we go out of bounds in the gump
+	        else    strcpy( buffer + 8, "Bulletin Board");
+                break;
+        case SendMessageSummary:
+        	//calculating length of packet  before building buffer
+        	length = 16; //BASE length, the length of fixed-length components
+                pChar poster = pointers::findCharBySerPtr(message->poster);
+                std::string timestring = message->getTimeString();
+                length += poster->getCurrentNameC().size() + 2;
+                length += message->subject.size() + 2;
+                length += timestring.size() + 2;
+                buffer = new UI08[length];
+	        buffer[0] = 0x71;
+	        ShortToCharPtr(length, buffer +1); 	//message length
+	        buffer[3] = 1; 				//subcommand 1
+	        LongToCharPtr(msgboard->getSerial32(), buffer + 4);	//board serial
+ 	        LongToCharPtr(message->getSerial32(), buffer + 8);	//message serial
+                LongToCharPtr(message->replyof, buffer + 12);		//parent message serial
+                int offset = 16;
+                buffer[16] = poster->getCurrentNameC().size() + 1;	//size() does not count the endstring 0
+		strcpy( buffer + 17, poster->getCurrentNameC().c_str());
+                offset += poster->getCurrentNameC().size() + 2;
+                buffer[offset] = message->subject.size() + 1;
+                strcpy( buffer + offset + 1, message->subject.c_str());
+                offset += message->subject.size() + 2;
+                buffer[offset] = timestring.size() + 1;
+                strcpy( buffer + offset + 1, timestring.c_str());
+                break;
+        case SendMessageBody:
+        	static const char pattern[29] = { 0x01, 0x90, 0x83, 0xea, 0x06,
+                				  0x15, 0x2e, 0x07, 0x1d, 0x17,
+                                                  0x0f, 0x07, 0x37, 0x1f, 0x7b,
+                                                  0x05, 0xeb, 0x20, 0x3d, 0x04,
+                                                  0x66, 0x20, 0x4d, 0x04, 0x66,
+                                                  0x0e, 0x75, 0x00, 0x00};
+                //calculating length of packet  before building buffer
+        	length = 12; //BASE length, the length of fixed-length components
+                pChar poster = pointers::findCharBySerPtr(message->poster);
+                std::string timestring = message->getTimeString();
+                length += poster->getCurrentNameC().size() + 2;
+                length += message->subject.size() + 2;
+                length += timestring.size() + 2;
+                buffer = new UI08[length];
+	        buffer[0] = 0x71;
+	        ShortToCharPtr(length, buffer +1); 	//message length
+	        buffer[3] = 2; 				//subcommand 2
+	        LongToCharPtr(msgboard->getSerial32(), buffer + 4);	//board serial
+ 	        LongToCharPtr(message->getSerial32(), buffer + 8);	//message serial
+                int offset = 12;
+                buffer[12] = poster->getCurrentNameC().size() + 1;	//size() does not count the endstring \0 :)
+		strcpy( buffer + 17, poster->getCurrentNameC().c_str());
+                offset += poster->getCurrentNameC().size() + 2;
+                buffer[offset] = message->subject.size() + 1;
+                strcpy( buffer + offset + 1, message->subject.c_str());
+                offset += message->subject.size() + 2;
+                buffer[offset] = timestring.size() + 1;
+                strcpy( buffer + offset + 1, timestring.c_str());
+                offset += message->timestring.size() + 2;
+		strncpy( buffer + offset + 1, pattern, 29);
+                offset +=29;
+                strncpy( buffer + offset + 1, message->body->data(),message->body.size());
+        }
 }
 
+cPacketSendMsgBoardItemsinContainer::prepare()
+{
+	//TODO: this function
+
+
+	pair<cBBRelations::iterator, cBBRelations::iterator> it = cMsgBoard::BBRelations.equal_range(msgbard->getSerial32());
+        // Now the *(it.first.second) is the serial of a message to be sent. and incrementing it.first
+        // until it reaches it.second we obtain all the serials
+
+}
 
 static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
 {
-
        switch(buffer[0])
        {
                 case 0x00: return new cPacketReceiveCreateChar(buffer, length);         // Create Character
@@ -451,7 +523,7 @@ static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
                 case 0xcc: length = ???; break; // Localized Message Affix
                 case 0xd1: length =   2; break; // Logout Status
                 case 0xd4: length = ???; break; // new Book Header
-                default: // Discard received packet
+                default: return NULL;	// Discard received packet
        }
 }
 
@@ -574,7 +646,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 	pc->namedeedserial=INVALID;
         for (int ii = 0; ii < TRUESKILLS; i++) Skills::updateSkillLevel(pc, ii);  //updating skill levels for pc
 
-	P_ITEM pi;
+	pItem pi;
 
       	if (HairStyle)  // If HairStyle was invalid, is now 0, so baldy pg :D
 	{
@@ -650,7 +722,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 
 
         newbieitems(pc);
-        Network->startchar(s);
+        client->startchar(); //TODO: move startchar from network to cClient
       	//clientInfo[s]->ingame=true;
         return true;
 }
@@ -1211,10 +1283,12 @@ bool cPacketReceiveTargetSelected::execute(pClient client)
 1) client doubleclicks the board (received 0x06 packets and doubleclick routine works with that)
 2) server sends 0x71 command 0 to tell client to open the bulletin board
 3) server sends 0x25 (add items to container) to tell to the client the serial numbers of all messages in the board
-4) the client replies to 0x25 sending a 0x71 message 4 for each post in the board to get the details of each (poster, date and topic)
+4) the client replies to 0x25 sending a 0x71 message 4 for each post in the board to get the details of each
+   (poster, date and topic)
 5) server replies to each 0x71 message 4 sent with a 0x71 message 1 with the required details
 
-if the clients doubleclicks on a message, it sends 0x71 command 3 and the server replies with 0x71 command 2 with the body of the message
+if the clients doubleclicks on a message, it sends 0x71 command 3 and the server replies with 0x71 command 2 with
+the body of the message
 */
 
 
@@ -1228,50 +1302,94 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 
 	int msgType = buffer[3];
         pMsgBoard msgboard = (pMsgBoard)pointers::findItemBySerial(LongFromCharPtr(buffer + 4));
-        VALIDATEPIR( msgboard, false)
+        pMsgBoardMessage message = (pMsgBoardMessage)pointers::findItemBySerial(LongFromCharPtr(buffer + 8));
+        //for msgtypes 3, 4, 6 message is the message on which operate, on message 5 it is parent message (message reply)
+        VALIDATEPIR( msgboard, false);
+	//message is validated inside the switch because subcommand 5 does not need it and may me invalid without consequences
 
 	switch (msgType)
 	{
 		case 3:  // Client->Server: Client has dbl-clicked on subject, requesting body of message
-		{        // Example  [SEND:12] 71 00 0c 03 40 07 ba 3d 40 1c 53 eb
-	                msgSN = LongFromCharPtr(buffer + 8);
-			msgboard->MsgBoardOpenPost( client, msgSN );
+		{
+                        VALIDATEPIR( message, false);
+                        cPacketSendBBoardCommand pk(msgboard, SendMessageBody, message);
+                        client->sendPacket(&pk);
 			break;
 		}
 
 		case 4:  // Client->Server: Client has ACK'ed servers download of posting serial numbers
-                	 // and requires the summary of (buffer + 8) message (topic, poster id and date)
+               		 // and requires the summary of (buffer + 8) message (topic, poster id and date)
 		{
-      	                msgSN = LongFromCharPtr(buffer + 8);
-			// Check to see whether client has ACK'd all of our message ID's before proceeding
-
-			client->postAckCount++;
-			//ConOut(" pstAckCont=%d        postCount=%d\n", postAckCount[s], postCount[s]);
-			if ( client->postAckCount != client->postCount )
-				return;
-
+		        VALIDATEPIR( message, false);
 			// Server needs to handle ACK from client that contains the posting serial numbers
-			msgboard->MsgBoardList( client );
+			msgboard->sendMessageSummary( client, message );
 			break;
 		}
 
-	case 5:  // Client->Server: Client clicked on Post button (either from the main board or after pressing the Reply)
+		case 5:  // Client->Server: Client clicked on Post button (either from the main board or after pressing the Reply)
 		{        //                 Reply just switches to the Post item.
 
 			pChar pc = client->currChar();
 			VALIDATEPCR(pc, false);
-			// Check privledge level against server.cfg msgpostaccess
 
-			if ( (pc->IsGM()) || (SrvParms->msgpostaccess) )
-				msgboard->MsgBoardPost( client, pc->postType, 0 );
-			else
+			// Check privledge level against server.cfg msgpostaccess
+	                if ( !(pc->IsGM()) && !(SrvParms->msgpostaccess) )
+                        {
 				client->sysmsg(TRANSLATE("Thou art not allowed to post messages."));
+                                return false;
+                        }
+
+                        UI32 msgSN = LongFromCharPtr(buffer + 8);
+
+                	// If this is a reply to anything other than a LOCAL post, abort
+			if ( msgSN>0))
+			{
+				VALIDATEPIR( message, false);
+                                if ( (message->availability != LOCALPOST) && !global::canReplytoGlobalMsgBoardPosts() )
+                                {
+					#ifdef DEBUG
+					ErrOut("MsgBoard: Attempted reply to a global or regional post\n");
+					#endif
+					client->sysmessage( TRANSLATE("You can not reply to global or regional posts") );
+					return false;
+                                }
+			}
+
+
+       	                int subjectlen = buffer[9];
+               	        pMsgBoardMessage newmessage = new cMsgBoardMessage(); 	//creating new message
+
+                        //filling new message with data
+
+                        newmessage->poster = pc->getSerial32();
+                        newmessage->availability = pc->postType;
+                        if (pc->postType == REGIONALPOST) newmessage->region = msgboard->getRegion();
+                       	newmessage->subject = string(buffer + 10);
+                        newmessage->body = string(buffer + 10 + subjectlen, length - 11 - subjectlen);
+                        // We need to use this string constructor because there may be many null-terminated strings, and since no
+               	        // process is needed by the server, it is much easier to copy the bulk of the body in a string and just
+                       	// give it back to a client that asks for it :D
+                        newmessage->setContainer(msgboard);
+			newmessage->replyof = msgSN;
+
+			if (!msgboard->addMessage( newmessage ))
+                        {
+                        	newmessage->Delete(); //if could not link, message should be deleted
+                                ErrOut("MsgBoard: Could not link message to msgboard(s)!\n");
+                        }
+                        else
+                        {
+				// Send "Add Item to Container" message to client
+		                cPacketSendAddContainerItem pk(newmessage);
+		                client->sendPacket(&pk);
+                	}
 
 			break;
 		}
 
 	case 6:  // Remove post from Bulletin board
 		{
+                        VALIDATEPIR( message, false);
 			pChar pc= client->currChar();
 			VALIDATEPCR(pc, false);
 			//             |p#|s1|s2|mt|b1|b2|b3|b4|m1|m2|m3|m4|

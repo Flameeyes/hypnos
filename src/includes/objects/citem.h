@@ -38,6 +38,7 @@ public:
 	static void	safeoldsave();
 
 	cItem(SERIAL serial);
+        cItem();
 	~cItem();
 
 	static const UI32 flagUseAnimID		= 0x00000001;
