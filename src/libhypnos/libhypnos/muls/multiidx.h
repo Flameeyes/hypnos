@@ -8,8 +8,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#ifndef __LIBHYPNOS_MULS_GUMPIDX_H__
-#define __LIBHYPNOS_MULS_GUMPIDX_H__
+#ifndef __LIBHYPNOS_MULS_MULTIIDX_H__
+#define __LIBHYPNOS_MULS_MULTIIDX_H__
 
 #include "libhypnos/muls/mulfiles.h"
 #include "libhypnos/muls/indexedfile.h"
@@ -19,53 +19,43 @@ namespace nLibhypnos {
 namespace nMULFiles {
 
 /*!
-\brief Internal structure of gumpidx.mul file
+\brief Internal structure of multi.idx file
 */
-class cGumpIDX
+class cMultiIdx
 {
 protected:
 	uint32_t lookup;	//!< Offset to seek to to have the
 				//!< gumpart.mul element
 	uint32_t size;		//!< Size of the gumpart.mul element
-	uint16_t height;	//!< Height of the gump
-	uint16_t width;		//!< Width of the gump
+	uint32_t unknown;	//!< Unknown value
 public:
 	inline uint32_t getLookup() const
 	{ return mtohl(lookup); }
 	
 	inline uint32_t getSize() const
 	{ return mtohl(size); }
-	
-	inline uint32_t getHeight() const
-	{ return mtohs(height); }
-	
-	inline uint32_t getWidth() const
-	{ return mtohs(width); }
 } PACK_NEEDED;
 
 /*!
-\class fGumpIDX gumpidx.h "libhypnos/muls/cgumpidx.h"
-\brief Access class to gumpidx.mul file
+\class fMultiIDX multiidx.h "libhypnos/muls/multiidx.h"
+\brief Access class to multi.idx file
 
-This class handles the access to the gumpidx.mul file, which contains not only
-the indexes for gumpart.mul file, but also the sizes of the gumps
+This class handles the access to the multi.idx file, which is the index for
+multi.mul file.
 
-\section gumpidx_structure Structure of gumpidx.mul file
+\section multiidx_structure Structure of multi.idx file
 
 The gumpidx.mul file is structured like this:
-	\li \b dword lookup (offset of the gump data in gumpart.mul file)
-	\li \b dword size (size of the gump data in gumpart.mul file)
-	\li \b word height (height of the gump in pixels)
-	\li \b word width (width of the gump in pixels)
+	\li \b dword lookup (offset of the multi data in multi.mul file)
+	\li \b dword size (size of the multi data in multi.mul file)
+	\li \b dword unknown
 
-Information grabbed from Alazane's UO File Formats guide.
+Information grabbed from WolfPack files formats guide.
 */
-class fGumpIDX : public tplIndexFile<cGumpIDX>
+class fMultiIDX : public tplIndexFile<cMultiIDX>
 {
 public:
-	fGumpIDX();
-	
-	sPoint getDimensions(uint16_t index);
+	fMultiIDX();
 };
 
 }}

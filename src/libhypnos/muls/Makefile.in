@@ -102,7 +102,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 noinst_LIBRARIES = libhypmul.a
-libhypmul_a_SOURCES = gumpidx.cpp tiledata.cpp
+libhypmul_a_SOURCES = gumpidx.cpp tiledata.cpp indexedfile.cpp multi.cpp multiidx.cpp
 subdir = libhypnos/muls
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -111,7 +111,8 @@ LIBRARIES = $(noinst_LIBRARIES)
 
 libhypmul_a_AR = $(AR) cru
 libhypmul_a_LIBADD =
-am_libhypmul_a_OBJECTS = gumpidx.$(OBJEXT) tiledata.$(OBJEXT)
+am_libhypmul_a_OBJECTS = gumpidx.$(OBJEXT) tiledata.$(OBJEXT) \
+	indexedfile.$(OBJEXT) multi.$(OBJEXT) multiidx.$(OBJEXT)
 libhypmul_a_OBJECTS = $(am_libhypmul_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -120,7 +121,9 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/gumpidx.Po ./$(DEPDIR)/tiledata.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/gumpidx.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/indexedfile.Po ./$(DEPDIR)/multi.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/multiidx.Po ./$(DEPDIR)/tiledata.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -157,6 +160,9 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gumpidx.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indexedfile.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multiidx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiledata.Po@am__quote@
 
 distclean-depend:

@@ -50,10 +50,7 @@ structures unless we can find a way to do that on BCC. Help on that will be
 useful.
 
 At least under Linux and MacOSX, mmapped files can be shared between two
-programs which are loaded in the same system. This is on by default for now, but
-I'm not sure if this is a good thing, because sometimes we need to modify the
-data inside that arrays (when loading the verdata patches), and if also Ultima
-is going to mmap the same file, we'll get some strange behaviour.
+programs which are loaded in the same system. This is on by default.
 
 \note The libhypmul library subclasses this to add the functions which access
 	the data inside the file itself.
@@ -68,9 +65,9 @@ protected:
 	MUL *array;	//!< Pointer to the mmapped file
 	uint32_t size;	//!< Size of the mmap in bytes
 	int fd;		//!< Descriptor of the mmapped file
-	#ifdef WIN32
+#ifdef WIN32
 	std::string fn;	//!< Name of the file (needed for Windows mmapping)
-	#endif
+#endif
 	
 	void open(std::string filename);
 	void mmap(uint32_t offset = 0, uint32_t length = 0);

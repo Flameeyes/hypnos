@@ -69,8 +69,7 @@ std::string long2ip(uint32_t l)
 void strupr(std::string &str)
 {
 	for(std::string::iterator it = str.begin(); it != str.end(); it++)
-		if ( islower(*it) )
-			*it -= 0x20;
+		*it = tolower(*it);
 }
 
 /*!
@@ -81,8 +80,7 @@ void strupr(std::string &str)
 void strlwr(std::string &str)
 {
 	for(std::string::iterator it = str.begin(); it != str.end(); it++)
-		if ( isupper(*it) )
-			*it += 0x20;
+		*it = toupper(*it);
 }
 
 /*!
@@ -112,6 +110,7 @@ stringVector tokenize(std::string str)
 
 /*!
 \brief Gets a string representing the current date and time for the log
+\return a [dd/mm/yyyy hh:mm:ss] formatted string.
 */
 std::string getDateString()
 {

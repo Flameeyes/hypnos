@@ -7,11 +7,13 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "common_libs.h"
-#include "sndpkg.h"
-#include "magic.h"
-#include "pointer.h"
 #include "data.h"
 #include "inlines.h"
+#include "logsystem.h"
+#include "magic.h"
+#include "pointer.h"
+#include "sndpkg.h"
+#include "objects/citem.h"
 
 #include <wefts_mutex.h>
 
@@ -36,6 +38,7 @@ uint32_t cItem::getNewSerial()
 			nserial = 0x40000000;
 		if ( ! firstpass && nserial == fserial )
 		{
+			//!\todo Throw exception
 			LogCritical("Too much items created!!!! No more serials free");
 		}
 		firstpass = false;
