@@ -1,0 +1,53 @@
+<!-- elements in script -->
+<!ELEMENT script (item | char)+>
+
+<!-- the script node (document node) has informations about emulator
+     name, type and version, it can also define a "standardized"
+     version of the settings, if emustd and stdver are not the default
+     ones. -->
+<!ATTLIST settings
+    emulator CDATA #REQUIRED
+    buildnum CDATA #REQUIRED
+    emustd CDATA "no"
+    stdver CDATA "0"
+>
+
+<!ELEMENT char ( name, id, color?, title?, stat+, skill+, event+ )>
+<!ELEMENT item ( name, id, color?, value?, layer?, event+ )>
+
+<!ELEMENT name EMPTY>
+<!ATTLIST name value CDATA #REQUIRED>
+
+<!ELEMENT id EMPTY>
+<!ATTLIST id value CDATA #REQUIRED>
+
+<!ELEMENT color EMPTY>
+<!ATTLIST color value CDATA #REQUIRED>
+
+<!ELEMENT title EMPTY>
+<!ATTLIST title value CDATA #REQUIRED>
+
+<!ELEMENT value EMPTY>
+<!ATTLIST value value CDATA #REQUIRED>
+
+<!ELEMENT layer EMPTY>
+<!ATTLIST layer value CDATA #REQUIRED>
+
+<!ELEMENT stat EMPTY>
+<!ATTLIST stat
+    name (str|int|dex) #REQUIRED
+    value CDATA #REQUIRED
+>
+
+<!ELEMENT skill EMPTY>
+<!ATTLIST skill
+    id CDATA #REQUIRED
+    value CDATA #REQUIRED
+>
+
+<!ELEMENT event EMPTY>
+<!ATTLIST event
+    name CDATA #REQUIRED
+    event CDATA #REQUIRED
+>
+
