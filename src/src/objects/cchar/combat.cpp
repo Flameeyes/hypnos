@@ -1089,3 +1089,145 @@ void cChar::combatOnHorse()
 		return;
 	}
 }
+
+
+/*** Xan : this function is critical, and *SHOULD* be used everytime
+ *** an attack request is made, not only for dblclicks in war mode
+ ***/
+
+void cChar::attackStuff(pChar victim)
+{
+	VALIDATEPC( victim );
+
+	if( getSerial32() == victim->getSerial32() )
+		return;
+
+	if ( amxevents[EVENT_CHR_ONBEGINATTACK]) {
+		g_bByPass = false;
+		amxevents[EVENT_CHR_ONBEGINATTACK]->Call( getSerial32(), victim->getSerial32() );
+		if (g_bByPass==true) return;
+	}
+
+	if ( victim->amxevents[EVENT_CHR_ONBEGINDEFENSE]) {
+		g_bByPass = false;
+		victim->amxevents[EVENT_CHR_ONBEGINDEFENSE]->Call( victim->getSerial32(), getSerial32() );
+		if (g_bByPass==true) return;
+	}
+	/*
+	runAmxEvent( EVENT_CHR_ONBEGINATTACK, getSerial32(), victim->getSerial32() );
+	if (g_bByPass==true)
+		return;
+	victim->runAmxEvent( EVENT_CHR_ONBEGINDEFENSE, victim->getSerial32(), getSerial32() );
+	if (g_bByPass==true)
+		return;
+	*/
+	targserial=victim->getSerial32();
+	unHide();
+	disturbMed();
+
+	if( victim->dead || victim->hp <= 0 )//AntiChrist
+	{
+		sysmsg( TRANSLATE("That person is already dead!") );
+		return;
+	}
+
+	if ( victim->npcaitype==NPCAI_PLAYERVENDOR)
+	{
+		sysmsg( TRANSLATE("%s cannot be harmed."), victim->getCurrentNameC() );
+		return;
+	}
+
+        //TODO: modify this to send a packet
+	SndAttackOK(s, victim->getSerial32());	//keep the target highlighted
+
+
+	if (!( victim->targserial== INVALID))
+	{
+		victim->attackerserial=getSerial32();
+		victim->ResetAttackFirst();
+	}
+	SetAttackFirst();
+	attackerserial=victim->getSerial32();
+
+
+        //TODO once set are done revise this
+	if( victim->guarded )
+	{
+		NxwCharWrapper sc;
+		sc.fillOwnedNpcs( victim, false, false );
+		for ( sc.rewind(); !sc.isEmpty(); sc++ )
+		{
+			P_CHAR guard = sc.getChar();
+			if ( ISVALIDPC( guard ) )
+				if ( guard->npcaitype == NPCAI_PETGUARD && ( distFrom( guard )<= 10 ) )
+					npcattacktarget(pc, guard);
+		}
+	}
+
+	if ((region[ victim->region].priv & RGNPRIV_GUARDED) && (SrvParms->guardsactive))
+	{
+		if (isGrey())
+			setGrey();
+
+		if (victim->npc==0 && victim->isInnocent() && (!victim->IsGrey()) && Guilds->Compare( pc, victim )==0) //REPSYS
+		{
+			criminal( pc );
+			if (ServerScp::g_nInstantGuard==1)
+				npcs::SpawnGuard(pc, victim, getPosition() );
+		}
+		else if( victim->npc && victim->isInnocent() && !victim->HasHumanBody() && victim->npcaitype!=NPCAI_TELEPORTGUARD )
+		{
+			criminal( pc );
+			if (ServerScp::g_nInstantGuard==1)
+				npcs::SpawnGuard(pc, victim, getPosition() );
+		}
+		else if( victim->npc && victim->isInnocent() && victim->HasHumanBody() && victim->npcaitype!=NPCAI_TELEPORTGUARD )
+		{
+			victim->talkAll( TRANSLATE("Help! Guards! I've been attacked!"), 1);
+			criminal( victim );
+			callguards(DEREF_P_CHAR(victim)); // Sparhawk must check if npcs can call guards
+		}
+		else if( victim->npc && victim->npcaitype==NPCAI_TELEPORTGUARD)
+		{
+			criminal( pc );
+			npcattacktarget(victim, pc);
+		}
+		else if ((victim->npc || victim->tamed) && !victim->war && victim->npcaitype!=NPCAI_TELEPORTGUARD)
+		{
+			victim->fight( pc );
+		}
+		else
+		{
+			victim->setNpcMoveTime();
+		}
+		//emoteall( "You see %s attacking %s!", 1, getCurrentNameC(), victim->getCurrentNameC() );
+	}
+	else	// not a guarded area
+	{
+		if ( victim->IsInnocent())
+		{
+			if ( victim->IsGrey())
+				attacker->SetGrey();
+			if (!victim->npc && (!victim->IsGrey()) && Guilds->Compare(pc, victim )==0)
+			{
+				criminal( pc );
+			}
+			else if (victim->npc && victim->tamed)
+			{
+				criminal( pc );
+				npcattacktarget(victim, pc);
+			}
+			else if (victim->npc)
+			{
+				criminal( pc );
+				npcattacktarget(victim, pc);
+				if (victim->HasHumanBody() )
+				{
+					victim->talkAll(TRANSLATE("Help! Guards! Tis a murder being commited!"), 1);
+				}
+			}
+		}
+	}
+
+}
+

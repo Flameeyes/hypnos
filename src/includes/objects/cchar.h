@@ -490,10 +490,16 @@ public:
 	void updateRegenTimer( StatType stat );
 //@}
 
+//@{
+/*!
+\name Skills and doubleclicking
+*/
 public:
 	TIMERVAL skilldelay;
 	TIMERVAL objectdelay;
 public:
+        void singleClick(pClient client);  // "this" is the clicked char, client is the client of the clicker
+        void doubleClick(pClient client, int keyboard);       //!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
 	inline void setSkillDelay( UI32 seconds = server_data.skilldelay )
 	{ skilldelay = uiCurrentTime + seconds * MY_CLOCKS_PER_SEC; }
 
@@ -506,6 +512,7 @@ public:
 	inline const bool canDoObjectAction() const
 	{ return TIMEOUT( objectdelay ); }
 
+//@}
 
 	/********************************/
 	/*     TO REMOVE/REPLACE        */
@@ -673,7 +680,7 @@ public:
 		TIMERVAL 		time_unused;
 		TIMERVAL 		timeused_last;
 
-		void			onSingleClick( P_CHAR clickedBy );
+
 
 	private:
 		inline void resetBaseSkill()
@@ -693,10 +700,6 @@ public:
 
 		inline void resetLockSkills()
 		{ memset(lockSkill, 0, sizeof(lockSkill)); }
-
-	private:
-
-		void 			doSingleClickOnItem( SERIAL serial );		// will become private function
 
 	public:
 		//! tells if a character is running

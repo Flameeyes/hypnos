@@ -82,7 +82,7 @@ class cNetwork
 		void LoginMain(int s);
 		void xSend(NXWSOCKET socket, const void *point, int length );
 		void xSend(NXWSOCKET socket, wstring& p, bool alsoTermination = true );
-		void Disconnect(cClient client);
+		void Disconnect(pClient client);
 		void ClearBuffers();
 		void CheckConn();
 		void CheckMessage();

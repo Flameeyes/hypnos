@@ -316,9 +316,9 @@ static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
                 case 0x03: return new cPacketReceiveTalkRequest(buffer, length);        // Talk Request
                 case 0x05: return new cPacketReceiveAttackRequest(buffer, length);      // Attack Request
                 case 0x06: return new cPacketReceiveDoubleclick(buffer, length);        // Double click
-                case 0x07: length =   7; break; // Pick Up Item(s)
+                case 0x07: return new cPacketReceivePickUp(buffer, length);             // Pick Up Item(s)
                 case 0x08: length =  14; break; // Drop Item(s)
-                case 0x09: length =   5; break; // Single click
+                case 0x09: return new cPacketReceiveSingleclick(buffer, length);        // Single click
                 case 0x12: length = ???; break; // Request Skill/Action/Magic Usage
                 case 0x13: length =  10; break; // Drop - Wear Item
                 case 0x1a: length = ???; break; // Object Information
@@ -668,7 +668,7 @@ virtual bool cPacketReceiveAttackRequest::execute (pClient client)
 \param client client who sent the packet
 */
 
-virtual bool cPacketReceiveDoubleclick::execute(cClient client)
+virtual bool cPacketReceiveDoubleclick::execute(pClient client)
 {
         if (length != 5) return false;
 	pPC pc = client->currChar();
@@ -680,11 +680,50 @@ virtual bool cPacketReceiveDoubleclick::execute(cClient client)
 	if (isCharSerial(serial))
 	{
 		pChar pd = pointers::findCharBySerial(serial);
-		ISVALIDPCR(pd, false)
-		pd->doubleClick(client);
-		return true;
+		if (ISVALIDPC(pd))
+                {
+                        pd->doubleClick(client, buffer[1] & 0x80);
+		        return true;
+                }
 	}
 	pItem pi = pointers::findItemBySerial(serial);
 	VALIDATEPIR(pi, false);  //If it's neither a char nor an item, then it's invalid
         pi->doubleClick(client);
+        return true;
+}
+
+/*!
+\brief Pickup Item Packet
+\author Chronodt
+\param client client who sent the packet
+*/
+
+virtual bool cPacketReceivePickUp::execute(pClient client)
+{
+        if (length != 7) return false;
+        
+}
+
+/*!
+\brief Singleclick Packet
+\author Chronodt
+\param client client who sent the packet
+*/
+virtual bool cPacketReceiveSingleclick::execute(pClient client)
+{
+        if (length != 5) return false;
+        SERIAL serial = LongFromCharPtr(buffer + 1);
+	if ( isCharSerial( serial ) )
+        {
+                pChar pc = pointers::findCharBySerial(serial);
+                VALIDATEPCR(pc, false);
+		pc->SingleClick( client);
+        }
+	else
+        {
+        	pItem pi = pointers::findItemBySerial(serial);
+                VALIDATEPIR(pi, false);
+		pi->SingleClick( client );
+        }
+        return true;
 }

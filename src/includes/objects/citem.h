@@ -663,9 +663,14 @@ public:
 /*!
 \name Item Use
 */
+protected:
+        bool            ToolWearOut(pClient client);            //!< Check for tool consumption. Used in doubleClick
 
-        bool checkItemUsability(pChar pc, int type);    //!< If item can be used with a doubleclick
-        void doubleClick(cClient client);               //!< Use of item
+public:
+        void            singleClick(pClient client);            //!< Single click on item
+        bool            usableWhenLockedDown();                 //!< Item can be used when locked down (in a house)
+        bool            checkItemUsability(pChar pc, int type); //!< If item can be used with "type" method by pc
+        void            doubleClick(pClient client);            //!< Use of item by doubleclicking on it
 
 //@{
 /*!

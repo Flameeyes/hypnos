@@ -45,20 +45,161 @@
 #include "utils.h"
 #include "fishing.h"
 
+
+
+bool cItem::usableWhenLockedDown()
+{
+//! \todo this function
+}
+
+/*!
+\brief single click on item
+\return bool
+\param client client of player who clicked the item
+*/
+
+void cItem::singleClick(pClient client )
+{
+	char temp[TEMP_STR_SIZE];
+	SI32 amt = 0, wgt;
+	char itemname[100];
+	char temp2[100];
+//	extern skill_st skill[SKILLS + 1]; // unused variable
+
+	pChar pj;
+
+	if (amxevents[EVENT_IONCLICK]!=NULL)
+	{
+		g_bByPass = false;
+		amxevents[EVENT_IONCLICK]->Call(getSerial32(), client->currChar()->getSerial32() );
+		if ( g_bByPass==true )
+			return;
+	}
+
+	getName( itemname );
+
+	if ( type == ITYPE_SPELLBOOK )
+	{
+		sprintf( temp, TRANSLATE("[%i spells]"), countSpellsInSpellBook() );
+		itemmessage(client, temp, serial, 0x0481);
+	}
+
+	if ( CanSeeSerials() )
+	{
+		if (amount > 1)
+			sprintf( temp, "%s [%x]: %i", itemname, getSerial32(), amount);
+		else
+			sprintf( temp, "%s [%x]", itemname, getSerial32());
+		itemmessage(client, temp, serial);
+		return;
+	}
+
+	// Click in a Player Vendor item, show description, price and return
+	if (!isInWorld() && isItemSerial(getContSerial()))
+	{
+		pItem cont = getContainer();
+		if( ISVALIDPI(cont) ) {
+			pj = cont->getPackOwner();
+			if( ISVALIDPC(pj) )
+			{
+				if( pj->npcaitype==NPCAI_PLAYERVENDOR )
+				{
+					if ( !creator.empty() && madewith>0)
+						sprintf( temp2, TRANSLATE("%s %s by %s"), vendorDescription.c_str(), ::skillinfo[madewith - 1].madeword, creator.c_str());
+					else
+						strcpy( temp2, vendorDescription.c_str() );
+
+					sprintf( temp, TRANSLATE("%s at %igp"), temp2, value );
+					itemmessage(client, temp, serial);
+					return;
+				}
+			}
+		}
+	}
+
+	// From now on, we will build the message into temp, and let itemname with just the name info
+	// Add amount info.
+	if (!pileable || amount == 1)
+		strncpy( temp, itemname, 100);
+	else
+		if (itemname[strlen(itemname) - 1] != 's') // avoid iron ingotss : x
+			sprintf( temp, "%ss : %i", itemname, amount);
+		else
+			sprintf( temp, "%s : %i", itemname, amount);
+
+	// Add creator's mark (if any)
+	if ( !creator.empty() && madewith > 0)
+		sprintf( temp, TRANSLATE("%s %s by %s"), temp, ::skillinfo[madewith - 1].madeword, creator.c_str());
+
+	if (type == ITYPE_WAND) // Fraz
+	{
+		if (!(strcmp(getSecondaryNameC(), getCurrentNameC())))
+		{
+			sprintf( temp, TRANSLATE("%s %i charge"), temp, morez);
+			if (morez != 1)
+				strcat(temp, "s");
+		}
+	}
+	else if (type == ITYPE_ITEMID_WAND || type == ITYPE_FIREWORKS_WAND)
+	{
+			if (!(strcmp(getSecondaryNameC(), getCurrentNameC())))
+			{
+				sprintf( temp, TRANSLATE("%s %i charge"), temp, morex);
+				if (morex != 1)
+					strcat(temp, "s");
+			}
+	}
+	// Corpse highlighting...Ripper
+	if (corpse==1)
+	{
+		if(more2==1)
+		        itemmessage( client,TRANSLATE("[Innocent]"),serial, 0x005A);
+		else if(more2==2)
+			itemmessage( client,TRANSLATE("[Criminal]"),serial, 0x03B2);
+		else if(pi->more2==3)
+			itemmessage( client,TRANSLATE("[Murderer]"),serial, 0x0026);
+	}  // end highlighting
+	// Let's handle secure/locked down stuff.
+	if (magic == 4 && type != ITYPE_DOOR && type != ITYPE_GUMPMENU)
+	{
+		if (secureIt !=1)
+			itemmessage( client, TRANSLATE("[locked down]"), serial, 0x0481);
+		if (secureIt == 1 && magic == 4)
+			itemmessage( client, TRANSLATE("[locked down & secure]"), serial, 0x0481);
+	}
+
+	itemmessage(client, temp, serial);
+
+	// Send the item/weight as the last line in case of containers
+	if (type == ITYPE_CONTAINER || type == ITYPE_UNLOCKED_CONTAINER || type == ITYPE_NODECAY_ITEM_SPAWNER || type == ITYPE_TRASH)
+	{
+		wgt = (SI32) weights::LockeddownWeight(this, &amt); // get stones and item #, LB
+		if (amt>0)
+		{
+			sprintf( temp2, TRANSLATE("[%i items, %i stones]"), amt, wgt);
+			itemmessage( client, temp2, serial);
+		}
+		else
+			itemmessage( client, TRANSLATE("[0 items, 0 stones]"), serial);
+	}
+
+}
+
 #define CASE(FUNC) else if( ( FUNC() ) )
 #define CASEOR(A, B) else if( (A())||(B()) )
 static void doubleclick_itemid( NXWSOCKET s, P_CHAR pc, P_ITEM pi, P_ITEM pack );
+
 /*!
 \brief Double click
 \author Ripper, rewrite by Endymion, then by Chronodt (1/2/2004)
 \param ps client of player dbclick
 \note Completely redone by Morrolan 20-07-99
 \warning I use a define CASE for make more readable the code, if you change name of P_ITEM pi chage also the macro
-\note P_ITEM pi changed with rewrite, so the macro has been changed too (1/2/2004)
+\note P_ITEM pi removed since merging with cItem, so the macro has been changed too (1/2/2004)
 \todo review when sets redone
 \todo los
 */
-void cItem::doubleClick(cClient client);
+void cItem::doubleClick(pClient client);
 {
 
 	if (client==NULL) return;
@@ -79,7 +220,7 @@ void cItem::doubleClick(cClient client);
 
         // Luxor: cannot use items if under invisible spell
         // Chronodt: 1/2/2004 added a server parameter check to allow servers to let items be used when invisible
-        if (pc->IsHiddenBySpell() && !canUseItemsWhenInvisible()) return;
+        if (pc->IsHiddenBySpell() && !global::canUseItemsWhenInvisible()) return;
 
 	if ( !pc->IsGM() && pc->objectdelay >= uiCurrentTime )
 	{
@@ -102,7 +243,7 @@ void cItem::doubleClick(cClient client);
 
 	tile_st item;
 
-	P_ITEM pack= pc->getBackpack();
+	pItem pack= pc->getBackpack();
 	VALIDATEPI( pack );
 
 
@@ -113,7 +254,7 @@ void cItem::doubleClick(cClient client);
 		// equip the item only if it is in the backpack of the player
 		if ((getContainer() == pack->getSerial32()) && (item.quality != 0) && (item.quality != LAYER_BACKPACK) && (item.quality != LAYER_MOUNT))
 		{
-			int drop[2]= {-1, -1};	// list of items to drop, there no reason for it to be larger
+			pItem drop[2]= {NULL, NULL};	// list of items to drop, there no reason for it to be larger
 			int curindex= 0;
 
                         //TODO: review when sets redone
@@ -124,60 +265,48 @@ void cItem::doubleClick(cClient client);
 			for( wea.rewind(); !wea.isEmpty(); wea++ )
 			{
 
-				P_ITEM pj=wea.getItem();
+				pItem pj=wea.getItem();
 				if(!ISVALIDPI(pj))
 					continue;
 				if ((item.quality == LAYER_1HANDWEAPON) || (item.quality == LAYER_2HANDWEAPON))// weapons
 				{
-					if (pi->itmhand == 2) // two handed weapons or shield
+					if (itmhand == 2) // item tried to equip is two handed weapon or shield
 					{
 						if (pj->itmhand == 2)
-							drop[curindex++]= DEREF_P_ITEM(pj);
+							drop[curindex++]= pj;
 						if ( (pj->itmhand == 1) || (pj->itmhand == 3) )
-							drop[curindex++]= DEREF_P_ITEM(pj);
+							drop[curindex++]= pj;
 					}
-					if (pi->itmhand == 3)
+					if (itmhand == 3)
 					{
 						if ((pj->itmhand == 2) || pj->itmhand == 3)
-							drop[curindex++]= DEREF_P_ITEM(pj);
+							drop[curindex++]= pj;
 					}
-					if ((pi->itmhand == 1) && ((pj->itmhand == 2) || (pj->itmhand == 1)))
-						drop[curindex++]= DEREF_P_ITEM(pj);
+					if ((itmhand == 1) && ((pj->itmhand == 2) || (pj->itmhand == 1)))
+						drop[curindex++]= pj;
 				}
 				else	// not a weapon
 				{
 					if (pj->layer == item.quality)
-						drop[curindex++]= DEREF_P_ITEM(pj);
+						drop[curindex++]= pj;
 				}
 			}
 
 			if (ServerScp::g_nUnequipOnReequip)
 			{
-				if (drop[0] > -1)	// there is at least one item to drop
+				if (drop[0] != NULL)	// there is at least one item to drop
 				{
-					for (int i= 0; i< 2; i++)
-					{
-						if (drop[i] > -1)
-
-						{
-
-							P_ITEM p_drop=MAKE_ITEM_REF(drop[i]);
-
-							if(ISVALIDPI(p_drop))
-								pc->UnEquip( p_drop );
-
-						}
-					}
+					for (int i= 0; i< 2; i++) if (drop[i] != NULL) pc->UnEquip(drop[i]);
 				}
-				pc->playSFX( itemsfx(pi->getId()) );
-				pc->Equip( pi );
+				pc->playSFX( itemsfx(getId()));
+				pc->Equip(this);
 			}
 			else
 			{
-				if (drop[0] == -1)
+				if (drop[0] == NULL)
 				{
-					pc->playSFX( itemsfx(pi->getId()) );
-					pc->Equip( pi );
+					pc->playSFX( itemsfx(getId()) );
+					pc->Equip(this);
 				}
 			}
 			return;
@@ -186,15 +315,15 @@ void cItem::doubleClick(cClient client);
 
 
 	//<Luxor>: Circle of transparency bug fix
-	P_ITEM pCont;
+	pContainer cont;
 	Location dst;
 
-	pCont = pi->getOutMostCont();
+	cont = getOutMostCont();
 
-	if(pCont->isInWorld()) {
-		dst = pCont->getPosition();
+	if(cont->isInWorld()) {
+		dst = cont->getPosition();
 	} else {
-		P_CHAR pg_dst = pointers::findCharBySerial( pCont->getContSerial() );
+		pChar pg_dst = pointers::findCharBySerial( cont->getContSerial() );  //TODO: verify if doing a getContSerial to a body returns a char
 		VALIDATEPC(pg_dst);
 		dst = pg_dst->getPosition();
 	}
@@ -203,54 +332,54 @@ void cItem::doubleClick(cClient client);
 	charPos.z = dst.z;
 	charPos.dispz = dst.dispz;
 
-	if ( !pc->IsGM() && !lineOfSight( charPos, dst ) && !(pc->nxwflags[0] & cChar::flagSpellTelekinesys) ) {
+	if ( !pc->IsGM() && !lineOfSight( charPos, dst ) && !pc->hasTelekinesis() ) {
 		pc->sysmsg( TRANSLATE( "You cannot reach the item" ) );
 		return;
 	}
 	//</Luxor>
 
-	P_CHAR itmowner = pi->getPackOwner();
+	pChar itmowner = getPackOwner();
 
-	if(!pi->isInWorld()) {
-		if (isItemSerial(pi->getContSerial()) && pi->type != ITYPE_CONTAINER)
+	if(!isInWorld()) {
+		if (isItemSerial(getContSerial()) && type != ITYPE_CONTAINER)
 		{// Cant use stuff that isn't in your pack.
 
 			if ( ISVALIDPC(itmowner) && (itmowner->getSerial32()!=pc->getSerial32()) )
 					return;
 		}
 		else
-			if (isCharSerial(pi->getContSerial()) && pi->type!=(UI32)INVALID)
+			if (isCharSerial(getContSerial()) && type!=(UI32)INVALID)
 			{// in a character.
-				P_CHAR wearedby = pointers::findCharBySerial(pi->getContSerial());
+				pChar wearedby = pointers::findCharBySerial(getContSerial());
 				if (ISVALIDPC(wearedby))
-					if (wearedby->getSerial32()!=pc->getSerial32() && pi->layer!=LAYER_UNUSED_BP && pi->type!=ITYPE_CONTAINER)
+					if (wearedby->getSerial32()!=pc->getSerial32() && layer!=LAYER_UNUSED_BP && type!=ITYPE_CONTAINER)
 						return;
 			}
 	}
 
-	if ((pi->magic==4) && (pi->secureIt==1))
+	if ((magic==4) && (secureIt==1))
 	{
-		if (!pc->isOwnerOf(pi) || !pc->IsGMorCounselor())
+		if (!pc->isOwnerOf(this) || !pc->IsGMorCounselor())
 		{
 			pc->sysmsg( TRANSLATE("That is a secured chest!"));
 			return;
 		}
 	}
 
-	if (pi->magic == 4)
+	if ((magic == 4) && !usableWhenLockedDown())  // Chronodt: without this last check, locked down chests could not be opened by nonowners even if unlocked
 	{
 		pc->sysmsg( TRANSLATE("That item is locked down."));
 		return;
 	}
 
-	if (pc->dead && pi->type!=ITYPE_RESURRECT) // if you are dead and it's not an ankh, FORGET IT!
+	if (pc->dead && >type!=ITYPE_RESURRECT) // if you are dead and it's not an ankh, FORGET IT!
 	{
 		pc->sysmsg(TRANSLATE("You may not do that as a ghost."));
 		return;
 	}
-	else if (!pc->IsGMorCounselor() && pi->layer!=0 && !pc->IsWearing(pi))
+	else if (!pc->IsGMorCounselor() && layer!=0 && !pc->IsWearing(this))
 	{// can't use other people's things!
-		if (!(pi->layer==LAYER_BACKPACK  && SrvParms->rogue==1)) // bugfix for snooping not working, LB
+		if (!(layer==LAYER_BACKPACK  && SrvParms->rogue==1)) // bugfix for snooping not working, LB
 		{
 			pc->sysmsg(TRANSLATE("You cannot use items equipped by other players."));
 			return;
@@ -260,19 +389,19 @@ void cItem::doubleClick(cClient client);
 
 	// Begin checking objects that we force an object delay for (std objects)
 	// start trigger stuff
-	if (pi->trigger > 0)
+	if (trigger > 0)
 	{
-		if (pi->trigtype == 0)
+		if (trigtype == 0)
 		{
-			if ( TIMEOUT( pi->disabled ) ) // changed by Magius(CHE) §
+			if ( TIMEOUT( disabled ) ) // changed by Magius(CHE) §
 			{
-				triggerItem(s, pi, TRIGTYPE_DBLCLICK); // if players uses trigger
+				triggerItem(client, TRIGTYPE_DBLCLICK); // if players uses trigger
 				return;
 			}
 			else
 			{
-				if ( pi->disabledmsg!=NULL )
-					pc->sysmsg("%s", pi->disabledmsg->c_str());
+				if ( disabledmsg!=NULL )
+					pc->sysmsg("%s", disabledmsg->c_str());
 				else
 					pc->sysmsg(TRANSLATE("That doesnt seem to work right now."));
 				return;
@@ -287,10 +416,13 @@ void cItem::doubleClick(cClient client);
 
 	// check this on trigger in the event that the .trigger property is not set on the item
 	// trigger code.  Check to see if item is envokable by id
-	else if (checkenvoke( pi->getId() ))
+	else if (checkenvoke( getId() ))
 	{
-		pc->envokeitem = pi->getSerial32();
-		pc->envokeid = pi->getId();
+		pc->envokeitem = getSerial32();
+		pc->envokeid = getId();
+
+                //TODO: REVISE WHEN TARGETS REDONE!!
+
 		P_TARGET targ = clientInfo[s]->newTarget( new cObjectTarget() );
 		targ->code_callback=target_envoke;
 		targ->send( ps );
@@ -311,7 +443,7 @@ void cItem::doubleClick(cClient client);
 
 	P_TARGET targ = NULL;
 
-	switch (pi->type)
+	switch (type)
 	{
 	case ITYPE_RESURRECT:
 		// Check for 'resurrect item type' this is the ONLY type one can use if dead.
@@ -328,14 +460,14 @@ void cItem::doubleClick(cClient client);
 		}
 	case ITYPE_BOATS:// backpacks - snooping a la Zippy - add check for SrvParms->rogue later- Morrolan
 
-		if (pi->type2 == 3)
+		if (type2 == 3)
 		{
-			switch( pi->getId() & 0xFF ) {
+			switch( getId() & 0xFF ) {
 				case 0x84:
 				case 0xD5:
 				case 0xD4:
 				case 0x89:
-					Boats->PlankStuff(pc, pi);
+					Boats->PlankStuff(client, this);
 					break;
 				default:
 					pc->sysmsg( TRANSLATE("That is locked."));
@@ -346,41 +478,47 @@ void cItem::doubleClick(cClient client);
 	case ITYPE_CONTAINER: // bugfix for snooping not working, lb
 	case ITYPE_UNLOCKED_CONTAINER:
 		// Wintermute: GMs or Counselors should be able to open trapped containers always
-		if (pi->moreb1 > 0 && !pc->IsGMorCounselor()) {
-			magic::castAreaAttackSpell(pi->getPosition("x"), pi->getPosition("y"), magic::SPELL_EXPLOSION);
-			pi->moreb1--;
+		if (moreb1 > 0 && !pc->IsGMorCounselor()) {
+			magic::castAreaAttackSpell(getPosition("x"), getPosition("y"), magic::SPELL_EXPLOSION);
+			moreb1--;
 		}
 		//Magic->MagicTrap(currchar[s], pi); // added by AntiChrist
 		// only 1 and 63 can be trapped, so pleaz leave it here :) - Anti
 	case ITYPE_NODECAY_ITEM_SPAWNER: // nodecay item spawner..Ripper
 	case ITYPE_DECAYING_ITEM_SPAWNER: // decaying item spawner..Ripper
-		if (pi->isInWorld() || (pc->IsGMorCounselor()) || // Backpack in world - free access to everyone
-			( isCharSerial(pi->getContSerial()) && pi->getContSerial()==pc->getSerial32()))	// primary pack
+		if (isInWorld() || (pc->IsGMorCounselor()) || // Backpack in world - free access to everyone
+			( isCharSerial(getContSerial()) && getContSerial()==pc->getSerial32()))	// primary pack
 		{
-			pc->showContainer(pi);
+			pc->showContainer(this);
 			pc->objectdelay=0;
 			return;
 		}
-		else if( isItemSerial(pi->getContSerial()) )
+		else if( isItemSerial(getContSerial()) )
 		{
-			P_ITEM pio = pi->getOutMostCont();
+			pItem pio = getOutMostCont();
 			if (pio->getContSerial()==pc->getSerial32() || pio->isInWorld() )
 			{
-				pc->showContainer(pi);
+				pc->showContainer(this);
 				pc->objectdelay=0;
 				return;
 			}
 		}
 		if(ISVALIDPC(itmowner))
-			snooping(pc, pi );
+			snooping(pc, pi );  //TODO: revise when snooping redone or updated
 		return;
 	case ITYPE_TELEPORTRUNE:
+
+        //TODO: REVISE WHEN TARGETS REDONE!!
+
 		targ = clientInfo[s]->newTarget( new cLocationTarget() );
 		targ->code_callback = target_tele;
 		targ->send( ps );
 		ps->sysmsg( TRANSLATE("Select teleport target."));
 		return;
 	case ITYPE_KEY:
+
+        //TODO: REVISE WHEN TARGETS REDONE!!
+
 		targ = clientInfo[s]->newTarget( new cItemTarget() );
 		targ->code_callback = target_key;
 		targ->buffer[0]= pi->more1;
@@ -397,9 +535,9 @@ void cItem::doubleClick(cClient client);
 		// Wintermute: GMs or Counselors should be able to open locked containers always
 		if ( !pc->IsGMorCounselor() )
 		{
-			if (pi->moreb1 > 0 ) {
-				magic::castAreaAttackSpell(pi->getPosition().x, pi->getPosition().y, magic::SPELL_EXPLOSION);
-				pi->moreb1--;
+			if (moreb1 > 0 ) {
+				magic::castAreaAttackSpell(getPosition().x, getPosition().y, magic::SPELL_EXPLOSION);
+				>moreb1--;
 			}
 
 			pc->sysmsg(TRANSLATE("This item is locked."));
@@ -407,18 +545,18 @@ void cItem::doubleClick(cClient client);
 		}
 		else
 		{
-			pc->showContainer(pi);
+			pc->showContainer(this);
  			return;
 		}
 	case ITYPE_SPELLBOOK:
 		if (ISVALIDPI(pack)) // morrolan
-			if(pi->getContSerial()==pack->getSerial32() || pc->IsWearing(pi))
-				ps->sendSpellBook(pi);
+			if(getContSerial()==pack->getSerial32() || pc->IsWearing(this))
+				ps->sendSpellBook(this);
 			else
 				pc->sysmsg(TRANSLATE("If you wish to open a spellbook, it must be equipped or in your main backpack."));
 			return;
 	case ITYPE_MAP:
-		LongToCharPtr(pi->getSerial32(), map1 +1);
+		LongToCharPtr(getSerial32(), map1 +1);
 		map2[1] = map1[1];
 		map2[2] = map1[2];
 		map2[3] = map1[3];
@@ -427,20 +565,23 @@ void cItem::doubleClick(cClient client);
 		By Polygon:
 		Assign areas and map size before sending
 */
-		map1[7] = pi->more1;	// Assign topleft x
-		map1[8] = pi->more2;
-		map1[9] = pi->more3;	// Assign topleft y
-		map1[10] = pi->more4;
-		map1[11] = pi->moreb1;	// Assign lowright x
-		map1[12] = pi->moreb2;
-		map1[13] = pi->moreb3;	// Assign lowright y
-		map1[14] = pi->moreb4;
+		map1[7]  = more1;	// Assign topleft x
+		map1[8]  = more2;
+		map1[9]  = more3;	// Assign topleft y
+		map1[10] = more4;
+		map1[11] = moreb1;	// Assign lowright x
+		map1[12] = moreb2;
+		map1[13] = moreb3;	// Assign lowright y
+		map1[14] = moreb4;
 		int width, height;		// Tempoary storage for w and h;
-		width = 134 + (134 * pi->morez);	// Calculate new w and h
-		height = 134 + (134 * pi->morez);
+		width = 134 + (134 * morez);	// Calculate new w and h
+		height = 134 + (134 * morez);
 		ShortToCharPtr(width, map1 +15);
 		ShortToCharPtr(height, map1 +17);
 //		END OF: By Polygon
+
+
+//TODO: redo when send packet for map redone
 
 		Xsend(s, map1, 19);
 //AoS/		Network->FlushBuffer(s);
@@ -448,31 +589,42 @@ void cItem::doubleClick(cClient client);
 //AoS/		Network->FlushBuffer(s);
 		return;
 	case ITYPE_BOOK:
+
+//TODO: redo when books updated
+
 		Books::DoubleClickBook(s, pi);
 		return;
 	case ITYPE_DOOR:
+
+//TODO: redo when houses updated
+
 		dooruse(s, pi);
 		return;
 	case ITYPE_LOCKED_DOOR:
 		// Wintermute: GMs or Counselors should be able to open locked doors always
 		if ( pc->IsGMorCounselor())
  		{
+                //TODO: redo when houses updated
  			dooruse(s, pi);
  			return;
  		}
 
 		if (ISVALIDPI(pack))
 		{
+                //TODO: redo when sets updated
 			NxwItemWrapper si;
 			si.fillItemsInContainer( pack );
 			for( si.rewind(); !si.isEmpty(); si++ )
 			{
-				P_ITEM pj = si.getItem();
+				pItem pj = si.getItem();
 				if (ISVALIDPI(pj) && pj->type==ITYPE_KEY)
-					if (((pj->more1 == pi->more1) && (pj->more2 == pi->more2) &&
-						 (pj->more3 == pi->more3) && (pj->more4 == pi->more4)) )
+					if (((pj->more1 == more1) && (pj->more2 == more2) &&
+						 (pj->more3 == more3) && (pj->more4 == more4)) )
 					{
 						pc->sysmsg(TRANSLATE("You quickly unlock, use, and then relock the door."));
+
+                                        //TODO: redo when houses updated
+
 						dooruse(s, pi);
 						return;
 					}
@@ -507,14 +659,14 @@ void cItem::doubleClick(cClient client);
 				default: pc->sysmsg( TRANSLATE("You are simply too full to eat any more!")); break;
 			}
 
-			if (pi->poisoned)
+			if (poisoned)
 			{
 				pc->sysmsg(TRANSLATE("The food was poisoned!"));
-				pc->applyPoison(PoisonType(pi->poisoned));
+				pc->applyPoison(PoisonType(poisoned));
 
 			}
 
-			pi->ReduceAmount(1);
+			ReduceAmount(1);
 		    pc->hunger++;
 		}
 		return;
@@ -522,22 +674,22 @@ void cItem::doubleClick(cClient client);
 	case ITYPE_MANAREQ_WAND: // magic items requiring mana (xan)
 		if (ISVALIDPI(pack))
 		{
-			if (pi->getContSerial() == pack->getSerial32() || pc->IsWearing(pi))
+			if (getContSerial() == pack->getSerial32() || pc->IsWearing(this))
 			{
-				if (pi->morez != 0)
+				if (morez != 0)
 				{
-					pi->morez--;
+					morez--;
 					if (magic::beginCasting(
-						static_cast<magic::SpellId>((8*(pi->morex - 1)) + pi->morey - 1),
-						ps,
-						(pi->type==ITYPE_WAND) ? magic::CASTINGTYPE_ITEM : magic::CASTINGTYPE_NOMANAITEM))
+						static_cast<magic::SpellId>((8*(morex - 1)) + morey - 1),
+						client,
+						(type==ITYPE_WAND) ? magic::CASTINGTYPE_ITEM : magic::CASTINGTYPE_NOMANAITEM))
 						{
-							if (pi->morez == 0)
+							if (morez == 0)
 							{
-								pi->type = pi->type2;
-								pi->morex = 0;
-								pi->morey = 0;
-								pi->offspell = 0;
+								type = type2;
+								morex = 0;
+								morey = 0;
+								offspell = 0;
 							}
 						}
 				}
@@ -565,47 +717,54 @@ void cItem::doubleClick(cClient client);
 		return;// case 18 (crystal ball?)
 */////////////////////ENDREMOVE/////////////////////////////////////
 	case ITYPE_POTION: // potions
-			if (pi->morey != 3)
-				pc->drink(pi);   //Luxor: delayed potions drinking
+			if (morey != 3)
+				pc->drink(this);   //Luxor: delayed potions drinking
 			else    //explosion potion
+
+                        //TODO: revise this
 				usepotion(pc, pi);
 			return;
 	case ITYPE_RUNE:
-			if (pi->morex==0 && pi->morey==0 && pi->morez==0)
+			if (morex==0 && morey==0 && morez==0)
 			{
 				pc->sysmsg( TRANSLATE("That rune is not yet marked!"));
 			}
 			else
 			{
-				pc->runeserial = pi->getSerial32();
+				pc->runeserial = getSerial32();
 				pc->sysmsg( TRANSLATE("Enter new rune name."));
 			}
 			return;
 	case ITYPE_SMOKE:
-			pc->smoketimer = pi->morex*MY_CLOCKS_PER_SEC + getclock();
-			pi->ReduceAmount(1);
+			pc->smoketimer = morex*MY_CLOCKS_PER_SEC + getclock();
+			ReduceAmount(1);
 			return;
 	case ITYPE_RENAME_DEED:
-			pc->namedeedserial = pi->getSerial32();
+			pc->namedeedserial = getSerial32();
 			pc->sysmsg( TRANSLATE("Enter your new name."));
-			pi->ReduceAmount(1);
+			ReduceAmount(1);
 			return;
 	case ITYPE_POLYMORPH:
-			pc->setId( pi->morex );
+
+        //TODO: redo when polymorph redone, with cbody class use
+			pc->setId( morex );
 			pc->teleport();
 			pi->type = ITYPE_POLYMORPH_BACK;
 			return;
 	case ITYPE_POLYMORPH_BACK:
+        //TODO: redo when polymorph redone, with cbody class use
 			pc->setId( pc->getOldId() );
 			pc->teleport();
-			pi->type = ITYPE_POLYMORPH;
+			type = ITYPE_POLYMORPH;
 			return;
 	case ITYPE_ARMY_ENLIST:
-			enlist(s, pi->morex);
-			pi->Delete();
+
+        //TODO: redo this
+			enlist(s, morex);
+			Delete();
 			return;
 	case ITYPE_TELEPORT:
-			pc->MoveTo( pi->morex,pi->morey,pi->morez );
+			pc->MoveTo(morex, morey, morez);
 			pc->teleport();
 			return;
 	case ITYPE_DRINK:
@@ -614,28 +773,31 @@ void cItem::doubleClick(cClient client);
 				case 0: pc->playSFX(0x0031); break;
 				case 1: pc->playSFX(0x0030); break;
 			}
-			pi->ReduceAmount(1);
+			ReduceAmount(1);
 			pc->sysmsg( TRANSLATE("Gulp !"));
 			return;
 	case ITYPE_GUILDSTONE:
-			if ( pi->getId() == 0x14F0  ||  pi->getId() == 0x1869 )	// Check for Deed/Teleporter + Guild Type
+
+                //TODO: redo when guilds fixed
+
+			if ( getId() == 0x14F0  ||  getId() == 0x1869 )	// Check for Deed/Teleporter + Guild Type
 			{
-				pc->fx1 = DEREF_P_ITEM(pi);
-				Guilds->StonePlacement(s);
+				pc->fx1 = DEREF_P_ITEM(pi);   //TODO: <- check this
+				Guilds->StonePlacement(s);    //TODO: <- and this
 				return;
 			}
-			else if (pi->getId() == 0x0ED5)	// Check for Guildstone + Guild Type
+			else if (getId() == 0x0ED5)	// Check for Guildstone + Guild Type
 			{
 				pc->fx1 = DEREF_P_ITEM(pi);
 				Guilds->Menu(s, 1);
 				return;
 			}
 			else
-				WarnOut("Unhandled guild item type named: %s with ID of: %X\n", pi->getCurrentNameC(), pi->getId());
+				WarnOut("Unhandled guild item type named: %s with ID of: %X\n", getCurrentNameC(), getId());
 			return;
 	case ITYPE_PLAYER_VENDOR_DEED:			// PlayerVendors deed
 			{
-			P_CHAR vendor = npcs::AddNPCxyz(-1, 2117, charpos.x, charpos.y, charpos.z);
+			pNPC vendor = npcs::AddNPCxyz(-1, 2117, charpos.x, charpos.y, charpos.z);
 			if ( !ISVALIDPC(vendor) )
 			{
 				WarnOut("npc-script couldnt find vendor !\n");
@@ -652,31 +814,33 @@ void cItem::doubleClick(cClient client);
 			vendor->SetInnocent();
 			vendor->setOwnerSerial32( pc->getSerial32() );
 			vendor->tamed = false;
-			pi->Delete();
+			Delete();
 			vendor->teleport();
 			char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 			sprintf( temp, TRANSLATE("Hello sir! My name is %s and i will be working for you."), vendor->getCurrentNameC());
-			vendor->talk(s, temp, 0);
+			vendor->talk(client, temp, 0);
 
 			return;
 			}
 	case ITYPE_TREASURE_MAP:
-			Skills::Decipher(pi, s);
+                //TODO: redo when treasures redone
+			Skills::Decipher(this, client);
 			return;
 
 	case ITYPE_DECIPHERED_MAP:
-			map1[ 1] = map2[1] = map3[1] = pi->getSerial().ser1;
-			map1[ 2] = map2[2] = map3[2] = pi->getSerial().ser2;
-			map1[ 3] = map2[3] = map3[3] = pi->getSerial().ser3;
-			map1[ 4] = map2[4] = map3[4] = pi->getSerial().ser4;
-			map1[ 7] = pi->more1;	// Assign topleft x
-			map1[ 8] = pi->more2;
-			map1[ 9] = pi->more3;	// Assign topleft y
-			map1[10] = pi->more4;
-			map1[11] = pi->moreb1;	// Assign lowright x
-			map1[12] = pi->moreb2;
-			map1[13] = pi->moreb3;	// Assign lowright y
-			map1[14] = pi->moreb4;
+                //TODO: redo when treasures redone
+			map1[ 1] = map2[1] = map3[1] = getSerial().ser1;
+			map1[ 2] = map2[2] = map3[2] = getSerial().ser2;
+			map1[ 3] = map2[3] = map3[3] = getSerial().ser3;
+			map1[ 4] = map2[4] = map3[4] = getSerial().ser4;
+			map1[ 7] = more1;	// Assign topleft x
+			map1[ 8] = more2;
+			map1[ 9] = more3;	// Assign topleft y
+			map1[10] = more4;
+			map1[11] = moreb1;	// Assign lowright x
+			map1[12] = moreb2;
+			map1[13] = moreb3;	// Assign lowright y
+			map1[14] = moreb4;
 			ShortToCharPtr(0x0100, map1 +15);			// Let width and height be 256
 			ShortToCharPtr(0x0100, map1 +17);
 			Xsend(s, map1, 19);
@@ -688,12 +852,12 @@ void cItem::doubleClick(cClient client);
 			// Generate message to add a map point
 			SI16 posx, posy;					// tempoary storage for map point
 			SI16 tlx, tly, lrx, lry;				// tempoary storage for map extends
-			tlx = (pi->more1 << 8) | pi->more2;
-			tly = (pi->more3 << 8) | pi->more4;
-			lrx = (pi->moreb1 << 8) | pi->moreb2;
-			lry = (pi->moreb3 << 8) | pi->moreb4;
-			posx = (256 * (pi->morex - tlx)) / (lrx - tlx);		// Generate location for point
-			posy = (256 * (pi->morey - tly)) / (lry - tly);
+			tlx = (more1 << 8)  | more2;
+			tly = (more3 << 8)  | more4;
+			lrx = (moreb1 << 8) | moreb2;
+			lry = (moreb3 << 8) | moreb4;
+			posx = (256 * (morex - tlx)) / (lrx - tlx);		// Generate location for point
+			posy = (256 * (morey - tly)) / (lry - tly);
 			ShortToCharPtr(posx, map3 +7);				// Store the point position
 			ShortToCharPtr(posy, map3 +9);
 			Xsend(s, map3, 11);					// Fire data to client :D
@@ -707,23 +871,25 @@ void cItem::doubleClick(cClient client);
 /////////////////READ UP :D////////////////////////////////
 
 	///BEGIN IDENTIFICATION BY ID
-	if (pi->IsSpellScroll())
+	if (IsSpellScroll())
 	{
 		if (ISVALIDPI(pack))
-			if( pi->getContSerial()==pack->getSerial32()) {
-				magic::SpellId spn = magic::spellNumberFromScrollId(pi->getId());	// avoid reactive armor glitch
+			if( getContSerial()==pack->getSerial32()) {
+				magic::SpellId spn = magic::spellNumberFromScrollId(getId());	// avoid reactive armor glitch
 				if ((spn>=0)&&(magic::beginCasting(spn, ps, magic::CASTINGTYPE_SCROLL)))
-					pi->ReduceAmount(1);							// remove scroll if successful
+					ReduceAmount(1);							// remove scroll if successful
 			}
 			else pc->sysmsg(TRANSLATE("The scroll must be in your backpack to envoke its magic."));
 	}
 	CASE(IsAnvil) {
+        //TODO: redo when targets redone
 		targ = clientInfo[s]->newTarget( new cItemTarget() );
 		targ->code_callback=Skills::target_repair;
 		targ->send( ps );
 		ps->sysmsg( TRANSLATE("Select item to be repaired."));
 	}
 	CASE(IsAxe) {
+        //TODO: redo when targets redone
 		targ = clientInfo[s]->newTarget( new cTarget() );
 		targ->code_callback=target_axe;
 		targ->buffer[0]=pi->getSerial32();
@@ -731,6 +897,7 @@ void cItem::doubleClick(cClient client);
 		ps->sysmsg( TRANSLATE("What would you like to use that on ?"));
 	}
 	CASEOR(IsFeather, IsShaft) {
+        //TODO: redo when targets redone
 		targ = clientInfo[s]->newTarget( new cItemTarget() );
 		targ->buffer[0]= pi->getSerial32();
 		targ->code_callback=Skills::target_fletching;
@@ -738,6 +905,7 @@ void cItem::doubleClick(cClient client);
 		ps->sysmsg( TRANSLATE("What would you like to use this with?"));
 	}
 	CASEOR( IsFencing1H, IsSword ) {
+        //TODO: redo when targets redone
 		targ = clientInfo[s]->newTarget( new cTarget() );
 		targ->code_callback=target_sword;
 		targ->send( ps );
@@ -846,7 +1014,7 @@ static void doubleclick_itemid( NXWSOCKET s, P_CHAR pc, P_ITEM pi, P_ITEM pack )
 		case 0x13E4:
 		case 0x0FB4:// sledge hammers
 		case 0x0FB5:
-			if (!Item_ToolWearOut(s, pi)) {
+			if (!ToolWearOut(client)) {
 				targ = clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_smith;
 				targ->send( ps );
@@ -876,7 +1044,7 @@ static void doubleclick_itemid( NXWSOCKET s, P_CHAR pc, P_ITEM pi, P_ITEM pack )
 		case 0x0E86:
 		case 0x0F39:// shovels
 		case 0x0F3A:
-			if (!Item_ToolWearOut(s, pi))
+			if (!ToolWearOut(client))
 			{
 				targ = clientInfo[s]->newTarget( new cLocationTarget() );
 				targ->code_callback=Skills::target_mine;
@@ -1220,53 +1388,50 @@ static void doubleclick_itemid( NXWSOCKET s, P_CHAR pc, P_ITEM pi, P_ITEM pack )
 
 /*!
 \brief wrap for check usability
-\author Xanathar
+\author Xanathar, update by Chronodt (2/2/2004)
 \return bool
 \param pc player trying using
-\param pi pointer to item to be used
 \param type type of usability
-\remarks Luxor - Added REQSKILL command support, three bug fix applied 
+\remarks Luxor - Added REQSKILL command support, three bug fix applied
 */
-bool checkItemUsability(pChar pc, int type)
+bool cItem::checkItemUsability(pChar pc, int type)
 {
 	g_nType = type;
-	VALIDATEPIR(pi, false);
+//	VALIDATEPIR(pi, false);
 	VALIDATEPCR(pc, false);
 
-	NXWSOCKET s = pc->getSocket();
-
-	if( !pi->isNewbie() )
+	if( !isNewbie() )
 	{
-		if ( pi->st > pc->getStrength() ) 
+		if ( st > pc->getStrength() )
 		{
 			pc->sysmsg(TRANSLATE("You are not strong enough to use that."));
 			return false;
 		}
-		if ( pi->dx > pc->dx )
+		if ( dx > pc->getDexterity() )
 		{
 			pc->sysmsg(TRANSLATE("You are not quick enough to use that."));
 			return false;
 		}
-		if ( pi->in > pc->in )
+		if ( in > pc->getIntelligence() )
 		{
 			pc->sysmsg(TRANSLATE("You are not intelligent enough to use that."));
 			return false;
 		}
 		//Luxor: REQSKILL command support
-		if (pi->reqskill[0] > 0 && pi->reqskill[1] > 0 )
+		if (reqskill[0] > 0 && reqskill[1] > 0 )
 		{
-			if (pi->reqskill[1] > pc->skill[pi->reqskill[0]]) {
+			if (reqskill[1] > skill[reqskill[0]]) {
 				pc->sysmsg(TRANSLATE("You are not skilled enough to use that."));
 				return false;
 			}
 		}
 	}
 
-	if (s >-1 && s < now) //Luxor
+	if (pc->getClient() != NULL)
 	{
-		
-		if (pi->amxevents[EVENT_IONCHECKCANUSE]==NULL) return true;
-		return (0!=pi->amxevents[EVENT_IONCHECKCANUSE]->Call(pi->getSerial32(), pc->getSerial32(), g_nType));
+
+		if (amxevents[EVENT_IONCHECKCANUSE]==NULL) return true;
+		return (0!=amxevents[EVENT_IONCHECKCANUSE]->Call(getSerial32(), pc->getSerial32(), g_nType));
 		/*
 		AmxEvent* event = pi->getAmxEvent( EVENT_IONCHECKCANUSE );
 		if ( !event ) return true;
@@ -1275,4 +1440,27 @@ bool checkItemUsability(pChar pc, int type)
 	}
 	return true;
 }
+
+/*!
+\brief apply wear out to item, delete if necessary
+\author Ripper, rewritten by Luxor
+\return bool
+\param client client of player who wear out the item
+*/
+bool cItem::ToolWearOut(pClient client)
+{
+	if (client == NULL) return false;
+	pChar pc = client->currChar();
+	VALIDATEPCR(pc, false);
+	if( chance(5) ) { // has item been destroyed ??
+		hp--;
+		if ( hp <= 0 ) {
+			pc->sysmsg("Your %s has been destroyed", getCurrentNameC());
+			Delete();
+			return true;
+		}
+	}
+	return false;
+}
+
 

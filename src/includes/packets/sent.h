@@ -336,7 +336,7 @@ public:
       	inline cPacketReceive(UI08 *buf, UI16 len) :
 		buffer(buf), length(len)
 	{ } 
-	~cPacketReceive();
+//	~cPacketReceive();
 	static pPacketReceive fromBuffer(UI08 *buffer, UI16 length);
 	inline virtual bool execute(pClient client)
 	{ }
@@ -354,5 +354,6 @@ class cPacketReceiveMoveRequest         : public cPacketReceive;
 class cPacketReceiveTalkRequest         : public cPacketReceive;
 class cPacketReceiveAttackRequest       : public cPacketReceive;
 class cPacketReceiveDoubleclick         : public cPacketReceive;
-
+class cPacketReceiveSingleclick         : public cPacketReceive;
+class cPacketReceivePickUp              : public cPacketReceive;
 #endif

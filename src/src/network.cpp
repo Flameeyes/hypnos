@@ -357,7 +357,7 @@ Updated to pyuo (Chronodt 29/1/04)
 \todo find something to replace socket number output with
 */
 
-void cNetwork::Disconnect (cClient client)              // Force disconnection of player //Instalog
+void cNetwork::Disconnect (pClient client)              // Force disconnection of player
 {
 	const char msgDisconnect[]	= "Client %i disconnected. [Total online clients: %i]\n";
 	const char msgPart[]		= "%s has left the realm";
@@ -407,10 +407,10 @@ void cNetwork::Disconnect (cClient client)              // Force disconnection o
 
 
 		}
-
+      //! \todo revise from here
 	FlushBuffer( client );
 
-  // revise from here
+
 
 	closesocket( client[ socket ] ); //so it bombs and free the mutex :]
 
