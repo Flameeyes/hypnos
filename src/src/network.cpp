@@ -476,11 +476,6 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 void cNetwork::LoginMain(int s)
 {
 	signed long int i;
-	unsigned char noaccount[2]={0x82, 0x00};
-	unsigned char acctused[2]={0x82, 0x01};
-	unsigned char acctblock[2]={0x82, 0x02};
-	unsigned char nopass[2]={0x82, 0x03};
-
 	uint32_t chrSerial;
 
 	acctno[s]=INVALID;
@@ -543,17 +538,17 @@ void cNetwork::LoginMain(int s)
 		{
 		case BAD_PASSWORD:
 			loginchars[s] = NULL;
-			Xsend(s, nopass, 2);
+			SendLoginDeniedPkt(s, 3);
 			return;
 		case ACCOUNT_BANNED:
 			loginchars[s] = NULL;
-			Xsend(s, acctblock, 2);
+			SendLoginDeniedPkt(s, 2);
 			return;
 		case LOGIN_NOT_FOUND:
 			if( !SrvParms->auto_a_create )
 			{
 				loginchars[s] = NULL;
-				Xsend(s, noaccount, 2);
+				SendLoginDeniedPkt(s, 0);
 				return;
 			} else {
 				// Auto create is enable, let's create the new account.
@@ -574,7 +569,7 @@ void cNetwork::LoginMain(int s)
 	pAccount acc = cAccount::findAccount(name);
 	if ( acc->currClient() )
 	{
-		Xsend(s, acctused, 2);
+		SendLoginDeniedPkt(s, 1);
 		//<Luxor>: Let's kick the current player
 		
 		//!\todo We actually want to kick already logged in player or not?
@@ -790,9 +785,6 @@ void cNetwork::CharList(int s) // Gameserver login and character listing
 {
 
 	int32_t i;
-	uint8_t noaccount[2]={0x82, 0x00};
-	uint8_t nopass[2]={0x82, 0x03};
-	uint8_t acctblock[2]={0x82, 0x02};
 
 	acctno[s]=-1;
 
@@ -806,19 +798,16 @@ void cNetwork::CharList(int s) // Gameserver login and character listing
 		switch(i)  //Let's check for the error message
 		{
 		case BAD_PASSWORD:
-			Xsend(s, nopass, 2);
 			loginchars[s] = NULL;
-//AoS/			Network->FlushBuffer(s);
+			SendLoginDenied(s, 3);
 			return;
 		case ACCOUNT_BANNED:
-			Xsend(s, acctblock, 2);
 			loginchars[s] = NULL;
-//AoS/			Network->FlushBuffer(s);
+			SendLoginDenied(s, 2);
 			return;
 		case LOGIN_NOT_FOUND:
-			Xsend(s, noaccount, 2);
 			loginchars[s] = NULL;
-//AoS/			Network->FlushBuffer(s);
+			SendLoginDenied(s, 0);
 			return;
 		}
 	}
@@ -915,8 +904,6 @@ void cNetwork::enterchar(int s)
 	features.send( pc->getClient() );
 
 	clientInfo[s]->ingame=true;
-
-	sLocation charpos= pc->getPosition();
 
 	Xsend(s, world, 6);
 	Network->FlushBuffer(s);

@@ -76,5 +76,6 @@ void wornitems(pClient client, pChar pc);
 void bgsound(pChar pc);
 void pweather(pClient client);
 
+void SendLoginDeniedPkt(int s, uint8_t why);
 
 #endif
