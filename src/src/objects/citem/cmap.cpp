@@ -87,7 +87,7 @@ bool cMap::toggleWritable(pClient client)		//!< Toggle pin addability and replie
 void cMap::doubleClicked(pClient client)
 {
 	if ( (flags & flagTreasure) && !(flags & flagDeciphered) ) {
-		//! \todo: redo when treasures redone
+		//! \todo redo when treasures redone
 		nSkills::Decipher(this, client);
 		return;
 	}

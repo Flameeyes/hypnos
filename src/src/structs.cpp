@@ -16,6 +16,49 @@
 #include "inlines.h"
 
 /*!
+\brief Moves a location
+\param dir Direction where to move the location
+\param paces Number of paces to move the location
+
+This function is used to calculate the direction of a movement (like in
+cBoat::step() ) from a given location.
+*/
+void sLocation::move(Direction dir, uint8_t paces)
+{
+	switch(dir)
+	{
+	case dirNorth:
+		y -= paces;
+		break;
+	case dirNorthEast:
+		x += paces;
+		y -= paces;
+		break;
+	case dirEast:
+		x += paces;
+		break;
+	case dirSouthEast:
+		x += paces;
+		y += paces;
+		break;
+	case dirSouth:
+		y += paces;
+		break;
+	case dirSouthWest:
+		x -= paces;
+		y += paces;
+		break;
+	case dirWest:
+		x -= paces;
+		break;
+	case dirNorthWest:
+		x -= paces;
+		y -= paces;
+		break;
+	}
+}
+
+/*!
 \brief Quick constructor passing an item pointer
 \param item Item to add to the container's item list
 */
@@ -55,7 +98,7 @@ sRect::sRect(sPoint a, sPoint b)
 \param p Point to check if inside the rectangle
 \return true if the point is internal, else false
 */
-bool sRect::isInside(sPoint p)
+bool sRect::isInside(sPoint p) const
 {
 	return between(p.x, ul.x, br.x) && between(p.y, ul.y, br.y);
 }

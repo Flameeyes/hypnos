@@ -27,7 +27,7 @@ std::map< uint32_t, pChar > houses;
 bool CheckBuildSite(int x, int y, int z, int sx, int sy);
 
 /*!
-\todo take a look to initialization, we could initialize the vector with the variables
+\todo Change all that... it's shitty!
 */
 void mtarget(int s, int a1, int a2, int a3, int a4, char b1, char b2, char *txt)
 {
@@ -489,84 +489,69 @@ void buildhouse( pClient ps, pTarget t )
 /*!
 \brief Turn a house into a deed if posible
 \author CrackerJack
-\param s socket of player
-\param pi pointer to the house item
+\param client client of the player
+\param pi pointer to the house
 */
-void deedhouse(pClient client, pItem pi)
+void deedhouse(pClient client, pHouse pi)
 {
-	uint32_t x1, y1, x2, y2;
 	if ( ! pi ) return;
 	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 	sLocation charpos= pc->getPosition();
 
-
-	if(pi->getOwner() == pc || pc->isGM()) // bugfix LB, was =
-	{
-		getMultiCorners(pi, x1,y1,x2,y2);
-
-		pItem pi_ii=item::CreateFromScript( pi->morex, pc->getBackpack() ); // need to make before delete
-		if ( ! pi_ii ) return;
-
-		sysmessage( s, "Demolishing House %s", pi->getCurrentName().c_str());
-		pi->Delete();
-		sysmessage(s, "Converted into a %s.", pi_ii->getCurrentName().c_str());
-		// door/sign delete
-
-		NxwCharWrapper sc;
-		sc.fillCharsNearXYZ( charpos, BUILDRANGE, true, false );
-		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-			pChar p_index=sc.getChar();
-			if( p_index ) {
-
-				sLocation charpos2= p_index->getPosition();
-				if( (charpos2.x >= (uint32_t)x1) && (charpos2.y >= (uint32_t)y1) && (charpos2.x <= (uint32_t)x2) && (charpos2.y <= (uint32_t)y2) )
-				{
-
-					if( p_index->npcaitype == NPCAI_PLAYERVENDOR )
-					{
-						char *temp;
-						asprintf( &temp, "A vendor deed for %s", p_index->getCurrentName().c_str() );
-						pItem pDeed = item::CreateFromScript( "$item_employment_deed", pc->getBackpack() );
-						if ( ! pDeed ) return;
-						free(temp);
-
-						pDeed->Refresh();
-						p_index->Delete();
-						sysmessage(s, "Packed up vendor %s.", p_index->getCurrentName().c_str());
-					}
-				}
-			}
-		}
-
-		NxwItemWrapper si;
-		si.fillItemsNearXYZ( charpos, BUILDRANGE, false );
-		for( si.rewind(); !si.isEmpty(); si++ ) {
-		{
-			pItem p_item=si.getItem();
-			if( p_item ) {
-				if( (p_item->getPosition().x >= (uint32_t)x1) &&
-					(p_item->getPosition().x <= (uint32_t)x2) &&
-					(p_item->getPosition().y >= (uint32_t)y1) &&
-					(p_item->getPosition().y <= (uint32_t)y2) )
-					{
-							p_item->Delete();
-					}
-				}
-			}
-		}
-
-		killkeys( pi->getSerial() );
-		sysmessage(s,"All house items and keys removed.");
-		/*
-		charpos.z= charpos.dispz= Map->MapElevation(charpos.x, charpos.y);
-		pc->setPosition( charpos );
-		*/
-		pc->setPosition("z", mapElevation(charpos.x, charpos.y));
-		pc->setPosition("dz", mapElevation(charpos.x, charpos.y));
-		pc->teleport();
+	if ( pi->getOwner() != pc && ! pc->isGM() )
 		return;
+
+	pItem pi_ii=item::CreateFromScript( pi->morex, pc->getBackpack() ); // need to make before delete
+	if ( ! pi_ii ) return;
+
+	sysmessage( s, "Demolishing House %s", pi->getCurrentName().c_str());
+	pi->Delete();
+	sysmessage(s, "Converted into a %s.", pi_ii->getCurrentName().c_str());
+	// door/sign delete
+
+	NxwCharWrapper sc;
+	sc.fillCharsNearXYZ( charpos, BUILDRANGE, true, false );
+	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
+		pChar p_index=sc.getChar();
+		
+		if (	! p_index ||
+			! pi->getArea().isInside( p_index->getPosition() ) ||
+			p_index->npcaitype != NPCAI_PLAYERVENDOR
+			)
+				continue;
+		
+		pItem deed = item::CreateFromScript( "$item_employment_deed", pc->getBackpack() );
+		if ( ! deed ) return;
+		deed->setCurrentName("A vendor deed for %s", p_index->getCurrentName().c_str());
+
+		deed->Refresh();
+		p_index->Delete();
+		client->sysmessage("Packed up vendor %s.", p_index->getCurrentName().c_str());
 	}
+
+	//!\todo This should be changed inside pHouse (when done)
+	NxwItemWrapper si;
+	si.fillItemsNearXYZ( charpos, BUILDRANGE, false );
+	for( si.rewind(); !si.isEmpty(); si++ ) {
+	{
+		pItem p_item=si.getItem();
+		if ( ! p_item || ! pi->getArea().isInside( p_index->getPosition() ) )
+			continue;
+		
+		p_item->Delete();
+	}
+
+	killkeys( pi->getSerial() );
+	sysmessage(s,"All house items and keys removed.");
+	/*
+	charpos.z= charpos.dispz= Map->MapElevation(charpos.x, charpos.y);
+	pc->setPosition( charpos );
+	*/
+	pc->setPosition("z", mapElevation(charpos.x, charpos.y));
+	pc->setPosition("dz", mapElevation(charpos.x, charpos.y));
+	pc->teleport();
+	return;
 }
 
 // removes houses - without regions. slow but necassairy for house decay
@@ -737,43 +722,35 @@ int on_hlist(pItem pi, uint32_t serial, int *li)
 \param t list tyle
 \return 1 if successful addition, 2 if the char was alredy on a house list, 3 if the character is not on property
 */
-int add_hlist(pChar pc, pItem pi_h, int t)
+int add_hlist(pChar pc, pHouse pi_h, int t)
 {
-	uint32_t sx, sy, ex, ey;
-
 	if ( ! pc || ! pi_h ) return 3;
 
 	if(on_hlist(pi_h, pc->getSerial(), NULL))
 		return 2;
 
-	getMultiCorners(pi_h, sx,sy,ex,ey);
 	// Make an object with the character's serial & the list type
 	// and put it "inside" the house item.
 	sLocation charpos= pc->getPosition();
 
-	if((charpos.x >= (uint32_t)sx) && (charpos.y >= (uint32_t)sy) && (charpos.x <= (uint32_t)ex) && (charpos.y <= (uint32_t)ey))
-	{
-		pItem pi = new cItem(cItem::nextSerial());
+	if ( ! pi_h->getArea().isInside(pc->getPosition()) )
+		return 3;
+	
+	pItem pi = new cItem(cItem::nextSerial());
 
-		pi->morex= t;
-		pi->more = pc->getSerial();
-		pi->morey= pi_h->getSerial();
+	pi->morex= t;
+	pi->more = pc->getSerial();
+	pi->morey= pi_h->getSerial();
 
-		pi->setDecay( false );
-		pi->setNewbie( false );
-		pi->setDispellable( false );
-		pi->visible= 0;
-		pi->setCurrentName("friend of house");
+	pi->setDecay( false );
+	pi->setNewbie( false );
+	pi->setDispellable( false );
+	pi->visible= 0;
+	pi->setCurrentName("friend of house");
 
-		pi->setPosition( pi_h->getPosition() );
-#ifdef SPAR_I_LOCATION_MAP
-		pointers::addToLocationMap(pi);
-#else
-		mapRegions->add(pi);
-#endif
-		return 1;
-	}
-	return 3;
+	pi->setPosition( pi_h->getPosition() );
+	pointers::addToLocationMap(pi);
+	return 1;
 }
 
 /*!
@@ -979,23 +956,18 @@ void target_houseEject( pClient ps, pTarget t )
 {
 	pChar pc = cSerializable::findCharBySerial(t->getClicked());
 	if ( ! pc ) return;
-	pItem pi_h=MAKE_ITEM_REF(t->buffer[0]);
-	if ( ! pi_h ) return;
+	pHouse ph = dynamic_cast<pHouse>( cSerializable::findBySerial(t->buffer[0]) );
+	if ( ! ph ) return;
 
-	pClient client =ps->toInt();
-
-	sLocation pcpos= pc->getPosition();
-
-	uint32_t sx, sy, ex, ey;
-	getMultiCorners(pi_h, sx,sy,ex,ey);
-	if((pcpos.x>=(uint32_t)sx) && (pcpos.y>=(uint32_t)sy) && (pcpos.x<=(uint32_t)ex) && (pcpos.y<=(uint32_t)ey))
+	if ( ! pi_h->getArea().isInside(pc->getPosition()) )
 	{
-		pc->MoveTo( ex, ey, pcpos.z );
-		pc->teleport();
-		sysmessage(s, "Player ejected.");
-	} else
-		sysmessage(s, "That is not inside the house.");
-
+		client->sysmessage("That is not inside the house.");
+		return;
+	}
+	
+	pc->MoveTo( ex+1, ey+1, pcpos.z );
+	pc->teleport();
+	sysmessage(s, "Player ejected.");
 }
 
 //buffer[0] house

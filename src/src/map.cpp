@@ -449,26 +449,3 @@ int8_t getHeight( sLocation pos )
 
 	return final_z;
 }
-
-/*!
-\author Luxor
-*/
-void getMultiCorners( pItem pi, uint32_t &x1, uint32_t &y1, uint32_t &x2, uint32_t &y2 )
-{
-	if ( !pi ) return;
-
-	multiVector m;
-	data::seekMulti( pi->getId() - 0x4000, m );
-	for( uint32_t i = 0; i < m.size(); i++ ) {
-		x1 = qmin( x1, m[i].x );
-		x2 = qmax( x2, m[i].x );
-		y1 = qmin( y1, m[i].y );
-		y2 = qmax( y2, m[i].y );
-	}
-
-	x1 += pi->getPosition().x;
-	x2 += pi->getPosition().x;
-	y1 += pi->getPosition().y;
-	y1 += pi->getPosition().y;
-}
-

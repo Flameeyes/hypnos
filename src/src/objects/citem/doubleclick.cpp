@@ -199,9 +199,6 @@ static void doubleclick_itemid( pClient client, pChar pc, pItem pi, pContainer p
 \note pItem pi removed since merging with cItem, so the macro has been changed too (1/2/2004)
 \todo review when sets redone
 \todo los
-
-\todo URGENT! Split the function in two: one will check the double click if is correct, and then a virtual one
-	who inherit the switch, so the new cClass can simply have their doubleClicked(pClient) function to call
 */
 void cItem::doubleClick(pClient client)
 {
@@ -244,16 +241,10 @@ void cItem::doubleClick(pClient client)
 	}
 
 
-//<Anthalir> VARIAIBLI
-
-	tile_st item;
-
 	pContainer pack = pc->getBackpack();
 	if(!pack) return;
-
-
+	tile_st item;
 	data::seekTile( getId(), item );
-//////FINEVARIABILI
 
 
 	//<Luxor>: Circle of transparency bug fix
@@ -265,7 +256,8 @@ void cItem::doubleClick(pClient client)
 	if(cont->isInWorld()) {
 		dst = cont->getPosition();
 	} else {
-		pChar pg_dst = cSerializable::findCharBySerial( cont->getContSerial() );  //!\todo: verify if doing a getContSerial to a body returns a char
+		pChar pg_dst = cSerializable::findCharBySerial( cont->getContSerial() );
+		//!\todo verify if doing a getContSerial to a body returns a char
 		if(!pg_dist) return;
 
 		dst = pg_dst->getPosition();
@@ -364,7 +356,7 @@ void cItem::doubleClick(pClient client)
 		pc->envokeitem = getSerial();
 		pc->envokeid = getId();
 
-                //TODO: REVISE WHEN TARGETS REDONE!!
+                //! \todo REVISE WHEN TARGETS REDONE!!
 
 		pTarget targ = clientInfo[s]->newTarget( new cObjectTarget() );
 		targ->code_callback=target_envoke;
@@ -433,11 +425,11 @@ void cItem::doubleClicked(pClient client)
 			}
 		}
 		if( itmowner )
-			snooping(pc, pi );  //!\todo: revise when snooping redone or updated
+			snooping(pc, pi );  //!\todo revise when snooping redone or updated
 		return;
 	case ITYPE_TELEPORTRUNE:
 
-        //!\todo: REVISE WHEN TARGETS REDONE!!
+        //!\todo REVISE WHEN TARGETS REDONE!!
 
 		targ = clientInfo[s]->newTarget( new cLocationTarget() );
 		targ->code_callback = target_tele;
@@ -446,7 +438,7 @@ void cItem::doubleClicked(pClient client)
 		return;
 	case ITYPE_KEY:
 
-        //!\todo: REVISE WHEN TARGETS REDONE!!
+        //!\todo REVISE WHEN TARGETS REDONE!!
 
 		targ = clientInfo[s]->newTarget( new cItemTarget() );
 		targ->code_callback = target_key;
@@ -464,9 +456,9 @@ void cItem::doubleClicked(pClient client)
 		// Wintermute: GMs or Counselors should be able to open locked containers always
 		if ( !pc->IsGMorCounselor() )
 		{
-			if (moreb1 > 0 ) {
-				magic::castAreaAttackSpell(getPosition().x, getPosition().y, magic::SPELL_EXPLOSION);
-				>moreb1--;
+			if (more2.moreb1 > 0 ) {
+				magic::castAreaAttackSpell(getPosition(), magic::SPELL_EXPLOSION);
+				more2.moreb1--;
 			}
 
 			client->sysmessage("This item is locked.");
@@ -485,12 +477,12 @@ void cItem::doubleClicked(pClient client)
 				client->sysmessage("If you wish to open a spellbook, it must be equipped or in your main backpack.");
 			return;
 	case ITYPE_BLANK_MAP:
-    		  //TODO check if pc has a pen to write maps with
+    		  //! \todo check if pc has a pen to write maps with
                 //! \todo map writing code
 		return;
 	case ITYPE_DOOR:
 
-//TODO: redo when houses updated
+//! \todo redo when houses updated
 
 		dooruse(s, pi);
 		return;
@@ -498,14 +490,14 @@ void cItem::doubleClicked(pClient client)
 		// Wintermute: GMs or Counselors should be able to open locked doors always
 		if ( pc->IsGMorCounselor())
  		{
-                //TODO: redo when houses updated
+                //! \todo redo when houses updated
  			dooruse(s, pi);
  			return;
  		}
 
 		if (pack)
 		{
-                //TODO: redo when sets updated
+                //! \todo redo when sets updated
 			NxwItemWrapper si;
 			si.fillItemsInContainer( pack );
 			for( si.rewind(); !si.isEmpty(); si++ )
@@ -516,7 +508,7 @@ void cItem::doubleClicked(pClient client)
 					{
 						client->sysmessage("You quickly unlock, use, and then relock the door.");
 
-                                        //TODO: redo when houses updated
+                                        //! \todo redo when houses updated
 
 						dooruse(s, pi);
 						return;
@@ -598,7 +590,7 @@ void cItem::doubleClicked(pClient client)
 				pc->drink(this);   //Luxor: delayed potions drinking
 			else    //explosion potion
 
-                        //TODO: revise this
+                        //! \todo revise this
 				usepotion(pc, pi);
 			return;
 	case ITYPE_RUNE:
@@ -623,20 +615,20 @@ void cItem::doubleClicked(pClient client)
 			return;
 	case ITYPE_POLYMORPH:
 
-        //TODO: redo when polymorph redone, with cbody class use
+        //! \todo redo when polymorph redone, with cbody class use
 			pc->setId( morex );
 			pc->teleport();
 			pi->type = ITYPE_POLYMORPH_BACK;
 			return;
 	case ITYPE_POLYMORPH_BACK:
-        //TODO: redo when polymorph redone, with cbody class use
+        //! \todo redo when polymorph redone, with cbody class use
 			pc->setId( pc->getOldId() );
 			pc->teleport();
 			type = ITYPE_POLYMORPH;
 			return;
 	case ITYPE_ARMY_ENLIST:
 
-        //TODO: redo this
+        //! \todo redo this
 			enlist(s, morex);
 			Delete();
 			return;
@@ -655,12 +647,12 @@ void cItem::doubleClicked(pClient client)
 			return;
 	case ITYPE_GUILDSTONE:
 
-                //!\todo: redo when guilds fixed
+                //!\todo redo when guilds fixed
 #if 0
 			if ( getId() == 0x14F0  ||  getId() == 0x1869 )	// Check for Deed/Teleporter + Guild Type
 			{
-				pc->fx1 = pi->getSerial();   //!\todo: <- check this
-				Guilds->StonePlacement(s);    //!\todo: <- and this
+				pc->fx1 = pi->getSerial();   //!\todo <- check this
+				Guilds->StonePlacement(s);    //!\todo <- and this
 				return;
 			}
 			else if (getId() == 0x0ED5)	// Check for Guildstone + Guild Type
@@ -721,14 +713,15 @@ void cItem::doubleClicked(pClient client)
 			else client->sysmessage("The scroll must be in your backpack to envoke its magic.");
 	}
 	CASE(IsAnvil) {
-        //TODO: redo when targets redone
+        //! \todo redo when targets redone
 		targ = clientInfo[s]->newTarget( new cItemTarget() );
 		targ->code_callback=Skills::target_repair;
 		targ->send( client );
 		client->sysmessage("Select item to be repaired.");
 	}
 	CASE(IsAxe) {
-        //TODO: redo when targets redone
+	//! \todo move it to cWeapon
+        //! \todo redo when targets redone
 		targ = clientInfo[s]->newTarget( new cTarget() );
 		targ->code_callback=target_axe;
 		targ->buffer[0]=pi->getSerial();
@@ -736,7 +729,7 @@ void cItem::doubleClicked(pClient client)
 		client->sysmessage("What would you like to use that on ?");
 	}
 	CASEOR(IsFeather, IsShaft) {
-        //TODO: redo when targets redone
+        //! \todo redo when targets redone
 		targ = clientInfo[s]->newTarget( new cItemTarget() );
 		targ->buffer[0]= pi->getSerial();
 		targ->code_callback=Skills::target_fletching;
@@ -744,18 +737,16 @@ void cItem::doubleClicked(pClient client)
 		client->sysmessage("What would you like to use this with?");
 	}
 	CASEOR( IsFencing1H, IsSword ) {
-        //TODO: redo when targets redone
+	//! \todo move it to cWeapon
+        //! \todo redo when targets redone
 		targ = clientInfo[s]->newTarget( new cTarget() );
 		targ->code_callback=target_sword;
 		targ->send( client );
 		client->sysmessage("What would you like to use that on ?");
 	}
-	else ///BEGIN IDENTIFICATION BY ID ( RAW MODE, DEPRECATED )
-		doubleclick_itemid( client, pc, pi, pack );
 }
 
-
-//TODO revise from here
+//! \todo revise from here
 
 void target_selectdyevat( pClient client, pTarget t )
 {
@@ -1253,8 +1244,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 
 /*!
 \brief wrap for check usability
-\author Xanathar, update by Chronodt (2/2/2004)
-\return bool
+\author Chronodt
 \param pc player trying using
 \param type type of usability
 \remarks Luxor - Added REQSKILL command support, three bug fix applied
@@ -1312,7 +1302,6 @@ bool cItem::checkItemUsability(pChar pc, int type)
 /*!
 \brief apply wear out to item, delete if necessary
 \author Ripper, rewritten by Luxor
-\return bool
 \param client client of player who wear out the item
 */
 bool cItem::ToolWearOut(pClient client)

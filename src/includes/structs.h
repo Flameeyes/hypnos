@@ -38,7 +38,7 @@ struct sRect {
 	sRect(sPoint a, sPoint b);
 	sRect(uint16_t ulx, uint16_t uly, uint16_t brx, uint16_t bry)
 	{ sRect(sPoint(ulx, uly), sPoint(brx, bry)); }
-	bool isInside(sPoint p);
+	bool isInside(sPoint p) const;
 };
 
 //! Represent a location on one map
@@ -92,6 +92,8 @@ struct sLocation {
 	//! Converts a location (x,y,z) into a point (x,y)
 	inline operator sPoint() const
 	{ return sPoint(x, y); }
+	
+	void move(Direction dir, uint8_t paces);
 };
 
 /*!

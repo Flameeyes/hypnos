@@ -23,7 +23,6 @@
 \brief Checks if the Char is allowed to move at all (not frozen, overloaded...)
 \author Duke
 \param pc ptr to the car
-\param sequence walksequence
 \return true if the walk is allowed
 */
 bool WalkHandleAllowance(pChar pc, int sequence)
@@ -629,9 +628,6 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 	}
 }
 
-
-//namespace walking {
-
 /*!
 \author Luxor
 */
@@ -806,8 +802,3 @@ void sendToPlayers( pChar pc, int8_t dir )
                 ps_i->sendPacket(&pk);
 	}
 }
-
-
-
-
-//} //namespace walking

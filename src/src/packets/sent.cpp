@@ -1636,7 +1636,7 @@ bool nPackets::Received::CreateChar::execute(pClient client)
 
 
 	newbieitems(pc);
-	client->startchar(); //!\todo: move startchar from network to cClient
+	client->startchar(); //!\todo move startchar from network to cClient
 	//clientInfo[s]->ingame=true;
 	return true;
 }
@@ -2690,7 +2690,7 @@ bool nPackets::Received::BookUpdateTitle::execute(pClient client)
 bool nPackets::Received::DyeItem::execute(pClient client)
 {
 	if (length != 9) return false;
-	//!\todo: moving dyeitem from commands to cclient??
+	//!\todo moving dyeitem from commands to cclient??
 	Commands::DyeItem(client);
 	return true;
 }

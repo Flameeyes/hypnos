@@ -44,7 +44,6 @@ int8_t tileHeight( uint16_t id );
 int8_t mapElevation( uint32_t x, uint32_t y );
 int8_t dynamicElevation( sLocation pos );
 int8_t getHeight( sLocation pos );
-void getMultiCorners( pItem pi, uint32_t &x1, uint32_t &y1, uint32_t &x2, uint32_t &y2 );
 
 inline int32_t line_of_sight( int32_t s, sLocation a, sLocation b, int32_t checkfor )
 { return lineOfSight( a, b ); }
