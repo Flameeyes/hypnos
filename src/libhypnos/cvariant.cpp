@@ -16,11 +16,11 @@ namespace nLibhypnos {
 //! Inline function to recalc the uint size
 inline void cVariant::recalcUIntSize(const uint64_t &val)
 {
-	if ( val > maxU32 )
+	if ( val > UINT32_MAX )
 		integerSize = is64;
-	else if ( val > maxU16 )
+	else if ( val > UINT16_MAX )
 		integerSize = is32;
-	else if ( val > maxU8 )
+	else if ( val > UINT8_MAX )
 		integerSize = is16;
 	else
 		integerSize = is8;
@@ -29,11 +29,11 @@ inline void cVariant::recalcUIntSize(const uint64_t &val)
 //! Inline function to recalc the sint size
 inline void cVariant::recalcSIntSize(const int64_t &val)
 {
-	if ( val > maxS32 || val < minS32 )
+	if ( val > INT32_MAX || val < INT32_MIN )
 		integerSize = is64;
-	else if ( val > maxS16 || val < minS16 )
+	else if ( val > INT16_MAX || val < INT16_MIN )
 		integerSize = is32;
-	else if ( val > maxS8 || val < minS8 )
+	else if ( val > INT8_MAX || val < INT8_MIN )
 		integerSize = is16;
 	else
 		integerSize = is8;
@@ -292,7 +292,7 @@ cVariant cVariant::operator -() const
 	switch(assignedType)
 	{
 	case vtUInt:
-		if ( uint64_t(*this) > maxS64 )
+		if ( uint64_t(*this) > INT64_MAX )
 			return cVariant();
 		
 		return cVariant(-uint64_t(*this));
@@ -776,7 +776,7 @@ uint32_t cVariant::toUInt32(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( result && *(reinterpret_cast<uint64_t*>(pointer)) > maxU32 )
+			if ( result && *(reinterpret_cast<uint64_t*>(pointer)) > UINT32_MAX )
 				*result = false;
 			else
 				*result = true;
@@ -797,7 +797,7 @@ uint32_t cVariant::toUInt32(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > maxU32 )
+			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > UINT32_MAX )
 				*result = false;
 			else
 				*result = true;
@@ -834,7 +834,7 @@ uint16_t cVariant::toUInt16(bool *result) const
 			return 0;
 		}
 		
-		if ( result && tmp > maxU16 )
+		if ( result && tmp > UINT16_MAX )
 			*result = false;
 		else
 			*result = true;
@@ -844,13 +844,13 @@ uint16_t cVariant::toUInt16(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( result && *(reinterpret_cast<uint64_t*>(pointer)) > maxU16 )
+			if ( result && *(reinterpret_cast<uint64_t*>(pointer)) > UINT16_MAX )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<uint64_t*>(pointer)) & 0xFFFF;
 		case is32:
-			if ( result && *(reinterpret_cast<uint32_t*>(pointer)) > maxU16 )
+			if ( result && *(reinterpret_cast<uint32_t*>(pointer)) > UINT16_MAX )
 				*result = false;
 			else
 				*result = true;
@@ -868,13 +868,13 @@ uint16_t cVariant::toUInt16(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > maxU16 )
+			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > UINT16_MAX )
 				*result = false;
 			else
 				*result = true;
 			return abs(*(reinterpret_cast<int64_t*>(pointer))) & 0xFFFF;
 		case is32:
-			if ( result && *(reinterpret_cast<int32_t*>(pointer)) > maxU16 )
+			if ( result && *(reinterpret_cast<int32_t*>(pointer)) > UINT16_MAX )
 				*result = false;
 			else
 				*result = true;
@@ -908,7 +908,7 @@ uint8_t cVariant::toUInt8(bool *result) const
 			return 0;
 		}
 		
-		if ( result && tmp > maxU8 )
+		if ( result && tmp > UINT8_MAX )
 			*result = false;
 		else
 			*result = true;
@@ -918,19 +918,19 @@ uint8_t cVariant::toUInt8(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( result && *(reinterpret_cast<uint64_t*>(pointer)) > maxU8 )
+			if ( result && *(reinterpret_cast<uint64_t*>(pointer)) > UINT8_MAX )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<uint64_t*>(pointer)) & 0xFF;
 		case is32:
-			if ( result && *(reinterpret_cast<uint32_t*>(pointer)) > maxU8 )
+			if ( result && *(reinterpret_cast<uint32_t*>(pointer)) > UINT8_MAX )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<uint32_t*>(pointer)) & 0xFF;
 		case is16:
-			if ( result && *(reinterpret_cast<uint16_t*>(pointer)) > maxU8 )
+			if ( result && *(reinterpret_cast<uint16_t*>(pointer)) > UINT8_MAX )
 				*result = false;
 			else
 				*result = true;
@@ -945,19 +945,19 @@ uint8_t cVariant::toUInt8(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > maxU8 )
+			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > UINT8_MAX )
 				*result = false;
 			else
 				*result = true;
 			return abs(*(reinterpret_cast<int64_t*>(pointer))) & 0xFF;
 		case is32:
-			if ( result && *(reinterpret_cast<int32_t*>(pointer)) > maxU8 )
+			if ( result && *(reinterpret_cast<int32_t*>(pointer)) > UINT8_MAX )
 				*result = false;
 			else
 				*result = true;
 			return abs(*(reinterpret_cast<int32_t*>(pointer))) & 0xFF;
 		case is16:
-			if ( result && *(reinterpret_cast<int16_t*>(pointer)) > maxU8 )
+			if ( result && *(reinterpret_cast<int16_t*>(pointer)) > UINT8_MAX )
 				*result = false;
 			else
 				*result = true;
@@ -1012,7 +1012,7 @@ int64_t cVariant::toSInt64(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( *(reinterpret_cast<uint64_t*>(pointer)) > maxS64 )
+			if ( *(reinterpret_cast<uint64_t*>(pointer)) > INT64_MAX )
 				*result = false;
 			else
 				*result = true;
@@ -1055,7 +1055,7 @@ int32_t cVariant::toSInt32(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > maxS32 || *(reinterpret_cast<int64_t*>(pointer)) < minS32 )
+			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > INT32_MAX || *(reinterpret_cast<int64_t*>(pointer)) < INT32_MIN )
 				*result = false;
 			else
 				*result = true;
@@ -1076,13 +1076,13 @@ int32_t cVariant::toSInt32(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( *(reinterpret_cast<uint64_t*>(pointer)) > maxS32 )
+			if ( *(reinterpret_cast<uint64_t*>(pointer)) > INT32_MAX )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<uint64_t*>(pointer)) & 0x7FFFFFFF;
 		case is32:
-			if ( *(reinterpret_cast<uint32_t*>(pointer)) > maxS32 )
+			if ( *(reinterpret_cast<uint32_t*>(pointer)) > INT32_MAX )
 				*result = false;
 			else
 				*result = true;
@@ -1122,13 +1122,13 @@ int16_t cVariant::toSInt16(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > maxS16 || *(reinterpret_cast<int64_t*>(pointer)) < minS16 )
+			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > INT16_MAX || *(reinterpret_cast<int64_t*>(pointer)) < INT16_MIN )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<int64_t*>(pointer)) & 0x7FFF;
 		case is32:
-			if ( result && *(reinterpret_cast<int32_t*>(pointer)) > maxS16 || *(reinterpret_cast<int64_t*>(pointer)) < minS16 )
+			if ( result && *(reinterpret_cast<int32_t*>(pointer)) > INT16_MAX || *(reinterpret_cast<int64_t*>(pointer)) < INT16_MIN )
 				*result = false;
 			else
 				*result = true;
@@ -1146,19 +1146,19 @@ int16_t cVariant::toSInt16(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( *(reinterpret_cast<uint64_t*>(pointer)) > maxS16 )
+			if ( *(reinterpret_cast<uint64_t*>(pointer)) > INT16_MAX )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<uint64_t*>(pointer)) & 0x7FFF;
 		case is32:
-			if ( *(reinterpret_cast<uint32_t*>(pointer)) > maxS16 )
+			if ( *(reinterpret_cast<uint32_t*>(pointer)) > INT16_MAX )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<uint32_t*>(pointer)) & 0x7FFF;
 		case is16:
-			if ( *(reinterpret_cast<uint16_t*>(pointer)) > maxS16 )
+			if ( *(reinterpret_cast<uint16_t*>(pointer)) > INT16_MAX )
 				*result = false;
 			else
 				*result = true;
@@ -1196,19 +1196,19 @@ int8_t cVariant::toSInt8(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > maxS8 || *(reinterpret_cast<int64_t*>(pointer)) < minS8 )
+			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > INT8_MAX || *(reinterpret_cast<int64_t*>(pointer)) < INT8_MIN )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<int64_t*>(pointer)) & 0xFFFF;
 		case is32:
-			if ( result && *(reinterpret_cast<int32_t*>(pointer)) > maxS8 || *(reinterpret_cast<int64_t*>(pointer)) < minS8 )
+			if ( result && *(reinterpret_cast<int32_t*>(pointer)) > INT8_MAX || *(reinterpret_cast<int64_t*>(pointer)) < INT8_MIN )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<int32_t*>(pointer)) & 0xFFFF;
 		case is16:
-			if ( result && *(reinterpret_cast<int16_t*>(pointer)) > maxS8 || *(reinterpret_cast<int16_t*>(pointer)) < minS8 )
+			if ( result && *(reinterpret_cast<int16_t*>(pointer)) > INT8_MAX || *(reinterpret_cast<int16_t*>(pointer)) < INT8_MIN )
 				*result = false;
 			else
 				*result = true;
@@ -1223,25 +1223,25 @@ int8_t cVariant::toSInt8(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( *(reinterpret_cast<uint64_t*>(pointer)) > maxS8 )
+			if ( *(reinterpret_cast<uint64_t*>(pointer)) > INT8_MAX )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<uint64_t*>(pointer)) & 0x7F;
 		case is32:
-			if ( *(reinterpret_cast<uint32_t*>(pointer)) > maxS8 )
+			if ( *(reinterpret_cast<uint32_t*>(pointer)) > INT8_MAX )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<uint32_t*>(pointer)) & 0x7F;
 		case is16:
-			if ( *(reinterpret_cast<uint16_t*>(pointer)) > maxS8 )
+			if ( *(reinterpret_cast<uint16_t*>(pointer)) > INT8_MAX )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<uint16_t*>(pointer)) & 0x7F;
 		case is8:
-			if ( *(reinterpret_cast<uint8_t*>(pointer)) > maxS8 )
+			if ( *(reinterpret_cast<uint8_t*>(pointer)) > INT8_MAX )
 				*result = false;
 			else
 				*result = true;

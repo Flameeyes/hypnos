@@ -100,36 +100,60 @@ struct sRect {
 # endif
 #endif
 
-#ifdef UINT64_MAX // take this as its defined with every else..
-	static const uint8_t maxU8 = UINT8_MAX;
-	static const uint16_t maxU16 = UINT16_MAX;
-	static const uint32_t maxU32 = UINT32_MAX;
-	static const uint64_t maxU64 = UINT64_MAX;
-	
-	static const int8_t minS8 = INT8_MIN;
-	static const int16_t minS16 = INT16_MIN;
-	static const int32_t minS32 = INT32_MIN;
-	static const int64_t minS64 = INT64_MIN;
-	
-	static const int8_t maxS8 = INT8_MAX;
-	static const int16_t maxS16 = INT16_MAX;
-	static const int32_t maxS32 = INT32_MAX;
-	static const int64_t maxS64 = INT64_MAX;
-#else // if we don't have the defines, we define it manually
-	static const uint8_t maxU8 = 255;
-	static const uint16_t maxU16 = 65535;
-	static const uint32_t maxU32 = 4294967295U;
-	static const uint64_t maxU64 = (__UINT64_C(18446744073709551615));
-	
-	static const int8_t minS8 = -128;
-	static const int16_t minS16 = -32768;
-	static const int32_t minS32 = -(-2147483647-1);
-	static const int64_t minS64 = (-__INT64_C(9223372036854775807)-1);
-	
-	static const int8_t maxS8 = 127;
-	static const int16_t maxS16 = 32767;
-	static const int32_t maxS32 = 2147483647ll;
-	static const int64_t maxS64 = (__INT64_C(9223372036854775807));
+// Default headers from solaris clash with GNU handling of 64-bits.
+// So we simply remove them.
+#if defined sun && defined __GNUC__
+# undef UINT64_MAX
+# undef INT64_MAX
+# undef INT64_MIN
+#endif
+
+#ifndef UINT64_MAX
+# define UINT64_MAX (__UINT64_C(18446744073709551615))
+#endif
+
+#ifndef UINT32_MAX
+# define UINT32_MAX 4294967295U
+#endif
+
+#ifndef UINT16_MAX
+# define UINT16_MAX 65535
+#endif
+
+#ifndef UINT8_MAX
+# define UINT8_MAX 255
+#endif
+
+#ifndef INT64_MAX
+# define INT64_MAX (__INT64_C(9223372036854775807))
+#endif
+
+#ifndef INT32_MAX
+# define INT32_MAX 2147483647ll
+#endif
+
+#ifndef INT16_MAX
+# define INT16_MAX 632767
+#endif
+
+#ifndef INT8_MAX
+# define INT8_MAX 127
+#endif
+
+#ifndef INT64_MIN
+# define INT64_MIN (__INT64_C(9223372036854775807))
+#endif
+
+#ifndef INT32_MIN
+# define INT32_MIN -(-2147483647-1)
+#endif
+
+#ifndef INT16_MIN
+# define INT16_MIN 632768
+#endif
+
+#ifndef INT8_MIN
+# define INT8_MIN -128
 #endif
 
 #endif

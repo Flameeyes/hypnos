@@ -102,7 +102,7 @@ cScheduler::cScheduler()
 		return;
 	}
 	
-	minInterval = maxU32;
+	minInterval = UINT32_MAX;
 	try {
 		MXML::Document doc(xmlfile);
 		
