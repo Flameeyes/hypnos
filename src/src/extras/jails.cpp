@@ -8,7 +8,7 @@
 
 #include "extras/jails.h"
 #include "objects/cpc.h"
-#include "objects/cclient.h"
+#include "networking/cclient.h"
 #include "objects/caccount.h"
 #include "objects/cbody.h"
 #include "libhypnos/cvariant.h"

@@ -7,7 +7,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "objects/cparty.h"
-#include "objects/cclient.h"
+#include "networking/cclient.h"
 #include "objects/cpc.h"
 #include "networking/sent.h"
 

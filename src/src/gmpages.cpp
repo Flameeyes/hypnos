@@ -13,7 +13,7 @@
 #include "gmpages.h"
 #include "common_libs.h"
 #include "objects/cchar.h"
-#include "objects/cclient.h"
+#include "networking/cclient.h"
 #include "objects/cpc.h"
 #include "objects/caccount.h"
 

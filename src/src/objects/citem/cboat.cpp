@@ -7,7 +7,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "objects/citem/cboat.h"
-#include "objects/cclient.h"
+#include "networking/cclient.h"
 #include "misc.h"
 
 /*!

@@ -9,7 +9,7 @@
 #ifndef __OBJECTS_CSOCKET_H__
 #define __OBJECTS_CSOCKET_H__
 
-#include "objects/cclient.h"
+#include "networking/cclient.h"
 
 //just c&p from network.cpp
 static int m_packetLen[256] =

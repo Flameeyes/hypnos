@@ -14,7 +14,7 @@
 #include "objects/cchar.h"
 #include "objects/cnpc.h"
 #include "objects/cpc.h"
-#include "objects/cclient.h"
+#include "networking/cclient.h"
 #include "objects/citem/cweapon.h"
 #include "common_libs.h"
 #include "tmpeff.h"

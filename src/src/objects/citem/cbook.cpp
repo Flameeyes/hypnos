@@ -10,7 +10,7 @@
 \brief Implementation of cBook Class
 */
 #include "objects/citem/cbook.h"
-#include "objects/cclient.h"
+#include "networking/cclient.h"
 #include "networking/sent.h"
 
 //! Base constructor

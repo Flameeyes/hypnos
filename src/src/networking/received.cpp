@@ -17,7 +17,7 @@
 #include "objects/cchar.h"
 #include "objects/cpc.h"
 #include "objects/cbody.h"
-#include "objects/cclient.h"
+#include "networking/cclient.h"
 #include "objects/citem/cbook.h"
 #include "objects/citem/cmap.h"
 #include "extras/motd.h"

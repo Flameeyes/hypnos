@@ -13,4 +13,5 @@ hypnos_SOURCES = area.cpp calendar.cpp console.cpp data.cpp effects.cpp\
 	targeting.cpp telport.cpp timing.cpp tmpeff.cpp trade.cpp walking.cpp\
 	worldmain.cpp
 
-SUBDIRS = archs backend encryption extras objects skills packets archetypes
+SUBDIRS = archs backend encryption extras objects skills packets archetypes \
+	networking

@@ -11,7 +11,7 @@
 #include "objects/cpc.h"
 #include "objects/cbody.h"
 #include "objects/caccount.h"
-#include "objects/cclient.h"
+#include "networking/cclient.h"
 
 #include <stdarg.h>
 

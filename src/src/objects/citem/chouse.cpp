@@ -9,7 +9,7 @@
 #include "objects/citem/chouse.h"
 #include "objects/cnpc.h"
 #include "objects/cpc.h"
-#include "objects/cclient.h"
+#include "networking/cclient.h"
 #include "archetypes/generic.h"
 #include "map.h"
 

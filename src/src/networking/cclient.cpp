@@ -10,7 +10,7 @@
 \brief Implementation of cClient class
 */
 
-#include "cclient.h"
+#include "networking/cclient.h"
 #include "settings.h"
 #include "misc.h"
 

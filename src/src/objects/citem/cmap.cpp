@@ -10,7 +10,7 @@
 #include "skills/skills.h"
 #include "objects/citem/cmap.h"
 #include "networking/sent.h"
-#include "objects/cclient.h"
+#include "networking/cclient.h"
 
 cMap::cMap() : cItem()
 {

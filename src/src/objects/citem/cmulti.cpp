@@ -7,7 +7,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "objects/citem/cmulti.h"
-#include "objects/cclient.h"
+#include "networking/cclient.h"
 
 /*!
 \brief Moves a multi, with all its content
