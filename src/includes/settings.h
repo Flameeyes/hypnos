@@ -80,6 +80,8 @@ namespace nSettings {
 	namespace Actions {
 		bool shouldEquipOnDClick();		//!< Should an item be equipped on double click? [Default: true]
 		bool canUseItemsWhenInvisible();	//!< When invisible (by spell) can a player use items? [Default: false]
+		
+		uint32_t getObjectsDelay();
 	}
 	
 	//! Reputation system settings

@@ -84,11 +84,11 @@ void cChar::doubleClick(pClient client)
 		if ( getOwner() == clicker || clicker->IsGMorCounselor() )
 		{
 			clicker->showContainer(pack);
-			SetTimerSec( &(clicker->objectdelay), SrvParms->objectdelay );
+			SetTimerSec( &(clicker->objectdelay), nSettings::Actions::getObjectsDelay() );
 			return;
 		}
 		
-		SetTimerSec( &(clicker->objectdelay), SrvParms->objectdelay + nSettings::Skills::getSnoopDelay() );
+		SetTimerSec( &(clicker->objectdelay), nSettings::Actions::getObjectsDelay() + nSettings::Skills::getSnoopDelay() );
 		if ( clicker->checkSkill( skSnooping, 0, 1000 ) )
 		{
 			client->sysmessage("You successfully snoop the pack animal.");

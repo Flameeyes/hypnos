@@ -882,7 +882,7 @@ void nSkills::target_healingSkill(pClient client, pTarget t )
 			} else
 				client->sysmessage("You failed to resurrect the ghost");
 
-			SetTimerSec(&ph->objectdelay,SrvParms->objectdelay+SrvParms->bandagedelay);
+			SetTimerSec(&ph->objectdelay,nSettings::Actions::getObjectsDelay()+SrvParms->bandagedelay);
 			pib->ReduceAmount(1);
 			return;
 		}
@@ -905,7 +905,7 @@ void nSkills::target_healingSkill(pClient client, pTarget t )
 		}
 
 		pib->ReduceAmount(1);
-		SetTimerSec(&ph->objectdelay,SrvParms->objectdelay+SrvParms->bandagedelay);
+		SetTimerSec(&ph->objectdelay,nSettings::Actions::getObjectsDelay()+SrvParms->bandagedelay);
 		return;
 	}
 
@@ -952,7 +952,7 @@ void nSkills::target_healingSkill(pClient client, pTarget t )
 		}
 	}
 
-	SetTimerSec(&ph->objectdelay,SrvParms->objectdelay+SrvParms->bandagedelay);
+	SetTimerSec(&ph->objectdelay,nSettings::Actions::getObjectsDelay()+SrvParms->bandagedelay);
 	pib->ReduceAmount(1);
 	
 	

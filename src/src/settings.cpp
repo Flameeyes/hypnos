@@ -275,12 +275,16 @@ namespace Actions {
 	bool canUseItemsWhenInvisible()
 	{ return flags & flagActionsUseInvisible; }
 	
+	//! Prevents permanent usage of objects, Sets the minimum time (seconds) between usage of objects
+	SETTING(uint32_t, ObjectsDelay, 1);
+	
 	void load(MXML::Node *s)
 	{
 		MXML::Node *n = s->child();
 		do {
 			BOOLSETTING(EquipOnDClick, flagActionsEquipOnDClick)
 			else BOOLSETTING(UseItemsWhenInvisible, flagActionsUseInvisible)
+			else XMLSETTING(ObjectsDelay, uint32_t, UInt32)
 			else LogWarning("Unknown node %s for nSettings::Actions namespace, ignoring", n->name().c_str() );
 			n = n->next();
 		} while(n);
@@ -393,10 +397,12 @@ namespace Skills {
 	//! Maximum number of stealth steps to perform
 	SETTING(uint32_t, MaxStealthSteps, 10);
 
-	//! Seconds to wait between two skill's use
+	//! Prevents permanent skill usage.
+	//! Sets the minimum time (seconds) between allowed skill usages
 	SETTING(uint32_t, SkillDelay, 5);
 	
-	//! Seconds to wait after a snoop action
+	//! Prevents heavy macroing of snooping.
+	//! Sets the minimum time (seconds) between snoops
 	SETTING(uint32_t, SnoopDelay, 15);
 	
 	void loadHiding(MXML::Node *s)

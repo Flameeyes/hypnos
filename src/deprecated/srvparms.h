@@ -22,7 +22,6 @@ int cfg_command (char *commandstr);
 extern void commitserverscript(); // second phase setup
 
 void saveserverscript();
-#define SrvParms (&server_data)	// in preparation of making sever_data a class.Use SrvParms->xxx instead of server_dat.xxx (Duke)
 
 #define NPCSPEED .2	// 5 steps every second
 #define NPCFOLLOWSPEED ((NPCSPEED)/4)
@@ -60,7 +59,6 @@ struct server_st
  unsigned int lootdecayswithcorpse;
 
  unsigned int invisibiliytimer;
- unsigned int objectdelay;
  unsigned int bandagedelay;					// in seconds, on top of objectdelay
  unsigned int bandageincombat;				// 0=no, 1=yes; can use bandages while healer and/or patient are in combat ?
  unsigned int inactivitytimeout;			// seconds of inactivity until player will be disconnected (duke)

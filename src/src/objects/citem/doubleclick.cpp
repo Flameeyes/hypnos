@@ -230,7 +230,7 @@ void cItem::doubleClick(pClient client)
 		return;
 	}
 	else
-		pc->objectdelay = SrvParms->objectdelay * SECS + getclock();
+		pc->objectdelay = nSettings::Actions::getObjectsDelay() * SECS + getclock();
 
 	///MODIFY, CANT CLICK ITEM AT DISTANCE >2//////////////
 	if ( (pc->distFrom(pi)>2) && !pc->IsGM() && !(pc->hasTelekinesis()) ) //Luxor: let's check also for the telekinesys spell
@@ -1044,7 +1044,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			ps->telltime();
 			return;
 		case 0x0E9B: // Mortar for Alchemy
-			pc->objectdelay = ((SrvParms->objectdelay * SECS)*3) + getclock();
+			pc->objectdelay = ((nSettings::Actions::getObjectsDelay() * SECS)*3) + getclock();
 			if (pi->type == ITYPE_MANAREQ_WAND)
 			{
 				targ = clientInfo[s]->newTarget( new cItemTarget() );
