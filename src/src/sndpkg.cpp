@@ -250,105 +250,13 @@ void pweather(NXWSOCKET  s)
 //AoS/	Network->FlushBuffer(s);
 }
 
-void sysbroadcast(char *txt, ...) // System broadcast in bold text
-//Modified by N6 to use UNICODE packets
-{
-	uint8_t unicodetext[512];
-
-	va_list argptr;
-	char msg[512];
-	va_start( argptr, txt );
-	vsprintf( msg, txt, argptr );
-	va_end( argptr );
-
-	int ucl = ( strlen ( msg ) * 2 ) + 2 ;
-
-	char2wchar(msg);
-	memcpy(unicodetext, Unicode::temp, ucl);
-
-	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	uint8_t sysname[30]={ 0x00, };
-	strcpy((char *)sysname, "System");
-
-	NxwSocketWrapper sw;
-	sw.fillOnline();
-	for( sw.rewind(); !sw.isEmpty(); sw++ )
-	{
-		NXWSOCKET sock=sw.getSocket();
-		if( sock!=INVALID )
-		{
-			SendUnicodeSpeechMessagePkt(sock, 0x01010101, 0x0101, 6, 0x084D /*0x0040*/, 0x0000, lang, sysname, unicodetext,  ucl);
-		}
-	}
-}
 
 
-void sysmessage(NXWSOCKET  s, const char *txt, ...) // System message (In lower left corner)
-{
-	if(s < 0)
-		return;
-
-	uint8_t unicodetext[512];
-
-	va_list argptr;
-	char msg[512];
-	va_start( argptr, txt );
-    vsprintf( msg, txt, argptr );
-	va_end( argptr );
-
-	uint32_t spyTo = clientInfo[s]->spyTo;
-	if( spyTo!=INVALID ) { //spy client
-		pChar pc=cSerializable::findCharBySerial( spyTo );
-		if( pc ) {
-			NXWCLIENT gm = pc->getClient();
-			if( gm!=NULL )
-				gm->sysmsg( "spy %s : %s", pc->getCurrentName().c_str(), msg );
-			else
-				clientInfo[s]->spyTo=INVALID;
-		}
-		else
-			clientInfo[s]->spyTo=INVALID;
-	}
-
-	int ucl = ( strlen ( msg ) * 2 ) + 2 ;
-
-	char2wchar(msg);
-	memcpy(unicodetext, Unicode::temp, ucl);
-
-	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	uint8_t sysname[30]={ 0x00, };
-	strcpy((char *)sysname, "System");
-
-	SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 6, 0x0387 /* Color - Previous default was 0x0040 - 0x03E9*/, 0x0003, lang, sysname, unicodetext,  ucl);
-
-}
 
 
-void sysmessage(NXWSOCKET  s, short color, const char *txt, ...) // System message (In lower left corner)
-{
-	if( s < 0)
-		return;
 
-	uint8_t unicodetext[512];
 
-	va_list argptr;
-	char msg[512];
-	va_start( argptr, txt );
-	//vsnprintf( msg, sizeof(msg)-1, txt, argptr );
-        vsprintf( msg, txt, argptr );
-	va_end( argptr );
-	uint16_t ucl = ( strlen ( msg ) * 2 ) + 2 ;
 
-	char2wchar(msg);
-	memcpy(unicodetext, Unicode::temp, ucl);
-
-	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	uint8_t sysname[30]={ 0x00, };
-	strcpy((char *)sysname, "System");
-
-	SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 0, color, 0x0003, lang, sysname, unicodetext,  ucl);
-
-}
 
 void itemmessage(NXWSOCKET  s, char *txt, int serial, short color)
 {
@@ -1690,21 +1598,7 @@ void itemeffectUO3D(pItem pi, ParticleFx *sta)
 
 }
 
-void sysmessageflat(NXWSOCKET  s, short color, const char *txt)
-// System message (In lower left corner)
-//Modified by N6 to use UNICODE packets
-{
-	uint8_t unicodetext[512];
-	uint16_t ucl = ( strlen ( txt ) * 2 ) + 2 ;
 
-	char2wchar(txt);
-	memcpy(unicodetext, Unicode::temp, ucl);
-
-	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	uint8_t sysname[30]={ 0x00, };
-	strcpy((char *)sysname, "System");
-
-	SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 6, color, 0x0003, lang, sysname, unicodetext,  ucl);
 
 }
 

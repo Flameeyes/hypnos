@@ -27,13 +27,9 @@ void SndShopgumpopen(pClient client, pClient clienterial);
 
 void soundeffect3(pItem pi, uint16_t sound);
 void soundeffect4(pClient client, pItem pi, uint16_t sound);
-void sysbroadcast(char *txt, ...);
-	//!< System broadcast in bold text
-void sysmessage(pClient client, const char *txt, ...);
-	//!< System message (In lower left corner);
-void sysmessage(pClient client, short color, const char *txt, ...);
-void sysmessageflat(pClient client, short color, const char *txt);
-	//!< System message (In lower left corner)
+
+
+
 void itemmessage(pClient client, char *txt, pClient clienterial, short color=0x0000);
 void backpack2(pClient client, uint32_t serial);
 	//!< Send corpse stuff

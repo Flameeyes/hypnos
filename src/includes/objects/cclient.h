@@ -125,7 +125,10 @@ public:
 \name Speech, message & communication stuff
 */
 public:
-	void talking(cSpeech &speech);	//!< The PC talks, and this finds out who will hear (and send it to them)
+	void talking(cSpeech &speech)				//!< The PC talks, and this finds out who will hear (and send it to them)
+	void sysmessage(pClient client, const char *txt, ...);			//!< System message (In lower left corner)
+        void sysmessage(pClient client, short color, const char *txt, ...);	//!< Colored system message (In lower left corner)
+        void sysbroadcast(char *txt, ...);					//!< System broadcast in bold text
 //@}
 
 //@{
