@@ -570,15 +570,11 @@ namespace nPackets {
 		\author Flameeyes
 		\note packet 0x3c
 		*/
-
 		class ContainerItem : public cPacketSend
 		{
 		protected:
 			std::list<sContainerItem> items;
 		public:
-			/*!
-			\param aContainer the container (for all items)
-			*/
 			inline ContainerItem() :
 				cPacketSend(NULL, 0)
 			{ }

@@ -5,11 +5,6 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file object.h
-\brief Declaration of class cObject
-\author Anthalir
-*/
 
 #ifndef __OBJECT_H
 #define __OBJECT_H

@@ -1,0 +1,86 @@
+/*!
+\page standard Coding Standards
+
+These are the standards used in the new code wrote for Hypnos (and the ones
+we'll follow when editing old code). Are all suggestions, there is no
+imposition, but we hope we can follow them.
+
+For tabulations we use the regular tab character ('\\t'), with width of 8
+spaces.
+
+All the files should have this header:
+
+\code
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| Hypnos UO Server Emulator                                                |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in hypnos.cpp file.            |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*\/
+\endcode
+
+\section iden Identation
+
+For indentation, we should use this form, inserting a linebreak after the
+function declaration and then have the trigraph by themselves in two lines.
+
+The only thing which can be after a closing trigraph is the 'else' after
+an if.
+
+Examples:
+
+\code	void func(...)
+	{
+		<code>
+	}
+	
+	
+	if (...)
+	{
+		<code>
+	} else {
+		<code>
+	}
+\endcode
+
+\section cond Conditions
+
+Please note that if you have a single big if like this:
+
+\code	if ( condition )
+	{
+		a lot of code...
+	} else
+		return;
+\endcode
+
+or variation of this, please change it to
+
+\code	if ( ! condition ) return;
+	
+	a lot of code...
+\endcode
+
+So we have a more readable code.
+
+\section sers Pointers and serials
+
+Serials are used by UO protocol to identify a single character or an item.
+We use serials only when interfacing with the UO protocol, with the scripts
+or with the savegames. For any other thing inside the server code, please
+only use pointes.
+
+Please \b never check two getSerial() against.
+This code requires the call of two (inlines) functions and then check the
+returned values:
+
+\code a->getSerial() == b->getSerial() \endcode
+
+Instead of do the thing above, test directly the two pointers, because the
+getSerial() function is unique for all the instances. This code check only
+two pointer values:
+
+\code a == b \endcode
+
+*/
