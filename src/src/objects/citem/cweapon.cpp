@@ -60,6 +60,8 @@ const Skill cWeapon::getCombatSkill() const
 	
 	if ( isWeaponLike(weaponBow|weaponXBow|weaponHXBow) )
 		return skArchery;
+	
+	return skWrestling;
 }
 
 /*!

@@ -75,6 +75,7 @@ CXXCPP = @CXXCPP@
 CXXFLAGS = @CXXFLAGS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
+DYNAMIC_LD_LIBS = @DYNAMIC_LD_LIBS@
 ECHO = @ECHO@
 EGREP = @EGREP@
 F77 = @F77@
@@ -98,6 +99,7 @@ install_sh = @install_sh@
 AUTOMAKE_OPTIONS = foreign 1.4
 
 SUBDIRS = src libhypnos
+_SOURCES = autogen.sh
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

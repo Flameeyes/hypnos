@@ -17,7 +17,7 @@ warnings/errors/issues.
 #ifndef __COMMON_LIBS_H__
 #define __COMMON_LIBS_H__
 
-// First of all, include the libhypnos commons
+// First of all, include the config.h and then libhypnos commons
 #include "libhypnos/commons.h"
 
 #if defined(__GNUC__) && ( __GNUC__ < 3 || ( __GNUC__ == 3 && __GNUC_MINOR__ < 1 ) )

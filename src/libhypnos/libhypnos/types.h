@@ -16,6 +16,18 @@ libhypnos library and are common to different applications of the suite.
 #ifndef __LIBHYPNOS_TYPES_H__
 #define __LIBHYPNOS_TYPES_H__
 
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#else
+// If we haven't stdint, we should define the integers we need, but in this
+// case we usually have MSVC or Borland compiler: gcc should provide stdint.h
+// For now we simply throw error, we'll fix this in the future
+
+#error Your compiler doesn't provide stdint.h header. This is bad, you should \
+	change compiler and in any case report this to Hypnos maintainers!
+
+#endif
+
 namespace nLibhypnos {
 	typedef class cVariant *pVariant;	//!< Pointer to a variant instance
 	typedef std::vector<cVariant> cVariantVector;	//!< Vector of variants

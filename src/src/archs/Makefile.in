@@ -75,6 +75,7 @@ CXXCPP = @CXXCPP@
 CXXFLAGS = @CXXFLAGS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
+DYNAMIC_LD_LIBS = @DYNAMIC_LD_LIBS@
 ECHO = @ECHO@
 EGREP = @EGREP@
 F77 = @F77@
@@ -92,18 +93,19 @@ VERSION = @VERSION@
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
-noinst_LTLIBRARIES = libarchs.la
-libarchs_la_SOURCES = hypunix.cpp hypwin32.cpp ntservice.cpp
+noinst_LIBRARIES = libarchs.a
+libarchs_a_SOURCES = hypunix.cpp hypwin32.cpp ntservice.cpp
 subdir = src/archs
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-LTLIBRARIES = $(noinst_LTLIBRARIES)
+LIBRARIES = $(noinst_LIBRARIES)
 
-libarchs_la_LDFLAGS =
-libarchs_la_LIBADD =
-am_libarchs_la_OBJECTS = hypunix.lo hypwin32.lo ntservice.lo
-libarchs_la_OBJECTS = $(am_libarchs_la_OBJECTS)
+libarchs_a_AR = $(AR) cru
+libarchs_a_LIBADD =
+am_libarchs_a_OBJECTS = hypunix.$(OBJEXT) hypwin32.$(OBJEXT) \
+	ntservice.$(OBJEXT)
+libarchs_a_OBJECTS = $(am_libarchs_a_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -112,8 +114,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/hypunix.Plo ./$(DEPDIR)/hypwin32.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/ntservice.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/hypunix.Po ./$(DEPDIR)/hypwin32.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ntservice.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -122,9 +124,9 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libarchs_la_SOURCES)
+DIST_SOURCES = $(libarchs_a_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libarchs_la_SOURCES)
+SOURCES = $(libarchs_a_SOURCES)
 
 all: all-am
 
@@ -136,16 +138,12 @@ $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 
-clean-noinstLTLIBRARIES:
-	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
-	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test -z "$dir" && dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-libarchs.la: $(libarchs_la_OBJECTS) $(libarchs_la_DEPENDENCIES) 
-	$(CXXLINK)  $(libarchs_la_LDFLAGS) $(libarchs_la_OBJECTS) $(libarchs_la_LIBADD) $(LIBS)
+clean-noinstLIBRARIES:
+	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+libarchs.a: $(libarchs_a_OBJECTS) $(libarchs_a_DEPENDENCIES) 
+	-rm -f libarchs.a
+	$(libarchs_a_AR) libarchs.a $(libarchs_a_OBJECTS) $(libarchs_a_LIBADD)
+	$(RANLIB) libarchs.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -153,9 +151,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypunix.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypwin32.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ntservice.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypunix.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypwin32.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ntservice.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -252,7 +250,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LIBRARIES)
 
 installdirs:
 
@@ -282,7 +280,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
+clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -320,16 +318,15 @@ mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 uninstall-am: uninstall-info-am
 
 .PHONY: GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstLTLIBRARIES distclean \
-	distclean-compile distclean-depend distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am info \
-	info-am install install-am install-data install-data-am \
-	install-exec install-exec-am install-info install-info-am \
-	install-man install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool tags uninstall uninstall-am \
-	uninstall-info-am
+	clean-libtool clean-noinstLIBRARIES distclean distclean-compile \
+	distclean-depend distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am info info-am install \
+	install-am install-data install-data-am install-exec \
+	install-exec-am install-info install-info-am install-man \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	tags uninstall uninstall-am uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

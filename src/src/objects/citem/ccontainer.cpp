@@ -44,7 +44,6 @@ void cContainer::loadContainersData()
 				g.downright.y = cVariant( n->getAttribute("y2") ).toUInt16();
 				
 				gumpinfos[g.gump] = g;
-				mapGumpsInfo::iterator it = gumpinfos.find(g);
 				
 				MXML::Node *id = n->child();
 				do {
@@ -57,7 +56,7 @@ void cContainer::loadContainersData()
 					uint16_t valId = cVariant( id->data() ).toUInt16();
 					if ( valId )
 						containers[valId] = it;
-				} while ( (id = id->next() );
+				} while ( (id = id->next() ) );
 				
 			} catch ( MXML::NotFoundError e ) {
 				LogWarning("Incomplete element in containers.xml");

@@ -1,2 +1,2 @@
-lib_LTLIBRARIES = libarchetypes.la
-libarchetypes_la_SOURCES = items.cpp
+noinst_LTLIBRARIES = libextras.la
+libextras_la_SOURCES = bounty.cpp jails.cpp motd.cpp

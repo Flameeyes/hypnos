@@ -9,6 +9,10 @@
 #ifndef __LIBHYPNOS_COMMONS_H__
 #define __LIBHYPNOS_COMMONS_H__
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 /*!
 \file
 \brief Common abstraction for libhypnos
@@ -51,7 +55,6 @@ suite to access the common defines without need of complete hypnos sources.
 	#define PRINTF_LIKE(A,B) ;
 #endif
 
-#include <stdint.h>
 #include <assert.h>
 
 // STL includes

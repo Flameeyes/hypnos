@@ -4,8 +4,7 @@ hypnos_LDADD = $(top_builddir)/src/skills/libskills.la \
 	$(top_builddir)/src/objects/cnpc/libcnpc.la $(top_builddir)/src/objects/citem/libcitem.la \
 	$(top_builddir)/src/objects/cchar/libcchar.la $(top_builddir)/src/objects/libobjects.la \
 	$(top_builddir)/src/extras/libextras.la $(top_builddir)/src/encryption/libencryption.la \
-	$(top_builddir)/src/backend/libbackend.la $(top_builddir)/src/archs/libarchs.la \
-	$(top_builddir)/src/archetypes/libarchetypes.la
+	$(top_builddir)/src/backend/libbackend.la $(top_builddir)/src/archetypes/libarchetypes.la
 hypnos_SOURCES = area.cpp calendar.cpp console.cpp data.cpp effects.cpp\
 	gamedate.cpp gmpages.cpp hypnos.cpp logsystem.cpp magic.cpp map.cpp\
 	menu.cpp misc.cpp network.cpp newbies.cpp npcai.cpp npcs.cpp oldmenu.cpp\
