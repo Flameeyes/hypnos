@@ -42,40 +42,35 @@ void cPC::heartbeat()
 	if( !IsOnline() )
 		return;
 
-	if ( amxevents[EVENT_CHR_ONHEARTBEAT] )
-	{
-		g_bByPass = false;
-		amxevents[EVENT_CHR_ONHEARTBEAT]->Call( getSerial(), getclock() );
-		if( g_bByPass == true ) return;
-		if( dead )	// Killed as result of script action
+	if ( events[evtChrOnHeartBeat] ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = getclock();
+		events[evtChrOnHeartBeat]->setParams(params);
+		events[evtChrOnHeartBeat]->execute();
+		if ( events[evtChrOnResurrect]->isBypassed() )
 			return;
 	}
-	/*
-	g_bByPass = false;
-	runAmxEvent( EVENT_CHR_ONHEARTBEAT, getSerial(), getclock() );
-	if( g_bByPass == true )
-		return;
-	*/
+	
 	if( isDead() )	// Killed as result of script action
 		return;
 	generic_heartbeat();
 	if( isDead() )	// Killed as result of generic heartbeat action
 		return;
 
-	if ( nSettings::Server::isEnabledHungerSystem() && TIMEOUT( hungertime ) && SrvParms->hungerrate > 1 && !IsGMorCounselor() )
+	if ( nSettings::Hunger::isEnabled() && TIMEOUT( hungertime ) && nSettings::Hunger::getRate() > 1 && !IsGMorCounselor() )
 	{
 		--hunger;
 		sayHunger();
-		hungertime = getclock()+(SrvParms->hungerrate*MY_CLOCKS_PER_SEC); // Bookmark
+		hungertime = getclock()+(nSettings::Hunger::getRate()*MY_CLOCKS_PER_SEC); // Bookmark
 	}
-	if ( nSettings::Server::isEnabledHungerSystem() && TIMEOUT( hungerdamagetimer ) && SrvParms->hungerdamage > 0 )
+	if ( nSettings::Hunger::isEnabled() && TIMEOUT( hungerdamagetimer ) && nSettings::Hunger::getDamage() > 0 )
 	// Damage them if they are very hungry
 	{
-		hungerdamagetimer=getclock()+(SrvParms->hungerdamagerate*MY_CLOCKS_PER_SEC); /** set new hungertime **/
+		hungerdamagetimer=getclock()+(nSettings::Hunger::getDamageRate()*MY_CLOCKS_PER_SEC); /** set new hungertime **/
 		if (hp > 0 && hunger<2 && !IsCounselor() && !dead)
 		{
 			sysmsg("You are starving !");
-			hp -= SrvParms->hungerdamage;
+			hp -= nSettings::Hunger::getDamage();
 			updateStats(0);
 			if(hp<=0)
 			{
@@ -84,15 +79,15 @@ void cPC::heartbeat()
 			}
 		}
 	}
-	if( dead )	// Starved to death
+	if ( isDead() )	// Starved to death
 		return;
 
 	checkFieldEffects( getclock(), this, 1 );
-	if( dead )
+	if ( isDead() )
 		return;
 
 	checkPoisoning();
-	if( dead )	// Poison took it's toll
+	if ( isDead() )	// Poison took it's toll
 		return;
 
 	int timer;

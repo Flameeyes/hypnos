@@ -300,11 +300,19 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	if (damage<0) damage=0;
 
 	if (damage>0 && weapon ) {
-		if ((weapon->amxevents[EVENT_IONDAMAGE]!=NULL)) {
-			g_bByPass = false;
-			damage = weapon->amxevents[EVENT_IONDAMAGE]->Call(weapon->getSerial(), pc_def->getSerial(), damage, getSerial());
-			if (g_bByPass==true) return;
+		
+		pFunctionHandle evt = src->getEvent(evtItmOnDamage);
+		if ( evt )
+		{
+			tVariantVector params = tVariantVector(4);
+			params[0] = weapon->getSerial(); params[1] = pc_def->getSerial();
+			params[2] = damage; params[3] = getSerial();
+			evt->setParams(params);
+			evt->execute();
+			if ( evt->isBypassed() )
+				return;
 		}
+	
 	}
 
 	//when hit and damage >1, defender fails if casting a spell!

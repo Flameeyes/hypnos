@@ -269,11 +269,7 @@ void loadserverdefaults()
 	server_data.auto_a_reload = 0;
 
 	server_data.invisibiliytimer=INVISTIMER;
-	server_data.hungerrate=HUNGERRATE;
-	server_data.hunger_system=1;
-	server_data.hungerdamagerate=10;			// every 10 seconds
 	server_data.snoopdelay=15;
-	server_data.hungerdamage=2;
 	server_data.skilldelay=SKILLDELAY;
 	server_data.objectdelay=1;					// in seconds
 	server_data.bandagedelay=6;					// in seconds
@@ -449,19 +445,6 @@ static int block_acc(char *script1, char *script2) // elcabesa tempblock
 		else return -1;																						// elcabesa tempblock
 		return 0;																							// elcabesa tempblock
 }																											// elcabesa tempblock
-
-
-
-
-static int loadhunger(char *script1, char *script2) // by Magius(CHE)
-{
-		if(!(strcmp(script1,"HUNGERRATE"))) server_data.hungerrate=str2num(script2);
-		else if(!(strcmp(script1,"HUNGER_DAMAGE"))) server_data.hungerdamage=str2num(script2);
-		else if(!(strcmp(script1,"HUNGER_SYSTEM"))) server_data.hunger_system=str2num(script2);
-		else if(!(strcmp(script1,"HUNGER_DAMAGE_RATE"))) server_data.hungerdamagerate=str2num(script2);
-		else return -1;
-		return 0;
-}
 
 static int loadvendor(char *script1, char *script2) // by Magius(CHE)
 {
@@ -1440,18 +1423,6 @@ void saveserverscript()
 	fprintf(file, "ARMOR_AFFECT_MANA_REGEN %i\n",server_data.armoraffectmana);
 	fprintf(file, "}\n\n");
 
-	fprintf(file, "SECTION HUNGER\n");
-	fprintf(file, "{\n");
-	fprintf(file, "// Activate internal hunger system. 1 is activated, 0 no\n");
-	fprintf(file, "HUNGER_SYSTEM %i\n",server_data.hunger_system);
-	fprintf(file, "// How often you get hungrier in seconds  \n");
-	fprintf(file, "HUNGERRATE %i\n",server_data.hungerrate);
-	fprintf(file, "// How much health is lost when you are starving  \n");
-	fprintf(file, "HUNGER_DAMAGE %i\n",server_data.hungerdamage);
-	fprintf(file, "// How often you lose health when you are starving  \n");
-	fprintf(file, "HUNGER_DAMAGE_RATE %i\n",server_data.hungerdamagerate);
-	fprintf(file, "}\n\n");
-
 	fprintf(file, "SECTION RESOURCE\n");
 	fprintf(file, "{\n");
 	fprintf(file, "// Dictates areas that can be mined. 0 is anywhere, 1 is mountains\n");
@@ -1727,7 +1698,6 @@ static int chooseSection(char *section,  int (*parseSec)(int (*parseLine)(char *
 	else if(!(strcmp(section, "RESOURCE"))) return parseSec(loadresources);
 	else if(!(strcmp(section, "REPSYS"))) return parseSec(loadrepsys);
 	else if(!(strcmp(section, "TIME_LIGHT"))) return parseSec(loadtime_light);
-	else if(!(strcmp(section, "HUNGER"))) return parseSec(loadhunger);
 	else if(!(strcmp(section, "COMBAT"))) return parseSec(loadcombat);
 	else if(!(strcmp(section, "VENDOR"))) return parseSec(loadvendor);
 	else if(!(strcmp(section, "REGENERATE"))) return parseSec(loadregenerate);

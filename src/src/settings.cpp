@@ -37,7 +37,7 @@ The constants of this group are or-ed together to get the server boolean's setti
 	//! Bounty system enabled
 	static const uint64_t flagServerBountySystem	= 0x0000000000000004;
 	//! Hunger system enabled
-	static const uint64_t flagServerHungerSystem	= 0x0000000000000008;
+	static const uint64_t flagHungerSystemEnabled	= 0x0000000000000008;
 	//! Popup Help enabled
 	static const uint64_t flagServerPopupHelp	= 0x0000000000000010;
 	//! UO Assist allowed
@@ -61,11 +61,6 @@ The constants of this group are or-ed together to get the server boolean's setti
 
 This variable stores all the boolean settings as bits. The flags are used or-ing
 the flags found in <b>Flags constants</b> group.
-
-Default value is:
-	flagServerBookSystem | flagServerTradeSystem | flagServerBountySystem |
-	flagServerHungerSystem | flagServerPopupHelp | flagServerUOAssist | 
-	flagServerPlayerDeletePC | flagServerShowPCNames | flagActionsEquipOnDClick
 */
 uint64_t flags = 
 	flagServerBookSystem | flagServerTradeSystem | flagServerBountySystem |
@@ -92,7 +87,7 @@ namespace MsgBoards {
 	
 	//! Maximum entries in ESCORST
 	SETTING(uint16_t, MaxEntries, 256);
-};
+}
 
 namespace Server {
 	bool isEnabledBookSystem()
@@ -103,9 +98,6 @@ namespace Server {
 	
 	bool isEnabledBountySystem()
 	{ return flags & flagServerBountySystem; }
-	
-	bool isEnabledHungerSystem()
-	{ return flags & flagServerHungerSystem; }
 	
 	bool isEnabledPopupHelp()
 	{ return flags & flagServerPopupHelp; }
@@ -145,7 +137,22 @@ namespace Server {
 	
 	//! How much weight can take with one str point?
 	SETTING(uint32_t, WeightPerStr, 4);
-};
+}
+
+namespace Hunger {
+	//! Is the Hunger system enabled?
+	bool isEnabled()
+	{ return flags & flagHungerSystemEnabled; }
+	
+	//!< How often you get hungrier in seconds
+	SETTING(uint16_t, HungerRate, 6000);
+	
+	//! How much health is lost when you are starving
+	SETTING(uint16_t, HungetDamage, 2);
+	
+	//! How often you lose health when you are starving
+	SETTING(uint16_t, HungerDamageRate, 10);
+}
 
 namespace Actions {
 	bool shouldEquipOnDClick()
@@ -183,4 +190,5 @@ namespace Skills {
 	//! How much fame is lost stealing? \todo Set the default
 	SETTING(uint16_t, StealFameLoss, 0);
 }
-};
+
+} // namespace nSettings

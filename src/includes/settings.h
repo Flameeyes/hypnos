@@ -41,7 +41,6 @@ namespace nSettings {
 		bool isEnabledBookSystem();		//!< Is the book system enabled? [Default: true]
 		bool isEnabledTradeSystem();		//!< Is the trade system enabled? [Default: true]
 		bool isEnabledBountySystem();		//!< Is the bounty system enabled? [Default: true]
-		bool isEnabledHungerSystem();		//!< is the hunger system enabled? [Default: true]
 		
 		bool isEnabledPopupHelp();		//!< popup help (since T2A) is enabled [Default:true]
 		bool isEnabledUOAssist();		//!< UO Assist enabled? [Default: true]
@@ -62,6 +61,14 @@ namespace nSettings {
 		uint32_t getDecayTimer();		//!< Decay timer
 		
 		uint32_t getWeightPerStr();		//!< How much weight can take with one str point? [Default: 4]
+	}
+	
+	//! Hunger System settings
+	namespace Hunger {
+		bool isEnabled();			//!< Is the Hunger system enabled? [Default: true]
+		uint16_t getHungerRate();		//!< How often you get hungrier in seconds [Default: 6000]
+		uint16_t getHungerDamage();		//!< How much health is lost when you are starving  [Default: 2]
+		uint16_t getHungerDamageRate();		//!< How often you lose health when you are starving [Default: 10]
 	}
 	
 	/*!

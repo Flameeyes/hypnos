@@ -35,7 +35,6 @@ void saveserverscript();
 
 #define DECAYTIMER 300  // 5 minute decay rate
 #define INVISTIMER 60 // invisibility spell lasts 1 minute
-#define HUNGERRATE 6000 // 15 minutes
 #define SKILLDELAY 5   // Skill usage delay     (5 seconds)
 #define REGENRATE1 8 // Seconds to heal ONE hp
 #define REGENRATE2 3 // Seconds to heal ONE stm
@@ -61,8 +60,6 @@ struct server_st
  unsigned int lootdecayswithcorpse;
 
  unsigned int invisibiliytimer;
- unsigned int hunger_system;
- unsigned int hungerrate;
  unsigned int skilldelay;
  unsigned int snoopdelay;
  unsigned int objectdelay;
@@ -112,8 +109,6 @@ struct server_st
  unsigned int skilllevel; // Magius(CHE)
  unsigned int trade_system; // Magius(CHE)
  unsigned int rank_system; // Magius(CHE)
- unsigned char hungerdamage;
- unsigned int hungerdamagerate;
  char armoraffectmana; // Should armor slow mana regen ?
 
  char announceworldsaves;
