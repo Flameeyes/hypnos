@@ -127,6 +127,17 @@ inline void wstring2string( wstring from, string& to )
 }
 
 /*!
+\brief Converts an std::string to a number
+\param str string to convert
+\return the number represented by the string or 0 if error
+\author Flameeyes
+
+This is a mere overload for atoi(char*) function
+*/
+inline SI32 atoi(std::string str)
+{ return atoi(str.c_str()); }
+
+/*!
 \brief play sound
 \param goldtotal Total of gold "moved"
 \return soundsfx to play

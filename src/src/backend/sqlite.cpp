@@ -8,6 +8,8 @@
 
 #include "includes/backend/sqlite.h"
 
+cSQLite *globalDB;
+
 /*!
 \brief Constructor for SQLite class
 \param filename Name of the file which stores the sqlite database
@@ -55,7 +57,7 @@ cSQLite::÷cSQLite()
 This function calls the facilities of sqlite to compile the query into a vm.
 \note This function is thread safe
 */
-pSQLiteQuery cSQLite::execQuery(std::string query)
+cSQLite::pSQLiteQuery cSQLite::execQuery(std::string query)
 {
 	mutex.acquire();
 	char * errmsg;
@@ -66,13 +68,43 @@ pSQLiteQuery cSQLite::execQuery(std::string query)
 		pSQLiteQuery ret = new pSQLiteQuery(vm);
 		mutex.release();
 		return ret;
-	}
-	else
-	{
+	} else {
 		LogError("SQLite error executing query %s: %d", query.c_str(), result);
 		mutex.release();
 		return NULL;
 	}
+}
+
+void cSQLite::createDatabaseSchema()
+{
+	pSQLiteQuery q;
+	
+	q = execQuery("CREATE TABLE accounts ("
+		      "id INT NOT NULL,"
+		      "name VARCHAR(30) NOT NULL,"
+		      "password VARCHAR(50) NOT NULL,"
+		      "cryptotype INT NOT NULL,"
+		      "privlevel INT NOT NULL,"
+		      "creationdate INT NOT NULL,"
+		      "banAuthor INT NOT NULL,"
+		      "banReleaseTime INT NOT NULL,"
+		      "jailtime INT NOT NULL,"
+		      "lastConnIP INT NOT NULL,"
+		      "lastConnTime INT NOT NULL,"
+		      "lastchar INT NOT NULL,"
+		      "PRIMARY KEY(id)"
+		      ")");
+	if ( q )
+		delete q;
+	
+	q = execQuery("CREATE TABLE charAccounts ("
+		      "account INT NOT NULL,"
+		      "char INT NOT NULL,"
+		      "PRIMARY KEY(account, char)"
+		      ")");
+	
+	if ( q )
+		delete q;
 }
 
 /*!
@@ -126,14 +158,14 @@ bool cSQLite::cSQLiteQuery::fetchRow()
 	}
 	flags |= flagStarted;
 	
-	thisRow.resize(columns);
-	columnNames.resize(columns);
+	setColumnNames &&
+		columnNames.resize(columns);
 	
 	for(register int i = 0; i < columns; i++)
 	{
-		thisRow[i] = std::string(colData[i]);
 		setColumnNames &&
-			columnNames[i] = colNames[i];
+		columnNames[i] = colNames[i];
+		thisRow[columnNames[i]] = std::string(colData[i]);
 	}
 
 	if ( flags & flagArchiving )
@@ -141,3 +173,5 @@ bool cSQLite::cSQLiteQuery::fetchRow()
 	
 	return complete;
 }
+
+

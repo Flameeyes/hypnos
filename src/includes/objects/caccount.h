@@ -26,7 +26,7 @@ typedef std::hash_map<std::list, cAccount> cAccounts;
 \brief This class represent an account for game
 
 In database we should store:
-name password cryptotype privlevel creationdate ban_author ban_releasetime
+name password cryptotype privlevel creationdate ban_author banReleaseTime
 jailtime lastconn_ip lastconn_time char1 char2 char3 char4 char5 lastchar
 */
 class cAccount
@@ -60,11 +60,11 @@ protected:
 	CryptoType ctype;		//!< Type of crypted password
 	UI08 privlevel;			//!< Priviledge level
 	SI32 creationdate;		//!< Epoch of creation date
-	pChar ban_author;		//!< Ban Author (if banned)
-	SI32 ban_releasetime;		//!< Epoch of release time of ban
+	pChar banAuthor;		//!< Ban Author (if banned)
+	SI32 banReleaseTime;		//!< Epoch of release time of ban
 	SI32 jailtime;			//!< Epoch of jail's release time
-	UI32 lastconn_ip;		//!< Last connection IP
-	SI32 lastconn_time;		//!< Last connection epoch
+	UI32 lastConnIP;		//!< Last connection IP
+	SI32 lastConnTime;		//!< Last connection epoch
 
 	std::list<pChar> chars;		//!< Characters of the account
 	pChar lastchar;			//!< Last character used
@@ -74,7 +74,7 @@ protected:
 public:
 	cAccount();
 		//!< Default constructor
-	cAccount(const char **row);
+	cAccount(cSQLite::cSQLiteQuery::tRow row);
 		//!< Constructor with database row
 	~cAccount();
 		//!< Default destructor
@@ -87,7 +87,7 @@ public:
 
 	void save();
 
-	inline const bool inGame() const
+	inline const bool inGame() const			//!< Returns if an accout is in game
 	{ return currentChar; }
 
 };

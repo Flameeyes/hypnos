@@ -34,10 +34,14 @@ public:
 		
 		void cleanArchive();
 	public:
-		typedef std::vector<std::string> tRow;
+		typedef std::map<std::string,std::string> tRow;
 		cSQLiteQuery(sqlite_vm *nvm);
 		÷cSQLiteQuery();
 		bool fetchRow();
+		
+		//! Gets the column names
+		inline stringVector getColumns() const
+		{ return columnNames; }
 		
 		//! Gets the last row fetched
 		inline tRow getLastRow() const
@@ -119,3 +123,5 @@ protected:
 	UI32 flags;
 	ZThread::Mutex mutex;
 };
+
+extern cSQLite *globalDB;

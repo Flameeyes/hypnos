@@ -10,9 +10,7 @@
 \brief Implementation of cAccount class
 */
 
-#include <iostream>
-
-#include "database.h"
+#include <backend/sqlite.h>
 
 static ZThread::FastMutex cAccount::global_mt;
 static cAccounts cAccount::accounts;
@@ -46,34 +44,14 @@ cAccount objects in the cAccount::accounts hashmap.
 static void cAccount::loadAll()
 {
 	global_mt.acquire();
+	
+	cSQLite::pSQLiteQuery q = globalDB->execQuery("SELECT * FROM accounts");
 
-	sqlite_vm *VM;
-	const char*pzTail;
-	char *errmsg;
-	static const char *query = "SELECT * FROM accounts";
-	int r;
-	SQLQUERY(r, query, &pzTail, &VM, &errmsg);
-	if ( r != SQLITE_OK )
-		Database::logQuery(r, query, errmsg);
-
-	int N;
-	char **coldata;
-	char **colnames;
-	while( sqlite_step(VM, &N, &coldata &colnames) == SQLITE_ROW )
-	{
-		if ( N != 16 )
-		{
-			LogError("Invalid column number %n", N);
-			continue;
-		}
-
-		accounts.add(cAccount(coldata));
-	}
-
-	SQLFINALIZE(r, VM, &errmsg);
-	if ( r != SQLITE_OK )
-		Database::logFinalize(r, errmsg);
-
+	while( q->fetchRow() )
+		accounts.add(cAccount(q->getLastRow()));
+	
+	delete q;
+	
 	global_mt.release();
 }
 
@@ -84,41 +62,42 @@ static void cAccount::loadAll()
 This function creates the account reading the 16 columns from the
 supplied row.
 */
-cAccount::cAccount(const char **row)
+cAccount::cAccount(cSQLite::cSQLiteQuery::tRow r)
 {
-	name = row[0];
-	password = row[1];
-	cryptotype = atoi(row[2]);
-	privlevel = atoi(row[3]);
-	creationdate = atoi(row[4]);
-
-	ban_author = cChar::findBySerial(atoi(row[5]));
-	ban_releasetime = atoi(row[6]);
-	jailtime = atoi(row[7]);
-	lastconn_ip = atoi(row[8]);
-	lastconn_time = atoi(row[9]);
-
-	pChar pc = cChar::findBySerial(atoi[10]);
-	if ( pc )
-		chars.add(pc);
-	pc = cChar::findBySerial(atoi[11]);
-	if ( pc )
-		chars.add(pc);
-	pc = cChar::findBySerial(atoi[12]);
-	if ( pc )
-		chars.add(pc);
-	pc = cChar::findBySerial(atoi[13]);
-	if ( pc )
-		chars.add(pc);
-	pc = cChar::findBySerial(atoi[14]);
-	if ( pc )
-		chars.add(pc);
-
+	name		= r["name"];
+	password	= r["password"];
+	cryptotype      = atoi(r["cryptotype"]);
+	privlevel       = atoi(r["privlevel"]);
+	creationdate    = atoi(r["creationdate"]);
+	
+	banAuthor       = cChar::findBySerial( atoi(r["banAuthor"]) );
+	banReleaseTime  = atoi(r["banReleaseTime"]);
+	jailtime	= atoi(r["jailtime"]);
+	lastConnIP      = atoi(r["lastConnIP"]);
+	lastConnTime    = atoi(r["lastConnTime"]);
+	
+	static char buffer[512];
+	sprintf(buffer, "SELECT char FROM charAccounts WHERE account = %d", r["id"]);
+	cSQLite::pSQLiteQuery q = globalDB->execQuery(buffer);
+	if ( ! q )
+		LogError("Error executing query %s, no char loaded for account %s", buffer, r["name"]);
+	else
+	{
+		pChar pc;
+		while(q->fetchRow())
+		{
+			cSQLite::cSQLiteQuery::tRow c = q->getLastRow();
+			if ( pc = cChar::findBySerial( atoi(c["char"]) ) )
+				chars.add(pc);
+		}
+		
+		delete q;
+	}
+	
 	lastchar = NULL;
-	pc = cChar::findBySerial(atoi[15]);
-	if ( pc && find(chars.begin(), chars.end(), pc) != chars.end() )
+	if ( pc = cChar::findBySerial( atoi(r["lastchar"]) ) && find(chars.begin(), chars.end(), pc) != chars.end() )
 		lastchar = pc;
-
+	
 	currentChar = NULL;
 }
 
@@ -129,47 +108,33 @@ This function insert into the database the needed row for the account.
 
 \brief This function acquires Database::dbMutex
 */
-void cAccount::save()
+void cAccount::save(int id)
 {
-	char *errmsg;
-
-	UI32 tchars[5] = { 0, 0, 0, 0, 0 }; int i = 0;
-	for( std::list<pChar>::iterator it = chars.begin(); it != chars.end(); it++)
-		tchars[i++] = (*it)->getSerial();
-
-	Database::dbMutex.acquire();
-	int r = sqlite_exec_printf(
-		Database::db,
-		"INSERT INTO accounts VALUES("
-		"'%q', '%q', '%u', '%u', '%n', '%u', '%n', '%n',"
-		"'%u', '%n', '%u', '%u', '%u', '%u', '%u', '%u')",
-		0,
-		0,
-		&errmsg,
+	static char buffer[512];
+	sprintf(buffer, "INSERT INTO accounts VALUES("
+			"%u, '%s', '%s', %u, %u, %u,"
+			"%u, %u, %u, %u, %u, %u)"
 		name.c_str(),
 		password.c_str(),
 		cryptotype,
-		privlevel,
 		creationdate,
-		ban_author ? ban_author->getSerial() : 0,
-		ban_releasetime,
+		banAuthor ? banAuthor->getSerial() : 0,
+		banReleaseTime,
 		jailtime,
-		lastconn_ip,
-		lastconn_time,
-		tchars[0],
-		tchars[1],
-		tchars[2],
-		tchars[3],
-		tchars[4],
+		lastConnIP,
+		lastConnTime,
 		lastchar
 		);
-
-	if ( r != SQLITE_OK )
+	
+	cSQLite::pSQLiteQuery q = globalDB->execQuery(buffer);
+	if ( q )
+		delete q;
+	
+	for( std::list<pChar>::iterator it = chars.begin(); it != chars.end(); it++)
 	{
-		Database::setFile(__FILE__, __LINE__);
-		Database::logQuery(r, errmsg);
+		sprintf(buffer, "INSERT INTO charAccounts VALUES(%u, %u)", id, (*it)->getSerial());
+		q = globalDB->execQuery(buffer);
+		if ( q )
+			delete q;
 	}
-	Database::dbMutex.release();
-
-	sqlite_freemem(errmsg);
 }
