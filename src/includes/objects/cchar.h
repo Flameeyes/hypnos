@@ -772,8 +772,25 @@ public:
 	void			talkAllRunic(TEXT *txt, bool antispam = 0);
 //@}
 
-	UI32			distFrom(pChar pc);
-	UI32			distFrom(pItem pi);
+	UI16			distFrom(pChar pc);
+	UI16			distFrom(pItem pi);
+	
+	/*!
+	\brief Check if a specified char is in range from this char
+	\param pc Char to check if in range
+	\param range Maximum distance from this char
+	*/
+	inline const bool       hasInRange(pChar pc, UI16 range = VISRANGE)
+	{ return pc && distFrom( pc ) <= range; }
+	
+	/*!
+	\brief Check if a specified char is in range from this char
+	\param pc Char to check if in range
+	\param range Maximum distance from this char
+	*/
+	inline const bool       hasInRange(pItem pc, UI16 range = VISRANGE)
+	{ return pi && distFrom( pi ) <= range; }
+	
 	void			teleport( UI08 flags = TELEFLAG_SENDALL, NXWCLIENT cli = NULL );
 	void			facexy(UI16 facex, UI16 facey);
 

@@ -1096,7 +1096,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			return;
 		case 0x0DE1:
 		case 0x0DE2: // camping
-  			if ( !item_inRange( pc, pi, 3 ) )
+  			if ( !pc->hasInRange(pi, 3) )
   			{
 				pc->sysmsg(TRANSLATE("You are to far away to reach that"));
 				return;
@@ -1347,7 +1347,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			return;
 		case 0x1070:
 		case 0x1074: // training dummies
-			if (item_inRange(pc, pi, 1))
+			if ( pc->hasInRange(pi, 1) )
 			{
 				if (pc->hidden==HIDDEN_BYSKILL)
 					pc->unHide();

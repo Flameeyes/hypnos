@@ -703,6 +703,7 @@ bool handleItemsAtNewPos(P_CHAR pc, int oldx, int oldy, int newx, int newy)
 			continue;
 			if( pi->getId()>=0x407C && pi->getId()<=0x407E )
 			{
+				pc->distFrom(pi);
 				int di= item_dist(pc, pi);
 
 				if (di<=BUILDRANGE && di>=VISRANGE)

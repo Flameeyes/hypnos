@@ -44,7 +44,7 @@ void snooping( P_CHAR snooper, P_ITEM cont )
 	else if (snooper->IsGMorCounselor())
 		snooper->showContainer(cont);
 	else
-	if ((char_inRange(snooper, owner, 2)) ||(item_inRange(snooper, cont, 2)))
+	if ( snooper->hasInRange(owner, 2) || snooper->hasInRange(cont, 2) )
 	{
 		if ( owner->HasHumanBody() && ( owner->getOwnerSerial32()==snooper->getSerial32()))
 			snooper->showContainer(cont);
@@ -337,7 +337,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 	sprintf(temp, TRANSLATE("You reach into %s's pack to steal something ..."), victim->getCurrentNameC() );
 	thief->sysmsg(temp);
 
-	if ( char_inRange(thief,victim,1) )
+	if ( thief->hasInRange(victim, 1) )
 	{
 		P_ITEM pi = NULL;
 
@@ -497,7 +497,7 @@ void Skills::target_lockpick( NXWCLIENT ps, P_TARGET t )
 		return;
 	*/
 
-	if( !item_inRange(pc,pick,1) )
+	if( !pc->hasInRange(pick, 1) )
 	{
 		pc->sysmsg(TRANSLATE("You are too far away!"));
 	}

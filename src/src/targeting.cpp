@@ -327,7 +327,7 @@ static void CorpseTarget(const NXWCLIENT pC)
     P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
     if(ISVALIDPI(pi))
     {
-        if(item_inRange(pc,pi,1))
+        if( pc->hasInRange(pi, 1) )
         {
             npcshape[0]=i;
             pc->playAction(0x20);
@@ -607,7 +607,7 @@ void target_key( NXWCLIENT ps, P_TARGET t )
     if ((pi->more1==0)&&(pi->more2==0)&&
             (pi->more3==0)&&(pi->more4==0))
         {
-            if ( pi->type==ITYPE_KEY && (item_inRange(MAKE_CHAR_REF(currchar[s]),pi,2) || (!pi->isInWorld()) ) )
+            if ( pi->type==ITYPE_KEY && (pc->hasInRange(pi, 2) || (!pi->isInWorld()) ) )
             {
                 if (!pc->checkSkill(TINKERING, 400, 1000))
                 {
@@ -631,7 +631,7 @@ void target_key( NXWCLIENT ps, P_TARGET t )
             (pi->more3==t->buffer[2])&&(pi->more4==t->buffer[3]))||
             (t->buffer[0]==(unsigned char) 0xFF))
         {
-            if (((pi->type==ITYPE_CONTAINER)||(pi->type==ITYPE_UNLOCKED_CONTAINER))&&(item_inRange(pc,pi,2)))
+            if (((pi->type==ITYPE_CONTAINER)||(pi->type==ITYPE_UNLOCKED_CONTAINER))&&(pc->hasInRange(pi, 2)))
             {
                 if(pi->type==ITYPE_CONTAINER) pi->type=ITYPE_LOCKED_ITEM_SPAWNER;
                 if(pi->type==ITYPE_UNLOCKED_CONTAINER) pi->type=ITYPE_LOCKED_CONTAINER;
@@ -639,13 +639,13 @@ void target_key( NXWCLIENT ps, P_TARGET t )
                 sysmessage(s, TRANSLATE("You lock the container."));
                 return;
             }
-            else if ((pi->type==ITYPE_KEY)&&(item_inRange(pc,pi,2)))
+            else if ((pi->type==ITYPE_KEY)&&(pc->hasInRange(pi, 2)))
             {
                 pc->keyserial=pi->getSerial32();
                 sysmessage(s,TRANSLATE("Enter new name for key."));//morrolan rename keys
                 return;
             }
-            else if ((pi->type==ITYPE_LOCKED_ITEM_SPAWNER)||(pi->type==ITYPE_LOCKED_CONTAINER)&&(item_inRange(pc,pi,2)))
+            else if ((pi->type==ITYPE_LOCKED_ITEM_SPAWNER)||(pi->type==ITYPE_LOCKED_CONTAINER)&& pc->hasInRange(pi, 2) )
             {
                 if(pi->type==ITYPE_LOCKED_ITEM_SPAWNER) pi->type=ITYPE_CONTAINER;
                 if(pi->type==ITYPE_LOCKED_CONTAINER) pi->type=ITYPE_UNLOCKED_CONTAINER;
@@ -653,14 +653,14 @@ void target_key( NXWCLIENT ps, P_TARGET t )
                 sysmessage(s, TRANSLATE("You unlock the container."));
                 return;
             }
-            else if ((pi->type==ITYPE_DOOR)&&(item_inRange(pc,pi,2)))
+            else if ((pi->type==ITYPE_DOOR)&& pc->hasInRange(pi, 2) )
             {
                 pi->type=ITYPE_LOCKED_DOOR;
                 // soundeffect3( pi, <whatever> );
                 sysmessage(s, TRANSLATE("You lock the door."));
                 return;
             }
-            else if ((pi->type==ITYPE_LOCKED_DOOR)&&(item_inRange(pc,pi,2)))
+            else if ((pi->type==ITYPE_LOCKED_DOOR)&& pc->hasInRange(pi, 2) )
             {
                 pi->type=ITYPE_DOOR;
                 // soundeffect3( pi, <whatever> );

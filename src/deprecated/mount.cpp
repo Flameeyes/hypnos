@@ -73,7 +73,7 @@ void cChar::mountHorse( pChar mount )
 {
 	if (
 		!mount ||
-		( !char_inRange(this, mount, 2) &&
+		( !hasInRange(mount, 2) &&
 		  ( !client || client->currAccount()->getPrivLevel() < cAccount::privCounselor )
 		)
 	   )

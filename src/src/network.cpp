@@ -398,7 +398,7 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 			{
                                 pChar pi = i->CurrChar();
 				if (ISVALIDPC(pi))
-					if( pc != i && char_inVisRange( pc, pi ))
+					if( pc != i && inRange(pc, pi))
 					{
 						i->SendDeleteObjectPkt(pc_serial);
 					}

@@ -669,7 +669,7 @@ void Skills::target_smeltOre( NXWCLIENT ps, P_TARGET t )
     {
         if( pi->IsForge() )
         {
-            if(!item_inRange(pc,pi,3))        //Check if the forge is in range
+            if( !pc->hasInRange(pi, 3) )        //Check if the forge is in range
                 pc->sysmsg(TRANSLATE("You cant smelt here."));
             else
             {
@@ -699,7 +699,7 @@ void Skills::target_wheel( NXWCLIENT ps, P_TARGET t )	//Spinning wheel
 
     if( pi->getId() >= 0x10A4 || pi->getId() <= 0x10A6 )
     {
-        if(item_inRange(pc_currchar,pi,3))
+        if( pc_currchar->hasInRange(pi, 3) )
         {
             if (!pc_currchar->checkSkill(TAILORING, 0, 1000))
             {
@@ -748,7 +748,7 @@ void Skills::target_loom( NXWCLIENT ps, P_TARGET t )
 	{
 		if ( pi->getId() >= 0x105F && pi->getId() <= 0x1066 )
 		{
-			if(item_inRange(pc_currchar,pi,3))
+			if( pc_currchar->hasInRange(pi, 3) )
 			{
 				P_ITEM pti=pointers::findItemBySerial( t->buffer[0] );
 				VALIDATEPI(pti);
@@ -825,7 +825,7 @@ void Skills::target_cookOnFire( NXWCLIENT ps, P_TARGET t )
         {
             if(pi->IsCookingPlace() )
             {
-                if(item_inRange(pc,pi,3))
+                if( pc->hasInRange(pi, 3) )
                 {
                     pc->playSFX(0x01DD);   // cooking sound
                     if (!pc->checkSkill(COOKING, 0, 1000))
@@ -1183,7 +1183,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, P_TARGET t )
 		}
 	}
 
-	if(!char_inRange(ph,pp,1))
+	if( !ph->hasInRange(pp, 1) )
 	{
 		ph->sysmsg(TRANSLATE("You are not close enough to apply the bandages."));
 		return;
