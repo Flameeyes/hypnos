@@ -24,10 +24,13 @@ if test "$is_icc" == "yes"; then
 	# and prevents wefts from linking to -lstdc++ (which is gcc specific)
 	WARNS="-wd143 -wd177 -wd279 -wd383 -wd810 -wd981 "
 	WEFTS_LIBS=$(echo $WEFTS_LIBS | sed -e 's/-lstdc++//')
+	CPPLIB=""
 else
 	WARNS="-Wno-reorder -Wno-switch-enum "
 	CXXFLAGS="$CXXFLAGS -fno-implicit-templates"
+	CPPLIB="-lstdc++'
 fi
+AC_SUBST(CPPLIB)
 
 AC_OBJEXT
 AC_EXEEXT
