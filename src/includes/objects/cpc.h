@@ -134,6 +134,21 @@ public:
 
 public:
 	void sayHunger();
+	
+//@{
+/*!
+\name Reputation
+*/
+protected:
+	Karma reputation;
+	uint16_t kills;		//!< PvP Kills
+	uint16_t deaths;	//!< Number of deaths
+public:
+	void setMurderer();
+	void setInnocent();
+	void setCriminal();
+	void makeCriminal();
+//@}
 };
 
 #endif

@@ -433,3 +433,58 @@ void cPC::sayHunger()
 			break;
 	}
 }
+
+void cPC::setMurderer()
+{
+	if ( events[evtPcOnFlagChange] ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = karmaMurderer;
+		events[evtPcOnFlagChange]->setParams(params);
+		events[evtPcOnFlagChange]->execute();
+		if ( events[evtPcOnFlagChange]->bypassed() )
+			return;
+	}
+
+	reputation = karmaMurderer;
+}
+
+void cPC::setInnocent()
+{
+	if ( events[evtPcOnFlagChange] ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = karmaInnocent;
+		events[evtPcOnFlagChange]->setParams(params);
+		events[evtPcOnFlagChange]->execute();
+		if ( events[evtPcOnFlagChange]->bypassed() )
+			return;
+	}
+
+	reputation = karmaInnocent;
+}
+
+void cPC::setCriminal()
+{
+	if ( events[evtPcOnFlagChange] ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = karmaCriminal;
+		events[evtPcOnFlagChange]->setParams(params);
+		events[evtPcOnFlagChange]->execute();
+		if ( events[evtPcOnFlagChange]->bypassed() )
+			return;
+	}
+	
+	reputation = karmaCriminal;
+}
+
+//! Makes someone criminal
+void cPC::makeCriminal()
+{
+	if ( isCriminal() || isMurderer() )
+		return;
+	
+	tempfx::add(this, this, tempfx::CRIMINAL, 0, 0, 0); //Luxor
+	if(::region[region].priv&0x01 && SrvParms->guardsactive) { //guarded
+		if ( nSettings::Server::hasInstantGuards() )
+			npcs::SpawnGuard( this, this, getPosition() ); // LB bugfix
+	}
+}

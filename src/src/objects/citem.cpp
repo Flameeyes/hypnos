@@ -1006,3 +1006,49 @@ const int32_t cItem::calcValue(int32_t bvalue)
 
 	return bvalue;
 }
+
+//! Sets the Playing Character a murderer
+void cPC::setMurderer()
+{
+	if ( events[evtPcOnFlagChange] ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = karmaMurderer;
+		events[evtPcOnFlagChange]->setParams(params);
+		events[evtPcOnFlagChange]->execute();
+		if ( events[evtPcOnFlagChange]->bypassed() )
+			return;
+	}
+
+	reputation = karmaMurderer;
+}
+
+//! Sets the Playing Character innocent
+void cChar::setInnocent()
+{
+	if ( events[evtPcOnFlagChange] ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = karmaInnocent;
+		events[evtPcOnFlagChange]->setParams(params);
+		events[evtPcOnFlagChange]->execute();
+		if ( events[evtPcOnFlagChange]->bypassed() )
+			return;
+	}
+
+	reputation = karmaInnocent;
+}
+
+//! Sets the Playing Character a criminal
+void cChar::setCriminal()
+{
+	if ( events[evtPcOnFlagChange] ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = karmaCriminal;
+		events[evtPcOnFlagChange]->setParams(params);
+		events[evtPcOnFlagChange]->execute();
+		if ( events[evtPcOnFlagChange]->bypassed() )
+			return;
+	}
+	
+	reputation = karmaCriminal;
+}
+

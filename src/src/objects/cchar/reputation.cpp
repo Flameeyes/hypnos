@@ -21,47 +21,6 @@ const bool cChar::IsGrey() const
 			return false;
 }
 
-void cChar::setMurderer()
-{
-
-	if (amxevents[EVENT_CHR_ONFLAGCHG])
-		amxevents[EVENT_CHR_ONFLAGCHG]->Call(getSerial() );
-	//runAmxEvent( EVENT_CHR_ONFLAGCHG, getSerial(), getSocket() );
-
-	flag=flagKarmaMurderer;
-}
-
-void cChar::setInnocent()
-{
-
-	if (amxevents[EVENT_CHR_ONFLAGCHG])
-		amxevents[EVENT_CHR_ONFLAGCHG]->Call(getSerial() );
-	//runAmxEvent( EVENT_CHR_ONFLAGCHG, getSerial(), getSocket() );
-	flag=flagKarmaInnocent;
-}
-
-void cChar::setCriminal()
-{
-
-	if (amxevents[EVENT_CHR_ONFLAGCHG])
-		amxevents[EVENT_CHR_ONFLAGCHG]->Call(getSerial() );
-	//runAmxEvent( EVENT_CHR_ONFLAGCHG, getSerial(), getSocket() );
-	flag=flagKarmaCriminal;
-}
-
-//! Makes someone criminal
-void cChar::makeCriminal()
-{
-	if ((!npc)&&(!IsCriminal() || !IsMurderer()))
-	{//Not an npc, not grey, not red
-		tempfx::add(this, this, tempfx::CRIMINAL, 0, 0, 0); //Luxor
-		if(::region[region].priv&0x01 && SrvParms->guardsactive) { //guarded
-			if ( nSettings::Server::hasInstantGuards() )
-				npcs::SpawnGuard( this, this, getPosition() ); // LB bugfix
-		}
-	}
-}
-
 /*!
 \brief increase or decrease the fame of the char
 \author Endymion
@@ -74,83 +33,83 @@ void cChar::modifyFame( int32_t value )
 	if( GetFame() > 10000 )
 		SetFame( 10000 );
 
-	if ( value != 0 )
+	if ( ! value )
+		return;
+	
+	int32_t	nFame	= value;
+	int	nChange	= 0;
+	int	nCurFame= fame;
+	
+	bool gained = true;
+
+	//! \todo Need to check this!
+	if( nCurFame > nFame ) // if player fame greater abort function
 	{
-		int32_t	nFame	= value;
-		int	nChange	= 0,
-			nEffect	= 0;
-		int	nCurFame= fame;
+		return;
+	}
 
-		if( nCurFame > nFame ) // if player fame greater abort function
+	if( nCurFame < nFame )
+	{
+		nChange=(nFame-nCurFame)/75;
+		fame=(nCurFame+nChange);
+		gained = true;
+	}
+
+	if( isDead() )
+	{
+		if(nCurFame<=0)
 		{
+			fame=0;
+		}
+		else
+		{
+			nChange=(nCurFame-0)/25;
+			fame=(nCurFame-nChange);
+		}
+		gained = false; 
+	}
+	
+	if ( ! nChange )
+		return;
+	
+	if ( events[evtChrOnReputationChange] ) {
+		tVariantVector params = tVariantVector(3);
+		params[0] = getSerial(); params[1] = gained ? nChange : -nChange;
+		params[3] = REPUTATION_FAME;
+		events[evtChrOnReputationChange]->setParams(params);
+		events[evtChrOnReputationChange]->execute();
+		if ( events[evtChrOnReputationChange]->bypassed() )
 			return;
-		}
-
-		if( nCurFame < nFame )
-		{
-			nChange=(nFame-nCurFame)/75;
-			fame=(nCurFame+nChange);
-			nEffect=1;
-		}
-
-		if( dead )
-		{
-			if(nCurFame<=0)
-			{
-				fame=0;
-			}
-			else
-			{
-				nChange=(nCurFame-0)/25;
-				fame=(nCurFame-nChange);
-			}
-			nEffect=0;
-		}
-		if( nChange != 0 )
-		{
-
-			if (amxevents[EVENT_CHR_ONREPUTATIONCHG])
-			{
-				g_bByPass = false;
-				int n = nChange;
-				if (!nEffect) n = -nChange;
-				amxevents[EVENT_CHR_ONREPUTATIONCHG]->Call(getSerial(), n, REPUTATION_FAME);
-			}
-			/*
-			pc->runAmxEvent( EVENT_CHR_ONREPUTATIONCHG, pc->getSerial(), (!nEffect ? -nChange : nChange), REPUTATION_FAME);
-			*/
-			if ( !g_bByPass && !npc )
-			{
-				if(nChange<=25)
-				{
-					if(nEffect)
-						sysmsg( "You have gained a little fame.");
-					else
-						sysmsg( "You have lost a little fame.");
-				}
-				else if(nChange<=75)
-				{
-					if(nEffect)
-						sysmsg( "You have gained some fame.");
-					else
-						sysmsg( "You have lost some fame.");
-				}
-				else if(nChange<=100)
-				{
-					if(nEffect)
-						sysmsg( "You have gained alot of fame.");
-					else
-						sysmsg( "You have lost alot of fame.");
-				}
-				else if(nChange>100)
-				{
-					if(nEffect)
-						sysmsg( "You have gained a huge amount of fame.");
-					else
-						sysmsg( "You have lost a huge amount of fame.");
-				}
-			}
-		}
+	}
+	
+	pPC tpc = NULL; // This PC
+	if ( ! (tpc = dynamic_cast<pPC>(this) ) || ! tpc->getClient() )
+		return;
+	
+	if(nChange<=25)
+	{
+		if(gained)
+			getClient()->sysmessage( "You have gained a little fame.");
+		else
+			getClient()->sysmessage( "You have lost a little fame.");
+	} else if(nChange<=75)
+	{
+		if(gained)
+			getClient()->sysmessage( "You have gained some fame.");
+		else
+			getClient()->sysmessage( "You have lost some fame.");
+	} else if(nChange<=100)
+	{
+		if(gained)
+			getClient()->sysmessage( "You have gained alot of fame.");
+		else
+			getClient()->sysmessage( "You have lost alot of fame.");
+	} else if(nChange>100)
+	{
+		if(gained)
+			getClient()->sysmessage( "You have gained a huge amount of fame.");
+		else
+			getClient()->sysmessage( "You have lost a huge amount of fame.");
 	}
 }
 
@@ -165,88 +124,81 @@ void cChar::modifyFame( int32_t value )
 */
 void cChar::IncreaseKarma( int32_t value, pChar pKilled )
 {
-	int32_t nCurKarma		= GetKarma();
+	int32_t nCurKarma = GetKarma();
 
 	if( nCurKarma > 10000 )
 		SetKarma( 10000 );
-	else
-		if( nCurKarma < -10000 )
-			SetKarma( -10000 );
+	else if( nCurKarma < -10000 )
+		SetKarma( -10000 );
 
-	if( value != 0 )
+	if ( ! value )
+		return;
+	
+	int32_t nKarma	= value,
+		nChange	= 0;
+
+	bool	positiveKarmaEffect	= false;
+
+	if	( nCurKarma < nKarma && nKarma > 0 )
 	{
-		int32_t 	nKarma			= value,
-			nChange			= 0;
-
-		bool	positiveKarmaEffect	= false;
-
-		if	( nCurKarma < nKarma && nKarma > 0 )
+		nChange=((nKarma-nCurKarma)/75);
+		SetKarma( GetKarma() + nChange );
+		positiveKarmaEffect = true;
+	}
+	else if ( nCurKarma > nKarma )
+	{
+		if ( ! pKilled )
 		{
-			nChange=((nKarma-nCurKarma)/75);
+			nChange=((nCurKarma-nKarma)/50);
 			SetKarma( GetKarma() + nChange );
-			positiveKarmaEffect = true;
 		}
-		else if ( nCurKarma > nKarma )
+		else if( pKilled->GetKarma()>0 )
 		{
-			if ( ! pKilled )
-			{
-				nChange=((nCurKarma-nKarma)/50);
-				SetKarma( GetKarma() + nChange );
-			}
-			else if( pKilled->GetKarma()>0 )
-			{
-				nChange=((nCurKarma-nKarma)/50);
-				SetKarma( GetKarma() + nChange );
-			}
-		}
-
-		if( nChange != 0 )
-		{
-			if ( amxevents[EVENT_CHR_ONREPUTATIONCHG] )
-			{
-				g_bByPass = false;
-				int32_t n = nChange;
-				if (!positiveKarmaEffect)
-					n = -nChange;
-				amxevents[EVENT_CHR_ONREPUTATIONCHG]->Call( getSerial(), n, REPUTATION_KARMA );
-			}
-			/*
-			pc->runAmxEvent( EVENT_CHR_ONREPUTATIONCHG, pc->getSerial(), (!nEffect ? -nChange : nChange), REPUTATION_KARMA);
-			if (g_bByPass==true)
-				return;
-			*/
-			if( !g_bByPass && !npc )
-			{
-				if(nChange<=25)
-				{
-					if(positiveKarmaEffect)
-						sysmsg( "You have gained a little karma.");
-					else
-						sysmsg( "You have lost a little karma.");
-				}
-				else if(nChange<=75)
-				{
-					if(positiveKarmaEffect)
-						sysmsg( "You have gained some karma.");
-					else
-						sysmsg( "You have lost some karma.");
-				}
-				else if(nChange<=100)
-				{
-					if(positiveKarmaEffect)
-						sysmsg( "You have gained alot of karma.");
-					else
-						sysmsg( "You have lost alot of karma.");
-				}
-				else if(nChange>100)
-				{
-					if(positiveKarmaEffect)
-						sysmsg( "You have gained a huge amount of karma.");
-					else
-						sysmsg( "You have lost a huge amount of karma.");
-				}
-			}
+			nChange=((nCurKarma-nKarma)/50);
+			SetKarma( GetKarma() + nChange );
 		}
 	}
-}
+	
+	if ( ! nChange )
+		return;
 
+	if ( events[evtChrOnReputationChange] ) {
+		tVariantVector params = tVariantVector(3);
+		params[0] = getSerial(); params[1] = positiveKarmaEffect ? nChange : -nChange;
+		params[3] = REPUTATION_KARMA;
+		events[evtChrOnReputationChange]->setParams(params);
+		events[evtChrOnReputationChange]->execute();
+		if ( events[evtChrOnReputationChange]->bypassed() )
+			return;
+	}
+	
+	pPC tpc = NULL; // This PC
+	if ( ! (tpc = dynamic_cast<pPC>(this) ) || ! tpc->getClient() )
+		return;
+	
+	if(nChange<=25)
+	{
+		if(positiveKarmaEffect)
+			sysmsg( "You have gained a little karma.");
+		else
+			sysmsg( "You have lost a little karma.");
+	} else if(nChange<=75)
+	{
+		if(positiveKarmaEffect)
+			sysmsg( "You have gained some karma.");
+		else
+			sysmsg( "You have lost some karma.");
+	} else if(nChange<=100)
+	{
+		if(positiveKarmaEffect)
+			sysmsg( "You have gained alot of karma.");
+		else
+			sysmsg( "You have lost alot of karma.");
+	} else if(nChange>100)
+	{
+		if(positiveKarmaEffect)
+			sysmsg( "You have gained a huge amount of karma.");
+		else
+			sysmsg( "You have lost a huge amount of karma.");
+	}
+}

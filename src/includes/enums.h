@@ -129,4 +129,9 @@ enum DispelType {
 	dispelUnknwon, dispelDispel, dispelTimeout, dispelGMRemove
 };
 
+//! Reputation's karma
+enum Karma {
+	karmaInnocent, karmaMurderer, karmaCriminal
+};
+
 #endif

@@ -208,8 +208,6 @@ protected:
 	int32_t karma;	//!< karma of the char
 	int32_t fame;	//!< fame of the char
 
-	uint16_t kills;	//!< PvP Kills
-	uint16_t deaths;//!< Number of deaths
 	float  fstm;	//!< Unavowed - stamina to remove the next step
 
 	inline void setFlag(uint64_t flag, bool set)
@@ -356,10 +354,6 @@ public:
 		else*/ makeCriminal();
 	}
 
-	void setMurderer();
-	void setInnocent();
-	void setCriminal();
-	void makeCriminal();
 	void increaseKarma(int32_t value, pChar pKilled = 0 );
 	void modifyFame( int32_t value );
 
@@ -397,7 +391,6 @@ private:
 */
 public:
 	void showLongName( pChar showToWho, bool showSerials );
-
 //@}
 
 
