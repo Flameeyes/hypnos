@@ -284,11 +284,12 @@ static bool checkReflection(pChar &pa, pChar &pd)
 	return false;
 }
 
-
-///////////////////////////////////////////////////////////////////
-// Function name	 : bool isFieldSpell, isBoxSpell, isAreaSpell
-// Description		 : checks for spell size
-// Author			 : Xanathar
+/*!
+\brief Checks if a spell is a field
+\author Xanathar
+\param spell Spell to check
+\return true if the spell is a field
+*/
 static inline bool isFieldSpell(SpellId spell)
 {
 	switch (spell) {
