@@ -12,7 +12,7 @@
 This file contains Begging namespace with begging functions and paramters
 */
 
-#include "typedefs.hpp"
+#include "common_libs.h"
 
 namespace Begging {
 	extern uint32_t timer;

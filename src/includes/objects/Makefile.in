@@ -475,7 +475,7 @@ uninstall-info: uninstall-info-recursive
 	uninstall uninstall-am uninstall-info-am
 
 
-@HAVE_PCH_TRUE@all: $(libinclude_PCH)
+@HAVE_PCH_TRUE@all: $(noinst_PCH)
 
 @HAVE_PCH_TRUE@%.h.gch: %.h
 @HAVE_PCH_TRUE@	$(CC) $< -o $@

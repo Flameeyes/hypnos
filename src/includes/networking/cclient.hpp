@@ -14,7 +14,10 @@
 #include "speech.hpp"
 
 #include <cabal_tcpsocket.h>
+
+#ifdef HAVE_IOSFWD
 #include <iosfwd>
+#endif
 
 //! Used in trading methods
 struct sBoughtItem
@@ -156,7 +159,7 @@ public:
 
 	//! removing trade session between this and another client
 	inline void removeTradeSession(sSecureTradeSession &session)
-	{ SecureTrade.erase(find(SecureTrade.begin(), SecureTrade.end(), session)); }
+	{ SecureTrade.erase(std::find(SecureTrade.begin(), SecureTrade.end(), session)); }
 
 	sSecureTradeSession findTradeSession(pContainer tradecontainer);	//!< Finds the trade session between "this" and another client knowing "this" tradecontainer
 	sSecureTradeSession findTradeSession(pClient tradeclient);		//!< Finds the trade session between "this" and another client knowing the other client

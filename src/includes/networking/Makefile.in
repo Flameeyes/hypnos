@@ -166,7 +166,9 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-noinst_HEADERS = cclient.hpp exceptions.hpp misccommand.hpp network.hpp received.hpp \
+
+# Note: misccommnad.hpp is NOT a precompilable headers!
+noinst_HEADERS = cclient.hpp exceptions.hpp network.hpp received.hpp \
 	sent.hpp tkiller.hpp tpllistener.hpp tracreceiver.hpp tuoreceiver.hpp
 
 @HAVE_PCH_TRUE@noinst_PCH = $(addsuffix .gch, $(noinst_HEADERS))
@@ -375,7 +377,7 @@ uninstall-am: uninstall-info-am
 	uninstall-am uninstall-info-am
 
 
-@HAVE_PCH_TRUE@all: $(libinclude_PCH)
+@HAVE_PCH_TRUE@all: $(noinst_PCH)
 
 @HAVE_PCH_TRUE@%.h.gch: %.h
 @HAVE_PCH_TRUE@	$(CC) $< -o $@

@@ -15,6 +15,9 @@
 #ifndef __NETWORKING_EXCEPTIONS_H__
 #define __NETWORKING_EXCEPTIONS_H__
 
+#include "common_libs.h"
+#include "libhypnos/exceptions.hpp"
+
 /*!
 \class eBufferIncomplete exceptions.h "networking/exceptions.h"
 \brief Incomplete buffer to receive the packet

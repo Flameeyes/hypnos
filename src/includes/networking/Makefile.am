@@ -1,4 +1,5 @@
-noinst_HEADERS = cclient.hpp exceptions.hpp misccommand.hpp network.hpp received.hpp \
+# Note: misccommnad.hpp is NOT a precompilable headers!
+noinst_HEADERS = cclient.hpp exceptions.hpp network.hpp received.hpp \
 	sent.hpp tkiller.hpp tpllistener.hpp tracreceiver.hpp tuoreceiver.hpp
 
 if HAVE_PCH

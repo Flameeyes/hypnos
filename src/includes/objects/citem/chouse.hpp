@@ -100,7 +100,7 @@ protected:
 	static HouseSList houses;	//!< All the houses in the world
 	Wefts::Mutex housesMutex;	//!< Mutex for access cHouse::houses
 public:
-	checkDecay();
+	void checkDecay();
 };
 
 #endif
