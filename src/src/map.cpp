@@ -101,15 +101,15 @@ int8_t isWalkable( sLocation pos, uint8_t flags, pChar pc )
 			if( !pi )
 				continue;
 
-			tile_st tile;
-			data::seekTile( pi->getId(), tile );
-
-			height = tile.height;
-			if ( tile.flags & TILEFLAG_BRIDGE ) // Stairs, ladders
-				height = tile.height / 2;
+			height = tiledataStatic->getHeight( pi->getId() );
+			
+			uint32_t tflags = tiledataStatic->getFlags( pi->getId() );
+			
+			if ( tflags & flagTileBridge ) // Stairs, ladders
+				height /= 2;
 
                 	if ( pi->getPosition().z < (pos.z + MaxZstep) ) { // We cannot walk under it
-				if ( tile.flags & TILEFLAG_IMPASSABLE ) // Block flag
+				if ( tflags & flagTileImpassable ) // Block flag
 					return illegal_z;
 
 				if ( (pi->getPosition().z + height) <= (pos.z + 3) ) { // We can walk on it
@@ -171,23 +171,22 @@ int8_t isWalkable( sLocation pos, uint8_t flags, pChar pc )
 		staticVector s;
 		data::collectStatics( pos.x, pos.y, s );
 
-		for( uint32_t i = 0; i < s.size(); i++ ) {
-			tile_st tile;
-			if( !data::seekTile( s[i].id, tile ) )
-				continue;
+		for( uint32_t i = 0; i < s.size(); i++ )
+		{
+			uint32_t tflags = tiledataStatic->getFlags( pi->getId() );
 
 			// Z elevation
-			height = tile.height;
-			if ( tile.flags & TILEFLAG_BRIDGE ) // Stairs, ladders
-				height = tile.height / 2;
+			int8_t theight = height = tiledataStatic->getHeight( pi->getId() );
+			if ( tflags & flagTileBridge ) // Stairs, ladders
+				height /= 2;
 
 			if ( s[i].z < (pos.z + MaxZstep) ) { // We cannot walk under it
-				if ( tile.flags & TILEFLAG_IMPASSABLE ) // Block flag
+				if ( tflags & flagTileImpassable ) // Block flag
 					return illegal_z;
 
 				if ( (s[i].z + height) <= (pos.z + 3) ) { // We can walk on it
-					if ( (s[i].z + tile.height) > zRes )
-						zRes = s[i].z + tile.height;
+					if ( (s[i].z + theight) > zRes )
+						zRes = s[i].z + theight;
 				} else
 					return illegal_z;
 			}
@@ -272,11 +271,8 @@ int8_t staticTop( sLocation pos )
 */
 int8_t tileHeight( uint16_t id )
 {
-	tile_st tile;
-	if ( !data::seekTile( id, tile ) )
-		return 0;
-	int8_t height = tile.height;
-	if ( tile.flags & TILEFLAG_BRIDGE )
+	int8_t height = tiledataStatic->getHeight(id);
+	if ( tiledataStatic->getFlags(id) & flagTileBridge )
 		height /= 2;
 
 	return height;
@@ -352,16 +348,14 @@ int8_t getHeight( sLocation pos )
 {
 	int8_t final_z = illegal_z, item_z = illegal_z, temp_z, base_z;
 	uint32_t item_flags;
-	tile_st tile;
 
 	NxwItemWrapper si;
 	si.fillItemsAtXY( pos.x, pos.y );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 		pItem pi = si.getItem();
 
-		data::seekTile( pi->getId(), tile );
-
-		base_z = ( tile.flags & TILEFLAG_BRIDGE /*|| !(tile.flags & TILEFLAG_IMPASSABLE)*/ ) ? pi->getPosition().z : pi->getPosition().z + tile.height;
+		uint32_t tflags = tiledataStatic->getFlags( pi->getId() );
+		base_z = tflags & flagTileBridge ? pi->getPosition().z : pi->getPosition().z + tiledataStatic->getHeight(pi->getId());
 		temp_z = pi->getPosition().z + tile.height;
 
 		// Check if the tile is reachable.
@@ -370,25 +364,25 @@ int8_t getHeight( sLocation pos )
 				// Nothing has been chosen until now: pick up this as the first valid Z value.
 				( item_z == illegal_z ) ||
 				// We're choosing between two bridges: choose the highest one
-				( item_flags & TILEFLAG_BRIDGE && tile.flags & TILEFLAG_BRIDGE && temp_z > item_z ) ||
+				( item_flags & flagTileBridge && tflags & flagTileBridge && temp_z > item_z ) ||
 				// We're choosing between two non-bridges: choose the highest one
-				( !(item_flags & TILEFLAG_BRIDGE) && !(tile.flags & TILEFLAG_BRIDGE) && temp_z > item_z )
+				( !(item_flags & flagTileBridge) && !(tflags & flagTileBridge) && temp_z > item_z )
 
 			) {
 				item_z = temp_z;
-				item_flags = tile.flags;
+				item_flags = tflags;
 			}
 
 			// We're choosing between a bridge and a non bridge: choose the highest one if the bridge is reachable only by falling down. Otherwise choose the bridge.
-			if ( !(item_flags & TILEFLAG_BRIDGE) && tile.flags & TILEFLAG_BRIDGE ) {
+			if ( !(item_flags & flagTileBridge) && tflags & flagTileBridge ) {
 				if ( temp_z >= pos.z - MIN_Z_FALL ) {
 					item_z = temp_z;
-					item_flags = tile.flags;
+					item_flags = tflags;
 				}
-			} else if ( item_flags & TILEFLAG_BRIDGE && !(tile.flags & TILEFLAG_BRIDGE) ) {
+			} else if ( item_flags & flagTileBridge && !(tflags & flagTileBridge) ) {
 				if ( item_z < pos.z - MIN_Z_FALL && temp_z > item_z ) {
 					item_z = temp_z;
-					item_flags = tile.flags;
+					item_flags = tflags;
 				}
 			}
 		}
@@ -396,12 +390,11 @@ int8_t getHeight( sLocation pos )
 
 	staticVector s;
 	data::collectStatics( pos.x, pos.y, s );
-	for( uint32_t i = 0; i < s.size(); i++ ) {
+	for( uint32_t i = 0; i < s.size(); i++ )
+	{
+		uint32_t tflags = tiledataStatic->getFlags(s[i].id);
 
-		if( !data::seekTile( s[i].id, tile ) )
-			continue;
-
-		base_z = ( tile.flags & TILEFLAG_BRIDGE /*|| !(tile.flags & TILEFLAG_IMPASSABLE)*/ ) ? s[i].z : s[i].z + tile.height;
+		base_z = tflags & flagTileBridge ? s[i].z : s[i].z + tiledataStatic->getHeight(s[i].id);
 		temp_z = s[i].z + tile.height;
 
 		// Check if the tile is reachable.
@@ -410,25 +403,25 @@ int8_t getHeight( sLocation pos )
 				// Nothing has been chosen until now: pick up this as the first valid Z value.
 				( item_z == illegal_z ) ||
 				// We're choosing between two bridges: choose the highest one
-				( item_flags & TILEFLAG_BRIDGE && tile.flags & TILEFLAG_BRIDGE && temp_z > item_z ) ||
+				( item_flags & flagTileBridge && tflags & flagTileBridge && temp_z > item_z ) ||
 				// We're choosing between two non-bridges: choose the highest one
-				( !(item_flags & TILEFLAG_BRIDGE) && !(tile.flags & TILEFLAG_BRIDGE) && temp_z > item_z )
+				( !(item_flags & flagTileBridge) && !(tflags & flagTileBridge) && temp_z > item_z )
 
 			) {
 				item_z = temp_z;
-				item_flags = tile.flags;
+				item_flags = tflags;
 			}
 
 			// We're choosing between a bridge and a non bridge: choose the highest one if the bridge is reachable only by falling down. Otherwise choose the bridge.
-			if ( !(item_flags & TILEFLAG_BRIDGE) && tile.flags & TILEFLAG_BRIDGE ) {
+			if ( !(item_flags & flagTileBridge) && tflags & flagTileBridge ) {
 				if ( temp_z >= pos.z - MIN_Z_FALL ) {
 					item_z = temp_z;
-					item_flags = tile.flags;
+					item_flags = tflags;
 				}
-			} else if ( item_flags & TILEFLAG_BRIDGE && !(tile.flags & TILEFLAG_BRIDGE) ) {
+			} else if ( item_flags & flagTileBridge && !(tflags & flagTileBridge) ) {
 				if ( item_z < pos.z - MIN_Z_FALL && temp_z > item_z ) {
 					item_z = temp_z;
-					item_flags = tile.flags;
+					item_flags = tflags;
 				}
 			}
 		}
