@@ -26,7 +26,7 @@ private:
 protected:
 	Location loc;
 	uint16_t model;
-	uint32_t clicked;
+	pSerializable clicked;		//!< Object (char or item) clicked
 
 public:
 	uint32_t serial;
@@ -44,10 +44,14 @@ public:
 	virtual bool isValid();
 	virtual void error( pClient client );
 
-	Location getLocation();
-	uint32_t getClicked();
-	uint16_t getModel();
-
+	const Location cTarget::getLocation() const
+	{ return loc; }
+	
+	const pSerializable cTarget::getClicked() const
+	{ return clicked; }
+	
+	const uint16_t cTarget::getModel() const
+	{ return model; }
 };
 
 class cObjectTarget : public cTarget {

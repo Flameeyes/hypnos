@@ -42,30 +42,11 @@ void cTarget::receive(pClient client)
 
 bool cTarget::isValid()
 {
-	if( type=1 && ( ( loc.x==UINVALID16 ) || ( loc.y==UINVALID16 ) ) )
+	if( type=1 && ( loc.x==UINVALID16 || loc.y==UINVALID16 ) )
 		return false;
-	if( type=0 && ( ( clicked==0 ) && ( model== 0 ) ) )
+	if( type=0 && !clicked && model== 0 )
 		return false;
 	return true;
-}
-
-void cTarget::error(pClient client)
-{
-}
-
-Location cTarget::getLocation()
-{
-	return loc;
-}
-
-uint32_t cTarget::getClicked()
-{
-	return clicked;
-}
-
-uint16_t cTarget::getModel()
-{
-	return model;
 }
 
 

@@ -293,7 +293,6 @@ uint32_t getclock()
 	return milliseconds ;
 }
 
-
 /*!
 \author Keldan
 \since 0.82r3
