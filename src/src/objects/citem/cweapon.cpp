@@ -55,7 +55,7 @@ const Skill cWeapon::getCombatSkill() const
 	if ( isWeaponLike(weaponFenc1H|weaponFenc2H) )
 		return skFencing;
 	
-	if ( isWeaponLike(weaponMace1H|weaponMace2H|weaponStave1H|weaponStave2H) )
+	if ( isWeaponLike(weaponMace1H|weaponMace2H|weaponStaff1H|weaponStaff2H) )
 		return skMacefighting;
 	
 	if ( isWeaponLike(weaponBow|weaponXBow|weaponHXBow) )

@@ -27,10 +27,13 @@ containers.xss, instead reads from containers.xml.
 
 \todo Actually write it
 */
-void cContainer::loadContainersData(std::istream &in)
+void cContainer::loadContainersData()
 {
+	ConOut("Loading constants information...\t\t");
+	
+	std::ifstream xmlfile("config/containers.xml");
 	try {
-		MXML::Document doc(in);
+		MXML::Document doc(xmlfile);
 		
 		MXML::Node *n = doc.main()->child();
 		do {
@@ -59,7 +62,7 @@ void cContainer::loadContainersData(std::istream &in)
 						continue;
 					}
 					
-					uint16_t valId = tVariant( id->getDat() ).toUInt16();
+					uint16_t valId = tVariant( id->data() ).toUInt16();
 					if ( valId )
 						containers[valId] = it;
 				} while ( (id = id->next() );
@@ -69,8 +72,10 @@ void cContainer::loadContainersData(std::istream &in)
 			}
 			
 		} while( (n = n->next()) );
+		ConOut("[   OK   ]\n");
 	} catch ( MXML::MalformedError e) {
-		LogCritical("containers.xml file not well formed. Default loading");
+		ConOut("[ Failed ]\n");
+		LogCritical("containers.xml file not well formed.");
 	}
 }
 

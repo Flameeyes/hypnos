@@ -87,8 +87,8 @@ uint16_t nStrConstants::weaponsTypes(std::string str)
 	if ( str == "weaponMace2H" ) return cWeapon::weaponMace2H;
 	if ( str == "weaponFenc1H" ) return cWeapon::weaponFenc1H;
 	if ( str == "weaponFenc2H" ) return cWeapon::weaponFenc2H;
-	if ( str == "weaponStave1H" ) return cWeapon::weaponStave1H;
-	if ( str == "weaponStave2H" ) return cWeapon::weaponStave2H;
+	if ( str == "weaponStaff1H" ) return cWeapon::weaponStaff1H;
+	if ( str == "weaponStaff2H" ) return cWeapon::weaponStaff2H;
 	if ( str == "weaponBow" ) return cWeapon::weaponBow;
 	if ( str == "weaponXBow" ) return cWeapon::weaponXBow;
 	if ( str == "weaponHXBow" ) return cWeapon::weaponHXBow;

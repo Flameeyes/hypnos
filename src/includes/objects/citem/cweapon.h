@@ -38,8 +38,8 @@ public:
 	static const uint16_t weaponMace2H	= 0x0020; //!< Mace 2 hands
 	static const uint16_t weaponFenc1H	= 0x0040; //!< Fencing 1 hand
 	static const uint16_t weaponFenc2H	= 0x0080; //!< Fencing 2 hands
-	static const uint16_t weaponStave1H	= 0x0100; //!< Staff 1 hand
-	static const uint16_t weaponStave2H	= 0x0200; //!< Staff 2 hands
+	static const uint16_t weaponStaff1H	= 0x0100; //!< Staff 1 hand
+	static const uint16_t weaponStaff2H	= 0x0200; //!< Staff 2 hands
 	static const uint16_t weaponBow		= 0x0400; //!< Bow
 	static const uint16_t weaponXBow	= 0x1000; //!< Crossbow
 	static const uint16_t weaponHXBow	= 0x2000; //!< Heavy Crossbow
@@ -102,12 +102,12 @@ public:
 	inline const bool isBowType() const
 	{ return isWeaponLike( getId(), weaponBow | weaponXBow | weaponHXBow ); }
 	
-	inline const bool isStave() const
-	{ return isWeaponLike( getId(), weaponStave1H | weaponStave2H ); }
+	inline const bool isStaff() const
+	{ return isWeaponLike( getId(), weaponStaff1H | weaponStaff2H ); }
 
 	//! -Fraz- The OSI macing weapons that do stamina and armor damage 2handed only
 	inline const bool IsSpecialMace() const
-	{ return isWeaponLike( getId(), weaponStave1H | weaponStave2H | weaponMace2H ); }
+	{ return isWeaponLike( getId(), weaponStaff1H | weaponStaff2H | weaponMace2H ); }
 
 //@}
 };

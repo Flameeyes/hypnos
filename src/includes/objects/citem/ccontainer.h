@@ -43,7 +43,7 @@ protected:
 	static mapContainerGumps containers;
 					//!< Containers' gumps
 	
-	static void loadContainersData(std::istream &in);
+	static void loadContainersData();
 //@}
 
 protected:
