@@ -360,6 +360,7 @@ void check_region_weatherchange ()
 	//! \todo sobstitute temporary region subnames with the true ones when regions redone
 
 	WeatherType current = region[cregion].weatherCurrent;
+	Climates climate = region[cregion].climate;
 	sint16_t oldintensity = region[cregion].weatherIntensity;
 	sint16_t newintensity = oldintensity;
 
@@ -391,40 +392,50 @@ void check_region_weatherchange ()
 	bool snow = false;
 	std::string message = "";
 
-	//! \todo insert a maxlight to limit light in bad beather (but nightvision should counter this) 
+	//! \todo insert a maxlight to limit light in bad beather (but nightvision should counter this)
 
 	switch (current)	//select message type to send clients based on previous weather in region. Also checking if weather change is too sudden, and if so lessen the impact :D
 	{
 	case wtSun:		// intensity 0 - 20
-		if (newintensity >= 35)
+		if (newintensity > 40)
 		{
-			newintensity = 69;	//If it was so clear, we need at least a few clouds in the sky before it can rain (or snow)
+			newintensity = 40;	//If it was so clear, we need at least a few clouds in the sky before it can rain (or snow)
 			message = "You see some clouds closing in";
 		}
 		break;
 	case wtCloud:		// intensity 21 - 40
-		if (newintensity >= 105)		// to have more than a light rain we need heavier clouds first
+		if (newintensity > 90)		// to have more than a light rain we need heavier clouds first
 		{
-			newintensity = 69;
+			newintensity = 70;
 			message = "Cloud covering thickens visibly. You hear rumbling in the distance";
 		}
-		else if (newintensity < 35) message = "The sky clears off and the sun shines again";
-		else if (newintensity >= 70)
-		{	//snow check
-			r = rand()%100;
-			if (r < snow) snow = true
-		}
-		break;
-	case wtStormCloud:	// intensity 41 - 70
-		//from this weather type, we can reach every other, since from here it can start raining with any intensity. Or it can snow but even clear up
-		if (newintensity < 70 && newintensity > 35) message = "The sky begins to clear off";
-		else if (newintensity < 35) message = "Strong winds clear away all the clouds, until the sun shines again";
+		else if (newintensity <= 20) message = "The sky clears off and the sun shines again";
 		else if (newintensity > 70)
 		{	//snow check
 			r = rand()%100;
-			if (r < snow) snow = true
+			if (r < snow) snow = true;
 		}
+		break;
+	case wtStormCloud:	// intensity 41 - 70
+		//from this weather type, we can reach every other, since from here it can start raining with any intensity. Or it can snow or even clear up
+		if (newintensity <= 40 && newintensity > 20) message = "The sky begins to clear off";
+		else if (newintensity <= 20) message = "Strong winds clear away the thick clouds, until the sun shines again";
+		else if (newintensity > 70)
+		{	//snow check
+			r = rand()%100;
+			if (r < snow) snow = true;
+		}
+		break;
 	case wtLightRain:	// intensity 71 - 90
+		if (newintensity < 71)
+		{
+			if (newintensity > 20) message = "The rain is stopping";
+			else message = "The rain is stopping and the sky clears up";
+		}
+		else message = "The rain gets stronger";
+		r = rand()%100;
+		if (climate == clArtic && r < snow/4) snow = true;	//If artic climate and raining, check if rain becomes snow (at 1/4 of normal snow chance)
+		break;
 	case wtMediumRain:	// intensity 91 - 110
 	case wtHeavyRain:	// intensity 111 - 140
 	case wtLightSnow:	// intensity 71 - 90
