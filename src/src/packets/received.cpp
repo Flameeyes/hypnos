@@ -137,7 +137,7 @@ void cPacketSendObjectInformation::prepare()
 }
 
 /*!
-\brief alters item already shown to client (color & position). used by lsd effect
+\brief alters item already shown to client (color & position). Item real position and color is not changed (used by lsd effect)
 \author Chronodt
 \note packet 0x1a
 */
@@ -145,7 +145,6 @@ void cPacketSendObjectInformation::prepare()
 void cPacketSendLSDObject::prepare()
 {
         buffer = new uint8_t[20]; 	//MAXIMUM packet length
-
 
 	LongToCharPtr(pi->getSerial() | 0x80000000, buffer +3);
 
@@ -186,6 +185,106 @@ void cPacketSendLSDObject::prepare()
 }
 
 
+/*!
+\brief Char Location and body type (Login confirmation)
+\author Chronodt
+\note packet 0x1b
+*/
+
+void cPacketSendLoginConfirmation::prepare()
+{
+        buffer = new uint8_t[37];
+        length= 37;
+
+       	static const uint8_t templ[37] = {
+	        0x1B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	        0x00, 0x7F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x80, 0x09,
+	        0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+		};
+	memcpy(buffer, templ, 37);
+	Location charpos= pc->getPosition();
+
+	LongToCharPtr(pc->getSerial(), buffer +1);
+	ShortToCharPtr(pc->getId(), buffer +9);
+	ShortToCharPtr(charpos.x, buffer +11);
+	ShortToCharPtr(charpos.y, buffer +13);
+	buffer[16]= charpos.z;
+	buffer[17]= pc->dir;
+	if(pc->poisoned) buffer[28]=0x04; else buffer[28]=0x00; //AntiChrist -- thnx to SpaceDog
+}
+
+/*!
+\brief Send Speech (not unicode)
+\author Chronodt
+\note packet 0x1c
+*/
+
+void cPacketSendSpeech::prepare()
+{
+	std::string text;
+        if (ghost) text = speech.toGhost()
+        else text = speech.toString();	// reducing unicode string to simple text
+	length = 44 + text.size() + 1;
+        buffer = new uint8_t[length];
+        buffer[0] = 0x1c;
+	ShortToCharPtr(length, buffer+1);
+       	LongToCharPtr(ps ? ps->getSerial() : 0xffffffff, buffer+3);
+	ShortToCharPtr(ps ? ps->getId() : 0xffff, buffer+7);
+        buffer[9] = speech.getMode();
+      	ShortToCharPtr(speech.getColor(), buffer+10);
+      	ShortToCharPtr(speech.getFont(), buffer+12);
+        strncpy(buffer + 14, (ps) ? ps->getCurrentName().c_str() : "", 30); //this will write the name and fills the missing char in the 30 bytes buffer with \0
+        strcpy(buffer + 44, text.c_str()); 
+}
+
+/*!
+\brief removes item from client's view
+\author Flameeyes
+\note packet 0x1d
+*/
+
+void cPacketSendDeleteObj::prepare()
+{
+	length = 5;
+	buffer = new uint8_t[5];
+
+	buffer[0] = 0x1D;
+	LongToCharPtr(pser->getSerial(), buffer+1);
+}
+
+/*!
+\brief Draws game player (used only for client-played char)
+\author Chronodt
+\note packet 0x20
+*/
+
+void cPacketSendDrawGamePlayer::prepare()
+{
+	length = 19;
+	buffer = new uint8_t[19];
+        pBody body = pc->getBody();
+
+	buffer[0] = 0x20;
+	LongToCharPtr(pc->getSerial(), buffer+1);
+	ShortToCharPtr(body->getId(), buffer +5);
+	buffer[7] = unk1;
+	ShortToCharPtr(body->getSkinColor(), buffer +8);
+        
+	uint8_t flag = 0;
+	if ( pc->poisoned )   flag |= 0x04;
+	if ( pc->isHidden() ) flag |= 0x80;
+
+	buffer[10] = flag;
+
+        Location pos = pc->getPosition();
+	ShortToCharPtr(pos.x, buffer +11);
+	ShortToCharPtr(pos.y, buffer +13);
+	ShortToCharPtr(0, buffer +15);
+	buffer[17]= pc->dir;   // old nox used this packet sending dir|0x80, but that wouldn't make the char always running?
+        //!\todo verify if using pos.dispz or pos.z changes anything here
+	buffer[18]= pos.dispz;
+}
 
 
 void cPacketSendAction::prepare()
@@ -322,14 +421,6 @@ void cPacketSendSoundFX::prepare()
 	ShortToCharPtr(z, buffer +10);
 }
 
-void cPacketSendDeleteObj::prepare()
-{
-	length = 5;
-	buffer = new uint8_t[5];
-
-	buffer[0] = 0x1D;
-	LongToCharPtr(serial, buffer+1);
-}
 
 void cPacketSendSkillState::prepare()
 {

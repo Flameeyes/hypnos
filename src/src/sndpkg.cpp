@@ -545,7 +545,11 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 			{
 				NXWSOCKET i=sw.getSocket();
 
-				SendSpeechMessagePkt(i, id, model, 1, color, font, name, (char*)&buffer[s][8]);
+				//!\todo redo adding to cpeech all the data and verifying
+				cPacketSendSpeech pk(cSpeech(buffer+8));
+				sw->sendPacket(&pk);
+
+				//SendSpeechMessagePkt(i, id, model, 1, color, font, name, (char*)&buffer[s][8]);
 			}
 		} // end unicode IF
 		else
@@ -916,32 +920,6 @@ void SendPauseResumePkt(NXWSOCKET s, uint8_t flag)
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SendDeleteObjectPkt(NXWSOCKET s, uint32_t serial)
-{
-	uint8_t removeitem[5] = { 0x1D, 0x00, };
-	LongToCharPtr(serial, removeitem +1);
-
-	Xsend(s, removeitem, 5);
-//AoS/	Network->FlushBuffer(s);
-}
-
-void SendDrawGamePlayerPkt(NXWSOCKET s, uint32_t player_id, uint16_t model, uint8_t unk1, uint16_t color, uint8_t flag, Location pos, uint16_t unk2, uint8_t dir, bool useDispZ)
-{
-	uint8_t goxyz[19]={ 0x20, 0x00, };
-
-	LongToCharPtr(player_id, goxyz +1);
-	ShortToCharPtr(model, goxyz +5);
-	goxyz[7] = unk1;
-	ShortToCharPtr(color, goxyz +8);
-	goxyz[10] = flag;
-	ShortToCharPtr(pos.x, goxyz +11);
-	ShortToCharPtr(pos.y, goxyz +13);
-	ShortToCharPtr(unk2, goxyz +15);
-	goxyz[17]= dir;
-	goxyz[18]= (useDispZ)? pos.dispz : pos.z;
-	Xsend(s, goxyz, 19);
-//AoS/	Network->FlushBuffer(s);
-}
 
 void SendDrawObjectPkt(NXWSOCKET s, pChar pc, int z)
 {
@@ -1023,28 +1001,6 @@ void SendDrawObjectPkt(NXWSOCKET s, pChar pc, int z)
 }
 
 
-
-void SendSpeechMessagePkt(NXWSOCKET s, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint8_t sysname[30],  char *text)
-{
-        uint16_t tl, len = strlen((char *)text) + 1;
-        uint8_t talk[14]={ 0x1C, 0x00, };
-
-        tl = 14 + 30  + len;  // 44(header) + len + null term.
-
-	ShortToCharPtr(tl, talk +1);
-	LongToCharPtr(id, talk +3);
-	ShortToCharPtr(model, talk +7);
-	talk[9]=type;
-	ShortToCharPtr(color, talk +10);
-	ShortToCharPtr(fonttype, talk +12);
-
-	Xsend(s, talk, 14);
-	Xsend(s, sysname, 30);
-	Xsend(s, text, len);
-//AoS/	Network->FlushBuffer(s);
-}
-
-
 void SendUnicodeSpeechMessagePkt(NXWSOCKET s, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint32_t lang, uint8_t sysname[30], uint8_t *unicodetext, uint16_t unicodelen)
 {
 	uint16_t tl;
@@ -1100,7 +1056,8 @@ void impowncreate(NXWSOCKET s, pChar pc, int z) //socket, player to send
 	if( !pc->npc && !pc->IsOnline()  && !pc_currchar->IsGM() )
 	{
 		sendit=false;
-		SendDeleteObjectPkt(s, pc->getSerial());
+		cPacketSendDeleteObj pk(pc);
+		client->sendPacket(&pk);
 	}
 	// hidden chars can only be seen "grey" by themselves or by gm's
 	// other wise they are invisible=dont send the packet

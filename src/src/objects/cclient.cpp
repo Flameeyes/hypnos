@@ -967,7 +967,10 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 					sw.fillOnline( pi->getPosition() );
                                         //! \todo the sendpacket stuff here
 					for( sw.rewind(); !sw.isEmpty(); sw++ )
-						SendDeleteObjectPkt(sw.getSocket(), pi->getSerial() );
+                                        {
+						cPacketSendDeleteObj pk(pi);
+						si->sendPacket(&pk); //!<\todo si must become a client pointer
+                                        }
 					mapRegions->remove(pi);
 				}
 
@@ -1070,8 +1073,8 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 	        sw.fillOnline( pi );
         	for( sw.rewind(); !sw.isEmpty(); sw++ )
         	{
-                        //! \todo the sendpacket stuff here
-        		SendDeleteObjectPkt( sw.getSocket(), pi->getSerial() );
+			cPacketSendDeleteObj pk(pi);
+			sw->sendPacket(&pk);
         	}
 
         	pi->MoveTo(Loc);
@@ -1798,8 +1801,11 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 		NxwSocketWrapper sws;
 		sws.fillOnline( pi );
 		for( sws.rewind(); !sws.isEmpty(); sws++ )
-                        //! \todo the sendpacket stuff here
-			SendDeleteObjectPkt( sws.getSocket(), pi->getSerial() );
+                {
+			cPacketSendDeleteObj pk(pi);
+			sws->sendPacket(&pk);
+                }
+
 
 //! \todo verify if layer behaves as Flameeyes told me :D (but it seems to me it does NOT! :P)
 
@@ -2145,7 +2151,8 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 
 				for( sw.rewind(); !sw.isEmpty(); sw++ )
 				{
-					SendDeleteObjectPkt( sw.getSocket(), pSell->getSerial() );
+					cPacketSendDeleteObj pk(pSell);
+					sw->sendPacket(&pk);
 				}
 
 				pSell->setContainer( np_b );

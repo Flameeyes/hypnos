@@ -1651,8 +1651,11 @@ void cGuilds::Title(int s,int player2)
 
 		uint8_t sysname[30]={ 0x00, };
 		strcpy((char *)sysname, "System");
+                //!\todo redo adding to cpeech all the data and verifying
+		cPacketSendSpeech pk(cSpeech(title));
+		pc2->getClient()->sendPacket(&pk);
 
-		SendSpeechMessagePkt(s, pc2->getSerial(), 0x0101, 0, pc2->emotecolor, 0x0003, sysname, title);
+		//SendSpeechMessagePkt(s, pc2->getSerial(), 0x0101, 0, pc2->emotecolor, 0x0003, sysname, title);
 	}
 }
 

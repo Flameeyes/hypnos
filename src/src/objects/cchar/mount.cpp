@@ -178,7 +178,8 @@ void cChar::mountHorse( pNPC mount )
 		NXWSOCKET si=sw.getSocket();
 		if(si!=INVALID)
 		{
-			SendDeleteObjectPkt(si, mount_serial);
+			cPacketSendDeleteObj pk(mount);
+			si->sendPacket(&pk);
 		}
 	}
 

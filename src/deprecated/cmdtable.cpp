@@ -1628,7 +1628,9 @@ void command_gy( pClient client )
 		if (pc_i && pc_i->IsGM())
 		{
 			NXWSOCKET allz = ps_i->toInt();
-			SendSpeechMessagePkt(allz, id, model, 1, color, font, name, (char*)message.c_str() );
+                        //!\todo redo adding to cpeech all the data and verifying
+			cPacketSendSpeech pk(cSpeech(message), pc);
+			ps_i->sendPacket(&pk);
 		}
 	}
 }
@@ -1669,7 +1671,10 @@ void command_yell( pClient client )
 		if (pc_i )
 		{
 			NXWSOCKET allz = ps_i->toInt();
-			SendSpeechMessagePkt(allz, id, model, 1, color, font, name, (char*)message.c_str() );
+                        //!\todo redo adding to cpeech all the data and verifying
+			cPacketSendSpeech pk(cSpeech(message), pc);
+			ps_i->sendPacket(&pk);
+
 		}
 	}
 }

@@ -20,8 +20,8 @@ protected:
         uint8_t mode;		//!< 0=say,2=emote,8=whisper,9=yell
 	uint16_t color;		//!< Color of the speech
 	uint16_t font;		//!< Font to use for the speech
-	char language[4];	//!< Language code
-	pChar speaker;		//!< Character who's speeching
+	char language[4];	//!< Language code (null terminated)
+	pSerializable speaker;	//!< Character who's speeching. NOTE: everything with a serial can speak!
 	bool packetByteOrder;	//!< Is the string in network-endian?
 public:
 //@{
@@ -53,6 +53,25 @@ public:
         
 	inline const int size()
 	{ return unicodeText.size(); }
+
+        inline const uint8_t getMode()
+        { return mode; }
+
+        inline void setMode(const uint8_t newmode)
+        { mode = newmode; }
+
+	inline const uint16_t getColor()
+        { return color; }
+
+        inline void setColor(const uint16_t newcolor)
+        { color = newcolor; }
+
+	inline const uint16_t getFont()
+        { return font; }
+
+        inline void setFont(const uint16_t newfont)
+        { font = newfont; }
+
 };
 
 void responsevendor(pClient client, int vendor);

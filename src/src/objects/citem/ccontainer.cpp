@@ -227,7 +227,10 @@ void cContainer::addItem(pItem item, uint16_t xx, uint16_t yy)
 	NxwSocketWrapper sw;
 	sw.fillOnline( item );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
-		SendDeleteObjectPkt(sw.getSocket(), item->getSerial() );
+        {
+		cPacketSendDeleteObj pk(item);
+		sw->sendPacket(&pk);
+        }
 
 	item->setContainer(this);
 	if ( xx != 0xFFFF )

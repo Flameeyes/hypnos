@@ -643,6 +643,10 @@ static void exec_broadcast(char *txt)
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
 		NXWSOCKET s=sw.getSocket();
 		if( s!=INVALID ) {
+                        //!\todo redo adding to cpeech all the data and verifying
+			cPacketSendSpeech pk(cSpeech(txt));
+			sw->sendPacket(&pk);
+
 			SendSpeechMessagePkt(s, 0x01010101, 0x0101, 1, 0x0040, 0x0003, sysname, txt);
 		}
 	}
@@ -663,7 +667,11 @@ static void exec_gy(char *txt)
 		pChar pj=ps->currChar();
 		if (pj && pj->IsGM())
 		{
-			SendSpeechMessagePkt(ps->toInt(), 0x01010101, 0x0101, 1, 0x0040, 0x0003, name, txt);
+                        //!\todo redo adding to cpeech all the data and verifying
+			cPacketSendSpeech pk(cSpeech(txt));
+			sw->sendPacket(&pk);
+
+//			SendSpeechMessagePkt(ps->toInt(), 0x01010101, 0x0101, 1, 0x0040, 0x0003, name, txt);
 		}
 	}
 

@@ -2761,8 +2761,12 @@ NATIVE( _chr_showMessage )
 
 		uint8_t sysname[30]={ 0x00, };
 		strcpy((char *)sysname, "System");
+		// color = params[4]
 
-		SendSpeechMessagePkt(s, pc2->getSerial(), pc2->getId(), 6, params[4], (uint16_t)pc1->fonttype, sysname, g_cAmxPrintBuffer);
+                // this is done only if there will be a remake of these function. Non even tried to get correct data here
+                cPacketSendSpeech pk(cSpeech(g_cAmxPrintBuffer), pc2);
+                pc1->getClient()->sendPacket(&pk);
+
 		return 0;
 	}
 	return INVALID;
@@ -3241,7 +3245,11 @@ NATIVE(_itm_speech)
 	uint8_t sysname[30]={ 0x00, };
 	strcpy((char *)sysname, "System");
 
-	SendSpeechMessagePkt( pc->getSocket(), cur->getSerial(), 0x0101, 6, 0x0481, 0x0003, sysname, g_cAmxPrintBuffer );
+        //only substituting speech message below. update as necessary
+	cPacketSendSpeech pk(cSpeech(g_cAmxPrintBuffer), cur);
+	pc->getClient()->sendPacket(&pk);
+
+	//SendSpeechMessagePkt( pc->getSocket(), cur->getSerial(), 0x0101, 6, 0x0481, 0x0003, sysname, g_cAmxPrintBuffer );
 
 	return 0;
 }

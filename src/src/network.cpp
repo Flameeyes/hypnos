@@ -384,11 +384,12 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 
 			for (cClients::iterator i = cClient::clients.begin(); cClient::clients.end(); i++ )
 			{
-                                pChar pi = i->CurrChar();
+                                pChar pi = (*i)->currChar();
 				if ( pi )
-					if( pc != i && pc->hasInRange(pi) )
+					if( pc != pi && pc->hasInRange(pi) )
 					{
-						i->SendDeleteObjectPkt(pc_serial);
+						cPacketSendDeleteObj pk(pc);
+        		                        (*i)->sendPacket(&pk);
 					}
 			}
 
@@ -941,6 +942,7 @@ void cNetwork::enterchar(int s)
 #ifdef ENCRYPTION
 	Network->FlushBuffer(s);
 #endif
+//!\todo use cPacketSendLoginConfirmation when rewriting here
 	Xsend(s, startup, 37);
 #ifdef ENCRYPTION
 	Network->FlushBuffer(s);

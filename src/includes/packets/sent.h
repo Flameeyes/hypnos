@@ -109,7 +109,7 @@ public:
 
 
 /*!
-\brief Sends to client info on item on the ground
+\brief lsd - alters item already shown to client. Real item position & color are not altered, just the shown ones
 \author Chronodt
 \note packet 0x1a
 */
@@ -130,6 +130,93 @@ public:
 	inline cPacketSendLSDObject(pItem i, pPC p, uint16_t c, Location pos) :
 		cPacketSend(NULL, 0), item(i), pc(p), color(c), position(pos)
 	{ }
+	void prepare();
+};
+
+/*!
+\brief Char Location and body type (Login confirmation)
+\author Chronodt
+\note packet 0x1b
+*/
+
+
+class cPacketSendLoginConfirmation : public cPacketSend
+{
+protected:
+        pPC pc;			//!< Player who is logging in
+public:
+	/*!
+        \param p pc who is logging in
+	*/
+	inline cPacketSendLoginConfirmation(pPC p) :
+		cPacketSend(NULL, 0), pc(p)
+	{ }
+	void prepare();
+};
+
+/*!
+\brief Send character speech (not unicode) to listener
+\author Chronodt
+\note packet 0x1c
+*/
+
+class cPacketSendSpeech : public cPacketSend
+{
+protected:
+        cSpeech speech;				//!< what ps is saying
+        pSerializable ps;			//!< everything with a serial can talk... but please use some logic :P
+	bool ghost;				//!< "ghostize" message (OOOoOOOoOOO :) )
+public:
+	/*!
+        \param p talker. NOTE: it p is NULL, it is considered a system message
+        \param s what is being told
+        \param toghost speech has to be mutated to ghost speech
+	*/
+        	inline cPacketSendSpeech(cSpeech &s, pSerializable p = NULL, bool ghostize = false) :
+		cPacketSend(NULL, 0), speech(s), ps(p), ghost(ghostize)
+	{ }
+	void prepare();
+};
+
+
+/*!
+\brief Delete object
+\author Flameeyes & Chronodt
+\note packet 0x1d
+*/
+class cPacketSendDeleteObj : public cPacketSend
+{
+protected:
+	pSerializable pser;
+public:
+	/*!
+	\param s serializable object to remove
+	*/
+	inline cPacketSendDeleteObj(pSerializable s) :
+		cPacketSend(NULL, 0), ps(s)
+	{ }
+
+	void prepare();
+};
+
+/*!
+\brief Draws game player (used only for client-played char)
+\author Chronodt
+\note packet 0x20
+*/
+
+class cPacketSendDrawGamePlayer : public cPacketSend
+{
+protected:
+	pPC pc;		//! Current player
+public:
+	/*!
+	\param s serial of the object to remove
+	*/
+	inline cPacketSendDrawGamePlayer(pPC player) :
+		cPacketSend(NULL, 0), pc(player)
+	{ }
+
 	void prepare();
 };
 
@@ -253,21 +340,7 @@ public:
 	void prepare();
 };
 
-//! Delete object
-class cPacketSendDeleteObj : public cPacketSend
-{
-protected:
-	uint32_t serial;
-public:
-	/*!
-	\param s serial of the object to remove
-	*/
-	inline cPacketSendDeleteObj(uint32_t s) :
-		cPacketSend(NULL, 0), serial(s)
-	{ }
 
-	void prepare();
-};
 
 //! Send skill status
 class cPacketSendSkillState : public cPacketSend

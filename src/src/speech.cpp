@@ -1415,7 +1415,9 @@ static bool stablePet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharW
 						if( ps==NULL )
 							continue;
 						
-						SendDeleteObjectPkt(ps->toInt(), pc_pet_serial);
+						cPacketSendDeleteObj pk(pc_pet);
+						client->sendPacket(&pk);
+
 					}
 
 					pc_pet->war=0;

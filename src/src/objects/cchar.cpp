@@ -524,10 +524,12 @@ void cChar::unHide()
 		if ( pj )
 		{
 			if (pj != *this) { //to other players : recreate player object
-				SendDeleteObjectPkt(i, my_serial);
+				cPacketSendDeleteObj pk(this);
+                                client->sendPacket(&pk);
 				impowncreate(i, this, 0);
 			} else {
-				SendDrawGamePlayerPkt(i, my_serial, getId(), 0x00, getColor(), (poisoned ? 0x04 : 0x00), my_pos, 0x0000, dir|0x80);
+                        	cPacketSendDrawGamePlayer pk(this);
+                                ps->sendPacket(&pk);
 			}
 		}
 	}
@@ -870,16 +872,10 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
     // Send the draw player packet
     //
 	if ( socket != INVALID ) {
-		uint8_t flag = 0x00;
-		Location pos = getPosition();
 
-		if( poisoned )
-			flag |= 0x04;
+		cPacketSendDrawGamePlayer pk(this);
+		ps->sendPacket(&pk);
 
-		if ( IsHidden() )
-			flag |= 0x80;
-
-		SendDrawGamePlayerPkt(socket, getSerial(), getId(), 0x00, getColor(), flag, pos, 0x0000, dir | 0x80, true);
 
 		getBody()->calcWeight();
 		client->statusWindow( this, true);
@@ -2422,7 +2418,11 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 		}
 	}
 
-	SendSpeechMessagePkt(socket, getSerial(), 0x0101, 6, color, 0x0003, sysname, temp1);
+	//!\todo redo adding to cpeech all the data and verifying
+	cPacketSendSpeech pk(cSpeech(temp1));
+	client->sendPacket(&pk);
+
+	//SendSpeechMessagePkt(socket, getSerial(), 0x0101, 6, color, 0x0003, sysname, temp1);
 }
 
 /*!

@@ -67,11 +67,10 @@ void itemeffectUO3D(pItem pi, ParticleFx *sta);
 void MakeGraphicalEffectPkt_(uint8_t pkt[28], uint8_t type, uint32_t src_serial, uint32_t dst_serial, uint16_t model_id, Location src_pos, Location dst_pos, uint8_t speed, uint8_t duration, uint8_t adjust, uint8_t explode );
 
 void SendPauseResumePkt(pClient client, uint8_t flag);
-void SendDeleteObjectPkt(pClient client, uint32_t serial);
 void SendDrawObjectPkt(pClient client, pChar pc, int z);
-void SendSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint8_t sysname[30], char *text);
+
 void SendUnicodeSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint32_t lang, uint8_t sysname[30], uint8_t *unicodetext, uint16_t unicodelen);
-void SendDrawGamePlayerPkt(pClient client, uint32_t player_id, uint16_t model, uint8_t unk1, uint16_t color, uint8_t flag, Location pos, uint16_t unk2, uint8_t dir, bool useDispZ = false);
+
 void SendPlaySoundEffectPkt(pClient client, uint8_t mode, uint16_t sound_model, uint16_t unkn, Location pos, bool useDispZ = false);
 void impowncreate(pClient client, pChar pc, int z);
 	//!< socket, player to send
