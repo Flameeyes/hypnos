@@ -72,6 +72,10 @@ if test "$is_win" == "yes"; then
 else
 	AC_FUNC_FORK
 	AC_CHECK_FUNCS([ntohl ntohs htonl htons])
+	
+	# define FHS-compliant directories only if not under windows :)
+	
+	AC_DEFINE(DATADIR, $datadir, "Base data dir for hypnos")
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.

@@ -1827,7 +1827,7 @@ void cChar::Kill()
 
 					if (SrvParms->pvp_log)
 					{
-							LogFile pvplog("PvP.log");
+							cLogFile pvplog("PvP.log");
 							pvplog.Write("%s was killed by %s!\n",getCurrentName().c_str(), pKiller->getCurrentName().c_str());
 					}
 				}   // was innocent
@@ -1923,7 +1923,7 @@ void cChar::Kill()
 
 					if (SrvParms->pvp_log)
 					{
-							LogFile pvplog("PvP.log");
+							cLogFile pvplog("PvP.log");
 							pvplog.Write("%s was killed by %s!\n",getCurrentName().c_str(), pk->getCurrentName().c_str());
 					}
 				}   // was innocent

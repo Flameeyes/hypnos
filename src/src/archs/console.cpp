@@ -110,21 +110,21 @@ void tConsoleInterface::output(tInterface::Level lev, const std::string &str)
 	case tInterface::levError:
 		outs = std::cerr;
 		AnsiOut(outs, "\x1B[1;31m");
-		outs << "E " << tInterface::getDate() << " - ";
+		outs << "E " << getDateString() << " - ";
 		break;
 	case tInterface::levWarning:
 		outs = std::cerr;
 		AnsiOut(outs, "\x1B[1;33m");
-		outs << "W " << tInterface::getDate() << " - ";
+		outs << "W " << getDateString() << " - ";
 		break;
 	case tInterface::levInformation:
 		AnsiOut(outs, "\x1B[1;34m");
-		outs << "i " << tInterface::getDate() << " - ";
+		outs << "i " << getDateString() << " - ";
 		break;
 	case tInterface::levPanic:
 		outs = std::cerr;
 		AnsiOut(outs, "\x1B[1;31m");
-		outs << "! " << tInterface::getDate() << " - ";
+		outs << "! " << getDateString() << " - ";
 		break;
 	}
 	
@@ -181,8 +181,9 @@ void *tConsoleInterface::run()
 
 int main(int argc, char *argv[])
 {
-	if (ServerScp::g_nDeamonMode!=0)
-		init_deamon();
+	// Better way to handle daemons on nix platforms: --daemon argument :)
+	if ( argc > 1 && ! strcmp(argv[1], "--daemon") )
+		init_daemon();
 	
 	new tConsoleInterface();
 	new tMainLoop();

@@ -45,25 +45,4 @@ void tInterface::outputf(tInterface::Level lev, char *txt, ...)
 	free(tmp);
 }
 
-/*!
-\brief Gets a string representing the current date and time for the log
-*/
-std::string tInterface::getDate()
-{
-	time_t TIME;
-	tm* T;
-	time(&TIME);
-	T = localtime(&TIME);
-	
-	std::ostringsream sout;
-	
-	sout 	<< "["	<< setw(2) << setfill(0) << T->m_mday
-		<< "/"	<< setw(2) << setfill(0) << T->tm_mon + 1
-		<< "/"	<< setw(4) << setfill(0) << T->tm_year + 1900
-		<< " "	<< setw(2) << setfill(0) << T->tm_hour 
-		<< ":"	<< setw(2) << setfill(0) << T->tm_min
-		<< ":"	<< setw(2) << setfill(0) << T->tm_sec
-		<< "]";
 
-	return sout.str();
-}

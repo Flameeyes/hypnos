@@ -9,7 +9,9 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "clock.h"
+#include "dirs.h"
 #include "hypnos.h"
+#include "logsystem.h"
 #include "mainloop.h"
 #include "archs/tinterface.h"
 #include "networking/tkiller.h"
@@ -21,6 +23,7 @@
 #endif
 
 #include <fstream>
+#include <sstream>
 
 tMainLoop *tMainLoop::instance = NULL;
 
@@ -38,19 +41,22 @@ tMainLoop::tMainLoop()
 
 #ifdef __unix__
 	// Put the pid into the right file
-	ofstream pid("/var/run/hypnos.pid");
+	ofstream pid(nDirs::getPidFilePath());
 	if ( pid )
 	{
 		pid << getpid();
-	} else
-		LogWarning("Error writing PID to /var/run/hypnos.pid. Is the directory writable?");
+	} else {
+		ostringstream sout;
+		sout << "Error writing PID to " << nDirs::getPidFilePath() << ". Is the directory writable?";
+		LogWarning(sout.str().c_str());
+	}
 #endif
 	
 	srand(getClockmSecs()); // initial randomization call
 	nSettings::load();
 	
 	// Load MULs
-	nMULFiles::setMULpath(nSettings::Server::getMULFilesPath());
+	nMULFiles::setMULpath(nDirs::getMulsDir());
 	tiledataStatic = new nMULFiles::fTiledataStatic();
 	tiledataLand = new nMULFiles::fTiledataLand();
 	
@@ -246,11 +252,11 @@ void *tMainLoop::run()
 	delete tKiller::instance;
 	tInterface::outPlain("[  Ok  ]\n");
 	
-	if (NewErrorsLogged())
-		outError("New ERRORS have been logged. Please send the logs/error*.log and logs/critical*.log files to the dev team !\n");
+	if (cLogFile::newErrorsLogged())
+		outError("New errors have been logged. See the server log for details.\n");
 	
-	if (NewWarningsLogged())
-		outWarning("New WARNINGS have been logged. Probably scripting errors. See the logs/warnings*.log for details !\n");
+	if (cLogFile::newWarningsLogged())
+		outWarning("New warnings have been logged. See the server log for details.\n");
 	
 	tInterface::instance->stop();
 	tInterface::instance->join();

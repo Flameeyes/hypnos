@@ -4,6 +4,9 @@
 | This software is free software released under GPL2 license.              |
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
+| Copyright (c) 2003 - NoX-Wizard Project                                  |
+| Copyright (c) 2004 - Hypnos Project                                      |
+|                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
@@ -14,66 +17,59 @@
 #define __LOGSYSTEM_H__
 
 #include "common_libs.h"
-#include "constants.h"
-#include "typedefs.h"
-#include "archs/tinterface.h"
-
-class LogFile;
-
-extern int32_t entries_e, entries_c, entries_w;
-extern LogFile ServerLog;	//!< global log object
-
-void WriteGMLog(pChar, char *msg, ...) PRINTF_LIKE(2,3);
+#include <iosfwd>
 
 /*!
 \brief Manage a log file
 \author Anthalir
 \since 0.82a
 */
-class LogFile
+class cLogFile
 {
 private:
-	FILE *file;		//!< pointer to opened file
-	std::string filename;	//!< name of the file
+	std::ostream file;	//!< Log file opened for output
 
 public:
-	LogFile(std::string name);
-	LogFile(char *format, ...) PRINTF_LIKE(2,3);	//!< path + filename
-	~LogFile();
-	void Write(std::string str);
+	//! Type of message to log
+	enum LogType {
+		logMessage,	//!< Simple message
+		logWarning,	//!< Warning
+		logError,	//!< Error
+		logCritical	//!< Critical error
+	};
+
+	cLogFile(const std::string &str);
+	~cLogFile();
+	
+	void Write(const std::string &str);
 	void Write(char *format, ...) PRINTF_LIKE(2,3);
+	
+	static cLogFile *serverLog;	//!< Global log object
+	static void logMessage(LogType type, char *fpath, int lnum, char *Message, ...) PRINTF_LIKE(4,5);
+	
+	static uint32_t logCounts[4];	//!< Counter for different type of errors
+	
+	static bool newErrorsLogged()
+	{ return logCounts[logError] || logCounts[logCritical]; }
+	
+	static bool newWarningsLogged()
+	{ return logCounts[logWarning]; }
 };
 
+//@{
 /*!
-\brief Check if new errors has been logged
-\retval true New errors had been logged, warn the user
-\retval false No new errors had been logged
+\brief Commodity Macros
+
+These functions are called as 'commodity' macros to simplify the call of actual
+logging facilities, stating the file name and the line number.
 */
-inline bool NewErrorsLogged()
-{ return (entries_e > 0 || entries_c > 0); }
+#define LogMessage(...)		cLogFile::logMessage(cLogFile::logMessage, __FILE__, __LINE__, __VA_ARGS__)
+#define LogWarning(...)		cLogFile::logMessage(cLogFile::logWarning, __FILE__, __LINE__, __VA_ARGS__)
+#define LogError(...)		cLogFile::logMessage(cLogFile::logError, __FILE__, __LINE__, __VA_ARGS__)
+#define LogCritical(...)	cLogFile::logMessage(cLogFile::logCritical, __FILE__, __LINE__, __VA_ARGS__)
+//@}
 
-/*!
-\brief Check if new warnings has been logged
-\retval true New warnings had been logged, warn the user
-\retval false No new warnings had been logged
-*/
-inline bool NewWarningsLogged()
-{ return (entries_w > 0); }
-
-void LogMessageF(char type, char *fpath, int lnum, char *Message, ...) PRINTF_LIKE(4,5);
-
-//---------------------------------------------------------------------------
-// Translator macros for functions
-//---------------------------------------------------------------------------
-
-#define LogMessage(...)		LogMessageF('M', __FILE__, __LINE__, __VA_ARGS__)
-#define LogWarning(...)		LogMessageF('W', __FILE__, __LINE__, __VA_ARGS__)
-#define LogError(...)		LogMessageF('E', __FILE__, __LINE__, __VA_ARGS__)
-#define LogCritical(...)	LogMessageF('C', __FILE__, __LINE__, __VA_ARGS__)
-
-//---------------------------------------------------------------------------
 // Special logging facility for debugging
-//---------------------------------------------------------------------------
 #ifndef NDEBUG
 	#define SWITCH_FALLOUT LogError("Switch fallout")
 #else

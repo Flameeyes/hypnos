@@ -610,7 +610,7 @@ void cChar::doCombat()
 			}
 			if (SrvParms->pvp_log)
 			{
-				LogFile pvplog("PvP.log");
+				cLogFile pvplog("PvP.log");
 				pvplog.Write("%s was killed by %s!\n", pc_def->getCurrentName().c_str(), getCurrentName().c_str());
 			}
 		}

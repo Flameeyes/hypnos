@@ -34,7 +34,7 @@ public:
 		levPanic	//!< Fatal error output
 	};
 	
-	void outputf(Level lev, char *txt, ...) PRINTF_LIKE(2, 3);
+	void outputf(Level lev, char *txt, ...) PRINTF_LIKE(3, 4);
 	virtual void output(Level lev, const std::string &str);
 	
 	virtual ~tInterface()
@@ -42,7 +42,6 @@ public:
 	
 	static tInterface *instance;
 protected:
-	std::string getDate();
 	tInterface();
 };
 

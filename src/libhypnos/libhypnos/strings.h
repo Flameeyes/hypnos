@@ -141,18 +141,6 @@ inline int hex2num ( std::string& s )
 }
 //@}
 
-bool ip2long(std::string ip, int &ris);
-std::string long2ip(int l);
-
-void strupr(std::string &str);
-void strlwr(std::string &str);
-
-stringVector tokenize(std::string str);
-
-int strtonum(int countx, int base= 0);
-
-}
-
 /*!
 \brief Converts an std::string to a number
 \param str string to convert
@@ -164,6 +152,20 @@ This is a mere overload for atoi(char*) function
 inline int32_t atoi(std::string str)
 {
 	return atoi(str.c_str());
+}
+
+bool ip2long(std::string ip, int &ris);
+std::string long2ip(int l);
+
+void strupr(std::string &str);
+void strlwr(std::string &str);
+
+stringVector tokenize(std::string str);
+
+int strtonum(int countx, int base= 0);
+
+std::string getDateString();
+
 }
 
 #ifndef HAVE_ASPRINTF
