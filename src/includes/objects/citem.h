@@ -422,7 +422,7 @@ public:
 
 		struct {
 		uint8_t more1, more2, more3, more4;
-		}
+		};
 	}
 
 	union tMoreB {
@@ -430,7 +430,7 @@ public:
 
 		struct {
 		uint8_t moreb1, moreb2, moreb3, moreb4;
-		}
+		};
 	}
 	uint32_t	morex;
 	uint32_t	morey;
