@@ -22,7 +22,7 @@ cMap::cMap() : cItem()
 */
 cMap::cMap(uint32_t ser) : cItem(ser)
 {
-	writeable = true;
+	flags |= flagWritable;
 }
 
 cMap &cMap::operator= (const cMap &oldmap)
@@ -37,43 +37,43 @@ cMap &cMap::operator= (const cMap &oldmap)
 */
 bool cMap::addPin(uint16_t x, uint16_t y)
 {
-	if ( pinData.size() > 50 || !writeable) return false;
+	if ( pinData.size() > 50 || !(flags & flagWritable)) return false;
 	pinData.push_back(sPoint(x,y));
         return true;
 }
 
 bool cMap::insertPin(uint16_t x,uint16_t y, uint32_t pin) 	//!< Inserts a pin between 2 existing ones. existing pins >= pin get shifted by one
 {
-	if (pin >= pinData.size() || !writeable) return false;
+	if (pin >= pinData.size() || !(flags & flagWritable)) return false;
 	pinData.insert(pin - 1, sPoint(x,y));
         return true;
 }
 
 bool cMap::changePin(uint16_t x,uint16_t y, uint32_t pin)	//!< Moves pin to another position
 {
-	if (pin > pinData.size() || !writeable) return false;
+	if (pin > pinData.size() || !(flags & flagWritable)) return false;
 	pinData[pin - 1] = sPoint(x,y);
         return true;
 }
 
 bool cMap::removePin(uint32_t pin)		//!< Removes pin
 {
-	if ((pin < 1) || (pin > pinData.size()) || !writeable ) return false;
+	if ((pin < 1) || (pin > pinData.size()) || !(flags & flagWritable)) return false;
         pinData.erase(pinData.begin() + pin - 1);
         return true;
 }
 
 bool cMap::clearAllPins()		//!< Removes all pins
 {
-	if (!writeable) return false;
+	if (!(flags & flagWritable)) return false;
 	pinData.clear();
         return true;
 }
 
 bool cMap::toggleWritable()		//!< Toggle pin addability and replies to client actual writeability status
 {
-	if (!isTreasureMap()) writeable = !writeable;
-        else writeable = false;
+	if (!isTreasureMap()) flags ^= flagWritable;
+        else flags &= ~flagWritable;
       	nPackets::Sent::MapPlotCourse pk(this, pccWriteableStatus, writeable, iter->x, iter->y);
 		//!\todo Chrono you should take a look to this!
 	client->sendPacket(&pk);
@@ -82,7 +82,7 @@ bool cMap::toggleWritable()		//!< Toggle pin addability and replies to client ac
 
 void cMap::doubleClicked(pClient client)
 {
-	if ( type == ITYPE_TREASURE_MAP ) {
+	if ( (flags & flagTreasure) && !(flags & flagDeciphered) ) {
 		//! \todo: redo when treasures redone
 		nSkills::Decipher(this, client);
 		return;
@@ -94,15 +94,8 @@ void cMap::doubleClicked(pClient client)
 	nPackets::Sent::MapPlotCourse pk2(this, pccClearAllPins); //Sending clear all pins command
 	client->sendPacket(&pk2);
 	
-	//!\todo Replace this type thing with flags
-	if ( type == ITYPE_MAP )
-	{
-		for(PointVector::iterator it = pinData.begin(); it != pinData.end(); it++)
-		{
-			nPackets::Sent::MapPlotCourse pki(this, pccAddPin, 0, (*it).x, (*it).y);
-			client->sendPacket(&pki);
-		}
-	} else if ( type == ITYPE_DECIPHERED_MAP ) {
+	//!\todo Replace mores with some decent variables
+	if ( (flags & flagTreasure) && (flags & flagDeciphered) ) {
 		// Generate message to add a map point
 		uint16_t posx, posy;					// tempoary storage for map point
 		uint16_t tlx, tly, lrx, lry;				// tempoary storage for map extends
@@ -116,5 +109,11 @@ void cMap::doubleClicked(pClient client)
 		
 		nPackets::Sent::MapPlotCourse pk3(this, pccAddPin, 0,posx, posy);//Sending add pin command
 		client->sendPacket(&pk3);
+	} else {
+		for(PointVector::iterator it = pinData.begin(); it != pinData.end(); it++)
+		{
+			nPackets::Sent::MapPlotCourse pki(this, pccAddPin, 0, (*it).x, (*it).y);
+			client->sendPacket(&pki);
+		}
 	}
 }

@@ -6,59 +6,57 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "network.h"
-#include "sregions.h"
-#include "sndpkg.h"
-#include "cmsgboard.h"
-#include "npcai.h"
-#include "utils.h"
-#include "inlines.h"
+#include "objects/citem/cmsgboard.h"
 
 /*!
 \brief Deleting an MsgBoard message
 \author Chronodt and Flameeyes
 */
-void cMsgBoard::cMessage::Delete()
+void cMessage::Delete()
 {
         switch (availability)
         {
-        case ptLocalPost:
-		//Here we need only to disconnect local MsgBoard
-                // Disconnecting relations from bullettin board which was linked to
-		pMsgBoard board = dynamic_cast<pMsgBoard>(getContainer());
-		
-		board->boardMutex.lock();
-		
-		MessageList::iterator it = board->boardMsgs.find(this);
-		
-		if ( it != board->boardMsgs.end() )
-			board->boardMsgs.erase(it);
-		
-		board->boardMutex.unlock();
-                break;
-        case ptRegionalPost:
-		//! \todo Need to rewrite the Regional Post when Regions are completed, until that, break
-		break;
-        case ptGlobalPost:
-		cMsgBoard::globalMutex.lock();
-		
-		// Here we need only to remove it from the global message list
-		MessageList::iterator it = cMsgBoard::globalMsgs.find(this);
-		if ( it != cMsgBoard::globalMsgs.end() )
-			cMsgBoard::globalMsgs.erase(it);
-		
-		cMsgBoard::globalMutex.unlock();
-                break;
+		case ptLocalPost:
+		{
+			//Here we need only to disconnect local MsgBoard
+			// Disconnecting relations from bullettin board which was linked to
+			pMsgBoard board = dynamic_cast<pMsgBoard>(getContainer());
+			
+			board->boardMutex.lock();
+			
+			MessageList::iterator it = board->boardMsgs.find(this);
+			
+			if ( it != board->boardMsgs.end() )
+				board->boardMsgs.erase(it);
+			
+			board->boardMutex.unlock();
+			break;
+		}
+		case ptRegionalPost:
+			//! \todo Need to rewrite the Regional Post when Regions are completed, until that, break
+			break;
+		case ptGlobalPost:
+		{
+			cMsgBoard::globalMutex.lock();
+			
+			// Here we need only to remove it from the global message list
+			MessageList::iterator it = cMsgBoard::globalMsgs.find(this);
+			if ( it != cMsgBoard::globalMsgs.end() )
+				cMsgBoard::globalMsgs.erase(it);
+			
+			cMsgBoard::globalMutex.unlock();
+			break;
+		}
         }
 	cItem::Delete();  //this will do the safedelete, too
 }
 
-cMsgBoard::cMessage::cMessage()
+cMessage::cMessage()
 {
-	cMsgBoard::cMessage(nextSerial());
+	cMessage(nextSerial());
 }
 
-cMsgBoard::cMessage::cMessage(uint32_t serial, pMsgBoard board) : cItem(serial)
+cMessage::cMessage(uint32_t serial, pMsgBoard board) : cItem(serial)
 {
         region = -1;
 
@@ -77,7 +75,7 @@ cMsgBoard::cMessage::cMessage(uint32_t serial, pMsgBoard board) : cItem(serial)
 
 }
 
-cMsgBoard::cMessage::~cMessage()
+cMessage::~cMessage()
 {
 }
 
@@ -86,7 +84,7 @@ cMsgBoard::cMessage::~cMessage()
 \todo check if there is space for a full time string comprehensive of date in letters rather than "day xxx"
 \author Chronodt
 */
-std::string cMsgBoard::cMessage::getTimeString()
+std::string cMessage::getTimeString()
 {
 	char *result;
         struct tm timest = localtime( &posttime);
@@ -101,11 +99,11 @@ std::string cMsgBoard::cMessage::getTimeString()
 \returns true if message expired (and deleted)
 \author Chronodt and Flameeyes
 */
-bool cMsgBoard::cMessage::expired()
+bool cMessage::expired()
 {
 	time_t now;
 	time( &now );
-        long messagelife = now - posttime;  	//messagelife is lifetime of message in seconds
+        uint32_t messagelife = now - posttime;  	//messagelife is lifetime of message in seconds
         //here we check if post has a timeout and if it has expired
         switch (qtype)
         {
@@ -157,7 +155,7 @@ bool cMsgBoard::cMessage::expired()
 \author Chronodt
 \note this should be called by MsgBoardMainteinance. It refreshes the timers of quests
 */
-void cMsgBoard::cMessage::refreshQuestMessage()
+void cMessage::refreshQuestMessage()
 {
 	pPC pc = dynamic_cast<pPC>(targetnpc); pNPC npc = dynamic_cast<pNPC>(targetnpc);
         switch (qtype)
@@ -275,15 +273,15 @@ void cMsgBoard::setPostType( pClient client, PostType nPostType )
 
 	switch ( nPostType )
 	{
-		case ptLocalPost: // LOCAL post
+		case ptLocalPost:
 			client->sysmessage("Post type set to local");
 			break;
 
-		case ptRegionalPost: // REGIONAL post
+		case ptRegionalPost:
 			client->sysmessage("Post type set to regional");
 			break;
 
-		case ptGlobalPost: // GLOBAL POST
+		case ptGlobalPost:
 			client->sysmessage("Post type set to global");
 			break;
 	}
@@ -364,7 +362,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 	static const char subjectBounty[]     = "Bounty: Reward for capture.";  // Default bounty message
 	static const char subjectItem[]       = "Lost valuable item.";          // Default item message
 
-        pMsgBoardMessage message = new cMsgBoard::cMessage();
+        pMsgBoardMessage message = new cMessage();
 
 	message->qtype = questType;
 	message->autopost = true;

@@ -27,6 +27,26 @@ protected:
 	bool writeable;				//!< map pins can be altered? \todo change in flag
 	inline sPoint getPin(uint32_t pin)	//!< Gets pin data for pin number "pin" (pin goes from 1 to 50, as it appears on client)
 	{ return pinData[pin - 1]; }
+	
+//@{
+/*!
+\name Flags
+*/
+protected:
+	static const uint64_t flagWritable	= 0x0000000000010000ull; //!< The map is writable
+	static const uint64_t flagTreasure	= 0x0000000000020000ull; //!< The map is a treasure map
+	static const uint64_t flagDeciphered	= 0x0000000000040000ull; //!< The treasure map is deciphered
+	static const uint64_t flagBlank		= 0x0000000000080000ull; //!< The map is blank
+public:
+	inline bool isBlankMap()
+	{ return (flags & flagWritable) && !getPinsNumber() ; }
+
+	inline bool isWrittenMap()
+	{ return ! ( flags & flagDeciphered|flagTreasure ); }
+	
+	inline bool isTreasureMap()
+	{ return flags & flagTreasure; }
+//@}
 public:
 	cMap();
 	cMap(uint32_t ser);
@@ -51,13 +71,6 @@ public:
 	inline int getPinsNumber()
 	{ return pinData.size(); }
 
-	inline bool isBlankMap()
-	{ return type == ITYPE_BLANK_MAP; }
-	inline bool isWrittenMap()
-	{ return type == ITYPE_MAP; }
-	inline bool isTreasureMap()
-	{ return (type == ITYPE_TREASURE_MAP) || (type == ITYPE_DECIPHERED_MAP); }
-	
 	void doubleClicked(pClient client);
 };
 

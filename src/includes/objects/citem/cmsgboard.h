@@ -37,8 +37,8 @@ protected:
 	PostType availability;  //!< local/regional/general post
 	QuestType qtype;	//!< type of quest
 	uint32_t replyof;	//!< serial of post of whom this is reply of. If 0 this is a new post
-	bool autopost;		//!< true if autoposted by server
-	uint32_t targetnpc;	//!< if LOCAL post it is unused, if quest contains the serial of the target of the quest
+	bool autopost;		//!< true if autoposted by server \todo Move this as a flag
+	pChar targetnpc;	//!< if LOCAL post it is unused, if quest contains the serial of the target of the quest
 
 public:
 	cMessage();
