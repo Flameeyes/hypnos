@@ -38,11 +38,11 @@ void cContainer::loadContainersData()
 			
 			try {
 				sContainerGump g;
-				g.gump = tVariant( n->getAttribute("id") ).toUInt16();
-				g.upperleft.x = tVariant( n->getAttribute("x1") ).toUInt16();
-				g.upperleft.y = tVariant( n->getAttribute("y1") ).toUInt16();
-				g.downright.x = tVariant( n->getAttribute("x2") ).toUInt16();
-				g.downright.y = tVariant( n->getAttribute("y2") ).toUInt16();
+				g.gump = cVariant( n->getAttribute("id") ).toUInt16();
+				g.upperleft.x = cVariant( n->getAttribute("x1") ).toUInt16();
+				g.upperleft.y = cVariant( n->getAttribute("y1") ).toUInt16();
+				g.downright.x = cVariant( n->getAttribute("x2") ).toUInt16();
+				g.downright.y = cVariant( n->getAttribute("y2") ).toUInt16();
 				
 				gumpinfos[g.gump] = g;
 				mapGumpsInfo::iterator it = gumpinfos.find(g);
@@ -55,7 +55,7 @@ void cContainer::loadContainersData()
 						continue;
 					}
 					
-					uint16_t valId = tVariant( id->data() ).toUInt16();
+					uint16_t valId = cVariant( id->data() ).toUInt16();
 					if ( valId )
 						containers[valId] = it;
 				} while ( (id = id->next() );

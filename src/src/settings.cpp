@@ -22,7 +22,7 @@ if it makes the error handling more difficult).
 #include <mxml.h>
 #include "settings.h"
 #include "logsystem.h"
-#include "abstraction/tvariant.h"
+#include "abstraction/cvariant.h"
 #include "backend/strconstants.h"
 
 #define SETTING(type, name, default) \
@@ -37,7 +37,7 @@ if it makes the error handling more difficult).
 #define XMLSETTING(sname, vartype, functype) \
 	if ( n->name() == #sname ) \
 	{ \
-		tVariant v = n->data(); \
+		cVariant v = n->data(); \
 		bool result = false; \
 		vartype temp = v.to##functype(&result); \
 		if ( result ) val##sname = temp; \

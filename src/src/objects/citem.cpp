@@ -368,7 +368,7 @@ bool cItem::doDecay(bool dontDelete = false)
 
 
 	if ( events[evtItmOnDecay] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = deleteDecay;
 		events[evtItmOnDecay]->setParams(params);
 		events[evtItmOnDecay]->execute();

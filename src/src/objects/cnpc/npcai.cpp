@@ -41,7 +41,7 @@ void cNPC::checkAI()
 
 	nextAiCheck = (uint32_t) ((double)getclock() + (speed.npcaitime*SECS));
 
-//!\todo Need to be rewrote after arrays are implemented in tVariant
+//!\todo Need to be rewrote after arrays are implemented in cVariant
 	if( amxevents[ EVENT_CHR_ONCHECKNPCAI ]!=NULL ) {
 
 		NxwCharWrapper sc;

@@ -43,7 +43,7 @@ void nSkills::target_removeTraps(pClient client, pTarget t )
 	pFunctionHandle evt = pi->getEvent(cItem::evtItmOnRemoveTrap);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = pi->getSerial(); params[1] = pc->getSerial();
 		evt->setParams(params);
 		evt->execute();
@@ -1379,7 +1379,7 @@ void target_poisoning2(pClient client, pTarget t )
 	pFunctionHandle evt = pi->getEvent(cItem::evtItmOnPoisoned);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(3);
+		cVariantVector params = cVariantVector(3);
 		params[0] = pi->getSerial(); params[1] = client;
 		params[2] = poison->morez;
 		evt->setParams(params);

@@ -29,7 +29,7 @@ void npcattacktarget(pChar pc, pChar pc_target)
 	pFunctionHandle evt;
 	evt = pc->getEvent(cChar::evtChrOnBeginAttack);
 	if (evt) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = pc->getSerial(); params[1] = pc_target->getSerial();
 		evt->setParams(params);
 		evt->execute();
@@ -39,7 +39,7 @@ void npcattacktarget(pChar pc, pChar pc_target)
 
 	evt = pc->getEvent(cChar::evtChrOnBeginDefence);
 	if (evt) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = pc->getSerial(); params[1] = pc_target->getSerial();
 		evt->setParams(params);
 		evt->execute();

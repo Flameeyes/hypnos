@@ -24,7 +24,7 @@ void cChar::mountHorse( pNPC mount )
 		return;
 		
 	if ( events[eventCharOnMount] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = mount->getSerial();
 		events[eventCharOnMount]->setParams(params);
 		events[eventCharOnMount]->execute();
@@ -200,7 +200,7 @@ bool cChar::unmountHorse()
 	pFunctionHandle evt = src->getEvent(cChar::evtChrOnDismount);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = INVALID;
 		evt->setParams(params);
 		evt->execute();

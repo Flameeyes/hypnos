@@ -1896,7 +1896,7 @@ void castSpell(SpellId spellnumber, sTarget& dest, pChar src, int flags, int par
 	pFunctionHandle evt = src->getEvent(cChar::evtChrOnCastSpell);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(4);
+		cVariantVector params = cVariantVector(4);
 		params[0] = src->getSerial(); params[1] = spellnumber;
 		params[2] = src->spelltype; params[3] = INVALID;
 		evt->setParams(params);
@@ -1989,7 +1989,7 @@ bool beginCasting (SpellId num, pClient s, CastingType type)
 	pFunctionHandle evt = pc->getEvent(cChar::evtChrOnCastSpell);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(4);
+		cVariantVector params = cVariantVector(4);
 		params[0] = pc->getSerial(); params[1] = num;
 		params[2] = type; params[3] = INVALID;
 		evt->setParams(params);

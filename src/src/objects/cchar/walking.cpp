@@ -254,7 +254,7 @@ void cChar::walk()
 
 			pFunctionHandle evt = getEvent(cChar::evtChrOnWalk);
 			if( evt ) {
-				tVariantVector params = tVariantVector(3);
+				cVariantVector params = cVariantVector(3);
 				params[0] = pc->getSerial(); params[1] = dir; params[2] = dir;
 				evt->setParams(params);
 				evt->execute();

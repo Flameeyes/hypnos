@@ -792,7 +792,7 @@ int response(pClient client)
 							pFunctionHandle evt = pc_map->getEvent(cNPC::evtNpcOnTransfer);
 							if ( evt )
 							{
-								tVariantVector params = tVariantVector(2);
+								cVariantVector params = cVariantVector(2);
 								params[0] = pc_map->getSerial(); params[1] = pc->getSerial();
 								evt->setParams(params);
 								evt->execute();

@@ -59,7 +59,7 @@ void snooping( pPC snooper, pItem cont )
 	pFunctionHandle owner = src->getEvent(cChar::evtChrOnSnooped);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = owner->getSerial(); params[1] = snooper->getSerial();
 		evt->setParams(params);
 		evt->execute();
@@ -174,7 +174,7 @@ void Skills::target_stealing( pClient client, pTarget t )
 		pFunctionHandle evt = pi->getEvent(cItem::evtItmOnStolen);
 		if ( evt )
 		{
-			tVariantVector params = tVariantVector(3);
+			cVariantVector params = cVariantVector(3);
 			params[0] = pi->getSerial(); params[1] = thief->getSerial();
 			params[2] = victim->getSerial();
 			evt->setParams(params);
@@ -186,7 +186,7 @@ void Skills::target_stealing( pClient client, pTarget t )
 		evt = victim->getEvent(cChar::evtChrOnStolen);
 		if ( evt )
 		{
-			tVariantVector params = tVariantVector(2);
+			cVariantVector params = cVariantVector(2);
 			params[0] = victim->getSerial(); params[1] = thief->getSerial();
 			evt->setParams(params);
 			evt->execute();
@@ -376,7 +376,7 @@ void Skills::target_randomSteal( pClient client, pTarget t )
 			pFunctionHandle evt = victim->getEvent(cChar::evtChrOnStolen);
 			if ( evt )
 			{
-				tVariantVector params = tVariantVector(2);
+				cVariantVector params = cVariantVector(2);
 				params[0] = victim->getSerial(); params[1] = thief->getSerial();
 				evt->setParams(params);
 				evt->execute();
@@ -461,7 +461,7 @@ void Skills::target_lockpick( pClient client, pTarget t )
 	pFunctionHandle evt = chest->getEvent(cContainer::evtCntOnLockPick);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = chest->getSerial(); params[1] = pc->getSerial();
 		evt->setParams(params);
 		evt->execute();

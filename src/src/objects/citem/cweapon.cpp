@@ -105,7 +105,7 @@ void cWeapon::loadWeaponsInfo()
 					continue;
 				
 				do {
-					uint16_t id = tVariant(n->data()).toUInt16();
+					uint16_t id = cVariant(n->data()).toUInt16();
 					if ( ! id )
 					{
 						LogWarning("Incomplete node in weapons.xml, ignoring");

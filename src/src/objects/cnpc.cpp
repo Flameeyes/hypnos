@@ -41,7 +41,7 @@ void cNPC::heartbeat()
 		return;
 
 	if ( events[evtChrOnHeartBeat] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = getclock();
 		events[evtChrOnHeartBeat]->setParams(params);
 		events[evtChrOnHeartBeat]->execute();
@@ -78,7 +78,7 @@ void cNPC::heartbeat()
 	if ( TIMEOUT( summontimer ) && summontimer > 0 )
 	{
 		if ( events[evtNpcOnDispel] && getClient() ) {
-			tVariantVector params = tVariantVector(3);
+			cVariantVector params = cVariantVector(3);
 			params[0] = getSerial(); params[1] = INVALID;
 			params[2] = dispelTimeout;
 			events[evtNpcOnDispel]->setParams(params);

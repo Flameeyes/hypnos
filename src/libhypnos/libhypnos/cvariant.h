@@ -12,25 +12,25 @@
 #include "common_libs.h"
 
 /*!
-\class tVariant tvariant.h "abstraction/tvariant.h"
+\class cVariant cvariant.h "abstraction/cvariant.h"
 \brief Variant type class
 \author Flameeyes
 
-The tVariant type is, as the name states, a variant type. An instance of this
+The cVariant type is, as the name states, a variant type. An instance of this
 class can contain different types of pointers, as well as integers (signed or
 unsigned) of any size, booleans, strings and vectors.
 
 The way this use to accomplish the above features is to save the stored type
 identifier AND the cctual content of the value passed, using the
-tVariant::ptr union to share the memory between the different pointers, and
+cVariant::ptr union to share the memory between the different pointers, and
 pointers for other types (bools, integers and compound types).
 
-tVariant instances can take their content and transform it into other types
+cVariant instances can take their content and transform it into other types
 in a very simple way. And then, can return a translated type on-the-fly without
 change the actual data inside them.
 
 */
-class tVariant
+class cVariant
 {
 public:
 	//! Type of acceptable values
@@ -44,7 +44,7 @@ public:
 		vtPItem,	//!< pItem (and derived) value
 		vtPClient,	//!< pClient value
 		vtPVoid,	//!< void pointer value
-		vtVector	//!< tVariantVector value
+		vtVector	//!< cVariantVector value
 	};
 	
 	//! Integer types sizes
@@ -60,90 +60,90 @@ public:
 /*!
 \name Constructors and operators
 */
-	tVariant();
-	~tVariant();
+	cVariant();
+	~cVariant();
 	
 	/*!
 	\brief Constructor with value
 	\param aval Value to assign to the variant
 	*/
-	inline tVariant(const bool &aval)
-	{ tVariant(); *this = aval; }
+	inline cVariant(const bool &aval)
+	{ cVariant(); *this = aval; }
 
-	//! \copydoc tVariant::tVariant(const bool&)
-	inline tVariant(const std::string &aval)
-	{ tVariant(); *this = aval; }
+	//! \copydoc cVariant::cVariant(const bool&)
+	inline cVariant(const std::string &aval)
+	{ cVariant(); *this = aval; }
 	
-	//! \copydoc tVariant::tVariant(const bool&)
-	inline tVariant(const uint64_t aval)
-	{ tVariant(); *this = aval; }
+	//! \copydoc cVariant::cVariant(const bool&)
+	inline cVariant(const uint64_t aval)
+	{ cVariant(); *this = aval; }
 	
-	//! \copydoc tVariant::tVariant(const bool&)
-	inline tVariant(const int64_t aval)
-	{ tVariant(); *this = aval; }
+	//! \copydoc cVariant::cVariant(const bool&)
+	inline cVariant(const int64_t aval)
+	{ cVariant(); *this = aval; }
 	
-	//! \copydoc tVariant::tVariant(const bool&)
-	inline tVariant(void *aval)
-	{ tVariant(); *this = aval; }
+	//! \copydoc cVariant::cVariant(const bool&)
+	inline cVariant(void *aval)
+	{ cVariant(); *this = aval; }
 	
-	//! \copydoc tVariant::tVariant(const bool&)
-	inline tVariant(pChar aval)
-	{ tVariant(); *this = aval; }
+	//! \copydoc cVariant::cVariant(const bool&)
+	inline cVariant(pChar aval)
+	{ cVariant(); *this = aval; }
 	
-	//! \copydoc tVariant::tVariant(const bool&)
-	inline tVariant(pItem aval)
-	{ tVariant(); *this = aval; }
+	//! \copydoc cVariant::cVariant(const bool&)
+	inline cVariant(pItem aval)
+	{ cVariant(); *this = aval; }
 	
-	//! \copydoc tVariant::tVariant(const bool&)
-	inline tVariant(pClient aval)
-	{ tVariant(); *this = aval; }
+	//! \copydoc cVariant::cVariant(const bool&)
+	inline cVariant(pClient aval)
+	{ cVariant(); *this = aval; }
 	
-	tVariant &operator =(const std::string &astr);
-	tVariant &operator =(const bool &aval);
-	tVariant &operator =(const uint64_t &aval);
-	tVariant &operator =(const int64_t &aval);
-	tVariant &operator =(void *aptr);
-	tVariant &operator =(pChar apc);
-	tVariant &operator =(pItem api);
-	tVariant &operator =(pClient api);
+	cVariant &operator =(const std::string &astr);
+	cVariant &operator =(const bool &aval);
+	cVariant &operator =(const uint64_t &aval);
+	cVariant &operator =(const int64_t &aval);
+	cVariant &operator =(void *aptr);
+	cVariant &operator =(pChar apc);
+	cVariant &operator =(pItem api);
+	cVariant &operator =(pClient api);
 	
-	tVariant operator -() const;
+	cVariant operator -() const;
 	
-	tVariant operator +(const tVariant &param) const;
-	tVariant operator -(const tVariant &param) const;
+	cVariant operator +(const cVariant &param) const;
+	cVariant operator -(const cVariant &param) const;
 	
 	//! Addiction operator
-	tVariant operator +=(const tVariant &param)
+	cVariant operator +=(const cVariant &param)
 	{ return (*this = *this + param); }
 	
 	//! Subtraction operator
-	tVariant operator -=(const tVariant &param)
+	cVariant operator -=(const cVariant &param)
 	{ return (*this = *this - param); }
 	
 	//! Prefixed increment operator
-	inline tVariant operator ++()
+	inline cVariant operator ++()
 	{ return operator += ((uint64_t)1); }
 	
 	//! Prefixed decrement operator
-	inline tVariant operator --()
+	inline cVariant operator --()
 	{ return operator -= ((uint64_t)1); }
 	
-	tVariant operator ++(int unused);
-	tVariant operator --(int unused);
-	bool operator ==(const tVariant &param) const;
-	bool operator <(const tVariant &param) const;
-	bool operator >(const tVariant &param) const;
+	cVariant operator ++(int unused);
+	cVariant operator --(int unused);
+	bool operator ==(const cVariant &param) const;
+	bool operator <(const cVariant &param) const;
+	bool operator >(const cVariant &param) const;
 	
 	//! Not equal operator
-	inline tVariant operator !=(const tVariant &param) const
+	inline cVariant operator !=(const cVariant &param) const
 	{ return ! (*this == param); }
 	
 	//! Minor or equal operator
-	inline tVariant operator <=(const tVariant &param) const
+	inline cVariant operator <=(const cVariant &param) const
 	{ return ! ( *this > param ); }
 	
 	//! Major or equal operator
-	inline tVariant operator >=(const tVariant &param) const
+	inline cVariant operator >=(const cVariant &param) const
 	{ return ! ( *this < param ); }
 //@}
 
@@ -157,7 +157,7 @@ the pointed bool will be set to true if the conversion is done correctly, else
 to false.
 
 In this section you can also find the operators used for the automatic cast of
-a tVariant to one of his usable types.
+a cVariant to one of his usable types.
 */
 	std::string toString(bool *result = NULL) const;
 	bool toBoolean(bool *result = NULL) const;

@@ -10,12 +10,12 @@
 // UINT16_MAX and sibling constants to calc the size of the integer values.
 #define __STDC_LIMIT_MACROS
 
-#include "abstraction/tvariant.h"
+#include "abstraction/cvariant.h"
 #include "objects/cchar.h"
 #include "objects/citem.h"
 
 //! Inline function to recalc the uint size
-inline void tVariant::recalcUIntSize(const uint64_t &val)
+inline void cVariant::recalcUIntSize(const uint64_t &val)
 {
 	if ( val > UINT32_MAX )
 		integerSize = is64;
@@ -28,7 +28,7 @@ inline void tVariant::recalcUIntSize(const uint64_t &val)
 }
 
 //! Inline function to recalc the sint size
-inline void tVariant::recalcSIntSize(const int64_t &val)
+inline void cVariant::recalcSIntSize(const int64_t &val)
 {
 	if ( val > INT32_MAX || val < INT32_MIN )
 		integerSize = is64;
@@ -41,30 +41,30 @@ inline void tVariant::recalcSIntSize(const int64_t &val)
 }
 
 //! Default constructor
-tVariant::tVariant()
+cVariant::cVariant()
 {
 	integerSize = isNotInt;
 	assignedType = vtNull;
 	pointer = NULL;
 }
 
-tVariant::~tVariant()
+cVariant::~cVariant()
 {
 	clear();
 }
 
 /*!
-\brief Clear the tVariant type
+\brief Clear the cVariant type
 
-This function is used to reset the tVariant at the null state. It deletes
+This function is used to reset the cVariant at the null state. It deletes
 eventual values stored inside and sets the type to vtNull.
 
-It's called by the by the ~tVariant() destructor and by the assignment
-operators to have a clean tVariant where to store the new value.
+It's called by the by the ~cVariant() destructor and by the assignment
+operators to have a clean cVariant where to store the new value.
 
 The only types which won't be deleted are the pointers, all the types.
 */
-void tVariant::clear()
+void cVariant::clear()
 {
 	switch(assignedType)
 	{
@@ -74,7 +74,7 @@ void tVariant::clear()
 		break;
 	
 	case vtVector:
-		delete reinterpret_cast<tVariantVector*>(pointer);
+		delete reinterpret_cast<cVariantVector*>(pointer);
 		pointer = NULL;
 		break;
 	
@@ -99,7 +99,7 @@ void tVariant::clear()
 				delete reinterpret_cast<uint8_t*>(pointer);
 				break;
 			case isNotInt:
-				LogCritical("tVariant %p has invalid pointer %p to a not integer size for an unsigned integer type", this, pointer);
+				LogCritical("cVariant %p has invalid pointer %p to a not integer size for an unsigned integer type", this, pointer);
 		};
 		pointer = NULL;
 		break;
@@ -120,7 +120,7 @@ void tVariant::clear()
 				delete reinterpret_cast<int8_t*>(pointer);
 				break;
 			case isNotInt:
-				LogCritical("tVariant %p has invalid pointer %p to a not integer size for a signed integer type", this, pointer);
+				LogCritical("cVariant %p has invalid pointer %p to a not integer size for a signed integer type", this, pointer);
 		};
 		pointer = NULL;
 		break;
@@ -146,7 +146,7 @@ void tVariant::clear()
 \return A reference to the instance itself
 \note This method create a new pointer instance
 */
-tVariant &tVariant::operator =(const std::string &astr)
+cVariant &cVariant::operator =(const std::string &astr)
 {
 	clear();
 	pointer = new std::string(astr);
@@ -162,7 +162,7 @@ tVariant &tVariant::operator =(const std::string &astr)
 \return A reference to the instance itself
 \note This method create a new pointer instance
 */
-tVariant &tVariant::operator =(const bool &aval)
+cVariant &cVariant::operator =(const bool &aval)
 {
 	clear();
 	pointer = new bool(aval);
@@ -183,7 +183,7 @@ the minimum integer size possible.
 Please note that doing this we need to use uint64_t when doing sums
 and differences.
 */
-tVariant &tVariant::operator =(const uint64_t &aval)
+cVariant &cVariant::operator =(const uint64_t &aval)
 {
 	clear();
 	recalcUIntSize(aval);
@@ -219,7 +219,7 @@ the minimum integer size possible.
 Please note that doing this we need to use int64_t when doing sums
 and differences.
 */
-tVariant &tVariant::operator =(const int64_t &aval)
+cVariant &cVariant::operator =(const int64_t &aval)
 {
 	clear();
 	recalcSIntSize(aval);
@@ -249,7 +249,7 @@ tVariant &tVariant::operator =(const int64_t &aval)
 \param aptr Pointer to set the internal pointer to
 \return A reference to the instance itself
 */
-tVariant &tVariant::operator =(void *aptr)
+cVariant &cVariant::operator =(void *aptr)
 {
 	pointer = aptr;
 	assignedType = vtPVoid;
@@ -257,8 +257,8 @@ tVariant &tVariant::operator =(void *aptr)
 	return *this;
 }
 
-//! \copydoc tVariant::operator=(void*)
-tVariant &tVariant::operator =(pChar aptr)
+//! \copydoc cVariant::operator=(void*)
+cVariant &cVariant::operator =(pChar aptr)
 {
 	pointer = aptr;
 	assignedType = vtPChar;
@@ -266,8 +266,8 @@ tVariant &tVariant::operator =(pChar aptr)
 	return *this;
 }
 
-//! \copydoc tVariant::operator=(void*)
-tVariant &tVariant::operator =(pItem aptr)
+//! \copydoc cVariant::operator=(void*)
+cVariant &cVariant::operator =(pItem aptr)
 {
 	pointer = aptr;
 	assignedType = vtPItem;
@@ -275,8 +275,8 @@ tVariant &tVariant::operator =(pItem aptr)
 	return *this;
 }
 
-//! \copydoc tVariant::operator=(void*)
-tVariant &tVariant::operator =(pClient aptr)
+//! \copydoc cVariant::operator=(void*)
+cVariant &cVariant::operator =(pClient aptr)
 {
 	pointer = aptr;
 	assignedType = vtPClient;
@@ -284,70 +284,70 @@ tVariant &tVariant::operator =(pClient aptr)
 	return *this;
 }
 
-tVariant tVariant::operator -() const
+cVariant cVariant::operator -() const
 {
 	switch(assignedType)
 	{
 	case vtUInt:
 		if ( uint64_t(*this) > INT64_MAX )
-			return tVariant();
+			return cVariant();
 		
-		return tVariant(-uint64_t(*this));
+		return cVariant(-uint64_t(*this));
 	case vtSInt:
-		return tVariant(-int64_t(*this));
+		return cVariant(-int64_t(*this));
 	
 	default: // We can't invert the sign of a non-integer
-		return tVariant();
+		return cVariant();
 	}
 }
 
-tVariant tVariant::operator +(const tVariant &param) const
+cVariant cVariant::operator +(const cVariant &param) const
 {
 	switch(assignedType)
 	{
 	case vtNull:
 		return param;
 	case vtString:
-		return tVariant(std::string(*this) + std::string(param));
+		return cVariant(std::string(*this) + std::string(param));
 	case vtUInt:
-		return tVariant(uint64_t(*this) + uint64_t(param));
+		return cVariant(uint64_t(*this) + uint64_t(param));
 	case vtSInt:
-		return tVariant(int64_t(*this) + int64_t(param));
+		return cVariant(int64_t(*this) + int64_t(param));
 	default:
-		return tVariant();
+		return cVariant();
 	}
 }
 
-tVariant tVariant::operator -(const tVariant &param) const
+cVariant cVariant::operator -(const cVariant &param) const
 {
 	switch(assignedType)
 	{
 	case vtNull:
 		return -param;
 	case vtUInt:
-		return tVariant(uint64_t(*this) - uint64_t(param));
+		return cVariant(uint64_t(*this) - uint64_t(param));
 	case vtSInt:
-		return tVariant(int64_t(*this) - int64_t(param));
+		return cVariant(int64_t(*this) - int64_t(param));
 	default:
-		return tVariant();
+		return cVariant();
 	}
 }
 
-tVariant tVariant::operator ++(int unused)
+cVariant cVariant::operator ++(int unused)
 {
-	tVariant tmp = *this;
+	cVariant tmp = *this;
 	*this += uint64_t(1);
 	return tmp;
 }
 
-tVariant tVariant::operator --(int unused)
+cVariant cVariant::operator --(int unused)
 {
-	tVariant tmp = *this;
+	cVariant tmp = *this;
 	*this -= uint64_t(1);
 	return tmp;
 }
 
-bool tVariant::operator ==(const tVariant &param) const
+bool cVariant::operator ==(const cVariant &param) const
 {
 	switch(assignedType)
 	{
@@ -371,7 +371,7 @@ bool tVariant::operator ==(const tVariant &param) const
 	}
 }
 
-bool tVariant::operator <(const tVariant &param) const
+bool cVariant::operator <(const cVariant &param) const
 {
 	switch(assignedType)
 	{
@@ -386,7 +386,7 @@ bool tVariant::operator <(const tVariant &param) const
 	}
 }
 
-bool tVariant::operator >(const tVariant &param) const
+bool cVariant::operator >(const cVariant &param) const
 {
 	switch(assignedType)
 	{
@@ -401,7 +401,7 @@ bool tVariant::operator >(const tVariant &param) const
 	}
 }
 
-bool tVariant::convertInString()
+bool cVariant::convertInString()
 {
 	bool conv;
 	std::string temp = toString(&conv);
@@ -413,7 +413,7 @@ bool tVariant::convertInString()
 	return true;
 }
 
-bool tVariant::convertInBoolean()
+bool cVariant::convertInBoolean()
 {
 	bool conv;
 	bool temp = toBoolean(&conv);
@@ -425,7 +425,7 @@ bool tVariant::convertInBoolean()
 	return true;
 }
 
-bool tVariant::convertInUInt()
+bool cVariant::convertInUInt()
 {
 	bool conv;
 	uint64_t temp = toUInt64(&conv);
@@ -437,7 +437,7 @@ bool tVariant::convertInUInt()
 	return true;
 }
 
-bool tVariant::convertInSInt()
+bool cVariant::convertInSInt()
 {
 	bool conv;
 	int64_t temp = toSInt64(&conv);
@@ -449,7 +449,7 @@ bool tVariant::convertInSInt()
 	return true;
 }
 
-bool tVariant::convertInPChar()
+bool cVariant::convertInPChar()
 {
 	bool conv;
 	pChar temp = toPChar(&conv);
@@ -461,7 +461,7 @@ bool tVariant::convertInPChar()
 	return true;
 }
 
-bool tVariant::convertInPItem()
+bool cVariant::convertInPItem()
 {
 	bool conv;
 	pItem temp = toPItem(&conv);
@@ -473,7 +473,7 @@ bool tVariant::convertInPItem()
 	return true;
 }
 
-bool tVariant::convertInPClient()
+bool cVariant::convertInPClient()
 {
 	bool conv;
 	pClient temp = toPClient(&conv);
@@ -485,7 +485,7 @@ bool tVariant::convertInPClient()
 	return true;
 }
 
-bool tVariant::convertInPVoid()
+bool cVariant::convertInPVoid()
 {
 	bool conv;
 	void *temp = toPVoid(&conv);
@@ -509,7 +509,7 @@ converted in \em truc or \em false strings. \b Pointers value are converted to
 strings as defined by %p format of printf. \b Null values are returned as
 \em [nil] string.
 */
-std::string tVariant::toString(bool *result) const
+std::string cVariant::toString(bool *result) const
 {
 	if ( result ) *result = true;
 	switch( assignedType )
@@ -582,7 +582,7 @@ std::string tVariant::toString(bool *result) const
 	}
 }
 
-bool tVariant::toBoolean(bool *result) const
+bool cVariant::toBoolean(bool *result) const
 {
 	if ( result ) *result = true;
 	switch( assignedType )
@@ -629,7 +629,7 @@ bool tVariant::toBoolean(bool *result) const
 	}
 }
 
-pChar tVariant::toPChar(bool *result) const
+pChar cVariant::toPChar(bool *result) const
 {
 	if ( result ) *result = true;
 	switch( assignedType )
@@ -643,7 +643,7 @@ pChar tVariant::toPChar(bool *result) const
 	}
 }
 
-pItem tVariant::toPItem(bool *result) const
+pItem cVariant::toPItem(bool *result) const
 {
 	if ( result ) *result = true;
 	switch( assignedType )
@@ -657,7 +657,7 @@ pItem tVariant::toPItem(bool *result) const
 	}
 }
 
-pClient tVariant::toPClient(bool *result) const
+pClient cVariant::toPClient(bool *result) const
 {
 	if ( result ) *result = true;
 	switch( assignedType )
@@ -671,7 +671,7 @@ pClient tVariant::toPClient(bool *result) const
 	}
 }
 
-void *tVariant::toPVoid(bool *result) const
+void *cVariant::toPVoid(bool *result) const
 {
 	switch( assignedType )
 	{
@@ -687,7 +687,7 @@ void *tVariant::toPVoid(bool *result) const
 	}
 }
 
-uint64_t tVariant::toUInt64(bool *result) const
+uint64_t cVariant::toUInt64(bool *result) const
 {
 	switch( assignedType )
 	{
@@ -741,7 +741,7 @@ uint64_t tVariant::toUInt64(bool *result) const
 	}
 }
 
-uint32_t tVariant::toUInt32(bool *result) const
+uint32_t cVariant::toUInt32(bool *result) const
 {
 	switch( assignedType )
 	{
@@ -801,7 +801,7 @@ uint32_t tVariant::toUInt32(bool *result) const
 	}
 }
 
-uint16_t tVariant::toUInt16(bool *result) const
+uint16_t cVariant::toUInt16(bool *result) const
 {
 	switch( assignedType )
 	{
@@ -871,7 +871,7 @@ uint16_t tVariant::toUInt16(bool *result) const
 	}
 }
 
-uint8_t tVariant::toUInt8(bool *result) const
+uint8_t cVariant::toUInt8(bool *result) const
 {
 	switch( assignedType )
 	{
@@ -947,7 +947,7 @@ uint8_t tVariant::toUInt8(bool *result) const
 	}
 }
 
-int64_t tVariant::toSInt64(bool *result) const
+int64_t cVariant::toSInt64(bool *result) const
 {
 	switch( assignedType )
 	{
@@ -1004,7 +1004,7 @@ int64_t tVariant::toSInt64(bool *result) const
 	}
 }
 
-int32_t tVariant::toSInt32(bool *result) const
+int32_t cVariant::toSInt32(bool *result) const
 {
 	switch( assignedType )
 	{
@@ -1067,7 +1067,7 @@ int32_t tVariant::toSInt32(bool *result) const
 	}
 }
 
-int16_t tVariant::toSInt16(bool *result) const
+int16_t cVariant::toSInt16(bool *result) const
 {
 	switch( assignedType )
 	{
@@ -1137,7 +1137,7 @@ int16_t tVariant::toSInt16(bool *result) const
 	}
 }
 
-int8_t tVariant::toSInt8(bool *result) const
+int8_t cVariant::toSInt8(bool *result) const
 {
 	switch( assignedType )
 	{

@@ -51,22 +51,22 @@ event you want to throw and then execute it (after set the right parameters
 to the function you are going to call):
 
 \code	if ( events[evtChrOnWounded] ) {
-		tVariantVector params = tVariantVector(3);
+		cVariantVector params = cVariantVector(3);
 		params[0] = getSerial(); params[1] = amount;
 		params[2] = serial_att;
 		events[evtChrOnWounded]->setParams(params);
-		tVariant ret = events[evtChrOnWounded]->execute();
+		cVariant ret = events[evtChrOnWounded]->execute();
 		if ( events[evtChrOnWounded]->isBypassed() )
 			return;
 		amount = ret.toSInt();
 	} \endcode
 
-The parameters are passed to the called function using a tVariantVector (a 
-vector of tVariant objects which can be nearly everything), which you should
+The parameters are passed to the called function using a cVariantVector (a 
+vector of cVariant objects which can be nearly everything), which you should
 create passing the number of parameters the function called has and then
 filling it with the parameters.
 
-The function also return a tVariant value which can be used for change the
+The function also return a cVariant value which can be used for change the
 behaviour of the thrower function. Another thing which can change the behaviour
 of the caller is the \b bypass: when a script function bypass the call, the
 caller can check the bypass state invoking
@@ -80,7 +80,7 @@ getEvent() function to get the handle to the function to call:
 \code	pFunctionHandle evt = src->getEvent(cChar::evtChrOnCastSpell);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(4);
+		cVariantVector params = cVariantVector(4);
 		params[0] = src->getSerial(); params[1] = spellnumber;
 		params[2] = src->spelltype; params[3] = INVALID;
 		evt->setParams(params);

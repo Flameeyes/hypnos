@@ -50,7 +50,7 @@ const uint8_t cBody::equip(pEquippable pi, bool drag)
 {
 	tile_st item;
 
-	tVariantVector params(2);
+	cVariantVector params(2);
 	param[0] = pi;
 	param[1] = getChar();
 	
@@ -101,7 +101,7 @@ const uint8_t cBody::unEquip(pItem pi, bool drag)
 {
 	checkSafeStats();
 
-	tVariantVector params(2);
+	cVariantVector params(2);
 	param[0] = pi;
 	param[1] = getChar();
 	

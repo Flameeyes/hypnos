@@ -43,7 +43,7 @@ void cPC::heartbeat()
 		return;
 
 	if ( events[evtChrOnHeartBeat] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = getclock();
 		events[evtChrOnHeartBeat]->setParams(params);
 		events[evtChrOnHeartBeat]->execute();
@@ -429,7 +429,7 @@ void cPC::sayHunger()
 void cPC::setMurderer()
 {
 	if ( events[evtPcOnFlagChange] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = karmaMurderer;
 		events[evtPcOnFlagChange]->setParams(params);
 		events[evtPcOnFlagChange]->execute();
@@ -443,7 +443,7 @@ void cPC::setMurderer()
 void cPC::setInnocent()
 {
 	if ( events[evtPcOnFlagChange] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = karmaInnocent;
 		events[evtPcOnFlagChange]->setParams(params);
 		events[evtPcOnFlagChange]->execute();
@@ -457,7 +457,7 @@ void cPC::setInnocent()
 void cPC::setCriminal()
 {
 	if ( events[evtPcOnFlagChange] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = karmaCriminal;
 		events[evtPcOnFlagChange]->setParams(params);
 		events[evtPcOnFlagChange]->execute();

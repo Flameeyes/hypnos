@@ -341,7 +341,7 @@ void walking(pChar pc, int dir, int sequence)
 
 	pFunctionHandle evt = pc->getEvent(evtChrOnWalk);
 	if( evt ) {
-		tVariantVector params = tVariantVector(3);
+		cVariantVector params = cVariantVector(3);
 		params[0] = pc->getSerial(); params[1] = dir; params[2] = sequence;
 		evt->setParams(params);
 		evt->execute();
@@ -567,7 +567,7 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 	pFunctionHandle evt = pc_i->getEvent(evtChrOnBlock);
 	if ( (!valid || !move) && evt )
 	{
-		tVariantVector params = tVariantVector(4);
+		cVariantVector params = cVariantVector(4);
 		params[0] = pc_i->getSerial(); params[1] = newX; params[2] = newY; params[3] = charpos.z;
 		evt->setParams(params);
 		evt->execute();

@@ -73,15 +73,15 @@ void nSkills::loadSkills()
 				}
 				
 				if ( n->hasAttribute("str") )
-					infos[sk].str = tVariant(n->getAttribute("str")).toUInt16();
+					infos[sk].str = cVariant(n->getAttribute("str")).toUInt16();
 				else infos[sk].str = 0;
 				
 				if ( n->hasAttribute("dex") )
-					infos[sk].dex = tVariant(n->getAttribute("dex")).toUInt16();
+					infos[sk].dex = cVariant(n->getAttribute("dex")).toUInt16();
 				else infos[sk].dex = 0;
 				
 				if ( n->hasAttribute("int") )
-					infos[sk].in_ = tVariant(n->getAttribute("int")).toUInt16();
+					infos[sk].in_ = cVariant(n->getAttribute("int")).toUInt16();
 				else infos[sk].in_ = 0;
 				
 				if ( n->hasAttribute("unhideOnUse") && n->getAttribute("unhideOnUse") != "true" )
@@ -296,10 +296,10 @@ bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
 	pFunctionHandle evt = pc->getEvent(cChar::evtChrOnGetSkillCap);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(4);
+		cVariantVector params = cVariantVector(4);
 		params[0] = pc->getSerial(); params[1] = pc->getClient();
 		evt->setParams(params);
-		tVariant ret = evt->execute();
+		cVariant ret = evt->execute();
 		skillcap = ret.toSInt32();
 	}
 	
@@ -389,11 +389,11 @@ bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
 	pFunctionHandle evt = pc->getEvent(cChar::evtChrOnAdvanceSkill);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(4);
+		cVariantVector params = cVariantVector(4);
 		params[0] = pc->getSerial(); params[1] = sk;
 		params[2] = skillused; params[3] = retval;
 		evt->setParams(params);
-		tVariant ret = evt->execute();
+		cVariant ret = evt->execute();
 		retval = ret.toBoolean();
 		if ( evt->isBypassed() )
 			return;
@@ -522,7 +522,7 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
 		pFunctionHandle evt = pc->getEvent(cChar::evtChrOnAdvanceStat);
 		if ( evt )
 		{
-			tVariantVector params = tVariantVector(4);
+			cVariantVector params = cVariantVector(4);
 			params[0] = pc->getSerial(); params[1] = type;
 			params[2] = sk; params[3] = tmp;
 			evt->setParams(params);
@@ -559,11 +559,11 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
 		pFunctionHandle evt = pc->getEvent(cChar::evtChrOnGetStatCap);
 		if ( evt )
 		{
-			tVariantVector params = tVariantVector(3);
+			cVariantVector params = cVariantVector(3);
 			params[0] = pc->getSerial(); params[1] = type;
 			params[2] = limit;
 			evt->setParams(params);
-			tVariant ret = evt->execute();
+			cVariant ret = evt->execute();
 			limit = ret.toSInt();
 		}
 
@@ -648,11 +648,11 @@ void Skills::AdvanceStats(pChar pc, int sk)
 	pFunctionHandle evt = pc->getEvent(cChar::evtChrOnGetStatCap);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(3);
+		cVariantVector params = cVariantVector(3);
 		params[0] = pc->getSerial(); params[1] = STATCAP_CAP;
 		params[2] = statcap;
 		evt->setParams(params);
-		tVariant ret = evt->execute();
+		cVariant ret = evt->execute();
 		statcap = ret.toSInt();
 	}
 

@@ -83,7 +83,7 @@ namespace nCommands {
 		virtual bool parseParams(pClient client, std::string command) = 0;
 		virtual void execute(pClient client) = 0;
 	protected:
-		tVariantVector params;	//!< Params used by the command
+		cVariantVector params;	//!< Params used by the command
 		uint8_t privLevel;	//!< Priviledge level at which the command can be used
 	};
 	
@@ -109,7 +109,7 @@ namespace nCommands {
 		by itself.
 		*/
 		void parserParams(pClient client, std::string command)
-		{ params[0] = client; params[1] = tVariant(command);
+		{ params[0] = client; params[1] = cVariant(command);
 		  return true; }
 		
 		/*!

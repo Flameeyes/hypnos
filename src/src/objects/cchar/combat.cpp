@@ -54,7 +54,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	pFunctionHandle evt = NULL;
 
 	if ( events[evtChrOnCombatHit] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = pc_def->getSerial();
 		events[evtChrOnCombatHit]->setParams(params);
 		events[evtChrOnCombatHit]->execute();
@@ -143,7 +143,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	if (!hit) {
 
 		if ( events[evtChrOnHitMiss] ) {
-			tVariantVector params = tVariantVector(2);
+			cVariantVector params = cVariantVector(2);
 			params[0] = getSerial(); params[1] = pc_def->getSerial();
 			events[evtChrOnHitMiss]->setParams(params);
 			events[evtChrOnHitMiss]->execute();
@@ -179,7 +179,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	}
 
 	if ( events[evtChrOnHit] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = pc_def->getSerial();
 		events[evtChrOnHit]->setParams(params);
 		events[evtChrOnHit]->execute();
@@ -190,7 +190,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	pFunctionHandle evt = src->getEvent(evtChrOnGetHit);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = pc_def->getSerial(); params[1] = getSerial();
 		evt->setParams(params);
 		evt->execute();
@@ -304,7 +304,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		pFunctionHandle evt = src->getEvent(evtItmOnDamage);
 		if ( evt )
 		{
-			tVariantVector params = tVariantVector(4);
+			cVariantVector params = cVariantVector(4);
 			params[0] = weapon->getSerial(); params[1] = pc_def->getSerial();
 			params[2] = damage; params[3] = getSerial();
 			evt->setParams(params);
@@ -424,7 +424,7 @@ void cChar::doCombat()
 
 	pFunctionHandle evt = getEvent(cChar::evtChrOnDoCombat);
 	if ( evt ) {
-		tVariantVector params = tVariantVector(4);
+		cVariantVector params = cVariantVector(4);
 		params[0] = getSerial(); params[1] = pc_def->getSerial(); params[2] = dist; params[3] =  weapon ? weapon->getSerial() : INVALID;
 		evt->setParams(params);
 		evt->execute();
@@ -1086,7 +1086,7 @@ void cChar::attackStuff(pChar victim)
 		return;
 
 	if ( events[evtChrOnBeginAttack] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = victim->getSerial();
 		events[evtChrOnBeginAttack]->setParams(params);
 		events[evtChrOnBeginAttack]->execute();
@@ -1096,7 +1096,7 @@ void cChar::attackStuff(pChar victim)
 	
 	evt = victim->getEvent(cChar::evtChrOnBeginDefense);
 	if ( evt ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = victim->getSerial(); params[1] = getSerial();
 		evt->setParams(params);
 		evt->execute();

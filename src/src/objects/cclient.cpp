@@ -607,7 +607,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 		pFunctionHandle evt = pi->getEvent(cItem::evtItmOnTakeFromContainer);
 		if ( evt )
 		{
-			tVariantVector params = tVariantVector(3);
+			cVariantVector params = cVariantVector(3);
 			params[0] = pi->getSerial(); params[1] = container->getSerial();
 			params[2] = pc_currchar->getSerial();
 			evt->setParams(params);
@@ -663,7 +663,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 			evt = picont->getEvent(cContainer::evtCntOnTakeItem);
 			if ( evt )
 			{
-				tVariantVector params = tVariantVector(3);
+				cVariantVector params = cVariantVector(3);
 				params[0] = pi_cont->getSerial(); params[1] = pi->getSerial();
 				params[2] = pc_currchar->getSerial();
 				evt->setParams(params);
@@ -902,7 +902,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 	pFunctionHandle evt = pi->getEvent(cItem::evtItmOnPutInContainer);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(3);
+		cVariantVector params = cVariantVector(3);
 		params[0] = pi->getSerial(); params[1] = dest->getSerial();
 		params[2] = pc->getSerial();
 		evt->setParams(params);
@@ -917,7 +917,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 	pContainer destcont = dynamic_cast<pContainer>(dest);
 	if ( destcont && ( evt = destcont->getEvent(cContainer::evtCntOnPutItem) ) )
 	{
-		tVariantVector params = tVariantVector(3);
+		cVariantVector params = cVariantVector(3);
 		params[0] = destcont->getSerial(); params[1] = pi->getSerial();
 		params[2] = pc->getSerial();
 		evt->setParams(params);
@@ -1228,7 +1228,7 @@ void cClient::dump_item(pItem pi, sLocation &loc) // Item is dropped on the grou
 	pFunctionHandle evt = pi->getEvent(cItem::evtItmOnDropInLand);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = pi->getSerial(); params[1] = pc->getSerial();
 		evt->setParams(params);
 		evt->execute();
@@ -2446,7 +2446,7 @@ void cClient::dotrade(sSecureTradeSession &session)
 			pFunctionHandle evt = pi->getEvent(cItem::evtItmOnTransfer);
 			if ( evt )
 			{
-				tVariantVector params = tVariantVector(3);
+				cVariantVector params = cVariantVector(3);
 				params[0] = pi->getSerial(); params[1] = pc1->getSerial();
 				params[2] = pc2->getSerial();
 				evt->setParams(params);
@@ -2479,7 +2479,7 @@ void cClient::dotrade(sSecureTradeSession &session)
 			pFunctionHandle evt = pi->getEvent(cItem::evtItmOnTransfer);
 			if ( evt )
 			{
-				tVariantVector params = tVariantVector(3);
+				cVariantVector params = cVariantVector(3);
 				params[0] = pi->getSerial(); params[1] = pc2->getSerial();
 				params[2] = pc1->getSerial();
 				evt->setParams(params);
@@ -2691,7 +2691,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 	pFunctionHandle evt = pc->getEvent(cChar::evtChrOnSpeech);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(3);
+		cVariantVector params = cVariantVector(3);
 		params[0] = pc->getSerial(); params[1] = speech;
 		evt->setParams(params);
 		evt->execute();
@@ -2831,7 +2831,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 		pFunctionHandle evt = a_pc->getEvent(evtChrOnHearPlayer);
 		if ( evt )
 		{
-			tVariantVector params = tVariantVector(2);
+			cVariantVector params = cVariantVector(2);
 			params[0] = a_pc->getSerial(); params[1] = pc->getSerial();
 			params[2] = ghost;
 			evt->setParams(params);

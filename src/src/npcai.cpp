@@ -183,7 +183,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 	pFunctionHandle evt = pc_att->getEvent(cChar::evtChrOnCastSpell);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(4);
+		cVariantVector params = cVariantVector(4);
 		params[0] = pc_att->getSerial(); params[1] = spell;
 		params[2] = -1; params[3] = sphere;
 		evt->setParams(params);

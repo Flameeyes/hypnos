@@ -62,7 +62,7 @@ void cItem::singleClick(pClient client )
 	pChar pj;
 
 	if ( events[evtItmOnClick] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = client->currChar()->getSerial();
 		events[evtItmOnClick]->setParams(params);
 		events[evtItmOnClick]->execute();
@@ -207,7 +207,7 @@ void cItem::doubleClick(pClient client)
 	if ( ! pc ) return;
 
 	if ( events[evtItmOnDoubleClick] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = pc->getSerial();
 		events[evtItmOnDoubleClick]->setParams(params);
 		events[evtItmOnDoubleClick]->execute();
@@ -1287,11 +1287,11 @@ bool cItem::checkItemUsability(pChar pc, int type)
 	}
 
 	if ( events[evtItmOnCheckCanUse] ) {
-		tVariantVector params = tVariantVector(3);
+		cVariantVector params = cVariantVector(3);
 		params[0] = getSerial(); params[1] = pc->getSerial();
 		params[2] = g_nType;
 		events[evtItmOnCheckCanUse]->setParams(params);
-		tVariant ret = events[evtItmOnCheckCanUse]->execute();
+		cVariant ret = events[evtItmOnCheckCanUse]->execute();
 		return ret.toBoolean();
 	}
 	

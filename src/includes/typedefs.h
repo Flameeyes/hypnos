@@ -21,8 +21,8 @@
 typedef int32_t				ACCOUNT;
 typedef int32_t				FUNCIDX;
 
-typedef class tVariant *pVariant;		//!< Pointer to a variant instance
-typedef std::vector<tVariant> tVariantVector;	//!< Vector of variants
+typedef class cVariant *pVariant;		//!< Pointer to a variant instance
+typedef std::vector<cVariant> cVariantVector;	//!< Vector of variants
 
 typedef std::set<uint32_t> uint32_set;		//!< A set of uint32_t
 typedef std::vector<uint32_t> uint32_vector;	//!< A vector of uint32_t

@@ -148,9 +148,9 @@ void nNewbies::loadStartLocations()
 						l->place = p->data();
 					else if ( p->name() == "position" )
 					{
-						l->position.x = tVariant(p->getAttribute("x")).toUInt16();
-						l->position.y = tVariant(p->getAttribute("y")).toUInt16();
-						l->position.z = tVariant(p->getAttribute("z")).toSInt8();
+						l->position.x = cVariant(p->getAttribute("x")).toUInt16();
+						l->position.y = cVariant(p->getAttribute("y")).toUInt16();
+						l->position.z = cVariant(p->getAttribute("z")).toSInt8();
 					}
 					
 				} while ( (p = p->next()) );
@@ -219,7 +219,7 @@ void nNewbies::loadNewbieItems()
 		}
 		
 		if ( doc.main()->hasAttribute("gold") )
-			nSettings::Server::setNewbiesGold(tVariant(doc.main()->getAttribute("gold")));
+			nSettings::Server::setNewbiesGold(cVariant(doc.main()->getAttribute("gold")));
 		
 		if ( ! n )
 			return;
@@ -282,7 +282,7 @@ nNewbies::NBItemSList nNewbies::loadItemsList(MXML::Node *n)
 			if ( itm->hasAttribute("place") )
 				i.place = nStrConstants::itemPlace(itm->getAttribute("place"));
 			if ( itm->hasAttribute("amount") )
-				i.amount = tVariant(itm->getAttribute("amount"));
+				i.amount = cVariant(itm->getAttribute("amount"));
 			
 			ret.push_front(i);
 			

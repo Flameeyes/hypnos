@@ -11,7 +11,7 @@
 #include "objects/cclient.h"
 #include "objects/caccount.h"
 #include "objects/cbody.h"
-#include "abstraction/tvariant.h"
+#include "abstraction/cvariant.h"
 #include "logsystem.h"
 #include "inlines.h"
 #include <mxml.h>
@@ -57,9 +57,9 @@ void nJails::loadJails()
 			
 			try {
 				sLocation loc;
-				loc.x = tVariant( n->getAttribute("x") ).toUInt16();
-				loc.y = tVariant( n->getAttribute("y") ).toUInt16();
-				loc.z = tVariant( n->getAttribute("z") ).toSInt8();
+				loc.x = cVariant( n->getAttribute("x") ).toUInt16();
+				loc.y = cVariant( n->getAttribute("y") ).toUInt16();
+				loc.z = cVariant( n->getAttribute("z") ).toSInt8();
 				
 				if ( loc == sLocation(0,0,0) || ! isValidCoord(loc) )
 				{

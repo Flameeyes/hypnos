@@ -652,7 +652,7 @@ void target_transfer( pClient client, pTarget t )
 	pFunctionHandle evt = pc1->getEvent(cNPC::evtNpcOnTransfer);
 	if ( evt )
 	{
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = pc1->getSerial(); params[1] = pc2->getSerial();
 		evt->setParams(params);
 		evt->execute();

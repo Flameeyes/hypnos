@@ -37,7 +37,7 @@ void cChar::singleClick( pClient client )
 
 	if ( events[evtChrOnClick] )
 	{
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = clickedBy->getSerial();
 		events[evtChrOnClick]->setParams(params);
 		events[evtChrOnClick]->execute();

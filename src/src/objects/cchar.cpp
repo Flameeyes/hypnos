@@ -476,7 +476,7 @@ void cChar::disturbMed()
 	if (!isMeditating()) return; // no reason to stay here :]
 	
 	if ( events[evtChrOnBreakMeditation] && getClient() ) {
-		events[evtChrOnBreakMeditation]->setParams(tVariantVector(1, getSerial()));
+		events[evtChrOnBreakMeditation]->setParams(cVariantVector(1, getSerial()));
 		events[evtChrOnBreakMeditation]->execute();
 		if ( events[evtChrOnBreakMeditation]->isBypassed() )
 			return;
@@ -686,11 +686,11 @@ void cChar::damage(int32_t amount, DamageType typeofdamage, StatType stattobedam
 	uint32_t serial_att= pc_att ? pc_att->getSerial() : INVALID;
 
 	if ( events[evtChrOnWounded] ) {
-		tVariantVector params = tVariantVector(3);
+		cVariantVector params = cVariantVector(3);
 		params[0] = getSerial(); params[1] = amount;
 		params[2] = serial_att;
 		events[evtChrOnWounded]->setParams(params);
-		tVariant ret = events[evtChrOnWounded]->execute();
+		cVariant ret = events[evtChrOnWounded]->execute();
 		if ( events[evtChrOnWounded]->isBypassed() )
 			return;
 		amount = ret.toSInt();
@@ -1450,7 +1450,7 @@ void cChar::resurrect( pClient healer )
 	mn=in;
 
 	if ( events[evtChrOnResurrect] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = healer ? healer->currChar()->getSerial() : INVALID;
 		events[evtChrOnResurrect]->setParams(params);
 		events[evtChrOnResurrect]->execute();
@@ -1712,7 +1712,7 @@ void cChar::Kill()
 	murderername[0] = '\0';
 
 	if ( events[evtChrBeforeDeath] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = INVALID;
 		events[evtChrBeforeDeath]->setParams(params);
 		events[evtChrBeforeDeath]->execute();
@@ -1839,7 +1839,7 @@ void cChar::Kill()
 
 				pFunctionHandle evt = pKiller->getEvent(evtChrOnKill);
 				if ( evt ) {
-					tVariantVector params = tVariantVector(2);
+					cVariantVector params = cVariantVector(2);
 					params[0] = pKiller->getSerial(); params[1] = getSerial();
 					evt->setParams(params);
 					evt->execute();
@@ -1851,7 +1851,7 @@ void cChar::Kill()
 		{
 			pFunctionHandle evt = pKiller->getEvent(evtChrOnKill);
 			if ( evt ) {
-				tVariantVector params = tVariantVector(2);
+				cVariantVector params = cVariantVector(2);
 				params[0] = pKiller->getSerial(); params[1] = getSerial();
 				evt->setParams(params);
 				evt->execute();
@@ -1935,7 +1935,7 @@ void cChar::Kill()
 	
 				pFunctionHandle evt = pk->getEvent(evtChrOnKill);
 				if ( evt ) {
-					tVariantVector params = tVariantVector(2);
+					cVariantVector params = cVariantVector(2);
 					params[0] = pk->getSerial(); params[1] = getSerial();
 					evt->setParams(params);
 					evt->execute();
@@ -1946,7 +1946,7 @@ void cChar::Kill()
 		{
 			pFunctionHandle evt = pk->getEvent(evtChrOnKill);
 			if ( evt ) {
-				tVariantVector params = tVariantVector(2);
+				cVariantVector params = cVariantVector(2);
 				params[0] = pk->getSerial(); params[1] = getSerial();
 				evt->setParams(params);
 				evt->execute();
@@ -2132,7 +2132,7 @@ void cChar::Kill()
 	pCorpse->Refresh();
 
 	if ( events[evtChrAfterDeath] ) {
-		tVariantVector params = tVariantVector(2);
+		cVariantVector params = cVariantVector(2);
 		params[0] = getSerial(); params[1] = pCorpse->getSerial();
 		events[evtChrAfterDeath]->setParams(params);
 		events[evtChrAfterDeath]->execute();

@@ -15,7 +15,7 @@
 
 #include "common_libs.h"
 #include "typedefs.h"
-#include "abstraction/tvariant.h"
+#include "abstraction/cvariant.h"
 
 /*!
 \class cScriptingEngine scripting.h "backend/scripting.h"
@@ -41,11 +41,11 @@ public:
 			\brief Sets the params for the function to call
 			\param aParams vector of params to set
 			*/
-			virtual void setParams(tVariantVector &aParams)
+			virtual void setParams(cVariantVector &aParams)
 			{ params = aParams; }
 			
 			//! Executes the function
-			virtual tVariant execute() = 0;
+			virtual cVariant execute() = 0;
 			
 			const bool isBypassed() const
 			{ return bypassed; }
@@ -54,7 +54,7 @@ public:
 			
 		protected:
 			cFunctionHandle();
-			tVariantVector params;
+			cVariantVector params;
 			bool bypassed;
 	};
 

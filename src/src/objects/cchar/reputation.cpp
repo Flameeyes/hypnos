@@ -74,7 +74,7 @@ void cChar::modifyFame( int32_t value )
 		return;
 	
 	if ( events[evtChrOnReputationChange] ) {
-		tVariantVector params = tVariantVector(3);
+		cVariantVector params = cVariantVector(3);
 		params[0] = getSerial(); params[1] = gained ? nChange : -nChange;
 		params[3] = repFame;
 		events[evtChrOnReputationChange]->setParams(params);
@@ -162,7 +162,7 @@ void cChar::increaseKarma( int32_t value, pChar pKilled )
 		return;
 
 	if ( events[evtChrOnReputationChange] ) {
-		tVariantVector params = tVariantVector(3);
+		cVariantVector params = cVariantVector(3);
 		params[0] = getSerial(); params[1] = positiveKarmaEffect ? nChange : -nChange;
 		params[3] = repKarma;
 		events[evtChrOnReputationChange]->setParams(params);
