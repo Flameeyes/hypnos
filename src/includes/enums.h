@@ -134,4 +134,16 @@ enum Karma {
 	karmaInnocent, karmaMurderer, karmaCriminal
 };
 
+//! Skills
+enum Skill {
+	skInvalid = -1, skAlchemy = 0, skAnatomy, skAnimalLore, skItemID, skArmsLore, skParrying,
+	skBegging, skBlacksmithing, skBowcraft, skPeacemaking, skCamping, skCarpentry, skCartography,
+	skCooking, skDetectingHidden, skEnticement, skEvaluatingIntelligence, skHealing, skFishing,
+	skForensics, skHerding, skHiding, skProvocation, skInscription, skLockPicking, skMagery,
+	skMagicResistance, skTactics, skSnooping, skMusicianship, skPoisoning, skArchery, skSpiritSpeak,
+	skStealing, skTailoring, skTaming, skTasteID, skTinkering, skTracking, skVeterinary, skSwordsmanship,
+	skMacefighting, skFencing, skWrestling, skLumberjacking, skMining, skMeditation, skStealth,
+	skRemoveTraps, skTrueSkills
+};
+
 #endif

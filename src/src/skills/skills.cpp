@@ -41,7 +41,7 @@ void Skills::Hide(pClient client)
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pj = sc.getChar();
 		if ( pj && pj->getSerial() != pc->getSerial() && !pj->IsHidden() && pc->losFrom(pj) ) {
-			pc->sysmsg("There is someone nearby who prevents you to hide.");
+			client->sysmessage("There is someone nearby who prevents you to hide.");
 			return;
 		}
 	}
@@ -138,7 +138,7 @@ bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
 	}
 	
 	lockstate=pc->lockSkill[sk];
-	if (pc->IsGM()) lockstate=0;
+	if (pc->isGM()) lockstate=0;
 	// for gms no skill cap exists, also ALL skill will be interperted as up, no matter how they are set
 	
 	if (lockstate==2 || lockstate==1) return 0;// skill is locked -> forget it
@@ -159,7 +159,7 @@ bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
         }
     }
 
-    if (!pc->IsGM())
+    if (!pc->isGM())
     {
         for (a=0;a<ALLSKILLS;a++)
         {
@@ -169,7 +169,7 @@ bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
 
         if (ges>skillcap && c==0) // skill capped and no skill is marked as fall down.
         {
-            pc->sysmsg("You have reached the skill-cap of %i and no skill can fall!", skillcap);
+            client->sysmessage("You have reached the skill-cap of %i and no skill can fall!", skillcap);
             return 0;
         }
 
@@ -419,7 +419,7 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
 		*update=true;
 	}
 
-	if( !pc->IsGM() )
+	if( !pc->isGM() )
 	{
 		switch( stat )
 		{
@@ -509,7 +509,7 @@ void Skills::AdvanceStats(pChar pc, int sk)
     	bool intCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceIntelligence( sk ) : skillinfo[sk].in ) > (uint32_t)(rand() % mod);
 
        	if ( strCheck )
-       		if ( AdvanceOneStat( sk, i, 'S', &update, STATCAP_STR, pc ) && atCap && !pc->IsGM() )
+       		if ( AdvanceOneStat( sk, i, 'S', &update, STATCAP_STR, pc ) && atCap && !pc->isGM() )
 			{
 				if( rand()%2 ) {
 					pc->dx3--;
@@ -522,7 +522,7 @@ void Skills::AdvanceStats(pChar pc, int sk)
 			}
 
 		if ( dexCheck )
-	       	if ( AdvanceOneStat(sk, i, 'D', &update, STATCAP_DEX, pc ) && atCap && !pc->IsGM() )
+	       	if ( AdvanceOneStat(sk, i, 'D', &update, STATCAP_DEX, pc ) && atCap && !pc->isGM() )
 			{
 				if( rand()%2 ) {
 					pc->st3--;
@@ -535,7 +535,7 @@ void Skills::AdvanceStats(pChar pc, int sk)
 			}
 
 	    if ( intCheck )
-	       	if ( AdvanceOneStat(sk, i, 'I', &update, STATCAP_INT, pc ) && atCap && !pc->IsGM() )
+	       	if ( AdvanceOneStat(sk, i, 'I', &update, STATCAP_INT, pc ) && atCap && !pc->isGM() )
 			{
 				if( rand()%2 ) {
 					pc->st3--;
@@ -563,8 +563,8 @@ void Skills::AdvanceStats(pChar pc, int sk)
 			for ( i = 0;  i < ALLSKILLS; i++ )
 				updateSkillLevel(pc,i );     // update client's skill window
 
-			if ( atCap && !pc->IsGM() )
-				pc->sysmsg("You have reached the stat-cap of %i!", statcap );
+			if ( atCap && !pc->isGM() )
+				client->sysmessage("You have reached the stat-cap of %i!", statcap );
 
 		}
 	}
@@ -601,37 +601,31 @@ void Skills::SpiritSpeak(pClient client)
 */
 void Skills::SkillUse(pClient client, int x)
 {
-	if ( s < 0 || s >= now || x < 0 || x >= skTrueSkills) //Luxor
-		return;
-
-    pClient ps=getClientFromSocket(s);
-	if( ps==NULL )
-		return;
-
-	pChar pc = ps->currChar();
+	if ( ! client || x >= skTrueSkills ) return;
+	
+	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
-	if( (pc->skilldelay>getclock()) && (!pc->IsGM()) )
+	if( (pc->skilldelay>getclock()) && (!pc->isGM()) )
 	{
-		sysmessage(s, "You must wait a few moments before using another skill.");
+		client->sysmessage("You must wait a few moments before using another skill.");
 		return;
 	}
 
-	if ( pc->jailed )
+	if ( client->currAccount()->isJailed() )
 	{
-		sysmessage(s,"you are in jail and cant gain skills here!");
+		client->sysmessage("you are in jail and cant gain skills here!");
 		return;
 	}
 
-	if ( pc->dead )
+	if ( pc->isDead() )
 	{
-		sysmessage(s,"You cannot do that as a ghost.");
+		client->sysmessage("You cannot do that as a ghost.");
 		return;
 	}
 
 	if (pc->IsHiddenBySpell())
 		return; //Luxor: cannot use skills if under invisible spell
-    /*  chars[cc].unHide();*/
 
 	//<Luxor> 7 dec 2001
 	if (skillinfo[x].unhide_onuse == 1)
@@ -641,7 +635,7 @@ void Skills::SkillUse(pClient client, int x)
 
 	if( pc->casting )
 	{
-		sysmessage( s, "You can't do that while you are casting" );
+		client->sysmessage("You can't do that while you are casting" );
 		return;
 	}
 
@@ -653,7 +647,7 @@ void Skills::SkillUse(pClient client, int x)
 
 	if( Race::isRaceSystemActive() && !(Race::getRace( pc->race )->getCanUseSkill( (uint32_t) x )) )
 	{
-		sysmessage(s, "Your race cannot use that skill");
+		client->sysmessage("Your race cannot use that skill");
 		setSkillDelay = false;
 	}
 	else
@@ -665,17 +659,17 @@ void Skills::SkillUse(pClient client, int x)
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=target_armsLore;
 				targ->send( ps );
-				ps->sysmsg( "What item do you wish to get information about?");
+				client->sysmessage( "What item do you wish to get information about?");
 				break;
 
 			case skAnatomy:
 				break;
 
-			case ITEMID:
+			case skItemID:
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_itemId;
 				targ->send( ps );
-				ps->sysmsg( "What do you wish to appraise and identify?");
+				client->sysmessage( "What do you wish to appraise and identify?");
 				break;
 
 			case skEvaluatingIntelligence:
@@ -685,10 +679,10 @@ void Skills::SkillUse(pClient client, int x)
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=target_tame;
 				targ->send( ps );
-				ps->sysmsg( "Tame which animal?");
+				client->sysmessage( "Tame which animal?");
 				break;
 
-			case HIDING:
+			case skHiding:
 				Skills::Hide(s);
 				break;
 
@@ -700,7 +694,7 @@ void Skills::SkillUse(pClient client, int x)
 				targ=clientInfo[s]->newTarget( new cLocationTarget() );
 				targ->code_callback=target_detectHidden;
 				targ->send( ps );
-				ps->sysmsg( "Where do you wish to search for hidden characters?");
+				client->sysmessage( "Where do you wish to search for hidden characters?");
 				break;
 
 			case skPeacemaking:
@@ -711,17 +705,17 @@ void Skills::SkillUse(pClient client, int x)
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=target_provocation1;
 				targ->send( ps );
-				ps->sysmsg( "Whom do you wish to incite?");
+				client->sysmessage( "Whom do you wish to incite?");
 				break;
 
 			case skEnticement:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=target_enticement1;
 				targ->send( ps );
-				ps->sysmsg( "Whom do you wish to entice?");
+				client->sysmessage( "Whom do you wish to entice?");
 				break;
 
-			case SPIRITSPEAK:
+			case skSpiritSpeak:
 				Skills::SpiritSpeak(s);
 				break;
 
@@ -730,11 +724,11 @@ void Skills::SkillUse(pClient client, int x)
 					targ=clientInfo[s]->newTarget( new cObjectTarget() );
 					targ->code_callback=target_stealing;
 					targ->send( ps );
-					ps->sysmsg( "What do you wish to steal?");
+					client->sysmessage( "What do you wish to steal?");
 				}
 				else
 				{
-					sysmessage(s, "That skill has been disabled.");
+					client->sysmessage(s, "That skill has been disabled.");
 					setSkillDelay = false;
 				}
 				break;
@@ -749,28 +743,28 @@ void Skills::SkillUse(pClient client, int x)
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback = Begging::target;
 				targ->send( ps );
-				ps->sysmsg( "Whom do you wish to annoy?");
+				client->sysmessage( "Whom do you wish to annoy?");
 				break;
 
 			case skAnimalLore:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=Skills::target_animalLore;
 				targ->send( ps );
-				ps->sysmsg( "What animal do you wish to get information about?");
+				client->sysmessage( "What animal do you wish to get information about?");
 				break;
 
 			case skForensics:
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_forensics;
 				targ->send( ps );
-				ps->sysmsg( "What corpse do you want to examine?");
+				client->sysmessage( "What corpse do you want to examine?");
 				break;
 
 			case skPoisoning:
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_poisoning;
 				targ->send( ps );
-				ps->sysmsg( "What poison do you want to apply?");
+				client->sysmessage( "What poison do you want to apply?");
 				break;
 
 			case skTasteID:
@@ -790,7 +784,7 @@ void Skills::SkillUse(pClient client, int x)
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=target_removeTraps;
 				targ->send( ps );
-				ps->sysmsg( "What do you want to untrap?");
+				client->sysmessage( "What do you want to untrap?");
 				break;
 
 			case skCartography:
@@ -798,7 +792,7 @@ void Skills::SkillUse(pClient client, int x)
 				break;
 
 			default:
-				sysmessage(s, "That skill has not been implemented yet.");
+				client->sysmessage("That skill has not been implemented yet.");
 				setSkillDelay = false;
 				break;
 		}
@@ -839,9 +833,8 @@ void Skills::updateSkillLevel(pChar pc, int s)
 
 void Skills::TDummy(pClient client)
 {
-	if ( ! client ) //Luxor
-		return;
-	pChar pc = cSerializable::findCharBySerial(currchar[s]);
+	if ( ! client ) return;
+	pPC pc = client->currChar();
 	if ( ! pc ) return;
 
 	int hit;
@@ -852,7 +845,7 @@ void Skills::TDummy(pClient client)
 	{
 		if (pc->getWeapon()->IsBowType())
 		{
-			sysmessage(s, "Practice archery on archery buttes !");
+			client->sysmessage("Practice archery on archery buttes !");
 			return;
 		}
 	}
@@ -904,18 +897,15 @@ void Skills::TDummy(pClient client)
 			pc->checkSkill(skTactics, 0, 250);  //Dupois - Increase tactics but only by a fraction of the normal rate
 	}
 	else
-		sysmessage(s, "You feel you would gain no more from using that.");
+		client->sysmessage("You feel you would gain no more from using that.");
 
 }
 
-void Skills::AButte(pClient client1, pItem pButte)
+void Skills::AButte(pClient client, pItem pButte)
 {
-	if ( s1 < 0 || s1 >= now ) //Luxor
-		return;
-	pChar pc = cSerializable::findCharBySerial( currchar[s1] );
+	if ( ! client ) return;
+	pPC pc = client->currChar();
 	if ( ! pc ) return;
-
-
 
 	int v1;
 	if(pButte->getId()==0x100A)
@@ -958,16 +948,16 @@ void Skills::AButte(pClient client1, pItem pButte)
 		switch(i)
 		{
 			case 0:
-				pc->getClient()->sysmessage("This target is empty");
+				client->sysmessage("This target is empty");
 				break;
 			case 1:
-				pc->getClient()->sysmessage("You pull %d arrows from the target",pButte->more1/2);
+				client->sysmessage("You pull %d arrows from the target",pButte->more1/2);
 				break;
 			case 2:
-				pc->getClient()->sysmessage("You pull %d bolts from the target",pButte->more2/2);
+				client->sysmessage("You pull %d bolts from the target",pButte->more2/2);
 				break;
 			case 3:
-				pc->getClient()->sysmessage("You pull %d arrows and %d bolts from the target",pButte->more1,pButte->more2/2);
+				client->sysmessage("You pull %d arrows and %d bolts from the target",pButte->more1,pButte->more2/2);
 				break;
 			default:
 				LogError("switch reached default");
@@ -981,12 +971,12 @@ void Skills::AButte(pClient client1, pItem pButte)
     {
         if (!pc->getWeapon()->IsBowType())
         {
-            pc->sysmsg( "You need to equip a bow to use this.");
+            client->sysmessage( "You need to equip a bow to use this.");
             return;
         }
         if ((pButte->more1+pButte->more2)>99)
         {
-            pc->sysmsg( "You should empty the butte first!");
+            client->sysmessage( "You should empty the butte first!");
             return;
         }
 		if (pc->getWeapon()->IsBow())
@@ -996,7 +986,7 @@ void Skills::AButte(pClient client1, pItem pButte)
 
         if (arrowsquant==0)
         {
-            pc->sysmsg( "You have nothing to fire!");
+            client->sysmessage( "You have nothing to fire!");
             return;
         }
 
@@ -1020,36 +1010,36 @@ void Skills::AButte(pClient client1, pItem pButte)
         if( pc->skill[skArchery] < 350 )
             pc->checkSkill( skArchery, 0, 1000 );
         else
-            pc->sysmsg( "You learn nothing from practicing here");
+            client->sysmessage( "You learn nothing from practicing here");
 
         switch( ( pc->skill[skArchery]+ ( (rand()%200) -100) ) /100 )
         {
 		case -1:
 		case 0:
 		case 1:
-			pc->sysmsg( "You miss the target");
+			client->sysmessage( "You miss the target");
 			pc->playSFX(0x0238);
 			break;
 		case 2:
 		case 3:
-			pc->sysmsg( "You hit the outer ring!");
+			client->sysmessage( "You hit the outer ring!");
 			pc->playSFX(0x0234);
 			break;
 		case 4:
 		case 5:
 		case 6:
-			pc->sysmsg( "You hit the middle ring!");
+			client->sysmessage( "You hit the middle ring!");
 			pc->playSFX(0x0234);
 			break;
 		case 7:
 		case 8:
 		case 9:
-			pc->sysmsg( "You hit the inner ring!");
+			client->sysmessage( "You hit the inner ring!");
 			pc->playSFX(0x0234);
 			break;
 		case 10:
 		case 11:
-			pc->sysmsg( "You hit the bullseye!!");
+			client->sysmessage( "You hit the bullseye!!");
 			pc->playSFX(0x0234);
 			break;
 		default:
@@ -1057,7 +1047,7 @@ void Skills::AButte(pClient client1, pItem pButte)
 		}
     }
     if ( (v1>1)&&(v1<5) || (v1>8))
-		pc->sysmsg( "You cant use that from here.");
+		client->sysmessage( "You cant use that from here.");
 
 }
 
@@ -1067,10 +1057,8 @@ void Skills::AButte(pClient client1, pItem pButte)
 */
 void Skills::Meditation (pClient client)
 {
-	if ( ! client )
-		return;
-
-	pChar pc = cSerializable::findCharBySerial(currchar[s]);
+	if ( ! client ) return;
+	pPC pc = client->currChar();
 	if ( ! pc ) return;
 
 	pItem pi = NULL;
@@ -1078,23 +1066,23 @@ void Skills::Meditation (pClient client)
 	pc->setMeditating(false);
 
 	if ( pc->war ) {
-		pc->sysmsg( "Your mind is too busy with the war thoughts.");
+		client->sysmessage( "Your mind is too busy with the war thoughts.");
 		return;
 	}
 
 	if ( SrvParms->armoraffectmana && Skills::GetAntiMagicalArmorDefence(pc) > 15 ) {
-		pc->sysmsg( "Regenerative forces cannot penetrate your armor.");
+		client->sysmessage( "Regenerative forces cannot penetrate your armor.");
 		return;
 	}
 
 	pi = pc->getWeapon();
 	if ( (pi && !pi->IsStave()) || pc->getShield() ) {
-		pc->sysmsg( "You cannot meditate with a weapon or shield equipped!");
+		client->sysmessage( "You cannot meditate with a weapon or shield equipped!");
 		return;
 	}
 
 	if ( pc->mn == pc->in ) {
-		pc->sysmsg( "You are at peace.");
+		client->sysmessage( "You are at peace.");
 		return;
 	}
 
@@ -1103,11 +1091,11 @@ void Skills::Meditation (pClient client)
 	// Meditation check
 	//
 	if ( !pc->checkSkill(skMeditation, 0, 1000) ) {
-		pc->sysmsg( "You cannot focus your concentration.");
+		client->sysmessage( "You cannot focus your concentration.");
 		return;
 	}
 
-	pc->sysmsg( "You enter a meditative trance.");
+	client->sysmessage( "You enter a meditative trance.");
 	pc->setMeditating(true);
 	pc->playSFX(0x00F9);
 }
@@ -1128,28 +1116,25 @@ decrease=3+(your int/10)
 */
 void Skills::Persecute (pClient client)
 {
-	if ( ! client ) //Luxor
-		return;
-
-	pChar pc = cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return;
+	if ( ! client ) return;
+	pPC pc = client->currChar();
 
 	pChar pc_targ = pc->getTarget();
 	if ( ! pc_targ ) return;
 
-	if (pc_targ->IsGM()) return;
+	if (pc_targ->isGM()) return;
 	
 	int decrease=(pc->in/10)+3;
 	
-	if( pc->skilldelay > getclock() && !pc->IsGM() )
+	if( pc->skilldelay > getclock() && !pc->isGM() )
 	{
-		pc->sysmsg("You are unable to persecute him now...rest a little...");
+		client->sysmessage("You are unable to persecute him now...rest a little...");
 		return;
 	}
 	
 	if ( (rand()%20 + pc->in) <= 45 )
 	{
-		pc->sysmsg("Your mind is not strong enough to disturb the enemy.");
+		client->sysmessage("Your mind is not strong enough to disturb the enemy.");
 		return;
 	}
 	
@@ -1158,8 +1143,11 @@ void Skills::Persecute (pClient client)
 	else
 		pc_targ->mn-=decrease;//decrease mana
 	pc_targ->updateStats(1);//update
-	pc->sysmsg("Your spiritual forces disturb the enemy!");
-	pc_targ->sysmsg("A damned soul is disturbing your mind!");
+	client->sysmessage("Your spiritual forces disturb the enemy!");
+	
+	if ( dynamic_cast<pPC>(pc_targ) )
+		(dynamic_cast<pPC>(pc_targ))->getClient()->sysmessage("A damned soul is disturbing your mind!");
+	
 	SetSkillDelay(pc);
 
 	pc_targ->emoteall("%s is persecuted by a ghost!!", true, pc_targ->getCurrentName().c_str());
@@ -1167,6 +1155,7 @@ void Skills::Persecute (pClient client)
 
 void loadskills()
 {
+//!\todo Move this in xml-form
     int i, noskill, l=0;
     char sect[512];
     cScpIterator* iter = NULL;
@@ -1240,56 +1229,56 @@ void loadskills()
 
 void SkillVars()
 {
-    strcpy(skillinfo[ALCHEMY].madeword,"mixed");
-    strcpy(skillinfo[skAnatomy].madeword,"made");
-    strcpy(skillinfo[skAnimalLore].madeword,"made");
-    strcpy(skillinfo[ITEMID].madeword,"made");
-    strcpy(skillinfo[skArmsLore].madeword,"made");
-    strcpy(skillinfo[skParrying].madeword,"made");
-    strcpy(skillinfo[skBegging].madeword,"made");
-    strcpy(skillinfo[skBlacksmithing].madeword,"forged");
-    strcpy(skillinfo[skBowcraft].madeword,"bowcrafted");
-    strcpy(skillinfo[skPeacemaking].madeword,"made");
-    strcpy(skillinfo[skCamping].madeword,"made");
-    strcpy(skillinfo[skCarpentry].madeword,"made");
-    strcpy(skillinfo[skCartography].madeword,"wrote");
-    strcpy(skillinfo[skCooking].madeword,"cooked");
-    strcpy(skillinfo[skDetectingHidden].madeword,"made");
-    strcpy(skillinfo[skEnticement].madeword,"made");
-    strcpy(skillinfo[skEvaluatingIntelligence].madeword,"made");
-    strcpy(skillinfo[HEALING].madeword,"made");
-    strcpy(skillinfo[FISHING].madeword,"made");
-    strcpy(skillinfo[skForensics].madeword,"made");
-    strcpy(skillinfo[skHerding].madeword,"made");
-    strcpy(skillinfo[HIDING].madeword,"made");
-    strcpy(skillinfo[skProvocation].madeword,"made");
-    strcpy(skillinfo[skInscription].madeword,"wrote");
-    strcpy(skillinfo[skLockPicking].madeword,"made");
-    strcpy(skillinfo[skMagery].madeword,"envoked");
-    strcpy(skillinfo[skMagicResistance].madeword,"made");
-    strcpy(skillinfo[skTactics].madeword,"made");
-    strcpy(skillinfo[skSnooping].madeword,"made");
-    strcpy(skillinfo[skMusicianship].madeword,"made");
-    strcpy(skillinfo[skPoisoning].madeword,"made");
-    strcpy(skillinfo[skArchery].madeword,"made");
-    strcpy(skillinfo[SPIRITSPEAK].madeword,"made");
-    strcpy(skillinfo[skStealing].madeword,"made");
-    strcpy(skillinfo[skTailoring].madeword,"sewn");
-    strcpy(skillinfo[skTaming].madeword,"made");
-    strcpy(skillinfo[skTasteID].madeword,"made");
-    strcpy(skillinfo[skTinkering].madeword,"made");
-    strcpy(skillinfo[skTracking].madeword,"made");
-    strcpy(skillinfo[skVeterinary].madeword,"made");
-    strcpy(skillinfo[skSwordsmanship].madeword,"made");
-    strcpy(skillinfo[skMacefighting].madeword,"made");
-    strcpy(skillinfo[FENCING].madeword,"made");
-    strcpy(skillinfo[skWrestling].madeword,"made");
-    strcpy(skillinfo[skLumberjacking].madeword,"made");
-    strcpy(skillinfo[skMining].madeword,"smelted");
-    strcpy(skillinfo[skMeditation].madeword,"envoked");
-    strcpy(skillinfo[skStealth].madeword,"made");
-    strcpy(skillinfo[skRemoveTraps].madeword,"made");
-
+	// Note: lore, knowledge and combat skills can't made anything!	
+	skillinfo[skAnimalLore].madeword = strNull;
+	skillinfo[skItemID].madeword = strNull;
+	skillinfo[skArmsLore].madeword = strNull;
+	skillinfo[skParrying].madeword = strNull;
+	skillinfo[skBegging].madeword = strNull;
+	skillinfo[skDetectingHidden].madeword = strNull;
+	skillinfo[skEnticement].madeword = strNull;
+	skillinfo[skEvaluatingIntelligence].madeword = strNull;
+	skillinfo[skForensics].madeword = strNull;
+	skillinfo[skHerding].madeword = strNull;
+	skillinfo[skHiding].madeword = strNull;
+	skillinfo[skProvocation].madeword = strNull;
+	skillinfo[skLockPicking].madeword = strNull;
+	skillinfo[skMagicResistance].madeword = strNull;
+	skillinfo[skTactics].madeword = strNull;
+	skillinfo[skSnooping].madeword = strNull;
+	skillinfo[skArchery].madeword = strNull;
+	skillinfo[skSpiritSpeak].madeword = strNull;
+	skillinfo[skStealing].madeword = strNull;
+	skillinfo[skTasteID].madeword = strNull;
+	skillinfo[skTracking].madeword = strNull;
+	skillinfo[skVeterinary].madeword = strNull;
+	skillinfo[skSwordsmanship].madeword = strNull;
+	skillinfo[skMacefighting].madeword = strNull;
+	skillinfo[skFencing].madeword = strNull;
+	skillinfo[skWrestling].madeword = strNull;
+	skillinfo[skLumberjacking].madeword = strNull;
+	skillinfo[skStealth].madeword = strNull;
+	skillinfo[skRemoveTraps].madeword = strNull;
+	
+	skillinfo[skAlchemy].madeword = strMixed;
+	skillinfo[skAnatomy].madeword = strMade;
+	skillinfo[skBlacksmithing].madeword = strForged;
+	skillinfo[skBowcraft].madeword = strBowcrafted;
+	skillinfo[skCamping].madeword = strMade;
+	skillinfo[skCarpentry].madeword = strMade;
+	skillinfo[skCartography].madeword = strWrote;
+	skillinfo[skCooking].madeword = strCooked;
+	skillinfo[skHealing].madeword = strMade;
+	skillinfo[skFishing].madeword = strFished;
+	skillinfo[skInscription].madeword = strWrote;
+	skillinfo[skMagery].madeword = strEvoked;
+	skillinfo[skMusicianship].madeword = strPlayed;
+	skillinfo[skPoisoning].madeword = strMixed;
+	skillinfo[skTailoring].madeword = strSewn;
+	skillinfo[skTaming].madeword = strTamed;   
+	skillinfo[skTinkering].madeword = strMade;
+	skillinfo[skMining].madeword = strSmelted;
+	skillinfo[skMeditation].madeword = strEvoked;
 }
 
 int Skills::GetAntiMagicalArmorDefence(pChar pc)
@@ -1423,7 +1412,7 @@ void Skills::Decipher(pItem tmap, pClient client)
     cScpIterator* iter = NULL;
     char script1[1024];
 
-    if(pc->skilldelay<=getclock() || pc->IsGM()) // Char doin something?
+    if(pc->skilldelay<=getclock() || pc->isGM()) // Char doin something?
     {
         if (pc->checkSkill( skCartography, tmap->morey * 10, 1000)) // Is the char skilled enaugh to decipher the map
         {
@@ -1515,12 +1504,12 @@ void Skills::Decipher(pItem tmap, pClient client)
             tmap->Delete();    // Delete the tattered map
         }
         else
-            pc->sysmsg("You fail to decipher the map");      // Nope :P
+            client->sysmessage("You fail to decipher the map");      // Nope :P
         // Set the skill delay, no matter if it was a success or not
         SetTimerSec(&pc->skilldelay,SrvParms->skilldelay);
         pc->playSFX(0x0249); // Do some inscription sound regardless of success or failure
-        pc->sysmsg("You put the deciphered tresure map in your pack");       // YAY
+        client->sysmessage("You put the deciphered tresure map in your pack");       // YAY
     }
     else
-        pc->sysmsg("You must wait to perform another action");       // wait a bit
+        client->sysmessage("You must wait to perform another action");       // wait a bit
 }

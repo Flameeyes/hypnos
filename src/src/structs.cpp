@@ -12,6 +12,7 @@
 
 #include "structs.h"
 #include "objects/citem.h"
+#include "constants.h"
 
 /*!
 \brief Quick constructor passing an item pointer
@@ -27,3 +28,12 @@ sContainerItem::sContainerItem(pItem item)
 	color	= item->getColor();
 }
 
+sSkillInfo::sSkillInfo()
+{
+	st = 0;
+	dx = 0;
+	in = 0;
+	flags = 0;
+	advanceIndex = 0;
+	madeword = strNull;
+}

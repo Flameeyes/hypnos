@@ -18,7 +18,9 @@
 /*!
 \brief Skill related stuff
 */
-namespace Skills {
+namespace nSkills {
+	sSkillInfo infos[skTrueSkills];
+
 	//@{
 	/*!
 	\name General Skill stuff

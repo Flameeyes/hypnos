@@ -100,7 +100,7 @@ cScheduler::cScheduler()
 			try {
 				new cEvent( n->getData(), tVariant( n->getAttribute("interval") ).toUInt32() );
 			} catch ( MXML::NotFoundError e ) {
-				LogWarning("Incomplete node schedules.xml, ignoring");
+				LogWarning("Incomplete node in schedules.xml, ignoring");
 				continue;
 			}
 		} while((n = n->next()));

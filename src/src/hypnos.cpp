@@ -1,39 +1,67 @@
 /*!
 \mainpage Hypnos documentation
 
-	<h1>Hypnos Emulator</h1>
-	UO Server Emulation Program
-	<i>Work based on NoX-Wizard project.</i>
+<h1>Hypnos UO Server Emulator</h1>
+<i>Work based on NoX-Wizard project.</i>
 
-	This Project started on January 2004, by Kheru & Flameeyes
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-	Copyright 1997, 98 by Marcus Rating (Cironian)
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-	GNU General Public License for more details.
+<b>In addition to that license, if you are running this program or modified
+versions of it on a public system you HAVE TO make the complete source of
+the version used by you available or provide people with a location to
+download it.</b>
 
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+You can find info about the authors in the AUTHORS file.
 
-	<b>In addition to that license, if you are running this program or modified
-	versions of it on a public system you HAVE TO make the complete source of
-	the version used by you available or provide people with a location to
-	download it.</b>
+NoX-Wizard project can be found at <a href="http://noxwizard.sf.net/">
+NoX-Wizard site</a>
 
 <hr>
 
-	You can find info about the authors in the AUTHORS file.
+<h2>Manifesto</h2>
 
-	NoX-Wizard project can be found at <a
-	href="http://noxwizard.sf.net/">NoX-Wizard site</a>
+I'd like to write a manifesto stating my intentions about Hypnos' project.
+Hypnos will never be the fastest UO emulator (such an emulator would have to
+be written entirely in C++) nor the most scriptable (which may be Luxor's MyUO,
+which supports packet forging and database access via script) but it has a
+clear purpose in my opinions.
+
+Hypnos must be simple. I want to create an emulator combining Sphere's
+simplicity with NoX-Wizard's 'wannabe' power.
+
+ID-defined objects (legacy from UOX/Wolfpack), numerical ID assigned to script
+definitions must disappear. ".go" command and regions managed as in Sphere, and
+so on. Unicorn (obviously reconfigured for Hypnos on release 1.0) is already
+similar to Axis, and will be even more so when EVERY object will be
+categorized, and for this I'll need much 'manpower'.
+
+In addiction a default behaviour should be defined, suited for quick needs so,
+like in Sphere, you won't go crazy trying to set up a minimal shard.
+
+I'm displeased about the fact that removing non-id-scripted objects, tools like
+Xuri's Worldbuilder won't work anymore, but we can live without it.
+
+Another important feature will be independence from scripting language. I want
+to use scripts written in different languages just changing a shared library
+(.so in linux, .dll in windows) and configuration settings.
+
+What I want won't be easily realized, and for most of the hard work I have to
+thank Chrono and Ghisha, valid collegues which I hope to work with for a long
+time, all of this woldn't had be possible without them.
+
+Also thanks to Judas for translating this text from italian to english :)
 
 */
 

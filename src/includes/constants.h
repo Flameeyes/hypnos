@@ -51,6 +51,29 @@ static const uint16_t VERY_VERY_FAR = 50000; //!< Used as distance between inval
 
 static const int8_t illegal_z = -128;	//!< An illegal z-value to return in case of error
 
+static const char strNull[] = "";
+
+//@{
+/*!
+\name Made words
+
+These are constants used by sSkillInfo struct to define the made word for the
+skills.
+*/
+	static const char strMixed[] = "mixed";
+	static const char strMade[] = "made";
+	static const char strForged[] = "forged";
+	static const char strBowcrafted[] = "bowcrafted";
+	static const char strWrote[] = "wrote";
+	static const char strCooked[] = "cooked";
+	static const char strSewn[] = "sewn";
+	static const char strSmelted[] = "smelted";
+	static const char strEvoked[] = "evoked";
+	static const char strFished[] = "fished";
+	static const char strPlayed[] = "played";
+	static const char strTamed[] = "tamed";
+//@}
+
 // Miscellaneous constants
 enum
 {
@@ -102,18 +125,6 @@ enum
 //! List of monster sounds (see cChar::playMonsterSound())
 typedef enum { SND_STARTATTACK = 0, SND_IDLE, SND_ATTACK, SND_DEFEND, SND_DIE } MonsterSound;
 #define ALL_MONSTER_SOUND 5
-
-//! Skills
-enum Skill {
-	skInvalid = -1, skAlchemy = 0, skAnatomy, skAnimalLore, skItemID, skArmsLore, skParrying,
-	skBegging, skBlacksmithing, skBowcraft, skPeacemaking, skCamping, skCarpentry, skCartography,
-	skCooking, skDetectingHidden, skEnticement, skEvaluatingIntelligence, skHealing, skFishing,
-	skForensics, skHerding, skHiding, skProvocation, skInscription, skLockPicking, skMagery,
-	skMagicResistance, skTactics, skSnooping, skMusicianship, skPoisoning, skArchery, skSpiritSpeak,
-	skStealing, skTailoring, skTaming, skTasteID, skTinkering, skTracking, skVeterinary, skSwordsmanship,
-	skMacefighting, skFencing, skWrestling, skLumberjacking, skMining, skMeditation, skStealth,
-	skRemoveTraps, skTrueSkills
-};
 
 enum { ALLSKILLS = 49, STR , DEX, INTEL, FAME, KARMA,
 	I_ACCOUNT, SKILLS
@@ -229,10 +240,4 @@ namespace tempfx {
 	};
 };
 
-/*!
-\brief Types of variaibles
-\author Endymion
-*/
-enum VarType { VAR_EFF =0, VAR_DEC, VAR_REAL, VAR_ACT, };
-
-#endif //__extern extern constANTS_H__
+#endif

@@ -136,20 +136,21 @@ struct unitile_st
  uint8_t weight;
 } PACK_NEEDED;
 
-/*!
-\todo rename to sSkill
-\todo use std::string instead of c-strings
-*/
-struct skill_st
+//! Informations about the skills
+struct sSkillInfo
 {
- int32_t st;
- int32_t dx;
- int32_t in;
- int32_t unhide_onuse;
- int32_t unhide_onfail;
- int32_t advance_index;
- char madeword[50]; // Added by Magius(CHE)
-};
+	static const uint8_t flagUnhideOnUse	= 0x01; //!< Unhide after a good use of the skill
+	static const uint8_t flagUnhideOnFail	= 0x02; //!< Unhide after a failure of the skill
+	
+	uint16_t st;			//!< Strength component of the skill
+	uint16_t dx;			//!< Dexterity component of the skill
+	uint16_t in;			//!< Intelligence component of the skill
+	uint8_t flags;			//!< Flags of the skill
+	uint16_t advanceIndex;
+	const char *madeword;		//!< Word for items/char prepared with that skill
+	
+	sSkillInfo();
+}
 
 /*!
 \todo rename to sAdvance
