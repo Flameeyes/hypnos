@@ -996,7 +996,7 @@ void StartClasses()
 	// Classes nulled now, lets get them set up :)
 	cwmWorldState=new CWorldMain;
 	mapRegions=new cRegion;
-	Boats=new cBoat;
+	Boats=new cBoatOLD;
 
 	Network=new cNetwork;
 	Spawns=new cSpawns;

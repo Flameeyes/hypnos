@@ -19,6 +19,9 @@
 \note over an existing old boat system
 */
 
+static const uint16_t XBORDER = 200;	//!< Border from x-limit
+static const uint16_t YBORDER = 200;	//!< Border from y-limit
+
 //For iSizeShipOffsets->
 #define PORT_PLANK 0
 #define STARB_PLANK 1
@@ -64,7 +67,7 @@ void insert_boat(pItem pi);
 boat_db* search_boat(int32_t ser);
 pItem search_boat_by_plank(pItem pl);
 
-class cBoat
+class cBoatOLD
 {
 	protected:
 		bool boat_collision(pItem pBoat1,int x1, int y1,int dir,pItem pBoat2);
@@ -80,9 +83,9 @@ class cBoat
 		void TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, pItem pTiller, pItem pHold );
 	public:
 
-		cBoat();
+		cBoatOLD();
 		pItem GetBoat(sLocation pos);
-		virtual ~cBoat();
+		virtual ~cBoatOLD();
 		bool Speech(pChar pc, pClient clientocket, std::string &talk );
 		void OpenPlank(pItem pi);
 		void PlankStuff(pChar pc, pItem pi);
@@ -94,6 +97,6 @@ class cBoat
 typedef std::map<int,boat_db> BOATS;
 extern BOATS	s_boat;
 
-extern cBoat* Boats;
+extern cBoatOLD* Boats;
 
 #endif
