@@ -5,10 +5,6 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Declaration of packets classes
-*/
 
 #ifndef __CPACKET_H__
 #define __CPACKET_H__
