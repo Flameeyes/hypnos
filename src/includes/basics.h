@@ -189,6 +189,20 @@ inline int hex2num ( std::string& s )
 }
 //@}
 
+R64 dist( Location a, Location b, LOGICAL countZ = !server_data.disable_z_checking);
+
+/*!
+\brief Check if a location is in the range of another one
+\param a Base location to check
+\param b Location to check if in range
+\param range range to use
+\deprecated No one is using it, maybe should be removed...
+*/
+inline const bool inRange(const Location a, const Location b, const UI16 range = VISRANGE)
+{
+	return (dist(a,b)<= range);
+}
+
 int fillIntArray(char* str, int *array, int maxsize, int defval = -1, int base = BASE_AUTO);
 void readSplitted(FILE* F, char* script1, char* script2);
 int RandomNum(int nLowNum, int nHighNum);

@@ -57,6 +57,8 @@ enum
 #define UINVALID16 0xFFFF
 #define UINVALID32 0xFFFFFFFF
 
+static const UI16 VERY_VERY_FAR = 50000; //!< Used as distance between invalid objects
+
 //@{
 /*!
 \name enumerated extern extern constants

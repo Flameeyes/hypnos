@@ -12,8 +12,23 @@
 #include "inlines.h"
 
 /*!
+\author Luxor
+\brief Returns distance between two points.
+*/
+const R64 dist( const Location a, const Location b, bool countZ )
+{
+        SI16 xDiff = a.x - b.x;
+        SI16 yDiff = a.y - b.y;
+	R64 distance = hypot( abs( xDiff ), abs( yDiff ) );
+	if ( !countZ || a.z == b.z )
+		return distance;
+	
+	R64 distZ = abs( a.z - b.z );
+	return hypot( distance, distZ );
+}
+
+/*!
 \brief Returns a random number between bounds
-\author ?
 \return int the number
 \param nLowNum lower bound
 \param nHighNum higher bound
