@@ -70,6 +70,7 @@ AR = @AR@
 AS = @AS@
 AWK = @AWK@
 CC = @CC@
+CPP = @CPP@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXFLAGS = @CXXFLAGS@

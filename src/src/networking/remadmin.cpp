@@ -145,7 +145,13 @@ void RemoteAdmin::CheckConn ()
 	
 	if (Network->CheckForBlockedIP(client_addr))
 	{
-		outPlainf("[BLOCKED!] IP Address: %s\n", inet_ntoa(rac_sockets_addr.sin_addr));
+		outPlainf("[BLOCKED!] IP Address: %s\n",
+		#ifdef HAVE_INET_NTOA
+			inet_ntoa(rac_sockets_addr.sin_addr)
+		#else
+			long2ip(rac_sockets_addr.sin_addr).c_str()
+		#endif
+		);
 		closesocket(sockets[racnow]);
 		return;
 	}
