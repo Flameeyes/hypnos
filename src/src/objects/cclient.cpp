@@ -600,7 +600,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 #else
 			mapRegions->remove( pi );
 #endif
-			if (!pc_currchar->isGM() && !pc->currChar->isHidden() && owner != pc_currchar)
+			if (!pc_currchar->isGM() && !pc->currchar->isHidden() && owner != pc_currchar)
                         {
                         	//the dragging of the item should not be shown if pc is a gm, is invisible or is trying to get an item on his person (or bank)
                                 //! \todo this packet has to be sent to all surrounding clients EXCEPT "this"
@@ -772,7 +772,7 @@ void cClient::pack_item(pItem pi, Location &loc, pContainer cont) // Item is put
                                 //! \todo this packet has to be sent to all surrounding clients INCLUDING "this"
                                 //! \todo complete when sets remade
 
-				cPacketSendDragItem pk(pi, pc_currchar->getLocation(), amount);
+				cPacketSendDragItem pk(pi, pc_currchar->getLocation(), pi->getAmount());
                         	sw->sendPacket(&pk);		//this packets shows to those clients the item being dropped on the ground
 
 				pc->playSFX( itemsfx(pi->getId()) );
@@ -899,76 +899,58 @@ void cClient::pack_item(pItem pi, Location &loc, pContainer cont) // Item is put
 		return;
 	}
 
+	if ( contOwner && npc && npc->npcaitype==NPCAI_PLAYERVENDOR && npc->getOwner()==pc )
+	{
+		pc->fx1= DEREF_pItem(pi);
+		pc->fx2=17;
+		pc->sysmsg("Set a price for this item.");
+        }
 
+	cont->AddItem(pi,loc->x,loc->y);
+	if (!pc_currchar->isGM() && !pc_currchar->isHidden() && owner != pc_currchar)
+	{
+		//the dragging of the item should not be shown if pc is a gm, is invisible or is trying to get an item on his person (or bank)
+		//! \todo this packet has to be sent to all surrounding clients EXCEPT "this"
+		//! \todo complete when sets remade
+		//! \todo verify if picking up items from the ground while hidden should unhide
+		cPacketSendDragItem pk(pi, cont->getWorldPosition(), pi->getAmount());
+		sw->sendPacket(&pk);		//this packets shows to those clients the item from the char to the destination container (or char if vendor)
+       	}
 
+	pc->playSFX( itemsfx(pi->getId()) );
+	statusWindow(pc, true);
 
+        /*
+        // this part may be useless 
 
-
-
-
-
-
-	if (cont->type == ITYPE_CONTAINER)
-        {
-
-		if ( contOwner )
+	if (cont->pileable && pi->pileable)
+	{
+		if ( !cont->PileItem( pi ) )
 		{
-			if ( npc && npc->npcaitype==NPCAI_PLAYERVENDOR && npc->getOwner()==pc )
-			{
-				pc->fx1= DEREF_pItem(pi);
-				pc->fx2=17;
-				pc->sysmsg("Set a price for this item.");
-			}
+			item_bounce6(pi);
+			return;
 		}
-
-		short xx=loc->x;
-		short yy=loc->y;
-
-		cont->AddItem(pi,xx,yy);
-
-		pc->playSFX( itemsfx(pi->getId()) );
-		statusWindow(pc, true);
 	}
-	// end of player run vendors
-
 	else
-		// - Unlocked item spawner or unlockable item spawner
-		if (cont->type==ITYPE_UNLOCKED_CONTAINER || cont->type==ITYPE_NODECAY_ITEM_SPAWNER || cont->type==ITYPE_DECAYING_ITEM_SPAWNER)
+	{
+		if( !pi->getOldContainer() ) //current cont serial is invalid because is dragging
 		{
-			cont->AddItem(pi, loc->x, loc->y); //Luxor
-			pc->playSFX( itemsfx(pi->getId()) );
-
+			NxwSocketWrapper sw;
+			sw.fillOnline( pi->getPosition() );
+			//! \todo the sendpacket stuff here
+			for( sw.rewind(); !sw.isEmpty(); sw++ )
+			{
+				cPacketSendDeleteObj pk(pi);
+				si->sendPacket(&pk); //!<\todo si must become a client pointer
+			}
+			mapRegions->remove(pi);
 		}
-		else  // - Pileable
-			if (cont->pileable && pi->pileable)
-			{
-				if ( !cont->PileItem( pi ) )
-				{
-					item_bounce6(pi);
-					return;
-				}
-			}
-			else
-			{
-				if( !pi->getOldContainer() ) //current cont serial is invalid because is dragging
-				{
-					NxwSocketWrapper sw;
-					sw.fillOnline( pi->getPosition() );
-                                        //! \todo the sendpacket stuff here
-					for( sw.rewind(); !sw.isEmpty(); sw++ )
-                                        {
-						cPacketSendDeleteObj pk(pi);
-						si->sendPacket(&pk); //!<\todo si must become a client pointer
-                                        }
-					mapRegions->remove(pi);
-				}
+        	pi->setPosition( loc );
+		pi->setContainer( cont->getContainer() );
 
-				pi->setPosition( loc );
-				pi->setContainer( cont->getContainer() );
-
-				pi->Refresh();
-			}
-
+		pi->Refresh();
+	 }
+         */
 
 }
 
