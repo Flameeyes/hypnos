@@ -241,20 +241,18 @@ namespace magic {
 	enum {	TARGTYPE_NONE = 0, TARGTYPE_XYZ, TARGTYPE_ITEM, TARGTYPE_CHAR,
 		TARGTYPE_CONTAINERORDOOR, TARGTYPE_CONTAINER, TARGTYPE_RUNE };
 
-	extern sSpell sSpells[MAX_SPELLS];
-
+	extern sSpell spellsData[MAX_SPELLS];
+	void loadSpells();
+	
 	bool checkMagicalSpeech( pChar pc, char* speech );
 	bool beginCasting (SpellId num, pClient client, CastingType type);
 	SpellId spellNumberFromScrollId(int id);
 	void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src = NULL, int flags = 0, int param = 0);
 	void castAreaAttackSpell (sPoint epi, SpellId spellnum, pChar pcaster = NULL);
-	void loadSpellsFromScript();
 	bool spellRequiresTarget(SpellId spellnum);
 	pChar summon (pChar owner, int npctype, int duration, bool bTamed = true, int x = INVALID, int y = INVALID, int z = INVALID);
 	bool checkGateCollision( pChar pc );
 	uint32_t getCastingTime( SpellId spell );
-
-
 } // namespace
 
 #endif
