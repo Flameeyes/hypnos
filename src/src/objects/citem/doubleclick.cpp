@@ -646,7 +646,7 @@ void cItem::doubleClicked(pClient client)
 				return;
 			}
 			else
-				WarnOut("Unhandled guild item type named: %s with ID of: %X\n", getCurrentName().c_str(), getId());
+				LogWarning("Unhandled guild item type named: %s with ID of: %X\n", getCurrentName().c_str(), getId());
 			return;
 #endif
 	case ITYPE_PLAYER_VENDOR_DEED:			// PlayerVendors deed
@@ -654,7 +654,7 @@ void cItem::doubleClicked(pClient client)
 			pNpc vendor = npcs::AddNPCxyz(-1, 2117, charpos.x, charpos.y, charpos.z);
 			if ( !vendor )
 			{
-				WarnOut("npc-script couldnt find vendor !\n");
+				LogWarning("npc-script couldnt find vendor !\n");
 				return;
 			}
 

@@ -322,7 +322,7 @@ void cNetwork::Login2(pClient client)
 	uint8_t newlist1[6]={ 0xA8, 0x00, };
 	uint8_t newlist2[40]={ 0x00, };
 
-	InfoOut( (char*)msgLogin, inet_ntoa(client_addr.sin_addr), &buffer[s][1] );
+	outInfof( (char*)msgLogin, inet_ntoa(client_addr.sin_addr), &buffer[s][1] );
 	if (SrvParms->server_log)
 		ServerLog.Write( (char*)msgLogin, inet_ntoa(client_addr.sin_addr), &buffer[s][1] );
 
@@ -377,7 +377,7 @@ void cNetwork::Relay(pClient client) // Relay player to a certain IP
 		} else
 			ip = serverip;
                 if (ip != oldip)
-			InfoOut("client %d relayed to IP %d.%d.%d.%d instead of %d.%d.%d.%d\n", s, IPPRINTF(ip), IPPRINTF(oldip));
+			outInfof("client %d relayed to IP %d.%d.%d.%d instead of %d.%d.%d.%d\n", s, IPPRINTF(ip), IPPRINTF(oldip));
         }
 
 
@@ -932,9 +932,6 @@ void cNetwork::SockClose () // Close all sockets for shutdown
 
 void cNetwork::CheckConn() // Check for connection requests
 {
-
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	pClient client;
 	socklen_t len;
 
@@ -960,7 +957,7 @@ void cNetwork::CheckConn() // Check for connection requests
 		}
 		if ( CheckForBlockedIP( client_addr ) )
 		{
-			InfoOut("IPBlocking: Blocking IP address [%s] listed in hosts_deny\n", inet_ntoa( client_addr.sin_addr ));
+			outInfof("IPBlocking: Blocking IP address [%s] listed in hosts_deny\n", inet_ntoa( client_addr.sin_addr ));
 
 			closesocket(client[now]);
 		}
@@ -982,13 +979,10 @@ void cNetwork::CheckConn() // Check for connection requests
 			++global_lis; // not 100% correct, but only cosmetical stuff, hence ok not to be 100% correct :>
 					// doesnt get correct status if kicked out due to worng pw etc.
 
-			if (global_lis % 2 == 0) sprintf((char*)temp2, "connecting"); else sprintf((char*)temp2, "connected");
-
-			sprintf((char*)temp,"client %i [%s] %s [Total:%i].\n",now,inet_ntoa(client_addr.sin_addr), temp2, now+1);
-			InfoOut(temp);
-
-			if (SrvParms->server_log)
-				ServerLog.Write("%s", temp);
+			outInfof("client %i [%s] %s [Total:%i].\n",
+				now, inet_ntoa(client_addr.sin_addr),
+				global_lis % 2 ? "connected" : "connecting",
+				now+1);
 
 			++now;
 		}
@@ -1193,7 +1187,7 @@ void cNetwork::GetMsg(pClient client) // Receive message from client
 			*(uint32_t*)&clientip[s]=tmp_addr.sin_addr.s_addr;
 		else
 		{
-			WarnOut("Unable to determine client's IP [s:%i]\n",s);
+			outWarn("Unable to determine client's IP [s:%i]\n",s);
 			*(uint32_t*)&clientip[s]=0;
 		}
 
@@ -1239,7 +1233,7 @@ void cNetwork::GetMsg(pClient client) // Receive message from client
 					}
 #endif
 					client->disconnect();
-					InfoOut("received garbage from a client, disconnected it to prevent bad things.\n User probably didnt use ignition or UO-RICE\n");
+					LogWarning("received garbage from a client, disconnected it to prevent bad things.\n User probably didnt use ignition or UO-RICE\n");
 					return;
 				}
 #ifdef ENCRYPTION
@@ -1358,47 +1352,46 @@ void cNetwork::LoadHosts_deny()
 
 	cScpIterator* iter = Scripts::HostDeny->getNewIterator("SECTION HOST_DENY");
 
-	if( iter != NULL )
+	if( iter == NULL )
 	{
-		ip_block_st	ip_block;
-		uint32_t		ip_address;
-		std::string	sScript1,
-				sToken1;
-		uint32_t 		siEnd ;
+		LogWarning("Can't find SECTION HOST_DENY! \n");
+		return;
+	}
+		
+	ip_block_st	ip_block;
+	uint32_t		ip_address;
+	std::string	sScript1,
+			sToken1;
+	uint32_t 		siEnd ;
 
-		do
+	do
+	{
+		//let's load a IP addresss/NetMask
+		sScript1 = iter->getEntry()->getFullLine();
+		siEnd = sScript1.find("/") ;
+		sToken1 = sScript1.substr(0,siEnd) ;
+		ip_address = inet_addr(sToken1.c_str()) ;
+
+		if (ip_address != INADDR_NONE)
 		{
-			//let's load a IP addresss/NetMask
-			sScript1 = iter->getEntry()->getFullLine();
-			siEnd = sScript1.find("/") ;
-			sToken1 = sScript1.substr(0,siEnd) ;
-			ip_address = inet_addr(sToken1.c_str()) ;
+			ip_block.address = ip_address;
 
-			if (ip_address != INADDR_NONE)
+			// Get the rest of the string, after the '/' token
+			if (siEnd != std::string::npos)
 			{
-				ip_block.address = ip_address;
-
-				// Get the rest of the string, after the '/' token
-				if (siEnd != std::string::npos)
-				{
-					sToken1 = sScript1.substr(siEnd+1) ;
-					ip_address = inet_addr(sToken1.c_str()) ;
-					if (ip_address != INADDR_NONE)
-						ip_block.mask = ip_address;
-					else
-						ip_block.mask = static_cast<uint32_t>(~0); // mask is not required. (fills all bits with 1's)
-				}
+				sToken1 = sScript1.substr(siEnd+1) ;
+				ip_address = inet_addr(sToken1.c_str()) ;
+				if (ip_address != INADDR_NONE)
+					ip_block.mask = ip_address;
 				else
-					ip_block.mask = static_cast<uint32_t>(~0);
-				hosts_deny.push_back(ip_block);
+					ip_block.mask = static_cast<uint32_t>(~0); // mask is not required. (fills all bits with 1's)
 			}
+			else
+				ip_block.mask = static_cast<uint32_t>(~0);
+			hosts_deny.push_back(ip_block);
 		}
-		while ( sScript1[0] != '}' );
 	}
-	else
-	{
-		WarnOut("Can't find SECTION HOST_DENY! \n");
-	}
+	while ( sScript1[0] != '}' );
 }
 
 bool cNetwork::CheckForBlockedIP(sockaddr_in ip_address)

@@ -81,7 +81,7 @@ void cSpawnScripted::safeCreate( pChar npc, cSpawnArea& single  )
 		npc->teleport();
 	}
 	else {
-		WarnOut("[ERROR] Problem with scripted spawn %i [%s] found. Nothing will be spawned.\n", serial, name.c_str() );
+		LogError("Problem with scripted spawn %i [%s] found. Nothing will be spawned.\n", serial, name.c_str() );
 		npc->Delete();
 	}
 }
@@ -101,7 +101,7 @@ void cSpawnScripted::safeCreate( pItem pi, cSpawnArea& single  )
 		pi->Refresh();
 	}
 	else {
-		WarnOut("[ERROR] Problem with scripted spawn %i [%s] found. Nothing will be spawned.\n", serial, name.c_str() );
+		LogError("Problem with scripted spawn %i [%s] found. Nothing will be spawned.\n", serial, name.c_str() );
 		pi->Delete();
 	}
 }
@@ -171,7 +171,7 @@ void cSpawnScripted::doSpawn( cSpawnArea& c ) {
 	}
 
 	c.disabled = true;
-	WarnOut("Scripted spawn %i [%s] couldn't find anything to spawn, check scripts.\n",serial, name.c_str());
+	LogError("Scripted spawn %i [%s] couldn't find anything to spawn, check scripts.\n",serial, name.c_str());
 
 }
 

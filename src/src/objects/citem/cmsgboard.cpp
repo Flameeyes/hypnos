@@ -692,13 +692,12 @@ void cMsgBoard::removeQuestMessage(pMessage message)
 void cMsgBoard::MsgBoardMaintenance()
 {
 	// Display progress message
-	InfoOut("Bulletin board maintenance... \n");
+	outPlain("Bulletin board maintenance... ");
 	
 	int expired = 0;
 	// With the new MsgBaord sytem we can't have orphaned messages, so check only for
 	// expiration
 	
-	outPlain("Message expiration check : ");
         //checking the expiration time while we insert the posts in the set
 	for(MessageList::iterator it = globalMsgs.begin(); it != globalMsgs.end(); it++)
 	{
@@ -727,8 +726,8 @@ void cMsgBoard::MsgBoardMaintenance()
 	}
 	boardsMutex.unlock()
 	
-      	outPlain("%i message(s) deleted", expired);
-      	outPlain("[   OK   ]\n");
+	outPlain("[   OK   ]\n");
+	LogMessage("Message expiration check: %i message(s) deleted", expired);
 }
 
 /*!

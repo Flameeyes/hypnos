@@ -73,7 +73,7 @@ void cClient::disconnect()
         int clientnumber = 0;
 	for (cClients::iterator i = cClient::clients.begin(); (i != client) || (cClient::clients.end()); i++ ) clientnumber++;
 
-	InfoOut( msgDisconnect, clientnumber , cClient::clients.size() - 1 );
+	outInfof( msgDisconnect, clientnumber , cClient::clients.size() - 1 );
 
 	if (SrvParms->server_log)
 		ServerLog.Write( msgDisconnect, clientnumber , cClient::clients.size() - 1);

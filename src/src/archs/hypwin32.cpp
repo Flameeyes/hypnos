@@ -103,7 +103,7 @@ char *splitPath (char *p)
 
 void init_deamon()
 {
-	WarnOut("Windows needs code to be run in daemon mode...");
+	outWarning("Windows needs code to be run in daemon mode...");
 }
 
 OSVersion OSVer = OSVER_UNKNOWN;

@@ -1622,8 +1622,8 @@ bool nPackets::Received::ClientVersion::execute(pClient client)
 		viter = find(clientsAllowed.begin(), clientsAllowed.end(), clientNumber);
 		if (viter == clientsAllowed.end() )
 		{
-			//!\todo find a better InfoOut than socket number :D
-			//InfoOut("client %i disconnected by Client Version Control System\n", s);
+			//!\todo find a better LogMessage than socket number :D
+			//LogMessage("client %i disconnected by Client Version Control System\n", s);
 			client->disconnect();
 		}
 	}

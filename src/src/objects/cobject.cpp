@@ -21,7 +21,7 @@ std::string cObject::getRandomScriptValue( std::string section, std::string& sec
 	cScpIterator*	iter	= getScriptIterator( section, sectionId );
 	if (iter == 0)
 	{
-		WarnOut("SECTION %s %s not found\n", section.c_str(), sectionId.c_str() );
+		LogWarning("SECTION %s %s not found\n", section.c_str(), sectionId.c_str() );
 	}
 	else
 	{
@@ -44,7 +44,7 @@ std::string cObject::getRandomScriptValue( std::string section, std::string& sec
 			iter = getScriptIterator( section, sectionId );
 			if (iter == 0)
 			{
-				WarnOut("SECTION %s %s not found\n", section.c_str(), sectionId.c_str() );
+				LogWarning("SECTION %s %s not found\n", section.c_str(), sectionId.c_str() );
 			}
 			else
 			{

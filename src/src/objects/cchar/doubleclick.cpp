@@ -74,7 +74,7 @@ void cChar::doubleClick(pClient client)i
 		if ( !npc ) return;
 		if ( !pack )
 		{
-			WarnOut("Pack animal %i has no backpack!\n",getSerial());
+			LogWarning("Pack animal %08x has no backpack!\n",getSerial());
 			return;
 		}
 		if ( getOwner() == clicker || clicker->IsGMorCounselor() )

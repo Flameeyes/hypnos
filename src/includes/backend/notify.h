@@ -41,8 +41,8 @@ namespace nNotify {
 #define outWarning(x) nNotify::output(nNotify::levWarning, x)
 #define outWarningf(...) nNotify::outputf(nNotify::levWarning, __VA_ARGS__)
 
-#define outInformation(x) nNotify::output(nNotify::levInformation, x)
-#define outInformationf(...) nNotify::outputf(nNotify::levInformation, __VA_ARGS__)
+#define outInfo(x) nNotify::output(nNotify::levInformation, x)
+#define outInfof(...) nNotify::outputf(nNotify::levInformation, __VA_ARGS__)
 
 #define outPanic(x) nNotify::output(nNotify::levPanic, x)
 #define outPanicf(...) nNotify::outputf(nNotify::levPanic, __VA_ARGS__)

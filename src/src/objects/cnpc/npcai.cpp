@@ -508,7 +508,7 @@ void cNPC::checkAI()
 		}
 		break;
 		default:
-			WarnOut("cCharStuff::CheckAI-> Error npc %i ( %08x ) has invalid AI type %i\n", getSerial(), getSerial(), npcaitype);
+			LogWarning("Error npc %08x has invalid AI type %i\n", getSerial(), npcaitype);
 			return;
 	}	//switch(npcaitype)
 } // checkAI

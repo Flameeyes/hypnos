@@ -239,7 +239,7 @@ void LogMessageF(char type, char *fpath, int lnum, char *Message, ...)
 
 	switch( type )
 	{
-//		case 'M': outInformationf("%s\n", fullMessage); break;
+//		case 'M': outInfof("%s\n", fullMessage); break;
 		case 'W': outWarningf("%s\n",fullMessage); break;
 		case 'E': outErrorf("%s\n",fullMessage); break;
 		case 'C': outPanicf("%s\n",fullMessage); break;

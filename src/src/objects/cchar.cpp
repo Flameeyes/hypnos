@@ -1512,7 +1512,7 @@ void cChar::morph ( short bodyid, short skincolor, short hairstyle, short hairco
 	{ // if empty morph called, no matter which bBackup status
 		if(!morphed)
 		{
-			WarnOut("cChar::morph(<void>) called on non-morphed char\n");
+			outWarning("cChar::morph() called on non-morphed char\n");
 			return;
 		}
 		morphed = false; //otherwise it will inf-loop

@@ -234,20 +234,20 @@ void checkkey ()
 		{
 			if (secure)
 			{
-				InfoOut("Secure mode disabled. Press ? for a commands list.\n");
+				outInfo("Secure mode disabled. Press ? for a commands list.\n");
 				secure=0;
 				return;
 			}
 			else
 			{
-				InfoOut("Secure mode re-enabled.\n");
+				outInfo("Secure mode re-enabled.\n");
 				secure=1;
 				return;
 			}
 		} else {
 			if (secure && c != '?')  //Allows help in secure mode.
 			{
-				InfoOut("Secure mode prevents keyboard commands! Press 'S' to disable.\n");
+				outInfo("Secure mode prevents keyboard commands! Press 'S' to disable.\n");
 				return;
 			}
 
@@ -258,7 +258,7 @@ void checkkey ()
 				break;
 			case 'Q':
 			case 'q':
-				InfoOut("Immediate Shutdown initialized!\n");
+				outInfo("Immediate Shutdown initialized!\n");
 				keeprun=false;
 				break;
 			case 'T':
@@ -276,54 +276,56 @@ void checkkey ()
 			case 'd':
 				{
 					int found = 0;
-					InfoOut( "Disconnecting account 0 players... ");
+					outInfo( "Disconnecting account 0 players... ");
 					for (i=0;i<now;i++)
 						if (acctno[i]==0 && clientInfo[i]->ingame)
 						{
 							found++;
 							Network->Disconnect(i);
 						}
-					if (found>0) lowlevelOutput( "[ OK ] (%d disconnected)\n", found);
-					else lowlevelOutput( "[FAIL] (no account 0 players online)\n", found);
+					if (found>0)
+						outInfof( "[ OK ] (%d disconnected)\n", found);
+					else	
+						outInfof( "[FAIL] (no account 0 players online)\n", found);
 				}
 				break;
 			case 'W':
 			case 'w':				// Display logged in chars
-				lowlevelOutput("----------------------------------------------------------------\n");
-				lowlevelOutput("Current Users in the World:\n");
+				outInfo("----------------------------------------------------------------\n");
+				outInfo("Current Users in the World:\n");
 				j = 0;  //Fix bug counting ppl online.
 				for (i=0;i<now;i++)
 				{
 					pChar pc_i=cSerializable::findCharBySerial(currchar[i]);
 					if(pc_i && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
 					{
-						lowlevelOutput("%i) %s [ %08x ]\n", j, pc_i->getCurrentName().c_str(), pc_i->getSerial());
+						outInfof("%i) %s [ %08x ]\n", j, pc_i->getCurrentName().c_str(), pc_i->getSerial());
 						j++;
 					}
 				}
-				lowlevelOutput("Total Users Online: %d\n", j);
+				outInfof("Total Users Online: %d\n", j);
 				break;
 			case 'r':
 			case 'R':
-				InfoOut("Hypnos: Total server reload!");
+				outInfo("Hypnos: Total server reload!");
 				//! \todo Need to freeze and unfreeze all the clients here for the resync
 				//! \todo Need to call a function exported by hypnos.h
 				loadServer();
 				break;
 			case '?':
-				lowlevelOutput("Console commands:\n");
-				lowlevelOutput("	<Esc> or Q: Shutdown the server.\n");
-				lowlevelOutput("	T - System Message: The server is shutting down in 2 minutes.\n");
-				lowlevelOutput("	# - Save world\n");
-				lowlevelOutput("	D - Disconnect Account 0\n");
-				lowlevelOutput("	W - Display logged in characters\n");
-				lowlevelOutput("	R - Total server reload\n");
-				lowlevelOutput("	S - Toggle Secure mode %s\n", secure ? "[enabled]" : "[disabled]" );
-				lowlevelOutput("	? - Commands list (this)\n");
-				lowlevelOutput("End of commands list.\n");
+				outInfo("Console commands:\n");
+				outInfo("	<Esc> or Q: Shutdown the server.\n");
+				outInfo("	T - System Message: The server is shutting down in 2 minutes.\n");
+				outInfo("	# - Save world\n");
+				outInfo("	D - Disconnect Account 0\n");
+				outInfo("	W - Display logged in characters\n");
+				outInfo("	R - Total server reload\n");
+				outInfof("	S - Toggle Secure mode %s\n", secure ? "[enabled]" : "[disabled]" );
+				outInfo("	? - Commands list (this)\n");
+				outInfo("End of commands list.\n");
 				break;
 			default:
-				InfoOut("Key %c [%x] does not preform a function.\n",c,c);
+				outInfof("Key %c [%x] does not preform a function.\n",c,c);
 				break;
 			}
 		}
@@ -453,7 +455,7 @@ int main(int argc, char *argv[])
 	
 	pointers::init(); //Luxor
 
-	InfoOut("Server started\n");
+	outInfo("Server started\n");
 
 	Spawns->doSpawnAll();
 

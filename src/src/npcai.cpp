@@ -275,7 +275,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_att, magic::spellReflection );
 			break;
 		default :
-			WarnOut("NPC-Spell %d not yet implemented, sorry :(\n", spherespells[sphere][spell]);
+			LogWarning("NPC-Spell %d not yet implemented, sorry :(\n", spherespells[sphere][spell]);
 			break;
 	}
 

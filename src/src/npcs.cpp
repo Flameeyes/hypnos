@@ -355,7 +355,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 											mypack=pi_n;
 										}
 										else
-											WarnOut("AddNPC: cannot spawn item $item_backpack\n");
+											LogWarning("AddNPC: cannot spawn item $item_backpack\n");
 										script1 = "DUMMY";
 									}
 								}
@@ -501,10 +501,10 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 											pi_sp->priv|=0x01;
 										}
 										else
-											WarnOut("AddNPC: cannot spawn item $item_gold_coin\n");
+											LogWarning("AddNPC: cannot spawn item $item_gold_coin\n");
 									}
 									else
-										WarnOut("Bad NPC Script %d with problem no backpack for gold.\n", npcNum);
+										LogWarning("Bad NPC Script %d with problem no backpack for gold.\n", npcNum);
 								}
 								break;
 							case 'H':
@@ -557,7 +557,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 									if (pi_n)
 									{
 										if (pi_n->layer==0)
-											WarnOut("Bad NPC Script %d with problem item %d executed!\n", npcNum, storeval);
+											LogWarning("Bad NPC Script %d with problem item %d executed!\n", npcNum, storeval);
 									}
 									script1 = "DUMMY";
 								}
@@ -699,7 +699,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 										script1 = "DUMMY";
 									}
 									else
-										WarnOut("Bad NPC Script %d with problem no backpack for packitem.\n", npcNum);
+										LogWarning("Bad NPC Script %d with problem no backpack for packitem.\n", npcNum);
 								}
 								else if ( "skParrying" == script1)
 									pc->baseskill[skParrying] = getRangedValue(script2);
@@ -779,7 +779,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 										script1 = "DUMMY";
 									}
 									else
-										WarnOut("Bad NPC Script %d with problem no buyRestockContainer for item %s.\n", npcNum, script2.c_str());
+										LogWarning("Bad NPC Script %d with problem no buyRestockContainer for item %s.\n", npcNum, script2.c_str());
 								}
 								break;
 							case 'S':
@@ -809,7 +809,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 										script1 = "DUMMY";
 									}
 									else
-										WarnOut("Bad NPC Script %d with problem no sellContainer for item %s.\n", npcNum, script2.c_str());
+										LogWarning("Bad NPC Script %d with problem no sellContainer for item %s.\n", npcNum, script2.c_str());
 								}
 								else if ( "SHOPITEM" == script1 )
 								{
@@ -833,7 +833,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 										script1 = "DUMMY";
 									}
 									else
-										WarnOut("Bad NPC Script %d with problem no buyNoRestockContainer for item %s.\n", npcNum, script2.c_str());
+										LogWarning("Bad NPC Script %d with problem no buyNoRestockContainer for item %s.\n", npcNum, script2.c_str());
 								}
 								else if ( "SHOPKEEPER" == script1 )
 									Commands::MakeShop(pc);
@@ -979,7 +979,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 								{
 									if (k>=50) //this CAN be a bit laggy. adjust as nessicary
 									{
-										WarnOut("Problem area spawner found at [%i,%i,%i]. NPC placed at default location.\n",pi_i->getPosition().x, pi_i->getPosition().y, pi_i->getPosition().z);
+										LogWarning("Problem area spawner found at [%i,%i,%i]. NPC placed at default location.\n",pi_i->getPosition().x, pi_i->getPosition().y, pi_i->getPosition().z);
 										xos=0;
 										yos=0;
 										break;
@@ -1223,7 +1223,7 @@ void cAllCreatures::load()
 						cinfo->flag |= CREATURE_CAN_FLY;
 					}
 					else
-						WarnOut("[ERROR] on parse of creatures.xss [%s]\n", lha.c_str() );
+						LogError("Parsing creatures.xss [%s]\n", lha.c_str() );
 				}
 			}
 			while ( lha[0] !='}' && ++loopexit < MAXLOOPS );

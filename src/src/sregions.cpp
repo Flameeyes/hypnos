@@ -75,7 +75,7 @@ void loadregions()//New -- Zippy spawn regions
 					}
 					else
 					{
-						WarnOut("region %i has more than 10 'GUARDNUM', The ones after 10 will not be used\n",i);
+						LogWarning("region %i has more than 10 'GUARDNUM', The ones after 10 will not be used\n",i);
 					}
 				}
 				else if (!(strcmp("NAME",script1)))
@@ -326,7 +326,7 @@ void check_region_weatherchange ()
 {
 	int r,sn=0, rn=0, dr=0, sm, i;
 
-	InfoOut("performing weather change...");
+	outInfo("performing weather change...");
 
 	//! \todo revisit this part
 	for (i=0;i<256;i++)

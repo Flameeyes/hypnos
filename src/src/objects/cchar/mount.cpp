@@ -242,6 +242,6 @@ bool cChar::unmountHorse()
 #endif
 	pi->Delete();
 	teleport( teleSendWornItems );
-	InfoOut("Horse not found");
+	LogWarning("Horse not found");
 	return false;
 }
