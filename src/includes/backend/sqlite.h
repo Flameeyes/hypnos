@@ -54,7 +54,7 @@ public:
 		{ return thisRow; }
 		
 		/*!
-		\Gets the row at index
+		\brief Gets the row at index
 		\param i Index of the row to get
 		\return Array of strings with values
 		*/
@@ -125,9 +125,9 @@ protected:
 			flags &= ~flag;
 	}
 	
-	cSQLite *litedb;
-	uint32_t flags;
-	ZThread::Mutex mutex;
+	cSQLite *litedb;	//!< Pointer to access the SQLite database
+	uint32_t flags;		//!< Flags for the access
+	ZThread::Mutex mutex;	//!< Mutex for threaded access to the database
 };
 
 extern cSQLite *globalDB;

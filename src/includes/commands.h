@@ -44,7 +44,8 @@ namespace nCommands {
 	\return True if the command can be unloaded, false if not found or
 		not user-defined
 	\note To disallow a system command either raise it's privlevel to
-		over-owner in commands.xml or override it with a null comamnd
+		over-owner in commands.xml or disable it also in commands.xml or
+		override it with a null comamnd
 	*/
 	bool unregisterScriptedCommand(std::string command);
 	
@@ -90,6 +91,7 @@ namespace nCommands {
 	public:
 		/*!
 		\brief Default constructor with pFunctionHandle param
+		\param plevel Level at which the command can be used (passed to cCommand)
 		\param func Function to be called by the command
 		*/
 		cScriptedCommand(uint8_t plevel, pFunctionHandle func) :
@@ -112,7 +114,8 @@ namespace nCommands {
 		
 		/*!
 		\brief Execute the command received
-		\param 
+		\param client Client which uses the command
+			(unused, passed to the called script function as first parameter)
 		*/
 		void execute(pClient client)
 		{

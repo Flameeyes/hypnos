@@ -69,12 +69,12 @@ class cPacketSendStatus : public cPacketSend
 protected:
 	pChar pc;	//!< Character
 	uint8_t type;	//!< Type
-	bool canrename;	//!< Can be renamed
+	bool canrename;	//!< Can the characeter be renamed?
 public:
 	/*!
 	\param p Character
       	\param t type of window
-        \param canrename client who receives this packet can rename char p
+        \param r client who receives this packet can rename char p
 	*/
 	inline cPacketSendStatus(pChar p, uint8_t t, bool r) :
 		cPacketSend(NULL, 0), pc(p), type(t), canrename(r)
@@ -168,11 +168,11 @@ protected:
 	bool ghost;				//!< "ghostize" message (OOOoOOOoOOO :) )
 public:
 	/*!
-        \param p talker. NOTE: it p is NULL, it is considered a system message
         \param s what is being told
-        \param toghost speech has to be mutated to ghost speech
+        \param p talker. NOTE: if p is NULL, it is considered a system message
+        \param ghostize speech has to be mutated to ghost speech
 	*/
-        	inline cPacketSendSpeech(cSpeech &s, pSerializable p = NULL, bool ghostize = false) :
+	cPacketSendSpeech(cSpeech &s, pSerializable p = NULL, bool ghostize = false) :
 		cPacketSend(NULL, 0), speech(s), ps(p), ghost(ghostize)
 	{ }
 	void prepare();
@@ -211,7 +211,7 @@ protected:
 	pPC pc;		//! Current player
 public:
 	/*!
-	\param pc current player
+	\param player current player
 	*/
 	inline cPacketSendDrawGamePlayer(pPC player) :
 		cPacketSend(NULL, 0), pc(player)
@@ -233,7 +233,8 @@ protected:
         uint8_t sequence;       //! Sequence number of move rejected
 public:
 	/*!
-	\param pc current player
+	\param player current player
+	\param seq Sequence number to reject
 	*/
 	inline cPacketSendMoveReject(pPC player, uint8_t seq) :
 		cPacketSend(NULL, 0), pc(player), sequence(seq)
@@ -338,11 +339,10 @@ public:
 class cPacketSendShowItemInContainer : public cPacketSend
 {
 protected:
-	pItem item;
+	pItem item;	//!< Item to add
 public:
 	/*!
 	\param itm item to add
-	\param cont serial of container item
 	*/
 	inline cPacketSendShowItemInContainer(pItem itm) :
 		cPacketSend(NULL, 0), item(itm)
@@ -422,10 +422,10 @@ public:
 class cPacketSendOpenBrowser : public cPacketSend
 {
 protected:
-	std::string url;
+	std::string url;	//!< Url to open the browser to
 public:
 	/*!
-	\param url Url to open the browser to
+	\param str Url to open the browser to
 	*/
 	inline cPacketSendOpenBrowser(std::string str) :
 		cPacketSend(NULL, 0), url(str)
