@@ -140,10 +140,13 @@ inline void ShortToCharPtr(const uint16_t i, unsigned char *p)
 \brief Tells if a given point is a valid coordinate
 \param p Point to test
 \return true if the point is in the map, else false
+
+\todo Fix this up with the new map.mul handler
 */
-inline bool isValidCoord( sPoint p )
+inline bool isValidCoord( sPoint p );
 {
-	return p.x < map_width*8 && p.y < map_height*8;
+	// return p.x < map_width*8 && p.y < map_height*8;
+	return false;
 }
 
 /*!
