@@ -5,16 +5,10 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Message board functions
-\author Chronodt (almost total rewrite)
-*/
 
 #include "network.h"
 #include "sregions.h"
 #include "sndpkg.h"
-#include "debug.h"
 #include "cmsgboard.h"
 #include "npcai.h"
 #include "utils.h"

@@ -6,14 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-
-/*!
-\file
-\brief Functions that handle the spawn regions
-*/
 #include "common_libs.h"
 #include "network.h"
-#include "debug.h"
 #include "sndpkg.h"
 #include "calendar.h"
 #include "sregions.h"

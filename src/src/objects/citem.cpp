@@ -10,7 +10,6 @@
 #include "sndpkg.h"
 #include "magic.h"
 #include "races/race.h"
-#include "debug.h"
 #include "pointer.h"
 #include "data.h"
 #include "boats.h"

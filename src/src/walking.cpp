@@ -10,7 +10,6 @@
 #include "network.h"
 #include "sregions.h"
 #include "sndpkg.h"
-#include "debug.h"
 #include "house.h"
 #include "tmpeff.h"
 #include "telport.h"

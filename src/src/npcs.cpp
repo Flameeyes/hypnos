@@ -9,7 +9,6 @@
 #include "magic.h"
 #include "sregions.h"
 #include "sndpkg.h"
-#include "debug.h"
 #include "commands.h"
 #include "npcai.h"
 #include "data.h"

@@ -67,14 +67,12 @@ Also thanks to Judas for translating this text from italian to english :)
 
 #include "common_libs.h"
 #include "basics.h"
-#include "speech.h"
 #include "sndpkg.h"
 #include "sregions.h"
 #include "remadmin.h"
 #include "backend/scheduler.h"
 #include "version.h"
 #include "calendar.h"
-#include "ntservice.h"
 #include "magic.h"
 #include "races/race.h"
 #include "party.h"
@@ -101,12 +99,6 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "map.h"
 #include "hypnos.h"
 
-#ifdef WIN32
-	#include "archs/hypwin32.h"
-#elif defined (__unix__)
-	#include "archs/hypunix.h"
-#endif
-
 extern void initSignalHandlers();
 
 extern void checkGarbageCollect(); //!< Remove items which were in deleted containers
@@ -114,8 +106,6 @@ extern void checkGarbageCollect(); //!< Remove items which were in deleted conta
 bool g_bInMainCycle = false;
 void LoadOverrides ();
 extern "C" int g_nTraceMode;
-
-#include "debug.h"
 
 RemoteAdmin TelnetInterface;	//!< remote administration
 

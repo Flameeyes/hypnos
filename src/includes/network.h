@@ -11,7 +11,6 @@
 
 #include "common_libs.h"
 #include "version.h"
-#include "debug.h"
 
 class ClientCrypt;
 

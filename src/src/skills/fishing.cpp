@@ -13,7 +13,6 @@
 */
 #include "common_libs.h"
 #include "sndpkg.h"
-#include "debug.h"
 #include "data.h"
 #include "skills/fishing.h"
 #include "basics.h"

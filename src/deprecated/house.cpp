@@ -15,7 +15,6 @@
 #include "common_libs.h"
 #include "network.h"
 #include "sndpkg.h"
-#include "debug.h"
 #include "house.h"
 #include "npcai.h"
 #include "data.h"

@@ -11,8 +11,6 @@
 \author Duke
 */
 #include "common_libs.h"
-#include "sndpkg.h"
-#include "debug.h"
 #include "inlines.h"
 #include "basics.h"
 

@@ -6,13 +6,10 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
-#include "debug.h"
-#include <signal.h>
 #include "version.h"
 #include "console.h"
 
 static FILE *s_fileStdOut = NULL;
-static char s_strSrvcMsg[8192];
 
 void clearscreen( void )
 {
@@ -91,17 +88,18 @@ extern "C" void ConOut(char *txt, ...)
 {
 	va_list argptr;
 
+	char *temp;
 	va_start( argptr, txt );
-	vasprintf( &s_strSrvcMsg, txt, argptr );
+	vasprintf( &temp, txt, argptr );
 	va_end( argptr );
 
 #ifndef _WINDOWS
-	fprintf(s_fileStdOut, s_strSrvcMsg);
+	fprintf(s_fileStdOut, temp);
 	fflush(s_fileStdOut);
 #else
-	xwprintf("%s", s_strSrvcMsg);
+	xwprintf("%s", temp);
 #endif
-	free(s_strSrvcMsg);
+	free(temp);
 }
 
 extern void setWinTitle(char *str, ...);
@@ -142,8 +140,9 @@ extern "C" void SDbgOut(char *txt, ...)
 {
 	va_list argptr;
 
+	char *temp;
 	va_start( argptr, txt );
-	vasprintf( &s_strSrvcMsg, txt, argptr );
+	vasprintf( &temp, txt, argptr );
 	va_end( argptr );
 
 #ifndef _WINDOWS
@@ -158,7 +157,7 @@ extern "C" void SDbgOut(char *txt, ...)
 		}
 	#endif
 
-	fprintf(s_fileStdOut, "%s", s_strSrvcMsg);
+	fprintf(s_fileStdOut, "%s", temp);
 	fflush(s_fileStdOut);
 
 	#ifdef _CONSOLE
@@ -172,17 +171,18 @@ extern "C" void SDbgOut(char *txt, ...)
 
 
 #else
-	xwprintf("\x80%s", s_strSrvcMsg);
+	xwprintf("\x80%s", temp);
 #endif
-	free(s_strSrvcMsg);
+	free(temp);
 }
 
 extern "C" void STraceOut(char *txt, ...)
 {
 	va_list argptr;
 
+	char *temp;
 	va_start( argptr, txt );
-	vsnprintf( s_strSrvcMsg, sizeof(s_strSrvcMsg)-1, txt, argptr );
+	vsnprintf( &temp, txt, argptr );
 	va_end( argptr );
 
 #ifndef _WINDOWS
@@ -196,7 +196,7 @@ extern "C" void STraceOut(char *txt, ...)
 	}
 #endif
 
-	fprintf(s_fileStdOut, "%s", s_strSrvcMsg);
+	fprintf(s_fileStdOut, "%s", temp);
 	fflush(s_fileStdOut);
 
 #ifdef _CONSOLE
@@ -210,8 +210,10 @@ extern "C" void STraceOut(char *txt, ...)
 
 
 #else
-	xwprintf("\x81%s", s_strSrvcMsg);
+	xwprintf("\x81%s", temp);
 #endif
+
+	free(temp);
 
 }
 

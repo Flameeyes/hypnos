@@ -11,7 +11,6 @@
 \author Duke
 \note not necessarily ALL those functions
 */
-
 #include "common_libs.h"
 #include "basics.h"
 #include "sregions.h"
@@ -20,7 +19,6 @@
 #include "magic.h"
 #include "race.h"
 #include "tmpeff.h"
-#include "debug.h"
 #include "house.h"
 #include "jail.h"
 #include "timers.h"
@@ -40,13 +38,13 @@ void checkFieldEffects( uint32_t currenttime, pChar pc, char timecheck )
 
 	if ( (timecheck && !(nextfieldeffecttime<=currenttime)) ) //changed by Luxor
 		return;
-#ifdef SPAR_NEW_WR_SYSTEM
+	
 	pItemVectorIt itemIt( pc->nearbyItems->begin() ), itemEnd( pc->nearbyItems->end() );
 
 	for( ; itemIt != itemEnd; ++itemIt ) {
 
 		pItem pi= (*itemIt);
-#else
+	
 	NxwItemWrapper si;
 	si.fillItemsNearXYZ( pc->getPosition(), 2, false );
 	for( si.rewind(); !si.isEmpty(); si++ )

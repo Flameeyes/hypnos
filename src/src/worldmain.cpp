@@ -14,7 +14,6 @@
 #include "worldmain.h"
 #include "sndpkg.h"
 #include "sregions.h"
-#include "debug.h"
 #include "version.h"
 #include "tmpeff.h"
 #include "jail.h"

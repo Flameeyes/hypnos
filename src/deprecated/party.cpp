@@ -6,16 +6,12 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
-#include "debug.h"
 #include "sndpkg.h"
 #include "speech.h" //for unicode conversions
 #include "party.h"
 #include "menu.h"
 #include "oldmenu.h"
-
-
 #include "inlines.h"
-
 
 class cPartys Partys;
 

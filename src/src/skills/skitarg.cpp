@@ -10,7 +10,6 @@
 #include "tmpeff.h"
 #include "constants.h"
 #include "npcai.h"
-#include "debug.h"
 #include "map.h"
 #include "skills.h"
 #include "basics.h"

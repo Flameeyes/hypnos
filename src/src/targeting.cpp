@@ -8,15 +8,12 @@
 #include "common_libs.h"
 #include "basics.h"
 #include "sndpkg.h"
-#include "debug.h"
 #include "party.h"
 #include "magic.h"
 #include "house.h"
 #include "targeting.h"
-#include "npcai.h"
 #include "commands.h"
 #include "tmpeff.h"
-#include "extras/jail.h"
 #include "data.h"
 #include "boats.h"
 #include "fishing.h"
@@ -24,7 +21,6 @@
 #include "skills.h"
 #include "inlines.h"
 #include "basics.h"
-#include "utils.h"
 
 void CarveTarget(pClient client, int feat, int ribs, int hides, int fur, int wool, int bird)
 {

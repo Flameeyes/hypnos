@@ -14,7 +14,6 @@
 #include "sregions.h"
 #include "sndpkg.h"
 #include "magic.h"
-#include "debug.h"
 #include "tmpeff.h"
 #include "race.h"
 #include "npcai.h"
