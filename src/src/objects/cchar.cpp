@@ -1908,32 +1908,6 @@ LOGICAL cChar::losFrom(P_CHAR pc)
 }
 
 /*!
-\author Flameeyes
-\brief plays a sound effect on a char
-\param sound as default
-\param onlyToMe Send sfx only to same char not to all near players (default: false)
-\todo We need to use new client sets
-*/
-void cChar::playSFX(SI16 sound, LOGICAL onlyToMe)
-{
-	cPacketSendSoundFX pk(sound, getPosition());
-
-	if(onlyToMe) {
-		client->send(&pk);
-		return;
-	}
-
-	NxwSocketWrapper sw;
-	sw.fillOnline( this, false );
-
-	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWCLIENT ps=sw.getClient();
-		if(ps!=NULL)
-			ps->send(&pk);
-	}
-}
-
-/*!
 \author Akron (port)
 \brief Plays a monster sound effect
 \param sfx sound effect
@@ -1946,9 +1920,9 @@ void cChar::playMonsterSound(MonsterSound sfx)
 	if( creature==NULL )
 		return;
 
-	SOUND s = creature->getSound( sfx );
-	if( s!=INVALID )
-		playSFX( s );
+	UI16 s = creature->getSound( sfx );
+	if( s != UINVALID16 )
+		client->playSFX( s );
 
 }
 
@@ -2053,11 +2027,26 @@ LOGICAL cChar::checkSkill(Skill sk, SI32 low, SI32 high, LOGICAL bRaise)
 			{
 				Skills::updateSkillLevel(this, sk);
 				if(!npc && IsOnline())
-					updateskill(s, sk);
+					updateSkill(sk);
 			}
 		}
 	}
 	return skillused;
+}
+
+/*!
+\brief Send the update skill packet to the client
+\param skill Skill to update
+\author Flameeyes
+*/
+void cChar::updateSkill(UI16 skill)
+{
+	if ( npc || ! client )
+		return;
+
+	cPacketSendUpdateSkill pk(this, skill);
+
+	client->sendPackage(&pk);
 }
 
 /*!
@@ -2068,10 +2057,10 @@ LOGICAL cChar::checkSkill(Skill sk, SI32 low, SI32 high, LOGICAL bRaise)
 \param color color of item to delete
 \return number of items deleted
 */
-SI32 cChar::delItems(short id, SI32 amount, short color)
+SI32 cChar::delItems(UI16 id, SI32 amount, UI16 color)
 {
 	P_ITEM pi= getBackpack();
-	if (pi==NULL) { return amount; }
+	if (!pi) { return amount; }
 
 	return pi->DeleteAmount(amount,id, color);
 }
@@ -2264,7 +2253,7 @@ void cChar::boltFX(LOGICAL bNoParticles)
 			 } else if (clientDimension[j]==3) // 3d client, send 3d-Particles
 			 {
 				//TODO!!!! fix it!
-				bolteffectUO3D(DEREF_P_CHAR(this));
+				//Magic->doStaticEffect(DEREF_P_CHAR(this), 30);
 				unsigned char particleSystem[49];
 				Xsend(j, particleSystem, 49);
 //AoS/				Network->FlushBuffer(j);
@@ -3140,12 +3129,7 @@ void cChar::Kill()
         if ( !npc )
 		teleport( TELEFLAG_SENDWORNITEMS );
 
-	//<Luxor>
 	pCorpse->Refresh();
-	if (getClient() != NULL) {
-		deathmenu(getClient()->toInt());
-	}
-	//</Luxor>
 
 	if (amxevents[EVENT_CHR_ONAFTERDEATH])
 	{
@@ -3608,8 +3592,7 @@ void cChar::doGmEffect()
 		{
 		case 1:	// flamestrike
 			staticeffect3(charpos.x+1, charpos.y+1, charpos.z+10, 0x37, 0x09, 0x09, 0x19, 0);
-			//soundeffect(s, 0x02, 0x08);
-			playSFX( 0x0802);
+			client->playSFX( 0x0802);
 			break;
 
 		case 2: // sparklie (fireworks wand style)
@@ -4594,14 +4577,15 @@ void cChar::do_lsd()
 
 		if (rand()%33==0)
 		{
-			if (rand()%10>3) soundeffect5(socket, 0x00F8); // lsd sound :)
+			if (rand()%10>3)
+				client->playSFX(0x00F8, true);
 			else
 			{
 				int snd=rand()%19;
 				if (snd>9)
-					soundeffect5(socket,(0x01<<8)|((snd-10)%256));
+					client->playSFX((0x01<<8)|((snd-10)%256), true);
 				else
-					soundeffect5(socket,246+snd);
+					client->playSFX(246+snd, true);
 			}
 		}
 	}
@@ -4912,4 +4896,35 @@ void cChar::useHairDye(P_ITEM bottle)
 		}
 	}
 	bottle->Delete();	//Now delete the hair dye bottle!
+}
+
+/*!
+\brief The char is in a dungeon?
+\todo WRONG!!!! If you change the map, this will be totally wrong!
+*/
+const bool cChar::inDungeon() const
+{
+	if ( getPosition().x < 5119)
+		return 0;
+
+	int x1 = (getPosition().x - 5119) >> 8;
+	int y1 = (getPosition().y >> 8);
+
+	switch (y1)
+	{
+		case 5:
+		case 0:
+			return true;
+		case 1:
+			return x != 0;
+		case 2:
+		case 3:
+			return x1 < 3;
+		case 4:
+		case 6:
+			return x1 == 0;
+		case 7:
+			return x1 < 2;
+	}
+	return false;
 }

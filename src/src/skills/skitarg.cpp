@@ -91,11 +91,6 @@ void Skills::target_removeTraps( NXWCLIENT ps, P_TARGET t )
 
 }
 
-
-AmxFunction* tailoring = NULL;
-AmxFunction* tannering = NULL;
-
-
 void Skills::target_tailoring( NXWCLIENT ps, P_TARGET t )
 {
 
@@ -1999,9 +1994,9 @@ public:
     virtual void delonsuccess(SOCK s)   {deletematerial(s, itemmake[s].needs);}
     virtual void failure(SOCK s)        {delonfail(s);playbad(s);failmsg(s);}
     */
-    virtual void failmsg(NXWSOCKET s)         {sysmessage(s,failtext);}
-    virtual void playbad(NXWSOCKET s)         {soundeffect(s, badsnd);}
-    virtual void playgood(NXWSOCKET s)        {soundeffect(s, 0x002A);}
+    virtual void failmsg(pClient client)         {sysmessage(s,failtext);}
+    virtual void playbad(pClient client)         {client->playSFX(badsnd);}
+    virtual void playgood(pClient client)        {client->playSFX(0x002A);}
     virtual void checkPartID(short id)  {;}
     virtual bool decide()               {return (itembits == 3) ? true : false;}
     virtual void createIt(NXWSOCKET s)        {;}

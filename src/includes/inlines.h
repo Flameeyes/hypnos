@@ -109,7 +109,7 @@ inline void SetTimerSec( TIMERVAL *timer, const short seconds)
 }
 
 inline bool isCharSerial( long ser ) { return ( ser > 0 && ser <  0x40000000 ); } //ndEndy 0 is not a char serial, see curr_charSerial note
-inline bool isItemSerial( long ser ) { return ( /*ser >= 0 && */ser >= 0x40000000 ); } 
+inline bool isItemSerial( long ser ) { return ( /*ser >= 0 && */ser >= 0x40000000 ); }
 
 
 
@@ -134,7 +134,7 @@ inline std::string toString(double value)
 }
 
 /*
-\brief Convert a string to an wstring
+\brief Convert a string to a wstring
 \author Endymion
 \param from the source string
 \param to the dest wstring
@@ -149,7 +149,7 @@ inline void string2wstring( string from, wstring& to )
 }
 
 /*
-\brief Convert a wstring to an string
+\brief Convert a wstring to a string
 \author Endymion
 \param from the source wstring
 \param to the dest string
@@ -161,6 +161,43 @@ inline void wstring2string( wstring from, string& to )
 	for( ; iter!=end; iter++ ) {
 		to+=static_cast<char>(*iter);
 	}
+}
+
+/*!
+\brief play sound
+\param goldtotal Total of gold "moved"
+\return soundsfx to play
+*/
+inline UI16 goldsfx(UI16 goldtotal)
+{
+	UI16 sound;
+
+	if (goldtotal==1)
+		sound = 0x0035;
+	else if (goldtotal<6)
+		sound = 0x0036;
+	else
+		sound = 0x0037;
+
+	return sound;
+}
+
+/*!
+\brief count the number of bit set
+\return int number of bit set
+\param number the number
+\remark is this really usefull ?
+*/
+inline const int numbitsset( int number )
+{
+	int bitsset = 0;
+
+	while( number )
+	{
+		bitsset += number&0x1;
+		number >>= 1;
+	}
+	return bitsset;
 }
 
 #endif //__INLINES_H__

@@ -43,16 +43,13 @@ cScriptCommand::cScriptCommand( std::string command, std::string param )
 
 cScriptCommand::~cScriptCommand( )
 {
-	
+
 }
 
-void cScriptCommand::execute( NXWSOCKET s )
+void cScriptCommand::execute( pClient client )
 {
-	if( s<0 )
-		return;
-	
-	P_CHAR pc= pointers::findCharBySerial( currchar[s] );
-	VALIDATEPC( pc );
+	pChar pc = client->currChar();
+	if ( ! pc ) return;
 
 	strupr(command);
 	strupr(param);
@@ -68,7 +65,8 @@ void cScriptCommand::execute( NXWSOCKET s )
 		itemmenu( s, str2num(param) );
 		return;
 	} else if ( command == "WEBLINK" ) {
-		weblaunch(s, param.c_str());
+		cPacketSendOpenBrowser pk(param);
+		client->sendPacket(&pk);
 		return;
 	} else if ( command == "SYSMESSAGE" ) {
 		sysmessage(s, param.c_str());
@@ -87,7 +85,7 @@ void cScriptCommand::execute( NXWSOCKET s )
 		std::string itemnum, amount;
 		splitLine( param, itemnum, amount );
 		int am = ( amount != "" )?  str2num( amount ) : INVALID; //ndEndy defined amount
-		
+
 		item::CreateFromScript( (char*)itemnum.c_str(), pc->getBackpack(), am );
 		return;
 	} else if ( command == "BATCH" ) {
@@ -154,39 +152,10 @@ void cScriptCommand::execute( NXWSOCKET s )
 		pi->Refresh();
 	} else if ( command == "@CALL" ) {
 		AmxFunction::g_prgOverride->CallFn(param.c_str());
-	} else if ( command == "@RUN" ) {
-		AmxProgram *prg = new AmxProgram(param.c_str());
-		prg->CallFn(INVALID);
-		safedelete(prg);
 	} else {
 	    ErrOut("script command syntax error : unknown command %s", command.c_str());
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void location2xyz(int loc, int& x, int& y, int& z)
 {
@@ -287,15 +256,15 @@ int hexnumber(int countx)
 */
 static void doorsfx(P_ITEM pi, int x, int y)
 {
- 
-	const int OPENWOOD = 0x00EA;
-	const int OPENGATE = 0x00EB;
-	const int OPENSTEEL = 0x00EC;
-	const int OPENSECRET = 0x00ED;
-	const int CLOSEWOOD = 0x00F1;
-	const int CLOSEGATE = 0x00F2;
-	const int CLOSESTEEL = 0x00F3;
-	const int CLOSESECRET = 0x00F4;
+
+	static const int OPENWOOD = 0x00EA;
+	static const int OPENGATE = 0x00EB;
+	static const int OPENSTEEL = 0x00EC;
+	static const int OPENSECRET = 0x00ED;
+	static const int CLOSEWOOD = 0x00F1;
+	static const int CLOSEGATE = 0x00F2;
+	static const int CLOSESTEEL = 0x00F3;
+	static const int CLOSESECRET = 0x00F4;
 
 	if (y==0) // Request open door sfx
 	{
@@ -510,7 +479,7 @@ void dooruse(NXWSOCKET  s, P_ITEM pi /* was ITEM item*/)
 
 	if (changed && ISVALIDPC(pc))
 	{
-		
+
 		pc->objectdelay=uiCurrentTime+ (server_data.objectdelay/4)*MY_CLOCKS_PER_SEC;
 		// house refreshment when a house owner or friend of a houe opens the house door
 
@@ -548,7 +517,7 @@ void dooruse(NXWSOCKET  s, P_ITEM pi /* was ITEM item*/)
 		} // end of is_multi
 	}
 
-	if (changed==0 && s>INVALID) 
+	if (changed==0 && s>INVALID)
 		sysmessage(s, TRANSLATE("This doesnt seem to be a valid door type. Contact a GM."));
 }
 
@@ -699,40 +668,6 @@ void setabovelight(unsigned char lightchar)
 	}
 }
 
-char indungeon(P_CHAR pc)
-{
-
-	VALIDATEPCR( pc, 0 );
-
-	if ( pc->getPosition().x < 5119)
-		return 0;
-
-	int x1 = (pc->getPosition().x - 5119) >> 8;
-	int y1 = (pc->getPosition().y >> 8);
-
-	switch (y1)
-	{
-	case 5:
-	case 0:	return 1;
-	case 1:
-		if (x1 != 0) return 1;
-		return 0;
-	case 2:
-	case 3:
-		if (x1 < 3) return 1;
-		else return 0;
-	case 4:
-	case 6:
-		if (x1 == 0) return 1;
-		else return 0;
-	case 7:
-		if (x1 < 2) return 1;
-		else return 0;
-	}
-	return 0;
-
-}
-
 /*!
 \brief converts x,y coords to sextant coords
 \author LB
@@ -828,35 +763,6 @@ void npcsimpleattacktarget(CHARACTER target2, CHARACTER target)
 	pc_target2->ResetAttackFirst();
 }
 
-/*!
-\brief delete a defined quantity of a specified id from a specified char
-\param c character
-\param id item id
-\param amount amount to delete
-\param not_deleted number of items that could NOT be deleted
-*/
-void delequan(int c, short id, int amount, int &not_deleted)
-{
-	P_CHAR pc=MAKE_CHAR_REF(c);
-	if(!ISVALIDPC(pc)) 
-	{ 
-		LogError("invalid character used");
-		not_deleted = amount; 
-		return; 
-	}
-
-	P_ITEM pi= pc->getBackpack();
-	if(!ISVALIDPI(pi)) 
-	{ 
-		LogError("invalid backpack");
-		not_deleted = amount; 
-		return; 
-	}
-
-	not_deleted = pi->DeleteAmount(amount,id);
-}
-
-
 void donewithcall(int s, int type)
 {
 	P_CHAR pc = MAKE_CHAR_REF( currchar[s] );
@@ -940,11 +846,11 @@ int calcValue(int i, int value)
 \todo write documentation
 */
 int calcGoodValue(CHARACTER npcnum2, int i, int value,int goodtype)
-{ 
-	
+{
+
 	P_CHAR npc=MAKE_CHAR_REF(npcnum2);
 	VALIDATEPCR(npc,0);
-	
+
 	const P_ITEM pi=MAKE_ITEM_REF(i);
 	VALIDATEPIR(pi,value);
 
@@ -967,25 +873,6 @@ int calcGoodValue(CHARACTER npcnum2, int i, int value,int goodtype)
 
 	return value;
 }
-
-/*!
-\brief count the number of bit set
-\return int number of bit set
-\param number the number
-\remark is this really usefull ?
-*/
-int numbitsset( int number )
-{
-	int bitsset = 0;
-
-	while( number )
-	{
-		if( number & 0x1 ) bitsset++;
-		number >>= 1;
-	}
-	return bitsset;
-}
-
 
 /*!
 \todo write documentation

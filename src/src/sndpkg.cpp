@@ -107,26 +107,6 @@ void SndShopgumpopen(NXWSOCKET  s, SERIAL serial)	//it's really necessary ? It i
 //AoS/	Network->FlushBuffer(s);
 }
 
-
-/*!
-\brief play sound
-\param goldtotal ?
-\return soundsfx to play
-*/
-UI16 goldsfx(int goldtotal)
-{
-	UI16 sound;
-
-	if (goldtotal==1)
-		sound = 0x0035;
-	else if (goldtotal<6)
-		sound = 0x0036;
-	else
-		sound = 0x0037;
-
-	return sound;
-}
-
 /*!
 \brief play a sound based on item id
 
@@ -217,75 +197,6 @@ void bgsound(CHARACTER s)
 		pc_curr->playSFX( basesound, true );
 	}
 }
-
-/*!
-\brief play a midi music
-\author ?
-\param s socket
-*/
-void dosocketmidi(NXWSOCKET s)
-{
-
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
-
-
-    cScpIterator* iter = NULL;
-    char script1[1024];
-    char script2[1024];
-
-	char sect[512];
-
-	if (pc->war)
-		strcpy(sect, "MIDILIST COMBAT");
-	else
-		sprintf(sect, "MIDILIST %i", region[pc->region].midilist);
-
-	iter = Scripts::Regions->getNewIterator(sect);
-	if (iter==NULL) return;
-
-	char midiarray[50];
-	int i=0;
-	int loopexit=0;
-	do
-	{
-		iter->parseLine(script1, script2);
-		if ((script1[0]!='}')&&(script1[0]!='{'))
-		{
-			if (!(strcmp("MIDI",script1)))
-			{
-				midiarray[i]=str2num(script2);
-				i++;
-			}
-		}
-	}
-	while ((script1[0]!='}') && (++loopexit < MAXLOOPS) );
-
-	safedelete(iter);
-
-	if (i!=0)
-	{
-		i=rand()%(i);
-		playmidi(s, 0, midiarray[i]);
-	}
-}
-
-void soundeffect(NXWSOCKET s, UI16 sound) // Play sound effect for player to all
-{
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
-
-	pc->playSFX(sound);
-}
-
-void soundeffect5(NXWSOCKET  s, UI16 sound) // Play sound effect for player only to me
-{
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
-
-	pc->playSFX(sound, true);
-}
-
 
 void soundeffect3(P_ITEM pi, UI16 sound)
 {
@@ -478,22 +389,6 @@ void itemmessage(NXWSOCKET  s, char *txt, int serial, short color)
 
 }
 
-void wearIt(const NXWSOCKET  s, const P_ITEM pi)
-{
-	VALIDATEPI(pi);
-
-	UI08 wearitem[15]={ 0x2E, 0x00, };
-
-	LongToCharPtr(pi->getSerial32(), wearitem +1);
-	ShortToCharPtr(pi->animid(),wearitem +5); // elcabesa animation
-	wearitem[7]= 0x00;
-	wearitem[8]= pi->layer;
-	LongToCharPtr(pi->getContSerial(),wearitem+9);
-	ShortToCharPtr(pi->getColor(), wearitem +13);
-	Xsend(s, wearitem, 15);
-//AoS/	Network->FlushBuffer(s);
-}
-
 void backpack2(NXWSOCKET s, SERIAL serial) // Send corpse stuff
 {
 	int count=0, count2;
@@ -557,56 +452,6 @@ void backpack2(NXWSOCKET s, SERIAL serial) // Send corpse stuff
 	}
 
 //AoS/	Network->FlushBuffer(s);
-}
-
-void sendbpitem(NXWSOCKET s, P_ITEM pi)
-{
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
-
-	Location pi_pos = pi->getPosition();
-
-	unsigned char display3[1]={ 0x25 };
-	unsigned char bpitem[20]={ 0x00, };
-
-	LongToCharPtr(pi->getSerial32(), bpitem);
-	//AntiChrist - world light sources stuff
-	//if player is a gm, this item
-	//is shown like a candle (so that he can move it),
-	//....if not, the item is a normal
-	//invisible light source!
-	if(pc->IsGM() && pi->getId()==0x1647)
-	{///let's show the lightsource like a candle
-		ShortToCharPtr(0x0A0F, bpitem +4);
-	} else
-	{//else like a normal item
-		ShortToCharPtr(pi->animid(), bpitem +4);
-	}
-	bpitem[6]=0x00;
-	ShortToCharPtr(pi->amount, bpitem +7);
-	ShortToCharPtr(pi_pos.x, bpitem +9);
-	ShortToCharPtr(pi_pos.y, bpitem +11);
-	LongToCharPtr(pi->getContSerial(), bpitem +13);
-	if(pc->IsGM() && pi->getId()==0x1647)
-	{///let's show the lightsource like a blue item
-		ShortToCharPtr(0x00C6, bpitem +17);
-	}
-	else
-	{//else like a normal item
-		ShortToCharPtr(pi->getColor(), bpitem +17);
-	}
-
-	// we need to find the topmost container that the item is in
-	// be it a character or another container.
-
-	if( pc->distFrom(pi)<=VISRANGE )
-	{
-		Xsend(s, display3, 1);
-		Xsend(s, bpitem, 19);
-	}
-//AoS/	Network->FlushBuffer(s);
-
-	weights::NewCalc(pc);	// Ison 2-20-99
 }
 
 void MakeGraphicalEffectPkt_(UI08 pkt[28], UI08 type, UI32 src_serial, UI32 dst_serial, UI16 model_id, Location src_pos, Location dst_pos, UI08 speed, UI08 duration, UI08 adjust, UI08 explode )
@@ -968,41 +813,6 @@ void chardel (NXWSOCKET  s) // Deletion of character
 //AoS/	Network->FlushBuffer(s);
 }
 
-void skillwindow(NXWSOCKET s) // Opens the skills list, updated for client 1.26.2b by LB
-{
-
-	P_CHAR pc= MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
-
-	UI08 skillstart[4]={ 0x3A, 0x00, };
-	UI08 skillmid[7]={ 0x00, };
-	UI08 skillend[2]={ 0x00, };
-	UI16 len;
-	char x;
-
-	len = 0x015D;					// Hardcoded -_-;  // hack for that 3 new skills+1.26.2 client, LB 4'th dec 1999
-	ShortToCharPtr(len, skillstart +1);
-	skillstart[3] = 0x00;				// Type:
-							// 0x00 = full list, 0xFF = single skill update,
-							// 0x02 = full list with skillcap, 0xDF = single skill update with cap
-
-	Xsend(s, skillstart, 4);
-	for (int i=0;i<TRUESKILLS;i++)
-	{
-		Skills::updateSkillLevel(pc,i);
-		ShortToCharPtr(i+1, skillmid +0);
-		ShortToCharPtr(pc->skill[i], skillmid +2);
-		ShortToCharPtr(pc->baseskill[i], skillmid +4);
-
-		x=pc->lockSkill[i];
-		if (x!=0 && x!=1 && x!=2) x=0;
-		skillmid[6]=x; // leave it unlocked, regardless
-		Xsend(s, skillmid, 7);
-	}
-	Xsend(s, skillend, 2);
-//AoS/	Network->FlushBuffer(s);
-}
-
 /*!
 \author Xanathar
 \brief Updates stats to nearbye players
@@ -1275,14 +1085,6 @@ void deny(NXWSOCKET  s, P_CHAR pc, int sequence)
 	walkdeny.z= pc->getPosition().dispz;
 	walkdeny.send( pc->getClient() );
 	walksequence[s]=INVALID;
-}
-
-void weblaunch(int s, const char *txt) // Direct client to a web page
-{
-	cPacketWebBrowser launch;
-
-	launch.link+=txt;
-	launch.send( getClientFromSocket(s) );
 }
 
 void broadcast(int s) // GM Broadcast (Done if a GM yells something)
@@ -1753,97 +1555,6 @@ MakeGraphicalEffectPkt_(effect, 0x00, pc_source->getSerial32(), pi->getSerial32(
 	}
 }
 
-void dolight(NXWSOCKET s, char level)
-{
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
-
-	UI08 light[2]={ 0x4F, 0x00 };
-
-	if ((s==INVALID)||(!clientInfo[s]->ingame)) return;
-
-	light[1]=level;
-	if (worldfixedlevel!=255)
-	{
-		light[1]=worldfixedlevel;
-	} else {
-		if (pc->fixedlight!=255)
-		{
-			light[1]=pc->fixedlight;
-		} else {
-			if (indungeon(pc))
-			{
-				light[1]=dungeonlightlevel;
-			}
-			else
-			{
-				light[1]=level;
-			}
-		}
-	}
-
-	Xsend(s, light, 2);
-//AoS/	Network->FlushBuffer(s);
-}
-
-void updateskill(NXWSOCKET s, int skillnum) // updated for client 1.26.2b by LB
-{
-
-	P_CHAR pc_currchar = MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc_currchar);
-
-	UI16 len;
-	UI08 update[11]={ 0x3A, 0x00, };
-	char x;
-
-	len = 11; // Length of message
-
-	update[3] = 0xFF; // single list
-
-	update[4] = 0x00;
-	update[5] = (char)skillnum;
-	ShortToCharPtr(pc_currchar->skill[skillnum], update +6);
-	ShortToCharPtr(pc_currchar->baseskill[skillnum], update +8);
-
-	x = pc_currchar->lockSkill[skillnum];
-	if (x != 0 && x != 1 && x != 2)
-		x = 0;
-	update[10] = x;
-
-	// CRASH_IF_INVALID_SOCK(s);
-
-	ShortToCharPtr(len, update +1);
-	Xsend(s, update, 11);
-//AoS/	Network->FlushBuffer(s);
-}
-
-void deathaction(P_CHAR pc, P_ITEM pi)
-{
-	UI08 deathact[13]={ 0xAF, 0x00, };
-
-	LongToCharPtr(pc->getSerial32(), deathact +1);
-	LongToCharPtr(pi->getSerial32(), deathact +5);
-
-	 NxwSocketWrapper sw;
-	 sw.fillOnline( pc, true );
-	 for( sw.rewind(); !sw.isEmpty(); sw++ )
-	 {
-		NXWSOCKET i=sw.getSocket();
-		if( i!=INVALID )
-		{
-			Xsend(i, deathact, 13);
-//AoS/			Network->FlushBuffer(i);
-		}
-	}
-}
-
-void deathmenu(NXWSOCKET s) // Character sees death menu
-{
-	UI08 testact[2]={ 0x2C, 0x00 };
-	Xsend(s, testact, 2);
-//AoS/	Network->FlushBuffer(s);
-}
-
 void SendPauseResumePkt(NXWSOCKET s, UI08 flag)
 {
 /* Flag: 0=pause, 1=resume */ // uhm.... O_o ... or viceversa ? -_-;
@@ -2267,16 +1978,6 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 	return 1;
 }
 
-void playmidi(int s, char num1, char num2)
-{
-	UI16 music_id = (num1<<8)|(num2%256);
-	UI08 msg[3] = { 0x06D, 0x00, };
-
-	ShortToCharPtr(music_id, msg +1);
-	Xsend(s, msg, 3);
-//AoS/	Network->FlushBuffer(s);
-}
-
 void sendtradestatus(P_ITEM c1, P_ITEM c2)
 {
 	VALIDATEPI(c1);
@@ -2663,13 +2364,6 @@ void itemeffectUO3D(P_ITEM pi, ParticleFx *sta)
 	particleSystem[47]=0x0;
 	particleSystem[48]=0x0;
 
-}
-
-void bolteffectUO3D(CHARACTER player)
-{
-
-/*	Magic->doStaticEffect(player, 30);
-*/
 }
 
 void sysmessageflat(NXWSOCKET  s, short color, const char *txt)

@@ -382,6 +382,8 @@ public:
 
 		void			IncreaseKarma(SI32 value, P_CHAR pKilled = 0 );
 		void			modifyFame( SI32 value );
+
+		const bool		inDungeon() const;
 //@}
 
 //@{
@@ -1078,7 +1080,7 @@ public:
 		{ priv2 |= flagPriv2Frozen; }
 
 		LOGICAL			checkSkill(Skill sk, SI32 low, SI32 high, LOGICAL bRaise = true);
-		SI32			delItems(short id, SI32 amount = 1, short color = INVALID);
+		SI32			delItems(UI16 id, SI32 amount = 1, UI16 color = INVALID);
 
 		const LOGICAL	checkSkillSparrCheck(Skill sk, SI32 low, SI32 high, P_CHAR pcd);
 

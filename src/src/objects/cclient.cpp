@@ -65,3 +65,111 @@ void cClient::showContainer(pItem pCont)
 	sendPacket(&pk2);
 }
 
+/*!
+\brief Show an item into a container
+\author Flameeyes
+\param item item to show
+*/
+void cClient::addItemToContainer(pItem item)
+{
+	if ( ! item || pc->distFrom(pi) > VISRANGE )
+		return;
+
+	cPacketSendAddContainerItem pk( item, item->getCont()->getSerial() );
+
+	sendPacket(&pk);
+
+	weights::NewCalc(pc);
+}
+
+/*!
+\brief Play a random midi file adapt to the current status
+\author Flameeyes
+\todo Write it after get working XML-Support
+*/
+void cClient::playMidi()
+{
+/*
+    cScpIterator* iter = NULL;
+    char script1[1024];
+    char script2[1024];
+
+	char sect[512];
+
+	if (pc->war)
+		strcpy(sect, "MIDILIST COMBAT");
+	else
+		sprintf(sect, "MIDILIST %i", region[pc->region].midilist);
+
+	iter = Scripts::Regions->getNewIterator(sect);
+	if (iter==NULL) return;
+
+	char midiarray[50];
+	int i=0;
+	int loopexit=0;
+	do
+	{
+		iter->parseLine(script1, script2);
+		if ((script1[0]!='}')&&(script1[0]!='{'))
+		{
+			if (!(strcmp("MIDI",script1)))
+			{
+				midiarray[i]=str2num(script2);
+				i++;
+			}
+		}
+	}
+	while ((script1[0]!='}') && (++loopexit < MAXLOOPS) );
+
+	safedelete(iter);
+
+	if (i!=0)
+	{
+		i=rand()%(i);
+		playmidi(s, 0, midiarray[i]);
+	}
+*/
+}
+
+/*!
+\brief Play a sound effect
+\author Flameeyes
+\todo Fix the set support after get working new sets
+*/
+void cClient::playSFX(UI16 sound, bool onlyMe)
+{
+	cPacketSendSoundFX pk(sound, pc->getPosition());
+
+	if(onlyMe) {
+		client->send(&pk);
+		return;
+	}
+
+/*
+	NxwSocketWrapper sw;
+	sw.fillOnline( pc, false );
+
+	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
+		NXWCLIENT ps=sw.getClient();
+		if(ps!=NULL)
+			ps->send(&pk);
+	}
+*/
+}
+
+void cClient::light(UI08 level)
+{
+	if ( ! pc ) return;
+
+	if (worldfixedlevel != 0xFF)
+		level = worldfixedlevel;
+	else if (pc->getFixedLight() != 0xFF)
+		level = pc->getFixedLight();
+	else if (pc->inDungeon())
+		level = dungeonlightlevel;
+
+	cPacketSendOverallLight pk(level);
+
+	sendPacket(&pk);
+}
+

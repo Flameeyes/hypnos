@@ -30,11 +30,8 @@ void SndUpdscroll(NXWSOCKET  s, short txtlen, const char* txt);
 
 void SndShopgumpopen(NXWSOCKET  s, int serial);
 
-void soundeffect(NXWSOCKET s, UI16 sound);
-	//!< Play sound effect for player
 void soundeffect3(P_ITEM pi, UI16 sound);
 void soundeffect4(NXWSOCKET s, P_ITEM pi, UI16 sound);
-void soundeffect5(NXWSOCKET s, UI16 sound);
 void sysbroadcast(char *txt, ...);
 	//!< System broadcast in bold text
 void sysmessage(NXWSOCKET  s, const char *txt, ...);
@@ -43,10 +40,8 @@ void sysmessage(NXWSOCKET  s, short color, const char *txt, ...);
 void sysmessageflat(NXWSOCKET  s, short color, const char *txt);
 	//!< System message (In lower left corner)
 void itemmessage(NXWSOCKET  s, char *txt, int serial, short color=0x0000);
-void wearIt(const NXWSOCKET  s, const P_ITEM pi);
 void backpack2(NXWSOCKET s, SERIAL serial);
 	//!< Send corpse stuff
-void sendbpitem(NXWSOCKET s, P_ITEM pi);
 void tileeffect(int x, int y, int z, char eff1, char eff2, char speed, char loop);
 void senditem(NXWSOCKET  s, P_ITEM pi);
 	//!< Send items (on ground);
@@ -86,16 +81,9 @@ void bolteffect2(CHARACTER player,char a1,char a2);	// experimenatal, lb
 
 void staticeffectUO3D(CHARACTER player, ParticleFx *sta);
 void movingeffectUO3D(CHARACTER source, CHARACTER dest, ParticleFx *sta);
-void bolteffectUO3D(CHARACTER player);
 void itemeffectUO3D(P_ITEM pi, ParticleFx *sta);
 void MakeGraphicalEffectPkt_(UI08 pkt[28], UI08 type, UI32 src_serial, UI32 dst_serial, UI16 model_id, Location src_pos, Location dst_pos, UI08 speed, UI08 duration, UI08 adjust, UI08 explode );
 
-void dolight(int s, char level);
-void updateskill(int s, int skillnum);
-void deathaction(P_CHAR player_id, P_ITEM corpse_id);
-	//!< Character does a certain action
-void deathmenu(int s);
-	//!< Character sees death menu
 void SendPauseResumePkt(NXWSOCKET s, UI08 flag);
 void SendDeleteObjectPkt(NXWSOCKET s, SERIAL serial);
 void SendDrawObjectPkt(NXWSOCKET s, P_CHAR pc, int z);
@@ -109,7 +97,6 @@ void impowncreate(NXWSOCKET s, P_CHAR pc, int z);
 	//!< socket, player to send
 void sendshopinfo(int s, int c, P_ITEM pi);
 int sellstuff(int s, int i);
-void playmidi(int s, char num1, char num2);
 void sendtradestatus(P_ITEM cont1, P_ITEM cont2);
 void endtrade(SERIAL serial);
 void tellmessage(int i, int s, char *txt);

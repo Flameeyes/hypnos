@@ -59,8 +59,6 @@ public:
 
 };
 
-extern P_CHAR loginchars[MAXCLIENT];
-
 class cClient {
 
 private:

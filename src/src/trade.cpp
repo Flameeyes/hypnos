@@ -379,36 +379,39 @@ void sellaction(NXWSOCKET s)
 // Function name     : tradestart
 // Return type       : P_ITEM
 // Author            : Luxor
-P_ITEM tradestart(P_CHAR pc1, P_CHAR pc2)
+pItem tradestart(pChar pc1, pChar pc2)
 {
-        VALIDATEPCR(pc1, NULL);
-        VALIDATEPCR(pc2, NULL);
-        if( pc1->getClient() == NULL || pc2->getClient() == NULL) return NULL;
-		if( pc1->dead || pc2->dead ) return NULL;
-		if( pc1->distFrom( pc2 )>5 ) return NULL;
-        SI32 s1 = pc1->getClient()->toInt();
-        SI32 s2 = pc2->getClient()->toInt();
-        P_ITEM bp1 = pc1->getBackpack();
-        if (!ISVALIDPI(bp1)) {
-                pc1->sysmsg(TRANSLATE("Time to buy a backpack!"));
-                return NULL;
-        }
-        P_ITEM bp2 = pc2->getBackpack();
-        if (!ISVALIDPI(bp2)) {
-                pc2->sysmsg(TRANSLATE("Time to buy a backpack!"));
-                return NULL;
-        }
+	if (
+		( ! pc1 || ! pc2 ) ||
+		( !pc1->getClient() || ! pc2->getClient() ) ||
+		( pc1->dead || pc2->dead ) ||
+		( pc1->distFrom( pc2 ) > 5 )
+	   )
+		return NULL;
 
-        P_ITEM cont1 = item::CreateFromScript( "$item_a_bulletin_board" );
-		P_ITEM cont2 = item::CreateFromScript( "$item_a_bulletin_board" );
-        VALIDATEPIR(cont1, NULL);
-        VALIDATEPIR(cont2, NULL);
+        pItem bp1 = pc1->getBackpack();
+	if ( ! bp1 )
+	{
+		pc1->sysmsg(TRANSLATE("Time to buy a backpack!"));
+		return NULL;
+	}
+        pItem bp2 = pc2->getBackpack();
+	if ( ! bp2 )
+	{
+		pc1->sysmsg(TRANSLATE("Time to buy a backpack!"));
+		return NULL;
+	}
+
+	pItem cont1 = item::CreateFromScript( "$item_a_bulletin_board" );
+	pItem cont2 = item::CreateFromScript( "$item_a_bulletin_board" );
+	if ( ! cont1 || ! cont2 )
+		return NULL;
 
         cont1->setPosition(26, 0, 0);
         cont2->setPosition(26, 0, 0);
-        cont1->setContSerial(pc1->getSerial32());
-        cont2->setContSerial(pc2->getSerial32());
-        cont1->layer = cont2->layer = 0;
+        cont1->setContainer(pc1);
+        cont2->setContainer(pc2);
+	cont1->layer = cont2->layer = 0;
 	cont1->type = cont2->type = 1;
 	cont1->dye = cont2->dye = 0;
         sendbpitem(s1, cont1);

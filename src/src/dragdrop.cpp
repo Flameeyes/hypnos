@@ -878,7 +878,7 @@ static bool ItemDroppedOnTrainer(NXWCLIENT ps, PKGx08 *pp, P_ITEM pi)
 		}
 		pc->baseskill[sk]+=delta;
 		Skills::updateSkillLevel(pc, sk);
-		updateskill(s,sk);
+		pc->updateSkill(sk);
 
 		pc->trainer=-1;
 		pc_t->trainingplayerin=0xFF;

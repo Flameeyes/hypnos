@@ -58,6 +58,9 @@ public:
 	void encrypt(char &*);
 
 	void showContainer(pItem pCont);
+	void playMidi();
+	void playSFX(UI16 sound, bool onlyMe = false);
+	void light();
 };
 
 #endif

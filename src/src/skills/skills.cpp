@@ -294,7 +294,7 @@ static bool DoOnePotion(NXWSOCKET s, UI16 regid, UI32 regamount, char* regname)
         success=true;
         sprintf(temp, TRANSLATE("*%s starts grinding some %s in the mortar.*"), pc->getCurrentNameC(), regname);
         pc->emoteall( temp,1); // LB, the 1 stops stupid alchemy spam
-        delequan(DEREF_P_CHAR(pc),regid,regamount);
+	pc->delItems(regid, regamount);
     }
     else
         sysmessage(s, TRANSLATE("You do not have enough reagents for that potion."));
@@ -430,7 +430,7 @@ void Skills::CreatePotion(CHARACTER s, char type, char sub, int mortar)
 	{
 		pc->playSFX(0x0240); // Liquid sfx
 		pc->emoteall(TRANSLATE("*%s pours the completed potion into a bottle.*"), 0, pc->getCurrentNameC());
-		delequan(DEREF_P_CHAR(pc), 0x0F0E, 1);
+		pc->delItems(0x0F0E);
 		Skills::PotionToBottle(pc, pi_mortar);
 	}
 }
@@ -700,7 +700,7 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 						d=0; // should never happen ...
                     pc->baseskill[atrophy_candidates[0]]-=d;
 					Skills::updateSkillLevel(pc, atrophy_candidates[0]);         // we HAVE to correct the skill-value
-                    updateskill(pc->getSocket(), atrophy_candidates[0]); // and send changed skill values packet so that client can re-draw correctly
+                    pc->updateSkill(atrophy_candidates[0]); // and send changed skill values packet so that client can re-draw correctly
                 }
             // this is very important cauz this is ONLY done for the calling skill value automatically .
             }
@@ -712,9 +712,9 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 
 					if (pc->baseskill[atrophy_candidates[d]]>=1)
 					{
-	                    pc->baseskill[atrophy_candidates[d]]--;
+	                    			pc->baseskill[atrophy_candidates[d]]--;
 						Skills::updateSkillLevel(pc, atrophy_candidates[d]);
-						updateskill(pc->getSocket(), atrophy_candidates[d]);
+						pc->updateSkill(atrophy_candidates[d]);
 					}
 
                 }

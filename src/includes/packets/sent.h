@@ -21,6 +21,27 @@ typedef cPacketReceive *pPacketReceive;
 
 #include "cclient.h"
 
+//! Item in a container
+struct sContainerItem
+{
+	sContainerItem() { }
+	sContainerItem(pItem item)
+	{
+		it.serial	= item->getSerial();
+		it.id		= item->getAnimId();
+		it.amount	= item->getAmount();
+		it.x		= item->getPosition().x;
+		it.y		= item->getPosition().y;
+		it.color	= item->getColor();
+	};
+
+	UI32 serial;
+	UI16 id;
+	UI16 amount;
+	UI16 x, y;
+	UI16 color;
+};
+
 /*!
 \author Flameeyes
 \brief Packet to be sent
@@ -116,14 +137,6 @@ public:
 class cPacketSendContainerItem
 {
 protected:
-	struct sContainerItem
-	{
-		UI32 serial;
-		UI16 id;
-		UI16 amount;
-		UI16 x, y;
-		UI16 color;
-	};
 	std::list<sContainerItem> items;
 public:
 	/*!
@@ -135,25 +148,43 @@ public:
 	\brief add an item to the list of items in the container
 	\param item item to add to the container
 	*/
-	inline void addItem(pItem *item)
-	{
-		sContainerItem it;
-		it.serial	= item->getSerial();
-		it.id		= item->getAnimId();
-		it.amount	= item->getAmount();
-		it.x		= item->getPosition().x;
-		it.y		= item->getPosition().y;
-		it.color	= item->getColor();
-		list.push_back(it);
-	}
+	inline void addItem(pItem item)
+	{ list.push_back(sContainerItem(item)); }
 
 	void prepare();
-}
+};
 
-/*!
-\brief Sound FX
-\author Flameeyes
-*/
+//! Add item to container
+class cPacketSendAddContainerItem
+{
+protected:
+	pItem item;
+public:
+	/*!
+	\param itm item to add
+	\param cont serial of container item
+	*/
+	inline cPacketAddContainerItem(pItem itm) :
+		item(itm)
+	{ }
+
+	void prepare();
+};
+
+//! Work item
+class cPacketSendWornItem
+{
+protected:
+	pItem item;
+public:
+	inline cPacketSendAddContainerItem(pItem itm) :
+		item(itm)
+	{ }
+
+	void prepare();
+};
+
+//! Sound FX
 class cPacketSendSoundFX
 {
 protected:
@@ -169,7 +200,105 @@ public:
 	{ }
 
 	void prepare();
-}
+};
+
+//! Delete object
+class cPacketSendDeleteObj
+{
+protected:
+	UI32 serial;
+public:
+	/*!
+	\param s serial of the object to remove
+	*/
+	inline cPacketSendDeleteObj(UI32 s) :
+		serial(s)
+	{ }
+
+	void prepare();
+};
+
+//! Send skill status
+class cPacketSendSkillState
+{
+protected:
+	pChar pc;
+public:
+	/*!
+	\param c Character to send the skill of
+	*/
+	inline cPacketSendSkillState(pChar c) :
+		pc(c)
+	{ }
+
+	void prepare();
+};
+
+//! Update a skill
+class cPacketSendUpdateSkill
+{
+protected:
+	pChar pc;
+	UI16 skill;
+public:
+	/*!
+	\param c Character to send the skill of
+	\param sk Skill to update
+	*/
+	inline cPacketSendUpdateSkill(pChar c, UI16 sk) :
+		pc(c), skill(sk)
+	{ }
+
+	void prepare();
+};
+
+//! Open Web Browser
+class cPacketSendOpenBrowser
+{
+protected:
+	std::string url;
+public:
+	/*!
+	\param url Url to open the browser to
+	*/
+	inline cPacketSendOpenBrowser(std::string str) :
+		url(str)
+	{ }
+
+	void prepare();
+};
+
+//! Play midi file
+class cPacketSendPlayMidi
+{
+protected:
+	UI16 id;
+public:
+	/*!
+	\param midi Midi file id
+	*/
+	inline cPacketSendPlayMidi(UI16 midi) :
+		id(midi)
+	{ }
+
+	void prepare();
+};
+
+//! Overall Light Level
+class cPacketSendOverallLight
+{
+protected:
+	UI08 level;
+public:
+	/*!
+	\param l Light level
+	*/
+	inline cPacketSendOverallLight(UI08 l) :
+		level(l)
+	{ }
+
+	void prepare();
+};
 
 /*!
 \brief Packet received

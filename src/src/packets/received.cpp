@@ -78,6 +78,47 @@ void cPacketSendContainerItem::prepare()
 	}
 }
 
+void cPacketSendAddContainerItem::prepare()
+{
+	length = 20;
+	buffer = new UI08[20];
+	buffer[0] = 0x25;
+	buffer[7] = 0x00;
+
+	//AntiChrist - world light sources stuff
+	//if player is a gm, this item
+	//is shown like a candle (so that he can move it),
+	//....if not, the item is a normal
+	//invisible light source!
+	if(pc->IsGM() && item.id == 0x1647)
+	{
+		item.id = 0x0A0F;
+		item.color = 0x00C6;
+	}
+
+	LongToCharPtr(item->getSerial(), buffer+1);
+	ShortToCharPtr(item->getAnimId(), ptrItem+5);
+	ShortToCharPtr(item->getAmount(), ptrItem+8);
+	ShortToCharPtr(item->getLocation().x, ptrItem+10);
+	ShortToCharPtr(item->getLocation().y, ptrItem+12);
+	LongToCharPtr(item->getCont()->getSerial(), ptrItem+14);
+	ShortToCharPtr(item->getColor(), ptrItem+18);
+}
+
+void cPacketSendWornItem::prepare()
+{
+	length = 15;
+	buffer = new UI08[15];
+	buffer[0] = 0x2E;
+	buffer[7] = 0x00;
+
+	LongToCharPtr(item->getSerial(), buffer+1);
+	ShortToCharPtr(item->getAnimId(), buffer+5);
+	buffer[8] = item->getLayer();
+	LongToCharPtr(item->getCont()->getSerial(), buffer+9);
+	ShortToCharPtr(item->getColor(), buffer+13);
+}
+
 void cPacketSendSoundFX::prepare()
 {
 	static const UI08 templ[12] = {
@@ -95,4 +136,82 @@ void cPacketSendSoundFX::prepare()
 	ShortToCharPtr(loc.x, buffer +6);
 	ShortToCharPtr(loc.y, buffer +8);
 	ShortToCharPtr(z, buffer +10);
+}
+
+void cPacketSendDeleteObj::prepare()
+{
+	length = 5;
+	buffer = new UI08[5];
+	buffer[0] = 0x1D;
+	LongToCharPtr(serial, buffer+1);
+}
+
+void cPacketSendSkillState::prepare()
+{
+	length = 4 + TRUESKILLS*7 + 2;
+	buffer = new UI08[length];
+
+	buffer[0] = 0x3A;
+	ShortToCharPtr(length, buffer+1);
+	buffer[3] = 0x00;
+
+	UI08 *skill = buffer+4;
+	for (int i=0; i<TRUESKILLS; i++)
+	{
+		Skills::updateSkillLevel(pc,i);
+
+		ShortToCharPtr(i+1, skill);
+		ShortToCharPtr(pc->getSkill(i), skill +2);
+		ShortToCharPtr(pc->getSkillBase(i), skill +4);
+
+		skill[6] = pc->getSkillLock(i);
+
+		skill += 7;
+	}
+	ShorToCharPtr(0, skill);
+}
+
+void cPacketSendUpdateSkill::prepare()
+{
+	length = 11;
+	buffer = new UI08[11];
+	buffer[0] = 0x3A;
+	ShortToCharPtr(11, buffer+1);
+	buffer[3] = 0xFF;
+
+	Skills::updateSkillLevel(pc, skill);
+	ShortToCharPtr(skill+1, buffer +4);
+	ShortToCharPtr(pc->getSkill(skill), buffer +6);
+	ShortToCharPtr(pc->getSkillBase(skill), buffer +8);
+
+	buffer[10] = pc->getSkillLock(skill);
+}
+
+void cPacketSendOpenBrowser::prepare()
+{
+	length = url.size() + 3;
+	buffer = new UI08[length];
+
+	buffer[0] = 0xA5;
+	ShortToCharPtr(length, buffer+1);
+
+	memcpy(buffer+3, url.c_str(), length-3);
+}
+
+void cPacketSendPlayMidi::prepare()
+{
+	length = 3;
+	buffer = new UI08[3];
+
+	buffer[0] = 0x6D;
+	ShortTOCharPtr(id, buffer+1);
+}
+
+void cPacketSendOverallLight::prepare()
+{
+	length = 2;
+	buffer = new UI08[2];
+
+	buffer[0] = 0x4F;
+	buffer[1] = level;
 }

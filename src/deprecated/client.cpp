@@ -101,12 +101,6 @@ void cNxwClientObj::sysmsg(char* txt, ...)
 //AoS/	Network->FlushBuffer(m_sck);
 }
 
-void cNxwClientObj::setLegacySocket(NXWSOCKET s)
-{
-	if (s < 0 || s > MAXCLIENT) return;
-	m_sck = s;
-}
-
 bool cNxwClientObj::isDragging()
 {
 	return clientInfo[m_sck]->dragging;
@@ -125,33 +119,6 @@ void cNxwClientObj::resetDragging()
 bool cNxwClientObj::inGame()
 {
 	return clientInfo[m_sck]->ingame;
-}
-
-P_CHAR cNxwClientObj::currChar()
-{
-
-	return MAKE_CHAR_REF(currchar[m_sck]);
-}
-
-int cNxwClientObj::currCharIdx()
-{
-	return currchar[m_sck];
-}
-
-int cNxwClientObj::getRealSocket()
-{
-	return client[m_sck];
-}
-
-BYTE *cNxwClientObj::getRcvBuffer()
-{
-	return &buffer[m_sck][0];
-}
-
-
-void cNxwClientObj::send(const void *point, int length)
-{
-	if (m_sck>-1 && m_sck < now) Xsend(m_sck,point,length);
 }
 
 void cNxwClientObj::sendSpellBook(P_ITEM pi)
@@ -279,23 +246,6 @@ void cNxwClientObj::sendSpellBook(P_ITEM pi)
     }
 }
 
-/*!
-\brief Sends to a client a remove object packet, for objects disappearing
-\author Luxor
-*/
-void cNxwClientObj::sendRemoveObject(P_OBJECT po)
-{
-	VALIDATEPO(po);
-
-	UI08 removeitem[5]={ 0x1D, 0x00, };
-	LongToCharPtr(po->getSerial32(), removeitem +1);
-	send(removeitem, 5);
-//AoS/	Network->FlushBuffer(m_sck);
-}
-
-SERIAL currchar[MAXCLIENT];
-
-
 cClient::cClient()
 {
 	spyTo=INVALID;
@@ -314,7 +264,6 @@ cClient::~cClient()
 	resetTarget();
 }
 
-
 void cClient::resetTarget()
 {
 	if( target!=NULL )
@@ -332,7 +281,3 @@ P_TARGET cClient::getTarget()
 {
 	return target;
 }
-
-
-P_CLIENT clientInfo[MAXCLIENT];
-
