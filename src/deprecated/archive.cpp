@@ -34,33 +34,11 @@ cAllObjects::~cAllObjects()
 
 void cAllObjects::clear()
 {
-	OBJECT_MAP::iterator iter( this->all.begin() );
+	OBJECT_MAP::iterator iter( all.begin() );
 	for( ; iter!=all.end(); iter++ ) {
 		if( iter->second!=NULL )
 			safedelete(iter->second);
 	}
-}
-
-pObject cAllObjects::findObject(uint32_t nSerial)
-{
-	if (nSerial < 0) return NULL;
-    OBJECT_MAP::iterator iter( this->all.find(nSerial) );
-    if (iter == all.end())
-		return NULL;
-
-	return iter->second;
-}
-
-void cAllObjects::insertObject( pObject obj )
-{
-	all.insert( make_pair( obj->getSerial(), obj ) );
-}
-
-void cAllObjects::eraseObject( pObject obj )
-{
-	OBJECT_MAP::iterator iter( all.find( obj->getSerial() ) );
-	if( iter!=all.end() )
-		all.erase( iter );
 }
 
 uint32_t cAllObjects::getNextCharSerial()

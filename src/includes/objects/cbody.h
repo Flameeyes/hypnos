@@ -20,21 +20,22 @@ static const uint16_t bodyFemale	= 0x191;
 
 /*!
 \brief This class represent a body of a character
-*/
-class cBody : cObject
-{
-protected:
-	//! The next serial to be used
-	static uint32_t nextSerial;
-public:
-	//! Get the next serial
-	static const uint32_t getNextSerial()
-	{ return nextSerial++; }
 
+This class replaces the old cChar as cObject subclass
+All skills, abilities, name, title, and so stuff must
+be moved here.
+The serial itself should be moved here as well.
+
+\todo Move serial stuff here
+\todo Move other stuff here
+*/
+class cBody : public cObject
+{
 protected:
 	std::string name;
 	std::string title;
 	uint16_t id;
+
 public:
 	//! Gets the character's name
 	inline const std::string& getName() const
@@ -156,9 +157,11 @@ public:
 \name Flags
 \brief Flags used by the body
 */
-public:
+protected:
 	//! Character is Female
-	static const uint32_t flagFemale		= 0x0000001;
+	static const uint32_t flagFemale		= 0x0000000000000001ull;
+public:
+	
 //@}
 
 //@{
@@ -167,56 +170,56 @@ public:
 \brief Skill stuff
 */
 public:
-	static const uint16_t skillAlchemy	 	= 0x00;
+	static const uint16_t skillAlchemy		= 0x00;
 	static const uint16_t skillAnatomy		= 0x01;
-	static const uint16_t skillAnimalLore	= 0x02;
+	static const uint16_t skillAnimalLore		= 0x02;
 	static const uint16_t skillItemID		= 0x03;
 	static const uint16_t skillArmsLore		= 0x04;
 	static const uint16_t skillParrying		= 0x05;
 	static const uint16_t skillBagging		= 0x06;
 	static const uint16_t skillBlacksmithing	= 0x07;
 	static const uint16_t skillBowcraft		= 0x08;
-	static const uint16_t skillPeacemaking	= 0x09;
+	static const uint16_t skillPeacemaking		= 0x09;
 	static const uint16_t skillCamping		= 0x0a;
-	static const uint16_t skillCarpentry	= 0x0b;
-	static const uint16_t skillCartography	= 0x0c;
+	static const uint16_t skillCarpentry		= 0x0b;
+	static const uint16_t skillCartography		= 0x0c;
 	static const uint16_t skillCooking		= 0x0d;
-	static const uint16_t skillDetectHidden	= 0x0e;
-	static const uint16_t skillEnticement	= 0x0f;
+	static const uint16_t skillDetectHidden		= 0x0e;
+	static const uint16_t skillEnticement		= 0x0f;
 	static const uint16_t skillEvalutateIntell	= 0x10;
 	static const uint16_t skillHealing		= 0x11;
 	static const uint16_t skillFishing		= 0x12;
 	static const uint16_t skillForensic		= 0x13;
 	static const uint16_t skillHerding		= 0x14;
 	static const uint16_t skillHiding		= 0x15;
-	static const uint16_t skillProvocation	= 0x16;
-	static const uint16_t skillInscription	= 0x17;
-	static const uint16_t skillLockpicking	= 0x18;
+	static const uint16_t skillProvocation		= 0x16;
+	static const uint16_t skillInscription		= 0x17;
+	static const uint16_t skillLockpicking		= 0x18;
 	static const uint16_t skillMagery		= 0x19;
 	static const uint16_t skillMagicResistance	= 0x1a;
 	static const uint16_t skillTactics		= 0x1b;
 	static const uint16_t skillSnooping		= 0x1c;
-	static const uint16_t skillMusicianship	= 0x1d;
-	static const uint16_t skillPoisoning	= 0x1e;
+	static const uint16_t skillMusicianship		= 0x1d;
+	static const uint16_t skillPoisoning		= 0x1e;
 	static const uint16_t skillArchery		= 0x1f;
-	static const uint16_t skillSpiritSpeak	= 0x20;
+	static const uint16_t skillSpiritSpeak		= 0x20;
 	static const uint16_t skillStealing		= 0x21;
-	static const uint16_t skillTailoring	= 0x22;
+	static const uint16_t skillTailoring		= 0x22;
 	static const uint16_t skillTaming		= 0x23;
 	static const uint16_t skillTasteID		= 0x24;
-	static const uint16_t skillTinkering	= 0x25;
+	static const uint16_t skillTinkering		= 0x25;
 	static const uint16_t skillTracking		= 0x26;
-	static const uint16_t skillVeterinary	= 0x27;
+	static const uint16_t skillVeterinary		= 0x27;
 	static const uint16_t skillSwordsmanship	= 0x28;
-	static const uint16_t skillMaceFighting	= 0x29;
+	static const uint16_t skillMaceFighting		= 0x29;
 	static const uint16_t skillFencing		= 0x2a;
-	static const uint16_t skillWrestling	= 0x2b;
+	static const uint16_t skillWrestling		= 0x2b;
 	static const uint16_t skillLumberjacking	= 0x2c;
 	static const uint16_t skillMining		= 0x2d;
-	static const uint16_t skillMeditation	= 0x2e;
+	static const uint16_t skillMeditation		= 0x2e;
 	static const uint16_t skillStealth		= 0x2f;
-	static const uint16_t skillRemoveTrap	= 0x30;
-	static const uint16_t skillNecromancy	= 0x31;
+	static const uint16_t skillRemoveTrap		= 0x30;
+	static const uint16_t skillNecromancy		= 0x31;
 
 protected:
 	uint16_t skills[50];
@@ -237,20 +240,20 @@ public:
 These values are used by the packet 0x11
 */
 protected:
-	uint16_t strength;		//!< Strength of the character
-	uint16_t hitPoints;		//!< Hitpoints of the character
+	uint16_t strength;	//!< Strength of the character
+	uint16_t hitPoints;	//!< Hitpoints of the character
 	uint16_t maxHitPoints;	//!< Max hitpoints of the character
 
-	uint16_t dextery;		//!< Dextery of the character
-	uint16_t stamina;		//!< Stamina of the character
+	uint16_t dextery;	//!< Dextery of the character
+	uint16_t stamina;	//!< Stamina of the character
 	uint16_t maxStamina;	//!< Max stamina of the character
 
 	uint16_t intelligence;	//!< Intelligence of the character
 	uint16_t mana;		//!< Mana of the character
-	uint16_t maxMana;		//!< Max mana of the character
+	uint16_t maxMana;	//!< Max mana of the character
 
-	uint16_t statCap;		//!< Statcap of the character [UO3?]
-	uint8_t followers;		//!< Followers of the character [UO3?]
+	uint16_t statCap;	//!< Statcap of the character [UO3?]
+	uint8_t followers;	//!< Followers of the character [UO3?]
 	uint8_t maxFollowers;	//!< Max followers of the character [UO3?]
 
 	uint16_t luck;		//!< Luck of the character [UO4]
@@ -260,10 +263,10 @@ protected:
 	uint16_t resistPoison;	//!< Resistance to poison of the character [UO4]
 	uint16_t resistEnergy;	//!< Resistance to energy of the character [UO4]
 
-	uint16_t damageMin;		//!< Minimum damage of the character [UO4]
-	uint16_t damageMax;		//!< Maximum damage of the character [UO4]
+	uint16_t damageMin;	//!< Minimum damage of the character [UO4]
+	uint16_t damageMax;	//!< Maximum damage of the character [UO4]
 
-        uint16_t skinColor;         //!< Skin color of the character
+        uint16_t skinColor;	//!< Skin color of the character
 public:
 	//! Gets the character strength
 	inline const uint16_t getStrength() const

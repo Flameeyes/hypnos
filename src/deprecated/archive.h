@@ -37,9 +37,6 @@ public:
 	cAllObjects();
 	~cAllObjects();
 
-	void insertObject( pObject obj );
-	void eraseObject( pObject obj );
-	pObject findObject(uint32_t nSerial);
 	uint32_t getNextCharSerial();
 	uint32_t getNextItemSerial();
 	void updateCharSerial( uint32_t ser );

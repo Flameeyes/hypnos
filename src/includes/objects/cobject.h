@@ -14,27 +14,10 @@
 #ifndef __OBJECT_H
 #define __OBJECT_H
 
-class cObject;
-typedef cObject *pObject;
-
-#include <stdarg.h>
-#include "constants.h"
-#include "typedefs.h"
+#include "common_libs.h"
 #include "tmpeff.h"
-#include "basics.h"
-
-class cScpIterator;
-
 
 typedef slist< tempfx::cTempfx > TempfxVector;
-
-//! == operator redefinition for Location
-inline bool operator ==(Location a, Location b)
-{ return ((a.x==b.x) && (a.y==b.y) && (a.z==b.z)); }
-
-//! != operator redefinition for Location
-inline bool operator !=(Location a, Location b)
-{ return ((a.x!=b.x) || (a.y!=b.y) || (a.z!=b.z)); }
 
 /*!
 \brief Base class of cItem and cChar
@@ -45,53 +28,23 @@ class cObject
 {
 //@{
 /*!
-\name Operators
+\name Constructor and Operators
 */
-public:
-	inline bool operator> (const cObject& obj) const
-	{ return(getSerial() >  obj.getSerial()); }
-
-	inline bool operator< (const cObject& obj) const
-	{ return(getSerial() <  obj.getSerial()); }
-
-	inline bool operator>=(const cObject& obj) const
-	{ return(getSerial() >= obj.getSerial()); }
-
-	inline bool operator<=(const cObject& obj) const
-	{ return(getSerial() <= obj.getSerial()); }
-
-	inline bool operator==(const cObject& obj) const
-	{ return(getSerial() == obj.getSerial()); }
-
-	inline bool operator!=(const cObject& obj) const
-	{ return(getSerial() != obj.getSerial()); }
-//@}
-
-public:
-	static std::string	getRandomScriptValue( std::string section, std::string& sectionId );
-protected:
-	static cScpIterator*	getScriptIterator( std::string section, std::string& sectionId );
-
 public:
 	cObject();
 	virtual ~cObject();
+//@}
+
+public:
 	virtual void Delete() = 0;
 //@{
 /*!
 \name Serials
-\brief functions for handle serials stuff
 */
 protected:
-	uint32_t		serial;		//!< serial of the object
 	uint32_t		multi_serial;	//!< multi serial of the object (don't know what it is used for)
 
 public:
-	//! return the serial of the object
-	inline const uint32_t getSerial() const
-	{ return serial; }
-
-	void setSerial(int32_t newserial);
-
 	//! return the object's multi serial
 	inline const uint32_t getMultiSerial() const
 	{ return multi_serial; }
@@ -140,12 +93,10 @@ public:
 \name Appearence
 */
 protected:
-	uint32_t ScriptID;	//!< Object's ScriptID
-
-	uint16_t id;	//!< Object's ID
+	uint16_t id;		//!< Object's ID
 	uint16_t id_old;	//!< Object's old ID
 
-	uint16_t color;	//!< Object's color
+	uint16_t color;		//!< Object's color
 	uint16_t color_old;	//!< Object's old color
 
 	/*!
@@ -184,14 +135,6 @@ public:
 	{ secondary_name = s; }
 
 	void setSecondaryName(const char *format, ...);
-
-	//! return the object's script number
-	inline const uint32_t getScriptID() const
-	{ return ScriptID; }
-
-	//! set the object's script number
-	inline void setScriptID(uint32_t sid)
-	{ ScriptID = sid; }
 
 	inline void setId( uint16_t newId )
 	{ id = newId; }
@@ -257,17 +200,17 @@ protected:
 	TempfxVector		*tempfx;
 
 public:
-	bool			addTempfx( cObject& src, int32_t num, int32_t more1 = 0, int32_t more2 = 0, int32_t more3 = 0, int32_t dur = 0, int32_t amxcback = INVALID );
-	void			delTempfx( int32_t num, bool executeExpireCode = true, uint32_t funcidx = INVALID );
-	void			checkTempfx();
-	void			tempfxOn();
-	void			tempfxOff();
-	bool			hasTempfx();
-	tempfx::cTempfx*	getTempfx( int32_t num, uint32_t funcidx = INVALID );
+	bool addTempfx( cObject& src, int32_t num, int32_t more1 = 0, int32_t more2 = 0, int32_t more3 = 0, int32_t dur = 0, int32_t amxcback = INVALID );
+	void delTempfx( int32_t num, bool executeExpireCode = true, uint32_t funcidx = INVALID );
+	void checkTempfx();
+	void tempfxOn();
+	void tempfxOff();
+	bool hasTempfx();
+	tempfx::cTempfx* getTempfx( int32_t num, uint32_t funcidx = INVALID );
 //@}
 
-	uint32_t	disabled;	//!< Disabled object timer, cant trigger.
-	std::string*	disabledmsg; //!< Object is disabled, so display this message.
+	uint32_t disabled;		//!< Disabled object timer, cant trigger.
+	std::string* disabledmsg;	//!< Object is disabled, so display this message.
 } PACK_NEEDED;
 
 #endif	// __OBJECT_H

@@ -284,10 +284,13 @@ namespace Commands
 
 			if( !Me->IsGMorCounselor() ) {
 
-				if( !pi->dye )
+				if( !pi->isDyeable() )
 					return;
-
+				
 				pItem outmost = pi->getOutMostCont();
+				
+				//!\todo should be rewrote using dynamic_cast
+				
 				uint32_t cont = outmost->getContSerial();
 				if( isCharSerial( cont ) ) {
 					if( cont!=Me->getSerial() )

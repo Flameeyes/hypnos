@@ -21,6 +21,8 @@ typedef int32_t				FUNCIDX;
 typedef std::set<uint32_t> uint32_set;		//!< A set of uint32_t
 typedef std::vector<uint32_t> uint32_vector;	//!< A vector of uint32_t
 
+typedef class cSerializable *pSerializable;	//!< Pointer to cSerializable
+
 typedef class cObject *pObject;			//!< Pointer to a cObject
 typedef class cTarget* pTarget;			//!< Pointer to a cTarget
 typedef class cGMPage *pGMPage;			//!< Pointer to a GM Page
@@ -49,5 +51,7 @@ typedef std::list<pGMPage> GMPageList;		//!< List of GM Pages
 typedef std::list<pItem> ItemList;		//!< List of items
 typedef std::list<pChar> CharList;		//!< List of characters
 typedef std::list<pClient> ClientList;		//!< List of connected clients
+
+typedef std::map<uint32_t, pSerializable>;	//!< Map of serializable objects (items, chars..)
 
 #endif //__TYPEDEFS_H__

@@ -31,13 +31,20 @@ struct Location {
 	\param Z z of the new location
 	\param DISPZ dispz of the new location
 	\param MAP map of the new location
-	 
-	\note Replaces Loc() function
 	*/
 	inline Location(uint16_t X, uint16_t Y, int8_t Z, int8_t DISPZ = 0, uint8_t MAP = 255)
 	{
 		x = X; y = Y; z = Z; dispz = DISPZ ? DISPZ : z; map = MAP;
 	}
+
+	//! == operator redefinition for Location
+	inline bool operator ==(const Location &b)
+	{ return (a.x==b.x) && (y==b.y) && (z==b.z); }
+	
+	//! != operator redefinition for Location
+	inline bool operator !=(const Location &b)
+	{ return (x!=b.x) || (y!=b.y) || (z!=b.z); }
+
 };
 
 struct location_st

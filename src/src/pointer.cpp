@@ -768,60 +768,6 @@ namespace pointers {
 		}
 	}
 
-	/*!
-	\brief returns the corrispondent char of a serial
-	\author Luxor
-	\return the corrispondent char of the serial passed in the params
-	\param serial the serial of the char which we're searching for
-	*/
-	pChar findCharBySerial(int serial)
-	{
-		if (serial < 0 || !isCharSerial(serial)) return 0;
-
-		return static_cast<pChar>( objects.findObject(serial) );
-
-	}
-
-	/*!
-	\brief returns the corrispondent item of a serial
-	\author Luxor
-	\return the corrispondent item of the serial passed in the params
-	\param serial the serial of the item which we're searching for
-	*/
-	pItem findItemBySerial(uint32_t serial)
-	{
-		if (serial < 0 || !isItemSerial(serial)) return 0;
-
-		return static_cast<pItem>( objects.findObject(serial) );
-	}
-
-	/*!
-	\brief returns the corrispondent char of a serial
-	\param p the pointer to serial
-	\author Luxor
-	\return the char we're looking for
-	*/
-	pChar findCharBySerPtr(uint8_t *p)
-	{
-		int serial=LongFromCharPtr(p);
-		if (serial < 0) return 0;
-		return findCharBySerial(serial);
-	}
-
-	/*!
-	\brief returns the corrispondent item of a serial
-	\author Luxor
-	\param p the pointer to serial
-	\return pItem of the found item
-	\author Luxor
-	*/
-	pItem findItemBySerPtr(unsigned char *p)
-	{
-		int serial=LongFromCharPtr(p);
-		if(serial < 0) return 0;
-		return findItemBySerial(serial);
-	}
-
 	pChar stableSearch(int serial, int *index)
 	{
 		if (serial < 0 || (*index) < 0)

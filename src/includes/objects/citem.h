@@ -14,11 +14,12 @@
 
 #include "common_libs.h"
 #include "objects/cobject.h"
+#include "objects/cserializable.h"
 #include "magic.h"
 #include "globals.h"
 
 //! Item class
-class cItem : public cObject
+class cItem : public cObject, public cSerializable
 {
 public:
 	static pItem addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, Location where);
@@ -101,7 +102,7 @@ public:
 \name Look
 */
 protected:
-	uint16_t		animid;		//!< animation id
+	uint16_t	animid;		//!< animation id
 	int8_t		layer;		//!< Layer if equipped on paperdoll
 	int8_t		oldlayer;	//!< Old layer - used for bouncing bugfix - AntiChrist
 	int8_t		scriptlayer;	//!< Luxor, for scripted setted Layer
@@ -337,6 +338,7 @@ protected:
 	static const uint64_t flagNewbie	= 0x0000000000000004ull; //!< Is the item newbie?
 	static const uint64_t flagDispellable	= 0x0000000000000008ull; //!< Can the item be dispelled?
 	static const uint64_t flagUseAnimID	= 0x0000000000000010ull; //!< The item uses animID
+	static const uint64_t flagDyeable	= 0x0000000000000020ull; //!< Can an item be dyed with dyekit?
 
 public:
 	inline const bool isPileable() const
@@ -368,6 +370,12 @@ public:
 	
 	inline void setUseAnimID(bool set = true) const
 	{ setFlag(flagUseAnimID, set); }
+	
+	inline const bool isDyeable() const
+	{ return flags & flagDyeable; }
+	
+	inline void setDyeable(bool set = true) const
+	{ setFlag(flagDyeable, set); }
 //@}
 
 //@{
@@ -503,8 +511,15 @@ public:
 /*!
 \name Corpse related
 */
-	string		murderer;	//!< char's name who kille the char (forensic ev.)
-	int32_t		murdertime;	//!< when the people has been killed
+protected:
+	std::string	murderer;	//!< char's name who killed the char (forensic ev.)
+	int32_t		murdertime;	//!< when the people has been killed \todo Should be moved to time_t?
+public:
+	inline const std::string getMurderer() const
+	{ return murderer; }
+	
+	inline void setMurderer(const std::string &newmurderer) const
+	{ murderer = newmurderer; }
 //@}
 
 //@{
@@ -617,10 +632,7 @@ public:
 //	int8_t		glow_effect;
 	int8_t		doordir; // Reserved for doors
 	bool		dooropen;
-	void		explode(NXWSOCKET  s);
-
-
-	bool		dye;		//!< Reserved: Can item be dyed by dye kit
+	void		explode(pClient client);
 
 protected:
 	TIMERVAL	decaytime;
