@@ -1050,7 +1050,7 @@ bool nPackets::Received::WarModeChange::execute(pClient client)
 		client->sendPacket(&pk);
 
 		if (pc->dead && pc->war) // Invisible ghost, resend.
-			pc->teleport( TELEFLAG_NONE );
+			pc->teleport( teleNone );
 		client->playMidi();
 		pc->disturbMed();
 		return true;

@@ -271,7 +271,7 @@ void Skills::Stealth(pClient client)
 	{
 		pc->setHidden(htUnhidden);
 		pc->stealth = INVALID;
-		pc->teleport( TELEFLAG_SENDWORNITEMS );
+		pc->teleport( teleSendWornItems );
 		return;
 	}
 	

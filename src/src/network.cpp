@@ -1668,7 +1668,7 @@ void cNetwork::GetMsg(pClient client) // Receive message from client
 //AoS/						Network->FlushBuffer(client);
 
 						if (pc_currchar->dead && pc_currchar->war) // Invisible ghost, resend.
-							pc_currchar->teleport( TELEFLAG_NONE );
+							pc_currchar->teleport( teleNone );
 
 						walking2(pc_currchar);
 						client->playMidi();

@@ -147,7 +147,6 @@ void cChar::resetData()
 	robe = INVALID; // Serial number of generated death robe (If char is a ghost)
 	SetKarma(0);
 	fame=0;
-	//pathnum = PATHNUM;
 	kills=0; //PvP Kills
 	deaths=0;
 	dead = false; // Is character dead
@@ -894,7 +893,7 @@ void cChar::teleport( uint8_t flags, pClient cli )
 			if( ps_i != NULL ) {
 				ps_i->sendchar(this);
 				//ndEndy not too sure of this
-				if ( flags&TELEFLAG_SENDWORNITEMS )
+				if ( flags&teleSendWornItems )
 					wornitems( ps_i->toInt(), this );
 			}
 		}
@@ -902,7 +901,7 @@ void cChar::teleport( uint8_t flags, pClient cli )
 	} else
 	{
 		cli->sendchar(this);
-		if ( flags&TELEFLAG_SENDWORNITEMS )
+		if ( flags&teleSendWornItems )
 			wornitems( cli->toInt(), this );
 	}
 
@@ -913,7 +912,7 @@ void cChar::teleport( uint8_t flags, pClient cli )
 	if ( cli == NULL || cli == getClient() )
 		if ( socket != INVALID )
 		{
-			if ( flags&TELEFLAG_SENDNEARCHARS )
+			if ( flags&teleSendNearChars )
 			{
 				NxwCharWrapper sc;
 				sc.fillCharsNearXYZ( getPosition(), VISRANGE, IsGM() ? false : true );
@@ -942,7 +941,7 @@ void cChar::teleport( uint8_t flags, pClient cli )
 					}
 				}
 
-				if ( flags&TELEFLAG_SENDNEARITEMS )
+				if ( flags&teleSendNearItems )
 				{
 					NxwItemWrapper si;
 					si.fillItemsNearXYZ( getPosition(), VISRANGE, false );
@@ -959,7 +958,7 @@ void cChar::teleport( uint8_t flags, pClient cli )
 	//
 	// Send the light level
 	//
-	if ( socket != INVALID && (flags&TELEFLAG_SENDLIGHT) )
+	if ( socket != INVALID && (flags&teleSendLight) )
 		dolight( socket, worldcurlevel );
 
 	//
@@ -970,7 +969,7 @@ void cChar::teleport( uint8_t flags, pClient cli )
 	//
 	// Send the weather
 	//
-	if( socket != INVALID && (flags&TELEFLAG_SENDWEATHER) )
+	if( socket != INVALID && (flags&teleSendWeather) )
 		pweather(socket);
 }
 
@@ -1403,7 +1402,7 @@ void cChar::hideBySkill()
 		client->sysmessage("You have hidden yourself well.");
 
 	hidden = htBySkill;
-	teleport( TELEFLAG_NONE );
+	teleport( teleNone );
 }
 
 /*!
@@ -1483,7 +1482,7 @@ void cChar::resurrect( pClient healer )
 		pi->setContainer(this);
 		pi->setDyeable(true);
 	}
-	teleport( TELEFLAG_SENDWORNITEMS | TELEFLAG_SENDLIGHT );
+	teleport( teleSendWornItems | teleSendLight );
 }
 
 /*!
@@ -1577,7 +1576,7 @@ void cChar::morph ( short bodyid, short skincolor, short hairstyle, short hairco
 
 	morphed = bBackup;
 
-	teleport( TELEFLAG_SENDWORNITEMS );
+	teleport( teleSendWornItems );
 
 }
 
@@ -1757,7 +1756,7 @@ void cChar::Kill()
 	{ // legacy code : should be cut when polymorph will be translated to morph
 		setId( getOldId() );
 		polymorph=false;
-		teleport( TELEFLAG_SENDWORNITEMS );
+		teleport( teleSendWornItems );
 	}
 
 	murdererSer = INVALID;
@@ -2121,7 +2120,7 @@ void cChar::Kill()
 	}
 
         if ( !npc )
-		teleport( TELEFLAG_SENDWORNITEMS );
+		teleport( teleSendWornItems );
 
 	pCorpse->Refresh();
 
@@ -2907,7 +2906,7 @@ void cChar::dyeChar(pClient client, uint16_t color)
 		{
 			setColor(color);
 			setOldColor(color);
-			teleport( TELEFLAG_NONE );
+			teleport( teleNone );
 			client->playSFX(0x023E);
 		}
 	}

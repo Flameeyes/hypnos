@@ -85,7 +85,7 @@ const uint8_t cBody::equip(pEquippable pi, bool drag)
 	pi->setContainer(this);
 
 	checkSafeStats();
-	teleport( TELEFLAG_SENDWORNITEMS );
+	teleport( teleSendWornItems );
 
 	return 0;
 }

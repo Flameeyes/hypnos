@@ -52,7 +52,7 @@ bool WalkHandleAllowance(pChar pc, int sequence)
 			{
 				pc->sysmsg("You are too fatigued to move.");
 			  	walksequence[s]=INVALID;
-			  	pc->teleport( TELEFLAG_NONE );
+			  	pc->teleport( teleNone );
 				nPackets::Sent::MoveReject(pc, sequence);
         	                pc->getClient()->sendPacket(&pk);
 	                       	walksequence[s]=INVALID;

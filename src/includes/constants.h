@@ -101,15 +101,12 @@ enum
 	MAXIMUM = 1024,		//!< Maximum open connections to server
 	MAXCLIENT = MAXIMUM +1,
 				//!< Maximum clients allowed
-	MAXSERV = 15,		//!< Maximum servers in login listing
 	MAXBUFFER = 2560,	//!< Buffer Size (For socket operations)
 	VISRANGE = 18,		//!< Visibility for normal items & chars
 	BUILDRANGE = 90,	//!< Visibility for castles and keeps
 	MAP0CACHE = 300,
-	PATHNUM = 2,
 
 	XYMAX = 256,		//!< Maximum items which can be handle on one X/Y square
-	CMAX = 40,		//!< Maximum parameters in one line (Only for memory reasons)
 	
 	DOORTYPES = 17,
 	POLYMORPHMENUOFFSET = 8196,
@@ -146,12 +143,19 @@ enum { ALLSKILLS = 49, STR , DEX, INTEL, FAME, KARMA,
 	I_ACCOUNT, SKILLS
 };
 
-//! cChar::teleport flags
-enum {
-	TELEFLAG_NONE = 0x0, TELEFLAG_SENDWORNITEMS = 0x1, TELEFLAG_SENDNEARCHARS = 0x2,
-	TELEFLAG_SENDNEARITEMS = 0x4, TELEFLAG_SENDLIGHT = 0x8, TELEFLAG_SENDWEATHER = 0x10,
-	TELEFLAG_SENDALL = 0x1F
-};
+//@{
+/*!
+\name Teleport flags
+\brief Flags used by cChar::teleport() function
+*/
+	static const uint8_t teleNone		= 0x00; //!< Send nothing
+	static const uint8_t teleSendWornItems	= 0x01; //!< Sends the worn items
+	static const uint8_t teleSendNearChars	= 0x02; //!< Sends the chars near self
+	static const uint8_t teleSendNearItems	= 0x04; //!< Sends the items near self
+	static const uint8_t teleSendLight	= 0x08; //!< Sends the light level
+	static const uint8_t teleSendWeather	= 0x10; //!< Sends the weather status
+	static const uint8_t teleAll		= 0x1F; //!< Mask for all the flags
+//@}
 
 //! for spinning wheel -vagrant
 enum { YARN, THREAD };
@@ -168,10 +172,10 @@ enum { spawn_script = 20, NUM_SCRIPTS = 32};
 /*!
 \name Region privs
 */
-static const uint8_t rgnFlagGuarded = 0x01;		//!< The region is guarded
-static const uint8_t rgnFlagMarkAllowed = 0x02;	//!< Marking rule is allowed
-static const uint8_t rgnFlagGateAllowed = 0x04;	//!< Gates are allowed
-static const uint8_t rgnFlagRecallAllowed = 0x08;	//!< Recall is allowed
+	static const uint8_t rgnFlagGuarded		= 0x01; //!< The region is guarded
+	static const uint8_t rgnFlagMarkAllowed		= 0x02; //!< Marking rule is allowed
+	static const uint8_t rgnFlagGateAllowed		= 0x04; //!< Gates are allowed
+	static const uint8_t rgnFlagRecallAllowed	= 0x08; //!< Recall is allowed
 //@}
 
 //! Stat types

@@ -25,7 +25,7 @@ void cChar::facexy(uint16_t facex, uint16_t facey)
 	dir = getDirFromXY(facex, facey);
 
 	if ( dir != olddir )
-		teleport(TELEFLAG_NONE);
+		teleport(teleNone);
 }
 
 /*!

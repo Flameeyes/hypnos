@@ -36,7 +36,7 @@ void cPC::heartbeat()
 	{
 		Accounts->SetOffline( account);
 		logout = INVALID;
-		teleport( TELEFLAG_NONE );
+		teleport( teleNone );
 		return;
 	}
 	if( !IsOnline() )

@@ -235,13 +235,13 @@ bool cChar::unmountHorse()
 			p_pet->teleport();
 
 			pi->Delete();
-			teleport( TELEFLAG_SENDWORNITEMS );
+			teleport( teleSendWornItems );
 			return true;
 		}
 	}
 #endif
 	pi->Delete();
-	teleport( TELEFLAG_SENDWORNITEMS );
+	teleport( teleSendWornItems );
 	InfoOut("Horse not found");
 	return false;
 }

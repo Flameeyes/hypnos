@@ -804,7 +804,7 @@ public:
 	inline const bool hasInRange(pItem pi, uint16_t range = VISRANGE)
 	{ return pi && distFrom( pi ) <= range; }
 	
-	void			teleport( uint8_t flags = TELEFLAG_SENDALL, pClient cli = NULL );
+	void			teleport( uint8_t flags = teleAll, pClient cli = NULL );
 	void			facexy(uint16_t facex, uint16_t facey);
 
 	/*!
