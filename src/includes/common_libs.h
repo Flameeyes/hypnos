@@ -34,9 +34,6 @@ warnings/errors/issues.
 	#define strcasecmp strcmpi
 #endif
 
-#if defined WIN32
-#endif
-
 #ifdef __APPLE__
 	#define __unix__
 #endif

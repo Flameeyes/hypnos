@@ -6874,51 +6874,48 @@ dnl AM_DL()
 dnl
 
 AC_DEFUN([AM_DL], [
-  AC_CHECK_LIB(c, dlopen,
-   [DYNAMIC_LD_LIBS=""
-    have_dl=yes])
 
-  if test x$have_dl != "xyes"; then
-    AC_CHECK_LIB(dl, dlopen,
-     [DYNAMIC_LD_LIBS="-ldl"
+case "$host" in
+  *-*-mingw* | *-*-cygwin*)
+    dnl check if we are using the cygwin, mingw or cygwin with mno-cygwin mode
+    dnl in which case we are actually dealing with a mingw32 compiler
+    case "$host" in
+      *-*-mingw32*)
+        SYS=mingw32
+        ;;
+      *-*-cygwin*)
+        AC_EGREP_CPP(pattern, 
+                     [#ifdef WIN32
+                      yes
+                      #endif],
+                     SYS=mingw32, SYS=cygwin)
+        ;;
+    esac
+
+    if test "$SYS" = "mingw32"; then
+      have_dl=yes
+      AC_MSG_RESULT(using WIN32 dinamic libraries)
+    fi
+  ;;
+  
+  *)
+    AC_CHECK_LIB(c, dlopen,
+     [DYNAMIC_LD_LIBS=""
       have_dl=yes])
-  fi
 
-  if test x$have_dl != "xyes"; then
-    AC_MSG_CHECKING(for dlopen under win32)
-    AC_LANG_SAVE()
-    AC_LANG_C()
+    if test x$have_dl != "xyes"; then
+      AC_CHECK_LIB(dl, dlopen,
+       [DYNAMIC_LD_LIBS="-ldl"
+        have_dl=yes])
+    fi
 
-    ac_save_CPPFLAGS="$CPPFLAGS"
-    ac_save_LIBS="$LIBS"
-    CPPFLAGS="-I${srcdir}/win32/include $CPPFLAGS"
-    LIBS="$LIBS -lkernel32"
-    AC_COMPILE_IFELSE([
-#include <stddef.h>
-#include <dlfcn.h>
+    if test x$have_dl != "xyes"; then
+      AC_MSG_ERROR(dynamic linker needed)
+    fi
 
-int main() {
-  dlopen(NULL, 0);
-  return 0;
-}
-], 
-      [DYNAMIC_LD_LIBS=-lkernel32
-       have_dl=yes
-       AC_MSG_RESULT(yes)],
-       AC_MSG_RESULT(no)
-    )
-
-    CPPFLAGS=$ac_save_CPPFLAGS
-    LIBS=$ac_save_LIBS
-
-    AC_LANG_RESTORE()
-  fi
-
-  if test x$have_dl != "xyes"; then
-    AC_MSG_ERROR(dynamic linker needed)
-  fi
-
-  AC_SUBST(DYNAMIC_LD_LIBS)
+    AC_SUBST(DYNAMIC_LD_LIBS)
+  ;;
+esac
 
 ])
 

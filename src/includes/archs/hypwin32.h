@@ -11,8 +11,8 @@
 */
 
 #ifdef WIN32
-#ifndef _HYPNOS_WIN32_
-#define _HYPNOS_WIN32_
+#ifndef __ARCHS_HYPWIN32_H__
+#define __ARCHS_HYPWIN32_H__
 
 #include <winsock.h>
 #include <winbase.h>
@@ -22,9 +22,6 @@
 #include <conio.h>
 #include <process.h>
 #include <errno.h>
-
-// for wefts
-#define HAVE_WIN_THREADS
 
 char *basename(char *path);
 
