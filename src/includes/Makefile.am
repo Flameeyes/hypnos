@@ -12,7 +12,7 @@ if HAVE_PCH
 
 noinst_PCH = $(addsuffix .gch, $(noinst_HEADERS))
 
-all: $(libinclude_PCH)
+all: $(noinst_PCH)
 
 %.h.gch: %.h
 	$(CC) $< -o $@
