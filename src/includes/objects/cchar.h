@@ -422,6 +422,8 @@ public:
 	\brief Makes the char casting a spell
 	\param spellnumber Spell identifier
 	\param dest target location of the spell
+	\param flags /todo
+	\param param /todo
 	\todo Document parameters
 	*/
 	inline void castSpell(magic::SpellId spellnumber, TargetLocation& dest, int32_t flags = 0, int32_t param = 0)

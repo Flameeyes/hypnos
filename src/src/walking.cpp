@@ -23,7 +23,9 @@
 \brief Checks if the Char is allowed to move at all (not frozen, overloaded...)
 \author Duke
 \param pc ptr to the car
+\param sequence UNDOCUMENTED
 \return true if the walk is allowed
+\todo document missing parameters
 */
 bool WalkHandleAllowance(pChar pc, int sequence)
 {

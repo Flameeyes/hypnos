@@ -351,8 +351,8 @@ bool cMsgBoard::addMessage(pMessage message)
 \brief creates an automatic quest message
 \note Since they are always general or regional, method is static because no single msgboard is normally selected
 \param questType type of quest
-\param pChar pointer to quest's target npc
-\param pItem pointer to quest's target item
+\param npc quest target 
+\param item quest target
 \param region validity region of quest (where is to be posted)
 \return serial of message posted
 \todo All this should be rewrote using XMLs

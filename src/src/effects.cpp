@@ -69,6 +69,7 @@ void movingFX(pSerializable source, pSerializable destination, uint16_t eff, uin
 
 /*!
 \brief Plays a static effect on a serializable
+\param source UNDOCUMENTED
 \param eff id of 2d effect; if -1, 2d effect is get from particles obj
 \param speed speed of effect, -1 and it will be get from particles data
 \param loop loop factor - -1 and it will be get from particles data

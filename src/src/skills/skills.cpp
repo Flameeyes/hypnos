@@ -456,6 +456,9 @@ and cuts it down to 100 if necessary
 \param sk skill identifier
 \param stat stat identifier
 \param pc pointer to character to advance the stats to
+\param i /todo
+\param type /todo
+\param update /todo
 \todo document missing paramteres
 */
 static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type, pChar pc)
