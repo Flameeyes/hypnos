@@ -721,19 +721,19 @@ void nPackets::Sent::OpenMapGump::prepare()
         buffer[0] = 0x90;
 	LongToCharPtr(map->getSerial(), buffer +1);
         ShortToCharPtr(0x139D, buffer + 5);
-	buffer[7]  = map->more1;	// Assign topleft x
-	buffer[8]  = map->more2;
-	buffer[9]  = map->more3;	// Assign topleft y
-	buffer[10] = map->more4;
-	buffer[11] = map->moreb1;	// Assign lowright x
-	buffer[12] = map->moreb2;
-	buffer[13] = map->moreb3;	// Assign lowright y
-	buffer[14] = map->moreb4;
+	buffer[7]  = map->more1.moreb1;	// Assign topleft x
+	buffer[8]  = map->more1.moreb2;
+	buffer[9]  = map->more1.moreb3;	// Assign topleft y
+	buffer[10] = map->more1.moreb4;
+	buffer[11] = map->more2.moreb1;	// Assign lowright x
+	buffer[12] = map->more2.moreb2;
+	buffer[13] = map->more2.moreb3;	// Assign lowright y
+	buffer[14] = map->more2.moreb4;
 	int width, height;		// Temporary storage for w and h;
 	width = 134 + (134 * morez);	// Calculate new w and h
 	height = 134 + (134 * morez);
-	ShortToCharPtr(width, map1 +15);
-	ShortToCharPtr(height, map1 +17);
+	ShortToCharPtr(width, buffer +15);
+	ShortToCharPtr(height, buffer +17);
 }
 
 void nPackets::Sent::MapPlotCourse::prepare()
