@@ -24,7 +24,7 @@ void ParticleFx::initWithSpellMoveEffect( magic::SpellId num )
 			effect[15]=0; effect[16]=0; effect[17]=0;
 			break;
 
-		case magic::SPELL_FIREBALL:    
+		case magic::spellFireball:    
 			effect[0]=0x36; effect[1]=0xD5; effect[2]=0x07; effect[3]=0x00; effect[4]=0x01; 
 			effect[5]=0x36; effect[6]=0xd4; effect[7]=0x07; effect[8]=0x00; effect[9]=0x0b; 
 			effect[10]=0xcb; effect[11]=0x0f; effect[12]=0xb3; 

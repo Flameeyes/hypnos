@@ -257,7 +257,7 @@ namespace tempfx {
 		spellStrenght,
 		ALCHEMY_GRIND,
 		ALCHEMY_END,
-		SPELL_BLESS,
+		spellBless,
 		SPELL_CURSE,
 		AUTODOOR,
 		TRAINDUMMY,
@@ -284,7 +284,7 @@ namespace tempfx {
 		GREY,			//!< mark grey
 		CRIMINAL,		//!< mark criminal
 		FIELD_DAMAGE,		//!< magic fields damage
-		SPELL_TELEKINESYS,	//!< telekinesys spell
+		spellTelekinesys,	//!< telekinesys spell
 		MAX_TEMPFX_INDEX
 	};
 };

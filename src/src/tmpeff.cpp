@@ -157,7 +157,7 @@ bool isDestRepeatable(int num)
 		case spellAgility:
 		case spellStrenght:
 		case spellCunning:
-		case SPELL_BLESS:
+		case spellBless:
 		case SPELL_CURSE:
 		case SPELL_INCOGNITO:
 		case SPELL_POLYMORPH:
@@ -205,7 +205,7 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 		case spellAgility:
 		case spellStrenght:
 		case spellCunning:
-		case SPELL_BLESS:
+		case spellBless:
 		case SPELL_CURSE:
 		case SPELL_REACTARMOR:
 		case spellProtection:
@@ -388,7 +388,7 @@ void cTempfx::start()
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_BLESS:
+		case spellBless:
 			dest->modifyStrength(m_nMore1);
 			dest->dx += m_nMore2;
 			dest->in += m_nMore3;
@@ -599,7 +599,7 @@ void cTempfx::start()
 			dest->sysmsg( "You are now a criminal!");
 			break;
 
-		case SPELL_TELEKINESYS:
+		case spellTelekinesys:
 			dest->nxwflags[0] |= cChar::flagSpellTelekinesys;
 			break;
 
@@ -696,7 +696,7 @@ void cTempfx::executeExpireCode()
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_BLESS:
+		case spellBless:
 			if ( ! dest ) return;
 			dest->modifyStrength(-m_nMore1);
 			dest->dx -= m_nMore2;
@@ -878,7 +878,7 @@ void cTempfx::executeExpireCode()
 			dest->sysmsg("You are no longer a criminal.");
 			break;
 
-		case SPELL_TELEKINESYS:
+		case spellTelekinesys:
 			if(!dest) return;
 			dest->nxwflags[0] &= ~cChar::flagSpellTelekinesys;
 			break;
@@ -938,7 +938,7 @@ void cTempfx::activate()
 			dest->in += m_nMore1;
 			break;
 
-		case SPELL_BLESS:
+		case spellBless:
 			dest->modifyStrength(m_nMore1);
 			dest->dx += m_nMore2;
 			dest->in += m_nMore3;
@@ -965,7 +965,7 @@ void cTempfx::activate()
 			dest->SetCriminal();
 			break;
 
-		case SPELL_TELEKINESYS:
+		case spellTelekinesys:
 			dest->nxwflags[0] |= NCF0_TELEKINESYS;
 			break;
 
@@ -1022,7 +1022,7 @@ void cTempfx::deactivate()
 			dest->in -= m_nMore1;
 			break;
 
-		case SPELL_BLESS:
+		case spellBless:
 			dest->modifyStrength(-m_nMore1);
 			dest->dx -= m_nMore2;
 			dest->in -= m_nMore3;
@@ -1048,7 +1048,7 @@ void cTempfx::deactivate()
 		case CRIMINAL:
 			dest->SetInnocent();
 			break;
-		case SPELL_TELEKINESYS:
+		case spellTelekinesys:
 			dest->nxwflags[0] &= ~NCF0_TELEKINESYS;
 			break;
 

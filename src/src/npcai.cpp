@@ -65,7 +65,7 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 				pc_att->beginCasting(pc_def, magic::spellWeaken );
 				break;
 			case 6:
-				pc_att->beginCasting(pc_def, magic::SPELL_FIREBALL );
+				pc_att->beginCasting(pc_def, magic::spellFireball );
 				break;
 			case 7:
 				pc_att->beginCasting(pc_def, magic::SPELL_CURSE );
@@ -222,7 +222,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::spellWeaken );
 			break;
 		case 6:
-			pc_att->beginCasting(pc_def, magic::SPELL_FIREBALL );
+			pc_att->beginCasting(pc_def, magic::spellFireball );
 			break;
 		case 7:
 			pc_att->beginCasting(pc_def, magic::SPELL_CURSE );
@@ -249,7 +249,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::SPELL_FIREFIELD );
 			break;
 		case 15:
-			pc_att->beginCasting(pc_def, magic::SPELL_POISONFIELD );
+			pc_att->beginCasting(pc_def, magic::spellPoisonFIELD );
 			break;
 		case 16:
 			pc_att->beginCasting(pc_def, magic::SPELL_PARALYZEFIELD );
@@ -264,7 +264,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_att, magic::spellCure );
 			break;
 		case 22:
-			pc_att->beginCasting(pc_def, magic::SPELL_POISON );
+			pc_att->beginCasting(pc_def, magic::spellPoison );
 			break;
 		case 23:
 			pc_att->beginCasting(pc_def, magic::SPELL_MANADRAIN );

@@ -325,10 +325,10 @@ static inline bool isFieldSpell(SpellId spell)
 {
 	switch (spell) {
 		case SPELL_FIREFIELD:
-		case SPELL_POISONFIELD:
+		case spellPoisonFIELD:
 		case SPELL_PARALYZEFIELD:
 		case SPELL_ENERGYFIELD:
-		case SPELL_WALLSTONE:
+		case spellWallStone:
 			return true;
 		default:
 			return false;
@@ -460,11 +460,11 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			pcto->playSFX( 0x1EE );
 			staticFX(pcto, 0x375A, 0, 10, &spfx );
 			break;
-		case SPELL_BLESS:
+		case spellBless:
 			pcto->playSFX( 0x1EA );
 			staticFX(pcto, 0x375A, 0, 10, &spfx );
 			break;
-		case SPELL_FIREBALL:
+		case spellFireball:
 			if ( pcfrom->skill[skMagery] < 500 )	// First level fireball
 				pcfrom->playSFX( 0x15E );
 			else if ( pcfrom->skill[skMagery] < 800 )	// Second level fireball
@@ -473,18 +473,18 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 				pcfrom->playSFX( 0x1F3 );
 			movingFX(pcfrom, pcto, 0x36D5, 5, 0, true, &mpfx );
 			break;
-		case SPELL_POISON:
+		case spellPoison:
 			pcto->playSFX( 0xF5 );
 			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
-		case SPELL_TELEKINESYS:
+		case spellTelekinesys:
 			pcfrom->playSFX( 0x1F5 );
 			break;
-		case SPELL_TELEPORT:
+		case spellTeleport:
 			pcfrom->playSFX( 0x1FE );
 			staticFX(pcfrom, 0x3727, 0, 10, &spfx );
 			break;
-		case SPELL_WALLSTONE:
+		case spellWallStone:
 			pcfrom->playSFX( 0x1F6 );
 			break;
 		case SPELL_ARCHCURE:
@@ -500,7 +500,7 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
 		case SPELL_FIREFIELD:
-		case SPELL_POISONFIELD:
+		case spellPoisonFIELD:
 			pcfrom->playSFX( 0x20C );
 			break;
 		case SPELL_GREATHEAL:
@@ -823,18 +823,18 @@ void castAreaAttackSpell (sPoint epi, SpellId spellnum, pChar pcaster)
 static inline int spellTargetType(SpellId spellnum)
 {
 	switch(spellnum) {
-		case SPELL_FIREBALL:
+		case spellFireball:
 		case spellClumsy:
 		case spellFeebleMind:
 		case spellWeaken:
 		case SPELL_PARALYZE:
 		case SPELL_DISPEL:
 		case SPELL_CURSE:
-		case SPELL_POISON:
+		case spellPoison:
 		case spellCunning:
 		case spellAgility:
 		case spellStrenght:
-		case SPELL_BLESS:
+		case spellBless:
 		case spellHeal:
 		case SPELL_GREATHEAL:
 		case spellCure:
@@ -873,8 +873,8 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellUntrap:
 			return TARGTYPE_CONTAINER;
 
-		case SPELL_LOCK:
-		case SPELL_UNLOCK:
+		case spellLock:
+		case spellUnlock:
 			return TARGTYPE_CONTAINERORDOOR;
 
 		case SPELL_GATE:
@@ -884,14 +884,14 @@ static inline int spellTargetType(SpellId spellnum)
 
 		case SPELL_BLADESPIRITS:
 		case SPELL_ENERGYVORTEX:
-		case SPELL_WALLSTONE:
-		case SPELL_TELEPORT:
+		case spellWallStone:
+		case spellTeleport:
 		case SPELL_MASSDISPEL:
 		case SPELL_MASSCURSE:
 		case SPELL_REVEAL:
 		case SPELL_FIREFIELD:
 		case SPELL_DISPELFIELD:
-		case SPELL_POISONFIELD:
+		case spellPoisonFIELD:
 		case SPELL_PARALYZEFIELD:
 		case SPELL_ENERGYFIELD:
 		case SPELL_CHAINLIGHTNING:
@@ -1116,9 +1116,9 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
 			tempfx::add(pa, pd, tempfx::spellStrenght, bonus, 0, 0, duration);
 			break;
-		case SPELL_BLESS:
+		case spellBless:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
-			tempfx::add(pa, pd, tempfx::SPELL_BLESS, bonus, bonus, bonus, duration);
+			tempfx::add(pa, pd, tempfx::spellBless, bonus, bonus, bonus, duration);
 			break;
 		default :
 			ErrOut("Switch fallout. magic::castStatPumper\n");
@@ -1181,11 +1181,11 @@ void castFieldSpell( pChar pc, sPosition pos, int spellnumber)
 
 	switch(spellnumber)
 	{
-		case SPELL_WALLSTONE:
+		case spellWallStone:
 			id = 0x0080; fieldLen = 2; break;
 		case SPELL_FIREFIELD:
 			id = (j) ? 0x3996 : 0x398c; break;
-		case SPELL_POISONFIELD:
+		case spellPoisonFIELD:
 			id = (j) ? 0x3920 : 0x3915; break;
 		case SPELL_PARALYZEFIELD:
 			id = (j) ? 0x3979 : 0x3967; break;
@@ -1272,7 +1272,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case spellCunning:
 		case spellAgility:
 		case spellStrenght:
-		case SPELL_BLESS:
+		case spellBless:
 			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
@@ -1296,7 +1296,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				tempfx::add(src, pd, tempfx::SPELL_PARALYZE);
 			}
 			break;
-		case SPELL_POISON:
+		case spellPoison:
 			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
@@ -1309,7 +1309,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 		case spellMagicArrow:
-		case SPELL_FIREBALL:
+		case spellFireball:
 		case SPELL_FLAMESTRIKE:
 		case SPELL_LIGHTNING:
 		case SPELL_EXPLOSION:
@@ -1369,7 +1369,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_LOCK:
+		case spellLock:
 			if (pi) {
 				if( pi->toContainer() && !pi->toSecureContainer() )
 				{
@@ -1391,7 +1391,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_UNLOCK:
+		case spellUnlock:
 			if ( pi && (pi->more1.more == 0) && (pi->isSecureContainer()) ) {
 				switch(pi->type)
 				{
@@ -1484,8 +1484,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_TELEKINESYS: // Luxor
-			tempfx::add( src, src, tempfx::SPELL_TELEKINESYS, 0, 0, 0, 10 );
+		case spellTelekinesys: // Luxor
+			tempfx::add( src, src, tempfx::spellTelekinesys, 0, 0, 0, 10 );
 			spellFX( spellnumber, src );
 			break;
 
@@ -1694,10 +1694,10 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 
 		case SPELL_FIREFIELD:
-		case SPELL_POISONFIELD:
+		case spellPoisonFIELD:
 		case SPELL_PARALYZEFIELD:
 		case SPELL_ENERGYFIELD:
-		case SPELL_WALLSTONE:
+		case spellWallStone:
 			spellFX(spellnumber, src, src);
 			castFieldSpell( src, loc, spellnumber);
 			break;
@@ -1821,7 +1821,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_TELEPORT:
+		case spellTeleport:
 			//Luxor: now a mage cannot teleport to water
 			/*bool isWater = false;
 			map_st map;
@@ -2069,7 +2069,7 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	pc->delTempfx( tempfx::spellFeebleMind );
 	pc->delTempfx( tempfx::spellClumsy );
 	pc->delTempfx( tempfx::SPELL_CURSE );
-	pc->delTempfx( tempfx::SPELL_BLESS);
+	pc->delTempfx( tempfx::spellBless);
 	pc->delTempfx( tempfx::spellWeaken );
 
 
@@ -2094,8 +2094,8 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 			pc->addTempfx( *pc, tempfx::spellWeaken, 20, 0, 0, polyduration );
 			break;
 		case 0x9:
-			pc->addTempfx( *pc, tempfx::SPELL_BLESS, 10, 10, 10, polyduration );
-			pc->addTempfx( *pc, tempfx::SPELL_TELEKINESYS, 0, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::spellBless, 10, 10, 10, polyduration );
+			pc->addTempfx( *pc, tempfx::spellTelekinesys, 0, 0, 0, polyduration );
 			break;
 		case 0x2:
 		case 0x4:
