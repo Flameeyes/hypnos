@@ -390,7 +390,7 @@ public:
 	\param dest target location of the spell
 	\todo Document parameters
 	*/
-	inline void castSpell(magic::SpellId spellnumber, sTarget& dest, int32_t flags = 0, int32_t param = 0)
+	inline void castSpell(SpellId spellnumber, sTarget& dest, int32_t flags = 0, int32_t param = 0)
 	{ magic::castSpell(spellnumber, dest, this, flags, param); }
 //@}
 
@@ -575,7 +575,7 @@ public:
 
 	uint32_t		crimflag; //!< Time when No longer criminal -1=Not Criminal
 	uint32_t		spelltime; //!< Time when they are done casting....
-	magic::SpellId		spell; //!< current spell they are casting....
+	SpellId		spell; //!< current spell they are casting....
 	int32_t			spellaction; //!< Action of the current spell....
 	magic::CastingType	spelltype;
 	uint32_t		nextact; //!< time to next spell action....
@@ -751,7 +751,7 @@ public:
 
 	void		Kill();
 	void		goPlace(int32_t);
-	bool		knowsSpell(magic::SpellId spellnumber);
+	bool		knowsSpell(SpellId spellnumber);
 
 public:
 	virtual void Delete();

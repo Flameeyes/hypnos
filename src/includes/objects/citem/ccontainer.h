@@ -114,7 +114,7 @@ public:
 //@}
 
 	uint32_t countSpellsInSpellBook(bool stdOnly = true);
-	bool containsSpell(magic::SpellId spellnum);
+	bool containsSpell(SpellId spellnum);
 	
 	const float getWeightActual();
 	

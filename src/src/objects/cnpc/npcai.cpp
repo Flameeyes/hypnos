@@ -15,7 +15,7 @@
 \param target Target of the spell
 \param spell Which spell the npc will cast
 */
-void cNPC::beginCasting(pChar target, magic::SpellId spell)
+void cNPC::beginCasting(pChar target, SpellId spell)
 {
 	if ( ! target ) return;
 	

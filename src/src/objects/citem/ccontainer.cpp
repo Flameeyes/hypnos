@@ -339,16 +339,16 @@ uint32_t cContainer::countSpellsInSpellBook(bool stdOnly)
 	only the base spells...
 \todo Move this on cSpellbook class when done
 */
-bool cContainer::containsSpell(magic::SpellId spellnum)
+bool cContainer::containsSpell(SpellId spellnum)
 {
 	bool raflag = false;
 
 	if (spellnum==magic::spellReactiveArmour)
 		raflag = true;
 	if ((spellnum>=magic::spellClumsy) && (spellnum < magic::spellReactiveArmour))
-			spellnum = static_cast<magic::SpellId>(static_cast<int>(spellnum)+1);
+			spellnum = static_cast<SpellId>(static_cast<int>(spellnum)+1);
 	if (raflag)
-		spellnum=static_cast<magic::SpellId>(0);
+		spellnum=static_cast<SpellId>(0);
 
 	for(ItemSList::iterator it = items.begin(); it != items.end(); it++)
 	{

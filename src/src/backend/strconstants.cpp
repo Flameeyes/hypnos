@@ -32,6 +32,8 @@ uint32_t nStrConstants::generic(std::string str)
 		return spellId(str);
 	if ( strncmp(str.c_str(), "weapon", 6) == 0 )
 		return weaponsTypes(str);
+	
+	return 0;
 }
 
 /*!

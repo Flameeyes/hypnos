@@ -141,7 +141,7 @@ inline void ShortToCharPtr(const uint16_t i, unsigned char *p)
 \param p Point to test
 \return true if the point is in the map, else false
 */
-bool isValidCoord( sPoint p )
+inline bool isValidCoord( sPoint p )
 {
 	return p.x < map_width*8 && p.y < map_height*8;
 }

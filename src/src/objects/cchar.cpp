@@ -1681,7 +1681,7 @@ void cChar::goPlace(int32_t loc)
 \param spellnumber spell identifier to check
 \return true if the char know the spell
 */
-bool cChar::knowsSpell(magic::SpellId spellnumber)
+bool cChar::knowsSpell(SpellId spellnumber)
 {
 	if ( ! body->getBackpack() )
 		return false;
@@ -2528,7 +2528,7 @@ void checkFieldEffects(uint32_t currenttime, pChar pc, char timecheck );
 void target_castSpell( pClient ps, pTarget t )
 {
 	sTarget TL( t );
-	magic::castSpell( static_cast<magic::SpellId>(t->buffer[0]), TL, ps->currChar() );
+	magic::castSpell( static_cast<SpellId>(t->buffer[0]), TL, ps->currChar() );
 }
 
 /*!

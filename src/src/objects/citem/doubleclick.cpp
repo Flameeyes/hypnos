@@ -555,7 +555,7 @@ void cItem::doubleClicked(pClient client)
 				{
 					morez--;
 					if (magic::beginCasting(
-						static_cast<magic::SpellId>((8*(morex - 1)) + morey - 1),
+						static_cast<SpellId>((8*(morex - 1)) + morey - 1),
 						client,
 						(type==ITYPE_WAND) ? magic::CASTINGTYPE_ITEM : magic::CASTINGTYPE_NOMANAITEM))
 						{
@@ -696,7 +696,7 @@ void cItem::doubleClicked(pClient client)
 	{
 		if (pack)
 			if( getContSerial()==pack->getSerial()) {
-				magic::SpellId spn = magic::spellNumberFromScrollId(getId());	// avoid reactive armor glitch
+				SpellId spn = magic::spellNumberFromScrollId(getId());	// avoid reactive armor glitch
 				if ((spn>=0)&&(magic::beginCasting(spn, client, magic::CASTINGTYPE_SCROLL)))
 					ReduceAmount(1);							// remove scroll if successful
 			}

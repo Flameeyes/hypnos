@@ -169,7 +169,7 @@ public:
 \name AI
 */
 protected:
-	void beginCasting(pChar target, magic::SpellId spell);
+	void beginCasting(pChar target, SpellId spell);
 	void checkAI();
 	NpcAi ai;
 

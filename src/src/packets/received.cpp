@@ -478,13 +478,13 @@ bool nPackets::Received::ActionRequest::execute(pClient client)
 				}
 				else
 				{
-					if (!pc->knowsSpell(static_cast<magic::SpellId>(book-1)))
+					if (!pc->knowsSpell(static_cast<SpellId>(book-1)))
 					{
 						client->sysmessage("You don't know that spell yet.");
 					}
 					else
 					{
-						magic::beginCasting(static_cast<magic::SpellId>(book-1),client,magic::CASTINGTYPE_SPELL);
+						magic::beginCasting(static_cast<SpellId>(book-1),client,magic::CASTINGTYPE_SPELL);
 					} // if don't knows spell
 				} // if frozen
 			} // if alive

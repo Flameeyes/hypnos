@@ -13,7 +13,7 @@
 \author Lord Binary (LB), Xanatar
 \param num casted spell
 */
-void ParticleFx::initWithSpellMoveEffect( magic::SpellId num )
+void ParticleFx::initWithSpellMoveEffect( SpellId num )
 {
 	switch( num ) {
 		case magic::spellMagicArrow:
@@ -56,7 +56,7 @@ void ParticleFx::initWithSpellMoveEffect( magic::SpellId num )
 \author Lord Binary (LB), Xanatar
 \param num casted spell
 */
-void ParticleFx::initWithSpellStatEffect( magic::SpellId num )
+void ParticleFx::initWithSpellStatEffect( SpellId num )
 {
 	int te0,te1,te2,te3,te4;      // 2d effects
 	int te5,te6,te7,te8,te9,te10,te11,te12; // 3d particles
@@ -345,7 +345,7 @@ void ParticleFx::initWithSpellStatEffect( magic::SpellId num )
 \author Lord Binary (LB), Xanatar
 \param num casted spell
 */
-void ParticleFx::initWithSpellStatEffects_pre( magic::SpellId num)
+void ParticleFx::initWithSpellStatEffects_pre( SpellId num)
 {
 	for (int i = 0; i<=18; i++) effect[i] = -1;
 	int te4,te5,te6,te7,te8,te9,te10,te11,te12; // 3d particles
@@ -380,7 +380,7 @@ void ParticleFx::initWithSpellStatEffects_pre( magic::SpellId num)
 \author Lord Binary (LB), Xanatar
 \param num casted spell
 */
-void ParticleFx::initWithSpellStatEffects_post( magic::SpellId num)
+void ParticleFx::initWithSpellStatEffects_post( SpellId num)
 {
 	for (int i = 0; i<=18; i++) effect[i] = -1;
 	int te4,te5,te6,te7,te8,te9,te10, te11,te12;
@@ -412,7 +412,7 @@ void ParticleFx::initWithSpellStatEffects_post( magic::SpellId num)
 \author Lord Binary (LB), Xanatar
 \param num casted spell
 */
-void ParticleFx::initWithSpellStatEffects_item( magic::SpellId num)
+void ParticleFx::initWithSpellStatEffects_item( SpellId num)
 {
 	for (int i = 0; i<=18; i++) effect[i] = -1;
 	int te4,te5,te6,te7,te8,te9,te10, te11;

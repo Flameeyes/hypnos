@@ -22,11 +22,11 @@ private:
 
 public:
 	int effect[18];
-	void initWithSpellStatEffects_item( magic::SpellId num);
-	void initWithSpellStatEffects_post( magic::SpellId num);
-	void initWithSpellStatEffects_pre( magic::SpellId num);
-	void initWithSpellStatEffect( magic::SpellId num );
-	void initWithSpellMoveEffect( magic::SpellId num );
+	void initWithSpellStatEffects_item( SpellId num);
+	void initWithSpellStatEffects_post( SpellId num);
+	void initWithSpellStatEffects_pre( SpellId num);
+	void initWithSpellStatEffect( SpellId num );
+	void initWithSpellMoveEffect( SpellId num );
 };
 
 #endif //__PARTICLES_H__
