@@ -128,9 +128,9 @@ public:
 */
 public:
 	void talking(cSpeech &speech);				//!< The PC talks, and this finds out who will hear (and send it to them)
-	void sysmessage(pClient client, uint16_t color, std::string txt);	//!< System message (compiled)
-	void sysmessage(pClient client, const char *txt, ...);			//!< System message (In lower left corner)
-        void sysmessage(pClient client, uint16_t color, const char *txt, ...);	//!< Colored system message (In lower left corner)
+	void sysmessage(uint16_t color, std::string txt);	//!< System message (compiled)
+	void sysmessage(const char *txt, ...);			//!< System message (In lower left corner)
+        void sysmessage(uint16_t color, const char *txt, ...);	//!< Colored system message (In lower left corner)
         void sysbroadcast(char *txt, ...);					//!< System broadcast in bold text
 	void sysbroadcast(std::string txt);					//!< System broadcast (compiled)
 //@}

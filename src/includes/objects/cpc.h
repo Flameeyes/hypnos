@@ -32,6 +32,8 @@ public:
 	cPC(uint32_t serial);
 	virtual ~cPC();
 	
+	uint16_t calcAtt();
+	
 protected:
 	//! Heartbeat for PCs
 	void heartbeat();

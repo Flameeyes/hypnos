@@ -12,6 +12,7 @@
 */
 
 #include "objects/cchar.h"
+#include "objects/cnpc.h"
 #include "objects/cpc.h"
 #include "objects/cclient.h"
 #include "objects/citem/cweapon.h"
@@ -85,8 +86,8 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	if((dist > 1 && fightskill != skArchery) || !los) return;
 
-	if ( dynamic_cast<pNPC>(pc_def) && dynamic_cast<pPC>(this) )
-		if ( pc_def->IsInvul() )
+	if ( dynamic_cast<pNPC>(pc_def) && dynamic_cast<pPC>(this) ) {
+		if ( pc_def->isInvul() )
 			return;
 		pChar pc_target = pc_def->target;
 		if ( pc_target ) {
@@ -99,7 +100,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		}
 	}
 
-	pItem def_Weapon = pc_def->getWeapon();
+	pWeapon def_Weapon = pc_def->getBody()->getWeapon();
 	def_fightskill = def_Weapon ? def_Weapon->getCombatSkill() : skWrestling;
 
 	int fs1, fs2, str1, str2, dex1, dex2;
@@ -141,13 +142,12 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	if (!hit) {
 
-		evt = getEvent(cChar::evtChrOnHitMiss);
-		if ( evt ) {
+		if ( events[evtChrOnHitMiss] ) {
 			tVariantVector params = tVariantVector(2);
 			params[0] = getSerial(); params[1] = pc_def->getSerial();
-			evt->setParams(params);
-			evt->execute();
-			if ( evt->isBypassed() )
+			events[evtChrOnHitMiss]->setParams(params);
+			events[evtChrOnHitMiss]->execute();
+			if ( events[evtChrOnHitMiss]->isBypassed() )
 				return;
 		}
 
@@ -162,10 +162,10 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		if (fightskill == skArchery) {
 			if (chance(33)) {
                                 pItem pi = NULL;
-				if (weapon->IsBow()) {
-					pi = item::CreateFromScript( "$item_arrow" );
+				if (weapon->isBow()) {
+// 					pi = item::CreateFromScript( "$item_arrow" );
 				} else {
-					pi = item::CreateFromScript( "$item_crossbow_bolt" );
+// 					pi = item::CreateFromScript( "$item_crossbow_bolt" );
 				}
 				if(pi) {
 
@@ -178,18 +178,18 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		return;
 	}
 
-	evt = getEvent(cChar::evtChrOnHit);
-	if( evt ) {
+	if ( events[evtChrOnHit] ) {
 		tVariantVector params = tVariantVector(2);
 		params[0] = getSerial(); params[1] = pc_def->getSerial();
-		evt->setParams(params);
-		evt->execute();
-		if ( evt->isBypassed() )
+		events[evtChrOnHit]->setParams(params);
+		events[evtChrOnHit]->execute();
+		if ( events[evtChrOnHit]->isBypassed() )
 			return;
 	}
-
-	evt = getEvent(cChar::evtChrOnGetHit);
-	if( evt ) {
+	
+	pFunctionHandle evt = src->getEvent(evtChrOnGetHit);
+	if ( evt )
+	{
 		tVariantVector params = tVariantVector(2);
 		params[0] = pc_def->getSerial(); params[1] = getSerial();
 		evt->setParams(params);
@@ -197,7 +197,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		if ( evt->isBypassed() )
 			return;
 	}
-
+	
 	if ( weapon ) {
 		if (chance(5) && weapon->type != ITYPE_SPELLBOOK) {
 			weapon->hp--;
@@ -209,11 +209,11 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		}
 	}
 
-	if (pc_def->IsInvul()) return;
+	if (pc_def->isInvul()) return;
 
 	checkSkillSparrCheck(skTactics, 0, 1000, pc_def);
-	if (pc_def->getId()==BODY_FEMALE) pc_def->playSFX(0x014B);
-	if (pc_def->getId()==BODY_MALE) pc_def->playSFX(0x0156);
+	if (pc_def->getBody()->getId()==BODY_FEMALE) pc_def->playSFX(0x014B);
+	if (pc_def->getBody()->getId()==BODY_MALE) pc_def->playSFX(0x0156);
 	pc_def->playMonsterSound( SND_DEFEND );
 
 	checkPoisoning(pc_def);	// attacker poisons defender
@@ -402,7 +402,7 @@ void cChar::doCombat()
 		return;
 	}
 
-	if ( (!target->npc && !target->IsOnline()) || target->isHidden() || target->dead || (target->npc && target->npcaitype==NPCAI_PLAYERVENDOR) )
+	if ( (!target->npc && !target->isOnline()) || target->isHidden() || target->dead || (target->npc && target->npcaitype==NPCAI_PLAYERVENDOR) )
 	{
 		undoCombat();
 		return;
@@ -449,7 +449,7 @@ void cChar::doCombat()
 		{
 			if (weapon->ammo == 0)   //old ammo system
 			{
-				weapon->IsBow() ? arrowsquant=getAmount(0x0F3F) : arrowsquant=getAmount(0x1BFB);
+				weapon->isBow() ? arrowsquant=getAmount(0x0F3F) : arrowsquant=getAmount(0x1BFB);
 
 				if (arrowsquant>0)
 					x=1;
@@ -557,7 +557,7 @@ void cChar::doCombat()
 			if (fightskill==skArchery)
 				if (weapon->ammo == 0)   //old ammo system
 				{
-					if (weapon->IsBow())
+					if (weapon->isBow())
 					{
 						delItems(0x0F3F, 1);
 						movingeffect3( getSerial(), targserial, 0x0F, 0x42, 0x08, 0x00, 0x00,0,0,0,0);
@@ -593,7 +593,7 @@ void cChar::doCombat()
 		pc_def->Kill();
 		if (!npc && !pc_def->npc)
 		{	//Player vs Player
-			if(pc_def->IsInnocent() && Guilds->Compare(this,pc_def) == 0 )
+			if(pc_def->isInnocent() && Guilds->Compare(this,pc_def) == 0 )
 			{
 				++kills;
 				sysmsg("You have killed %i innocent people.", kills);
@@ -932,40 +932,16 @@ void cChar::setWresMove(int32_t move)
 
 /*!
 \author Luxor
-\brief Calculates total ataack power
-\return character's attack
-*/
-int cChar::calcAtt()
-{
-	if(npc) {
-		if (lodamage < 1 || hidamage < 1) return 1;
-		return RandomNum(lodamage, hidamage);
-	}
-
-	pItem pi = getWeapon();
-	//if(pi==NULL)
-	//	return 0;
-	if ( ! pi ) return skill[skWrestling]/100;
-
-	return RandomNum(pi->lodamage, pi->hidamage);
-}
-
-/*!
-\author Luxor
 \brief Does a combat sound event
 \param fightskill fighting skill
 \param weapon weapon used
 */
-void cChar::doCombatSoundEffect(uint16_t fightskill, pItem weapon)
+void cChar::doCombatSoundEffect(uint16_t fightskill, pWeapon weapon)
 {
-	bool heavy=false;
 	int a=RandomNum(0,3);
 
 	//check for heavy weapon
-	if (weapon && weapon->IsAxe())
-		heavy=true;
-
-	if(heavy)
+	if(weapon && weapon->isAxe())
 	{
 		if (a==0 || a==1) playSFX(0x0236);
 		else playSFX(0x0237);
@@ -977,7 +953,7 @@ void cChar::doCombatSoundEffect(uint16_t fightskill, pItem weapon)
 		case skArchery:
 			playSFX(0x0234);
 			break;
-		case FENCING:
+		case skFencing:
 		case skSwordsmanship:
 			if (a==0 || a==1) playSFX(0x023B);
 			else playSFX(0x023C);
@@ -1004,58 +980,58 @@ void cChar::doCombatSoundEffect(uint16_t fightskill, pItem weapon)
 */
 void cChar::combatOnFoot()
 {
-	pItem weapon = getWeapon();
+	pWeapon weapon = getBody()->getWeapon();
 	int m = RandomNum(0,3);
 
-	if (weapon) {
-//		short weapId = weapon->id(); // unused variable
-
-		if (weapon->IsBow()) {
-			playAction(0x12); //bow
-			return;
-		} else if (weapon->IsCrossbow() || weapon->IsHeavyCrossbow()) {
-			playAction(0x13); //crossbow - regular
-			return;
-		} else if (weapon->IsSword()) {
-			switch (m) //swords
-			{
-				case 0:		playAction(0x0D);	return; //side swing
-				case 1:		playAction(0x0A);	return; //poke
-				default:	playAction(0x09);	return; //top-down swing
-			}
-		} else if (weapon->IsMace1H()) {
-			switch (m) //maces
-			{
-				case 0:		playAction(0x0D);	return;	//side swing
-				default:	playAction(0x09);	return; //top-down swing
-			}
-		} else if (weapon->IsMace2H() || weapon->IsAxe() || weapon->IsSpecialMace()) {
-			switch (m)
-			{
-				case 0:		playAction(0x0D);	return; //2H top-down
-				case 1:		playAction(0x0C);	return; //2H swing
-				default:	playAction(0x0D);	return; //2H top-down
-			}
-		} else if (weapon->IsFencing1H())	{
-			switch (m) //fencing
-			{
-				case 0:		playAction(0x09);	return; //top-down
-				case 1:		playAction(0x0D);	return; //side-swipe
-				default:	playAction(0x0A);	return; //default: poke
-			}
-		} else if (weapon->IsFencing2H()) { 	//pitchfork & spear
-			switch (m) //pitchfork
-			{
-				case 0:		playAction(0x0D);	return; //top-down
-				default:	playAction(0x0E);	return; //default: 2-handed poke
-			}
-		}
-	} else { //fist fighting
+	if ( ! weapon ) // fist fighting
+	{
 		switch (m)
 		{
 			case 0:		playAction(0x0A);	return; //fist straight-punch
 			case 1:		playAction(0x09);	return; //fist top-down
 			default:	playAction(0x1F);	return; //default: fist over-head
+		}
+		return;
+	}
+	
+	if (weapon->isBow()) {
+		playAction(0x12); //bow
+		return;
+	} else if (weapon->isCrossbow() || weapon->isHeavyCrossbow()) {
+		playAction(0x13); //crossbow - regular
+		return;
+	} else if (weapon->isSword()) {
+		switch (m) //swords
+		{
+			case 0:		playAction(0x0D);	return; //side swing
+			case 1:		playAction(0x0A);	return; //poke
+			default:	playAction(0x09);	return; //top-down swing
+		}
+	} else if (weapon->isMace1H()) {
+		switch (m) //maces
+		{
+			case 0:		playAction(0x0D);	return;	//side swing
+			default:	playAction(0x09);	return; //top-down swing
+		}
+	} else if (weapon->isMace2H() || weapon->isAxe() || weapon->isSpecialMace()) {
+		switch (m)
+		{
+			case 0:		playAction(0x0D);	return; //2H top-down
+			case 1:		playAction(0x0C);	return; //2H swing
+			default:	playAction(0x0D);	return; //2H top-down
+		}
+	} else if (weapon->isFencing1H())	{
+		switch (m) //fencing
+		{
+			case 0:		playAction(0x09);	return; //top-down
+			case 1:		playAction(0x0D);	return; //side-swipe
+			default:	playAction(0x0A);	return; //default: poke
+		}
+	} else if (weapon->isFencing2H()) { 	//pitchfork & spear
+		switch (m) //pitchfork
+		{
+			case 0:		playAction(0x0D);	return; //top-down
+			default:	playAction(0x0E);	return; //default: 2-handed poke
 		}
 	}
 }
@@ -1066,25 +1042,25 @@ void cChar::combatOnFoot()
 */
 void cChar::combatOnHorse()
 {
-	pItem weapon = getWeapon();
-	if (weapon) {
-		short weapId = weapon->getId();
-
-		if (weapon->IsBow()) {
-			playAction(0x1B);
-			return;
-		} else if (weapon->IsCrossbow() || weapon->IsHeavyCrossbow()) {
-			playAction(0x1C);
-			return;
-		} else if(  weapon->IsSword() || weapon->IsSpecialMace() || weapon->IsMaceType() || (weapId ==0x0FB4 || weapId ==0x0FB5) || weapon->IsFencing1H() ) {
-			playAction(0x1A);
-			return;
-		} else if ( weapon->IsAxe() || weapon->IsFencing2H() ) {
-			playAction(0x1D); //2Handed
-			return;
-		}
-	} else {
+	pWeapon weapon = getWeapon();
+	if ( ! weapon )
+	{
 		playAction(0x1A); //fist fighting
+		return;
+	}
+	
+	if (weapon->isBow()) {
+		playAction(0x1B);
+		return;
+	} else if (weapon->isCrossbow() || weapon->isHeavyCrossbow()) {
+		playAction(0x1C);
+		return;
+	} else if(  weapon->isSword() || weapon->isSpecialMace() || weapon->isMaceType() ||
+		(weapon->getId() ==0x0FB4 || weapon->getId() ==0x0FB5) || weapon->isFencing1H() ) {
+		playAction(0x1A);
+		return;
+	} else if ( weapon->isAxe() || weapon->isFencing2H() ) {
+		playAction(0x1D); //2Handed
 		return;
 	}
 }
@@ -1098,22 +1074,18 @@ void cChar::attackStuff(pChar victim)
 {
 	if ( ! victim ) return;
 
-	if( getSerial() == victim->getSerial() )
+	if( this == victim )
 		return;
 
-	pFunctionHandle evt = NULL;
-	
-	evt = getEvent(cChar::evtChrOnBeginAttack);
-	if ( evt ) {
+	if ( events[evtChrOnBeginAttack] ) {
 		tVariantVector params = tVariantVector(2);
 		params[0] = getSerial(); params[1] = victim->getSerial();
-		evt->setParams(params);
-		evt->execute();
-		if( evt->isBypassed() )
+		events[evtChrOnBeginAttack]->setParams(params);
+		events[evtChrOnBeginAttack]->execute();
+		if ( events[evtChrOnBeginAttack]->isBypassed() )
 			return;
 	}
-
-
+	
 	evt = victim->getEvent(cChar::evtChrOnBeginDefense);
 	if ( evt ) {
 		tVariantVector params = tVariantVector(2);
@@ -1152,7 +1124,6 @@ void cChar::attackStuff(pChar victim)
 	SetAttackFirst();
 	attackerserial=victim->getSerial();
 
-
         //!\todo once set are done revise this
 	if( victim->guarded )
 	{
@@ -1172,7 +1143,7 @@ void cChar::attackStuff(pChar victim)
 		if (isGrey())
 			setGrey();
 
-		if (victim->npc==0 && victim->isInnocent() && (!victim->IsGrey()) && Guilds->Compare( pc, victim )==0) //REPSYS
+		if (victim->npc==0 && victim->isInnocent() && (!victim->isGrey()) && Guilds->Compare( pc, victim )==0) //REPSYS
 		{
 			criminal( pc );
 			if ( nSettings::Server::hasInstantGuards() )
@@ -1207,27 +1178,27 @@ void cChar::attackStuff(pChar victim)
 	}
 	else	// not a guarded area
 	{
-		if ( victim->IsInnocent())
+		if ( ! victim->isInnocent() )
+			return;
+		
+		if ( victim->isGrey())
+			attacker->SetGrey();
+		if (!victim->npc && (!victim->isGrey()) && Guilds->Compare(pc, victim )==0)
 		{
-			if ( victim->IsGrey())
-				attacker->SetGrey();
-			if (!victim->npc && (!victim->IsGrey()) && Guilds->Compare(pc, victim )==0)
+			criminal( pc );
+		}
+		else if (victim->npc && victim->tamed)
+		{
+			criminal( pc );
+			npcattacktarget(victim, pc);
+		}
+		else if (victim->npc)
+		{
+			criminal( pc );
+			npcattacktarget(victim, pc);
+			if (victim->HasHumanBody() )
 			{
-				criminal( pc );
-			}
-			else if (victim->npc && victim->tamed)
-			{
-				criminal( pc );
-				npcattacktarget(victim, pc);
-			}
-			else if (victim->npc)
-			{
-				criminal( pc );
-				npcattacktarget(victim, pc);
-				if (victim->HasHumanBody() )
-				{
-					victim->talkAll("Help! Guards! Tis a murder being commited!", true);
-				}
+				victim->talkAll("Help! Guards! Tis a murder being commited!", true);
 			}
 		}
 	}

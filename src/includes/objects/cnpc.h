@@ -37,10 +37,11 @@ public:
 	virtual ~cNPC();
 
 	virtual const std::string getPopupHelp() const;
+	uint16_t calcAtt();
 
 protected:
 	pChar owner;	//! NPC's owner
-	virtual const uint16_t eventsNumber() const
+	virtual uint16_t eventsNumber() const
 	{ return evtNpcMax; }
 
 public:

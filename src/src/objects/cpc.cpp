@@ -488,3 +488,18 @@ void cPC::makeCriminal()
 			npcs::SpawnGuard( this, this, getPosition() ); // LB bugfix
 	}
 }
+
+/*!
+\author Luxor
+\brief Calculates total attack power
+\return character's attack
+*/
+uint16_t cPC::calcAtt()
+{
+	pWeapon pw = getBody()->getWeapon();
+	
+	if ( ! pw )
+		return skill[skWrestling]/100;
+
+	return RandomNum(pi->lodamage, pi->hidamage);
+}

@@ -410,7 +410,7 @@ protected:
 	void			checkPoisoning(pChar pc_def);
 	void			doMissedSoundEffect();
 	int32_t			combatHitMessage(int32_t damage);
-	void			doCombatSoundEffect(int32_t fightskill, pItem pWeapon);
+	void			doCombatSoundEffect(int32_t fightskill, pWeapon pw);
 	void			undoCombat();
 
 public:
@@ -427,7 +427,7 @@ public:
 	void			combatOnHorse();
 	void			combatOnFoot();
 	void			playCombatAction();
-	int32_t			calcAtt();
+	virtual uint16_t 	calcAtt() = 0;
 	int32_t			calcDef(int32_t x = 0);
 	void			setWresMove(int32_t move = 0);
 	int32_t			calcResist(DamageType typeofdamage);

@@ -479,3 +479,15 @@ void cNPC::deleteEscortQuest()
 	Kill();
 	Delete();
 }
+
+/*!
+\author Luxor
+\brief Calculates total attack power
+\return character's attack
+*/
+uint16_t cNPC::calcAtt()
+{
+	if (lodamage < 1 || hidamage < 1)
+		return 1;
+	return RandomNum(lodamage, hidamage);
+}
