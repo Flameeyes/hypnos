@@ -139,7 +139,7 @@ void cClient::addItemToContainer(pItem item)
 	if ( ! item || pc->distFrom(pi) > VISRANGE )
 		return;
 
-	cPacketSendAddContainerItem pk( item, item->getContainr()->getSerial() );
+	cPacketSendAddContainerItem pk( item, item->getContainer()->getSerial() );
 
 	sendPacket(&pk);
 
