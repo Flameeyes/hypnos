@@ -35,7 +35,9 @@ public:
 		vtSInt,		//!< signed integer value (see size for exact type)
 		vtPChar,	//!< pChar (and derived) value
 		vtPItem,	//!< pItem (and derived) value
-		vtPVoid		//!< void pointer value
+		vtPClient,	//!< pClient value
+		vtPVoid,	//!< void pointer value
+		vtVector	//!< Vector value
 	};
 	
 	//! Integer types sizes
@@ -62,45 +64,52 @@ public:
 	
 	/*!
 	\brief Constructor with value
-	\param aval String to assign to the variant
+	\param aval Boolean to assign to the variant
 	*/
 	inline tVariant(const bool &aval)
 	{ tVariant(); *this = aval; }
 	
 	/*!
 	\brief Constructor with value
-	\param aval String to assign to the variant
+	\param aval unsigned to assign to the variant
 	*/
 	inline tVariant(const uint32_t &aval)
 	{ tVariant(); *this = aval; }
 	
 	/*!
 	\brief Constructor with value
-	\param aval String to assign to the variant
+	\param aval integer to assign to the variant
 	*/
 	inline tVariant(const int32_t &aval)
 	{ tVariant(); *this = aval; }
 	
 	/*!
 	\brief Constructor with value
-	\param aptr String to assign to the variant
+	\param aptr void * to assign to the variant
 	*/
 	inline tVariant(void *aptr)
 	{ tVariant(); *this = aptr; }
 	
 	/*!
 	\brief Constructor with value
-	\param apc String to assign to the variant
+	\param apc pChar to assign to the variant
 	*/
 	inline tVariant(pChar apc)
 	{ tVariant(); *this = apc; }
 	
 	/*!
 	\brief Constructor with value
-	\param api String to assign to the variant
+	\param api pItem to assign to the variant
 	*/
 	inline tVariant(pItem api)
-	{ tVariant(); *this = api; }	
+	{ tVariant(); *this = api; }
+	
+	/*!
+	\brief Constructor with value
+	\param aclient pClient to assign to the variant
+	*/
+	inline tVariant(pClient aclient)
+	{ tVariant(); *this = aclient; }
 	
 	tVariant &operator =(const std::string &astr);
 	tVariant &operator =(const bool &aval);
@@ -109,6 +118,7 @@ public:
 	tVariant &operator =(void *aptr);
 	tVariant &operator =(pChar apc);
 	tVariant &operator =(pItem api);
+	tVariant &operator =(pClient api);
 	
 	tVariant operator -() const;
 	
@@ -162,6 +172,7 @@ pointed bool will be set to true if the conversion is done correctly, else to fa
 	bool toBoolean(bool *result = NULL) const;
 	pChar toPChar(bool *result = NULL) const;
 	pItem toPItem(bool *result = NULL) const;
+	pClient toPClient(bool *result = NULL) const;
 	void *toPVoid(bool *result = NULL) const;
 	uint32_t toUInt32(bool *result = NULL) const;
 	uint16_t toUInt16(bool *result = NULL) const;
@@ -185,6 +196,7 @@ All these functions return a bool which represent the success or not of the conv
 	bool convertInSInt();
 	bool convertInPChar();
 	bool convertInPItem();
+	bool convertInPClient();
 	bool convertInPVoid();
 
 //@}

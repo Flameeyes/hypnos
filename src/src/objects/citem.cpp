@@ -569,7 +569,7 @@ void cItem::MoveTo(Location newloc)
 */
 inline bool operator ==( cItem& a, cItem& b ) {
 	return  a.isPileable() && b.isPileable()  &&
-		( a.getSerial() != b.getSerial32() ) &&
+		( a.getSerial() != b.getSerial() ) &&
 		( a.getScriptID() == b.getScriptID() ) &&
 		( a.getId() == b.getId() ) &&
 		( a.getColor() == b.getColor() ) &&

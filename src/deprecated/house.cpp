@@ -990,7 +990,7 @@ void target_houseOwner( NXWCLIENT ps, pTarget t )
 	if ( ! pHouse ) return;
 
 	NXWSOCKET s = ps->toInt();
-	if(pc->getSerial() == curr->getSerial32())
+	if(pc->getSerial() == curr->getSerial())
 	{
 		sysmessage(s, "you already own this house!");
 		return;
@@ -1079,7 +1079,7 @@ void target_houseBan( NXWCLIENT ps, pTarget t )
 	pItem pi=cSerializable::findItemBySerial( t->buffer[0] );
 	if(pi)
 	{
-		if(pc->getSerial() == curr->getSerial32())
+		if(pc->getSerial() == curr->getSerial())
 			return;
 		int r=add_hlist(DEREF_pChar(pc), DEREF_pItem(pi), H_BAN);
 		if(r==1)
@@ -1109,7 +1109,7 @@ void target_houseFriend( NXWCLIENT ps, pTarget t )
 
 	if( Friend && pi)
 	{
-		if(Friend->getSerial() == curr->getSerial32())
+		if(Friend->getSerial() == curr->getSerial())
 		{
 			sysmessage(s,"You cant do that!");
 			return;

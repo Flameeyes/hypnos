@@ -39,7 +39,7 @@ void cChar::singleClick( pClient client )
 	
 	if ( events[evtChrOnClick] ) {
 		tVariantVector params = tVariantVector(2);
-		params[0] = getSerial(); params[1] = clickedBy->getSerial32();
+		params[0] = getSerial(); params[1] = clickedBy->getSerial();
 		events[evtChrOnClick]->setParams(params);
 		events[evtChrOnClick]->execute();
 		if ( events[evtChrOnClick]->bypassed() )
@@ -62,7 +62,7 @@ void cChar::doubleClick(pClient client)
 	pChar clicker = client->currChar();
 	if ( ! clicker ) return;
 
-	if( clicker->war && (clicker->getSerial()!=getSerial32()) )
+	if( clicker->war && (clicker->getSerial()!=getSerial()) )
 		clicker->attackStuff(this);
 
 	pItem pack = getBackpack();

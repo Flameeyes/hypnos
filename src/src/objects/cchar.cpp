@@ -943,7 +943,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 					pChar pc=sc.getChar();
 					if( pc )
 					{
-						if( getSerial() != pc->getSerial32() )
+						if( getSerial() != pc->getSerial() )
 						{
 							if ( !pc->IsOnline() && !pc->npc )
 							{
@@ -1888,7 +1888,7 @@ void cChar::Kill()
 				pFunctionHandle evt = pKiller->getEvent(evtChrOnKill);
 				if ( evt ) {
 					tVariantVector params = tVariantVector(2);
-					params[0] = pKiller->getSerial(); params[1] = getSerial32();
+					params[0] = pKiller->getSerial(); params[1] = getSerial();
 					evt->setParams(params);
 					evt->execute();
 				}
@@ -1900,7 +1900,7 @@ void cChar::Kill()
 			pFunctionHandle evt = pKiller->getEvent(evtChrOnKill);
 			if ( evt ) {
 				tVariantVector params = tVariantVector(2);
-				params[0] = pKiller->getSerial(); params[1] = getSerial32();
+				params[0] = pKiller->getSerial(); params[1] = getSerial();
 				evt->setParams(params);
 				evt->execute();
 			}
@@ -1984,7 +1984,7 @@ void cChar::Kill()
 				pFunctionHandle evt = pk->getEvent(evtChrOnKill);
 				if ( evt ) {
 					tVariantVector params = tVariantVector(2);
-					params[0] = pk->getSerial(); params[1] = getSerial32();
+					params[0] = pk->getSerial(); params[1] = getSerial();
 					evt->setParams(params);
 					evt->execute();
 				}
@@ -1995,7 +1995,7 @@ void cChar::Kill()
 			pFunctionHandle evt = pk->getEvent(evtChrOnKill);
 			if ( evt ) {
 				tVariantVector params = tVariantVector(2);
-				params[0] = pk->getSerial(); params[1] = getSerial32();
+				params[0] = pk->getSerial(); params[1] = getSerial();
 				evt->setParams(params);
 				evt->execute();
 			}
@@ -2176,7 +2176,7 @@ void cChar::Kill()
 
 	if ( events[evtChrOnAfterDeath] ) {
 		tVariantVector params = tVariantVector(2);
-		params[0] = getSerial(); params[1] = pCorpse->getSerial32();
+		params[0] = getSerial(); params[1] = pCorpse->getSerial();
 		events[evtChrOnAfterDeath]->setParams(params);
 		events[evtChrOnAfterDeath]->execute();
 	}

@@ -1661,7 +1661,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 				// Client sends 71  0  c  6 40  0  0 18  1  0  0  4
 				if ( (pc->IsGM()) || (SrvParms->msgpostremove) )
 	                        {
-                                	if ( global::onlyPosterCanDeleteMsgBoardMessage() && (pc->getSerial() != message->poster && !pc->IsGM() && (pc->getSerial32() != msgboard->getOwner() || message->availability != LOCALPOST )))
+                                	if ( global::onlyPosterCanDeleteMsgBoardMessage() && (pc->getSerial() != message->poster && !pc->IsGM() && (pc->getSerial() != msgboard->getOwner() || message->availability != LOCALPOST )))
                                         	client->sysmessage( tr("You are not allowed to delete this message") );
                                         else
                                         {
@@ -2148,7 +2148,7 @@ bool cPacketReceiveCharProfileRequest::execute(pClient client)
 
 	if( buffer[3])
         { //update profile
-		if( ( serial!=pc->getSerial32() ) && !pc->IsGMorCounselor() )
+		if( ( serial!=pc->getSerial() ) && !pc->IsGMorCounselor() )
 			return true; //lamer fix, but packet still processed
                 int profilesize = ShortFromCharPtr(buffer + 10);
                 cSpeech profile(buffer + 12, profilesize);

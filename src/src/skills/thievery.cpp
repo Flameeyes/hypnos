@@ -51,7 +51,7 @@ void snooping( pPC snooper, pItem cont )
 				if ( owner->amxevents[EVENT_CHR_ONSNOOPED])
 				{
 					g_bByPass = false;
-					owner->amxevents[EVENT_CHR_ONSNOOPED]->Call( owner->getSerial(), snooper->getSerial32());
+					owner->amxevents[EVENT_CHR_ONSNOOPED]->Call( owner->getSerial(), snooper->getSerial());
 					if (g_bByPass==true) return;
 				}
 				/*
@@ -138,7 +138,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
        	return;
 	}
 
-	if ( (thief->getSerial() == victim->getSerial32()) || (thief->getSerial32()==victim->getOwnerSerial32()) )
+	if ( (thief->getSerial() == victim->getSerial()) || (thief->getSerial()==victim->getOwnerSerial32()) )
 	{
 		thief->sysmsg(TRANSLATE("You catch yourself red handed."));
 		return;
@@ -166,7 +166,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 			if (pi->amxevents[EVENT_IONSTOLEN]!=NULL)
 			{
 				g_bByPass = false;
-				pi->amxevents[EVENT_IONSTOLEN]->Call(pi->getSerial(), thief->getSerial32(), victim->getSerial32());
+				pi->amxevents[EVENT_IONSTOLEN]->Call(pi->getSerial(), thief->getSerial(), victim->getSerial());
 				if (g_bByPass==true)
 					return;
 			}
@@ -174,13 +174,13 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 			if (victim->amxevents[EVENT_CHR_ONSTOLEN])
 			{
 				g_bByPass = false;
-				victim->amxevents[EVENT_CHR_ONSTOLEN]->Call(victim->getSerial(), thief->getSerial32());
+				victim->amxevents[EVENT_CHR_ONSTOLEN]->Call(victim->getSerial(), thief->getSerial());
 				if (g_bByPass==true)
 					return;
 			}
 			/*
 
-			pi->runAmxEvent( EVENT_IONSTOLEN, pi->getSerial(), s, victim->getSerial32() );
+			pi->runAmxEvent( EVENT_IONSTOLEN, pi->getSerial(), s, victim->getSerial() );
 			if (g_bByPass==true)
 				return;
 
@@ -298,7 +298,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 	VALIDATEPC(victim);
 
 
-	if (thief->getSerial() == victim->getSerial32() || thief->getSerial32()==victim->getOwnerSerial32())
+	if (thief->getSerial() == victim->getSerial() || thief->getSerial()==victim->getOwnerSerial32())
 	{
 		thief->sysmsg(TRANSLATE("You catch yourself red handed."));
 		return;
@@ -377,7 +377,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 				if (victim->amxevents[EVENT_CHR_ONSTOLEN])
 				{
 					g_bByPass = false;
-					victim->amxevents[EVENT_CHR_ONSTOLEN]->Call(victim->getSerial(), thief->getSerial32());
+					victim->amxevents[EVENT_CHR_ONSTOLEN]->Call(victim->getSerial(), thief->getSerial());
 					if (g_bByPass==true)
 						return;
 				}
@@ -465,7 +465,7 @@ void Skills::target_lockpick( NXWCLIENT ps, pTarget t )
 	if (chest->amxevents[EVENT_IONLOCKPICK]!=NULL)
 	{
 		g_bByPass = false;
-		chest->amxevents[EVENT_IONLOCKPICK]->Call(chest->getSerial(), pc->getSerial32());
+		chest->amxevents[EVENT_IONLOCKPICK]->Call(chest->getSerial(), pc->getSerial());
 		if (g_bByPass==true)
 			return;
 	}

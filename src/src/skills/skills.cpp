@@ -41,7 +41,7 @@ void Skills::Hide(NXWSOCKET s)
 	sc.fillCharsNearXYZ( pc->getPosition(), 4 );
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pj = sc.getChar();
-		if ( pj && pj->getSerial() != pc->getSerial32() && !pj->IsHidden() && pc->losFrom(pj) ) {
+		if ( pj && pj->getSerial() != pc->getSerial() && !pj->IsHidden() && pc->losFrom(pj) ) {
 			pc->sysmsg( TRANSLATE("There is someone nearby who prevents you to hide.") );
 			return;
 		}
@@ -141,7 +141,7 @@ void Skills::PeaceMaking(NXWSOCKET s)
 		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 			pChar pcm = sc.getChar();
 			if( pcm ) {
-				if (pcm->war && pc->getSerial()!=pcm->getSerial32())
+				if (pcm->war && pc->getSerial()!=pcm->getSerial())
                 {
                     pcm->sysmsg(TRANSLATE("You hear some lovely music, and forget about fighting."));
 					if (pcm->war)
@@ -516,41 +516,42 @@ void Skills::PotionToBottle( pChar pc, pItem pi_mortar )
     pi_mortar->type=0;
 }
 
-char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
+bool Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 {
 	if ( sk < 0 || sk >= skTrueSkills ) //Luxor
 		return 0;
 
-    pChar pc = MAKE_CHAR_REF(s);
-	VALIDATEPCR(pc,0);
+	pChar pc = MAKE_CHAR_REF(s);
+	if ( ! pc ) return 0;
+	
+	int a,ges=0,d=0;
+	unsigned char lockstate;
+	int skillcap = SrvParms->skillcap;
+	uint32_t incval;
+	int atrophy_candidates[ALLSKILLS+1];
 
-    int a,ges=0,d=0;
-    unsigned char lockstate;
-    int skillcap = SrvParms->skillcap;
-    uint32_t incval;
-    int atrophy_candidates[ALLSKILLS+1];
-
-
-
-    if (pc->amxevents[EVENT_CHR_ONGETSKILLCAP])
-        skillcap = pc->amxevents[EVENT_CHR_ONGETSKILLCAP]->Call(pc->getSerial(), pc->getSocket() );
-	/*
-	if ( pc->getAmxEvent(EVENT_CHR_ONGETSKILLCAP) != NULL )
-		skillcap = pc->runAmxEvent( EVENT_CHR_ONGETSKILLCAP, pc->getSerial(), pc->getSocket() );
-	*/
-
-    lockstate=pc->lockSkill[sk];
-    if (pc->IsGM()) lockstate=0;
-    // for gms no skill cap exists, also ALL skill will be interperted as up, no matter how they are set
-
-    if (lockstate==2 || lockstate==1) return 0;// skill is locked -> forget it
-
-    // also NOthing happens if you train a skill marked for atrophy !!!
-    // skills only fall if others raise, ( osi quote ), so my interpretion
-    // is that those marked as falling cant fall if you use them directly
-    // exception: if you are gm its ignored!
-
-    int c=0;
+	pFunctionHandle evt = src->getEvent(evtChrOnGetSkillCap);
+	if ( evt )
+	{
+		tVariantVector params = tVariantVector(4);
+		params[0] = src->getSerial(); params[1] = pc->getClient();
+		evt->setParams(params);
+		tVariant ret = evt->execute();
+		skillcap = ret.toSInt32();
+	}
+	
+	lockstate=pc->lockSkill[sk];
+	if (pc->IsGM()) lockstate=0;
+	// for gms no skill cap exists, also ALL skill will be interperted as up, no matter how they are set
+	
+	if (lockstate==2 || lockstate==1) return 0;// skill is locked -> forget it
+	
+	// also NOthing happens if you train a skill marked for atrophy !!!
+	// skills only fall if others raise, ( osi quote ), so my interpretion
+	// is that those marked as falling cant fall if you use them directly
+	// exception: if you are gm its ignored!
+	
+	int c=0;
 
     for (int b=0;b<(ALLSKILLS+1);b++)
     {
@@ -620,71 +621,65 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 	incval *= 10;
     }
 
-    int retval=0;
-    if (incval>rand()%SrvParms->skilladvancemodifier)
-    {
-        retval=1;
-    }
-
-
-    if(pc->amxevents[EVENT_CHR_ONADVANCESKILL]!=NULL) {
-        g_bByPass = false;
-        retval = pc->amxevents[EVENT_CHR_ONADVANCESKILL]->Call(pc->getSerial(), sk, skillused, retval);
-        if (g_bByPass==true) return retval;
-    }
-	/*
-	if ( pc->getAmxEvent(EVENT_CHR_ONADVANCESKILL) != NULL ) {
-		retval = pc->runAmxEvent( EVENT_CHR_ONADVANCESKILL, pc->getSerial(), sk, skillused, retval);
-		if (g_bByPass==true)
-			return retval;
+	bool retval = incval > (rand()%SrvParms->skilladvancemodifier);
+	
+	pFunctionHandle evt = pc->getEvent(evtChrOnAdvanceSkill);
+	if ( evt )
+	{
+		tVariantVector params = tVariantVector(4);
+		params[0] = pc->getSerial(); params[1] = sk;
+		params[2] = skillused; params[3] = retval;
+		evt->setParams(params);
+		tVariant ret = evt->execute();
+		retval = ret.toBoolean();
+		if ( evt->bypassed() )
+			return;
 	}
-	*/
-    if (retval)
-    {
+	
+	if (retval)
+	{
 		pc->baseskill[sk]++;
-        // no atrophy for gm's !!
-        if (ges>skillcap) // atrophy only if cap is reached !!!
-        // if we are above the skill cap -> we have to let the atrophy candidates fall
-        // important: we have to let 2 skills fall, or we'll never go down to cap
-        // (especially if we are far above the cap from previous verisons)
-        {
-            if (c==1)
-            {
-                d = (pc->baseskill[atrophy_candidates[0]]>=2)? 2 : 1; // avoid value below 0 (=65535 cause unsigned)
-                {
-                    if (d==1 && pc->baseskill[atrophy_candidates[0]]==0)
-						d=0; // should never happen ...
-                    pc->baseskill[atrophy_candidates[0]]-=d;
-					Skills::updateSkillLevel(pc, atrophy_candidates[0]);         // we HAVE to correct the skill-value
-                    pc->updateSkill(atrophy_candidates[0]); // and send changed skill values packet so that client can re-draw correctly
-                }
-            // this is very important cauz this is ONLY done for the calling skill value automatically .
-            }
-            else
-            {
-                for( int vol=0; vol<2; vol++ ) {
-
+		// no atrophy for gm's !!
+		if (ges>skillcap) // atrophy only if cap is reached !!!
+		// if we are above the skill cap -> we have to let the atrophy candidates fall
+		// important: we have to let 2 skills fall, or we'll never go down to cap
+		// (especially if we are far above the cap from previous verisons)
+		{
+			if (c==1)
+			{
+				d = (pc->baseskill[atrophy_candidates[0]]>=2)? 2 : 1;
+				// avoid value below 0 (=65535 cause unsigned)
+				if (d==1 && pc->baseskill[atrophy_candidates[0]]==0)
+					d=0; // should never happen ...
+				
+				pc->baseskill[atrophy_candidates[0]]-=d;
+				Skills::updateSkillLevel(pc, atrophy_candidates[0]);
+				// we HAVE to correct the skill-value
+				
+				pc->updateSkill(atrophy_candidates[0]);
+				// and send changed skill values packet so that client can re-draw correctly
+				// this is very important cauz this is ONLY done for the calling skill value automatically .
+			} else {
+				for( int vol=0; vol<2; vol++ )
+				{
 					d = ( c != 0)? rand()%c : 0;
-
+	
 					if (pc->baseskill[atrophy_candidates[d]]>=1)
 					{
-	                    			pc->baseskill[atrophy_candidates[d]]--;
+						pc->baseskill[atrophy_candidates[d]]--;
 						Skills::updateSkillLevel(pc, atrophy_candidates[d]);
 						pc->updateSkill(atrophy_candidates[d]);
 					}
-
-                }
-            }
-        }
-        if (ServerScp::g_nStatsAdvanceSystem == 0)
-			Skills::AdvanceStats(s, sk);
-    }
-    if (ServerScp::g_nStatsAdvanceSystem == 1)
+				}
+			}
+		}
+		if (ServerScp::g_nStatsAdvanceSystem == 0)
+				Skills::AdvanceStats(s, sk);
+	}
+	if (ServerScp::g_nStatsAdvanceSystem == 1)
 		Skills::AdvanceStats(s, sk);
-    //AMXEXECS(s,AMXT_SPECIALS, 5, retval, AMX_AFTER);
-    return retval;
-
-
+	
+	return retval;
 }
 
 /*!
@@ -762,16 +757,18 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
  //       *stat2 -= 1000;                     // then change it
 
 
-    if (pc->amxevents[EVENT_CHR_ONADVANCESTAT]) {
-        g_bByPass = false;
-        pc->amxevents[EVENT_CHR_ONADVANCESTAT]->Call(pc->getSerial(), type, sk, tmp);
-        if (g_bByPass==true) return false;
-	}
-
-	//pc->runAmxEvent( EVENT_CHR_ONADVANCESTAT, pc->getSerial(), type, sk, tmp);
- 	if (g_bByPass==true)
-		return false;
-
+		pFunctionHandle evt = pc->getEvent(evtChrOnAdvanceStat);
+		if ( evt )
+		{
+			tVariantVector params = tVariantVector(4);
+			params[0] = pc->getSerial(); params[1] = type;
+			params[2] = sk; params[3] = tmp;
+			evt->setParams(params);
+			evt->execute();
+			if ( evt->bypassed() )
+				return false;
+		}
+		
 		if( Race::isRaceSystemActive() )
 		{
 			switch( type )
@@ -793,19 +790,20 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
 					SDbgOut("AdvanceOneStat() race %d %s intcap %d\n", pc->race, Race::getName( pc->race )->c_str(), limit );
 					break;
 			}
-		}
-		else
-		{
+		} else {
 			limit = 100;
 		}
 
-    if (pc->amxevents[EVENT_CHR_ONGETSTATCAP]!=NULL)
-       	limit = pc->amxevents[EVENT_CHR_ONGETSTATCAP]->Call(pc->getSerial(), type, limit);
-
-	/*
-	if ( pc->getAmxEvent(EVENT_CHR_ONGETSTATCAP) != NULL )
-		limit = pc->runAmxEvent( EVENT_CHR_ONGETSTATCAP, pc->getSerial(), type, limit);
-	*/
+		pFunctionHandle evt = pc->getEvent(evtChrOnGetStatCap);
+		if ( evt )
+		{
+			tVariantVector params = tVariantVector(3);
+			params[0] = pc->getSerial(); params[1] = type;
+			params[2] = limit;
+			evt->setParams(params);
+			tVariant ret = evt->execute();
+			limit = ret.toSInt();
+		}
 
 		switch( stat )
 		{
@@ -821,30 +819,36 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
 						pc->in3++;
 						break;
 		}
-       	*update=true;
-    }
+		*update=true;
+	}
 
 	if( !pc->IsGM() )
 	{
 		switch( stat )
 		{
-		case 'S':	if(pc->st3 > limit)	{
-						pc->st3=limit;
-						pc->setStrength(limit);
-					}
-					break;
+		case 'S':
+			if(pc->st3 > limit)
+			{
+				pc->st3=limit;
+				pc->setStrength(limit);
+			}
+			break;
 
-		case 'D':	if(pc->dx3 > limit) {
-						pc->dx3=limit;
-						pc->dx= limit;
-					}
-					break;
+		case 'D':
+			if(pc->dx3 > limit)
+			{
+				pc->dx3=limit;
+				pc->dx= limit;
+			}
+			break;
 
-		case 'I':	if(pc->in3 > limit) {
-						pc->in3=limit;
-						pc->in= limit;
-					}
-					break;
+		case 'I':
+		if(pc->in3 > limit)
+			{
+				pc->in3=limit;
+				pc->in= limit;
+			}
+			break;
 		}
 		*update= true;
 	}
@@ -883,20 +887,25 @@ void Skills::AdvanceStats(CHARACTER s, int sk)
 
 
 
-	if (pc->amxevents[EVENT_CHR_ONGETSTATCAP]!=NULL)
-		statcap = pc->amxevents[EVENT_CHR_ONGETSTATCAP]->Call(pc->getSerial(), STATCAP_CAP, statcap);
-	/*
-	if ( pc->getAmxEvent(EVENT_CHR_ONGETSTATCAP) != NULL )
-		statcap = pc->runAmxEvent( EVENT_CHR_ONGETSTATCAP, pc->getSerial(), STATCAP_CAP, statcap);
-	*/
+	pFunctionHandle evt = pc->getEvent(evtChrOnGetStatCap);
+	if ( evt )
+	{
+		tVariantVector params = tVariantVector(3);
+		params[0] = pc->getSerial(); params[1] = STATCAP_CAP;
+		params[2] = statcap;
+		evt->setParams(params);
+		tVariant ret = evt->execute();
+		statcap = ret.toSInt();
+	}
+
 	// End: Determine statcap
 
-    bool atCap = (pc->st3 + pc->dx3 + pc->in3) > statcap;
-
-    int	i = skillinfo[sk].advance_index;
-    int mod	= SrvParms->statsadvancemodifier;
+	bool atCap = (pc->st3 + pc->dx3 + pc->in3) > statcap;
+	
+	int i = skillinfo[sk].advance_index;
+	int mod	= SrvParms->statsadvancemodifier;
 //  int	*pi; // ptr to stat to be decreased
-	bool 	update 	= false;
+	bool update = false;
 
 	if ( pc->statGainedToday <= nSettings::Skills::getStatDailyLimit() )
 	{

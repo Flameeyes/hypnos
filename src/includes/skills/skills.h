@@ -25,7 +25,7 @@ namespace Skills {
 	/*!
 	\name General Skill stuff
 	*/
-	char AdvanceSkill(CHARACTER s, int sk, char skillused);
+	bool AdvanceSkill(CHARACTER s, int sk, char skillused);
 	void AdvanceStats(CHARACTER s, int sk);
 	void SkillUse(NXWSOCKET s, int x);
 	void updateSkillLevel(pChar pc, int s);

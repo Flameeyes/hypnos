@@ -85,7 +85,7 @@ void cItem::singleClick(pClient client )
 	if (amxevents[EVENT_IONCLICK]!=NULL)
 	{
 		g_bByPass = false;
-		amxevents[EVENT_IONCLICK]->Call(getSerial(), client->currChar()->getSerial32() );
+		amxevents[EVENT_IONCLICK]->Call(getSerial(), client->currChar()->getSerial() );
 		if ( g_bByPass==true )
 			return;
 	}
@@ -227,7 +227,7 @@ void cItem::doubleClick(pClient client)
 
 	if (amxevents[EVENT_IONDBLCLICK]!=NULL) {
 		g_bByPass = false;
-		amxevents[EVENT_IONDBLCLICK]->Call( getSerial(), pc->getSerial32() );
+		amxevents[EVENT_IONDBLCLICK]->Call( getSerial(), pc->getSerial() );
 		if (g_bByPass==true)
 			return;
 	}
@@ -308,7 +308,7 @@ void cItem::doubleClick(pClient client)
 			{// in a character.
 				pChar wearedby = cSerializable::findCharBySerial(getContSerial());
 				if ( wearedby )
-					if (wearedby->getSerial()!=pc->getSerial32() && layer!=LAYER_UNUSED_BP && type!=ITYPE_CONTAINER)
+					if (wearedby->getSerial()!=pc->getSerial() && layer!=LAYER_UNUSED_BP && type!=ITYPE_CONTAINER)
 						return;
 			}
 	}
@@ -1099,7 +1099,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			return;
 		case 0x0DBF:
 		case 0x0DC0:// fishing
-			if( pi->getContSerial()==pc->getSerial() || pi->getContSerial()==pack->getSerial32() ) {
+			if( pi->getContSerial()==pc->getSerial() || pi->getContSerial()==pack->getSerial() ) {
 				targ = clientInfo[s]->newTarget( new cLocationTarget() );
 				targ->code_callback = Fishing::target_fish;
 				targ->send( ps );
@@ -1349,7 +1349,7 @@ bool cItem::checkItemUsability(pChar pc, int type)
 	{
 
 		if (amxevents[EVENT_IONCHECKCANUSE]==NULL) return true;
-		return (0!=amxevents[EVENT_IONCHECKCANUSE]->Call(getSerial(), pc->getSerial32(), g_nType));
+		return (0!=amxevents[EVENT_IONCHECKCANUSE]->Call(getSerial(), pc->getSerial(), g_nType));
 		/*
 		AmxEvent* event = pi->getAmxEvent( EVENT_IONCHECKCANUSE );
 		if ( !event ) return true;

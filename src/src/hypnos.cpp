@@ -195,7 +195,7 @@ void callguards( CHARACTER p )
 		pChar character=sc.getChar();
 		if(! character )
 			continue;
-		if( caller->getSerial() != character->getSerial32() && caller->distFrom( character )  <= 15 && !character->dead && !character->IsHidden())
+		if( caller->getSerial() != character->getSerial() && caller->distFrom( character )  <= 15 && !character->dead && !character->IsHidden())
 		{
 			if ((!character->IsInnocent() || character->npcaitype == NPCAI_EVIL) && !character->IsHidden() )
 				offenders = true;
@@ -1140,22 +1140,22 @@ void npcattacktarget(pChar pc, pChar pc_target)
 	) return;
 	
 	if( pc->amxevents[ EVENT_CHR_ONBEGINATTACK ]!=NULL ) {
-		pc->amxevents[ EVENT_CHR_ONBEGINATTACK ]->Call( pc->getSerial(), pc_target->getSerial32() );
+		pc->amxevents[ EVENT_CHR_ONBEGINATTACK ]->Call( pc->getSerial(), pc_target->getSerial() );
 		if (g_bByPass==true)
 			return;
 	}
 	/*
-	pc->runAmxEvent( EVENT_CHR_ONBEGINATTACK, pc->getSerial(), pc_target->getSerial32() );
+	pc->runAmxEvent( EVENT_CHR_ONBEGINATTACK, pc->getSerial(), pc_target->getSerial() );
 	if (g_bByPass==true)
 		return;
 	*/
 	if( pc->amxevents[ EVENT_CHR_ONBEGINDEFENSE ]!=NULL ) {
-		pc->amxevents[ EVENT_CHR_ONBEGINDEFENSE ]->Call( pc_target->getSerial(), pc->getSerial32() );
+		pc->amxevents[ EVENT_CHR_ONBEGINDEFENSE ]->Call( pc_target->getSerial(), pc->getSerial() );
 		if (g_bByPass==true)
 			return;
 	}
 	/*
-	pc->runAmxEvent( EVENT_CHR_ONBEGINDEFENSE, pc_target->getSerial(), pc->getSerial32() );
+	pc->runAmxEvent( EVENT_CHR_ONBEGINDEFENSE, pc_target->getSerial(), pc->getSerial() );
 	if (g_bByPass==true)
 		return;
 	*/
@@ -1653,7 +1653,7 @@ void InitMultis()
 		{
 			pItem multi=findmulti( pi->getPosition() );
 			if ( multi )
-				if (multi->getSerial()!=pi->getSerial32())
+				if (multi->getSerial()!=pi->getSerial())
 					//setserial(DEREF_pItem(pi),DEREF_pItem(multi),7);
 					pi->SetMultiSerial(multi->getSerial());
 				else

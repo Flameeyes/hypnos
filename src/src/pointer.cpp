@@ -236,7 +236,7 @@ namespace pointers {
 				{
 					if( pSelf )
 					{
-						if( (flags & EXCLUDESELF) && pSelf->getSerial() == pc->getSerial32() )
+						if( (flags & EXCLUDESELF) && pSelf->getSerial() == pc->getSerial() )
 						{
 							continue;
 						}
@@ -360,7 +360,7 @@ namespace pointers {
 				{
 					if( pSelf )
 					{
-						if( (flags & EXCLUDESELF) && pSelf->getSerial() == pi->getSerial32() )
+						if( (flags & EXCLUDESELF) && pSelf->getSerial() == pi->getSerial() )
 						{
 							continue;
 						}

@@ -40,9 +40,6 @@ static void npcBeginCasting( pChar pc, pChar target, magic::SpellId spell )
 ///////////////NPC MAGIC STUFF
 ///////////////BY LUXOR & XANATHAR
 #define NPCMAGIC_FLAGS (SPELLFLAG_DONTCRIMINAL+SPELLFLAG_DONTREQREAGENTS+SPELLFLAG_DONTCHECKSPELLBOOK+SPELLFLAG_IGNORETOWNLIMITS+SPELLFLAG_DONTCHECKSKILL)
-//#define NPC_CASTSPELL(A,B) pc_att->castSpell(A, TargetLocation DUMMYTMP(B), NPCMAGIC_FLAGS);
-//#define NPC_CASTSPELL(A,B) { TargetLocation INSTANCETEMP(B); pc_att->castSpell(A, INSTANCETEMP , NPCMAGIC_FLAGS); }
-#define NPC_CASTSPELL(A,B) { npcBeginCasting( pc_att, B, A ); }
 
 int spherespells[256][256];
 
@@ -67,7 +64,7 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 
 	if ( pc_def->summontimer && pc_att->baseskill[skMagery] > 700 ) {
 		pc_att->facexy( pc_def->getPosition().x, pc_def->getPosition().y );
-		NPC_CASTSPELL( magic::SPELL_DISPEL, pc_def );
+		{ npcBeginCasting( pc_att, pc_def ,  magic::SPELL_DISPEL ); }
 		return;
 	}
 	// We're here.. let's spellcast ;)
@@ -80,52 +77,52 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 		switch(whichbit(pc_att->spattack, spattackbit))
 		{
 			case 1:
-				NPC_CASTSPELL(magic::SPELL_MAGICARROW, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MAGICARROW ); }
 				break;
 			case 2:
-				NPC_CASTSPELL(magic::SPELL_HARM, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_HARM ); }
 				break;
 			case 3:
-				NPC_CASTSPELL(magic::SPELL_CLUMSY, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_CLUMSY ); }
 				break;
 			case 4:
-				NPC_CASTSPELL(magic::SPELL_FEEBLEMIND, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FEEBLEMIND ); }
 				break;
 			case 5:
-				NPC_CASTSPELL(magic::SPELL_WEAKEN, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_WEAKEN ); }
 				break;
 			case 6:
-				NPC_CASTSPELL(magic::SPELL_FIREBALL, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FIREBALL ); }
 				break;
 			case 7:
-				NPC_CASTSPELL(magic::SPELL_CURSE, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_CURSE ); }
 				break;
 			case 8:
-				NPC_CASTSPELL(magic::SPELL_LIGHTNING, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_LIGHTNING ); }
 				break;
 			case 9:
-				NPC_CASTSPELL(magic::SPELL_PARALYZE, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_PARALYZE ); }
 				break;
 			case 10:
-				NPC_CASTSPELL(magic::SPELL_MINDBLAST, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MINDBLAST ); }
 				break;
 			case 11:
-				NPC_CASTSPELL(magic::SPELL_ENERGYBOLT, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_ENERGYBOLT ); }
 				break;
 			case 12:
-				NPC_CASTSPELL(magic::SPELL_EXPLOSION, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_EXPLOSION ); }
 				break;
 			case 13:
-				NPC_CASTSPELL(magic::SPELL_FLAMESTRIKE, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FLAMESTRIKE ); }
 				break;
 			case 14:
-				NPC_CASTSPELL(magic::SPELL_MINDBLAST, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MINDBLAST ); }
 				break;
 			case 15:
-				NPC_CASTSPELL(magic::SPELL_MINDBLAST, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MINDBLAST ); }
 				break;
 			case 16:
-				NPC_CASTSPELL(magic::SPELL_MINDBLAST, pc_def);
+				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MINDBLAST ); }
 				break;
 			default:
 				break;
@@ -210,19 +207,19 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 
 	if (spherespells[sphere][spell]==0) return;
 
-	if (pc_att->amxevents[EVENT_CHR_ONCASTSPELL]) {
-		g_bByPass = false;
-		pc_att->amxevents[EVENT_CHR_ONCASTSPELL]->Call(pc_att->getSerial(), spell, -1, sphere);
-		if (g_bByPass==true) return;
+	pFunctionHandle evt = pc_att->getEvent(evtChrOnCastSpell);
+	if ( evt )
+	{
+		tVariantVector params = tVariantVector(4);
+		params[0] = pc_att->getSerial(); params[1] = spell;
+		params[2] = -1; params[3] = sphere;
+		evt->setParams(params);
+		evt->execute();
+		if ( evt->bypassed() )
+			return;
 	}
-	/*
-	pc_att->runAmxEvent( EVENT_CHR_ONCASTSPELL, pc_att->getSerial(), spell, -1, sphere );
-	if (g_bByPass==true)
-		return;
-	*/
-
+	
 	pc_att->playAction(6);
-
 
 	if (spherespells[sphere][spell]<0) {
 		//summon an NPC
@@ -237,73 +234,73 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 	switch(spherespells[sphere][spell])
 	{
 		case 1:
-			NPC_CASTSPELL(magic::SPELL_MAGICARROW, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MAGICARROW ); }
 			break;
 		case 2:
-			NPC_CASTSPELL(magic::SPELL_HARM, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_HARM ); }
 			break;
 		case 3:
-			NPC_CASTSPELL(magic::SPELL_CLUMSY, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_CLUMSY ); }
 			break;
 		case 4:
-			NPC_CASTSPELL(magic::SPELL_FEEBLEMIND, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FEEBLEMIND ); }
 			break;
 		case 5:
-			NPC_CASTSPELL(magic::SPELL_WEAKEN, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_WEAKEN ); }
 			break;
 		case 6:
-			NPC_CASTSPELL(magic::SPELL_FIREBALL, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FIREBALL ); }
 			break;
 		case 7:
-			NPC_CASTSPELL(magic::SPELL_CURSE, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_CURSE ); }
 			break;
 		case 8:
-			NPC_CASTSPELL(magic::SPELL_LIGHTNING, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_LIGHTNING ); }
 			break;
 		case 9:
-			NPC_CASTSPELL(magic::SPELL_PARALYZE, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_PARALYZE ); }
 			break;
 		case 10:
-			NPC_CASTSPELL(magic::SPELL_MINDBLAST, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MINDBLAST ); }
 			break;
 		case 11:
-			NPC_CASTSPELL(magic::SPELL_ENERGYBOLT, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_ENERGYBOLT ); }
 			break;
 		case 12:
-			NPC_CASTSPELL(magic::SPELL_EXPLOSION, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_EXPLOSION ); }
 			break;
 		case 13:
-			NPC_CASTSPELL(magic::SPELL_FLAMESTRIKE, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FLAMESTRIKE ); }
 			break;
 		case 14:
-			NPC_CASTSPELL(magic::SPELL_FIREFIELD, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FIREFIELD ); }
 			break;
 		case 15:
-			NPC_CASTSPELL(magic::SPELL_POISONFIELD, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_POISONFIELD ); }
 			break;
 		case 16:
-			NPC_CASTSPELL(magic::SPELL_PARALYZEFIELD, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_PARALYZEFIELD ); }
 			break;
 		case 17:
-			NPC_CASTSPELL(magic::SPELL_HEAL, pc_att);
+			{ npcBeginCasting( pc_att, pc_att, magic::SPELL_HEAL ); }
 			break;
 		case 18:
-			NPC_CASTSPELL(magic::SPELL_GREATHEAL, pc_att);
+			{ npcBeginCasting( pc_att, pc_att, magic::SPELL_GREATHEAL ); }
 			break;
 		case 19:
-			NPC_CASTSPELL(magic::SPELL_CURE, pc_att);
+			{ npcBeginCasting( pc_att, pc_att, magic::SPELL_CURE ); }
 			break;
 		case 22:
-			NPC_CASTSPELL(magic::SPELL_POISON, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_POISON ); }
 			break;
 		case 23:
-			NPC_CASTSPELL(magic::SPELL_MANADRAIN, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MANADRAIN ); }
 			break;
 		case 24:
-			NPC_CASTSPELL(magic::SPELL_MANAVAMPIRE, pc_def);
+			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MANAVAMPIRE ); }
 			break;
 		case 27:
-			NPC_CASTSPELL(magic::SPELL_REFLECTION, pc_att);
+			{ npcBeginCasting( pc_att, pc_att, magic::SPELL_REFLECTION ); }
 			break;
 		default :
 			WarnOut("NPC-Spell %d not yet implemented, sorry :(\n", spherespells[sphere][spell]);
@@ -317,17 +314,17 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 
 /*!
 \author Luxor
+\todo Need to be backported into cNPC as cNPC::checkAI()
 */
 void checkAI(pChar pc) //Lag Fix -- Zippy
 {
-	if ( ! pc ) return;
-	pChar pc_att = pc;	//Dirty... but now we can use NPC_CASTSPELL macro :P
 	if ( !pc->npc ) return;
 	if ( !TIMEOUT( pc->nextAiCheck ) )
 		return;
 
 	pc->nextAiCheck = (uint32_t) ((double)uiCurrentTime + (speed.npcaitime*MY_CLOCKS_PER_SEC));
 
+//!\todo Need to be rewrote after arrays are implemented in tVariant
 	if( pc->amxevents[ EVENT_CHR_ONCHECKNPCAI ]!=NULL ) {
 
 		NxwCharWrapper sc;
@@ -359,7 +356,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				sc.fillCharsNearXYZ( pc->getPosition(), 3, true, true );
 				for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 					pChar pj=sc.getChar();
-					if (pj->getSerial() == pc->getSerial32()) continue; //Luxor
+					if (pj->getSerial() == pc->getSerial()) continue; //Luxor
 
 					if( pj->dead )
 						continue;
@@ -392,7 +389,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				if ( !pj || !pj->dead )
 			  		continue;
 
-				if (pj->getSerial() == pc->getSerial32()) continue; //Luxor
+				if (pj->getSerial() == pc->getSerial()) continue; //Luxor
 			  	if ( !pj->IsInnocent() || pj->IsCriminal() || pj->IsMurderer())
 			  	{
 			  		if (pj->IsMurderer())
@@ -430,11 +427,11 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				if ( chance( 50 ) )
 				{
 					if (pc->hp < pc->getStrength()/2)
-						NPC_CASTSPELL(magic::SPELL_GREATHEAL, pc);
+						{ npcBeginCasting( pc, pc, magic::SPELL_GREATHEAL ); }
 				}
 				else
 					if (pc->poisoned > 0)
-						NPC_CASTSPELL(magic::SPELL_CURE, pc);
+						{ npcBeginCasting( pc, pc, magic::SPELL_CURE ); }
 			}
 #ifdef SPAR_NEW_WR_SYSTEM
 			pointers::pCharVector *pcv = pointers::getCharsNearLocation( pc, VISRANGE, pointers::NPC );
@@ -446,7 +443,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 			{
 				pj = (*it);
 				if ( 	!(
-					pc->getSerial() == pj->getSerial32() ||
+					pc->getSerial() == pj->getSerial() ||
 					pj->IsInvul() ||
 					pj->hidden > 0 ||
 					pj->dead ||
@@ -484,7 +481,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
 				pChar pj=sc.getChar();
-				if (!pj || pc->getSerial()==pj->getSerial32() )
+				if (!pj || pc->getSerial()==pj->getSerial() )
 					continue;
 
 				if (	pj->IsInvul() ||
@@ -526,7 +523,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				pChar pj=sc.getChar();
 				if ( ! pj || !pj->dead )
 					continue;
-				if (pj->getSerial() == pc->getSerial32()) continue; //Luxor
+				if (pj->getSerial() == pc->getSerial()) continue; //Luxor
 				if ( pj->IsInnocent() ) {
 					pc->talkAll(TRANSLATE("I despise all things good. I shall not give thee another chance!"), 1);
 					continue;
@@ -559,7 +556,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				pChar pj=sc.getChar();
 				if (!pj) continue;
 
-				if (pj->getSerial() == pc->getSerial32()) continue; //Luxor
+				if (pj->getSerial() == pc->getSerial()) continue; //Luxor
 				if ( pj->dead || !pj->IsInnocent() || pj->hidden > 0)
 					continue;
 
@@ -620,7 +617,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				pChar character=sc.getChar();
 				if ( character )
 				{
-					if ( character->getSerial() != pc->getSerial32() &&
+					if ( character->getSerial() != pc->getSerial() &&
 					     !character->dead &&
 					     !character->IsHidden() &&
 					     pc->losFrom( character )
@@ -659,7 +656,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 
 				pChar pj=sc.getChar();
 
-				if (pj->getSerial() == pc->getSerial32()) continue; //Luxor
+				if (pj->getSerial() == pc->getSerial()) continue; //Luxor
 				if( pj && pj->npc && pj->npcaitype==NPCAI_EVIL)
 				{
 					npcattacktarget(pc, pj);
@@ -678,7 +675,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 
 				pChar pj=sc.getChar();
 				if (!pj) continue;
-				if (pj->getSerial() == pc->getSerial32()) continue; //Luxor
+				if (pj->getSerial() == pc->getSerial()) continue; //Luxor
 				if ( pj->IsInvul() || pj->dead || (pj->npcaitype != NPCAI_EVIL && !pj->IsCriminal() && !pj->IsMurderer())) continue;
 
 				npcattacktarget(pc, pj);
@@ -752,46 +749,46 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 					switch(RandomNum(0, 6))
 					{
 						case 0:
-							NPC_CASTSPELL(magic::SPELL_CURSE, pj);
+							{ npcBeginCasting( pc, pj, magic::SPELL_CURSE ); }
 							pc->talkAll(TRANSLATE("You are ridiculous"), 1);
 							break;
 						case 1:
-							NPC_CASTSPELL(magic::SPELL_FLAMESTRIKE, pj);
+							{ npcBeginCasting( pc, pj, magic::SPELL_FLAMESTRIKE ); }
 							pc->talkAll(TRANSLATE("Die unusefull mortal!"), 1);
 							break;
 						case 2:
-							NPC_CASTSPELL(magic::SPELL_PARALYZE, pj);
+							{ npcBeginCasting( pc, pj, magic::SPELL_PARALYZE ); }
 							pc->talkAll(TRANSLATE("What are you doing? Come here and Die!"), 1);
 							break;
 						case 3:
-							NPC_CASTSPELL(magic::SPELL_LIGHTNING, pj);
+							{ npcBeginCasting( pc, pj, magic::SPELL_LIGHTNING ); }
 							pc->talkAll(TRANSLATE("Stupid Mortal I'll crush you as a fly"), 1);
 							break;
 						case 4:
-							NPC_CASTSPELL(magic::SPELL_LIGHTNING, pj);
+							{ npcBeginCasting( pc, pj, magic::SPELL_LIGHTNING ); }
 							pc->talkAll(TRANSLATE("Stupid Mortal I'll crush you as a fly"), 1);
 							break;
 						case 5:
-							NPC_CASTSPELL(magic::SPELL_EXPLOSION, pj);
+							{ npcBeginCasting( pc, pj, magic::SPELL_EXPLOSION ); }
 							pc->talkAll(TRANSLATE("Die unusefull mortal!"), 1);
 							break;
 						case 6:
-							NPC_CASTSPELL(magic::SPELL_EXPLOSION, pj);
+							{ npcBeginCasting( pc, pj, magic::SPELL_EXPLOSION ); }
 							pc->talkAll(TRANSLATE("Die unusefull mortal!"), 1);
 							break;
 					}
 				}
 				if (pc->hp < pc->getStrength()/2) {
 					pc->talkAll("In Vas Mani", 1);
-					NPC_CASTSPELL(magic::SPELL_GREATHEAL, pc);
+					{ npcBeginCasting( pc, pc, magic::SPELL_GREATHEAL ); }
 				}
 				if (pc->poisoned > 0) {
 					pc->talkAll("An Nox", 1);
-					NPC_CASTSPELL(magic::SPELL_CURE, pc);
+					{ npcBeginCasting( pc, pc, magic::SPELL_CURE ); }
 				}
 				if ( pj->isDispellable() ) {
 					pc->talkAll("An Ort", 1);
-					NPC_CASTSPELL(magic::SPELL_DISPEL, pj);
+					{ npcBeginCasting( pc, pj, magic::SPELL_DISPEL ); }
 				}
 
 				if ( !pj->IsHidden() ) npcattacktarget(pc, pj);
@@ -800,7 +797,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 		}
 		break;
 		default:
-			WarnOut("cCharStuff::CheckAI-> Error npc %i ( %08x ) has invalid AI type %i\n", pc->getSerial(), pc->getSerial32(), pc->npcaitype);
+			WarnOut("cCharStuff::CheckAI-> Error npc %i ( %08x ) has invalid AI type %i\n", pc->getSerial(), pc->getSerial(), pc->npcaitype);
 			return;
 	}	//switch(pc->npcaitype)
 } //void checkAI(unsigned int currenttime, pChar pc)

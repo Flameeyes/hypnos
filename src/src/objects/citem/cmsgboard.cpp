@@ -395,7 +395,7 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
                	pair<cBBRelations::iterator, cBBRelations::iterator> it = BBRelations.equal_range(getSerial());
                 if ( distance(it.first, it.second) > nSettings::MsgBoards::getMaxPosts() ) return false;
 
-        	BBRelations.insert(cBBRelations::pair(getSerial(), message->getSerial32()));
+        	BBRelations.insert(cBBRelations::pair(getSerial(), message->getSerial()));
         	break;
         case REGIONALPOST;
                	pair<cMsgBoards::iterator, cMsgBoards::iterator> it = getBoardsinRegion(region);
@@ -403,12 +403,12 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
                 if (it.first == MsgBoards.end()) return false;
                 // We now have a range it.first-(it.second - 1) of msgBoards that are in the same region as the message.
 		for (;it.first != it.second; ++it.first)
-                	BBRelations.insert(cBBRelations::pair((*(it.first))->getSerial(), message->getSerial32()));
+                	BBRelations.insert(cBBRelations::pair((*(it.first))->getSerial(), message->getSerial()));
         	break;
         case GLOBALPOST:
         	if (MsgBoards.empty()) return false; //Obiously, even general posts cannot be done when NO msgboards are present at all....
         	for(cMsgBoards::iterator it = MsgBoards.begin(), it != MsgBoards.end(), ++it)
-                      	BBRelations.insert(cBBRelations::pair((*it)->getSerial(), message->getSerial32()));
+                      	BBRelations.insert(cBBRelations::pair((*it)->getSerial(), message->getSerial()));
         }
 	return true;
 }

@@ -66,7 +66,7 @@ void Skills::target_removeTraps( NXWCLIENT ps, pTarget t )
 			pc->checkSkill( skRemoveTraps, 0, 750); //ndEny is good?
 	}
 	else
-		pi->amxevents[EVENT_IONREMOVETRAP]->Call(pi->getSerial(), pc->getSerial32() );
+		pi->amxevents[EVENT_IONREMOVETRAP]->Call(pi->getSerial(), pc->getSerial() );
 
 }
 
@@ -100,13 +100,13 @@ void Skills::target_tailoring( NXWCLIENT ps, pTarget t )
 				if( tannering == NULL )
 					tannering = new AmxFunction( AMXTANNERING );
 				if( tannering != NULL )
-					tannering->Call( pc->getSerial(), pi->getSerial32() );
+					tannering->Call( pc->getSerial(), pi->getSerial() );
 			}
             else {
 				if( tailoring == NULL )
 					tailoring = new AmxFunction( AMXskTailoring );
 				if( tailoring != NULL )
-					tailoring->Call( pc->getSerial(), pi->getSerial32() );
+					tailoring->Call( pc->getSerial(), pi->getSerial() );
 			}
 
         }
@@ -655,7 +655,7 @@ void Skills::target_smeltOre( NXWCLIENT ps, pTarget t )
                 pItem pix=cSerializable::findItemBySerial( t->buffer[0] );
 				VALIDATEPI( pix );
 
-                AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMXSMELTORE), pc->getSerial(), pix->getColor(), pix->getSerial32());
+                AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMXSMELTORE), pc->getSerial(), pix->getColor(), pix->getSerial());
             }
         }
     }
@@ -1170,7 +1170,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
 
 	if( ((pp->getId() != BODY_MALE) || (pp->getId() != BODY_FEMALE)) && pp->tamed==false) //Used on non-human and controls if tamed
 
-        if ((ph->IsInnocent()) &&(ph->getSerial() != pp->getSerial32()))
+        if ((ph->IsInnocent()) &&(ph->getSerial() != pp->getSerial()))
         {
 			ph->helpStuff(pp);
         }
@@ -1241,7 +1241,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
 			//sysmessage(s,"You apply the bandages and the patient looks a bit healthier.");
 			int iMore1 = 0;
 			(j+pp->hp > pp->getStrength()) ? iMore1 = pp->getStrength() - pp->hp : iMore1 = j;
-			if(pp->getSerial()==ph->getSerial32())
+			if(pp->getSerial()==ph->getSerial())
 				tempfx::add(ph, ph, tempfx::HEALING_DELAYHEAL, iMore1/2,0,10);//allow a delay
 			else
 				tempfx::add(ph, pp, tempfx::HEALING_DELAYHEAL, iMore1/2,0,4);// added suggestion by Ramases //-Fraz- must be checked

@@ -55,7 +55,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	if ( amxevents[EVENT_CHR_ONCOMBATHIT] ) {
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONCOMBATHIT]->Call( getSerial(), pc_def->getSerial32() );
+		amxevents[EVENT_CHR_ONCOMBATHIT]->Call( getSerial(), pc_def->getSerial() );
 		if( g_bByPass == true )
 			return;
 		if( dead )	// Killed as result of script action
@@ -144,7 +144,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 		if (amxevents[EVENT_CHR_ONHITMISS]) {
 			g_bByPass = false;
-			amxevents[EVENT_CHR_ONHITMISS]->Call(getSerial(), pc_def->getSerial32());
+			amxevents[EVENT_CHR_ONHITMISS]->Call(getSerial(), pc_def->getSerial());
 			if (g_bByPass==true) return;
 		}
 
@@ -177,13 +177,13 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	if (amxevents[EVENT_CHR_ONHIT]) {
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONHIT]->Call(getSerial(), pc_def->getSerial32());
+		amxevents[EVENT_CHR_ONHIT]->Call(getSerial(), pc_def->getSerial());
 		if (g_bByPass==true) return;
 	}
 
 	if (pc_def->amxevents[EVENT_CHR_ONGETHIT]) {
 		g_bByPass = false;
-		pc_def->amxevents[EVENT_CHR_ONGETHIT]->Call(pc_def->getSerial(), getSerial32());
+		pc_def->amxevents[EVENT_CHR_ONGETHIT]->Call(pc_def->getSerial(), getSerial());
 		if (g_bByPass==true) return;
 	}
 
@@ -291,7 +291,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	if (damage>0 && weapon ) {
 		if ((weapon->amxevents[EVENT_IONDAMAGE]!=NULL)) {
 			g_bByPass = false;
-			damage = weapon->amxevents[EVENT_IONDAMAGE]->Call(weapon->getSerial(), pc_def->getSerial32(), damage, getSerial32());
+			damage = weapon->amxevents[EVENT_IONDAMAGE]->Call(weapon->getSerial(), pc_def->getSerial(), damage, getSerial());
 			if (g_bByPass==true) return;
 		}
 	}
@@ -407,7 +407,7 @@ void cChar::doCombat()
 
 	if ( amxevents[EVENT_CHR_ONDOCOMBAT] ) {
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONDOCOMBAT]->Call( getSerial(), pc_def->getSerial32(), dist, weapon ? weapon->getSerial32() : INVALID );
+		amxevents[EVENT_CHR_ONDOCOMBAT]->Call( getSerial(), pc_def->getSerial(), dist, weapon ? weapon->getSerial() : INVALID );
 		if( g_bByPass == true )
 		{
 			return;
@@ -1093,25 +1093,25 @@ void cChar::attackStuff(pChar victim)
 {
 	if ( ! victim ) return;
 
-	if( getSerial() == victim->getSerial32() )
+	if( getSerial() == victim->getSerial() )
 		return;
 
 	if ( amxevents[EVENT_CHR_ONBEGINATTACK]) {
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONBEGINATTACK]->Call( getSerial(), victim->getSerial32() );
+		amxevents[EVENT_CHR_ONBEGINATTACK]->Call( getSerial(), victim->getSerial() );
 		if (g_bByPass==true) return;
 	}
 
 	if ( victim->amxevents[EVENT_CHR_ONBEGINDEFENSE]) {
 		g_bByPass = false;
-		victim->amxevents[EVENT_CHR_ONBEGINDEFENSE]->Call( victim->getSerial(), getSerial32() );
+		victim->amxevents[EVENT_CHR_ONBEGINDEFENSE]->Call( victim->getSerial(), getSerial() );
 		if (g_bByPass==true) return;
 	}
 	/*
-	runAmxEvent( EVENT_CHR_ONBEGINATTACK, getSerial(), victim->getSerial32() );
+	runAmxEvent( EVENT_CHR_ONBEGINATTACK, getSerial(), victim->getSerial() );
 	if (g_bByPass==true)
 		return;
-	victim->runAmxEvent( EVENT_CHR_ONBEGINDEFENSE, victim->getSerial(), getSerial32() );
+	victim->runAmxEvent( EVENT_CHR_ONBEGINDEFENSE, victim->getSerial(), getSerial() );
 	if (g_bByPass==true)
 		return;
 	*/

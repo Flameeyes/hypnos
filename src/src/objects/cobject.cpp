@@ -183,7 +183,7 @@ bool cObject::addTempfx( cObject& src, int32_t num, int32_t more1, int32_t more2
 	//
 	//	Create the tempfx
 	//
-	tempfx::cTempfx tmpeff( src.getSerial(), getSerial32(), num, dur, more1, more2, more3, amxcback );
+	tempfx::cTempfx tmpeff( src.getSerial(), getSerial(), num, dur, more1, more2, more3, amxcback );
 
 	if ( !tmpeff.isValid() )
 		return false;

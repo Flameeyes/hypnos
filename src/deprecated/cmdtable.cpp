@@ -2198,7 +2198,7 @@ void target_spy( pClient client, pTarget t )
 	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc ) return;
 
-	if( pc->getSerial()!=curr->getSerial32() ) {
+	if( pc->getSerial()!=curr->getSerial() ) {
 		NXWCLIENT victim = pc->getClient();
 		if( victim!=NULL ) {
 			clientInfo[victim->toInt()]->spyTo=curr->getSerial();
@@ -2510,7 +2510,7 @@ void target_makegm( pClient client, pTarget t )
 	if ( ! curr ) return;
 
     if (SrvParms->gm_log)
-		WriteGMLog(curr, "%s [ serial %i ] as made %s [ serial %i ] a GM.\n", curr->getCurrentName().c_str(), curr->getSerial(), pc->getCurrentName().c_str(), pc->getSerial32() );
+		WriteGMLog(curr, "%s [ serial %i ] as made %s [ serial %i ] a GM.\n", curr->getCurrentName().c_str(), curr->getSerial(), pc->getCurrentName().c_str(), pc->getSerial() );
 
     pc->unmountHorse();
     pc->gmrestrict = 0;
@@ -2576,7 +2576,7 @@ void target_makecns( pClient client, pTarget t )
 	if ( ! curr ) return;
 
     if (SrvParms->gm_log)
-		WriteGMLog(curr, "%s [ serial %i ] as made %s [ serial %i ] a Counselor.\n", curr->getCurrentName().c_str(), curr->getSerial(), pc->getCurrentName().c_str(), pc->getSerial32() );
+		WriteGMLog(curr, "%s [ serial %i ] as made %s [ serial %i ] a Counselor.\n", curr->getCurrentName().c_str(), curr->getSerial(), pc->getCurrentName().c_str(), pc->getSerial() );
 
     pc->setId(BODY_GMSTAFF);
     pc->setOldId(BODY_GMSTAFF);

@@ -726,18 +726,17 @@ int response(NXWSOCKET  s)
 						{
 							pc->guarded = false; // Sparhawk	How about when more than 1 pets is guarding me??
 							
-							if (pc_map->amxevents[EVENT_CHR_ONTRANSFER])
+							pFunctionHandle evt = pc_map->getEvent(evtNpcOnTransfer);
+							if ( evt )
 							{
-								g_bByPass = false;
-								pc_map->amxevents[EVENT_CHR_ONTRANSFER]->Call(pc_map->getSerial(), pc->getSerial32());
-								if (g_bByPass==true)
+								tVariantVector params = tVariantVector(2);
+								params[0] = pc_map->getSerial(); params[1] = pc->getSerial();
+								evt->setParams(params);
+								evt->execute();
+								if ( evt->bypassed() )
 									return 0;
 							}
-							/*
-							pc_map->runAmxEvent( EVENT_CHR_ONTRANSFER, pc_map->getSerial(), pc->getSerial32());
-							if (g_bByPass==true)
-								return 0;
-							*/
+	
 							//pet transfer code here
 							pTarget targ = clientInfo[s]->newTarget( new cCharTarget() );
 							targ->code_callback=target_transfer;

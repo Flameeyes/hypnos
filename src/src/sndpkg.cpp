@@ -1114,7 +1114,7 @@ void movingeffect(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned
 
 	if (!skip_old)
 	{
-MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial(), dst->getSerial32(), eff, srcpos, destpos, speed, loop, 0, explode);
+MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial(), dst->getSerial(), eff, srcpos, destpos, speed, loop, 0, explode);
 	}
 
 	 if (!UO3DonlyEffekt) // no UO3D effect ? lets send old effect to all clients
@@ -1177,7 +1177,7 @@ void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned ch
 
 	if (!skip_old)
 	{
-		MakeGraphicalEffectPkt_(effect, 0x02, pi->getSerial(), pi->getSerial32(), eff, pos, pos, speed, loop, 1, explode);
+		MakeGraphicalEffectPkt_(effect, 0x02, pi->getSerial(), pi->getSerial(), eff, pos, pos, speed, loop, 1, explode);
 	}
 
 	if (!UO3DonlyEffekt) // no UO3D effect ? lets send old effect to all clients
@@ -1335,7 +1335,7 @@ void movingeffect3(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigne
 	Location srcpos= src->getPosition();
 	Location destpos= dst->getPosition();
 
-MakeGraphicalEffectPkt_(effect, type, src->getSerial(), dst->getSerial32(), eff, srcpos, destpos, speed, loop, ajust, explode);
+MakeGraphicalEffectPkt_(effect, type, src->getSerial(), dst->getSerial(), eff, srcpos, destpos, speed, loop, ajust, explode);
 
 	 NxwSocketWrapper sw;
 	 sw.fillOnline( );
@@ -1368,7 +1368,7 @@ void movingeffect2(CHARACTER source, int dest, unsigned char eff1, unsigned char
 
 	Location srcpos= pc_source->getPosition(), pos2 = pi->getPosition();
 
-MakeGraphicalEffectPkt_(effect, 0x00, pc_source->getSerial(), pi->getSerial32(), eff, srcpos, pos2, speed, loop, 0, explode);
+MakeGraphicalEffectPkt_(effect, 0x00, pc_source->getSerial(), pi->getSerial(), eff, srcpos, pos2, speed, loop, 0, explode);
 
 	 NxwSocketWrapper sw;
 	 sw.fillOnline( );
@@ -1571,7 +1571,7 @@ void impowncreate(NXWSOCKET s, pChar pc, int z) //socket, player to send
 		return; // dont **show** stabled pets
 
 	bool sendit = true; //Luxor bug fix
-	if (pc->IsHidden() && pc->getSerial()!=pc_currchar->getSerial32() && !pc_currchar->IsGM())
+	if (pc->IsHidden() && pc->getSerial()!=pc_currchar->getSerial() && !pc_currchar->IsGM())
 		sendit=false;
 
 	if( !pc->npc && !pc->IsOnline()  && !pc_currchar->IsGM() )

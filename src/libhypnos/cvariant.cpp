@@ -102,6 +102,14 @@ tVariant &tVariant::operator =(pItem api)
 	return *this;
 }
 
+tVariant &tVariant::operator =(pClient aclient)
+{
+	ptrvalue = aclient;
+	assignedType = vtPClient;
+	integerSize = isNotInt;
+	return *this;
+}
+
 tVariant tVariant::operator -() const
 {
 	switch(assignedType)
@@ -182,6 +190,7 @@ bool tVariant::operator ==(const tVariant &param) const
 		case vtPVoid:
 		case vtPChar:
 		case vtPItem:
+		case vtPClient:
 			return ptrvalue == param.toPVoid();
 	}
 }
@@ -294,6 +303,20 @@ bool tVariant::convertInPItem()
 	return true;
 }
 
+bool tVariant::convertInPClient()
+{
+	bool conv;
+	pClient temp = toPClient(&conv);
+	
+	if ( ! conv )
+		return false;
+	
+	ptrvalue = temp;
+	assignedType = vtPClient;
+	integerSize = isNotInt;
+	return true;
+}
+
 bool tVariant::convertInPVoid()
 {
 	bool conv;
@@ -339,6 +362,7 @@ std::string tVariant::toString(bool *result) const
 		
 		case vtPChar:
 		case vtPItem:
+		case vtPClient:
 		case vtPVoid:
 			{
 				char *tmp;
@@ -366,6 +390,7 @@ bool tVariant::toBoolean(bool *result) const
 			return sintvalue;
 		case vtPChar:
 		case vtPItem:
+		case vtPClient:
 		case vtPVoid:
 			return ptrvalue;
 		case vtString:
@@ -420,12 +445,34 @@ pItem tVariant::toPItem(bool *result) const
 	}
 }
 
+pClient tVariant::toPClient(bool *result) const
+{
+	if ( result ) *result = true;
+	switch( assignedType )
+	{
+		case vtPClient:
+			return ptrvalue;
+		case vtPVoid:
+			{
+				pItem tmp = dynamic_cast<pClient>(ptrvalue);
+				if ( result && ! tmp && ptrvalue )
+					*result = false;
+				
+				return tmp;
+			}
+		default:
+			if ( result ) *result = false;
+			return NULL;
+	}
+}
+
 void *tVariant::toPVoid(bool *result) const
 {
 	switch( assignedType )
 	{
 		case vtPItem:
 		case vtPChar:
+		case vtPClient:
 		case vtPVoid:
 			if ( result ) *result = true;
 			return ptrvalue;

@@ -799,11 +799,11 @@ void target_transfer( NXWCLIENT ps, pTarget t )
 	if (pc1->amxevents[EVENT_CHR_ONTRANSFER])
 	{
 		g_bByPass = false;
-		pc1->amxevents[EVENT_CHR_ONTRANSFER]->Call(pc1->getSerial(),pc2->getSerial32());
+		pc1->amxevents[EVENT_CHR_ONTRANSFER]->Call(pc1->getSerial(),pc2->getSerial());
 		if (g_bByPass==true) return ;
 	}
 	/*
-	pc1->runAmxEvent( EVENT_CHR_ONTRANSFER, pc1->getSerial(),pc2->getSerial32());
+	pc1->runAmxEvent( EVENT_CHR_ONTRANSFER, pc1->getSerial(),pc2->getSerial());
 	if (g_bByPass==true)
 		return ;
 	*/

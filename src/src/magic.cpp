@@ -776,7 +776,7 @@ void castAreaAttackSpell (int x, int y, SpellId spellnum, pChar pcaster)
 		if ( pd ) {
 			if ( pcaster ) {
 				if ( spellnum == SPELL_EARTHQUAKE || spellnum == SPELL_CHAINLIGHTNING ) {
-					if ( pd->getSerial() == pcaster->getSerial32() )
+					if ( pd->getSerial() == pcaster->getSerial() )
 						continue;
 				}
 			}
@@ -1543,7 +1543,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
-				if ( pd && pd->getSerial()!=src->getSerial32()) {
+				if ( pd && pd->getSerial()!=src->getSerial()) {
 					spellFX(spellnumber, src, pd);
 					castStatPumper(SPELL_CURSE, dest, src, flags, param);
 				}
