@@ -8,7 +8,7 @@
 /*!
 \file
 \brief Remote Admin Console Stuff
-\todo port to namespace? - Akron
+\todo port to namespace? - Flameeyes
 \todo add useful commands ;)
 */
 

@@ -14,6 +14,7 @@
 #define __CSERIALIZABLE_H__
 
 #include "common_libs.h"
+#include "inlines.h"
 
 /*!
 \brief Serializable object
@@ -38,10 +39,23 @@ class cSerializable
 private:
 	static SerializableMap objects;	//!< Map of all serialized object
 	uint32_t	serial;		//!< Serial of the object
+	
+	static const uint32_t minCharSerial = 1;
+	static const uint32_t maxCharSerial = 0x3FFFFFFF;
+	static const uint32_t minItemSerial = 0x40000000;
+	static const uint32_t maxItemSerial = 0x7FFFFFFF;
 public:
 	static pChar findCharBySerial(uint32_t serial);
 	static pItem findItemBySerial(uint32_t serial);
 	static pSerializable findBySerial(uint32_t serial);
+
+	//! Tells if a serial is of a character
+	inline static bool isCharSerial( uint32_t ser )
+	{ return between(ser, minCharSerial, maxCharSerial); }
+	
+	//! Tells if a serial is of an item
+	inline static bool isItemSerial( uint32_t ser )
+	{ return between(ser, minItemSerial, maxItemSerial); }
 //@}
 
 public:

@@ -824,13 +824,13 @@ void target_telestuff( pClient client, pTarget t )
 		loc.z+=tileHeight( t->getModel() );
 
 		uint32_t serial = t->buffer[0];
-		if( isCharSerial(serial) ) {
+		if( cSerializable::isCharSerial(serial) ) {
 			pChar pt = cSerializable::findCharBySerial( serial );
 			if(!pt) return;
 
 			pt->MoveTo( loc );
 			pt->teleport();
-		} else if ( isItemSerial(serial) ) {
+		} else if ( cSerializable::isItemSerial(serial) ) {
 			pItem pi = cSerializable::findItemBySerial( serial );
 			if ( ! pi ) return;
 

@@ -17,14 +17,20 @@
 #include "basics.h"
 #include "utils.h"
 
+#include <wefts_mutex.h>
+
 uint32_t cItem::nextSerial = 0x40000000;
 
 /*!
 \brief Gets the next serial
 \see cSerializable
 */
-uint32_t cItem::newSerial()
+uint32_t cItem::getNewSerial()
 {
+	// This is here to avoid serials collisions
+	static Wefts::Mutex m;
+	
+	m.lock();
 	bool firstpass = true;
 	uint32_t fserial = nextSerial;
 	uint32_t nserial;
@@ -34,10 +40,13 @@ uint32_t cItem::newSerial()
 			nserial = 0x40000000;
 		if ( ! firstpass && nserial == fserial )
 		{
-			LogCritical("Too much items created!!!!");
+			LogCritical("Too much items created!!!! No more serials free");
 		}
 		firstpass = false;
 	} while ( cSerializable::findBySerial(nserial) );
+
+	m.unlock();
+	return nserial;
 }
 
 /*!
@@ -96,7 +105,7 @@ static const bool cItem::isHouse(uint16_t id)
 \brief Constructor for new item
 */
 cItem::cItem()
-	: cSerializable(ser)
+	: cSerializable(getNewSerial())
 {
 	resetData();
 }
@@ -104,7 +113,7 @@ cItem::cItem()
 /*!
 \brief Constructor with serial known
 */
-cItem::cItem( uint32_t ser )
+cItem::cItem(uint32_t ser)
 	: cSerializable(ser)
 {
 	resetData();
@@ -813,7 +822,7 @@ void cItem::Refresh()
 
 	//if not, let's check if it's on a char or in a pack
 
-	if( isCharSerial(cont->getSerial()) )//container is a player...it means it's equipped on a character!
+	if( cSerializable::isCharSerial(cont->getSerial()) )//container is a player...it means it's equipped on a character!
 	{
 		// elcabesa this is like a wearit() function, we can use here
 		pChar charcont= (pChar)cont;
@@ -929,7 +938,7 @@ uint32_t cItem::distFrom( pItem pi )
 		if( myomc->isInWorld() )
 			return (uint32_t)dist(myomc->getPosition(),omc->getPosition());
 		else { //this is weared
-			if(isCharSerial(omc->getContainer()->getSerial()))
+			if(cSerializable::isCharSerial(omc->getContainer()->getSerial()))
 			{ //can be weared
 				pChar pc = omc->getContainer();
 				if ( ! pc )
@@ -941,7 +950,7 @@ uint32_t cItem::distFrom( pItem pi )
 		}
 	}
 	else { //omc is weared
-		if(isCharSerial(omc->getContainer()->getSerial()))
+		if(cSerializable::isCharSerial(omc->getContainer()->getSerial()))
 			pChar pc_i = omc->getContainer();
 			if ( ! pc_i )
 				return VERY_VERY_FAR;

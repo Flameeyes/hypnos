@@ -48,7 +48,7 @@ cBook &cBook::operator =(const cBook &oldbook)
 
 /*!
 \brief parse the 0x66 package replied by client for page changes
-\author Akron
+\author Flameeyes
 \param packet pointer to packet got from socket
 \param p index of page to change
 \param l lines to process
@@ -95,7 +95,7 @@ void cBook::changePages(char *packet, uint16_t p, uint16_t l, uint16_t size)
 }
 
 /*!
-\author Akron
+\author Flameeyes
 \brief Manage the doubleclick of a book-type item
 \param client Client which double clicked on the book
 */
@@ -119,7 +119,7 @@ void cBook::doubleClicked(pClient client)
 }
 
 /*!
-\author Akron
+\author Flameeyes
 \brief Sends to the client data for opening book in read/write mode
 \param client client to send the book to
 \note it sends <b>a lot</b> of data to client....
@@ -148,7 +148,7 @@ void cBook::openBookReadOnly(pClient client)
 
 /*!
 \brief send to the specified client the page for reading only
-\author Akron
+\author Flameeyes
 \param client client to send the book page
 \param p index of page to send
 */

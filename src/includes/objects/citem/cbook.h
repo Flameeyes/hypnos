@@ -18,7 +18,7 @@
 
 /*!
 \brief Item class for books
-\author Akron aka Flameeyes (complete rewrite)
+\author Flameeyes
 */
 class cBook : public cItem
 {
@@ -35,7 +35,6 @@ public:
 //@{
 /*!
 \name Constructors and operators
-\author Akron
 */
 public:
 	cBook();

@@ -1691,7 +1691,7 @@ bool nPackets::Received::Doubleclick::execute(pClient client)
 
 	uint32_t serial = LongFromCharPtr(buffer +1);
 
-	if (isCharSerial(serial))
+	if (cSerializable::isCharSerial(serial))
 	{
 		pChar pd = cSerializable::findCharBySerial(serial);
 		if(!pd) return false;
@@ -1757,7 +1757,7 @@ bool nPackets::Received::Singleclick::execute(pClient client)
 {
 	if (length != 5) return false;
 	uint32_t serial = LongFromCharPtr(buffer + 1);
-	if ( isCharSerial( serial ) )
+	if ( cSerializable::isCharSerial( serial ) )
 	{
 		pChar pc = cSerializable::findCharBySerial(serial);
 		if(!pc) return false;
@@ -2131,7 +2131,7 @@ bool nPackets::Received::LoginChar::execute(pClient client)
 
 /*!
 \brief Receive changed book page
-\author Akron & Chronodt
+\author Flameeyes & Chronodt
 \param client client who sent the packet
 \note packet 0x66
 */

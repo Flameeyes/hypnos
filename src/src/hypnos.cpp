@@ -74,7 +74,6 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "version.h"
 #include "calendar.h"
 #include "magic.h"
-#include "races/race.h"
 #include "party.h"
 #include "npcai.h"
 #include "network.h"
@@ -127,7 +126,7 @@ static void item_char_test()
 	{
 		uint32_t ser=objs.getSerial();
 
-		if( isItemSerial( ser ) ) {
+		if( cSerializable::isItemSerial( ser ) ) {
 
 			pItem pi=(pItem)(objs.getObject() );
 
@@ -162,11 +161,7 @@ static void item_char_test()
 				if (! stablemaster )
 				{
 					p_pet->unStable();
-#ifdef SPAR_C_LOCATION_MAP
 					pointers::addToLocationMap( p_pet );
-#else
-					mapRegions->add(p_pet);
-#endif
 					p_pet->timeused_last=getclock();
 					p_pet->time_unused=0;
 					LogMessage("Stabled animal got freed because stablemaster died");
@@ -189,7 +184,7 @@ void checkkey ()
 	char c;
 	int i,j=0;
 
-	// Akron: borland c++ builder doesn't accept kbhit() in windows mode
+	// Flameeyes: borland c++ builder doesn't accept kbhit() in windows mode
 	// Also to force only remote admin under unix, we can remove the kbhit() test
 
 #if !defined __BORLANDC__ && !defined __unix__
@@ -392,11 +387,17 @@ void checkkey ()
 	}
 }
 
+static inline void exitOnError(bool error)
+{
+	if ( ! error ) return;
+	
+	Network->SockClose();
+	DeleteClasses();
+	exit(-1);
+}
+
 int main(int argc, char *argv[])
 {
-#define CIAO_IF_ERROR if (error==1) { Network->SockClose();  \
-	DeleteClasses(); exit(INVALID); }
-
 	int i;
 	unsigned long tempSecs;
 	unsigned long tempMilli;
@@ -447,7 +448,7 @@ int main(int argc, char *argv[])
 
 	StartClasses();
 
-	CIAO_IF_ERROR;
+	exitOnError(error);
 
 	commitserverscript(); // second phase setup
 		
@@ -458,7 +459,7 @@ int main(int argc, char *argv[])
 	//Now lets load the custom scripts, if they have them defined...
 	i=0;
 
-	CIAO_IF_ERROR; // errors here crashes further startup process. so stop insted of crash
+	exitOnError(error); // errors here crashes further startup process. so stop insted of crash
 
 	ConOut("\n");
 	SetGlobalVars();
@@ -488,7 +489,7 @@ int main(int argc, char *argv[])
 	error=Network->faul; // i hope i can find a cleaner solution for that, but this works !!!
 	// has to here and not at the cal cause it would get overriten later
 
-	CIAO_IF_ERROR;
+	exitOnError(error);
 
 	ConOut("Loading areas...");
 	Areas->loadareas();
@@ -504,16 +505,14 @@ int main(int argc, char *argv[])
 	loadregions();
 	ConOut("[DONE]\n");
 
-	cMsgBoard::MsgBoardMaintenance();
-
-	CIAO_IF_ERROR;
+	exitOnError(error);
 
 	ConOut("\n");
 
 	data::init(); // Luxor
 
 	if (!keeprun) error = 1;
-	CIAO_IF_ERROR
+	exitOnError(error)
 
 	ConOut("Loading Teleport...");
 	read_in_teleport();
@@ -525,14 +524,12 @@ int main(int argc, char *argv[])
 	ConOut("Loading vital scripts... ");
 	loadmetagm();
 	ConOut("[DONE]\n");
-//	ConOut("Loading Hypnos extensions...\n");
 
 	npcs::initNpcSpells();
 
 	TelnetInterface.Init();	// initialise remote admin interface
 
-	initAmxEvents();
-	LoadOverrides ();
+	LoadOverrides();
 	cScheduler::init();
 	Calendar::loadCalendarScp();
 
@@ -540,12 +537,12 @@ int main(int argc, char *argv[])
 
 	serverstarttime=getclock();
 
-	CIAO_IF_ERROR;
+	exitOnError(error);
 
 	ConOut("\n");
 	cwmWorldState->loadNewWorld();
 
-	CIAO_IF_ERROR; // LB prevents file corruption
+	exitOnError(error); // LB prevents file corruption
 
 	ConOut("Clearing all trades...");
 	clearalltrades();
@@ -569,8 +566,6 @@ int main(int argc, char *argv[])
 	starttime=getclock();
 	endtime=0;
 	lclock=0;
-	ConOut("Initializing Que System...");
-	initque();
 
 	ConOut(" [DONE]\nLoading custom titles...");
 	loadcustomtitle();
@@ -604,12 +599,12 @@ int main(int argc, char *argv[])
 	ConOut("\nBased on NoX-Wizard 20031228");
 	ConOut("\nWeb-site : http://hypnos.berlios.de/\n");
 	ConOut("\n");
-	ConOut("Copyright (C) 1997, 98 Marcus Rating (Cironian)\n\n");
+	ConOut("Original copyright (C) 1997, 98 Marcus Rating (Cironian)\n\n");
 	ConOut("This program is free software; you can redistribute it and/or modify\n");
 	ConOut("it under the terms of the GNU General Public License as published by\n");
 	ConOut("the Free Software Foundation; either version 2 of the License, or\n");
 	ConOut("(at your option) any later version.\n\n");
-	ConOut("Running on %s\n", getOSVersionString());
+	ConOut("Running on %s\n", getOSVersionString().c_str() );
 
 	
 	if (SrvParms->server_log)
@@ -617,7 +612,7 @@ int main(int argc, char *argv[])
 
 	serverstarttime=getclock(); // dont remove, its absolutly necassairy that its 3 times in the startup sequence for several timing reasons.
 
-	CIAO_IF_ERROR;
+	exitOnError(error);
 
 	ConOut("\nMap size : %dx%d", map_width, map_height);
 
@@ -906,13 +901,13 @@ void enlist(int s, int listnum) // listnum is stored in items morex
 
 	int x,j;
 //	char sect[512];
-    cScpIterator* iter = NULL;
-    char script1[1024];
+	cScpIterator* iter = NULL;
+	char script1[1024];
 
 	//sprintf(sect, "SECTION ITEMLIST %i", listnum);
 
 	iter = Scripts::Items->getNewIterator("SECTION ITEMLIST %i", listnum);
-    if (iter==NULL) return;
+	if (iter==NULL) return;
 
 	int loopexit=0;
 	do
@@ -970,7 +965,7 @@ void InitMultis()
 //	pChar pc; // unused variable
 	for( objs.rewind(); !objs.IsEmpty(); objs++ )
 	{
-		if ( !isCharSerial(objs.getSerial()) ) continue;
+		if ( !cSerializable::isCharSerial(objs.getSerial()) ) continue;
 		pChar pc_i = (pChar)(objs.getObject());
 		if(!pc_i)
 			continue;
@@ -990,7 +985,7 @@ void InitMultis()
 	{
 	/*for (i=0;i<itemcount;i++)
 	{*/
-		if ( isCharSerial(objs.getSerial()) ) continue;
+		if ( cSerializable::isCharSerial(objs.getSerial()) ) continue;
 		pi=(pItem)(objs.getObject());
 		if(!pi)
 			continue;
@@ -1017,10 +1012,8 @@ void StartClasses()
 	cwmWorldState=new CWorldMain;
 	mapRegions=new cRegion;
 	Boats=new cBoat;
-	Guilds=new cGuilds;
 
 	Network=new cNetwork;
-	//Respawn=new cRespawn;
 	Spawns=new cSpawns;
 	Areas=new cAreas;
 	Restocks= new cRestockMng();
@@ -1033,15 +1026,12 @@ void DeleteClasses()
 	delete cwmWorldState;
 	delete mapRegions;
 	delete Boats;
-	delete Guilds;
 
 	delete Network;
-	//delete Respawn;
 	delete Spawns;
 	delete Areas;
 
 	delete Restocks;
-	//objects.clear();
 }
 ////////////////////////////
 // garbage collection
@@ -1072,13 +1062,12 @@ void checkGarbageCollect () // Remove items which were in deleted containers
 
 	do
 	{
-
 		removed=0;
 
 		for( objs.rewind(); !objs.IsEmpty(); objs++ )
 		{
 
-			if( isCharSerial( objs.getSerial() ) )
+			if( cSerializable::isCharSerial( objs.getSerial() ) )
 			{
 				if( first ) {
 					pChar pc=(pChar)(objs.getObject());
@@ -1093,18 +1082,13 @@ void checkGarbageCollect () // Remove items which were in deleted containers
 			}
 			else {
 
-				pItem pi=(pItem)(objs.getObject());
+				pItem pi=dynamic_cast<pItem>(objs.getObject());
 
 				if( pi->isInWorld() )
 					continue;
 
-				// find the container if theres one.
-				pChar pc_j= cSerializable::findCharBySerial(pi->getContSerial());
-				pItem pi_j= cSerializable::findItemBySerial(pi->getContSerial());
-
 				// if container serial is invalid
-				if( ((pc_j==NULL) ) &&
-					((pi_j==NULL) ) )
+				if( ! pi->getContainer() )
 				{
 					pi->Delete();
 					++removed;

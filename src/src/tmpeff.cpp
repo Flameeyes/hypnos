@@ -1100,22 +1100,22 @@ cTempfx::cTempfx( uint32_t nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t
 	//
 	//	Set serials
 	//
-	if ( isCharSerial(nSrc) ) {
+	if ( cSerializable::isCharSerial(nSrc) ) {
 		if ( !cSerializable::findCharBySerial(nSrc) )
 			return;
 	}
 
-	if ( isItemSerial(nSrc) ) {
+	if ( cSerializable::isItemSerial(nSrc) ) {
 		if ( !cSerializable::findItemBySerial(nSrc) )
 			return;
 	}
 
-	if ( isCharSerial(nDest) ) {
+	if ( cSerializable::isCharSerial(nDest) ) {
 		if ( !cSerializable::findCharBySerial(nDest) )
 			return;
 	}
 
-	if ( isItemSerial(nDest) ) {
+	if ( cSerializable::isItemSerial(nDest) ) {
 		if ( !cSerializable::findItemBySerial(nDest) )
 			return;
 	}

@@ -5,10 +5,6 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Implementation of cChar class
-*/
 
 #include "common_libs.h"
 #include "sregions.h"
@@ -28,14 +24,19 @@
 #include "utils.h"
 #include "targeting.h"
 
+#include <wefts_mutex.h>
+
 uint32_t cChar::nextSerial = 1;
 
 /*!
 \brief Gets the next serial
 \see cSerializable
 */
-uint32_t cChar::newSerial()
+uint32_t cChar::getNewSerial()
 {
+	static Wefts::Mutex m;
+	
+	m.lock();
 	bool firstpass = true;
 	uint32_t fserial = nextSerial;
 	uint32_t nserial;
@@ -45,14 +46,17 @@ uint32_t cChar::newSerial()
 			nserial = 1;
 		if ( ! firstpass && nserial == fserial )
 		{
-			LogCritical("Too much chars created!!!!");
+			LogCritical("Too much chars created!!!! No more serials free");
 		}
 		firstpass = false;
 	} while ( cSerializable::findBySerial(nserial) );
+	
+	m.unlock();
+	return nserial;
 }
 
 cChar::cChar()
-	: cSerializable(), cEventThroewr(eventsNumber())
+	: cSerializable(getNewSerial()), cEventThroewr(eventsNumber())
 {
 	resetData();
 }
@@ -797,7 +801,7 @@ uint32_t cChar::distFrom(pItem pi)
 
 	if(cont->isInWorld())
 		return (uint32_t)dist(getPosition(),cont->getPosition());
-	else if(isCharSerial(cont->getContSerial())) //can be weared
+	else if(cSerializable::isCharSerial(cont->getContSerial())) //can be weared
 		return distFrom( cSerializable::findCharBySerial(cont->getContSerial()) );
 	else
 		return VERY_VERY_FAR; //not world, not weared.. and another cont can't be
@@ -819,7 +823,7 @@ bool cChar::canSee( pObject obj )
 		return false;
 
 	uint32_t ser = obj.getSerial();
-	if ( isCharSerial( ser ) ) {
+	if ( cSerializable::isCharSerial( ser ) ) {
 		pChar pc = pChar( &obj );
 		if ( !IsGM() ) { // Players only
 			if ( pc->IsHidden() ) // Hidden chars cannot be seen by Players
@@ -834,7 +838,7 @@ bool cChar::canSee( pObject obj )
 		}
 	}
 
-	/*if ( isItemSerial( ser ) ) { //Future use
+	/*if ( cSerializable::isItemSerial( ser ) ) { //Future use
 	}*/
 	return true;
 }

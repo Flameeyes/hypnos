@@ -8,8 +8,8 @@
 /*!
 \file
 \brief House System Functions' Bodies
-\todo a lot of functions need rewrite, now are commented out - Akron
-\todo like other parts of NoX, houses should be moved into "House" namespace, IMHO - Akron
+\todo a lot of functions need rewrite, now are commented out - Flameeyes
+\todo like other parts of NoX, houses should be moved into "House" namespace, IMHO - Flameeyes
 */
 
 #include "common_libs.h"
@@ -689,7 +689,7 @@ void killkeys(uint32_t serial) // Crackerjack 8/11/99
 	cAllObjectsIter objs;
 	pItem pi = NULL;
 	for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
-		if ( !isItemSerial( objs.getSerial() ) )
+		if ( !cSerializable::isItemSerial( objs.getSerial() ) )
 			continue;
 
 		if ( (pi=static_cast<pItem>(objs.getObject())) ) {

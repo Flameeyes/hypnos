@@ -85,7 +85,7 @@ namespace pointers {
 	{
 		if( pObject != 0 )
 		{
-			if( isItemSerial( pObject->getSerial() ) )
+			if( cSerializable::isItemSerial( pObject->getSerial() ) )
 			{
 				if( static_cast<pItem>(pObject)->isInWorld() )
 					addItemToLocationMap( static_cast<pItem>(pObject) );
@@ -101,7 +101,7 @@ namespace pointers {
 	{
 		if( pObject != 0 )
 		{
-			if( isItemSerial( pObject->getSerial() ) )
+			if( cSerializable::isItemSerial( pObject->getSerial() ) )
 			{
 				if( static_cast<pItem>(pObject)->isInWorld() )
 				{
@@ -121,7 +121,7 @@ namespace pointers {
 	{
 		if( pObject != 0 )
 		{
-			if( isItemSerial( pObject->getSerial() ) )
+			if( cSerializable::isItemSerial( pObject->getSerial() ) )
 			{
 				if( static_cast<pItem>(pObject)->isInWorld() )
 				{
@@ -195,7 +195,7 @@ namespace pointers {
 
 		if( pObject != 0 )
 		{
-			if( isItemSerial( pObject->getSerial() ) )
+			if( cSerializable::isItemSerial( pObject->getSerial() ) )
 			{
 				if( static_cast<pItem>(pObject)->isInWorld() )
 					validCall = true;
@@ -315,7 +315,7 @@ namespace pointers {
 
 		if( pObject != 0 )
 		{
-			if( isItemSerial( pObject->getSerial() ) )
+			if( cSerializable::isItemSerial( pObject->getSerial() ) )
 			{
 				pSelf = static_cast<pItem>(pObject);
 				if( pSelf->isInWorld() )
@@ -425,7 +425,7 @@ namespace pointers {
 
 		for( objs.rewind(); !objs.IsEmpty(); objs++ )
 		{
-			if( isCharSerial( objs.getSerial() ) ) {
+			if( cSerializable::isCharSerial( objs.getSerial() ) ) {
 				pc=(pChar)objs.getObject();
 				{
 					if( pc->isStabled() ) {

@@ -8,7 +8,7 @@
 /*!
 \file
 \brief Message board functions
-\author Dupois and Akron (rewrite and cleanup)
+\author Dupois and Flameeyes (rewrite and cleanup)
 \note rewrite by Chronodt (march 2004) and by Flameeyes (august 2004)
 */
 
@@ -54,7 +54,7 @@ public:
 
 /*!
 \brief Message boards handling
-\author Akron
+\author Flameeyes
 \since 0.82r3
 */
 class cMsgBoard : public cItem

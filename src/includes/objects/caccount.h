@@ -28,30 +28,30 @@ protected:
 	static Wefts::Mutex global_mt;
 		//!< Global mutex used while saving or loading
 
-	static cAccounts accounts;			//!< All the accounts [Hash-map]
+	static cAccounts accounts;		//!< All the accounts [Hash-map]
 
 public:
-	static void saveAll();				//!< Globally save accounts
-	static void loadAll();				//!< Globally load accounts
+	static void saveAll();			//!< Globally save accounts
+	static void loadAll();			//!< Globally load accounts
 
 	static pAccount findAccount(std::string name);
 
 protected:
-	ZThread::FastMutex local_mt;			//!< Local mutex, used for logins and other things
-	std::string name; 				//!< Account name
-	std::string password;				//!< Account password (crypted)
-	CryptoType ctype;				//!< Type of crypted password
-	uint8_t privlevel;				//!< Priviledge level
-	int32_t creationdate;				//!< Epoch of creation date
-	pPC banAuthor;					//!< Ban Author (if banned)
-	int32_t banReleaseTime;				//!< Epoch of release time of ban
-	uint32_t lastConnIP;				//!< Last connection IP
-	int32_t lastConnTime;				//!< Last connection epoch
+	Wefts::Mutex local_mt;			//!< Local mutex, used for logins and other things
+	std::string name; 			//!< Account name
+	std::string password;			//!< Account password (crypted)
+	CryptoType ctype;			//!< Type of crypted password
+	uint8_t privlevel;			//!< Priviledge level
+	int32_t creationdate;			//!< Epoch of creation date
+	pPC banAuthor;				//!< Ban Author (if banned)
+	int32_t banReleaseTime;			//!< Epoch of release time of ban
+	uint32_t lastConnIP;			//!< Last connection IP
+	int32_t lastConnTime;			//!< Last connection epoch
 
-	PCVector chars;					//!< Characters of the account
-	pPC lastchar;					//!< Last character used
+	PCVector chars;				//!< Characters of the account
+	pPC lastchar;				//!< Last character used
 
-	pClient client;					//!< Client in use
+	pClient client;				//!< Client in use
 public:
 	const uint8_t getCharsNumber() const;
 

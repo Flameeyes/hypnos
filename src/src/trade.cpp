@@ -34,7 +34,7 @@ void restock(bool total)
 	pItem pi;
 	for( objs.rewind(); !objs.IsEmpty(); objs++ )
 	{
-		if( isCharSerial( objs.getSerial() ) )
+		if( cSerializable::isCharSerial( objs.getSerial() ) )
 			continue;
 
 		pi = (pItem)(objs.getObject());

@@ -14,15 +14,13 @@
 #define __INLINES_H__
 
 #include "basics.h"
-
-// Macros & Templates by Xan :
+#include "data.h"
 
 template<typename T> inline T qmax(T a, T b) { return a > b ? a : b; }
 template<typename T> inline T qmin(T a, T b) { return a < b ? a : b; }
 template<typename T> inline bool between(T val, T min, T max)
 { return val >= min && val <= max; }
 
-// this delete is safe from multiple deletes of same ptr
 template<typename T> inline void safedelete(T*& p) { delete p; p = NULL; }
 template<typename T> inline void safedeletearray(T*& p) { delete[] p; p = NULL; }
 template<typename T> inline void qswap(T& a, T& b) { T dummy; dummy = a; a = b; b = dummy; }
@@ -37,10 +35,6 @@ inline void SetTimerSec( uint32_t *timer, const short seconds)
 {
 	*timer=seconds * SECS /*+ getclock()*/;
 }
-
-inline bool isCharSerial( long ser ) { return ( ser > 0 && ser <  0x40000000 ); }
-//ndEndy 0 is not a char serial, see curr_charSerial note
-inline bool isItemSerial( long ser ) { return ( /*ser >= 0 && */ser >= 0x40000000 ); }
 
 inline std::string toString(int value)
 {
@@ -122,7 +116,7 @@ inline uint16_t goldsfx(uint16_t goldtotal)
 \brief count the number of bit set
 \return int number of bit set
 \param number the number
-\remark is this really usefull ?
+\todo is this really usefull ?
 */
 inline const int numbitsset( int number )
 {
@@ -240,11 +234,10 @@ inline void ShortToCharPtr(const uint16_t i, unsigned char *p)
 \brief Tells if a given point is a valid coordinate
 \param p Point to test
 \return true if the point is in the map, else false
-\todo Change the MAP_WIDTH, MAP_HEIGHT with the REAL map dimensions
 */
 bool isValidCoord( sPoint p )
 {
-	return ( p.x < MAP_WIDTH && p.y < MAP_HEIGHT );
+	return p.x < map_width*8 && p.y < map_height*8;
 }
 
 #endif //__INLINES_H__

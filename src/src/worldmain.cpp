@@ -1010,11 +1010,11 @@ void CWorldMain::loadNewWorld() // Load world from NXW*.WSC
 	pChar pc = NULL;
 	pItem pi = NULL;
 	for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
-		if ( isCharSerial( objs.getSerial() ) && (pc=static_cast<pChar>(objs.getObject())) ) {
+		if ( cSerializable::isCharSerial( objs.getSerial() ) && (pc=static_cast<pChar>(objs.getObject())) ) {
 			if( pc->dead && pc->HasHumanBody() )
 				pc->morph( ((pc->getId() == BODY_FEMALE) ? BODY_DEADFEMALE : BODY_DEADMALE ), 0, 0, 0, 0, 0, NULL, true);
 		}
-		if ( isItemSerial( objs.getSerial() ) && (pi=static_cast<pItem>(objs.getObject())) ) {
+		if ( cSerializable::isItemSerial( objs.getSerial() ) && (pi=static_cast<pItem>(objs.getObject())) ) {
 			if ( pi->isSpawner() )
 				Spawns->loadFromItem(pi);
 		}
@@ -1576,7 +1576,7 @@ void CWorldMain::SaveItem( pItem pi )
 		fprintf(iWsc, "uint32_t %i\n", pi->getSerial());
 		fprintf(iWsc, "NAME %s\n", pi->getCurrentName().c_str());
 		//<Luxor>: if the item is beard or hair of a morphed char, we must save the original ID and COLOR value
-		if ( (pi->layer == LAYER_BEARD || pi->layer == LAYER_HAIR) && isCharSerial( pi->getContSerial() ) ) {
+		if ( (pi->layer == LAYER_BEARD || pi->layer == LAYER_HAIR) && cSerializable::isCharSerial( pi->getContSerial() ) ) {
 			pChar pc_morphed = (pChar)(pi->getContainer());
 			if ( pc_morphed ) {
 				if (pc_morphed->morphed) {
@@ -1780,7 +1780,7 @@ void CWorldMain::realworldsave ()
 	pItem pi = NULL;
 	for( objs.rewind(); !objs.IsEmpty(); objs++ )
 	{
-		if( isCharSerial( objs.getSerial() ) )
+		if( cSerializable::isCharSerial( objs.getSerial() ) )
 			SaveChar( (pChar)(objs.getObject()) );
 		else {
 			pi = static_cast<pItem>(objs.getObject());

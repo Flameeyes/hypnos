@@ -508,7 +508,7 @@ void cSpawnDinamic::doSpawn()
 void cSpawnDinamic::remove( uint32_t serial )
 {
 	
-	if( isCharSerial( serial ) ) {
+	if( cSerializable::isCharSerial( serial ) ) {
 		uint32_set::iterator iter( this->npc_spawned.find( serial ) );
 		if( iter!=this->npc_spawned.end() ) {
 			this->npc_spawned.erase( iter );

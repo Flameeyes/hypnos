@@ -15,7 +15,7 @@
 #include "common_libs.h"
 
 /*!
-\author Akron
+\author Flameeyes
 \brief return the start of the line passed
 \param line string that represent the line
 \return the pointer to the start of the line, chopping out all initial space characters
@@ -29,7 +29,7 @@ char *linestart(char *line)
 }
 
 /*!
-\author Akron
+\author Flameeyes
 \brief capitalize a c++ string
 \param str the string to capitalize
 \since 0.82r3
@@ -42,7 +42,7 @@ void strupr(std::string &str)
 }
 
 /*!
-\author Akron
+\author Flameeyes
 \brief lowerize a c++ string
 \param str the string to lowerize
 \since 0.82r3

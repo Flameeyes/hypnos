@@ -78,7 +78,7 @@ cCharTarget::~cCharTarget()
 
 bool cCharTarget::isValid()
 {
-	return ( type==0 ) && ( isCharSerial( clicked ) && ( MAKE_CHAR_REF( clicked )!=NULL ) );
+	return ( type==0 ) && ( cSerializable::isCharSerial( clicked ) && ( MAKE_CHAR_REF( clicked )!=NULL ) );
 }
 
 void cCharTarget::error(pClient client)
@@ -96,7 +96,7 @@ cItemTarget::~cItemTarget()
 
 bool cItemTarget::isValid()
 {
-	return ( type==0 ) && ( isItemSerial( clicked ) && MAKE_ITEM_REF( clicked )!=NULL );
+	return ( type==0 ) && ( cSerializable::isItemSerial( clicked ) && MAKE_ITEM_REF( clicked )!=NULL );
 }
 
 void cItemTarget::error(pClient client)

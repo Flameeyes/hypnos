@@ -92,7 +92,7 @@ void cItem::singleClick(pClient client )
 	}
 
 	// Click in a Player Vendor item, show description, price and return
-	if (!isInWorld() && isItemSerial(getContSerial()))
+	if (!isInWorld() && cSerializable::isItemSerial(getContSerial()))
 	{
 		pItem cont = getContainer();
 		if( cont ) {
@@ -284,14 +284,14 @@ void cItem::doubleClick(pClient client)
 	pChar itmowner = getPackOwner();
 
 	if(!isInWorld()) {
-		if (isItemSerial(getContSerial()) && type != ITYPE_CONTAINER)
+		if (cSerializable::isItemSerial(getContSerial()) && type != ITYPE_CONTAINER)
 		{// Cant use stuff that isn't in your pack.
 
 			if ( itmowner && tmowner->getSerial()!=pc->getSerial() )
 					return;
 		}
 		else
-			if (isCharSerial(getContSerial()) && type!=(uint32_t)INVALID)
+			if (cSerializable::isCharSerial(getContSerial()) && type!=(uint32_t)INVALID)
 			{// in a character.
 				pChar wearedby = cSerializable::findCharBySerial(getContSerial());
 				if ( wearedby )
@@ -428,13 +428,13 @@ void cItem::doubleClicked(pClient client)
 	case ITYPE_NODECAY_ITEM_SPAWNER: // nodecay item spawner..Ripper
 	case ITYPE_DECAYING_ITEM_SPAWNER: // decaying item spawner..Ripper
 		if (isInWorld() || (pc->IsGMorCounselor()) || // Backpack in world - free access to everyone
-			( isCharSerial(getContSerial()) && getContSerial()==pc->getSerial()))	// primary pack
+			( cSerializable::isCharSerial(getContSerial()) && getContSerial()==pc->getSerial()))	// primary pack
 		{
 			pc->showContainer(this);
 			pc->objectdelay=0;
 			return;
 		}
-		else if( isItemSerial(getContSerial()) )
+		else if( cSerializable::isItemSerial(getContSerial()) )
 		{
 			pItem pio = getOutMostCont();
 			if (pio->getContSerial()==pc->getSerial() || pio->isInWorld() )

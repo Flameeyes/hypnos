@@ -498,8 +498,8 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 	if( !pc_currchar ) return;
 
 	//Luxor: not-movable items
-	/*if (pi->magic == 2 || (isCharSerial(pi->getContSerial()) && pi->getContSerial() != pc_currchar->getSerial()) ) {
-		if (isCharSerial(pi->getContSerial())) {
+	/*if (pi->magic == 2 || (cSerializable::isCharSerial(pi->getContSerial()) && pi->getContSerial() != pc_currchar->getSerial()) ) {
+		if (cSerializable::isCharSerial(pi->getContSerial())) {
 			pChar pc_i = cSerializable::findCharBySerial(pi->getContSerial());
 			if ( pc_i )
 //				pc_i->getClient()->sysmessage("Warning, backpack bug located!");
@@ -736,7 +736,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 					pin->setContainer(pi->getContainer());	//Luxor
 					pin->setPosition( pi->getPosition() );
 
-					/*if( !pin->isInWorld() && isItemSerial( pin->getContainer()->getSerial() ) )
+					/*if( !pin->isInWorld() && cSerializable::isItemSerial( pin->getContainer()->getSerial() ) )
 						pin->SetRandPosInCont( (pItem)pin->getContainer() );*/
 
 					statusWindow(pc_currchar, true); //since a new item has been created, it is better to do directly the statusWindow

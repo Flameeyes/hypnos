@@ -8,7 +8,7 @@
 /*!
 \file
 \brief Header for conversion functions
-\note documentation ported to doxygen by Akron
+\note documentation ported to doxygen by Flameeyes
 */
 #ifndef __BASICS_H__
 #define __BASICS_H__

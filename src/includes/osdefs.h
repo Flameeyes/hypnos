@@ -10,7 +10,7 @@
 \brief header regarding os definitions
 \author ITB CompuPhase <info@compuphase.com>
 \note Copyright 1998-2000, ITB CompuPhase, The Netherlands.
-\note 2003/03/10 Added doxygen documentation - Akron
+\note 2003/03/10 Added doxygen documentation - Flameeyes
 
 Every compiler uses different "default" macros to indicate the mode
 it is in. Throughout the source, we use the Borland C++ macros, so
