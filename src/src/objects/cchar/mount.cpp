@@ -157,9 +157,9 @@ void cChar::mountHorse( pNPC mount )
 	}
 
 	// if this is a gm lets tame the animal in the process
-	if (IsGM())
+	if (isGM())
 	{
-		mount->setOwnerSerial32( getSerial() );
+		mount->setOwner( this );
 		mount->tamed = true;
 		mount->npcaitype = NPCAI_GOOD;
 	}

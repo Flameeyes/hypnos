@@ -124,8 +124,8 @@ cItem::resetData()
 	flags = 0ull;
 	// Hypnos OK
 
-	setOwnerSerial32Only(INVALID);
-	setMultiSerial32Only(INVALID);//Multi serial
+	setOwner(NULL);
+	setMulti(NULL);//Multi serial
 	
 	setCurrentName("#");
 	setSecondaryName("#");
@@ -241,7 +241,6 @@ cItem& cItem::operator=(const cItem& b)
         rank = b.rank;
         good = b.good;
         rndvaluerate = b.rndvaluerate;
-        //setMultiSerial32(b.getMultiSerial32());
         setId( b.getId() );
         //setPosition(b.getPosition());
         //setOldPosition(b.getOldPosition());
@@ -292,7 +291,6 @@ cItem& cItem::operator=(const cItem& b)
         gatetime = b.gatetime;
         gatenumber = b.gatenumber;
         decaytime = b.decaytime;
-        //setOwnerSerial32(b.getOwnerSerial32());
         visible = b.visible;
         spawnserial = INVALID;
         spawnregion = INVALID;
@@ -403,22 +401,17 @@ bool cItem::doDecay(bool dontDelete = false)
 	//Multis
 	if ( !isFieldSpellItem() && !corpse )
 	{
-		if ( getMultiSerial32() == INVALID )
-		{
-			pItem pi_multi = findmulti(getPosition());
-			if ( pi_multi )
-			{
-				if ( pi_multi->more4 == 0 )
-				{
-					setDecayTime();
-					SetMultiSerial(pi_multi->getSerial());
-					return false;
-				}
-			}
-		}
-		else
+		if ( getMulti() )
 		{
 			setDecayTime();
+			return false;
+		}
+		
+		pItem pi_multi = findmulti(getPosition());
+		if ( pi_multi && pi_multi->more1.moreb4 == 0 )
+		{
+			setDecayTime();
+			SetMultiSerial(pi_multi->getSerial());
 			return false;
 		}
 	}
@@ -532,30 +525,13 @@ const magic::FieldType cItem::isFieldSpellItem() const
 	return fieldInvalid;
 }
 
-void cItem::SetMultiSerial(int32_t mulser)
-{
-	if (getMultiSerial32()!=INVALID)	// if it was set, remove the old one
-		pointers::delFromMultiMap(this);
-
-	setMultiSerial32Only(mulser);
-
-	if (getMultiSerial32()!=INVALID)		// if there is multi, add it
-		pointers::addToMultiMap(this);
-}
-
 /*!
 \author Anthalir
 */
 void cItem::MoveTo(sLocation newloc)
 {
-#ifdef SPAR_I_LOCATION_MAP
 	setPosition( newloc );
 	pointers::updateLocationMap(this);
-#else
-	mapRegions->remove(this);
-	setPosition( newloc );
-	mapRegions->add(this);
-#endif
 }
 
 /*!

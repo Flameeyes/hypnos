@@ -426,9 +426,6 @@ namespace pointers {
 					}
 					if( pc->mounted )
 						pMounted[pc->getOwnerSerial32()]=pc;
-
-					pChar own=cSerializable::findCharBySerial(pc->getOwnerSerial32());
-					pc->setOwnerSerial32( own->getSerial(), true );
 				}
 			}
 			else {
@@ -436,9 +433,6 @@ namespace pointers {
 				pItem pi = (pItem)objs.getObject();
 
 				updContMap(pi);
-
-				pChar own=cSerializable::findCharBySerial(pi->getOwnerSerial32());
-				pi->setOwnerSerial32( own->getSerial(), true );
 			}
 		}
 

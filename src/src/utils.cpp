@@ -254,7 +254,7 @@ void dooruse(pChar pc, pItem pi)
 	if ( ! pi_house->isHouse() )
 		return;
 	
-	houseowner_serial=pi2->getOwnerSerial32();
+	houseowner_serial=pi2->getOwner()->getSerial();
 	j=on_hlist(pi_house, pc->getSerial(), NULL);
 	
 	if ( j != H_FRIEND && ( pi->getOwner() != pc ) )

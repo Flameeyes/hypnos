@@ -73,7 +73,7 @@ void cChar::doubleClick(pClient client)
 		case	0x0124	:
 			if ( npc )
 			{
-				if ( getOwnerSerial32() == clicker->getSerial() || clicker->IsGMorCounselor() )
+				if ( getOwner() == clicker || clicker->IsGMorCounselor() )
 				{
 					if (pack) {
 						clicker->showContainer(pack);

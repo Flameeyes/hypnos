@@ -747,7 +747,7 @@ int response(pClient client)
 							//pet release code here
 							pc_map->ftargserial=INVALID;
 							pc_map->npcWander=WANDER_FREELY_CIRCLE;
-							pc_map->setOwnerSerial32(INVALID);
+							pc_map->setOwner(NULL);
 							pc_map->taming=2000;//he cannot be retamed	Sparhawk	This is bullshit!!!
 							//taken from 6904t2(5/10/99) - AntiChrist
 							pc_map->tamed = false;
@@ -774,7 +774,7 @@ int response(pClient client)
 						//pet release code here
 						pc_map->ftargserial=INVALID;
 						pc_map->npcWander=WANDER_FREELY_CIRCLE;
-						pc_map->setOwnerSerial32(INVALID);
+						pc_map->setOwner(NULL);
 						pc_map->taming=2000;//he cannot be retamed
 						pc_map->tamed = false;
 						pc_map->talkAll("*%s appears to have decided that it is better off without a master *", false, pc_map->getCurrentName().c_str());

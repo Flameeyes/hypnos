@@ -1256,10 +1256,10 @@ void nSkills::target_animalLore(pClient client, pTarget t )
 	{
         	if (target->checkSkill( skAnimalLore, 0, 1000))
         	{
-			pChar target_owner = cSerializable::findCharBySerial( target->getOwnerSerial32() );
+			pChar target_owner = target->getOwner();
 			if(!target_owner) return;
 
-			sprintf(temp, "Attack [%i] Defense [%i] Taming [%i] Hit Points [%i] is Loyal to: [%s]", target->att, target->def, target->taming/10, target->hp, (target->tamed)? target_owner->getCurrentName().c_str() : "himself" );
+			sprintf(temp, "Attack [%i] Defense [%i] Taming [%i] Hit Points [%i] is Loyal to: [%s]", target->att, target->def, target->taming/10, target->hp, target->isTamed() ? target_owner->getCurrentName().c_str() : "himself" );
 			target->emote(s,temp,1);
         	}
         	else

@@ -232,39 +232,36 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 	{
 		pItem pi_multi=findmulti( pc->getPosition() );
 
-		if( !pi_multi &&(pc->getMultiSerial32() != INVALID))
-		{
-			pc->setMultiSerial(INVALID); // Elcabesa bug-fix  we MUST use setmultiserial  NOT pc->multis = -1;
-			//xan : probably the plr has exited the boat walking!
-			//pc->multi1 = pc->multi2 = pc->multi3 = pc->multi4 = 0xFF;
-			pc->setMultiSerial32Only(-1);
-		}
+		if( !pi_multi && pc->getMulti() )
+			pc->setMulti(NULL);
 
 		if(pi_multi)
 		{
-			if (pc->getMultiSerial32() < 0)
+			if (!pc->getMulti())
 			{
 				//xan : probably the plr has entered the boat walking!
-				pc->setMultiSerial32Only(INVALID);
+				pc->setMulti(NULL);
 				pItem boat = Boats->GetBoat(pc->getPosition());
-				if (boat!=NULL) {
-					pc->setMultiSerial( boat->getSerial() );
+				if (boat)
+				{
+					pc->setMulti(boat);
 
 					NxwCharWrapper pets;
 					pets.fillOwnedNpcs( pc, false, true );
-					for( pets.rewind(); !pets.isEmpty(); pets++ ) {
+					for( pets.rewind(); !pets.isEmpty(); pets++ )
+					{
 
 						pChar pc_b=pets.getChar();
-						if( pc_b ) {
-							pc->MoveTo( boat->getPosition().x+1, boat->getPosition().y+1, boat->getPosition().z+2 );
-							pc->setMultiSerial( boat->getSerial() );
-							pc_b->teleport();
-						}
+						if (! pc_b ) return;
+						
+						pc_b->MoveTo( boat->getPosition() + sLocation(1,1,2) );
+						pc_b->setMulti( boat() );
+						pc_b->teleport();
 					}
 				}
 			}
 
-			if ( pi_multi && pi_multi->IsHouse() )
+			if ( pi_multi->IsHouse() )
 			{
 				uint32_t sx, sy, ex, ey;
 				j=on_hlist(pi_multi, pc->getSerial(), NULL);

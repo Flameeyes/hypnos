@@ -40,23 +40,26 @@ public:
 	virtual void Delete() = 0;
 //@{
 /*!
-\name Serials
+\name Multi and Owners
 */
 protected:
-	uint32_t		multi_serial;	//!< multi serial of the object (don't know what it is used for)
+	pItem multi;	//!< Multi where the object is
+	pChar owner;	//!< Owner of the object
 
 public:
-	//! return the object's multi serial
-	inline const uint32_t getMultiSerial() const
-	{ return multi_serial; }
+	//! Returns the object's multi serial
+	pItem getMulti() const
+	{ return multi; }
 
-	//! Set the multi serial of the object
-	inline void setMultiSerial(uint32_t newserial)
-	{ multi_serial = newserial; }
-
-//!\todo Need to reactive this
-//	inline void setOwnerSerial32Only(uint32_t newserial)
-//	{ owner_serial = newserial; }
+	//! Sets the multi of the object
+	virtual void setMulti(pItem nmulti)
+	
+	//! Returns the object's owner
+	pChar getOwner() const
+	{ return owner; }
+	
+	//! Sets the object's owner
+	virtual void setOwner(pChar nowner);
 //@}
 
 //@{

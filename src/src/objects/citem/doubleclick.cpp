@@ -725,7 +725,7 @@ void cItem::doubleClicked(pClient client)
 			vendor->dir = pc->dir;
 			vendor->npcWander = WANDER_NOMOVE;
 			vendor->SetInnocent();
-			vendor->setOwnerSerial32( pc->getSerial() );
+			vendor->setOwner( pc );
 			vendor->tamed = false;
 			Delete();
 			vendor->teleport();

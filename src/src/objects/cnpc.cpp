@@ -132,7 +132,7 @@ void cNPC::heartbeat()
 					break;
 				case 0:	ftargserial = INVALID;
 					npcWander = WANDER_FREELY_CIRCLE;
-					setOwnerSerial32( INVALID );
+					setOwner(NULL);
 					emoteall("* %s appears to have decided that it is better off without a master *", false, getCurrentName().c_str());
 					playSFX( 0x01FE);
 					if( SrvParms->tamed_disappear )
@@ -459,8 +459,7 @@ void cNPC::clearedEscordQuest(pPC pc)
 	// Set a timer to automatically delete the NPC
 	summontimer = ( getclock() + ( SECS * SrvParms->escortdoneexpire ) );
 
-    	setOwnerSerial32Only(-1);
-
+	setOwner(NULL);
 }
 
 /*!

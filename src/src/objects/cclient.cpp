@@ -376,7 +376,7 @@ void cClient::statusWindow(pChar target, bool extended) //, bool canrename)  wil
 
 	bool canrename;
 
-	if (pc->IsGM() || ((target->getOwnerSerial32()==pc->getSerial()) && (target!=pc))) canrename = true;
+	if (pc->IsGM() || (target->getOwner() == pc && target != pc) ) canrename = true;
 	else canrename = false;
 
 	if ((pc->getBody()->getId() == BODY_DEADMALE) || (pc->getBody()->getId() == BODY_DEADFEMALE)) canrename = false;
@@ -442,7 +442,7 @@ void senditem(pItem pi) // Shows items to client (on the ground or inside contai
 
 	if (!pc->hasInRange(pi, visualRange) ) return; //we must check on client's selected visual range for items to send (see packet 0xc8)
 	if ( pi->visible==2 && !pc->isGM()) return;
-	if ( pi->visible==1 && pc->getSerial()!=pi->getOwnerSerial32() && !pc->isGM()) return; //On visible set to 1, only owners or GMs see the item
+	if ( pi->visible==1 && pc != pi->getOwner() && !pc->isGM()) return; //On visible set to 1, only owners or GMs see the item
 	// meaning of the item's attribute visible
 	// Visible 0 -> visible to everyone
 	// Visible 1 -> only visible to owner and gm's (for owners normal for gm's grayish/hidden color)
@@ -1263,19 +1263,6 @@ void cClient::dump_item(pItem pi, sLocation &loc) // Item is dropped on the grou
                         return;
 		}
 	}
-/*
-	//Boats !
-	if (pc->getMultiSerial32() > 0) //How can they put an item in a multi if they aren't in one themselves Cut lag by not checking everytime something is put down
-	{
-		pItem multi = cSerializable::findItemBySerial( pc->getMultiSerial32() );
-		if ( multi )
-		{
-			multi=findmulti( Loc );
-			if ( multi ) pi->SetMultiSerial(multi->getSerial());
-		}
-	}
-	//End Boats
-*/
 	if (pc->getBody()->getSkill(skillStealth) < nSettings::Skills::getStealthToDropItemsWhileHid() && !pc_isGM()) pc->unHide();
 	NxwSocketWrapper sw;
 	sw.fillOnline( pi );

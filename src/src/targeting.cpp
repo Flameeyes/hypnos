@@ -723,7 +723,7 @@ void target_guard( pClient client, pTarget t )
 	if ( ! pc || ! pPet ) return;
 
 	pChar pToGuard = dynamic_cast<pChar>( t->getClicked() );
-	if( !pToGuard || pToGuard->getSerial() != pPet->getOwnerSerial32() )
+	if( !pToGuard || pToGuard != pPet->getOwner() )
 	{
 		client->sysmessage( "Currently can't guard anyone but yourself!" );
 		return;

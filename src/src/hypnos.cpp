@@ -104,8 +104,6 @@ Also thanks to Judas for translating this text from italian to english :)
 
 extern void initSignalHandlers();
 
-extern void checkGarbageCollect(); //!< Remove items which were in deleted containers
-
 bool g_bInMainCycle = false;
 void LoadOverrides ();
 extern "C" int g_nTraceMode;
@@ -144,11 +142,11 @@ static void item_char_test()
 			}
 
 			// item is owned by himself
-			if (pi->getSerial() == pi->getOwnerSerial32())
+			if (pi == pi->getOwner())
 			{
 				WarnOut("item %s [serial: %i] has dangerous owner value",pi->getCurrentName().c_str(),pi->getSerial());
 				LogWarning("ALERT ! item %s [serial: %i] has dangerous owner value",pi->getCurrentName().c_str(),pi->getSerial());
-				pi->setOwnerSerial32(INVALID);
+				pi->setOwner(NULL);
 			}
 
 		}
@@ -557,8 +555,6 @@ int main(int argc, char *argv[])
 	//ConOut(" [FAIL]  <-!!! DISABLED FOR THIS DEBUG VERSION\n");
 	//End Boats --^
 
-	gcollect();
-
 //	ConOut("Initializing glowing-items...");
 //	start_glow();
 //	ConOut(" [DONE]\n"); // Magius(CHE) (1)
@@ -661,9 +657,6 @@ int main(int argc, char *argv[])
 	}
 
 	pointers::init(); //Luxor
-
-
-	checkGarbageCollect();
 
 	InfoOut("Server started\n");
 
@@ -790,8 +783,6 @@ int main(int argc, char *argv[])
 	ConOut("Closing sockets...");
 
 	Network->SockClose();
-
-	gcollect();		// cleanup before saving, especially items of deleted chars (Duke, 10.1.2001)
 
 	ConOut(" Done.\n");
 	ConOut("Saving server.cfg...\n");
@@ -974,32 +965,26 @@ void InitMultis()
 		if( multi )
 		{
 			if (multi->type==117)
-				pc_i->setMultiSerial(multi->getSerial());
+				pc_i->setMulti(multi);
 			else
-				pc_i->setMultiSerial32Only(INVALID);
+				pc_i->setMulti(NULL);
 		}
 	}
 
 	pItem pi;
 	for( objs.rewind(); !objs.IsEmpty(); objs++ )
 	{
-	/*for (i=0;i<itemcount;i++)
-	{*/
-		if ( cSerializable::isCharSerial(objs.getSerial()) ) continue;
-		pi=(pItem)(objs.getObject());
-		if(!pi)
+		pItem pi = dynamic_cast<pItem>(objs.getObject());
+		if( ! pi || ! pi->isInWorld() )
 			continue;
 
-		//Endymion modified from !pi->isInWorld() to pi->isInWorld()
-		if (pi->isInWorld() && (pi->getSerial()!=INVALID))
-		{
-			pItem multi=findmulti( pi->getPosition() );
-			if ( multi )
-				if (multi->getSerial()!=pi->getSerial())
-					pi->SetMultiSerial(multi->getSerial());
-				else
-					pi->setMultiSerial32Only(INVALID);
-		}
+		pItem multi=findmulti( pi->getPosition() );
+		if ( ! multi ) continue;
+			
+		if (multi != pi)
+			pi->setMulti(multi);
+		else
+			pi->setMulti(NULL);
 	}
 }
 
@@ -1032,81 +1017,4 @@ void DeleteClasses()
 	delete Areas;
 
 	delete Restocks;
-}
-////////////////////////////
-// garbage collection
-////////////////////////////
-static bool s_bGarbageCollect = false;			//! garbage must be checked ?
-
-//! request garbage collecting
-void gcollect()
-{
-	s_bGarbageCollect = true;
-}
-
-/*!
-\brief remove all the item without any parents (not in any valid container)
-*/
-void checkGarbageCollect () // Remove items which were in deleted containers
-{
-	int removed, rtotal=0, corrected=0;
-	int loopexit=0;
-	bool first=true;
-
-	if (!s_bGarbageCollect) return;
-	s_bGarbageCollect = false;
-
-	LogMessage("Performing Garbage Collection...");
-
-	cAllObjectsIter objs;
-
-	do
-	{
-		removed=0;
-
-		for( objs.rewind(); !objs.IsEmpty(); objs++ )
-		{
-
-			if( cSerializable::isCharSerial( objs.getSerial() ) )
-			{
-				if( first ) {
-					pChar pc=(pChar)(objs.getObject());
-					if( pc->getOwnerSerial32()!=INVALID ) {
-						pChar own=cSerializable::findCharBySerial( pc->getOwnerSerial32() );
-						if(!own) {
-							pc->setOwnerSerial32( INVALID );
-							++corrected;
-						}
-					}
-				}
-			}
-			else {
-
-				pItem pi=dynamic_cast<pItem>(objs.getObject());
-
-				if( pi->isInWorld() )
-					continue;
-
-				// if container serial is invalid
-				if( ! pi->getContainer() )
-				{
-					pi->Delete();
-					++removed;
-				}
-			}
-		}
-		rtotal+=removed;
-		first=false;
-	} while (removed>0 && (++loopexit < MAXLOOPS) );
-
-	if(rtotal>0)
-	{
-		LogMessage("Gargbage Collector removed %i items",rtotal);
-		WarnOut("Gargbage Collector removed %i items\n",rtotal);
-	}
-	if(corrected>0)
-	{
-		LogMessage("Gargbage Collector corrected %i char",corrected);
-		WarnOut("Gargbage Collector corrected %i char\n",corrected);
-	}
 }

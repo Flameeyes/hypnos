@@ -327,3 +327,19 @@ tempfx::cTempfx* cObject::getTempfx( int32_t num, uint32_t funcidx )
 
 	return NULL;
 }
+
+void cObject::setMulti(pItem nMulti)
+{
+	if ( getMulti() )
+		pointers::delFromMultiMap(this);
+	
+	multi = nMulti;
+	
+	if ( getMulti() )
+		pointers::addToMultiMap(this);
+}
+
+void cObject::setOwner(pChar nowner)
+{
+	owner = nowner;
+}

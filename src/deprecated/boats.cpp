@@ -531,7 +531,7 @@ bool cBoat::Speech(pChar pc, pClient clientocket, std::string &talk)//See if the
 	//
 	// if the pc is not the boat owner..we don't care what he says
 	//
-	if(pBoat->getOwnerSerial32()!= pc->getSerial())
+	if(pBoat->getOwner() != pc)
 	{
 		return false;
 	}
@@ -804,7 +804,7 @@ bool cBoat::Build(pClient client, pItem pBoat, char id2)
 		return false;
 	// Okay we found a good  place....
 
-	pBoat->setOwnerSerial32(pc_cs->getSerial());
+	pBoat->setOwner(pc_cs);
 	pBoat->more1.moreb1 = id2;//Set min ID
 	pBoat->more1.moreb2 = nid2+3;//set MAX id
 	pBoat->type=ITYPE_BOATS;//Boat type

@@ -56,6 +56,14 @@ struct sLocation {
 	//! != operator redefinition for sLocation
 	inline bool operator !=(const sLocation &b) const
 	{ return x != b.x || y != b.y || z != b.z; }
+	
+	//! + operator to add values to the coords in a pass
+	inline sLocation operator +(const sLocation &b) const
+	{ return sLocation( x + b.x, y + b.y, z + b.z ); }
+
+	//! - operator to remove values to the coords in a pass
+	inline sLocation operator -(const sLocation &b) const
+	{ return sLocation( x - b.x, y - b.y, z - b.z ); }
 
 	//! Converts a location (x,y,z) into a point (x,y)
 	inline operator sPoint() const

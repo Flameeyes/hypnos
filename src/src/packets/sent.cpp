@@ -187,7 +187,7 @@ void nPackets::Sent::LSDObject::prepare()
 
 	if (pi->magic==1 || pc->canAllMove()) itmput[offset +2]|=0x20; //item can be moved even if normally cannot
 
-	if ((pi->magic==3 || pi->magic==4) && pc->getSerial()==pi->getOwnerSerial32()) itmput[offset +2]|=0x20; //Item can be moved by owner for those "magic levels"
+	if ((pi->magic==3 || pi->magic==4) && pc == pi->getOwner()) itmput[offset +2]|=0x20; //Item can be moved by owner for those "magic levels"
 
 	length = offset +4;
 	ShortToCharPtr(length, buffer +1);

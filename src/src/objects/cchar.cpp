@@ -72,12 +72,10 @@ void cChar::resetData()
 {
 	client = NULL;
 	hidden = htUnhidden;
-	jailInfo = NULL;
-	jailPositions = NULL;
+	setJail(NULL, NULL);
+	setMulti(NULL);
+	setOwner(NULL);
 	// Hypnos OK!
-
-	setMultiSerial32Only(INVALID);//Multi serial
-	setOwnerSerial32Only(INVALID);
 
 	setCurrentName("<this is a bug>");
 	setRealName("<this is a bug>");
@@ -146,7 +144,6 @@ void cChar::resetData()
 	resetBaseSkill();
 	npc=0;
 	shopkeeper = false; //true=npc shopkeeper
-	setOwnerSerial32Only(INVALID);
 	tamed = false; // True if NPC is tamed
 	robe = INVALID; // Serial number of generated death robe (If char is a ghost)
 	SetKarma(0);
@@ -1528,15 +1525,16 @@ void cChar::resurrect( pClient healer )
 }
 
 /*!
-\author Xanathar
 \brief Sets owner fields
-\param owner new owner
+\param nowner new owner
+\todo Should be virtu
 */
-void cChar::setOwner(pChar owner)
+void cChar::setOwner(pChar nowner)
 {
-	setOwnerSerial32(owner->getSerial());
+	cObject::setOwner(nowner);
+	
 	npcWander=WANDER_NOMOVE;
-	tamed = true;
+	setTamed(true);
 	npcaitype=NPCAI_GOOD;
 }
 
@@ -2071,7 +2069,7 @@ void cChar::Kill()
 			pCorpse->more2 = 2;
 		else if (IsMurderer())
 			pCorpse->more2 = 3;
-		pCorpse->setOwnerSerial32(getSerial());
+		pCorpse->setOwner(this);
 		pCorpse->more4 = char( SrvParms->playercorpsedecaymultiplier&0xff ); // how many times longer for the player's corpse to decay
 	}
 
@@ -2251,10 +2249,12 @@ void cChar::checkEquipment()
 void cChar::showLongName( pChar showToWho, bool showSerials )
 {
 	if ( ! showToWho ) return;
+	//!\todo Virtualize
 	
 	pClient client = showToWho->getSocket();
 	if (socket < 0 || socket > now) return;
 
+	//!\todo Remove these temp vars
 	char temp[TEMP_STR_SIZE];
  	char temp1[TEMP_STR_SIZE];
 
@@ -2338,7 +2338,7 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 			strcat(temp1,temp);
 		}
 	}
-	if (tamed && npcaitype==NPCAI_PETGUARD && getOwnerSerial32()==showToWho->getSerial() && showToWho->guarded)
+	if (tamed && npcaitype==NPCAI_PETGUARD && getOwner() == showToWho && showToWho->guarded)
 	{
 		if  (strcmp(::title[15].other,""))
 		{
