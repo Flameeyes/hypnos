@@ -70,18 +70,17 @@ cChar::cChar( uint32_t ser )
 //! Resets data in the newly created instances
 void cChar::resetData()
 {
+	cSerializable::resetData();
 	client = NULL;
 	hidden = htUnhidden;
 	setJail(NULL, NULL);
-	setMulti(NULL);
-	setOwner(NULL);
 	// Hypnos OK!
 
 	setCurrentName("<this is a bug>");
 	setRealName("<this is a bug>");
 	title[0]=0x00;
 
-	///TIMERS
+	//TIMERS
 	antiguardstimer=getclock();
 	antispamtimer=getclock();
 	begging_timer=getclock();
@@ -844,31 +843,21 @@ bool cChar::canSee( pObject obj )
 /*!
 \author Luxor
 \brief Teleports character to its current set coordinates.
+\todo Break cPC stuff into a cPC function
 */
 void cChar::teleport( uint8_t flags, pClient cli )
 {
-	pItem p_boat = Boats->GetBoat(getPosition());
-	if( p_boat ) {
-		setMultiSerial(p_boat->getSerial());
-		sLocation boatpos = getPosition();
-		boatpos.z = p_boat->getPosition().z +3;
-		boatpos.dispz = p_boat->getPosition().dispz +3;
-		setPosition( boatpos );
-	} else
-		setMultiSerial(INVALID);
-
+	setMulti(GetBoat(getPosition()));
+	
 	updateFlag();	//AntiChrist - Update highlight color
 
-	pClient client = getSocket();
-
-    //
-    // Send the draw player packet
-    //
-	if ( socket != INVALID ) {
+	//
+	// Send the draw player packet
+	//
+	if ( client != INVALID ) {
 
 		nPackets::Sent::DrawGamePlayer pk(this);
 		ps->sendPacket(&pk);
-
 
 		getBody()->calcWeight();
 		client->statusWindow( this, true);
@@ -876,9 +865,9 @@ void cChar::teleport( uint8_t flags, pClient cli )
 	}
 
 
-    //
-    // Send the object remove packet
-    //
+	//
+	// Send the object remove packet
+	//
 	if ( cli == NULL ) { //ndEndy, this send also to current char?
 		NxwSocketWrapper sw;
 		sw.fillOnline( getOldPosition() );
@@ -917,10 +906,10 @@ void cChar::teleport( uint8_t flags, pClient cli )
 	}
 
 
-    //
-    // Send other players and items to char (if online)
-    //
-    if ( cli == NULL || cli == getClient() )
+	//
+	// Send other players and items to char (if online)
+	//
+	if ( cli == NULL || cli == getClient() )
 		if ( socket != INVALID )
 		{
 			if ( flags&TELEFLAG_SENDNEARCHARS )
@@ -969,9 +958,9 @@ void cChar::teleport( uint8_t flags, pClient cli )
 	if ( socket != INVALID && (flags&TELEFLAG_SENDLIGHT) )
 		dolight( socket, worldcurlevel );
 
-    //
-    // Check if the region changed
-    //
+	//
+	// Check if the region changed
+	//
 	checkregion( this );
 
 	//

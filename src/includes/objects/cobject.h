@@ -33,29 +33,6 @@ public:
 
 public:
 	virtual void Delete() = 0;
-//@{
-/*!
-\name Multi and Owners
-*/
-protected:
-	pItem multi;	//!< Multi where the object is
-	pChar owner;	//!< Owner of the object
-
-public:
-	//! Returns the object's multi serial
-	pItem getMulti() const
-	{ return multi; }
-
-	//! Sets the multi of the object
-	virtual void setMulti(pItem nmulti)
-	
-	//! Returns the object's owner
-	pChar getOwner() const
-	{ return owner; }
-	
-	//! Sets the object's owner
-	virtual void setOwner(pChar nowner);
-//@}
 
 //@{
 /*!

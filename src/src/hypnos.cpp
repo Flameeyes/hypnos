@@ -950,48 +950,28 @@ void SetGlobalVars()
 */
 void InitMultis()
 {
-//	unsigned int i ; // unused variable
-
 	cAllObjectsIter objs;
-//	pChar pc; // unused variable
 	for( objs.rewind(); !objs.IsEmpty(); objs++ )
 	{
-		if ( !cSerializable::isCharSerial(objs.getSerial()) ) continue;
-		pChar pc_i = (pChar)(objs.getObject());
-		if(!pc_i)
-			continue;
-
-		pItem multi=findmulti( pc_i->getPosition() );
-		if( multi )
-		{
-			if (multi->type==117)
-				pc_i->setMulti(multi);
-			else
-				pc_i->setMulti(NULL);
-		}
-	}
-
-	pItem pi;
-	for( objs.rewind(); !objs.IsEmpty(); objs++ )
-	{
+		pChar pc = dynamic_cast<pChar>(objs.getObject());
 		pItem pi = dynamic_cast<pItem>(objs.getObject());
-		if( ! pi || ! pi->isInWorld() )
-			continue;
-
-		pItem multi=findmulti( pi->getPosition() );
-		if ( ! multi ) continue;
-			
-		if (multi != pi)
-			pi->setMulti(multi);
+		
+		// At least one of the two...
+		if ( ! pc && ( ! pi || ! pi->isInWorld() ) ) continue;
+		
+		pMulti multi = findMulti( pi ? pi->getPosition() : pc->getBody()->getPosition() );
+		
+		if ( pc )
+			//!\todo Check what is this type and change with a constant
+			pc->setMulti( (multi && multi->type==117) ? multi : NULL );
 		else
-			pi->setMulti(NULL);
+			pi->setMulti(multi);
 	}
 }
 
 void StartClasses()
 {
 	ConOut("Initializing classes...");
-
 
 	// Classes nulled now, lets get them set up :)
 	cwmWorldState=new CWorldMain;

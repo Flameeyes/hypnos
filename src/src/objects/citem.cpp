@@ -121,11 +121,9 @@ cItem::cItem(uint32_t ser)
 
 cItem::resetData()
 {
+	cSerializable::resetData();
 	flags = 0ull;
 	// Hypnos OK
-
-	setOwner(NULL);
-	setMulti(NULL);//Multi serial
 	
 	setCurrentName("#");
 	setSecondaryName("#");

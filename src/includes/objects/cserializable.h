@@ -145,6 +145,30 @@ public:
 
 //@{
 /*!
+\name Multi and Owners
+*/
+protected:
+	pMulti multi;	//!< Multi where the object is
+	pChar owner;	//!< Owner of the object
+
+public:
+	//! Returns the object's multi serial
+	pMulti getMulti() const
+	{ return multi; }
+
+	//! Sets the multi of the object
+	virtual void setMulti(pItem nmulti)
+	
+	//! Returns the object's owner
+	pChar getOwner() const
+	{ return owner; }
+	
+	//! Sets the object's owner
+	virtual void setOwner(pChar nowner);
+//@}
+
+//@{
+/*!
 \name Operators
 */
 public:

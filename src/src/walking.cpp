@@ -184,6 +184,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 
 	sLocation pcpos= pc->getPosition();
 
+	//! \todo Change this to a simpler call to a 'movement' function which calculates the position
 	switch(dir&0x0F)
 	{
 		case 0: pc->setPosition("y", pcpos.y-1);
@@ -225,63 +226,47 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 
 	//WalkEvaluateBlockers(pc, &z, &dispz, blockers);
 
-	// check if player is banned from a house - crackerjack 8/12/99
-	int j;
-
+	//!\todo Should this actually be used only for npcs? Sure the owner and banned stuff, but the rest?
 	if (pc->npc==0) // this is also called for npcs .. LB ?????? Sparhawk Not if you're excluding npc's
 	{
-		pItem pi_multi=findmulti( pc->getPosition() );
-
-		if( !pi_multi && pc->getMulti() )
+		pMulti pi_multi=findmulti( pc->getPosition() );
+		
+		if ( ! pi_multi )
 			pc->setMulti(NULL);
-
-		if(pi_multi)
-		{
-			if (!pc->getMulti())
-			{
-				//xan : probably the plr has entered the boat walking!
-				pc->setMulti(NULL);
-				pItem boat = Boats->GetBoat(pc->getPosition());
-				if (boat)
+		else {
+			pBoat pb = dynamic_cast<pBoat>(pi_multi);
+			pHouse ph = dynamic_cast<pHouse>(pi_multi);
+			
+			if ( pb )
+			{ //xan : probably the plr has entered the boat walking!
+				//!\todo Change this when new owner-system is up and running
+				NxwCharWrapper pets;
+				pets.fillOwnedNpcs( pc, false, true );
+				for( pets.rewind(); !pets.isEmpty(); pets++ )
 				{
-					pc->setMulti(boat);
 
-					NxwCharWrapper pets;
-					pets.fillOwnedNpcs( pc, false, true );
-					for( pets.rewind(); !pets.isEmpty(); pets++ )
-					{
-
-						pChar pc_b=pets.getChar();
-						if (! pc_b ) return;
-						
-						pc_b->MoveTo( boat->getPosition() + sLocation(1,1,2) );
-						pc_b->setMulti( boat() );
-						pc_b->teleport();
-					}
+					pChar pc_b=pets.getChar();
+					if (! pc_b ) return;
+					
+					pc_b->MoveTo( boat->getPosition() + sLocation(1,1,2) );
+					pc_b->setMulti(boat);
+					pc_b->teleport();
 				}
-			}
-
-			if ( pi_multi->IsHouse() )
-			{
-				uint32_t sx, sy, ex, ey;
-				j=on_hlist(pi_multi, pc->getSerial(), NULL);
+			} else if ( ph ) {
+				//!\todo When new house stuff is done, please clean this up :)
+				int j = on_hlist(pi_multi, pc->getSerial(), NULL);
 
 				if(j==H_BAN)
 				{
-					getMultiCorners(pi_multi,sx,sy,ex,ey);
 					pc->sysmsg("You are banned from that location.");
-					sLocation pcpos= pc->getPosition();
-					pcpos.x= ex;
-					pcpos.y= ey+1;
-					pc->setPosition( pcpos );
+					sLocation newpos = pi_multi->getArea().br + sLocation(1, 1, pc->getPosition().z);
+					pc->setPosition(newpos);
 					pc->teleport();
 					return false;
 				}
-
 				// house refreshment code moved to dooruse()
-
-			} // end of is_house
-		} // end of is_multi
+			}
+		}
 	} // end of is player
 
 	if ( z == illegal_z )
@@ -314,8 +299,8 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 	pc->y= oldy; // we have to remove it with OLD x,y ... LB, very important
 	pc->MoveTo(nowx2,nowy2,z);
 	*/
-	pc->setPosition("x", oldx);
-	pc->setPosition("y", oldy);
+	pc->setPositionX(oldx);
+	pc->setPositionT(oldy);
 	pc->MoveTo( nowx2, nowy2, z );
 	return true;
 }

@@ -126,20 +126,19 @@ void PlankStuff(pChar pc , pItem pi)//If the plank is opened, double click Will 
 
 	boat2->type2 = 0; //STOP the BOAT
 
+	//! \todo Change this to the new owner system when done
 	NxwCharWrapper sc;
 	sc.fillOwnedNpcs( pc, false, true );
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) 
 	{
 		pChar pc_b=sc.getChar();
 
-		if( pc_b )
-		{
-			sLocation boatpos= boat2->getPosition();
-			pc_b->MoveTo( boatpos.x+1, boatpos.y+1, boatpos.z+2 );
-			pc_b->setMultiSerial( boat2->getSerial() );
-			pc_b->teleport();
-
-		}
+		if( ! pc_b ) continue;
+		
+		sLocation boatpos= boat2->getPosition();
+		pc_b->MoveTo( boatpos.x+1, boatpos.y+1, boatpos.z+2 );
+		pc_b->setMulti( boat2 );
+		pc_b->teleport();
 	}
 
 
@@ -149,7 +148,6 @@ void PlankStuff(pChar pc , pItem pi)//If the plank is opened, double click Will 
 	pc->MoveTo( boatpos.x+1, boatpos.y+1, boatpos.z+3 );
 	pc->teleport();
 	pc->sysmsg("you entered a boat");
-	// pc->setMultiSerial( boat2->getSerial() ); it's has just been called by pc->teleport, so wee need it not
 }
 
 void LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open plank while on the boat.
@@ -181,6 +179,7 @@ void LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open plank wh
 			if( ! ( (typ==0 && mz!=-5) || (typ==1 && sz!=-5) ) )
 				continue;
 			
+			//! \todo Change this to the new owner system when done
 			NxwCharWrapper sc;
 			sc.fillOwnedNpcs( pc, false, true );
 			for( sc.rewind(); !sc.isEmpty(); sc++ )
@@ -194,7 +193,7 @@ void LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open plank wh
 				pc_b->teleport();
 			}
 
-			pc->setMultiSerial(INVALID);
+			pc->setMulti(NULL);
 			pc->getBody()->setPosition( sLocation( x, y, typ ? sz : mz, typ ? sz : mz ) );
 			pointers::updateLocationMap(pc);
 			pc->sysmsg("You left the boat.");

@@ -71,6 +71,12 @@ cSerializable::cSerializable(uint32_t givenSerial)
 	}
 	
 	objects.insert( std::make_pair( serial, this ) );
+	
+	// We must set them here because we can't use directly
+	// the setMulti() and setOwner() functions of resetData()
+	// else we can try to dereference a dirt pointer.
+	multi = NULL;
+	owner = NULL;
 }
 
 /*!
@@ -85,6 +91,18 @@ cSerializable::~cSerializable()
 		objects.erase(it);
 }
 
+/*!
+\brief Resets the data inside the instance of the class
+
+This function is similar to cObject::resetData() and is called by the two
+cItem::resetData() and cChar::resetData() to reset the data derived from the
+serialization of the object iself.
+*/
+void cSerializable::resetData()
+{
+	setMulti(NULL);
+	setOwner(NULL);
+}
 
 /*!
 \brief Plays a moving effect from this to target char
@@ -255,4 +273,22 @@ void cChar::circleFX(short id)
 //AoS/			Network->FlushBuffer(j);
 		}
 	}
+}
+
+/*!
+\brief Sets the object inside the given multi
+\param nMulti New multi to set (if NULL, remove from multi)
+
+This function calls the cMulti::remove() function to remove itself if already
+in a multi and then cMulti::add() function to add itself if nMulti is not NULL.
+*/
+void cSerializable::setMulti(pMulti nMulti)
+{
+	if ( multi )
+		multi->remove(this);
+	
+	if ( nMulti )
+		nMulti->add(this);
+	
+	multi = nMulti;
 }

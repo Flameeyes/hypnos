@@ -78,8 +78,8 @@ struct sLocation {
 	{ return sLocation( x + b.x, y + b.y, z + b.z ); }
 
 	//! - operator to remove values to the coords in a pass
-	inline sLocation operator -(const sLocation &b) const
-	{ return sLocation( x - b.x, y - b.y, z - b.z ); }
+	inline sPositionOffset operator -(const sLocation &b) const
+	{ return sPositionOffset( x - b.x, y - b.y, z - b.z ); }
 
 	//! + operator to add values to the coords in a pass
 	inline sLocation operator +(const sPositionOffset &b) const

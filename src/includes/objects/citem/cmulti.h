@@ -43,11 +43,19 @@ protected:
 	MultiItemSList items;
 	//! The chars which are inside the multi
 	CharSList chars;
+	
+	sRect area;			//!< Area of the multi (region occupied by it)
 public:
 	cMulti();
 	cMulti(uint32_t nserial);
 	
 	void MoveTo(sLocation newloc);
+	
+	void add(pSerializable obj);
+	bool remove(pSerializable obj);
+	
+	const sRect &getArea() const
+	{ return area; }
 };
 
 #endif

@@ -560,8 +560,6 @@ public:
 	/********************************/
 #if 0
 public:
-	void 			setMultiSerial(long mulser);
-
 	inline const bool isOwnerOf(const cObject *obj) const
 	{ return this == obj->getOwner(); }
 #endif
