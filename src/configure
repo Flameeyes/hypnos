@@ -22971,7 +22971,7 @@ done
 
 # Adding include dirs and WEFTS_ variables
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
-CXXFLAGS="$CXXFLAGS $INCLUDES $WEFTS_CXXFLAGS -Wall $WARNS $DEFDIRS"
+CXXFLAGS="$CXXFLAGS $INCLUDES $WEFTS_CXXFLAGS -Wall $WARNS $DEFDIRS -frepo"
 CFLAGS="$CXXFLAGS"
 LDFLAGS="$LDFLAGS"
 

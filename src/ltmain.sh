@@ -563,7 +563,7 @@ if test -z "$show_help"; then
 	    # user sometimes does CC=<HOST>-gcc so we need to match that to 'gcc'
 	    trimedcc="${CC/${host}-}"
 	    case "$base_compile " in
-	    "gcc "* | " gcc "*) tagname=CC ; break ;;
+	    "gcc "* | " gcc "* | "${host}-gcc "* | " ${host}-gcc "*) tagname=CC ; break ;;
 	    "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*|\
 	    "$trimedcc "* | " $trimedcc "* | "`$echo $trimedcc` "* | " `$echo $trimedcc` "*)
 	      # The compiler in the base compile command matches
@@ -953,8 +953,8 @@ EOF
 	    eval "`${SED} -n -e '/^# ### BEGIN LIBTOOL TAG CONFIG: '$z'$/,/^# ### END LIBTOOL TAG CONFIG: '$z'$/p' < $0`"
 	    # user sometimes does CC=<HOST>-gcc so we need to match that to 'gcc'
 	    trimedcc="${CC/${host}-}"
-	    case "$base_compile " in
-	    "gcc "* | " gcc "*) tagname=CC ; break ;;
+	    case $base_compile in
+	    "gcc "* | " gcc "* | "${host}-gcc "* | " ${host}-gcc "*) tagname=CC ; break ;;
 	    "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*|\
 	    "$trimedcc "* | " $trimedcc "* | "`$echo $trimedcc` "* | " `$echo $trimedcc` "*)
 	      # The compiler in $compile_command matches
