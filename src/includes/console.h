@@ -21,17 +21,17 @@
 
 #ifdef __cplusplus
 
-extern "C" void __CDECL ConOut(char *txt, ...) PRINTF_LIKE(1,2);	//!< Unformatted output
-extern "C" void __CDECL ErrOut(char *txt, ...) PRINTF_LIKE(1,2);	//!< Formatted as error
-extern "C" void __CDECL WarnOut(char *txt, ...) PRINTF_LIKE(1,2);	//!< Formatted as warning
-extern "C" void __CDECL InfoOut(char *txt, ...) PRINTF_LIKE(1,2);	//!< Formatted as info
-extern "C" void __CDECL PanicOut(char *txt, ...) PRINTF_LIKE(1,2);	//!< Formatted as panic
-extern "C" void __CDECL DmpOut(char *txt, ...) PRINTF_LIKE(1,2);	//!< Formatted as internal-development debug info (should not be in releases)
-extern "C" void __CDECL SDbgOut(char *txt, ...) PRINTF_LIKE(1,2);	//!< Formatted as amx debug output
+extern "C" void __CDECL ConOut(char *txt, ...) PRINTF_LIKE(1,2)	//!< Unformatted output
+extern "C" void __CDECL ErrOut(char *txt, ...) PRINTF_LIKE(1,2)	//!< Formatted as error
+extern "C" void __CDECL WarnOut(char *txt, ...) PRINTF_LIKE(1,2)	//!< Formatted as warning
+extern "C" void __CDECL InfoOut(char *txt, ...) PRINTF_LIKE(1,2)	//!< Formatted as info
+extern "C" void __CDECL PanicOut(char *txt, ...) PRINTF_LIKE(1,2)	//!< Formatted as panic
+extern "C" void __CDECL DmpOut(char *txt, ...) PRINTF_LIKE(1,2)	//!< Formatted as internal-development debug info (should not be in releases)
+extern "C" void __CDECL SDbgOut(char *txt, ...) PRINTF_LIKE(1,2)	//!< Formatted as amx debug output
 extern "C" void __CDECL SDbgIn(char *s, int n);				//!< Formatted as amx debug info
-extern "C" void __CDECL STraceOut(char *txt, ...) PRINTF_LIKE(1,2);
+extern "C" void __CDECL STraceOut(char *txt, ...) PRINTF_LIKE(1,2)
 void clearscreen( void );
-void setWinTitle(char *str, ...) PRINTF_LIKE(1,2);
+void setWinTitle(char *str, ...) PRINTF_LIKE(1,2)
 void constart( void );
 
 #define ALERT_TYPE_OK 0
@@ -46,9 +46,9 @@ void constart( void );
 bool alertBox(char *msg, char *title, int gravity = 0, int type = 0);
 
 #else
-void __CDECL ConOut(char *txt, ...) PRINTF_LIKE(1,2);
-void __CDECL STraceOut(char *txt, ...) PRINTF_LIKE(1,2);
-void __CDECL SDbgOut(char *txt, ...) PRINTF_LIKE(1,2);
+void __CDECL ConOut(char *txt, ...) PRINTF_LIKE(1,2)
+void __CDECL STraceOut(char *txt, ...) PRINTF_LIKE(1,2)
+void __CDECL SDbgOut(char *txt, ...) PRINTF_LIKE(1,2)
 void __CDECL SDbgIn(char *s, int n);
 #endif
 

@@ -104,12 +104,12 @@ const uint32 INVALID_uint32_t = 0xffffffff;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void log_printf(const char * format, ...) PRINTF_LIKE(1,2);
-void error_printf(const char * format, ...) PRINTF_LIKE(1,2);
-void warning_printf(const char * format, ...) PRINTF_LIKE(1,2);
+void log_printf(const char * format, ...) PRINTF_LIKE(1,2)
+void error_printf(const char * format, ...) PRINTF_LIKE(1,2)
+void warning_printf(const char * format, ...) PRINTF_LIKE(1,2)
 void log_dump(unsigned char * buf, int length);
 void log_flush();
-void trace_printf(const char * format, ...) PRINTF_LIKE(1,2);
+void trace_printf(const char * format, ...) PRINTF_LIKE(1,2)
 void trace_dump(unsigned char * buf, int length);
 
 class Logger
@@ -126,7 +126,7 @@ public:
 public:
     // dump functions
     void dump(bool verbose, unsigned char * buf, int length);
-    void printf(bool verbose, const char * format, ...) PRINTF_LIKE(3,4);
+    void printf(bool verbose, const char * format, ...) PRINTF_LIKE(3,4)
     void vprintf(bool verbose, const char * format, va_list ap);
     void flush();
     bool get_flush() const { return m_flush; }

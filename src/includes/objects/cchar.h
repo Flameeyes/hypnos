@@ -774,7 +774,7 @@ public:
 	inline const bool resist(uint32_t n) const
 	{ return flags & n; }
 
-	void			sysmsg(const char *txt, ...) PRINTF_LIKE(1,2);
+	void			sysmsg(const char *txt, ...) PRINTF_LIKE(1,2)
 
 	void                    attackStuff (pChar victim);
 	void			helpStuff(pChar pc_i);
@@ -798,8 +798,8 @@ protected:
 public:
 	void			talkAll(char *txt, bool antispam = true);
 	void			talk(pClient client, char *txt, bool antispam = true);
-	void			emote(pClient client,char *txt, bool antispam, ...) PRINTF_LIKE(4,5);
-	void			emoteall(char *txt, bool antispam, ...) PRINTF_LIKE(3,4);
+	void			emote(pClient client,char *txt, bool antispam, ...) PRINTF_LIKE(4,5)
+	void			emoteall(char *txt, bool antispam, ...) PRINTF_LIKE(3,4)
 	void			talkRunic(pClient client, char *txt, bool antispam = 1);
 	void			talkAllRunic(char *txt, bool antispam = 0);
 //@}

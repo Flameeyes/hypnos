@@ -108,7 +108,7 @@ public:
 	inline void setCurrentName(std::string s)
 	{ current_name = s; }
 
-	void setCurrentName(char *format, ...) PRINTF_LIKE(1,2);
+	void setCurrentName(char *format, ...) PRINTF_LIKE(1,2)
 
 	//! Get the secondary name of the object
 	inline const std::string getSecondaryName() const
@@ -118,7 +118,7 @@ public:
 	inline void setSecondaryName( std::string s )
 	{ secondary_name = s; }
 
-	void setSecondaryName(const char *format, ...) PRINTF_LIKE(1,2);
+	void setSecondaryName(const char *format, ...) PRINTF_LIKE(1,2)
 
 	inline void setId( uint16_t newId )
 	{ id = newId; }
