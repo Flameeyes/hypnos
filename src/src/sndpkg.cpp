@@ -309,11 +309,11 @@ void tileeffect(int x, int y, int z, char eff1, char eff2, char speed, char loop
 	uint16_t eff = (eff1<<8)|(eff2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
 
-Location pos1={ x, y, z, 0}, pos2={ 0, 0, 0, 0};
-
-MakeGraphicalEffectPkt_(effect, 0x02, 0, 0, eff, pos1, pos2, speed, loop, 1, 0);
-
-pos1.z=0;
+	Location pos1={ x, y, z, 0}, pos2={ 0, 0, 0, 0};
+	
+	MakeGraphicalEffectPkt_(effect, 0x02, 0, 0, eff, pos1, pos2, speed, loop, 1, 0);
+	
+	pos1.z=0;
 
 	NxwSocketWrapper sw;
 	sw.fillOnline( pos1 );
@@ -390,11 +390,11 @@ void updates(pClient client) // Update Window
 {
 	int x, y, j;
 	char temp[512];
-    cScpIterator* iter = NULL;
-    char script1[1024];
-
-    iter = Scripts::Misc->getNewIterator("SECTION MOTD");
-    if (iter==NULL) return;
+	cScpIterator* iter = NULL;
+	char script1[1024];
+	
+	iter = Scripts::Misc->getNewIterator("SECTION MOTD");
+	if (iter==NULL) return;
 	strcpy(script1, iter->getEntry()->getFullLine().c_str()); //discard the {
 
 	x=-1;
@@ -801,6 +801,7 @@ void SendDrawObjectPkt(pClient client, pChar pc, int z)
 		default: oc[18]=3; break;//grey (Can be pretty much any number.. I like 3 :-)
 	}
 
+	//!\todo Rewrite this with the new layer system
 #if 0
 // layers was a global variable, and global variables are evil. Please rewrite this code from scratch
 
@@ -1344,10 +1345,6 @@ void itemeffectUO3D(pItem pi, ParticleFx *sta)
 
 }
 
-
-
-}
-
 void wornitems(pClient client, pChar pc) // Send worn items of player
 {
 	if ( ! pc ) return;
@@ -1361,4 +1358,3 @@ void wornitems(pClient client, pChar pc) // Send worn items of player
 			wearIt(s,pi);
 	}
 }
-
