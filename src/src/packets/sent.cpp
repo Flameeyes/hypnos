@@ -447,7 +447,7 @@ cPacketSendMsgBoardItemsinContainer::prepare()
 	//TODO: this function
 
 
-	pair<cBBRelations::iterator, cBBRelations::iterator> it = cMsgBoard::BBRelations.equal_range(msgbard->getSerial32());
+	pair<cBBRelations::iterator, cBBRelations::iterator> it = cMsgBoard::BBRelations.equal_range(msgboard->getSerial32());
         // Now the *(it.first.second) is the serial of a message to be sent. and incrementing it.first
         // until it reaches it.second we obtain all the serials
 
@@ -1305,15 +1305,28 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
         pMsgBoardMessage message = (pMsgBoardMessage)pointers::findItemBySerial(LongFromCharPtr(buffer + 8));
         //for msgtypes 3, 4, 6 message is the message on which operate, on message 5 it is parent message (message reply)
         VALIDATEPIR( msgboard, false);
-	//message is validated inside the switch because subcommand 5 does not need it and may me invalid without consequences
+	// message is validated inside the switch because subcommand 5 does not need it and may me invalid without consequences
+        // in addition an unvalid message means that it has just been deleted by someone else
 
 	switch (msgType)
 	{
 		case 3:  // Client->Server: Client has dbl-clicked on subject, requesting body of message
 		{
-                        VALIDATEPIR( message, false);
-                        cPacketSendBBoardCommand pk(msgboard, SendMessageBody, message);
-                        client->sendPacket(&pk);
+                        if (message == NULL)
+                        {
+	                        // Possible situation: two users are browsing a msg board with the same message
+                                // and the first user deletes that message. The second still sees it in the summary
+                                // and can stil TRY to open it. We must tell the second player that the message is
+                                // no longer available and remove it from his/her list.
+                                cPacketSendDeleteObj pk(LongFromCharPtr(buffer + 8));
+                                client->sendPacket(&pk);
+                                client->sysmsg(tr("This message has just been deleted by someone else")); //TODO add this to translation files
+                        }
+                        else
+                        {
+	                        cPacketSendBBoardCommand pk(msgboard, SendMessageBody, message);
+        	                client->sendPacket(&pk);
+                        }
 			break;
 		}
 
@@ -1374,8 +1387,8 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 
 			if (!msgboard->addMessage( newmessage ))
                         {
-                        	newmessage->Delete(); //if could not link, message should be deleted
-                                ErrOut("MsgBoard: Could not link message to msgboard(s)!\n");
+                                if (pc->postType == LOCALPOST) client->sysmessage( tr("This Message Board has too many messages!");
+	                   	newmessage->Delete(); //if could not link, message should be deleted
                         }
                         else
                         {
@@ -1389,21 +1402,44 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 
 	case 6:  // Remove post from Bulletin board
 		{
-                        VALIDATEPIR( message, false);
-			pChar pc= client->currChar();
-			VALIDATEPCR(pc, false);
-			//             |p#|s1|s2|mt|b1|b2|b3|b4|m1|m2|m3|m4|
-			// Client sends 71  0  c  6 40  0  0 18  1  0  0  4
-			if ( (pc->IsGM()) || (SrvParms->msgpostremove) )
-				msgboard->MsgBoardRemovePost( client );
+                        if (message == NULL)
+                        {
+	                        // Possible situation: two users are browsing a msg board with the same message
+                                // and the first user deletes that message. The second still sees it in the summary.
+                                // Since both are trying to delete it, the result is the same, only we do not have
+                                // to delete the same item again :D
+                                cPacketSendDeleteObj pk(LongFromCharPtr(buffer + 8));
+                                client->sendPacket(&pk);
+                        }
+                        else
+                        {
+	                        VALIDATEPIR( message, false);
+				pChar pc= client->currChar();
+				VALIDATEPCR(pc, false);
+				//             |p#|s1|s2|mt|b1|b2|b3|b4|m1|m2|m3|m4|
+				// Client sends 71  0  c  6 40  0  0 18  1  0  0  4
+				if ( (pc->IsGM()) || (SrvParms->msgpostremove) )
+	                        {
+                                	if ( global::onlyPosterCanDeleteMsgBoardMessage() && (pc->getSerial32() != message->poster && !pc->IsGM() && (pc->getSerial32() != msgboard->getOwner() || message->availability != LOCALPOST )))
+                                        	client->sysmessage( tr("You are not allowed to delete this message") );
+                                        else
+                                        {
+                                        	// if onlyPosterCanDeleteMsgBoardMessage() is true, the only ones
+                                                // who can delete a post are: a gm, the poster and the owner of the
+                                                // msgboard, but the latter only if the message is local
+	                                	cPacketSendDeleteObj pk(LongFromCharPtr(buffer + 8));
+        	                        	client->sendPacket(&pk);
+                                        	message->Delete();
+                                        }
+	                        }
+
+                        }
 			break;
 		}
 
 
 	default:
-		{
-			ErrOut("MsgBoardEvent() Unknown msgType:%x for message: %x\n", buffer[3], buffer[0]);
-			break;
-		}
+		return false;
 	}
+        return true;
 }

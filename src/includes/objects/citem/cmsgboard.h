@@ -122,17 +122,6 @@ public:
 	static cBBRelations BBRelations; //This will associate a bb serial to the serial of all mesages therein contained
 	static cMsgBoards MsgBoards;
 
-
-	/*!
-	\brief different types of QUESTS
-	Added for Quests (ESCORTS)<br/>
-	Reason for starting high and counting down, is that I store the entire user
-	posted message as is (which includes the message type).  The message type
-	for a user post is 0x05 and I also use this field to determine whether the
-	post is marked for deletion (0x00).  In order to allow for the maximum number
-	of different quest types, I opted to start high and count down.
-	*/
-
         cMsgBoard();
         cMsgBoard(UI32 serial);
         ~cMsgBoard();
@@ -151,12 +140,13 @@ public:
 	void	MsgBoardQuestEscortDelete( int nNPCIndex );
 	void	MsgBoardQuestEscortRemovePost( int nNPCIndex );
 	void	MsgBoardMaintenance();
-	bool	MsgBoardRemoveGlobalPostBySerial( int nPostSerial );
+
         inline const UI32 rtti() const
 	{ return rtti::cMsgBoard; }
 
         int getRegion();
         static pair<cMsgBoards::iterator, cMsgBoards::iterator> getBoardsinRegion(int region);
+
 	#if defined(__unix__)
 	std::vector<std::string> MsgBoardGetFile( char* pattern, char* path) ;
 	#endif

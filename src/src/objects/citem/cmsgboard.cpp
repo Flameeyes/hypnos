@@ -1,4 +1,4 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+tare  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
     ||                                                                         ||
     || This software is free software released under GPL2 license.             ||
@@ -289,7 +289,13 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
 	switch (message->availability)
         {
 	case LOCALPOST:
-        	//only one insertion needed here :D
+        	//only one insertion needed here, but we first have to verify msgboard capacity against MAXPOSTS
+		//Note that this only means that normal players cannot bring a MsgBoard to have more than MAXPOSTS
+                //mexes, but by posting regional or global messages this limit can be exceeded
+                
+               	pair<cBBRelations::iterator, cBBRelations::iterator> it = BBRelations.equal_range(getSerial32());
+                if (distance(it.first, it.second) >= MAXPOSTS) return false;
+
         	BBRelations.insert(cBBRelations::pair(getSerial32(), message->getSerial32()));
         	break;
         case REGIONALPOST;
@@ -307,231 +313,7 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
 	return true;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// FUNCTION:    MsgBoardRemovePost( int s )
-//
-// PURPOSE:     Marks the posting for a specific message for deletion, thereby
-//              removing it from the bulletin boards viewable list.
-//
-// PARAMETERS:  s        Serial number of the player removing the post
-//
-// RETURNS:     void
-//////////////////////////////////////////////////////////////////////////////
-void MsgBoardRemovePost( int s )
-{
- 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	// Sample REMOVE POST message from client
-	//             | 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|
-	//             |p#|s1|s2|mt|b1|b2|b3|b4|m1|m2|m3|m4|
-	// Client sends 71  0  c  6 40  0  0 18  1  0  0  4
 
-	// Read bbi file to determine messages on boards list
-	// Find the post and mark it for deletion
-	// thereby removing it from the bulletin boards list
-
-	// int s = calcSerFromChar( serial );
-
-	FILE *file = NULL;
-	// 50 chars for prefix and 4 for the extension plus the ending NULL
-	char fileName[256] = "";
-
-	SERIAL msgSN      = 0;
-	SERIAL msgBoardSN = 0;
-
-	// Get the integer value of the message serial number
-	msgSN = LongFromCharPtr(buffer[s] +8);
-
-	// Calculate the Bulletin Boards serial number
-	msgBoardSN = LongFromCharPtr(buffer[s] +4);
-
-	P_ITEM p_msgboard = pointers::findItemBySerial(msgBoardSN);
-
-	// Switch depending on what type of message this is:
-	// GLOBAL = 0x01000000 -> 0x01FFFFFF
-	// REGION = 0x02000000 -> 0x02FFFFFF
-	// LOCAL  = 0x03000000 -> 0x03FFFFFF
-	switch ( buffer[s][8] )
-	{
-	case 0x01:
-		{
-			// GLOBAL post file
-			strcpy( temp, "global.bbi" );
-			break;
-		}
-
-	case 0x02:
-		{
-			// REGIONAL post file
-			sprintf( temp, "region%d.bbi", calcRegionFromXY( p_msgboard->getPosition() ) );
-			break;
-		}
-
-	default:
-		{
-			// LOCAL post file
-			sprintf( temp, "%08x.bbi", msgBoardSN);
-			break;
-		}
-	}
-
-	// If a MSBBOARDPATH has been define in the SERVER.cfg file, then use it
-	if (SrvParms->msgboardpath)
-		strcpy( fileName, SrvParms->msgboardpath );
-
-	// Create the full path to the file we need to open
-	strcat( fileName, temp );
-	file = fopen( fileName, "rb+" );
-
-	// If the file exists continue, othewise abort with an error
-	if ( file != NULL )
-	{
-		// Ignore first 4 bytes of bbi file as this is reserverd for the current max message serial number being used
-		if ( fseek( file, 4, SEEK_SET ) )
-		{
-			ErrOut("MsgBoardRemovePost() failed to seek first message seg in bbi\n");
-			sysmessage( s, TRANSLATE("Failed to find post to be removed." ));
-			return;
-		}
-		int loopexit=0;
-
-		// Loop until we have reached the end of the file
-		while ( !feof(file) && (++loopexit < MAXLOOPS) )
-		{
-			//  | 0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18
-			//  |mg1|mg2|mg3|mg4|mo1|mo2|DEL|sg1|sg2|xx1|xx2|yy1|yy2|NS1|NS2|NS3|NS4|co1|co2|
-			// "\x40\x1c\x53\xeb\x0e\xb0\x00\x00\x00\x00\x3a\x00\x3a\x40\x00\x00\x19\x00\x00";
-
-			// Fill up the msg with data from the bbi file
-			if ( fread( msg, sizeof(char), 19, file ) != 19 )
-			{
-				ErrOut("MsgBoardRemovePost() Could not find message to mark deleted\n");
-				if ( feof(file) ) break;
-			}
-
-			if ( LongFromCharPtr(msg) == msgSN )
-			{
-				// Jump back to the DEL segment in order to mark the post for deletion
-				fseek( file, -13, SEEK_CUR );
-
-				// Write out the mark for deletion value (0x00)
-				fputc( 0, file );
-
-				// Inform user that the post has been removed
-				sysmessage( s, TRANSLATE("Post removed.") );
-
-				// We found the message we wanted so break out and close the file
-				break;
-			}
-
-		}
-	}
-
-	// Close bbi file
-	if ( file ) fclose( file );
-
-	// Put code to actually remove the post from the bulletin board here.
-	// Posted messages use serial numbers from 0x01000000 to 0x03FFFFFF so they
-	// will not interfere with other worldly objects that start at serial number 0x40000000
-	// If, however, this is a problem, then simply remove this portion of code and the
-	// messages will not be removed on the client but will still be marked for removal
-	// in the message board files.
-	SendDeleteObjectPkt(s, msgSN);
-	// Remove code above to prevent problems with client if necessary
-
-	return;
-
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// FUNCTION:    MsgBoardRemoveGlobalPostBySerial( int nPostSerial )
-//
-// PURPOSE:     Marks the posting for a specific message in the GLOBAL
-//              bulletin board file for deletion, thereby
-//              removing it from the bulletin boards viewable list.
-//
-// PARAMETERS:  nPostSerial Serial number of post to be removed
-//
-// RETURNS:     TRUE  Post was successfully found and marked as deleted
-//              FALSE Post could not be found
-//////////////////////////////////////////////////////////////////////////////
-bool MsgBoardRemoveGlobalPostBySerial( SERIAL nPostSerial )
-{
-	// Sample REMOVE POST message from client
-	//             | 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|
-	//             |p#|s1|s2|mt|b1|b2|b3|b4|m1|m2|m3|m4|
-	// Client sends 71  0  c  6 40  0  0 18  1  0  0  4
-
-	// Read bbi file to determine messages on boards list
-	// Find the post and mark it for deletion
-	// thereby removing it from the bulletin boards list
-
- 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	bool bReturn = true;
-	FILE *file = NULL;
-	// 50 chars for prefix and 4 for the extension plus the ending NULL
-	char fileName[256] = "";
-
-	// GLOBAL post file
-	strcpy( temp, "global.bbi" );
-
-	// If a MSBBOARDPATH has been define in the SERVER.cfg file, then use it
-	if (SrvParms->msgboardpath)
-		strcpy( fileName, SrvParms->msgboardpath );
-
-	// Create the full path to the file we need to open
-	strcat( fileName, temp );
-	file = fopen( fileName, "rb+" );
-
-	// If the file exists continue, othewise abort with an error
-	if ( file != NULL )
-	{
-		// Ignore first 4 bytes of bbi file as this is reserverd for the current max message serial number being used
-		if ( fseek( file, 4, SEEK_SET ) )
-		{
-			ErrOut("MsgBoardRemoveGlobalPostBySerial() failed to seek first message seg in bbi\n");
-      fclose( file );
-			return false;
-		}
-
-		int loopexit=0;
-		// Loop until we have reached the end of the file
-		while ( !feof(file) && (++loopexit < MAXLOOPS) )
-		{
-			//  | 0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18
-			//  |mg1|mg2|mg3|mg4|mo1|mo2|DEL|sg1|sg2|xx1|xx2|yy1|yy2|NS1|NS2|NS3|NS4|co1|co2|
-			// "\x40\x1c\x53\xeb\x0e\xb0\x00\x00\x00\x00\x3a\x00\x3a\x40\x00\x00\x19\x00\x00";
-
-			// Fill up the msg with data from the bbi file
-			if ( fread( msg, sizeof(char), 19, file ) != 19 )
-			{
-                bReturn = false;
-				ErrOut("MsgBoardRemoveGlobalPostBySerial() Could not find message to mark deleted\n");
-				if ( feof(file) )
-                break;
-			}
-
-			if ( LongFromCharPtr(msg) == nPostSerial )
-			{
-				// Jump back to the DEL segment in order to mark the post for deletion
-				fseek( file, -13, SEEK_CUR );
-
-				// Write out the mark for deletion value (0x00)
-				fputc( 0, file );
-
-				// We found the message we wanted so break out and close the file
-				break;
-			}
-
-		}
-	}
-
-	// Close bbi file
-	if ( file )
-    fclose( file );
-
-	return bReturn;
-
-}
 
 //////////////////////////////////////////////////////////////////////////////
 // FUNCTION:    MsgBoardPostQuest( int serial, int questType )
