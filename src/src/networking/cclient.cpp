@@ -1797,9 +1797,6 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 		sws->sendPacket(&pk);
 	}
 
-	if (g_nShowLayers) InfoOut("Item equipped on layer %i.\n",layer);
-
-
 	//! \todo the sendpacket stuff
 	wearIt(pi);
 

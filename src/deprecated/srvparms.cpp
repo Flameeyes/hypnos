@@ -108,7 +108,6 @@ int g_nLineBuffer=50;
 int g_nAutoDetectIP=1;
 int g_nBehindNat=0;
 int g_nStealthArLimit = 1;
-int g_nLoadDebugger = 0;
 int g_nCheckBySmall = 0;
 int g_nStopOnAnyCall = 0; //<-- XAN : UNUSED! :D
 

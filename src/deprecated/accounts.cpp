@@ -229,12 +229,10 @@ void cAccounts::LoadAccount( ACCOUNT acctnumb, FILE* F )
 	}
 	while ( (!feof(F))&&(strcmp(script1, "}")) && (strcmp(script1, "EOF")) && (++loopexit < MAXLOOPS) );
 	#ifdef WIN32
-	if ((ServerScp::g_nDeamonMode==0)&&(ServerScp::g_nLoadDebugger==0)) {
-		if ((!bWarned) && (account.number==ADMIN_ACCOUNT) && (account.name=="admin") && (account.pass=="admin"))
-		{
-			MessageBox(NULL, "You have yet the standard Admin password.\nRemember to change it before allowing public access to your shard!\nRead the configuration help (NXWUSER.PDF) to learn how to do this.", "Security warning",MB_ICONWARNING|MB_SETFOREGROUND|MB_TOPMOST );
-			bWarned = true; //otherwise the warning appears too many times! :)
-		}
+	if ((!bWarned) && (account.number==ADMIN_ACCOUNT) && (account.name=="admin") && (account.pass=="admin"))
+	{
+		MessageBox(NULL, "You have yet the standard Admin password.\nRemember to change it before allowing public access to your shard!\nRead the configuration help (NXWUSER.PDF) to learn how to do this.", "Security warning",MB_ICONWARNING|MB_SETFOREGROUND|MB_TOPMOST );
+		bWarned = true; //otherwise the warning appears too many times! :)
 	}
 	#endif
 	safeInsert( account );
@@ -447,7 +445,7 @@ int32_t cAccounts::Authenticate(std::string username, std::string password)
 \return true if can, false else
 \param username Username
 \param password Password
-\remarks Always the Account n° 0 can use Ras
+\remarks Always the Account n 0 can use Ras
 */
 bool cAccounts::AuthenticateRAS(std::string username, std::string password)
 {

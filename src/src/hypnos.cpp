@@ -80,7 +80,9 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "networking/network.h"
 #include "skills/skills.h"
 
-extern void initSignalHandlers();
+#ifdef USE_SIGNALS
+#include "arch/signals.h"
+#endif
 
 bool g_bInMainCycle = false;
 void LoadOverrides ();
@@ -220,8 +222,6 @@ void loadServer()
 	StartClasses();
 }
 
-extern "C" void breakOnFirstFuncz();
-
 /*!
 \brief facilitate console control. SysOp keys and localhost controls
 */
@@ -276,33 +276,6 @@ void checkkey ()
 			case '\x1B':
 				keeprun=false;
 				break;
-			case 'B':
-			case 'b':
-				if (ServerScp::g_nLoadDebugger==0) {
-					InfoOut("You must enable debugger starting Hypnos with the -debug option.\n");
-					break;
-				}
-				breakOnFirstFuncz();
-				InfoOut("Debug break scheduled for next amx call\n");
-				break;
-			case 'C':
-			case 'c':
-				if (ServerScp::g_nLoadDebugger==0) {
-					InfoOut("You must enable debugger starting Hypnos with the -debug option.\n");
-					break;
-				}
-				g_bStepInTriggers = true;
-				InfoOut("Debug break scheduled for next trigger call\n");
-				break;
-			case 'N':
-			case 'n':
-				if (ServerScp::g_nLoadDebugger==0) {
-					InfoOut("You must enable debugger starting Hypnos with the -debug option.\n");
-					break;
-				}
-				g_nTraceMode=1-g_nTraceMode;
-				InfoOut("Native tracing %s\n", (g_nTraceMode!=0) ? "enabled" : "disabled");
-				break;
 			case 'Q':
 			case 'q':
 				InfoOut("Immediate Shutdown initialized!\n");
@@ -317,19 +290,6 @@ void checkkey ()
 				if ( !cwmWorldState->Saving() )
 				{
 					cwmWorldState->saveNewWorld();
-				}
-				break;
-			case 'L':
-			case 'l':
-				if (g_nShowLayers)
-				{
-					InfoOut("Layer display disabled.\n");
-					g_nShowLayers=false;
-				}
-				else
-				{
-					InfoOut("Layer display enabled.\n");
-					g_nShowLayers=true;
 				}
 				break;
 			case 'D':	// Disconnect account 0 (useful when client crashes)
@@ -386,40 +346,20 @@ void checkkey ()
 				break;
 			case 'r':
 			case 'R':
-				InfoOut("Command is disabled\n");
+				InfoOut("Hypnos: Total server reload!");
+				//! \todo Need to freeze and unfreeze all the clients here for the resync
+				loadServer();
 				break;
-/*				ConOut("Hypnos: Reloading server.cfg, spawn.scp, and regions.scp...\n");
-				loadspawnregions();
-				loadregions();
-				ConOut("Loading vital scripts... ");
-				loadmetagm();
-				loadmenuprivs();
-				ConOut("[DONE]\n");
-				loadserverscript();
-				ConOut("Hypnos: Reloading IP Blocking rules...");
-				Network->LoadHosts_deny();
-				ConOut("[DONE]\n");
-				break;
-*/			case '?':
+			case '?':
 				ConOut("Console commands:\n");
 				ConOut("	<Esc> or Q: Shutdown the server.\n");
 				ConOut("	T - System Message: The server is shutting down in 2 minutes.\n");
 				ConOut("	# - Save world\n");
-				ConOut("	L - Toggle layer display");
-				if (g_nShowLayers)
-					ConOut(" [currently enabled]\n");
-
-				else
-					ConOut(" [currently disabled]\n");
 				ConOut("	D - Disconnect Account 0\n");
 				ConOut("	W - Display logged in characters\n");
 				ConOut("	A - Reload accounts file\n");
 				ConOut("	X - Reload XSS scripts\n");
-				ConOut("	S - Toggle Secure mode ");
-				if (secure)
-					ConOut("[enabled]\n");
-				else
-					ConOut("[disabled]\n");
+				ConOut("	S - Toggle Secure mode %s\n", secure ? "[enabled]" : "[disabled]" );
 				ConOut("	B - Set breakpoint on first amx function [DEBUG MODE ONLY]\n");
 				ConOut("	C - Set breakpoint on first legacy trigger [DEBUG MODE ONLY]\n\n");
 				ConOut("	? - Commands list (this)\n");
@@ -456,9 +396,6 @@ int main(int argc, char *argv[])
 
 	initclock() ;
 
-	if ((argc>1)&&(strstr(argv[1], "-debug")))	// activate debugger if requested
-		ServerScp::g_nLoadDebugger = 1;
-		
 	loadServer();
 
 	serverstarttime=getclock();
@@ -488,8 +425,6 @@ int main(int argc, char *argv[])
 		ConOut("Going into deamon mode... bye...\n");
 		init_deamon();
 	}
-	if (ServerScp::g_nDeamonMode!=0)	// if in daemon mode => disable debugger
-		ServerScp::g_nLoadDebugger = 0;
 
 	ConOut("Applying interface settings... ");
 	constart();
@@ -892,7 +827,6 @@ void SetGlobalVars()
 	donpcupdate=0;
 	wtype=0;
 
-	g_nShowLayers=false;
 	ConOut(" [ OK ]\n");
 }
 

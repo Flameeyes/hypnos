@@ -236,7 +236,6 @@ extern int g_nWalkIgnoreWetBit;
 extern int g_nStealthOnHorse;
 extern int g_nStealthArLimit;
 
-extern int g_nLoadDebugger;
 extern int g_nStopOnAnyCall;
 extern int g_nCheckBySmall; //!< check all object with scripted small function
 

@@ -147,7 +147,6 @@ int tnum;
 unsigned int starttime, endtime, lclock;
 bool overflow;
 unsigned char wtype;
-bool g_nShowLayers;
 
 unsigned int respawntime=0;
 unsigned int gatedesttime=0;

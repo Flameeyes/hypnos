@@ -20,8 +20,6 @@
 
 // GOOD GLOBALZ (Those which are just fine)
 
-extern bool g_nShowLayers;
-
 extern repsys_st repsys;
 extern resource_st resource;
 
