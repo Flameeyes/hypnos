@@ -149,10 +149,6 @@ static unsigned int bit_table[257][2] =
 
 //unsigned long __stdcall ConnectionThread( void *Arg );
 
-#ifdef USE_MTHREAD_SEND
-static NetThread* g_NT[MAXCLIENT];
-#endif
-
 pClient getClientFromSocket( pClient client )
 {
 	if( socket < 0 )
@@ -171,26 +167,12 @@ static void initClients()
 	for (int i=0; i < MAXCLIENT; ++i)
 	{
 		loginchars[i] = NULL;
-#ifdef USE_MTHREAD_SEND
-	        g_NT[i] = NULL;
-#endif
 	}
 }
 
-#ifdef USE_MTHREAD_SEND
-
 int MTsend( pClient client, char* xoutbuffer, int len, int boh )
 {
-    g_NT[ socket ]->enqueue( xoutbuffer, len );
-    return 0;
-}
-
-
-#else
-
-int MTsend( pClient client, char* xoutbuffer, int len, int boh )
-{
-	int sent, loopexit=30;
+	pClient clientent, loopexit=30;
 	while( --loopexit>0 )
 	{
 		sent = send( client[ socket ], xoutbuffer, len, boh );
@@ -217,7 +199,7 @@ int MTsend( pClient client, char* xoutbuffer, int len, int boh )
 
 void cNetwork::DoStreamCode( pClient clientocket )
 {
-	int status ;
+	pClient clienttatus ;
 /*
 	FILE *debugout=fopen("d:\\packets.log", "a");
 	for ( int i = 0; i < boutlength[socket];++i)
@@ -252,7 +234,7 @@ void cNetwork::DoStreamCode( pClient clientocket )
 void cNetwork::FlushBuffer( pClient client ) // Sends buffered data at once
 {
 
-	int status ;
+	pClient clienttatus ;
 	if ( boutlength[ socket ] > 0 )
 	{
 		if ( clientInfo[ socket ]->compressOut )
@@ -332,155 +314,14 @@ void cNetwork::xSend(pClient client, wstring& p, bool alsoTermination )
 	boutlength[ socket ] += length;
 }
 
-/*!
-\brief Disconnects client
-
-Updated to hypnos (Chronodt 29/1/04)
-\todo find something to replace socket number output with
-*/
-
-void cNetwork::Disconnect (pClient client)              // Force disconnection of player
-{
-	const char msgDisconnect[]	= "Client %i disconnected. [Total online clients: %i]\n";
-	const char msgPart[]		= "%s has left the realm";
-
-	pChar pc = client->currChar();
-
-	time_t ltime;
-	time( &ltime );
-
-        int clientnumber = 0;
-	for (cClients::iterator i = cClient::clients.begin(); (i != client) || (cClient::clients.end()); i++ ) clientnumber++;
-
-	InfoOut( (char*)msgDisconnect, clientnumber , cClient::clients.size() - 1 );
-
-	if (SrvParms->server_log)
-		ServerLog.Write( (char*)msgDisconnect, clientnumber , cClient::clients.size() - 1);
-
-	if ( pc )
-		if (SrvParms->partmsg && pc != NULL && !pc->npc )
-			sysbroadcast( (char*)msgPart, pc->getCurrentName().c_str() );
-
-	if( pc )
-		if ( pc->IsOnline() )
-		{
-			LogOut( client );
-
-
-			if( pc->party!=INVALID ) {
-				P_PARTY party = Partys.getParty( pc->party );
-				if( party!=NULL )
-					party->removeMember( pc );
-			}
-
-
-			uint32_t pc_serial = pc->getSerial();
-
-			for (cClients::iterator i = cClient::clients.begin(); cClient::clients.end(); i++ )
-			{
-                                pChar pi = (*i)->currChar();
-				if ( pi )
-					if( pc != pi && pc->hasInRange(pi) )
-					{
-						nPackets::Sent::DeleteObj pk(pc);
-        		                        (*i)->sendPacket(&pk);
-					}
-			}
-
-
-
-		}
-      //! \todo revise from here
-	FlushBuffer( client );
-
-
-
-	closesocket( client[ socket ] ); //so it bombs and free the mutex :]
-
-#ifdef ENCRYPTION
-	if ( clientCrypter[socket] != NULL && !clientCrypter[socket]->getEntering())
-	{
-		delete (ClientCrypt * ) clientCrypter[socket] ;
-		clientCrypter[socket]=NULL;
-	}
-#endif
-#ifdef USE_MTHREAD_SEND
-	g_NT[ socket ]->mtxrun.enter();
-	NetThread* NT = g_NT[ socket ];
-#endif
-
-	if( pc )
-	{
-		pc->setClient( NULL );
-
-		if( pc->murderrate>getclock() ) //save murder decay
-			pc->murdersave= (pc->murderrate -getclock()) / SECS;
-
-	}
-
-	loginchars[socket] = NULL;
-
-	safedelete( clientInfo[socket] );
-
-	for ( j = socket; j < now - 1; ++j )
-	{
-		int jj = j+1;
-		client[j]=client[jj];
-		loginchars[socket] = loginchars[jj];
-		cryptedClient[j]=cryptedClient[jj];
-#ifdef ENCRYPTION
-		clientCrypter[jj] = clientCrypter[j];
-#endif
-		clientip[j][0]=clientip[jj][0];
-		clientip[j][1]=clientip[jj][1];
-		clientip[j][2]=clientip[jj][2];
-		clientip[j][3]=clientip[jj][3];
-		acctno[j]=acctno[jj];
-		binlength[j]=binlength[jj];
-		boutlength[j]=boutlength[jj];
-		clientInfo[j]=clientInfo[jj];
-		walksequence[j]=walksequence[jj];
-		clientDimension[j]=clientDimension[jj];
-
-		memcpy(&buffer[j], &buffer[jj], MAXBUFFER); // probably not nec.
-		memcpy(&outbuffer[j], &outbuffer[jj], MAXBUFFER); // very important
-
-#ifdef USE_MTHREAD_SEND
-		g_NT[j] = g_NT[jj];
-#endif
-	}
-#ifdef USE_MTHREAD_SEND
-	g_NT[now] = NT;
-#endif
-
-	pChar pj = NULL;
-	for ( i = 0; i < MAXCLIENT; ++i ) {
-		pj = loginchars[i];
-		if ( pj )
-			pj->setClient(NULL);
-
-		if ( i >= now )
-			loginchars[i] = INVALID;
-	}
-
-	--now;
-
-	for ( i = 0; i < now; ++i ) {
-		pj = loginchars[i];
-		if( pj )
-			pj->setClient(new cNxwClientObj(i));
-	}
-}
-
-
-void cNetwork::LoginMain(int s)
+void cNetwork::LoginMain(pClient client)
 {
 	signed long int i;
 	uint32_t chrSerial;
 
 	acctno[s]=INVALID;
 #ifdef ENCRYPTION
-	pClient ps = getClientFromSocket(s);
+	pClient ps = getClientFromSocket(client);
 	int length=0x3e;
 	int j;
 	unsigned char decryptPacket[MAXBUFFER+1];
@@ -516,7 +357,7 @@ void cNetwork::LoginMain(int s)
 							if ( acctno[j] == i )
 							{
 								// Found logged in account
-								Disconnect(acctno[j]);
+								acctno[j]->disconnect();
 								break;
 							}
 						}
@@ -589,12 +430,12 @@ void cNetwork::LoginMain(int s)
 	if (acctno[s]!=INVALID)
 	{
 		Accounts->SetEntering(acctno[s]);
-		Login2(s);
+		Login2(client);
 	}
 }
 
 
-void cNetwork::Login2(int s)
+void cNetwork::Login2(pClient client)
 {
 	const char msgLogin[] = "Client [%s] connected [first] using Account '%s'.\n";
 
@@ -625,11 +466,11 @@ void cNetwork::Login2(int s)
 		LongToCharPtr(ip, newlist2 +36);  //Network order ...
 		Xsend(s, newlist2, 40);
 	}
-//AoS/	Network->FlushBuffer(s);
+//AoS/	Network->FlushBuffer(client);
 }
 
 
-void cNetwork::Relay(int s) // Relay player to a certain IP
+void cNetwork::Relay(pClient client) // Relay player to a certain IP
 {
 	unsigned long int ip;
 	int port;
@@ -647,7 +488,7 @@ void cNetwork::Relay(int s) // Relay player to a certain IP
 		getsockname (client[s], (sockaddr*)(&sa), (socklen_t*)(&n));
 		unsigned long oldip = ip;
 		//Luxor: REALLY tricky... i should change this soon, but no time to make it better by now :P
-		unsigned long int serverip = sa.sin_addr.s_addr;
+		unsigned long pClient clienterverip = sa.sin_addr.s_addr;
 		unsigned long int clientip = client_addr.sin_addr.s_addr;
 //		printf("IP: %d.%d.%d.%d\n", IPPRINTF(ip));
 //		printf("SERVER_IP: %d.%d.%d.%d\n", IPPRINTF(serverip));
@@ -691,7 +532,7 @@ void cNetwork::Relay(int s) // Relay player to a certain IP
 #endif
 	LongToCharPtr(key, login03 +7);	// New Server Key!
 	Xsend(s, login03, 11);
-	Network->FlushBuffer(s);
+	Network->FlushBuffer(client);
 }
 
 void cNetwork::ActivateFeatures(pClient client)
@@ -718,10 +559,10 @@ void cNetwork::ActivateFeatures(pClient client)
 
 	ShortToCharPtr(features, feat+1);
 	Xsend(s, feat, 3);
-//AoS/	Network->FlushBuffer(s);
+//AoS/	Network->FlushBuffer(client);
 }
 
-void cNetwork::GoodAuth(int s)
+void cNetwork::GoodAuth(pClient client)
 {
 	uint32_t j;
 	uint16_t tlen;
@@ -737,7 +578,7 @@ void cNetwork::GoodAuth(int s)
 	NxwCharWrapper sc;
 	Accounts->GetAllChars( acctno[s], sc );
 
-	ActivateFeatures(s);
+	ActivateFeatures(client);
 
 	login04a[3] = sc.size(); //Number of characters found
 	Xsend(s, login04a, 4);
@@ -782,10 +623,10 @@ void cNetwork::GoodAuth(int s)
 	if(server_data.feature == 2) 	// LBR: NPC Popup Menu   (not currently impl.)
 		tail[3] = 0x08;
 	Xsend(s, tail, 4);
-//AoS/	Network->FlushBuffer(s);
+//AoS/	Network->FlushBuffer(client);
 }
 
-void cNetwork::CharList(int s) // Gameserver login and character listing
+void cNetwork::CharList(pClient client) // Gameserver login and character listing
 {
 
 	int32_t i;
@@ -820,7 +661,7 @@ void cNetwork::CharList(int s) // Gameserver login and character listing
 	}
 
 	if (acctno[s] >= 0)
-		GoodAuth(s);
+		GoodAuth(client);
 }
 
 void cNetwork::pSplit (char *pass0) // Split login password into NoX-Wizard password and UO password
@@ -836,70 +677,70 @@ void cNetwork::pSplit (char *pass0) // Split login password into NoX-Wizard pass
 
 }
 
-void cNetwork::charplay (int s) // After hitting "Play Character" button //Instalog
+void cNetwork::charplay (pClient client) // After hitting "Play Character" button //Instalog
 {
-	if ( s < 0 || s >= now )
+	if ( ! client )
 		return;
 
 	loginchars[s] = NULL;
 
 	pChar pc_k=NULL;
 
-	if (acctno[s]>INVALID)
+	if ( acctno[s] == INVALID )
+		return;
+	
+	int j=0;
+	Accounts->SetOffline(acctno[s]);
+	NxwCharWrapper sc;
+	Accounts->GetAllChars( acctno[s], sc );
+	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
+		pChar pc_i=sc.getChar();
+		if(!pc_i)
+			continue;
+		if (j==buffer[s][0x44]) {
+			pc_k=pc_i;
+			break;
+		}
+		j++;
+	}
+
+	if ( pc_k )
 	{
-		int j=0;
-		Accounts->SetOffline(acctno[s]);
-		NxwCharWrapper sc;
-		Accounts->GetAllChars( acctno[s], sc );
-		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-			pChar pc_i=sc.getChar();
-			if(!pc_i)
-				continue;
-			if (j==buffer[s][0x44]) {
-				pc_k=pc_i;
-				break;
+		pc_k->setClient(NULL);
+		int32_t nSer = pc_k->getSerial();
+		for ( int32_t idx = 0; idx < now; idx++ ) {
+			if ( pc_k == loginchars[idx] ) {
+				//!\todo We need to fix this!!!
+				nPackets::Sent::IdleWarning pk(0x5);
+				client->sendPacket(&pk);
+				client->disconnect();
+				idx->disconnect();
+				return;
 			}
-			j++;
 		}
 
-		if ( pc_k )
-		{
-			pc_k->setClient(NULL);
-			int32_t nSer = pc_k->getSerial();
-			for ( int32_t idx = 0; idx < now; idx++ ) {
-				if ( pc_k == loginchars[idx] ) {
-					// TODO We need to fix this!!!
-					nPackets::Sent::IdleWarning pk(0x5);
-					client->sendPacket(&pk);
-					Disconnect(s);
-					Disconnect(idx);
-					return;
-				}
-			}
+		Accounts->SetOnline(acctno[s], pc_k);
+		pc_k->logout=INVALID;
 
-			Accounts->SetOnline(acctno[s], pc_k);
-			pc_k->logout=INVALID;
+		loginchars[s] = pc_k;
 
-			loginchars[s] = pc_k;
-
-			pc_k->setClient(new cNxwClientObj(s));
-			startchar(s);
-		}
-		else
-		{
-					nPackets::Sent::IdleWarning pk(0x5);
-					client->sendPacket(&pk);
-					Disconnect(s);
-		}
+		pc_k->setClient(new cNxwClientObj(client));
+		startchar(client);
+	}
+	else
+	{
+		nPackets::Sent::IdleWarning pk(0x5);
+		client->sendPacket(&pk);
+		client->disconnect();
 	}
 }
 
-void cNetwork::enterchar(int s)
+void cNetwork::enterchar(pClient client)
 {
-	if (s < 0 || s >= now) return; //Luxor
-	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return;
-
+	pPC pc = NULL;
+	if ( ! client || ! ( pc = client->currChar() ) )
+		return;
+	
 	uint8_t techstuff[5]={ 0x69, 0x00, 0x05, 0x01, 0x00 };
 	uint8_t world[6]={0xBF, 0x00, 0x06, 0x00, 0x08, 0x00};
 	uint8_t modeset[5]={0x72, 0x00, 0x00, 0x32, 0x00};
@@ -913,26 +754,26 @@ void cNetwork::enterchar(int s)
 	clientInfo[s]->ingame=true;
 
 	Xsend(s, world, 6);
-	Network->FlushBuffer(s);
+	Network->FlushBuffer(client);
 
 	nPackets::Sent::LoginConfirmation pkLoginConf(pc);
 	client->sendPacket(&pkLoginConf);
 
 	pc->war=0;
 	Xsend(s, modeset, 5);
-	Network->FlushBuffer(s);
+	Network->FlushBuffer(client);
 
 	techstuff[3]=0x01;
 	Xsend(s, techstuff, 5);
-	Network->FlushBuffer(s);
+	Network->FlushBuffer(client);
 
 	techstuff[3]=0x02;
 	Xsend(s, techstuff, 5);
-	Network->FlushBuffer(s);
+	Network->FlushBuffer(client);
 
 	techstuff[3]=0x03;
 	Xsend(s, techstuff, 5);
-	Network->FlushBuffer(s);
+	Network->FlushBuffer(client);
 
 	nPackets::Sent::StartGame pkStartGame;
 	client->sendPacket(&pkStartGame);
@@ -954,20 +795,20 @@ void cNetwork::enterchar(int s)
 }
 
 
-void cNetwork::startchar(int s) // Send character startup stuff to player
+//! Send character startup stuff to player
+void cNetwork::startchar(pClient client)
 {
-
-	if ( s < 0 || s >= now ) //Luxor
+	pPC pc = NULL;
+	if ( ! client || ! ( pc = client->currChar() ) )
 		return;
-	pChar pc = cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return;
+	
 	pc->setCrypter(clientCrypter[s]);
 	//<Luxor>: possess stuff
 	if (pc->possessedSerial != INVALID) {
 		pChar pcPos = cSerializable::findCharBySerial(pc->possessedSerial);
 		if ( pcPos ) {
 			currchar[s] = pcPos->getSerial();
-			pcPos->setClient(new cNxwClientObj(s));
+			pcPos->setClient(new cNxwClientObj(client));
 			pcPos->setCrypter(clientCrypter[s]);
 			pc->setCrypter(NULL);
 			pc->setClient(NULL);
@@ -977,20 +818,17 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	}
 	//</Luxor>
 	clientCrypter[s]=NULL;
-	char zbuf[255];
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
 	AMXEXECSV( pc->getSerial(),AMXT_SPECIALS, 4, AMX_BEFORE);
 
 	enterchar( s );
-	Network->FlushBuffer(s);
+	Network->FlushBuffer(client);
 
-	sysmessage(s,0x058, "%s %s %s [%s] Compiled by %s", PRODUCT, VER, VERNUMB, OS , NAME);
-	Network->FlushBuffer(s);
+	client->sysmessage(0x058, "%s %s %s [%s] Compiled by %s", PRODUCT, VER, VERNUMB, OS , NAME);
+	Network->FlushBuffer(client);
 
-	sysmessage(s,0x038, "Programmed by: %s",PROGRAMMERS);
-	Network->FlushBuffer(s);
 	// log last time signed on
 	time_t ltime;
 	time( &ltime );
@@ -1000,8 +838,6 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 		if (!strcmp(pc->getCurrentName().c_str(), "pty Slot --")) pc->setCurrentName("A new Character");//AntiChrist
 		sysbroadcast("%s entered the realm",pc->getCurrentName().c_str());//message upon entering a server
 	}
-
-	sprintf(zbuf,"%s Logged in the game",pc->getCurrentName().c_str()); //for logging to UOXmon
 
 	// very stupid stuff
 	//pc->murderrate=getclock()+repsys.murderdecay*SECS; // LB, bugfix for murder-count getting --'ed each start
@@ -1018,32 +854,14 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 
 	AMXEXECSV(pc->getSerial(),AMXT_SPECIALS, 4, AMX_AFTER);
 
-	//
-	// Sparhawk	Race system support
-	//		When the race system is active and users doesn't belong to a valid race start enlistment procedure
-	//
-	if ( Race::isRaceSystemActive() )
-		if ( pc->race <= 0 )
-		{
-			pc->race = 0;
-
-			AmxFunction* race_enlist = NULL;
-			if( race_enlist==NULL )
-				race_enlist = new AmxFunction( "__race_enlist" );
-
-			race_enlist->Call( pc->getSerial() );
-		}
-		//else
-		//	validate pc race and decide what to do if race is invalid or has been deactivated
-
 	if ( !(strcmp(temp, "ALL") ) )
 	{
-  	  pc->sysmsg("There is NO client version checking active on this shard. The recommanded-dev-team-supported client version for this server version is client version %s though", SUPPORTED_CLIENT);
+  	  client->sysmessage("There is NO client version checking active on this shard. The recommanded-dev-team-supported client version for this server version is client version %s though", SUPPORTED_CLIENT);
 	  return;
 
 	} else if ( !(strcmp(temp, "SERVER_DEFAULT") ) )
 	{
-	  pc->sysmsg("This shard requires the recommanded-dev-team-supported client version for this server version client version %s", SUPPORTED_CLIENT);
+	  client->sysmessage("This shard requires the recommanded-dev-team-supported client version for this server version client version %s", SUPPORTED_CLIENT);
 	  return;
 	}
 	else
@@ -1065,11 +883,11 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	}
 
 	strcat(idname, temp2);
-	strcat(idname," The NoX-Wizard team recommanded client is ");
+	strcat(idname," The Hypnos team recommanded client is ");
 	strcat(idname, SUPPORTED_CLIENT);
 
-	pc->sysmsg(idname);
-	Network->FlushBuffer(s);
+	client->sysmessage(idname);
+	Network->FlushBuffer(client);
 }
 
 char cNetwork::LogOut(pClient client)//Instalog
@@ -1156,7 +974,7 @@ char cNetwork::LogOut(pClient client)//Instalog
 \param a the buffer offset
 \return the number of actually read bytes
 */
-int cNetwork::Receive(int s, int x, int a )
+int cNetwork::Receive(pClient client, int x, int a )
 {
 	if ( (x+a) >= MAXBUFFER) return 0;
 
@@ -1312,7 +1130,7 @@ void cNetwork::CheckConn() // Check for connection requests
 
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	int s;
+	pClient client;
 	socklen_t len;
 
 	if (now<MAXIMUM)
@@ -1397,7 +1215,7 @@ void cNetwork::CheckConn() // Check for connection requests
 void cNetwork::CheckMessage() // Check for messages from the clients
 {
 
-	int s, i, oldnow;
+	pClient client, i, oldnow;
 	int lp, loops;     //Xan : rewritten to support more than 64 concurrent clients
 
 	oldnow = now;
@@ -1426,7 +1244,7 @@ void cNetwork::CheckMessage() // Check for messages from the clients
 			{
 				if (FD_ISSET(client[i],&errsock))
 				{
-					Network->Disconnect(i);
+					i->disconnect();
 				}
 
 
@@ -1508,7 +1326,7 @@ int cNetwork::Pack(void *pvIn, void *pvOut, int len)
 #ifdef ENCRYPTION
 unsigned char cNetwork::calculateLoginKey(unsigned char loginKey[4], unsigned char packetId)
 {
-	unsigned int seed;
+	unsigned pClient clienteed;
 	int  m_key [2], index = -1;
 	unsigned char out;
 	bool found;
@@ -1538,12 +1356,12 @@ unsigned char cNetwork::calculateLoginKey(unsigned char loginKey[4], unsigned ch
 }
 #endif
 
-void cNetwork::GetMsg(int s) // Receive message from client
+void cNetwork::GetMsg(pClient client) // Receive message from client
 {
 #ifdef ENCRYPTION
 	ClientCrypt *crypter=NULL;
 #endif
-	pClient ps = getClientFromSocket(s);
+	pClient ps = getClientFromSocket(client);
 	pChar pc_currchar= (ps!=NULL)? ps->currChar() : NULL;
 #ifdef ENCRYPTION
 	if ( pc_currchar != NULL )
@@ -1630,7 +1448,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						clientCrypter[s]=NULL;
 					}
 #endif
-					Disconnect(s);
+					client->disconnect();
 					InfoOut("received garbage from a client, disconnected it to prevent bad things.\n User probably didnt use ignition or UO-RICE\n");
 					return;
 				}
@@ -1719,13 +1537,13 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						if (pc_currchar->IsGM())
 						{
 							Xsend(s, packet, 2);
-//AoS/							Network->FlushBuffer(s);
+//AoS/							Network->FlushBuffer(client);
 							LogMessage("%s connected in with God Client!\n", pc_currchar->getCurrentName().c_str());
 						}
 						else
 						{
-							sysmessage(s, "Access Denied!!!");
-							Disconnect(s);
+							client->sysmessage("Access Denied!!!");
+							client->disconnect();
 							LogWarning("%s tried connecting in with God Client but has no priviledges!\n", pc_currchar->getCurrentName().c_str());
 						}
 
@@ -1734,7 +1552,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 
 				case PACKET_DISCONNECT:// Main Menu on the character select screen
 				// remark LB : no longer send :(
-					Disconnect(s);
+					client->disconnect();
 					break;
 
 				case PACKET_FIRSTLOGINREQUEST:
@@ -1743,11 +1561,11 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						clientCrypter[s]->setCryptMode(CRYPT_LOGIN) ;
 #endif
 					clientInfo[s]->firstpacket=false;
-					LoginMain(s);
+					LoginMain(client);
 					break;
 
 				case PACKET_SELECTSERVER:
-					Relay(s);
+					Relay(client);
 					break;
 
 				case PACKET_LOGINREQUEST:
@@ -1757,19 +1575,19 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					if ( clientCrypter[s] != NULL )
 						clientCrypter[s]->setEntering(false);
 #endif
-					CharList(s);
+					CharList(client);
 					break;
 
 				case PACKET_DELETECHAR:
-					chardel(s);
+					chardel(client);
 					break;
 
 				case PACKET_CREATECHARACTER:
-					charcreate(s);
+					charcreate(client);
 					break;
 
 				case PACKET_CHARACTERSELECT:
-					charplay(s);
+					charplay(client);
 					break;
 
 				case PACKET_MOVE_REQUEST:
@@ -1781,7 +1599,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 
 				case PACKET_PING:
 					Xsend(s, buffer[s], 2);
-//AoS/					Network->FlushBuffer(s);
+//AoS/					Network->FlushBuffer(client);
 					break;
 
 				case PACKET_RESYNC_REQUEST:
@@ -1878,7 +1696,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 
 				case PACKET_SINGLECLICK:
 					//! \todo Port to new cPacketReceive
-					singleclick(s);
+					singleclick(client);
 					break;
 
 				case PACKET_TARGETING: {
@@ -1912,7 +1730,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						pc_currchar->war=buffer[s][1];
 						pc_currchar->targserial=INVALID;
 						Xsend(s, buffer[s], 5);
-//AoS/						Network->FlushBuffer(s);
+//AoS/						Network->FlushBuffer(client);
 
 						if (pc_currchar->dead && pc_currchar->war) // Invisible ghost, resend.
 							pc_currchar->teleport( TELEFLAG_NONE );
@@ -2006,12 +1824,12 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					break;
 
 				case PACKET_DIALOG_RESPONSE:
-					//choice(s);
+					//choice(client);
 					Menus.handleMenu( ps );
 					break;
 
 				case PACKET_DYEITEM:
-					Commands::DyeItem(s);
+					Commands::DyeItem(client);
 					break;
 
 				case PACKET_STATUS_REQUEST:
@@ -2020,7 +1838,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 							statwindow(pc_currchar, cSerializable::findCharBySerial(LongFromCharPtr(buffer[s] +6)));
 
 						if (buffer[s][5]==5)
-							skillwindow(s);
+							skillwindow(client);
 					}
 					break;
 
@@ -2035,7 +1853,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 
 				case PACKET_READBOOK:
 					{
-					int size;
+					pClient clientize;
 					size=dyn_length;
 					pItem pBook=cSerializable::findItemBySerial(LongCharFromPtr(buffer[s] +3));
 					if( pBook )
@@ -2119,7 +1937,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					break;
 
 				case PACKET_GUMP_charENTRY_INPUT:
-					//gumps::Input(s);
+					//gumps::Input(client);
 					break;
 
 				case PACKET_RESURRECT_CHOICE:
@@ -2138,15 +1956,15 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					break;
 
 				case PACKET_BUYITEM:
-					buyaction(s);
+					buyaction(client);
 					break;
 
 				case PACKET_SELLITEM:
-					sellaction(s);
+					sellaction(client);
 					break;
 
 				case PACKET_SECURETRADING:
-					trademsg(s);
+					trademsg(client);
 					break;
 
 				case PACKET_TIPS_REQUEST:// T2A Popuphelp request
@@ -2192,7 +2010,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						len = 7+p;
 						ShortToCharPtr(len, packet +1);
 						Xsend(s, packet, len);
-//AoS/						Network->FlushBuffer(s);
+//AoS/						Network->FlushBuffer(client);
 					}
 					break;
 
@@ -2205,7 +2023,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					break;
 
 				case PACKET_MSGBOARD:
-					MsgBoards::MsgBoardEvent(s);
+					MsgBoards::MsgBoardEvent(client);
 					break;
 
 				// Client version packet ... OSI clients always send that one on login.
@@ -2225,7 +2043,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					{
 						if ( strcmp( clientNumber, SUPPORTED_CLIENT) ) // check if client version matches
 						{
-							Disconnect(s);
+							client->disconnect();
 							break;
 						}
 						break;
@@ -2237,7 +2055,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 				   		if (viter != clientsAllowed.end() ) break; else
 						{
 							InfoOut("client %i disconnected by Client Version Control System\n", s);
-							Disconnect(s);
+							client->disconnect();
 						}
 					}
            			break;
@@ -2313,20 +2131,17 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					clientCrypter[s]=NULL;
 				}
 #endif
-				Disconnect(s) ; // Error on a read
+				client->disconnect();
 			}
   		} // end if recv >0
   		else
   		{
-	  //ConOut("FB: %i perm: %i\n",fb,perm[s]);
-		  Disconnect(s); // extremly important (and tricky too ;-) !!!
-	  // osi client closes socket AFTRER the first 4 bytes and re-opens it afterward.
-	  // this line handles this correctly
-		  }
-
+			//ConOut("FB: %i perm: %i\n",fb,perm[s]);
+			client->disconnect(); // extremly important (and tricky too ;-) !!!
+			// osi client closes socket AFTRER the first 4 bytes and re-opens it afterward.
+			// this line handles this correctly
+		}
  	} // end if newclient[]
-
-
 }
 
 void cNetwork::LoadHosts_deny()
@@ -2381,7 +2196,7 @@ void cNetwork::LoadHosts_deny()
 
 bool cNetwork::CheckForBlockedIP(sockaddr_in ip_address)
 {
-	const int size = hosts_deny.size();
+	const pClient clientize = hosts_deny.size();
 
 	for ( int i = 0; i < size; ++i )
 		if( (ip_address.sin_addr.s_addr&hosts_deny[i].mask) == (hosts_deny[i].address&hosts_deny[i].mask ))
@@ -2437,7 +2252,7 @@ static TTHREAD startNetThread (void *ptr)
     EXIT_TTHREAD;     // we don't dealloc mem since it's static :]
 }
 
-void NetThread::set(int s)
+void NetThread::set(pClient client)
 {
     realsocket=s;
     outtail = 0;
@@ -2445,9 +2260,9 @@ void NetThread::set(int s)
     lastopwasinsert = false;
 }
 
-NetThread::NetThread(int s)
+NetThread::NetThread(pClient client)
 {
-    set(s);
+    set(client);
     mtxrun.enter();
     int n = tthreads::startTThread(startNetThread, this);
     InfoOut("Starting new network thread [%d]\n", n);

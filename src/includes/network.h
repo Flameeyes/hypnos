@@ -35,8 +35,8 @@ class NetThread
 		int realsocket;
 		void run();
 		void enqueue (char*, int);
-		NetThread(int s);
-		void set(int s);
+		NetThread(pClient client);
+		void set(pClient client);
 };
 
 class cNetwork
@@ -44,9 +44,9 @@ class cNetwork
 	public:
 		cNetwork();
 
-		void enterchar(int s);
-		void startchar(int s);
-		void LoginMain(int s);
+		void enterchar(pClient client);
+		void startchar(pClient client);
+		void LoginMain(pClient client);
 		void xSend(pClient client, const void *point, int length );
 		void xSend(pClient client, unistring& p, bool alsoTermination = true );
 		void Disconnect(pClient client);
@@ -66,13 +66,13 @@ class cNetwork
 
 		void DoStreamCode(pClient client);
 		int  Pack(void *pvIn, void *pvOut, int len);
-		void Login2(int s);
-		void Relay(int s);
-		void GoodAuth(int s);
-		void charplay (int s);
-		void CharList(int s);
-		int  Receive(int s, int x, int a);
-		void GetMsg(int s);
+		void Login2(pClient client);
+		void Relay(pClient client);
+		void GoodAuth(pClient client);
+		void charplay (pClient client);
+		void CharList(pClient client);
+		int  Receive(pClient client, int x, int a);
+		void GetMsg(pClient client);
 		char LogOut(pClient client);
 		void pSplit(char *pass0);
 		void sockInit();
@@ -82,8 +82,8 @@ class cNetwork
 		unsigned char clientSeed[MAXCLIENT+1][4]; 
 };
 
-extern class cNetwork	*Network;
+extern class cNetwork *Network;
 
-pClient getClientFromSocket(int s);
+pClient getClientFromSocket(pClient client);
 
 #endif

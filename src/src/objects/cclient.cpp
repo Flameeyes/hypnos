@@ -55,6 +55,129 @@ cClient::~cClient()
 }
 
 /*!
+\brief Disconnects client
+
+Updated to hypnos (Chronodt 29/1/04)
+\todo find something to replace socket number output with
+*/
+void cClient::disconnect()
+{
+	static const char msgDisconnect[]	= "Client %i disconnected. [Total online clients: %i]\n";
+	static const char msgPart[]		= "%s has left the realm";
+
+	time_t ltime;
+	time( &ltime );
+
+        int clientnumber = 0;
+	for (cClients::iterator i = cClient::clients.begin(); (i != client) || (cClient::clients.end()); i++ ) clientnumber++;
+
+	InfoOut( msgDisconnect, clientnumber , cClient::clients.size() - 1 );
+
+	if (SrvParms->server_log)
+		ServerLog.Write( msgDisconnect, clientnumber , cClient::clients.size() - 1);
+
+	if( currChar() )
+	{
+		if (SrvParms->partmsg && currChar() )
+			sysbroadcast( msgPart, currChar()->getCurrentName().c_str() );
+		
+		if ( currChar()->IsOnline() )
+		{
+			LogOut( client );
+
+
+			if( currChar()->party!=INVALID ) {
+				P_PARTY party = Partys.getParty( currChar()->party );
+				if( party!=NULL )
+					party->removeMember( currChar() );
+			}
+
+
+			uint32_t pc_serial = currChar()->getSerial();
+
+			for (cClients::iterator i = cClient::clients.begin(); cClient::clients.end(); i++ )
+			{
+                                pChar pi = (*i)->currChar();
+				if ( pi )
+					if( currChar() != pi && currChar()->hasInRange(pi) )
+					{
+						nPackets::Sent::DeleteObj pk(currChar());
+        		                        (*i)->sendPacket(&pk);
+					}
+			}
+		}
+	}
+	//! \todo revise from here
+	FlushBuffer( client );
+
+	closesocket( client[ socket ] ); //so it bombs and free the mutex :]
+
+#ifdef ENCRYPTION
+	if ( clientCrypter[socket] != NULL && !clientCrypter[socket]->getEntering())
+	{
+		delete (ClientCrypt * ) clientCrypter[socket] ;
+		clientCrypter[socket]=NULL;
+	}
+#endif
+
+	if( currChar() )
+	{
+		currChar()->setClient( NULL );
+
+		if( currChar()->murderrate>getclock() ) //save murder decay
+			currChar()->murdersave= (currChar()->murderrate -getclock()) / SECS;
+
+	}
+
+	loginchars[socket] = NULL;
+
+	safedelete( clientInfo[socket] );
+
+	for ( j = socket; j < now - 1; ++j )
+	{
+		int jj = j+1;
+		client[j]=client[jj];
+		loginchars[socket] = loginchars[jj];
+		cryptedClient[j]=cryptedClient[jj];
+#ifdef ENCRYPTION
+		clientCrypter[jj] = clientCrypter[j];
+#endif
+		clientip[j][0]=clientip[jj][0];
+		clientip[j][1]=clientip[jj][1];
+		clientip[j][2]=clientip[jj][2];
+		clientip[j][3]=clientip[jj][3];
+		acctno[j]=acctno[jj];
+		binlength[j]=binlength[jj];
+		boutlength[j]=boutlength[jj];
+		clientInfo[j]=clientInfo[jj];
+		walksequence[j]=walksequence[jj];
+		clientDimension[j]=clientDimension[jj];
+
+		memcpy(&buffer[j], &buffer[jj], MAXBUFFER); // probably not nec.
+		memcpy(&outbuffer[j], &outbuffer[jj], MAXBUFFER); // very important
+
+	}
+
+	pChar pj = NULL;
+	for ( i = 0; i < MAXCLIENT; ++i ) {
+		pj = loginchars[i];
+		if ( pj )
+			pj->setClient(NULL);
+
+		if ( i >= now )
+			loginchars[i] = INVALID;
+	}
+
+	--now;
+
+	for ( i = 0; i < now; ++i ) {
+		pj = loginchars[i];
+		if( pj )
+			pj->setClient(new cNxwClientObj(i));
+	}
+}
+
+/*!
 \brief Compress packet buffer
 \param out_buffer buffer to send
 \param out_len size of buffer to send

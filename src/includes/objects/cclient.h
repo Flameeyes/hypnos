@@ -59,6 +59,8 @@ protected:
 public:
 	cClient(int32_t sd, struct sockaddr_in* addr);
 	~cClient();
+	
+	void disconnect();
 
 	void sendPacket(pPacketSend ps);
 
