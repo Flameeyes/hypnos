@@ -12,9 +12,15 @@
 In this file I'll write the functions to access to the server's settings,
 like skills settings, working systems and so on.
 To store the settings in a file, we'll use a settings.xml file.
+
+Note about defined macros. Usually I hate them and I prefer not to use them,
+but in this file we have a lot of identical code which change only the names
+of the settings, so I defined the macros to have the code more clean (also
+if it makes the error handling more difficult).
 */
 
 #include "settings.h"
+#include "mxml.h"
 
 #define SETTING(type, name, default) \
 	type val##name = default; \
@@ -54,6 +60,15 @@ The constants of this group are or-ed together to get the server boolean's setti
 	static const uint64_t flagActionsUseInvisible	= 0x0000000000000400;
 	//! Stealth on horse
 	static const uint64_t flagSkillsStealthOnHorse	= 0x0000000000000800;
+	
+	//! Sets a determined flag on or off
+	void setFlag(const uint64_t flag, bool on = true)
+	{
+		if ( on )
+			flags |= flag;
+		else
+			flags &= ~flag;
+	}
 //@}
 
 /*!
@@ -87,6 +102,16 @@ namespace MsgBoards {
 	
 	//! Maximum entries in ESCORST
 	SETTING(uint16_t, MaxEntries, 256);
+	
+	void load(MXML::Node *n)
+	{
+		do {
+			XMLSETTING(MaxPosts, UInt16)
+			else XMLSETTING(MaxEntries, UInt16)
+			else LogWarning("Unknown node %s in settings.xml, ignoring", d->name().c_str() );
+			n = n->next();
+		} while(n);
+	}
 }
 
 namespace Server {
@@ -137,6 +162,16 @@ namespace Server {
 	
 	//! How much weight can take with one str point?
 	SETTING(uint32_t, WeightPerStr, 4);
+
+	void load(MXML::Node *n)
+	{
+		do {
+			XMLSETTING(MaxPosts)
+			else XMLSETTING(MaxEntries)
+			else LogWarning("Unknown node %s in settings.xml, ignoring", d->name().c_str() );
+			n = n->next();
+		} while(n);
+	}
 }
 
 namespace Hunger {
@@ -205,6 +240,33 @@ namespace Skills {
 namespace Logging {
 	//! Gets the absolute path of the logs directory
 	SETTING(std::string, LogPath, "");
+}
+
+#define SECTION(name) \
+	if ( d->name() == #name )
+		##name::load(d);
+
+void load(std::istream &xmlfile)
+{
+	try {
+		MXML::Document(xmlfile);
+		
+		MXML::Node *d = doc.main()->child();
+		do {
+			SECTION(MsgBoards)
+			else SECTION(Server)
+			else SECTION(Hunger)
+			else SECTION(Actions)
+			else SECTION(Skills)
+			else SECTION(Logging)
+			else
+				LogWarning("Unknown node %s in settings.xml, ignoring", d->name().c_str() );
+			
+			n = n->next();
+		} while(n);
+	} catch ( MXML::MalformedError e) {
+		LogCritical("settings.xml file not well formed. Default loading");
+	}
 }
 
 } // namespace nSettings

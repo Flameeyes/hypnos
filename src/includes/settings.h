@@ -85,12 +85,22 @@ namespace nSettings {
 	\brief Skill related settings
 	*/
 	namespace Skills {
-		bool canStealthOnHorse();		//!< Can a character stealth on an horse? [Default: false ]
 		uint16_t getStatDailyLimit();		//!< Maximum stat gain in a (real) day [Default: \b missing ]
-                uint16_t getStealthToTakeItemsWhileHid();	//!< Stealth necessary to pick up an item and remain hidden. if INVALID pc is always unhid while picking up items from the ground [Default: 960]
-                uint16_t getStealthToDropItemsWhileHid();	//!< Stealth necessary to drop an item and remain hidden. if INVALID pc is always unhid while dropping items on the ground [Default: 960]
 		uint16_t getLimitPlayerSparring();	//!< Defending player must have N skill points more than the attacker for the attacker to gain skill (in PvP only). [Default: 0]
                 uint16_t getMaximumSkillTraining();	//!< maximum skill an npc trainer can teach to a PC [Default: 250]
+		
+		//@{
+		/*!
+		\name Hiding and Stealth
+		*/
+			bool canStealthOnHorse();	//!< Can a character stealth on an horse? [Default: false ]
+			uint16_t getStealthToTakeItemsWhileHid();
+				//!< Stealth necessary to pick up an item and remain hidden.
+				//!< If INVALID pc is always unhid while picking up items from the ground [Default: 960]
+			uint16_t getStealthToDropItemsWhileHid();
+				//!< Stealth necessary to drop an item and remain hidden.
+				//!< If INVALID pc is always unhid while dropping items on the ground [Default: 960]
+		//@}
 		
 		//@{
 		/*!
