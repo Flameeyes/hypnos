@@ -80,6 +80,4 @@ void LogMessageF(char type, char *fpath, int lnum, char *Message, ...) PRINTF_LI
 	#define SWITCH_FALLOUT
 #endif
 
-void LogSocketError(char* message, int err);
-
 #endif

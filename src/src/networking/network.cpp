@@ -156,31 +156,6 @@ void cNetwork::Relay(pClient client) // Relay player to a certain IP
 	ip = inet_addr(serv[buffer[s][2]-1][1]);
 	port =str2num(serv[buffer[s][2]-1][2]);
 
-	// Enable autodetect unless you bind to a specific ip address
-        // otherwise you should lead in some security issue
-        if(ServerScp::g_nAutoDetectIP || ServerScp::g_nBehindNat) { //Luxor
-		//Xan : plug'n'play mode under windows :)
-                //Rik : and for linux too ;) (should run on other bsd compatible systems too)
-		socklen_t n = sizeof(sockaddr_in);
-                sockaddr_in sa;
-		getsockname (client[s], (sockaddr*)(&sa), (socklen_t*)(&n));
-		uint32_t oldip = ip;
-		//Luxor: REALLY tricky... i should change this soon, but no time to make it better by now :P
-		uint32_t pClient clienterverip = sa.sin_addr.s_addr;
-		uint32_t clientip = client_addr.sin_addr.s_addr;
-//		printf("IP: %d.%d.%d.%d\n", IPPRINTF(ip));
-//		printf("SERVER_IP: %d.%d.%d.%d\n", IPPRINTF(serverip));
-//		printf("CLIENT_IP: %d.%d.%d.%d\n", IPPRINTF(clientip));
-		if (ServerScp::g_nBehindNat) { //if the server is behind a NAT, use the autodetection only if the client is in the same LAN
-			if (((serverip&0xFF) == (clientip&0xFF)) && (((serverip>>8)&0xFF) == ((clientip>>8)&0xFF)))
-				ip = serverip;
-		} else
-			ip = serverip;
-                if (ip != oldip)
-			outInfof("client %d relayed to IP %d.%d.%d.%d instead of %d.%d.%d.%d\n", s, IPPRINTF(ip), IPPRINTF(oldip));
-        }
-
-
 	uint32_t key = calcserial('a', 'K', 'E', 'Y');
 
 	srand(ip+acctno[s]+now+getClockmSecs()); // Perform randomize

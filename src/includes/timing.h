@@ -16,10 +16,4 @@
 void checkauto();	//!< Check automatic/timer controlled stuff (Like fighting and regeneration)
 void checktimers();	//!< Check shutdown timers
 
-extern uint32_t initialServerSecs;
-extern uint32_t initialServermSecs;
-
-inline void initclock()
-{ getClock(initialServerSecs, initialServermSecs); }
-
 #endif

@@ -226,11 +226,3 @@ void LogMessageF(char type, char *fpath, int lnum, char *Message, ...)
 
 	MessageReady(type, fullMessage2);
 }
-
-void LogSocketError(char* message, int err) {
-#ifndef __unix__
-	LogError("Socket Send error WSA_%i\n", WSAGetLastError());
-#else
-	LogError("Socket Send error %i (%s)\n", err, strerror(err)) ;
-#endif
-}

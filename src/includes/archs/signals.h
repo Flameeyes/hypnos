@@ -29,12 +29,20 @@ similar.
 
 #ifdef USE_SIGNALS
 
+#include <sys/signal.h>
+
 bool pollHUPStatus();
 bool pollCloseRequests();
 void setup_signals();
 void start_signal_thread();
 void init_deamon();
 
+#else
+inline bool pollHUPStatus () { return false; }
+inline bool pollCloseRequests () { return false; }
+inline void setup_signals (){ return; }
+inline void start_signal_thread() { return; }
+inline void init_daemon() { return; }
 #endif // USE_SIGNALS
 
 #endif // __ARCHS_SIGNALS_H__

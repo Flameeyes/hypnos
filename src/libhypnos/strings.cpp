@@ -230,3 +230,15 @@ int strcasecmp( const char *str1, const char *str2 )
     return toupper(*ustr1) - toupper(*ustr2);
 }
 #endif // HAVE_STRCASECMP
+
+#ifndef HAVE_BASENAME
+char *basename(char *path)
+{
+	// ret= end of string path
+	char *ret= path+strlen(path);
+
+	// stop on the first '/' or '\' encountered
+	while( (*ret!='\\') && (*ret!='/') ) ret--;
+	return ++ret;
+}
+#endif

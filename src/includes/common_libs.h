@@ -43,15 +43,22 @@ warnings/errors/issues.
 
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/timeb.h>
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #include <ctype.h>
 #include <unistd.h>
 
-// Only the one which is used it's actually included, the others will be
-// ignored.
-#include "archs/hypunix.h"
-#include "archs/hypwin32.h"
+#ifdef WIN32
+#include <winbase.h>
+#include <io.h>
+#include <dos.h>
+#include <limits.h>
+#include <conio.h>
+#include <process.h>
+#endif
 
 #ifndef MSG_NOSIGNAL
     #define MSG_NOSIGNAL 0
@@ -67,5 +74,19 @@ enum OSVersion { OSVER_UNKNOWN, OSVER_WIN9X, OSVER_WINNT, OSVER_NONWINDOWS };
 extern OSVersion getOSVersion();
 
 using namespace nLibhypnos;
+
+/*!
+\brief Checks if a file exists already
+\param filename Relative path of the file to check
+\return true if the file exists, else false
+*/
+bool fileExists(std::string filename);
+
+/*!
+\brief Check if the directory of the given file exists, and if not, create it
+\param dirname Relative path of the file to check the directory of
+\return false if unable to create the directory, else true
+*/
+bool ensureDirectory(std::string filename);
 
 #endif //__COMMON_LIBS_H__

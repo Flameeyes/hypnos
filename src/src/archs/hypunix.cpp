@@ -12,11 +12,10 @@
 #ifdef __unix__
 
 #include "common_libs.h"
-#include "logsystem.h"
-#include <fstream>
 
-termios termstate;
-unsigned long int oldtime, newtime;
+#ifdef HAVE_SYS_UTSNAME_H
+#include <sys/utsname.h>
+#endif
 
 std::string getOSVersionString()
 {

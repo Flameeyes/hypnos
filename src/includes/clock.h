@@ -15,7 +15,14 @@
 #ifndef __CLOCK_H__
 #define __CLOCK_H__
 
-void initclock();
+extern uint32_t initialServerSecs;
+extern uint32_t initialServermSecs;
+
+void getClock(uint32_t &secs, uint32_t &msecs);
+
+inline void initclock()
+{ getClock(initialServerSecs, initialServermSecs); }
+
 uint32_t getClockmSecs();
 uint32_t getClockSys();
 uint32_t getClockDay();

@@ -222,4 +222,8 @@ int strcasecmp(const char *str1, const char *str2);
 # endif
 #endif // !defined(HAVE_STRCASECMP)
 
+#ifndef HAVE_BASENAME
+char *basename(char *path);
+#endif
+
 #endif

@@ -9,38 +9,8 @@
 #ifdef WIN32
 
 #include "common_libs.h"
-#include "backend/notify.h"
 
 #include <process.h>
-#include <wefts_mutex.h>
-
-WSADATA wsaData;
-WORD wVersionRequested;
-long int oldtime, newtime;
-
-/*!
-\brief Splits a path between path and filename
-\author Xanathar [NoX]
-\param p the complete path which gets truncated
-\return ptr to the filename portion
-*/
-char *splitPath (char *p)
-{
-	int i, ln = strlen(p);
-
-	for (i=ln-1; i>=0; i--) {
-		if ((p[i]=='\\')) { //||(p[i]=='/')) {
-			p[i] = '\0';
-			return p+i+1;
-		}
-	}
-	return p; //no backslash found
-}
-
-void init_deamon()
-{
-	outWarning("Windows needs code to be run in daemon mode...");
-}
 
 OSVersion OSVer = OSVER_UNKNOWN;
 
@@ -93,16 +63,6 @@ OSVersion getOSVersion()
         getOSVersionString();
     }
     return OSVer;
-}
-
-char *basename(char *path)
-{
-	// ret= end of string path
-	char *ret= path+strlen(path);
-
-	// stop on the first '/' or '\' encountered
-	while( (*ret!='\\') && (*ret!='/') ) ret--;
-	return ++ret;
 }
 
 #endif
