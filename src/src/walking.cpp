@@ -7,7 +7,6 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
 #include "walking.h"
-#include "networking/network.h"
 #include "sregions.h"
 #include "sndpkg.h"
 #include "house.h"
@@ -16,6 +15,8 @@
 #include "boats.h"
 #include "map.h"
 #include "inlines.h"
+#include "networking/network.h"
+#include "libhypnos/cvariant.h"
 
 /*!
 \brief Checks if the Char is allowed to move at all (not frozen, overloaded...)
@@ -372,7 +373,7 @@ void walking(pChar pc, int dir, int sequence)
 	if (dir>INVALID && (dir&0x0F)<8)
 		pc->dir=(dir&0x0F);
 	else
-		ConOut("dir-screwed : %i\n",dir);
+		outPlain("dir-screwed : %i\n",dir);
 
 
 	if( oldx!=newx || oldy!=newy )

@@ -24,7 +24,7 @@ void nMOTD::loadMOTD()
 {
 	bool motdLoaded = false;
 
-	ConOut("Loading MOTD and Tips data...\t\t");
+	outPlain("Loading MOTD and Tips data...\t\t");
 	
 	std::ifstream xmlfile("config/motd.xml");
 	try {
@@ -51,9 +51,9 @@ void nMOTD::loadMOTD()
 			}
 			
 		} while( (n = n->next()) );
-		ConOut("[   OK   ]\n");
+		outPlain("[   OK   ]\n");
 	} catch ( MXML::MalformedError e) {
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("motd.xml file not well formed.");
 	}
 }

@@ -53,7 +53,7 @@ static void cacheMap()
 			continue;
 		map_st m;
 		std::map< uint32_t, map_st > *map_cache = new std::map< uint32_t, map_st >;
-		ConOut( "\nCaching map %i data ( map0.mul )\t\t", i );
+		outPlain( "\nCaching map %i data ( map0.mul )\t\t", i );
 		uint16_t blockX;
 		uint8_t xOffset;
 		int8_t yOffset;
@@ -79,7 +79,7 @@ static void cacheMap()
 			}
 		}
 		maps[i]->setCache( map_cache );
-		ConOut( "[Done]" );
+		outPlain( "[Done]" );
 	}
 }
 
@@ -103,7 +103,7 @@ static void cacheStatics()
 	uint16_t blockX;
 	int16_t blockY;
 	uint32_t num;
-	ConOut( "\nCaching statics data ( staidx0.mul, statics0.mul )\t\t" );
+	outPlain( "\nCaching statics data ( staidx0.mul, statics0.mul )\t\t" );
 	for ( blockX = 0; blockX < map_width; blockX++ ) {
 		for ( blockY = map_height -1; blockY >= 0; blockY-- ) {
 			pos =
@@ -126,7 +126,7 @@ static void cacheStatics()
 	}
 	statics->setCache( statics_cache );
 	staticIdx->setCache( staidx_cache );
-	ConOut( "[Done]" );
+	outPlain( "[Done]" );
 }
 
 /*!
@@ -145,13 +145,13 @@ static void cacheVerdataIndex()
 	int32_t i;
 	uint32_t pos;
 
-	ConOut( "\nCaching verdata index ( verdata.mul ) \t\t" );
+	outPlain( "\nCaching verdata index ( verdata.mul ) \t\t" );
 	for ( i = 0; i < verdataEntries; i++ ) {
 		pos = VERDATA_HEADER_SIZE + ( i * verdata_st_size );
 		if ( verIdx->getData( pos, v ) )
 			verIdx_cache->insert( std::pair< uint32_t, verdata_st >( pos, v ) );
 	}
-	ConOut( "[Done]" );
+	outPlain( "[Done]" );
 	verIdx->setCache( verIdx_cache );
 }
 
@@ -173,7 +173,7 @@ static void cacheVerdata()
 	uint8_t index;
 	int32_t i;
 
-	ConOut( "\nCaching verdata tiledata info ( verdata.mul ) \t\t" );
+	outPlain( "\nCaching verdata tiledata info ( verdata.mul ) \t\t" );
 	for ( i = 0; i < verdataEntries; i++ ) {
 		pos = VERDATA_HEADER_SIZE + ( i * verdata_st_size );
 		if ( !verIdx->getData( pos, v ) )
@@ -197,7 +197,7 @@ static void cacheVerdata()
 			}
 		}
 	}
-	ConOut( "[Done]" );
+	outPlain( "[Done]" );
 	verTile->setCache( verTile_cache );
 	verLand->setCache( verLand_cache );
 }
@@ -213,7 +213,7 @@ void init()
 	//
 	// If MULs loading fails, stop the server!
 	//
-	ConOut("Preparing to open *.mul files...\n(If they don't open, fix your paths in server.cfg)\n");
+	outPlain("Preparing to open *.mul files...\n(If they don't open, fix your paths in server.cfg)\n");
 
 	maps.push_back( new cMULFile< map_st > ( map_path, "rb" ) );
 	CHECKMUL( maps[0], map_path.c_str() );
@@ -259,7 +259,7 @@ void init()
 	//
 	// MULs loaded, keep the server running
 	//
-	ConOut("MUL files loaded succesfully.\n" );
+	outPlain("MUL files loaded succesfully.\n" );
 }
 
 /*!
@@ -522,7 +522,7 @@ cMULFile<T>::cMULFile( std::string path, std::string mode )
 			safedelete( s );
 			strcat( fn, "\\" );
 			strcat( fn, f );
-			ConOut( "*** Can't open %s, trying %s ***\n", path.c_str(), fn );
+			outPlain( "*** Can't open %s, trying %s ***\n", path.c_str(), fn );
 			m_file = fopen( fn, mode.c_str() );
 		}
 	}

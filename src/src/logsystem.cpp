@@ -18,8 +18,6 @@
 int32_t entries_e=0, entries_c=0, entries_w=0, entries_m=0;
 LogFile ServerLog("server.log");
 
-void ErrOut(char *txt, ...);
-
 /*!
 \brief Write text to the GM log file
 \author Anthalir
@@ -63,7 +61,7 @@ LogFile::LogFile(char *format, ...)
 
 	if( file==NULL )
 	{
-		ErrOut("unable to open/create log file %s", filename.c_str());
+		outErrorf("unable to open/create log file %s", filename.c_str());
 		return;
 	}
 }
@@ -76,7 +74,7 @@ LogFile::LogFile(std::string name)
 
 	if( file==NULL )
 	{
-		ErrOut("unable to open/create log file %s", filename.c_str());
+		outErrorf("unable to open/create log file %s", filename.c_str());
 		return;
 	}
 }
@@ -113,7 +111,7 @@ void LogFile::Write(char *format, ...)
 	if ( fprintf(file, "[%02d/%02d/%04d %02d:%02d:%02d] %s", T->tm_mday, T->tm_mon+1, T->tm_year+1900,
 		T->tm_hour, T->tm_min, T->tm_sec, tmp) == 0 )
 	{
-		ErrOut("Unable to write to log file %s", filename.c_str());
+		outErrorf("Unable to write to log file %s", filename.c_str());
 	}
 	free(tmp);
 }
@@ -128,7 +126,7 @@ void LogFile::Write(std::string str)
 	if ( fprintf(file, "[%02d/%02d/%04d %02d:%02d:%02d] %s", T->tm_mday, T->tm_mon+1, T->tm_year+1900,
 		T->tm_hour, T->tm_min, T->tm_sec, str.c_str()) == 0 )
 	{
-		ErrOut("Unable to write to log file %s", filename.c_str());
+		outErrorf("Unable to write to log file %s", filename.c_str());
 	}
 }
 
@@ -243,10 +241,10 @@ void LogMessageF(char *Message, ...)
 
 	switch( LogType )
 	{
-//		case 'M': InfoOut("%s\n", fullMessage); break;
-		case 'W': WarnOut("%s\n",fullMessage); break;
-		case 'E': ErrOut("%s\n",fullMessage); break;
-		case 'C': PanicOut("%s\n",fullMessage); break;
+//		case 'M': outInformationf("%s\n", fullMessage); break;
+		case 'W': outWarningf("%s\n",fullMessage); break;
+		case 'E': outErrorf("%s\n",fullMessage); break;
+		case 'C': outPanicf("%s\n",fullMessage); break;
 	}
 
 	if( LogType != 'M' )

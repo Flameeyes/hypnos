@@ -41,12 +41,12 @@ into nSkill::infos array.
 */
 void nSkills::loadSkills()
 {
-	ConOut("Loading skills information...\t\t");
+	outPlain("Loading skills information...\t\t");
 	
 	std::ifstream xmlfile("config/skills.xml");
 	if ( ! xmlfile )
 	{
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("Unable to open skills.xml file.");
 		return;
 	}
@@ -118,9 +118,9 @@ void nSkills::loadSkills()
 			}
 		} while((n = n->next()));
 		
-		ConOut("[   OK   ]\n");
+		outPlain("[   OK   ]\n");
 	} catch ( MXML::MalformedError e) {
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("skills.xml file not well formed.");
 	}
 	
@@ -355,7 +355,6 @@ bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
 				incval = r->getSkillAdvanceSuccess( (uint32_t) sk, (uint32_t) pc->baseskill[sk] );
 			else
 				incval=0;
-			//SDbgOut("Race advance success for skill %d with base %d is %d\n", sk, pc->baseskill[sk], incval * 10 );
 		}
 		else
 		{
@@ -365,7 +364,6 @@ bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
 			else
 				incval =0;
 
-			//SDbgOut("Race advance failure for skill %d with base %d is %d\n", sk, pc->baseskill[sk], incval * 10 );
 		}
 		incval *= 10;
 
@@ -486,8 +484,6 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
 
 	stat2update2 = wpadvance[i].success;         // gather small increases
 
-	//SDbgOut("AdvanceOneStat() skill %d base %d succes %d %d\n", sk, (*stat)*10, stat2update1, stat2update2);
-
 	if( Race::isRaceSystemActive() )
 		stat2update = stat2update1;
 	else
@@ -537,19 +533,15 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
 			{
 				case STATCAP_CAP:
 					limit = Race::getRace( (uint32_t) pc->race )->getStatCap();
-					SDbgOut("AdvanceOneStat() race %d %s statcap %d\n", pc->race, Race::getName( pc->race )->c_str(), limit );
 					break;
 				case STATCAP_STR:
 					limit = Race::getRace( (uint32_t) pc->race )->getStrCap();
-					SDbgOut("AdvanceOneStat() race %d %s strcap %d\n", pc->race, Race::getName( pc->race )->c_str(), limit );
 					break;
 				case STATCAP_DEX:
 					limit = Race::getRace( (uint32_t) pc->race )->getDexCap();
-					SDbgOut("AdvanceOneStat() race %d %s dexcap %d\n", pc->race, Race::getName( pc->race )->c_str(), limit );
 					break;
 				case STATCAP_INT:
 					limit = Race::getRace( (uint32_t) pc->race )->getIntCap();
-					SDbgOut("AdvanceOneStat() race %d %s intcap %d\n", pc->race, Race::getName( pc->race )->c_str(), limit );
 					break;
 			}
 		} else {

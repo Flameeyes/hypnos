@@ -88,7 +88,7 @@ nMULFiles::fTiledataStatic *tiledataStatic = NULL;
 void StartClasses()
 {
 	//! \todo this should be completely removed!
-	ConOut("Initializing classes...");
+	outPlain("Initializing classes...");
 
 	// Classes nulled now, lets get them set up :)
 	cwmWorldState=new CWorldMain;
@@ -99,7 +99,7 @@ void StartClasses()
 	Areas=new cAreas;
 	Restocks= new cRestockMng();
 
-	ConOut(" [ OK ]\n");
+	outPlain(" [ OK ]\n");
 }
 
 void DeleteClasses()
@@ -121,7 +121,7 @@ void DeleteClasses()
 */
 void SetGlobalVars()
 {
-	ConOut("Initializing global variables...");
+	outPlain("Initializing global variables...");
 
 	w_anim[0]=0; w_anim[1]=0; w_anim[2]=0;
 
@@ -136,7 +136,7 @@ void SetGlobalVars()
 	donpcupdate=0;
 	wtype=0;
 
-	ConOut(" [ OK ]\n");
+	outPlain(" [ OK ]\n");
 }
 
 /*!
@@ -180,40 +180,40 @@ void loadServer()
 	cWeapon::loadWeaponsInfo();
 	cContainer::loadContainersData();
 	
-	ConOut("Loading mountable creature...");
+	outPlain("Loading mountable creature...");
 	loadmounts();
-	ConOut("[  Ok  ]\n");
+	outPlain("[  Ok  ]\n");
 
-	ConOut("Loading Creature info...");
+	outPlain("Loading Creature info...");
 	creatures.load();
-	ConOut("[  Ok  ]\n");
+	outPlain("[  Ok  ]\n");
 
-	ConOut("Building pointer arrays...");
+	outPlain("Building pointer arrays...");
 	BuildPointerArray();
-	ConOut("[  Ok  ]\n");
+	outPlain("[  Ok  ]\n");
 
-	ConOut("Loading accounts...");
+	outPlain("Loading accounts...");
 	Accounts->LoadAccounts();
-	ConOut("[  Ok  ]\n");
+	outPlain("[  Ok  ]\n");
 
-	ConOut("Loading areas...");
+	outPlain("Loading areas...");
 	Areas->loadareas();
-	ConOut("[DONE]\n");
+	outPlain("[DONE]\n");
 
-	ConOut("Loading spawn regions...");
+	outPlain("Loading spawn regions...");
 	//loadspawnregions();
 	Spawns->loadFromScript();
-	ConOut("[DONE]\n");
+	outPlain("[DONE]\n");
 
-	ConOut("Loading regions...");
+	outPlain("Loading regions...");
 	loadregions();
-	ConOut("[DONE]\n");
+	outPlain("[DONE]\n");
 
 	data::init(); // Luxor
 
-	ConOut("Loading Teleport...");
+	outPlain("Loading Teleport...");
 	read_in_teleport();
-	ConOut("[DONE]\n");
+	outPlain("[DONE]\n");
 
 	npcs::initNpcSpells();
 
@@ -221,26 +221,26 @@ void loadServer()
 
 	cScheduler::init();
 
-	ConOut(" [DONE]\nLoading custom titles...");
+	outPlain(" [DONE]\nLoading custom titles...");
 	loadcustomtitle();
-	ConOut(" [DONE]\n");
+	outPlain(" [DONE]\n");
 
-	ConOut("Initializing creatures... ");
+	outPlain("Initializing creatures... ");
 	creatures.load();
-	ConOut("[DONE]\n");
+	outPlain("[DONE]\n");
 
-	ConOut("Initializing magic... ");
+	outPlain("Initializing magic... ");
 	//Magic->InitSpells();
 	magic::loadSpellsFromScript();
-	ConOut("[DONE]\n");
+	outPlain("[DONE]\n");
 
-	ConOut("Initializing races... ");
+	outPlain("Initializing races... ");
 	Race::parse();
-	ConOut("[DONE]\n");
+	outPlain("[DONE]\n");
 
-	ConOut("Loading IP blocking rules... ");
+	outPlain("Loading IP blocking rules... ");
 	Network->LoadHosts_deny();
-	ConOut("[DONE]\n");
+	outPlain("[DONE]\n");
 
 	Guilds->CheckConsistancy(); // LB
 
@@ -258,16 +258,16 @@ void shutdownServer()
 	cwmWorldState->saveNewWorld();
 
 	sysbroadcast("The server is shutting down.");
-	ConOut("Closing sockets...");
+	outPlain("Closing sockets...");
 
 	Network->SockClose();
 
-	ConOut(" Done.\n");
-	ConOut("Saving server.cfg...\n");
+	outPlain(" Done.\n");
+	outPlain("Saving server.cfg...\n");
 	saveserverscript();
-	ConOut("\n");
-	ConOut("Deleting Classes...");
+	outPlain("\n");
+	outPlain("Deleting Classes...");
 	DeleteClasses();
 	data::shutdown(); // Luxor
-	ConOut("[DONE]\n");
+	outPlain("[DONE]\n");
 }

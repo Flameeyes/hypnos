@@ -10,7 +10,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "archs/signals.h"
-#include <wefts_sleep.h>
+#include <wefts_os_base.h>
 
 // If not USE_SIGNALS simply compile an empty unit
 #ifdef USE_SIGNALS

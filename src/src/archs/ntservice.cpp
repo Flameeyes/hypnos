@@ -259,13 +259,13 @@ void initService (int argc, char **argv);
 void remain(int argc, char *argv[])
 {
 	SC_HANDLE myService, scm;
-// 	ConOut("NT-Service Installation/Uninstallation\n");
-// 	ConOut("Program by Xanathar, Ummon\n\n\n");
+// 	outPlain("NT-Service Installation/Uninstallation\n");
+// 	outPlain("Program by Xanathar, Ummon\n\n\n");
 	char str[800];
 	sprintf(str, "Hypnos %s", strVersion );
 
 // 	open a connection to the SCM
-// 	ConOut("\nOpening connection to SCM...");
+// 	outPlain("\nOpening connection to SCM...");
 	scm = OpenSCManager(0, 0, SC_MANAGER_CREATE_SERVICE);
 	if (!scm)
 	{
@@ -278,7 +278,7 @@ void remain(int argc, char *argv[])
 	
 	if (myService!=NULL)
 	{
-		//ConOut("Deleting previous installation...");
+		//outPlain("Deleting previous installation...");
 		if (!DeleteService(myService))
 		{
 			char *tmp;
@@ -301,7 +301,7 @@ void remain(int argc, char *argv[])
 
 
 // 	Install the NEW service
-// 	ConOut("Creating new service...");
+// 	outPlain("Creating new service...");
 	myService = CreateService(
 		scm, "Hypnos", // the internal service name used by the SCM
 		str,  // the external label seen in the Service Control applet

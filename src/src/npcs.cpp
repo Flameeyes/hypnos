@@ -985,7 +985,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 									}
 									xos=RandomNum(-pi_i->more3,pi_i->more3);
 									yos=RandomNum(-pi_i->more4,pi_i->more4);
-									//ConOut("AddNPC Spawning at Offset %i,%i (%i,%i,%i) [-%i,%i <-> -%i,%i]. [Loop #: %i]\n",xos,yos,items[i].x+xos,items[i].y+yos,items[i].z,items[i].more3,items[i].more3,items[i].more4,items[i].more4,k); /** lord binary, changed %s to %i, crash when uncommented ! **/
+									//outPlain("AddNPC Spawning at Offset %i,%i (%i,%i,%i) [-%i,%i <-> -%i,%i]. [Loop #: %i]\n",xos,yos,items[i].x+xos,items[i].y+yos,items[i].z,items[i].more3,items[i].more3,items[i].more4,items[i].more4,k); /** lord binary, changed %s to %i, crash when uncommented ! **/
 									k++;
 
 									if ((pi_i->getPosition().x+xos<1) || (pi_i->getPosition().y+yos<1))

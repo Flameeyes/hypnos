@@ -142,7 +142,7 @@ int response(pClient client)
 	}
         else
         {
-		ConOut("Non-Unicode speech\n");
+		outPlain("Non-Unicode speech\n");
 		for (i=7; i < MAXBUFFER_REAL; i++)
 			buffer1[i]=toupper(buffer[s][i]);	// Sparhawk 	Let's forget about toupper and use strcasecmp for case insensitive comparisons
 								//		Needed for none english characters? Probably yes

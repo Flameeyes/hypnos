@@ -104,12 +104,12 @@ void nNewbies::loadStartLocations()
 	memset(startLocations, 0, sizeof(startLocations));
 	firstLoad = false;
 	
-	ConOut("Loading start locations...\t\t");
+	outPlain("Loading start locations...\t\t");
 	
 	std::ifstream xmlfile("config/start.xml");
 	if ( ! xmlfile )
 	{
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("Unable to open start.xml file.");
 		return;
 	}
@@ -167,9 +167,9 @@ void nNewbies::loadStartLocations()
 		
 		padMissingLocations();
 		
-		ConOut("[   OK   ]\n");
+		outPlain("[   OK   ]\n");
 	} catch ( MXML::MalformedError e) {
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("start.xml file not well formed.");
 	}
 }
@@ -195,12 +195,12 @@ void nNewbies::loadNewbieItems()
 	}
 	
 	//!\todo Add code to cleanup the items' lists
-	ConOut("Loading newbies' items...\t\t");
+	outPlain("Loading newbies' items...\t\t");
 	
 	std::ifstream xmlfile("config/newbies.xml");
 	if ( ! xmlfile )
 	{
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("Unable to open newbies.xml file.");
 		return;
 	}
@@ -212,7 +212,7 @@ void nNewbies::loadNewbieItems()
 		
 		if ( doc.main()->name() != "newbies" )
 		{
-			ConOut("[ Failed ]\n");
+			outPlain("[ Failed ]\n");
 			LogCritical("Unknown document node %s in newbies.xml, failing out", n->name().c_str() );
 			return;
 		}
@@ -254,9 +254,9 @@ void nNewbies::loadNewbieItems()
 		
 		padMissingLocations();
 		
-		ConOut("[   OK   ]\n");
+		outPlain("[   OK   ]\n");
 	} catch ( MXML::MalformedError e) {
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("start.xml file not well formed.");
 	}
 }

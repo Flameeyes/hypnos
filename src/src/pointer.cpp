@@ -155,11 +155,11 @@ namespace pointers {
 	{
 		PCHARLOCATIONMAPIT it( pCharLocationMap.begin() ), end( pCharLocationMap.end() );
 
-		ConOut( "--------------------------------\n" );
-		ConOut( "|      CHAR LOCATION MAP       |\n" );
-		ConOut( "--------------------------------\n" );
-		ConOut( "|   Key   | X  | Y  |  uint32_t  |\n" );
-		ConOut( "--------------------------------\n" );
+		outPlain( "--------------------------------\n" );
+		outPlain( "|      CHAR LOCATION MAP       |\n" );
+		outPlain( "--------------------------------\n" );
+		outPlain( "|   Key   | X  | Y  |  uint32_t  |\n" );
+		outPlain( "--------------------------------\n" );
 
 		uint32_t 	invalidCount	=  0;
 		int32_t 	x	  	=  0;
@@ -176,12 +176,12 @@ namespace pointers {
 				++invalidCount;
 				serial = INVALID;
 			}
-			ConOut( "|%10i|%4i|%4i|%10i|\n", it->first, x, y, serial );
+			outPlain( "|%10i|%4i|%4i|%10i|\n", it->first, x, y, serial );
 		}
-		ConOut( "--------------------------------\n" );
-		ConOut( "| entries in map : %10i  |\n", pCharLocationMap.size());
-		ConOut( "| invalid entries: %10i  |\n", invalidCount );
-		ConOut( "--------------------------------\n" );
+		outPlain( "--------------------------------\n" );
+		outPlain( "| entries in map : %10i  |\n", pCharLocationMap.size());
+		outPlain( "| invalid entries: %10i  |\n", invalidCount );
+		outPlain( "--------------------------------\n" );
 	}
 
 	CharList* getNearbyChars( pObject pObject, int32_t range, uint32_t flags )
@@ -369,11 +369,11 @@ namespace pointers {
 	{
 		PITEMLOCATIONMAPIT it( pItemLocationMap.begin() ), end( pItemLocationMap.end() );
 
-		ConOut( "--------------------------------\n" );
-		ConOut( "|      ITEM LOCATION MAP       |\n" );
-		ConOut( "--------------------------------\n" );
-		ConOut( "|   Key   | X  | Y  |  uint32_t  |\n" );
-		ConOut( "--------------------------------\n" );
+		outPlain( "--------------------------------\n" );
+		outPlain( "|      ITEM LOCATION MAP       |\n" );
+		outPlain( "--------------------------------\n" );
+		outPlain( "|   Key   | X  | Y  |  uint32_t  |\n" );
+		outPlain( "--------------------------------\n" );
 
 		uint32_t 	invalidCount	=  0;
 		int32_t 	x	  	=  0;
@@ -390,12 +390,12 @@ namespace pointers {
 				++invalidCount;
 				serial = INVALID;
 			}
-			ConOut( "|%10i|%4i|%4i|%10i|\n", it->first, x, y, serial );
+			outPlain( "|%10i|%4i|%4i|%10i|\n", it->first, x, y, serial );
 		}
-		ConOut( "--------------------------------\n" );
-		ConOut( "| entries in map : %10i  |\n", pItemLocationMap.size());
-		ConOut( "| invalid entries: %10i  |\n", invalidCount );
-		ConOut( "--------------------------------\n" );
+		outPlain( "--------------------------------\n" );
+		outPlain( "| entries in map : %10i  |\n", pItemLocationMap.size());
+		outPlain( "| invalid entries: %10i  |\n", invalidCount );
+		outPlain( "--------------------------------\n" );
 	}
 #endif
 	/*!

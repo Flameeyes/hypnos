@@ -299,9 +299,9 @@ void cSpawns::loadFromScript()
 					if( newarea!=Areas->allareas.end() )
 						dummy->singles.push_back( cSpawnArea( newarea ) );
 					else 
-						ConOut("[ERROR] on parse of spawn.xss, can't add a new area\n" );
+						outPlain("[ERROR] on parse of spawn.xss, can't add a new area\n" );
 				}
-				else ConOut("[ERROR] on parse of spawn.xss [%s]\n", script1.c_str() );
+				else outPlain("[ERROR] on parse of spawn.xss [%s]\n", script1.c_str() );
 			}
 
 		}
@@ -314,13 +314,13 @@ void cSpawns::loadFromScript()
 				if( newarea!=Areas->allareas.end() )
 					dummy->singles.push_back( cSpawnArea( newarea ) );
 				else 
-					ConOut("[ERROR] on parse of spawn.xss, can't add a new area\n" );
+					outPlain("[ERROR] on parse of spawn.xss, can't add a new area\n" );
 			}
 			else 
-				ConOut("[ERROR] on parse of spawn.xss, can't add a new area\n" );
+				outPlain("[ERROR] on parse of spawn.xss, can't add a new area\n" );
 		}
 		else if( check!=0 ) {
-			ConOut("[ERROR] on parse of spawn.xss [%i], incomplete X1 Y1 X2 Y2\n", current );
+			outPlain("[ERROR] on parse of spawn.xss [%i], incomplete X1 Y1 X2 Y2\n", current );
 			continue;
 		}
 

@@ -5,18 +5,19 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include <stdio.h>
 #include "common_libs.h"
-#include "networking/network.h"
 #include "sndpkg.h"
-#include "backend/scheduler.h"
-#include "networking/remadmin.h"
-#include "worldmain.h"
 #include "inlines.h"
+#include "logsystem.h"
+#include "backend/scheduler.h"
+#include "networking/network.h"
+#include "networking/remadmin.h"
 
 #ifdef ECHO
 	#undef ECHO
 #endif
+
+#include <stdio.h>
 
 //@{
 /*!
@@ -64,20 +65,20 @@ RemoteAdmin::~RemoteAdmin()
 void RemoteAdmin::Init()
 {
 	int bcode;
-	ConOut( "Initializing remote administration server...");
+	outPlain( "Initializing remote administration server...");
 	
 	rac_port = ServerScp::g_nRacTCPPort;
 	
 	if (rac_port==0) 
 	{
-		ConOut("[DISABLED]\n");
+		outPlain("[DISABLED]\n");
 		return;
 	}
 		
 	racSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (racSocket < 0 )
 	{
-		ConOut("[FAIL]\nERROR: Unable to create RAC socket\n");
+		outPlain("[FAIL]\nERROR: Unable to create RAC socket\n");
 		return;
 	}
 
@@ -94,7 +95,7 @@ void RemoteAdmin::Init()
 		#ifndef __unix__
 			bcode = WSAGetLastError ();
 		#endif
-		ConOut("[FAIL]\nERROR: Unable to bind RAC socket - Error code: %i\n",bcode);
+		outPlainf("[FAIL]\nERROR: Unable to bind RAC socket - Error code: %i\n",bcode);
 		return;
 	}
     
@@ -102,7 +103,7 @@ void RemoteAdmin::Init()
 
 	if (bcode!=0)
 	{
-		ConOut("[FAIL]\nERROR: Unable to set RAC socket in listen mode  - Error code: %i\n",bcode);
+		outPlainf("[FAIL]\nERROR: Unable to set RAC socket in listen mode  - Error code: %i\n",bcode);
 		return;
 	}
 
@@ -110,7 +111,7 @@ void RemoteAdmin::Init()
 
 	ioctlsocket(racSocket,FIONBIO,&nonzero) ;
 
-	ConOut("[ OK ]\n");
+	outPlain("[ OK ]\n");
 }
 
 
@@ -133,23 +134,23 @@ void RemoteAdmin::CheckConn ()
 
 	if (s<=0) return;
 		
-	ConOut("Connecting sockets...");
+	outPlain("Connecting sockets...");
 	len=sizeof (struct sockaddr_in);
 	sockets[racnow] = accept(racSocket, (struct sockaddr *)&rac_sockets_addr, &len); 
 
 	if ((sockets[racnow]<0)) {
-		ConOut("[FAIL]\n");
+		outPlain("[FAIL]\n");
 		return;
 	}
 	
 	if (Network->CheckForBlockedIP(client_addr))
 	{
-		ConOut("[BLOCKED!] IP Address: %s\n", inet_ntoa(rac_sockets_addr.sin_addr));
+		outPlainf("[BLOCKED!] IP Address: %s\n", inet_ntoa(rac_sockets_addr.sin_addr));
 		closesocket(sockets[racnow]);
 		return;
 	}
 
-	ConOut("[ OK ]\n");
+	outPlain("[ OK ]\n");
 
 	status[racnow]=RACST_CHECK_USR;
 	inputptrs[racnow] = 0;
@@ -157,9 +158,9 @@ void RemoteAdmin::CheckConn ()
 	// disable local echo for client
 	Printf(racnow, "%c%c%c", IAC, WILL, ECHO);
 
-	ConOut("Hypnos %s [%s]\r\nRemote Administration Console\r\nProgrammed by: %s", strVersion, OS, strDevelopers);
-	ConOut("\r\nBased on NoX-Wizard 20031228");
-	ConOut("\r\nWeb-site : http://hypnos.berlios.de/\r\n");
+	Printf("Hypnos %s [%s]\r\nRemote Administration Console\r\nProgrammed by: %s", strVersion, OS, strDevelopers);
+	Printf("\r\nBased on NoX-Wizard 20031228");
+	Printf("\r\nWeb-site : http://hypnos.berlios.de/\r\n");
 	Printf(racnow, "\r\n");
 	Printf(racnow, "INFO: character typed for login and password\r\n");
 	Printf(racnow, "are not echoed, this is not a bug.\r\n");
@@ -226,7 +227,7 @@ void RemoteAdmin::Disconnect(int s)
 
 	closesocket(sockets[s]);
 
-	//ConOut("RAC : disconnecting socket...[ OK ]\n");
+	//outPlain("RAC : disconnecting socket...[ OK ]\n");
 	//if it was the last socket opened, just throw it away :)
 	if (racnow==s+1) {
 		racnow--;
@@ -397,7 +398,7 @@ void RemoteAdmin::ProcessInput(int s)
 		if( !Accounts->AuthenticateRAS(loginname[s], inp) ) 
 		{
 			Printf(s, "\r\nAccess Denied.\r\nPress any key to get disconnected...");
-			ConOut("Access Denied on Remote Console for user '%s' with pass '%s'\n", loginname[s], inp);
+			outPlainf("Access Denied on Remote Console for user '%s' with pass '%s'\n", loginname[s], inp);
 			status[s]=RACST_ACCESS_DENIED;
 			return;
 		} else {
@@ -416,7 +417,7 @@ void RemoteAdmin::ProcessInput(int s)
 			Printf(s, "%c%c%c", IAC, DO, ECHO);
 			Printf(s, "%c%c%c", IAC, WONT, ECHO);
 
-			ConOut("Authorised acces on Remote Console by user %s\n", loginname[s]);
+			outPlain("Authorised acces on Remote Console by user %s\n", loginname[s]);
 			return;
 		}
 	}
@@ -536,7 +537,7 @@ void RemoteAdmin::ProcessInput(int s)
 	}
 
 	if (!strcmp(inp,"SHUTDOWN")) {
-			ConOut("!!!: Immediate Shutdown initialized from Remote Console!\n");
+			outPlain("!!!: Immediate Shutdown initialized from Remote Console!\n");
 			Printf(s, "Bye! :)\r\n\r\n");
 			keeprun=0;
 			return;

@@ -41,8 +41,6 @@ void initclock();
 extern termios termstate ;
 extern unsigned long int oldtime, newtime;
 
-void Sleep(unsigned long msec);
-
 #define closesocket(s)	close(s)
 #define ioctlsocket ioctl
 

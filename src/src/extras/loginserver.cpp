@@ -26,7 +26,7 @@
 void nLoginServer::loadServers()
 {
 	servers.clear();
-	ConOut("Loading login server data...\t\t");
+	outPlain("Loading login server data...\t\t");
 	
 	std::ifstream xmlfile("config/loginserver.xml");
 	try {
@@ -49,9 +49,9 @@ void nLoginServer::loadServers()
 			servers.push_back(srv);
 			
 		} while( (n = n->next()) );
-		ConOut("[   OK   ]\n");
+		outPlain("[   OK   ]\n");
 	} catch ( MXML::MalformedError e) {
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("loginserver.xml file not well formed.");
 	}
 }

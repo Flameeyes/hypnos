@@ -56,7 +56,7 @@ public:
 	void Exit();
 	void CheckInp();
 	void CheckConn();
-	void Printf(int sock, char *fmt, ...) PRINTF_LIKE(2,3)
+	void Printf(int sock, char *fmt, ...) PRINTF_LIKE(3,4)
 	void Disconnect(int sock);
 	void Rcv(int sock);
 	void ProcessInput(int s);

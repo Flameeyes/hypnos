@@ -101,7 +101,6 @@ void cNetwork::DoStreamCode( pClient clientocket )
 	fclose(debugout);
 */
 	int len = Pack( outbuffer[socket], xoutbuffer, boutlength[socket] );
-	// ConOut("Packed %d bytes input to %d bytes out\n", boutlength[socket], len);
 	
 	pChar pc_currchar= (client)? client->currChar() : NULL;
 	if ( clientCrypter[socket] != NULL && clientCrypter[socket]->getCryptVersion() >= CRYPT_3_0_0c )
@@ -1282,7 +1281,6 @@ void cNetwork::GetMsg(pClient client) // Receive message from client
 					dyn_length = (int) (  ( (int) buffer[s][1]<<8) + (int) buffer[s][2] );
 					length=dyn_length;
 					readstat = Receive(s, dyn_length-3, 3) ;
-				//ConOut("dyn-length: %i\n",dyn_length);
 				} else return;
 
 
@@ -1346,7 +1344,6 @@ void cNetwork::GetMsg(pClient client) // Receive message from client
   		} // end if recv >0
   		else
   		{
-			//ConOut("FB: %i perm: %i\n",fb,perm[s]);
 			client->disconnect(); // extremly important (and tricky too ;-) !!!
 			// osi client closes socket AFTRER the first 4 bytes and re-opens it afterward.
 			// this line handles this correctly

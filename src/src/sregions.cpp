@@ -568,7 +568,7 @@ void check_region_weatherchange ()
 		region[cregion].weatherIntensity = region[cregion].weatherIntensityNew;
 	}
 
-	ConOut("[ OK ]\n");
+	outPlain("[ OK ]\n");
 
 }
 

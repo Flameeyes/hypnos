@@ -411,8 +411,8 @@ void cNPC::createEscortQuest()
         questEscortPostSerial = createQuestMessage(ESCORTQUEST,getSerial(), NULL, region);
 	if ( !questEscortPostSerial )
 	{
-		ConOut( "createEscortQuest() Failed to add quest post for %s\n", getCurrentName().c_str() );
-		ConOut( "createEscortQuest() Deleting NPC %s\n", getCurrentName().c_str() );
+		outPlain( "createEscortQuest() Failed to add quest post for %s\n", getCurrentName().c_str() );
+		outPlain( "createEscortQuest() Deleting NPC %s\n", getCurrentName().c_str() );
 		Delete();
 		return;
 	}

@@ -9,9 +9,11 @@
 // Request limits
 #define __STDC_LIMIT_MACROS
 
-#include "backend/scheduler.h"
 #include "logsystem.h"
 #include "inlines.h"
+#include "backend/scheduler.h"
+#include "backend/notify.h"
+
 #include <mxml.h>
 
 cScheduler *cScheduler::scheduler = NULL;
@@ -85,12 +87,12 @@ the instances for the scheduled events to run.
 */
 cScheduler::cScheduler()
 {
-	ConOut("Loading scheduler...\t\t");
+	outPlain("Loading scheduler...\t\t");
 	
 	std::ifstream xmlfile("config/scheduler.xml");
 	if ( ! xmlfile )
 	{
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("Unable to open schedule.xml file.");
 		return;
 	}
@@ -115,19 +117,19 @@ cScheduler::cScheduler()
 			}
 		} while((n = n->next()));
 		
-		ConOut("[   OK   ]\n");
+		outPlain("[   OK   ]\n");
 	} catch ( MXML::MalformedError e) {
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("schedules.xml file not well formed.");
 	}
 }
 
 cScheduler::~cScheduler()
 {
-	LogMessage("Closing scheduler...");
+	outPlain("Closing scheduler...");
 	for(EventsList::iterator it = events.begin(); it != events.end(); it++)
 		delete (*it);
-	LogMessage("\t\t[   OK   ]");
+	outPlain("\t\t[   OK   ]");
 }
 
 /*!

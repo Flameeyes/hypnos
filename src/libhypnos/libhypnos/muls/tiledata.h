@@ -235,7 +235,7 @@ public:
 	} PACK_NEEDED;
 	
 	uint32_t unknown;
-	cEntry entries[32];
+	cEntry entries[32] PACK_NEEDED;
 } PACK_NEEDED;
 
 /*!

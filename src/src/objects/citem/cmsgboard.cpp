@@ -204,7 +204,7 @@ void cMessage::refreshQuestMessage()
         	//Yet to be implemented
         	break;
 	default:
-        	ConOut("[WARNING]\n\tUnhandled QuestType found during maintenance\n");
+        	outPlain("[WARNING]\n\tUnhandled QuestType found during maintenance\n");
 	}
 }
 //-----------------------------------------------------------------------------------------
@@ -475,7 +475,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 		// If no entries are found in the list, then there must be no entries at all.
 		if ( listCount == 0 )
 		{
-			ConOut( "cMsgBoard::createQuestMessage() No msgboard.scp entries found for ESCORT quests\n" );
+			outPlain( "cMsgBoard::createQuestMessage() No msgboard.scp entries found for ESCORT quests\n" );
 		       	message->Delete();
 			return 0;
 		}
@@ -491,7 +491,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 
 		if (iter==NULL)
 		{
-			ConOut( "cMsgBoard::createQuestMessage() Couldn't find entry %s for ESCORT quest\n", temp );
+			outPlain( "cMsgBoard::createQuestMessage() Couldn't find entry %s for ESCORT quest\n", temp );
                       	message->Delete();
 			return 0;
 		}
@@ -529,7 +529,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 		// If no entries are found in the list, then there must be no entries at all.
 		if ( listCount == 0 )
 		{
-			ConOut( "cMsgBoard::createQuestMessage() No msgboard.scp entries found for BOUNTY quests\n" );
+			outPlain( "cMsgBoard::createQuestMessage() No msgboard.scp entries found for BOUNTY quests\n" );
 	       		message->Delete();
 			return 0;
 		}
@@ -546,13 +546,13 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 		iter = Scripts::MsgBoard->getNewIterator(temp);
 		if (iter==NULL)
 		{
-			ConOut( "cMsgBoard::createQuestMessage() Couldn't find entry %s for BOUNTY quest\n", temp );
+			outPlain( "cMsgBoard::createQuestMessage() Couldn't find entry %s for BOUNTY quest\n", temp );
 	       		message->Delete();
 			return 0;
 		}
 	      	break;
 	default:
-		ConOut( "cMsgBoard::createQuestMessage() Invalid questType %d\n", questType );
+		outPlain( "cMsgBoard::createQuestMessage() Invalid questType %d\n", questType );
 	    	message->Delete();
 		return 0;
 	}
@@ -698,7 +698,7 @@ void cMsgBoard::MsgBoardMaintenance()
 	// With the new MsgBaord sytem we can't have orphaned messages, so check only for
 	// expiration
 	
-	ConOut("Message expiration check : ");
+	outPlain("Message expiration check : ");
         //checking the expiration time while we insert the posts in the set
 	for(MessageList::iterator it = globalMsgs.begin(); it != globalMsgs.end(); it++)
 	{
@@ -727,8 +727,8 @@ void cMsgBoard::MsgBoardMaintenance()
 	}
 	boardsMutex.unlock()
 	
-      	ConOut("%i message(s) deleted", expired);
-      	ConOut("[   OK   ]\n");
+      	outPlain("%i message(s) deleted", expired);
+      	outPlain("[   OK   ]\n");
 }
 
 /*!

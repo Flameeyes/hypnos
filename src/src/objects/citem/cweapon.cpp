@@ -70,12 +70,12 @@ const Skill cWeapon::getCombatSkill() const
 */
 void cWeapon::loadWeaponsInfo()
 {
-	ConOut("Loading weapons information...\t\t");
+	outPlain("Loading weapons information...\t\t");
 	
 	std::ifstream xmlfile("config/weapons.xml");
 	if ( ! xmlfile )
 	{
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("Unable to open weapons.xml file.");
 		return;
 	}
@@ -123,9 +123,9 @@ void cWeapon::loadWeaponsInfo()
 			}
 		} while((n = n->next()));
 		
-		ConOut("[   OK   ]\n");
+		outPlain("[   OK   ]\n");
 	} catch ( MXML::MalformedError e) {
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("weapons.xml file not well formed.");
 	}
 }

@@ -107,7 +107,7 @@ void initNpcSpells ()
 {
 	int ptr = 0;
 
-	ConOut("Loading custom NPC grimoires (npcmagic.xss)...");
+	outPlain("Loading custom NPC grimoires (npcmagic.xss)...");
 
 	for ( int i=0; i<256; ++i )
 		for ( int j=0; j<256; ++j )
@@ -164,7 +164,7 @@ void initNpcSpells ()
 
 	}
 	safedelete(iter);
-	ConOut("[DONE]\n");
+	outPlain("[DONE]\n");
 }
 #undef CHECKSPELL
 

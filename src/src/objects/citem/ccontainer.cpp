@@ -21,7 +21,7 @@ containers.xss, instead reads from containers.xml.
 */
 void cContainer::loadContainersData()
 {
-	ConOut("Loading constants information...\t\t");
+	outPlain("Loading constants information...\t\t");
 	
 	std::ifstream xmlfile("config/containers.xml");
 	try {
@@ -63,9 +63,9 @@ void cContainer::loadContainersData()
 			}
 			
 		} while( (n = n->next()) );
-		ConOut("[   OK   ]\n");
+		outPlain("[   OK   ]\n");
 	} catch ( MXML::MalformedError e) {
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("containers.xml file not well formed.");
 	}
 }

@@ -35,7 +35,7 @@ void nJails::loadJails()
 {
 	mutex.lock();
 
-	ConOut("Loading jails data...\t\t");
+	outPlain("Loading jails data...\t\t");
 	
 	std::ifstream xmlfile("config/jails.xml");
 	try {
@@ -75,7 +75,7 @@ void nJails::loadJails()
 		
 		if ( ! jails.size() )
 		{
-			ConOut("[ Failed ]\n");
+			outPlain("[ Failed ]\n");
 			LogCritical("No valid jails found on jails.xml");
 			mutex.unlock();
 			return;
@@ -83,9 +83,9 @@ void nJails::loadJails()
 		
 		currentJail = jails.begin();
 		
-		ConOut("[   OK   ]\n");
+		outPlain("[   OK   ]\n");
 	} catch ( MXML::MalformedError e) {
-		ConOut("[ Failed ]\n");
+		outPlain("[ Failed ]\n");
 		LogCritical("jails.xml file not well formed.");
 	}
 	mutex.unlock();
