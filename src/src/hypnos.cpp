@@ -245,8 +245,11 @@ void loadServer()
 
 	StartClasses();
 	
-	new tListening();
+	new tListening(nSettings::Server::getLocalHostname(), nSettings::Server::getLocalPort());
+	new tKilling();
+	
 	tListening::instance->start();
+	tKilling::instance->start();
 }
 
 /*!

@@ -133,9 +133,10 @@ names to be standardized, in this form:
 \li \b c Class
 \li \b s Struct
 \li \b t Thread (it's a special class, derived from Wefts::Thread class) in
-	this case you should also set the name of the class in a -ing form,
-	see for example tKilling, tListening.
+	this case you should also set the name of the class in -ing or -er
+	form.
 \li \b e Exception (it's a special class, derived from
 	nLibhypnos::eException class)
+\li \b tpl Templates
 
 */

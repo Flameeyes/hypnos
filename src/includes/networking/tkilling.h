@@ -18,14 +18,14 @@
 #include "common_libs.h"
 #include <wefts_thread.h>
 
-class tReceiving;
+class tReceiver;
 
 /*!
 \class tKilling tkilling.h "networking/tkilling.h"
 \brief Thread killing dead sockets
 
 This class is used to cleanup the sockets which are closed by the server (for
-timeout, errors, or requested disconnection).
+timeout, errors, or requested disconnection), both for UO and RAC sockets.
 
 It has a FIFO of sets to delete, the thread blocks for a new element, then
 takes it, joins it and then delete it (the joining is to avoid still-running
@@ -35,10 +35,10 @@ deletions).
 */
 class tKilling : public Wefts::Thread
 {
-friend class tReceiving;
+friend class tUOReceiver;
 
 protected:
-	Wefts::Queue<tReceiving *> deadSockets;	//!< Sockets to delete
+	Wefts::Queue<tReceiver *> deadSockets;	//!< Sockets to delete
 public:
 	static tKilling *instance;		//!< Instance of the thread (is a singleton)
 

@@ -30,7 +30,7 @@ handling threads.
 */
 void *tKilling::run()
 {
-	tReceiving *dead = NULL;
+	tUOReceiver *dead = NULL;
 	
 	while(1)
 	{

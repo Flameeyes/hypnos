@@ -13,53 +13,47 @@
 #include "networking/treceiving.h"
 #include "settings.h"
 
-tListening *tListening::instance = NULL;
+template <class tHandler> tplListener<tHandler> *tplListener<tHandler>::instance = NULL;
 
 /*!
-\brief Constructor for tListening thread
+\brief Constructor for a listening thread
+\param localHost host where to open the listening socket
+\param localPort port where to open the listening socket
 
-This function creates the listening server loop, opens the server socket and
-creates the tKilling thread.
 \todo Throw an exception if there's already an instance.
 */
-tListening::tListening() : Wefts::Thread()
+template <class tHandler> tplListener<tHandler>::tplListener(std::string localHost, uint16_t localPort) : Wefts::Thread()
 {
 	instance = this;
 	
 	// Create the socket
-	sock = new Cabal::ServerSocket(nSettings::Server::getLocalHostname(), nSettings::Server::getLocalPort(), 2000);
-	
-	new tKilling();
+	sock = new Cabal::ServerSocket(localHost, localPort, 2000);
 }
 
 /*!
-\brief Loop function for tListening thread
+\brief Loop function for tplListener thread
 
-This function does all the dirt work for tListening thread, accepting the
-connection until the socket is closed, and spawning new tUOReceiver threads for
+This function does all the dirt work for tplListener thread, accepting the
+connection until the socket is closed, and spawning new tHandler threads for
 every new connection.
-
-\note This function also starts tKilling thread
 */
-void *tListening::run()
+template <class tHandler> void *tplListener<tHandler>::run()
 {
-	tKilling::instance->start();
-	
 	while(!sock->closed())
 	{
 		Cabal::TCPSocket *accepted = sock->accept();
 		if ( accepted )
-			new tUOReceiver(accepted);
+			new tHandler(accepted);
 	}
 }
 
 /*!
-\brief Desctructor for tListening thread
+\brief Desctructor for tplListener thread
 
-This function closes all the sockets in the tListening::threads sets to be
+This function closes all the sockets in the tplListener::threads sets to be
 deleted by tKilling, and then destroy itself.
 */
-tListening::~tListening()
+template <class tHandler> tplListener<tHandler>::~tplListener()
 {
 	for(std::set<tUOReceiver*>::iterator it = threads.begin(): it != threads.end(); it++)
 		(*it)->close();

@@ -9,37 +9,32 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
-\brief Listening server loop
+\brief Receiving thread
 */
 
-#ifndef __NETWORKING_TRACLISTENING_H__
-#define __NETWORKING_TRACLISTENING_H__
+#ifndef __NETWORKING_TRECEIVING_H__
+#define __NETWORKING_TRECEIVING_H__
 
 #include "common_libs.h"
 #include <wefts_thread.h>
-#include <cabal_ssocket.h>
-
-class tRemoteAdmin;
+#include <cabal_tcpsocket.h>
 
 /*!
-\class tRACListening traclistening.h "networking/traclistening.h"
-\brief Listening remote administration console loop
+\class tUOReceiver treceiving.h "networking/treceiving.h"
+\brief Thread which receive data from a socket
 
-This thread listens for new requests for remote access, then spawns a new
-tRemoteAdmin thread which takes care of parsing user input.
+This class is spawned by tListening when a new connection is accepted, and
+takes care of receive the buffer and then call the right functions to mangle
+it.
+Instances of this class are deleted by tKilling thread, see tListening::run()
+method for more information.
 */
-class tRACListening : public Wefts::Thread
+class tUOReceiver : public Wefts::Thread
 {
-friend class tRemoteAdmin;
-
-private:
-	Cabal::ServerSocket *sock;	//!< Server socket for the loop
-	std::set<tReceiving *> threads;	//!< List of currently operating receiving thredas
-	Wefts::Mutex threads_m;		//!< Mutex which prevents double access to cListenLoop::threads
+protected:
+	Cabal::TCPSocket *sock;
 public:
-	static tRACListening *instance;
-
-	tRACListening();
+	tUOReceiver(Cabal::TCPSocket *aSock);
 	
 	void *run();
 };

@@ -12,12 +12,12 @@
 #include "networking/tkilling.h"
 
 /*!
-\brief Constructor for tReceiving thread
+\brief Constructor for tUOReceiver thread
 
 This function register the thread in tListening::threads set and also starts
 the thread itself.
 */
-tReceiving::tReceiving() : Wefts::Thread(), sock(aSock)
+tUOReceiver::tUOReceiver() : Wefts::Thread(), sock(aSock)
 {
 	// Lock the threads set
 	tListening::instance->threads_m.lock();
@@ -33,7 +33,7 @@ tReceiving::tReceiving() : Wefts::Thread(), sock(aSock)
 /*!
 \brief Receiving loop function
 
-This function does all the dirt work for tReceiving thread, looping until the
+This function does all the dirt work for tUOReceiver thread, looping until the
 socket is closed, receiving data in the buffer and transforming it into
 packets to be executed.
 
@@ -42,7 +42,7 @@ closed.
 
 \todo Missing all the work in this :)
 */
-void *tReceiving::run()
+void *tUOReceiver::run()
 {
 	if ( ! sock ) return NULL;
 	
