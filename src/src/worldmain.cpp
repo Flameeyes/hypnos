@@ -388,7 +388,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 			else if (!strcmp(script1, "POISON"))			{ pc->poison=str2num(script2);}
 			else if (!strcmp(script1, "POISONED"))		{ pc->poisoned=(PoisonType)str2num(script2);}
 
-			else if (!strcmp( script1, "PC_FTARG" ) )   { pChar temp=MAKE_CHAR_REF(str2num(script2)); pc->ftargserial = temp ? temp->getSerial() : INVALID;} //legacy code
+			else if (!strcmp( script1, "PC_FTARG" ) )   { pChar temp=str2num(script2); pc->ftargserial = temp ? temp->getSerial() : INVALID;} //legacy code
 			else if (!strcmp( script1, "PC_FTARGSER" ) )   {pc->ftargserial=str2num(script2); }
 			else if (!strcmp( script1, "POSSESSEDuint32_t" ) )   {pc->possessedSerial=str2num(script2); }
 			else if (!(strcmp(script1, "PROFILE"))) {

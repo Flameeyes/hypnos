@@ -385,9 +385,9 @@ int BuyShop(pClient client, pChar pc)
 {
 	pItem buyRestockContainer=NULL, buyNoRestockContainer=NULL;
 
-	if(!pc) return 0;
+	if(!client || !pc) return 0;
 
-	pChar curr=MAKE_CHAR_REF(currchar[s]);
+	pChar curr = client->currChar();
 	if(!curr) return 0;
 
 	//!\todo Update to new layer system
@@ -428,7 +428,7 @@ int BuyShop(pClient client, pChar pc)
 
 void target_playerVendorBuy( pClient client, pTarget t )
 {
-	pChar pc = MAKE_CHAR_REF(t->buffer[0]);
+	pChar pc = cSerializable::findCharBySerial(t->buffer[0]);
 	if (!pc) return;
 
 	pChar pc_currchar = client->currChar();
@@ -440,10 +440,9 @@ void target_playerVendorBuy( pClient client, pTarget t )
 		return; 
 	}
 
-	uint32_t serial = LongFromCharPtr(buffer[s] +7);
-	pItem pi=cSerializable::findItemBySerial(serial);     // the item
+	pItem pi=cSerializable::findItemBySerial(LongFromCharPtr(buffer[s] +7));     // the item
     
-	if ( !pc || pi->isInWorld() )
+	if ( !pi || pi->isInWorld() )
 		return;
 
 	int price=pi->value;
@@ -483,7 +482,6 @@ void target_envoke( pClient client, pTarget t )
 	pChar curr = client->currChar();
 	pItem pi = NULL; pChar pc = NULL;
 
-	uint32_t serial=t->getClicked();
 	if( pi = dynamic_cast<pItem>(t->getClicked()) )
 	{
 		pi->triggerItem(client, TRIGTYPE_ENVOKED );

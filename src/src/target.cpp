@@ -78,7 +78,7 @@ cCharTarget::~cCharTarget()
 
 bool cCharTarget::isValid()
 {
-	return ( type==0 ) && ( cSerializable::isCharSerial( clicked ) && ( MAKE_CHAR_REF( clicked )!=NULL ) );
+	return !type && cSerializable::findCharBySerial( clicked );
 }
 
 void cCharTarget::error(pClient client)
