@@ -39,11 +39,7 @@ void setWinTitle(char *str, ...)
 
 void constart( void )
 {
-	if (ServerScp::g_nLoadDebugger!=0) {
-		setWinTitle("%s %s - [debug mode] [run]", PRODUCT, VERNUMB);
-	} else {
-		setWinTitle("%s %s", PRODUCT, VERNUMB);
-	}
+	setWinTitle("Hypnos %s", strVersion);
 	#ifndef __unix__
 	#ifndef _WINDOWS
 	if (ServerScp::g_nDeamonMode==0) {
@@ -103,78 +99,6 @@ extern "C" void ConOut(char *txt, ...)
 }
 
 extern void setWinTitle(char *str, ...);
-
-extern "C" void SDbgIn(char *s, int n) 
-{
-	if (ServerScp::g_nDeamonMode!=0) {
-		ConOut("ALERT : INPUT REQUESTED IN SERVICE");
-		sprintf(s, "--Unknown Input--");
-	}
-	
-	setWinTitle("%s %s - [debug mode] [break]", PRODUCT, VERNUMB);
-
-#ifndef _WINDOWS
-
-	if (ServerScp::g_nDeamonMode==0) {
-		#ifdef _CONSOLE
-				HANDLE Buff = GetStdHandle(STD_OUTPUT_HANDLE);
-				unsigned short color;
-				color=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_INTENSITY;
-				SetConsoleTextAttribute(Buff,color);
-		#endif //Win-CONSOLE
-		fgets(s,n,stdin);
-		#ifdef _CONSOLE
-				color=FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE;
-				SetConsoleTextAttribute(Buff,color);
-		#endif //Win-CONSOLE
-	}
-#else //Win-GUI
-	xwgets(s, n);
-#endif //Win-GUI
-	
-	setWinTitle("%s %s - [debug mode] [run]", PRODUCT, VERNUMB);
-}
-
-
-extern "C" void SDbgOut(char *txt, ...)
-{
-	va_list argptr;
-
-	char *temp;
-	va_start( argptr, txt );
-	vasprintf( &temp, txt, argptr );
-	va_end( argptr );
-
-#ifndef _WINDOWS
-
-	#ifdef _CONSOLE
-		if (ServerScp::g_nDeamonMode==0) 
-		{
-			HANDLE Buff = GetStdHandle(STD_OUTPUT_HANDLE);
-			unsigned short color;
-			color=FOREGROUND_GREEN|FOREGROUND_RED;
-			SetConsoleTextAttribute(Buff,color);
-		}
-	#endif
-
-	fprintf(s_fileStdOut, "%s", temp);
-	fflush(s_fileStdOut);
-
-	#ifdef _CONSOLE
-		if (ServerScp::g_nDeamonMode==0) {
-			HANDLE Buff = GetStdHandle(STD_OUTPUT_HANDLE);
-			unsigned short color;
-			color=FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE;
-			SetConsoleTextAttribute(Buff,color);
-		}
-	#endif
-
-
-#else
-	xwprintf("\x80%s", temp);
-#endif
-	free(temp);
-}
 
 extern "C" void STraceOut(char *txt, ...)
 {

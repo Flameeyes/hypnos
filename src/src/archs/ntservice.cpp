@@ -262,17 +262,14 @@ void remain(int argc, char *argv[])
 // 	ConOut("NT-Service Installation/Uninstallation\n");
 // 	ConOut("Program by Xanathar, Ummon\n\n\n");
 	char str[800];
-	sprintf(str, "%s %s", PRODUCT, VERNUMB );
+	sprintf(str, "Hypnos %s", strVersion );
 
 // 	open a connection to the SCM
 // 	ConOut("\nOpening connection to SCM...");
 	scm = OpenSCManager(0, 0, SC_MANAGER_CREATE_SERVICE);
 	if (!scm)
 	{
-		char *tmp;
-		sprintf(&tmp, "Error : can't connect to Service Control Manager ", PRODUCT, VERNUMB );
-		MessageBox(NULL, tmp, "Hypnos Service Manager", MB_ICONSTOP);
-		free(tmp);
+		MessageBox(NULL, "Error : can't connect to Service Control Manager ", "Hypnos Service Manager", MB_ICONSTOP);
 		return;
 	}
 
@@ -285,7 +282,7 @@ void remain(int argc, char *argv[])
 		if (!DeleteService(myService))
 		{
 			char *tmp;
-			asprintf(&tmp, "%s Service %s can't be removed. ", PRODUCT, VERNUMB );
+			asprintf(&tmp, "Hypnos Service %s can't be removed. ", strVersion);
 			MessageBox(NULL, tmp, "Hypnos Service Manager", MB_ICONEXCLAMATION);
 			free(tmp);
 		} else {
@@ -293,7 +290,7 @@ void remain(int argc, char *argv[])
 			CloseServiceHandle(scm);
 			
 			char *tmp;
-			asprintf(&tmp, "%s Service %s successfully removed. ", PRODUCT,  VERNUMB );
+			asprintf(&tmp, "Hypnos Service %s successfully removed. ", strVersion);
 			MessageBox(NULL, tmp, "Hypnos Service Manager", MB_ICONINFORMATION);
 			free(tmp);
 			
@@ -317,14 +314,14 @@ void remain(int argc, char *argv[])
 	if (!myService)
 	{
 		char *tmp;
-		asprintf(&tmp, "%s Service %s can't be installed. ", PRODUCT,  VERNUMB );
+		asprintf(&tmp, "Hypnos Service %s can't be installed. ", strVersion);
 		MessageBox(NULL, tmp, "Hypnos Service Manager", MB_ICONSTOP);
 		free(tmp);
 	}
 	else
 	{
 		char *tmp;
-		asprintf(&tmp, "%s Service %s successfully installed. ", PRODUCT, VERNUMB);
+		asprintf(&tmp, "Hypnos Service %s successfully installed. ", strVersion);
 		MessageBox(NULL, tmp, "Hypnos Service Manager", MB_ICONINFORMATION);
 		free(tmp);
 	}

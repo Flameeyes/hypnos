@@ -163,10 +163,9 @@ void RemoteAdmin::CheckConn ()
 	// disable local echo for client
 	Printf(racnow, "%c%c%c", IAC, WILL, ECHO);
 
-	Printf(racnow, "%s %s.%s [%s]\r\n", PRODUCT, VERNUMB, HOTFIX, OS);
-	Printf(racnow, "Remote Administration Console\r\n");
-	Printf(racnow, "Program by Xanathar and Ummon\r\n");
-	Printf(racnow, "%s\r\n", URL);
+	ConOut("Hypnos %s [%s]\r\nRemote Administration Console\r\nProgrammed by: %s", strVersion, OS, strDevelopers);
+	ConOut("\r\nBased on NoX-Wizard 20031228");
+	ConOut("\r\nWeb-site : http://hypnos.berlios.de/\r\n");
 	Printf(racnow, "\r\n");
 	Printf(racnow, "INFO: character typed for login and password\r\n");
 	Printf(racnow, "are not echoed, this is not a bug.\r\n");

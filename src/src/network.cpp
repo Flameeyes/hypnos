@@ -807,7 +807,7 @@ void cNetwork::startchar(pClient client)
 	enterchar( s );
 	Network->FlushBuffer(client);
 
-	client->sysmessage(0x058, "%s %s %s [%s] Compiled by %s", PRODUCT, VER, VERNUMB, OS , NAME);
+	client->sysmessage(0x058, "Hypnos %s [%s]", strVersion, OS);
 	Network->FlushBuffer(client);
 
 	// log last time signed on
@@ -837,12 +837,12 @@ void cNetwork::startchar(pClient client)
 
 	if ( !(strcmp(temp, "ALL") ) )
 	{
-  	  client->sysmessage("There is NO client version checking active on this shard. The recommanded-dev-team-supported client version for this server version is client version %s though", SUPPORTED_CLIENT);
+  	  client->sysmessage("There is NO client version checking active on this shard. The recommanded-dev-team-supported client version for this server version is client version %s though", strSupportedClient);
 	  return;
 
 	} else if ( !(strcmp(temp, "SERVER_DEFAULT") ) )
 	{
-	  client->sysmessage("This shard requires the recommanded-dev-team-supported client version for this server version client version %s", SUPPORTED_CLIENT);
+	  client->sysmessage("This shard requires the recommanded-dev-team-supported client version for this server version client version %s", strSupportedClient);
 	  return;
 	}
 	else
@@ -865,7 +865,7 @@ void cNetwork::startchar(pClient client)
 
 	strcat(idname, temp2);
 	strcat(idname," The Hypnos team recommanded client is ");
-	strcat(idname, SUPPORTED_CLIENT);
+	strcat(idname, strSupportedClient);
 
 	client->sysmessage(idname);
 	Network->FlushBuffer(client);
@@ -2004,7 +2004,7 @@ void cNetwork::GetMsg(pClient client) // Receive message from client
 					viter = find(clientsAllowed.begin(), clientsAllowed.end(), "SERVER_DEFAULT");
 					if ( viter != clientsAllowed.end() )  // server_default mode ?
 					{
-						if ( strcmp( clientNumber, SUPPORTED_CLIENT) ) // check if client version matches
+						if ( strcmp( clientNumber, strSupportedClient) ) // check if client version matches
 						{
 							client->disconnect();
 							break;

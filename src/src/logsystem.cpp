@@ -212,7 +212,7 @@ static void MessageReady(char *OutputMessage)
 
 	if (entries_c==1 && LogType=='C') // @serverstart, write out verison# !!!
 	{
-		logerr.Write("\nRunning Hypnos Version: %s\n\n",VERNUMB);
+		logerr.Write("\nRunning Hypnos Version: %s\n\n", strVersion);
 		logerr.Write("******************************************************************************************************************************************\n");
 		logerr.Write("* to increase the stability and quality of this software please send this file to the Hypnos developers - thanks for your support !!! *\n");
 		logerr.Write("******************************************************************************************************************************************\n\n");
@@ -221,7 +221,7 @@ static void MessageReady(char *OutputMessage)
 
 	if ( (entries_e==1 && LogType=='E') || (entries_w==1 && LogType=='W') || (entries_m==1 && LogType=='M'))
 	{
-		logerr.Write("\nRunning Hypnos Version: %s\n\n",VERNUMB);
+		logerr.Write("\nRunning Hypnos Version: %s\n\n", strVersion);
 	}
 
 	logerr.Write("%s", OutputMessage);

@@ -2961,7 +2961,7 @@ bool nPackets::Received::ClientVersion::execute(pClient client)
 	viter = find(clientsAllowed.begin(), clientsAllowed.end(), "SERVER_DEFAULT");
 	if ( viter != clientsAllowed.end() )  // server_default mode ?
 	{
-		if ( strcmp( clientNumber.c_str(), SUPPORTED_CLIENT) ) // check if client version matches
+		if ( strcmp( clientNumber.c_str(), strSupportedClient) ) // check if client version matches
 		{
 			client->disconnect();
 			return true;

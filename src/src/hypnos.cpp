@@ -591,7 +591,7 @@ int main(int argc, char *argv[])
 
 	clearscreen();
 
-	ConOut("%s %s %s.%s [%s] compiled by %s\nProgrammed by: %s", PRODUCT, VER, VERNUMB, HOTFIX, OS, NAME, PROGRAMMERS);
+	ConOut("Hypnos %s [%s]\nProgrammed by: %s", strVersion, OS, strDevelopers);
 	ConOut("\nBased on NoX-Wizard 20031228");
 	ConOut("\nWeb-site : http://hypnos.berlios.de/\n");
 	ConOut("\n");
@@ -634,7 +634,7 @@ int main(int argc, char *argv[])
 
 	  if ( t == "SERVER_DEFAULT" )
 	  {
-		  ConOut("%s : %s\n", t.c_str(), SUPPORTED_CLIENT);
+		  ConOut("%s : %s\n", t.c_str(), strSupportedClient);
 		  break;
 	  }
 	  else if ( t == "ALL" )
