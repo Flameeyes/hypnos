@@ -528,28 +528,23 @@ namespace Commands
 
 	}
 
-
-	void DupeItem(NXWSOCKET s, int i, int amount)
+	void DupeItem(pClient client, pItem pi_from, UI16 amount)
 	{
-		P_CHAR pc = MAKE_CHAR_REF(currchar[s]);
-		VALIDATEPC( pc );
-		P_ITEM pi_from = MAKE_ITEM_REF( i );
-		VALIDATEPI( pi_from );
-		P_ITEM pack = pc->getBackpack();
-		VALIDATEPI( pack );
+		pChar pc = client->currChar();
+		if ( ! pc ) return;
+		pItem pack = pc->getBackpack();
+		if ( ! pack || ! pi_from )
+			return;
 
 		if ( !pi_from->corpse )
 		{
-			P_ITEM pi_to = archive::item::New();
+			pItem pi_to = new cItem(cItem::nextSerial());
 			(*pi_to)=(*pi_from);
 
-			pi_to->setContSerial( pack->getSerial32() );
+			pi_to->setContainer( pack );
 			pi_to->SetRandPosInCont( pack );
 
-			pi_to->amount = amount;
-
-			//if (pi_from->getOwnerSerial32() != INVALID)
-			//	pi_to->setOwnerSerial32( pi_from->getOwnerSerial32() );
+			pi_to->setAmount(amount);
 
 			pi_to->Refresh();
 		}

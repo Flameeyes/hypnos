@@ -86,7 +86,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 
 	SI16 id = INVALID; //house ID
 
-	
+
 
 	hitem[0]=0;//avoid problems if there are no HOUSE_ITEMs by initializing the first one as 0
 	if (i)
@@ -167,7 +167,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 		if (i)
 		{
 
-			
+
 			if (norealmulti) {
 				P_TARGET targ = clientInfo[s]->newTarget( new cLocationTarget() );
 				targ->code_callback=buildhouse;
@@ -175,7 +175,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 				targ->buffer[1]=100;
 				//targ->buffer[2]; never setted
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("Select a place for your structure: ")); 
+				ps->sysmsg( TRANSLATE("Select a place for your structure: "));
 			}
 			else
 				mtarget(s, 0, 1, 0, 0, (id>>8) -0x40, (id%256), TRANSLATE("Select location for building."));
@@ -288,7 +288,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 		pHouse->more4 = itemsdecay; // set to 1 to make items in houses decay
 		pHouse->morex=hdeed; // crackerjack 8/9/99 - for converting back *into* deeds
 		pHouse->setOwnerSerial32(pc->getSerial32());
-		if (pHouse->isInWorld()) 
+		if (pHouse->isInWorld())
 		{
 			mapRegions->add(pHouse);
 		}
@@ -335,7 +335,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 			sprintf(temp,"%s's ship key",pc->getCurrentNameC());
 			pKey= item::CreateFromScript( "$item_bronze_key", pBackPack ); //Boats -Rusty Iron Key
 			pKey2= item::CreateFromScript( "$item_bronze_key", pBackPack );
-			
+
 		}
 		else
 		{
@@ -413,7 +413,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 							if(ISVALIDPI(pi_l))
 							{
 
-					
+
 							pi_l->magic=2;//Non-Movebale by default
 							pi_l->setDecay( false ); //since even things in houses decay, no-decay by default
 							pi_l->setNewbie( false );
@@ -475,20 +475,20 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 				}
 				while ( (strcmp(script1,"}")) && (++loopexit < MAXLOOPS) );
 
-				if (ISVALIDPI(pi_l)) 
-					if (pi_l->isInWorld()) 
+				if (ISVALIDPI(pi_l))
+					if (pi_l->isInWorld())
 					{
 						mapRegions->add(pi_l);
 					}
 				safedelete(iter);
 			}
 		}
-			
+
         NxwSocketWrapper sw;
 		sw.fillOnline( pc, false );
         for( sw.rewind(); !sw.isEmpty(); sw++ ) {
 			NXWCLIENT ps_i = sw.getClient();
-			if(ps_i==NULL) 
+			if(ps_i==NULL)
 				continue;
 			P_CHAR pc_i=ps_i->currChar();
 			if(ISVALIDPC(pc_i))
@@ -544,7 +544,7 @@ void deedhouse(NXWSOCKET s, P_ITEM pi)
 				Location charpos2= p_index->getPosition();
 				if( (charpos2.x >= (UI32)x1) && (charpos2.y >= (UI32)y1) && (charpos2.x <= (UI32)x2) && (charpos2.y <= (UI32)y2) )
 				{
-                
+
 					if( p_index->npcaitype == NPCAI_PLAYERVENDOR )
 					{
 						char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
@@ -558,10 +558,10 @@ void deedhouse(NXWSOCKET s, P_ITEM pi)
 						p_index->Delete();
 						sysmessage(s, temp);
 					}
-				}		
+				}
 			}
 		}
-        
+
 		NxwItemWrapper si;
 		si.fillItemsNearXYZ( charpos, BUILDRANGE, false );
 		for( si.rewind(); !si.isEmpty(); si++ ) {
@@ -628,10 +628,10 @@ void killhouse(ITEM i)
 	for (a = 0; a < itemcount; a++) // deleting itmes inside house
 	{
 		pi = MAKE_ITEM_REF(a);
-		if ((pi->getPosition("x") >= x1) && 
-			(pi->getPosition("y") >= y1) && 
-			(pi->getPosition("x") <= x2) && 
-			(pi->getPosition("y") <= y2) && 
+		if ((pi->getPosition("x") >= x1) &&
+			(pi->getPosition("y") >= y1) &&
+			(pi->getPosition("x") <= x2) &&
+			(pi->getPosition("y") <= y2) &&
 			(!pi->free))
 		{
 			if (pi->type != ITYPE_GUILDSTONE) // dont delete guild stones !
@@ -739,7 +739,7 @@ int on_hlist(P_ITEM pi, unsigned char s1, unsigned char s2, unsigned char s3, un
 	VALIDATEPIR( pi, 0);
 	if( !pi->isInWorld() )
 		return 0;
-	
+
 	P_ITEM p_ci=NULL;
 
 	NxwItemWrapper si;
@@ -808,7 +808,7 @@ int add_hlist(int c, int h, int t)
 		return 2;
 
 
-	
+
 	getMultiCorners(pi_h, sx,sy,ex,ey);
 	// Make an object with the character's serial & the list type
 	// and put it "inside" the house item.
@@ -816,8 +816,7 @@ int add_hlist(int c, int h, int t)
 
 	if((charpos.x >= (UI32)sx) && (charpos.y >= (UI32)sy) && (charpos.x <= (UI32)ex) && (charpos.y <= (UI32)ey))
 	{
-		P_ITEM pi=archive::item::New();
-		
+		pItem pi = new cItem(cItem::nextSerial());
 
 		pi->morex= t;
 		pi->more1= pc->getSerial().ser1;
@@ -1075,7 +1074,7 @@ void target_houseEject( NXWCLIENT ps, P_TARGET t )
         pc->teleport();
         sysmessage(s, TRANSLATE("Player ejected."));
     }
-	else 
+	else
 		sysmessage(s, TRANSLATE("That is not inside the house."));
 
 }

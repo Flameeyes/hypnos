@@ -384,25 +384,21 @@ void get_item( NXWCLIENT client ) // Client grabs an item
 			if (pi->amount>1)
 			{
 				SI16 amount = ShortFromCharPtr(buffer[s] +5);
-				if (amount > pi->amount)
-					amount = pi->amount;
-				else if (amount < pi->amount)
+				if (amount > pi->getAmount())
+					amount = pi->getAmount();
+				else if (amount < pi->getAmount())
 				{ //get not all but a part of item ( piled? ), but anyway make a new one item
 
-					P_ITEM pin =archive::item::New();
+					pItem pin = new cItem(cItem::nextSerial());
 					(*pin)=(*pi);
 
-					pin->amount = pi->amount - amount;
+					pin->setAmount(pi->getAmount - amount);
 
-					pin->setContSerial(pi->getContSerial());	//Luxor
+					pin->setContainer(pi->getContainer());	//Luxor
 					pin->setPosition( pi->getPosition() );
 
 					/*if( !pin->isInWorld() && isItemSerial( pin->getContSerial() ) )
 						pin->SetRandPosInCont( (P_ITEM)pin->getContainer() );*/
-
-					if ( pin->getOwnerSerial32() != INVALID )
-						pin->setOwnerSerial32( pi->getOwnerSerial32() );
-
 
 					statwindow(pc_currchar,pc_currchar);
 					pin->Refresh();//AntiChrist
@@ -410,13 +406,13 @@ void get_item( NXWCLIENT client ) // Client grabs an item
 
 				if ( pi->getId() == ITEMID_GOLD)
 				{
-					P_ITEM pack= pc_currchar->getBackpack();
-					if (ISVALIDPI(pack)) // lb
-						if ( pi->getContSerial() == pack->getSerial32())
+					pItem pack= pc_currchar->getBackpack();
+					if ( pack )
+						if ( pi->getContainer() == pack )
 							statwindow(pc_currchar, pc_currchar);
 				}
 
-				pi->amount = amount;
+				pi->setAmount(amount);
 
 			} // end if corpse
 #ifdef SPAR_I_LOCATION_MAP

@@ -205,9 +205,8 @@ wstring HexVector2UnicodeString( char* s )
 
 void CWorldMain::loadChar() // Load a character from WSC
 {
-	P_CHAR pc = archive::character::Instance();
-	if ( pc == 0 )
-		return;
+	pChar pc = new cChar(INVALID);
+
 	//
 	// Sparhawk:	Fix for 0.73 worldfiles	where players can no longer use their characters
 	//		because removed player characters in 0.73 have ACCOUNT -1
@@ -722,10 +721,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 //! Load an item from WSC
 void loaditem()
 {
-	P_ITEM pi = archive::item::New( true );
-
-	if( pi == 0 )
-		return;
+	pItem pi = new cItem(INVALID);
 
 	unsigned long int i;
 	int loops=0;

@@ -1890,7 +1890,7 @@ void target_poisoning2( NXWCLIENT ps, P_TARGET t )
 
 	poison->Delete();
 	//spawn an empty bottle after poisoning
-	P_ITEM emptybottle=archive::item::New();
+	pItem emptybottle = new cItem(cItem::nextSerial());
 
 	emptybottle->setId( 0x0F0E );
 	emptybottle->pileable=1;
@@ -1898,7 +1898,7 @@ void target_poisoning2( NXWCLIENT ps, P_TARGET t )
 	emptybottle->priv|=0x01;
 	emptybottle->Refresh();
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,POISONING,AMX_AFTER);
+	AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,POISONING,AMX_AFTER);
 }
 
 

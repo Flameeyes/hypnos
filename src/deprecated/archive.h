@@ -108,21 +108,4 @@ public:
 
 };
 
-namespace archive {
-
-	namespace item
-	{
-		P_ITEM	New( LOGICAL forCopyPurpose = false );
-	}
-
-	namespace character
-	{
-		P_CHAR	New();
-		P_CHAR	Instance();
-		void	Delete( P_CHAR pc );
-		void	Delete( SERIAL k  );
-	}
-}
-
-
 #endif

@@ -57,12 +57,7 @@ namespace item
 		if((iter = Scripts::Items->getNewIterator(sect)) == NULL)
 			return NULL;
 
-		P_ITEM pi= archive::item::New();
-
-		if (!ISVALIDPI(pi)) {
-			safedelete(iter);
-			return NULL;
-		}
+		pItem pi = new cItem(cItem::nextSerial());
 
 		pi->animSetId(0);
 		pi->setId( 0x0915 );
@@ -638,67 +633,6 @@ namespace item
 		return strlen(itemname)+1;
 
 	}
-
-	/*P_ITEM SpawnItem(CHARACTER ch, SI32 nAmount, char* cName, LOGICAL pileable, SI16 id, SI16 color, LOGICAL nPack)
-	{
-		P_CHAR pc=MAKE_CHAR_REF(ch);
-		VALIDATEPCR(pc,NULL);
-		P_ITEM pPack= pc->getBackpack();
-		LOGICAL pile = false;
-
-		if (pileable)
-		{					// make sure it's REALLY pileable ! (Duke)
-			tile_st tile;
-			Map->SeekTile(id, &tile);
-			if (tile.flag2&0x08)
-				pile=true;
-			else
-			{
-				LogWarning("Spawning an item that is not truly pileable, id=%x",id);
-				pile=pileable;
-			}
-		}
-
-		// no such item found, so let's create it
-		P_ITEM pi=archive::getNewItem();
-
-		if(cName!=NULL)
-			pi->setCurrentName(cName);
-		pi->setId(id);
-		pi->animSetId(0);
-		pi->useAnimId = false;
-		pi->setScriptID(0);
-		pi->setColor(color);
-		pi->amount=nAmount;
-		pi->pileable=pile;
-		pi->att=5;
-		pi->setDecay();
-
-		if (nPack)
-		{
-			if (ISVALIDPI(pPack))
-			{
-				SERIAL piled = pPack->ContainerPileItem(pi);
-				if( piled==INVALID ) {
-					pi->setContSerial( pPack->getSerial32() );
-					pi->SetRandPosInCont( pPack );
-				}
-				else
-					return pointers::findItemBySerial( piled );
-			}
-			else
-			{// LB place it at players feet if he hasnt got backpack
-				pi->MoveTo( pc->getPosition() );
-			}
-		}
-
-		//ConOut("Adding Harditems settings in items.cpp:spawnitem\n");
-		item::GetScriptItemSetting(pi); // Added by Magius(CHE) (2)
-		pc->making=DEREF_P_ITEM(pi);
-		pi->Refresh();
-		return pi;
-
-	}*/
 
 	/*!
 	\author Magius(CHE), bugfixed by AntiChrist

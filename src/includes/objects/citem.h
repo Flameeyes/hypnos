@@ -30,6 +30,8 @@ public:
 	//! Redefinition of = operator for cItem class
         cItem& operator=(cItem& b);
 
+	static UI32	nextSerial();
+
         static void	archive();
 	static void	safeoldsave();
 

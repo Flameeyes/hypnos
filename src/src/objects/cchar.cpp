@@ -2083,18 +2083,29 @@ UI32 cChar::getAmount(short id, short col, bool onlyPrimaryBackpack)
 
 /*!
 \brief sends a remove packet to everyone nearby and deletes itself
-\author Luxor
+\author Flameeyes
 */
 void cChar::Delete()
 {
+	if( spawnregion!=INVALID )
+		Spawns->removeObject( spawnregion, this );
+
+	if( spawnserial!=INVALID )
+		Spawns->removeSpawnDinamic( this );
+
+	pointers::delChar(this);	//Luxor
+
+	cPacketSendDeleteObject pk(serial);
+
         NxwSocketWrapper sc;
         sc.fillOnline( this );
 	for ( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		NXWCLIENT ps = sc.getClient();
 		if ( ps != NULL )
-			ps->sendRemoveObject( static_cast<P_OBJECT>(this) );
+			ps->sendPacket(&pk);
 	}
-	archive::character::Delete( this );
+
+	safedelete(this);
 }
 
 /*!

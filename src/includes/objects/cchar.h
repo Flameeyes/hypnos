@@ -122,21 +122,20 @@ class ClientCrypt;
 */
 class cChar : public cObject
 {
-	public:
-		cChar( SERIAL ser );
-		~cChar();
-		void setClient(NXWCLIENT client);
-	private:
-		cNxwClientObj* m_client;
-	public:
-		static void	archive();
-		static void	safeoldsave();
-		void		getPopupHelp(char *str)
-		void		MoveTo(Location newloc);
-		void 		loadEventFromScript(TEXT *script1, TEXT *script2);
+public:
+	static UI32 nextSerial();
 
-		inline void		MoveTo(SI32 x, SI32 y, SI08 z)
-		{ MoveTo( Loc(x, y, z) ); }
+	cChar( SERIAL ser );
+	~cChar();
+
+	static void	archive();
+	static void	safeoldsave();
+	void		getPopupHelp(char *str)
+	void		MoveTo(Location newloc);
+	void 		loadEventFromScript(TEXT *script1, TEXT *script2);
+
+	inline void		MoveTo(SI32 x, SI32 y, SI08 z)
+	{ MoveTo( Loc(x, y, z) ); }
 
 protected:
 	pClient client;
@@ -145,32 +144,35 @@ public:
 	inline pClient getClient() const
 	{ return client; }
 
+	inline void setClient(pClient c)
+	{ client = c; }
+
 public:
 //@{
 /*!
 \name nxwflags_chars
 \brief Flags used for the char
 */
-		static const UI08 flagGrey		= 0x01; //!< Char is grey
-		static const UI08 flagPermaGrey		= 0x02; //!< Char is permanent grey
-		static const UI08 flagResistFire	= 0x04; //!< Char resists to fire (unused)
-		static const UI08 flagResistParalisys	= 0x08; //!< Char resists to paralisys (unused)
-		static const UI08 flagResistPoison	= 0x10; //!< Char resists to poison (unused)
-		static const UI08 flagWaterWalk		= 0x20;	//!< Char walks on water (npc only)
-		static const UI08 flagSpellTelekinesys	= 0x40; //!< Char under telekinesys spell (Luxor)
-		static const UI08 flagSpellProtection	= 0x80; //!< Char under protection spell (Luxor)
+	static const UI08 flagGrey		= 0x01; //!< Char is grey
+	static const UI08 flagPermaGrey		= 0x02; //!< Char is permanent grey
+	static const UI08 flagResistFire	= 0x04; //!< Char resists to fire (unused)
+	static const UI08 flagResistParalisys	= 0x08; //!< Char resists to paralisys (unused)
+	static const UI08 flagResistPoison	= 0x10; //!< Char resists to poison (unused)
+	static const UI08 flagWaterWalk		= 0x20;	//!< Char walks on water (npc only)
+	static const UI08 flagSpellTelekinesys	= 0x40; //!< Char under telekinesys spell (Luxor)
+	static const UI08 flagSpellProtection	= 0x80; //!< Char under protection spell (Luxor)
 
-		static const UI08 flagKarmaInnocent	= 0x04; //!< Char is innocent
-		static const UI08 flagKarmaMurderer	= 0x01; //!< Char is murderer
-		static const UI08 flagKarmaCriminal	= 0x02; //!< Char is criminal
+	static const UI08 flagKarmaInnocent	= 0x04; //!< Char is innocent
+	static const UI08 flagKarmaMurderer	= 0x01; //!< Char is murderer
+	static const UI08 flagKarmaCriminal	= 0x02; //!< Char is criminal
 //@}
-		char			nxwflags[4]; // for special nxw features
+	char			nxwflags[4]; // for special nxw features
 
-		inline const LOGICAL resistsFire() const
-		{ return nxwflags[0] & flagResistFire; }
+	inline const LOGICAL resistsFire() const
+	{ return nxwflags[0] & flagResistFire; }
 
-		inline const LOGICAL resistsFreeze() const
-		{ return nxwflags[0] & flagResistParalisys; }
+	inline const LOGICAL resistsFreeze() const
+	{ return nxwflags[0] & flagResistParalisys; }
 
 //@{
 /*!
@@ -178,42 +180,42 @@ public:
 \brief Priv variables used by priv and priv2
 */
 
-		static const UI08 flagPrivGM		= 0x01; //!< Char is GM
-		static const UI08 flagPrivBroadcast	= 0x02; //!< Char can broadcast
-		static const UI08 flagPrivInvulnerable	= 0x04; //!< Char is invulnerable
-		static const UI08 flagPrivCanViewSerials= 0x08; //!< Char can view serial codes
-		static const UI08 flagPrivNoSkillTitle	= 0x10; //!< Char hasn't skill title
-		static const UI08 flagPrivPageAble	= 0x20;
-		static const UI08 flagPrivCanSnoopAll	= 0x40;
-		static const UI08 flagPrivCounselor	= 0x80;
+	static const UI08 flagPrivGM		= 0x01; //!< Char is GM
+	static const UI08 flagPrivBroadcast	= 0x02; //!< Char can broadcast
+	static const UI08 flagPrivInvulnerable	= 0x04; //!< Char is invulnerable
+	static const UI08 flagPrivCanViewSerials= 0x08; //!< Char can view serial codes
+	static const UI08 flagPrivNoSkillTitle	= 0x10; //!< Char hasn't skill title
+	static const UI08 flagPrivPageAble	= 0x20;
+	static const UI08 flagPrivCanSnoopAll	= 0x40;
+	static const UI08 flagPrivCounselor	= 0x80;
 
-		static const UI08 flagPriv2AllMove	= 0x01;
-		static const UI08 flagPriv2Frozen	= 0x02;
-		static const UI08 flagPriv2ViewHouseIcon= 0x04;
-		static const UI08 flagPriv2PermaHidden	= 0x08;
-		static const UI08 flagPriv2NoUseMana	= 0x10;
-		static const UI08 flagPriv2Dispellable	= 0x20;
-		static const UI08 flagPriv2Reflection	= 0x40;
-		static const UI08 flagPriv2NoUseReagents= 0x80;
+	static const UI08 flagPriv2AllMove	= 0x01;
+	static const UI08 flagPriv2Frozen	= 0x02;
+	static const UI08 flagPriv2ViewHouseIcon= 0x04;
+	static const UI08 flagPriv2PermaHidden	= 0x08;
+	static const UI08 flagPriv2NoUseMana	= 0x10;
+	static const UI08 flagPriv2Dispellable	= 0x20;
+	static const UI08 flagPriv2Reflection	= 0x40;
+	static const UI08 flagPriv2NoUseReagents= 0x80;
 //@}
 
 //@{
 /*!
 \name Priviledges
 */
-	protected:
-		// We really need so many vars?
-		UI08 priv;	//!< see cchar_privs
-		UI08 priv2;	//!< see cchar_privs
-		UI08 privLevel; //!< privilege level
+protected:
+	// We really need so many vars?
+	UI08 priv;	//!< see cchar_privs
+	UI08 priv2;	//!< see cchar_privs
+	UI08 privLevel; //!< privilege level
 
-		inline void setPriv2(UI08 priv, LOGICAL set)
-		{
-			if ( set )
-				priv2 |= priv;
-			else
-				priv2 &= ~priv;
-		}
+	inline void setPriv2(UI08 priv, LOGICAL set)
+	{
+		if ( set )
+			priv2 |= priv;
+		else
+			priv2 &= ~priv;
+	}
 
 	public:
 		const LOGICAL		IsTrueGM() const;
