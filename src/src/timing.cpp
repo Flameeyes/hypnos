@@ -32,8 +32,6 @@
 #include "boats.h"
 #include "spawn.h"
 #include "trade.h"
-#include "html.h"
-
 
 #include "inlines.h"
 
@@ -116,7 +114,6 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 	static TIMERVAL checknpcfollow=0;
 	static TIMERVAL checkitemstime=0;
 	static TIMERVAL lighttime=0;
-	static TIMERVAL htmltime=0;
 	static TIMERVAL housedecaytimer=0;
 
 	bool lightChanged = false;
@@ -372,14 +369,6 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 		checktamednpcs=(TIMERVAL)((double) uiCurrentTime+(speed.tamednpctime*MY_CLOCKS_PER_SEC));
 	if( TIMEOUT( checknpcfollow ) )
 		checknpcfollow=(TIMERVAL)((double) uiCurrentTime+(speed.npcfollowtime*MY_CLOCKS_PER_SEC));
-	//
-	// Html
-	//
-	if(SrvParms->html>0 && (htmltime<=uiCurrentTime ))
-	{
-		updatehtml();
-		htmltime=uiCurrentTime+(SrvParms->html*MY_CLOCKS_PER_SEC);
-	}
 	//
 	// Finish
 	//

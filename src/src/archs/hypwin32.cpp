@@ -6,6 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#ifdef _WIN32
+
 #include "pywin32.cpp"
 #include <process.h>
 
@@ -158,3 +160,5 @@ char* getOSVersionString()
 
 	return g_szOSVerBuffer;
 }
+
+#endif

@@ -343,7 +343,6 @@ void loadserverdefaults()
 	server_data.persecute=1;//AntiChrist
 
 	server_data.feature=0; //Transparent mode: don't send packet 0xB9 
-	server_data.html=-1;//HTML
 
 	server_data.tamed_disappear=1; // Ripper
 	server_data.houseintown=0; // Ripper
@@ -655,7 +654,6 @@ static int loadserver(char *script1, char *script2)
 		else if(!strcmp(script1,"RUNNINGSTAMINASTEPS"))		server_data.runningstaminasteps=str2num(script2);//AntiChrist
 		else if(!strcmp(script1,"BOAT_SPEED"))			server_data.boatspeed=(float)atof(script2);//Boats
 		else if(!strcmp(script1,"STABLING_FEE"))		server_data.stablingfee=(float)atof(script2);//Boats
-		else if(!strcmp(script1,"HTML"))			server_data.html=str2num(script2);//HTML
         else if(!strcmp(script1,"CUT_SCROLL_REQUIREMENTS"))	server_data.cutscrollreq=str2num(script2);//AntiChrist
         else if(!strcmp(script1,"PERSECUTION"))			server_data.persecute=str2num(script2);//AntiChrist
 		else if(!strcmp(script1,"AUTO_CREATE_ACCTS"))		server_data.auto_a_create = str2num( script2 );
@@ -1268,8 +1266,6 @@ void saveserverscript()
 	fprintf(file, "SAVEPATH %s\n", server_data.savePath.c_str() );
 	fprintf(file, "// Set directory where worldfile backups will be stored\n");
 	fprintf(file, "ARCHIVEPATH %s\n", server_data.archivePath.c_str() );
-	fprintf(file, "// 0= disable html, else put in the number of seconds between HTML generation \n");
-	fprintf(file, "HTML %i\n",server_data.html);
 	fprintf(file, "// Enables / Disable features for UO:T2A/UO:R/UO:3D Clients (VERY! experimental)\n");
 	fprintf(file, "// 0: Dont send packet, (default)\n");
 	fprintf(file, "// 1: T2A (chat button, popup help, ...) 2: LBR (plus T2A) animations \n");

@@ -6,6 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#ifdef _WIN32
+
 bool g_bNTService = false;
 
 #ifdef _CONSOLE
@@ -400,5 +402,7 @@ int main(int argc, char *argv[])
 	StartServiceCtrlDispatcher(serviceTable);
 	return 0;
 }
+
+#endif
 
 #endif

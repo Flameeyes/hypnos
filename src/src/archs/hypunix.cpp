@@ -6,6 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#ifdef __unix__
+
 namespace arch {
 
 	termios termstate;
@@ -278,3 +280,4 @@ char* getOSVersionString()
     return g_szOSVerBuffer;
 }
 
+#endif

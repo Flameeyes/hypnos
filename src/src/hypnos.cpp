@@ -70,18 +70,15 @@
 #include "pointer.h"
 #include "data.h"
 #include "boats.h"
-#include "books.h"
 #include "scp_parser.h"
 #include "area.h"
 #include "spawn.h"
 #include "archive.h"
 #include "trade.h"
 #include "newbie.h"
-#include "html.h"
 #include "sndpkg.h"
 #include "titles.h"
 #include "timing.h"
-
 
 #include "inlines.h"
 #include "basics.h"

@@ -304,7 +304,6 @@ namespace Scripts {
 	cScpScript* House = NULL; //cScpScript("house.scp");
 	cScpScript* Creatures = NULL;
 	cScpScript* HostDeny = NULL; //cScpScript("host_deny.xss");
-	cScpScript* HtmlStrm = NULL; //cScpScript("htmlstrm.scp");
 	cScpScript* Items = NULL; //cScpScript("items.scp");
 	cScpScript* Location = NULL; //cScpScript("location.scp");
 	cScpScript* Menus = NULL; //cScpScript("menus.scp");
@@ -349,7 +348,6 @@ void newScriptsInit()
 	Scripts::House = new cScpScript("scripts/house.xss");
 	Scripts::Creatures = new cScpScript("scripts/creatures.xss");
 	Scripts::HostDeny = new cScpScript("config/hostdeny.xss");
-	Scripts::HtmlStrm = new cScpScript("scripts/html.xss");
 	Scripts::Items = new cScpScript("scripts/items.xss");
 	Scripts::Location = new cScpScript("scripts/location.xss");
 	Scripts::Menus = new cScpScript("scripts/menus.xss");
@@ -396,7 +394,6 @@ void deleteNewScripts()
 	safedelete(Scripts::House );//= new cScpScript("house.scp");
 	safedelete(Scripts::Creatures );
 	safedelete(Scripts::HostDeny);
-	safedelete(Scripts::HtmlStrm );//= new cScpScript("htmlstrm.scp");
 	safedelete(Scripts::Items );//= new cScpScript("items.scp");
 	safedelete(Scripts::Location );//= new cScpScript("location.scp");
 	safedelete(Scripts::Menus );//= new cScpScript("scripts/menus.xss");
