@@ -183,10 +183,7 @@ void loadserverdefaults()
 	strcpy(ServerScp::g_szOutput, "nxwout");
 
 	clientsAllowed.push_back(sd);
-	strcpy(serv[0][0], "NoX-Wizard Shard");
-	strcpy(serv[0][1], "127.0.0.1");
-	strcpy(serv[0][2], "2593");
-
+	
 	strcpy(temp_map, "./map0.mul");
 	strcpy(temp_statics, "./statics0.mul");
 	strcpy(temp_staidx, "./staidx0.mul");
@@ -332,8 +329,6 @@ extern bool g_bInMainCycle;
 
 void commitserverscript() // second phase setup
 {
- 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-
 	data::setPath( Map_File, std::string( temp_map ) );
 	data::setPath( StaIdx_File, std::string( temp_staidx ) );
 	data::setPath( Statics_File, std::string( temp_statics ) );
@@ -341,53 +336,6 @@ void commitserverscript() // second phase setup
 	data::setPath( TileData_File, std::string( temp_tiledata ) );
 	data::setPath( Multi_File, std::string( temp_multimul ) );
 	data::setPath( MultiIdx_File, std::string( temp_multiidx ) );
-
-		// name resovling of server-address, LB 7-JULY 2000
-
-	unsigned int i;
-	unsigned long ip;
-	sockaddr_in m_sin;
-	hostent *hpe;
-	char *name;
-
-    m_sin.sin_family = AF_INET;
-
-	for (i = 0; i < servcount; i++)
-	{
-		ip = inet_addr(serv[i][1]);
-
-		if (ip == INADDR_NONE) // adresse-name instead of ip adress given ! trnslate to ip string
-		{
-			name = serv[i][1];
-			ConOut("host: %s\n", name);
-			hpe = gethostbyname(name);
-
-			if (hpe == NULL)
-			{
-#if	defined(__unix__)
-				// We should be able to use the xti error functions, cant find them so...
-				// sprintf(temp,"warning: %d resolving name: %s\n", t_srerror(t_errno),name) ;
-#ifndef __BEOS__
-				sprintf(temp, "warning: Error desolving name: %s : %s\n", name, hstrerror(h_errno));
-#endif
-#else
-				sprintf(temp, "warning: %d resolving name: %s\n", WSAGetLastError(), name);
-#endif
-				LogWarning(temp);
-				LogWarning("switching to localhost\n");
-
-				strcpy(serv[i][1], "127.0.0.1");
-			}
-			else
-			{
-				memcpy(&(m_sin.sin_addr), hpe->h_addr, hpe->h_length);
-
-				strncpy(serv[i][1], inet_ntoa(m_sin.sin_addr), 28);
-				serv[i][1][29] = 0;
-			} // end else resolvable
-		}
-	} // end server loop
-
 }
 
 void saveserverscript()
