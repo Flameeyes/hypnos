@@ -1505,24 +1505,6 @@ void SendDrawGamePlayerPkt(NXWSOCKET s, uint32_t player_id, uint16_t model, uint
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SendUpdatePlayerPkt(NXWSOCKET s, uint32_t player_id, uint16_t model, Location pos, uint8_t dir, uint16_t color, uint8_t flag, uint8_t hi_color)
-{
-	uint8_t extmove[17]={ 0x77, 0x00 };
-
-	LongToCharPtr(player_id, extmove +1);
-	ShortToCharPtr(model, extmove +5);
-	ShortToCharPtr(pos.x, extmove +7);
-	ShortToCharPtr(pos.y, extmove +9);
-	extmove[11]=pos.dispz;			// ??!?!?!?!? .z ?!
-	extmove[12]=dir;
-	ShortToCharPtr(color, extmove +13);
-	extmove[15]=flag;
-	extmove[16]=hi_color;
-
-	Xsend(s, extmove, 17);
-//AoS/	Network->FlushBuffer(s);
-}
-
 void SendDrawObjectPkt(NXWSOCKET s, P_CHAR pc, int z)
 {
 	P_CHAR pc_currchar=MAKE_CHAR_REF(currchar[s]);

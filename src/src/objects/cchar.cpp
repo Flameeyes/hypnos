@@ -2752,7 +2752,8 @@ void cChar::warUpdate()
 		{
 			if (!pc_i->isDead())
 			{
-				SendDeleteObjectPkt(ps_i->toInt(), getSerial32());
+				cPacketSendDeleteObj pk(pc_i->getSerial32());
+		                ps_i->sendPacket(&pk);
 				sendit = false;
 			}
 			else
@@ -2768,7 +2769,7 @@ void cChar::warUpdate()
 			// running stuff
 
 			if (npc && (inWarMode() || ftarget)) // Skyfire
-				dir |= 0x80;
+				ndir |= 0x80;
 
 			flag =  inWarMode() ? 0x40 : 0 |
 				isHidden() ? 0x80 : 0 |
@@ -2794,8 +2795,8 @@ void cChar::warUpdate()
 				hi_color = 3;  // show grey
 
 			// end of if sendit
-
-			SendUpdatePlayerPkt(s, getSerial32(), getId(), charpos, dir, getColor(), flag, hi_color);
+                        cPacketSendUpdatePlayer pk(this, ndir, flag, hi_color );
+                        ps_i->sendPacket(&pk);
 		}
 	}
 }

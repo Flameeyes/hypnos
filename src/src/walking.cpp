@@ -818,7 +818,8 @@ void sendToPlayers( P_CHAR pc, int8_t dir )
 		else
 			hi_color = 3;		// grey
 
-		SendUpdatePlayerPkt( ps->toInt(), pc->getSerial32(), pc->getId(), pc->getPosition(), dir, pc->getColor(), flag, hi_color );
+                cPacketSendUpdatePlayer pk(pc, dir, flag, hi_color );
+                ps_i->sendPacket(&pk);
 	}
 }
 

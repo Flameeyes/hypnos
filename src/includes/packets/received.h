@@ -478,7 +478,6 @@ class cPacketSendSecureTradingStatus : cPacketSend
 {
 protected:
 
-//	const pContainer cont1,cont2;
         const uint8_t action;
         const uint32_t id1,id2,id3;
 
@@ -490,6 +489,25 @@ public:
 
 	void prepare();
 };
+
+
+class cPacketSendUpdatePlayer : cPacketSend
+{
+protected:
+
+	const pChar chr;
+        const uint8_t dir, flag, hi_color;
+        const uint32_t id1,id2,id3;
+
+public:
+	inline cPacketSendUpdatePlayer(pChar pc, uint8_t newdir, uint8_t newflag, uint8_t newhi_color) :
+        	chr(pc), dir(newdir), flag(newflag), hi_color(newhi_color),
+		buffer(NULL), length(NULL)
+	{ }
+
+	void prepare();
+};
+
 
 
 /*!
@@ -541,7 +559,7 @@ class cPacketReceiveBookPage		: public cPacketReceive;
 class cPacketReceiveTargetSelected      : public cPacketReceive;
 class cPacketReceiveBBoardMessage       : public cPacketReceive;
 class cPacketReceiveSecureTrade         : public cPacketReceive;
-class        : public cPacketReceive;
+class cPacketReceiveWarModeChange       : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;

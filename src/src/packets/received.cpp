@@ -446,7 +446,7 @@ void cPacketSendBBoardCommand::prepare()
         }
 }
 
-cPacketSendMsgBoardItemsinContainer::prepare()
+void cPacketSendMsgBoardItemsinContainer::prepare()
 {
  	static const uint8_t templ1[5] = {
 		0x3C, 0x00, 0x05, 0x00, 0x00
@@ -485,7 +485,7 @@ cPacketSendMsgBoardItemsinContainer::prepare()
 }
 
 
-cPacketSendSecureTradingStatus::prepare()
+void cPacketSendSecureTradingStatus::prepare()
 {
         buffer = new uint8_t[17];
 	buffer[0] = 0x6F;
@@ -496,6 +496,24 @@ cPacketSendSecureTradingStatus::prepare()
 	LongToCharPtr(id3, buffer +12);
 	buffer[16]=0; 			// No name in this message
 }
+
+void cPacketSendUpdatePlayer::prepare()
+{
+	buffer = new uint8_t[17];
+	buffer[0]=0x77;
+	Location pos = chr->getPosition();
+	LongToCharPtr(chr->getSerial(), buffer +1);
+	ShortToCharPtr(chr->getId(), buffer +5);
+	ShortToCharPtr(pos.x, buffer +7);
+	ShortToCharPtr(pos.y, buffer +9);
+	buffer[11]=pos.dispz;
+	buffer[12]=dir;
+	ShortToCharPtr(chr->getColor(), buffer +13);
+	buffer[15]=flag;
+	buffer[16]=hi_color;
+}
+
+
 
 static pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
 {
@@ -528,7 +546,7 @@ static pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t lengt
                 case 0x6c: return new cPacketReceiveTargetSelected(buffer, length);	// Targeting Cursor Commands
                 case 0x6f: return new cPacketReceiveSecureTrade(buffer,length);		// Secure Trading
                 case 0x71: return new cPacketReceiveBBoardMessage(buffer, length); 	// Bulletin Board Message
-                case 0x72: length =   5; break; // Request War Mode Change/Send War Mode status
+                case 0x72: return new cPacketReceiveWarModeChange(buffer, length); 	// Request War Mode Change/Send War Mode status
                 case 0x73: length =   2; break; // Ping message
                 case 0x7d: length =  13; break; // Client Response To Dialog
                 case 0x80: length =  62; break; // Login Request
@@ -1346,13 +1364,13 @@ bool cPacketReceiveSecureTrade::execute(pClient client)
 			client->sendtradestatus(cont1, cont2);
 			if (cont1->morez && cont2->morez)
 			{
-				dotrade(cont1, cont2);
-				endtrade( LongFromCharPtr(buffer + 4) );
+				client->dotrade(cont1, cont2);
+				client->endtrade( LongFromCharPtr(buffer + 4) );
 			}
 		}
 		break;
 	case 1://Cancel trade. Send each person cancel messages, move items.
-		endtrade( LongFromCharPtr(buffer +4) );
+		client->endtrade( LongFromCharPtr(buffer +4) );
 		break;
 	default:
 		ErrOut("Switch fallout. trade.cpp, trademsg()\n"); //Morrolan
@@ -1529,4 +1547,27 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
         return true;
 }
 
+
+bool cPacketReceiveWarModeChange::execute(pClient client)
+{
+        if (length != 5) return false;
+        pPC pc = client->currChar();
+        if( pc !=NULL )
+        {
+        	if( (inWarMode() && !buffer[1]) || (!inWarMode() && buffer[1])  //Translation: if warmode has to change
+                {
+			pc->setWarMode(buffer[1]);
+			pc->targserial=INVALID;
+//TODO: revise from here
+
+		Xsend(s, buffer[s], 5);
+
+
+			if (pc->dead && pc->war) // Invisible ghost, resend.
+				pc->teleport( TELEFLAG_NONE );
+		pc->toggleWarMode();
+						dosocketmidi(s);
+						pc_currchar->disturbMed();
+	}
+}
 
