@@ -11,7 +11,7 @@
 
 export SUBDIRS  = src src/abstraction src/archs src/backend src/encryption src/extras src/objects src/objects/cchar src/objects/citem src/objects/cnpc src/races src/skills
 
-export SOURCES := $(foreach dir, $(SUBDIRS), $(wildcard $(dir)/*.cpp))
+export SOURCES := $(foreach dir, $(SUBDIRS), $(PWD)/$(wildcard $(dir)/*.cpp))
 export OBJECTS := $(SOURCES:.cpp=.o)
 
 ifndef COMSPEC
