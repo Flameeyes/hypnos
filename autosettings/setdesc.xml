@@ -28,7 +28,8 @@ enabled, pgs can't trade items with each others.
   </setting>
   <setting Name="EnabledBountySystem" type="flag" default="on" flag="is">
 Set this to on if you want the Bounty System to be enabled. If bounty system is not
- enabled, pgs can't ask for the head of the PK
+enabled, pgs can't ask for the head of the PK
+  </setting>
   <setting Name="EnabledPopupHelp" type="flag" default="on" flag="is">
 Set this to on if you want the PopupHelp to be enabled. (since t2a)
   </setting>
