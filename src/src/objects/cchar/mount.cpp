@@ -18,7 +18,7 @@
 \param mount the creature
 \note remove creature and give player a creature item
 */
-void cChar::mountHorse( pNPC mount )
+void cBody::mount(pNPC mount)
 {
 	if ( ! mount || ( !hasInRange(mount, 2) && ( !client || client->currAccount()->getPrivLevel() < cAccount::privCounselor ) ) )
 		return;

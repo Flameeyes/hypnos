@@ -52,7 +52,7 @@ struct sPositionOffset {
 	int8_t z;	//!< Z-coord offset
 	
 	sPositionOffset(int8_t ox = 0, int8_t oy = 0, int8_t oz = 0) :
-		x(ox), y(ox), z(oz)
+		x(ox), y(oy), z(oz)
 	{ }
 };
 

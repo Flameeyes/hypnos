@@ -101,20 +101,21 @@ WEFTS_LIBS = @WEFTS_LIBS@
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
-noinst_LTLIBRARIES = libnetworking.la
-libnetworking_la_SOURCES = misccommand.cpp received.cpp sent.cpp cclient.cpp network.cpp huffman.cpp tpllistener.cpp tkiller.cpp tuoreceiver.cpp tracreceiver.cpp
+noinst_LIBRARIES = libnetworking.a
+libnetworking_a_SOURCES = misccommand.cpp received.cpp sent.cpp cclient.cpp network.cpp huffman.cpp tpllistener.cpp tkiller.cpp tuoreceiver.cpp tracreceiver.cpp
 subdir = src/networking
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-LTLIBRARIES = $(noinst_LTLIBRARIES)
+LIBRARIES = $(noinst_LIBRARIES)
 
-libnetworking_la_LDFLAGS =
-libnetworking_la_LIBADD =
-am_libnetworking_la_OBJECTS = misccommand.lo received.lo sent.lo \
-	cclient.lo network.lo huffman.lo tpllistener.lo tkiller.lo \
-	tuoreceiver.lo tracreceiver.lo
-libnetworking_la_OBJECTS = $(am_libnetworking_la_OBJECTS)
+libnetworking_a_AR = $(AR) cru
+libnetworking_a_LIBADD =
+am_libnetworking_a_OBJECTS = misccommand.$(OBJEXT) received.$(OBJEXT) \
+	sent.$(OBJEXT) cclient.$(OBJEXT) network.$(OBJEXT) \
+	huffman.$(OBJEXT) tpllistener.$(OBJEXT) tkiller.$(OBJEXT) \
+	tuoreceiver.$(OBJEXT) tracreceiver.$(OBJEXT)
+libnetworking_a_OBJECTS = $(am_libnetworking_a_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -122,12 +123,12 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/cclient.Plo ./$(DEPDIR)/huffman.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/misccommand.Plo ./$(DEPDIR)/network.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/received.Plo ./$(DEPDIR)/sent.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/tkiller.Plo ./$(DEPDIR)/tpllistener.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/tracreceiver.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/tuoreceiver.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/cclient.Po ./$(DEPDIR)/huffman.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/misccommand.Po ./$(DEPDIR)/network.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/received.Po ./$(DEPDIR)/sent.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/tkiller.Po ./$(DEPDIR)/tpllistener.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/tracreceiver.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/tuoreceiver.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -136,9 +137,9 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libnetworking_la_SOURCES)
+DIST_SOURCES = $(libnetworking_a_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libnetworking_la_SOURCES)
+SOURCES = $(libnetworking_a_SOURCES)
 
 all: all-am
 
@@ -150,16 +151,12 @@ $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 
-clean-noinstLTLIBRARIES:
-	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
-	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test -z "$dir" && dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-libnetworking.la: $(libnetworking_la_OBJECTS) $(libnetworking_la_DEPENDENCIES) 
-	$(CXXLINK)  $(libnetworking_la_LDFLAGS) $(libnetworking_la_OBJECTS) $(libnetworking_la_LIBADD) $(LIBS)
+clean-noinstLIBRARIES:
+	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+libnetworking.a: $(libnetworking_a_OBJECTS) $(libnetworking_a_DEPENDENCIES) 
+	-rm -f libnetworking.a
+	$(libnetworking_a_AR) libnetworking.a $(libnetworking_a_OBJECTS) $(libnetworking_a_LIBADD)
+	$(RANLIB) libnetworking.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -167,16 +164,16 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cclient.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/huffman.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misccommand.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/network.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/received.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sent.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tkiller.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tpllistener.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tracreceiver.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tuoreceiver.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cclient.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/huffman.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misccommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/network.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/received.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sent.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tkiller.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tpllistener.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tracreceiver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tuoreceiver.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -273,7 +270,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LIBRARIES)
 
 installdirs:
 
@@ -303,7 +300,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
+clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -341,16 +338,15 @@ mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 uninstall-am: uninstall-info-am
 
 .PHONY: GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstLTLIBRARIES distclean \
-	distclean-compile distclean-depend distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am info \
-	info-am install install-am install-data install-data-am \
-	install-exec install-exec-am install-info install-info-am \
-	install-man install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool tags uninstall uninstall-am \
-	uninstall-info-am
+	clean-libtool clean-noinstLIBRARIES distclean distclean-compile \
+	distclean-depend distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am info info-am install \
+	install-am install-data install-data-am install-exec \
+	install-exec-am install-info install-info-am install-man \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	tags uninstall uninstall-am uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,2 +1,2 @@
-noinst_LTLIBRARIES = libcnpc.la
-libcnpc_la_SOURCES = npcai.cpp
+noinst_LIBRARIES = libcnpc.a
+libcnpc_a_SOURCES = npcai.cpp

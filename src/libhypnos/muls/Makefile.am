@@ -1,3 +1,2 @@
-noinst_LTLIBRARIES = libhypmul.la
-
-libhypmul_la_SOURCES = gumpidx.cpp tiledata.cpp
+noinst_LIBRARIES = libhypmul.a
+libhypmul_a_SOURCES = gumpidx.cpp tiledata.cpp

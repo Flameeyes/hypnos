@@ -198,7 +198,7 @@ void cNPC::heartbeat()
 			}
 		} else if ( TIMEOUT( nextact ) ) {
 			nextact = getClockmSecs() + uint32_t(SECS*1.5);
-			if ( isMounting() )
+			if ( getBody()->isMounted() )
 				playAction( 0x1b );
 			else
 				playAction( spellaction );

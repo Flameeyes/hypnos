@@ -1,10 +1,10 @@
 bin_PROGRAMS = hypnos
-hypnos_LDADD = $(top_builddir)/src/skills/libskills.la \
-	$(top_builddir)/libhypnos/libhypnos.la $(top_builddir)/src/networking/libnetworking.la \
-	$(top_builddir)/src/objects/cnpc/libcnpc.la $(top_builddir)/src/objects/citem/libcitem.la \
-	$(top_builddir)/src/objects/cchar/libcchar.la $(top_builddir)/src/objects/libobjects.la \
-	$(top_builddir)/src/extras/libextras.la $(top_builddir)/src/encryption/libencryption.la \
-	$(top_builddir)/src/backend/libbackend.la $(top_builddir)/src/archetypes/libarchetypes.la
+hypnos_LDADD = $(top_builddir)/src/skills/libskills.a \
+	$(top_builddir)/libhypnos/libhypnos.la $(top_builddir)/src/networking/libnetworking.a \
+	$(top_builddir)/src/objects/cnpc/libcnpc.a $(top_builddir)/src/objects/citem/libcitem.a \
+	$(top_builddir)/src/objects/cchar/libcchar.a $(top_builddir)/src/objects/libobjects.a \
+	$(top_builddir)/src/extras/libextras.a $(top_builddir)/src/encryption/libencryption.a \
+	$(top_builddir)/src/backend/libbackend.a $(top_builddir)/src/archetypes/libarchetypes.a
 
 hypnos_SOURCES = area.cpp calendar.cpp console.cpp data.cpp effects.cpp\
 	gamedate.cpp gmpages.cpp hypnos.cpp logsystem.cpp magic.cpp map.cpp\

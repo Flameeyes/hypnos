@@ -303,7 +303,7 @@ void usepotion(pChar pc, pItem pi)
 	}
 
 	pc->playSFX(0x0030);
-	if (pc->HasHumanBody() && !pc->isMounting())
+	if (pc->HasHumanBody() && !pc->getBody()->isMounted())
 		pc->playAction(0x22);
 
 	pi->ReduceAmount( 1 );

@@ -207,10 +207,10 @@ void Skills::Hide(pClient client)
 
 	NxwCharWrapper sc;
 	pChar pj = NULL;
-	sc.fillCharsNearXYZ( pc->getPosition(), 4 );
+	sc.fillCharsNearXYZ( pc->getBody()->getPosition(), 4 );
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pj = sc.getChar();
-		if ( pj && pj->getSerial() != pc->getSerial() && !pj->IsHidden() && pc->losFrom(pj) ) {
+		if ( pj && pj->getSerial() != pc->getSerial() && !pj->getBody()->isHidden() && pc->losFrom(pj) ) {
 			client->sysmessage("There is someone nearby who prevents you to hide.");
 			return;
 		}
@@ -230,7 +230,7 @@ void Skills::Stealth(pClient client)
 	if ( ! client || ! (pc = client->currChar()) ) //Luxor
 		return;
 
-	if ( pc->isMounting() && ! nSettings::Skills::canStealthOnHorse() ) {
+	if ( pc->getBody()->isMounted() && ! nSettings::Skills::canStealthOnHorse() ) {
 		client->sysmessage("You can't stealth on horse!");
 		return;
 	}
@@ -999,7 +999,7 @@ void Skills::TDummy(pClient client)
 
 	int skillused = pc->getCombatSkill();
 
-	if (pc->isMounting())
+	if (pc->getBody()->isMounted())
 		pc->combatOnHorse();
 	else
 		pc->combatOnFoot();
@@ -1152,7 +1152,7 @@ void Skills::AButte(pClient client, pItem pButte)
 		//add moving effect here to item, not character
 	}
 
-	if (pc->isMounting())
+	if (pc->getBody()->isMounted())
 		pc->combatOnHorse();
 	else
 		pc->combatOnFoot();

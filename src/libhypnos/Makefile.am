@@ -6,4 +6,4 @@ INCLUDES= $(all_includes)
 lib_LTLIBRARIES = libhypnos.la
 libhypnos_la_SOURCES = cvariant.cpp mmappedfile.cpp strings.cpp prefix.c
 SUBDIRS = muls
-libhypnos_la_LIBADD = $(top_builddir)/libhypnos/muls/libhypmul.la
+libhypnos_la_LIBADD = $(top_builddir)/libhypnos/muls/libhypmul.a

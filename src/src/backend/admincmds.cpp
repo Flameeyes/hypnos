@@ -11,6 +11,7 @@
 
 #include "mainloop.h"
 #include "backend/admincmds.h"
+#include "networking/cclient.h"
 
 /*!
 \brief Parses an administrative command
@@ -30,22 +31,9 @@ void nAdminCommands::parseCommand(const std::string &str, std::ostream &outs)
 		break;
 	case 'W':
 	case 'w':				// Display logged in chars
-		outs	<< "----------------------------------------------------------------" << std::endl
-			<< "Current Users in the World:" << std::endl;
-		//! \todo Fix this with a better way
-		{
-			int j = 0;  //Fix bug counting ppl online.
-			for (int i=0;i<now;i++)
-			{
-				pChar pc_i=cSerializable::findCharBySerial(currchar[i]);
-				if(pc_i && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
-				{
-					outs << j << ") " << pc_i->getCurrentName() << " [ " << std::setw(8) << std::setfill('0') << hex << pc_i->getSerial() << " ]" << std::endl;
-					j++;
-				}
-			}
-			outs << "Total Users Online: " << j << std::endl;
-		}
+		outs	<< "----------------------------------------------------------------" << std::endl;
+		
+		cClient::listConnected(outs);
 		break;
 	case 'r':
 	case 'R':

@@ -452,7 +452,7 @@ bool nPackets::Received::ActionRequest::execute(pClient client)
 
 	if (type==0xC7) // Action
 	{
-		if (pc->isMounting()) return true;
+		if (pc->getBody()->isMounted()) return true;
 		if (!(strcmp(buffer + 4,"bow"))) pc->playAction(0x20);
 		if (!(strcmp(buffer + 4,"salute"))) pc->playAction(0x21);
 	        return true; // Morrolan

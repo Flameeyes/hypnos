@@ -1,2 +1,2 @@
-noinst_LTLIBRARIES = libextras.la
-libextras_la_SOURCES = bounty.cpp jails.cpp motd.cpp loginserver.cpp
+noinst_LIBRARIES = libextras.a
+libextras_a_SOURCES = bounty.cpp jails.cpp motd.cpp loginserver.cpp

@@ -101,18 +101,19 @@ WEFTS_LIBS = @WEFTS_LIBS@
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
-noinst_LTLIBRARIES = libextras.la
-libextras_la_SOURCES = bounty.cpp jails.cpp motd.cpp loginserver.cpp
+noinst_LIBRARIES = libextras.a
+libextras_a_SOURCES = bounty.cpp jails.cpp motd.cpp loginserver.cpp
 subdir = src/extras
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-LTLIBRARIES = $(noinst_LTLIBRARIES)
+LIBRARIES = $(noinst_LIBRARIES)
 
-libextras_la_LDFLAGS =
-libextras_la_LIBADD =
-am_libextras_la_OBJECTS = bounty.lo jails.lo motd.lo loginserver.lo
-libextras_la_OBJECTS = $(am_libextras_la_OBJECTS)
+libextras_a_AR = $(AR) cru
+libextras_a_LIBADD =
+am_libextras_a_OBJECTS = bounty.$(OBJEXT) jails.$(OBJEXT) motd.$(OBJEXT) \
+	loginserver.$(OBJEXT)
+libextras_a_OBJECTS = $(am_libextras_a_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -120,8 +121,8 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/bounty.Plo ./$(DEPDIR)/jails.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/loginserver.Plo ./$(DEPDIR)/motd.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/bounty.Po ./$(DEPDIR)/jails.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/loginserver.Po ./$(DEPDIR)/motd.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -130,9 +131,9 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libextras_la_SOURCES)
+DIST_SOURCES = $(libextras_a_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libextras_la_SOURCES)
+SOURCES = $(libextras_a_SOURCES)
 
 all: all-am
 
@@ -144,16 +145,12 @@ $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 
-clean-noinstLTLIBRARIES:
-	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
-	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test -z "$dir" && dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-libextras.la: $(libextras_la_OBJECTS) $(libextras_la_DEPENDENCIES) 
-	$(CXXLINK)  $(libextras_la_LDFLAGS) $(libextras_la_OBJECTS) $(libextras_la_LIBADD) $(LIBS)
+clean-noinstLIBRARIES:
+	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+libextras.a: $(libextras_a_OBJECTS) $(libextras_a_DEPENDENCIES) 
+	-rm -f libextras.a
+	$(libextras_a_AR) libextras.a $(libextras_a_OBJECTS) $(libextras_a_LIBADD)
+	$(RANLIB) libextras.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -161,10 +158,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bounty.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jails.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loginserver.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/motd.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bounty.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jails.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loginserver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/motd.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -261,7 +258,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LIBRARIES)
 
 installdirs:
 
@@ -291,7 +288,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
+clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -329,16 +326,15 @@ mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 uninstall-am: uninstall-info-am
 
 .PHONY: GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstLTLIBRARIES distclean \
-	distclean-compile distclean-depend distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am info \
-	info-am install install-am install-data install-data-am \
-	install-exec install-exec-am install-info install-info-am \
-	install-man install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool tags uninstall uninstall-am \
-	uninstall-info-am
+	clean-libtool clean-noinstLIBRARIES distclean distclean-compile \
+	distclean-depend distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am info info-am install \
+	install-am install-data install-data-am install-exec \
+	install-exec-am install-info install-info-am install-man \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	tags uninstall uninstall-am uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -109,7 +109,7 @@ INCLUDES = $(all_includes)
 lib_LTLIBRARIES = libhypnos.la
 libhypnos_la_SOURCES = cvariant.cpp mmappedfile.cpp strings.cpp prefix.c
 SUBDIRS = muls
-libhypnos_la_LIBADD = $(top_builddir)/libhypnos/muls/libhypmul.la
+libhypnos_la_LIBADD = $(top_builddir)/libhypnos/muls/libhypmul.a
 subdir = libhypnos
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -117,7 +117,7 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libhypnos_la_LDFLAGS =
-libhypnos_la_DEPENDENCIES = $(top_builddir)/libhypnos/muls/libhypmul.la
+libhypnos_la_DEPENDENCIES = $(top_builddir)/libhypnos/muls/libhypmul.a
 am_libhypnos_la_OBJECTS = cvariant.lo mmappedfile.lo strings.lo \
 	prefix.lo
 libhypnos_la_OBJECTS = $(am_libhypnos_la_OBJECTS)

@@ -176,23 +176,23 @@ void cChar::follow( pChar pc )
 			safedelete( path );
 		return;
 	}
-	if ( dist( getPosition(), pc->getPosition() ) <= 1.0f ) { // Target reached
+	if ( dist( getBody()->getPosition(), pc->getBody()->getPosition() ) <= 1.0 ) { // Target reached
 		if ( hasPath() )
 			safedelete( path );
-		facexy( pc->getPosition().x, pc->getPosition().y );
+		facexy( pc->getBody()->getPosition().x, pc->getBody()->getPosition().y );
 		return;
 	}
 	if ( !hasPath() || path->targetReached() ) { // We haven't got a right path, call the pathfinding.
-		pathFind( pc->getPosition(), true );
+		pathFind( pc->getBody()->getPosition(), true );
 		walkNextStep();
 		return;
 	}
 
-	double distance = dist( path->getFinalPos(), pc->getPosition() );
+	double distance = dist( path->getFinalPos(), pc->getBody()->getPosition() );
 	if ( distance <= 3.0 ) { // Path finalPos is pretty near... let's not overhead the processor
 		walkNextStep();
 	} else { // Path finalPos is too far, call the pathfinding.
-		pathFind( pc->getPosition(), true );
+		pathFind( pc->getBody()->getPosition(), true );
 		walkNextStep();
 	}
 }
@@ -222,7 +222,7 @@ void cChar::walk()
 			pChar pc = cSerializable::findCharBySerial( ftargserial );
 			if ( !pc )
 				break;
-			if ( pc->dead )
+			if ( pc->isDead() )
 				break;
 			if ( pc->questDestRegion == region )
 				((pNPC)this)->clearedEscordQuest( (pPC) pc );
@@ -243,8 +243,8 @@ void cChar::walk()
 			pChar target = cSerializable::findCharBySerial( targserial );
 			if ( target ) {
 				if ( distFrom( target ) < VISRANGE )
-					getDirFromXY( target->getPosition() );
-				npcwalk( this, npcSelectDir( this, (  getDirFromXY(target->getPosition()) +4 )%8 )%8,0);
+					getDirFromXY( target->getBody()->getPosition() );
+				npcwalk( this, npcSelectDir( this, getDirFromXY(target->getBody()->getPosition()) +4 ), 0);
 			}
 		}
 			break;

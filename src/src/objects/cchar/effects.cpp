@@ -95,12 +95,12 @@ void cChar::playAction(uint16_t action)
 
 void cChar::impAction(uint16_t action)
 {
-	if ( isMounting() && (action==0x10 || action==0x11))
+	if ( getBody()->isMounted() && (action==0x10 || action==0x11))
 	{
 		playAction(0x1b);
 		return;
 	}
-	if ( isMounting() || ( getId() < 0x190 ) && action == 0x22 )
+	if ( getBody()->isMounted() || ( getId() < 0x190 ) && action == 0x22 )
 		return;
 	playAction(action);
 }

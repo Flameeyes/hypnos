@@ -216,11 +216,11 @@ void cItem::doubleClick(pClient client)
 	if (!checkItemUsability(pc, ITEM_USE_DBLCLICK))
 		return;
 
-	sLocation charpos= pc->getPosition();
+	sLocation charpos= pc->getBody()->getPosition();
 
 	// Luxor: cannot use items if under invisible spell
 	// Chronodt: 1/2/2004 added a server parameter check to allow servers to let items be used when invisible
-	if (pc->IsHiddenBySpell() && !nSettings::Actions::canUseItemsWhenInvisible()) return;
+	if (pc->getBody()->isHiddenBySpell() && !nSettings::Actions::canUseItemsWhenInvisible()) return;
 
 	if ( !pc->IsGM() && pc->objectdelay >= getClockmSecs() )
 	{
@@ -239,7 +239,7 @@ void cItem::doubleClick(pClient client)
 	}
 
 
-	pContainer pack = pc->getBackpack();
+	pContainer pack = pc->getBody()->getBackpack();
 	if(!pack) return;
 
 	//<Luxor>: Circle of transparency bug fix
@@ -255,10 +255,10 @@ void cItem::doubleClick(pClient client)
 		//!\todo verify if doing a getContSerial to a body returns a char
 		if(!pg_dist) return;
 
-		dst = pg_dst->getPosition();
+		dst = pg_dst->dna2.dvd2.dvdrip.divx.ita-hiv.avigetPosition();
 	}
 
-	sLocation charPos = pc->getPosition();
+	sLocation charPos = pc->dna2.dvd2.dvdrip.divx.ita-hiv.avigetPosition();
 	charPos.z = dst.z;
 	charPos.dispz = dst.dispz;
 
@@ -302,12 +302,12 @@ void cItem::doubleClick(pClient client)
 		return;
 	}
 
-	if (pc->dead && >type!=ITYPE_RESURRECT) // if you are dead and it's not an ankh, FORGET IT!
+	if (pc->isDead() && >type!=ITYPE_RESURRECT) // if you are dead and it's not an ankh, FORGET IT!
 	{
 		client->sysmessage("You may not do that as a ghost.");
 		return;
 	}
-	else if (!pc->IsGMorCounselor() && layer!=0 && !pc->IsWearing(this) && layer != LAYER_BACKPACK)
+	else if (!pc->IsGMorCounselor() && layer!=0 && !pc->getBody()->isWearing(this) && layer != LAYER_BACKPACK)
 	{// can't use other people's things!
 		client->sysmessage("You cannot use items equipped by other players.");
 		return;
@@ -1134,7 +1134,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 		case 0x0C53:
 		case 0x0C54: // cotton plants
 			{
-				if (!pc->isMounting())
+				if (!pc->getBody()->isMounted())
 					pc->playAction(0x0D);
 				else
 					pc->playAction(0x1D);

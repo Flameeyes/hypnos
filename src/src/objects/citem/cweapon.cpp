@@ -6,11 +6,13 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#include "logsystem.h"
+#include "archs/tinterface.h"
+#include "backend/strconstants.h"
+#include "objects/citem/cweapon.h"
+
 #include <fstream>
 #include <mxml.h>
-#include "objects/citem/cweapon.h"
-#include "backend/strconstants.h"
-#include "logsystem.h"
 
 cWeapon::WeaponMap cWeapon::weaponinfo;
 
@@ -29,7 +31,7 @@ cWeapon::cWeapon(uint32_t serial) :
 \param id id of the weapon
 \param type mask of weapon types to tests
 */
-const bool cWeapon::isWeaponLike( uint16_t id, uint16_t type )
+bool cWeapon::isWeaponLike( uint16_t id, uint16_t type )
 {
 	WeaponMap::iterator iter( weaponinfo.find( id ) );
 	if( iter==weaponinfo.end() )
@@ -44,7 +46,7 @@ const bool cWeapon::isWeaponLike( uint16_t id, uint16_t type )
 This function check the combatSkill attribute and, if skInvalid, checks
 againts the ID of the weapon
 */
-const Skill cWeapon::getCombatSkill() const
+Skill cWeapon::getCombatSkill() const
 {
 	if ( combatSkill != skInvalid )
 		return combatSkill;

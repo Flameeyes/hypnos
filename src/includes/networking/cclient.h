@@ -14,6 +14,7 @@
 #include "speech.h"
 
 #include <cabal_tcpsocket.h>
+#include <iosfwd>
 
 //! Used in trading methods
 struct sBoughtItem
@@ -44,6 +45,8 @@ public:
 	static const uint32_t clientIsT2A		= 0x00000002;
 	static const uint32_t clientIsUO3D		= 0x00000004;
 	static const uint32_t clientIsAoS		= 0x00000008;
+	
+	static void listConnected(std::ostream &);
 
 protected:
 	pPC pc;	        //!< Current char used by the client

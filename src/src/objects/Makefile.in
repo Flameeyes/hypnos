@@ -101,25 +101,25 @@ WEFTS_LIBS = @WEFTS_LIBS@
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
+noinst_LIBRARIES = libobjects.a
+libobjects_a_SOURCES = caccount.cpp cbody.cpp cchar.cpp ceventthrower.cpp \
+	citem.cpp cnpc.cpp cobject.cpp cparty.cpp cpc.cpp cserializable.cpp
+
 
 SUBDIRS = citem cchar cnpc
-lib_LTLIBRARIES = libobjects.la
-libobjects_la_SOURCES = caccount.cpp cbody.cpp cchar.cpp \
-	ceventthrower.cpp citem.cpp cnpc.cpp cobject.cpp cparty.cpp cpc.cpp\
-	cserializable.cpp
-
 subdir = src/objects
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-LTLIBRARIES = $(lib_LTLIBRARIES)
+LIBRARIES = $(noinst_LIBRARIES)
 
-libobjects_la_LDFLAGS =
-libobjects_la_LIBADD =
-am_libobjects_la_OBJECTS = caccount.lo cbody.lo cchar.lo \
-	ceventthrower.lo citem.lo cnpc.lo cobject.lo cparty.lo cpc.lo \
-	cserializable.lo
-libobjects_la_OBJECTS = $(am_libobjects_la_OBJECTS)
+libobjects_a_AR = $(AR) cru
+libobjects_a_LIBADD =
+am_libobjects_a_OBJECTS = caccount.$(OBJEXT) cbody.$(OBJEXT) \
+	cchar.$(OBJEXT) ceventthrower.$(OBJEXT) citem.$(OBJEXT) \
+	cnpc.$(OBJEXT) cobject.$(OBJEXT) cparty.$(OBJEXT) cpc.$(OBJEXT) \
+	cserializable.$(OBJEXT)
+libobjects_a_OBJECTS = $(am_libobjects_a_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -127,11 +127,11 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/caccount.Plo ./$(DEPDIR)/cbody.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/cchar.Plo ./$(DEPDIR)/ceventthrower.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/citem.Plo ./$(DEPDIR)/cnpc.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/cobject.Plo ./$(DEPDIR)/cparty.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/cpc.Plo ./$(DEPDIR)/cserializable.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/caccount.Po ./$(DEPDIR)/cbody.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/cchar.Po ./$(DEPDIR)/ceventthrower.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/citem.Po ./$(DEPDIR)/cnpc.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/cobject.Po ./$(DEPDIR)/cparty.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/cpc.Po ./$(DEPDIR)/cserializable.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -140,7 +140,7 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libobjects_la_SOURCES)
+DIST_SOURCES = $(libobjects_a_SOURCES)
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
@@ -148,7 +148,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
 DIST_COMMON = Makefile.am Makefile.in
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(libobjects_la_SOURCES)
+SOURCES = $(libobjects_a_SOURCES)
 
 all: all-recursive
 
@@ -159,36 +159,13 @@ $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	  $(AUTOMAKE) --gnu  src/objects/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-libLTLIBRARIES_INSTALL = $(INSTALL)
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    f="`echo $$p | sed -e 's|^.*/||'`"; \
-	    echo " $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$f"; \
-	    $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$f; \
-	  else :; fi; \
-	done
 
-uninstall-libLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	    p="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p"; \
-	  $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
-	done
-
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test -z "$dir" && dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-libobjects.la: $(libobjects_la_OBJECTS) $(libobjects_la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(libdir) $(libobjects_la_LDFLAGS) $(libobjects_la_OBJECTS) $(libobjects_la_LIBADD) $(LIBS)
+clean-noinstLIBRARIES:
+	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+libobjects.a: $(libobjects_a_OBJECTS) $(libobjects_a_DEPENDENCIES) 
+	-rm -f libobjects.a
+	$(libobjects_a_AR) libobjects.a $(libobjects_a_OBJECTS) $(libobjects_a_LIBADD)
+	$(RANLIB) libobjects.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -196,16 +173,16 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/caccount.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cbody.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cchar.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ceventthrower.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/citem.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cnpc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cobject.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cparty.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cserializable.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/caccount.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cbody.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cchar.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ceventthrower.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/citem.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cnpc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cobject.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cparty.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cserializable.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -375,10 +352,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-recursive
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LIBRARIES)
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
 
 install: install-recursive
 install-exec: install-exec-recursive
@@ -406,7 +382,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
 
-clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
+clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-recursive
@@ -424,7 +400,7 @@ info-am:
 
 install-data-am:
 
-install-exec-am: install-libLTLIBRARIES
+install-exec-am:
 
 install-info: install-info-recursive
 
@@ -441,26 +417,25 @@ mostlyclean: mostlyclean-recursive
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES
+uninstall-am: uninstall-info-am
 
 uninstall-info: uninstall-info-recursive
 
 .PHONY: $(RECURSIVE_TARGETS) GTAGS all all-am check check-am clean \
-	clean-generic clean-libLTLIBRARIES clean-libtool \
+	clean-generic clean-libtool clean-noinstLIBRARIES \
 	clean-recursive distclean distclean-compile distclean-depend \
 	distclean-generic distclean-libtool distclean-recursive \
 	distclean-tags distdir dvi dvi-am dvi-recursive info info-am \
 	info-recursive install install-am install-data install-data-am \
 	install-data-recursive install-exec install-exec-am \
 	install-exec-recursive install-info install-info-am \
-	install-info-recursive install-libLTLIBRARIES install-man \
-	install-recursive install-strip installcheck installcheck-am \
-	installdirs installdirs-am installdirs-recursive \
-	maintainer-clean maintainer-clean-generic \
-	maintainer-clean-recursive mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool mostlyclean-recursive \
-	tags tags-recursive uninstall uninstall-am uninstall-info-am \
-	uninstall-info-recursive uninstall-libLTLIBRARIES \
+	install-info-recursive install-man install-recursive \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am installdirs-recursive maintainer-clean \
+	maintainer-clean-generic maintainer-clean-recursive mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	mostlyclean-recursive tags tags-recursive uninstall \
+	uninstall-am uninstall-info-am uninstall-info-recursive \
 	uninstall-recursive
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -2765,7 +2765,7 @@ void cChar::warUpdate()
 	}
 
 	bool hidden = (IsHidden() || (isDead() && !inWarMode()));
-	const bool npc = rtti() == rtti::cNPC;
+	const bool npc = dynamic_cast<pNPC>(this);
 
 	NxwSocketWrapper sw;
 	sw.fillOnline( pc_s, false );

@@ -26,7 +26,7 @@ void cMulti::MoveTo(sLocation newloc)
 	
 	for(CharSList::iterator it = chars.begin(); it != chars.end(); it++)
 	{
-		sPositionOffset off = (*it)->getPosition() - getPosition();
+		sPositionOffset off = (*it)->getBody()->getPosition() - getPosition();
 		(*it)->MoveTo(newloc + off);
 		(*it)->Refresh();
 	}
@@ -46,7 +46,7 @@ cHouse reimplements this one more time deleting the npc vendors.
 void cMulti::Delete()
 {
 	for(MultiItemSList::iterator it = items.begin(); it != items.end(); it++)
-		(*it)->Delete();
+		delete *it;
 	
 	for(CharSList::iterator it = chars.begin(); it != chars.end(); it++)
 		(*it)->setMulti(NULL);
@@ -57,9 +57,9 @@ void cMulti::Delete()
 /*!
 \brief Gets the actual area occupied by the multi
 */
-const sRect getArea() const
+const sRect cMulti::getArea() const
 {
-	return sRect(area.ul + sPositionOffset(getPosition().x, getPosition().y), area.br + sPositionOffset(getPosition().x, getPosition().y) )
+	return sRect(area.ul + sPositionOffset(getPosition().x, getPosition().y), area.br + sPositionOffset(getPosition().x, getPosition().y) );
 }
 
 /*!
@@ -87,7 +87,7 @@ void cMulti::add(pSerializable obj)
 		mi.item = pi;
 		mi.offset = pi->getPosition() - getPosition();
 		mi.required = false;
-		items.push_fromt(mi);
+		items.push_front(mi);
 	}
 }
 
@@ -113,11 +113,11 @@ bool cMulti::remove(pSerializable obj)
 	
 	if ( pc )
 	{
-		CharSList::iterator it = std::find(pc, chars.begin(), chars.end());
+		CharSList::iterator it = std::find(chars.begin(), chars.end(), pc);
 		if ( it != chars.end() )
 			chars.erase(it);
 	} else {
-		MultiItemSList::iterator it = std::find(pi, items.begin(), items.end());
+		MultiItemSList::iterator it = std::find(items.begin(), items.end(), pi);
 		if ( it == items.end() )
 			return false;
 		
@@ -142,6 +142,7 @@ bool cMulti::remove(pSerializable obj)
 pMulti cMulti::getAt(sPoint p)
 {
 	for( ; ; ) //!\todo Need to be changed when the new region stuff is done
+	{
 		if( !(*it) ) continue;
 		
 		if ( (*it)->getArea().isInside(p) )

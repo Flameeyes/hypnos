@@ -215,7 +215,7 @@ void nSkills::decipher(pClient client)
 	}
 	
 	// Stores the new map
-	pItem nmap=item::CreateFromScript( 70025, pc->getBackpack() );
+	pItem nmap=item::CreateFromScript( 70025, pc->getBody()->getBackpack() );
 	if (!nmap)
 	{
 		LogWarning("bad script item # 70025(Item Not found).");
@@ -224,7 +224,7 @@ void nSkills::decipher(pClient client)
 
 	nmap->setCurrentName("a deciphered lvl.%d treasure map", morez);   // Give it the correct name
 	nmap->morez = morez;              // Give it the correct level
-	nmap->creator = pc->getCurrentName();  // Store the creator
+	nmap->creator = pc->getBody()->getCurrentName();  // Store the creator
 
 
 	sprintf(sect, "SECTION TREASURE %i", nmap->morez);

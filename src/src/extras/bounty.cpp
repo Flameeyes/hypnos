@@ -133,15 +133,14 @@ bool BountyDelete( pChar pc)
 
 bool BountyWithdrawGold( pChar pVictim, int nAmount )
 {
-	int has = pVictim->countBankGold();
+	int has = pVictim->getBody()->countBankGold();
 	if (has < nAmount)
 		return false;
 
-	pItem pBox = pVictim->GetBankBox();
+	pItem pBox = pVictim->getBody()->getBankBox();
 	if (!pBox)
 		return false;	// shouldn't happen coz it's needed in CountBankGold...
 
 	pBox->DeleteAmount(nAmount,0x0EED);
 	return true;
 }
-

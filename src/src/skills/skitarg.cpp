@@ -120,25 +120,17 @@ void nSkills::target_bowcraft(pClient client, pTarget t )
 	pChar pc = client->currChar();
 	if ( !pc ) return;
 
-	pc->playAction(pc->isMounting() ? 0x1C : 0x0D);
+	pc->playAction(pc->getBody()->isMounted() ? 0x1C : 0x0D);
 
 	pItem pi=dynamic_cast<pItem>( t->getClicked() );
 	if ( ! pi ) return;
 
 	AMXEXECSVTARGET(pc->getSerial(),AMXT_SKITARGS,skBowcraft,AMX_BEFORE);
 
-	pc->playAction(pc->isMounting() ? 0x1C : 0x0D);
-	if ( pi->magic!=4) // Ripper
-	{
-
-		if( pi->isLog() || pi->isBoard() )
-		{
-			if (CheckInPack(client,pi))
-			{
-				MakeMenu(pc,65,skBowcraft,pi);
-			}
-		}
-	}
+	pc->playAction(pc->getBody()->isMounted() ? 0x1C : 0x0D);
+	
+	if ( pi->magic!=4 && (pi->isLog() || pi->isBoard()) && CheckInPack(client,pi) )
+		MakeMenu(pc,65,skBowcraft,pi);
 
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skBowcraft,AMX_AFTER);
 }
@@ -364,13 +356,13 @@ void nSkills::target_tree(pClient client, pTarget t )
     unsigned int c;
     unsigned long int curtime=getClockmSecs();
 
-	if( pc->isMounting() ) {
+	if( pc->getBody()->isMounted() ) {
 		client->sysmessage("You cannot do this on a horse");
 		return;
 	}
 
-	sLocation charpos = pc->getPosition();
-	sLocation location = t->getPosition();
+	sLocation charpos = pc->getBody()->getPosition();
+	sLocation location = t->getBody()->getPosition();
 
 
     if( dist( charpos, location )>2 )
@@ -449,7 +441,7 @@ void nSkills::target_tree(pClient client, pTarget t )
 		return;
 	}
 
-    pc->playAction( pc->isMounting() ? 0x1C : 0x0D );
+    pc->playAction( pc->getBody()->isMounted() ? 0x1C : 0x0D );
     pc->playSFX(0x013E);
 
     if (!pc->checkSkill(skLumberjacking, 0, 1000))
@@ -478,7 +470,7 @@ void nSkills::GraveDig(pClient client) // added by Genesis 11-4-98
 
     pc->IncreaseKarma(-2000); // Karma loss no lower than the -2 pier
 
-    pc->playAction( pc->isMounting() ? 0x1A : 0x0b );
+    pc->playAction( pc->getBody()->isMounted() ? 0x1A : 0x0b );
     pc->playSFX(0x0125);
     if(!pc->checkSkill(skMining, 0, 800))
     {
@@ -487,7 +479,7 @@ void nSkills::GraveDig(pClient client) // added by Genesis 11-4-98
     }
 
     nFame = pc->GetFame();
-    pc->playAction( pc->isMounting() ? 0x1A : 0x0b );
+    pc->playAction( pc->getBody()->isMounted() ? 0x1A : 0x0b );
     pc->playSFX(0x0125);
     int nRandnum=rand()%13;
     switch(nRandnum)

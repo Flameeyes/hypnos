@@ -169,7 +169,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 				}
 				if(pi) {
 
-					pi->MoveTo( pc_def->getPosition() );
+					pi->MoveTo( pc_def->getBody()->getPosition() );
 					pi->setDecay();
 					pi->Refresh();//AntiChrist
 				}
@@ -230,9 +230,9 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 			chanceToHit += int( skill[skTactics]/100.0 - pc_def->skill[skTactics]/100.0 );
 			chanceToHit += int( str1/10.0 - str2/10.0 );
 			if ( chance( chanceToHit ) ) {
-				pItem dWeapon=pc_def->getWeapon();
+				pItem dWeapon=pc_def->getBody()->getWeapon();
 				if (dWeapon!=NULL) {
-					sLocation charpos = pc_def->getPosition();
+					sLocation charpos = pc_def->getBody()->getPosition();
 
 					wresmove = 0;
 					dWeapon->setContainer(0);
@@ -280,8 +280,9 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 			if (pShield->def!=0 && fightskill==skArchery) damage -= pShield->def; // damage absorbed by shield
 			if (chance(5)) pShield->hp--;
 			if (pShield->hp<=0) {
-				pc_def->sysmsg("Your shield has been destroyed");
-				pShield->Delete();
+				if ( pc_dev->getClient() )
+					pc_def->getClient()->sysmessage("Your shield has been destroyed");
+				delete pShield;
 			}
 		}
 	}
@@ -357,10 +358,10 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		pc_def->updateHp();
 	}
 
-	if( pc_def->HasHumanBody() ) {
-		if (!pc_def->onhorse) pc_def->playAction(0x14);
-	}
-        if (nTimeOut != 0) {
+	if( pc_def->getBody()->isHuman() && !pc_def->getBody()->isMounted() )
+		pc_def->playAction(0x14);
+        
+	if (nTimeOut != 0) {
                 timeout = getClockmSecs() + nTimeOut;
         }
 }
@@ -390,7 +391,7 @@ void cChar::doCombat()
 		isDead() ||
 		isHiddenBySpell() ||
 		isFrozen() ||
-		( rtti() == rtti::cPC && (reinterpret_cast<cPC>this)->isOnline() )
+		( reinterpret_cast<cPC>(this) && (reinterpret_cast<cPC>(this)->isOnline()) )
 	   )
 	{
 		undoCombat();

@@ -101,22 +101,23 @@ WEFTS_LIBS = @WEFTS_LIBS@
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
-lib_LTLIBRARIES = libcitem.la
-libcitem_la_SOURCES = cboat.cpp cbook.cpp ccontainer.cpp cequippable.cpp\
+noinst_LIBRARIES = libcitem.a
+libcitem_a_SOURCES = cboat.cpp cbook.cpp ccontainer.cpp cequippable.cpp\
 	chouse.cpp cmap.cpp cmsgboard.cpp cmulti.cpp cweapon.cpp doubleclick.cpp
 
 subdir = src/objects/citem
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-LTLIBRARIES = $(lib_LTLIBRARIES)
+LIBRARIES = $(noinst_LIBRARIES)
 
-libcitem_la_LDFLAGS =
-libcitem_la_LIBADD =
-am_libcitem_la_OBJECTS = cboat.lo cbook.lo ccontainer.lo cequippable.lo \
-	chouse.lo cmap.lo cmsgboard.lo cmulti.lo cweapon.lo \
-	doubleclick.lo
-libcitem_la_OBJECTS = $(am_libcitem_la_OBJECTS)
+libcitem_a_AR = $(AR) cru
+libcitem_a_LIBADD =
+am_libcitem_a_OBJECTS = cboat.$(OBJEXT) cbook.$(OBJEXT) \
+	ccontainer.$(OBJEXT) cequippable.$(OBJEXT) chouse.$(OBJEXT) \
+	cmap.$(OBJEXT) cmsgboard.$(OBJEXT) cmulti.$(OBJEXT) \
+	cweapon.$(OBJEXT) doubleclick.$(OBJEXT)
+libcitem_a_OBJECTS = $(am_libcitem_a_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -124,12 +125,12 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/cboat.Plo ./$(DEPDIR)/cbook.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/ccontainer.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/cequippable.Plo ./$(DEPDIR)/chouse.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/cmap.Plo ./$(DEPDIR)/cmsgboard.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/cmulti.Plo ./$(DEPDIR)/cweapon.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/doubleclick.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/cboat.Po ./$(DEPDIR)/cbook.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ccontainer.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/cequippable.Po ./$(DEPDIR)/chouse.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/cmap.Po ./$(DEPDIR)/cmsgboard.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/cmulti.Po ./$(DEPDIR)/cweapon.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/doubleclick.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -138,9 +139,9 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libcitem_la_SOURCES)
+DIST_SOURCES = $(libcitem_a_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libcitem_la_SOURCES)
+SOURCES = $(libcitem_a_SOURCES)
 
 all: all-am
 
@@ -151,36 +152,13 @@ $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	  $(AUTOMAKE) --gnu  src/objects/citem/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-libLTLIBRARIES_INSTALL = $(INSTALL)
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    f="`echo $$p | sed -e 's|^.*/||'`"; \
-	    echo " $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$f"; \
-	    $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$f; \
-	  else :; fi; \
-	done
 
-uninstall-libLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	    p="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p"; \
-	  $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
-	done
-
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test -z "$dir" && dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-libcitem.la: $(libcitem_la_OBJECTS) $(libcitem_la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(libdir) $(libcitem_la_LDFLAGS) $(libcitem_la_OBJECTS) $(libcitem_la_LIBADD) $(LIBS)
+clean-noinstLIBRARIES:
+	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+libcitem.a: $(libcitem_a_OBJECTS) $(libcitem_a_DEPENDENCIES) 
+	-rm -f libcitem.a
+	$(libcitem_a_AR) libcitem.a $(libcitem_a_OBJECTS) $(libcitem_a_LIBADD)
+	$(RANLIB) libcitem.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -188,16 +166,16 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cboat.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cbook.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ccontainer.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cequippable.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chouse.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cmap.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cmsgboard.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cmulti.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cweapon.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleclick.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cboat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cbook.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ccontainer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cequippable.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chouse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cmap.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cmsgboard.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cmulti.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cweapon.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleclick.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -294,10 +272,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LIBRARIES)
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
 
 install: install-am
 install-exec: install-exec-am
@@ -325,7 +302,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
+clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -343,7 +320,7 @@ info-am:
 
 install-data-am:
 
-install-exec-am: install-libLTLIBRARIES
+install-exec-am:
 
 install-info: install-info-am
 
@@ -360,19 +337,18 @@ mostlyclean: mostlyclean-am
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES
+uninstall-am: uninstall-info-am
 
 .PHONY: GTAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool distclean distclean-compile \
+	clean-libtool clean-noinstLIBRARIES distclean distclean-compile \
 	distclean-depend distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am info info-am install \
 	install-am install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool tags uninstall \
-	uninstall-am uninstall-info-am uninstall-libLTLIBRARIES
+	install-exec-am install-info install-info-am install-man \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	tags uninstall uninstall-am uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

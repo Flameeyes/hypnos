@@ -186,7 +186,7 @@ bool cBody::overloadedWalking()
 		*/		amount=ServerScp::g_fStaminaUsage[index];
 	
 	if(isRunning()) amount*=2; //if running, double the amount of stamina used
-	if(isMounting()) amount*=(float)server_data.staminaonhorse;
+	if(getBody()->isMounted()) amount*=(float)server_data.staminaonhorse;
 	
 	pc->fstm+=amount; //increase the amount of stamina to be subtracted
 	

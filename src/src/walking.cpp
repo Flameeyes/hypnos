@@ -131,8 +131,8 @@ bool WalkHandleRunning(pChar pc, int dir)
 		if (!pc->dead)
 		{
 			if(
-				( (!pc->isMounting() && pc->running>(SrvParms->runningstaminasteps)*2) ) ||
-				( pc->isMounting() && pc->running>(SrvParms->runningstaminasteps*2)*2 )
+				( (!pc->getBody()->isMounted() && pc->running>(SrvParms->runningstaminasteps)*2) ) ||
+				( pc->getBody()->isMounted() && pc->running>(SrvParms->runningstaminasteps*2)*2 )
 				)
 			{ //The first *2 it's because i noticed that a step(animation) correspond to 2 walking calls
 				pc->running=0;

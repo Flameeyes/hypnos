@@ -152,7 +152,7 @@ static bool canMine( pClient client, pItem weapon )
 			case 0x0E86	:
 			case 0x0F39	:
 			case 0x0F3A	:
-				if (pc->isMounting())
+				if (pc->getBody()->isMounted())
 					client->sysmessage( "You cant mine while on a horse!");
 				else
 					if( !pc->IsGM() && (ores.stamina<0) && (abs( ores.stamina )>pc->stm) )
@@ -278,7 +278,7 @@ void Skills::target_mine( pClient client, pTarget t )
 		return;
 	}
 
-	if (pc->isMounting())
+	if (pc->getBody()->isMounted())
 		pc->playAction(0x1A);
 	else
 		pc->playAction(0x0B);

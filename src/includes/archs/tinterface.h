@@ -58,7 +58,7 @@ public:
 	{ }
 	
 	void output(tInterface::Level lev, const std::string &str)
-	{ }
+	{ if(lev) str.lenght(); }
 	
 	void *run()
 	{ return NULL; }

@@ -10,9 +10,11 @@
 \brief Implementation of cClient class
 */
 
-#include "networking/cclient.h"
-#include "settings.h"
 #include "misc.h"
+#include "settings.h"
+#include "networking/cclient.h"
+
+#include <ostream>
 
 static ClientSList cClient::clients;
 static ClientSList cClient::cGMs;
@@ -3240,3 +3242,18 @@ void cClient::sendLocationTarget(processTarget callback)
 	sendPacket(&pk);
 }
 
+void cClient::listConnected(std::ostream &out)
+{
+	out << "Current Users in the World:" << std::endl;
+	
+	uint16_t count = 0;
+	for(ClientSList::iterator it = clients.begin(); it != clients.end(); it++)
+	{
+		pChar pc = (*it)->currChar();
+		out	<< count++ << ") " << pc->getBody()->getCurrentName()
+			<< " [ " << std::setw(8) << std::setfill('0') << std::hex
+			<< pc->getSerial() << " ]" << std::endl;
+	}
+	
+	out << "Total users online: " << count << std::endl;
+}

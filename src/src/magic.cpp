@@ -602,7 +602,7 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			break;
 		case spellEarthquake:
 			pcto->playSFX( 0x20D );
-			if ( pcto->HasHumanBody() && !pcto->isMounting() )
+			if ( pcto->HasHumanBody() && !pcto->getBody()->isMounted() )
 				pcto->playAction( (rand()%2 == 1) ? 0x15 : 0x16 );
 			break;
 		case spellEnergyVortex:
@@ -803,7 +803,7 @@ void castAreaAttackSpell (sPoint epi, SpellId spellnum, pChar pcaster)
 			&& ( pd == pcaster ) )
 				return;
 		
-		if ( spellnum == spellEarthquake && pd->isMounting() )
+		if ( spellnum == spellEarthquake && pd->getBody()->isMounted() )
 				pd->unmountHorse();
 		
 		spellFX(spellnum, pcaster, pd);
@@ -1859,7 +1859,7 @@ void castSpell(SpellId spellnumber, sTarget& dest, pChar src, int flags, int par
 			src->talkAll((char*)spellsData[src->spell].mantra.c_str(), false);
 		else
 			src->talkAllRunic((char*)spellsData[src->spell].mantra.c_str(), false);
-		if (src->isMounting()) { //Luxor
+		if (src->getBody()->isMounted()) { //Luxor
 			src->playAction(0x1B); // General Lee
 		} else {
 			src->playAction(spellsData[src->spell].action);
