@@ -13,12 +13,16 @@ AC_PROG_MAKE_SET
 AM_PROG_LIBTOOL
 
 AM_DL()
-AM_PATH_WEFTS()
 AC_ICC_COMPILER()
 AC_WINENV()
 AC_HYPNOSRELOC()
 AC_PCH()
 AC_CHECK_STDINTS()
+
+AM_PATH_WEFTS()
+if test "$WEFTS_LIBS" = ""; then
+	AC_MSG_ERROR([Unable to find Wefts++ library. Error on configure.])
+fi
 
 AC_OBJEXT
 AC_EXEEXT
