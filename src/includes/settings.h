@@ -29,23 +29,9 @@ there won't be inline methods. This should be anyway managed by the compiler.
 	namespace.
 */
 namespace nSettings {
-	/*!
-	\brief Message Boards related settings
-	
-	(obsolete calculation)
-	--------------------------------------------------------------------------------
-	Buffer Size = 2560
-	Therefore 0x3c max size = 2560 - 5 (0x3c header info) = 2550
-	2550 / 19 (item segment size per msg) = 134
-	Round down to 128 messages allowable on a message board (better safe than sorry)
-	--------------------------------------------------------------------------------
-	
-	Outbound packets now can have any length, so the maxpost is only used to have a
-	REASONABLE sized packet to send (Chronodt 10/3/04)
-	*/
 	namespace MsgBoards {
-		uint32_t getMaxPosts();			//!< Maximum post possible [Default: 128]
-		uint32_t getMaxEntries();		//!< Maximum entries in ESCORTS [Default: 256]
+		uint16_t getMaxPosts();			//!< Maximum post possible [Default: 128]
+		uint16_t getMaxEntries();		//!< Maximum entries in ESCORTS [Default: 256]
 	}
 	
 	/*!
@@ -83,7 +69,7 @@ namespace nSettings {
 	*/
 	namespace Actions {
 		bool shouldEquipOnDClick();		//!< Should an item be equipped on double click? [Default: true]
-                bool canUseItemsWhenInvisible();	//!< When invisible (by spell) can a player use items? [Default: \b missing ]
+                bool canUseItemsWhenInvisible();	//!< When invisible (by spell) can a player use items? [Default: false]
 		uint16_t getBountyKarmaGain();		//!< How much karma is gained for bounty hunting? [Default: \b missing ]
 		uint16_t getBountyFameGain();		//!< How much fame is gained for bounty hunting? [Default: \b missing ]
 	}
@@ -92,7 +78,7 @@ namespace nSettings {
 	\brief Skill related settings
 	*/
 	namespace Skills {
-		bool canStealthOnHorse();		//!< Can a character stealth on an horse? [Default: \b missing ]
+		bool canStealthOnHorse();		//!< Can a character stealth on an horse? [Default: false ]
 		uint16_t getStatDailyLimit();		//!< Maximum stat gain in a (real) day [Default: \b missing ]
 
 		uint16_t getLimitPlayerSparring();	//!< Defending player must have N skill points more than the attacker for the attacker to gain skill (in PvP only). [Default: 0]

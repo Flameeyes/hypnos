@@ -92,8 +92,6 @@ warnings/errors/issues.
     #define MSG_NOSIGNAL 0
 #endif
 
-#include <xercesc/parsers/XercesDOMParser.hpp>
-
 #include "typedefs.h"
 #include "constants.h"
 #include "console.h"

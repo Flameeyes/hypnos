@@ -12,7 +12,6 @@
 	of them are system-dependent, so are implemented in the archs.
 */
 
-#define USE_THREADS
 #include "common_libs.h"
 
 OSVersion g_OSVer = OSVER_UNKNOWN;
