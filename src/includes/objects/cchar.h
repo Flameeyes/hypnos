@@ -27,10 +27,6 @@
 #include "settings.h"
 #include "enums.h"
 
-#ifndef TIMEOUT
-#define TIMEOUT(X) /*(((X) <= uiCurrentTime) || overflow)*/ false
-#endif
-
 enum WanderMode {
 	WANDER_NOMOVE = 0,
 	WANDER_FOLLOW,

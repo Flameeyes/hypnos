@@ -37,7 +37,7 @@ class LogFile
 {
 private:
 	FILE *file;		//!< pointer to opened file
-	char *filename;		//!< name of the file
+	std::string filename;	//!< name of the file
 
 public:
 	LogFile(std::string name);

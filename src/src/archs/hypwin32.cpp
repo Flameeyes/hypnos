@@ -205,4 +205,12 @@ uint32_t getsysclock()
    return seconds ;
 }
 
+char *basename(char *path)
+{
+	char *ret= path+strlen(path);				// ret= end of string path
+
+	while( (*ret!='\\') && (*ret!='/') ) ret--;	// stop on the first '/' or '\' encountered
+	return ++ret;
+}
+
 #endif

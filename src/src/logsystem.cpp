@@ -9,8 +9,11 @@
 
 #include "logsystem.h"
 #include "inlines.h"
+#include "settings.h"
+#include "objects/cpc.h"
+#include "objects/cbody.h"
 
-#define MAXLINESIZE	200
+#include <stdarg.h>
 
 int32_t entries_e=0, entries_c=0, entries_w=0, entries_m=0;
 LogFile ServerLog("server.log");
@@ -27,14 +30,15 @@ void ErrOut(char *txt, ...);
 void WriteGMLog(pChar pc, char *msg, ...)
 {
 	va_list vargs;
-	char tmp[MAXLINESIZE];
+	char *tmp = NULL;
 
 	va_start(vargs, msg);
-		vsnprintf(tmp, sizeof(tmp)-1, msg, vargs);
+	vasprintf(&tmp, msg, vargs);
 	va_end(vargs);
 
-	LogFile gmlog("GM/%s.log", pc->getCurrentName().c_str());
-	gmlog.Write("%s", tmp);
+	LogFile gmlog("GM/%s.log", pc->getBody()->getCurrentName().c_str());
+	gmlog.Write(tmp);
+	free(tmp);
 }
 
 /*!
@@ -44,22 +48,21 @@ void WriteGMLog(pChar pc, char *msg, ...)
 */
 LogFile::LogFile(char *format, ...)
 {
-	char tmp[MAXLINESIZE], tmp2[MAXLINESIZE];
+	char *tmp = NULL, *tmp2 = NULL;
 	va_list vargs;
 
 	va_start(vargs, format);
-		vsnprintf(tmp2, sizeof(tmp2)-1, format, vargs);
+	vasprintf(&tmp2, format, vargs);
 	va_end(vargs);
 
 	// add path
-	strcpy(tmp, SrvParms->log_path);
-	strcat(tmp, tmp2);
+	asprintf(&tmp, "%s/%s", nSettings::Logging::getLogPath().c_str(), tmp2);
 
-	filename= new char[strlen(tmp)+1];
-	strcpy(filename, tmp);
+	filename = std::string(tmp);
 
-	file= fopen(tmp, "a");
+	file = fopen(tmp, "a");
 
+	free(tmp); free(tmp2);
 	if( file==NULL )
 	{
 		ErrOut("unable to open/create log file %s", tmp);
@@ -67,21 +70,15 @@ LogFile::LogFile(char *format, ...)
 	}
 }
 
-LogFile::LogFile(string name)
+LogFile::LogFile(std::string name)
 {
-	string tmp;
+	filename = nSettings::Logging::getLogPath() + name;
 
-	// add path
-	tmp= SrvParms->log_path + name;
-
-	filename= new char[tmp.size()+1];
-	strcpy(filename, tmp.c_str());
-
-	file= fopen(filename, "a");
+	file = fopen(filename.c_str(), "a");
 
 	if( file==NULL )
 	{
-		ErrOut("unable to open/create log file %s", tmp.c_str());
+		ErrOut("unable to open/create log file %s", filename.c_str());
 		return;
 	}
 }
@@ -93,7 +90,6 @@ LogFile::LogFile(string name)
 LogFile::~LogFile()
 {
 	if( file ) fclose(file);
-	if( filename ) safedelete(filename);
 }
 
 /*!
@@ -104,53 +100,50 @@ LogFile::~LogFile()
 */
 void LogFile::Write(char *format, ...)
 {
-	char tmp[MAXLINESIZE], tmp2[MAXLINESIZE];
+	if( file==NULL ) return;
+	
+	char *tmp = NULL;
 	va_list vargs;
 
-	if( file==NULL ) return;
 	va_start(vargs, format);
-		vsnprintf(tmp2, sizeof(tmp2)-1, format, vargs);
+	vasprintf(&tmp, format, vargs);
 	va_end(vargs);
 
-    time_t currtime= time(NULL);
-    struct tm* T= localtime(&currtime);
+	time_t currtime = time(NULL);
+	struct tm* T = localtime(&currtime);
 
-	sprintf(tmp, "[%02d/%02d/%04d %02d:%02d:%02d] %s", T->tm_mday, T->tm_mon+1, T->tm_year+1900,
-		T->tm_hour, T->tm_min, T->tm_sec, tmp2);
-
-	if( fwrite(tmp, strlen(tmp), 1, file)==0 )
+	if ( fprintf(file, "[%02d/%02d/%04d %02d:%02d:%02d] %s", T->tm_mday, T->tm_mon+1, T->tm_year+1900,
+		T->tm_hour, T->tm_min, T->tm_sec, tmp) == 0 )
 	{
-		ErrOut("Unable to write to log file %s", filename);
+		ErrOut("Unable to write to log file %s", filename.c_str());
 	}
+	free(tmp);
 }
 
-void LogFile::Write(string str)
+void LogFile::Write(std::string str)
 {
-	char tmp[MAXLINESIZE];
-
 	if( file==NULL ) return;
 
-    time_t currtime= time(NULL);
-    struct tm* T= localtime(&currtime);
+	time_t currtime= time(NULL);
+	struct tm* T= localtime(&currtime);
 
-	sprintf(tmp, "[%02d/%02d/%04d %02d:%02d:%02d] %s", T->tm_mday, T->tm_mon+1, T->tm_year+1900,
-		T->tm_hour, T->tm_min, T->tm_sec, str.c_str());
-
-	if( fwrite(tmp, strlen(tmp), 1, file)==0 )
+	if ( fprintf(file, "[%02d/%02d/%04d %02d:%02d:%02d] %s", T->tm_mday, T->tm_mon+1, T->tm_year+1900,
+		T->tm_hour, T->tm_min, T->tm_sec, str.c_str()) == 0 )
 	{
-		ErrOut("Unable to write to log file %s", filename);
+		ErrOut("Unable to write to log file %s", filename.c_str());
 	}
 }
 
-string SpeechLogFile::MakeFilename(pChar pc)
+std::string SpeechLogFile::MakeFilename(pChar pc)
 {
-	char tmp[MAXLINESIZE];
-
 	if( !pc ) return "bad npc";
+	
+	char *tmp;
 
-	sprintf(tmp, "speech/speech_[%d][%d][%s].txt", pc->account, pc->getSerial(), pc->getCurrentName().c_str());
-	string str(tmp);
+	asprintf(&tmp, "speech/speech_[%d][%d][%s].txt", pc->account, pc->getSerial(), pc->getBody()->getCurrentName().c_str());
+	std::string str(tmp);
 
+	free(tmp);
 	return str;
 }
 
@@ -162,47 +155,36 @@ string SpeechLogFile::MakeFilename(pChar pc)
 \since 0.82a
 \param pc character pointer
 */
-SpeechLogFile::SpeechLogFile(cChar *pc) : LogFile(MakeFilename(pc))
+SpeechLogFile::SpeechLogFile(pChar pc) : LogFile(MakeFilename(pc))
 {
 
 }
 
-char CurrentFile[100];
+std::string CurrentFile;
+
 int CurrentLine;
 char LogType= 'M';
 
-#ifdef WIN32
-	char *basename(char *path)
-	{
-		char *ret= path+strlen(path);				// ret= end of string path
-
-		while( (*ret!='\\') && (*ret!='/') ) ret--;	// stop on the first '/' or '\' encountered
-		return ++ret;
-	}
-#endif
-
 void prepareLogs(char type, char *fpath, int lnum)
 {
-	fpath= basename(fpath);
-	strncpy(CurrentFile, fpath, sizeof(CurrentFile)-1);
-	CurrentFile[sizeof(CurrentFile)-1]= 0;
+	CurrentFile = std::string(basename(fpath));
 	CurrentLine= lnum;
 	LogType= type;
 }
 
-/********************************************************
- *                                                      *
- *  Function to be called when a string is ready to be  *
- *    written to the log.  Insert access to your log in *
- *    this function.                                    *
- *                                                      *
- *  Rewritten/Improved/touched by LB 30-July 2000       *
- ********************************************************/
+/*!
+\brief Function to be called when a string is ready to be written to the log.
+\author LB
+
+Insert access to your log in this function.
+\todo Need to get the right ip from the server
+*/
 static void MessageReady(char *OutputMessage)
 {
 	char file_name[256];
 	char b1[16],b2[16],b3[16],b4[16];
-	unsigned long int ip=inet_addr(serv[0][1]);
+//	unsigned long int ip=inet_addr(serv[0][1]);
+	uint32_t ip = 0;
 	char i1,i2,i3,i4;
 
 	i1=(char) (ip>>24);
@@ -239,9 +221,9 @@ static void MessageReady(char *OutputMessage)
 
 	}
 
-    if ( (entries_e==1 && LogType=='E') || (entries_w==1 && LogType=='W') || (entries_m==1 && LogType=='M'))
+	if ( (entries_e==1 && LogType=='E') || (entries_w==1 && LogType=='W') || (entries_m==1 && LogType=='M'))
 	{
-	   logerr.Write("\nRunning PyUO Version: %s\n\n",VERNUMB);
+		logerr.Write("\nRunning PyUO Version: %s\n\n",VERNUMB);
 	}
 
 	logerr.Write("%s", OutputMessage);
@@ -254,26 +236,25 @@ static void MessageReady(char *OutputMessage)
  ********************************************************/
 void LogMessageF(char *Message, ...)
 {
-	char fullMessage[512];
-	char fullMessage2[512];
+	char *fullMessage = NULL, *fullMessage2 = NULL;
 	va_list argptr;
 
 	va_start(argptr, Message);
-	vsnprintf(fullMessage, sizeof(fullMessage)-1, Message, argptr);
+	vasprintf(&fullMessage, Message, argptr);
 	va_end(argptr);
 
 	switch( LogType )
 	{
-//	case 'M': InfoOut("%s\n", fullMessage); break;
+//		case 'M': InfoOut("%s\n", fullMessage); break;
 		case 'W': WarnOut("%s\n",fullMessage); break;
 		case 'E': ErrOut("%s\n",fullMessage); break;
 		case 'C': PanicOut("%s\n",fullMessage); break;
 	}
 
 	if( LogType != 'M' )
-		sprintf(fullMessage2, "[%s:%d] %s\n", CurrentFile, CurrentLine, fullMessage);
+		asprintf(&fullMessage2, "[%s:%d] %s\n", CurrentFile.c_str(), CurrentLine, fullMessage);
 	else
-		sprintf(fullMessage2, "%s\n", fullMessage);
+		asprintf(&fullMessage2, "%s\n", fullMessage);
 
 	MessageReady(fullMessage2);
 }

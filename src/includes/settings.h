@@ -106,6 +106,11 @@ namespace nSettings {
 			uint16_t getStealFameLoss();	//!< How much fame is lost stealing? [Default: \b missing ]
 		//@}
 	}
+	
+	//! Log system settings
+	namespace Logging {
+		std::string getLogPath();		//!< Gets the absolute path of the logs directory
+	}
 };
 
 #endif

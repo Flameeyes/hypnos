@@ -15,7 +15,6 @@
 
 #include "basics.h"
 
-#define TIMEOUT(X) (((X) <= uiCurrentTime) || overflow)
 // Macros & Templates by Xan :
 
 template<typename T> inline T qmax(T a, T b) { return a > b ? a : b; }

@@ -171,4 +171,7 @@ int startTThread( TTHREAD ( *funk )( void * ), void* param = NULL );
 #endif
 
 typedef int FAR socklen_t ;
+
+char *basename(char *path)
+
 #endif

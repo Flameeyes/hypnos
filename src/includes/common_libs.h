@@ -106,6 +106,9 @@ warnings/errors/issues.
 	#include "archs/pywin32.h"
 #endif
 
+//#define TIMEOUT(X) (((X) <= uiCurrentTime) || overflow)
+#define TIMEOUT(X) false
+
 extern char* getOSVersionString();
 enum OSVersion { OSVER_UNKNOWN, OSVER_WIN9X, OSVER_WINNT, OSVER_NONWINDOWS };
 extern OSVersion getOSVersion();
