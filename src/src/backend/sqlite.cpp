@@ -6,7 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "includes/backend/sqlite.h"
+#include "logsystem.h"
+#include "backend/sqlite.h"
 
 cSQLite *globalDB;
 
@@ -43,7 +44,7 @@ cSQLite::cSQLite(std::string filename)
 	}
 }
 
-cSQLite::÷cSQLite()
+cSQLite::~cSQLite()
 {
 	if ( litedb )
 		sqlite_close(litedb);
@@ -121,7 +122,7 @@ cSQLite::cSQLiteQuery::cSQLiteQuery(sqlite_vm *nvm)
 \brief Destructor for cSQLiteQuery class
 \note This function finalize the supplied vm
 */
-cSQLite::cSQLiteQuery::÷cSQLiteQuery()
+cSQLite::cSQLiteQuery::~cSQLiteQuery()
 {
 	char *errmsg;
 	int ret = sqlite_finalize(vm, &errmsg);

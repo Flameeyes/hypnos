@@ -107,7 +107,7 @@ enum Skill {
 	skForensics, skHerding, skHiding, skProvocation, skInscription, skLockPicking, skMagery,
 	skMagicResistance, skTactics, skSnooping, skMusicianship, skPoisoning, skArchery, skSpiritSpeak,
 	skStealing, skTailoring, skTaming, skTasteID, skTinkering, skTracking, skVeterinary, skSwordsmanship,
-	skMacefighting, skFencing, skWrestling, skLumberjacking, skMining, skMeditation, skStealth
+	skMacefighting, skFencing, skWrestling, skLumberjacking, skMining, skMeditation, skStealth,
 	skRemoveTraps, skTrueSkills
 };
 
@@ -186,8 +186,8 @@ enum {	ITEM_TYPE_CHOICES = 6,
 	static const uint16_t MAXGUILDRECRUITS = 30;
 	static const uint16_t MAXGUILDWARS = 10;
 	static const uint16_t MAXMEMRECWAR = 30; //!< max of max guildmembers, max recruits and max war
-	static const char[] DEFAULTCHARTER = "Guildstone";
-	static const char[] DEFAULTWEBPAGE = "";
+	static const char DEFAULTCHARTER[] = "Guildstone";
+	static const char DEFAULTWEBPAGE[] = "";
 //@}
 
 /*!
