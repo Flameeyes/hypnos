@@ -20039,7 +20039,7 @@ if test "$is_icc" == "yes"; then
 else
 	WARNS="-Wno-reorder -Wno-switch-enum "
 	CXXFLAGS="$CXXFLAGS -fno-implicit-templates"
-	CPPLIB="-lstdc++'
+	CPPLIB="-lstdc++"
 fi
 
 
