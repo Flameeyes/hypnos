@@ -665,7 +665,7 @@ void cBoat::TurnShip( uint8_t size, int32_t dir, P_ITEM pPort, P_ITEM pStarboard
 }
 
 
-LOGICAL cBoat::Speech(P_CHAR pc, NXWSOCKET socket, std::string &talk)//See if they said a command.
+bool cBoat::Speech(P_CHAR pc, NXWSOCKET socket, std::string &talk)//See if they said a command.
 {
 	/*
 		pc & socket validation done in talking()
@@ -812,7 +812,7 @@ LOGICAL cBoat::Speech(P_CHAR pc, NXWSOCKET socket, std::string &talk)//See if th
 // Called form		 : cBoat:good_position()
 
 
-LOGICAL cBoat::tile_check(multi_st multi,P_ITEM pBoat,map_st map,int x, int y,int dir)
+bool cBoat::tile_check(multi_st multi,P_ITEM pBoat,map_st map,int x, int y,int dir)
 {
 	int dx,dy;
 	switch(dir)
@@ -868,10 +868,10 @@ LOGICAL cBoat::tile_check(multi_st multi,P_ITEM pBoat,map_st map,int x, int y,in
 // Changes           : none yet
 // Called form		 : cBoat:build()
 
-LOGICAL cBoat::good_position(P_ITEM pBoat, Location where, int dir)
+bool cBoat::good_position(P_ITEM pBoat, Location where, int dir)
 {
 	uint32_t x= where.x, y= where.y, i;
-	LOGICAL good_pos=false;
+	bool good_pos=false;
 
 	multiVector m;
 	data::seekMulti( pBoat->getId()-0x4000, m );
@@ -938,7 +938,7 @@ LOGICAL cBoat::good_position(P_ITEM pBoat, Location where, int dir)
 // Author            : Elcabesa
 // Changes           : none yet
 // Called form	     : buildhouse()
-LOGICAL cBoat::Build(NXWSOCKET  s, P_ITEM pBoat, char id2)
+bool cBoat::Build(NXWSOCKET  s, P_ITEM pBoat, char id2)
 {
 	if ( s < 0 || s >= now )
 		return false;
@@ -1097,7 +1097,7 @@ LOGICAL cBoat::Build(NXWSOCKET  s, P_ITEM pBoat, char id2)
 // Description       : handle if at these coord there is another boat
 // Return type       : bool TRUE boat collision,FALSE not obat collision
 // Author            : Elcabesa
-LOGICAL cBoat::collision(P_ITEM pi,Location where,int dir)
+bool cBoat::collision(P_ITEM pi,Location where,int dir)
 {
 	int x= where.x, y= where.y;
 	std::map<int,boat_db>::iterator iter_boat;
@@ -1131,7 +1131,7 @@ LOGICAL cBoat::collision(P_ITEM pi,Location where,int dir)
 // Called from		 : cBoat:collision()
 
 
-LOGICAL cBoat::boat_collision(P_ITEM pBoat1,int x1, int y1,int dir,P_ITEM pBoat2)
+bool cBoat::boat_collision(P_ITEM pBoat1,int x1, int y1,int dir,P_ITEM pBoat2)
 {
 	uint32_t i1, i2;
 	int x,y;
@@ -1260,7 +1260,7 @@ void cBoat::Move(NXWSOCKET  s, int dir, P_ITEM pBoat)
 // Author            : Elcabesa
 // Changes           : none yet
 
-void cBoat::iMove(NXWSOCKET  s, int dir, P_ITEM pBoat, LOGICAL forced)
+void cBoat::iMove(NXWSOCKET  s, int dir, P_ITEM pBoat, bool forced)
 {
 	int tx=0,ty=0;
 	int serial;

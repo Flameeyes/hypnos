@@ -19,8 +19,8 @@
 #include "inlines.h"
 #include "nxw_utils.h"
 
-LOGICAL statics_cache = false;
-LOGICAL map_cache = false;
+bool statics_cache = false;
+bool map_cache = false;
 
 uint16_t map_width = 768;
 uint16_t map_height = 512;
@@ -430,7 +430,7 @@ std::string getPath( MulFileId id )
 /*!
 \author Luxor
 */
-LOGICAL seekMap( uint32_t x, uint32_t y, map_st& m, uint8_t nMap )
+bool seekMap( uint32_t x, uint32_t y, map_st& m, uint8_t nMap )
 {
 	if ( nMap >= maps.size() )
 		return false;
@@ -453,7 +453,7 @@ LOGICAL seekMap( uint32_t x, uint32_t y, map_st& m, uint8_t nMap )
 /*!
 \author Luxor
 */
-LOGICAL collectStatics( uint32_t x, uint32_t y, staticVector& s_vec )
+bool collectStatics( uint32_t x, uint32_t y, staticVector& s_vec )
 {
 	if ( !staticIdx->isReady() || !statics->isReady() )
 		return false;
@@ -485,7 +485,7 @@ LOGICAL collectStatics( uint32_t x, uint32_t y, staticVector& s_vec )
 /*!
 \author Luxor
 */
-LOGICAL seekLand( uint16_t id, land_st& land )
+bool seekLand( uint16_t id, land_st& land )
 {
 	if ( !tdLand->isCached() && seekVerLand( id, land ) )
 		return true;
@@ -505,7 +505,7 @@ LOGICAL seekLand( uint16_t id, land_st& land )
 /*!
 \author Luxor
 */
-LOGICAL seekTile( uint16_t id, tile_st& tile )
+bool seekTile( uint16_t id, tile_st& tile )
 {
 	if ( !tdTile->isCached() && seekVerTile( id, tile ) )
 		return true;
@@ -527,7 +527,7 @@ LOGICAL seekTile( uint16_t id, tile_st& tile )
 /*!
 \author Luxor
 */
-LOGICAL seekMulti( uint16_t id, multiVector& m_vec )
+bool seekMulti( uint16_t id, multiVector& m_vec )
 {
 	if ( !multiIdx->isReady() || !multi->isReady() )
 		return false;
@@ -551,7 +551,7 @@ LOGICAL seekMulti( uint16_t id, multiVector& m_vec )
 /*!
 \author Luxor
 */
-LOGICAL seekVerTile( uint16_t id, tile_st& tile )
+bool seekVerTile( uint16_t id, tile_st& tile )
 {
 	if ( !verIdx->isReady() || !verTile->isReady() )
 		return false;
@@ -579,7 +579,7 @@ LOGICAL seekVerTile( uint16_t id, tile_st& tile )
 /*!
 \author Luxor
 */
-LOGICAL seekVerLand( uint16_t id, land_st& land )
+bool seekVerLand( uint16_t id, land_st& land )
 {
 	if ( !verIdx->isReady() || !verLand->isReady() )
 		return false;
@@ -643,7 +643,7 @@ cMULFile<T>::cMULFile( std::string path, std::string mode )
 \author Luxor
 */
 template <typename T>
-LOGICAL cMULFile<T>::getData( uint32_t index, T& data )
+bool cMULFile<T>::getData( uint32_t index, T& data )
 {
 	if ( !isReady() )
 		return false;
@@ -664,7 +664,7 @@ LOGICAL cMULFile<T>::getData( uint32_t index, T& data )
 \author Luxor
 */
 template <typename T>
-LOGICAL cMULFile<T>::getData( uint32_t index, BYTE* ptr, uint32_t size )
+bool cMULFile<T>::getData( uint32_t index, BYTE* ptr, uint32_t size )
 {
 	if ( !isReady() )
 		return false;
@@ -687,7 +687,7 @@ void cMULFile<T>::setCache( typename std::map< uint32_t, T > *cache )
 \author Luxor
 */
 template <typename T>
-LOGICAL cMULFile<T>::eof()
+bool cMULFile<T>::eof()
 {
 	if ( m_file == NULL )
 		return true;

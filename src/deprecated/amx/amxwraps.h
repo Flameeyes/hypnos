@@ -286,7 +286,7 @@ const char*	getCharStrProperty(P_CHAR pc, int property, int prop2);
 wstring&		getCharUniProperty( P_CHAR pc, int property, int prop2 );
 
 void	setCharIntProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, int value );
-void	setCharBoolProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, LOGICAL value );
+void	setCharBoolProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, bool value );
 void	setCharShortProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, short value );
 void	setCharCharProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, char value );
 void	setCharStrProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, char* value );

@@ -3667,7 +3667,7 @@ NATIVE(_chr_addLocalStrVar)
 	amx_GetAddr(amx,params[3],&cstr);
 	printstring(amx,cstr,params+4,(int)(params[0]/sizeof(cell))-1);
 	g_cAmxPrintBuffer[g_nAmxPrintPtr] = '\0';
-	LOGICAL success = amxVS.insertVariable( pc->getSerial32(), params[2], g_cAmxPrintBuffer );
+	bool success = amxVS.insertVariable( pc->getSerial32(), params[2], g_cAmxPrintBuffer );
 	g_nAmxPrintPtr=0;
 	g_cAmxPrintBuffer[0] = '\0';
 	return success;
@@ -3746,7 +3746,7 @@ NATIVE(_chr_setLocalStrVar)
 	amx_GetAddr(amx,params[3],&cstr);
 	printstring(amx,cstr,params+4,(int)(params[0]/sizeof(cell))-1);
 	g_cAmxPrintBuffer[g_nAmxPrintPtr] = '\0';
-	LOGICAL success = amxVS.updateVariable( pc->getSerial32(), params[2], g_cAmxPrintBuffer );
+	bool success = amxVS.updateVariable( pc->getSerial32(), params[2], g_cAmxPrintBuffer );
 	g_nAmxPrintPtr=0;
 	g_cAmxPrintBuffer[0] = '\0';
 	return success;
@@ -3863,7 +3863,7 @@ NATIVE(_itm_addLocalStrVar)
 	amx_GetAddr(amx,params[3],&cstr);
 	printstring(amx,cstr,params+4,(int)(params[0]/sizeof(cell))-1);
 	g_cAmxPrintBuffer[g_nAmxPrintPtr] = '\0';
-	LOGICAL success = amxVS.insertVariable( pi->getSerial32(), params[2], g_cAmxPrintBuffer );
+	bool success = amxVS.insertVariable( pi->getSerial32(), params[2], g_cAmxPrintBuffer );
 	g_nAmxPrintPtr=0;
 	g_cAmxPrintBuffer[0] = '\0';
 	return success;
@@ -3913,7 +3913,7 @@ NATIVE(_itm_setLocalStrVar)
 	amx_GetAddr(amx,params[3],&cstr);
 	printstring(amx,cstr,params+4,(int)(params[0]/sizeof(cell))-1);
 	g_cAmxPrintBuffer[g_nAmxPrintPtr] = '\0';
-	LOGICAL success = amxVS.updateVariable( pi->getSerial32(), params[2], g_cAmxPrintBuffer );
+	bool success = amxVS.updateVariable( pi->getSerial32(), params[2], g_cAmxPrintBuffer );
 	g_nAmxPrintPtr=0;
 	g_cAmxPrintBuffer[0] = '\0';
 	return success;

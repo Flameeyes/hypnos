@@ -39,8 +39,8 @@ private:
 };
 
 int8_t isWalkable( Location pos, uint8_t flags = WALKFLAG_ALL, P_CHAR pc = NULL );
-LOGICAL lineOfSight( Location pos1, Location pos2 );
-LOGICAL canNpcWalkHere( Location pos );
+bool lineOfSight( Location pos1, Location pos2 );
+bool canNpcWalkHere( Location pos );
 int8_t staticTop( Location pos );
 int8_t tileHeight( uint16_t id );
 int8_t mapElevation( uint32_t x, uint32_t y );

@@ -122,7 +122,7 @@ void cPath::exec()
 			heuristic = 0;
                         Location parent = currNode->parentNode->pos;
                         Location next = nextNode->pos;
-                        LOGICAL bOk = false;
+                        bool bOk = false;
 
 			if ( abs( int16_t(parent.x - next.x) ) + abs( int16_t(parent.y - next.y) ) == 1 )
 				heuristic = STRAIGHT_COST;
@@ -169,7 +169,7 @@ uint8_t cPath::addReachableNodes( path_node* node )
 {
 	P_CHAR pc = pointers::findCharBySerial( pc_serial );
 
-	LOGICAL bWalkable[ 4 ];
+	bool bWalkable[ 4 ];
 
 	uint8_t num = 0;
 	int8_t zAdd = 0;
@@ -327,7 +327,7 @@ Location cPath::getNextPos()
 /*!
 \author Luxor
 */
-LOGICAL cPath::targetReached()
+bool cPath::targetReached()
 {
 	return path_list.empty();
 }

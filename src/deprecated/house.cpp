@@ -34,7 +34,7 @@
 
 std::map< SERIAL, P_CHAR > houses;
 
-LOGICAL CheckBuildSite(int x, int y, int z, int sx, int sy);
+bool CheckBuildSite(int x, int y, int z, int sx, int sy);
 
 /*!
 \todo take a look to initialization, we could initialize the vector with the variables
@@ -877,7 +877,7 @@ int del_hlist(int c, int h)
 	return(hl);
 }
 
-LOGICAL house_speech( P_CHAR pc, NXWSOCKET socket, std::string &talk)
+bool house_speech( P_CHAR pc, NXWSOCKET socket, std::string &talk)
 {
 	//
 	// NOTE: Socket and pc checking allready done in talking()
@@ -960,7 +960,7 @@ LOGICAL house_speech( P_CHAR pc, NXWSOCKET socket, std::string &talk)
 }
 
 
-LOGICAL CheckBuildSite(int x, int y, int z, int sx, int sy)
+bool CheckBuildSite(int x, int y, int z, int sx, int sy)
 {
 	signed int checkz;
 	//char statc;

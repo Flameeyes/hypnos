@@ -33,7 +33,7 @@ namespace item
 
 	void		GetScriptItemSetting(P_ITEM pi); // by Magius(CHE)
 
-	P_ITEM		CreateScriptItem(NXWSOCKET s, int32_t itemnum, LOGICAL nSpawned, cObject* cont=NULL );
+	P_ITEM		CreateScriptItem(NXWSOCKET s, int32_t itemnum, bool nSpawned, cObject* cont=NULL );
 
 	void		AddRespawnItem(int s, int x, int y);
 	P_ITEM		SpawnRandomItem(NXWSOCKET s, char* cList, char* cItemID);

@@ -21,7 +21,7 @@
 namespace Books
 {
 	std::map<uint32_t, cBook> books;
-	LOGICAL shouldsave = false;
+	bool shouldsave = false;
 
 	/*!
 	\author Akron

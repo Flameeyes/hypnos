@@ -118,7 +118,7 @@ SERIAL cMenus::removeMenu( SERIAL menu, P_CHAR pc )
 	return INVALID;
 }
 
-LOGICAL cMenus::handleMenu( NXWCLIENT ps )
+bool cMenus::handleMenu( NXWCLIENT ps )
 {
 
 	if( ps==NULL )

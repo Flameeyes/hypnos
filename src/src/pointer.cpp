@@ -252,7 +252,7 @@ namespace pointers {
 	PCHAR_VECTOR* getNearbyChars( P_OBJECT pObject, int32_t range, uint32_t flags )
 	{
 		PCHAR_VECTOR* 	pvCharsInRange	= 0;
-		LOGICAL		validCall	= false;
+		bool		validCall	= false;
 		P_CHAR		pSelf		= 0;
 
 		if( pObject != 0 )
@@ -372,7 +372,7 @@ namespace pointers {
 	PITEM_VECTOR* getNearbyItems( cObject* pObject, uint32_t range, uint32_t flags )
 	{
 		PITEM_VECTOR* 	pvItemsInRange	= 0;
-		LOGICAL		validCall	= false;
+		bool		validCall	= false;
 		P_ITEM		pSelf		= 0;
 
 		if( pObject != 0 )
@@ -970,7 +970,7 @@ namespace pointers {
 	\param bAddAmounts if true we want to add the amount of the items to the return value
 	\param recurseSubpack if true we search also in subpack
 	*/
-	uint32_t containerCountItems(SERIAL serial, short id, short color, LOGICAL bAddAmounts, LOGICAL recurseSubpack)
+	uint32_t containerCountItems(SERIAL serial, short id, short color, bool bAddAmounts, LOGICAL recurseSubpack)
 	{
 
 		std::map< SERIAL , vector<P_ITEM> >::iterator cont( pointers::pContMap.find( serial ) );
@@ -1004,7 +1004,7 @@ namespace pointers {
 	\param scriptID the scriptID which we're searching for
 	\param bAddAmounts if true we want to add the amount of the items to the return value
 	*/
-	uint32_t containerCountItemsByID(SERIAL serial, uint32_t scriptID, LOGICAL bAddAmounts)
+	uint32_t containerCountItemsByID(SERIAL serial, uint32_t scriptID, bool bAddAmounts)
 	{
 		std::map< SERIAL , vector<P_ITEM> >::iterator cont( pointers::pContMap.find( serial ) );
 		if( cont==pointers::pContMap.end() || cont->second.empty() )

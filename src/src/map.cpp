@@ -230,7 +230,7 @@ int8_t isWalkable( Location pos, uint8_t flags, P_CHAR pc )
 \brief Tells if the line of sight between two locations is not interrupted
 \return True if the line of sight is clean, false if not
 */
-LOGICAL lineOfSight( Location A, Location B )
+bool lineOfSight( Location A, Location B )
 {
 	cLine line( A, B );
 
@@ -253,7 +253,7 @@ LOGICAL lineOfSight( Location A, Location B )
 \brief Tells if an npc can move in the given position
 \todo Implement special features based on the npc (fire elemental should walk on lava passages etc...)
 */
-LOGICAL canNpcWalkHere( Location pos )
+bool canNpcWalkHere( Location pos )
 {
 	return ( isWalkable( pos ) != illegal_z );
 }

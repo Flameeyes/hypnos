@@ -651,7 +651,7 @@ void setabovelight(uint8_t lightchar)
 \note thanks goes to Balxan / UOAM for the basic alogithm
 	  could be optimized a lot, but the freuqency of being called is probably very low
 */
-void getSextantCoords(int32_t x, int32_t y, LOGICAL t2a, char *sextant)
+void getSextantCoords(int32_t x, int32_t y, bool t2a, char *sextant)
 {
    double Tx, Ty, Dx, Dy, Cx, Cy, Wx, Wy, Mx, My, Hx, Hy;
    signed int xH, xM, yH, yM;

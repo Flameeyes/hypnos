@@ -149,10 +149,9 @@ struct advance_st
 };
 
 /*!
-\todo rename to sGMPage
 \todo Use std::string instead of c-strings
 */
-struct gmpage_st
+struct sGMPage
 {
 	TEXT reason[80];
 	Serial serial;

@@ -66,7 +66,7 @@ void cPoll::setPollOption( const uint32_t option, const std::string &optionText 
 	pollOptions[ option ] = optionText;
 }
 
-LOGICAL cPoll::castVote( const SERIAL voterSerial, const uint32_t option )
+bool cPoll::castVote( const SERIAL voterSerial, const uint32_t option )
 {
 	if( pollVoters.find( voterSerial ) != pollVoters.end() )
 	{

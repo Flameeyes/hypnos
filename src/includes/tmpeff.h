@@ -26,8 +26,8 @@ enum {
 };
 
 bool	add(P_OBJECT src, P_OBJECT dest, int num, unsigned char more1 = 0, unsigned char more2 = 0, unsigned char more3 = 0,short dur=INVALID, int amxcback = INVALID);
-LOGICAL	isSrcRepeatable(int num);
-LOGICAL	isDestRepeatable(int num);
+bool	isSrcRepeatable(int num);
+bool	isDestRepeatable(int num);
 void	addTempfxCheck( SERIAL serial );
 
 	
@@ -47,9 +47,9 @@ private:
 	int32_t m_nMore1;
 	int32_t m_nMore2;
 	int32_t m_nMore3;
-	LOGICAL m_bDispellable;
-	LOGICAL m_bSrcRepeatable;
-	LOGICAL m_bDestRepeatable;
+	bool m_bDispellable;
+	bool m_bSrcRepeatable;
+	bool m_bDestRepeatable;
 public:
 	cTempfx( SERIAL nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t more1, int32_t more2, int32_t more3, int32_t amxcback );
 	int getExpireTime() { return m_nExpireTime; }

@@ -116,7 +116,7 @@ namespace Books
 
 			uint32_t GetIndex() const				//!< gets the book index
 				{ return index; }
-			inline LOGICAL IsReadOnly() const		//!< return true if books is readonly
+			inline bool IsReadOnly() const		//!< return true if books is readonly
 				{ return readonly; }
 			inline void GetPages(tpages &pags) const	//!< return the pages of the book
 				{ pags = pages; }
@@ -128,7 +128,7 @@ namespace Books
 				{ return pages.size(); }
 
 		private:
-			LOGICAL readonly;				//!< if the book is loaded from script it must be true
+			bool readonly;				//!< if the book is loaded from script it must be true
 			std::string author;				//!< author of the book
 			std::string title;				//!< title of the book
 			tpages pages;					//!< pages of the book

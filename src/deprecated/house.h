@@ -22,7 +22,7 @@ int 	check_house_decay();
 void 	deedhouse(NXWSOCKET  s, P_ITEM pi);
 int 	del_hlist(int c, int h);
 int		on_hlist(P_ITEM pi, unsigned char s1, unsigned char s2, unsigned char s3, unsigned char s4, int *li);
-LOGICAL house_speech( P_CHAR pc, NXWSOCKET socket, std::string &talk);
+bool house_speech( P_CHAR pc, NXWSOCKET socket, std::string &talk);
 void 	killkeys(SERIAL serial);
 void 	mtarget(int s, int a1, int a2, int a3, int a4, char b1, char b2, char *txt);
 

@@ -199,7 +199,7 @@ void cGameDate::fromString( const std::string& arg )
 
 void cGameDate::fromString( const std::string& arg, eDateFormat format )
 {
-	LOGICAL success = false;
+	bool success = false;
 
 	if( !arg.empty() )
 	{

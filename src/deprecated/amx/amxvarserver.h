@@ -31,7 +31,7 @@ typedef enum
 {
 	AMXVARSRV_UNDEFINED		= 0,
 	AMXVARSRV_INTEGER		= 1,
-	AMXVARSRV_LOGICAL		= 2,
+	AMXVARSRV_bool		= 2,
 	AMXVARSRV_STRING		= 3,
 	AMXVARSRV_INTEGERVECTOR	= 4,
 	AMXVARSRV_SCRIPTID		= 5
@@ -114,12 +114,12 @@ class amxVariableServer
 	private:
 		amxObjectVariableMap		varMap;
 		int32_t				error;
-		LOGICAL				mode;
+		bool				mode;
 	public:
 						amxVariableServer();
 						~amxVariableServer();
-		LOGICAL				inUserMode();
-		LOGICAL				inServerMode();
+		bool				inUserMode();
+		bool				inServerMode();
 		void				setUserMode();
 		void				setServerMode();
 		int32_t				getError();
@@ -129,32 +129,32 @@ class amxVariableServer
 		//
 		//	Integer variable
 		//
-		LOGICAL				insertVariable( const SERIAL serial, const int32_t variable, const int32_t value );
-		LOGICAL				updateVariable( const SERIAL serial, const int32_t variable, const int32_t value );
-		LOGICAL				selectVariable( const SERIAL serial, const int32_t variable, int32_t& value );
+		bool				insertVariable( const SERIAL serial, const int32_t variable, const int32_t value );
+		bool				updateVariable( const SERIAL serial, const int32_t variable, const int32_t value );
+		bool				selectVariable( const SERIAL serial, const int32_t variable, int32_t& value );
 		//
 		//	String variable
 		//
-		LOGICAL				insertVariable( const SERIAL serial, const int32_t variable, const std::string& value );
-		LOGICAL				updateVariable( const SERIAL serial, const int32_t variable, const std::string& value );
-		LOGICAL				selectVariable( const SERIAL serial, const int32_t variable, std::string& value );
+		bool				insertVariable( const SERIAL serial, const int32_t variable, const std::string& value );
+		bool				updateVariable( const SERIAL serial, const int32_t variable, const std::string& value );
+		bool				selectVariable( const SERIAL serial, const int32_t variable, std::string& value );
 		//
 		//	Integer vectors
 		//
-		LOGICAL 			insertVariable( const SERIAL serial, const int32_t variable, const int32_t size, const int32_t value );
-		LOGICAL				updateVariable( const SERIAL serial, const int32_t variable, const int32_t index, const int32_t value );
-		LOGICAL				selectVariable( const SERIAL serial, const int32_t variable, const int32_t index, int32_t& value );
+		bool 			insertVariable( const SERIAL serial, const int32_t variable, const int32_t size, const int32_t value );
+		bool				updateVariable( const SERIAL serial, const int32_t variable, const int32_t index, const int32_t value );
+		bool				selectVariable( const SERIAL serial, const int32_t variable, const int32_t index, int32_t& value );
 		//
 		//	Type aspecific methods
 		//
-		LOGICAL				deleteVariable( const SERIAL serial );
-		LOGICAL				deleteVariable( const SERIAL serial, const int32_t variable );
-		LOGICAL				existsVariable( const SERIAL serial, const int32_t variable, const int32_t type );
+		bool				deleteVariable( const SERIAL serial );
+		bool				deleteVariable( const SERIAL serial, const int32_t variable );
+		bool				existsVariable( const SERIAL serial, const int32_t variable, const int32_t type );
 		int32_t				countVariable();
 		int32_t				countVariable( const SERIAL serial );
 		int32_t				countVariable( const SERIAL serial, const SERIAL type );
-		LOGICAL				copyVariable( const SERIAL fromSerial, const SERIAL toSerial );
-		LOGICAL				moveVariable( const SERIAL fromSerial, const SERIAL toSerial );
+		bool				copyVariable( const SERIAL fromSerial, const SERIAL toSerial );
+		bool				moveVariable( const SERIAL fromSerial, const SERIAL toSerial );
 		void				saveVariable( const SERIAL serial, FILE * stream );
 		int32_t				size( const SERIAL serial, const int32_t variable, const int32_t index = -1 );
 };

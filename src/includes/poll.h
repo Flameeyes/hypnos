@@ -49,7 +49,7 @@ class cPoll
 	private:
 		mPollVoter	pollVoters;
 	public:
-		LOGICAL		castVote( const SERIAL voterSerial, const uint32_t option );
+		bool		castVote( const SERIAL voterSerial, const uint32_t option );
 };
 
 #endif

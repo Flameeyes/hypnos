@@ -886,7 +886,7 @@ void Skills::target_detectHidden( NXWCLIENT ps, P_TARGET t )
 	}
 
 	NxwCharWrapper sw;
-	LOGICAL bFound = false;
+	bool bFound = false;
 	P_CHAR pc_curr = NULL;
 	int32_t nDist = 0;
 	sw.fillCharsNearXYZ( location, nRange, true, true );

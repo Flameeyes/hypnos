@@ -50,7 +50,7 @@ namespace item
 		cScpIterator* 	iter = NULL;
 		int 		tmp;
 
-		LOGICAL 	finished = false;
+		bool 	finished = false;
 
 		sprintf(sect, "SECTION ITEM %i", itemnum);
 
@@ -452,7 +452,7 @@ namespace item
 	*/
 	static P_ITEM spawnItemByIdInternal(int nAmount, const char* cName, short id, short color)
 	{
-		LOGICAL pile=false;
+		bool pile=false;
 
 		tile_st tile;
 		data::seekTile(id, tile);
@@ -471,7 +471,7 @@ namespace item
 		return pi;
 	}
 
-	LOGICAL moreItemMemoryRequested = false;
+	bool moreItemMemoryRequested = false;
 
 	/*!
 	\brief adds an item from spawner or gm 'ADDITEM command
@@ -481,7 +481,7 @@ namespace item
 	\param nSpawned is spawned?
 	\param cont container to add the item to
 	*/
-	P_ITEM CreateScriptItem(NXWSOCKET s, int32_t itemnum, LOGICAL nSpawned, cObject* cont )
+	P_ITEM CreateScriptItem(NXWSOCKET s, int32_t itemnum, bool nSpawned, cObject* cont )
 	{
 		P_ITEM pi= NULL;
 		pi = item::CreateFromScript( itemnum,cont);
@@ -551,9 +551,9 @@ namespace item
 	what fur said about the assert only partially applies to this version. Duke
 
 	*/
-	/*P_ITEM SpawnItem(NXWSOCKET  nSocket, int nAmount, char* cName, LOGICAL nStackable,
+	/*P_ITEM SpawnItem(NXWSOCKET  nSocket, int nAmount, char* cName, bool nStackable,
 						int16_t cItemId, int16_t cColorId,
-						LOGICAL nPack, LOGICAL nSend)
+						bool nPack, LOGICAL nSend)
 	{
 		if (nSocket < 0)
 		{
@@ -578,9 +578,9 @@ namespace item
 	\param nSend if true the item is sent to all clients
 */
 	/*P_ITEM SpawnItem(NXWSOCKET  nSocket, CHARACTER ch,
-						int32_t nAmount, char* cName, LOGICAL nStackable,
+						int32_t nAmount, char* cName, bool nStackable,
 						int16_t cItemId, int16_t cColorId,
-						LOGICAL nPack, LOGICAL nSend)
+						bool nPack, LOGICAL nSend)
 	{
 		P_ITEM pi= item::SpawnItem(ch, nAmount, cName, nStackable, cItemId, cColorId, nPack);
 		if (pi==NULL) return NULL;
@@ -605,7 +605,7 @@ namespace item
 		char script1[1024];
 		char script2[1024];
 		int tmp;
-		LOGICAL sectfound=false;
+		bool sectfound=false;
 		char buff[512];
 
 

@@ -65,8 +65,8 @@ namespace pointers {
 	P_ITEM findItemBySerPtr(unsigned char *p);
 	P_ITEM containerSearch(int serial, int *index);
 	P_ITEM containerSearchFor(const int serial, int *index, short id, short color);
-	uint32_t containerCountItems(SERIAL serial, short id, short color, LOGICAL bAddAmounts = true, LOGICAL recurseSubpack=true);
-	uint32_t containerCountItemsByID(SERIAL serial, uint32_t scriptID, LOGICAL bAddAmounts);
+	uint32_t containerCountItems(SERIAL serial, short id, short color, bool bAddAmounts = true, LOGICAL recurseSubpack=true);
+	uint32_t containerCountItemsByID(SERIAL serial, uint32_t scriptID, bool bAddAmounts);
 	P_CHAR stableSearch(int serial, int *index);
 #ifdef SPAR_LOCATION_MAP
 	//

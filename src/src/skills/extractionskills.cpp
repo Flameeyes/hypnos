@@ -152,7 +152,7 @@ void cResources::deleteBlock( Location location )
 
 
 
-static LOGICAL canMine( P_CHAR pc, P_ITEM weapon )
+static bool canMine( P_CHAR pc, P_ITEM weapon )
 {
 
 	VALIDATEPCR(pc,false);
@@ -204,8 +204,8 @@ void Skills::target_mine( NXWCLIENT ps, P_TARGET t )
 	if ( pc->hidden )
 		pc->unHide();
 
-	LOGICAL floor = false;
-	LOGICAL mountain= false;
+	bool floor = false;
+	bool mountain= false;
 
 	map_st map;
 	land_st land;

@@ -1122,9 +1122,9 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 }
 
 /*
-static LOGICAL respond( P_CHAR pc, NXWSOCKET socket, string &speech )
+static bool respond( P_CHAR pc, NXWSOCKET socket, string &speech )
 {
-	LOGICAL success = false;
+	bool success = false;
 	pCharVector	nearbyPlayerVendors;
 	uint32_t		i = 0;
 	uint32_t		j = nearbyNpcs->size();
@@ -1142,9 +1142,9 @@ static LOGICAL respond( P_CHAR pc, NXWSOCKET socket, string &speech )
 }
 */
 
-static LOGICAL pricePlayerVendorItem( P_CHAR pc, NXWSOCKET socket, string &price )
+static bool pricePlayerVendorItem( P_CHAR pc, NXWSOCKET socket, string &price )
 {
-	LOGICAL success = false;
+	bool success = false;
 	if ( pc->fx2 == 17 )
 	{
 		int i = str2num( const_cast<char*>(price.c_str()) );
@@ -1176,9 +1176,9 @@ static LOGICAL pricePlayerVendorItem( P_CHAR pc, NXWSOCKET socket, string &price
 	return success;
 }
 
-static LOGICAL describePlayerVendorItem( P_CHAR pc, NXWSOCKET socket, string &description )
+static bool describePlayerVendorItem( P_CHAR pc, NXWSOCKET socket, string &description )
 {
-	LOGICAL success = false;
+	bool success = false;
 	if( pc->fx2 == 18 )
 	{
 		P_ITEM pi = MAKE_ITEM_REF( pc->fx1 );
@@ -1197,9 +1197,9 @@ static LOGICAL describePlayerVendorItem( P_CHAR pc, NXWSOCKET socket, string &de
 	return success;
 }
 
-static LOGICAL renameRune( P_CHAR pc, NXWSOCKET socket, string &name )
+static bool renameRune( P_CHAR pc, NXWSOCKET socket, string &name )
 {
-	LOGICAL success = false;
+	bool success = false;
 	P_ITEM pi = pointers::findItemBySerial( pc->runeserial );
 	if( ISVALIDPI( pi ) )
 	{
@@ -1211,9 +1211,9 @@ static LOGICAL renameRune( P_CHAR pc, NXWSOCKET socket, string &name )
 	return success;
 }
 
-static LOGICAL renameSelf( P_CHAR pc, NXWSOCKET socket, string &name )
+static bool renameSelf( P_CHAR pc, NXWSOCKET socket, string &name )
 {
-	LOGICAL success = false;
+	bool success = false;
 	if( pc->namedeedserial != INVALID )
 	{
 		P_ITEM pi = pointers::findItemBySerial( pc->namedeedserial );
@@ -1231,9 +1231,9 @@ static LOGICAL renameSelf( P_CHAR pc, NXWSOCKET socket, string &name )
 	return success;
 }
 
-static LOGICAL renameKey( P_CHAR pc, NXWSOCKET socket, string &name )
+static bool renameKey( P_CHAR pc, NXWSOCKET socket, string &name )
 {
-	LOGICAL success = false;
+	bool success = false;
 	P_ITEM pi = pointers::findItemBySerial( pc->keyserial );
 	if( ISVALIDPI( pi ) )
 	{
@@ -1245,46 +1245,9 @@ static LOGICAL renameKey( P_CHAR pc, NXWSOCKET socket, string &name )
 	return success;
 }
 
-static LOGICAL pageGameMaster( P_CHAR pc, NXWSOCKET socket, string &reason )
+static bool pageCouncillor( P_CHAR pc, NXWSOCKET socket, string &reason )
 {
-	LOGICAL success = false;
-	if (pc->pagegm == 1)
-	{
-		char temp[TEMP_STR_SIZE];
-		strcpy( gmpages[ pc->playercallnum ].reason, reason.c_str());
-		sprintf(temp, "GM Page from %s [%08x]: %s", pc->getCurrentNameC(), pc->getSerial32(), gmpages[pc->playercallnum].reason);
-		bool foundGm = false;
-		
-		NxwSocketWrapper sw;
-		sw.fillOnline( );
-		
-		for( sw.rewind(); !sw.isEmpty(); sw++ )
-		{
-			NXWCLIENT ps=sw.getClient();
-			if( ps==NULL )
-				continue;
-			
-			P_CHAR gamemaster = ps->currChar();
-			if( ISVALIDPC( gamemaster ) )
-				if ( gamemaster->IsGM() )
-				{
-					foundGm = true;
-					sysmessage(ps->toInt(), temp);
-				}
-		}
-		if (foundGm)
-			sysmessage(socket, TRANSLATE("Available Game Masters have been notified of your request."));
-		else
-			sysmessage(socket, TRANSLATE("There was no Game Master available to take your call."));
-		pc->pagegm = 0;
-		success = true;
-	}
-	return success;
-}
-
-static LOGICAL pageCouncillor( P_CHAR pc, NXWSOCKET socket, string &reason )
-{
-	LOGICAL success = false;
+	bool success = false;
 	if (pc->pagegm == 2) // Counselor page
 	{
 		char temp[TEMP_STR_SIZE];
@@ -1320,9 +1283,9 @@ static LOGICAL pageCouncillor( P_CHAR pc, NXWSOCKET socket, string &reason )
 	return success;
 }
 
-static LOGICAL resignFromGuild( P_CHAR pc, NXWSOCKET socket, string &resign )
+static bool resignFromGuild( P_CHAR pc, NXWSOCKET socket, string &resign )
 {
-	LOGICAL success = false;
+	bool success = false;
 	if (!resign.compare("I RESIGN FROM MY GUILD"))
 	{
 		Guilds->Resign( pc, socket );
@@ -1331,9 +1294,9 @@ static LOGICAL resignFromGuild( P_CHAR pc, NXWSOCKET socket, string &resign )
 	return success;
 }
 
-static LOGICAL callGuards( P_CHAR pc, NXWSOCKET socket, string &helpcall )
+static bool callGuards( P_CHAR pc, NXWSOCKET socket, string &helpcall )
 {
-	LOGICAL success = false;
+	bool success = false;
 	if( helpcall.find("GUARDS") != std::string::npos )
 	{
 		//
@@ -1349,13 +1312,13 @@ namespace Speech
 {
 namespace Stablemaster
 {
-static LOGICAL respond( P_CHAR pc, NXWSOCKET socket, std::string &speech );
-static LOGICAL stablePet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters );
-static LOGICAL claimPet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters );
+static bool respond( P_CHAR pc, NXWSOCKET socket, std::string &speech );
+static bool stablePet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters );
+static bool claimPet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters );
 
-static LOGICAL respond( P_CHAR pc, NXWSOCKET socket, std::string &speech )
+static bool respond( P_CHAR pc, NXWSOCKET socket, std::string &speech )
 {
-	LOGICAL 	success = false;
+	bool 	success = false;
 	NxwCharWrapper	nearbyStablemasters;
 	P_CHAR		pc_a_npc;
 
@@ -1376,7 +1339,7 @@ static LOGICAL respond( P_CHAR pc, NXWSOCKET socket, std::string &speech )
 	return success;
 }
 
-static LOGICAL stablePet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters )
+static bool stablePet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters )
 {
 /*
 	command					action
@@ -1397,18 +1360,18 @@ static LOGICAL stablePet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwC
 
 	<stable master> stable all <pet>	stablemaster with name <stable master> stables all pets with name <pet>
 */
-	LOGICAL success = false;
+	bool success = false;
 	int32_t tokenPosition = findKeyword( speech, "STABLE");
 	if( tokenPosition != INVALID )
 	{
 		std::string 	stablemasterName( trimString( speech.substr( 0, tokenPosition ) ) );
-		LOGICAL 	findStablemasterByName = (stablemasterName.length() != 0);
+		bool 	findStablemasterByName = (stablemasterName.length() != 0);
 		std::string 	petName( trimString( speech.substr( tokenPosition + 6) ) );
 		tokenPosition = findKeyword( petName, "ALL");
-		LOGICAL stableAllPets = (tokenPosition == 0 );
+		bool stableAllPets = (tokenPosition == 0 );
 		if( stableAllPets )
 			petName = trimString( petName.substr( 3 ) );
-		LOGICAL 	findPetByName = (petName.length() != 0);
+		bool 	findPetByName = (petName.length() != 0);
 		//
 		// Find stable master, in case of multiple stable masters the one nearest will be selected
 		//
@@ -1416,7 +1379,7 @@ static LOGICAL stablePet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwC
 		P_CHAR		pc_pet = 0;
 		P_CHAR		pc_a_npc;
 		NxwCharWrapper	petsToStable;
-		LOGICAL		petFound = false;
+		bool		petFound = false;
 
 		for( nearbyStablemasters.rewind(); !nearbyStablemasters.isEmpty(); nearbyStablemasters++  )
 		{
@@ -1513,7 +1476,7 @@ static LOGICAL stablePet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwC
 	return success;
 }
 
-static LOGICAL claimPet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters )
+static bool claimPet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters )
 {
 	/*
 		command					Action
@@ -1526,22 +1489,22 @@ static LOGICAL claimPet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCh
 		<stablemaster> claim <pet>
 		<stablemaster> claim all <pet>
 	*/
-	LOGICAL success = false;
+	bool success = false;
 	int32_t tokenPosition = findKeyword( speech, "CLAIM");
 	if( tokenPosition != INVALID )
 	{
 		std::string 	stablemasterName( trimString( speech.substr( 0, tokenPosition ) ) );
-		LOGICAL 	findStablemasterByName = (stablemasterName.length() != 0);
+		bool 	findStablemasterByName = (stablemasterName.length() != 0);
 		std::string 	petName( trimString( speech.substr( tokenPosition + 5) ) );
 		tokenPosition = findKeyword( petName, "ALL");
-		LOGICAL 	claimAllPets = (tokenPosition == 0 );
+		bool 	claimAllPets = (tokenPosition == 0 );
 		if( claimAllPets )
 			petName = trimString( petName.substr( 3 ) );
-		LOGICAL 	findPetByName = (petName.length() != 0);
+		bool 	findPetByName = (petName.length() != 0);
 		P_CHAR		pc_a_npc = 0;
 		P_CHAR		pc_stablemaster = 0;
 		P_CHAR		pc_pet = 0;
-		LOGICAL 	found = false;
+		bool 	found = false;
 		NxwCharWrapper	stabledPets;
 		for( nearbyStablemasters.rewind(); !nearbyStablemasters.isEmpty() && !found; nearbyStablemasters++ )
 		{
@@ -1665,14 +1628,14 @@ stabledPets.rewind();	// GH!
 
 namespace Guard
 {
-static LOGICAL respond( P_CHAR pc, NXWSOCKET socket, std::string &speech );
-static LOGICAL requestChaosShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
-static LOGICAL requestOrderShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
-static LOGICAL requestHelp( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
+static bool respond( P_CHAR pc, NXWSOCKET socket, std::string &speech );
+static bool requestChaosShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
+static bool requestOrderShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
+static bool requestHelp( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
 
-static LOGICAL respond( P_CHAR pc, NXWSOCKET socket, std::string &speech )
+static bool respond( P_CHAR pc, NXWSOCKET socket, std::string &speech )
 {
-	LOGICAL success = false;
+	bool success = false;
 	NxwCharWrapper	nearbyGuards;
 	NxwCharWrapper	nearbyOrderGuards;
 	NxwCharWrapper	nearbyChaosGuards;
@@ -1714,9 +1677,9 @@ nearbyChaosGuards.rewind();
 	return success;
 }
 
-static LOGICAL requestChaosShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyChaosGuards )
+static bool requestChaosShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyChaosGuards )
 {
-	LOGICAL success = false;
+	bool success = false;
 	int32_t tokenPosition = findKeyword( speech, "SHIELD");
 	if( tokenPosition != INVALID )
 	{
@@ -1724,7 +1687,7 @@ static LOGICAL requestChaosShield( P_CHAR pc, NXWSOCKET socket, std::string &spe
 		if( objectName.empty() )
 		{
 			std::string 	guardName( trimString( speech.substr( 0, tokenPosition ) ) );
-			LOGICAL 	findGuardByName = (guardName.length() != 0);
+			bool 	findGuardByName = (guardName.length() != 0);
 			P_CHAR		pc_a_npc;
 			P_CHAR		chaosGuard = 0;
 			for( nearbyChaosGuards.rewind(); !nearbyChaosGuards.isEmpty(); nearbyChaosGuards++  )
@@ -1769,9 +1732,9 @@ static LOGICAL requestChaosShield( P_CHAR pc, NXWSOCKET socket, std::string &spe
 	return success;
 }
 
-static LOGICAL requestOrderShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyOrderGuards )
+static bool requestOrderShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyOrderGuards )
 {
-	LOGICAL success = false;
+	bool success = false;
 	int32_t tokenPosition = findKeyword( speech, "SHIELD");
 	if( tokenPosition != INVALID )
 	{
@@ -1779,7 +1742,7 @@ static LOGICAL requestOrderShield( P_CHAR pc, NXWSOCKET socket, std::string &spe
 		if( objectName.empty() )
 		{
 			std::string 	guardName( trimString( speech.substr( 0, tokenPosition ) ) );
-			LOGICAL 	findGuardByName = (guardName.length() != 0);
+			bool 	findGuardByName = (guardName.length() != 0);
 			P_CHAR		pc_a_npc;
 			P_CHAR		orderGuard = 0;
 			for( nearbyOrderGuards.rewind(); !nearbyOrderGuards.isEmpty(); nearbyOrderGuards++  )
@@ -1824,18 +1787,18 @@ static LOGICAL requestOrderShield( P_CHAR pc, NXWSOCKET socket, std::string &spe
 	return success;
 }
 
-static LOGICAL requestHelp( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards )
+static bool requestHelp( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards )
 {
-	LOGICAL success = false;
+	bool success = false;
 	//if( region[pc->region].priv&0x01 && SrvParms->guardsactive || !TIMEOUT( pc->antiguardstimer ) )
 	return success;
 }
 
 } // namespace Guards
 
-static LOGICAL buyFromVendor( P_CHAR pc, NXWSOCKET socket, string &speech, NxwCharWrapper &nearbyVendors )
+static bool buyFromVendor( P_CHAR pc, NXWSOCKET socket, string &speech, NxwCharWrapper &nearbyVendors )
 {
-	LOGICAL success = false;
+	bool success = false;
 //	int32_t tokenPosition = INVALID;
 	/*
 	if(!speech.compare(0,10,"VENDOR BUY") || !speech.compare(0,14,"SHOPKEEPER BUY") )
@@ -1977,12 +1940,17 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 	if( renameKey( pc, socket, speech ) )
 		return;
 
-	if( pageGameMaster( pc, socket, speech ) )
+	if ( pc->pagegm == 1 ) // GM Page
+	{
+		new cGMPage(pc, speech, true);
 		return;
-
-	if( pageCouncillor( pc, socket, speech ) )
-		return;
-
+	}
+	
+	if ( pc->pagegm == 2 ) // Counselor page
+	{
+		new cGMPage(pc, speech, false);
+	}
+	
 	if ( pc->squelched )
 	{
 		pc->sysmsg(TRANSLATE("You have been squelched."));

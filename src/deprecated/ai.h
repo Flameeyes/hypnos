@@ -69,7 +69,7 @@ public:
 	virtual void run();
 	cAction* getAction()
 	void setAction();
-	inline LOGICAL hasAction() { return ( currAction != NULL ); }
+	inline bool hasAction() { return ( currAction != NULL ); }
 	inline P_CHAR getChar() { return pointers::findCharBySerial( m_pc ); }
 };*/
 
@@ -113,10 +113,10 @@ public:
 	void exec();
 	Location getNextPos();
 	inline Location getFinalPos() { return m_finalPos; }
-	LOGICAL targetReached();
-	inline LOGICAL pathFound() { return m_pathFound; }
+	bool targetReached();
+	inline bool pathFound() { return m_pathFound; }
 private:
-	LOGICAL m_pathFound;
+	bool m_pathFound;
 	uint32_t m_loops;
 	SERIAL pc_serial;
 	path_node* currNode;

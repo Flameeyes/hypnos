@@ -23,7 +23,7 @@
 
 struct region_st
 {
-	LOGICAL inUse;
+	bool inUse;
  	TEXT name[50];
  	int32_t midilist;
  	uint8_t priv;	// 0x01 guarded, 0x02, mark allowed, 0x04, gate allowed, 0x08, recall
@@ -40,7 +40,7 @@ struct region_st
 	int32_t goodrnd1[256]; // Magius(CHE) (2)
 	int32_t goodrnd2[256]; // Magius(CHE) (2)
 	int32_t forcedseason;
-	LOGICAL ignoreseason;
+	bool ignoreseason;
 };
 
 extern region_st region[256];

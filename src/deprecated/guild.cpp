@@ -81,10 +81,10 @@ void cGuild::load( cStringFile& file )
 				if( l=="MEMBER" )
 				{
 					SERIAL memberSerial = str2num( r );
-					P_CHAR pChar = pointers::findCharBySerial( memberSerial );
+					pChar pc = pointers::findCharBySerial( memberSerial );
 					if( ISVALIDPC( pChar ) )
 					{
-						P_GUILD_MEMBER member = addMember( pChar );
+						P_GUILD_MEMBER member = addMember( pc );
 						member->load( file );
 					}
 					else

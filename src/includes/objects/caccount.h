@@ -70,8 +70,42 @@ protected:
 	pChar lastchar;			//!< Last character used
 
 	pChar currentChar;		//!< Current char used ingame
-
+	
+	uint8_t flags;			//!< Flags of the account
+	
+	inline void setFlag(uint8_t flag, bool on)
+	{
+		if ( on )
+			flags |= flag;
+		else
+			flags &= ~flag;
+	}
 public:
+//@{
+/*!
+\name Account Flags
+\brief Flags present on an account
+*/
+	static const uint8_t flagSeeGMPages	= 0x01;
+	static const uint8_t flagSeeConsPages	= 0x02;
+	
+	//! Gets if the account can see GM Pages
+	inline const bool seeGMPages() const
+	{ return flags & flagSeeGMPages; }
+	
+	//! (Un)sets the capability to see GM Pages
+	inline void setSeeGMPages(bool on = true)
+	{ setFlag(flagSeeGMPages, on); }
+	
+	//! Gets if the account can see Cons pages
+	inline const bool seeConsPages const
+	{ return flags & flagSeeConsPages; }
+	
+	//! (Un)sets the capability to see Cons Pages
+	inline void setSeeConsPages(bool on = true)
+	{ setFlag(flagSeeConPages, on); }
+//@}
+
 	cAccount();
 		//!< Default constructor
 	cAccount(cSQLite::cSQLiteQuery::tRow row);

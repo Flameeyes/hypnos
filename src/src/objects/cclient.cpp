@@ -12,7 +12,8 @@
 
 #include "cclient.h"
 
-static cClients cClient::clients;               //!< this keeps all online clients
+static cClients cClient::clients;
+static cClients cClient::cGMs;
 
 cClient::cClient(int32_t sd, struct sockaddr_in* addr)
 {
@@ -2258,6 +2259,7 @@ void cClient::playSFX(uint16_t sound, bool onlyMe)
 		return;
 	}
 
+	//!\todo Missing way to find out
 /*
 	NxwSocketWrapper sw;
 	sw.fillOnline( pc, false );

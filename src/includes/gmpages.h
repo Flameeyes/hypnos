@@ -7,16 +7,28 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
- \brief GM Pages management declaration
- */
+\brief GM Pages management declarations
+*/
 
-namespace Pages {
-	class cPage {
-	public:
-	protected:
-		SERIAL serial;
-		
+class cGMPage;
+typedef cGMPage *pGMPage;		//!< Pointer to a GM Page
+typedef std::list<pGMPage> GMPageList;	//!< List of GM Pages
+
+class cGMPage {
+public:
+	enum HandledStatus {
+		eNotHandled,		//!< The query was never handled
+		eHandling,		//!< Query's handling in progress
+		eHandled,		//!< Query already handled
+		eReQueued		//!< Query was handled, but it was requeued
 	};
+	cGMPage(pChar pc, std::string &pageReason, bool onlyGM = false);
 	
-	void cmdNextCall(pClient cli);
-}
+protected:
+	std::string reason;		//!< Reason of the page (from the user)
+
+	static GMPageList pages;	//!< List of pages
+	static uint32_t nextID;		//!< ID to assign to the next instance
+};
+
+void cmdNextCall(pClient cli);

@@ -18,8 +18,8 @@
 
 extern uint16_t map_width;
 extern uint16_t map_height;
-extern LOGICAL statics_cache;
-extern LOGICAL map_cache;
+extern bool statics_cache;
+extern bool map_cache;
 
 /*!
 \author Luxor
@@ -191,13 +191,13 @@ void shutdown();
 void setPath( MulFileId id, std::string path );
 std::string getPath( MulFileId id );
 
-LOGICAL seekMap( uint32_t x, uint32_t y, map_st& m, uint8_t nMap = 0 ); //<! Luxor: nMap will be used for future multiple maps support.
-LOGICAL collectStatics( uint32_t x, uint32_t y, staticVector& s_vec );
-LOGICAL seekLand( uint16_t id, land_st& land );
-LOGICAL seekTile( uint16_t id, tile_st& tile );
-LOGICAL seekMulti( uint16_t id, multiVector& m_vec );
-LOGICAL seekVerTile( uint16_t id, tile_st& tile );
-LOGICAL seekVerLand( uint16_t id, land_st& land );
+bool seekMap( uint32_t x, uint32_t y, map_st& m, uint8_t nMap = 0 ); //<! Luxor: nMap will be used for future multiple maps support.
+bool collectStatics( uint32_t x, uint32_t y, staticVector& s_vec );
+bool seekLand( uint16_t id, land_st& land );
+bool seekTile( uint16_t id, tile_st& tile );
+bool seekMulti( uint16_t id, multiVector& m_vec );
+bool seekVerTile( uint16_t id, tile_st& tile );
+bool seekVerLand( uint16_t id, land_st& land );
 
 /*!
 \author Luxor
@@ -211,12 +211,12 @@ public:
 		if ( m_cache != NULL )
 			safedelete( m_cache );
 	}
-	LOGICAL getData( uint32_t index, T& data );
-	LOGICAL getData( uint32_t index, BYTE* ptr, uint32_t size );
+	bool getData( uint32_t index, T& data );
+	bool getData( uint32_t index, BYTE* ptr, uint32_t size );
 	void setCache( std::map< uint32_t, T > *cache );
-	LOGICAL eof();
-	inline LOGICAL isReady() { return ( m_file != NULL ); }
-	inline LOGICAL isCached() { return ( m_cache != NULL ); }
+	bool eof();
+	inline bool isReady() { return ( m_file != NULL ); }
+	inline bool isCached() { return ( m_cache != NULL ); }
 private:
 	FILE	*m_file;
 	std::map< uint32_t, T > *m_cache;

@@ -56,7 +56,7 @@ uint32_t getCastingTime( SpellId spell )
 /*!
 \author Luxor
 */
-LOGICAL checkMagicalSpeech( P_CHAR pc, char* speech )
+bool checkMagicalSpeech( P_CHAR pc, char* speech )
 {
 	VALIDATEPCR( pc, false );
 	NXWCLIENT client = pc->getClient();

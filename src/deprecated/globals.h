@@ -105,12 +105,6 @@ extern unsigned char clientDimension[MAXCLIENT]; // stores if the client is the 
 extern char tbuffer[MAXBUFFER];
 extern char xoutbuffer[MAXBUFFER*5];
 
-
-
-
-
-extern gmpage_st gmpages[MAXPAGES];
-extern gmpage_st counspages[MAXPAGES];
 extern skill_st skillinfo[SKILLS+1];
 extern unsigned short int doorbase[DOORTYPES];
 extern char skillname[SKILLS+1][20];

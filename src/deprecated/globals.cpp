@@ -241,8 +241,6 @@ unsigned char clientDimension[MAXCLIENT];
 ///////////////////////////////////////////
 
  skill_st skillinfo[SKILLS+1];
- gmpage_st gmpages[MAXPAGES];
- gmpage_st counspages[MAXPAGES];
  std::multimap <int, tele_locations_st> tele_locations; //!< can't use a map here, so using a multimap with x as the key :(
  char serv[MAXSERV][3][30]; //!< Servers list
 

@@ -30,7 +30,7 @@ int32_t amxFiles::open( const std::string &name, const std::string &mode )
 	return lastHandleIssued;
 }
 
-LOGICAL amxFiles::close( const int32_t handle )
+bool amxFiles::close( const int32_t handle )
 {
 	miAmxFile iter( files.find( handle ) );
 	if( iter == files.end() )
@@ -40,7 +40,7 @@ LOGICAL amxFiles::close( const int32_t handle )
 	return true;
 }
 
-LOGICAL	amxFiles::eof( const int32_t handle )
+bool	amxFiles::eof( const int32_t handle )
 {
 	miAmxFile iter( files.find( handle ) );
 	if( iter == files.end() )
@@ -48,7 +48,7 @@ LOGICAL	amxFiles::eof( const int32_t handle )
 	return feof( iter->second );
 }
 
-LOGICAL	amxFiles::write( const int32_t handle, const std::string &line )
+bool	amxFiles::write( const int32_t handle, const std::string &line )
 {
 	miAmxFile iter( files.find( handle ) );
 	if( iter == files.end() )
@@ -75,7 +75,7 @@ std::string amxFiles::read( const int32_t handle )
 	if( iter != files.end() )
 	{
 		int i;
-		LOGICAL finished = false;
+		bool finished = false;
 		char c;
 		char line[1024];
 		line[0]=0;

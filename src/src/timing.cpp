@@ -119,7 +119,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 	static TIMERVAL htmltime=0;
 	static TIMERVAL housedecaytimer=0;
 
-	LOGICAL lightChanged = false;
+	bool lightChanged = false;
 
 	//
 	// Accounts

@@ -71,15 +71,15 @@ P_ITEM search_boat_by_plank(P_ITEM pl);
 class cBoat
 {
 	protected:
-		LOGICAL boat_collision(P_ITEM pBoat1,int x1, int y1,int dir,P_ITEM pBoat2);
-		LOGICAL collision(P_ITEM pi, Location where,int dir);
-		LOGICAL good_position(P_ITEM pBoat, Location where, int dir);
-		LOGICAL tile_check(multi_st multi,P_ITEM pBoat,map_st map,int x, int y ,int dir);
+		bool boat_collision(P_ITEM pBoat1,int x1, int y1,int dir,P_ITEM pBoat2);
+		bool collision(P_ITEM pi, Location where,int dir);
+		bool good_position(P_ITEM pBoat, Location where, int dir);
+		bool tile_check(multi_st multi,P_ITEM pBoat,map_st map,int x, int y ,int dir);
 		void LeaveBoat(P_CHAR pc, P_ITEM pi);
 		void TurnStuff_i(P_ITEM, P_ITEM, int, int);
 
 		void TurnStuff_c(P_ITEM, P_CHAR, int, int);
-		void iMove(NXWSOCKET  s, int dir, P_ITEM pBoat, LOGICAL forced = true);
+		void iMove(NXWSOCKET  s, int dir, P_ITEM pBoat, bool forced = true);
 
 		void TurnShip( uint8_t size, int32_t dir, P_ITEM pPort, P_ITEM pStarboard, P_ITEM pTiller, P_ITEM pHold );
 	public:
@@ -87,10 +87,10 @@ class cBoat
 		cBoat();
 		P_ITEM GetBoat(Location pos);
 		virtual ~cBoat();
-		LOGICAL Speech(P_CHAR pc, NXWSOCKET socket, std::string &talk );
+		bool Speech(P_CHAR pc, NXWSOCKET socket, std::string &talk );
 		void OpenPlank(P_ITEM pi);
 		void PlankStuff(P_CHAR pc, P_ITEM pi);
-		LOGICAL Build(NXWSOCKET s, P_ITEM pBoat, char);
+		bool Build(NXWSOCKET s, P_ITEM pBoat, char);
 		void Move(NXWSOCKET  s, int dir, P_ITEM pBoat);
 		void Turn(P_ITEM, int);
 };

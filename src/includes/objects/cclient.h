@@ -40,8 +40,10 @@ This is the class which provides client compression & encryption.
 */
 class cClient
 {
+friend class cGMPage;
 protected:
-      	static cClients clients;        	                //!< All the clients
+      	static cClients clients;	//!< All the clients
+	static cClients cGMs		//!< GMs' clients \todo Need to be used
 
 public:
 	static const uint32_t clientHasCrypto		= 0x00000001;
@@ -54,8 +56,8 @@ protected:
 	pAccount acc;	//!< Current account logged in by the client
 	pSocket sock;	//!< Current socket used by the client
 
-	uint32_t flags;	//!< Flags of capabilities of the client
-        short int clientDimension;      //!< 2d or 3d client? (must contain 2 or 3)
+	uint32_t flags;			//!< Flags of capabilities of the client
+        short int clientDimension;	//!< 2d or 3d client? (must contain 2 or 3)
 public:
 	cClient(int32_t sd, struct sockaddr_in* addr);
 	~cClient();
@@ -73,8 +75,9 @@ public:
 	void compress(char &*);
 	void encrypt(char &*);
 
-        //! drag & drop methods
-
+	//! Gets the online GMs
+	static cClients getOnlineGMs()
+	{ return cGMs; }
 protected:
        	bool dragging; //!< true if is dragging
 	bool evilDrag; //!< evil dragging, we need this for UO3D clients to save dragging history
@@ -93,8 +96,6 @@ protected:
         void item_bounce4(const pItem pi);                              //!< bounce & checkid before resending item
         void item_bounce5(const pItem pi);                              //!< bounce & resend item
         void item_bounce6(const pItem pi);                              //!< advanced bouncing
-
-
 
 public:
         inline bool isDragging() const
@@ -129,7 +130,6 @@ public:
         void skillWindow();
         void updatePaperdoll();
         void sendMidi(char num1, char num2);
-
 
         //! audio packets (sound effects & music)
 	void playMidi();

@@ -17,9 +17,9 @@ class amxFiles
 				~amxFiles();
 	public:
 		int32_t		open( const std::string &name, const std::string &mode );
-		LOGICAL		close( const int32_t handle );
-		LOGICAL		eof( const int32_t handle );
-		LOGICAL		write( const int32_t handle, const std::string &line );
+		bool		close( const int32_t handle );
+		bool		eof( const int32_t handle );
+		bool		write( const int32_t handle, const std::string &line );
 		std::string	read( const int32_t handle );
 };
 

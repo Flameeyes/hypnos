@@ -201,7 +201,7 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8
 					buyNoRestockContainer	= INVALID,
 					sellContainer		= INVALID;
 
-			LOGICAL		error			= false;
+			bool		error			= false;
 
 			do
 			{

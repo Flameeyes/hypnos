@@ -210,9 +210,9 @@ void CWorldMain::loadChar() // Load a character from WSC
 	//		because removed player characters in 0.73 have ACCOUNT -1
 	//		DO NOT REMOVE
 	//
-	LOGICAL hasAccount 		= false;
-	LOGICAL hasInvalidAccount 	= false;
-	LOGICAL hasCreationDay		= false;
+	bool hasAccount 		= false;
+	bool hasInvalidAccount 	= false;
+	bool hasCreationDay		= false;
 	//
 	//
 	//

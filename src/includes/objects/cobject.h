@@ -256,12 +256,12 @@ protected:
 	TempfxVector		*tempfx;
 
 public:
-	LOGICAL			addTempfx( cObject& src, int32_t num, int32_t more1 = 0, int32_t more2 = 0, int32_t more3 = 0, int32_t dur = 0, int32_t amxcback = INVALID );
-	void			delTempfx( int32_t num, LOGICAL executeExpireCode = true, SERIAL funcidx = INVALID );
+	bool			addTempfx( cObject& src, int32_t num, int32_t more1 = 0, int32_t more2 = 0, int32_t more3 = 0, int32_t dur = 0, int32_t amxcback = INVALID );
+	void			delTempfx( int32_t num, bool executeExpireCode = true, SERIAL funcidx = INVALID );
 	void			checkTempfx();
 	void			tempfxOn();
 	void			tempfxOff();
-	LOGICAL			hasTempfx();
+	bool			hasTempfx();
 	tempfx::cTempfx*	getTempfx( int32_t num, SERIAL funcidx = INVALID );
 //@}
 

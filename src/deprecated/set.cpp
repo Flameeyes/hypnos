@@ -1172,7 +1172,7 @@ void NxwSocketWrapper::insertClient( NXWCLIENT ps )
 void NxwSocketWrapper::fillOnline( P_CHAR onlyNearThis, bool bExcludeThis, uint32_t nDistance )
 {
 	P_CHAR	pc;
-	LOGICAL	validOnlyNearThis = ISVALIDPC(onlyNearThis);
+	bool	validOnlyNearThis = ISVALIDPC(onlyNearThis);
 
 	for (int32_t i = 0; i < now; ++i )
 	{

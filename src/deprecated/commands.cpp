@@ -430,7 +430,7 @@ namespace Commands
 	{
 		if ( s < 0 || s >= now )
 			return;
-		LOGICAL pileable=false;
+		bool pileable=false;
 		tile_st tile;
 
 		data::seekTile( id, tile);

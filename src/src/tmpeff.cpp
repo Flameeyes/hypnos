@@ -133,7 +133,7 @@ static void callCustomTempFx(P_OBJECT poSrc, P_OBJECT poDest, int mode, int amxc
 /*!
 \author Luxor
 */
-LOGICAL isSrcRepeatable(int num)
+bool isSrcRepeatable(int num)
 {
 	if ( num < 0 || num >= MAX_TEMPFX_INDEX )
 		return false;
@@ -156,7 +156,7 @@ LOGICAL isSrcRepeatable(int num)
 /*!
 \author Luxor
 */
-LOGICAL isDestRepeatable(int num)
+bool isDestRepeatable(int num)
 {
 	if ( num < 0 || num >= MAX_TEMPFX_INDEX )
 		return false;
