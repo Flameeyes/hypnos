@@ -70,7 +70,7 @@ public:
       	UI32 poster;		// Serial of poster pg. if -1 autopost
         std::string subject;	// Subject of message (title)
         std::string body;	// body of message
-        struct tm posttime;	// time of posting
+        time_t posttime;	// time of posting
         PostType availability;  // local/regional/general post
         int region;		// if REGIONAL avalaibility, region contains a region number based on worlddata (see sregions.cpp/h)
 	QuestType qtype;     	// type of quest
@@ -86,6 +86,7 @@ public:
 	static UI32 nextSerial();
        	virtual void Delete();
         std::string getTimeString();
+        bool expired();		// expiration time check & delete. Returns true if post has been deleted for reaching expiration time
 
 	inline const UI32 rtti() const
 	{ return rtti::cMsgBoardMessage; }

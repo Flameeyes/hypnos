@@ -47,8 +47,9 @@ static UI32 cMsgBoardMessage::nextSerial()
 \author Chronodt
 */
 
-void cMsgBoardMessage::Delete() : cItem::Delete()
+void cMsgBoardMessage::Delete()
 {
+/*
 	cPacketSendDeleteObject pk(serial);
 
         //! \todo replace this when sets redone
@@ -62,7 +63,7 @@ void cMsgBoardMessage::Delete() : cItem::Delete()
 		if ( ps != NULL )
 			ps->sendPacket(&pk);
 	}
-
+*/
         switch (availability)
         {
         case LOCALPOST: //Here we need only to disconnect local MsgBoard
@@ -73,7 +74,7 @@ void cMsgBoardMessage::Delete() : cItem::Delete()
         case REGIONALPOST: //Here, instead, we have to disconnect ALL msgBoard in the same region as the board in which post was originally posted
 
         	pair<cMsgBoards::iterator, cMsgBoards::iterator> it = cMsgBoard::getBoardsinRegion(region);
-                if (it.first == cMsgBoards::MsgBoards.end()) break;	//If no msgboards in region, bail out (but if post exist.. msgboard should exist too :D)
+                if (it.first == cMsgBoards::MsgBoards.end()) break;	//If no msgboards in region, bail out
                 /*
                 We now have a range it.first-it.second of msgBoards that are in the same region as the message to be deleted. (they may even be
                 the same)
@@ -110,7 +111,7 @@ void cMsgBoardMessage::Delete() : cItem::Delete()
                 }
                 break;
         }
-	safedelete(this);
+	cItem::Delete();  //this will do the safedelete, too
 }
 
 cMsgBoardMessage::cMsgBoardMessage()
@@ -130,10 +131,10 @@ cMsgBoardMessage::cMsgBoardMessage(UI32 serial) : cItem(serial)
 	autopost = false;
         targetserial = -1;
 
-        time_t now;
-        time( &now );
-	posttime = *localtime( &now );
-        //With these last 3 lines, creating a post sets also automatically the current time, so when it is not startup, there is no need to set it :D
+        // With this line, creating a post sets also automatically the current time, so when it is not startup,
+        // there is no need to set it :D
+        time( &posttime );
+
 
         setAnimId(0xeb0): //Model ID for msgboards items
 
@@ -149,8 +150,53 @@ cMsgBoardMessage::~cMsgBoardMessage()
 std::string cMsgBoardMessage::getTimeString()
 {
 	char result[25];
-        sprintf( result, "Day %i @ %i:%02i", posttime.tm_yday + 1, posttime.tm_hour, posttime.tm_min );
+        struct tm timest = localtime( &posttime);
+        sprintf( result, "Day %i @ %i:%02i", timest.tm_yday + 1, timest.tm_hour, timest.tm_min );
         return std::string(result);
+}
+
+bool cMsgBoardMessage::expired()
+{
+	time_t now;
+	time( &now );
+        long messagelife = now - posttime;  	//messagelife is lifetime of message in seconds
+        //here we check if post has a timeout and if it has expired
+        switch (qtype)
+        {
+        case QTINVALID:
+        	if (!SrvParms->msgretention && messagelife > (SrvParms->msgretention * 86400))  //86400 = 24 * 60 * 60 -> msgretention is expressed in days while messagelife in seconds
+                {
+                	//If it isn't a quest, we simply delete the message
+			Delete();
+                        return true;
+                }
+		break;
+        case ESCORTQUEST:
+               	if (!SrvParms->escortinitexpire && messagelife > SrvParms->escortinitexpire)	//escortinitexpire is expressed in seconds
+                {
+                	pNPC npc = pointers::findCharBySerial(targetnpc);
+                        if (!npc && npc->questEscortPostSerial == getSerial32()) npc->Delete();	//If it has not yet disappeared, but the serial is still the right escort npc (the serial may have been reused!!) we delete it
+                        Delete();
+                        return true;
+                }
+		break;
+	case BOUNTYQUEST:
+        	if (!SrvParms->bountysexpire && messagelife > (SrvParms->bountysexpire * 86400))	//86400 = 24 * 60 * 60 -> bountysexpire is expressed in days while messagelife in seconds
+                {
+                        pChar pc = pointers::findCharBySerial(targetnpc);
+                        // If it is an npc created just for the bounty (function not yet implemented) but it has not yet
+                        // disappeared, but the serial is still the right npc (the serial may have been reused!!) we delete it
+                        if (!pc && pc->rtti() == rtti::cNPC && pc->questBountyPostSerial == getSerial32()) pc->Delete();
+                        Delete();
+                        return true;
+		}
+		break;
+	case ITEMQUEST:  //not yet implemented, so we always put it to be deleted, as the default
+        default:
+        	Delete();
+                return true;
+	}
+	return false;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -713,9 +759,6 @@ void MsgBoardMaintenance( void )
 	int loopexit=0, loopexit2=0;
 	UI08                  msg2[MAXBUFFER];
 
-	// WINDOWS OS structure to be passed to _findfirst() and _findnext()
-	// too make this work with LINUX some #ifdef'ing will have to happen.
-
 	struct tm             currentDate;
 	time_t                now;
 	int                   dayOfYear;
@@ -726,189 +769,41 @@ void MsgBoardMaintenance( void )
 	// Display progress message
 	InfoOut("Bulletin board maintenance... ");
 
-        
-	ConOut("1\n");
-	// Set the Tmp file names
-	strcpy( fileBBITmp, filePath  );
-	strcat( fileBBITmp, "bbi.tmp" );
 
-	strcpy( fileBBPTmp, filePath  );
-	strcat( fileBBPTmp, "bbp.tmp" );
+	ConOut("1\n");
 	ConOut("2\n");
-	// Setup for the starting findfirst() call
-#if defined(__unix__)
-	vecFiles = MsgBoardGetFile(".bbi",filePath) ;
-#else
-	strcpy( fileName, filePath );
-	strcat( fileName, "*.bbi"  );
-#endif
 	ConOut("3\n");
 	// Calculate current time and date to check if post retention period has expired
+
 	time( &now );
-	currentDate = *localtime( &now );
-	dayOfYear   = currentDate.tm_yday+1;
+        // "now" now contains time elapsed in seconds from 1 jan 1970, but since the messages also
+        // keep the time that way, we only need to make a subtraction to get seconds since posting
+
 	ConOut("4\n");
-	// Find a *.BBI file, if none exist then no bulletin boards exist
-#if defined(__unix__)
-	if(vecFiles.empty())
-#else
-	if( (hBBIFile = _findfirst( fileName, &BBIFile )) == -1L )
-#endif
+
+	ConOut("[DONE]\n");
+
+	// Now lets find out what posts we keep and what posts to remove
+        // to realize that, we create two sets: the first will contain all serials for the loaded messages,
+        // the second all the serial linked by bsgboards. If the two are not identical, there are some unlinked
+        // posts, to be deleted or moved, depending on the type of message
+        std::set<UI32> serialsm, serialsb;
+        cMsgBoardMessages::iterator it = MsgBoardMessages.begin();
+
+        //checking the expiration time while we insert the posts in the set
+        for(;it != MsgBoardMessages.end(); ++it) if (!(*it)->expired()) serialsm.insert((*it)->getSerial32());
+
+
+
+
+	// Loop until we have reached the end of the BBI file
+	while ( !feof(pBBIOld) 	&& (loopexit < MAXLOOPS) )
 	{
-		//ConOut( "\n\tNo BBI files found." );
-		// Setup for the BBP findfirst() call
-		ConOut("5\n");
-#if defined(__unix__)
-		ConOut("Before\n");
-		vecFiles = MsgBoardGetFile(".bbp",filePath) ;
-		ConOut("After\n");
-		if ( vecFiles.empty() )
-#else
-		strcpy( fileName, filePath );
-		strcat( fileName, "*.bbp"  );
-		if( (hBBPFile = _findfirst( fileName, &BBPFile )) == -1L )
-#endif
-			;//ConOut( "\n\tNo BBP files found.\n\tNo Bulletin Board files found to process.\n" );
-		else
-			ConOut( "[ERROR]\n\tBBP files found with no matching BBI files.\n\t!!! Clean your bulletin board directory !!!\n", filePath );
+		//Increment progress dots
+		ConOut(".");
 
-		// Close the BBI & BBP file handles and exit routine
-#ifndef __unix__
-		_findclose( hBBIFile );
-		_findclose( hBBPFile );
-#endif
-		ConOut("[DONE]\n");
-		return;
-	}
-
-	ConOut("FUCK\n");
-	// If we made it through the first check then we found a BBI file.
-	do
-	{
-		// Set the number of messages compressed back to 0
-		count = 0;
-
-		// Add the file path first then the name of the current BBI file
-		strcpy( fileName, filePath     );
-	#if defined(__unix__)
-		strcat( fileName, vecFiles[index].c_str() );
-	#else
-		strcat( fileName, BBIFile.name );
-	#endif
-
-		// Setting up BBI file for cleaning and compression
-		// Rename the BBI file to the temporary file
-		rename( fileName, fileBBITmp );
-
-		// Open the new file with the same name as the original BBI file
-		pBBINew = fopen( fileName, "wb" );
-
-		// Open the old BBI.TMP file
-		pBBIOld = fopen( fileBBITmp, "rb" );
-
-		// Make sure ALL files opened ok
-		if ( feof(pBBINew) || feof(pBBIOld) )
-		{
-			fclose( pBBINew );
-			fclose( pBBIOld );
-
-			// Delete the new file if it exists
-			remove ( fileName );
-
-			// Put the old file name back
-			rename( fileBBITmp, fileName );
-
-			ConOut("[ERROR]\n\t  couldn't open all the BBI files needed, aborting!\n");
-			break;
-		}
-
-		// Set the fileName to the proper extension for the BBP file
-		fileName[strlen(fileName)-1] = 'p';
-
-		// Rename the BBP file to the temporary file
-		rename( fileName, fileBBPTmp );
-
-		// Open the new file with the same name as the original BBP file
-		if ( ( pBBPNew = fopen( fileName, "a+b" ) )==NULL )
-		{
-			ConOut("[ERROR]\n\t  couldn't open all the BBP files needed, aborting!\n");
-			return;
-		}
-
-		// Open the old BBI.TMP file
-		if ( ( pBBPOld = fopen( fileBBPTmp, "rb" ) )==NULL )
-		{
-			ConOut("[ERROR]\n\t  couldn't open all the BBP files needed, aborting!\n");
-			fclose( pBBPNew );
-			return;
-		}
-
-		// Make sure ALL files opened ok
-		if ( feof(pBBPNew) || feof(pBBPOld) )
-		{
-			fclose( pBBPNew );
-			fclose( pBBPOld );
-
-			// Delete the new file if it exists
-			remove ( fileName );
-
-			// Put the old file name back
-			rename( fileBBPTmp, fileName );
-
-			ConOut("[ERROR]\n\t  couldn't open all the BBP files needed, aborting!\n");
-			break;
-		}
-
-		// Determine what type of file this is and initialize its starting post serial number accordingly
-		switch ( fileName[strlen(filePath)] )
-		{
-			// global.bbp
-			case 'g':
-				newPostSN = 0x01000000;
-				break;
-
-			// region.bbp
-			case 'r':
-				newPostSN = 0x02000000;
-				break;
-
-				// local.bbp ( ie 40000000.bbp )
-			default:
-				newPostSN = 0x03000000;
-				break;
-		}
-
-		// Save the newPostSN for the BBP file
-		basePostSN = newPostSN;
-
-		// Write out the new base SN to the new BBI file
-		LongToCharPtr(newPostSN, msg +0);
-
-		if ( fwrite( msg, sizeof(char), 4, pBBINew ) != 4 )
-			ConOut("[FAIL]\n\tMsgBoardMaintenance() Failed to write out newPostSN to pBBINew\n");
-
-		// Now lets find out what posts we keep and what posts to remove
-
-		// Fill post2Keep array with all posts that are not marked for deletion or past the retention period
-		// Ignore first 4 bytes of bbi file as this is reserverd for the current max message serial number being used
-		if ( fseek( pBBIOld, 4, SEEK_SET ) )
-		{
-			ConOut("[FAIL]\n\tMsgBoardMaintenance() failed to seek to first message segment in pBBIOld\n");
-			return;
-		}
-
-		// Loop until we have reached the end of the BBI file
-		while ( !feof(pBBIOld) 	&& (loopexit < MAXLOOPS) )
-		{
-			//Increment progress dots
-			ConOut(".");
-
-			// Fill up msg with data from the bbi file
-			if ( fread( msg, sizeof(char), 19, pBBIOld ) != 19 )
-				if ( feof(pBBIOld) ) break;
-
-			// Day that post was created
-			postDay = ShortFromCharPtr(msg +7);
+		// Day that post was created
+		postDay = ShortFromCharPtr(msg +7);
 
 			// Calculate the age of this post;
 			postAge = dayOfYear - postDay;
