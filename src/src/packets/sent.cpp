@@ -1612,11 +1612,7 @@ bool nPackets::Received::CreateChar::execute(pClient client)
 	pc->SetPriv2(defaultpriv2);
 	pc->setProfile("");
 
-	sLocation charpos;
-	charpos.x= str2num(start[StartingLocation][2]);
-	charpos.y= str2num(start[StartingLocation][3]);
-	charpos.dispz= charpos.z= str2num(start[StartingLocation][4]);
-	pc->MoveTo( charpos );
+	pc->MoveTo(startLocations[StartingLocation]->position);
 
 	pc->dir=4;	//should be facing north. not that it matters :D
 	pc->namedeedserial=INVALID;

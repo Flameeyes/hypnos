@@ -594,8 +594,9 @@ void cNetwork::GoodAuth(pClient client)
 	{
 		memset(login04d, 0, 63);
 		login04d[0]=i;
-		for (j=0;j<=strlen(start[i][0]);j++) login04d[j+1]=start[i][0][j];
-		for (j=0;j<=strlen(start[i][1]);j++) login04d[j+32]=start[i][1][j];
+		
+		strncpy(login04d+1, startLocations[i]->city.c_str(), 30);
+		strncpy(login04d+32, startLocations[i]->place.c_str(), 30);
 		Xsend(s, login04d, 63);
 	}
 

@@ -334,77 +334,6 @@ void commitserverscript() // second phase setup
 {
  	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
-	if (startcount<9)
-	{
-		if (startcount==0)
-		{   //default starting locz
-			ConOut("\n  Warning no starting locations... defaulting to classic ones!\n");
-			strcpy(start[startcount][0], "Yew");
-			strcpy(start[startcount][1], "The Sturdy Bow");
-			strcpy(start[startcount][2], "567");
-			strcpy(start[startcount][3], "978");
-			strcpy(start[startcount][4], "0");
-			startcount++;
-			strcpy(start[startcount][0], "Minoc");
-			strcpy(start[startcount][1], "The Barnacle Tavern");
-			strcpy(start[startcount][2], "2477");
-			strcpy(start[startcount][3], "407");
-			strcpy(start[startcount][4], "15");
-			startcount++;
-			strcpy(start[startcount][0], "Britain");
-			strcpy(start[startcount][1], "Sweet Dreams Inn");
-			strcpy(start[startcount][2], "1496");
-			strcpy(start[startcount][3], "1629");
-			strcpy(start[startcount][4], "10");
-			startcount++;
-			strcpy(start[startcount][0], "Moonglow");
-			strcpy(start[startcount][1], "The Scholars Inn");
-			strcpy(start[startcount][2], "4404");
-			strcpy(start[startcount][3], "1169");
-			strcpy(start[startcount][4], "0");
-			startcount++;
-			strcpy(start[startcount][0], "Trinsic");
-			strcpy(start[startcount][1], "The Traveller's Inn");
-			strcpy(start[startcount][2], "1844");
-			strcpy(start[startcount][3], "2745");
-			strcpy(start[startcount][4], "0");
-			startcount++;
-			strcpy(start[startcount][0], "Magincia");
-			strcpy(start[startcount][1], "The Great Horns Tavern");
-			strcpy(start[startcount][2], "3738");
-			strcpy(start[startcount][3], "2223");
-			strcpy(start[startcount][4], "20");
-			startcount++;
-			strcpy(start[startcount][0], "Jhelom");
-			strcpy(start[startcount][1], "The Morning Star Inn");
-			strcpy(start[startcount][2], "1378");
-			strcpy(start[startcount][3], "3817");
-			strcpy(start[startcount][4], "0");
-			startcount++;
-			strcpy(start[startcount][0], "Skara Brae");
-			strcpy(start[startcount][1], "The Falconers Inn");
-			strcpy(start[startcount][2], "594");
-			strcpy(start[startcount][3], "2227");
-			strcpy(start[startcount][4], "0");
-			startcount++;
-			strcpy(start[startcount][0], "Vesper");
-			strcpy(start[startcount][1], "The Ironwood Inn");
-			strcpy(start[startcount][2], "2771");
-			strcpy(start[startcount][3], "977");
-			strcpy(start[startcount][4], "0");
-			startcount++;
-		}
-		ConOut("\n  Warning, insufficient starting locations... padding...\n");
-		for (; startcount<9; startcount++)
-		{
-			strcpy(start[startcount][0], start[0][0]);
-			strcpy(start[startcount][1], start[0][1]);
-			strcpy(start[startcount][2], start[0][2]);
-			strcpy(start[startcount][3], start[0][3]);
-			strcpy(start[startcount][4], start[0][4]);
-		}
-	}
-
 	data::setPath( Map_File, std::string( temp_map ) );
 	data::setPath( StaIdx_File, std::string( temp_staidx ) );
 	data::setPath( Statics_File, std::string( temp_statics ) );
@@ -995,65 +924,13 @@ void saveserverscript()
 	fprintf(file, "}\n\n\n\n");
 
 
-	fprintf(file, "SECTION BLOCK_ACC_PSS\n");		//elcabesa tempblock
-	fprintf(file, "{\n");							//elcabesa tempblock
+	fprintf(file, "SECTION BLOCK_ACC_PSS\n");						//elcabesa tempblock
+	fprintf(file, "{\n");									//elcabesa tempblock
 	fprintf(file, "// set to 1 if you want an account blocked due to many bad password\n");	//elcabesa tempblock
-	fprintf(file, "BLOCKACCBADPASS %i\n",server_data.blockaccbadpass);						//elcabesa tempblock
+	fprintf(file, "BLOCKACCBADPASS %i\n",server_data.blockaccbadpass);			//elcabesa tempblock
 	fprintf(file, "// number of times you can mistake password before account will be blocked.\n");	//elcabesa tempblock
-	fprintf(file, "N_BADPASS %i\n",server_data.n_badpass);								//elcabesa tempblock
-	fprintf(file, "// time in minutes the account stay blocked\n");							//elcabesa tempblock
-	fprintf(file, "TIME_BLOCKED %i\n",server_data.time_badpass);							//elcabesa tempblock
+	fprintf(file, "N_BADPASS %i\n",server_data.n_badpass);					//elcabesa tempblock
+	fprintf(file, "// time in minutes the account stay blocked\n");				//elcabesa tempblock
+	fprintf(file, "TIME_BLOCKED %i\n",server_data.time_badpass);				//elcabesa tempblock
 	fprintf(file, "}\n\n");
-}
-
-int cfg_command (char *commandstr)
-{
-	char b[80];
-	int i;
-
-	//copy, uppercase and truncate
-	for (i=0; i<79; i++)
-	{
-		if ((commandstr[i]>='a')&&(commandstr[i]<='z'))
-			b[i] = commandstr[i]+ 'A'-'a';
-		else b[i] = commandstr[i];
-		if (b[i]=='\0') break;
-	}
-	b[79] = '\0'; //xan -> truncate to avoid overflowz
-
-	char *section = b;
-	char *property = NULL;
-	char *value = NULL;
-	int ln = strlen(b);
-
-	for (i=0; i<ln; i++)
-	{
-		if (b[i]=='.')
-		{
-			b[i]='\0';
-			property = b+i+1;
-			break;
-		}
-	}
-
-	if (property==NULL) return -3;
-
-	ln = strlen(property);
-
-	for (i=0; i<ln; i++)
-	{
-		if ((property[i]==' ')||(property[i]=='=')||(property[i]==':')||(property[i]==','))
-		{
-			property[i]='\0';
-			value = property+i+1;
-			break;
-		}
-	}
-	if (value==NULL) return -4;
-
-	gprop = property;
-	gval = value;
-
-	//now we have section, property and value.. parse them all :)
-	return chooseSection(section, parseCfgLine);
 }

@@ -441,6 +441,7 @@ int main(int argc, char *argv[])
 	ConOut("\n");
 	SetGlobalVars();
 
+	loadStartLocations();
 	nSkills::loadSkills();
 	nJails::loadJails();
 	cWeapon::loadWeaponsInfo();
