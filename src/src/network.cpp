@@ -901,23 +901,17 @@ char cNetwork::LogOut(pClient client)//Instalog
 	if (! ( p_multi = pc->getMulti() ) )
 		p_multi = findmulti( pc->getPosition() );
 
-	if ( p_multi && !valid)//It they are in a multi... and it's not already valid (if it is why bother checking?)
-	{
-		pack= pc->getBackpack();
-		if( pack)
+	if ( p_multi && !valid && (pack = pc->getBackpack()) )
+	{ //It they are in a multi... and it's not already valid (if it is why bother checking?)
+	
+		pItem key = NULL
+		
+		while( (key = pack->searchForType(ITYPE_KEY)) )
 		{
-			NxwItemWrapper si;
-			si.fillItemsInContainer( pack, false );
-			for( si.rewind(); !si.isEmpty(); si++ ) {
-
-				pItem p_ci=si.getItem();
-				if (! p_ci )
-					if (p_ci->type==ITYPE_KEY &&
-						(p_multi->getSerial() == calcserial(p_ci->more1, p_ci->more2, p_ci->more3, p_ci->more4)) )
-					{//a key to this multi
-						valid=1;//Log 'em out now!
-						break;
-					}
+			if ( p_multi->getSerial() == key->more1.more )
+			{
+				valid = true;
+				break;
 			}
 		}
 	}
@@ -937,19 +931,18 @@ char cNetwork::LogOut(pClient client)//Instalog
 	sw.fillOnline( pc, true );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		pClient client =sw.getSocket();
-		if( s!=INVALID )
-			impowncreate(s,pc,0);
+		pClient client = sw.getSocket();
+		if ( ! client ) return;
+		
+		client->impOwnCreate(pc, 0);
 	}
-
 	return valid;
-
 }
 
 /*!
 \brief Receive data from a socket
 \param s the socket to receive from
-\param x the numero of bytes to receive
+\param x the number of bytes to receive
 \param a the buffer offset
 \return the number of actually read bytes
 */

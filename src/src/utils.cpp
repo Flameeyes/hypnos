@@ -260,9 +260,6 @@ void dooruse(pChar pc, pItem pi)
 	if ( j != H_FRIEND && ( pi->getOwner() != pc ) )
 		return;
 	
-	if ( s == INVALID )
-		return;
-	
 	if (SrvParms->housedecay_secs!=0)
 		ds=((pi2->time_unused)*100)/(SrvParms->housedecay_secs);
 	else ds=INVALID;
@@ -355,18 +352,12 @@ std::string getSextantCoords(sPoint p, sPoint center)
 	free(temp);
 	
 	return ret;
-	
 }
 
 /*!
 \brief trade System
 \author Magius(CHE)
-\return int ?
-\param npc ?
-\param pi ?
-\param value ?
-\param goodtype ?
-\todo write documentation
+\todo Try to take a look to what is this and document it
 */
 int calcGoodValue(pChar npc, pItem pi, int value,int goodtype)
 {
@@ -392,4 +383,3 @@ int calcGoodValue(pChar npc, pItem pi, int value,int goodtype)
 
 	return value;
 }
-

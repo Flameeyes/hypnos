@@ -13,9 +13,9 @@ static const uint16_t MAX_MAP_CELLS = 0xFFFF;	//!< Maximum count of cells
 static const uint8_t REGION_GRIDSIZE = 32;	//!< Horizontal size of the grid
 static const uint8_t REGION_COLSIZE = 32;	//!< Vertical size of the grid
 
-static const uint16_t REGION_X_CELLS = MAP_WIDTH/REGION_GRIDSIZE;
+static const uint16_t REGION_X_CELLS = (map_width*8)/REGION_GRIDSIZE;
 						//!< Count of X Cells
-static const uint16_t REGION_Y_CELLS = MAP_HEIGHT/REGION_COLSIZE;
+static const uint16_t REGION_Y_CELLS = (map_height*8)/REGION_COLSIZE;
 						//!< Count of Y Cells
 
 struct region_st
