@@ -46,7 +46,7 @@ void cScheduler::restart()
 \note This function also set the minimum interval time for the scheduler to
 	sleep.
 */
-cScheduler::cEvent::cEvent(std::string funcName, uint32_t nInterval, cScheduler *parent)
+cScheduler::sEvent::sEvent(std::string funcName, uint32_t nInterval, cScheduler *parent)
 {
 	if ( funcName.length() == 0 || ! nInterval )
 	{
@@ -108,7 +108,7 @@ cScheduler::cScheduler()
 			}
 			
 			try {
-				new cEvent( n->data(), cVariant( n->getAttribute("interval") ).toUInt32(), this );
+				new sEvent( n->data(), cVariant( n->getAttribute("interval") ).toUInt32(), this );
 			} catch ( MXML::NotFoundError e ) {
 				LogWarning("Incomplete node in schedules.xml, ignoring");
 				continue;

@@ -36,8 +36,7 @@ class cScheduler : public Wefts::Thread
 {
 protected:
 	//! Scheduled event
-	class cEvent {
-	public:
+	struct sEvent {
 		pFunctionHandle callback;
 			//!< Script function to call to run the schedule
 		uint32_t interval;
@@ -49,7 +48,7 @@ protected:
 		cEvent(std::string funcName, uint32_t interval, cScheduler *parent);
 	};
 	
-	typedef std::list<cEvent*> EventsList;
+	typedef std::list<sEvent*> EventsList;
 				//!< List of scheduled events
 	
 	EventsList events;	//!< Scheduled events
