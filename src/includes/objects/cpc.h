@@ -43,6 +43,13 @@ protected:
 	virtual uint16_t eventsNumber() const
 	{ return evtPcMax; }
 
+	/*!
+	\brief Effect done when moving as a gm
+	\li \c 0 None
+	\li \c 1 Flamestrike (standard)
+	\li \c 2-6 Different sparkles
+	*/
+	uint8_t gmMoveEff;
 public:
 	virtual const std::string getPopupHelp() const;
 	
@@ -56,6 +63,7 @@ public:
 	void deadAttack (pChar victim);  //if dead and trying to attack someone...
 	
 	bool isGM();	//!< Returns true if is a gm or gm-like player
+	void doGmEffect();
 
 //@{
 /*!

@@ -91,7 +91,6 @@ public:
 	virtual const std::string getPopupHelp() const = 0;
 	void MoveTo(sLocation newloc);
 	void loadEventFromScript(char *script1, char *script2);
-	void doGmEffect();
 	
 protected:
 	pClient client;		//!< Client connected with the character
@@ -464,8 +463,8 @@ public:
 \name Skills and doubleclicking
 */
 public:
-	uint32_t skilldelay;
-	uint32_t objectdelay;
+	uint32_t skilldelay;	//!< Timeout of delay between two skill uses
+	uint32_t objectdelay;	//!< Timeout of delay between two object uses
 public:
 	void singleClick(pClient client);	//!< \c this is the clicked char, client is the client of the clicker
 	void doubleClick(pClient client);	//!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
@@ -547,26 +546,23 @@ public:
 	int32_t			stm; // Stamina
 	int32_t			mn;  // Mana
 	int32_t			mn2; // Reserved for calculation
-	uint16_t		baseskill[ALLSKILLS+1]; // Base skills without stat modifiers
-	uint16_t		skill[ALLSKILLS+1]; // List of skills (with stat modifiers)
 
-	uint32_t			robe; // Serial number of generated death robe (If char is a ghost)
+	uint32_t		robe; // Serial number of generated death robe (If char is a ghost)
 	uint8_t			fixedlight; // Fixed lighting level (For chars in dungeons, where they dont see the night)
 	char			speech; // For NPCs: Number of the assigned speech block
-	uint32_t			att; // Intrinsic attack (For monsters that cant carry weapons)
-	uint32_t			def; // Intrinsic defense
+	uint32_t		att; // Intrinsic attack (For monsters that cant carry weapons)
+	uint32_t		def; // Intrinsic defense
 	char			wresmove; // Luxor: for Wrestling's special moves
 
 	uint32_t		timeout; // Combat timeout (For hitting)
 	uint32_t		timeout2; // memory of last shot timeout
 
 	uint32_t		invistimeout;
-	int32_t			hunger;  // Level of hungerness, 6 = full, 0 = "empty"
-	uint32_t		hungertime; // Timer used for hunger, one point is dropped every 20 min
+	uint8_t			hunger;  //!< Level of hungerness, 6 = full, 0 = "empty"
+	uint32_t		hungertime; //!< Timer used for hunger, one point is dropped every 20 min
 	int32_t			callnum; //GM Paging
 	int32_t			playercallnum; //GM Paging
 	int32_t			pagegm; //GM Paging
-	//char region;
 	uint8_t			region;
 
 	int32_t			combathitmessage;
@@ -577,7 +573,6 @@ public:
 	int32_t			spattack;
 	uint32_t		spadelay;
 	uint32_t		spatimer;
-	int32_t			taming; //Skill level required for taming
 	uint32_t		summontimer; //Timer for summoned creatures.
 	uint32_t		fishingtimer; // Timer used to delay the catching of fish
 
@@ -606,7 +601,7 @@ public:
 	std::wstring* staticProfile;			//!< player static profile
 
 
-	uint32_t		murderrate; //!< # of ticks until one murder decays //REPSYS
+	uint32_t		murderrate; //!< # of ticks until one murder decays
 	uint32_t		murdersave; //!< # of second for murder decay
 
 	uint32_t		crimflag; //!< Time when No longer criminal -1=Not Criminal
@@ -619,23 +614,20 @@ public:
 
 	int32_t			squelched; //!< zippy  - squelching
 	uint32_t		mutetime; //!< Time till they are UN-Squelched.
-	//int32_t statuse[3]; //Morrolan - stat/skill cap STR/INT/DEX in that order
-	//int32_t skilluse[skTrueSkills][1]; //Morrolan - stat/skill cap
-	uint8_t			lockSkill[ALLSKILLS+1]; // LB, client 1.26.2b skill managment
-	int32_t			stealth; //AntiChrist - stealth ( steps already done, -1=not using )
-	uint32_t		running; //AntiChrist - Stamina Loose while running
-	uint32_t		lastRunning; //Luxor
-	int32_t			logout; //Time till logout for this char -1 means in the world or already logged out //Instalog
-	//uint32_t swing;
+	uint8_t			lockSkill[ALLSKILLS+1];
+	int32_t			stealth; //!< stealth ( steps already done, -1=not using )
+	uint32_t		running; //!< Stamina Loose while running
+	uint32_t		lastRunning;
+	int32_t			logout; //!< Time till logout for this char -1 means in the world or already logged out //Instalog
 
-	uint32_t		holdg; // Gold a player vendor is holding for Owner
-	char			fly_steps; // number of step the creatures flies if it can fly
-	uint32_t		smoketimer; // LB
+	uint32_t		holdg; //!< Gold a player vendor is holding for Owner
+	char			fly_steps; //!< number of step the creatures flies if it can fly
+	uint32_t		smoketimer;
 	uint32_t		smokedisplaytimer;
 
-	uint32_t		antispamtimer;//LB - anti spam
+	uint32_t		antispamtimer; //!< anti spam
 
-	uint32_t		antiguardstimer;//AntiChrist - anti "GUARDS" spawn
+	uint32_t		antiguardstimer;//!< anti "GUARDS" spawn
 
 	int32_t			carve; //AntiChrist - for new carve system
 
@@ -693,13 +685,6 @@ public:
 
 	bool			isInBackpack( pItem pi );
 	void			addGold(uint16_t totgold);
-
-	// The bit for setting what effect gm movement
-	// commands shows
-	// 0 = off
-	// 1 = FlameStrike
-	// 2-6 = Sparkles
-	int32_t			gmMoveEff;
 
 	int32_t			getTeachingDelta(pChar pPlayer, int32_t skill, int32_t sum);
 	void			removeItemBonus(cItem* pi);
@@ -808,7 +793,6 @@ public:
 	bool		knowsSpell(magic::SpellId spellnumber);
 
 public:
-	uint32_vector lootVector;
 	virtual void Delete();
 //@{
 /*!

@@ -10,6 +10,9 @@
 \brief cChar's effects (graphics and sound) methods
 */
 
+#include "enums.h"
+#include "objects/cchar.h"
+
 /*!
 \author Luxor
 \brief Does a missed sound effect for combat
@@ -27,15 +30,13 @@ void cChar::doMissedSoundEffect()
 }
 
 /*!
-\author Flameeyes (port)
 \brief Plays a monster sound effect
-\param sfx sound effect
-\note ported from sndpkg.cpp, i'm not the original author - Flameeyes
+\param sfx Sound effect type
 */
 void cChar::playMonsterSound(MonsterSound sfx)
 {
 	pCreatureInfo creature = creatures.getCreature( getId() );
-	if( creature==NULL )
+	if( ! creature )
 		return;
 
 	uint16_t s = creature->getSound( sfx );
@@ -43,107 +44,41 @@ void cChar::playMonsterSound(MonsterSound sfx)
 		client->playSFX( s );
 }
 
-
-
-/*!
-\brief Function for the different gm movement effects
-\author Aldur
-\remarks
-	\remark if we can find new effects they can be added here and will be active
-	for 'go 'goiter 'goplace 'whilst and 'tell for gm's and counselors
-	\remark
-		\li 0 = none
-		\li 1 = flamestrike
-		\li 2 - 6 = different sparkles
-*/
-void cChar::doGmEffect()
-{
-	if ( isPermaHidden() )
-		return;
-	
-	switch( gmMoveEff )
-	{
-	case 1:	// flamestrike
-		locationFX( sLocation(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x3709, 9, 25, false);
-		client->playSFX( 0x0802);
-		break;
-
-	case 2: // sparklie (fireworks wand style)
-		locationFX( sLocation(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x373A, 9, 25, false);
-		break;
-
-	case 3: // sparklie (fireworks wand style)
-		locationFX( sLocation(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x374A, 9, 25, false);
-		break;
-
-	case 4: // sparklie (fireworks wand style)
-		locationFX( sLocation(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x375A, 9, 25, false);
-		break;
-
-	case 5: // sparklie (fireworks wand style)
-		locationFX( sLocation(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x376A, 9, 25, false);
-		break;
-
-	case 6: // sparklie (fireworks wand style)
-		locationFX( sLocation(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x377A, 9, 25, false);
-		break;
-	}
-}
-
 /*!
 \brief Makes the char doing an action
 \author Luxor
+\param action ID of the action to play
 */
 void cChar::playAction(uint16_t action)
 {
 	switch (action)
 	{
-		case 0x1A:// Mining-Gravedigging
-		case 0x0B:
-			if (onhorse)
-				action = 0x1A;
-			else
-				action = 0x0b;
-			break;
-		case 0x1C:// LumberJacking-Bowcraft
-		case 0x0D:
-			if (onhorse)
-				action = 0x1C;
-			else
-				action = 0x0D;
-			break;
-		case 0x1D:// Swordtarget
-			// case 0x0D:
-			if (onhorse)
-				action = 0x1D;
-			else
-				action = 0x0D;
-			break;
-		case 0x0A:// Fist Fighting
-			if (onhorse)
-				action = 0x1A;
-			else
-				action = 0x0A;
-			break;
-		case 0x0E:// Smelting irons
-			if (onhorse)
-				action = 0x1C;
-			else
-				action = 0x0E;
-			break;
-		case 0x09:// Working ingots
-			if (onhorse)
-				action = 0x1A;
-			else
-				action = 0x09;
-			break;
-		case 0x14:// These can be done only if not onhorse
-		case 0x22:
-			if (onhorse)
-				action = 0x00;
-			break;
-		default:
-			break;
+	case 0x1A:// Mining-Gravedigging
+	case 0x0B:
+		action = onhorse ? 0x1A : 0x0B;
+		break;
+	case 0x1C:// LumberJacking-Bowcraft
+	case 0x0D:
+		action = onhorse ? 0x1C : 0x0D;
+		break;
+	case 0x1D:// Swordtarget
+	// case 0x0D:
+		action = onhorse ? 0x1D : 0x0D;
+		break;
+	case 0x0A:// Fist Fighting
+		action = onhorse ? 0x1A : 0x0A;
+		break;
+	case 0x0E:// Smelting irons
+		action = onhorse ? 0x1C : 0x0E;
+		break;
+	case 0x09:// Working ingots
+		action = onhorse ? 0x1A : 0x09;
+		break;
+	case 0x14:// These can be done only if not onhorse
+	case 0x22:
+		if (onhorse)
+			action = 0x00;
+		break;
 	}
 
 	if ( ! action )

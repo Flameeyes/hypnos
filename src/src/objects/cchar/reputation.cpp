@@ -116,8 +116,6 @@ void cChar::modifyFame( int32_t value )
 
 /*!
 \brief increase or decrease the karma of the char
-\author Endymion
-\since 0.82a
 \param value positive or negative value to add to karma
 \param pKilled ptr to killed char
 \note every increase of karma has a related event

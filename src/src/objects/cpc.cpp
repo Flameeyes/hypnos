@@ -495,3 +495,44 @@ uint16_t cPC::calcAtt()
 
 	return RandomNum(pi->lodamage, pi->hidamage);
 }
+
+/*!
+\brief Function for the different gm movement effects
+
+If we can find new effects they can be added here and will be active
+for 'go 'goiter 'goplace 'whilst and 'tell for gm's and counselors
+*/
+void cPC::doGmEffect()
+{
+	static const sPositionOffset GmFXOffset(1,1,10);
+	if ( isPermaHidden() )
+		return;
+	
+	switch( gmMoveEff )
+	{
+	case 1:	// flamestrike
+		nEffects::locationFX( getPosition() + GmFXOffset, 0x3709, 9, 25, false);
+		client->playSFX( 0x0802);
+		break;
+
+	case 2: // sparklie (fireworks wand style)
+		nEffects::locationFX( getPosition() + GmFXOffset, 0x373A, 9, 25, false);
+		break;
+
+	case 3: // sparklie (fireworks wand style)
+		nEffects::locationFX( getPosition() + GmFXOffset, 0x374A, 9, 25, false);
+		break;
+
+	case 4: // sparklie (fireworks wand style)
+		nEffects::locationFX( getPosition() + GmFXOffset, 0x375A, 9, 25, false);
+		break;
+
+	case 5: // sparklie (fireworks wand style)
+		nEffects::locationFX( getPosition() + GmFXOffset, 0x376A, 9, 25, false);
+		break;
+
+	case 6: // sparklie (fireworks wand style)
+		nEffects::locationFX( getPosition() + GmFXOffset, 0x377A, 9, 25, false);
+		break;
+	}
+}
