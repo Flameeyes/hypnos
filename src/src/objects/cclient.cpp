@@ -12,6 +12,7 @@
 
 #include "cclient.h"
 #include "settings.h"
+#include "misc.h"
 
 static ClientSList cClient::clients;
 static ClientSList cClient::cGMs;
@@ -560,9 +561,6 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 
 	pc_currchar->disturbMed(); // Meditation
 
-	tile_st item;
-	data::seekTile( pi->getId(), item );
-
 	// Check if item is equipped
 	pContainer container=pi->getOutMostCont();
 	pEquippable equipcont = dynamic_cast<pEquippable> container;
@@ -735,18 +733,14 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 	{
 		updateStatusWindow(pi);
 
-		tile_st tile;
-		data::seekTile( pi->getId(), tile);
-
-		if (!pc_currchar->IsGM() && (( pi->magic == 2 || ((tile.weight == 255) && ( pi->magic != 1))) && !pc_currchar->canAllMove() )  ||
-			(( pi->magic == 3|| pi->magic == 4) && !pc_currchar->isOwnerOf( pi )))
+		if ( ! isMovable(pc_currchar, pi) )
 		{
 			nPackets::Sent::BounceItem pk(0);
 			sendPacket(&pk);
 			if (isDragging()) // only restore item if it got dragged before !!!
 			{
 				resetDragging();
-				item_bounce4( pi );
+				item_bounce4(pi);
 			}
 		} // end of can't get
 		else
@@ -866,14 +860,13 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 	pChar pc= currChar();
 	if ( ! pc ) return;
 
-	tile_st tile;
-
 	sLocation charpos = pc->getPosition();
 
 
 	if (pi->getId() >= 0x4000)
 	{
 		sysmessage("Hey, putting houses in your pack crashes your back and client!");
+		return;
 	}
 
 	//ndEndy recurse only a time
@@ -1011,9 +1004,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 		return;
 	}
 
-	data::seekTile(pi->getId(), tile);
-	if ((((pi->magic==2)||((tile.weight==255)&&(pi->magic!=1)))&&!pc->canAllMove) ||
-				( (pi->magic==3|| pi->magic==4) && !(pi->getOwner()==pc)))
+	if ( ! isMovable(pc, pi) )
 	{
 		nPackets::Sent::BounceItem pk(5);
 		sendPacket(&pk);
@@ -1192,8 +1183,6 @@ void cClient::dump_item(pItem pi, sLocation &loc) // Item is dropped on the grou
 {
 	if ( ! pi ) return;
 
-	tile_st tile;
-
 	pChar pc=currChar();
 	if ( ! pc ) return;
 
@@ -1216,9 +1205,7 @@ void cClient::dump_item(pItem pi, sLocation &loc) // Item is dropped on the grou
 		return;
 	}
 
-	data::seekTile(pi->getId(), tile);
-	if (!pc->IsGM() && ((pi->magic==2 || (tile.weight==255 && pi->magic!=1))&&!pc->canAllMove()) ||
-		( (pi->magic==3 || pi->magic==4) && !(pi->getOwner()==pc)))
+	if ( ! isMovable(pc, pi) )
 	{
 		item_bounce6(pi);
 		return;
@@ -1686,9 +1673,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 		return;
 	}
 
-	tile_st tile;
-	data::seekTile( pi->getId(), tile);
-	if ((((pi->magic==2)||((tile.weight==255)&&(pi->magic!=1))) && !pc->canAllMove()) || ( (pi->magic==3|| pi->magic==4) && !isOwnerOf(pi)) )
+	if ( ! isMovable(pc, pi) )
 	{
 		item_bounce6(pi);
 		return;

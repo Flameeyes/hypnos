@@ -36,5 +36,6 @@ int fillIntArray(char* str, int *array, int maxsize, int defval = -1, int base =
 int RandomNum(int nLowNum, int nHighNum);
 
 bool isWaterTile(sPoint pt);
+bool isMovable(pChar pc, pItem pi);
 
 #endif

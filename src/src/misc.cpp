@@ -892,3 +892,18 @@ bool isWaterTile(sPoint pt)
 	return tiledataLand->getFlags(map.id) & nMULFiles::flagTileWet;
 
 }
+
+/*!
+\brief Checks if an item can be moved by the given player
+\author Flameeyes
+\param pc Player who's trying to move the item
+\param pi Item which is trying to be moved
+\retval true The item can be moved
+\retval false The item can't be moved
+*/
+bool isMovable(pChar pc, pItem pi)
+{
+	return pc->isGM() ||
+		(pc->canAllMove() && ( pi->magic == 2 || ( tiledataStatic->getWeight(getId()) && (pi->magic != 1) ) ) )||
+		(pi->getOwner() == pc && ( pi->magic == 3 || pi->magic == 4 ));
+}
