@@ -105,6 +105,6 @@ public:
 	{ return isWeaponLike( getId(), STAVE1H, STAVE2H, MACE2H ); }
 
 //@}
-} PACK_NEEDED;
+};
 
 #endif

@@ -893,6 +893,6 @@ public:
 
 	uint32_vector lootVector;
 	virtual void Delete();
-} PACK_NEEDED;
+};
 
 #endif

@@ -649,7 +649,7 @@ public:
 
 public:
 	virtual void	Delete();
-} PACK_NEEDED;
+};
 
 extern bool LoadItemEventsFromScript (pItem pi, char *script1, char *script2);
 

@@ -218,6 +218,6 @@ public:
 
 	uint32_t disabled;		//!< Disabled object timer, cant trigger.
 	std::string* disabledmsg;	//!< Object is disabled, so display this message.
-} PACK_NEEDED;
+};
 
 #endif	// __OBJECT_H
