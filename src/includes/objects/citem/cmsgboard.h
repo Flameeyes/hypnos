@@ -33,7 +33,7 @@ public:
 	\brief Message board message
 	\author Chronodt & Flameeyes
 	*/
-	class cMessage
+	class cMessage : public cItem
 	{
 	protected:
 		pPC poster;		//!< Poster pc, NULL if autoposted
@@ -41,12 +41,10 @@ public:
 		std::string body;	//!< body of message
 		time_t posttime;	//!< time of posting
 		PostType availability;  //!< local/regional/general post
-		int region;		//!< if REGIONAL avalaibility, region contains a region number based on worlddata (see sregions.cpp/h)
 		QuestType qtype;	//!< type of quest
 		pMessage replyof;	//!< serial of post of whom this is reply of. If 0 this is a new post
 		bool autopost;		//!< true if autoposted by server
 		uint32_t targetnpc;	//!< if LOCAL post it is unused, if quest contains the serial of the target of the quest
-		uint32_t targetite;	//!<
 	
 	public:
 		cMessage();
@@ -62,7 +60,6 @@ public:
 protected:
 	
 	static MessageList globalMsgs;
-	static std::map<uint32_t, MessageList> regionalMsgs;
 public:
 //@{
 /*!

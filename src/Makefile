@@ -9,9 +9,6 @@
 #
 ###############################################################################
 
-CXXFLAGS	= -I $(PWD)/includes/ -pipe
-export LIBADD	= -lpthread -lmxmlplus -lwefts 
-
 export SUBDIRS  = src src/abstraction src/archs src/backend src/encryption src/extras src/objects src/objects/cchar src/objects/citem src/objects/cnpc src/races src/skills
 
 export SOURCES := $(foreach dir, $(SUBDIRS), $(wildcard $(dir)/*.cpp))
@@ -63,6 +60,4 @@ clean:
 	@echo -e "\tCLEAN"
 	@rm -f $(OBJECTS) $(TARGET) $(TARGET).exe
 
-.cpp.o:
-	@echo -e "\tCXX   $@"
-	$(CXX) $(CXXBASEFLAGS) $(CXXFLAGS) -c -o $@ $<
+include makefiles/Makefile.inc

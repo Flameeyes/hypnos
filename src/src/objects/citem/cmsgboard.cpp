@@ -21,61 +21,16 @@
 
 void cMsgBoardMessage::Delete()
 {
-/*
-
-All in this comment range is done by cItem::Delete() at the bottom of this method...
-
-	nPackets::Sent::DeleteObject pk(serial);
-
-        //! \todo replace this when sets redone
-
-
-
-        NxwSocketWrapper sc;
-        sc.fillOnline( this );
-	for ( sc.rewind(); !sc.isEmpty(); sc++ ) {
-		pClient ps = sc.getClient();
-		if ( ps != NULL )
-			ps->sendPacket(&pk);
-	}
-*/
         switch (availability)
         {
-        case LOCALPOST: //Here we need only to disconnect local MsgBoard
+        case ptLocalPost: //Here we need only to disconnect local MsgBoard
                 // Disconnecting relations from bullettin board which was linked to
         	cBBRelations::iterator it = find(cMsgBoards::BBRelations.begin(),cMsgBoards::BBRelations.end(), cBBRelations::pair(getContainer()->getSerial(), serial));
 	        if (it != cMsgBoards::BBRelations.end()) cMsgBoards::BBRelations.erase(it);
                 break;
-        case REGIONALPOST: //Here, instead, we have to disconnect ALL msgBoard in the same region as the board in which the message was originally posted to
-
-        	pair<cMsgBoards::iterator, cMsgBoards::iterator> it = cMsgBoard::getBoardsinRegion(region);
-                if (it.first == cMsgBoards::MsgBoards.end()) break;	//If no msgboards in region, bail out
-                /*
-                We now have a range it.first-it.second of msgBoards that are in the same region as the message to be deleted. (they are returned
-                as first in region - first in next region, so they are never the same unless they are both end(), and it means no msgboards in region)
-                Since they are all in the same region, due to RegionSort, this range is sorted by serial number now, and we use this fact:
-                BBrelations key is the serial and sorted in the same way, so the find algorithm will NOT need to research from the beginning
-                each time. In addition, find algorithm looks for the first (and should be the only) occurrence of the pair, so the search is much
-                more time efficient than a whole search from the beginning for each msgboard in region
-                */
-                cBBRelations::iterator bbit = cMsgBoards::BBRelations.begin();
-                for(; (it.first != it.second) && (bbit != cMsgBoards::BBRelations.end()); ++it.first)
-                {
-                        //finding the current serial and set it for next search, since it will be only on following serials
-			bbit = find(bbit,cMsgBoards::BBRelations.end(), cBBRelations::pair((*itbegin)->getSerial(), serial));
-               	        //bbit now contains the iterator that points to the pair msgboard serial - message serial to delete
-                       	if (bbit == cMsgBoards::BBRelations.end() && ((*bbit) != cBBRelations::pair((*itbegin)->getSerial(), serial)) )
-                        {
-                        	// if for any chance bbit reaches the end of the set (meaning no pair has been found) we skip deletion of that
-                                // message and begin again from the beginning with next mex. It really is a really bad case scenario because
-                                // it SHOULD never get to this, but this way we could avoid deleting last connection uselessly if something goes
-                                // wrong :D
-                        	bbit = cMsgBoards::BBRelations.begin();
-                                continue;
-                        }
-                        BBRelations.erase(bbit++);
-       	        }
-                break;
+        case ptRegionalPost:
+		//! \todo Need to rewrite the Regional Post when Regions are completed, until that, break
+		break;
         case GLOBALPOST:  //Obiously, we need to disconnect this from ALL MsgBoards
                 for(cMsgBoards::iterator it = cMsgBoards::MsgBoards.begin(); (it != cMsgBoards::MsgBoards.end()); ++it)
                 {
@@ -96,30 +51,26 @@ cMsgBoardMessage::cMsgBoardMessage()
 
 cMsgBoardMessage::cMsgBoardMessage(uint32_t serial) : cItem(serial)
 {
-//	setSerial(serial);
         region = -1;
 
         availability = LOCALPOST;
-        poster = -1;
-        replyof = 0;
+        poster = NULL;
+        replyof = NULL;
         qtype = QTINVALID;
 	autopost = false;
-        targetserial = -1;
+        targetnpc = -1;
 
         // With this line, creating a post sets also automatically the current time, so when it is not startup,
         // there is no need to set it :D
         time( &posttime );
 
-
         setAnimId(0xeb0): //Model ID for msgboards items
 
         MsgBoardMessages.push_back(this)
-
 }
 
 cMsgBoardMessage::~cMsgBoardMessage()
 {
-        MsgBoardMessages.erase(find(MsgBoardMessages.begin(), MsgBoardMessages.end(), this));
 }
 
 /*!
@@ -266,14 +217,12 @@ cMsgBoard::cMsgBoard()
 
 cMsgBoard::cMsgBoard(uint32_t serial) : cItem(serial)
 {
-        MsgBoards.push_back(this)
+	
 }
 
 cMsgBoard::~cMsgBoard()
 {
-	MsgBoards.erase(find(MsgBoards.begin(), MsgBoards.end(), this));
 }
-
 
 /*!
 \param client player client
@@ -285,19 +234,17 @@ void cMsgBoard::getPostType( pClient client )
 	pPC pc = client->currChar();
 	if ( ! pc ) return;
 
-	PostType type = pc->postType;
-
-	switch ( type )
+	switch ( pc->postType )
 	{
-		case LOCALPOST: // LOCAL post
+		case ptLocalPost:
 			client->sysmessage("Currently posting LOCAL messages");
 			break;
 
-		case REGIONALPOST: // REGIONAL post
+		case ptRegionalPost:
 			client->sysmessage("Currently posting REGIONAL messages");
 			break;
 
-		case GLOBALPOST: // GLOBAL POST
+		case ptGlobalPost:
 			client->sysmessage("Currently posting GLOBAL messages");
 			break;
 	}
@@ -324,15 +271,15 @@ void cMsgBoard::setPostType( pClient client, PostType nPostType )
 	switch ( nPostType )
 	{
 		case LOCALPOST: // LOCAL post
-			client->sysmessage("Post type set to LOCAL");
+			client->sysmessage("Post type set to local");
 			break;
 
 		case REGIONALPOST: // REGIONAL post
-			client->sysmessage("Post type set to REGIONAL");
+			client->sysmessage("Post type set to regional");
 			break;
 
 		case GLOBALPOST: // GLOBAL POST
-			client->sysmessage("Post type set to GLOBAL");
+			client->sysmessage("Post type set to global");
 			break;
 	}
 	return;
@@ -748,9 +695,6 @@ void cMsgBoard::removeQuestMessage(uint32_t messageserial)
         for (; (*it)->getSerial() != messageserial && it != MsgBoardMessages.end(); ++it) {}
         if (it != MsgBoardMessages.end()) (*it)->Delete();
 }
-
-
-
 
 /*!
 \brief Message board mainteinance
