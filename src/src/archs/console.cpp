@@ -98,7 +98,7 @@ void tConsoleInterface::output(tInterface::Level lev, const std::string &str)
 	static Wefts::Mutex m;
 	m.lock();
 	
-	std::ostream outs = std::cout;
+	std::ostream *outs = &std::cout;
 	
 	// Set the color
 	switch(lev)
@@ -106,31 +106,31 @@ void tConsoleInterface::output(tInterface::Level lev, const std::string &str)
 	case tInterface::levPlain:
 		break;
 	case tInterface::levError:
-		outs = std::cerr;
-		AnsiOut(outs, "\x1B[1;31m");
-		outs << "E " << getDateString() << " - ";
+		outs = &std::cerr;
+		AnsiOut(*outs, "\x1B[1;31m");
+		*outs << "E " << getDateString() << " - ";
 		break;
 	case tInterface::levWarning:
-		outs = std::cerr;
-		AnsiOut(outs, "\x1B[1;33m");
-		outs << "W " << getDateString() << " - ";
+		outs = &std::cerr;
+		AnsiOut(*outs, "\x1B[1;33m");
+		*outs << "W " << getDateString() << " - ";
 		break;
 	case tInterface::levInformation:
-		AnsiOut(outs, "\x1B[1;34m");
-		outs << "i " << getDateString() << " - ";
+		AnsiOut(*outs, "\x1B[1;34m");
+		*outs << "i " << getDateString() << " - ";
 		break;
 	case tInterface::levPanic:
-		outs = std::cerr;
-		AnsiOut(outs, "\x1B[1;31m");
-		outs << "! " << getDateString() << " - ";
+		outs = &std::cerr;
+		AnsiOut(*outs, "\x1B[1;31m");
+		*outs << "! " << getDateString() << " - ";
 		break;
 	}
 	
-	outs << str;
+	*outs << str;
 	
 	// Close the colored part
 	if ( lev != tInterface::levPlain )
-		AnsiOut(outs, "\x1B[0m");
+		AnsiOut(*outs, "\x1B[0m");
 	
 	m.unlock();
 }

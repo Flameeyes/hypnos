@@ -121,12 +121,12 @@ std::string getDateString()
 	
 	std::ostringstream sout;
 	
-	sout 	<< "["	<< std::ios::setw(2) << std::ios::setfill(0) << T->tm_mday
-		<< "/"	<< std::ios::setw(2) << std::ios::setfill(0) << T->tm_mon + 1
-		<< "/"	<< std::ios::setw(4) << std::ios::setfill(0) << T->tm_year + 1900
-		<< " "	<< std::ios::setw(2) << std::ios::setfill(0) << T->tm_hour 
-		<< ":"	<< std::ios::setw(2) << std::ios::setfill(0) << T->tm_min
-		<< ":"	<< std::ios::setw(2) << std::ios::setfill(0) << T->tm_sec
+	sout 	<< "["	<< std::setw(2) << std::setfill(0) << T->tm_mday
+		<< "/"	<< std::setw(2) << std::setfill(0) << T->tm_mon + 1
+		<< "/"	<< std::setw(4) << std::setfill(0) << T->tm_year + 1900
+		<< " "	<< std::setw(2) << std::setfill(0) << T->tm_hour 
+		<< ":"	<< std::setw(2) << std::setfill(0) << T->tm_min
+		<< ":"	<< std::setw(2) << std::setfill(0) << T->tm_sec
 		<< "]";
 
 	return sout.str();
