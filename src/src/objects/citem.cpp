@@ -34,7 +34,7 @@ uint32_t cItem::newSerial()
 	uint32_t nserial;
 	do {
 		nserial = nextSerial++;
-		if ( nserial >= 0 )
+		if ( nserial >= 0x80000000 )
 			nserial = 0x40000000;
 		if ( ! firstpass && nserial == fserial )
 		{
