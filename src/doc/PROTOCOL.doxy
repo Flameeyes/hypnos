@@ -1,0 +1,92 @@
+/*!
+\page protocol UO Protocol
+\author Flameeyes
+
+\section authnote Author's Note
+
+This is a small page with some infos about the Ultima Online's proocol, which
+I'm writing to clarify the misteries of the emulator to who want to help us or 
+fork to write a new emulator.
+
+I'm not the developer who wrote the actual network code for Hypnos emulator, 
+this was \b Chronodt. But I designed and prepared its structure (the base
+packet classes and the cClient / cSocket interface).
+
+For all the details about the protocol itself, Chrono should write a deeper
+documentation. What I'm trying to explain here are the details of the structure
+not the protocol itself.
+
+\section tags Versions tags
+Sometimes in the documentation you find some brief with strange tags like
+[UO4]. These are "notes" for the devel to know that the variable, the
+function or whatever is for only one UO-Protocol version.
+
+\b [UO3] Represent Ultima Online: The Third Age (3D client) specific variables.
+
+\b [UO4] Represent Ultima Online: Age of Shadows specific variables, functions
+      and so on.
+
+These function need to be identified becase we can find why a function
+isn't called in some clients or servers.
+
+\section endian Endianness
+
+The 'endian' of an hardware platform can be either little or big. This states
+how the processor (and then all the hardware and software) must store integers
+variables in memory and on disk.
+
+Intel architecture is little endian, PowerPC (Macintosh) architecture is big
+endian. The big endian is sometime called 'natural way' or 'network endian'.
+The first name is dued to the way the big endian stores the integers: for
+example the value of the 0x0123 word is stored in big endian with the ordered
+bytes 0x01 0x23, instead in little endian it will be stored reversed: 0x23 0x01.
+
+The second name, <i>network endian</i> is used because quite all the binary
+protocols (inclused IP and TCP protocols), uses this endian to store the
+integer data.
+
+Also UO's protocol is a big endian protocol, so because the development of UO
+server emulators started on Intel machines, a way to convert from the little to
+the big endian was needed.
+
+I don't actually know which of our 'parents' invented the LongToCharPtr() and
+sibling functions, but I found them on NoX-Wizard, and them worked quite fine:
+they didn't relay on the internal structure of the integer variable, but only
+on the declared position of the bits. This works everywhere, but it's quite
+slow when done a lot of times subsequently.
+
+My solution was to use two functions that every operating system (yes, also
+Windows) provides: hton and ntoh. These acronymes stands for Host to Network
+and Network to Host, and relates about the endiannes. On Intel (or in general
+on little endian machines) these functions swaps the bytes of the passed
+variable, instead they do nothing if the machine is already big endian (such as
+an Apple machine). These functions are now used inside the four conversion 
+functions, which should only be called inside packet forging functions, so we
+should, in the future, move them away from the 'general' functions.
+
+\see LongToCharPtr()
+\see LongFromCharPtr()
+\see ShortToCharPtr()
+\see ShortFromCharPtr()
+
+\section links Links
+
+To find out how the UO protocol works, we used some documents where we can find
+information about the packets that the clients and server sends, and also the 
+comments that was present inside the old networking code.
+
+If you want to take a look to the documents which describes the UO protocol
+itself, you can take a look to one of the following links:
+
+\li http://cvs.sourceforge.net/viewcvs.py/freeuoclients/Docs/detailed_packets.htm?rev=HEAD
+	<b>Jerrith's UO Packets guide</b> took from freeuoclients project,
+	contains not only the packets (and quite \b all the packets), but also
+	many useful constants' descriptions.
+\li http://steamengine.sourceforge.net/uo_packets.php <b>Steam Engine's packet
+	guide</b> this guide is quite short, but contains some useful infos
+	that are cleaner than other guides.
+\li http://gonzo.kiev.ua/guide/node1.html <b>The WolfPack Hackers' Guide</b>
+	One of the oldest guides I personally used, because was the reference
+	for NoX-Wizard networking interface.
+
+*/
