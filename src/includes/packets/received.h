@@ -605,57 +605,64 @@ public:
 \name Packet Reception
 \author Chronodt
 */
-class cPacketReceiveCreateChar          : public cPacketReceive;	//!< Character creation
-class cPacketReceiveDisconnectNotify    : public cPacketReceive;	//!< "software disconnect"
-class cPacketReceiveMoveRequest         : public cPacketReceive;	//!< move (or run) 1 step
-class cPacketReceiveTalkRequest         : public cPacketReceive;	//!< character speech (NOT UNICODE!!)
-class cPacketReceiveAttackRequest       : public cPacketReceive;        //!< Clients requests an armed/unarmed attack request against someone
-class cPacketReceiveDoubleclick         : public cPacketReceive;	//!< Use of item or info on char
-class cPacketReceivePickUp              : public cPacketReceive;	//!< trying to pick up an item
-class cPacketReceiveDropItem            : public cPacketReceive;	//!< releasing mouse button and dropping item dragged. Position check too
-class cPacketReceiveSingleclick         : public cPacketReceive;	//!< info/name request for item/char
-class cPacketReceiveActionRequest       : public cPacketReceive;	//!< skill/magic use (spells from macros i believe) and generic action, like salute or bow
-class cPacketReceiveWearItem            : public cPacketReceive;	//!< drag of item on paperdoll. Check if equippable too
-class cPacketReceiveMoveACK_ResyncReq   : public cPacketReceive;	//!< move acknowdlege or if it sends a 0x220000, resends data to client
-class cPacketReceiveRessChoice          : public cPacketReceive;	//!< once it was used for a ress choice(ghost or revive with skill penalties?) now only used for bounty placement
-class cPacketReceiveStatusRequest       : public cPacketReceive;	//!< statusbar request about a char
-class cPacketReceiveSetSkillLock        : public cPacketReceive;	//!< skill lock change (up, down, lock)
-class cPacketReceiveBuyItems            : public cPacketReceive;	//!< receive list of items selected from a buy list of vendor
-class cPacketReceiveMapPlotCourse       : public cPacketReceive;	//!< pin change for a course on map. Also all pin-related action on map
-class cPacketReceiveLoginChar       	: public cPacketReceive;
-class cPacketReceiveBookPage		: public cPacketReceive;        //!< receives a changed book page
-class cPacketReceiveTargetSelected      : public cPacketReceive;        //!< target selected (for whatever asked for it :D)
-class cPacketReceiveSecureTrade         : public cPacketReceive;	//!< secure trade conclusion (change in the secure trade window's checkmark)
-class cPacketReceiveBBoardMessage       : public cPacketReceive;	//!< almost all msgboard activity except opening the board itself comes here
-class cPacketReceiveWarModeChange       : public cPacketReceive;        //!< warmode change request
-class cPacketReceivePing	        : public cPacketReceive;        //!< Ping of client. Obiously server answers :D
-class cPacketReceiveRenameCharacter     : public cPacketReceive;	//!< client tries to rename a character
-class cPacketReceiveDialogResponse      : public cPacketReceive;
-class cPacketReceiveLoginRequest        : public cPacketReceive;
-class cPacketReceiveDeleteCharacter     : public cPacketReceive;        //!< client tries to delete a char from login window
-class cPacketReceiveGameServerLogin     : public cPacketReceive;
-class cPacketReceiveBookUpdateTitle     : public cPacketReceive;	//!< change title of book
-class cPacketReceiveDyeItem             : public cPacketReceive;	//!< dye item (returns color selected in dye menu)
-class cPacketReceiveRequestHelp	        : public cPacketReceive;        //!< gm/conselor page request
-class cPacketReceiveSellItems           : public cPacketReceive;        //!< receive list of items selected from a sell list of vendor
-class cPacketReceiveSelectServer        : public cPacketReceive;
-class cPacketReceiveTipsRequest         : public cPacketReceive;
-class cPacketReceiveGumpTextDialogReply : public cPacketReceive;
-class cPacketReceiveUnicodeSpeechReq    : public cPacketReceive;	//!< unicode speech request from client
-class cPacketReceiveGumpResponse        : public cPacketReceive;
-class cPacketReceiveChatMessage       	: public cPacketReceive;
-class cPacketReceiveChatWindowOpen      : public cPacketReceive;
-class cPacketReceivePopupHelpRequest    : public cPacketReceive;
-class cPacketReceiveCharProfileRequest  : public cPacketReceive;	//!< update or asks for character profile and title (char profile is the one on the paperdoll's scroll)
-class cPacketReceiveClientVersion       : public cPacketReceive;        //!< during login, client sends its version
-class cPacketReceiveAssistVersion       : public cPacketReceive;
-class cPacketReceiveMiscCommand         : public cPacketReceive;	//!< multipurpouse packet. It ranges from party commands to fastwalk prevention, gumps and menu
-class cPacketReceiveTextEntryUnicode    : public cPacketReceive;
-class cPacketReceiveClientViewRange     : public cPacketReceive;	//!< Client sends its (wanted) view area in "squares" (from 5 to 18). If server replyes with same packet, it gets activated
-class cPacketReceiveLogoutStatus        : public cPacketReceive;	//!< if client receives a certain flag on packet 0xa9 on login, sends this packet when logging out and expects a reply before disconnecting
-class cPacketReceiveNewBookHeader       : public cPacketReceive;	//!< more up-to-date book header communication (only difference found: variable-length title and author)
-class cPacketReceiveFightBookSelection  : public cPacketReceive;	//!< fightbook icon selection
+#define RECEIVE_PACKET(A) \
+class A : public cPacketReceive { \
+	bool execute(pClient client); \
+};
+
+RECEIVE_PACKET(cPacketReceiveCreateChar)	//!< Character creation
+RECEIVE_PACKET(cPacketReceiveDisconnectNotify)	//!< "software disconnect"
+RECEIVE_PACKET(cPacketReceiveMoveRequest)	//!< move (or run) 1 step
+RECEIVE_PACKET(cPacketReceiveTalkRequest)	//!< character speech (NOT UNICODE!!)
+RECEIVE_PACKET(cPacketReceiveAttackRequest)	//!< Clients requests an armed/unarmed attack request against someone
+RECEIVE_PACKET(cPacketReceiveDoubleclick)	//!< Use of item or info on char
+RECEIVE_PACKET(cPacketReceivePickUp)		//!< trying to pick up an item
+RECEIVE_PACKET(cPacketReceiveDropItem)		//!< releasing mouse button and dropping item dragged. Position check too
+RECEIVE_PACKET(cPacketReceiveSingleclick)	//!< info/name request for item/char
+RECEIVE_PACKET(cPacketReceiveActionRequest)	//!< skill/magic use (spells from macros i believe) and generic action, like salute or bow
+RECEIVE_PACKET(cPacketReceiveWearItem)		//!< drag of item on paperdoll. Check if equippable too
+RECEIVE_PACKET(cPacketReceiveMoveACK_ResyncReq)	//!< move acknowdlege or if it sends a 0x220000, resends data to client
+RECEIVE_PACKET(cPacketReceiveRessChoice)	//!< once it was used for a ress choice(ghost or revive with skill penalties?) now only used for bounty placement
+RECEIVE_PACKET(cPacketReceiveStatusRequest)	//!< statusbar request about a char
+RECEIVE_PACKET(cPacketReceiveSetSkillLock)	//!< skill lock change (up, down, lock)
+RECEIVE_PACKET(cPacketReceiveBuyItems)		//!< receive list of items selected from a buy list of vendor
+RECEIVE_PACKET(cPacketReceiveMapPlotCourse)	//!< pin change for a course on map. Also all pin-related action on map
+RECEIVE_PACKET(cPacketReceiveLoginChar)
+RECEIVE_PACKET(cPacketReceiveBookPage)		//!< receives a changed book page
+RECEIVE_PACKET(cPacketReceiveTargetSelected)	//!< target selected (for whatever asked for it :D)
+RECEIVE_PACKET(cPacketReceiveSecureTrade)	//!< secure trade conclusion (change in the secure trade window's checkmark)
+RECEIVE_PACKET(cPacketReceiveBBoardMessage)	//!< almost all msgboard activity except opening the board itself comes here
+RECEIVE_PACKET(cPacketReceiveWarModeChange)	//!< warmode change request
+RECEIVE_PACKET(cPacketReceivePing)		//!< Ping of client. Obiously server answers :D
+RECEIVE_PACKET(cPacketReceiveRenameCharacter)	//!< client tries to rename a character
+RECEIVE_PACKET(cPacketReceiveDialogResponse)
+RECEIVE_PACKET(cPacketReceiveLoginRequest)
+RECEIVE_PACKET(cPacketReceiveDeleteCharacter)	//!< client tries to delete a char from login window
+RECEIVE_PACKET(cPacketReceiveGameServerLogin)
+RECEIVE_PACKET(cPacketReceiveBookUpdateTitle)	//!< change title of book
+RECEIVE_PACKET(cPacketReceiveDyeItem)		//!< dye item (returns color selected in dye menu)
+RECEIVE_PACKET(cPacketReceiveRequestHelp)	//!< gm/conselor page request
+RECEIVE_PACKET(cPacketReceiveSellItems)		//!< receive list of items selected from a sell list of vendor
+RECEIVE_PACKET(cPacketReceiveSelectServer)
+RECEIVE_PACKET(cPacketReceiveTipsRequest)
+RECEIVE_PACKET(cPacketReceiveGumpTextDialogReply)
+RECEIVE_PACKET(cPacketReceiveUnicodeSpeechReq)	//!< unicode speech request from client
+RECEIVE_PACKET(cPacketReceiveGumpResponse)
+RECEIVE_PACKET(cPacketReceiveChatMessage)
+RECEIVE_PACKET(cPacketReceiveChatWindowOpen)
+RECEIVE_PACKET(cPacketReceivePopupHelpRequest)
+RECEIVE_PACKET(cPacketReceiveCharProfileRequest)//!< update or asks for character profile and title (char profile is the one on the paperdoll's scroll)
+RECEIVE_PACKET(cPacketReceiveClientVersion)	//!< during login, client sends its version
+RECEIVE_PACKET(cPacketReceiveAssistVersion)
+RECEIVE_PACKET(cPacketReceiveMiscCommand)	//!< multipurpouse packet. It ranges from party commands to fastwalk prevention, gumps and menu
+RECEIVE_PACKET(cPacketReceiveTextEntryUnicode)
+RECEIVE_PACKET(cPacketReceiveClientViewRange)	//!< Client sends its (wanted) view area in "squares" (from 5 to 18). If server replyes with same packet, it gets activated
+RECEIVE_PACKET(cPacketReceiveLogoutStatus)	//!< if client receives a certain flag on packet 0xa9 on login, sends this packet when logging out and expects a reply before disconnecting
+RECEIVE_PACKET(cPacketReceiveNewBookHeader)	//!< more up-to-date book header communication (only difference found: variable-length title and author)
+RECEIVE_PACKET(cPacketReceiveFightBookSelection)//!< fightbook icon selection
 //@}
+
+#undef RECEIVE_PACKET
 
 #endif
 

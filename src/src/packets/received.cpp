@@ -615,7 +615,7 @@ void cPacketSendMoveAcknowdledge::prepare()
         length = 3;
         buffer[0] = 0x22;
         buffer[1] = sequence;
-	buffer[2] = notoriety; //!\ todo change to real notoriety of pg
+	buffer[2] = notoriety; //!\todo change to real notoriety of pg
 /*
 notoriety:
 0 = invalid/across server line
