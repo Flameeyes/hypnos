@@ -76,9 +76,9 @@ pItem tradestart(pPC pc1, pPC pc2)
         pc1->getClient()->showItemInContainer(cont2);
         pc2->getClient()->showItemInContainer(cont2);
 
-        cont2->moreb = cont1->getSerial();
+        cont2->more2.more = cont1->getSerial();
 	cont2->morez=0;
-	cont1->moreb = cont2->getSerial();
+	cont1->more2.more = cont2->getSerial();
 	cont1->morez=0;
 
         uint8_t msg[90];
