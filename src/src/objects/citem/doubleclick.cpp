@@ -27,32 +27,25 @@ bool cItem::usableWhenLockedDown(pPc pc)
 //! \todo this function
 	switch(type)
         {
-        	case ITYPE_CONTAINER:
-                case ITYPE_LOCKED_ITEM_SPAWNER:
-		case ITYPE_SPELLBOOK:
-                case ITYPE_MAP:
-                case ITYPE_BOOK:
-                case ITYPE_DOOR:
-                case ITYPE_LOCKED_DOOR:
-                case ITYPE_RESURRECT:
-                case ITYPE_UNLOCKED_CONTAINER:
-		case ITYPE_LOCKED_CONTAINER:
-                case ITYPE_TRASH:
-                case ITYPE_SLOTMACHINE:
-                case ITYPE_DECIPHERED_MAP:
-                	return true;		// These items are always usable when locked down
+	case ITYPE_CONTAINER:		// These items are always usable when locked down
+	case ITYPE_LOCKED_ITEM_SPAWNER:
+	case ITYPE_SPELLBOOK:
+	case ITYPE_MAP:
+	case ITYPE_BOOK:
+	case ITYPE_DOOR:
+	case ITYPE_LOCKED_DOOR:
+	case ITYPE_RESURRECT:
+	case ITYPE_UNLOCKED_CONTAINER:
+	case ITYPE_LOCKED_CONTAINER:
+	case ITYPE_TRASH:
+	case ITYPE_DECIPHERED_MAP:
+		return true;
 
+	case ITYPE_KEY:			// these items can be used only by owner or house owner/coowner/friend when locked down
+		return pc == owner || ( inHouse && inHouse->isFriend(pc) );
 
-                case ITYPE_KEY:
-                	{
-                        	if (pc == owner) return true;
-                        	if (inHouse!= NULL)
-                                	if(inHouse->isFriend(pc)) return true;
-
-
-                	}	// these items can be used only by owner or house owner/coowner/friend when locked down
-        }
-        return false
+	}
+	return false;
 }
 
 /*!

@@ -32,14 +32,15 @@ pItem Check4Pack(pClient client)
 
 bool CheckInPack(pClient client, pItem pi)
 {
-    pItem pPack=Check4Pack(s);
-    VALIDATEPIR(pPack, false);
-    if (pi->getContSerial()!=pPack->getSerial())
-    {
-        sysmessage(s,"You can't use material outside your backpack");
-        return false;
-    }
-    return true;
+	pItem pPack=Check4Pack(s);
+	if ( ! pPack ) return false;
+	
+	if (pi->getContSerial()!=pPack->getSerial())
+	{
+		client->sysmessage("You can't use material outside your backpack");
+		return false;
+	}
+	return true;
 }
 
 
@@ -140,7 +141,7 @@ void Skills::target_fletching(pClient client, pTarget t )
 void Skills::target_bowcraft(pClient client, pTarget t )
 {
 	pChar pc_currchar = ps->currChar();
-	VALIDATEPC(pc_currchar);
+	if ( ! pc_currchar ) return;
 
 	pClient client = ps->toInt();
 
@@ -208,32 +209,34 @@ void Skills::target_carpentry(pClient client, pTarget t )
 */
 static bool ForgeInRange(pClient client)
 {
-    pChar pc = cSerializable::findCharBySerial(currchar[s]);
-	VALIDATEPCR(pc, false);
-
+	pPC pc = client->currChar();
+	if ( ! pc ) return false;
+	
 	NxwItemWrapper si;
 	si.fillItemsNearXYZ( pc->getPosition(), 3, false );
-	for( si.rewind(); !si.isEmpty(); si++ ) {
-        pItem pi=si.getItem();
+	for( si.rewind(); !si.isEmpty(); si++ )
+	{
+		pItem pi=si.getItem();
 		if( pi && pi->IsForge())
 			return true;
-    }
-    return false;
+	}
+	return false;
 }
 
 static bool AnvilInRange(pClient client)
 {
-    pChar pc = cSerializable::findCharBySerial( currchar[s]);
-	VALIDATEPCR(pc, false);
+	pPC pc = client->currChar();
+	if ( ! pc ) return false;
 
 	NxwItemWrapper si;
 	si.fillItemsNearXYZ( pc->getPosition(), 3, false );
-	for( si.rewind(); !si.isEmpty(); si++ ) {
-        pItem pi=si.getItem();
-        if(pi->IsAnvil())
+	for( si.rewind(); !si.isEmpty(); si++ )
+	{
+		pItem pi=si.getItem();
+		if(pi->IsAnvil())
 			return true;
-    }
-    return false;
+	}
+	return false;
 }
 
 /*!
@@ -648,7 +651,7 @@ void Skills::target_smeltOre(pClient client, pTarget t )
             else
             {
                 pItem pix=cSerializable::findItemBySerial( t->buffer[0] );
-				VALIDATEPI( pix );
+		if ( ! pix ) return;
 
                 AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMXSMELTORE), pc->getSerial(), pix->getColor(), pix->getSerial());
             }
@@ -661,117 +664,89 @@ void Skills::target_smeltOre(pClient client, pTarget t )
 
 void Skills::target_wheel(pClient client, pTarget t )	//Spinning wheel
 {
-    pChar pc_currchar = ps->currChar();
-	VALIDATEPC(pc_currchar);
-    pItem pi=cSerializable::findItemBySerial( t->getClicked() );
-    if ( ! pi ) return;
+	pChar pc_currchar = ps->currChar();
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
+	if ( ! pc || ! pi ) return;
 
 	int mat = t->buffer[0];
 
-    int tailme=0;
+	if( ! (pi->getId() >= 0x10A4 && pi->getId() <= 0x10A6) || ! pc_currchar->hasInRange(pi, 3) )
+	{
+		client->sysmessage("You cant tailor here.");
+		return;
+	}
+	
+	if (!pc_currchar->checkSkill(skTailoring, 0, 1000))
+	{
+		client->sysmessage("You failed to spin your material.");
+		return;
+	}
 
-
-    if( pi->getId() >= 0x10A4 || pi->getId() <= 0x10A6 )
-    {
-        if( pc_currchar->hasInRange(pi, 3) )
-        {
-            if (!pc_currchar->checkSkill(skTailoring, 0, 1000))
-            {
-                pc_currchar->sysmsg("You failed to spin your material.");
-                return;
-            }
-
-            pItem pti=cSerializable::findItemBySerial( t->buffer[1] );   // on error return
-			VALIDATEPI(pti);
-
-            pc_currchar->sysmsg("You have successfully spun your material.");
-
-            if (mat==YARN)
-            {
-                pti->setCurrentName("#");
-                pti->setId( 0x0E1D );
-                pti->amount=pti->amount*3;
-            }
-            else if (mat==THREAD)
-            {
-                pti->setCurrentName("#");
-                pti->setId( 0x0FA0 );
-                pti->amount=pti->amount*3;
-            }
-
-            pti->setCanDecay(true);
-            pti->Refresh();
-            tailme=1;
-        }
-    }
-
-    if(!tailme)
-		pc_currchar->sysmsg("You cant tailor here.");
+	pItem pti = cSerializable::findItemBySerial( t->buffer[1] );
+	if ( ! pti ) return;
+	
+	client->sysmessage("You have successfully spun your material.");
+	
+	pti->setCurrentName("");
+	pti->amount *= 3;
+	pti->setId( mat == YARN ? 0x0E1D : 0x0FA0 );
+	
+	pti->setCanDecay(true);
+	pti->Refresh();
 }
 
 void Skills::target_loom(pClient client, pTarget t )
 {
-    pChar pc_currchar = ps->currChar();
-	VALIDATEPC(pc_currchar);
-	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
-	if ( ! pi ) return;
+	pChar pc_currchar = ps->currChar();
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
+	if ( ! pc_currchar || ! pi ) return;
 
-	int tailme=0;
-
-	if (pi->magic!=4) // Ripper
+	if ( pi->magic == 4 || ! ( pi->getId() >= 0x105F && pi->getId() <= 0x1066 ) || ! pc_currchar->hasInRange(pi, 3) )
 	{
-		if ( pi->getId() >= 0x105F && pi->getId() <= 0x1066 )
-		{
-			if( pc_currchar->hasInRange(pi, 3) )
-			{
-				pItem pti=cSerializable::findItemBySerial( t->buffer[0] );
-				VALIDATEPI(pti);
+		client->sysmessage("You can't tailor here.");
+		return;
+	}
+	
+	pItem pti = cSerializable::findItemBySerial( t->buffer[0] );
+	if ( ! pti ) return;
 
-				if(pti->amount<5)
-				{
-					pc_currchar->sysmsg("You do not have enough material to make anything!");
-					return;
-				}
-
-				if (!pc_currchar->checkSkill(skTailoring, 300, 1000))
-				{
-					pc_currchar->sysmsg("You failed to make cloth.");
-					pc_currchar->sysmsg("You have broken and lost some material!");
-					pti->ReduceAmount( 1+(rand() % (pti->amount)));
-					pti->Refresh();
-					return;
-				}
-
-				switch( pti->getId() )
-				{
-					case 0x0E1E: // Yarn
-					case 0x0E1D:
-					case 0x0E1F:
-						pc_currchar->sysmsg("You have made your cloth.");
-						pti->setCurrentName("#");
-						pti->setId( 0x175D );
-						pti->setCanDecay(true);
-						pti->setAmount((pti->amount-1)*10);
-						break;
-					case 0x0FA0: // Thread
-					case 0x0FA1:
-						pc_currchar->sysmsg("You have made a bolt of cloth.");
-						pti->setCurrentName("#");
-						pti->setId( 0x0F95 );
-						pti->setCanDecay(true);
-						pti->setAmount(pti->amount*0.25);
-						break;
-				}
-
-				pti->Refresh();
-
-				tailme=1;
-			}
-		}
+	if(pti->amount<5)
+	{
+		pc_currchar->sysmsg("You do not have enough material to make anything!");
+		return;
 	}
 
-	if(!tailme)
-		pc_currchar->sysmsg("You can't tailor here.");
+	if (!pc_currchar->checkSkill(skTailoring, 300, 1000))
+	{
+		pc_currchar->sysmsg("You failed to make cloth.");
+		pc_currchar->sysmsg("You have broken and lost some material!");
+		pti->ReduceAmount( 1+(rand() % (pti->amount)));
+		pti->Refresh();
+		return;
+	}
+
+	switch( pti->getId() )
+	{
+	case 0x0E1E: // Yarn
+	case 0x0E1D:
+	case 0x0E1F:
+		pc_currchar->sysmsg("You have made your cloth.");
+		pti->setCurrentName("#");
+		pti->setId( 0x175D );
+		pti->setCanDecay(true);
+		pti->setAmount((pti->amount-1)*10);
+		break;
+	case 0x0FA0: // Thread
+	case 0x0FA1:
+		pc_currchar->sysmsg("You have made a bolt of cloth.");
+		pti->setCurrentName("#");
+		pti->setId( 0x0F95 );
+		pti->setCanDecay(true);
+		pti->setAmount(pti->amount*0.25);
+		break;
+	}
+
+	pti->Refresh();
 }
 
 ////////////
@@ -781,48 +756,40 @@ void Skills::target_loom(pClient client, pTarget t )
 //
 void Skills::target_cookOnFire(pClient client, pTarget t )
 {
+	pChar pc_currchar = ps->currChar();
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
+	if ( ! pc_currchar || ! pi ) return;
 
-	pChar pc=ps->currChar();
-	if ( ! pc ) return;
+	uint16_t id = t->buffer[0];
+	std::string matname = t->buffer_str[0];
+	
+	if ( pi->magic == 4 )
+		return;
 
-	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
+        pItem piRaw = cSerializable::findItemBySerial( t->buffer[1] );
+	if ( ! piRaw || ! pc->isInBackpack(piRaw) || ! pi->IsCookingPlace() || ! pc->hasInRange(pi, 3) )
+	{
+		client->sysmessage("You cannot cook here");
+		return;
+	}
+                    
+	pc->playSFX(0x01DD);   // cooking sound
+	if (!pc->checkSkill(skCooking, 0, 1000))
+	{
+		piRaw->ReduceAmount(1+(rand() %(piRaw->amount)));
+		client->sysmessage("You failed to cook the %s and drop some into the ashes.", matname.c_str());
+		return;
+	}
+	
+	pItem pi=item::CreateFromScript( "$item_raw_fish", pc->getBackpack(), piRaw->amount );
 	if ( ! pi ) return;
 
-	short id = t->buffer[0];
-	std::string matname = t->buffer_str[0];
-
-    if (pi->magic!=4) // Ripper
-    {
-        pItem piRaw=MAKE_ITEM_REF( t->buffer[1] );
-		VALIDATEPI(piRaw);
-        if (pc->isInBackpack(piRaw))
-        {
-            if(pi->IsCookingPlace() )
-            {
-                if( pc->hasInRange(pi, 3) )
-                {
-                    pc->playSFX(0x01DD);   // cooking sound
-                    if (!pc->checkSkill(skCooking, 0, 1000))
-                    {
-                        piRaw->ReduceAmount(1+(rand() %(piRaw->amount)));
-                        pc->sysmsg("You failed to cook the %s and drop some into the ashes.", matname.c_str());
-                    }
-                    else
-                    {
-                        pItem pi=item::CreateFromScript( "$item_raw_fish", pc->getBackpack(), piRaw->amount );
-                        if ( ! pi ) return;
-
-                        pi->setCurrentName( "#" );
-                        pi->setId( id );
-                        pi->type=ITYPE_FOOD;
-                        pi->Refresh();
-                        piRaw->Delete();
-                        pc->sysmsg("You have cooked the %s,and it smells great.", matname.c_str());
-                    }
-                }
-            }
-        }
-    }
+	pi->setCurrentName("");
+	pi->setId( id );
+	pi->type = ITYPE_FOOD;
+	pi->Refresh();
+	piRaw->Delete();
+	client->sysmessage("You have cooked the %s,and it smells great.", matname.c_str());
 }
 
 
@@ -891,184 +858,6 @@ void Skills::target_detectHidden(pClient client, pTarget t )
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skDetectingHidden,AMX_AFTER);
 }
 
-void target_enticement2(pClient client, pTarget t )
-{
-
-	pChar pc=ps->currChar();
-	if ( ! pc ) return;
-
-	pChar pc_ftarg=cSerializable::findCharBySerial( t->getClicked() );
-	VALIDATEPC(pc_ftarg);
-
-	pClient client= ps->toInt();
-
-	ITEM inst = Skills::GetInstrument(s);
-	if (inst==INVALID)
-	{
-		sysmessage(s, "You do not have an instrument to play on!");
-		return;
-	}
-
-	if (pc->checkSkill( skEnticement, 0, 1000) && pc->checkSkill( skMusicianship, 0, 1000) )
-	{
-		pChar pc_target = cSerializable::findCharBySerial( t->buffer[0] );
-		VALIDATEPC(pc_target);
-		pc_target->ftargserial = pc_ftarg->getSerial();
-		pc_target->npcWander = WANDER_FOLLOW;
-		sysmessage(s, "You play your hypnotic music, luring them near your target.");
-		Skills::PlayInstrumentWell(s, inst);
-	}
-	else
-	{
-		sysmessage(s, "Your music fails to attract them.");
-		Skills::PlayInstrumentPoor(s, inst);
-	}
-}
-
-void Skills::target_enticement1(pClient client, pTarget t )
-{
-
-	pChar current=ps->currChar();
-	VALIDATEPC(current);
-
-	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
-	if ( ! pc ) return;
-
-	pClient client = ps->toInt();
-
-	ITEM inst = Skills::GetInstrument(s);
-	if (inst==INVALID)
-	{
-		sysmessage(s, "You do not have an instrument to play on!");
-		return;
-	}
-	if ( pc->IsInvul() || pc->shopkeeper )
-	{
-		sysmessage(s," You cant entice that npc!");
-		return;
-	}
-	if (pc->InGuardedArea())
-	{
-		sysmessage(s," You cant do that in town!");
-		return;
-	}
-	if (!pc->npc)
-		sysmessage(s, "You cannot entice other players.");
-	else
-	{
-		pTarget targ= clientInfo[s]->newTarget( new cCharTarget() );
-		targ->code_callback = target_enticement2;
-		targ->buffer[0]= pc->getSerial();
-		targ->send( ps );
-		ps->sysmsg("You play your music, luring them near. Whom do you wish them to follow?");
-		PlayInstrumentWell(s, inst);
-	}
-}
-
-
-void target_provocation2(pClient client, pTarget t )
-{
-	pChar Victim2 = cSerializable::findCharBySerial( t->getClicked() );
-	VALIDATEPC(Victim2);
-
-	pChar Player = ps->currChar();
-	VALIDATEPC(Player);
-	Location charpos= Player->getPosition();
-
-	pChar Victim1 = cSerializable::findCharBySerial( t->buffer[0] );
-	VALIDATEPC(Victim1);
-
-	pClient client =ps->toInt();
-
-	if (Victim2->InGuardedArea())
-	{
-		sysmessage(s,"You cant do that in town!");
-		return;
-	}
-	if (Victim1->isSameAs(Victim2))
-	{
-		sysmessage(s, "Silly bard! You can't get something to attack itself.");
-		return;
-	}
-
-	int inst = Skills::GetInstrument(s);
-	if (inst==INVALID)
-	{
-		sysmessage(s, "You do not have an instrument to play on!");
-		return;
-	}
-	if (Player->checkSkill( skMusicianship, 0, 1000))
-	{
-		Skills::PlayInstrumentWell(s, inst);
-		if (Player->checkSkill( skProvocation, 0, 1000))
-		{
-			if (Player->InGuardedArea() && ServerScp::g_nInstantGuard == 1) //Luxor
-				npcs::SpawnGuard(Player, Player, charpos.x+1, charpos.y, charpos.z); //ripper
-			sysmessage(s, "Your music succeeds as you start a fight.");
-		}
-		else
-		{
-			sysmessage(s, "Your music fails to incite enough anger.");
-			Victim2 = Player;		// make the targeted one attack the Player
-		}
-
-		Victim1->fight(Victim2);
-		Victim1->SetAttackFirst();
-
-		Victim2->fight(Victim1);
-		Victim2->ResetAttackFirst();
-
-		char temp[500];
-		sprintf(temp, "* You see %s attacking %s *", Victim1->getCurrentName().c_str(), Victim2->getCurrentName().c_str());
-
-		NxwSocketWrapper sw;
-		sw.fillOnline( Victim1, false );
-		for( sw.rewind(); !sw.isEmpty(); sw++ )
-		{
-			pClient i = sw.getClient();
-			if( !i ) continue;
-			
-			itemmessage(i, temp, Victim1->getSerial());
-		}
-	}
-	else
-	{
-		Skills::PlayInstrumentPoor(s, inst);
-		sysmessage(s, "You play rather poorly and to no effect.");
-	}
-}
-
-void Skills::target_provocation1(pClient client, pTarget t )
-{
-	pChar current=ps->currChar();
-	VALIDATEPC(current);
-
-	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
-	if ( ! pc ) return;
-
-	pClient client =ps->toInt();
-
-	int inst = Skills::GetInstrument(s);
-	if (inst==INVALID)
-	{
-		sysmessage(s, "You do not have an instrument to play on!");
-		return;
-	}
-
-	if (!pc->npc)
-		sysmessage(s, "You cannot provoke other players.");
-	else
-	{
-		pTarget targ=clientInfo[s]->newTarget( new cCharTarget() );
-		targ->code_callback=target_provocation2;
-		targ->buffer[0]=pc->getSerial();
-		targ->send( ps );
-		ps->sysmsg( "You play your music, inciting anger, and your target begins to look furious. Whom do you wish it to attack?");
-		PlayInstrumentWell(s, inst);
-	}
-}
-
-
 
 //////////////////////////
 // name:    AlchemyTarget
@@ -1078,15 +867,12 @@ void Skills::target_provocation1(pClient client, pTarget t )
 //
 void Skills::target_alchemy(pClient client, pTarget t )
 {
-
 	pChar pc_currchar = ps->currChar();
-	VALIDATEPC(pc_currchar);
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
+	if ( ! pc_currchar || ! pi ) return;
 
-	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
-	if ( ! pi ) return;
-
-	pItem pack= pc_currchar->getBackpack();    // Get the packitem
-	VALIDATEPI(pack);
+	pItem pack = pc_currchar->getBackpack();    // Get the packitem
+	if ( ! pack ) return;
 
 	pClient client = ps->toInt();
 
@@ -1106,24 +892,24 @@ void Skills::target_alchemy(pClient client, pTarget t )
 
 	if (!pfbottle)
 	{
-		sysmessage(s,"There is no bottle in your pack");
+		client->sysmessage("There is no bottle in your pack");
 		return;
 	}
 
-    switch (pi->getId())
-    {
-		case 0x0F7B: itemmenu( s, 7021 ); break;   // Agility,
-		case 0x0F84: itemmenu( s, 7022 ); break;   // Cure, Garlic
-		case 0x0F8C: itemmenu( s, 7023 ); break;   // Explosion, Sulfurous Ash
-		case 0x0F85: itemmenu( s, 7024 ); break;   // Heal, Ginseng
-		case 0x0F8D: itemmenu( s, 7025 ); break;   // Night sight
-		case 0x0F88: itemmenu( s, 7026 ); break;   // Poison, Nightshade
-		case 0x0F7A: itemmenu( s, 7027 ); break;   // Refresh,
-		case 0x0F86: itemmenu( s, 7028 ); break;   // Strength,
-		case 0x0E9B: break; // Mortar
-		default:
-            sysmessage(s,"That is not a valid reagent.");
-    }
+	switch (pi->getId())
+	{
+	case 0x0F7B: itemmenu( s, 7021 ); break;   // Agility,
+	case 0x0F84: itemmenu( s, 7022 ); break;   // Cure, Garlic
+	case 0x0F8C: itemmenu( s, 7023 ); break;   // Explosion, Sulfurous Ash
+	case 0x0F85: itemmenu( s, 7024 ); break;   // Heal, Ginseng
+	case 0x0F8D: itemmenu( s, 7025 ); break;   // Night sight
+	case 0x0F88: itemmenu( s, 7026 ); break;   // Poison, Nightshade
+	case 0x0F7A: itemmenu( s, 7027 ); break;   // Refresh,
+	case 0x0F86: itemmenu( s, 7028 ); break;   // Strength,
+	case 0x0E9B: break; // Mortar
+	default:
+		client->sysmessage("That is not a valid reagent.");
+	}
 }
 
 
@@ -1134,40 +920,39 @@ void Skills::target_alchemy(pClient client, pTarget t )
 void Skills::target_healingSkill(pClient client, pTarget t )
 {
 
-    pChar ph = ps->currChar();   // points to the healer
-	VALIDATEPC(ph);
-    pChar pp = cSerializable::findCharBySerial( t->getClicked() );; // pointer to patient
-	VALIDATEPC(pp);
+	pChar ph = ps->currChar();
+	pChar pp = dynamic_cast<pChar>( t->getClicked() );
+	if ( ! ph || ! pp ) return;
 
-    int j;
-    pItem pib=MAKE_ITEM_REF( t->buffer[0] );    // item index of bandage
-	VALIDATEPI(pib);
+	int j;
+	pItem pib = MAKE_ITEM_REF( t->buffer[0] );    // item index of bandage
+	if ( ! pib ) return;
 
-    AMXEXECSVTARGET( ph->getSerial(),AMXT_SKITARGS,HEALING,AMX_BEFORE);
-
-    if (!SrvParms->bandageincombat ) {
+	AMXEXECSVTARGET( ph->getSerial(),AMXT_SKITARGS,HEALING,AMX_BEFORE);
+	
+	if (!SrvParms->bandageincombat ) {
 		//pChar pc_att=cSerializable::findCharBySerial(ph->attackerserial);
 		if( ph->war/* || pp->war || ( pc_att && pc_att->war)*/)
 		{
-			ph->sysmsg("You can't heal while in a fight!");
+			client->sysmessage("You can't heal while in a fight!");
 			return;
 		}
 	}
 
 	if( !ph->hasInRange(pp, 1) )
 	{
-		ph->sysmsg("You are not close enough to apply the bandages.");
+		client->sysmessage("You are not close enough to apply the bandages.");
 		return;
 	}
 
 	if( ((pp->getId() != BODY_MALE) || (pp->getId() != BODY_FEMALE)) && !pp->tamed) //Used on non-human and controls if tamed
 
-        if ((ph->IsInnocent()) &&(ph->getSerial() != pp->getSerial()))
+        if ( ph->isInnocent() && ph != pp )
         {
-			ph->helpStuff(pp);
+		ph->helpStuff(pp);
         }
 
-	if (pp->dead)
+	if ( pp->isDead() )
 	{
 		if (ph->baseskill[HEALING] < 800 || ph->baseskill[skAnatomy]<800)
 			ph->sysmsg("You are not skilled enough to resurrect");
@@ -1177,14 +962,13 @@ void Skills::target_healingSkill(pClient client, pTarget t )
 				pp->resurrect();
 				ph->sysmsg("Because of your skill, you were able to resurrect the ghost.");
 			}
-            else
+			else
 				ph->sysmsg("You failed to resurrect the ghost");
 
 			SetTimerSec(&ph->objectdelay,SrvParms->objectdelay+SrvParms->bandagedelay);
 			pib->ReduceAmount(1);
-            return;
-        }
-
+			return;
+		}
 	}
 
 	if (pp->poisoned>0)
@@ -1241,7 +1025,7 @@ void Skills::target_healingSkill(pClient client, pTarget t )
 		}
 
 	}
-    else //Bandages used on a non-human
+	else //Bandages used on a non-human
 	{
 		if (!ph->checkSkill(skVeterinary,0,1000))
 			ph->sysmsg("You are not skilled enough to heal that creature.");
@@ -1255,10 +1039,10 @@ void Skills::target_healingSkill(pClient client, pTarget t )
 	}
 
 	SetTimerSec(&ph->objectdelay,SrvParms->objectdelay+SrvParms->bandagedelay);
-    pib->ReduceAmount(1);
-
-
-    AMXEXECSVTARGET( ph->getSerial(),AMXT_SKITARGS,HEALING,AMX_AFTER);
+	pib->ReduceAmount(1);
+	
+	
+	AMXEXECSVTARGET( ph->getSerial(),AMXT_SKITARGS,HEALING,AMX_AFTER);
 }
 
 void Skills::target_armsLore(pClient client, pTarget t )
@@ -1473,7 +1257,7 @@ void Skills::target_tame(pClient client, pTarget t )
 
 	int tamed=0;
 
-	if(line_of_sight(INVALID, pc->getPosition(), target->getPosition(), WALLS_CHIMNEYS+DOORS+FLOORS_FLAT_ROOFING)==0)
+	if(! line_of_sight(INVALID, pc->getPosition(), target->getPosition(), losWallsChimneys | losDoors | losRoofingFlat))
 		return;
 
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skTaming,AMX_BEFORE);

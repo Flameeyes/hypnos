@@ -73,8 +73,8 @@ std::string cObject::getRandomScriptValue( std::string section, std::string& sec
 
 cObject::cObject()
 {
-	setCurrentName("#");
-	setSecondaryName("#");
+	setCurrentName("");
+	setSecondaryName("");
 	serial.serial32 = INVALID;
 	multi_serial.serial32 = INVALID;
 	OwnerSerial.serial32 = INVALID;

@@ -786,7 +786,7 @@ void target_expPotion( pClient ps, pTarget t )
 
 	pClient client =ps->toInt();
 
-	if(!line_of_sight(s, pc->getPosition(), loc, WALLS_CHIMNEYS + DOORS + ROOFING_SLANTED))
+	if(!line_of_sight(s, pc->getPosition(), loc, losWallsChimneys | losDoors | losRoofingSlanted))
 	{
 		pc->sysmsg("You cannot throw the potion there!");
 		return;

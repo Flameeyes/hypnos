@@ -157,9 +157,8 @@ enum ItemType {
 	ITYPE_ADVENCEMET_GATE_SEX = 82, ITYPE_TRASH = 87, ITYPE_BOATS = 117, ITYPE_FIREWORKS_WAND = 181,
 	ITYPE_SMOKE = 185, ITYPE_RENAME_DEED = 186, ITYPE_POLYMORPH = 101, ITYPE_POLYMORPH_BACK = 102,
 	ITYPE_ARMY_ENLIST = 103, ITYPE_TELEPORT = 104, ITYPE_DRINK = 105, ITYPE_ESCORTSPAWN = 125,
-	ITYPE_GUMPMENU = 203, ITYPE_SLOTMACHINE = 204,
-	ITYPE_PLAYER_VENDOR_DEED = 217, ITYPE_BLANK_MAP = 300, ITYPE_TREASURE_MAP = 301, ITYPE_DECIPHERED_MAP = 302,
-	ITYPE_JAIL_BALL = 401, ITYPE_ITEMID_WAND = 404
+	ITYPE_GUMPMENU = 203, ITYPE_PLAYER_VENDOR_DEED = 217, ITYPE_BLANK_MAP = 300, ITYPE_TREASURE_MAP = 301,
+	ITYPE_DECIPHERED_MAP = 302, ITYPE_JAIL_BALL = 401, ITYPE_ITEMID_WAND = 404
 };
 
 //! Bank Type
@@ -168,15 +167,18 @@ enum { BANK_GOLD = 1, BANK_ITEM = 0, MOREY_GOLDONLYBANK = 123, MOREX_BANK = 1 };
 //! House list type
 enum { H_FRIEND = 1, H_BAN };
 
-//! Line of sight
-enum {	ITEM_TYPE_CHOICES = 6,
-	TREES_BUSHES = 1,		//!< Trees and other large vegetaion in the way
-	WALLS_CHIMNEYS = 2,		//!< Walls, chimineys, ovens, etc... in the way
-	DOORS = 4,			//!< Doors in the way
-	ROOFING_SLANTED = 8,		//!< So can't tele onto slanted roofs, basically
-	FLOORS_FLAT_ROOFING = 16,	//!< So can't tele onto slanted roofs, basically
-	LAVA_WATER = 32			//!< Don't know what all to use this for yet
-};
+//@}
+
+//@{
+/*!
+\name Line of sight
+*/
+static const uint8_t losTreesBushes	= 0x01; //!< Trees and other large vegetaion in the way
+static const uint8_t losWallsChimneys	= 0x02; //!< Walls, chimineys, ovens, etc... in the way
+static const uint8_t losDoors		= 0x04; //!< Doors in the way
+static const uint8_t losRoofingSlanted	= 0x08; //!< So can't tele onto slanted roofs, basically
+static const uint8_t losRoofingFlat	= 0x10; //!< So can't tele onto flat roofs, basically
+static const uint8_t losLavaWater	= 0x20; //!< Don't know what all to use this for yet
 //@}
 
 /*!

@@ -95,8 +95,9 @@ void snooping( pPC snooper, pItem cont )
 */
 void Skills::target_stealing( pClient ps, pTarget t )
 {
-	pChar thief = ps->currChar();
-	VALIDATEPC(thief);
+	pPC thief = ps->currChar();
+	if ( ! thief ) return;
+	
 	uint32_t target_serial = t->getClicked();
 
 	AMXEXECSVTARGET( thief->getSerial(),AMXT_SKITARGS,skStealing,AMX_BEFORE);
@@ -121,17 +122,17 @@ void Skills::target_stealing( pClient ps, pTarget t )
 	//no stealing for items on layers other than 0 (equipped!) , newbie items, and items not being in containers allowed !
 	if ( pi->layer!=0 || pi->isNewbie() || pi->isInWorld() )
 	{
-       	thief->sysmsg("You cannot steal that.");
-       	return;
+		thief->sysmsg("You cannot steal that.");
+		return;
 	}
 
 	pChar victim = pi->getPackOwner();
-	VALIDATEPC(victim);
+	if ( ! victim ) return;
 
 	if (victim->npcaitype == NPCAI_PLAYERVENDOR)
 	{
-		thief->sysmsg("You cannot steal from player vendors.");
-       	return;
+		thief->getClient()->sysmessage("You cannot steal from player vendors.");
+		return;
 	}
 
 	if ( (thief->getSerial() == victim->getSerial()) || (thief->getSerial()==victim->getOwnerSerial32()) )
@@ -185,7 +186,7 @@ void Skills::target_stealing( pClient ps, pTarget t )
 		}
 	
 		pItem pack= thief->getBackpack();
-		VALIDATEPI(pack);
+		if ( ! pack ) return;
 
 		pi->setContainer( pack );
 
@@ -217,7 +218,7 @@ void Skills::target_stealing( pClient ps, pTarget t )
 
 	std::string itmname;
 	
-	if ( pi->getCurrentName() != "#" )
+	if ( pi->getCurrentName().length() )
 		itmname = pi->getCurrentName();
 	else
 		itmname = pi->getName();
@@ -258,19 +259,19 @@ void Skills::PickPocketTarget(pClient ps)
 {
 	if( ps == 0 ) return;
 	pChar Me = ps->currChar();
-	VALIDATEPC(Me);
+	if ( ! Me ) return;
 
-	if (Me->skill[skStealing] < 300)
-	// check if under 30 in stealing
+	
+	// check if over 30 in stealing
+	if (Me->skill[skStealing] >= 300)
 	{
-		Me->checkSkill( skStealing, 0, 1000);
-		// check their skill
-		Me->playSFX(0x0249);
-		// rustling sound..dont know if right but it works :)
+		Me->sysmsg("You learn nothing from practicing here");
+		return;
 	}
-	else
-        Me->sysmsg("You learn nothing from practicing here");
-        	// if over 30 Stealing..dont learn.
+	
+	Me->checkSkill( skStealing, 0, 1000);
+	// check their skill
+	Me->playSFX(0x0249);
 }
 
 /*!
@@ -281,14 +282,12 @@ void Skills::PickPocketTarget(pClient ps)
 */
 void Skills::target_randomSteal( pClient ps, pTarget t )
 {
+	pPC thief = ps->currChar();
+	pChar victim = dynamic_cast<pChar>(t->getClicked());
+	if ( ! thief || ! victim )
+		return;
 
-	pChar thief=ps->currChar();
-	VALIDATEPC(thief);
-	pChar victim = cSerializable::findCharBySerial( t->getClicked() );
-	VALIDATEPC(victim);
-
-
-	if (thief->getSerial() == victim->getSerial() || thief->getSerial()==victim->getOwnerSerial32())
+	if (thief == victim || thief == victim->getOwner())
 	{
 		thief->sysmsg("You catch yourself red handed.");
 		return;
