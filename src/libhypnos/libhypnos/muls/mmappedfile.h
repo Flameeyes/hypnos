@@ -60,7 +60,7 @@ programs which are loaded in the same system. This is on by default.
 	methods which fixes the endianness of the file to be the same of the
 	system.
 */
-template<typename MUL> class tplMMappedFile {
+template<class MUL> class tplMMappedFile {
 protected:
 	MUL *array;	//!< Pointer to the mmapped file
 	uint32_t size;	//!< Size of the mmap in bytes
