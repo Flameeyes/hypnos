@@ -944,21 +944,21 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 	if ( nSettings::Server::getBankMaxItems() )
 	{
 		pContainer contOutMost = pi->getOutMostCont();
-		if(  contOutMost && contOutMost->morex==MOREX_BANK )
+		if ( ! contOutMost || contOutMost->morex != MOREX_BANK )
+			continue;
+		
+		int n = contOutMost->CountItems( INVALID, INVALID, false);
+		n -= contOutMost->CountItems( ITEMID_GOLD, INVALID, false);
+		if( isContainer(pi) )
+			n += (dynamic_cast<pContainer>(pi))->CountItems( INVALID, INVALID, false);
+		else
+			++n;
+		
+		if( n > nSettings::Server::getBankMaxItems() )
 		{
-			int n = contOutMost->CountItems( INVALID, INVALID, false);
-			n -= contOutMost->CountItems( ITEMID_GOLD, INVALID, false);
-			if( isContainer(pi) )
-				n += (dynamic_cast<pContainer> pi)->CountItems( INVALID, INVALID, false);
-			else
-				++n;
-			if( n > nSettings::Server::getBankMaxItems() )
-			{
-				sysmessage("You exceeded the number of maximimum items in bank of %d", nSettings::Server::getBankMaxItems());
-				item_bounce6(pi);
-				return;
-			}
-
+			sysmessage("You exceeded the number of maximimum items in bank of %d", nSettings::Server::getBankMaxItems());
+			item_bounce6(pi);
+			return;
 		}
 	}
 
@@ -990,7 +990,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 	if( dest->type==ITYPE_TRASH)   //!< \todo find a true trash container check
 	{
 		pi->Delete();
-		//!\ todo when tempfx revised, do a timed deletion
+		//! \todo when tempfx revised, do a timed deletion
 		sysmessage("As you let go of the item it disappears.");
 		dragItem = NULL;
 		resetDragging();
@@ -1177,9 +1177,6 @@ void cClient::dump_item(pItem pi, sLocation &loc) // Item is dropped on the grou
 		return;
 	}
 
-
-
-
 	data::seekTile(pi->getId(), tile);
 	if (!pc->IsGM() && ((pi->magic==2 || (tile.weight==255 && pi->magic!=1))&&!pc->canAllMove()) ||
 		( (pi->magic==3 || pi->magic==4) && !(pi->getOwner()==pc)))
@@ -1269,16 +1266,14 @@ void cClient::dump_item(pItem pi, sLocation &loc) // Item is dropped on the grou
 }
 
 /*!
-\brief verifies if item has been dropped on a char and if so executes necessary code
+\brief Verifies if item has been dropped on a char and if so executes necessary code
 \author Unknown, moved here by Chronodt (4/2/2004)
-\param pi item to be dropped (already in dragging mode)
-\param loc position to drop item at (eventually in cont)
-\param cont container into which *pi has to be dropped (-1 = world)
+\param pi Item to be dropped (already in dragging mode)
+\param dest Char where to drop the item to
 */
 void cClient::droppedOnChar(pItem pi, pChar dest)
 {
-	if(!pi) return false;
-	if(!dest) return false;
+	if( !pi || !dest ) return false;
 
 	pChar pc_currchar = currChar();
 	if(!pc_currchar) return false;
@@ -1286,49 +1281,80 @@ void cClient::droppedOnChar(pItem pi, pChar dest)
 	sLocation charpos = pc_currchar->getPosition();
 	pNPC npc = dynamic_cast<pNPC> dest;
 
-	if (pc_currchar != dest)
+	if (pc_currchar == dest)
 	{
-		if (npc)
+		droppedOnSelf(pi);
+		return;
+	}
+	
+	if (npc)
+	{
+		if(!npc->getBody()->isHuman()) droppedOnPet( pi, npc);
+		else	// Item dropped on a Human character
 		{
-			if(!npc->getBody()->isHuman()) droppedOnPet( pi, npc);
-			else	// Item dropped on a Human character
+			// Item dropped on a Guard (possible bounty quest)
+			if ( npc->npcaitype == NPCAI_TELEPORTGUARD ) droppedOnGuard(pi, npc);
+			if ( npc->npcaitype == NPCAI_BEGGAR )	droppedOnBeggar(pi, npc);
+			//! \todo add a money-accepting part even for non-trainers. They won't give karma for it, but they will thank nonetheless :P
+			if(pc_currchar->getTrainer() != npc)
 			{
-				// Item dropped on a Guard (possible bounty quest)
-				if ( npc->npcaitype == NPCAI_TELEPORTGUARD ) droppedOnGuard(pi, npc);
-				if ( npc->npcaitype == NPCAI_BEGGAR )	droppedOnBeggar(pi, npc);
-				//! \todo add a money-accepting part even for non-trainers. They won't give karma for it, but they will thank nonetheless :P
-				if(pc_currchar->getTrainer() != npc)
+				npc->talk(this, "Thank thee kindly, but I have done nothing to warrant a gift.", false);
+				nPackets::Sent::BounceItem pk(5);
+				sendPacket(&pk);
+				if (isDragging())
 				{
-					npc->talk(this, "Thank thee kindly, but I have done nothing to warrant a gift.", false);
-					nPackets::Sent::BounceItem pk(5);
-					sendPacket(&pk);
-					if (isDragging())
-					{
-						resetDragging();
-						item_bounce5(pi);
-					}
-					return;
+					resetDragging();
+					item_bounce5(pi);
 				}
-				else // The player is training from this NPC
+				return;
+			}
+			else // The player is training from this NPC
+			{
+				droppedOnTrainer( pi, npc);
+			}
+		}//if human or not
+	}
+	else // dropped on another player
+	{
+		// Avoid starting the trade if GM drops item on logged out char (crash fix)
+		if ((pc_currchar->IsGM()) && !dest->isOnline())
+		{
+			// Drop the item in the players pack instead
+			// Get the pack
+			pItem pack = dest->getBackpack();
+			if (pack != NULL)	// Valid pack?
+			{
+				pack->AddItem(pi);	// Add it
+				dest->getBody()->calcWeight();
+			}
+			else	// No pack, give it back to the GM
+			{
+				nPackets::Sent::BounceItem pk(5);
+				sendPacket(&pk);
+				if (isDragging())
 				{
-					droppedOnTrainer( pi, npc);
+					resetDragging();
+					item_bounce5(pi);
+					updateStatusWindow(pi);
 				}
-			}//if human or not
+			}
 		}
-		else // dropped on another player
+		else
 		{
-			// Avoid starting the trade if GM drops item on logged out char (crash fix)
-			if ((pc_currchar->IsGM()) && !dest->isOnline())
+			//Now finding if they have already a secure trade session open
+			pClient tradeClient = (dynamic_cast<pPC>dest)->getClient();
+			sSecureTradeSession session = findTradeSession(tradeClient);
+			if (session.tradepartner)
 			{
-				// Drop the item in the players pack instead
-				// Get the pack
-				pItem pack = dest->getBackpack();
-				if (pack != NULL)	// Valid pack?
+				pContainer tradeCont = tradestart(tradeClient);
+				if ( tradeCont )
 				{
-					pack->AddItem(pi);	// Add it
-					dest->getBody()->calcWeight();
+					tradeCont->AddItem( pi, 30, 30 );
+					dragItem = NULL;
+					resetDragging();
+					return
 				}
-				else	// No pack, give it back to the GM
+				else
 				{
 					nPackets::Sent::BounceItem pk(5);
 					sendPacket(&pk);
@@ -1340,56 +1366,22 @@ void cClient::droppedOnChar(pItem pi, pChar dest)
 					}
 				}
 			}
-			else
+			else	//if trade session already open, send item to that container
 			{
-				//Now finding if they have already a secure trade session open
-				pClient tradeClient = (dynamic_cast<pPC>dest)->getClient();
-				sSecureTradeSession session = findTradeSession(tradeClient);
-				if (session.tradepartner)
-				{
-					pContainer tradeCont = tradestart(tradeClient);
-					if ( tradeCont )
-					{
-						tradeCont->AddItem( pi, 30, 30 );
-						dragItem = NULL;
-						resetDragging();
-						return
-					}
-					else
-					{
-						nPackets::Sent::BounceItem pk(5);
-						sendPacket(&pk);
-						if (isDragging())
-						{
-							resetDragging();
-							item_bounce5(pi);
-							updateStatusWindow(pi);
-						}
-					}
-				}
-				else	//if trade session already open, send item to that container
-				{
-					pack_item(pi, session.container1);
-					return;
-				}
+				pack_item(pi, session.container1);
+				return;
 			}
 		}
 	}
-	else // dumping stuff to his own backpack !
-	{
-		droppedOnSelf( pi);
-	}
 	return;
-
 }
 
 /*!
 \brief item has been dropped on a pet and verifies if correct item given
 \author Unknown, moved here by Chronodt (4/2/2004)
-\param pi item to be dropped (already in dragging mode)
-\param pet target npc
+\param pi Item to be dropped (already in dragging mode)
+\param pet Pet where the item is being dropped on
 */
-
 void cClient::droppedOnPet(pItem pi, pNPC pet)
 {
 	pChar pc = currChar();

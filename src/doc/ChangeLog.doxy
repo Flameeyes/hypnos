@@ -1,0 +1,46 @@
+/*!
+\page changelog Change Log for Hypnos
+\author Flameeyes
+
+Giving a log of the changes done in Hypnos is not easy at all: we had so much
+code to change, clean and rewrite that none of us can't say what is changed
+exactly from the version of NoX-Wizard we took as base.
+
+If you want a true changelog of what we changed, I suggest you to take a look
+to our CVS repository at Berlios:
+http://cvs.berlios.de/cgi-bin/viewcvs.cgi/hypnos/ which contains all the
+revisions of the source files.
+
+What I'm going to explain here are the major differences between NoX-Wizard
+(and the other parents) and Hypnos.
+
+\li First and most important thing you can find in Hypnos is the missing of a
+	central scripting engine: scripting language is loaded at runtime from
+	a dynamic library, so we can easly change the scripting language used
+	for the emulator. The base language is Python, but we hope to add more
+	in the future.
+\li Hypnos hasn't a GUI neither under Windows (NoX-Wizard had one), that
+	because we want to make it run in production shards as a daemon or a
+	service. This also make simpler the maintenance of the main loop code.
+\li The support for BeOS (not complete on NoX-Wizard, because of the miss of
+	pthread stuff), is completely dropped for now, because we haven't a
+	BeOS developer to help us. If you are using BeOS and want to help us,
+	please take a look to our forums at http://hypnos.berlios.de/forum/ .
+\li Also the support for Microsoft Visual C++ compiler is gone to thrash can.
+	This because the support for this compiler is sooo dirty: it doesn't
+	use the last standard constructs, its standard library doesn't work at
+	all (also NoX-Wizard needs STLport to run correctly) and making the
+	emulator compatible with it requires <b>a lot</b> of #ifdefs which
+	make the readability of the code very low.
+\li Support for Borland C++ is at the moment frozen: the base compiler for both
+	Linux, Windows and MacOSX is now GCC 3.3, but we plan to continue the
+	support for Borland C++ when the first versions of Hypnos will compile,
+	because this compiler (native for Windows) is closer to the standard.
+	Actually there's a problem: the Borland's standard library shipped with
+	compilers before C++ Builder 6.0 is unusable with Hypnos (from version
+	6.0 of C++ Builder Borland ships STLport which is perfect for us), so
+	if you are planning to use the command lines tools distributed for free
+	by Borland you should download and compile STLport from
+	http://www.stlport.org/ .
+
+*/

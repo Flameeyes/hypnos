@@ -1,5 +1,6 @@
 /*!
 \page standard Coding Standards
+\author Flameeyes
 
 These are the standards used in the new code wrote for Hypnos (and the ones
 we'll follow when editing old code). Are all suggestions, there is no
@@ -87,5 +88,26 @@ two pointer values:
 \code a == b \endcode
 
 \see cSerializable
+
+\section includes How to include header files
+
+This section can seems stupid for a developer documentation, but I think is
+important to know how to deal with headers file in a so big (in term of files
+and classes) project.
+
+All the headers need to have a #ifndef / #define / #endif block, and within
+this the classes can be defined.
+The macro defined should be extracted from the filename. In the form
+__DIR_SUBDIR_SUBDIR_FILENAME_H__ . So for example for objects/citem/cmulti.h
+the macro is __OBJECTS_CITEM_CMULTI_H__ (go search, it's actually this :) ).
+
+In a .h you shouldn't include other big .h such as cchar.h or citem.h if you
+aren't defining a subclass or \b actually need these. If you need simply a
+pointer to a cItem instance or similar things, you can use the common_libs.h
+file which (in turn) includes typedefs.h where all the pinters you need are
+defined.
+
+\note Please include only the needed headers in all the source unit: have a
+	list of twenty includes in a file make its readability quite low.
 
 */

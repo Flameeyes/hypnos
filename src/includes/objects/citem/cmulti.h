@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#ifndef __CMULTI_H__
-#define __CMULTI_H__
+#ifndef __OBJECTS_CITEM_CMULTI_H__
+#define __OBJECTS_CITEM_CMULTI_H__
 
 #include "common_libs.h"
 #include "objects/citem.h"
