@@ -55,11 +55,11 @@ class RaceSkillModifier
 {
 	private:
 		uint32_t			base;
-		R32				modifier;
+		float				modifier;
 	public:
 		RaceSkillModifier( void );
 		uint32_t			getBase( void );
-		R32				getModifier( void );
+		float				getModifier( void );
 		RaceSkillModifier&	operator=( const string& );
 };
 

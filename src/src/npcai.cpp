@@ -331,7 +331,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 	if ( !TIMEOUT( pc->nextAiCheck ) )
 		return;
 
-	pc->nextAiCheck = (uint32_t) ((R64)uiCurrentTime + (speed.npcaitime*MY_CLOCKS_PER_SEC));
+	pc->nextAiCheck = (uint32_t) ((double)uiCurrentTime + (speed.npcaitime*MY_CLOCKS_PER_SEC));
 
 	if( pc->amxevents[ EVENT_CHR_ONCHECKNPCAI ]!=NULL ) {
 

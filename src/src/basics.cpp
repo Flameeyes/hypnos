@@ -15,15 +15,15 @@
 \author Luxor
 \brief Returns distance between two points.
 */
-const R64 dist( const Location a, const Location b, bool countZ )
+const double dist( const Location a, const Location b, bool countZ )
 {
         int16_t xDiff = a.x - b.x;
         int16_t yDiff = a.y - b.y;
-	R64 distance = hypot( abs( xDiff ), abs( yDiff ) );
+	double distance = hypot( abs( xDiff ), abs( yDiff ) );
 	if ( !countZ || a.z == b.z )
 		return distance;
 	
-	R64 distZ = abs( a.z - b.z );
+	double distZ = abs( a.z - b.z );
 	return hypot( distance, distZ );
 }
 

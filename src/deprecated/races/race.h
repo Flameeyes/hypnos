@@ -85,7 +85,7 @@ class Race
 		static	const 	string*	getPluralName( const uint32_t raceId );
 		static	void		setName( const uint32_t raceId, const char *newName )	;
 
-		static	R32			getPoisonResistance( const uint32_t raceId, PoisonType poisonStrength )	;
+		static	float			getPoisonResistance( const uint32_t raceId, PoisonType poisonStrength )	;
 		static	bool		isPlayerRace( const uint32_t raceId );
 		static	RACIALRELATION	getRacialRelation( uint32_t raceId1, uint32_t raceId2 );
 		static	Race*		getRace( uint32_t raceId );
@@ -143,7 +143,7 @@ class Race
 			// -- resistances
 			//
 			bool				magicResistant;
-			R32				poisonResistance[6];
+			float				poisonResistance[6];
 			//
 			// -- relations
 			//

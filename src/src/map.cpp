@@ -58,7 +58,7 @@ cLine::cLine( Location A, Location B )
 int8_t cLine::calcZAtX( uint32_t x )
 {
 	int8_t z;
-	z = int8_t( ( R32( ( int32_t(x - x1) * m_zDist ) + (z1 * m_xDist) ) / R32( m_xDist ) ) + 0.5);
+	z = int8_t( ( float( ( int32_t(x - x1) * m_zDist ) + (z1 * m_xDist) ) / R32( m_xDist ) ) + 0.5);
 	return z;
 }
 
@@ -68,7 +68,7 @@ int8_t cLine::calcZAtX( uint32_t x )
 Location cLine::getPosAtX( uint32_t x )
 {
 	Location pos = Location( x, 0, 0 );
-	pos.y = uint32_t( ( R32( ( int32_t(x - x1) * m_yDist ) + ( int32_t(y1) * m_xDist) ) / R32( m_xDist ) ) + 0.5);
+	pos.y = uint32_t( ( float( ( int32_t(x - x1) * m_yDist ) + ( int32_t(y1) * m_xDist) ) / R32( m_xDist ) ) + 0.5);
 	pos.z = calcZAtX( pos.x );
 	return pos;
 }
@@ -79,7 +79,7 @@ Location cLine::getPosAtX( uint32_t x )
 Location cLine::getPosAtY( uint32_t y )
 {
 	Location pos = Location( 0, y, 0 );
-	pos.x = uint32_t( ( R32( ( int32_t(y - y1) * m_xDist ) + ( int32_t(x1) * m_yDist) ) / R32( m_yDist ) ) + 0.5);
+	pos.x = uint32_t( ( float( ( int32_t(y - y1) * m_xDist ) + ( int32_t(x1) * m_yDist) ) / R32( m_yDist ) ) + 0.5);
 	pos.z = calcZAtX( pos.x );
 	return pos;
 }

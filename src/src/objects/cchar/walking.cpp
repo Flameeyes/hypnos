@@ -189,7 +189,7 @@ void cChar::follow( pChar pc )
 		return;
 	}
 
-	R64 distance = dist( path->getFinalPos(), pc->getPosition() );
+	double distance = dist( path->getFinalPos(), pc->getPosition() );
 	if ( distance <= 3.0 ) { // Path finalPos is pretty near... let's not overhead the processor
 		walkNextStep();
 	} else { // Path finalPos is too far, call the pathfinding.

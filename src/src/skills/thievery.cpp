@@ -157,7 +157,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 
 		int result;
 
-		R32 we = pi->getWeightActual();
+		float we = pi->getWeightActual();
 		int bonus= (int)( (1800 - we)/5 );
 		if ( thief->checkSkill( STEALING,0,(1000-bonus)) )
 		{

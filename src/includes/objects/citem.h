@@ -13,7 +13,8 @@
 #define __ITEMS_H
 
 class cItem;
-typedef cItem* pItem;
+typedef cItem*			pItem;		//!< Pointer to an item
+typedef std::list<pItem>	ItemList;	//!< List of items
 
 #include "object.h"
 #include "magic.h"
@@ -27,7 +28,6 @@ class cItem : public cObject
 {
 public:
 	static pItem addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, Location where);
-
 
 	//! Redefinition of = operator for cItem class
         cItem& operator=(cItem& b);
@@ -530,8 +530,8 @@ protected:
 	uint32_t			weight;
 
 public:
-	R32			getWeight();
-	virtual const R32	getWeightActual();
+	float			getWeight();
+	virtual const float	getWeightActual();
 //@}
 
 //@{

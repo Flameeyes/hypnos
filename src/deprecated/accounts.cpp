@@ -22,7 +22,6 @@
 #include "inlines.h"
 #include "items.h"
 
-
 cAccounts* Accounts=NULL;
 
 /*!

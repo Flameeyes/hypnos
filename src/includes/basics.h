@@ -189,7 +189,7 @@ inline int hex2num ( std::string& s )
 }
 //@}
 
-R64 dist( Location a, Location b, LOGICAL countZ = !server_data.disable_z_checking);
+double dist( Location a, Location b, LOGICAL countZ = !server_data.disable_z_checking);
 
 /*!
 \brief Check if a location is in the range of another one

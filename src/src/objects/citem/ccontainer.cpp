@@ -364,9 +364,9 @@ void cContainer::insertItem(pItem itm)
 \brief Gets the actual weight of the container, also with the sum of the item inside it
 \auhor Flameeyes
 */
-const R32 cContainer::getWeightActual()
+const float cContainer::getWeightActual()
 {
-	R32 totalWeight = cItem::getWeightActual();
+	float totalWeight = cItem::getWeightActual();
 	
 	for(ItemList::iterator iit = items.begin(); iit != items.end(); it++)
 		totalWeight += (*iit)->getWeightActual();

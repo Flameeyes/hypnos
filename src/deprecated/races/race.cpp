@@ -423,7 +423,7 @@ void Race::parsePoisonResistance( const string& sectionName )
 	}
 	else
 	{
-//		R32 	pr;
+//		float 	pr;
 		string	lha, rha;
 
 		loopexit=0;
@@ -717,9 +717,9 @@ void Race::setName( const uint32_t raceId, const char *newName )
 //		raceMap[raceId]->Name = newName;
 }
 
-R32 Race::getPoisonResistance( const uint32_t raceId, PoisonType poisonStrength )
+float Race::getPoisonResistance( const uint32_t raceId, PoisonType poisonStrength )
 {
-	R32 pr = 0.0;
+	float pr = 0.0;
 	if ( isRaceSystemActive() )
 	{
 		std::map<uint32_t, class Race*>::iterator raceIter = raceMap.find( raceId );

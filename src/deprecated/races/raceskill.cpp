@@ -164,7 +164,7 @@ uint32_t RaceSkillModifier::getBase( void )
 	return this->base;
 }
 
-R32 RaceSkillModifier::getModifier( void )
+float RaceSkillModifier::getModifier( void )
 {
 	return this->modifier;
 }

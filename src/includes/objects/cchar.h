@@ -212,7 +212,7 @@ protected:
 
 	uint16_t kills;	//!< PvP Kills
 	uint16_t deaths;	//!< Number of deaths
-	R32  fstm;	//!< Unavowed - stamina to remove the next step
+	float  fstm;	//!< Unavowed - stamina to remove the next step
 
 	inline void setFlag(uint64_t flag, bool set)
 	{

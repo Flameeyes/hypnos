@@ -773,16 +773,16 @@ const std::string cItem::getName()
 \return the weigth
 \note May have to seek it from mul files
 */
-R32 cItem::getWeight()
+float cItem::getWeight()
 {
 
 	if (getId() == ITEMID_GOLD)
-		return (R32)SrvParms->goldweight;
+		return (float)SrvParms->goldweight;
 
-	R32 itemweight=0.0;
+	float itemweight=0.0;
 
 	if (weight>0) //weight is defined in scripts for this item
-		itemweight=(R32)weight;
+		itemweight=(float)weight;
 	else
 	{
 		tile_st tile;
@@ -798,7 +798,7 @@ R32 cItem::getWeight()
 		else //found the weight from the tile, set it for next time
 		{
 			weight=(tile.weight*100); // set weight so next time don't have to search
-			itemweight = (R32)(weight);
+			itemweight = (float)(weight);
 		}
 
 	}
@@ -810,7 +810,7 @@ R32 cItem::getWeight()
 \note This is a virtual method, when called for cContainer items, all the items inside it
       will be also added to the weight.
 */
-const R32 cItem::getWeightActual()
+const float cItem::getWeightActual()
 {
 	return (amount>1)? getWeight()*amount : getWeight();
 }

@@ -891,7 +891,7 @@ bool cChar::canSee( cObject &obj )
 	//
 	// Check if the object is in visRange
 	//
-	R64 distance = dist( obj.getPosition(), getPosition(), false );
+	double distance = dist( obj.getPosition(), getPosition(), false );
 	if ( distance > VISRANGE ) // We cannot see it!
 		return false;
 

@@ -18,13 +18,7 @@
 #include <stdint.h>
 #include <set>
 
-typedef double				R64;	//< 64 bits floating point
-typedef float				R32;	//< 32 bits floating point
-
-typedef std::vector<pItem>	ItemList;
-
-
-typedef uint32_t				TIMERVAL;
+typedef uint32_t			TIMERVAL;
 typedef int32_t				ACCOUNT;
 typedef int32_t				FUNCIDX;
 
@@ -47,12 +41,6 @@ typedef int32_t				FUNCIDX;
 // typedef class cGuildMember* P_GUILD_MEMBER;
 // typedef class cGuildRecruit* P_GUILD_RECRUIT;
 // typedef class cClient* P_CLIENT;
-
-#if defined __GNUC__ && (__GNUC__ < 3 || defined(WIN32))
-	typedef std::basic_string <wchar_t> wstring;
-#else
-	using std::wstring;
-#endif
 
 #ifdef __BORLANDC__
 	#include <stlport/hash_map>
@@ -91,15 +79,13 @@ struct path_st {
 	uint32_t y;
 };
 
-
 //REPSYS
 struct repsys_st
 {
-	int32_t	murderdecay;
-	uint32_t		maxkills;
+	int32_t		murderdecay;
+	uint32_t	maxkills;
 	int32_t		crimtime;
 };
-
 
 struct resource_st
 {
@@ -110,7 +96,6 @@ struct resource_st
 	int32_t		logtrigger;//AntiChrist
 	int32_t		logstamina;//AntiChrist
 };
-
 
 struct creat_st
 {
@@ -191,12 +176,12 @@ struct spiritspeak_st
 struct sSpeed
 {
 	int32_t nice;
-	R32 itemtime;
+	float itemtime;
 	TIMERVAL srtime;
-	R32 npctime;
-	R32 tamednpctime;
-	R32 npcfollowtime;
-	R32 npcaitime;
+	float npctime;
+	float tamednpctime;
+	float npcfollowtime;
+	float npcaitime;
 };
 
 
@@ -220,8 +205,8 @@ struct Location {
 	uint16_t x;		//!< X-Coordinate of the location
 	uint16_t y;		//!< Y-Coordinate of the location
 	int8_t z;		//!< Z-Coordinate of the location
-	int8_t dispz;	//!< Displayed Z of the location
-	uint8_t map;	//!< Map the location (if 255 -> every map)
+	int8_t dispz;		//!< Displayed Z of the location
+	uint8_t map;		//!< Map the location (if 255 -> every map)
 	
 	/*!
 	\brief Constructor for Location structure

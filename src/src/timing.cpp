@@ -355,7 +355,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 									dir%=8;
 									Boats->Move(ps->toInt(),dir,pi);
 								}
-								pi->gatetime=(TIMERVAL)(uiCurrentTime + (R64)(SrvParms->boatspeed*MY_CLOCKS_PER_SEC));
+								pi->gatetime=(TIMERVAL)(uiCurrentTime + (double)(SrvParms->boatspeed*MY_CLOCKS_PER_SEC));
 							}
 						break;
 				}
@@ -365,13 +365,13 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 
 
 	if( TIMEOUT( checkitemstime ) )
-		checkitemstime = (TIMERVAL)((R64) uiCurrentTime+(speed.itemtime*MY_CLOCKS_PER_SEC));
+		checkitemstime = (TIMERVAL)((double) uiCurrentTime+(speed.itemtime*MY_CLOCKS_PER_SEC));
 	if( TIMEOUT( checknpcs ) )
-		checknpcs = (TIMERVAL)((R64) uiCurrentTime+(speed.npctime*MY_CLOCKS_PER_SEC));
+		checknpcs = (TIMERVAL)((double) uiCurrentTime+(speed.npctime*MY_CLOCKS_PER_SEC));
 	if( TIMEOUT( checktamednpcs ) )
-		checktamednpcs=(TIMERVAL)((R64) uiCurrentTime+(speed.tamednpctime*MY_CLOCKS_PER_SEC));
+		checktamednpcs=(TIMERVAL)((double) uiCurrentTime+(speed.tamednpctime*MY_CLOCKS_PER_SEC));
 	if( TIMEOUT( checknpcfollow ) )
-		checknpcfollow=(TIMERVAL)((R64) uiCurrentTime+(speed.npcfollowtime*MY_CLOCKS_PER_SEC));
+		checknpcfollow=(TIMERVAL)((double) uiCurrentTime+(speed.npcfollowtime*MY_CLOCKS_PER_SEC));
 	//
 	// Html
 	//
@@ -384,27 +384,27 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 	// Finish
 	//
 	if ( TIMEOUT( nextfieldeffecttime ) )
-		nextfieldeffecttime = (TIMERVAL)((R64) uiCurrentTime + (0.5*MY_CLOCKS_PER_SEC));
+		nextfieldeffecttime = (TIMERVAL)((double) uiCurrentTime + (0.5*MY_CLOCKS_PER_SEC));
 	if ( TIMEOUT( nextdecaytime ) )
 		nextdecaytime = uiCurrentTime + (15*MY_CLOCKS_PER_SEC);
         if( TIMEOUT( checktempfx ) )
-		checktempfx = (TIMERVAL)((R64) uiCurrentTime+(0.5*MY_CLOCKS_PER_SEC));
+		checktempfx = (TIMERVAL)((double) uiCurrentTime+(0.5*MY_CLOCKS_PER_SEC));
 }
 
 static int32_t linInterpolation (int32_t ix1, int32_t iy1, int32_t ix2, int32_t iy2, int32_t ix)
 {
-	#define NSIN(X) ((static_cast<R32>(1.0+sin((2.0*X-1.0)*PI)))/2.0f)
+	#define NSIN(X) ((static_cast<float>(1.0+sin((2.0*X-1.0)*PI)))/2.0f)
 	#define NLIN(X) (X)
 
-	R32 x1 = static_cast<R32>(ix1);
-	R32 x2 = static_cast<R32>(ix2);//reinterpret_cast
-	R32 y1 = static_cast<R32>(iy1);
-	R32 y2 = static_cast<R32>(iy2);
-	R32  x = static_cast<R32>(ix);
-	R32 X2 = x2 - x1;
-	R32 Y2 = y2 - y1;
-	R32  X =  x - x1;
-	R32  Y = (NLIN((X/X2))*Y2)+y1;
+	float x1 = static_cast<R32>(ix1);
+	float x2 = static_cast<R32>(ix2);//reinterpret_cast
+	float y1 = static_cast<R32>(iy1);
+	float y2 = static_cast<R32>(iy2);
+	float  x = static_cast<R32>(ix);
+	float X2 = x2 - x1;
+	float Y2 = y2 - y1;
+	float  X =  x - x1;
+	float  Y = (NLIN((X/X2))*Y2)+y1;
 
 	int32_t y = static_cast<int32_t>(Y);
 
