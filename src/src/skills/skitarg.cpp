@@ -692,23 +692,21 @@ void nSkills::target_loom(pClient client, pTarget t )
 		return;
 	}
 
+	client->sysmessage("You have made a bolt of cloth.");
+	pti->setCurrentName("");
+	pti->setCanDecay(true);
+	
 	switch( pti->getId() )
 	{
 	case 0x0E1E: // Yarn
 	case 0x0E1D:
 	case 0x0E1F:
-		client->sysmessage("You have made your cloth.");
-		pti->setCurrentName("#");
 		pti->setId( 0x175D );
-		pti->setCanDecay(true);
 		pti->setAmount((pti->amount-1)*10);
 		break;
 	case 0x0FA0: // Thread
 	case 0x0FA1:
-		client->sysmessage("You have made a bolt of cloth.");
-		pti->setCurrentName("#");
 		pti->setId( 0x0F95 );
-		pti->setCanDecay(true);
 		pti->setAmount(pti->amount*0.25);
 		break;
 	}
@@ -1082,75 +1080,67 @@ void nSkills::target_itemId(pClient client, pTarget t )
 
 	if ( !pc || !pi ) return;
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ITEMID,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ITEMID,AMX_BEFORE);
     
-	if( pi->magic!=4) // Ripper
+	if( pi->magic == 4) // Ripper
+		return;
+
+	if (!pc->checkSkill( ITEMID, 0, 250))
 	{
-        	if (!pc->checkSkill( ITEMID, 0, 250))
-			client->sysmessage("You can't quite tell what this item is...");
-		else {
-            
-			if(pi->corpse)
-			{
-				client->sysmessage("You have to use your forensics evalutation skill to know more on this corpse.");
-				return;
-			}
+		client->sysmessage("You can't quite tell what this item is...");
+		return;
+	}
+
+	//! \todo Fix this!
+	if(pi->corpse)
+	{
+		client->sysmessage("You have to use your forensics evalutation skill to know more on this corpse.");
+		return;
+	}
 			
-			if (pc->checkSkill( ITEMID, 250, 500))
-			if (pi->getSecondaryNameC() && (strcmp(pi->getSecondaryNameC(),"#"))) pi->setCurrentName(pi->getSecondaryNameC()); // Item identified! -- by Magius(CHE)
+	if (pc->checkSkill( ITEMID, 250, 500) && pi->getSecondaryName().size())
+	{
+		pi->setCurrentName(pi->getSecondaryNameC()); // Item identified! -- by Magius(CHE)
 
-			if( !strncmp(pi->getCurrentName().c_str(), "#", 1) )
-				pi->getName(temp2);
-			else
-				strcpy(temp2, pi->getCurrentName().c_str());
+		if( !strncmp(pi->getCurrentName().c_str(), "#", 1) )
+			pi->getName(temp2);
+		else
+			strcpy(temp2, pi->getCurrentName().c_str());
+	
+		client->sysmessage("You found that this item appears to be called: %s", pi->getCurrentName());
+	}
+	
+	if ( ! pc->checkSkill( ITEMID, 250, 500) )
+	{
+		client->sysmessage("You can't know its creator!");
+		return;
+	}
+	
+	if ( pi->getCreator().empty() )
+	{
+		client->sysmessage("You don't know its creator!");
+		return;
+	}
+	
+	if (pi->madewith>0)
+		client->sysmessage("It is %s by %s",skillinfo[pi->madewith-1].madeword,pi->getCreator().c_str());
+	else if (pi->madewith<0)
+		client->sysmessage("It is %s by %s",skillinfo[0-pi->madewith-1].madeword,pi->getCreator().c_str());
+	else
+		client->sysmessage("It is crafted by %s",pi->creator.c_str());
+	
+	if (!pc->checkSkill( ITEMID, 250, 500))
+		client->sysmessage("You can't tell if it is magical or not.");
+	else if(pi->type != ITYPE_WAND)
+		client->sysmessage("This item has no hidden magical properties.");
+	else if (!pc->checkSkill( ITEMID, 500, 1000))
+		client->sysmessage("This item is enchanted with a spell, but you cannot determine which");
+	else if (!pc->checkSkill( ITEMID, 750, 1100))
+		client->sysmessage("It is enchanted with the spell %s, but you cannot determine how many charges remain.",spellname[(8*(pi->morex-1))+pi->morey-1]);
+	else
+		client->sysmessage("It is enchanted with the spell %s, and has %d charges remaining.",spellname[(8*(pi->morex-1))+pi->morey-1],pi->morez);
 
-			client->sysmessage("You found that this item appears to be called: %s", temp2);
-
-            // Show Creator by Magius(CHE)
-            if (pc->checkSkill( ITEMID, 250, 500))
-            {
-                if (!pi->creator.empty())
-                {
-                    if (pi->madewith>0) client->sysmessage("It is %s by %s",skillinfo[pi->madewith-1].madeword,pi->creator.c_str());
-                    else if (pi->madewith<0) client->sysmessage("It is %s by %s",skillinfo[0-pi->madewith-1].madeword,pi->creator.c_str());
-                    else client->sysmessage("It is made by %s",pi->creator.c_str());
-                } else client->sysmessage("You don't know its creator!");
-            } else client->sysmessage("You can't know its creator!");
-            // End Show creator
-
-            if (!pc->checkSkill( ITEMID, 250, 500))
-            {
-                client->sysmessage("You can't tell if it is magical or not.");
-            }
-            else
-            {
-                if(pi->type != ITYPE_WAND)
-                {
-                    client->sysmessage("This item has no hidden magical properties.");
-                }
-                else
-                {
-                    if (!pc->checkSkill( ITEMID, 500, 1000))
-                    {
-                        client->sysmessage("This item is enchanted with a spell, but you cannot determine which");
-                    }
-                    else
-                    {
-                        if (!pc->checkSkill( ITEMID, 750, 1100))
-                        {
-                            client->sysmessage("It is enchanted with the spell %s, but you cannot determine how many charges remain.",spellname[(8*(pi->morex-1))+pi->morey-1]);
-                        }
-                        else
-                        {
-                            client->sysmessage("It is enchanted with the spell %s, and has %d charges remaining.",spellname[(8*(pi->morex-1))+pi->morey-1],pi->morez);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ITEMID,AMX_AFTER);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ITEMID,AMX_AFTER);
 }
 
 

@@ -141,5 +141,18 @@ uint32_t getclockday();
 void initclock();
 //@}
 
-#endif //__COMMON_LIBS_H__
+/*!
+\class eException common_libs.h "common_libs.h"
+\brief Base class for Hypnos' exceptions
 
+This class is inherited by all the specific exceptions thrown by Hypnos emulator
+(and by libhypmul), which can be used by the exception handler to find all the
+exception which wasn't handled in other ways (at least the ones thrown by Hypnos
+and not by external libraries).
+*/
+class eException {
+protected:		
+	Exception() { }
+};
+
+#endif //__COMMON_LIBS_H__

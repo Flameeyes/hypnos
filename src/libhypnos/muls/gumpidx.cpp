@@ -33,13 +33,7 @@ nMULFiles::fGumpIDX::~fGumpIDX()
 sPoint nMULFiles::fGumpIDX::getDimensions(uint16_t index)
 {
 	if ( index >= getCount() )
-	{
-		/*!
-		\todo Here we should throw an out-of-bound exception when it's
-		done :D
-		*/
-		return InvalidCoord;
-	}
+		throw nLibhypmul::eOutOfBound(getCount()-1, index);
 	
 	return sPoint(array[index].getHeight(), array[index].getWidth());
 }

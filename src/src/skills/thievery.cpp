@@ -407,11 +407,7 @@ void Skills::target_randomSteal( pClient client, pTarget t )
 	if (victim->IsInnocent() && thief->attackerserial!=victim->getSerial() && Guilds->Compare(thief,victim)==0)//AntiChrist
 		thief->setCrimGrey( nSettings::Reputation::getStealAction() ); //Blue and not attacker and not guild
 
-	std::string itmname = "";
-	if ( pi->getCurrentName() != "#" )
-		itmname = pi->getCurrentName();
-	else
-		itmname = pi->getName();
+	std::string itmname = pi->getRealName();
 
 	if (dynamic_cast<pNPC>(victim))
 		victim->talkAll( "Guards!! A thief is amoung us!",0);

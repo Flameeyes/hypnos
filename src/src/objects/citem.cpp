@@ -561,8 +561,14 @@ inline bool operator !=( cItem& a, cItem& b ) {
 */
 const std::string cItem::getRealItemName()
 {
-	if ( !current_name.length() )
-		return tiledataStatic->getName(getId());
+	try {
+		if ( !current_name.length() )
+			return tiledataStatic->getName(getId());
+	} catch( nLibhypmul::eOutOfBound &e ) {
+		LogWarning("Out of bound in tiledata.mul for id %04x (maxid %04x)", getId(), e.max);
+		
+		return "unnamed";
+	}
 
 	return current_name;
 }
@@ -573,32 +579,40 @@ const std::string cItem::getRealItemName()
 */
 const std::string cItem::getName()
 {
-	int len, mode, used, ok, namLen;
 	std::string name;
 
 	if ( current_name.length() )
 		return current_name;
 
-	if ( tiledataStatic->getFlags(getId()) & nMULFiles::flagTileAnPrefix )
-		name = "an ";
-	else if ( tiledataStatic->getFlags(getId()) & nMULFiles::flagTileAPrefix )
-		name = "a ";
+	try {
+		if ( tiledataStatic->getFlags(getId()) & nMULFiles::flagTileAnPrefix )
+			name = "an ";
+		else if ( tiledataStatic->getFlags(getId()) & nMULFiles::flagTileAPrefix )
+			name = "a ";
+	} catch( nLibhypmul::eOutOfBound &e ) {
+		LogWarning("Out of bound in tiledata.mul for id %04x (maxid %04x)", getId(), e.max);
+		
+		return "unnamed";
+	}
 
-	mode=0;
-	used=0;
-	len=strlen((char *) tile.name);
-	for(register int j = 0; j < len; j++)
+	int mode=0, used=0;
+	bool ok = false;
+	
+	std::string tileName = tiledataStatic->getName(getId());
+	
+	//! \todo Change this to a better regexp
+	for( std::string::iterator = tileName.begin(); it != tileName.end(); it++)
 	{
-		ok=0;
-		if ((tile.name[j]=='%')&&(mode==0)) mode=2;
-		else if ((tile.name[j]=='%')&&(mode!=0)) mode=0;
-		else if ((tile.name[j]=='/')&&(mode==2)) mode=1;
-		else if (mode==0) ok=1;
-		else if ((mode==1)&&(pi->amount==1)) ok=1;
-		else if ((mode==2)&&(pi->amount>1)) ok=1;
+		ok = false;
+		if ((*it=='%')&&(mode==0)) mode=2;
+		else if ((*it=='%')&&(mode!=0)) mode=0;
+		else if ((*it=='/')&&(mode==2)) mode=1;
+		else if (mode==0) ok = true;
+		else if ((mode==1)&&(pi->amount==1)) ok = true;
+		else if ((mode==2)&&(pi->amount>1)) ok = true;
 		if (ok)
 		{
-			name += tile.name[j];
+			name += *it;
 			if (mode) used=1;
 		}
 	}
@@ -607,40 +621,27 @@ const std::string cItem::getName()
 }
 
 /*!
-\brief the weight of the single item
-\return the weigth
-\note May have to seek it from mul files
+\brief Get the weight for one item of this kind
+\return The weight for a single item (load from mul files if needed)
 */
 float cItem::getWeight()
 {
-
-	if (getId() == ITEMID_GOLD)
-		return (float)SrvParms->goldweight;
-
-	float itemweight=0.0;
-
 	if (weight>0) //weight is defined in scripts for this item
-		itemweight=(float)weight;
-	else
-	{
-		//! \todo Add a try catch block
-		itemweight = tiledataStatic->getWeight(getId());
-		
-		if ( itemweight == 0 )
-		{
-			if(type != ITYPE_FOOD)
-				itemweight = 2.0;	// not food weighs .02 stone
-			else
-				itemweight = 100.0;	//food weighs 1 stone
-		}
-		else //found the weight from the tile, set it for next time
-		{
-			weight=(itemweight*100); // set weight so next time don't have to search
-			itemweight = (float)(weight);
-		}
+		return weight;
 
+	uint32_t itemweight = 0;
+
+	try {
+		itemweight = tiledataStatic->getWeight(getId());
+	} catch( nLibhypmul::eOutOfBound &e ) {
+		LogWarning("Out of bound in tiledata.mul for id %04x (maxid %04x)", getId(), e.max);
+		itemweight = 0;
 	}
-	return itemweight;
+	
+	if ( ! itemweight ) // If not found the weight return 1 stone
+		return 100;
+	
+	return itemweight * 100.0;
 }
 
 /*!

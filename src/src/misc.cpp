@@ -886,15 +886,21 @@ bool isWaterTile(sPoint pt)
 
 	staticVector s;
 	data::collectStatics( p.x, p.y, s );
-	for( register int i = 0; i < s.size(); i++ )
-	{
-		std::string tilename = tiledataStatic->getName( s[i].id );
+
+	try {
+		for( register int i = 0; i < s.size(); i++ )
+		{
+			std::string tilename = tiledataStatic->getName( s[i].id );
+			
+			if ( strstr( tilename.c_str(), "water" ) || strstr( tilename.c_str(), "water" ) )
+				return true;
 		
-		if ( strstr( tilename.c_str(), "water" ) || strstr( tilename.c_str(), "water" ) )
-			return true;
-		
-		if ( tiledataLand->getFlags(map.id) & nMULFiles::flagTileWet )
-			return true;
+			if ( tiledataLand->getFlags(s[i].id) & nMULFiles::flagTileWet )
+				return true;
+		}
+	} catch( nLibhypmul::eOutOfBound &e ) {
+		LogWarning("Out of bound in tiledata.mul for id %04x (maxid %04x)", e.requested, e.max);
+		return false;
 	}
 	return false;
 }

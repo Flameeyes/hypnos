@@ -139,7 +139,10 @@ class nMULFiles::fTiledataLand : public tMMappedFile<cTiledataLand>
 {
 protected:
 	cTiledataLand &tile(uint16_t id) const
-	{ return array[id/32].entries[id%32]; }
+	{
+		if ( id >= 512 ) throw nLibhypmul::eOutOfBound(511, id);
+		return array[id/32].entries[id%32];
+	}
 public:
 	fTiledataLand();
 	~fTiledataLand();
@@ -239,7 +242,12 @@ class nMULFiles::fTiledataStatic : public tMMappedFile<cTiledataStatic>
 {
 protected:
 	cTiledataStatic &tile(uint16_t id) const
-	{ return array[id/32].entries[id%32]; }
+	{
+		if ( id >= getCount()*32 )
+			throw nLibhypmul::eOutOfBound(getCount()*32-1, id);
+		
+		return array[id/32].entries[id%32];
+	}
 public:
 	fTiledataStatic();
 	~fTiledataStatic();
