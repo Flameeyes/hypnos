@@ -52,7 +52,12 @@ protected:
 	pAccount acc;	//!< Current account logged in by the client
 	pSocket sock;	//!< Current socket used by the client
 
-	uint8_t visualRange;	//!< holds number of "squares" clients can see. Default is 18, but it can be changed (\see cPacketReceiveClientViewRange)
+	/*!< holds number of "squares" clients can see. Default is 18, but it can be changed 
+ 	\see cPacketReceiveClientViewRange
+  	*/	
+	uint8_t visualRange;				   
+                                   
+ 
 
 	uint32_t flags;			//!< Flags of capabilities of the client
         short int clientDimension;	//!< 2d or 3d client? (must contain 2 or 3)

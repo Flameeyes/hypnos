@@ -28,10 +28,10 @@ void ClientCrypt::setLoginCryptKeys(uint32_t key1, uint32_t key2)
 	loginKey2= key2;
 }
 
-void ClientCrypt::init(unsigned char *pseed)
+void ClientCrypt::init(unsigned char seed[4])
 {
-	memcpy (clientSeed, pseed, 4);
-	loginCrypter.init(pseed, loginKey1, loginKey2);
+	memcpy (clientSeed, seed, 4);
+	loginCrypter.init(seed, loginKey1, loginKey2);
 }
 
 void ClientCrypt::setCryptSeed(uint8_t pseed[4])

@@ -461,9 +461,9 @@ public:
 	inline const bool hasPath() const
 	{ return path; }
 
-	bool		canSee( cObject &obj );	//!< can it see the object?
-	bool		seeForFirstTime( cObject &obj );	//!< does it see the object for the first time?
-	bool		seeForLastTime( cObject &obj ); //!< does it see the object for the first time?
+	bool		canSee( pObject obj );	//!< can it see the object?
+	bool		seeForFirstTime( pObject obj );	//!< does it see the object for the first time?
+	bool		seeForLastTime( pObject obj ); //!< does it see the object for the first time?
 	void		walk();			//!< execute walk code <Luxor>
 	void		follow( pChar pc ); //!< follow pc
 	void 		flee( pChar pc, int32_t seconds=INVALID ); //!< flee from pc
@@ -477,7 +477,7 @@ public:
 */
 public:
 	bool unmountHorse();
-	void mounthorse(pNPC mount);
+	void mountHorse(pNPC mount);
 	pNPC getHorse();
 	void setOnHorse();
 	bool isMounting( );

@@ -324,7 +324,7 @@ cChar::~cChar()
 add onstart event to character programmatically
 \todo Remove this
 */
-void cChar::loadEventFromScript(char *script1, TEXT *script2)
+void cChar::loadEventFromScript(char *script1, char *script2)
 {
 
 #if 0
@@ -563,7 +563,7 @@ void cChar::fight(pChar other)
 
 Searches the character recursively, counting the items of the given ID and (if given) color
 */
-uint32_t cChar::CountItems(uint16_t matchId, uint16_t matchColor)
+uint32_t cChar::countItems(uint16_t matchId, uint16_t matchColor)
 {
 	if ( ! body ) return;
 	pContainer bp = body->getBackpack();
@@ -611,7 +611,7 @@ void cChar::MoveTo(sLocation newloc)
 \param pc_i helped character
 \brief Called after helping a character for accomplish to criminals
 */
-void cChar::helpStuff(pPC pc_i)
+void cChar::helpStuff(pChar pc_i)
 {
 	if (!pc_i || this == pc_i )
 		return;
@@ -1185,7 +1185,7 @@ int32_t cChar::getCombatSkill()
 	return skWrestling;
 }
 
-bool const cChar::CanDoGestures() const
+bool const cChar::canDoGestures() const
 {
 	if ( IsGM() )
 		return true;
@@ -1217,7 +1217,7 @@ bool const cChar::CanDoGestures() const
 bool cChar::checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise)
 {
 	pClient ps = getClient();;
-	pClient client =INVALID;
+	pClient client = INVALID;
 
 	if ( sk < 0 || sk > skTrueSkills ) //Luxor
 		return false;

@@ -794,7 +794,8 @@ void target_telestuff( pClient client, pTarget t )
 
 /*!
 \author Luxor
-\param s socket to attack
+\param client attacker
+\param t target
 \brief Manages all attack command
 */
 void target_allAttack( pClient client, pTarget t )

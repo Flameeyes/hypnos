@@ -144,9 +144,8 @@ CWorldMain::~CWorldMain()
 \brief read from a file an unicode string
 \author Endymion
 \note intput is like 00AE001232120000, hex ( Big Endian Format )
-\param f the file
-\param name the variable name
 \return the unicode string
+\todo re-document
 */
 wstring HexVector2UnicodeString( char* s )
 {

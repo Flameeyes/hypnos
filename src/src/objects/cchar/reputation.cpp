@@ -10,7 +10,7 @@
 \brief cChar's reputation methods
 */
 
-const bool cChar::IsGrey() const
+const bool cChar::isGrey() const
 {
 	if ( npc || IsMurderer() || IsCriminal() )
 		return false;
@@ -122,7 +122,7 @@ void cChar::modifyFame( int32_t value )
 \note every increase of karma has a related event
 \note Sparhawk: karma increase now can also be applied to npc's
 */
-void cChar::IncreaseKarma( int32_t value, pChar pKilled )
+void cChar::increaseKarma( int32_t value, pChar pKilled )
 {
 	int32_t nCurKarma = GetKarma();
 

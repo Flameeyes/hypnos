@@ -672,6 +672,7 @@ bool collision(pBoat pi, sPoint where, uint8_t dir)
 \param pb1 First boat
 \param pb2 Second boat
 \param w Point where the collision can be
+\param dir Turning direction
 \return true if collided, else false
 \see collision()
 */

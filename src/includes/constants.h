@@ -188,8 +188,6 @@ enum { BANK_GOLD = 1, BANK_ITEM = 0, MOREY_GOLDONLYBANK = 123, MOREX_BANK = 1 };
 //! House list type
 enum { H_FRIEND = 1, H_BAN };
 
-//@}
-
 //@{
 /*!
 \name Line of sight
