@@ -8,6 +8,7 @@ class Setting:
 	type = 'string'
 	default = ''
 	description = 'A setting'
+	flag = ''
 	flagnum = 0
 
 class Group:
@@ -67,6 +68,7 @@ while n != None:
 		s.default = setn.getAttribute("default")
 		setn.normalize()
 		s.description = setn.childNodes.item(0).data
+		s.flag = setn.getAttribute("flag")
 		
 		assert(s.name)
 		assert(s.type)
@@ -161,14 +163,14 @@ for group in groups:
 	
 	# First pass: declarations
 	for setting in group.settings:
-		unith.write(
-			"\t\t" + toCType(setting.type) + " get" + setting.name + "();\n"
-			"\t\tvoid set" + setting.name + "(" + toCType(setting.type) + ");\n\n"
-			);
-		
 		if setting.type == 'flag':
+			unith.write(
+				"\t\tbool " + setting.flag + setting.name + "();\n"
+				"\t\tvoid set" + setting.name + "(" + toCType(setting.type) + ");\n\n"
+				);
+			
 			unitcpp.write(
-				"\tbool get" + setting.name + "()\n"
+				"\tbool " + setting.flag + setting.name + "()\n"
 				"\t{ return flags" + str(setting.flagnum) + " & flag" + setting.name + "; }\n"
 				"\n"
 				"\t void set" + setting.name + "(bool on)\n"
@@ -177,6 +179,11 @@ for group in groups:
 				"\n"
 				)
 		else:
+			unith.write(
+				"\t\t" + toCType(setting.type) + " get" + setting.name + "();\n"
+				"\t\tvoid set" + setting.name + "(" + toCType(setting.type) + ");\n\n"
+				);
+			
 			unitcpp.write(
 				"\tstatic " + toCType(setting.type) + " m_" + setting.name + " = " + formatC(setting) + ";\n"
 				"\n"
