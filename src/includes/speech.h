@@ -9,29 +9,35 @@
 #define __SPEECH_H__
 
 /*!
-\brief Used in speech methods to hold spoken text. "unicode" conversion supported as well as network to host byte order conversion and vice versa
+\brief Unicode text container and converter.
 \author Chronodt
-\note it is called simply cSpeech because i had no heart to call it cUnicode, since it is not a true unicode support, but a "cut-down" one, just enough to work with UO protocol
+\note it is called simply cSpeech because i had no heart to call it cUnicode,
+	since it is not a true unicode support, but a "cut-down" one, just
+	enough to work with UO protocol
 
-speech mode:
-0x00 - Regular
-0x01 - Broadcast
-0x02 - Emote (adds *'s as part of text)
-0x06  Label (You see: )
-0x07 - Emphasis (clears previous messages)
-0x08 - Whisper
-0x09  Yell
-0x0a  spell
+Used in speech methods to hold spoken text. "unicode" conversion supported as
+well as network to host byte order conversion and vice versa.
+
+\paragraph sm Speech mode
+\li \c 0x00 - Regular
+\li \c 0x01 - Broadcast
+\li \c 0x02 - Emote (adds *'s as part of text)
+\li \c 0x06  Label (You see: )
+\li \c 0x07 - Emphasis (clears previous messages)
+\li \c 0x08 - Whisper
+\li \c 0x09  Yell
+\li \c 0x0a  spell
 */
 class cSpeech
 {
 protected:
 	unistring unicodeText;	//!< Unicode string to say
 	uint8_t mode;		//!< type of speech (normal, emote, yell, etc etc)
+				//!< \see \ref sm
 	uint16_t color;		//!< Color of the speech
 	uint16_t font;		//!< Font to use for the speech
 	char language[4];	//!< Language code (null terminated)
-	pSerializable speaker;	//!< Character who's speaking. NOTE: everything with a serial can speak!
+	pSerializable speaker;	//!< Character who's speaking. \note Everything with a serial can speak!
 	bool packetByteOrder;	//!< Is the string in network-endian?
 public:
 //@{
