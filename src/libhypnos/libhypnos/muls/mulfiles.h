@@ -55,16 +55,6 @@ Those functions are the mtohs() and mtohl(). The \c m stands for Mul-endianness.
 
 */
 namespace nMULFiles {
-	class fGumpIDX;
-	class cGumpIDX;
-	
-	class cTiledataLand;
-	class cTiledataStatic;
-	class fTiledataLand;
-	class fTiledataStatic;
-	
-	class fMultiIDX;
-	
 #ifdef __BIG_ENDIAN__
 	inline uint32_t mtohl(uint32_t dword)
 	{

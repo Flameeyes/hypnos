@@ -6,7 +6,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "utils/strings.h"
+#include "libhypnos/strings.h"
 
 /*!
 \brief Converts an ip-string to a long value

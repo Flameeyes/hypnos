@@ -20,7 +20,7 @@ more of them.
 #ifndef __UTILS_STRINGS_H__
 #define __UTILS_STRINGS_H__
 
-#include "common_libs.h"
+#include "libhypnos/commons.h"
 
 inline std::string toString(int value)
 {

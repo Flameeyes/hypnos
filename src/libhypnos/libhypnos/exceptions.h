@@ -26,7 +26,6 @@ namespace nLibhypnos {
 		eException() { }
 	};
 
-	
 	/*!
 	\class eOutOfBound exceptions.h "libhypnos/exceptions.h"
 	\brief Exception thrown when trying to access an index out of the bound
