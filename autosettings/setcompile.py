@@ -8,6 +8,7 @@ class Setting:
 	type = 'string'
 	default = ''
 	description = 'A setting'
+	flagnum = 0
 
 class Group:
 	grName = ''
@@ -23,7 +24,17 @@ def toCType(type):
 	if type == 'int32': return 'int32_t'
 	if type == 'int16': return 'int16_t'
 	if type == 'int8': return 'int8_t'
-	if type == 'flag': return 'flag'
+	if type == 'flag': return 'bool'
+	return None
+
+def toVarFunc(type):
+	if type == 'string': return 'String'
+	if type == 'uint32': return 'UInt32'
+	if type == 'uint16': return 'UInt16'
+	if type == 'uint8': return 'UInt8'
+	if type == 'int32': return 'Int32'
+	if type == 'int16': return 'Int16'
+	if type == 'int8': return 'Int8'
 	return None
 
 def formatC(setting):
@@ -84,6 +95,8 @@ unith.write("""
 #include "common_libs.h"
 
 namespace nSettings {
+
+
 """)
 
 unitcpp.write("""
@@ -93,6 +106,7 @@ unitcpp.write("""
 #include "settings.h"
 
 namespace nSettings {
+
 """)
 
 # Calculate flags count
@@ -120,9 +134,11 @@ for group in groups:
 		if setting.type != 'flag': continue
 		
 		if setting.default == 'on':
-			defaults[flagvar] += "\n\t\t | n" + group.grName + "::flag" + setting.name
+			defaults[flagvar] += "\n\t | n" + group.grName + "::flag" + setting.name
 		
 		unitcpp.write("\tstatic const uint64_t flag" + setting.name + " = " + hex(1 << flagbit) + ";\n");
+		
+		setting.flagnum = flagvar
 		
 		flagbit += 1
 		if flagbit >= 64:
@@ -130,12 +146,12 @@ for group in groups:
 			flagbit %= 64
 			defaults.append("")
 	
-	unitcpp.write("} // namespace n" + group.grName + "\n")
+	unitcpp.write("}\n")
 
 unitcpp.write("\n\n")
 
 for i in range(0, flagvars):
-	unitcpp.write("\tstatic uint64_t flags" + str(i) + " = 0" + defaults[i] + ";\n\n\n")
+	unitcpp.write("static uint64_t flags" + str(i) + " = 0" + defaults[i] + ";\n\n\n")
 
 # Handle normal settings
 
@@ -143,21 +159,75 @@ for group in groups:
 	unith.write("\tnamespace n" + group.grName + " {\n")
 	unitcpp.write("namespace n" + group.grName + " {\n")
 	
+	# First pass: declarations
 	for setting in group.settings:
-		# Flags are handled at the end of the section, 'cause they are handled in different ways
-		if setting.type == 'flag': continue
-		
 		unith.write(
 			"\t\t" + toCType(setting.type) + " get" + setting.name + "();\n"
 			"\t\tvoid set" + setting.name + "(" + toCType(setting.type) + ");\n\n"
 			);
 		
+		if setting.type == 'flag':
+			unitcpp.write(
+				"\tbool get" + setting.name + "()\n"
+				"\t{ return flags" + str(setting.flagnum) + " & flag" + setting.name + "; }\n"
+				"\n"
+				"\t void set" + setting.name + "(bool on)\n"
+				"\t{ if ( on ) flags" + str(setting.flagnum) + " |= flag" + setting.name +
+				"; else flags" + str(setting.flagnum) + " &= ~flag" + setting.name + "; }\n"
+				"\n"
+				)
+		else:
+			unitcpp.write(
+				"\tstatic " + toCType(setting.type) + " m_" + setting.name + " = " + formatC(setting) + ";\n"
+				"\n"
+				"\t" + toCType(setting.type) + " get" + setting.name + "()\n"
+				"\t{ return m_" + setting.name + "; }\n"
+				"\n"
+				"\tvoid set" + setting.name + "(" + toCType(setting.type) + " newval)\n"
+				"\t{ m_" + setting.name + " = newval; }\n"
+				"\n"
+				)
+	
+	# Second pass: load() function
+	
+	unitcpp.write(
+		"\tvoid load(MXML::Node *n) {\n"
+		"\t{\n"
+		"\t\tdo {\n"
+		)
+	
+	first = True
+	for setting in group.settings:
+		unitcpp.write("\t\t\t")
+		
+		if not first:
+			unitcpp.write("else ")
+		else:
+			first = False
+		
 		unitcpp.write(
-			"\tstatic " + toCType(setting.type) + " m_" + setting.name + " = " + formatC(setting) + ";\n")
-		unitcpp.write(
-			"\t" + toCType(setting.type) + " get" + setting.name + "()\n"
-			"\t{ return m_" + setting.name + "; }\n\n"
+			"if ( n->name() == \"" + setting.name + "\" )\n"
+			"\t\t\t{\n"
 			)
+		
+		if setting.type == 'flag':
+			unitcpp.write("TODO\n")
+		else:
+			unitcpp.write(
+				"\t\t\t\tcVariant v = n->data();\n"
+				"\t\t\t\tbool result = false;\n"
+				"\t\t\t\t" + toCType(setting.type) + " tempo = v.to" + toVarFunc(setting.type) + "(&result);\n"
+				"\t\t\t\telse LogWarning(\"Invalid value for parameter " + setting.name + "\");\n"
+				)
+		
+		unitcpp.write("\t\t\t}\n")
+	
+	unitcpp.write(
+		"\t\t\telse LogWarning(\"Unknown node %s in settings.xml, ignoring\", n->name().c_str() );\n"
+		"\t\t\tn = n->next();\n"
+		"\t\t} while(n);\n"
+		"\t}\n"
+		)
 	
 	unith.write("\t} // namespace n" + group.grName + "\n")
 	unitcpp.write("} // namespace n" + group.grName + "\n")
