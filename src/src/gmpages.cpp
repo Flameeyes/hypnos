@@ -15,6 +15,7 @@
 #include "objects/cchar.h"
 #include "objects/cclient.h"
 #include "objects/cpc.h"
+#include "objects/caccount.h"
 
 GMPageList cGMPage::pages;
 uint32_t cGMPage::nextID = 0;
@@ -36,7 +37,7 @@ cGMPage::cGMPage(pPC pc, std::string &pageReason, bool onlyGM)
 	bool notified = false;
 	for( ClientList::iterator it = cClient::clients.begin(); it != cClient::clients.end(); it++)
 	{
-		if ( onlyGM ? (*it)->currAccount()->canSeeGMPages() : (*it)->currAccount()->canSeeConsPages() )
+		if ( onlyGM ? (*it)->currAccount()->seeGMPages() : (*it)->currAccount()->seeConsPages() )
 		{
 			notified = true;
 			(*it)->sysmessage(msg);
@@ -111,7 +112,7 @@ void cGMPage::showQueue(pClient viewer)
 	{
 		if ( !(*it)->getHandler() && ( gmpages || ! (*it)->getGMOnly() ) )
 		{
-			viewer->sysmessage( "Next unhandled page from %s", (*it)->getCaller()->getPlayerName().c_str() );
+			viewer->sysmessage( "Next unhandled page from %s", (*it)->getCaller()->getBody()->getCurrentName().c_str() );
 			viewer->sysmessage( "Problem: %s.", (*it)->getReason().c_str() );
 			//!\todo Need to add support for time
 //			viewer->sysmessage("Paged at %s.", gmpages[i].timeofcall);
@@ -141,6 +142,7 @@ void cGMPage::requeueGMOnly()
 	delete this;
 }
 
+#if 0
 /*!
 \brief Gets the next page
 \todo Rewrite it merging counselor and gm calls
@@ -216,3 +218,4 @@ void cmdNextCall(pClient cli)
 		if(x==0) pc_currchar->sysmsg("The Counselor queue is currently empty");
 	}//if
 }
+#endif

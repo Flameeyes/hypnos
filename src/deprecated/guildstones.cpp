@@ -23,13 +23,13 @@
 // Placer gets guildmaster, whatever he does ;)
 // Force placer to give that damn guild a damn name :)
 
-void cGuilds::StonePlacement(int s)
+void cGuilds::StonePlacement(pClient client)
 {
-	int /*stone,*/guildnumber;
+	if ( ! client ) return;
+	int guildnumber;
 	pItem pStone;
-	//unsigned int k; // lb, msvc++ 5.0 didnt like the guild(int x,inty) ...
 	char stonename[60];
-	pChar pc = cSerializable::findCharBySerial(currchar[s]);
+	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
 	Location charpos= pc->getPosition();
@@ -40,84 +40,84 @@ void cGuilds::StonePlacement(int s)
 		sysmessage(s,"You cannot place guildstones at any other location than your house"); return;
 	} */
 	pItem pi_fx1=MAKE_ITEM_REF(pc->fx1);
-	if( pi_fx1 )
+	if ( ! pi_fx1 )
+		return;
+	
+	if (pi_fx1->getId()==0x14F0)
 	{
-		if (pi_fx1->getId()==0x14F0)
+		if (pc->GetGuildNumber() !=0)
 		{
-			if (pc->GetGuildNumber() !=0)
-			{
-				itemmessage(s,"You are already in a guild.",pi_fx1->getSerial());
-				return;
-			}
-			guildnumber=Guilds->SearchSlot(0,1);
-			if (guildnumber==-1)
-			{
-				itemmessage(s,"There are already enough guildstones placed.",pi_fx1->getSerial());
-				return;
-			}
-			pc->SetGuildNumber( guildnumber );
+			itemmessage(s,"You are already in a guild.",pi_fx1->getSerial());
+			return;
+		}
+		guildnumber=Guilds->SearchSlot(0,1);
+		if (guildnumber==-1)
+		{
+			itemmessage(s,"There are already enough guildstones placed.",pi_fx1->getSerial());
+			return;
+		}
+		pc->SetGuildNumber( guildnumber );
+		pStone = item::CreateFromScript( "$item_hardcoded" );
+		if (!pStone)
+		{//AntiChrist - to prevent crashes				
+			pc->sysmsg("Cannot create guildstone");
+			return;
+		}
+		pStone->setId( 0x0ED5 );
+		pStone->setCurrentName( "Guildstone for a unnamed guild" );
+		if ( pc->getId() == BODY_FEMALE )
+			pc->SetGuildTitle("Guildmistress");
+		else
+			pc->SetGuildTitle("Guildmaster");
+		guilds[guildnumber].free = 0;
+		guilds[guildnumber].members = 1;
+		guilds[guildnumber].member[1] = pc->getSerial();
+		guilds[guildnumber].type = 0;
+		guilds[guildnumber].abbreviation[0] = 0;
+		strcpy(guilds[guildnumber].webpage,DEFAULTWEBPAGE);
+		strcpy(guilds[guildnumber].charter,DEFAULTCHARTER);
+		pStone->setPosition( charpos );
+		pStone->type= ITYPE_GUILDSTONE;
+		pStone->priv= 0;
+		pStone->Refresh();
+		pi_fx1->Delete();
+		pc->fx1 = 0;
+		guilds[guildnumber].stone= pStone->getSerial();
+		guilds[guildnumber].master= pc->getSerial();
+//guild will be rewrited tomorrow so np
+//			entrygump(s, pc->getSerial(), 100, 1, 40, "Enter a name for the guild.");
+	}
+	else
+	{
+		guildnumber = SearchByStone(s);
+		if (guildnumber==-1)
+		{//AntiChrist
+			pc->sysmsg("There are already enough guildstones placed.");
+			return;
+		}
+		if (( pi_fx1->getSerial()==guilds[guildnumber].stone &&
+			pc->getSerial() == guilds[guildnumber].master) ||
+			pc->IsGM() )
+		{
+			sprintf(stonename, "Guildstone for %s", guilds[guildnumber].name);
 			pStone = item::CreateFromScript( "$item_hardcoded" );
-			if (!pStone)
-			{//AntiChrist - to prevent crashes				
+			if ( !pStone )
+			{//AntiChrist - to preview crashes
 				pc->sysmsg("Cannot create guildstone");
 				return;
 			}
-			pStone->setId( 0x0ED5 );
-			pStone->setCurrentName( "Guildstone for a unnamed guild" );
-			if ( pc->getId() == BODY_FEMALE )
-				pc->SetGuildTitle("Guildmistress");
-			else
-				pc->SetGuildTitle("Guildmaster");
-			guilds[guildnumber].free = 0;
-			guilds[guildnumber].members = 1;
-			guilds[guildnumber].member[1] = pc->getSerial();
-			guilds[guildnumber].type = 0;
-			guilds[guildnumber].abbreviation[0] = 0;
-			strcpy(guilds[guildnumber].webpage,DEFAULTWEBPAGE);
-			strcpy(guilds[guildnumber].charter,DEFAULTCHARTER);
+			pStone->setId( 0xED5 );
+			pStone->setCurrentName( stonename );
 			pStone->setPosition( charpos );
 			pStone->type= ITYPE_GUILDSTONE;
 			pStone->priv= 0;
-			pStone->Refresh();
+			pStone->Refresh();//AntiChrist
 			pi_fx1->Delete();
 			pc->fx1 = 0;
-			guilds[guildnumber].stone= pStone->getSerial();
-			guilds[guildnumber].master= pc->getSerial();
-//guild will be rewrited tomorrow so np
-//			entrygump(s, pc->getSerial(), 100, 1, 40, "Enter a name for the guild.");
+			guilds[guildnumber].stone = pStone->getSerial();
 		}
-		else
-		{
-			guildnumber = SearchByStone(s);
-			if (guildnumber==-1)
-			{//AntiChrist
-				pc->sysmsg("There are already enough guildstones placed.");
-				return;
-			}
-			if (( pi_fx1->getSerial()==guilds[guildnumber].stone &&
-				pc->getSerial() == guilds[guildnumber].master) ||
-				pc->IsGM() )
-			{
-				sprintf(stonename, "Guildstone for %s", guilds[guildnumber].name);
-				pStone = item::CreateFromScript( "$item_hardcoded" );
-				if ( !pStone )
-				{//AntiChrist - to preview crashes
-					pc->sysmsg("Cannot create guildstone");
-					return;
-				}
-                pStone->setId( 0xED5 );
-				pStone->setCurrentName( stonename );
-				pStone->setPosition( charpos );
-				pStone->type= ITYPE_GUILDSTONE;
-				pStone->priv= 0;
-				pStone->Refresh();//AntiChrist
-				pi_fx1->Delete();
-				pc->fx1 = 0;
-				guilds[guildnumber].stone = pStone->getSerial();
-			}
-			else 
-				itemmessage(s,"You are not the guildmaster of this guild. Only the guildmaster may use this guildstone teleporter.",pi_fx1->getSerial());
-		}
+		else 
+			itemmessage(s,"You are not the guildmaster of this guild. Only the guildmaster may use this guildstone teleporter.",pi_fx1->getSerial());
 	}
 }
 

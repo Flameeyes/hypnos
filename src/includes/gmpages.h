@@ -19,6 +19,7 @@ class cGMPage {
 public:
 	cGMPage(pPC pc, std::string &pageReason, bool onlyGM = false);
 	cGMPage(pGMPage old);
+	~cGMPage();
 	
 	inline pPC getCaller() const
 	{ return caller; }

@@ -72,6 +72,10 @@ public:
 	inline const std::string getName() const
 	{ return name; }
 	
+	//! Gets the account priviledge level
+	inline const int8_t getLevel() const
+	{ return privlevel; }
+	
 //@{
 /*!
 \name Account Flags
