@@ -12,4 +12,4 @@ CXXFLAGS="$CXXFLAGS $INCLUDES"
 
 AC_SUBST(CXXFLAGS)
 
-AC_OUTPUT(Makefile src/Makefile libhypnos/Makefile libhypnos/muls/Makefile)
+AC_OUTPUT(Makefile libhypnos/Makefile libhypnos/muls/Makefile src/Makefile src/archs/Makefile src/backend/Makefile src/encryption/Makefile src/extras/Makefile src/objects/cchar/Makefile src/objects/citem/Makefile src/objects/cnpc/Makefile src/objects/Makefile src/skills/Makefile src/packets/Makefile src/archetypes/Makefile )

@@ -29,6 +29,9 @@
       <mainprogram>src/hypnos</mainprogram>
       <terminal>true</terminal>
       <directoryradio>executable</directoryradio>
+      <runarguments>
+        <hypnos/>
+      </runarguments>
     </run>
     <configurations>
       <optimized>

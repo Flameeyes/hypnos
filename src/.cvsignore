@@ -7,3 +7,6 @@ config.cache
 autom4te.cache
 stamp-h
 stamp-h1
+hypnos.kdevses
+debug
+hypnos.kdevelop.pcs

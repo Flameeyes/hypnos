@@ -29,7 +29,7 @@ struct sLocation {
 	inline sLocation()
 	{ x = 0; y = 0; z = 0; dispz = 0; map = 0; }
 	
-	/*!
+	/*!	
 	\brief Constructor for sLocation structure
 	\param X x of the new location
 	\param Y y of the new location
