@@ -20,6 +20,8 @@
 #include "archs/signals.h"
 #include "backend/admincmds.h"
 
+#include "libhypnos/strings.h"
+
 #ifdef HAVE_WINCON_H
 #include <wincon.h>
 #endif

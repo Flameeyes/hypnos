@@ -56,7 +56,7 @@ public:
 	
 	const sRect &getArea() const;
 	
-	static pMulti cMulti::getAt(sPoint p);
+	static pMulti getAt(sPoint p);
 	
 	virtual void Delete();
 };

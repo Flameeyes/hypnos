@@ -6,9 +6,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#include "logsystem.h"
+#include "archs/tinterface.h"
 #include "objects/citem/ccontainer.h"
 #include "objects/citem/cmap.h"
-#include "logsystem.h"
+
 #include <mxml.h>
 
 cContainer::mapGumpsInfo cContainer::gumpinfos;
@@ -56,7 +58,7 @@ void cContainer::loadContainersData()
 					
 					uint16_t valId = cVariant( id->data() ).toUInt16();
 					if ( valId )
-						containers[valId] = it;
+						containers[valId] = id;
 				} while ( (id = id->next() ) );
 				
 			} catch ( MXML::NotFoundError e ) {
@@ -412,7 +414,7 @@ void cContainer::doubleClicked()
 {
 	// Wintermute: GMs or Counselors should be able to open trapped containers always
 	if (moreb1 > 0 && !pc->IsGMorCounselor()) {
-		magic::castAreaAttackSpell(getPosition().x, getPosition().y, magic::spellExplosion);
+		magic::castAreaAttackSpell(getPosition(), magic::spellExplosion);
 		moreb1--;
 	}
 	//Magic->MagicTrap(currchar[s], pi); // added by AntiChrist
@@ -428,7 +430,7 @@ void cContainer::doubleClicked()
 This function is called by all the musicianship-related functions inside the
 nSkills namespace.
 */
-pItem cContainer::getInstrument(bool recurse = false)
+pItem cContainer::getInstrument(bool recurse = false) const
 {
 	for ( ItemSList::const_iterator it = items.begin(); it != items.end(); it++ )
 	{

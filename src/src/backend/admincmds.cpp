@@ -23,7 +23,7 @@ void nAdminCommands::parseCommand(const std::string &str, std::ostream &outs)
 	{
 	case 'T':
 	case 't':
-		tMainLoop::instance->requestShutdown();
+		tMainLoop::instance->requestShutdown(2);
 		break;
 	case '#':
 		tMainLoop::instance->requestSave();
@@ -40,12 +40,12 @@ void nAdminCommands::parseCommand(const std::string &str, std::ostream &outs)
 				pChar pc_i=cSerializable::findCharBySerial(currchar[i]);
 				if(pc_i && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
 				{
-					outs << j << ") " << pc_i->getCurrentName() << " [ " << setw(8) << setfill('0') << hex << pc_i->getSerial() << " ]" << std::endl;
+					outs << j << ") " << pc_i->getCurrentName() << " [ " << std::setw(8) << std::setfill('0') << hex << pc_i->getSerial() << " ]" << std::endl;
 					j++;
 				}
 			}
+			outs << "Total Users Online: " << j << std::endl;
 		}
-		outs << "Total Users Online: " << j << std::endl;
 		break;
 	case 'r':
 	case 'R':
@@ -57,9 +57,8 @@ void nAdminCommands::parseCommand(const std::string &str, std::ostream &outs)
 			<< "\t# - Save world" << std::endl
 			<< "\tW - Display logged in characters" << std::endl
 			<< "\tR - Total server reload" << std::endl
-			<< "\tS - Toggle Secure mode" << secure ? "[enabled]" : "[disabled]" << std::endl
 			<< "\t? - Commands list (this)" << std::endl
-			<< "End of commands list." << std::endl
+			<< "End of commands list." << std::endl;
 		break;
 	default:
 		outs << "Command " << str << " does not perform a function." << std::endl;

@@ -100,7 +100,7 @@ public:
 	\brief Change the book title
 	\param titl new title of the book
 	*/
-	void cBook::setTitle(std::string titl)
+	void setTitle(std::string titl)
 	{ title = titl; }
 
 	//! Passes the pages of the book

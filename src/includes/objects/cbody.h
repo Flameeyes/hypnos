@@ -35,7 +35,7 @@ protected:
 
 public:
 	//! Gets the character's name
-	inline std::string& getName() const
+	inline const std::string& getName() const
 	{ return name; }
 
 	//! Sets the character's name
@@ -43,7 +43,7 @@ public:
 	{ name = value; }
 
 	//! Gets the character's title
-	inline std::string& getTitle() const
+	inline const std::string& getTitle() const
 	{ return title; }
 
 	//! Sets the character's title
@@ -79,10 +79,10 @@ public:
 
 	pEquippableContainer getBackpack(bool create = false);
 
-	const bool isWearing(pItem pi) const;
+	bool isWearing(pItem pi) const;
 
-	const uint8_t equip(pEquippable pi, bool drag = false);
-	const uint8_t unEquip(pEquippable pi, bool drag = false);
+	uint8_t equip(pEquippable pi, bool drag = false);
+	uint8_t unEquip(pEquippable pi, bool drag = false);
 
 	void checkEquipment();
 	

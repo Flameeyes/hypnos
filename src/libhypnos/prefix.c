@@ -39,7 +39,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
-#include "prefix.h"
+#include "libhypnos/prefix.h"
 
 #ifdef __cplusplus
 extern "C" {

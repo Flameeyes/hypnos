@@ -25,7 +25,7 @@ namespace nMOTD {
 	
 	const std::string &getMOTD();
 	const std::string &getTip(uint16_t index);
-	const uint16_t getTipsCount();
-};
+	uint16_t getTipsCount();
+}
 
 #endif

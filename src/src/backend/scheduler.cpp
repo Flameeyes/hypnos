@@ -147,5 +147,4 @@ void *cScheduler::run()
 			if ( getClockmSecs() > ( (*it)->lastrun + (*it)->interval ) )
 				(*it)->callback->execute();
 	}
-	return 0;
 }

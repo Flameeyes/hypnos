@@ -6,29 +6,31 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#include "logsystem.h"
+#include "inlines.h"
+#include "archs/tinterface.h"
 #include "extras/jails.h"
-#include "objects/cpc.h"
+#include "libhypnos/cvariant.h"
 #include "networking/cclient.h"
 #include "objects/caccount.h"
 #include "objects/cbody.h"
-#include "libhypnos/cvariant.h"
-#include "logsystem.h"
-#include "inlines.h"
+#include "objects/cpc.h"
+
 #include <mxml.h>
 #include <wefts_mutex.h>
 
 namespace nJails {
-	LocationList jails;		//!< List of locations usable for jails
-	LocationList::iterator currentJail = jails.end();
-					//!< Current jail used
-	Wefts::Mutex mutex;		//!< Mutex for the load of jails
+	static LocationList jails;		//!< List of locations usable for jails
+	static LocationList::iterator currentJail = jails.end();
+						//!< Current jail used
+	static Wefts::Mutex mutex;		//!< Mutex for the load of jails
 	
-	PCList jailedPlayers;		//!< List of jailed players
-	AccountList jailedAccounts;	//!< List of jailed accounts
+	static PCList jailedPlayers;		//!< List of jailed players
+	static AccountList jailedAccounts;	//!< List of jailed accounts
 	
-	void checkJailedPlayers();
-	void checkJailedAccounts();
-};
+	static void checkJailedPlayers();
+	static void checkJailedAccounts();
+}
 
 //! Loads the jails data from the jails.xml file
 void nJails::loadJails()
@@ -62,7 +64,7 @@ void nJails::loadJails()
 				
 				if ( loc == sLocation(0,0,0) || ! isValidCoord(loc) )
 				{
-					LogWarning("Invalid jail location %u, %u, %c", loc.x, loc.y, loc.z);
+					LogWarning("Invalid jail location (%hu,%hu,%hhi)", loc.x, loc.y, loc.z);
 					continue;
 				}
 				

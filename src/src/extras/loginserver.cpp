@@ -8,9 +8,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypnos/cvariant.h"
-#include "extras/loginserver.h"
 #include "logsystem.h"
+#include "archs/tinterface.h"
+#include "extras/loginserver.h"
+
+#include "libhypnos/cvariant.h"
 
 #include <mxml.h>
 #include <wefts_mutex.h>

@@ -51,7 +51,7 @@ public:
 	cContainer();
 	cContainer(uint32_t serial);
 	
-	virtual void doubleClicked();
+	virtual void doubleClicked(pClient);
 
 //@{
 /*!
@@ -116,7 +116,7 @@ public:
 	uint32_t countSpellsInSpellBook(bool stdOnly = true);
 	bool containsSpell(SpellId spellnum);
 	
-	const float getWeightActual();
+	float getWeightActual();
 	
 	virtual bool doDecay(bool dontDelete = false);
 	

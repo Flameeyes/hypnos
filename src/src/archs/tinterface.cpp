@@ -41,7 +41,7 @@ void tInterface::outputf(tInterface::Level lev, char *txt, ...)
 	vasprintf( &tmp, txt, argptr );
 	va_end( argptr );
 	
-	output(lev, buffer);
+	output(lev, tmp);
 	free(tmp);
 }
 

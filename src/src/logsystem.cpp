@@ -89,7 +89,7 @@ LogError, LogFatal, from which it takes the type of the message, the file path
 \param lnum Line number (__LINE__)
 \param Message Message to log
 */
-void cLogFile::logMessage(cLogFile::LogType type, char *fpath, int lnum, char *Message, ...)
+void cLogFile::log(cLogFile::LogType type, const char *fpath, int lnum, char *Message, ...)
 {
 	char *fullMessage = NULL;
 	va_list argptr;

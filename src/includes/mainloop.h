@@ -12,8 +12,10 @@
 #define __MAINLOOP_H__
 
 #include "common_libs.h"
+#include "libhypnos/cvariant.h"
 
 #include <wefts_thread.h>
+#include <wefts_queue.h>
 
 class tInterface;
 
@@ -58,7 +60,7 @@ private:
 	void doResync();
 	void doBroadcast(std::string bcast);
 public:
-	tMainLoop(tInterface *output);
+	tMainLoop();
 	
 	void *run();
 	

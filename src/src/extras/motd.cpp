@@ -8,14 +8,16 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "extras/motd.h"
 #include "logsystem.h"
+#include "archs/tinterface.h"
+#include "extras/motd.h"
+
 #include <mxml.h>
 
 namespace nMOTD {
-	std::string motd;	//!< Message of the day
-	stringVector tips;	//!< Tips for the players
-};
+	static std::string motd;	//!< Message of the day
+	static stringVector tips;	//!< Tips for the players
+}
 
 /*!
 \brief Loads MOTD and Tips data from motd.xml configuration file.
@@ -78,7 +80,7 @@ const std::string &nMOTD::getTip(uint16_t index)
 }
 
 //! Gets the number of tips presents
-const uint16_t nMOTD::getTipsCount()
+uint16_t nMOTD::getTipsCount()
 {
 	return tips.size();
 }

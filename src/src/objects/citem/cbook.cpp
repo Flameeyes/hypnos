@@ -63,12 +63,12 @@ void cBook::changePages(char *packet, uint16_t p, uint16_t l, uint16_t size)
 	char s[34];
 	if ( p >= pages.size() )
 	{
-		LogWarning("Invalid page index in packet (index: %u max: %uz)\n", p, pages.size());
+		LogWarning("Invalid page index in packet (index: %u max: %z)", p, pages.size());
 		return;
 	}
 	if ( l >= pages[p].size() )
 	{
-		LogWarning("Invalid line index in packet (index: %u max: %uz)\n", l, pages[p].size());
+		LogWarning("Invalid line index in packet (index: %u max: %z)", l, pages[p].size());
 		return;
 	}
 

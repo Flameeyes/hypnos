@@ -242,7 +242,7 @@ public:
 	//!\todo change when new regions' system works
 	}
 
-	const bool isGrey() const;
+	bool isGrey() const;
 	
 	inline bool holyDamaged() const
 	{ return flags & flagHolyDamaged; }
@@ -263,8 +263,8 @@ public:
 	inline bool isOverWeight()
 	{ return /*!isGM() &&*/ body->overloadedTeleport(); }
 	
-	const bool canDoGestures() const;
-	const bool inDungeon() const;
+	bool canDoGestures() const;
+	bool inDungeon() const;
 
 	//! Sets char's karma
 	inline void setKarma(int32_t newkarma)

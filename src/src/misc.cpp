@@ -783,7 +783,7 @@ int calcGoodValue(pChar npc, pItem pi, int value,int goodtype)
 \author Luxor
 \brief Returns distance between two points.
 */
-const double dist( const sLocation a, const sLocation b, bool countZ )
+double dist( const sLocation a, const sLocation b, bool countZ )
 {
         int16_t xDiff = a.x - b.x;
         int16_t yDiff = a.y - b.y;

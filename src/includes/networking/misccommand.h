@@ -110,4 +110,4 @@ namespace nPackets { namespace Sent {
 		
 		void prepare();
 	};
-} };
+} }

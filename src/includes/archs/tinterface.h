@@ -35,7 +35,7 @@ public:
 	};
 	
 	void outputf(Level lev, char *txt, ...) PRINTF_LIKE(3, 4);
-	virtual void output(Level lev, const std::string &str);
+	virtual void output(Level lev, const std::string &str) = 0;
 	
 	virtual ~tInterface()
 	{ }
@@ -59,6 +59,9 @@ public:
 	
 	void output(tInterface::Level lev, const std::string &str)
 	{ }
+	
+	void *run()
+	{ return NULL; }
 };
 
 #define outPlain(x)	tInterface::instance->output(tInterface::levPlain, x)

@@ -109,8 +109,6 @@ stringVector tokenize(std::string str)
 	return ret;
 }
 
-}
-
 /*!
 \brief Gets a string representing the current date and time for the log
 */
@@ -121,17 +119,19 @@ std::string getDateString()
 	time(&TIME);
 	T = localtime(&TIME);
 	
-	std::ostringsream sout;
+	std::ostringstream sout;
 	
-	sout 	<< "["	<< setw(2) << setfill(0) << T->m_mday
-		<< "/"	<< setw(2) << setfill(0) << T->tm_mon + 1
-		<< "/"	<< setw(4) << setfill(0) << T->tm_year + 1900
-		<< " "	<< setw(2) << setfill(0) << T->tm_hour 
-		<< ":"	<< setw(2) << setfill(0) << T->tm_min
-		<< ":"	<< setw(2) << setfill(0) << T->tm_sec
+	sout 	<< "["	<< std::ios::setw(2) << std::ios::setfill(0) << T->tm_mday
+		<< "/"	<< std::ios::setw(2) << std::ios::setfill(0) << T->tm_mon + 1
+		<< "/"	<< std::ios::setw(4) << std::ios::setfill(0) << T->tm_year + 1900
+		<< " "	<< std::ios::setw(2) << std::ios::setfill(0) << T->tm_hour 
+		<< ":"	<< std::ios::setw(2) << std::ios::setfill(0) << T->tm_min
+		<< ":"	<< std::ios::setw(2) << std::ios::setfill(0) << T->tm_sec
 		<< "]";
 
 	return sout.str();
+}
+
 }
 
 #ifndef HAVE_ASPRINTF

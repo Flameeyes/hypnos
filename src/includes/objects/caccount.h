@@ -55,7 +55,7 @@ protected:
 
 	pClient client;				//!< Client in use
 public:
-	const uint8_t getCharsNumber() const;
+	uint8_t getCharsNumber() const;
 
 	inline uint8_t addCharToAccount(pPC pc);
 	void save(uint32_t id);
@@ -66,7 +66,7 @@ public:
 	{ return client; }
 
 	//! Gets the account name
-	inline std::string getName() const
+	inline const std::string &getName() const
 	{ return name; }
 	
 	//! Gets the account priviledge level

@@ -155,7 +155,7 @@ void cBoat::turn(bool turnRight)
 	const uint8_t *pShipItems = ShipItems[ dir ];
 
 	plankLeft->setId( plankLeft->getId() | pShipItems[idPortPlankClosed] );//change the ID
-	plankRight->setId( pplankRight->getId() | pShipItems[idStarPlankClosed] );
+	plankRight->setId( plankRight->getId() | pShipItems[idStarPlankClosed] );
 	tillerMan->setId( tillerMan->getId() | pShipItems[idTiller] );
 	hold->setId( hold->getId() | pShipItems[idHold] );
 
@@ -166,7 +166,7 @@ void cBoat::turn(bool turnRight)
 	MoveTo(getPosition());
 
 	for ( ClientSList::iterator it = toResume.begin(); it != toResume.end(); it++ )
-		(*it)->resume():
+		(*it)->resume();
 }
 
 /*!

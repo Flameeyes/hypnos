@@ -45,7 +45,7 @@ public:
 	void Write(char *format, ...) PRINTF_LIKE(2,3);
 	
 	static cLogFile *serverLog;	//!< Global log object
-	static void logMessage(LogType type, char *fpath, int lnum, char *Message, ...) PRINTF_LIKE(4,5);
+	static void log(LogType type, const char *fpath, int lnum, char *Message, ...) PRINTF_LIKE(4,5);
 	
 	static uint32_t logCounts[4];	//!< Counter for different type of errors
 	
@@ -63,10 +63,10 @@ public:
 These functions are called as 'commodity' macros to simplify the call of actual
 logging facilities, stating the file name and the line number.
 */
-#define LogMessage(...)		cLogFile::logMessage(cLogFile::logMessage, __FILE__, __LINE__, __VA_ARGS__)
-#define LogWarning(...)		cLogFile::logMessage(cLogFile::logWarning, __FILE__, __LINE__, __VA_ARGS__)
-#define LogError(...)		cLogFile::logMessage(cLogFile::logError, __FILE__, __LINE__, __VA_ARGS__)
-#define LogCritical(...)	cLogFile::logMessage(cLogFile::logCritical, __FILE__, __LINE__, __VA_ARGS__)
+#define LogMessage(...)		cLogFile::log(cLogFile::logMessage, __FILE__, __LINE__, __VA_ARGS__)
+#define LogWarning(...)		cLogFile::log(cLogFile::logWarning, __FILE__, __LINE__, __VA_ARGS__)
+#define LogError(...)		cLogFile::log(cLogFile::logError, __FILE__, __LINE__, __VA_ARGS__)
+#define LogCritical(...)	cLogFile::log(cLogFile::logCritical, __FILE__, __LINE__, __VA_ARGS__)
 //@}
 
 // Special logging facility for debugging

@@ -32,7 +32,7 @@ there won't be inline methods. This should be anyway managed by the compiler.
 	values.
 */
 namespace nSettings {
-	load();
+	void load();
 
 	/*!
 	\brief Server related settings

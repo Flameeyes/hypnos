@@ -95,7 +95,7 @@ protected:
 
 public:
 	//! return the real name of object
-	inline std::string &getRealName() const
+	inline const std::string &getRealName() const
 	{ return secondary_name; }
 
 	//! Set the real name of object
@@ -103,7 +103,7 @@ public:
 	{ secondary_name = s; }
 
 	//! return the current name of object
-	inline std::string &getCurrentName() const
+	inline const std::string &getCurrentName() const
 	{ return current_name;  }
 
 	//! Set the current name of object

@@ -40,10 +40,10 @@ namespace nLoginServer {
 	
 	typedef std::vector<sServer> ServerVector;	//!< Vector of server (type)
 	
-	ServerVector servers;	//!< Servers which clients can login to
+	extern ServerVector servers;	//!< Servers which clients can login to
 	
 	void loadServers();
 	
-}; // namespace
+} // namespace
 
 #endif

@@ -192,14 +192,7 @@ pPC cAccount::getChar(uint8_t index)
 	if ( index >= getCharsNumber() )
 		return NULL;
 	
-	for(PCVector::iterator it = chars.begin(); it != chars.end(); it++)
-	{
-		if ( (*it) )
-		{
-			if ( ! index ) return *it;
-			index--;
-		}
-	}
+	return chars[index];
 }
 
 /*!

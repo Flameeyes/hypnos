@@ -96,7 +96,7 @@ bool BountyCreate( pChar pc, int nRewardAmount )
 
     // Attempt to post the message first
     pc->questBountyReward = nRewardAmount;
-    nPostSerial = cMsgBoard::createQuestMessage( cMsgBoard::BOUNTYQUEST, pc->getSerial());
+    nPostSerial = cMsgBoard::createQuestMessage(cMsgBoard::qtBounty, pc);
 
     // If we received a valid serial number then the post was successfull
     if( nPostSerial > 0 )
@@ -109,7 +109,7 @@ bool BountyCreate( pChar pc, int nRewardAmount )
   // Failed to post bounty
   LogWarning("BountyCreate():  FAILED to place a bounty of %i on %s (PostSerial=%x)\n",
           nRewardAmount,
-          pc->getCurrentName().c_str(),
+          pc->getBody()->getCurrentName().c_str(),
           nPostSerial );
 
   // Post must have failed

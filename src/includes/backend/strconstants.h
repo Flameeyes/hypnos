@@ -54,6 +54,6 @@ namespace nStrConstants {
 	SuspectAction suspectAction(std::string str);
 	ItemPlace itemPlace(std::string str);
 	SpellId spellId(std::string str);
-};
+}
 
 #endif

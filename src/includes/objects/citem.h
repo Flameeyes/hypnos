@@ -157,7 +157,7 @@ public:
 	inline static bool isFeather(uint16_t id)
 	{ return ( id>=0x1BD1 && id<=0x1BD3 ); }
 
-	const bool isHouse(uint16_t id);
+	bool isHouse(uint16_t id);
 
 // Non-static ItemID functions
 
@@ -320,9 +320,6 @@ public:
 
 	inline bool isTheatreSign() const
 	{ return ((getId() >= 0x0C0D && getId() <= 0x0C0E)); }
-
-	inline bool isHouse() const
-	{ return isHouse( getId() ); }
 
 	//! Tells if an item is a dynamic spawner
 	inline bool isSpawner() const

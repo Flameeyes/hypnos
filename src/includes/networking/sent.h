@@ -524,7 +524,7 @@ namespace nPackets {
 			\param aPc Character to send the skill of
 			\param aSkill skill to send. if INVALID (or omitted) sends all the skills
 			*/
-			inline SendSkills(pChar aPc, uint8_t aSkill = UINVALID16) :
+			inline SendSkills(pChar aPc, uint8_t aSkill = 0xFF) :
 				pc(aPc), skill(aSkill)
 			{ }
 

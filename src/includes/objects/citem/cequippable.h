@@ -80,13 +80,13 @@ public:
 	{ minEquippingIntelligence = newIntelligence; }
 
 	inline void setMinEquippingSkill1(uint16_t skill, uint16_t value)
-	{ minEquippingSkill[1] = skill; minEquippingSkillValue[1] = value; }
+	{ minEquippingSkill[0] = skill; minEquippingSkillValue[0] = value; }
 
 	inline void setMinEquippingSkill2(uint16_t skill, uint16_t value)
-	{ minEquippingSkill[2] = skill; minEquippingSkillValue[2] = value; }
+	{ minEquippingSkill[1] = skill; minEquippingSkillValue[1] = value; }
 
 	inline void setMinEquippingSkill3(uint16_t skill, uint16_t value)
-	{ minEquippingSkill[3] = skill; minEquippingSkillValue[3] = value; }
+	{ minEquippingSkill[2] = skill; minEquippingSkillValue[2] = value; }
 
 	inline uint16_t getMinEquippingStrength()
 	{ return minEquippingStrength; }
@@ -98,25 +98,24 @@ public:
 	{ return minEquippingIntelligence; }
 
 	inline uint16_t getMinEquippingSkill1()
-	{ return minEquippingSkill[1]; }
+	{ return minEquippingSkill[0]; }
 
 	inline uint16_t getMinEquippingSkillValue1()
-	{ return minEquippingSkillValue[1]; }
+	{ return minEquippingSkillValue[0]; }
 
 	inline uint16_t getMinEquippingSkill2()
-	{ return minEquippingSkill[2]; }
+	{ return minEquippingSkill[1]; }
 
 	inline uint16_t getMinEquippingSkillValue2()
-	{ return minEquippingSkillValue[2]; }
+	{ return minEquippingSkillValue[1]; }
 
 	inline uint16_t getMinEquippingSkill3()
-	{ return minEquippingSkill[3]; }
+	{ return minEquippingSkill[2]; }
 
 	inline uint16_t getMinEquippingSkillValue3()
-	{ return minEquippingSkillValue[3]; }
+	{ return minEquippingSkillValue[2]; }
 
 //@}
 };
-
 
 #endif
