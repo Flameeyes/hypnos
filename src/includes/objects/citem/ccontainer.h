@@ -12,11 +12,8 @@
 #ifndef __CONTAINERS_H
 #define __CONTAINERS_H
 
-class cContainer;
-typedef cContainer* pContainer;
-
+#include "common_libs.h"
 #include "objects/citem.h"
-#include "typedefs.h"
 
 /*!
 \brief Container item
@@ -32,7 +29,8 @@ protected:
 	void		setRandPos(pItem Item);
 
 public:
-	cContainer(bool ser= true);
+	cContainer();
+	cContainer(uint32_t serial);
 
 	bool addItem(pItem item, uint16_t xx=-1, uint16_t yy=-1);
 	void insertItem(pItem itm);
@@ -40,10 +38,9 @@ public:
 	uint16_t getGump();
 
 	uint32_t removeItems(uint32_t amount, uint16_t id, uint16_t color = 0);
-	uint32_t removeItems(uint32_t amount, uint32_t scriptID);
+	uint32_t removeItems(uint32_t delAmount, uint16_t matchId, uint16_t matchColor, bool recures = false);
 	void dropItem(pItem pi);
 
-	uint32_t countItems(uint32_t scriptID, bool total = false);
 	uint32_t countItems(uint16_t id, uint16_t color = 0, bool recurse = false);
 
 	pItem findFirstType(uint16_t type, bool recurse = false);

@@ -32,15 +32,6 @@ cBook::cBook(uint32_t serial)
 }
 
 /*!
-\brief Copy constructor for cBook class
-\param oldbook old book to copy the data from
-*/
-cBook::cBook(const cBook &oldbook) : cItem(oldbook)
-{
-	*this = oldbook;
-}
-
-/*!
 \brief Assignment operator
 \param oldbook book to assign to this
 */

@@ -39,7 +39,6 @@ public:
 */
 public:
 	cBook();
-	cBook(const cBook &oldbook);
 	cBook(uint32_t serial);
 	cBook &operator =(const cBook &oldbook);
 //@}

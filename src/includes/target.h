@@ -16,6 +16,7 @@
 #define __TARGET_H__
 
 #include "common_libs.h"
+#include "structs.h"
 
 typedef void ( cClient::*processTarget ) ( pTarget );
 

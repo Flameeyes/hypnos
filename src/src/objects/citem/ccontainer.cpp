@@ -10,27 +10,32 @@
 \brief Implementation of cContainer class
 */
 
-#include "ccontainer.h"
+#include "objects/citem/ccontainer.h"
+#include "logsystem.h"
+#include "basics.h"
+
 cContainer::cContainer()
+	: cItem()
 {
-	cContainer(nextSerial());
 }
 
 cContainer::cContainer(uint32_t serial)
 	: cItem(serial)
 {
-	classType = itContainer;
 }
 
 //! Gets the container's gump
 uint16_t cContainer::getGump()
 {
-	CONTINFOMAP::iterator iter( contInfo.find( getId() ) );
+/*	CONTINFOMAP::iterator iter( contInfo.find( getId() ) );
 	if( iter==contInfo.end() || iter->second==contInfoGump.end() )
 		return 0x47;
 	else
-		return iter->second->second.gump;
-
+		return iter->second->second.gump;*/
+	
+	//!\todo Need to be wrote!
+	
+	return 0x47;
 }
 
 /*!
@@ -38,6 +43,7 @@ uint16_t cContainer::getGump()
 \param item item to pile
 \return true if pileable [and piled]
 \note after this function, item can be NULL
+\todo cItem::refresh() missing ?
 */
 bool cContainer::pileItem(pItem &item)
 {
@@ -46,7 +52,7 @@ bool cContainer::pileItem(pItem &item)
 		if ( ! *it ) continue;
 
 		if ( ! (
-			(*it)->pileable && item->pileable &&
+			(*it)->isPileable() && item->isPileable() &&
 			(*it)->getId() == item->getId() &&
 			(*it)->getColor() == item->getColor()
 		   )   )
@@ -57,24 +63,26 @@ bool cContainer::pileItem(pItem &item)
 			item->setPosition( (*it)->getPosition().x, (*it)->getPosition().y, 9 );
 			item->setAmount( (*it)->getAmount() + item->getAmount() - 65535 );
 			(*it)->setAmount(65535);
-			item->refresh();
+//			item->refresh();
 		} else {
 			(*it)->setAmount( (*it)->getAmount() + item->getAmount() );
 			item->Delete();
 		}
-		(*it)->refresh();
+//		(*it)->refresh();
 	}
 }
 
 /*!
 \brief Sets a random position for the given item in the container
 \param item item to set the position for
+\todo Missing CONTINFOMAP
 */
 void cContainer::setRandPos(pItem item)
 {
 	Location p = item->getPosition();
 	p.z = 9;
 
+#if 0
 	CONTINFOMAP::iterator iter( contInfo.find( pCont->getId() ) );
 	if( iter==contInfo.end() || iter->second==contInfoGump.end()) {
 		p.x = RandomNum(18, 118);
@@ -84,43 +92,16 @@ void cContainer::setRandPos(pItem item)
 		p.x = RandomNum(iter->second->second.upperleft.x, iter->second->second.downright.x);
 		p.y = RandomNum(iter->second->second.upperleft.y, iter->second->second.downright.y);
 	}
+#else
+	p.x = RandomNum(18, 118);
+	p.y = RandomNum(50, 100);
+#endif
 
 	item->setPosition(p);
 }
 
 /*!
-\brief Count items in container with given scriptID
-\param scriptID scriptid of items to count
-\param total if true, the returned value are the total amount of items
-	else, it will be the number of instances of the items
-\return the number of items counted (see total parameter)
-*/
-uint32_t cContainer::countItems(uint32_t scriptID, bool total/*= false*/)
-{
-	uint32_t count = 0;
-
-	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
-	{
-		if ( ! *it ) {
-			LogWarning("NULL item!");
-			items.erase(it);
-			continue;
-		}
-
-		if ( (*it)->getScriptID() != scriptID )
-			continue;
-
-		if ( total )
-			count += (*it)->getAmount();
-		else
-			count++;
-	}
-
-	return count;
-}
-
-/*!
-\brief Count items in container with given scriptID
+\brief Count items in container with given id
 \author Flameeyes
 \param matchId items' id
 \param matchColor items' color (or 0xFFFF for all colors)
@@ -142,8 +123,8 @@ uint32_t cContainer::countItems(uint16_t matchId, uint16_t matchColor, bool recu
 		if ( (*it)->getId() == matchId && ( matchColor == 0xFFFF || (*it)->getColor() == matchColor ) )
 			count += (*it)->getAmount();
 
-		if ( recurse && (*it)->rtti() == rtti::cContainer )
-			count += (reinterpret_cast<pContainer>(*it))->countItems(matchID, matchColor, recurse);
+		if ( recurse && dynamic_cast<pContainer>(*it) )
+			count += (dynamic_cast<pContainer>(*it))->countItems(matchId, matchColor, recurse);
 	}
 
 	return count;
@@ -154,8 +135,9 @@ uint32_t cContainer::countItems(uint16_t matchId, uint16_t matchColor, bool recu
 \param type item's type
 \param recurse if true will recurse in all sub-containers
 \return pointer to the first item found or NULL
+\todo Restore type check
 */
-pItem cContainer::findFirstType(uint16_t type, bool recurse = false)
+pItem cContainer::findFirstType(uint16_t type, bool recurse)
 {
 	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
 	{
@@ -165,50 +147,19 @@ pItem cContainer::findFirstType(uint16_t type, bool recurse = false)
 			continue;
 		}
 
+#if 0
 		if ( (*it)->getType() == type )
 			return (*it);
+#endif
 
-		if ( recurse && (*it)->rtti() == rtti::cContainer )
+		if ( recurse && dynamic_cast<pContainer>(*it) )
 		{
-			pItem ret = (reinterpret_cast<pContainer>(*it))->findFirstType(type, true);
+			pItem ret = (dynamic_cast<pContainer>(*it))->findFirstType(type, true);
 			if ( ret ) return ret;
 		}
 	}
 
 	return NULL;
-}
-
-/*!
-\author Flameeyes
-\brief Removes the given amount of items with given scriptID
-\param scriptID scriptID of the items to remove
-\param amount amount of items to remove
-\param recurse if true will recures in all sub-containers
-\return how many items can't be removed (because not present)
-*/
-uint32_t cContainer::removeItems(uint32_t scriptID, uint32_t delAmount, bool recurse)
-{
-	uint32_t rest = delAmount;
-
-	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
-	{
-		if ( ! *it ) {
-			LogWarning("NULL item!");
-			items.erase(it);
-			continue;
-		}
-
-		if ( (*it)->getScriptID() == scriptID )
-			rest = (*it)->reduceAmount(rest);
-
-		if ( recurse && rest && (*it)->rtti() == rtti::cContainer )
-			rest = (reinterpret_cast<pContainer>(*it))->removeItems(scriptID, delAmount, true);
-
-		if ( rest == 0 )
-			break;
-	}
-
-	return rest;
 }
 
 /*!
@@ -235,9 +186,8 @@ uint32_t cContainer::removeItems(uint32_t delAmount, uint16_t matchId, uint16_t 
 		if ( (*it)->getId() == matchId && ( matchColor != 0xFFFF || matchColor == (*it)->getColor() ) )
 			rest = (*it)->reduceAmount(rest);
 
-		if ( recurse && rest && (*it)->rtti() == rtti::cContainer )
-			rest = (reinterpret_cast<pContainer>(*it))->
-				removeItems(delAmount, matchId, matchColor, true);
+		if ( recurse && rest && dynamic_cast<pContainer>(*it) )
+			rest = (dynamic_cast<pContainer>(*it))->removeItems(delAmount, matchId, matchColor, true);
 
 		if ( rest == 0 )
 			break;

@@ -11,6 +11,7 @@
 */
 
 #include "objects/citem/cequippable.h"
+#include "objects/cchar.h"
 
 cEquippable::cEquippable()
 	: cItem()
@@ -22,7 +23,7 @@ cEquippable::cEquippable(uint32_t newSerial)
 {
 }
 
-~cEquippable::cEquippable()
+cEquippable::~cEquippable()
 {
 }
 
@@ -38,7 +39,7 @@ void cEquippable::setContainer(pObject obj)
 	pBody body = NULL;
 	if ( (body = dynamic_cast<pBody>(obj)) )
 	{
-		findLayerFromID(getID());
+		findLayerFromID(getId());
 		body->setLayerItem(layer, this);
 	} else
 		cItem::setContainer(obj);
