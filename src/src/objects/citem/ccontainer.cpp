@@ -40,7 +40,7 @@ uint16_t cContainer::getGump()
 
 /*!
 \brief try to find an item in the container to stack with and stack.
-\param item item to pile
+\param item item to pile (note: it must already be in the container)
 \return true if pileable [and piled]
 \note after this function, item can be NULL
 \todo cItem::refresh() missing ?
@@ -49,27 +49,26 @@ bool cContainer::pileItem(pItem &item)
 {
 	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
 	{
-		if ( ! *it ) continue;
-
-		if ( ! (
-			(*it)->isPileable() && item->isPileable() &&
-			(*it)->getId() == item->getId() &&
-			(*it)->getColor() == item->getColor()
-		   )   )
-			return false;
+		if ( ! *it ) continue;	//!< \todo shouldn't this be an error in ItemList items?
+                if ( *it == item ) continue; //item cannot stack with itself! :D
+		if ( !(*it)->isCombinableWith(item)) continue;
 
 		if ( (*it)->getAmount() + item->getAmount() > 65535 )
 		{
-			item->setPosition( (*it)->getPosition().x, (*it)->getPosition().y, 9 );
+//                	item->setContainer(this);	//not necessary. This method is called by addItem()
+			setRandPos(item);
 			item->setAmount( (*it)->getAmount() + item->getAmount() - 65535 );
 			(*it)->setAmount(65535);
 //			item->refresh();
+			return true;
 		} else {
 			(*it)->setAmount( (*it)->getAmount() + item->getAmount() );
 			item->Delete();
+			return true;
 		}
 //		(*it)->refresh();
 	}
+        return false;	//if it exits the for without having found a combinable item, we can report the failure
 }
 
 /*!

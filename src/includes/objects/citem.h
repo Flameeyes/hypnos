@@ -440,6 +440,13 @@ public:
 	{ return amount; }
 
 	int32_t DeleteAmount(int amount, short id, short color=-1);
+
+        //! \todo maybe add quality check
+        inline const bool isCombinableWith(pItem it)
+        { return isPileable() && it->isPileable() &&
+		 getId() == it->getId() &&
+		 getColor() == it->getColor(); }
+
 //@}
 
 //@{

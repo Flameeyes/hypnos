@@ -288,6 +288,27 @@ public:
 };
 
 /*!
+\brief Bounce item
+\author Chronodt
+\note packet 0x27
+*/
+
+class cPacketSendBounceItem : public cPacketSend
+{
+protected:
+	uint8_t mode 		//!< I dont' really know. Sometimes you send a 5, sometimes a 0....
+public:
+	inline cPacketSendBounceItem(uint8_t aMode = 0) :
+        	cPacketSend(NULL, 0), mode(aMode)
+	{ }
+
+	void prepare();
+};
+
+
+
+
+/*!
 \brief cChar::action() packet
 \author Flameeyes
 */

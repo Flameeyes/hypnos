@@ -355,6 +355,21 @@ void cPacketSendDragItem::prepare()
         buffer[25] = destination.z;
 }
 
+/*!
+\brief Bounce item
+\author Chronodt
+\note packet 0x27
+*/
+
+void cPacketSendBounceItem::prepare()
+{
+	buffer = new uint8_t[2];
+        length = 2;
+        buffer[0] = 0x27;
+	buffer[1] = mode;
+}
+
+
 void cPacketSendAction::prepare()
 {
 	static const uint8_t templ[14] = {
@@ -1263,12 +1278,9 @@ bool cPacketReceiveDropItem::execute(pClient client)
         VALIDATEPIR(pi, false);
         Location drop_at = Location(ShortFromCharPtr(buffer+5), ShortFromCharPtr(buffer+7), buffer[9]);
         uint32_t destserial LongFromCharPtr(buffer+10);
-        if (destserial == 0xffffffff) client->drop_item(pi, drop_at, NULL); //if dropped in world, there is no container
-        pItem destination = cSerializable::findItemBySerial(destserial);
-        pContainer container = dynamic_cast<pContainer>(destination);
-        //if container is null, now, it is not a container, but an item!!
-        if (!container) client->drop_item(pi, drop_at, destination->getContainer());
-        client->drop_item(pi, drop_at, container);  //!< if refused, the drop_item automatically bounces the item back
+        if (destserial == 0xffffffff) client->drop_item(pi, drop_at, NULL); //if dropped in world, there is no item/char with that serial (avoiding a serial search)
+        pSerializable destination = cSerializable::findBySerial(destserial);
+        client->drop_item(pi, drop_at, destination);
         return true;
 }
 
