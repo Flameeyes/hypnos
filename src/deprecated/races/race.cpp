@@ -17,8 +17,8 @@
 #include "raceskill.h"
 #include "racetokenizer.h"
 #include "scp_parser.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 #include "basics.h"
 #include "scripts.h"

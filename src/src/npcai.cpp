@@ -12,8 +12,8 @@
 #include "magic.h"
 #include "npcai.h"
 #include "set.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "basics.h"
 #include "utils.h"
 #include "inlines.h"
@@ -216,11 +216,11 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 
 	if (pc_att->amxevents[EVENT_CHR_ONCASTSPELL]) {
 		g_bByPass = false;
-		pc_att->amxevents[EVENT_CHR_ONCASTSPELL]->Call(pc_att->getSerial32(), spell, -1, sphere);
+		pc_att->amxevents[EVENT_CHR_ONCASTSPELL]->Call(pc_att->getSerial(), spell, -1, sphere);
 		if (g_bByPass==true) return;
 	}
 	/*
-	pc_att->runAmxEvent( EVENT_CHR_ONCASTSPELL, pc_att->getSerial32(), spell, -1, sphere );
+	pc_att->runAmxEvent( EVENT_CHR_ONCASTSPELL, pc_att->getSerial(), spell, -1, sphere );
 	if (g_bByPass==true)
 		return;
 	*/
@@ -341,7 +341,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 		amxSet::copy( set, sc );
 
 		g_bByPass = false;
-		pc->amxevents[ EVENT_CHR_ONCHECKNPCAI ]->Call( pc->getSerial32(), set, uiCurrentTime );
+		pc->amxevents[ EVENT_CHR_ONCHECKNPCAI ]->Call( pc->getSerial(), set, uiCurrentTime );
 
 		amxSet::deleteSet( set );
 
@@ -364,7 +364,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				sc.fillCharsNearXYZ( pc->getPosition(), 3, true, true );
 				for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 					pChar pj=sc.getChar();
-					if (pj->getSerial32() == pc->getSerial32()) continue; //Luxor
+					if (pj->getSerial() == pc->getSerial32()) continue; //Luxor
 
 					if( pj->dead )
 						continue;
@@ -395,7 +395,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				if ( !ISVALIDPC(pj) || !pj->dead )
 			  		continue;
 
-				if (pj->getSerial32() == pc->getSerial32()) continue; //Luxor
+				if (pj->getSerial() == pc->getSerial32()) continue; //Luxor
 			  	if ( !pj->IsInnocent() || pj->IsCriminal() || pj->IsMurderer())
 			  	{
 			  		if (pj->IsMurderer())
@@ -449,7 +449,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 			{
 				pj = (*it);
 				if ( 	!(
-					pc->getSerial32() == pj->getSerial32() ||
+					pc->getSerial() == pj->getSerial32() ||
 					pj->IsInvul() ||
 					pj->hidden > 0 ||
 					pj->dead ||
@@ -487,7 +487,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
 				pChar pj=sc.getChar();
-				if (!ISVALIDPC(pj) || pc->getSerial32()==pj->getSerial32() )
+				if (!ISVALIDPC(pj) || pc->getSerial()==pj->getSerial32() )
 					continue;
 
 				if (	pj->IsInvul() ||
@@ -529,7 +529,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				pChar pj=sc.getChar();
 				if ( !ISVALIDPC( pj ) || !pj->dead )
 					continue;
-				if (pj->getSerial32() == pc->getSerial32()) continue; //Luxor
+				if (pj->getSerial() == pc->getSerial32()) continue; //Luxor
 				if ( pj->IsInnocent() ) {
 					pc->talkAll(TRANSLATE("I despise all things good. I shall not give thee another chance!"), 1);
 					continue;
@@ -562,7 +562,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				pChar pj=sc.getChar();
 				if (!ISVALIDPC(pj)) continue;
 
-				if (pj->getSerial32() == pc->getSerial32()) continue; //Luxor
+				if (pj->getSerial() == pc->getSerial32()) continue; //Luxor
 				if ( pj->dead || !pj->IsInnocent() || pj->hidden > 0)
 					continue;
 
@@ -623,7 +623,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				pChar character=sc.getChar();
 				if ( ISVALIDPC( character ) )
 				{
-					if ( character->getSerial32() != pc->getSerial32() &&
+					if ( character->getSerial() != pc->getSerial32() &&
 					     !character->dead &&
 					     !character->IsHidden() &&
 					     pc->losFrom( character )
@@ -662,7 +662,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 
 				pChar pj=sc.getChar();
 
-				if (pj->getSerial32() == pc->getSerial32()) continue; //Luxor
+				if (pj->getSerial() == pc->getSerial32()) continue; //Luxor
 				if( ISVALIDPC(pj) && pj->npc && pj->npcaitype==NPCAI_EVIL)
 				{
 					npcattacktarget(pc, pj);
@@ -681,7 +681,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 
 				pChar pj=sc.getChar();
 				if (!ISVALIDPC(pj)) continue;
-				if (pj->getSerial32() == pc->getSerial32()) continue; //Luxor
+				if (pj->getSerial() == pc->getSerial32()) continue; //Luxor
 				if ( pj->IsInvul() || pj->dead || (pj->npcaitype != NPCAI_EVIL && !pj->IsCriminal() && !pj->IsMurderer())) continue;
 
 				npcattacktarget(pc, pj);
@@ -700,7 +700,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				pChar pj=sc.getChar();
 				if (!(ISVALIDPC(pj))) continue;
 				if (pj->npc || pj->dead || pj->guarded == false) continue;
-				if (pc->getOwnerSerial32() == pj->getSerial32()) {
+				if (pc->getOwnerSerial32() == pj->getSerial()) {
 					if (pj->IsOnline()) {
 						pChar pc_attacker = pointers::findCharBySerial(pj->attackerserial);
 						VALIDATEPC(pc_attacker);
@@ -803,7 +803,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 		}
 		break;
 		default:
-			WarnOut("cCharStuff::CheckAI-> Error npc %i ( %08x ) has invalid AI type %i\n", pc->getSerial32(), pc->getSerial32(), pc->npcaitype);
+			WarnOut("cCharStuff::CheckAI-> Error npc %i ( %08x ) has invalid AI type %i\n", pc->getSerial(), pc->getSerial32(), pc->npcaitype);
 			return;
 	}	//switch(pc->npcaitype)
 } //void checkAI(unsigned int currenttime, pChar pc)

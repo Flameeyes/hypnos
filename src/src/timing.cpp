@@ -33,8 +33,8 @@
 #include "spawn.h"
 #include "trade.h"
 #include "html.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "inlines.h"
 
 extern bool g_bMustExecAICode;

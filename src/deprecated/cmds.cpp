@@ -33,8 +33,8 @@
 #include "data.h"
 #include "spawn.h"
 #include "trade.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "basics.h"
 #include "inlines.h"
 #include "nox-wizard.h"

@@ -10,8 +10,8 @@
 
 #include "menu.h"
 #include "amx/amxwraps.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "inlines.h"
 
 cMenus Menus;
@@ -105,7 +105,7 @@ uint32_t cMenus::removeMenu( SERIAL menu, pChar pc )
 	MENU_MAP::iterator iter( menuMap.find( menu ) );
 	if( iter != menuMap.end() )
 	{		
-		bool needDelete = removeFromView( iter->second, pc->getSerial32() );
+		bool needDelete = removeFromView( iter->second, pc->getSerial() );
 
 		if( needDelete ) {
 			delete iter->second;
@@ -208,8 +208,8 @@ void cBasicMenu::show( pChar pc )
 	packet->send( ps );
 	delete packet;
 
-	Menus.whoSeeWhat[ pc->getSerial32() ].insert( serial );
-	whoSeeThis.insert( pc->getSerial32() );
+	Menus.whoSeeWhat[ pc->getSerial() ].insert( serial );
+	whoSeeThis.insert( pc->getSerial() );
 }
 
 cServerPacket* cBasicMenu::createPacket()
@@ -448,7 +448,7 @@ void cMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 		if( iter!=buttonCallbacks.end() ) {
 
 			AmxFunction func( iter->second );
-			func.Call( serial, pc->getSerial32(), buttonReturnCode );
+			func.Call( serial, pc->getSerial(), buttonReturnCode );
 			return;
 
 		}
@@ -479,7 +479,7 @@ void cMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 	}
 	
 	if( callback!=NULL )
-		callback->Call( serial, pc->getSerial32(), buttonReturnCode );
+		callback->Call( serial, pc->getSerial(), buttonReturnCode );
 	else
 		hard( this, ps, buttonReturnCode );
 }
@@ -852,7 +852,7 @@ void cIconListMenu::handleButton( NXWCLIENT ps,  cClientPacket* pkg  )
 
 	uint32_t index = p->index.get();
 	
-	callback->Call( serial, pc->getSerial32(), index, icons[index-1].model.get(), icons[index-1].color.get(), iconData[index-1] );
+	callback->Call( serial, pc->getSerial(), index, icons[index-1].model.get(), icons[index-1].color.get(), iconData[index-1] );
 
 }
 

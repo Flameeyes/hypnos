@@ -76,16 +76,16 @@ INCLUDE IMPLEMENTATION SPECIFIC INFORMATION.
     parameters at the bottom of the structs as appropriate.
 */
 
-typedef unsigned char BYTE;
+typedef unsigned char uint8_t;
 typedef unsigned long DWORD;        /* 32-bit unsigned quantity */
 typedef DWORD fullSbox[4][256];
 
 /* The structure for key information */
 typedef struct 
     {
-    BYTE direction;                 /* Key used for encrypting or decrypting? */
+    uint8_t direction;                 /* Key used for encrypting or decrypting? */
 #if ALIGN32
-    BYTE dummyAlign[3];             /* keep 32-bit alignment */
+    uint8_t dummyAlign[3];             /* keep 32-bit alignment */
 #endif
     int  keyLen;                    /* Length of the key */
     char keyMaterial[MAX_KEY_SIZE+4];/* Raw key data in ASCII */
@@ -106,7 +106,7 @@ typedef struct
     void *decryptFuncPtr;           /* ptr to asm decrypt function */
     DWORD codeSize;                 /* size of compiledCode */
     DWORD cSig2;                    /* set after first "compile" */
-    BYTE  compiledCode[5000];       /* make room for the code itself */
+    uint8_t  compiledCode[5000];       /* make room for the code itself */
   #endif
 #endif
     } keyInstance;
@@ -114,11 +114,11 @@ typedef struct
 /* The structure for cipher information */
 typedef struct 
     {
-    BYTE  mode;                     /* MODE_ECB, MODE_CBC, or MODE_CFB1 */
+    uint8_t  mode;                     /* MODE_ECB, MODE_CBC, or MODE_CFB1 */
 #if ALIGN32
-    BYTE dummyAlign[3];             /* keep 32-bit alignment */
+    uint8_t dummyAlign[3];             /* keep 32-bit alignment */
 #endif
-    BYTE  IV[MAX_IV_SIZE];          /* CFB1 iv bytes  (CBC uses iv32) */
+    uint8_t  IV[MAX_IV_SIZE];          /* CFB1 iv bytes  (CBC uses iv32) */
 
     /* Twofish-specific parameters: */
     DWORD cipherSig;                /* set to VALID_SIG by cipherInit() */

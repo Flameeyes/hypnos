@@ -8,11 +8,11 @@
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
 #include "ai.h"
-#include "chars.h"
+
 #include "map.h"
 #include "classes.h"
 #include "range.h"
-#include "object.h"
+#include "objects/cobject.h"
 
 /*!
 \file
@@ -44,7 +44,7 @@ cPath::cPath( Location startPos, Location finalPos, pChar pc )
 	if ( pc == NULL )
 		pc_serial = INVALID;
 	else
-		pc_serial = pc->getSerial32();
+		pc_serial = pc->getSerial();
 	open_list.clear();
 	closed_list.clear();
 	path_list.clear();

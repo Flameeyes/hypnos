@@ -212,7 +212,7 @@ public:
 			safedelete( m_cache );
 	}
 	bool getData( uint32_t index, T& data );
-	bool getData( uint32_t index, BYTE* ptr, uint32_t size );
+	bool getData( uint32_t index, uint8_t* ptr, uint32_t size );
 	void setCache( std::map< uint32_t, T > *cache );
 	bool eof();
 	inline bool isReady() { return ( m_file != NULL ); }

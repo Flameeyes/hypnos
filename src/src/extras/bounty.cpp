@@ -10,8 +10,8 @@
 #include "common_libs.h"
 #include "bounty.h"
 #include "debug.h"
-#include "items.h"
-#include "chars.h"
+
+
 
 /*
 //////////////////////////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ bool BountyCreate( pChar pc, int nRewardAmount )
 
     // Attempt to post the message first
     pc->questBountyReward = nRewardAmount;
-    nPostSerial = cMsgBoard::createQuestMessage( cMsgBoard::BOUNTYQUEST, pc->getSerial32());
+    nPostSerial = cMsgBoard::createQuestMessage( cMsgBoard::BOUNTYQUEST, pc->getSerial());
 
     // If we received a valid serial number then the post was successfull
     if( nPostSerial > 0 )

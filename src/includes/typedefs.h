@@ -22,7 +22,10 @@ typedef uint32_t			TIMERVAL;
 typedef int32_t				ACCOUNT;
 typedef int32_t				FUNCIDX;
 
-// typedef std::vector<uint32_t>		uint32_tVECTOR;	//!< vector of unsigned 32 bits integers
+typedef std::set<uint32_t> uint32_set;	//!< A set of uint32_t
+typedef std::vector<uint32_t> uint32_vector;	//!< A vector of uint32_t
+
+// typedef std::vector<uint32_t>		uint32_vector;	//!< vector of unsigned 32 bits integers
 // typedef std::vector<uint32_t>		SERIAL_VECTOR;	//!< vector of serials
 // typedef slist<uint32_t>                   SERIAL_SLIST;	//!< slist of serials
 

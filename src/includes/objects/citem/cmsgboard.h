@@ -30,7 +30,7 @@ struct RegionSort //Used for sorting MsgBoards by region # and as secondary sort
 {
 	inline bool operator()(const pMsgBoard s1, const pMsgBoard s2) const
 	{
-        	if (s1->getRegion() == s2->getRegion()) return s1->getSerial32() < s2->getSerial32();
+        	if (s1->getRegion() == s2->getRegion()) return s1->getSerial() < s2->getSerial32();
                 else return s1->getRegion() < s2->getRegion();
 	}
 }
@@ -38,7 +38,7 @@ struct SerialSort //Used for sorting Messages by serial #
 {
 	inline bool operator()(const pMsgBoardMessage s1, const pMsgBoardMessage s2) const
 	{
-        	return s1->getSerial32() < s2->getSerial32();
+        	return s1->getSerial() < s2->getSerial32();
 	}
 }
 typedef std::set<pMsgBoardMessage, SerialSort> cMsgBoardMessages; //With SerialSort the messages are inserted in ascending serial order

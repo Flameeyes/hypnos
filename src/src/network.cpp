@@ -10,7 +10,7 @@
 #include "network.h"
 #include "race.h"
 #include "commands.h"
-#include "packets.h"
+
 #include "basics.h"
 #include "menu.h"
 #include "addmenu.h"
@@ -28,8 +28,8 @@
 #include "sndpkg.h"
 #include "walking.h"
 #include "rcvpkg.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "range.h"
 #include "inlines.h"
 #include "skills.h"
@@ -392,7 +392,7 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 			}
 
 
-			uint32_t pc_serial = pc->getSerial32();
+			uint32_t pc_serial = pc->getSerial();
 
 			for (cClients::iterator i = cClient::clients.begin(); cClient::clients.end(); i++ )
 			{
@@ -887,7 +887,7 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 		if (ISVALIDPC(pc_k))
 		{
 			pc_k->setClient(NULL);
-			int32_t nSer = pc_k->getSerial32();
+			int32_t nSer = pc_k->getSerial();
 			for ( int32_t idx = 0; idx < now; idx++ ) {
 				if ( pc_k == loginchars[idx] ) {
 					// TODO We need to fix this!!!
@@ -940,7 +940,7 @@ void cNetwork::enterchar(int s)
 
 	Location charpos= pc->getPosition();
 
-	LongToCharPtr(pc->getSerial32(), startup +1);
+	LongToCharPtr(pc->getSerial(), startup +1);
 	ShortToCharPtr(pc->getId(), startup +9);
 	ShortToCharPtr(charpos.x, startup +11);
 	ShortToCharPtr(charpos.y, startup +13);
@@ -1015,7 +1015,7 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	if (pc->possessedSerial != INVALID) {
 		pChar pcPos = pointers::findCharBySerial(pc->possessedSerial);
 		if (ISVALIDPC(pcPos)) {
-			currchar[s] = pcPos->getSerial32();
+			currchar[s] = pcPos->getSerial();
 			pcPos->setClient(new cNxwClientObj(s));
 #ifdef ENCRYPTION
 			pcPos->setCrypter(clientCrypter[s]);
@@ -1034,7 +1034,7 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
-	AMXEXECSV( pc->getSerial32(),AMXT_SPECIALS, 4, AMX_BEFORE);
+	AMXEXECSV( pc->getSerial(),AMXT_SPECIALS, 4, AMX_BEFORE);
 
 	enterchar( s );
 #ifdef ENCRYPTION
@@ -1073,7 +1073,7 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	t = (*vis).c_str();
 	strcpy(temp,t);
 
-	AMXEXECSV(pc->getSerial32(),AMXT_SPECIALS, 4, AMX_AFTER);
+	AMXEXECSV(pc->getSerial(),AMXT_SPECIALS, 4, AMX_AFTER);
 
 	//
 	// Sparhawk	Race system support
@@ -1088,7 +1088,7 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 			if( race_enlist==NULL )
 				race_enlist = new AmxFunction( "__race_enlist" );
 
-			race_enlist->Call( pc->getSerial32() );
+			race_enlist->Call( pc->getSerial() );
 		}
 		//else
 		//	validate pc race and decide what to do if race is invalid or has been deactivated
@@ -1147,7 +1147,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 	uint32_t x= charpos.x, y= charpos.y;
 
 
-	AMXEXECSVNR(pc->getSerial32(),AMXT_SPECIALS, 8, AMX_BEFORE);
+	AMXEXECSVNR(pc->getSerial(),AMXT_SPECIALS, 8, AMX_BEFORE);
 
 	pItem pack;
 	for(a=0;a<logoutcount;a++)
@@ -1179,7 +1179,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 				pItem p_ci=si.getItem();
 				if (!ISVALIDPI(p_ci))
 					if (p_ci->type==ITYPE_KEY &&
-						(p_multi->getSerial32() == calcserial(p_ci->more1, p_ci->more2, p_ci->more3, p_ci->more4)) )
+						(p_multi->getSerial() == calcserial(p_ci->more1, p_ci->more2, p_ci->more3, p_ci->more4)) )
 					{//a key to this multi
 						valid=1;//Log 'em out now!
 						break;
@@ -1755,7 +1755,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
         		    // 0x73 (idle packet) also counts towards client idle time
 
 				if (ISVALIDPC(pc_currchar))
-					AMXEXECSV(pc_currchar->getSerial32(),AMXT_NETRCV, packet, AMX_BEFORE);
+					AMXEXECSV(pc_currchar->getSerial(),AMXT_NETRCV, packet, AMX_BEFORE);
 
 				//if (packet != PACKET_FIRSTLOGINREQUEST && !ISVALIDPC(pc_currchar)) return;
 #ifdef ENCRYPTION
@@ -2225,9 +2225,9 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						uint8_t packet[4000]; packet[0] = '\0';
 						if ( ISVALIDPC(pc_currchar) && pc_currchar->IsGM()) {
 							if (ISVALIDPC(pc) )
-								sprintf((char *)packet, "char n°%d serial : %x", DEREF_pChar(pc), pc->getSerial32());
+								sprintf((char *)packet, "char n°%d serial : %x", DEREF_pChar(pc), pc->getSerial());
 							if (ISVALIDPI(pi) )
-								sprintf((char *)packet, "item n°%d serial : %x", DEREF_pItem(pi), pi->getSerial32());
+								sprintf((char *)packet, "item n°%d serial : %x", DEREF_pItem(pi), pi->getSerial());
 						}
 						else
 						{
@@ -2363,7 +2363,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 
     				} // end switch
 				if (ISVALIDPC(pc_currchar))
-					AMXEXECSV(pc_currchar->getSerial32(),AMXT_NETRCV, packet, AMX_AFTER);
+					AMXEXECSV(pc_currchar->getSerial(),AMXT_NETRCV, packet, AMX_AFTER);
 
 			}
 			else

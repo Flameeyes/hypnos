@@ -27,8 +27,8 @@
 #include "data.h"
 #include "spawn.h"
 #include "trade.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "basics.h"
 #include "inlines.h"
 #include "nox-wizard.h"
@@ -498,9 +498,9 @@ void command_action( pClient client )
 
 // Sets the season globally
 // Season change packet structure:
-// BYTE 0xBC	(Season change command)
-// BYTE season	(0 spring, 1 summer, 2 fall, 3 winter, 4 dead, 5 unknown (rotating?))
-// BYTE unknown	If 0, cannot change from undead, so 1 is the default
+// uint8_t 0xBC	(Season change command)
+// uint8_t season	(0 spring, 1 summer, 2 fall, 3 winter, 4 dead, 5 unknown (rotating?))
+// uint8_t unknown	If 0, cannot change from undead, so 1 is the default
 void command_setseason( pClient client )
 {
 	pChar pc = client->currChar();
@@ -611,7 +611,7 @@ void target_addTarget( P_TARGET t )
 	pItem pi = item::CreateFromScript( "$item_hardcoded" );
 	VALIDATEPI(pi);
 
-	uint16_t id = DBYTE2WORD( t->buffer[0], t->buffer[1] );
+	uint16_t id = Duint8_t2WORD( t->buffer[0], t->buffer[1] );
 
 	tile_st tile;
 	data::seekTile( id, tile );
@@ -671,10 +671,10 @@ void command_addx( pClient client )
 //	NXWSOCKET s = ps->toInt();
 
 	if (tnum==3)
-		Commands::AddHere(s, DBYTE2WORD( strtonum(1), strtonum(2) ), pc->getPosition("z"));
+		Commands::AddHere(s, Duint8_t2WORD( strtonum(1), strtonum(2) ), pc->getPosition("z"));
 
 	if (tnum==4)
-		Commands::AddHere(s, DBYTE2WORD( strtonum(1), strtonum(2) ), strtonum(3));
+		Commands::AddHere(s, Duint8_t2WORD( strtonum(1), strtonum(2) ), strtonum(3));
 
 }
 
@@ -1100,7 +1100,7 @@ void target_dupe( pClient client, P_TARGET t )
         {
             for (int j=0; j<n; j++ )
             {
-                Commands::DupeItem( ps->toInt(), pi->getSerial32(), pi->amount );
+                Commands::DupeItem( ps->toInt(), pi->getSerial(), pi->amount );
                 ps->sysmsg( "DupeItem done.");
             }
         }
@@ -1290,8 +1290,8 @@ void target_addNpc( pClient client, P_TARGET t )
 		pChar pc = new cChar(cChar::nextSerial());
 
 		pc->setCurrentName("Dummy");
-		pc->setId( DBYTE2WORD( t->buffer[0], t->buffer[1] ) );
-		pc->setOldId( DBYTE2WORD( t->buffer[0], t->buffer[1] ) );
+		pc->setId( Duint8_t2WORD( t->buffer[0], t->buffer[1] ) );
+		pc->setOldId( Duint8_t2WORD( t->buffer[0], t->buffer[1] ) );
 		pc->setColor(0);
 		pc->setOldColor(0);
 		pc->SetPriv(0x10);
@@ -1441,7 +1441,7 @@ void command_setshoprestockrate( pClient client )
 void command_midi( pClient client )
 {
 	pChar pc = client->currChar();
-	uint16_t midi = DBYTE2WORD(strtonum(1), strtonum(2));
+	uint16_t midi = Duint8_t2WORD(strtonum(1), strtonum(2));
 
 	cPacketSendPlayMidi pkt_midi(midi);
 	client->sendPacket(&pkt_midi);	
@@ -1497,7 +1497,7 @@ void command_regedit( pClient client ) // O_o" to rewrite/trash ?
 	pChar pc = client->currChar();
 
 	LogMessage("Region edit command called by %s.\n", pc->getCurrentNameC());
-	//newAmxEvent("gui_rgnList")->Call( pc->getSerial32(), 0 );
+	//newAmxEvent("gui_rgnList")->Call( pc->getSerial(), 0 );
 }
 
 // Reloads the SERVER.cfg file.
@@ -1642,7 +1642,7 @@ void command_gy( pClient client )
 	uint32_t id;
 	uint16_t model, color, font;
 
-	id = pc->getSerial32();
+	id = pc->getSerial();
 	model = pc->getId();
 	color = ShortFromCharPtr(buffer[s] +4);
 	font = (buffer[s][6]<<8)|(pc->fonttype%256);
@@ -1683,7 +1683,7 @@ void command_yell( pClient client )
 	uint32_t id;
 	uint16_t model, color, font;
 
-	id = pc->getSerial32();
+	id = pc->getSerial();
 	model = pc->getId();
 	color = ShortFromCharPtr(buffer[s] +4);
 	font = (buffer[s][6]<<8)|(pc->fonttype%256);
@@ -1855,7 +1855,7 @@ void command_who( pClient client )
 			pChar pc_i=ps_i->currChar();
 			if(ISVALIDPC(pc_i)) {
 				j++;
-				sprintf(s_szCmdTableTemp, "%i) %s [%x]", (j-1), pc_i->getCurrentNameC(), pc_i->getSerial32());
+				sprintf(s_szCmdTableTemp, "%i) %s [%x]", (j-1), pc_i->getCurrentNameC(), pc_i->getSerial());
 				pc->sysmsg(s_szCmdTableTemp);
 			}
 		}
@@ -2030,7 +2030,7 @@ void target_remove( pClient client, P_TARGET t )
 		VALIDATEPC(pc);
 
 		if (pc->amxevents[EVENT_CHR_ONDISPEL]) {
-			pc->amxevents[EVENT_CHR_ONDISPEL]->Call( pc->getSerial32(), INVALID, DISPELTYPE_GMREMOVE );
+			pc->amxevents[EVENT_CHR_ONDISPEL]->Call( pc->getSerial(), INVALID, DISPELTYPE_GMREMOVE );
 		}
 
         if (pc->account>INVALID && !pc->npc)
@@ -2048,7 +2048,7 @@ void target_remove( pClient client, P_TARGET t )
 
 		ps->sysmsg( TRANSLATE("Removing item.") );
         if( pi->amxevents[EVENT_IONDECAY] )
-			pi->amxevents[EVENT_IONDECAY]->Call( pi->getSerial32(), DELTYPE_GMREMOVE );
+			pi->amxevents[EVENT_IONDECAY]->Call( pi->getSerial(), DELTYPE_GMREMOVE );
         ps->sysmsg( TRANSLATE("Removing item.") );
         pi->Delete();
 	}
@@ -2071,7 +2071,7 @@ void target_dye( pClient client, P_TARGET t )
 		{
 			if( color==UINVALID16 ) //open dye vat
 			{
-				SndDyevat( ps->toInt(), pi->getSerial32(), pi->getId() );
+				SndDyevat( ps->toInt(), pi->getSerial(), pi->getId() );
 			}
 			else {
 				if (! ((color & 0x4000) || (color & 0x8000)) )
@@ -2093,7 +2093,7 @@ void target_dye( pClient client, P_TARGET t )
 		{
 			if( color==UINVALID16 ) //open dye vat
 			{
-				SndDyevat( ps->toInt(), pc->getSerial32(), 0x2106 );
+				SndDyevat( ps->toInt(), pc->getSerial(), 0x2106 );
 			}
 			else {
 
@@ -2129,10 +2129,10 @@ void command_dye( pClient client )
 	if (tnum==3)
 	{
 		if ( server_data.always_add_hex ) {
-			targ->buffer[0]=DBYTE2WORD( hexnumber(1), hexnumber(2) );
+			targ->buffer[0]=Duint8_t2WORD( hexnumber(1), hexnumber(2) );
 		}
 		else {
-			targ->buffer[0]=DBYTE2WORD( strtonum(1), strtonum(2) );
+			targ->buffer[0]=Duint8_t2WORD( strtonum(1), strtonum(2) );
 		}
 	}
 	else
@@ -2189,7 +2189,7 @@ void target_setid( pClient client, P_TARGET t )
 {
 
     uint32_t serial = t->getClicked();
-	uint16_t value = DBYTE2WORD( t->buffer[0], t->buffer[1] );
+	uint16_t value = Duint8_t2WORD( t->buffer[0], t->buffer[1] );
 
 	if( isCharSerial( serial ) ) {
 		pChar pc=pointers::findCharBySerial( serial );
@@ -2215,15 +2215,15 @@ void target_spy( pClient client, P_TARGET t )
 	pChar pc=pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
-	if( pc->getSerial32()!=curr->getSerial32() ) {
+	if( pc->getSerial()!=curr->getSerial32() ) {
 		NXWCLIENT victim = pc->getClient();
 		if( victim!=NULL ) {
-			clientInfo[victim->toInt()]->spyTo=curr->getSerial32();
+			clientInfo[victim->toInt()]->spyTo=curr->getSerial();
 		}
 	}
 	else {
 		for( int s=0; s<now; s++ )
-			if( clientInfo[s]->spyTo==curr->getSerial32() )
+			if( clientInfo[s]->spyTo==curr->getSerial() )
 				clientInfo[s]->spyTo=INVALID;
 	}
 }
@@ -2285,7 +2285,7 @@ void target_hide( pClient client, P_TARGET t )
 
 	if( pc->IsHidden() )
 	{
-		if( pc->getSerial32() == ps->currCharIdx() )
+		if( pc->getSerial() == ps->currCharIdx() )
 			ps->sysmsg( TRANSLATE("You are already hiding.") );
 		else
 			ps->sysmsg(  TRANSLATE("He is already hiding.") );
@@ -2307,7 +2307,7 @@ void target_unhide( pClient client, P_TARGET t )
 
 	if( !pc->IsHidden() )
 	{
-		if( pc->getSerial32()==ps->currCharIdx() )
+		if( pc->getSerial()==ps->currCharIdx() )
 			ps->sysmsg( TRANSLATE("You are not hiding."));
 		else
 			ps->sysmsg( TRANSLATE("He is not hiding."));
@@ -2326,7 +2326,7 @@ void target_fullstats( pClient client, P_TARGET t )
     if (ISVALIDPC(pc))
     {
         pc->playSFX( 0x01F2);
-        staticeffect( pc->getSerial32(), 0x37, 0x6A, 0x09, 0x06);
+        staticeffect( pc->getSerial(), 0x37, 0x6A, 0x09, 0x06);
         pc->mn=pc->in;
         pc->hp=pc->getStrength();
         pc->stm=pc->dx;
@@ -2342,7 +2342,7 @@ void target_heal( pClient client, P_TARGET t )
     if (ISVALIDPC(pc))
     {
         pc->playSFX( 0x01F2);
-        staticeffect( pc->getSerial32(), 0x37, 0x6A, 0x09, 0x06);
+        staticeffect( pc->getSerial(), 0x37, 0x6A, 0x09, 0x06);
         pc->hp=pc->getStrength();
         pc->updateStats(0);
     }
@@ -2354,7 +2354,7 @@ void target_mana( pClient client, P_TARGET t )
     if (ISVALIDPC(pc))
     {
         pc->playSFX( 0x01F2);
-        staticeffect( pc->getSerial32(), 0x37, 0x6A, 0x09, 0x06);
+        staticeffect( pc->getSerial(), 0x37, 0x6A, 0x09, 0x06);
         pc->mn=pc->in;
         pc->updateStats(1);
     }
@@ -2366,7 +2366,7 @@ void target_stamina( pClient client, P_TARGET t )
     if( ISVALIDPC(pc) )
     {
         pc->playSFX( 0x01F2);
-        staticeffect( pc->getSerial32(), 0x37, 0x6A, 0x09, 0x06);
+        staticeffect( pc->getSerial(), 0x37, 0x6A, 0x09, 0x06);
         pc->stm=pc->dx;
         pc->updateStats(2);
     }
@@ -2467,7 +2467,7 @@ void target_kill( pClient client, P_TARGET t )
     {
         if(!pc->dead)
         {
-			pc->attackerserial=pc->getSerial32();
+			pc->attackerserial=pc->getSerial();
 			pc->boltFX( true );
 			pc->playSFX( 0x0029 );
 			pc->Kill();
@@ -2527,7 +2527,7 @@ void target_makegm( pClient client, P_TARGET t )
 	VALIDATEPC(curr);
 
     if (SrvParms->gm_log)
-		WriteGMLog(curr, "%s [ serial %i ] as made %s [ serial %i ] a GM.\n", curr->getCurrentNameC(), curr->getSerial32(), pc->getCurrentNameC(), pc->getSerial32() );
+		WriteGMLog(curr, "%s [ serial %i ] as made %s [ serial %i ] a GM.\n", curr->getCurrentNameC(), curr->getSerial(), pc->getCurrentNameC(), pc->getSerial32() );
 
     pc->unmountHorse();
     pc->gmrestrict = 0;
@@ -2593,7 +2593,7 @@ void target_makecns( pClient client, P_TARGET t )
 	VALIDATEPC(curr);
 
     if (SrvParms->gm_log)
-		WriteGMLog(curr, "%s [ serial %i ] as made %s [ serial %i ] a Counselor.\n", curr->getCurrentNameC(), curr->getSerial32(), pc->getCurrentNameC(), pc->getSerial32() );
+		WriteGMLog(curr, "%s [ serial %i ] as made %s [ serial %i ] a Counselor.\n", curr->getCurrentNameC(), curr->getSerial(), pc->getCurrentNameC(), pc->getSerial32() );
 
     pc->setId(BODY_GMSTAFF);
     pc->setOldId(BODY_GMSTAFF);

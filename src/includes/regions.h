@@ -21,6 +21,9 @@
 #define REGION_X_CELLS MAP_WIDTH/REGION_GRIDSIZE
 #define REGION_Y_CELLS MAP_HEIGHT/REGION_COLSIZE
 
+#include "objects/cchar.h"
+#include "objects/citem.h"
+
 struct region_st
 {
 	bool inUse;
@@ -46,8 +49,8 @@ struct region_st
 extern region_st region[256];
 
 typedef struct {
-	uint32_t_SET charsInRegions;
-	uint32_t_SET itemsInRegions;
+	uint32_set charsInRegions;
+	uint32_set itemsInRegions;
 } region_db_st;
 
 class RegCoordPoint : public cPoint< uint16_t > {

@@ -32,8 +32,8 @@
 #include "fishing.h"
 #include "archive.h"
 #include "map.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 #include "classes.h"
 #include "nox-wizard.h"
@@ -962,7 +962,7 @@ NATIVE(_isetSerial)
 {
 	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, INVALID );
-	pi->setSerial32(params[2]);
+	pi->setSerial(params[2]);
 	return 0;
 }
 
@@ -985,7 +985,7 @@ NATIVE(_itm_createFromScript)
     pItem pi = item::CreateFromScript(params[1], po, params[3]);
 	VALIDATEPIR(pi, INVALID);
     pi->Refresh();
-	return pi->getSerial32();
+	return pi->getSerial();
 }
 
 /*
@@ -1011,7 +1011,7 @@ NATIVE(_itm_createByDef)
 	pi = item::CreateFromScript( g_cAmxPrintBuffer, po, params[3] );
 	g_nAmxPrintPtr = 0;
 	if ( ISVALIDPI( pi ) )
-		return pi->getSerial32();
+		return pi->getSerial();
 
 	return INVALID;
 }
@@ -1031,7 +1031,7 @@ NATIVE(_itm_createInBp)
 
 	pItem pi = item::CreateFromScript( params[1], pc->getBackpack(), params[3] );
 
-	return ISVALIDPI( pi )? pi->getSerial32() : INVALID;
+	return ISVALIDPI( pi )? pi->getSerial() : INVALID;
 
 }
 
@@ -1055,7 +1055,7 @@ NATIVE(_itm_createInBpDef)
 
 	pItem pi = item::CreateFromScript( g_cAmxPrintBuffer, pc->getBackpack(), params[3] );
 	g_nAmxPrintPtr = 0;
-	return ISVALIDPI( pi )? pi->getSerial32() : INVALID;
+	return ISVALIDPI( pi )? pi->getSerial() : INVALID;
 
 }
 
@@ -1074,7 +1074,7 @@ NATIVE(_itm_createInBank)
 
 	pItem pi = item::CreateFromScript( params[1], pc->GetBankBox(), params[3] );
 
-	return ISVALIDPI( pi )? pi->getSerial32() : INVALID;
+	return ISVALIDPI( pi )? pi->getSerial() : INVALID;
 
 }
 
@@ -1098,7 +1098,7 @@ NATIVE(_itm_createInBankDef)
 
 	pItem pi = item::CreateFromScript( g_cAmxPrintBuffer, pc->GetBankBox(), params[3] );
 	g_nAmxPrintPtr = 0;
-	return ISVALIDPI( pi )? pi->getSerial32() : INVALID;
+	return ISVALIDPI( pi )? pi->getSerial() : INVALID;
 
 }
 
@@ -1133,14 +1133,14 @@ NATIVE(_chr_getBackpack)
 		pItem bp = item::CreateFromScript( "$item_backpack", pc );
 		if( ISVALIDPI(bp) )
 		{
-			pc->packitemserial=bp->getSerial32();
-			return bp->getSerial32();
+			pc->packitemserial=bp->getSerial();
+			return bp->getSerial();
 		}
 		else
 			return INVALID;
 	}
 	else
-		return pi->getSerial32();
+		return pi->getSerial();
 }
 
 /*
@@ -1202,7 +1202,7 @@ NATIVE(_chr_addNPC) //addNPC npcnum, x,y,z
 {
     pChar pc = npcs::AddNPC(INVALID, NULL, params[1], params[2], params[3], params[4]);
     VALIDATEPCR(pc, INVALID);
-    return pc->getSerial32();
+    return pc->getSerial();
 }
 
 /*
@@ -1539,7 +1539,7 @@ NATIVE(_send_confirmAttack)
 	if ( ps == NULL )
 		return INVALID;
 
-    SndAttackOK( ps->toInt(), pc->getSerial32() );
+    SndAttackOK( ps->toInt(), pc->getSerial() );
 	return 0;
 }
 
@@ -2342,7 +2342,7 @@ NATIVE( _set_get )
 NATIVE( _set_getChar )
 {
 	pChar pc=pointers::findCharBySerial( amxSet::get( params[1] ) );
-	return ISVALIDPC(pc)? pc->getSerial32() : INVALID;
+	return ISVALIDPC(pc)? pc->getSerial() : INVALID;
 }
 
 /*
@@ -2356,7 +2356,7 @@ NATIVE( _set_getChar )
 NATIVE( _set_getItem )
 {
 	pItem pi=pointers::findItemBySerial( amxSet::get( params[1] ) );
-	return ISVALIDPI(pi)? pi->getSerial32() : INVALID;
+	return ISVALIDPI(pi)? pi->getSerial() : INVALID;
 }
 
 /*
@@ -2762,7 +2762,7 @@ NATIVE( _chr_showMessage )
 		uint8_t sysname[30]={ 0x00, };
 		strcpy((char *)sysname, "System");
 
-		SendSpeechMessagePkt(s, pc2->getSerial32(), pc2->getId(), 6, params[4], (uint16_t)pc1->fonttype, sysname, g_cAmxPrintBuffer);
+		SendSpeechMessagePkt(s, pc2->getSerial(), pc2->getId(), 6, params[4], (uint16_t)pc1->fonttype, sysname, g_cAmxPrintBuffer);
 		return 0;
 	}
 	return INVALID;
@@ -3241,7 +3241,7 @@ NATIVE(_itm_speech)
 	uint8_t sysname[30]={ 0x00, };
 	strcpy((char *)sysname, "System");
 
-	SendSpeechMessagePkt( pc->getSocket(), cur->getSerial32(), 0x0101, 6, 0x0481, 0x0003, sysname, g_cAmxPrintBuffer );
+	SendSpeechMessagePkt( pc->getSocket(), cur->getSerial(), 0x0101, 6, 0x0481, 0x0003, sysname, g_cAmxPrintBuffer );
 
 	return 0;
 }
@@ -3531,7 +3531,7 @@ NATIVE(_chr_isaLocalVar)
 {
 	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
-	return amxVS.existsVariable( pc->getSerial32(), params[2], params[3] );
+	return amxVS.existsVariable( pc->getSerial(), params[2], params[3] );
 }
 
 /*
@@ -3546,7 +3546,7 @@ NATIVE(_chr_delLocalVar)
 {
 	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
-	return amxVS.deleteVariable( pc->getSerial32(), params[2] );
+	return amxVS.deleteVariable( pc->getSerial(), params[2] );
 }
 
 /*
@@ -3562,7 +3562,7 @@ NATIVE(_chr_addLocalIntVar)
 {
 	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
-	return amxVS.insertVariable( pc->getSerial32(), params[2], params[3] );
+	return amxVS.insertVariable( pc->getSerial(), params[2], params[3] );
 }
 
 /*
@@ -3578,7 +3578,7 @@ NATIVE(_chr_getLocalIntVar)
 	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	int32_t value;
-	amxVS.selectVariable( pc->getSerial32(), params[2], value );
+	amxVS.selectVariable( pc->getSerial(), params[2], value );
 	return value;
 }
 
@@ -3595,7 +3595,7 @@ NATIVE (_chr_setLocalIntVar)
 {
 	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
-	return amxVS.updateVariable( pc->getSerial32(), params[2], params[3] );
+	return amxVS.updateVariable( pc->getSerial(), params[2], params[3] );
 }
 
 /*
@@ -3612,7 +3612,7 @@ NATIVE( _chr_addLocalIntVec )
 {
 	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
-	return amxVS.insertVariable( pc->getSerial32(), params[2], params[3], params[4] );
+	return amxVS.insertVariable( pc->getSerial(), params[2], params[3], params[4] );
 }
 
 /*
@@ -3629,7 +3629,7 @@ NATIVE(_chr_getLocalIntVec)
 	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	int32_t value;
-	amxVS.selectVariable( pc->getSerial32(), params[2], params[3], value );
+	amxVS.selectVariable( pc->getSerial(), params[2], params[3], value );
 	return value;
 }
 
@@ -3647,7 +3647,7 @@ NATIVE (_chr_setLocalIntVec)
 {
 	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
-	return amxVS.updateVariable( pc->getSerial32(), params[2], params[3], params[4] );
+	return amxVS.updateVariable( pc->getSerial(), params[2], params[3], params[4] );
 }
 
 /*
@@ -3667,7 +3667,7 @@ NATIVE(_chr_addLocalStrVar)
 	amx_GetAddr(amx,params[3],&cstr);
 	printstring(amx,cstr,params+4,(int)(params[0]/sizeof(cell))-1);
 	g_cAmxPrintBuffer[g_nAmxPrintPtr] = '\0';
-	bool success = amxVS.insertVariable( pc->getSerial32(), params[2], g_cAmxPrintBuffer );
+	bool success = amxVS.insertVariable( pc->getSerial(), params[2], g_cAmxPrintBuffer );
 	g_nAmxPrintPtr=0;
 	g_cAmxPrintBuffer[0] = '\0';
 	return success;
@@ -3690,7 +3690,7 @@ NATIVE(_chr_getLocalStrVar)
 	g_cAmxPrintBuffer[0] = '\0';
 	cell *cptr;
 	std::string str;
-	if( amxVS.selectVariable( pc->getSerial32(), params[2], str ) )
+	if( amxVS.selectVariable( pc->getSerial(), params[2], str ) )
 	{
  		strcpy( g_cAmxPrintBuffer, str.c_str() );
 		amx_GetAddr( amx, params[3], &cptr );
@@ -3746,7 +3746,7 @@ NATIVE(_chr_setLocalStrVar)
 	amx_GetAddr(amx,params[3],&cstr);
 	printstring(amx,cstr,params+4,(int)(params[0]/sizeof(cell))-1);
 	g_cAmxPrintBuffer[g_nAmxPrintPtr] = '\0';
-	bool success = amxVS.updateVariable( pc->getSerial32(), params[2], g_cAmxPrintBuffer );
+	bool success = amxVS.updateVariable( pc->getSerial(), params[2], g_cAmxPrintBuffer );
 	g_nAmxPrintPtr=0;
 	g_cAmxPrintBuffer[0] = '\0';
 	return success;
@@ -3776,7 +3776,7 @@ NATIVE(_itm_isaLocalVar)
 {
     pItem pi = pointers::findItemBySerial(params[1]);
     VALIDATEPIR(pi, INVALID);
-		return amxVS.existsVariable( pi->getSerial32(), params[2], params[3] );
+		return amxVS.existsVariable( pi->getSerial(), params[2], params[3] );
 }
 
 /*
@@ -3793,7 +3793,7 @@ NATIVE(_itm_delLocalVar)
     pItem pi = pointers::findItemBySerial(params[1]);
     VALIDATEPIR(pi, INVALID);
     //return pi->localProperty->deleteVar( params[2], params[3] );
-		return amxVS.deleteVariable( pi->getSerial32(), params[2] );
+		return amxVS.deleteVariable( pi->getSerial(), params[2] );
 }
 
 /*
@@ -3809,7 +3809,7 @@ NATIVE(_itm_addLocalIntVar)
 {
     pItem pi = pointers::findItemBySerial(params[1]);
     VALIDATEPIR(pi, INVALID);
-	return amxVS.insertVariable( pi->getSerial32(), params[2], params[3] );
+	return amxVS.insertVariable( pi->getSerial(), params[2], params[3] );
 }
 
 /*
@@ -3826,7 +3826,7 @@ NATIVE(_itm_getLocalIntVar)
     pItem pi = pointers::findItemBySerial(params[1]);
     VALIDATEPIR(pi, INVALID);
 		int32_t value;
-		amxVS.selectVariable( pi->getSerial32(), params[2], value );
+		amxVS.selectVariable( pi->getSerial(), params[2], value );
 		return value;
 }
 
@@ -3843,7 +3843,7 @@ NATIVE (_itm_setLocalIntVar)
 {
     pItem pi = pointers::findItemBySerial(params[1]);
     VALIDATEPIR(pi, INVALID);
-		return amxVS.updateVariable( pi->getSerial32(), params[2], params[3] );
+		return amxVS.updateVariable( pi->getSerial(), params[2], params[3] );
 }
 
 /*
@@ -3863,7 +3863,7 @@ NATIVE(_itm_addLocalStrVar)
 	amx_GetAddr(amx,params[3],&cstr);
 	printstring(amx,cstr,params+4,(int)(params[0]/sizeof(cell))-1);
 	g_cAmxPrintBuffer[g_nAmxPrintPtr] = '\0';
-	bool success = amxVS.insertVariable( pi->getSerial32(), params[2], g_cAmxPrintBuffer );
+	bool success = amxVS.insertVariable( pi->getSerial(), params[2], g_cAmxPrintBuffer );
 	g_nAmxPrintPtr=0;
 	g_cAmxPrintBuffer[0] = '\0';
 	return success;
@@ -3886,7 +3886,7 @@ NATIVE(_itm_getLocalStrVar)
 	g_cAmxPrintBuffer[0] = '\0';
 	cell *cptr;
 	std::string str;
-	if( amxVS.selectVariable( pi->getSerial32(), params[2], str ) )
+	if( amxVS.selectVariable( pi->getSerial(), params[2], str ) )
 	{
  		strcpy( g_cAmxPrintBuffer, str.c_str() );
 		amx_GetAddr( amx, params[3], &cptr );
@@ -3913,7 +3913,7 @@ NATIVE(_itm_setLocalStrVar)
 	amx_GetAddr(amx,params[3],&cstr);
 	printstring(amx,cstr,params+4,(int)(params[0]/sizeof(cell))-1);
 	g_cAmxPrintBuffer[g_nAmxPrintPtr] = '\0';
-	bool success = amxVS.updateVariable( pi->getSerial32(), params[2], g_cAmxPrintBuffer );
+	bool success = amxVS.updateVariable( pi->getSerial(), params[2], g_cAmxPrintBuffer );
 	g_nAmxPrintPtr=0;
 	g_cAmxPrintBuffer[0] = '\0';
 	return success;
@@ -5241,7 +5241,7 @@ NATIVE( _party_delCandidate )
 	pChar pc = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, false );
 
-	party->removeCandidate( pc->getSerial32() );
+	party->removeCandidate( pc->getSerial() );
 	return true;
 }
 
@@ -5262,7 +5262,7 @@ NATIVE( _party_isCandidate )
 	pChar pc = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, false );
 
-	return party->isCandidate( pc->getSerial32() );
+	return party->isCandidate( pc->getSerial() );
 
 }
 

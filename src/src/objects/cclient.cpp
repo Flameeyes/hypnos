@@ -234,7 +234,7 @@ void cClient::statusWindow(pChar target, bool extended) //, bool canrename)  wil
 
         bool canrename;
 
-	if (pc->IsGM() || ((target->getOwnerSerial32()==pc->getSerial32()) && (target!=pc))) canrename = true;
+	if (pc->IsGM() || ((target->getOwnerSerial32()==pc->getSerial()) && (target!=pc))) canrename = true;
 	else canrename = false;
 
 	if ((pc->getBody()->getId() == BODY_DEADMALE) || (pc->getBody()->getId() == BODY_DEADFEMALE)) canrename = false;
@@ -343,7 +343,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 	VALIDATEPC( pc_currchar );
 
 	//Luxor: not-movable items
-	/*if (pi->magic == 2 || (isCharSerial(pi->getContSerial()) && pi->getContSerial() != pc_currchar->getSerial32()) ) {
+	/*if (pi->magic == 2 || (isCharSerial(pi->getContSerial()) && pi->getContSerial() != pc_currchar->getSerial()) ) {
 		if (isCharSerial(pi->getContSerial())) {
 			pChar pc_i = pointers::findCharBySerial(pi->getContSerial());
 			if (ISVALIDPC(pc_i))
@@ -444,7 +444,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 			if (pi->amxevents[EVENT_ITAKEFROMCONTAINER]!=NULL)
 			{
 				g_bByPass = false;
-				pi->amxevents[EVENT_ITAKEFROMCONTAINER]->Call( pi->getSerial32(), pi->getContSerial(), pc_currchar->getSerial32() );
+				pi->amxevents[EVENT_ITAKEFROMCONTAINER]->Call( pi->getSerial(), pi->getContSerial(), pc_currchar->getSerial32() );
 				if (g_bByPass)
 				{
                                 //! \todo the sendpacket stuff here
@@ -466,7 +466,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 			/*
 			//<Luxor>
 			g_bByPass = false;
-			pi->runAmxEvent( EVENT_ITAKEFROMCONTAINER, pi->getSerial32(), pi->getContSerial(), s );
+			pi->runAmxEvent( EVENT_ITAKEFROMCONTAINER, pi->getSerial(), pi->getContSerial(), s );
 			if (g_bByPass)
 			{
 				Sndbounce5(s);
@@ -496,7 +496,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 						if( ISVALIDPC( dead ) && dead->party==pc_currchar->party ) {
 							P_PARTY party = Partys.getParty( pc_currchar->party );
 							if( party!=NULL ) {
-								P_PARTY_MEMBER member = party->getMember( pc_currchar->getSerial32() );
+								P_PARTY_MEMBER member = party->getMember( pc_currchar->getSerial() );
 								if( member!=NULL )
 									bCanLoot = member->canLoot;
 							}
@@ -620,8 +620,8 @@ void cClient::drop_item(pItem pi, Location &loc, pItem cont) // Item is dropped
 	  // LB
 
 	  #ifdef debug_dragg
-	    if (ISVALIDPI(pi)) { sprintf(temp, "%04x %02x %02x %01x %04x i-name: %s EVILDRAG-old: %i\n",pi->getSerial32(), loc->x, loc->y, loc->z, cont->getSerial32(), pi->name, evilDrag); ConOut(temp); }
-		else { sprintf(temp, "blocked: %04x %02x %02x %01x %04x i-name: invalid item EVILDRAG-old: %i\n",pi->getSerial32(), loc->x, loc->y, loc->z, cont->getSerial32(), evilDrag); ConOut(temp); }
+	    if (ISVALIDPI(pi)) { sprintf(temp, "%04x %02x %02x %01x %04x i-name: %s EVILDRAG-old: %i\n",pi->getSerial(), loc->x, loc->y, loc->z, cont->getSerial32(), pi->name, evilDrag); ConOut(temp); }
+		else { sprintf(temp, "blocked: %04x %02x %02x %01x %04x i-name: invalid item EVILDRAG-old: %i\n",pi->getSerial(), loc->x, loc->y, loc->z, cont->getSerial32(), evilDrag); ConOut(temp); }
 	  #endif
 
 	  if  ( (loc->x==-1) && (loc->y==-1) && (loc->z==0)  && (evilDrag) )
@@ -641,7 +641,7 @@ void cClient::drop_item(pItem pi, Location &loc, pItem cont) // Item is dropped
 		  item_bounce6( pi);
 		  return;
 	  }
-	  else if ( ( (loc->x!=-1) && (loc->y!=-1) && ( cont->getSerial32()!=-1)) || ( (pi->getSerial32()>=0x40000000) && (cont->getSerial32()>=0x40000000) ) )
+	  else if ( ( (loc->x!=-1) && (loc->y!=-1) && ( cont->getSerial()!=-1)) || ( (pi->getSerial32()>=0x40000000) && (cont->getSerial32()>=0x40000000) ) )
 		  evilDrag=true; // calc new evildrag value
 	  else evilDrag=false;
 	}
@@ -649,12 +649,12 @@ void cClient::drop_item(pItem pi, Location &loc, pItem cont) // Item is dropped
 	#ifdef debug_dragg
 	  else
 	  {
-	     if (ISVALIDPI(pi)) { sprintf(temp, "blocked: %04x %02x %02x %01x %04x i-name: %s EVILDRAG-old: %i\n",pi->getSerial32(), loc->x, loc->y, loc->z, cont->getSerial32(), pi->name, evilDrag); ConOut(temp); }
+	     if (ISVALIDPI(pi)) { sprintf(temp, "blocked: %04x %02x %02x %01x %04x i-name: %s EVILDRAG-old: %i\n",pi->getSerial(), loc->x, loc->y, loc->z, cont->getSerial32(), pi->name, evilDrag); ConOut(temp); }
 	  }
 	#endif
 
 
-	if ( isItemSerial(cont->getSerial32()) && (cont->getSerial32() != INVALID)  ) // Invalid target => invalid container => put inWorld !!!
+	if ( isItemSerial(cont->getSerial()) && (cont->getSerial32() != INVALID)  ) // Invalid target => invalid container => put inWorld !!!
 		pack_item(pi, loc, cont);
 	else
 		dump_item(pi, loc, cont);
@@ -697,8 +697,8 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 	pChar contOwner = (pChar) contOutMost->getContainer();
 
 	if( ISVALIDPC(contOwner) ) {
-		//if ((contOwner->npcaitype==NPCAI_PLAYERVENDOR) && (contOwner->npc) && (contOwner->getOwnerSerial32()!=pc->getSerial32()) )
-		if ( contOwner->getSerial32() != pc->getSerial32() && contOwner->getOwnerSerial32() != pc->getSerial32() && !pc->IsGM() ) { // Luxor
+		//if ((contOwner->npcaitype==NPCAI_PLAYERVENDOR) && (contOwner->npc) && (contOwner->getOwnerSerial32()!=pc->getSerial()) )
+		if ( contOwner->getSerial() != pc->getSerial32() && contOwner->getOwnerSerial32() != pc->getSerial32() && !pc->IsGM() ) { // Luxor
 			sysmsg(TRANSLATE("This aint your backpack!"));
                         //! \todo the sendpacket stuff here
 			Sndbounce5(s);
@@ -714,7 +714,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 
 	if (cont->amxevents[EVENT_IONPUTITEM]!=NULL) {
 		g_bByPass = false;
-		cont->amxevents[EVENT_IONPUTITEM]->Call( cont->getSerial32(), pi->getSerial32(), pc->getSerial32() );
+		cont->amxevents[EVENT_IONPUTITEM]->Call( cont->getSerial(), pi->getSerial32(), pc->getSerial32() );
 		if (g_bByPass)
 		{
 			item_bounce6(pi);
@@ -790,7 +790,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 
 	data::seekTile(pi->getId(), tile);
 	if ((((pi->magic==2)||((tile.weight==255)&&(pi->magic!=1)))&&!pc->canAllMove) ||
-				( (pi->magic==3|| pi->magic==4) && !(pi->getOwnerSerial32()==pc->getSerial32())))
+				( (pi->magic==3|| pi->magic==4) && !(pi->getOwnerSerial32()==pc->getSerial())))
 	{
         //! \todo the sendpacket stuff here
 		Sndbounce5(s);
@@ -881,7 +881,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 
 		if ( ISVALIDPC(contOwner) )
 		{
-			if ( (contOwner->npcaitype==NPCAI_PLAYERVENDOR) && (contOwner->npc) && (contOwner->getOwnerSerial32()==pc->getSerial32()) )
+			if ( (contOwner->npcaitype==NPCAI_PLAYERVENDOR) && (contOwner->npc) && (contOwner->getOwnerSerial32()==pc->getSerial()) )
 			{
 				pc->fx1= DEREF_pItem(pi);
 				pc->fx2=17;
@@ -924,7 +924,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 					sw.fillOnline( pi->getPosition() );
                                         //! \todo the sendpacket stuff here
 					for( sw.rewind(); !sw.isEmpty(); sw++ )
-						SendDeleteObjectPkt(sw.getSocket(), pi->getSerial32() );
+						SendDeleteObjectPkt(sw.getSocket(), pi->getSerial() );
 					mapRegions->remove(pi);
 				}
 
@@ -1013,7 +1013,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 
 	data::seekTile(pi->getId(), tile);
 	if (!pc->IsGM() && ((pi->magic==2 || (tile.weight==255 && pi->magic!=1))&&!pc->canAllMove()) ||
-		( (pi->magic==3 || pi->magic==4) && !(pi->getOwnerSerial32()==pc->getSerial32())))
+		( (pi->magic==3 || pi->magic==4) && !(pi->getOwnerSerial32()==pc->getSerial())))
 	{
 		item_bounce6(pi);
 		return;
@@ -1023,7 +1023,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
         {
                if (pi->amxevents[EVENT_IDROPINLAND]!=NULL) {
 	       	        g_bByPass = false;
-        	        pi->amxevents[EVENT_IDROPINLAND]->Call( pi->getSerial32(), pc->getSerial32() );
+        	        pi->amxevents[EVENT_IDROPINLAND]->Call( pi->getSerial(), pc->getSerial32() );
 			        if (g_bByPass) {
 				        pi->Refresh();
 				        return;
@@ -1034,7 +1034,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
         	for( sw.rewind(); !sw.isEmpty(); sw++ )
         	{
                         //! \todo the sendpacket stuff here
-        		SendDeleteObjectPkt( sw.getSocket(), pi->getSerial32() );
+        		SendDeleteObjectPkt( sw.getSocket(), pi->getSerial() );
         	}
 
         	pi->MoveTo(Loc);
@@ -1044,7 +1044,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 
         	if(ISVALIDPI(p_boat))
         	{
-        		pi->SetMultiSerial(p_boat->getSerial32());
+        		pi->SetMultiSerial(p_boat->getSerial());
         	}
 
 
@@ -1112,7 +1112,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 				multi=findmulti( pi->getPosition() );
 				if (ISVALIDPI(multi))
 					//setserial(DEREF_pItem(pi),DEREF_pItem(multi),7);
-					pi->SetMultiSerial(multi->getSerial32());
+					pi->SetMultiSerial(multi->getSerial());
 			}
 		}
 		//End Boats
@@ -1133,7 +1133,7 @@ bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
 	VALIDATEPIR(pi, false);
 
 
-	pChar pTC = pointers::findCharBySerial(cont->getSerial32());	// the targeted character
+	pChar pTC = pointers::findCharBySerial(cont->getSerial());	// the targeted character
 	VALIDATEPCR(pTC, false);
 	pChar pc_currchar = currChar();
 	VALIDATEPCR(pc_currchar, false);
@@ -1141,7 +1141,7 @@ bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
 
 	if (!pTC) return true;
 
-	if (pc_currchar->getSerial32() != pTC->getSerial32() /*DEREF_pChar(pTC)!=cc*/)
+	if (pc_currchar->getSerial() != pTC->getSerial32() /*DEREF_pChar(pTC)!=cc*/)
 	{
 		if (pTC->npc)
 		{
@@ -1162,7 +1162,7 @@ bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
 				}
 
 				//This crazy training stuff done by Anthracks (fred1117@tiac.net)
-				if(pc_currchar->trainer != pTC->getSerial32())
+				if(pc_currchar->trainer != pTC->getSerial())
 
 				{
 					pTC->talk(this, TRANSLATE("Thank thee kindly, but I have done nothing to warrant a gift."),0);
@@ -1248,7 +1248,7 @@ bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
 
 bool cClient::droppedOnPet(pItem pi, Location &loc, pItem cont)
 {
-	pChar pet = pointers::findCharBySerial(cont->getSerial32());
+	pChar pet = pointers::findCharBySerial(cont->getSerial());
 	VALIDATEPCR(pet, false);
 	pChar pc = currChar();
 	VALIDATEPCR(pc, false);
@@ -1305,7 +1305,7 @@ bool cClient::droppedOnGuard(pItem pi, Location &loc, pItem cont)
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	pChar pc = currChar();
 	VALIDATEPCR(pc,false);
-	pChar pc_t=pointers::findCharBySerial(cont->getSerial32()); //the guard
+	pChar pc_t=pointers::findCharBySerial(cont->getSerial()); //the guard
 	VALIDATEPCR(pc_t,false);
 	// Search for the key word "the head of"
         //! \todo change check for text to check for id
@@ -1319,7 +1319,7 @@ bool cClient::droppedOnGuard(pItem pi, Location &loc, pItem cont)
 		{
 			// Give the person the bounty assuming that they are not the
 			// same person as the reward is for
-			if( pc->getSerial32() != own->getSerial32() )
+			if( pc->getSerial() != own->getSerial32() )
 			{
 				// give them the gold for bringing the villan to justice
 				pc->addGold(own->questBountyReward);
@@ -1367,7 +1367,7 @@ bool cClient::droppedOnBeggar(pItem pi, Location &loc, pItem cont)
 	pChar pc=currChar();
 	VALIDATEPCR(pc,false);
 
-	pChar pc_t=pointers::findCharBySerial(cont->getSerial32()); //beggar
+	pChar pc_t=pointers::findCharBySerial(cont->getSerial()); //beggar
 	VALIDATEPCR(pc_t,false);
 
 	if(pi->getId()!=ITEMID_GOLD)
@@ -1419,7 +1419,7 @@ bool cClient::droppedOnTrainer(pItem pi, Location &loc, pItem cont)
 
 	pChar pc = currChar();
 	VALIDATEPCR(pc,false);
-	pChar pc_t = pointers::findCharBySerial(cont->getSerial32());
+	pChar pc_t = pointers::findCharBySerial(cont->getSerial());
 	VALIDATEPCR(pc_t,false);
 
 	if( pi->getId() == ITEMID_GOLD )
@@ -1643,7 +1643,7 @@ void wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 
 		// - AntiChrist (4) - checks for new ITEMHAND system
 		// - now you can't equip 2 hnd weapons with 1hnd weapons nor shields!!
-		serial= pck->getSerial32(); //xan -> k not cc :)
+		serial= pck->getSerial(); //xan -> k not cc :)
 
 		pItem pj = NULL;
  		pChar pc_currchar= pck;
@@ -1762,7 +1762,7 @@ void wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 
 		if (!(pc->IsGM())) //Ripper..players cant equip items on other players or npc`s paperdolls.
 		{
-			if ((pck->getSerial32() != pc->getSerial32())/*&&(chars[s].npc!=k)*/) //-> really don't understand this! :|, xan
+			if ((pck->getSerial() != pc->getSerial32())/*&&(chars[s].npc!=k)*/) //-> really don't understand this! :|, xan
 			{
 				sysmsg(TRANSLATE("You can't put items on other people!"));
 				item_bounce6(pi);
@@ -1774,7 +1774,7 @@ void wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 		sws.fillOnline( pi );
 		for( sws.rewind(); !sws.isEmpty(); sws++ )
                         //! \todo the sendpacket stuff here
-			SendDeleteObjectPkt( sws.getSocket(), pi->getSerial32() );
+			SendDeleteObjectPkt( sws.getSocket(), pi->getSerial() );
 
 //! \todo verify if layer behaves as Flameeyes told me :D (but it seems to me it does NOT! :P)
 
@@ -2047,8 +2047,8 @@ void sendtradestatus(pContainer cont1, pContainer cont2)  //takes clients from c
 	p2 = pointers::findCharBySerial(cont2->getContSerial());
 	VALIDATEPC(p2);
 
-	cPacketSendSecureTradingStatus pk1(0x02, cont1->getSerial32(), (uint32_t) (cont1->morez%256), (uint32_t) (cont2->morez%256));
-      	cPacketSendSecureTradingStatus pk2(0x02, cont2->getSerial32(), (uint32_t) (cont2->morez%256), (uint32_t) (cont1->morez%256));
+	cPacketSendSecureTradingStatus pk1(0x02, cont1->getSerial(), (uint32_t) (cont1->morez%256), (uint32_t) (cont2->morez%256));
+      	cPacketSendSecureTradingStatus pk2(0x02, cont2->getSerial(), (uint32_t) (cont2->morez%256), (uint32_t) (cont1->morez%256));
 	p1->getClient()->sendPacket(&pk1);
 	p2->getClient()->sendPacket(&pk2);
 }
@@ -2087,7 +2087,7 @@ void dotrade(pContainer cont1, pContainer cont2)
 
 			if (pi->amxevents[EVENT_IONTRANSFER]!=NULL) {
 				g_bByPass = false;
-				pi->amxevents[EVENT_IONTRANSFER]->Call(pi->getSerial32(), pc1->getSerial32(), pc2->getSerial32());
+				pi->amxevents[EVENT_IONTRANSFER]->Call(pi->getSerial(), pc1->getSerial32(), pc2->getSerial32());
 				if (g_bByPass==true) continue; //skip item, I hope
 			}
 			pi->setContainer( bp2 );
@@ -2109,7 +2109,7 @@ void dotrade(pContainer cont1, pContainer cont2)
 			if (pi->amxevents[EVENT_IONTRANSFER]!=NULL)
                         {
         			g_bByPass = false;
-        			pi->amxevents[EVENT_IONTRANSFER]->Call(pi->getSerial32(), pc2->getSerial32(), pc1->getSerial32());
+        			pi->amxevents[EVENT_IONTRANSFER]->Call(pi->getSerial(), pc2->getSerial32(), pc1->getSerial32());
         			if (g_bByPass==true) continue; //skip item, I hope
 			}
 
@@ -2145,12 +2145,12 @@ void endtrade(uint32_t serial)
 
 	if (c1 != NULL)	// player may have been disconnected (Duke)
         {
-        	cPacketSendSecureTradingStatus pk1(0x01, cont1->getSerial32(), 0, 0);
+        	cPacketSendSecureTradingStatus pk1(0x01, cont1->getSerial(), 0, 0);
 		c1->sendPacket(&pk1);
 	}
 	if (c2 != NULL)	// player may have been disconnected (Duke)
         {
-              	cPacketSendSecureTradingStatus pk2(0x01, cont2->getSerial32(), 0, 0);
+              	cPacketSendSecureTradingStatus pk2(0x01, cont2->getSerial(), 0, 0);
               	c2->sendPacket(&pk2);
         }
 

@@ -16,8 +16,8 @@
 #include "srvparms.h"
 #include "nxw_utils.h"
 #include "archive.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "inlines.h"
 #include "skills.h"
 #include "utils.h"
@@ -127,7 +127,7 @@ static void callCustomTempFx(pObject poSrc, P_OBJECT poDest, int mode, int amxca
 	if (amxcallback <= -2) return;
 
 	int more = (more3<<16) + (more2<<8) + more1;
-	AmxFunction::g_prgOverride->CallFn(amxcallback, poSrc->getSerial32(), poDest->getSerial32(), more, mode);
+	AmxFunction::g_prgOverride->CallFn(amxcallback, poSrc->getSerial(), poDest->getSerial32(), more, mode);
 }
 
 /*!

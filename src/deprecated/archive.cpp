@@ -53,12 +53,12 @@ pObject cAllObjects::findObject(uint32_t nSerial)
 
 void cAllObjects::insertObject( pObject obj )
 {
-	all.insert( make_pair( obj->getSerial32(), obj ) );
+	all.insert( make_pair( obj->getSerial(), obj ) );
 }
 
 void cAllObjects::eraseObject( pObject obj )
 {
-	OBJECT_MAP::iterator iter( all.find( obj->getSerial32() ) );
+	OBJECT_MAP::iterator iter( all.find( obj->getSerial() ) );
 	if( iter!=all.end() )
 		all.erase( iter );
 }

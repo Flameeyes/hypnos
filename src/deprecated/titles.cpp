@@ -9,8 +9,8 @@
 
 #include "common_libs.h"
 #include "titles.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "inlines.h"
 #include "scripts.h"
 

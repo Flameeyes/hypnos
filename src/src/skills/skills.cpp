@@ -21,8 +21,8 @@
 #include "addmenu.h"
 #include "scp_parser.h"
 #include "set.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 #include "nox-wizard.h"
 #include "scripts.h"
@@ -72,7 +72,7 @@ void Skills::Hide(NXWSOCKET s)
 	sc.fillCharsNearXYZ( pc->getPosition(), 4 );
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pj = sc.getChar();
-		if ( ISVALIDPC(pj) && pj->getSerial32() != pc->getSerial32() && !pj->IsHidden() && pc->losFrom(pj) ) {
+		if ( ISVALIDPC(pj) && pj->getSerial() != pc->getSerial32() && !pj->IsHidden() && pc->losFrom(pj) ) {
 			pc->sysmsg( TRANSLATE("There is someone nearby who prevents you to hide.") );
 			return;
 		}
@@ -172,7 +172,7 @@ void Skills::PeaceMaking(NXWSOCKET s)
 		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 			pChar pcm = sc.getChar();
 			if( ISVALIDPC( pcm ) ) {
-				if (pcm->war && pc->getSerial32()!=pcm->getSerial32())
+				if (pcm->war && pc->getSerial()!=pcm->getSerial32())
                 {
                     pcm->sysmsg(TRANSLATE("You hear some lovely music, and forget about fighting."));
 					if (pcm->war)
@@ -422,7 +422,7 @@ void Skills::CreatePotion(CHARACTER s, char type, char sub, int mortar)
 	{
 		P_TARGET targ = clientInfo[s]->newTarget( new cItemTarget() );
 		targ->code_callback=Skills::target_bottle;
-		targ->buffer[0]=pi_mortar->getSerial32();
+		targ->buffer[0]=pi_mortar->getSerial();
 		targ->send( ps );
 		ps->sysmsg( TRANSLATE("Where is an empty bottle for your potion?"));
 	}
@@ -577,10 +577,10 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 
 
     if (pc->amxevents[EVENT_CHR_ONGETSKILLCAP])
-        skillcap = pc->amxevents[EVENT_CHR_ONGETSKILLCAP]->Call(pc->getSerial32(), pc->getSocket() );
+        skillcap = pc->amxevents[EVENT_CHR_ONGETSKILLCAP]->Call(pc->getSerial(), pc->getSocket() );
 	/*
 	if ( pc->getAmxEvent(EVENT_CHR_ONGETSKILLCAP) != NULL )
-		skillcap = pc->runAmxEvent( EVENT_CHR_ONGETSKILLCAP, pc->getSerial32(), pc->getSocket() );
+		skillcap = pc->runAmxEvent( EVENT_CHR_ONGETSKILLCAP, pc->getSerial(), pc->getSocket() );
 	*/
 
     lockstate=pc->lockSkill[sk];
@@ -673,12 +673,12 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 
     if(pc->amxevents[EVENT_CHR_ONADVANCESKILL]!=NULL) {
         g_bByPass = false;
-        retval = pc->amxevents[EVENT_CHR_ONADVANCESKILL]->Call(pc->getSerial32(), sk, skillused, retval);
+        retval = pc->amxevents[EVENT_CHR_ONADVANCESKILL]->Call(pc->getSerial(), sk, skillused, retval);
         if (g_bByPass==true) return retval;
     }
 	/*
 	if ( pc->getAmxEvent(EVENT_CHR_ONADVANCESKILL) != NULL ) {
-		retval = pc->runAmxEvent( EVENT_CHR_ONADVANCESKILL, pc->getSerial32(), sk, skillused, retval);
+		retval = pc->runAmxEvent( EVENT_CHR_ONADVANCESKILL, pc->getSerial(), sk, skillused, retval);
 		if (g_bByPass==true)
 			return retval;
 	}
@@ -808,11 +808,11 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
 
     if (pc->amxevents[EVENT_CHR_ONADVANCESTAT]) {
         g_bByPass = false;
-        pc->amxevents[EVENT_CHR_ONADVANCESTAT]->Call(pc->getSerial32(), type, sk, tmp);
+        pc->amxevents[EVENT_CHR_ONADVANCESTAT]->Call(pc->getSerial(), type, sk, tmp);
         if (g_bByPass==true) return false;
 	}
 
-	//pc->runAmxEvent( EVENT_CHR_ONADVANCESTAT, pc->getSerial32(), type, sk, tmp);
+	//pc->runAmxEvent( EVENT_CHR_ONADVANCESTAT, pc->getSerial(), type, sk, tmp);
  	if (g_bByPass==true)
 		return false;
 
@@ -844,11 +844,11 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
 		}
 
     if (pc->amxevents[EVENT_CHR_ONGETSTATCAP]!=NULL)
-       	limit = pc->amxevents[EVENT_CHR_ONGETSTATCAP]->Call(pc->getSerial32(), type, limit);
+       	limit = pc->amxevents[EVENT_CHR_ONGETSTATCAP]->Call(pc->getSerial(), type, limit);
 
 	/*
 	if ( pc->getAmxEvent(EVENT_CHR_ONGETSTATCAP) != NULL )
-		limit = pc->runAmxEvent( EVENT_CHR_ONGETSTATCAP, pc->getSerial32(), type, limit);
+		limit = pc->runAmxEvent( EVENT_CHR_ONGETSTATCAP, pc->getSerial(), type, limit);
 	*/
 
 		switch( stat )
@@ -928,10 +928,10 @@ void Skills::AdvanceStats(CHARACTER s, int sk)
 
 
 	if (pc->amxevents[EVENT_CHR_ONGETSTATCAP]!=NULL)
-		statcap = pc->amxevents[EVENT_CHR_ONGETSTATCAP]->Call(pc->getSerial32(), STATCAP_CAP, statcap);
+		statcap = pc->amxevents[EVENT_CHR_ONGETSTATCAP]->Call(pc->getSerial(), STATCAP_CAP, statcap);
 	/*
 	if ( pc->getAmxEvent(EVENT_CHR_ONGETSTATCAP) != NULL )
-		statcap = pc->runAmxEvent( EVENT_CHR_ONGETSTATCAP, pc->getSerial32(), STATCAP_CAP, statcap);
+		statcap = pc->runAmxEvent( EVENT_CHR_ONGETSTATCAP, pc->getSerial(), STATCAP_CAP, statcap);
 	*/
 	// End: Determine statcap
 
@@ -1087,7 +1087,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 
 	pc->disturbMed(); // Meditation
 
-	AMXEXECSV( pc->getSerial32(),AMXT_SKILLS, x, AMX_BEFORE);
+	AMXEXECSV( pc->getSerial(),AMXT_SKILLS, x, AMX_BEFORE);
 
 	bool setSkillDelay = true;
 
@@ -1248,9 +1248,9 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 	}
 
 	if ( setSkillDelay )
-		SetSkillDelay(pc->getSerial32());
+		SetSkillDelay(pc->getSerial());
 
-	AMXEXECSV( pc->getSerial32(),AMXT_SKILLS, x, AMX_AFTER);
+	AMXEXECSV( pc->getSerial(),AMXT_SKILLS, x, AMX_AFTER);
 }
 
 
@@ -1524,7 +1524,7 @@ void Skills::Meditation (NXWSOCKET  s)
 		return;
 	}
 
-	if ( SrvParms->armoraffectmana && Skills::GetAntiMagicalArmorDefence(pc->getSerial32()) > 15 ) {
+	if ( SrvParms->armoraffectmana && Skills::GetAntiMagicalArmorDefence(pc->getSerial()) > 15 ) {
 		pc->sysmsg( TRANSLATE("Regenerative forces cannot penetrate your armor.") );
 		return;
 	}
@@ -1783,7 +1783,7 @@ void Skills::Cartography(NXWSOCKET s)
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
-    if( Skills::HasEmptyMap(pc->getSerial32()) )
+    if( Skills::HasEmptyMap(pc->getSerial()) )
     {
         //itemmake[s].has = 1;
 		//Skills::MakeMenu(s, 1200, CARTOGRAPHY);
@@ -1810,7 +1810,7 @@ bool Skills::HasEmptyMap(CHARACTER cc)
 
 	int ci = 0, loopexit = 0;
 	pItem pi;
-	while (((pi = ContainerSearch(pack->getSerial32(), &ci)) != NULL) &&(++loopexit < MAXLOOPS))
+	while (((pi = ContainerSearch(pack->getSerial(), &ci)) != NULL) &&(++loopexit < MAXLOOPS))
 	{
         if(!ISVALIDPI(pi))
 			continue;
@@ -1840,7 +1840,7 @@ bool Skills::DelEmptyMap(CHARACTER cc)
     int ci=0;       // Stores the last found item
     int loopexit=0; // Avoids the loop to take too much time
 	pItem cand=NULL;
-	while (((cand = ContainerSearch(pack->getSerial32(), &ci)) != NULL) &&(++loopexit < MAXLOOPS))
+	while (((cand = ContainerSearch(pack->getSerial(), &ci)) != NULL) &&(++loopexit < MAXLOOPS))
 	{
         if(!ISVALIDPI(cand))
 			continue;

@@ -18,8 +18,12 @@ class cChar;
 typedef cChar *pChar;			//!< Pointer to a Char
 typedef std::list<pChar> CharList;	//!< List of pointers to Char
 
-#include "ai.h"
 #include "objects/cobject.h"
+#include "objects/citem.h"
+#include "objects/cclient.h"
+#include "objects/cbody.h"
+
+#include "ai.h"
 #include "magic.h"
 
 #include "npcs.h"
@@ -133,9 +137,9 @@ public:
 
 	static void	archive();
 	static void	safeoldsave();
-	void		getPopupHelp(char *str)
+	void		getPopupHelp(char *str);
 	void		MoveTo(Location newloc);
-	void 		loadEventFromScript(char *script1, TEXT *script2);
+	void 		loadEventFromScript(char *script1, char *script2);
 	void		doGmEffect();
 
 protected:

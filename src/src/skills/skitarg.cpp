@@ -22,8 +22,8 @@
 #include "set.h"
 #include "archive.h"
 #include "map.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "skills.h"
 #include "basics.h"
 #include "inlines.h"
@@ -62,7 +62,7 @@ bool CheckInPack(NXWSOCKET  s, pItem pi)
 {
     pItem pPack=Check4Pack(s);
     VALIDATEPIR(pPack, false);
-    if (pi->getContSerial()!=pPack->getSerial32())
+    if (pi->getContSerial()!=pPack->getSerial())
     {
         sysmessage(s,TRANSLATE("You can't use material outside your backpack"));
         return false;
@@ -87,7 +87,7 @@ void Skills::target_removeTraps( NXWCLIENT ps, P_TARGET t )
 			pc->checkSkill( REMOVETRAPS, 0, 750); //ndEny is good?
 	}
 	else
-		pi->amxevents[EVENT_IONREMOVETRAP]->Call(pi->getSerial32(), pc->getSerial32() );
+		pi->amxevents[EVENT_IONREMOVETRAP]->Call(pi->getSerial(), pc->getSerial32() );
 
 }
 
@@ -102,7 +102,7 @@ void Skills::target_tailoring( NXWCLIENT ps, P_TARGET t )
 
 	NXWSOCKET s = ps->toInt();
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,TAILORING,AMX_BEFORE);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,TAILORING,AMX_BEFORE);
 
     if( pi->magic==4)
 		return;
@@ -121,13 +121,13 @@ void Skills::target_tailoring( NXWCLIENT ps, P_TARGET t )
 				if( tannering == NULL )
 					tannering = new AmxFunction( AMXTANNERING );
 				if( tannering != NULL )
-					tannering->Call( pc->getSerial32(), pi->getSerial32() );
+					tannering->Call( pc->getSerial(), pi->getSerial32() );
 			}
             else {
 				if( tailoring == NULL )
 					tailoring = new AmxFunction( AMXTAILORING );
 				if( tailoring != NULL )
-					tailoring->Call( pc->getSerial32(), pi->getSerial32() );
+					tailoring->Call( pc->getSerial(), pi->getSerial32() );
 			}
 
         }
@@ -135,7 +135,7 @@ void Skills::target_tailoring( NXWCLIENT ps, P_TARGET t )
     }
 	else pc->sysmsg(TRANSLATE("You cannot use that material for tailoring."));
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,TAILORING,AMX_AFTER);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,TAILORING,AMX_AFTER);
 }
 
 void Skills::target_fletching( NXWCLIENT ps, P_TARGET t )
@@ -148,7 +148,7 @@ void Skills::target_fletching( NXWCLIENT ps, P_TARGET t )
 	pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,BOWCRAFT,AMX_BEFORE);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,BOWCRAFT,AMX_BEFORE);
     if ( pi->magic!=4) // Ripper
     {
         if (CheckInPack(s,pi))
@@ -159,7 +159,7 @@ void Skills::target_fletching( NXWCLIENT ps, P_TARGET t )
 	else
 		pc->sysmsg(TRANSLATE("You cannot use that for fletching."));
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,BOWCRAFT,AMX_AFTER);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,BOWCRAFT,AMX_AFTER);
 }
 
 void Skills::target_bowcraft( NXWCLIENT ps, P_TARGET t )
@@ -174,7 +174,7 @@ void Skills::target_bowcraft( NXWCLIENT ps, P_TARGET t )
 	const pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
-	AMXEXECSVTARGET(pc_currchar->getSerial32(),AMXT_SKITARGS,BOWCRAFT,AMX_BEFORE);
+	AMXEXECSVTARGET(pc_currchar->getSerial(),AMXT_SKITARGS,BOWCRAFT,AMX_BEFORE);
 
 	pc_currchar->playAction(pc_currchar->isMounting() ? 0x1C : 0x0D);
 	if ( pi->magic!=4) // Ripper
@@ -189,7 +189,7 @@ void Skills::target_bowcraft( NXWCLIENT ps, P_TARGET t )
 		}
 	}
 
-	AMXEXECSVTARGET( pc_currchar->getSerial32(),AMXT_SKITARGS,BOWCRAFT,AMX_AFTER);
+	AMXEXECSVTARGET( pc_currchar->getSerial(),AMXT_SKITARGS,BOWCRAFT,AMX_AFTER);
 }
 
 ////////////////////
@@ -210,7 +210,7 @@ void Skills::target_carpentry( NXWCLIENT ps, P_TARGET t )
 	pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,CARPENTRY,AMX_BEFORE);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,CARPENTRY,AMX_BEFORE);
     if ( pi->magic!=4)
     {
         if( pi->IsLog() || pi->IsBoard() ) // logs or boards
@@ -225,7 +225,7 @@ void Skills::target_carpentry( NXWCLIENT ps, P_TARGET t )
     else
         pc->sysmsg(TRANSLATE("You cannot use that material for carpentry."));
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,CARPENTRY,AMX_AFTER);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,CARPENTRY,AMX_AFTER);
 }
 
 /*!
@@ -415,7 +415,7 @@ void Skills::target_tree( NXWCLIENT ps, P_TARGET t )
 
 	NXWSOCKET s = ps->toInt();
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,LUMBERJACKING,AMX_BEFORE);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,LUMBERJACKING,AMX_BEFORE);
 
     static TIMERVAL logtime[max_res_x][max_res_y];//see mine for values...they were 1000 also here
     static uint32_t logamount[max_res_x][max_res_y];
@@ -524,7 +524,7 @@ void Skills::target_tree( NXWCLIENT ps, P_TARGET t )
 
     AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMXLUMBERJACKING), s);
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,LUMBERJACKING,AMX_AFTER);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,LUMBERJACKING,AMX_AFTER);
 }
 
 void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
@@ -676,7 +676,7 @@ void Skills::target_smeltOre( NXWCLIENT ps, P_TARGET t )
                 pItem pix=pointers::findItemBySerial( t->buffer[0] );
 				VALIDATEPI( pix );
 
-                AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMXSMELTORE), pc->getSerial32(), pix->getColor(), pix->getSerial32());
+                AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMXSMELTORE), pc->getSerial(), pix->getColor(), pix->getSerial32());
             }
         }
     }
@@ -871,7 +871,7 @@ void Skills::target_detectHidden( NXWCLIENT ps, P_TARGET t )
 	pChar pc = ps->currChar();
 	VALIDATEPC(pc);
 
-	AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,DETECTINGHIDDEN,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,DETECTINGHIDDEN,AMX_BEFORE);
 
 	Location location = t->getLocation();
 
@@ -916,7 +916,7 @@ void Skills::target_detectHidden( NXWCLIENT ps, P_TARGET t )
 	if( !bFound )
 		pc->sysmsg( TRANSLATE("You fail to find anyone.") );
 
-	AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,DETECTINGHIDDEN,AMX_AFTER);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,DETECTINGHIDDEN,AMX_AFTER);
 }
 
 void target_enticement2( NXWCLIENT ps, P_TARGET t )
@@ -941,7 +941,7 @@ void target_enticement2( NXWCLIENT ps, P_TARGET t )
 	{
 		pChar pc_target = pointers::findCharBySerial( t->buffer[0] );
 		VALIDATEPC(pc_target);
-		pc_target->ftargserial = pc_ftarg->getSerial32();
+		pc_target->ftargserial = pc_ftarg->getSerial();
 		pc_target->npcWander = WANDER_FOLLOW;
 		sysmessage(s, TRANSLATE("You play your hypnotic music, luring them near your target."));
 		Skills::PlayInstrumentWell(s, inst);
@@ -986,7 +986,7 @@ void Skills::target_enticement1( NXWCLIENT ps, P_TARGET t )
 	{
 		P_TARGET targ= clientInfo[s]->newTarget( new cCharTarget() );
 		targ->code_callback = target_enticement2;
-		targ->buffer[0]= pc->getSerial32();
+		targ->buffer[0]= pc->getSerial();
 		targ->send( ps );
 		ps->sysmsg(TRANSLATE("You play your music, luring them near. Whom do you wish them to follow?"));
 		PlayInstrumentWell(s, inst);
@@ -1056,7 +1056,7 @@ void target_provocation2( NXWCLIENT ps, P_TARGET t )
 			NXWSOCKET i=sw.getSocket();
 			if( i!=INVALID )
 			{
-				itemmessage(i, temp, Victim1->getSerial32());
+				itemmessage(i, temp, Victim1->getSerial());
 			}
 		}
 	}
@@ -1090,7 +1090,7 @@ void Skills::target_provocation1( NXWCLIENT ps, P_TARGET t )
 	{
 		P_TARGET targ=clientInfo[s]->newTarget( new cCharTarget() );
 		targ->code_callback=target_provocation2;
-		targ->buffer[0]=pc->getSerial32();
+		targ->buffer[0]=pc->getSerial();
 		targ->send( ps );
 		ps->sysmsg( TRANSLATE("You play your music, inciting anger, and your target begins to look furious. Whom do you wish it to attack?"));
 		PlayInstrumentWell(s, inst);
@@ -1172,7 +1172,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, P_TARGET t )
     pItem pib=MAKE_ITEM_REF( t->buffer[0] );    // item index of bandage
 	VALIDATEPI(pib);
 
-    AMXEXECSVTARGET( ph->getSerial32(),AMXT_SKITARGS,HEALING,AMX_BEFORE);
+    AMXEXECSVTARGET( ph->getSerial(),AMXT_SKITARGS,HEALING,AMX_BEFORE);
 
     if (!SrvParms->bandageincombat ) {
 		//pChar pc_att=pointers::findCharBySerial(ph->attackerserial);
@@ -1191,7 +1191,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, P_TARGET t )
 
 	if( ((pp->getId() != BODY_MALE) || (pp->getId() != BODY_FEMALE)) && pp->tamed==false) //Used on non-human and controls if tamed
 
-        if ((ph->IsInnocent()) &&(ph->getSerial32() != pp->getSerial32()))
+        if ((ph->IsInnocent()) &&(ph->getSerial() != pp->getSerial32()))
         {
 			ph->helpStuff(pp);
         }
@@ -1262,7 +1262,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, P_TARGET t )
 			//sysmessage(s,"You apply the bandages and the patient looks a bit healthier.");
 			int iMore1 = 0;
 			(j+pp->hp > pp->getStrength()) ? iMore1 = pp->getStrength() - pp->hp : iMore1 = j;
-			if(pp->getSerial32()==ph->getSerial32())
+			if(pp->getSerial()==ph->getSerial32())
 				tempfx::add(ph, ph, tempfx::HEALING_DELAYHEAL, iMore1/2,0,10);//allow a delay
 			else
 				tempfx::add(ph, pp, tempfx::HEALING_DELAYHEAL, iMore1/2,0,4);// added suggestion by Ramases //-Fraz- must be checked
@@ -1287,7 +1287,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, P_TARGET t )
     pib->ReduceAmount(1);
 
 
-    AMXEXECSVTARGET( ph->getSerial32(),AMXT_SKITARGS,HEALING,AMX_AFTER);
+    AMXEXECSVTARGET( ph->getSerial(),AMXT_SKITARGS,HEALING,AMX_AFTER);
 }
 
 void Skills::target_armsLore( NXWCLIENT ps, P_TARGET t )
@@ -1304,7 +1304,7 @@ void Skills::target_armsLore( NXWCLIENT ps, P_TARGET t )
     float totalhp;
     char p2[100];
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,ARMSLORE,AMX_BEFORE);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ARMSLORE,AMX_BEFORE);
 
     if ( (pi->def==0 || pi->pileable)
         && ((pi->lodamage==0 && pi->hidamage==0) && (pi->rank<1 || pi->rank>9)))
@@ -1402,7 +1402,7 @@ void Skills::target_armsLore( NXWCLIENT ps, P_TARGET t )
             }
         }
     }
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,ARMSLORE,AMX_AFTER);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ARMSLORE,AMX_AFTER);
 
 }
 
@@ -1416,7 +1416,7 @@ void Skills::target_itemId( NXWCLIENT ps, P_TARGET t )
 
     char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,ITEMID,AMX_BEFORE);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ITEMID,AMX_BEFORE);
     if( pi->magic!=4) // Ripper
     {
         if (!pc->checkSkill( ITEMID, 0, 250))
@@ -1486,7 +1486,7 @@ void Skills::target_itemId( NXWCLIENT ps, P_TARGET t )
         }
     }
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,ITEMID,AMX_AFTER);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ITEMID,AMX_AFTER);
 }
 
 
@@ -1506,7 +1506,7 @@ void Skills::target_tame( NXWCLIENT ps, P_TARGET t )
 	if(line_of_sight(INVALID, pc->getPosition(), target->getPosition(), WALLS_CHIMNEYS+DOORS+FLOORS_FLAT_ROOFING)==0)
 		return;
 
-	AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,TAMING,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,TAMING,AMX_BEFORE);
 
 	if(buffer[s][7]==0xFF) return;
 
@@ -1564,7 +1564,7 @@ void Skills::target_tame( NXWCLIENT ps, P_TARGET t )
 
 	if (tamed==0) pc->sysmsg(TRANSLATE("You can't tame that!"));
 
-	AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,TAMING,AMX_AFTER);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,TAMING,AMX_AFTER);
 }
 
 
@@ -1587,7 +1587,7 @@ void Skills::target_animalLore( NXWCLIENT ps, P_TARGET t )
 		return;
 	}
 
-	AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,ANIMALLORE,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ANIMALLORE,AMX_BEFORE);
 
 	if (target->IsGMorCounselor())
 	{
@@ -1614,7 +1614,7 @@ void Skills::target_animalLore( NXWCLIENT ps, P_TARGET t )
         	}
 	}
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,ANIMALLORE,AMX_AFTER);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ANIMALLORE,AMX_AFTER);
 }
 
 void Skills::target_forensics( NXWCLIENT ps, P_TARGET t )
@@ -1624,7 +1624,7 @@ void Skills::target_forensics( NXWCLIENT ps, P_TARGET t )
 	pItem pi = pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
-	AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,FORENSICS,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,FORENSICS,AMX_BEFORE);
 
 	int curtim=uiCurrentTime;
 
@@ -1654,7 +1654,7 @@ void Skills::target_forensics( NXWCLIENT ps, P_TARGET t )
 		}
 	}
 
-	AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,FORENSICS,AMX_AFTER);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,FORENSICS,AMX_AFTER);
 }
 
 
@@ -1671,7 +1671,7 @@ void target_poisoning2( NXWCLIENT ps, P_TARGET t )
     VALIDATEPC(pc);
 	NXWSOCKET s = ps->toInt();
 
-    AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,POISONING,AMX_BEFORE);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,POISONING,AMX_BEFORE);
     pItem poison=pointers::findItemBySerial(t->buffer[0]);
     VALIDATEPI(poison);
 
@@ -1718,12 +1718,12 @@ void target_poisoning2( NXWCLIENT ps, P_TARGET t )
 
 	if (pi->amxevents[EVENT_IONPOISONED]!=NULL) {
 		g_bByPass = false;
-		poison->morez = pi->amxevents[EVENT_IONPOISONED]->Call(pi->getSerial32(), s, poison->morez);
+		poison->morez = pi->amxevents[EVENT_IONPOISONED]->Call(pi->getSerial(), s, poison->morez);
 		if (g_bByPass==true) return;
 	}
 	/*
 	if ( pi->getAmxEvent(EVENT_IONPOISONED) != NULL ) {
-		poison->morez = pi->runAmxEvent( EVENT_IONPOISONED, pi->getSerial32(), s, poison->morez );
+		poison->morez = pi->runAmxEvent( EVENT_IONPOISONED, pi->getSerial(), s, poison->morez );
 		if (g_bByPass==true)
 			return;
 	}
@@ -1789,7 +1789,7 @@ void target_poisoning2( NXWCLIENT ps, P_TARGET t )
 	emptybottle->priv|=0x01;
 	emptybottle->Refresh();
 
-	AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,POISONING,AMX_AFTER);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,POISONING,AMX_AFTER);
 }
 
 
@@ -1800,7 +1800,7 @@ void Skills::target_poisoning( NXWCLIENT ps, P_TARGET t )
 
 	P_TARGET targ = clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
 	targ->code_callback=target_poisoning2;
-	targ->buffer[0]=poison->getSerial32();
+	targ->buffer[0]=poison->getSerial();
 	targ->send( ps );
 	ps->sysmsg( TRANSLATE("What item do you want to poison?") );
 
@@ -1816,7 +1816,7 @@ void Skills::target_tinkering( NXWCLIENT ps, P_TARGET t )
 
 	NXWSOCKET s = ps->toInt();
 
-    AMXEXECSVTARGET( pc_currchar->getSerial32(),AMXT_SKITARGS,TINKERING,AMX_BEFORE);
+    AMXEXECSVTARGET( pc_currchar->getSerial(),AMXT_SKITARGS,TINKERING,AMX_BEFORE);
 
     if ( pi->magic!=4) // Ripper
     {
@@ -1850,7 +1850,7 @@ void Skills::target_tinkering( NXWCLIENT ps, P_TARGET t )
     }
     sysmessage(s,TRANSLATE("You cannot use that material for tinkering."));
 
-    AMXEXECSVTARGET(pc_currchar->getSerial32(),AMXT_SKITARGS,TINKERING,AMX_AFTER);
+    AMXEXECSVTARGET(pc_currchar->getSerial(),AMXT_SKITARGS,TINKERING,AMX_AFTER);
 }
 
 //////////////////////////////////
@@ -1913,8 +1913,8 @@ public:
         // make sure both items are in the player's backpack
         pItem pPack=Check4Pack(s);
         if (pPack==NULL) return;
-        if ( piTarg->getContSerial()!=pPack->getSerial32()
-            || piClick->getContSerial()!=pPack->getSerial32())
+        if ( piTarg->getContSerial()!=pPack->getSerial()
+            || piClick->getContSerial()!=pPack->getSerial())
         {
             sysmessage(s,TRANSLATE("You can't use material outside your backpack"));
             return;

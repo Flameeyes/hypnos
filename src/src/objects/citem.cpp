@@ -19,8 +19,8 @@
 #include "data.h"
 #include "boats.h"
 #include "archive.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 #include "basics.h"
 #include "utils.h"
@@ -146,7 +146,7 @@ cItem::cItem()
 cItem::cItem( uint32_t ser )
 {
 
-	setSerial32( ser );
+	setSerial( ser );
 	setOwnerSerial32Only(INVALID);
 	setMultiSerial32Only(INVALID);//Multi serial
 
@@ -366,7 +366,7 @@ cItem& cItem::operator=(cItem& b)
 		setAmxEvent( i, event->getFuncName(), !(event->shouldBeSaved()) );*/
 	}
 	vendorDescription = b.vendorDescription;
-	amxVS.copyVariable(getSerial32(), b.getSerial32());
+	amxVS.copyVariable(getSerial(), b.getSerial32());
 
         return *this;
 }
@@ -486,13 +486,13 @@ bool cItem::doDecay()
 		if ( amxevents[EVENT_IONDECAY] !=NULL )
 		{
 			g_bByPass = false;
-			amxevents[EVENT_IONDECAY]->Call(getSerial32(), DELTYPE_DECAY);
+			amxevents[EVENT_IONDECAY]->Call(getSerial(), DELTYPE_DECAY);
 			if ( g_bByPass == true )
 				return false;
 		}
 		/*
 		g_bByPass = false;
-		runAmxEvent( EVENT_IONDECAY, getSerial32(), DELTYPE_DECAY );
+		runAmxEvent( EVENT_IONDECAY, getSerial(), DELTYPE_DECAY );
 		if ( g_bByPass == true )
 			return false;
 		*/
@@ -508,7 +508,7 @@ bool cItem::doDecay()
 					if ( pi_multi->more4 == 0 )
 					{
 						setDecayTime();
-						SetMultiSerial(pi_multi->getSerial32());
+						SetMultiSerial(pi_multi->getSerial());
 						return false;
 					}
 				}
@@ -680,7 +680,7 @@ void cItem::MoveTo(Location newloc)
 */
 inline bool operator ==( cItem& a, cItem& b ) {
 	return  a.isPileable() && b.isPileable()  &&
-		( a.getSerial32() != b.getSerial32() ) &&
+		( a.getSerial() != b.getSerial32() ) &&
 		( a.getScriptID() == b.getScriptID() ) &&
 		( a.getId() == b.getId() ) &&
 		( a.getColor() == b.getColor() ) &&
@@ -822,7 +822,7 @@ bool LoadItemEventsFromScript (pItem pi, char *script1, char *script2)
 
 	if (!strcmp("@ONSTART",script1))	{
 		pi->amxevents[EVENT_IONSTART] = newAmxEvent(script2);
-		newAmxEvent(script2)->Call(pi->getSerial32(), -1);
+		newAmxEvent(script2)->Call(pi->getSerial(), -1);
 	}
 	CASEITEMEVENT("@ONDAMAGE", EVENT_IONDAMAGE)
 	CASEITEMEVENT("@ONEQUIP", EVENT_IONEQUIP)
@@ -841,7 +841,7 @@ bool LoadItemEventsFromScript (pItem pi, char *script1, char *script2)
 	CASEITEMEVENT("@ONWALKOVER", EVENT_IONWALKOVER)
 	CASEITEMEVENT("@ONPUTITEM", EVENT_IONPUTITEM)
 	CASEITEMEVENT("@ONTAKEFROMCONTAINER", EVENT_ITAKEFROMCONTAINER)
-	else if (!(strcmp("@ONCREATION",script1))) newAmxEvent(script2)->Call(pi->getSerial32(),-1);
+	else if (!(strcmp("@ONCREATION",script1))) newAmxEvent(script2)->Call(pi->getSerial(),-1);
 	else return false;
 	return true;
 }
@@ -905,7 +905,7 @@ void cItem::Refresh()
 
 	if( cont == this )
 	{
-		ErrOut("item %s [serial: %i] has dangerous container value, autocorrecting...\n", getCurrentNameC(), getSerial32());
+		ErrOut("item %s [serial: %i] has dangerous container value, autocorrecting...\n", getCurrentNameC(), getSerial());
 		setContainer(NULL);
 	}
 

@@ -13,7 +13,7 @@
 
 
 #include "ai.h"
-#include "object.h"
+#include "objects/cobject.h"
 #include "magic.h"
 
 #include "npcs.h"
@@ -25,7 +25,7 @@
 #include "globals.h"
 
 #include "basics.h"
-#include "items.h"
+
 #include "cmds.h"
 
 /*!
@@ -41,11 +41,11 @@ void cChar::singleClick( pClient client )
                 if ( amxevents[EVENT_CHR_ONCLICK] != NULL )
 	        {
 		        g_bByPass = false;
-		        amxevents[EVENT_CHR_ONCLICK]->Call( getSerial32(), clickedBy->getSerial32() );
+		        amxevents[EVENT_CHR_ONCLICK]->Call( getSerial(), clickedBy->getSerial32() );
 		        if ( g_bByPass==true )
 			return;
 	        }
-                if (ServerScp::g_nShowPCNames || npc || getSerial32() == clickedBy->getSerial32()) showLongName( clickedBy, false );
+                if (ServerScp::g_nShowPCNames || npc || getSerial() == clickedBy->getSerial32()) showLongName( clickedBy, false );
 	}
 	else
 	{
@@ -66,7 +66,7 @@ void cChar::doubleClick(pClient client, int keyboard)
 	pChar clicker = client->currChar();
 	VALIDATEPC(clicker);
 
-	if( clicker->war && (clicker->getSerial32()!=getSerial32()) )
+	if( clicker->war && (clicker->getSerial()!=getSerial32()) )
 		clicker->attackStuff(this);
 
 	pItem pack = getBackpack();
@@ -78,14 +78,14 @@ void cChar::doubleClick(pClient client, int keyboard)
 		case	0x0124	:
 			if ( npc )
 			{
-				if ( getOwnerSerial32() == clicker->getSerial32() || clicker->IsGMorCounselor() )
+				if ( getOwnerSerial32() == clicker->getSerial() || clicker->IsGMorCounselor() )
 				{
 					if (ISVALIDPI(pack)) {
 						clicker->showContainer(pack);
 						SetTimerSec( &(clicker->objectdelay), SrvParms->objectdelay );
 					}
 					else
-						WarnOut("Pack animal %i has no backpack!\n",getSerial32());
+						WarnOut("Pack animal %i has no backpack!\n",getSerial());
 				}
 				else
 				{
@@ -98,7 +98,7 @@ void cChar::doubleClick(pClient client, int keyboard)
 							SetTimerSec( &(clicker->objectdelay), SrvParms->objectdelay+SrvParms->snoopdelay );
 						}
 						else
-							WarnOut("Pack animal %i has no backpack!\n",getSerial32());
+							WarnOut("Pack animal %i has no backpack!\n",getSerial());
 					}
 					else
 					{
@@ -125,7 +125,7 @@ void cChar::doubleClick(pClient client, int keyboard)
 				if ( ISVALIDPI(pack))
                                         clicker->showContainer(pack);
 			}
-			else if ( clicker->getSerial32() == getSerial32() )
+			else if ( clicker->getSerial() == getSerial32() )
 			{//dbl-click self
 				if ( (!keyboard) && ( clicker->unmountHorse() == 0 ) ) return; //on horse
 				//if not on horse, treat ourselves as any other char
@@ -136,7 +136,7 @@ void cChar::doubleClick(pClient client, int keyboard)
 
 			uint8_t pdoll[66] = { 0x88, 0x00, 0x05, 0xA8, 0x90, 0x00, };
 
-			LongToCharPtr(getSerial32(), pdoll +1);
+			LongToCharPtr(getSerial(), pdoll +1);
 
 			completetitle = complete_title(this);   //<- had a parameter which become this with merging. Still to be updated
 			if ( strlen(completetitle) >= 60 )

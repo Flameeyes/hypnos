@@ -19,8 +19,8 @@
 #include "calendar.h"
 #include "sregions.h"
 #include "scp_parser.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "basics.h"
 #include "scripts.h"
 #include "inlines.h"
@@ -282,9 +282,9 @@ void checkregion(pChar pc)
 	{
 		
 		if ( pc->amxevents[EVENT_CHR_ONREGIONCHANGE] )
-			pc->amxevents[EVENT_CHR_ONREGIONCHANGE]->Call( pc->getSerial32(), pc->region, calcreg);
+			pc->amxevents[EVENT_CHR_ONREGIONCHANGE]->Call( pc->getSerial(), pc->region, calcreg);
 		
-		//pc->runAmxEvent( EVENT_CHR_ONREGIONCHANGE, pc->getSerial32(), pc->region, calcreg);
+		//pc->runAmxEvent( EVENT_CHR_ONREGIONCHANGE, pc->getSerial(), pc->region, calcreg);
 
 		s = pc->getSocket();
 		if (s!=INVALID)

@@ -54,9 +54,9 @@ class Race
 
 		static	void		showRaceDescription( const NXWSOCKET socket, uint32_t raceId );
 //		static	void		showRaceDescription( const NXWSOCKET socket, const uint32_t raceId, short int gumpId, bool canClose, bool canMove, bool withOk );
-		static	void		showRaceDescription( const NXWSOCKET socket, const uint32_t raceId, BYTE gumpId, bool canClose, bool canMove, bool withOk );
+		static	void		showRaceDescription( const NXWSOCKET socket, const uint32_t raceId, uint8_t gumpId, bool canClose, bool canMove, bool withOk );
 //		static	void		showRaceNameList( const NXWSOCKET socket, const RACETYPE raceType, short int gumpId, bool canClose, bool canMove, bool withOk ); // race list pc | npc | both
-		static	void		showRaceNameList( const NXWSOCKET socket, const RACETYPE raceType, BYTE gumpId, bool canClose, bool canMove, bool withOk ); // race list pc | npc | both
+		static	void		showRaceNameList( const NXWSOCKET socket, const RACETYPE raceType, uint8_t gumpId, bool canClose, bool canMove, bool withOk ); // race list pc | npc | both
 
 		static	void		parseGlobalSection( void );
 		static	void		parseRaceSection( void );

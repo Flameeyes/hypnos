@@ -16,8 +16,8 @@
 #include "itemid.h"
 #include "speech.h"
 #include "globals.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "basics.h"
 #include "inlines.h"
 
@@ -152,7 +152,7 @@ void cNxwClientObj::sendSpellBook(pItem pi)
     // reason: just have a look at the loop above ...
 
     if (!pi ||  // no book at all
-        ((ISVALIDPI(p_back)) && (pi->getContSerial()!=p_back->getSerial32()) &&    // not in primary pack
+        ((ISVALIDPI(p_back)) && (pi->getContSerial()!=p_back->getSerial()) &&    // not in primary pack
                 !pc_currchar->IsWearing(pi)))       // not equipped
     {
         this->sysmsg(TRANSLATE("In order to open spellbook, it must be equipped in your hand or in the first layer of your backpack."));

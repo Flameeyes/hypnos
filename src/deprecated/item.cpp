@@ -12,8 +12,8 @@
 #include "scp_parser.h"
 #include "archive.h"
 #include "map.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 #include "scripts.h"
 
@@ -86,21 +86,21 @@ namespace item
 					// Old style user variables
 					//
 					else if ( lha == "AMXFLAG0" )
-						amxVS.insertVariable( pi->getSerial32(), 0, str2num( rha ) );
+						amxVS.insertVariable( pi->getSerial(), 0, str2num( rha ) );
 					else if ( lha == "AMXFLAG1" )
-						amxVS.insertVariable( pi->getSerial32(), 1, str2num( rha ) );
+						amxVS.insertVariable( pi->getSerial(), 1, str2num( rha ) );
 					else if ( lha == "AMXFLAG2" )
-						amxVS.insertVariable( pi->getSerial32(), 2, str2num( rha ) );
+						amxVS.insertVariable( pi->getSerial(), 2, str2num( rha ) );
 					else if ( lha == "AMXFLAG3" )
-						amxVS.insertVariable( pi->getSerial32(), 3, str2num( rha ) );
+						amxVS.insertVariable( pi->getSerial(), 3, str2num( rha ) );
 					else if ( lha == "AMXFLAG4" )
-						amxVS.insertVariable( pi->getSerial32(), 4, str2num( rha ) );
+						amxVS.insertVariable( pi->getSerial(), 4, str2num( rha ) );
 					else if ( lha == "AMXFLAG5" )
-						amxVS.insertVariable( pi->getSerial32(), 5, str2num( rha ) );
+						amxVS.insertVariable( pi->getSerial(), 5, str2num( rha ) );
 					else if ( lha == "AMXFLAG6" )
-						amxVS.insertVariable( pi->getSerial32(), 6, str2num( rha ) );
+						amxVS.insertVariable( pi->getSerial(), 6, str2num( rha ) );
 					else if ( lha == "AMXFLAG7" )
-						amxVS.insertVariable( pi->getSerial32(), 7, str2num( rha ) );
+						amxVS.insertVariable( pi->getSerial(), 7, str2num( rha ) );
 					//
 					// New style user variables
 					//
@@ -109,14 +109,14 @@ namespace item
 						std::string rha1;
 						std::string rha2;
 						splitLine( rha, rha1, rha2 );
-						amxVS.insertVariable( pi->getSerial32(), str2num( rha1 ), str2num( rha2 ) );
+						amxVS.insertVariable( pi->getSerial(), str2num( rha1 ), str2num( rha2 ) );
 					}
 					else if ( lha == "AMXSTR"  )
 					{
 						std::string rha1;
 						std::string rha2;
 						splitLine( rha, rha1, rha2 );
-						amxVS.insertVariable( pi->getSerial32(), str2num( rha1 ), rha2 );
+						amxVS.insertVariable( pi->getSerial(), str2num( rha1 ), rha2 );
 					}
 					else if ( lha == "ANIMID" )
 						pi->animSetId(hex2num(rha));
@@ -399,7 +399,7 @@ namespace item
 
 		//Luxor: put it in the container
 		if ( ISVALIDPO( cont ) )
-			if( isItemSerial( cont->getSerial32() ) )
+			if( isItemSerial( cont->getSerial() ) )
 			{
 				((pItem)cont)->AddItem(pi);
 			}
@@ -553,7 +553,7 @@ namespace item
 	*/
 	/*pItem SpawnItem(NXWSOCKET  nSocket, int nAmount, char* cName, bool nStackable,
 						int16_t cItemId, int16_t cColorId,
-						bool nPack, LOGICAL nSend)
+						bool nPack, bool nSend)
 	{
 		if (nSocket < 0)
 		{
@@ -580,7 +580,7 @@ namespace item
 	/*pItem SpawnItem(NXWSOCKET  nSocket, CHARACTER ch,
 						int32_t nAmount, char* cName, bool nStackable,
 						int16_t cItemId, int16_t cColorId,
-						bool nPack, LOGICAL nSend)
+						bool nPack, bool nSend)
 	{
 		pItem pi= item::SpawnItem(ch, nAmount, cName, nStackable, cItemId, cColorId, nPack);
 		if (pi==NULL) return NULL;

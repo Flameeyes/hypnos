@@ -8,10 +8,10 @@
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
 #include "common_libs.h"
-#include "packets.h"
+
 #include "network.h"
 #include "globals.h"
-#include "chars.h"
+
 #include "party.h"
 
 wstring emptyUnicodeString;

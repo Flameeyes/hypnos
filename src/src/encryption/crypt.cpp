@@ -84,7 +84,7 @@ int         needToBuildMDS=1;       /* is MDStab initialized yet? */
 #define     BIG_TAB     0
 
 #if BIG_TAB
-BYTE        bigTab[4][256][256];    /* pre-computed S-box */
+uint8_t        bigTab[4][256][256];    /* pre-computed S-box */
 #endif
 
 /* number of rounds for various key sizes:  128, 192, 256 */
@@ -96,7 +96,7 @@ CONST int   numRounds[4]= {0,ROUNDS_128,ROUNDS_192,ROUNDS_256};
 #else
 static      fullSbox _sBox_;        /* permuted MDStab based on keys */
 #endif
-#define _sBox8_(N) (((BYTE *) _sBox_) + (N)*256)
+#define _sBox8_(N) (((uint8_t *) _sBox_) + (N)*256)
 
 /*------- see what level of S-box precomputation we need to do -----*/
 #if   defined(ZERO_KEY)
@@ -1138,7 +1138,7 @@ void NewGameCrypt::encrypt(unsigned char * in, unsigned char * out, int len)
     // Only used in Ver 2.0.4 and above.
 
     // This table generated basec on DWORD id passed at start. 127.0.0.1
-    static const BYTE sm_bData[] = { 0x05, 0x92, 0x66, 0x23, 0x67, 0x14, 0xE3,
+    static const uint8_t sm_bData[] = { 0x05, 0x92, 0x66, 0x23, 0x67, 0x14, 0xE3,
         0x62, 0xDC, 0x60, 0x8C, 0xD6, 0xFE, 0x7C, 0x25, 0x69 };
 
     // @ 04264A5 in 2.0.4
@@ -1227,7 +1227,7 @@ int NewGameCrypt::ParseHexDword(int bits,CONST char *srcTxt,DWORD *d,char *dstTx
 
     union   /* make sure LittleEndian is defined correctly */
         {
-        BYTE  b[4];
+        uint8_t  b[4];
         DWORD d[1];
         } v;
     v.d[0]=1;
@@ -1284,17 +1284,17 @@ void NewGameCrypt::BuildMDS(void)
     {
     int i;
     DWORD d;
-    BYTE m1[2],mX[2],mY[4];
+    uint8_t m1[2],mX[2],mY[4];
 
     for (i=0;i<256;i++)
         {
         m1[0]=P8x8[0][i];       /* compute all the matrix elements */
-        mX[0]=(BYTE) Mul_X(m1[0]);
-        mY[0]=(BYTE) Mul_Y(m1[0]);
+        mX[0]=(uint8_t) Mul_X(m1[0]);
+        mY[0]=(uint8_t) Mul_Y(m1[0]);
 
         m1[1]=P8x8[1][i];
-        mX[1]=(BYTE) Mul_X(m1[1]);
-        mY[1]=(BYTE) Mul_Y(m1[1]);
+        mX[1]=(uint8_t) Mul_X(m1[1]);
+        mY[1]=(uint8_t) Mul_Y(m1[1]);
 
 #undef  Mul_1                   /* change what the pre-processor does with Mij */
 #undef  Mul_X
@@ -1325,7 +1325,7 @@ void NewGameCrypt::BuildMDS(void)
 #if BIG_TAB
     {
     int j,k;
-    BYTE *q0,*q1;
+    uint8_t *q0,*q1;
 
     for (i=0;i<4;i++)
         {
@@ -1364,7 +1364,7 @@ void NewGameCrypt::BuildMDS(void)
 *   Note that key->numRounds must be even and >= 2 here.
 *
 -****************************************************************************/
-void NewGameCrypt::ReverseRoundSubkeys(keyInstance *key,BYTE newDir)
+void NewGameCrypt::ReverseRoundSubkeys(keyInstance *key,uint8_t newDir)
     {
     DWORD t0,t1;
     register DWORD *r0=key->subKeys+ROUND_SUBKEYS;
@@ -1404,7 +1404,7 @@ void NewGameCrypt::ReverseRoundSubkeys(keyInstance *key,BYTE newDir)
 *   Borland, while Microsoft happily works with a call.
 *
 -****************************************************************************/
-void NewGameCrypt::Xor256(void *dst,void *src,BYTE b)
+void NewGameCrypt::Xor256(void *dst,void *src,uint8_t b)
     {
     register DWORD  x=b*0x01010101u;    /* replicate byte to all four bytes */
     register DWORD *d=(DWORD *)dst;
@@ -1475,7 +1475,7 @@ int NewGameCrypt::reKey(keyInstance *key)
     int     subkeyCnt;
     DWORD   A=0,B=0,q;
     DWORD   sKey[MAX_KEY_BITS/64],k32e[MAX_KEY_BITS/64],k32o[MAX_KEY_BITS/64];
-    BYTE    L0[256],L1[256];    /* small local 8-bit permutations */
+    uint8_t    L0[256],L1[256];    /* small local 8-bit permutations */
 
 #if VALIDATE_PARMS
   #if ALIGN32
@@ -1561,7 +1561,7 @@ else
 #if BIG_TAB
             #define one128(N,J) sbSet(N,i,J,L0[i+J])
             #define sb128(N) {                      \
-                BYTE *qq=bigTab[N][b##N(sKey[1])];  \
+                uint8_t *qq=bigTab[N][b##N(sKey[1])];  \
                 Xor256(L0,qq,b##N(sKey[0]));        \
                 for (i=0;i<256;i+=2) { one128(N,0); one128(N,1); } }
 #else
@@ -1662,7 +1662,7 @@ else
 * Notes:    This parses the key bits from keyMaterial.  Zeroes out unused key bits
 *
 -****************************************************************************/
-int NewGameCrypt::makeKey(keyInstance *key, BYTE direction, int keyLen,CONST char *keyMaterial)
+int NewGameCrypt::makeKey(keyInstance *key, uint8_t direction, int keyLen,CONST char *keyMaterial)
     {
 #if VALIDATE_PARMS              /* first, sanity check on parameters */
     if (key == NULL)            
@@ -1709,7 +1709,7 @@ int NewGameCrypt::makeKey(keyInstance *key, BYTE direction, int keyLen,CONST cha
 *                   else error code (e.g., BAD_CIPHER_MODE)
 *
 -****************************************************************************/
-int NewGameCrypt::cipherInit(cipherInstance *cipher, BYTE mode,CONST char *IV)
+int NewGameCrypt::cipherInit(cipherInstance *cipher, uint8_t mode,CONST char *IV)
     {
     int i;
 #if VALIDATE_PARMS              /* first, sanity check on parameters */
@@ -1759,14 +1759,14 @@ int NewGameCrypt::cipherInit(cipherInstance *cipher, BYTE mode,CONST char *IV)
 *        sizes can be supported.
 *
 -****************************************************************************/
-int NewGameCrypt::blockEncrypt(cipherInstance *cipher, keyInstance *key,CONST BYTE *input,
-                int inputLen, BYTE *outBuffer)
+int NewGameCrypt::blockEncrypt(cipherInstance *cipher, keyInstance *key,CONST uint8_t *input,
+                int inputLen, uint8_t *outBuffer)
     {
     int   i,n;                      /* loop counters */
     DWORD x[BLOCK_SIZE/32];         /* block being encrypted */
     DWORD t0,t1;                    /* temp variables */
     int   rounds=key->numRounds;    /* number of rounds */
-    BYTE  bit,bit0,ctBit,carry;     /* temps for CFB */
+    uint8_t  bit,bit0,ctBit,carry;     /* temps for CFB */
 
     /* make local copies of things for faster access */
     int   mode = cipher->mode;
@@ -1796,9 +1796,9 @@ int NewGameCrypt::blockEncrypt(cipherInstance *cipher, keyInstance *key,CONST BY
         cipher->mode = MODE_ECB;    /* do encryption in ECB */
         for (n=0;n<inputLen;n++)
             {
-            blockEncrypt(cipher,key,cipher->IV,BLOCK_SIZE,(BYTE *)x);
+            blockEncrypt(cipher,key,cipher->IV,BLOCK_SIZE,(uint8_t *)x);
             bit0  = 0x80 >> (n & 7);/* which bit position in byte */
-            ctBit = (input[n/8] & bit0) ^ ((((BYTE *) x)[0] & 0x80) >> (n&7));
+            ctBit = (input[n/8] & bit0) ^ ((((uint8_t *) x)[0] & 0x80) >> (n&7));
             outBuffer[n/8] = (outBuffer[n/8] & ~ bit0) | ctBit;
             carry = ctBit >> (7 - (n&7));
             for (i=BLOCK_SIZE/8-1;i>=0;i--)
@@ -1916,14 +1916,14 @@ int NewGameCrypt::blockEncrypt(cipherInstance *cipher, keyInstance *key,CONST BY
 *        sizes can be supported.
 *
 -****************************************************************************/
-int NewGameCrypt::blockDecrypt(cipherInstance *cipher, keyInstance *key,CONST BYTE *input,
-                int inputLen, BYTE *outBuffer)
+int NewGameCrypt::blockDecrypt(cipherInstance *cipher, keyInstance *key,CONST uint8_t *input,
+                int inputLen, uint8_t *outBuffer)
     {
     int   i,n;                      /* loop counters */
     DWORD x[BLOCK_SIZE/32];         /* block being encrypted */
     DWORD t0,t1;                    /* temp variables */
     int   rounds=key->numRounds;    /* number of rounds */
-    BYTE  bit,bit0,ctBit,carry;     /* temps for CFB */
+    uint8_t  bit,bit0,ctBit,carry;     /* temps for CFB */
 
     /* make local copies of things for faster access */
     int   mode = cipher->mode;
@@ -1953,11 +1953,11 @@ int NewGameCrypt::blockDecrypt(cipherInstance *cipher, keyInstance *key,CONST BY
         cipher->mode = MODE_ECB;    /* do encryption in ECB */
         for (n=0;n<inputLen;n++)
             {
-            blockEncrypt(cipher,key,cipher->IV,BLOCK_SIZE,(BYTE *)x);
+            blockEncrypt(cipher,key,cipher->IV,BLOCK_SIZE,(uint8_t *)x);
             bit0  = 0x80 >> (n & 7);
             ctBit = input[n/8] & bit0;
             outBuffer[n/8] = (outBuffer[n/8] & ~ bit0) |
-                             (ctBit ^ ((((BYTE *) x)[0] & 0x80) >> (n&7)));
+                             (ctBit ^ ((((uint8_t *) x)[0] & 0x80) >> (n&7)));
             carry = ctBit >> (7 - (n&7));
             for (i=BLOCK_SIZE/8-1;i>=0;i--)
                 {

@@ -32,8 +32,8 @@
 #include "trade.h"
 #include "basics.h"
 #include "inlines.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "classes.h"
 #include "scripts.h"
 #include "skills.h"
@@ -522,7 +522,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 			else if (!strcmp(script1, "POISON"))			{ pc->poison=str2num(script2);}
 			else if (!strcmp(script1, "POISONED"))		{ pc->poisoned=(PoisonType)str2num(script2);}
 
-			else if (!strcmp( script1, "PC_FTARG" ) )   { pChar temp=MAKE_CHAR_REF(str2num(script2)); pc->ftargserial = ISVALIDPC(temp)? temp->getSerial32() : INVALID;} //legacy code
+			else if (!strcmp( script1, "PC_FTARG" ) )   { pChar temp=MAKE_CHAR_REF(str2num(script2)); pc->ftargserial = ISVALIDPC(temp)? temp->getSerial() : INVALID;} //legacy code
 			else if (!strcmp( script1, "PC_FTARGSER" ) )   {pc->ftargserial=str2num(script2); }
 			else if (!strcmp( script1, "POSSESSEDuint32_t" ) )   {pc->possessedSerial=str2num(script2); }
 			else if (!(strcmp(script1, "PROFILE"))) {
@@ -562,7 +562,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 			{
 				i = str2num(script2);
 				//if (charcount2<=i) charcount2=i+1;
-				pc->setSerial32(i);
+				pc->setSerial(i);
 				objects.updateCharSerial( i );
 //				setptr(&charsp[i%HASHMAX], x); //Load into charsp array
 			}
@@ -712,7 +712,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 
 	pc->updateFlag();
 
-	amxVS.moveVariable( INVALID, pc->getSerial32() );
+	amxVS.moveVariable( INVALID, pc->getSerial() );
 
 }
 
@@ -837,7 +837,7 @@ void loaditem()
 				else
 				{
 					pi->setColor( 0 ); // bugged color found, leave it undyed
-					WarnOut("item# %i with problematic hue corrected\n", pi->getSerial32());
+					WarnOut("item# %i with problematic hue corrected\n", pi->getSerial());
 				}
 			}
 			else if (!(strcmp(script1, "CONT")))
@@ -926,7 +926,7 @@ void loaditem()
 					data::seekMulti( i-0x4000, m_vec );
 					if( m_vec.empty() )
 					{
-						LogWarning("bad item, serial: %i name: %s\n",pi->getSerial32(), pi->getCurrentNameC());
+						LogWarning("bad item, serial: %i name: %s\n",pi->getSerial(), pi->getCurrentNameC());
 						bad=1;
 					}
 				}
@@ -1028,7 +1028,7 @@ void loaditem()
 				i=str2num(script2);
 				//if (itemcount2<=i)
 				//	itemcount2=i+1;
-				pi->setSerial32(i);
+				pi->setSerial(i);
 				objects.updateItemSerial( i );
 			}
 			else if (!(strcmp(script1, "SMELT")))
@@ -1145,7 +1145,7 @@ void loaditem()
 			pi->Delete();
 	}
 
-	amxVS.moveVariable( INVALID, pi->getSerial32() );
+	amxVS.moveVariable( INVALID, pi->getSerial() );
 
 	if( pi->layer==LAYER_TRADE_RESTOCK )
 		Restocks->addNewRestock( pi );
@@ -1417,14 +1417,14 @@ void CWorldMain::SaveChar( pChar pc )
 		pc->free;
 */
 	valid=1;
-	if (pc->getSerial32() < 0) valid = 0;
+	if (pc->getSerial() < 0) valid = 0;
 	if (pc->summontimer ) valid = 0; //xan : we don't save summoned stuff
 	if (pc->spawnregion!=INVALID || pc->spawnserial!=INVALID ) valid=0;
 	if (valid)
 	{
 			fprintf(cWsc, "SECTION CHARACTER %i\n", this->chr_curr++);
 			fprintf(cWsc, "{\n");
-			fprintf(cWsc, "uint32_t %i\n", pc->getSerial32());
+			fprintf(cWsc, "uint32_t %i\n", pc->getSerial());
 			//Luxor: if the char is morphed, we have to save the original values.
 			if(pc->morphed!=dummy.morphed)
 			{//save original name
@@ -1805,7 +1805,7 @@ void CWorldMain::SaveChar( pChar pc )
 			//
 			//  SAVE NEW STYLE AMX VARIABLES
 			//
-			amxVS.saveVariable( pc->getSerial32(), cWsc );
+			amxVS.saveVariable( pc->getSerial(), cWsc );
 
 			if ( !(pc->npc || pc->IsGMorCounselor()) )
 			{
@@ -1824,7 +1824,7 @@ void CWorldMain::SaveItem( pItem pi )
 
 	static cItem dummy( false );
 
-	if (pi->getSerial32()<0) return;
+	if (pi->getSerial()<0) return;
 
 	if (pi->spawnregion!=INVALID || pi->spawnserial!=INVALID )
 		return;
@@ -1848,7 +1848,7 @@ void CWorldMain::SaveItem( pItem pi )
 	{
 		fprintf(iWsc, "SECTION WORLDITEM %i\n", this->itm_curr++);
 		fprintf(iWsc, "{\n");
-		fprintf(iWsc, "uint32_t %i\n", pi->getSerial32());
+		fprintf(iWsc, "uint32_t %i\n", pi->getSerial());
 		fprintf(iWsc, "NAME %s\n", pi->getCurrentNameC());
 		//<Luxor>: if the item is beard or hair of a morphed char, we must save the original ID and COLOR value
 		if ( (pi->layer == LAYER_BEARD || pi->layer == LAYER_HAIR) && isCharSerial( pi->getContSerial() ) ) {
@@ -2039,7 +2039,7 @@ void CWorldMain::SaveItem( pItem pi )
 		//
 		// SAVE NEW AMX VARS
 		//
-		amxVS.saveVariable( pi->getSerial32(), iWsc );
+		amxVS.saveVariable( pi->getSerial(), iWsc );
 
 		fprintf(iWsc, "}\n\n");
 	}

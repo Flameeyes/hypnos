@@ -10,8 +10,8 @@
 #include "common_libs.h"
 #include "spawn.h"
 #include "map.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 #include "scripts.h"
 
@@ -81,7 +81,7 @@ void cSpawnScripted::safeCreate( pChar npc, cSpawnArea& single  )
 		single.current++;
 		single.nextspawn=uiCurrentTime+ (60*RandomNum( mintime, maxtime)*MY_CLOCKS_PER_SEC);
 		npc->spawnregion=this->serial;
-		single.npcs_spawned.insert( npc->getSerial32() );
+		single.npcs_spawned.insert( npc->getSerial() );
 		npc->MoveTo( location );
 		npc->teleport();
 	}
@@ -101,7 +101,7 @@ void cSpawnScripted::safeCreate( pItem pi, cSpawnArea& single  )
 		single.current++;
 		single.nextspawn=uiCurrentTime+ (60*RandomNum( mintime, maxtime)*MY_CLOCKS_PER_SEC);
 		pi->spawnregion=this->serial;
-		single.items_spawned.insert( pi->getSerial32() );
+		single.items_spawned.insert( pi->getSerial() );
 		pi->MoveTo( location );
 		pi->Refresh();
 	}
@@ -213,7 +213,7 @@ void cSpawnScripted::removeObject( pItem pi )
 {
 	SPAWNAREA_VECTOR::iterator iter( this->singles.begin() ), end( this->singles.end() );
 	for( ; iter!=end; iter++ ) {
-		uint32_t_SET::iterator itm( (*iter).items_spawned.find( pi->getSerial32() ) );
+		uint32_set::iterator itm( (*iter).items_spawned.find( pi->getSerial() ) );
 		if( itm!=(*iter).items_spawned.end() ) {
 			(*iter).items_spawned.erase( itm );
 			if( (*iter).current>0 )
@@ -227,7 +227,7 @@ void cSpawnScripted::removeObject( pChar pc )
 {
 	SPAWNAREA_VECTOR::iterator iter( this->singles.begin() ), end( this->singles.end() );
 	for( ; iter!=end; iter++ ) {
-		uint32_t_SET::iterator npc( (*iter).npcs_spawned.find( pc->getSerial32() ) );
+		uint32_set::iterator npc( (*iter).npcs_spawned.find( pc->getSerial() ) );
 		if( npc!=(*iter).npcs_spawned.end() ) {
 			(*iter).npcs_spawned.erase( npc );
 			if( (*iter).current>0 )
@@ -365,7 +365,7 @@ void cSpawns::loadFromItem( pItem pi )
 	//
 	// Insert the spawner in the map.
 	//
-	Spawns->dinamic.insert( make_pair( pi->getSerial32(), cSpawnDinamic(pi) ) );
+	Spawns->dinamic.insert( make_pair( pi->getSerial(), cSpawnDinamic(pi) ) );
 }
 
 void cSpawns::doSpawn()
@@ -431,7 +431,7 @@ void cSpawns::removeObject( uint32_t spawn, pChar pc )
 void cSpawns::removeSpawnDinamic( pItem pi )
 {
 	VALIDATEPI(pi);
-	SPAWN_DINAMIC_DB::iterator iter( this->dinamic.find( pi->getSerial32() ) );
+	SPAWN_DINAMIC_DB::iterator iter( this->dinamic.find( pi->getSerial() ) );
 	if( iter!=this->dinamic.end() ) {
 		this->dinamic.erase( iter );
 	}
@@ -439,7 +439,7 @@ void cSpawns::removeSpawnDinamic( pItem pi )
 		if( pi->spawnserial!=INVALID ) {
 			iter= this->dinamic.find( pi->spawnserial );
 			if( iter!=this->dinamic.end() ) {
-				iter->second.remove( pi->getSerial32() );
+				iter->second.remove( pi->getSerial() );
 			}
 		}
 	}
@@ -452,7 +452,7 @@ void cSpawns::removeSpawnDinamic( pChar pc )
 	if( pc->spawnserial!=INVALID ) {
 		SPAWN_DINAMIC_DB::iterator iter= this->dinamic.find( pc->spawnserial );
 		if( iter!=this->dinamic.end() ) {
-			iter->second.remove( pc->getSerial32() );
+			iter->second.remove( pc->getSerial() );
 		}
 	}
 
@@ -460,7 +460,7 @@ void cSpawns::removeSpawnDinamic( pChar pc )
 
 cSpawnDinamic::cSpawnDinamic( pItem pi )
 {
-	this->item=pi->getSerial32();
+	this->item=pi->getSerial();
 	this->item_spawned.clear();
 	this->npc_spawned.clear();
 	this->current=0;
@@ -487,7 +487,7 @@ void cSpawnDinamic::doSpawn()
 		pItem pi=item::CreateFromScript( spawn->morex );
 		if( ISVALIDPI( pi ) ) {
 			this->current++;
-			this->item_spawned.insert( pi->getSerial32() );
+			this->item_spawned.insert( pi->getSerial() );
 			pi->spawnserial=this->item;
 			pi->MoveTo( spawn->getPosition() );
 			pi->Refresh();
@@ -499,7 +499,7 @@ void cSpawnDinamic::doSpawn()
 		pChar npc=npcs::addNpc( spawn->morex, spawn->getPosition().x, spawn->getPosition().y, spawn->getPosition().z );
 		if(ISVALIDPC( npc )) {
 			this->current++;
-			this->npc_spawned.insert( npc->getSerial32() );
+			this->npc_spawned.insert( npc->getSerial() );
 			npc->spawnserial=this->item;
 			npc->MoveTo( spawn->getPosition() );
 			npc->teleport();
@@ -514,7 +514,7 @@ void cSpawnDinamic::remove( uint32_t serial )
 {
 	
 	if( isCharSerial( serial ) ) {
-		uint32_t_SET::iterator iter( this->npc_spawned.find( serial ) );
+		uint32_set::iterator iter( this->npc_spawned.find( serial ) );
 		if( iter!=this->npc_spawned.end() ) {
 			this->npc_spawned.erase( iter );
 			if( current>0 )
@@ -522,7 +522,7 @@ void cSpawnDinamic::remove( uint32_t serial )
 		}
 	}
 	else {
-		uint32_t_SET::iterator iter( this->item_spawned.find( serial ) );
+		uint32_set::iterator iter( this->item_spawned.find( serial ) );
 		if( iter!=this->item_spawned.end() ) {
 			this->item_spawned.erase( iter );
 			if( current>0 )

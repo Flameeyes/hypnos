@@ -26,8 +26,8 @@
 #include "scp_parser.h"
 #include "archive.h"
 #include "map.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 #include "classes.h"
 #include "scripts.h"
@@ -287,7 +287,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 		pHouse->setDispellable( false );
 		pHouse->more4 = itemsdecay; // set to 1 to make items in houses decay
 		pHouse->morex=hdeed; // crackerjack 8/9/99 - for converting back *into* deeds
-		pHouse->setOwnerSerial32(pc->getSerial32());
+		pHouse->setOwnerSerial32(pc->getSerial());
 		if (pHouse->isInWorld())
 		{
 			mapRegions->add(pHouse);
@@ -350,8 +350,8 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 		pKey->Refresh();
 		pKey2->Refresh();
 
-		pHouse->st = pKey->getSerial32();		// Create link from house to housekeys to allow easy renaming of
-		pHouse->st2= pKey2->getSerial32();	// house, housesign and housekeys without having to loop trough
+		pHouse->st = pKey->getSerial();		// Create link from house to housekeys to allow easy renaming of
+		pHouse->st2= pKey2->getSerial();	// house, housesign and housekeys without having to loop trough
 														// all world items (Sparhawk)
 
 
@@ -419,7 +419,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 							pi_l->setNewbie( false );
 							pi_l->setDispellable( false );
 							pi_l->setPosition(x, y, z);
-							pi_l->setOwnerSerial32(pc->getSerial32());
+							pi_l->setOwnerSerial32(pc->getSerial());
 							// SPARHAWK 2001-01-28 Added House sign naming
 							if (pi_l->IsSign())
 								if ((id%256 >=0x70) && (id%256<=0x73))
@@ -523,7 +523,7 @@ void deedhouse(NXWSOCKET s, pItem pi)
 	Location charpos= pc->getPosition();
 
 
-	if(pi->getOwnerSerial32() == pc->getSerial32() || pc->IsGM()) // bugfix LB, was =
+	if(pi->getOwnerSerial32() == pc->getSerial() || pc->IsGM()) // bugfix LB, was =
 	{
 		getMultiCorners(pi, x1,y1,x2,y2);
 
@@ -579,7 +579,7 @@ void deedhouse(NXWSOCKET s, pItem pi)
 			}
 		}
 
-		killkeys( pi->getSerial32() );
+		killkeys( pi->getSerial() );
 		sysmessage(s,TRANSLATE("All house items and keys removed."));
 		/*
 		charpos.z= charpos.dispz= Map->MapElevation(charpos.x, charpos.y);
@@ -608,7 +608,7 @@ void killhouse(ITEM i)
 	pi = MAKE_ITEM_REF(i);
 
 	Map->MultiArea(pi, &x1, &y1, &x2, &y2);
-	uint32_t serial = pi->getSerial32();
+	uint32_t serial = pi->getSerial();
 
 	int a;
 	for (a = 0; a < charcount; a++) // deleting npc-vendors attched to the decying house
@@ -749,7 +749,7 @@ int on_hlist(pItem pi, unsigned char s1, unsigned char s2, unsigned char s3, uns
 		p_ci=si.getItem();
 		if(ISVALIDPI(p_ci)) {
 
-			if((p_ci->morey== (uint32_t)pi->getSerial32())&&
+			if((p_ci->morey== (uint32_t)pi->getSerial())&&
 			   (p_ci->more1== s1)&&(p_ci->more2==s2)&&
 			   (p_ci->more3== s3)&&(p_ci->more4==s4))
 				{
@@ -823,7 +823,7 @@ int add_hlist(int c, int h, int t)
 		pi->more2= pc->getSerial().ser2;
 		pi->more3= pc->getSerial().ser3;
 		pi->more4= pc->getSerial().ser4;
-		pi->morey= pi_h->getSerial32();
+		pi->morey= pi_h->getSerial();
 
 		pi->setDecay( false );
 		pi->setNewbie( false );
@@ -894,7 +894,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 	// if pc is not a friend or owner, we don't care what he says
 	//
 	fr=on_hlist(pi, pc->getSerial().ser1, pc->getSerial().ser2, pc->getSerial().ser3, pc->getSerial().ser4, NULL);
-	if( fr != H_FRIEND && pi->getOwnerSerial32() != pc->getSerial32() )
+	if( fr != H_FRIEND && pi->getOwnerSerial32() != pc->getSerial() )
 		return false;
 	//
 	// house ban
@@ -903,7 +903,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 	{
 		P_TARGET targ = clientInfo[socket]->newTarget( new cCharTarget() );
 		targ->code_callback=target_houseBan;
-		targ->buffer[0]=pi->getSerial32();
+		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
 		sysmessage( socket, TRANSLATE("Select person to ban from house."));
 		return true;
@@ -915,7 +915,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 	{
 		P_TARGET targ = clientInfo[socket]->newTarget( new cCharTarget() );
 		targ->code_callback=target_houseEject;
-		targ->buffer[0]=pi->getSerial32();
+		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
 		sysmessage( socket, TRANSLATE("Select person to eject from house."));
 		return true;
@@ -927,7 +927,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 	{
 		P_TARGET targ = clientInfo[socket]->newTarget( new cItemTarget() );
 		targ->code_callback=target_houseLockdown;
-		targ->buffer[0]=pi->getSerial32();
+		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
 		sysmessage( socket, TRANSLATE("Select item to lock down"));
 		return true;
@@ -939,7 +939,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 	{
 		P_TARGET targ = clientInfo[socket]->newTarget( new cItemTarget() );
 		targ->code_callback=target_houseRelease;
-		targ->buffer[0]=pi->getSerial32();
+		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
 		sysmessage( socket, TRANSLATE("Select item to release"));
 		return true;
@@ -951,7 +951,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 	{
 		P_TARGET targ = clientInfo[socket]->newTarget( new cItemTarget() );
 		targ->code_callback=target_houseSecureDown;
-		targ->buffer[0]=pi->getSerial32();
+		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
 		sysmessage( socket, TRANSLATE("Select item to secure"));
 		return true;
@@ -1006,17 +1006,17 @@ void target_houseOwner( NXWCLIENT ps, P_TARGET t )
 
 
 	NXWSOCKET s = ps->toInt();
-	if(pc->getSerial32() == curr->getSerial32())
+	if(pc->getSerial() == curr->getSerial32())
 	{
 		sysmessage(s, "you already own this house!");
 		return;
 	}
 
-	pSign->setOwnerSerial32(pc->getSerial32());
+	pSign->setOwnerSerial32(pc->getSerial());
 
-	pHouse->setOwnerSerial32(pc->getSerial32());
+	pHouse->setOwnerSerial32(pc->getSerial());
 
-	killkeys( pHouse->getSerial32() );
+	killkeys( pHouse->getSerial() );
 
 
 	NXWCLIENT osc=pc->getClient();
@@ -1095,7 +1095,7 @@ void target_houseBan( NXWCLIENT ps, P_TARGET t )
 	pItem pi=pointers::findItemBySerial( t->buffer[0] );
 	if(ISVALIDPI(pi))
 	{
-		if(pc->getSerial32() == curr->getSerial32())
+		if(pc->getSerial() == curr->getSerial32())
 			return;
 		int r=add_hlist(DEREF_pChar(pc), DEREF_pItem(pi), H_BAN);
 		if(r==1)
@@ -1125,7 +1125,7 @@ void target_houseFriend( NXWCLIENT ps, P_TARGET t )
 
 	if(ISVALIDPC(Friend) && ISVALIDPI(pi))
 	{
-		if(Friend->getSerial32() == curr->getSerial32())
+		if(Friend->getSerial() == curr->getSerial32())
 		{
 			sysmessage(s,"You cant do that!");
 			return;
@@ -1209,7 +1209,7 @@ void target_houseLockdown( NXWCLIENT ps, P_TARGET t )
             }
             pi->magic = 4;  // LOCKED DOWN!
             clientInfo[s]->dragging=false;
-            pi->setOwnerSerial32Only(pc->getSerial32());
+            pi->setOwnerSerial32Only(pc->getSerial());
             pi->Refresh();
             return;
         }
@@ -1261,7 +1261,7 @@ void target_houseSecureDown( NXWCLIENT ps, P_TARGET t )
             pi->magic = 4;  // LOCKED DOWN!
             pi->secureIt = 1;
             clientInfo[s]->dragging=false;
-            pi->setOwnerSerial32Only(pc->getSerial32());
+            pi->setOwnerSerial32Only(pc->getSerial());
             pi->Refresh();
             return;
         }
@@ -1298,7 +1298,7 @@ void target_houseRelease( NXWCLIENT ps, P_TARGET t )
     pItem pi=pointers::findItemBySerial( t->getClicked() );
     if(ISVALIDPI(pi))
     {
-        if(pi->getOwnerSerial32() != pc->getSerial32())
+        if(pi->getOwnerSerial32() != pc->getSerial())
         {
             sysmessage(s,TRANSLATE("This is not your item!"));
             return;

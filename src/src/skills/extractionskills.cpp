@@ -10,8 +10,8 @@
 #include "common_libs.h"
 #include "extractionskills.h"
 #include "data.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "skills.h"
 #include "inlines.h"
 
@@ -199,7 +199,7 @@ void Skills::target_mine( NXWCLIENT ps, P_TARGET t )
 
 	pc->facexy( target.x, target.y );
 
-	AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,MINING,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,MINING,AMX_BEFORE);
 
 	if ( pc->hidden )
 		pc->unHide();
@@ -314,6 +314,6 @@ void Skills::target_mine( NXWCLIENT ps, P_TARGET t )
 	ores.decreaseResource( target, res );
 
 	AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMXMINING), s);
-	AMXEXECSVTARGET(pc->getSerial32(),AMXT_SKITARGS,MINING,AMX_AFTER);
+	AMXEXECSVTARGET(pc->getSerial(),AMXT_SKITARGS,MINING,AMX_AFTER);
 }
 

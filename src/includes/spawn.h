@@ -26,8 +26,8 @@ public:
 	uint32_t current; //!< currente number of spawned
 	TIMERVAL nextspawn; //!< next spawn
 
-	uint32_t_SET items_spawned;
-	uint32_t_SET npcs_spawned;
+	uint32_set items_spawned;
+	uint32_set npcs_spawned;
 	AREA_ITER where;
 
 	bool needSpawn();
@@ -79,8 +79,8 @@ public:
 	~cSpawnDinamic();
 
 	uint32_t item; //!< the spawner
-	uint32_t_SET item_spawned; //!< spawned items
-	uint32_t_SET npc_spawned; //!< spawned npcs
+	uint32_set item_spawned; //!< spawned items
+	uint32_set npc_spawned; //!< spawned npcs
 
 	uint32_t current;
 	TIMERVAL nextspawn; //!< next spawn

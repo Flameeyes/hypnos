@@ -12,15 +12,15 @@
 #include "debug.h"
 #include "encryption.h"
 #include "network.h"
-#include "chars.h"
-#include "chars.h"
+
+
 #include "client.h"
 #include "srvparms.h"
 #include "globals.h"
 #include "logsystem.h"
 #include "basics.h"
 #include "inlines.h"
-#include "items.h"
+
 
 cAccounts* Accounts=NULL;
 
@@ -65,7 +65,7 @@ void cAccount::setOnline( pChar pc )
 	if(!ISVALIDPC(pc))
 		setOffline();
 	else {
-		pc_online=pc->getSerial32();
+		pc_online=pc->getSerial();
 		state=LOG_INGAME;
 	}
 }
@@ -164,7 +164,7 @@ void cAccount::getAllChars(  NxwCharWrapper& sc )
 void cAccount::addCharToAccount( pChar pc )
 {
 	if( this->pgs.size() < 5 ) {
-		this->pgs.push_back( pc->getSerial32() );
+		this->pgs.push_back( pc->getSerial() );
 		pc->account=this->number;
 	}
 	else

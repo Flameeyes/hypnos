@@ -93,7 +93,7 @@ void cChar::boltFX(bool bNoParticles)
 
 	Location pos2;
 	pos2.x = 0; pos2.y = 0; pos2.z = 0;
-	MakeGraphicalEffectPkt_(effect, 0x01, getSerial32(), 0, 0, getPosition(), pos2, 0, 0, 1, 0);
+	MakeGraphicalEffectPkt_(effect, 0x01, getSerial(), 0, 0, getPosition(), pos2, 0, 0, 1, 0);
 
 	if (bNoParticles) // no UO3D effect ? lets send old effect to all clients
 	{

@@ -11,8 +11,8 @@
 #include "race.h"
 #include "set.h"
 #include "layer.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "range.h"
 #include "network.h"
 
@@ -232,7 +232,7 @@ inline void NxwSocketWrapper2NxwCharWrapper( NxwSocketWrapper& sw, NxwCharWrappe
 		if( ps != 0 ) {
 			pChar pc=ps->currChar();
 			if(ISVALIDPC(pc))
-				sc->insert( pc->getSerial32() );
+				sc->insert( pc->getSerial() );
 		}
 	}
 }
@@ -484,7 +484,7 @@ void NxwSerialWrapper::insertSerial( uint32_t s )
 void NxwSerialWrapper::insertSerial( cObject* obj )
 {
 	if( (obj!=NULL) )
-		this->insertSerial( obj->getSerial32() );
+		this->insertSerial( obj->getSerial() );
 };
 
 
@@ -529,7 +529,7 @@ void NxwSerialWrapper::fillSerialInContainer( uint32_t serial, bool bIncludeSubC
 void NxwSerialWrapper::fillSerialInContainer( cObject* obj, bool bIncludeSubContained, bool bIncludeOnlyFirstSubcont )
 {
 	if( obj != 0 )
-		fillSerialInContainer( obj->getSerial32(), bIncludeSubContained, bIncludeOnlyFirstSubcont );
+		fillSerialInContainer( obj->getSerial(), bIncludeSubContained, bIncludeOnlyFirstSubcont );
 }
 
 
@@ -566,7 +566,7 @@ pChar NxwCharWrapper::getChar()
 void NxwCharWrapper::insertChar( pChar pc )
 {
 	VALIDATEPC(pc);
-	insertSerial( pc->getSerial32() );
+	insertSerial( pc->getSerial() );
 };
 
 /*!
@@ -582,7 +582,7 @@ void NxwCharWrapper::fillOwnedNpcs( pChar pc, bool bIncludeStabled, bool bOnlyFo
 
 	VALIDATEPC( pc );
 
-	std::map< uint32_t, std::vector< pChar > >::iterator vect( pointers::pOwnCharMap.find( pc->getSerial32() ) );
+	std::map< uint32_t, std::vector< pChar > >::iterator vect( pointers::pOwnCharMap.find( pc->getSerial() ) );
 	if( ( vect!=pointers::pOwnCharMap.end() ) && !vect->second.empty() ) {
 
 		std::vector< pChar >::iterator iter( vect->second.begin() ), end( vect->second.end() );
@@ -592,9 +592,9 @@ void NxwCharWrapper::fillOwnedNpcs( pChar pc, bool bIncludeStabled, bool bOnlyFo
 
 			if(ISVALIDPC(poOwnedChr))
 			{
-				if ((poOwnedChr->ftargserial==pc->getSerial32()) ||
+				if ((poOwnedChr->ftargserial==pc->getSerial()) ||
 					( !bOnlyFollowing && bIncludeStabled && ( poOwnedChr->isStabled() ) ) ) {
-					insertSerial(poOwnedChr->getSerial32());
+					insertSerial(poOwnedChr->getSerial());
 				}
 			}
 		}
@@ -616,7 +616,7 @@ void NxwCharWrapper::fillCharsAtXY( uint16_t x, uint16_t y, bool bExcludeOffline
 
 		if( !mapRegions->regions[nowx][nowy].charsInRegions.empty() )
 		{
-			uint32_t_SET::iterator	it( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
+			uint32_set::iterator	it( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
 						end( mapRegions->regions[nowx][nowy].charsInRegions.end() );
 			for( ; it != end; ++it ) {
 				pChar pc = pointers::findCharBySerial( *it );
@@ -630,7 +630,7 @@ void NxwCharWrapper::fillCharsAtXY( uint16_t x, uint16_t y, bool bExcludeOffline
 					continue;
 				if ( pc->mounted )
 					continue;
-				insertSerial( pc->getSerial32() );
+				insertSerial( pc->getSerial() );
 			}
 		}
 	}
@@ -671,7 +671,7 @@ void NxwCharWrapper::fillCharsNearXYZ ( uint16_t x, uint16_t y, int nDistance, b
 						if( mapRegions->regions[nowx][nowy].charsInRegions.empty() )
 							continue;
 
-						uint32_t_SET::iterator	iter( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
+						uint32_set::iterator	iter( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
 									end( mapRegions->regions[nowx][nowy].charsInRegions.end() );
 						for( ; iter != end; ++iter ) {
 							pChar pc=pointers::findCharBySerial( *iter );
@@ -686,7 +686,7 @@ void NxwCharWrapper::fillCharsNearXYZ ( uint16_t x, uint16_t y, int nDistance, b
 								continue;
 							if ( bExcludeOfflinePlayers && !pc->npc && !pc->IsOnline() )
 								continue;
-							insertSerial( pc->getSerial32() );
+							insertSerial( pc->getSerial() );
 						}
 					}
 				}
@@ -732,7 +732,7 @@ void NxwCharWrapper::fillNpcsNearXY( uint16_t x, uint16_t y, int nDistance )
 						if( mapRegions->regions[nowx][nowy].charsInRegions.empty() )
 							continue;
 
-						uint32_t_SET::iterator iter( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
+						uint32_set::iterator iter( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
 									end( mapRegions->regions[nowx][nowy].charsInRegions.end() );
 						for( ; iter != end; ++iter ) {
 							pChar pc=pointers::findCharBySerial( *iter );
@@ -743,7 +743,7 @@ void NxwCharWrapper::fillNpcsNearXY( uint16_t x, uint16_t y, int nDistance )
 							if(  !pc->isStabled() && !pc->mounted ) {
 								int iDist=(int)dist(Location(x,y,0),pc->getPosition(), false);
 								if (iDist <= nDistance)
-									this->insertSerial(pc->getSerial32());
+									this->insertSerial(pc->getSerial());
 							}
 						}
 					}
@@ -811,8 +811,8 @@ void NxwCharWrapper::fillPartyFriend( pChar pc, uint32_t nDistance, bool bExclud
 			if( ISVALIDPC(pj) )
 				if( pc->party==pj->party ) {
 					if( pc->distFrom( pj ) <= nDistance ) {
-						if( !bExcludeThis || ( pc->getSerial32()!=pj->getSerial32() ) )
-							this->insert( pj->getSerial32() );
+						if( !bExcludeThis || ( pc->getSerial()!=pj->getSerial32() ) )
+							this->insert( pj->getSerial() );
 				}
 			}
 		}
@@ -889,7 +889,7 @@ pItem NxwItemWrapper::getItem()
 void NxwItemWrapper::insertItem( pItem pi )
 {
 	VALIDATEPI(pi);
-	insertSerial( pi->getSerial32() );
+	insertSerial( pi->getSerial() );
 };
 
 /*!
@@ -926,7 +926,7 @@ void NxwItemWrapper::fillItemsAtXY( uint16_t x, uint16_t y, int32_t type, int32_
 	if( mapRegions->regions[nowx][nowy].itemsInRegions.empty() )
 		return;
 
-	uint32_t_SET::iterator	iter( mapRegions->regions[nowx][nowy].itemsInRegions.begin() ),
+	uint32_set::iterator	iter( mapRegions->regions[nowx][nowy].itemsInRegions.begin() ),
 				end( mapRegions->regions[nowx][nowy].itemsInRegions.end() );\
 
 	for( ; iter != end; ++iter ) {
@@ -980,7 +980,7 @@ void NxwItemWrapper::fillItemsNearXYZ ( uint16_t x, uint16_t y, int nDistance, b
 						if( mapRegions->regions[nowx][nowy].itemsInRegions.empty() )
 							continue;
 
-						uint32_t_SET::iterator	iter( mapRegions->regions[nowx][nowy].itemsInRegions.begin() ),
+						uint32_set::iterator	iter( mapRegions->regions[nowx][nowy].itemsInRegions.begin() ),
 									end( mapRegions->regions[nowx][nowy].itemsInRegions.end() );
 						for( ; iter != end; ++iter ) {
 							pItem pi=pointers::findItemBySerial( *iter );
@@ -1028,7 +1028,7 @@ void NxwItemWrapper::fillItemWeared( pChar pc, bool bIncludeLikeHair, bool bIncl
 	
 	VALIDATEPC(pc);
 
-	std::map< uint32_t , vector<pItem> >::iterator cont( pointers::pContMap.find( pc->getSerial32() ) );
+	std::map< uint32_t , vector<pItem> >::iterator cont( pointers::pContMap.find( pc->getSerial() ) );
 	if( cont==pointers::pContMap.end() || cont->second.empty() )
 		return;
 
@@ -1061,7 +1061,7 @@ void NxwItemWrapper::fillItemWeared( pChar pc, bool bIncludeLikeHair, bool bIncl
 			if (!bIncludeProtectedLayer && ( Race::isProtectedLayer( (uint32_t) pc->race, pi_j->layer ) ) ) 
 				continue;
 
-		this->insertSerial( pi_j->getSerial32() );
+		this->insertSerial( pi_j->getSerial() );
 	}
 
 }
@@ -1185,7 +1185,7 @@ void NxwSocketWrapper::fillOnline( pChar onlyNearThis, bool bExcludeThis, uint32
 				insertSocket(i);
 			else
 				if ( onlyNearThis->distFrom(pc) <= nDistance )
-					if( !(bExcludeThis && ( pc->getSerial32()==onlyNearThis->getSerial32() ) ) )
+					if( !(bExcludeThis && ( pc->getSerial()==onlyNearThis->getSerial32() ) ) )
 						insertSocket(i);
 	}
 }

@@ -85,7 +85,7 @@ void cChar::talk(NXWSOCKET s, char *txt, bool antispam)
 			saycolor=0x005B;
 		}
 
-		SendSpeechMessagePkt(s, getSerial32(), getId(), 0, saycolor, fonttype, name, txt);
+		SendSpeechMessagePkt(s, getSerial(), getId(), 0, saycolor, fonttype, name, txt);
 	}
 }
 
@@ -121,7 +121,7 @@ void cChar::emote( NXWSOCKET socket, char *txt, bool antispam, ... )
 		uint8_t name[30]={ 0x00, };
 		strcpy((char *)name, getCurrentNameC());
 
-		SendSpeechMessagePkt(socket, getSerial32(), getId(), 2, emotecolor, fonttype, name, msg);
+		SendSpeechMessagePkt(socket, getSerial(), getId(), 2, emotecolor, fonttype, name, msg);
 	}
 }
 
@@ -194,7 +194,7 @@ void cChar::talkRunic(NXWSOCKET s, char *txt, bool antispam)
 		uint8_t name[30]={ 0x00, };
 		strcpy((char *)name, getCurrentNameC());
 
-		SendSpeechMessagePkt(s, getSerial32(), getId(), 0, 0x0001, 0x0008, name, txt);
+		SendSpeechMessagePkt(s, getSerial(), getId(), 0, 0x0001, 0x0008, name, txt);
 	}
 }
 

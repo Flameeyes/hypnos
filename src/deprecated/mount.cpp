@@ -14,8 +14,8 @@
 #include "npcai.h"
 #include "scp_parser.h"
 #include "set.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 #include "utils.h"
 #include "range.h"
@@ -247,7 +247,7 @@ jump_mountevent:
 	// if this is a gm lets tame the animal in the process
 	if (IsGM())
 	{
-		mount->setOwnerSerial32( getSerial32() );
+		mount->setOwnerSerial32( getSerial() );
 		mount->tamed = true;
 		mount->npcaitype = NPCAI_GOOD;
 	}
@@ -257,12 +257,12 @@ jump_mountevent:
 #else
 	mapRegions->remove( mount );
 #endif
-	pointers::pMounted.insert( make_pair( getSerial32(), mount ) );
+	pointers::pMounted.insert( make_pair( getSerial(), mount ) );
 
 	sw.clear();
 	sw.fillOnline( this, false );
 
-	uint32_t mount_serial = mount->getSerial32();
+	uint32_t mount_serial = mount->getSerial();
 
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
@@ -297,11 +297,11 @@ int cChar::unmountHorse()
 	if(this->amxevents[EVENT_CHR_ONDISMOUNT]) // Unavowed
 	{
 		g_bByPass=false;
-		this->amxevents[EVENT_CHR_ONDISMOUNT]->Call(this->getSerial32(),INVALID);
+		this->amxevents[EVENT_CHR_ONDISMOUNT]->Call(this->getSerial(),INVALID);
 		if(g_bByPass) return 1;
 	}
 	/*
-	runAmxEvent( EVENT_CHR_ONDISMOUNT, getSerial32() );
+	runAmxEvent( EVENT_CHR_ONDISMOUNT, getSerial() );
 	if(g_bByPass)
 		return 1;
 	*/
@@ -317,7 +317,7 @@ int cChar::unmountHorse()
 			onhorse = false;
 
 
-			std::map< uint32_t, pChar >::iterator iter( pointers::pMounted.find( getSerial32() ) );
+			std::map< uint32_t, pChar >::iterator iter( pointers::pMounted.find( getSerial() ) );
 
 			if( ( iter!=pointers::pMounted.end() ) ) {
 

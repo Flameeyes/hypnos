@@ -19,14 +19,14 @@
 #include "trigger.h"
 #include "house.h"
 #include "tmpeff.h"
-#include "packets.h"
+
 #include "telport.h"
 #include "weight.h"
 #include "boats.h"
 #include "set.h"
 #include "map.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "classes.h"
 #include "inlines.h"
 #include "basics.h"
@@ -249,7 +249,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 				pc->setMultiSerial32Only(INVALID);
 				pItem boat = Boats->GetBoat(pc->getPosition());
 				if (boat!=NULL) {
-					pc->setMultiSerial( boat->getSerial32() );
+					pc->setMultiSerial( boat->getSerial() );
 
 					NxwCharWrapper pets;
 					pets.fillOwnedNpcs( pc, false, true );
@@ -258,7 +258,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 						pChar pc_b=pets.getChar();
 						if(ISVALIDPC(pc_b)) {
 							pc->MoveTo( boat->getPosition("x")+1, boat->getPosition("y")+1, boat->getPosition("z")+2 );
-							pc->setMultiSerial( boat->getSerial32() );
+							pc->setMultiSerial( boat->getSerial() );
 							pc_b->teleport();
 						}
 					}
@@ -361,7 +361,7 @@ void WalkingHandleRainSnow(pChar pc)
 	if (pc->IsOnline())
 	{
 		int serial,serhash,ci;
-		serial=pc->getSerial32();
+		serial=pc->getSerial();
 		serhash=serial%HASHMAX;
 		for (ci=0;ci<glowsp[serhash].max;ci++)
 		{
@@ -400,7 +400,7 @@ void walking(pChar pc, int dir, int sequence)
 
 	if ( pc->amxevents[EVENT_CHR_ONWALK] ) {
 		g_bByPass = false;
-		pc->amxevents[EVENT_CHR_ONWALK]->Call( pc->getSerial32(), dir, sequence );
+		pc->amxevents[EVENT_CHR_ONWALK]->Call( pc->getSerial(), dir, sequence );
 		if ( g_bByPass==true )
 			return;
 	}
@@ -626,14 +626,14 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 		if ( (!valid || !move) && pc_i->amxevents[EVENT_CHR_ONBLOCK] )
 		{
 			g_bByPass = false;
-			pc_i->amxevents[EVENT_CHR_ONBLOCK]->Call( pc_i->getSerial32(), newX, newY, charpos.z);
+			pc_i->amxevents[EVENT_CHR_ONBLOCK]->Call( pc_i->getSerial(), newX, newY, charpos.z);
 			if (g_bByPass==true)
 				return;
 		}
 		/*
 		if ( (!valid || !move) && pc_i->getAmxEvent( EVENT_CHR_ONBLOCK ) )
 		{
-			pc_i->runAmxEvent( EVENT_CHR_ONBLOCK, pc_i->getSerial32(), newX, newY, charpos.z);
+			pc_i->runAmxEvent( EVENT_CHR_ONBLOCK, pc_i->getSerial(), newX, newY, charpos.z);
 			if (g_bByPass==true)
 				return;
 		}
@@ -663,7 +663,7 @@ void handleCharsAtNewPos( pChar pc )
 		pc_curr = sc.getChar();
 		if ( !ISVALIDPC( pc_curr ) )
 			continue;
-		if ( pc->IsGMorCounselor() || pc_curr->getSerial32() == pc->getSerial32() )
+		if ( pc->IsGMorCounselor() || pc_curr->getSerial() == pc->getSerial32() )
 			continue;
 		if ( pc_curr->dead || pc_curr->IsInvul() )
 			continue;

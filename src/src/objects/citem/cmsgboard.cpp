@@ -21,8 +21,8 @@
 #include "cmsgboard.h"
 #include "npcai.h"
 #include "scp_parser.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "utils.h"
 #include "inlines.h"
 #include "nox-wizard.h"
@@ -70,7 +70,7 @@ All in this comment range is done by cItem::Delete() at the bottom of this metho
         {
         case LOCALPOST: //Here we need only to disconnect local MsgBoard
                 // Disconnecting relations from bullettin board which was linked to
-        	cBBRelations::iterator it = find(cMsgBoards::BBRelations.begin(),cMsgBoards::BBRelations.end(), cBBRelations::pair(getContainer()->getSerial32(), serial));
+        	cBBRelations::iterator it = find(cMsgBoards::BBRelations.begin(),cMsgBoards::BBRelations.end(), cBBRelations::pair(getContainer()->getSerial(), serial));
 	        if (it != cMsgBoards::BBRelations.end()) cMsgBoards::BBRelations.erase(it);
                 break;
         case REGIONALPOST: //Here, instead, we have to disconnect ALL msgBoard in the same region as the board in which the message was originally posted to
@@ -89,9 +89,9 @@ All in this comment range is done by cItem::Delete() at the bottom of this metho
                 for(; (it.first != it.second) && (bbit != cMsgBoards::BBRelations.end()); ++it.first)
                 {
                         //finding the current serial and set it for next search, since it will be only on following serials
-			bbit = find(bbit,cMsgBoards::BBRelations.end(), cBBRelations::pair((*itbegin)->getSerial32(), serial));
+			bbit = find(bbit,cMsgBoards::BBRelations.end(), cBBRelations::pair((*itbegin)->getSerial(), serial));
                	        //bbit now contains the iterator that points to the pair msgboard serial - message serial to delete
-                       	if (bbit == cMsgBoards::BBRelations.end() && ((*bbit) != cBBRelations::pair((*itbegin)->getSerial32(), serial)) )
+                       	if (bbit == cMsgBoards::BBRelations.end() && ((*bbit) != cBBRelations::pair((*itbegin)->getSerial(), serial)) )
                         {
                         	// if for any chance bbit reaches the end of the set (meaning no pair has been found) we skip deletion of that
                                 // message and begin again from the beginning with next mex. It really is a really bad case scenario because
@@ -108,7 +108,7 @@ All in this comment range is done by cItem::Delete() at the bottom of this metho
                 {
                         //Removing a global post is not as efficient as removing a regional post.... :(
                         //but since most autopost for quests will be regional, it is best to get THAT as the most efficient :P
-                        cBBRelations::iterator it2 = find(cMsgBoards::BBRelations.begin(),cMsgBoards::BBRelations.end(), cBBRelations::pair((*it)->getSerial32(), serial));
+                        cBBRelations::iterator it2 = find(cMsgBoards::BBRelations.begin(),cMsgBoards::BBRelations.end(), cBBRelations::pair((*it)->getSerial(), serial));
                         if (it2 != cMsgBoards::BBRelations.end()) cMsgBoards::BBRelations.erase(it2);
                 }
                 break;
@@ -188,7 +188,7 @@ bool cMsgBoardMessage::expired()
                	if (!SrvParms->escortinitexpire && messagelife > SrvParms->escortinitexpire)	//escortinitexpire is expressed in seconds
                 {
                 	pNPC npc = pointers::findCharBySerial(targetnpc);
-                        if (!npc && npc->questEscortPostSerial == getSerial32()) npc->Delete();	//If it has not yet disappeared, but the serial is still the right escort npc (the serial may have been reused!!) we delete it
+                        if (!npc && npc->questEscortPostSerial == getSerial()) npc->Delete();	//If it has not yet disappeared, but the serial is still the right escort npc (the serial may have been reused!!) we delete it
                         Delete();
                         return true;
                 }
@@ -199,8 +199,8 @@ bool cMsgBoardMessage::expired()
                         pChar pc = pointers::findCharBySerial(targetnpc);
                         // If it is an npc created just for the bounty (function not yet implemented) but it has not yet
                         // disappeared and the serial is still the right npc (the serial may have been reused!!) we delete it
-                        if (!pc && pc->rtti() == rtti::cNPC && pc->questBountyPostSerial == getSerial32()) pc->Delete();
-			if (!pc && pc->rtti() == rtti::cPC && pc->questBountyPostSerial == getSerial32())
+                        if (!pc && pc->rtti() == rtti::cNPC && pc->questBountyPostSerial == getSerial()) pc->Delete();
+			if (!pc && pc->rtti() == rtti::cPC && pc->questBountyPostSerial == getSerial())
                         {
                         	//Deleting bounty
 				pc->questBountyReward     = 0;
@@ -378,7 +378,7 @@ void cMsgBoard::openBoard(pClient client)
 	client->sendPacket(&pk);
         // .. and immediately thereafter the "items" it contains (the serials of messages connected to that board)
         // but only if it has at least 1 message inside
-      	if (BBRelations.find(getSerial32()) != BBRelations.end())
+      	if (BBRelations.find(getSerial()) != BBRelations.end())
 	{
         	cPacketSendMsgBoardItemsinContainer pk2 (this);
        		client->sendPacket(&pk2);
@@ -411,10 +411,10 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
 		//Note that this only means that normal players cannot bring a MsgBoard to have more than MAXPOSTS
                 //mexes, but by posting regional or global messages this limit can be exceeded
                 
-               	pair<cBBRelations::iterator, cBBRelations::iterator> it = BBRelations.equal_range(getSerial32());
+               	pair<cBBRelations::iterator, cBBRelations::iterator> it = BBRelations.equal_range(getSerial());
                 if (distance(it.first, it.second) > MAXPOSTS) return false;
 
-        	BBRelations.insert(cBBRelations::pair(getSerial32(), message->getSerial32()));
+        	BBRelations.insert(cBBRelations::pair(getSerial(), message->getSerial32()));
         	break;
         case REGIONALPOST;
                	pair<cMsgBoards::iterator, cMsgBoards::iterator> it = getBoardsinRegion(region);
@@ -422,12 +422,12 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
                 if (it.first == MsgBoards.end()) return false;
                 // We now have a range it.first-(it.second - 1) of msgBoards that are in the same region as the message.
 		for (;it.first != it.second; ++it.first)
-                	BBRelations.insert(cBBRelations::pair((*(it.first))->getSerial32(), message->getSerial32()));
+                	BBRelations.insert(cBBRelations::pair((*(it.first))->getSerial(), message->getSerial32()));
         	break;
         case GLOBALPOST:
         	if (MsgBoards.empty()) return false; //Obiously, even general posts cannot be done when NO msgboards are present at all....
         	for(cMsgBoards::iterator it = MsgBoards.begin(), it != MsgBoards.end(), ++it)
-                      	BBRelations.insert(cBBRelations::pair((*it)->getSerial32(), message->getSerial32()));
+                      	BBRelations.insert(cBBRelations::pair((*it)->getSerial(), message->getSerial32()));
         }
 	return true;
 }
@@ -452,8 +452,8 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 
 	message->qtype = questType;
 	message->autopost = true;
-	message->targetnpc = (npc) ? npc->getSerial32() : 0;
-        message->targetitem = (item) ? item->getSerial32() : 0;
+	message->targetnpc = (npc) ? npc->getSerial() : 0;
+        message->targetitem = (item) ? item->getSerial() : 0;
         message->region = region;	//if questtype does not need to use a regional post, this is simply ignored :D
         
 	int32_t	sectionEntrys[MAXENTRIES];                            // List of SECTION items to store for randomizing
@@ -758,7 +758,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
         	message->Delete();
         	return 0;
         }
-        return message->getSerial32();
+        return message->getSerial();
 
 }
 
@@ -771,7 +771,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 void cMsgBoard::removeQuestMessage(uint32_t messageserial)
 {
 	cMsgBoardMessages::iterator it = MsgBoardMessages.begin();
-        for (; (*it)->getSerial32() != messageserial && it != MsgBoardMessages.end(); ++it) {}
+        for (; (*it)->getSerial() != messageserial && it != MsgBoardMessages.end(); ++it) {}
         if (it != MsgBoardMessages.end()) (*it)->Delete();
 }
 
@@ -800,7 +800,7 @@ void cMsgBoard::MsgBoardMaintenance()
         int expired = 0;
         for(;it != MsgBoardMessages.end(); ++it)
         {
-        	if (!(*it)->expired()) serialsm.insert((*it)->getSerial32());
+        	if (!(*it)->expired()) serialsm.insert((*it)->getSerial());
                 else expired++;
                 //while browsing the messages and after expiration checks, refresh quests :) 
 		if((*it)->qtype != QTINVALID) (*it)->refreshQuest();
@@ -826,7 +826,7 @@ void cMsgBoard::MsgBoardMaintenance()
                 expired = 0;  // reusing expired variable to count deleted items :D
 		for(itdiff = serialdiff.begin();itdiff != serialdiff.end(); ++itdiff)
                 {
-		        for(it = MsgBoardMessages.begin();(*it)->getSerial32() != (*itdiff) && it != MsgBoardMessages.end() ; ++it) {}
+		        for(it = MsgBoardMessages.begin();(*it)->getSerial() != (*itdiff) && it != MsgBoardMessages.end() ; ++it) {}
 			// *it is now the message to be relinked
                         if ((*it)->qtype == QTINVALID)
                         {

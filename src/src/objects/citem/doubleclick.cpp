@@ -33,8 +33,8 @@
 #include "titles.h"
 #include "rcvpkg.h"
 #include "map.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "basics.h"
 #include "inlines.h"
 #include "skills.h"
@@ -99,7 +99,7 @@ void cItem::singleClick(pClient client )
 	if (amxevents[EVENT_IONCLICK]!=NULL)
 	{
 		g_bByPass = false;
-		amxevents[EVENT_IONCLICK]->Call(getSerial32(), client->currChar()->getSerial32() );
+		amxevents[EVENT_IONCLICK]->Call(getSerial(), client->currChar()->getSerial32() );
 		if ( g_bByPass==true )
 			return;
 	}
@@ -115,9 +115,9 @@ void cItem::singleClick(pClient client )
 	if ( CanSeeSerials() )
 	{
 		if (amount > 1)
-			sprintf( temp, "%s [%x]: %i", itemname, getSerial32(), amount);
+			sprintf( temp, "%s [%x]: %i", itemname, getSerial(), amount);
 		else
-			sprintf( temp, "%s [%x]", itemname, getSerial32());
+			sprintf( temp, "%s [%x]", itemname, getSerial());
 		itemmessage(client, temp, serial);
 		return;
 	}
@@ -238,7 +238,7 @@ void cItem::doubleClick(pClient client);
 
 	if (amxevents[EVENT_IONDBLCLICK]!=NULL) {
 		g_bByPass = false;
-		amxevents[EVENT_IONDBLCLICK]->Call( getSerial32(), pc->getSerial32() );
+		amxevents[EVENT_IONDBLCLICK]->Call( getSerial(), pc->getSerial32() );
 		if (g_bByPass==true)
 			return;
 	}
@@ -282,7 +282,7 @@ void cItem::doubleClick(pClient client);
 	if ( ServerScp::g_nEquipOnDclick )
 	{
 		// equip the item only if it is in the backpack of the player
-		if ((getContainer() == pack->getSerial32()) && (item.quality != 0) && (item.quality != LAYER_BACKPACK) && (item.quality != LAYER_MOUNT))
+		if ((getContainer() == pack->getSerial()) && (item.quality != 0) && (item.quality != LAYER_BACKPACK) && (item.quality != LAYER_MOUNT))
 		{
 			pItem drop[2]= {NULL, NULL};	// list of items to drop, there no reason for it to be larger
 			int curindex= 0;
@@ -374,7 +374,7 @@ void cItem::doubleClick(pClient client);
 		if (isItemSerial(getContSerial()) && type != ITYPE_CONTAINER)
 		{// Cant use stuff that isn't in your pack.
 
-			if ( ISVALIDPC(itmowner) && (itmowner->getSerial32()!=pc->getSerial32()) )
+			if ( ISVALIDPC(itmowner) && (itmowner->getSerial()!=pc->getSerial32()) )
 					return;
 		}
 		else
@@ -382,7 +382,7 @@ void cItem::doubleClick(pClient client);
 			{// in a character.
 				pChar wearedby = pointers::findCharBySerial(getContSerial());
 				if (ISVALIDPC(wearedby))
-					if (wearedby->getSerial32()!=pc->getSerial32() && layer!=LAYER_UNUSED_BP && type!=ITYPE_CONTAINER)
+					if (wearedby->getSerial()!=pc->getSerial32() && layer!=LAYER_UNUSED_BP && type!=ITYPE_CONTAINER)
 						return;
 			}
 	}
@@ -448,7 +448,7 @@ void cItem::doubleClick(pClient client);
 	// trigger code.  Check to see if item is envokable by id
 	else if (checkenvoke( getId() ))
 	{
-		pc->envokeitem = getSerial32();
+		pc->envokeitem = getSerial();
 		pc->envokeid = getId();
 
                 //TODO: REVISE WHEN TARGETS REDONE!!
@@ -511,7 +511,7 @@ void cItem::doubleClick(pClient client);
 	case ITYPE_NODECAY_ITEM_SPAWNER: // nodecay item spawner..Ripper
 	case ITYPE_DECAYING_ITEM_SPAWNER: // decaying item spawner..Ripper
 		if (isInWorld() || (pc->IsGMorCounselor()) || // Backpack in world - free access to everyone
-			( isCharSerial(getContSerial()) && getContSerial()==pc->getSerial32()))	// primary pack
+			( isCharSerial(getContSerial()) && getContSerial()==pc->getSerial()))	// primary pack
 		{
 			pc->showContainer(this);
 			pc->objectdelay=0;
@@ -520,7 +520,7 @@ void cItem::doubleClick(pClient client);
 		else if( isItemSerial(getContSerial()) )
 		{
 			pItem pio = getOutMostCont();
-			if (pio->getContSerial()==pc->getSerial32() || pio->isInWorld() )
+			if (pio->getContSerial()==pc->getSerial() || pio->isInWorld() )
 			{
 				pc->showContainer(this);
 				pc->objectdelay=0;
@@ -574,7 +574,7 @@ void cItem::doubleClick(pClient client);
 		}
 	case ITYPE_SPELLBOOK:
 		if (ISVALIDPI(pack)) // morrolan
-			if(getContSerial()==pack->getSerial32() || pc->IsWearing(this))
+			if(getContSerial()==pack->getSerial() || pc->IsWearing(this))
 				client->sendSpellBook(this);
 			else
 				pc->sysmsg(TRANSLATE("If you wish to open a spellbook, it must be equipped or in your main backpack."));
@@ -684,7 +684,7 @@ void cItem::doubleClick(pClient client);
 	case ITYPE_MANAREQ_WAND: // magic items requiring mana (xan)
 		if (ISVALIDPI(pack))
 		{
-			if (getContSerial() == pack->getSerial32() || pc->IsWearing(this))
+			if (getContSerial() == pack->getSerial() || pc->IsWearing(this))
 			{
 				if (morez != 0)
 				{
@@ -714,14 +714,14 @@ void cItem::doubleClick(pClient client);
 	case 18: // crystal ball?
 		switch (RandomNum(0, 9))
 		{
-		case 0: itemmessage(s, TRANSLATE("Seek out the mystic llama herder."), pi->getSerial32());									break;
-		case 1: itemmessage(s, TRANSLATE("Wherever you go, there you are."), pi->getSerial32());									break;
-		case 4: itemmessage(s, TRANSLATE("The message appears to be too cloudy to make anything out of it."), pi->getSerial32());	break;
-		case 5: itemmessage(s, TRANSLATE("You have just lost five strength.. not!"), pi->getSerial32());							break;
-		case 6: itemmessage(s, TRANSLATE("You're really playing a game you know"), pi->getSerial32());								break;
-		case 7: itemmessage(s, TRANSLATE("You will be successful in all you do."), pi->getSerial32());								break;
-		case 8: itemmessage(s, TRANSLATE("You are a person of culture."), pi->getSerial32());										break;
-		default: itemmessage(s, TRANSLATE("Give me a break! How much good fortune do you expect!"), pi->getSerial32());				break;
+		case 0: itemmessage(s, TRANSLATE("Seek out the mystic llama herder."), pi->getSerial());									break;
+		case 1: itemmessage(s, TRANSLATE("Wherever you go, there you are."), pi->getSerial());									break;
+		case 4: itemmessage(s, TRANSLATE("The message appears to be too cloudy to make anything out of it."), pi->getSerial());	break;
+		case 5: itemmessage(s, TRANSLATE("You have just lost five strength.. not!"), pi->getSerial());							break;
+		case 6: itemmessage(s, TRANSLATE("You're really playing a game you know"), pi->getSerial());								break;
+		case 7: itemmessage(s, TRANSLATE("You will be successful in all you do."), pi->getSerial());								break;
+		case 8: itemmessage(s, TRANSLATE("You are a person of culture."), pi->getSerial());										break;
+		default: itemmessage(s, TRANSLATE("Give me a break! How much good fortune do you expect!"), pi->getSerial());				break;
 		}// switch
 		soundeffect2(pc_currchar, 0x01EC);
 		return;// case 18 (crystal ball?)
@@ -741,7 +741,7 @@ void cItem::doubleClick(pClient client);
 			}
 			else
 			{
-				pc->runeserial = getSerial32();
+				pc->runeserial = getSerial();
 				pc->sysmsg( TRANSLATE("Enter new rune name."));
 			}
 			return;
@@ -750,7 +750,7 @@ void cItem::doubleClick(pClient client);
 			ReduceAmount(1);
 			return;
 	case ITYPE_RENAME_DEED:
-			pc->namedeedserial = getSerial32();
+			pc->namedeedserial = getSerial();
 			pc->sysmsg( TRANSLATE("Enter your new name."));
 			ReduceAmount(1);
 			return;
@@ -822,7 +822,7 @@ void cItem::doubleClick(pClient client);
 			vendor->dir = pc->dir;
 			vendor->npcWander = WANDER_NOMOVE;
 			vendor->SetInnocent();
-			vendor->setOwnerSerial32( pc->getSerial32() );
+			vendor->setOwnerSerial32( pc->getSerial() );
 			vendor->tamed = false;
 			Delete();
 			vendor->teleport();
@@ -868,7 +868,7 @@ void cItem::doubleClick(pClient client);
 	if (IsSpellScroll())
 	{
 		if (ISVALIDPI(pack))
-			if( getContSerial()==pack->getSerial32()) {
+			if( getContSerial()==pack->getSerial()) {
 				magic::SpellId spn = magic::spellNumberFromScrollId(getId());	// avoid reactive armor glitch
 				if ((spn>=0)&&(magic::beginCasting(spn, client, magic::CASTINGTYPE_SCROLL)))
 					ReduceAmount(1);							// remove scroll if successful
@@ -886,14 +886,14 @@ void cItem::doubleClick(pClient client);
         //TODO: redo when targets redone
 		targ = clientInfo[s]->newTarget( new cTarget() );
 		targ->code_callback=target_axe;
-		targ->buffer[0]=pi->getSerial32();
+		targ->buffer[0]=pi->getSerial();
 		targ->send( client );
 		client->sysmsg( TRANSLATE("What would you like to use that on ?"));
 	}
 	CASEOR(IsFeather, IsShaft) {
         //TODO: redo when targets redone
 		targ = clientInfo[s]->newTarget( new cItemTarget() );
-		targ->buffer[0]= pi->getSerial32();
+		targ->buffer[0]= pi->getSerial();
 		targ->code_callback=Skills::target_fletching;
 		targ->send( client );
 		client->sysmsg( TRANSLATE("What would you like to use this with?"));
@@ -920,7 +920,7 @@ void target_selectdyevat( pClient client, P_TARGET t )
 
     if( pi->getId()==0x0FAB ||                     //dye vat
         pi->getId()==0x0EFF || pi->getId()==0x0E27 )  //hair dye
-            client->sndDyevat(pi->getSerial32(), pi->getId() );
+            client->sndDyevat(pi->getSerial(), pi->getId() );
         else
             client->sysmsg( TRANSLATE("You can only use this item on a dye vat."));
 }
@@ -938,7 +938,7 @@ void target_dyevat( pClient client, P_TARGET t )
 
 		pChar pc = pi->getPackOwner();
 
-		if( !ISVALIDPC(pc) || ( pc->getSerial32()==curr->getSerial32() ) ) //in world or owned
+		if( !ISVALIDPC(pc) || ( pc->getSerial()==curr->getSerial32() ) ) //in world or owned
 		{
 			pi->setColor( t->buffer[0] );
 			pi->Refresh();
@@ -1044,7 +1044,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			{
 				targ = clientInfo[s]->newTarget( new cLocationTarget() );
 				targ->code_callback=Skills::target_mine;
-				targ->buffer[0]=pi->getSerial32();
+				targ->buffer[0]=pi->getSerial();
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("Where do you want to dig?"));
 			}
@@ -1053,7 +1053,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_wheel;
 			targ->buffer[0]=THREAD;
-			targ->buffer[1]=pi->getSerial32();
+			targ->buffer[1]=pi->getSerial();
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("Select spinning wheel to spin cotton.") );
 			return;
@@ -1061,7 +1061,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_wheel;
 			targ->buffer[0]=YARN;
-			targ->buffer[1]=pi->getSerial32();
+			targ->buffer[1]=pi->getSerial();
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("Select your spin wheel to spin wool."));
 			return;
@@ -1072,7 +1072,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 		case 0x0E1E:  // yarn to cloth
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_loom;
-			targ->buffer[0]=pi->getSerial32();
+			targ->buffer[0]=pi->getSerial();
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("Select loom to make your cloth"));
 			return;
@@ -1088,7 +1088,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 		case 0x19B8: // smelt ore
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_smeltOre;
-			targ->buffer[0]=pi->getSerial32();
+			targ->buffer[0]=pi->getSerial();
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("Select forge to smelt ore on."));// smelting  for all ore changed by Myth 11/12/98
 			return;
@@ -1177,7 +1177,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			return;
 		case 0x0DBF:
 		case 0x0DC0:// fishing
-			if( pi->getContSerial()==pc->getSerial32() || pi->getContSerial()==pack->getSerial32() ) {
+			if( pi->getContSerial()==pc->getSerial() || pi->getContSerial()==pack->getSerial32() ) {
 				targ = clientInfo[s]->newTarget( new cLocationTarget() );
 				targ->code_callback = Fishing::target_fish;
 				targ->send( ps );
@@ -1197,7 +1197,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			{
 				targ = clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_bottle;
-				targ->buffer[0]=pi->getSerial32();
+				targ->buffer[0]=pi->getSerial();
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("Where is an empty bottle for your potion?") );
 			}
@@ -1205,7 +1205,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			{
 				targ = clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_alchemy;
-				targ->buffer[0]=pi->getSerial32();
+				targ->buffer[0]=pi->getSerial();
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("What do you wish to grind with your mortar and pestle?"));
 			}
@@ -1213,7 +1213,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 		case 0x0E21: // healing
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_healingSkill;
-			targ->buffer[0]=pi->getSerial32();
+			targ->buffer[0]=pi->getSerial();
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("Who will you use the bandages on?"));
 			return;
@@ -1235,7 +1235,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 		case 0x14FE: // lockpicks
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_lockpick;
-			targ->buffer[0]=pi->getSerial32();
+			targ->buffer[0]=pi->getSerial();
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("What lock would you like to pick?"));
 			return;
@@ -1243,7 +1243,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_cookOnFire;
 			targ->buffer[0]=0x097B;
-			targ->buffer[1]=pi->getSerial32();
+			targ->buffer[1]=pi->getSerial();
 			targ->buffer_str[0] = "fish steaks";
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("What would you like to cook this on?"));
@@ -1252,7 +1252,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_cookOnFire;
 			targ->buffer[0]=0x09B7;
-			targ->buffer[1]=pi->getSerial32();
+			targ->buffer[1]=pi->getSerial();
 			targ->buffer_str[0] = "bird";
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("What would you like to cook this on?"));
@@ -1261,7 +1261,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_cookOnFire;
 			targ->buffer[0]=0x160A;
-			targ->buffer[1]=pi->getSerial32();
+			targ->buffer[1]=pi->getSerial();
 			targ->buffer_str[0] = "lamb";
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("What would you like to cook this on?"));
@@ -1270,7 +1270,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_cookOnFire;
 			targ->buffer[0]=0x09F2;
-			targ->buffer[1]=pi->getSerial32();
+			targ->buffer[1]=pi->getSerial();
 			targ->buffer_str[0] = "ribs";
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("What would you like to cook this on?"));
@@ -1279,7 +1279,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_cookOnFire;
 			targ->buffer[0]=0x1608;
-			targ->buffer[1]=pi->getSerial32();
+			targ->buffer[1]=pi->getSerial();
 			targ->buffer_str[0] = "chicken legs";
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("What would you like to cook this on?"));
@@ -1308,7 +1308,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 		case 0x1054: // tinker axle
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_tinkerAxel;
-			targ->buffer[0]=pi->getSerial32();
+			targ->buffer[0]=pi->getSerial();
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("Select part to combine that with."));
 			return;
@@ -1320,7 +1320,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 		case 0x105E:
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_tinkerAwg;
-			targ->buffer[0]=pi->getSerial32();
+			targ->buffer[0]=pi->getSerial();
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("Select part to combine it with."));
 			return;
@@ -1330,7 +1330,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 		case 0x104E:// tinker clock
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_tinkerClock;
-			targ->buffer[0]=pi->getSerial32();
+			targ->buffer[0]=pi->getSerial();
 			targ->send( ps );
 			ps->sysmsg( TRANSLATE("Select part to combine with"));
 			return;
@@ -1427,11 +1427,11 @@ bool cItem::checkItemUsability(pChar pc, int type)
 	{
 
 		if (amxevents[EVENT_IONCHECKCANUSE]==NULL) return true;
-		return (0!=amxevents[EVENT_IONCHECKCANUSE]->Call(getSerial32(), pc->getSerial32(), g_nType));
+		return (0!=amxevents[EVENT_IONCHECKCANUSE]->Call(getSerial(), pc->getSerial32(), g_nType));
 		/*
 		AmxEvent* event = pi->getAmxEvent( EVENT_IONCHECKCANUSE );
 		if ( !event ) return true;
-		return ( 0 != event->Call(pi->getSerial32(), s, g_nType ) );
+		return ( 0 != event->Call(pi->getSerial(), s, g_nType ) );
 		*/
 	}
 	return true;

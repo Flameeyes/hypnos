@@ -13,8 +13,8 @@
 #include "set.h"
 #include "sndpkg.h"
 #include "map.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "classes.h"
 #include "range.h"
 #include "inlines.h"
@@ -155,7 +155,7 @@ void cBoat::PlankStuff(pChar pc , pItem pi)//If the plank is opened, double clic
 			{
 				Location boatpos= boat2->getPosition();
 				pc_b->MoveTo( boatpos.x+1, boatpos.y+1, boatpos.z+2 );
-				pc_b->setMultiSerial( boat2->getSerial32() );
+				pc_b->setMultiSerial( boat2->getSerial() );
 				pc_b->teleport();
 
 			}
@@ -168,7 +168,7 @@ void cBoat::PlankStuff(pChar pc , pItem pi)//If the plank is opened, double clic
 		pc->MoveTo( boatpos.x+1, boatpos.y+1, boatpos.z+3 );
 		pc->teleport();
 		pc->sysmsg(TRANSLATE("you entered a boat"));
-       // pc->setMultiSerial( boat2->getSerial32() ); it's has just been called by pc->teleport, so wee need it not
+       // pc->setMultiSerial( boat2->getSerial() ); it's has just been called by pc->teleport, so wee need it not
 	}
 
 }
@@ -328,13 +328,14 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 			p2,
 			hold;
 
-	WORD2DBYTE( pi->getId(), id1, id2 );
+	WORD2Duint8_t( pi->getId(), id1, id2 );
 
 	//Of course we need the boat items!
 	serial=calcserial(pi->moreb1,pi->moreb2,pi->moreb3,pi->moreb4);
 	if(serial<0)
 		return;
-
+//!\todo Find a better way to handle this
+#if 0
 	itiller = calcItemFromSer( serial | 0x40000000 );
 	tiller = MAKE_ITEM_REF( itiller );
 	VALIDATEPI(tiller);
@@ -350,6 +351,7 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 	ihold = calcItemFromSer( pi->morez | 0x40000000);
 	hold = MAKE_ITEM_REF( ihold );
 	VALIDATEPI(hold);
+#endif
 
 	NxwSocketWrapper sw;
 	sw.fillOnline();
@@ -387,7 +389,7 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 	if(id2>pi->more2)
 		id2-=4;//Now you know what the min/max id is for :-)
 
-	pi->setId( DBYTE2WORD( id1, id2 ) );//set the id
+	pi->setId( Duint8_t2WORD( id1, id2 ) );//set the id
 
 	if(id2==pi->more1)
 		pi->dir=0;//extra DIR error checking
@@ -678,11 +680,11 @@ bool cBoat::Speech(pChar pc, NXWSOCKET socket, std::string &talk)//See if they s
 	//
 	// if the pc is not the boat owner..we don't care what he says
 	//
-	if(pBoat->getOwnerSerial32()!= pc->getSerial32())
+	if(pBoat->getOwnerSerial32()!= pc->getSerial())
 	{
 		return false;
 	}
-	boat_db* boat=search_boat(pBoat->getSerial32());
+	boat_db* boat=search_boat(pBoat->getSerial());
 	if(boat==NULL)
 		return  false;
 
@@ -969,7 +971,7 @@ bool cBoat::Build(NXWSOCKET  s, pItem pBoat, char id2)
 	}
 	// Okay we found a good  place....
 
-	pBoat->setOwnerSerial32(pc_cs->getSerial32());
+	pBoat->setOwnerSerial32(pc_cs->getSerial());
 	pBoat->more1=id2;//Set min ID
 	pBoat->more2=nid2+3;//set MAX id
 	pBoat->type=ITYPE_BOATS;//Boat type
@@ -1023,9 +1025,9 @@ bool cBoat::Build(NXWSOCKET  s, pItem pBoat, char id2)
 	pBoat->moreb2= pTiller->getSerial().ser2;
 	pBoat->moreb3= pTiller->getSerial().ser3;
 	pBoat->moreb4= pTiller->getSerial().ser4;
-	pBoat->morex= pPlankL->getSerial32();//Store the other stuff anywhere it will fit :-)
-	pBoat->morey= pPlankR->getSerial32();
-	pBoat->morez= pHold->getSerial32();
+	pBoat->morex= pPlankL->getSerial();//Store the other stuff anywhere it will fit :-)
+	pBoat->morey= pPlankR->getSerial();
+	pBoat->morez= pHold->getSerial();
 
 	Location boatpos= pBoat->getPosition();
 
@@ -1087,7 +1089,7 @@ bool cBoat::Build(NXWSOCKET  s, pItem pBoat, char id2)
 
 	pc_cs->MoveTo(boatpos);
 	//setserial(DEREF_pChar(pc_cs),DEREF_pItem(pBoat),8);
-	pc_cs->setMultiSerial( pBoat->getSerial32() );
+	pc_cs->setMultiSerial( pBoat->getSerial() );
 	insert_boat(pBoat); // insert the boat in the boat_database
 	return true;
 }
@@ -1104,7 +1106,7 @@ bool cBoat::collision(pItem pi,Location where,int dir)
 	for(iter_boat=s_boat.begin();iter_boat!=s_boat.end();iter_boat++)
 	{
 		boat_db coll=iter_boat->second;
-		if(coll.serial != pi->getSerial32())
+		if(coll.serial != pi->getSerial())
 		{
 			int xx=abs(x - (int)coll.p_serial->getPosition("x"));
 			int yy=abs(y - (int)coll.p_serial->getPosition("y"));
@@ -1266,7 +1268,7 @@ void cBoat::iMove(NXWSOCKET  s, int dir, pItem pBoat, bool forced)
 	int serial;
 
 	if (pBoat==NULL) return;
-	boat_db* boat=search_boat(pBoat->getSerial32());
+	boat_db* boat=search_boat(pBoat->getSerial());
 
 	if(boat==NULL)
 		return;
@@ -1311,7 +1313,7 @@ void cBoat::iMove(NXWSOCKET  s, int dir, pItem pBoat, bool forced)
 		break;
 	default:
 		{
-		  LogWarning("Warning: Boat direction error: %i int boat %i\n", pBoat->dir&0x0F, pBoat->getSerial32());
+		  LogWarning("Warning: Boat direction error: %i int boat %i\n", pBoat->dir&0x0F, pBoat->getSerial());
 		  break;
 		}
 	}
@@ -1373,7 +1375,7 @@ void cBoat::iMove(NXWSOCKET  s, int dir, pItem pBoat, bool forced)
 	p2->MoveTo( p2pos );
 	hold->MoveTo( holdpos );
 
-	serial= pBoat->getSerial32();
+	serial= pBoat->getSerial();
 
 /*wait until set hav appropriate function
 	for (a=0;a<imultisp[serial%HASHMAX].max;a++)  // move all item upside the boat
@@ -1444,7 +1446,7 @@ cBoat::~cBoat()//Destructor
 void insert_boat(pItem pi)
 {
 	boat_db boat;
-	boat.serial= pi->getSerial32();
+	boat.serial= pi->getSerial();
 	boat.tiller_serial= calcserial(pi->moreb1,pi->moreb2,pi->moreb3,pi->moreb4);
 	boat.l_plank_serial= pi->morex;
 	boat.r_plank_serial= pi->morey;
@@ -1454,7 +1456,7 @@ void insert_boat(pItem pi)
 	boat.p_r_plank= pointers::findItemBySerial(boat.r_plank_serial);
 	boat.p_tiller= pointers::findItemBySerial(boat.tiller_serial);
 	boat.p_container= pointers::findItemBySerial(boat.container);
-	s_boat.insert(std::make_pair(pi->getSerial32(), boat)); // insert a boat in the boat search tree
+	s_boat.insert(std::make_pair(pi->getSerial(), boat)); // insert a boat in the boat search tree
 }
 
 

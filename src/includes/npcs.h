@@ -15,6 +15,9 @@
 #ifndef NPCS_INCLUDE
 #define NPCS_INCLUDE
 
+#include "objects/cchar.h"
+#include "objects/citem.h"
+
 char* getRandomName(char * namelist);
 void setrandomname(pChar pc, char * namelist);
 COLOR addrandomcolor(cObject* po, char *colorlist);

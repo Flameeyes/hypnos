@@ -15,7 +15,7 @@
 #ifndef __RCVPKG_H
 #define __RCVPKG_H
 
-#include "packets.h"
+
 
 
 void profileStuff( NXWCLIENT ps, cPacketCharProfileReq& p );

@@ -22,8 +22,8 @@
 #include "set.h"
 #include "archive.h"
 #include "item.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 
 
@@ -213,7 +213,7 @@ namespace Commands
 		pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
 		VALIDATEPC( pc_currchar );
 
-		a = pc_currchar->getSerial32();
+		a = pc_currchar->getSerial();
 
 		for(i=1;i<MAXPAGES;i++)
 		{
@@ -290,12 +290,12 @@ namespace Commands
 				pItem outmost = pi->getOutMostCont();
 				uint32_t cont = outmost->getContSerial();
 				if( isCharSerial( cont ) ) {
-					if( cont!=Me->getSerial32() )
+					if( cont!=Me->getSerial() )
 						return;
 				}
 				else if( isItemSerial( cont ) ) {
 					pItem backpack = Me->getBackpack();
-					if( ISVALIDPI( backpack ) && ( cont!=backpack->getSerial32() ) )
+					if( ISVALIDPI( backpack ) && ( cont!=backpack->getSerial() ) )
 						return;
 				}
 				else { //on ground

@@ -45,8 +45,8 @@
 #include "archive.h"
 #include "trade.h"
 #include "map.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 #include "skills.h"
 #include "nox-wizard.h"
@@ -58,16 +58,16 @@ typedef struct _PKGx08
 {
 //0x08 Packet
 //Drop Item(s) (14 bytes)
-//* BYTE cmd
-//* BYTE[4] item id
+//* uint8_t cmd
+//* uint8_t[4] item id
 	long Iserial;
-//* BYTE[2] xLoc
+//* uint8_t[2] xLoc
 	short TxLoc;
-//* BYTE[2] yLoc
+//* uint8_t[2] yLoc
 	short TyLoc;
-//* BYTE zLoc
+//* uint8_t zLoc
 	signed char TzLoc;
-//* BYTE[4] Move Into (FF FF FF FF if normal world)
+//* uint8_t[4] Move Into (FF FF FF FF if normal world)
 	long Tserial;
 } PKGx08;
 

@@ -18,11 +18,11 @@
 #include "npcai.h"
 #include "network.h"
 #include "commands.h"
-#include "packets.h"
+
 #include "boats.h"
 #include "scp_parser.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 #include "classes.h"
 #include "utils.h"
@@ -344,7 +344,7 @@ int response(NXWSOCKET  s)
 					if ( pc_map->ftargserial == INVALID )
 					{
 						// Set the NPC to follow the PC
-						pc_map->ftargserial = pc->getSerial32();
+						pc_map->ftargserial = pc->getSerial();
 
 						// Set the NPC to wander freely
 						pc_map->npcWander = WANDER_FOLLOW;
@@ -372,7 +372,7 @@ int response(NXWSOCKET  s)
 				{
 					if ( pc_map->questType==cMsgBoard::ESCORTQUEST )
 					{
-						if ( pc_map->ftargserial == pc->getSerial32() )
+						if ( pc_map->ftargserial == pc->getSerial() )
 						{
 							// Send out the rant about accepting the escort
 							sprintf(temp, TRANSLATE("Lead on to %s. I shall pay thee when we arrive."), region[pc_map->questDestRegion].name);
@@ -519,7 +519,7 @@ int response(NXWSOCKET  s)
 
 									sprintf(temp2, TRANSLATE(" Very well I, can train thee up to the level of %i percent for %i gold. Pay for less and I shall teach thee less."),perc,delta);
 									strcat(temp, temp2);
-									pc->trainer=pc_map->getSerial32();
+									pc->trainer=pc_map->getSerial();
 									pc_map->trainingplayerin=x;
 								}
 								pc_map->talk(s, temp,0);
@@ -551,7 +551,7 @@ int response(NXWSOCKET  s)
 							}
 							if ( requestFollowMe )
 							{
-								pc_map->ftargserial = pc->getSerial32();
+								pc_map->ftargserial = pc->getSerial();
 								pc_map->npcWander = WANDER_FOLLOW;
 								pc_map->playMonsterSound(SND_STARTATTACK);
 								return 1;
@@ -561,7 +561,7 @@ int response(NXWSOCKET  s)
 							//
 
 							P_TARGET targ = clientInfo[s]->newTarget( new cCharTarget() );
-							targ->buffer[0]=pc_map->getSerial32();
+							targ->buffer[0]=pc_map->getSerial();
 							targ->code_callback=target_follow;
 							targ->send( getClientFromSocket(s) );
 							sysmessage( s, TRANSLATE("Click on the target to follow.") );
@@ -619,7 +619,7 @@ int response(NXWSOCKET  s)
 
 							P_TARGET targ = clientInfo[s]->newTarget( new cCharTarget() );
 							targ->code_callback=target_playerVendorBuy;
-							targ->buffer[0] = pc_map->getSerial32();
+							targ->buffer[0] = pc_map->getSerial();
 							targ->send( getClientFromSocket(s) );
 							//pet kill code here
 							sysmessage( s, TRANSLATE("Select the target to attack.") );
@@ -643,7 +643,7 @@ int response(NXWSOCKET  s)
 							pc->guarded = false;
 							P_TARGET targ = clientInfo[s]->newTarget( new cObjectTarget() );
 							targ->code_callback=target_fetch;
-							targ->buffer[0]=pc_map->getSerial32();
+							targ->buffer[0]=pc_map->getSerial();
 							targ->send( getClientFromSocket(s) );							
 							sysmessage( s, TRANSLATE("Click on the object to fetch."));
 							return 1;
@@ -664,7 +664,7 @@ int response(NXWSOCKET  s)
 						if ( requestPetname )
 						{
 							pc->guarded = false;
-							pc_map->ftargserial=pc->getSerial32();
+							pc_map->ftargserial=pc->getSerial();
 							pc_map->npcWander=WANDER_FOLLOW;
 							sysmessage(s, TRANSLATE("Your pet begins following you."));
 							return 1;
@@ -686,7 +686,7 @@ int response(NXWSOCKET  s)
 						{
 							P_TARGET targ=clientInfo[s]->newTarget( new cCharTarget() );
 							targ->code_callback=target_guard;
-							targ->buffer[0] = pc_map->getSerial32();	// the pet's serial
+							targ->buffer[0] = pc_map->getSerial();	// the pet's serial
 							targ->buffer[1] = 0;
 							if ( requestGuardMe )
 								targ->buffer[1]=1;	// indicates we already know whom to guard (for future use)
@@ -740,19 +740,19 @@ int response(NXWSOCKET  s)
 							if (pc_map->amxevents[EVENT_CHR_ONTRANSFER])
 							{
 								g_bByPass = false;
-								pc_map->amxevents[EVENT_CHR_ONTRANSFER]->Call(pc_map->getSerial32(), pc->getSerial32());
+								pc_map->amxevents[EVENT_CHR_ONTRANSFER]->Call(pc_map->getSerial(), pc->getSerial32());
 								if (g_bByPass==true)
 									return 0;
 							}
 							/*
-							pc_map->runAmxEvent( EVENT_CHR_ONTRANSFER, pc_map->getSerial32(), pc->getSerial32());
+							pc_map->runAmxEvent( EVENT_CHR_ONTRANSFER, pc_map->getSerial(), pc->getSerial32());
 							if (g_bByPass==true)
 								return 0;
 							*/
 							//pet transfer code here
 							P_TARGET targ = clientInfo[s]->newTarget( new cCharTarget() );
 							targ->code_callback=target_transfer;
-							targ->buffer[0]=pc_map->getSerial32();
+							targ->buffer[0]=pc_map->getSerial();
 							targ->send( getClientFromSocket(s) );
 							sysmessage( s, TRANSLATE("Select character to transfer your pet to."));
 							return 1;
@@ -986,7 +986,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 					pc_vendor->talk(s,TRANSLATE("What would you like to buy?"),0);
 					P_TARGET targ = clientInfo[s]->newTarget( new cItemTarget() );
 					targ->code_callback=target_playerVendorBuy;
-					targ->buffer[0]=pc_vendor->getSerial32();
+					targ->buffer[0]=pc_vendor->getSerial();
 					targ->send( getClientFromSocket(s) );
 					return; // lb bugfix
 				}
@@ -1051,7 +1051,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 						pc->talk(s,TRANSLATE("What would you like to buy?"),0);
 						P_TARGET targ= clientInfo[s]->newTarget( new cItemTarget() );
 						targ->code_callback = target_playerVendorBuy;
-						targ->buffer[0]=pc->getSerial32();
+						targ->buffer[0]=pc->getSerial();
 						targ->send( getClientFromSocket(s) );
 						return;
 					}
@@ -1252,7 +1252,7 @@ static bool pageCouncillor( pChar pc, NXWSOCKET socket, string &reason )
 	{
 		char temp[TEMP_STR_SIZE];
 		strcpy( counspages[pc->playercallnum].reason, reason.c_str() );
-		sprintf(temp, TRANSLATE("Counselor Page from %s [%08x]: %s"),pc->getCurrentNameC(), pc->getSerial32(), counspages[pc->playercallnum].reason);
+		sprintf(temp, TRANSLATE("Counselor Page from %s [%08x]: %s"),pc->getCurrentNameC(), pc->getSerial(), counspages[pc->playercallnum].reason);
 		bool foundCons = false;
 		pChar councillor;
 		
@@ -1435,7 +1435,7 @@ static bool stablePet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharW
 				{
 					pc_pet = petsToStable.getChar();
 					
-					uint32_t pc_pet_serial = pc_pet->getSerial32();
+					uint32_t pc_pet_serial = pc_pet->getSerial();
 		 
 					NxwSocketWrapper sw;
 					sw.fillOnline( pc_pet, false );
@@ -1523,7 +1523,7 @@ static bool claimPet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWr
 				if( !pc_stablemaster->war )
 				{
 					int32_t ii = 0;
-					while ( ( pc_a_npc = pointers::stableSearch( pc_stablemaster->getSerial32(), &ii ) ) != 0 )
+					while ( ( pc_a_npc = pointers::stableSearch( pc_stablemaster->getSerial(), &ii ) ) != 0 )
 					{
 						if( pc->isOwnerOf( pc_a_npc ) )
 							if(findPetByName)
@@ -1828,7 +1828,7 @@ static bool buyFromVendor( pChar pc, NXWSOCKET socket, string &speech, NxwCharWr
 	{
 		pc_vendor->talk( socket, TRANSLATE("What would you like to buy?"), 0 );
 		P_TARGET targ = clientInfo[socket]->newTarget( new cItemTarget() );
-		targ->buffer[0]= pc_vendor->getSerial32();
+		targ->buffer[0]= pc_vendor->getSerial();
 		targ->send( getClientFromSocket( socket ) );
 		success = true;
 	}
@@ -1891,7 +1891,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 
 	std::string back( speech.c_str() ); //Luxor
 		
-	checkAmxSpeech( pc->getSerial32(), const_cast<char *>(back.c_str()) );
+	checkAmxSpeech( pc->getSerial(), const_cast<char *>(back.c_str()) );
 	//
 	// Allow for bypass set in checkAmxSpeech.This way certain speech like passwords will not be echoed to the screen
 	//
@@ -1903,14 +1903,14 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 	if ( pc->amxevents[EVENT_CHR_ONSPEECH] ) {
 		g_bByPass = false;
 		strcpy( script2, speech.c_str() );
-		pc->amxevents[EVENT_CHR_ONSPEECH]->Call( pc->getSerial32() );
+		pc->amxevents[EVENT_CHR_ONSPEECH]->Call( pc->getSerial() );
 		if( g_bByPass == true )
 			return;
 	}
 	/*
         if ( pc->getAmxEvent( EVENT_CHR_ONSPEECH ) != NULL ) {
                 strcpy( script2, speech.c_str() );
-                pc->runAmxEvent( EVENT_CHR_ONSPEECH, pc->getSerial32() );
+                pc->runAmxEvent( EVENT_CHR_ONSPEECH, pc->getSerial() );
 
                 if( g_bByPass == true )
                         return;
@@ -1985,11 +1985,11 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 	// Echo speech to self and pcs in visual range
 	//
 	cPacketUnicodeSpeech talk;
-	talk.obj=pc->getSerial32();
+	talk.obj=pc->getSerial();
 	talk.model=pc->getId();
 	talk.type= buffer[socket][3];
-	talk.color= DBYTE2WORD( buffer[socket][4], buffer[socket][5] );
-	talk.font= DBYTE2WORD( buffer[socket][6], buffer[socket][7] );
+	talk.color= Duint8_t2WORD( buffer[socket][4], buffer[socket][5] );
+	talk.font= Duint8_t2WORD( buffer[socket][6], buffer[socket][7] );
 	talk.name+=pc->getCurrentName();
 
 	wstring speechUni;
@@ -2044,8 +2044,8 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 		pc->setSpeechCurrent( &speechUni );
 
 		if( a_pc->amxevents[EVENT_CHR_ONHEARPLAYER]!=NULL )
-			a_pc->amxevents[EVENT_CHR_ONHEARPLAYER]->Call( a_pc->getSerial32(), pc->getSerial32(), ghost );
-		//a_pc->runAmxEvent( EVENT_CHR_ONHEARPLAYER, a_pc->getSerial32(), pc->getSerial32(), ghost );
+			a_pc->amxevents[EVENT_CHR_ONHEARPLAYER]->Call( a_pc->getSerial(), pc->getSerial32(), ghost );
+		//a_pc->runAmxEvent( EVENT_CHR_ONHEARPLAYER, a_pc->getSerial(), pc->getSerial32(), ghost );
 
 		bool modifiedInEvent = false;
 		if( pc->getSpeechCurrent()==&speechUni ) { //so not was modified in event
@@ -2078,7 +2078,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 	if (SrvParms->speech_log)
 	{
 		SpeechLogFile logfile(pc);
-		logfile.Write("%s [%08x] [%i] said: %s\n", pc->getCurrentNameC(), pc->getSerial32(), pc->account, speech.c_str());
+		logfile.Write("%s [%08x] [%i] said: %s\n", pc->getCurrentNameC(), pc->getSerial(), pc->account, speech.c_str());
 
 		int n= 0;
 		string namelist= "to: ";
@@ -2176,7 +2176,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pChar pj=sc.getChar();
 		if(ISVALIDPC(pj)) {
-			if ((pc->getSerial32() != pj->getSerial32()) && (pj->npc) )
+			if ((pc->getSerial() != pj->getSerial32()) && (pj->npc) )
 			{
 				pc_found = pj;
 				break;
@@ -2240,7 +2240,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 				}
 
 				if ( !strcmp("@CALL", script1) )	// Courtesy of Flamegod - Revelation emu
-					AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal( script2 ), static_cast<int>(pc_found->getSerial32()), static_cast<int>(socket) );
+					AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal( script2 ), static_cast<int>(pc_found->getSerial()), static_cast<int>(socket) );
 
 			}
 		}

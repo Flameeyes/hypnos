@@ -10,8 +10,8 @@
 
 #include "oldmenu.h"
 #include "inlines.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "basics.h"
 
 

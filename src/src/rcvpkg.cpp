@@ -15,8 +15,8 @@
 #include "debug.h"
 #include "npcai.h"
 #include "set.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "basics.h"
 #include "inlines.h"
 #include "classes.h"
@@ -34,7 +34,7 @@ void profileStuff( NXWCLIENT ps, cPacketCharProfileReq& p )
 	VALIDATEPC( who );
 
 	if( p.update ) { //update profile
-		if( ( who->getSerial32()!=pc->getSerial32() ) && !pc->IsGMorCounselor() ) 
+		if( ( who->getSerial()!=pc->getSerial32() ) && !pc->IsGMorCounselor() ) 
 			return; //lamer fix
 		who->profile = p.profile;
 	}

@@ -33,8 +33,8 @@
 #include "walking.h"
 #include "rcvpkg.h"
 #include "map.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "inlines.h"
 #include "basics.h"
 #include "magic.h"
@@ -85,7 +85,7 @@ cChar::cChar( uint32_t ser ) : cObject()
 
 	m_client = NULL;
 
-	setSerial32(ser);
+	setSerial(ser);
 
 	setMultiSerial32Only(INVALID);//Multi serial
 	setOwnerSerial32Only(INVALID);
@@ -370,7 +370,7 @@ void cChar::loadEventFromScript(char *script1, TEXT *script2)
 
 	if (!strcmp("@ONSTART",script1))	{
 		amxevents[EVENT_CHR_ONSTART] = newAmxEvent(script2);
-		newAmxEvent(script2)->Call(getSerial32(), INVALID);
+		newAmxEvent(script2)->Call(getSerial(), INVALID);
 	}
 	CASECHAREVENT("@ONDEATH",EVENT_CHR_ONBEFOREDEATH)
 	CASECHAREVENT("@ONBEFOREDEATH",EVENT_CHR_ONBEFOREDEATH)		// SYNONYM OF ONDEATH EVENT
@@ -411,7 +411,7 @@ void cChar::loadEventFromScript(char *script1, TEXT *script2)
 	CASECHAREVENT("@ONCOMBATHIT",EVENT_CHR_ONCOMBATHIT)
 	CASECHAREVENT("@ONSPEECH",EVENT_CHR_ONSPEECH)
 	CASECHAREVENT("@ONCHECKNPCAI",EVENT_CHR_ONCHECKNPCAI)
-	else if (!strcmp("@ONCREATION",script1)) 	newAmxEvent(script2)->Call(getSerial32(), INVALID);
+	else if (!strcmp("@ONCREATION",script1)) 	newAmxEvent(script2)->Call(getSerial(), INVALID);
 }
 
 void cChar::getPopupHelp(char *str)
@@ -540,7 +540,7 @@ void cChar::disturbMed()
 		//<Luxor>
 		pClient cli = getClient();
 		if (cli != NULL)
-  			amxevents[EVENT_CHR_ONBREAKMEDITATION]->Call( getSerial32() );
+  			amxevents[EVENT_CHR_ONBREAKMEDITATION]->Call( getSerial() );
 		//</Luxor>
 		if (g_bByPass==true) return;
   	}
@@ -551,7 +551,7 @@ void cChar::disturbMed()
 	if (cli != NULL)
 	{
 		g_bByPass = false;
-		runAmxEvent( EVENT_CHR_ONBREAKMEDITATION, getSerial32(), cli->toInt(), INVALID );
+		runAmxEvent( EVENT_CHR_ONBREAKMEDITATION, getSerial(), cli->toInt(), INVALID );
 		if (g_bByPass==true)
 			return;
 	}
@@ -577,7 +577,7 @@ void cChar::unHide()
 
 		updateFlag();//AntiChrist - bugfix for highlight color not being updated
 
-		uint32_t my_serial = getSerial32();
+		uint32_t my_serial = getSerial();
 		Location my_pos = getPosition();
 
 		NxwSocketWrapper sw;
@@ -591,7 +591,7 @@ void cChar::unHide()
 			pChar pj=ps_i->currChar();
 			if (ISVALIDPC(pj))
 			{
-				if (pj->getSerial32() != my_serial) { //to other players : recreate player object
+				if (pj->getSerial() != my_serial) { //to other players : recreate player object
 					SendDeleteObjectPkt(i, my_serial);
 					impowncreate(i, this, 0);
 				} else {
@@ -614,10 +614,10 @@ void cChar::fight(pChar other)
 {
 	VALIDATEPC(other);
 	//if (!war) toggleCombat(); //Luxor
-	targserial=other->getSerial32();
+	targserial=other->getSerial();
 	unHide();
 	disturbMed(); // Meditation
-	attackerserial=other->getSerial32();
+	attackerserial=other->getSerial();
 	if (npc)
 	{
 		/*if (!war)
@@ -762,20 +762,20 @@ void cChar::damage(int32_t amount, DamageType typeofdamage, StatType stattobedam
 {
 	if (!npc && !IsOnline())
 		return;
-	pChar myself=pointers::findCharBySerial(getSerial32());
+	pChar myself=pointers::findCharBySerial(getSerial());
 	if ( ! ISVALIDPC(myself) )
 		return;
 	pChar pc_att=pointers::findCharBySerial(attackerserial);
-	uint32_t serial_att= ISVALIDPC(pc_att)? pc_att->getSerial32() : INVALID;
+	uint32_t serial_att= ISVALIDPC(pc_att)? pc_att->getSerial() : INVALID;
 
 	if (amxevents[EVENT_CHR_ONWOUNDED]) {
 		g_bByPass = false;
-		amount = amxevents[EVENT_CHR_ONWOUNDED]->Call(getSerial32(), amount, serial_att);
+		amount = amxevents[EVENT_CHR_ONWOUNDED]->Call(getSerial(), amount, serial_att);
 		if (g_bByPass==true) return;
 	}
 	/*
 	if ( getAmxEvent(EVENT_CHR_ONWOUNDED) != NULL ) {
-		amount = runAmxEvent( EVENT_CHR_ONWOUNDED, getSerial32(), amount, serial_att );
+		amount = runAmxEvent( EVENT_CHR_ONWOUNDED, getSerial(), amount, serial_att );
 		if (g_bByPass==true)
 			return;
 	}
@@ -895,7 +895,7 @@ bool cChar::canSee( cObject &obj )
 	if ( distance > VISRANGE ) // We cannot see it!
 		return false;
 
-	uint32_t ser = obj.getSerial32();
+	uint32_t ser = obj.getSerial();
 	if ( isCharSerial( ser ) ) {
 		pChar pc = pChar( &obj );
 		if ( !IsGM() ) { // Players only
@@ -927,7 +927,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 
 	pItem p_boat = Boats->GetBoat(getPosition());
 	if( ISVALIDPI(p_boat) ) {
-		setMultiSerial(p_boat->getSerial32());
+		setMultiSerial(p_boat->getSerial());
 		Location boatpos = getPosition();
 		boatpos.z = p_boat->getPosition().z +3;
 		boatpos.dispz = p_boat->getPosition().dispz +3;
@@ -952,7 +952,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 		if ( IsHidden() )
 			flag |= 0x80;
 
-		SendDrawGamePlayerPkt(socket, getSerial32(), getId(), 0x00, getColor(), flag, pos, 0x0000, dir | 0x80, true);
+		SendDrawGamePlayerPkt(socket, getSerial(), getId(), 0x00, getColor(), flag, pos, 0x0000, dir | 0x80, true);
 
 		getBody()->calcWeight();
 		client->statusWindow( this, true);
@@ -1016,7 +1016,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 					pChar pc=sc.getChar();
 					if( ISVALIDPC( pc ) )
 					{
-						if( getSerial32() != pc->getSerial32() )
+						if( getSerial() != pc->getSerial32() )
 						{
 							if ( !pc->IsOnline() && !pc->npc )
 							{
@@ -1250,12 +1250,12 @@ void cChar::Delete()
 */
 bool cChar::seeForFirstTime( cObject &obj )
 {
-	uint32_t objser = obj.getSerial32();
+	uint32_t objser = obj.getSerial();
 
 	//
         // The char cannot see itself for the first time ;)
         //
-	if ( objser == getSerial32() )
+	if ( objser == getSerial() )
 		return false;
 
 	//
@@ -1287,12 +1287,12 @@ bool cChar::seeForFirstTime( cObject &obj )
 */
 bool cChar::seeForLastTime( cObject &obj )
 {
-	uint32_t objser = obj.getSerial32();
+	uint32_t objser = obj.getSerial();
 
         //
         // The char cannot see itself for the last time ;)
         //
-	if ( objser == getSerial32() )
+	if ( objser == getSerial() )
 		return false;
 
 	//
@@ -1407,12 +1407,12 @@ void cChar::resurrect( NXWCLIENT healer )
 
 		if (amxevents[EVENT_CHR_ONRESURRECT]) {
 			g_bByPass = false;
-			amxevents[EVENT_CHR_ONRESURRECT]->Call(getSerial32(), (healer!=NULL)? healer->currCharIdx() : INVALID );
+			amxevents[EVENT_CHR_ONRESURRECT]->Call(getSerial(), (healer!=NULL)? healer->currCharIdx() : INVALID );
 			if (g_bByPass==true) return;
 		}
 		/*
 		g_bByPass = false;
-		runAmxEvent( EVENT_CHR_ONRESURRECT, getSerial32(), (healer!=NULL)? healer->toInt() : INVALID );
+		runAmxEvent( EVENT_CHR_ONRESURRECT, getSerial(), (healer!=NULL)? healer->toInt() : INVALID );
 		if (g_bByPass==true)
 			return;
 		*/
@@ -1435,7 +1435,7 @@ void cChar::resurrect( NXWCLIENT healer )
 			if( pj->layer == LAYER_NECK )
 			{
 				pj->layer = LAYER_BACKPACK;
-				packitemserial=pj->getSerial32(); //Tauriel packitem speedup
+				packitemserial=pj->getSerial(); //Tauriel packitem speedup
 			}
 		}
 
@@ -1464,7 +1464,7 @@ void cChar::resurrect( NXWCLIENT healer )
 */
 void cChar::setOwner(pChar owner)
 {
-	setOwnerSerial32(owner->getSerial32());
+	setOwnerSerial32(owner->getSerial());
 	npcWander=WANDER_NOMOVE;
 	tamed = true;
 	npcaitype=NPCAI_GOOD;
@@ -1614,13 +1614,13 @@ void cChar::possess(pChar pc)
 		possessorSerial = INVALID;
 		pc->possessedSerial = INVALID;
 	} else {
-		pc->possessorSerial = getSerial32();
-		possessedSerial = pc->getSerial32();
+		pc->possessorSerial = getSerial();
+		possessedSerial = pc->getSerial();
 	}
 
 	//Network related stuff
 	( bSwitchBack ) ? npc = 1 : pc->npc = 0;
-	currchar[ socket ] = pc->getSerial32();
+	currchar[ socket ] = pc->getSerial();
 	pc->setClient( new cNxwClientObj( socket ) );
 	setClient( NULL );
 
@@ -1684,13 +1684,13 @@ void cChar::Kill()
 
 	if (amxevents[EVENT_CHR_ONBEFOREDEATH]) {
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONBEFOREDEATH]->Call(getSerial32(), INVALID);
+		amxevents[EVENT_CHR_ONBEFOREDEATH]->Call(getSerial(), INVALID);
 		if (g_bByPass==true) return;
 	}
 
 	/*
 	g_bByPass = false;
-	runAmxEvent( EVENT_CHR_ONDEATH, getSerial32(), s );
+	runAmxEvent( EVENT_CHR_ONDEATH, getSerial(), s );
 	if (g_bByPass==true)
 		return;
 	*/
@@ -1764,7 +1764,7 @@ void cChar::Kill()
 		pKiller->attackerserial = INVALID;
 		pKiller->ResetAttackFirst();
 
-		if( pKiller->attackerserial == getSerial32() )
+		if( pKiller->attackerserial == getSerial() )
 		{
 			pKiller->attackerserial = INVALID;
 			pKiller->ResetAttackFirst();
@@ -1796,7 +1796,7 @@ void cChar::Kill()
 			{ // PvP
 				if ( !IsGrey() && IsInnocent() && Guilds->Compare(pKiller,this) == 0 )
 				{
-					murdererSer = pKiller->getSerial32();
+					murdererSer = pKiller->getSerial();
 					++pKiller->kills;
 					pKiller->sysmsg(TRANSLATE("You have killed %i innocent people."), pKiller->kills);
 
@@ -1812,15 +1812,15 @@ void cChar::Kill()
 			}   // was innocent
 
 			if (pKiller->amxevents[EVENT_CHR_ONKILL])
-				pKiller->amxevents[EVENT_CHR_ONKILL]->Call( pKiller->getSerial32(), getSerial32() );
+				pKiller->amxevents[EVENT_CHR_ONKILL]->Call( pKiller->getSerial(), getSerial32() );
 
-				//pk->runAmxEvent( EVENT_CHR_ONKILL, pk->getSerial32(), pk->getClient()->toInt(), getSerial32(), s);
+				//pk->runAmxEvent( EVENT_CHR_ONKILL, pk->getSerial(), pk->getClient()->toInt(), getSerial32(), s);
 			} //PvP
 		}//if !npc
 		else
 		{
 			if (pKiller->amxevents[EVENT_CHR_ONKILL])
-				pKiller->amxevents[EVENT_CHR_ONKILL]->Call( pKiller->getSerial32(), getSerial32() );
+				pKiller->amxevents[EVENT_CHR_ONKILL]->Call( pKiller->getSerial(), getSerial32() );
 			if (pKiller->war)
 				pKiller->toggleCombat(); // ripper
 		}
@@ -1834,7 +1834,7 @@ void cChar::Kill()
 	for( sc.rewind(); !sc.isEmpty(); sc++ )
 	{
 		pk = sc.getChar();
-		if(!ISVALIDPC(pk) || pk->targserial!=getSerial32() )
+		if(!ISVALIDPC(pk) || pk->targserial!=getSerial() )
 			continue;
 
 		if (pk->npcaitype==NPCAI_TELEPORTGUARD)
@@ -1882,7 +1882,7 @@ void cChar::Kill()
 			{ // PvP
 				if ( (!IsGrey()) && IsInnocent() && Guilds->Compare(pk,this)==0)
 				{
-					murdererSer = pk->getSerial32();
+					murdererSer = pk->getSerial();
 					pk->kills++;
 					pk->sysmsg(TRANSLATE("You have killed %i innocent people."), pk->kills);
 
@@ -1898,15 +1898,15 @@ void cChar::Kill()
 			}   // was innocent
 
 			if (pk->amxevents[EVENT_CHR_ONKILL])
-				pk->amxevents[EVENT_CHR_ONKILL]->Call( pk->getSerial32(), getSerial32() );
+				pk->amxevents[EVENT_CHR_ONKILL]->Call( pk->getSerial(), getSerial32() );
 
-				//pk->runAmxEvent( EVENT_CHR_ONKILL, pk->getSerial32(), pk->getClient()->toInt(), getSerial32(), s);
+				//pk->runAmxEvent( EVENT_CHR_ONKILL, pk->getSerial(), pk->getClient()->toInt(), getSerial32(), s);
 			} //PvP
 		}//if !npc
 		else
 		{
 			if (pk->amxevents[EVENT_CHR_ONKILL])
-				pk->amxevents[EVENT_CHR_ONKILL]->Call( pk->getSerial32(), getSerial32() );
+				pk->amxevents[EVENT_CHR_ONKILL]->Call( pk->getSerial(), getSerial32() );
 			if (pk->war)
 				pk->toggleCombat(); // ripper
 
@@ -1937,7 +1937,7 @@ void cChar::Kill()
 		if ((pi_j->type==ITYPE_CONTAINER) && (pi_j->getPosition().x==26) && (pi_j->getPosition().y==0) &&
 			(pi_j->getPosition().z==0) && (pi_j->getId()==0x1E5E) )
 		{
-			endtrade(pi_j->getSerial32());
+			endtrade(pi_j->getSerial());
 		}
 	}
 
@@ -1954,7 +1954,7 @@ void cChar::Kill()
 		pItem pDeathRobe = cItem::addByID( ITEMID_DEATHSHROUD, 1, "a death shroud", 0, getPosition());
         	if (pDeathRobe)
 		{
-			robe = pDeathRobe->getSerial32();
+			robe = pDeathRobe->getSerial();
 			pDeathRobe->setContainer(this);
 			pDeathRobe->layer = LAYER_OUTER_TORSO;
 			pDeathRobe->def = 1;
@@ -1988,7 +1988,7 @@ void cChar::Kill()
 			pCorpse->more2 = 2;
 		else if (IsMurderer())
 			pCorpse->more2 = 3;
-		pCorpse->setOwnerSerial32(getSerial32());
+		pCorpse->setOwnerSerial32(getSerial());
 		pCorpse->more4 = char( SrvParms->playercorpsedecaymultiplier&0xff ); // how many times longer for the player's corpse to decay
 	}
 
@@ -2085,7 +2085,7 @@ void cChar::Kill()
 	if (amxevents[EVENT_CHR_ONAFTERDEATH])
 	{
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONAFTERDEATH]->Call(getSerial32(), pCorpse->getSerial32() );
+		amxevents[EVENT_CHR_ONAFTERDEATH]->Call(getSerial(), pCorpse->getSerial32() );
 	}
 
 	if ( npc )
@@ -2208,7 +2208,7 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 
 	if ( showToWho->CanSeeSerials() || showSerials )
 	{
-		sprintf( temp, " [%x]", getSerial32() );
+		sprintf( temp, " [%x]", getSerial() );
 		strcat( temp1, temp );
 	}
 
@@ -2253,7 +2253,7 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 			strcat(temp1,temp);
 		}
 	}
-	if (tamed && npcaitype==NPCAI_PETGUARD && getOwnerSerial32()==showToWho->getSerial32() && showToWho->guarded)
+	if (tamed && npcaitype==NPCAI_PETGUARD && getOwnerSerial32()==showToWho->getSerial() && showToWho->guarded)
 	{
 		if  (strcmp(::title[15].other,""))
 		{
@@ -2330,7 +2330,7 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 		}
 	}
 
-	SendSpeechMessagePkt(socket, getSerial32(), 0x0101, 6, color, 0x0003, sysname, temp1);
+	SendSpeechMessagePkt(socket, getSerial(), 0x0101, 6, color, 0x0003, sysname, temp1);
 }
 
 /*!
@@ -2486,7 +2486,7 @@ void cChar::checkPoisoning()
 						     );
 					break;
 				default:
-					ErrOut("checkPoisoning switch fallout for char with serial [%u]\n", getSerial32() );
+					ErrOut("checkPoisoning switch fallout for char with serial [%u]\n", getSerial() );
 					poisoned = POISON_NONE;
 					return;
 				}
@@ -2561,7 +2561,7 @@ void cChar::do_lsd()
 
 			// lots of color consistancy checks
 			color=color%0x03E9;
-			WORD2DBYTE( color, c1, c2 );
+			WORD2Duint8_t( color, c1, c2 );
 			if (color<0x0002 || color>0x03E9 )
 				color=0x03E9;
 
@@ -2580,7 +2580,7 @@ void cChar::do_lsd()
 				yy= pi->getPosition().y + rand()%3;
 			else
 				yy= pi->getPosition().y;
-			WORD2DBYTE(color, c1, c2);
+			WORD2Duint8_t(color, c1, c2);
 			if (distFrom(pi)<13) if (rand()%7==0)
 			{
 				icnt++;
@@ -2752,7 +2752,7 @@ void cChar::warUpdate()
 		{
 			if (!pc_i->isDead())
 			{
-				cPacketSendDeleteObj pk(pc_i->getSerial32());
+				cPacketSendDeleteObj pk(pc_i->getSerial());
 		                ps_i->sendPacket(&pk);
 				sendit = false;
 			}

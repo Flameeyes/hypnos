@@ -31,8 +31,8 @@
 #include "amxcback.h"
 #include "sndpkg.h"
 #include "itemid.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "client.h"
 #include "network.h"
 

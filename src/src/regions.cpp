@@ -9,8 +9,8 @@
 
 #include "common_libs.h"
 #include "debug.h"
-#include "items.h"
-#include "chars.h"
+
+
 
 cRegion::cRegion()
 {
@@ -91,12 +91,12 @@ void cRegion::remove( pItem pi )
 void cRegion::removeNow( pChar pc )
 {
 
-	WHERE_IS_NOW_MAP::iterator iternow( this->char_where_is_now.find( pc->getSerial32() ) );
+	WHERE_IS_NOW_MAP::iterator iternow( this->char_where_is_now.find( pc->getSerial() ) );
 	if( iternow!=this->char_where_is_now.end() ) {
 		RegCoordPoint* p = &iternow->second;
 	
-		uint32_t_SET* iter = &this->regions[p->a][p->b].charsInRegions;
-		uint32_t_SET::iterator i( iter->find(pc->getSerial32()) );
+		uint32_set* iter = &this->regions[p->a][p->b].charsInRegions;
+		uint32_set::iterator i( iter->find(pc->getSerial()) );
 		if( i!=iter->end() )
 			iter->erase( i );
 	}
@@ -105,12 +105,12 @@ void cRegion::removeNow( pChar pc )
 void cRegion::removeNow( pItem pi )
 {
 
-	WHERE_IS_NOW_MAP::iterator iternow( this->item_where_is_now.find( pi->getSerial32() ) );
+	WHERE_IS_NOW_MAP::iterator iternow( this->item_where_is_now.find( pi->getSerial() ) );
 	if( iternow!=this->item_where_is_now.end() ) {
 		RegCoordPoint* p = &iternow->second;
 	
-		uint32_t_SET* iter = &this->regions[p->a][p->b].itemsInRegions;
-		uint32_t_SET::iterator i( iter->find(pi->getSerial32()) );
+		uint32_set* iter = &this->regions[p->a][p->b].itemsInRegions;
+		uint32_set::iterator i( iter->find(pi->getSerial()) );
 		if( i!=iter->end() )
 			iter->erase( i );
 	}
@@ -119,15 +119,15 @@ void cRegion::removeNow( pItem pi )
 void cRegion::addNow( pChar pc )
 {
 	RegCoordPoint p( pc->getPosition() ); 
-	this->char_where_is_now.insert( make_pair( pc->getSerial32(), p ) );
-	this->regions[p.a][p.b].charsInRegions.insert( pc->getSerial32() );
+	this->char_where_is_now.insert( make_pair( pc->getSerial(), p ) );
+	this->regions[p.a][p.b].charsInRegions.insert( pc->getSerial() );
 }
 
 void cRegion::addNow( pItem pi )
 {
 	RegCoordPoint p( pi->getPosition() ); 
-	this->item_where_is_now.insert( make_pair( pi->getSerial32(), p ) );
-	this->regions[p.a][p.b].itemsInRegions.insert( pi->getSerial32() );
+	this->item_where_is_now.insert( make_pair( pi->getSerial(), p ) );
+	this->regions[p.a][p.b].itemsInRegions.insert( pi->getSerial() );
 }
 
 RegCoordPoint::RegCoordPoint( Location location )

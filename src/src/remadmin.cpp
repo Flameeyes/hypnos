@@ -16,8 +16,8 @@
 #include "remadmin.h"
 #include "accounts.h"
 #include "worldmain.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 
 
@@ -504,7 +504,7 @@ void RemoteAdmin::ProcessInput(int s)
 				if( ISVALIDPC(pc_i) && clientInfo[i]->ingame ) //Keeps NPC's from appearing on the list
 				{
 					j++;
-					Printf(s, "    %i) %s [%08x]\r\n", j, pc_i->getCurrentNameC(), pc_i->getSerial32());
+					Printf(s, "    %i) %s [%08x]\r\n", j, pc_i->getCurrentNameC(), pc_i->getSerial());
 				}
 			}
 			Printf(s, "Total Users Online: %d\r\n", j);

@@ -81,8 +81,8 @@
 #include "sndpkg.h"
 #include "titles.h"
 #include "timing.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 #include "basics.h"
 #include "skills.h"
@@ -128,24 +128,24 @@ static void item_char_test()
 
 			pItem pi=(pItem)(objs.getObject() );
 
-			if (pi->getSerial32()==INVALID) {
-				WarnOut("item %s [serial: %i] has invalid serial!",pi->getCurrentNameC(),pi->getSerial32());
-				LogWarning("ALERT ! item %s [serial: %i] has invalid serial!",pi->getCurrentNameC(),pi->getSerial32());
+			if (pi->getSerial()==INVALID) {
+				WarnOut("item %s [serial: %i] has invalid serial!",pi->getCurrentNameC(),pi->getSerial());
+				LogWarning("ALERT ! item %s [serial: %i] has invalid serial!",pi->getCurrentNameC(),pi->getSerial());
 			}
 
 			// item is contained in himself
 			if (pi == pi->getContainer())
 			{
-				WarnOut("item %s [serial: %i] has dangerous container value, autocorrecting",pi->getCurrentNameC(),pi->getSerial32());
-				LogWarning("ALERT ! item %s [serial: %i] has dangerous container value, autocorrecting",pi->getCurrentNameC(),pi->getSerial32());
+				WarnOut("item %s [serial: %i] has dangerous container value, autocorrecting",pi->getCurrentNameC(),pi->getSerial());
+				LogWarning("ALERT ! item %s [serial: %i] has dangerous container value, autocorrecting",pi->getCurrentNameC(),pi->getSerial());
 				pi->setContainer(0);
 			}
 
 			// item is owned by himself
 			if (pi->getSerial() == pi->getOwnerSerial32())
 			{
-				WarnOut("item %s [serial: %i] has dangerous owner value",pi->getCurrentNameC(),pi->getSerial32());
-				LogWarning("ALERT ! item %s [serial: %i] has dangerous owner value",pi->getCurrentNameC(),pi->getSerial32());
+				WarnOut("item %s [serial: %i] has dangerous owner value",pi->getCurrentNameC(),pi->getSerial());
+				LogWarning("ALERT ! item %s [serial: %i] has dangerous owner value",pi->getCurrentNameC(),pi->getSerial());
 				pi->setOwnerSerial32(INVALID);
 			}
 
@@ -209,7 +209,7 @@ void callguards( CHARACTER p )
 		pChar character=sc.getChar();
 		if(!ISVALIDPC(character))
 			continue;
-		if( caller->getSerial32() != character->getSerial32() && caller->distFrom( character )  <= 15 && !character->dead && !character->IsHidden())
+		if( caller->getSerial() != character->getSerial32() && caller->distFrom( character )  <= 15 && !character->dead && !character->IsHidden())
 		{
 			if ((!character->IsInnocent() || character->npcaitype == NPCAI_EVIL) && !character->IsHidden() )
 				offenders = true;
@@ -246,7 +246,7 @@ void callguards( CHARACTER p )
 				guard = guards.back();
 				guard->oldnpcWander = guard->npcWander;
 				guard->npcWander = WANDER_FOLLOW;
-				guard->ftargserial = caller->getSerial32();
+				guard->ftargserial = caller->getSerial();
 				guard->antiguardstimer=uiCurrentTime+(MY_CLOCKS_PER_SEC*10); // Sparhawk this should become server configurable
 				guard->talkAll( TRANSLATE("Don't fear, help is on the way"), 0 );
 				//guard->antispamtimer = uiCurrentTime+MY_CLOCKS_PER_SEC*5;
@@ -413,7 +413,7 @@ void checkkey ()
 					pChar pc_i=MAKE_CHAR_REF(currchar[i]);
 					if(ISVALIDPC(pc_i) && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
 					{
-						ConOut("%i) %s [ %08x ]\n", j, pc_i->getCurrentNameC(), pc_i->getSerial32());
+						ConOut("%i) %s [ %08x ]\n", j, pc_i->getCurrentNameC(), pc_i->getSerial());
 						j++;
 					}
 				}
@@ -811,12 +811,12 @@ int main(int argc, char *argv[])
 		for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
 			if ( isCharSerial( objs.getSerial() ) && ISVALIDPC( ( pc=static_cast<pChar>(objs.getObject())) ) ) {
 				if( pc->npc )
-					checkNpcs.Call( pc->getSerial32() );
+					checkNpcs.Call( pc->getSerial() );
 				else
-					checkPlayers.Call( pc->getSerial32() );
+					checkPlayers.Call( pc->getSerial() );
 			}
 			else if ( isItemSerial( objs.getSerial() ) && ISVALIDPI( ( pi=static_cast<pItem>(objs.getObject())) ) ) {
-				checkItems.Call( pi->getSerial32() );
+				checkItems.Call( pi->getSerial() );
 			}
 		}
 
@@ -1154,37 +1154,37 @@ void npcattacktarget(pChar pc, pChar pc_target)
 	if ( pc->dead || pc_target->dead )
 		return;
 
-	if ( pc->getSerial32() == pc_target->getSerial32() )
+	if ( pc->getSerial() == pc_target->getSerial32() )
 		return;
 
 	if ( !pc->losFrom(pc_target) )
 		return;
 
 	if( pc->amxevents[ EVENT_CHR_ONBEGINATTACK ]!=NULL ) {
-		pc->amxevents[ EVENT_CHR_ONBEGINATTACK ]->Call( pc->getSerial32(), pc_target->getSerial32() );
+		pc->amxevents[ EVENT_CHR_ONBEGINATTACK ]->Call( pc->getSerial(), pc_target->getSerial32() );
 		if (g_bByPass==true)
 			return;
 	}
 	/*
-	pc->runAmxEvent( EVENT_CHR_ONBEGINATTACK, pc->getSerial32(), pc_target->getSerial32() );
+	pc->runAmxEvent( EVENT_CHR_ONBEGINATTACK, pc->getSerial(), pc_target->getSerial32() );
 	if (g_bByPass==true)
 		return;
 	*/
 	if( pc->amxevents[ EVENT_CHR_ONBEGINDEFENSE ]!=NULL ) {
-		pc->amxevents[ EVENT_CHR_ONBEGINDEFENSE ]->Call( pc_target->getSerial32(), pc->getSerial32() );
+		pc->amxevents[ EVENT_CHR_ONBEGINDEFENSE ]->Call( pc_target->getSerial(), pc->getSerial32() );
 		if (g_bByPass==true)
 			return;
 	}
 	/*
-	pc->runAmxEvent( EVENT_CHR_ONBEGINDEFENSE, pc_target->getSerial32(), pc->getSerial32() );
+	pc->runAmxEvent( EVENT_CHR_ONBEGINDEFENSE, pc_target->getSerial(), pc->getSerial32() );
 	if (g_bByPass==true)
 		return;
 	*/
 
 	pc->playMonsterSound(SND_STARTATTACK);
 
-	pc->targserial = pc_target->getSerial32();
-	pc->attackerserial = pc_target->getSerial32();
+	pc->targserial = pc_target->getSerial();
+	pc->attackerserial = pc_target->getSerial();
 	pc->SetAttackFirst();
 
 	if ( !pc->war )
@@ -1194,14 +1194,14 @@ void npcattacktarget(pChar pc, pChar pc_target)
 	pChar pc_target_targ = pointers::findCharBySerial(pc_target->targserial);
 	if ( !ISVALIDPC(pc_target_targ) || pc_target_targ->dead || pc_target->distFrom(pc_target_targ) > 15 ) {
 		if (!pc_target->npc && pc_target->war) {
-			pc_target->targserial = pc->getSerial32();
-			pc_target->attackerserial = pc->getSerial32();
+			pc_target->targserial = pc->getSerial();
+			pc_target->attackerserial = pc->getSerial();
 		} else if (pc_target->npc) {
 			if ( !pc_target->war )
 				pc_target->toggleCombat();
 
-			pc_target->targserial = pc->getSerial32();
-			pc_target->attackerserial = pc->getSerial32();
+			pc_target->targserial = pc->getSerial();
+			pc_target->attackerserial = pc->getSerial();
 			pc_target->setNpcMoveTime();
 		}
 	}
@@ -1326,7 +1326,7 @@ void usepotion(pChar pc, pItem pi)
 
 		P_TARGET targ= clientInfo[s]->newTarget( new cTarget() );
 		targ->code_callback=target_expPotion;
-		targ->buffer[0]= pi->getSerial32();
+		targ->buffer[0]= pi->getSerial();
 		targ->send( getClientFromSocket(s) );
 		sysmessage( s, "*throw*" );
 		return;
@@ -1694,7 +1694,7 @@ void InitMultis()
 		{
 			if (multi->type==117)
 				//setserial(i,DEREF_pItem(multi),8);
-				pc_i->setMultiSerial(multi->getSerial32());
+				pc_i->setMultiSerial(multi->getSerial());
 			else
 				pc_i->setMultiSerial32Only(INVALID);
 		}
@@ -1711,13 +1711,13 @@ void InitMultis()
 			continue;
 
 		//Endymion modified from !pi->isInWorld() to pi->isInWorld()
-		if (pi->isInWorld() && (pi->getSerial32()!=INVALID))
+		if (pi->isInWorld() && (pi->getSerial()!=INVALID))
 		{
 			pItem multi=findmulti( pi->getPosition() );
 			if (ISVALIDPI(multi))
-				if (multi->getSerial32()!=pi->getSerial32())
+				if (multi->getSerial()!=pi->getSerial32())
 					//setserial(DEREF_pItem(pi),DEREF_pItem(multi),7);
-					pi->SetMultiSerial(multi->getSerial32());
+					pi->SetMultiSerial(multi->getSerial());
 				else
 					pi->setMultiSerial32Only(INVALID);
 		}

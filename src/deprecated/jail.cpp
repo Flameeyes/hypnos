@@ -9,8 +9,8 @@
 
 #include "common_libs.h"
 #include "jail.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "basics.h"
 #include "inlines.h"
 
@@ -130,7 +130,7 @@ void prison::release( pChar releaser, pChar pc )
 {
 	VALIDATEPC(pc);
 	JAILEDVECTOR::iterator j = prison::jailed.begin();
-	while(  j!=prison::jailed.end() && (*j).serial!=pc->getSerial32() )	j++;
+	while(  j!=prison::jailed.end() && (*j).serial!=pc->getSerial() )	j++;
 	if(j==prison::jailed.end()) {
 		if( ISVALIDPC( releaser ) )
 			releaser->sysmsg( "The player isn't jailed" );

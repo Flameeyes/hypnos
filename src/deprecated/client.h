@@ -19,6 +19,9 @@
 #include "targeting.h"
 #include "target.h"
 
+#include "objects/cchar.h"
+#include "objects/citem.h"
+
 typedef std::vector< std::string > td_cmdparams;
 
 class cNxwClientObj {
@@ -40,7 +43,7 @@ public:
 	pChar currChar();
 	int currCharIdx();
 	int getRealSocket();
-	BYTE *getRcvBuffer();
+	uint8_t *getRcvBuffer();
 	//@}
 
 	//@{

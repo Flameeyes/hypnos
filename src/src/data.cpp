@@ -199,7 +199,7 @@ static void cacheVerdataIndex()
 		return;
 
 	std::map< uint32_t, verdata_st >* verIdx_cache = new std::map< uint32_t, verdata_st >;
-	verIdx->getData( 0, (BYTE*)(&verdataEntries), 4 );
+	verIdx->getData( 0, (uint8_t*)(&verdataEntries), 4 );
 
 	verdata_st v;
 	int32_t i;
@@ -664,12 +664,12 @@ bool cMULFile<T>::getData( uint32_t index, T& data )
 \author Luxor
 */
 template <typename T>
-bool cMULFile<T>::getData( uint32_t index, BYTE* ptr, uint32_t size )
+bool cMULFile<T>::getData( uint32_t index, uint8_t* ptr, uint32_t size )
 {
 	if ( !isReady() )
 		return false;
 	fseek( m_file, index, SEEK_SET );
-	return ( fread( ptr, sizeof( BYTE ), size, m_file ) != 0 );
+	return ( fread( ptr, sizeof( uint8_t ), size, m_file ) != 0 );
 }
 
 /*!

@@ -18,8 +18,8 @@
 #include "trade.h"
 #include "commands.h"
 #include "weight.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "inlines.h"
 #include "nox-wizard.h"
 #include "utils.h"
@@ -151,7 +151,7 @@ void sellaction(NXWSOCKET s)
 
 					for( sw.rewind(); !sw.isEmpty(); sw++ )
 					{
-						SendDeleteObjectPkt( sw.getSocket(), pSell->getSerial32() );
+						SendDeleteObjectPkt( sw.getSocket(), pSell->getSerial() );
 					}
 
 					pSell->setContainer( npb );
@@ -233,9 +233,9 @@ pItem tradestart(pChar pc1, pChar pc2)
 	msg[1]=0;       //Size
 	msg[2]=47;      //Size
 	msg[3]=0;       //Initiate
-        LongToCharPtr(pc2->getSerial32(), msg+4);
-	LongToCharPtr(cont1->getSerial32(), msg+8);
-	LongToCharPtr(cont2->getSerial32(), msg+12);
+        LongToCharPtr(pc2->getSerial(), msg+4);
+	LongToCharPtr(cont1->getSerial(), msg+8);
+	LongToCharPtr(cont2->getSerial(), msg+12);
 	msg[16]=1;
 	strcpy((char*)&(msg[17]), pc2->getCurrentNameC());
 	Xsend(s1, msg, 47);
@@ -245,9 +245,9 @@ pItem tradestart(pChar pc1, pChar pc2)
 	msg2[1]=0;      //Size
 	msg2[2]=47;     //Size
 	msg2[3]=0;      //Initiate
-	LongToCharPtr(pc1->getSerial32(),msg2+4);
-	LongToCharPtr(cont2->getSerial32(), msg2+8);
-	LongToCharPtr(cont1->getSerial32(), msg2+12);
+	LongToCharPtr(pc1->getSerial(),msg2+4);
+	LongToCharPtr(cont2->getSerial(), msg2+8);
+	LongToCharPtr(cont1->getSerial(), msg2+12);
 	msg2[16]=1;
 	strcpy((char*)&(msg2[17]), pc1->getCurrentNameC());
 	Xsend(s2, msg2, 47);
@@ -381,7 +381,7 @@ void cRestockMng::doRestock()
 
 			}
 
-			restocked.push( pi->getSerial32() );
+			restocked.push( pi->getSerial() );
 
 		}
 
@@ -416,7 +416,7 @@ void cRestockMng::doRestockAll()
 
 			}
 
-			restocked.push( pi->getSerial32() );
+			restocked.push( pi->getSerial() );
 
 		}
 
@@ -429,7 +429,7 @@ void cRestockMng::doRestockAll()
 void cRestockMng::addNewRestock( pItem pi )
 {
 	VALIDATEPI(pi);
-	this->needrestock.push( pi->getSerial32() );
+	this->needrestock.push( pi->getSerial() );
 }
 
 void cRestockMng::rewindList()

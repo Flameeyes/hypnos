@@ -60,7 +60,7 @@ void setHKLMRegistryString(char *key, char *subkey, char *value)
 	// Access using preferred 'Ex' functions
 	if (RegCreateKeyEx (HKEY_LOCAL_MACHINE, key, 0, subkey, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,  &hTestKey,  &dwCreateResult) == ERROR_SUCCESS)
 	{
-		RegSetValueEx(hTestKey, subkey, 0, REG_SZ, (CONST BYTE *)value, strlen(value));
+		RegSetValueEx(hTestKey, subkey, 0, REG_SZ, (CONST uint8_t *)value, strlen(value));
 		RegCloseKey (hTestKey);
 	}
 }

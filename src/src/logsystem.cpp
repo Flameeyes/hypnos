@@ -150,7 +150,7 @@ string SpeechLogFile::MakeFilename(pChar pc)
 
 	if( !ISVALIDPC(pc) ) return "bad npc";
 
-	sprintf(tmp, "speech/speech_[%d][%d][%s].txt", pc->account, pc->getSerial32(), pc->getCurrentNameC());
+	sprintf(tmp, "speech/speech_[%d][%d][%s].txt", pc->account, pc->getSerial(), pc->getCurrentNameC());
 	string str(tmp);
 
 	return str;

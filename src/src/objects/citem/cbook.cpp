@@ -13,8 +13,8 @@
 #include "network.h"
 #include "worldmain.h"
 #include "globals.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "utils.h"
 #include "basics.h"
 
@@ -509,7 +509,7 @@ namespace Books
 		for(; i < 30; i++)
 			booktitle[i] = '\0';
 
-		LongToCharPtr(book->getSerial32(), bookopen+1);
+		LongToCharPtr(book->getSerial(), bookopen+1);
 		ShortToCharPtr(pages.size(), bookopen+7);
 
 		Xsend(s, bookopen, 9);
@@ -530,7 +530,7 @@ namespace Books
 
 		bytes=9;
 
-		LongToCharPtr(book->getSerial32(), bookpage_pre+3);
+		LongToCharPtr(book->getSerial(), bookpage_pre+3);
 
 		tpages::iterator it ( pages.begin() );
 		for ( ; it != pages.end(); it++ )
@@ -581,7 +581,7 @@ namespace Books
 		for(; i < 31; i++)
 			booktitle[i] = '\0';
 
-		LongToCharPtr(book->getSerial32(), bookopen+1);
+		LongToCharPtr(book->getSerial(), bookopen+1);
 		ShortToCharPtr(pages.size(), bookopen+7);
 
 		Xsend(s, bookopen, 9);
@@ -614,7 +614,7 @@ namespace Books
 			bytes += (*it).size() + 1;
 
 		ShortToCharPtr(bytes, bookpage+1);
-		LongToCharPtr(book->getSerial32(), bookpage+3);
+		LongToCharPtr(book->getSerial(), bookpage+3);
 		ShortToCharPtr(p, bookpage+9);
 		ShortToCharPtr(selpage.size(), bookpage+11);
 

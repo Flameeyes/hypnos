@@ -19,8 +19,8 @@
 #include "trigger.h"
 #include "nxwgui.h"
 #include "set.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 #include "skills.h"
 #include "range.h"
@@ -186,7 +186,7 @@ void cTriggerContext::parseIAddCommand(char* par)
     // Added colormem token here! by Magius(CHE) §
     if( ISVALIDPI(pi) ) {
 		if( m_nColor1!=0xFF ) {
-			pi->setColor( DBYTE2WORD( m_nColor1, m_nColor2 ) );
+			pi->setColor( Duint8_t2WORD( m_nColor1, m_nColor2 ) );
 			pi->Refresh();
 		}
     }
@@ -719,7 +719,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 				if ((ISNOTNPC(m_nTriggerType))&&(m_pi!=0))
 					ser = m_pi->getOwnerSerial32();
 
-				if (ser != m_pcCurrChar->getSerial32())
+				if (ser != m_pcCurrChar->getSerial())
 					sysmessage(m_socket, TRANSLATE("You do not own that."));
 
 			} else if (!(strcmp("IFREQ", cmd))) {
@@ -755,9 +755,9 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 				pItem pc = item::CreateFromScript( "$item_hardcoded" );
 				if (!ISVALIDPI(pc)) STOPTRIGGER;
 
-				pc->setId( DBYTE2WORD( array[0], array[1] ) );
+				pc->setId( Duint8_t2WORD( array[0], array[1] ) );
 				if( m_nColor1 != 0xFF)
-					pc->setColor( DBYTE2WORD( m_nColor1, m_nColor2 ) );
+					pc->setColor( Duint8_t2WORD( m_nColor1, m_nColor2 ) );
 
 				if( ISVALIDPC( m_pcCurrChar ) ) {
 					pItem pack=m_pcCurrChar->getBackpack();
@@ -940,7 +940,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 		else if (!(strcmp("NEWOWNER", cmd)))  // Set ownership of NPC
 		{
 				if (m_pcAdded!=0) {
-					m_pcAdded->setOwnerSerial32(m_pcCurrChar->getSerial32());
+					m_pcAdded->setOwnerSerial32(m_pcCurrChar->getSerial());
 					m_pcAdded->tamed = true;
 				}
 			}
@@ -1121,7 +1121,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 			pack = (MAKE_CHAR_REF(currchar[m_socket]))->getBackpack();
 
 			if (pack!=0) {// lb
-			if (m_pi->getContSerial() != pack->getSerial32())
+			if (m_pi->getContSerial() != pack->getSerial())
 			{
 				int dx = abs(x1 - x2);
 				int dy = abs(y1 - y2);
@@ -1207,7 +1207,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 		{
 			int array[2];
 					fillIntArray(par, array, 2, 0, 16);
-					m_pcCurrChar->playSFX( DBYTE2WORD( array[0], array[1] ));
+					m_pcCurrChar->playSFX( Duint8_t2WORD( array[0], array[1] ));
 		}
 		//////////////////////////////////////////////////////////////////////////
 			// SETTRG
@@ -1240,14 +1240,14 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 			fillIntArray(par, array, 2, 0, 16);
 
 			if ((ISNPC(m_nTriggerType))&&(m_pcNpc!=0)) {
-			m_pcNpc->setId( DBYTE2WORD( array[0], array[1] ) );
-			m_pcNpc->setOldId( DBYTE2WORD( array[0], array[1] ) );
+			m_pcNpc->setId( Duint8_t2WORD( array[0], array[1] ) );
+			m_pcNpc->setOldId( Duint8_t2WORD( array[0], array[1] ) );
 			for (int j = 0; j < now; j++)
 				if (clientInfo[j]->ingame && m_pcNpc->hasInRange(MAKE_CHAR_REF(currchar[j])))
 				m_pcNpc->teleport();
 			}
 			if ((ISNOTNPC(m_nTriggerType))&&(m_pi!=0)) {
-				m_pi->setId( DBYTE2WORD( array[0], array[1] ) );
+				m_pi->setId( Duint8_t2WORD( array[0], array[1] ) );
 				m_pi->Refresh();
 			}
 		}
@@ -1257,7 +1257,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 			fillIntArray(par, array, 2, 0, 16);
 			if (m_piEnvoked != 0)
 			{
-				m_piEnvoked->setId( DBYTE2WORD( array[0], array[1] ) );
+				m_piEnvoked->setId( Duint8_t2WORD( array[0], array[1] ) );
 				m_piEnvoked->Refresh();
 			}
 		}
@@ -1341,7 +1341,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 		else if (!(strcmp("SETOWNER", cmd)))  // Set ownership of NPC
 		{
 					if (m_pcNpc!=0) {
-						m_pcNpc->setOwnerSerial32(m_pcCurrChar->getSerial32());
+						m_pcNpc->setOwnerSerial32(m_pcCurrChar->getSerial());
 						m_pcNpc->tamed = true;
 					}
 		}

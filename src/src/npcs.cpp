@@ -21,8 +21,8 @@
 #include "scp_parser.h"
 #include "archive.h"
 #include "map.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 #include "classes.h"
 #include "scripts.h"
@@ -60,8 +60,8 @@ void SpawnGuard(pChar pc, pChar pc_i, int x, int y, signed char z)
 		{
 		  pc_c->npcaitype=NPCAI_TELEPORTGUARD;
 		  pc_c->SetAttackFirst();
-		  pc_c->attackerserial=pc->getSerial32();
-		  pc_c->targserial=pc->getSerial32();
+		  pc_c->attackerserial=pc->getSerial();
+		  pc_c->targserial=pc->getSerial();
 		  pc_c->npcWander=WANDER_FREELY_CIRCLE;  //set wander mode Tauriel
 		  pc_c->toggleCombat();
 		  pc_c->setNpcMoveTime();
@@ -159,7 +159,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 	if ( !postype )
 	{
 		ErrOut("AddNPC: bad parms in call (socket [%d], item[%d], npcNum[%d], x1[%d], y1[%d]\n",
-			s, ((ISVALIDPI(pi))? pi->getSerial32() : INVALID), npcNum, x1, y1);
+			s, ((ISVALIDPI(pi))? pi->getSerial() : INVALID), npcNum, x1, y1);
 	}
 	else
 	{
@@ -280,37 +280,37 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 								// Old style user variables
 								//
 								else if	( "AMXFLAG0" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 0, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 0, str2num( script2 ) );
 								else if ( "AMXFLAG1" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 1, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 1, str2num( script2 ) );
 								else if ( "AMXFLAG2" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 2, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 2, str2num( script2 ) );
 								else if ( "AMXFLAG3" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 3, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 3, str2num( script2 ) );
 								else if ( "AMXFLAG4" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 4, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 4, str2num( script2 ) );
 								else if ( "AMXFLAG5" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 5, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 5, str2num( script2 ) );
 								else if ( "AMXFLAG6" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 6, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 6, str2num( script2 ) );
 								else if ( "AMXFLAG7" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 7, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 7, str2num( script2 ) );
 								else if ( "AMXFLAG8" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 8, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 8, str2num( script2 ) );
 								else if ( "AMXFLAG9" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 9, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 9, str2num( script2 ) );
 								else if ( "AMXFLAGA" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 10, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 10, str2num( script2 ) );
 								else if ( "AMXFLAGB" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 11, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 11, str2num( script2 ) );
 								else if ( "AMXFLAGC" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 12, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 12, str2num( script2 ) );
 								else if ( "AMXFLAGD" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 13, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 13, str2num( script2 ) );
 								else if ( "AMXFLAGE" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 14, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 14, str2num( script2 ) );
 								else if ( "AMXFLAGF" == script1 )
-									amxVS.insertVariable( pc->getSerial32(), 15, str2num( script2 ) );
+									amxVS.insertVariable( pc->getSerial(), 15, str2num( script2 ) );
 								//
 								// New style user variables
 								//
@@ -319,14 +319,14 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									std::string rha1;
 									std::string rha2;
 									splitLine( script2, rha1, rha2 );
-									amxVS.insertVariable( pc->getSerial32(), str2num( rha1 ), str2num( rha2 ) );
+									amxVS.insertVariable( pc->getSerial(), str2num( rha1 ), str2num( rha2 ) );
 								}
 								else if ( "AMXINTVEC" == script1 )
 								{
 									splitLine( script2, script1, script3 );
 									int32_t vectorId = str2num( script1 );
 									int32_t vectorSize = str2num( script3 );
-									amxVS.insertVariable( pc->getSerial32(), vectorId, vectorSize, 0 );
+									amxVS.insertVariable( pc->getSerial(), vectorId, vectorSize, 0 );
 									int32_t vectorIndex = 0;
 									do
 									{
@@ -339,7 +339,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 											default	 :
 												if( vectorIndex < vectorSize )
 												{
-													amxVS.updateVariable( pc->getSerial32(), vectorId, vectorIndex, str2num( script1 ) );
+													amxVS.updateVariable( pc->getSerial(), vectorId, vectorIndex, str2num( script1 ) );
 													++vectorIndex;
 												}
 												break;
@@ -352,7 +352,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									std::string rha1;
 									std::string rha2;
 									splitLine( script2, rha1, rha2 );
-									amxVS.insertVariable( pc->getSerial32(), str2num( rha1 ), rha2 );
+									amxVS.insertVariable( pc->getSerial(), str2num( rha1 ), rha2 );
 								}
 								else if ( "ANATOMY" == script1 )
 									pc->baseskill[ANATOMY] = getRangedValue(script2);
@@ -371,7 +371,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 										pi_n=item::CreateFromScript( "$item_backpack" );
 										if( ISVALIDPI(pi_n) )
 										{
-											pc->packitemserial=pi_n->getSerial32();
+											pc->packitemserial=pi_n->getSerial();
 											pi_n->setPosition(0, 0, 0);
 											pi_n->setContainer(pc);
 											mypack=pi_n;
@@ -778,7 +778,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 										pItem pi_z=pc->GetItemOnLayer(LAYER_TRADE_RESTOCK);
 										if (ISVALIDPI(pi_z))
 										{
-											buyRestockContainer = pi_z->getSerial32();
+											buyRestockContainer = pi_z->getSerial();
 										}
 									}
 									if ( buyRestockContainer != INVALID )

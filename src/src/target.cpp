@@ -155,13 +155,13 @@ void amxCallbackOld( NXWCLIENT ps, P_TARGET t )
 	
 	pChar pc = pointers::findCharBySerial( t->getClicked() );
 	if( ISVALIDPC(pc) ) {
-        t->amx_callback->Call( ps->currCharIdx(), pc->getSerial32(), INVALID, INVALID, INVALID, INVALID );
+        t->amx_callback->Call( ps->currCharIdx(), pc->getSerial(), INVALID, INVALID, INVALID, INVALID );
         return;
     }
 
     pItem pi = pointers::findItemBySerial( t->getClicked() );
     if( ISVALIDPI(pi) ) {
-		t->amx_callback->Call( ps->currCharIdx(), INVALID, pi->getSerial32(), INVALID, INVALID, INVALID );
+		t->amx_callback->Call( ps->currCharIdx(), INVALID, pi->getSerial(), INVALID, INVALID, INVALID );
         return;
     }
 
@@ -182,7 +182,7 @@ void amxCallback( NXWCLIENT ps, P_TARGET t )
 
 	pObject po = objects.findObject( t->getClicked() );
 	if( ISVALIDPO(po) ) {
-        t->amx_callback->Call( t->serial, ps->currCharIdx(), po->getSerial32(), INVALID, INVALID, INVALID, model, t->buffer[0] );
+        t->amx_callback->Call( t->serial, ps->currCharIdx(), po->getSerial(), INVALID, INVALID, INVALID, model, t->buffer[0] );
         return;
     }
 	else {
@@ -241,7 +241,7 @@ void TargetLocation::init(pChar pc)
 	m_z = pcpos.z;
 	m_pi = NULL;
 	m_piSerial = INVALID;
-	m_pcSerial = pc->getSerial32();
+	m_pcSerial = pc->getSerial();
 }
 ///////////////////////////////////////////////////////////////////
 // Function name     : void TargetLocation::init
@@ -258,7 +258,7 @@ void TargetLocation::init(pItem pi)
 		m_x = m_y = m_z = 0;
 	}
 	m_pi = pi;
-	m_piSerial = pi->getSerial32();
+	m_piSerial = pi->getSerial();
 	m_pcSerial = INVALID;
 }
 
@@ -320,9 +320,9 @@ void TargetLocation::extendItemTarget()
 	}
 	else {
 		int it, ch;
-		getWorldCoordsFromSerial (m_pi->getSerial32(), m_x, m_y, m_z, ch, it);
+		getWorldCoordsFromSerial (m_pi->getSerial(), m_x, m_y, m_z, ch, it);
 		m_pc=MAKE_CHAR_REF(ch);
-		m_pcSerial = (ISVALIDPC(m_pc))? m_pc->getSerial32() : INVALID;
+		m_pcSerial = (ISVALIDPC(m_pc))? m_pc->getSerial() : INVALID;
 	}
 	revalidate();
 }

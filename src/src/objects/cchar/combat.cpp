@@ -22,8 +22,8 @@
 #include "npcai.h"
 #include "data.h"
 #include "set.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "basics.h"
 #include "inlines.h"
 #include "classes.h"
@@ -60,7 +60,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	if ( amxevents[EVENT_CHR_ONCOMBATHIT] ) {
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONCOMBATHIT]->Call( getSerial32(), pc_def->getSerial32() );
+		amxevents[EVENT_CHR_ONCOMBATHIT]->Call( getSerial(), pc_def->getSerial32() );
 		if( g_bByPass == true )
 			return;
 		if( dead )	// Killed as result of script action
@@ -149,7 +149,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 		if (amxevents[EVENT_CHR_ONHITMISS]) {
 			g_bByPass = false;
-			amxevents[EVENT_CHR_ONHITMISS]->Call(getSerial32(), pc_def->getSerial32());
+			amxevents[EVENT_CHR_ONHITMISS]->Call(getSerial(), pc_def->getSerial32());
 			if (g_bByPass==true) return;
 		}
 
@@ -182,13 +182,13 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	if (amxevents[EVENT_CHR_ONHIT]) {
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONHIT]->Call(getSerial32(), pc_def->getSerial32());
+		amxevents[EVENT_CHR_ONHIT]->Call(getSerial(), pc_def->getSerial32());
 		if (g_bByPass==true) return;
 	}
 
 	if (pc_def->amxevents[EVENT_CHR_ONGETHIT]) {
 		g_bByPass = false;
-		pc_def->amxevents[EVENT_CHR_ONGETHIT]->Call(pc_def->getSerial32(), getSerial32());
+		pc_def->amxevents[EVENT_CHR_ONGETHIT]->Call(pc_def->getSerial(), getSerial32());
 		if (g_bByPass==true) return;
 	}
 
@@ -296,7 +296,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	if (damage>0 && ISVALIDPI(weapon) ) {
 		if ((weapon->amxevents[EVENT_IONDAMAGE]!=NULL)) {
 			g_bByPass = false;
-			damage = weapon->amxevents[EVENT_IONDAMAGE]->Call(weapon->getSerial32(), pc_def->getSerial32(), damage, getSerial32());
+			damage = weapon->amxevents[EVENT_IONDAMAGE]->Call(weapon->getSerial(), pc_def->getSerial32(), damage, getSerial32());
 			if (g_bByPass==true) return;
 		}
 	}
@@ -413,7 +413,7 @@ void cChar::doCombat()
 
 	if ( amxevents[EVENT_CHR_ONDOCOMBAT] ) {
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONDOCOMBAT]->Call( getSerial32(), pc_def->getSerial32(), dist, validWeapon ? weapon->getSerial32() : INVALID );
+		amxevents[EVENT_CHR_ONDOCOMBAT]->Call( getSerial(), pc_def->getSerial32(), dist, validWeapon ? weapon->getSerial32() : INVALID );
 		if( g_bByPass == true )
 		{
 			return;
@@ -557,18 +557,18 @@ void cChar::doCombat()
 					if (weapon->IsBow())
 					{
 						delItems(0x0F3F, 1);
-						movingeffect3( getSerial32(), targserial, 0x0F, 0x42, 0x08, 0x00, 0x00,0,0,0,0);
+						movingeffect3( getSerial(), targserial, 0x0F, 0x42, 0x08, 0x00, 0x00,0,0,0,0);
 					}
 					else
 					{
 						delItems(0x1BFB, 1);
-						movingeffect3( getSerial32(), targserial, 0x1B, 0xFE, 0x08, 0x00, 0x00,0,0,0,0);
+						movingeffect3( getSerial(), targserial, 0x1B, 0xFE, 0x08, 0x00, 0x00,0,0,0,0);
 					}
 				}
 				else   //new ammo system
 				{
 					(getBackpack())->DeleteAmountByID(1, weapon->ammo);
-					movingeffect3( getSerial32(), targserial, (weapon->ammoFx>>8)&0xFF, weapon->ammoFx & 0xFF, 0x08, 0x00, 0x00,0,0,0,0);
+					movingeffect3( getSerial(), targserial, (weapon->ammoFx>>8)&0xFF, weapon->ammoFx & 0xFF, 0x08, 0x00, 0x00,0,0,0,0);
 				}
 
 			if ( dist < 2 || fightskill == ARCHERY )
@@ -1099,29 +1099,29 @@ void cChar::attackStuff(pChar victim)
 {
 	VALIDATEPC( victim );
 
-	if( getSerial32() == victim->getSerial32() )
+	if( getSerial() == victim->getSerial32() )
 		return;
 
 	if ( amxevents[EVENT_CHR_ONBEGINATTACK]) {
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONBEGINATTACK]->Call( getSerial32(), victim->getSerial32() );
+		amxevents[EVENT_CHR_ONBEGINATTACK]->Call( getSerial(), victim->getSerial32() );
 		if (g_bByPass==true) return;
 	}
 
 	if ( victim->amxevents[EVENT_CHR_ONBEGINDEFENSE]) {
 		g_bByPass = false;
-		victim->amxevents[EVENT_CHR_ONBEGINDEFENSE]->Call( victim->getSerial32(), getSerial32() );
+		victim->amxevents[EVENT_CHR_ONBEGINDEFENSE]->Call( victim->getSerial(), getSerial32() );
 		if (g_bByPass==true) return;
 	}
 	/*
-	runAmxEvent( EVENT_CHR_ONBEGINATTACK, getSerial32(), victim->getSerial32() );
+	runAmxEvent( EVENT_CHR_ONBEGINATTACK, getSerial(), victim->getSerial32() );
 	if (g_bByPass==true)
 		return;
-	victim->runAmxEvent( EVENT_CHR_ONBEGINDEFENSE, victim->getSerial32(), getSerial32() );
+	victim->runAmxEvent( EVENT_CHR_ONBEGINDEFENSE, victim->getSerial(), getSerial32() );
 	if (g_bByPass==true)
 		return;
 	*/
-	targserial=victim->getSerial32();
+	targserial=victim->getSerial();
 	unHide();
 	disturbMed();
 
@@ -1138,16 +1138,16 @@ void cChar::attackStuff(pChar victim)
 	}
 
         //TODO: modify this to send a packet
-	SndAttackOK(s, victim->getSerial32());	//keep the target highlighted
+	SndAttackOK(s, victim->getSerial());	//keep the target highlighted
 
 
 	if (!( victim->targserial== INVALID))
 	{
-		victim->attackerserial=getSerial32();
+		victim->attackerserial=getSerial();
 		victim->ResetAttackFirst();
 	}
 	SetAttackFirst();
-	attackerserial=victim->getSerial32();
+	attackerserial=victim->getSerial();
 
 
         //TODO once set are done revise this

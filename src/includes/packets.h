@@ -773,7 +773,7 @@ class cPacketPlayerStatus : public cClientPacket {
 public:
 
 	uint32_t	pattern;	//!< pattern ( 0xEDEDEDED )
-	BYTE	type;		//!< get type ( 4=Basic Stats (Packet 0x11 Response), 5=Request Skills (Packet 0x3A Response) )
+	uint8_t	type;		//!< get type ( 4=Basic Stats (Packet 0x11 Response), 5=Request Skills (Packet 0x3A Response) )
 	Serial	player;		//!< serial of player
 
 	cPacketPlayerStatus();	
@@ -1028,9 +1028,9 @@ to the num of rain currently going, plus the number of snow you want
 */
 class cPacketWeather : public cServerPacket {
 
-	BYTE	type;		//!< type ( see note )
-	BYTE	n;			//!< number of weather effects on screen
-	BYTE	temp;		//!< temperature
+	uint8_t	type;		//!< type ( see note )
+	uint8_t	n;			//!< number of weather effects on screen
+	uint8_t	temp;		//!< temperature
 	
 	
 	cPacketWeather();	
@@ -1130,13 +1130,13 @@ private:
 
 public:
 
-	BYTE action
-	BYTE[4] id1
-	BYTE[4] id2
-	BYTE[4] id3
-	BYTE nameFollowing (0 or 1)
+	uint8_t action
+	uint8_t[4] id1
+	uint8_t[4] id2
+	uint8_t[4] id3
+	uint8_t nameFollowing (0 or 1)
 	If (nameFollowing = 1)
-	BYTE[?] charName
+	uint8_t[?] charName
 
 	cPacketSecureTrading();	
 
@@ -1192,7 +1192,7 @@ class cPacketWarMode : public cServerPacket /*CLIENTALSOPD*/ {
 
 public:
 
-	BYTE	flag;		//!< flag ( 0=Normal, 1=Fighting )
+	uint8_t	flag;		//!< flag ( 0=Normal, 1=Fighting )
 	uint8_t	unk[3];		//!< unknown (always 00 32 00 in testing)
 
 	cPacketWarMode();
@@ -1212,7 +1212,7 @@ class cPacketPing : public cPackets {
 
 public:
 
-	BYTE seq; //!<  
+	uint8_t seq; //!<  
 
 	cPacketPing();	
 
@@ -1222,7 +1222,7 @@ public:
 typedef struct {
 	uint32_t price;
 	uint8_t length; of text description
-	BYTE[text length] item description
+	uint8_t[text length] item description
 } openbuyitem_st ;
 
 *//*

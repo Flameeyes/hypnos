@@ -90,7 +90,7 @@ public:
 	inline const uint32_t getSerial() const
 	{ return serial; }
 
-	void setSerial32(int32_t newserial);
+	void setSerial(int32_t newserial);
 
 	//! return the object's multi serial
 	inline const uint32_t getMultiSerial() const

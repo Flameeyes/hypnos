@@ -21,8 +21,8 @@
 #include "scp_parser.h"
 #include "fishing.h"
 #include "globals.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "basics.h"
 #include "inlines.h"
 #include "scripts.h"
@@ -342,7 +342,7 @@ void Fishing::Fish(CHARACTER i)
 
 				if( ((color&0x4000)>>14) + ((color&0x8000)>>15) )
 				{
-					color = DBYTE2WORD(0x01, rand()%255);
+					color = Duint8_t2WORD(0x01, rand()%255);
 				}
 			} else color=0;
 		

@@ -10,7 +10,7 @@
 #include "common_libs.h"
 #include "containers.h"
 #include "scp_parser.h"
-#include "items.h"
+
 #include "basics.h"
 #include "inlines.h"
 #include "scripts.h"
@@ -27,7 +27,7 @@ void loadcontainers()
 	int32_t 		gump = INVALID;
 	BasicPosition	uprleft = {INVALID,INVALID};
 	BasicPosition	dwnrght = {INVALID,INVALID};
-	uint32_tVECTOR	*vet = new uint32_tVECTOR;
+	uint32_vector	*vet = new uint32_tVECTOR;
 
 	int cont=0;
 
@@ -82,7 +82,7 @@ void loadcontainers()
 			CONTINFOGUMPMAP::iterator iter( contInfoGump.find(gump) );
 			if( iter != contInfoGump.end() )
 			{
-				uint32_tVECTOR::iterator ids( vet->begin() ), end( vet->end() );
+				uint32_vector::iterator ids( vet->begin() ), end( vet->end() );
 				for(; ids != end; ++ids )
 					contInfo[(*ids)] = iter;
 			}

@@ -14,8 +14,8 @@
 #include "party.h"
 #include "menu.h"
 #include "oldmenu.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 
 
@@ -35,7 +35,7 @@ cParty::~cParty()
 
 void cParty::addMember( pChar member )
 {
-	this->members.push_back( new cPartyMember( member->getSerial32() ) );
+	this->members.push_back( new cPartyMember( member->getSerial() ) );
 	member->party=this->serial;
 	csPacketAddPartyMembers pkg;
 	pkg.members = &members;
@@ -47,11 +47,11 @@ void cParty::removeMember( pChar member )
 {
 	std::vector<P_PARTY_MEMBER>::iterator iter( members.begin() ), end( members.end() );
 	for( ; iter!=end; ++iter) {
-		if( (*iter)->serial==member->getSerial32() ) {
+		if( (*iter)->serial==member->getSerial() ) {
 			members.erase( iter );
 			csPacketRemovePartyMembers pkg;
 			pkg.members = &members;
-			pkg.member = member->getSerial32();
+			pkg.member = member->getSerial();
 			if( !members.empty() ) {
 				sendToAllMember( &pkg );
 			}
@@ -86,9 +86,9 @@ uint32_t cParty::getLeader()
 
 void cParty::addCandidate( pChar leader, pChar candidate )
 {
-	candidates.push_back( candidate->getSerial32() );
+	candidates.push_back( candidate->getSerial() );
 	csPacketPartyInvite pkg;
-	pkg.leader=leader->getSerial32();
+	pkg.leader=leader->getSerial();
 	pkg.send( candidate->getClient() );
 }
 
@@ -245,7 +245,7 @@ void cPartys::recive( NXWCLIENT ps )
 				pChar pc = pointers::findCharBySerial( toRemove );
 				VALIDATEPC( pc );
 
-				delMem->Call( ps->currCharIdx(), pc->getSerial32() );
+				delMem->Call( ps->currCharIdx(), pc->getSerial() );
 			}
 			break;
 		}

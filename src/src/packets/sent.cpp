@@ -317,7 +317,7 @@ void cPacketSendClearBuyWindow::prepare()
 	buffer = new uint8_t[8];
 	buffer[0] = 0x3B;
 	ShortToCharPtr(0x08, buffer +1);			// Packet len
-	LongToCharPtr( npc->getSerial32(), buffer + 3);	        // vendorID
+	LongToCharPtr( npc->getSerial(), buffer + 3);	        // vendorID
 	buffer[7]=0x00;						// Flag:  0 => no more items  0x02 items following ...
 }
 
@@ -334,7 +334,7 @@ void cPacketSendOpenMapGump::prepare()
 	length = 19;
 	buffer = new uint8_t[19];
         buffer[0] = 0x90;
-	LongToCharPtr(map->getSerial32(), buffer +1);
+	LongToCharPtr(map->getSerial(), buffer +1);
         ShortToCharPtr(0x139D, buffer + 5);
 	buffer[7]  = map->more1;	// Assign topleft x
 	buffer[8]  = map->more2;
@@ -356,7 +356,7 @@ void cPacketSendMapPlotCourse::prepare()
 	length = 11;
 	buffer = new uint8_t[11];
         buffer[0] = 0x56;
-	LongToCharPtr(map->getSerial32(), buffer +1);
+	LongToCharPtr(map->getSerial(), buffer +1);
 	buffer[5]  = command;
 	if (command == WriteableStatus) buffer[6] = (pin) ? 1 : 0;  // not sure if the values needed by client are exactly 1 and 0, but better safe than sorry
         else buffer[6] = pin;
@@ -374,7 +374,7 @@ void cPacketSendBBoardCommand::prepare()
 	        buffer[0] = 0x71;
 	        ShortToCharPtr(38, buffer +1); 	//message length
 	        buffer[3] = 0; 			//subcommand 0
-	        LongToCharPtr(msgboard->getSerial32(), buffer + 4);	//board serial
+	        LongToCharPtr(msgboard->getSerial(), buffer + 4);	//board serial
 	        memset(buffer + 8, 0, 22);				//filling boardname with 22 zeroes
 	        LongToCharPtr(0x402000FF, buffer + 30);			//gump id, i believe
 	        LongToCharPtr(0x0, buffer + 34);			//zero
@@ -397,8 +397,8 @@ void cPacketSendBBoardCommand::prepare()
 	        buffer[0] = 0x71;
 	        ShortToCharPtr(length, buffer +1); 	//message length
 	        buffer[3] = 1; 				//subcommand 1
-	        LongToCharPtr(msgboard->getSerial32(), buffer + 4);	//board serial
- 	        LongToCharPtr(message->getSerial32(), buffer + 8);	//message serial
+	        LongToCharPtr(msgboard->getSerial(), buffer + 4);	//board serial
+ 	        LongToCharPtr(message->getSerial(), buffer + 8);	//message serial
                 LongToCharPtr(message->replyof, buffer + 12);		//parent message serial
                 int offset = 16;
                 buffer[16] = poster->getCurrentNameC().size() + 1;	//size() does not count the endstring 0
@@ -428,8 +428,8 @@ void cPacketSendBBoardCommand::prepare()
 	        buffer[0] = 0x71;
 	        ShortToCharPtr(length, buffer +1); 	//message length
 	        buffer[3] = 2; 				//subcommand 2
-	        LongToCharPtr(msgboard->getSerial32(), buffer + 4);	//board serial
- 	        LongToCharPtr(message->getSerial32(), buffer + 8);	//message serial
+	        LongToCharPtr(msgboard->getSerial(), buffer + 4);	//board serial
+ 	        LongToCharPtr(message->getSerial(), buffer + 8);	//message serial
                 int offset = 12;
                 buffer[12] = poster->getCurrentNameC().size() + 1;	//size() does not count the endstring \0 :)
 		strcpy( buffer + 17, poster->getCurrentNameC().c_str());
@@ -458,7 +458,7 @@ void cPacketSendMsgBoardItemsinContainer::prepare()
 		0x00, 0x00, 0x00, 0x00, 0x00
 		};
 
-	pair<cBBRelations::iterator, cBBRelations::iterator> it = cMsgBoard::BBRelations.equal_range(msgboard->getSerial32());
+	pair<cBBRelations::iterator, cBBRelations::iterator> it = cMsgBoard::BBRelations.equal_range(msgboard->getSerial());
         // Now the *(it.first.second) is the serial of a message to be sent. and incrementing it.first
         // until it reaches it.second we obtain all the serials
 
@@ -476,8 +476,8 @@ void cPacketSendMsgBoardItemsinContainer::prepare()
 	for(;it.first != it.second; ++(it.first))
 	{
 		memcpy(ptrItem, templ2, 19);
-		LongToCharPtr((*it.first)->getSerial32(), ptrItem);
-		LongToCharPtr(msgboard->getSerial32(), ptrItem+13);
+		LongToCharPtr((*it.first)->getSerial(), ptrItem);
+		LongToCharPtr(msgboard->getSerial(), ptrItem+13);
                 //all other parts are invaried in msgboards messages and are defaulted in templ2
 		ptrItem += 19;
 	}
@@ -1313,7 +1313,7 @@ bool cPacketReceiveLoginChar::execute(pClient client)
 		if (ISVALIDPC(pc_k))
 		{
 			pc_k->setClient(NULL);
-			int32_t nSer = pc_k->getSerial32();
+			int32_t nSer = pc_k->getSerial();
 			for ( int32_t idx = 0; idx < now; idx++ ) {
 				if ( pc_k == loginchars[idx] ) {
 					// TODO We need to fix this!!!
@@ -1532,7 +1532,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 
                         //filling new message with data
 
-                        newmessage->poster = pc->getSerial32();
+                        newmessage->poster = pc->getSerial();
                         newmessage->availability = pc->postType;
                         if (pc->postType == REGIONALPOST) newmessage->region = msgboard->getRegion();
                        	newmessage->subject = string(buffer + 10);
@@ -1578,7 +1578,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 				// Client sends 71  0  c  6 40  0  0 18  1  0  0  4
 				if ( (pc->IsGM()) || (SrvParms->msgpostremove) )
 	                        {
-                                	if ( global::onlyPosterCanDeleteMsgBoardMessage() && (pc->getSerial32() != message->poster && !pc->IsGM() && (pc->getSerial32() != msgboard->getOwner() || message->availability != LOCALPOST )))
+                                	if ( global::onlyPosterCanDeleteMsgBoardMessage() && (pc->getSerial() != message->poster && !pc->IsGM() && (pc->getSerial32() != msgboard->getOwner() || message->availability != LOCALPOST )))
                                         	client->sysmessage( tr("You are not allowed to delete this message") );
                                         else
                                         {

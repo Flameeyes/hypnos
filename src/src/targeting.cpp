@@ -36,8 +36,8 @@
 #include "fishing.h"
 #include "rcvpkg.h"
 #include "map.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "skills.h"
 #include "classes.h"
 #include "inlines.h"
@@ -321,9 +321,7 @@ static void CorpseTarget(const NXWCLIENT pC)
     NXWSOCKET  s = pC->toInt();
 
     uint32_t serial=LongFromCharPtr(buffer[s]+7);
-    int i=calcItemFromSer(serial);
-    pItem pi=MAKE_ITEM_REF(i);
-	VALIDATEPI(pi);
+    pItem pi = pointers::findItemBySerial( serial );
     pChar pc=MAKE_CHAR_REF(currchar[s]);
     if(ISVALIDPI(pi))
     {
@@ -507,7 +505,7 @@ int BuyShop(NXWSOCKET s, uint32_t c)
 
     sendshopinfo(s, DEREF_pChar(pc), buyRestockContainer); // Send normal shop items
 //  sendshopinfo(s, c, buyNoRestockContainer); // Send items sold to shop by players
-    SndShopgumpopen(s,pc->getSerial32());
+    SndShopgumpopen(s,pc->getSerial());
 
     //! \todo check second argument
     client->statusWindow(curr,true); // Make sure the gold total has been sent.
@@ -540,7 +538,7 @@ void target_playerVendorBuy( NXWCLIENT ps, P_TARGET t )
 	VALIDATEPI(thepack);
 	pChar pNpc= thepack->getPackOwner();               // the vendor
 
-    if(DEREF_pChar(pNpc)!=pc->getSerial32() || pc->npcaitype!=NPCAI_PLAYERVENDOR) return;
+    if(DEREF_pChar(pNpc)!=pc->getSerial() || pc->npcaitype!=NPCAI_PLAYERVENDOR) return;
 
     if (pc_currchar->isOwnerOf(pc))
     {
@@ -641,7 +639,7 @@ void target_key( NXWCLIENT ps, P_TARGET t )
             }
             else if ((pi->type==ITYPE_KEY)&&(pc->hasInRange(pi, 2)))
             {
-                pc->keyserial=pi->getSerial32();
+                pc->keyserial=pi->getSerial();
                 sysmessage(s,TRANSLATE("Enter new name for key."));//morrolan rename keys
                 return;
             }
@@ -670,7 +668,7 @@ void target_key( NXWCLIENT ps, P_TARGET t )
             else if (pi->getId()==0x0BD2)
             {
                 sysmessage(s, TRANSLATE("What do you wish the sign to say?"));
-                pc->keyserial=pi->getSerial32(); //Morrolan sign kludge
+                pc->keyserial=pi->getSerial(); //Morrolan sign kludge
                 return;
             }
 
@@ -714,7 +712,7 @@ void target_follow( NXWCLIENT ps, P_TARGET t )
 	pChar pc2 = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc2);
 
-    pc->ftargserial=pc2->getSerial32();
+    pc->ftargserial=pc2->getSerial();
     pc->npcWander=WANDER_FOLLOW;
 }
 
@@ -785,13 +783,13 @@ void target_guard( NXWCLIENT ps, P_TARGET t )
     VALIDATEPC(pPet);
 
     pChar pToGuard = pointers::findCharBySerial( t->getClicked() );
-    if( !ISVALIDPC(pToGuard) || pToGuard->getSerial32() != pPet->getOwnerSerial32() )
+    if( !ISVALIDPC(pToGuard) || pToGuard->getSerial() != pPet->getOwnerSerial32() )
     {
         ps->sysmsg( TRANSLATE("Currently can't guard anyone but yourself!" ));
         return;
     }
     pPet->npcaitype = NPCAI_PETGUARD;
-    pPet->ftargserial=pc->getSerial32();
+    pPet->ftargserial=pc->getSerial();
     pPet->npcWander=WANDER_FOLLOW;
     ps->sysmsg( TRANSLATE("Your pet is now guarding you."));
     pc->guarded = true;
@@ -810,11 +808,11 @@ void target_transfer( NXWCLIENT ps, P_TARGET t )
 	if (pc1->amxevents[EVENT_CHR_ONTRANSFER])
 	{
 		g_bByPass = false;
-		pc1->amxevents[EVENT_CHR_ONTRANSFER]->Call(pc1->getSerial32(),pc2->getSerial32());
+		pc1->amxevents[EVENT_CHR_ONTRANSFER]->Call(pc1->getSerial(),pc2->getSerial32());
 		if (g_bByPass==true) return ;
 	}
 	/*
-	pc1->runAmxEvent( EVENT_CHR_ONTRANSFER, pc1->getSerial32(),pc2->getSerial32());
+	pc1->runAmxEvent( EVENT_CHR_ONTRANSFER, pc1->getSerial(),pc2->getSerial32());
 	if (g_bByPass==true)
 		return ;
 	*/
@@ -891,7 +889,7 @@ void target_telestuff( NXWCLIENT ps, P_TARGET t )
 	if( ISVALIDPO(po) ) { //clicked on obj to move
 		P_TARGET targ=clientInfo[s]->newTarget( new cLocationTarget() );
 		targ->code_callback=target_telestuff;
-		targ->buffer[0]=po->getSerial32();
+		targ->buffer[0]=po->getSerial();
 		targ->send(ps);
 		ps->sysmsg( TRANSLATE("Select location to put this object.") );
 	} else { //on ground.. so move it

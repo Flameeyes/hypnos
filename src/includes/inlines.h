@@ -13,10 +13,7 @@
 #ifndef __INLINES_H__
 #define __INLINES_H__
 
-#include "items.h"
-#include "chars.h"
 #include "basics.h"
-
 
 #define TIMEOUT(X) (((X) <= uiCurrentTime) || overflow)
 // Macros & Templates by Xan :
@@ -29,43 +26,11 @@ template<typename T> inline void safedelete(T*& p) { delete p; p = NULL; }
 template<typename T> inline void safedeletearray(T*& p) { delete[] p; p = NULL; }
 template<typename T> inline void qswap(T& a, T& b) { T dummy; dummy = a; a = b; b = dummy; }
 
-#define charsysmsg(PC) if (PC->getClient()!=NULL) PC->getClient()->sysmsg
+//!\todo remove them!!
+#define Duint8_t2WORD(A,B) (((A)<<8) + ((B)&0xFF))
+#define WORD2Duint8_t(A,B,C) { B = WORD2DBYTE1(A); C = WORD2DBYTE2(A); }
 
-#define DBYTE2WORD(A,B) (((A)<<8) + ((B)&0xFF))
-#define WORD2DBYTE1(A)  ((char)((A)>>8))
-#define WORD2DBYTE2(A)  ((char)((A)&0xFF))
-#define WORD2DBYTE(A,B,C) { B = WORD2DBYTE1(A); C = WORD2DBYTE2(A); }
-
-
-inline bool chance(int percent) { return ( (rand()%100) < percent); }
-
-inline int calcCharFromPtr(unsigned char *p)
-{
-	int serial;
-	if((serial=LongFromCharPtr(p)) < 0) return INVALID;
-	if (ISVALIDPC(pointers::findCharBySerial(serial))) return (DEREF_pChar(pointers::findCharBySerial(serial)));
-	else return (INVALID);
-}
-
-inline int calcItemFromPtr(unsigned char *p)
-{
-	int serial;
-	if((serial=LongFromCharPtr(p)) < 0) return INVALID;
-	if (ISVALIDPI(pointers::findItemBySerial(serial))) return (DEREF_pItem(pointers::findItemBySerial(serial)));
-	else return (INVALID);
-}
-
-inline int calcItemFromSer(int ser) // Aded by Magius(CHE) (2)
-{
-	if (ISVALIDPI(pointers::findItemBySerial(ser))) return (DEREF_pItem(pointers::findItemBySerial(ser)));
-	else return (INVALID);
-}
-
-inline int calcCharFromSer(int serial)
-{
-	if (ISVALIDPC(pointers::findCharBySerial(serial))) return (DEREF_pChar(pointers::findCharBySerial(serial)));
-	else return (INVALID);
-}
+inline bool chance(uint8_t percent) { return ( (rand()%100) < percent); }
 
 inline void SetTimerSec( TIMERVAL *timer, const short seconds)
 {
@@ -75,8 +40,6 @@ inline void SetTimerSec( TIMERVAL *timer, const short seconds)
 inline bool isCharSerial( long ser ) { return ( ser > 0 && ser <  0x40000000 ); }
 //ndEndy 0 is not a char serial, see curr_charSerial note
 inline bool isItemSerial( long ser ) { return ( /*ser >= 0 && */ser >= 0x40000000 ); }
-
-#define SETSOCK(A) g_nCurrentSocket = A;
 
 inline std::string toString(int value)
 {
@@ -96,13 +59,13 @@ inline std::string toString(double value)
 	return std::string(s);
 }
 
-/*
+/*!
 \brief Convert a string to a wstring
 \author Endymion
 \param from the source string
 \param to the dest wstring
 */
-inline void string2wstring( string from, wstring& to )
+inline void string2wstring( std::string from, std::wstring& to )
 {
 	to.erase();
 	string::iterator iter( from.begin() ), end( from.end() );
@@ -111,13 +74,13 @@ inline void string2wstring( string from, wstring& to )
 	}
 }
 
-/*
+/*!
 \brief Convert a wstring to a string
 \author Endymion
 \param from the source wstring
 \param to the dest string
 */
-inline void wstring2string( wstring from, string& to )
+inline void wstring2string( std::wstring from, std::string& to )
 {
 	to.erase();
 	wstring::iterator iter( from.begin() ), end( from.end() );

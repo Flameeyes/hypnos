@@ -31,8 +31,8 @@
 #include "guild.h"
 #include "set.h"
 #include "inlines.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "race.h"
 #include "layer.h"
 #include "party.h"
@@ -349,7 +349,7 @@ void setItemIntProperty(pItem pi, int property, int prop2, int value )
 			pi->secureIt = value;
 			break;
 		case NXW_IP_I_uint32_t :					   //dec value :  233;
-			pi->setSerial32(value);
+			pi->setSerial(value);
 			break;
 		case NXW_IP_I_SMELT :					   //dec value :  234;
 			pi->smelt = value;
@@ -405,7 +405,7 @@ void setItemIntProperty(pItem pi, int property, int prop2, int value )
 			//
 			//pi->amxflags[params[3]] = value;
 			if ( prop2 >= 0 && prop2 <= 15 )
-				amxVS.updateVariable( pi->getSerial32(), prop2, value );
+				amxVS.updateVariable( pi->getSerial(), prop2, value );
 			break;
 		case NXW_IP_I_SCRIPTID :				//dec value 251;
 			pi->setScriptID( value );
@@ -654,7 +654,7 @@ int getItemIntProperty( pItem pi, int property, int prop2)
 		CHECK(NXW_IP_I_RESTOCK, pi->restock )					//dec value :  230;
 		CHECK(NXW_IP_I_RNDVALUERATE, pi->rndvaluerate )			//dec value :  231;
 		CHECK(NXW_IP_I_SECUREIT, pi->secureIt )					//dec value :  232;
-		CHECK(NXW_IP_I_uint32_t, pi->getSerial32() )				//dec value :  233;
+		CHECK(NXW_IP_I_uint32_t, pi->getSerial() )				//dec value :  233;
 		CHECK(NXW_IP_I_SMELT, pi->smelt )						//dec value :  234;
 		CHECK(NXW_IP_I_SPAWNREGION, pi->spawnregion )			//dec value :  235;
 		CHECK(NXW_IP_I_SPAWNuint32_t, pi->spawnserial )			//dec value :  236;
@@ -678,7 +678,7 @@ int getItemIntProperty( pItem pi, int property, int prop2)
 				if ( prop2 >= 0 && prop2 <= 15 )
 				{
 					int value;
-					amxVS.selectVariable( pi->getSerial32(), prop2, value );
+					amxVS.selectVariable( pi->getSerial(), prop2, value );
 					return value;
 				}
 				return 0;
@@ -1443,7 +1443,7 @@ void setCharIntProperty( pChar pc, int property, int subproperty, int subsubprop
 			pc->running = value;
 			break;
 		case NXW_CP_I_uint32_t :				  			//dec value: 276;
-			pc->setSerial32(value);
+			pc->setSerial(value);
 			break;
 		case NXW_CP_I_SKILLDELAY :				  		//dec value: 277;
 			pc->skilldelay = value;
@@ -1566,7 +1566,7 @@ void setCharIntProperty( pChar pc, int property, int subproperty, int subsubprop
 			//
 			//pc->amxflags[params[3]] = p;
 			if ( subproperty >= 0 && subproperty <= 15 )
-				amxVS.updateVariable( pc->getSerial32(), subproperty, value );
+				amxVS.updateVariable( pc->getSerial(), subproperty, value );
 			break;
 		case NXW_CP_I_RACE :		 				//dec value: 315
 			pc->race = value;
@@ -1769,7 +1769,7 @@ int getCharIntProperty( pChar pc, int property, int prop2, int prop3 )
 		CHECK(	NXW_CP_I_GUILD, (pc->getGuild()!=NULL)? pc->getGuild()->serial : INVALID )			//dec value: 273
 		CHECK(  NXW_CP_I_ROBE , pc->robe )  				//dec value: 274;
 		CHECK(  NXW_CP_I_RUNNING , pc->running )  			//dec value: 275;
-		CHECK(  NXW_CP_I_uint32_t , pc->getSerial32() )  			//dec value: 276;
+		CHECK(  NXW_CP_I_uint32_t , pc->getSerial() )  			//dec value: 276;
 		CHECK(  NXW_CP_I_SKILLDELAY , pc->skilldelay )  		//dec value: 277;
 		CHECK(  NXW_CP_I_SMOKEDISPLAYTIME , pc->smokedisplaytimer )  	//dec value: 279;
 		CHECK(  NXW_CP_I_SMOKETIMER , pc->smoketimer )  		//dec value: 280;
@@ -1822,7 +1822,7 @@ int getCharIntProperty( pChar pc, int property, int prop2, int prop3 )
 				if ( prop2 >= 0 && prop2 <= 15 )
 				{
 					int value;
-					amxVS.selectVariable( pc->getSerial32(), prop2, value );
+					amxVS.selectVariable( pc->getSerial(), prop2, value );
 					return value;
 				}
 				return 0;

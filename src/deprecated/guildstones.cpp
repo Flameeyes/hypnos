@@ -16,8 +16,8 @@
 #include "house.h"
 #include "boats.h"
 #include "set.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "basics.h"
 #include "inlines.h"
 #include "utils.h"
@@ -52,13 +52,13 @@ void cGuilds::StonePlacement(int s)
 		{
 			if (pc->GetGuildNumber() !=0)
 			{
-				itemmessage(s,TRANSLATE("You are already in a guild."),pi_fx1->getSerial32());
+				itemmessage(s,TRANSLATE("You are already in a guild."),pi_fx1->getSerial());
 				return;
 			}
 			guildnumber=Guilds->SearchSlot(0,1);
 			if (guildnumber==-1)
 			{
-				itemmessage(s,TRANSLATE("There are already enough guildstones placed."),pi_fx1->getSerial32());
+				itemmessage(s,TRANSLATE("There are already enough guildstones placed."),pi_fx1->getSerial());
 				return;
 			}
 			pc->SetGuildNumber( guildnumber );
@@ -76,7 +76,7 @@ void cGuilds::StonePlacement(int s)
 				pc->SetGuildTitle("Guildmaster");
 			guilds[guildnumber].free = 0;
 			guilds[guildnumber].members = 1;
-			guilds[guildnumber].member[1] = pc->getSerial32();
+			guilds[guildnumber].member[1] = pc->getSerial();
 			guilds[guildnumber].type = 0;
 			guilds[guildnumber].abbreviation[0] = 0;
 			strcpy(guilds[guildnumber].webpage,DEFAULTWEBPAGE);
@@ -87,8 +87,8 @@ void cGuilds::StonePlacement(int s)
 			pStone->Refresh();
 			pi_fx1->Delete();
 			pc->fx1 = 0;
-			guilds[guildnumber].stone= pStone->getSerial32();
-			guilds[guildnumber].master= pc->getSerial32();
+			guilds[guildnumber].stone= pStone->getSerial();
+			guilds[guildnumber].master= pc->getSerial();
 //guild will be rewrited tomorrow so np
 //			entrygump(s, pc->getSerial().ser1, pc->getSerial().ser2, pc->getSerial().ser3, pc->getSerial().ser4,100,1,40,TRANSLATE("Enter a name for the guild."));
 		}
@@ -100,8 +100,8 @@ void cGuilds::StonePlacement(int s)
 				pc->sysmsg(TRANSLATE("There are already enough guildstones placed."));
 				return;
 			}
-			if (( pi_fx1->getSerial32()==guilds[guildnumber].stone &&
-				pc->getSerial32() == guilds[guildnumber].master) ||
+			if (( pi_fx1->getSerial()==guilds[guildnumber].stone &&
+				pc->getSerial() == guilds[guildnumber].master) ||
 				pc->IsGM() )
 			{
 				sprintf(stonename, TRANSLATE("Guildstone for %s"), guilds[guildnumber].name);
@@ -119,10 +119,10 @@ void cGuilds::StonePlacement(int s)
 				pStone->Refresh();//AntiChrist
 				pi_fx1->Delete();
 				pc->fx1 = 0;
-				guilds[guildnumber].stone = pStone->getSerial32();
+				guilds[guildnumber].stone = pStone->getSerial();
 			}
 			else 
-				itemmessage(s,TRANSLATE("You are not the guildmaster of this guild. Only the guildmaster may use this guildstone teleporter."),pi_fx1->getSerial32());
+				itemmessage(s,TRANSLATE("You are not the guildmaster of this guild. Only the guildmaster may use this guildstone teleporter."),pi_fx1->getSerial());
 		}
 	}
 }
@@ -162,15 +162,15 @@ void cGuilds::Menu(int s, int page)
 		return;
 	}
 
-	if ((guilds[guildnumber].stone!=pStone->getSerial32())&&
+	if ((guilds[guildnumber].stone!=pStone->getSerial())&&
 		(!(pc->IsGM())))
 	{
-		itemmessage(s,TRANSLATE("You are not a member of this guild. Ask an existing guildmember to invite you into this guild."), pStone->getSerial32());
+		itemmessage(s,TRANSLATE("You are not a member of this guild. Ask an existing guildmember to invite you into this guild."), pStone->getSerial());
 		return;
 	}
 
 	strcpy(guildfealty,"yourself");
-	if ((pc->GetGuildFealty() != pc->getSerial32())&&(pc->GetGuildFealty() !=0))
+	if ((pc->GetGuildFealty() != pc->getSerial())&&(pc->GetGuildFealty() !=0))
 	{
 		for (member=1;member<MAXGUILDMEMBERS; ++member)
 		{
@@ -184,7 +184,7 @@ void cGuilds::Menu(int s, int page)
 		}
 	}
 	else
-		pc->SetGuildFealty( pc->getSerial32() );
+		pc->SetGuildFealty( pc->getSerial() );
 
 	if (guilds[guildnumber].master==0) 
 		Guilds->CalcMaster(guildnumber);
@@ -219,7 +219,7 @@ void cGuilds::Menu(int s, int page)
 		sprintf(mygump[5],TRANSLATE("Toggle showing the guild's abbreviation in your name to unguilded people. Currently %s."),toggle);
 		strcpy(mygump[6],TRANSLATE("Resign from the guild."));
 		strcpy(mygump[7],TRANSLATE("View list of candidates who have been sponsored to the guild."));
-		if ((pc->getSerial32()==guilds[guildnumber].master) || (pc->IsGM()))
+		if ((pc->getSerial()==guilds[guildnumber].master) || (pc->IsGM()))
 		{
 			//
 			// Guildmaster Access?
@@ -476,7 +476,7 @@ void cGuilds::Menu(int s, int page)
 		total+=4+1+strlen(mygump[i]);
 	}
 	ShortToCharPtr(total, gmprefix +1);
-	LongToCharPtr(pc->getSerial32(), gmprefix +3);
+	LongToCharPtr(pc->getSerial(), gmprefix +3);
 	Xsend(s, gmprefix, 9);
 	Xsend(s, &lentext, 1);
 	Xsend(s, mygump[0], lentext);
@@ -516,7 +516,7 @@ void cGuilds::Resign( pChar pc, NXWSOCKET socket )
 
 	pc->sysmsg(TRANSLATE("You are no longer in that guild."));
 
-	if (guild->master == pc->getSerial32() && guild->members!=0 )
+	if (guild->master == pc->getSerial() && guild->members!=0 )
 	{
 		guild->master=0;
 		Guilds->CalcMaster(guildnumber);
@@ -585,7 +585,7 @@ void cGuilds::EraseMember(int c)
 		int j,member;
 		for(j=0;j<=guilds[guildnumber].members; ++j)
 		{
-			if (guilds[guildnumber].member[j] == pc->getSerial32())
+			if (guilds[guildnumber].member[j] == pc->getSerial())
 			{
 				pChar hold = pointers::findCharBySerial(guilds[guildnumber].member[j]);
 				if (ISVALIDPC(hold))
@@ -597,7 +597,7 @@ void cGuilds::EraseMember(int c)
 
 		for (member=1;member<MAXGUILDMEMBERS; ++member)
 		{
-			if (guilds[guildnumber].member[member] == pc->getSerial32())
+			if (guilds[guildnumber].member[member] == pc->getSerial())
 			{
 				guilds[guildnumber].member[member] = 0;
 				guilds[guildnumber].members--;
@@ -682,13 +682,13 @@ void cGuilds::Recruit(int s)
 					slot = SearchSlot(guildnumber, 3);
 					for ( dummy = 1; dummy < MAXGUILDRECRUITS; ++dummy )
 					{
-						if ( guilds[guildnumber].recruit[dummy] == pc->getSerial32() ) 
+						if ( guilds[guildnumber].recruit[dummy] == pc->getSerial() ) 
 							slot = 0;
 					}
 					if ((slot!=-1)&&(slot!=0))
 					{
 						++guilds[guildnumber].recruits;
-						guilds[guildnumber].recruit[slot] = pc->getSerial32();
+						guilds[guildnumber].recruit[slot] = pc->getSerial();
 					}
 					else
 					{
@@ -794,7 +794,7 @@ void cGuilds::StoneMove(int s)
 	pNewstone->setId( 0x1869 );
 
 	pNewstone->type = ITYPE_GUILDSTONE;			// Set Guildstone to Type 'Guild Related'
-	guilds[guildnumber].stone=pNewstone->getSerial32();	// Remember its serial number
+	guilds[guildnumber].stone=pNewstone->getSerial();	// Remember its serial number
 	stone->Delete();				// Remove the guildstone
 	pc->sysmsg(TRANSLATE("Take care of that stone!"));	// And tell him also
 }
@@ -1012,7 +1012,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 				counter++;
 				if (sub==counter)
 				{
-					if (guilds[guildnumber].member[member]==pc->getSerial32())
+					if (guilds[guildnumber].member[member]==pc->getSerial())
 					{
 						pc->sysmsg(TRANSLATE("You cannot dimiss yourself, please resign from the guild if you wish."));
 					}
@@ -1078,7 +1078,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 							slot = Guilds->SearchSlot(guildnumber,2);
 							if (slot != INVALID)
 							{
-								guilds[guildnumber].member[slot] = pc_recruit->getSerial32();
+								guilds[guildnumber].member[slot] = pc_recruit->getSerial();
 								guilds[guildnumber].members++;
 								pc_recruit->SetGuildNumber( guildnumber );
 								guilds[guildnumber].recruit[recruit] = 0;
@@ -1122,7 +1122,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 				counter++;
 				if (sub==counter)
 				{
-					guilds[guildnumber].priv = calcCharFromSer( guilds[guildnumber].member[member] );
+//					guilds[guildnumber].priv = calcCharFromSer( guilds[guildnumber].member[member] );
 					//entrygump(socket, s1, s2, s3, s4, 100, 3, 20, "Enter new guildtitle.");
 					return;
 				}
@@ -1467,7 +1467,7 @@ int cGuilds::SearchByStone(int s)
 	if(!ISVALIDPI(pStone))
 		return -1;
 
-	int stone= pStone->getSerial32();
+	int stone= pStone->getSerial();
 
 
 	if (pc->IsGM())
@@ -1649,7 +1649,7 @@ void cGuilds::Title(int s,int player2)
 		uint8_t sysname[30]={ 0x00, };
 		strcpy((char *)sysname, "System");
 
-		SendSpeechMessagePkt(s, pc2->getSerial32(), 0x0101, 0, pc2->emotecolor, 0x0003, sysname, title);
+		SendSpeechMessagePkt(s, pc2->getSerial(), 0x0101, 0, pc2->emotecolor, 0x0003, sysname, title);
 	}
 }
 
@@ -1776,7 +1776,7 @@ int cGuilds::CheckValidPlace(int s)
 			pi=si.getItem();
 
 			if (ISVALIDPI(pi))
-				if (pi->type==ITYPE_KEY && calcserial(pi->more1,pi->more2,pi->more3,pi->more4)==house->getSerial32())
+				if (pi->type==ITYPE_KEY && calcserial(pi->more1,pi->more2,pi->more3,pi->more4)==house->getSerial())
 				{
 					return 1;
 					break;

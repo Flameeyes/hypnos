@@ -6,10 +6,10 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
-#include "object.h"
+#include "objects/cobject.h"
 #include "archive.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "inlines.h"
 #include "utils.h"
 #include "scripts.h"
@@ -128,7 +128,7 @@ cObject::~cObject()
 \since 0.82a
 \param newserial the new serial
 */
-void cObject::setSerial32(int32_t newserial)
+void cObject::setSerial(int32_t newserial)
 {
 	serial.serial32= newserial;
 	if( newserial!=INVALID )
@@ -203,7 +203,7 @@ bool cObject::addTempfx( cObject& src, int32_t num, int32_t more1, int32_t more2
 	//
 	//	Create the tempfx
 	//
-	tempfx::cTempfx tmpeff( src.getSerial32(), getSerial32(), num, dur, more1, more2, more3, amxcback );
+	tempfx::cTempfx tmpeff( src.getSerial(), getSerial32(), num, dur, more1, more2, more3, amxcback );
 
 	if ( !tmpeff.isValid() )
 		return false;
@@ -211,7 +211,7 @@ bool cObject::addTempfx( cObject& src, int32_t num, int32_t more1, int32_t more2
         //
         //	Put the object in the global check vector if necessary
         //
-        tempfx::addTempfxCheck( getSerial32() );
+        tempfx::addTempfxCheck( getSerial() );
 
 	//
 	//	Start the tempfx

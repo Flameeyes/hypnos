@@ -16,7 +16,7 @@ void cPC::heartbeat()
 {
 	if ( dead )
 		return;
-	if ( Accounts->GetInWorld( account ) == getSerial32() && logout > 0 && ( logout <= (int32_t)uiCurrentTime  ) )
+	if ( Accounts->GetInWorld( account ) == getSerial() && logout > 0 && ( logout <= (int32_t)uiCurrentTime  ) )
 	{
 		Accounts->SetOffline( account);
 		logout = INVALID;
@@ -29,14 +29,14 @@ void cPC::heartbeat()
 	if ( amxevents[EVENT_CHR_ONHEARTBEAT] )
 	{
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONHEARTBEAT]->Call( getSerial32(), uiCurrentTime );
+		amxevents[EVENT_CHR_ONHEARTBEAT]->Call( getSerial(), uiCurrentTime );
 		if( g_bByPass == true ) return;
 		if( dead )	// Killed as result of script action
 			return;
 	}
 	/*
 	g_bByPass = false;
-	runAmxEvent( EVENT_CHR_ONHEARTBEAT, getSerial32(), uiCurrentTime );
+	runAmxEvent( EVENT_CHR_ONHEARTBEAT, getSerial(), uiCurrentTime );
 	if( g_bByPass == true )
 		return;
 	*/
@@ -341,7 +341,7 @@ void cPC::deadAttack (pChar victim)
 	{//if this not a npc but a player
 		if(SrvParms->persecute)
 		{//start persecute stuff - AntiChrist
-			targserial = victim->getSerial32();
+			targserial = victim->getSerial();
 			Skills::Persecute(getClient());
 		}
 		else

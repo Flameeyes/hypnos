@@ -26,7 +26,7 @@ void cNPC::heartbeat()
 	if ( amxevents[EVENT_CHR_ONHEARTBEAT] )
 	{
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONHEARTBEAT]->Call( getSerial32(), uiCurrentTime );
+		amxevents[EVENT_CHR_ONHEARTBEAT]->Call( getSerial(), uiCurrentTime );
 		if ( g_bByPass == true )
 			return;
 		if( dead )	// Killed as result of action in script
@@ -34,7 +34,7 @@ void cNPC::heartbeat()
 	}
 	/*
 	g_bByPass = false;
-	runAmxEvent( EVENT_CHR_ONHEARTBEAT, getSerial32(), uiCurrentTime );
+	runAmxEvent( EVENT_CHR_ONHEARTBEAT, getSerial(), uiCurrentTime );
 	if ( g_bByPass == true )
 		return;
 	*/
@@ -69,12 +69,12 @@ void cNPC::heartbeat()
 		if ( amxevents[EVENT_CHR_ONDISPEL] )
 		{
 			g_bByPass = false;
-			amxevents[EVENT_CHR_ONDISPEL]->Call( getSerial32(), INVALID, DISPELTYPE_TIMEOUT );
+			amxevents[EVENT_CHR_ONDISPEL]->Call( getSerial(), INVALID, DISPELTYPE_TIMEOUT );
 			if ( g_bByPass == true ) return;
 		}
 		/*
 		g_bByPass = false;
-		runAmxEvent( EVENT_CHR_ONDISPEL, getSerial32(), INVALID, DISPELTYPE_TIMEOUT );
+		runAmxEvent( EVENT_CHR_ONDISPEL, getSerial(), INVALID, DISPELTYPE_TIMEOUT );
 		if ( g_bByPass == true ) return;
 		*/
 		// Dupois - Added Dec 20, 1999
@@ -397,7 +397,7 @@ void cNPC::createEscortQuest()
 	}
 
 	// Post the message to the message board in the same REGION as the NPC
-        questEscortPostSerial = createQuestMessage(ESCORTQUEST,getSerial32(), NULL, region);
+        questEscortPostSerial = createQuestMessage(ESCORTQUEST,getSerial(), NULL, region);
 	if ( !questEscortPostSerial )
 	{
 		ConOut( "createEscortQuest() Failed to add quest post for %s\n", getCurrentNameC() );

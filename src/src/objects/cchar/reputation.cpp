@@ -25,8 +25,8 @@ void cChar::setMurderer()
 {
 
 	if (amxevents[EVENT_CHR_ONFLAGCHG])
-		amxevents[EVENT_CHR_ONFLAGCHG]->Call(getSerial32() );
-	//runAmxEvent( EVENT_CHR_ONFLAGCHG, getSerial32(), getSocket() );
+		amxevents[EVENT_CHR_ONFLAGCHG]->Call(getSerial() );
+	//runAmxEvent( EVENT_CHR_ONFLAGCHG, getSerial(), getSocket() );
 
 	flag=flagKarmaMurderer;
 }
@@ -35,8 +35,8 @@ void cChar::setInnocent()
 {
 
 	if (amxevents[EVENT_CHR_ONFLAGCHG])
-		amxevents[EVENT_CHR_ONFLAGCHG]->Call(getSerial32() );
-	//runAmxEvent( EVENT_CHR_ONFLAGCHG, getSerial32(), getSocket() );
+		amxevents[EVENT_CHR_ONFLAGCHG]->Call(getSerial() );
+	//runAmxEvent( EVENT_CHR_ONFLAGCHG, getSerial(), getSocket() );
 	flag=flagKarmaInnocent;
 }
 
@@ -44,8 +44,8 @@ void cChar::setCriminal()
 {
 
 	if (amxevents[EVENT_CHR_ONFLAGCHG])
-		amxevents[EVENT_CHR_ONFLAGCHG]->Call(getSerial32() );
-	//runAmxEvent( EVENT_CHR_ONFLAGCHG, getSerial32(), getSocket() );
+		amxevents[EVENT_CHR_ONFLAGCHG]->Call(getSerial() );
+	//runAmxEvent( EVENT_CHR_ONFLAGCHG, getSerial(), getSocket() );
 	flag=flagKarmaCriminal;
 }
 
@@ -114,10 +114,10 @@ void cChar::modifyFame( int32_t value )
 				g_bByPass = false;
 				int n = nChange;
 				if (!nEffect) n = -nChange;
-				amxevents[EVENT_CHR_ONREPUTATIONCHG]->Call(getSerial32(), n, REPUTATION_FAME);
+				amxevents[EVENT_CHR_ONREPUTATIONCHG]->Call(getSerial(), n, REPUTATION_FAME);
 			}
 			/*
-			pc->runAmxEvent( EVENT_CHR_ONREPUTATIONCHG, pc->getSerial32(), (!nEffect ? -nChange : nChange), REPUTATION_FAME);
+			pc->runAmxEvent( EVENT_CHR_ONREPUTATIONCHG, pc->getSerial(), (!nEffect ? -nChange : nChange), REPUTATION_FAME);
 			*/
 			if ( !g_bByPass && !npc )
 			{
@@ -208,10 +208,10 @@ void cChar::IncreaseKarma( int32_t value, pChar pKilled )
 				int32_t n = nChange;
 				if (!positiveKarmaEffect)
 					n = -nChange;
-				amxevents[EVENT_CHR_ONREPUTATIONCHG]->Call( getSerial32(), n, REPUTATION_KARMA );
+				amxevents[EVENT_CHR_ONREPUTATIONCHG]->Call( getSerial(), n, REPUTATION_KARMA );
 			}
 			/*
-			pc->runAmxEvent( EVENT_CHR_ONREPUTATIONCHG, pc->getSerial32(), (!nEffect ? -nChange : nChange), REPUTATION_KARMA);
+			pc->runAmxEvent( EVENT_CHR_ONREPUTATIONCHG, pc->getSerial(), (!nEffect ? -nChange : nChange), REPUTATION_KARMA);
 			if (g_bByPass==true)
 				return;
 			*/

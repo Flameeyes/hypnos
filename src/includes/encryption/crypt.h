@@ -112,14 +112,14 @@ private:
     int m_pos_enc, m_pos_dec;
     keyInstance encrypt_ki, decrypt_ki;     /* key information, including tables */
     cipherInstance encrypt_ci, decrypt_ci;          /* keeps mode (ECB, CBC) and IV */
-	BYTE m_dec_subData3[256];
-    BYTE m_enc_subData3[256];
+	uint8_t m_dec_subData3[256];
+    uint8_t m_enc_subData3[256];
     DWORD dwIndex;
 
 	int NewGameCrypt::ParseHexDword(int bits,CONST char *srcTxt,DWORD *d,char *dstTxt);
 	DWORD NewGameCrypt::RS_MDS_Encode(DWORD k0,DWORD k1);
 	void NewGameCrypt::BuildMDS(void);
-	void NewGameCrypt::ReverseRoundSubkeys(keyInstance *key,BYTE newDir);
+	void NewGameCrypt::ReverseRoundSubkeys(keyInstance *key,uint8_t newDir);
 #if defined(__BORLANDC__)   /* do it inline */
 	NewGameCrypt::Xor32(dst,src,i) { ((DWORD *)dst)[i] = ((DWORD *)src)[i] ^ tmpX; };
 	NewGameCrypt::Xor256(dst,src,b)               \
@@ -129,15 +129,15 @@ private:
         { Xor32(dst,src,i  ); Xor32(dst,src,i+1); Xor32(dst,src,i+2); Xor32(dst,src,i+3); } \
     };
 #else                       /* do it as a function call */
-	void NewGameCrypt::Xor256(void *dst,void *src,BYTE b);
+	void NewGameCrypt::Xor256(void *dst,void *src,uint8_t b);
 #endif
 	int NewGameCrypt::reKey(keyInstance *key);
-	int NewGameCrypt::makeKey(keyInstance *key, BYTE direction, int keyLen,CONST char *keyMaterial);
-	int NewGameCrypt::blockEncrypt(cipherInstance *cipher, keyInstance *key,CONST BYTE *input,
-                int inputLen, BYTE *outBuffer);
-	int NewGameCrypt::blockDecrypt(cipherInstance *cipher, keyInstance *key,CONST BYTE *input,
-		                int inputLen, BYTE *outBuffer);
-	int NewGameCrypt::cipherInit(cipherInstance *cipher, BYTE mode,CONST char *IV);
+	int NewGameCrypt::makeKey(keyInstance *key, uint8_t direction, int keyLen,CONST char *keyMaterial);
+	int NewGameCrypt::blockEncrypt(cipherInstance *cipher, keyInstance *key,CONST uint8_t *input,
+                int inputLen, uint8_t *outBuffer);
+	int NewGameCrypt::blockDecrypt(cipherInstance *cipher, keyInstance *key,CONST uint8_t *input,
+		                int inputLen, uint8_t *outBuffer);
+	int NewGameCrypt::cipherInit(cipherInstance *cipher, uint8_t mode,CONST char *IV);
 
 
 

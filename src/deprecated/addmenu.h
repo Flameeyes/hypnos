@@ -20,7 +20,7 @@
 #include "menu.h"
 #include "oldmenu.h"
 #include "utils.h"
-#include "chars.h"
+
 #include "client.h"
 
 

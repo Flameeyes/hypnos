@@ -21,8 +21,8 @@
 #include "scp_parser.h"
 #include "rcvpkg.h"
 #include "map.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "inlines.h"
 #include "classes.h"
 #include "utils.h"
@@ -784,7 +784,7 @@ void castAreaAttackSpell (int x, int y, SpellId spellnum, pChar pcaster)
 		if ( ISVALIDPC(pd) ) {
 			if ( ISVALIDPC( pcaster ) ) {
 				if ( spellnum == SPELL_EARTHQUAKE || spellnum == SPELL_CHAINLIGHTNING ) {
-					if ( pd->getSerial32() == pcaster->getSerial32() )
+					if ( pd->getSerial() == pcaster->getSerial32() )
 						continue;
 				}
 			}
@@ -1554,7 +1554,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
-				if ( ISVALIDPC(pd) && pd->getSerial32()!=src->getSerial32()) {
+				if ( ISVALIDPC(pd) && pd->getSerial()!=src->getSerial32()) {
 					spellFX(spellnumber, src, pd);
 					castStatPumper(SPELL_CURSE, dest, src, flags, param);
 				}
@@ -1919,12 +1919,12 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 
 	if (src->amxevents[EVENT_CHR_ONCASTSPELL]) {
 		g_bByPass = false;
-		src->amxevents[EVENT_CHR_ONCASTSPELL]->Call(src->getSerial32(), spellnumber, src->spelltype, INVALID);
+		src->amxevents[EVENT_CHR_ONCASTSPELL]->Call(src->getSerial(), spellnumber, src->spelltype, INVALID);
 		if (g_bByPass==true) return;
 	}
 
 	/*
-	src->runAmxEvent( EVENT_CHR_ONCASTSPELL, src->getSerial32(), spellnumber, src->spelltype, INVALID );
+	src->runAmxEvent( EVENT_CHR_ONCASTSPELL, src->getSerial(), spellnumber, src->spelltype, INVALID );
 	if (g_bByPass==true)
 		return;
 	*/
@@ -2015,11 +2015,11 @@ bool beginCasting (SpellId num, NXWCLIENT s, CastingType type)
 
 	if (pc->amxevents[EVENT_CHR_ONCASTSPELL]) {
 		g_bByPass = false;
-		pc->amxevents[EVENT_CHR_ONCASTSPELL]->Call(pc->getSerial32(), num, type, INVALID );
+		pc->amxevents[EVENT_CHR_ONCASTSPELL]->Call(pc->getSerial(), num, type, INVALID );
 		if (g_bByPass==true) return false;
 	}
 	/*
-	pc->runAmxEvent( EVENT_CHR_ONCASTSPELL, pc->getSerial32(), num, type, s->toInt() );
+	pc->runAmxEvent( EVENT_CHR_ONCASTSPELL, pc->getSerial(), num, type, s->toInt() );
 	if (g_bByPass==true)
 		return false;
 	*/

@@ -59,8 +59,8 @@
 #include "trade.h"
 #include "globals.h"
 #include "inlines.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "nox-wizard.h"
 
 
@@ -527,7 +527,7 @@ static void exec_whologow(char *dummy)
 		if( ISVALIDPC(pj) ) //Keeps NPC's from appearing on the list
 		{
 			j++;
-			fprintf(File, "%i) %s [%x]\n", (j-1), pj->getCurrentNameC(), pj->getSerial32());
+			fprintf(File, "%i) %s [%x]\n", (j-1), pj->getCurrentNameC(), pj->getSerial());
 		}
 	}
 	fprintf(File,"Total Users Online: %d\n", j);
@@ -564,7 +564,7 @@ static void exec_wholog(char *dummy)
 		if( ISVALIDPC(pj) ) //Keeps NPC's from appearing on the list
 		{
 			j++;
-			fprintf(File, "%i) %s [%x ]\n", (j-1), pj->getCurrentNameC(), pj->getSerial32());
+			fprintf(File, "%i) %s [%x ]\n", (j-1), pj->getCurrentNameC(), pj->getSerial());
 		}
 	}
 	fprintf(File,"Total Users Online: %d\n", j);

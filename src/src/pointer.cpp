@@ -11,8 +11,8 @@
 #include "set.h"
 #include "debug.h"
 #include "archive.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "inlines.h"
 
 
@@ -72,16 +72,16 @@ void getWorldCoordsFromSerial (int sr, int& px, int& py, int& pz, int& ch, int& 
 
 namespace pointers {
 
-	std::map<uint32_t, vector <pChar> > pStableMap;
-	std::map<uint32_t, pChar > pMounted;
+	std::map<uint32_t, CharList> pStableMap;
+	std::map<uint32_t, pChar> pMounted;
 
-	std::map<uint32_t, vector <pChar> > pOwnCharMap;
-	std::map<uint32_t, vector <pItem> > pOwnItemMap;
+	std::map<uint32_t, CharList> pOwnCharMap;
+	std::map<uint32_t, ItemList> pOwnItemMap;
 
-	std::map<uint32_t, vector <pItem> > pContMap;
+	std::map<uint32_t, ItemList> pContMap;
 
-	std::map<uint32_t, vector <pChar> > pMultiCharMap;
-	std::map<uint32_t, vector <pItem> > pMultiItemMap;
+	std::map<uint32_t, CharList> pMultiCharMap;
+	std::map<uint32_t, ItemList> pMultiItemMap;
 
 #ifdef SPAR_LOCATION_MAP
 	//
@@ -147,7 +147,7 @@ namespace pointers {
 	{
 		if( pObject != 0 )
 		{
-			if( isItemSerial( pObject->getSerial32() ) )
+			if( isItemSerial( pObject->getSerial() ) )
 			{
 				if( static_cast<pItem>(pObject)->isInWorld() )
 					addItemToLocationMap( static_cast<pItem>(pObject) );
@@ -163,7 +163,7 @@ namespace pointers {
 	{
 		if( pObject != 0 )
 		{
-			if( isItemSerial( pObject->getSerial32() ) )
+			if( isItemSerial( pObject->getSerial() ) )
 			{
 				if( static_cast<pItem>(pObject)->isInWorld() )
 				{
@@ -183,7 +183,7 @@ namespace pointers {
 	{
 		if( pObject != 0 )
 		{
-			if( isItemSerial( pObject->getSerial32() ) )
+			if( isItemSerial( pObject->getSerial() ) )
 			{
 				if( static_cast<pItem>(pObject)->isInWorld() )
 				{
@@ -206,10 +206,10 @@ namespace pointers {
 	void delCharFromLocationMap( const pChar pWho )
 	{
 		pair< PCHARLOCATIONMAPIT, PCHARLOCATIONMAPIT > it = pCharLocationMap.equal_range( pWho->getLocationKey() );
-		uint32_t pWhoSerial = pWo->getSerial32();
+		uint32_t pWhoSerial = pWo->getSerial();
 
 		for( ; it.first != it.second; ++it.first )
-			if( it.first->second->getSerial32() == pWhoSerial32 )
+			if( it.first->second->getSerial() == pWhoSerial32 )
 			{
 				pCharLocationMap.erase( it.first );
 				break;
@@ -235,7 +235,7 @@ namespace pointers {
 			x = it->first >> 16;
 			y = it->first & 0x0000FFFF;
 			if( ISVALIDPC( it->second ) )
-				serial = it->second->getSerial32();
+				serial = it->second->getSerial();
 			else
 			{
 				++invalidCount;
@@ -257,7 +257,7 @@ namespace pointers {
 
 		if( pObject != 0 )
 		{
-			if( isItemSerial( pObject->getSerial32() ) )
+			if( isItemSerial( pObject->getSerial() ) )
 			{
 				if( static_cast<pItem>(pObject)->isInWorld() )
 					validCall = true;
@@ -294,12 +294,12 @@ namespace pointers {
 				{
 					if( pSelf )
 					{
-						if( (flags & EXCLUDESELF) && pSelf->getSerial32() == pc->getSerial32() )
+						if( (flags & EXCLUDESELF) && pSelf->getSerial() == pc->getSerial32() )
 						{
 							continue;
 						}
 
-						if ( (flags & COMBATTARGET) && pSelf->getSerial32() == pc->targserial )
+						if ( (flags & COMBATTARGET) && pSelf->getSerial() == pc->targserial )
 						{
 							pvCharsInRange->push_back( pc );
 							continue;
@@ -358,10 +358,10 @@ namespace pointers {
 	void delItemFromLocationMap( const pItem pWhat )
 	{
 		pair< PITEMLOCATIONMAPIT, PITEMLOCATIONMAPIT > it = pItemLocationMap.equal_range( pWhat->getLocationKey() );
-		uint32_t	pWhatSerial = pWhat->getSerial32();
+		uint32_t	pWhatSerial = pWhat->getSerial();
 
 		for( ; it.first != it.second; ++it.first )
-			if( it.first->second->getSerial32() == pWhatSerial32 )
+			if( it.first->second->getSerial() == pWhatSerial32 )
 			{
 				pItemLocationMap.erase( it.first );
 				break;
@@ -377,7 +377,7 @@ namespace pointers {
 
 		if( pObject != 0 )
 		{
-			if( isItemSerial( pObject->getSerial32() ) )
+			if( isItemSerial( pObject->getSerial() ) )
 			{
 				pSelf = static_cast<pItem>(pObject);
 				if( pSelf->isInWorld() )
@@ -418,7 +418,7 @@ namespace pointers {
 				{
 					if( pSelf )
 					{
-						if( (flags & EXCLUDESELF) && pSelf->getSerial32() == pi->getSerial32() )
+						if( (flags & EXCLUDESELF) && pSelf->getSerial() == pi->getSerial32() )
 						{
 							continue;
 						}
@@ -453,7 +453,7 @@ namespace pointers {
 			x = it->first >> 16;
 			y = it->first & 0x0000FFFF;
 			if( ISVALIDPI( it->second ) )
-				serial = it->second->getSerial32();
+				serial = it->second->getSerial();
 			else
 			{
 				++invalidCount;
@@ -785,7 +785,7 @@ namespace pointers {
 #endif
 		objects.eraseObject( pc );
 
-		eraseContainerInfo( pc->getSerial32() );
+		eraseContainerInfo( pc->getSerial() );
 
 
 	}
@@ -810,7 +810,7 @@ namespace pointers {
 
 		objects.eraseObject(pi);
 
-		eraseContainerInfo( pi->getSerial32() );
+		eraseContainerInfo( pi->getSerial() );
 
 		uint32_t cont=pi->getContSerial();
 		if ( cont > INVALID ) {
@@ -970,7 +970,7 @@ namespace pointers {
 	\param bAddAmounts if true we want to add the amount of the items to the return value
 	\param recurseSubpack if true we search also in subpack
 	*/
-	uint32_t containerCountItems(uint32_t serial, short id, short color, bool bAddAmounts, LOGICAL recurseSubpack)
+	uint32_t containerCountItems(uint32_t serial, short id, short color, bool bAddAmounts, bool recurseSubpack)
 	{
 
 		std::map< uint32_t , vector<pItem> >::iterator cont( pointers::pContMap.find( serial ) );
@@ -985,7 +985,7 @@ namespace pointers {
 
 			pItem pi=(*iter);
 			if (pi->isContainer() && recurseSubpack) {
-				total += containerCountItems(pi->getSerial32(), id, color, bAddAmounts, true);
+				total += containerCountItems(pi->getSerial(), id, color, bAddAmounts, true);
 				continue;
 			}
 			if ((pi->getId()==id && (color==-1 || pi->getColor()==color))||(id==-1)) {
@@ -1019,7 +1019,7 @@ namespace pointers {
 			pItem pi=(*iter);
 			if (pi->type == 1)	// container
 			{
-				total += containerCountItemsByID(pi->getSerial32(), scriptID, bAddAmounts);
+				total += containerCountItemsByID(pi->getSerial(), scriptID, bAddAmounts);
 				continue;
 			}
 			if ( pi->getScriptID() == scriptID ) {

@@ -162,7 +162,7 @@ void cChar::flee( pChar pc, int32_t seconds )
 
 	oldnpcWander = npcWander;
 	npcWander = WANDER_FLEE;
-	targserial=pc->getSerial32();
+	targserial=pc->getSerial();
 
 }
 
@@ -255,12 +255,12 @@ void cChar::walk()
 			if (amxevents[EVENT_CHR_ONWALK])
 			{
 				g_bByPass = false;
-				amxevents[EVENT_CHR_ONWALK]->Call(getSerial32(), dir, dir);
+				amxevents[EVENT_CHR_ONWALK]->Call(getSerial(), dir, dir);
 				if (g_bByPass==true)
 					return;
 			}
 			/*
-			pc_i->runAmxEvent( EVENT_CHR_ONWALK, pc_i->getSerial32(), pc_i->dir, pc_i->dir);
+			pc_i->runAmxEvent( EVENT_CHR_ONWALK, pc_i->getSerial(), pc_i->dir, pc_i->dir);
 			if (g_bByPass==true)
 				return;
 			*/
@@ -273,7 +273,7 @@ void cChar::walk()
 		}
 			break;
 		default:
-			ErrOut("cChar::walk() unknown npcwander [%i] serial %u\n", npcWander, getSerial32() );
+			ErrOut("cChar::walk() unknown npcwander [%i] serial %u\n", npcWander, getSerial() );
 			break;
 	}
 	setNpcMoveTime();

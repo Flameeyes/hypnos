@@ -11,8 +11,8 @@
 #include "debug.h"
 #include "scp_parser.h"
 #include "titles.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "scripts.h"
 #include "basics.h"
 #include "inlines.h"

@@ -31,7 +31,7 @@
    where a = primitive root of field generator 0x14D */
 #define RS_GF_FDBK      0x14D       /* field generator */
 #define RS_rem(x)       \
-    { BYTE  b  = (BYTE) (x >> 24);                                           \
+    { uint8_t  b  = (BYTE) (x >> 24);                                           \
       DWORD g2 = ((b << 1) ^ ((b & 0x80) ? RS_GF_FDBK : 0 )) & 0xFF;         \
       DWORD g3 = ((b >> 1) & 0x7F) ^ ((b & 1) ? RS_GF_FDBK >> 1 : 0 ) ^ g2 ; \
       x = (x << 8) ^ (g3 << 24) ^ (g2 << 16) ^ (g3 << 8) ^ b;                \
@@ -137,7 +137,7 @@
 * log2(skXor[ 0.. 0])
 * log2(skDup[ 0.. 6])=   ---  2.37  0.44  3.94  8.36 13.04 17.99
 ***********************************************************************/
-CONST BYTE P8x8[2][256]=
+CONST uint8_t P8x8[2][256]=
     {
 /*  p0:   */
 /*  dpMax      = 10.  lpMax      = 64.  cycleCnt=   1  1  1  0.         */

@@ -15,7 +15,9 @@
 #ifndef __TARGET_H__
 #define __TARGET_H__
 
-#include "packets.h"
+
+#include "objects/cchar.h"
+#include "objects/citem.h"
 
 typedef class cTarget* P_TARGET;
 typedef void ( *processTarget )			( NXWCLIENT, P_TARGET );
@@ -128,13 +130,13 @@ P_TARGET createTarget( TARG_TYPE type );
 class TargetLocation
 {
 private:
-	pChar m_pc;
-	int    m_pcSerial;
-	pItem m_pi;
-	int    m_piSerial;
-	int    m_x;
-	int    m_y;
-	int    m_z;
+	pChar	m_pc;
+	int	m_pcSerial;
+	pItem	m_pi;
+	int	m_piSerial;
+	int	m_x;
+	int	m_y;
+	int	m_z;
 	void   init(int x, int y, int z);
 	void   init(pChar pc);
 	void   init(pItem pi);

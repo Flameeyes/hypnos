@@ -18,8 +18,8 @@
 #include "layer.h"
 #include "scp_parser.h"
 #include "set.h"
-#include "chars.h"
-#include "items.h"
+
+
 #include "inlines.h"
 #include "basics.h"
 #include "scripts.h"
@@ -195,7 +195,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 					{
 						int serial;
 						uint32_t ci;
-						serial=pc->getSerial32();
+						serial=pc->getSerial();
 						if (serial > INVALID)
 							for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 							{
@@ -219,7 +219,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 					{
 						int serial;
 						uint32_t ci;
-						serial=pc->getSerial32();
+						serial=pc->getSerial();
 						if (serial > INVALID)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 						{
@@ -245,7 +245,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 					{
 						int serial;
 						uint32_t ci;
-						serial=pc->getSerial32();
+						serial=pc->getSerial();
 						if (serial > INVALID)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 						{
@@ -262,7 +262,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 					{
 						int serial;
 						uint32_t ci;
-						serial=pc->getSerial32();
+						serial=pc->getSerial();
 						if (serial > INVALID)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 						{
@@ -279,7 +279,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 					{
 						int serial;
 						uint32_t ci;
-						serial=pc->getSerial32();
+						serial=pc->getSerial();
 						if (serial > INVALID)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 						{
@@ -446,7 +446,7 @@ void teleporters(pChar pc)
 					{
 						pChar pc_i=sc.getChar();
 						// That is following this player character
-						if ( (pc_i->npc) && (pc_i->ftargserial==pc->getSerial32()) )
+						if ( (pc_i->npc) && (pc_i->ftargserial==pc->getSerial()) )
 						{
 							// Teleport the NPC along with the player
 							pc_i->MoveTo(	iter_tele_locations->second.destination.x,

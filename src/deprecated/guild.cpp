@@ -12,8 +12,8 @@
 #include "debug.h"
 #include "worldmain.h"
 #include "guild.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "basics.h"
 #include "scripts.h"
 
@@ -207,7 +207,7 @@ std::string cGuild::getAbbreviation()
 P_GUILD_MEMBER cGuild::addMember( pChar pc )
 {
 
-	P_GUILD_MEMBER member = new cGuildMember( pc->getSerial32() );
+	P_GUILD_MEMBER member = new cGuildMember( pc->getSerial() );
 	members.insert( make_pair( member->serial, member ) );
 	pc->setGuild( this, member );
 	return member;
@@ -222,7 +222,7 @@ P_GUILD_MEMBER cGuild::addMember( pChar pc )
 void cGuild::resignMember( pChar pc )
 {
 	pc->setGuild( NULL, NULL );
-	members.erase( pc->getSerial32() );
+	members.erase( pc->getSerial() );
 }
 
 /*!
@@ -245,8 +245,8 @@ P_GUILD_MEMBER cGuild::getMember( uint32_t member )
 */
 P_GUILD_RECRUIT cGuild::addNewRecruit( pChar recruit, pChar recruiter )
 {
-	P_GUILD_RECRUIT re = new cGuildRecruit( recruit->getSerial32() );
-	re->recruiter = this->getMember( recruiter->getSerial32() );
+	P_GUILD_RECRUIT re = new cGuildRecruit( recruit->getSerial() );
+	re->recruiter = this->getMember( recruiter->getSerial() );
 	recruits.insert( make_pair( re->serial, re ) );
 	return re;
 }
@@ -258,7 +258,7 @@ P_GUILD_RECRUIT cGuild::addNewRecruit( pChar recruit, pChar recruiter )
 */
 void cGuild::refuseRecruit( pChar pc )
 {
-	std::map< uint32_t, P_GUILD_RECRUIT>::iterator iter( recruits.find( pc->getSerial32() ) ), end( recruits.end() );
+	std::map< uint32_t, P_GUILD_RECRUIT>::iterator iter( recruits.find( pc->getSerial() ) ), end( recruits.end() );
 	if( iter != end ) {
 		recruits.erase( iter );
 	}

@@ -246,7 +246,7 @@ uint32_t cContainer::removeItems(uint32_t delAmount, uint16_t matchId, uint16_t 
 */
 void cContainer::dropitem(pItem pi)
 {
-	int ser= pi->getSerial32();
+	int ser= pi->getSerial();
 	vector<int32_t>::iterator it= ItemList.begin();
 
 	ItemList::iterator it = items.find(pi);
@@ -270,7 +270,7 @@ void cContainer::addItem(pItem item, uint16_t xx, uint16_t yy)
 	NxwSocketWrapper sw;
 	sw.fillOnline( item );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
-		SendDeleteObjectPkt(sw.getSocket(), item->getSerial32() );
+		SendDeleteObjectPkt(sw.getSocket(), item->getSerial() );
 
 	item->setContainer(this);
 	if ( xx != 0xFFFF )

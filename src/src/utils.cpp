@@ -22,8 +22,8 @@
 #include "accounts.h"
 #include "boats.h"
 #include "map.h"
-#include "items.h"
-#include "chars.h"
+
+
 #include "skills.h"
 #include "nox-wizard.h"
 #include "scripts.h"
@@ -488,7 +488,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 			{
 				houseowner_serial=pi2->getOwnerSerial32();
 				j=on_hlist(pi_house, pc->getSerial().ser1,  pc->getSerial().ser2,  pc->getSerial().ser3,  pc->getSerial().ser4, NULL);
-				if ( j==H_FRIEND || (pi2->getOwnerSerial32()==pc->getSerial32()) ) // house_refresh stuff, LB, friends of the house can do.
+				if ( j==H_FRIEND || (pi2->getOwnerSerial32()==pc->getSerial()) ) // house_refresh stuff, LB, friends of the house can do.
 				{
 					if (s!=INVALID)
 					{
@@ -498,7 +498,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 
 						if (ds>=50) // sysmessage iff decay status >=50%
 						{
-							if (houseowner_serial!= pc->getSerial32())
+							if (houseowner_serial!= pc->getSerial())
 								sysmessage(s,TRANSLATE("You refreshed your friend's house"));
 							else
 								sysmessage(s,TRANSLATE("You refreshed the house"));
