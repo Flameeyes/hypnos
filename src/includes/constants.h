@@ -53,9 +53,9 @@ enum
 }; //enum
 
 #define INVALID -1
-#define UINVALID 0xFFFFFFFF
 #define UINVALID08 0xFF
 #define UINVALID16 0xFFFF
+#define UINVALID32 0xFFFFFFFF
 
 //@{
 /*!
@@ -125,6 +125,8 @@ enum {	RGNPRIV_GUARDED = 0x01, RGNPRIV_MARKALLOWED = 0x02, RGNPRIV_GATEALLOWED =
 
 //! Stat types
 enum StatType { STAT_HP = 0, STAT_MANA, STAT_STAMINA, ALL_STATS };
+
+enum Coord { cX, cY, cZ, cDispZ };
 
 //! Type of damage
 enum DamageType {

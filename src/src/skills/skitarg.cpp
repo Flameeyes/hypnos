@@ -582,7 +582,7 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
         else
         { // Create between 1 and 15 goldpieces and place directly in backpack
             nAmount=1+(rand()%15);
-            addgold(DEREF_P_CHAR(pc),nAmount);
+	    pc->addGold(nAmount);
             pc->playSFX( goldsfx(nAmount) );
             if (nAmount==1)
                 pc->sysmsg(TRANSLATE("You unearthed %i gold coin."), nAmount);
@@ -1671,7 +1671,7 @@ void Skills::target_begging( NXWCLIENT ps, P_TARGET t )
                 }
 
                 pc->talkAll(TRANSLATE("Ohh thou lookest so poor, Here is some gold I hope this will assist thee."),0); // zippy
-                addgold(s,realgold);
+		pcc->addGold(realgold);
                 sysmessage(s,TRANSLATE("Some gold is placed in your pack."));
             }
         }
@@ -1679,7 +1679,7 @@ void Skills::target_begging( NXWCLIENT ps, P_TARGET t )
             sysmessage(s, TRANSLATE("That would be foolish."));
 
 
-    AMXEXECSVTARGET( pcc->getSerial32(),AMXT_SKITARGS,BEGGING,AMX_AFTER);
+	AMXEXECSVTARGET( pcc->getSerial32(),AMXT_SKITARGS,BEGGING,AMX_AFTER);
 }
 
 void Skills::target_animalLore( NXWCLIENT ps, P_TARGET t )

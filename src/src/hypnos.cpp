@@ -1532,26 +1532,6 @@ void initque()
 
 }
 
-
-/*!
-\author Unknown, rewritten by Luxor
-\brief add gold to char handled by socket
-\param s socket
-\param totgold amount of gold to add
-*/
-void addgold(int s, int totgold)
-{
-	if ( s < 0 || s >= now )
-		return;
-
-	P_CHAR pc = pointers::findCharBySerial( currchar[s] );
-	P_ITEM pi = item::CreateFromScript( "$item_gold_coin", pc->getBackpack(), totgold );
-	if ( pi != 0 )
-	{
-		pi->Refresh();
-	}
-}
-
 void usepotion(P_CHAR pc, P_ITEM pi)
 {
 	int x;

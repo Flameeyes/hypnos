@@ -88,21 +88,16 @@ public:
 \brief functions for handle serials stuff
 */
 private:
-	Serial			serial;			//!< serial of the object
-	Serial			multi_serial;		//!< multi serial of the object (don't know what it is used for)
-	Serial			OwnerSerial;		//!< If Char is an NPC, this sets its owner
+	UI32		serial;		//!< serial of the object
+	UI32		multi_serial;	//!< multi serial of the object (don't know what it is used for)
+	UI32		owner_serial;	//!< If Char is an NPC, this sets its owner
 
 public:
-	//! return the object's serial
-	inline const Serial	getSerial() const
-	{ return serial; }
-
 	//! return the serial of the object
 	inline const SI32	getSerial32() const
-	{ return serial.serial32; }
+	{ return serial; }
 
 	void			setSerial32(SI32 newserial);
-	const void		setSerialByte(UI32 nByte, BYTE value);
 
 	//! return the object's multi serial
 	inline const Serial	getMultiSerial() const
@@ -150,8 +145,8 @@ public:
 	inline const Location	getPosition() const
 	{ return position; }
 
-	SI32			getPosition(const char *what) const;
-	void			setPosition(const char *what, SI32 value);
+	SI32			getPosition(Coord what) const;
+	void			setPosition(Coord what, SI32 value);
 	void			setPosition(Location where);
 
 	//! Set the position of the object

@@ -86,7 +86,7 @@ typedef       class cObject*		P_OBJECT;	//!< pointer to cObject
 typedef SI32				SERIAL;		//!< 32-bit serial number
 typedef UI32				TIMERVAL;
 typedef SI32				ACCOUNT;
-typedef SI32				FUNCIDX;				
+typedef SI32				FUNCIDX;
 typedef std::vector<UI32>		UI32VECTOR;	//!< vector of unsigned 32 bits integers
 typedef std::vector<SERIAL>		SERIAL_VECTOR;	//!< vector of serials
 typedef slist<SERIAL>                   SERIAL_SLIST;	//!< slist of serials
@@ -130,13 +130,13 @@ template < class T >
 class cPoint{
 public:
 
-	cPoint( T a=0, T b=0 ) { this->a=a; this->b=b; }; 
+	cPoint( T a=0, T b=0 ) { this->a=a; this->b=b; };
 
 	T a;
 	T b;
 };
 
-/*! 
+/*!
 \brief Define a unsigned 32bit integer with 3 saved values
 \author Anthalir
 \since 0.82
@@ -206,9 +206,6 @@ struct creat_st
 	SI32 icon;
 };
 
-
-
-
 // XYZZY
 struct unitile_st
 {
@@ -222,39 +219,6 @@ struct unitile_st
  SI08 height;
  UI08 weight;
 } PACK_NEEDED;
-
-
-
-
-
-
-
-
-/*
-	Sparhawk	-- moved to regions.h
-	
-struct region_st
-{
-	LOGICAL inUse;
- 	TEXT name[50];
- 	SI32 midilist;
- 	UI08 priv;	// 0x01 guarded, 0x02, mark allowed, 0x04, gate allowed, 0x08, recall
-			// 0x10 raining, 0x20, snowing, 0x40 magic damage reduced to 0
-	TEXT guardowner[50];
-	UI08 snowchance;
-	UI08 rainchance;
-	UI08 drychance;
-	UI08 keepchance;
-	UI08 wtype;
-	SI32 guardnum[10];
-	SI32 goodsell[256]; // Magius(CHE)
-	SI32 goodbuy[256]; // Magius(CHE)
-	SI32 goodrnd1[256]; // Magius(CHE) (2)
-	SI32 goodrnd2[256]; // Magius(CHE) (2)
-	SI32 forcedseason;
-	LOGICAL ignoreseason;
-};
-*/
 
 struct skill_st
 {
@@ -274,53 +238,6 @@ struct advance_st
  SI32 success;
  SI32 failure;
 };
-
-#ifndef DOXYGEN	// this definitions are used when compiling
-
-	struct Serial{
-	#define ser1 aa._ser1
-	#define ser2 aa._ser2
-	#define ser3 aa._ser3
-	#define ser4 aa._ser4
-		union{
-			struct { BYTE _ser4, _ser3, _ser2, _ser1; }aa;
-			SI32 serial32;
-		};
-	};
-
-	struct Color{
-		union{
-			UI16 color16;
-			struct{ BYTE _ser2, _ser1; }aa;
-		};
-	};
-
-#else			// these are only for doxygen to make a good documentation
-	/*! 
-	\brief Define a serial number
-	\author Anthalir
-	\since 0.82a
-	\remarks each object in the UO world have a single serial
-	*/
-	struct Serial{
-			BYTE ser1;			//!< byte 1
-			BYTE ser2;			//!< byte 2
-			BYTE ser3;			//!< byte 3
-			BYTE ser4;			//!< byte 4
-			SI32 serial32;		//!< full serial (32bits)
-	};
-
-	/*! 
-	\brief Define a Color
-	\author Anthalir
-	\since 0.82
-	*/
-	struct Color{
-			BYTE ser1;		//!< byte 1
-			BYTE ser2;		//!< byte 2
-			UI16 color16;		//!< full color (16bits)
-	}
-#endif // DOXYGEN
 
 struct gmpage_st
 {
@@ -376,7 +293,7 @@ struct title_st
  TEXT other[50];
 };
 
-/*! 
+/*!
 \brief Represent a point on the map
 \author Anthalir
 \since 0.82a
@@ -392,7 +309,7 @@ struct tele_locations_st {
 };
 
 
-/*! 
+/*!
 \brief Stat regeneration info
 \author Endymion
 \since 0.83

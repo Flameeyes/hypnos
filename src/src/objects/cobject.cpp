@@ -132,88 +132,7 @@ cObject::~cObject()
 		safedelete( disabledmsg );
 }
 
-/*!
-\brief set one byte of the object's serial
-\author Sparhawk
-\since 0.82a
-\param nByte byte number to get
-\param value to set serial byte to
-\remarks nByte start at \b 1 not \b 0 and end at 4
-*/
-const void cObject::setSerialByte(UI32 nByte, BYTE value)
-{
-	switch(nByte)
-	{
-	case 1: serial.ser1 = value; break;
-	case 2: serial.ser2 = value; break;
-	case 3: serial.ser3 = value; break;
-	case 4: serial.ser4 = value; break;
 
-	default:
-		WarnOut("cannot access byte %i of serial !!", nByte);
-		break;
-	}
-}
-
-/*!
-\brief set one byte of the object's owner serial
-\author Sparhawk
-\since 0.82a
-\param nByte byte number to get
-\param value to set serial byte to
-\remarks nByte start at \b 1 not \b 0 and end at 4
-*/
-const void cObject::setOwnerSerialByte(UI32 nByte, BYTE value)
-{
-	switch(nByte)
-	{
-	case 1:
-		OwnerSerial.ser1 = value;
-		break;
-	case 2:
-		OwnerSerial.ser2 = value;
-		break;
-	case 3:
-		OwnerSerial.ser3 = value;
-		break;
-	case 4:
-		OwnerSerial.ser4 = value;
-		break;
-	default:
-		WarnOut("cannot access byte %i of serial !!", nByte);
-		break;
-	}
-}
-
-/*!
-\brief set one byte of the object's multi serial
-\author Sparhawk
-\since 0.82a
-\param nByte byte number to get
-\param value to set serial byte to
-\remarks nByte start at \b 1 not \b 0 and end at 4
-*/
-const void cObject::setMultiSerialByte(UI32 nByte, BYTE value)
-{
-	switch(nByte)
-	{
-	case 1:
-		multi_serial.ser1 = value;
-		break;
-	case 2:
-		multi_serial.ser2 = value;
-		break;
-	case 3:
-		multi_serial.ser3 = value;
-		break;
-	case 4:
-		multi_serial.ser4 = value;
-		break;
-	default:
-		WarnOut("cannot access byte %i of serial !!", nByte);
-		break;
-	}
-}
 /*!
 \brief Set the serial of the object
 \author Anthalir
@@ -269,39 +188,22 @@ void cObject::setOwnerSerial32(SI32 ownser, bool force)
 \brief return one coord of the object position
 \author Anthalir
 \since 0.82a
-\param what what to return ?	\li "x" = return the x position
-								\li "y" = return the y position
-								\li "z" = return the z position
-								\li "dz"= return the dispz position (used in cChar)
+\param what what to return ?
 \return signed int
 */
-SI32 cObject::getPosition( const char *what ) const
+SI32 cObject::getPosition( Coord what ) const
 {
-
-	switch( what[0] )
+	switch( what )
 	{
-	case 'x':
-	case 'X':
-		return position.x;
-
-	case 'y':
-	case 'Y':
-		return position.y;
-
-	case 'z':
-	case 'Z':
-		return position.z;
-
-	case 'd':
-	case 'D':
-		if( (what[1] == 'z') || (what[1] == 'Z') )
+		case cX:
+			return position.x;
+		case cY:
+			return position.y;
+		case cZ:
+			return position.z;
+		case cDispZ:
 			return position.dispz;
 	}
-
-	WarnOut("getPosition called with wrong parameter: '%s' !!", what);
-	return -1;
-
-
 }
 
 /*!
@@ -313,10 +215,7 @@ SI32 cObject::getPosition( const char *what ) const
 void cObject::setPosition(Location where)
 {
         old_position = position; // Luxor
-	position.x= where.x;
-	position.y= where.y;
-	position.z= where.z;
-	position.dispz= where.dispz;
+	position = where;
 }
 
 /*!
@@ -334,70 +233,54 @@ void cObject::setPosition(Location where)
 void cObject::setPosition( const char *what, SI32 value)
 {
         old_position = position; // Luxor
-	switch( what[0] )
+	switch( what )
 	{
-	case 'x':
-	case 'X':
-		position.x= value;
-		break;
-
-	case 'y':
-	case 'Y':
-		position.y= value;
-		break;
-
-	case 'z':
-	case 'Z':
-		position.z= value;
-		break;
-
-	case 'd':
-	case 'D':
-		if( (what[1] == 'z') || (what[1] == 'Z') )
-			position.dispz= value;
-		break;
+		case cX:
+			position.x = value;
+			return;
+		case cY:
+			position.y = value;
+			return;
+		case cZ:
+			position.z = value;
+			return;
+		case cDispZ:
+			position.dispz = value;
+			return;
 	}
 }
 
 SI32 cObject::getOldPosition( const char *what) const
 {
-	switch( what[0] )
+	switch( what )
 	{
-	case 'x':
-	case 'X':
-		return old_position.x;
-
-	case 'y':
-	case 'Y':
-		return old_position.y;
-
-	case 'z':
-	case 'Z':
-		return old_position.z;
+		case cX:
+			return old_position.x;
+		case cY:
+			return old_position.y;
+		case cZ:
+			return old_position.z;
+		case cDispZ:
+			return old_position.dispz;
 	}
-
-	WarnOut("getPosition called with wrong parameter: '%s' !!", what);
-	return -1;
 }
 
 void cObject::setOldPosition( const char *what, SI32 value)
 {
-	switch( what[0] )
+	switch( what )
 	{
-	case 'x':
-	case 'X':
-		old_position.x= value;
-		break;
-
-	case 'y':
-	case 'Y':
-		old_position.y= value;
-		break;
-
-	case 'z':
-	case 'Z':
-		old_position.z= value;
-		break;
+		case cX:
+			old_position.x = value;
+			return;
+		case cY:
+			old_position.y = value;
+			return;
+		case cZ:
+			old_position.z = value;
+			return;
+		case cDispZ:
+			old_position.dispz = value;
+			return;
 	}
 }
 

@@ -25,7 +25,6 @@ void npcattacktarget(P_CHAR npc, P_CHAR target);
 void enlist(int s, int listnum);		//!< For enlisting in army
 void gcollect();
 void initque();
-void addgold(int s, int totgold);
 void StoreItemRandomValue(P_ITEM pi,int tmpreg);
 void loadmetagm();
 

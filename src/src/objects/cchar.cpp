@@ -1456,6 +1456,18 @@ LOGICAL const cChar::IsOnline() const
 
 /*!
 \author Luxor
+\brief add gold to the char
+\param totgold amount of gold to add
+*/
+void cChar::addGold(UI16 totgold)
+{
+	P_ITEM pi = item::CreateFromScript( "$item_gold_coin", getBackpack(), totgold );
+	if ( pi != 0 )
+		pi->Refresh();
+}
+
+/*!
+\author Luxor
 \brief shows speech text to all pcs near the char
 \param txt the speech
 \param antispam use or not antispam

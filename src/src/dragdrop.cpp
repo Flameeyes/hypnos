@@ -768,7 +768,7 @@ static bool ItemDroppedOnGuard(NXWCLIENT ps, PKGx08 *pp, P_ITEM pi)
 			if( pc->getSerial32() != own->getSerial32() )
 			{
 				// give them the gold for bringing the villan to justice
-				addgold( s, own->questBountyReward );
+				pc->addGold(own->questBountyReward);
 				pc->playSFX( goldsfx( own->questBountyReward ) );
 
 				// Now thank them for their hard work

@@ -1007,6 +1007,7 @@ public:
 		void			showContainer( P_ITEM pCont );
 		P_ITEM 			getBackpack();
 		LOGICAL			isInBackpack( P_ITEM pi );
+		void			addGold(UI16 totgold);
 
 		//! Show Backpack to player
 		inline void		showBackpack()

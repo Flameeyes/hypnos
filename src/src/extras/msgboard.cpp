@@ -1636,7 +1636,7 @@ void MsgBoardEvent(int s)
 			P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
 			VALIDATEPC(pc);
 			// Check privledge level against server.cfg msgpostaccess
-			
+
 			if ( (pc->IsGM()) || (SrvParms->msgpostaccess) )
 				MsgBoardPost( s, pc->postType, 0 );
 			else
@@ -1971,8 +1971,8 @@ int MsgBoardPostQuest( int serial, QuestType questType )
 					// Gold amount
 				case 'g':
 					{
-						
-						
+
+
 						char szBounty[32] = "";
 
 						sprintf(szBounty,"%d",pc_s->questBountyReward) ;
@@ -2045,7 +2045,7 @@ void MsgBoardQuestEscortCreate( int npcIndex )
 {
 	P_CHAR npc=MAKE_CHAR_REF(npcIndex);
 	VALIDATEPC(npc);
-	
+
 	// Choose a random region as a destination for the escort quest (except for the same region as the NPC was spawned in)
 	int loopexit=0;
 	do
@@ -2137,7 +2137,7 @@ void MsgBoardQuestEscortArrive( P_CHAR pc, P_CHAR pc_k)
 	{
 		// Less than 75 gold for a escort is pretty cheesey, so if its between 1 and 75, add a randum amount of between 75 to 100 gold
 		if ( servicePay < 75 ) servicePay += RandomNum(75, 100);
-		addgold( pc_k->getSocket(), servicePay );
+		pc_k->addGold(servicePay);
 		pc_k->playSFX( goldsfx(servicePay) );
 		sprintf( temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Here is thy pay as promised."), pc_k->getCurrentNameC(), region[pc->questDestRegion].name );
 		pc->talk( pc_k->getSocket(), temp, 0 );
@@ -2430,7 +2430,7 @@ void MsgBoardMaintenance( void )
 
 			// Delete the new file if it exists
 			remove ( fileName );
-				
+
 			// Put the old file name back
 			rename( fileBBITmp, fileName );
 

@@ -358,7 +358,7 @@ void sellaction(NXWSOCKET s)
 				}
 			}
 		}
-		addgold(pc->getSocket(), totgold);
+		pc->addGold(totgold);
 		pc->playSFX( goldsfx(totgold) );
 	}
 
