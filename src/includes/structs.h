@@ -65,6 +65,12 @@ struct sContainerItem
 	uint16_t color;		//!< Color of the item
 };
 
+//! Point in the map
+struct sPoint {
+	uint16_t x;
+	uint16_t y;
+};
+
 struct location_st
 {
  int32_t x1;

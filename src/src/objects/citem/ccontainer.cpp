@@ -14,7 +14,18 @@
 #include "logsystem.h"
 #include "basics.h"
 
-static void cContainer::loadContainersData()
+mapGumpsInfo cContainer::info;
+mapContainerGumps cContainer::containers;
+
+/*!
+\brief Loads the containers' gumps' data
+
+This funciton replaces the old loadcontainers() function which loaded from
+containers.xss, instead reads from containers.xml.
+
+\todo Actually write it
+*/
+void cContainer::loadContainersData()
 {
 	
 }
@@ -32,13 +43,11 @@ cContainer::cContainer(uint32_t serial)
 //! Gets the container's gump
 uint16_t cContainer::getGump()
 {
-/*	CONTINFOMAP::iterator iter( contInfo.find( getId() ) );
-	if( iter==contInfo.end() || iter->second==contInfoGump.end() )
+	mapContainerGumps::iterator iter = containers.find( getId() );
+	if ( iter == containers.end() || iter->second == info.end() )
 		return 0x47;
 	else
-		return iter->second->second.gump;*/
-	
-	//!\todo Need to be wrote!
+		return iter->second->second.gump;
 	
 	return 0x47;
 }
@@ -86,21 +95,16 @@ void cContainer::setRandPos(pItem item)
 	Location p = item->getPosition();
 	p.z = 9;
 
-#if 0
-	CONTINFOMAP::iterator iter( contInfo.find( pCont->getId() ) );
-	if( iter==contInfo.end() || iter->second==contInfoGump.end()) {
+	mapContainerGumps::iterator iter = containers.find( getId() );
+	if ( iter == containers.end() || iter->second == info.end() ) {
 		p.x = RandomNum(18, 118);
 		p.y = RandomNum(50, 100);
-		LogWarning("trying to put something INTO a non container, id=0x%X",pCont->getId() );
+		LogWarning("trying to put something INTO a non container, id=0x%X", getId() );
 	} else {
 		p.x = RandomNum(iter->second->second.upperleft.x, iter->second->second.downright.x);
 		p.y = RandomNum(iter->second->second.upperleft.y, iter->second->second.downright.y);
 	}
-#else
-	p.x = RandomNum(18, 118);
-	p.y = RandomNum(50, 100);
-#endif
-
+	
 	item->setPosition(p);
 }
 

@@ -22,6 +22,30 @@
 */
 class cContainer : virtual public cItem
 {
+//@{
+/*!
+\name Containers' Gumps' Map
+*/
+protected:
+	//! Info about the gumps
+	struct sContainerGump {
+		uint16_t gump;		//!< Gump's id
+		sPoint upperleft;	//!< Minimum position
+		sPoint downright;	//!< Maximum position
+	};
+	
+	//! Containers' gumps' info [index is Gump's ID]
+	typedef std::map< uint16_t, sContainerGump > mapGumpsInfo;
+	//! Containers' ID map [index is Item's ID]
+	typedef std::map< uint16_t, mapGumpsInfo::iterator > mapContainerGumps
+	
+	static mapGumpsInfo info;	//!< Gumps' information
+	static mapContainerGumps containers;
+					//!< Containers' gumps
+	
+	static void loadContainersData();
+//@}
+
 protected:
 	//! Items in the container
 	ItemList	items;
