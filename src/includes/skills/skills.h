@@ -19,8 +19,37 @@
 \brief Skill related stuff
 */
 namespace nSkills {
+	//! Advance level of a skills
+	struct sSkillAdvance {
+		uint16_t base;		//!< Maximum level of the skill
+		uint16_t success;	//!< Advance if success
+		uint16_t failure;	//!< Advance if failure
+	};
+	
+	//! Informations about the skills
+	struct sSkillInfo
+	{
+		static const uint8_t flagUnhideOnUse	= 0x01; //!< Unhide after a good use of the skill
+		static const uint8_t flagUnhideOnFail	= 0x02; //!< Unhide after a failure of the skill
+		
+		uint16_t str;			//!< Strength component of the skill
+		uint16_t dex;			//!< Dexterity component of the skill
+		uint16_t in_;			//!< Intelligence component of the skill
+		uint8_t flags;			//!< Flags of the skill
+		
+		std::vector<sSkillAdvance> advances;
+						//!< Advance levels
+		
+		const char *madeword;		//!< Word for items/char prepared with that skill
+		
+		sSkillInfo();
+	}
+
 	sSkillInfo infos[skTrueSkills];
 
+	inline void loadSkillVars();
+	void loadskills();
+	
 	//@{
 	/*!
 	\name General Skill stuff
@@ -186,9 +215,5 @@ namespace nSkills {
 	int GetAntiMagicalArmorDefence(pChar pc); //!< blackwind meditation armor stuff
 };
 void snooping( pChar snooper, pItem cont );
-
-
-void SkillVars();
-void loadskills();
 
 #endif

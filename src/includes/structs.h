@@ -136,34 +136,6 @@ struct unitile_st
  uint8_t weight;
 } PACK_NEEDED;
 
-//! Informations about the skills
-struct sSkillInfo
-{
-	static const uint8_t flagUnhideOnUse	= 0x01; //!< Unhide after a good use of the skill
-	static const uint8_t flagUnhideOnFail	= 0x02; //!< Unhide after a failure of the skill
-	
-	uint16_t st;			//!< Strength component of the skill
-	uint16_t dx;			//!< Dexterity component of the skill
-	uint16_t in;			//!< Intelligence component of the skill
-	uint8_t flags;			//!< Flags of the skill
-	uint16_t advanceIndex;
-	const char *madeword;		//!< Word for items/char prepared with that skill
-	
-	sSkillInfo();
-}
-
-/*!
-\todo rename to sAdvance
-\todo verify if the int32_t are too much for the values
-*/
-struct advance_st
-{
- uint8_t skill;
- int32_t base;
- int32_t success;
- int32_t failure;
-};
-
 /*!
 \todo We really need it? It's only a value!
 */

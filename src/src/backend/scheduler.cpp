@@ -82,11 +82,18 @@ the instances for the scheduled events to run.
 */
 cScheduler::cScheduler()
 {
+	ConOut("Loading scheduler...\t\t")
+	
 	std::istream xmlfile("config/scheduler.xml");
+	if ( ! xmlfile )
+	{
+		ConOut("[ Failed ]\n");
+		LogCritical("Unable to open schedule.xml file.");
+		return;
+	}
 	
 	minInterval = UINT32_MAX;
 	try {
-		LogMessage("Loading scheduler...")
 		MXML::Document doc(xmlfile);
 		
 		MXML::Node *n = doc.main()->child();
@@ -105,10 +112,10 @@ cScheduler::cScheduler()
 			}
 		} while((n = n->next()));
 		
-		LogMessage("\t\t[   OK   ]");
+		ConOut("[   OK   ]\n");
 	} catch ( MXML::MalformedError e) {
-		LogMessage("\t\t[ Failed ]");
-		LogCritical("schedules.xml file not well formed. Default loading");
+		ConOut("[ Failed ]\n");
+		LogCritical("schedules.xml file not well formed.");
 	}
 }
 

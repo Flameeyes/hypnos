@@ -21,6 +21,230 @@ inline void SetSkillDelay(pChar pc)
 	SetTimerSec(&pc->skilldelay,SrvParms->skilldelay);
 }
 
+//! Default constructor for nSkills::sSkillInfo struct
+nSkills::sSkillInfo::sSkillInfo()
+{
+	st = 0;
+	dx = 0;
+	in = 0;
+	flags = 0x03;
+	advanceIndex = 0;
+	madeword = strNull;
+}
+
+/*!
+\brief Translate a sk??? string into the c++ constant
+\param str String representing the skill
+\return The skill constant or skInvalid if invalid string
+\note The function is case sensitive
+\todo Make it case insensitive, maybe?
+*/
+Skill nSkills::string2Constant(std::string str)
+{
+	if ( str == "skAlchemy" ) return skAlchemy;
+	else if ( str == "skAnatomy" ) return skAnatomy;
+	else if ( str == "skAnimalLore" ) return skAnimalLore;
+	else if ( str == "skItemID" ) return skItemID;
+	else if ( str == "skArmsLore" ) return skArmsLore;
+	else if ( str == "skParrying" ) return skParrying;
+	else if ( str == "skBegging" ) return skBegging;
+	else if ( str == "skBlacksmithing" ) return skBlacksmithing;
+	else if ( str == "skBowcraft" ) return skBowcraft;
+	else if ( str == "skPeacemaking" ) return skPeacemaking;
+	else if ( str == "skCamping" ) return skCamping;
+	else if ( str == "skCarpentry" ) return skCarpentry;
+	else if ( str == "skCartography" ) return skCartography;
+	else if ( str == "skCooking" ) return skCooking;
+	else if ( str == "skDetectingHidden" ) return skDetectingHidden;
+	else if ( str == "skEnticement" ) return skEnticement;
+	else if ( str == "skEvaluatingIntelligence" ) return skEvaluatingIntelligence;
+	else if ( str == "skHealing" ) return skHealing;
+	else if ( str == "skFishing" ) return skFishing;
+	else if ( str == "skForensics" ) return skForensics;
+	else if ( str == "skHerding" ) return skHerding;
+	else if ( str == "skHiding" ) return skHiding;
+	else if ( str == "skProvocation" ) return skProvocation;
+	else if ( str == "skInscription" ) return skInscription;
+	else if ( str == "skLockPicking" ) return skLockPicking;
+	else if ( str == "skMagery" ) return skMagery;
+	else if ( str == "skMagicResistance" ) return skMagicResistance;
+	else if ( str == "skTactics" ) return skTactics;
+	else if ( str == "skSnooping" ) return skSnooping;
+	else if ( str == "skMusicianship" ) return skMusicianship;
+	else if ( str == "skPoisoning" ) return skPoisoning;
+	else if ( str == "skArchery" ) return skArchery;
+	else if ( str == "skSpiritSpeak" ) return skSpiritSpeak;
+	else if ( str == "skStealing" ) return skStealing;
+	else if ( str == "skTailoring" ) return skTailoring;
+	else if ( str == "skTaming" ) return skTaming;
+	else if ( str == "skTasteID" ) return skTasteID;
+	else if ( str == "skTinkering" ) return skTinkering;
+	else if ( str == "skTracking" ) return skTracking;
+	else if ( str == "skVeterinary" ) return skVeterinary;
+	else if ( str == "skSwordsmanship" ) return skSwordsmanship;
+	else if ( str == "skMacefighting" ) return skMacefighting;
+	else if ( str == "skFencing" ) return skFencing;
+	else if ( str == "skWrestling" ) return skWrestling;
+	else if ( str == "skLumberjacking" ) return skLumberjacking;
+	else if ( str == "skMining" ) return skMining;
+	else if ( str == "skMeditation" ) return skMeditation;
+	else if ( str == "skStealth" ) return skStealth;
+	else if ( str == "skRemoveTraps" ) return skRemoveTraps;
+	else if ( str == "skTrueSkills" ) return skTrueSkills;
+	else return skInvalid;
+}
+
+/*!
+\brief Loads the skills from skills.xml
+
+This function loads the skills' infos from skills.xml datafile, and stores them
+into nSkill::infos array.
+
+\todo We open here the file, but we don't know exactly which is the program and
+	the execution directory, so we should fix this adding a wrapper to the
+	directories.
+*/
+void nSkills::loadSkills()
+{
+	ConOut("Loading skills information...\t\t")
+	
+	std::istream xmlfile("config/skills.xml");
+	if ( ! xmlfile )
+	{
+		ConOut("[ Failed ]\n");
+		LogCritical("Unable to open skills.xml file.");
+		return;
+	}
+	
+	try {
+		MXML::Document doc(xmlfile);
+		
+		MXML::Node *n = doc.main()->child();
+		if ( ! n ) return;
+		
+		do {
+			if ( n->name() != "skill" )
+			{
+				LogWarning("Unknown node %s in skills.xml, ignoring", n->name().c_str() );
+				continue;
+			}
+			
+			try {
+				Skill sk = n->getAttribute("name");
+				if ( sk == skInvalid )
+				{
+					LogWarning("Unknown skill name in skills.xml, ignoring");
+					continue;
+				}
+				
+				if ( n->hasAttribute("str") )
+					infos[sk].str = tVariant(n->getAttribute("str")).toUInt16();
+				else infos[sk].str = 0;
+				
+				if ( n->hasAttribute("dex") )
+					infos[sk].dex = tVariant(n->getAttribute("dex")).toUInt16();
+				else infos[sk].dex = 0;
+				
+				if ( n->hasAttribute("int") )
+					infos[sk].in_ = tVariant(n->getAttribute("int")).toUInt16();
+				else infos[sk].in_ = 0;
+				
+				if ( n->hasAttribute("unhideOnUse") && n->getAttribute("unhideOnUse") != "true" )
+					infos[sk].flags &= ~sSkillInfo::flagUnhideOnUse;
+				else infos[sk].flags |= sSkillInfo::flagUnhideOnUse;
+				
+				if ( n->hasAttribute("unhideOnFail") && n->getAttribute("unhideOnFail") != "true" )
+					infos[sk].flags &= ~sSkillInfo::flagUnhideOnFail;
+				else infos[sk].flags |= sSkillInfo::flagUnhideOnFail;
+				
+				infos[sk].advances.clear();
+				
+				MXML::Node *p = n->child();
+				
+				if ( ! p )
+					continue;
+				
+				do {
+					try {
+						sSkillAdvance adv;
+						adv.base = p->getAttribute("base");
+						adv.success = p->getAttribute("success");
+						adv.failure = p->getAttribute("failure");
+						infos[sk].advances.push_back(adv);
+					} catch ( MXML::NotFoundError e ) {
+						LogWarning("Incomplete node in skills.xml, ignoring");
+						continue;
+					}
+				} while ( (p = p->next()) );
+				
+			} catch ( MXML::NotFoundError e ) {
+				LogWarning("Incomplete node in skills.xml, ignoring");
+				continue;
+			}
+		} while((n = n->next()));
+		
+		ConOut("[   OK   ]\n");
+	} catch ( MXML::MalformedError e) {
+		ConOut("[ Failed ]\n");
+		LogCritical("skills.xml file not well formed.");
+	}
+	
+	loadSkillVars();
+}
+
+inline void nSkills::loadSkillVars()
+{
+	// Note: lore, knowledge and combat skills can't made anything!	
+	skillinfo[skAnimalLore].madeword = strNull;
+	skillinfo[skItemID].madeword = strNull;
+	skillinfo[skArmsLore].madeword = strNull;
+	skillinfo[skParrying].madeword = strNull;
+	skillinfo[skBegging].madeword = strNull;
+	skillinfo[skDetectingHidden].madeword = strNull;
+	skillinfo[skEnticement].madeword = strNull;
+	skillinfo[skEvaluatingIntelligence].madeword = strNull;
+	skillinfo[skForensics].madeword = strNull;
+	skillinfo[skHerding].madeword = strNull;
+	skillinfo[skHiding].madeword = strNull;
+	skillinfo[skProvocation].madeword = strNull;
+	skillinfo[skLockPicking].madeword = strNull;
+	skillinfo[skMagicResistance].madeword = strNull;
+	skillinfo[skTactics].madeword = strNull;
+	skillinfo[skSnooping].madeword = strNull;
+	skillinfo[skArchery].madeword = strNull;
+	skillinfo[skSpiritSpeak].madeword = strNull;
+	skillinfo[skStealing].madeword = strNull;
+	skillinfo[skTasteID].madeword = strNull;
+	skillinfo[skTracking].madeword = strNull;
+	skillinfo[skVeterinary].madeword = strNull;
+	skillinfo[skSwordsmanship].madeword = strNull;
+	skillinfo[skMacefighting].madeword = strNull;
+	skillinfo[skFencing].madeword = strNull;
+	skillinfo[skWrestling].madeword = strNull;
+	skillinfo[skLumberjacking].madeword = strNull;
+	skillinfo[skStealth].madeword = strNull;
+	skillinfo[skRemoveTraps].madeword = strNull;
+	
+	skillinfo[skAlchemy].madeword = strMixed;
+	skillinfo[skAnatomy].madeword = strMade;
+	skillinfo[skBlacksmithing].madeword = strForged;
+	skillinfo[skBowcraft].madeword = strBowcrafted;
+	skillinfo[skCamping].madeword = strMade;
+	skillinfo[skCarpentry].madeword = strMade;
+	skillinfo[skCartography].madeword = strWrote;
+	skillinfo[skCooking].madeword = strCooked;
+	skillinfo[skHealing].madeword = strMade;
+	skillinfo[skFishing].madeword = strFished;
+	skillinfo[skInscription].madeword = strWrote;
+	skillinfo[skMagery].madeword = strEvoked;
+	skillinfo[skMusicianship].madeword = strPlayed;
+	skillinfo[skPoisoning].madeword = strMixed;
+	skillinfo[skTailoring].madeword = strSewn;
+	skillinfo[skTaming].madeword = strTamed;   
+	skillinfo[skTinkering].madeword = strMade;
+	skillinfo[skMining].madeword = strSmelted;
+	skillinfo[skMeditation].madeword = strEvoked;
+}
 
 /*!
 \author Luxor
@@ -1100,12 +1324,6 @@ void Skills::Meditation (pClient client)
 	pc->playSFX(0x00F9);
 }
 
-//AntiChrist - 5/11/99
-//
-//If you are a ghost and attack a player, you can PERSECUTE him
-//and his mana decreases each time you try to persecute him
-//decrease=3+(your int/10)
-//
 /*!
 \author AntiChrist
 \param client client of the persecuter
@@ -1151,134 +1369,6 @@ void Skills::Persecute (pClient client)
 	SetSkillDelay(pc);
 
 	pc_targ->emoteall("%s is persecuted by a ghost!!", true, pc_targ->getCurrentName().c_str());
-}
-
-void loadskills()
-{
-//!\todo Move this in xml-form
-    int i, noskill, l=0;
-    char sect[512];
-    cScpIterator* iter = NULL;
-    char script1[1024];
-    char script2[1024];
-
-    for (i=0;i<SKILLS;i++) // lb
-    {
-        skillinfo[i].st=0;
-        skillinfo[i].dx=0;
-        skillinfo[i].in=0;
-        skillinfo[i].advance_index=l;
-        skillinfo[i].unhide_onuse = 1;
-        skillinfo[i].unhide_onfail = 0;
-        noskill=0;
-
-        sprintf(sect, "SECTION SKILL %i", i);
-        safedelete(iter);
-        iter = Scripts::Skills->getNewIterator(sect);
-        if (iter==NULL) continue;
-
-        int loopexit=0;
-        do
-        {
-            iter->parseLine(script1, script2);
-            if ((script1[0]!='}')&&(script1[0]!='{'))
-            {
-                if (!(strcmp("STR", script1)))
-                {
-                    skillinfo[i].st=str2num(script2);
-                }
-                else if (!(strcmp("DEX", script1)))
-                {
-                    skillinfo[i].dx=str2num(script2);
-                }
-                else if (!(strcmp("INT", script1)))
-                {
-                    skillinfo[i].in=str2num(script2);
-                }
-                else if (!(strcmp("SKILLPOINT", script1)))
-                {
-                    wpadvance[l].skill=i;
-                    gettokennum(script2, 0);
-                    wpadvance[l].base=str2num(gettokenstr);
-                    gettokennum(script2, 1);
-                    wpadvance[l].success=str2num(gettokenstr);
-                    gettokennum(script2, 2);
-                    wpadvance[l].failure=str2num(gettokenstr);
-                    l++;
-                }
-                else if (!(strcmp("UNHIDEONUSE", script1)))  //Luxor 7 dec 2001
-                {
-                    if (str2num(script2) == 0)
-                        skillinfo[i].unhide_onuse = 0;
-                    else
-                        skillinfo[i].unhide_onuse = 1;
-                }
-                else if (!(strcmp("UNHIDEONFAIL", script1))) //Luxor 7 dec 2001
-                {
-                    if (str2num(script2) > 0)
-                        skillinfo[i].unhide_onfail = 1;
-                    else
-                        skillinfo[i].unhide_onfail = 0;
-                }
-            }
-        }
-        while ( (script1[0]!='}') && (!noskill) && (++loopexit < MAXLOOPS) );
-    }
-    safedelete(iter);
-}
-
-void SkillVars()
-{
-	// Note: lore, knowledge and combat skills can't made anything!	
-	skillinfo[skAnimalLore].madeword = strNull;
-	skillinfo[skItemID].madeword = strNull;
-	skillinfo[skArmsLore].madeword = strNull;
-	skillinfo[skParrying].madeword = strNull;
-	skillinfo[skBegging].madeword = strNull;
-	skillinfo[skDetectingHidden].madeword = strNull;
-	skillinfo[skEnticement].madeword = strNull;
-	skillinfo[skEvaluatingIntelligence].madeword = strNull;
-	skillinfo[skForensics].madeword = strNull;
-	skillinfo[skHerding].madeword = strNull;
-	skillinfo[skHiding].madeword = strNull;
-	skillinfo[skProvocation].madeword = strNull;
-	skillinfo[skLockPicking].madeword = strNull;
-	skillinfo[skMagicResistance].madeword = strNull;
-	skillinfo[skTactics].madeword = strNull;
-	skillinfo[skSnooping].madeword = strNull;
-	skillinfo[skArchery].madeword = strNull;
-	skillinfo[skSpiritSpeak].madeword = strNull;
-	skillinfo[skStealing].madeword = strNull;
-	skillinfo[skTasteID].madeword = strNull;
-	skillinfo[skTracking].madeword = strNull;
-	skillinfo[skVeterinary].madeword = strNull;
-	skillinfo[skSwordsmanship].madeword = strNull;
-	skillinfo[skMacefighting].madeword = strNull;
-	skillinfo[skFencing].madeword = strNull;
-	skillinfo[skWrestling].madeword = strNull;
-	skillinfo[skLumberjacking].madeword = strNull;
-	skillinfo[skStealth].madeword = strNull;
-	skillinfo[skRemoveTraps].madeword = strNull;
-	
-	skillinfo[skAlchemy].madeword = strMixed;
-	skillinfo[skAnatomy].madeword = strMade;
-	skillinfo[skBlacksmithing].madeword = strForged;
-	skillinfo[skBowcraft].madeword = strBowcrafted;
-	skillinfo[skCamping].madeword = strMade;
-	skillinfo[skCarpentry].madeword = strMade;
-	skillinfo[skCartography].madeword = strWrote;
-	skillinfo[skCooking].madeword = strCooked;
-	skillinfo[skHealing].madeword = strMade;
-	skillinfo[skFishing].madeword = strFished;
-	skillinfo[skInscription].madeword = strWrote;
-	skillinfo[skMagery].madeword = strEvoked;
-	skillinfo[skMusicianship].madeword = strPlayed;
-	skillinfo[skPoisoning].madeword = strMixed;
-	skillinfo[skTailoring].madeword = strSewn;
-	skillinfo[skTaming].madeword = strTamed;   
-	skillinfo[skTinkering].madeword = strMade;
-	skillinfo[skMining].madeword = strSmelted;
-	skillinfo[skMeditation].madeword = strEvoked;
 }
 
 int Skills::GetAntiMagicalArmorDefence(pChar pc)

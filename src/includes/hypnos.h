@@ -20,8 +20,6 @@ void SetGlobalVars();
 void BuildPointerArray();
 void InitMultis();
 void DeleteClasses();
-void telltime( pClient ps );
-void npcattacktarget(pChar npc, pChar target);
 void enlist(int s, int listnum);		//!< For enlisting in army
 void gcollect();
 void initque();
@@ -31,9 +29,6 @@ void loadmetagm();
 // Profiling
 void StartMilliTimer(unsigned long &Seconds, unsigned long &Milliseconds);
 unsigned long CheckMilliTimer(unsigned long &Seconds, unsigned long &Milliseconds);
-
-void callguards( int p );
-void usepotion(pChar pc, pItem pi);
 
 void newScriptsInit();
 void deleteNewScripts();

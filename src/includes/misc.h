@@ -5,25 +5,13 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Contains constructors and functions for structs defined in structs.h
-*/
 
-#include "structs.h"
-#include "objects/citem.h"
-#include "constants.h"
+#ifndef __MISC_H__
+#define __MISC_H__
 
-/*!
-\brief Quick constructor passing an item pointer
-\param item Item to add to the container's item list
-*/
-sContainerItem::sContainerItem(pItem item)
-{
-	serial	= item->getSerial();
-	id	= item->getAnimId();
-	amount	= item->getAmount();
-	x	= item->getPosition().x;
-	y	= item->getPosition().y;
-	color	= item->getColor();
-}
+void telltime( pClient ps );
+void npcattacktarget(pChar npc, pChar target);
+void callguards( int p );
+void usepotion(pChar pc, pItem pi);
+
+#endif
