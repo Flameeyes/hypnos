@@ -1,6 +1,6 @@
 include makefiles/Makefile.mingw.inc
 
-${TARGET}: ${OBJECTS}
+${TARGET}.exe: ${OBJECTS}
 	@echo -e "\tLD    $@"
 	$(LINK) $(LIBADD) $(LDFLAGS) $(OBJECTS) -o $(TARGET)
 	@echo -e "\tSTRIP $@"

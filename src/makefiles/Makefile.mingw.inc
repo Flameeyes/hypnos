@@ -6,5 +6,5 @@ STRIP		=@strip
 CXXFLAGS	:= $(CXXFLAGS) -mno-cygwin
 LDFLAGS		:= $(LDFLAGS) -mno-cygwin
 
-TARGET		= hypnos.exe
+TARGET		= hypnos
 
