@@ -82,6 +82,7 @@ void cPacketSendAddContainerItem::prepare()
 {
 	length = 20;
 	buffer = new UI08[20];
+
 	buffer[0] = 0x25;
 	buffer[7] = 0x00;
 
@@ -101,7 +102,7 @@ void cPacketSendAddContainerItem::prepare()
 	ShortToCharPtr(item->getAmount(), ptrItem+8);
 	ShortToCharPtr(item->getLocation().x, ptrItem+10);
 	ShortToCharPtr(item->getLocation().y, ptrItem+12);
-	LongToCharPtr(item->getContainr()->getSerial(), ptrItem+14);
+	LongToCharPtr(item->getContainer()->getSerial(), ptrItem+14);
 	ShortToCharPtr(item->getColor(), ptrItem+18);
 }
 
@@ -109,13 +110,14 @@ void cPacketSendWornItem::prepare()
 {
 	length = 15;
 	buffer = new UI08[15];
+
 	buffer[0] = 0x2E;
 	buffer[7] = 0x00;
 
 	LongToCharPtr(item->getSerial(), buffer+1);
 	ShortToCharPtr(item->getAnimId(), buffer+5);
 	buffer[8] = item->getLayer();
-	LongToCharPtr(item->getContainr()->getSerial(), buffer+9);
+	LongToCharPtr(item->getContainer()->getSerial(), buffer+9);
 	ShortToCharPtr(item->getColor(), buffer+13);
 }
 
@@ -142,6 +144,7 @@ void cPacketSendDeleteObj::prepare()
 {
 	length = 5;
 	buffer = new UI08[5];
+
 	buffer[0] = 0x1D;
 	LongToCharPtr(serial, buffer+1);
 }
@@ -175,6 +178,7 @@ void cPacketSendUpdateSkill::prepare()
 {
 	length = 11;
 	buffer = new UI08[11];
+
 	buffer[0] = 0x3A;
 	ShortToCharPtr(11, buffer+1);
 	buffer[3] = 0xFF;
@@ -204,7 +208,7 @@ void cPacketSendPlayMidi::prepare()
 	buffer = new UI08[3];
 
 	buffer[0] = 0x6D;
-	ShortTOCharPtr(id, buffer+1);
+	ShortToCharPtr(id, buffer+1);
 }
 
 void cPacketSendOverallLight::prepare()
