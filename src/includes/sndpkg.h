@@ -31,8 +31,6 @@ void target(pClient client, int a1, int a2, int a3, int a4, char *txt);
 	//!< Send targetting cursor to client
 void skillwindow(pClient client);
 	//!< Opens the skills list, updated for client 1.26.2b by LB
-void updates(pClient client);
-	//!< Update Window
 void weblaunch(pClient client, const char *txt);
 	//!< Direct client to a web page
 void broadcast(pClient client);

@@ -345,12 +345,6 @@ void cChar::updateStats(int32_t stat)
 	}
 }
 
-void updates(pClient client) // Update Window
-{
-	nPackets::Sent::TipsWindow pkMOTD(nMOTD::getMOTD());
-	client->sendPacket(&pkMOTD);
-}
-
 void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 //Modified by N6 to use UNICODE packets
 {

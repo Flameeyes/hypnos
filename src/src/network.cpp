@@ -1007,7 +1007,8 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	//pc->murderrate=getclock()+repsys.murderdecay*SECS; // LB, bugfix for murder-count getting --'ed each start
 	pc->murderrate=getclock()+pc->murdersave*SECS;
 
-	updates(s);
+	nPackets::Sent::TipsWindow pkMOTD(nMOTD::getMOTD());
+	client->sendPacket(&pkMOTD);
 
 	const char * t;
 	std::vector<std::string>::const_iterator vis( clientsAllowed.begin() ), vis_end( clientsAllowed.end() );
