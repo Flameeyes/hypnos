@@ -48,9 +48,6 @@ typedef int FAR socklen_t ;
 
 char *basename(char *path);
 
-int asprintf(char **strp, const char *fmt, ...) PRINTF_LIKE(2,3)
-int vasprintf(char **strp, const char *fmt, va_list ap);
-
 /*!
 \brief Checks if a file exists already
 \param filename Relative path of the file to check
