@@ -10,6 +10,8 @@
 #include "settings.h"
 #include "objects/cpc.h"
 #include "objects/cbody.h"
+#include "objects/caccount.h"
+#include "objects/cclient.h"
 
 #include <stdarg.h>
 
@@ -54,8 +56,8 @@ LogFile::LogFile(char *format, ...)
 	va_end(vargs);
 
 	// add path
-	filename = nSettings::Logging::getLogPath() + "/" + tmp2;
-	free(tmp2);
+	filename = nSettings::Logging::getLogPath() + "/" + tmp;
+	free(tmp);
 
 	file = fopen(filename.c_str(), "a");
 
@@ -130,13 +132,13 @@ void LogFile::Write(std::string str)
 	}
 }
 
-std::string SpeechLogFile::MakeFilename(pChar pc)
+std::string SpeechLogFile::MakeFilename(pPC pc)
 {
 	if( !pc ) return "bad npc";
 	
 	char *tmp;
 
-	asprintf(&tmp, "speech/speech_[%d][%d][%s].txt", pc->account, pc->getSerial(), pc->getBody()->getCurrentName().c_str());
+	asprintf(&tmp, "speech/speech_[%s][%d][%s].txt", pc->getClient()->currAccount()->getName().c_str(), pc->getSerial(), pc->getBody()->getCurrentName().c_str());
 	std::string str(tmp);
 
 	free(tmp);
@@ -151,7 +153,7 @@ std::string SpeechLogFile::MakeFilename(pChar pc)
 \since 0.82a
 \param pc character pointer
 */
-SpeechLogFile::SpeechLogFile(pChar pc) : LogFile(MakeFilename(pc))
+SpeechLogFile::SpeechLogFile(pPC pc) : LogFile(MakeFilename(pc))
 {
 
 }

@@ -54,10 +54,10 @@ class SpeechLogFile : public LogFile
 {
 private:
 	pChar pc;
-	std::string MakeFilename(pChar pc);
+	std::string MakeFilename(pPC pc);
 
 public:
-	SpeechLogFile(pChar pc);
+	SpeechLogFile(pPC pc);
 };
 
 
