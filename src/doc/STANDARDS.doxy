@@ -110,4 +110,18 @@ defined.
 \note Please include only the needed headers in all the source unit: have a
 	list of twenty includes in a file make its readability quite low.
 
+\section list-vs-slist List vs Singly-linked lists
+
+If you taked a look to the sources of Hypnos, you'd found that we did a massive
+use of slist (singly-linked lists) instead of classical lists. Why this?
+
+We have a lot of lists and for every list's element, a singly-linked saves
+about 4 bytes, and several CPU cycles :) I know isn't a big performance boost,
+but we never cycle a list in the reverse order, so use the singly-listed isn't
+a problem :)
+
+So if you want to add a list of something in Hypnos sources, please use slist 
+if you know you'll not use the reverse order (or you'll use it so rarely that
+a cycle or two more can't create problems to the rest of the emulator).
+
 */

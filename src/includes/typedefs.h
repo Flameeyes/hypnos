@@ -22,12 +22,11 @@ typedef int32_t				ACCOUNT;
 typedef int32_t				FUNCIDX;
 
 typedef class tVariant *pVariant;		//!< Pointer to a variant instance
-typedef std::list<tVariant> tVariantList;	//!< List of variants
 typedef std::vector<tVariant> tVariantVector;	//!< Vector of variants
 
 typedef std::set<uint32_t> uint32_set;		//!< A set of uint32_t
 typedef std::vector<uint32_t> uint32_vector;	//!< A vector of uint32_t
-typedef std::slist<uint32_t> uint32_slist;	//!< A slist of uint32_t
+typedef std::slist<uint32_t> uint32_slist;	//!< Singly-linked list of uint32_t
 
 typedef std::vector<std::string> stringVector;	//!< A vector of strings
 
@@ -46,10 +45,10 @@ typedef std::map< std::string, pCommand > CommandMap;
 typedef class cCreatureInfo* pCreatureInfo;
 
 typedef class cGMPage *pGMPage;			//!< Pointer to a GM Page
-typedef std::list<pGMPage> GMPageList;		//!< List of GM Pages
+typedef std::slist<pGMPage> GMPageSList;	//!< Singly-linked list of GM Pages
 
 typedef class cClient *pClient;			//!< Pointer to a cClient
-typedef std::slist<PClient> ClientSList;	//!< Singly list of connected clients
+typedef std::slist<PClient> ClientSList;	//!< Singly-linked list of connected clients
 
 typedef class cMenu *pMenu;			//!< Pointer to a cMenu
 typedef std::map<uint32_t, pMenu> MenuMap;	//!< Map of menus

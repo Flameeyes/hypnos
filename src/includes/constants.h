@@ -113,6 +113,8 @@ enum
 #define UINVALID16 0xFFFF
 #define UINVALID32 0xFFFFFFFF
 
+static const sPoint InvalidCoord(0xFFFF, 0xFFFF);
+
 //@{
 /*!
 \name enumerated constants
