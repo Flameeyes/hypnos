@@ -16,24 +16,21 @@
 #include "common_libs.h"
 
 /*!
+\author Flameeyes
 \brief Access to server settings
 
 This namespace contains all the method to access the server settings.
 All the settings variables are stored in the settings.cpp file and then
 there won't be inline methods. This should be anyway managed by the compiler.
 
-\todo For now this is only declarations, not implementations. To have
-	implementations we need the XML Parser by il_guru, so for now I'll
-	put comments about the items here.
 \note Namespace inside that hasn't the n prefix, because nSettings is a special
 	namespace.
+\note Groups inside namespaces aren't namespaces themselves to avoid long
+	function calls, but are saved in different elements inside the XML
+	file, so one can simply delete the base element to have the default
+	values.
 */
 namespace nSettings {
-	namespace MsgBoards {
-		uint16_t getMaxPosts();			//!< Maximum post possible [Default: 128]
-		uint16_t getMaxEntries();		//!< Maximum entries in ESCORTS [Default: 256]
-	}
-	
 	/*!
 	\brief Server related settings
 	*/
@@ -63,6 +60,11 @@ namespace nSettings {
 		uint32_t getWeightPerStr();		//!< How much weight can take with one str point? [Default: 4]
 	}
 	
+	namespace MsgBoards {
+		uint16_t getMaxPosts();			//!< Maximum post possible [Default: 128]
+		uint16_t getMaxEntries();		//!< Maximum entries in ESCORTS [Default: 256]
+	}
+	
 	//! Hunger System settings
 	namespace Hunger {
 		bool isEnabled();			//!< Is the Hunger system enabled? [Default: true]
@@ -71,9 +73,7 @@ namespace nSettings {
 		uint16_t getHungerDamageRate();		//!< How often you lose health when you are starving [Default: 10]
 	}
 	
-	/*!
-	\brief Actions related settings
-	*/
+	//! Actions related settings
 	namespace Actions {
 		bool shouldEquipOnDClick();		//!< Should an item be equipped on double click? [Default: true]
                 bool canUseItemsWhenInvisible();	//!< When invisible (by spell) can a player use items? [Default: false]
@@ -81,9 +81,7 @@ namespace nSettings {
 		uint16_t getBountyFameGain();		//!< How much fame is gained for bounty hunting? [Default: \b missing ]
 	}
 
-	/*!
-	\brief Skill related settings
-	*/
+	//! Skill related settings
 	namespace Skills {
 		uint16_t getStatDailyLimit();		//!< Maximum stat gain in a (real) day [Default: \b missing ]
 		uint16_t getLimitPlayerSparring();	//!< Defending player must have N skill points more than the attacker for the attacker to gain skill (in PvP only). [Default: 0]
