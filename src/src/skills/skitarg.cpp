@@ -348,7 +348,7 @@ const short NumberOfOres = sizeof(OreTable)/sizeof(Ore);
         sprintf(tmp,"%s Ore",orename);
         item::SpawnItem(s,cc,1,tmp,1,id1,id2,col1,col2,1,1);
 
-        sysmessage(s,"You place some %c%s ore in your pack.",tolower(*orename),orename+1);
+        client->sysmessage("You place some %c%s ore in your pack.",tolower(*orename),orename+1);
         return true;
     }
     return false;
@@ -926,9 +926,10 @@ void nSkills::target_healingSkill(pClient client, pTarget t )
 		{
 			j=ph->skill[HEALING]/100*2 + 1 + rand()%2;      // a GM healer gives 42-44,
 			j+=ph->skill[skAnatomy]/100*2 + 1 + rand()%2;     // a 20.0 healer 10-12. Ok ?
-			//pp->hp = qmin(pp->st, j+pp->hp);
-			//updatestats(i, 0);
-			//sysmessage(s,"You apply the bandages and the patient looks a bit healthier.");
+/*			pp->hp = qmin(pp->st, j+pp->hp);
+			updatestats(i, 0);
+			client->sysmessage("You apply the bandages and the patient looks a bit healthier.");
+*/
 			int iMore1 = 0;
 			(j+pp->hp > pp->getStrength()) ? iMore1 = pp->getStrength() - pp->hp : iMore1 = j;
 			if(pp->getSerial()==ph->getSerial())

@@ -227,7 +227,7 @@ void Skills::Stealth(pClient client)
 		return;
 
 	if ( pc->isMounting() && ! nSettings::Skills::canStealthOnHorse() ) {
-		sysmessage(s,"You can't stealth on horse!");
+		client->sysmessage("You can't stealth on horse!");
 		return;
 	}
 	

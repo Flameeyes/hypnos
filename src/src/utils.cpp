@@ -83,9 +83,11 @@ void dooruse(pChar pc, pItem pi)
 
 	int i, db, x;
 	bool changed=0;
+	
+	pClient client = pc ? pc->getClient() : NULL;
 
-	/*if (pc && ( !pc->hasInRange(pi, 2) ) && s>INVALID) {
-		sysmessage(s, "You cannot reach the handle from here");
+	/*if (pc && ( !pc->hasInRange(pi, 2) ) && client ) {
+		client->sysmessage("You cannot reach the handle from here");
 		return;
 	}*/
 
@@ -266,11 +268,14 @@ void dooruse(pChar pc, pItem pi)
 
 	if (ds < 50) // sysmessage iff decay status >=50%
 		return;
-		
-	if (houseowner_serial!= pc->getSerial())
-		sysmessage(s,"You refreshed your friend's house");
-	else
-		sysmessage(s,"You refreshed the house");
+	
+	if ( client )
+	{
+		if (houseowner_serial != pc->getSerial())
+			client->sysmessage("You refreshed your friend's house");
+		else
+			client->sysmessage("You refreshed the house");
+	}
 
 	pi2->time_unused=0;
 	pi2->timeused_last=getclock();

@@ -1881,13 +1881,13 @@ void cNetwork::GetMsg(pClient client) // Receive message from client
 						pChar murderer=cSerializable::findCharBySerial(pc_currchar->murdererSer);
 						if( murderer && SrvParms->bountysactive )
 						{
-							sysmessage( s,"To place a bounty on %s, use the command BOUNTY <Amount>.",
+							client->sysmessage("To place a bounty on %s, use the command BOUNTY <Amount>.",
 								murderer->getCurrentName().c_str()  );
 						}
-						sysmessage(s, "You are now a ghost.");
+						client->sysmessage("You are now a ghost.");
 					}
 					if(buffer[s][1]==0x01)
-						sysmessage(s, "The connection between your spirit and the world is too weak.");
+						client->sysmessage("The connection between your spirit and the world is too weak.");
 					break;
 
 				case PACKET_BUYITEM:
@@ -1968,7 +1968,7 @@ void cNetwork::GetMsg(pClient client) // Receive message from client
 					char clientNumber[TEMP_STR_SIZE];
 					strcpy((char*)clientNumber,(char*) &buffer[s][3]); // copy client version data
 					if ( strlen (clientNumber) > 10) clientDimension[s] = 3; else clientDimension[s] = 2;
-					sysmessage(s,"You are using a %iD client, version %s", clientDimension[s], clientNumber);
+					client->sysmessage("You are using a %iD client, version %s", clientDimension[s], clientNumber);
 
 					viter = find(clientsAllowed.begin(), clientsAllowed.end(), "ALL");
 					if ( viter != clientsAllowed.end() ) break; // ALL mode found/activated -> quit

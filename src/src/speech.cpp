@@ -349,7 +349,7 @@ int response(pClient client)
 					pDeed->Refresh();
 					pc_map->playMonsterSound(SND_DIE);
 					pc_map->Delete();
-					sysmessage(s, "Packed up vendor %s.", pc_map->getCurrentName().c_str());
+					client->sysmessage("Packed up vendor %s.", pc_map->getCurrentName().c_str());
 					// return 1;
 					handledRequest = true;
 				}
@@ -614,7 +614,7 @@ int response(pClient client)
 							targ->buffer[0]=pc_map->getSerial();
 							targ->code_callback=target_follow;
 							targ->send( client );
-							sysmessage( s, "Click on the target to follow." );
+							client->sysmessage("Click on the target to follow." );
 							return 1;
 						}
 					}
@@ -631,19 +631,19 @@ int response(pClient client)
 					//I don't understand why i must check for animals stabled too... probably a bug
 					if ( sc.size()==0 )
 					{
-						sysmessage(s,"You dont have pets following you");
+						client->sysmessage("You dont have pets following you");
 						return 1;
 					}
 					if ( region[pc->region].priv&0x01 ) // Ripper..No pet attacking in town.
 					{
-						sysmessage(s,"You cant have pets attack in town!");
+						client->sysmessage("You cant have pets attack in town!");
 						return 1;
 					}
 					pc->guarded = false;
 					pTarget targ=clientInfo[s]->newTarget( new cCharTarget() );
 					targ->code_callback=target_allAttack;
 					targ->send(client);
-					sysmessage( s, "Select the target to attack.");
+					client->sysmessage("Select the target to attack.");
 					return 1;
 				}
 				//
@@ -661,7 +661,7 @@ int response(pClient client)
 						{
 							if (region[pc->region].priv&0x01) // Ripper..No pet attacking in town.
 							{
-								sysmessage( s, "You can't have pets attack in town!");
+								client->sysmessage("You can't have pets attack in town!");
 								return 0;
 							}
 							if (pc_map->npcaitype== NPCAI_PLAYERVENDOR )
@@ -672,7 +672,7 @@ int response(pClient client)
 							targ->buffer[0] = pc_map->getSerial();
 							targ->send( client );
 							//pet kill code here
-							sysmessage( s, "Select the target to attack.");
+							client->sysmessage("Select the target to attack.");
 							return 1;
 						}
 					}
@@ -695,7 +695,7 @@ int response(pClient client)
 							targ->code_callback=target_fetch;
 							targ->buffer[0]=pc_map->getSerial();
 							targ->send( client );							
-							sysmessage( s, "Click on the object to fetch.");
+							client->sysmessage("Click on the object to fetch.");
 							return 1;
 						}
 					}
@@ -716,7 +716,7 @@ int response(pClient client)
 							pc->guarded = false;
 							pc_map->ftargserial=pc->getSerial();
 							pc_map->npcWander=WANDER_FOLLOW;
-							sysmessage(s, "Your pet begins following you.");
+							client->sysmessage("Your pet begins following you.");
 							return 1;
 						}
 					}
@@ -742,7 +742,7 @@ int response(pClient client)
 								targ->buffer[1]=1;	// indicates we already know whom to guard (for future use)
 										// for now they still must click on themselves (Duke)
 							targ->send(client);
-							sysmessage( s, "Click on the char to guard.") ;
+							client->sysmessage("Click on the char to guard.") ;
 
 							return 1;
 						}
@@ -803,7 +803,7 @@ int response(pClient client)
 							targ->code_callback=target_transfer;
 							targ->buffer[0]=pc_map->getSerial();
 							targ->send( client );
-							sysmessage( s, "Select character to transfer your pet to.");
+							client->sysmessage("Select character to transfer your pet to.");
 							return 1;
 						}
 					}
@@ -1197,19 +1197,19 @@ static bool pricePlayerVendorItem( pChar pc, pClient client, string &price )
 			{
 				pi->value = i;
 				pc->fx2 = 18;
-				sysmessage( socket, "The price of item %s has been set to %i.", pi->getCurrentName().c_str(), i);
-				sysmessage( socket, "Enter a description for this item.");
+				client->sysmessage("The price of item %s has been set to %i.", pi->getCurrentName().c_str(), i);
+				client->sysmessage("Enter a description for this item.");
 			}
 			else
 			{
 				pc->fx2 = 18;
-				sysmessage( socket, "No price entered, this item's price has been set to %i.", pi->value);
-				sysmessage( socket, "Enter a description for this item.");
+				client->sysmessage("No price entered, this item's price has been set to %i.", pi->value);
+				client->sysmessage("Enter a description for this item.");
 			}
 		}
 		else
 		{
-			sysmessage( socket, "This item is invalid and cannot be priced" );
+			client->sysmessage("This item is invalid and cannot be priced" );
 			pc->fx1 = INVALID;
 			pc->fx2 = INVALID;
 		}
@@ -1228,10 +1228,10 @@ static bool describePlayerVendorItem( pChar pc, pClient client, string &descript
 		{
 			//strcpy( pi->desc, description.c_str() );
 			pi->vendorDescription = description;
-			sysmessage( socket, "This item is now described as %s, ", description.c_str() );
+			client->sysmessage("This item is now described as %s, ", description.c_str() );
 		}
 		else
-			sysmessage( socket, "This item is invalid and cannot be described");
+			client->sysmessage("This item is invalid and cannot be described");
 		pc->fx1 = INVALID;
 		pc->fx2 = INVALID;
 		success = true;
@@ -1246,7 +1246,7 @@ static bool renameRune( pChar pc, pClient client, string &name )
 	if( pi )
 	{
 		pi->setCurrentName("Rune to %s", name.c_str() );
-		sysmessage( socket, "Rune renamed to: Rune to %s", name.c_str() );
+		client->sysmessage("Rune renamed to: Rune to %s", name.c_str() );
 		pc->runeserial = INVALID;
 		success = true;
 	}
@@ -1263,10 +1263,10 @@ static bool renameSelf( pChar pc, pClient client, string &name )
 		{
 			pi->setCurrentName( name.c_str());
 			pc->setCurrentName( name.c_str());
-			sysmessage(socket, "Your new name is: %s", name.c_str());
+			client->sysmessage("Your new name is: %s", name.c_str());
 		}
 		else
-			sysmessage(socket, "Invalid namedeed");
+			client->sysmessage("Invalid namedeed");
 		pc->namedeedserial = INVALID;
 		success = true;
 	}
@@ -1280,7 +1280,7 @@ static bool renameKey( pChar pc, pClient client, string &name )
 	if( pi )
 	{
 		pi->setCurrentName( name.c_str() );
-		sysmessage( socket, "Key renamed to: %s", name.c_str() );
+		client->sysmessage("Key renamed to: %s", name.c_str() );
 		success = true;
 	}
 	pc->keyserial = INVALID;
@@ -1315,9 +1315,9 @@ static bool pageCouncillor( pChar pc, pClient client, string &reason )
 			}
 		}
 		if (foundCons)
-			sysmessage(socket, "Available Counselors have been notified of your request.");
+			client->sysmessage("Available Counselors have been notified of your request.");
 		else
-			sysmessage(socket, "There was no Counselor available to take your call.");
+			client->sysmessage("There was no Counselor available to take your call.");
 		pc->pagegm = 0;
 		success = true;
 	}
