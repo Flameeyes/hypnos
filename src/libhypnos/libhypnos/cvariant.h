@@ -297,9 +297,9 @@ protected:
 class eInvalidInteger : public eException
 {
 public:
-	const pVariant var;	//!< Invalid variant variable
+	const cVariant *var;	//!< Invalid variant variable
 	
-	eInvalidInteger(const pVariant aVar)
+	eInvalidInteger(const cVariant *aVar)
 		: var(aVar)
 	{ }
 };

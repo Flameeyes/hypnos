@@ -15,8 +15,8 @@
 #include "networking/cclient.h"
 #include "objects/cchar.h"
 #include "objects/citem.h"
+#include "objects/cpc.h"
 #include "objects/citem/ccontainer.h"
-#include "objects/cchar/cpc.h"
 #include "skills/skills.h"
 
 bool cItem::usableWhenLockedDown(pPC pc)

@@ -11,9 +11,6 @@
 */
 
 #include "objects/cbody.h"
-#include "python/events.h"
-
-static uint32_t cBody::nextSerial = 1;
 
 cBody::cBody()
 {
@@ -153,7 +150,7 @@ void cBody::calcWeight()
 	weight = bp ? bp->getWeightActual() : 0;
 	
 	for(register int i = 0; i < 0x1E; i++)
-		if ( layers[i] && i != cEquippable::layMount )
+		if ( layers[i] && i != layMount )
 			weight += layers[i]->getWeightActual();
 }
 

@@ -300,7 +300,7 @@ void nSkills::decipher(pClient client)
 	nmap->moreb4 = lry%256;
 	nmap->morex = x;        // Store the treasure's location
 	nmap->morey = y;
-	Delete();    // Delete the tattered map
+	delete this;
 
 	client->sysmessage("You put the deciphered tresure map in your pack");
 }

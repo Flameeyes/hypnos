@@ -26,6 +26,8 @@ be moved here.
 class cBody : public cObject
 {
 friend class cChar;
+public:
+	cBody();
 protected:
 	std::string name;
 	std::string title;
@@ -70,7 +72,7 @@ protected:
 public:
 	//! Gets the item on the specified layer
 	inline pEquippable getLayerItem(Layer layer) const
-	{ return layers[layer]; }
+	{ assert(layer < 0x1E); return layers[layer]; }
 
 	//! Sets the item on the specified layer
 	inline void setLayerItem(Layer layer, pEquippable item);

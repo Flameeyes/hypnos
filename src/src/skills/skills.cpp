@@ -6,12 +6,16 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "skills/skills.h"
 #include "common_libs.h"
 #include "settings.h"
 #include "backend/strconstants.h"
 #include "extras/jails.h"
-#include <fstream>
+#include "objects/cchar.h"
+#include "objects/cpc.h"
+#include "objects/cnpc.h"
+#include "skills/skills.h"
+
+#include <mxml.h>
 
 //int goldsmithing;
 //1=iron, 2=golden, 3=agapite, 4=shadow, 5=mythril, 6=bronze, 7=verite, 8=merkite, 9=copper, 10=silver

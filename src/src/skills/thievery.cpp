@@ -8,10 +8,13 @@
 #include "common_libs.h"
 #include "sndpkg.h"
 #include "npcai.h"
-#include "skills/skills.h"
 #include "inlines.h"
 #include "settings.h"
 #include "backend/scripting.h"
+#include "objects/cchar.h"
+#include "objects/cpc.h"
+#include "objects/cnpc.h"
+#include "skills/skills.h"
 
 /*!
 \brief Snoop into container

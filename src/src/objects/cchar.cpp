@@ -890,7 +890,7 @@ void cChar::teleport( uint8_t flags, pClient cli )
 				ps_i->sendchar(this);
 				//ndEndy not too sure of this
 				if ( flags&teleSendWornItems )
-					wornitems( ps_i->toInt(), this );
+					ps_i->wornItems(this);
 			}
 		}
 		sw.clear();
@@ -898,7 +898,7 @@ void cChar::teleport( uint8_t flags, pClient cli )
 	{
 		cli->sendchar(this);
 		if ( flags&teleSendWornItems )
-			wornitems( cli->toInt(), this );
+			cli->wornItems(this);
 	}
 
 
@@ -2205,7 +2205,7 @@ void cChar::checkEquipment()
 			for( sw.rewind(); !sw.isEmpty(); sw++ ) {
 				pClient ps=sw.getClient();
 				if(ps!=NULL ) {
-					wornitems(ps->toInt(), this );
+					ps->wornItems(this);
 					senditem(ps->toInt(), pi);
 				}
 			}

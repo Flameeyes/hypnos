@@ -1760,8 +1760,8 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 	sw.fillOnline( pck, false );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		cClient j = sw.getClient();
-		if( j!=NULL ) j->wornitems(pck );
+		pClient j = sw.getClient();
+		if( j ) j->workItems(pck);
 	}
 
 
@@ -3150,6 +3150,22 @@ void cClient::telltime()
 	}
 	
 	sysmessage("%s %s %s", prefix, strhour, suffix);
+}
+
+/*!
+\brief Sends to the client the items worned by the given char
+\param pc Player to send the items of
+*/
+void cClient::wornItems(pChar pc)
+{
+	if ( ! pc ) return;
+	pBody b = pc->getBody();
+	assert(b);
+	
+	for(register int i = 0; i < 0x1E; i++)
+	{
+		wornItem(b->getLayerItem(i));
+	}
 }
 
 /*!

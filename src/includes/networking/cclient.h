@@ -229,6 +229,7 @@ public:
 								//!< warps item in world for hallucinatory effect (sets new color and location)
 	void dressCorpse(pContainer corpse);			//!< Sends items worn on corpse for display on client
 	void sendchar(pChar pc, bool z = true);			//!< Shows char to client. Checks for gm and invisibility too
+	void wornItems(pChar pc);
 
 	//! audio packets (sound effects & music)
 	void playMidi();

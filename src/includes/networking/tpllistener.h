@@ -44,6 +44,9 @@ public:
 	~tplListener();
 	
 	void *run();
+	
+	void closeServer()
+	{ sock->close(); }
 };
 
 /*!

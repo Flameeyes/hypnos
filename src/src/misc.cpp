@@ -8,6 +8,8 @@
 
 #include "misc.h"
 #include "objects/cchar.h"
+#include "objects/cpc.h"
+#include "objects/cnpc.h"
 #include "objects/citem.h"
 #include "hypnos.h"
 #include "libhypnos/muls/tiledata.h"

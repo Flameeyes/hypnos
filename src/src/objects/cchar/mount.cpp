@@ -153,7 +153,7 @@ void cChar::mountHorse( pNPC mount )
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
 		if ( sw.getClient() )
-			sw.getClient()->wornitems(this);
+			sw.getClient()->wornItems(this);
 	}
 
 	// if this is a gm lets tame the animal in the process

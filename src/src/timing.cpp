@@ -20,6 +20,8 @@
 #include "spawn.h"
 #include "trade.h"
 #include "inlines.h"
+#include "networking/cclient.h"
+#include "objects/cchar.h"
 #include "objects/citem/chouse.h"
 
 extern bool g_bMustExecAICode;
@@ -306,12 +308,12 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 							if( TIMEOUT( pi->gatetime ) )
 							{
 								if (pi->type2==1)
-									Boats->Move(ps->toInt(),pi->dir,pi);
+									Boats->Move(ps,pi->dir,pi);
 								else
 								{
 									int dir=pi->dir+4;
 									dir%=8;
-									Boats->Move(ps->toInt(),dir,pi);
+									Boats->Move(ps,dir,pi);
 								}
 								pi->gatetime=(uint32_t)(getClockmSecs() + (double)(SrvParms->boatspeed*SECS));
 							}
