@@ -14,13 +14,11 @@
 #include "nxw_utils.h"
 #include "weight.h"
 #include "set.h"
-
-
 #include "skills.h"
 #include "classes.h"
 #include "inlines.h"
 #include "range.h"
-
+#include "settings.h"
 
 /*!
 \brief Snoop into container
@@ -88,8 +86,9 @@ void snooping( pChar snooper, pItem cont )
 						sprintf( temp, TRANSLATE("You notice %s trying to peek into your pack!"), snooper->getCurrentName().c_str());
 						owner->sysmsg( temp );
 					}
-					snooper->IncreaseKarma(-ServerScp::g_nSnoopKarmaLoss);//AntiChrist
-					snooper->modifyFame(-ServerScp::g_nSnoopFameLoss);//AntiChrist
+					snooper->IncreaseKarma( - nSettings::Skills::getSnoopKarmaLoss() );
+					snooper->modifyFame( - nSettings::Skills::getSnoopFameLoss() );
+					//!\TODO This should be investigated
 					snooper->setCrimGrey(ServerScp::g_nSnoopWillCriminal);
 				}
 			}
@@ -219,10 +218,11 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 		{
 			thief->unHide();
 			thief->sysmsg(TRANSLATE("You have been caught!"));
-			thief->IncreaseKarma(ServerScp::g_nStealKarmaLoss);
-			thief->modifyFame(ServerScp::g_nStealFameLoss);
+			thief->increaseKarma( - nSettings::Skills::getStealKarmaLoss() );
+			thief->modifyFame( - nSettings::Skills::getStealFameLoss() );
 
 			if ( victim->IsInnocent() && thief->attackerserial != victim->getSerial() && Guilds->Compare(thief,victim)==0)
+				//!\TODO should be investigated
 				thief->setCrimGrey(ServerScp::g_nStealWillCriminal); //Blue and not attacker and not same guild
 
 
@@ -408,8 +408,8 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 		{
 			thief->unHide();
 			thief->sysmsg(TRANSLATE("You have been caught!"));
-			thief->IncreaseKarma( ServerScp::g_nStealKarmaLoss);
-			thief->modifyFame( ServerScp::g_nStealFameLoss);
+			thief->IncreaseKarma( - nSettings::Skills::getStealKarmaLoss() );
+			thief->modifyFame( - nSettings::Skills::getStealFameLoss() );
 
 			if (victim->IsInnocent() && thief->attackerserial!=victim->getSerial() && Guilds->Compare(thief,victim)==0)//AntiChrist
 				thief->setCrimGrey(ServerScp::g_nStealWillCriminal);//Blue and not attacker and not guild

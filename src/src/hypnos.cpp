@@ -217,9 +217,9 @@ void callguards( CHARACTER p )
 	}
 	if ( offenders )
 	{
-		if ( guards.empty() && ServerScp::g_nInstantGuard == 1 )
+		if ( guards.empty() && nSettings::Server::hasInstantGuards() )
 		{
-			pChar  guard = npcs::AddNPCxyz( caller->getSocket(), region[caller->region].guardnum[(rand()%10)+1], caller->getPosition());
+			pNPC guard = npcs::AddNPCxyz( caller->getSocket(), region[caller->region].guardnum[(rand()%10)+1], caller->getPosition());
 
 			if ( guard )
 			{

@@ -11,6 +11,7 @@
 */
 
 #include "cpacket.h"
+#include "settings.h"
 
 void cPacketSendAction::prepare()
 {
@@ -691,7 +692,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
         // Disconnect-level protocol error check (possible client hack or too many chars already present in account)
         if (
                 !(client->currAccount()->comparePassword(buffer+40)) ||                  //!< Password check
-                (client->currAccount()->getCharsNumber() >= ServerScp::g_nLimitRoleNumbers) ||  //!< Max PCs per account check
+                (client->currAccount()->getCharsNumber() >= nSettings::Server::getMaximumPCs()) ||  //!< Max PCs per account check
                 ((sex !=1) && (sex != 0)) ||                                                    //!< Sex validity check
                 (strength + dexterity + intelligence > 80) ||                                   //!< Stat check: stat sum must be <=80
                 (strength < 10)     || (strength > 60)     ||                                   //!< each stat must be >= 10 and <= 60
@@ -1706,7 +1707,7 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
 
 	pPC TrashMeUp = account->getChar(index);	//PC to delete. if index is too large or invalid, it returns NULL
 
-	if (ServerScp::g_nPlayersCanDeleteRoles)
+	if ( nSettings::Server::canPlayersDeletePCs() )
         {
 		if(!TrashMeUp)
                 {

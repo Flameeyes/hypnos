@@ -15,7 +15,7 @@
 
 #include "common_libs.h"
 #include "objects/cobject.h"
-#include "objects/citem/cequippable.h"
+#include "enums.h"
 
 static const uint16_t bodyMale		= 0x190;
 static const uint16_t bodyFemale	= 0x191;
@@ -75,12 +75,11 @@ protected:
 	pEquippable layers[0x1E];
 public:
 	//! Gets the item on the specified layer
-	inline pEquippable getLayerItem(cEquippable::Layers layer) const
+	inline pEquippable getLayerItem(Layer layer) const
 	{ return layers[layer]; }
 
 	//! Sets the item on the specified layer
-	inline void setLayerItem(cEquippable::Layers layer, pEquippable item)
-	{ layers[layer] = item; }
+	inline void setLayerItem(Layer layer, pEquippable item);
 
 	pEquippableContainer getBackpack(bool create = false);
 

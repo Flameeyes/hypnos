@@ -13,33 +13,17 @@
 \author Chronodt (almost total rewrite)
 */
 
-#include "common_libs.h"
 #include "network.h"
 #include "sregions.h"
 #include "sndpkg.h"
 #include "debug.h"
 #include "cmsgboard.h"
 #include "npcai.h"
-#include "scp_parser.h"
-
 
 #include "utils.h"
 #include "inlines.h"
 #include "nox-wizard.h"
 #include "scripts.h"
-
-/*!
-\note xan -> do not move in headers, plz
-*/
-extern char g_strScriptTemp[TEMP_STR_SIZE];
-
-/*
-static uint32_t cMsgBoardMessage::nextSerial()
-{
-	//! Since the clients treats a message almost like an item, we use an item serial :D
-	return cItem::nextSerial();
-}
-*/
 
 /*!
 \brief Deleting an MsgBoard message
@@ -412,7 +396,7 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
                 //mexes, but by posting regional or global messages this limit can be exceeded
                 
                	pair<cBBRelations::iterator, cBBRelations::iterator> it = BBRelations.equal_range(getSerial());
-                if (distance(it.first, it.second) > MAXPOSTS) return false;
+                if ( distance(it.first, it.second) > nSettings::MsgBoards::getMaxPosts() ) return false;
 
         	BBRelations.insert(cBBRelations::pair(getSerial(), message->getSerial32()));
         	break;
@@ -456,7 +440,8 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
         message->targetitem = (item) ? item->getSerial() : 0;
         message->region = region;	//if questtype does not need to use a regional post, this is simply ignored :D
         
-	int32_t	sectionEntrys[MAXENTRIES];                            // List of SECTION items to store for randomizing
+	int32_t *sectionEntries = new sectionEntries[ nSettings::MsgBoards::getMaxEntries() ];
+	// List of SECTION items to store for randomizing
 
 	uint32_t	listCount           = 0;  // Number of entries under the ESCORTS section, used to randomize selection
 	int32_t	entryToUse          = 0;  // Entry of the list that will be used to create random message
@@ -543,13 +528,13 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 			iter->parseLine(script1, script2);
 			if ( !script1.compare("ESCORT") )
 			{
-				if ( listCount >= MAXENTRIES )
+				if ( listCount >= nSettings::MsgBoards::getMaxEntries() )
 				{
-					ErrOut("cMsgBoard::createQuestMessage() Too many entries in ESCORTS list [MAXENTRIES=%d]\n", MAXENTRIES );
+					ErrOut("cMsgBoard::createQuestMessage() Too many entries in ESCORTS list [MAXENTRIES=%d]\n", nSettings::MsgBoards::getMaxEntries() );
 					break;
 				}
 
-				sectionEntrys[listCount] = str2num(script2.c_str());
+				sectionEntries[listCount] = str2num(script2.c_str());
 				listCount++;
 			}
 		} while ( script1[0]!='}' && script1[0]!=0 	&& (++loopexit < MAXLOOPS) );
@@ -572,7 +557,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 		// Open the script again and find the section choosen by the randomizer
 		char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
-		sprintf( temp, "SECTION ESCORT %i", sectionEntrys[entryToUse-1] );
+		sprintf( temp, "SECTION ESCORT %i", sectionEntries[entryToUse-1] );
 		iter = Scripts::MsgBoard->getNewIterator(temp);
 
 		if (iter==NULL)
@@ -599,13 +584,13 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 			iter->parseLine(script1, script2);
 			if ( !script1.compare("BOUNTY") )
 			{
-				if ( listCount >= MAXENTRIES )
+				if ( listCount >= nSettings::MsgBoards::getMaxEntries() )
 				{
-					ErrOut("cMsgBoard::createQuestMessage() Too many entries in BOUNTYS list [MAXENTRIES=%d]\n", MAXENTRIES );
+					ErrOut("cMsgBoard::createQuestMessage() Too many entries in BOUNTYS list [MAXENTRIES=%d]\n", nSettings::MsgBoards::getMaxEntries() );
 					break;
 				}
 
-				sectionEntrys[listCount] = str2num(script2.c_str());
+				sectionEntries[listCount] = str2num(script2.c_str());
 				listCount++;
 			}
 		} while ( script1[0]!='}' && script1[0]!=0 	&& (++loopexit < MAXLOOPS)  );
@@ -628,7 +613,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 		// Open the script again and find the section choosen by the randomizer
 		char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
-		sprintf( temp, "BOUNTY %i", sectionEntrys[entryToUse-1] );
+		sprintf( temp, "BOUNTY %i", sectionEntries[entryToUse-1] );
 
 	        safedelete(iter);
 		iter = Scripts::MsgBoard->getNewIterator(temp);

@@ -15,9 +15,8 @@
 #ifndef __CMSGBOARD_H__
 #define __CMSGBOARD_H__
 
-enum PostType { ptLocalPost = 0, ptRegionalPost, ptGlobalPost };
-enum QuestType { qtEscort = 0xFF, qtBoundy = 0xFE, qtItem = 0xFD, qtInvalid = 0x0 };
-
+#include "common_libs.h"
+#include "enums.h"
 #include "objects/citem.h"
 
 /*!
@@ -64,31 +63,6 @@ protected:
 	static MessageList globalMsgs;
 	static std::map<uint32_t, MessageList> regionalMsgs;
 public:
-//@{
-/*!
-\name Parameters
-\todo Need to be moved as server parameters
-*/
-	
-	/*!
-	\brief Maximum number of posts per board
-
-        (obsolete calculation)
-        --------------------------------------------------------------------------------
-	Buffer Size = 2560
-	Therefore 0x3c max size = 2560 - 5 (0x3c header info) = 2550
-	2550 / 19 (item segment size per msg) = 134
-	Round down to 128 messages allowable on a message board (better safe than sorry)
-        --------------------------------------------------------------------------------
-
-        Outbound packets now can have any length, so the maxpost is only used to have a REASONABLE sized packet to send (Chronodt 10/3/04)
-
-	*/
-	static const uint32_t MAXPOSTS = 128;
-
-	static const uint32_t MAXENTRIES = 256; //!< maximum number of entries in a ESCORTS list in the MSGBOARD.sSCP file
-//@}
-
 //@{
 /*!
 \name Constructors and operators

@@ -11,6 +11,7 @@
 */
 
 #include "cclient.h"
+#include "settings.h"
 
 static ClientList cClient::clients;
 static ClientList cClient::cGMs;
@@ -498,6 +499,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 					if ( !bCanLoot && container->more2==1 )
 					{
 						pc_currchar->IncreaseKarma(-5);
+						//!\todo should be investigated
 						pc_currchar->setCrimGrey(ServerScp::g_nLootingWillCriminal);
 						pc_currchar->sysmsg( TRANSLATE("You are loosing karma!"));
 					}
@@ -753,8 +755,8 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 	}
 
 	// Xanathars's Bank Limit Code
-	if (ServerScp::g_nBankLimit != 0) {
-
+	if ( nSettings::Server::getBankMaxItems() )
+	{
 		if(  contOutMost && contOutMost->morex==MOREX_BANK ) {
 
 			int n = contOutMost->CountItems( INVALID, INVALID, false);
@@ -763,8 +765,8 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 				n += pi->CountItems( INVALID, INVALID, false);
 			else
 				++n;
-			if( n > ServerScp::g_nBankLimit ) {
-				sysmsg(TRANSLATE("You exceeded the number of maximimum items in bank of %d"), ServerScp::g_nBankLimit);
+			if( n > nSettings::Server::getBankMaxItems() ) {
+				sysmsg(TRANSLATE("You exceeded the number of maximimum items in bank of %d"), nSettings::Server::getBankMaxItems());
 				item_bounce6(pi);
 				return;
 			}
@@ -1327,8 +1329,8 @@ bool cClient::droppedOnGuard(pItem pi, Location &loc, pItem cont)
 				BountyDelete(own );
 
 				// xan : increment fame & karma :)
-				pc->modifyFame( ServerScp::g_nBountyFameGain );
-				pc->IncreaseKarma(ServerScp::g_nBountyKarmaGain);
+				pc->IncreaseKarma( nSettings::Actions::getBountyKarmaGain() );
+				pc->modifyFame( nSettings::Actions::getBountyFameGain() );
 			}
 			else
 				pc_t->talk(this, TRANSLATE("You can not claim that prize scoundrel. You are lucky I don't strike you down where you stand!"),0);
@@ -1817,7 +1819,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 
 void cClient::item_bounce4(const pItem pi)
 {
-	VALIDATEPI( pi );
+	if ( ! pi ) return;
 	item_bounce3(pi);
 	if( (pi->getId() >>8) < 0x40)
 		senditem( pi );
@@ -1830,7 +1832,7 @@ void cClient::item_bounce4(const pItem pi)
 
 void cClient::item_bounce5( const pItem pi)
 {
-	VALIDATEPI( pi );
+	if ( ! pi ) return;
 	item_bounce3(pi);
 	senditem(pi);
 }
@@ -1851,9 +1853,6 @@ void cClient::item_bounce6(const pItem pi)
 	}
 }
 
-
-
-
 /*------------------------------------------------------------------------------
                              TRADING METHODS
 ------------------------------------------------------------------------------*/
@@ -1864,9 +1863,6 @@ void cClient::item_bounce6(const pItem pi)
 \param npc vendor whose goods player is buying
 \param allitemsbought list of items selected from player (layer, pItem and amount for each item)
 */
-
-
-
 void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 {
 

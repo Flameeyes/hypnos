@@ -16,18 +16,15 @@
 #include "common_libs.h"
 #include "itemid.h"
 #include "sndpkg.h"
-#include "amx/amxcback.h"
 #include "layer.h"
 #include "tmpeff.h"
 #include "npcai.h"
 #include "data.h"
 #include "set.h"
-
-
 #include "basics.h"
 #include "inlines.h"
-#include "classes.h"
 #include "utils.h"
+#include "settings.h"
 
 
 /*!
@@ -1171,13 +1168,13 @@ void cChar::attackStuff(pChar victim)
 		if (victim->npc==0 && victim->isInnocent() && (!victim->IsGrey()) && Guilds->Compare( pc, victim )==0) //REPSYS
 		{
 			criminal( pc );
-			if (ServerScp::g_nInstantGuard==1)
+			if ( nSettings::Server::hasInstantGuards() )
 				npcs::SpawnGuard(pc, victim, getPosition() );
 		}
 		else if( victim->npc && victim->isInnocent() && !victim->HasHumanBody() && victim->npcaitype!=NPCAI_TELEPORTGUARD )
 		{
 			criminal( pc );
-			if (ServerScp::g_nInstantGuard==1)
+			if ( nSettings::Server::hasInstantGuards() )
 				npcs::SpawnGuard(pc, victim, getPosition() );
 		}
 		else if( victim->npc && victim->isInnocent() && victim->HasHumanBody() && victim->npcaitype!=NPCAI_TELEPORTGUARD )

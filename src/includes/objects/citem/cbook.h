@@ -53,10 +53,11 @@ public:
 
 	inline void setReadOnly(bool set = true)
 	{ setFlag(flagIsReadOnly, set); }
-private:
+protected:
 	static const uint64_t flagIsReadOnly	= 0x0000000000010000ull;	//!< Is the book read only?
 //@}
 
+public:
 	void doubleClicked(pClient client);
 	void openBookReadOnly(pClient client);
 	void openBookReadWrite(pClient client);

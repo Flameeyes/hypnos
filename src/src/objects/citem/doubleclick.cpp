@@ -282,69 +282,6 @@ void cItem::doubleClick(pClient client)
 
 	data::seekTile( getId(), item );
 //////FINEVARIABILI
-	if ( ServerScp::g_nEquipOnDclick )
-	{
-		// equip the item only if it is in the backpack of the player
-		if ((getContainer() == pack->getSerial()) && (item.quality != 0) && (item.quality != LAYER_BACKPACK) && (item.quality != LAYER_MOUNT))
-		{
-			pItem drop[2]= {NULL, NULL};	// list of items to drop, there no reason for it to be larger
-			int curindex= 0;
-
-                        //TODO: review when sets redone
-
-
-			NxwItemWrapper wea;
-			wea.fillItemWeared( pc, true, true, true );
-			for( wea.rewind(); !wea.isEmpty(); wea++ )
-			{
-
-				pItem pj=wea.getItem();
-				if(!pj)
-					continue;
-				if ((item.quality == LAYER_1HANDWEAPON) || (item.quality == LAYER_2HANDWEAPON))// weapons
-				{
-					if (itmhand == 2) // item tried to equip is two handed weapon or shield
-					{
-						if (pj->itmhand == 2)
-							drop[curindex++]= pj;
-						if ( (pj->itmhand == 1) || (pj->itmhand == 3) )
-							drop[curindex++]= pj;
-					}
-					if (itmhand == 3)
-					{
-						if ((pj->itmhand == 2) || pj->itmhand == 3)
-							drop[curindex++]= pj;
-					}
-					if ((itmhand == 1) && ((pj->itmhand == 2) || (pj->itmhand == 1)))
-						drop[curindex++]= pj;
-				}
-				else	// not a weapon
-				{
-					if (pj->layer == item.quality)
-						drop[curindex++]= pj;
-				}
-			}
-
-			if (ServerScp::g_nUnequipOnReequip)
-			{
-				if (drop[0] != NULL)	// there is at least one item to drop
-				{
-					for (int i= 0; i< 2; i++) if (drop[i] != NULL) pc->UnEquip(drop[i]);
-				}
-				pc->playSFX( itemsfx(getId()));
-				pc->Equip(this);
-			}
-			else
-			{
-				if (drop[0] == NULL)
-				{
-					pc->playSFX( itemsfx(getId()) );
-					pc->Equip(this);
-				}
-			}
-			return;
-		}
-	} // </Anthalir>
 
 
 	//<Luxor>: Circle of transparency bug fix

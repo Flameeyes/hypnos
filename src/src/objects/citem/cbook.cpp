@@ -102,13 +102,12 @@ void cBook::changePages(char *packet, uint16_t p, uint16_t l, uint16_t size)
 void cBook::doubleClicked(pClient client)
 {
 	pPC pc = client->currChar();
-	
-	//! \todo This should be changed with the new configuration system
-/*	if ( !ServerScp::g_nEnableBooks )
+
+	if ( ! nSettings::Server::isEnabledBookSystem() )
 	{
-		pc->sysmsg(TRANSLATE("Books are currently disabled, sorry :("));
+		client->sysmessage("Books are currently disabled, sorry.");
 		return;
-	}*/
+	}
 	
 	if ( isReadOnly() )
 		openBookReadOnly(client);
@@ -131,15 +130,14 @@ void cBook::openBookReadWrite(pClient client)
 
 	uint16_t bytes;
 
-	char booktitle[60];
-	char bookauthor[30];
+	char booktitle[61];
+	char bookauthor[31];
 
-	uint16_t i;
-	strncpy(bookauthor, author.c_str(), 29);
-	bookauthor[29] = '\0';
+	strncpy(bookauthor, author.c_str(), 30);
+	bookauthor[30] = '\0';
 	
-	strncpy(booktitle, title.c_str(), 59);
-	booktitle[59] = '\0';
+	strncpy(booktitle, title.c_str(), 60);
+	booktitle[60] = '\0';
 	
 	LongToCharPtr(getSerial(), bookopen+1);
 	ShortToCharPtr(pages.size(), bookopen+7);
@@ -206,16 +204,11 @@ void cBook::openBookReadOnly(pClient client)
 	char booktitle[61];
 	char bookauthor[31];
 
-	uint16_t i;
-	for(i = 0; i < author.size() && i < 31; i++)
-		bookauthor[i] = author[i];
-	for(; i < 31; i++)
-		bookauthor[i] = '\0';
-
-	for(i = 0; i < title.size() && i < 61; i++)
-		booktitle[i] = title[i];
-	for(; i < 31; i++)
-		booktitle[i] = '\0';
+	strncpy(bookauthor, author.c_str(), 30);
+	bookauthor[30] = '\0';
+	
+	strncpy(booktitle, title.c_str(), 60);
+	booktitle[60] = '\0';
 
 	LongToCharPtr(getSerial(), bookopen+1);
 	ShortToCharPtr(pages.size(), bookopen+7);

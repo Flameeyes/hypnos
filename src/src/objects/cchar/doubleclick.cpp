@@ -22,10 +22,9 @@
 #include "menu.h"
 #include "logsystem.h"
 #include "globals.h"
-
 #include "basics.h"
-
 #include "cmds.h"
+#include "settings.h"
 
 /*!
 \brief single clicks over PC/NPCs
@@ -44,7 +43,7 @@ void cChar::singleClick( pClient client )
 		        if ( g_bByPass==true )
 			return;
 	        }
-                if (ServerScp::g_nShowPCNames || npc || getSerial() == clickedBy->getSerial32()) showLongName( clickedBy, false );
+                if ( nSettings::Server::shouldShowPCNames() || npc || getSerial() == clickedBy->getSerial32()) showLongName( clickedBy, false );
 	}
 	else
 	{
@@ -102,8 +101,9 @@ void cChar::doubleClick(pClient client, int keyboard)
 					else
 					{
 						clicker->sysmsg( TRANSLATE("You failed to snoop the pack animal.") );
-						clicker->IncreaseKarma( ServerScp::g_nSnoopKarmaLoss  );
-						clicker->modifyFame( ServerScp::g_nSnoopFameLoss );
+						clicker->IncreaseKarma( - nSettings::Skills::getSnoopKarmaLoss() );
+						clicker->modifyFame( - nSettings::Skills::getSnoopFameLoss() );
+						//!\TODO should investigate
 						clicker->setCrimGrey(ServerScp::g_nSnoopWillCriminal);
 						SetTimerSec( &(clicker->objectdelay), SrvParms->objectdelay+SrvParms->snoopdelay );
 					}

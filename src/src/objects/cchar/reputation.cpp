@@ -56,7 +56,7 @@ void cChar::makeCriminal()
 	{//Not an npc, not grey, not red
 		tempfx::add(this, this, tempfx::CRIMINAL, 0, 0, 0); //Luxor
 		if(::region[region].priv&0x01 && SrvParms->guardsactive) { //guarded
-			if (ServerScp::g_nInstantGuard == 1)
+			if ( nSettings::Server::hasInstantGuards() )
 				npcs::SpawnGuard( this, this, getPosition() ); // LB bugfix
 		}
 	}

@@ -9,38 +9,7 @@
 
 #include "common_libs.h"
 #include "skills.h"
-#include "basics.h"
-#include "itemid.h"
-#include "sndpkg.h"
-#include "srvparms.h"
-#include "amx/amxcback.h"
-#include "race.h"
-#include "magic.h"
-#include "network.h"
-#include "tmpeff.h"
-#include "addmenu.h"
-#include "scp_parser.h"
-#include "set.h"
-
-
-#include "inlines.h"
-#include "nox-wizard.h"
-#include "scripts.h"
-
-//<Luxor>: for skills implementation by small
-/*
-#undef AMXTASTEID
-#define AMXTASTEID "__nxw_sk_tasteid"
-#undef AMXANATOMY
-#define AMXANATOMY "__nxw_sk_anatomy"
-#undef AMXEVALINT
-#define AMXEVALINT "__nxw_sk_evint"
-*/
-#undef AMX_SKILLS_MAIN
-#define AMX_SKILLS_MAIN "__nxw_sk_main"
-//</Luxor>
-
-#include "debug.h"
+#include "settings.h"
 
 //int goldsmithing;
 //1=iron, 2=golden, 3=agapite, 4=shadow, 5=mythril, 6=bronze, 7=verite, 8=merkite, 9=copper, 10=silver
@@ -93,7 +62,7 @@ void Skills::Stealth(NXWSOCKET s)
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	if ( ! pc ) return;
 
-    if ( (pc->isMounting()) && (ServerScp::g_nStealthOnHorse==0) ) {
+    if ( pc->isMounting() && ! nSettings::Skills::canStealthOnHorse() ) {
         sysmessage(s,TRANSLATE("You can't stealth on horse!"));
         return;
     }
@@ -942,7 +911,7 @@ void Skills::AdvanceStats(CHARACTER s, int sk)
 //  int	*pi; // ptr to stat to be decreased
 	bool 	update 	= false;
 
-	if ( pc->statGainedToday <= ServerScp::g_nStatDailyLimit )
+	if ( pc->statGainedToday <= nSettings::Skills::getStatDailyLimit() )
 	{
 		bool strCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceStrength( sk ) : skillinfo[sk].st ) > (uint32_t)(rand() % mod);
     	bool dexCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceDexterity( sk ) : skillinfo[sk].dx ) > (uint32_t)(rand() % mod);

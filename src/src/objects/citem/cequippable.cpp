@@ -12,6 +12,7 @@
 
 #include "objects/citem/cequippable.h"
 #include "objects/cchar.h"
+#include "settings.h"
 
 cEquippable::cEquippable()
 	: cItem()
@@ -38,9 +39,35 @@ void cEquippable::setContainer(pObject obj)
 {
 	pBody body = NULL;
 	if ( (body = dynamic_cast<pBody>(obj)) )
-	{
-		findLayerFromID(getId());
-		body->setLayerItem(layer, this);
-	} else
+		body->setLayerItem(findLayerById(getId), this);
+	else {
+		layer = layNone;
 		cItem::setContainer(obj);
+	}
+}
+
+/*!
+\brief Double click on an equippable item
+\param client Client who performed the double click
+
+This function will check if the server requires equip on double click and acts
+as requested.
+*/
+void cEquippable::doubleClicked(pClient client)
+{
+	Layer lay = findLayerById(getId());
+	bool pass = nSettings::Actions::shouldEquipOnDClick() &&
+		// equip the item only if it is in the backpack of the player
+		getContainer() == client->currChar()->getBody()->getBackpack() &&
+		(lay != layBackpack && lay != layMount) &&
+		this != client->currChar()->getBody()->getLayerItem(lay);
+	
+	
+	if ( ! pass )
+	{
+		cItem::doubleClicked();
+		return;
+	}
+	
+	client->currChar()->getBody()->setLayerItem(lay, this);
 }
