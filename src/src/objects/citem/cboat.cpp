@@ -25,12 +25,23 @@ const uint8_t cBoat::ShipItems[4][6]=
  {0x85,0x84,0x8A,0x89,0x93,0x50}
 };
 
+/*!
+\brief Get the boat from one of its planks
+\param pl Plank to search the boat of
+\return The boat of the given plank or NULL if not found
+
+This function gets the multi of the item, and casts it to a pBoat, clenaing up
+different type of multis (like houses and other multis), returing so a perfect
+pointer to the pBoat instasnce the plank is.
+
+This anyway should be done directly in the caller functions, so I think this
+should be removed in the future.
+
+\deprecated This function is merely a dynamic_cast, so we should no more use it
+*/
 pBoat cBoat::searchByPlank(pItem pl)
 {
-	if ( ! pl )
-		return NULL;
-	
-	return dynamic_cast<pBoat>( cSerializable::findBySerial(pl->more1.more) );
+	return dynamic_cast<pBoat>( pl->getMulti() );
 }
 
 cBoat::cBoat() : cItem()

@@ -22,8 +22,10 @@ warnings/errors/issues.
 
 #ifdef __GNUC__
 	#define PACK_NEEDED __attribute__ ((packed))
+	#define DEPRECATED __attribute__ ((deprecated))
 #else
 	#define PACK_NEEDED
+	#define DEPRECATED
 	#define strncasecmp strncmpi
 	#define strcasecmp strcmpi
 #endif

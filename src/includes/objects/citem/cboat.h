@@ -16,8 +16,21 @@
 \class cBoat cboat.h "objects/citem/cboat.h"
 \brief Boat
 
-This class represent and manages the boats, taking care of turn them and
-get the commands.
+The boats are special cases in multi items, like the houses. In this case,
+anyway, we have a lot more code regarding the items created with the multi
+itself.
+
+This because unlike an house, a boat can turn in four different directions,
+so we should change and move the items with it.
+
+And also we must provide 4 special multi items: the two planks (left and right)
+the tillerman, and the hold (the container in the front of the boat).
+
+\todo Need a way to recalc the char and items position when turning, before call
+the cMulti::MoveTo() function
+
+\see cMulti
+\see cHouse
 */
 class cBoat : public cMulti
 {
@@ -25,10 +38,19 @@ public:
 	cBoat();
 	cBoat(uint32_t nserial);
 
+//@{
+/*!
+\name Movement
+\brief Movement and turning functions
+
+A boat, obviously, move itself, so we have different functions to moves the
+boat and turn it, with various checks.
+*/
 	void step(pClient client, uint8_t dir = 0xFF);
 	void turn(bool turnRight);
+//@}
 	
-	static pBoat searchByPlank(pItem pl);
+	static pBoat searchByPlank(pItem pl) DEPRECATED;
 	
 protected:
 	pItem plankRight;	//!< Right plank
