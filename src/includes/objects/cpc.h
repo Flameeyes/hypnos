@@ -54,6 +54,8 @@ public:
 	{ /*tempfx::add(this, this, tempfx::GREY, 0, 0, 0, 0x7FFF);*/ }
         
 	void deadAttack (pChar victim);  //if dead and trying to attack someone...
+	
+	bool isGM();	//!< Returns true if is a gm or gm-like player
 
 //@{
 /*!

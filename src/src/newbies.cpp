@@ -20,7 +20,6 @@
 
 #include <mxml.h>
 #include <fstream>
-#include <assert.h>
 
 namespace nNewbies {
 	//@{

@@ -17,11 +17,11 @@ speech mode:
 0x00 - Regular
 0x01 - Broadcast
 0x02 - Emote (adds *'s as part of text)
-0x06 – Label (You see: )
+0x06  Label (You see: )
 0x07 - Emphasis (clears previous messages)
 0x08 - Whisper
-0x09 – Yell
-0x0a – spell
+0x09  Yell
+0x0a  spell
 */
 class cSpeech
 {
@@ -41,7 +41,7 @@ public:
 	char operator[](int i); 			//!< gets 8-bit ascii char in location "i" in either byteorder
 	cSpeech& operator= (std::string& s);		//!< Assignment operator from a non unicode string. Converts to 16bit-char and stores it
 	cSpeech& operator= (cSpeech& s);		//!< assignment operator (copy operator)
-	cSpeech(std:string& s); 			//!< non-unicode fill from string (defaults to packetByteorder = false)
+	cSpeech(std::string& s); 			//!< non-unicode fill from string (defaults to packetByteorder = false)
 	cSpeech(char* buffer, uint16_t size = 0);	//!< Unicode fill from packet buffer. Size is used only for not null-terminated strings, if it is 0 is ignored, else reads size bytes wherever \\0 is present or not. (defaults to packetByteorder = true)
 //@}
 

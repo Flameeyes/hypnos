@@ -18,11 +18,31 @@
 #include "common_libs.h"
 #include "enums.h"
 
+/*!
+\brief Position offsets
+
+This struct represent the offset of items in multi or to move a boat.
+The size of the offsets is of only a byte because we don't want multis bigger
+than 128 squares :)
+*/
+struct sPositionOffset {
+	int8_t x;	//!< X-coord offset
+	int8_t y;	//!< Y-coord offset
+	int8_t z;	//!< Z-coord offset
+	
+	sPositionOffset(int8_t ox = 0, int8_t oy = 0, int8_t oz = 0) :
+		x(ox), y(ox), z(oz)
+	{ }
+};
+
 //! Point in the map
 struct sPoint {
 	uint16_t x;
 	uint16_t y;
 	sPoint(uint16_t X = 0, uint16_t Y = 0) : x(X), y(Y) { }
+	
+	inline sPoint operator +(const sPositionOffset &b) const
+	{ return sPoint( x + b.x, y + b.y ); }
 };
 
 /*!
@@ -48,23 +68,6 @@ struct sRect {
 	sRect(uint16_t ulx, uint16_t uly, uint16_t brx, uint16_t bry);
 	
 	bool isInside(sPoint p) const;
-};
-
-/*!
-\brief Position offsets
-
-This struct represent the offset of items in multi or to move a boat.
-The size of the offsets is of only a byte because we don't want multis bigger
-than 128 squares :)
-*/
-struct sPositionOffset {
-	int8_t x;	//!< X-coord offset
-	int8_t y;	//!< Y-coord offset
-	int8_t z;	//!< Z-coord offset
-	
-	sPositionOffset(int8_t ox = 0, int8_t oy = 0, int8_t oz = 0) :
-		x(ox), y(ox), z(oz)
-	{ }
 };
 
 //! Represent a location on one map

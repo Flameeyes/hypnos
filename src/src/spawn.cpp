@@ -35,7 +35,7 @@ bool cSpawnArea::findValidLocation( sLocation& location )
 
 		location.x = RandomNum( where->second.x1, where->second.x2 );
 		location.y = RandomNum( where->second.y1, where->second.y2 );
-		location.z = mapElevation( location.x, location.y );
+		location.z = mapElevation( location );
 
 		if( canNpcWalkHere( location ) )
 			return true;

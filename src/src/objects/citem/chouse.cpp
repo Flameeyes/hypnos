@@ -7,7 +7,11 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "objects/citem/chouse.h"
+#include "objects/cnpc.h"
+#include "objects/cpc.h"
 #include "objects/cclient.h"
+#include "archetypes/generic.h"
+#include "map.h"
 
 /*!
 \brief Checks if a player is a Co-Owner of the house
@@ -81,7 +85,70 @@ bool cHouse::setStatus(pPC pc, PlayerStatus status)
 	
 	PSMap::iterator it = playerStatus.find(pc->getSerial());
 	if ( it != playerStatus.end() )
-		playerstatus.erase(it);
+		playerStatus.erase(it);
 	
 	return true;
+}
+
+/*!
+\brief Retrasform the house into a deed, redeeding also the vendors inside
+\param client Client who requested the redeed
+*/
+void cHouse::redeed(pClient client)
+{
+	pPC pc = NULL;
+	if ( ! client || ! ( pc = client->currChar() ) )
+		return;
+	
+	if ( owner != pc && ! pc->isGM() )
+		return;
+
+	pItem deed = nArchetypes::createItem( deedID );
+	if ( ! deed ) return;
+	deed->setContainer( pc->getBody()->getBackpack() );
+	deed->Refresh();
+	
+	for( CharSList::iterator it = chars.begin(); it != chars.end(); it++ )
+	{
+		//!\todo Change all this to a %redeed() like function for vendors when new vendor system is done
+		assert(*it);
+		pNPC npc = dynamic_cast<pNPC>(*it);
+		if (	! npc || 
+			! getArea().isInside( npc->getBody()->getPosition() ) ||
+			npc->getAIType() != cNPC::NPCAI_PLAYERVENDOR
+			)
+				continue;
+		
+		pItem vdeed = nArchetypes::createItem("item_deed_vendor");
+		if ( ! vdeed ) continue;
+		vdeed->setContainer( pc->getBody()->getBackpack() );
+		vdeed->setCurrentName("A vendor deed for %s", npc->getBody()->getCurrentName().c_str());
+		vdeed->Refresh();
+		
+		client->sysmessage("Packed up vendor %s.", npc->getBody()->getCurrentName().c_str());
+		
+		npc->Delete();
+	}
+	
+	killKeys();
+	client->sysmessage("All house items and keys removed.");
+	
+	client->sysmessage("Demolishing House %s", getCurrentName().c_str());
+	client->sysmessage("Converted into a %s.", deed->getCurrentName().c_str());
+
+	int8_t newz = mapElevation(pc->getBody()->getPosition());
+	pc->getBody()->setPositionZ(newz);
+	pc->getBody()->setPositionDZ(newz);
+	pc->teleport();
+	
+	Delete();
+	return;
+}
+
+/*!
+\brief Deletes the keys of a house
+\todo This function need to be wrote when the cKey class is done
+*/
+void cHouse::killKeys()
+{
 }

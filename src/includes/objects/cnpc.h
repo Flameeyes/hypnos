@@ -32,6 +32,27 @@ public:
 		evtNpcMax
 	};
 	
+	enum NpcAi
+	{
+		NPCAI_GOOD		= 0,
+		NPCAI_HEALER,
+		NPCAI_EVIL,
+		NPCAI_EVILHEALER,
+		NPCAI_TELEPORTGUARD,
+		NPCAI_BEGGAR,
+		NPCAI_ORDERGUARD,
+		NPCAI_CHAOSGUARD,
+		NPCAI_BANKER,
+		NPCAI_GUARD,
+		NPCAI_TAMEDDRAGON,
+		NPCAI_ATTACKSRED,
+		NPCAI_PLAYERVENDOR	= 17,
+		NPCAI_PETGUARD		= 32,
+		NPCAI_MADNESS		= 50,
+		NPCAI_DRAGON2		= 60,
+		NPCAI_DRAGON1		= 96
+	};
+	
 	cNPC();
 	cNPC(uint32_t serial);
 	virtual ~cNPC();
@@ -141,9 +162,13 @@ public:
 /*!
 \name AI
 */
-private:
+protected:
 	void beginCasting(pChar target, magic::SpellId spell);
 	void checkAI();
+	NpcAi ai;
+public:
+	NpcAi getAIType() const
+	{ return ai; }
 //@}
 };
 

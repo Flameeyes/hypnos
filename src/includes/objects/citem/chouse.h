@@ -64,6 +64,13 @@ protected:
 	
 	pPC owner;		//!< Owner of the house
 	PSMap playerStatus;	//!< Status of registered players
+	
+	/*!
+	\brief House's deed's identifier
+	\todo Change this to an archetype pointer
+	*/
+	std::string deedID;
+	
 public:
 	//! Gets the house's owner
 	pPC getOwner() const
@@ -78,6 +85,9 @@ public:
 	{ return isCoowner(pc) || isFriend(pc); }
 	
 	bool setStatus(pPC pc, PlayerStatus status);
+	
+	void redeed(pClient client);
+	void killKeys();
 };
 
 #endif

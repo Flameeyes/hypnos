@@ -62,6 +62,10 @@ public:
 	void setPositionZ(int8_t z)
 	{ setPosition( sLocation(position.x, position.y, z) ); }
 
+	//! Sets the position's Z-coordinate
+	void setPositionDZ(int8_t dz)
+	{ setPosition( sLocation(position.x, position.y, position.z, dz) ); }
+
 	inline const sLocation getOldPosition() const
 	{ return old_position; }
 

@@ -84,6 +84,8 @@ warnings/errors/issues.
 #include <utility>
 #include <set>
 
+#include <assert.h>
+
 #ifdef __GNUC__
 	#include <ext/slist>
 	#include <ext/hash_map>

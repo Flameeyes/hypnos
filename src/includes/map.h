@@ -41,7 +41,7 @@ bool lineOfSight( sLocation pos1, sLocation pos2 );
 bool canNpcWalkHere( sLocation pos );
 int8_t staticTop( sLocation pos );
 int8_t tileHeight( uint16_t id );
-int8_t mapElevation( uint32_t x, uint32_t y );
+int8_t mapElevation( sPoint p );
 int8_t dynamicElevation( sLocation pos );
 int8_t getHeight( sLocation pos );
 

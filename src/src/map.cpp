@@ -285,10 +285,10 @@ int8_t tileHeight( uint16_t id )
 /*!
 \author Luxor
 */
-int8_t mapElevation( uint32_t x, uint32_t y )
+int8_t mapElevation( sPoint p )
 {
 	map_st m;
-	if ( !data::seekMap( x, y, m ) )
+	if ( !data::seekMap( p.x, p.y, m ) )
 		return illegal_z;
 	return m.z;
 }
@@ -296,15 +296,15 @@ int8_t mapElevation( uint32_t x, uint32_t y )
 /*!
 \author Luxor
 */
-int8_t mapAverageElevation( uint32_t x, uint32_t y )
+int8_t mapAverageElevation( sPoint p )
 {
-	int8_t map1_z = mapElevation( x, y );
+	int8_t map1_z = mapElevation( p );
 	if ( map1_z == illegal_z )
 		return illegal_z;
 
-	int8_t map2_z = mapElevation( x + 1, y );
-	int8_t map3_z = mapElevation( x, y + 1 );
-	int8_t map4_z = mapElevation( x + 1, y + 1 );
+	int8_t map2_z = mapElevation( p + sPositonOffset(1,0) );
+	int8_t map3_z = mapElevation( p + sPositonOffset(0,1) );
+	int8_t map4_z = mapElevation( p + sPositonOffset(1,1) );
 	int8_t z;
 
 	if ( abs( map1_z - map4_z ) <= abs( map2_z - map3_z ) ) {
