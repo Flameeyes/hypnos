@@ -8,17 +8,22 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#include "libhypnos/cvariant.h"
 #include "extras/loginserver.h"
 #include "logsystem.h"
 
 #include <mxml.h>
-#include <netdb.h>
 #include <wefts_mutex.h>
+
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 /*!
 \brief Loads Login Servers List data from loginserver.xml configuration file.
 */
-void nMOTD::loadServers()
+void nLoginServer::loadServers()
 {
 	servers.clear();
 	ConOut("Loading login server data...\t\t");
@@ -64,12 +69,12 @@ restore UDP queries.
 \note This function is thread-safe, mutexed because \c gethostbyname() function
 	may return pointer to static data which can be overwritten.
 */
-uint32_t nMOTD::sServer::getIPAddress()
+uint32_t nLoginServer::sServer::getIPAddress() const
 {
 	// Mutex used to prevent gethostbyname() returned pointer to be
 	// overwritten by new calls.
 	static Wefts::Mutex m;
-	m.acquire();
+	m.lock();
 	
 	struct hostent *ret = gethostbyname(hostname.c_str());
 	
@@ -78,29 +83,28 @@ uint32_t nMOTD::sServer::getIPAddress()
 		{
 		case HOST_NOT_FOUND:
 			LogWarning("Hostname %s not found. Returning invalid IP.", hostname.c_str());
-			m.release();
+			m.unlock();
 			return 0;
 		case NO_ADDRESS:
-		case NO_DATA:
 			LogWarning("Hostname %s is valid, but no IP address is defined for it. Returning invalid IP.", hostname.c_str());
-			m.release();
+			m.unlock();
 			return 0;
 		case NO_RECOVERY:
 		case TRY_AGAIN:
 		default:
 			LogWarning("Error connecting to name server. Returning invalid IP.");
-			m.release();
+			m.unlock();
 			return 0;
 		}
 
-	static struct inet_addr addr;
-	if ( ! inet_ntoa(ret->h_addr_list[0], &addr) )
+	static struct in_addr addr;
+	if ( ! inet_aton(ret->h_addr_list[0], &addr) )
 	{
 		LogWarning("Error resolving the address. Returning invalid IP.");
-		m.release();
+		m.unlock();
 		return 0;
 	}
 	
-	m.release();
+	m.unlock();
 	return addr.s_addr;
 }
