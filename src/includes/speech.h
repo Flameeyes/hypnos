@@ -72,7 +72,7 @@ public:
 
 };
 
-void responsevendor(pClient client, int vendor);
+void responsevendor(pClient client, pChar pc_vendor);
 void char2wchar (const char* str);
 
 #endif

@@ -76,7 +76,7 @@ public:
 	void GumpInput(int s, int type, int index, char *text);
 	void GumpChoice(pClient client, int main, int sub);
 	int SearchByStone(int s);
-	void Title(int s, int player2);
+	void Title(int s, pChar player2);
 	void Read(int guildnumber);
 	void Write(FILE *wscfile);
 	void CheckConsistancy();

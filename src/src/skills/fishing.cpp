@@ -24,14 +24,14 @@
 TIMERVAL Fishing::basetime = FISHINGTIMEBASE;
 TIMERVAL Fishing::randomtime = FISHINGTIMER;
 
-int SpawnFishingMonster(pChar pc, char* cScript, char* cList, char* cNpcID)
+pNPC SpawnFishingMonster(pChar pc, char* cScript, char* cList, char* cNpcID)
 {
 	/*This function gets the random monster number from
 	the script and list specified.
 	npcs::AddRespawnNPC passing the new number*/
 
 	if (region[pc->region].priv&0x01 && SrvParms->guardsactive) //guarded
-		return INVALID;
+		return NULL;
 
 	char sect[512];
 	int i=0,item[256]={0};
@@ -41,7 +41,7 @@ int SpawnFishingMonster(pChar pc, char* cScript, char* cList, char* cNpcID)
 	
 	sprintf(sect, "SECTION %s %s", cList, cNpcID);
     iter = Scripts::Fishing->getNewIterator(sect);
-    if (iter==NULL) return INVALID;
+    if (iter==NULL) return NULL
 
 	int loopexit=0;
  	do
@@ -61,10 +61,10 @@ int SpawnFishingMonster(pChar pc, char* cScript, char* cList, char* cNpcID)
   		i=rand()%(i);
 		if(item[i]!=-1)
 		{
-			return DEREF_pChar(npcs::AddRespawnNPC(pc,item[i]));
+			return npcs::AddRespawnNPC(pc,item[i]);
 		}
 	}
-	return INVALID;
+	return NULL;
 }
 
 int SpawnFishingItem(NXWSOCKET  s,int nInPack, char* cScript, char* cList, char* cItemID)

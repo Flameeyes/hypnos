@@ -195,7 +195,7 @@ void cPC::heartbeat()
 		timer = SrvParms->bg_sounds * 100;
 		if ( !timer ) ++timer;
 		if( rand() % timer == timer / 2 )
-			bgsound( DEREF_pChar(this) );
+			bgsound( this );
 	}
 
 	if( TIMEOUT( spiritspeaktimer ) && spiritspeaktimer > 0 )

@@ -1151,7 +1151,7 @@ bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
 
 	if (!pTC) return true;
 
-	if (pc_currchar->getSerial() != pTC->getSerial() /*DEREF_pChar(pTC)!=cc*/)
+	if (pc_currchar->getSerial() != pTC->getSerial())
 	{
 		if (pTC->npc)
 		{
@@ -2716,7 +2716,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 
 		if(abs(pc_found->getPosition().z-pc->getPosition().z) >3 ) return;
 
-		responsevendor(socket, DEREF_pChar(pc_found));
+		responsevendor(socket, pc_found);
 
 		cScpIterator* iter = NULL;
 		char script1[1024];

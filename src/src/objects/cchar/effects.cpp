@@ -143,7 +143,7 @@ void cChar::staticFX(uint16_t id, uint8_t speed, uint8_t loop, ParticleFx* part)
 		if (speed<=-1) speed = part->effect[2];
 		if (loop<=-1) loop = part->effect[3];
 	}
-	staticeffect(DEREF_pChar(this), id >> 8, id & 0xFF, speed, loop, part!=NULL, part);
+	staticeffect(this, id, speed, loop, part!=NULL, part);
 }
 
 /*!

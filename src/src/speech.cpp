@@ -880,10 +880,10 @@ void PlVGetgold(NXWSOCKET s, pChar pc_vendor)//PlayerVendors
 		pc_vendor->talk(s,"I don't work for you!",0);
 }
 
-void responsevendor(NXWSOCKET  s, SERIAL vendor)
+void responsevendor(NXWSOCKET  s, pChar pc_vendor)
 {
 	pChar pc_currchar = cSerializable::findCharBySerial(currchar[s]);
-	pChar pc_vendor = cSerializable::findCharBySerial(vendor);
+
 	if ( ! pc_currChar || ! pc_vendor ) return;
 
 	static char buffer1[MAXBUFFER_REAL]; // static becasue maxbuffer_ral close to stack limit of win-machines

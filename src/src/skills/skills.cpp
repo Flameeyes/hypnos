@@ -492,12 +492,11 @@ void Skills::PotionToBottle( pChar pc, pItem pi_mortar )
     pi_mortar->type=0;
 }
 
-bool Skills::AdvanceSkill(pChar pc /*uint32_t s*/, int sk, char skillused)
+bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
 {
 	if ( sk < 0 || sk >= skTrueSkills ) //Luxor
 		return 0;
 
-//	pChar pc = cSerializable::findCharBySerial(s);
 	if ( ! pc ) return 0;
 	
 	int a,ges=0,d=0;

@@ -1332,7 +1332,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 				m_pcCurrChar->baseskill[p] = 1000;
 			}
 			} else {
-						Skills::AdvanceSkill(currchar[m_socket], p, 1);
+						Skills::AdvanceSkill(m_pcCurrChar, p, 1);
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////

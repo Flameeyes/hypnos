@@ -135,13 +135,11 @@ uint16_t itemsfx(uint16_t item)
 /*!
 \brief Plays background sounds of the game
 \author LB & Duke
-\param s the character index
-\todo convert to pChar or add to cChar class
+\param pc_curr Playing Character
 */
-void bgsound(SERIAL s)
+void bgsound(pChar pc_curr)
 {
-    pChar pc_curr=cSerializable::findCharBySerial(s);
-	VALIDATEPC(pc_curr);
+	if(!pc_curr) return;
 
 	pChar inrange[15];
 	int y=0;
@@ -604,12 +602,10 @@ void itemtalk(pItem pi, char *txt)
 // simply dont set them in that case
 // the last parameter is for particlesystem optimization only (dangerous). don't use unless you know 101% what you are doing.
 
-void staticeffect(SERIAL player, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop,  bool UO3DonlyEffekt, ParticleFx *sta, bool skip_old)
+void staticeffect(pChar player, uint16_t eff, unsigned char speed, unsigned char loop,  bool UO3DonlyEffekt, ParticleFx *sta, bool skip_old)
 {
-	pChar pc=cSerializable::findCharBySerial(player);
 	if ( ! pc ) return;
 
-	uint16_t eff = (eff1<<8)|(eff2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
 
 	 int a0,a1,a2,a3,a4;

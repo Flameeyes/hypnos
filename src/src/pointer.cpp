@@ -437,7 +437,7 @@ namespace pointers {
 						pMounted[pc->getOwnerSerial32()]=pc;
 
 					pChar own=cSerializable::findCharBySerial(pc->getOwnerSerial32());
-					pc->setOwnerSerial32( DEREF_pChar(own), true );
+					pc->setOwnerSerial32( own->getSerial(), true );
 				}
 			}
 			else {
@@ -447,7 +447,7 @@ namespace pointers {
 				updContMap(pi);
 
 				pChar own=cSerializable::findCharBySerial(pi->getOwnerSerial32());
-				pi->setOwnerSerial32( DEREF_pChar(own), true );
+				pi->setOwnerSerial32( own->getSerial(), true );
 			}
 		}
 

@@ -1292,7 +1292,7 @@ bool cChar::checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise)
 	{
 		if (bRaise)
 		{
-			if(Skills::AdvanceSkill(DEREF_pChar(this), sk, skillused))
+			if(Skills::AdvanceSkill(this, sk, skillused))
 			{
 				Skills::updateSkillLevel(this, sk);
 				if(!npc && IsOnline())
@@ -2382,7 +2382,7 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 		}
 	}
 
-	Guilds->Title( socket, DEREF_pChar(this) );
+	Guilds->Title( socket, this );
 
 	uint16_t color;
 	int32_t guild = Guilds->Compare(showToWho,this);

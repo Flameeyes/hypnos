@@ -1616,13 +1616,12 @@ cGuilds::cGuilds()
 // of clicked character, name color gets calculated from the guild relationship of both players
 // Called by: textflags()
 
-void cGuilds::Title(int s,int player2)
+void cGuilds::Title(int s,pChar pc2)
 {
 	char title[150];
 	char abbreviation[5];
 	char guildtype[10];
 
-	pChar pc2= cSerializable::findCharBySerial( player2 );
 	if ( ! pc2 ) return;
 
 	if (pc2->GetGuildNumber()<0 || pc2->GetGuildNumber()>=MAXGUILDS) return;

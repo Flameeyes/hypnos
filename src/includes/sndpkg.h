@@ -50,7 +50,7 @@ void itemtalk( pItem pi, char *txt);
 	//!< Item "speech"
 
 
-void staticeffect (int/*SERIAL*/ player, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false );
+void staticeffect (pChar player, uint16_t effect, unsigned char speed, unsigned char loop, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false );
 void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false);
 
 void staticeffect3(Location pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode);
@@ -82,7 +82,7 @@ uint16_t itemsfx(uint16_t item);
 
 void weather(pClient client, unsigned char bolt);
 void wornitems(pClient client, pChar pc);
-void bgsound(pClient client);
+void bgsound(pChar pc);
 void pweather(pClient client);
 
 
