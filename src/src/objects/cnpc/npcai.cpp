@@ -288,7 +288,7 @@ void cNPC::checkAI()
 		case NPCAI_TELEPORTGUARD:
 		case NPCAI_GUARD : 		// in world guards, they dont teleport out...Ripper
 		{
-			if (war || !(region[region].priv & RGNPRIV_GUARDED))	// this region is not guarded
+			if (war || !(region[region].priv & rgnFlagGuarded))	// this region is not guarded
 				return;
 			//
 			// Sparhawk	Check wether a guard should continue walking towards the character who called him

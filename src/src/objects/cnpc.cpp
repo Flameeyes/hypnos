@@ -282,7 +282,7 @@ bool cNPC::updateFlag()
 			}
 			else if (server_data.animals_guarded == 1 && npcaitype == NPCAI_GOOD && !owner)
 			{
-				if (region[region].priv & RGNPRIV_GUARDED)	// in a guarded region, with guarded animals, animals == blue
+				if (region[region].priv & rgnFlagGuarded)	// in a guarded region, with guarded animals, animals == blue
 				{
 					if( !IsInnocent() )
 						flagHasChanged = true;

@@ -273,7 +273,7 @@ public:
 	{ return flags & flagDead; }
 
 	inline const bool inGuardedArea() const
-	{ return false/*::region[region].priv & RGNPRIV_GUARDED*/;
+	{ return false/*::region[region].priv & rgnFlagGuarded*/;
 	//!\todo need to fix this
 	}
 

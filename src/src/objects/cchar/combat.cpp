@@ -1145,7 +1145,7 @@ void cChar::attackStuff(pChar victim)
 		}
 	}
 
-	if ((region[ victim->region].priv & RGNPRIV_GUARDED) && (SrvParms->guardsactive))
+	if ((region[ victim->region].priv & rgnFlagGuarded) && (SrvParms->guardsactive))
 	{
 		if (isGrey())
 			setGrey();

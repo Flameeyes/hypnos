@@ -292,10 +292,10 @@ void checkregion(pChar pc)
 				client->sysmessage("You have entered %s.", region[calcreg].name);
 			}
 			j=strcmp(region[calcreg].guardowner, region[pc->region].guardowner);
-			if ( (region[calcreg].priv & RGNPRIV_GUARDED)!=(region[pc->region].priv & RGNPRIV_GUARDED) ||
-				(region[calcreg].priv & RGNPRIV_GUARDED && j))
+			if ( (region[calcreg].priv & rgnFlagGuarded)!=(region[pc->region].priv & rgnFlagGuarded) ||
+				(region[calcreg].priv & rgnFlagGuarded && j))
 			{
-				if (region[calcreg].priv & RGNPRIV_GUARDED)
+				if (region[calcreg].priv & rgnFlagGuarded)
 				{
 					if (region[calcreg].guardowner[0]==0)
 						client->sysmessage("You are now under the protection of the guards.");

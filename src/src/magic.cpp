@@ -194,7 +194,7 @@ static inline bool checkTownLimits(SpellId spellnum, pChar pa, pChar pd, int spe
 {
 	if(!pd) return false;
 
-	if ((g_Spells[spellnum].attackSpell)&&(SrvParms->guardsactive)&&(region[pd->region].priv&RGNPRIV_GUARDED))
+	if ((g_Spells[spellnum].attackSpell)&&(SrvParms->guardsactive)&&(region[pd->region].priv&rgnFlagGuarded))
 	{
 		if (spellflags&SPELLFLAG_IGNORETOWNLIMITS) return false;
 		if (areaspell) return false; // do *NOT* change order of these lines!! :]
@@ -866,7 +866,7 @@ static inline int spellTargetType(SpellId spellnum)
 		default:
 			return TARGTYPE_NONE;
 	}
-}
+} PURE;
 
 
 /*!
@@ -1167,7 +1167,7 @@ void castFieldSpell( pChar pc, sPosition pos, int spellnumber)
 	if ((R<=INVALID)||(R>255)) R = 255;
 
 
-	if ((region[R].priv&RGNPRIV_GUARDED)&&(SrvParms->guardsactive)) return;
+	if ((region[R].priv&rgnFlagGuarded)&&(SrvParms->guardsactive)) return;
 
 	for( j=0; j<=fieldLen; j++ )
 	{

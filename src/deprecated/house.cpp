@@ -185,7 +185,7 @@ void buildhouse( pClient ps, pTarget t )
 		looptimes=0;
 		if(!pc->IsGM() && SrvParms->houseintown==0)
 		{
-			if ((region[pc->region].priv & RGNPRIV_GUARDED) && itemById::IsHouse(id) ) // popy
+			if ((region[pc->region].priv & rgnFlagGuarded) && itemById::IsHouse(id) ) // popy
 			{
 			    client->sysmessage(" You cannot build houses in town!");
 			    return;
@@ -247,7 +247,6 @@ void buildhouse( pClient ps, pTarget t )
 			}
 		}
 
-		//Boats ->
 		if((id % 256)>=18)
 			sprintf(temp,"%s's house",pc->getCurrentName().c_str());//This will make the little deed item you see when you have showhs on say the person's name, thought it might be helpful for GMs.
 		else
@@ -286,16 +285,16 @@ void buildhouse( pClient ps, pTarget t )
 			return;//If there's no extra items, we don't really need a key, or anything else do we? ;-)
 		}
 
-		if(boat) //Boats
+		if(boat)
 		{
-			if(!Boats->Build(s,pHouse, id%256/*id2*/))
+			if(!Build(s,pHouse, id%256/*id2*/))
 			{
 				pHouse->Delete();
 				return;
 			}
 		}
 
-		if (i)//Boats->.. Moved from up there ^
+		if (i)
 		{
 			pItem pFx1 = MAKE_ITEM_REF( pc->fx1 );
 			if ( pFx1 != 0 )

@@ -104,7 +104,8 @@ static void item_char_test()
 	{
 		uint32_t ser=objs.getSerial();
 
-		if( cSerializable::isItemSerial( ser ) ) {
+		if( cSerializable::isItemSerial( ser ) )
+		{
 
 			pItem pi=(pItem)(objs.getObject() );
 
@@ -129,8 +130,7 @@ static void item_char_test()
 				pi->setOwner(NULL);
 			}
 
-		}
-		else {
+		} else {
 			pChar p_pet = (pChar)(objs.getObject());
 
 			if (p_pet->isStabled())
@@ -155,7 +155,6 @@ extern "C" void breakOnFirstFuncz();
 
 /*!
 \brief facilitate console control. SysOp keys and localhost controls
-\author ?
 */
 void checkkey ()
 {
@@ -956,7 +955,6 @@ void StartClasses()
 	// Classes nulled now, lets get them set up :)
 	cwmWorldState=new CWorldMain;
 	mapRegions=new cRegion;
-	Boats=new cBoatOLD;
 
 	Network=new cNetwork;
 	Spawns=new cSpawns;
@@ -970,7 +968,6 @@ void DeleteClasses()
 {
 	delete cwmWorldState;
 	delete mapRegions;
-	delete Boats;
 
 	delete Network;
 	delete Spawns;

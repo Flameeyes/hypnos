@@ -158,10 +158,10 @@ enum { spawn_script = 20, NUM_SCRIPTS = 32};
 /*!
 \name Region privs
 */
-static const uint8_t RGNPRIV_GUARDED = 0x01;		//!< The region is guarded
-static const uint8_t RGNPRIV_MARKALLOWED = 0x02;	//!< Marking rule is allowed
-static const uint8_t RGNPRIV_GATEALLOWED = 0x04;	//!< Gates are allowed
-static const uint8_t RGNPRIV_RECALLALLOWED = 0x08;	//!< Recall is allowed
+static const uint8_t rgnFlagGuarded = 0x01;		//!< The region is guarded
+static const uint8_t rgnFlagMarkAllowed = 0x02;	//!< Marking rule is allowed
+static const uint8_t rgnFlagGateAllowed = 0x04;	//!< Gates are allowed
+static const uint8_t rgnFlagRecallAllowed = 0x08;	//!< Recall is allowed
 //@}
 
 //! Stat types
