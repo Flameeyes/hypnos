@@ -26,7 +26,7 @@ class cPacketSend
 protected:
 	uint8_t *buffer;	//!< Pointer to the buffer
 	uint16_t length;	//!< Length of the buffer
-	
+
 	cPacketSend(uint8_t *aBuffer, uint16_t aLenght)
 	{ buffer = aBuffer; length = aLenght; }
 
@@ -82,6 +82,30 @@ public:
 
 	void prepare();
 };
+
+
+/*!
+\brief Sends to client info on item on the ground
+\author Chronodt
+\note packet 0x1a
+*/
+
+
+class cPacketSendObjectInformation : public cPacketSend
+{
+protected:
+	pItem item;	//!< Item
+public:
+	/*!
+	\param i item
+	*/
+	inline cPacketSendObjectInformation(pItem i) :
+		cPacketSend(NULL, 0), item(i)
+	{ }
+
+	void prepare();
+};
+
 
 /*!
 \brief cChar::action() packet

@@ -352,7 +352,7 @@ void senditem(pItem pi) // Shows items to client (on the ground or inside contai
 		}
 	}
 	else
-	if( pc->hasInRange(pi, visualRange) ) //we must check on client's selected visual range for items to send (see packet 0xc8
+	if( pc->hasInRange(pi, visualRange) ) //we must check on client's selected visual range for items to send (see packet 0xc8)
 	{
 		Location pos = pi->getPosition();
 
