@@ -12,6 +12,8 @@
 
 #include "libhypnos/cvariant.h"
 
+#define throw_if_not_int case isNotInt: throw eInvalidInteger(this);
+
 namespace nLibhypnos {
 
 //! Inline function to recalc the uint size
@@ -98,8 +100,8 @@ void cVariant::clear()
 			case is8:
 				delete reinterpret_cast<uint8_t*>(pointer);
 				break;
-			case isNotInt:
-				throw eInvalidInteger(this);
+			
+			throw_if_not_int
 		};
 		pointer = NULL;
 		break;
@@ -119,8 +121,8 @@ void cVariant::clear()
 			case is8:
 				delete reinterpret_cast<int8_t*>(pointer);
 				break;
-			case isNotInt:
-				throw eInvalidInteger(this);
+			
+			throw_if_not_int
 		};
 		pointer = NULL;
 		break;
@@ -202,6 +204,8 @@ cVariant &cVariant::operator =(const uint64_t &aval)
 	case is8:
 		pointer = new uint8_t(aval & 0xFF);
 		break;
+	
+	throw_if_not_int
 	}
 	
 	assignedType = vtUInt;
@@ -238,6 +242,8 @@ cVariant &cVariant::operator =(const int64_t &aval)
 	case is8:
 		pointer = new int8_t(aval & 0xFF);
 		break;
+	
+	throw_if_not_int
 	}
 	
 	assignedType = vtSInt;
@@ -533,6 +539,8 @@ std::string cVariant::toString(bool *result) const
 		case is8:
 			asprintf(&tmp, "%hhi", *(reinterpret_cast<int8_t*>(pointer)));
 			break;
+		
+		throw_if_not_int
 		}
 		std::string ret(tmp);
 		free(tmp);
@@ -555,6 +563,8 @@ std::string cVariant::toString(bool *result) const
 		case is8:
 			asprintf(&tmp, "%hhu", *(reinterpret_cast<uint8_t*>(pointer)));
 			break;
+		
+		throw_if_not_int
 		}
 		std::string ret(tmp);
 		free(tmp);
@@ -601,6 +611,8 @@ bool cVariant::toBoolean(bool *result) const
 			return *(reinterpret_cast<uint16_t*>(pointer));
 		case is8:
 			return *(reinterpret_cast<uint8_t*>(pointer));
+		
+		throw_if_not_int
 		}
 	case vtSInt:
 		switch(integerSize)
@@ -613,6 +625,8 @@ bool cVariant::toBoolean(bool *result) const
 			return *(reinterpret_cast<int16_t*>(pointer));
 		case is8:
 			return *(reinterpret_cast<int8_t*>(pointer));
+		
+		throw_if_not_int
 		}
 	case vtPChar:
 	case vtPItem:
@@ -718,6 +732,8 @@ uint64_t cVariant::toUInt64(bool *result) const
 		case is8:
 			*result = true;
 			return *(reinterpret_cast<uint8_t*>(pointer));
+		
+		throw_if_not_int
 		}
 	case vtSInt:
 		switch(integerSize)
@@ -734,6 +750,8 @@ uint64_t cVariant::toUInt64(bool *result) const
 		case is8:
 			*result = true;
 			return abs(*(reinterpret_cast<int8_t*>(pointer)));
+		
+		throw_if_not_int
 		}
 	default:
 		if ( result ) *result = false;
@@ -775,6 +793,8 @@ uint32_t cVariant::toUInt32(bool *result) const
 		case is8:
 			*result = true;
 			return *(reinterpret_cast<uint8_t*>(pointer));
+		
+		throw_if_not_int
 		}
 	case vtSInt:
 		switch(integerSize)
@@ -794,6 +814,8 @@ uint32_t cVariant::toUInt32(bool *result) const
 		case is8:
 			*result = true;
 			return abs(*(reinterpret_cast<int8_t*>(pointer)));
+		
+		throw_if_not_int
 		}
 	default:
 		if ( result ) *result = false;
@@ -842,6 +864,8 @@ uint16_t cVariant::toUInt16(bool *result) const
 		case is8:
 			*result = true;
 			return *(reinterpret_cast<uint8_t*>(pointer));
+		
+		throw_if_not_int
 		}
 	case vtSInt:
 		switch(integerSize)
@@ -864,6 +888,8 @@ uint16_t cVariant::toUInt16(bool *result) const
 		case is8:
 			*result = true;
 			return abs(*(reinterpret_cast<int8_t*>(pointer)));
+		
+		throw_if_not_int
 		}
 	default:
 		if ( result ) *result = false;
@@ -915,6 +941,8 @@ uint8_t cVariant::toUInt8(bool *result) const
 		case is8:
 			*result = true;
 			return *(reinterpret_cast<uint8_t*>(pointer));
+		
+		throw_if_not_int
 		}
 	case vtSInt:
 		switch(integerSize)
@@ -940,6 +968,8 @@ uint8_t cVariant::toUInt8(bool *result) const
 		case is8:
 			*result = true;
 			return abs(*(reinterpret_cast<int8_t*>(pointer)));
+		
+		throw_if_not_int
 		}
 	default:
 		if ( result ) *result = false;
@@ -978,6 +1008,8 @@ int64_t cVariant::toSInt64(bool *result) const
 		case is8:
 			*result = true;
 			return *(reinterpret_cast<int8_t*>(pointer));
+		
+		throw_if_not_int
 		}
 	case vtUInt:
 		switch(integerSize)
@@ -997,6 +1029,8 @@ int64_t cVariant::toSInt64(bool *result) const
 		case is8:
 			*result = true;
 			return *(reinterpret_cast<uint8_t*>(pointer));
+		
+		throw_if_not_int
 		}
 	default:
 		if ( result ) *result = false;
@@ -1038,6 +1072,8 @@ int32_t cVariant::toSInt32(bool *result) const
 		case is8:
 			*result = true;
 			return *(reinterpret_cast<int8_t*>(pointer));
+		
+		throw_if_not_int
 		}
 	case vtUInt:
 		switch(integerSize)
@@ -1060,6 +1096,8 @@ int32_t cVariant::toSInt32(bool *result) const
 		case is8:
 			*result = true;
 			return *(reinterpret_cast<uint8_t*>(pointer));
+		
+		throw_if_not_int
 		}
 	default:
 		if ( result ) *result = false;
@@ -1104,6 +1142,8 @@ int16_t cVariant::toSInt16(bool *result) const
 		case is8:
 			*result = true;
 			return *(reinterpret_cast<int8_t*>(pointer));
+		
+		throw_if_not_int
 		}
 	case vtUInt:
 		switch(integerSize)
@@ -1130,6 +1170,8 @@ int16_t cVariant::toSInt16(bool *result) const
 		case is8:
 			*result = true;
 			return *(reinterpret_cast<uint8_t*>(pointer));
+		
+		throw_if_not_int
 		}
 	default:
 		if ( result ) *result = false;
@@ -1177,6 +1219,8 @@ int8_t cVariant::toSInt8(bool *result) const
 		case is8:
 			*result = true;
 			return *(reinterpret_cast<int8_t*>(pointer));
+		
+		throw_if_not_int
 		}
 	case vtUInt:
 		switch(integerSize)
@@ -1205,6 +1249,8 @@ int8_t cVariant::toSInt8(bool *result) const
 			else
 				*result = true;
 			return *(reinterpret_cast<uint8_t*>(pointer)) & 0x7F;
+		
+		throw_if_not_int
 		}
 	default:
 		if ( result ) *result = false;

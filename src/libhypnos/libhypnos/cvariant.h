@@ -117,6 +117,33 @@ public:
 	cVariant &operator =(pItem api);
 	cVariant &operator =(pClient api);
 	
+	//@{
+	/*!
+	\brief Integer assignments signatures
+	
+	In this section you'll found assigments operators which are used to
+	assign arbitrary length integers, without threw ambiguity between
+	signatures.
+	*/
+	
+	#define op_assign_uint(dim) \
+		inline cVariant &operator =(const uint#dim &aval) \
+		{ *this = (uint64_t)aval; }
+	
+	#define op_assign_int(dim) \
+		inline cVariant &operator =(const int#dim &aval) \
+		{ *this = (int64_t)aval; }
+		
+	op_assign_uint(32)
+	op_assign_uint(16)
+	op_assign_uint(8)
+	
+	op_assign_int(32)
+	op_assign_int(16)
+	op_assign_int(8)
+	
+	//@}
+	
 	cVariant operator -() const;
 	
 	cVariant operator +(const cVariant &param) const;
