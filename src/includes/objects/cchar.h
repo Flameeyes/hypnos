@@ -427,7 +427,7 @@ public:
 	void		follow( pChar pc ); //!< follow pc
 	void 		flee( pChar pc, int32_t seconds=INVALID ); //!< flee from pc
 	void		pathFind( sLocation pos, bool bOverrideCurrentPath = true );
-	uint8_t		getDirFromXY( uint16_t targetX, uint16_t targetY );
+	uint8_t getDirFromXY(sPoint p);
 //@}
 
 //@{

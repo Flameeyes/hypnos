@@ -16,13 +16,12 @@
 /*!
 \brief Changes the orientation of a player
 \author Flameeyes
-\param facex X-coord to face to	
-\param facey Y-coord to face to
+\param p Point to face to
 */
-void cChar::facexy(uint16_t facex, uint16_t facey)
+void cChar::facexy(sPoint p)
 {
 	uint8_t olddir = dir;
-	dir = getDirFromXY(facex, facey);
+	dir = getDirFromXY(p);
 
 	if ( dir != olddir )
 		teleport(teleNone);
@@ -138,8 +137,8 @@ void cChar::walkNextStep()
 				playAction( 0x13 ); // Flying animation
 	}
 
-	int8_t dirXY = getDirFromXY( pos.x, pos.y );
-	dir = dirXY & 0x0F;
+	uint8_t dirXY = getDirFromXY(pos);
+	dir = dirXY & 0x07;
 	MoveTo( pos );
 	sendToPlayers( this, dirXY );
 	setNpcMoveTime();
@@ -244,8 +243,8 @@ void cChar::walk()
 			pChar target = cSerializable::findCharBySerial( targserial );
 			if ( target ) {
 				if ( distFrom( target ) < VISRANGE )
-					getDirFromXY( target->getPosition().x, target->getPosition().y );
-				npcwalk( this, npcSelectDir( this, (  getDirFromXY( target->getPosition().x, target->getPosition().y ) +4 )%8 )%8,0);
+					getDirFromXY( target->getPosition() );
+				npcwalk( this, npcSelectDir( this, (  getDirFromXY(target->getPosition()) +4 )%8 )%8,0);
 			}
 		}
 			break;
@@ -280,31 +279,29 @@ void cChar::walk()
 
 /*!
 \brief Return direction to target coordinate
-\param targetX the target X-coordinate
-\param targetY the target Y-coordinate
+\param p The target coordinates
 \return the direction to the coordinats
 */
-uint8_t cChar::getDirFromXY( uint16_t targetX, uint16_t targetY )
+uint8_t cChar::getDirFromXY( sPoint p )
 {
 	uint8_t direction = dir;
-	sLocation pcpos= getPosition();
 
-	if ( targetX < pcpos.x )
-		if ( targetY < pcpos.y )
+	if ( p.x < getPosition().x )
+		if ( p.y < getPosition().y )
 			direction = dirNorthWest;
-		else if ( targetY > pcpos.y )
+		else if ( p.y > getPosition().y )
 			direction = dirSouthWest;
 		else
 			direction = dirWest;
 	else
-		if ( targetX > pcpos.x )
-			if ( targetY < pcpos.y )
+		if ( p.x > getPosition().x )
+			if ( p.y < getPosition().y )
 				direction = dirNorthEast;
-			else if ( targetY > pcpos.y )
+			else if ( p.y > getPosition().y )
 				direction = dirSouthEast;
 			else
 				direction = dirEast;
-		else if ( targetY < pcpos.y )
+		else if ( p.y < getPosition().y )
 			direction = dirNorth;
 		else
 			direction = dirSouth;

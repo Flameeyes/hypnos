@@ -15,7 +15,7 @@ void usepotion(pChar pc, pItem pi);
 
 int checkBoundingBox(int xPos, int yPos, int fx1, int fy1, int fz1, int fx2, int fy2);
 int checkBoundingCircle(int xPos, int yPos, int fx1, int fy1, int fz1, int radius);
-int fielddir(pChar pc, int x, int y, int z);
+int fielddir(pChar pc, sPoint p);
 void npcsimpleattacktarget(int target2, int target);
 
 void endmessage(int x);

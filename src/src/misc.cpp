@@ -37,22 +37,24 @@ int chardirxyz(pChar pc, int x, int y)
 	return dir;
 }
 
-
-int fielddir(pChar pc, int x, int y, int z)
+/*!
+\brief Gets the direction for a field magic
+\param pc Caster character
+\param p Point where the field should be summoned
+*/
+bool fielddir(pChar pc, sPoint p)
 {
-//WARNING: unreferenced formal parameter z
+	if ( !pc ) return false;
 
-	if ( !pc ) return 0;
-
-	int dir=chardirxyz(pc, x, y);
+	int dir = pc->getDirFromXY(loc);
 	switch (dir)
 	{
 	case 0:
 	case 4:
-		return 0;
+		return false;
 	case 2:
 	case 6:
-		return 1;
+		return true;
 	case 1:
 	case 3:
 	case 5:
@@ -62,25 +64,25 @@ int fielddir(pChar pc, int x, int y, int z)
 		{
 		case 0:
 		case 4:
-			return 0;
+			return false;
 
 		case 2:
 		case 6:
-			return 1;
+			return true;
 
 		case 1:
 		case 3:
 		case 5:
 		case 7:
-			return 1;
+			return true;
 
 		default:
 			LogError("Switch fallout. misc.cpp, fielddir()\n"); //Morrolan
-			return 0;
+			return false;
 		}
 	default:
 		LogError("Switch fallout. misc.cpp, fielddir()\n"); //Morrolan
-		return 0;
+		return false;
 	}
 }
 
