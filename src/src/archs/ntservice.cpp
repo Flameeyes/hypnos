@@ -10,22 +10,18 @@
 
 bool g_bNTService = false;
 
-#ifdef _CONSOLE
-
-
-#include "ntservice.h"
-// The name of the service
-#define WIN32_LEAN_AND_MEAN
+#include "arch/ntservice.h"
 #include "version.h"
+
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <stdio.h>
 #include <conio.h>
 #include <stdlib.h>
 
+//! The name of the service
 char *SERVICE_NAME = "Hypnos Server Emulator";
 extern bool keeprun;
-
-#define serviceRunning keeprun
 
 BOOL servicePaused;
 HANDLE threadHandle;
@@ -45,10 +41,10 @@ DWORD serviceCurrentStatus;
 //! Allow ServiceMain to exit
 void KillService()
 {
-  serviceRunning=FALSE;
-  // Set the event that is blocking ServiceMain
-  // so that ServiceMain can return
-  SetEvent(killServiceEvent);
+	keeprun=FALSE;
+	// Set the event that is blocking ServiceMain
+	// so that ServiceMain can return
+	SetEvent(killServiceEvent);
 }
 
 //! Handles the events dispatched by the Service Control Manager.
@@ -61,7 +57,7 @@ BOOL success;
 	  // ServiceMain gets called on a start
 	  // Pause the service
 	  case SERVICE_CONTROL_PAUSE:
-	     if (serviceRunning && !servicePaused)
+	     if (keeprun && !servicePaused)
 	     {
 	        // Tell the SCM we're about to Pause.
 	        success = UpdateSCMStatus(SERVICE_PAUSE_PENDING, NO_ERROR, 0, 1, 1000);
@@ -72,7 +68,7 @@ BOOL success;
 	     break;
 	  // Resume from a pause
 	  case SERVICE_CONTROL_CONTINUE:
-	     if (serviceRunning && servicePaused)
+	     if (keeprun && servicePaused)
 	     {
 	        // Tell the SCM we're about to Resume.
 	        success = UpdateSCMStatus(SERVICE_CONTINUE_PENDING, NO_ERROR, 0, 1, 1000);
@@ -200,18 +196,14 @@ DWORD ServiceExecutionThread(LPDWORD param)
 //! This starts the service by creating its execution thread.
 BOOL StartServiceThread()
 {
-   DWORD id;
-   // Start the service's thread
-   threadHandle = CreateThread(0, 0,(LPTHREAD_START_ROUTINE) ServiceExecutionThread,0, 0, &id);
-   if (threadHandle == 0)
-   {
-	  return FALSE;
-   }
-   else
-   {
-	  serviceRunning = TRUE;
-	  return TRUE;
-   }
+	DWORD id;
+	// Start the service's thread
+	threadHandle = CreateThread(0, 0,(LPTHREAD_START_ROUTINE) ServiceExecutionThread,0, 0, &id);
+	if (threadHandle == 0)
+		return FALSE;
+		
+	keeprun = TRUE;
+	return TRUE;
 }
 
 //! This function updates the service status for the SCM
@@ -266,73 +258,82 @@ void initService (int argc, char **argv);
 
 void remain(int argc, char *argv[])
 {
-   SC_HANDLE myService, scm;
-   char stringona[8192];
-//  ConOut("NT-Service Installation/Uninstallation\n");
-//  ConOut("Program by Xanathar, Ummon\n\n\n");
-   char str[800];
-   sprintf(str, "%s %s", PRODUCT, VERNUMB );
+	SC_HANDLE myService, scm;
+// 	ConOut("NT-Service Installation/Uninstallation\n");
+// 	ConOut("Program by Xanathar, Ummon\n\n\n");
+	char str[800];
+	sprintf(str, "%s %s", PRODUCT, VERNUMB );
 
-// open a connection to the SCM
-// ConOut("\nOpening connection to SCM...");
-   scm = OpenSCManager(0, 0, SC_MANAGER_CREATE_SERVICE);
-   if (!scm)
-   {
-		sprintf(stringona, "Error : can't connect to Service Control Manager ", PRODUCT, VERNUMB );
-		MessageBox(NULL, stringona, "Hypnos Service Manager", MB_ICONSTOP);
+// 	open a connection to the SCM
+// 	ConOut("\nOpening connection to SCM...");
+	scm = OpenSCManager(0, 0, SC_MANAGER_CREATE_SERVICE);
+	if (!scm)
+	{
+		char *tmp;
+		sprintf(&tmp, "Error : can't connect to Service Control Manager ", PRODUCT, VERNUMB );
+		MessageBox(NULL, tmp, "Hypnos Service Manager", MB_ICONSTOP);
+		free(tmp);
 		return;
-   } else //ConOut("[ OK ]\n");
+	}
 
-   // Delete the OLD service
-   myService = OpenService(scm, "Hypnos", DELETE);
-
-   if (myService!=NULL) {
-			//ConOut("Deleting previous installation...");
-			if (!DeleteService(myService))
-			{
-				sprintf(stringona, "%s Service %s can't be removed. ", PRODUCT, VERNUMB );
-				MessageBox(NULL, stringona, "Hypnos Service Manager", MB_ICONEXCLAMATION);
-			}
-			else {
-				   CloseServiceHandle(myService);
-				   CloseServiceHandle(scm);
-				   {
-					   sprintf(stringona, "%s Service %s successfully removed. ", PRODUCT,  VERNUMB );
-					   MessageBox(NULL, stringona, "Hypnos Service Manager", MB_ICONINFORMATION);
-				   }
-				   setHKLMRegistryString("SOFTWARE\\Hypnos", "Service", "0");
- 				   return;
-			}
+	// Delete the OLD service
+	myService = OpenService(scm, "Hypnos", DELETE);
+	
+	if (myService!=NULL)
+	{
+		//ConOut("Deleting previous installation...");
+		if (!DeleteService(myService))
+		{
+			char *tmp;
+			asprintf(&tmp, "%s Service %s can't be removed. ", PRODUCT, VERNUMB );
+			MessageBox(NULL, tmp, "Hypnos Service Manager", MB_ICONEXCLAMATION);
+			free(tmp);
+		} else {
+			CloseServiceHandle(myService);
+			CloseServiceHandle(scm);
+			
+			char *tmp;
+			asprintf(&tmp, "%s Service %s successfully removed. ", PRODUCT,  VERNUMB );
+			MessageBox(NULL, tmp, "Hypnos Service Manager", MB_ICONINFORMATION);
+			free(tmp);
+			
+			setHKLMRegistryString("SOFTWARE\\Hypnos", "Service", "0");
+			return;
 		}
+	}
 
 
-   // Install the NEW service
-  // ConOut("Creating new service...");
-   myService = CreateService(
-	  scm, "NoXWizard", // the internal service name used by the SCM
-	  str,  // the external label seen in the Service Control applet
-	  SERVICE_ALL_ACCESS,  // We want full access to control the service
-	  SERVICE_WIN32_OWN_PROCESS,  // The service is a single app and not a driver
-	  SERVICE_DEMAND_START,  // The service will be started by us manually
-	  SERVICE_ERROR_NORMAL,  // If error during service start, don't misbehave.
-	  argv[0],
-	  0, 0, 0, 0, 0);
+// 	Install the NEW service
+// 	ConOut("Creating new service...");
+	myService = CreateService(
+		scm, "Hypnos", // the internal service name used by the SCM
+		str,  // the external label seen in the Service Control applet
+		SERVICE_ALL_ACCESS,  // We want full access to control the service
+		SERVICE_WIN32_OWN_PROCESS,  // The service is a single app and not a driver
+		SERVICE_DEMAND_START,  // The service will be started by us manually
+		SERVICE_ERROR_NORMAL,  // If error during service start, don't misbehave.
+		argv[0],
+		0, 0, 0, 0, 0);
 	if (!myService)
 	{
-				sprintf(stringona, "%s Service %s can't be installed. ", PRODUCT,  VERNUMB );
-				MessageBox(NULL, stringona, "Hypnos Service Manager", MB_ICONSTOP);
+		char *tmp;
+		asprintf(&tmp, "%s Service %s can't be installed. ", PRODUCT,  VERNUMB );
+		MessageBox(NULL, tmp, "Hypnos Service Manager", MB_ICONSTOP);
+		free(tmp);
 	}
 	else
 	{
-		sprintf(stringona, "%s Service %s successfully installed. ", PRODUCT, VERNUMB);
-		MessageBox(NULL, stringona, "Hypnos Service Manager", MB_ICONINFORMATION);
+		char *tmp;
+		asprintf(&tmp, "%s Service %s successfully installed. ", PRODUCT, VERNUMB);
+		MessageBox(NULL, tmp, "Hypnos Service Manager", MB_ICONINFORMATION);
+		free(tmp);
 	}
 
 
 	char ss[800];
 	GetCurrentDirectory(790, ss);
  	setHKLMRegistryString("SOFTWARE\\Hypnos", "Path", ss);
-    setHKLMRegistryString("SOFTWARE\\Hypnos", "Service", "1");
+	setHKLMRegistryString("SOFTWARE\\Hypnos", "Service", "1");
 
 	// clean up
 	CloseServiceHandle(myService);
@@ -379,7 +380,7 @@ int main(int argc, char *argv[])
 	preloadSections("shards_server.scp"); */
 
 	if ((argc>1)&&(argv[1][0]=='#'))
-    {
+	{
 		remain(argc,argv);
 		return 0;
 	}
@@ -401,7 +402,5 @@ int main(int argc, char *argv[])
 	StartServiceCtrlDispatcher(serviceTable);
 	return 0;
 }
-
-#endif
 
 #endif

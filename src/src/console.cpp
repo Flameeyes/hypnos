@@ -217,30 +217,24 @@ extern "C" void STraceOut(char *txt, ...)
 
 }
 
-
-
-
-
 static char s_szErrMsg[2048];
-static char s_szNoXDate[128];
 
-char* getNoXDate()
+const std::string &getNoXDate()
 {
-    time_t TIME;
-    tm* T;
-    time(&TIME);
-    T = localtime(&TIME);
+	time_t TIME;
+	tm* T;
+	time(&TIME);
+	T = localtime(&TIME);
 
-//	sprintf(s_szNoXDate, "%02d%02d%02d%02d%02d%02d",  T->tm_year%100,T->tm_mon+1, T->tm_mday,
-//		T->tm_hour, T->tm_min, T->tm_sec);
+	char *tmp;
+	asprintf(&tmp, "[%02d/%02d/%04d %02d:%02d:%02d]",
+	T->tm_mday, T->tm_mon+1, T->tm_year+1900, T->tm_hour, T->tm_min, T->tm_sec);
+	
+	std::string s(tmp);
+	free(tmp);
 
-	sprintf(s_szNoXDate, "[%02d/%02d/%04d %02d:%02d:%02d]", T->tm_mday, T->tm_mon+1, T->tm_year+1900, 
-													  T->tm_hour, T->tm_min, T->tm_sec);
-
-	return s_szNoXDate;
+	return s;
 }
-
-
 
 /*******************************************************
  ** NEW GEN Console Functions                         **
@@ -265,7 +259,7 @@ extern "C" void ErrOut(char *txt, ...)
 	va_end( argptr );
 
     AnsiOut("\x1B[1;31m");
-	ConOut("E %s - %s", getNoXDate(), s_szErrMsg);
+	ConOut("E %s - %s", getNoXDate().c_str(), s_szErrMsg);
     AnsiOut("\x1B[0m");
 }
 
@@ -279,7 +273,7 @@ extern "C" void WarnOut(char *txt, ...)
 	va_end( argptr );
 
     AnsiOut("\x1B[1;33m");
-	ConOut("W %s - %s", getNoXDate(), s_szErrMsg);
+	ConOut("W %s - %s", getNoXDate().c_str(), s_szErrMsg);
     AnsiOut("\x1B[0m");
 }
 
@@ -292,7 +286,7 @@ extern "C" void InfoOut(char *txt, ...)
 	vsnprintf( s_szErrMsg, sizeof(s_szErrMsg)-1, txt, argptr );
 	va_end( argptr );
     AnsiOut("\x1B[1;34m");
-	ConOut("i %s - %s", getNoXDate(), s_szErrMsg);
+	ConOut("i %s - %s", getNoXDate().c_str(), s_szErrMsg);
     AnsiOut("\x1B[0m");
 }
 
@@ -305,7 +299,7 @@ extern "C" void PanicOut(char *txt, ...)
 	va_end( argptr );
 
     AnsiOut("\x1B[1;31m");
-	ConOut("! %s - %s", getNoXDate(), s_szErrMsg);
+	ConOut("! %s - %s", getNoXDate().c_str(), s_szErrMsg);
     AnsiOut("\x1B[0m");
 }
 
