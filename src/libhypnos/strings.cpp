@@ -149,8 +149,6 @@ string getDateString()
 
 #ifndef HAVE_ASPRINTF
 
-#include <wefts_mutex.h>
-
 //@
 /*!
 \name asprintf and vasprintf stuff
