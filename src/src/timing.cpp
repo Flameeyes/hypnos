@@ -55,22 +55,22 @@ void checkFieldEffects( uint32_t currenttime, pChar pc, char timecheck )
 				case 0x3996:
 				case 0x398C: //Fire Field
 					if (!pc->resistsFire())
-						tempfx::add(pc, pc, tempfx::FIELD_DAMAGE, int32_t(pi->morex/100.0), damFire, 0, 1);
+						tempfx::add(pc, pc, tempfx::tmpfxFieldDamage, int32_t(pi->morex/100.0), damFire, 0, 1);
 					return;
 				case 0x3915:
 				case 0x3920: //Poison Field
 					if ((pi->morex<997)) {
-						tempfx::add(pc, pc, tempfx::FIELD_DAMAGE, 2, damPoison, 0, 2);
+						tempfx::add(pc, pc, tempfx::tmpfxFieldDamage, 2, damPoison, 0, 2);
 						pc->applyPoison(poisonWeak);
 					} else {
-						tempfx::add(pc, pc, tempfx::FIELD_DAMAGE, 3, damPoison, 0, 2); // gm mages can cast greater poison field, LB
+						tempfx::add(pc, pc, tempfx::tmpfxFieldDamage, 3, damPoison, 0, 2); // gm mages can cast greater poison field, LB
 						pc->applyPoison(poisonNormal);
 					}
 					return;
 				case 0x3979:
 				case 0x3967: //Para Field
 					if (chance(50)) {
-						tempfx::add(pc, pc, tempfx::spellParalyze, 0, 0, 0, 3);
+						tempfx::add(pc, pc, tempfx::tmpfxSpellParalyze, 0, 0, 0, 3);
 						pc->playSFX( 0x0204 );
 					}
 					return;

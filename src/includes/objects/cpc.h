@@ -58,7 +58,7 @@ public:
 	//! Makes a character temporary grey
 	//!\todo Rewrite!
 	inline void setGrey()
-	{ /*tempfx::add(this, this, tempfx::GREY, 0, 0, 0, 0x7FFF);*/ }
+	{ /*tempfx::add(this, this, tempfx::tmpfxGrey, 0, 0, 0, 0x7FFF);*/ }
         
 	void deadAttack (pChar victim);  //if dead and trying to attack someone...
 	

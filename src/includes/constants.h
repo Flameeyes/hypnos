@@ -111,7 +111,7 @@ enum
 	
 	DOORTYPES = 17,
 	POLYMORPHMENUOFFSET = 8196,
-				//!< polymorph spell menu offset
+				//!< polymorph tmpfxSpell menu offset
 	MAKEMENUOFFSET = 2048
 
 }; //enum
@@ -247,44 +247,44 @@ enum { BANK_GOLD = 1, BANK_ITEM = 0, MOREY_GOLDONLYBANK = 123, MOREX_BANK = 1 };
 */
 namespace tempfx {
 	enum {
-		spellParalyze = 1,
-		SPELL_LIGHT,
-		spellClumsy,
-		spellFeebleMind,
-		spellWeaken,
-		spellAgility,
-		spellCunning,
-		spellStrength,
-		ALCHEMY_GRIND,
-		ALCHEMY_END,
-		spellBless,
-		spellCurse,
-		AUTODOOR,
-		TRAINDUMMY,
-		SPELL_REACTARMOR,
-		EXPLOTIONMSG,
-		EXPLOTIONEXP,
-		spellPolymorph,
-		spellIncognito,
-		LSD,
-		spellProtection,
-		HEALING_HEAL,
-		HEALING_RESURRECT,
-		HEALING_CURE,
-		POTION_DELAY,
-		spellInvisibility,
-		DRINK_EMOTE,
-		DRINK_FINISHED,
-		GM_HIDING = 33,
-		GM_UNHIDING,
-		HEALING_DELAYHEAL,
-		COMBAT_PARALYZE	= 44,
-		COMBAT_CONCUSSION = 45,
-		AMXCUSTOM = 121,	//!< custom amx effects
-		GREY,			//!< mark grey
-		CRIMINAL,		//!< mark criminal
-		FIELD_DAMAGE,		//!< magic fields damage
-		spellTelekinesys,	//!< telekinesys spell
+		tmpfxSpellParalyze = 1,
+		tmpfxSpellNightSight,
+		tmpfxSpellClumsy,
+		tmpfxSpellFeebleMind,
+		tmpfxSpellWeaken,
+		tmpfxSpellAgility,
+		tmpfxSpellCunning,
+		tmpfxSpellStrength,
+		tmpfxAlchemyGrind,
+		tmpfxAlchemyEnd,
+		tmpfxSpellBless,
+		tmpfxSpellCurse,
+		tmpfxAutoDoor,
+		tmpfxTrainDummy,
+		tmpfxSpellReactiveArmour,
+		tmpfxExplosionMsg,
+		tmpfxExplosionExp,
+		tmpfxSpellPolymorph,
+		tmpfxSpellIncognito,
+		tmpfxLSD,
+		tmpfxSpellProtection,
+		tmpfxHealingHeal,
+		tmpfxHealingResurrect,
+		tmpfxHealingCure,
+		tmpfxPotionDelay,
+		tmpfxSpellInvisibility,
+		tmpfxDrinkEmote,
+		tmpfxDrinkFinished,
+		tmpfxGMHiding = 33,
+		tmpfxGMUnhiding,
+		tmpfxHealingDelayHeal,
+		tmpfxCombatParalyze	= 44,
+		tmpfxCombatConcussion = 45,
+		tmpfxScriptDefined = 121,	//!< custom amx effects
+		tmpfxGrey,			//!< mark grey
+		tmpfxCriminal,			//!< mark criminal
+		tmpfxFieldDamage,		//!< magic fields damage
+		tmpfxSpellTelekinesys,		//!< telekinesys tmpfxSpell
 		MAX_TEMPFX_INDEX
 	};
 };

@@ -474,7 +474,7 @@ void cPC::makeCriminal()
 	if ( isCriminal() || isMurderer() )
 		return;
 	
-	tempfx::add(this, this, tempfx::CRIMINAL, 0, 0, 0); //Luxor
+	tempfx::add(this, this, tempfx::tmpfxCriminal, 0, 0, 0); //Luxor
 	if(::region[region].priv&0x01 && SrvParms->guardsactive) { //guarded
 		if ( nSettings::Server::hasInstantGuards() )
 			npcs::SpawnGuard( this, this, getPosition() ); // LB bugfix

@@ -90,11 +90,11 @@ void usepotion(pChar pc, pItem pi)
 		switch(pi->morez)
 		{
 		case 1:
-			tempfx::add(pc, pc, tempfx::spellAgility, 5+RandomNum(1,10), 0, 0, 120);
+			tempfx::add(pc, pc, tempfx::tmpfxSpellAgility, 5+RandomNum(1,10), 0, 0, 120);
 			if(client) client->sysmessage("You feel more agile!");
 			break;
 		case 2:
-			tempfx::add(pc, pc, tempfx::spellAgility, 10+RandomNum(1,20), 0, 0, 120);
+			tempfx::add(pc, pc, tempfx::tmpfxSpellAgility, 10+RandomNum(1,20), 0, 0, 120);
 			if(client) client->sysmessage("You feel much more agile!");
 			break;
 		default:
@@ -157,10 +157,10 @@ void usepotion(pChar pc, pItem pi)
 			return;
 		}
 		if(client) client->sysmessage("Now would be a good time to throw it!");
-		tempfx::add(pc, pc, tempfx::EXPLOTIONMSG, 0, 1, 3);
-		tempfx::add(pc, pc, tempfx::EXPLOTIONMSG, 0, 2, 2);
-		tempfx::add(pc, pc, tempfx::EXPLOTIONMSG, 0, 3, 1);
-		tempfx::add(pc, pi, tempfx::EXPLOTIONEXP, 0, 4, 0);
+		tempfx::add(pc, pc, tempfx::tmpfxExplosionMsg, 0, 1, 3);
+		tempfx::add(pc, pc, tempfx::tmpfxExplosionMsg, 0, 2, 2);
+		tempfx::add(pc, pc, tempfx::tmpfxExplosionMsg, 0, 3, 1);
+		tempfx::add(pc, pi, tempfx::tmpfxExplosionExp, 0, 4, 0);
 
 		pTarget targ= clientInfo[s]->newTarget( new cTarget() );
 		targ->code_callback=target_expPotion;
@@ -199,7 +199,7 @@ void usepotion(pChar pc, pItem pi)
 
 	case 5: // Night Sight Potion
 		staticFX(pc, 0x376A, 9, 6);
-		tempfx::add(pc, pc, tempfx::SPELL_LIGHT, 0, 0, 0,(720*secondsperuominute*SECS));
+		tempfx::add(pc, pc, tempfx::tmpfxSpellNightSight, 0, 0, 0,(720*secondsperuominute*SECS));
 		pc->playSFX(0x01E3);
 		break;
 
@@ -243,11 +243,11 @@ void usepotion(pChar pc, pItem pi)
 		switch(pi->morez)
 		{
 		case 1:
-			tempfx::add(pc, pc, tempfx::spellStrength, 5+RandomNum(1,10), 0, 0, 120);
+			tempfx::add(pc, pc, tempfx::tmpfxSpellStrength, 5+RandomNum(1,10), 0, 0, 120);
 			if(client) client->sysmessage("You feel more strong!");
 			break;
 		case 2:
-			tempfx::add(pc, pc, tempfx::spellStrength, 10+RandomNum(1,20), 0, 0, 120);
+			tempfx::add(pc, pc, tempfx::tmpfxSpellStrength, 10+RandomNum(1,20), 0, 0, 120);
 			if(client) client->sysmessage("You feel much more strong!");
 			break;
 		default:
@@ -286,7 +286,7 @@ void usepotion(pChar pc, pItem pi)
 			if(client) client->sysmessage("no,no,no,cant you get enough ?");
 			return;
 		}
-		tempfx::add(pc, pc, tempfx::LSD, 60+RandomNum(1,120), 0, 0); // trigger effect
+		tempfx::add(pc, pc, tempfx::tmpfxLSD, 60+RandomNum(1,120), 0, 0); // trigger effect
 		staticFX(pc, 0x376A, 9, 6); // Sparkle effect
 		pc->playSFX(0x00F8, true); // lsd sound :)
 		break;
@@ -497,7 +497,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, false);
-			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
+			tempfx::add(pc, pi, tempfx::tmpfxAutoDoor, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+1))
 		{
@@ -514,7 +514,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, false);
-			tempfx::add(pc , pi, tempfx::AUTODOOR, 0, 0, 0);
+			tempfx::add(pc , pi, tempfx::tmpfxAutoDoor, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+3))
 		{
@@ -531,7 +531,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, false);
-			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
+			tempfx::add(pc, pi, tempfx::tmpfxAutoDoor, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+5))
 		{
@@ -548,7 +548,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, false);
-			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
+			tempfx::add(pc, pi, tempfx::tmpfxAutoDoor, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+7))
 		{
@@ -565,7 +565,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, false);
-			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
+			tempfx::add(pc, pi, tempfx::tmpfxAutoDoor, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+9))
 		{
@@ -582,7 +582,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, false);
-			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
+			tempfx::add(pc, pi, tempfx::tmpfxAutoDoor, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+11))
 		{
@@ -599,7 +599,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, false);
-			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
+			tempfx::add(pc, pi, tempfx::tmpfxAutoDoor, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+13))
 		{
@@ -615,7 +615,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, false);
-			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
+			tempfx::add(pc, pi, tempfx::tmpfxAutoDoor, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+15))
 		{

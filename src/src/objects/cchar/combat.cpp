@@ -250,7 +250,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 			chanceToHit += int( str1/10.0 - str2/10.0 );
 			if ( chance( chanceToHit ) ) {
 				wresmove = 0;
-				tempfx::add(this, pc_def, tempfx::spellParalyze, 0, 0, 0, 7); //paralyze for 7 secs
+				tempfx::add(this, pc_def, tempfx::tmpfxSpellParalyze, 0, 0, 0, 7); //paralyze for 7 secs
 			} else {
 				wresmove = 0;
 				sysmsg("You failed to stun your opponent!");

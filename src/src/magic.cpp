@@ -1090,35 +1090,35 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 	{
 		case spellClumsy:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 6;
-			tempfx::add(pa, pd, tempfx::spellClumsy, bonus, 0, 0, duration);
+			tempfx::add(pa, pd, tempfx::tmpfxSpellClumsy, bonus, 0, 0, duration);
 			break;
 		case spellFeebleMind:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 6;
-			tempfx::add(pa, pd, tempfx::spellFeebleMind, bonus, 0, 0, duration);
+			tempfx::add(pa, pd, tempfx::tmpfxSpellFeebleMind, bonus, 0, 0, duration);
 			break;
 		case spellWeaken:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 6;
-			tempfx::add(pa, pd, tempfx::spellWeaken, bonus, 0, 0, duration);
+			tempfx::add(pa, pd, tempfx::tmpfxSpellWeaken, bonus, 0, 0, duration);
 			break;
 		case spellCurse:
 			duration = int( pa->skill[skMagery] * 0.12 );
-			tempfx::add(pa, pd, tempfx::spellCurse, bonus, bonus, bonus, duration);
+			tempfx::add(pa, pd, tempfx::tmpfxSpellCurse, bonus, bonus, bonus, duration);
 			break;
 		case spellCunning:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
-			tempfx::add(pa, pd, tempfx::spellCunning, bonus, 0, 0, duration);
+			tempfx::add(pa, pd, tempfx::tmpfxSpellCunning, bonus, 0, 0, duration);
 			break;
 		case spellAgility:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
-			tempfx::add(pa, pd, tempfx::spellAgility, bonus, 0, 0, duration);
+			tempfx::add(pa, pd, tempfx::tmpfxSpellAgility, bonus, 0, 0, duration);
 			break;
 		case spellStrength:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
-			tempfx::add(pa, pd, tempfx::spellStrength, bonus, 0, 0, duration);
+			tempfx::add(pa, pd, tempfx::tmpfxSpellStrength, bonus, 0, 0, duration);
 			break;
 		case spellBless:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
-			tempfx::add(pa, pd, tempfx::spellBless, bonus, bonus, bonus, duration);
+			tempfx::add(pa, pd, tempfx::tmpfxSpellBless, bonus, bonus, bonus, duration);
 			break;
 		default :
 			ErrOut("Switch fallout. magic::castStatPumper\n");
@@ -1293,7 +1293,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
-				tempfx::add(src, pd, tempfx::spellParalyze);
+				tempfx::add(src, pd, tempfx::tmpfxSpellParalyze);
 			}
 			break;
 		case spellPoison:
@@ -1447,7 +1447,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case spellReactiveArmour:
 			if (nTime==INVALID) nTime = src->skill[nSkill]/15;
 			spellFX(spellnumber, src, src);
-			tempfx::add(src,src, tempfx::SPELL_REACTARMOR, 0, 0, 0, nTime);
+			tempfx::add(src,src, tempfx::tmpfxSpellReactiveArmour, 0, 0, 0, nTime);
 			break;
 
 		case spellDispel:	//Luxor
@@ -1485,7 +1485,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			break;
 
 		case spellTelekinesys: // Luxor
-			tempfx::add( src, src, tempfx::spellTelekinesys, 0, 0, 0, 10 );
+			tempfx::add( src, src, tempfx::tmpfxSpellTelekinesys, 0, 0, 0, 10 );
 			spellFX( spellnumber, src );
 			break;
 
@@ -1559,7 +1559,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				pChar pd = sc.getChar();
 				if ( pd && pd->IsHidden() && !checkResist(src, pd, spellReveal)) {
 					if ( pd->IsHiddenBySpell() )
-						pd->delTempfx( tempfx::spellInvisibility );
+						pd->delTempfx( tempfx::tmpfxSpellInvisibility );
 					else
 						pd->unHide();
 				}
@@ -1571,7 +1571,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			spellFX(spellnumber, src, pd);
 			if (nTime==INVALID) nTime = src->skill[nSkill]/15;
 			if (nValue==INVALID) nValue = src->skill[nSkill]/10;
-			tempfx::add(src,src, tempfx::spellProtection, nValue, 0, 0, nTime);
+			tempfx::add(src,src, tempfx::tmpfxSpellProtection, nValue, 0, 0, nTime);
 			break;
 
 		case spellArchProtection:
@@ -1589,7 +1589,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
 				if( pd ) {
-					tempfx::add(pd,pd, tempfx::spellProtection, nValue, 0, 0, nTime);
+					tempfx::add(pd,pd, tempfx::tmpfxSpellProtection, nValue, 0, 0, nTime);
 					spellFX(spellnumber, src, pd);
 				}
 			}
@@ -1601,7 +1601,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if ( !pd && src ) pd = src;
 			if (pd) {
 				if (nTime==INVALID) nTime = 90;
-				tempfx::add(pd,pd, tempfx::spellIncognito, 0,0,0, nTime);
+				tempfx::add(pd,pd, tempfx::tmpfxSpellIncognito, 0,0,0, nTime);
 			}
 			break;
 
@@ -1614,7 +1614,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case spellInvisibility:
 			spellFX(spellnumber, src, pd);
 			if ( src->isHiddenBySpell() ) {
-				src->delTempfx( tempfx::spellInvisibility );
+				src->delTempfx( tempfx::tmpfxSpellInvisibility );
 			} else {
 				if (nTime==INVALID) nTime = 90;
 				src->hideBySpell(nTime);
@@ -1688,7 +1688,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					if (src!=NULL) nTime = src->skill[nSkill] / 2;
 					else nTime = 300; // 5' default
 				}
-				tempfx::add(src, pd, tempfx::SPELL_LIGHT, 0,0,0, nTime);
+				tempfx::add(src, pd, tempfx::tmpfxSpellNightSight, 0,0,0, nTime);
 			}
 			break;
 
@@ -2027,7 +2027,7 @@ bool beginCasting (SpellId num, pClient s, CastingType type)
 cPolymorphMenu::cPolymorphMenu( pChar pc ) : cIconListMenu()
 {
 	if ( ! pc ) return;
-	if ( pc->getTempfx( tempfx::spellPolymorph ) != NULL )
+	if ( pc->getTempfx( tempfx::tmpfxSpellPolymorph ) != NULL )
 		addIcon( 0x2106, 0, pc->getOldId(), std::string("Undo polymorph") );
 	addIcon( 0x20CF, 0, 0xd3, std::string("Black Bear") );
 	addIcon( 0x20DB, 0, 0xd4, std::string("Grizzly Bear") );
@@ -2063,39 +2063,39 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	std::map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
 	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
-	pc->delTempfx( tempfx::spellStrength );
-	pc->delTempfx( tempfx::spellCunning );
-	pc->delTempfx( tempfx::spellAgility );
-	pc->delTempfx( tempfx::spellFeebleMind );
-	pc->delTempfx( tempfx::spellClumsy );
-	pc->delTempfx( tempfx::spellCurse );
-	pc->delTempfx( tempfx::spellBless);
-	pc->delTempfx( tempfx::spellWeaken );
+	pc->delTempfx( tempfx::tmpfxSpellStrength );
+	pc->delTempfx( tempfx::tmpfxSpellCunning );
+	pc->delTempfx( tempfx::tmpfxSpellAgility );
+	pc->delTempfx( tempfx::tmpfxSpellFeebleMind );
+	pc->delTempfx( tempfx::tmpfxSpellClumsy );
+	pc->delTempfx( tempfx::tmpfxSpellCurse );
+	pc->delTempfx( tempfx::tmpfxSpellBless);
+	pc->delTempfx( tempfx::tmpfxSpellWeaken );
 
 
-	if ( pc->getTempfx( tempfx::spellPolymorph ) != NULL && data == pc->getOldId() ) {
-		pc->delTempfx( tempfx::spellPolymorph );
+	if ( pc->getTempfx( tempfx::tmpfxSpellPolymorph ) != NULL && data == pc->getOldId() ) {
+		pc->delTempfx( tempfx::tmpfxSpellPolymorph );
 		return;
 	}
 
-	pc->delTempfx( tempfx::spellPolymorph );
-	pc->addTempfx( *pc, tempfx::spellPolymorph, data );
+	pc->delTempfx( tempfx::tmpfxSpellPolymorph );
+	pc->addTempfx( *pc, tempfx::tmpfxSpellPolymorph, data );
 
 	switch( data )
 	{
 		case 0xd3:
 		case 0xd4:
 		case 0xd5:
-			pc->addTempfx( *pc, tempfx::spellStrength, 40, 0, 0, polyduration );
-			pc->addTempfx( *pc, tempfx::spellCurse, 0, 15, 20, polyduration );
+			pc->addTempfx( *pc, tempfx::tmpfxSpellStrength, 40, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::tmpfxSpellCurse, 0, 15, 20, polyduration );
 			break;
 		case 0xd0:
-			pc->delTempfx( tempfx::spellWeaken );
-			pc->addTempfx( *pc, tempfx::spellWeaken, 20, 0, 0, polyduration );
+			pc->delTempfx( tempfx::tmpfxSpellWeaken );
+			pc->addTempfx( *pc, tempfx::tmpfxSpellWeaken, 20, 0, 0, polyduration );
 			break;
 		case 0x9:
-			pc->addTempfx( *pc, tempfx::spellBless, 10, 10, 10, polyduration );
-			pc->addTempfx( *pc, tempfx::spellTelekinesys, 0, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::tmpfxSpellBless, 10, 10, 10, polyduration );
+			pc->addTempfx( *pc, tempfx::tmpfxSpellTelekinesys, 0, 0, 0, polyduration );
 			break;
 		case 0x2:
 		case 0x4:
@@ -2103,20 +2103,20 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 		case 0x23:
 		case 0x1:
 		case 0x10:
-			pc->addTempfx( *pc, tempfx::spellStrength, 30, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::tmpfxSpellStrength, 30, 0, 0, polyduration );
 			break;
 		case 0xe:
-			pc->addTempfx( *pc, tempfx::spellStrength, 50, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::tmpfxSpellStrength, 50, 0, 0, polyduration );
 			break;
 		case 0xc8:
-			pc->addTempfx( *pc, tempfx::spellAgility, 50, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::tmpfxSpellAgility, 50, 0, 0, polyduration );
 			break;
 		case 0x3a:
-			pc->addTempfx( *pc, tempfx::spellCunning, 40, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::tmpfxSpellCunning, 40, 0, 0, polyduration );
 			break;
 		case 0x32:
-			pc->addTempfx( *pc, tempfx::spellStrength, 10, 0, 0, polyduration );
-			pc->addTempfx( *pc, tempfx::spellFeebleMind, 20, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::tmpfxSpellStrength, 10, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::tmpfxSpellFeebleMind, 20, 0, 0, polyduration );
 			break;
 	}
 

@@ -27,7 +27,7 @@ void cNPC::beginCasting(pChar target, magic::SpellId spell)
 	nextact = 1;
 	spellaction = 6;
 	spelltime = magic::getCastingTime( spell );
-	addTempfx( *pc, tempfx::spellParalyze, 0, 0, 0, ( pc->spelltime - getclock() ) / SECS );
+	addTempfx( *pc, tempfx::tmpfxSpellParalyze, 0, 0, 0, ( pc->spelltime - getclock() ) / SECS );
 	emoteall("*Begins casting a spell*", false);
 }
 

@@ -131,7 +131,7 @@ bool isSrcRepeatable(int num)
 		case spellIncognito:
 		case spellInvisibility:
 		case spellPolymorph:
-		case DRINK_FINISHED:
+		case tmpfxDrinkFinished:
 			return false;
 
 		default:
@@ -163,7 +163,7 @@ bool isDestRepeatable(int num)
 		case spellPolymorph:
 		case spellInvisibility:
 		case CRIMINAL:
-		case FIELD_DAMAGE:
+		case tmpfxFieldDamage:
 			return false;
 
 		default:
@@ -186,7 +186,7 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 
 	switch (num)
 	{
-		case FIELD_DAMAGE:
+		case tmpfxFieldDamage:
 			dur = 2;
 			break;
 		case spellParalyze:
@@ -194,7 +194,7 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 			dur = src->skill[skMagery]/100;
 			break;
 
-		case SPELL_LIGHT:
+		case tmpfxSpellNightSight:
 			if(!src) return 0;
 			dur = src->skill[skMagery]*10;
 			break;
@@ -207,7 +207,7 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 		case spellCunning:
 		case spellBless:
 		case spellCurse:
-		case SPELL_REACTARMOR:
+		case tmpfxSpellReactiveArmour:
 		case spellProtection:
 			if(!src) return 0;
 			dur = src->skill[skMagery]/10;
@@ -225,27 +225,27 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 			dur = 90;
 			break;
 
-		case ALCHEMY_GRIND:
+		case tmpfxAlchemyGrind:
 			dur = more2;
 			break;
 
-		case ALCHEMY_END:
+		case tmpfxAlchemyEnd:
 			dur = 12;
 			break;
 
-		case AUTODOOR:
+		case tmpfxAutoDoor:
 			dur = 10;
 			break;
 
-		case TRAINDUMMY:
+		case tmpfxTrainDummy:
 			dur = 5;
 			break;
 
-		case EXPLOTIONMSG:
+		case tmpfxExplosionMsg:
 			dur = more2;
 			break;
 
-		case EXPLOTIONEXP:
+		case tmpfxExplosionExp:
 			dur = 4;
 			break;
 
@@ -253,45 +253,45 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 			dur = 90;
 			break;
 
-		case HEALING_HEAL:
+		case tmpfxHealingHeal:
 			dur = 0;
 			break;
 
-		case HEALING_CURE:
+		case tmpfxHealingCure:
 			dur = 0;
 			break;
 
-		case HEALING_RESURRECT:
+		case tmpfxHealingResurrect:
 			dur = 0;
 			break;
 
-		case POTION_DELAY:
+		case tmpfxPotionDelay:
 			dur = 0;
 			break;
 
-		case GM_HIDING:
+		case tmpfxGMHiding:
 			dur = more1;
 			break;
 
-		case GM_UNHIDING:
+		case tmpfxGMUnhiding:
 			dur = more1;
 			break;
 
-		case HEALING_DELAYHEAL:
+		case tmpfxHealingDelayHeal:
 			dur = more3;
 			break;
 
-		case COMBAT_PARALYZE:
+		case tmpfxCombatParalyze:
 			dur = 5;
 			break;
 
-		case COMBAT_CONCUSSION:
+		case tmpfxCombatConcussion:
 			dur = 30;
 			break;
 
-		case AMXCUSTOM:
+		case tmpfxScriptDefined:
 			dur = 0;
-			break; //Luxor's note: AMXCUSTOM will never get into this function :P
+			break; //Luxor's note: tmpfxScriptDefined will never get into this function :P
 
 		case GREY:
 			dur = 240;
@@ -301,7 +301,7 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 			dur = repsys.crimtime;
 			break;
 
-		case DRINK_FINISHED:
+		case tmpfxDrinkFinished:
 			dur = 3;
 			break;
 
@@ -326,7 +326,7 @@ void cTempfx::start()
 
 	switch(m_nNum)
 	{
-		case FIELD_DAMAGE:
+		case tmpfxFieldDamage:
 			dest->damage(m_nMore1, static_cast<DamageType>(m_nMore2));
 			dest->playSFX(0x0208);
 			break;
@@ -336,7 +336,7 @@ void cTempfx::start()
 			dest->freeze();
 			break;
 
-		case SPELL_LIGHT:
+		case tmpfxSpellNightSight:
 			dest->fixedlight = worldbrightlevel;
 			if (dest->getClient())
 				dolight(dest->getClient()->toInt(), worldbrightlevel);
@@ -419,26 +419,26 @@ void cTempfx::start()
 			dest->morph(0);
 			break;
 
-		case ALCHEMY_GRIND:
+		case tmpfxAlchemyGrind:
 			break;
 
-		case ALCHEMY_END:
+		case tmpfxAlchemyEnd:
 			break;
 
-		case AUTODOOR:
+		case tmpfxAutoDoor:
 			break;
 
-		case TRAINDUMMY:
+		case tmpfxTrainDummy:
 			break;
 
-		case SPELL_REACTARMOR:
+		case tmpfxSpellReactiveArmour:
 			dest->ra = 1;
 			break;
 
-		case EXPLOTIONMSG:
+		case tmpfxExplosionMsg:
 			break;
 
-		case EXPLOTIONEXP:
+		case tmpfxExplosionExp:
 			break;
 
 		case spellPolymorph:
@@ -557,13 +557,13 @@ void cTempfx::start()
 			dest->nxwflags[0] |= cChar::flagSpellProtection;
 			break;
 
-		case GM_HIDING:
+		case tmpfxGMHiding:
 			break;
 
-		case GM_UNHIDING:
+		case tmpfxGMUnhiding:
 			break;
 
-		case HEALING_DELAYHEAL:
+		case tmpfxHealingDelayHeal:
 			if ( src ) {
 				if (src->war)
 					src->sysmsg("You cannot heal while you are in a fight.");
@@ -574,7 +574,7 @@ void cTempfx::start()
 			}
 			break;
 
-		case AMXCUSTOM:
+		case tmpfxScriptDefined:
 			callCustomTempFx(src, dest, MODE_START, m_nAmxcback, m_nMore1, m_nMore2, m_nMore3);
 			break;
 
@@ -582,11 +582,11 @@ void cTempfx::start()
 			dest->nxwflags[0] |= cChar::flagGrey;
 			break;
 
-		case COMBAT_PARALYZE:
+		case tmpfxCombatParalyze:
 			dest->freeze();
 			break;
 
-		case COMBAT_CONCUSSION:
+		case tmpfxCombatConcussion:
 			if (dest->in < m_nMore1)
 				m_nMore1 = dest->in;
 			dest->in -= m_nMore1;
@@ -644,7 +644,7 @@ void cTempfx::executeExpireCode()
 				dest->unfreeze( true );
 			break;
 
-		case SPELL_LIGHT:
+		case tmpfxSpellNightSight:
 			if ( ! dest ) return;
 			dest->fixedlight = 0xFF;
 			if (dest->getClient())
@@ -727,7 +727,7 @@ void cTempfx::executeExpireCode()
 			break;
 
 
-		case ALCHEMY_GRIND:
+		case tmpfxAlchemyGrind:
 			if ( ! dest ) return;
 			if (m_nMore1 == 0)
 			{
@@ -739,13 +739,13 @@ void cTempfx::executeExpireCode()
 			break;
 
 
-		case ALCHEMY_END:
+		case tmpfxAlchemyEnd:
 			if ( !src || !pi_dest ) return;
 
 			Skills::CreatePotion(src, m_nMore1, m_nMore2, pi_dest);
 			break;
 
-		case AUTODOOR:
+		case tmpfxAutoDoor:
 			if(!pi_dest) return;
 
 			if (pi_dest->dooropen == 0)
@@ -754,7 +754,7 @@ void cTempfx::executeExpireCode()
 			dooruse(INVALID, pi_dest);
 			break;
 
-		case TRAINDUMMY:
+		case tmpfxTrainDummy:
 			if(!pi_dest) return;
 
 			if (pi_dest->getId() == 0x1071)
@@ -771,17 +771,17 @@ void cTempfx::executeExpireCode()
 			}
 			break;
 
-		case SPELL_REACTARMOR:
+		case tmpfxSpellReactiveArmour:
 			if (!dest) return;
 			dest->ra = 0;
 			break;
 
-		case EXPLOTIONMSG:
+		case tmpfxExplosionMsg:
 			if (!dest) return;
 			dest->sysmsg("%i", m_nMore3);
 			break;
 
-		case EXPLOTIONEXP:
+		case tmpfxExplosionExp:
 			if ( !src || !pi_dest ) return;
 
 			if (src->getClient())
@@ -823,31 +823,31 @@ void cTempfx::executeExpireCode()
 			dest->nxwflags[0] &= ~cChar::flagSpellProtection;
 			break;
 
-		case DRINK_EMOTE:
+		case tmpfxDrinkEmote:
 			if (!src) return;
 			src->emote(src->getSocket(),"*glu*",1);
 			break;
 
-		case DRINK_FINISHED:
+		case tmpfxDrinkFinished:
 			if ( !src || !pi_dest ) return;
 
 			usepotion(src, pi_dest);
 			break;
 
-		case GM_HIDING:
+		case tmpfxGMHiding:
 			if (!dest) return;
 			dest->sysmsg("You have hidden yourself well.");
 			dest->setHidden(htBySkill);
 			dest->teleport( teleNone );
 			break;
 
-		case GM_UNHIDING:
+		case tmpfxGMUnhiding:
 			if (!dest) return;
 			dest->unHide();
 			dest->sysmsg("You are now visible.");
 			break;
 
-		case HEALING_DELAYHEAL:
+		case tmpfxHealingDelayHeal:
 			if ( !src || !dest ) return;
 
 			if (src->war) {
@@ -861,7 +861,7 @@ void cTempfx::executeExpireCode()
 				add(src, dest, m_nNum, m_nMore1 +1, 1, m_nMore3);
 			break;
 
-		case AMXCUSTOM:
+		case tmpfxScriptDefined:
 			if ( !src || !dest ) return;
 
 			callCustomTempFx(src, dest, MODE_END, m_nAmxcback, m_nMore1, m_nMore2, m_nMore3);
@@ -910,7 +910,7 @@ void cTempfx::activate()
 			dest->freeze();
 			break;
 
-		case SPELL_LIGHT:
+		case tmpfxSpellNightSight:
 			dest->fixedlight = worldbrightlevel;
 			break;
 
@@ -953,7 +953,7 @@ void cTempfx::activate()
 		case spellInvisibility:
                         break;
 
-		case AMXCUSTOM:
+		case tmpfxScriptDefined:
 			callCustomTempFx(src, dest, MODE_ON, m_nAmxcback, m_nMore1, m_nMore2, m_nMore3);
 			break;
 
@@ -994,7 +994,7 @@ void cTempfx::deactivate()
 				dest->unfreeze( true );
 			break;
 
-		case SPELL_LIGHT:
+		case tmpfxSpellNightSight:
 			dest->fixedlight = 0xFF;
 			break;
 
@@ -1037,7 +1037,7 @@ void cTempfx::deactivate()
 		case spellInvisibility:
 			break;
 
-		case AMXCUSTOM:
+		case tmpfxScriptDefined:
 			callCustomTempFx(src, dest, MODE_OFF, m_nAmxcback, m_nMore1, m_nMore2, m_nMore3);
 			break;
 
@@ -1069,7 +1069,7 @@ bool cTempfx::isValid()
 	if ( m_nNum < 0 || m_nNum >= MAX_TEMPFX_INDEX )
 		return false;
 
-	if ( m_nNum == AMXCUSTOM && m_nAmxcback <= INVALID )
+	if ( m_nNum == tmpfxScriptDefined && m_nAmxcback <= INVALID )
 		return false;
 
 	pObject src = objects.findObject(m_nSrc);
@@ -1139,7 +1139,7 @@ cTempfx::cTempfx( uint32_t nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t
 	else
 		m_nExpireTime = getclock() + (getTempFxTime(cSerializable::findCharBySerial(m_nSrc), num, more1, more2, more3)*SECS);
 
-	if ( m_nNum == AMXCUSTOM && amxcback <= INVALID )
+	if ( m_nNum == tmpfxScriptDefined && amxcback <= INVALID )
 		return;
 
 	m_nMore1 = more1;

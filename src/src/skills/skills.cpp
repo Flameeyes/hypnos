@@ -1036,7 +1036,7 @@ void Skills::TDummy(pClient client)
 		if (pj->getId()==0x1074)
 			pj->setId( 0x1075 );
 
-		tempfx::add(pc, pj, tempfx::TRAINDUMMY, 0, 0, 0); //Luxor
+		tempfx::add(pc, pj, tempfx::tmpfxTrainDummy, 0, 0, 0); //Luxor
 		pj->Refresh();
 	}
 

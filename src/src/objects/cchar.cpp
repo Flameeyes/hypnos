@@ -526,7 +526,7 @@ void cChar::unHide()
 	}
 
 	if (IsGM())
-		tempfx::add(this, this, tempfx::GM_UNHIDING, 3, 0, 0);
+		tempfx::add(this, this, tempfx::tmpfxGMUnhiding, 3, 0, 0);
 }
 
 /*!
@@ -659,7 +659,7 @@ void cChar::applyPoison(PoisonType poisontype, int32_t secs )
 void cChar::unfreeze( bool calledByTempfx )
 {
 	if( !calledByTempfx )
-		delTempfx( tempfx::spellParalyze, false ); //Luxor
+		delTempfx( tempfx::tmpfxSpellParalyze, false ); //Luxor
 	
 	if ( ! isFrozen() ) return;
 
@@ -1391,7 +1391,7 @@ void cChar::hideBySkill()
 	{
 		staticFX(this, 0x3709, 9, 25);
 		playSFX( 0x0208 );
-		tempfx::add(this, this, tempfx::GM_HIDING, 1, 0, 0);
+		tempfx::add(this, this, tempfx::tmpfxGMHiding, 1, 0, 0);
 		// immediate hiding overwrites the effect.
 		// so lets hide after 4 secs.
 		// 1 sec works fine now so changed to this.
@@ -1412,7 +1412,7 @@ void cChar::hideBySkill()
 void cChar::hideBySpell(int32_t timer)
 {
 	if (timer == INVALID) timer = SrvParms->invisibiliytimer;
-	tempfx::add(this, this, tempfx::spellInvisibility, 0,0,0, timer);
+	tempfx::add(this, this, tempfx::tmpfxSpellInvisibility, 0,0,0, timer);
 }
 
 /*!
@@ -2392,10 +2392,10 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 void cChar::drink(pItem pi)
 {
         if (pi && pi->getType() == ITYPE_POTION) {
-                tempfx::add(this, pi, tempfx::DRINK_EMOTE, 0, 0, 0, 0);
-                tempfx::add(this, pi, tempfx::DRINK_EMOTE, 0, 0, 0, 1);
-                tempfx::add(this, pi, tempfx::DRINK_EMOTE, 0, 0, 0, 2);
-                tempfx::add(this, pi, tempfx::DRINK_FINISHED, 0, 0, 0, 3);
+                tempfx::add(this, pi, tempfx::tmpfxDrinkEmote, 0, 0, 0, 0);
+                tempfx::add(this, pi, tempfx::tmpfxDrinkEmote, 0, 0, 0, 1);
+                tempfx::add(this, pi, tempfx::tmpfxDrinkEmote, 0, 0, 0, 2);
+                tempfx::add(this, pi, tempfx::tmpfxDrinkFinished, 0, 0, 0, 3);
         }
 }
 

@@ -87,11 +87,11 @@ void nSkills::DoPotion(pClient client, uint8_t type, uint8_t sub, pItem mortar)
 
 	if (success)
 	{
-		tempfx::add(pc, pc, tempfx::ALCHEMY_GRIND, 0, 0, 0); // make grinding sound for a while
-		tempfx::add(pc, pc, tempfx::ALCHEMY_GRIND, 0, 3, 0);
-		tempfx::add(pc, pc, tempfx::ALCHEMY_GRIND, 0, 6, 0);
-		tempfx::add(pc, pc, tempfx::ALCHEMY_GRIND, 0, 9, 0);
-		tempfx::add(pc, mortar, tempfx::ALCHEMY_END, type, sub, 0);  // this will indirectly call CreatePotion()
+		tempfx::add(pc, pc, tempfx::tmpfxAlchemyGrind, 0, 0, 0); // make grinding sound for a while
+		tempfx::add(pc, pc, tempfx::tmpfxAlchemyGrind, 0, 3, 0);
+		tempfx::add(pc, pc, tempfx::tmpfxAlchemyGrind, 0, 6, 0);
+		tempfx::add(pc, pc, tempfx::tmpfxAlchemyGrind, 0, 9, 0);
+		tempfx::add(pc, mortar, tempfx::tmpfxAlchemyEnd, type, sub, 0);  // this will indirectly call CreatePotion()
 	}
 }
 

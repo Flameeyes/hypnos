@@ -933,9 +933,9 @@ void nSkills::target_healingSkill(pClient client, pTarget t )
 			int iMore1 = 0;
 			(j+pp->hp > pp->getStrength()) ? iMore1 = pp->getStrength() - pp->hp : iMore1 = j;
 			if(pp->getSerial()==ph->getSerial())
-				tempfx::add(ph, ph, tempfx::HEALING_DELAYHEAL, iMore1/2,0,10);//allow a delay
+				tempfx::add(ph, ph, tempfx::tmpfxHealingDelayHeal, iMore1/2,0,10);//allow a delay
 			else
-				tempfx::add(ph, pp, tempfx::HEALING_DELAYHEAL, iMore1/2,0,4);// added suggestion by Ramases //-Fraz- must be checked
+				tempfx::add(ph, pp, tempfx::tmpfxHealingDelayHeal, iMore1/2,0,4);// added suggestion by Ramases //-Fraz- must be checked
 
 		}
 
