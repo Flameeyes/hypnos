@@ -132,7 +132,7 @@ extern char serv[MAXSERV][3][30]; // Servers list
 
 extern char saveip[30];
 extern char start[MAXSTART][5][30]; // Startpoints list
-extern title_st title[ALLSKILLS+1];
+extern sTitle title[ALLSKILLS+1];
 extern unsigned char *comm[CMAX];
 extern int layers[MAXLAYERS];
 

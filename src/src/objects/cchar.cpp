@@ -2176,8 +2176,6 @@ void cChar::checkEquipement()
 	}
 }
 
-
-
 void cChar::showLongName( P_CHAR showToWho, bool showSerials )
 {
 	VALIDATEPC( showToWho );
@@ -2186,7 +2184,6 @@ void cChar::showLongName( P_CHAR showToWho, bool showSerials )
 
 	char temp[TEMP_STR_SIZE];
  	char temp1[TEMP_STR_SIZE];
-//        extern title_st title[ALLSKILLS +1]; // unused variable
 
 	*(temp1)='\0';
 

@@ -262,7 +262,7 @@ unsigned char clientDimension[MAXCLIENT];
 
  char saveip[30]; //!< Servers list
  char start[MAXSTART][5][30]; //!< Startpoints list
- title_st title[ALLSKILLS+1];
+ sTitle title[ALLSKILLS+1];
  unsigned char *comm[CMAX];
  int layers[MAXLAYERS];
 

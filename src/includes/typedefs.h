@@ -9,12 +9,12 @@
 \file typedefs.h
 \brief contains typedefs for integer values and common structures.
 \todo complete the documentation of types
+\todo Rename structures ending in _st to starting with s
 */
 
 #ifndef __TYPEDEFS_H__
 #define __TYPEDEFS_H__
 #include <set>
-
 
 typedef double				R64;	//< 64 bits floating point
 typedef float				R32;	//< 32 bits floating point
@@ -78,8 +78,6 @@ typedef SI32				FUNCIDX;
 	#include <stlport/hash_map>
 #endif
 
-
-
 template < class T >
 class cPoint{
 public:
@@ -88,12 +86,6 @@ public:
 
 	T a;
 	T b;
-};
-
-struct lookuptr_st //Tauriel  used to create pointers to the items dynamically allocated
-{               //         so don't mess with it unless you know what you are doing!
-  SI32 max;
-  SI32 *pointer;
 };
 
 struct location_st
@@ -148,7 +140,9 @@ struct creat_st
 	SI32 icon;
 };
 
-// XYZZY
+/*!
+\todo rename to sUnitile
+*/
 struct unitile_st
 {
  SI08 basez;
@@ -162,6 +156,10 @@ struct unitile_st
  UI08 weight;
 } PACK_NEEDED;
 
+/*!
+\todo rename to sSkill
+\todo use std::string instead of c-strings
+*/
 struct skill_st
 {
  SI32 st;
@@ -173,6 +171,10 @@ struct skill_st
  TEXT madeword[50]; // Added by Magius(CHE)
 };
 
+/*!
+\todo rename to sAdvance
+\todo verify if the SI32 are too much for the values
+*/
 struct advance_st
 {
  UI08 skill;
@@ -181,6 +183,10 @@ struct advance_st
  SI32 failure;
 };
 
+/*!
+\todo rename to sGMPage
+\todo Use std::string instead of c-strings
+*/
 struct gmpage_st
 {
 	TEXT reason[80];
@@ -190,6 +196,10 @@ struct gmpage_st
 	SI32 handled;
 } PACK_NEEDED;
 
+/*!
+\todo rename to sBegging
+\todo Use std::string instead of c-strings
+*/
 struct begging_st
 {
  SI32 timer;
@@ -197,12 +207,18 @@ struct begging_st
  TEXT text[3][256];
 };
 
+/*!
+\todo rename to sFishing
+*/
 struct fishing_st
 {
  TIMERVAL basetime;
  TIMERVAL randomtime;
 };
 
+/*!
+\todo We really need it? It's only a value!
+*/
 struct spiritspeak_st
 {
  TIMERVAL spiritspeaktimer;
@@ -226,13 +242,14 @@ struct speed_st
 
 /*!
 \brief struct for manage custom titles
+\todo Verify if it's actually used or not
 */
-struct title_st
+struct sTitle
 {
- TEXT fame[50];
- TEXT skill[50];
- TEXT prowess[50];
- TEXT other[50];
+	std::string fame;
+	std::string skill;
+	std::string prowess;
+	std::string other;
 };
 
 /*!
