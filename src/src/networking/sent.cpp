@@ -1732,7 +1732,7 @@ void nPackets::Sent::TipsWindow::prepare()
 }
 
 /*!
-\brief  Game Server List [packet 0xa8]
+\brief Game Server List [packet 0xa8]
 \author Kheru
 \note Packet 0xA8
 */
@@ -1764,8 +1764,43 @@ void nPackets::Sent::GameServerList::prepare()
 }
 
 /*!
-\todo packet 0xa9: Characters / Starting Locations... login packet (strictly linked with GoodAuth in network.cpp and a global variable)
+\brief Characters / Starting Locations... (Packet 0xa9)
+\author Kheru
+\note packet 0xa9
 */
+void nPackets::Sent::CharStartingLoc::prepare()
+{
+	uint8_t i, offset;
+
+	length = 4+(5 *60)+1+(9 *63) +4;
+	buffer = new uint8_t[length];
+
+	buffer[0] = 0xA9;
+	ShortToCharPtr(length, buffer +1);
+	buffer[3] = 5;
+
+	offset = 4;
+	for(i=0; i<5; i++, offset += 60 ) {
+		pPC pc_a = accounts.getChar(i);
+		if( ! pc_a )
+			memset(&buffer[offset], 0, 60);
+		else
+			memcpy(&buffer[offset], pc_a->getCurrentName().c_str(), 60);
+	}
+
+	buffer[offset++] = 9;
+
+	for(i=0; i<9; i++, offset += 60 ) {
+		memset(&buffer[offset], 0, 63);
+		buffer[offset] = i;
+		if( nNewbies::startLocations[i] ) {
+			memcpy(&buffer[offset +1], nNewbies::startLocations[i]->city.c_str(), 31);
+			memcpy(&buffer[offset +32], nNewbies::startLocations[i]->place.c_str(), 31);
+		}
+	}
+
+	LongToCharPtr(flags, &buffer[offset]);
+}
 
 /*!
 \brief Sends attack request reply [packet 0xaa]
@@ -1775,7 +1810,7 @@ void nPackets::Sent::GameServerList::prepare()
 void nPackets::Sent::AttackAck::prepare()
 {
 	length = 5;
-	buffer = new buffer[5];
+	buffer = new uint8_t[5];
 	buffer[0] = 0xAA;
 	if ( victim )
 		LongToCharPtr(victim->getSerial(), buffer+1);

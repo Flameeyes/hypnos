@@ -204,66 +204,17 @@ void cNetwork::ActivateFeatures(pClient client)
 
 void cNetwork::GoodAuth(pClient client)
 {
-	uint32_t j;
-	uint16_t tlen;
-	uint8_t login04a[4]={ 0xA9, 0x09, 0x24, 0x02 }, n = startcount;
-
-	tlen=4+(5*60)+1+(startcount*63) +4;
-
-	ShortToCharPtr(tlen, login04a +1);
-
-	Accounts->OnLogin(acctno[s],s);
-
-	//Endy now much fast
-	NxwCharWrapper sc;
-	Accounts->GetAllChars( acctno[s], sc );
+	uint32_t flags = 0;
 
 	ActivateFeatures(client);
 
-	login04a[3] = sc.size(); //Number of characters found
-	Xsend(s, login04a, 4);
-
-	j=0;
-
-	uint8_t login04b[60]={ 0, };
-
-	for ( sc.rewind(); !sc.isEmpty(); sc++ )
-	{
-		pChar pc_a=sc.getChar();
-		if( ! pc_a )
-			continue;
-
-		strcpy((char*)login04b, pc_a->getCurrentName().c_str());
-		Xsend(s, login04b, 60);
-		j++;
-	}
-
-	uint32_t i=0;
-	memset(login04b, 0, 60);
-	for ( i=j;i<5;i++)
-	{
-		Xsend(s, login04b, 60);
-	}
-
-	Xsend(s, &n, 1);  // startcount
-
-	uint8_t login04d[63]= { 0, };
-
-	for (i=0;i<startcount;i++)
-	{
-		memset(login04d, 0, 63);
-		login04d[0]=i;
-		
-		strncpy(login04d+1, nNewbies::startLocations[i]->city.c_str(), 30);
-		strncpy(login04d+32, nNewbies::startLocations[i]->place.c_str(), 30);
-		Xsend(s, login04d, 63);
-	}
-
-	uint8_t tail[4]={0, }; //Fix for new clients, else it stuck on "Connecting ..."
+	pAccount acc = client->currAccount();
 
 	if(server_data.feature == 2) 	// LBR: NPC Popup Menu   (not currently impl.)
-		tail[3] = 0x08;
-	Xsend(s, tail, 4);
+		flags = 0x08;
+
+	nPackets::Sent::CharStartingLoc pk(acc, flags);
+	client->sendPacket(&pk);
 }
 
 void cNetwork::CharList(pClient client) // Gameserver login and character listing

@@ -1495,9 +1495,23 @@ namespace nPackets {
 		};
 
 		/*!
-		\todo packet 0xa9: Characters / Starting Locations... login packet (strictly linked with GoodAuth in network.cpp and a global variable)
+		\brief Characters / Starting Locations... (Packet 0xa9)
+		\author Kheru
+		\note Packet 0xA9
 		*/
+		class CharStartingLoc : public cPacketSend
+		{
+		protected:
+			pAccount account;
+			uint32_t flags;
 
+		public:
+			inline CharStartingLoc(pAccount acc, uint32_t f) :
+				account(acc), flags(f)
+			{ }
+
+			void prepare();
+		};
 
 		/*!
 		\brief Sends the OK/Not OK for an attack
