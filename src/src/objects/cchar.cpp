@@ -1408,21 +1408,16 @@ void cChar::playAction(UI16 action)
 			break;
 	}
 
-	UI08 doact[14]={ 0x6E, 0x01, 0x02, 0x03, 0x04, 0x01, 0x02, 0x00, 0x05, 0x00, 0x01, 0x0, 0x00, 0x01 };
-	LongToCharPtr(getSerial32(), doact +1);
-	ShortToCharPtr(action, doact +5);
+	if ( ! action )
+		return;
 
-	NxwSocketWrapper sw;
-	sw.fillOnline( this, false );
+	cPacketSendAction pa(serial, action);
 
-	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWCLIENT ps=sw.getClient();
-		if(ps!=NULL)
-		{
-			Xsend(ps->toInt(), doact, 14);
-//AoS/			Network->FlushBuffer(ps->toInt());
-		}
-	}
+	cClientSet cs;
+	cs.fillOnline( this, false );
+
+	for( cs.rewind(); !cs.isEmpty(); cs++ )
+		cs.sendPacket(&pa);
 }
 
 void cChar::impAction(UI16 action)

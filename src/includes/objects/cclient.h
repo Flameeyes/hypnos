@@ -13,6 +13,9 @@
 #ifndef __CCLIENT_H__
 #define __CCLIENT_H__
 
+class cClient;
+typedef cClient *pClient;
+
 #include "cchar.h"
 
 /*!

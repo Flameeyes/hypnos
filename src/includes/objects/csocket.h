@@ -13,9 +13,13 @@
 #ifndef __CSOCKET_H__
 #define __CSOCKET_H__
 
-#include "char.h"
 #include <zthread/Thread.h>
 #include <zthread/BlockingQueue.h>
+
+class cSocket;
+typedef cSocket *pSocket;
+
+#include "cclient.h"
 
 //! Raw Packet
 struct sRawPacket
@@ -43,6 +47,8 @@ protected:
 	std::list<sRawPacket> receiveQueue;
 	//! Socket address
 	struct sockaddr_in *saddr;
+	//! Client object
+	pClient client;
 
 	/*!
 	\brief Class for receiving task
@@ -88,9 +94,12 @@ public:
 	inline const SI32 getSocket() const
 	{ return s; }
 
-};
+	//! Gets the client
+	inline const pClient getClient() const
+	{ return client; }
 
-//! Pointer to a socket item
-typedef cSocket *pSocket;
+	void clean();
+
+};
 
 #endif

@@ -137,7 +137,15 @@ class cChar : public cObject
 
 		inline void		MoveTo(SI32 x, SI32 y, SI08 z)
 		{ MoveTo( Loc(x, y, z) ); }
-	public:
+
+protected:
+	pClient client;
+
+public:
+	inline pClient getClient() const
+	{ return client; }
+
+public:
 //@{
 /*!
 \name nxwflags_chars
@@ -1020,18 +1028,12 @@ public:
 		// 2-6 = Sparkles
 		SI32			gmMoveEff;
 
-
 		UI32			getSkillSum();
 		SI32			getTeachingDelta(P_CHAR pPlayer, SI32 skill, SI32 sum);
 		void			removeItemBonus(cItem* pi);
 		LOGICAL			isSameAs(P_CHAR pc) {if (pc && (pc->getSerial32() == getSerial32())) return true; else return false;}
 		LOGICAL			resist(SI32 n)		 { return ((nxwflags[0]&n)!=0); }    // <-- what is this ?, xan
 
-		//! get the client
-		inline NXWCLIENT	getClient() const
-		{ return m_client; }
-
-		NXWSOCKET		getSocket() const;
 		void			sysmsg(const TEXT *txt, ...);
 		void			attackStuff(P_CHAR pc);
 		void			helpStuff(P_CHAR pc_i);
@@ -1119,44 +1121,10 @@ public:
 		NxwItemWrapper*		nearbyItems;
 	#endif
 
-	public:
 		std::vector< UI32 >	lootVector;
-
-	public:
 		virtual void		Delete();
-	/*
-	public:
-		LOGICAL			isValidAmxEvent( UI32 eventId );
-	*/
-#ifdef ENCRYPTION
-//@{
-/*!
-\name crypt
-\brief  Encryption per client
-*/
-	public:
-		inline void setCrypter(ClientCrypt * crypt)
-		{ crypter=crypt; }
-
-		inline ClientCrypt * getCrypter() const
-		{ return crypter; }
-
-	private:
-		ClientCrypt * crypter;
-//@}
-#endif
 } PACK_NEEDED;
 
-
-#define MAKE_CHAR_REF(i) pointers::findCharBySerial(i)
-
-#define DEREF_P_CHAR(pc) ( ( ISVALIDPC(pc) ) ? pc->getSerial32() : INVALID )
-
-#define ISVALIDPC(pc) ( ( pc!=NULL && sizeof(*pc) == sizeof(cChar) ) ? (pc->getSerial32() >= 0) : false )
-
-#define VALIDATEPC(pc) if (!ISVALIDPC(pc)) { LogWarning("a non-valid P_CHAR pointer was used in %s:%d", basename(__FILE__), __LINE__); return; }
-#define VALIDATEPCR(pc, r) if (!ISVALIDPC(pc)) { LogWarning("a non-valid P_CHAR pointer was used in %s:%d", basename(__FILE__), __LINE__); return r; }
-
-
+typedef cChar *pChar;
 
 #endif
