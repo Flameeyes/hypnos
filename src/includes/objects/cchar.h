@@ -678,8 +678,8 @@ protected:
 public:
 	void talkAll(char *txt, bool antispam = true);
 	void talk(pClient client, char *txt, bool antispam = true);
-	void emote(pClient client,char *txt, bool antispam, ...) PRINTF_LIKE(3,5)
-	void emoteall(char *txt, bool antispam, ...) PRINTF_LIKE(2,4)
+	void emote(pClient client,char *txt, bool antispam, ...) PRINTF_LIKE(3,5);
+	void emoteall(char *txt, bool antispam, ...) PRINTF_LIKE(2,4);
 	void talkRunic(pClient client, char *txt, bool antispam = 1);
 	void talkAllRunic(char *txt, bool antispam = 0);
 //@}

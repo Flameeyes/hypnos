@@ -177,10 +177,10 @@ public:
 	void talking(cSpeech &speech);				//!< The PC talks, and this finds out who will hear (and send it to them)
 	void broadcast(cSpeech &speech);			//!< GM Broadcast (Done if a GM yells something)
 	void sysmessage(uint16_t color, std::string txt);	//!< System message (compiled)
-	void sysmessage(const char *txt, ...) PRINTF_LIKE(2,3)	//!< System message (In lower left corner)
-	void sysmessage(uint16_t color, const char *txt, ...) PRINTF_LIKE(3,4)
+	void sysmessage(const char *txt, ...) PRINTF_LIKE(2,3);	//!< System message (In lower left corner)
+	void sysmessage(uint16_t color, const char *txt, ...) PRINTF_LIKE(3,4);
 								//!< Colored system message (In lower left corner)
-	void sysbroadcast(char *txt, ...) PRINTF_LIKE(2,3)	//!< System broadcast in bold text
+	void sysbroadcast(char *txt, ...) PRINTF_LIKE(2,3);	//!< System broadcast in bold text
 	void sysbroadcast(std::string txt);			//!< System broadcast (compiled)
 //@}
 

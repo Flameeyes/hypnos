@@ -23,7 +23,7 @@ class LogFile;
 extern int32_t entries_e, entries_c, entries_w;
 extern LogFile ServerLog;	//!< global log object
 
-void WriteGMLog(pChar, char *msg, ...) PRINTF_LIKE(2,3)
+void WriteGMLog(pChar, char *msg, ...) PRINTF_LIKE(2,3);
 
 /*!
 \brief Manage a log file
@@ -38,10 +38,10 @@ private:
 
 public:
 	LogFile(std::string name);
-	LogFile(char *format, ...) PRINTF_LIKE(2,3)	//!< path + filename
+	LogFile(char *format, ...) PRINTF_LIKE(2,3);	//!< path + filename
 	~LogFile();
 	void Write(std::string str);
-	void Write(char *format, ...) PRINTF_LIKE(2,3)
+	void Write(char *format, ...) PRINTF_LIKE(2,3);
 };
 
 /*!
@@ -60,7 +60,7 @@ inline bool NewErrorsLogged()
 inline bool NewWarningsLogged()
 { return (entries_w > 0); }
 
-void LogMessageF(char type, char *fpath, int lnum, char *Message, ...) PRINTF_LIKE(4,5)
+void LogMessageF(char type, char *fpath, int lnum, char *Message, ...) PRINTF_LIKE(4,5);
 
 //---------------------------------------------------------------------------
 // Translator macros for functions
