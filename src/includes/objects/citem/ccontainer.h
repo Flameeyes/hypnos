@@ -75,6 +75,12 @@ public:
 
 	uint32_t countItems(uint16_t id, uint16_t color = 0, bool recurse = false);
 	
+	/*!
+	\brief Find the first item of the given id
+	\param id ID of the item to search for
+	\param recurse If true, search in subcontainers
+	*/
+	pItem findItem(const std::string &id, bool recurse = false);
 	pItem findFirstType(uint16_t type, bool recurse = false);
 
 	pItem getInstrument() const;
