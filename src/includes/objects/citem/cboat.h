@@ -25,7 +25,6 @@ public:
 	cBoat();
 	cBoat(uint32_t nserial);
 
-	void MoveTo(sLocation newloc);
 	void step(pClient client, uint8_t dir = 0xFF);
 	void turn(bool turnRight);
 	

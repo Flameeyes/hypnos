@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "objects/citem/cboath"
-#include "objects/cclienth"
+#include "objects/citem/cboat.h"
+#include "objects/cclient.h"
 
 /*!
 \brief Ship items for directions
@@ -41,12 +41,6 @@ cBoat::cBoat(uint32_t nserial) : cItem(nserial)
 {
 }
 
-void cBoat::MoveTo(sLocation newpos)
-{
-	//!\todo Calc items position to move them as well
-	cItem::MoveTo(newpos);
-}
-
 /*!
 \brief Moves the board one tile in the direction specified
 \param client Client who requested the move
@@ -62,41 +56,40 @@ void cBoat::step(pClient client, uint8_t dir)
 	nPackets::Sent::PauseClient pk(0x01);
 	client->sendPacket(&pk);
 
+	sLocation boatpos = getPosition();
+	
 	switch(dir&0x07)//Which DIR is it going in?
 	{
 	case 0:
-		--ty;
+		--boatpos.y;
 		break;
 	case 1:
-		++tx;
-		--ty;
+		++boatpos.x;
+		--boatpos.y;
 		break;
 	case 2:
-		++tx;
+		++boatpos.x;
 		break;
 	case 3:
-		++tx;
-		++ty;
+		++boatpos.x;
+		++boatpos.y;
 		break;
 	case 4:
-		++ty;
+		++boatpos.y;
 		break;
 	case 5:
-		--tx;
-		++ty;
+		--boatpos.x;
+		++boatpos.y;
 		break;
 	case 6:
-		--tx;
+		--boatpos.x;
 		break;
 	case 7:
-		--tx;
-		--ty;
+		--boatpos.x;
+		--boatpos.y;
 		break;
 	}
 
-
-	sLocation boatpos = getPosition();
-	boatpos.x += tx; boatpos.y += ty;
 
 	if( ( boatpos.x <= XBORDER || boatpos.x >= ((map_width*8)-XBORDER))
 		|| (boatpos.y <= YBORDER || boatpos.y >= ((map_height*8)-YBORDER))) //bugfix LB
@@ -126,24 +119,8 @@ void cBoat::step(pClient client, uint8_t dir)
 		return;
 	}
 
-	sLocation tillerpos = tillerMan->getPosition();
-	tillerpos.x += tx; tillerpos.y += ty;
-
-	sLocation p1pos = plankLeft->getPosition();
-	p1pos.x += tx; p1pos.y += ty;
-
-	sLocation p2pos = plankRight->getPosition();
-	p2pos.x += tx; p2pos.y += ty;
-
-	sLocation holdpos= hold->getPosition();
-	holdpos.x += tx; holdpos.y += ty;
-
-	//Move all the special items
+	// The special items are also multi's items, so this moves all
 	MoveTo( boatpos );
-	tillerMan->MoveTo( tillerpos );
-	plankLeft->MoveTo( p1pos );
-	plankRight->MoveTo( p2pos );
-	hold->MoveTo( holdpos );
 
 //!\todo wait until set hav appropriate function
 #if 0
@@ -189,12 +166,6 @@ void cBoat::step(pClient client, uint8_t dir)
 	//! Removes the pause in the client
 	nPackets::Sent::PauseClient pk(0x00);
 	client->sendPacket(&pk);
-	
-	Refresh();
-	tillerMan->Refresh();
-	plankLeft->Refresh();
-	plankRight->Refresh();
-	hold->Refresh();
 }
 
 /*!

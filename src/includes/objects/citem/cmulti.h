@@ -23,9 +23,29 @@ In this category we have the houses (cHouse) and the boats (cBoat).
 class cMulti : public cItem
 {
 protected:
+	/*!
+	\brief Item in multi
+	
+	This structure represent an item present in the multi (like a door
+	or the sign), which \b must be moved with the multi itself.
+	*/
+	struct sMultiItem {
+		pItem item;		//!< Pointer to the item instance
+		sPositionOffset offset;	//!< Offset of the item from the center of the multi
+		bool required;		//!< True if the item is a fundamnetal component of the multi
+					//!< i.e.: the multi should be deleted if this item is deleted
+	};
+	
+	//! A singly-linked list of multi items
+	typedef std::slist<sMultiItem> MultiItemSList;
+	
+	//! The items component of the multi
+	MultiItemSList items;
 public:
 	cMulti();
 	cMulti(uint32_t nserial);
+	
+	void MoveTo(sLocation newloc);
 };
 
 #endif

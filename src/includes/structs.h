@@ -65,9 +65,34 @@ struct sLocation {
 	inline sLocation operator -(const sLocation &b) const
 	{ return sLocation( x - b.x, y - b.y, z - b.z ); }
 
+	//! + operator to add values to the coords in a pass
+	inline sLocation operator +(const sPositionOffset &b) const
+	{ return sLocation( x + b.x, y + b.y, z + b.z ); }
+
+	//! - operator to remove values to the coords in a pass
+	inline sLocation operator -(const sPositionOffset &b) const
+	{ return sLocation( x - b.x, y - b.y, z - b.z ); }
+
 	//! Converts a location (x,y,z) into a point (x,y)
 	inline operator sPoint() const
 	{ return sPoint(x, y); }
+};
+
+/*!
+\brief Position offsets
+
+This struct represent the offset of items in multi or to move a boat.
+The size of the offsets is of only a byte because we don't want multis bigger
+than 128 squares :)
+*/
+struct sPositionOffset {
+	int8_t x;	//!< X-coord offset
+	int8_t y;	//!< Y-coord offset
+	int8_t z;	//!< Z-coord offset
+	
+	sPositionOffset(int8_t ox = 0, int8_t oy = 0, int8_t oz = 0) :
+		x(ox), y(ox), z(oz)
+	{ }
 };
 
 /*!
