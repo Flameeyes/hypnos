@@ -17,7 +17,7 @@ libhypnos library and are common to different applications of the suite.
 #define __LIBHYPNOS_TYPES_H__
 
 namespace nLibhypnos {
-	typedef class nLibhypnos::cVariant *pVariant;	//!< Pointer to a variant instance
+	typedef class cVariant *pVariant;	//!< Pointer to a variant instance
 	typedef std::vector<cVariant> cVariantVector;	//!< Vector of variants
 }
 

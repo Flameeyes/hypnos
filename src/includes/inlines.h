@@ -13,7 +13,6 @@
 #ifndef __INLINES_H__
 #define __INLINES_H__
 
-#include "basics.h"
 #include "data.h"
 
 template<typename T> inline T qmax(T a, T b) { return a > b ? a : b; }

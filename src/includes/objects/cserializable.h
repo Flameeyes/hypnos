@@ -94,20 +94,11 @@ public:
 
 	//! Tells if a serial is of a character
 	inline static bool isCharSerial( uint32_t ser )
-	{
-		// We don't want to export these constants...
-		static const uint32_t minCharSerial = 1;
-		static const uint32_t maxCharSerial = 0x3FFFFFFF;
-		return between(ser, minCharSerial, maxCharSerial);
-	}
+	{ return between(ser, (uint32_t)1, (uint32_t)0x3FFFFFFF); }
 	
 	//! Tells if a serial is of an item
 	inline static bool isItemSerial( uint32_t ser )
-	{
-		static const uint32_t minItemSerial = 0x40000000;
-		static const uint32_t maxItemSerial = 0x7FFFFFFF;
-		return between(ser, minItemSerial, maxItemSerial);
-	}
+	{ return between(ser, (uint32_t)0x40000000, (uint32_t)0x7FFFFFFF); }
 //@}
 
 private:

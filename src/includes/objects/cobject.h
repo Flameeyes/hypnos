@@ -13,6 +13,7 @@
 #include "tmpeff.h"
 #include "structs.h"
 #include "objects/ceventthrower.h"
+#include "inlines.h"
 
 typedef std::slist< tempfx::cTempfx > TempfxVector;
 
@@ -40,8 +41,8 @@ public:
 \brief Position related stuff
 */
 protected:
-	sLocation		old_position;		//!< old position of object
-	sLocation		position;		//!< current position of object
+	sLocation old_position;		//!< old position of object
+	sLocation position;		//!< current position of object
 
 public:
 	//! return the position of the object
@@ -71,9 +72,6 @@ public:
 
 	inline void setOldPosition(const sLocation where)
 	{ old_position = where; }
-
-	inline void setOldPosition(int32_t x, int32_t y, signed char z, signed char dispz)
-	{ setOldPosition( sLocation(x, y, z, dispz) ); }
 //@}
 
 //@{
@@ -88,7 +86,7 @@ protected:
 	uint16_t color_old;	//!< Object's old color
 
 	/*!
-	Real name of the char, 30 chars max + '\\0'<br>
+	\brief Real name of the char, 30 chars max + '\\0'<br>
 	Also used to store the secondary name of items.
 	*/
 	std::string	secondary_name;

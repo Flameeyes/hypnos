@@ -10,7 +10,6 @@
 #define __SKILLS_H__
 
 #include "common_libs.h"
-#include "target.h"
 #include "enums.h"
 
 /*!

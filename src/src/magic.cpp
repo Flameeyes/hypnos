@@ -19,8 +19,8 @@
 
 namespace magic {
 
-sSpell spellsData[MAX_SPELLS];
-std::map< std::string, SpellId > speechMap;
+std::vector<sSpell> spellsData;
+std::map< std::string, uint16_t> speechMap;
 
 /*!
 \brief Gets the direction for a field magic

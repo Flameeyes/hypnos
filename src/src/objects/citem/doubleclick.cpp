@@ -7,18 +7,14 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
 #include "network.h"
-#include "sndpkg.h"
 #include "magic.h"
 #include "house.h"
 #include "npcai.h"
 #include "mount.h"
-#include "data.h"
 #include "boats.h"
 #include "map.h"
-#include "basics.h"
 #include "inlines.h"
 #include "skills/skills.h"
-#include "misc.h"
 #include "fishing.h"
 
 bool cItem::usableWhenLockedDown(pPc pc)

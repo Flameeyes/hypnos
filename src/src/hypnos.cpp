@@ -46,7 +46,6 @@ Also thanks to Judas for translating this text from italian to english :)
 */
 
 #include "common_libs.h"
-#include "basics.h"
 #include "sndpkg.h"
 #include "sregions.h"
 #include "remadmin.h"
@@ -73,7 +72,6 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "newbies.h"
 #include "timing.h"
 #include "inlines.h"
-#include "basics.h"
 #include "skills/skills.h"
 #include "map.h"
 #include "hypnos.h"

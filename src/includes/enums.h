@@ -126,12 +126,23 @@ without remember the right index of them.
 \see cBoat
 */
 enum Direction {
-	dirNorth, dirNorthEast, dirEast, dirSouthEast, dirSouth, dirSouthWest, dirWest, dirNorthWest
+	dirNorth, dirNorthEast, dirEast, dirSouthEast,
+	dirSouth, dirSouthWest, dirWest, dirNorthWest
 };
 
-//! Type of damage
+/*!
+\brief Types of damage and resistance [UO4]
+
+This type defines the five kinds of attacks and defences possible on the new
+Ultima OnLine: Age of Shadows extension.
+The previous implementation (the NoX-Wizard's one) consisted of many more
+damage types and so resistances, but they are now simplified to the base ones.
+
+It will be quite simple to implement at scripting level new types of damage, so
+they won't be handled by the core system.
+*/
 enum DamageType {
-	damPure, damSlash, damPierce, damBludgeon, damBackstab, damFire, damElectricity, damMental, damPoison, damCold, damForce, damHoly, damMagic, MAX_RESISTANCE_INDEX
+	damPhysical, damEnergy, damPoison, damCold, damfire
 };
 
 //! Type of hiding
@@ -224,7 +235,7 @@ enum WeatherType {
 	wtHeavySnow	//!< blizzard
 };
 
-//! graphical effect type
+//! Graphical effect type
 enum EffectType {
 	etBolt = 0,	//!< effect travels from source to target
 	etLightning,	//!< lighning effect at source
@@ -268,10 +279,52 @@ enum ReputationChange {
 //! target type
 enum TargetType {
 	ttAll = 0,		//!< any target is valid
-	ttObject,			//!< anything with a serial is valid
+	ttObject,		//!< anything with a serial is valid
 	ttChar,			//!< chars are valid targets
 	ttItem,			//!< items are valid targets
 	ttLocation		//!< target location rather than an object
+};
+
+/*!
+\brief Default spells' IDs
+
+This enums contains all the spell's IDs from the default provided by Hypnos.
+They are magery, necromantic and chivalry spells, and everyone uses the spells'
+framework provided by Hypnos if not otherwise specified int the spells datafile.
+
+New spells which shares the underlying framework with the base's one can be
+added always using the spells datafile.
+
+\todo Add values for necromantic and chivalry spells.
+\todo Add documentation about the spells' datafile.
+\todo Add support for the spells' datafile
+*/
+enum SpellId {
+	spellInvalid = -1,
+	// Magery - Level 1
+	spellClumsy, spellCreateFood, spellFeebleMind, spellHeal, 
+	spellMagicArrow, spellNightSight, spellReactiveArmour, spellWeaken,
+	// Magery - Level 2
+	spellAgility, spellCunning, spellCure, spellHarm,
+	spellTrap, spellUntrap, spellProtection, spellStrength,
+	// Magery - Level 3
+	spellBless, spellFireball, spellLock, spellPoison, 
+	spellTelekinesys, spellTeleport, spellUnlock, spellWallStone,
+	// Magery - Level 4
+	spellArchCure, spellArchProtection, spellCurse, spellFireField,
+	spellGreatHeal, spellLightning, spellManaDrain, spellRecall,
+	// Magery - Level 5
+	spellBladeSpirit, spellDispelField, spellIncognito, spellReflection,
+	spellMindBlast, spellParalyze, spellPoisonField, spellSummon,
+	// Magery - Level 6
+	spellDispel, spellEnergyBolt, spellExplosion, spellInvisibility,
+	spellMark, spellMassCurse, spellParalyzeField, spellReveal,
+	// Magery - Level 7
+	spellChainLighting, spellEnergyField, spellFlameStrike, spellGate,
+	spellManaVampire, spellMassDispel, spellMeteorSwarm, spellPolymorph,
+	// Magery - Level 8
+	spellEarthquake, spellEnergyVortex, spellResurrection, spellSummonElemAir,
+	spellSummonDaemon, spellSummonElemEarth, spellSummonElemFire, spellSummonElemWater
 };
 
 #endif

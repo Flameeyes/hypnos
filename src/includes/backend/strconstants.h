@@ -53,7 +53,7 @@ namespace nStrConstants {
 	uint16_t weaponsTypes(std::string str);
 	SuspectAction suspectAction(std::string str);
 	ItemPlace itemPlace(std::string str);
-	magic::SpellId spellId(std::string str);
+	SpellId spellId(std::string str);
 };
 
 #endif

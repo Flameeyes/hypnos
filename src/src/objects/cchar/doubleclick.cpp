@@ -1,4 +1,5 @@
-/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*| Hypnos UO Server Emulator                                                |
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| Hypnos UO Server Emulator                                                |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
 | You can find detailed license information in hypnos.cpp file.            |
@@ -13,12 +14,9 @@
 #include "objects/cobject.h"
 #include "magic.h"
 #include "npcs.h"
-#include "msgboard.h"
-#include "target.h"
 #include "constants.h"
 #include "menu.h"
 #include "logsystem.h"
-#include "basics.h"
 #include "settings.h"
 
 /*!

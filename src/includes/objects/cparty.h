@@ -10,7 +10,6 @@
 #define __OBJECTS_CPARTY_H__
 
 #include "common_libs.h"
-#include "target.h"
 #include <wefts_mutex.h>
 
 /*!

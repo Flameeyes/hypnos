@@ -109,87 +109,7 @@ namespace magic {
 		cSummonCreatureMenu( pChar pc );
 		virtual void handleButton( pClient client, void /*cClientPacket*/* pkg  );
 	};
-
-	//! Spells' IDs
-	enum SpellId {
-		// Level 1
-		spellInvalid = -1,
-		spellClumsy,
-		spellCreateFood,
-		spellFeebleMind,
-		spellHeal,
-		spellMagicArrow,
-		spellNightSight,
-		spellReactiveArmour,
-		spellWeaken,
-		// Level 2
-		spellAgility,
-		spellCunning,
-		spellCure,
-		spellHarm,
-		spellTrap,
-		spellUntrap,
-		spellProtection,
-		spellStrength,
-		// Level 3
-		spellBless,
-		spellFireball,
-		spellLock,
-		spellPoison,
-		spellTelekinesys,
-		spellTeleport,
-		spellUnlock,
-		spellWallStone,
-		// Level 4
-		spellArchCure,
-		spellArchProtection,
-		spellCurse,
-		spellFireField,
-		spellGreatHeal,
-		spellLightning,
-		spellManaDrain,
-		spellRecall,
-		// Level 5
-		spellBladeSpirit,
-		spellDispelField,
-		spellIncognito,
-		spellReflection,
-		spellMindBlast,
-		spellParalyze,
-		spellPoisonField,
-		spellSummon,
-		// Level 6
-		spellDispel,
-		spellEnergyBolt,
-		spellExplosion,
-		spellInvisibility,
-		spellMark,
-		spellMassCurse,
-		spellParalyzeField,
-		spellReveal,
-		// Level 7
-		spellChainLighting,
-		spellEnergyField,
-		spellFlameStrike,
-		spellGate,
-		spellManaVampire,
-		spellMassDispel,
-		spellMeteorSwarm,
-		spellPolymorph,
-		// Level 8
-		spellEarthquake,
-		spellEnergyVortex,
-		spellResurrection,
-		spellSummonElemAir,
-		spellSummonDaemon,
-		spellSummonElemEarth,
-		spellSummonElemFire,
-		spellSummonElemWater
-	};
 	
-	//! Maximum number of spells
-	static const uint8_t MAX_SPELLS = spellSummonElemWater+1;
-
 	enum CastingType {
 		CASTINGTYPE_SPELL = 0,
 		CASTINGTYPE_SCROLL,
@@ -240,7 +160,7 @@ namespace magic {
 	enum {	TARGTYPE_NONE = 0, TARGTYPE_XYZ, TARGTYPE_ITEM, TARGTYPE_CHAR,
 		TARGTYPE_CONTAINERORDOOR, TARGTYPE_CONTAINER, TARGTYPE_RUNE };
 
-	extern sSpell spellsData[MAX_SPELLS];
+	extern std::vector<sSpell> spellsData;
 	void loadSpells();
 	
 	bool checkMagicalSpeech( pChar pc, char* speech );
