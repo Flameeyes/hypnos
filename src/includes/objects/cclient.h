@@ -113,8 +113,10 @@ public:
         //! trading methods
 
 public:
-        void buyaction(pNpc npc, std::vector< buyeditem > &allitemsbought);      //!< Getting purchased item and gold/availability check
-
+        void buyaction(pNpc npc, std::vector< buyeditem > &allitemsbought);    	//!< Getting purchased item and gold/availability check
+        static void sendtradestatus(pContainer cont1, pContainer cont2);  	//!< updates secure trade window
+        static void dotrade(pContainer cont1,pContainer cont2);			//!< concludes trade (either swapping items or returning them)
+	static void endtrade(uint32_t serial);					//!< closing trade window : called when one client ends the transaction (either accepted or canceled)
         //! packet methods
 
 public:
@@ -124,11 +126,11 @@ public:
 	void light();
 	void showBankBox(pChar dest);
 	void showSpecialBankBox(pChar dest);
-	void statusWindow(pChar target, bool extended = true); //, bool canrename);  canrename will be "calculated" within the method
+	void statusWindow(pChar target, bool extended = true);
         void updateStatusWindow(pItem item);
         void skillWindow();
         void updatePaperdoll();
-        static void sendtradestatus(pContainer cont1, pContainer cont2);  //takes clients from containers' owners
+
 };
 
 #endif

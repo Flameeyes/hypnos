@@ -114,7 +114,7 @@ const uint8_t cBody::unEquip(pItem pi, bool drag)
 	pi->layer= 0;
 	pi->setContainer( getBackpack(true) );
 
-	cPacketSendAddContainerItem pk(pi);
+	cPacketSendAddItemtoContainer pk(pi);
 	if(client)
 		client->sendPacket(&pk);
 

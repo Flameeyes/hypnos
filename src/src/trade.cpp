@@ -211,10 +211,11 @@ pItem tradestart(pChar pc1, pChar pc2)
 	cont1->layer = cont2->layer = 0;
 	cont1->type = cont2->type = 1;
 	cont1->dye = cont2->dye = 0;
-        sendbpitem(s1, cont1);
-        sendbpitem(s2, cont1);
-        sendbpitem(s1, cont2);
-        sendbpitem(s2, cont2);
+        //TODO find client1 & client2
+        client1->addItemToContainer(cont1);
+        client2->addItemToContainer(cont1);
+        client1->addItemToContainer(cont2);
+        client2->addItemToContainer(cont2);
 
         cont2->moreb1= cont1->getSerial().ser1;
 	cont2->moreb2= cont1->getSerial().ser2;
@@ -288,87 +289,7 @@ void clearalltrades()
         }*/
 }
 
-void dotrade(P_ITEM cont1, P_ITEM cont2)
-{
-        VALIDATEPI(cont1);
-        VALIDATEPI(cont2);
-        P_CHAR pc1 = pointers::findCharBySerial(cont1->getContSerial());
-        P_CHAR pc2 = pointers::findCharBySerial(cont2->getContSerial());
-        VALIDATEPC(pc1);
-        VALIDATEPC(pc2);
-        P_ITEM bp1 = pc1->getBackpack();
-        P_ITEM bp2 = pc2->getBackpack();
-        VALIDATEPI(bp1);
-        VALIDATEPI(bp2);
-        int32_t s1, s2;
-        if (pc1->getClient() == NULL || pc2->getClient() == NULL) return;
-        s1 = pc1->getClient()->toInt();
-        s2 = pc2->getClient()->toInt();
 
-        if (cont1->morez == 0 || cont2->morez == 0) {
-                //If the trade is not accepted, then give items back to original owners
-                P_CHAR pc_dummy = NULL;
-                pc_dummy = pc1;
-                pc1 = pc2;
-                pc2 = pc_dummy;
-        }
-
-        //Player1 items go to player2
-
-	NxwItemWrapper si;
-	si.fillItemsInContainer( cont1, false );
-	for( si.rewind(); !si.isEmpty(); si++ )
-	{
-		P_ITEM pi = si.getItem();
-		if( ISVALIDPI(pi))
-		{
-
-			if (pi->amxevents[EVENT_IONTRANSFER]!=NULL) {
-				g_bByPass = false;
-				pi->amxevents[EVENT_IONTRANSFER]->Call(pi->getSerial32(), pc1->getSerial32(), pc2->getSerial32());
-				if (g_bByPass==true) continue; //skip item, I hope
-			}
-			/*
-			g_bByPass = false;
-			pi->runAmxEvent( EVENT_IONTRANSFER, pi->getSerial32(), s1, s2 );
-			if (g_bByPass==true)
-				continue; //skip item, I hope
-			*/
-			pi->setContainer( bp2 );
-			pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
-			sendbpitem(s2, pi);
-			pi->Refresh();
-		}
-	}
-
-
-	si.clear();
-	si.fillItemsInContainer( cont2, false );
-	for( si.rewind(); !si.isEmpty(); si++ )
-	{
-		P_ITEM pi = si.getItem();
-		if( ISVALIDPI(pi))
-		{
-
-			if (pi->amxevents[EVENT_IONTRANSFER]!=NULL) {
-        		g_bByPass = false;
-        		pi->amxevents[EVENT_IONTRANSFER]->Call(pi->getSerial32(), pc2->getSerial32(), pc1->getSerial32());
-        		if (g_bByPass==true) continue; //skip item, I hope
-			}
-			/*
-			g_bByPass = false;
-			pi->runAmxEvent( EVENT_IONTRANSFER, pi->getSerial32(), s2, s1 );
-			if (g_bByPass==true)
-				continue; //skip item, I hope
-			*/
-
-			pi->setContainer( bp1 );
-			pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
-			sendbpitem(s1, pi);
-			pi->Refresh();
-		}
-	}
-}
 
 /*
 void restock(bool total)

@@ -21,7 +21,7 @@
 typedef double				R64;	//< 64 bits floating point
 typedef float				R32;	//< 32 bits floating point
 
-#ypedef std::vector<pItem>	ItemList;
+typedef std::vector<pItem>	ItemList;
 
 
 typedef uint32_t				TIMERVAL;

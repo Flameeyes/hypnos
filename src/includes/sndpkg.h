@@ -95,7 +95,7 @@ void impowncreate(NXWSOCKET s, P_CHAR pc, int z);
 void sendshopinfo(int s, int c, P_ITEM pi);
 int sellstuff(int s, int i);
 
-void endtrade(SERIAL serial);
+
 void tellmessage(int i, int s, char *txt);
 void gmyell(char *txt);
 

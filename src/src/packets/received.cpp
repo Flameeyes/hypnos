@@ -78,7 +78,7 @@ void cPacketSendContainerItem::prepare()
 	}
 }
 
-void cPacketSendAddContainerItem::prepare()
+void cPacketSendAddItemtoContainer::prepare()
 {
 	length = 20;
 	buffer = new uint8_t[20];
@@ -86,24 +86,28 @@ void cPacketSendAddContainerItem::prepare()
 	buffer[0] = 0x25;
 	buffer[7] = 0x00;
 
-	//AntiChrist - world light sources stuff
+	LongToCharPtr(item->getSerial(), buffer+1);
+
+       	//AntiChrist - world light sources stuff
 	//if player is a gm, this item
 	//is shown like a candle (so that he can move it),
 	//....if not, the item is a normal
 	//invisible light source!
-	if(pc->IsGM() && item.id == 0x1647)
-	{
-		item.id = 0x0A0F;
-		item.color = 0x00C6;
-	}
-
-	LongToCharPtr(item->getSerial(), buffer+1);
-	ShortToCharPtr(item->getAnimId(), ptrItem+5);
+        if(pc->IsGM() && item.id == 0x1647)
+        {
+        	ShortToCharPtr(0x0A0F, ptrItem+5);
+                ShortToCharPtr(0x00C6, ptrItem+18);
+        }
+        else
+        {
+		ShortToCharPtr(item->getAnimId(), ptrItem+5);
+                ShortToCharPtr(item->getColor(), ptrItem+18);
+        }
 	ShortToCharPtr(item->getAmount(), ptrItem+8);
 	ShortToCharPtr(item->getLocation().x, ptrItem+10);
 	ShortToCharPtr(item->getLocation().y, ptrItem+12);
 	LongToCharPtr(item->getContainer()->getSerial(), ptrItem+14);
-	ShortToCharPtr(item->getColor(), ptrItem+18);
+
 }
 
 void cPacketSendWornItem::prepare()
@@ -1342,19 +1346,6 @@ bool cPacketReceiveSecureTrade::execute(pClient client)
 			client->sendtradestatus(cont1, cont2);
 			if (cont1->morez && cont2->morez)
 			{
-
-
-//Continue revision from here
-
-
-
-
-
-
-
-
-
-
 				dotrade(cont1, cont2);
 				endtrade( LongFromCharPtr(buffer + 4) );
 			}
@@ -1487,7 +1478,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                         else
                         {
 				// Send "Add Item to Container" message to client
-		                cPacketSendAddContainerItem pk(newmessage);
+		                cPacketSendAddItemtoContainer pk(newmessage);
 		                client->sendPacket(&pk);
                 	}
 

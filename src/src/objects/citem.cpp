@@ -957,9 +957,10 @@ void cItem::Refresh()
 		{
 			NXWSOCKET a=sw.getSocket();
 			if(a!=INVALID)
-				sendbpitem(a, this);	//NOTE: there's already the inrange check
-							//in the sendbpitem() function, so it's unuseful
-							//to do a double check!!
+                        //TODO: calculate client
+				client->addItemToContainer(this);	//NOTE: there's already the inrange check
+									//in the addItemToContainer() function, so it's unuseful
+									//to do a double check!!
 		}
 	}
 }

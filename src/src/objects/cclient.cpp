@@ -143,7 +143,7 @@ void cClient::addItemToContainer(pItem item)
 	if ( ! item || pc->distFrom(pi) > VISRANGE )
 		return;
 
-	cPacketSendAddContainerItem pk( item, item->getContainer()->getSerial() );
+	cPacketSendAddItemtoContainer pk( item );
 
 	sendPacket(&pk);
 
@@ -342,6 +342,8 @@ void cClient::updateStatusWindow(pItem item)
 	if( item->getContainer() != pack || item->getContainer() == pc )     //!< if item was in pack and has been moved out or has been equipped/deequipped update char
 		statusWindow( pc, true );
 }
+
+
 
 /*!
 \brief brings up the skill window in client
@@ -1874,8 +1876,7 @@ void wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 			pc->playSFX( itemsfx(pi->getId()) );
 			pi->layer= 0;
 			pi->setContainer( pack );
-                        //! \todo the sendpacket stuff here
-			sendbpitem(pi);
+			addItemToContainer(pi);
 			return;
 		}
 
@@ -2112,7 +2113,142 @@ void sendtradestatus(pContainer cont1, pContainer cont2)  //takes clients from c
 	VALIDATEPC(p2);
 
 	cPacketSendSecureTradingStatus pk1(0x02, cont1->getSerial32(), (uint32_t) (cont1->morez%256), (uint32_t) (cont2->morez%256));
-      	cPacketSendSecureTradingStatus pk1(0x02, cont2->getSerial32(), (uint32_t) (cont2->morez%256), (uint32_t) (cont1->morez%256));
+      	cPacketSendSecureTradingStatus pk2(0x02, cont2->getSerial32(), (uint32_t) (cont2->morez%256), (uint32_t) (cont1->morez%256));
 	p1->getClient()->sendPacket(&pk1);
 	p2->getClient()->sendPacket(&pk2);
 }
+
+void dotrade(pContainer cont1, pContainer cont2)
+{
+        VALIDATEPI(cont1);
+        VALIDATEPI(cont2);
+        pPC pc1 = pointers::findCharBySerial(cont1->getContSerial());
+        pPC pc2 = pointers::findCharBySerial(cont2->getContSerial());
+        VALIDATEPC(pc1);
+        VALIDATEPC(pc2);
+        pContainer bp1 = pc1->getBackpack();
+        pContainer bp2 = pc2->getBackpack();
+        VALIDATEPI(bp1);
+        VALIDATEPI(bp2);
+        if (pc1->getClient() == NULL || pc2->getClient() == NULL) return;
+
+        if (cont1->morez == 0 || cont2->morez == 0) {
+                //If the trade is not accepted, then give items back to original owners
+                pPC pc_dummy = NULL;
+                pc_dummy = pc1;
+                pc1 = pc2;
+                pc2 = pc_dummy;
+        }
+
+        //Player1 items go to player2
+
+	NxwItemWrapper si;
+	si.fillItemsInContainer( cont1, false );
+	for( si.rewind(); !si.isEmpty(); si++ )
+	{
+		pItem pi = si.getItem();
+		if( ISVALIDPI(pi))
+		{
+
+			if (pi->amxevents[EVENT_IONTRANSFER]!=NULL) {
+				g_bByPass = false;
+				pi->amxevents[EVENT_IONTRANSFER]->Call(pi->getSerial32(), pc1->getSerial32(), pc2->getSerial32());
+				if (g_bByPass==true) continue; //skip item, I hope
+			}
+			pi->setContainer( bp2 );
+			pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
+			pc2->getClient()->addItemToContainer(pi);
+			pi->Refresh();
+		}
+	}
+
+
+	si.clear();
+	si.fillItemsInContainer( cont2, false );
+	for( si.rewind(); !si.isEmpty(); si++ )
+	{
+		P_ITEM pi = si.getItem();
+		if( ISVALIDPI(pi))
+		{
+
+			if (pi->amxevents[EVENT_IONTRANSFER]!=NULL)
+                        {
+        			g_bByPass = false;
+        			pi->amxevents[EVENT_IONTRANSFER]->Call(pi->getSerial32(), pc2->getSerial32(), pc1->getSerial32());
+        			if (g_bByPass==true) continue; //skip item, I hope
+			}
+
+			pi->setContainer( bp1 );
+			pi->setPosition( 50+(rand()%80), 50+(rand()%80), 9);
+			pc1->getClient()->addItemToContainer(pi);
+			pi->Refresh();
+		}
+	}
+}
+
+void endtrade(uint32_t serial)
+{
+	pItem c1=pointers::findItemBySerial(serial);
+	VALIDATEPI(c1);
+	pItem c2=pointers::findItemBySerial(calcserial(c1->moreb1, c1->moreb2, c1->moreb3, c1->moreb4));
+	VALIDATEPI(c2);
+
+	pChar pc1=pointers::findCharBySerial(c1->getContSerial());
+	VALIDATEPC(pc1);
+
+	pChar pc2=pointers::findCharBySerial(c2->getContSerial());
+	VALIDATEPC(pc2);
+
+
+	pItem bp1= pc1->getBackpack();
+	VALIDATEPI(bp1);
+	pItem bp2= pc2->getBackpack();
+	VALIDATEPI(bp2);
+
+	pClient c1 = pc1->getClient();
+	pClient c2 = pc2->getClient();
+
+	if (c1 != NULL)	// player may have been disconnected (Duke)
+        {
+        	cPacketSendSecureTradingStatus pk1(0x01, cont1->getSerial32(), 0, 0);
+		c1->sendPacket(&pk1);
+	}
+	if (c2 != NULL)	// player may have been disconnected (Duke)
+        {
+              	cPacketSendSecureTradingStatus pk2(0x01, cont2->getSerial32(), 0, 0);
+              	c2->sendPacket(&pk2);
+        }
+
+	NxwItemWrapper si;
+	si.fillItemsInContainer( c1, false );
+	for( si.rewind(); !si.isEmpty(); si++ )
+	{
+		pItem pj=si.getItem(); //</Luxor>
+		if (ISVALIDPI(pj))
+		{
+			bp1->AddItem(pj);
+
+			if (s1!=INVALID)
+				pj->Refresh();
+		}
+	}
+
+	NxwItemWrapper si2;
+	si2.fillItemsInContainer( c2, false );
+	for( si2.rewind(); !si2.isEmpty(); si2++ )
+	{
+
+		pItem pj=si2.getItem();
+		if (ISVALIDPI(pj))
+		{
+			bp2->AddItem(pj);
+
+			if (s2!=INVALID)
+				pj->Refresh();
+		}
+	}
+
+	c1->Delete();
+	c2->Delete();
+}
+

@@ -155,7 +155,8 @@ public:
 };
 
 //! Add item to container
-class cPacketSendAddContainerItem : cPacketSend
+//! \note packet has to be sent AFTER the real moving of the item. This only tells the client where it has gone to
+class cPacketSendAddItemtoContainer : cPacketSend
 {
 protected:
 	pItem item;
@@ -164,7 +165,7 @@ public:
 	\param itm item to add
 	\param cont serial of container item
 	*/
-	inline cPacketAddContainerItem(pItem itm) :
+	inline cPacketSendAddItemtoContainer(pItem itm) :
 		item(itm)
 	{ }
 
@@ -177,7 +178,7 @@ class cPacketSendWornItem : cPacketSend
 protected:
 	pItem item;
 public:
-	inline cPacketSendAddContainerItem(pItem itm) :
+	inline cPacketSendWornItem(pItem itm) :
 		item(itm)
 	{ }
 

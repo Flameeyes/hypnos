@@ -14,7 +14,7 @@ void sellaction(int s);
 P_ITEM tradestart(P_CHAR pc1, P_CHAR pc2);
 void clearalltrades();
 void trademsg(int s);
-void dotrade(P_ITEM cont1,P_ITEM cont2);
+
 
 
 typedef struct {

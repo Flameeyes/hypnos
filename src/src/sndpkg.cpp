@@ -1876,67 +1876,6 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 }
 
 
-void endtrade(SERIAL serial)
-{
-	P_ITEM c1=pointers::findItemBySerial(serial);
-	VALIDATEPI(c1);
-	P_ITEM c2=pointers::findItemBySerial(calcserial(c1->moreb1, c1->moreb2, c1->moreb3, c1->moreb4));
-	VALIDATEPI(c2);
-
-	P_CHAR pc1=pointers::findCharBySerial(c1->getContSerial());
-	VALIDATEPC(pc1);
-
-	P_CHAR pc2=pointers::findCharBySerial(c2->getContSerial());
-	VALIDATEPC(pc2);
-
-
-	P_ITEM bp1= pc1->getBackpack();
-	VALIDATEPI(bp1);
-	P_ITEM bp2= pc2->getBackpack();
-	VALIDATEPI(bp2);
-
-	NXWSOCKET s1 = pc1->getSocket();
-	NXWSOCKET s2 = pc2->getSocket();
-
-	if (s1 > -1)	// player may have been disconnected (Duke)
-		SendSecureTradingPkt(s1, 0x01, c1->getSerial32(), 0, 0);
-
-	if (s2 > -1)	// player may have been disconnected (Duke)
-		SendSecureTradingPkt(s2, 0x01, c2->getSerial32(), 0, 0);
-
-
-	NxwItemWrapper si;
-	si.fillItemsInContainer( c1, false );
-	for( si.rewind(); !si.isEmpty(); si++ )
-	{
-		P_ITEM pj=si.getItem(); //</Luxor>
-		if (ISVALIDPI(pj))
-		{
-			bp1->AddItem(pj);
-
-			if (s1!=INVALID)
-				pj->Refresh();
-		}
-	}
-
-	NxwItemWrapper si2;
-	si2.fillItemsInContainer( c2, false );
-	for( si2.rewind(); !si2.isEmpty(); si2++ )
-	{
-
-		P_ITEM pj=si2.getItem();
-		if (ISVALIDPI(pj))
-		{
-			bp2->AddItem(pj);
-
-			if (s2!=INVALID)
-				pj->Refresh();
-		}
-	}
-
-	c1->Delete();
-	c2->Delete();
-}
 
 void tellmessage(int i, int s, char *txt)
 //Modified by N6 to use UNICODE packets
