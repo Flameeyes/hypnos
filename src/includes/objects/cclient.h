@@ -56,6 +56,8 @@ public:
 	void encode(char &*);
 	void compress(char &*);
 	void encrypt(char &*);
+
+	void showContainer(pItem pCont);
 };
 
 #endif

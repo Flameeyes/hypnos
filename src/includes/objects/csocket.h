@@ -49,6 +49,10 @@ protected:
 	struct sockaddr_in *saddr;
 	//! Client object
 	pClient client;
+	//! Receiving task
+	cReceiver receiver;
+	//! Sending task
+	cSender sender;
 
 	/*!
 	\brief Class for receiving task
@@ -60,8 +64,9 @@ protected:
 	private:
 		pSocket sock;
 	public:
-		inline cReceiver(pSocket s)
-		{ sock = s; }
+		inline cReceiver(pSocket s) :
+			sock(s)
+		{ }
 
 		void run();
 	};
@@ -76,8 +81,9 @@ protected:
 	private:
 		pSocket sock;
 	public:
-		inline cSender(pSocket s)
-		{ sock = s; }
+		inline cSender(pSocket s) :
+			sock(s)
+		{ }
 
 		void run();
 	};

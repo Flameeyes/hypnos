@@ -991,65 +991,6 @@ P_ITEM cChar::getShield()
 		return NULL;
 }
 
-/*!
-\brief Show a container to player
-\author GHisha
-\param pCont the container
-*/
-void cChar::showContainer(P_ITEM pCont)
-{
-	VALIDATEPI(pCont);
-	NXWCLIENT ps=getClient();
-	if(ps==NULL) return;
-	NXWSOCKET s=ps->toInt();
-
-	NxwItemWrapper si;
-	si.fillItemsInContainer( pCont, false, false );
-	SI32 count=si.size();
-
-	UI08 bpopen[7]= { 0x24, 0x40, 0x0B, 0x00, 0x1A, 0x00, 0x3C };
-	UI16 gump= pCont->getContGump();
-
-	LongToCharPtr(pCont->getSerial32(), bpopen+1);
-	ShortToCharPtr(gump, bpopen+5);
-
-	Xsend(s, bpopen, 7);
-//AoS/	Network->FlushBuffer(s);
-
-	UI08 bpopen2[5]= { 0x3C, 0x00, 0x05, 0x00, 0x00 };
-
-	ShortToCharPtr(count, bpopen2+3);
-	count=(count*19)+5;
-	ShortToCharPtr(count, bpopen2+1);
-	Xsend(s, bpopen2, 5);
-
-	UI08 bpitem[19]= { 0x40,0x0D,0x98,0xF7,0x0F,0x4F,0x00,0x00,0x09,0x00,0x30,0x00,0x52,0x40,0x0B,0x00,0x1A,0x00,0x00 };
-
-
-	for( si.rewind(); !si.isEmpty(); si++ )
-	{
-		P_ITEM pi=si.getItem();
-		if(!ISVALIDPI(pi))
-			continue;
-
-		//fix location of items if they mess up. (needs tweaked for container types)
-		if (pi->getPosition("x") > 150) pi->setPosition("x", 150);
-		if (pi->getPosition("y") > 140) pi->setPosition("y", 140);
-		//end fix
-		LongToCharPtr(pi->getSerial32(), bpitem);
-		ShortToCharPtr(pi->animid(), bpitem +4);
-		ShortToCharPtr(pi->amount, bpitem +7);
-		ShortToCharPtr(pi->getPosition().x, bpitem +9);
-		ShortToCharPtr(pi->getPosition().y, bpitem +11);
-		LongToCharPtr(pCont->getSerial32(), bpitem +13);
-		ShortToCharPtr(pi->getColor(), bpitem +17);
-		//bpitem[19]=pi->decaytime=0;//HoneyJar // reseting the decaytimer in the backpack
-		bpitem[19]= 0;
-		Xsend(s, bpitem, 19);
-	}
-//AoS/ Network->FlushBuffer(s);
-}
-
 P_ITEM cChar::getBackpack()
 {
 	P_ITEM pi=pointers::findItemBySerial(packitemserial);
@@ -1967,19 +1908,18 @@ LOGICAL cChar::losFrom(P_CHAR pc)
 }
 
 /*!
-\author Xanathar
+\author Flameeyes
 \brief plays a sound effect on a char
 \param sound as default
 \param onlyToMe Send sfx only to same char not to all near players (default: false)
+\todo We need to use new client sets
 */
 void cChar::playSFX(SI16 sound, LOGICAL onlyToMe)
 {
-	Location charpos = getPosition();
-
-	charpos.z = 0;
+	cPacketSendSoundFX pk(sound, getPosition());
 
 	if(onlyToMe) {
-		SendPlaySoundEffectPkt(getSocket(), 0x01, sound, 0x0000, charpos);
+		client->send(&pk);
 		return;
 	}
 
@@ -1989,9 +1929,7 @@ void cChar::playSFX(SI16 sound, LOGICAL onlyToMe)
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
 		NXWCLIENT ps=sw.getClient();
 		if(ps!=NULL)
-		{
-			SendPlaySoundEffectPkt(ps->toInt(), 0x01, sound, 0x0000, charpos);
-		}
+			client->send(&pk);
 	}
 }
 
@@ -3925,19 +3863,21 @@ P_GUILD_MEMBER cChar::getGuildMember()
 
 /*!
 \brief open a bankbox
-\author Endymion
+\author Flameeyes
 \param pc the character to open the bank of
-\note Added to cChar by Akron (todo from endymion)
 */
-void cChar::openBankBox(P_CHAR pc)
+void cChar::openBankBox(pChar pc)
 {
-	VALIDATEPC(pc);
-	if ((getSerial32() != pc->getSerial32()) && !IsGMorCounselor())
+	if ( ! pc || ! client || ( ( this != pc ) && !IsGMorCounselor() ) )
 		return;
 
-	P_ITEM bank = pc->GetBankBox(BANK_GOLD);
+	pItem bank = pc->GetBankBox(BANK_GOLD);
+	if ( ! bank )
+		return;
+
 	wearIt(getSocket(), bank);
-	showContainer(bank);
+
+	client->showContainer(bank);
 }
 
 /*!
@@ -3955,15 +3895,17 @@ All this for increasing pk-work and commerce! :)
 (and surely the Mercenary work, so now have to pay strong
 warriors to escort u during your travels!)
 */
-void cChar::openSpecialBank(P_CHAR pc)
+void cChar::openSpecialBank(pChar pc)
 {
-	VALIDATEPC( pc );
-	if((getSerial32()!=pc->getSerial32()) && !IsGMorCounselor())
+	if ( ! pc || ! client || ( ( this != pc ) && !IsGMorCounselor() ) )
 		return;
 
-	P_ITEM bank = pc->GetBankBox(BANK_ITEM);
+	pItem bank = pc->GetBankBox(BANK_ITEM);
+	if ( ! bank )
+		return;
+
 	wearIt(getSocket(), bank);
-	showContainer(bank);
+	client->showContainer(bank);
 }
 
 void cChar::heartbeat()

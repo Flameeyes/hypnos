@@ -156,15 +156,15 @@ void cNxwClientObj::send(const void *point, int length)
 
 void cNxwClientObj::sendSpellBook(P_ITEM pi)
 {
-    if (pi==NULL) // item number send by client?
-        pi=pointers::findItemBySerPtr(getRcvBuffer()+1);
+	if (pi==NULL) // item number send by client?
+		pi=pointers::findItemBySerPtr(getRcvBuffer()+1);
 
-    P_CHAR pc_currchar = this->currChar();
+	P_CHAR pc_currchar = this->currChar();
 
 	P_ITEM p_back=pc_currchar->getBackpack();
 
 
-    if (!pi )
+	if (!pi )
 		if( ISVALIDPI(p_back))
 		{
 			NxwItemWrapper si;
@@ -277,33 +277,6 @@ void cNxwClientObj::sendSpellBook(P_ITEM pi)
             send(sbookspell, 19);
         }
     }
-}
-
-
-void cNxwClientObj::sendSFX(unsigned char a, unsigned char b, bool bIncludeNearby)
-{
-	unsigned char sfx[13]="\x54\x01\x12\x34\x00\x00\x06\x40\x05\x9A\x00\x00";
-	P_CHAR pc = currChar();
-	Location charpos= pc->getPosition();
-
-	sfx[2]= a;
-	sfx[3]= b;
-	sfx[6]= charpos.x >> 8;
-	sfx[7]= charpos.x % 256;
-	sfx[8]= charpos.y >> 8;
-	sfx[9]= charpos.y % 256;
-
-	if (bIncludeNearby) {
-		NxwSocketWrapper sw;
-		sw.fillOnline( pc );
-		for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-
-			NXWCLIENT c= sw.getClient();
-			if (c!=NULL)
-				c->send(sfx, 12);
-		}
-	}
-	else send(sfx,12); //Endy fix for double send
 }
 
 /*!

@@ -12,7 +12,11 @@
 
 #include "csocket.h"
 
-cSocket::cSocket(SI32 sd, struct sockaddr_in *addr)
+#include <sys/types.h>
+#include <sys/socket.h>
+
+cSocket::cSocket(SI32 sd, struct sockaddr_in *addr) :
+	receiver(this), sender(this)
 {
 	s = sd;
 	saddr = addr;
@@ -27,3 +31,14 @@ cSocket::clean()
 	Network::cleanSocket(this);
 }
 
+void cSocket::cReceiver::run()
+{
+	UI08 buf[1024];
+	size_t read;
+
+	while( (read = recv(sock, buf, 1024, 0)) > 0 )
+	{
+		pPacketReceive pr = cPacketReceived::fromBuffer(buf, read);
+		pr->execute(sock->getClient());
+	}
+}
