@@ -157,21 +157,34 @@ enum ItemType {
 	ITYPE_JAIL_BALL = 401, ITYPE_ITEMID_WAND = 404
 };
 
-//! Colors
-enum {	COLOR_LIGHTBLUE = 0x489, COLOR_VIOLET = 0xD, COLOR_WHITE = 0x481, COLOR_BLACK = 0x1,
-	COLOR_NONE = 0
-}; //!< Colors
-
-//! Human bodies
-enum { BODY_MALE = 0x190, BODY_FEMALE = 0x191, BODY_DEADMALE = 0x192, BODY_DEADFEMALE = 0x193, BODY_GMSTAFF = 0x03DB };
-
 //! Bank Type
 enum { BANK_GOLD = 1, BANK_ITEM = 0, MOREY_GOLDONLYBANK = 123, MOREX_BANK = 1 };
 
-//! Items (?)
-enum {	ITEMID_DEATHSHROUD = 0x204E, ITEMID_CORPSEBASE = 0x2006, ITEMID_BANKBOX = 0x09AB,
-	ITEMID_GOLD = 0x0EED
-};
+//@{
+//! \name Colors
+static const uint16_t COLOR_LIGHTBLUE	= 0x0489;
+static const uint16_t COLOR_VIOLET	= 0x000D;
+static const uint16_t COLOR_WHITE	= 0x0481;
+static const uint16_t COLOR_BLACK	= 0x0001;
+static const uint16_t COLOR_NONE	= 0x0000;
+//@}
+
+//@{
+//! \name Human bodies
+static const uint16_t BODY_MALE		= 0x0190;	//!< Male body
+static const uint16_t BODY_FEMALE	= 0x0191;	//!< Female body
+static const uint16_t BODY_DEADMALE	= 0x0192;	//!< Dead male body
+static const uint16_t BODY_DEADFEMALE	= 0x0193;	//!< Dead female body
+static const uint16_t BODY_GMSTAFF	= 0x03DB;	//!< GM Staff body
+//@}
+
+//@{
+//! \name Some items
+static const uint16_t ITEMID_DEATHSHROUD= 0x204E;
+static const uint16_t ITEMID_CORPSEBASE	= 0x2006;
+static const uint16_t ITEMID_BANKBOX	= 0x09AB;
+static const uint16_t ITEMID_GOLD	= 0x0EED;
+//@}
 
 //! House list type
 enum { H_FRIEND = 1, H_BAN };

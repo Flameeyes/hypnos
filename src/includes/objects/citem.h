@@ -427,12 +427,12 @@ public:
 \name Amount
 */
 protected:
-	uint16_t		amount;		//!< Amount of items in pile
-	uint16_t		amount2;	//!< Used to track things like number of yards left in a roll of cloth
+	uint16_t amount;	//!< Amount of items in pile
+	uint16_t amount2;	//!< Used to track things like number of yards left in a roll of cloth
 
 public:
-	int32_t		ReduceAmount(const int16_t amount);
-	int32_t		IncreaseAmount(const int16_t amount);
+	int32_t ReduceAmount(const int16_t amount);
+	int32_t IncreaseAmount(const int16_t amount);
 
 	//! sets the amount of piled items
 	inline void setAmount(const uint16_t amt)
