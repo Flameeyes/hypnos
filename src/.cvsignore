@@ -13,3 +13,4 @@ hypnos.kdevelop.pcs
 libtool
 Makefile
 config.status
+errors.log
