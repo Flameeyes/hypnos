@@ -12,7 +12,9 @@
 #define __VERSION_H__
 
 #include "common_libs.hpp"
-#include <iostream>
+
+#include "libhypnos/hypstl/string.hpp"
+#include "libhypnos/hypstl/iosfwd.hpp"
 
 /*!
 \brief List of version's developers

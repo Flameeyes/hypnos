@@ -21297,7 +21297,10 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
-for ac_header in ios ios.h sstream sstream.h iosfwd iosfwd.h iostream iostream.h ostream ostream.h fstream fstream.h iomanip iomanip.h set set.h vector vector.h slist ext/slist slist.h cassert assert.h string string.h hash_map ext/hash_map hash_map.h map map.h list list.h
+
+
+
+for ac_header in ios ios.h sstream sstream.h iosfwd iosfwd.h iostream iostream.h ostream ostream.h fstream fstream.h iomanip iomanip.h set set.h vector vector.h slist ext/slist slist.h cassert assert.h string string.h hash_map ext/hash_map stlport/hash_map hash_map.h map map.h list list.h queue queue.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then
@@ -24068,6 +24071,9 @@ else
 	PCHINCLUDES=''
 fi
 
+# We already define it in the config.h, avoid idiotic errors about redefinition.
+BINRELOC_CFLAGS=$(echo $BINRELOC_CFLAGS | sed -e 's/-DENABLE_BINRELOC//')
+
 TMPFLAGS="$WEFTS_CXXFLAGS -Wall"
 
 
@@ -24228,7 +24234,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
-CPPFLAGS="$INCLUDES $CPPFLAGS $WEFTS_CXXFLAGS $MXML_CXXFLAGS $DEFDIRS $BINRELOC_CFLAGS -DHAVE_CONFIG_H "
+CPPFLAGS="$INCLUDES $CPPFLAGS $WEFTS_CXXFLAGS $MXML_CXXFLAGS $DEFDIRS $BINRELOC_CFLAGS -DHAVE_CONFIG_H -DHYPNOS_SOURCES"
 CFLAGS="$CFLAGS $WORKING_CFLAGS $PCHINCLUDES $CPPFLAGS"
 CXXFLAGS="$CXXFLAGS $WORKING_CXXFLAGS $PCHINCLUDES $CPPFLAGS"
 
@@ -24251,7 +24257,7 @@ fi
 
 
 
-                                                                                                                                                                                                                                                                                                  ac_config_files="$ac_config_files Makefile libhypnos/Makefile libhypnos/muls/Makefile libhypnos/libhypnos/Makefile libhypnos/libhypnos/muls/Makefile utils/Makefile utils/clilist/Makefile includes/Makefile includes/archetypes/Makefile includes/archs/Makefile includes/backend/Makefile includes/objects/Makefile includes/objects/citem/Makefile includes/encryption/Makefile includes/networking/Makefile includes/skills/Makefile includes/extras/Makefile src/Makefile src/archetypes/Makefile src/archs/Makefile src/backend/Makefile src/encryption/Makefile src/extras/Makefile src/networking/Makefile src/objects/Makefile src/objects/cchar/Makefile src/objects/citem/Makefile src/objects/cnpc/Makefile src/skills/Makefile"
+                                                                                                                                                                                                                                                                                                            ac_config_files="$ac_config_files Makefile libhypnos/Makefile libhypnos/muls/Makefile libhypnos/libhypnos/Makefile libhypnos/libhypnos/hypstl/Makefile libhypnos/libhypnos/muls/Makefile utils/Makefile utils/clilist/Makefile includes/Makefile includes/archetypes/Makefile includes/archs/Makefile includes/backend/Makefile includes/objects/Makefile includes/objects/citem/Makefile includes/encryption/Makefile includes/networking/Makefile includes/skills/Makefile includes/extras/Makefile src/Makefile src/archetypes/Makefile src/archs/Makefile src/backend/Makefile src/encryption/Makefile src/extras/Makefile src/networking/Makefile src/objects/Makefile src/objects/cchar/Makefile src/objects/citem/Makefile src/objects/cnpc/Makefile src/skills/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -24835,6 +24841,7 @@ do
   "libhypnos/Makefile" ) CONFIG_FILES="$CONFIG_FILES libhypnos/Makefile" ;;
   "libhypnos/muls/Makefile" ) CONFIG_FILES="$CONFIG_FILES libhypnos/muls/Makefile" ;;
   "libhypnos/libhypnos/Makefile" ) CONFIG_FILES="$CONFIG_FILES libhypnos/libhypnos/Makefile" ;;
+  "libhypnos/libhypnos/hypstl/Makefile" ) CONFIG_FILES="$CONFIG_FILES libhypnos/libhypnos/hypstl/Makefile" ;;
   "libhypnos/libhypnos/muls/Makefile" ) CONFIG_FILES="$CONFIG_FILES libhypnos/libhypnos/muls/Makefile" ;;
   "utils/Makefile" ) CONFIG_FILES="$CONFIG_FILES utils/Makefile" ;;
   "utils/clilist/Makefile" ) CONFIG_FILES="$CONFIG_FILES utils/clilist/Makefile" ;;

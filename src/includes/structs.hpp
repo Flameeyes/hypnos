@@ -17,6 +17,7 @@
 
 #include "common_libs.hpp"
 #include "enums.hpp"
+#include "libhypnos/hypstl/string.hpp"
 
 //! Represent a location on one map
 struct sLocation {

@@ -939,7 +939,7 @@ void nPackets::Send::BookPagesReadWrite::prepare()
 	{
 		bytes += 4;
 		uint16_t j = 0;
-		for ( stringVector::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++)
+		for ( vector<string>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++)
 			length += (*it2).size() + 1; // null-terminated string
 		
 		if ( j < 8 )
@@ -962,7 +962,7 @@ void nPackets::Send::BookPagesReadWrite::prepare()
 		
 		uint8_t *line = page+4;
 		int j = 0;
-		for( stringVector::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++)
+		for( vector<string>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++)
 		{
 			strcpy( page, (*it2).c_str() );
 			page += (*it2).size() +1;
@@ -983,10 +983,10 @@ void nPackets::Send::BookPagesReadWrite::prepare()
 
 void nPackets::Send::BookPageReadOnly::prepare()
 {
-	stringVector page = book->getPage(p);
+	vector<string> page = book->getPage(p);
 	
 	length = 13;
-	for ( stringVector::iterator it = page.begin(); it != page.end(); it++)
+	for ( vector<string>::iterator it = page.begin(); it != page.end(); it++)
 		length += (*it2).size() + 1; // null-terminated string
 	
 	buffer = new uint8_t[length];
@@ -1000,7 +1000,7 @@ void nPackets::Send::BookPageReadOnly::prepare()
 	
 	uint8_t *line = buffer+13;
 	
-	for( stringVector::iterator it = page.begin(); it != page.end(); it++)
+	for( vector<string>::iterator it = page.begin(); it != page.end(); it++)
 	{
 		strcpy( line, (*it2).c_str() );
 		line += (*it2).size() +1;

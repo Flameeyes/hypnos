@@ -8,10 +8,13 @@
 #ifndef _SREGIONS_H
 #define _SREGIONS_H
 
+#include "common_libs.hpp"
+
 void loadregions();
 void checkregion(pChar pc);
-short calcRegionFromXY(sLocation pos);	// added by Anthalir
-short calcRegionFromXY(int x, int y);
+uint16_t calcRegionFromXY(sLocation pos);	// added by Anthalir
+uint16_t calcRegionFromXY(uint16_t x, uint16_t y);
 void check_region_weatherchange ();
-sint16_t getIntensityModifier(uint16_t region1, uint16_t region2);
+int16_t getIntensityModifier(uint16_t region1, uint16_t region2);
+
 #endif

@@ -423,7 +423,7 @@ void cNetwork::startchar(pClient client)
 	client->sendPacket(&pkMOTD);
 
 	const char * t;
-	stringVector::const_iterator vis( clientsAllowed.begin() ), vis_end( clientsAllowed.end() );
+	vector<string>::const_iterator vis( clientsAllowed.begin() ), vis_end( clientsAllowed.end() );
 
 	t = (*vis).c_str();
 	strcpy(temp,t);

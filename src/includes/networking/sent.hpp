@@ -14,6 +14,9 @@
 #include "structs.hpp"
 #include "speech.hpp"
 #include "objects/cserializable.hpp"
+#include "objects/citem/cequippable.hpp"
+#include "libhypnos/hypstl/list.hpp"
+#include "libhypnos/hypstl/slist.hpp"
 
 /*!
 \author Flameeyes

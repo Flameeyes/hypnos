@@ -8,6 +8,8 @@
 #ifndef __SPEECH_H__
 #define __SPEECH_H__
 
+#include "common_libs.hpp"
+
 /*!
 \brief Unicode text container and converter.
 \author Chronodt

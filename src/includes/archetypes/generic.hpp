@@ -9,6 +9,8 @@
 #ifndef __ARCHETYPES_ITEMS_H__
 #define __ARCHETYPES_ITEMS_H__
 
+#include "common_libs.hpp"
+
 /*!
 \brief Script Archetypes
 

@@ -13,6 +13,8 @@
 #ifndef __TMPEFF_H__
 #define __TMPEFF_H__
 
+#include "common_libs.hpp"
+
 namespace tempfx {
 	
 enum {

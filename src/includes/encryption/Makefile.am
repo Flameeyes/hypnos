@@ -1,4 +1,4 @@
-noinst_HEADERS = clientcrypt.hpp common.hpp crypt.hpp
+noinst_HEADERS = clientcrypt.hpp common.hpp crypt.hpp table.hpp
 
 if HAVE_PCH
 

@@ -1,4 +1,4 @@
-SUBDIRS = muls
+SUBDIRS = muls hypstl
 
 libincludedir = $(includedir)/libhypnos
 libinclude_HEADERS = commons.hpp exceptions.hpp strings.hpp cvariant.hpp prefix.hpp \

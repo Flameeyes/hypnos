@@ -1,21 +1,15 @@
 /*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
-| Hypnos UO Server Emulator                                                |
+| Hypnos UO Server Emulator (Utility Library)                              |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in hypnos.cpp file.            |
+| You can find detailed license information in LICENSE file.               |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file common_libs.h
-\brief Common library header
-*/
 
-#ifndef __COMMON_LIBS_H__
-#define __COMMON_LIBS_H__
+#ifdef HAVE_QUEUE
+	#include <queue>
+	using std::queue;
+#elif defined HAVE_QUEUE_H
+	#include <queue.h>
+#endif
 
-#include "libhypnos/commons.hpp"
-using namespace nLibhypnos;
-
-#include "typedefs.hpp"
-
-#endif //__COMMON_LIBS_H__

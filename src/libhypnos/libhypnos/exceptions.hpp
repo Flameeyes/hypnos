@@ -10,6 +10,7 @@
 #define __LIBHYPNOS_EXCEPTIONS_H__
 
 #include "libhypnos/commons.hpp"
+#include "libhypnos/hypstl/string.hpp"
 
 namespace nLibhypnos {
 	/*!

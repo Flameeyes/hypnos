@@ -16,6 +16,7 @@
 #include "common_libs.hpp"
 #include "typedefs.hpp"
 #include "libhypnos/cvariant.hpp"
+#include "libhypnos/hypstl/vector.hpp"
 
 /*!
 \class cScriptingEngine scripting.h "backend/scripting.h"

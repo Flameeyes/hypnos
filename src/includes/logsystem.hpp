@@ -17,12 +17,11 @@
 #define __LOGSYSTEM_H__
 
 #include "common_libs.hpp"
-#include <iosfwd>
+#include "libhypnos/hypstl/iosfwd.hpp"
 
 /*!
 \brief Manage a log file
 \author Anthalir
-\since 0.82a
 */
 class cLogFile
 {

@@ -13,6 +13,8 @@
 #ifndef __TELPORT_H__
 #define __TELPORT_H__
 
+#include "common_libs.hpp"
+
 void objTeleporters(pChar pc);
 int validtelepos(pChar pc);
 void advancementobjects(pChar pc, int x, int always);

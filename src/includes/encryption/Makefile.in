@@ -166,7 +166,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-noinst_HEADERS = clientcrypt.hpp common.hpp crypt.hpp
+noinst_HEADERS = clientcrypt.hpp common.hpp crypt.hpp table.hpp
 @HAVE_PCH_TRUE@noinst_PCH = $(addsuffix .gch, $(noinst_HEADERS))
 all: all-am
 

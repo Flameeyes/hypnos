@@ -15,17 +15,10 @@
 #define _AREA_H
 
 #include "common_libs.hpp"
+#include "libhypnos/hypstl/map.hpp"
 
-typedef struct {
-	uint16_t x1;
-	uint16_t y1;
-	uint16_t x2;
-	uint16_t y2;
-} Area;
-
-typedef map< uint32_t, Area > AREA_DB;
+typedef map< uint32_t, sRect > AREA_DB;
 typedef AREA_DB::iterator AREA_ITER;
-
 
 class cAreas {
 
@@ -48,6 +41,5 @@ public:
 };
 
 extern cAreas* Areas;
-
 
 #endif

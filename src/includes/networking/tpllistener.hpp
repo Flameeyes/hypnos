@@ -16,6 +16,9 @@
 #define __NETWORKING_TPLLISTENER_H__
 
 #include "common_libs.hpp"
+#include "libhypnos/hypstl/set.hpp"
+#include "libhypnos/hypstl/string.hpp"
+
 #include <wefts_thread.h>
 #include <cabal_ssocket.h>
 

@@ -160,6 +160,12 @@
 /* Define to 1 if you have the <ostream.h> header file. */
 #undef HAVE_OSTREAM_H
 
+/* Define to 1 if you have the <queue> header file. */
+#undef HAVE_QUEUE
+
+/* Define to 1 if you have the <queue.h> header file. */
+#undef HAVE_QUEUE_H
+
 /* Define to 1 if you have the <set> header file. */
 #undef HAVE_SET
 
@@ -195,6 +201,9 @@
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <stlport/hash_map> header file. */
+#undef HAVE_STLPORT_HASH_MAP
 
 /* Define to 1 if you have the `strcasecmp' function. */
 #undef HAVE_STRCASECMP

@@ -1633,7 +1633,7 @@ bool nPackets::Received::ClientVersion::execute(pClient client)
 				  else client->clientDimension = 2;
 	client->sysmessage("You are using a %iD client, version %s", client->clientDimension, clientNumber.c_str());
 
-	stringVector::const_iterator viter = find(clientsAllowed.begin(), clientsAllowed.end(), "ALL");
+	vector<string>::const_iterator viter = find(clientsAllowed.begin(), clientsAllowed.end(), "ALL");
 	if ( viter != clientsAllowed.end() ) return true; // ALL mode found/activated -> quit
 
 	viter = find(clientsAllowed.begin(), clientsAllowed.end(), "SERVER_DEFAULT");

@@ -66,25 +66,6 @@ suite to access the common defines without need of complete hypnos sources.
 	#include <assert.h>
 #endif
 
-#ifdef HAVE_IOSFWD
-	#include <iosfwd>
-	using std::istream;
-	using std::ostream;
-	using std::ifstream;
-	using std::ofstream;
-#elif defined HAVE_IOSFWD_H
-	#include <iosfwd.h>
-#endif
-
-#ifdef HAVE_ALGORITHM
-	#include <algorithm>
-	using std::find;
-#elif defined HAVE_ALGORITHM_H
-	#include <algorithm.h>
-#elif defined HAVE_ALGO_H
-	#include <algo.h>
-#endif
-
 #include "libhypnos/types.hpp"
 
 #endif

@@ -15,9 +15,9 @@
 
 #include <cabal_tcpsocket.h>
 
-#ifdef HAVE_IOSFWD
-#include <iosfwd>
-#endif
+#include "libhypnos/hypstl/iosfwd.hpp"
+#include "libhypnos/hypstl/list.hpp"
+#include "libhypnos/hypstl/slist.hpp"
 
 //! Used in trading methods
 struct sBoughtItem

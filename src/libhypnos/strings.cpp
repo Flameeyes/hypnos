@@ -100,11 +100,11 @@ void strlwr(string &str)
 \brief Split a single line in a vector by spaces
 \author Flameeyes
 \param str String to split
-\return a stringVector with the tokens in it
+\return a vector<string> with the tokens in it
 */
-stringVector tokenize(string str)
+vector<string> tokenize(string str)
 {
-	stringVector ret;
+	vector<string> ret;
 	char *tmp = new char[str.size() +1];
 	strncpy(tmp, str.c_str(), str.size()+1);
 		

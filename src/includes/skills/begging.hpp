@@ -12,7 +12,8 @@
 This file contains Begging namespace with begging functions and paramters
 */
 
-#include "common_libs.h"
+#include "common_libs.hpp"
+#include "libhypnos/hypstl/string.hpp"
 
 namespace Begging {
 	extern uint32_t timer;

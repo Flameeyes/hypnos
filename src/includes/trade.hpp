@@ -8,6 +8,9 @@
 #ifndef __TRADE_H__
 #define __TRADE_H__
 
+#include "common_libs.hpp"
+#include "libhypnos/hypstl/queue.hpp"
+
 #define RESTOCK_PER_TIME 20
 #define CHECK_RESTOCK_EVERY 3
 

@@ -14,6 +14,7 @@
 #include "structs.hpp"
 #include "objects/ceventthrower.hpp"
 #include "inlines.hpp"
+#include "libhypnos/hypstl/slist.hpp"
 
 typedef slist< tempfx::cTempfx > TempfxVector;
 

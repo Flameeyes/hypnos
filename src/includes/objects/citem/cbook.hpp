@@ -45,7 +45,7 @@ public:
 \name Static members and Typedefs
 */
 	//! List of pages (vector of vectors of strings)
-	typedef vector< stringVector > tpages;
+	typedef vector< vector<string> > tpages;
 //@}
 	
 
@@ -108,12 +108,12 @@ public:
 	{ pags = pages; }
 	 
 	//! Gets a given page
-	inline stringVector getPage(uint16_t n) const
+	inline vector<string> getPage(uint16_t n) const
 	{
 		if ( n < pages.size() )
 			return pages[n];
 		else
-			return stringVector();
+			return vector<string>();
 	}
 	
 	//! return the number of pages of the book

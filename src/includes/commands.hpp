@@ -13,6 +13,9 @@
 #ifndef __COMMANDS_H__
 #define __COMMANDS_H__
 
+#include "common_libs.hpp"
+#include "libhypnos/hypstl/string.hpp"
+
 //! Commands related stuff
 namespace nCommands {
 

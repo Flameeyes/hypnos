@@ -149,7 +149,7 @@ string long2ip(uint32_t l);
 void strupr(string &str);
 void strlwr(string &str);
 
-stringVector tokenize(string str);
+vector<string> tokenize(string str);
 
 int strtonum(int countx, int base= 0);
 

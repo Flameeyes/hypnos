@@ -11,6 +11,7 @@
 
 #include "common_libs.hpp"
 #include "inlines.hpp"
+#include "structs.hpp"
 
 /*!
 \brief Graphical effects function

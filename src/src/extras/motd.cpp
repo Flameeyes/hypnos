@@ -16,7 +16,7 @@
 
 namespace nMOTD {
 	static string motd;	//!< Message of the day
-	static stringVector tips;	//!< Tips for the players
+	static vector<string> tips;	//!< Tips for the players
 }
 
 /*!

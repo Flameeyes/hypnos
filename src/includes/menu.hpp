@@ -15,6 +15,10 @@
 #define _MENU_H_
 
 #include "common_libs.hpp"
+#include "constants.hpp"
+#include "libhypnos/hypstl/set.hpp"
+#include "libhypnos/hypstl/map.hpp"
+#include "libhypnos/hypstl/vector.hpp"
 
 #define MENUSTYLE_LARGE 128
 

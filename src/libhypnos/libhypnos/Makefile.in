@@ -181,7 +181,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-SUBDIRS = muls
+SUBDIRS = muls hypstl
 libincludedir = $(includedir)/libhypnos
 libinclude_HEADERS = commons.hpp exceptions.hpp strings.hpp cvariant.hpp prefix.hpp \
 	types.hpp

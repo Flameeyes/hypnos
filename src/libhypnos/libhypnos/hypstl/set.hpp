@@ -1,21 +1,21 @@
 /*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
-| Hypnos UO Server Emulator                                                |
+| Hypnos UO Server Emulator (Utility Library)                              |
 |                                                                          |
 | This software is free software released under GPL2 license.              |
-| You can find detailed license information in hypnos.cpp file.            |
+| You can find detailed license information in LICENSE file.               |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief All mount related stuff
-\author Endymion
-*/
-#ifndef _MOUNT_H
-#define _MOUNT_H
 
-#include "common_libs.hpp"
+#ifndef __LIBHYPNOS_HYPSTL_SET_HPP__
+#define __LIBHYPNOS_HYPSTL_SET_HPP__
 
-void loadmounts();
-extern map<int32_t,int32_t> mountinfo;
+#ifdef HAVE_SET
+	#include <set>
+	using std::set;
+#elif defined HAVE_SET_H
+	#include <set.h>
+#endif
+
+typedef set<uint32_t> uint32_set;		//!< A set of uint32_t
 
 #endif

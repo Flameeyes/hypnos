@@ -10,10 +10,10 @@
 #define __NETWORK_H__
 
 #include "common_libs.hpp"
+#include "libhypnos/hypstl/string.hpp"
+#include "libhypnos/hypstl/vector.hpp"
 
 class ClientCrypt;
-
-#define IPPRINTF(I) ((I)&(0xFF)),((I>>8)&(0xFF)),((I>>16)&(0xFF)),(I>>24)
 
 typedef struct 
 {
@@ -37,7 +37,6 @@ class cNetwork
 		void SockClose();
 		void FlushBuffer(pClient client);
 		void LoadHosts_deny( void );
-		bool CheckForBlockedIP(sockaddr_in ip_address);
 
 		int kr,faul; // needed because global varaibles cant be changes in constructores LB
 

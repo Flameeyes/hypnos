@@ -12,6 +12,7 @@
 #define __ARCHS_TINTERFACE_H__
 
 #include "common_libs.hpp"
+#include "libhypnos/hypstl/string.hpp"
 
 #include <wefts_thread.h>
 

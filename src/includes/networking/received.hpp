@@ -13,6 +13,7 @@
 #include "enums.hpp"
 #include "structs.hpp"
 #include "speech.hpp"
+#include "networking/exceptions.hpp"
 
 /*!
 \brief Base class for a received packet
@@ -25,13 +26,13 @@ protected:
 	uint8_t *buffer;	//!< Pointer to the buffer (needed in all derived classes)
 	uint16_t length;	//!< Length of the buffer
 public:
-	inline cPacketReceive(uint8_t *buf, uint16_t len, uint8_t *&newbuf, uint16_t &newlen) throw eBufferIncomplete; :
+	inline cPacketReceive(uint8_t *buf, uint16_t len, uint8_t *&newbuf, uint16_t &newlen) :
 		buffer(buf), length(len)
 	{ } 
 	
 	virtual ~cPacketReceive() = 0;
 	
-	static pPacketReceive fromBuffer(uint8_t *buffer, uint16_t length, uint8_t *&newbuf, uint16_t &newlen) throw eBufferIncomplete;
+	static pPacketReceive fromBuffer(uint8_t *buffer, uint16_t length, uint8_t *&newbuf, uint16_t &newlen);
 	virtual bool execute(pClient client) = 0;
 };
 
@@ -43,12 +44,12 @@ namespace nPackets {
 	In this namespace we have all the packets received handling classes
 	*/
 	namespace Received {
-		#define RECEIVE_PACKET(A, len) \
+		#define RECEIVE_PACKET(A, LEN) \
 		class A : public cPacketReceive { \
 			bool execute(pClient client); \
-			uint16_t getLength() \
-			{ return len; } \
-			inline A(uint8_t *buf, uint16_t len, uint8_t *&newbuf, uint16_t &newlen) throw eBufferIncomplete : \
+			uint16_t getLength() const \
+			{ return LEN; } \
+			inline A(uint8_t *buf, uint16_t len, uint8_t *&newbuf, uint16_t &newlen): \
 				cPacketReceive(buf, len, newbuf, newlen) \
 			{ } \
 		};

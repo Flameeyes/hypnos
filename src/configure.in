@@ -33,7 +33,7 @@ AC_CHECK_HEADERS([fcntl.h limits.h memory.h signal.h stdlib.h sys/time.h sys/tim
 
 AC_LANG_CPLUSPLUS
 # Those are all stl headers... checking both for standard and deprecated header (and gcc extension when needed)
-AC_CHECK_HEADERS([ios ios.h sstream sstream.h iosfwd iosfwd.h iostream iostream.h ostream ostream.h fstream fstream.h iomanip iomanip.h set set.h vector vector.h slist ext/slist slist.h cassert assert.h string string.h hash_map ext/hash_map hash_map.h map map.h list list.h])
+AC_CHECK_HEADERS([ios ios.h sstream sstream.h iosfwd iosfwd.h iostream iostream.h ostream ostream.h fstream fstream.h iomanip iomanip.h set set.h vector vector.h slist ext/slist slist.h cassert assert.h string string.h hash_map ext/hash_map stlport/hash_map hash_map.h map map.h list list.h queue queue.h])
 
 # Check for windows headers only under windows
 # And check for fork() or ntoh/hton functions only if not under windows
@@ -105,11 +105,14 @@ else
 	PCHINCLUDES=''
 fi
 
+# We already define it in the config.h, avoid idiotic errors about redefinition.
+BINRELOC_CFLAGS=$(echo $BINRELOC_CFLAGS | sed -e 's/-DENABLE_BINRELOC//')
+
 TMPFLAGS="$WEFTS_CXXFLAGS -Wall"
 AC_TEST_CFLAGS($TMPFLAGS)
 AC_TEST_CXXFLAGS($TMPFLAGS)
 
-CPPFLAGS="$INCLUDES $CPPFLAGS $WEFTS_CXXFLAGS $MXML_CXXFLAGS $DEFDIRS $BINRELOC_CFLAGS -DHAVE_CONFIG_H "
+CPPFLAGS="$INCLUDES $CPPFLAGS $WEFTS_CXXFLAGS $MXML_CXXFLAGS $DEFDIRS $BINRELOC_CFLAGS -DHAVE_CONFIG_H -DHYPNOS_SOURCES"
 CFLAGS="$CFLAGS $WORKING_CFLAGS $PCHINCLUDES $CPPFLAGS"
 CXXFLAGS="$CXXFLAGS $WORKING_CXXFLAGS $PCHINCLUDES $CPPFLAGS"
 
@@ -136,6 +139,7 @@ AC_CONFIG_FILES([Makefile
                  libhypnos/Makefile
                  libhypnos/muls/Makefile
 		 libhypnos/libhypnos/Makefile
+		 libhypnos/libhypnos/hypstl/Makefile
 		 libhypnos/libhypnos/muls/Makefile
                  utils/Makefile
                  utils/clilist/Makefile

@@ -8,6 +8,10 @@
 #ifndef __DATA_H__
 #define __DATA_H__
 
+#include "common_libs.hpp"
+#include "libhypnos/hypstl/vector.hpp"
+#include "libhypnos/hypstl/map.hpp"
+
 /*!
 \file
 \author Luxor

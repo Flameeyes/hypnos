@@ -15,7 +15,7 @@
 #ifndef __NETWORKING_EXCEPTIONS_H__
 #define __NETWORKING_EXCEPTIONS_H__
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 #include "libhypnos/exceptions.hpp"
 
 /*!
