@@ -578,7 +578,7 @@ public:
 	for example: RANK 5 ---> 5*10=50% of malus<br>
 	this item has same values decreased by 50%..<br>
 	RANK 1 ---> 1*10=10% this item has 90% of malus!<br>
-	RANK 10 --> 10*10=100% this item has no malus! RANK 10 is automatically setted if you select RANKSYSTEM 0.<br>
+	RANK 10 --> 10*10=100% this item has no malus! RANK 10 is automatically set if you select RANKSYSTEM 0.<br>
 	Vars: LODAMAGE,HIDAMAGE,ATT,DEF,HP,MAXHP<br>
 	*/
 	int32_t		rank;

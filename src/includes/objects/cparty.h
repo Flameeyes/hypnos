@@ -35,7 +35,7 @@ the content of the party: if the total members are less than 2, the party is
 disbanded and its instance deleted.
 
 Please also note that parties aren't saved in the worldfile, so after a reboot
-of the server the party are resetted, and that the party's won't work with
+of the server the party are reset, and that the party's won't work with
 offline players. However, if a player crashes or lose the connection, it will
 remain in the party for a configurable time (it can be 0, so an admin can
 disable the maintaining of disconnetted players).
