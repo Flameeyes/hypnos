@@ -16,7 +16,7 @@
 /*!
 \brief Gets a string representing the current date and time for the log
 */
-static const std::string getDate()
+const std::string getDate()
 {
 	time_t TIME;
 	tm* T;

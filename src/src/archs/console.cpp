@@ -11,11 +11,15 @@
 
 #include "clock.h"
 #include "common_libs.h"
+#include "data.h"
 #include "hypnos.h"
-#include "notify.h"
+#include "logsystem.h"
 #include "version.h"
 #include "archs/console.h"
+#include "archs/daemon.h"
 #include "archs/signals.h"
+#include "backend/notify.h"
+#include "backend/admincmds.h"
 
 #ifdef HAVE_WINCON_H
 #include <wincon.h>
@@ -79,7 +83,7 @@ void consoleOutput(nNotify::Level lev, const std::string str)
 	outs << str;
 	
 	// Close the colored part
-	if ( lev != levPlain )
+	if ( lev != nNotify::levPlain )
 		AnsiOut(outs, "\x1B[0m");
 	
 	m.unlock();
@@ -105,7 +109,7 @@ void setWinTitle(char *str, ...)
 	free(temp);
 }
 
-void constart()
+static void constart()
 {
 	setWinTitle("Hypnos %s", strVersion);
 	#ifdef WIN32
@@ -140,12 +144,13 @@ void constart()
 /*!
 \brief facilitate console control. SysOp keys and localhost controls
 */
-void checkkey ()
+static void checkkey ()
 {
+	static bool secure = true;
 	std::string str;
 	getline(std::cin, str);
 	
-	if ( ! str.lenght() ) return;
+	if ( ! str.length() ) return;
 
 	if ( str == "S" )
 	{
@@ -185,12 +190,9 @@ int main(int argc, char *argv[])
 	
 	cwmWorldState->loadNewWorld();
 
-	endtime=0;
 	lclock=0;
 
 	std::cout << std::endl << std::endl;
-
-	clearscreen();
 
 	outputHypnosIntro(std::cout);
 	

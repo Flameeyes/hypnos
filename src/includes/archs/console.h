@@ -15,6 +15,6 @@
 #include "backend/notify.h"
 
 void consoleOutput(nNotify::Level lev, const std::string str);
-void setWinTitle(char *str, ...) PRINTF_LIKE(1,2)
+void setWinTitle(char *str, ...) PRINTF_LIKE(1,2);
 
 #endif

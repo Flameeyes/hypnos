@@ -50,14 +50,14 @@ suite to access the common defines without need of complete hypnos sources.
 	
 	//! Define a function to conforms to the printf arguments formatting
 	//! \see http://gcc.gnu.org/onlinedocs/gcc-3.3.3/gcc/Function-Attributes.html#Function%20Attributes
-	#define PRINTF_LIKE(A,B) ;
+	#define PRINTF_LIKE(A,B) 
 
 #elif defined( __GNUC__ ) || defined(__ICC)
 // Intel C++ Compiler supports attributes (seems)
 	#define PACK_NEEDED __attribute__ ((packed))
 	#define DEPRECATED __attribute__ ((deprecated))
 	#define PURE __attribute__ ((pure))
-	#define PRINTF_LIKE(A,B) __attribute__ ((format (printf, A, B)));
+	#define PRINTF_LIKE(A,B) __attribute__ ((format (printf, A, B)))
 #else
 	#define PACK_NEEDED
 	#define DEPRECATED

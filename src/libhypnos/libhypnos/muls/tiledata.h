@@ -126,7 +126,7 @@ public:
 		{ return mtohl(flags); }
 		
 		uint16_t getTextureID() const
-		{ return mtohs(flags); }
+		{ return mtohs(textId); }
 		
 		std::string getName() const;
 	} PACK_NEEDED;

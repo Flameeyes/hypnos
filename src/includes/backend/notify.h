@@ -29,7 +29,7 @@ namespace nNotify {
 	void outputf(Level lev, char *txt, ...) PRINTF_LIKE(2, 3);
 	void output(Level lev, const std::string str);
 	
-	void getDate();
+	const std::string getDate();
 }
 
 #define outPlain(x) nNotify::output(nNotify::levPlain, x)
