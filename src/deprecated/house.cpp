@@ -726,7 +726,7 @@ void killkeys(uint32_t serial) // Crackerjack 8/11/99
 \return 0 if character is not on house list, else the type of list
 \todo change the 4 chars to a single serial32
 */
-int on_hlist(pItem pi, unsigned char s1, unsigned char s2, unsigned char s3, unsigned char s4, int *li)
+int on_hlist(pItem pi, uint32_t serial, int *li)
 {
 	if ( ! pi || ! pi->isInWorld() ) return 0;
 
@@ -740,8 +740,7 @@ int on_hlist(pItem pi, unsigned char s1, unsigned char s2, unsigned char s3, uns
 		if( p_ci ) {
 
 			if((p_ci->morey== (uint32_t)pi->getSerial())&&
-			   (p_ci->more1== s1)&&(p_ci->more2==s2)&&
-			   (p_ci->more3== s3)&&(p_ci->more4==s4))
+			   (calcserial( p_ci->more1i, p_ci->more2, p_ci->more3, p_ci->more4) == serial) )
 				{
 				    if(li!=NULL) *li=DEREF_pItem(p_ci);
 						return p_ci->morex;
@@ -751,49 +750,21 @@ int on_hlist(pItem pi, unsigned char s1, unsigned char s2, unsigned char s3, uns
 
 	return 0;
 }
-/*
-int on_hlist(int h, unsigned char s1, unsigned char s2, unsigned char s3, unsigned char s4, int *li)
-{
-	int cc;
-	int cl=-1;
-	int ci=-1;
-
-	cc=mapRegions->GetCell(items[h].x,items[h].y);
-	do {
-		cl=mapRegions->GetNextItem(cc, cl);
-		if(cl==-1) break;
-		ci=mapRegions->GetItem(cc, cl);
-		if(ci<1000000) {
-			if((items[ci].contserial==items[h].serial)&&
-				(items[ci].more1==s1)&&(items[ci].more2==s2)&&
-				(items[ci].more3==s3)&&(items[ci].more4==s4))
-			{
-				if(li!=NULL) *li=ci;
-				return items[ci].morex;
-			}
-		}
-	} while(ci!=-1);
-	return 0;
-}
-*/
 
 /*!
 \brief Adds somebody to a house list
-\param c chars[] index
-\param h items[] index
+\param pc someone character
+\param pi_h someonelse's house
 \param t list tyle
 \return 1 if successful addition, 2 if the char was alredy on a house list, 3 if the character is not on property
-\todo here there's a on_hlist to change to serial32
 */
-int add_hlist(int c, int h, int t)
+int add_hlist(pChar pc, pItem pi_h, int t)
 {
 	uint32_t sx, sy, ex, ey;
 
-	pChar pc=cSerializable::findCharBySerial(c);
-	pItem pi_h=MAKE_ITEM_REF(h);
 	if ( ! pc || ! pi_h ) return 3;
 
-	if(on_hlist(pi_h, pc->getSerial().ser1, pc->getSerial().ser2, pc->getSerial().ser3, pc->getSerial().ser4, NULL))
+	if(on_hlist(pi_h, pc->getSerial(), NULL))
 		return 2;
 
 	getMultiCorners(pi_h, sx,sy,ex,ey);
@@ -831,21 +802,17 @@ int add_hlist(int c, int h, int t)
 
 /*!
 \brief Remove somebody from a house list
-\param c chars[] index
-\param h items[] index for house
-\todo change to pChar & pItem
+\param pc someone
+\param pi house
 \return 0 if the player was not on a list, else the list which the player was in.
 */
-int del_hlist(int c, int h)
+int del_hlist(pChar pc, pItem pi)
 {
 	int hl, li;
 
-	pChar pc=cSerializable::findCharBySerial(c);
-	pItem pi=MAKE_ITEM_REF(h);
-	
 	if ( ! pc || ! pi ) return 0;
 
-	hl=on_hlist(pi, pc->getSerial().ser1, pc->getSerial().ser2, pc->getSerial().ser3, pc->getSerial().ser4, &li);
+	hl=on_hlist(pi, pc->getSerial(), &li);
 	if(hl) {
 		pItem pli=MAKE_ITEM_REF(li);
 		if( pli ) {
@@ -877,7 +844,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 	//
 	// if pc is not a friend or owner, we don't care what he says
 	//
-	fr=on_hlist(pi, pc->getSerial().ser1, pc->getSerial().ser2, pc->getSerial().ser3, pc->getSerial().ser4, NULL);
+	fr=on_hlist(pi, pc->getSerial(), NULL);
 	if( fr != H_FRIEND && pi->getOwnerSerial32() != pc->getSerial() )
 		return false;
 	//
@@ -1080,7 +1047,7 @@ void target_houseBan( NXWCLIENT ps, pTarget t )
 	{
 		if(pc->getSerial() == curr->getSerial())
 			return;
-		int r=add_hlist(DEREF_pChar(pc), DEREF_pItem(pi), H_BAN);
+		int r=add_hlist(pc, pi, H_BAN);
 		if(r==1)
 		{
 			sysmessage(s, "%s has been banned from this house.", pc->getCurrentName().c_str());
@@ -1113,7 +1080,7 @@ void target_houseFriend( NXWCLIENT ps, pTarget t )
 			sysmessage(s,"You cant do that!");
 			return;
 		}
-		int r=add_hlist(DEREF_pChar(Friend), DEREF_pItem(pi), H_FRIEND);
+		int r=add_hlist(Friend, pi, H_FRIEND);
 		if(r==1)
 		{
 			sysmessage(s, "%s has been made a friend of the house.", Friend->getCurrentName().c_str());
@@ -1131,19 +1098,18 @@ void target_houseFriend( NXWCLIENT ps, pTarget t )
 void target_houseUnlist( NXWCLIENT ps, pTarget t )
 {
 	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
-    pItem pi= cSerializable::findItemBySerial( t->buffer[0] );
+	pItem pi= cSerializable::findItemBySerial( t->buffer[0] );
 	NXWSOCKET s = ps->toInt();
-    if(pc && pi)
-    {
-        int r=del_hlist(DEREF_pChar(pc), DEREF_pItem(pi));
-        if(r>0)
-        {
-            sysmessage(s, "%s has been removed from the house registry.", pc->getCurrentName().c_str());
-        }
-        else
-            sysmessage(s, "That player is not on the house registry.");
-    }
+    
+	if(pc && pi)
+	{
+        	if ( del_hlist(pc, pi) >0)
+			sysmessage(s, "%s has been removed from the house registry.", pc->getCurrentName().c_str());
+		else 
+			sysmessage(s, "That player is not on the house registry.");
+	}
 }
+
 void target_houseLockdown( NXWCLIENT ps, pTarget t )
 // PRE:     S is the socket of a valid owner/coowner and is in a valid house
 // POST:    either locks down the item, or puts a message to the owner saying he's a moron

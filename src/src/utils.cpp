@@ -387,16 +387,14 @@ std::string getSextantCoords(uint16_t x, uint16_t y, uint16_t cx, uint16_t cy)
 \brief trade System
 \author Magius(CHE)
 \return int ?
-\param npcnum2 ?
-\param i ?
+\param npc ?
+\param pi ?
 \param value ?
 \param goodtype ?
 \todo write documentation
 */
-int calcGoodValue(SERIAL npcnum2, int i, int value,int goodtype)
+int calcGoodValue(pChar npc, pItem pi, int value,int goodtype)
 {
-	pChar npc=cSerializable::findCharBySerial(npcnum2);
-	const pItem pi=MAKE_ITEM_REF(i);
 	if ( ! npc ) return 0;
 	if ( ! pi ) return value;
 	

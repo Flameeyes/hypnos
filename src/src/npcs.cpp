@@ -847,7 +847,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 										WarnOut("Bad NPC Script %d with problem no buyNoRestockContainer for item %s.\n", npcNum, script2.c_str());
 								}
 								else if ( "SHOPKEEPER" == script1 )
-									Commands::MakeShop(DEREF_pChar(pc));
+									Commands::MakeShop(pc);
 								else if ( "SKILL" == script1 )
 								{
 									gettokennum(script2, 0);

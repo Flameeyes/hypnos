@@ -438,12 +438,12 @@ static void CorpseTarget(const NXWCLIENT pC)
 
 
 
-int BuyShop(NXWSOCKET s, uint32_t c)
+int BuyShop(NXWSOCKET s, pChar pc)
 {
     pItem buyRestockContainer=NULL, buyNoRestockContainer=NULL;
 
-    pChar pc = MAKE_CHAR_REF(c);
-	VALIDATEPCR(pc,0);
+	if(!pc) return 0;
+
 	pChar curr=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPCR(curr,0);
 
@@ -470,7 +470,7 @@ int BuyShop(NXWSOCKET s, uint32_t c)
 
     impowncreate(s, pc, 0); // Send the NPC again to make sure info is current. (OSI does this we might not have to)
 
-    sendshopinfo(s, DEREF_pChar(pc), buyRestockContainer); // Send normal shop items
+    sendshopinfo(s, pc, buyRestockContainer); // Send normal shop items
 //  sendshopinfo(s, c, buyNoRestockContainer); // Send items sold to shop by players
     SndShopgumpopen(s,pc->getSerial());
 
@@ -503,9 +503,9 @@ void target_playerVendorBuy( NXWCLIENT ps, pTarget t )
 
 	pItem thepack=(pItem)pi->getContainer();
 	VALIDATEPI(thepack);
-	pChar pNpc= thepack->getPackOwner();               // the vendor
+	pChar npc = thepack->getPackOwner();               // the vendor
 
-    if(DEREF_pChar(pNpc)!=pc->getSerial() || pc->npcaitype!=NPCAI_PLAYERVENDOR) return;
+    if(npc->getSerial() != pc->getSerial() || pc->npcaitype!=NPCAI_PLAYERVENDOR) return;
 
     if (pc_currchar->isOwnerOf(pc))
     {

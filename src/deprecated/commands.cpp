@@ -21,9 +21,8 @@ namespace Commands
 {
 	int32_t cmd_offset;
 
-	void MakeShop(int c)
+	void MakeShop(pChar pc)
 	{
-		pChar pc = MAKE_CHAR_REF( c );
 		if ( ! pc ) return;
 
 		pc->shopkeeper = true;

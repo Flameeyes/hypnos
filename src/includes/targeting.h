@@ -16,7 +16,7 @@
 #include "common_libs.h"
 #include "target.h"
 
-int BuyShop(pClient client, uint32_t c);
+int BuyShop(pClient client, pChar vendor);
 
 void target_envoke( pClient client, pTarget t );
 void target_key( pClient client, pTarget t );

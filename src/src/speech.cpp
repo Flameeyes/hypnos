@@ -828,12 +828,11 @@ int response(NXWSOCKET  s)
 
 }
 
-void PlVGetgold(NXWSOCKET s, SERIAL v)//PlayerVendors
+void PlVGetgold(NXWSOCKET s, pChar pc_vendor)//PlayerVendors
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 	pChar pc_currchar = cSerializable::findCharBySerial( currchar[s] );
-	pChar pc_vendor = cSerializable::findCharBySerial(v);
 	
 	if ( ! pc_currchar || ! pc_vendor ) return;
 
@@ -957,7 +956,7 @@ void responsevendor(NXWSOCKET  s, SERIAL vendor)
 					targ->send( getClientFromSocket(s) );
 					return; // lb bugfix
 				}
-				else if(BuyShop(s, DEREF_pChar(pc_vendor)))
+				else if(BuyShop(s, pc_vendor))
 					return; // lb bugfix
 			}
 		}
@@ -972,7 +971,7 @@ void responsevendor(NXWSOCKET  s, SERIAL vendor)
 			{
 				if (pc_vendor->npcaitype==NPCAI_PLAYERVENDOR)
 				{
-					PlVGetgold(s, DEREF_pChar(pc_vendor));
+					PlVGetgold(s, pc_vendor);
 					return;
 				}
 			}
@@ -987,7 +986,7 @@ void responsevendor(NXWSOCKET  s, SERIAL vendor)
 		{
 			if (response2 || response1)
 			{
-				sellstuff(s, DEREF_pChar(pc_vendor));
+				sellstuff(s, pc_vendor);
 				return;
 			}
 		}
@@ -1023,7 +1022,7 @@ void responsevendor(NXWSOCKET  s, SERIAL vendor)
 						return;
 					}
 					else
-						if(BuyShop(s, DEREF_pChar(pc)))
+						if(BuyShop(s, pc))
 							return;
 				}
 			}
@@ -1053,7 +1052,7 @@ void responsevendor(NXWSOCKET  s, SERIAL vendor)
 				{
 					if (pc->npcaitype==NPCAI_PLAYERVENDOR)
 					{
-						PlVGetgold(s, DEREF_pChar(pc));
+						PlVGetgold(s, pc);
 						return;
 					}
 				}
@@ -1080,7 +1079,7 @@ void responsevendor(NXWSOCKET  s, SERIAL vendor)
 				response3=(strstr( comm, search3));
 				if (response3)
 				{
-					sellstuff(s, DEREF_pChar(pc));
+					sellstuff(s, pc);
 					return;
 				}
 			}
@@ -1798,7 +1797,7 @@ static bool buyFromVendor( pChar pc, NXWSOCKET socket, string &speech, NxwCharWr
 		success = true;
 	}
 	else
-		if( BuyShop( socket, DEREF_pChar( pc_vendor ) ) )
+		if(BuyShop(socket, pc_vendor))
 			success = true;
 	return success;
 

@@ -607,7 +607,7 @@ void cTempfx::start()
 			break;
 	}
 
-	//if (dest) item::CheckEquipment(DEREF_pChar(dest));
+	//if (dest) item::CheckEquipment(dest);
 }
 
 /*!
@@ -742,7 +742,7 @@ void cTempfx::executeExpireCode()
 		case ALCHEMY_END:
 			if ( ! src ) return;
 			VALIDATEPI(pi_dest);
-			Skills::CreatePotion(DEREF_pChar(src), m_nMore1, m_nMore2, DEREF_pItem(pi_dest));
+			Skills::CreatePotion(src, m_nMore1, m_nMore2, pi_dest);
 			break;
 
 		case AUTODOOR:

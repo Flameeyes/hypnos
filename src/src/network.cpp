@@ -2191,11 +2191,12 @@ void cNetwork::GetMsg(int s) // Receive message from client
 
 						int len = 0;
 						uint8_t packet[4000]; packet[0] = '\0';
+
 						if ( pc_currchar && pc_currchar->IsGM()) {
 							if (pc )
-								sprintf((char *)packet, "char n°%d serial : %x", DEREF_pChar(pc), pc->getSerial());
+								sprintf((char *)packet, "char serial : %x", pc->getSerial());
 							if (pi )
-								sprintf((char *)packet, "item n°%d serial : %x", DEREF_pItem(pi), pi->getSerial());
+								sprintf((char *)packet, "item serial : %x", pi->getSerial());
 						}
 						else
 						{

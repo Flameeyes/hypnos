@@ -70,7 +70,7 @@ void SendUnicodeSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, ui
 void SendPlaySoundEffectPkt(pClient client, uint8_t mode, uint16_t sound_model, uint16_t unkn, Location pos, bool useDispZ = false);
 void impowncreate(pClient client, pChar pc, int z);
 	//!< socket, player to send
-void sendshopinfo(pClient client, int c, pItem pi);
+void sendshopinfo(pClient client, pChar pc, pItem pi);
 pClient clientellstuff(pClient client, int i);
 
 

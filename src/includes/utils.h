@@ -25,7 +25,7 @@ void setabovelight(unsigned char);
 
 void endmessage(int x);
 void dooruse(pClient client, pItem pi/*int item*/);
-int calcGoodValue(int npcnum, int i, int value,int goodtype); // by Magius(CHE) for trade system
+int calcGoodValue(pChar npc, pItem pi, int value,int goodtype); // by Magius(CHE) for trade system
 
 int whichbit( int number, int bit );
 int numbitsset( int number );

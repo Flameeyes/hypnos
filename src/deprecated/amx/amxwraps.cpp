@@ -1260,7 +1260,7 @@ NATIVE(_chr_fish)
 {
     pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
-	Fishing::Fish (DEREF_pChar(pc));
+	Fishing::Fish (pc);
     return 0;
 }
 
@@ -1830,8 +1830,7 @@ NATIVE (_send_movingfx)
     pChar pc2 = pointers::findCharBySerial(params[2]);
     VALIDATEPCR(pc2, INVALID);
 
-    movingeffect(DEREF_pChar(pc1), DEREF_pChar(pc2), (params[3]>>8)&0xFF, params[3]&0xFF, params[4], params[5],
-		params[6]);
+    movingeffect(pc1, pc2, params[3], params[4], params[5], params[6]);
 
 	return 0;
 }

@@ -983,7 +983,7 @@ void impowncreate(NXWSOCKET s, pChar pc, int z) //socket, player to send
 	//pc_currchar->sysmsg( "sended %s", pc->getCurrentName().c_str() );
 }
 
-void sendshopinfo(int s, int c, pItem pi)
+void sendshopinfo(int s, pChar pc, pItem pi)
 {
 	if ( ! pi ) return;
 
@@ -1028,7 +1028,7 @@ void sendshopinfo(int s, int c, pItem pi)
 				value = pj->calcValue(value);
 				
 				if ( nSettings::Server::isEnabledTradeSystem() )
-					value=calcGoodValue(c,DEREF_pItem(pj),value,0); // by Magius(CHE)
+					value=calcGoodValue(pc, pj, value, 0); // by Magius(CHE)
 				
 				LongToCharPtr(value, m2+m2t+0);		// Item value/price
 				namelen = pj->getName((char *)itemname);
@@ -1056,13 +1056,13 @@ void sendshopinfo(int s, int c, pItem pi)
 	}
 }
 
-int sellstuff(NXWSOCKET s, SERIAL i)
+int sellstuff(NXWSOCKET s, pChar pc)
 {
 	if (s < 0 || s >= now) return 0; //Luxor
-    pChar pc = cSerializable::findCharBySerial(i);
-	VALIDATEPCR(pc, 0);
+
 	pChar pcs = cSerializable::findCharBySerial(currchar[s]);
-	VALIDATEPCR(pcs,0);
+
+	if(!pcs || !pc) return 0;
 
 	char itemname[256];
 	int m1t, z, value;

@@ -1064,7 +1064,6 @@ bool cBoat::Build(pClient client, pItem pBoat, char id2)
 	boatpos.dispz=boatpos.z;
 
 	pc_cs->MoveTo(boatpos);
-	//setserial(DEREF_pChar(pc_cs),DEREF_pItem(pBoat),8);
 	pc_cs->setMultiSerial( pBoat->getSerial() );
 	insert_boat(pBoat); // insert the boat in the boat_database
 	return true;
