@@ -329,7 +329,10 @@ public:
 		{ return (hidden & HIDDEN_BYSKILL); }
 
 		LOGICAL const		IsOverWeight();
-		LOGICAL const		IsOnline() const;
+
+		//! get online status
+		LOGICAL const		isOnline() const
+		{ return client; }
 
 		inline const LOGICAL	InGuardedArea() const
 		{ return ::region[region].priv & RGNPRIV_GUARDED; }

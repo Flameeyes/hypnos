@@ -16,6 +16,8 @@
 class cPacketSend;
 typedef cPacketSend *pPacketSend;
 
+#include "cclient.h"
+
 /*!
 \author Flameeyes
 \brief Packet to be sent
@@ -44,6 +46,9 @@ public:
 
 		return length;
 	}
+
+	virtual void fixForClient(cClient::ClientType ct)
+	{ }
 
 private:
 	cPacketSend();

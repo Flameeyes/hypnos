@@ -1433,23 +1433,6 @@ void cChar::impAction(UI16 action)
 }
 
 /*!
-\brief get online status
-\return true if the player is owning the character online
-\author Luxor
-*/
-LOGICAL const cChar::IsOnline() const
-{
-	if (getClient() != NULL) return true;
-
-	if (npc) return false;
-
-	if(Accounts->GetInWorld(account) == getSerial32())
-		return true;
-
-	return false;
-}
-
-/*!
 \author Luxor
 \brief add gold to the char
 \param totgold amount of gold to add

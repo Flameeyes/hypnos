@@ -29,10 +29,16 @@ Is this class which provides client compression & encryption.
 */
 class cClient
 {
+public:
+	static const UI32 clientHasCrypto	= 0x00000001;
+	static const UI32 clientIsT2A		= 0x00000002;
+	static const UI32 clientIsAoS		= 0x00000004;
 protected:
 	pChar pc;	//!< Current char used by the client
 	pAccount acc;	//!< Current account logged in by the client
 	pSocket sock;	//!< Current socket used by the client
+
+	UI32 flags;	//!< Flags of capabilities of the client
 
 public:
 	cClient(SI32 sd, struct sockaddr_in* addr);
@@ -46,6 +52,10 @@ public:
 
 	inline pAccount currAccount() const
 	{ return acc; }
+
+	void encode(char &*);
+	void compress(char &*);
+	void encrypt(char &*);
 };
 
 #endif
