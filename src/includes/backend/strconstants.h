@@ -37,6 +37,7 @@ watching at its prefix.
 \li \b sk Skill index
 \li \b weapon Weapon type
 \li \b sa SuspectAction values
+\li \b ip ItemPlace values
 
 \see enums.h
 
@@ -50,6 +51,7 @@ namespace nStrConstants {
 	Skill skills(std::string str);
 	uint16_t weaponsTypes(std::string str);
 	SuspectAction suspectAction(std::string str);
+	ItemPlace itemPlace(std::string str);
 };
 
 #endif

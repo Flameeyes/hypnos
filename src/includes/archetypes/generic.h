@@ -6,17 +6,30 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#ifndef __SKELETONS_ITEMS_H__
-#define __SKELETONS_ITEMS_H__
+#ifndef __ARCHETYPES_ITEMS_H__
+#define __ARCHETYPES_ITEMS_H__
 
 /*!
-\brief Script Skeletons
+\brief Script Archetypes
 
 In this namespace we declare the classes to store and use the items' and
-characters' skeletons read from the XML datafiles.
+characters' archetypes read from the XML datafiles.
 */
-namespace nSkeletons
+namespace nArchetypes
 {
+//@{
+/*!
+\brief Creation functions
+
+These functions are used to create new items or characters based on a given
+XML datafile identifier (a string).
+*/
+
+	pItem createItem(std::string id);
+	pPC createPlayer(std::string id);
+	pNPC createCharacter(std::string id);
+
+//@}
 };
 
 #endif

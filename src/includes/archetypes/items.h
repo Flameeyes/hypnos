@@ -6,10 +6,10 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#ifndef __SKELETONS_ITEMS_H__
-#define __SKELETONS_ITEMS_H__
+#ifndef __ARCHETYPES_ITEMS_H__
+#define __ARCHETYPES_ITEMS_H__
 
-namespace nSkeletons
+namespace nArchetypes
 {
 };
 

@@ -138,16 +138,53 @@ void loadStartLocations()
 	}
 }
 
-void newbieitems(pChar pc)
+//@{
+/*!
+\name Newbies' items' lists
+
+The variables in this group are variables used for store the data about the
+items to add to the newbies.
+*/
+
+//! Struct representing a newbie item
+struct sNewbieItem {
+	pItem item;	//!< Item to add
+	ItemPlace place;//!< Place where to add the item
+};
+
+//! Singly-linked list of sNewbieItem's
+typedef std::slist<sNewbieItem> NBItemSList;
+
+//! Items common to all the newbies
+NBItemSList NewbiesAll;
+//! Items common to all the male newbies
+NBItemSList NewbiesMale;
+//! Items common to all the female newbies
+NBItemSList NewbiesFemale;
+//! Items for skills' newbies
+NBItemSlist NewbiesSkills[skTrueSkills];
+//@}
+
+void giveItems(pChar pc)
 {
 	if ( ! pc ) return;
 	
+	Skills first = pc->bestSkill();
+	Skills second = pc->nextBestSkill(first);
+	Skills third = pc->nextBestSkill(second);
+	
+	if ( pc->getBody()->getSkill(third) )
+		third = skInvalid;
+	
+}
+
+void newbieitems(pChar pc)
+{
 	pClient ps=pc->getClient();
 	if(ps==NULL)
 		return;
 
 	int storeval, itemaddperskill, loopexit = 0;
-	uint8_t first, second, third;
 	char sect[512];
 	char whichsect[105];
 	cScpIterator* iter = NULL;

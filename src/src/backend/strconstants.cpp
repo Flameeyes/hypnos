@@ -117,7 +117,7 @@ uint16_t nStrConstants::weaponsTypes(std::string str)
 
 /*!
 \brief Translate a sa?? string into the enumerated constant
-\param str Stirng representing the SuspectAction enum value
+\param str String representing the SuspectAction enum value
 \return The SuspectAction enum value represented by the string, or saNormal if
 	not a valid string
 */
@@ -128,4 +128,19 @@ SuspectAction nStrConstants::suspectAction(std::string str)
 	
 	// No need to check for saNormal :)
 	return saNormal;
+}
+
+/*!
+\brief Translates a ip?? string into the enumerated constant
+\param str String  representing the ItemPlace enum value
+\return The ItemPlace enum value represented by the string, or ipBackpack if
+	not a valid string
+*/
+ItemPlace nStrConstants::itemPlace(std::string str)
+{
+	if ( str == "ipBankbox" ) return ipBankBox;
+	if ( str == "ipEquip" ) return ipEquip;
+	
+	// No need to check for ipBackpack :)
+	return ipBackpack;
 }

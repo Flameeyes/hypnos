@@ -244,4 +244,14 @@ enum SuspectAction {
 	saGrey		//!< Set the suspect grey
 };
 
+/*!
+\brief Place to add the newly created items
+\see sNewbieItem
+*/
+enum ItemPlace {
+	ipBackpack,	//!< The item will be added in the backpack
+	ipBankbox,	//!< The item will be added in the bank box
+	ipEquip		//!< The item will be equipped to the character
+};
+
 #endif
