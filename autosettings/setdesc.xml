@@ -91,7 +91,21 @@ The maximum number of days a post remains on the board.
 The number of seconds until an escorting quest expires. (Default: 1 day)
   </setting>
   <setting name="EscortActiveExpire" type="uint32" default="1800" flag="get">
-Don't know actually (Default: 1/2 hour)
+Don't know actually. (Default: 1/2 hour)
+  </setting>
+ </group>
+ <group name="Hunger">
+  <setting name="Enabled" type="flag" default="on" flag="is">
+Set this on if you want the Hunger System to be Enabled.
+  </setting>
+  <setting name="HungerRate" type="uint16" default="6000" flag="get">
+The number of seconds before the character gets hungrier.
+  </setting>
+  <setting name="HungerDamage" type="uint16" default="2" flag="get">
+The number of HP a character loses when is starving.
+  </setting>
+  <setting name="HungerDamageRate" type="uint16" default="10" flag="get">
+The rate a character loses HP when starving. (in seconds)
   </setting>
  </group>
 </autosettings>
