@@ -111,6 +111,7 @@ protected:
 \name Who is
 */
 	Event		*events[ALLITEMEVENTS];
+	int		handleEvent(UI08 code, UI08 nParams, UI32 *params);
 
 	SI32		hp;	//!< Number of hit points an item has.
 	SI32		maxhp;	//!< Max number of hit points an item can have.
@@ -700,36 +701,6 @@ public:
 
 public:
 	virtual void	Delete();
-/*
-public:
-	bool 	isValidAmxEvent( UI32 eventId );
-*/
-} PACK_NEEDED;
-
-// will be fully implemented in 0.83
-// Anthalir
-/*
-
-  properties of containers:
-	- one or more key(s)
-	- a list of items stored in it
-	- a gump
-*/
-class cContainerItem : public cItem
-{
-private:
-	vector<SI32>		ItemList;
-
-	SI16				getGumpType();
-	bool				pileItem(P_ITEM pItem);
-	void				setRandPos(P_ITEM pItem);
-
-public:
-						cContainerItem(bool ser= true);
-	UI32				removeItems(UI32 scriptID, UI32 amount/*= 1*/);
-	void				dropItem(P_ITEM pi);
-	UI32				countItems(UI32 scriptID, bool bAddAmounts= false);
-
 } PACK_NEEDED;
 
 class cWeapon : public cItem
@@ -742,14 +713,5 @@ extern bool LoadItemEventsFromScript (P_ITEM pi, char *script1, char *script2);
 
 
 #define MAKE_ITEM_REF(i) pointers::findItemBySerial(i)
-
-#define DEREF_P_ITEM(pi) ( ( ISVALIDPI(pi) ) ? pi->getSerial32() : INVALID )
-
-#define ISVALIDPI(pi) ( ( pi!=NULL && sizeof(*pi) == sizeof(cItem) ) ? (pi->getSerial32() > 0) : false )
-
-#define VALIDATEPI(pi) if (!ISVALIDPI(pi)) { LogWarning("Warning: a non-valid P_ITEM pointer was used in %s:%d", basename(__FILE__), __LINE__); return; }
-#define VALIDATEPIR(pi, r) if (!ISVALIDPI(pi)) { LogWarning("Warning: a non-valid P_ITEM pointer was used in %s:%d", basename(__FILE__), __LINE__); return r; }
-
-
 
 #endif

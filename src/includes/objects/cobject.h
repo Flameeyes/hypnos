@@ -23,10 +23,6 @@
 #include "tmpeff.h"
 #include "basics.h"
 
-#define ISVALIDPO(po) ( ( po!=NULL && ( sizeof(*po) == sizeof(cObject) || sizeof(*po) == sizeof(cChar) || sizeof(*po) == sizeof(cItem) ) ) ? (po->getSerial32() >= 0) : false )
-#define VALIDATEPO(po) if (!ISVALIDPO(po)) { LogWarning("a non-valid P_OBJECT pointer was used in %s:%d", basename(__FILE__), __LINE__); return; }
-#define VALIDATEPOR(po, r) if (!ISVALIDPO(po)) { LogWarning("a non-valid P_OBJECT pointer was used in %s:%d", basename(__FILE__), __LINE__); return r; }
-
 class cScpIterator;
 
 typedef map< UI32, AmxEvent* > AmxEventMap;
@@ -48,29 +44,27 @@ inline bool operator !=(Location a, Location b)
 */
 class cObject
 {
-protected:
-	enum{OBJECT, ITEM, CHAR, } objtype;
 //@{
 /*!
 \name Operators
 */
 public:
-	inline bool		operator> (const cObject& obj) const
+	inline bool operator> (const cObject& obj) const
 	{ return(getSerial32() >  obj.getSerial32()); }
 
-	inline bool		operator< (const cObject& obj) const
+	inline bool operator< (const cObject& obj) const
 	{ return(getSerial32() <  obj.getSerial32()); }
 
-	inline bool		operator>=(const cObject& obj) const
+	inline bool operator>=(const cObject& obj) const
 	{ return(getSerial32() >= obj.getSerial32()); }
 
-	inline bool		operator<=(const cObject& obj) const
+	inline bool operator<=(const cObject& obj) const
 	{ return(getSerial32() <= obj.getSerial32()); }
 
-	inline bool		operator==(const cObject& obj) const
+	inline bool operator==(const cObject& obj) const
 	{ return(getSerial32() == obj.getSerial32()); }
 
-	inline bool		operator!=(const cObject& obj) const
+	inline bool operator!=(const cObject& obj) const
 	{ return(getSerial32() != obj.getSerial32()); }
 //@}
 
@@ -90,45 +84,24 @@ public:
 private:
 	UI32		serial;		//!< serial of the object
 	UI32		multi_serial;	//!< multi serial of the object (don't know what it is used for)
-	UI32		owner_serial;	//!< If Char is an NPC, this sets its owner
 
 public:
 	//! return the serial of the object
-	inline const SI32	getSerial32() const
+	inline const UI32 getSerial32() const
 	{ return serial; }
 
-	void			setSerial32(SI32 newserial);
+	void setSerial32(SI32 newserial);
 
 	//! return the object's multi serial
-	inline const Serial	getMultiSerial() const
+	inline const UI32 getMultiSerial() const
 	{ return multi_serial; }
 
-	//! return the multi serial of the object
-	inline const SI32	getMultiSerial32() const
-	{ return multi_serial.serial32; }
-
 	//! Set the multi serial of the object
-	inline void		setMultiSerial32Only(SI32 newserial)
-	{ multi_serial.serial32= newserial; }
+	inline void setMultiSerial(UI32 newserial)
+	{ multi_serial = newserial; }
 
-	const void		setMultiSerialByte(UI32 nByte, BYTE value);
-
-	//! return the object's owner serial
-	inline const Serial	getOwnerSerial() const
-	{ return OwnerSerial; }
-
-	//! return the object's owner serial
-	inline const SI32      	getOwnerSerial32() const
-	{ return OwnerSerial.serial32; }
-
-	inline void            	setOwnerSerial32Only(SI32 newserial)
-	{ OwnerSerial.serial32 = newserial; }
-
-	void            	setOwnerSerial32(SI32 newserial, bool force=false );
-	const void		setOwnerSerialByte(UI32 nByte, BYTE value);
-
-	inline void		setSameOwnerAs(const cObject* obj)
-	{ setOwnerSerial32Only(obj->getOwnerSerial32()); }
+	inline void setOwnerSerial32Only(UI32 newserial)
+	{ owner_serial = newserial; }
 //@}
 
 //@{
@@ -142,27 +115,22 @@ private:
 
 public:
 	//! return the position of the object
-	inline const Location	getPosition() const
+	inline const Location getPosition() const
 	{ return position; }
 
-	SI32			getPosition(Coord what) const;
-	void			setPosition(Coord what, SI32 value);
 	void			setPosition(Location where);
 
 	//! Set the position of the object
 	inline void		setPosition(UI32 x, UI32 y, SI08 z)
 	{ setPosition( Loc( x, y, z ) ); }
 
-	inline const Location	getOldPosition() const
+	inline const Location getOldPosition() const
 	{ return old_position; }
 
-	SI32			getOldPosition(const char *what) const;
-	void			setOldPosition(const char *what, SI32 value);
-
-	inline void		setOldPosition(const Location where)
+	inline void setOldPosition(const Location where)
 	{ old_position = where; }
 
-	inline void		setOldPosition(SI32 x, SI32 y, signed char z, signed char dispz)
+	inline void setOldPosition(SI32 x, SI32 y, signed char z, signed char dispz)
 	{ setOldPosition( Loc(x, y, z, dispz) ); }
 //@}
 
@@ -171,61 +139,42 @@ public:
 \name Appearence
 */
 protected:
-	string			secondary_name;
-/*!<
+/*!
 Real name of the char, 30 chars max + '\\0'<br>
 Also used to store the secondary name of items.
 */
-	string			current_name;	//!< Name displayed everywhere for this object, 30 char max + '\\0'
+	std::string	secondary_name;
+	//! Name displayed everywhere for this object, 30 char max + '\\0'
+	std::string	current_name;
 
 public:
 	//! return the real name of object
-	inline const string 	getRealName() const
+	inline const std::string &getRealName() const
 	{ return secondary_name; }
 
-	//! return the real name of object
-	inline const char*		getRealNameC() const
-	{ return secondary_name.c_str(); }
-
 	//! Set the real name of object
-	inline void		setRealName(string s)
+	inline void setRealName(std::string s)
 	{ secondary_name = s; }
 
-	//! Set the real name of object
-	inline void		setRealName(const char *str)
-	{ secondary_name = string(str); }
-
 	//! return the current name of object
-	inline const string	getCurrentName() const
+	inline const std::string &getCurrentName() const
 	{ return current_name;  }
 
-	//! return the current name of object
-	inline const char*	getCurrentNameC() const
-	{ return current_name.c_str(); }
-
 	//! Set the current name of object
-	inline void		setCurrentName(string s)
+	inline void setCurrentName(std::string s)
 	{ current_name = s; }
 
-	//! Set the current name of object
-	inline void		setCurrentName(const char *str)
-	{ current_name = string(str); }
-
-	void			setCurrentName(char *format, ...);
-
-	//! Set the secondary name of object
-	inline void		setSecondaryName( string s )
-	{ secondary_name = s; }
+	void setCurrentName(char *format, ...);
 
 	//! Get the secondary name of the object
-	inline const char*	getSecondaryNameC() const
-	{ return secondary_name.c_str(); }
-
-	//! Get the secondary name of the object
-	inline const string	getSecondaryName() const
+	inline const std::string getSecondaryName() const
 	{ return secondary_name; }
 
-	void			setSecondaryName(const char *format, ...);
+	//! Set the secondary name of object
+	inline void setSecondaryName( std::string s )
+	{ secondary_name = s; }
+
+	void setSecondaryName(const char *format, ...);
 //@}
 
 //@{
@@ -247,25 +196,24 @@ public:
 //@}
 
 	//! return the object's script number
-	inline const UI32	getScriptID() const
+	inline const UI32 getScriptID() const
 	{ return ScriptID; }
 
 	//! set the object's script number
-	inline void		setScriptID(UI32 sid)
+	inline void setScriptID(UI32 sid)
 	{ ScriptID = sid; }
 
 	UI32	disabled;	//!< Disabled object timer, cant trigger.
 	std::string*	disabledmsg; //!< Object is disabled, so display this message.
 
-
 public:
-	virtual	void		Delete();
+	virtual void Delete() = 0;
 
 private:
-	UI16 id_old;
-	UI16 id;
-	COLOR color;
-	COLOR color_old;
+	UI16 id;	//!< Object's ID
+	UI16 id_old;	//!< Object's old ID
+	UI16 color;	//!< Object's color
+	UI16 color_old;	//!< Object's old color
 public:
 	inline void setId( UI16 newId )
 	{ id = newId; }
@@ -279,34 +227,18 @@ public:
 	inline const UI16 getOldId() const
 	{ return id_old; }
 
-	inline void setColor( COLOR newColor )
+	inline void setColor( UI16 newColor )
 	{ color = newColor; }
 
-	inline const COLOR getColor() const
+	inline const UI16 getColor() const
 	{ return color; }
 
-	inline void setOldColor( COLOR oldColor )
+	inline void setOldColor( UI16 oldColor )
 	{ color_old = oldColor; }
 
-	inline const COLOR getOldColor() const
+	inline const UI16 getOldColor() const
 	{ return this->color_old; }
 
 } PACK_NEEDED;
 
-/*!
-\brief spawner
-*/
-class cSpawner : public cObject
-{
-};
-
-class cItemSpawner : public cSpawner
-{
-};
-
-class cNpcSpawner : public cSpawner
-{
-};
-
 #endif	// __OBJECT_H
-

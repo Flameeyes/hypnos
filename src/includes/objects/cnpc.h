@@ -28,8 +28,23 @@ public:
 	inline cNPC() : cChar()
 	{ }
 
-	inline cNPC(UI32 serial) : cChar(serial)
+	inline cNPC() : cChar(serial)
 	{ }
+
+	virtual ~cNPC();
+
+	virtual UI32 rtti()
+	{ return rtti::cNPC; }
+
+protected:
+	pChar owner;	//! NPC's owner
+
+public:
+	//! Gets NPC's owner
+	inline pChar getOwner() const
+	{ return owner; }
+
+	void setOwner(pChar pc);
 
 protected:
 	//! Heartbeat for NPCs

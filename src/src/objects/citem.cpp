@@ -678,11 +678,25 @@ inline bool operator !=( cItem& a, cItem& b ) {
 	return !(a==b);
 }
 
+/*!
+\author Flameeyes
+\brief Handle the right event for this item
+\param code Code of the event
+\param nParams number of params for the event handler
+\param params params for the event handler
+*/
+int cItem::handleEvent(UI08 code, UI08 nParams, UI32 *params)
+{
+	return PythonInterface::handleEvent(
+		events[code], etItem, code,
+		nParams, params
+		);
+}
+
 #define MAX_ITEM_AMOUNT 65535
 
 /*!
 \brief Pile two items
-\author
 \return true if piled, false else
 \note refresh is done if piled
 */
@@ -692,7 +706,7 @@ bool cItem::PileItem( P_ITEM item )
 	if( (*this) != (*item) )
 		return false;	//cannot stack.
 
-	if( amount+ item->amount>MAX_ITEM_AMOUNT )
+	if( amount+ item->amount> 65535  )
 	{
 		if( cont )
 			item->SetRandPosInCont( cont );
@@ -720,6 +734,7 @@ bool cItem::PileItem( P_ITEM item )
 
 /*!
 \brief try to find an item in the container to stack with
+\todo port to cContainer.... GHISHAAAAAAAAAA! :P
 */
 bool cItem::ContainerPileItem( P_ITEM item)
 {
@@ -791,16 +806,6 @@ int cItem::DeleteAmountByID(int amount, unsigned int scriptID)
 
 }
 
-
-/*!
-\author Elcabesa
-*/
-void cItem::animSetId(SI16 id)
-{
-	animid1=id>>8;
-	animid2=id&0x00FF;
-}
-
 /*!
 \todo backport
 */
@@ -853,7 +858,6 @@ R32 cItem::getWeight()
 \return the weigth actual
 \todo make return value float
 */
-
 cItem::cItem( SERIAL ser )
 {
 

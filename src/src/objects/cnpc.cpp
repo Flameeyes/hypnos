@@ -7,20 +7,23 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
-\brief Python events handling
+\brief Implementation of cNPC class
 */
 
-#ifndef __PYEVENTS_H__
-#define __PYEVENTS_H__
+#include "objects/cnpc.h"
 
-#include <Python.h>
-
-namespace PythonInterface
+/*!
+\brief Sets the NPC's owner
+\author Flameeyes
+\param pc new owner
+*/
+void cNPC::setOwner(pChar pc)
 {
-	int handleEvent(
-		PyObject *pFunc, eventType et, UI08 code,
-		UI08 nParams, UI32 *params
-		);
-}
+	if ( owner )
+		owner->removeOwned(this);
 
-#endif
+	owner = pc;
+
+	if ( owner )
+		owner->addOwned(this);
+}

@@ -115,15 +115,6 @@ cObject::cObject()
 
 cObject::~cObject()
 {
-	/*if( amxEvents )
-	{
-		//AmxEventMap::iterator it( amxEvents->begin() ), end( amxEvents->end() );
-		//for( ; it!=end; it++ )
-		//{
-		//	delete it->second;
-		//}
-		safedelete( amxEvents );
-	}*/
 	if ( tempfx ) {
 		tempfx->clear();
 		safedelete( tempfx );
@@ -137,73 +128,13 @@ cObject::~cObject()
 \brief Set the serial of the object
 \author Anthalir
 \since 0.82a
-\param newserial the new serial (unsigned int)
+\param newserial the new serial
 */
 void cObject::setSerial32(SI32 newserial)
 {
 	serial.serial32= newserial;
 	if( newserial!=INVALID )
 		objects.insertObject( this );
-}
-
-void cObject::setOwnerSerial32(SI32 ownser, bool force)
-{
-
-  //Endymion
-  //i think need to have only in cObejct the setOwnerOnly and have SetOwnerSerial in cItem and cChar
-
-	if( !force )
-		if ( ownser == getOwnerSerial32() ) return;
-
-	if ( getOwnerSerial32() != INVALID ) // if it was set, remove the old one
-		if ( isCharSerial( getSerial32() ) )
-			pointers::delFromOwnerMap( (P_CHAR)( this ) );
-		else
-			pointers::delFromOwnerMap( (P_ITEM)( this ) );
-
-
-	setOwnerSerial32Only(ownser);
-
-	if ( getOwnerSerial32() == INVALID ) {
-		if( isCharSerial( getSerial32() ) )
-			((P_CHAR)(this))->tamed = false;
-		return;
-	}
-
-	if ( isCharSerial( getSerial32() ) ) {
-		if ( getOwnerSerial32() != getSerial32() )
-			((P_CHAR)(this))->tamed = true;
-		else
-			((P_CHAR)(this))->tamed = false;
-	}
-
-	if ( isCharSerial( getSerial32() ) ) // if there is an owner, add it
-		pointers::addToOwnerMap( (P_CHAR)( this ) );
-	else
-		pointers::addToOwnerMap( (P_ITEM)( this ) );
-	//End Endymion..
-}
-
-/*!
-\brief return one coord of the object position
-\author Anthalir
-\since 0.82a
-\param what what to return ?
-\return signed int
-*/
-SI32 cObject::getPosition( Coord what ) const
-{
-	switch( what )
-	{
-		case cX:
-			return position.x;
-		case cY:
-			return position.y;
-		case cZ:
-			return position.z;
-		case cDispZ:
-			return position.dispz;
-	}
 }
 
 /*!
@@ -216,72 +147,6 @@ void cObject::setPosition(Location where)
 {
         old_position = position; // Luxor
 	position = where;
-}
-
-/*!
-\brief Set one coord of the object position
-\author Anthalir
-\since 0.82a
-\param what what to set ?
-	\li "x" = set the x position
-	\li "y" = set the y position
-	\li "z" = set the z position
-	\li "dz"= set the dispz position (used in cChar)
-\param value the value to set
-\todo change from string to a simpler enum
-*/
-void cObject::setPosition( const char *what, SI32 value)
-{
-        old_position = position; // Luxor
-	switch( what )
-	{
-		case cX:
-			position.x = value;
-			return;
-		case cY:
-			position.y = value;
-			return;
-		case cZ:
-			position.z = value;
-			return;
-		case cDispZ:
-			position.dispz = value;
-			return;
-	}
-}
-
-SI32 cObject::getOldPosition( const char *what) const
-{
-	switch( what )
-	{
-		case cX:
-			return old_position.x;
-		case cY:
-			return old_position.y;
-		case cZ:
-			return old_position.z;
-		case cDispZ:
-			return old_position.dispz;
-	}
-}
-
-void cObject::setOldPosition( const char *what, SI32 value)
-{
-	switch( what )
-	{
-		case cX:
-			old_position.x = value;
-			return;
-		case cY:
-			old_position.y = value;
-			return;
-		case cZ:
-			old_position.z = value;
-			return;
-		case cDispZ:
-			old_position.dispz = value;
-			return;
-	}
 }
 
 /*!
@@ -318,88 +183,6 @@ void cObject::setSecondaryName(const char *format, ...)
         tmp[sizeof(tmp)-1] = '\0';
 	secondary_name = string(tmp);
 }
-
-/*!
-\brief Tell if the AmxEvent id is valid
-\author Luxor
-\since 0.82
-*//*
-LOGICAL cObject::isValidAmxEvent( UI32 eventId )
-{
-	if ( eventId < 0 )
-		return false;
-
-	if ( isCharSerial(getSerial32()) && eventId >= ALLCHAREVENTS )
-		return false;
-
-	if ( isItemSerial(getSerial32()) && eventId >= ALLITEMEVENTS )
-		return false;
-
-	return true;
-}
-
-AmxEvent* cObject::getAmxEvent( UI32 eventId )
-{
-	if( isValidAmxEvent( eventId ) )
-	{
-		if( amxEvents != NULL )
-		{
-			AmxEventMap::iterator it = amxEvents->find( eventId );
-			if( it != amxEvents->end() )
-				return it->second;
-		}
-	}
-	return NULL;
-}
-
-AmxEvent* cObject::setAmxEvent( UI32 eventId, char *amxFunction, LOGICAL dynamicEvent )
-{
-	AmxEvent* event = NULL;
-
-	if( isValidAmxEvent( eventId ) )
-	{
-		delAmxEvent( eventId );
-
-		if( amxEvents == NULL )
-			amxEvents = new AmxEventMap;
-
-		event = newAmxEvent( amxFunction, dynamicEvent );
-		amxEvents->insert( make_pair( eventId, event ) );
-	}
-
-	return event;
-}
-
-cell cObject::runAmxEvent( UI32 eventID, SI32 param1, SI32 param2, SI32 param3, SI32 param4 )
-{
-	AmxEvent* event = getAmxEvent( eventID );
-
-	g_bByPass = false;
-
-	if( event != NULL )
-		return event->Call( param1, param2, param3, param4 );
-
-	return INVALID;
-}
-
-void cObject::delAmxEvent( UI32 eventId )
-{
-	if( isValidAmxEvent( eventId ) )
-	{
-		if( amxEvents )
-		{
-			AmxEventMap::iterator it = amxEvents->find( eventId );
-			if( it != amxEvents->end() )
-			{
-				// we do not delete the actual AmxEvent instance as it's part of a vital hash queue in amxcback.cpp
-				amxEvents->erase( it );
-			}
-			if( amxEvents->empty() )
-				safedelete( amxEvents );
-		}
-	}
-}
-*/
 
 /*!
 \author Luxor
@@ -543,13 +326,6 @@ LOGICAL cObject::hasTempfx()
 	}
 
 	return true;
-}
-/*!
-\author Sparhawk
-\brief Tells if the object has tempfx in queue
-*/
-void cObject::Delete()
-{
 }
 
 /*!

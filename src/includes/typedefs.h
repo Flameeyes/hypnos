@@ -41,76 +41,34 @@ typedef float				R32;	//< 32 bits floating point
 	typedef signed __int16 SI16;
 	typedef signed __int32 SI32;
 	typedef signed __int64 SI64;
-
-	//typedef __int8			UI08;
-	//typedef __int16			UI16;
-	//typedef __int32			UI32;
-	//typedef __int64			UI64;
-#else
-	#ifdef _MSC_VER
-		#if _MSC_VER<=1200
-			typedef unsigned long		UI64;
-			typedef signed long		SI64;
-		#else
-			typedef unsigned __int64	UI64;
-			typedef signed __int64		SI64;
-		#endif
-	#else
-		typedef unsigned long long	UI64;
-		typedef long long		SI64;
-	#endif
-	typedef unsigned int			UI32;		//!< unsigned 32 bits integer
-	typedef signed int			SI32;		//!< signed 32 bits integer
-	typedef unsigned short int		UI16;		//!< unsigned 16 bits integer
-	typedef signed short int		SI16;		//!< signed 16 bits integer
-	typedef unsigned char			UI08;		//!< unsigned 8 bits integer
-	typedef signed char			SI08;		//!< signed 8 bits integer
 #endif
 
-typedef bool				LOGICAL;	//!< boolean type
-typedef char				TEXT;		//!< character type
-typedef UI08				ARMORCLASS;
-typedef SI32				CHARACTER;
-typedef UI16				COLOR;
-typedef SI32				SOUND;
+typedef std::vector<pItem>	ItemList;
 
-typedef SI32				ITEM;
-typedef class cNxwClientObj*		NXWCLIENT;
-typedef SI32				NXWSOCKET;	//!< socket connection
-typedef unsigned char			BYTE;
-typedef       class cChar*		P_CHAR;		//!< pointer to cChar
-typedef const class cChar*		PC_CHAR;	//!< const pointer to cChar
-typedef       class cItem*		P_ITEM;		//!< pointer to cItem
-typedef const class cItem*		PC_ITEM;	//!< const pointer to cItem
-typedef       class cObject*		P_OBJECT;	//!< pointer to cObject
-typedef SI32				SERIAL;		//!< 32-bit serial number
+
 typedef UI32				TIMERVAL;
 typedef SI32				ACCOUNT;
 typedef SI32				FUNCIDX;
-typedef std::vector<UI32>		UI32VECTOR;	//!< vector of unsigned 32 bits integers
-typedef std::vector<SERIAL>		SERIAL_VECTOR;	//!< vector of serials
-typedef slist<SERIAL>                   SERIAL_SLIST;	//!< slist of serials
-typedef SERIAL 				SCRIPTID; 	//!< a script id
-typedef std::set<SERIAL>		SERIAL_SET;	//!< set of serials
-typedef std::vector< P_OBJECT >		POBJECT_VECTOR;	//!<  a vector of pointers to cObject
-typedef POBJECT_VECTOR::iterator	POBJECT_VECTOR_IT;//!< an iterator to a vector of pointers to cObject
-typedef std::vector< P_CHAR >		PCHAR_VECTOR;	//!< a vector of pointers to cChar
-typedef PCHAR_VECTOR::iterator		PCHAR_VECTOR_IT;//!< an iterator to a vector of pointers to cChar
-typedef std::vector< P_ITEM >		PITEM_VECTOR;	//!<  a vector of pointers to cItem
-typedef PITEM_VECTOR::iterator		PITEM_VECTOR_IT;//!< an iterator to a vector of pointers to cChar
-typedef class cPartyMember* P_PARTY_MEMBER;
-typedef class cParty*	P_PARTY;
-typedef class cBasicMenu* P_MENU;
-typedef class cGuild* P_GUILD;
-typedef class cGuildMember* P_GUILD_MEMBER;
-typedef class cGuildRecruit* P_GUILD_RECRUIT;
-typedef class cClient* P_CLIENT;
 
+// typedef std::vector<UI32>		UI32VECTOR;	//!< vector of unsigned 32 bits integers
+// typedef std::vector<SERIAL>		SERIAL_VECTOR;	//!< vector of serials
+// typedef slist<SERIAL>                   SERIAL_SLIST;	//!< slist of serials
 
-
-
-
-
+// typedef SERIAL 				SCRIPTID; 	//!< a script id
+// typedef std::set<SERIAL>		SERIAL_SET;	//!< set of serials
+// typedef std::vector< P_OBJECT >		POBJECT_VECTOR;	//!<  a vector of pointers to cObject
+// typedef POBJECT_VECTOR::iterator	POBJECT_VECTOR_IT;//!< an iterator to a vector of pointers to cObject
+// typedef std::vector< P_CHAR >		PCHAR_VECTOR;	//!< a vector of pointers to cChar
+// typedef PCHAR_VECTOR::iterator		PCHAR_VECTOR_IT;//!< an iterator to a vector of pointers to cChar
+// typedef std::vector< P_ITEM >		PITEM_VECTOR;	//!<  a vector of pointers to cItem
+// typedef PITEM_VECTOR::iterator		PITEM_VECTOR_IT;//!< an iterator to a vector of pointers to cChar
+// typedef class cPartyMember* P_PARTY_MEMBER;
+// typedef class cParty*	P_PARTY;
+// typedef class cBasicMenu* P_MENU;
+// typedef class cGuild* P_GUILD;
+// typedef class cGuildMember* P_GUILD_MEMBER;
+// typedef class cGuildRecruit* P_GUILD_RECRUIT;
+// typedef class cClient* P_CLIENT;
 
 #if defined __GNUC__ && (__GNUC__ < 3 || defined(WIN32))
 	typedef std::basic_string <wchar_t> wstring;
@@ -120,8 +78,6 @@ typedef class cClient* P_CLIENT;
 
 #ifdef __BORLANDC__
 	#include <stlport/hash_map>
-#else
-	//#include <hashmap>
 #endif
 
 
@@ -134,18 +90,6 @@ public:
 
 	T a;
 	T b;
-};
-
-/*!
-\brief Define a unsigned 32bit integer with 3 saved values
-\author Anthalir
-\since 0.82
-*/
-struct UI32_s {
-	UI32	value;
-	UI32	save1;
-	UI32	save2;
-	UI32	save3;
 };
 
 struct lookuptr_st //Tauriel  used to create pointers to the items dynamically allocated
@@ -294,15 +238,16 @@ struct title_st
 };
 
 /*!
-\brief Represent a point on the map
+\brief Represent a location on one map
 \author Anthalir
-\since 0.82a
 */
-struct Location{
-	UI32			x, y;
-	signed char		z, dispz;		// dispz is used for the char location
+struct Location {
+	UI16 x;		//!< X-Coordinate of the location
+	UI16 y;		//!< Y-Coordinate of the location
+	SI08 z;		//!< Z-Coordinate of the location
+	SI08 dispz;	//!< Displayed Z of the location
+	UI08 map;	//!< Map the location (if 255 -> every map)
 };
-
 
 struct tele_locations_st {
 	Location destination, origem;

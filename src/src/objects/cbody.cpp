@@ -34,45 +34,9 @@ const UI08 cBody::equip(pItem pi, bool drag)
 {
 	tile_st item;
 
-	PyObject *pArgs, *pValue;
-	if (pi->events[eventItemOnEquip] && PyCallable_Check(pi->events[eventItemOnEquip]) )
-	{
-		pArgs = PyTurple_New(2);
-		pValue = PyLong_FromVoidPtr(pi);
-		if ( ! pValue )
-		{
-			Py_DECREF(pArgs);
-			LogError("Error adding parameters for item equip - ignoring");
-			goto jump_equipevent;
-		}
-		PyTurple_SetItem(pArgs, 0, pValue)
-
-		pValue = PyLong_FromVoidPtr(this);
-		if ( ! pValue )
-		{
-			Py_DECREF(pArgs);
-			LogError("Error adding parameters for item equip - ignoring");
-			goto jump_equipevent;
-		}
-		PyTurple_SetItem(pArgs, 1, pValue)
-
-		pValue = PyObject_CallObject(pi->events[eventItemOnEquip], pArgs);
-		Py_DECREF(pArgs);
-
-		if ( ! pValue )
-		{
-			LogError("Call of event handler for item equip failed");
-			goto jump_equipevent;
-		}
-
-		int res = PyInt_AsInt(pValue);
-		Py_DECREF(pValue);
-
-		if ( res == pyEat )
-			return 2;
-	}
-
-jump_equipevent:
+	UI32 params[2] = { (UI32)pi, (UI32)this };
+	if ( !pi->handleEvent( eventItemOnEquip, 2, params ) )
+		return 2;
 
 	// AntiChrist -- for poisoned items
 	if(pi->poisoned)
@@ -116,45 +80,9 @@ const UI08 cBody::unEquip(pItem pi, bool drag)
 {
 	checkSafeStats();
 
-	PyObject *pArgs, *pValue;
-	if (pi->events[eventItemOnUnEquip] && PyCallable_Check(pi->events[eventItemOnUnEquip]) )
-	{
-		pArgs = PyTurple_New(2);
-		pValue = PyLong_FromVoidPtr(pi);
-		if ( ! pValue )
-		{
-			Py_DECREF(pArgs);
-			LogError("Error adding parameters for item unequip - ignoring");
-			goto jump_unequipevent;
-		}
-		PyTurple_SetItem(pArgs, 0, pValue)
-
-		pValue = PyLong_FromVoidPtr(this);
-		if ( ! pValue )
-		{
-			Py_DECREF(pArgs);
-			LogError("Error adding parameters for item unequip - ignoring");
-			goto jump_unequipevent;
-		}
-		PyTurple_SetItem(pArgs, 1, pValue)
-
-		pValue = PyObject_CallObject(pi->events[eventItemOnUnEquip], pArgs);
-		Py_DECREF(pArgs);
-
-		if ( ! pValue )
-		{
-			LogError("Call of event handler for item unequip failed");
-			goto jump_unequipevent;
-		}
-
-		int res = PyInt_AsInt(pValue);
-		Py_DECREF(pValue);
-
-		if ( res == pyEat )
-			return 1;
-	}
-
-jump_unequipevent:
+	UI32 params[2] = { (UI32)pi, (UI32)this };
+	if ( !pi->handleEvent( eventItemOnUnEquip, 2, params ) )
+		return 2;
 
 	// AntiChrist -- for poisoned items
 	if (pi->poisoned)

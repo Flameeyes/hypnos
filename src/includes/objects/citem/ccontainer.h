@@ -13,10 +13,12 @@
 #ifndef __CONTAINERS_H
 #define __CONTAINERS_H
 
-#include "citem.h"
-
 class cContainer;
 typedef cContainer* pContainer;
+
+#include "objects/citem.h"
+#include "rtti.h"
+#include "typedefs.h"
 
 // will be fully implemented in 0.83
 // Anthalir
@@ -29,19 +31,25 @@ typedef cContainer* pContainer;
 */
 class cContainer : public cItem
 {
-private:
-	vector<SI32>		ItemList;
+protected:
+	//! Items in the container
+	ItemList	items;
 
-	bool				pileItem(P_ITEM pItem);
-	void				setRandPos(P_ITEM pItem);
+	bool		pileItem(pItem &item);
+	void		setRandPos(pItem Item);
 
 public:
-					cContainer(bool ser= true);
-	UI16				getGump();
-	bool				AddItem(P_ITEM item, short xx=-1, short yy=-1);	// Add Item to container
-	UI32				removeItems(UI32 scriptID, UI32 amount/*= 1*/);
-	void				dropItem(P_ITEM pi);
-	UI32				countItems(UI32 scriptID, bool bAddAmounts= false);
+			cContainer(bool ser= true);
+
+	//! Return the right rtti
+	inline const UI32 rtti() const
+	{ return rtti::cContainer; }
+
+	UI16		getGump();
+	bool		addItem(pItem item, UI16 xx=-1, UI16 yy=-1);	// Add Item to container
+	UI32		removeItems(UI32 scriptID, UI32 amount/*= 1*/);
+	void		dropItem(pItem pi);
+	UI32		countItems(UI32 scriptID, bool total = false);
 
 } PACK_NEEDED;
 
