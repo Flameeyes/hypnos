@@ -506,7 +506,7 @@ static void exec_whologow(char *dummy)
 	NxwSocketWrapper sw;
 	sw.fillOnline();
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWCLIENT ps=sw.getClient();
+		pClient ps=sw.getClient();
 		if( ps==NULL )
 			continue;
 		
@@ -544,7 +544,7 @@ static void exec_wholog(char *dummy)
 	NxwSocketWrapper sw;
 	sw.fillOnline();
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWCLIENT ps=sw.getClient();
+		pClient ps=sw.getClient();
 		if( ps==NULL )
 			continue;
 		pChar pj=ps->currChar();
@@ -658,7 +658,7 @@ static void exec_gy(char *txt)
 	NxwSocketWrapper sw;
 	sw.fillOnline();
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWCLIENT ps=sw.getClient();
+		pClient ps=sw.getClient();
 		if( ps==NULL )
 			continue;
 		pChar pj=ps->currChar();

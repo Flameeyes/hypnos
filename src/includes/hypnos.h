@@ -20,7 +20,7 @@ void SetGlobalVars();
 void BuildPointerArray();
 void InitMultis();
 void DeleteClasses();
-void telltime( NXWCLIENT ps );
+void telltime( pClient ps );
 void npcattacktarget(pChar npc, pChar target);
 void enlist(int s, int listnum);		//!< For enlisting in army
 void gcollect();

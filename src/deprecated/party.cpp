@@ -124,7 +124,7 @@ void cParty::talkToAll( std::wstring& s, COLOR color )
 	for ( ; iter!=end; ++iter ) {
 		pChar pc = cSerializable::findCharBySerial( (*iter)->serial );
 		if( pc ) {
-			NXWCLIENT ps = pc->getClient();
+			pClient ps = pc->getClient();
 			if( ps!=NULL )
 				ps->sysmsg( color, (char*)m.c_str() );
 		}
@@ -207,7 +207,7 @@ void cPartys::removeParty( uint32_t serial )
 }
 
 
-void cPartys::receive( NXWCLIENT ps )
+void cPartys::receive( pClient ps )
 {
 
 	static AmxFunction* addMem, *delMem, *lootMode, *accept, *decline = NULL;

@@ -167,7 +167,7 @@ static bool canMine( pChar pc, pItem weapon )
 }
 
 
-void Skills::target_mine( NXWCLIENT ps, pTarget t )
+void Skills::target_mine( pClient ps, pTarget t )
 {
 
 	pChar pc = ps->currChar();

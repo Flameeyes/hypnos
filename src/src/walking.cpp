@@ -694,7 +694,7 @@ bool handleItemsAtNewPos(pChar pc, int oldx, int oldy, int newx, int newy)
 {
 	if ( ! pc ) return false;
 
-	NXWCLIENT ps=pc->getClient();
+	pClient ps=pc->getClient();
 	if ( ps == NULL ) //Luxor
 		return false;
 
@@ -734,8 +734,8 @@ void sendToPlayers( pChar pc, int8_t dir )
 {
 	if ( ! pc ) return;
 
-	NXWCLIENT ps = NULL;
-	NXWCLIENT cli = pc->getClient();
+	pClient ps = NULL;
+	pClient cli = pc->getClient();
 	NxwCharWrapper sc;
 	sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE + 1, !pc->IsGM() );
 

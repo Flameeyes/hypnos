@@ -96,7 +96,7 @@ void snooping( pPC snooper, pItem cont )
 \author Unknow, completly rewritten by Endymion
 \param ps the client
 */
-void Skills::target_stealing( NXWCLIENT ps, pTarget t )
+void Skills::target_stealing( pClient ps, pTarget t )
 {
 	pChar thief = ps->currChar();
 	VALIDATEPC(thief);
@@ -239,7 +239,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 	sw.fillOnline( thief, true );
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
 
-		NXWCLIENT ps_i=sw.getClient();
+		pClient ps_i=sw.getClient();
 		if(ps_i==NULL ) continue;
 
 		pChar pc_i=ps_i->currChar();
@@ -257,7 +257,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 \author Ripper, updated by Endymion
 \param ps the client
 */
-void Skills::PickPocketTarget(NXWCLIENT ps)
+void Skills::PickPocketTarget(pClient ps)
 {
 	if( ps == 0 ) return;
 	pChar Me = ps->currChar();
@@ -282,7 +282,7 @@ void Skills::PickPocketTarget(NXWCLIENT ps)
 \param ps the client
 \todo add string because it's locked contanier into translate
 */
-void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
+void Skills::target_randomSteal( pClient ps, pTarget t )
 {
 
 	pChar thief=ps->currChar();
@@ -422,7 +422,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 	sw.fillOnline( thief, true );
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
 
-		NXWCLIENT ps_i=sw.getClient();
+		pClient ps_i=sw.getClient();
 		if( ps_i==NULL ) continue;
 
 		pChar pc_i=ps_i->currChar();
@@ -441,7 +441,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 \since 0.53
 \param ps the client
 */
-void Skills::target_lockpick( NXWCLIENT ps, pTarget t )
+void Skills::target_lockpick( pClient ps, pTarget t )
 {
 
 	pChar pc = ps->currChar();

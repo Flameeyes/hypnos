@@ -1225,7 +1225,7 @@ static bool pageCouncillor( pChar pc, pClient client, string &reason )
 		
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			NXWCLIENT ps=sw.getClient();
+			pClient ps=sw.getClient();
 			if( ps==NULL )
 				continue;
 			
@@ -1403,7 +1403,7 @@ static bool stablePet( pChar pc, pClient client, std::string &speech, NxwCharWra
 					NxwSocketWrapper sw;
 					sw.fillOnline( pc_pet, false );
 					for ( sw.rewind(); !sw.isEmpty(); sw++ ) {
-						NXWCLIENT ps=sw.getClient();
+						pClient ps=sw.getClient();
 						if( ps==NULL )
 							continue;
 						

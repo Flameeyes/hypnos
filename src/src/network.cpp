@@ -158,7 +158,7 @@ static unsigned int bit_table[257][2] =
 static NetThread* g_NT[MAXCLIENT];
 #endif
 
-NXWCLIENT getClientFromSocket( pClient client )
+pClient getClientFromSocket( pClient client )
 {
 	if( socket < 0 )
 		return NULL;
@@ -238,7 +238,7 @@ void cNetwork::DoStreamCode( pClient clientocket )
 */
 	int len = Pack( outbuffer[socket], xoutbuffer, boutlength[socket] );
 	// ConOut("Packed %d bytes input to %d bytes out\n", boutlength[socket], len);
-	NXWCLIENT ps = getClientFromSocket(socket);
+	pClient ps = getClientFromSocket(socket);
 #ifdef ENCRYPTION
 	pChar pc_currchar= (ps!=NULL)? ps->currChar() : NULL;
 	if ( clientCrypter[socket] != NULL && clientCrypter[socket]->getCryptVersion() >= CRYPT_3_0_0c )
@@ -490,7 +490,7 @@ void cNetwork::LoginMain(int s)
 
 	acctno[s]=INVALID;
 #ifdef ENCRYPTION
-	NXWCLIENT ps = getClientFromSocket(s);
+	pClient ps = getClientFromSocket(s);
 	int length=0x3e;
 	int j;
 	unsigned char decryptPacket[MAXBUFFER+1];
@@ -1575,7 +1575,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 #ifdef ENCRYPTION
 	ClientCrypt *crypter=NULL;
 #endif
-	NXWCLIENT ps = getClientFromSocket(s);
+	pClient ps = getClientFromSocket(s);
 	pChar pc_currchar= (ps!=NULL)? ps->currChar() : NULL;
 #ifdef ENCRYPTION
 	if ( pc_currchar != NULL )

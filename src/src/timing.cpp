@@ -244,7 +244,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWCLIENT ps = sw.getClient();
+		pClient ps = sw.getClient();
 		if( ps == NULL )
 			continue;
 

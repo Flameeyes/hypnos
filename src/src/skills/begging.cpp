@@ -23,7 +23,7 @@ void Begging::initialize()
 	text[2] = "I have a family to feed, think of the children.";
 }
 
-void Begging::target(NXWCLIENT ps, pTarget t)
+void Begging::target(pClient ps, pTarget t)
 {
 	pChar pcc = ps->currChar();
 	if ( ! pcc )

@@ -112,7 +112,7 @@ uint32_t cMenus::removeMenu( SERIAL menu, pChar pc )
 	return INVALID;
 }
 
-bool cMenus::handleMenu( NXWCLIENT ps )
+bool cMenus::handleMenu( pClient ps )
 {
 
 	if( ps==NULL )
@@ -186,7 +186,7 @@ void cBasicMenu::setCallBack( int fn )
 	callback = new AmxFunction( fn );
 }
 
-void cBasicMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
+void cBasicMenu::handleButton( pClient ps, cClientPacket* pkg  )
 {
 }
 
@@ -194,7 +194,7 @@ void cBasicMenu::show( pChar pc )
 {
 	if ( ! pc ) return;
 
-	NXWCLIENT ps=pc->getClient();
+	pClient ps=pc->getClient();
 	if( ps==NULL ) return;
 
 	cServerPacket* packet = build();
@@ -419,7 +419,7 @@ int32_t cMenu::getButton( int32_t rawButton )
 
 
 
-void cMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
+void cMenu::handleButton( pClient ps, cClientPacket* pkg  )
 {
 	
 	cPacketMenuSelection* p = (cPacketMenuSelection*)pkg;
@@ -835,7 +835,7 @@ void cIconListMenu::addIcon( uint16_t model, COLOR color, int32_t data, std::str
 }
 
 
-void cIconListMenu::handleButton( NXWCLIENT ps,  cClientPacket* pkg  )
+void cIconListMenu::handleButton( pClient ps,  cClientPacket* pkg  )
 {
 
 	pChar pc = ps->currChar();

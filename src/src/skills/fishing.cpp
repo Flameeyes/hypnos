@@ -156,7 +156,7 @@ inline bool isWaterTarget(pClient client)
 }
 
 
-void Fishing::target_fish( NXWCLIENT ps, pTarget t )
+void Fishing::target_fish( pClient ps, pTarget t )
 {
 	pClient client=ps->toInt();
 	pChar pPlayer=ps->currChar();

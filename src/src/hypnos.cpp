@@ -982,7 +982,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-void telltime( NXWCLIENT ps )
+void telltime( pClient ps )
 {
 	//!\todo Here we can use static const char* instead of these strcpy, and asprintf instead of sprintf
 

@@ -351,7 +351,7 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 	sw.fillOnline();
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
 
-		NXWCLIENT ps_i=sw.getClient();
+		pClient ps_i=sw.getClient();
 		
 		if ( ! ps_i )
 			continue;

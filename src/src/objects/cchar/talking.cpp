@@ -40,7 +40,7 @@ void cChar::talkAll(char *txt, bool antispam)
 	sw.fillOnline( this, false );
 
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWCLIENT ps=sw.getClient();
+		pClient ps=sw.getClient();
 		if( ps!=NULL )
 			talk(ps->toInt(), txt,antispam);
 	}
@@ -162,7 +162,7 @@ void cChar::emoteall( char *txt, bool antispam, ... )
 		sw.fillOnline( this, false );
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			NXWCLIENT ps=sw.getClient();
+			pClient ps=sw.getClient();
 			if( ps!=NULL )
 				emote( ps->toInt(), msg, 0 );
 		}
@@ -221,7 +221,7 @@ void cChar::talkAllRunic(char *txt, bool antispam)
 	NxwSocketWrapper sw;
 	sw.fillOnline( this, false );
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWCLIENT ps=sw.getClient();
+		pClient ps=sw.getClient();
 		if( ps!=NULL )
 			talkRunic(ps->toInt(), txt, antispam);
 	}

@@ -58,7 +58,7 @@ Space around the house with SPACEX/Y and CHAR offset CHARX/Y/Z
 
 \todo Remove temp variable
 */
-void buildhouse( NXWCLIENT ps, pTarget t )
+void buildhouse( pClient ps, pTarget t )
 {
 	pClient client = ps->toInt();
 	int i = t->buffer[2];
@@ -468,7 +468,7 @@ void buildhouse( NXWCLIENT ps, pTarget t )
         NxwSocketWrapper sw;
 		sw.fillOnline( pc, false );
         for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-			NXWCLIENT ps_i = sw.getClient();
+			pClient ps_i = sw.getClient();
 			if(ps_i==NULL)
 				continue;
 			pChar pc_i=ps_i->currChar();
@@ -920,7 +920,7 @@ bool CheckBuildSite(int x, int y, int z, int sx, int sy)
 }
 
 // buffer 0 the sign
-void target_houseOwner( NXWCLIENT ps, pTarget t )
+void target_houseOwner( pClient ps, pTarget t )
 {
 	pChar curr=ps->currChar();
 	if ( ! curr ) return;
@@ -979,7 +979,7 @@ void target_houseOwner( NXWCLIENT ps, pTarget t )
 }
 
 // buffer[0] house
-void target_houseEject( NXWCLIENT ps, pTarget t )
+void target_houseEject( pClient ps, pTarget t )
 {
 	pChar pc = cSerializable::findCharBySerial(t->getClicked());
 	if ( ! pc ) return;
@@ -1003,7 +1003,7 @@ void target_houseEject( NXWCLIENT ps, pTarget t )
 }
 
 //buffer[0] house
-void target_houseBan( NXWCLIENT ps, pTarget t )
+void target_houseBan( pClient ps, pTarget t )
 {
 	target_houseEject(ps, t);	// first, eject the player
 
@@ -1035,7 +1035,7 @@ void target_houseBan( NXWCLIENT ps, pTarget t )
 }
 
 // buffer[0] the house
-void target_houseFriend( NXWCLIENT ps, pTarget t )
+void target_houseFriend( pClient ps, pTarget t )
 {
 	pChar Friend = cSerializable::findCharBySerial( t->getClicked() );
 
@@ -1068,7 +1068,7 @@ void target_houseFriend( NXWCLIENT ps, pTarget t )
 }
 
 // bugffer[0] the hose
-void target_houseUnlist( NXWCLIENT ps, pTarget t )
+void target_houseUnlist( pClient ps, pTarget t )
 {
 	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	pItem pi= cSerializable::findItemBySerial( t->buffer[0] );
@@ -1083,7 +1083,7 @@ void target_houseUnlist( NXWCLIENT ps, pTarget t )
 	}
 }
 
-void target_houseLockdown( NXWCLIENT ps, pTarget t )
+void target_houseLockdown( pClient ps, pTarget t )
 // PRE:     S is the socket of a valid owner/coowner and is in a valid house
 // POST:    either locks down the item, or puts a message to the owner saying he's a moron
 // CODER:   Abaddon
@@ -1149,7 +1149,7 @@ void target_houseLockdown( NXWCLIENT ps, pTarget t )
     }
 }
 
-void target_houseSecureDown( NXWCLIENT ps, pTarget t )
+void target_houseSecureDown( pClient ps, pTarget t )
 // For locked down and secure chests
 {
 	pChar pc=ps->currChar();
@@ -1206,7 +1206,7 @@ void target_houseSecureDown( NXWCLIENT ps, pTarget t )
     }
 }
 
-void target_houseRelease( NXWCLIENT ps, pTarget t )
+void target_houseRelease( pClient ps, pTarget t )
 // PRE:     S is the socket of a valid owner/coowner and is in a valid house, the item is locked down
 // POST:    either releases the item from lockdown, or puts a message to the owner saying he's a moron
 // CODER:   Abaddon

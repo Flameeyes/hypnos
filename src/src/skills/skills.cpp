@@ -386,7 +386,7 @@ void Skills::CreatePotion(pChar pc, uint8_t type, uint8_t sub, pItem mortar)
 pour in the potion from the mortar
 \param client client of the crafter
 */
-void Skills::target_bottle( NXWCLIENT ps, pTarget t )
+void Skills::target_bottle( pClient ps, pTarget t )
 {
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
@@ -428,7 +428,7 @@ void Skills::PotionToBottle( pChar pc, pItem pi_mortar )
 {
 	if ( ! pc ) return;
 
-	NXWCLIENT ps=pc->getClient();
+	pClient ps=pc->getClient();
 	if( ps==NULL ) return;
 
 	VALIDATEPI(pi_mortar);
@@ -982,7 +982,7 @@ void Skills::SkillUse(pClient client, int x)
 	if ( s < 0 || s >= now || x < 0 || x >= skTrueSkills) //Luxor
 		return;
 
-    NXWCLIENT ps=getClientFromSocket(s);
+    pClient ps=getClientFromSocket(s);
 	if( ps==NULL )
 		return;
 

@@ -40,7 +40,7 @@ All in this comment range is done by cItem::Delete() at the bottom of this metho
         NxwSocketWrapper sc;
         sc.fillOnline( this );
 	for ( sc.rewind(); !sc.isEmpty(); sc++ ) {
-		NXWCLIENT ps = sc.getClient();
+		pClient ps = sc.getClient();
 		if ( ps != NULL )
 			ps->sendPacket(&pk);
 	}

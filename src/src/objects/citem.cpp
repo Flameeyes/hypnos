@@ -793,7 +793,7 @@ void cItem::Refresh()
 	NxwSocketWrapper sw;
 	sw.fillOnline();
 	for ( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWCLIENT ps_w = sw.getClient();
+		pClient ps_w = sw.getClient();
 		if ( ps_w != NULL )
 			ps_w->sendRemoveObject(static_cast<pObject>(this));
 	}

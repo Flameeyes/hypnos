@@ -20,5 +20,5 @@ namespace Begging {
 	extern std::string text[3];
 	
 	void initialize();
-	void target(NXWCLIENT ps, pTarget t);
+	void target(pClient ps, pTarget t);
 }

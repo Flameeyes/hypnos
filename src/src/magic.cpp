@@ -49,7 +49,7 @@ uint32_t getCastingTime( SpellId spell )
 bool checkMagicalSpeech( pChar pc, char* speech )
 {
 	VALIDATEPCR( pc, false );
-	NXWCLIENT client = pc->getClient();
+	pClient client = pc->getClient();
 	if ( client == NULL )
 		return false;
 
@@ -1920,7 +1920,7 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 \param client caster
 \param type type of casting
 */
-bool beginCasting (SpellId num, NXWCLIENT s, CastingType type)
+bool beginCasting (SpellId num, pClient s, CastingType type)
 {
 	if (s == NULL) return true;
 	// override for spellcasting (?)
@@ -2021,7 +2021,7 @@ cPolymorphMenu::cPolymorphMenu( pChar pc ) : cIconListMenu()
 /*!
 \author Luxor
 */
-void cPolymorphMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
+void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 {
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
@@ -2117,7 +2117,7 @@ cCreateFoodMenu::cCreateFoodMenu( pChar pc ) : cIconListMenu()
 /*!
 \author Luxor
 */
-void cCreateFoodMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
+void cCreateFoodMenu::handleButton( pClient ps, cClientPacket* pkg  )
 {
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
@@ -2159,7 +2159,7 @@ cSummonCreatureMenu::cSummonCreatureMenu( pChar pc ) : cIconListMenu()
 /*!
 \author Luxor
 */
-void cSummonCreatureMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
+void cSummonCreatureMenu::handleButton( pClient ps, cClientPacket* pkg  )
 {
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;

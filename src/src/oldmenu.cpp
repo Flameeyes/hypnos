@@ -89,7 +89,7 @@ void cOldMenu::addMenuItem( int page, int idx, std::wstring desc )
 }
 
 
-void cOldMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
+void cOldMenu::handleButton( pClient ps, cClientPacket* pkg  )
 {
 	
 	pChar pc = ps->currChar();

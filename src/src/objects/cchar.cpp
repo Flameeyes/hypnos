@@ -851,7 +851,7 @@ bool cChar::canSee( pObject obj )
 \author Luxor
 \brief Teleports character to its current set coordinates.
 */
-void cChar::teleport( uint8_t flags, NXWCLIENT cli )
+void cChar::teleport( uint8_t flags, pClient cli )
 {
 	pItem p_boat = Boats->GetBoat(getPosition());
 	if( p_boat ) {
@@ -889,7 +889,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 		NxwSocketWrapper sw;
 		sw.fillOnline( getOldPosition() );
 		for ( sw.rewind(); !sw.isEmpty(); sw++ ) {
-			NXWCLIENT ps_w = sw.getClient();
+			pClient ps_w = sw.getClient();
 			if ( ps_w == NULL )
 				continue;
 			pChar pc = ps_w->currChar();
@@ -907,7 +907,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 		NxwSocketWrapper sw;
 		sw.fillOnline( this, false );
 		for ( sw.rewind(); !sw.isEmpty(); sw++ ) {
-			NXWCLIENT ps_i = sw.getClient();
+			pClient ps_i = sw.getClient();
 			if( ps_i != NULL ) {
 				impowncreate( ps_i->toInt(), this, 1 );
 				//ndEndy not too sure of this
@@ -1233,7 +1233,7 @@ bool const cChar::CanDoGestures() const
 */
 bool cChar::checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise)
 {
-	NXWCLIENT ps = getClient();;
+	pClient ps = getClient();;
 	pClient client =INVALID;
 
 	if ( sk < 0 || sk > skTrueSkills ) //Luxor
@@ -1321,7 +1321,7 @@ void cChar::Delete()
         NxwSocketWrapper sc;
         sc.fillOnline( this );
 	for ( sc.rewind(); !sc.isEmpty(); sc++ ) {
-		NXWCLIENT ps = sc.getClient();
+		pClient ps = sc.getClient();
 		if ( ps != NULL )
 			ps->sendPacket(&pk);
 	}
@@ -1749,7 +1749,7 @@ void cChar::Kill()
 	if (dead || npcaitype == NPCAI_PLAYERVENDOR || IsInvul() )
 		return;
 
-	NXWCLIENT ps=getClient();
+	pClient ps=getClient();
 
 	char murderername[128];
 	murderername[0] = '\0';
@@ -2240,7 +2240,7 @@ void cChar::checkEquipment()
 			sw.fillOnline( this, false );
 
 			for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-				NXWCLIENT ps=sw.getClient();
+				pClient ps=sw.getClient();
 				if(ps!=NULL ) {
 					wornitems(ps->toInt(), this );
 					senditem(ps->toInt(), pi);
@@ -2520,7 +2520,7 @@ void cChar::generic_heartbeat()
 
 void checkFieldEffects(uint32_t currenttime, pChar pc, char timecheck );
 
-void target_castSpell( NXWCLIENT ps, pTarget t )
+void target_castSpell( pClient ps, pTarget t )
 {
 	TargetLocation TL( t );
 	magic::castSpell( static_cast<magic::SpellId>(t->buffer[0]), TL, ps->currChar() );

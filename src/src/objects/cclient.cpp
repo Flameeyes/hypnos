@@ -2449,7 +2449,7 @@ void cClient::playSFX(uint16_t sound, bool onlyMe)
 	sw.fillOnline( pc, false );
 
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWCLIENT ps=sw.getClient();
+		pClient ps=sw.getClient();
 		if(ps!=NULL)
 			ps->send(&pk);
 	}
@@ -2604,7 +2604,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 	sw.fillOnline( pc, false, range );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWCLIENT ps=sw.getClient();
+		pClient ps=sw.getClient();
 		if( ps==NULL )
 			continue;
 		pChar a_pc= ps->currChar();
@@ -2687,7 +2687,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
 			
-			NXWCLIENT ps=sw.getClient();
+			pClient ps=sw.getClient();
 			if(ps==NULL)
 				continue;
 			pChar pc_new_char = ps->currChar();
@@ -2866,7 +2866,7 @@ void sysmessage(pClient client, const char *txt, ...) // System message (In lowe
 	if( spyTo!=INVALID ) { //spy client
 		pChar pc=cSerializable::findCharBySerial( spyTo );
 		if( pc ) {
-			NXWCLIENT gm = pc->getClient();
+			pClient gm = pc->getClient();
 			if( gm!=NULL )
 				gm->sysmsg( "spy %s : %s", pc->getCurrentName().c_str(), msg );
 			else

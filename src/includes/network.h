@@ -85,6 +85,6 @@ class cNetwork
 
 extern class cNetwork	*Network;
 
-NXWCLIENT getClientFromSocket(int s);
+pClient getClientFromSocket(int s);
 
 #endif

@@ -39,7 +39,7 @@ void gmyell(char *txt)
 	sw.fillOnline();
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWCLIENT ps_i=sw.getClient();
+		pClient ps_i=sw.getClient();
 		if(ps_i==NULL) continue;
 		pChar pc=ps_i->currChar();
 		pClient client = ps_i->toInt();
@@ -196,7 +196,7 @@ void soundeffect3(pItem pi, uint16_t sound)
 	sw.fillOnline( pi );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWCLIENT ps_i=sw.getClient();
+		pClient ps_i=sw.getClient();
 		if(ps_i==NULL) continue;
 		pChar pc_j=ps_i->currChar();
 		if( pc_j )

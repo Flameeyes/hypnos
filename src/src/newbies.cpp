@@ -14,7 +14,7 @@ void newbieitems(pChar pc)
 {
 	if ( ! pc ) return;
 	
-	NXWCLIENT ps=pc->getClient();
+	pClient ps=pc->getClient();
 	if(ps==NULL)
 		return;
 

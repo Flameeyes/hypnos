@@ -78,7 +78,7 @@ void setSeason(int nSeason)
 	NxwSocketWrapper sw;
 	sw.fillOnline();
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWCLIENT ps=sw.getClient();
+		pClient ps=sw.getClient();
 		if(ps!=NULL)
 			commitSeason(ps->currChar());
 	}
