@@ -16,26 +16,19 @@
 #ifndef __ADDMENU_H
 #define __ADDMENU_H
 
-
 #include "menu.h"
 #include "oldmenu.h"
 #include "utils.h"
 
-#include "client.h"
-
-
 class cRawItem {
-
 public:
-
-    int32_t id;
-    COLOR color;
-    uint32_t number;
+	int32_t id;
+	uint16_t color;
+	uint32_t number;
 
 	cRawItem( std::string& s );
-	cRawItem( int32_t id=0, COLOR color=0, uint32_t number=0 );
+	cRawItem( int32_t id=0, uint16_t color=0, uint32_t number=0 );
 	~cRawItem();
-
 };
 
 
@@ -71,10 +64,10 @@ class cMakeMenu : public cBasicMenu
 
 		virtual void loadFromScript( pChar pc );
 		std::string cleanString( std::string s );
-		void execMake( NXWCLIENT ps, uint32_t item );
+		void execMake( pClient client, uint32_t item );
 
 	protected:
-		virtual cServerPacket* build();
+		virtual void /*cServerPacket*/* build();
 
 	public:
 
@@ -82,11 +75,11 @@ class cMakeMenu : public cBasicMenu
 		cRawItem mat[2];
 		
 		cMakeMenu( uint32_t section );
-		cMakeMenu( uint32_t section, pChar pc, int skill, uint16_t firstId=0, COLOR firstColor=0, uint16_t secondId=0, COLOR secondColor=0 );
+		cMakeMenu( uint32_t section, pChar pc, int skill, uint16_t firstId=0, uint16_t firstColor=0, uint16_t secondId=0, uint16_t secondColor=0 );
 
 		~cMakeMenu();
 
-		virtual void handleButton( NXWCLIENT ps, cClientPacket* pkg  );
+		virtual void handleButton( pClient client, void /*cClientPacket*/* pkg  );
 
 };
 
@@ -101,7 +94,7 @@ class cAddMenu : public cMakeMenu
 		cAddMenu( uint32_t section, pChar pc );
 		~cAddMenu();
 
-		virtual void handleButton( NXWCLIENT ps, cClientPacket* pkg  );
+		virtual void handleButton( pClient client, void /*cClientPacket*/* pkg  );
 
 };
 

@@ -15,23 +15,7 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
 
-#include "globals.h"
-
-class cScriptCommand {
-
-	public:
-
-		std::string command;
-		std::string param;
-
-		cScriptCommand( );
-		cScriptCommand( std::string command, std::string param );
-		~cScriptCommand();
-
-		void execute( NXWSOCKET s );
-
-};
-
+#include "common_libs.h"
 
 int checkBoundingBox(int xPos, int yPos, int fx1, int fy1, int fz1, int fx2, int fy2);
 int checkBoundingCircle(int xPos, int yPos, int fx1, int fy1, int fz1, int radius);
@@ -41,9 +25,9 @@ void npcsimpleattacktarget(int target2, int target);
 // Day and Night related prototypes
 void setabovelight(unsigned char);
 
-void scriptcommand (NXWSOCKET s, std::string script1, std::string script2);
+void scriptcommand (pClient client, std::string script1, std::string script2);
 void endmessage(int x);
-void dooruse(NXWSOCKET s, pItem pi/*int item*/);
+void dooruse(pClient client, pItem pi/*int item*/);
 int calcGoodValue(int npcnum, int i, int value,int goodtype); // by Magius(CHE) for trade system
 
 int whichbit( int number, int bit );
@@ -61,7 +45,6 @@ uint32_t getsysclock();
 uint32_t getclockday();
 void initclock();
 
-
 //@{
 /*!
 \name Strings
@@ -73,7 +56,6 @@ void strupr(std::string &str);
 void strlwr(std::string &str);
 
 int strtonum(int countx, int base= 0);
-
 //@}
 
 #endif
