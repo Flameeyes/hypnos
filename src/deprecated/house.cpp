@@ -196,9 +196,6 @@ void buildhouse( pClient ps, pTarget t )
 		y = ShortFromCharPtr(buffer[s] +13);
 		z = buffer[s][16] + tileHeight(ShortFromCharPtr(buffer[s] +17));
 
-#define XBORDER 200
-#define YBORDER 200
-
 		//XAN : House placing fix :)
 		if ( (( x<XBORDER || y <YBORDER ) || ( x>(uint32_t)((map_width*8)-XBORDER) || y >(uint32_t)((map_height*8)-YBORDER) ))  )
 		{

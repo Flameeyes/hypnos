@@ -48,24 +48,6 @@ static const int16_t iLargeShipOffsets[4][4][2]=
 };
 //============================================================================================
 
-bool inmulti(sLocation where, pItem pi)//see if they are in the multi at these chords (Z is NOT checked right now)
-{
-	if ( ! pi )
-		return false;
-
-	multiVector m;
-
-	data::seekMulti( pi->getId()-0x4000, m );
-	sLocation itmpos= pi->getPosition();
-	for( uint32_t i = 0; i < m.size(); i++ ) {
-		if(/*(multi.visible)&&*/((itmpos.x+m[i].x) == where.x) && ((itmpos.y+m[i].y) == where.y))
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
 void PlankStuff(pChar pc , pItem pi)//If the plank is opened, double click Will send them here
 {
 	if ( ! pc )
@@ -168,7 +150,7 @@ void LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open plank wh
 }
 
 
-void TurnStuff_i(pItem p_b, pItem pi, int dir, int type)//Turn an item that was on the boat when the boat was turned.
+void TurnStuff_i(pItem p_b, pItem pi, uint8_t dir, int type)//Turn an item that was on the boat when the boat was turned.
 {
 	if ( ! p_b || ! pi )
 		return;
@@ -197,7 +179,7 @@ void TurnStuff_i(pItem p_b, pItem pi, int dir, int type)//Turn an item that was 
 }
 
 
-void TurnStuff_c(pItem p_b, pChar pc, int dir, int type)//Turn an item that was on the boat when the boat was turned.
+void TurnStuff_c(pItem p_b, pChar pc, uint8_t dir, int type)//Turn an item that was on the boat when the boat was turned.
 {
 	if ( ! p_b || ! pc )
 		return;
@@ -432,29 +414,29 @@ bool Speech(pClient client, std::string &talk)
 \author Elcabesa
 \brief Check if all the boats tile are in water
 */
-bool tile_check(multi_st multi,pItem pb,map_st map,int x, int y,int dir)
+bool tile_check(multi_st multi, pItem pb, map_st map, sPoint w,uint8_t dir)
 {
-	int dx,dy;
+	int16_t dx,dy;
 	switch(dir)
 		{
 		case -1:
-			dx=x-multi.y;
-			dy=y+multi.x;
+			dx=w.x-multi.y;
+			dy=w.y+multi.x;
 			break;
 		case 0:
-			dx=x+multi.x;
-			dy=y+multi.y;
+			dx=w.x+multi.x;
+			dy=w.y+multi.y;
 			break;
 		case 1:
-			dx=x+multi.y;
-			dy=y-multi.x;
+			dx=w.x+multi.y;
+			dy=w.y-multi.x;
 			break;
 
 		case 2:
 
-			dx=x-multi.y;
+			dx=w.x-multi.y;
 
-			dy=y-multi.x;
+			dy=w.y-multi.x;
 
 			break;
 		}
@@ -484,7 +466,7 @@ bool tile_check(multi_st multi,pItem pb,map_st map,int x, int y,int dir)
 \author Elcabesa
 \brief Check if this is a good position for building or moving a boat
 */
-bool good_position(pItem pb, sLocation where, int dir)
+bool good_position(pItem pb, sLocation where, uint8_t dir)
 {
 	uint32_t x= where.x, y= where.y, i;
 	bool good_pos = false;

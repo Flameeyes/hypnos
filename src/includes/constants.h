@@ -54,6 +54,9 @@ static const uint16_t VERY_VERY_FAR = 50000; //!< Used as distance between inval
 
 static const int8_t illegal_z = -128;	//!< An illegal z-value to return in case of error
 
+static const uint16_t XBORDER = 200;	//!< Border from x-limit
+static const uint16_t YBORDER = 200;	//!< Border from y-limit
+
 static const char strNull[] = "";
 
 //@{
@@ -112,7 +115,7 @@ enum
 
 //@{
 /*!
-\name enumerated extern extern constants
+\name enumerated constants
 */
 
 //! Verdata patches index
@@ -151,10 +154,15 @@ enum { ITEM_USE_UNKNOWN = 0, ITEM_USE_WEAR, ITEM_USE_CHECKEQUIP, ITEM_USE_DBLCLI
 
 enum { spawn_script = 20, NUM_SCRIPTS = 32};
 
-//! Region privs
-enum {	RGNPRIV_GUARDED = 0x01, RGNPRIV_MARKALLOWED = 0x02, RGNPRIV_GATEALLOWED = 0x04,
-	RGNPRIV_RECALLALLOWED = 0x08
-};
+//@{
+/*!
+\name Region privs
+*/
+static const uint8_t RGNPRIV_GUARDED = 0x01;		//!< The region is guarded
+static const uint8_t RGNPRIV_MARKALLOWED = 0x02;	//!< Marking rule is allowed
+static const uint8_t RGNPRIV_GATEALLOWED = 0x04;	//!< Gates are allowed
+static const uint8_t RGNPRIV_RECALLALLOWED = 0x08;	//!< Recall is allowed
+//@}
 
 //! Stat types
 enum StatType { STAT_HP = 0, STAT_MANA, STAT_STAMINA, ALL_STATS };
