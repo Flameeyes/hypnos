@@ -614,14 +614,13 @@ pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
                 // in old nox is not implemented. Do we need it?
                 case 0x9a: return NULL; 						// Console Entry Prompt
 
-                case 0x9b: return new cPacketRequestHelp(buffer, length); 	      	// Request Help
+                case 0x9b: return new cPacketReceiveRequestHelp(buffer, length);       	// Request Help
                 case 0x9f: return new cPacketReceiveSellItems(buffer, length); 		// Sell Reply
-                case 0xa0: length =   3; break; // Select Server
-                case 0xa4: length =   5; break; // Client Machine info (Apparently was a sort of lame spyware command .. unknown if it still works)
-                case 0xa7: length =   4; break; // Request Tips/Notice
-                case 0xaa: length =   5; break; // Attack Request Reply
-                case 0xac: length = ???; break; // Gump Text Entry Dialog Reply
-                case 0xad: length = ???; break; // Unicode speech request
+                case 0xa0: return new cPacketReceiveSelectServer(buffer, length); 	// Select Server
+                case 0xa4: return NULL; 						// Client Machine info (It was a sort of lame spyware command .. we have no need for it :D)
+                case 0xa7: return new cPacketReceiveTipsRequest(buffer, length); 	// Request Tips/Notice
+                case 0xac: return new cPacketReceiveGumpTextDialogReply(buffer, length);// Gump Text Entry Dialog Reply
+                case 0xad: return new cPacketReceiveUnicodeSpeechReq(buffer, length);	// Unicode speech request
                 case 0xb1: length = ???; break; // Gump Menu Selection
 
                 //unsure about this message if received, sent or both
@@ -1796,7 +1795,7 @@ bool cPacketReceiveDyeItem::execute(pClient client)
 }
 
 
-bool cPacketRequestHelp::execute(pClient client)
+bool cPacketReceiveRequestHelp::execute(pClient client)
 {
 	if (length != 258) return false;
         //! \todo whem menu's are revised, look at this...
@@ -1823,8 +1822,7 @@ bool cPacketReceiveSellItems::execute(pClient client)
 
 		boughtitem b;
 
-                uint32_t itemserial = LongFromCharPtr(buffer + pos);
-		b.item=pointers::findItemBySerPtr(itemserial);
+		b.item=pointers::findItemBySerPtr(LongFromCharPtr(buffer + pos));
 		if(!b.item)
 			continue;
 		b.amount=ShortFromCharPtr(buffer + pos + 4);
@@ -1834,3 +1832,180 @@ bool cPacketReceiveSellItems::execute(pClient client)
         return true;
 }
 
+
+bool cPacketReceiveSelectServer::execute(pClient client)
+{
+       	if (length != 3) return false;
+        //!\todo another login packet, and another crypting function to update
+        Relay(client);
+        return true;
+}
+
+
+
+bool cPacketReceiveTipsRequest::execute(pClient client)
+{
+       	if (length != 4) return false;
+	uint16_t i = ShortFromCharPtr(buffer + 1);
+	uint8_t want_next = buffer[3];
+
+        //!Script searching, redo when xml scripting done
+#if 0
+	int x, y, j;
+	char temp[512];
+
+	cScpIterator* iter = NULL;
+	char script1[1024];
+	char script2[1024];
+
+	if(want_next) i = i+1;
+	else i = i-1;
+
+	if (i==0) i=1;
+
+	iter = Scripts::Misc->getNewIterator("SECTION TIPS");
+	if (iter==NULL) return;
+
+	x=i;
+	int loopexit=0;
+	do
+	{
+		iter->parseLine(script1, script2);
+		if (!(strcmp("TIP", script1))) x--;
+	}
+	while ((x>0)&&script1[0]!='}'&&script1[0]!=0 && (++loopexit < MAXLOOPS) );
+
+	safedelete(iter);
+
+	if (!(strcmp("}", script1)))
+	{
+		tips(s, 1, want_next);
+		return;
+	}
+
+	sprintf(temp, "SECTION TIP %i", str2num(script2));
+    iter = Scripts::Misc->getNewIterator(temp);
+
+	if (iter==NULL) return;
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());//discards the {
+
+	x=-1;
+	y=-2;
+	loopexit=0;
+	do
+	{
+		strcpy(script1, iter->getEntry()->getFullLine().c_str());
+		x++;
+		y+=strlen(script1)+1;
+	}
+	while ( (strcmp(script1, "}")) && (++loopexit < MAXLOOPS) );
+	y+=10;
+	iter->rewind();
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());//discards the {
+
+	uint8_t updscroll[10]={ 0xA6, 0x00, };
+	ShortToCharPtr(y, updscroll +1); 		// len of pkt.
+	updscroll[3]=0; 				// Type: 0x00 tips, 0x02 updates
+	LongToCharPtr(i, updscroll +4);			// tip num.
+	ShortToCharPtr(y-10, updscroll +8);		// len of only mess.
+	Xsend(s, updscroll, 10); 		// Send 1st part (header)
+
+	for (j=0;j<x;j++)
+	{
+		strcpy(script1, iter->getEntry()->getFullLine().c_str());//discards the {
+		sprintf(temp, "%s ", script1);
+		Xsend(s, temp, strlen(temp)); // Send the rest
+	}
+	safedelete(iter);
+
+//AoS/	Network->FlushBuffer(s);
+#endif
+	return true;
+}
+
+
+bool cPacketReceiveGumpTextDialogReply::execute(pClient client)
+{
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+        //!\todo gump remake -_-
+        return true;
+}
+
+bool cPacketReceiveUnicodeSpeechReq::execute(pClient client)
+{
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+
+        pPC pc_currchar = client->currChar;
+	if(pc_currchar)
+        {
+        	pc_currchar->unicode=true;
+    		// Check for command word versions of this packet
+		if ( (buffer[3]) >=0xc0 )
+		{
+			buffer[3] = buffer[3] & 0x0F ; // set to normal (cutting off the ascii indicator since we are converting back to unicode)
+
+			int num_words,/*idx=0,*/ num_unknown;
+
+			// number of distict trigger words
+			num_words = ( buffer[12] << 24 ) + ( buffer[13] << 16 );
+			num_words = (num_words >> 20);
+
+			/*************************************/
+			// plz dont delete yet
+			// trigger word index in/from speech.mul, not required [yet]
+			/*idx = ( (static_cast<int>(buffer[s][13])) << 24 ) + ( (static_cast<int>(buffer[s][14])) << 16);
+			idx = idx & 0x0fff0000;
+			idx = ( (idx << 4) >> 20) ;*/
+			//cout << "#keywords was " << hex << num_words << "\n" << hex << static_cast<int>(buffer[s][12]) << " " << hex << static_cast<int> (buffer[s][13]) << " " << static_cast<int> (buffer[s][14]) << " " << static_cast<int> (buffer[s][15]) << endl ;
+			// cout << "idx: " << idx << endl;
+			/*************************************/
+
+		       	if ((num_words %2) == 1)  // odd number ?
+		       		num_unknown = ( num_words / 2 ) * 3;
+		       	else
+		       		num_unknown = ((num_words / 2 ) * 3 ) - 1 ;
+
+		       	myoffset = 15 + num_unknown;
+
+                        //TODO: revise from here
+
+
+						//
+						//	Now adjust the buffer
+						int iWord ;
+						//int iTempBuf ;
+						iWord = static_cast<int> ((buffer[s][1] << 8)) + static_cast<int> (buffer[s][2]) ;
+						myj = 12 ;
+
+						//cout << "Max length characters will be " << dec << (iWord - myoffset) << endl ;
+						mysize = iWord - myoffset ;
+
+						for (i=0; i < mysize ; i++)
+							mytempbuf[i] = buffer[s][i+myoffset] ;
+
+						for (i=0; i < mysize ; i++)
+						{
+							myj++ ;
+							buffer[s][myj] = mytempbuf[i] ;
+							//iTempBuf = static_cast<int> (mytempbuf[i]) ;
+							//cout << "Copying value of " << hex << iTempBuf << endl ;
+							myj++;
+							buffer[s][myj] = 0 ;
+						}
+
+						iWord = (((iWord - myoffset ) * 2) + 12) ;
+						//cout << "Setting buffer size to " << dec << iWord << endl ;
+						buffer[s][1] = static_cast<unsigned char> ( ( ( iWord & 0xFF00 ) >>8 ) ) ;
+						buffer[s][2] = static_cast<unsigned char> ( iWord & 0x00FF ) ;
+					}
+
+					wchar2char((char*)&buffer[s][13]);
+					strncpy((char*)nonuni, Unicode::temp, ((buffer[s][1]<<8)+buffer[s][2])/2);
+					talking(s, (char*)nonuni);
+					}
+
+
+        return true;
+}

@@ -590,11 +590,11 @@ public:
 \name Packet Reception
 \author Chronodt
 */
-class cPacketReceiveCreateChar          : public cPacketReceive;
-class cPacketReceiveDisconnectNotify    : public cPacketReceive;
-class cPacketReceiveMoveRequest         : public cPacketReceive;
-class cPacketReceiveTalkRequest         : public cPacketReceive;
-class cPacketReceiveAttackRequest       : public cPacketReceive;
+class cPacketReceiveCreateChar          : public cPacketReceive;	//!< Character creation
+class cPacketReceiveDisconnectNotify    : public cPacketReceive;	//!< "software disconnect"
+class cPacketReceiveMoveRequest         : public cPacketReceive;	//!< move (or run) 1 step
+class cPacketReceiveTalkRequest         : public cPacketReceive;	//!< character speech (NOT UNICODE!!)
+class cPacketReceiveAttackRequest       : public cPacketReceive; 
 class cPacketReceiveDoubleclick         : public cPacketReceive;
 class cPacketReceivePickUp              : public cPacketReceive;
 class cPacketReceiveDropItem            : public cPacketReceive;
@@ -621,12 +621,12 @@ class cPacketReceiveDeleteCharacter     : public cPacketReceive;
 class cPacketReceiveGameServerLogin     : public cPacketReceive;
 class cPacketReceiveBookUpdateTitle     : public cPacketReceive;
 class cPacketReceiveDyeItem             : public cPacketReceive;
-class cPacketRequestHelp	        : public cPacketReceive;
+class cPacketReceiveRequestHelp	        : public cPacketReceive;
 class cPacketReceiveSellItems           : public cPacketReceive;
-class        : public cPacketReceive;
-class        : public cPacketReceive;
-class        : public cPacketReceive;
-class        : public cPacketReceive;
+class cPacketReceiveSelectServer        : public cPacketReceive;
+class cPacketReceiveTipsRequest         : public cPacketReceive;
+class cPacketReceiveGumpTextDialogReply : public cPacketReceive;
+class cPacketReceiveUnicodeSpeechReq    : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;

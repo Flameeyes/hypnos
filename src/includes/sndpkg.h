@@ -56,8 +56,6 @@ void skillwindow(int s);
 	//!< Opens the skills list, updated for client 1.26.2b by LB
 void updates(NXWSOCKET  s);
 	//!< Update Window
-void tips(NXWSOCKET s, uint16_t i, uint8_t flag);
-	//!< Tip of the day window
 void deny(NXWSOCKET  k,pChar pc, int sequence);
 void weblaunch(int s, const char *txt);
 	//!< Direct client to a web page
