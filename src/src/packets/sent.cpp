@@ -320,7 +320,7 @@ static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
                 case 0x07: return new cPacketReceivePickUp(buffer, length);             // Pick Up Item(s)
                 case 0x08: return new cPacketReceiveDropItem(buffer, length);           // Drop Item(s)
                 case 0x09: return new cPacketReceiveSingleclick(buffer, length);        // Single click
-                case 0x12: length = ???; break; // Request Skill/Action/Magic Usage
+                case 0x12: return new cPacketReceiveActionRequest(buffer, length);      // Request Skill/Action/Magic Usage
                 case 0x13: length =  10; break; // Drop - Wear Item
                 case 0x1a: length = ???; break; // Object Information
                 case 0x1b: length =  37; break; // Char Location and body type (Login confirmation)
@@ -750,3 +750,98 @@ bool cPacketReceiveSingleclick::execute(pClient client)
         }
         return true;
 }
+
+/*!
+\brief Action Request Packet
+\author Chronodt
+\param client client who sent the packet
+\todo check the last if.... why does it do that check?????? it has no sense...
+*/
+
+bool cPacketReceiveActionRequest::execute(pClient client)
+{
+        UI16 size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+
+        UI08 type = buffer[3];
+        pChar pc = client->currChar();
+        VALIDATEPCR(pc, false);
+	if (type==0xC7) // Action
+	{
+		if (pc->isMounting()) break;
+		if (!(strcmp((char*)&buffer[4],"bow"))) pc->playAction(0x20);
+		if (!(strcmp((char*)&buffer[4],"salute"))) pc->playAction(0x21);
+		break; // Morrolan
+	}
+	else if (type) // Skill
+	{
+		int i=4;
+		while ( (buffer[i]!=' ') && (i < size) ) i++;
+		buffer[i]=0;
+		Skills::SkillUse(client, str2num((char*)&buffer[4]));
+		break;
+	}
+	else if ((type==0x27)||(type==0x56))  // Spell
+	{
+		pItem p_j = NULL;
+		pItem pack= pc->getBackpack();
+                int book = 0;
+		if(ISVALIDPI(pack)) //lb
+		{
+			NxwItemWrapper gri;
+			gri.fillItemsInContainer( pack, false );
+			gri.fillItemWeared( pc_currchar, true, true, false );
+			for( gri.rewind(); !gri.isEmpty(); gri++ )
+			{
+				pItem pj=gri.getItem();
+				if (ISVALIDPI(pj))
+					if (pj->type==ITYPE_SPELLBOOK)
+					{
+						p_j=pj;
+						break;
+					}
+			}
+		}
+		if (p_j!=NULL)
+		{
+			book=buffer[4]-0x30;
+			if (buffer[5]>0x20)
+			{
+				book=(book*10)+(buffer[5]-0x30);
+			}
+			if (pc->dead)
+                        {
+			        pc->sysmsg(TRANSLATE("Ethereal souls really can't cast spells"));
+       			}
+                        else
+                        {
+			        if (pc->isFrozen())
+                                {
+				        if (pc->casting) client->sysmsg(TRANSLATE("You are already casting a spell."));
+				        else client->sysmsg(TRANSLATE("You cannot cast spells while frozen."));
+        		        }
+                                else
+                                {
+	        		        if (!pc->knowsSpell(static_cast<magic::SpellId>(book-1)))
+                                        {
+					        client->sysmsg("You don't know that spell yet.");
+				        }
+                                        else
+                                        {
+					        magic::beginCasting(static_cast<magic::SpellId>(book-1),client,magic::CASTINGTYPE_SPELL);
+				        } // if don't knows spell
+			        } // if frozen
+        	       	} // if alive
+		} // if has spellbook
+	}  // if spell
+	else
+	{
+		if (ShortFromCharPtr(buffer + 2) == 0x0543)  // Open spell book  //Chronodt: ?????? what is this?
+		{
+			client->sendSpellBook(NULL);
+		}
+		break;
+	}
+}
+
+

@@ -891,7 +891,7 @@ int cChar::calcDef(SI32 x)
 		}
 	}
 
-	if (getClient() != NULL) statwindow(this,this);
+	if (getClient() != NULL) getClient()->statusWindow(this,true);
 
 	if (total<2) total=2;
 	return total*3;

@@ -71,17 +71,7 @@ typedef struct _PKGx08
 	long Tserial;
 } PKGx08;
 
-void UpdateStatusWindow(NXWSOCKET socket, P_ITEM pi)
-{
-	P_CHAR pc = MAKE_CHAR_REF( currchar[socket] );
-	VALIDATEPC( pc );
-	VALIDATEPI( pi );
-	P_ITEM pack = pc->getBackpack();
-	VALIDATEPI( pack );
 
-	if( pi->getContainer() != pack || pi->getContainer() == pc )
-		statwindow( pc, pc );
-}
 
 static void Sndbounce5( NXWSOCKET socket )
 {
@@ -93,66 +83,7 @@ static void Sndbounce5( NXWSOCKET socket )
 	}
 }
 
-// Name:	item_bounce3
-// Purpose:	holds some statements that were COPIED some 50 times
-// Remarks:	temporary functions to revamp the 30 occurences of the 'bouncing bugfix'
-// History:	init Duke, 10.8.2000 / bugfix for bonus stats, Xanathar, 05-aug-2001
-static void item_bounce3(const P_ITEM pi)
-{
-	VALIDATEPI( pi );
-	pi->setContainer( pi->getOldContainer() );
-	pi->setPosition( pi->getOldPosition() );
-	pi->layer=pi->oldlayer;
 
-	P_CHAR pc = (pChar) pi->getOldContainer();
-	if(pc)
-		return ;
-
-	if ( pi->layer > 0 )
-	{
-		// Xanathar -- add BONUS STATS given by equipped special items
-		pc->setStrength( pc->getStrength() + pi->st2, true );
-		//pc->st += pi->st2;
-		pc->dx += pi->dx2;
-		pc->in += pi->in2;
-		// Xanathar -- for poisoned items
-		if (pi->poisoned)
-		{
-			pc->poison += pi->poisoned;
-			if ( pc->poison < 0)
-				pc->poison = 0;
-		}
-	}
-}
-
-static void item_bounce4(const NXWSOCKET  socket, const P_ITEM pi)
-{
-	VALIDATEPI( pi );
-	item_bounce3(pi);
-	if( (pi->getId() >>8) < 0x40)
-		senditem( socket, pi );
-}
-
-static void item_bounce5(const NXWSOCKET socket, const P_ITEM pi)
-{
-	VALIDATEPI( pi );
-	item_bounce3(pi);
-	senditem(socket, pi);
-}
-
-static void item_bounce6(const NXWCLIENT client, const P_ITEM pi)
-{
-	if ( client != NULL )
-	{
-		VALIDATEPI(pi);
-		Sndbounce5( client->toInt() );
-		if ( client->isDragging() )
-		{
-			client->resetDragging();
-			item_bounce4( client->toInt(), pi );
-		}
-	}
-}
 
 
 
@@ -201,7 +132,7 @@ void wear_item(NXWCLIENT ps) // Item is dropped on paperdoll
 		if (ps->isDragging())
 		{
 			ps->resetDragging();
-			item_bounce4(s,pi);
+			item_bounce4(pi);
 			UpdateStatusWindow(s,pi);
 		}
 		return;
@@ -235,7 +166,7 @@ void wear_item(NXWCLIENT ps) // Item is dropped on paperdoll
 			if (ps->isDragging())
 			{
 				ps->resetDragging();
-				item_bounce4(s,pi);
+				item_bounce4(pi);
 				UpdateStatusWindow(s,pi);
 			}
 			return;
@@ -367,7 +298,7 @@ void wear_item(NXWCLIENT ps) // Item is dropped on paperdoll
 			if ((pck->getSerial32() != pc->getSerial32())/*&&(chars[s].npc!=k)*/) //-> really don't understand this! :|, xan
 			{
 				ps->sysmsg(TRANSLATE("You can't put items on other people!"));
-				item_bounce6(ps,pi);
+				item_bounce6(pi);
 				return;
 			}
 		}

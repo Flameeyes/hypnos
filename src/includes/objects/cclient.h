@@ -78,6 +78,11 @@ protected:
         bool droppedOnBeggar(pItem pi, Location &loc, pItem cont);      //!< Item is dropped on a beggar
         bool droppedOnTrainer(pItem pi, Location &loc, pItem cont);     //!< Item is dropped on a trainer
         bool droppedOnSelf(pItem pi, Location &loc, pItem cont);        //!< Item is dropped on self
+        void item_bounce3(const pItem pi);                              //!< simple bouncing
+        void item_bounce4(const pItem pi);                              //!< bounce & checkid before resending item
+        void item_bounce5(const pItem pi);                              //!< bounce & resend item
+        void item_bounce6(const pItem pi);                              //!< advanced bouncing
+
 
 
 public:
@@ -103,6 +108,7 @@ public:
 	void showBankBox(pChar dest);
 	void showSpecialBankBox(pChar dest);
 	void statusWindow(pChar target, bool extended = true); //, bool canrename);  canrename will be "calculated" within the method
+        void updateStatusWindow(pItem item);
 };
 
 #endif

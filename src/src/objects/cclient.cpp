@@ -284,6 +284,12 @@ void cClient::showSpecialBankBox(pPC dest)
 	showClient(bank);
 }
 
+/*!
+\brief send status window of target to client
+\param target character whose status window has to be reported to client
+\param extended if extended info needed
+*/
+
 void cClient::statusWindow(pChar target, bool extended) //, bool canrename)  will be calculated from client data
 {
 
@@ -292,7 +298,7 @@ void cClient::statusWindow(pChar target, bool extended) //, bool canrename)  wil
 
         bool canrename;
 
-	if ((pc->IsGM() || (target->getOwnerSerial32()==pc->getSerial32())) && (target!=pc)) canrename = true;
+	if (pc->IsGM() || ((target->getOwnerSerial32()==pc->getSerial32()) && (target!=pc))) canrename = true;
 	else canrename = false;
 
 	if ((pc->getBody()->getId() == BODY_DEADMALE) || (pc->getBody()->getId() == BODY_DEADFEMALE)) canrename = false;
@@ -309,6 +315,23 @@ void cClient::statusWindow(pChar target, bool extended) //, bool canrename)  wil
 
 	cPacketSendStatus pk(sorg, ext, canrename);
 	sendPacket(&pk);
+}
+
+/*!
+\brief updates status window of client if drag & drop has modified player in any way, weight included
+\param item item moved in drag & drop
+*/
+
+void cClient::updateStatusWindow(pItem item)
+{
+	pChar pc = currchar();
+	VALIDATEPC( pc );
+	VALIDATEPI( item );
+	pItem pack = pc->getBackpack();
+	VALIDATEPI( pack );
+
+	if( item->getContainer() != pack || item->getContainer() == pc )     //!< if item was in pack and has been moved out or has been equipped/deequipped update char
+		statusWindow( pc, true );
 }
 
 /*------------------------------------------------------------------------------
@@ -335,7 +358,7 @@ void cClient::get_item( pItem pi, UI16 amount ) // Client grabs an item
 		}
 		if (client->isDragging()) {
         		client->resetDragging();
-			UpdateStatusWindow(s,pi);
+			updateStatusWindow(pi);
         	}
 		pi->setContainer( pi->getOldContainer() );
 		pi->setPosition( pi->getOldPosition() );
@@ -440,7 +463,7 @@ void cClient::get_item( pItem pi, UI16 amount ) // Client grabs an item
 					if (isDragging())
 					{
 						resetDragging();
-						UpdateStatusWindow(s,pi);
+						updateStatusWindow(pi);
 					}
 					pi->setContainer( pi->getOldContainer() );
 					pi->setPosition( pi->getOldPosition() );
@@ -461,7 +484,7 @@ void cClient::get_item( pItem pi, UI16 amount ) // Client grabs an item
 				if (client->isDragging())
 				{
 					client->resetDragging();
-					UpdateStatusWindow(s,pi);
+					updateStatusWindow(pi);
 				}
 				pi->setContainer( pi->getOldContainer() );
 				pi->setPosition( pi->getOldPosition() );
@@ -509,8 +532,7 @@ void cClient::get_item( pItem pi, UI16 amount ) // Client grabs an item
 
 	if ( !pi->corpse )
 	{
-                //! \todo the sendpacket stuff here
-		UpdateStatusWindow(s, pi);
+		updateStatusWindow(pi);
 
 		tile_st tile;
 		data::seekTile( pi->getId(), tile);
@@ -525,7 +547,7 @@ void cClient::get_item( pItem pi, UI16 amount ) // Client grabs an item
 			if (isDragging()) // only restore item if it got draggged before !!!
 			{
 				resetDragging();
-				item_bounce4(s, pi );
+				item_bounce4( pi );
 			}
 		} // end of can't get
 		else
@@ -558,18 +580,16 @@ void cClient::get_item( pItem pi, UI16 amount ) // Client grabs an item
 					/*if( !pin->isInWorld() && isItemSerial( pin->getContainer()->getSerial() ) )
 						pin->SetRandPosInCont( (pItem)pin->getContainer() );*/
 
-                                        //! \todo the sendpacket stuff here
-					statwindow(pc_currchar,pc_currchar);
+					statusWindow(pc_currchar, true);
 					pin->Refresh();//AntiChrist
 				}
 
 				if ( pi->getId() == ITEMID_GOLD)
 				{
 					pItem pack= pc_currchar->getBackpack();
-                                        //! \todo the sendpacket stuff here
 					if ( pack )
 						if ( pi->getContainer() == pack )
-							statwindow(pc_currchar, pc_currchar);
+							statusWindow(pc_currchar, true);
 				}
 
 				pi->setAmount(amount);
@@ -588,8 +608,7 @@ void cClient::get_item( pItem pi, UI16 amount ) // Client grabs an item
 	int amt = 0, wgt;
 	wgt = (int)weights::LockeddownWeight( pi, &amt);
 	pc_currchar->weight += wgt;
-        //! \todo the sendpacket stuff here
-	statwindow(pc_currchar, pc_currchar);
+	statusWindow(pc_currchar, true);
 }
 
 
@@ -632,8 +651,7 @@ void cClient::drop_item(pItem pi, Location &loc, pItem cont) // Item is dropped
           #ifdef debug_dragg
 		    ConOut("Bounce & Swallow\n");
           #endif
-                  //! \todo the sendpacket stuff here
-		  item_bounce6(ps, pi);
+		  item_bounce6( pi);
 		  return;
 	  }
 	  else if ( ( (loc->x!=-1) && (loc->y!=-1) && ( cont->getSerial32()!=-1)) || ( (pi->getSerial32()>=0x40000000) && (cont->getSerial32()>=0x40000000) ) )
@@ -712,8 +730,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 		cont->amxevents[EVENT_IONPUTITEM]->Call( cont->getSerial32(), pi->getSerial32(), pc->getSerial32() );
 		if (g_bByPass)
 		{
-                //! \todo the sendpacket stuff here
-			item_bounce6(ps,pi);
+			item_bounce6(pi);
 			return;
 		}
 	}
@@ -769,8 +786,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 				++n;
 			if( n > ServerScp::g_nBankLimit ) {
 				sysmsg(TRANSLATE("You exceeded the number of maximimum items in bank of %d"), ServerScp::g_nBankLimit);
-                                //! \todo the sendpacket stuff here
-				item_bounce6(ps,pi);
+				item_bounce6(pi);
 				return;
 			}
 
@@ -782,8 +798,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 	//testing UOP Blocking Tauriel 1-12-99
 	if (!pi->isInWorld())
 	{
-        //! \todo the sendpacket stuff here
-		item_bounce6(ps,pi);
+		item_bounce6(pi);
 		return;
 	}
 
@@ -832,8 +847,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 			if ((cont->getContainer() != pc ) && (cont->getContainer()!=pack) && (!pc->CanSnoop()))
 			{
 				sysmsg(TRANSLATE("You cannot place spells in other peoples spellbooks."));
-                                //! \todo the sendpacket stuff here
-				item_bounce6(ps,pi);
+				item_bounce6(pi);
 				return;
 			}
 
@@ -859,8 +873,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 						if(!(strcmp(temp,temp2)) || !(strcmp(temp,"All-Spell Scroll")))
 						{
 							sysmsg(TRANSLATE("You already have that spell!"));
-                                                        //! \todo the sendpacket stuff here
-							item_bounce6(ps,pi);
+							item_bounce6(pi);
 							return;
 						}
 					}
@@ -868,8 +881,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 				if (pi->amount > 1)
 				{
 					sysmsg(TRANSLATE("You can't put more than one scroll at a time in your book."));
-                                        //! \todo the sendpacket stuff here
-					item_bounce6(ps,pi);
+					item_bounce6(pi);
 					return;
 				}
 			}
@@ -897,8 +909,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 		cont->AddItem(pi,xx,yy);
 
 		pc->playSFX( itemsfx(pi->getId()) );
-                //! \todo the sendpacket stuff here
-		statwindow(pc,pc);
+		statusWindow(pc, true);
 	}
 	// end of player run vendors
 
@@ -915,8 +926,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 			{
 				if ( !cont->PileItem( pi ) )
 				{
-                                        //! \todo the sendpacket stuff here
-					item_bounce6(ps,pi);
+					item_bounce6(pi);
 					return;
 				}
 			}
@@ -965,8 +975,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 
 		if (isDragging()) {
                         resetDragging();
-                        //! \todo the sendpacket stuff here
-                        UpdateStatusWindow(s,pi);
+                        updateStatusWindow(pi);
                 }
 		pi->setContainer( pi->getOldContainer() );
                 pi->setPosition( pi->getOldPosition() );
@@ -977,8 +986,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 	if (pi->magic == 2) { //Luxor -- not movable objects
 		if (isDragging()) {
                         resetDragging();
-                        //! \todo the sendpacket stuff here
-                        UpdateStatusWindow(s,pi);
+                        updateStatusWindow(pi);
                 }
 		pi->setContainer( pi->getOldContainer() );
 		pi->MoveTo( pi->getOldPosition() );
@@ -993,8 +1001,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
         if(pi!=NULL)
 	{
 		weights::NewCalc(pc);
-                //! \todo the sendpacket stuff here
-		statwindow(pc,pc);
+		statusWindow(pc, this);
 	}
 
 
@@ -1011,8 +1018,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 	//test UOP blocking Tauriel 1-12-99
 	if (!pi->isInWorld())
 	{
-        //! \todo the sendpacket stuff here
-		item_bounce6(ps,pi);
+		item_bounce6(pi);
 		return;
 	}
 
@@ -1023,8 +1029,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 	if (!pc->IsGM() && ((pi->magic==2 || (tile.weight==255 && pi->magic!=1))&&!pc->canAllMove()) ||
 		( (pi->magic==3 || pi->magic==4) && !(pi->getOwnerSerial32()==pc->getSerial32())))
 	{
-        //! \todo the sendpacket stuff here
-		item_bounce6(ps,pi);
+		item_bounce6(pi);
 		return;
 	}
 
@@ -1072,7 +1077,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
         	        	Sndbounce5(s);
 	                	if (isDragging()) {
 	                        	resetDragging();
-                        		UpdateStatusWindow(s,pi);
+                        		updateStatusWindow(pi);
                 		}
                 		pi->setContainer( pi->getOldContainer() );
                 		pi->setPosition( pi->getOldPosition() );
@@ -1092,7 +1097,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 					Sndbounce5(s);
 					if (isDragging()) {
 						resetDragging();
-						UpdateStatusWindow(s,pi);
+						updateStatusWindow(pi);
 					}
 					if (ISVALIDPI(pc->getBackpack())) {
 						pc->getBackpack()->AddItem(pi);
@@ -1110,7 +1115,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 
 		weights::NewCalc(pc);  // Ison 2-20-99
                 //! \todo the sendpacket stuff here
-		statwindow(pc,pc);
+		statusWindow(pc, true);
 		pc->playSFX( itemsfx(pi->getId()) );
 
 		//Boats !
@@ -1181,7 +1186,7 @@ bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
 					if (isDragging())
 					{
 						resetDragging();
-						item_bounce5(s,pi);
+						item_bounce5(pi);
 					}
 					return true;
 				}
@@ -1231,7 +1236,7 @@ bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
                     Sndbounce5(s);
                     if (isDragging()) {
                  		resetDragging();
-                 		UpdateStatusWindow(s,pi);
+                 		updateStatusWindow(pi);
                    	}
                  }
                  //</Luxor>
@@ -1292,7 +1297,7 @@ bool cClient::droppedOnPet(pItem pi, Location &loc, pItem cont)
 		if (isDragging())
 		{
 			resetDragging();
-			item_bounce5(s,pi);
+			item_bounce5(pi);
 
 		}
 	}
@@ -1389,7 +1394,7 @@ bool cClient::droppedOnBeggar(pItem pi, Location &loc, pItem cont)
 		if (isDragging())
 		{
 		        resetDragging();
-			item_bounce5(s,pi);
+			item_bounce5(pi);
 			return true;
 		}
 	}
@@ -1448,7 +1453,7 @@ bool cClient::droppedOnTrainer(pItem pi, Location &loc, pItem cont)
 			if (isDragging())
 			{
 			        resetDragging();
-				item_bounce5(s,pi);
+				item_bounce5(pi);
 			}
 		}
 		else
@@ -1473,7 +1478,7 @@ bool cClient::droppedOnTrainer(pItem pi, Location &loc, pItem cont)
 		if (isDragging())
 		{
 			resetDragging();
-			item_bounce5(s,pi);
+			item_bounce5(pi);
 		}
 	}//if items[i]=gold
 	return true;
@@ -1523,9 +1528,83 @@ bool cClient::droppedOnSelf(pItem pi, Location &loc, pItem cont)
 		pack->AddItem(pi); // player has a pack, put it in there
 
 		weights::NewCalc(pc);//AntiChrist bugfixes
-		statwindow(pc,pc);
+		statusWindow(pc,true);
 		pc->playSFX( itemsfx(pi->getId()) );
 	}
 	return true;
 }
 
+
+/*!
+\brief holds some statements that were COPIED some 50 times
+\param pi item to be bounced back (already in dragging mode)
+*/
+
+void cClient::item_bounce3(const pItem pi)
+{
+	VALIDATEPI( pi );
+	pi->setContainer( pi->getOldContainer() );
+	pi->setPosition( pi->getOldPosition() );
+	pi->layer=pi->oldlayer;
+
+	pChar pc = (pChar) pi->getOldContainer();
+	if(pc)
+		return ;
+
+	if ( pi->layer > 0 )
+	{
+		// Xanathar -- add BONUS STATS given by equipped special items
+		pc->setStrength( pc->getStrength() + pi->st2, true );
+		//pc->st += pi->st2;
+		pc->setDexterity(pc->getDexterity() + pi->dx2, true);
+		pc->setIntelligence(pc->getIntelligence() + pi->in2, true);
+		// Xanathar -- for poisoned items
+		if (pi->poisoned)
+		{
+			pc->poison += pi->poisoned;
+			if ( pc->poison < 0)
+				pc->poison = 0;
+		}
+	}
+}
+
+/*!
+\brief holds some statements that were COPIED some 50 times
+\param pi item to be bounced back (already in dragging mode)
+*/
+
+void cClient::item_bounce4(const pItem pi)
+{
+	VALIDATEPI( pi );
+	item_bounce3(pi);
+	if( (pi->getId() >>8) < 0x40)
+		senditem( pi );
+}
+
+/*!
+\brief holds some statements that were COPIED some 50 times
+\param pi item to be bounced back (already in dragging mode)
+*/
+
+void cClient::item_bounce5( const pItem pi)
+{
+	VALIDATEPI( pi );
+	item_bounce3(pi);
+	senditem(pi);
+}
+
+/*!
+\brief holds some statements that were COPIED some 50 times
+\param pi item to be bounced back (already in dragging mode)
+*/
+
+void cClient::item_bounce6(const pItem pi)
+{
+	VALIDATEPI(pi);
+	Sndbounce5();
+	if ( isDragging() )
+	{
+		resetDragging();
+		item_bounce4( pi );
+	}
+}

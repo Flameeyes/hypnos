@@ -954,7 +954,7 @@ void cChar::teleport( UI08 flags, NXWCLIENT cli )
 		SendDrawGamePlayerPkt(socket, getSerial32(), getId(), 0x00, getColor(), flag, pos, 0x0000, dir | 0x80, true);
 
 		weights::NewCalc(this);
-		statwindow( this, this );
+		client->statusWindow( this, true);
 		walksequence[socket] = INVALID;
 	}
 

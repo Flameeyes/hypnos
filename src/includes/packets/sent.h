@@ -357,4 +357,5 @@ class cPacketReceiveDoubleclick         : public cPacketReceive;
 class cPacketReceivePickUp              : public cPacketReceive;
 class cPacketReceiveDropItem            : public cPacketReceive;
 class cPacketReceiveSingleclick         : public cPacketReceive;
+class cPacketReceiveActionRequest       : public cPacketReceive;
 #endif
