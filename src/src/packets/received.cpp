@@ -11,15 +11,16 @@
 */
 
 #include "objects/cpacket.h"
+#include "objects/cchar.h"
+#include "objects/cpc.h"
 #include "settings.h"
-
+#include "inlines.h"
 
 /*!
 \brief Status window
 \author Flameeyes
 \note packet 0x11
 */
-
 void cPacketSendStatus::prepare()
 {
 	length = 0;
@@ -43,7 +44,7 @@ void cPacketSendStatus::prepare()
 	ShortToCharPtr(pc->getSerial(), buffer+3);
 
 	memset(buffer+7, 0, 30);
-	strncpy(buffer+7, body->getName().c_str(), 30);
+	strncpy((char*)buffer+7, body->getName().c_str(), 30);
 
 
         ShortToCharPtr(body->getHitPoints(), buffer+37);
@@ -92,7 +93,6 @@ void cPacketSendStatus::prepare()
 \author Chronodt
 \note packet 0x1a
 */
-
 void cPacketSendObjectInformation::prepare()
 {
         buffer = new uint8_t[20]; 	//MAXIMUM packet length

@@ -94,7 +94,7 @@ public:
 class cPacketSendObjectInformation : public cPacketSend
 {
 protected:
-	pItem item;	//!< Item
+	pItem pi;	//!< Item to send
         pPC pc;		//!< Player who sees the item
 public:
 	/*!
@@ -113,15 +113,13 @@ public:
 \author Chronodt
 \note packet 0x1a
 */
-
-
 class cPacketSendLSDObject : public cPacketSend
 {
 protected:
 	pItem item;		//!< Item
         pPC pc;			//!< Player who sees the item
-        uint16_t color  	//!< new color of item
-        Location position	//!< new position of item
+        uint16_t color;		//!< new color of item
+        Location position;	//!< new position of item
 public:
 	/*!
 	\param i item
@@ -129,7 +127,7 @@ public:
         \param c new color of item
         \param pos new position of item
 	*/
-	inline cPacketSendObjectInformation(pItem i, pPC p, uint16_t c, Location pos) :
+	inline cPacketSendLSDObject(pItem i, pPC p, uint16_t c, Location pos) :
 		cPacketSend(NULL, 0), item(i), pc(p), color(c), position(pos)
 	{ }
 	void prepare();
@@ -467,7 +465,7 @@ public:
 	\param com command for the msgboard
         \param mess message to be sent. May be omitted if command is DisplayBBoard
 	*/
-	inline cPacketSendMapPlotCourse(pMsgBoard m, BBoardCommands com, pMsgBoardMessage mess = NULL) :
+	inline cPacketSendBBoardCommand(pMsgBoard m, BBoardCommands com, pMsgBoardMessage mess = NULL) :
         	cPacketSend(NULL, 0), msgboard (m), command(com), message(mess)
 	{ }
 
@@ -661,6 +659,9 @@ public:
 #define RECEIVE_PACKET(A) \
 class A : public cPacketReceive { \
 	bool execute(pClient client); \
+	inline A(uint8_t *buf, uint16_t len) : \
+		cPacketReceive(buf, len) \
+	{ } \
 };
 
 RECEIVE_PACKET(cPacketReceiveCreateChar)	//!< Character creation
