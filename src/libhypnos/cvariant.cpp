@@ -14,6 +14,8 @@
 #define __STDC_LIMIT_MACROS
 
 #include "abstraction/tvariant.h"
+#include "objects/cchar.h"
+#include "objects/citem.h"
 
 //! Inline function to recalc the uint size
 inline void tVariant::recalcUIntSize()
@@ -409,15 +411,8 @@ pChar tVariant::toPChar(bool *result) const
 	switch( assignedType )
 	{
 		case vtPChar:
-			return ptrvalue;
 		case vtPVoid:
-			{
-				pChar tmp = dynamic_cast<pChar>(ptrvalue);
-				if ( result && ! tmp && ptrvalue )
-					*result = false;
-				
-				return tmp;
-			}
+			return reinterpret_cast<pChar>(ptrvalue);
 		default:
 			if ( result ) *result = false;
 			return NULL;
@@ -430,15 +425,8 @@ pItem tVariant::toPItem(bool *result) const
 	switch( assignedType )
 	{
 		case vtPItem:
-			return ptrvalue;
 		case vtPVoid:
-			{
-				pItem tmp = dynamic_cast<pItem>(ptrvalue);
-				if ( result && ! tmp && ptrvalue )
-					*result = false;
-				
-				return tmp;
-			}
+			return reinterpret_cast<pItem>(ptrvalue);
 		default:
 			if ( result ) *result = false;
 			return NULL;
@@ -451,15 +439,8 @@ pClient tVariant::toPClient(bool *result) const
 	switch( assignedType )
 	{
 		case vtPClient:
-			return ptrvalue;
 		case vtPVoid:
-			{
-				pItem tmp = dynamic_cast<pClient>(ptrvalue);
-				if ( result && ! tmp && ptrvalue )
-					*result = false;
-				
-				return tmp;
-			}
+			return reinterpret_cast<pClient>(ptrvalue);
 		default:
 			if ( result ) *result = false;
 			return NULL;
@@ -508,7 +489,7 @@ uint32_t tVariant::toUInt32(bool *result) const
 					return 0;
 				}
 				
-				return reinterpret_cast<uint32_t>(sintvalue);
+				return static_cast<uint32_t>(sintvalue);
 			}
 		
 		default:
@@ -544,7 +525,7 @@ uint16_t tVariant::toUInt16(bool *result) const
 					return 0;
 				}
 				
-				tmp = reinterpret_cast<uint32_t>(sintvalue);
+				tmp = static_cast<uint32_t>(sintvalue);
 			}
 			break;
 		
@@ -560,7 +541,7 @@ uint16_t tVariant::toUInt16(bool *result) const
 	}
 	
 	if ( result ) *result = true;
-	return reinterpret_cast<uint16_t>tmp;
+	return static_cast<uint16_t>(tmp);
 }
 
 uint8_t tVariant::toUInt8(bool *result) const
@@ -590,7 +571,7 @@ uint8_t tVariant::toUInt8(bool *result) const
 					return 0;
 				}
 				
-				tmp = reinterpret_cast<uint32_t>(sintvalue);
+				tmp = static_cast<uint32_t>(sintvalue);
 			}
 			break;
 		
@@ -606,10 +587,10 @@ uint8_t tVariant::toUInt8(bool *result) const
 	}
 	
 	if ( result ) *result = true;
-	return reinterpret_cast<uint8_t>tmp;
+	return static_cast<uint8_t>(tmp);
 }
 
-uint32_t tVariant::toSInt32(bool *result) const
+int32_t tVariant::toSInt32(bool *result) const
 {
 	switch( assignedType )
 	{
@@ -635,7 +616,7 @@ uint32_t tVariant::toSInt32(bool *result) const
 					return 0;
 				}
 				
-				return reinterpret_cast<int32_t>(uintvalue);
+				return static_cast<int32_t>(uintvalue);
 			}
 		
 		default:
@@ -644,7 +625,7 @@ uint32_t tVariant::toSInt32(bool *result) const
 	}
 }
 
-uint16_t tVariant::toSInt16(bool *result) const
+int16_t tVariant::toSInt16(bool *result) const
 {
 	int32_t tmp = 0;
 	switch( assignedType )
@@ -671,7 +652,7 @@ uint16_t tVariant::toSInt16(bool *result) const
 					return 0;
 				}
 				
-				tmp = reinterpret_cast<int32_t>(uintvalue);
+				tmp = static_cast<int32_t>(uintvalue);
 			}
 			break;
 		
@@ -687,10 +668,10 @@ uint16_t tVariant::toSInt16(bool *result) const
 	}
 	
 	if ( result ) *result = true;
-	return reinterpret_cast<int16_t>tmp;
+	return static_cast<int16_t>(tmp);
 }
 
-uint8_t tVariant::toSInt8(bool *result) const
+int8_t tVariant::toSInt8(bool *result) const
 {
 	int32_t tmp = 0;
 	switch( assignedType )
@@ -717,7 +698,7 @@ uint8_t tVariant::toSInt8(bool *result) const
 					return 0;
 				}
 				
-				tmp = reinterpret_cast<int32_t>(uintvalue);
+				tmp = static_cast<int32_t>(uintvalue);
 			}
 			break;
 		
@@ -733,5 +714,5 @@ uint8_t tVariant::toSInt8(bool *result) const
 	}
 	
 	if ( result ) *result = true;
-	return reinterpret_cast<int8_t>tmp;
+	return static_cast<int8_t>(tmp);
 }
