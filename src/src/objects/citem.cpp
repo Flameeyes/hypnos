@@ -199,7 +199,7 @@ cItem::resetData()
 	trigger=0; //Trigger number that item activates
 	trigtype=0; //Type of trigger
 	tuses=0;    //Number of uses for trigger
-	poisoned=POISON_NONE; //AntiChrist -- for poisoning skill
+	poisoned=poisonNone; //AntiChrist -- for poisoning skill
 	murdertime=0; //AntiChrist -- for corpse -- when the people has been killed
 //	glow=0;
 //	glow_effect=0;

@@ -93,4 +93,18 @@ enum ClientType {
 	ctNormal	//!< Normal client
 };
 
+//! Type of poison
+enum PoisonType {
+	poisonNone,	//!< No poison
+	poisonWeak,	//!< Weak poison
+	poisonNormal,	//!< Normal poison
+	poisonGreater,	//!< Greater poison
+	poisonDeadly	//!< Deadly poison
+};
+
+//! Directions
+enum Direction {
+	dirNorth, dirNorthEast, dirEast, dirSouthEast, dirSouth, dirSouthWest, dirWest, dirNorthWest
+};
+
 #endif

@@ -1298,11 +1298,11 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
 				if ( src->skill[MAGERY] < 700 )
-					pd->applyPoison(POISON_WEAK);
+					pd->applyPoison(poisonWeak);
 				else if ( src->skill[MAGERY] < 900 )
-					pd->applyPoison(POISON_NORMAL);
+					pd->applyPoison(poisonNormal);
 				else
-					pd->applyPoison(POISON_GREATER);
+					pd->applyPoison(poisonGreater);
 			}
 			break;
 		case SPELL_MAGICARROW:

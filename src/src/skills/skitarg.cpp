@@ -704,7 +704,7 @@ void Skills::target_wheel( NXWCLIENT ps, pTarget t )	//Spinning wheel
                 pti->amount=pti->amount*3;
             }
 
-            pti->priv |= ITMPRIV_DECAY;
+            pti->setCanDecay(true);
             pti->Refresh();
             tailme=1;
         }
@@ -755,16 +755,16 @@ void Skills::target_loom( NXWCLIENT ps, pTarget t )
 						pc_currchar->sysmsg(TRANSLATE("You have made your cloth."));
 						pti->setCurrentName("#");
 						pti->setId( 0x175D );
-						pti->priv |= ITMPRIV_DECAY;
-						pti->amount=(pti->amount-1)*10;
+						pti->setCanDecay(true);
+						pti->setAmount((pti->amount-1)*10);
 						break;
 					case 0x0FA0: // Thread
 					case 0x0FA1:
 						pc_currchar->sysmsg(TRANSLATE("You have made a bolt of cloth."));
 						pti->setCurrentName("#");
 						pti->setId( 0x0F95 );
-						pti->priv |= ITMPRIV_DECAY;
-						pti->amount=(uint16_t)(pti->amount*0.25);
+						pti->setCanDecay(true);
+						pti->setAmount(pti->amount*0.25);
 						break;
 				}
 
@@ -1206,7 +1206,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
 		{
 			if (ph->checkSkill( HEALING,600,1000) && ph->checkSkill(ANATOMY,600,1000))
 			{
-				pp->poisoned=POISON_NONE;
+				pp->poisoned=poisonNone;
 				ph->sysmsg(TRANSLATE("Because of your skill, you were able to counter the poison."));
 			}
 			else
@@ -1747,7 +1747,7 @@ void target_poisoning2( NXWCLIENT ps, pTarget t )
 		{
 			pc->sysmsg(TRANSLATE("You fail to apply the poison."));
 			pi->hp-=poison->morez;
-			pi->poisoned=POISON_NONE;
+			pi->poisoned=poisonNone;
 			if(pi->hp<=0)
 			{
 				pc->sysmsg(TRANSLATE("Your weapon has been destroyed"));

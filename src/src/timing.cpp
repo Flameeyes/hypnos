@@ -71,10 +71,10 @@ void checkFieldEffects( uint32_t currenttime, pChar pc, char timecheck )
 					case 0x3920: //Poison Field
 						if ((pi->morex<997)) {
 							tempfx::add(pc, pc, tempfx::FIELD_DAMAGE, 2, DAMAGE_POISON, 0, 2);
-							pc->applyPoison(POISON_WEAK);
+							pc->applyPoison(poisonWeak);
 						} else {
 							tempfx::add(pc, pc, tempfx::FIELD_DAMAGE, 3, DAMAGE_POISON, 0, 2); // gm mages can cast greater poison field, LB
-							pc->applyPoison(POISON_NORMAL);
+							pc->applyPoison(poisonNormal);
 						}
 						return;
 					case 0x3979:

@@ -1248,7 +1248,7 @@ void usepotion(pChar pc, pItem pi)
 		break;
 
 	case 2: // Cure Potion
-		if (pc->poisoned<1)
+		if ( pc->getBody()->getPoisoned() == poisonNone )
 			pc->sysmsg(TRANSLATE("The potion had no effect."));
 		else
 		{
@@ -1256,24 +1256,24 @@ void usepotion(pChar pc, pItem pi)
 			{
 			case 1:
 				x=RandomNum(1,100);
-				if (pc->poisoned==POISON_WEAK && x<81) pc->poisoned=POISON_NONE;
-				if (pc->poisoned==POISON_NORMAL && x<41) pc->poisoned=POISON_NONE;
-				if (pc->poisoned==POISON_GREATER && x<21) pc->poisoned=POISON_NONE;
-				if (pc->poisoned==POISON_DEADLY && x< 6) pc->poisoned=POISON_NONE;
+				if (pc->getBody()->getPoisoned() == poisonWeak && x<81) pc->getBody()->setPoisoned(poisonNone);
+				if (pc->getBody()->getPoisoned() == poisonNormal && x<41) pc->getBody()->setPoisoned(poisonNone);
+				if (pc->getBody()->getPoisoned() == poisonGreater && x<21) pc->getBody()->setPoisoned(poisonNone);
+				if (pc->getBody()->getPoisoned() == poisonDeadly && x< 6) pc->getBody()->setPoisoned(poisonNone);
 				break;
 			case 2:
 				x=RandomNum(1,100);
-				if (pc->poisoned==POISON_WEAK) pc->poisoned=POISON_NONE;
-				if (pc->poisoned==POISON_NORMAL && x<81) pc->poisoned=POISON_NONE;
-				if (pc->poisoned==POISON_GREATER && x<41) pc->poisoned=POISON_NONE;
-				if (pc->poisoned==POISON_DEADLY && x<21) pc->poisoned=POISON_NONE;
+				if (pc->getBody()->getPoisoned() == poisonWeak) pc->getBody()->setPoisoned(poisonNone);
+				if (pc->getBody()->getPoisoned() == poisonNormal && x<81) pc->getBody()->setPoisoned(poisonNone);
+				if (pc->getBody()->getPoisoned() == poisonGreater && x<41) pc->getBody()->setPoisoned(poisonNone);
+				if (pc->getBody()->getPoisoned() == poisonDeadly && x<21) pc->getBody()->setPoisoned(poisonNone);
 				break;
 			case 3:
 				x=RandomNum(1,100);
-				if (pc->poisoned==POISON_WEAK) pc->poisoned=POISON_NONE;
-				if (pc->poisoned==POISON_NORMAL) pc->poisoned=POISON_NONE;
-				if (pc->poisoned==POISON_GREATER && x<81) pc->poisoned=POISON_NONE;
-				if (pc->poisoned==POISON_DEADLY && x<61) pc->poisoned=POISON_NONE;
+				if (pc->getBody()->getPoisoned() == poisonWeak) pc->getBody()->setPoisoned(poisonNone);
+				if (pc->getBody()->getPoisoned() == poisonNormal) pc->getBody()->setPoisoned(poisonNone);
+				if (pc->getBody()->getPoisoned() == poisonGreater && x<81) pc->getBody()->setPoisoned(poisonNone);
+				if (pc->getBody()->getPoisoned() == poisonDeadly && x<61) pc->getBody()->setPoisoned(poisonNone);
 				break;
 			default:
 				ErrOut("Switch fallout. pyuo.cpp, usepotion()\n"); //Morrolan
@@ -1284,7 +1284,7 @@ void usepotion(pChar pc, pItem pi)
 			else
 			{
 				staticeffect(DEREF_pChar(pc), 0x37, 0x3A, 0, 15);
-				pc->playSFX( 0x01E0); //cure sound - SpaceDog
+				pc->playSFX(0x01E0); //cure sound - SpaceDog
 				pc->sysmsg(TRANSLATE("The poison was cured."));
 			}
 		}

@@ -624,7 +624,7 @@ void cChar::checkPoisoning(pChar pc_def)
 					if ( weapon->poisoned > 1 )
 						weapon->poisoned = static_cast<PoisonType>(weapon->poisoned -1);
 					else {
-						weapon->poisoned = POISON_NONE;
+						weapon->poisoned = poisonNone;
 						sysmsg( TRANSLATE("The poison you put on the weapon went out.") );
 					}
 					(poison > 1) ? poison = static_cast<PoisonType>(poison-1) : poison = 0;

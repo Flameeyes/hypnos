@@ -220,7 +220,7 @@ void cChar::resetData()
 	fishingtimer=0; // Timer used to delay the catching of fish
 	advobj=0; //Has used advance gate?
 	poison=0; // used for poison skill
-	poisoned=POISON_NONE; // type of poison
+	poisoned=poisonNone; // type of poison
 	poisontime=0; // poison damage timer
 	poisontxt=0; // poision text timer
 	poisonwearofftime=0; // LB, makes poision wear off ...
@@ -695,8 +695,8 @@ void cChar::applyPoison(PoisonType poisontype, int32_t secs )
         unfreeze();
 	if ( !IsInvul() && (::region[region].priv&0x40)) // LB magic-region change
 	{
-		if (poisontype>POISON_DEADLY) poisontype = POISON_DEADLY;
-		else if (poisontype<POISON_WEAK) poisontype = POISON_WEAK;
+		if (poisontype>poisonDeadly) poisontype = poisonDeadly;
+		else if (poisontype<poisonWeak) poisontype = poisonWeak;
 		if ( poisontype>=poisoned ) {
 			poisoned=poisontype;
 			if( secs == INVALID )
@@ -1549,7 +1549,7 @@ void cChar::hideBySpell(int32_t timer)
 */
 void cChar::curePoison()
 {
-	poisoned = POISON_NONE;
+	poisoned = poisonNone;
 	poisonwearofftime = uiCurrentTime;
 	if (getClient() != NULL) impowncreate(getClient()->toInt(), this, 1);
 }
@@ -1869,7 +1869,7 @@ void cChar::Kill()
 		morph();
 
 	dead = true;
-	poisoned = POISON_NONE;
+	poisoned = poisonNone;
 	poison = hp = 0;
 
 	if( getOldId() == BODY_FEMALE)
@@ -2619,31 +2619,31 @@ void cChar::checkPoisoning()
 			{
 				switch ( poisoned )
 				{
-				case POISON_WEAK:
+				case poisonWeak:
 					poisontime= uiCurrentTime + ( 15 * MY_CLOCKS_PER_SEC );
 					// between 0% and 5% of player's hp reduced by racial combat poison resistance
 					hp -= int32_t(
 							qmax( ( ( hp ) * RandomNum( 0, 5 ) ) / 100, 3 ) *
-							( (100 - Race::getPoisonResistance( race, POISON_WEAK ) ) / 100 )
+							( (100 - Race::getPoisonResistance( race, poisonWeak ) ) / 100 )
 						     );
 					break;
-				case POISON_NORMAL:
+				case poisonNormal:
 					poisontime = uiCurrentTime + ( 10 * MY_CLOCKS_PER_SEC );
 					// between 5% and 10% of player's hp reduced by racial combat poison resistance
 					hp -= int32_t(
 							qmax( ( ( hp ) * RandomNum( 5, 10 ) ) / 100, 5 ) *
-							( (100 - Race::getPoisonResistance( race, POISON_NORMAL ) ) / 100 )
+							( (100 - Race::getPoisonResistance( race, poisonNormal ) ) / 100 )
 						      );
 					break;
-				case POISON_GREATER:
+				case poisonGreater:
 					poisontime = uiCurrentTime+( 10 * MY_CLOCKS_PER_SEC );
 					// between 10% and 15% of player's hp reduced by racial combat poison resistance
 					hp -= int32_t(
 							qmax( ( ( hp ) * RandomNum( 10,15 ) ) / 100, 7 ) *
-							( (100 - Race::getPoisonResistance( race, POISON_GREATER ) ) / 100 )
+							( (100 - Race::getPoisonResistance( race, poisonGreater ) ) / 100 )
 						     );
 					break;
-				case POISON_DEADLY:
+				case poisonDeadly:
 					poisontime = uiCurrentTime + ( 5 * MY_CLOCKS_PER_SEC );
 					// between 15% and 20% of player's hp reduced by racial combat poison resistance
 					if ( hp <= (getStrength()/4) ) {
@@ -2652,12 +2652,12 @@ void cChar::checkPoisoning()
 					}
 					hp -= int32_t(
 							qmax( ( ( hp ) * RandomNum( 15, 20 ) ) / 100, 6) *
-							( (100 - Race::getPoisonResistance( race, POISON_DEADLY ) ) / 100 )
+							( (100 - Race::getPoisonResistance( race, poisonDeadly ) ) / 100 )
 						     );
 					break;
 				default:
 					ErrOut("checkPoisoning switch fallout for char with serial [%u]\n", getSerial() );
-					poisoned = POISON_NONE;
+					poisoned = poisonNone;
 					return;
 				}
 				if ( hp < 1 )
@@ -2674,16 +2674,16 @@ void cChar::checkPoisoning()
 						emotecolor = 0x0026;
 						switch ( poisoned )
 						{
-						case POISON_WEAK:
+						case poisonWeak:
 							emoteall( TRANSLATE("* %s looks a bit nauseous *"), 1, getCurrentName().c_str() );
 							break;
-						case POISON_NORMAL:
+						case poisonNormal:
 							emoteall( TRANSLATE("* %s looks disoriented and nauseous! *"), 1, getCurrentName().c_str());
 							break;
-						case POISON_GREATER:
+						case poisonGreater:
 							emoteall( TRANSLATE("* %s is in severe pain! *"), 1, getCurrentName().c_str());
 							break;
-						case POISON_DEADLY:
+						case poisonDeadly:
 							emoteall( TRANSLATE("* %s looks extremely weak and is wrecked in pain! *"), 1, getCurrentName().c_str());
 							break;
 						}
@@ -2693,7 +2693,7 @@ void cChar::checkPoisoning()
 			}
 			else
 			{
-				poisoned = POISON_NONE;
+				poisoned = poisonNone;
 				impowncreate( getSocket(), this, 1 ); // updating to blue stats-bar ...
 				if ( !npc )
 					sysmsg( TRANSLATE( "The poison has worn off." ) );

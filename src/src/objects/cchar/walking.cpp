@@ -292,22 +292,22 @@ uint8_t cChar::getDirFromXY( uint16_t targetX, uint16_t targetY )
 
 	if ( targetX < pcpos.x )
 		if ( targetY < pcpos.y )
-			direction = NORTHWEST;
+			direction = dirNorthWest;
 		else if ( targetY > pcpos.y )
-			direction = SOUTHWEST;
+			direction = dirSouthWest;
 		else
-			direction = WEST;
+			direction = dirWest;
 	else
 		if ( targetX > pcpos.x )
 			if ( targetY < pcpos.y )
-				direction = NORTHEAST;
+				direction = dirNorthEast;
 			else if ( targetY > pcpos.y )
-				direction = SOUTHEAST;
+				direction = dirSouthEast;
 			else
-				direction = EAST;
+				direction = dirEast;
 		else if ( targetY < pcpos.y )
-			direction = NORTH;
+			direction = dirNorth;
 		else
-			direction = SOUTH;
+			direction = dirSouth;
 	return direction;
 }
