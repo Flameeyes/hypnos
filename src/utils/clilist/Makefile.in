@@ -45,9 +45,9 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/binreloc.m4 \
 	$(top_srcdir)/m4/checkflags.m4 $(top_srcdir)/m4/dl.m4 \
 	$(top_srcdir)/m4/hypnosreloc.m4 $(top_srcdir)/m4/icc.m4 \
-	$(top_srcdir)/m4/pch.m4 $(top_srcdir)/m4/wefts.m4 \
-	$(top_srcdir)/m4/windows.m4 $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.in
+	$(top_srcdir)/m4/pch.m4 $(top_srcdir)/m4/stdints.m4 \
+	$(top_srcdir)/m4/wefts.m4 $(top_srcdir)/m4/windows.m4 \
+	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

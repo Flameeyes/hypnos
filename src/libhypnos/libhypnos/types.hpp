@@ -21,15 +21,13 @@ libhypnos library and are common to different applications of the suite.
 #endif
 
 #ifdef HAVE_STDINT_H
-#include <stdint.h>
+	#include <stdint.h>
+#elif define HAVE_SYS_TYPES_H
+	#includ <sys/types.h>
 #else
-// If we haven't stdint, we should define the integers we need, but in this
-// case we usually have MSVC or Borland compiler: gcc should provide stdint.h
-// For now we simply throw error, we'll fix this in the future
-
-#error "Your compiler doesn't provide stdint.h header. This is bad, you should " \
-	"change compiler and in any case report this to Hypnos maintainers!"
-
+	#error "Your compiler doesn't support stdint.h header, and your system doesn't " \
+		"provide a sys/types.h header, too. Report this to Hypnos maintainers " \
+		"and they'll try to make hypnos work for you."
 #endif
 
 #ifdef HAVE_SET

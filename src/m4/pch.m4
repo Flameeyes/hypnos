@@ -10,7 +10,7 @@ AC_DEFUN(AC_PCH,
 	AC_ARG_ENABLE(pch,
 		AC_HELP_STRING([--enable-pch],
 			[enables precompiled headers support]),
-		[ use_pch=$enableval ], [ use_pch=no ] )
+		[ use_pch=$enableval ], [ use_pch=yes ] )
 	
 	if test "$use_pch" = "yes"; then
 		AC_MSG_CHECKING(whether $CXX supports precompiling c++ header files)
