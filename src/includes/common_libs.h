@@ -51,10 +51,6 @@ warnings/errors/issues.
 #include <ctype.h>
 #include <unistd.h>
 
-#ifndef MSG_NOSIGNAL
-    #define MSG_NOSIGNAL 0
-#endif
-
 #include "typedefs.h"
 #include "constants.h"
 

@@ -30,6 +30,12 @@
 /* Define to 1 if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
 
+/* Define to 1 if you have the `htonl' function. */
+#undef HAVE_HTONL
+
+/* Define to 1 if you have the `htons' function. */
+#undef HAVE_HTONS
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
@@ -54,6 +60,15 @@
 
 /* Define to 1 if you have the `munmap' function. */
 #undef HAVE_MUNMAP
+
+/* Define to 1 if you have the <netinet/in.h> header file. */
+#undef HAVE_NETINET_IN_H
+
+/* Define to 1 if you have the `ntohl' function. */
+#undef HAVE_NTOHL
+
+/* Define to 1 if you have the `ntohs' function. */
+#undef HAVE_NTOHS
 
 /* Define to 1 if stdbool.h conforms to C99. */
 #undef HAVE_STDBOOL_H
@@ -200,7 +215,7 @@
    supported. Do not define if restrict is supported directly. */
 #undef restrict
 
-/* define ssize_t to __int64 if it's missing in defaul t includes */
+/* define ssize_t to __int64 if it's missing in default includes */
 #undef ssize_t
 
 /* Define as `fork' if `vfork' does not work. */
