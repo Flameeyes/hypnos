@@ -13,12 +13,9 @@
 #ifndef __SCRIPTING_H__
 #define __SCRIPTING_H__
 
+#include "common_libs.h"
 #include "typedefs.h"
-
-extern "C" {
-	cScriptingEngine *initEngine();
-	void quitEngine(cScriptingEngine *);
-}
+#include "abstraction/tvariant.h"
 
 /*!
 \class cScriptingEngine scripting.h "backend/scripting.h"
@@ -36,7 +33,7 @@ public:
 			/*!
 			\brief Sets the params for the function to call
 			\param aParams vector of params to set
-			*/extern 
+			*/
 			virtual void setParams(tVariantVector &aParams)
 			{ params = aParams; }
 			
@@ -54,6 +51,12 @@ protected:
 	virtual ~cScriptingEngine() { };
 };
 
-typedef std::vector<cScriptingEngine::cFunctionHandle *> FunctionVector;
+typedef cScriptingEngine::cFunctionHandle *pFunctionHandle;
+typedef std::vector<pFunctionHandle> FunctionVector;
+
+extern "C" {
+	cScriptingEngine *initEngine();
+	void quitEngine(cScriptingEngine *);
+}
 
 #endif

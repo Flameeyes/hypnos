@@ -34,7 +34,7 @@ protected:
 	FunctionVector events;	//!< Handlers to call for events
 	virtual uint16_t eventsNumber() const = 0;
 public:
-	pFunctionHandler getEvent(uint16_t index);
+	pFunctionHandle getEvent(uint16_t index);
 	virtual ~cEventThrower() { }
 };
 

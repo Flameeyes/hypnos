@@ -54,7 +54,7 @@ private:
 	void EraseGuild(int guildnumber);
 	void ToggleAbbreviation(int s);
 	int SearchSlot(int guildnumber, int type);
-	void ChangeName(NXWSOCKET s, char *text);
+	void ChangeName(pClient client, char *text);
 	void ChangeAbbreviation(int s, char *text);
 	void ChangeTitle(int s, char *text);
 	void ChangeCharter(int s, char *text);
@@ -70,13 +70,13 @@ public:
 	int  GetType(int guildnumber);
 	void StonePlacement(int s);
 	void Menu(int s, int page);
-	void Resign(pChar pc, NXWSOCKET socket);
+	void Resign(pChar pc, pClient clientocket);
 	void Recruit(int s);
 	void TargetWar(int s);
 	void StoneMove(int s);
 	int Compare(pChar player1,pChar player2);
 	void GumpInput(int s, int type, int index, char *text);
-	void GumpChoice(NXWSOCKET s, int main, int sub);
+	void GumpChoice(pClient client, int main, int sub);
 	int SearchByStone(int s);
 	void Title(int s, int player2);
 	void Read(int guildnumber);

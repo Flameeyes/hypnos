@@ -10,14 +10,13 @@
 
 #include "common_libs.h"
 #include "boats.h"
-#include "set.h"
 #include "sndpkg.h"
 #include "map.h"
-
-
 #include "classes.h"
-#include "range.h"
 #include "inlines.h"
+#include "objects/citem.h"
+#include "objects/cchar.h"
+#include "objects/cbody.h"
 
 BOATS	s_boat;
 
@@ -127,52 +126,49 @@ void cBoat::PlankStuff(pChar pc , pItem pi)//If the plank is opened, double clic
 	if ( ! pc )
 		return;
 
-	pItem boat =GetBoat(pc->getPosition());
+	pItem boat =GetBoat(pc->getBody()->getPosition());
 	if (boat!=NULL) //we are on boat
 	{
 		boat->type2 = 0; //STOP the BOAT
 		LeaveBoat(pc,pi);//get of form boat
+		return;
 	}
-	else // we are not on boat
+
+	pItem boat2;
+
+	boat2=search_boat_by_plank(pi);
+	if (boat2 == NULL)
 	{
-
-		pItem boat2;
-
-		boat2=search_boat_by_plank(pi);
-		if (boat2 == NULL)
-		{
-			WarnOut("Can't find boats!\n");
-			return;
-		}
-
-		boat2->type2 = 0; //STOP the BOAT
-
-		NxwCharWrapper sc;
-		sc.fillOwnedNpcs( pc, false, true );
-		for( sc.rewind(); !sc.isEmpty(); sc++ ) 
-		{
-			pChar pc_b=sc.getChar();
-
-			if( pc_b )
-			{
-				Location boatpos= boat2->getPosition();
-				pc_b->MoveTo( boatpos.x+1, boatpos.y+1, boatpos.z+2 );
-				pc_b->setMultiSerial( boat2->getSerial() );
-				pc_b->teleport();
-
-			}
-		}
-
-
-        OpenPlank(pi); //lb
-
-		Location boatpos= boat2->getPosition();
-		pc->MoveTo( boatpos.x+1, boatpos.y+1, boatpos.z+3 );
-		pc->teleport();
-		pc->sysmsg("you entered a boat");
-       // pc->setMultiSerial( boat2->getSerial() ); it's has just been called by pc->teleport, so wee need it not
+		WarnOut("Can't find boats!\n");
+		return;
 	}
 
+	boat2->type2 = 0; //STOP the BOAT
+
+	NxwCharWrapper sc;
+	sc.fillOwnedNpcs( pc, false, true );
+	for( sc.rewind(); !sc.isEmpty(); sc++ ) 
+	{
+		pChar pc_b=sc.getChar();
+
+		if( pc_b )
+		{
+			Location boatpos= boat2->getPosition();
+			pc_b->MoveTo( boatpos.x+1, boatpos.y+1, boatpos.z+2 );
+			pc_b->setMultiSerial( boat2->getSerial() );
+			pc_b->teleport();
+
+		}
+	}
+
+
+	OpenPlank(pi); //lb
+
+	Location boatpos= boat2->getPosition();
+	pc->MoveTo( boatpos.x+1, boatpos.y+1, boatpos.z+3 );
+	pc->teleport();
+	pc->sysmsg("you entered a boat");
+	// pc->setMultiSerial( boat2->getSerial() ); it's has just been called by pc->teleport, so wee need it not
 }
 
 void cBoat::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open plank while on the boat.
@@ -667,7 +663,7 @@ void cBoat::TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, 
 }
 
 
-bool cBoat::Speech(pChar pc, NXWSOCKET socket, std::string &talk)//See if they said a command.
+bool cBoat::Speech(pChar pc, pClient clientocket, std::string &talk)//See if they said a command.
 {
 	/*
 		pc & socket validation done in talking()
@@ -939,7 +935,7 @@ bool cBoat::good_position(pItem pBoat, Location where, int dir)
 // Author            : Elcabesa
 // Changes           : none yet
 // Called form	     : buildhouse()
-bool cBoat::Build(NXWSOCKET  s, pItem pBoat, char id2)
+bool cBoat::Build(pClient client, pItem pBoat, char id2)
 {
 	if ( s < 0 || s >= now )
 		return false;
@@ -1248,7 +1244,7 @@ pItem cBoat::GetBoat(Location pos)
 // Author            : unknow
 // Changes           : none yet
 
-void cBoat::Move(NXWSOCKET  s, int dir, pItem pBoat)
+void cBoat::Move(pClient client, int dir, pItem pBoat)
 {
 	iMove(s,dir,pBoat,false);
 }
@@ -1262,7 +1258,7 @@ void cBoat::Move(NXWSOCKET  s, int dir, pItem pBoat)
 // Author            : Elcabesa
 // Changes           : none yet
 
-void cBoat::iMove(NXWSOCKET  s, int dir, pItem pBoat, bool forced)
+void cBoat::iMove(pClient client, int dir, pItem pBoat, bool forced)
 {
 	int tx=0,ty=0;
 	int serial;

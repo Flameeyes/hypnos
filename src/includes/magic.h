@@ -17,17 +17,13 @@
 
 #include "common_libs.h"
 #include "targeting.h"
-
 #include "menu.h"
+#include "enums.h"
 
-//! dont use up mana
-#define SPELLFLAG_NOUSEMANA 0x1
-//! dont check criminal stuff
-#define SPELLFLAG_DONTCRIMINAL 0x2
-//! dont use up reagents
-#define SPELLFLAG_DONTREQREAGENTS 0x4
-//! dont check spellbook for spell presence
-#define SPELLFLAG_DONTCHECKSPELLBOOK 0x8
+static const uint8_t SPELLFLAG_NOUSEMANA		= 0x01; //!< dont use up mana
+static const uint8_t SPELLFLAG_DONTCRIMINAL		= 0x02; //!< dont check criminal stuff
+static const uint8_t SPELLFLAG_DONTREQREAGENTS		= 0x04; //!< dont use up reagents
+static const uint8_t SPELLFLAG_DONTCHECKSPELLBOOK	= 0x08; //!< dont check spellbook for spell presence
 
 //! optional parameter is the skill to be used instead of magery
 #define SPELLFLAG_PARAMISSKILLTOUSE 0x10

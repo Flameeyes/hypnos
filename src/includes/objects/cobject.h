@@ -17,6 +17,7 @@
 #include "common_libs.h"
 #include "tmpeff.h"
 #include "structs.h"
+#include "objects/ceventthrower.h"
 
 typedef std::slist< tempfx::cTempfx > TempfxVector;
 

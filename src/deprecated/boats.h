@@ -12,8 +12,8 @@
 #ifndef __BOATS_H__
 #define __BOATS_H__
 
-
 #include "common_libs.h"
+#include "structs.h"
 #include "data.h"
 
 /*!
@@ -44,7 +44,7 @@ extern char cShipItems[4][6];
 
 //NEW BOAT SYSTEM
 
-//bool check_boat_position(NXWSOCKET  s,pItem pBoat);
+//bool check_boat_position(pClient client,pItem pBoat);
 
 struct boat_db
 {
@@ -79,19 +79,19 @@ class cBoat
 		void TurnStuff_i(pItem, pItem, int, int);
 
 		void TurnStuff_c(pItem, pChar, int, int);
-		void iMove(NXWSOCKET  s, int dir, pItem pBoat, bool forced = true);
+		void iMove(pClient client, int dir, pItem pBoat, bool forced = true);
 
-		void TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, P_ITEM pTiller, P_ITEM pHold );
+		void TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, pItem pTiller, pItem pHold );
 	public:
 
 		cBoat();
 		pItem GetBoat(Location pos);
 		virtual ~cBoat();
-		bool Speech(pChar pc, NXWSOCKET socket, std::string &talk );
+		bool Speech(pChar pc, pClient clientocket, std::string &talk );
 		void OpenPlank(pItem pi);
 		void PlankStuff(pChar pc, pItem pi);
-		bool Build(NXWSOCKET s, pItem pBoat, char);
-		void Move(NXWSOCKET  s, int dir, pItem pBoat);
+		bool Build(pClient client, pItem pBoat, char);
+		void Move(pClient client, int dir, pItem pBoat);
 		void Turn(pItem, int);
 };
 

@@ -87,6 +87,7 @@ warnings/errors/issues.
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
+#include <netinet/in.h>
 #include <ctype.h>
 #include <stdint.h>
 

@@ -36,7 +36,7 @@ inline bool chance(uint8_t percent) { return ( (rand()%100) < percent); }
 
 inline void SetTimerSec( TIMERVAL *timer, const short seconds)
 {
-	*timer=seconds * MY_CLOCKS_PER_SEC + uiCurrentTime;
+	*timer=seconds * MY_CLOCKS_PER_SEC /*+ uiCurrentTime*/;
 }
 
 inline bool isCharSerial( long ser ) { return ( ser > 0 && ser <  0x40000000 ); }
@@ -197,7 +197,7 @@ char *long2ip(int l, char *out)
 */
 inline uint32_t LongFromCharPtr(const unsigned char *p)
 {
-	return ntohl( *(reinterpret_cast<uint32_t *>(p)) );
+	return ntohl( *(reinterpret_cast<const uint32_t *>(p)) );
 }
 
 /*!
@@ -208,7 +208,7 @@ inline uint32_t LongFromCharPtr(const unsigned char *p)
 */
 inline uint16_t ShortFromCharPtr(const unsigned char *p)
 {
-	return ntohs( *(reinterpret_cast<uint16_t *>(p)) );
+	return ntohs( *(reinterpret_cast<const uint16_t *>(p)) );
 }
 
 /*!

@@ -14,8 +14,6 @@
 #define __TVARIANT_H__
 
 #include "common_libs.h"
-#include "objects/cchar.h"
-#include "objects/citem.h"
 
 /*!
 \brief Variant type class
@@ -202,7 +200,7 @@ All these functions return a bool which represent the success or not of the conv
 //@}
 
 	inline const bool isNull() const
-	{ return assignedType == vtNull; )
+	{ return assignedType == vtNull; }
 
 private:
 	void recalcUIntSize();
