@@ -53,9 +53,15 @@ is going to mmap the same file, we'll get some strange behaviour.
 */
 template<class MUL> class tMMappedFile {
 protected:
-	MUL *array;
+	MUL *array;	//!< Pointer to the mmapped file
+	uint32_t size;	//!< Size of the mmap in bytes
+	int fd;		//!< Descriptor of the mmapped file
+	
+	void open(std::string filename);
+	vodi mmap(uint32_t offset, uint32_t length);
 public:
-	tMMappedFile(std::string filename);
+	tMMappedFile();
+	tMMappedFile(std::string filename, uint32_t offset = 0, uint32_t length = 0);
 	~tMMappedFile();
 };
 
