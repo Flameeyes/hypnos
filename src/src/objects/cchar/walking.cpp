@@ -14,6 +14,21 @@
 #include "walking.h"
 
 /*!
+\brief Changes the orientation of a player
+\author Flameeyes
+\param facex X-coord to face to
+\param faxey Y-coord to face to
+*/
+void cChar::facexy(UI16 facex, UI16 facey)
+{
+	UI08 olddir = dir;
+	dir = getDirFromXY(facex, facey);
+
+	if ( dir != olddir )
+		teleport(TELEFLAG_NONE);
+}
+
+/*!
 \author Luxor
 \brief Calls the pathfinding algorithm and creates a new path
 */

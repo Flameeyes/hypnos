@@ -1294,195 +1294,6 @@ void cChar::addGold(UI16 totgold)
 }
 
 /*!
-\author Luxor
-\brief shows speech text to all pcs near the char
-\param txt the speech
-\param antispam use or not antispam
-*/
-void cChar::talkAll(TEXT *txt, bool antispam)
-{
-	NxwSocketWrapper sw;
-	sw.fillOnline( this, false );
-
-	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWCLIENT ps=sw.getClient();
-		if( ps!=NULL )
-			talk(ps->toInt(), txt,antispam);
-	}
-
-}
-
-/*!
-\author Luxor
-\brief Shows speech text of a char to the given char
-\param s socket to send the speech to
-\param txt the speech
-\param antispam use or not antispam
-*/
-void cChar::talk(NXWSOCKET s, TEXT *txt, bool antispam)
-{
-	if( s < 0 || s >= now )
-		return;
-
-	bool machwas= true;
-
-	if( antispam )
-	{
-		if( TIMEOUT(antispamtimer) )
-			antispamtimer=uiCurrentTime+MY_CLOCKS_PER_SEC*10;
-		else
-			machwas = false;
-	}
-
-	if( machwas )
-	{
-		UI08 name[30]={ 0x00, };
-		strcpy((char *)name, getCurrentNameC());
-
-		saycolor=0x0481;
-
-		if( npcaitype==NPCAI_EVIL )
-		{
-			saycolor=0x0026;
-		}
-		else if( npc && !tamed && !guarded && !war )
-		{
-			saycolor=0x005B;
-		}
-
-		SendSpeechMessagePkt(s, getSerial32(), getId(), 0, saycolor, fonttype, name, txt);
-	}
-}
-
-/*!
-\brief Shows emote text of a char
-\author Luxor
-\param socket socket to send the emote to
-\param txt the emote
-\param antispam use or not antispam
-\todo document extra parameters
-*/
-void cChar::emote( NXWSOCKET socket, TEXT *txt, bool antispam, ... )
-{
-	bool sendEmote = true;
-	emotecolor = 0x0026;
-
-	if ( antispam )
-	{
-		if ( TIMEOUT( antispamtimer ) )
-			antispamtimer=uiCurrentTime+MY_CLOCKS_PER_SEC*10;
-		else
-			sendEmote = false;
-	}
-
-	if ( sendEmote )
-	{
-		va_list argptr;
-		char msg[512];
-		va_start( argptr, antispam );
-		vsnprintf( msg, sizeof( msg ) - 1, txt, argptr );
-		va_end( argptr );
-
-		UI08 name[30]={ 0x00, };
-		strcpy((char *)name, getCurrentNameC());
-
-		SendSpeechMessagePkt(socket, getSerial32(), getId(), 2, emotecolor, fonttype, name, msg);
-	}
-}
-
-/*!
-\brief Shows emote text of a char to all near pcs
-\param txt the emote
-\param antispam use or not antispam
-\todo document extra parameters
-*/
-void cChar::emoteall( char *txt, bool antispam, ... )
-{
-	bool sendEmote = true;
-
-	if ( antispam )
-	{
-		if ( TIMEOUT( antispamtimer ) )
-			antispamtimer=uiCurrentTime+MY_CLOCKS_PER_SEC*10;
-		else
-			sendEmote = false;
-	}
-
-	if( sendEmote )
-	{
-		va_list argptr;
-		char msg[512];
-		va_start( argptr, antispam );
-		vsnprintf( msg, sizeof( msg ) - 1, txt, argptr );
-		va_end( argptr );
-
-		NxwSocketWrapper sw;
-		sw.fillOnline( this, false );
-		for( sw.rewind(); !sw.isEmpty(); sw++ )
-		{
-			NXWCLIENT ps=sw.getClient();
-			if( ps!=NULL )
-				emote( ps->toInt(), msg, 0 );
-		}
-	}
-
-}
-
-/*!
-\author Luxor
-\brief Shows runic speech text of a char to the given socket
-\param s socket to send the speech to
-\param txt speech
-\param antispam use or not antispam
-*/
-void cChar::talkRunic(NXWSOCKET s, TEXT *txt, bool antispam)
-{
-	bool machwas;
-
-	if (s<0) return;
-
-	if (antispam)
-	{
-		if (TIMEOUT(antispamtimer))
-		{
-			antispamtimer=uiCurrentTime+MY_CLOCKS_PER_SEC*10;
-			machwas = true;
-		}
-		else
-			machwas = false;
-	}
-	else
-		machwas = true;
-
-	if (machwas)
-	{
-		UI08 name[30]={ 0x00, };
-		strcpy((char *)name, getCurrentNameC());
-
-		SendSpeechMessagePkt(s, getSerial32(), getId(), 0, 0x0001, 0x0008, name, txt);
-	}
-}
-
-/*!
-\author Luxor
-\brief Shows runic speech text to all pcs near the char
-\param txt the speech
-\param antispam use or not antispam
-*/
-void cChar::talkAllRunic(TEXT *txt, bool antispam)
-{
-
-	NxwSocketWrapper sw;
-	sw.fillOnline( this, false );
-	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWCLIENT ps=sw.getClient();
-		if( ps!=NULL )
-			talkRunic(ps->toInt(), txt, antispam);
-	}
-}
-
-
-/*!
 \brief Get char's distance from the given character
 \author Luxor
 \return distance ( if invalid is returned VERY_VERY_FAR )
@@ -1703,52 +1514,6 @@ void cChar::teleport( UI08 flags, NXWCLIENT cli )
 }
 
 /*!
-\author Juliunus
-\brief Changes the orientation of a player
-\todo document parameters
-*/
-void cChar::facexy(SI32 facex, SI32 facey)
-{
-	SI32 x= getPosition().x;
-	SI32 y= getPosition().y;
-
-	if ((x == facex) && (y == facey))
-		return;
-	SI32 olddir = dir;
-	if (x == facex)
-		if (y > facey)
-			dir = 0; // north
-		else
-			dir = 4; // south
-	else
-	{
-		float coef =((float)facey - y) / ((float)facex - x);
-		if (x < facex) // facing east
-			if (coef > 2)
-				dir = 4; // north
-			else if (coef > 0.5)
-				dir = 3; // north-east;
-			else if (coef > -0.5)
-				dir = 2; // east;
-			else if (coef > -2)
-				dir = 1; // south-east
-			else dir = 0; // south
-		else // facing west
-			if (coef > 2)
-				dir = 0; // south
-			else if (coef > 0.5)
-				dir = 7; // south-west
-			else if (coef > -0.5)
-				dir = 6; // west
-			else if (coef > -2)
-				dir = 5; // north-west
-			else dir = 4; // north
-	}
-	if (dir != olddir)
-		teleport( TELEFLAG_NONE );
-}
-
-/*!
 \author Luxor
 \brief returns char's combat skill
 \return the index of the char's combat skill
@@ -1792,38 +1557,6 @@ SI32 cChar::getCombatSkill()
 	return WRESTLING;
 
 }
-
-/*!
-\author Luxor
-\brief Returns line of sight from the char to the give char
-\param pc pointer to the char to check line of sight from
-\return true if is in line of sight
-*/
-bool cChar::losFrom(P_CHAR pc)
-{
-	VALIDATEPCR(pc, false );
-	return lineOfSight( getPosition(), pc->getPosition() );
-}
-
-/*!
-\author Flameeyes (port)
-\brief Plays a monster sound effect
-\param sfx sound effect
-\note ported from sndpkg.cpp, i'm not the original author - Flameeyes
-*/
-void cChar::playMonsterSound(MonsterSound sfx)
-{
-
-	P_CREATURE_INFO creature = creatures.getCreature( getId() );
-	if( creature==NULL )
-		return;
-
-	UI16 s = creature->getSound( sfx );
-	if( s != UINVALID16 )
-		client->playSFX( s );
-
-}
-
 
 bool const cChar::CanDoGestures() const
 {
@@ -1933,53 +1666,6 @@ bool cChar::checkSkill(Skill sk, SI32 low, SI32 high, bool bRaise)
 }
 
 /*!
-\brief Send the update skill packet to the client
-\param skill Skill to update
-\author Flameeyes
-*/
-void cChar::updateSkill(UI16 skill)
-{
-	if ( npc || ! client )
-		return;
-
-	cPacketSendUpdateSkill pk(this, skill);
-
-	client->sendPackage(&pk);
-}
-
-/*!
-\author Xanathar
-\brief Deletes items from backpack, by id
-\param id id of the item to delete
-\param amount amount of item to delete
-\param color color of item to delete
-\return number of items deleted
-*/
-SI32 cChar::delItems(UI16 id, SI32 amount, UI16 color)
-{
-	P_ITEM pi= getBackpack();
-	if (!pi) { return amount; }
-
-	return pi->DeleteAmount(amount,id, color);
-}
-
-/*!
-\brief Get the amount of the given id, color
-\author Luxor, modified by Endymion for color and pack check
-\return amount
-\param id the id ( INVALID if no used )
-\param col the color ( INVALID if no used )
-\param onlyPrimaryBackpack false if search also in th subpack
-\note changed to UI32 by Flameeyes on 2003-03-18
-*/
-UI32 cChar::getAmount(short id, short col, bool onlyPrimaryBackpack)
-{
-	P_ITEM pi= getBackpack();
-	VALIDATEPIR( pi, 0 );
-	return pointers::containerCountItems(pi->getSerial32(), id, col, true, !onlyPrimaryBackpack);
-}
-
-/*!
 \brief sends a remove packet to everyone nearby and deletes itself
 \author Flameeyes
 */
@@ -2077,111 +1763,6 @@ bool cChar::seeForLastTime( cObject &obj )
 	sentObjects.erase( it );
 
 	return true;
-}
-
-
-/*!
-\author Xanathar
-\brief Plays a moving effect from this to target char
-\param destination the target char
-\param id id of the effect
-\param speed speed of the effect
-\param loop loops
-\param explode true if should do a final explosion
-\param part particle effects structure
-*/
-void cChar::movingFX(P_CHAR destination, short id, SI32 speed, SI32 loop, bool explode, ParticleFx* part)
-{
-	movingeffect(DEREF_P_CHAR(this), DEREF_P_CHAR(destination), id >> 8, id & 0xFF,
-		speed & 0xFF, loop & 0xFF, explode ? '\1' : '\0', part!=NULL, part);
-}
-
-/*!
-\brief Plays a static effect on a char
-\author Xanathar
-\param id id of 2d effect; if -1, 2d effect is get from particles obj
-\param speed speed of effect, -1 and it will be get from particles data
-\param loop loop factor - -1 and it will be get from particles data
-\param part optional particles data
-\note if part == NULL then id, speed and loop MUST be >= 0
-*/
-void cChar::staticFX(short id, SI32 speed, SI32 loop, ParticleFx* part)
-{
-	if (part!=NULL) {
-		if (id<=-1) id = (part->effect[0] << 8) + part->effect[1];
-		if (speed<=-1) speed = part->effect[2];
-		if (loop<=-1) loop = part->effect[3];
-	}
-	staticeffect(DEREF_P_CHAR(this), id >> 8, id & 0xFF, speed, loop, part!=NULL, part);
-}
-
-/*!
-\brief Bolts a char
-\author Xanathar
-\param bNoParticles true if NOT to use particles
-\todo backport
-*/
-void cChar::boltFX(bool bNoParticles)
-{
-	UI08 effect[28]={ 0x70, 0x00, };
-
- 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-
-	Location pos2;
-	pos2.x = 0; pos2.y = 0; pos2.z = 0;
-	MakeGraphicalEffectPkt_(effect, 0x01, getSerial32(), 0, 0, getPosition(), pos2, 0, 0, 1, 0);
-
-	if (bNoParticles) // no UO3D effect ? lets send old effect to all clients
-	{
-		 NxwSocketWrapper sw;
-		 sw.fillOnline( this, false );
-		 for( sw.rewind(); !sw.isEmpty(); sw++ )
-		 {
-			 NXWSOCKET j=sw.getSocket();
-			 if( j!=INVALID )
-			 {
-				Xsend(j, effect, 28);
-//AoS/				Network->FlushBuffer(j);
-			 }
-		 }
-	   return;
-	}
-	else
-	{
-		 NxwSocketWrapper sw;
-		 sw.fillOnline( this, false );
-		 for( sw.rewind(); !sw.isEmpty(); sw++ )
-		 {
-			 NXWSOCKET j=sw.getSocket();
-			 if( j!=INVALID )
-			 {
-			 if (clientDimension[j]==2) // 2D client, send old style'd
-			 {
-				 Xsend(j, effect, 28);
-//AoS/				Network->FlushBuffer(j);
-			 } else if (clientDimension[j]==3) // 3d client, send 3d-Particles
-			 {
-				//TODO!!!! fix it!
-				//Magic->doStaticEffect(DEREF_P_CHAR(this), 30);
-				unsigned char particleSystem[49];
-				Xsend(j, particleSystem, 49);
-//AoS/				Network->FlushBuffer(j);
-			 }
-			 else if (clientDimension[j] != 2 && clientDimension[j] !=3 ) { sprintf(temp, "Invalid Client Dimension: %i\n",clientDimension[j]); LogError(temp); }
-		 }
-	   }
-	}
-}
-
-/*!
-\brief Plays <i>circle of blood</i> or similar effect
-\author Xanathar
-\param id effect id
-\todo backport
-*/
-void cChar::circleFX(short id)
-{
-	bolteffect2(DEREF_P_CHAR(this),id >> 8,id & 0xFF);
 }
 
 /*!
@@ -2351,58 +1932,12 @@ void cChar::setOwner(P_CHAR owner)
 
 /*!
 \author Xanathar
-\brief Gets beard item
-\return the beard
-\note Based on Antichrist incognito code
-*/
-P_ITEM cChar::getBeardItem()
-{
-	NxwItemWrapper si;
-	si.fillItemWeared( this, true, true, true );
-	for( si.rewind(); !si.isEmpty(); si++ ) {
-		P_ITEM pj=si.getItem();
-		if (ISVALIDPI(pj) && pj->layer==LAYER_BEARD) {
-			beardserial= pj->getSerial32();
-			return pj;
-		}
-	}
-
-	beardserial=INVALID;
-	return NULL;
-}
-
-/*!
-\author Xanathar
-\note Based on Antichrist incognito code
-\brief Gets hairs item
-\return the hairs
-*/
-P_ITEM cChar::getHairItem()
-{
-	NxwItemWrapper si;
-	si.fillItemWeared( this, true, true, true );
-	for( si.rewind(); !si.isEmpty(); si++ ) {
-
-		P_ITEM pj=si.getItem();
-		if (ISVALIDPI(pj) && pj->layer==LAYER_HAIR)
-		{
-			hairserial= pj->getSerial32();
-			return pj;
-		}
-	}
-
-	hairserial = INVALID;
-	return NULL;
-}
-
-/*!
-\author Xanathar
 \note based on Antichrist incognito code
 \brief Characters morphing (incognito, polymorph, etc)
 \note Calling it with no params will undo any morphing
 \note Any morphing with backup on will undo all previous morphings and install itself
 \note Can recurse :]
-\todo document parameters
+\todo must be rewrited! body's now used!!!
 */
 void cChar::morph ( short bodyid, short skincolor, short hairstyle, short haircolor,
     short beardstyle, short beardcolor, const char* newname, bool bBackup)
@@ -2600,30 +2135,19 @@ void cChar::goPlace(SI32 loc)
 }
 
 /*!
-\author Xanathar
+\author Flameeyes
 \brief Checks if a char knows a given spell
 \param spellnumber spell identifier to check
 \return true if the char know the spell
 */
 bool cChar::knowsSpell(magic::SpellId spellnumber)
 {
+	if ( ! body->getBackpack() )
+		return false;
 
-    NxwItemWrapper sw;
-    sw.fillItemsInContainer( getBackpack(), false, false );
-	sw.fillItemWeared( this );
+	pContainer sb = reinterpret_cast<pContainer>(body->getBackpack()->findFirstType(ITYPE_SPELLBOOK));
 
-    for( sw.rewind(); !sw.isEmpty(); sw++ ){
-        P_ITEM pi = sw.getItem();
-        if( ISVALIDPI(pi)) {
-            if (pi->type==ITYPE_SPELLBOOK) {
-                if (pi->containsSpell(spellnumber)) return true;
-                //if it doesn't contain it, we loop again, since pc may have more
-                //than one spellbook in the backpack :]
-            }
-        }
-    }
-
-    return false;
+	return sb && sb->containsSpell(spellnumber);
 }
 
 /*!
@@ -3176,20 +2700,6 @@ void cChar::makeCriminal()
 	}
 }
 
-void cChar::doSingleClickOnCharacter( SERIAL serial )
-{
-	P_CHAR pc = pointers::findCharBySerial(serial);
-
-	if ( ISVALIDPC(pc) )
-	{
-		pc->onSingleClick( this );
-	}
-	else
-	{
-		LogMessage("<%d> cChar::doSingleClickOnCharacter couldn't find char serial: %d\n", __LINE__, serial);
-	}
-}
-
 void cChar::doSingleClickOnItem( SERIAL serial )
 {
 	char temp[TEMP_STR_SIZE];
@@ -3330,15 +2840,6 @@ void cChar::doSingleClickOnItem( SERIAL serial )
 
 }
 
-void cChar::doSingleClick( SERIAL serial )
-{
-	if ( isCharSerial( serial ) )
-		doSingleClickOnCharacter( serial );
-	else
-		doSingleClickOnItem( serial );
-
-}
-
 void cChar::onSingleClick( P_CHAR clickedBy )
 {
 
@@ -3360,49 +2861,6 @@ void cChar::onSingleClick( P_CHAR clickedBy )
 		showLongName( clickedBy, false );
 	}
 	//</Luxor>
-}
-
-/*!
-\brief Function for the different gm movement effects
-\author Aldur
-\remarks
-	\remark if we can find new effects they can be added here and will be active
-	for 'go 'goiter 'goplace 'whilst and 'tell for gm's and counselors
-	\remark
-		\li 0 = none
-		\li 1 = flamestrike
-		\li 2 - 6 = different sparkles
-*/
-void cChar::doGmEffect()
-{
-	if( !isPermaHidden() )
-	{
-		Location charpos= getPosition();
-
-		switch( gmMoveEff )
-		{
-		case 1:	// flamestrike
-			staticeffect3(charpos.x+1, charpos.y+1, charpos.z+10, 0x37, 0x09, 0x09, 0x19, 0);
-			client->playSFX( 0x0802);
-			break;
-
-		case 2: // sparklie (fireworks wand style)
-			staticeffect3(charpos.x+1, charpos.y+1, charpos.z+10, 0x37, 0x3A, 0x09, 0x19, 0); break;
-
-		case 3: // sparklie (fireworks wand style)
-			staticeffect3(charpos.x+1, charpos.y+1, charpos.z+10, 0x37, 0x4A, 0x09, 0x19, 0); break;
-
-		case 4: // sparklie (fireworks wand style)
-			staticeffect3(charpos.x+1, charpos.y+1, charpos.z+10, 0x37, 0x5A, 0x09, 0x19, 0); break;
-
-		case 5: // sparklie (fireworks wand style)
-			staticeffect3(charpos.x+1, charpos.y+1, charpos.z+10, 0x37, 0x6A, 0x09, 0x19, 0); break;
-
-		case 6: // sparklie (fireworks wand style)
-			staticeffect3(charpos.x+1, charpos.y+1, charpos.z+10, 0x37, 0x7A, 0x09, 0x19, 0); break;
-		}
-	}
-	return;
 }
 
 void cChar::showLongName( P_CHAR showToWho, bool showSerials )
@@ -3581,11 +3039,9 @@ void cChar::showLongName( P_CHAR showToWho, bool showSerials )
 \since 0.82a
 \param pi the object to drink from
 */
-void cChar::drink(P_ITEM pi)
+void cChar::drink(pItem pi)
 {
-        VALIDATEPI(pi);
-
-        if (pi->type == ITYPE_POTION) {
+        if (pi && pi->getType() == ITYPE_POTION) {
                 tempfx::add(this, pi, tempfx::DRINK_EMOTE, 0, 0, 0, 0);
                 tempfx::add(this, pi, tempfx::DRINK_EMOTE, 0, 0, 0, 1);
                 tempfx::add(this, pi, tempfx::DRINK_EMOTE, 0, 0, 0, 2);
@@ -3634,34 +3090,6 @@ P_GUILD_MEMBER cChar::getGuildMember()
 	return member;
 }
 
-
-/*!
-\brief region specific bankbox
-\author Endymion
-\param pc character owner of bank
-
-If activated, you can only put golds into normal banks
-and there are special banks (for now we still use normal bankers,
-but u have to say the SPECIALBANKTRIGGER word to open it)
-where u can put all the items: one notice: the special bank
-is caracteristic of regions....so in Britain you don't find
-the items you leaved in Minoc!
-All this for increasing pk-work and commerce! :)
-(and surely the Mercenary work, so now have to pay strong
-warriors to escort u during your travels!)
-*/
-void cChar::openSpecialBank(pChar pc)
-{
-	if ( ! pc || ! client || ( ( this != pc ) && !IsGMorCounselor() ) )
-		return;
-
-	pItem bank = pc->GetBankBox(BANK_ITEM);
-	if ( ! bank )
-		return;
-
-	wearIt(getSocket(), bank);
-	client->showContainer(bank);
-}
 
 void cChar::heartbeat()
 {
@@ -4250,45 +3678,6 @@ void cChar::checkPoisoning()
 	}
 }
 
-/*NOT USED NOW IS NOT GOOD FOR BIG SHARD
-void cChar::restock()
-{
-	if ( npc && shopkeeper && TIMEOUT( shoprestocktime ) && SrvParms->shoprestock == 1 )
-	{
-
-		NxwItemWrapper si;
-		si.fillItemWeared( this, false, false, false );
-		for( si.rewind(); !si.isEmpty(); si++ ) {
-
-			P_ITEM pici=si.getItem();
-			if (ISVALIDPI(pici) && pici->layer==LAYER_TRADE_RESTOCK )
-			{
-				NxwItemWrapper sc;
-				sc.fillItemsInContainer( pici, true, true );
-				for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-
-					P_ITEM pic=sc.getItem();
-					if (ISVALIDPI(pic))
-					{
-						if (pic->restock)
-						{
-							SI32 tmp=qmin(pic->restock, (pic->restock/2)+1);
-							pic->amount += tmp;
-							pic->restock -= tmp;
-						}
-						//
-						//	All items in shopkeeper need a new randomvaluerate.
-						//
-						if (SrvParms->trade_system==1)
-							StoreItemRandomValue(pic,calcRegionFromXY( getPosition() ));// Magius(CHE) (2)
-
-					}
-				}
-			}
-		}
-	}
-}
-*/
 void cChar::do_lsd()
 {
 	if (rand()%15==0)

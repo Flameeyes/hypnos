@@ -654,7 +654,6 @@ public:
 		TIMERVAL 		time_unused;
 		TIMERVAL 		timeused_last;
 
-		void 			doSingleClick( SERIAL serial );
 		void			onSingleClick( P_CHAR clickedBy );
 
 	private:
@@ -678,7 +677,6 @@ public:
 
 	private:
 
-		void 			doSingleClickOnCharacter( SERIAL serial );	// will become private function
 		void 			doSingleClickOnItem( SERIAL serial );		// will become private function
 
 	public:
@@ -738,48 +736,77 @@ public:
 /*!
 \name Talk and Emote stuff
 */
-		UI16			emotecolor;		//!< Color for emote messages
-		UI08			fonttype;		//!< Speech font to use
-		UI16			saycolor;		//!< Color for say messages
-
-		void			talkAll(TEXT *txt, bool antispam = 1);
-		void			talk(NXWSOCKET s, TEXT *txt, bool antispam = 1);
-		void			emote(NXWSOCKET s,TEXT *txt, bool antispam, ...);
-		void			emoteall(char *txt, bool antispam, ...);
-		void			talkRunic(NXWSOCKET s, TEXT *txt, bool antispam = 1);
-		void			talkAllRunic(TEXT *txt, bool antispam = 0);
+protected:
+	UI16			emotecolor;		//!< Color for emote messages
+	UI08			fonttype;		//!< Speech font to use
+	UI16			saycolor;		//!< Color for say messages
+public:
+	void			talkAll(TEXT *txt, bool antispam = 1);
+	void			talk(NXWSOCKET s, TEXT *txt, bool antispam = 1);
+	void			emote(NXWSOCKET s,TEXT *txt, bool antispam, ...);
+	void			emoteall(char *txt, bool antispam, ...);
+	void			talkRunic(NXWSOCKET s, TEXT *txt, bool antispam = 1);
+	void			talkAllRunic(TEXT *txt, bool antispam = 0);
 //@}
 
-		UI32			distFrom(pChar pc);
-		UI32			distFrom(pItem pi);
-		void			teleport( UI08 flags = TELEFLAG_SENDALL, NXWCLIENT cli = NULL );
-		void			facexy(SI32 facex, SI32 facey);
-		bool			losFrom(P_CHAR pc);
-		void			playSFX(SI16 sound, bool onlyToMe = false);
-		void			playMonsterSound(MonsterSound sfx);
+	UI32			distFrom(pChar pc);
+	UI32			distFrom(pItem pi);
+	void			teleport( UI08 flags = TELEFLAG_SENDALL, NXWCLIENT cli = NULL );
+	void			facexy(UI16 facex, UI16 facey);
 
-		bool			checkSkill(Skill sk, SI32 low, SI32 high, bool bRaise = true);
-		SI32			delItems(UI16 id, SI32 amount = 1, UI16 color = INVALID);
+	/*!
+	\author Luxor
+	\brief Returns line of sight from the char to the give char
+	\param pc pointer to the char to check line of sight from
+	\return true if is in line of sight
+	*/
+	inline const bool losFrom(const pChar pc) const
+	{ return pc ? lineOfSight( getPosition(), pc->getPosition() ) : false; }
 
-		const bool	checkSkillSparrCheck(Skill sk, SI32 low, SI32 high, P_CHAR pcd);
+	void			playSFX(SI16 sound, bool onlyToMe = false);
+	void			playMonsterSound(MonsterSound sfx);
 
-		UI32			getAmount(short id, short col=INVALID, bool onlyPrimaryBackpack=false );
+	bool			checkSkill(Skill sk, SI32 low, SI32 high, bool bRaise = true);
 
-		void			movingFX(P_CHAR destination, short id, SI32 speed, SI32 loop, bool explode, class ParticleFx* part = NULL);
-		void			staticFX(short id, SI32 speed, SI32 loop, class ParticleFx* part = NULL);
-		void			boltFX(bool bNoParticles);
-		void			circleFX(short id);
+	/*!
+	\author Xanathar
+	\brief Deletes items from backpack, by id
+	\param id id of the item to delete
+	\param amount amount of item to delete
+	\param color color of item to delete
+	\return number of items deleted
+	*/
+	inline const UI32 delItems(UI16 id, UI32 amount = 1, UI16 color = 0xFFFF)
+	{ return body->getBackpack() ? body->getBackpack()->removeItems(amount,id, color) : amount; }
 
-		void			useHairDye(P_ITEM bottle);
+	const bool	checkSkillSparrCheck(Skill sk, SI32 low, SI32 high, P_CHAR pcd);
 
-		void			morph ( short bodyid = INVALID, short skincolor = INVALID,
-								short hairstyle = INVALID, short haircolor = INVALID, short beardstyle = INVALID,
-								short beardcolor = INVALID, const char* newname = NULL, bool bBackup = true);
+	/*!
+	\brief Get the amount of the given id, color
+	\author Flameeyes
+	\return amount of items counted
+	\param id the id
+	\param col the color ( 0xFFFF for all colors )
+	\param onlyPrimaryBackpack false if search also in th subpack
+	*/
+	inline const bool UI32 getAmount(UI16 id, UI16 col=0xFFFF, bool onlyPrimaryBackpack=false )
+	{ return body->getBackpack() ? body->getBackpack()->countItems(id, col, !onlyPrimaryBackpack); }
+
+	void			movingFX(P_CHAR destination, short id, SI32 speed, SI32 loop, bool explode, class ParticleFx* part = NULL);
+	void			staticFX(short id, SI32 speed, SI32 loop, class ParticleFx* part = NULL);
+	void			boltFX(bool bNoParticles);
+	void			circleFX(short id);
+
+	void			useHairDye(P_ITEM bottle);
+
+	void			morph ( short bodyid = INVALID, short skincolor = INVALID,
+							short hairstyle = INVALID, short haircolor = INVALID, short beardstyle = INVALID,
+							short beardcolor = INVALID, const char* newname = NULL, bool bBackup = true);
 
 
-		void		Kill();
-		void		goPlace(SI32);
-		bool		knowsSpell(magic::SpellId spellnumber);
+	void		Kill();
+	void		goPlace(SI32);
+	bool		knowsSpell(magic::SpellId spellnumber);
 
 	public:
 	#ifdef SPAR_NEW_WR_SYSTEM

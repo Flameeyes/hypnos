@@ -241,7 +241,7 @@ void cClient::light(UI08 level)
 	sendPacket(&pk);
 }
 
-void cClient::openBankBox(pPC dest)
+void cClient::showBankBox(pPC dest)
 {
 	if ( ! dest || (dest != pc && acc->getPrivLevel() < privSeer ) )
 		return;
@@ -253,7 +253,22 @@ void cClient::openBankBox(pPC dest)
 	showClient(bank);
 }
 
-void cClient::openSpecialBankBox(pPC dest)
+/*!
+\brief region specific bankbox
+\author Endymion
+\param pc character owner of bank
+
+If activated, you can only put golds into normal banks
+and there are special banks (for now we still use normal bankers,
+but u have to say the SPECIALBANKTRIGGER word to open it)
+where u can put all the items: one notice: the special bank
+is caracteristic of regions....so in Britain you don't find
+the items you leaved in Minoc!
+All this for increasing pk-work and commerce! :)
+(and surely the Mercenary work, so now have to pay strong
+warriors to escort u during your travels!)
+*/
+void cClient::showSpecialBankBox(pPC dest)
 {
 	if ( ! dest || (dest != pc && acc->getPrivLevel() < privSeer ) )
 		return;

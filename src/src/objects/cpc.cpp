@@ -46,3 +46,18 @@ bool cPC::updateFlag()
 		*/
 	return flagHasChanged;
 }
+
+/*!
+\brief Send the update skill packet to the client
+\param skill Skill to update
+\author Flameeyes
+*/
+void cChar::updateSkill(UI16 skill)
+{
+	if ( ! client )
+		return;
+
+	cPacketSendUpdateSkill pk(this, skill);
+
+	client->sendPackage(&pk);
+}

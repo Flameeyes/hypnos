@@ -114,6 +114,65 @@ UI32 cContainer::countItems(UI32 scriptID, bool total/*= false*/)
 }
 
 /*!
+\brief Count items in container with given scriptID
+\author Flameeyes
+\param matchId items' id
+\param matchColor items' color (or 0xFFFF for all colors)
+\param recurse If true, recurse into subcontainers
+\return the number of items counted
+*/
+UI32 cContainer::countItems(UI16 matchId, UI16 matchColor, bool recurse)
+{
+	UI32 count = 0;
+
+	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
+	{
+		if ( ! *it ) {
+			LogWarning("NULL item!");
+			items.erase(it);
+			continue;
+		}
+
+		if ( (*it)->getId() == matchId && ( matchColor == 0xFFFF || (*it)->getColor() == matchColor ) )
+			count += (*it)->getAmount();
+
+		if ( recurse && (*it)->rtti() == rtti::cContainer )
+			count += (reinterpret_cast<pContainer>(*it))->countItems(matchID, matchColor, recurse);
+	}
+
+	return count;
+}
+
+/*!
+\author Flameeyes
+\param type item's type
+\param recurse if true will recurse in all sub-containers
+\return pointer to the first item found or NULL
+*/
+pItem cContainer::findFirstType(UI16 type, bool recurse = false)
+{
+	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
+	{
+		if ( ! *it ) {
+			LogWarning("NULL item!");
+			items.erase(it);
+			continue;
+		}
+
+		if ( (*it)->getType() == type )
+			return (*it);
+
+		if ( recurse && (*it)->rtti() == rtti::cContainer )
+		{
+			pItem ret = (reinterpret_cast<pContainer>(*it))->findFirstType(type, true);
+			if ( ret ) return ret;
+		}
+	}
+
+	return NULL;
+}
+
+/*!
 \author Flameeyes
 \brief Removes the given amount of items with given scriptID
 \param scriptID scriptID of the items to remove
