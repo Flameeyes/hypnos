@@ -1,7 +1,5 @@
 <!-- elements in hypnoscommands -->
-<!ELEMENT hypnoscommands (builtins, user?)>
-<!ELEMENT builtins (bcommand)+>
-<!ELEMENT user (ucommand)+>
+<!ELEMENT hypnoscommands (bcommand+, ucommand*)>
 
 <!ELEMENT bcommand EMPTY>
 <!ATTLIST bcommand

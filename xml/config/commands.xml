@@ -1,13 +1,9 @@
 <!DOCTYPE hypnoscommands SYSTEM "http://flameeyes.is-a-geek.org/uodtds/commands.dtd">
 <hypnoscommands>
-  <builtins>
-    <bcommand name="where" level="0" disabled="true" />
-    <bcommand name="appetite" level="0" />
-    <bcommand name="kick" level="4" />
-    <bcommand name="disconnect" level="3" />
-    <bcommand name="lights" level="2" disabled="true" />
-  </builtins>
-  <user>
-    <ucommand name="pippo" callback="micio" level="0" />
-  </user>
+  <bcommand name="where" level="0" disabled="true" />
+  <bcommand name="appetite" level="0" />
+  <bcommand name="kick" level="4" />
+  <bcommand name="disconnect" level="3" />
+  <bcommand name="lights" level="2" disabled="true" />
+  <ucommand name="pippo" callback="micio" level="0" />
 </hypnoscommands>
