@@ -23,22 +23,26 @@ cRegion::~cRegion()
 
 }
 
-bool cRegion::isValidCoord( uint16_t x, uint16_t y )
+/*!
+\brief Tells if a given point is a valid coordinate
+\param p Point to test
+\return true if the point is in the map, else false
+\todo Export it to all the emulator (some places needs something like that)
+\todo Change the MAP_WIDTH, MAP_HEIGHT with the REAL map dimensions
+*/
+bool cRegion::isValidCoord( sPoint p )
 {
-	return ( x<MAP_WIDTH && y<MAP_HEIGHT );
-
+	return ( p.x < MAP_WIDTH && p.y < MAP_HEIGHT );
 }
-
 
 void cRegion::add( pChar pc )
 {
 
 	if(!pc )
 		return;
-	if(!isValidCoord( pc->getPosition().x, pc->getPosition().y )) {
+	if(!isValidCoord(pc->getPosition()) )
 		//move to safe location? boh
 		return;
-	}
 
 	this->removeNow( pc );
 	this->addNow( pc );
@@ -51,7 +55,7 @@ void cRegion::add( pItem pi )
 	if ( ! pi ) return;
 	if( !pi || !pi->isInWorld() )
 		return;
-	if(!isValidCoord( pi->getPosition().x, pi->getPosition().y )) {
+	if(!isValidCoord(pi->getPosition())) {
 		//move to safe location? boh
 		return;
 	}
@@ -65,7 +69,7 @@ void cRegion::remove( pChar pc )
 
 	if ( ! pc ) return;
 
-	if(!isValidCoord( pc->getPosition().x, pc->getPosition().y ) )
+	if(!isValidCoord(pc->getPosition()) )
 		return;
 
 	this->removeNow( pc );
@@ -77,7 +81,7 @@ void cRegion::remove( pItem pi )
 
 	if ( ! pi ) return;
 
-	if(!isValidCoord( pi->getPosition().x, pi->getPosition().y ) )
+	if(!isValidCoord(pi->getPosition().x) )
 		return;
 
 	this->removeNow( pi );

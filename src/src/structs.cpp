@@ -21,7 +21,7 @@
 sContainerItem::sContainerItem(pItem item)
 {
 	serial	= item->getSerial();
-	id	= item->getAnimId();
+	id	= item->getId();
 	amount	= item->getAmount();
 	x	= item->getPosition().x;
 	y	= item->getPosition().y;

@@ -326,7 +326,6 @@ New maps can redefine these values.
 std::string getSextantCoords(sPoint p, sPoint center)
 {
 	float Tx, Ty, Dx, Dy, Wx, Wy, Mx, My, Hx, Hy;
-	int16_t xH, xM, yH, yM;
 	
 	//! \todo This is not always true! Should we pass it as a parameter maybe?
 	//  map dimensions
@@ -344,14 +343,7 @@ std::string getSextantCoords(sPoint p, sPoint center)
 	Mx *= 60;
 
 	Hy = (int16_t) Dy;
-	My = Dy - Hy;
-	My *= 60;
-
-	// convert the results to ints;
-	xH = (signed int) Hx;
-	xM = (signed int) Mx;
-	yH = (signed int) Hy;
-	yM = (signed int) My;
+	My = (Dy - Hy) *60;
 
 	char *temp;
 	asprintf(&temp, "%uo %u' %c  %uo %u' %c",

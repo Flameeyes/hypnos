@@ -1261,7 +1261,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			}
 			else
 				client->sysmessage("You need to be closer to use that.");
-				return;
+			return;
 		case 0x1071:
 		case 0x1073:
 		case 0x1075:

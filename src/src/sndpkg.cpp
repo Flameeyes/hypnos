@@ -549,9 +549,9 @@ void staticeffect(pChar player, uint16_t eff, unsigned char speed, unsigned char
 
 	 if (!skip_old)
 	 {
-Location pos2;
-pos2.x = 0; pos2.y = 0; pos2.z = 0;
-MakeGraphicalEffectPkt_(effect, 0x03, pc->getSerial(), 0, eff, charpos, pos2, speed, loop, 1, 0);
+		Location pos2;
+		pos2.x = 0; pos2.y = 0; pos2.z = 0;
+		MakeGraphicalEffectPkt_(effect, 0x03, pc->getSerial(), 0, eff, charpos, pos2, speed, loop, 1, 0);
 	 }
 
 	 if (!UO3DonlyEffekt) // no UO3D effect ? lets send old effect to all clients
@@ -743,7 +743,7 @@ void movingeffect3(SERIAL source, SERIAL dest, unsigned char eff1, unsigned char
 	Location srcpos= src->getPosition();
 	Location destpos= dst->getPosition();
 
-MakeGraphicalEffectPkt_(effect, type, src->getSerial(), dst->getSerial(), eff, srcpos, destpos, speed, loop, ajust, explode);
+	MakeGraphicalEffectPkt_(effect, type, src->getSerial(), dst->getSerial(), eff, srcpos, destpos, speed, loop, ajust, explode);
 
 	 NxwSocketWrapper sw;
 	 sw.fillOnline( );

@@ -16,6 +16,8 @@
 #ifndef __STRUCTS_H__
 #define __STRUCTS_H__
 
+#include "common_libs.h"
+
 //! Point in the map
 struct sPoint {
 	uint16_t x;
@@ -53,7 +55,7 @@ struct Location {
 	{ return x != b.x || y != b.y || z != b.z; }
 
 	//! Converts a location (x,y,z) into a point (x,y)
-	inline const sPoint operator sPoint() const
+	inline operator sPoint() const
 	{ return sPoint(x, y); }
 };
 
