@@ -14,7 +14,6 @@
 #define __CPC_H__
 
 #include "objects/cchar.h"
-#include "objects/cnpc.h"
 
 /*!
 \brief This class represent a playing character.
@@ -37,7 +36,7 @@ protected:
 	//! Heartbeat for PCs
 	void heartbeat();
 	void do_lsd();		//!< called by pc heartbeat when under lsd effects
-	virtual const uint16_t eventsNumber() const
+	virtual uint16_t eventsNumber() const
 	{ return evtPcMax; }
 
 public:

@@ -9,8 +9,8 @@
 \file
 \brief Declaration of cChar class
 */
-#ifndef __CHARS_H
-#define __CHARS_H
+#ifndef __CCHAR_H__
+#define __CCHAR_H__
 
 #include "common_libs.h"
 #include "objects/cbody.h"
@@ -28,7 +28,7 @@
 #include "enums.h"
 
 #ifndef TIMEOUT
-#define TIMEOUT(X) (((X) <= uiCurrentTime) || overflow)
+#define TIMEOUT(X) /*(((X) <= uiCurrentTime) || overflow)*/ false
 #endif
 
 enum WanderMode {
@@ -71,8 +71,8 @@ public:
 	enum {
 		evtChrOnStart,
 		evtChrOnDeath,
-		evtChrOnBeforeDeath,
-		evtChrOnAfterDeath
+		evtChrBeforeDeath,
+		evtChrAfterDeath,
 		evtChrOnDied,
 		evtChrOnWounded,
 		evtChrOnHit,
@@ -270,7 +270,9 @@ public:
         { return flags & flagSpellTelekinesys; }
 
 	inline const bool inGuardedArea() const
-	{ return ::region[region].priv & RGNPRIV_GUARDED; }
+	{ return false/*::region[region].priv & RGNPRIV_GUARDED*/;
+	//!\todo need to fix this
+	}
 
 	const bool isGrey() const;
 	
@@ -522,13 +524,13 @@ public:
         void singleClick(pClient client);	//!< "this" is the clicked char, client is the client of the clicker
         void doubleClick(pClient client);	//!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
 	inline void setSkillDelay( uint32_t seconds = nSettings::Server::getDelaySkills() )
-	{ skilldelay = uiCurrentTime + seconds * MY_CLOCKS_PER_SEC; }
+	{ skilldelay = /*uiCurrentTime + */seconds * MY_CLOCKS_PER_SEC; }
 
 	inline const bool canDoSkillAction() const
 	{ return TIMEOUT( skilldelay ); }
 
 	inline void setObjectDelay( uint32_t seconds = nSettings::Server::getDelayObjects() )
-	{ objectdelay = uiCurrentTime + seconds * MY_CLOCKS_PER_SEC; }
+	{ objectdelay = /*uiCurrentTime + */seconds * MY_CLOCKS_PER_SEC; }
 
 	inline const bool canDoObjectAction() const
 	{ return TIMEOUT( objectdelay ); }
@@ -547,7 +549,7 @@ public:
 	\return A string with the character's title
 	*/
 	inline std::string getTitle2() const
-	{ return std::string(title[ bestSkill()+1 ].skill); }
+	{ return std::string(/*title[ bestSkill()+1 ].skill*/ ""); }
 	
 	std::string getTitle3() const;
 	std::string getCompleteTitle() const;
@@ -737,10 +739,10 @@ public:
 	public:
 		//! tells if a character is running
 		inline const bool isRunning() const
-		{ return ( (uiCurrentTime - lastRunning) <= 100 ); }
+		{ return ( (/*uiCurrentTime -*/ lastRunning) <= 100 ); }
 
 		inline void setRunning()
-		{ lastRunning = uiCurrentTime; }
+		{ lastRunning = /*uiCurrentTime*/0; }
 
 		void 			updateStats(int32_t stat);
 

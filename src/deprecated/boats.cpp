@@ -198,40 +198,34 @@ void cBoat::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open p
 			else typ=1;
 			//o=Map->o_Type(x,y,z);
 
-			if((typ==0 && mz!=-5) || (typ==1 && sz!=-5))// everthing the blocks a boat is ok to leave the boat ... LB
+			if( ! ( (typ==0 && mz!=-5) || (typ==1 && sz!=-5) ) )
+				continue;
+			
+			NxwCharWrapper sc;
+			sc.fillOwnedNpcs( pc, false, true );
+			for( sc.rewind(); !sc.isEmpty(); sc++ )
 			{
 
-				NxwCharWrapper sc;
-				sc.fillOwnedNpcs( pc, false, true );
-				for( sc.rewind(); !sc.isEmpty(); sc++ )
-				{
-
-					pChar pc_b=sc.getChar();
-					if( pc_b )
-					{
-							
-						pc_b->MoveTo( x,y, typ ? sz : mz );
-
-						pc_b->setMultiSerial(INVALID);
-
-						pc_b->teleport();
-
-					}
-				}
-
-				pc->setMultiSerial(INVALID);
-#ifdef SPAR_C_LOCATION_MAP
-				pc->setPosition( Location( x, y, typ ? sz : mz, typ ? sz : mz ) );
-				pointers::updateLocationMap(pc);
-#else
-				mapRegions->remove(pc);
-				pc->setPosition( Location( x, y, typ ? sz : mz, typ ? sz : mz ) );
-				mapRegions->add(pc);
-#endif
-				pc->sysmsg("You left the boat.");
-				pc->teleport();//Show them they moved.
-				return;
+				pChar pc_b=sc.getChar();
+				if ( ! pc_b ) return;
+				
+				pc_b->MoveTo( x,y, typ ? sz : mz );
+				pc_b->setMultiSerial(INVALID);
+				pc_b->teleport();
 			}
+
+			pc->setMultiSerial(INVALID);
+#ifdef SPAR_C_LOCATION_MAP
+			pc->setPosition( Location( x, y, typ ? sz : mz, typ ? sz : mz ) );
+			pointers::updateLocationMap(pc);
+#else
+			mapRegions->remove(pc);
+			pc->setPosition( Location( x, y, typ ? sz : mz, typ ? sz : mz ) );
+			mapRegions->add(pc);
+#endif
+			pc->sysmsg("You left the boat.");
+			pc->teleport();//Show them they moved.
+			return;
 		}//for y
 	}//for x
 	pc->sysmsg("You cannot get off here!");
@@ -362,16 +356,19 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
 
 		NXWCLIENT ps_i=sw.getClient();
-		if( ps_i )
-			if(pi->distFrom(ps_i->currChar())<=BUILDRANGE)
-			{
-				Send[d]=ps_i->toInt();
+		
+		if ( ! ps_i )
+			continue;
+		
+		if( pi->distFrom(ps_i->currChar()) > BUILDRANGE)
+			continue;
+			
+		Send[d]=ps_i->toInt();
 
-				//////////////FOR ELCABESA VERY WARNING BY ENDYMION
-				//////THIS PACKET PAUSE THE CLIENT
-				SendPauseResumePkt(ps_i->toInt(), 0x01);
-				d++;
-			}
+		//////////////FOR ELCABESA VERY WARNING BY ENDYMION
+		//////THIS PACKET PAUSE THE CLIENT
+		SendPauseResumePkt(ps_i->toInt(), 0x01);
+		d++;
 	}
 
 	if(turn)//Right
@@ -1102,33 +1099,27 @@ bool cBoat::collision(pItem pi,Location where,int dir)
 	for(iter_boat=s_boat.begin();iter_boat!=s_boat.end();iter_boat++)
 	{
 		boat_db coll=iter_boat->second;
-		if(coll.serial != pi->getSerial())
-		{
-			int xx=abs(x - coll.p_serial->getPosition().x);
-			int yy=abs(y - coll.p_serial->getPosition().y);
-			double dist=hypot(xx, yy);
-			if(dist<10)
-			{
-				if(boat_collision(pi,x,y,dir,coll.p_serial)==true)
-
-				return true;
-
-			}
-		}
+		if ( coll.serial == pi->getSerial() )
+			continue;
+		
+		int xx=abs(x - coll.p_serial->getPosition().x);
+		int yy=abs(y - coll.p_serial->getPosition().y);
+		double dist=hypot(xx, yy);
+		if ( dist >= 10 )
+			continue;
+			
+		if(boat_collision(pi,x,y,dir,coll.p_serial)==true)
+			return true;
 	}
 	return false;
 }
 
-
-///////////////////////////////////////////////////////////////////
-// Function name     : boat_collision
-// Description       : check if 2 boat are put upon // sovrapposte?
-// Return type       : bool true: collision     false: no collision
-// Author            : Elcabesa
-// Changes           : none yet
-// Called from		 : cBoat:collision()
-
-
+/*!
+\brief check if 2 boat are collided
+\author Elcabesa
+\return true if collided, else false
+\see cBoat::collision()
+*/
 bool cBoat::boat_collision(pItem pBoat1,int x1, int y1,int dir,pItem pBoat2)
 {
 	uint32_t i1, i2;
@@ -1221,17 +1212,16 @@ pItem cBoat::GetBoat(Location pos)
 		pItem pBoat=boat.p_serial;
 		if( ! pBoat )
 			continue;
-		if( dist( pos, pBoat->getPosition() ) < 10.0 )
-		{
-			multiVector m;
-			data::seekMulti( pBoat->getId()-0x4000, m );
+		
+		if( dist( pos, pBoat->getPosition() ) >= 10.0 )
+			continue;
+		multiVector m;
+		data::seekMulti( pBoat->getId()-0x4000, m );
 
-			for( i = 0; i < m.size(); i++ ) {
-				if( ((m[i].x + pBoat->getPosition().x) == pos.x) && ((m[i].y + pBoat->getPosition().y) == pos.y) )
-				{
-					return  pBoat;
-				}
-			}
+		for( i = 0; i < m.size(); i++ )
+		{
+			if( ((m[i].x + pBoat->getPosition().x) == pos.x) && ((m[i].y + pBoat->getPosition().y) == pos.y) )
+				return  pBoat;
 		}
 	}
 	return NULL;
@@ -1459,7 +1449,8 @@ boat_db* search_boat(int32_t ser)
 {
 	std::map<int,boat_db>::iterator iter_boat;
 	iter_boat= s_boat.find(ser);
-	if (iter_boat == s_boat.end()) return 0;
+	if (iter_boat == s_boat.end())
+		return 0;
 	else
 		return &iter_boat->second;
 }

@@ -1759,12 +1759,12 @@ void cChar::Kill()
 	char murderername[128];
 	murderername[0] = '\0';
 
-	if ( events[evtChrOnBeforeDeath] ) {
+	if ( events[evtChrBeforeDeath] ) {
 		tVariantVector params = tVariantVector(2);
 		params[0] = getSerial(); params[1] = INVALID;
-		events[evtChrOnBeforeDeath]->setParams(params);
-		events[evtChrOnBeforeDeath]->execute();
-		if ( events[evtChrOnBeforeDeath]->bypassed() )
+		events[evtChrBeforeDeath]->setParams(params);
+		events[evtChrBeforeDeath]->execute();
+		if ( events[evtChrBeforeDeath]->bypassed() )
 			return;
 	}
 
@@ -2172,11 +2172,11 @@ void cChar::Kill()
 
 	pCorpse->Refresh();
 
-	if ( events[evtChrOnAfterDeath] ) {
+	if ( events[evtChrAfterDeath] ) {
 		tVariantVector params = tVariantVector(2);
 		params[0] = getSerial(); params[1] = pCorpse->getSerial();
-		events[evtChrOnAfterDeath]->setParams(params);
-		events[evtChrOnAfterDeath]->execute();
+		events[evtChrAfterDeath]->setParams(params);
+		events[evtChrAfterDeath]->execute();
 	}
 
 	if ( npc )

@@ -11,9 +11,10 @@
 */
 
 #include "gmpages.h"
-
+#include "common_libs.h"
+#include "objects/cchar.h"
 #include "objects/cclient.h"
-#include "objects/cchar/cpc.h"
+#include "objects/cpc.h"
 
 GMPageList cGMPage::pages;
 uint32_t cGMPage::nextID = 0;
@@ -30,12 +31,12 @@ cGMPage::cGMPage(pPC pc, std::string &pageReason, bool onlyGM)
 	reason = pageReason;
 	
 	char *msg;
-	asprintf(&msg, "GM Page from %s: %s", pc->getCurrentName().c_str(), pageReason.c_str());
+	asprintf(&msg, "GM Page from %s: %s", pc->getBody()->getCurrentName().c_str(), pageReason.c_str());
 
 	bool notified = false;
-	for( cClients::iterator it = cClient::clients.begin(); it != cClient::clients.end(); it++)
+	for( ClientList::iterator it = cClient::clients.begin(); it != cClient::clients.end(); it++)
 	{
-		if ( onlyGM ? (*it)->currAccount()->seeGMPages() : (*it)->currAccount()->seeConsPages() )
+		if ( onlyGM ? (*it)->currAccount()->canSeeGMPages() : (*it)->currAccount()->canSeeConsPages() )
 		{
 			notified = true;
 			(*it)->sysmessage(msg);
@@ -101,11 +102,11 @@ pGMPage cGMPage::findPage(pClient handler)
 void cGMPage::showQueue(pClient viewer)
 {
 	//!\todo Need to add configure option for the minimum level
-	if ( viewer->currAccount()->level() < 2 )
+	if ( viewer->currAccount()->getLevel() < 2 )
 		return;
 	
 	//!\todo Need to add configure also for this!
-	bool gmpages = viewer->currAccount()->leve() >= 4;
+	bool gmpages = viewer->currAccount()->getLevel() >= 4;
 	for( GMPageList::iterator it = pages.begin(); it != pages.end(); it++ )
 	{
 		if ( !(*it)->getHandler() && ( gmpages || ! (*it)->getGMOnly() ) )
@@ -118,7 +119,7 @@ void cGMPage::showQueue(pClient viewer)
 	}
 	
 	viewer->sysmessage( "");
-	viewer->sysmessage( "Total pages in queue: %i", pages.count() );
+	viewer->sysmessage( "Total pages in queue: %i", pages.size() );
 }
 
 //! Moves the handler to the caller
@@ -127,8 +128,8 @@ void cGMPage::moveToCaller()
 	if ( ! handler || ! caller )
 		return;
 
-	handler->currChar()->MoveTo( caller->getPosition );
-	handler->sysmessage("Transporting to your current call.")
+	handler->currChar()->MoveTo( caller->getBody()->getPosition() );
+	handler->sysmessage("Transporting to your current call.");
 	handler->currChar()->teleport();
 }
 

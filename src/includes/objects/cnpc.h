@@ -14,7 +14,6 @@
 #define __CNPC_H__
 
 #include "objects/cchar.h"
-#include "objects/cpc.h"
 
 /*!
 \brief This class represent a non-playing character.

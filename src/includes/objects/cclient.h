@@ -15,6 +15,7 @@
 
 #include "common_libs.h"
 #include "structs.h"
+#include "speech.h"
 
 //! Used in trading methods
 struct sBoughtItem
@@ -123,10 +124,8 @@ public:
 /*!
 \name Speech, message & communication stuff
 */
-
 public:
-	void talking(cSpeech &speech)	//!< The PC talks, and this finds out who will hear (and send it to them)
-
+	void talking(cSpeech &speech);	//!< The PC talks, and this finds out who will hear (and send it to them)
 //@}
 
 //@{

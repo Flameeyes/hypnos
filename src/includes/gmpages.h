@@ -10,6 +10,9 @@
 \brief GM Pages management declarations
 */
 
+#ifndef __GMPAGES_H__
+#define __GMPAGES_H__
+
 #include "common_libs.h"
 
 class cGMPage {
@@ -45,3 +48,5 @@ protected:
 };
 
 void cmdNextCall(pClient cli);
+
+#endif

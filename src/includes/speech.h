@@ -15,38 +15,47 @@
 //!\note it is called simply cSpeech because i had no heart to call it cUnicode, since it is not a true unicode support, but a "cut-down" one, just enough to work with UO protocol
 class cSpeech
 {
-private:
-	std::basic_string<uint16_t> unicode_text;	//wchar was not guaranteed to be a 16 bit char on all systems
-        uint8_t mode;	//0=say,2=emote,8=whisper,9=yell
-	uint16_t color;
-	uint16_t font;
-        char[4] language;
-        pChar speaker;
-        bool packet_byteorder;
+protected:
+	unistring unicodeText;	//!< Unicode string to say
+        uint8_t mode;		//!< 0=say,2=emote,8=whisper,9=yell
+	uint16_t color;		//!< Color of the speech
+	uint16_t font;		//!< Font to use for the speech
+	char language[4];	//!< Language code
+	pChar speaker;		//!< Character who's speeching
+	bool packetByteOrder;	//!< Is the string in network-endian?
 public:
+//@{
+/*!
+\brief Constructors and operators
+*/
+	char operator[](int i);			//!< gets 8-bit ascii char in location "i" in either byteorder
+	cSpeech& operator= (std::string s);	//!< Assignment operator from a non unicode string. Converts to unicode and stores it
+	cSpeech& operator= (cSpeech& s);	//!< assignment operator (copy operator)
+        cSpeech(char* buffer, int size = 0); 	//!< Size is used only for not null-terminated strings, if it is 0 is ignored, else reads size bytes wherever \\0 is present or not
+//@}
+	
 	inline bool isPacketByteOrder()
-	        { return packet_byteOrder}
-        void setPacketByteOrder();				//!< Sets byteorder and swaps unicode_text to the protocol byteorder (if needed)
+	{ return packetByteOrder; }
+        
+	void setPacketByteOrder();				//!< Sets byteorder and swaps unicode_text to the protocol byteorder (if needed)
         void clearPackeByteOrder();  				//!< Clears byteorder and swaps unicode_text if it is necessary to machine byte order
-        inline void assignPacketByteOrder(bool byteorder)	//!< sets byteorder without changing unicode_text
-        	{ packet_byteorder = byteorder; }
-        char operator[](int i);                           	//!< gets 8-bit ascii char in location "i" in either byteorder
-        cSpeech& operator= (std::string s);     //!< Assignment operator from a non unicode string. Converts to unicode and stores it
-        cSpeech& operator= (cSpeech& s);        //!< assignment operator (copy operator)
-        cSpeech(char* buffer, int size = 0); 	//!< Size is used only for not null-terminated strings, if it is 0 is ignored, else reads size bytes wherever \0 is present or not
-        std::string toString();			//!< returns a normal char-based string obtained truncating unicode to ascii values
+	
+	//! sets byteorder without changing unicode_text
+        inline void assignPacketByteOrder(bool byteorder)
+	{ packetByteOrder = byteorder; }
+        
+	std::string toString();			//!< returns a normal char-based string obtained truncating unicode to ascii values
         std::string toGhost();			//!< returns a randomized "ooooOOoo" based on current string content (not unicode)
-        inline const char* c_str() const	//!< returns a read-only char* pointer to internal unicode_text, as a null-terminated 16bit-char string
-        	{ return unicode_text.c_str(); }
-        inline const int size()
-        	{ return unicode_text.size(); }
-}
+        
+	//! Returns a read-only char* pointer to internal unicode_text, as a null-terminated 16bit-char string
+	inline const char* rawBytes() const
+	{ return reinterpret_cast<const char*>(unicodeText.c_str()); }
+        
+	inline const int size()
+	{ return unicodeText.size(); }
+};
 
-
-void responsevendor(NXWSOCKET  s, int vendor);
-
-
+void responsevendor(pClient client, int vendor);
 void char2wchar (const char* str);
-
 
 #endif

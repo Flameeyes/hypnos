@@ -31,6 +31,8 @@ typedef std::vector<uint32_t> uint32_vector;	//!< A vector of uint32_t
 typedef std::slist<uint32_t> uint32_slist;	//!< A slist of uint32_t
 
 typedef std::vector<std::string> stringVector;	//!< A vector of strings
+
+typedef std::basic_string<uint16_t> unistring;	//!< Unicode string
 //@}
 
 typedef class cTarget* pTarget;			//!< Pointer to a cTarget
