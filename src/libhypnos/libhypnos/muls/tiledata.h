@@ -143,7 +143,7 @@ This class handles the access to the tiledata.mul file, restricted to the 512
 land blocks.
 
 */
-class fTiledataLand : public tMMappedFile<cTiledataLand>
+class fTiledataLand : public tplMMappedFile<cTiledataLand>
 {
 protected:
 	cTiledataLand::cEntry &tile(uint16_t id) const
@@ -246,7 +246,7 @@ This class handles the access to the tiledata.mul file, restricted to the
 variables static blocks.
 
 */
-class fTiledataStatic : public tMMappedFile<cTiledataStatic>
+class fTiledataStatic : public tplMMappedFile<cTiledataStatic>
 {
 protected:
 	cTiledataStatic::cEntry &tile(uint16_t id) const

@@ -41,7 +41,7 @@ use too to access those files.
 Because the indexes aren't so big and all have fixed-length records, we can mmap
 those we use to access them quickly.
 
-\see tMMappedFile for more information about the memory mapping stuff
+\see tplMMappedFile for more information about the memory mapping stuff
 
 \section mulendianness MUL files' endianness
 

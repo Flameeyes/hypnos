@@ -16,12 +16,12 @@ namespace nMULFiles {
 /*!
 \brief Constructor
 
-This function simply calls the tMMappedFile constructor with the path given by
+This function simply calls the tplMMappedFile constructor with the path given by
 getMULpath() function and the filename \c gumpidx.mul .
 
 */
 fGumpIDX::fGumpIDX()
-	: tMMappedFile<cGumpIDX>( nMULFiles::getMULpath() + "gumpidx.mul" )
+	: tplMMappedFile<cGumpIDX>( nMULFiles::getMULpath() + "gumpidx.mul" )
 {
 }
 

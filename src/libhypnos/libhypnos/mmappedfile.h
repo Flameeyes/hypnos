@@ -20,7 +20,7 @@
 namespace nLibhypnos {
 
 /*!
-\class tMMappedFile mmappedfile.h "libhypnos/mmappedfile.h"
+\class tplMMappedFile mmappedfile.h "libhypnos/mmappedfile.h"
 \brief Memory Mapped File
 \author Flameeyes
 
@@ -61,7 +61,7 @@ is going to mmap the same file, we'll get some strange behaviour.
 	methods which fixes the endianness of the file to be the same of the
 	system.
 */
-template<class MUL> class tMMappedFile {
+template<class MUL> class tplMMappedFile {
 protected:
 	MUL *array;	//!< Pointer to the mmapped file
 	uint32_t size;	//!< Size of the mmap in bytes
@@ -70,9 +70,9 @@ protected:
 	void open(std::string filename);
 	void mmap(uint32_t offset = 0, uint32_t length = 0);
 public:
-	tMMappedFile();
-	tMMappedFile(std::string filename, uint32_t offset = 0, uint32_t length = 0);
-	virtual ~tMMappedFile();
+	tplMMappedFile();
+	tplMMappedFile(std::string filename, uint32_t offset = 0, uint32_t length = 0);
+	virtual ~tplMMappedFile();
 	
 	uint32_t getCount() const
 	{ return size / sizeof(MUL); }

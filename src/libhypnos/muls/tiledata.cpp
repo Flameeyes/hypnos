@@ -31,12 +31,12 @@ std::string cTiledataStatic::cEntry::getName() const
 }
 
 fTiledataLand::fTiledataLand()
-	: tMMappedFile<cTiledataLand>(nMULFiles::getMULpath() + "tiledata.mul", 0, 512*sizeof(cTiledataLand))
+	: tplMMappedFile<cTiledataLand>(nMULFiles::getMULpath() + "tiledata.mul", 0, 512*sizeof(cTiledataLand))
 {
 }
 
 fTiledataStatic::fTiledataStatic()
-	: tMMappedFile<cTiledataStatic>()
+	: tplMMappedFile<cTiledataStatic>()
 {
 	open(nMULFiles::getMULpath() + "tiledata.mul");
 	

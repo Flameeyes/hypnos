@@ -58,7 +58,7 @@ The gumpidx.mul file is structured like this:
 
 Information grabbed from Alazane's UO File Formats guide.
 */
-class fGumpIDX : public tMMappedFile<cGumpIDX>
+class fGumpIDX : public tplMMappedFile<cGumpIDX>
 {
 protected:
 public:
