@@ -410,7 +410,7 @@ public:
 	inline const pObject getContainer() const
 	{ return cont; }
 
-	void setContainer(pOjbect obj, bool old = true);
+	void setContainer(pOjbect obj);
 
 	inline const pObject getOldContainer() const
 	{ return oldcont; }

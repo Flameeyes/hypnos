@@ -386,7 +386,7 @@ void cItem::getPopupHelp(char *str)
 \param obj New (actual) container
 \param update Update the container map?
 */
-void cItem::setContainer(pOjbect obj, bool old)
+void cItem::setContainer(pObject obj)
 {
 	oldcont = cont;
 	cont = obj;
@@ -403,7 +403,7 @@ void cItem::setContainer(pOjbect obj, bool old)
 \param obj New (saved) container
 \param update Update the container map?
 */
-void cItem::setOldContainer(pOjbect obj)
+void cItem::setOldContainer(pObject obj)
 {
 		oldcont = obj;
 }
