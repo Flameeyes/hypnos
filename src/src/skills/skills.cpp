@@ -275,7 +275,7 @@ void Skills::Stealth(pClient client)
 		return;
 	}
 	
-	client->sysmessage("You can move %i steps unseen.", ((SrvParms->maxstealthsteps*pc->skill[skStealth])/1000) );
+	client->sysmessage("You can move %i steps unseen.", (nSettings::Skills::getMaxStealthSteps()*pc->skill[skStealth])/1000 );
 	pc->stealth = 0; //AntiChrist -- init. steps already done
 	pc->hideBySkill();
 }

@@ -115,7 +115,6 @@ struct server_st
  unsigned int  auto_a_reload; //Auto reload accounts if file was touched, this stores the time interval in minutes.
 
  unsigned int rogue;
- unsigned int maxstealthsteps;//AntiChrist - max number of steps allowed with stealth skill at 100.0
  unsigned int runningstaminasteps;//AntiChrist - max number of steps allowed with stealth skill at 100.0
  unsigned short int quittime;//Instalog
  int html;//HTML

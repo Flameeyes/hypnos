@@ -327,7 +327,6 @@ void loadserverdefaults()
 	server_data.bountysexpire=0;           // Dupois - Added July 18, 2000 for bountys (0-Never - in days)
 
 
-	server_data.maxstealthsteps=10;// AntiChrist - stealth=100.0 --> 10 steps allowed
 	server_data.runningstaminasteps=15;// AntiChrist - how often ( in steps ) stamina decreases while running
 
 	server_data.boatspeed=0.75;//Boats

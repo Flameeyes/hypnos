@@ -125,6 +125,7 @@ namespace nSettings {
 			uint16_t getStealthToDropItemsWhileHid();
 				//!< Stealth necessary to drop an item and remain hidden.
 				//!< If INVALID pc is always unhid while dropping items on the ground [Default: 960]
+			uint8_t getMaxStealthSteps();
 		//@}
 		
 		//@{

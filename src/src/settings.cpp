@@ -389,7 +389,9 @@ namespace Skills {
 
 	bool isEnabledSkillBySkillCap()
 	{ return flags & flagSkillBySkillCap; }
-
+	
+	//! Maximum number of stealth steps to perform
+	SETTING(uint32_t, MaxStealthSteps, 10);
 
 	//! Seconds to wait between two skill's use
 	SETTING(uint32_t, SkillDelay, 5);
@@ -404,6 +406,7 @@ namespace Skills {
 			BOOLSETTING(StealthOnHorse, flagSkillsStealthOnHorse)
 			else XMLSETTING(StealthToTakeItemsWhileHid, uint16_t, UInt16)
 			else XMLSETTING(StealthToDropItemsWhileHid, uint16_t, UInt16)
+			else XMLSETTING(MaxStealthSteps, uint8_t, UInt8)
 			else BOOLSETTING(SkillbySkillCap, flagSkillBySkillCap)
 			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
 			n = n->next();
