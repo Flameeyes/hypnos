@@ -13,7 +13,6 @@
 #define __CHARS_H
 
 #include "common_libs.h"
-#include "objects/citem/cmsgboard.h"
 #include "objects/cbody.h"
 #include "ai.h"
 #include "magic.h"
@@ -126,6 +125,7 @@ class ClientCrypt;
 class cChar
 {
 protected:
+	static uint32_t nextSerial;
 	uint32_t newSerial();
 public:
 	cChar();

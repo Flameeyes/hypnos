@@ -21,9 +21,12 @@
 //! Item class
 class cItem : public cObject, public cSerializable
 {
+protected:
+	static uint32_t nextSerial;
+	uint32_t newSerial();
+
 public:
 	static pItem addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, Location where);
-	static uint32_t	nextSerial();
 //@{
 /*!
 \name Constructors and Operators

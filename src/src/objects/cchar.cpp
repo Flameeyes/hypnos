@@ -43,6 +43,29 @@
 #include "targeting.h"
 #include "cmds.h"
 
+uint32_t cChar::nextSerial = 1;
+
+/*!
+\brief Gets the next serial
+\see cSerializable
+*/
+uint32_t cChar::newSerial()
+{
+	bool firstpass = true;
+	uint32_t fserial = nextSerial;
+	uint32_t nserial;
+	do {
+		nserial = nextSerial++;
+		if ( nserial >= 0x40000000 )
+			nserial = 1;
+		if ( ! firstpass && nserial == fserial )
+		{
+			LogCritical("Too much chars created!!!!");
+		}
+		firstpass = false;
+	} while ( cSerializable::findBySerial(nserial) );
+}
+
 cChar::cChar()
 	: cSerializable()
 {

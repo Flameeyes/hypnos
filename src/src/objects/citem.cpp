@@ -25,6 +25,29 @@
 #include "basics.h"
 #include "utils.h"
 
+uint32_t cItem::nextSerial = 0x40000000;
+
+/*!
+\brief Gets the next serial
+\see cSerializable
+*/
+uint32_t cItem::newSerial()
+{
+	bool firstpass = true;
+	uint32_t fserial = nextSerial;
+	uint32_t nserial;
+	do {
+		nserial = nextSerial++;
+		if ( nserial >= 0 )
+			nserial = 0x40000000;
+		if ( ! firstpass && nserial == fserial )
+		{
+			LogCritical("Too much items created!!!!");
+		}
+		firstpass = false;
+	} while ( cSerializable::findBySerial(nserial) );
+}
+
 /*!
 \brief Add item by ID
 \author Anthalir - Rewrote by Flameeyes
