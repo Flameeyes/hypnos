@@ -1057,6 +1057,34 @@ void nPackets::Sent::SecureTrading::prepare()
 	}
 }
 
+/*!
+\brief Sends a visual effect
+\author Chronodt
+\note packet 0x70
+*/
+
+void nPackets::Sent::GraphicalEffect()
+{
+	length = 28;
+	buffer = new uint8_t[28];
+	buffer[0] = 0x70;
+	buffer[1] = type;
+	LongToCharPtr(src->getSerial(), buffer +2);
+	LongToCharPtr(dst->getSerial(), buffer +6);
+	ShortToCharPtr(model_id, buffer + 10);
+	ShortToCharPtr(src_pos.x, buffer + 12);
+	ShortToCharPtr(src_pos.y, buffer + 14);
+	buffer[16]=src_pos.z;
+	ShortToCharPtr(dst_pos.x, buffer + 17);
+	ShortToCharPtr(dst_pos.y, buffer + 19);
+	buffer[21]=dst_pos.z;
+	buffer[22]=speed;
+	buffer[23]=duration;
+	ShortToCharPtr(0, buffer + 24); 	//unknown bytes, apparently 0
+	buffer[26]=fixeddir ? 0x01 : 0x00;
+	buffer[27]=explode ? 0x01 : 0x00;
+}
+
 
 void nPackets::Send::LoginDenied::prepare()
 {

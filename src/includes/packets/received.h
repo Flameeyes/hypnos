@@ -946,6 +946,47 @@ namespace nPackets {
 		};
 
 		/*!
+		\brief Sends a visual effect
+		\author Chronodt
+		\note packet 0x70
+
+		direction type
+		00 = go from source to dest
+		01 = lightning strike at source
+		02 = stay at current x,y,z
+		03 = stay with current source character id
+
+		*/
+		class GraphicalEffect : public cPacketSend
+		{
+		protected:
+
+			EffectType type;		//!< movement type
+			pSerializable src, dst;		//!< source and destination of effect
+			uint16_t model_id;		//!< visual id of effect
+			sLocation src_pos, des_pos;	//!< souce and destination position of effect
+			uint8_t speed;			//!< speed of effect (SPPED OF ANIMATION)
+			uint8_t duration;		//!< travel speed of effect
+			bool fixeddir;  		//!< if true animation direction does not change during effect
+			bool explode;			//!< explosion once effect reaches target
+
+
+		public:
+			inline GraphicalEffect(EffectType aType, pSerializable aSrc, pSerializable aDst, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
+				cPacketSend(NULL, 0), type(aType), src(aSrc), dst(aDst), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
+			{
+				src_pos = src->getPosition();
+				des_pos = (dst) ? dst->getPosition() : sLocation(0,0,0);
+			}
+
+			inline GraphicalEffect(EffectType aType, sLocation aSrc_pos, sLocation aDes_pos, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
+				cPacketSend(NULL, 0), type(aType), src(NULL), dst(NULL), src_pos(aSrc_pos), des_pos(aDes_pos), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
+			{ }
+		
+			void prepare();
+		};
+
+		/*!
 		\brief Login Denied
 		\author Kheru
 		\note packet 0x82

@@ -201,4 +201,12 @@ enum WeatherType {
 	wtMediumSnow,	//!< medium snowstorm
 	wtHeavySnow	//!< blizzard
 };
+
+//! graphical effect type
+enum EffectType {
+	etBolt = 0,	//!< effect travels from source to target
+	etLightning,	//!< lighning effect at source
+	etStayAtTarget,	//!< effect stays at source xyz
+	etStayAtObject	//!< effect follows source
+}
 #endif

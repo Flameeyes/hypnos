@@ -72,3 +72,181 @@ cSerializable::~cSerializable()
 	if ( it != objects.end() )
 		objects.erase(it);
 }
+
+
+
+/*!
+\brief Plays a moving effect from this to target char
+\param destination the target
+\param id id of the effect
+\param speed speed of the effect
+\param duration loops
+\param explode true if should do a final explosion
+\param part particle effects structure
+*/
+void cSerializable::movingFX(pSerializable destination, uint16_t eff, uint8_t speed, uint8_t duration, bool explode, ParticleFx* part)
+{
+	if ( ! destination ) return;
+
+	nPackets::Sent::GraphicalEffect pk(etBolt, this, destination, eff, speed, duration, 0, explode);
+
+	if (!part) // no UO3D effect ? lets send old effect to all clients
+	{
+		NxwSocketWrapper sw;
+		sw.fillOnline( );
+		for( sw.rewind(); !sw.isEmpty(); sw++ )
+		{
+			pClient j =sw.getSocket();
+			pChar pj = cSerializable::findCharBySerial(currchar[j]);
+			if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
+			{
+				j->sendPacket(&pk);
+			}
+		}
+		return;
+	} else {
+		// UO3D effect -> let's check which client can see it
+
+		NxwSocketWrapper sw;
+		sw.fillOnline();
+		for( sw.rewind(); !sw.isEmpty(); sw++ )
+		{
+			 pClient j =sw.getSocket();
+			 pChar pj = cSerializable::findCharBySerial(currchar[j]);
+			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
+			 {
+				if (clientDimension[j]==2) // 2D client, send old style'd
+				{
+					j->sendPacket(&pk);
+				} else if (clientDimension[j]==3) // 3d client, send 3d-Particles
+				{
+					//!\ todo packet 0xc7
+					movingeffectUO3D(source, dest, part);
+					unsigned char particleSystem[49];
+					Xsend(j, particleSystem, 49);
+//AoS/					Network->FlushBuffer(j);
+				}
+				else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
+					LogError"Invalid Client Dimension: %i\n", clientDimension[j]);
+			}
+		}
+	}
+}
+
+/*!
+\brief Plays a static effect on a char
+\author Xanathar
+\param id id of 2d effect; if -1, 2d effect is get from particles obj
+\param speed speed of effect, -1 and it will be get from particles data
+\param loop loop factor - -1 and it will be get from particles data
+\param part optional particles data
+\note if part == NULL then id, speed and loop MUST be >= 0
+*/
+void cChar::staticFX(uint16_t id, uint8_t speed, uint8_t loop, ParticleFx* part)
+{
+	if (part!=NULL) {
+		if (id<=-1) id = (part->effect[0] << 8) + part->effect[1];
+		if (speed<=-1) speed = part->effect[2];
+		if (loop<=-1) loop = part->effect[3];
+	}
+	staticeffect(this, id, speed, loop, part!=NULL, part);
+}
+
+/*!
+\brief Bolts a char
+\author Xanathar
+\param bNoParticles true if NOT to use particles
+\todo backport
+*/
+void cChar::boltFX(bool bNoParticles)
+{
+	uint8_t effect[28]={ 0x70, 0x00, };
+
+ 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+
+	sLocation pos2;
+	pos2.x = 0; pos2.y = 0; pos2.z = 0;
+	MakeGraphicalEffectPkt_(effect, 0x01, getSerial(), 0, 0, getPosition(), pos2, 0, 0, 1, 0);
+
+	if (bNoParticles) // no UO3D effect ? lets send old effect to all clients
+	{
+		NxwSocketWrapper sw;
+		sw.fillOnline( this, false );
+		for( sw.rewind(); !sw.isEmpty(); sw++ )
+		{
+			pClient j =sw.getSocket();
+			if( j!=INVALID )
+			{
+				Xsend(j, effect, 28);
+//AoS/				Network->FlushBuffer(j);
+			}
+		}
+		return;
+	}
+	else
+	{
+		 NxwSocketWrapper sw;
+		 sw.fillOnline( this, false );
+		 for( sw.rewind(); !sw.isEmpty(); sw++ )
+		 {
+			 pClient j =sw.getSocket();
+			 if( j!=INVALID )
+			 {
+			 if (clientDimension[j]==2) // 2D client, send old style'd
+			 {
+				 Xsend(j, effect, 28);
+//AoS/				Network->FlushBuffer(j);
+			 } else if (clientDimension[j]==3) // 3d client, send 3d-Particles
+			 {
+				//!\todo!!!! fix it!
+				//Magic->doStaticEffect(DEREF_pChar(this), 30);
+				unsigned char particleSystem[49];
+				Xsend(j, particleSystem, 49);
+//AoS/				Network->FlushBuffer(j);
+			 }
+			 else if (clientDimension[j] != 2 && clientDimension[j] !=3 ) { sprintf(temp, "Invalid Client Dimension: %i\n",clientDimension[j]); LogError(temp); }
+		 }
+	   }
+	}
+}
+
+/*!
+\brief Plays <i>circle of blood</i> or similar effect
+\author Xanathar
+\param id effect id
+\todo backport
+*/
+void cChar::circleFX(short id)
+{
+	uint8_t effect[28]={ 0x70, 0x00, };
+
+	int x,y;
+	sLocation charpos = getPosition(), pos2;
+
+	y=rand()%36;
+	x=rand()%36;
+
+	if (rand()%2==0) x=x*-1;
+	if (rand()%2==0) y=y*-1;
+	pos2.x = charpos.x + x;
+	pos2.y = charpos.y + y;
+	if (pos2.x<0) pos2.x=0;
+	if (pos2.y<0) pos2.y=0;
+	if (pos2.x>6144) pos2.x=6144;
+	if (pos2.y>4096) pos2.y=4096;
+
+	charpos.z = 0; pos2.z = 127;
+	MakeGraphicalEffectPkt_(effect, 0x00, getSerial(), 0, id, charpos, pos2, 0, 0, 1, 0);
+
+	 NxwSocketWrapper sw;
+	 sw.fillOnline( pc );
+	 for( sw.rewind(); !sw.isEmpty(); sw++ )
+	 {
+		pClient j =sw.getSocket();
+		if( j!=INVALID )
+		{
+			Xsend(j, effect, 28);
+//AoS/			Network->FlushBuffer(j);
+		}
+	}
+}

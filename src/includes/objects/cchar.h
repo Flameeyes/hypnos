@@ -888,7 +888,6 @@ public:
 \name Sound and Visual effects
 */
 	void movingFX(pChar destination, uint16_t id, uint8_t speed, uint8_t loop, bool explode, class ParticleFx* part);
-	void movingFX2(pItem dest, uint16_t eff, uint8_t speed, uint8_t loop, bool explode);
 	void staticFX(uint16_t id, uint8_t speed, uint8_t loop, class ParticleFx* part = NULL);
 	void boltFX(bool bNoParticles);
 	void circleFX(short id);
