@@ -111,6 +111,8 @@ namespace nSettings {
 		uint16_t getLimitPlayerSparring();	//!< Defending player must have N skill points more than the attacker for the attacker to gain skill (in PvP only). [Default: 0]
 		uint16_t getMaximumSkillTraining();	//!< maximum skill an npc trainer can teach to a PC [Default: 300]
 		bool isEnabledSkillBySkillCap();	//!< Recent uo clients allow setting of a skillcap for each skill. If enabled allows server side support for that [Default: true]
+		
+		uint32_t getSkillDelay();
 
 		//@{
 		/*!

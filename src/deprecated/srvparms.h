@@ -60,7 +60,6 @@ struct server_st
  unsigned int lootdecayswithcorpse;
 
  unsigned int invisibiliytimer;
- unsigned int skilldelay;
  unsigned int objectdelay;
  unsigned int bandagedelay;					// in seconds, on top of objectdelay
  unsigned int bandageincombat;				// 0=no, 1=yes; can use bandages while healer and/or patient are in combat ?

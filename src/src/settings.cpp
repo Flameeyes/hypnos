@@ -390,6 +390,10 @@ namespace Skills {
 	bool isEnabledSkillBySkillCap()
 	{ return flags & flagSkillBySkillCap; }
 
+
+	//! Seconds to wait between two skill's use
+	SETTING(uint32_t, SkillDelay, 5);
+	
 	//! Seconds to wait after a snoop action
 	SETTING(uint32_t, SnoopDelay, 15);
 	
@@ -425,6 +429,7 @@ namespace Skills {
 			else XMLSETTING(StatDailyLimit, uint16_t, UInt16)
 			else XMLSETTING(LimitPlayerSparring, uint16_t, UInt16)
 			else XMLSETTING(MaximumSkillTraining, uint16_t, UInt16)
+			else XMLSETTING(SkillDelay, uint32_t, UInt32)
 			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
 			n = n->next();
 		} while(n);

@@ -269,7 +269,6 @@ void loadserverdefaults()
 	server_data.auto_a_reload = 0;
 
 	server_data.invisibiliytimer=INVISTIMER;
-	server_data.skilldelay=SKILLDELAY;
 	server_data.objectdelay=1;					// in seconds
 	server_data.bandagedelay=6;					// in seconds
 	server_data.bandageincombat=1;				// 0=no, 1=yes; can use bandages while healer and/or patient are in combat ?

@@ -19,7 +19,7 @@ int ingottype=0;//will hold number of ingot type to be deleted
 
 inline void SetSkillDelay(pChar pc)
 {
-	SetTimerSec(&pc->skilldelay,SrvParms->skilldelay);
+	SetTimerSec(&pc->skilldelay, nSettings::Skills::getSkillDelay());
 }
 
 //! Default constructor for nSkills::sSkillInfo struct
@@ -1412,7 +1412,7 @@ void nSkills::Decipher(pMap tmap, pClient client)
 	char script1[1024];
 	
 	// Set the skill delay, no matter if it was a success or not
-	SetTimerSec(&pc->skilldelay,SrvParms->skilldelay);
+	SetTimerSec(&pc->skilldelay, nSettings::Skills::getSkillDelay() );
 	pc->playSFX(0x0249);
 	
 	if( pc->skilldelay > getclock() && !pc->isGM()) // Char doin something?
