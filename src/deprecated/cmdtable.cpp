@@ -2000,7 +2000,7 @@ void target_remove( pClient client, pTarget t )
 		return;
 	} else if ( ( pc = dynamic_cast<pNPC>(t->getClicked()) ) ) {
 	
-		pFunctionHandler fh = pc->getEvent(evtNpcOnDispel);
+		pFunctionHandler fh = pc->getEvent(cNPC::evtNpcOnDispel);
 		tVariantVector params = tVariantVector(3);
 		params[0] = pc->getSerial(); params[1] = INVALID;
 		params[2] = dispelGMRemove;
@@ -2010,7 +2010,7 @@ void target_remove( pClient client, pTarget t )
 		client->sysmessage("Removing character.");
 		pc->Delete();
 	} else if ( ( pi = dynamic_cast<pItem>(t->getClicked()) ) ) {
-		pFunctionHandler fh = pi->getEvent(evtItmOnDecay);
+		pFunctionHandler fh = pi->getEvent(cItem::evtItmOnDecay);
 		tVariantVector params = tVariantVector(2);
 		params[0] = pc->getSerial(); params[1] = deleteGMRemove;
 		fh->setParams(params);

@@ -253,7 +253,7 @@ void cChar::walk()
 		{
 			uint32_t l = dir;
 
-			pFunctionHandle evt = getEvent(evtChrOnWalk);
+			pFunctionHandle evt = getEvent(cChar::evtChrOnWalk);
 			if( evt ) {
 				tVariantVector params = tVariantVector(3);
 				params[0] = pc->getSerial(); params[1] = dir; params[2] = dir;

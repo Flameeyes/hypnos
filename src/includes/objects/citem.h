@@ -25,6 +25,8 @@ protected:
 	static uint32_t nextSerial;
 	uint32_t newSerial();
 
+	virtual uint16_t eventsNumber() const
+	{ return evtItmMax; }
 public:
 	static pItem addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, Location where);
 //@{
@@ -39,28 +41,31 @@ public:
         cItem();
 	~cItem();
 //@}
+	//! Events for securable items
+	enum {
+		evtSecOnLockPick = evtCntMax,
+		evtSecMax
+	};
 
 	//! Events for items
-	enum Event {
-		EVENT_IONSTART = 0,
-		EVENT_IONDAMAGE,
-		EVENT_IONEQUIP,
-		EVENT_IONUNEQUIP,
-		EVENT_IONCLICK,
-		EVENT_IONDBLCLICK,
-		EVENT_IPUTINBACKPACK,
-		EVENT_IDROPINLAND,
-		EVENT_IONCHECKCANUSE,
-		EVENT_IONTRANSFER,
-		EVENT_IONSTOLEN,
-		EVENT_IONPOISONED,
-		EVENT_IONDECAY,
-		EVENT_IONREMOVETRAP,
-		EVENT_IONLOCKPICK,
-		EVENT_IONWALKOVER,
-		EVENT_IONPUTITEM,
-		EVENT_ITAKEFROMCONTAINER,
-		ALLITEMEVENTS
+	enum {
+		evtOnStart = evtGenericMax,
+		evtItmOnDamage,
+		evtItmOnClick,
+		evtItmOnDblClick,
+		evtItmOnPutInBackpack,
+		evtItmOnDropInLand,
+		evtItmOnCheckCanUse,
+		evtItmOnTransfer,
+		evtItmOnStolen,
+		evtItmOnPoisoned,
+		evtItmOnDecay,
+		evtItmOnRemoveTrap,
+		evtItmOnLockPick,
+		evtItmOnWalkOver,
+		evtItmOnPutInContainer,
+		evtItmOnTakeFromContainer,
+		evtItmMax
 	};
 
 //@{

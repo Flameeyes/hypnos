@@ -65,8 +65,7 @@ class cChar : public cSerializable, virtual public cEventThrower
 {
 public:
 	enum {
-		evtChrOnStart,
-		evtChrOnDeath,
+		evtChrOnDeath = evtGenericMax,
 		evtChrBeforeDeath,
 		evtChrAfterDeath,
 		evtChrOnDied,

@@ -1,12 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| Hypnos UO Server Emulator                                                |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in hypnos.cpp file.            |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
 #include "magic.h"
 #include "npcai.h"
@@ -183,7 +181,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 
 	if (spherespells[sphere][spell]==0) return;
 
-	pFunctionHandle evt = pc_att->getEvent(evtChrOnCastSpell);
+	pFunctionHandle evt = pc_att->getEvent(cChar::evtChrOnCastSpell);
 	if ( evt )
 	{
 		tVariantVector params = tVariantVector(4);

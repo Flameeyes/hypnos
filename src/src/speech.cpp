@@ -1,12 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| Hypnos UO Server Emulator                                                |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in hypnos.cpp file.            |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
 #include "sndpkg.h"
 #include "debug.h"
@@ -713,7 +711,7 @@ int response(NXWSOCKET  s)
 						{
 							pc->guarded = false; // Sparhawk	How about when more than 1 pets is guarding me??
 							
-							pFunctionHandle evt = pc_map->getEvent(evtNpcOnTransfer);
+							pFunctionHandle evt = pc_map->getEvent(cNPC::evtNpcOnTransfer);
 							if ( evt )
 							{
 								tVariantVector params = tVariantVector(2);

@@ -28,6 +28,8 @@ protected:
 	bool		pileItem(pItem &item);
 	void		setRandPos(pItem Item);
 
+	virtual uint16_t eventsNumber() const
+	{ return evtCntMax; }
 public:
 	cContainer();
 	cContainer(uint32_t serial);
@@ -53,6 +55,14 @@ public:
 	pItem getInstrument() const;
 
 	virtual bool doDecay(bool dontDelete = false);
+	
+	//! Events for containers
+	enum {
+		evtCntOnTakeItem = evtEqpMax,
+		evtCntOnPutItem,
+		evtCntMax
+	};
+	
 };
 
 #endif

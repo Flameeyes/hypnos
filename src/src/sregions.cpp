@@ -1,12 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| Hypnos UO Server Emulator                                                |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in hypnos.cpp file.            |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
 \brief Functions that handle the spawn regions
@@ -275,7 +273,7 @@ void checkregion(pChar pc)
 	if (calcreg!= pc->region)
 	{
 		
-		pFunctionHandle evt = pc->getEvent(evtChrOnRegionChange);
+		pFunctionHandle evt = pc->getEvent(cChar::evtChrOnRegionChange);
 		if(evt) {
 			tVariantVector params = tVariantVector(3);
 			params[0] = pc->getSerial(); params[1] = pc->region; params[2] = calcreg;

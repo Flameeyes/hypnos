@@ -44,9 +44,19 @@ public:
 	
 	void doubleClicked(pClient client);
 
+	//! Events for equippable items
+	enum {
+		evtEqpOnEquip = evtItmMax,
+		evtEqpOnUnequip,
+		evtEqpMax
+	};
+	
 protected:
 	Layer layer;	//!< Layer where the item \b is equipped
 	static Layer findLayerFromID(uint16_t id);
+	
+	virtual uint16_t eventsNumber() const
+	{ return evtEqpMax; }
 };
 
 #endif

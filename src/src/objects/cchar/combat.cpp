@@ -1,12 +1,10 @@
-   /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| Hypnos UO Server Emulator                                                |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in hypnos.cpp file.            |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \brief Combat System Related Stuff
 \author Luxor
@@ -54,7 +52,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	}
 	pFunctionHandle evt = NULL;
 
-	evt = getEvent(evtChrOnCombatHit);
+	evt = getEvent(cChar::evtChrOnCombatHit);
 	if ( evt ) {
 		tVariantVector params = tVariantVector(2);
 		params[0] = getSerial(); params[1] = pc_def->getSerial();
@@ -144,7 +142,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	if (!hit) {
 
-		evt = getEvent(evtChrOnHitMiss);
+		evt = getEvent(cChar::evtChrOnHitMiss);
 		if ( evt ) {
 			tVariantVector params = tVariantVector(2);
 			params[0] = getSerial(); params[1] = pc_def->getSerial();
@@ -181,7 +179,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		return;
 	}
 
-	evt = getEvent(evtChrOnHit);
+	evt = getEvent(cChar::evtChrOnHit);
 	if( evt ) {
 		tVariantVector params = tVariantVector(2);
 		params[0] = getSerial(); params[1] = pc_def->getSerial();
@@ -191,7 +189,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 			return;
 	}
 
-	evt = getEvent(evtChrOnGetHit);
+	evt = getEvent(cChar::evtChrOnGetHit);
 	if( evt ) {
 		tVariantVector params = tVariantVector(2);
 		params[0] = pc_def->getSerial(); params[1] = getSerial();
@@ -419,7 +417,7 @@ void cChar::doCombat()
 
 	dist = distFrom(pctarget);
 
-	pFunctionHandle evt = getEvent(evtChrOnDoCombat);
+	pFunctionHandle evt = getEvent(cChar::evtChrOnDoCombat);
 	if ( evt ) {
 		tVariantVector params = tVariantVector(4);
 		params[0] = getSerial(); params[1] = pc_def->getSerial(); params[2] = dist; params[3] =  weapon ? weapon->getSerial() : INVALID;
@@ -1108,7 +1106,7 @@ void cChar::attackStuff(pChar victim)
 
 	pFunctionHandle evt = NULL;
 	
-	evt = getEvent(evtChrOnBeginAttack);
+	evt = getEvent(cChar::evtChrOnBeginAttack);
 	if ( evt ) {
 		tVariantVector params = tVariantVector(2);
 		params[0] = getSerial(); params[1] = victim->getSerial();
@@ -1119,7 +1117,7 @@ void cChar::attackStuff(pChar victim)
 	}
 
 
-	evt = victim->getEvent(evtChrOnBeginDefense);
+	evt = victim->getEvent(cChar::evtChrOnBeginDefense);
 	if ( evt ) {
 		tVariantVector params = tVariantVector(2);
 		params[0] = victim->getSerial(); params[1] = getSerial();

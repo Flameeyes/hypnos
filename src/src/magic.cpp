@@ -1,12 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| Hypnos UO Server Emulator                                                |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in hypnos.cpp file.            |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
 #include "targeting.h"
 #include "magic.h"
@@ -1907,7 +1905,7 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 	}
 	// do the event :]
 
-	pFunctionHandle evt = src->getEvent(evtChrOnCastSpell);
+	pFunctionHandle evt = src->getEvent(cChar::evtChrOnCastSpell);
 	if ( evt )
 	{
 		tVariantVector params = tVariantVector(4);
@@ -2000,7 +1998,7 @@ bool beginCasting (SpellId num, NXWCLIENT s, CastingType type)
 	}
 
 
-	pFunctionHandle evt = src->getEvent(evtChrOnCastSpell);
+	pFunctionHandle evt = src->getEvent(cChar::evtChrOnCastSpell);
 	if ( evt )
 	{
 		tVariantVector params = tVariantVector(4);

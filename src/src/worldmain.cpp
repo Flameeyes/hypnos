@@ -34,7 +34,7 @@ void split( std::string& source, std::string& first, std::string& second )
 	first = "";
 	second = "";
 
-	int i=0;
+	register int i=0;
 	int size=source.size();
 
 	for( i=0; i<size; ++i ) {
@@ -1575,10 +1575,10 @@ void CWorldMain::SaveChar( pChar pc )
 				fprintf(cWsc, "TRIGGER %i\n", pc->trigger);
 			if (pc->trigword.length()>0)
 				fprintf(cWsc, "TRIGWORD %s\n", pc->trigword.c_str());
-			//Changed by Magius(CHE) §
+			//Changed by Magius(CHE) 
 			//tmpdisable=(long) pc->disabled-currenttime;
 			if (pc->disabledmsg!=NULL)
-				fprintf(cWsc, "DISABLEMSG %s\n", pc->disabledmsg->c_str()); // Added by Magius(CHE) §
+				fprintf(cWsc, "DISABLEMSG %s\n", pc->disabledmsg->c_str()); // Added by Magius(CHE) 
 
 			for (j=0;j<skTrueSkills;j++)
 			{

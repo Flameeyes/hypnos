@@ -34,6 +34,12 @@ protected:
 	FunctionVector events;	//!< Handlers to call for events
 	virtual uint16_t eventsNumber() const = 0;
 public:
+	//!< Generic events for all event-throwing classes
+	enum {
+		evtOnStart,
+		evtGenericMax
+	};
+
 	pFunctionHandle getEvent(uint16_t index);
 	virtual ~cEventThrower() { }
 };

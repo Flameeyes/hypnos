@@ -199,7 +199,7 @@ void cChar::mountHorse( pNPC mount )
 */
 bool cChar::unmountHorse()
 {
-	pFunctionHandle evt = src->getEvent(evtChrOnDismount);
+	pFunctionHandle evt = src->getEvent(cChar::evtChrOnDismount);
 	if ( evt )
 	{
 		tVariantVector params = tVariantVector(2);

@@ -1,13 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| Hypnos UO Server Emulator                                                |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in hypnos.cpp file.            |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
 #include "sndpkg.h"
 #include "npcai.h"
@@ -56,7 +53,7 @@ void snooping( pPC snooper, pItem cont )
 	if ( dynamic_cast<pBody>(cont->getContainer()) == snooper->getBody() )
 		return;
 	
-	pFunctionHandle owner = src->getEvent(evtChrOnSnooped);
+	pFunctionHandle owner = src->getEvent(cChar::evtChrOnSnooped);
 	if ( evt )
 	{
 		tVariantVector params = tVariantVector(2);
@@ -167,7 +164,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 		return;
 		}
 
-		pFunctionHandle evt = pi->getEvent(evtItmOnStolen);
+		pFunctionHandle evt = pi->getEvent(cItem::evtItmOnStolen);
 		if ( evt )
 		{
 			tVariantVector params = tVariantVector(3);
@@ -179,7 +176,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 				return;
 		}
 	
-		evt = victim->getEvent(evtChrOnStolen);
+		evt = victim->getEvent(cChar::evtChrOnStolen);
 		if ( evt )
 		{
 			tVariantVector params = tVariantVector(2);
@@ -372,7 +369,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 			thief->sysmsg("... and fail because it is too heavy.");
 		else
 		{
-			pFunctionHandle evt = victim->getEvent(evtChrOnStolen);
+			pFunctionHandle evt = victim->getEvent(cChar::evtChrOnStolen);
 			if ( evt )
 			{
 				tVariantVector params = tVariantVector(2);
@@ -456,7 +453,7 @@ void Skills::target_lockpick( NXWCLIENT ps, pTarget t )
 	
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skLockPicking,AMX_BEFORE);
 
-	pFunctionHandle evt = chest->getEvent(evtCntOnLockPick);
+	pFunctionHandle evt = chest->getEvent(cContainer::evtCntOnLockPick);
 	if ( evt )
 	{
 		tVariantVector params = tVariantVector(2);

@@ -1,12 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| Hypnos UO Server Emulator                                                |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in hypnos.cpp file.            |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
 #include "skills.h"
 #include "settings.h"
@@ -508,7 +506,7 @@ bool Skills::AdvanceSkill(pChar pc /*uint32_t s*/, int sk, char skillused)
 	uint32_t incval;
 	int atrophy_candidates[ALLSKILLS+1];
 
-	pFunctionHandle evt = pc->getEvent(evtChrOnGetSkillCap);
+	pFunctionHandle evt = pc->getEvent(cChar::evtChrOnGetSkillCap);
 	if ( evt )
 	{
 		tVariantVector params = tVariantVector(4);
@@ -601,7 +599,7 @@ bool Skills::AdvanceSkill(pChar pc /*uint32_t s*/, int sk, char skillused)
 
 	bool retval = incval > (rand()%SrvParms->skilladvancemodifier);
 	
-	pFunctionHandle evt = pc->getEvent(evtChrOnAdvanceSkill);
+	pFunctionHandle evt = pc->getEvent(cChar::evtChrOnAdvanceSkill);
 	if ( evt )
 	{
 		tVariantVector params = tVariantVector(4);
@@ -735,7 +733,7 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
  //       *stat2 -= 1000;                     // then change it
 
 
-		pFunctionHandle evt = pc->getEvent(evtChrOnAdvanceStat);
+		pFunctionHandle evt = pc->getEvent(cChar::evtChrOnAdvanceStat);
 		if ( evt )
 		{
 			tVariantVector params = tVariantVector(4);
@@ -772,7 +770,7 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
 			limit = 100;
 		}
 
-		pFunctionHandle evt = pc->getEvent(evtChrOnGetStatCap);
+		pFunctionHandle evt = pc->getEvent(cChar::evtChrOnGetStatCap);
 		if ( evt )
 		{
 			tVariantVector params = tVariantVector(3);
@@ -863,7 +861,7 @@ void Skills::AdvanceStats(pChar pc, int sk)
 
 
 
-	pFunctionHandle evt = pc->getEvent(evtChrOnGetStatCap);
+	pFunctionHandle evt = pc->getEvent(cChar::evtChrOnGetStatCap);
 	if ( evt )
 	{
 		tVariantVector params = tVariantVector(3);
