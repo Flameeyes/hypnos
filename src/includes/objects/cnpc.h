@@ -28,16 +28,9 @@ characters.
 class cNPC : cChar
 {
 public:
-	inline cNPC() : cChar()
-	{ }
-
-	inline cNPC() : cChar(serial)
-	{ }
-
+	cNPC();
+	cNPC(uint32_t serial);
 	virtual ~cNPC();
-
-	virtual uint32_t rtti()
-	{ return rtti::cNPC; }
 
 protected:
 	pChar owner;	//! NPC's owner

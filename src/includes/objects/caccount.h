@@ -14,10 +14,12 @@
 #define __CACCOUNT_H__
 
 #include "common_libs.h"
-
-typedef std::hash_map<std::list, class cAccount> cAccounts;	//!< Hashed map of accounts
+#include "backend/sqlite.h"
+#include "enums.h"
+#include <zthread/FastMutex.h>
 
 /*!
+\class cAccount caccount.h "objects/caccount.h"
 \brief This class represent an account for game
 
 In database we should store:
@@ -30,43 +32,55 @@ protected:
 	static ZThread::FastMutex global_mt;
 		//!< Global mutex used while saving or loading
 
-	static cAccounts accounts;
-		//!< All the accounts [Hash-map]
+	static cAccounts accounts;			//!< All the accounts [Hash-map]
 
 public:
-	static void saveAll(std::string filename);
-		//!< Globally save accounts
-	static void loadAll(std::string filename);
-		//!< Globally load accounts
+	static void saveAll();				//!< Globally save accounts
+	static void loadAll();				//!< Globally load accounts
 
-
-	//! Type of crypto-algorithms
-	enum CryptoType {
-		cryptoPlain,	//! Plain text
-		cryptoMD5,	//! MD5 hash
-		cryptoSHA1	//! SHA1 hash
-	};
+	static pAccount findAccount(std::string name);
 
 protected:
-	ZThread::FastMutex local_mt;
-		//!< Local mutex, used for logins and other things
-	std::string name; 		//!< Account name
-	std::string password;		//!< Account password (crypted)
-	CryptoType ctype;		//!< Type of crypted password
-	uint8_t privlevel;		//!< Priviledge level
-	int32_t creationdate;		//!< Epoch of creation date
-	pPC banAuthor;			//!< Ban Author (if banned)
-	int32_t banReleaseTime;		//!< Epoch of release time of ban
-	int32_t jailtime;			//!< Epoch of jail's release time
-	uint32_t lastConnIP;		//!< Last connection IP
-	int32_t lastConnTime;		//!< Last connection epoch
+	ZThread::FastMutex local_mt;			//!< Local mutex, used for logins and other things
+	std::string name; 				//!< Account name
+	std::string password;				//!< Account password (crypted)
+	CryptoType ctype;				//!< Type of crypted password
+	uint8_t privlevel;				//!< Priviledge level
+	int32_t creationdate;				//!< Epoch of creation date
+	pPC banAuthor;					//!< Ban Author (if banned)
+	int32_t banReleaseTime;				//!< Epoch of release time of ban
+	int32_t jailtime;				//!< Epoch of jail's release time
+	uint32_t lastConnIP;				//!< Last connection IP
+	int32_t lastConnTime;				//!< Last connection epoch
 
-	PCList chars;			//!< Characters of the account
-	pPC lastchar;			//!< Last character used
+	PCVector chars;					//!< Characters of the account
+	pPC lastchar;					//!< Last character used
 
-	pPC currentChar;		//!< Current char used ingame
+	pClient client;					//!< Client in use
+public:
+	inline const uint8_t getCharsNumber() const;
+
+	inline uint8_t addCharToAccount(pPC pc);
+	void save();
+        pPC getChar(uint8_t index);
+
+	//! Returns the current client connected or NULL if not connected
+	inline pClient currClient() const
+	{ return client; }
+
+	//! Gets the account name
+	inline const std::string getName() const
+	{ return name; }
 	
-	uint8_t flags;			//!< Flags of the account
+//@{
+/*!
+\name Account Flags
+*/
+protected:
+	uint8_t flags;					//!< Flags of the account
+	
+	static const uint8_t flagSeeGMPages	= 0x01;
+	static const uint8_t flagSeeConsPages	= 0x02;
 	
 	inline void setFlag(uint8_t flag, bool on)
 	{
@@ -76,14 +90,6 @@ protected:
 			flags &= ~flag;
 	}
 public:
-//@{
-/*!
-\name Account Flags
-\brief Flags present on an account
-*/
-	static const uint8_t flagSeeGMPages	= 0x01;
-	static const uint8_t flagSeeConsPages	= 0x02;
-	
 	//! Gets if the account can see GM Pages
 	inline const bool seeGMPages() const
 	{ return flags & flagSeeGMPages; }
@@ -93,34 +99,20 @@ public:
 	{ setFlag(flagSeeGMPages, on); }
 	
 	//! Gets if the account can see Cons pages
-	inline const bool seeConsPages const
+	inline const bool seeConsPages() const
 	{ return flags & flagSeeConsPages; }
 	
 	//! (Un)sets the capability to see Cons Pages
 	inline void setSeeConsPages(bool on = true)
-	{ setFlag(flagSeeConPages, on); }
+	{ setFlag(flagSeeConsPages, on); }
 //@}
 
-	cAccount();
+	cAccount(std::string aName, std::string aPassword);
 		//!< Default constructor
 	cAccount(cSQLite::cSQLiteQuery::tRow row);
 		//!< Constructor with database row
 	~cAccount();
 		//!< Default destructor
-
-        inline const uint8_t getCharsNumber() const                //!< Returns number of characters in account
-        { return chars.size() }
-
-        inline void addChartoAccount(pPC pc) const              //!< Adds pc to account
-        { chars.push_back(pc) }
-
-	void save();
-
-	inline const bool inGame() const			//!< Returns if an account is in game
-	{ return currentChar; }
-
-        pPC getChar(int index);		//!< gets char number "index" in player account
-
 };
 
 #endif

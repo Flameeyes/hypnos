@@ -231,3 +231,14 @@ bool cBody::overloadedTeleport()
 	}
 	return false;
 }
+
+/*!
+\brief Tells if the body is wearing the given item
+\param pi Item to test
+\return true if the body is wearing the item, else false
+\note Can't be inlined, because in this case cbody will need to include citem.h
+*/
+const bool isWearing(pItem pi) const
+{
+	return this == pi->getContainer();
+}

@@ -83,8 +83,7 @@ public:
 
 	pEquippableContainer getBackpack(bool create = false);
 
-	inline const bool isWearing(pItem pi) const
-	{ return this == pi->getContainer(); }
+	const bool isWearing(pItem pi) const;
 
 	int32_t equip(pEquippable pi, bool drag = false);
 	int32_t unEquip(pEquippable pi, bool drag = false);

@@ -13,9 +13,8 @@
 #ifndef __CPC_H__
 #define __CPC_H__
 
-class cPC;
-typedef cPC *pPC;		//!< Pointer to a playing character
-typedef std::list<pPC> PCList;	//!< List of pointers to PCs
+#include "objects/cchar.h"
+#include "objects/cnpc.h"
 
 /*!
 \brief This class represent a playing character.
@@ -36,9 +35,11 @@ public:
 	bool		updateFlag();
 
 	//! Makes a character temporary grey
+	//!\todo Rewrite!
 	inline void setGrey()
-	{ tempfx::add(this, this, tempfx::GREY, 0, 0, 0, 0x7FFF); }
-        void deadAttack (pChar victim);  //if dead and trying to attack someone...
+	{ /*tempfx::add(this, this, tempfx::GREY, 0, 0, 0, 0x7FFF);*/ }
+        
+	void deadAttack (pChar victim);  //if dead and trying to attack someone...
 
 //@{
 /*!
@@ -52,7 +53,7 @@ public:
 	inline const bool	isBeingTrained() const
 	{ return trainer; }
 
-	inline const pChar	getTrainer() const
+	inline const pNPC getTrainer() const
 	{ return trainer; }
 
 	inline const uint8_t	getSkillTaught() const
@@ -75,7 +76,7 @@ public:
 	inline const bool canBroadcast() const
 	{ return flags & flagBroadcast; }
 
-	inline void flagBroadcast(bool set = true)
+	inline void setBroadcast(bool set = true)
 	{ setFlag(flagBroadcast, set); }
 
 	inline const bool canViewHouseIcon() const

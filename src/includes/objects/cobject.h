@@ -18,7 +18,7 @@
 #include "tmpeff.h"
 #include "structs.h"
 
-typedef slist< tempfx::cTempfx > TempfxVector;
+typedef std::slist< tempfx::cTempfx > TempfxVector;
 
 /*!
 \brief Base class of cItem and cChar

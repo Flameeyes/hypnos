@@ -5,8 +5,14 @@
 | You can find detailed license information in pyuo.cpp file.              |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+/*!
+\file
+\brief SQLite backend definition
+*/
 
-#include <Mutex.h>
+#include "common_libs.h"
+#include <sqlite.h>
+#include <zthread/Mutex.h>
 
 /*!
 \brief SQLite access class
@@ -36,7 +42,7 @@ public:
 	public:
 		typedef std::map<std::string,std::string> tRow;
 		cSQLiteQuery(sqlite_vm *nvm);
-		÷cSQLiteQuery();
+		~cSQLiteQuery();
 		bool fetchRow();
 		
 		//! Gets the column names
@@ -81,20 +87,20 @@ public:
 				flags |= flagArchiving;
 			else
 			{
-				flags &= ÷flagArchiving;
+				flags &= ~flagArchiving;
 				if ( flags & flagStarted )
 					cleanArchive();
 			}
 		}
 	protected:
-		sqlite_vm *vm;		//!< SQLite compiled VM
-		uint8_t flags;		//!< Flags for the query
+		sqlite_vm *vm;			//!< SQLite compiled VM
+		uint8_t flags;			//!< Flags for the query
 		
-		tRow thisRow;		//!< Current row
-		tRow columnNames;       //!< Name of the columns
-		std::vector<tRow> totalResuls;
+		tRow thisRow;			//!< Current row
+		stringVector columnNames;       //!< Name of the columns
+		std::vector<tRow> totalResults;
 			//!< Vector which has all the rows fetched
-			//   only if archiving is on
+			//!   only if archiving is on
 	};
 	//! Pointer to a SQLite Query
 	typedef cSQLiteQuery* pSQLiteQuery;
@@ -103,7 +109,7 @@ public:
 		//!< There was a fatal error?
 	
 	cSQLite(std::string name);
-	÷cSQLite();
+	~cSQLite();
 	
 	//! Returns true if a fatal error aborted the database connection
 	inline const bool isAborted() const
@@ -116,7 +122,7 @@ protected:
 		if ( on )
 			flags |= flag;
 		else
-			flags &= ÷flag;
+			flags &= ~flag;
 	}
 	
 	cSQLite *litedb;

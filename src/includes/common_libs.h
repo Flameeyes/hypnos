@@ -74,9 +74,14 @@ warnings/errors/issues.
 
 #ifdef __GNUC__
 	#include <ext/slist>
-	using __gnu_cxx::slist;
+	#include <ext/hash_map>
+	namespace std {
+		using __gnu_cxx::slist;
+		using __gnu_cxx::hash_map;
+	}
 #else
 	#include <slist>
+	#include <hash_map>
 #endif
 
 #include <sys/stat.h>
@@ -93,13 +98,10 @@ extern OSVersion getOSVersion();
     #define MSG_NOSIGNAL 0
 #endif
 
-#include <zthread/FastMutex.h>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 
 #include "typedefs.h"
 #include "constants.h"
-#include "pointer.h"
 #include "console.h"
-#include "srvparms.h"
 
 #endif //__COMMON_LIBS_H__

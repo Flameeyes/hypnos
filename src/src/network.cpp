@@ -493,7 +493,7 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 void cNetwork::LoginMain(int s)
 {
 	signed long int i;
-    unsigned char noaccount[2]={0x82, 0x00};
+	unsigned char noaccount[2]={0x82, 0x00};
 	unsigned char acctused[2]={0x82, 0x01};
 	unsigned char acctblock[2]={0x82, 0x02};
 	unsigned char nopass[2]={0x82, 0x03};
@@ -588,18 +588,17 @@ void cNetwork::LoginMain(int s)
 		}
 	}
 
-	if (Accounts->IsOnline(acctno[s]) )
+	pAccount acc = cAccount::findAccount(name);
+	if ( acc->currClient() )
 	{
 		Xsend(s, acctused, 2);
 		//<Luxor>: Let's kick the current player
-		chrSerial = Accounts->GetInWorld(acctno[s]);
-		if (chrSerial == INVALID)
-			return;
-		pChar pc = pointers::findCharBySerial(chrSerial);
-		if ( ! pc ) return;
-		pc->kick();
-		loginchars[s] = NULL;
+		
+		//!\todo We actually want to kick already logged in player or not?
+		
+		acc->currClient()->kick();
 		return;
+		
 		//</Luxor>
 	}
 

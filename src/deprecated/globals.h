@@ -17,11 +17,8 @@
 #define __GLOBALS_H__
 
 #include "regions.h"
-#include "srvparms.h"
 
 // GOOD GLOBALZ (Those which are just fine)
-
-extern server_st server_data;
 
 extern bool g_nShowLayers;
 
@@ -53,16 +50,6 @@ extern sSpeed speed;//Lag Fix -- Zippy
 extern char n_scripts[NUM_SCRIPTS][512] ; // array of script filenames
 
 extern short g_nMainTCPPort;
-
-
-/*****************************************************************************
- EVIL GLOBALZ (Those to be cut from NXW whenever possible)
- *****************************************************************************/
-extern char script1[512];
-extern char script2[512];
-extern char script3[512];
-extern char script4[512]; // added to use for newbie items
-
 
 
 /*****************************************************************************

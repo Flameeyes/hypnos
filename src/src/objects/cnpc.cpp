@@ -13,6 +13,17 @@
 #include "objects/cnpc.h"
 
 #define NPCMAGIC_FLAGS (SPELLFLAG_DONTCRIMINAL+SPELLFLAG_DONTREQREAGENTS+SPELLFLAG_DONTCHECKSPELLBOOK+SPELLFLAG_IGNORETOWNLIMITS+SPELLFLAG_DONTCHECKSKILL)
+
+cNPC::cNPC()
+	: cChar()
+{
+}
+
+cNPC::cNPC(uint32_t serial)
+	: cChar(serial)
+{
+}
+
 void cNPC::heartbeat()
 {
 	if ( dead )
@@ -22,7 +33,7 @@ void cNPC::heartbeat()
 
 	if( mounted )
 		return;
-
+#if 0
 	if ( amxevents[EVENT_CHR_ONHEARTBEAT] )
 	{
 		g_bByPass = false;
@@ -32,6 +43,7 @@ void cNPC::heartbeat()
 		if( dead )	// Killed as result of action in script
 			return;
 	}
+#endif
 	/*
 	g_bByPass = false;
 	runAmxEvent( EVENT_CHR_ONHEARTBEAT, getSerial(), uiCurrentTime );

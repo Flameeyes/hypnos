@@ -73,4 +73,15 @@ enum Layer {
 	layBank			//!< PC Bank Box (see cPC::bankBox)
 };
 
+/*!
+\brief Type of crypto-algorithms
+
+\see cAccount
+*/
+enum CryptoType {
+	cryptoPlain,	//! Plain text
+	cryptoMD5,	//! MD5 hash
+	cryptoSHA1	//! SHA1 hash
+};
+
 #endif

@@ -62,6 +62,9 @@ namespace nSettings {
 		bool hasInstantGuards();	//!< Should guards instantly teleport over new criminals? [Default: false]
 		
 		bool shouldShowPCNames();	//!< Should the playing characters' names be shown on single click? [Default: true]
+		
+		uint32_t getDelaySkills();	//!< Delay between two skill uses
+		uint32_t getDelayObjects();	//!< Delay between two object uses
 	}
 	
 	/*!

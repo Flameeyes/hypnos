@@ -17,9 +17,6 @@
 
 #include "common_libs.h"
 
-#include "objects/cchar.h"
-#include "objects/citem.h"
-
 char* getRandomName(char * namelist);
 void setrandomname(pChar pc, char * namelist);
 uint16_t addrandomcolor(cObject* po, char *colorlist);

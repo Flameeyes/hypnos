@@ -1453,20 +1453,18 @@ cBoat::~cBoat()//Destructor
 void insert_boat(pItem pi)
 {
 	boat_db boat;
-	boat.serial= pi->getSerial();
-	boat.tiller_serial= calcserial(pi->moreb1,pi->moreb2,pi->moreb3,pi->moreb4);
-	boat.l_plank_serial= pi->morex;
-	boat.r_plank_serial= pi->morey;
-	boat.container= pi->morez;
-	boat.p_serial= pi;
-	boat.p_l_plank= pointers::findItemBySerial(boat.l_plank_serial);
-	boat.p_r_plank= pointers::findItemBySerial(boat.r_plank_serial);
-	boat.p_tiller= pointers::findItemBySerial(boat.tiller_serial);
-	boat.p_container= pointers::findItemBySerial(boat.container);
+	boat.serial = pi->getSerial();
+	boat.tiller_serial = calcserial(pi->moreb1,pi->moreb2,pi->moreb3,pi->moreb4);
+	boat.l_plank_serial = pi->morex;
+	boat.r_plank_serial = pi->morey;
+	boat.container = pi->morez;
+	boat.p_serial = pi;
+	boat.p_l_plank = cSerializable::findItemBySerial(boat.l_plank_serial);
+	boat.p_r_plank = cSerializable::findItemBySerial(boat.r_plank_serial);
+	boat.p_tiller = cSerializable::findItemBySerial(boat.tiller_serial);
+	boat.p_container = cSerializable::findItemBySerial(boat.container);
 	s_boat.insert(std::make_pair(pi->getSerial(), boat)); // insert a boat in the boat search tree
 }
-
-
 
 boat_db* search_boat(int32_t ser)
 {

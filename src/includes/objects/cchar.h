@@ -14,7 +14,6 @@
 
 #include "common_libs.h"
 #include "objects/cbody.h"
-#include "ai.h"
 #include "magic.h"
 #include "npcs.h"
 #include "target.h"
@@ -25,6 +24,7 @@
 #include "basics.h"
 #include "cmds.h"
 #include "map.h"
+#include "settings.h"
 
 #ifndef TIMEOUT
 #define TIMEOUT(X) (((X) <= uiCurrentTime) || overflow)
@@ -515,13 +515,13 @@ public:
 public:
         void singleClick(pClient client);  // "this" is the clicked char, client is the client of the clicker
         void doubleClick(pClient client, int keyboard);       //!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
-	inline void setSkillDelay( uint32_t seconds = server_data.skilldelay )
+	inline void setSkillDelay( uint32_t seconds = nSettings::Server::getDelaySkills() )
 	{ skilldelay = uiCurrentTime + seconds * MY_CLOCKS_PER_SEC; }
 
 	inline const bool canDoSkillAction() const
 	{ return TIMEOUT( skilldelay ); }
 
-	inline void setObjectDelay( uint32_t seconds = server_data.objectdelay )
+	inline void setObjectDelay( uint32_t seconds = nSettings::Server::getDelayObjects() )
 	{ objectdelay = uiCurrentTime + seconds * MY_CLOCKS_PER_SEC; }
 
 	inline const bool canDoObjectAction() const

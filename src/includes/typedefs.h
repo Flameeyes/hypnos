@@ -28,11 +28,12 @@ typedef std::vector<tVariant> tVariantVector;	//!< Vector of variants
 
 typedef std::set<uint32_t> uint32_set;		//!< A set of uint32_t
 typedef std::vector<uint32_t> uint32_vector;	//!< A vector of uint32_t
-typedef slist<uint32_t> uint32_slist;		//!< A slist of uint32_t
+typedef std::slist<uint32_t> uint32_slist;	//!< A slist of uint32_t
+
+typedef std::vector<std::string> stringVector;	//!< A vector of strings
 //@}
 
 typedef class cTarget* pTarget;			//!< Pointer to a cTarget
-typedef class cAccount *pAccount;		//!< Pointer to a cAccount
 typedef class cSocket *pSocket;			//!< Pointer to a cSocket
 typedef class cPacketSend *pPacketSend;		//!< Pointer to a cPacketSend
 
@@ -51,6 +52,9 @@ typedef std::list<pClient> ClientList;		//!< List of connected clients
 typedef class cMenu *pMenu;			//!< Pointer to a cMenu
 typedef std::map<uint32_t, pMenu> MenuMap;	//!< Map of menus
 
+typedef class cAccount *pAccount;		//!< Pointer to a cAccount
+typedef std::hash_map<std::string, pAccount> cAccounts;
+						//!< Hashed-map of accounts
 //@{
 /*!
 \name Objects and serializables
@@ -83,6 +87,7 @@ typedef class cBody* pBody;			//!< Pointer to a cBody
 typedef class cChar *pChar;			//!< Pointer to a cChar (character)
 typedef std::list<pChar> CharList;		//!< List of characters
 typedef class cPC *pPC;				//!< Pointer to a pPC (playing character)
+typedef std::vector<pPC> PCVector;		//!< Vector of playing characters
 typedef class cNPC *pNPC;			//!< Pointer to a pNPC (non playing character)
 
 //@}
