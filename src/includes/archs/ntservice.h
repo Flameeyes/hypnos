@@ -14,13 +14,13 @@
 
 	
 
-void __cdecl svcprintf(char *txt, ...); 
+void __cdecl svcprintf(char *txt, ...) PRINTF_LIKE(1,2);
 
 #ifdef __cplusplus
-	extern "C" {
+extern "C" {
 #endif
 
-void __cdecl svcprintf_C(char *txt, ...); 
+void __cdecl svcprintf_C(char *txt, ...) PRINTF_LIKE(1,2);
 void initService ( void );
 
 

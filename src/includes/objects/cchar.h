@@ -671,15 +671,15 @@ public:
 	uint32_t		murdersave; //!< # of second for murder decay
 
 	uint32_t		crimflag; //!< Time when No longer criminal -1=Not Criminal
-	uint32_t		spelltime; //Time when they are done casting....
-	magic::SpellId		spell; //current spell they are casting....
-	int32_t			spellaction; //Action of the current spell....
+	uint32_t		spelltime; //!< Time when they are done casting....
+	magic::SpellId		spell; //!< current spell they are casting....
+	int32_t			spellaction; //!< Action of the current spell....
 	magic::CastingType	spelltype;
-	uint32_t		nextact; //time to next spell action....
-	TargetLocation*		spellTL; //Luxor: npc spell targetlocation
+	uint32_t		nextact; //!< time to next spell action....
+	TargetLocation*		spellTL; //!< Luxor: npc spell targetlocation
 
-	int32_t			squelched; // zippy  - squelching
-	uint32_t		mutetime; //Time till they are UN-Squelched.
+	int32_t			squelched; //!< zippy  - squelching
+	uint32_t		mutetime; //!< Time till they are UN-Squelched.
 	//int32_t statuse[3]; //Morrolan - stat/skill cap STR/INT/DEX in that order
 	//int32_t skilluse[skTrueSkills][1]; //Morrolan - stat/skill cap
 	uint8_t			lockSkill[ALLSKILLS+1]; // LB, client 1.26.2b skill managment
@@ -774,7 +774,7 @@ public:
 	inline const bool resist(uint32_t n) const
 	{ return flags & n; }
 
-	void			sysmsg(const char *txt, ...);
+	void			sysmsg(const char *txt, ...) PRINTF_LIKE(1,2);
 
 	void                    attackStuff (pChar victim);
 	void			helpStuff(pChar pc_i);
@@ -796,10 +796,10 @@ protected:
 	uint8_t			fonttype;		//!< Speech font to use
 	uint16_t			saycolor;		//!< Color for say messages
 public:
-	void			talkAll(char *txt, bool antispam = 1);
-	void			talk(pClient client, char *txt, bool antispam = 1);
-	void			emote(pClient client,char *txt, bool antispam, ...);
-	void			emoteall(char *txt, bool antispam, ...);
+	void			talkAll(char *txt, bool antispam = true);
+	void			talk(pClient client, char *txt, bool antispam = true);
+	void			emote(pClient client,char *txt, bool antispam, ...) PRINTF_LIKE(4,5);
+	void			emoteall(char *txt, bool antispam, ...) PRINTF_LIKE(3,4);
 	void			talkRunic(pClient client, char *txt, bool antispam = 1);
 	void			talkAllRunic(char *txt, bool antispam = 0);
 //@}

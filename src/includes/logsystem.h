@@ -24,7 +24,7 @@ class LogFile;
 extern int32_t entries_e, entries_c, entries_w;
 extern LogFile ServerLog;	//! global log object
 
-void WriteGMLog(pChar, char *msg, ...);
+void WriteGMLog(pChar, char *msg, ...) PRINTF_LIKE(2,3);
 
 /*!
 \brief Manage a log file
@@ -39,10 +39,10 @@ private:
 
 public:
 	LogFile(std::string name);
-	LogFile(char *format, ...);	//!< path + filename
+	LogFile(char *format, ...) PRINTF_LIKE(1,2);	//!< path + filename
 	~LogFile();
 	void Write(std::string str);
-	void Write(char *format, ...);
+	void Write(char *format, ...) PRINTF_LIKE(1,2);
 };
 
 /*!
@@ -75,7 +75,7 @@ inline bool NewErrorsLogged()
 inline bool NewWarningsLogged()
 { return (entries_w > 0); }
 
-void LogMessageF(char *Message, ...);
+void LogMessageF(char *Message, ...) PRINTF_LIKE(1,2);
 void prepareLogs(char type, char *fpath, int lnum);
 
 //---------------------------------------------------------------------------

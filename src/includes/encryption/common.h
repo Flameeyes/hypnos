@@ -90,13 +90,10 @@ inline void pack_little_uint16(uint8 * buf, uint16 x)
 }
 
 // GCC_NORETURN means the function never returns
-// GCC_PRINTF means the function has printf-style arguments
 #ifdef __GNUC__
 #   define GCC_NORETURN __attribute__((noreturn))
-#   define GCC_PRINTF(n,m) __attribute__((format (printf, n, m)))
 #else
 #   define GCC_NORETURN
-#   define GCC_PRINTF(n,m)
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,12 +104,12 @@ const uint32 INVALID_uint32_t = 0xffffffff;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void log_printf(const char * format, ...) GCC_PRINTF(1,2);
-void error_printf(const char * format, ...) GCC_PRINTF(1,2);
-void warning_printf(const char * format, ...) GCC_PRINTF(1,2);
+void log_printf(const char * format, ...) PRINTF_LIKE(1,2);
+void error_printf(const char * format, ...) PRINTF_LIKE(1,2);
+void warning_printf(const char * format, ...) PRINTF_LIKE(1,2);
 void log_dump(unsigned char * buf, int length);
 void log_flush();
-void trace_printf(const char * format, ...) GCC_PRINTF(1,2);
+void trace_printf(const char * format, ...) PRINTF_LIKE(1,2);
 void trace_dump(unsigned char * buf, int length);
 
 class Logger
@@ -129,7 +126,7 @@ public:
 public:
     // dump functions
     void dump(bool verbose, unsigned char * buf, int length);
-    void printf(bool verbose, const char * format, ...) GCC_PRINTF(3,4);
+    void printf(bool verbose, const char * format, ...) PRINTF_LIKE(3,4);
     void vprintf(bool verbose, const char * format, va_list ap);
     void flush();
     bool get_flush() const { return m_flush; }
