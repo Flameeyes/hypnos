@@ -54,7 +54,7 @@ void Skills::Hide(pClient client)
 /*!
 \author AntiChrist
 \brief Stealths a char
-\param c client requesting stealthing
+\param client client requesting stealthing
 */
 void Skills::Stealth(pClient client)
 {
@@ -1446,7 +1446,7 @@ void Skills::AButte(pClient client1, pItem pButte)
 \author Luxor
 \brief Implements Meditation skill
 */
-void Skills::Meditation (NXWSOCKET  s)
+void Skills::Meditation (pClient client)
 {
 	if ( ! client )
 		return;
@@ -1507,7 +1507,7 @@ If you are a ghost and attack a player, you can PERSECUTE him
 and his mana decreases each time you try to persecute him
 decrease=3+(your int/10)
 */
-void Skills::Persecute (NXWSOCKET  s)
+void Skills::Persecute (pClient client)
 {
 	if ( ! client ) //Luxor
 		return;
