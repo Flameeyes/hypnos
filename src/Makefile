@@ -9,22 +9,31 @@
 #
 ###############################################################################
 
-SOURCES	:=	$(foreach dir, $(SUBDIRS), $(wildcard $(dir)/*.cpp))
-OBJECTS	:=	$(SOURCES:.cpp=.o)
+export SOURCES := $(foreach dir, $(SUBDIRS), $(wildcard $(dir)/*.cpp))
+export OBJECTS := $(SOURCES:.cpp=.o)
 
-TARGET=hypnos
+CXXFLAGS	= -I $(PWD)/includes/ -pipe
+export LIBADD	= -lpthread -lmxmlplus -lwefts 
+
+export SUBDIRS  = src src/abstraction src/archs src/backend src/encryption src/extras src/objects src/objects/cchar src/objects/citem src/objects/cnpc src/races src/skills
 
 ifndef COMSPEC
 	default=linux
+	include makefiles/Makefile.linux.inc
 else
 	default=mingw
+	include makefiles/Makefile.mingw.inc
 endif
 
 ifdef DEBUG
 	actdefault =$(default)-debug
+	CXXBASEFLAGS = -O0 -g -Wall
 else
 	actdefault =$(default)
+	CXXBASEFLAGS = -O3 -fshort-enums
 endif
+
+.SUFFIXES: .cpp
 
 default: $(actdefault)
 
@@ -33,23 +42,27 @@ nodebug: $(default)
 debug: $(default)-debug
 
 linux: #$(TARGET)
-	@make -f makefiles/Makefile.linux all CXXFLAGS="-O3 -fshort-enums"
+	@make -f makefiles/Makefile.linux all CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums"
 
 linux-debug: #$(TARGET)
-	@make -f makefiles/Makefile.linux all CXXFLAGS="-O0 -g -Wall"
+	@make -f makefiles/Makefile.linux all CXXFLAGS="$(CXXFLAGS) -O0 -g -Wall"
 
 mingw: #$(TARGET).exe
-	@make -f makefiles/Makefile.mingw all CXXFLAGS="-O3 -fshort-enums"
+	@make -f makefiles/Makefile.mingw all CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums"
 
 mingw-debug: #$(TARGET).exe
-	@make -f makefiles/Makefile.mingw all CXXFLAGS="-O0 -g -Wall"
+	@make -f makefiles/Makefile.mingw all CXXFLAGS="$(CXXFLAGS) -O0 -g -Wall"
 
 xmingw: #$(TARGET).exe
-	@make -f makefiles/Makefile.xmingw32 all CXXFLAGS="-O3 -fshort-enums"
+	@make -f makefiles/Makefile.xmingw32 all CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums"
 
 xmingw-debug: #$(TARGET).exe
-	@make -f makefiles/Makefile.xmingw32 all CXXFLAGS="-O0 -g -Wall"
+	@make -f makefiles/Makefile.xmingw32 all CXXFLAGS="$(CXXFLAGS) -O0 -g -Wall"
 
 clean:
 	@echo -e "\tCLEAN"
 	@rm -f $(OBJECTS) $(TARGET) $(TARGET).exe
+
+.cpp.o:
+	@echo -e "\tCXX   $@"
+	$(CXX) $(CXXBASEFLAGS) $(CXXFLAGS) -c -o $@ $<

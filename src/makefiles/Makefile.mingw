@@ -1,14 +1,4 @@
-CC		=@gcc
-CXX		=@g++
-LINK		=@g++
-STRIP		=@strip
-
-CXXFLAGS	:= $(CXXFLAGS) -mno-cygwin
-LDFLAGS		:= $(LDFLAGS) -mno-cygwin
-
-TARGET		= hypnos.exe
-
-include makefiles/Makefile.inc
+include makefiles/Makefile.mingw.inc
 
 ${TARGET}: ${OBJECTS}
 	@echo -e "\tLD    $@"

@@ -95,9 +95,13 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "timing.h"
 #include "inlines.h"
 #include "basics.h"
-#include "skills.h"
+#include "skills/skills.h"
 #include "map.h"
 #include "hypnos.h"
+#include "logsystem.h"
+#include "objects/citem.h"
+#include "objects/cchar.h"
+
 
 extern void initSignalHandlers();
 

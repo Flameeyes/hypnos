@@ -1,14 +1,5 @@
-CC		=@gcc
-CXX		=@g++
-LINK		=@g++
-
-CXXFLAGS	:= $(CXXFLAGS)
-
-TARGET		= hypnos
-
-include makefiles/Makefile.inc
+include makefiles/Makefile.linux.inc
 
 ${TARGET}: ${OBJECTS}
 	@echo -e "\tLD    $@"
 	$(LINK) $(LIBADD) $(OBJECTS) -o $(TARGET)
-
