@@ -29,6 +29,24 @@ template<typename T> inline void safedelete(T*& p) { delete p; p = NULL; }
 template<typename T> inline void safedeletearray(T*& p) { delete[] p; p = NULL; }
 template<typename T> inline void qswap(T& a, T& b) { T dummy; dummy = a; a = b; b = dummy; }
 
+/*!
+\brief Sets/unsets a flag in a flags variable
+\param[out] flags Reference to the flags variable
+\param flag To set/unset
+\param on If true the flag will be set, else unset
+
+This function is used by many classes to sets the internal flags. Original
+implementation used to create an internal setFlag() function to use, but using\
+this we will have less functions inside the classes.
+*/
+template<typename T> inline void setFlag(T &flags, T flag, bool on)
+{
+	if ( on )
+		flags |= flag;
+	else
+		flags &= ~flag;
+}
+
 inline bool chance(uint8_t percent) { return ( (rand()%100) < percent); }
 
 inline void SetTimerSec( uint32_t *timer, const short seconds)

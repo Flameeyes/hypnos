@@ -10,6 +10,7 @@
 #define __OBJECTS_CPARTY_H__
 
 #include "common_libs.h"
+#include "target.h"
 #include <wefts_mutex.h>
 
 /*!
@@ -65,13 +66,16 @@ protected:
 				//!< members to loot his corpse without making
 				//!< them criminals
 	};
-	typedef std::<sPartyMember> MemberSList;
+	typedef std::slist<sPartyMember> MemberSList;
 public:
 	static void deleteParties();
-	static void executeCommand(pClient, char *buffer, uint16_t size);        
+	static void executeCommand(pClient, const uint8_t *buffer, uint16_t size);
+
+	static void inviteMemberCB(pClient client, sTarget *targ);
+	static void removeMemberCB(pClient client, sTarget *targ);
 
 public:
-	cParty(pPC leader, pPC member);
+	cParty(pPC leader);
 	~cParty();
 	
 	void inviteMember(pClient client, pPC member);
@@ -80,11 +84,16 @@ public:
 	void disband();
 
 	PCSList getMembersList();
+	
+	void setCanLootMe(pPC member, bool setting);
 
 protected:
 	sPartyMember leader;		//!< Party's leader (can kick and add)
 	MemberSList members;		//!< Party's fully members
 	PCSList invited;		//!< Party's invited members
+public:
+	inline pPC getLeader() const
+	{ return leader.player; }
 };
 
 #endif

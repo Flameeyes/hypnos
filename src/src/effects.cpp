@@ -7,7 +7,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "effects.h"
-#include "packets/send.h"
+#include "packets/sent.h"
 #include "logsystem.h"	
 
 /*!
@@ -23,9 +23,12 @@ void nEffects::staticFX(pSerializable source, uint16_t eff, uint8_t speed, uint8
 {
 	if (part)
 	{
-		if (effect<=-1) eff = (part->effect[0] << 8) + part->effect[1];
-		if (speed<=-1) speed = part->effect[2];
-		if (loop<=-1) loop = part->effect[3];
+		if (eff == 0xFFFF)
+			eff = (part->effect[0] << 8) + part->effect[1];
+		if (speed == 0xFF)
+			speed = part->effect[2];
+		if (loop == 0xFF)
+			loop = part->effect[3];
 	}
 
 	int a0,a1,a2,a3,a4;

@@ -14,7 +14,6 @@
 #define __CACCOUNT_H__
 
 #include "common_libs.h"
-#include "backend/sqlite.h"
 #include "extras/jails.h"
 #include "enums.h"
 #include <wefts_mutex.h>
@@ -81,14 +80,6 @@ protected:
 	
 	static const uint8_t flagSeeGMPages	= 0x01;
 	static const uint8_t flagSeeConsPages	= 0x02;
-	
-	inline void setFlag(uint8_t flag, bool on)
-	{
-		if ( on )
-			flags |= flag;
-		else
-			flags &= ~flag;
-	}
 public:
 	//! Gets if the account can see GM Pages
 	inline const bool seeGMPages() const
@@ -96,7 +87,7 @@ public:
 	
 	//! (Un)sets the capability to see GM Pages
 	inline void setSeeGMPages(bool on = true)
-	{ setFlag(flagSeeGMPages, on); }
+	{ setFlag(flags, flagSeeGMPages, on); }
 	
 	//! Gets if the account can see Cons pages
 	inline const bool seeConsPages() const
@@ -104,13 +95,11 @@ public:
 	
 	//! (Un)sets the capability to see Cons Pages
 	inline void setSeeConsPages(bool on = true)
-	{ setFlag(flagSeeConsPages, on); }
+	{ setFlag(flags, flagSeeConsPages, on); }
 //@}
 
 	cAccount(std::string aName, std::string aPassword);
 		//!< Default constructor
-	cAccount(cSQLite::cSQLiteQuery::tRow row);
-		//!< Constructor with database row
 	~cAccount();
 		//!< Default destructor
 

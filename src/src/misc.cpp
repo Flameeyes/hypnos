@@ -7,6 +7,8 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "misc.h"
+#include "objects/cchar.h"
+#include "objects/citem.h"
 
 /*!
 \brief makes an npc attacking someone
@@ -773,4 +775,80 @@ int calcGoodValue(pChar npc, pItem pi, int value,int goodtype)
 	if (value<=0) value=1; // Added by Magius(CHE) (2)
 
 	return value;
+}
+
+/*!
+\author Luxor
+\brief Returns distance between two points.
+*/
+const double dist( const sLocation a, const sLocation b, bool countZ )
+{
+        int16_t xDiff = a.x - b.x;
+        int16_t yDiff = a.y - b.y;
+	double distance = hypot( abs( xDiff ), abs( yDiff ) );
+	if ( !countZ || a.z == b.z )
+		return distance;
+	
+	double distZ = abs( a.z - b.z );
+	return hypot( distance, distZ );
+}
+
+/*!
+\brief Returns a random number between bounds
+\return int the number
+\param nLowNum lower bound
+\param nHighNum higher bound
+*/
+int RandomNum(int nLowNum, int nHighNum)
+{
+	if (nHighNum - nLowNum + 1)
+		return ((rand() % (nHighNum - nLowNum + 1)) + nLowNum);
+	else
+		return nLowNum;
+}
+
+/*!
+\brief fills an integer array with tokens extracted from a string
+\author Xanathar
+\return int the number of number read from the string
+\param str the string
+\param array the array
+\param maxsize the size of array
+\param defval -1 -> the default value for uninitialized items
+\param base the base for number conversion
+\deprecated This is part of the old XSS stuff.
+*/
+int fillIntArray(char* str, int *array, int maxsize, int defval, int base)
+{
+	int i=0;
+	char tmp[1048];
+	char *mem;
+
+	if (strlen(str) > 1024) {
+		mem = new char[strlen(str)+5];
+	} else mem = tmp;  //xan -> we avoid dyna-alloc for strs < 1K
+	strcpy(tmp, str);
+
+	char *s;
+	char *delimiter = " ";
+
+	if (base != baseInArray) for (i = 0; i < maxsize; i++) array[i] = defval;
+
+	i = 0;
+
+	s = strtok(tmp,delimiter);
+
+	while ((s!=NULL)&&(i < maxsize)) {
+		if (base == baseInArray) {
+			array[i] = str2num(s, array[i]);
+			i++;
+		}
+		else {
+			array[i++] = str2num(s, base);
+		}
+		s = strtok(NULL, delimiter);
+	}
+
+	if (mem != tmp) safedeletearray(mem);
+	return i;
 }

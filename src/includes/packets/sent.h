@@ -13,6 +13,7 @@
 #include "enums.h"
 #include "structs.h"
 #include "speech.h"
+#include "objects/cserializable.h"
 
 /*!
 \author Flameeyes
@@ -24,7 +25,7 @@ protected:
 	uint8_t *buffer;	//!< Pointer to the buffer
 	uint16_t length;	//!< Length of the buffer
 
-	cPacketSend(uint8_t *aBuffer, uint16_t aLenght)
+	cPacketSend(uint8_t *aBuffer = NULL, uint16_t aLenght = 0)
 	{ buffer = aBuffer; length = aLenght; }
 
 public:
@@ -76,7 +77,7 @@ namespace nPackets {
 			\param r client who receives this packet can rename char p
 			*/
 			inline Status(pChar p, uint8_t t, bool r) :
-				cPacketSend(NULL, 0), pc(p), type(t), canrename(r)
+				pc(p), type(t), canrename(r)
 			{ }
 		
 			void prepare();
@@ -101,7 +102,7 @@ namespace nPackets {
 			\param p pc who sees the item
 			*/
 			inline ObjectInformation(pItem i, pPC p) :
-				cPacketSend(NULL, 0), pi(i), pc(p)
+				pi(i), pc(p)
 			{ }
 			void prepare();
 		};
@@ -127,7 +128,7 @@ namespace nPackets {
 			\param pos new position of item
 			*/
 			inline LSDObject(pItem i, pPC p, uint16_t c, sLocation pos) :
-				cPacketSend(NULL, 0), pi(i), pc(p), color(c), position(pos)
+				pi(i), pc(p), color(c), position(pos)
 			{ }
 			void prepare();
 		};
@@ -148,7 +149,7 @@ namespace nPackets {
 			\param p pc who is logging in
 			*/
 			inline LoginConfirmation(pPC p) :
-				cPacketSend(NULL, 0), pc(p)
+				pc(p)
 			{ }
 			void prepare();
 		};
@@ -171,7 +172,7 @@ namespace nPackets {
 			\param ghostize speech has to be mutated to ghost speech
 			*/
 			inline Speech(cSpeech &s, bool ghostize = false) :
-				cPacketSend(NULL, 0), speech(s), ghost(ghostize)
+				speech(s), ghost(ghostize)
 			{ }
 			void prepare();
 		};
@@ -191,7 +192,7 @@ namespace nPackets {
 			\param s serializable object to remove
 			*/
 			inline DeleteObj(pSerializable s) :
-				cPacketSend(NULL, 0), pser(s)
+				pser(s)
 			{ }
 		
 			void prepare();
@@ -212,7 +213,7 @@ namespace nPackets {
 			\param player current player
 			*/
 			inline DrawGamePlayer(pPC player) :
-				cPacketSend(NULL, 0), pc(player)
+				pc(player)
 			{ }
 		
 			void prepare();
@@ -235,7 +236,7 @@ namespace nPackets {
 			\param seq Sequence number to reject
 			*/
 			inline MoveReject(pPC player, uint8_t seq) :
-				cPacketSend(NULL, 0), pc(player), sequence(seq)
+				pc(player), sequence(seq)
 			{ }
 		
 			void prepare();
@@ -259,7 +260,7 @@ namespace nPackets {
 			*/
 		
 			inline MoveAcknowdledge(uint8_t s, uint8_t n) :
-				cPacketSend(NULL, 0), sequence(s), notoriety(n)
+				sequence(s), notoriety(n)
 			{ }
 		
 			void prepare();
@@ -279,7 +280,7 @@ namespace nPackets {
 			uint16_t amount;	//!< how many items in stack
 		public:
 			inline DragItem(pItem aItem, sLocation aDestination, uint16_t aAmount) :
-				cPacketSend(NULL, 0), item(aItem), destination(aDestination), amount(aAmount)
+				item(aItem), destination(aDestination), amount(aAmount)
 			{ }
 
 			void prepare();
@@ -297,7 +298,7 @@ namespace nPackets {
 			uint16_t gump;			//!< gump id
 		public:
 			inline OpenGump(uint32_t aSerial, uint16_t aGump) :
-				cPacketSend(NULL, 0), serial(aSerial), gump(aGump)
+				serial(aSerial), gump(aGump)
 			{ }
 
 			void prepare();
@@ -320,7 +321,7 @@ namespace nPackets {
 			\param aItem item to add
 			*/
 			inline ShowItemInContainer(pItem aItem) :
-				cPacketSend(NULL, 0), item(aItem)
+				item(aItem)
 			{ }
 
 			void prepare();
@@ -343,7 +344,7 @@ namespace nPackets {
 			\param aKicker gm who kick this client'pg
 			*/
 			inline Kick(pPC aKicker) :
-				cPacketSend(NULL, 0), kicker(aKicker)
+				kicker(aKicker)
 			{ }
 
 			void prepare();
@@ -362,7 +363,7 @@ namespace nPackets {
 			uint8_t mode; 		//!< I dont' really know. Sometimes you send a 5, sometimes a 0....
 		public:
 			inline BounceItem(uint8_t aMode = 0) :
-				cPacketSend(NULL, 0), mode(aMode)
+				mode(aMode)
 			{ }
 
 			void prepare();
@@ -382,7 +383,7 @@ namespace nPackets {
 		uint16_t y;	//!< y coordinate
 		public:
 			inline ClearSquare(uint16_t aX, uint16_t aY) :
-				cPacketSend(NULL, 0), x(aX), y(aY)
+				x(aX), y(aY)
 			{ }
 
 			void prepare();
@@ -397,8 +398,7 @@ namespace nPackets {
 		class PaperdollClothingUpdated : public cPacketSend
 		{
 		public:
-			inline PaperdollClothingUpdated() :
-				cPacketSend(NULL, 0)
+			inline PaperdollClothingUpdated()
 			{ }
 
 			void prepare();
@@ -415,7 +415,7 @@ namespace nPackets {
 		pChar chr;		//!< character
 		public:
 			inline MobileAttributes(pChar aChr) :
-				cPacketSend(NULL, 0), chr(aChr)
+				chr(aChr)
 			{ }
 
 			void prepare();
@@ -433,7 +433,7 @@ namespace nPackets {
 			pEquippable item;
 		public:
 			inline WornItem(pEquippable aItem) :
-				cPacketSend(NULL, 0), item(aItem)
+				item(aItem)
 			{ }
 
 			void prepare();
@@ -452,7 +452,7 @@ namespace nPackets {
 
 		public:
 			inline FightOnScreen(pChar aAttacker, pChar aDefender) :
-				cPacketSend(NULL, 0), attacker(aAttacker), defender(aDefender)
+				attacker(aAttacker), defender(aDefender)
 			{ }
 
 			void prepare();
@@ -481,7 +481,7 @@ namespace nPackets {
 				depends on other things other than that.
 			*/
 			inline PauseClient(uint8_t aPauseStatus) :
-				cPacketSend(NULL, 0), pausestatus(aPauseStatus)
+				pausestatus(aPauseStatus)
 			{ prepare(); }
 
 			void prepare();
@@ -501,7 +501,7 @@ namespace nPackets {
 			sLocation loc;		//!< destination
 		public:
 			inline Pathfinding(sLocation aLoc) :
-				cPacketSend(NULL, 0), loc(aLoc)
+				loc(aLoc)
 			{ }
 
 			void prepare();
@@ -525,7 +525,7 @@ namespace nPackets {
 			\param aSkill skill to send. if INVALID (or omitted) sends all the skills
 			*/
 			inline SendSkills(pChar aPc, uint8_t aSkill = UINVALID16) :
-				cPacketSend(NULL, 0), pc(aPc), skill(aSkill)
+				pc(aPc), skill(aSkill)
 			{ }
 
 			void prepare();
@@ -546,7 +546,7 @@ namespace nPackets {
 			\param n npc vendor
 			*/
 			inline ClearBuyWindow(pNPC n) :
-				cPacketSend(NULL, 0), npc(n)
+				npc(n)
 			{ }
 			void prepare();
 		};
@@ -562,8 +562,7 @@ namespace nPackets {
 		protected:
 			std::list<sContainerItem> items;
 		public:
-			inline ContainerItem() :
-				cPacketSend(NULL, 0)
+			inline ContainerItem()
 			{ }
 
 			/*!
@@ -595,7 +594,7 @@ namespace nPackets {
 			\param aMsgboard msgboard used. This is called only on msgboard first opening
 			*/
 			inline MsgBoardItemsinContainer(pMsgBoard aMsgboard) :
-				cPacketSend(NULL, 0), msgboard (aMsgboard)
+				msgboard (aMsgboard)
 			{ }
 		
 			void prepare();
@@ -618,7 +617,7 @@ namespace nPackets {
 			\param aLight light level ( 0x00=day, 0x09=OSI night, 0x1F=Black )
 			*/
 			inline PersonalLight(pChar aPc, uint8_t aLight) :
-				cPacketSend(NULL, 0), pc(aPc), light(aLight)
+				pc(aPc), light(aLight)
 			{ }
 
 			void prepare();
@@ -638,7 +637,7 @@ namespace nPackets {
 			\param l Light level
 			*/
 			inline OverallLight(uint8_t l) :
-				cPacketSend(NULL, 0), level(l)
+				level(l)
 			{ }
 		
 			void prepare();
@@ -670,7 +669,7 @@ namespace nPackets {
 			\param aType Warning type
 			*/
 			inline IdleWarning(uint8_t aType) :
-				cPacketSend(NULL, 0), type(aType)
+				type(aType)
 			{ }
 
 			void prepare();
@@ -695,7 +694,7 @@ namespace nPackets {
 			\param r should the sound be repeated?
 			*/
 			inline SoundFX(uint16_t m, sLocation l, bool r) :
-				cPacketSend(NULL, 0), model(m), loc(l), rep(r)
+				model(m), loc(l), rep(r)
 			{ }
 
 			void prepare();
@@ -711,8 +710,7 @@ namespace nPackets {
 		{
 		protected:
 		public:
-			inline StartGame() :
-				cPacketSend(NULL, 0)
+			inline StartGame()
 			{ }
 
 			void prepare();
@@ -748,23 +746,20 @@ namespace nPackets {
 			\param yy y position of pin (map relative, pixels from topleft corner)
 			*/
 			inline MapPlotCourse(pMap aMap, PlotCourseCommands aCommand, uint8_t aPin = 0, uint16_t xx = 0, uint16_t yy = 0) :
-				cPacketSend(NULL, 0), map (aMap), command (aCommand), pin (aPin),  x (xx), y (yy)
+				map (aMap), command (aCommand), pin (aPin),  x (xx), y (yy)
 			{ }
 
 			void prepare();
 		};
 		/*!
-		\brief Local time of server (or game time?)
+		\brief Local time of server (or game time?) (Packet 0x5B)
 		\author Chronodt
-		\note packet 0x5b
 		*/
-
 		class GameTime : public cPacketSend
 		{
 		protected:
 		public:
-			inline GameTime() :
-				cPacketSend(NULL, 0)
+			inline GameTime()
 			{ }
 			void prepare();
 		};
@@ -797,7 +792,7 @@ namespace nPackets {
 			uint8_t intensity;	//!< number of simultaneous weather effects on screen
 		public:
 			inline Weather(uint8_t aWeather, uint8_t aIntensity) :
-				cPacketSend(NULL, 0), weather(aWeather), intensity(aIntensity)
+				weather(aWeather), intensity(aIntensity)
 			{ }
 			void prepare();
 		};
@@ -818,7 +813,7 @@ namespace nPackets {
 			void preparePagesReadWrite();
 		public:
 			inline BookPagesReadWrite(pBook abook) :
-				cPacketSend(NULL, 0), book(abook)
+				book(abook)
 			{ }
 		
 			void prepare();
@@ -841,7 +836,7 @@ namespace nPackets {
 			void preparePagesReadWrite();
 		public:
 			inline BookPageReadOnly(pBook abook, uint16_t page) :
-				cPacketSend(NULL, 0), book(abook), p(page)
+				book(abook), p(page)
 			{ }
 		
 			void prepare();
@@ -862,7 +857,7 @@ namespace nPackets {
 			uint32_t cursorid;	//!< I SUPPOSE it is something related to the animation id of the targeting cursor
 		public:
 			inline TargetingCursor(uint8_t aType, uint32_t aCursorId) :
-				cPacketSend(NULL, 0), type(aType), cursorid(aCursorId)
+				type(aType), cursorid(aCursorId)
 			{ }
 			void prepare();
 		};
@@ -881,7 +876,7 @@ namespace nPackets {
 			\param midi Midi file id
 			*/
 			inline PlayMidi(uint16_t midi) :
-				cPacketSend(NULL, 0), id(midi)
+				id(midi)
 			{ }
 			void prepare();
 		};
@@ -904,7 +899,7 @@ namespace nPackets {
 			\param a id of the action to execute
 			*/
 			inline Action(pChar aChr, uint16_t a) :
-				cPacketSend(NULL, 0), pc(aChr), action(a)
+				pc(aChr), action(a)
 			{ }
 			void prepare();
 		};
@@ -926,7 +921,7 @@ namespace nPackets {
 
 		public:
 			inline SecureTrading(uint8_t aAction, pPC aTradePartner, uint32_t aId1, uint32_t aId2) :
-				cPacketSend(NULL, 0), action(aAction), tradePartner(aTradePartner), id1(aId1), id2(aId2)
+				action(aAction), tradePartner(aTradePartner), id1(aId1), id2(aId2)
 			{ }
 		
 			void prepare();
@@ -954,26 +949,26 @@ namespace nPackets {
 		public:
 			//! object to object constructor
 			inline GraphicalEffect(EffectType aType, pSerializable aSrc, pSerializable aDst, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
-				cPacketSend(NULL, 0), type(aType), src(aSrc), dst(aDst), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
+				type(aType), src(aSrc), dst(aDst), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
 			{
-				src_pos = src->getWorldPosition();
-				dst_pos = (dst) ? dst->getWorldPosition() : sLocation(0,0,0);
+				src_pos = src->getWorldLocation();
+				dst_pos = (dst) ? dst->getWorldLocation() : sLocation(0,0,0);
 			}
 			//! object to position constructor
 			inline GraphicalEffect(EffectType aType, pSerializable aSrc, sLocation aDst_pos, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
-				cPacketSend(NULL, 0), type(aType), src(aSrc), dst(NULL), dst_pos(aDst_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
+				type(aType), src(aSrc), dst(NULL), dst_pos(aDst_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
 			{
-				src_pos = src->getWorldPosition();
+				src_pos = src->getWorldLocation();
 			}
 			//! position to object constructor
 			inline GraphicalEffect(EffectType aType, sLocation aSrc_pos, pSerializable aDst, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
-				cPacketSend(NULL, 0), type(aType), src(NULL), dst(aDst), src_pos(aSrc_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
+				type(aType), src(NULL), dst(aDst), src_pos(aSrc_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
 			{
-				dst_pos = dst->getWorldPosition();
+				dst_pos = dst->getWorldLocation();
 			}
 			//! position to position constructor
 			inline GraphicalEffect(EffectType aType, sLocation aSrc_pos, sLocation aDst_pos, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
-				cPacketSend(NULL, 0), type(aType), src(NULL), dst(NULL), src_pos(aSrc_pos), dst_pos(aDst_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
+				type(aType), src(NULL), dst(NULL), src_pos(aSrc_pos), dst_pos(aDst_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
 			{ }
 		
 			void prepare();
@@ -1003,7 +998,7 @@ namespace nPackets {
 			\param mess message to be sent. May be omitted if command is DisplayBBoard
 			*/
 			inline BBoardCommand(pMsgBoard m, BBoardCommands com, pMessage mess = NULL) :
-				cPacketSend(NULL, 0), msgboard (m), command(com), message(mess)
+				msgboard (m), command(com), message(mess)
 			{ }
 		
 			void prepare();
@@ -1013,7 +1008,6 @@ namespace nPackets {
 		\brief Sends war mode actual status to client [packet 0x72]
 		\author Chronodt
 		*/
-
 		class WarModeStatus : public cPacketSend
 		{
 		protected:
@@ -1021,8 +1015,7 @@ namespace nPackets {
 			uint8_t buf[5];
 		
 		public:
-			inline WarModeStatus(uint8_t* buffer) :
-				cPacketSend(NULL, 0)
+			inline WarModeStatus(uint8_t* buffer)
 			{ memcpy(buf, buffer, 5);}
 
 			void prepare();
@@ -1039,8 +1032,7 @@ namespace nPackets {
 		protected:
 			uint8_t buf[2];
 		public:
-			inline PingReply(uint8_t* buffer) :
-				cPacketSend(NULL, 0)
+			inline PingReply(uint8_t* buffer)
 			{ memcpy(buf, buffer, 2);}
 
 			void prepare();
@@ -1055,8 +1047,7 @@ namespace nPackets {
 		protected:
 			pEquippableContainer container;
 		public:
-			inline BuyWindow(uint8_t* buffer) :
-				cPacketSend(NULL, 0)
+			inline BuyWindow(uint8_t* buffer)
 			{ }
 			void prepare();
 		};
@@ -1078,7 +1069,7 @@ namespace nPackets {
 
 		public:
 			inline UpdatePlayer(pChar pc, uint8_t newdir, uint8_t newflag, uint8_t newhi_color) :
-				cPacketSend(NULL, 0), chr(pc), dir(newdir), flag(newflag), hi_color(newhi_color)
+				chr(pc), dir(newdir), flag(newflag), hi_color(newhi_color)
 			{ }
 
 			void prepare();
@@ -1098,7 +1089,7 @@ namespace nPackets {
 			bool usedispz;		//!< use dispz instead of z as z-coordinate
 		public:
 			inline DrawObject(pClient aClient, pChar aPc, bool aUseDispZ) :
-				cPacketSend(NULL, 0), client(aClient), pc(aPc), usedispz(aUseDispZ)
+				client(aClient), pc(aPc), usedispz(aUseDispZ)
 			{ }
 			void prepare();
 		};
@@ -1108,17 +1099,20 @@ namespace nPackets {
 		\author Chronodt
 		\todo this function
 
-		This packet sends a dialog to the client. No checkbox, id or anything except buttons and text and their respective return code is sent
-		Useful for menus and (obiously) dialog box where multiple choices (or even a single ok button) have to be selected
+		This packet sends a dialog to the client. No checkbox, id or
+		anything except buttons and text and their respective return
+		code is sent.
+		Useful for menus and (obiously) dialog box where multiple
+		choices (or even a single ok button) have to be selected
 
-		This is the first of the "open gump" packets (the other ones are the 0xab and the 0xb0 packets)
+		This is the first of the "open gump" packets (the other ones are
+		the 0xab and the 0xb0 packets)
 		*/
 		class OpenDialogBox : public cPacketSend
 		{
 		protected:
 		public:
-			inline OpenDialogBox() :		//!< \todo finish this function
-				cPacketSend(NULL, 0)
+			inline OpenDialogBox()	//!< \todo finish this function
 			{ }
 			void prepare();
 		};
@@ -1142,7 +1136,7 @@ namespace nPackets {
 
 		public:
 			inline LoginDenied(uint8_t aReason) :
-				cPacketSend(NULL, 0), reason(aReason)
+				reason(aReason)
 			{ }
 
 			void prepare();
@@ -1170,7 +1164,7 @@ namespace nPackets {
 			uint8_t reason;
 		public:
 			inline CharDeleteError(uint8_t r) :
-				cPacketSend(NULL, 0), reason(r)
+				reason(r)
 			{ }
 			void prepare();
 		};
@@ -1186,7 +1180,7 @@ namespace nPackets {
 			pAccount account;
 		public:
 			inline CharAfterDelete(pAccount aAccount) :
-				cPacketSend(NULL, 0), account(aAccount)
+				account(aAccount)
 			{ }
 			void prepare();
 		};
@@ -1200,8 +1194,8 @@ namespace nPackets {
 		protected:
 			pChar pc;
 		public:
-			inline CharAfterDelete(pChar aPc) :
-				cPacketSend(NULL, 0), pc(aPc)
+			inline OpenPaperdoll(pChar aPc) :
+				pc(aPc)
 			{ }
 			void prepare();
 		};
@@ -1215,14 +1209,14 @@ namespace nPackets {
 		class CorpseClothing : public cPacketSend
 		{
 		protected:
-			std::slist<pEquippable> items;
+			EquippableSList items;
 			pContainer corpse;
 		public:
 			inline CorpseClothing(pContainer aCorpse) :
-				cPacketSend(NULL, 0), corpse(aCorpse)
+				corpse(aCorpse)
 			{ }
 			inline void addItem(pEquippable item)
-			{ items.push_back(item); }
+			{ items.push_front(item); }
 
 			void prepare();
 		};
@@ -1238,8 +1232,8 @@ namespace nPackets {
 			uint16_t port;		//!< port of game server
 			uint32_t newkey;	//!< new crypt key to use
 		public:
-			inline ConnectToGameServer(uint32_t aIp, uint16_t sPort, uint32_t aNewkey) :
-				cPacketSend(NULL, 0), ip(aIp), port(aPort), newkey(aNewKey)
+			inline ConnectToGameServer(uint32_t aIp, uint16_t aPort, uint32_t aNewkey) :
+				ip(aIp), port(aPort), newkey(aNewkey)
 			{ }
 			void prepare();
 		};
@@ -1258,7 +1252,7 @@ namespace nPackets {
 			\param m map
 			*/
 			inline OpenMapGump(pMap m) :
-				cPacketSend(NULL, 0), map (m)
+				map (m)
 			{ }
 			void prepare();
 		};
@@ -1274,7 +1268,7 @@ namespace nPackets {
 			bool readonly;	//!< Is the book read only?
 		public:
 			inline BookHeader(pBook abook, bool ro) :
-				cPacketSend(NULL, 0), book(abook), readonly(ro)
+				book(abook), readonly(ro)
 			{ }
 
 			void prepare();
@@ -1290,7 +1284,7 @@ namespace nPackets {
 			pSerializable object;	//!< Item/char to dye
 		public:
 			inline DyeWindow(pSerializable aObject) :
-				cPacketSend(NULL, 0), object(aObject)
+				object(aObject)
 			{ }
 			void prepare();
 		};
@@ -1307,7 +1301,7 @@ namespace nPackets {
 			uint8_t direction;	//!< direction of movement
 		public:
 			inline MovePlayer(uint8_t aDirection) :
-				cPacketSend(NULL, 0), direction(aDirection)
+				direction(aDirection)
 			{ }
 			void prepare();
 		};
@@ -1317,23 +1311,21 @@ namespace nPackets {
 		*/
 
 		/*!
-		\brief This is sent to bring up a house-placing target [packet 0x99]
+		\brief This is sent to bring up a house-placing target (Packet 0x99)
 		\author Kheru
-		\param multi_serial The serial of the multi deed
-		\param multi_model The house's multi number (item model - 0x4000)
-		\param radius The object's tile radius. [Default: 0 ??]
 		*/
 		class TargetMulti : public cPacketSend
 		{
 		protected:
-			uint32_t multi_serial;
-			uint16_t multi_model;
-			uint32_t radius;
+			uint32_t multi_serial;	//!< The serial of the multi deed
+			uint16_t multi_model;	//!< The house's multi number (item number - 0x4000)
+			uint32_t radius;	//!< The object's tile radius
 		public:
 			inline TargetMulti(uint32_t aSerial, uint16_t aModelID, uint32_t aRadius = 0x00000000) :
-				cPacketSend(NULL, 0), multi_serial(aSerial), multi_model(aModelID), radius(aRadius)
+				multi_serial(aSerial), multi_model(aModelID), radius(aRadius)
 			{ }
-			prepare();
+			
+			void prepare();
 		};
 
 		/*!
@@ -1349,14 +1341,16 @@ namespace nPackets {
 		class SellList : public cPacketSend
 		{
 		protected:
-			std::slist<pItem> items;
-			pNpc vendor;
+			ItemSList items;
+			pNPC vendor;
 		public:
-			inline SellList(pNpc aVendor) :
-				cPacketSend(NULL, 0), vendor(aVendor)
+			inline SellList(pNPC aVendor) :
+				vendor(aVendor)
 			{ }
+			
 			inline void addItem(pItem item)
-			{ items.push_back(item); }
+			{ items.push_front(item); }
+			
 			void prepare();
 		};
 
@@ -1370,7 +1364,7 @@ namespace nPackets {
 			pChar pc;
 		public:
 			inline UpdateHp(pChar aPc) :
-				cPacketSend(NULL, 0), pc(aPc)
+				pc(aPc)
 			{ }
 			void prepare();
 		};
@@ -1385,7 +1379,7 @@ namespace nPackets {
 			pChar pc;
 		public:
 			inline UpdateMana(pChar aPc) :
-				cPacketSend(NULL, 0), pc(aPc)
+				pc(aPc)
 			{ }
 			void prepare();
 		};
@@ -1400,7 +1394,7 @@ namespace nPackets {
 			pChar pc;
 		public:
 			inline UpdateStamina(pChar aPc) :
-				cPacketSend(NULL, 0), pc(aPc)
+				pc(aPc)
 			{ }
 			void prepare();
 		};
@@ -1419,7 +1413,7 @@ namespace nPackets {
 			\param str Url to open the browser to
 			*/
 			inline OpenBrowser(std::string str) :
-				cPacketSend(NULL, 0), url(str)
+				url(str)
 			{ }
 			void prepare();
 		};
@@ -1438,7 +1432,7 @@ namespace nPackets {
 
 		public:
 			inline TipsWindow(std::string aMessage, uint8_t TipType = 0x02, uint16_t TipNum = 0x0000) :
-				cPacketSend(NULL, 0), type(TipType), tip_num(TipNum), message(aMessage)
+				type(TipType), tip_num(TipNum), message(aMessage)
 			{ }
 
 			void prepare();
@@ -1467,34 +1461,36 @@ namespace nPackets {
 			\param v Character attacked (should be NULL to undo an attack)
 			*/
 			AttackAck(pChar v) :
-				cPacketSend(NULL, 0), victim(v)
+				victim(v)
 			{ }
 
 			void prepare();
 		};
 
 		/*!
-		\brief Opens Gump Text Entry Dialog [packet 0xab]
+		\brief Opens Gump Text Entry Dialog (Packet 0xAB)
 		\author Chronodt
 
-		This packet sends a text entry dialog to the client. No checkbox, id or anything except a single button, a description and a text entry to be filled
+		This packet sends a text entry dialog to the client. No
+		checkbox, id or anything except a single button, a description
+		and a text entry to be filled
 		Useful for name request popups, and similar dialogs
 
-		This is the second "open gump" packet (the other ones are the 0x7c and the 0xb0 packets)
+		This is the second "open gump" packet (the other ones are the
+		0x7c and the 0xb0 packets)
 		\todo awaiting gump remake
 		*/
 		class OpenTextEntryDialog : public cPacketSend
 		{
 		protected:
 		public:
-			inline OpenTextEntryDialog() :		//!< \todo finish this function
-				cPacketSend(NULL, 0)
+			inline OpenTextEntryDialog() //!< \todo finish this function
 			{ }
 			void prepare();
 		};
 
 		/*!
-		\brief Send character unicode speech to listener [packet 0xae]
+		\brief Send character unicode speech to listener (Packet 0xAE)
 		\author Chronodt
 		*/
 
@@ -1507,7 +1503,7 @@ namespace nPackets {
 			\param s what is being told
 			*/
 			inline UnicodeSpeech(cSpeech &s) :
-				cPacketSend(NULL, 0), speech(s)
+				speech(s)
 			{ }
 			void prepare();
 		};
@@ -1524,7 +1520,7 @@ namespace nPackets {
 			pContainer corpse;	//!< the new corpse for player
 		public:
 			inline DeathAction(pChar aPc, pContainer aCorpse) :
-				cPacketSend(NULL, 0), pc(aPc), corpse(aCorpse)
+				pc(aPc), corpse(aCorpse)
 			{ }
 			void prepare();
 		};
@@ -1533,19 +1529,21 @@ namespace nPackets {
 		\brief Opens Gump Menu Dialog [packet 0xb0]
 		\author Chronodt
 
-		This packet sends a gump to the client. This is the most complete dialog since you cann add icons, buttons, checkboxes
-		and everything else to the gump. Obiously is the gump packet that sends the most data to the client (and receives the most
+		This packet sends a gump to the client. This is the most
+		complete dialog since you can add icons, buttons, checkboxes
+		and everything else to the gump. Obiously is the gump packet
+		that sends the most data to the client (and receives the most
 		data for reply)
 
-		This is the third and last "open gump" packet (the other ones are the 0x7c and the 0xab packets)
+		This is the third and last "open gump" packet (the other ones
+		are the 0x7c and the 0xab packets)
 		\todo awaiting gump remake
 		*/
 		class OpenGumpMenuDialog : public cPacketSend
 		{
 		protected:
 		public:
-			inline OpenGumpMenuDialog() :		//!< \todo finish this function
-				cPacketSend(NULL, 0)
+			inline OpenGumpMenuDialog()//!< \todo finish this function
 			{ }
 			void prepare();
 		};
@@ -1560,8 +1558,7 @@ namespace nPackets {
 		{
 		protected:
 		public:
-			inline ChatMessage() :		//!< \todo finish this function
-				cPacketSend(NULL, 0)
+			inline ChatMessage() //!< \todo finish this function
 			{ }
 			void prepare();
 		};
@@ -1577,8 +1574,8 @@ namespace nPackets {
 		{
 		protected:
 		public:
-			inline OpenChatWindow() :		//!< \todo finish this function
-				cPacketSend(NULL, 0)
+			inline OpenChatWindow()	//!< \todo finish this function
+
 			{ }
 			void prepare();
 		};
@@ -1595,7 +1592,7 @@ namespace nPackets {
 			pSerializable object;	// since this packet is only sent immediately after the request
 		public:
 			inline PopupHelp(std::string &aText, pSerializable aObject) :
-				cPacketSend(NULL, 0), text(aText), object(aObject)
+				text(aText), object(aObject)
 			{ }
 			void prepare();
 		};
@@ -1611,7 +1608,7 @@ namespace nPackets {
 			pChar who;
 		public:
 			inline CharProfile(uint32_t s, pChar w) :
-				cPacketSend(NULL, 0), serial(s), who(w)
+				serial(s), who(w)
 			{ }
 			void prepare();
 		};
@@ -1641,7 +1638,7 @@ namespace nPackets {
 
 		public:
 			inline Features(uint16_t aFeatures) :
-				cPacketSend(NULL, 0), features(aFeatures)
+				features(aFeatures)
 			{ }
 
 			void prepare();
@@ -1652,8 +1649,7 @@ namespace nPackets {
 		protected:
 		
 		public:
-			inline LogoutStatus() :
-				cPacketSend(NULL, 0)
+			inline LogoutStatus()
 			{ }
 		
 			void prepare();
@@ -1665,7 +1661,7 @@ namespace nPackets {
 			uint8_t range;
 		public:
 			inline ClientViewRange(uint8_t r) :
-				cPacketSend(NULL, 0), range(r)
+				range(r)
 			{ }
 		
 			void prepare();
@@ -1674,6 +1670,8 @@ namespace nPackets {
 
 	} // Sent
 } // nPackets
+
+#include "packets/misccommand.h"
 
 #endif
 

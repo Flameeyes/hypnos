@@ -45,3 +45,5 @@ namespace nEffects {
 
 	void circleFX(pSerializable target, uint16_t id);
 };
+
+#endif

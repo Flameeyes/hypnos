@@ -9,6 +9,10 @@
 #ifndef __MISC_H__
 #define __MISC_H__
 
+#include "common_libs.h"
+#include "structs.h"
+#include "utils/strings.h"
+
 void npcattacktarget(pChar npc, pChar target);
 void callguards( int p );
 void usepotion(pChar pc, pItem pi);
@@ -24,6 +28,11 @@ int calcGoodValue(pChar npc, pItem pi, int value,int goodtype); // by Magius(CHE
 int whichbit( int number, int bit );
 int numbitsset( int number );
 
-std::string getSextantCoords(sPoint p, sPoint center)
+std::string getSextantCoords(sPoint p, sPoint center);
+
+const double dist( sLocation a, sLocation b, bool countZ = true);
+
+int fillIntArray(char* str, int *array, int maxsize, int defval = -1, int base = baseAuto);
+int RandomNum(int nLowNum, int nHighNum);
 
 #endif

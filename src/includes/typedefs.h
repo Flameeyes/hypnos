@@ -82,6 +82,7 @@ typedef std::slist<pChar> CharSList;		//!< Singly-linked list of characters
 typedef class cPC *pPC;				//!< Pointer to a pPC (playing character)
 typedef std::vector<pPC> PCVector;		//!< Vector of playing characters
 typedef std::list<pPC> PCList;			//!< List of playinc characters
+typedef std::slist<pPC> PCSList;		//!< Singly-liked list of playinc characters
 typedef class cNPC *pNPC;			//!< Pointer to a pNPC (non playing character)
 
 //@}
@@ -93,7 +94,10 @@ typedef class cNPC *pNPC;			//!< Pointer to a pNPC (non playing character)
 typedef class cItem *pItem;			//!< Pointer to a cItem
 typedef std::list<pItem> ItemList;		//!< List of items
 typedef std::slist<pItem> ItemSList;		//!< Singly-linked list of items
+
 typedef class cEquippable *pEquippable;		//!< Pointer to a cEquippable
+typedef std::slist<pEquippable> EquippableSList;//!< Singly-linked list of equippable items
+
 typedef class cBook *pBook;			//!< Pointer to a cBook
 typedef class cWeapon *pWeapon;			//!< Pointer to a cWeapon
 typedef class cContainer *pContainer;		//!< Pointer to a cContainer

@@ -160,12 +160,11 @@ public:
 	static const uint64_t flagDoorUse		= 0x0000000000080000ull;
 
 	static const uint64_t flagIsCasting		= 0x0000000000100000ull;
-	static const uint64_t flagIsGuarded		= 0x0000000000200000ull;
 
-	static const uint64_t flagHolyDamaged		= 0x0000000000400000ull;
-	static const uint64_t flagLightDamaged		= 0x0000000000800000ull;
+	static const uint64_t flagHolyDamaged		= 0x0000000000200000ull;
+	static const uint64_t flagLightDamaged		= 0x0000000000400000ull;
 
-	static const uint64_t flagIsMeditating		= 0x0000000001000000ull; //!< Char is using meditation
+	static const uint64_t flagIsMeditating		= 0x0000000000800000ull; //!< Char is using meditation
 //@}
 
 //@{
@@ -182,12 +181,6 @@ protected:
 	int32_t fame;	//!< fame of the char
 
 	float  fstm;	//!< Unavowed - stamina to remove the next step
-
-	inline void setFlag(uint64_t flag, bool set)
-	{
-		if ( set ) flags |= flag;
-		else flags &= ~flag;
-	}
 
 public:
 	inline void setHidden(HideType ht)
@@ -248,7 +241,7 @@ public:
 
 	inline const bool inGuardedArea() const
 	{ return false/*::region[region].priv & rgnFlagGuarded*/;
-	//!\todo need to fix this
+	//!\todo change when new regions' system works
 	}
 
 	const bool isGrey() const;
@@ -270,7 +263,7 @@ public:
 	\todo Reactivate GM Support
 	*/
 	inline const bool isOverWeight()
-	{ return /*!isGM() && */body->overloadedTeleport(); }
+	{ return !isGM() && body->overloadedTeleport(); }
 	
 	const bool canDoGestures() const;
 	const bool inDungeon() const;
@@ -283,40 +276,40 @@ public:
 	{ fame=newfame; }
 
 	inline void setFrozen(bool set = true)
-	{ setFlag(flagFrozen, set); }
+	{ setFlag(flags, flagFrozen, set); }
 
 	inline void setPermaHidden(bool set = true)
-	{ setFlag(flagPermaHidden, set); }
+	{ setFlag(flags, flagPermaHidden, set); }
 
 	inline void setReflection(bool set = true)
-	{ setFlag(flagReflection, set); }
+	{ setFlag(flags, flagReflection, set); }
 
 	inline void setPermaGrey(bool set = true)
-	{ setFlag(flagGrey|flagPermaGrey, set); }
+	{ setFlag(flags, flagGrey|flagPermaGrey, set); }
 
 	inline void setCanUseDoor(bool set = true)
-	{ setFlag(flagDoorUse, set); }
+	{ setFlag(flags, flagDoorUse, set); }
 
 	inline void makeInvulnerable(bool set = true)
-	{ setFlag(flagInvulnerable, set); }
+	{ setFlag(flags, flagInvulnerable, set); }
 
 	inline const bool inWarMode() const
 	{ return flags & flagWarMode; }
 
 	inline void setWarMode(bool set = true)
-	{ setFlag(flagWarMode, set); }
+	{ setFlag(flags, flagWarMode, set); }
 
 	inline void toggleWarMode()
 	{ flags ^= flagWarMode; warUpdate(); }
 
 	inline void setHolyDamaged(bool set = true)
-	{ setFlag(flagHolyDamaged, set); }
+	{ setFlag(flags, flagHolyDamaged, set); }
 	
 	inline void setLightDamaged(bool set = true)
-	{ setFlag(flagLightDamaged, set); }
+	{ setFlag(flags, flagLightDamaged, set); }
 	
 	inline void setIsMeditating(bool set = true)
-	{ setFlag(flagIsMeditating, set); }
+	{ setFlag(flags, flagIsMeditating, set); }
 	
 	void warUpdate();
 	
@@ -376,7 +369,7 @@ public:
 	{ return flags & flagAttackFirst; }
 
 	inline void setAttackFirst(bool set = true)
-	{ setFlag(flagAttackFirst, set); }
+	{ setFlag(flags, flagAttackFirst, set); }
 
 	void			checkPoisoning();
 	void 			fight(pChar pOpponent);
@@ -409,31 +402,17 @@ public:
 */
 protected:
 	uint32_slist	sentObjects;
-	uint8_t		dir;			//!< &0F=Direction
 	uint32_t	LastMoveTime;		//!< server time of last move
 
 public:
-	bool		canSee( pObject obj );	//!< can it see the object?
-	bool		seeForFirstTime( pObject obj );	//!< does it see the object for the first time?
-	bool		seeForLastTime( pObject obj ); //!< does it see the object for the first time?
-	void		walk();			//!< execute walk code (Luxor)
-	void		follow( pChar pc ); //!< follow pc
-	void 		flee( pChar pc, int32_t seconds=INVALID ); //!< flee from pc
-	void		pathFind( sLocation pos, bool bOverrideCurrentPath = true );
+	bool canSee( pObject obj );		//!< can it see the object?
+	bool seeForFirstTime( pObject obj );	//!< does it see the object for the first time?
+	bool seeForLastTime( pObject obj ); 	//!< does it see the object for the first time?
+	void walk();				//!< execute walk code (Luxor)
+	void follow( pChar pc ); 		//!< follow pc
+	void flee( pChar pc, int32_t seconds=INVALID ); //!< flee from pc
+	void pathFind( sLocation pos, bool bOverrideCurrentPath = true );
 	uint8_t getDirFromXY(sPoint p);
-//@}
-
-//@{
-/*!
-\name Mount
-*/
-public:
-	bool unmountHorse();
-	void mountHorse(pNPC mount);
-	pNPC getHorse();
-	void setOnHorse();
-	bool isMounting( );
-	bool isMounting(pNPC horse);
 //@}
 
 //@{
@@ -541,7 +520,6 @@ public:
 	int32_t			mn;  // Mana
 	int32_t			mn2; // Reserved for calculation
 
-	uint32_t		robe; // Serial number of generated death robe (If char is a ghost)
 	uint8_t			fixedlight; // Fixed lighting level (For chars in dungeons, where they dont see the night)
 	char			speech; // For NPCs: Number of the assigned speech block
 	uint32_t		att; // Intrinsic attack (For monsters that cant carry weapons)
@@ -571,7 +549,6 @@ public:
 	uint32_t		fishingtimer; // Timer used to delay the catching of fish
 
 	//<Luxor>
-	int32_t			resists[MAX_RESISTANCE_INDEX];
 	DamageType		damagetype;
 	//</Luxor>
 	int32_t			advobj;		//!< Has used advance gate?
@@ -635,8 +612,6 @@ public:
 	uint32_t		questEscortPostSerial;	// The global posting serial number of the escort message
 	uint32_t		murdererSer;			// Serial number of last person that murdered this char
 
-	// COORDINATE	previousLocation;
-
 	uint32_t 		time_unused;
 	uint32_t 		timeused_last;
 
@@ -645,9 +620,6 @@ public:
 private:
 	inline void resetFlags()
 	{ flags = 0; }
-
-	inline void resetResists()
-	{ memset(resists, 0, sizeof(resists)); }
 
 	inline void resetLockSkills()
 	{ memset(lockSkill, 0, sizeof(lockSkill)); }
@@ -681,8 +653,6 @@ public:
 	inline const bool resist(uint32_t n) const
 	{ return flags & n; }
 
-	void			sysmsg(const char *txt, ...) PRINTF_LIKE(2,3)
-
 	void                    attackStuff (pChar victim);
 	void			helpStuff(pChar pc_i);
 	void			applyPoison(PoisonType poisontype, int32_t secs = INVALID);
@@ -697,6 +667,11 @@ public:
 //@{
 /*!
 \name Talk and Emote stuff
+
+Here we can find the data about the color used by the player to talk, and the
+functions to use to make the player talk, emote, or talk using runic stuff.
+
+\todo Colors are probably client's related stuff, so should moved to cClient.
 */
 protected:
 	uint16_t emotecolor;		//!< Color for emote messages

@@ -112,25 +112,25 @@ public:
 	{ return flags & flagCanTrain; }
 
 	inline void setCanTrain(bool on = true)
-	{ setFlag(flagCanTrain, on); }
+	{ setFlag(flags, flagCanTrain, on); }
 
 	inline const bool isShopKeeper() const
 	{ return flags & flagShopKeeper; }
 
 	inline void setShopKeeper(bool on = true)
-	{ setFlag(flagShopKeeper, on); }
+	{ setFlag(flags, flagShopKeeper, on); }
 
 	inline const bool isDispellable() const
 	{ return flags & flagDispellable; }
 
 	inline void setDispellable(bool on = true)
-	{ setFlag(flagDispellable, on); }
+	{ setFlag(flags, flagDispellable, on); }
 
 	inline const bool canWaterWalk() const
 	{ return flags & flagWaterWalk; }
 
 	inline void setCanWaterWalk(bool on = true)
-	{ setFlag(flagWaterWalk, on); }
+	{ setFlag(flags, flagWaterWalk, on); }
 
 //@}
 

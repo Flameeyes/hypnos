@@ -23,7 +23,7 @@ splitting it out of the main packets file to maintain them smaller.
 #error Never include this file directly
 #endif
 
-namespace nPackets::Sent {
+namespace nPackets { namespace Sent {
 	/*!
 	\brief Sends to a party the notify of an accepted add member invitation
 		(Subcommand 0x06-0x01)
@@ -64,7 +64,7 @@ namespace nPackets::Sent {
 		pPC removed;	//!< Member removed from the party
 		pParty party;	//!< Party to send to the members
 	public:
-		PartyRemvoeMember(pPC r, pParty p)
+		PartyRemoveMember(pPC r, pParty p)
 			: removed(r), party(p)
 		{ }
 	};
@@ -107,5 +107,7 @@ namespace nPackets::Sent {
 		PartyBroadcast(pPC s, cSpeech msg)
 			: sender(s), message(msg)
 		{ }
-	}
-};
+		
+		void prepare();
+	};
+} };

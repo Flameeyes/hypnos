@@ -100,31 +100,31 @@ public:
 	{ return flags & flagBroadcast; }
 
 	inline void setBroadcast(bool set = true)
-	{ setFlag(flagBroadcast, set); }
+	{ setFlag(flags, flagBroadcast, set); }
 
 	inline const bool canViewHouseIcon() const
 	{ return flags & flagViewHouseIcon; }
 
 	inline void setViewHouseIcon(bool set = true)
-	{ setFlag(flagViewHouseIcon, set); }
+	{ setFlag(flags, flagViewHouseIcon, set); }
 
 	inline const bool canSeeSerials() const
 	{ return flags & flagCanViewSerials; }
 
 	inline void setCanSeeSerials(bool set = true)
-	{ setFlag(flagCanViewSerials, set); }
+	{ setFlag(flags, flagCanViewSerials, set); }
 
 	inline const bool canSnoop() const
 	{ return flags & flagCanSnoopAll; }
 
 	inline void setSnoopAll(bool set = true)
-	{ setFlag(flagCanSnoopAll, set); }
+	{ setFlag(flags, flagCanSnoopAll, set); }
 
 	inline const bool canAllMove() const
 	{ return flags & flagAllMove; }
 
 	inline void setAllMove(bool set = true)
-	{ setFlag(flagAllMove, set); }
+	{ setFlag(flags, flagAllMove, set); }
 
 //@}
 

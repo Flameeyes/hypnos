@@ -159,24 +159,12 @@ protected:
 	uint64_t flags;	//!< Common flags for objects
 
 	static const uint64_t flagIncognito	= 0x8000000000000000ull; //!< Is under incognito effect?
-	
-	/*!
-	\brief Set a given flag on or off
-	\param flag Flag to set
-	\param set true if the flag must be set on, else false
-	*/
-	inline void setFlag(uint64_t flag, bool set)
-	{
-		if ( set ) flags |= flag;
-		else flags &= ~flag;
-	}
-
 public:
-	//! Gets the character flags
+	//! Gets the object's flags
 	inline const uint64_t getFlags() const
 	{ return flags; }
 
-	//! Sets the character flags
+	//! Sets the object's flags
 	inline void setFlags(uint64_t newFlags)
 	{ flags = newFlags; }
 
@@ -184,7 +172,7 @@ public:
 	{ return flags & flagIncognito; }
 	
 	inline void setIncognito(bool set = true)
-	{ setFlag(flagIncognito, set); }
+	{ setFlag(flags, flagIncognito, set); }
 //@}
 
 //@{
@@ -205,7 +193,7 @@ public:
 //@}
 
 	uint32_t disabled;		//!< Disabled object timer, cant trigger.
-	std::string* disabledmsg;	//!< Object is disabled, so display this message.
+	std::string disabledmsg;	//!< Object is disabled, so display this message.
 };
 
-#endif	// __OBJECT_H
+#endif

@@ -7,6 +7,9 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "objects/cparty.h"
+#include "objects/cclient.h"
+#include "objects/cpc.h"
+#include "packets/sent.h"
 
 /*!
 \brief Delete the pointers of the parties.
@@ -40,7 +43,7 @@ party related stuff inside this file.
 
 \see nPackets::Received::MiscCommand
 */
-void cParty::executeCommand(pClient client, char *buffer, uint16_t size)
+void cParty::executeCommand(pClient client, const uint8_t *buffer, uint16_t size)
 {
 	assert(buffer[0] == '0xBF'); // make sure this is a 0xBF package.
 	// Maybe we should also add an assert for make sure it's the true 0x06
@@ -49,7 +52,7 @@ void cParty::executeCommand(pClient client, char *buffer, uint16_t size)
 	pPC pc = client->currChar();
 	if ( ! pc ) return; // MiscCommand doesn't validate it, so we do
 	
-	char *partyPkg = buffer+5; // Here we are at the start of the party
+	const uint8_t *partyPkg = buffer+5; // Here we are at the start of the party
 				   // Subpackage.
 	
 	switch( partyPkg[0] )
@@ -59,8 +62,7 @@ void cParty::executeCommand(pClient client, char *buffer, uint16_t size)
 			uint32_t newMemberSerial = LongFromCharPtr(partyPkg+1);
 			if ( ! newMemberSerial )
 			{
-				// Now we should show to the client a target to select
-				// the player to add
+				client->sendCharTarget(&cParty::inviteMemberCB);
 			} else {
 				pPC newMember = dynamic_cast<pPC>(cSerializable::findBySerial(newMemberSerial));
 			
@@ -80,6 +82,7 @@ void cParty::executeCommand(pClient client, char *buffer, uint16_t size)
 			uint32_t removedSerial = LongFromCharPtr(partyPkg+1);
 			if ( ! removedSerial )
 			{
+				client->sendCharTarget(&cParty::removeMemberCB);
 			} else {
 				pPC removed = dynamic_cast<pPC>(cSerializable::findBySerial(removedSerial));
 				
@@ -109,7 +112,7 @@ void cParty::executeCommand(pClient client, char *buffer, uint16_t size)
 				return;
 			}
 			
-			cSpeech msg(partyPkg+5);
+			cSpeech msg((char*)(partyPkg+5));
 			
 			nPackets::Sent::PartyPrivateMessage pk(target, msg);
 			//! And then resend it to the party
@@ -122,7 +125,7 @@ void cParty::executeCommand(pClient client, char *buffer, uint16_t size)
 			// Not in a party? ingnore it
 			if ( ! pc->getParty() ) return;
 			
-			cSpeech msg(partyPkg+1);
+			cSpeech msg((char*)(partyPkg+1));
 			
 			nPackets::Sent::PartyBroadcast pk(pc, msg);
 			
@@ -165,6 +168,57 @@ void cParty::executeCommand(pClient client, char *buffer, uint16_t size)
 }
 
 /*!
+\brief Adds a player to the party (Callback)
+\param client Client who performed the target
+\param targ Target of the client
+\note This is a target callback function
+*/
+void cParty::inviteMemberCB(pClient client, sTarget *targ)
+{
+	pParty party = client->currChar()->getParty();
+	if ( ! party ) return;
+	
+	pPC pc_target = dynamic_cast<pPC>(targ->clicked);
+	
+	if ( ! pc_target )
+	{
+		client->sysmessage("You must target a player!");
+		return;
+	}
+	
+	party->inviteMember(client, pc_target);
+}
+
+/*!
+\brief Removes a player from the party (Callback)
+\param client Client who performed the target
+\param targ Target of the client
+\note This is a target callback function
+*/
+void cParty::removeMemberCB(pClient client, sTarget *targ)
+{
+	pParty party = client->currChar()->getParty();
+	if ( ! party ) return;
+	
+	pPC pc_target = dynamic_cast<pPC>(targ->clicked);
+	
+	if ( ! pc_target )
+	{
+		client->sysmessage("You must target a player!");
+		return;
+	}
+	
+
+	if ( pc_target->getParty() != party )
+	{
+		client->sysmessage("%s isn't in your party", pc_target->getBody()->getCurrentName().c_str());
+		return;
+	}
+	
+	party->removeMember(pc_target);
+}
+
+/*!
 \brief Constructor
 \note cParty can only be created having a leader and the first member
 \param leader Leader (creator) of the party
@@ -172,16 +226,16 @@ void cParty::executeCommand(pClient client, char *buffer, uint16_t size)
 	invalid party.
 \note Constructor register the party in the \ref parties list
 */
-void cParty::cParty(pPC leader)
+cParty::cParty(pPC leader)
 {
 	leader->setParty(this);
 	
 	parties.push_front(this);
 }
 
-void cParty::~cParty()
+cParty::~cParty()
 {
-	PartySList::iterator it = parties.find(this);
+	PartySList::iterator it = std::find(this, parties.begin(), parties.end());
 	if  ( it != parties.end() )
 		parties.erase(it);
 }
@@ -203,7 +257,7 @@ void cParty::inviteMember(pClient client, pPC member)
 	std::string name = member->getBody()->getCurrentName();
 	
 	pClient invclient = NULL;
-	if ( ! (invclient = member->getclient()) )
+	if ( ! (invclient = member->getClient()) )
 	{
 		client->sysmessage("%s is not logged on", name.c_str());
 		return;
@@ -213,20 +267,20 @@ void cParty::inviteMember(pClient client, pPC member)
 	if ( member->getParty() )
 	{
 		if ( member->getParty() == this )
-			client->sysmessage("%s is already in this party", name.c_str())
+			client->sysmessage("%s is already in this party", name.c_str());
 		else
 			client->sysmessage("%s is already in a party", name.c_str());
 		return;
 	}
 	
-	PCSList::iterator it = find(member, invited.begin(); invited.end());
+	PCSList::iterator it = std::find(member, invited.begin(), invited.end());
 	if ( it != invited.end() )
 	{
 		client->sysmessage("%s is already invited to join the party", name.c_str());
 		return;
 	}
 	
-	invited.push_front(pc);
+	invited.push_front(member);
 	
 	member->setParty(this);
 	
@@ -373,4 +427,12 @@ PCSList cParty::getMembersList()
 			ret.push_front( (*it).player );
 
 	return ret;
+}
+
+void cParty::setCanLootMe(pPC member, bool setting)
+{
+	MemberSList::iterator it = std::find(member, members.begin(), members.end());
+	assert( it != members.end() );
+	
+	(*it).allowLoot = setting;
 }

@@ -347,42 +347,49 @@ public:
 	{ return flags & flagPileable; }
 
 	inline void setPileable(bool set = true)
-	{ setFlag(flagPileable, set); }
+	{ setFlag(flags, flagPileable, set); }
 
 	inline const bool canDecay() const
 	{ return flags & flagCanDecay; }
 
 	inline void setDecay(bool set = true)
-	{ setFlag(flagCanDecay, set); }
+	{ setFlag(flags, flagCanDecay, set); }
 
 	inline const bool isNewbie() const
 	{ return flags & flagNewbie; }
 
 	inline void setNewbie(bool set = true)
-	{ setFlag(flagNewbie, set); }
+	{ setFlag(flags, flagNewbie, set); }
 
 	inline const bool isDispellable() const
 	{ return flags & flagDispellable; }
 
 	inline void setDispellable(bool set = true)
-	{ setFlag(flagDispellable, set); }
+	{ setFlag(flags, flagDispellable, set); }
 	
 	inline const bool useAnimID() const
 	{ return flags & flagUseAnimID; }
 	
 	inline void setUseAnimID(bool set = true)
-	{ setFlag(flagUseAnimID, set); }
+	{ setFlag(flags, flagUseAnimID, set); }
 	
 	inline const bool isDyeable() const
 	{ return flags & flagDyeable; }
 	
 	inline void setDyeable(bool set = true)
-	{ setFlag(flagDyeable, set); }
+	{ setFlag(flags, flagDyeable, set); }
 //@}
 
 //@{
 /*!
 \name Containers
+
+An item can either be in world or in a container. For container this time we
+don't intend a cContainer instance, because the container of an item can also be
+a body, if the item is equipped.
+
+This complicate the container's stuff because we must have functions which works
+with pContainer and ones which works with pObject.
 */
 protected:
 	pObject cont;
@@ -407,8 +414,8 @@ public:
 	inline const bool isSecureContainer() const
 	{ return type==8 || type==13 || type==64; }
 
-	int32_t		secureIt; // secured chests
-	void		putInto( pItem pi );
+	int32_t	 secureIt; // secured chests
+	void putInto( pItem pi );
 //@}
 
 //@{
@@ -501,6 +508,9 @@ public:
 //@{
 /*!
 \name Weapon and armour related
+
+\deprecated All this should be moved inside cWeapon or cArmor, or cEquippable,
+	if common between them.
 */
 	uint32_t	att;		//!< Item attack
 	uint32_t	def;		//!< Item defense
@@ -536,7 +546,7 @@ public:
 //@{
 /*!
 \name Corpse related
-\todo Move them to cContainer at least, or crate cCorpse
+\deprecated Move them to cContainer at least, or create cCorpse
 */
 protected:
 	std::string	murderer;	//!< char's name who killed the char (forensic ev.)
@@ -553,6 +563,9 @@ public:
 /*!
 \name Creation related
 \author Magius (CHE)
+
+\todo Change all this into a struct and place here a pointer to that struct, so
+	if an item hasn't this stuff we don't waste too much space.
 */
 	int32_t		smelt;		//!< for item smelting
 	/*!
@@ -615,6 +628,8 @@ public:
 //@{
 /*!
 \name Item Use
+\todo All the minUsingSkill must be changed to a parameterized functions to
+	allow \c n values.
 */
 protected:
 	bool ToolWearOut(pClient client);			//!< Check for tool consumption. Used in doubleClick
@@ -673,11 +688,15 @@ public:
 //@{
 /*!
 \name Special Use
+
+\deprecated Many of these things must be removed from there or moved out of this
+	section.
 */
 	uint32_t	type;		//!< For things that do special things on doubleclicking
 	uint32_t	type2;
 	int32_t		carve;		//!< for new carve system
 	int32_t		wipe;		//!< Should this item be wiped with the /wipe command
+					//!< \todo This should be changed to a flag
 	uint32_t	time_unused;	//!< used for house decay and possibly for more in future, gets saved
 	uint32_t	timeused_last;	//!< helper attribute for time_unused, doesnt get saved
 //@}
