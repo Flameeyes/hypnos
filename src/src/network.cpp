@@ -20,14 +20,9 @@
 #include "trade.h"
 #include "sndpkg.h"
 #include "walking.h"
-#include "range.h"
 #include "inlines.h"
 #include "skills.h"
-
-#ifdef ENCRYPTION
 #include "encryption/clientcrypt.h"
-#endif
-//#define USE_MTHREAD_SEND
 
 cNetwork	*Network;
 

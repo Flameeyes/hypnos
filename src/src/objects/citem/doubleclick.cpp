@@ -5,31 +5,20 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-
-/*!
-\file
-\brief Item use
-*/
-
 #include "common_libs.h"
 #include "network.h"
-#include "itemid.h"
 #include "sndpkg.h"
 #include "debug.h"
 #include "magic.h"
 #include "house.h"
 #include "npcai.h"
 #include "mount.h"
-#include "nxw_utils.h"
 #include "data.h"
 #include "boats.h"
-#include "set.h"
 #include "map.h"
 #include "basics.h"
 #include "inlines.h"
 #include "skills.h"
-#include "classes.h"
-#include "range.h"
 #include "utils.h"
 #include "fishing.h"
 

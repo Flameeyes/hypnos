@@ -11,7 +11,6 @@
 \author Ripper
 \date 31/01/2001
 */
-
 #include "common_libs.h"
 #include "sndpkg.h"
 #include "debug.h"
@@ -19,7 +18,6 @@
 #include "skills/fishing.h"
 #include "basics.h"
 #include "inlines.h"
-#include "range.h"
 
 TIMERVAL Fishing::basetime = FISHINGTIMEBASE;
 TIMERVAL Fishing::randomtime = FISHINGTIMER;

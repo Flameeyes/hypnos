@@ -21,7 +21,6 @@
 #include "menu.h"
 #include "logsystem.h"
 #include "basics.h"
-#include "cmds.h"
 #include "settings.h"
 
 /*!

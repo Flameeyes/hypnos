@@ -13,7 +13,6 @@
 #include "common_libs.h"
 #include "sndpkg.h"
 #include "debug.h"
-#include "set.h"
 #include "inlines.h"
 #include "basics.h"
 
@@ -23,7 +22,7 @@ void read_in_teleport()
 	char seps[]	= " ,\t\n";
 	char *token;
 
-    cScpIterator* iter = NULL;
+	cScpIterator* iter = NULL;
 
 	iter = Scripts::Regions->getNewIterator("SECTION TELEPORT");
 

@@ -5,10 +5,6 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-*/
-
 #include "common_libs.h"
 #include "walking.h"
 #include "network.h"
@@ -20,11 +16,9 @@
 #include "telport.h"
 #include "weight.h"
 #include "boats.h"
-#include "set.h"
 #include "map.h"
 #include "inlines.h"
 #include "basics.h"
-#include "range.h"
 #include "utils.h"
 
 /*!

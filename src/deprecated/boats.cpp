@@ -9,7 +9,6 @@
 #include "boats.h"
 #include "sndpkg.h"
 #include "map.h"
-#include "classes.h"
 #include "inlines.h"
 #include "objects/citem.h"
 #include "objects/cchar.h"

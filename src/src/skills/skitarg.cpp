@@ -12,12 +12,10 @@
 #include "npcai.h"
 #include "debug.h"
 #include "weight.h"
-#include "set.h"
 #include "map.h"
 #include "skills.h"
 #include "basics.h"
 #include "inlines.h"
-#include "range.h"
 
 pItem Check4Pack(pClient client)
 {
@@ -835,8 +833,6 @@ void Skills::target_cookOnFire(pClient client, pTarget t )
 * the edges of the detect circle. Also low skill detecters cannot find high skilled
 * hiders as easily as low skilled hiders.
 */
-
-#include "set.h"
 
 /*!
 \author Luxor

@@ -6,7 +6,6 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
-#include "itemid.h"
 #include "magic.h"
 #include "sregions.h"
 #include "sndpkg.h"
@@ -16,7 +15,6 @@
 #include "data.h"
 #include "map.h"
 #include "inlines.h"
-#include "classes.h"
 #include "skills.h"
 #include "utils.h"
 

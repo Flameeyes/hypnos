@@ -12,14 +12,12 @@
 #include "basics.h"
 #include "sndpkg.h"
 #include "sregions.h"
-#include "itemid.h"
 #include "tmpeff.h"
 #include "speech.h"
 #include "weight.h"
 #include "inlines.h"
 #include "basics.h"
 #include "skills.h"
-#include "range.h"
 #include "utils.h"
 
 void gmyell(char *txt)

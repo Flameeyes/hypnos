@@ -9,14 +9,12 @@
 #include "sndpkg.h"
 #include "debug.h"
 #include "calendar.h"
-#include "set.h"
 #include "house.h"
 #include "npcai.h"
 #include "network.h"
 #include "commands.h"
 #include "boats.h"
 #include "inlines.h"
-#include "classes.h"
 #include "utils.h"
 
 #define MAXBUFFER_REAL MAXBUFFER

@@ -9,8 +9,6 @@
 #include "debug.h"
 #include "tmpeff.h"
 #include "sndpkg.h"
-#include "set.h"
-#include "nxw_utils.h"
 #include "inlines.h"
 #include "skills.h"
 #include "utils.h"

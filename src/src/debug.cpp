@@ -8,7 +8,6 @@
 #include "common_libs.h"
 #include "debug.h"
 #include "version.h"
-#include "nxw_utils.h"
 #include "inlines.h"
 
 #include <signal.h>

@@ -11,7 +11,6 @@
 */
 
 #include "common_libs.h"
-#include "itemid.h"
 #include "sregions.h"
 #include "sndpkg.h"
 #include "magic.h"
@@ -20,9 +19,7 @@
 #include "race.h"
 #include "npcai.h"
 #include "network.h"
-#include "set.h"
-#include "jail.h"
-#include "nxw_utils.h"
+#include "extras/jail.h"
 #include "weight.h"
 #include "boats.h"
 #include "walking.h"
@@ -31,10 +28,8 @@
 #include "basics.h"
 #include "magic.h"
 #include "skills.h"
-#include "range.h"
 #include "utils.h"
 #include "targeting.h"
-#include "cmds.h"
 
 uint32_t cChar::nextSerial = 1;
 

@@ -21,7 +21,6 @@ bool g_bNTService = false;
 #include <stdio.h>
 #include <conio.h>
 #include <stdlib.h>
-#include "nxw_utils.h"
 
 char *SERVICE_NAME = "Hypnos Server Emulator";
 extern bool keeprun;

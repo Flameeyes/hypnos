@@ -8,14 +8,11 @@
 #include "common_libs.h"
 #include "sndpkg.h"
 #include "npcai.h"
-#include "nxw_utils.h"
 #include "weight.h"
-#include "set.h"
 #include "skills.h"
-#include "classes.h"
 #include "inlines.h"
-#include "range.h"
 #include "settings.h"
+#include "backend/scripting.h"
 
 /*!
 \brief Snoop into container
