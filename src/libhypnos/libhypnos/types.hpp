@@ -22,12 +22,14 @@ libhypnos library and are common to different applications of the suite.
 
 #ifdef HAVE_STDINT_H
 	#include <stdint.h>
-#elif define HAVE_SYS_TYPES_H
+#elif defined HAVE_INTTYPES_H
+	#include <inttypes.h>
+#elif defined HAVE_SYS_TYPES_H
 	#includ <sys/types.h>
 #else
-	#error "Your compiler doesn't support stdint.h header, and your system doesn't " \
-		"provide a sys/types.h header, too. Report this to Hypnos maintainers " \
-		"and they'll try to make hypnos work for you."
+	#error "Hypnos needs standard integer types, to avoid errors on types' lenghts." \
+		"Your platform or your compiler seems not to support them. Please report " \
+		"this to Hypnos development team."
 #endif
 
 namespace nLibhypnos {

@@ -19995,7 +19995,8 @@ fi
 
 
 
-for ac_header in stdint.h sys/types.h
+
+for ac_header in stdint.h inttypes.h sys/types.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then
@@ -20159,6 +20160,8 @@ cat >>conftest.$ac_ext <<_ACEOF
 
 		#ifdef HAVE_STDINT_H
 		#include <stdint.h>
+		#elif defined HAVE_INTTYPES_H
+		#include <inttypes.h>
 		#elif defined HAVE_SYS_TYPES_H
 		#include <sys/types.h>
 		#endif
@@ -20230,6 +20233,8 @@ cat >>conftest.$ac_ext <<_ACEOF
 
 		#ifdef HAVE_STDINT_H
 		#include <stdint.h>
+		#elif defined HAVE_INTTYPES_H
+		#include <inttypes.h>
 		#elif defined HAVE_SYS_TYPES_H
 		#include <sys/types.h>
 		#endif
@@ -20301,6 +20306,8 @@ cat >>conftest.$ac_ext <<_ACEOF
 
 		#ifdef HAVE_STDINT_H
 		#include <stdint.h>
+		#elif defined HAVE_INTTYPES_H
+		#include <inttypes.h>
 		#elif defined HAVE_SYS_TYPES_H
 		#include <sys/types.h>
 		#endif
@@ -20372,6 +20379,8 @@ cat >>conftest.$ac_ext <<_ACEOF
 
 		#ifdef HAVE_STDINT_H
 		#include <stdint.h>
+		#elif defined HAVE_INTTYPES_H
+		#include <inttypes.h>
 		#elif defined HAVE_SYS_TYPES_H
 		#include <sys/types.h>
 		#endif
@@ -20443,6 +20452,8 @@ cat >>conftest.$ac_ext <<_ACEOF
 
 		#ifdef HAVE_STDINT_H
 		#include <stdint.h>
+		#elif defined HAVE_INTTYPES_H
+		#include <inttypes.h>
 		#elif defined HAVE_SYS_TYPES_H
 		#include <sys/types.h>
 		#endif
@@ -20514,6 +20525,8 @@ cat >>conftest.$ac_ext <<_ACEOF
 
 		#ifdef HAVE_STDINT_H
 		#include <stdint.h>
+		#elif defined HAVE_INTTYPES_H
+		#include <inttypes.h>
 		#elif defined HAVE_SYS_TYPES_H
 		#include <sys/types.h>
 		#endif
@@ -20585,6 +20598,8 @@ cat >>conftest.$ac_ext <<_ACEOF
 
 		#ifdef HAVE_STDINT_H
 		#include <stdint.h>
+		#elif defined HAVE_INTTYPES_H
+		#include <inttypes.h>
 		#elif defined HAVE_SYS_TYPES_H
 		#include <sys/types.h>
 		#endif
@@ -20656,6 +20671,8 @@ cat >>conftest.$ac_ext <<_ACEOF
 
 		#ifdef HAVE_STDINT_H
 		#include <stdint.h>
+		#elif defined HAVE_INTTYPES_H
+		#include <inttypes.h>
 		#elif defined HAVE_SYS_TYPES_H
 		#include <sys/types.h>
 		#endif

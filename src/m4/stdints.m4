@@ -9,11 +9,13 @@
 
 AC_DEFUN(AC_CHECK_STDINTS,
 [
-	AC_CHECK_HEADERS([stdint.h sys/types.h])
+	AC_CHECK_HEADERS([stdint.h inttypes.h sys/types.h])
 	
 	AC_CHECK_TYPES([uint64_t, uint32_t, uint16_t, uint8_t, int64_t, int32_t, int16_t, int8_t], , , [
 		#ifdef HAVE_STDINT_H
 		#include <stdint.h>
+		#elif defined HAVE_INTTYPES_H
+		#include <inttypes.h>
 		#elif defined HAVE_SYS_TYPES_H
 		#include <sys/types.h>
 		#endif
