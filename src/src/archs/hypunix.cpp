@@ -6,6 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+namespace arch {
+
 /*!
 \brief signal handlers
 \param signal the signal received
@@ -80,6 +82,8 @@ void initclock()
 	initialserversec = t.tv_sec ;
 	initialservermill = t.tv_usec/ 1000 ;
 }
+
+} // namespace arch
 
 char *strlwr(char *str) {
   for (unsigned int i=0;i<strlen(str);i++)

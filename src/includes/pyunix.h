@@ -39,16 +39,18 @@
     #include <pthread.h>
 #endif
 
-extern bool pollHUPStatus ();
-extern bool pollCloseRequests ();
-extern void setup_signals ();
-extern void start_signal_thread();
+namespace arch {
+	extern bool pollHUPStatus ();
+	extern bool pollCloseRequests ();
+	extern void setup_signals ();
+	extern void start_signal_thread();
+
+	void init_deamon();
+	void initclock();
+} // namespace arch
 
 char *strlwr(char *);
 char *strupr(char *);
-
-void init_deamon();
-void initclock();
 
 void Sleep(unsigned long msec);
 

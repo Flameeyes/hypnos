@@ -1,11 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| PyUO Server Emulator                                                     |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in pyuo.cpp file.              |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 bool g_bNTService = false;
 
@@ -22,9 +21,8 @@ bool g_bNTService = false;
 #include <stdlib.h>
 #include "nxw_utils.h"
 
-char *SERVICE_NAME = "NoXWizard";
+char *SERVICE_NAME = "PyUO Server Emulator";
 extern bool keeprun;
-
 
 #define serviceRunning keeprun
 
@@ -43,7 +41,7 @@ void terminateService(int i) { exit(i); }
 int beepDelay;
 DWORD serviceCurrentStatus;
 
-// the killServiceEvent to allow ServiceMain to exit.
+//! Allow ServiceMain to exit
 void KillService()
 {
   serviceRunning=FALSE;
@@ -52,7 +50,7 @@ void KillService()
   SetEvent(killServiceEvent);
 }
 
-//   Handles the events dispatched by the Service Control Manager.
+//! Handles the events dispatched by the Service Control Manager.
 VOID ServiceCtrlHandler (DWORD controlCode)
 {
 BOOL success;
@@ -109,21 +107,13 @@ BOOL success;
    UpdateSCMStatus(serviceCurrentStatus, NO_ERROR, 0, 0, 0);
 }
 
-
-
-
-
-
 SERVICE_STATUS_HANDLE serviceStatusHandle;
 
-//   ServiceMain -
-//   ServiceMain is called when the Service Control Manager wants to
-// launch the service.  It should not return until the service has
-// stopped. To accomplish this, for this example, it waits blocking
-// on an event just before the end of the function.  That event gets
-// set by the function which terminates the service above.  Also, if
-// there is an error starting the service, ServiceMain returns immediately
-// without launching the main service thread, terminating the service.
+/*!
+
+ServiceMain is called when the Service Control Manager wants to launch the
+service. It should not return until the service has stopped.
+*/
 VOID ServiceMain(DWORD argc, LPTSTR *argv)
 {
    BOOL success;
@@ -197,28 +187,16 @@ VOID ServiceMain(DWORD argc, LPTSTR *argv)
    terminateService(0);
 }
 
-
-
-
-
-
-
-
-
 extern "C" int win32_main(int argc, char *argv[]);
 
-
-
-// ServiceExecutionThread -
-//   This is the main thread of execution for the
-// service while it is running.
+//! This is the main thread of execution for the service while it is running.
 DWORD ServiceExecutionThread(LPDWORD param)
 {
 	win32_main(0,NULL);
 	return 0;
 }
-// StartService -
-//   This starts the service by creating its execution thread.
+
+//! This starts the service by creating its execution thread.
 BOOL StartServiceThread()
 {
    DWORD id;
@@ -235,13 +213,7 @@ BOOL StartServiceThread()
    }
 }
 
-
-
-
-
-
-
-// This function updates the service status for the SCM
+//! This function updates the service status for the SCM
 BOOL UpdateSCMStatus (DWORD dwCurrentState,
 	                  DWORD dwWin32ExitCode,
 	                  DWORD dwServiceSpecificExitCode,
@@ -288,29 +260,8 @@ BOOL UpdateSCMStatus (DWORD dwCurrentState,
    return success;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void remain(int argc, char *argv[]);
 void initService (int argc, char **argv);
-
-
-
 
 void remain(int argc, char *argv[])
 {
@@ -400,8 +351,6 @@ void goToServiceDir ( void )
 
 }
 
-
-
 int main(int argc, char *argv[])
 {
 
@@ -452,20 +401,4 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-
-
-
-
-
-
-
 #endif
-
-
-
-
-
-
-
-
-

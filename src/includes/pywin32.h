@@ -21,18 +21,21 @@
 #include <conio.h>
 #include <process.h>
 
-char *getHKLMRegistryString(char *key, char *subkey);
-void setHKLMRegistryString(char *key, char *subkey, char *value);
-char *splitPath (char *p);
+namespace arch {
 
-void init_deamon();
-void initclock();
+	char *getHKLMRegistryString(char *key, char *subkey);
+	void setHKLMRegistryString(char *key, char *subkey, char *value);
+	char *splitPath (char *p);
 
-inline bool pollHUPStatus () { return false; }
-inline bool pollCloseRequests () { return false; }
-inline void setup_signals (){ return; }
-inline void start_signal_thread() {return;}
+	void init_deamon();
+	void initclock();
 
+	inline bool pollHUPStatus () { return false; }
+	inline bool pollCloseRequests () { return false; }
+	inline void setup_signals (){ return; }
+	inline void start_signal_thread() {return;}
+} // namespace arch
+	
 namespace tthreads {
 
 class Mutex

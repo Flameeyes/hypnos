@@ -9,6 +9,8 @@
 #include "pywin32.cpp"
 #include <process.h>
 
+namespace arch {
+
 /*!
 \brief Gets a string value from the KHEY_LOCAL_MACHINE registry
 \author Xanathar [NoX]
@@ -91,6 +93,8 @@ void initclock()
 	initialserversec = t.time ;
 	initialservermill = t.millitm ;
 }
+
+} // namespace arch
 
 /*!
 \brief Thread abstraction namespace
