@@ -5,10 +5,6 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file 
-\brief Declaration of class cSerializable
-*/
 
 #ifndef __EFFECTS_H__
 #define __EFFECTS_H__
@@ -17,11 +13,18 @@
 #include "inlines.h"
 
 /*!
-\brief Graphic effects functions
+\brief Graphical effects function
 \author Chronodt
-\todo put it in a namespace "nEffects" ?
-*/
 
+The functions in this namespace are used to show to the client the graphical
+effects, both for the 2D and the 3D version.
+
+Usually an effect has a source and a target, sometimes they are the same.
+Both the source and the target can be a serializable (so a cChar or a cItem) or
+a sLocation.
+
+The effects are identified by an ID which is a 16-bit unsigned integer.
+*/
 namespace nEffects {
 
 	//! static effect that follows source
