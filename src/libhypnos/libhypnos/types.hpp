@@ -90,8 +90,8 @@ struct sRect {
 
 static const uint8_t maxU8 = 255u;
 static const uint16_t maxU16 = 65535u;
-static const uint32_t maxU32 = 4294967295u;
-static const uint64_t maxU64 = 18446744073709551615u;
+static const uint32_t maxU32 = 4294967295ul;
+static const uint64_t maxU64 = 18446744073709551615ull;
 
 static const int8_t minS8 = -128;
 static const int16_t minS16 = -32768;
