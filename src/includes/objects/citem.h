@@ -105,7 +105,6 @@ protected:
 	uint16_t	animid;		//!< animation id
 	int8_t		layer;		//!< Layer if equipped on paperdoll
 	int8_t		oldlayer;	//!< Old layer - used for bouncing bugfix - AntiChrist
-	int8_t		scriptlayer;	//!< Luxor, for scripted setted Layer
 
 	int8_t		magic;		//!< 0=Default as stored in client, 1=Always movable, 2=Never movable, 3=Owner movable.
 	int8_t		visible;	//!< 0=Normally Visible, 1=Owner & GM Visible, 2=GM Visible
@@ -390,7 +389,7 @@ public:
 	inline const pObject getContainer() const
 	{ return cont; }
 
-	void setContainer(pObject obj);
+	virtual void setContainer(pObject obj);
 
 	inline const pObject getOldContainer() const
 	{ return oldcont; }
@@ -540,7 +539,6 @@ public:
 	*/
 	int32_t		rank;
 
-	//char		creator[50];	//!< Store the name of the player made this item
 	std::string	creator;	//!< Store the name of the player made this item
 	int32_t		good;		//!< Store type of GOODs to trade system! (Plz not set as UNSIGNED)
 	int32_t		rndvaluerate;	//!< Store the value calculated base on RANDOMVALUE in region.scp.

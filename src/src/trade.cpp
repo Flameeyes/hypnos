@@ -72,19 +72,22 @@ pItem tradestart(pChar pc1, pChar pc2)
 	if ( ! cont1 || ! cont2 )
 		return NULL;
 
-        cont1->setPosition(26, 0, 0);
-        cont2->setPosition(26, 0, 0);
-        cont1->setContainer(pc1);
-        cont2->setContainer(pc2);
+	cont1->setPosition(26, 0, 0);
+	cont2->setPosition(26, 0, 0);
+	cont1->setContainer(pc1);
+	cont2->setContainer(pc2);
 	cont1->layer = cont2->layer = 0;
 	cont1->type = cont2->type = 1;
-	cont1->dye = cont2->dye = 0;
-        //TODO find client1 & client2
+	cont1->setDyeable(false);
+	cont2->setDyeable(false);
+        
+	//!\TODO find client1 & client2
         client1->addItemToContainer(cont1);
         client2->addItemToContainer(cont1);
         client1->addItemToContainer(cont2);
         client2->addItemToContainer(cont2);
 
+	//!\todo Need to remplace these with a decent version..
         cont2->moreb1= cont1->getSerial().ser1;
 	cont2->moreb2= cont1->getSerial().ser2;
 	cont2->moreb3= cont1->getSerial().ser3;

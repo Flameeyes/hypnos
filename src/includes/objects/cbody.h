@@ -14,6 +14,8 @@
 #define __CBODY_H__
 
 #include "common_libs.h"
+#include "objects/cobject.h"
+#include "objects/equippable.h"
 
 static const uint16_t bodyMale		= 0x190;
 static const uint16_t bodyFemale	= 0x191;
@@ -24,9 +26,7 @@ static const uint16_t bodyFemale	= 0x191;
 This class replaces the old cChar as cObject subclass
 All skills, abilities, name, title, and so stuff must
 be moved here.
-The serial itself should be moved here as well.
 
-\todo Move serial stuff here
 \todo Move other stuff here
 */
 class cBody : public cObject
@@ -63,91 +63,31 @@ public:
 
 	//! Returns true if the char is human
 	inline const bool isHuman() const
-	{ return id == bodyMale || id == bodyHuman; }
+	{ return id == bodyMale || id == bodyFemale; }
 
 //@{
 /*!
 \name Items
 \brief Item related stuff
 */
-public:
-	//! One handed weapon layer
-	static const uint8_t layWeapon1H	= 0x01;
-	//! Two handed weapon, shield, or misc layer
-	static const uint8_t layWeapon2H	= 0x02;
-	//! Shoes layer
-	static const uint8_t layShoes	= 0x03;
-	//! Pants layer
-	static const uint8_t layPants	= 0x04;
-	//! Shirt layer
-	static const uint8_t layShirt	= 0x05;
-	//! Helm/Hat layer
-	static const uint8_t layHat	= 0x06;
-	//! Gloves layer
-	static const uint8_t layGloves	= 0x07;
-	//! Ring layer
-	static const uint8_t layRing	= 0x08;
-	//! Unused layer
-	static const uint8_t layUnused	= 0x09;
-	//! Neck layer
-	static const uint8_t layNeck	= 0x0A;
-	//! Hair layer
-	static const uint8_t layHair	= 0x0B;
-	//! Waist (half apron) layer
-	static const uint8_t layWaist	= 0x0C;
-	//! Torso (inner) (chest armor) layer
-	static const uint8_t layTorsoInner	= 0x0D;
-	//! Bracelet layer
-	static const uint8_t layBracelet	= 0x0E;
-	//! Unused (backpack?) layer
-	static const uint8_t layUnused2	= 0x0F;
-	//! Facial Hair (Beard) layer
-	static const uint8_t layBeard	= 0x10;
-	//! Torso (middle) (sircoat, tunic, full apron, sash) layer
-	static const uint8_t layTorsoMiddle= 0x11;
-	//! Earrings layer
-	static const uint8_t layEarrings	= 0x12;
-	//! Arms layer
-	static const uint8_t layArms	= 0x13;
-	//! Back (cloack) layer
-	static const uint8_t layBack	= 0x14;
-	//! Backpack layer
-	static const uint8_t layBackpack	= 0x15;
-	//! Torso (outer) (robe) layer
-	static const uint8_t layTorsoOuter	= 0x16;
-	//! Legs (outer) (skirt/kilt) layer
-	static const uint8_t layLegsOuter	= 0x17;
-	//! Legs (inner) (leg armor) layer
-	static const uint8_t layLegsInner	= 0x18;
-	//! Mount (horse, ostarard, etc) layer
-	static const uint8_t layMount	= 0x19;
-	//! NPC Buy Restock container layer (see cNPC::restock)
-	static const uint8_t layNPCBuyR	= 0x1A;
-	//! NPC Buy no-restock container layer (see cNPC::bought)
-	static const uint8_t layNPCBuyN	= 0x1B;
-	//! NPC Buy Sell container layer (see cNPC::sell)
-	static const uint8_t laySell	= 0x1C;
-	//! PC Bank Box (see cPC::bankBox)
-	static const uint8_t layBank	= 0x1D;
-
 protected:
-	pItem layers[0x1E];
+	pEquippable layers[0x1E];
 public:
 	//! Gets the item on the specified layer
-	inline pItem getLayerItem(uint8_t layer) const
+	inline pEquippable getLayerItem(cEquippable::Layer layer) const
 	{ return layers[layer]; }
 
 	//! Sets the item on the specified layer
-	inline pItem setLayerItem(uint8_t layer, pItem item)
+	inline void setLayerItem(cEquippable::Layer layer, pEquippable item)
 	{ layers[layer] = item; }
 
-	pItem getBackpack(bool create = false);
+	pBackpack getBackpack(bool create = false);
 
 	inline const bool isWearing(pItem pi) const
 	{ return this == pi->getContainer(); }
 
-	int32_t equip(pItem pi, bool drag = false);
-	int32_t unEquip(pItem pi, bool drag = false);
+	int32_t equip(pEquippable pi, bool drag = false);
+	int32_t unEquip(pEquippable pi, bool drag = false);
 
 	void checkEquipement();
 //@}

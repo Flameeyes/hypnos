@@ -933,12 +933,11 @@ void target_dyevat( pClient client, P_TARGET t )
 	pItem pi=pointers::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
-	if( pi->dye )//if dyeable
+	if( pi->isDyeable() )
 	{
-
 		pChar pc = pi->getPackOwner();
 
-		if( !pc || ( pc->getSerial()==curr->getSerial32() ) ) //in world or owned
+		if( !pc || ( pc == curr ) ) //in world or owned
 		{
 			pi->setColor( t->buffer[0] );
 			pi->Refresh();

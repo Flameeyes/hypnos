@@ -13,9 +13,6 @@
 #ifndef __TVARIANT_H__
 #define __TVARIANT_H__
 
-class tVariant;
-typedef tVariant *pVariant;	//!< Pointer to a variant
-
 // Request limits
 #define __STDC_LIMIT_MACROS
 

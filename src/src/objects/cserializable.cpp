@@ -20,11 +20,18 @@ SerializableMap cSerializable::objects;
 */
 pSerializable cSerializable::findBySerial(uint32_t serial)
 {
-	SerializableMap::iterator it = objects.find(nSerial);
+	SerializableMap::iterator it = objects.find(serial);
 	
 	return it == objects.end() ? NULL : *it;
 }
 
+/*!
+\brief Constructor with new serial
+
+This constructor should be called when creating a new object, assigning
+it a new serial number. This function calls the abstract function
+getNewSerial() which needs to be implemented by the subclass.
+*/
 cSerializable::cSerializable()
 {
 	serial = getNewSerial();
@@ -41,9 +48,20 @@ never for other things!
 cSerializable::cSerializable(uint32_t givenSerial)
 {
 	serial = givenSerial;
+	if ( objects.find(givenSerial) != objects.end() )
+	{
+		LogWarning("Tried to create a new object with an existing serial number %08x. Creating new serial...", givenSerial);
+		serial = getNewSerial();
+	}
+	
 	objects.insert( make_pair( serial, this ) );
 }
 
+/*!
+\brief Destructor
+
+The destructor take care of remove the object from the objects list.
+*/
 cSerializable::~cSerializable()
 {
 	SerializableMap::iterator it = objects.find(nSerial);

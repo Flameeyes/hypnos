@@ -21,6 +21,10 @@ typedef int32_t				FUNCIDX;
 typedef std::set<uint32_t> uint32_set;		//!< A set of uint32_t
 typedef std::vector<uint32_t> uint32_vector;	//!< A vector of uint32_t
 
+typedef class tVariant *pVariant;		//!< Pointer to a variant instance
+typedef std::list<tVariant> tVariantList;	//!< List of variants
+typedef std::vector<tVariant> tVariantVector;	//!< Vector of variants
+
 typedef class cSerializable *pSerializable;	//!< Pointer to cSerializable
 
 typedef class cObject *pObject;			//!< Pointer to a cObject
@@ -34,6 +38,7 @@ typedef class cSocket *pSocket;			//!< Pointer to a cSocket
 typedef class cPacketSend *pPacketSend;		//!< Pointer to a cPacketSend
 
 typedef class cItem *pItem;			//!< Pointer to a cItem
+typedef class cEquippable *pEquippable;		//!< Pointer to a cEquippable
 typedef class cBook *pBook;			//!< Pointer to a cBook
 typedef class cWeapon *pWeapon;			//!< Pointer to a cWeapon
 typedef class cContainer *pContainer;		//!< Pointer to a cContainer

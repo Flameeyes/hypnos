@@ -42,20 +42,25 @@ uint32_t cBody::getSkillSum()
 	2 if event handler cancelled the equip
 \param pi item to equip
 \param drag true if called in wear_item
+\todo Change event handling
+\todo Move the '#if 0'ed part to cEquippable after rewriting mul reading stuff
 */
-const uint8_t cBody::equip(pItem pi, bool drag)
+const uint8_t cBody::equip(pEquippable pi, bool drag)
 {
 	tile_st item;
 
-	uint32_t params[2] = { (uint32_t)pi, (uint32_t)this };
+	tVariantVector params(2);
+	param[0] = pi;
+	param[1] = getChar();
+	
 	if ( !pi->handleEvent( eventItemOnEquip, 2, params ) )
 		return 2;
 
 	// AntiChrist -- for poisoned items
-	if(pi->poisoned)
+	if(pi->getPoison())
 	{
-		if(poison < pi->poisoned)
-			poison=pi->poisoned;
+		if(poison < pi->getPoison())
+			poison += pi->getPoison();
 	}
 
 	if ( client )
@@ -64,6 +69,7 @@ const uint8_t cBody::equip(pItem pi, bool drag)
 	if (drag)
 		return 0;
 
+#if 0
 	data::seekTile( pi->getId(), item );
 
 	if (
@@ -74,6 +80,7 @@ const uint8_t cBody::equip(pItem pi, bool drag)
 		return 1
 
 	pi->layer = item.quality;
+#endif
 	pi->setContainer(this);
 
 	checkSafeStats();
@@ -93,16 +100,18 @@ const uint8_t cBody::unEquip(pItem pi, bool drag)
 {
 	checkSafeStats();
 
-	uint32_t params[2] = { (uint32_t)pi, (uint32_t)this };
+	tVariantVector params(2);
+	param[0] = pi;
+	param[1] = getChar();
+	
 	if ( !pi->handleEvent( eventItemOnUnEquip, 2, params ) )
 		return 2;
 
 	// AntiChrist -- for poisoned items
-	if (pi->poisoned)
+	if(pi->getPoison())
 	{
-		poison -= pi->poisoned;
-		if (poison < 0)
-			poison = 0;
+		if(poison < pi->getPoison())
+			poison -= pi->getPoison();
 	}
 
 	if ( client )
@@ -111,7 +120,6 @@ const uint8_t cBody::unEquip(pItem pi, bool drag)
 	if (drag)
 		return 0;
 
-	pi->layer= 0;
 	pi->setContainer( getBackpack(true) );
 
 	cPacketSendAddItemtoContainer pk(pi);
@@ -149,7 +157,7 @@ void cBody::calcWeight()
 	weight = bp ? bp->getWeightActual() : 0;
 	
 	for(register int i = 0; i < 0x1E; i++)
-		if ( layers[i] && i != LAYER_MOUNT )
+		if ( layers[i] && i != cEquippable::layMount )
 			weight += layers[i]->getWeightActual();
 }
 

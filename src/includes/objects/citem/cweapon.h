@@ -13,16 +13,13 @@
 #ifndef _CWEAPON_H__
 #define _CWEAPON_H__
 
-class cWeapon;
-typedef cWeapon *pWeapon;	//!< Pointer to a weapon
-
 #include "common_libs.h"
-#include "objects/citem.h"
+#include "objects/citem/cequippable.h"
 
 /*!
 \brief Weapon Items
 */
-class cWeapon : public cItem
+class cWeapon : public cEquippable
 {
 public:
 	cWeapon();

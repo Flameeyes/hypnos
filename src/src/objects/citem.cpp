@@ -80,26 +80,31 @@ static const bool cItem::isHouse(uint16_t id)
 /*!
 \brief Constructor for new item
 */
-
 cItem::cItem()
+	: cSerializable(ser)
 {
-	cItem(nextSerial());
+	resetData();
 }
 
 /*!
 \brief Constructor with serial known
-\todo a check to ensure nextSerial() will still be valid even after adding this one 
 */
 cItem::cItem( uint32_t ser )
+	: cSerializable(ser)
 {
+	resetData();
+}
 
-	setSerial( ser );
+cItem::resetData()
+{
+	flags = 0ull;
+	// PyUO OK
+
 	setOwnerSerial32Only(INVALID);
 	setMultiSerial32Only(INVALID);//Multi serial
-
+	
 	setCurrentName("#");
 	setSecondaryName("#");
-	setScriptID( 0 );
 	murderer = string("");
 	creator = string("");
 	incognito=false;//AntiChrist - incognito
@@ -136,7 +141,6 @@ cItem::cItem( uint32_t ser )
 	doordir=0; // Reserved for doors
 	dooropen=0;
 	pileable=0; // Can item be piled
-	dye=0; // Reserved: Can item be dyed by dye kit
 	corpse=0; // Is item a corpse
 	carve=-1;//AntiChrist-for new carving system
 	att=0; // Item attack
@@ -199,8 +203,6 @@ cItem::cItem( uint32_t ser )
 	//desc[0]=0x00;
 	vendorDescription = std::string("");
 	setDecayTime(); //Luxor
-
-	type = itPureItem;
 }
 
 /*!
@@ -210,11 +212,13 @@ cItem::cItem( uint32_t ser )
 */
 cItem& cItem::operator=(cItem& b)
 {
-        // NAMES
+	flags = b.flags;
+	// PyUO OK!
+        
+	// NAMES
         setCurrentName(b.getCurrentName());
         setRealName(b.getRealName());
-
-        setScriptID(b.getScriptID());
+	
         creator = b.creator;
         incognito = b.incognito;
         madewith = b.madewith;
@@ -249,7 +253,6 @@ cItem& cItem::operator=(cItem& b)
         amount2 = b.amount2;
         doordir = b.doordir;
         dooropen = b.dooropen;
-        dye = b.dye;
         corpse = b.corpse;
         carve = b.carve;
         att = b.att;
@@ -352,26 +355,19 @@ void cItem::getPopupHelp(char *str)
 \author Flameeyes
 \brief Set the item's container
 \param obj New (actual) container
-\note This function insert the item in the container's list or in the layers
-	of the wearing body.
+\note This function insert the item in the container's list
 */
 void cItem::setContainer(pObject obj)
 {
-	if ( obj && obj->rtti() != rtti::cContainer && obj->rtti() != rtti::cBody && obj->rtti() != rtti::cMsgBoard)
-		return;
-
 	oldcont = cont;
 	cont = obj;
-
-     	if ( cont && cont->rtti() == rtti::cMsgBoard ) return; //Only container addition is needed for msgboards
-
+	
 	if ( ! obj )
 		setDecayTime();
-
-	if ( cont && cont->rtti() == rtti::cContainer )
-		(reinterpret_cast<pContainer>cont)->insertItem(this);
-	else if (cont && cont->rtti() == rtti::cBody )
-		(reinterpret_cast<pBody>cont)->setLayerItem(layer, this);
+	
+	pContainer itemcont = NULL;
+	if ( (itemcont = dynamic_cast<pContainer>(cont)) )
+		itemcont->insertItem(this);
 }
 
 /*!

@@ -25,7 +25,9 @@ with cItem.
 All the class who has a serial included in the main serial-stuff, should
 use this class to register the instances.
 
-\todo move findPtrBySerial stuff here
+The abstract method getNewSerial() \b must be implemented by the derived classes,
+and \b must return an unique serial, so it should check if there's already an
+object with the same serial.
 */
 class cSerializable
 {
@@ -33,8 +35,9 @@ class cSerializable
 /*!
 \name Searching functions
 */
-protected:
-	static SerializableMap objects;
+private:
+	static SerializableMap objects;	//!< Map of all serialized object
+	uint32_t	serial;		//!< Serial of the object
 public:
 	inline static pChar findCharBySerial(uint32_t serial)
 	{ return dynamic_cast<pChar>(findBySerial(serial)); }
@@ -45,22 +48,18 @@ public:
 	static pSerializable findBySerial(uint32_t serial);
 //@}
 
-protected:
+public:
 	cSerializable();
 	cSerializable(uint32_t serial);
-public:
-	~cSerializable();
-
-protected:
-	uint32_t	serial;		//!< serial of the object
+	virtual ~cSerializable();
 	
-	//! Gets the new serial for the object
-	virtual uint32_t getNewSerial() = 0;
-public:
+	//! Gets the current serial
 	inline const uint32_t getSerial() const
 	{ return serial; }
 	
-	void setSerial(const uint32_t &newSerial);
+protected:
+	//! Gets the new serial for the object
+	virtual uint32_t getNewSerial() = 0;
 
 //@{
 /*!

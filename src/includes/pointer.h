@@ -59,8 +59,6 @@ namespace pointers {
 	void addToMultiMap( pItem pi );
 	void delFromMultiMap( pItem pi );
 	
-	pChar findCharBySerial(int serial);
-	pItem findItemBySerial(int serial);
 	pChar stableSearch(int serial, int *index);
 #ifdef SPAR_LOCATION_MAP
 	//

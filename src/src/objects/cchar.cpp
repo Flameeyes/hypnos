@@ -1640,7 +1640,7 @@ void cChar::resurrect( NXWCLIENT healer )
 			pi->setCurrentName( "a resurrect robe" );
 			pi->layer = LAYER_OUTER_TORSO;
 			pi->setContainer(this);
-			pi->dye=1;
+			pi->setDyeable(true);
 		}
 		teleport( TELEFLAG_SENDWORNITEMS | TELEFLAG_SENDLIGHT );
 	}
