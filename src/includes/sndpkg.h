@@ -68,7 +68,6 @@ void staticeffect3(uint16_t x, uint16_t y, int8_t z, unsigned char eff1, unsigne
 void movingeffect3(int/*CHARACTER*/ source, unsigned short x, unsigned short y, signed char z, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode);
 void movingeffect3(int/*CHARACTER*/ source, int/*CHARACTER*/ dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode,unsigned char unk1,unsigned char unk2,unsigned char ajust,unsigned char type);
 void movingeffect2(int/*CHARACTER*/ source, int/*CHARACTER*/ dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode);
-void bolteffect2(int/*CHARACTER*/ player,char a1,char a2);	// experimenatal, lb
 
 void staticeffectUO3D(int/*CHARACTER*/ player, ParticleFx *sta);
 void movingeffectUO3D(int/*CHARACTER*/ source, int/*CHARACTER*/ dest, ParticleFx *sta);

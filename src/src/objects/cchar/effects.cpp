@@ -97,18 +97,18 @@ void cChar::boltFX(bool bNoParticles)
 
 	if (bNoParticles) // no UO3D effect ? lets send old effect to all clients
 	{
-		 NxwSocketWrapper sw;
-		 sw.fillOnline( this, false );
-		 for( sw.rewind(); !sw.isEmpty(); sw++ )
-		 {
-			 NXWSOCKET j=sw.getSocket();
-			 if( j!=INVALID )
-			 {
+		NxwSocketWrapper sw;
+		sw.fillOnline( this, false );
+		for( sw.rewind(); !sw.isEmpty(); sw++ )
+		{
+			NXWSOCKET j=sw.getSocket();
+			if( j!=INVALID )
+			{
 				Xsend(j, effect, 28);
 //AoS/				Network->FlushBuffer(j);
-			 }
-		 }
-	   return;
+			}
+		}
+		return;
 	}
 	else
 	{
@@ -125,7 +125,7 @@ void cChar::boltFX(bool bNoParticles)
 //AoS/				Network->FlushBuffer(j);
 			 } else if (clientDimension[j]==3) // 3d client, send 3d-Particles
 			 {
-				//TODO!!!! fix it!
+				//!\todo!!!! fix it!
 				//Magic->doStaticEffect(DEREF_pChar(this), 30);
 				unsigned char particleSystem[49];
 				Xsend(j, particleSystem, 49);
@@ -145,7 +145,37 @@ void cChar::boltFX(bool bNoParticles)
 */
 void cChar::circleFX(short id)
 {
-	bolteffect2(DEREF_pChar(this),id >> 8,id & 0xFF);
+	uint8_t effect[28]={ 0x70, 0x00, };
+
+	int x,y;
+	Location charpos = getPosition(), pos2;
+
+	y=rand()%36;
+	x=rand()%36;
+
+	if (rand()%2==0) x=x*-1;
+	if (rand()%2==0) y=y*-1;
+	pos2.x = charpos.x + x;
+	pos2.y = charpos.y + y;
+	if (pos2.x<0) pos2.x=0;
+	if (pos2.y<0) pos2.y=0;
+	if (pos2.x>6144) pos2.x=6144;
+	if (pos2.y>4096) pos2.y=4096;
+
+	charpos.z = 0; pos2.z = 127;
+	MakeGraphicalEffectPkt_(effect, 0x00, getSerial(), 0, id, charpos, pos2, 0, 0, 1, 0);
+
+	 NxwSocketWrapper sw;
+	 sw.fillOnline( pc );
+	 for( sw.rewind(); !sw.isEmpty(); sw++ )
+	 {
+		NXWSOCKET j=sw.getSocket();
+		if( j!=INVALID )
+		{
+			Xsend(j, effect, 28);
+//AoS/			Network->FlushBuffer(j);
+		}
+	}
 }
 
 /*!

@@ -1224,48 +1224,6 @@ void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned ch
 	}
 }
 
-
-void bolteffect2(CHARACTER player,char a1,char a2)	// experimenatal, lb
-{
-	pChar pc=MAKE_CHAR_REF(player);
-	if ( ! pc ) return;
-
-	uint16_t eff = (a1<<8)|(a2%256);
-	uint8_t effect[28]={ 0x70, 0x00, };
-
-	int x,y;
-	Location charpos = pc->getPosition(), pos2;
-
-	y=rand()%36;
-	x=rand()%36;
-
-	if (rand()%2==0) x=x*-1;
-	if (rand()%2==0) y=y*-1;
-	pos2.x = charpos.x + x;
-	pos2.y = charpos.y + y;
-	if (pos2.x<0) pos2.x=0;
-	if (pos2.y<0) pos2.y=0;
-	if (pos2.x>6144) pos2.x=6144;
-	if (pos2.y>4096) pos2.y=4096;
-
-charpos.z = 0; pos2.z = 127;
-MakeGraphicalEffectPkt_(effect, 0x00, pc->getSerial(), 0, eff, charpos, pos2, 0, 0, 1, 0);
-
-	// ConOut("bolt: %i %i %i %i %i %i\n",x2,y2,chars[player].x,chars[player].y,x,y);
-
-	 NxwSocketWrapper sw;
-	 sw.fillOnline( pc );
-	 for( sw.rewind(); !sw.isEmpty(); sw++ )
-	 {
-		NXWSOCKET j=sw.getSocket();
-		if( j!=INVALID )
-		{
-			Xsend(j, effect, 28);
-//AoS/			Network->FlushBuffer(j);
-		}
-	}
-}
-
 //	- Movingeffect3 is used to send an object from a char
 //    to another object (like purple potions)
 void movingeffect3(CHARACTER source, unsigned short x, unsigned short y, signed char z, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode)
