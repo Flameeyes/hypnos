@@ -382,9 +382,6 @@ const short NumberOfOres = sizeof(OreTable)/sizeof(Ore);
 }
 */ // XAN : SEEMS UNUSED
 
-#define max_res_x 610
-#define max_res_y 410
-
 void Skills::target_tree(pClient client, pTarget t )
 {
 
@@ -857,61 +854,6 @@ void Skills::target_detectHidden(pClient client, pTarget t )
 
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skDetectingHidden,AMX_AFTER);
 }
-
-
-//////////////////////////
-// name:    AlchemyTarget
-// history: unknown, revamped by Duke,21.04.2000
-// Purpose: checks for valid reg and brings up gumpmenu to select potion
-//          This is called after the user dblclicked a mortar and targeted a reg
-//
-void Skills::target_alchemy(pClient client, pTarget t )
-{
-	pChar pc_currchar = ps->currChar();
-	pItem pi = dynamic_cast<pItem>( t->getClicked() );
-	if ( ! pc_currchar || ! pi ) return;
-
-	pItem pack = pc_currchar->getBackpack();    // Get the packitem
-	if ( ! pack ) return;
-
-	pClient client = ps->toInt();
-
-
-	pItem pfbottle=NULL; //candidate of the bottle
-
-	NxwItemWrapper si;
-	si.fillItemsInContainer( pack, false );
-	for( si.rewind(); !si.isEmpty(); si++ )
-	{
-		pItem piii=si.getItem();
-		if( piii && piii->type==0) {
-			pfbottle=pi;
-			break;
-		}
-	}
-
-	if (!pfbottle)
-	{
-		client->sysmessage("There is no bottle in your pack");
-		return;
-	}
-
-	switch (pi->getId())
-	{
-	case 0x0F7B: itemmenu( s, 7021 ); break;   // Agility,
-	case 0x0F84: itemmenu( s, 7022 ); break;   // Cure, Garlic
-	case 0x0F8C: itemmenu( s, 7023 ); break;   // Explosion, Sulfurous Ash
-	case 0x0F85: itemmenu( s, 7024 ); break;   // Heal, Ginseng
-	case 0x0F8D: itemmenu( s, 7025 ); break;   // Night sight
-	case 0x0F88: itemmenu( s, 7026 ); break;   // Poison, Nightshade
-	case 0x0F7A: itemmenu( s, 7027 ); break;   // Refresh,
-	case 0x0F86: itemmenu( s, 7028 ); break;   // Strength,
-	case 0x0E9B: break; // Mortar
-	default:
-		client->sysmessage("That is not a valid reagent.");
-	}
-}
-
 
 ////////////////////////
 // name:    HealingSkillTarget
