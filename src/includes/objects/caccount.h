@@ -13,13 +13,9 @@
 #ifndef __CACCOUNT_H__
 #define __CACCOUNT_H__
 
-class cAccount;
-typedef cAccount *pAccount;				//!< Pointer to an account
-
-typedef std::hash_map<std::list, cAccount> cAccounts;	//!< Hashed map of accounts
-
 #include "common_libs.h"
-#include "objecs/cpc.h"
+
+typedef std::hash_map<std::list, class cAccount> cAccounts;	//!< Hashed map of accounts
 
 /*!
 \brief This class represent an account for game

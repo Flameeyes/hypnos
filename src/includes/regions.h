@@ -55,13 +55,7 @@ typedef struct {
 	uint32_set itemsInRegions;
 } region_db_st;
 
-class RegCoordPoint : public cPoint< uint16_t > {
-public:
-	
-	RegCoordPoint( Location location );
-};
-
-typedef std::map< uint32_t, RegCoordPoint > WHERE_IS_NOW_MAP;
+typedef std::map< uint32_t, std::pair<uint16_t, uint16_t> > WHERE_IS_NOW_MAP;
 
 class cRegion
 {

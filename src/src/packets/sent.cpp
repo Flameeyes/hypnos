@@ -1215,7 +1215,7 @@ bool cPacketReceiveBuyItems::execute(pClient client)
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
 
-        std::list< boughtitem > allitemsbought;
+        std::list< sBoughtItem > allitemsbought;
 
 	pNpc npc = (pNpc)pointers::findCharBySerPtr(LongFromCharPtr(buffer + 3));
 	VALIDATEPCR(npc, false);
@@ -1227,7 +1227,7 @@ bool cPacketReceiveBuyItems::execute(pClient client)
 	{
 		int pos=8+(7*i);
 
-		boughtitem b;
+		sBoughtItem b;
 
 		b.layer=buffer[pos];
                 uint32_t itemserial = LongFromCharPtr(buffer + pos + 1);
@@ -1808,7 +1808,7 @@ bool cPacketReceiveSellItems::execute(pClient client)
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
 
-        std::list< boughtitem > allitemssold;
+        std::list< sBoughtItem > allitemssold;
 
 	pNpc npc = (pNpc)pointers::findCharBySerPtr(LongFromCharPtr(buffer + 3));
 	VALIDATEPCR(npc, false);
@@ -1820,7 +1820,7 @@ bool cPacketReceiveSellItems::execute(pClient client)
 	{
 		int pos=9+(6*i);
 
-		boughtitem b;
+		sBoughtItem b;
 
 		b.item=pointers::findItemBySerPtr(LongFromCharPtr(buffer + pos));
 		if(!b.item)

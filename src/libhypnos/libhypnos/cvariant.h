@@ -19,11 +19,9 @@ typedef tVariant *pVariant;	//!< Pointer to a variant
 // Request limits
 #define __STDC_LIMIT_MACROS
 
-#include <stdint.h>
-#include <string>
-
-typedef class cChar *pChar;
-typedef class cItem *pItem;
+#include "common_libs.h"
+#include "objects/cchar.h"
+#include "objects/citem.h"
 
 /*!
 \brief Variant type class

@@ -15,31 +15,26 @@
 #ifndef _TARGETING_INCLUDED
 #define _TARGETING_INCLUDED
 
-#include "typedefs.h"
+#include "common_libs.h"
 #include "target.h"
 
-int BuyShop(NXWSOCKET s, uint32_t c);
+int BuyShop(pClient client, uint32_t c);
 
-void target_envoke( NXWCLIENT ps, P_TARGET t );
-void target_key( NXWCLIENT ps, P_TARGET t );
-void target_axe( NXWCLIENT ps, P_TARGET t );
-void target_sword( NXWCLIENT ps, P_TARGET t );
+void target_envoke( pClient client, pTarget t );
+void target_key( pClient client, pTarget t );
+void target_axe( pClient client, pTarget t );
+void target_sword( pClient client, pTarget t );
 
-void target_expPotion( NXWCLIENT ps, P_TARGET t );
-void target_npcMenu( NXWCLIENT ps, P_TARGET t );
-void target_trigger( NXWCLIENT ps, P_TARGET t );
+void target_expPotion( pClient client, pTarget t );
+void target_npcMenu( pClient client, pTarget t );
+void target_trigger( pClient client, pTarget t );
 
-void target_follow( NXWCLIENT ps, P_TARGET t );
-void target_attack( NXWCLIENT ps, P_TARGET t );
-void target_playerVendorBuy( NXWCLIENT ps, P_TARGET t );
-void target_allAttack( NXWCLIENT ps, P_TARGET t );
-void target_fetch( NXWCLIENT ps, P_TARGET t );
-void target_guard( NXWCLIENT ps, P_TARGET t );
-void target_transfer( NXWCLIENT ps, P_TARGET t );
-
-
-
-
-
+void target_follow( pClient client, pTarget t );
+void target_attack( pClient client, pTarget t );
+void target_playerVendorBuy( pClient client, pTarget t );
+void target_allAttack( pClient client, pTarget t );
+void target_fetch( pClient client, pTarget t );
+void target_guard( pClient client, pTarget t );
+void target_transfer( pClient client, pTarget t );
 
 #endif	// _TARGETING_INCLUDED

@@ -12,8 +12,8 @@
 
 #include "cclient.h"
 
-static cClients cClient::clients;
-static cClients cClient::cGMs;
+static ClientList cClient::clients;
+static ClientList cClient::cGMs;
 
 cClient::cClient(int32_t sd, struct sockaddr_in* addr)
 {
@@ -39,7 +39,7 @@ cClient::~cClient()
 \param out_buffer buffer to send
 \param out_len size of buffer to send
 */
-void cClient::compress(uint8_t& *out_buffer, uint32_t& out_len)
+void cClient::compress(uint8_t *&out_4buffer, uint32_t& out_len)
 {
 uint8_t *new_buffer = new uint8_t[out_len];
 uint32_t new_len=0, tmp_len=out_len;

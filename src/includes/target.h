@@ -17,24 +17,21 @@
 
 #include "objects/cchar.h"
 #include "objects/citem.h"
+#include "objects/cclient.h"
 
-typedef class cTarget* P_TARGET;
-typedef void ( *processTarget )			( NXWCLIENT, P_TARGET );
+typedef void ( cClient::*processTarget ) ( pTarget );
 
 class cTarget {
 
 private:
-
 	static uint32_t serial_current;
 
 protected:
-
 	Location loc;
 	uint16_t model;
 	uint32_t clicked;
 
 public:
-
 	uint32_t serial;
 	bool type;
 
@@ -46,17 +43,16 @@ public:
 	cTarget( bool selectLocation=true );
 	virtual ~cTarget();
 
-	void send( NXWCLIENT ps );
-	void receive( NXWCLIENT ps );
+	void send( pClient client );
+	void receive( pClient client );
 	virtual bool isValid();
-	virtual void error( NXWCLIENT ps );
+	virtual void error( pClient client );
 
 	Location getLocation();
 	uint32_t getClicked();
 	uint16_t getModel();
 
 };
-
 
 class cObjectTarget : public cTarget {
 
@@ -66,7 +62,7 @@ public:
 	~cObjectTarget();
 
 	virtual bool isValid();
-	virtual void error( NXWCLIENT ps );
+	virtual void error( pClient client );
 };
 
 class cCharTarget : public cObjectTarget {
@@ -77,7 +73,7 @@ public:
 	~cCharTarget();
 
 	virtual bool isValid();
-	virtual void error( NXWCLIENT ps );
+	virtual void error( pClient client );
 };
 
 class cItemTarget : public cObjectTarget {
@@ -88,7 +84,7 @@ public:
 	~cItemTarget();
 
 	virtual bool isValid();
-	virtual void error( NXWCLIENT ps );
+	virtual void error( pClient client );
 };
 
 class cLocationTarget : public cTarget {
@@ -99,12 +95,12 @@ public:
 	~cLocationTarget();
 
 	virtual bool isValid();
-	virtual void error( NXWCLIENT ps );
+	virtual void error( pClient client );
 };
 
 
-void amxCallbackOld( NXWCLIENT ps, P_TARGET t );
-void amxCallback( NXWCLIENT ps, P_TARGET t );
+void amxCallbackOld( pClient client, pTarget t );
+void amxCallback( pClient client, pTarget t );
 
 
 typedef enum {
@@ -116,15 +112,7 @@ typedef enum {
 } TARG_TYPE;
 
 
-P_TARGET createTarget( TARG_TYPE type );
-
-
-
-
-
-
-
-
+pTarget createTarget( TARG_TYPE type );
 
 class TargetLocation
 {
@@ -146,7 +134,7 @@ public:
 	//!creates a target loc from an item
 	TargetLocation(pItem pi) { init(pi); }
 	//!creates a target loc from a target net packet
-	TargetLocation( P_TARGET pp );
+	TargetLocation( pTarget pp );
 	//!creates a target loc from a xyz position in the map
 	TargetLocation(int x, int y, int z) { init(x,y,z); }
 

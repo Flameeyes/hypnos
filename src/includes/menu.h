@@ -17,9 +17,6 @@
 #define _MENU_H_
 
 #include "common_libs.h"
-#include "objects/cchar.h"
-#include "objects/citem.h"
-#include "objects/cclient.h"
 
 #define MENUSTYLE_LARGE 128
 
@@ -38,9 +35,6 @@ enum MENU_TYPE {
 
 #define MENU_CLOSE 0
 
-class cMenu;
-typedef cMenu *pMenu;	//!< Pointer to a menu
-
 typedef void ( *menu_callback ) ( pMenu, pClient, int32_t );
 	//!< Menu callback function type
 
@@ -56,7 +50,7 @@ class cBasicMenu {
 
 	private:
 
-		std::set<uint32_t> whoSeeThis; //!< who are seeing this menu
+		uint32_set whoSeeThis; //!< who are seeing this menu
 
 	protected:
 

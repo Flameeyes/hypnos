@@ -30,6 +30,7 @@ warnings/errors/issues.
 	#else
 		#define _WINDOWS
 	#endif
+	#include <stlport/hash_map>
 #endif
 
 #if defined WIN32 || defined _WIN32
@@ -57,16 +58,10 @@ warnings/errors/issues.
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
+#include <cstring>
+
 #include <string>
 #include <vector>
-
-#ifdef __GNUC__
-	#include <ext/slist>
-	using __gnu_cxx::slist;
-#else
-	#include <slist>
-#endif
-
 #include <map>
 #include <queue>
 #include <list>
@@ -75,7 +70,15 @@ warnings/errors/issues.
 #include <stack>
 #include <fstream>
 #include <utility>
-#include <cstring>
+#include <set>
+
+#ifdef __GNUC__
+	#include <ext/slist>
+	using __gnu_cxx::slist;
+#else
+	#include <slist>
+#endif
+
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/timeb.h>

@@ -13,22 +13,14 @@
 #ifndef __CCLIENT_H__
 #define __CCLIENT_H__
 
-class cClient;
-typedef cClient *pClient;
-
-typedef std::list<pClient> cClients;
-
-
-typedef struct {
+//!< Used in trading methods
+struct sBoughtItem {
 	int layer;
 	pItem item;
 	int amount;
-} boughtitem;                    // Used in trading methods
+};
 
-
-#include "objects/cchar.h"
-#include "objects/citem/cmsgboard.h"
-#include "objects/citem/ccontainer.h"
+#include "common_libs.h"
 
 /*!
 \author Flameeyes
@@ -43,8 +35,8 @@ class cClient
 {
 friend class cGMPage;
 protected:
-      	static cClients clients;	//!< All the clients
-	static cClients cGMs		//!< GMs' clients \todo Need to be used
+      	static ClientList clients;	//!< All the clients
+	static ClientList cGMs;		//!< GMs' clients \todo Need to be used
 
 public:
 	static const uint32_t clientHasCrypto		= 0x00000001;
@@ -72,12 +64,12 @@ public:
 	inline pAccount currAccount() const
 	{ return acc; }
 
-	void encode(char &*);
-	void compress(char &*);
-	void encrypt(char &*);
+	void encode(uint8_t *&);
+	void compress(uint8_t *&, uint32_t&);
+	void encrypt(uint8_t *&);
 
 	//! Gets the online GMs
-	static cClients getOnlineGMs()
+	static ClientList getOnlineGMs()
 	{ return cGMs; }
 protected:
        	bool dragging; //!< true if is dragging
@@ -115,8 +107,8 @@ public:
         //! trading methods
 
 public:
-        void buyaction(pNpc npc, std::list< boughtitem > &allitemsbought);    	//!< Getting purchased item and gold/availability check
-        void sellaction(pNpc npc, std::list< boughtitem > &allitemssold);	//!< Sellig of items. Moving from char and getting paid :D
+        void buyaction(pNPC npc, std::list< sBoughtItem > &allitemsbought);    	//!< Getting purchased item and gold/availability check
+        void sellaction(pNPC npc, std::list< sBoughtItem > &allitemssold);	//!< Sellig of items. Moving from char and getting paid :D
         static void sendtradestatus(pContainer cont1, pContainer cont2);  	//!< updates secure trade window
         static void dotrade(pContainer cont1,pContainer cont2);			//!< concludes trade (either swapping items or returning them)
 	static void endtrade(uint32_t serial);					//!< closing trade window : called when one client ends the transaction (either accepted or canceled)

@@ -38,11 +38,6 @@
 #include <stdio.h>
 #include <memory.h>
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned long uint32;
-typedef signed long sint32;
-
 // Given a buffer of 4 bytes, extract a big endian 32 bit unsigned integer
 inline uint32 unpack_big_uint32(uint8 * buf)
 {

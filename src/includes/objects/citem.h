@@ -12,17 +12,10 @@
 #ifndef __ITEMS_H
 #define __ITEMS_H
 
-class cItem;
-typedef cItem*			pItem;		//!< Pointer to an item
-typedef std::list<pItem>	ItemList;	//!< List of items
-
+#include "common_libs.h"
 #include "objects/cobject.h"
-#include "objects/cchar.h"
 #include "magic.h"
-#include "item.h"
 #include "globals.h"
-
-#include "itemid.h"
 
 //! Item class
 class cItem : public cObject
@@ -41,39 +34,6 @@ public:
 	cItem(uint32_t serial);
         cItem();
 	~cItem();
-//@}
-
-//@{
-/*!
-\name Casts and types
-*/
-protected:
-	//! Type of item (subclass)
-	enum ItemType {
-		itPureItem,		//!< No subclass
-		itContainer,		//!< cContainer subclass
-		itMap,			//!< cMap subclass
-		itMsgBoardMessage,	//!< cMsgBoardMessage subclass
-		itWeapon,		//!< cWeapon subclass
-		itBook,			//!< cBook subclass
-	};
-	
-	ItemType classType;
-public:
-	inline pContainer toContainer()
-	{ return classType == itContainer ? (reinterpret_cast<pContainer>(this)) : NULL; }
-
-	inline pMap toContainer()
-	{ return classType == itMap ? (reinterpret_cast<pMap>(this)) : NULL; }
-
-	inline pMsgBoardMessage toContainer()
-	{ return classType == itMsgBoardMessage ? (reinterpret_cast<pMsgBoardMessage>(this)) : NULL; }
-	
-	inline pWeapon toContainer()
-	{ return classType == itWeapon ? (reinterpret_cast<pWeapon>(this)) : NULL; }
-
-	inline pBook toContainer()
-	{ return classType == itBook ? (reinterpret_cast<pBook>(this)) : NULL; }
 //@}
 
 	//! deletion type
@@ -622,7 +582,7 @@ protected:
 
 public:
         void            singleClick(pClient client);            //!< Single click on item
-        bool            usableWhenLockedDown(pPc pc = NULL);	//!< Item can be used when locked down (e.g. in a house)
+        bool            usableWhenLockedDown(pPC pc = NULL);	//!< Item can be used when locked down (e.g. in a house)
         bool            checkItemUsability(pChar pc, int type); //!< If item can be used with "type" method by pc
         void            doubleClick(pClient client);            //!< Use of item by doubleclicking on it
 

@@ -11,12 +11,6 @@
 */
 
 #include "common_libs.h"
-#include "objects/cclient.h"
-#include "objects/cpc.h"
-
-class cGMPage;
-typedef cGMPage *pGMPage;		//!< Pointer to a GM Page
-typedef std::list<pGMPage> GMPageList;	//!< List of GM Pages
 
 class cGMPage {
 public:

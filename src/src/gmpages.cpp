@@ -11,7 +11,9 @@
 */
 
 #include "gmpages.h"
+
 #include "objects/cclient.h"
+#include "objects/cchar/cpc.h"
 
 GMPageList cGMPage::pages;
 uint32_t cGMPage::nextID = 0;

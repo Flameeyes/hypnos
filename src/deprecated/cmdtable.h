@@ -19,12 +19,12 @@
 */
 enum CmdType
 {
-	CMD_TARGET=1,		//!< Call target struct specified in cmd_extra
-	CMD_FUNC,		//!< Call function specified in cmd_extra, must be of type GMFUNC
-	CMD_TARGETN,		//!< target with 1 param
-	CMD_TARGETNNN,		//!< target with 3 param
-	CMD_TARGETS,		//!< target with 1 string param
-	CMD_MANAGEDCMD =32	//!< command is full self managed
+	ctTarget=1,		//!< Call target struct specified in cmd_extra
+	ctFunc,			//!< Call function specified in cmd_extra, must be of type GMFUNC
+	ctTargetN,		//!< target with 1 param
+	ctTargetNNN,		//!< target with 3 param
+	ctTargetS,		//!< target with 1 string param
+	ctManagedCmd =32	//!< command is full self managed
 };
 
 // Definitions of casting and declarataion of command step functions
@@ -56,7 +56,7 @@ enum
 	}
 
 /* All command_ functions take an int value of the player that triggered the command. */
-#define CMD_HANDLER(name) extern void name ( NXWCLIENT ps )
+#define CMD_HANDLER(name) extern void name ( pClient client )
 
 
 /* Defined commands that are just being mapped to internal functions */
@@ -202,42 +202,38 @@ CMD_HANDLER(command_reloadracescript);
 CMD_HANDLER(command_npcrectcoded);
 CMD_HANDLER(command_tweak);
 
-
-
-
-
-void target_tele( NXWCLIENT ps, P_TARGET t );
-void target_remove( NXWCLIENT ps, P_TARGET t );
-void target_jail( NXWCLIENT ps, P_TARGET t );
-void target_release( NXWCLIENT ps, P_TARGET t );
-void target_xbank( NXWCLIENT ps, P_TARGET t );
-void target_xsbank( NXWCLIENT ps, P_TARGET t );
-void target_makegm( NXWCLIENT ps, P_TARGET t );
-void target_makecns( NXWCLIENT ps, P_TARGET t );
-void target_killhair( NXWCLIENT ps, P_TARGET t );
-void target_killbeard( NXWCLIENT ps, P_TARGET t );
-void target_kill( NXWCLIENT ps, P_TARGET t );
-void target_resurrect( NXWCLIENT ps, P_TARGET t );
-void target_bolt( NXWCLIENT ps, P_TARGET t );
-void target_kick( NXWCLIENT ps, P_TARGET t );
-void target_xgo( NXWCLIENT ps, P_TARGET t );
-void target_movetobag( NXWCLIENT ps, P_TARGET t );
-void target_npcaction( NXWCLIENT ps, P_TARGET t );
-void target_setamount( NXWCLIENT ps, P_TARGET t );
-void target_freeze( NXWCLIENT ps, P_TARGET t );
-void target_unfreeze( NXWCLIENT ps, P_TARGET t );
-void target_tiledata( NXWCLIENT ps, P_TARGET t );
-void target_heal( NXWCLIENT ps, P_TARGET t );
-void target_mana( NXWCLIENT ps, P_TARGET t );
-void target_stamina( NXWCLIENT ps, P_TARGET t );
-void target_fullstats( NXWCLIENT ps, P_TARGET t );
-void target_hide( NXWCLIENT ps, P_TARGET t );
-void target_unhide( NXWCLIENT ps, P_TARGET t );
-void target_possess( NXWCLIENT ps, P_TARGET t );
-void target_telestuff( NXWCLIENT ps, P_TARGET t );
-void target_emptypack( NXWCLIENT ps, P_TARGET t );
-void target_ban( NXWCLIENT ps, P_TARGET t );
-void target_spy( NXWCLIENT ps, P_TARGET t );
-void target_title( NXWCLIENT ps, P_TARGET t );
+void target_tele( pClient client, pTarget t );
+void target_remove( pClient client, pTarget t );
+void target_jail( pClient client, pTarget t );
+void target_release( pClient client, pTarget t );
+void target_xbank( pClient client, pTarget t );
+void target_xsbank( pClient client, pTarget t );
+void target_makegm( pClient client, pTarget t );
+void target_makecns( pClient client, pTarget t );
+void target_killhair( pClient client, pTarget t );
+void target_killbeard( pClient client, pTarget t );
+void target_kill( pClient client, pTarget t );
+void target_resurrect( pClient client, pTarget t );
+void target_bolt( pClient client, pTarget t );
+void target_kick( pClient client, pTarget t );
+void target_xgo( pClient client, pTarget t );
+void target_movetobag( pClient client, pTarget t );
+void target_npcaction( pClient client, pTarget t );
+void target_setamount( pClient client, pTarget t );
+void target_freeze( pClient client, pTarget t );
+void target_unfreeze( pClient client, pTarget t );
+void target_tiledata( pClient client, pTarget t );
+void target_heal( pClient client, pTarget t );
+void target_mana( pClient client, pTarget t );
+void target_stamina( pClient client, pTarget t );
+void target_fullstats( pClient client, pTarget t );
+void target_hide( pClient client, pTarget t );
+void target_unhide( pClient client, pTarget t );
+void target_possess( pClient client, pTarget t );
+void target_telestuff( pClient client, pTarget t );
+void target_emptypack( pClient client, pTarget t );
+void target_ban( pClient client, pTarget t );
+void target_spy( pClient client, pTarget t );
+void target_title( pClient client, pTarget t );
 
 #endif /* __CMDTABLE_H */

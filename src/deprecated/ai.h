@@ -6,18 +6,18 @@
     ||                                                                         ||
     || For any question post to NoX-Wizard forums.                             ||
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
+/*!
+\file
+\author Luxor
+\brief Header of Artificial Intelligence implementation
+*/
 
 #ifndef __AI_H__
 #define __AI_H__
 
 #include "common_libs.h"
 #include "objects/cchar.h"
-
-/*!
-\file
-\author Luxor
-\brief Header of Artificial Intelligence implementation
-*/
+#include "structs.h"
 
 //@{
 /*!

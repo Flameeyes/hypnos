@@ -13,12 +13,10 @@
 #ifndef __CBODY_H__
 #define __CBODY_H__
 
-class cBody;
-typedef cBody* pBody;
+#include "common_libs.h"
 
-
-const uint16_t bodyMale	= 0x190;
-const uint16_t bodyFemale	= 0x191;
+static const uint16_t bodyMale		= 0x190;
+static const uint16_t bodyFemale	= 0x191;
 
 /*!
 \brief This class represent a body of a character

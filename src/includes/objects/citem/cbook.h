@@ -5,7 +5,6 @@
 | You can find detailed license information in pyuo.cpp file.              |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-
 /*!
 \file books.h
 \brief Declaration of cBook Class
@@ -15,9 +14,6 @@
 
 #ifndef __CBOOKS_H__
 #define __CBOOKS_H__
-
-class cBook;
-typedef cBook *pBook;	//!< Pointer to a book
 
 #include "common_libs.h"
 #include "objects/citem.h"

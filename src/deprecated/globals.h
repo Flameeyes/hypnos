@@ -16,11 +16,8 @@
 #ifndef __GLOBALS_H__
 #define __GLOBALS_H__
 
-#include "amx/amxvarserver.h"
 #include "regions.h"
-#include "scp_parser.h"
-#include "client.h"
-
+#include "srvparms.h"
 
 // GOOD GLOBALZ (Those which are just fine)
 

@@ -14,15 +14,6 @@
 
 #include "common_libs.h"
 
-class cChar;
-typedef cChar *pChar;			//!< Pointer to a Char
-typedef std::list<pChar> CharList;	//!< List of pointers to Char
-
-#include "objects/cobject.h"
-#include "objects/citem.h"
-#include "objects/cclient.h"
-#include "objects/cbody.h"
-
 #include "ai.h"
 #include "magic.h"
 
@@ -127,7 +118,7 @@ class ClientCrypt;
 /*!
 \brief Character class
 */
-class cChar : public cObject
+class cChar
 {
 public:
 	static uint32_t nextSerial();
