@@ -48,3 +48,17 @@ All the files should have this header:
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+
+
+Note: Please *never* check two getSerial() against. Because serials are unique
+to the pointers, instead of do
+
+a->getSerial() == b->getSerial()
+
+do
+
+a == b
+
+So you check between two pointers instead of call two functions to check the
+results.
+Same for getOwnerSerial32() and so on.

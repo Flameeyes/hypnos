@@ -279,7 +279,7 @@ void buildhouse( pClient ps, pTarget t )
 		pHouse->setDispellable( false );
 		pHouse->more4 = itemsdecay; // set to 1 to make items in houses decay
 		pHouse->morex=hdeed; // crackerjack 8/9/99 - for converting back *into* deeds
-		pHouse->setOwnerSerial32(pc->getSerial());
+		pHouse->setOwner(pc);
 		if (pHouse->isInWorld())
 		{
 			mapRegions->add(pHouse);
@@ -402,7 +402,7 @@ void buildhouse( pClient ps, pTarget t )
 							pi_l->setNewbie( false );
 							pi_l->setDispellable( false );
 							pi_l->setPosition(x, y, z);
-							pi_l->setOwnerSerial32(pc->getSerial());
+							pi_l->setOwner(pc);
 							// SPARHAWK 2001-01-28 Added House sign naming
 							if (pi_l->IsSign())
 								if ((id%256 >=0x70) && (id%256<=0x73))
@@ -501,7 +501,7 @@ void deedhouse(pClient client, pItem pi)
 	sLocation charpos= pc->getPosition();
 
 
-	if(pi->getOwnerSerial32() == pc->getSerial() || pc->IsGM()) // bugfix LB, was =
+	if(pi->getOwner() == pc || pc->isGM()) // bugfix LB, was =
 	{
 		getMultiCorners(pi, x1,y1,x2,y2);
 
@@ -821,7 +821,7 @@ bool house_speech( pChar pc, pClient client, std::string &talk)
 	// if pc is not a friend or owner, we don't care what he says
 	//
 	fr=on_hlist(pi, pc->getSerial(), NULL);
-	if( fr != H_FRIEND && pi->getOwnerSerial32() != pc->getSerial() )
+	if( fr != H_FRIEND && pi->getOwner() != pc )
 		return false;
 	//
 	// house ban
@@ -931,16 +931,15 @@ void target_houseOwner( pClient ps, pTarget t )
 	pItem pHouse=cSerializable::findItemBySerial( pSign->more );
 	if ( ! pHouse ) return;
 
-	pClient client = ps->toInt();
-	if(pc->getSerial() == curr->getSerial())
+	if(pc == curr)
 	{
 		sysmessage(s, "you already own this house!");
 		return;
 	}
 
-	pSign->setOwnerSerial32(pc->getSerial());
+	pSign->setOwner(pc);
 
-	pHouse->setOwnerSerial32(pc->getSerial());
+	pHouse->setOwner(pc);
 
 	killkeys( pHouse->getSerial() );
 
@@ -1015,7 +1014,7 @@ void target_houseBan( pClient ps, pTarget t )
 	pItem pi=cSerializable::findItemBySerial( t->buffer[0] );
 	if(pi)
 	{
-		if(pc->getSerial() == curr->getSerial())
+		if(pc == curr)
 			return;
 		int r=add_hlist(pc, pi, H_BAN);
 		if(r==1)
@@ -1045,7 +1044,7 @@ void target_houseFriend( pClient ps, pTarget t )
 
 	if( Friend && pi)
 	{
-		if(Friend->getSerial() == curr->getSerial())
+		if(Friend == curr)
 		{
 			sysmessage(s,"You cant do that!");
 			return;
@@ -1128,7 +1127,7 @@ void target_houseLockdown( pClient ps, pTarget t )
             }
             pi->magic = 4;  // LOCKED DOWN!
             clientInfo[s]->dragging=false;
-            pi->setOwnerSerial32Only(pc->getSerial());
+            pi->setOwner(pc);
             pi->Refresh();
             return;
         }
@@ -1180,7 +1179,7 @@ void target_houseSecureDown( pClient ps, pTarget t )
             pi->magic = 4;  // LOCKED DOWN!
             pi->secureIt = 1;
             clientInfo[s]->dragging=false;
-            pi->setOwnerSerial32Only(pc->getSerial());
+            pi->setOwner(pc);
             pi->Refresh();
             return;
         }
@@ -1217,7 +1216,7 @@ void target_houseRelease( pClient ps, pTarget t )
     pItem pi=cSerializable::findItemBySerial( t->getClicked() );
     if(pi)
     {
-        if(pi->getOwnerSerial32() != pc->getSerial())
+        if(pi->getOwner() != pc)
         {
             sysmessage(s,"This is not your item!");
             return;

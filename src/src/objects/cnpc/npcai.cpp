@@ -74,7 +74,7 @@ void cNPC::checkAI()
 			sc.fillCharsNearXYZ( getPosition(), 3, true, true );
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pj=sc.getChar();
-				if (pj->getSerial() == getSerial()) continue; //Luxor
+				if (pj == this) continue; //Luxor
 
 				if( pj->dead )
 					continue;
@@ -101,7 +101,7 @@ void cNPC::checkAI()
 				if ( !pj || !pj->dead )
 			  		continue;
 
-				if (pj->getSerial() == getSerial()) continue; //Luxor
+				if (pj == this) continue; //Luxor
 			  	if ( !pj->IsInnocent() || pj->IsCriminal() || pj->IsMurderer())
 			  	{
 			  		if (pj->IsMurderer())
@@ -155,7 +155,7 @@ void cNPC::checkAI()
 			{
 				pj = (*it);
 				if ( 	!(
-					getSerial() == pj->getSerial() ||
+					pj == this ||
 					pj->IsInvul() ||
 					pj->hidden > 0 ||
 					pj->dead ||
@@ -193,7 +193,7 @@ void cNPC::checkAI()
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
 				pChar pj=sc.getChar();
-				if (!pj || getSerial()==pj->getSerial() )
+				if (!pj || pj == this )
 					continue;
 
 				if (	pj->IsInvul() ||
@@ -235,7 +235,7 @@ void cNPC::checkAI()
 				pChar pj=sc.getChar();
 				if ( ! pj || !pj->dead )
 					continue;
-				if (pj->getSerial() == getSerial()) continue; //Luxor
+				if (pj == this) continue; //Luxor
 				if ( pj->IsInnocent() ) {
 					talkAll("I despise all things good. I shall not give thee another chance!", 1);
 					continue;
@@ -266,10 +266,9 @@ void cNPC::checkAI()
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
 				pChar pj=sc.getChar();
-				if (!pj) continue;
+				if (!pj || pc == this) continue;
 
-				if (pj->getSerial() == getSerial()) continue; //Luxor
-				if ( pj->dead || !pj->IsInnocent() || pj->hidden > 0)
+				if ( pj->isDead() || !pj->isInnocent() || pj->hidden > 0)
 					continue;
 
 				switch (RandomNum(0,2))
@@ -329,9 +328,9 @@ void cNPC::checkAI()
 				pChar character=sc.getChar();
 				if ( character )
 				{
-					if ( character->getSerial() != getSerial() &&
-					     !character->dead &&
-					     !character->IsHidden() &&
+					if ( character != this &&
+					     !character->isDead() &&
+					     !character->isHidden() &&
 					     losFrom( character )
 					   )
 					{
@@ -368,7 +367,7 @@ void cNPC::checkAI()
 
 				pChar pj=sc.getChar();
 
-				if (pj->getSerial() == getSerial()) continue; //Luxor
+				if (pj == this) continue; //Luxor
 				if( pj && pj->npc && pj->npcaitype==NPCAI_EVIL)
 				{
 					npcattacktarget(this, pj);
@@ -386,8 +385,8 @@ void cNPC::checkAI()
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
 				pChar pj=sc.getChar();
-				if (!pj) continue;
-				if (pj->getSerial() == getSerial()) continue; //Luxor
+				if ( !pj || pj == this) continue;
+				
 				if ( pj->IsInvul() || pj->dead || (pj->npcaitype != NPCAI_EVIL && !pj->IsCriminal() && !pj->IsMurderer())) continue;
 
 				npcattacktarget(this, pj);
@@ -406,7 +405,7 @@ void cNPC::checkAI()
 				pChar pj=sc.getChar();
 				if (!(pj)) continue;
 				if (pj->npc || pj->dead || pj->guarded == false) continue;
-				if (getOwnerSerial32() == pj->getSerial()) {
+				if (getOwner() == pj) {
 					if (pj->IsOnline()) {
 						pChar pc_attacker = cSerializable::findCharBySerial(pj->attackerserial);
 						if ( ! pc_attacker ) return;

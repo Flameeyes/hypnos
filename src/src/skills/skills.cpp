@@ -41,10 +41,6 @@ nSkills::sSkillInfo::sSkillInfo()
 
 This function loads the skills' infos from skills.xml datafile, and stores them
 into nSkill::infos array.
-
-\todo We open here the file, but we don't know exactly which is the program and
-	the execution directory, so we should fix this adding a wrapper to the
-	directories.
 */
 void nSkills::loadSkills()
 {

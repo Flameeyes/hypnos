@@ -348,6 +348,7 @@ void cChar::updateStats(int32_t stat)
 void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 //Modified by N6 to use UNICODE packets
 {
+	//! \todo For my sake, can someone try to figure out how works this?! - Flame
 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
@@ -359,59 +360,59 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 		{
 			nonuni[(i-13)/2]=buffer[s][i];
 		}
-		if(!(pc->unicode))
+	if(!(pc->unicode))
+	{
+		uint32_t id;
+		uint16_t model,font, color;
+
+		id = pc->getSerial();
+		model = pc->getId();
+		color = ShortFromCharPtr(buffer[s] +4);		// use color from client
+		font = (buffer[s][6]<<8)|(pc->fonttype%256);	// use font ("not only") from  client
+
+		uint8_t name[30]={ 0x00, };
+		strcpy((char *)name, pc->getCurrentName().c_str());
+
+		NxwSocketWrapper sw;
+		sw.fillOnline();
+		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			uint32_t id;
-			uint16_t model,font, color;
+			pClient i=sw.getSocket();
 
-			id = pc->getSerial();
-			model = pc->getId();
-			color = ShortFromCharPtr(buffer[s] +4);		// use color from client
-			font = (buffer[s][6]<<8)|(pc->fonttype%256);	// use font ("not only") from  client
+			//!\todo redo adding to cpeech all the data and verifying
+			nPackets::Sent::Speech pk(cSpeech(buffer+8));
+			sw->sendPacket(&pk);
 
-			uint8_t name[30]={ 0x00, };
-			strcpy((char *)name, pc->getCurrentName().c_str());
-
-			NxwSocketWrapper sw;
-			sw.fillOnline();
-			for( sw.rewind(); !sw.isEmpty(); sw++ )
-			{
-				pClient i=sw.getSocket();
-
-				//!\todo redo adding to cpeech all the data and verifying
-				nPackets::Sent::Speech pk(cSpeech(buffer+8));
-				sw->sendPacket(&pk);
-
-				//SendSpeechMessagePkt(i, id, model, 1, color, font, name, (char*)&buffer[s][8]);
-			}
-		} // end unicode IF
-		else
-		{
-			uint32_t id;
-			uint16_t model,font, color;
-			uint8_t unicodetext[512];
-			uint16_t ucl = ( strlen ( &nonuni[0] ) * 2 ) + 2 ;
-
-			char2wchar(&nonuni[0]);
-			memcpy(unicodetext, Unicode::temp, ucl);
-
-			id = pc->getSerial();
-			model = pc->getId();
-			color = ShortFromCharPtr(buffer[s] +4);		// use color from client
-			font = (buffer[s][6]<<8)|(pc->fonttype%256);	// use font ("not only") from  client
-
-			uint32_t lang =  LongFromCharPtr(buffer[s] +9);
-			uint8_t name[30]={ 0x00, };
-			strcpy((char *)name, pc->getCurrentName().c_str());
-
-			NxwSocketWrapper sw;
-			sw.fillOnline();
-			for( sw.rewind(); !sw.isEmpty(); sw++ )
-			{
-				pClient i=sw.getSocket();
-				SendUnicodeSpeechMessagePkt(i, id, model, 1, color, font, lang, name, unicodetext,  ucl);
-			}
+			//SendSpeechMessagePkt(i, id, model, 1, color, font, name, (char*)&buffer[s][8]);
 		}
+	} // end unicode IF
+	else
+	{
+		uint32_t id;
+		uint16_t model,font, color;
+		uint8_t unicodetext[512];
+		uint16_t ucl = ( strlen ( &nonuni[0] ) * 2 ) + 2 ;
+
+		char2wchar(&nonuni[0]);
+		memcpy(unicodetext, Unicode::temp, ucl);
+
+		id = pc->getSerial();
+		model = pc->getId();
+		color = ShortFromCharPtr(buffer[s] +4);		// use color from client
+		font = (buffer[s][6]<<8)|(pc->fonttype%256);	// use font ("not only") from  client
+
+		uint32_t lang =  LongFromCharPtr(buffer[s] +9);
+		uint8_t name[30]={ 0x00, };
+		strcpy((char *)name, pc->getCurrentName().c_str());
+
+		NxwSocketWrapper sw;
+		sw.fillOnline();
+		for( sw.rewind(); !sw.isEmpty(); sw++ )
+		{
+			pClient i=sw.getSocket();
+			SendUnicodeSpeechMessagePkt(i, id, model, 1, color, font, lang, name, unicodetext,  ucl);
+		}
+	}
 }
 
 void itemtalk(pItem pi, char *txt)
@@ -1271,5 +1272,3 @@ void wornitems(pClient client, pChar pc) // Send worn items of player
 			wearIt(s,pi);
 	}
 }
-
-

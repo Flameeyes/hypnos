@@ -75,11 +75,11 @@ int fielddir(pChar pc, int x, int y, int z)
 			return 1;
 
 		default:
-			LogError("Switch fallout. hypnos.cpp, fielddir()\n"); //Morrolan
+			LogError("Switch fallout. misc.cpp, fielddir()\n"); //Morrolan
 			return 0;
 		}
 	default:
-		LogError("Switch fallout. hypnos.cpp, fielddir()\n"); //Morrolan
+		LogError("Switch fallout. misc.cpp, fielddir()\n"); //Morrolan
 		return 0;
 	}
 }
@@ -96,7 +96,7 @@ void npcattacktarget(pChar pc, pChar pc_target)
 		! pc || ! pc_target ||
 		! pc->npc ||
 		pc->isDead() || pc_target->isDead() ||
-		pc->getSerial() == pc_target->getSerial() ||
+		pc == pc_target ||
 		!pc->losFrom(pc_target)
 	) return;
 	
@@ -405,7 +405,6 @@ void usepotion(pChar pc, pItem pi)
 	}
 }
 
-//taken from 6904t2(5/10/99) - AntiChrist
 /*!
 \todo backport into cChar
 */
@@ -420,64 +419,65 @@ void callguards( pChar caller )
 	caller->antiguardstimer=getclock()+(SECS*10);
 
 	/*
-	Sparhawk:	1. when instant guard is set and offender nearby caller spawn guard near caller and leave attacking to checkAI
-			2. when instant guard is not set and offender nearby caller walk toward caller and leave attacking to checkAI
+	Sparhawk:
+	1. when instant guard is set and offender nearby caller spawn guard near caller and leave attacking to checkAI
+	2. when instant guard is not set and offender nearby caller walk toward caller and leave attacking to checkAI
 	*/
 	bool offenders = false;
 	vector < pChar > guards;
-
-//	int loopexit=0; // unused variable
 
 	NxwCharWrapper sc;
 	sc.fillCharsNearXYZ( caller->getPosition(), VISRANGE, true, false  );
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
 		pChar character=sc.getChar();
-		if(! character )
-			continue;
-		if( caller->getSerial() != character->getSerial() && caller->distFrom( character )  <= 15 && !character->dead && !character->IsHidden())
+		if(	! character ||
+			caller == character ||
+			caller->distFrom(character) > 15 ||
+			character->isDead() ||
+			character->isHidden() )
+				continue;
+			
+		if ((!character->IsInnocent() || character->npcaitype == NPCAI_EVIL) && !character->IsHidden() )
+			offenders = true;
+		else
+			if ((character->npcaitype == NPCAI_TELEPORTGUARD || character->npcaitype == NPCAI_GUARD) && !character->war && character->npcWander != WANDER_FOLLOW)
+				guards.push_back( character );
+	}
+	
+	if ( ! offenders ) return;
+	
+	if ( guards.empty() && nSettings::Server::hasInstantGuards() )
+	{
+		pNPC guard = npcs::AddNPCxyz( caller->getSocket(), region[caller->region].guardnum[(rand()%10)+1], caller->getPosition());
+
+		if ( guard )
 		{
-			if ((!character->IsInnocent() || character->npcaitype == NPCAI_EVIL) && !character->IsHidden() )
-				offenders = true;
-			else
-				if ((character->npcaitype == NPCAI_TELEPORTGUARD || character->npcaitype == NPCAI_GUARD) && !character->war && character->npcWander != WANDER_FOLLOW)
-					guards.push_back( character );
+			guard->npcaitype=NPCAI_TELEPORTGUARD;
+			guard->npcWander=WANDER_FREELY_CIRCLE;
+			guard->setNpcMoveTime();
+			guard->summontimer = getclock() + SECS * 25 ;
+
+			guard->playSFX( 0x01FE );
+			guard->staticFX(0x372A, 9, 6);
+
+			guard->teleport();
+			guard->talkAll("Don't fear, help is near", false );
 		}
 	}
-	if ( offenders )
+	else
 	{
-		if ( guards.empty() && nSettings::Server::hasInstantGuards() )
+		pChar guard;
+		while( !guards.empty() )
 		{
-			pNPC guard = npcs::AddNPCxyz( caller->getSocket(), region[caller->region].guardnum[(rand()%10)+1], caller->getPosition());
-
-			if ( guard )
-			{
-				guard->npcaitype=NPCAI_TELEPORTGUARD;
-				guard->npcWander=WANDER_FREELY_CIRCLE;
-				guard->setNpcMoveTime();
-				guard->summontimer = getclock() + SECS * 25 ;
-
-				guard->playSFX( 0x01FE );
-				guard->staticFX(0x372A, 9, 6);
-
-				guard->teleport();
-				guard->talkAll("Don't fear, help is near", false );
-			}
-		}
-		else
-		{
-			pChar guard;
-			while( !guards.empty() )
-			{
-				guard = guards.back();
-				guard->oldnpcWander = guard->npcWander;
-				guard->npcWander = WANDER_FOLLOW;
-				guard->ftargserial = caller->getSerial();
-				guard->antiguardstimer=getclock()+(SECS*10); // Sparhawk this should become server configurable
-				guard->talkAll("Don't fear, help is on the way", false );
-				//guard->antispamtimer = getclock()+SECS*5;
-				guards.pop_back();
-			}
+			guard = guards.back();
+			guard->oldnpcWander = guard->npcWander;
+			guard->npcWander = WANDER_FOLLOW;
+			guard->ftargserial = caller->getSerial();
+			guard->antiguardstimer=getclock()+(SECS*10); // Sparhawk this should become server configurable
+			guard->talkAll("Don't fear, help is on the way", false );
+			//guard->antispamtimer = getclock()+SECS*5;
+			guards.pop_back();
 		}
 	}
 }

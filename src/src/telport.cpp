@@ -38,7 +38,7 @@ void read_in_teleport()
 
 		if ((text[0]!=';')&&(text[0]!='/')&&(text[0]!='}')&&(text[0]!='{'))
 		{
-			tele_locations_st dummy;
+			sTeleLocations dummy;
 
 			token = strtok( text, seps );
 
@@ -58,7 +58,7 @@ void read_in_teleport()
 			token = strtok(NULL, seps);
 			dummy.destination.z = atoi(token);
 
-			tele_locations.insert(pair<int, tele_locations_st>(dummy.origem.x, dummy));
+			tele_locations.insert(pair<int, sTeleLocations>(dummy.origem.x, dummy));
 
 		}
 	} while ((text[0]!='}'));
@@ -418,7 +418,7 @@ void teleporters(pChar pc)
 
 	sLocation charpos= pc->getPosition();
 
-	std::multimap<int, tele_locations_st>::iterator iter_tele_locations( tele_locations.find(charpos.x) ),
+	std::multimap<int, sTeleLocations>::iterator iter_tele_locations( tele_locations.find(charpos.x) ),
 							iter_tele_locations_end( tele_locations.end() );
 
 	while  ( charpos.x == iter_tele_locations->second.origem.x && iter_tele_locations!=iter_tele_locations_end )

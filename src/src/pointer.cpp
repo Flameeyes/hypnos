@@ -83,71 +83,68 @@ namespace pointers {
 
 	void addToLocationMap( const pObject pObject )
 	{
-		if( pObject != 0 )
+		if ( ! pObject ) return;
+
+		if( cSerializable::isItemSerial( pObject->getSerial() ) )
 		{
-			if( cSerializable::isItemSerial( pObject->getSerial() ) )
-			{
-				if( static_cast<pItem>(pObject)->isInWorld() )
-					addItemToLocationMap( static_cast<pItem>(pObject) );
-			}
-			else
-			{
-				addCharToLocationMap( static_cast<pChar>(pObject) );
-			}
+			if( dynamic_cast<pItem>(pObject)->isInWorld() )
+				addItemToLocationMap( dynamic_cast<pItem>(pObject) );
+		}
+		else
+		{
+			addCharToLocationMap( dynamic_cast<pChar>(pObject) );
 		}
 	}
 
 	void updateLocationMap( const pObject pObject )
 	{
-		if( pObject != 0 )
+		if ( ! pObject ) return;
+			
+		if( cSerializable::isItemSerial( pObject->getSerial() ) )
 		{
-			if( cSerializable::isItemSerial( pObject->getSerial() ) )
+			if( static_cast<pItem>(pObject)->isInWorld() )
 			{
-				if( static_cast<pItem>(pObject)->isInWorld() )
-				{
-					delItemFromLocationMap( static_cast<pItem>(pObject) );
-					addItemToLocationMap( static_cast<pItem>(pObject) );
-				}
+				delItemFromLocationMap( static_cast<pItem>(pObject) );
+				addItemToLocationMap( static_cast<pItem>(pObject) );
 			}
-			else
-			{
-				delCharFromLocationMap( static_cast<pChar>(pObject) );
-				addCharToLocationMap( static_cast<pChar>(pObject) );
-			}
+		}
+		else
+		{
+			delCharFromLocationMap( static_cast<pChar>(pObject) );
+			addCharToLocationMap( static_cast<pChar>(pObject) );
 		}
 	}
 
 	void delFromLocationMap( const pObject pObject )
 	{
-		if( pObject != 0 )
+		if ( ! pObject ) return;
+		
+		if( cSerializable::isItemSerial( pObject->getSerial() ) )
 		{
-			if( cSerializable::isItemSerial( pObject->getSerial() ) )
+			if( static_cast<pItem>(pObject)->isInWorld() )
 			{
-				if( static_cast<pItem>(pObject)->isInWorld() )
-				{
-					delItemFromLocationMap( static_cast<pItem>(pObject) );
-				}
+				delItemFromLocationMap( static_cast<pItem>(pObject) );
 			}
-			else
-			{
-				delCharFromLocationMap( static_cast<pChar>(pObject) );
-			}
+		}
+		else
+		{
+			delCharFromLocationMap( static_cast<pChar>(pObject) );
 		}
 	}
 
 	void addCharToLocationMap( const pChar pWho )
 	{
+		if ( ! pWho ) return;
 		pWho->setPositionKey();
 		pCharLocationMap.insert( pair< uint32_t, pChar >( pWho->getPositionKey(), pWho ) );
 	}
 
 	void delCharFromLocationMap( const pChar pWho )
 	{
-		pair< PCHARLOCATIONMAPIT, PCHARLOCATIONMAPIT > it = pCharLocationMap.equal_range( pWho->getPositionKey() );
-		uint32_t pWhoSerial = pWo->getSerial();
+		std::pair< PCHARLOCATIONMAPIT, PCHARLOCATIONMAPIT > it = pCharLocationMap.equal_range( pWho->getPositionKey() );
 
 		for( ; it.first != it.second; ++it.first )
-			if( it.first->second->getSerial() == pWhoSerial32 )
+			if( it.first->second == pWho )
 			{
 				pCharLocationMap.erase( it.first );
 				break;
@@ -189,93 +186,89 @@ namespace pointers {
 
 	CharList* getNearbyChars( pObject pObject, int32_t range, uint32_t flags )
 	{
+		if ( ! pObject ) return NULL;
+			
 		CharList* 	pvCharsInRange	= 0;
 		bool		validCall	= false;
 		pChar		pSelf		= 0;
 
-		if( pObject != 0 )
+		if( cSerializable::isItemSerial( pObject->getSerial() ) )
 		{
-			if( cSerializable::isItemSerial( pObject->getSerial() ) )
-			{
-				if( static_cast<pItem>(pObject)->isInWorld() )
-					validCall = true;
-			}
-			else
-			{
-				pSelf = static_cast<pChar>(pObject);
+			if( static_cast<pItem>(pObject)->isInWorld() )
 				validCall = true;
-			}
-			if( validCall )
-				pvCharsInRange = getNearbyChars( pObject->getPosition().x, pObject->getPosition().y, range, flags, pSelf );
 		}
+		else
+		{
+			pSelf = static_cast<pChar>(pObject);
+			validCall = true;
+		}
+		if( validCall )
+			pvCharsInRange = getNearbyChars( pObject->getPosition().x, pObject->getPosition().y, range, flags, pSelf );
+		
 		return pvCharsInRange;
 	}
 
-	CharList* getNearbyChars( uint32_t x, uint32_t y, uint32_t range, uint32_t flags, pChar pSelf )
+	CharList* getNearbyChars( sPoint p, uint32_t range, uint32_t flags, pChar pSelf )
 	{
-		CharList* pvCharsInRange = 0;
+		if ( ! isValidCoord(p) ) return NULL;
+		
+		CharList* pvCharsInRange = new CharList();
 
-		if( x > 0 && x < 6145 && y > 0 && y < 4097 )
+		calculateBoundary( x, y, range );
+
+		PCHARLOCATIONMAPIT it(  pCharLocationMap.lower_bound( locationToKey( upperLeft.x,  upperLeft.y ) ) ),
+					end( pCharLocationMap.upper_bound( locationToKey( lowerRight.x, lowerRight.y) ) );
+		pChar pc = 0;
+
+		for( ; it != end; ++it )
 		{
-			pvCharsInRange = new CharList();
-
-			calculateBoundary( x, y, range );
-
-			PCHARLOCATIONMAPIT it(  pCharLocationMap.lower_bound( locationToKey( upperLeft.x,  upperLeft.y ) ) ),
-					   end( pCharLocationMap.upper_bound( locationToKey( lowerRight.x, lowerRight.y) ) );
-			pChar pc = 0;
-
-			for( ; it != end; ++it )
+			pc = it->second;
+			if ( ! flags )
 			{
-				pc = it->second;
-				if( flags )
+				pvCharsInRange->push_back( pc );
+				continue;
+			}
+			
+			if( pSelf )
+			{
+				if( (flags & EXCLUDESELF) && pSelf == pc )
 				{
-					if( pSelf )
-					{
-						if( (flags & EXCLUDESELF) && pSelf->getSerial() == pc->getSerial() )
-						{
-							continue;
-						}
-
-						if ( (flags & COMBATTARGET) && pSelf->getSerial() == pc->targserial )
-						{
-							pvCharsInRange->push_back( pc );
-							continue;
-						}
-					}
-
-					if ( pc->npc )
-					{
-						if ( (flags & NPC) )
-						{
-							pvCharsInRange->push_back( pc );
-							continue;
-						}
-						continue;
-					}
-
-					if ( (flags & ONLINE) && pc->IsOnline() )
-					{
-						pvCharsInRange->push_back( pc );
-						continue;
-					}
-
-					if ( (flags & OFFLINE) && !pc->IsOnline() )
-					{
-						pvCharsInRange->push_back( pc );
-						continue;
-					}
-
-					if ( (flags & DEAD) && pc->dead )
-					{
-						pvCharsInRange->push_back( pc );
-						continue;
-					}
+					continue;
 				}
-				else
+
+				if ( (flags & COMBATTARGET) && pSelf == pc )
 				{
 					pvCharsInRange->push_back( pc );
+					continue;
 				}
+			}
+
+			if ( pc->npc )
+			{
+				if ( (flags & NPC) )
+				{
+					pvCharsInRange->push_back( pc );
+					continue;
+				}
+				continue;
+			}
+
+			if ( (flags & ONLINE) && pc->IsOnline() )
+			{
+				pvCharsInRange->push_back( pc );
+				continue;
+			}
+
+			if ( (flags & OFFLINE) && !pc->IsOnline() )
+			{
+				pvCharsInRange->push_back( pc );
+				continue;
+			}
+
+			if ( (flags & DEAD) && pc->dead )
+			{
+				pvCharsInRange->push_back( pc );
+				continue;
 			}
 		}
 		return pvCharsInRange;
@@ -289,6 +282,7 @@ namespace pointers {
 
 	void addItemToLocationMap( const pItem pWhat )
 	{
+		if ( ! pWhat ) return;
 		pWhat->setPositionKey();
 		pItemLocationMap.insert( pair< uint32_t, pItem >( pWhat->getPositionKey(), pWhat ) );
 	}
@@ -296,10 +290,9 @@ namespace pointers {
 	void delItemFromLocationMap( const pItem pWhat )
 	{
 		pair< PITEMLOCATIONMAPIT, PITEMLOCATIONMAPIT > it = pItemLocationMap.equal_range( pWhat->getPositionKey() );
-		uint32_t	pWhatSerial = pWhat->getSerial();
 
 		for( ; it.first != it.second; ++it.first )
-			if( it.first->second->getSerial() == pWhatSerial32 )
+			if( it.first->second == pWhat )
 			{
 				pItemLocationMap.erase( it.first );
 				break;
@@ -356,7 +349,7 @@ namespace pointers {
 				{
 					if( pSelf )
 					{
-						if( (flags & EXCLUDESELF) && pSelf->getSerial() == pi->getSerial() )
+						if( (flags & EXCLUDESELF) && pSelf == pi )
 						{
 							continue;
 						}
@@ -712,11 +705,7 @@ namespace pointers {
 
 		delFromStableMap(pc);
 		delFromOwnerMap(pc);
-#ifdef SPAR_C_LOCATION_MAP
 		delFromLocationMap(pc);
-#else
-		mapRegions->remove(pc);
-#endif
 		objects.eraseObject( pc );
 
 		eraseContainerInfo( pc->getSerial() );
@@ -735,11 +724,7 @@ namespace pointers {
 
 		if (pi->isInWorld())
 		{
-#ifdef SPAR_I_LOCATION_MAP
 			pointers::delFromLocationMap(pi);
-#else
-			mapRegions->remove(pi);
-#endif
 		}
 
 		objects.eraseObject(pi);

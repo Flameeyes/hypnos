@@ -665,7 +665,7 @@ void handleCharsAtNewPos( pChar pc )
 		pc_curr = sc.getChar();
 		if ( !pc_curr )
 			continue;
-		if ( pc->IsGMorCounselor() || pc_curr->getSerial() == pc->getSerial() )
+		if ( pc->IsGMorCounselor() || pc_curr == pc )
 			continue;
 		if ( pc_curr->dead || pc_curr->IsInvul() )
 			continue;

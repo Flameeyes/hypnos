@@ -144,7 +144,7 @@ void Skills::target_stealing( pClient client, pTarget t )
 		return;
 	}
 
-	if ( (thief->getSerial() == victim->getSerial()) || (thief->getSerial()==victim->getOwnerSerial32()) )
+	if ( thief == victim || thief == victim->getOwner()) )
 	{
 		client->sysmessage("You catch yourself red handed.");
 		return;

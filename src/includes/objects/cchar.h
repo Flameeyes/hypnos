@@ -489,7 +489,7 @@ public:
 \name Stats regen rate info
 */
 private:
-	regen_st regens[ALL_STATS]; //!< stats regen info
+	sRegen regens[ALL_STATS]; //!< stats regen info
 public:
 	void setRegenRate( StatType stat, uint32_t rate, VarType type );
 	uint32_t getRegenRate( StatType stat, VarType type );

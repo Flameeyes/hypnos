@@ -150,7 +150,7 @@ struct sTitle
 	std::string other;
 };
 
-struct tele_locations_st {
+struct sTeleLocations {
 	sLocation destination, origem;
 };
 
@@ -161,7 +161,7 @@ struct tele_locations_st {
 \since 0.83
 \note regeneration rage is in milliseconds
 */
-struct regen_st {
+struct sRegen {
 	uint32_t timer; //!< the timer
 	uint32_t rate_eff; //!< regeneration rate current
 	uint32_t rate_real; //!< regeneration rate real
