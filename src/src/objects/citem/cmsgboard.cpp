@@ -385,7 +385,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 		message->availability = REGIONALPOST;
 		if (!npc || !item)
 		{
-			ErrOut("cMsgBoard::createQuestMessage() missing valid npc or item for ITEMQUEST\n");
+			LogError("Missing valid npc or item for ITEMQUEST\n");
 			message->Delete;
 			return 0;
 		}
@@ -396,7 +396,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 		message->availability = GLOBALPOST;
 		if (!npc)
 		{
-			ErrOut("cMsgBoard::createQuestMessage() missing valid npc for BOUNTYQUEST\n");
+			LogError("Missing valid npc for BOUNTYQUEST\n");
 			message->Delete;
 			return 0;
 		}
@@ -408,14 +408,14 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 		message->availability = REGIONALPOST;
 		if (!npc)
 		{
-			ErrOut("cMsgBoard::createQuestMessage() missing valid npc for ESCORTQUEST\n");
+			LogError("Missing valid npc for ESCORTQUEST\n");
 			message->Delete;
 			return 0;
 		}
 
 		break;
 	default:
-		ErrOut("cMsgBoard::createQuestMessage() invalid quest type\n");
+		LogError("Invalid quest type\n");
 		message->Delete;
 		return 0;
 	}
@@ -461,7 +461,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 			{
 				if ( listCount >= nSettings::MsgBoards::getMaxEntries() )
 				{
-					ErrOut("cMsgBoard::createQuestMessage() Too many entries in ESCORTS list [MAXENTRIES=%d]\n", nSettings::MsgBoards::getMaxEntries() );
+					LogError("Too many entries in ESCORTS list [MAXENTRIES=%d]\n", nSettings::MsgBoards::getMaxEntries() );
 					break;
 				}
 
@@ -515,7 +515,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 			{
 				if ( listCount >= nSettings::MsgBoards::getMaxEntries() )
 				{
-					ErrOut("cMsgBoard::createQuestMessage() Too many entries in BOUNTYS list [MAXENTRIES=%d]\n", nSettings::MsgBoards::getMaxEntries() );
+					LogError("Too many entries in BOUNTYS list [MAXENTRIES=%d]\n", nSettings::MsgBoards::getMaxEntries() );
 					break;
 				}
 
@@ -529,7 +529,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 		// If no entries are found in the list, then there must be no entries at all.
 		if ( listCount == 0 )
 		{
-			outPlain( "cMsgBoard::createQuestMessage() No msgboard.scp entries found for BOUNTY quests\n" );
+			LogMessage( "No msgboard.scp entries found for BOUNTY quests\n" );
 	       		message->Delete();
 			return 0;
 		}

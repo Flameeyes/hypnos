@@ -434,7 +434,7 @@ void cItem::explode(pClient client)
 		case 2:dmg=RandomNum(10,20) ;break;
 		case 3:dmg=RandomNum(20,40) ;break;
 		default:
-			ErrOut("Switch fallout. citem.cpp, explode()\n"); //Morrolan
+			SWITCH_FALLOUT;
 			dmg=RandomNum(5,10);
 	}
 
@@ -710,7 +710,8 @@ void cItem::Refresh()
 
 	if( cont == this )
 	{
-		ErrOut("item %s [serial: %i] has dangerous container value, autocorrecting...\n", getCurrentName().c_str(), getSerial());
+		LogError("Item %s [serial: %i] has dangerous container value, autocorrecting...\n",
+			getCurrentName().c_str(), getSerial());
 		setContainer(NULL);
 	}
 

@@ -315,7 +315,7 @@ const short NumberOfOres = sizeof(OreTable)/sizeof(Ore);
             return &OreTable[i];
         if(OreTable[i].minskill > skill)
         {
-            ErrOut("something went wrong with mining");
+            LogError("something went wrong with mining");
             break;
         }
     }

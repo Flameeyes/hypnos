@@ -136,7 +136,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 
 	if ( !postype )
 	{
-		ErrOut("AddNPC: bad parms in call (socket [%d], item[%d], npcNum[%d], x1[%d], y1[%d]\n",
+		LogError("AddNPC: bad parms in call (socket [%d], item[%d], npcNum[%d], x1[%d], y1[%d]\n",
 			s, ((pi)? pi->getSerial() : INVALID), npcNum, x1, y1);
 	}
 	else
@@ -144,7 +144,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 		cScpIterator*	iter = Scripts::Npc->getNewIterator("SECTION NPC %i", npcNum);
 		if ( !iter )
 		{
-			ErrOut("AddNpc: SECTION NPC %i not found\n", npcNum );
+			LogError("AddNpc: SECTION NPC %i not found\n", npcNum );
 		}
 		else
 		{
@@ -203,11 +203,11 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 
 			if	( loopexit == MAXLOOPS )
 			{
-				ErrOut("AddNpc: Missing { in SECTION NPC %i\n", npcNumSave );
+				LogError("AddNpc: Missing { in SECTION NPC %i\n", npcNumSave );
 			}
 			else if ( error )
 			{
-				ErrOut("AddNpc: NPC %s in NPCLIST in SECTION NPC %i is invalid\n", script2.c_str(), npcNumSave );
+				LogError("AddNpc: NPC %s in NPCLIST in SECTION NPC %i is invalid\n", script2.c_str(), npcNumSave );
 			}
 			else
 			{
@@ -215,9 +215,9 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 				if ( !iter )
 				{
 					if( npcNum != npcNumSave )
-						ErrOut("AddNpc: NPC %i in NPCLIST in SECTION NPC %i is invalid\n", npcNum, npcNumSave );
+						LogError("AddNpc: NPC %i in NPCLIST in SECTION NPC %i is invalid\n", npcNum, npcNumSave );
 					else
-						ErrOut("AddNpc: SECTION NPC %i not found\n", npcNum );
+						LogError("AddNpc: SECTION NPC %i not found\n", npcNum );
 				}
 				else
 				{
@@ -940,7 +940,8 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 									pc->baseskill[skWrestling] = getRangedValue(script2);
 								break;
 							default:
-								ErrOut("Switch fallout in npcs.cpp AddNPC( %d ), invalid script param [ %s ]\n", npcNum, script1.c_str());
+								SWITCH_FALLOUT;
+								LogError("AddNPC( %d ), invalid script param [ %s ]\n", npcNum, script1.c_str());
 							}
 						}
 					}

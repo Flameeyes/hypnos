@@ -977,9 +977,6 @@ bool nPackets::Received::BBoardMessage::execute(pClient client)
 				if(!message) return false;
 				if ( (message->availability != LOCALPOST) && !global::canReplytoGlobalMsgBoardPosts() )
 				{
-					#ifdef DEBUG
-					ErrOut("MsgBoard: Attempted reply to a global or regional post\n");
-					#endif
 					client->sysmessage( "You can not reply to global or regional posts");
 					return false;
 				}

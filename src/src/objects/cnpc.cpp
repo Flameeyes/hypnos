@@ -402,7 +402,7 @@ void cNPC::createEscortQuest()
 	// Make sure the questDest is valid otherwise don't post and delete the NPC
 	if ( !questDestRegion )
 	{
-		ErrOut("createEscortQuest() No valid regions defined for escort quests\n");
+		LogError("No valid regions defined for escort quests\n");
 		Delete();
 		return;
 	}
@@ -416,12 +416,6 @@ void cNPC::createEscortQuest()
 		Delete();
 		return;
 	}
-
-	// Debugging messages
-#ifdef DEBUG
-	ErrOut("createEscortQuest() Escort quest for:\n       %s to be escorted to %s\n", name, region[questDestRegion].name );
-#endif
-
 }
 
 

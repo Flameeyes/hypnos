@@ -2096,7 +2096,8 @@ void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 							iter->item->Refresh();
 							break;
 						default:
-							ErrOut("Switch fallout. trade.cpp, buyaction()\n"); //Morrolan
+							SWITCH_FALLOUT;
+							return;
 					}
 				}
 			}

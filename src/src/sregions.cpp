@@ -155,12 +155,12 @@ void loadregions()//New -- Zippy spawn regions
 				else if (!(strcmp("BUYABLE", script1))) // Magius(CHE)
 				{
 					if (actgood>INVALID) regionRef.goodbuy[actgood]=str2num(script2);
-					else ErrOut("error in regions.xss. You must write BUYABLE after GOOD <num>!\n");
+					else LogError("error in regions.xss. You must write BUYABLE after GOOD <num>!\n");
 				}
 				else if (!(strcmp("SELLABLE", script1))) // Magius(CHE)
 				{
 					if (actgood>INVALID) regionRef.goodsell[actgood]=str2num(script2);
-					else ErrOut("error in regions.xss. You must write SELLABLE after GOOD <num>!\n");
+					else LogError("error in regions.xss. You must write SELLABLE after GOOD <num>!\n");
 				}
 				else if (!(strcmp("RANDOMVALUE", script1))) // Magius(CHE) (2)
 				{
@@ -171,11 +171,11 @@ void loadregions()//New -- Zippy spawn regions
 						regionRef.goodrnd2[actgood]=str2num(gettokenstr);
 						if (regionRef.goodrnd2[actgood]<regionRef.goodrnd1[actgood])
 						{
-							ErrOut("error in regions.xss. You must write RANDOMVALUE NUM2[%i] grater than NUM1[%i].\n",regionRef.goodrnd2[actgood],regionRef.goodrnd1[actgood]);
+							LogError("error in regions.xss. You must write RANDOMVALUE NUM2[%i] grater than NUM1[%i].\n",regionRef.goodrnd2[actgood],regionRef.goodrnd1[actgood]);
 							regionRef.goodrnd2[actgood]=regionRef.goodrnd1[actgood]=0;
 						}
 					}
-					else ErrOut("error in regions.xss. You must write RANDOMVALUE after GOOD <num>!\n");
+					else LogError("error in regions.xss. You must write RANDOMVALUE after GOOD <num>!\n");
 				}
 				else if (!(strcmp("X1", script1)))
 				{

@@ -868,7 +868,7 @@ void cNetwork::sockInit()
 	a_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (a_socket < 0 )
 	{
-		ErrOut("ERROR: Unable to create socket\n");
+		LogError("ERROR: Unable to create socket\n");
 		keeprun=false;
 		error=1;
 		kr=0;
@@ -900,7 +900,7 @@ void cNetwork::sockInit()
 
 	if (bcode!=0)
 	{
-		ErrOut("ERROR: Unable to set socket in listen mode  - Error code: %i\n",bcode);
+		LogError("ERROR: Unable to set socket in listen mode  - Error code: %i\n",bcode);
 		keeprun=false;
 		error=1;
 		kr=0;
@@ -953,7 +953,7 @@ void cNetwork::CheckConn() // Check for connection requests
 		client[now] = accept(a_socket, (struct sockaddr *)&client_addr, &len);
 		if ((client[now]<0))
 		{
-			ErrOut("Unknown error at client connection!\n");
+			LogError("Unknown error at client connection!\n");
 			error=1;
 			keeprun=true;
 			return;
@@ -997,7 +997,7 @@ void cNetwork::CheckConn() // Check for connection requests
 	}
 	else if (s<0)
 	{
-		ErrOut("select (Conn) failed!\n");
+		LogError("select (Conn) failed!\n");
 		keeprun=true;
 		error=1;
 		return;

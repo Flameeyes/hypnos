@@ -61,11 +61,11 @@ static bool fielddir(pChar pc, sPoint p)
 			return true;
 
 		default:
-			LogError("Switch fallout. misc.cpp, fielddir()\n"); //Morrolan
+			SWITCH_FALLOUT;
 			return false;
 		}
 	default:
-		LogError("Switch fallout. misc.cpp, fielddir()\n"); //Morrolan
+		SWITCH_FALLOUT;
 		return false;
 	}
 }
@@ -1120,7 +1120,7 @@ static void castStatPumper(SpellId spellnumber, sTarget& dest, pChar pa, int fla
 			tempfx::add(pa, pd, tempfx::tmpfxSpellBless, bonus, bonus, bonus, duration);
 			break;
 		default :
-			ErrOut("Switch fallout. magic::castStatPumper\n");
+			SWITCH_FALLOUT;
 	}
 }
 
@@ -1191,7 +1191,7 @@ void castFieldSpell( pChar pc, sPosition pos, int spellnumber)
 		case spellEnergyField:
 			id = (j) ? 0x3956 : 0x3946; break;
 		default:
-			ErrOut("Switch fallout in magic::castFieldSpell\n");
+			SWITCH_FALLOUT;
 			return;
 	}
 

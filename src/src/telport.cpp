@@ -25,7 +25,7 @@ void read_in_teleport()
 
 	if(iter==NULL)
 	{
-		ErrOut("Teleport Data not found\n");
+		LogError("Teleport Data not found\n");
 		error=1;
 		keeprun=false;
 		return;
@@ -106,7 +106,7 @@ void advancementobjects(pChar pc, int x, int allways)
 		iter = Scripts::Advance->getNewIterator(sect);
 		if (iter==NULL)
 		{
-			ErrOut("advancement object: Script section not found. Aborting.\n");
+			LogError("advancement object: Script section not found. Aborting.\n");
 			pc->advobj=0;
 			return;
 		}

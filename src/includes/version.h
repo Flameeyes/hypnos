@@ -20,8 +20,8 @@ yourself, anyway.
 */
 static const char *strDevelopers = "Flameeyes, Kheru, Chrono, il_guru, Judas";
 
-//! Hypnos version string
-static const char *strVersion = "CVS";
+//! Hypnos version string \todo Set SVN revision number
+static const char *strVersion = "SVN []";
 
 /*!
 \brief Emulator's supported client

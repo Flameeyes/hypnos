@@ -9,8 +9,9 @@
 #ifdef _WIN32
 
 #include "common_libs.h"
-#include <process.h>
+#include "backend/notify.h"
 
+#include <process.h>
 #include <wefts_mutex.h>
 
 WSADATA wsaData;
@@ -30,7 +31,7 @@ bool winSockInit()
 				MB_ICONSTOP
 				);
 		
-		ErrOut("ERROR: Winsock 2.0 not found...\n");
+		outError("ERROR: Winsock 2.0 not found...\n");
 		return false;
 	}
 	return true;
@@ -74,7 +75,7 @@ void sockManageError(int na)
 			break;
 	}
 	
-	ErrOut("ERROR: Unable to bind socket (code %d)\n"
+	outError("ERROR: Unable to bind socket (code %d)\n"
 		"\tError string: %s\n", bcode, strError);
 
 	if (ServerScp::g_nDeamonMode==0)

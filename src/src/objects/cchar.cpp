@@ -2000,7 +2000,7 @@ void cChar::Kill()
 		}
 		else
 		{
-			ErrOut("cChar::Kill() : Failed to create death robe\n");
+			LogError("Failed to create death robe\n");
 		}
 	}
 
@@ -2545,6 +2545,8 @@ void cChar::checkPoisoning()
 			{
 				switch ( poisoned )
 				{
+				case poisonNone:
+					break;
 				case poisonWeak:
 					poisontime= getclock() + ( 15 * SECS );
 					// between 0% and 5% of player's hp reduced by racial combat poison resistance
@@ -2581,10 +2583,6 @@ void cChar::checkPoisoning()
 							( (100 - Race::getPoisonResistance( race, poisonDeadly ) ) / 100 )
 						     );
 					break;
-				default:
-					ErrOut("checkPoisoning switch fallout for char with serial [%u]\n", getSerial() );
-					poisoned = poisonNone;
-					return;
 				}
 				if ( hp < 1 )
 				{

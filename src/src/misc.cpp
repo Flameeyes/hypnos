@@ -102,7 +102,7 @@ void usepotion(pChar pc, pItem pi)
 			if(client) client->sysmessage("You feel much more agile!");
 			break;
 		default:
-			ErrOut("Switch fallout. hypnos.cpp, usepotion()\n");
+			SWITCH_FALLOUT;
 			return;
 		}
 		pc->playSFX(0x01E7);
@@ -139,7 +139,7 @@ void usepotion(pChar pc, pItem pi)
 				if (pc->getBody()->getPoisoned() == poisonDeadly && x<61) pc->getBody()->setPoisoned(poisonNone);
 				break;
 			default:
-				ErrOut("Switch fallout. hypnos.cpp, usepotion()\n"); //Morrolan
+				SWITCH_FALLOUT;
 				return;
 			}
 			if (pc->poisoned)
@@ -190,7 +190,7 @@ void usepotion(pChar pc, pItem pi)
 			break;
 
 		default:
-			ErrOut("Switch fallout. hypnos.cpp, usepotion()\n"); //Morrolan
+			SWITCH_FALLOUT;
 			return;
 		}
 
@@ -232,7 +232,7 @@ void usepotion(pChar pc, pItem pi)
 				break;
 
 			default:
-				ErrOut("Switch fallout. hypnos.cpp, usepotion()\n"); //Morrolan
+				SWITCH_FALLOUT;
 				return;
 		}
 		if (s!=INVALID)
@@ -255,7 +255,7 @@ void usepotion(pChar pc, pItem pi)
 			if(client) client->sysmessage("You feel much more strong!");
 			break;
 		default:
-			ErrOut("Switch fallout. hypnos.cpp, usepotion()\n");
+			SWITCH_FALLOUT;
 			return;
 		}
 		pc->playSFX(0x01EE);
@@ -273,7 +273,7 @@ void usepotion(pChar pc, pItem pi)
 			break;
 
 		default:
-			ErrOut("Switch fallout. hypnos.cpp, usepotion()\n");
+			SWITCH_FALLOUT;
 			return;
 		}
 		if (client)
@@ -296,7 +296,7 @@ void usepotion(pChar pc, pItem pi)
 		break;
 
 	default:
-		ErrOut("Switch fallout. hypnos.cpp, usepotion()\n"); //Morrolan
+		SWITCH_FALLOUT;
 		return;
 	}
 

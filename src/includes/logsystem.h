@@ -79,13 +79,22 @@ inline bool NewWarningsLogged()
 void LogMessageF(char type, char *fpath, int lnum, char *Message, ...) PRINTF_LIKE(4,5)
 
 //---------------------------------------------------------------------------
-//     Translator macros for functions
+// Translator macros for functions
 //---------------------------------------------------------------------------
 
 #define LogMessage(...)		LogMessageF('M', __FILE__, __LINE__, __VA_ARGS__)
 #define LogWarning(...)		LogMessageF('W', __FILE__, __LINE__, __VA_ARGS__)
 #define LogError(...)		LogMessageF('E', __FILE__, __LINE__, __VA_ARGS__)
 #define LogCritical(...)	LogMessageF('C', __FILE__, __LINE__, __VA_ARGS__)
+
+//---------------------------------------------------------------------------
+// Special logging facility for debugging
+//---------------------------------------------------------------------------
+#ifndef NDEBUG
+	#define SWITCH_FALLOUT LogError("Switch fallout")
+#else
+	#define SWITCH_FALLOUT
+#endif
 
 void LogSocketError(char* message, int err);
 

@@ -271,7 +271,7 @@ void cChar::walk()
 		}
 			break;
 		default:
-			ErrOut("cChar::walk() unknown npcwander [%i] serial %u\n", npcWander, getSerial() );
+			LogError("Unknown npcwander [serial %u]\n", getSerial());
 			break;
 	}
 	setNpcMoveTime();
