@@ -7,13 +7,6 @@
     || For any question post to NoX-Wizard forums.                             ||
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
-
-//file cmds.cpp
-//by Frodo & Stonedz
-//Work in progress...
-
-
-
 #include "common_libs.h"
 #include "network.h"
 #include "cmds.h"
@@ -21,32 +14,19 @@
 #include "bounty.h"
 #include "sndpkg.h"
 #include "debug.h"
-#include "amx/amxcback.h"
 #include "calendar.h"
 #include "race.h"
-#include "scp_parser.h"
 #include "commands.h"
-#include "addmenu.h"
 #include "telport.h"
-#include "accounts.h"
 #include "worldmain.h"
 #include "data.h"
 #include "spawn.h"
 #include "trade.h"
-
-
 #include "basics.h"
 #include "inlines.h"
-#include "nox-wizard.h"
-#include "archive.h"
 #include "map.h"
 #include "jail.h"
 #include "skills.h"
-#include "layer.h"
-#include "scripts.h"
-
-
-
 
 /*///////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

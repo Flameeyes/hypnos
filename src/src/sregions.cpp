@@ -15,14 +15,9 @@
 #include "network.h"
 #include "debug.h"
 #include "sndpkg.h"
-#include "amx/amxcback.h"
 #include "calendar.h"
 #include "sregions.h"
-#include "scp_parser.h"
-
-
 #include "basics.h"
-#include "scripts.h"
 #include "inlines.h"
 
 void loadregions()//New -- Zippy spawn regions

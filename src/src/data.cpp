@@ -15,7 +15,6 @@
 
 #include "common_libs.h"
 #include "data.h"
-#include "globals.h"
 #include "inlines.h"
 #include "nxw_utils.h"
 

@@ -10,10 +10,7 @@
 #include "common_libs.h"
 #include "spawn.h"
 #include "map.h"
-
-
 #include "inlines.h"
-#include "scripts.h"
 
 cSpawns* Spawns=NULL;
 

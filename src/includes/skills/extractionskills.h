@@ -17,11 +17,6 @@
 #define __EXTRACTION_SKILLS_H
 
 #include "sndpkg.h"
-#include "amx/amxcback.h"
-#include "globals.h"
-
-#undef AMXMINING
-#define AMXMINING "__nxw_sk_mining"
 
 class cResource {
 public:

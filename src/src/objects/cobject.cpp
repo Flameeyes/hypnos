@@ -5,31 +5,11 @@
 | You can find detailed license information in pyuo.cpp file.              |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+
 #include "common_libs.h"
 #include "objects/cobject.h"
-#include "archive.h"
-
-
 #include "inlines.h"
 #include "utils.h"
-#include "scripts.h"
-
-cScpIterator* cObject::getScriptIterator( std::string section, std::string& sectionId )
-{
-	cScpIterator*	iter	= 0;
-
-	if ( section == "LOOTLIST" )
-		iter = Scripts::Npc->getNewIterator( "SECTION %s %s", section.c_str(), sectionId.c_str() );
-	else if ( section == "NPCLIST" )
-		iter = Scripts::Npc->getNewIterator( "SECTION %s %s", section.c_str(), sectionId.c_str() );
-	else if	( section == "RANDOMCOLOR" )
-		iter = Scripts::Colors->getNewIterator( "SECTION %s %s", section.c_str(), sectionId.c_str() );
-	else if	( section == "RANDOMNAME" )
-		iter = Scripts::Npc->getNewIterator( "SECTION %s %s", section.c_str(), sectionId.c_str() );
-	else if ( section == "UNDEADLIST" )
-		iter = Scripts::Necro->getNewIterator( "SECTION %s %s", section.c_str(), sectionId.c_str() );
-	return iter;
-}
 
 std::string cObject::getRandomScriptValue( std::string section, std::string& sectionId )
 {

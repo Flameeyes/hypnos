@@ -16,13 +16,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "console.h"
-#ifdef _WINDOWS
-#include "nxwgui.h"
-#endif
 
 static FILE *s_fileStdOut = NULL;
 static char s_strSrvcMsg[8192];
-
 
 void clearscreen( void )
 {

@@ -16,7 +16,6 @@
 #include "common_libs.h"
 #include "itemid.h"
 #include "sndpkg.h"
-#include "layer.h"
 #include "tmpeff.h"
 #include "npcai.h"
 #include "data.h"
@@ -25,7 +24,6 @@
 #include "inlines.h"
 #include "utils.h"
 #include "settings.h"
-
 
 /*!
 \author Luxor

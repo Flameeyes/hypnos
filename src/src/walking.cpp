@@ -15,19 +15,13 @@
 #include "sregions.h"
 #include "sndpkg.h"
 #include "debug.h"
-#include "amx/amxcback.h"
-#include "trigger.h"
 #include "house.h"
 #include "tmpeff.h"
-
 #include "telport.h"
 #include "weight.h"
 #include "boats.h"
 #include "set.h"
 #include "map.h"
-
-
-#include "classes.h"
 #include "inlines.h"
 #include "basics.h"
 #include "range.h"

@@ -33,26 +33,17 @@
 #include "speech.h"
 #include "itemid.h"
 #include "bounty.h"
-#include "srvparms.h"
 #include "set.h"
-#include "layer.h"
 #include "npcai.h"
 #include "nxw_utils.h"
 #include "weight.h"
 #include "data.h"
-#include "books.h"
 #include "boats.h"
-#include "archive.h"
 #include "trade.h"
 #include "map.h"
-
-
 #include "inlines.h"
 #include "skills.h"
-#include "nox-wizard.h"
 #include "party.h"
-
-
 
 typedef struct _PKGx08
 {

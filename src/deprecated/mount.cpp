@@ -10,16 +10,11 @@
 #include "common_libs.h"
 #include "network.h"
 #include "sndpkg.h"
-#include "layer.h"
 #include "npcai.h"
-#include "scp_parser.h"
 #include "set.h"
-
-
 #include "inlines.h"
 #include "utils.h"
 #include "range.h"
-#include "scripts.h"
 
 std::map< int32_t, int32_t > mountinfo;
 

@@ -8,17 +8,12 @@
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
 #include "common_libs.h"
-#include "amx/amxcback.h"
 #include "magic.h"
 #include "npcai.h"
 #include "set.h"
-
-
 #include "basics.h"
 #include "utils.h"
 #include "inlines.h"
-#include "nox-wizard.h"
-#include "scripts.h"
 
 namespace npcs {
 

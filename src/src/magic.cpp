@@ -11,23 +11,15 @@
 #include "targeting.h"
 #include "magic.h"
 #include "set.h"
-#include "amx/amxcback.h"
 #include "tmpeff.h"
 #include "itemid.h"
 #include "particles.h"
 #include "sndpkg.h"
 #include "npcai.h"
 #include "data.h"
-#include "scp_parser.h"
-#include "rcvpkg.h"
 #include "map.h"
-
-
 #include "inlines.h"
-#include "classes.h"
 #include "utils.h"
-#include "scripts.h"
-
 
 namespace magic {
 

@@ -15,31 +15,19 @@
 #include "sndpkg.h"
 #include "sregions.h"
 #include "debug.h"
-#include "amx/amxcback.h"
 #include "version.h"
 #include "nxw_utils.h"
 #include "tmpeff.h"
-#include "amx/amxvarserver.h"
-#include "layer.h"
 #include "jail.h"
-#include "accounts.h"
 #include "data.h"
 #include "boats.h"
-#include "books.h"
 #include "spawn.h"
 #include "set.h"
-#include "archive.h"
 #include "trade.h"
 #include "basics.h"
 #include "inlines.h"
-
-
-#include "classes.h"
-#include "scripts.h"
 #include "skills.h"
 #include "utils.h"
-#include "nox-wizard.h"
-
 
 void split( std::string& source, std::string& first, std::string& second )
 {

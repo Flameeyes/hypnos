@@ -18,8 +18,6 @@
 #include "basics.h"
 #include "sregions.h"
 #include "sndpkg.h"
-#include "srvparms.h"
-#include "amx/amxcback.h"
 #include "calendar.h"
 #include "magic.h"
 #include "race.h"
@@ -28,11 +26,9 @@
 #include "house.h"
 #include "jail.h"
 #include "timers.h"
-#include "accounts.h"
 #include "boats.h"
 #include "spawn.h"
 #include "trade.h"
-
 #include "inlines.h"
 
 extern bool g_bMustExecAICode;

@@ -10,39 +10,18 @@
 #include "common_libs.h"
 #include "itemid.h"
 #include "sndpkg.h"
-#include "amx/amxcback.h"
 #include "targeting.h"
 #include "tmpeff.h"
 #include "constants.h"
 #include "npcai.h"
 #include "debug.h"
-#include "srvparms.h"
-#include "addmenu.h"
 #include "weight.h"
 #include "set.h"
-#include "archive.h"
 #include "map.h"
-
-
 #include "skills.h"
 #include "basics.h"
 #include "inlines.h"
 #include "range.h"
-#include "nox-wizard.h"
-
-
-//Luxor: for AMX skills implementation
-#undef AMXINGOTMAKEMENU
-#define AMXINGOTMAKEMENU "__nxw_ingot_mm"
-#undef AMXSMELTORE
-#define AMXSMELTORE "__nxw_smeltOre"
-#undef AMXLUMBERJACKING
-#define AMXLUMBERJACKING "__nxw_sk_lumber"
-#undef AMXTAILORING
-#define AMXTAILORING "__nxw_sk_tailoring"
-#undef AMXTANNERING
-#define AMXTANNERING "__nxw_sk_tannering"
-
 
 pItem Check4Pack(NXWSOCKET  s)
 {

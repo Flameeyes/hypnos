@@ -13,19 +13,12 @@
 #include "sregions.h"
 #include "sndpkg.h"
 #include "debug.h"
-#include "amx/amxcback.h"
-#include "layer.h"
 #include "commands.h"
 #include "npcai.h"
 #include "data.h"
-#include "scp_parser.h"
-#include "archive.h"
 #include "map.h"
-
-
 #include "inlines.h"
 #include "classes.h"
-#include "scripts.h"
 #include "skills.h"
 #include "utils.h"
 

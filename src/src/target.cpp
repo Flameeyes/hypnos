@@ -9,11 +9,8 @@
 
 #include "common_libs.h"
 #include "target.h"
-#include "client.h"
 #include "inlines.h"
 #include "network.h"
-#include "archive.h"
-
 
 uint32_t cTarget::serial_current = 0;
 

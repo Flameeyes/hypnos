@@ -16,12 +16,8 @@
 #include "racescriptentry.h"
 #include "raceskill.h"
 #include "racetokenizer.h"
-#include "scp_parser.h"
-
-
 #include "inlines.h"
 #include "basics.h"
-#include "scripts.h"
 
 //
 //	STATIC DATA

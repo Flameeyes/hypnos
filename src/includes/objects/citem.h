@@ -16,7 +16,6 @@
 #include "objects/cobject.h"
 #include "objects/cserializable.h"
 #include "magic.h"
-#include "globals.h"
 #include "settings.h"
 
 //! Item class

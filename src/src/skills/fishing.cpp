@@ -18,14 +18,9 @@
 #include "sndpkg.h"
 #include "debug.h"
 #include "data.h"
-#include "scp_parser.h"
 #include "fishing.h"
-#include "globals.h"
-
-
 #include "basics.h"
 #include "inlines.h"
-#include "scripts.h"
 #include "range.h"
 
 TIMERVAL Fishing::basetime = FISHINGTIMEBASE;

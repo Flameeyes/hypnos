@@ -23,14 +23,8 @@
 #include "npcai.h"
 #include "data.h"
 #include "boats.h"
-#include "scp_parser.h"
-#include "archive.h"
 #include "map.h"
-
-
 #include "inlines.h"
-#include "classes.h"
-#include "scripts.h"
 
 std::map< uint32_t, pChar > houses;
 

@@ -11,7 +11,6 @@
 #define __racescriptentry__
 
 #include "common_libs.h"
-#include "scp_parser.h"
 
 class RaceScriptEntry
 {

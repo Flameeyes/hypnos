@@ -8,7 +8,6 @@
 
 #include "common_libs.h"
 #include "sndpkg.h"
-#include "amx/amxcback.h"
 #include "magic.h"
 #include "set.h"
 #include "itemid.h"
@@ -18,9 +17,6 @@
 #include "range.h"
 #include "data.h"
 #include "boats.h"
-#include "archive.h"
-
-
 #include "inlines.h"
 #include "basics.h"
 #include "utils.h"

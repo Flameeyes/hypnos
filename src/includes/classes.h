@@ -18,7 +18,6 @@ cMapStuff, cFishing, cSkills, cNetworkStuff and a lot of structures
 #ifndef __Classes_h
 #define __Classes_h
 
-#include "client.h"
 #include "targeting.h"
 
 /*!

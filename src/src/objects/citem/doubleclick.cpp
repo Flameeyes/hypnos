@@ -15,37 +15,23 @@
 #include "network.h"
 #include "itemid.h"
 #include "sndpkg.h"
-#include "srvparms.h"
 #include "debug.h"
-#include "amx/amxcback.h"
-#include "trigger.h"
 #include "magic.h"
 #include "house.h"
 #include "npcai.h"
-#include "layer.h"
 #include "mount.h"
 #include "nxw_utils.h"
 #include "data.h"
 #include "boats.h"
-#include "books.h"
 #include "set.h"
-#include "dbl_single_click.h"
-#include "titles.h"
-#include "rcvpkg.h"
 #include "map.h"
-
-
 #include "basics.h"
 #include "inlines.h"
 #include "skills.h"
 #include "classes.h"
 #include "range.h"
-#include "scp_parser.h"
-#include "nox-wizard.h"
 #include "utils.h"
 #include "fishing.h"
-
-
 
 bool cItem::usableWhenLockedDown(pPc pc)
 {

@@ -14,19 +14,13 @@
 
 #include "common_libs.h"
 #include "sndpkg.h"
-#include "addmenu.h"
 #include "sregions.h"
 #include "house.h"
 #include "commands.h"
 #include "tmpeff.h"
-#include "accounts.h"
 #include "boats.h"
 #include "map.h"
-
-
 #include "skills.h"
-#include "nox-wizard.h"
-#include "scripts.h"
 #include "inlines.h"
 #include "range.h"
 #include "network.h"

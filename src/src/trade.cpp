@@ -12,16 +12,11 @@
 #include "sndpkg.h"
 #include "itemid.h"
 #include "debug.h"
-#include "amx/amxcback.h"
 #include "set.h"
-#include "layer.h"
 #include "trade.h"
 #include "commands.h"
 #include "weight.h"
-
-
 #include "inlines.h"
-#include "nox-wizard.h"
 #include "utils.h"
 
 // this is a q&d fix for 'sell price higher than buy price' bug (Duke, 30.3.2001)

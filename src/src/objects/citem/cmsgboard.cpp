@@ -19,11 +19,8 @@
 #include "debug.h"
 #include "cmsgboard.h"
 #include "npcai.h"
-
 #include "utils.h"
 #include "inlines.h"
-#include "nox-wizard.h"
-#include "scripts.h"
 
 /*!
 \brief Deleting an MsgBoard message

@@ -9,11 +9,8 @@
 
 #include "common_libs.h"
 #include "containers.h"
-#include "scp_parser.h"
-
 #include "basics.h"
 #include "inlines.h"
-#include "scripts.h"
 
 CONTINFOGUMPMAP contInfoGump;
 CONTINFOMAP contInfo;

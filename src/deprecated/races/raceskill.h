@@ -11,8 +11,6 @@
 #define __raceskill__
 
 #include "common_libs.h"
-#include "scp_parser.h"
-
 #include "racescriptentry.h"
 
 class RaceSkillAdvancePoint

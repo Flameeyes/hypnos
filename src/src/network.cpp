@@ -10,32 +10,20 @@
 #include "network.h"
 #include "race.h"
 #include "commands.h"
-
 #include "basics.h"
 #include "menu.h"
-#include "addmenu.h"
-#include "accounts.h"
 #include "party.h"
 #include "calendar.h"
 #include "dragdrop.h"
 #include "speech.h"
 #include "data.h"
-#include "books.h"
 #include "boats.h"
-#include "scp_parser.h"
-#include "dbl_single_click.h"
 #include "trade.h"
 #include "sndpkg.h"
 #include "walking.h"
-#include "rcvpkg.h"
-
-
 #include "range.h"
 #include "inlines.h"
 #include "skills.h"
-#include "nox-wizard.h"
-#include "scripts.h"
-
 
 #ifdef ENCRYPTION
 #include "encryption/clientcrypt.h"

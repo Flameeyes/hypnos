@@ -13,11 +13,9 @@
 
 #include "common_libs.h"
 #include "version.h"
-#include <iostream>
 #include "debug.h"
 
 class ClientCrypt;
-using namespace std ;
 
 #if defined(__unix__)
 	#include <unistd.h>
@@ -33,13 +31,6 @@ using namespace std ;
 #else
 	typedef int FAR socklen_t ;
 #endif
-
-#include "srvparms.h"
-
-#ifdef _WINDOWS
-	#include "nxwgui.h"
-#endif
-
 
 #define IPPRINTF(I) ((I)&(0xFF)),((I>>8)&(0xFF)),((I>>16)&(0xFF)),(I>>24)
 

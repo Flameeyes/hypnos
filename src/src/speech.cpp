@@ -12,22 +12,14 @@
 #include "debug.h"
 #include "calendar.h"
 #include "set.h"
-#include "trigger.h"
 #include "house.h"
 #include "npcai.h"
 #include "network.h"
 #include "commands.h"
-
 #include "boats.h"
-#include "scp_parser.h"
-
-
 #include "inlines.h"
 #include "classes.h"
 #include "utils.h"
-#include "nox-wizard.h"
-#include "scripts.h"
-
 
 #define MAXBUFFER_REAL MAXBUFFER
 

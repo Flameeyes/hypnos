@@ -7,7 +7,6 @@
     || For any question post to NoX-Wizard forums.                             ||
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
-
 #include "common_libs.h"
 #include "network.h"
 #include "debug.h"
@@ -15,17 +14,10 @@
 #include "sregions.h"
 #include "sndpkg.h"
 #include "commands.h"
-#include "layer.h"
-#include "addmenu.h"
 #include "data.h"
 #include "spawn.h"
 #include "set.h"
-#include "archive.h"
-#include "item.h"
-
-
 #include "inlines.h"
-           
 
 namespace Commands
 {

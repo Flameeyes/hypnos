@@ -15,24 +15,14 @@
 #include "sndpkg.h"
 #include "sregions.h"
 #include "itemid.h"
-#include "srvparms.h"
-#include "amx/amxcback.h"
 #include "tmpeff.h"
 #include "speech.h"
-
-#include "layer.h"
 #include "weight.h"
-#include "accounts.h"
-#include "scp_parser.h"
-
-
 #include "inlines.h"
 #include "basics.h"
 #include "skills.h"
 #include "range.h"
-#include "classes.h"
 #include "utils.h"
-#include "scripts.h"
 
 void gmyell(char *txt)
 {

@@ -7,7 +7,6 @@
     || For any question post to NoX-Wizard forums.                             ||
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
-
 #include "common_libs.h"
 #include "classes.h"
 #include "network.h"
@@ -16,12 +15,9 @@
 #include "house.h"
 #include "boats.h"
 #include "set.h"
-
-
 #include "basics.h"
 #include "inlines.h"
 #include "utils.h"
-#include "scripts.h"
 
 //////////////////////////////OLD CODE TO REMOVE ////////////////////////////////////
 

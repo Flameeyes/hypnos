@@ -12,9 +12,6 @@
 #include "calendar.h"
 #include "set.h"
 
-#include "globals.h"
-
-
 namespace Calendar {
 
 #define HDT_NONE -3

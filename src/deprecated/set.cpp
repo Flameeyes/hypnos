@@ -10,9 +10,6 @@
 #include "common_libs.h"
 #include "race.h"
 #include "set.h"
-#include "layer.h"
-
-
 #include "range.h"
 #include "network.h"
 

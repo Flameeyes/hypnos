@@ -20,7 +20,6 @@
 #include "constants.h"
 #include "menu.h"
 #include "logsystem.h"
-#include "globals.h"
 #include "basics.h"
 #include "cmds.h"
 #include "map.h"

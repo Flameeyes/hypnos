@@ -12,11 +12,7 @@
 #include "debug.h"
 #include "worldmain.h"
 #include "guild.h"
-
-
 #include "basics.h"
-#include "scripts.h"
-
 
 cGuildz Guildz;
 

@@ -11,8 +11,6 @@
 #define __race__
 
 #include "common_libs.h"
-#include "scp_parser.h"
-
 #include "raceability.h"
 #include "racegender.h"
 #include "racerequiredtype.h"
