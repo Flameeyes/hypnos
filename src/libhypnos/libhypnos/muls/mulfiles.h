@@ -56,6 +56,11 @@ namespace nMULFiles {
 	class fGumpIDX;
 	class cGumpIDX;
 	
+	class cTiledataLand;
+	class cTiledataStatic;
+	class fTiledataLand;
+	class fTiledataStatic;
+	
 	class fMultiIDX;
 	
 #ifdef __BIG_ENDIAN__

@@ -77,7 +77,7 @@ template<class MUL> {
 	\brief Actually mmap the file in the memory
 	\param offset Offset to start the mmap to
 	\param length Length of the mmapped area. If 0, all the file will be
-		mmaped
+		mmaped (minus the offset if present)
 	
 	This function does all the magic about the mmapping of the files, and
 	is called by the parameterized constructor. Subclasses which wants to
@@ -109,7 +109,7 @@ template<class MUL> {
 				return;
 			}
 			
-			length = info.st_size;
+			length = info.st_size - offset;
 		}
 		
 		// And here we mmap the file

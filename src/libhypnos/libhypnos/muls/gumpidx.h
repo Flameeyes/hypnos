@@ -35,7 +35,7 @@ public:
 	
 	inline uint32_t getWidth() const
 	{ return mtohs(width); }
-};
+} PACK_NEEDED;
 
 /*!
 \class fGumpIDX gumpidx.h "libhypmul/cgumpidx.h"
