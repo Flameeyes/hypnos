@@ -6960,7 +6960,7 @@ AC_ARG_ENABLE(weftstest, [  --disable-weftstest       Do not try to compile and 
      fi
   fi
 
-  AC_PATH_PROG(WEFTS_CONFIG, wefts-conf, no)
+  AC_PATH_PROG(WEFTS_CONFIG, wefts-conf, no, $prefix/bin:$PATH)
   AC_MSG_CHECKING(for Wefts++)
   no_wefts=""
   if test "$WEFTS_CONFIG" = "no" ; then
