@@ -14,6 +14,13 @@
 #ifndef __PY_METHODS__
 #define __PY_METHODS__
 
+#include <Python.h>
+
+#define PYNATIVE(_func) \
+	static PyObject* _func(PyObject *self, PyObject *args);
+
+#define PYINVALID Py_BuildValue("i", -1)
+
 /*!
 \brief Contains all Python related methods, and variables.
 
@@ -22,12 +29,16 @@ need to rename the function to avoid names' collisions.
 */
 namespace PythonInterface
 {
+	PYNATIVE(getCurrentTime);
+
 	/*!
 	\brief Methods for PyUO module
 
 	This variable contains the list of methods that are passed to python
 	*/
 	static PyMethodDef PyUOMethods[] = {
+		{"getCurrentTime", getCurrentTime, METH_VARARGS,
+			"Returns the current time"},
 		{NULL, NULL, 0, NULL}
 	};
 };

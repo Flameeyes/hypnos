@@ -497,85 +497,6 @@ NATIVE(_chr_message)
 }
 
 /*
-\brief get the current string mode used
-\author Xanathar
-\since 0.10
-\return the string mode
-*/
-NATIVE(_getStringMode)
-{ 	return g_nStringMode; }
-
-/*
-\brief set the current string mode used
-\author Xanathar
-\since 0.10
-\param 1: new string mode ( 0=unpacked, 1=packet )
-\return the string mode
-*/
-NATIVE(_setStringMode)
-{	g_nStringMode = params[1];	return g_nStringMode; }
-
-/*
-\brief get the current time
-\author Xanathar
-\since 0.10
-\return the current time
-*/
-NATIVE(_getCurrentTime)
-{	return uiCurrentTime; }
-
-/*
-\brief get the current system time (in s)
-\author Keldan
-\since 0.83
-\return the current system time (in s)
-*/
-NATIVE(_getSystemTime)
-{   return getsysclock(); }
-
-/*
-\brief get if the character Yell is a server broadcast
-\author Xanathar
-\since 0.10
-\param 1: the character
-\return true or false
-*/
-NATIVE(_canBroadcast)
-{
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
-	VALIDATEPCR( pc, false );
-	return pc->CanBroadcast();
-}
-
-/*
-\brief get if the character can see serial number
-\author Xanathar
-\since 0.10
-\param 1: the character
-\return true or false
-*/
-NATIVE(_canSeeSerials)
-{
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
-	VALIDATEPCR( pc, false );
-	return pc->CanSeeSerials();
-}
-
-/*
-\brief get if the character can snoop everywhere always
-\author Xanathar
-\since 0.10
-\param 1: the character
-\return true or false ( false also if not valid character )
-*/
-NATIVE(_canSnoop)
-{
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
-	VALIDATEPCR( pc, false );
-	return pc->CanSnoop();
-}
-
-/*
 \brief Jail the given character
 \author Endymion
 \since 0.10
@@ -602,35 +523,6 @@ NATIVE(_chr_jail)
 	return 1;
 }
 
-
-/*
-\brief get the total gold in character bank box
-\author Xanathar
-\since 0.10
-\param 1: the character
-\return the number of gold or INVALID if not valid character
-*/
-NATIVE(_CountBankGold)
-{
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
-	VALIDATEPCR( pc, INVALID );
-	return pc->countBankGold();
-}
-
-/*
-\brief get the total gold in character backpack
-\author Xanathar
-\since 0.10
-\param 1: the character
-\return the number of gold or INVALID if not valid character
-*/
-NATIVE(_CountGold)
-{
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
-	VALIDATEPCR( pc, INVALID );
-	return pc->CountGold();
-}
-
 /*NATIVE(_CountItems)
 { return chars[params[1]].CountItems(params[2], params[3]); }
 */
@@ -651,39 +543,6 @@ NATIVE(_CountColoredItems)
 	return pc->CountItems(params[2], params[3]);
 }
 
-
-/*
-\brief disturb the meditation of the character
-\author Xanathar
-\since 0.10
-\param 1: the character
-\return INVALID if not valid character, 0 else
-*/
-NATIVE(_disturbMed)
-{
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
-	VALIDATEPCR( pc, INVALID );
-	pc->disturbMed();
-	return 0;
-}
-
-/*
-\brief get the char's bankbox
-\author Xanathar
-\since 0.10
-\note bug fixed by Luxor
-\param 1: the character
-\param 1: bank box type ( BANKBOX_BANK, BANKBOX_WARE )
-\return INVALID if not valid character, else the bank
-*/
-NATIVE(_GetBankBox)
-{
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
-	VALIDATEPCR( pc, INVALID );
-        P_ITEM pi = pc->GetBankBox(params[2]);
-        VALIDATEPIR( pi, INVALID );
-        return pi->getSerial32();
-}
 
 /*
 \brief get the serial of the item on the specified layer of the character
@@ -4452,7 +4311,7 @@ NATIVE(_map_getFloorTileID)
 \since 0.82
 \param 1: x of the location
 \param 2: y of the location
-\return INVALID or z of the location 
+\return INVALID or z of the location
 */
 NATIVE(_map_getZ)
 {
