@@ -1,23 +1,8 @@
 SOURCES	:=	$(wildcard *.cpp)
 OBJECTS	:=	$(SOURCES:.cpp=.o)
-DEPS	:=	$(SOURCES:.cpp=.d)
 
-objects.o: $(OBJECTS)
+built-in.o: $(OBJECTS)
+	touch built-in.o
 
-objects.d: deps citem/citem.d cchar/cchar.d
-	touch objects.d
-
-citem/citem.o:$(wildcard citem/*.cpp)
-	cd citem && $(MAKE)
-
-citem/citem.d:$(wildcard citem/*.cpp)
-	cd citem && $(MAKE) citem.d
-
-cchar/cchar.o:$(wildcard cchar/*.cpp)
-	cd cchar && $(MAKE)
-
-cchar/cchar.d:$(wildcard cchar/*.cpp)
-	cd cchar && $(MAKE) cchar.d
-
-deps: $(SOURCES)
-	$(CC) $(DEPFLAGS) $(SOURCES) > /dev/null
+.cpp.o:
+	$(CXX) $(DEPFLAGS) -c $(CXXFLAGS) $(INCPATH) -o $@ $<

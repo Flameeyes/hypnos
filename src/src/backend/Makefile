@@ -1,11 +1,8 @@
 SOURCES	:=	$(wildcard *.cpp)
 OBJECTS	:=	$(SOURCES:.cpp=.o)
-DEPS	:=	$(SOURCES:.cpp=.d)
 
-backend.o: $(OBJECTS)
+built-in.o: $(OBJECTS)
+	touch built-in.o
 
-backend.d: deps
-	touch backend.d
-
-deps: $(SOURCES)
-	$(CC) $(DEPFLAGS) $(SOURCES) > /dev/null
+.cpp.o:
+	$(CXX) $(DEPFLAGS) -c $(CXXFLAGS) $(INCPATH) -o $@ $<

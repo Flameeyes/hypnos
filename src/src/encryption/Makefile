@@ -1,11 +1,8 @@
 SOURCES	:=	$(wildcard *.cpp)
 OBJECTS	:=	$(SOURCES:.cpp=.o)
-DEPS	:=	$(SOURCES:.cpp=.d)
 
-encryption.o: $(OBJECTS)
+built-in.o: $(OBJECTS)
+	touch built-in.o
 
-encryption.d: deps
-	touch encryption.d
-
-deps: $(SOURCES)
-	$(CC) $(DEPFLAGS) $(SOURCES) > /dev/null
+.cpp.o:
+	$(CXX) $(DEPFLAGS) -c $(CXXFLAGS) $(INCPATH) -o $@ $<
