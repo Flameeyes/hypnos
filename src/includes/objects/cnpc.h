@@ -22,7 +22,7 @@
 In this class there are members used only for NPCs, and not for playing
 characters.
 */
-class cNPC : cChar
+class cNPC : public cChar
 {
 public:
 	enum {

@@ -21,11 +21,10 @@
 typedef std::slist< tempfx::cTempfx > TempfxVector;
 
 /*!
+\class cObject cobject.h "objects/cobject.h"
 \brief Base class of cItem and cChar
-\author Anthalir
-\since 0.82a
 */
-class cObject, virtual public cEventThrower
+class cObject : virtual public cEventThrower
 {
 //@{
 /*!
