@@ -1,0 +1,23 @@
+/*!
+\page authors Hypnos Authors
+\author Flameeyes
+
+Hypnos Project spawned in January 2004 by Diego Pettenò (Flameeyes) and
+Giandomenico De Tullio (Kheru), forking a CVS snapshot of NoX-Wizard Project.
+
+At the moment, the developers involved in the projects are:
+
+\li Diego Pettenò (Flameeyes <flameeyes@users.berlios.de>) - Co-Forker
+\li Giandomenico De Tullio (Kheru <kheru@users.berlios.de>) - Co-Forker
+
+\li Davide Poli (ChronoDT <chronodt@users.berlios.de>) - Developer
+\li Luigi Audasso (il_guru <il_guru@users.berlios.de>) - Developer
+
+\li Andrea Ortale (Judas <judas@users.berlios.de>) - Doc Writer
+
+For details about Hypnos Developers, see the page 
+https://developer.berlios.de/project/memberlist.php?group_id=2094
+
+We want to thanks the developers of NoX-Wizard, which you can find at the
+page http://noxwizard.sourceforge.net/
+*/

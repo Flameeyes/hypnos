@@ -427,14 +427,13 @@ void cClient::skillWindow() // Opens the skills list
 }
 
 
-void sendMidi(char num1, char num2)
+void cClient::sendMidi(uint16_t id)
 {
-	UI16 music_id = (num1<<8)|(num2%256);
-	nPackets::Sent::PlayMidi pk(music_id);
+	nPackets::Sent::PlayMidi pk(id);
 	sendPacket(&pk);
 }
 
-void senditem(pItem pi) // Shows items to client (on the ground or inside containers)
+void cClient::senditem(pItem pi) // Shows items to client (on the ground or inside containers)
 {
 	if ( ! pi ) return;
 	pChar pc= currChar();
@@ -469,7 +468,7 @@ void senditem(pItem pi) // Shows items to client (on the ground or inside contai
 
 // sends item in differnt color and position than it actually is
 // used for LSd potions now, LB 5'th nov 1999
-void senditem_lsd(pItem pi, uint16_t color, sLocation position)
+void cClient::senditem_lsd(pItem pi, uint16_t color, sLocation position)
 {
 	if ( ! pi ) return;
 	pChar pc= currChar();
@@ -2301,6 +2300,7 @@ void cClient::dotrade(sSecureTradeSession &session)
 		if ( ! pi )
 			continue;
 		if (trade)	//Event ontransfer should be called only if a trade is done, not on trade cancel
+		{
 			pFunctionHandle evt = pi->getEvent(cItem::evtItmOnTransfer);
 			if ( evt )
 			{
@@ -2474,7 +2474,7 @@ void cClient::playMidi()
 	if (i!=0)
 	{
 		i=rand()%(i);
-		sendMidi(0, midiarray[i]);
+		sendMidi(midiarray[i]);
 	}
 }
 

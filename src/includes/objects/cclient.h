@@ -198,7 +198,7 @@ public:
 	void updateStatusWindow(pItem item);
 	void skillWindow();					//!< send the skill level info to the skill window of client
 	void updatePaperdoll();					//!< tells to the client that something has changed in his paperdoll
-	void sendMidi(char num1, char num2);			//!< plays midi on client (note: if client disabled music it will not play :D)
+	void sendMidi(uint16_t id);				//!< plays midi on client (note: if client disabled music it will not play :D)
 	void sendItem(pItem pi);				//!< Shows items to client (on the ground or inside containers)
 	void senditem_lsd(pItem pi, uint16_t color, sLocation position);	//!< warps item in world for hallucinatory effect (sets new color and location) 	
 

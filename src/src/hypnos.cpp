@@ -1,36 +1,16 @@
 /*!
-\mainpage Hypnos documentation
-
-<h1>Hypnos UO Server Emulator</h1>
-<i>Work based on NoX-Wizard project.</i>
+\mainpage Hypnos UO Server Emulator
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+\see \ref license for more information about the software license
+\see \ref authors for information about the authors
+\see http://noxwizard.sf.net/ for information about the NoX-Wizard Project
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-<b>In addition to that license, if you are running this program or modified
-versions of it on a public system you HAVE TO make the complete source of
-the version used by you available or provide people with a location to
-download it.</b>
-
-You can find info about the authors in the AUTHORS file.
-
-NoX-Wizard project can be found at <a href="http://noxwizard.sf.net/">
-NoX-Wizard site</a>
-
-<hr>
-
-<h2>Manifesto</h2>
+\section Manifesto
 
 I'd like to write a manifesto stating my intentions about Hypnos' project.
 Hypnos will never be the fastest UO emulator (such an emulator would have to
