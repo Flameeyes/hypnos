@@ -88,19 +88,19 @@ struct sRect {
 	bool isInside(sPoint p) const;
 };
 
-static const uint8_t maxU8 = 255;
-static const uint16_t maxU16 = 65535;
+static const uint8_t maxU8 = 255u;
+static const uint16_t maxU16 = 65535u;
 static const uint32_t maxU32 = 4294967295u;
 static const uint64_t maxU64 = 18446744073709551615u;
 
 static const int8_t minS8 = -128;
 static const int16_t minS16 = -32768;
-static const int32_t minS32 = -2147483648;
-static const int64_t minS64 = -9223372036854775808;
+static const int32_t minS32 = -2147483648l;
+static const int64_t minS64 = -9223372036854775808ll;
 
 static const int8_t maxS8 = 127;
 static const int16_t maxS16 = 32767;
-static const int32_t maxS32 = 2147483647;
-static const int64_t maxS64 = 9223372036854775807;
+static const int32_t maxS32 = 2147483647ll;
+static const int64_t maxS64 = 9223372036854775807ll;
 
 #endif
