@@ -16,8 +16,8 @@
 
 PRISONCELLVECTOR prison::cells;
 JAILEDVECTOR prison::jailed;
- 
- 
+
+
 /*!
 \brief Constructor of cJailed
 \author Endymion
@@ -94,58 +94,6 @@ void prison::safeoldsave()
 }
 
 /*!
-\brief jail a character
-\author Endymion
-\param jailer the jailer
-\param pc the player who jail
-\param secs the second of jail
-*/
-void prison::jail( P_CHAR jailer, P_CHAR pc, UI32 secs )
-{
-
-	VALIDATEPC(pc);
-
-	if( pc->jailed ) 
-	{
-		if( ISVALIDPC( jailer ) )
-			jailer->sysmsg("That player is already in jail!");
-		return;
-	}
-
-	PRISONCELLVECTOR::iterator cell( prison::cells.begin() ), end( prison::cells.end() );
-	while( (cell!=end) && !(cell->free) ) ++cell;
-
-	if( cell==end ) //no cell free
-	{
-		if( ISVALIDPC( jailer ) )
-			jailer->sysmsg(TRANSLATE("No free cells to jail %s"), pc->getRealNameC() );
-		return;
-	}
-
-	cell->free = false;
-
-	cJailed j;
-
-	j.serial=pc->getSerial32();
-	j.oldpos=pc->getPosition();
-	j.sec=secs;
-	j.timer=uiCurrentTime + MY_CLOCKS_PER_SEC *secs;
-	j.cell=cell->serial;
-	prison::jailed.push_back( j );
-
-	pc->MoveTo( cell->pos );
-	pc->jailed=true;
-	pc->teleport();
-
-
-	pc->sysmsg(TRANSLATE("You are jailed !"));
-
-	if( ISVALIDPC( jailer ) )
-		jailer->sysmsg( "Player %s has been jailed in cell %i.", pc->getCurrentNameC(), cell->serial);
-
-}
-
-/*!
 \brief Auto check and free of jailed people
 \author Endymion
 */
@@ -167,7 +115,7 @@ void prison::checkForFree()
 			}
 			return;
 		}
-		
+
 	}
 
 }
@@ -184,7 +132,7 @@ void prison::release( P_CHAR releaser, P_CHAR pc )
 	JAILEDVECTOR::iterator j = prison::jailed.begin();
 	while(  j!=prison::jailed.end() && (*j).serial!=pc->getSerial32() )	j++;
 	if(j==prison::jailed.end()) {
-		if( ISVALIDPC( releaser ) ) 
+		if( ISVALIDPC( releaser ) )
 			releaser->sysmsg( "The player isn't jailed" );
 		return;
 	}
@@ -207,7 +155,7 @@ void prison::release( P_CHAR releaser, P_CHAR pc )
 		releaser->sysmsg("%s is now free", pc->getCurrentNameC());
 		pc->sysmsg( "%s have released you", releaser->getCurrentNameC() );
 	}
-	
+
 
 }
 
@@ -249,13 +197,13 @@ void prison::addCell( SERIAL serial, UI32 x, UI32 y, UI32 z )
 	prison::cells.push_back( c );
 
 
-	
+
 }
 
 /*!
 \brief Get the defaul position for prison cell
 \author Sabrewulf, moved here by Endymion
-\param jailnum 
+\param jailnum
 \param x the x position
 \param y the y position
 \param z the z position

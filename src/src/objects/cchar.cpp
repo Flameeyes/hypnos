@@ -629,23 +629,6 @@ void cChar::fight(pChar other)
 }
 
 /*!
-\brief Simpler attack for NPCs
-*/
-void cChar::npcSimpleAttack(pChar pc_target)
-{
-	if ( ! pc_target )
-		return;
-
-	if ( ( pc_target == this ) || pc_target->dead || dead )
-		return;
-
-	fight( pc_target2 );
-	SetAttackFirst();
-	pc_target2->fight( this );
-	pc_target2->ResetAttackFirst();
-}
-
-/*!
 \brief count items of given id and color
 \author Flameeyes (based on Duke)
 \param matchId id of items to count
@@ -670,17 +653,6 @@ bool cChar::isInBackpack( pItem pi )
 	if ( ! pi || !body || !body->getBackpack() ) return false;
 
 	return pi->getOutMostCont() == body->getBackpack();
-}
-
-void cChar::setMultiSerial(UI32 mulser)
-{
-	if (getMultiSerial32() != INVALID) // if it was set, remove the old one
-		pointers::delFromMultiMap(this);
-
-	setMultiSerial32Only(mulser);
-
-	if (getMultiSerial32()!=INVALID) 	// if there is multi, add it
-		pointers::addToMultiMap(this);
 }
 
 void cChar::MoveTo(Location newloc)
@@ -708,19 +680,6 @@ void cChar::MoveTo(Location newloc)
 }
 
 /*!
-\brief Gets the skill sum
-\return the sum of the skills, including the deciaml digit
-*/
-UI32 cChar::getSkillSum()
-{
-	UI32 sum = 0;
-	for ( register int i = 0; i < ALLSKILLS; i++)
-		sum += baseskill[i];
-
-	return sum;
-}
-
-/*!
 \brief wrapper for AttackStuff()
 \param pc as default
 \author Xanathar
@@ -736,13 +695,14 @@ void cChar::attackStuff(P_CHAR pc)
 
 /*!
 \author Xanathar
-\param pc_i as default
+\param pc_i helped character
+\brief Called after helping a character for accomplish to criminals
 */
-void cChar::helpStuff(P_CHAR pc_i)
+void cChar::helpStuff(pPC pc_i)
 {
-	VALIDATEPC(pc_i);
+	if (! pc_i || this == pc_i )
+		return;
 
-	if (this==pc_i) return;
 	if (pc_i->IsGrey()) setCrimGrey (this, ServerScp::g_nHelpingGreyWillCriminal);
 
 	if (pc_i->IsInnocent())
@@ -793,13 +753,13 @@ void cChar::applyPoison(PoisonType poisontype, SI32 secs )
 */
 void cChar::unfreeze( bool calledByTempfx )
 {
-    if( !calledByTempfx )
+	if( !calledByTempfx )
 		delTempfx( tempfx::SPELL_PARALYZE, false ); //Luxor
 
 	if ( isFrozen() )
 	{
-		priv2 &= ~flagPriv2Frozen;
-		if (!(flags & flagIsCasting)) //Luxor
+		setFrozen(false);
+		if (!isCasting()) //Luxor
 			sysmsg(TRANSLATE("You are no longer frozen."));
 	}
 }
@@ -1702,30 +1662,6 @@ void cChar::possess(P_CHAR pc)
 
 	//Let's go! :)
 	Network->enterchar( socket );
-}
-
-/*!
-\brief Jails a char
-\author Xanathar
-\param seconds second to jail the character for
-\todo backport
-*/
-void cChar::jail (SI32 seconds)
-{
-	prison::jail( NULL, this, seconds );
-}
-
-/*!
-\author Zippy, Xanathar
-\brief Kicks a char
-*/
-void cChar::kick ()
-{
-    NXWSOCKET j = getSocket();
-    if(j > INVALID) {
-        sysmsg(TRANSLATE("You have been kicked!"));
-        Network->Disconnect(j);
-    }
 }
 
 /*!

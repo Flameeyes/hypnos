@@ -23,6 +23,19 @@ cBody::cBody()
 }
 
 /*!
+\brief Gets the skill sum
+\return the sum of the skills, including the deciaml digit
+*/
+UI32 cBody::getSkillSum()
+{
+	UI32 sum = 0;
+	for ( register int i = 0; i < 49; i++)
+		sum += skills[i];
+
+	return sum;
+}
+
+/*!
 \author Flameeyes
 \brief Equip an item
 \return 0 if item equipped, 1 if not equipped (layer already used),

@@ -33,6 +33,11 @@ protected:
 
 public:
 	bool		updateFlag();
+
+	//! Makes a character temporary grey
+	inline void setGrey()
+	{ tempfx::add(this, this, tempfx::GREY, 0, 0, 0, 0x7FFF); }
+
 //@{
 /*!
 \name Trainer

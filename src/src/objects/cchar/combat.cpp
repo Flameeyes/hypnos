@@ -39,8 +39,8 @@
 */
 static bool checkForCastingLoss(P_CHAR pc, int damage)
 {
-	VALIDATEPCR(pc, false);
-	int chanceToResist = qmin(10, int((pc->skill[MEDITATION]/10.0)-(damage*2.0)));
+	if ( ! pc ) return false;
+	int chanceToResist = qmin(10, int((pc->body->getSkill(skillMeditation)/10.0)-(damage*2.0)));
 	if (chance(chanceToResist)) return false;
 	pc->sysmsg(TRANSLATE("You break your concentration."));
 	return true;
@@ -66,19 +66,15 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 		if( dead )	// Killed as result of script action
 			return;
 	}
-	/*
-	runAmxEvent( EVENT_CHR_ONCOMBATHIT, getSerial32(), pc_def->getSerial32() );
-	if( g_bByPass == true )
-		return;
-	*/
-	if( dead )	// Killed as result of script action
+
+	if( isDead() )	// Killed as result of script action
 		return;
 	bool hit, los;
 	int dist, basedamage, damage, def, x;
 	Skill fightskill, def_fightskill;
 	DamageType dmgtype;
 
-	if (!war)
+	if (!inWarMode())
 		return;
 
 	unHide();
@@ -88,9 +84,9 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 
 	los = losFrom(pc_def);
 
-	P_ITEM pWeapon=getWeapon();
+	P_ITEM weapon=getWeapon();
 
-	(ISVALIDPI(pWeapon)) ? fightskill = pWeapon->getCombatSkill() : fightskill=WRESTLING;
+	(ISVALIDPI(weapon)) ? fightskill = weapon->getCombatSkill() : fightskill=WRESTLING;
 	dist = distFrom(pc_def);
 
 	if((dist > 1 && fightskill != ARCHERY) || !los) return;
@@ -109,11 +105,12 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 		}
 	}
 
-	P_ITEM def_Weapon = pc_def->getWeapon();
-	(ISVALIDPI(def_Weapon)) ? def_fightskill = def_Weapon->getCombatSkill() : def_fightskill=WRESTLING;
+	pItem def_Weapon = pc_def->getWeapon();
+	def_fightskill = def_Weapon ? def_Weapon->getCombatSkill() : WRESTLING;
+
 	int fs1, fs2, str1, str2, dex1, dex2;
-	str1 = getStrength();
-	str2 = pc_def->getStrength();
+	str1 = body->getStrength();
+	str2 = pc_def->getBody()->getStrength();
 
 	(pc_def->dx < 100) ? dex2 = pc_def->dx : dex2 = 100;
 	(dx < 100) ? dex1 = dx : dex1 = 100;
@@ -155,11 +152,7 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 			amxevents[EVENT_CHR_ONHITMISS]->Call(getSerial32(), pc_def->getSerial32());
 			if (g_bByPass==true) return;
 		}
-		/*
-		runAmxEvent( EVENT_CHR_ONHITMISS, getSerial32(), pc_def->getSerial32() );
-		if (g_bByPass==true)
-			return;
-		*/
+
 		if (!npc) {
 			if ( chance(30) || def_fightskill == ARCHERY )
 				doMissedSoundEffect();
@@ -171,7 +164,7 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 		if (fightskill == ARCHERY) {
 			if (chance(33)) {
                                 P_ITEM pi = NULL;
-				if (pWeapon->IsBow()) {
+				if (weapon->IsBow()) {
 					pi = item::CreateFromScript( "$item_arrow" );
 				} else {
 					pi = item::CreateFromScript( "$item_crossbow_bolt" );
@@ -192,29 +185,20 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 		amxevents[EVENT_CHR_ONHIT]->Call(getSerial32(), pc_def->getSerial32());
 		if (g_bByPass==true) return;
 	}
-	/*
-	runAmxEvent( EVENT_CHR_ONHIT, getSerial32(), pc_def->getSerial32());
-	if (g_bByPass==true)
-		return;
-	*/
 
 	if (pc_def->amxevents[EVENT_CHR_ONGETHIT]) {
 		g_bByPass = false;
 		pc_def->amxevents[EVENT_CHR_ONGETHIT]->Call(pc_def->getSerial32(), getSerial32());
 		if (g_bByPass==true) return;
 	}
-	/*
-	pc_def->runAmxEvent( EVENT_CHR_ONGETHIT, pc_def->getSerial32(), getSerial32() );
-	if (g_bByPass==true)
-		return;
-	*/
-	if (ISVALIDPI(pWeapon)) {
-		if (chance(5) && pWeapon->type != ITYPE_SPELLBOOK) {
-			pWeapon->hp--;
-			if(pWeapon->hp <= 0) {
+
+	if (ISVALIDPI(weapon)) {
+		if (chance(5) && weapon->type != ITYPE_SPELLBOOK) {
+			weapon->hp--;
+			if(weapon->hp <= 0) {
 				sysmsg(TRANSLATE("Your weapon has been destroyed"));
 				//XAN TO-DO : Insert event handler here ? :)
-				pWeapon->Delete();
+				weapon->Delete();
 			}
 		}
 	}
@@ -309,23 +293,13 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 	if (!pc_def->npc) damage = (int)(damage / float(SrvParms->npcdamage));
 	if (damage<0) damage=0;
 
-	if (damage>0 && ISVALIDPI(pWeapon) ) {
-		if ((pWeapon->amxevents[EVENT_IONDAMAGE]!=NULL)) {
+	if (damage>0 && ISVALIDPI(weapon) ) {
+		if ((weapon->amxevents[EVENT_IONDAMAGE]!=NULL)) {
 			g_bByPass = false;
-			damage = pWeapon->amxevents[EVENT_IONDAMAGE]->Call(pWeapon->getSerial32(), pc_def->getSerial32(), damage, getSerial32());
+			damage = weapon->amxevents[EVENT_IONDAMAGE]->Call(weapon->getSerial32(), pc_def->getSerial32(), damage, getSerial32());
 			if (g_bByPass==true) return;
 		}
 	}
-	/*
-	if (damage>0 && ISVALIDPI( pWeapon ) )
-	{
-		if ( pWeapon->getAmxEvent(EVENT_IONDAMAGE) != NULL ) {
-			damage = pWeapon->runAmxEvent( EVENT_IONDAMAGE, pWeapon->getSerial32(), pc_def->getSerial32(), damage, getSerial32() );
-			if (g_bByPass==true)
-				return;
-		}
-	}
-	*/
 
 	//when hit and damage >1, defender fails if casting a spell!
 	if (damage > 1 && !pc_def->npc) {
@@ -346,25 +320,25 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 			dmgtype = damagetype;
 			damage = int(damage / 3.5);
 		}
-		(ISVALIDPI(pWeapon)) ? dmgtype = pWeapon->damagetype : dmgtype = DAMAGE_PURE;
+		(ISVALIDPI(weapon)) ? dmgtype = weapon->damagetype : dmgtype = DAMAGE_PURE;
 
 		if (pc_def->ra) {	 // Reactive Armor
 			//80% to defender, 10-20% to attacker
 			this->damage(int((damage/10.0) + (damage/100.0)*float(RandomNum(1,10))));
-            		if ((ISVALIDPI(pWeapon))&&(pWeapon->auxdamage)) {
-                		pc_def->damage(pWeapon->auxdamage, pWeapon->auxdamagetype);
+            		if ((ISVALIDPI(weapon))&&(weapon->auxdamage)) {
+                		pc_def->damage(weapon->auxdamage, weapon->auxdamagetype);
             		}
 			pc_def->damage(int(damage - (damage/100.0)*20.0), dmgtype);
 			pc_def->staticFX(0x374A, 0, 15);
 		} else {
 			pc_def->damage(damage, dmgtype);
-		        if ((ISVALIDPI(pWeapon))&&(pWeapon->auxdamage)) {
-	                	pc_def->damage(pWeapon->auxdamage, pWeapon->auxdamagetype);
+		        if ((ISVALIDPI(weapon))&&(weapon->auxdamage)) {
+	                	pc_def->damage(weapon->auxdamage, weapon->auxdamagetype);
             		}
 		}
 	}	//End -> if (damage > 0)
 	if (!npc)
-		doCombatSoundEffect(fightskill, pWeapon);
+		doCombatSoundEffect(fightskill, weapon);
 
 	if (pc_def->hp < 0) {
 		pc_def->hp=0;
@@ -380,23 +354,6 @@ void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 }
 
 /*!
-\brief Check for combat timeout
-\author Luxor
-\return true if pc's timeout for combat has passed
-*/
-bool cChar::combatTimerOk()
-{
-	if ( TIMEOUT(timeout)/* || TIMEOUT(timeout2)*/ )
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-/*!
 \brief Abort combat sequence
 \author Sparhawk
 */
@@ -407,7 +364,7 @@ void cChar::undoCombat()
 	timeout = 0;
 	attacker = NULL;
 	target = NULL;
-	ResetAttackFirst();
+	setAttackFirst(false);
 }
 
 /*!
@@ -416,7 +373,13 @@ void cChar::undoCombat()
 */
 void cChar::doCombat()
 {
-	if ( !war || dead || IsHiddenBySpell() || IsFrozen() || (!npc && !IsOnline()) )
+	if (
+		!inWarMode() ||
+		isDead() ||
+		isHiddenBySpell() ||
+		isFrozen() ||
+		( rtti() == rtti::cPC && (reinterpret_cast<cPC>this)->isOnline() )
+	   )
 	{
 		undoCombat();
 		return;
@@ -427,8 +390,8 @@ void cChar::doCombat()
 		x = 0,
 		j = 0,
 		arrowsquant = 0;
-	P_ITEM	pWeapon = getWeapon();
-	bool	validWeapon = ISVALIDPI( pWeapon );
+	P_ITEM	weapon = getWeapon();
+	bool	validWeapon = ISVALIDPI( weapon );
 
 	if( !target )
 	{
@@ -450,7 +413,7 @@ void cChar::doCombat()
 
 	if ( amxevents[EVENT_CHR_ONDOCOMBAT] ) {
 		g_bByPass = false;
-		amxevents[EVENT_CHR_ONDOCOMBAT]->Call( getSerial32(), pc_def->getSerial32(), dist, validWeapon ? pWeapon->getSerial32() : INVALID );
+		amxevents[EVENT_CHR_ONDOCOMBAT]->Call( getSerial32(), pc_def->getSerial32(), dist, validWeapon ? weapon->getSerial32() : INVALID );
 		if( g_bByPass == true )
 		{
 			return;
@@ -461,14 +424,6 @@ void cChar::doCombat()
 			return;
 		}
 	}
-	/*
-	runAmxEvent( EVENT_CHR_ONDOCOMBAT, getSerial32(), pc_def->getSerial32(), dist, ISVALIDPI(pWeapon)? pWeapon->getSerial32() : INVALID );
-	if( g_bByPass == true )
-		return;
-
-	if( dead )	// Killed as result of script action
-		return;
-	*/
 
 	if ( npc )
 		npcs::npcMagicAttack( this, target );
@@ -485,13 +440,13 @@ void cChar::doCombat()
 	}
 	else if ( combatTimerOk() )
 	{
-		validWeapon ? fightskill = pWeapon->getCombatSkill() : fightskill = WRESTLING;
+		validWeapon ? fightskill = weapon->getCombatSkill() : fightskill = WRESTLING;
 
 		if (fightskill==ARCHERY)
 		{
-			if (pWeapon->ammo == 0)   //old ammo system
+			if (weapon->ammo == 0)   //old ammo system
 			{
-				pWeapon->IsBow() ? arrowsquant=getAmount(0x0F3F) : arrowsquant=getAmount(0x1BFB);
+				weapon->IsBow() ? arrowsquant=getAmount(0x0F3F) : arrowsquant=getAmount(0x1BFB);
 
 				if (arrowsquant>0)
 					x=1;
@@ -500,7 +455,7 @@ void cChar::doCombat()
 			}
 			else   //new ammo system
 			{
-				if ((getBackpack())->CountItemsByID(pWeapon->ammo, true))
+				if ((getBackpack())->CountItemsByID(weapon->ammo, true))
 					x=1;
 				else
 					sysmsg(TRANSLATE("You are out of ammunitions!"));
@@ -521,9 +476,9 @@ void cChar::doCombat()
        					sysmsg(TRANSLATE("You are too tired to attack."));
 					if ( validWeapon )
 					{
-						if (pWeapon->spd==0)
-							pWeapon->spd=35;
-						x = (15000 / ((stm+100) * pWeapon->spd)*MY_CLOCKS_PER_SEC);	//Calculate combat delay
+						if (weapon->spd==0)
+							weapon->spd=35;
+						x = (15000 / ((stm+100) * weapon->spd)*MY_CLOCKS_PER_SEC);	//Calculate combat delay
 					}
 					else
 					{
@@ -560,9 +515,9 @@ void cChar::doCombat()
 			//
 			if ( validWeapon )
 			{
-	    			if (pWeapon->spd==0)
-					pWeapon->spd=35;
-				x = (15000 / ((dx+100) * pWeapon->spd)*MY_CLOCKS_PER_SEC);
+	    			if (weapon->spd==0)
+					weapon->spd=35;
+				x = (15000 / ((dx+100) * weapon->spd)*MY_CLOCKS_PER_SEC);
 			}
 			else
 			{
@@ -597,9 +552,9 @@ void cChar::doCombat()
 
 			// New ammo system for bows and crossbows by Keldan
 			if (fightskill==ARCHERY)
-				if (pWeapon->ammo == 0)   //old ammo system
+				if (weapon->ammo == 0)   //old ammo system
 				{
-					if (pWeapon->IsBow())
+					if (weapon->IsBow())
 					{
 						delItems(0x0F3F, 1);
 						movingeffect3( getSerial32(), targserial, 0x0F, 0x42, 0x08, 0x00, 0x00,0,0,0,0);
@@ -612,13 +567,12 @@ void cChar::doCombat()
 				}
 				else   //new ammo system
 				{
-					(getBackpack())->DeleteAmountByID(1, pWeapon->ammo);
-					movingeffect3( getSerial32(), targserial, (pWeapon->ammoFx>>8)&0xFF, pWeapon->ammoFx & 0xFF, 0x08, 0x00, 0x00,0,0,0,0);
+					(getBackpack())->DeleteAmountByID(1, weapon->ammo);
+					movingeffect3( getSerial32(), targserial, (weapon->ammoFx>>8)&0xFF, weapon->ammoFx & 0xFF, 0x08, 0x00, 0x00,0,0,0,0);
 				}
 
 			if ( dist < 2 || fightskill == ARCHERY )
-				npcSimpleAttack(
-				npcsimpleattacktarget( getSerial32(), targserial);
+				(reinterpret_cast<pNPC>this)->simpleAttack(target);
 
 			if (fightskill == ARCHERY)
 				combatHit( pc_def );
@@ -656,11 +610,11 @@ void cChar::doCombat()
 	}
 }
 
-//////////////////////////////////////////////////////////////////
-// Function name     : cChar::checkPoisoning
-// Description       : checks for poisoning attack
-// Return type       : void
-// Author            : Luxor
+/*!
+\author Luxor
+\brief Checks for poisoning attack
+\param pc_def Defender character
+*/
 void cChar::checkPoisoning(P_CHAR pc_def)
 {
 	if ( npc ) { //NPC poisoning
@@ -668,15 +622,15 @@ void cChar::checkPoisoning(P_CHAR pc_def)
 			pc_def->applyPoison( static_cast<PoisonType>(poison) );
 		}
 	} else { //PC poisoning
-		P_ITEM pWeapon = getWeapon();
-		if ( ISVALIDPI(pWeapon) && pWeapon->poisoned > 0 && pc_def->poisoned < pWeapon->poisoned ) {
+		P_ITEM weapon = getWeapon();
+		if ( ISVALIDPI(weapon) && weapon->poisoned > 0 && pc_def->poisoned < weapon->poisoned ) {
 			if ( chance(33) ) {
-				pc_def->applyPoison( static_cast<PoisonType>(pWeapon->poisoned) );
+				pc_def->applyPoison( static_cast<PoisonType>(weapon->poisoned) );
 				if ( chance(80) ) {
-					if ( pWeapon->poisoned > 1 )
-						pWeapon->poisoned = static_cast<PoisonType>(pWeapon->poisoned -1);
+					if ( weapon->poisoned > 1 )
+						weapon->poisoned = static_cast<PoisonType>(weapon->poisoned -1);
 					else {
-						pWeapon->poisoned = POISON_NONE;
+						weapon->poisoned = POISON_NONE;
 						sysmsg( TRANSLATE("The poison you put on the weapon went out.") );
 					}
 					(poison > 1) ? poison = static_cast<PoisonType>(poison-1) : poison = 0;
@@ -686,11 +640,12 @@ void cChar::checkPoisoning(P_CHAR pc_def)
 	}
 }
 
-//////////////////////////////////////////////////////////////////
-// Function name     : cChar::combatHitMessage
-// Description       : determines part of body hit and show to pc_def the hit message
-// Return type       : int
-// Author            : Luxor
+/*!
+\author Luxor
+\brief Determines part of body hit and show to pc_def the hit message (?)
+\param damaage Damage inflicted
+\return part of body hit
+*/
 int cChar::combatHitMessage(SI32 damage)
 {
 	char temp[TEMP_STR_SIZE];
@@ -797,11 +752,12 @@ int cChar::combatHitMessage(SI32 damage)
 	return x;
 }
 
-//////////////////////////////////////////////////////////////////
-// Function name     : cChar::calcDef
-// Description       : calculates defense of the given body part (x)
-// Return type       : int
-// Author            : Luxor
+/*!
+\author Luxor
+\brief Calculates defense of the given body part
+\param x Body part hit
+\return defense of the part
+*/
 int cChar::calcDef(SI32 x)
 {
 	if (npc) return def;
@@ -941,11 +897,12 @@ int cChar::calcDef(SI32 x)
 	return total*3;
 }
 
-//////////////////////////////////////////////////////////////////
-// Function name     : cChar::setWresMove
-// Description       : sets a wrestling move, including the skills check
-// Return type       : void
-// Author            : Luxor
+/*!
+\author Luxor
+\brief Sets a wrestling move, including the skills check
+\author Luxor
+\param move Move's id
+*/
 void cChar::setWresMove(SI32 move)
 {
 	switch (move)
@@ -974,11 +931,11 @@ void cChar::setWresMove(SI32 move)
 	}
 }
 
-//////////////////////////////////////////////////////////////////
-// Function name     : cChar::calcAtt
-// Description       : calculates total attack power
-// Return type       : int
-// Author            : Luxor
+/*!
+\author Luxor
+\brief Calculates total ataack power
+\return character's attack
+*/
 int cChar::calcAtt()
 {
 	if(npc) {
@@ -994,36 +951,19 @@ int cChar::calcAtt()
 	return RandomNum(pi->lodamage, pi->hidamage);
 }
 
-//////////////////////////////////////////////////////////////////
-// Function name     : cChar::doMissedSoundEffect
-// Description       : does a missed sound effect for combat
-// Return type       : void
-// Author            : Luxor
-void cChar::doMissedSoundEffect()
-{
-	int a=RandomNum(0,2);
-
-	switch (a)
-	{
-		case 0: playSFX(0x0238); break;
-		case 1: playSFX(0x0239); break;
-		case 2:
-		default: playSFX(0x023A);
-	}
-}
-
-//////////////////////////////////////////////////////////////////
-// Function name     : cChar::doCombatSoundEffect
-// Description       : does a combat sound effect
-// Return type       : void
-// Author            : Luxor
-void cChar::doCombatSoundEffect(SI32 fightskill, P_ITEM pWeapon)
+/*!
+\author Luxor
+\brief Does a combat sound event
+\param fightskill fighting skill
+\param weapon weapon used
+*/
+void cChar::doCombatSoundEffect(UI16 fightskill, pItem weapon)
 {
 	bool heavy=false;
 	int a=RandomNum(0,3);
 
 	//check for heavy weapon
-	if (ISVALIDPI(pWeapon) && pWeapon->IsAxe())
+	if (ISVALIDPI(weapon) && weapon->IsAxe())
 		heavy=true;
 
 	if(heavy)
@@ -1059,53 +999,52 @@ void cChar::doCombatSoundEffect(SI32 fightskill, P_ITEM pWeapon)
 	}
 }
 
-//////////////////////////////////////////////////////////////////
-// Function name     : cChar::combatOnFoot
-// Description       : does an animation for a char fighting on feet
-// Return type       : void
-// Author            : Luxor
+/*!
+\author Luxor
+\brief Does an animation for a char fighting on feet
+*/
 void cChar::combatOnFoot()
 {
-	P_ITEM pWeapon = getWeapon();
+	P_ITEM weapon = getWeapon();
 	int m = RandomNum(0,3);
 
-	if (ISVALIDPI(pWeapon)) {
-//		short weapId = pWeapon->id(); // unused variable
+	if (ISVALIDPI(weapon)) {
+//		short weapId = weapon->id(); // unused variable
 
-		if (pWeapon->IsBow()) {
+		if (weapon->IsBow()) {
 			playAction(0x12); //bow
 			return;
-		} else if (pWeapon->IsCrossbow() || pWeapon->IsHeavyCrossbow()) {
+		} else if (weapon->IsCrossbow() || weapon->IsHeavyCrossbow()) {
 			playAction(0x13); //crossbow - regular
 			return;
-		} else if (pWeapon->IsSword()) {
+		} else if (weapon->IsSword()) {
 			switch (m) //swords
 			{
 				case 0:		playAction(0x0D);	return; //side swing
 				case 1:		playAction(0x0A);	return; //poke
 				default:	playAction(0x09);	return; //top-down swing
 			}
-		} else if (pWeapon->IsMace1H()) {
+		} else if (weapon->IsMace1H()) {
 			switch (m) //maces
 			{
 				case 0:		playAction(0x0D);	return;	//side swing
 				default:	playAction(0x09);	return; //top-down swing
 			}
-		} else if (pWeapon->IsMace2H() || pWeapon->IsAxe() || pWeapon->IsSpecialMace()) {
+		} else if (weapon->IsMace2H() || weapon->IsAxe() || weapon->IsSpecialMace()) {
 			switch (m)
 			{
 				case 0:		playAction(0x0D);	return; //2H top-down
 				case 1:		playAction(0x0C);	return; //2H swing
 				default:	playAction(0x0D);	return; //2H top-down
 			}
-		} else if (pWeapon->IsFencing1H())	{
+		} else if (weapon->IsFencing1H())	{
 			switch (m) //fencing
 			{
 				case 0:		playAction(0x09);	return; //top-down
 				case 1:		playAction(0x0D);	return; //side-swipe
 				default:	playAction(0x0A);	return; //default: poke
 			}
-		} else if (pWeapon->IsFencing2H()) { 	//pitchfork & spear
+		} else if (weapon->IsFencing2H()) { 	//pitchfork & spear
 			switch (m) //pitchfork
 			{
 				case 0:		playAction(0x0D);	return; //top-down
@@ -1122,48 +1061,31 @@ void cChar::combatOnFoot()
 	}
 }
 
-//////////////////////////////////////////////////////////////////
-// Function name     : cChar::combatOnHorse
-// Description       : does an animation for a char fighting on horse
-// Return type       : void
-// Author            : Luxor
+/*!
+\author Luxor
+\brief Does an animation for a char fighting on horse
+*/
 void cChar::combatOnHorse()
 {
-	P_ITEM pWeapon = getWeapon();
-	if (ISVALIDPI(pWeapon)) {
-		short weapId = pWeapon->getId();
+	P_ITEM weapon = getWeapon();
+	if (ISVALIDPI(weapon)) {
+		short weapId = weapon->getId();
 
-		if (pWeapon->IsBow()) {
+		if (weapon->IsBow()) {
 			playAction(0x1B);
 			return;
-		} else if (pWeapon->IsCrossbow() || pWeapon->IsHeavyCrossbow()) {
+		} else if (weapon->IsCrossbow() || weapon->IsHeavyCrossbow()) {
 			playAction(0x1C);
 			return;
-		} else if(  pWeapon->IsSword() || pWeapon->IsSpecialMace() || pWeapon->IsMaceType() || (weapId ==0x0FB4 || weapId ==0x0FB5) || pWeapon->IsFencing1H() ) {
+		} else if(  weapon->IsSword() || weapon->IsSpecialMace() || weapon->IsMaceType() || (weapId ==0x0FB4 || weapId ==0x0FB5) || weapon->IsFencing1H() ) {
 			playAction(0x1A);
 			return;
-		} else if ( pWeapon->IsAxe() || pWeapon->IsFencing2H() ) {
+		} else if ( weapon->IsAxe() || weapon->IsFencing2H() ) {
 			playAction(0x1D); //2Handed
 			return;
 		}
 	} else {
 		playAction(0x1A); //fist fighting
 		return;
-	}
-}
-
-/*!
-\brief plays the combat animation
-\author Luxor
-*/
-void cChar::playCombatAction()
-{
-	if ( !HasHumanBody() ) {
-		playAction(4+rand()%3);
-		playMonsterSound(SND_ATTACK);
-	} else if ( onhorse ) {
-		combatOnHorse();
-	} else {
-		combatOnFoot();
 	}
 }

@@ -158,7 +158,7 @@ public:
 	static const UI64 flagGrey		= 0x0000000000000001ull; //!< Char is grey
 	static const UI64 flagPermaGrey		= 0x0000000000000002ull; //!< Char is permanent grey
 	static const UI64 flagResistParalisys	= 0x0000000000000004ull; //!< Char resists to paralisys (unused)
-	static const UI64 flagWaterWalk		= 0x0000000000000008ull; //!< Char walks on water (npc only)
+	static const UI64 flagWarMode		= 0x0000000000000008ull; //!< Char is in war mode
 	static const UI64 flagSpellTelekinesys	= 0x0000000000000010ull; //!< Char under telekinesys spell (Luxor)
 	static const UI64 flagSpellProtection	= 0x0000000000000020ull; //!< Char under protection spell (Luxor)
 
@@ -184,8 +184,6 @@ public:
 
 	static const UI64 flagIsCasting		= 0x0000000000200000ull;
 	static const UI64 flagIsGuarded		= 0x0000000000400000ull;
-
-	static const UI64 flagWarMode		= 0x0000000000800000ull; //!< Char is in war mode
 //@}
 
 //@}
@@ -289,10 +287,6 @@ public:
 	inline void makeInvulnerable(bool set = true)
 	{ setFlag(flagInvulnerable, set); }
 
-	//! Makes a character temporary grey
-	inline void setGrey()
-	{ if (!npc) tempfx::add(this, this, tempfx::GREY, 0, 0, 0, 0x7FFF); }
-
 	inline const bool inWarMode() const
 	{ return flags & flagWarMode; }
 
@@ -364,7 +358,10 @@ public:
 \name Combat
 */
 protected:
-	bool			combatTimerOk();
+	//! Check for combat timeout
+	inline const bool combatTimerOk()
+	{ return TIMEOUT(timeout); }
+
 	void			checkPoisoning(P_CHAR pc_def);
 	void			doMissedSoundEffect();
 	SI32			combatHitMessage(SI32 damage);

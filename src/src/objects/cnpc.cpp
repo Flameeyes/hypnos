@@ -330,3 +330,17 @@ void cNPC::unStable()
 	stablemaster = NULL;
 }
 
+/*!
+\brief Simpler attack for NPCs
+\param pc_target target character
+*/
+void cChar::simpleAttack(pChar pc_target)
+{
+	if ( ! pc_target || pc_target == this || pc_target->isDead() || isDead() )
+		return;
+
+	fight( pc_target2 );
+	setAttackFirst()
+	pc_target2->fight( this );
+	pc_target2->setAttackFirst(false);
+}

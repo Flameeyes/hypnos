@@ -11,6 +11,22 @@
 */
 
 /*!
+\author Luxor
+\brief Does a missed sound effect for combat
+*/
+void cChar::doMissedSoundEffect()
+{
+	UI08 a=RandomNum(0,2);
+
+	switch (a)
+	{
+		case 0: playSFX(0x0238); break;
+		case 1: playSFX(0x0239); break;
+		default: playSFX(0x023A);
+	}
+}
+
+/*!
 \author Flameeyes (port)
 \brief Plays a monster sound effect
 \param sfx sound effect
@@ -255,3 +271,18 @@ void cChar::impAction(UI16 action)
 	playAction(action);
 }
 
+/*!
+\brief plays the combat animation
+\author Luxor
+*/
+void cChar::playCombatAction()
+{
+	if ( !body->isHuman() ) {
+		playAction(4+rand()%3);
+		playMonsterSound(SND_ATTACK);
+	} else if ( onhorse ) {
+		combatOnHorse();
+	} else {
+		combatOnFoot();
+	}
+}

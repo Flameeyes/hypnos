@@ -51,6 +51,7 @@ protected:
 	void heartbeat();
 public:
 	bool updateFlag();
+	void simpleAttack(pChar pc);
 
 //@{
 /*!
@@ -73,6 +74,7 @@ public:
 	static const UI64 flagCanTrain		= 0x0000000100000000ull;
 	static const UI64 flagShopKeeper	= 0x0000000200000000ull;
 	static const UI64 flagDispellable	= 0x0000000400000000ull;
+	static const UI64 flagWaterWalk		= 0x0000000800000000ull; //!< Char walks on water
 
 	inline const bool canTrain() const
 	{ return flags & flagCanTrain; }
@@ -91,6 +93,12 @@ public:
 
 	inline void setDispellable(bool on = true)
 	{ setFlag(flagDispellable, on); }
+
+	inline const bool canWaterWalk() const
+	{ return flags & flagWaterWalk; }
+
+	inline void setCanWaterWalk(bool on = true)
+	{ setFlag(flagWaterWalk, on); }
 
 //@}
 
