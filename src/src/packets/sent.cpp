@@ -567,7 +567,7 @@ void cPacketSendCharAfterDelete::prepare()
 }
 
 
-static pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
+pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
 {
        switch(buffer[0])
        {
@@ -652,8 +652,6 @@ static pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t lengt
 
 Mostly taken from old noxwizard.cpp and (vastly :) ) modified to pyuo object system
 */
-
-
 bool cPacketReceiveCreateChar::execute(pClient client)
 {
         // Disconnect-level encryption or transfer error check
@@ -1352,22 +1350,20 @@ bool cPacketReceiveLoginChar::execute(pClient client)
 \author Akron & Chronodt
 \param client client who sent the packet
 */
-
-
 bool cPacketReceiveBookPage::execute(pClient client)
 {
-        uint16_t size = ShortFromCharPtr(buffer + 1);
-        if (length != size) return false;
-	pItem book=pointers::findItemBySerPtr(buffer+3);
-	if(book)
+	uint16_t size = ShortFromCharPtr(buffer + 1);
+	if (length != size) return false;
+	
+	pItem item = pointers::findItemBySerPtr(buffer+3);
+	pBook book = NULL;
+	
+	if ( item && ( book = item->toBook() ) )
 	{
-		if (book->morez == 0)	Books::addNewBook(book);
-		if (book->morex!=666 && book->morex!=999)
-			book->morex = 666;
-		if (book->morex==666) // writeable book -> copy page data send by client to the class-page buffer
-			Books::books[book->morez].ChangePages(buffer + 13, ShortFromCharPtr(buffer + 9), ShortFromCharPtr(buffer + 11), size - 13 );
-		else if (pBook->morex==999)
-			Books::books[book->morez].SendPageReadOnly(client, book, ShortFromCharPtr(buffer + 9));
+		if ( book->isReadOnly() )
+			book->sendPageReadOnly(client, book, ShortFromCharPtr(buffer + 9));
+		else
+			book->changePages(buffer + 13, ShortFromCharPtr(buffer + 9), ShortFromCharPtr(buffer + 11), size - 13);
 	}
         return true;
 }
@@ -1658,7 +1654,7 @@ bool cPacketReceiveDialogResponse::execute(pClient client)
 {
 	if (length != 13) return false;
 
-        //TODO check menus
+        //!\TODO check menus
 
 	Menus.handleMenu( client );
 
@@ -1678,7 +1674,7 @@ bool cPacketReceiveLoginRequest::execute(pClient client)
 	clientInfo[s]->firstpacket=false;
 	LoginMain(s);
 */
-	//TODO: Add code from loginmain in network.cpp and update it
+	//!\TODO: Add code from loginmain in network.cpp and update it
         return true;
 }
 
@@ -1767,34 +1763,35 @@ bool cPacketReceiveGameServerLogin::execute(pClient client)
         return true;
 }
 
-
-
-
 bool cPacketReceiveBookUpdateTitle::execute(pClient client)
 {
 	if (length != 99) return false;
-	int j= 9;
-	char author[31],title[61];
-        pItem pBook=pointers::findItemBySerPtr(buffer+1);
-  	if(!ISVALIDPI(pBook)) return false;
-        strncpy(title, buffer + 9, 60);
-        strncpy(author, buffer + 69, 30);
-        //so if clients somehow does not send a null terminated string, we zero the last character to be sure
-        title[60] = 0;
-        author[30] = 0;
-	Books::books[pBook->morez].ChangeAuthor(author);
-	Books::books[pBook->morez].ChangeTitle(title);
-        return true;
+	char author[31], title[61];
+	
+	pItem item = pointers::findItemBySerPtr(buffer+1);
+	pBook book = NULL;
+	if ( ! item || ! ( book = item->toBook() ) )
+		return false;
+	
+	//so if clients somehow does not send a null terminated string, we zero the last character to be sure
+	strncpy(title, buffer + 9, 60); title[60] = 0;
+	strncpy(author, buffer + 69, 30); author[30] = 0;
+	
+	book->changeAuthor(author);
+	book->changeTitle(title);
+	
+	return true;
 }
+
 
 
 
 bool cPacketReceiveDyeItem::execute(pClient client)
 {
 	if (length != 9) return false;
-        //TODO: moving dyeitem from commands to cclient??
-        Commands::DyeItem(client);
-        return true;
+	//!\todo: moving dyeitem from commands to cclient??
+	Commands::DyeItem(client);
+	return true;
 }
 
 

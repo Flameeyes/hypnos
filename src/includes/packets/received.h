@@ -582,16 +582,14 @@ public:
 	{ } 
 //	~cPacketReceive();
 	static pPacketReceive fromBuffer(uint8_t *buffer, uint16_t length);
-	inline virtual bool execute(pClient client)
-	{ }
-};
+	inline virtual bool execute(pClient client) = 0;
 
 
+//@{
 /*!
-\brief packet reception classes declarations
+\name Packet Reception
 \author Chronodt
 */
-
 class cPacketReceiveCreateChar          : public cPacketReceive;
 class cPacketReceiveDisconnectNotify    : public cPacketReceive;
 class cPacketReceiveMoveRequest         : public cPacketReceive;
@@ -634,6 +632,7 @@ class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
+//@}
 
 #endif
 

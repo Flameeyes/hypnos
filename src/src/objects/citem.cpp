@@ -253,6 +253,7 @@ cItem::cItem( uint32_t ser )
 	vendorDescription = std::string("");
 	setDecayTime(); //Luxor
 
+	type = itPureItem;
 }
 
 /*!

@@ -30,20 +30,55 @@ class cItem : public cObject
 public:
 	static pItem addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, Location where);
 
-	//! Redefinition of = operator for cItem class
-        cItem& operator=(cItem& b);
-
 	static uint32_t	nextSerial();
 
         static void	archive();
 	static void	safeoldsave();
+//@{
+/*!
+\name Constructors and Operators
+*/
+public:
+	//! Redefinition of = operator for cItem class
+        cItem& operator=(cItem& b);
 
 	cItem(uint32_t serial);
         cItem();
 	~cItem();
+//@}
 
-	static const uint32_t flagUseAnimID		= 0x00000001;
-		//!< The item uses animID
+//@{
+/*!
+\name Casts and types
+*/
+protected:
+	//! Type of item (subclass)
+	enum ItemType {
+		itPureItem,		//!< No subclass
+		itContainer,		//!< cContainer subclass
+		itMap,			//!< cMap subclass
+		itMsgBoardMessage,	//!< cMsgBoardMessage subclass
+		itWeapon,		//!< cWeapon subclass
+		itBook,			//!< cBook subclass
+	};
+	
+	ItemType classType;
+public:
+	inline pContainer toContainer()
+	{ return classType == itContainer ? (reinterpret_cast<pContainer>(this)) : NULL; }
+
+	inline pMap toContainer()
+	{ return classType == itMap ? (reinterpret_cast<pMap>(this)) : NULL; }
+
+	inline pMsgBoardMessage toContainer()
+	{ return classType == itMsgBoardMessage ? (reinterpret_cast<pMsgBoardMessage>(this)) : NULL; }
+	
+	inline pWeapon toContainer()
+	{ return classType == itWeapon ? (reinterpret_cast<pWeapon>(this)) : NULL; }
+
+	inline pBook toContainer()
+	{ return classType == itBook ? (reinterpret_cast<pBook>(this)) : NULL; }
+//@}
 
 	//! deletion type
 	enum DelType
@@ -105,11 +140,9 @@ protected:
 
 //@}
 
-protected:
-
 //@{
 /*!
-\name Who is
+\name Main properties
 */
 protected:
 	Event			*events[ALLITEMEVENTS];
@@ -415,13 +448,14 @@ public:
 
 //@{
 /*!
-\name flags
+\name Flags
 */
 protected:
-	static const uint64_t flagPileable		= 0x0000000000000001ull; //!< Can the item be piled?
-	static const uint64_t flagCanDecay		= 0x0000000000000002ull; //!< Can the item decay?
-	static const uint64_t flagNewbie		= 0x0000000000000004ull; //!< Is the item newbie?
-	static const uint64_t flagDispellable	= 0x0000000000000004ull; //!< Can the item be dispelled?
+	static const uint64_t flagPileable	= 0x0000000000000001ull; //!< Can the item be piled?
+	static const uint64_t flagCanDecay	= 0x0000000000000002ull; //!< Can the item decay?
+	static const uint64_t flagNewbie	= 0x0000000000000004ull; //!< Is the item newbie?
+	static const uint64_t flagDispellable	= 0x0000000000000008ull; //!< Can the item be dispelled?
+	static const uint64_t flagUseAnimID	= 0x0000000000000010ull; //!< The item uses animID
 
 public:
 	inline const bool isPileable() const
@@ -447,6 +481,12 @@ public:
 
 	inline void setDispellable(bool set = true)
 	{ setFlag(flagDispellable, set); }
+	
+	inline const bool useAnimID() const
+	{ return flags & flagUseAnimID; }
+	
+	inline void setUseAnimID(bool set = true) const
+	{ setFlag(flagUseAnimID, set); }
 //@}
 
 //@{
@@ -668,6 +708,7 @@ public:
 */
 protected:
         bool            ToolWearOut(pClient client);            //!< Check for tool consumption. Used in doubleClick
+	virtual void	doubleClicked(pClient client);		//!< After an accepted doubleclick, call this virtual
 
 public:
         void            singleClick(pClient client);            //!< Single click on item

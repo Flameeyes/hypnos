@@ -222,14 +222,17 @@ static void doubleclick_itemid( pClient client, pChar pc, pItem pi, pContainer p
 /*!
 \brief Double click
 \author Ripper, rewrite by Endymion, then by Chronodt (1/2/2004)
-\param ps client of player dbclick
+\param client client of player dbclick
 \note Completely redone by Morrolan 20-07-99
 \warning I use a define CASE for make more readable the code, if you change name of pItem pi chage also the macro
 \note pItem pi removed since merging with cItem, so the macro has been changed too (1/2/2004)
 \todo review when sets redone
 \todo los
+
+\todo URGENT! Split the function in two: one will check the double click if is correct, and then a virtual one
+	who inherit the switch, so the new cClass can simply have their doubleClicked(pClient) function to call
 */
-void cItem::doubleClick(pClient client);
+void cItem::doubleClick(pClient client)
 {
 
 	if (client==NULL) return;
@@ -417,7 +420,7 @@ void cItem::doubleClick(pClient client);
 	}
 
 
-	// Begin checking objects that we force an object delay for (std objects)
+	// BEGIN checking objects that we force an object delay for (std objects)
 	// start trigger stuff
 	if (trigger > 0)
 	{
@@ -459,14 +462,18 @@ void cItem::doubleClick(pClient client);
 		client->sysmsg( TRANSLATE("What will you use this on?"));
 		return;
 	}
-	// end trigger stuff
+	// END trigger stuff
 	// BEGIN Check items by type
 
 	int los = 0;
 
-
 	P_TARGET targ = NULL;
+	
+	doubleClicked(client);
+}
 
+void cItem::doubleClicked(pClient client)
+{
 	switch (type)
 	{
 	case ITYPE_RESURRECT:
@@ -597,12 +604,6 @@ void cItem::doubleClick(pClient client);
                 }
 
 
-		return;
-	case ITYPE_BOOK:
-
-//TODO: redo when books updated
-
-		Books::DoubleClickBook(s, pi);
 		return;
 	case ITYPE_DOOR:
 
@@ -907,7 +908,6 @@ void cItem::doubleClick(pClient client);
 	}
 	else ///BEGIN IDENTIFICATION BY ID ( RAW MODE, DEPRECATED )
 		doubleclick_itemid( client, pc, pi, pack );
-
 }
 
 

@@ -116,9 +116,4 @@ void newbieitems(pChar pc)
 	{
 		item::CreateFromScript( "$item_gold_coin", pc->getBackpack(), goldamount );
 	}
-
-
 }
-
-
-

@@ -20,131 +20,93 @@
 #ifndef __books_h
 #define __books_h
 
-#include <map>
-#include <fstream>
+class cBook;
+typedef cBook *pBook;	//!< Pointer to a book
+
+#include "common_libs.h"
+#include "objects/citem.h"
 
 /*!
-\brief Books stuff
-\author Akron
-\since 0.82r3
-
-new books readonly -> morex 999<br>
-new books writeable -> morex 666<br>
-
+\brief Item class for books
+\author Akron aka Flameeyes (complete rewrite)
 */
-namespace Books
+class cBook : cItem
 {
-	void LoadBooks();
-	void SaveBooks();
-	void safeoldsave();
-	void archive();
-	void addNewBook(pItem book);
-	void DoubleClickBook(NXWSOCKET s, pItem book);
+public:
+//@{
+/*!
+\name Static members and Typedefs
+*/
+	//! List of pages (vector of vectors of strings)
+	typedef std::vector< std::vector<std::string> > tpages;
+//@}
+	
 
+//@{
+/*!
+\name Constructors and operators
+\author Akron
+*/
+public:
+	cBook();					//!< default constructor
+	cBook(const cBook &oldbook);			//!< copy constructor
+	cBook &operator = (const cBook & oldbook); 	//!< assignment operator =
+//@}
+
+//@{
+/*!
+\name Flags
+*/
+public:
+	inline const bool isReadOnly() const
+	{ return flags & flagIsReadOnly; }
+
+	inline void setReadOnly(bool set = true)
+	{ setFlag(flagIsReadOnly, set); }
+private:
+	static const uint64_t flagIsReadOnly	= 0x0000000000010000ull;	//!< Is the book read only?
+//@}
+
+	void doubleClicked(pClient client);
+	void openBookReadOnly(pClient client);
+	void openBookReadWrite(pClient client);
+	void sendPageReadOnly(pClient client, uint16_t p);
+	void changePages(char *packet, uint16_t p, uint16_t l, uint16_t s);
+
+	//!< Returns the author of the book
+	inline std::string getAuthor() const
+	{ return author; }
+	
 	/*!
-	\brief Item class for books
-	\author Akron (complete rewrite)
-	\todo create xss-based books
-
-	There are two types of books, read only books, defined by scripters, in this case they are loaded
-	from xss scripts and read/write books, wrote in game, that are saved to a save file on disk.
-
-	Two books can have the same contents if it's defined by xss script, but not if they are
-	read/write books.<br>
-	For this reason, we need to duplicate the book's data if we are duping a book item, else we could
-	have two books "linked" together, changing one, will change the other too.
-
-	a read/write book is defined on the file like that (without tabs identation obviously :P):
-
-	<pre>
-	SECTION RWBOOK index
-	{
-		AUTHOR author
-		TITLE title
-		PAGE
-		{
-			LINE blablabla
-			LINE bblalblal
-		}
-		PAGE
-		{
-			LINE blablabla
-		}
-		PAGE
-		{
-			LINE blablabla
-		}
-	}
-	</pre>
-
+	\brief Change the book author
+	\param auth new author of the book
 	*/
-	class cBook
-	{
-		public:
-			typedef std::vector< std::vector<std::string> > tpages;
+	inline void setAuthor(std::string auth)
+	{ author = auth; }
+	
+	//!< Returns the title of the book
+	inline std::string getTitle() const
+	{ return title; }
+	
+	/*!
+	\brief Change the book title
+	\param titl new title of the book
+	*/
+	void cBook::setTitle(std::string titl)
+	{ title = titl; }
 
-			//@{
-			/*!
-			\name Constructors and operators
-			\author Akron
-			*/
-			cBook();					//!< default constructor
-			cBook(const cBook &oldbook);			//!< copy constructor
-			cBook(pItem book);				//!< item constructor
-			cBook(std::istream &s);				//!< constructor that read the book from stream (see cBooks::ReadFrom)
-			cBook &operator = (const cBook & oldbook); 	//!< assignment operator =
-			//@}
+	//!< Passes the pages of the book
+	inline void getPages(tpages &pags) const
+	{ pags = pages; }
+	
+	//!< return the number of pages of the book
+	inline uint32_t getNumPages() const
+	{ return pages.size(); }
 
-			//@{
-			/*!
-			\name Book Dump/Load functions
-			\author Akron
-			These functions are used to write and read books from a file or, in general from a stream.<br>
-			This mean that we can truly use files for store books, but also other streams, like string streams.
-			*/
-			void DumpTo(std::ostream &s);			//!< write the book to a stream
-			bool ReadFrom(std::istream &s);			//!< read the book from a stream
-			//@}
-
-			void OpenBookReadOnly(NXWSOCKET s, pItem book);
-			void OpenBookReadWrite(NXWSOCKET s, pItem book);
-			void SendPageReadOnly(NXWSOCKET s, pItem book, uint16_t p);
-
-			void ChangeAuthor(char *auth);
-			void ChangeTitle(char *titl);
-			void ChangePages(char *packet, uint16_t p, uint16_t l, uint16_t s);
-
-			uint32_t GetIndex() const				//!< gets the book index
-				{ return index; }
-			inline bool IsReadOnly() const		//!< return true if books is readonly
-				{ return readonly; }
-			inline void GetPages(tpages &pags) const	//!< return the pages of the book
-				{ pags = pages; }
-			std::string GetAuthor() const			//!< return the author of the book
-				{ return author; }
-			inline std::string GetTitle() const		//!< return the title of the book
-				{ return title; }
-			inline uint32_t GetNumPages() const			//!< return the number of pages of the book
-				{ return pages.size(); }
-
-		private:
-			bool readonly;				//!< if the book is loaded from script it must be true
-			std::string author;				//!< author of the book
-			std::string title;				//!< title of the book
-			tpages pages;					//!< pages of the book
-
-			/*!
-			\brief index of the book
-			\note When creating new books, it should be greater than cBook::books counter.
-
-			Needed for get informations about the book, also used for book indexing.
-			*/
-			uint32_t index;
-
-			static uint32_t books_index;			//!< 1-based books counter
-	};
-
-	extern std::map<uint32_t, cBook> books;
+protected:
+	std::string author;		//!< author of the book
+	std::string title;		//!< title of the book
+	tpages pages;			//!< pages of the book
 };
 
 #endif

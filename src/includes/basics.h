@@ -147,7 +147,7 @@ inline int str2num ( std::wstring& s, int base = baseAuto )
 \deprecated After removed the dummy pointer, replace in the sources the
             str2num call with a strtol direct call...
 */
-inline int str2num( char* sz, int base )
+inline int str2num( char* sz, int base = baseAuto )
 {
 	return strtol(sz, NULL, base );
 }
