@@ -10,8 +10,10 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "common_libs.h"
+#include "hypnos.h"
 #include "version.h"
 #include "arch/console.h"
+#include "arch/signals.h"
 
 static FILE *s_fileStdOut = NULL;
 
