@@ -299,7 +299,7 @@ class eInvalidInteger : public eException
 public:
 	const pVariant var;	//!< Invalid variant variable
 	
-	eInvalidInteger(pVariant aVar)
+	eInvalidInteger(const pVariant aVar)
 		: var(aVar)
 	{ }
 };

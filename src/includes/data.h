@@ -24,14 +24,14 @@ extern bool map_cache;
 */
 enum {
 	MAP_HEADER_SIZE = 4, MAP_BLOCK_SIZE = 196,
-	TILE_HEADER_SIZE = 4, TILEDATA_LAND_SIZE = 0x68800
+	TILE_HEADER_SIZE = 4
 };
 
 /*!
 \author Luxor
 */
 enum MulFileId {
-	Map_File = 0, StaIdx_File, Statics_File, Multi_File, MultiIdx_File, TileData_File
+	Map_File = 0, StaIdx_File, Statics_File, Multi_File, MultiIdx_File
 };
 
 

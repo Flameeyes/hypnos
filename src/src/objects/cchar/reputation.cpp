@@ -11,17 +11,20 @@
 */
 
 #include "enums.h"
+#include "networking/cclient.h"
 #include "objects/cchar.h"
+#include "objects/cpc.h"
+#include "objects/cnpc.h"
 
 const bool cChar::isGrey() const
 {
-	if ( npc || IsMurderer() || IsCriminal() )
+	if ( dynamic_cast<cNPC>(this) || isMurderer() || isCriminal() )
 		return false;
-	else
-		if ( (karma <= -10000) || (nxwflags[0] & flagPermaGrey) || (nxwflags[0] & flagGrey) )
-			return true;
-		else
-			return false;
+	
+	if ( (karma <= -10000) || isPermaGrey() )
+		return true;
+	
+	return false;
 }
 
 /*!
@@ -31,8 +34,8 @@ const bool cChar::isGrey() const
 */
 void cChar::modifyFame( int32_t value )
 {
-	if( GetFame() > 10000 )
-		SetFame( 10000 );
+	if( getFame() > 10000 )
+		setFame( 10000 );
 
 	if ( ! value )
 		return;
@@ -123,12 +126,12 @@ void cChar::modifyFame( int32_t value )
 */
 void cChar::increaseKarma( int32_t value, pChar pKilled )
 {
-	int32_t nCurKarma = GetKarma();
+	int32_t nCurKarma = getKarma();
 
 	if( nCurKarma > 10000 )
-		SetKarma( 10000 );
+		setKarma( 10000 );
 	else if( nCurKarma < -10000 )
-		SetKarma( -10000 );
+		setKarma( -10000 );
 
 	if ( ! value )
 		return;
@@ -172,32 +175,29 @@ void cChar::increaseKarma( int32_t value, pChar pKilled )
 	}
 	
 	pPC tpc = NULL; // This PC
-	if ( ! (tpc = dynamic_cast<pPC>(this) ) || ! tpc->getClient() )
+	pClient tcl = NULL; // This client
+	if ( ! (tpc = dynamic_cast<pPC>(this) ) || ! (tcl = tpc->getClient()) )
 		return;
 	
-	if(nChange<=25)
-	{
+	if(nChange<=25) {
 		if(positiveKarmaEffect)
-			sysmsg( "You have gained a little karma.");
+			tcl->sysmessage( "You have gained a little karma.");
 		else
-			sysmsg( "You have lost a little karma.");
-	} else if(nChange<=75)
-	{
+			tcl->sysmessage( "You have lost a little karma.");
+	} else if(nChange<=75) {
 		if(positiveKarmaEffect)
-			sysmsg( "You have gained some karma.");
+			tcl->sysmessage( "You have gained some karma.");
 		else
-			sysmsg( "You have lost some karma.");
-	} else if(nChange<=100)
-	{
+			tcl->sysmessage( "You have lost some karma.");
+	} else if(nChange<=100) {
 		if(positiveKarmaEffect)
-			sysmsg( "You have gained alot of karma.");
+			tcl->sysmessage( "You have gained alot of karma.");
 		else
-			sysmsg( "You have lost alot of karma.");
-	} else if(nChange>100)
-	{
+			tcl->sysmessage( "You have lost alot of karma.");
+	} else if(nChange>100) {
 		if(positiveKarmaEffect)
-			sysmsg( "You have gained a huge amount of karma.");
+			tcl->sysmessage( "You have gained a huge amount of karma.");
 		else
-			sysmsg( "You have lost a huge amount of karma.");
+			tcl->sysmessage( "You have lost a huge amount of karma.");
 	}
 }

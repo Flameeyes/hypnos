@@ -185,20 +185,10 @@ void shutdown()
 		safedelete( staticIdx );
 	if ( statics != NULL )
 		safedelete( statics );
-	if ( tdLand != NULL )
-		safedelete( tdLand );
-	if ( tdTile != NULL )
-		safedelete( tdTile );
 	if ( multiIdx != NULL )
 		safedelete( multiIdx );
 	if ( multi != NULL )
 		safedelete( multi );
-	if ( verIdx != NULL )
-		safedelete( verIdx );
-	if ( verLand!= NULL )
-		safedelete( verLand );
-	if ( verTile != NULL )
-		safedelete( verTile );
 }
 
 /*!
@@ -222,9 +212,6 @@ void setPath( MulFileId id, std::string path )
 			break;
 		case MultiIdx_File:
 			multiIdx_path = path;
-			break;
-		case TileData_File:
-			tiledata_path = path;
 			break;
 		default:
 			break;
@@ -252,9 +239,6 @@ std::string getPath( MulFileId id )
 			break;
 		case MultiIdx_File:
 			return multiIdx_path;
-			break;
-		case TileData_File:
-			return tiledata_path;
 			break;
 		default:
 			break;

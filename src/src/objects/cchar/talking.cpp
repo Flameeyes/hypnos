@@ -10,26 +10,7 @@
 \brief cChar's talking methods
 */
 
-/*!
-\brief easy wrapper to sysmsg
-\author Luxor
-\param txt as default
-\param ... as default
-*/
-void cChar::sysmsg(const char *txt, ...)
-{
-	if ( ! getClient() )
-		return;
-	
-	va_list argptr;
-	char *msg;
-	va_start( argptr, txt );
-
-	vasprintf( &msg, txt, argptr );
-	va_end( argptr );
-	getClient()->sysmsg(msg);
-	free(msg);
-}
+#include "objects/cchar.h"
 
 /*!
 \author Luxor

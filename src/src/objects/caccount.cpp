@@ -149,6 +149,7 @@ This function insert into the database the needed row for the account.
 */
 void cAccount::save(uint32_t id)
 {
+#if 0
 	char *buffer;
 	asprintf(&buffer, "INSERT INTO accounts VALUES("
 			"%u, '%s', '%s', %u, %u, %u,"
@@ -176,6 +177,7 @@ void cAccount::save(uint32_t id)
 		if ( q )
 			delete q;
 	}
+#endif
 }
 
 /*!

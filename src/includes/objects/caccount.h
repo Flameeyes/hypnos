@@ -16,6 +16,8 @@
 #include "common_libs.h"
 #include "extras/jails.h"
 #include "enums.h"
+#include "inlines.h"
+
 #include <wefts_mutex.h>
 
 /*!
