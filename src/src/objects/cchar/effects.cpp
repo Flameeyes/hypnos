@@ -54,10 +54,77 @@ void cChar::playMonsterSound(MonsterSound sfx)
 \param part particle effects structure
 \todo backport
 */
-void cChar::movingFX(pChar destination, short id, int32_t speed, int32_t loop, bool explode, ParticleFx* part)
+void cChar::movingFX(pChar dst, uint16_t eff, uint8_t speed, uint8_t loop, bool explode, ParticleFx* part)
 {
-	movingeffect(DEREF_pChar(this), DEREF_pChar(destination), id >> 8, id & 0xFF,
-		speed & 0xFF, loop & 0xFF, explode ? '\1' : '\0', part!=NULL, part);
+	if ( ! dst ) return;
+
+	uint8_t effect[28]={ 0x70, 0x00, };
+
+	MakeGraphicalEffectPkt_(effect, 0x00, getSerial(), dst->getSerial(), eff, getPosition(), dst->getPosition(), speed, loop, 0, explode);
+
+	if (!part) // no UO3D effect ? lets send old effect to all clients
+	{
+		NxwSocketWrapper sw;
+		sw.fillOnline( );
+		for( sw.rewind(); !sw.isEmpty(); sw++ )
+		{
+			 NXWSOCKET j=sw.getSocket();
+			 pChar pj = MAKE_CHAR_REF(currchar[j]);
+			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
+			 {
+				Xsend(j, effect, 28);
+//AoS/				Network->FlushBuffer(j);
+			 }
+		}
+		return;
+	} else {
+		// UO3D effect -> let's check which client can see it
+
+		NxwSocketWrapper sw;
+		sw.fillOnline();
+		for( sw.rewind(); !sw.isEmpty(); sw++ )
+		{
+			 NXWSOCKET j=sw.getSocket();
+			 pChar pj = MAKE_CHAR_REF(currchar[j]);
+			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
+			 {
+				if (clientDimension[j]==2) // 2D client, send old style'd
+				{
+					Xsend(j, effect, 28);
+//AoS/					Network->FlushBuffer(j);
+				} else if (clientDimension[j]==3) // 3d client, send 3d-Particles
+				{
+					movingeffectUO3D(source, dest, part);
+					unsigned char particleSystem[49];
+					Xsend(j, particleSystem, 49);
+//AoS/					Network->FlushBuffer(j);
+				}
+				else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
+					LogError"Invalid Client Dimension: %i\n", clientDimension[j]);
+			}
+		}
+	}
+}
+
+void cChar::movingFX2(pItem dest, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
+{
+	if ( ! dest ) return;
+
+	uint8_t effect[28]={ 0x70, 0x00, };
+
+	MakeGraphicalEffectPkt_(effect, 0x00, getSerial(), pi->getSerial(), eff, getPosition(), pi->getPosition(), speed, loop, 0, explode ? 0x01 : 0x00);
+
+	NxwSocketWrapper sw;
+	sw.fillOnline( );
+	for( sw.rewind(); !sw.isEmpty(); sw++ )
+	{
+		NXWSOCKET j=sw.getSocket();
+		if( j!=INVALID )
+		{
+			Xsend(j, effect, 28);
+//AoS/			Network->FlushBuffer(j);
+		}
+	}
 }
 
 /*!
@@ -69,7 +136,7 @@ void cChar::movingFX(pChar destination, short id, int32_t speed, int32_t loop, b
 \param part optional particles data
 \note if part == NULL then id, speed and loop MUST be >= 0
 */
-void cChar::staticFX(short id, int32_t speed, int32_t loop, ParticleFx* part)
+void cChar::staticFX(uint16_t id, uint8_t speed, uint8_t loop, ParticleFx* part)
 {
 	if (part!=NULL) {
 		if (id<=-1) id = (part->effect[0] << 8) + part->effect[1];

@@ -1097,74 +1097,6 @@ MakeGraphicalEffectPkt_(effect, 0x03, pc->getSerial(), 0, eff, charpos, pos2, sp
 	// I think it's too infrequnet to consider this as optimization.
 }
 
-
-void movingeffect(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt, ParticleFx *str, bool skip_old )
-{
-
-	pChar src=MAKE_CHAR_REF(source);
-	if ( ! src ) return;
-	pChar dst=MAKE_CHAR_REF(dest);
-	VALIDATEPC(dst);
-
-	uint16_t eff = (eff1<<8)|(eff2%256);
-	uint8_t effect[28]={ 0x70, 0x00, };
-
-	Location srcpos= src->getPosition();
-	Location destpos= dst->getPosition();
-
-	if (!skip_old)
-	{
-MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial(), dst->getSerial(), eff, srcpos, destpos, speed, loop, 0, explode);
-	}
-
-	 if (!UO3DonlyEffekt) // no UO3D effect ? lets send old effect to all clients
-	 {
-
-		 NxwSocketWrapper sw;
-		 sw.fillOnline( );
-		 for( sw.rewind(); !sw.isEmpty(); sw++ )
-		 {
-			 NXWSOCKET j=sw.getSocket();
-			 pChar pj = MAKE_CHAR_REF(currchar[j]);
-			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
-			 {
-				Xsend(j, effect, 28);
-//AoS/				Network->FlushBuffer(j);
-			 }
-		 }
-	   return;
-	}
-	else
-	{
-		// UO3D effect -> let's check which client can see it
-
-		NxwSocketWrapper sw;
-		sw.fillOnline();
-		 for( sw.rewind(); !sw.isEmpty(); sw++ )
-		 {
-			 NXWSOCKET j=sw.getSocket();
-			 pChar pj = MAKE_CHAR_REF(currchar[j]);
-			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
-			 {
-				 if (clientDimension[j]==2 && !skip_old) // 2D client, send old style'd
-				 {
-					 Xsend(j, effect, 28);
-//AoS/					Network->FlushBuffer(j);
-				 } else if (clientDimension[j]==3) // 3d client, send 3d-Particles
-				 {
-
-					movingeffectUO3D(source, dest, str);
-					unsigned char particleSystem[49];
-					Xsend(j, particleSystem, 49);
-//AoS/					Network->FlushBuffer(j);
-				}
-				else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
-					LogError"Invalid Client Dimension: %i\n", clientDimension[j]);
-			}
-		}
-	}
-}
-
 // staticeffect2 is for effects on items
 void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt,  ParticleFx *str, bool skip_old )
 {
@@ -1295,39 +1227,6 @@ void movingeffect3(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigne
 	Location destpos= dst->getPosition();
 
 MakeGraphicalEffectPkt_(effect, type, src->getSerial(), dst->getSerial(), eff, srcpos, destpos, speed, loop, ajust, explode);
-
-	 NxwSocketWrapper sw;
-	 sw.fillOnline( );
-	 for( sw.rewind(); !sw.isEmpty(); sw++ )
-	 {
-		NXWSOCKET j=sw.getSocket();
-		if( j!=INVALID )
-		{
-			Xsend(j, effect, 28);
-//AoS/			Network->FlushBuffer(j);
-		}
-	}
-}
-
-
-
-//	- Movingeffect2 is used to send an object from a char
-//	to another object (like purple potions)
-void movingeffect2(CHARACTER source, int dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode)
-{
-	//0x0f 0x42 = arrow 0x1b 0xfe=bolt
-
-	const pItem pi=MAKE_ITEM_REF(dest);
-	if ( ! pi ) return;
-	pChar pc_source = MAKE_CHAR_REF(source);
-	VALIDATEPC(pc_source);
-
-	uint16_t eff = (eff1<<8)|(eff2%256);
-	uint8_t effect[28]={ 0x70, 0x00, };
-
-	Location srcpos= pc_source->getPosition(), pos2 = pi->getPosition();
-
-MakeGraphicalEffectPkt_(effect, 0x00, pc_source->getSerial(), pi->getSerial(), eff, srcpos, pos2, speed, loop, 0, explode);
 
 	 NxwSocketWrapper sw;
 	 sw.fillOnline( );

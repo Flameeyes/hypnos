@@ -827,7 +827,7 @@ void target_expPotion( NXWCLIENT ps, pTarget t )
 	pi->MoveTo( loc );
 	pi->setContainer(0);
 	pi->magic=2; //make item unmovable once thrown
-	movingeffect2(DEREF_pChar(pc), DEREF_pItem(pi), 0x0F, 0x0D, 0x11, 0x00, 0x00);
+	pc->movingFX2(pi, 0x0F0D, 17, 0, 0);
 	pi->Refresh();
 }
 

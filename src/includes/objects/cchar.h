@@ -836,9 +836,6 @@ public:
 	inline const bool losFrom(const pChar pc) const
 	{ return pc && pc->getBody() ? lineOfSight( body->getPosition(), pc->getBody()->getPosition() ) : false; }
 
-	void			playSFX(int16_t sound, bool onlyToMe = false);
-	void			playMonsterSound(MonsterSound sfx);
-
 	bool			checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise = true);
 	bool			checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, pChar defend);
 
@@ -866,11 +863,6 @@ public:
 	inline const uint32_t getAmount(uint16_t id, uint16_t col=0xFFFF, bool onlyPrimaryBackpack=false )
 	{ return body->getBackpack() ? /*body->getBackpack()->countItems(id, col, !onlyPrimaryBackpack)*/ 0 : 0; }
 
-	void			movingFX(pChar destination, short id, int32_t speed, int32_t loop, bool explode, class ParticleFx* part = NULL);
-	void			staticFX(short id, int32_t speed, int32_t loop, class ParticleFx* part = NULL);
-	void			boltFX(bool bNoParticles);
-	void			circleFX(short id);
-
 	void			useHairDye(pItem bottle);
 
 	void			morph ( short bodyid = INVALID, short skincolor = INVALID,
@@ -890,6 +882,19 @@ public:
 
 	uint32_vector lootVector;
 	virtual void Delete();
+//@{
+/*!
+\name Sound and Visual effects
+*/
+	void movingFX(pChar destination, uint16_t id, uint8_t speed, uint8_t loop, bool explode, class ParticleFx* part);
+	void movingFX2(pItem dest, uint16_t eff, uint8_t speed, uint8_t loop, bool explode);
+	void staticFX(uint16_t id, uint8_t speed, uint8_t loop, class ParticleFx* part = NULL);
+	void boltFX(bool bNoParticles);
+	void circleFX(short id);
+
+	void playSFX(int16_t sound, bool onlyToMe = false);
+	void playMonsterSound(MonsterSound sfx);
+//@}
 };
 
 #endif
