@@ -181,20 +181,54 @@ enum { spawn_script = 20, NUM_SCRIPTS = 32};
 //! Stat types
 enum StatType { STAT_HP = 0, STAT_MANA, STAT_STAMINA, ALL_STATS };
 
-//! Type of item
-enum ItemType {
-	ITYPE_ORDER_GATES = 2, ITYPE_ORDER_GATES_OPENER = 3, ITYPE_CHAOS_GATES = 4,
-	ITYPE_CHAOS_GATES_OPENER = 5, ITYPE_TELEPORTRUNE = 6,  ITYPE_KEY = 7, ITYPE_LOCKED_ITEM_SPAWNER = 8,
-	ITYPE_SPELLBOOK = 9, ITYPE_MAP = 10, ITYPE_DOOR = 12, ITYPE_LOCKED_DOOR = 13,
-	ITYPE_FOOD = 14, ITYPE_WAND = 15, ITYPE_RESURRECT = 16,ITYPE_MANAREQ_WAND = 17, ITYPE_POTION = 19,
-	ITYPE_RUNE = 50, ITYPE_ITEM_SPAWNER = 61, ITYPE_NPC_SPAWNER = 62, ITYPE_UNLOCKED_CONTAINER = 63,
-	ITYPE_LOCKED_CONTAINER = 64, ITYPE_NODECAY_ITEM_SPAWNER = 65, ITYPE_DECAYING_ITEM_SPAWNER = 66,
-	ITYPE_RAND_NPC_SPAWNER = 69, ITYPE_ADVENCEMET_GATE1 = 80, ITYPE_ADVENCEMET_GATE2 = 81,
-	ITYPE_ADVENCEMET_GATE_SEX = 82, ITYPE_TRASH = 87, ITYPE_BOATS = 117, ITYPE_FIREWORKS_WAND = 181,
-	ITYPE_SMOKE = 185, ITYPE_RENAME_DEED = 186, ITYPE_POLYMORPH = 101, ITYPE_POLYMORPH_BACK = 102,
-	ITYPE_ARMY_ENLIST = 103, ITYPE_TELEPORT = 104, ITYPE_DRINK = 105, ITYPE_ESCORTSPAWN = 125,
-	ITYPE_GUMPMENU = 203, ITYPE_PLAYER_VENDOR_DEED = 217, ITYPE_ITEMID_WAND = 404
-};
+//@{
+/*!
+\name Item types
+\brief Constant used to identify some kind of items.
+\deprecated This should be changed in a better class-ed thing
+*/
+	static const uint16_t ITYPE_ORDER_GATES = 2;
+	static const uint16_t ITYPE_ORDER_GATES_OPENER = 3;
+	static const uint16_t ITYPE_CHAOS_GATES = 4;
+	static const uint16_t ITYPE_CHAOS_GATES_OPENER = 5;
+	static const uint16_t ITYPE_TELEPORTRUNE = 6;
+	static const uint16_t ITYPE_KEY = 7;
+	static const uint16_t ITYPE_LOCKED_ITEM_SPAWNER = 8;
+	static const uint16_t ITYPE_SPELLBOOK = 9
+	static const uint16_t ITYPE_MAP = 10;
+	static const uint16_t ITYPE_DOOR = 12;
+	static const uint16_t ITYPE_LOCKED_DOOR = 13;
+	static const uint16_t ITYPE_FOOD = 14;
+	static const uint16_t ITYPE_WAND = 15;
+	static const uint16_t ITYPE_RESURRECT = 16;
+	static const uint16_t ITYPE_MANAREQ_WAND = 17;
+	static const uint16_t ITYPE_POTION = 19;
+	static const uint16_t ITYPE_RUNE = 50;
+	static const uint16_t ITYPE_ITEM_SPAWNER = 61;
+	static const uint16_t ITYPE_NPC_SPAWNER = 62;
+	static const uint16_t ITYPE_UNLOCKED_CONTAINER = 63;
+	static const uint16_t ITYPE_LOCKED_CONTAINER = 64;
+	static const uint16_t ITYPE_NODECAY_ITEM_SPAWNER = 65;
+	static const uint16_t ITYPE_DECAYING_ITEM_SPAWNER = 66;
+	static const uint16_t ITYPE_RAND_NPC_SPAWNER = 69;
+	static const uint16_t ITYPE_ADVENCEMET_GATE1 = 80;
+	static const uint16_t ITYPE_ADVENCEMET_GATE2 = 81;
+	static const uint16_t ITYPE_ADVENCEMET_GATE_SEX = 82;
+	static const uint16_t ITYPE_TRASH = 87;
+	static const uint16_t ITYPE_BOATS = 117;
+	static const uint16_t ITYPE_FIREWORKS_WAND = 181;
+	static const uint16_t ITYPE_SMOKE = 185;
+	static const uint16_t ITYPE_RENAME_DEED = 186;
+	static const uint16_t ITYPE_POLYMORPH = 101;
+	static const uint16_t ITYPE_POLYMORPH_BACK = 102;
+	static const uint16_t ITYPE_ARMY_ENLIST = 103;
+	static const uint16_t ITYPE_TELEPORT = 104;
+	static const uint16_t ITYPE_DRINK = 105;
+	static const uint16_t ITYPE_ESCORTSPAWN = 125;
+	static const uint16_t ITYPE_GUMPMENU = 203;
+	static const uint16_t ITYPE_PLAYER_VENDOR_DEED = 217;
+	static const uint16_t ITYPE_ITEMID_WAND = 404;
+//@}
 
 //! Bank Type
 enum { BANK_GOLD = 1, BANK_ITEM = 0, MOREY_GOLDONLYBANK = 123, MOREX_BANK = 1 };
