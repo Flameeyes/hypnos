@@ -60,9 +60,6 @@ Set this on if you want the Guards to instantly teleport over new criminals.
   <setting name="ShowPCNames" type="flag" default="on" flag="should">
 Set this on if you want the characters' names to be shown on single click.
   </setting>
-  <setting name="DelaySkills" type="uint32" default="5" flag="get">
-Delay between the use of two skills.
-  </setting>
   <setting name="DecayTimer" type="uint32" default="300" flag="get">
 The time before a corpse is removed.
   </setting>
@@ -118,6 +115,43 @@ Delay between the use of two objects. (in seconds)
   </setting>
   <setting name="BandageDelay" type="uint32" default="6" flag="get">
 Delay between the use of two bandages. (in seconds)
+  </setting>
+ </group>
+ 
+ <group name="Skills">
+  <setting name="StatDailyLimit" type="uint16" default="" flag="get">
+The maximum stat gain in a (real) day.
+  </setting>
+  <setting name="LimitPlayerSparring" type="uint16" default="0" flag="get">
+The number of points the defending player need to have over the attacker to have the attacker gaining skill points. (in PvP only)
+  </setting>
+  <setting name="MaximumSkillTraining" type="uint16" default="300" flag="get">
+The maximum skill an npc can teach to a character.
+  </setting>
+  <setting name="EnabledSkillBySkillCap" type="flag" default="on" flag="is">
+Set this on if you want to allow server side support for clients' skillcap settings.
+  </setting>
+  <setting name="SkillDelay" type="uint32" default="5" flag="get">
+Delay between the use of two skills.
+  </setting>
+  
+  <setting name="StealthOnHorse" type="flag" default="off" flag="can">
+Set this on if you want a character to be able to use stealth while on horse.
+  </setting>
+  <setting name="StealthToTakeItemsWhileHid" type="uint16" default="960" flag="get">
+Stealth Skill necessary to pick up an item and  remain hidden.
+If INVALID pc is always unhidden while picking up items from the ground.
+  </setting>
+  <setting name="StealthToDropItemsWhileHid" type="uint16" default="960" flag="get">
+Stealth Skill necessary to drop an item and  remain hidden.
+If INVALID pc is always unhidden while dropping items on the ground.
+  </setting>
+  <setting name="MaxStealthStep" type="uint8" default="10" flag="get">
+The maximum amount of steps a character can make with stealth until he becomes visible again.
+  </setting>
+  
+  <setting name="SnoopDelay" type="uint32" default="15" flag="get">
+The minimum number of seconds between snoops.  
   </setting>
  </group>
  
