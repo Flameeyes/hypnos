@@ -381,33 +381,25 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 			// 0 stealing 2 stones, 10  3 stones, 99.9 12 stones, 100 17 stones !!!
 			int cansteal = thief->skill[STEALING] > 999 ? 1700 : thief->skill[STEALING] + 200;
 
-			if ( ((pi->getWeightActual())>cansteal) && !pi->isContainer())//Containers
+			if ( pi->getWeightActual() > cansteam )
 				thief->sysmsg(TRANSLATE("... and fail because it is too heavy."));
-        		else
-				if(pi->isContainer() && (weights::RecursePacks(pi)>cansteal))
-					thief->sysmsg(TRANSLATE("... and fail because it is too heavy."));
-				else
+			else
+			{
+				if (victim->amxevents[EVENT_CHR_ONSTOLEN])
 				{
-
-					if (victim->amxevents[EVENT_CHR_ONSTOLEN])
-					{
-						g_bByPass = false;
-						victim->amxevents[EVENT_CHR_ONSTOLEN]->Call(victim->getSerial32(), thief->getSerial32());
-						if (g_bByPass==true)
-							return;
-					}
-					/*
-					victim->runAmxEvent( EVENT_CHR_ONSTOLEN, victim->getSerial32(), s);
+					g_bByPass = false;
+					victim->amxevents[EVENT_CHR_ONSTOLEN]->Call(victim->getSerial32(), thief->getSerial32());
 					if (g_bByPass==true)
 						return;
-					*/
-					P_ITEM thiefpack = thief->getBackpack();
-					VALIDATEPI(thiefpack);
-					pi->setContainer( thiefpack );
-					thief->sysmsg(TRANSLATE("... and you succeed."));
-					pi->Refresh();
-					//all_items(s);
 				}
+
+				P_ITEM thiefpack = thief->getBackpack();
+				VALIDATEPI(thiefpack);
+				pi->setContainer( thiefpack );
+				thief->sysmsg(TRANSLATE("... and you succeed."));
+				pi->Refresh();
+				//all_items(s);
+			}
 		}
 		else
 			thief->sysmsg(TRANSLATE(".. and fail because you're not good enough."));

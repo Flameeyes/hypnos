@@ -137,3 +137,18 @@ void cBody::mount(pChar horse)
 void cBody::unmount()
 {
 }
+
+/*!
+\brief Calculates the weight of the body with all equipment and backpacks
+\author Flameeyes
+\note Replace old weights::NewCalc() function
+*/
+void cBody::calcWeight()
+{
+	pContainer bp = getBackpack();
+	weight = bp ? bp->getWeightActual() : 0;
+	
+	for(register int i = 0; i < 0x1E; i++)
+		if ( layers[i] && i != LAYER_MOUNT )
+			weight += layers[i]->getWeightActual();
+}

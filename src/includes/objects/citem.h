@@ -530,9 +530,7 @@ protected:
 
 public:
 	R32			getWeight();
-
-	inline const R32	getWeightActual()
-	{ return (amount>1)? getWeight()*amount : getWeight(); }
+	virtual const R32	getWeightActual();
 //@}
 
 //@{

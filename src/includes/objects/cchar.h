@@ -572,7 +572,6 @@ public:
 		SERIAL			robe; // Serial number of generated death robe (If char is a ghost)
 		UI08			fixedlight; // Fixed lighting level (For chars in dungeons, where they dont see the night)
 		char			speech; // For NPCs: Number of the assigned speech block
-		SI32			weight; //Total weight
 		UI32			att; // Intrinsic attack (For monsters that cant carry weapons)
 		UI32			def; // Intrinsic defense
 		char			wresmove; // Luxor: for Wrestling's special moves

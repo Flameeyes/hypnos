@@ -394,6 +394,21 @@ public:
 	{ return mounting; }
 //@}
 
+//@{
+/*!
+\name Weight
+\brief Weight stuff
+*/
+protected:
+	R32 weight; //!< Weight of the body (with all equipment and backpack)
+private:
+	//! Gets the weight of the body, calculating it when necessary
+	inline const R32 getWeight()
+	{ weight > 0 || calcWeight(); return weight; }
+	
+	void calcWeight();
+//@}
+	
 	void checkEquipment();
 };
 

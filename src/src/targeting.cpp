@@ -113,7 +113,7 @@ void CarveTarget(NXWSOCKET s, int feat, int ribs, int hides, int fur, int wool, 
 		pc->sysmsg(TRANSLATE("You carve away some raw bird."));
 	}
 
-	weights::NewCalc(pc);
+	pc->getBody()->calcWeight();
 }
 
 /*!

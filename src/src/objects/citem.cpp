@@ -795,6 +795,16 @@ R32 cItem::getWeight()
 	return itemweight;
 }
 
+/*!
+\brief Gets the actual weight of the item, counting all the amount of it
+\note This is a virtual method, when called for cContainer items, all the items inside it
+      will be also added to the weight.
+*/
+const R32 cItem::getWeightActual()
+{
+	return (amount>1)? getWeight()*amount : getWeight();
+}
+
 bool LoadItemEventsFromScript (P_ITEM pi, char *script1, char *script2)
 {
 

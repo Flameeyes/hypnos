@@ -681,7 +681,7 @@ void Skills::target_smeltOre( NXWCLIENT ps, P_TARGET t )
         }
     }
 
-	weights::NewCalc(pc);   // Ison 2-20-99
+    pc->getBody()->calcWeight();
     client->statusWindow(pc,true);  //!< \todo check second argument
 }
 

@@ -147,7 +147,7 @@ void cClient::addItemToContainer(pItem item)
 
 	sendPacket(&pk);
 
-	weights::NewCalc(pc);
+	pc->getBody()->calcWeight();
 }
 
 /*!
@@ -1053,7 +1053,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 
         if(pi!=NULL)
 	{
-		weights::NewCalc(pc);
+		pc->getBody()->calcWeight();
 		statusWindow(pc, this);
 	}
 
@@ -1166,7 +1166,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
         		//</Luxor>
 		}
 
-		weights::NewCalc(pc);  // Ison 2-20-99
+		pc->getBody()->calcWeight();
 		statusWindow(pc, true);
 		pc->playSFX( itemsfx(pi->getId()) );
 
@@ -1259,7 +1259,7 @@ bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
 				if (pack != NULL)	// Valid pack?
 				{
 					pack->AddItem(pi);	// Add it
-					weights::NewCalc(pTC);
+					pTC->getBody()->calcWeight();
 				}
 				else	// No pack, give it back to the GM
 				{
@@ -1267,7 +1267,7 @@ bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
 					if (pack != NULL)	// Valid pack?
 					{
 						pack->AddItem(pi);	// Add it
-						weights::NewCalc(pc_currchar);
+						pc_currchar->getBody()->calcWeight();
 					}
 					else	// Even GM has no pack?
 					{
@@ -1579,7 +1579,7 @@ bool cClient::droppedOnSelf(pItem pi, Location &loc, pItem cont)
 	{
 		pack->AddItem(pi); // player has a pack, put it in there
 
-		weights::NewCalc(pc);//AntiChrist bugfixes
+		pc->getBody()->calcWeight();
 		statusWindow(pc,true);
 		pc->playSFX( itemsfx(pi->getId()) );
 	}
@@ -1862,7 +1862,7 @@ void wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 		}
 
 		pc->playSFX( itemsfx(pi->getId()) );
-		weights::NewCalc(pc);	// Ison 2-20-99
+		pc->getBody()->calcWeight();
 		statusWindow(pc, true);
 
 //		if (pi->glow>0)
@@ -2098,7 +2098,7 @@ void cClient::buyaction(pNpc npc, std::vector< buyeditem > &allitemsbought)
                 cPacketSendClearBuyWindow pk(npc);
 	        sendPacket(&pk);
 	}
-	weights::NewCalc(pc);	// Ison 2-20-99
+	pc->getBody()->calcWeight();
 	statusWindow(pc,true);  //!< \todo check second argument
 }
 

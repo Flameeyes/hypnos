@@ -22,9 +22,7 @@
 namespace weights {
 
 	int	CheckWeight(P_CHAR pc);
-	float	RecursePacks(P_ITEM bp);
 	int	CheckWeight2(P_CHAR pc);
-	void	NewCalc(P_CHAR pc);
 	float	LockeddownWeight(P_ITEM pItem, int *total);
 }
 
