@@ -523,13 +523,13 @@ public:
         NotEquippableReason canEquip(pItem pi);
 
 	inline void setSkillDelay( uint32_t seconds = nSettings::Server::getDelaySkills() )
-	{ skilldelay = getclock() + seconds * MY_CLOCKS_PER_SEC; }
+	{ skilldelay = getclock() + seconds * SECS; }
 
 	inline const bool canDoSkillAction() const
 	{ return TIMEOUT( skilldelay ); }
 
 	inline void setObjectDelay( uint32_t seconds = nSettings::Server::getDelayObjects() )
-	{ objectdelay = getclock() + seconds * MY_CLOCKS_PER_SEC; }
+	{ objectdelay = getclock() + seconds * SECS; }
 
 	inline const bool canDoObjectAction() const
 	{ return TIMEOUT( objectdelay ); }

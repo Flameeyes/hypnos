@@ -324,7 +324,7 @@ int response(pClient client)
 						pc_map->npcWander = WANDER_FOLLOW;
 
 						// Set the expire time if nobody excepts the quest
-						pc_map->summontimer = ( getclock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortactiveexpire ) );
+						pc_map->summontimer = ( getclock() + ( SECS * SrvParms->escortactiveexpire ) );
 
 						// Send out the rant about accepting the escort
 						pc_map->talkAll("Lead on! Payment shall be made when we arrive at %s.", false, region[pc_map->questDestRegion].name);

@@ -269,7 +269,7 @@ void checkkey ()
 				break;
 			case 'T':
 			case 't':
-				endtime=getclock()+(MY_CLOCKS_PER_SEC*60*2);
+				endtime=getclock()+(SECS*60*2);
 				endmessage(0);
 				break;
 			case '#':
@@ -725,7 +725,7 @@ int main(int argc, char *argv[])
 
 		if ( TIMEOUT( CheckClientIdle ) )
 		{
-			CheckClientIdle=((SrvParms->inactivitytimeout/2)*MY_CLOCKS_PER_SEC)+getclock();
+			CheckClientIdle=((SrvParms->inactivitytimeout/2)*SECS)+getclock();
 
 			for (r=0;r<now;r++)
 			{

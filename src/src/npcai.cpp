@@ -32,7 +32,7 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 
 	if (pc_def->dead || pc_att->distFrom(pc_def)>=10 || spattacks <= 0 || pc_att->spattack==0) return;
 
-	pc_att->spatimer=currenttime+(pc_att->spadelay*MY_CLOCKS_PER_SEC); //LB bugkilling
+	pc_att->spatimer=currenttime+(pc_att->spadelay*SECS); //LB bugkilling
 
 
 	if ( pc_def->summontimer && pc_att->baseskill[skMagery] > 700 ) {

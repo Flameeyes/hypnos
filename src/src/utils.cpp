@@ -241,7 +241,7 @@ void dooruse(pChar pc, pItem pi)
 	if ( ! changed || ! pc )
 		return;
 
-	pc->objectdelay=getclock()+ (server_data.objectdelay/4)*MY_CLOCKS_PER_SEC;
+	pc->objectdelay=getclock()+ (server_data.objectdelay/4)*SECS;
 	// house refreshment when a house owner or friend of a houe opens the house door
 
 	int j, houseowner_serial,ds;
@@ -287,9 +287,9 @@ void endmessage(int x) // If shutdown is initialized
 		endtime=igetclock;
 
 	sysbroadcast("server going down in %i minutes.\n",
-		((endtime-igetclock)/MY_CLOCKS_PER_SEC)/60);
+		((endtime-igetclock)/SECS)/60);
 	InfoOut("server going down in %i minutes.\n",
-		((endtime-igetclock)/MY_CLOCKS_PER_SEC)/60);
+		((endtime-igetclock)/SECS)/60);
 }
 
 int checkBoundingBox(int xPos, int yPos, int fx1, int fy1, int fz1, int fx2, int fy2)

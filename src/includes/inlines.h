@@ -35,7 +35,7 @@ inline bool chance(uint8_t percent) { return ( (rand()%100) < percent); }
 
 inline void SetTimerSec( TIMERVAL *timer, const short seconds)
 {
-	*timer=seconds * MY_CLOCKS_PER_SEC /*+ getclock()*/;
+	*timer=seconds * SECS /*+ getclock()*/;
 }
 
 inline bool isCharSerial( long ser ) { return ( ser > 0 && ser <  0x40000000 ); }

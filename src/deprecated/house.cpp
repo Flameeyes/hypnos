@@ -659,7 +659,7 @@ int check_house_decay()
 			}
 			else // house ok -> update unused-time-attribute
 			{
-				timediff=(ct-pi->timeused_last)/MY_CLOCKS_PER_SEC;
+				timediff=(ct-pi->timeused_last)/SECS;
 				pi->time_unused+=timediff; // might be over limit now, but it will be cought next check anyway
 				pi->timeused_last=ct;	// if we don't do that and housedecay is checked every 11 minutes,
 									// it would add 11,22,33,... minutes. So now timeused_last should in fact

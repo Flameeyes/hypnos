@@ -414,7 +414,7 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 		pc->setClient( NULL );
 
 		if( pc->murderrate>getclock() ) //save murder decay
-			pc->murdersave= (pc->murderrate -getclock()) / MY_CLOCKS_PER_SEC;
+			pc->murdersave= (pc->murderrate -getclock()) / SECS;
 
 	}
 
@@ -1031,8 +1031,8 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	sprintf(zbuf,"%s Logged in the game",pc->getCurrentName().c_str()); //for logging to UOXmon
 
 	// very stupid stuff
-	//pc->murderrate=getclock()+repsys.murderdecay*MY_CLOCKS_PER_SEC; // LB, bugfix for murder-count getting --'ed each start
-	pc->murderrate=getclock()+pc->murdersave*MY_CLOCKS_PER_SEC;
+	//pc->murderrate=getclock()+repsys.murderdecay*SECS; // LB, bugfix for murder-count getting --'ed each start
+	pc->murderrate=getclock()+pc->murdersave*SECS;
 
 	updates(s);
 
@@ -1158,7 +1158,7 @@ char cNetwork::LogOut(pClient client)//Instalog
 	} else {
 		if ( clientInfo[s]->ingame )
 		{
-		    pc->logout=getclock()+SrvParms->quittime*MY_CLOCKS_PER_SEC;
+		    pc->logout=getclock()+SrvParms->quittime*SECS;
 		}
 	}
 
@@ -1712,7 +1712,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 			if (readstat > SOCKET_ERROR)
 			{
 				if (pc_currchar && packet !=0x73 && packet!=0x80 && packet!=0xA4 && packet!=0xA0 && packet!=0x90 && packet!=0x91 ) {
-					pc_currchar->clientidletime=SrvParms->inactivitytimeout*MY_CLOCKS_PER_SEC+getclock();
+					pc_currchar->clientidletime=SrvParms->inactivitytimeout*SECS+getclock();
 				}
         		    // LB, client activity-timestamp !!! to detect client crashes, ip changes etc and disconnect in that case
         		    // 0x73 (idle packet) also counts towards client idle time

@@ -23,6 +23,8 @@
 #include <process.h>
 #include <errno.h>
 
+#define HAVE_WIN_THREADS
+
 char *basename(char *path);
 
 char *getHKLMRegistryString(char *key, char *subkey);

@@ -334,7 +334,7 @@ void usepotion(pChar pc, pItem pi)
 
 	case 5: // Night Sight Potion
 		pc->staticFX(0x376A, 9, 6);
-		tempfx::add(pc, pc, tempfx::SPELL_LIGHT, 0, 0, 0,(720*secondsperuominute*MY_CLOCKS_PER_SEC));
+		tempfx::add(pc, pc, tempfx::SPELL_LIGHT, 0, 0, 0,(720*secondsperuominute*SECS));
 		pc->playSFX(0x01E3);
 		break;
 
@@ -343,7 +343,7 @@ void usepotion(pChar pc, pItem pi)
 			pc->poisoned=(PoisonType)pi->morez;
 		if(pi->morez>4)
 			pi->morez=4;
-		pc->poisonwearofftime=getclock()+(MY_CLOCKS_PER_SEC*SrvParms->poisontimer); // lb, poison wear off timer setting
+		pc->poisonwearofftime=getclock()+(SECS*SrvParms->poisontimer); // lb, poison wear off timer setting
 		impowncreate(s,pc,1); //Lb, sends the green bar !
 		pc->playSFX(0x0246); //poison sound - SpaceDog
 		if(client) client->sysmessage("You poisoned yourself! *sigh*"); //message -SpaceDog
@@ -476,7 +476,7 @@ void callguards( pChar caller )
 	if( !(region[caller->region].priv&0x01 ) || !SrvParms->guardsactive || !TIMEOUT( caller->antiguardstimer ) || caller->dead )
 		return;
 
-	caller->antiguardstimer=getclock()+(MY_CLOCKS_PER_SEC*10);
+	caller->antiguardstimer=getclock()+(SECS*10);
 
 	/*
 	Sparhawk:	1. when instant guard is set and offender nearby caller spawn guard near caller and leave attacking to checkAI
@@ -514,7 +514,7 @@ void callguards( pChar caller )
 				guard->npcaitype=NPCAI_TELEPORTGUARD;
 				guard->npcWander=WANDER_FREELY_CIRCLE;
 				guard->setNpcMoveTime();
-				guard->summontimer = getclock() + MY_CLOCKS_PER_SEC * 25 ;
+				guard->summontimer = getclock() + SECS * 25 ;
 
 				guard->playSFX( 0x01FE );
 				guard->staticFX(0x372A, 9, 6);
@@ -532,9 +532,9 @@ void callguards( pChar caller )
 				guard->oldnpcWander = guard->npcWander;
 				guard->npcWander = WANDER_FOLLOW;
 				guard->ftargserial = caller->getSerial();
-				guard->antiguardstimer=getclock()+(MY_CLOCKS_PER_SEC*10); // Sparhawk this should become server configurable
+				guard->antiguardstimer=getclock()+(SECS*10); // Sparhawk this should become server configurable
 				guard->talkAll("Don't fear, help is on the way", false );
-				//guard->antispamtimer = getclock()+MY_CLOCKS_PER_SEC*5;
+				//guard->antispamtimer = getclock()+SECS*5;
 				guards.pop_back();
 			}
 		}

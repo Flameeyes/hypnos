@@ -113,7 +113,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 	//
 	// Accounts
 	//
-	if (SrvParms->auto_a_reload > 0 && TIMEOUT( Accounts->lasttimecheck + (SrvParms->auto_a_reload*60*MY_CLOCKS_PER_SEC) ) )
+	if (SrvParms->auto_a_reload > 0 && TIMEOUT( Accounts->lasttimecheck + (SrvParms->auto_a_reload*60*SECS) ) )
 		Accounts->CheckAccountFile();
 	//
 	// Weather (change is handled by crontab)
@@ -124,7 +124,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 	{
 		if (Calendar::advanceMinute())
 			day++;
-		uotickcount=getclock()+secondsperuominute*MY_CLOCKS_PER_SEC;
+		uotickcount=getclock()+secondsperuominute*SECS;
 		if (Calendar::g_nMinute%8==0)
 			moon1=(moon1+1)%8;
 		if (Calendar::g_nMinute%3==0)
@@ -195,7 +195,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 			worldcurlevel = lightLevel;
 			lightChanged  = true;
 		}
-		lighttime=getclock()+secondsperuominute*5*MY_CLOCKS_PER_SEC;
+		lighttime=getclock()+secondsperuominute*5*SECS;
 	}
 
 	//
@@ -208,7 +208,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 		/////////////////////
 		if( SrvParms->housedecay_secs != UINVALID )
 			check_house_decay();
-		housedecaytimer = getclock()+MY_CLOCKS_PER_SEC*60*60; // check only each hour
+		housedecaytimer = getclock()+SECS*60*60; // check only each hour
 	}
 	//
 	// Spawns
@@ -344,7 +344,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 									dir%=8;
 									Boats->Move(ps->toInt(),dir,pi);
 								}
-								pi->gatetime=(TIMERVAL)(getclock() + (double)(SrvParms->boatspeed*MY_CLOCKS_PER_SEC));
+								pi->gatetime=(TIMERVAL)(getclock() + (double)(SrvParms->boatspeed*SECS));
 							}
 						break;
 				}
@@ -354,22 +354,22 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 
 
 	if( TIMEOUT( checkitemstime ) )
-		checkitemstime = (TIMERVAL)((double) getclock()+(speed.itemtime*MY_CLOCKS_PER_SEC));
+		checkitemstime = (TIMERVAL)((double) getclock()+(speed.itemtime*SECS));
 	if( TIMEOUT( checknpcs ) )
-		checknpcs = (TIMERVAL)((double) getclock()+(speed.npctime*MY_CLOCKS_PER_SEC));
+		checknpcs = (TIMERVAL)((double) getclock()+(speed.npctime*SECS));
 	if( TIMEOUT( checktamednpcs ) )
-		checktamednpcs=(TIMERVAL)((double) getclock()+(speed.tamednpctime*MY_CLOCKS_PER_SEC));
+		checktamednpcs=(TIMERVAL)((double) getclock()+(speed.tamednpctime*SECS));
 	if( TIMEOUT( checknpcfollow ) )
-		checknpcfollow=(TIMERVAL)((double) getclock()+(speed.npcfollowtime*MY_CLOCKS_PER_SEC));
+		checknpcfollow=(TIMERVAL)((double) getclock()+(speed.npcfollowtime*SECS));
 	//
 	// Finish
 	//
 	if ( TIMEOUT( nextfieldeffecttime ) )
-		nextfieldeffecttime = (TIMERVAL)((double) getclock() + (0.5*MY_CLOCKS_PER_SEC));
+		nextfieldeffecttime = (TIMERVAL)((double) getclock() + (0.5*SECS));
 	if ( TIMEOUT( nextdecaytime ) )
-		nextdecaytime = getclock() + (15*MY_CLOCKS_PER_SEC);
+		nextdecaytime = getclock() + (15*SECS);
         if( TIMEOUT( checktempfx ) )
-		checktempfx = (TIMERVAL)((double) getclock()+(0.5*MY_CLOCKS_PER_SEC));
+		checktempfx = (TIMERVAL)((double) getclock()+(0.5*SECS));
 }
 
 static int32_t linInterpolation (int32_t ix1, int32_t iy1, int32_t ix2, int32_t iy2, int32_t ix)

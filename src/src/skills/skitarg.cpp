@@ -431,7 +431,7 @@ void nSkills::target_tree(pClient client, pTarget t )
     {
         for(c=0;c<resource.logs;c++)//Find howmany 10 min periods have been by, give 1 more for each period.
         {
-            if((logtime[a][b]+(c*resource.logtime*MY_CLOCKS_PER_SEC))<=curtime && logamount[a][b]<resource.logs)
+            if((logtime[a][b]+(c*resource.logtime*SECS))<=curtime && logamount[a][b]<resource.logs)
                 logamount[a][b]+=resource.lograte;//AntiChrist
             else break;
         }
@@ -1288,7 +1288,7 @@ void nSkills::target_forensics(pClient client, pTarget t )
 	}
 
 	if(pc->isGM()) {
-    		client->sysmessage("The %s is %i seconds old and the killer was %s.", pi->getCurrentName().c_str(), (curtim-pi->murdertime)/MY_CLOCKS_PER_SEC, pi->murderer.c_str());
+    		client->sysmessage("The %s is %i seconds old and the killer was %s.", pi->getCurrentName().c_str(), (curtim-pi->murdertime)/SECS, pi->murderer.c_str());
 	} else {
 		if (!pc->checkSkill( skForensics, 0, 500)) client->sysmessage("You are not certain about the corpse.");
 		else
@@ -1299,9 +1299,9 @@ void nSkills::target_forensics(pClient client, pTarget t )
 			static const char strMany[] = "many";
 			static const char strManyMany[] = "many many";
 			
-			if ( (curtim-pi->murdertime)/MY_CLOCKS_PER_SEC > 180 )
+			if ( (curtim-pi->murdertime)/SECS > 180 )
 				tmp = strManyMany;
-			else if ( (curtim-pi->murdertime)/MY_CLOCKS_PER_SEC > 60 )
+			else if ( (curtim-pi->murdertime)/SECS > 60 )
 				tmp = strMany;
 			else
 				tmp = strFew;

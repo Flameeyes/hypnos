@@ -51,7 +51,7 @@ void SpawnGuard(pChar pc, pChar pc_i, int x, int y, signed char z)
 		  pc_c->npcWander=WANDER_FREELY_CIRCLE;  //set wander mode Tauriel
 		  pc_c->toggleCombat();
 		  pc_c->setNpcMoveTime();
-		  pc_c->summontimer=(getclock()+(MY_CLOCKS_PER_SEC*25));
+		  pc_c->summontimer=(getclock()+(SECS*25));
 
 		  pc_c->playSFX(0x01FE);
 		  pc_c->staticFX(0x372A, 9, 6);

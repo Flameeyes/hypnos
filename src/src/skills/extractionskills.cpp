@@ -99,10 +99,10 @@ bool cResources::checkRes( pResource res )
 			res->consumed=ores.n;
 		for( uint32_t c=0; c<ores.n; c++ ) //Find howmany periods have been by, give 1 more ore for each period.
 		{
-			if(( TIMEOUT( res->timer+(c* ores.time*MY_CLOCKS_PER_SEC)) ) && res->consumed>=ores.rate )
+			if(( TIMEOUT( res->timer+(c* ores.time*SECS)) ) && res->consumed>=ores.rate )
 				res->consumed-=ores.rate;//AntiChrist
 		}
-		res->timer= getclock() + ores.time*MY_CLOCKS_PER_SEC;
+		res->timer= getclock() + ores.time*SECS;
 		if( res->consumed == 0)
 			return true; // delete itself because FULL
 	}
@@ -114,7 +114,7 @@ bool cResources::checkRes( pResource res )
 void cResources::checkAll()
 {
 
-	static TIMERVAL timer=getclock()+2*60*MY_CLOCKS_PER_SEC;
+	static TIMERVAL timer=getclock()+2*60*SECS;
 
 	if(TIMEOUT( timer ) ) {
 
@@ -125,7 +125,7 @@ void cResources::checkAll()
 				this->resources.erase( iter );
 			}
 		}
-		timer=getclock()+2*60*MY_CLOCKS_PER_SEC;
+		timer=getclock()+2*60*SECS;
 	}
 }
 

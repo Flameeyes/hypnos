@@ -193,12 +193,12 @@ void cMsgBoard::cMessage::refreshQuestMessage()
 		if ( pc->ftargserial==INVALID )
 		{
 			// Lets reset the summontimer to the escortinit
-			pc->summontimer = ( getclock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortinitexpire ) );
+			pc->summontimer = ( getclock() + ( SECS * SrvParms->escortinitexpire ) );
 		}
 		else // It must have an escort in progress so set the escortactiveexpire timer
 		{
 			// Lets reset the summontimers to the escortactive value
-			pc->summontimer = ( getclock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortactiveexpire ) );
+			pc->summontimer = ( getclock() + ( SECS * SrvParms->escortactiveexpire ) );
 		}
 */
 		break;
@@ -688,85 +688,48 @@ void cMsgBoard::removeQuestMessage(pMessage message)
 /*!
 \brief Message board mainteinance
 \note Message retention check, link consistency check and refreshing of quests
-\note This function should hold and release the mutexes!
 \todo Rewrote this, so that the maintenance thread can use it
 */
 void cMsgBoard::MsgBoardMaintenance()
 {
 	// Display progress message
 	InfoOut("Bulletin board maintenance... \n");
-
-	// Now lets find out what posts we keep and what posts to remove
-        // to realize that, we create two sets: the first will contain all serials for the loaded messages,
-        // the second all the serial linked by bsgboards. If the two are not identical, there are some unlinked
-        // posts, to be deleted or moved, depending on the type of message
-        std::set<uint32_t> serialsm, serialsb, serialdiff;
-        cMsgBoard::cMessages::iterator it = MsgBoardMessages.begin();
+	
+	int expired = 0;
+	// With the new MsgBaord sytem we can't have orphaned messages, so check only for
+	// expiration
+	
 	ConOut("Message expiration check : ");
         //checking the expiration time while we insert the posts in the set
-        int expired = 0;
-        for(;it != MsgBoardMessages.end(); ++it)
-        {
-        	if (!(*it)->expired()) serialsm.insert((*it)->getSerial());
-                else expired++;
-                //while browsing the messages and after expiration checks, refresh quests :) 
-		if((*it)->qtype != QTINVALID) (*it)->refreshQuest();
-        }
-      	ConOut("%i message(s) deleted", expired);
-
-	//now the set serialsm is full of the serials of all messages loaded
-
-        cBBRelations::iterator it2 = BBRelations.begin();
-        for(;it2 != BBRelations.end(); ++it2) serialsb.insert((*it2).second));
-	// now the set serialsb is full of the serials of all messages linked to msgboards. On a set, multiple
-        // insertions are ignored if value already present, so we don't need to check it
-
-	std::set<uint32_t>::iterator itdiff = serialdiff.begin();
-
-        // This will fill set serialdiff with the DIFFERENCE between the set containing the serials of
-        // existing messages and a set containing all linked messages. If any difference exist, those posts
-        // should be deleted (if not quests)
-        set_difference(serialsm.begin(), serialsm.end(), serialsb.begin(), serialsb.end(), itdiff);
-        if (!serialdiff.empty())
-        {
-		ConOut("Found %i lost messages. Trying to relink\n", serialdiff.size());
-                expired = 0;  // reusing expired variable to count deleted items :D
-		for(itdiff = serialdiff.begin();itdiff != serialdiff.end(); ++itdiff)
-                {
-		        for(it = MsgBoardMessages.begin();(*it)->getSerial() != (*itdiff) && it != MsgBoardMessages.end() ; ++it) {}
-			// *it is now the message to be relinked
-                        if ((*it)->qtype == QTINVALID)
-                        {
-                        	if  (!(*it)->getContainer())
-                                {
-                        		//If the messageboard whose it was linked to no longer exist, delete! (even if not local)
-                        		(*it)->Delete();
-                                	expired++;
-                                }
-                                else
-                                {
-                                	//relink message :)
-                                        pMsgBoard board = (pMsgBoard)(*it)->getContainer();
-                                        if (!board->addMessage(*it))
-                                        {
-                                        	//If it couldn't even relink, delete
-	                        		(*it)->Delete();
-        	                        	expired++;
-                                        }
-                                }
-                                continue;
-                        }
-                        else if (!relinkQuestMessage(*it))
-                        {
-                      		(*it)->Delete();
-	                      	expired++;
-                        }
-
-                }
-                ConOut("Relinking complete. %i message(s) relinked, %i message(s) deleted\n", serialdiff.size() - expired, expired);
-
+	for(MessageList::iterator it = globalMsgs.begin(); it != globalMsgs.end(); it++)
+	{
+		if ( (*it)->expired() )
+			expired++;
+		else //while browsing the messages and after expiration checks, refresh quests :)
+			if ( (*it)->qtype != qtInvalid )
+				(*it)->refreshQuestMessage();
 	}
-      	ConOut("[DONE]\n");
+	
+	//!\todo Add support for regional posts
+	
+	boardsMutex.lock()
+	for(BoardsList::iterator b = boards.begin(); b != boards.end(); b++)
+	{
+		// Here we don't actually need the mutex, because lists doesn't invalidate
+		// iterators after insertion or deletion
+		for( MessageList::iterator it = b->boardMsgs.begin(); it != b->boardMsgs.end(); it++ )
+		{
+			if ( (*it)->expired() )
+				expired++;
+			else //while browsing the messages and after expiration checks, refresh quests :)
+				if ( (*it)->qtype != qtInvalid )
+					(*it)->refreshQuestMessage();
+		}
+	}
+	boardsMutex.unlock()
+	
+      	ConOut("%i message(s) deleted", expired);
+      	ConOut("[   OK   ]\n");
 }
 
 /*!

@@ -710,7 +710,7 @@ protected:
 public:
 	virtual bool doDecay(bool dontDelete = false);
 
-	inline const void setDecayTime( const TIMERVAL delay = /*getclock()+*/(nSettings::Server::getDecayTimer()*MY_CLOCKS_PER_SEC) )
+	inline const void setDecayTime( const TIMERVAL delay = /*getclock()+*/(nSettings::Server::getDecayTimer()*SECS) )
 	{ decaytime = delay; }
 
 	inline const TIMERVAL getDecayTime() const

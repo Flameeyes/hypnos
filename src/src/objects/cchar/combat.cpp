@@ -489,7 +489,7 @@ void cChar::doCombat()
 					{
 						if (weapon->spd==0)
 							weapon->spd=35;
-						x = (15000 / ((stm+100) * weapon->spd)*MY_CLOCKS_PER_SEC);	//Calculate combat delay
+						x = (15000 / ((stm+100) * weapon->spd)*SECS);	//Calculate combat delay
 					}
 					else
 					{
@@ -505,7 +505,7 @@ void cChar::doCombat()
 						else
 							j = 30;
 
-						x = (15000 / ((stm+100) * j)*MY_CLOCKS_PER_SEC);
+						x = (15000 / ((stm+100) * j)*SECS);
 					}
 					timeout = getclock()+x;
        				}
@@ -528,7 +528,7 @@ void cChar::doCombat()
 			{
 	    			if (weapon->spd==0)
 					weapon->spd=35;
-				x = (15000 / ((dx+100) * weapon->spd)*MY_CLOCKS_PER_SEC);
+				x = (15000 / ((dx+100) * weapon->spd)*SECS);
 			}
 			else
 			{
@@ -553,7 +553,7 @@ void cChar::doCombat()
 				{
 					j = 30;
 				}
-				x = (15000 / ((dx+100) * j)*MY_CLOCKS_PER_SEC);
+				x = (15000 / ((dx+100) * j)*SECS);
 			}
        			timeout = getclock()+x;
 			timeout2 = timeout;

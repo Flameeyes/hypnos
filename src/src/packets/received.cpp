@@ -735,8 +735,8 @@ void nPackets::Sent::MsgBoardItemsinContainer::prepare()
 		0x00, 0x00, 0x00, 0x00, 0x00
 		};
 
-	msgboard->boardMutex.lock();
 	cMsgBoard::globalMutex.lock();
+	msgboard->boardMutex.lock();
 	
 	uint16_t count = msgboard->boardMsgs.size() + cMsgBoard::globalMsgs.size();
 		//! \todo We need to add support for regional posts here!
@@ -771,8 +771,8 @@ void nPackets::Sent::MsgBoardItemsinContainer::prepare()
 		ptrItem += 19;
 	}
 	
-	msgboard->boardMutex.unlock();
 	cMsgBoard::globalMutex.unlock();
+	msgboard->boardMutex.unlock();
 }
 
 

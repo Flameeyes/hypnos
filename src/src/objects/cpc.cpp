@@ -61,12 +61,12 @@ void cPC::heartbeat()
 	{
 		--hunger;
 		sayHunger();
-		hungertime = getclock()+(nSettings::Hunger::getRate()*MY_CLOCKS_PER_SEC); // Bookmark
+		hungertime = getclock()+(nSettings::Hunger::getRate()*SECS); // Bookmark
 	}
 	if ( nSettings::Hunger::isEnabled() && TIMEOUT( hungerdamagetimer ) && nSettings::Hunger::getDamage() > 0 )
 	// Damage them if they are very hungry
 	{
-		hungerdamagetimer=getclock()+(nSettings::Hunger::getDamageRate()*MY_CLOCKS_PER_SEC); /** set new hungertime **/
+		hungerdamagetimer=getclock()+(nSettings::Hunger::getDamageRate()*SECS); /** set new hungertime **/
 		if (hp > 0 && hunger<2 && !IsCounselor() && !dead)
 		{
 			client->sysmessage("You are starving !");
@@ -102,7 +102,7 @@ void cPC::heartbeat()
 	{
 		if ( TIMEOUT( smokedisplaytimer ) )
 		{
-			smokedisplaytimer = getclock() + 5 * MY_CLOCKS_PER_SEC;
+			smokedisplaytimer = getclock() + 5 * SECS;
 			staticFX(0x3735, 0, 30);
 			playSFX( 0x002B );
 			switch( RandomNum( 0, 6 ) )
@@ -145,7 +145,7 @@ void cPC::heartbeat()
 			client->sysmessage("You are no longer a murderer.");
 			SetInnocent();
 		}
-		murderrate = ( repsys.murderdecay * MY_CLOCKS_PER_SEC ) + getclock();
+		murderrate = ( repsys.murderdecay * SECS ) + getclock();
 	}
 
 	updateFlag();
@@ -171,7 +171,7 @@ void cPC::heartbeat()
 		}
 		else if ( TIMEOUT( nextact ) ) //redo the spell action
 		{ //<Luxor>
-			nextact = getclock() + uint32_t(MY_CLOCKS_PER_SEC*1.5);
+			nextact = getclock() + uint32_t(SECS*1.5);
 			if ( isMounting() )
 				playAction( 0x1b );
 			else
@@ -285,7 +285,7 @@ bool cPC::updateFlag()
 		//! \todo - TODO check out logic of next 2 statements (Sparhawk)
 		//
 		SetMurderer();
-		murderrate = (repsys.murderdecay*MY_CLOCKS_PER_SEC)+getclock();
+		murderrate = (repsys.murderdecay*SECS)+getclock();
 	}
 	/*else
 

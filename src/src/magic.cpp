@@ -38,7 +38,7 @@ std::map< std::string, SpellId > speechMap;
 */
 uint32_t getCastingTime( SpellId spell )
 {
-	return ( ( (g_Spells[spell].delay/10) * MY_CLOCKS_PER_SEC ) + getclock() );
+	return ( ( (g_Spells[spell].delay/10) * SECS ) + getclock() );
 }
 
 /*!
@@ -1146,7 +1146,7 @@ pChar summon (pChar owner, int npctype, int duration, bool bTamed, int x, int y,
 	} else {
 		pc->npcaitype = NPCAI_MADNESS; //Blade spirit, E-Vortex
 	}
-	pc->summontimer = getclock() + duration * MY_CLOCKS_PER_SEC;
+	pc->summontimer = getclock() + duration * SECS;
 	return pc;
 }
 
@@ -1208,7 +1208,7 @@ void castFieldSpell( pChar pc, int x, int y, int z, int spellnumber)
 		{
 			pi->setDecay();
 			pi->setDispellable();
-			pi->setDecayTime( (getclock()+(int(pc->skill[skMagery]/20)+4)*MY_CLOCKS_PER_SEC) );
+			pi->setDecayTime( (getclock()+(int(pc->skill[skMagery]/20)+4)*SECS) );
 			pi->morex=pc->skill[skMagery]; // remember casters magery skill for damage, LB
 			pi->dir=29;
 			pi->magic=2;
@@ -1452,8 +1452,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if ( pd && pd->summontimer > 0 ) { //Only if it's a summoned creature
 				pd->emoteall( "%s begins disappearing", true, pd->getCurrentName().c_str() );
 				//3 seconds left
-				if ( pd->summontimer > (getclock() + 3*MY_CLOCKS_PER_SEC) )
-					pd->summontimer = getclock() + 3*MY_CLOCKS_PER_SEC;
+				if ( pd->summontimer > (getclock() + 3*SECS) )
+					pd->summontimer = getclock() + 3*SECS;
 				spellFX( spellnumber, pd );
 			}
 			break;
@@ -1476,8 +1476,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					continue;
 				if ( pc_curr->summontimer > 0 ) {
 					pc_curr->emoteall( "%s begins disappearing", true, pc_curr->getCurrentName().c_str() );
-					if ( pc_curr->summontimer > (getclock() + 3*MY_CLOCKS_PER_SEC) )
-						pc_curr->summontimer = getclock() + 3*MY_CLOCKS_PER_SEC;
+					if ( pc_curr->summontimer > (getclock() + 3*SECS) )
+						pc_curr->summontimer = getclock() + 3*SECS;
 				}
 				spellFX( SPELL_DISPEL, pc_curr );
 			}
@@ -1513,7 +1513,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 						pgate->morez = pi->morez;
 						pgate->type = 51;
 						pgate->setDecay( true );
-						pgate->setDecayTime( getclock() + 30*MY_CLOCKS_PER_SEC );
+						pgate->setDecayTime( getclock() + 30*SECS );
 						pgate->Refresh();
 
 						pItem pgate2 = item::CreateFromScript( "$item_a_blue_moongate" );
@@ -1525,7 +1525,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 						pgate2->morez = srcpos.z;
 						pgate2->type = 51;
 						pgate2->setDecay( true );
-						pgate2->setDecayTime( getclock() + 30*MY_CLOCKS_PER_SEC );
+						pgate2->setDecayTime( getclock() + 30*SECS );
 						pgate2->Refresh();
 
 						spellFX( spellnumber, src );
@@ -2208,7 +2208,7 @@ void cSummonCreatureMenu::handleButton( pClient ps, cClientPacket* pkg  )
 
 	pc_monster->setOwner( pc );
 	pc_monster->tamed = true;
-	pc_monster->summontimer = getclock() + uint32_t(pc->skill[skMagery] * 0.4) * MY_CLOCKS_PER_SEC;
+	pc_monster->summontimer = getclock() + uint32_t(pc->skill[skMagery] * 0.4) * SECS;
 	pc_monster->MoveTo( pos.x, pos.y, pos.z );
 	pc_monster->teleport();
 	spellFX( SPELL_SUMMON, pc, pc );
