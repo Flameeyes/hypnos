@@ -577,7 +577,7 @@ namespace item
 	\param nPack if true the item is spawned in socket's backpack
 	\param nSend if true the item is sent to all clients
 */
-	/*pItem SpawnItem(NXWSOCKET  nSocket, CHARACTER ch,
+	/*pItem SpawnItem(NXWSOCKET  nSocket, SERIAL ch,
 						int32_t nAmount, char* cName, bool nStackable,
 						int16_t cItemId, int16_t cColorId,
 						bool nPack, bool nSend)

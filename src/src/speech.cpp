@@ -828,7 +828,7 @@ int response(NXWSOCKET  s)
 
 }
 
-void PlVGetgold(NXWSOCKET s, CHARACTER v)//PlayerVendors
+void PlVGetgold(NXWSOCKET s, SERIAL v)//PlayerVendors
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
@@ -881,11 +881,8 @@ void PlVGetgold(NXWSOCKET s, CHARACTER v)//PlayerVendors
 		pc_vendor->talk(s,"I don't work for you!",0);
 }
 
-void responsevendor(NXWSOCKET  s, CHARACTER vendor)
+void responsevendor(NXWSOCKET  s, SERIAL vendor)
 {
-
-//	CHARACTER cc=currchar[s];
-
 	pChar pc_currchar = cSerializable::findCharBySerial(currchar[s]);
 	pChar pc_vendor = cSerializable::findCharBySerial(vendor);
 	if ( ! pc_currChar || ! pc_vendor ) return;

@@ -138,7 +138,7 @@ uint16_t itemsfx(uint16_t item)
 \param s the character index
 \todo convert to pChar or add to cChar class
 */
-void bgsound(CHARACTER s)
+void bgsound(SERIAL s)
 {
     pChar pc_curr=cSerializable::findCharBySerial(s);
 	VALIDATEPC(pc_curr);
@@ -604,7 +604,7 @@ void itemtalk(pItem pi, char *txt)
 // simply dont set them in that case
 // the last parameter is for particlesystem optimization only (dangerous). don't use unless you know 101% what you are doing.
 
-void staticeffect(CHARACTER player, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop,  bool UO3DonlyEffekt, ParticleFx *sta, bool skip_old)
+void staticeffect(SERIAL player, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop,  bool UO3DonlyEffekt, ParticleFx *sta, bool skip_old)
 {
 	pChar pc=cSerializable::findCharBySerial(player);
 	if ( ! pc ) return;
@@ -681,77 +681,6 @@ MakeGraphicalEffectPkt_(effect, 0x03, pc->getSerial(), 0, eff, charpos, pos2, sp
 	// I think it's too infrequnet to consider this as optimization.
 }
 
-<<<<<<< sndpkg.cpp
-
-void movingeffect(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt, ParticleFx *str, bool skip_old )
-{
-
-	pChar src=cSerializable::findCharBySerial(source);
-	if ( ! src ) return;
-	pChar dst=cSerializable::findCharBySerial(dest);
-	VALIDATEPC(dst);
-
-	uint16_t eff = (eff1<<8)|(eff2%256);
-	uint8_t effect[28]={ 0x70, 0x00, };
-
-	Location srcpos= src->getPosition();
-	Location destpos= dst->getPosition();
-
-	if (!skip_old)
-	{
-MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial(), dst->getSerial(), eff, srcpos, destpos, speed, loop, 0, explode);
-	}
-
-	 if (!UO3DonlyEffekt) // no UO3D effect ? lets send old effect to all clients
-	 {
-
-		 NxwSocketWrapper sw;
-		 sw.fillOnline( );
-		 for( sw.rewind(); !sw.isEmpty(); sw++ )
-		 {
-			 NXWSOCKET j=sw.getSocket();
-			 pChar pj = cSerializable::findCharBySerial(currchar[j]);
-			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
-			 {
-				Xsend(j, effect, 28);
-//AoS/				Network->FlushBuffer(j);
-			 }
-		 }
-	   return;
-	}
-	else
-	{
-		// UO3D effect -> let's check which client can see it
-
-		NxwSocketWrapper sw;
-		sw.fillOnline();
-		 for( sw.rewind(); !sw.isEmpty(); sw++ )
-		 {
-			 NXWSOCKET j=sw.getSocket();
-			 pChar pj = cSerializable::findCharBySerial(currchar[j]);
-			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
-			 {
-				 if (clientDimension[j]==2 && !skip_old) // 2D client, send old style'd
-				 {
-					 Xsend(j, effect, 28);
-//AoS/					Network->FlushBuffer(j);
-				 } else if (clientDimension[j]==3) // 3d client, send 3d-Particles
-				 {
-
-					movingeffectUO3D(source, dest, str);
-					unsigned char particleSystem[49];
-					Xsend(j, particleSystem, 49);
-//AoS/					Network->FlushBuffer(j);
-				}
-				else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
-					LogError"Invalid Client Dimension: %i\n", clientDimension[j]);
-			}
-		}
-	}
-}
-
-=======
->>>>>>> 1.27
 // staticeffect2 is for effects on items
 void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt,  ParticleFx *str, bool skip_old )
 {
@@ -813,7 +742,7 @@ void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned ch
 
 //	- Movingeffect3 is used to send an object from a char
 //    to another object (like purple potions)
-void movingeffect3(CHARACTER source, unsigned short x, unsigned short y, signed char z, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode)
+void movingeffect3(SERIAL source, unsigned short x, unsigned short y, signed char z, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode)
 {
 
 	pChar src=cSerializable::findCharBySerial(source);
@@ -866,7 +795,7 @@ void staticeffect3(Location pos, uint16_t eff, uint8_t speed, uint8_t loop, uint
 	}
 }
 
-void movingeffect3(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode,unsigned char unk1,unsigned char unk2,unsigned char ajust,unsigned char type)
+void movingeffect3(SERIAL source, SERIAL dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode,unsigned char unk1,unsigned char unk2,unsigned char ajust,unsigned char type)
 {
 	pChar src=cSerializable::findCharBySerial(source);
 	if ( ! src ) return;
@@ -1127,7 +1056,7 @@ void sendshopinfo(int s, int c, pItem pi)
 	}
 }
 
-int sellstuff(NXWSOCKET s, CHARACTER i)
+int sellstuff(NXWSOCKET s, SERIAL i)
 {
 	if (s < 0 || s >= now) return 0; //Luxor
     pChar pc = cSerializable::findCharBySerial(i);
@@ -1286,7 +1215,7 @@ void tellmessage(int i, int s, char *txt)
 // effect 12 ->
 
 
-void staticeffectUO3D(CHARACTER player, ParticleFx *sta)
+void staticeffectUO3D(SERIAL player, ParticleFx *sta)
 {
 
    PC_CHAR pc_cs=cSerializable::findCharBySerial(player);
@@ -1380,7 +1309,7 @@ void staticeffectUO3D(CHARACTER player, ParticleFx *sta)
 // effect 15 -> adjust
 // effect 16 -> explode on impact
 
-void movingeffectUO3D(CHARACTER source, CHARACTER dest, ParticleFx *sta)
+void movingeffectUO3D(SERIAL source, SERIAL dest, ParticleFx *sta)
 {
 
 

@@ -393,7 +393,7 @@ std::string getSextantCoords(uint16_t x, uint16_t y, uint16_t cx, uint16_t cy)
 \param goodtype ?
 \todo write documentation
 */
-int calcGoodValue(CHARACTER npcnum2, int i, int value,int goodtype)
+int calcGoodValue(SERIAL npcnum2, int i, int value,int goodtype)
 {
 	pChar npc=cSerializable::findCharBySerial(npcnum2);
 	const pItem pi=MAKE_ITEM_REF(i);

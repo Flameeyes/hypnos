@@ -362,7 +362,7 @@ const short NumberOfOres = sizeof(OreTable)/sizeof(Ore);
                         unsigned char col1,unsigned char col2,  // color
                         char *orename)          // first letter should be uppercase
 {
-    CHARACTER cc = currchar[s];
+    SERIAL cc = currchar[s];
     pChar pc = MAKE_CHARREF_LRV(cc, false);
 
     if(pc->skill[skMining] >= minskill)

@@ -19,7 +19,7 @@ namespace Fishing
 	extern TIMERVAL randomtime;
 	
 	void target_fish( NXWCLIENT ps, pTarget t );
-	void Fish(CHARACTER c);
+	void Fish(pChar pc);
 };
 
 int SpawnFishingMonster(pChar pc, char* cScript, char* cList, char* cNpcID);

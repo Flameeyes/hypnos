@@ -50,15 +50,15 @@ void itemtalk( pItem pi, char *txt);
 	//!< Item "speech"
 
 
-void staticeffect (int/*CHARACTER*/ player, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false );
+void staticeffect (int/*SERIAL*/ player, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false );
 void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false);
 
 void staticeffect3(Location pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode);
-void movingeffect3(int/*CHARACTER*/ source, unsigned short x, unsigned short y, signed char z, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode);
-void movingeffect3(int/*CHARACTER*/ source, int/*CHARACTER*/ dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode,unsigned char unk1,unsigned char unk2,unsigned char ajust,unsigned char type);
+void movingeffect3(int/*SERIAL*/ source, unsigned short x, unsigned short y, signed char z, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode);
+void movingeffect3(int/*SERIAL*/ source, int/*SERIAL*/ dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode,unsigned char unk1,unsigned char unk2,unsigned char ajust,unsigned char type);
 
-void staticeffectUO3D(int/*CHARACTER*/ player, ParticleFx *sta);
-void movingeffectUO3D(int/*CHARACTER*/ source, int/*CHARACTER*/ dest, ParticleFx *sta);
+void staticeffectUO3D(int/*SERIAL*/ player, ParticleFx *sta);
+void movingeffectUO3D(int/*SERIAL*/ source, int/*SERIAL*/ dest, ParticleFx *sta);
 void itemeffectUO3D(pItem pi, ParticleFx *sta);
 void MakeGraphicalEffectPkt_(uint8_t pkt[28], uint8_t type, uint32_t src_serial, uint32_t dst_serial, uint16_t model_id, Location src_pos, Location dst_pos, uint8_t speed, uint8_t duration, uint8_t adjust, uint8_t explode );
 

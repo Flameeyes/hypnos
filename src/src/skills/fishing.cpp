@@ -189,12 +189,12 @@ void Fishing::target_fish( NXWCLIENT ps, pTarget t )
 	pPlayer->playSFX(0x023F);
 	pPlayer->unHide();
 	pPlayer->fish();
-//	Fish(DEREF_pChar(pPlayer));
+//	Fish(pPlayer);
 }
 
 
 // LB: added fish stacking !!
-void Fishing::Fish(CHARACTER i)
+void Fishing::Fish(pChar pc)
 {
 //	const int max_fish_piles = 1;		// attention: thats per fish *type*, so the efffective limit of piles is *3
 //	const int max_fish_stacksize = 15;	// attention: rela max size = value+1
@@ -203,7 +203,6 @@ void Fishing::Fish(CHARACTER i)
 	int idnum;
 	int16_t color;
 
-	pChar pc = cSerializable::findCharBySerial(i);
 	if ( ! pc ) return;
 	pItem pc_bp = pc->getBackpack();
 	NXWSOCKET s = pc->getSocket() ;
@@ -248,7 +247,7 @@ void Fishing::Fish(CHARACTER i)
             if(skill>=950) 
 			{ 
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "2" ); // random weapons 
-				pc->sysmsg(("You fished up an ancient weapon!");
+				pc->sysmsg("You fished up an ancient weapon!");
 			} 
             break;
 		case 3:
