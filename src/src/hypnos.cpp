@@ -465,21 +465,15 @@ int main(int argc, char *argv[])
 
 	nSkills::loadSkills();
 	nJails::loadJails();
-
-	ConOut("Loading Weapon type...");
-	loadweaponsinfo();
-	ConOut("[  Ok  ]\n");
-
+	cWeapon::loadWeaponsInfo();
+	cContainer::loadContainersData();
+	
 	ConOut("Loading mountable creature...");
 	loadmounts();
 	ConOut("[  Ok  ]\n");
 
 	ConOut("Loading Creature info...");
 	creatures.load();
-	ConOut("[  Ok  ]\n");
-
-	ConOut("Loading container...");
-	loadcontainers();
 	ConOut("[  Ok  ]\n");
 
 	ConOut("Building pointer arrays...");
