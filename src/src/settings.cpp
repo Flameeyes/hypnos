@@ -390,6 +390,9 @@ namespace Skills {
 	bool isEnabledSkillBySkillCap()
 	{ return flags & flagSkillBySkillCap; }
 
+	//! Seconds to wait after a snoop action
+	SETTING(uint32_t, SnoopDelay, 15);
+	
 	void loadHiding(MXML::Node *s)
 	{
 		MXML::Node *n = s->child();
@@ -407,7 +410,8 @@ namespace Skills {
 	{
 		MXML::Node *n = s->child();
 		do {
-			LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
+			XMLSETTING(SnoopDelay, uint32_t, UInt32)
+			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
 			n = n->next();
 		} while(n);
 	}

@@ -269,7 +269,6 @@ void loadserverdefaults()
 	server_data.auto_a_reload = 0;
 
 	server_data.invisibiliytimer=INVISTIMER;
-	server_data.snoopdelay=15;
 	server_data.skilldelay=SKILLDELAY;
 	server_data.objectdelay=1;					// in seconds
 	server_data.bandagedelay=6;					// in seconds
@@ -279,7 +278,7 @@ void loadserverdefaults()
 	server_data.staminarate=REGENRATE2;
 	server_data.manarate=REGENRATE3;
 	server_data.skilladvancemodifier=1000;		// Default Modulo val for skill advance
-    server_data.statsadvancemodifier=500;		// Default Modulo val for stats advance
+	server_data.statsadvancemodifier=500;		// Default Modulo val for stats advance
 	server_data.gatetimer=GATETIMER;
 	server_data.minecheck=1;
 	server_data.showdeathanim=1;				// 1 = yes/true
@@ -350,14 +349,14 @@ void loadserverdefaults()
 
 	server_data.housedecay_secs=604800*2; // LB, one week //xan, 2 weeks default
 
-    server_data.eclipsemode=0; // Light to dark..
+	server_data.eclipsemode=0; // Light to dark..
 
 	//cwmWorldState->SetLoopSaveAmt(-1);
 
 	speed.srtime=30;
 	speed.itemtime=(float)1.5;
 	speed.npctime=(float)1.0; // lb, why -1 zippy ??????
-    speed.npcaitime=(float)1.2;
+	speed.npcaitime=(float)1.2;
 	speed.tamednpctime=(float)0.9;//AntiChrist
 	speed.npcfollowtime=(float)0.5; //Ripper
 	speed.nice=2;

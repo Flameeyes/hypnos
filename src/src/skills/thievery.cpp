@@ -69,7 +69,8 @@ void snooping( pPC snooper, pItem cont )
 	
 	pPC pc_owner = dynamic_cast<pPC>(owner);
 
-	snooper->objectdelay=SrvParms->snoopdelay * SECS + getclock();
+	snooper->objectdelay = nSettings::Skills::getSnoopDelay() * SECS + getclock();
+	
 	if ( owner->IsGMorCounselor())
 	{
 		client->sysmessage("You can't peek into that container or you'll be jailed.");

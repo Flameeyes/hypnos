@@ -124,6 +124,13 @@ namespace nSettings {
 				//!< Stealth necessary to drop an item and remain hidden.
 				//!< If INVALID pc is always unhid while dropping items on the ground [Default: 960]
 		//@}
+		
+		//@{
+		/*!
+		\name Thievery
+		*/
+			uint32_t getSnoopDelay();
+		//@}
 	}
 	
 	//! Log system settings
