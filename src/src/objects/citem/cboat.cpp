@@ -266,26 +266,25 @@ bool cBoat::isGoodPosition(uint16_t id, sPoint w, int8_t dir)
 {
 	bool good_pos = false;
 
-	multiVector m;
-	data::seekMulti( id-0x4000, m );
+	nMULFiles::cMultiBlock mb = multiMUL->getBlock(id-0x4000);
+	const uint32_t mc = mb.count();
 
-	for(register int i = 0; i < m.size(); i++ )
+	for(register int i = 0; i < mc; i++ )
 	{
-
 		map_st map;
 		switch(dir)
 		{
 		case -1:
-			data::seekMap(w.x-m[i].y, w.y+m[i].x, map);
+			data::seekMap(w.x - mb.getY(i), w.y + mb.getX(i), map);
 			break;
 		case 0:
-			data::seekMap(w.x+m[i].x, w.y+m[i].y, map);
+			data::seekMap(w.x + mb.getX(i), w.y + mb.getY(i), map);
 			break;
 		case 1:
-			data::seekMap(w.x+m[i].y, w.y-m[i].x, map);
+			data::seekMap(w.x + mb.getY(i), w.y - mb.getX(i), map);
 			break;
 		case 2:
-			data::seekMap(w.x-m[i].x, w.y-m[i].y, map);
+			data::seekMap(w.x - mb.getX(i), w.y - mb.getY(i), map);
 			break;
 		}
 
@@ -310,7 +309,7 @@ bool cBoat::isGoodPosition(uint16_t id, sPoint w, int8_t dir)
 			good_pos=true;
 			break;
 		default:// we are in default if we are nearer coast
-			good_pos = tileCheck( m[i], map, w, dir );
+			good_pos = tileCheck( mb.getItem(i), map, w, dir );
 			if (!good_pos) return false;
 		}
 	}
@@ -325,27 +324,27 @@ bool cBoat::isGoodPosition(uint16_t id, sPoint w, int8_t dir)
 \param dir Direction of boat (from -1 to 2, this is strange!)
 \todo Fix the dir stuff
 */
-bool cBoat::tileCheck(multi_st multi, map_st map, sPoint w, int8_t dir)
+bool cBoat::tileCheck(const nMULFiles::cMultiItem *multi, map_st map, sPoint w, int8_t dir)
 {
-	int16_t dx,dy;
+	uint16_t dx,dy;
 	switch(dir)
 	{
 	case -1:
-		dx=w.x-multi.y;
-		dy=w.y+multi.x;
+		dx = w.x - multi.getY();
+		dy = w.y + multi.getX();
 		break;
 	case 0:
-		dx=w.x+multi.x;
-		dy=w.y+multi.y;
+		dx = w.x + multi.getX();
+		dy = w.y + multi.getY();
 		break;
 	case 1:
-		dx=w.x+multi.y;
-		dy=w.y-multi.x;
+		dx = w.x + multi.getY();
+		dy = w.y - multi.getX();
 		break;
 
 	case 2:
-		dx=w.x-multi.y;
-		dy=w.y-multi.x;
+		dx = w.x - multi.getY();
+		dy = w.y - multi.getX();
 		break;
 	}
 

@@ -59,6 +59,8 @@ tMainLoop::tMainLoop()
 	nMULFiles::setMULpath(nDirs::getMulsDir());
 	tiledataStatic = new nMULFiles::fTiledataStatic();
 	tiledataLand = new nMULFiles::fTiledataLand();
+	multiIDX = new nMULFiles::fMultiIDX();
+	multiMUL = new nMULFiles::fMulti(multiIDX);
 	
 	// Load datafiles
 	nMOTD::loadMOTD();

@@ -20,5 +20,7 @@
 
 extern nMULFiles::fTiledataLand *tiledataLand;
 extern nMULFiles::fTiledataStatic *tiledataStatic;
+extern nMULFiles::fMultiIDX *multiIDX;
+extern nMULFiles::fMulti *multiMUL;
 
 #endif

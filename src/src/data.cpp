@@ -23,19 +23,14 @@ uint16_t map_height = 512;
 
 namespace data {
 
-
 std::vector < cMULFile< map_st >* > maps; // Maps (map0.mul map1.mul...)
 cMULFile< staticIdx_st >* staticIdx; // staidx0.mul
 cMULFile< static_st >* statics; // statics.mul
-cMULFile< multiIdx_st >* multiIdx; // multi.idx
-cMULFile< multi_st >* multi; // multi.mul
 
 static std::string map_path;
 static std::string staIdx_path;
 static std::string statics_path;
 static std::string tiledata_path;
-static std::string multi_path;
-static std::string multiIdx_path;
 
 /*!
 \author Luxor
@@ -147,12 +142,6 @@ void init()
 	statics = new cMULFile< static_st > ( statics_path, "rb" );
 	CHECKMUL( statics, statics_path.c_str() );
 
-	multiIdx = new cMULFile< multiIdx_st > ( multiIdx_path, "rb" );
-	CHECKMUL( multiIdx, multiIdx_path.c_str() );
-
-	multi = new cMULFile< multi_st > ( multi_path, "rb" );
-	CHECKMUL( multi, multi_path.c_str() );
-
 	//
 	// We cache always the tiledata, it's very small and it really improves performances.
 	//
@@ -176,19 +165,11 @@ void init()
 */
 void shutdown()
 {
-	uint32_t i;
-	for ( i = 0; i < maps.size(); i++ )
-		if ( maps[i] != NULL )
-			safedelete( maps[i] );
+	for ( register int i = 0; i < maps.size(); i++ )
+		safedelete( maps[i] );
 
-	if ( staticIdx != NULL )
-		safedelete( staticIdx );
-	if ( statics != NULL )
-		safedelete( statics );
-	if ( multiIdx != NULL )
-		safedelete( multiIdx );
-	if ( multi != NULL )
-		safedelete( multi );
+	safedelete( staticIdx );
+	safedelete( statics );
 }
 
 /*!
@@ -206,12 +187,6 @@ void setPath( MulFileId id, std::string path )
 			break;
 		case Statics_File:
 			statics_path = path;
-			break;
-		case Multi_File:
-			multi_path = path;
-			break;
-		case MultiIdx_File:
-			multiIdx_path = path;
 			break;
 		default:
 			break;
@@ -233,12 +208,6 @@ std::string getPath( MulFileId id )
 			break;
 		case Statics_File:
 			return statics_path;
-			break;
-		case Multi_File:
-			return multi_path;
-			break;
-		case MultiIdx_File:
-			return multiIdx_path;
 			break;
 		default:
 			break;
@@ -300,30 +269,6 @@ bool collectStatics( uint32_t x, uint32_t y, staticVector& s_vec )
 			s_vec.push_back( s );
 	}
 	return ( s_vec.size() > 0 );
-}
-
-/*!
-\author Luxor
-*/
-bool seekMulti( uint16_t id, multiVector& m_vec )
-{
-	if ( !multiIdx->isReady() || !multi->isReady() )
-		return false;
-
-	multiIdx_st idx;
-	uint32_t pos = id * multiIdx_st_size;
-	if ( !multiIdx->getData( pos, idx ) || idx.start < 0 || idx.length <= 0 )
-		return false;
-
-	multi_st m;
-	uint32_t num = idx.length / multi_st_size;
-	for ( uint32_t i = 0; i < num; i++ ) {
-		pos = idx.start + ( i * multi_st_size );
-		if ( !multi->getData( pos, m ) )
-			continue;
-		m_vec.push_back( m );
-	}
-	return ( m_vec.size() > 0 );
 }
 
 /*!
@@ -397,8 +342,7 @@ bool cMULFile<T>::getData( uint32_t index, uint8_t* ptr, uint32_t size )
 template <typename T>
 void cMULFile<T>::setCache( typename std::map< uint32_t, T > *cache )
 {
-	if ( m_cache != NULL )
-		safedelete( m_cache );
+	safedelete( m_cache );
 	m_cache = cache;
 }
 

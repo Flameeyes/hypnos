@@ -31,7 +31,7 @@ enum {
 \author Luxor
 */
 enum MulFileId {
-	Map_File = 0, StaIdx_File, Statics_File, Multi_File, MultiIdx_File
+	Map_File = 0, StaIdx_File, Statics_File
 };
 
 
@@ -56,24 +56,6 @@ struct static_st {
 
 typedef std::vector< static_st > staticVector;
 
-struct multiIdx_st {
-	int32_t start;
-	int32_t length;
-	int32_t unknown;
-} PACK_NEEDED;
-
-struct multi_st {
-	int16_t block;
-	uint16_t x;
-	uint16_t y;
-	int16_t height;
-	uint32_t flags;
-} PACK_NEEDED;
-
-typedef std::vector< multi_st > multiVector;
-
-const uint8_t multi_st_size = sizeof( multi_st );
-const uint8_t multiIdx_st_size = sizeof( multiIdx_st );
 const uint8_t static_st_size = sizeof( static_st );
 const uint8_t staticIdx_st_size = sizeof( staticIdx_st );
 const uint8_t map_st_size = sizeof( map_st );
@@ -90,7 +72,6 @@ std::string getPath( MulFileId id );
 
 bool seekMap( uint32_t x, uint32_t y, map_st& m, uint8_t nMap = 0 ); //<! Luxor: nMap will be used for future multiple maps support.
 bool collectStatics( uint32_t x, uint32_t y, staticVector& s_vec );
-bool seekMulti( uint16_t id, multiVector& m_vec );
 
 /*!
 \author Luxor

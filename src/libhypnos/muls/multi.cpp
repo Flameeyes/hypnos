@@ -26,6 +26,20 @@ fMulti::fMulti(fMultiIDX *aIdx)
 }
 
 /*!
+\brief Gets a pointer to the multi item class for the given multi block item
+\param index Index of the item in the list. Zero-based
+\return A pointer to the multi block item class
+\throw eOutOfBound If the requested index is greater than the count of items
+*/
+const cMultiItem *getItem(uint16_t id) const
+{
+	if ( index >= getCount() )
+		throw eOutOfBound(getCount()-1, index);
+	
+	return items[index];
+}}
+
+/*!
 \brief Gets the item id for the given multi block item
 \param index Index of the item in the list. Zero-based
 \return The item id for the given multi block item

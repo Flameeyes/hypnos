@@ -68,6 +68,8 @@ public:
 	uint32_t getCount() const
 	{ return size/sizeof(cMultiItem); }
 	
+	const cMultiItem *getItem(uint16_t id) const;
+	
 	uint16_t getItemID(uint16_t id) const;
 	uint16_t getX(uint16_t id) const;
 	uint16_t getY(uint16_t id) const;
