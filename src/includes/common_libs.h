@@ -25,9 +25,7 @@ warnings/errors/issues.
 #endif
 
 #ifdef __BORLANDC__
-	#define NDEBUG
 	#define WIN32
-	#define _CONSOLE
 	#include <stlport/hash_map>
 #endif
 
@@ -41,21 +39,25 @@ warnings/errors/issues.
 #include <cmath>
 #include <cstring>
 
+#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
 #include <ctype.h>
-#include <unistd.h>
 
 #include "typedefs.h"
 #include "constants.h"
+#include "clock.h"
 
-#define TIMEOUT(X) ((X) <= getclock())
-
+#define TIMEOUT(X) ((X) <= getClockmSecs())
 
 using namespace nLibhypnos;
 

@@ -20,7 +20,6 @@
 #include "map.h"
 #include "settings.h"
 #include "enums.h"
-#include "clock.h"
 
 enum StatCap
 {
