@@ -47,56 +47,56 @@ void cChar::pathFind( Location pos, bool bOverrideCurrentPath )
 		bOk = false;
 		for ( UI32 i = 1; i < 4; i++ ) {
                         // East
-			loc = Loc( pos.x + i, pos.y, pos.z );
+			loc = Location( pos.x + i, pos.y, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// West
-			loc = Loc( pos.x - i, pos.y, pos.z );
+			loc = Location( pos.x - i, pos.y, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// South
-			loc = Loc( pos.x, pos.y + i, pos.z );
+			loc = Location( pos.x, pos.y + i, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// North
-			loc = Loc( pos.x, pos.y - i, pos.z );
+			loc = Location( pos.x, pos.y - i, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// North-East
-			loc = Loc( pos.x + i, pos.y - i, pos.z );
+			loc = Location( pos.x + i, pos.y - i, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// North-West
-			loc = Loc( pos.x - i, pos.y - i, pos.z );
+			loc = Location( pos.x - i, pos.y - i, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// South-East
-			loc = Loc( pos.x + i, pos.y + i, pos.z );
+			loc = Location( pos.x + i, pos.y + i, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// South-West
-			loc = Loc( pos.x - i, pos.y + i, pos.z );
+			loc = Location( pos.x - i, pos.y + i, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;

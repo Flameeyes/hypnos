@@ -1013,7 +1013,7 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, UI16 x1, UI16 y1, SI08 z1)
 									if ((pi_i->getPosition("x")+xos<1) || (pi_i->getPosition("y")+yos<1))
 										lb=0; /* lord binary, fixes crash when calling npcvalid with negative coordiantes */
 									else { //<Luxor>
-										Location newpos = Loc( pi_i->getPosition().x+xos, pi_i->getPosition().y+yos, pi_i->getPosition().z );
+										Location newpos = Location( pi_i->getPosition().x+xos, pi_i->getPosition().y+yos, pi_i->getPosition().z );
 										lb = ( isWalkable( newpos ) != illegal_z );
 									}//</Luxor>
 

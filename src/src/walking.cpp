@@ -548,7 +548,7 @@ void npcwalk( P_CHAR pc_i, UI08 newDirection, int type)   //type is npcwalk mode
 		int newY = charpos.y;
 		getXYfromDir( pc_i->dir, newX, newY );	// get coords of the location we want to walk
                 //<Luxor>
-		Location newpos = Loc( newX, newY, charpos.z );
+		Location newpos = Location( newX, newY, charpos.z );
 		valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
 		//</Luxor>
 		if ( valid )
@@ -563,7 +563,7 @@ void npcwalk( P_CHAR pc_i, UI08 newDirection, int type)   //type is npcwalk mode
 				UI08 direction = pc_i->getDirFromXY(pc_i->fx1, pc_i->fy1);
 				getXYfromDir( direction, newX, newY );
 				//<Luxor>
-				newpos = Loc( newX, newY, charpos.z );
+				newpos = Location( newX, newY, charpos.z );
 				valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
 				//</Luxor>
 				if ( !valid ) // try to bounce around obstacle
@@ -571,7 +571,7 @@ void npcwalk( P_CHAR pc_i, UI08 newDirection, int type)   //type is npcwalk mode
 					direction = pc_i->dir;
 					getXYfromDir( pc_i->dir, newX, newY );
 					//<Luxor>
-					newpos = Loc( newX, newY, charpos.z );
+					newpos = Location( newX, newY, charpos.z );
 					valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
 					//</Luxor>
 					bool clockwise = chance( 50 );
@@ -583,7 +583,7 @@ void npcwalk( P_CHAR pc_i, UI08 newDirection, int type)   //type is npcwalk mode
 							direction = getLeftDir( direction );
 						getXYfromDir( pc_i->dir, newX, newY );
 						//<Luxor>
-						newpos = Loc( newX, newY, charpos.z );
+						newpos = Location( newX, newY, charpos.z );
 						valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
 						//</Luxor>
 					}
@@ -607,7 +607,7 @@ void npcwalk( P_CHAR pc_i, UI08 newDirection, int type)   //type is npcwalk mode
 			{
 				getXYfromDir( direction, newX, newY );
 				//<Luxor>
-				newpos = Loc( newX, newY, charpos.z );
+				newpos = Location( newX, newY, charpos.z );
 				valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
 				//</Luxor>
 				if ( clockwise )

@@ -1224,7 +1224,7 @@ void castFieldSpell( P_CHAR pc, int x, int y, int z, int spellnumber)
 
 	for( j=0; j<=fieldLen; j++ )
 	{
-		SI08 nz=getHeight( Loc( fx[j], fy[j], z ) );
+		SI08 nz=getHeight( Location( fx[j], fy[j], z ) );
 		pItem pi = cItem::addByID(id, 1, "#", 0, Location(fx[j], fy[j], nz));
 
 		if (pi)
@@ -1267,7 +1267,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, P_CHAR src, in
 	//Sparhawk:	Don't check los for spells on items in containers
 	//
 	if( ( ( pi != 0 ) && pi->isInWorld() ) || pd != 0 )
-		if (!checkLos(src, Loc(x,y,z)))
+		if (!checkLos(src, Location(x,y,z)))
 			return;
 
 	int nSkill = MAGERY;

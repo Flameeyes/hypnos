@@ -98,8 +98,8 @@ cObject::cObject()
 	serial.serial32 = INVALID;
 	multi_serial.serial32 = INVALID;
 	OwnerSerial.serial32 = INVALID;
-	old_position = Loc(0,0,0);
-	position = Loc(0,0,0);
+	old_position = Location(0,0,0);
+	position = Location(0,0,0);
 	ScriptID = 0;
 
 	color = color_old = 0;

@@ -12,33 +12,6 @@
 #include "inlines.h"
 
 /*!
-\brief convert a char* into a number with the specified base
-\author Xanathar
-\return int the number or 0 if no conversion possible
-\param sz the string
-\param base number's base
-*/
-int str2num( char* sz, int base )
-{
-	char *dummy;
-	return strtol(sz, &dummy, base );
-}
-
-/*!
-\brief Convert a wchar_t* into a number with the specified base
-\author Endymion
-\return int the number or 0 if no conversion possible
-\param sz the string
-\param base number's base
-*/
-int str2num( wchar_t* sz, int base )
-{
-	wchar_t *dummy;
-	return wcstol(sz, &dummy, base );
-}
-
-
-/*!
 \brief Returns a random number between bounds
 \author ?
 \return int the number
@@ -133,9 +106,6 @@ void readSplitted(FILE* F, char* script1, char* script2)
 	if ((script1[0]!='}') && (str[i]!=0)) strcpy(script2,(char*)( str+i+1));
 }
 
-
-
-
 /*!
 \brief return current local time
 \return char* the time (time_str)
@@ -149,25 +119,4 @@ char *RealTime(char *time_str)
 	curtime = localtime(&bintime);
 	strftime(time_str, 256, "%A %B %d %I:%M:%S %p %Y %z", curtime);
 	return time_str;
-}
-
-/*!
-\brief build a Location structure
-\author Anthalir
-\return The Location structure that represent the, ehm, location
-\since 0.82a
-\param x X-Coordinate
-\param y Y-Coordinate
-\param z Z-Coordinate
-\param dispz displayed z value
-*/
-Location Loc(SI32 x, SI32 y, SI08 z, SI08 dispz)
-{
-	Location l= {x, y, z, 0};
-	if(dispz==0)
-		l.dispz=z;
-	else
-		l.dispz= dispz;
-
-	return l;
 }

@@ -545,7 +545,7 @@ public:
 	{ return cont; }
 
 	inline void MoveTo(SI32 x, SI32 y, SI08 z)
-	{ MoveTo( Loc(x, y, z) ); }
+	{ MoveTo( Location(x, y, z) ); }
 //@}
 
 //@{

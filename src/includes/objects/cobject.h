@@ -122,7 +122,7 @@ public:
 
 	//! Set the position of the object
 	inline void		setPosition(UI32 x, UI32 y, SI08 z)
-	{ setPosition( Loc( x, y, z ) ); }
+	{ setPosition( Location( x, y, z ) ); }
 
 	inline const Location getOldPosition() const
 	{ return old_position; }
@@ -131,7 +131,7 @@ public:
 	{ old_position = where; }
 
 	inline void setOldPosition(SI32 x, SI32 y, signed char z, signed char dispz)
-	{ setOldPosition( Loc(x, y, z, dispz) ); }
+	{ setOldPosition( Location(x, y, z, dispz) ); }
 //@}
 
 //@{

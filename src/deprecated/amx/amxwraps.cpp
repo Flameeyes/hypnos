@@ -3929,7 +3929,7 @@ NATIVE(_itm_setLocalStrVar)
 */
 NATIVE(_map_canMoveHere)
 {
-	return canNpcWalkHere( Loc( static_cast<UI32>(params[1]), static_cast<UI32>(params[2]), 0 ) );
+	return canNpcWalkHere( Location( static_cast<UI32>(params[1]), static_cast<UI32>(params[2]), 0 ) );
 }
 
 /*

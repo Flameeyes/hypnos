@@ -245,6 +245,21 @@ struct Location {
 	SI08 z;		//!< Z-Coordinate of the location
 	SI08 dispz;	//!< Displayed Z of the location
 	UI08 map;	//!< Map the location (if 255 -> every map)
+	
+	/*!
+	\brief Constructor for Location structure
+	\param X x of the new location
+	\param Y y of the new location
+	\param Z z of the new location
+	\param DISPZ dispz of the new location
+	\param MAP map of the new location
+	 
+	\note Replaces Loc() function
+	*/
+	inline Location(UI16 X, UI16 Y, SI08 Z, SI08 DISPZ = 0, UI08 MAP = 255)
+	{
+		x = X; y = Y; z = Z; dispz = DISPZ ? DISPZ : z; map = MAP;
+	}
 };
 
 struct tele_locations_st {

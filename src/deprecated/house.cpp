@@ -238,7 +238,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 				loc.y=y+l;
 
 				loc.z=z;
-				Location newpos = Loc( x+k, y+l, z );
+				Location newpos = Location( x+k, y+l, z );
 				if ( (isWalkable( newpos ) == illegal_z ) &&
 					((charpos.x != x+k)&&(charpos.y != y+l)) )
 					/*This will take the char making the house out of the space check, be careful

@@ -192,7 +192,7 @@ void cBoat::LeaveBoat(P_CHAR pc, P_ITEM pi)//Get off a boat (dbl clicked an open
 	{
 		for(y=y2-YY;y<=y2+YY;y++)
 		{
-			sz=(signed char) staticTop(Loc(x,y,z)); // MapElevation() doesnt work cauz we are in a multi !!
+			sz=(signed char) staticTop(Location(x,y,z)); // MapElevation() doesnt work cauz we are in a multi !!
 
 			mz=(signed char) mapElevation(x,y);
 			if (sz==illegal_z) typ=0;
@@ -222,11 +222,11 @@ void cBoat::LeaveBoat(P_CHAR pc, P_ITEM pi)//Get off a boat (dbl clicked an open
 
 				pc->setMultiSerial(INVALID);
 #ifdef SPAR_C_LOCATION_MAP
-				pc->setPosition( Loc( x, y, typ ? sz : mz, typ ? sz : mz ) );
+				pc->setPosition( Location( x, y, typ ? sz : mz, typ ? sz : mz ) );
 				pointers::updateLocationMap(pc);
 #else
 				mapRegions->remove(pc);
-				pc->setPosition( Loc( x, y, typ ? sz : mz, typ ? sz : mz ) );
+				pc->setPosition( Location( x, y, typ ? sz : mz, typ ? sz : mz ) );
 				mapRegions->add(pc);
 #endif
 				pc->sysmsg(TRANSLATE("You left the boat."));

@@ -660,7 +660,7 @@ void NxwCharWrapper::fillCharsAtXY( Location location, bool bExcludeOfflinePlaye
 */
 void NxwCharWrapper::fillCharsNearXYZ ( UI16 x, UI16 y, int nDistance, bool bExcludeOfflinePlayers, bool bOnlyPlayer )
 {
-	Location pos = Loc( x, y, 0 );
+	Location pos = Location( x, y, 0 );
 	if( mapRegions->isValidCoord( x, y ) )
 		for( SI32 ix=x-REGION_GRIDSIZE; ix<=x+REGION_GRIDSIZE; ix+=REGION_GRIDSIZE ) {
 			if( ix>=0 ) {

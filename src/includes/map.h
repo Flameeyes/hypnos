@@ -52,7 +52,7 @@ inline SI32 line_of_sight( SI32 s, Location a, Location b, SI32 checkfor )
 { return lineOfSight( a, b ); }
 
 inline SI32 line_of_sight( SI32 s, SI32 x1, SI32 y1, SI32 z1, SI32 x2, SI32 y2, SI32 z2, SI32 checkfor )
-{ return lineOfSight( Loc( x1, y1, z1 ), Loc( x2, y2, z2 ) ); }
+{ return lineOfSight( Location( x1, y1, z1 ), Location( x2, y2, z2 ) ); }
 
 
 #endif //__MAP_H__

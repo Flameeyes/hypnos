@@ -177,7 +177,7 @@ UI08 cPath::addReachableNodes( path_node* node )
 	Location pos = node->pos;
 
 	// North - 0
-	loc = Loc( pos.x, pos.y - 1, pos.z );
+	loc = Location( pos.x, pos.y - 1, pos.z );
 	if ( (zAdd = isWalkable( loc, WALKFLAG_ALL, pc )) != illegal_z ) {
 		bWalkable[ 0 ] = true;
 		loc.z = zAdd;
@@ -187,7 +187,7 @@ UI08 cPath::addReachableNodes( path_node* node )
 		bWalkable[ 0 ] = false;
 
         // South - 1
-	loc = Loc( pos.x, pos.y + 1, pos.z );
+	loc = Location( pos.x, pos.y + 1, pos.z );
 	if ( (zAdd = isWalkable( loc, WALKFLAG_ALL, pc )) != illegal_z ) {
 		bWalkable[ 1 ] = true;
 		loc.z = zAdd;
@@ -197,7 +197,7 @@ UI08 cPath::addReachableNodes( path_node* node )
 		bWalkable[ 1 ] = false;
 
 	// East - 2
-	loc = Loc( pos.x + 1, pos.y, pos.z );
+	loc = Location( pos.x + 1, pos.y, pos.z );
 	if ( (zAdd = isWalkable( loc, WALKFLAG_ALL, pc )) != illegal_z ) {
 		bWalkable[ 2 ] = true;
 		loc.z = zAdd;
@@ -208,7 +208,7 @@ UI08 cPath::addReachableNodes( path_node* node )
 
 
 	// West - 3
-	loc = Loc( pos.x - 1, pos.y, pos.z );
+	loc = Location( pos.x - 1, pos.y, pos.z );
 	if ( (zAdd = isWalkable( loc, WALKFLAG_ALL, pc )) != illegal_z ) {
 		bWalkable[ 3 ] = true;
 		loc.z = zAdd;
@@ -218,7 +218,7 @@ UI08 cPath::addReachableNodes( path_node* node )
 		bWalkable[ 3 ] = false;
 
 	// North-East
-	loc = Loc( pos.x + 1, pos.y - 1, pos.z );
+	loc = Location( pos.x + 1, pos.y - 1, pos.z );
 	if ( bWalkable[0] && bWalkable[2] ) { // Avoid to go near a tile angle
 		if ( (zAdd = isWalkable( loc, WALKFLAG_ALL, pc )) != illegal_z ) {
 			loc.z = zAdd;
@@ -228,7 +228,7 @@ UI08 cPath::addReachableNodes( path_node* node )
 	}
 
         // North-West
-	loc = Loc( pos.x - 1, pos.y - 1, pos.z );
+	loc = Location( pos.x - 1, pos.y - 1, pos.z );
 	if ( bWalkable[0] && bWalkable[3] ) { // Avoid to go near a tile angle
 		if ( (zAdd = isWalkable( loc, WALKFLAG_ALL, pc )) != illegal_z ) {
 			loc.z = zAdd;
@@ -238,7 +238,7 @@ UI08 cPath::addReachableNodes( path_node* node )
 	}
 
 	// South-East
-	loc = Loc( pos.x + 1, pos.y + 1, pos.z );
+	loc = Location( pos.x + 1, pos.y + 1, pos.z );
 	if ( bWalkable[1] && bWalkable[2] ) { // Avoid to go near a tile angle
 		if ( (zAdd = isWalkable( loc, WALKFLAG_ALL, pc )) != illegal_z ) {
 			loc.z = zAdd;
@@ -248,7 +248,7 @@ UI08 cPath::addReachableNodes( path_node* node )
 	}
 
 	// South-West
-	loc = Loc( pos.x - 1, pos.y + 1, pos.z );
+	loc = Location( pos.x - 1, pos.y + 1, pos.z );
 	if ( bWalkable[1] && bWalkable[3] ) { // Avoid to go near a tile angle
 		if ( (zAdd = isWalkable( loc, WALKFLAG_ALL, pc )) != illegal_z ) {
 			loc.z = zAdd;
@@ -318,7 +318,7 @@ void cPath::dropToClosedList( path_node* node )
 Location cPath::getNextPos()
 {
 	if( path_list.empty() )
-		return Loc( 0, 0, 0 );
+		return Location( 0, 0, 0 );
 	Location pos = *(path_list.begin());
 	path_list.pop_front();
 	return pos;

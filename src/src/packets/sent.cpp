@@ -786,7 +786,7 @@ bool cPacketReceiveDropItem::execute(pClient client)
 {
         if (length != 14) return false;
 	pItem pi = pointers::findItemBySerPtr(LongFromCharPtr(buffer+1));
-        Location drop_at = Loc(ShortFromCharPtr(buffer+5), ShortFromCharPtr(buffer+7), buffer[9]);
+        Location drop_at = Location(ShortFromCharPtr(buffer+5), ShortFromCharPtr(buffer+7), buffer[9]);
         pItem container = pointers::findItemBySerial(LongFromCharPtr(buffer+10));
         client->drop_item(pi, drop_at, container);  //!< if refused, the drop_item automatically bounces the item back
         return true;
@@ -911,32 +911,46 @@ bool cPacketReceiveActionRequest::execute(pClient client)
         return false; //If flow arrives here, maybe invalid data in packet
 }
 
-/*!
-\brief Wear Item Packet
+
+/*!
+
+\brief Wear Item Packet
 \author Chronodt
 \param client client who sent the packet
 */
 
-bool cPacketReceiveWearItem::execute(pClient client)
-{
-        if (length != 10) return false;
-	pChar pc = pointers::findCharBySerPtr(buffer+6);
-	VALIDATEPCR(pck, false);
+
+bool cPacketReceiveWearItem::execute(pClient client)
+
+{
+
+        if (length != 10) return false;
+
+	pChar pc = pointers::findCharBySerPtr(buffer+6);
+
+	VALIDATEPCR(pck, false);
 	pItem pi = pointers::findItemBySerPtr(buffer+1);
 	VALIDATEPIR(pi, false);
-        client->wear_item(pc, pi);
-        return true;
-}
 
-/*!
-\brief Resync Request Packet
+        client->wear_item(pc, pi);
+
+        return true;
+
+}
+
+
+/*!
+
+\brief Resync Request Packet
 \author Chronodt
 \param client client who sent the packet
 */
 
 
-bool cPacketReceiveResyncRequest::execute(pClient client)
-{
+
+bool cPacketReceiveResyncRequest::execute(pClient client)
+
+{
         if (length != 3) return false;
 	if( client->currChar()!=NULL ) {
         	client->currChar()->teleport();

@@ -42,7 +42,7 @@ void cTarget::receive( NXWCLIENT ps )
 
 	this->clicked = pkg.clicked.get();
 	this->model= pkg.model.get();
-	this->loc = Loc( pkg.x.get(), pkg.y.get(), pkg.z );
+	this->loc = Location( pkg.x.get(), pkg.y.get(), pkg.z );
 }
 
 bool cTarget::isValid()

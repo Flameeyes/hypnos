@@ -1,12 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| PyUO Server Emulator                                                     |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in pyuo.cpp file.              |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
 \brief Header for conversion functions
@@ -101,43 +99,13 @@ inline void hextostr(UI32 i, char *ourstring)
 \name Bases
 \brief bases for conversion from string to number
 */
-#define BASE_INARRAY -1
-#define BASE_AUTO 0
-#define BASE_BIN 2
-#define BASE_OCT 8
-#define BASE_DEC 10
-#define BASE_HEX 16
+static const int baseInArray = -1;
+static const int baseAuto = 0;
+static const int baseBin = 2;
+static const int baseOct = 8;
+static const int baseDec = 10;
+static const int baseHex = 16;
 //@}
-
-
-/*!
-\author Xanathar
-\brief Conversion from sz to numbers
-\param sz string that represent the number
-\param base base in which the number is (see Bases)
-\return the number represented by the string
-*/
-int str2num(char* sz, int base = BASE_AUTO);
-
-/*!
-\brief Conversion from sz to numbers
-\author Endymion
-\param sz string that represent the number
-\param base base in which the number is (see Bases)
-\return the number represented by the string
-*/
-int str2num( wchar_t* sz, int base = BASE_AUTO);
-
-/*!
-\author Xanathar
-\brief New style hexstring to number
-\param sz the hexstring
-\return the number represented by the string
-*/
-inline int hex2num (char *sz)
-{
-	return str2num(sz, BASE_HEX);
-}
 
 //@{
 /*!
@@ -153,9 +121,9 @@ inline int hex2num (char *sz)
 \param base base in which the number is (see Bases)
 \return the number represented by the string
 */
-inline int str2num ( std::string& s, int base = BASE_AUTO )
+inline int str2num ( std::string& s, int base = baseAuto )
 {
-	return str2num( const_cast< char* >( s.c_str() ), base );
+	return strtol( const_cast< char* >( s.c_str() ), NULL, base );
 }
 
 /*!
@@ -165,11 +133,49 @@ inline int str2num ( std::string& s, int base = BASE_AUTO )
 \param base base in which the number is (see Bases)
 \return the number represented by the string
 */
-inline int str2num ( std::wstring& s, int base = BASE_AUTO )
+inline int str2num ( std::wstring& s, int base = baseAuto )
 {
-	return str2num( const_cast< wchar_t* >(s.c_str()), base );
+	return wcstol( const_cast< wchar_t* >(s.c_str()), NULL, base );
 }
 
+/*!
+\brief convert a char* into a number with the specified base
+\author Xanathar
+\return int the number or 0 if no conversion possible
+\param sz the string
+\param base number's base
+\deprecated After removed the dummy pointer, replace in the sources the
+            str2num call with a strtol direct call...
+*/
+inline int str2num( char* sz, int base )
+{
+	return strtol(sz, NULL, base );
+}
+
+/*!
+\brief Convert a wchar_t* into a number with the specified base
+\author Endymion
+\return int the number or 0 if no conversion possible
+\param sz the string
+\param base number's base
+\deprecated After removed the dummy pointer, replace in the sources the
+            str2num call with a wcstol direct call...
+*/
+inline int str2num( wchar_t* sz, int base )
+{
+	return wcstol(sz, NULL, base );
+}
+
+/*!
+\author Xanathar
+\brief New style hexstring to number
+\param sz the hexstring
+\return the number represented by the string
+*/
+inline int hex2num (char *sz)
+{
+	return strtol(sz, NULL, baseHex);
+}
 
 /*!
 \author Sparhawk
@@ -179,7 +185,7 @@ inline int str2num ( std::wstring& s, int base = BASE_AUTO )
 */
 inline int hex2num ( std::string& s )
 {
-	return str2num( const_cast< char* >( s.c_str() ), BASE_HEX );
+	return strtol( const_cast< char* >( s.c_str() ), NULL, baseHex );
 }
 //@}
 
@@ -187,6 +193,5 @@ int fillIntArray(char* str, int *array, int maxsize, int defval = -1, int base =
 void readSplitted(FILE* F, char* script1, char* script2);
 int RandomNum(int nLowNum, int nHighNum);
 char *RealTime(char *time_str);
-Location Loc(SI32 x, SI32 y, SI08 z, SI08 dispz=0);
 
 #endif //__BASICS_H__
