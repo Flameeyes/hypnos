@@ -1,0 +1,690 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE skills SYSTEM "http://hypnos.berlios.de/dtds/skills.dtd">
+<skills>
+  <skill name="skAlchemy" dex="50" int="50">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skAnatomy" str="10" dex="10" int="80" unhideOnUse="false">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skAnimalLore" int="100">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skItemID" int="100">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skArmsLore" str="80" dex="10" int="10">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skParrying" str="75" dex="25">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skBegging">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skBlacksmithing" str="100">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skBowcraft" str="40" dex="60">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skPeacemaking" dex="50" int="50">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skCamping" str="60" dex="20" int="20">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skCarpentry" str="75" dex="25">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skCartography" dex="50" int="50">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skCooking" dex="40" int="60">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skDetectingHidden" dex="40" int="60">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skEnticement" dex="50" int="50">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skEvaluatingIntelligence" int="100">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skHealing" str="35" dex="40" int="25">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skFishing" str="50" dex="50">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skForensics" dex="20" int="80">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skHerding" str="10" dex="50" int="40">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skHiding" dex="80" int="20">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skProvocation" dex="75" int="25">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skInscription" dex="20" int="80">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skLockPicking" str="20" dex="40" int="40">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skMagery" int="150">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skMagicResistance" str="25" dex="25" int="50">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skTactics">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skSnooping" dex="100">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skMusicianship" dex="80" int="20">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skPoisoning" dex="40" int="60">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skArchery" str="25" dex="75">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skSpiritSpeak" int="100">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skStealing" dex="100">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skTailoring" str="10" dex="60" int="30">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skTaming" str="40" dex="20" int="40">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skTasteID" str="20" int="80">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skTinkering" str="40" dex="20" int="40">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skTracking" dex="50" int="50">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skVeterinary" str="80" dex="10" int="10">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skSwordsmahsip" str="75" dex="25">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skMacefighting" str="90" dex="10">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skFencing" str="50" dex="50">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skWrestling" str="90" dex="10">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skLumberjacking" str="100">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skMining" str="100">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skMeditation" int="100">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skStealth" dex="100" unhideOnUse="false">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+  <skill name="skRemoveTraps" int="100">
+    <skillpoint base="0" success="75" failure="50" />
+    <skillpoint base="100" success="70" failure="30" />
+    <skillpoint base="200" success="65" failure="25" />
+    <skillpoint base="300" success="60" failure="20" />
+    <skillpoint base="400" success="55" failure="15" />
+    <skillpoint base="500" success="50" failure="10" />
+    <skillpoint base="600" success="30" failure="5" />
+    <skillpoint base="700" success="25" failure="2" />
+    <skillpoint base="800" success="20" failure="1" />
+    <skillpoint base="900" success="15" failure="0" />
+    <skillpoint base="990" success="10" failure="0" />
+    <skillpoint base="1000" success="0" failure="0" />
+  </skill>
+</skills>
