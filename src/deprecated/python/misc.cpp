@@ -10,10 +10,6 @@
 \brief PyUO natives for Python - Miscellaneous
 */
 
-#include "methods.h"
-
-using namespace PythonInterface;
-
 //! Returns the current time
 PYNATIVE(getCurrentTime)
 {

@@ -13,8 +13,6 @@
 	character to use the function on.
 */
 
-#include "methods.h"
-
 using namespace PythonInterface;
 
 //! get if the character Yell is a server broadcast

@@ -15,9 +15,10 @@
 #define __PY_METHODS__
 
 #include <Python.h>
+#include "globals.h"
 
 #define PYNATIVE(_func) \
-	static PyObject* _func(PyObject *self, PyObject *args);
+	static PyObject* _func(PyObject *self, PyObject *args)
 
 #define PYINVALID Py_BuildValue("i", -1)
 
@@ -29,7 +30,8 @@ need to rename the function to avoid names' collisions.
 */
 namespace PythonInterface
 {
-	PYNATIVE(getCurrentTime);
+#include "misc.cpp"
+#include "characters.cpp"
 
 	/*!
 	\brief Methods for PyUO module
