@@ -252,9 +252,14 @@ public:
 class cPacketSendMoveAcknowdledge : public cPacketSend
 {
 protected:
-	uint8_t sequence;
-	uint8_t notoriety;
+	uint8_t sequence;	//! walk sequence number
+	uint8_t notoriety;	//! could be how the player has to be seen (blue innocent, grey criminal, etc) not sure about it
 public:
+	/*!
+	\param s sequence #
+        \param n notoriety (????)
+	*/
+
 	inline cPacketSendMoveAcknowdledge(uint8_t s, uint8_t n) :
         	cPacketSend(NULL, 0), sequence(s), notoriety(n)
 	{ }
@@ -262,6 +267,25 @@ public:
 	void prepare();
 };
 
+/*!
+\brief Item dragging
+\author Chronodt
+\note packet 0x23
+*/
+
+class cPacketSendDragItem : public cPacketSend
+{
+protected:
+	pItem item; 		//!< dragged item
+	Location destination; 	//!< where the item is dragged to
+        uint16_t amount;	//!< how many items in stack
+public:
+	inline cPacketSendMoveAcknowdledge(pItem aitem, Location aDestination, uint16_t aAmount) :
+        	cPacketSend(NULL, 0), item(aItem), destination(aDestination), amount(aAmount)
+	{ }
+
+	void prepare();
+};
 
 /*!
 \brief cChar::action() packet

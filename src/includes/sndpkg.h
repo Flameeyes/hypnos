@@ -32,7 +32,6 @@ void itemmessage(pClient client, char *txt, pClient clienterial, short color=0x0
 void backpack2(pClient client, uint32_t serial);
 	//!< Send corpse stuff
 void tileeffect(int x, int y, int z, char eff1, char eff2, char speed, char loop);
-void senditem_lsd(pClient client, int/*ITEM*/ i,char color1, char color2, int x, int y, signed char z);
 void chardel (pClient client);
 	//!< Deletion of character
 void updatechar(pChar pc);

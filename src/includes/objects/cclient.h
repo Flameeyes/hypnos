@@ -80,17 +80,19 @@ protected:
        	bool dragging; //!< true if is dragging
 	bool evilDrag; //!< evil dragging, we need this for UO3D clients to save dragging history
 
+        void get_item(pItem pi, uint16_t amount);                   	//!< Client grabs an item
+        void drop_item(pItem pi, Location &loc, pContainer cont);    	//!< Item is dropped on ground, char or item
         // internally used by drop_item:
-        void pack_item(pItem pi, Location &loc, pItem cont);            //!< put dropped item into a container
-        void dump_item(pItem pi, Location &loc, pItem cont);            //!< Item is dropped on ground or a character
+        void pack_item(pItem pi, Location &loc, pContainer cont);	//!< put dropped item into a container
+        void dump_item(pItem pi, Location &loc);			//!< Item is dropped on ground or a character
         bool droppedOnChar(pItem pi, Location &loc, pItem cont);        //!< Item is dropped on a character
         bool droppedOnPet(pItem pi, Location &loc, pItem cont);         //!< Item is dropped on a pet
         bool droppedOnGuard(pItem pi, Location &loc, pItem cont);       //!< Item is dropped on a guard
         bool droppedOnBeggar(pItem pi, Location &loc, pItem cont);      //!< Item is dropped on a beggar
         bool droppedOnTrainer(pItem pi, Location &loc, pItem cont);     //!< Item is dropped on a trainer
         bool droppedOnSelf(pItem pi, Location &loc, pItem cont);        //!< Item is dropped on self
-        void get_item(pItem pi, uint16_t amount);                   //!< Client grabs an item
-        void drop_item(pItem pi, Location &loc, pItem cont);    //!< Item is dropped on ground, char or item
+
+
         void wear_item(pChar pck, pItem pi);                            //!< Item is dropped on paperdoll
         void item_bounce3(const pItem pi);                              //!< simple bouncing
         void item_bounce4(const pItem pi);                              //!< bounce & checkid before resending item

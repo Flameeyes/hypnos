@@ -263,11 +263,11 @@ void cClient::statusWindow(pChar target, bool extended) //, bool canrename)  wil
 void cClient::updateStatusWindow(pItem item)
 {
 	pChar pc = currchar();
-	pItem pack = currchar()->getBackpack();
+	pContainer pack = dynamic_cast<pContainer> (currchar()->getBackpack());
 	if ( ! item || ! pack )
 		return;
 
-	if( item->getContainer() != pack || item->getContainer() == pc )     //!< if item was in pack and has been moved out or has been equipped/deequipped update char
+	if( item->getOutMostCont() != pack || item->getContainer() == pc->getBody() )     //!< if item was in pack and has been moved out or has been equipped/deequipped update char
 		statusWindow( pc, true );
 }
 
@@ -408,12 +408,15 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
  	data::seekTile( pi->getId(), item );
 
 	// Check if item is equipped
-        pEquippable ei = dynamic_cast<pEquippable> pi;
+       	pItem container=pi->getOutMostCont();
+        pEquippable equipcont = dynamic_cast<pEquippable> container;
+	pEquippable equipitem = dynamic_cast<pEquippable> pi;
         pBody body = pc_currchar->getBody();
+	pChar owner=pi->getCurrentOwner();
 
- 	if( ei && ei->getContainer() == body && !ei->getLayer())
+ 	if( equipitem && equipitem->getContainer() == body && !equipitem->getLayer()) //if item is equippable and equipped on this client's body
  	{
- 		if( body->UnEquip( pe, true ) == 1 )	// bypass called
+ 		if( body->UnEquip( equipitem, true ) == 1 )	// bypass called
  		{
  			if( isDragging() )
  			{
@@ -422,16 +425,13 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
  			}
  			return;
  		}
- 	}
+	}
 
-
-	pChar owner=pi->getCurrentOwner();
-	pItem container=pi->getOutMostCont();
-
-	if ( owner && (owner != pc_currchar) )
+	if ( owner && (owner != pc_currchar) ) //Item is on another char
 	{
 		if ( !pc_currchar->IsGM() && !pc_currchar->isOwnerOf(owner))
-		{// Own serial stuff by Zippy -^ Pack aniamls and vendors.
+		{
+	                //if not pets or player vendors (of this client's current char) bounce item
                  //! \todo the sendpacket stuff here
 			uint8_t bounce[2]= { 0x27, 0x00 };
 			Xsend(s, bounce, 2);
@@ -446,11 +446,9 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 		}
 	}
 
-        pEquippable equipcont = dynamic_cast<pEquippable> container;
 
 	if ( container )
 	{
-
 		if ( (!equipcont || equipcont->getLayer()== 0) && container->getId() == 0x1E5E)
 		{
 			// Trade window???
@@ -467,88 +465,67 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 					sendtradestatus( piz, container );
 				}
 
-
-			//<Luxor>
-			if (pi->amxevents[EVENT_ITAKEFROMCONTAINER]!=NULL)
-			{
-				g_bByPass = false;
-                                //!\todo adding another event using container instead of pi as sender, you can create event ontakefromthiscontainer, a CONTAINER event, instead of an item one. Also rename this as ONREMOVEFROMCONTAINER, to differentiate them further and avoid confusion 
-				pi->amxevents[EVENT_ITAKEFROMCONTAINER]->Call( pi->getSerial(), pi->getContSerial(), pc_currchar->getSerial() );
-				if (g_bByPass)
-				{
-                                //! \todo the sendpacket stuff here
-					Sndbounce5(s);
-					if (isDragging())
-					{
-						resetDragging();
-						updateStatusWindow(pi);
-					}
-					pi->setContainer( pi->getOldContainer() );
-					pi->setPosition( pi->getOldPosition() );
-					pi->layer = pi->oldlayer;
-                                        //!\todo add packet 0x23 to send to surrounding clients drag of item from oldlocation to pc location
-					pi->Refresh();
-					return;
-                		}
-			}
-			//</Luxor>
-
-			/*
-			//<Luxor>
+                }
+		//<Luxor>
+		if (pi->amxevents[EVENT_ITAKEFROMCONTAINER]!=NULL)
+		{
 			g_bByPass = false;
-			pi->runAmxEvent( EVENT_ITAKEFROMCONTAINER, pi->getSerial(), pi->getContSerial(), s );
+                        //!\todo adding another event using container instead of pi as sender, you can create event ontakefromthiscontainer, a CONTAINER event, instead of an item one. Also rename this as ONREMOVEFROMCONTAINER, to differentiate them further and avoid confusion
+			pi->amxevents[EVENT_ITAKEFROMCONTAINER]->Call( pi->getSerial(), pi->getContSerial(), pc_currchar->getSerial() );
 			if (g_bByPass)
 			{
+                        //! \todo the sendpacket stuff here
 				Sndbounce5(s);
-				if (client->isDragging())
+				if (isDragging())
 				{
-					client->resetDragging();
+					resetDragging();
 					updateStatusWindow(pi);
 				}
 				pi->setContainer( pi->getOldContainer() );
 				pi->setPosition( pi->getOldPosition() );
-				pi->layer = pi->oldlayer;
+				if (equipitem) equipitem->setLayer(equipitem->getOldLayer());
 				pi->Refresh();
 				return;
-			}
-			//</Luxor>
-			*/
+               		}
+		}
 
-			if ( container->corpse )
-			{
-				if ( container->getOwnerSerial32() != pc_currchar->getSerial())
-				{ //Looter :P
 
-					pc_currchar->unHide();
-					bool bCanLoot = false;
-					if( pc_currchar->party!=INVALID ) {
-						pChar dead = cSerializable::findCharBySerial( container->getOwnerSerial32() ) ;
-						if( dead && dead->party==pc_currchar->party ) {
-							P_PARTY party = Partys.getParty( pc_currchar->party );
-							if( party!=NULL ) {
-								P_PARTY_MEMBER member = party->getMember( pc_currchar->getSerial() );
-								if( member!=NULL )
-									bCanLoot = member->canLoot;
-							}
+		if ( container->isCorpse() )
+		{
+			if ( container->getOwner() != pc_currchar)
+			{ //Looter :P
+				pc_currchar->unHide();
+				bool bCanLoot = false;
+				if( pc_currchar->party!=INVALID ) {
+					pChar dead = container->getOwner();
+                                        //!\todo check when party redone
+					if( dead && dead->party==pc_currchar->party )
+                                        {
+						P_PARTY party = Partys.getParty( pc_currchar->party );
+						if( !party )
+                                                {
+							P_PARTY_MEMBER member = party->getMember( pc_currchar->getSerial() );
+							if( member!=NULL ) bCanLoot = member->canLoot;
 						}
 					}
-					if ( !bCanLoot && container->more2==1 )
-					{
-						pc_currchar->IncreaseKarma(-5);
-						//!\todo should be investigated
-						pc_currchar->setCrimGrey(ServerScp::g_nLootingWillCriminal);
-						pc_currchar->sysmsg("You are loosing karma!");
-					}
 				}
-			} // corpse stuff
+				if ( !bCanLoot && container->more2==1 ) //!< \todo the more2 here represent the innocence level of corpse (1 = blue). Replace with something better than an anonymous more2
+				{
+					pc_currchar->IncreaseKarma(-5);
+					//!\todo should be investigated
+					pc_currchar->setCrimGrey(ServerScp::g_nLootingWillCriminal);
+					pc_currchar->sysmsg("You are loosing karma!");
+				}
+			}
+		} // corpse stuff
 
-			container->SetMultiSerial(INVALID);
+		container->SetMultiSerial(INVALID);
 
-			//at end reset decay of container
-			container->setDecayTime();
+		//at end reset decay of container
+		container->setDecayTime();
 
-		} // end cont valid
-	}
+	} // end cont valid
+
 
 	if ( !pi->corpse )
 	{
@@ -576,8 +553,11 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 			setDragging();
 			pi->setOldPosition( pi->getPosition() ); // first let's save the position
 
-			pi->oldlayer = pi->layer;	// then the layer
-			pi->layer = 0;
+			if (equipitem) //remember: equipitem is pi dynamic-casted to pEquippable
+                        {
+                        	equipitem->setOldLayer(equipitem->getLayer());	// then the layer
+				equipitem->setLayer(0);
+                        }
 
 			if (!pi->isInWorld())
 				pc_currchar->playSFX(0x0057);
@@ -589,7 +569,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 				else if (amount < pi->getAmount())
 				{ //get not all but a part of item ( piled? ), but anyway make a new one item
 
-					pItem pin = new cItem(cItem::nextSerial());
+					pItem pin = new cItem();
 					(*pin)=(*pi);
 
 					pin->setAmount(pi->getAmount() - amount);
@@ -614,17 +594,26 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 
 				pi->setAmount(amount);
 
-			} // end if corpse
+			} // end if not corpse
 #ifdef SPAR_I_LOCATION_MAP
 			pointers::delFromLocationMap( pi );
 #else
 			mapRegions->remove( pi );
 #endif
+			if (!pc_currchar->isGM() && !pc->currChar->isHidden() && owner != pc_currchar)
+                        {
+                        	//the dragging of the item should not be shown if pc is a gm, is invisible or is trying to get an item on his person (or bank)
+                                //! \todo this packet has to be sent to all surrounding clients EXCEPT "this"
+                                //! \todo complete when sets remade
+                                //! \todo verify if picking up items from the ground while hidden should unhide
+				cPacketSendDragItem pk(pi, pc_currchar->getLocation(), amount);
+                        	sw->sendPacket(&pk);		//this packets shows to those clients the item being dragged to the char
+                        }
 			pi->setPosition( 0, 0, 0 );
 			pi->setContainer(0);
 		}
 	}
-
+	//!\todo look at this weight check -_-
 	pc_currchar->weight += pi->getWeightActual();
 	statusWindow(pc_currchar, true);
 }
@@ -635,10 +624,10 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 \author Unknown, moved here by Chronodt (3/2/2004)
 \param pi item to be dropped (already in dragging mode)
 \param loc position to drop item at (eventually in cont)
-\param cont container into which *pi has to be dropped (-1 = world)
+\param cont container into which *pi has to be dropped (NULL = world)
 */
 
-void cClient::drop_item(pItem pi, Location &loc, pItem cont) // Item is dropped
+void cClient::drop_item(pItem pi, Location &loc, pContainer cont) // Item is dropped
 {
 
     //#define debug_dragg
@@ -651,15 +640,15 @@ void cClient::drop_item(pItem pi, Location &loc, pItem cont) // Item is dropped
 	  // LB
 
 	  #ifdef debug_dragg
-	    if ( pi ) { sprintf(temp, "%04x %02x %02x %01x %04x i-name: %s EVILDRAG-old: %i\n",pi->getSerial(), loc->x, loc->y, loc->z, cont->getSerial(), pi->name, evilDrag); ConOut(temp); }
-		else { sprintf(temp, "blocked: %04x %02x %02x %01x %04x i-name: invalid item EVILDRAG-old: %i\n",pi->getSerial(), loc->x, loc->y, loc->z, cont->getSerial(), evilDrag); ConOut(temp); }
+	    if ( pi ) sysmessage("%04x %02x %02x %01x %04x i-name: %s EVILDRAG-old: %i\n",pi->getSerial(), loc->x, loc->y, loc->z, cont ? cont->getSerial(): -1, pi->name, evilDrag);
+		else sysmessage("blocked: %04x %02x %02x %01x %04x i-name: invalid item EVILDRAG-old: %i\n",pi->getSerial(), loc->x, loc->y, loc->z, cont ? cont->getSerial(): -1, evilDrag);
 	  #endif
 
 	  if  ( (loc->x==-1) && (loc->y==-1) && (loc->z==0)  && (evilDrag) )
 	  {
 		  evilDrag=false;
           #ifdef debug_dragg
-		    ConOut("Swallow only\n");
+		    sysmessage("Swallow only\n");
           #endif
 		  return;
 	  }	 // swallow! note: previous evildrag !
@@ -667,12 +656,12 @@ void cClient::drop_item(pItem pi, Location &loc, pItem cont) // Item is dropped
 	  else if ( (loc->x==-1) && (loc->y==-1) && (loc->z==0)  && (!evilDrag) )
 	  {
           #ifdef debug_dragg
-		    ConOut("Bounce & Swallow\n");
+		    sysmessage("Bounce & Swallow\n");
           #endif
 		  item_bounce6( pi);
 		  return;
 	  }
-	  else if ( ( (loc->x!=-1) && (loc->y!=-1) && ( cont->getSerial()!=-1)) || ( (pi->getSerial()>=0x40000000) && (cont->getSerial()>=0x40000000) ) )
+	  else if ( ( (loc->x!=-1) && (loc->y!=-1) &&  !cont) || ( (pi->getSerial()>=0x40000000) && (cont && cont->getSerial()>=0x40000000) ) )
 		  evilDrag=true; // calc new evildrag value
 	  else evilDrag=false;
 	}
@@ -680,15 +669,15 @@ void cClient::drop_item(pItem pi, Location &loc, pItem cont) // Item is dropped
 	#ifdef debug_dragg
 	  else
 	  {
-	     if ( pi ) { sprintf(temp, "blocked: %04x %02x %02x %01x %04x i-name: %s EVILDRAG-old: %i\n",pi->getSerial(), loc->x, loc->y, loc->z, cont->getSerial(), pi->name, evilDrag); ConOut(temp); }
+	     if ( pi ) sysmessage("blocked: %04x %02x %02x %01x %04x i-name: %s EVILDRAG-old: %i\n",pi->getSerial(), loc->x, loc->y, loc->z, cont ? cont->getSerial() : -1, pi->name, evilDrag);
 	  }
 	#endif
 
 
-	if ( isItemSerial(cont->getSerial()) && (cont->getSerial() != INVALID)  ) // Invalid target => invalid container => put inWorld !!!
+	if ( cont) // Invalid target => invalid container => put inWorld !!!
 		pack_item(pi, loc, cont);
 	else
-		dump_item(pi, loc, cont);
+		dump_item(pi, loc);
 }
 
 /*!
@@ -700,50 +689,46 @@ void cClient::drop_item(pItem pi, Location &loc, pItem cont) // Item is dropped
 */
 
 
-void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into container
+void cClient::pack_item(pItem pi, Location &loc, pContainer cont) // Item is put into container
 {
 
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	int serial/*, serhash*/;
 	tile_st tile;
-//	bool abort=false;
 
 	pChar pc= currChar();
 	if ( ! pc ) return;
 
 	Location charpos = pc->getPosition();
 
-	pItem pack;
 
 	if (pi->getId() >= 0x4000)
 	{
-//		abort=true; // LB crashfix that prevents moving multi objcts in BP's
-		sysmsg("Hey, putting houses in your pack crashes your back and client!");
+		sysmessage("Hey, putting houses in your pack crashes your back and client!");
 	}
 
 	//ndEndy recurse only a time
-	pItem contOutMost = cont->getOutMostCont();
-//	pChar contOwner = ( !contOutMost->isInWorld() )? cSerializable::findCharBySerial( contOutMost->getContainer()->getSerial() ) : NULL;
-	pChar contOwner = (pChar) contOutMost->getContainer();
+	pChar contOwner = cont->getCurrentOwner();
+        pNPC npc = dynamic_cast<pNPC> contOwner;
 
-	if( contOwner ) {
-		//if ((contOwner->npcaitype==NPCAI_PLAYERVENDOR) && (contOwner->npc) && (contOwner->getOwnerSerial32()!=pc->getSerial()) )
-		if ( contOwner->getSerial() != pc->getSerial() && contOwner->getOwnerSerial32() != pc->getSerial() && !pc->IsGM() ) { // Luxor
-			sysmsg("This aint your backpack!");
+	if( contOwner )
+        {				 	               					// it has to bounce if:
+		if ( (contOwner != pc && !pnc && !pc->IsGM())  ||				// a) trying to put item on another pc's pack
+                     (npc && npc->npcaitype==NPCAI_PLAYERVENDOR && npg->getOwner()!=pc))	// b) npc is not your player vendor
+                { // Luxor
+			sysmessage("This aint your backpack!");
                         //! \todo the sendpacket stuff here
 			Sndbounce5(s);
 			if (isDragging()) {
 				resetDragging();
 				item_bounce3(pi);
 				if (cont->getId() >= 0x4000)
-					senditem(s, cont);
+					senditem(cont); //If tried to put a house in backpack, resend all items in it
 			}
 			return;
 		}
 	}
-
-	if (cont->amxevents[EVENT_IONPUTITEM]!=NULL) {
+        //!\todo if copying this using pi instead of cont, we can create an item version of onputin (maybe called ONSTOREITEM??) while ONPUTITEM may be renamed as ONFILLCONTAINER to differentiate them better
+	if (cont->amxevents[EVENT_IONPUTITEM]!=NULL)
+        {
 		g_bByPass = false;
 		cont->amxevents[EVENT_IONPUTITEM]->Call( cont->getSerial(), pi->getSerial(), pc->getSerial() );
 		if (g_bByPass)
@@ -753,7 +738,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 		}
 	}
 	if (cont->layer==0 && cont->getId() == 0x1E5E &&
-		cont->getContainer() == pc)
+		cont->getContainer() == pc->getBody())
 	{
 		// Trade window???
 		serial=calcserial(cont->moreb1, cont->moreb2, cont->moreb3, cont->moreb4);
@@ -772,7 +757,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 
 	if(SrvParms->usespecialbank)//only if special bank is activated
 	{
-		if(cont->morey==MOREY_GOLDONLYBANK && cont->morex==MOREX_BANK && cont->type==ITYPE_CONTAINER)
+		if(cont->morey==MOREY_GOLDONLYBANK && cont->morex==MOREX_BANK)
 		{
 			if ( pi->getId() == ITEMID_GOLD )
 			{//if they're gold ok
@@ -781,28 +766,38 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 			{//if they're not gold..bounce on ground
 				sysmsg("You can only put golds in this bank box!");
 
-				pi->setContainer(0);
+				pi->setContainer(NULL);
 				pi->MoveTo( charpos );
-				pi->Refresh();
+
+                                //! \todo this packet has to be sent to all surrounding clients INCLUDING "this"
+                                //! \todo complete when sets remade
+
+				cPacketSendDragItem pk(pi, pc_currchar->getLocation(), amount);
+                        	sw->sendPacket(&pk);		//this packets shows to those clients the item being dropped on the ground
+
 				pc->playSFX( itemsfx(pi->getId()) );
+				pi->Refresh();
 				return;
 			}
 		}
 	}
 
+
 	// Xanathars's Bank Limit Code
 	if ( nSettings::Server::getBankMaxItems() )
 	{
+		pContainer contOutMost = pi->getOutMostCont();
 		if(  contOutMost && contOutMost->morex==MOREX_BANK ) {
 
 			int n = contOutMost->CountItems( INVALID, INVALID, false);
 			n -= contOutMost->CountItems( ITEMID_GOLD, INVALID, false);
-			if( pi->type == ITYPE_CONTAINER )
-				n += pi->CountItems( INVALID, INVALID, false);
+			if( isContainer(pi) )
+				n += (dynamic_cast<pContainer> pi)->CountItems( INVALID, INVALID, false);
 			else
 				++n;
-			if( n > nSettings::Server::getBankMaxItems() ) {
-				sysmsg("You exceeded the number of maximimum items in bank of %d", nSettings::Server::getBankMaxItems());
+			if( n > nSettings::Server::getBankMaxItems() )
+			{
+				sysmessage("You exceeded the number of maximimum items in bank of %d", nSettings::Server::getBankMaxItems());
 				item_bounce6(pi);
 				return;
 			}
@@ -821,7 +816,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 
 	data::seekTile(pi->getId(), tile);
 	if ((((pi->magic==2)||((tile.weight==255)&&(pi->magic!=1)))&&!pc->canAllMove) ||
-				( (pi->magic==3|| pi->magic==4) && !(pi->getOwnerSerial32()==pc->getSerial())))
+				( (pi->magic==3|| pi->magic==4) && !(pi->getOwner()==pc)))
 	{
         //! \todo the sendpacket stuff here
 		Sndbounce5(s);
@@ -838,6 +833,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 	if( cont->type==ITYPE_TRASH)
 	{
 		pi->Delete();
+                //!\ todo when tempfx revised, do a timed deletion
 		sysmsg("As you let go of the item it disappears.");
 		return;
 	}
@@ -846,7 +842,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 	{
 		if (!pi->IsSpellScroll72())
 		{
-			sysmsg("You can only place spell scrolls in a spellbook!");
+			sysmessage("You can only place spell scrolls in a spellbook!");
                         //! \todo the sendpacket stuff here
 			Sndbounce5(s);
 			if (isDragging())
@@ -855,64 +851,69 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 				item_bounce3(pi);
 			}
 			if (cont->getId() >= 0x4000)
-				senditem(s, cont);
+				senditem(cont);
 			return;
 		}
-		pack= pc->getBackpack();
-		if( pack )
+		if (contOwner != pc && !pc->CanSnoop())
 		{
-			if ((cont->getContainer() != pc ) && (cont->getContainer()!=pack) && (!pc->CanSnoop()))
+			sysmessage("You cannot place spells in other peoples spellbooks.");
+			item_bounce6(pi);
+			return;
+		}
+                std::string temp1, temp2;
+		if( pi->getCurrentName()[0] == "#") temp2 = pi->getName();
+		else temp2 = pi->getCurrentName();
+
+
+		NxwItemWrapper sii;
+		sii.fillItemsInContainer( cont, false );
+		for( sii.rewind(); !sii.isEmpty(); sii++ ) {
+
+			pItem pi_ci=sii.getItem();
+
+				if ( pi_ci )
+				{
+					if( pi_ci->getCurrentName()[0] == "#" )
+
+						temp1 = pi_ci->getName();
+					else
+						temp1 = pi_ci->getCurrentName();
+
+					if( temp1 == temp2 || temp1 == "All-Spell Scroll")
+					{
+						sysmessage("You already have that spell!");
+						item_bounce6(pi);
+						return;
+					}
+				}
+			// Juliunus, to prevent ppl from wasting scrolls.
+			if (pi->amount > 1)
 			{
-				sysmsg("You cannot place spells in other peoples spellbooks.");
+				sysmessage("You can't put more than one scroll at a time in your book.");
 				item_bounce6(pi);
 				return;
 			}
-
-			if( strncmp(pi->getCurrentName().c_str(), "#", 1) )
-				pi->getName(temp2);
-			else
-				strcpy(temp2,pi->getCurrentName().c_str());
-
-			NxwItemWrapper sii;
-			sii.fillItemsInContainer( cont, false );
-			for( sii.rewind(); !sii.isEmpty(); sii++ ) {
-
-				pItem pi_ci=sii.getItem();
-
-					if ( pi_ci )
-					{
-						if( strncmp(pi_ci->getCurrentName().c_str(), "#", 1) )
-
-							pi_ci->getName(temp);
-						else
-							strcpy(temp,pi_ci->getCurrentName().c_str());
-
-						if(!(strcmp(temp,temp2)) || !(strcmp(temp,"All-Spell Scroll")))
-						{
-							sysmsg("You already have that spell!");
-							item_bounce6(pi);
-							return;
-						}
-					}
-				// Juliunus, to prevent ppl from wasting scrolls.
-				if (pi->amount > 1)
-				{
-					sysmsg("You can't put more than one scroll at a time in your book.");
-					item_bounce6(pi);
-					return;
-				}
-			}
 		}
-		cont->AddItem( pi );
+		cont->addItem( pi );
 		sendSpellBook(cont);
 		return;
 	}
 
-	if (cont->type == ITYPE_CONTAINER) {
+
+
+
+
+
+
+
+
+
+	if (cont->type == ITYPE_CONTAINER)
+        {
 
 		if ( contOwner )
 		{
-			if ( (contOwner->npcaitype==NPCAI_PLAYERVENDOR) && (contOwner->npc) && (contOwner->getOwnerSerial32()==pc->getSerial()) )
+			if ( npc && npc->npcaitype==NPCAI_PLAYERVENDOR && npc->getOwner()==pc )
 			{
 				pc->fx1= DEREF_pItem(pi);
 				pc->fx2=17;
@@ -976,11 +977,10 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 \brief drop dragged item on the ground or a character
 \author Unknown, moved here by Chronodt (4/2/2004)
 \param pi item to be dropped (already in dragging mode)
-\param loc position to drop item at (eventually in cont)
-\param cont container into which *pi has to be dropped (-1 = world)
+\param loc position to drop item at
 */
 
-void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped on ground or a character
+void cClient::dump_item(pItem pi, Location &loc) // Item is dropped on ground or a character
 {
 	if ( ! pi ) return;
 
