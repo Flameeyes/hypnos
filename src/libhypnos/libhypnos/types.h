@@ -27,4 +27,56 @@ typedef std::slist<uint32_t> uint32_slist;	//!< Singly-linked list of uint32_t
 
 typedef std::vector<std::string> stringVector;	//!< A vector of strings
 
+/*!
+\brief Position offsets
+
+This struct represent the offset of items in multi or to move a boat.
+The size of the offsets is of only a byte because we don't want multis bigger
+than 128 squares :)
+*/
+struct sPositionOffset {
+	int8_t x;	//!< X-coord offset
+	int8_t y;	//!< Y-coord offset
+	int8_t z;	//!< Z-coord offset
+	
+	sPositionOffset(int8_t ox = 0, int8_t oy = 0, int8_t oz = 0) :
+		x(ox), y(ox), z(oz)
+	{ }
+};
+
+//! Point in the map
+struct sPoint {
+	uint16_t x;
+	uint16_t y;
+	sPoint(uint16_t X = 0, uint16_t Y = 0) : x(X), y(Y) { }
+	
+	inline sPoint operator +(const sPositionOffset &b) const
+	{ return sPoint( x + b.x, y + b.y ); }
+};
+
+/*!
+\brief Coordinates of (INVALID, INVALID)
+
+This constant is here because we are having a circular dependency of structs.h
+and constants.h.
+*/
+static const sPoint InvalidCoord(0xFFFF, 0xFFFF);
+
+/*!
+\brief Rectangle definition
+
+This struct is used to define a rectangle and test if a point is inside it.
+It's used in many place, like for example cBoat::step() function to test
+if the boat is still into the movement area.
+*/
+struct sRect {
+	sPoint ul;	//!< Upperleft corner
+	sPoint br;	//!< Bottomright corner
+	sRect();
+	sRect(sPoint a, sPoint b);
+	sRect(uint16_t ulx, uint16_t uly, uint16_t brx, uint16_t bry);
+	
+	bool isInside(sPoint p) const;
+};
+
 #endif

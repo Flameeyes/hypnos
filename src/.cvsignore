@@ -1,3 +1,9 @@
 build
 .DS_Store*.d
 apidocs
+config.log
+config.h
+config.cache
+autom4te.cache
+stamp-h
+stamp-h1

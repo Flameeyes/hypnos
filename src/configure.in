@@ -1,0 +1,15 @@
+AC_INIT(configure.in)
+
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(hypnos, 0.1)
+
+AC_LANG_CPLUSPLUS
+AC_PROG_CXX
+AM_PROG_LIBTOOL
+
+INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
+CXXFLAGS="$CXXFLAGS $INCLUDES"
+
+AC_SUBST(CXXFLAGS)
+
+AC_OUTPUT(Makefile src/Makefile libhypnos/Makefile libhypnos/muls/Makefile)

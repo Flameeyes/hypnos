@@ -11,6 +11,7 @@
 
 #include "libhypnos/muls/mulfiles.h"
 #include "libhypnos/mmappedfile.h"
+#include "libhypnos/types.h"
 
 namespace nLibhypnos {
 namespace nMULFiles {
@@ -57,7 +58,7 @@ The gumpidx.mul file is structured like this:
 
 Information grabbed from Alazane's UO File Formats guide.
 */
-class nMULFiles::fGumpIDX : public tMMappedFile<cGumpIDX>
+class fGumpIDX : public tMMappedFile<cGumpIDX>
 {
 protected:
 public:
