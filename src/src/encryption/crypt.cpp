@@ -39,26 +39,10 @@
 // To be continued ... =)
 //
 //////////////////////////////////////////////////////////////////////
-#include "crypt.h"
+#include "encryption/crypt.h"
 
-#include "common.h"
-#include "../console.h"
-
-
-
-
-// Load long from address C into LL with bytes swapped.
-#define N2L(C, LL) \
-    LL  = ((unsigned int)(*((C)++))) << 24, \
-    LL |= ((unsigned int)(*((C)++))) << 16, \
-    LL |= ((unsigned int)(*((C)++))) << 8, \
-    LL |= ((unsigned int)(*((C)++)))
-// Store long LL at address C with bytes swapped.
-#define L2N(LL, C) \
-    *((C)++) = (unsigned char)(((LL) >> 24) & 0xff), \
-    *((C)++) = (unsigned char)(((LL) >> 16) & 0xff), \
-    *((C)++) = (unsigned char)(((LL) >> 8) & 0xff), \
-    *((C)++) = (unsigned char)(((LL)) & 0xff)
+#include "encryption/common.h"
+#include "console.h"
 
 //////////////////////////////////////////////////////////////////////
 

@@ -5,13 +5,9 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Declaration of cClient class
-*/
 
-#ifndef __CCLIENT_H__
-#define __CCLIENT_H__
+#ifndef __OBJECTS_CCLIENT_H__
+#define __OBJECTS_CCLIENT_H__
 
 #include "common_libs.h"
 #include "structs.h"
