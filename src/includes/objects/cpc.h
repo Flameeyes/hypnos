@@ -21,62 +21,40 @@ typedef cPC *pPC;
 
 In this class there are members used only for PCs, and not for NPCs.
 */
-class cNPC
+class cPC : cChar
 {
 public:
-	inline cNPC() : cChar()
+	inline cPC() : cChar()
 	{ }
 
-	inline cNPC(UI32 serial) : cChar(serial)
+	inline cPC(UI32 serial) : cChar(serial)
 	{ }
 
 protected:
 	//! Heartbeat for PCs
 	void		heartbeat();
 
-	UI32		lastNpcCheck;
-		//!< timestamp used to reduce # of checkNPC calls in checkAuto() to 1 (Sparhawk)
+public:
 
-	Location 	workloc;	//!< work location (not used for now)
-	Location 	homeloc;	//!< home location (not used for now)
-	Location 	foodloc;	//!< food location (not used for now)
-	TIMERVAL	nextAiCheck;
-
-	SI32		hidamage;	//!< NPC Hi Damage
-	SI32		lodamage;	//!< NPC Lo Damage
-
-	SI32		npcaitype;	//!< NPC ai
-
-	TIMERVAL	npcmovetime; // Next time npc will walk
-	char		npcWander; // NPC Wander Mode
-	char		oldnpcWander; // Used for fleeing npcs
-	SI32		fleeTimer;
-	R32		npcMoveSpeed; // Used to controll npc walking speed
-	R32		npcFollowSpeed; // Used to controll npc walking speed when following a target (npcwander = 1)
-	SI32		fx1; //NPC Wander Point 1 x
-	SI32		fx2; //NPC Wander Point 2 x
-	SI32		fy1; //NPC Wander Point 1 y
-	SI32		fy2; //NPC Wander Point 2 y
-	signed char	fz1; //NPC Wander Point 1 z
-
-	SI32		magicsphere; // for npc ai
-
-	SERIAL		spawnserial; //!< Spawned by dinamic
-	SERIAL		spawnregion; //!< Spawned by scripted
-
-	SI08		npc_type;
-		//!< currently only used for stabling, (type==1 -> stablemaster)
-		//!< can be used for other npc types too of course
+//@{
+/*!
+\name Trainer
+*/
+public:
+	pChar	trainer;		//!< NPC training the char
+	UI08	trainingplayerin;	//!< Index in skillname of the skill the NPC is training the player in
 
 public:
-	void		setNpcMoveTime();
-	void		npcSimpleAttack(pChar pc_target);
+	inline const bool	isBeingTrained() const
+	{ return trainer; }
 
-	inline const bool canTrain() const
-	{ return flags & flagCanTrain; }
+	inline const pChar	getTrainer() const
+	{ return trainer; }
 
-	inline void setCanTrain(bool set = true)
-	{ setFlag(flagCanTrain, set); }
+	inline const UI08	getSkillTaught() const
+	{ return trainingplayerin; }
+//@}
+
 };
 
 #endif

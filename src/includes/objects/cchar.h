@@ -189,14 +189,13 @@ public:
 
 	static const UI32 flagAttackFirst	= 0x08000000;
 	static const UI32 flagDoorUse		= 0x10000000;
-	static const UI32 flagShopKeeper	= 0x20000000;
 
-	static const UI32 flagNPC		= 0x40000000;
-	static const UI32 flagCanTrain		= 0x80000000;
+	static const UI32 flagOnHorse		= 0x40000000;
+	static const UI32 flagIsCasting		= 0x80000000;
 
 	static const UI32 flag2Mounted		= 0x00000001;
-	static const UI32 flag2OnHorse		= 0x00000002;
-	static const UI32 flag2IsCasting	= 0x00000004;
+	static const UI32 flag2CanTrain		= 0x00000002;
+	static const UI32 flag2ShopKeeper	= 0x00000004;
 	static const UI32 flag2IsTamed		= 0x00000008;
 	static const UI32 flag2IsGuarded	= 0x00000010;
 //@}
@@ -221,6 +220,12 @@ protected:
 	{
 		if ( set ) flags |= flag;
 		else flags &= ~flag;
+	}
+
+	inline void setFlag2(UI32 flag, bool set)
+	{
+		if ( set ) flags2 |= flag;
+		else flags2 &= ~flag;
 	}
 
 public:
@@ -262,9 +267,6 @@ public:
 	inline const bool isHiddenBySkill() const
 	{ return (hidden & HIDDEN_BYSKILL); }
 
-	inline const bool isNPC() const
-	{ return flags & flagNPC; }
-
 	inline const bool canAllMove() const
 	{ return flags & flagAllMove; }
 
@@ -272,7 +274,7 @@ public:
 	{ return flags & flagDoorUse; }
 
 	inline const bool canShopKeeper() const
-	{ return flags & flagShopKeeper; }
+	{ return flags2 & flag2ShopKeeper; }
 
 	inline const bool canSnoop() const
 	{ return flags & flagCanSnoopAll; }
@@ -330,7 +332,7 @@ public:
 	{ setFlag(flagDoorUse, set); }
 
 	inline void setShopKeeper(bool set = true)
-	{ setFlag(flagShopKeeper, set); }
+	{ setFlag2(flag2ShopKeeper, set); }
 
 	inline void makeInvulnerable(bool set = true)
 	{ setFlag(flagInvulnerable, set); }
@@ -541,25 +543,6 @@ public:
 	void		follow( P_CHAR pc ); //!< follow pc
 	void 		flee( P_CHAR pc, SI32 seconds=INVALID ); //!< flee from pc
 	void		pathFind( Location pos, bool bOverrideCurrentPath = true );	//!< Walk to position
-//@}
-
-//@{
-/*!
-\name Trainer
-*/
-public:
-	pChar	trainer;		//!< NPC training the char
-	UI08	trainingplayerin;	//!< Index in skillname of the skill the NPC is training the player in
-
-public:
-	inline const bool	isBeingTrained() const
-	{ return trainer; }
-
-	inline const pChar	getTrainer() const
-	{ return trainer; }
-
-	inline const UI08	getSkillTaught() const
-	{ return trainingplayerin; }
 //@}
 
 //@{

@@ -22,7 +22,7 @@ typedef cNPC *pNPC;
 In this class there are members used only for NPCs, and not for playing
 characters.
 */
-class cNPC
+class cNPC : cChar
 {
 public:
 	inline cNPC() : cChar()
