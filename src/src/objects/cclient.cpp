@@ -23,8 +23,7 @@ cClient::cClient(int32_t sd, struct sockaddr_in* addr)
 	acc = NULL:
 	visualRange = VISRANGE;
 	dragItem = NULL;
-	target.clicked = NULL;
-	target.loc = sLocation(UINVALID16,UINVALID16,UINVALID16);
+	target.source = NULL;
 	resetDragging();
 	clients.push_back(this);
 }
@@ -3283,35 +3282,35 @@ void cClient::resume()
 ------------------------------------------------------------------------------*/
 
 
-void cClient::sendTarget(processTarget callback)
+void cClient::sendTarget(pSerializable source, processTarget callback)
 {
 	target.callback = callback;
 	target.type = ttAll;
-	nPackets::Sent::TargetingCursor pk(1,0);	//verify if cursorid has any sense (second argument)
+	nPackets::Sent::TargetingCursor pk(source, true);
 	sendPacket(&pk);
 }
 
-void cClient::sendObjectTarget(processTarget callback)
+void cClient::sendObjectTarget(pSerializable source, processTarget callback)
 {
 	target.callback = callback;
 	target.type = ttObject;
-	nPackets::Sent::TargetingCursor pk(0,0);	//verify if cursorid has any sense (second argument)
+	nPackets::Sent::TargetingCursor pk(source, false);
 	sendPacket(&pk);
 }
 
-void cClient::sendCharTarget(processTarget callback)
+void cClient::sendCharTarget(pSerializable source, processTarget callback)
 {
 	target.callback = callback;
 	target.type = ttChar;
-	nPackets::Sent::TargetingCursor pk(0,0);	//verify if cursorid has any sense (second argument)
+	nPackets::Sent::TargetingCursor pk(source, false);
 	sendPacket(&pk);
 }
 
-void cClient::sendItemTarget(processTarget callback)
+void cClient::sendItemTarget(pSerializable source, processTarget callback)
 {
 	target.callback = callback;
 	target.type = ttItem;
-	nPackets::Sent::TargetingCursor pk(0,0);	//verify if cursorid has any sense (second argument)
+	nPackets::Sent::TargetingCursor pk(source, false);
 	sendPacket(&pk);
 }
 
@@ -3319,7 +3318,7 @@ void cClient::sendLocationTarget(processTarget callback)
 {
 	target.callback = callback;
 	target.type = ttLocation;
-	nPackets::Sent::TargetingCursor pk(1,0);	//verify if cursorid has any sense (second argument)
+	nPackets::Sent::TargetingCursor pk(source, true);
 	sendPacket(&pk);
 }
 

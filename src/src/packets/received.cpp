@@ -786,8 +786,6 @@ bool nPackets::Received::BookPage::execute(pClient client)
 \author Chronodt
 \param client client who sent the packet
 \note packet 0x6c
-
-\todo finish when targets redone
 */
 
 
@@ -797,6 +795,9 @@ bool nPackets::Received::TargetSelected::execute(pClient client)
 	sTarget target = client->getTarget();
 	if( target.loc.x == UINVALID16 || target.loc.y==UINVALID16) return false; //maybe it CAN return true if this packet is sent on targeting abortion. verify it! If true, add targeting abortion code instead of returning
 
+	pSerializable source =  cSerializable::findBySerial(LongFromCharPtr(buffer + 2));
+	if (!source) return false;	//If serial sent no longer exist target is invalid
+	
 	pSerializable clicked = cSerializable::findBySerial(LongFromCharPtr(buffer + 7);
 	sLocation loc;
 	loc.x = ShortFromCharPtr(buffer + 9);
@@ -812,8 +813,7 @@ bool nPackets::Received::TargetSelected::execute(pClient client)
 	    (target.type != ttAll && target.type != ttLocation && !clicked && !model))					// ... the target requires an object target but neither a serializable nor a static item was selected
 	{
 		// Resetting target data
-		target.clicked = NULL;
-		target.loc = sLocation(UINVALID16,UINVALID16,UINVALID16);
+		target.source = NULL;
 		client->setTarget(target);	//replace client's target
 		return false;
 	}
@@ -827,7 +827,7 @@ bool nPackets::Received::TargetSelected::execute(pClient client)
 			valid = dynamic_cast<pItem> clicked;
 			break;
 		case ttObject:
-			valid = clicked;
+			valid = clicked; // || model ?
 			break;
 		case ttAll:
 			valid = clicked || model || (loc.x!=UINVALID16 && loc.y!=UINVALID16)
@@ -835,9 +835,9 @@ bool nPackets::Received::TargetSelected::execute(pClient client)
 		default:
 			valid = loc.x!=UINVALID16 && loc.y!=UINVALID16;
 	}
+	target.source = source;
 	if (valid) target.callback( client, target );
-	target.clicked = NULL;
-	target.loc = sLocation(UINVALID16,UINVALID16,UINVALID16);
+	target.source = NULL;
 	client->setTarget(target);	//replace client's target
 	if (!valid) return false;
 	return true;

@@ -847,17 +847,15 @@ namespace nPackets {
 		\brief Send targeting cursor to client
 		\author Chronodt
 		\note packet 0x6C
-
-		\todo targeting has to be remade almost completely -_-
 		*/
 		class TargetingCursor : public cPacketSend
 		{
 		protected:
-			uint8_t type;		//!< 0 = creature/item target, 1 = xyz(location) target
-			uint32_t cursorid;	//!< I SUPPOSE it is something related to the animation id of the targeting cursor
+			bool islocationtarget;	//!< false = creature/item target, true = xyz(location) target
+			pSerializable source;	//!< item/char that called up the target
 		public:
-			inline TargetingCursor(uint8_t aType, uint32_t aCursorId) :
-				type(aType), cursorid(aCursorId)
+			inline TargetingCursor(pSerializable aSource, bool aIsLocationTarget) :
+				source(aSource), islocationtarget(aIsLocationTarget)
 			{ }
 			void prepare();
 		};

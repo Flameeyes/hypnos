@@ -197,11 +197,11 @@ public:
 	inline void setTarget(sTarget newtarget)
 	{ target = newtarget; }
 
-	void sendTarget(processTarget callback);		//!< sends a targeting cursor to client
-	void sendObjectTarget(processTarget callback);		//!< senda an object target
-	void sendCharTarget(processTarget callback);		//!< sends a char target
-	void sendItemTarget(processTarget callback);		//!< sends an item target
-	void sendLocationTarget(processTarget callback);	//!< sends a location target
+	void sendTarget(pSerializable source, processTarget callback);		//!< sends a targeting cursor to client
+	void sendObjectTarget(pSerializable source, processTarget callback);	//!< senda an object target
+	void sendCharTarget(pSerializable source, processTarget callback);	//!< sends a char target
+	void sendItemTarget(pSerializable source, processTarget callback);	//!< sends an item target
+	void sendLocationTarget(pSerializable source, processTarget callback);	//!< sends a location target
 
 //@}
 

@@ -992,8 +992,6 @@ void nPackets::Send::BookPageReadOnly::prepare()
 \brief Send Targeting cursor to client
 \author Chronodt
 \note packet 0x6C
-
-\todo targeting has to be remade almost completely -_-
 */
 
 void nPackets::Sent::TargetingCursor::prepare()
@@ -1001,9 +999,9 @@ void nPackets::Sent::TargetingCursor::prepare()
 	buffer = new uint8_t[19];
 	length = 19;
 	buffer[0] = 0x6c;
-	buffer[1] = type;
-	LongToCharPtr(cursorid, buffer+2);
-	buffer[6] = 0;
+	buffer[1] = islocationtarget ? 1 : 0;
+	LongToCharPtr(source->getSerial(), buffer + 2);
+	buffer[6] = 0;		// this is always 0 now
 	memset(buffer + 7, 0, 12);	//the remaining bytes are useless in sent message
 }
 

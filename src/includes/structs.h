@@ -230,4 +230,24 @@ struct sRegen {
 	uint32_t rate_real; //!< regeneration rate real
 };
 
+//! Target callback
+typedef void (*processTarget)( pClient, struct sTarget );
+
+/*!
+\brief Struct for a target callback
+\author Chronodt
+This struct is used as parameter of a target callback. It contains the data
+about what was targeted by the client.
+*/
+struct sTarget
+{
+	sLocation loc;			//!< xyz clicked
+	uint16_t id;			//!< visual id of object clicked
+	pSerializable source;		//!< pSerializable to char or item that called the target
+	pSerializable clicked;		//!< Object (char or item) clicked
+	processTarget callback; 	//!< note: callback function must be static or global!
+	TargetType type;		//!< item, char or location target?
+};
+
+
 #endif
