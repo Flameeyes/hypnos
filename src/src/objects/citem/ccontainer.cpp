@@ -5,10 +5,6 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Implementation of cContainer class
-*/
 
 #include "objects/citem/ccontainer.h"
 #include "logsystem.h"

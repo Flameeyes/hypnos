@@ -7,6 +7,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "extras/motd.h"
+#include <mxml.h>
 
 namespace nMOTD {
 	std::string motd;	//!< Message of the day
@@ -76,4 +77,5 @@ const std::string &nMOTD::getTip(uint16_t index)
 //! Gets the number of tips presents
 const uint16_t nMOTD::getTipsCount()
 {
+	return tips.size();
 }
