@@ -96,7 +96,7 @@ protected:
         void droppedOnSelf(pItem pi);        				//!< Item is dropped on self
 
 
-        void wear_item(pChar pck, pItem pi);                            //!< Item is dropped on paperdoll
+        void wear_item(pChar pck, pItem pi);				//!< Item is dropped on paperdoll
         void item_bounce3(const pItem pi);                              //!< simple bouncing
         void item_bounce4(const pItem pi);                              //!< bounce & checkid before resending item
         void item_bounce5(const pItem pi);                              //!< bounce & resend item

@@ -763,7 +763,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 	if( destOwner )
         {				 	               					// it has to bounce if:
 		if ( (destOwner != pc && !pnc && !pc->IsGM())  ||				// a) trying to put item on another pc's pack
-                     (npc && npc->npcaitype==NPCAI_PLAYERVENDOR && npg->getOwner()!=pc))	// b) npc is not your player vendor
+                     (npc && npc->npcaitype==NPCAI_PLAYERVENDOR && !pc->isOwnerOf(npc))		// b) npc is not your player vendor
                 { // Luxor
 			sysmessage("This aint your backpack!");
 			cPacketSendBounceItem pk(5);
@@ -1447,12 +1447,12 @@ void cClient::droppedOnBeggar(pItem pi, pNPC npc)
 		if(pi->amount<=100)
 		{
 			pc->IncreaseKarma(10);
-			ps->sysmsg("You have gain a little karma!");
+			ps->sysmsg("You have gained a little karma!");
 		}
 		else if(pi->amount>100)
 		{
 			pc->IncreaseKarma(50);
-			ps->sysmsg("You have gain some karma!");
+			ps->sysmsg("You have gained some karma!");
 		}
 		resetDragging();
 		dragItem = NULL;
@@ -1580,46 +1580,29 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 
 	pChar pc = currChar();
 	if ( ! pc ) return;
-	if( pck->dead )  //Exploit fix: Dead ppl can't equip anything.
-		return;
 
-	bool resetDragging = false;
+        pEquippable epi = dynamic_cast<pEquippable> pi;
 
-	if( (pi->getId()>>8) >= 0x40)  // LB, client crashfix if multi-objects are moved to PD
-		resetDragging = true;
-
-	tile_st tile;
-	int serial/*, letsbounce=0*/; // AntiChrist (5) - new ITEMHAND system
-
-	data::seekTile(pi->getId(), tile);
-
-	if( ( clientDimension == 3 ) &&  (tile.quality == 0) )
+        if (!epi || (pi->getId()>>8) >= 0x40)
 	{
-		sysmsg("You can't wear that");
-		resetDragging = true;
-	}
-	else {
-		pItem outmost = pi->getOutMostCont();
-		pChar vendor = (pChar) outmost->getContainer();
-		if( vendor && ( vendor->getOwnerSerial32() != pc->getSerial() ) )
-		{
-			resetDragging = true;
-		}
-	}
-
-	if( resetDragging ) {
-		cPacketSendBounceItem pk(5);
-		sendPacket(&pk);
-		if (isDragging())
-		{
-			resetDragging();
-			item_bounce4(pi);
-			updateStatusWindow(pi);
-		}
+		sysmessage("You can't wear that!");
+		item_bounce6(pi);
 		return;
 	}
 
-	if ( pck == pc || pc->IsGM() )
+	if (pck->isDead())
+	{
+		sysmessage("You can't dress ghosts!");
+		item_bounce6(pi);
+		return;
+	}
+
+
+        pNPC npc = dynamic_cast<pNPC> pck;
+
+
+	if ( pck == pc || pc->IsGM() ||						// players is dressing himself, player is a gm, or...
+           ( npc && npc->npcaitype==NPCAI_PLAYERVENDOR && pc->isOwnerOf(npc)) )	// player is dressing his own personal vendor
 	{
 
 		if ( !pc->IsGM() && pi->st > pck->getStrength() && !pi->isNewbie() ) // now you can equip anything if it's newbie
