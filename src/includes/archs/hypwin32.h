@@ -26,24 +26,21 @@
 
 char *basename(char *path);
 
-namespace arch {
+char *getHKLMRegistryString(char *key, char *subkey);
+void setHKLMRegistryString(char *key, char *subkey, char *value);
+char *splitPath (char *p);
 
-	char *getHKLMRegistryString(char *key, char *subkey);
-	void setHKLMRegistryString(char *key, char *subkey, char *value);
-	char *splitPath (char *p);
+void init_deamon();
+void initclock();
 
-	void init_deamon();
-	void initclock();
+inline bool pollHUPStatus () { return false; }
+inline bool pollCloseRequests () { return false; }
+inline void setup_signals (){ return; }
+inline void start_signal_thread() {return;}
 
-	inline bool pollHUPStatus () { return false; }
-	inline bool pollCloseRequests () { return false; }
-	inline void setup_signals (){ return; }
-	inline void start_signal_thread() {return;}
-
-	extern WSADATA wsaData;
-	extern WORD wVersionRequested;
-	extern long int oldtime, newtime;
-} // namespace arch
+extern WSADATA wsaData;
+extern WORD wVersionRequested;
+extern long int oldtime, newtime;
 
 typedef int FAR socklen_t ;
 

@@ -8,15 +8,14 @@
 
 #ifdef _WIN32
 
-#include "archs/hypwin32.h"
+#include "common_libs.h"
 #include <process.h>
 
 #include <wefts_mutex.h>
 
-namespace arch {
-	WSADATA wsaData;
-	WORD wVersionRequested;
-	long int oldtime, newtime;
+WSADATA wsaData;
+WORD wVersionRequested;
+long int oldtime, newtime;
 	
 /*!
 \brief Gets a string value from the KHEY_LOCAL_MACHINE registry
@@ -93,55 +92,73 @@ void init_deamon()
 	WarnOut("Windows needs code to be run in daemon mode...");
 }
 
+OSVersion OSVer = OSVER_UNKNOWN;
+
+std::string getOSVersionString()
+{
+	bool l_bWindowsNT = false;
+
+	OSVERSIONINFO vi = { sizeof(vi) };
+	char *s;
+	GetVersionEx(&vi);
+	if ((vi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS))
+	{
+		s = "Windows 95";
+		if (vi.dwMinorVersion>=10)
+		{
+			s = "Windows 98";
+			if (strstr(vi.szCSDVersion, "A")!=NULL) s = "Windows 98 2nd Edition";
+			if ((vi.dwMinorVersion>11)||(vi.dwMajorVersion>=5)) s = "Windows ME";
+		}
+		l_bWindowsNT = false;
+	} else {
+		s = "Windows NT";
+		if (vi.dwMajorVersion>=5)
+		{
+			s = "Windows 2000";
+			if ((vi.dwMinorVersion>0)||(vi.dwMajorVersion>5)) s = "Windows XP";
+		}
+		l_bWindowsNT = true;
+	}
+
+	char *temp;
+	if (l_bWindowsNT) {
+		asprintf(&temp, "%s v%d.%d [Build %d] %s",s,vi.dwMajorVersion , vi.dwMinorVersion ,
+			vi.dwBuildNumber , vi.szCSDVersion );
+	} else {
+		asprintf(&temp, "%s v%d.%d %s [Build %d]",s,vi.dwMajorVersion , vi.dwMinorVersion ,
+		vi.szCSDVersion, vi.dwBuildNumber & 0xFFFF );
+	}
+	OSVer = (l_bWindowsNT) ? OSVER_WINNT : OSVER_WIN9X;
+
+	std::string ret(temp);
+	free(temp);
+	
+	return ret;
+}
+
+OSVersion getOSVersion()
+{
+    if (g_OSVer==OSVER_UNKNOWN) {
+        getOSVersionString();
+    }
+    return OSVer;
+}
+
+//@{
+/*!
+\name Clock functions
+*/
+
+unsigned long initialserversec = 0;
+unsigned long initialservermill = 0;
+
 void initclock()
 {
 	timeb t ;
 	::ftime(&t) ;
 	initialserversec = t.time ;
 	initialservermill = t.millitm ;
-}
-
-} // namespace arch
-
-static char g_szOSVerBuffer[1024];
-char* getOSVersionString()
-{
-	g_szOSVerBuffer[0] = '\0';
-	bool l_bWindowsNT = false;
-
-	OSVERSIONINFO vi = { sizeof(vi) };
-	char s[80];
-	GetVersionEx(&vi);
-	if ((vi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS))
-	{
-		strcpy (s, "Windows 95");
-		if (vi.dwMinorVersion>=10)
-		{
-			strcpy (s, "Windows 98");
-			if (strstr(vi.szCSDVersion, "A")!=NULL) strcpy (s, "Windows 98 2nd Edition");
-			if ((vi.dwMinorVersion>11)||(vi.dwMajorVersion>=5)) strcpy (s, "Windows ME");
-		}
-		l_bWindowsNT = false;
-	} else {
-		strcpy (s, "Windows NT");
-		if (vi.dwMajorVersion>=5)
-		{
-			strcpy (s, "Windows 2000");
-			if ((vi.dwMinorVersion>0)||(vi.dwMajorVersion>5)) strcpy (s, "Windows XP");
-		}
-		l_bWindowsNT = true;
-	}
-
-	if (l_bWindowsNT) {
-		sprintf(g_szOSVerBuffer, "%s v%d.%d [Build %d] %s",s,vi.dwMajorVersion , vi.dwMinorVersion ,
-			vi.dwBuildNumber , vi.szCSDVersion );
-	} else {
-		sprintf(g_szOSVerBuffer, "%s v%d.%d %s [Build %d]",s,vi.dwMajorVersion , vi.dwMinorVersion ,
-		vi.szCSDVersion, vi.dwBuildNumber & 0xFFFF );
-	}
-	g_OSVer = (l_bWindowsNT) ? OSVER_WINNT : OSVER_WIN9X;
-
-	return g_szOSVerBuffer;
 }
 
 uint32_t getclockday()
@@ -188,6 +205,8 @@ uint32_t getsysclock()
    return seconds ;
 }
 
+//@}
+
 char *basename(char *path)
 {
 	char *ret= path+strlen(path);				// ret= end of string path
@@ -195,6 +214,14 @@ char *basename(char *path)
 	while( (*ret!='\\') && (*ret!='/') ) ret--;	// stop on the first '/' or '\' encountered
 	return ++ret;
 }
+
+//@
+/*!
+\name asprintf and vasprintf stuff
+\author Flameeyes
+\brief Implementation of asprintf and vasprintf function which aren't present
+	in Windows' library
+*/
 
 static const char as_buffer[4096];
 static Wefts::Mutex as_mutex;
@@ -253,5 +280,6 @@ int vasprintf(char **strp, const char *fmt, va_list ap)
 	as_mutex.unlock();
 	return retval;
 }
+//@}
 
 #endif

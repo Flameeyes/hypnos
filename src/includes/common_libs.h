@@ -94,7 +94,7 @@ warnings/errors/issues.
 
 #define TIMEOUT(X) ((X) <= getclock())
 
-extern char* getOSVersionString();
+extern std::string getOSVersionString();
 enum OSVersion { OSVER_UNKNOWN, OSVER_WIN9X, OSVER_WINNT, OSVER_NONWINDOWS };
 extern OSVersion getOSVersion();
 

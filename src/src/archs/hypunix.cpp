@@ -8,39 +8,36 @@
 
 #ifdef __unix__
 
-#include "archs/hypunix.h"
+#include "common_libs.h"
+#include <fstream>
 
-namespace arch {
-
-	termios termstate;
-	unsigned long int oldtime, newtime;
+termios termstate;
+unsigned long int oldtime, newtime;
 	
 /*!
 \brief signal handlers
 \param signal the signal received
+\todo Rewrite completely this! the signal handler is a thread so we should ITC
+to the main loop to request the save or the reload.
+
+The signals are these:
+	\li \b SIGHUP reloads all the scripts' data (Resync)
+	\li \b SIGUSR1 reloads the account file, deleting the old accounts
+		and adding the new ones
+	\li \b SIGUSR2 saves the world
+	\li \b SIGTERM CLose the server (gracefully)
 */
 void signal_handler(int signal)
 {
-//	ConOut("In signal handler\n") ;
 	switch (signal)
 	{
 	case SIGHUP:
-		//loadspawnregions();
-		loadregions();
-		loadmetagm();
-		loadserverscript();
-		Network->LoadHosts_deny();
 		break ;
-
 	case SIGUSR1:
-		Accounts->LoadAccounts();
 		break ;
 	case SIGUSR2:
-		cwmWorldState->saveNewWorld();
-		saveserverscript();
 		break ;
 	case SIGTERM:
-		keeprun = false ;
 		break ;
 	default:
 		break ;
@@ -53,44 +50,26 @@ void init_deamon()
 	pid_t pid ;
 
 	if ((pid = fork() ) != 0)
-		exit(0) ; //
+		_exit(0) ;
+	
 	setsid() ;
-	signal(SIGHUP, SIG_IGN) ;
+	signal(SIGHUP, SIG_IGN);
 	if ((pid=fork()) != 0)
 	{
-		fstream fPid ;
-		fPid.open("nxwpid",ios::out) ;
-		fPid << pid <<endl;
+		std::fstream fPid("nxwpid", std::ios::out);
+		fPid << pid << std::endl;
 		fPid.close() ;
-		exit(0) ;
-
+		_exit(0);
 	}
 	// We should close any dangling descriptors we have
 	for (i=0 ; i < 64 ; i++)
 		close(i) ;
 
-	// Ok, we are a true deamon now, so we should setup our signal handler
-	// We can use SIGHUP, SIGINT, and SIGWINCH as we should never receive them
-	// So we will use SIGHUP to reload our scripts (kinda a standard for sighup to be reload)
-	// We will use a SIGUSR2 to be world save
-	// and SIGUSR1 for an Account reload
-	/*
 	signal(SIGUSR2,&signal_handler);
 	signal(SIGHUP,&signal_handler);
 	signal(SIGUSR1,&signal_handler);
 	signal(SIGTERM,&signal_handler);
-	*/
 }
-
-void initclock()
-{
-	timeval t ;
-	gettimeofday(&t,NULL) ; // ftime has been obseloated
-	initialserversec = t.tv_sec ;
-	initialservermill = t.tv_usec/ 1000 ;
-}
-
-} // namespace arch
 
 char *strlwr(char *str) {
   for (unsigned int i=0;i<strlen(str);i++)
@@ -232,7 +211,7 @@ void setup_signals ()
 	// declare a variable of struct type.
 
 		// set the sigaction struct to all zeros
-	std::memset(&ignore_handler, 0, sizeof(struct sigaction));
+	memset(&ignore_handler, 0, sizeof(struct sigaction));
 
 		// set the ignore_handler to SIG_IGN
 	ignore_handler.sa_handler = SIG_IGN;
@@ -253,16 +232,38 @@ void setup_signals ()
 	sigaction(SIGPIPE, &ignore_handler, 0);
 }
 
-static char g_szOSVerBuffer[1024];
-char* getOSVersionString()
+std::string getOSVersionString()
 {
-    g_szOSVerBuffer[0] = '\0';
-    struct utsname info;
-    uname(&info);
-    sprintf(g_szOSVerBuffer, "%s %s on a %s", info.sysname, info.release, info.machine);
-    g_OSVer = OSVER_NONWINDOWS;
+	char *temp;
+	struct utsname info;
+	uname(&info);
+	asprintf(&temp, "%s %s on a %s", info.sysname, info.release, info.machine);
+	
+	std::string s(temp);
+	free(temp);
+	
+	return s;
+}
 
-    return g_szOSVerBuffer;
+OSVersion getOSVersion()
+{
+	return OSVER_NONWINDOWS;
+}
+
+//@{
+/*!
+\name Clock functions
+*/
+
+unsigned long initialserversec = 0;
+unsigned long initialservermill = 0;
+
+void initclock()
+{
+	timeval t ;
+	gettimeofday(&t,NULL) ; // ftime has been obseloated
+	initialserversec = t.tv_sec ;
+	initialservermill = t.tv_usec/ 1000 ;
 }
 
 uint32_t getclockday()
@@ -308,5 +309,7 @@ uint32_t getsysclock()
 	seconds = buffer.tv_sec;
 	return seconds;
 }
+
+//@}
 
 #endif

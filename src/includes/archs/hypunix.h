@@ -36,17 +36,15 @@
 
 #define SLPMULTI 1000
 
-namespace arch {
-	extern bool pollHUPStatus ();
-	extern bool pollCloseRequests ();
-	extern void setup_signals ();
-	extern void start_signal_thread();
+extern bool pollHUPStatus ();
+extern bool pollCloseRequests ();
+extern void setup_signals ();
+extern void start_signal_thread();
 
-	void init_deamon();
-	void initclock();
-	extern termios termstate ;
-	extern unsigned long int oldtime, newtime;
-} // namespace arch
+void init_deamon();
+void initclock();
+extern termios termstate ;
+extern unsigned long int oldtime, newtime;
 
 char *strlwr(char *);
 char *strupr(char *);

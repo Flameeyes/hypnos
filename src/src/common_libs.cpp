@@ -14,16 +14,6 @@
 
 #include "common_libs.h"
 
-OSVersion g_OSVer = OSVER_UNKNOWN;
-
-OSVersion getOSVersion()
-{
-    if (g_OSVer==OSVER_UNKNOWN) {
-        getOSVersionString();
-    }
-    return g_OSVer;
-}
-
 /*!
 \author Akron
 \brief return the start of the line passed
