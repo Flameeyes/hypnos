@@ -16,6 +16,8 @@
 #ifndef _AREA_H
 #define _AREA_H
 
+#include "common_libs.h"
+
 typedef struct {
 	uint16_t x1;
 	uint16_t y1;
@@ -41,7 +43,7 @@ public:
 	cAreas();
 	~cAreas();
 
-	uint32_t insert( Area& newarea, SERIAL index = INVALID );
+	uint32_t insert( Area& newarea, uint32_t index = UINVALID32 );
 	void loadareas();
 
 

@@ -14,14 +14,15 @@
 #define __INLINES_H__
 
 #include "basics.h"
+#include "globals.h"
 
 #define TIMEOUT(X) (((X) <= uiCurrentTime) || overflow)
 // Macros & Templates by Xan :
 
-template<typename T> inline T qmax(T a, T b) { a > b ? a : b; }
-template<typename T> inline T qmin(T a, T b) { a < b ? a : b; }
+template<typename T> inline T qmax(T a, T b) { return a > b ? a : b; }
+template<typename T> inline T qmin(T a, T b) { return a < b ? a : b; }
 template<typename T> inline bool between(T val, T min, T max)
-{ return val => min && val <= max; }
+{ return val >= min && val <= max; }
 
 // this delete is safe from multiple deletes of same ptr
 template<typename T> inline void safedelete(T*& p) { delete p; p = NULL; }
@@ -70,10 +71,8 @@ inline std::string toString(double value)
 inline void string2wstring( std::string from, std::wstring& to )
 {
 	to.erase();
-	string::iterator iter( from.begin() ), end( from.end() );
-	for( ; iter!=end; iter++ ) {
-		to+=static_cast<wchar_t>(*iter);
-	}
+	for( std::string::iterator iter = from.begin(); iter != from.end(); iter++ )
+		to += static_cast<wchar_t>(*iter);
 }
 
 /*!
@@ -85,10 +84,8 @@ inline void string2wstring( std::string from, std::wstring& to )
 inline void wstring2string( std::wstring from, std::string& to )
 {
 	to.erase();
-	wstring::iterator iter( from.begin() ), end( from.end() );
-	for( ; iter!=end; iter++ ) {
-		to+=static_cast<char>(*iter);
-	}
+	for( std::wstring::iterator iter = from.begin(); iter != from.end(); iter++ )
+		to += static_cast<char>(*iter);
 }
 
 /*!

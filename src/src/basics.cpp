@@ -65,14 +65,14 @@ int fillIntArray(char* str, int *array, int maxsize, int defval, int base)
 	char *s;
 	char *delimiter = " ";
 
-	if (base != BASE_INARRAY) for (i = 0; i < maxsize; i++) array[i] = defval;
+	if (base != baseInArray) for (i = 0; i < maxsize; i++) array[i] = defval;
 
 	i = 0;
 
 	s = strtok(tmp,delimiter);
 
 	while ((s!=NULL)&&(i < maxsize)) {
-		if (base == BASE_INARRAY) {
+		if (base == baseInArray) {
 			array[i] = str2num(s, array[i]);
 			i++;
 		}

@@ -7,32 +7,23 @@
     || For any question post to NoX-Wizard forums.                             ||
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
-#include "common_libs.h"
 #include "area.h"
-#include "scp_parser.h"
-#include "globals.h"
-#include "basics.h"
-#include "inlines.h"
-#include "scripts.h"
-
 
 cAreas*	Areas=NULL;
 
-
 cAreas::cAreas() 
 {
-	this->currarea=INVALID;
-};
+	currarea = UINVALID32;
+}
 
 cAreas::~cAreas() 
 {
 }
 
-
-uint32_t cAreas::insert( Area& newarea, SERIAL index )
+uint32_t cAreas::insert( Area& newarea, uint32_t index )
 {
 	AREA_DB::iterator iter( this->allareas.find( index ) );
-	if( iter==this->allareas.end() && index!=INVALID ) {
+	if( iter==this->allareas.end() && index != UINVALID32 ) {
 		if( currarea<=index )
 			currarea=index;
 		allareas[index]=newarea;
@@ -45,64 +36,6 @@ uint32_t cAreas::insert( Area& newarea, SERIAL index )
 	}
 }
 
-
 void cAreas::loadareas()
 {
-
-	cScpIterator*	iter = 0;
-	std::string	rha,
-			lha;
-	int idxarea=0;
-
-	int loopexit=0;
-	do
-	{
-		safedelete(iter);
-		uint32_t current=idxarea;
-		iter = Scripts::Areas->getNewIterator("SECTION AREA %i", idxarea++);
-		if( iter )
-		{
-
-			Area area;
-			uint16_t check=0;
-
-			do
-			{
-				iter->parseLine( lha, rha );
-				if ( lha[0] != '}' && lha[0] !='{' )
-				{
-					if	( lha == "X1")
-					{
-						area.x1 = str2num( rha );
-						check|=0x000F;
-					}
-					else if ( lha == "Y1" )
-					{
-						area.y1 = str2num( rha );
-						check|=0x00F0;
-					}
-					else if ( lha == "X2" )
-					{
-						area.x2 = str2num( rha );
-						check|=0x0F00;
-					}
-					else if ( lha == "Y2" )
-					{
-						area.y2 = str2num( rha );
-						check|=0xF000;
-					}
-					else
-						WarnOut("[ERROR] on parse of areas.xss" );
-				}
-			}
-			while ( lha[0] !='}' && ++loopexit < MAXLOOPS );
-
-			if( check==0xFFFF )
-				this->insert( area, current );
-		}
-    }
-	while (  lha != "EOF" && ++loopexit < MAXLOOPS );
-
-    safedelete(iter);
-
 }
