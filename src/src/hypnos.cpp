@@ -39,7 +39,7 @@ to use scripts written in different languages just changing a shared library
 
 What I want won't be easily realized, and for most of the hard work I have to
 thank Chrono and Ghisha, valid collegues which I hope to work with for a long
-time, all of this woldn't had be possible without them.
+time, all of this wouldn't had be possible without them.
 
 Also thanks to Judas for translating this text from italian to english :)
 
@@ -48,21 +48,16 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "common_libs.h"
 #include "sndpkg.h"
 #include "sregions.h"
-#include "networking/remadmin.h"
-#include "backend/scheduler.h"
 #include "version.h"
 #include "calendar.h"
 #include "magic.h"
 #include "party.h"
 #include "npcai.h"
-#include "networking/network.h"
 #include "tmpeff.h"
 #include "menu.h"
 #include "telport.h"
 #include "mount.h"
-#include "extras/jails.h"
 #include "ai.h"
-#include "worldmain.h"
 #include "pointer.h"
 #include "data.h"
 #include "boats.h"
@@ -72,13 +67,18 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "newbies.h"
 #include "timing.h"
 #include "inlines.h"
-#include "skills/skills.h"
 #include "map.h"
 #include "hypnos.h"
 #include "logsystem.h"
+#include "backend/scheduler.h"
+#include "extras/jails.h"
+#include "extras/motd.h"
+#include "extras/loginserver.h"
 #include "objects/citem.h"
 #include "objects/cchar.h"
-
+#include "networking/remadmin.h"
+#include "networking/network.h"
+#include "skills/skills.h"
 
 extern void initSignalHandlers();
 
@@ -91,66 +91,133 @@ RemoteAdmin TelnetInterface;	//!< remote administration
 nMULFiles::fTiledataLand *tiledataLand = NULL;
 nMULFiles::fTiledataStatic *tiledataStatic = NULL;
 
+void StartClasses()
+{
+	//! \todo this should be completely removed!
+	ConOut("Initializing classes...");
+
+	// Classes nulled now, lets get them set up :)
+	cwmWorldState=new CWorldMain;
+	mapRegions=new cRegion;
+
+	Network=new cNetwork;
+	Spawns=new cSpawns;
+	Areas=new cAreas;
+	Restocks= new cRestockMng();
+
+	ConOut(" [ OK ]\n");
+}
+
+void DeleteClasses()
+{
+	//! \todo this should be completely removed!
+	delete cwmWorldState;
+	delete mapRegions;
+
+	delete Network;
+	delete Spawns;
+	delete Areas;
+
+	delete Restocks;
+}
 
 /*!
-\todo clean and broke up
+\brief Loads the server settings and datafiles
+
+This function loads various settings and datafiles calling the right functions
+which then take the duty of load the XML files.
+This function is currently called by the main() function only, but it can be
+used to reload all the server's data.
 */
-static void item_char_test()
+void loadServer()
 {
-	LogMessage("Starting item consistancy check");
-	ConOut("Starting item consistancy check... \n");
+	srand(getclock()); // initial randomization call
+	
+	// Load MULs
+	nMULFiles::setMULpath("./muls"); //!\todo need to fix this
+	tiledataStatic = new nMULFiles::fTiledataStatic();
+	tiledataLand = new nMULFiles::fTiledataLand();
+	
+	// Load datafiles
+	nMOTD::loadMOTD();
+	nLoginServer::loadLoginServer();
+	nNewbies::loadStartLocations();
+	nNewbies::loadNewbieItems();
+	nSkills::loadSkills();
+	nJails::loadJails();
+	cWeapon::loadWeaponsInfo();
+	cContainer::loadContainersData();
+	
+	ConOut("Loading mountable creature...");
+	loadmounts();
+	ConOut("[  Ok  ]\n");
 
+	ConOut("Loading Creature info...");
+	creatures.load();
+	ConOut("[  Ok  ]\n");
 
-	cAllObjectsIter objs;
-	for( objs.rewind(); !objs.IsEmpty(); objs++ )
-	{
-		uint32_t ser=objs.getSerial();
+	ConOut("Building pointer arrays...");
+	BuildPointerArray();
+	ConOut("[  Ok  ]\n");
 
-		if( cSerializable::isItemSerial( ser ) )
-		{
+	ConOut("Loading accounts...");
+	Accounts->LoadAccounts();
+	ConOut("[  Ok  ]\n");
 
-			pItem pi=(pItem)(objs.getObject() );
-
-			if (pi->getSerial()==INVALID) {
-				WarnOut("item %s [serial: %i] has invalid serial!",pi->getCurrentName().c_str(),pi->getSerial());
-				LogWarning("ALERT ! item %s [serial: %i] has invalid serial!",pi->getCurrentName().c_str(),pi->getSerial());
-			}
-
-			// item is contained in himself
-			if (pi == pi->getContainer())
-			{
-				WarnOut("item %s [serial: %i] has dangerous container value, autocorrecting",pi->getCurrentName().c_str(),pi->getSerial());
-				LogWarning("ALERT ! item %s [serial: %i] has dangerous container value, autocorrecting",pi->getCurrentName().c_str(),pi->getSerial());
-				pi->setContainer(0);
-			}
-
-			// item is owned by himself
-			if (pi == pi->getOwner())
-			{
-				WarnOut("item %s [serial: %i] has dangerous owner value",pi->getCurrentName().c_str(),pi->getSerial());
-				LogWarning("ALERT ! item %s [serial: %i] has dangerous owner value",pi->getCurrentName().c_str(),pi->getSerial());
-				pi->setOwner(NULL);
-			}
-
-		} else {
-			pChar p_pet = (pChar)(objs.getObject());
-
-			if (p_pet->isStabled())
-			{
-				pChar stablemaster=cSerializable::findCharBySerial(p_pet->getStablemaster());
-				if (! stablemaster )
-				{
-					p_pet->unStable();
-					pointers::addToLocationMap( p_pet );
-					p_pet->timeused_last=getclock();
-					p_pet->time_unused=0;
-					LogMessage("Stabled animal got freed because stablemaster died");
-					InfoOut("stabled animal got freed because stablemaster died\n");
-				}
-			 }
-		}
-	}
+	ConOut("Loading areas...");
+	Areas->loadareas();
 	ConOut("[DONE]\n");
+
+	ConOut("Loading spawn regions...");
+	//loadspawnregions();
+	Spawns->loadFromScript();
+	ConOut("[DONE]\n");
+
+	ConOut("Loading regions...");
+	loadregions();
+	ConOut("[DONE]\n");
+
+	data::init(); // Luxor
+
+	ConOut("Loading Teleport...");
+	read_in_teleport();
+	ConOut("[DONE]\n");
+
+	ConOut("Loading vital scripts... ");
+	loadmetagm();
+	ConOut("[DONE]\n");
+
+	npcs::initNpcSpells();
+
+	TelnetInterface.Init();	// initialise remote admin interface
+
+	LoadOverrides();
+	cScheduler::init();
+
+	ConOut(" [DONE]\nLoading custom titles...");
+	loadcustomtitle();
+	ConOut(" [DONE]\n");
+
+	ConOut("Initializing creatures... ");
+	creatures.load();
+	ConOut("[DONE]\n");
+
+	ConOut("Initializing magic... ");
+	//Magic->InitSpells();
+	magic::loadSpellsFromScript();
+	ConOut("[DONE]\n");
+
+	ConOut("Initializing races... ");
+	Race::parse();
+	ConOut("[DONE]\n");
+
+	ConOut("Loading IP blocking rules... ");
+	Network->LoadHosts_deny();
+	ConOut("[DONE]\n");
+
+	Guilds->CheckConsistancy(); // LB
+
+	StartClasses();
 }
 
 extern "C" void breakOnFirstFuncz();
@@ -391,9 +458,13 @@ int main(int argc, char *argv[])
 
 	if ((argc>1)&&(strstr(argv[1], "-debug")))	// activate debugger if requested
 		ServerScp::g_nLoadDebugger = 1;
+		
+	loadServer();
 
 	serverstarttime=getclock();
 
+#if 0
+// Old load...
 	loadserverdefaults();
 	preloadSections("config/server.cfg");
 	preloadSections("custom/server.cfg");
@@ -404,12 +475,13 @@ int main(int argc, char *argv[])
 
 	//XAN : moved here 'cos nxw needs early initialization
 	//(has vital data in server.cfg, needed for proper "bootstrap" :))
-
 	loadserverscript();
+#endif
 
 #ifdef USE_SIGNALS
 	//thx to punt and Plastique :]
 	signal(SIGPIPE, SIG_IGN);
+	initSignalHandlers();
 #endif
 
 	if (ServerScp::g_nDeamonMode!=0) {
@@ -425,8 +497,8 @@ int main(int argc, char *argv[])
 
 	openings = 0;
 
-	StartClasses();
-
+#if 0
+// old things
 	exitOnError(error);
 
 	commitserverscript(); // second phase setup
@@ -442,87 +514,12 @@ int main(int argc, char *argv[])
 
 	ConOut("\n");
 	SetGlobalVars();
-
-	// Load MULs
-	nMULFiles::setMULpath("./muls"); //!\todo need to fix this
-	tiledataStatic = new nMULFiles::fTiledataStatic();
-	tiledataLand = new nMULFiles::fTiledataLand();
+#endif
 	
-	// Load datafiles
-	nMOTD::loadMOTD();
-	nLoginServer::loadLoginServer();
-	nNewbies::loadStartLocations();
-	nNewbies::loadNewbieItems();
-	nSkills::loadSkills();
-	nJails::loadJails();
-	cWeapon::loadWeaponsInfo();
-	cContainer::loadContainersData();
-	
-	ConOut("Loading mountable creature...");
-	loadmounts();
-	ConOut("[  Ok  ]\n");
-
-	ConOut("Loading Creature info...");
-	creatures.load();
-	ConOut("[  Ok  ]\n");
-
-	ConOut("Building pointer arrays...");
-	BuildPointerArray();
-	ConOut("[  Ok  ]\n");
-
-	ConOut("Loading accounts...");
-	Accounts->LoadAccounts();
-	ConOut("[  Ok  ]\n");
 
 	keeprun=(Network->kr); //LB. for some technical reasons global varaibles CANT be changed in constructors in c++.
 	error=Network->faul; // i hope i can find a cleaner solution for that, but this works !!!
 	// has to here and not at the cal cause it would get overriten later
-
-	exitOnError(error);
-
-	ConOut("Loading areas...");
-	Areas->loadareas();
-	ConOut("[DONE]\n");
-
-
-	ConOut("Loading spawn regions...");
-	//loadspawnregions();
-	Spawns->loadFromScript();
-	ConOut("[DONE]\n");
-
-	ConOut("Loading regions...");
-	loadregions();
-	ConOut("[DONE]\n");
-
-	exitOnError(error);
-
-	ConOut("\n");
-
-	data::init(); // Luxor
-
-	if (!keeprun) error = 1;
-	exitOnError(error)
-
-	ConOut("Loading Teleport...");
-	read_in_teleport();
-	ConOut("[DONE]\n");
-
-	ConOut("Initializing random number seed... [ OK ]\n");
-
-	srand(getclock()); // initial randomization call
-	ConOut("Loading vital scripts... ");
-	loadmetagm();
-	ConOut("[DONE]\n");
-
-	npcs::initNpcSpells();
-
-	TelnetInterface.Init();	// initialise remote admin interface
-
-	LoadOverrides();
-	cScheduler::init();
-	Calendar::loadCalendarScp();
-
-	Translation::init_translation(); //belli marco
 
 	serverstarttime=getclock();
 
@@ -554,30 +551,6 @@ int main(int argc, char *argv[])
 	endtime=0;
 	lclock=0;
 
-	ConOut(" [DONE]\nLoading custom titles...");
-	loadcustomtitle();
-	ConOut(" [DONE]\n");
-
-	ConOut("Initializing creatures... ");
-	creatures.load();
-	ConOut("[DONE]\n");
-
-	ConOut("Initializing magic... ");
-	//Magic->InitSpells();
-	magic::loadSpellsFromScript();
-	ConOut("[DONE]\n");
-
-	ConOut("Initializing races... ");
-	Race::parse();
-	ConOut("[DONE]\n");
-
-	ConOut("Loading IP blocking rules... ");
-	Network->LoadHosts_deny();
-	ConOut("[DONE]\n");
-	item_char_test(); //LB
-	Guilds->CheckConsistancy(); // LB
-
-
 	ConOut("\n\n");
 
 	clearscreen();
@@ -603,8 +576,10 @@ int main(int argc, char *argv[])
 
 	ConOut("\nMap size : %dx%d", map_width, map_height);
 
-	if ((map_width==768)&&(map_height==512)) ConOut(" [standard Britannia/Sosaria map size]\n");
-	else if ((map_width==288)&&(map_height==200)) ConOut(" [standard Ilshenar map size]\n");
+	if ((map_width==768)&&(map_height==512))
+		ConOut(" [standard Britannia/Sosaria map size]\n");
+	else if ((map_width==288)&&(map_height==200))
+		ConOut(" [standard Ilshenar map size]\n");
 	else ConOut(" [custom map size]\n");
 
 	if (ServerScp::g_nAutoDetectIP==1)  {
@@ -612,7 +587,6 @@ int main(int argc, char *argv[])
 	} else {
 		ConOut("\nServer waiting connections at IP %s, TCP port %i\n", serv[0][1], g_nMainTCPPort);
 	}
-	//	ConOut("\nServer waiting connections on all interfaces at TCP port %s\n", serv[0][2]);
 
 	// print allowed clients
 	std::string t;
@@ -621,38 +595,28 @@ int main(int argc, char *argv[])
 	ConOut("\nAllowed clients : ");
 	for ( ; vis != vis_end;  ++vis)
 	{
-	t = (*vis);  // a bit pervert to store c++ strings and operate with c strings, admitably
+		t = (*vis);  // a bit pervert to store c++ strings and operate with c strings, admitably
 
-	  if ( t == "SERVER_DEFAULT" )
-	  {
-		  ConOut("%s : %s\n", t.c_str(), strSupportedClient);
-		  break;
-	  }
-	  else if ( t == "ALL" )
-	  {
-		  ConOut("ALL\n");
-		  break;
-	  }
+		if ( t == "SERVER_DEFAULT" )
+		{
+			ConOut("%s : %s\n", t.c_str(), strSupportedClient);
+			break;
+		}
+		else if ( t == "ALL" )
+		{
+			ConOut("ALL\n");
+			break;
+		}
 
-	  ConOut("%s,", t.c_str());
-    }
-    ConOut("\n");
-
-	initSignalHandlers();
-
-
-	if (ServerScp::g_nLoadDebugger) {
-		SDbgOut("                         -=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
-		SDbgOut("                         ||  RUNNING IN DEBUG MODE  ||\n");
-		SDbgOut("                         -=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
+		ConOut("%s,", t.c_str());
 	}
-
+	ConOut("\n");
+	
 	pointers::init(); //Luxor
 
 	InfoOut("Server started\n");
 
 	Spawns->doSpawnAll();
-
 
 	//OnStart
 	AMXEXEC(AMXT_SPECIALS,0,0,AMX_AFTER);
@@ -874,8 +838,6 @@ unsigned long CheckMilliTimer(unsigned long &Seconds, unsigned long &Millisecond
 	return( 1000 * ( newSec - Seconds ) + ( newMill - Milliseconds ) );
 }
 
-
-
 void enlist(int s, int listnum) // listnum is stored in items morex
 {
 	pChar pc = cSerializable::findCharBySerial(currchar[s]);
@@ -958,32 +920,4 @@ void InitMultis()
 		else
 			pi->setMulti(multi);
 	}
-}
-
-void StartClasses()
-{
-	ConOut("Initializing classes...");
-
-	// Classes nulled now, lets get them set up :)
-	cwmWorldState=new CWorldMain;
-	mapRegions=new cRegion;
-
-	Network=new cNetwork;
-	Spawns=new cSpawns;
-	Areas=new cAreas;
-	Restocks= new cRestockMng();
-
-	ConOut(" [ OK ]\n");
-}
-
-void DeleteClasses()
-{
-	delete cwmWorldState;
-	delete mapRegions;
-
-	delete Network;
-	delete Spawns;
-	delete Areas;
-
-	delete Restocks;
 }
