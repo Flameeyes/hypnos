@@ -331,6 +331,7 @@ class cChar : public cObject
 		void 			SetMurderer();
 		void 			SetInnocent();
 		void 			SetCriminal();
+		void			makeCriminal();
 
 		inline void 		SetPermaGrey()
 		{ nxwflags[0] |= flagGrey|flagPermaGrey; }
@@ -338,6 +339,18 @@ class cChar : public cObject
 		//! Makes a character temporary grey
 		void 			SetGrey()
 		{ if (!npc) tempfx::add(this, this, tempfx::GREY, 0, 0, 0, 0x7FFF); }
+
+		/*!
+		\brief Sets criminal or grey depending on a server.cfg setting
+		\param mode server.cfg setting to test (1 | 2)
+		*/
+		inline void cChar::setCrimGrey(int mode)
+		{
+			if ( mode == 1 )
+				SetGrey();
+			else
+				makeCriminal();
+		}
 
 		void 			unHide();
 
@@ -903,9 +916,8 @@ public:
 
 		SI32			carve; //AntiChrist - for new carve system
 
-		SERIAL			hairserial;//there are needed for incognito stuff
+		SERIAL			hairserial;
 		SERIAL			beardserial;
-
 
 		TIMERVAL		begging_timer;
 		MsgBoards::PostType	postType;
@@ -1073,6 +1085,9 @@ public:
 
 		P_ITEM			getBeardItem();
 		P_ITEM			getHairItem();
+
+		void			useHairDye(P_ITEM bottle);
+
 		void			morph ( short bodyid = INVALID, short skincolor = INVALID,
 								short hairstyle = INVALID, short haircolor = INVALID, short beardstyle = INVALID,
 								short beardcolor = INVALID, const char* newname = NULL, LOGICAL bBackup = true);

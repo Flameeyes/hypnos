@@ -153,13 +153,13 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pc->modifyFame(ServerScp::g_nChopFameLoss); // Ripper..lose fame and karma and criminal.
 		pc->IncreaseKarma(+ServerScp::g_nChopKarmaLoss);
 		pc->sysmsg(TRANSLATE("You lost some fame and karma!"));
-		setCrimGrey(pc, ServerScp::g_nChopWillCriminal);//Blue and not attacker and not guild
+		pc->setCrimGrey(ServerScp::g_nChopWillCriminal);//Blue and not attacker and not guild
 
 		//create the Head
 		sprintf(temp,"the head of %s",pi3->getSecondaryNameC());
-        P_ITEM pi = item::CreateFromScript( "$item_hardcoded" );
-        VALIDATEPI(pi);
-        pi->setId( 0x1DA0 );
+		P_ITEM pi = item::CreateFromScript( "$item_hardcoded" );
+		VALIDATEPI(pi);
+		pi->setId( 0x1DA0 );
 		pi->setContSerial(INVALID);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
@@ -565,9 +565,9 @@ void target_playerVendorBuy( NXWCLIENT ps, P_TARGET t )
 
 void target_envoke( NXWCLIENT ps, P_TARGET t )
 {
-	
+
 	P_CHAR curr=ps->currChar();
-	
+
 	SERIAL serial=t->getClicked();
 	if( isItemSerial( serial ) )
 	{
@@ -688,7 +688,7 @@ void target_key( NXWCLIENT ps, P_TARGET t )
         }//else
 }
 
-void target_attack( NXWCLIENT ps, P_TARGET t ) 
+void target_attack( NXWCLIENT ps, P_TARGET t )
 {
 
     P_CHAR pc_t1= pointers::findCharBySerial( t->buffer[0] );
@@ -702,7 +702,7 @@ void target_attack( NXWCLIENT ps, P_TARGET t )
     npcattacktarget(pc_t1, pc_t2);
 }
 
-void target_follow( NXWCLIENT ps, P_TARGET t ) 
+void target_follow( NXWCLIENT ps, P_TARGET t )
 {
 
     P_CHAR pc = pointers::findCharBySerial( t->buffer[0] );
@@ -759,11 +759,11 @@ void target_sword( NXWCLIENT ps, P_TARGET t )
 	else if(itemById::IsLog(id)) // vagrant
 	{
 		Skills::target_bowcraft( ps, t );
-	} 
+	}
 	else if(itemById::IsCorpse(id))
 	{
 		CorpseTarget(ps);
-	} 
+	}
 	else
 		pc->sysmsg(TRANSLATE("You can't think of a way to use your blade on that."));
 }
@@ -847,7 +847,7 @@ void target_expPotion( NXWCLIENT ps, P_TARGET t )
             pi->Refresh();
         }
     }
-    else 
+    else
 		pc->sysmsg(TRANSLATE("You cannot throw the potion there!"));
 }
 
@@ -857,7 +857,7 @@ void target_trigger( NXWCLIENT ps, P_TARGET t )
 
 	P_ITEM pi = MAKE_ITEM_REF(t->getClicked());
 	VALIDATEPI(pi);
-    
+
 	triggerItem(ps->toInt(), pi, TRIGTYPE_TARGET);
 
 }
@@ -892,7 +892,7 @@ void target_telestuff( NXWCLIENT ps, P_TARGET t )
 		targ->send(ps);
 		ps->sysmsg( TRANSLATE("Select location to put this object.") );
 	} else { //on ground.. so move it
-		
+
 		Location loc=t->getLocation();
 		loc.z+=tileHeight( t->getModel() );
 

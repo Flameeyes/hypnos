@@ -20,8 +20,6 @@
 
 namespace item
 {
-
-
 	/*!
 	\author Anthalir
 	*/
@@ -412,7 +410,7 @@ namespace item
 			}
 			else
 				pi->setCont( cont );
-		
+
 		return pi;
 
 	}
@@ -681,12 +679,12 @@ namespace item
 			if (ISVALIDPI(pPack))
 			{
 				SERIAL piled = pPack->ContainerPileItem(pi);
-				if( piled==INVALID ) { 
+				if( piled==INVALID ) {
 					pi->setContSerial( pPack->getSerial32() );
 					pi->SetRandPosInCont( pPack );
 				}
-				else 
-					return pointers::findItemBySerial( piled );				
+				else
+					return pointers::findItemBySerial( piled );
 			}
 			else
 			{// LB place it at players feet if he hasnt got backpack
@@ -973,7 +971,7 @@ namespace item
 						if ((pi->gatetime<=currenttime || (overflow)) && pi->morex!=0)
 						{
 							npcs::AddRespawnNPC(pi,pi->morex);
-							pi->gatetime=0;					
+							pi->gatetime=0;
 						}
 					}
 				}
@@ -1088,7 +1086,7 @@ namespace item
 
 	P_ITEM SpawnRandomItem(NXWSOCKET s, char* cList, char* cItemID)
 	{
-		
+
 		P_CHAR pc=MAKE_CHAR_REF( currchar[s] );
 		VALIDATEPCR( pc, NULL );
 

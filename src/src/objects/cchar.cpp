@@ -1220,9 +1220,9 @@ void cChar::helpStuff(P_CHAR pc_i)
 		return;
 	}
 
-	if (pc_i->IsCriminal()) setCrimGrey (this, ServerScp::g_nHelpingCriminalWillCriminal);
+	if (pc_i->IsCriminal()) setCrimGrey (ServerScp::g_nHelpingCriminalWillCriminal);
 
-	if (pc_i->IsMurderer()) criminal(this);
+	if (pc_i->IsMurderer()) makeCriminal();
 }
 
 /*!
@@ -2519,8 +2519,6 @@ void cChar::setOwner(P_CHAR owner)
 */
 P_ITEM cChar::getBeardItem()
 {
-
-
 	NxwItemWrapper si;
 	si.fillItemWeared( this, true, true, true );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
@@ -2533,7 +2531,6 @@ P_ITEM cChar::getBeardItem()
 
 	beardserial=INVALID;
 	return NULL;
-
 }
 
 /*!
@@ -2544,7 +2541,6 @@ P_ITEM cChar::getBeardItem()
 */
 P_ITEM cChar::getHairItem()
 {
-
 	NxwItemWrapper si;
 	si.fillItemWeared( this, true, true, true );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
@@ -2557,8 +2553,8 @@ P_ITEM cChar::getHairItem()
 		}
 	}
 
-    hairserial = INVALID;
-    return NULL;
+	hairserial = INVALID;
+	return NULL;
 }
 
 /*!
@@ -3450,6 +3446,19 @@ void cChar::SetCriminal()
 		amxevents[EVENT_CHR_ONFLAGCHG]->Call(getSerial32() );
 	//runAmxEvent( EVENT_CHR_ONFLAGCHG, getSerial32(), getSocket() );
 	flag=flagKarmaCriminal;
+}
+
+//! Makes someone criminal
+void cChar::makeCriminal()
+{
+	if ((!npc)&&(!IsCriminal() || !IsMurderer()))
+	{//Not an npc, not grey, not red
+		tempfx::add(this, this, tempfx::CRIMINAL, 0, 0, 0); //Luxor
+		if(::region[region].priv&0x01 && SrvParms->guardsactive) { //guarded
+			if (ServerScp::g_nInstantGuard == 1)
+				npcs::SpawnGuard( this, this, getPosition() ); // LB bugfix
+		}
+	}
 }
 
 void cChar::doSingleClickOnCharacter( SERIAL serial )
@@ -4938,4 +4947,25 @@ void cChar::modifyFame( SI32 value )
 const LOGICAL cChar::checkSkillSparrCheck(Skill sk, SI32 low, SI32 high, P_CHAR pcd)
 {
 	return Skills::CheckSkillSparrCheck(DEREF_P_CHAR(this),sk, low, high, pcd);
+}
+
+void cChar::useHairDye(P_ITEM bottle)
+{
+	VALIDATEPI(bottle);
+
+	NxwItemWrapper si;
+	si.fillItemWeared( this, true, true, true );
+	for( si.rewind(); !si.isEmpty(); si++ )
+	{
+		P_ITEM pi=si.getItem();
+		if(!ISVALIDPI(pi))
+			continue;
+		if(pi->layer==LAYER_BEARD || pi->layer==LAYER_HAIR)
+		{
+			pi->setColor( bottle->getColor() );
+			//Now change the color to the hair dye bottle color!
+			pi->Refresh();
+		}
+	}
+	bottle->Delete();	//Now delete the hair dye bottle!
 }

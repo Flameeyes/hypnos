@@ -2015,27 +2015,6 @@ void enlist(int s, int listnum) // listnum is stored in items morex
     safedelete(iter);
 }
 
-
-
-/*!
-\brief make someone criminal
-\author Repsys Ripper
-\param pc character to make criminal
-\remark cleaned and modified by Luxor to use CRIMINAL temp effect
-*/
-void criminal(P_CHAR pc)
-{
-	VALIDATEPC(pc);
-	if ((!pc->npc)&&(!pc->IsCriminal() || !pc->IsMurderer()))
-	{//Not an npc, not grey, not red
-		tempfx::add(pc, pc, tempfx::CRIMINAL, 0, 0, 0); //Luxor
-		if(region[pc->region].priv&0x01 && SrvParms->guardsactive) { //guarded
-			if (ServerScp::g_nInstantGuard == 1)
-				npcs::SpawnGuard( pc, pc, pc->getPosition() ); // LB bugfix
-		}
-	}
-}
-
 void setcharflag(P_CHAR pc)// repsys ...Ripper
 {
 	VALIDATEPC(pc);

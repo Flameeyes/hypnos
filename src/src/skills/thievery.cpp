@@ -54,7 +54,7 @@ void snooping( P_CHAR snooper, P_ITEM cont )
 		{
 			if ((cont->getContSerial()>1) && (cont->getContSerial() != snooper->getSerial32()) )
 			{
-				
+
 				if ( owner->amxevents[EVENT_CHR_ONSNOOPED])
 				{
 					g_bByPass = false;
@@ -90,7 +90,7 @@ void snooping( P_CHAR snooper, P_ITEM cont )
 					}
 					snooper->IncreaseKarma(-ServerScp::g_nSnoopKarmaLoss);//AntiChrist
 					snooper->modifyFame(-ServerScp::g_nSnoopFameLoss);//AntiChrist
-					setCrimGrey(snooper, ServerScp::g_nSnoopWillCriminal);
+					snooper->setCrimGrey(ServerScp::g_nSnoopWillCriminal);
 				}
 			}
 		}
@@ -170,7 +170,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
         		return;
 			}
 
-			
+
 			if (pi->amxevents[EVENT_IONSTOLEN]!=NULL)
 			{
 				g_bByPass = false;
@@ -204,7 +204,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 
 			thief->sysmsg(TRANSLATE("You successfully steal the item."));
 			pi->Refresh();
-			
+
 			result=+200;
 			//all_items(s); why all item?
 		}
@@ -223,7 +223,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 			thief->modifyFame(ServerScp::g_nStealFameLoss);
 
 			if ( victim->IsInnocent() && thief->attackerserial != victim->getSerial32() && Guilds->Compare(thief,victim)==0)
-				setCrimGrey(thief, ServerScp::g_nStealWillCriminal); //Blue and not attacker and not same guild
+				thief->setCrimGrey(ServerScp::g_nStealWillCriminal); //Blue and not attacker and not same guild
 
 
 			std::string itmname ( "" );
@@ -249,7 +249,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 			NxwSocketWrapper sw;
 			sw.fillOnline( thief, true );
 			for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-				
+
 				NXWCLIENT ps_i=sw.getClient();
 				if(ps_i==NULL ) continue;
 
@@ -260,7 +260,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 			}
 		}
 	}
-	else 
+	else
 	{
 		thief->sysmsg(TRANSLATE("You are too far away to steal that item."));
 	}
@@ -305,7 +305,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 	VALIDATEPC(thief);
 	P_CHAR victim = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(victim);
-	
+
 
 	if (thief->getSerial32() == victim->getSerial32() || thief->getSerial32()==victim->getOwnerSerial32())
 	{
@@ -360,11 +360,11 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 			return;
 		}
 
-		
+
 		//Endy can't be not valid after this -^ loop, else error
 		VALIDATEPI(pi);
 
-		if( pi->isNewbie() ) 
+		if( pi->isNewbie() )
 		{//newbie
 			thief->sysmsg(TRANSLATE("... and fail because it is of no value to you."));
 			return;
@@ -388,7 +388,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 					thief->sysmsg(TRANSLATE("... and fail because it is too heavy."));
 				else
 				{
-					
+
 					if (victim->amxevents[EVENT_CHR_ONSTOLEN])
 					{
 						g_bByPass = false;
@@ -420,12 +420,12 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 			thief->modifyFame( ServerScp::g_nStealFameLoss);
 
 			if (victim->IsInnocent() && thief->attackerserial!=victim->getSerial32() && Guilds->Compare(thief,victim)==0)//AntiChrist
-				setCrimGrey(thief, ServerScp::g_nStealWillCriminal);//Blue and not attacker and not guild
+				thief->setCrimGrey(ServerScp::g_nStealWillCriminal);//Blue and not attacker and not guild
 
 			std::string itmname = "";
 			if ( pi->getCurrentName() != "#" )
 				itmname = pi->getCurrentName();
-			else 
+			else
 			{
 				pi->getName( temp );
 				itmname = temp;
@@ -445,7 +445,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 			NxwSocketWrapper sw;
 			sw.fillOnline( thief, true );
 			for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-				
+
 				NXWCLIENT ps_i=sw.getClient();
 				if( ps_i==NULL ) continue;
 
@@ -456,7 +456,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 			}
 		}
 	}
-	else 
+	else
 	{
 		thief->sysmsg( TRANSLATE("... and realise you're too far away."));
 	}
@@ -490,7 +490,7 @@ void Skills::target_lockpick( NXWCLIENT ps, P_TARGET t )
 		if (g_bByPass==true)
 			return;
 	}
-	
+
 	/*
 	chest->runAmxEvent( EVENT_IONLOCKPICK, chest->getSerial32(), s );
 	if (g_bByPass==true)
@@ -536,11 +536,11 @@ void Skills::target_lockpick( NXWCLIENT ps, P_TARGET t )
 				pc->sysmsg( TRANSLATE("You broke your lockpick!"));
 				pick->ReduceAmount(1);
 			}
-			else 
+			else
 				pc->sysmsg(TRANSLATE( "You fail to open the lock."));
 		}
 	}
-	else 
+	else
 		pc->sysmsg(TRANSLATE("That cannot be unlocked without a key."));
 
 

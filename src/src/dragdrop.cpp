@@ -336,7 +336,7 @@ void get_item( NXWCLIENT client ) // Client grabs an item
 					if ( !bCanLoot && container->more2==1 )
 					{
 						pc_currchar->IncreaseKarma(-5);
-						setCrimGrey(pc_currchar, ServerScp::g_nLootingWillCriminal);
+						pc_currchar->setCrimGrey(ServerScp::g_nLootingWillCriminal);
 						pc_currchar->sysmsg( TRANSLATE("You are loosing karma!"));
 					}
 				}

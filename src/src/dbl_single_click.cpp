@@ -1123,7 +1123,7 @@ static void doubleclick_itemid( NXWSOCKET s, P_CHAR pc, P_ITEM pi, P_ITEM pack )
 			return;
 		case 0x0E27:
 		case 0x0EFF:   // Hair Dye
-			usehairdye(s,pi);
+			pc->useHairDye(pi);
 			return;
 		case 0x14FB:
 		case 0x14FC:
@@ -1346,7 +1346,7 @@ void dbl_click_character(NXWCLIENT ps, P_CHAR target)
 						pc->sysmsg( TRANSLATE("You failed to snoop the pack animal.") );
 						pc->IncreaseKarma( ServerScp::g_nSnoopKarmaLoss  );
 						pc->modifyFame( ServerScp::g_nSnoopFameLoss );
-						setCrimGrey(pc, ServerScp::g_nSnoopWillCriminal );
+						pc->setCrimGrey(ServerScp::g_nSnoopWillCriminal);
 						SetTimerSec( &(pc->objectdelay), SrvParms->objectdelay+SrvParms->snoopdelay );
 					}
 				}
