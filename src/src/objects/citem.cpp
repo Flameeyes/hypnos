@@ -142,8 +142,6 @@ cItem& cItem::operator=(cItem& b)
         //setPosition(b.getPosition());
         //setOldPosition(b.getOldPosition());
         setColor( b.getColor() );
-        setContSerial(INVALID);
-        //setContSerial(b.getContSerial(true), true);
         layer = b.layer;
         oldlayer = b.oldlayer;
         scriptlayer = b.scriptlayer;
@@ -359,87 +357,24 @@ void cItem::getPopupHelp(char *str)
 }
 
 /*!
-\brief set the serial of the item's container
-\author Anthalir
-\since 0.82a
-\param serial new serial
-\param old set the saved cont serial or the actual one ?
-\param update update the container map ?
+\brief Set the item's container
+\param obj New container
+\param old Set the saved container or the actual one
+\param update Update the container map?
 */
-void cItem::setContSerial(SI32 serial, bool old, bool update )
+void cItem::setContainer(pOjbect obj)
 {
-	if( old ) {
-		oldcontserial.serial32= serial;
-	} else { //Luxor bug fix
-		oldcontserial.serial32= contserial.serial32;
-		contserial.serial32= serial;
-		if (serial == INVALID)
+	if ( old )
+		oldcont = obj;
+	else {
+		oldcont = cont;
+		cont = obj;
+		if ( ! obj )
 			setDecayTime();
 	}
 
-	if( update )
+	if ( update )
 		pointers::updContMap(this);
-}
-
-void cItem::setContSerialByte(UI32 nByte, BYTE value, bool old/*= false*/)
-{
-	Serial *cont;
-
-	if( old )
-		cont= &oldcontserial;
-	else
-		cont= &contserial;
-
-	switch( nByte )
-	{
-	case 1: cont->ser1= value; break;
-	case 2: cont->ser2= value; break;
-	case 3: cont->ser3= value; break;
-	case 4: cont->ser4= value; break;
-	default: LogWarning("cannot access byte %i of serial !!", nByte);
-	}
-}
-
-BYTE cItem::getContSerialByte(UI32 nByte, bool old/*= false*/) const
-{
-	const Serial *cont;
-
-	if( old )
-		cont= &oldcontserial;
-	else
-		cont= &contserial;
-
-	switch( nByte )
-	{
-	case 1: return cont->ser1;
-	case 2: return cont->ser2;
-	case 3: return cont->ser3;
-	case 4: return cont->ser4;
-	default: LogWarning("cannot access byte %i of serial !!", nByte);
-	}
-
-	return 0;
-}
-
-SI32 cItem::getContSerial(bool old/*= 0*/) const
-{
-	if(old)
-		return oldcontserial.serial32;
-	else
-		return contserial.serial32;
-}
-
-const cObject* cItem::getContainer() const
-{
-	SI32 ser= contserial.serial32;
-
-	if( isItemSerial(ser) )			// container is an item
-		return pointers::findItemBySerial(ser);
-
-	if( isCharSerial(ser) )			// container is a player
-		return pointers::findCharBySerial(ser);
-
-	return NULL;					// container serial is invalid
 }
 
 /*!
@@ -509,7 +444,7 @@ bool cItem::doDecay()
 				P_ITEM pj = si.getItem();
 				if( ISVALIDPI(pj) )
 				{
-					pj->setContSerial(INVALID);
+					pj->setContainer(0);
 					pj->MoveTo( getPosition() );
 					pj->setDecayTime();
 					pj->Refresh();
@@ -625,52 +560,6 @@ const magic::FieldType cItem::isFieldSpellItem() const
 	return fieldInvalid;
 }
 
-/*
-// This method does not change the pointer arrays !!
-// should only be used in VERY specific situations like initItem... Duke, 6.4.2001
-void cItem::setContSerialOnly(SI32 contser)
-{
-	oldcontserial.serial32= contserial.serial32;	//Luxor
-	contserial.serial32= contser;
-
-	cont1=(unsigned char) ((contser&0xFF000000)>>24);
-	cont2=(unsigned char) ((contser&0x00FF0000)>>16);
-	cont3=(unsigned char) ((contser&0x0000FF00)>>8);
-	cont4=(unsigned char) ((contser&0x000000FF));
-
-}
-
-void cItem::setContSerial(SI32 contser)
-{
-	setContSerial(contser, false, false);
-	pointers::updContMap(this);	//Luxor
-}
-*/
-
-/*
-void cItem::setOwnSerialOnly(SI32 ownser)
-{
-	ownserial=ownser;
-	owner1=(unsigned char) ((ownser&0xFF000000)>>24);
-	owner2=(unsigned char) ((ownser&0x00FF0000)>>16);
-	owner3=(unsigned char) ((ownser&0x0000FF00)>>8);
-	owner4=(unsigned char) ((ownser&0x000000FF));
-}
-
-void cItem::SetOwnSerial(SI32 ownser)
-{
-	if (ownserial!=-1)	// if it was set, remove the old one
-		removefromptr(&ownsp[ownserial%HASHMAX], DEREF_P_ITEM(this));
-
-	setOwnSerialOnly(ownser);
-
-	if (ownser!=-1)		// if there is an owner, add it
-		setptr(&ownsp[ownserial%HASHMAX], DEREF_P_ITEM(this));
-
-}
-*/
-
-
 void cItem::SetMultiSerial(SI32 mulser)
 {
 	if (getMultiSerial32()!=INVALID)	// if it was set, remove the old one
@@ -701,36 +590,36 @@ void cItem::MoveTo(Location newloc)
 /*!
 \brief Add item to container
 \author Endymion
-\param pItem the item to add
+\param item the item to add
 \param xx the x location or INVALID if use rand pos
 \param yy the y location or INVALID if use rand pos
 */
-bool cItem::AddItem(P_ITEM pItem, short xx, short yy)
+bool cItem::AddItem(pItem item, short xx, short yy)
 {
-
-	VALIDATEPIR(pItem,false);
+	if ( ! item )
+		return false;
 
 	NxwSocketWrapper sw;
-	sw.fillOnline( pItem );
+	sw.fillOnline( item );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
-		SendDeleteObjectPkt(sw.getSocket(), pItem->getSerial32() );
+		SendDeleteObjectPkt(sw.getSocket(), item->getSerial32() );
 
 
 	if (xx!=-1)	// use the given position
 	{
-		pItem->setContSerial( getSerial32() );
-		pItem->setPosition(xx, yy, 9);
+		item->setContainer( this );
+		item->setPosition(xx, yy, 9);
 	}
 	else		// no pos given
 	{
-		if( !ContainerPileItem(pItem) )	{ // try to pile
-			pItem->SetRandPosInCont(this);		// not piled, random pos
-			pItem->setContSerial( getSerial32() );
+		if( !ContainerPileItem(item) )	{ // try to pile
+			item->SetRandPosInCont(this);		// not piled, random pos
+			item->setContainer(this);
 		}
 		else
 			return true; //Luxor: we cannot do a refresh because item was piled
 	}
-	pItem->Refresh();
+	item->Refresh();
 	return true;
 
 }
@@ -766,32 +655,31 @@ inline bool operator !=( cItem& a, cItem& b ) {
 \return true if piled, false else
 \note refresh is done if piled
 */
-bool cItem::PileItem( P_ITEM pItem )
+bool cItem::PileItem( P_ITEM item )
 {
-	VALIDATEPIR( pItem, false )
-	if( (*this) != (*pItem) )
+	VALIDATEPIR( item, false )
+	if( (*this) != (*item) )
 		return false;	//cannot stack.
 
-	if( amount+ pItem->amount>MAX_ITEM_AMOUNT )
+	if( amount+ item->amount>MAX_ITEM_AMOUNT )
 	{
-		P_ITEM cont = pointers::findItemBySerial( getContSerial());
-		if( ISVALIDPI(cont) )
-			pItem->SetRandPosInCont( cont );
+		if( cont )
+			item->SetRandPosInCont( cont );
 		else
-			pItem->setPosition( getPosition().x+1, getPosition().y, getPosition().z );
+			item->setPosition( getPosition().x+1, getPosition().y, getPosition().z );
 
-		pItem->setContSerial( getContSerial() );
+		item->setContainer( cont );
 
-		pItem->amount=(amount+pItem->amount)-MAX_ITEM_AMOUNT;
+		item->amount=(amount+item->amount)-MAX_ITEM_AMOUNT;
 		amount=MAX_ITEM_AMOUNT;
-		pItem->Refresh();
+		item->Refresh();
 	}
 	else
 	{
-		pItem->setPosition( getPosition() );
-		pItem->setContSerial( getContSerial() );
-		pItem->amount+=amount;
-		pItem->Refresh();
+		item->setPosition( getPosition() );
+		item->setContainer( cont );
+		item->amount+=amount;
+		item->Refresh();
 		Delete();
 	}
 
@@ -802,16 +690,16 @@ bool cItem::PileItem( P_ITEM pItem )
 /*!
 \brief try to find an item in the container to stack with
 */
-bool cItem::ContainerPileItem( P_ITEM pItem)
+bool cItem::ContainerPileItem( P_ITEM item)
 {
-	VALIDATEPIR(pItem, false );
+	VALIDATEPIR(item, false );
 	NxwItemWrapper si;
 	si.fillItemsInContainer( this, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
 		P_ITEM pi=si.getItem();
 		if( ISVALIDPI(pi) ) {
-			if( pi->PileItem(pItem) )
+			if( pi->PileItem(item) )
 				return true;
 		}
 	}
@@ -1183,10 +1071,10 @@ void cItem::Delete()
 void cItem::Refresh()
 {
 
-	if( getContSerial()==getSerial32() )
+	if( cont == this )
 	{
 		ErrOut("item %s [serial: %i] has dangerous container value, autocorrecting...\n", getCurrentNameC(), getSerial32());
-		setContSerial(INVALID);
+		setContainer(NULL);
 	}
 
 	NxwSocketWrapper sw;
@@ -1214,10 +1102,10 @@ void cItem::Refresh()
 
 	//if not, let's check if it's on a char or in a pack
 
-	if( isCharSerial(getContSerial()) )//container is a player...it means it's equipped on a character!
+	if( isCharSerial(cont->getSerial()) )//container is a player...it means it's equipped on a character!
 	{
 		// elcabesa this is like a wearit() function, we can use here
-		P_CHAR charcont= (P_CHAR)(getContainer());
+		pChar charcont= (pChar)cont;
 
 		NxwSocketWrapper sw;
 		sw.fillOnline( charcont, false );
@@ -1311,7 +1199,7 @@ SI16 cContainerItem::getGumpType()
 	}
 }
 
-bool cContainerItem::pileItem( P_ITEM pItem)	// try to find an item in the container to stack with
+bool cContainerItem::pileItem( P_ITEM item)	// try to find an item in the container to stack with
 {
 
 	NxwItemWrapper si;
@@ -1321,22 +1209,22 @@ bool cContainerItem::pileItem( P_ITEM pItem)	// try to find an item in the conta
 		P_ITEM pi=si.getItem();
 		if(!ISVALIDPI(pi)) continue;
 
-		if (!(pileable && pItem->pileable &&
-			getId()==pItem->getId() &&
-			getColor()==pItem->getColor() ))
+		if (!(pileable && item->pileable &&
+			getId()==item->getId() &&
+			getColor()==item->getColor() ))
 			return false;	//cannot stack.
 
-		if (amount+pItem->amount>65535)
+		if (amount+item->amount>65535)
 		{
-			pItem->setPosition( getPosition("x"), getPosition("y"), 9);
-			pItem->amount=(amount+pItem->amount)-65535;
+			item->setPosition( getPosition("x"), getPosition("y"), 9);
+			item->amount=(amount+item->amount)-65535;
 			amount=65535;
-			pItem->Refresh();
+			item->Refresh();
 		}
 		else
 		{
-			amount+=pItem->amount;
-			pItem->Delete();
+			amount+=item->amount;
+			item->Delete();
 		}
 		Refresh();
 		return true;
@@ -1345,37 +1233,37 @@ bool cContainerItem::pileItem( P_ITEM pItem)	// try to find an item in the conta
 
 }
 
-void cContainerItem::setRandPos(P_ITEM pItem)
+void cContainerItem::setRandPos(P_ITEM item)
 {
-	pItem->setPosition("x", RandomNum(18, 118));
-	pItem->setPosition("z", 9);
+	item->setPosition("x", RandomNum(18, 118));
+	item->setPosition("z", 9);
 
 	switch( getGumpType() )
 	{
 	case 1:
-		pItem->setPosition("y", RandomNum(50, 100));
+		item->setPosition("y", RandomNum(50, 100));
 		break;
 
 	case 2:
-		pItem->setPosition("y", RandomNum(30, 80));
+		item->setPosition("y", RandomNum(30, 80));
 		break;
 
 	case 3:
-		pItem->setPosition("y", RandomNum(100, 140));
+		item->setPosition("y", RandomNum(100, 140));
 		break;
 
 	case 4:
-		pItem->setPosition("y", RandomNum(60, 140));
-		pItem->setPosition("x", RandomNum(60, 140));
+		item->setPosition("y", RandomNum(60, 140));
+		item->setPosition("x", RandomNum(60, 140));
 		break;
 
 	case 5:
-		pItem->setPosition("y", RandomNum(85, 160));
-		pItem->setPosition("x", RandomNum(20, 70));
+		item->setPosition("y", RandomNum(85, 160));
+		item->setPosition("x", RandomNum(20, 70));
 		break;
 
 	default:
-		pItem->setPosition("y", RandomNum(30, 80));
+		item->setPosition("y", RandomNum(30, 80));
 		break;
 	}
 }
@@ -1429,7 +1317,7 @@ UI32 cContainerItem::removeItems(UI32 scriptID, UI32 amount/*= 1*/)
 /*!
 \brief remove item from container but don't delete it from world
 */
-void cContainerItem::dropItem(P_ITEM pi)
+void cContainerItem::droitem(P_ITEM pi)
 {
 	int ser= pi->getSerial32();
 	vector<SI32>::iterator it= ItemList.begin();
@@ -1449,90 +1337,89 @@ void cContainerItem::dropItem(P_ITEM pi)
 \param rec not need to use, only internal for have a max number or recursion
 \note max recursion = 50
 */
-P_ITEM cItem::getOutMostCont( short rec )
+pItem cItem::getOutMostCont( short rec )
 {
 	if ( rec<0	// too many recursions
-		|| (isCharSerial(getContSerial()))	//weared
+		|| (isCharSerial(cont->getSerial()))	//weared
 		|| (isInWorld()) )	// in the world
 		return this;
-	P_ITEM pOut=pointers::findItemBySerial(getContSerial());	// up one level
-	if (!ISVALIDPI(pOut))
-	{
-		char ttt[222];
-		sprintf(ttt,"item <%i> has a bad contserial <%i>", getSerial32(), getContSerial());
-		LogCritical(ttt);
-		return this;
-	}
-	else
-		return pOut->getOutMostCont( --rec );
+
+	return cont->getOutMostCont( --rec );
 }
 
 /*!
 \brief Get the owner of this pack ( automatic recurse for out most pack )
-\author Endymion
+\author Flameeyes
 \return pointer to pack owner
-\note automatic recurse for get out most container
 */
-P_CHAR cItem::getPackOwner()
+pChar cItem::getPackOwner()
 {
-	P_ITEM cont=getOutMostCont();
-	if(cont->isInWorld())
+	P_ITEM omcont = getOutMostCont();
+
+	if(omcont->isInWorld())
 		return NULL;
 	else
-		return pointers::findCharBySerial(cont->getContSerial());
+		return cont->getContainer();
 }
 
 /*!
 \brief Get item's distance from the given char
-\author Endymion
-\return distance ( if invalid is returned VERY_VERY_FAR )
+\author Flameeyes
+\return distance ( if error is returned VERY_VERY_FAR )
 \param pc the char
-\note it check also if is subcontainer, or weared. so np call freely
 */
-UI32 cItem::distFrom( P_CHAR pc )
+UI32 cItem::distFrom( pChar pc )
 {
-	VALIDATEPCR(pc, VERY_VERY_FAR );
-	return pc->distFrom( this );
+	if ( ! pc )
+		return VERY_VERY_FAR;
+
+	return pc->distFrom(this);
 }
 
 /*!
 \brief Get item's distance from the given item
-\author Endymion
+\author Endymion - rewrite by Flameeyes
 \return distance ( if invalid is returned VERY_VERY_FAR )
 \param pi the item
 \note it check also if is subcontainer, or weared. so np call freely
 */
-UI32 cItem::distFrom( P_ITEM pi )
+UI32 cItem::distFrom( pItem pi )
 {
-	VALIDATEPIR(pi, VERY_VERY_FAR);
-	P_ITEM cont=pi->getOutMostCont(); //return at least itself
-	VALIDATEPIR(cont, VERY_VERY_FAR);
-	P_ITEM mycont=getOutMostCont();
-	VALIDATEPIR(mycont, VERY_VERY_FAR );
+	if ( ! pi )
+		return VERY_VERY_FAR;
 
-	if(cont->isInWorld() ) {
-		if( mycont->isInWorld() )
-			return (int)dist(mycont->getPosition(),cont->getPosition());
+	pItem omc = pi->getOutMostCont();
+	if ( ! omc )
+		return VERY_VERY_FAR;
+
+	pItem mycont = getOutMostCont();
+	if ( ! mycont )
+		return VERY_VERY_FAR;
+
+	if(omc->isInWorld() ) {
+		if( myomc->isInWorld() )
+			return (UI32)dist(myomc->getPosition(),omc->getPosition());
 		else { //this is weared
-			SERIAL outcontserial=cont->getContSerial();
-			if(isCharSerial(outcontserial)) { //can be weared
-				P_CHAR pc=pointers::findCharBySerial( outcontserial );
-				VALIDATEPCR(pc,VERY_VERY_FAR);
-				return (int)dist(pc->getPosition(),cont->getPosition());
+			if(isCharSerial(omc->getContainer()->getSerial()))
+			{ //can be weared
+				pChar pc = omc->getContainer();
+				if ( ! pc )
+					return VERY_VERY_FAR;
+
+				return (UI32)dist(pc->getPosition(),omc->getPosition());
 			}
-			else
-				return VERY_VERY_FAR; //not world, not weared.. and another cont can't be
+			else return VERY_VERY_FAR; //not world, not weared.. and another omc can't be
 		}
 	}
-	else { //cont is weared
-		SERIAL outcontserial=cont->getContSerial();
-		if(isCharSerial(outcontserial)) { //can be weared
-			P_CHAR pc_i=pointers::findCharBySerial( outcontserial );
-			VALIDATEPCR(pc_i,VERY_VERY_FAR);
-			if( mycont->isInWorld() )
-				return (int)dist(pc_i->getPosition(),mycont->getPosition());
+	else { //omc is weared
+		if(isCharSerial(omc->getContainer()->getSerial()))
+			pChar pc_i = omc->getContainer();
+			if ( ! pc_i )
+				return VERY_VERY_FAR;
+			if( myomc->isInWorld() )
+				return (UI32)dist(pc_i->getPosition(),myomc->getPosition());
 			else
-				return pc_i->distFrom(mycont);
+				return pc_i->distFrom(myomc);
 		}
 		else return VERY_VERY_FAR;
 

@@ -403,13 +403,10 @@ private:
 	pObject		oldcont;
 
 public:
-	const pObject	getContainer() const;
+	inline const pObject getContainer() const
+	{ return cont; }
 
-	inline void	setCont(P_OBJECT obj)
-	{ setContSerial(obj->getSerial32()); }
-
-	void		setContSerial(SI32 serial, bool old= false, bool update= true);
-	void		setContSerialByte(UI32 nByte, BYTE value, bool old= false);
+	void setContainer(pOjbect obj);
 
 	//! check if item is a container
 	inline const bool isContainer() const
@@ -420,9 +417,10 @@ public:
 
 	//SI16		GetContGumpType();
 	void		SetRandPosInCont(P_ITEM pCont);
-	bool		ContainerPileItem( P_ITEM pItem );	// try to find an item in the container to stack with
+	//! try to find an item in the container to stack with
+	bool		ContainerPileItem( P_ITEM item );
 	SI32		secureIt; // secured chests
-	bool		AddItem(P_ITEM pItem, short xx=-1, short yy=-1);	// Add Item to container
+	bool		AddItem(P_ITEM item, short xx=-1, short yy=-1);	// Add Item to container
 	SI32		DeleteAmountByID(int amount, unsigned int scriptID);
 	SI16		getContGump();
 	void		putInto( P_ITEM pi );
@@ -489,7 +487,7 @@ public:
 	void MoveTo(Location newloc);
 
 	inline const bool isInWorld() const
-	{ return contserial.serial32 == INVALID; }
+	{ return cont; }
 
 	inline void MoveTo(SI32 x, SI32 y, SI08 z)
 	{ MoveTo( Loc(x, y, z) ); }
