@@ -7,6 +7,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "libhypnos/cvariant.hpp"
+#include "libhypnos/hypstl/vector.hpp"
 
 #define throw_if_not_int case isNotInt: throw eInvalidInteger(this);
 
