@@ -13,7 +13,7 @@
 \todo like other parts of NoX, houses should be moved into "House" namespace, IMHO - Akron
 */
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "network.h"
 #include "sndpkg.h"
 #include "debug.h"

@@ -9,7 +9,7 @@
 \file
 */
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "walking.h"
 #include "network.h"
 #include "sregions.h"

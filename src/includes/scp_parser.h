@@ -14,7 +14,7 @@
 #ifndef __SCP_PARSER_H__
 #define __SCP_PARSER_H__
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 
 bool evaluateOneDefine (char *szLine);
 

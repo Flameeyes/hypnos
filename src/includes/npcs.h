@@ -73,7 +73,7 @@ typedef struct {
 
 /*
 \soundflags	
-	0 - normal, 5 sounds (attack-started, idle, attack, defence, dying, see nxwcommn.h)
+	0 - normal, 5 sounds (attack-started, idle, attack, defence, dying, see common_libs.h)
 	1 - birds .. only one "bird-shape" and zillions of sounds ...
 	2 - only 3 sounds -> (attack,defence,dying)
 	3 - only 4 sounds ->	(attack-started,attack,defnce,dying)

@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "network.h"
 #include "sndpkg.h"
 #include "race.h"

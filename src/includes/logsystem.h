@@ -17,7 +17,7 @@
 #define __LOGSYSTEM_H
 
 #include <stdarg.h>
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "common_libs.h"
 #include "constants.h"
 #include "typedefs.h"

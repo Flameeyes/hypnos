@@ -1,7 +1,7 @@
 #ifndef __AMXFILE_H__
 #define __AMXFILE_H__
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 
 typedef map< uint32_t, FILE* >	mAmxFile;
 typedef mAmxFile::iterator	miAmxFile;

@@ -12,7 +12,7 @@
 \brief functions that handle the teleporting
 \author Duke
 */
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "sndpkg.h"
 #include "debug.h"
 #include "layer.h"

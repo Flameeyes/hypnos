@@ -27,7 +27,7 @@
 
 #if (0) && defined(__BORLANDC__) && (__BORLANDC__ >= 0x462)
 #error "!!!This does not work for some reason!!!"
-#include    <stdlib.h>                  /* get prototype for _lrotl() , _lrotr() */
+#include    <cstdlib>                  /* get prototype for _lrotl() , _lrotr() */
 #pragma inline __lrotl__
 #pragma inline __lrotr__
 #undef  ROL                             /* get rid of inefficient definitions */
@@ -37,7 +37,7 @@
 #endif
 
 #ifdef _MSC_VER
-#include    <stdlib.h>                  /* get prototypes for rotation functions */
+#include    <cstdlib>                  /* get prototypes for rotation functions */
 #undef  ROL
 #undef  ROR
 #pragma intrinsic(_lrotl,_lrotr)        /* use intrinsic compiler rotations */

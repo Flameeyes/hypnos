@@ -7,7 +7,7 @@
     || For any question post to NoX-Wizard forums.                             ||
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "packets.h"
 #include "network.h"
 #include "globals.h"

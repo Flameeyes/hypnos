@@ -27,7 +27,7 @@
  ***********************************************************************************
  */
  
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "amxcback.h"
 #include "sndpkg.h"
 #include "itemid.h"

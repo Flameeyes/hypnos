@@ -6,7 +6,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "network.h"
 #include "race.h"
 #include "commands.h"

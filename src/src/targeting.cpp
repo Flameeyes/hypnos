@@ -7,7 +7,7 @@
     || For any question post to NoX-Wizard forums.                             ||
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "client.h"
 #include "basics.h"
 #include "amx/amxcback.h"

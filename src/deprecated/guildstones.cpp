@@ -8,7 +8,7 @@
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "classes.h"
 #include "network.h"
 #include "sndpkg.h"

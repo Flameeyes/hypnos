@@ -16,7 +16,7 @@
 #ifndef __AMXVARSERVER_H__
 #define __AMXVARSERVER_H__
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 
 typedef enum
 {

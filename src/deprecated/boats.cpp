@@ -8,7 +8,7 @@
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "boats.h"
 #include "set.h"
 #include "sndpkg.h"

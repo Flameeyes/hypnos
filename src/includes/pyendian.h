@@ -17,7 +17,7 @@
 #ifndef __ENDIAN_H__
 #define __ENDIAN_H__
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 
 /*
 \brief endian-independent unsigned int 16 bits

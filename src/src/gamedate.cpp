@@ -8,7 +8,7 @@
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
  
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "calendar.h"
 #include "gamedate.h"
 #include "basics.h"

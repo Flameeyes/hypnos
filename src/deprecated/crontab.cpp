@@ -42,7 +42,7 @@
 
 ******************************************************************************************/
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "network.h"
 #include "cmdtable.h"
 #include "sregions.h"

@@ -14,7 +14,7 @@
 
 
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "network.h"
 #include "cmds.h"
 #include "sregions.h"

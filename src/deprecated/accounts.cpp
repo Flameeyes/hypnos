@@ -5,7 +5,9 @@
 | You can find detailed license information in pyuo.cpp file.              |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "nxwcommn.h"
+
+#include "common_libs.h"
+
 #include "accounts.h"
 #include "debug.h"
 #include "encryption.h"
@@ -22,7 +24,6 @@
 
 
 cAccounts* Accounts=NULL;
-
 
 /*!
 \brief Constructor

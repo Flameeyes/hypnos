@@ -10,7 +10,7 @@
 #ifndef __racegender__
 #define __racegender__
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 
 typedef enum { FEMALE, MALE, FEMALE_OR_MALE } GENDER;
 

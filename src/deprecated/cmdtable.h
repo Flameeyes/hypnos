@@ -11,7 +11,7 @@
 #ifndef __CMDTABLE_H
 #define __CMDTABLE_H
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "target.h"
 
 /*!

@@ -13,7 +13,7 @@
 #define __BOATS_H__
 
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "data.h"
 
 /*!

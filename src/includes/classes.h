@@ -65,7 +65,7 @@ private:
 	void CalcMaster(int guildnumber);
 	void SetType(int guildnumber, int type);
 public:
-	guild_st guilds[MAXGUILDS]; //lb, moved from nxwcommn.h cauz global variabels cant be changed in constuctors ...
+	guild_st guilds[MAXGUILDS]; //lb, moved from common_libs.h cauz global variabels cant be changed in constuctors ...
 	cGuilds();
 	virtual ~cGuilds();
 	int  GetType(int guildnumber);

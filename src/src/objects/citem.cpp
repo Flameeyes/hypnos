@@ -6,7 +6,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "sndpkg.h"
 #include "amx/amxcback.h"
 #include "magic.h"

@@ -13,7 +13,7 @@
 \note Completely rewritten by Luxor in January 2002
 */
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "itemid.h"
 #include "sndpkg.h"
 #include "amx/amxcback.h"

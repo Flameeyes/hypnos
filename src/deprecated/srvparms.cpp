@@ -41,7 +41,7 @@
 
 ***********************************************************************************/
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "party.h"
 #include "debug.h"
 #include "version.h"

@@ -13,7 +13,7 @@
 \author Chronodt (almost total rewrite)
 */
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "network.h"
 #include "sregions.h"
 #include "sndpkg.h"

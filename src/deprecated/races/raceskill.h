@@ -10,7 +10,7 @@
 #ifndef __raceskill__
 #define __raceskill__
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "scp_parser.h"
 
 #include "racescriptentry.h"

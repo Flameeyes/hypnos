@@ -12,7 +12,7 @@
 \brief Encryption Stuff
 */
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "basics.h"
 
 /*******************************************************************************************

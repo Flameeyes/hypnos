@@ -10,7 +10,7 @@
 #ifndef __racerequiredtype__
 #define __racerequiredtype__
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 
 typedef enum { RT_OPTIONAL = 0, RT_PROHIBITED = 1, RT_MANDATORY = 2 } REQUIREDTYPE;
 

@@ -16,7 +16,7 @@
 #define __CMDS_H
 
 #include "common_libs.h"
-#include "nxwcommn.h"		//for std classes
+#include "common_libs.h"		//for std classes
 
 
 enum PrivLevel

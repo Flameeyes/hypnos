@@ -11,7 +11,7 @@
 #ifndef __NETWORK__H
 #define __NETWORK__H
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "version.h"
 #include <iostream>
 #include "debug.h"

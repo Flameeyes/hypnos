@@ -37,7 +37,7 @@
 
 */
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "basics.h"
 #include "cmdtable.h"
 #include "speech.h"

@@ -14,7 +14,7 @@
 \date 26/10/2000
 */
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "debug.h"
 #include "basics.h"
 #include "globals.h"

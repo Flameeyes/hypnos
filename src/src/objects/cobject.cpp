@@ -5,7 +5,7 @@
 | You can find detailed license information in pyuo.cpp file.              |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "object.h"
 #include "archive.h"
 #include "chars.h"

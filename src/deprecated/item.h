@@ -18,7 +18,7 @@
 #ifndef __ITEM_H__
 #define __ITEM_H__
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 
 /*!
 \brief Item related stuff

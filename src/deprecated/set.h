@@ -15,7 +15,7 @@
 #ifndef __SET_H__
 #define __SET_H__
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "guild.h"
 
 class NxwWrapper {

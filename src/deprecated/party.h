@@ -10,7 +10,7 @@
 #ifndef __PARTY_H__
 #define __PARTY_H__
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "oldmenu.h"
 #include "target.h"
 

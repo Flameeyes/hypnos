@@ -7,7 +7,7 @@
     || For any question post to NoX-Wizard forums.                             ||
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "racescriptentry.h"
 
 typedef enum { STRENGTH, DEXTERITY, INTELLIGENCE, CONSTITUTION, WISDOM, CHARISMA } RACIALABILITY;

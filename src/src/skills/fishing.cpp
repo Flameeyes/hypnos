@@ -14,7 +14,7 @@
 \date 31/01/2001
 */
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "sndpkg.h"
 #include "debug.h"
 #include "data.h"

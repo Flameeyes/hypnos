@@ -13,7 +13,7 @@
 \brief Data files handling system
 */
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "data.h"
 #include "globals.h"
 #include "inlines.h"

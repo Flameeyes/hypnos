@@ -11,7 +11,7 @@
  \brief Item use
 */
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "network.h"
 #include "itemid.h"
 #include "sndpkg.h"

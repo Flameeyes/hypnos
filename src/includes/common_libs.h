@@ -15,13 +15,11 @@ with the explicit purpose of tearing away some platform dependant
 warnings/errors/issues.
 */
 
-
 #ifndef __COMMON_LIBS_H__
 #define __COMMON_LIBS_H__
 
-#if !defined(WIN32) && (__GNUC__ == 3) && ( (__GNUC_MINOR__ == 1) || ( __GNUC_MINOR__ == 2 && __GNUC_PATCHLEVEL__ < 2 ) )
-	#warning The use of GCC 3 with NoX-Wizard is very very dangerous. \
-	GCC3.2.2+ of Debian GNU/Linux seems to be ok.
+#if defined(__GNUC__) && ( __GNUC__ < 3 || ( __GNUC__ == 3 && __GNUC_MINOR__ < 1 ) )
+	#error You need at least GCC 3.2 to compile this!
 #endif
 
 #ifdef __BORLANDC__
@@ -45,13 +43,7 @@ warnings/errors/issues.
 #endif
 
 #ifndef __GNUC__
-	#ifdef _MSC_VER
-		#define strncasecmp strncmp
-		// can microsoft follow standards? no, obvious... I hate them.... - Akron
-	#else
-		#define strncasecmp strncmpi
-		// on borland compiler exists strncmpi...
-	#endif
+	#define strncasecmp strncmpi
 	#define strcasecmp strcmpi
 #endif
 
@@ -59,12 +51,6 @@ warnings/errors/issues.
 	#define PACK_NEEDED __attribute__ ((packed))
 #else
 	#define PACK_NEEDED
-#endif
-
-#ifdef  _MSC_VER
-	#pragma pack(push,8)		//for Visual C++ using STLport
-	#pragma warning(disable: 4786)	//Gets rid of BAD stl warnings
-	#pragma warning(disable: 4800)	//needed couse now we can see the real warning
 #endif
 
 #include <cstdio>
@@ -97,27 +83,22 @@ warnings/errors/issues.
 #include <sys/types.h>
 #include <sys/timeb.h>
 #include <ctype.h>
-
-#ifdef  _MSC_VER
-	#pragma pack(pop)
-	#ifndef STLPORT
-		#pragma warning(disable: 4103)
-		#pragma warning(disable: 4786)
-		#define vsnprintf _vsnprintf
-	#endif
-#endif
+#include <stdint.h>
 
 extern char* getOSVersionString();
 enum OSVersion { OSVER_UNKNOWN, OSVER_WIN9X, OSVER_WINNT, OSVER_NONWINDOWS };
 extern OSVersion getOSVersion();
 
-#ifdef  _MSC_VER
-	#pragma warning(disable: 4018)
-#endif
-
 #ifndef MSG_NOSIGNAL
     #define MSG_NOSIGNAL 0
 #endif
 
-#endif //__COMMON_LIBS_H__
+#define USE_THREADS
 
+#include "typedefs.h"
+#include "constants.h"
+#include "pointer.h"
+#include "console.h"
+#include "srvparms.h"
+
+#endif //__COMMON_LIBS_H__

@@ -10,7 +10,7 @@
 \brief Implementation of cChar class
 */
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "itemid.h"
 #include "sregions.h"
 #include "sndpkg.h"

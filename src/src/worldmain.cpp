@@ -10,7 +10,7 @@
 \brief Implementation of the CWorldMain class
 */
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "worldmain.h"
 #include "sndpkg.h"
 #include "sregions.h"

@@ -10,7 +10,7 @@
 #ifndef __racescriptentry__
 #define __racescriptentry__
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "scp_parser.h"
 
 class RaceScriptEntry

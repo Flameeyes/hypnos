@@ -50,6 +50,7 @@ those of Borland C++.
 #  endif
 #endif
 
+#if 0
 /* Linux already has these */
 #if !defined BIG_ENDIAN
   #define BIG_ENDIAN 4321
@@ -57,15 +58,7 @@ those of Borland C++.
 #if !defined LITTLE_ENDIAN
   #define LITTLE_ENDIAN 1234
 #endif
-/* educated guess, BYTE_ORDER is undefined, i386 is common => little endian */
-#if !defined BYTE_ORDER
-  #if defined UCLINUX
-    #define BYTE_ORDER BIG_ENDIAN
-  #else
-    #define BYTE_ORDER LITTLE_ENDIAN
-  #endif
 #endif
-
 
 #if defined(_Windows) && !defined(_INC_WINDOWS) && !defined(__WINDOWS_H) && !defined(NOWINDOWS)
 #  include <windows.h>

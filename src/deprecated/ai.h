@@ -82,7 +82,7 @@ public:
 \author Luxor
 \name Pathfinding method implementation
 */
-#include "nxwcommn.h"
+#include "common_libs.h"
 
 #define MAX_PATH_INTERNAL_LOOPS 200
 #define MAX_PATH_TOTAL_LOOPS 10000

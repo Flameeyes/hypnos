@@ -17,7 +17,7 @@
 #define _MENU_H_
 
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "packets.h"
 
 

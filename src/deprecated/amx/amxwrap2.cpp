@@ -16,7 +16,7 @@
  \date 12-09-2002 Luxor: changed to work with serials instead of old indexes
  */
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 #include "basics.h"
 #include "cmdtable.h"
 #include "speech.h"

@@ -10,7 +10,7 @@
 #ifndef __RaceType__
 #define __RaceType__
 
-#include "nxwcommn.h"
+#include "common_libs.h"
 
 typedef enum { PCRACE = 0, NPCRACE = 1, PCNPCRACE = 4 } RACETYPE;
 const RACETYPE DEFAULTRACETYPE = PCNPCRACE;
