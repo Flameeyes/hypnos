@@ -111,24 +111,6 @@ bool cStringFile::eof()
 	return (f!=NULL)? feof(f) : true;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -159,8 +141,7 @@ CWorldMain::~CWorldMain()
 		fclose(jWsc);
 }
 
-
-/*
+/*!
 \brief read from a file an unicode string
 \author Endymion
 \note intput is like 00AE001232120000, hex ( Big Endian Format )
@@ -218,85 +199,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 			break;
 		case 'A':
 		case 'a':
-			//
-			// CONVERT OLD STYLE AMXFLAGS TO NEW STYLE
-			//
-			if ( !strcmp( "AMXFLAG0", script1 ) )
-				amxVS.insertVariable( INVALID, 0, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG1", script1 ) )
-				amxVS.insertVariable( INVALID, 1, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG2", script1 ) )
-				amxVS.insertVariable( INVALID, 2, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG3", script1 ) )
-				amxVS.insertVariable( INVALID, 3, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG4", script1 ) )
-				amxVS.insertVariable( INVALID, 4, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG5", script1 ) )
-				amxVS.insertVariable( INVALID, 5, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG6", script1 ) )
-				amxVS.insertVariable( INVALID, 6, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG7", script1 ) )
-				amxVS.insertVariable( INVALID, 7, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG8", script1 ) )
-				amxVS.insertVariable( INVALID, 8, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG9", script1 ) )
-				amxVS.insertVariable( INVALID, 9, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAGA", script1 ) )
-				amxVS.insertVariable( INVALID, 10, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAGB", script1 ) )
-				amxVS.insertVariable( INVALID, 11, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAGC", script1 ) )
-				amxVS.insertVariable( INVALID, 12, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAGD", script1 ) )
-				amxVS.insertVariable( INVALID, 13, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAGE", script1 ) )
-				amxVS.insertVariable( INVALID, 14, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAGF", script1 ) )
-				amxVS.insertVariable( INVALID, 15, str2num( script2 ) );
-			//
-			// READ NEW STYLE AMX VARS
-			//
-			else if ( !strcmp( "AMXINT", script1 ) )
-			{
-				splitLine( script2, script1, script3 );
-				amxVS.insertVariable( INVALID, str2num( script1 ), str2num( script3 ) );
-			}
-			else if ( !strcmp( "AMXINTVEC", script1 ) )
-			{
-				splitLine( script2, script1, script3 );
-				int32_t vectorId = str2num( script1 );
-				int32_t vectorSize = str2num( script3 );
-				amxVS.insertVariable( INVALID, vectorId, vectorSize, 0 );
-				int32_t vectorIndex = 0;
-				do
-				{
-					readw2();
-					switch( script1[0] )
-					{
-						case '{' :
-						case '}' :
-							break;
-						default	 :
-							if( vectorIndex < vectorSize )
-							{
-								amxVS.updateVariable( INVALID, vectorId, vectorIndex, str2num( script1 ) );
-								++vectorIndex;
-							}
-							break;
-					}
-				}
-				while( script1[0] != '}' );
-				strcpy( script1, "DUMMY" );
-			}
-			else if (!strcmp("AMXSTR", script1) )
-			{
-				splitLine( script2, script1, script3 );
-				amxVS.insertVariable( INVALID, str2num( script1 ), script3 );
-			}
-			//
-			//
-			//
-			else if (!strcmp(script1, "ACCOUNT"))
+			if (!strcmp(script1, "ACCOUNT"))
 			{
 				hasAccount = true;
 				if( str2num( script2 ) == -1 )
@@ -462,11 +365,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 
 		case 'N':
 		case 'n':
-			if (!(strcmp("NXWFLAG0",script1)))					{pc->nxwflags[0] = str2num(script2);  }
-			else if (!(strcmp("NXWFLAG1",script1)))				{pc->nxwflags[1] = str2num(script2);  }
-			else if (!(strcmp("NXWFLAG2",script1)))				{pc->nxwflags[2] = str2num(script2);  }
-			else if (!(strcmp("NXWFLAG3",script1)))				{pc->nxwflags[3] = str2num(script2);  }
-			else if (!strcmp(script1, "NPC"))			{ pc->npc=str2num(script2);}
+			if (!strcmp(script1, "NPC"))			{ pc->npc=str2num(script2);}
 			else if (!strcmp(script1, "NPCWANDER"))		{ pc->npcWander=str2num(script2);}
 			else if (!strcmp(script1, "NOTRAIN"))		{ pc->cantrain=false;}
 			else if (!strcmp(script1, "NPCTYPE"))		{ pc->npc_type=str2num(script2);  }
@@ -621,7 +520,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 		break;
 		}
 		loops++;
- }  while (strcmp(script1, "}") && loops<=200);
+	}  while (strcmp(script1, "}") && loops<=200);
 
 	amxVS.setUserMode();
 
@@ -647,14 +546,10 @@ void CWorldMain::loadChar() // Load a character from WSC
 	//
 	//
 	pc->region=static_cast<unsigned char>(calcRegionFromXY( pc->getPosition() )); //LB bugfix
-#ifdef SPAR_C_LOCATION_MAP
 	//
 	// Hmmm...is not needed here because lowerdown a move to is done!
 	// will correct this later
 	pointers::addToLocationMap(pc);
-#else
-	mapRegions->add(pc);
-#endif
 
  // begin of meta gm stuff
 
@@ -703,79 +598,7 @@ void loaditem()
 
 		case 'a':
 		case 'A':
-			//
-			// CONVERT OLD STYLE AMXFLAGS TO NEW STYLE
-			//
-			if ( !strcmp( "AMXFLAG0", script1 ) )
-				amxVS.insertVariable( INVALID, 0, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG1", script1 ) )
-				amxVS.insertVariable( INVALID, 1, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG2", script1 ) )
-				amxVS.insertVariable( INVALID, 2, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG3", script1 ) )
-				amxVS.insertVariable( INVALID, 3, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG4", script1 ) )
-				amxVS.insertVariable( INVALID, 4, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG5", script1 ) )
-				amxVS.insertVariable( INVALID, 5, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG6", script1 ) )
-				amxVS.insertVariable( INVALID, 6, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG7", script1 ) )
-				amxVS.insertVariable( INVALID, 7, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG8", script1 ) )
-				amxVS.insertVariable( INVALID, 8, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAG9", script1 ) )
-				amxVS.insertVariable( INVALID, 9, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAGA", script1 ) )
-				amxVS.insertVariable( INVALID, 10, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAGB", script1 ) )
-				amxVS.insertVariable( INVALID, 11, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAGC", script1 ) )
-				amxVS.insertVariable( INVALID, 12, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAGD", script1 ) )
-				amxVS.insertVariable( INVALID, 13, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAGE", script1 ) )
-				amxVS.insertVariable( INVALID, 14, str2num( script2 ) );
-			else  if ( !strcmp( "AMXFLAGF", script1 ) )
-				amxVS.insertVariable( INVALID, 15, str2num( script2 ) );
-			else if (!strcmp("AMXINT", script1) )
-			{
-				splitLine( script2, script1, script3 );
-				amxVS.insertVariable( INVALID, str2num( script1 ), str2num( script3 ) );
-			}
-			else if ( !strcmp( "AMXINTVEC", script1 ) )
-			{
-				splitLine( script2, script1, script3 );
-				int32_t vectorId = str2num( script1 );
-				int32_t vectorSize = str2num( script3 );
-				amxVS.insertVariable( INVALID, vectorId, vectorSize, 0 );
-				int32_t vectorIndex = 0;
-				do
-				{
-					readw2();
-					switch( script1[0] )
-					{
-						case '{' :
-							continue;
-						case '}' :
-							break;
-						default	 :
-							if( vectorIndex < vectorSize )
-							{
-								amxVS.updateVariable( INVALID, vectorId, vectorIndex, str2num( script1 ) );
-								++vectorIndex;
-							}
-							break;
-					}
-				}
-				while( script1[0] != '}' );
-			}
-			else if (!strcmp("AMXSTR", script1) )
-			{
-				splitLine( script2, script1, script3 );
-				amxVS.insertVariable( INVALID, str2num( script1 ), script3 );
-			}
-			else if (!(strcmp(script1, "AMOUNT")))
+			if (!(strcmp(script1, "AMOUNT")))
 				pi->amount=str2num(script2);
 			else if (!(strcmp(script1, "ATT")))
 				pi->att=str2num(script2);
@@ -1086,11 +909,7 @@ void loaditem()
 		int max_x = map_width  * 8;
 		int max_y = map_height * 8;
 
-#ifdef SPAR_I_LOCATION_MAP
 		pointers::addToLocationMap(pi);
-#else
-		mapRegions->add(pi);
-#endif
 
 		if( (pi->type==ITYPE_BOATS) && (pi->type2==0) ) //it's a boat!!
 		{
@@ -1278,22 +1097,6 @@ void CWorldMain::saveNewWorld()
 	fprintf(iWsc, "//\n");
 ////END
 
-////JAIL SAVE
-//Endymion Save new Jail System
-	prison::safeoldsave();
-	fileName = SrvParms->savePath + SrvParms->jailWorldfile + SrvParms->worldfileExtension;
-	jWsc=fopen(fileName.c_str(), "w");
-	if (!jWsc)
-	{
-		ErrOut("Error, couldn't open %s for writing. Check file permissions.\n", fileName.c_str() );
-		tempfx::tempeffectson();
-		return;
-	}
-	savePrison();
-	fclose(jWsc); jWsc=NULL;
-//Endymion End Save new Jail System
-////END
-
 	realworldsave();
 
 	tempfx::tempeffectson();
@@ -1314,7 +1117,7 @@ bool CWorldMain::Saving()
 }
 
 
-/*
+/*!
 \brief save on file a wstring
 \author Endymion
 \note save output is like 00E000123215, hex output
@@ -1994,4 +1797,3 @@ void CWorldMain::realworldsave ()
 	fprintf(iWsc, "EOF\n\n");
 	fclose(iWsc); iWsc=NULL;
 }
-
