@@ -243,11 +243,11 @@ void usepotion(pChar pc, pItem pi)
 		switch(pi->morez)
 		{
 		case 1:
-			tempfx::add(pc, pc, tempfx::spellStrenght, 5+RandomNum(1,10), 0, 0, 120);
+			tempfx::add(pc, pc, tempfx::spellStrength, 5+RandomNum(1,10), 0, 0, 120);
 			if(client) client->sysmessage("You feel more strong!");
 			break;
 		case 2:
-			tempfx::add(pc, pc, tempfx::spellStrenght, 10+RandomNum(1,20), 0, 0, 120);
+			tempfx::add(pc, pc, tempfx::spellStrength, 10+RandomNum(1,20), 0, 0, 120);
 			if(client) client->sysmessage("You feel much more strong!");
 			break;
 		default:

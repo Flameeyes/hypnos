@@ -254,7 +254,7 @@ namespace tempfx {
 		spellWeaken,
 		spellAgility,
 		spellCunning,
-		spellStrenght,
+		spellStrength,
 		ALCHEMY_GRIND,
 		ALCHEMY_END,
 		spellBless,

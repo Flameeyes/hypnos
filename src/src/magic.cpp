@@ -456,7 +456,7 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			pcto->playSFX( 0x1ED );
 			staticFX(pcto, 0x373A, 0, 10, &spfx );
 			break;
-		case spellStrenght:
+		case spellStrength:
 			pcto->playSFX( 0x1EE );
 			staticFX(pcto, 0x375A, 0, 10, &spfx );
 			break;
@@ -833,7 +833,7 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellPoison:
 		case spellCunning:
 		case spellAgility:
-		case spellStrenght:
+		case spellStrength:
 		case spellBless:
 		case spellHeal:
 		case spellGreatHeal:
@@ -1112,9 +1112,9 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
 			tempfx::add(pa, pd, tempfx::spellAgility, bonus, 0, 0, duration);
 			break;
-		case spellStrenght:
+		case spellStrength:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
-			tempfx::add(pa, pd, tempfx::spellStrenght, bonus, 0, 0, duration);
+			tempfx::add(pa, pd, tempfx::spellStrength, bonus, 0, 0, duration);
 			break;
 		case spellBless:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
@@ -1271,7 +1271,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 	{
 		case spellCunning:
 		case spellAgility:
-		case spellStrenght:
+		case spellStrength:
 		case spellBless:
 			if (pd) {
 				CHECKDISTANCE(src, pd);
@@ -2063,7 +2063,7 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	std::map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
 	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
-	pc->delTempfx( tempfx::spellStrenght );
+	pc->delTempfx( tempfx::spellStrength );
 	pc->delTempfx( tempfx::spellCunning );
 	pc->delTempfx( tempfx::spellAgility );
 	pc->delTempfx( tempfx::spellFeebleMind );
@@ -2086,7 +2086,7 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 		case 0xd3:
 		case 0xd4:
 		case 0xd5:
-			pc->addTempfx( *pc, tempfx::spellStrenght, 40, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::spellStrength, 40, 0, 0, polyduration );
 			pc->addTempfx( *pc, tempfx::spellCurse, 0, 15, 20, polyduration );
 			break;
 		case 0xd0:
@@ -2103,10 +2103,10 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 		case 0x23:
 		case 0x1:
 		case 0x10:
-			pc->addTempfx( *pc, tempfx::spellStrenght, 30, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::spellStrength, 30, 0, 0, polyduration );
 			break;
 		case 0xe:
-			pc->addTempfx( *pc, tempfx::spellStrenght, 50, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::spellStrength, 50, 0, 0, polyduration );
 			break;
 		case 0xc8:
 			pc->addTempfx( *pc, tempfx::spellAgility, 50, 0, 0, polyduration );
@@ -2115,7 +2115,7 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 			pc->addTempfx( *pc, tempfx::spellCunning, 40, 0, 0, polyduration );
 			break;
 		case 0x32:
-			pc->addTempfx( *pc, tempfx::spellStrenght, 10, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::spellStrength, 10, 0, 0, polyduration );
 			pc->addTempfx( *pc, tempfx::spellFeebleMind, 20, 0, 0, polyduration );
 			break;
 	}

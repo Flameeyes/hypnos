@@ -224,7 +224,7 @@ void nSkills::PotionToBottle( pPC pc, pItem pi_mortar )
 	 * two tables to look for the grade of the potion.
 	 * 
 	 * They are needed because Nightsight has only a grade, instead
-	 * Agility, Strenght and Energy have only two grades instead of 3
+	 * Agility, Strength and Energy have only two grades instead of 3
 	 * 
 	 * Poison has four grades, but this is not a problem for us :)
 	*/
@@ -259,7 +259,7 @@ void nSkills::PotionToBottle( pPC pc, pItem pi_mortar )
 		
 		case 1: // Agility
 		case 7: // Energy
-		case 8: // Strenght
+		case 8: // Strength
 			// We have only 2 grades
 			if ( ! pi_mortar->more1.moreb2 || pi_mortar->more1.moreb2 > 2 )
 				pi_mortar->more1.moreb2 = 1;

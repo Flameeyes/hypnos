@@ -132,7 +132,7 @@ namespace magic {
 		spellTrap,
 		spellUntrap,
 		spellProtection,
-		spellStrenght,
+		spellStrength,
 		// Level 3
 		spellBless,
 		spellFireball,

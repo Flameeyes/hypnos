@@ -155,7 +155,7 @@ bool isDestRepeatable(int num)
 		case spellFeebleMind:
 		case spellWeaken:
 		case spellAgility:
-		case spellStrenght:
+		case spellStrength:
 		case spellCunning:
 		case spellBless:
 		case spellCurse:
@@ -203,7 +203,7 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 		case spellFeebleMind:
 		case spellWeaken:
 		case spellAgility:
-		case spellStrenght:
+		case spellStrength:
 		case spellCunning:
 		case spellBless:
 		case spellCurse:
@@ -374,7 +374,7 @@ void cTempfx::start()
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case spellStrenght:
+		case spellStrength:
 			dest->modifyStrength(m_nMore1);
 			dest->hp += m_nMore1;
 			if (dest->getClient())
@@ -680,7 +680,7 @@ void cTempfx::executeExpireCode()
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case spellStrenght:
+		case spellStrength:
 			if ( ! dest ) return;
 			dest->modifyStrength(-m_nMore1);
 			dest->hp = min(dest->hp, (int32_t)dest->getStrength());
@@ -930,7 +930,7 @@ void cTempfx::activate()
 			dest->dx += m_nMore1;
 			break;
 
-		case spellStrenght:
+		case spellStrength:
 			dest->modifyStrength(m_nMore1);
 			break;
 
@@ -1014,7 +1014,7 @@ void cTempfx::deactivate()
 			dest->dx -= m_nMore1;
 			break;
 
-		case spellStrenght:
+		case spellStrength:
 			dest->modifyStrength(-m_nMore1);
 			break;
 

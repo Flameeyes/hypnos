@@ -262,7 +262,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 
 	damage = basedamage + (int)(basedamage/100.0 * ((skill[skTactics])/16.0)); //Bonus damage for tactics
-	damage += (int)(damage/100.0 * getStrength()/5.0); //Bonus damage for strenght
+	damage += (int)(damage/100.0 * getStrength()/5.0); //Bonus damage for strength
 	if (checkSkillSparrCheck(skAnatomy, 0, 1000, pc_def)) { //Bonus damage for anatomy
 		if ( skill[skAnatomy] < 1000 ) {
 			damage += (int)( damage/100.0 * skill[skAnatomy]/50.0 );
