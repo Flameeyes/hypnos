@@ -59,7 +59,7 @@ void consoleOutput(nNotify::Level lev, const std::string str)
 	static Wefts::Mutex;
 	m.lock();
 	
-	int outfd = stdout;
+	FILE *outfp = stdout;
 	
 	// Set the color
 	switch(lev)
@@ -69,12 +69,12 @@ void consoleOutput(nNotify::Level lev, const std::string str)
 	case levError:
 		AnsiOut("\x1B[1;31m");
 		lowlevelOutput(stderr, "E %s - ", nNotify::getDate().c_str());
-		outfd = stderr;
+		outfp = stderr;
 		break;
 	case levWarning:
 		AnsiOut("\x1B[1;33m");
 		lowlevelOutput(stderr, "W %s - ", nNotify::getDate().c_str());
-		outfd = stderr;
+		outfp = stderr;
 		break;
 	case levInformation:
 		AnsiOut("\x1B[1;34m");
@@ -83,11 +83,11 @@ void consoleOutput(nNotify::Level lev, const std::string str)
 	case levPanic:
 		AnsiOut("\x1B[1;31m");
 		lowlevelOutput(stderr, "! %s - ", nNotify::getDate().c_str());
-		outfd = stderr;
+		outfp = stderr;
 		break;
 	}
 	
-	lowlevelOutput(outfd, str.c_str());
+	lowlevelOutput(outfp, str.c_str());
 	
 	// Close the colored part
 	if ( lev != levPlain )
