@@ -983,30 +983,24 @@ the item is talking.
 It's used by cBoat for tillerman and to implement the communication crystals
 (when done).
 
-\todo Fix the Unicode stuff
 \todo Change to the new region system when done
 */
 void talk(const std::string &msg)
 {
+	cSpeech speech(msg);
+	speech.setSpeaker(this);
+	speech.setColor(0x0481);
+	speech.setFont(0x03);		// normal font
+	speech.setMode(0x00);		// normal speech
+	nPackets::Sent::UnicodeSpeech pk(speech);
+
 	NxwSocketWrapper sw;
 	sw.fillOnline( this );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
 		pClient client = sw.getClient();
 		if ( ! client ) continue;
-
-		uint8_t unicodetext[512];
-		uint16_t ucl = ( msg.size() * 2 ) + 2 ;
-
-		char2wchar(msg);
-		memcpy(unicodetext, Unicode::temp, ucl);
-
-		uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-		uint8_t name[30]={ 0x00, };
-		strcpy((char *)name, getCurrentName().c_str());
-
-		SendUnicodeSpeechMessagePkt(s, getSerial(), getId(), 0, 0x0481, 0x0003, lang, name, unicodetext,  ucl);
-
+		client->sendPacket(&pk);
 	}
 }
 

@@ -1512,21 +1512,110 @@ namespace nPackets {
 			void prepare();
 		};
 
+		/*!
+		\brief Display death action [packet 0xaf]
+		\author Chronodt
+		*/
 
+		class DeathAction : public cPacketSend
+		{
+		protected:
+			pChar pc;		//!< the newly dead :D
+			pContainer corpse;	//!< the new corpse for player
+		public:
+			inline DeathAction(pChar aPc, pContainer aCorpse) :
+				cPacketSend(NULL, 0), pc(aPc), corpse(aCorpse)
+			{ }
+			void prepare();
+		};
+
+		/*!
+		\brief Opens Gump Menu Dialog [packet 0xb0]
+		\author Chronodt
+
+		This packet sends a gump to the client. This is the most complete dialog since you cann add icons, buttons, checkboxes
+		and everything else to the gump. Obiously is the gump packet that sends the most data to the client (and receives the most
+		data for reply)
+
+		This is the third and last "open gump" packet (the other ones are the 0x7c and the 0xab packets)
+		\todo awaiting gump remake
+		*/
+		class OpenGumpMenuDialog : public cPacketSend
+		{
+		protected:
+		public:
+			inline OpenGumpMenuDialog() :		//!< \todo finish this function
+				cPacketSend(NULL, 0)
+			{ }
+			void prepare();
+		};
+
+		/*!
+		\brief Chat Message [packet 0xb2]
+		\author Chronodt
+
+		\todo awaiting chat implementation
+		*/
+		class ChatMessage : public cPacketSend
+		{
+		protected:
+		public:
+			inline ChatMessage() :		//!< \todo finish this function
+				cPacketSend(NULL, 0)
+			{ }
+			void prepare();
+		};
+
+
+		/*!
+		\brief Chat Message [packet 0xb5]
+		\author Chronodt
+
+		\todo awaiting chat implementation
+		*/
+		class OpenChatWindow : public cPacketSend
+		{
+		protected:
+		public:
+			inline OpenChatWindow() :		//!< \todo finish this function
+				cPacketSend(NULL, 0)
+			{ }
+			void prepare();
+		};
+
+
+		/*!
+		\brief Sends popup help [packet 0xb7]
+		\author Chronodt
+		*/
+		class PopupHelp : public cPacketSend
+		{
+		protected:
+			std::string text;	// text to be sent (will be converted in unicode)
+			pSerializable object;	// since this packet is only sent immediately after the request
+		public:
+			inline PopupHelp(std::string &aText, pSerializable aObject) :
+				cPacketSend(NULL, 0), text(aText), object(aObject)
+			{ }
+			void prepare();
+		};
+
+		/*!
+		\brief sends character profile [packet 0xb8]
+		\author Chronodt
+		*/
 		class CharProfile : public cPacketSend
 		{
 		protected:
 			uint32_t serial;
 			pChar who;
-
 		public:
 			inline CharProfile(uint32_t s, pChar w) :
 				cPacketSend(NULL, 0), serial(s), who(w)
 			{ }
-		
 			void prepare();
 		};
-		
+
 		/*!
 		\brief Enable locked client features [Packet 0xB9]
 		\param features to set.

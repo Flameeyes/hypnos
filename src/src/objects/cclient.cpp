@@ -3048,72 +3048,34 @@ void cClient::talking(cSpeech &speech) // PC speech
 	}
 }
 
-void broadcast(cSpeech &speech) // GM Broadcast (Done if a GM yells something)
+void cClient::broadcast(cSpeech &speech) // GM Broadcast (Done if a GM yells something)
 {
 
 	pPC pc= currChar();
 	if ( ! pc ) return;
 
-	//! \todo revise from here
-	int i;
-	char nonuni[512];
+	//Chronodt: i don't know why does it do this...
+	speech.setFont = (speech.getFont()<<8)|(pc->fonttype%256);	// use font ("not only") from  client
 
-	if(pc->unicode)
-		for (i=13;i<ShortFromCharPtr(buffer[s] +1);i=i+2)
-		{
-			nonuni[(i-13)/2]=buffer[s][i];
-		}
+	NxwSocketWrapper sw;
+	sw.fillOnline();
+
 	if(!(pc->unicode))
 	{
-		uint32_t id;
-		uint16_t model,font, color;
-
-		id = pc->getSerial();
-		model = pc->getId();
-		color = ShortFromCharPtr(buffer[s] +4);		// use color from client
-		font = (buffer[s][6]<<8)|(pc->fonttype%256);	// use font ("not only") from  client
-
-		uint8_t name[30]={ 0x00, };
-		strcpy((char *)name, pc->getCurrentName().c_str());
-
-		NxwSocketWrapper sw;
-		sw.fillOnline();
+		nPackets::Sent::Speech pk(speech);
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
 			pClient i=sw.getSocket();
-
-			//!\todo redo adding to cpeech all the data and verifying
-			nPackets::Sent::Speech pk(cSpeech(buffer+8));
-			sw->sendPacket(&pk);
-
-			//SendSpeechMessagePkt(i, id, model, 1, color, font, name, (char*)&buffer[s][8]);
+			i->sendPacket(&pk);
 		}
-	} // end unicode IF
+	}
 	else
 	{
-		uint32_t id;
-		uint16_t model,font, color;
-		uint8_t unicodetext[512];
-		uint16_t ucl = ( strlen ( &nonuni[0] ) * 2 ) + 2 ;
-
-		char2wchar(&nonuni[0]);
-		memcpy(unicodetext, Unicode::temp, ucl);
-
-		id = pc->getSerial();
-		model = pc->getId();
-		color = ShortFromCharPtr(buffer[s] +4);		// use color from client
-		font = (buffer[s][6]<<8)|(pc->fonttype%256);	// use font ("not only") from  client
-
-		uint32_t lang =  LongFromCharPtr(buffer[s] +9);
-		uint8_t name[30]={ 0x00, };
-		strcpy((char *)name, pc->getCurrentName().c_str());
-
-		NxwSocketWrapper sw;
-		sw.fillOnline();
+		nPackets::Sent::UnicodeSpeech pk(speech);
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
 			pClient i=sw.getSocket();
-			SendUnicodeSpeechMessagePkt(i, id, model, 1, color, font, lang, name, unicodetext,  ucl);
+			i->sendPacket(&pk)
 		}
 	}
 }
@@ -3121,11 +3083,6 @@ void broadcast(cSpeech &speech) // GM Broadcast (Done if a GM yells something)
 
 void cClient::sysmessage(const char *txt, ...) // System message (In lower left corner)
 {
-	if(s < 0)
-		return;
-
-	uint8_t unicodetext[512];
-
 	va_list argptr;
 	char *msg;
 	va_start( argptr, txt );
@@ -3133,9 +3090,11 @@ void cClient::sysmessage(const char *txt, ...) // System message (In lower left 
 	va_end( argptr );
 
 	uint32_t spyTo = clientInfo[s]->spyTo;
-	if( spyTo!=INVALID ) { //spy client
+	if( spyTo!=INVALID )
+	{ //spy client
 		pChar pc=cSerializable::findCharBySerial( spyTo );
-		if( pc ) {
+		if( pc )
+		{
 			pClient gm = pc->getClient();
 			if( gm!=NULL )
 				gm->sysmessage( "spy %s : %s", pc->getCurrentName().c_str(), msg );
@@ -3146,73 +3105,58 @@ void cClient::sysmessage(const char *txt, ...) // System message (In lower left 
 			clientInfo[s]->spyTo=INVALID;
 	}
 
-	int ucl = ( strlen ( msg ) * 2 ) + 2 ;
+	cSpeech speech(std::string(msg));	//we must use string constructor or else it is supposed to be an unicode packet
+	speech.setColor(0x387);
+	speech.setFont(0x03);		// normal font
+	speech.setMode(0x06);		// label
 
-	char2wchar(msg);
-	memcpy(unicodetext, Unicode::temp, ucl);
+	nPackets::Sent::UnicodeSpeech pk(speech);
+	sendPacket(&pk);
 
-	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	uint8_t sysname[30]={ 0x00, };
-	strcpy((char *)sysname, "System");
-
-	SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 6, 0x0387 /* Color - Previous default was 0x0040 - 0x03E9*/, 0x0003, lang, sysname, unicodetext,  ucl);
-	
 	free(msg);
 }
 
 void cClient::sysmessage(uint16_t color, const char *txt, ...) // System message (In lower left corner)
 {
-	if( s < 0)
-		return;
-
-	uint8_t unicodetext[512];
-
 	va_list argptr;
 	char *msg;
 	va_start( argptr, txt );
-        vasprintf( &msg, txt, argptr );
+	vasprintf( &msg, txt, argptr );
 	va_end( argptr );
 	uint16_t ucl = ( strlen ( msg ) * 2 ) + 2 ;
 
-	char2wchar(msg);
-	memcpy(unicodetext, Unicode::temp, ucl);
+	cSpeech speech(std::string(msg));	//we must use string constructor or else it is supposed to be an unicode packet
+	speech.setColor(color);
+	speech.setFont(0x03);		// normal font
+	speech.setMode(0x06);		// label
 
-	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	uint8_t sysname[30]={ 0x00, };
-	strcpy((char *)sysname, "System");
-
-	SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 0, color, 0x0003, lang, sysname, unicodetext,  ucl);
+	nPackets::Sent::UnicodeSpeech pk(speech);
+	sendPacket(&pk);
 
 	free(msg);
 }
 
 void cClient::sysbroadcast(char *txt, ...) // System broadcast in bold text
-//Modified by N6 to use UNICODE packets
 {
-	uint8_t unicodetext[512];
-
 	va_list argptr;
 	char *msg;
 	va_start( argptr, txt );
 	vasprintf( msg, txt, argptr );
 	va_end( argptr );
 
-	int ucl = ( strlen ( msg ) * 2 ) + 2 ;
+	cSpeech speech(std::string(msg));	//we must use string constructor or else it is supposed to be an unicode packet
+	speech.setColor(0x084d);
+	speech.setFont(0x00);		// bold text
+	speech.setMode(0x06);		// label
 
-	char2wchar(msg);
-	memcpy(unicodetext, Unicode::temp, ucl);
-
-	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	uint8_t sysname[30]={ 0x00, };
-	strcpy((char *)sysname, "System");
+	nPackets::Sent::UnicodeSpeech pk(speech);
 
 	NxwSocketWrapper sw;
 	sw.fillOnline();
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
 		pClient ci = sw.getClient();
-		if ( ci )
-			SendUnicodeSpeechMessagePkt(ci, 0x01010101, 0x0101, 6, 0x084D /*0x0040*/, 0x0000, lang, sysname, unicodetext,  ucl);
+		if ( ci ) ci->sendPacket(&pk);
 	}
 	
 	free(msg);

@@ -2050,6 +2050,11 @@ void cChar::Kill()
 
 	pCorpse->murderer = string(murderername);
 	pCorpse->murdertime = getclock();
+
+	//deathaction chronodt 31/08/04
+	nPackets::Sent::DeathAction pk(this, pCorpse);
+	getClient()->sendPacket(&pk);
+
 	pCorpse->Refresh();
 
 
@@ -2119,8 +2124,10 @@ void cChar::Kill()
 		//General Lee
 	}
 
-        if ( !npc )
+	if ( !npc )
+	{
 		teleport( teleSendWornItems );
+	}
 
 	pCorpse->Refresh();
 
@@ -2130,6 +2137,9 @@ void cChar::Kill()
 		events[evtChrAfterDeath]->setParams(params);
 		events[evtChrAfterDeath]->execute();
 	}
+
+
+
 
 	if ( npc )
 	{

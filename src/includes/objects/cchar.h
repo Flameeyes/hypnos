@@ -687,7 +687,7 @@ public:
 	void			addGold(uint16_t totgold);
 
 	int32_t			getTeachingDelta(pChar pPlayer, int32_t skill, int32_t sum);
-	void			removeItemBonus(cItem* pi);
+	void			removeItemBonus(pItem pi);
 
 	//! Return the resistance for a defined type
 	inline const bool resist(uint32_t n) const

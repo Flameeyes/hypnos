@@ -193,29 +193,25 @@ void SendUnicodeSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, ui
 
 
 
-
+//! \todo this funcion is called apparently only by a function in the deprecated cmdtable.cpp. Delete or update it when that command is revised
 void tellmessage(int i, int s, char *txt)
 //Modified by N6 to use UNICODE packets
 {
 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
-	uint8_t unicodetext[512];
 	char temp;
 
 	asprintf(&temp, "GM tells %s: %s", pc->getCurrentName().c_str(), txt);
 
-	uint16_t ucl = ( strlen ( temp ) * 2 ) + 2 ;
-	char2wchar(temp);
-	memcpy(unicodetext, Unicode::temp, ucl);
+	cSpeech speech(std::string(temp));	//we must use string constructor or else it is supposed to be an unicode packet
+	speech.setColor(0x35);
+	speech.setFont(0x03);		// normal font
+	speech.setMode(0x00);		// normal speech
 
-	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	uint8_t sysname[30]={ 0x00, };
-	strcpy((char *)sysname, "System");
-
-	SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 0, 0x0035, 0x0003, lang, sysname, unicodetext,  ucl);
-	SendUnicodeSpeechMessagePkt(i, 0x01010101, 0x0101, 0, 0x0035, 0x0003, lang, sysname, unicodetext,  ucl); //So Person who said it can see too
-	
+	nPackets::Sent::UnicodeSpeech pk(speech);
+	s->sendPacket(&pk);
+	i->sendPacket(&pk);
 	free(temp);
 }
 

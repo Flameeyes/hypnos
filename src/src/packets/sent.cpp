@@ -1752,7 +1752,82 @@ void nPackets::Sent::UnicodeSpeech::prepare()
 	strncpy(buffer + 18, (ps) ? ps->getCurrentName().c_str() : "System", 30);	// this will write the name and fills the missing char in the 30 bytes buffer with \0
 	speech.setPacketByteOrder();							// reorder (if necessary) packet to network-endian
 	memcpy(buffer + 48, text.rawBytes(), length - 48);
+}
 
+
+/*!
+\brief Display death action [packet 0xaf]
+\author Chronodt
+\note packet 0xaf
+*/
+void nPackets::Sent::DeathAction::prepare()
+{
+	length = 13;
+	buffer = new uint8_t[13];
+	buffer[0] = 0xaf;
+	LongToCharPtr(pc->getSerial(), buffer+1);
+	LongToCharPtr(corpse->getSerial(), buffer+5);
+	LongToCharPtr(0, buffer+9);
+}
+
+/*!
+\brief Opens Gump Menu Dialog [packet 0xb0]
+\author Chronodt
+\note packet 0xb0
+*/
+
+void nPackets::Sent::OpenTextEntryDialog::prepare()
+{
+	//! \todo this function (awaiting gump remake)
+}
+
+/*!
+\brief Opens Gump Menu Dialog [packet 0xb2]
+\author Chronodt
+\note packet 0xb2
+*/
+
+void nPackets::Sent::ChatMessage::prepare()
+{
+	//! \todo this function (awaiting chat implementation)
+}
+
+/*!
+\brief Opens Gump Menu Dialog [packet 0xb5]
+\author Chronodt
+\note packet 0xb5
+*/
+
+void nPackets::Sent::OpenChatWindow::prepare()
+{
+	//! \todo this function (awaiting chat implementation)
+}
+
+/*!
+\brief sends Popup Help [packet 0xb7]
+\author Chronodt
+\note packet 0xb7
+*/
+
+void nPackets::Sent::PopupHelp::prepare()
+{
+	length = 9 + text.size() * 2 + 2;
+	buffer = new uint8_t[length];
+	buffer[0] = 0xb7;
+	ShortToCharPtr(length, buffer + 1);
+	LongToCharPtr(object->getSerial(), buffer + 3);
+
+	cSpeech speech(text);
+	speech.setPacketByteOrder();
+	memcpy(buffer + 7, speech.rawBytes(), speech.size() * 2 + 2);
+	ShortToCharPtr(3300, buffer + 1);	// packet terminator (?)
+}
+
+/*!
+\brief sends character profile [packet 0xb8]
+\author Chronodt
+\note packet 0xb8
+*/
 
 void nPackets::Sent::CharProfile::prepare()
 {
@@ -1779,6 +1854,9 @@ void nPackets::Sent::CharProfile::prepare()
 	memcpy(offset, who->getProfile().rawBytes(), who->getProfile().size() * 2 + 2);
 }
 
+/*!
+\brief Enable locked client features [packet 0xb9]
+*/
 void nPackets::Sent::Features::prepare()
 {
 	buffer = new uint8_t[3];

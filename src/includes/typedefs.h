@@ -55,7 +55,7 @@ typedef std::map<uint32_t, pMenu> MenuMap;	//!< Map of menus
 
 typedef class cAccount *pAccount;		//!< Pointer to a cAccount
 typedef std::map<std::string, pAccount> cAccounts;
-						//!< Hashed-map of accounts
+						//!< map of accounts
 typedef std::list<pAccount> AccountList;	//!< List of accounts
 
 typedef std::vector<struct sPoint> PointVector;	//!< Vector of (x,y) points (uint16_t coords)

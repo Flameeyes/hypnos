@@ -753,7 +753,7 @@ bool nPackets::Received::LoginChar::execute(pClient client)
 		{
 			nPackets::Sent::IdleWarning pk(0x5);
 			client->sendPacket(&pk);
-			Disconnect(s);
+			client->disconnect();
 		}
 	}
 }
@@ -1514,29 +1514,9 @@ bool nPackets::Received::PopupHelpRequest::execute(pClient client)
 	} else {
 		descr = p->getPopupHelp();
 
-	if ( descr.length() == 0 )
-		return true;	//We have parsed the packet, but nothing had to return...
-
-	//!\todo cspeech implementation here, for unicode "conversion" and then use it for packet sending
-#if 0
-	uint8_t packet = new packet[ ];			// Must be counted from the descr length
-	char2wchar((char *)packet); // Change this
-
-	packet[0] = 0xB7;
-	LongToCharPtr( LongFromCharPtr(buffer[s] +1), packet +3);
-	int p = 0;
-	while (p<600) {
-		packet[7+p] = (uint8_t) Unicode::temp[p];
-		packet[8+p] = (uint8_t) Unicode::temp[p+1];
-		if ((Unicode::temp[p]=='\0')&&(Unicode::temp[p+1]=='\0')) break;
-		p += 2;
-	}
-	p += 2;
-	len = 7+p;
-	ShortToCharPtr(len, packet +1);
-	Xsend(s, packet, len);
-//AoS/	Network->FlushBuffer(s);
-#endif
+	if ( !descr.size()) return true;		//We have parsed the packet, but nothing had to return...
+	nPackets::Sent::PopupHelp pk(descr, p);
+	client->sendPacket(&pk);
 	return true;
 }
 

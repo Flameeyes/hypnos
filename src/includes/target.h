@@ -15,6 +15,53 @@
 
 #include "common_libs.h"
 #include "structs.h"
+#include "inlines.h"
+
+// hmm... sarà meglio mettere una classe cTargetResponse (quello che preferirei)
+// o settare un callback verso funzioni statiche "verso" qualunque cosa abbia chiamato il target?
+typedef void ( cClient::*processTarget ) ( pTarget );
+
+class cTarget
+{
+protected:
+	sLocation loc;
+	uint16_t id;
+	pSerializable clicked;		//!< Object (char or item) clicked
+
+public:
+	bool type;
+
+	processTarget code_callback;
+
+	cTarget( bool selectLocation=true );
+	virtual ~cTarget();
+
+	virtual bool isValid();
+	virtual void error( pClient client );
+
+	const sLocation getPosition() const
+	{ return loc; }
+
+	const pSerializable getClicked() const
+	{ return clicked; }
+
+	const uint16_t cTarget::getId() const
+	{ return id; }
+};
+
+
+
+
+
+
+
+
+
+
+
+// OLD TARGETS BEGIN HERE
+#if 0
+
 
 typedef void ( cClient::*processTarget ) ( pTarget );
 
@@ -46,10 +93,10 @@ public:
 
 	const sLocation cTarget::getPosition() const
 	{ return loc; }
-	
+
 	const pSerializable cTarget::getClicked() const
 	{ return clicked; }
-	
+
 	const uint16_t cTarget::getModel() const
 	{ return model; }
 };
@@ -153,4 +200,5 @@ public:
 	void extendItemTarget();
 };
 
+#endif //#if 0
 #endif
