@@ -184,85 +184,6 @@ static void item_char_test()
 	ConOut("[DONE]\n");
 }
 
-
-
-//taken from 6904t2(5/10/99) - AntiChrist
-/*!
-\todo backport into cChar
-*/
-void callguards( pChar caller )
-{
-	if ( !caller )
-		return;
-
-	if( !(region[caller->region].priv&0x01 ) || !SrvParms->guardsactive || !TIMEOUT( caller->antiguardstimer ) || caller->dead )
-		return;
-
-	caller->antiguardstimer=getclock()+(MY_CLOCKS_PER_SEC*10);
-
-	/*
-	Sparhawk:	1. when instant guard is set and offender nearby caller spawn guard near caller and leave attacking to checkAI
-			2. when instant guard is not set and offender nearby caller walk toward caller and leave attacking to checkAI
-	*/
-	bool offenders = false;
-	vector < pChar > guards;
-
-//	int loopexit=0; // unused variable
-
-	NxwCharWrapper sc;
-	sc.fillCharsNearXYZ( caller->getPosition(), VISRANGE, true, false  );
-	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-
-		pChar character=sc.getChar();
-		if(! character )
-			continue;
-		if( caller->getSerial() != character->getSerial() && caller->distFrom( character )  <= 15 && !character->dead && !character->IsHidden())
-		{
-			if ((!character->IsInnocent() || character->npcaitype == NPCAI_EVIL) && !character->IsHidden() )
-				offenders = true;
-			else
-				if ((character->npcaitype == NPCAI_TELEPORTGUARD || character->npcaitype == NPCAI_GUARD) && !character->war && character->npcWander != WANDER_FOLLOW)
-					guards.push_back( character );
-		}
-	}
-	if ( offenders )
-	{
-		if ( guards.empty() && nSettings::Server::hasInstantGuards() )
-		{
-			pNPC guard = npcs::AddNPCxyz( caller->getSocket(), region[caller->region].guardnum[(rand()%10)+1], caller->getPosition());
-
-			if ( guard )
-			{
-				guard->npcaitype=NPCAI_TELEPORTGUARD;
-				guard->npcWander=WANDER_FREELY_CIRCLE;
-				guard->setNpcMoveTime();
-				guard->summontimer = getclock() + MY_CLOCKS_PER_SEC * 25 ;
-
-				guard->playSFX( 0x01FE );
-				guard->staticFX(0x372A, 9, 6);
-
-				guard->teleport();
-				guard->talkAll("Don't fear, help is near", false );
-			}
-		}
-		else
-		{
-			pChar guard;
-			while( !guards.empty() )
-			{
-				guard = guards.back();
-				guard->oldnpcWander = guard->npcWander;
-				guard->npcWander = WANDER_FOLLOW;
-				guard->ftargserial = caller->getSerial();
-				guard->antiguardstimer=getclock()+(MY_CLOCKS_PER_SEC*10); // Sparhawk this should become server configurable
-				guard->talkAll("Don't fear, help is on the way", false );
-				//guard->antispamtimer = getclock()+MY_CLOCKS_PER_SEC*5;
-				guards.pop_back();
-			}
-		}
-	}
-}
-
 extern "C" void breakOnFirstFuncz();
 
 /*!
@@ -399,17 +320,6 @@ void checkkey ()
 					InfoOut("Hypnos: Heartbeat Enabled\n");
 				heartbeat = !heartbeat;
 				break;
-			case 'P':
-			case 'p':				// Display profiling information
-				ConOut("----------------------------------------------------------------\n");
-				ConOut("Performace Dump:\n");
-				ConOut("Network code: %fmsec [%i samples]\n" , (float)((float)networkTime/(float)networkTimeCount) , networkTimeCount);
-				ConOut("Timer code: %fmsec [%i samples]\n" , (float)((float)timerTime/(float)timerTimeCount) , timerTimeCount);
-				ConOut("Auto code: %fmsec [%i samples]\n" , (float)((float)autoTime/(float)autoTimeCount) , autoTimeCount);
-				ConOut("Loop Time: %fmsec [%i samples]\n" , (float)((float)loopTime/(float)loopTimeCount) , loopTimeCount);
-				//ConOut("Characters: %i (Dynamic)		Items: %i (Dynamic)\n" , charcount , char_mem::cmem , itemcount , item_mem::imem);
-				ConOut("Simulation Cycles: %f per sec\n" , (1000.0*(1.0/(float)((float)loopTime/(float)loopTimeCount))));
-				break;
 			case 'W':
 			case 'w':				// Display logged in chars
 				ConOut("----------------------------------------------------------------\n");
@@ -467,7 +377,6 @@ void checkkey ()
 				else
 					ConOut(" [currently disabled]\n");
 				ConOut("	D - Disconnect Account 0\n");
-				ConOut("	P - Preformance Dump\n");
 				ConOut("	W - Display logged in characters\n");
 				ConOut("	A - Reload accounts file\n");
 				ConOut("	X - Reload XSS scripts\n");
@@ -478,9 +387,6 @@ void checkkey ()
 					ConOut("[disabled]\n");
 				ConOut("	B - Set breakpoint on first amx function [DEBUG MODE ONLY]\n");
 				ConOut("	C - Set breakpoint on first legacy trigger [DEBUG MODE ONLY]\n\n");
-#ifndef _WINDOWS
-				ConOut("	N - Toggle tracing of native functions [DEBUG MODE ONLY]\n");
-#endif
 				ConOut("	? - Commands list (this)\n");
 				ConOut("End of commands list.\n");
 				break;
@@ -511,10 +417,7 @@ int main(int argc, char *argv[])
 
 	if ((argc>1)&&(strstr(argv[1], "-debug")))	// activate debugger if requested
 		ServerScp::g_nLoadDebugger = 1;
-	if ((argc>1)&&(strstr(argv[1], "-check")))	// activate check if requested
-		ServerScp::g_nCheckBySmall = 1;
 
-	getclock()=getclock();
 	serverstarttime=getclock();
 
 	loadserverdefaults();
@@ -778,44 +681,6 @@ int main(int argc, char *argv[])
 
 	checkGarbageCollect();
 
-	if( ServerScp::g_nCheckBySmall ) {
-		InfoOut("Check of all object started...");
-
-		AmxFunction checkItems( "__check_Item" );
-		AmxFunction checkNpcs( "__check_Npc" );
-		AmxFunction checkPlayers( "__check_Player" );
-
-		cAllObjectsIter objs;
-		pChar pc = NULL;
-		pItem pi = NULL;
-		for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
-			if ( isCharSerial( objs.getSerial() ) && ( pc=static_cast<pChar>(objs.getObject())) ) {
-				if( pc->npc )
-					checkNpcs.Call( pc->getSerial() );
-				else
-					checkPlayers.Call( pc->getSerial() );
-			}
-			else if ( isItemSerial( objs.getSerial() ) && ( pi=static_cast<pItem>(objs.getObject())) ) {
-				checkItems.Call( pi->getSerial() );
-			}
-		}
-
-		ConOut("[DONE]\n");
-		ServerScp::g_nCheckBySmall = false;
-
-		cwmWorldState->saveNewWorld();
-
-		ConOut("Closing sockets...");
-		Network->SockClose();
-		ConOut("Saving server.cfg...\n");
-		saveserverscript();
-		ConOut("[DONE]\n");
-		ConOut("Deleting Classes...");
-		DeleteClasses();
-		ConOut("[DONE]\n");
-		return 0;
-	}
-
 	InfoOut("Server started\n");
 
 	Spawns->doSpawnAll();
@@ -914,7 +779,6 @@ int main(int argc, char *argv[])
 
 		checktimers();
 
-		getclock()=getclock();//getclock() only once
 		tempTime = CheckMilliTimer(tempSecs, tempMilli);
 		timerTime += tempTime;
 		timerTimeCount++;
@@ -949,7 +813,6 @@ int main(int argc, char *argv[])
 
 	ConOut(" Done.\n");
 	ConOut("Saving server.cfg...\n");
-	//saveserverscript(1);
 	saveserverscript();
 	ConOut("\n");
 	ConOut("Deleting Classes...");
@@ -966,12 +829,12 @@ int main(int argc, char *argv[])
 		ConOut("ERROR: Server terminated by error!\n");
 
 		if (SrvParms->server_log)
-			ServerLog.Write("Server Shutdown by Error!\n=======================================================================\n\n\n");
+			ServerLog.Write("Server Shutdown by Error!\n");
 
 	} else {
 		ConOut("Hypnos: Server shutdown complete!\n");
 		if (SrvParms->server_log)
-			ServerLog.Write("Server Shutdown!\n=======================================================================\n\n\n");
+			ServerLog.Write("Server Shutdown!\n");
 
 	}
 	return 0;
@@ -1113,14 +976,11 @@ void enlist(int s, int listnum) // listnum is stored in items morex
 */
 void SetGlobalVars()
 {
-	int i=0;
 	ConOut("Initializing global variables...");
 
 	w_anim[0]=0; w_anim[1]=0; w_anim[2]=0;
 
 	for (i=0; i>ALLSKILLS; i++) { strcpy(title[i].other, "old titles.scp error"); }
-	completetitle = new char[1024];
-	for (i=0;i<(MAXCLIENT);i++) { clientDimension[i]=2; } // LB
 
 	save_counter=0;
 
@@ -1130,10 +990,6 @@ void SetGlobalVars()
 	error=0;
 	now=0;
 	secure=1;
-//	charcount=0;
-//	itemcount=0;
-//	charcount2=1;
-//	itemcount2=0x40000000;
 	donpcupdate=0;
 	wtype=0;
 
@@ -1154,8 +1010,6 @@ void InitMultis()
 //	pChar pc; // unused variable
 	for( objs.rewind(); !objs.IsEmpty(); objs++ )
 	{
-	/*for (i=0;i<charcount;i++)
-	{*/
 		if ( !isCharSerial(objs.getSerial()) ) continue;
 		pChar pc_i = (pChar)(objs.getObject());
 		if(!pc_i)
@@ -1202,7 +1056,6 @@ void StartClasses()
 	// Classes nulled now, lets get them set up :)
 	cwmWorldState=new CWorldMain;
 	mapRegions=new cRegion;
-	Accounts = new cAccounts;
 	Boats=new cBoat;
 	Guilds=new cGuilds;
 
@@ -1219,7 +1072,6 @@ void DeleteClasses()
 {
 	delete cwmWorldState;
 	delete mapRegions;
-	delete Accounts;
 	delete Boats;
 	delete Guilds;
 
