@@ -1501,7 +1501,6 @@ void cNetwork::CheckMessage() // Check for messages from the clients
 				if ((FD_ISSET(client[i],&all))&&(oldnow==now))
 				{
 					Network->GetMsg(i);
-					if (executebatch) batchcheck(i);
 				}
 			}
 		}

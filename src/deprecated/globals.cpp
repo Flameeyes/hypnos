@@ -160,7 +160,6 @@ int tnum;
 unsigned int starttime, endtime, lclock;
 bool overflow;
 unsigned char wtype;
-int executebatch;
 bool g_nShowLayers;
 
 unsigned int respawntime=0;

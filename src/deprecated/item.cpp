@@ -444,9 +444,6 @@ namespace item
 		return (k>0)? item::CreateFromScript( k, cont ) : NULL;
 	}
 
-
-
-
 //not checked
 
 	/*!

@@ -88,9 +88,6 @@ void cScriptCommand::execute( pClient client )
 
 		item::CreateFromScript( (char*)itemnum.c_str(), pc->getBackpack(), am );
 		return;
-	} else if ( command == "BATCH" ) {
-		executebatch=str2num(param);
-		return;
 	} else if ( command == "INFORMATION" ) {
 		sysmessage(s, TRANSLATE("Connected players [%i out of %i accounts] Items [] Characters []"),
 			now,Accounts->Count());
@@ -547,31 +544,6 @@ void scriptcommand (NXWSOCKET s, std::string script1, std::string script2) // Ex
 	cScriptCommand command( script1, script2 );
 	command.execute( s );
 }
-
-void batchcheck(int s) // Do we have to run a batch file
-{
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	char script1[1024], script2[1024];
-    cScpIterator* iter = NULL;
-
-
-	sprintf(temp, "SECTION BATCH %i", executebatch);
-
-    iter = Scripts::Menus->getNewIterator(temp);
-    if (iter==NULL) return;
-
-	int loopexit=0;
-	do
-	{
-		iter->parseLine(script1, script2);
-		if ((script1[0]!='}')&&(script1[0]!='{')) scriptcommand(s, script1, script2);
-	}
-	while ( (script1[0]!='}') && (++loopexit < MAXLOOPS) );
-	safedelete(iter);
-	executebatch=0;
-}
-
-
 
 int checkBoundingBox(int xPos, int yPos, int fx1, int fy1, int fz1, int fx2, int fy2)
 {

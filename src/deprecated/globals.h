@@ -267,7 +267,6 @@ extern bool overflow;
 //extern unsigned char globallight;
 extern unsigned char wtype;
 
-extern int executebatch;
 extern int openings;
 
 extern unsigned int respawntime;
