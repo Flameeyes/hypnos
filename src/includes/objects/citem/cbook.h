@@ -17,8 +17,8 @@
 \date 19/03/2003 books are now saved only if modified
 */
 
-#ifndef __books_h
-#define __books_h
+#ifndef __CBOOKS_H__
+#define __CBOOKS_H__
 
 class cBook;
 typedef cBook *pBook;	//!< Pointer to a book
@@ -30,7 +30,7 @@ typedef cBook *pBook;	//!< Pointer to a book
 \brief Item class for books
 \author Akron aka Flameeyes (complete rewrite)
 */
-class cBook : cItem
+class cBook : public cItem
 {
 public:
 //@{
