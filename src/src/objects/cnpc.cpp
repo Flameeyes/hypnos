@@ -427,7 +427,6 @@ void cNPC::createEscortQuest()
 /*!
 \brief completed escort quest with this npc. Gets reward
 */
-
 void cNPC::clearedEscordQuest(pPC pc)
 {
 	// Calculate payment for services rendered

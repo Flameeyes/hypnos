@@ -22,7 +22,7 @@
 
 /*!
 \brief Snoop into container
-\author Endymion
+\author Endymion and Flameeyes
 \param snooper the snooper
 \param cont the contanier
 */
@@ -32,63 +32,65 @@ void snooping( pPC snooper, pItem cont )
 	if ( ! snooper || ! cont || ! snooper->getClient() || ! ( owner = cont->getPackOwner() ) )
 		return;
 
-	if (snooper == owner)
+	if (snooper == owner) {
 		snooper->showContainer(cont);
-	else if (snooper->IsGMorCounselor())
-		snooper->showContainer(cont);
-	else
-	if ( snooper->hasInRange(owner, 2) || snooper->hasInRange(cont, 2) )
-	{
-		if ( owner->HasHumanBody() && ( owner->getOwnerSerial32()==snooper->getSerial()))
-			snooper->showContainer(cont);
-		else if ( owner->npcaitype == NPCAI_PLAYERVENDOR)
-				snooper->showContainer(cont);
-		else
-		{
-			if ((cont->getContSerial()>1) && (cont->getContSerial() != snooper->getSerial()) )
-			{
-
-				if ( owner->amxevents[EVENT_CHR_ONSNOOPED])
-				{
-					g_bByPass = false;
-					owner->amxevents[EVENT_CHR_ONSNOOPED]->Call( owner->getSerial(), snooper->getSerial());
-					if (g_bByPass==true) return;
-				}
-				/*
-				owner->runAmxEvent( EVENT_CHR_ONSNOOPED, owner->getSerial(), s);
-				if (g_bByPass==true)
-					return;
-				*/
-				snooper->objectdelay=SrvParms->snoopdelay * MY_CLOCKS_PER_SEC + uiCurrentTime;
-				if ( owner->IsGMorCounselor())
-				{
-					snooper->sysmsg( TRANSLATE("You can't peek into that container or you'll be jailed."));// AntiChrist
-					owner->sysmsg(TRANSLATE("%s is trying to snoop you!"), snooper->getCurrentName().c_str());
-					return;
-				}
-				else if (snooper->checkSkill( skSnooping, 0, 1000))
-				{
-					snooper->showContainer(cont);
-					snooper->sysmsg( TRANSLATE("You successfully peek into that container."));
-				}
-				else
-				{
-					snooper->sysmsg( TRANSLATE("You failed to peek into that container."));
-					if ( owner->npc )
-						owner->talk(s, TRANSLATE("Art thou attempting to disturb my privacy?"), 0);
-					else {
-						owner->sysmsg( TRANSLATE("You notice %s trying to peek into your pack!"), snooper->getCurrentName().c_str());
-					}
-					snooper->IncreaseKarma( - nSettings::Skills::getSnoopKarmaLoss() );
-					snooper->modifyFame( - nSettings::Skills::getSnoopFameLoss() );
-					//!\todo This should be investigated
-					snooper->setCrimGrey(ServerScp::g_nSnoopWillCriminal);
-				}
-			}
-		}
+		return;
 	}
-	else {
+	if (snooper->IsGMorCounselor()) {
+		snooper->showContainer(cont);
+		return;
+	}
+	if ( ! snooper->hasInRange(owner, 2) && ! snooper->hasInRange(cont, 2) ) {
 		snooper->sysmsg(TRANSLATE("You are too far away!"));
+		return;
+	}
+	if ( owner->HasHumanBody() && owner->getOwner() == snooper ) {
+		snooper->showContainer(cont);
+		return;
+	}
+	if ( owner->npcaitype == NPCAI_PLAYERVENDOR) {
+		snooper->showContainer(cont);
+		return;
+	}
+	
+	if ( dynamic_cast<pBody>(cont->getContainer()) == snooper->getBody() )
+		return;
+	
+	pFunctionHandle owner = src->getEvent(evtChrOnSnooped);
+	if ( evt )
+	{
+		tVariantVector params = tVariantVector(2);
+		params[0] = owner->getSerial(); params[1] = snooper->getSerial();
+		evt->setParams(params);
+		evt->execute();
+		if ( evt->bypassed() )
+			return;
+	}
+	
+	snooper->objectdelay=SrvParms->snoopdelay * MY_CLOCKS_PER_SEC + uiCurrentTime;
+	if ( owner->IsGMorCounselor())
+	{
+		snooper->sysmsg( TRANSLATE("You can't peek into that container or you'll be jailed."));// AntiChrist
+		owner->sysmsg(TRANSLATE("%s is trying to snoop you!"), snooper->getCurrentName().c_str());
+		return;
+	}
+	else if (snooper->checkSkill( skSnooping, 0, 1000))
+	{
+		snooper->showContainer(cont);
+		snooper->sysmsg( TRANSLATE("You successfully peek into that container."));
+	}
+	else
+	{
+		snooper->sysmsg( TRANSLATE("You failed to peek into that container."));
+		if ( owner->npc )
+			owner->talk(s, TRANSLATE("Art thou attempting to disturb my privacy?"), 0);
+		else {
+			owner->sysmsg( TRANSLATE("You notice %s trying to peek into your pack!"), snooper->getCurrentName().c_str());
+		}
+		snooper->IncreaseKarma( - nSettings::Skills::getSnoopKarmaLoss() );
+		snooper->modifyFame( - nSettings::Skills::getSnoopFameLoss() );
+		//!\todo This should be investigated
+		snooper->setCrimGrey(ServerScp::g_nSnoopWillCriminal);
 	}
 }
 
@@ -144,117 +146,111 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 		return;
 	}
 
-	if (thief->distFrom( victim ) == 1)
+	if (thief->distFrom( victim ) > 1)
 	{
+		thief->sysmsg(TRANSLATE("You are too far away to steal that item."));
+		return;
+	}
+	
+	int result;
 
-		int result;
+	float we = pi->getWeightActual();
+	int bonus= (int)( (1800 - we)/5 );
+	if ( thief->checkSkill( skStealing,0,(1000-bonus)) )
+	{
+		// 0 stealing 2 stones, 10  3 stones, 99.9 12 stones, 100 17 stones !!!
+		int cansteal = thief->skill[skStealing] > 999 ? 1700 : thief->skill[skStealing] + 200;
 
-		float we = pi->getWeightActual();
-		int bonus= (int)( (1800 - we)/5 );
-		if ( thief->checkSkill( skStealing,0,(1000-bonus)) )
+		if ( we > cansteal )
 		{
-			// 0 stealing 2 stones, 10  3 stones, 99.9 12 stones, 100 17 stones !!!
-			int cansteal = thief->skill[skStealing] > 999 ? 1700 : thief->skill[skStealing] + 200;
+		thief->sysmsg(TRANSLATE("That is too heavy."));
+		return;
+		}
 
-			if ( we > cansteal )
-			{
-        		thief->sysmsg(TRANSLATE("That is too heavy."));
-        		return;
-			}
-
-
-			if (pi->amxevents[EVENT_IONSTOLEN]!=NULL)
-			{
-				g_bByPass = false;
-				pi->amxevents[EVENT_IONSTOLEN]->Call(pi->getSerial(), thief->getSerial(), victim->getSerial());
-				if (g_bByPass==true)
-					return;
-			}
-
-			if (victim->amxevents[EVENT_CHR_ONSTOLEN])
-			{
-				g_bByPass = false;
-				victim->amxevents[EVENT_CHR_ONSTOLEN]->Call(victim->getSerial(), thief->getSerial());
-				if (g_bByPass==true)
-					return;
-			}
-			/*
-
-			pi->runAmxEvent( EVENT_IONSTOLEN, pi->getSerial(), s, victim->getSerial() );
-			if (g_bByPass==true)
+		pFunctionHandle evt = pi->getEvent(evtItmOnStolen);
+		if ( evt )
+		{
+			tVariantVector params = tVariantVector(3);
+			params[0] = pi->getSerial(); params[1] = thief->getSerial();
+			params[2] = victim->getSerial();
+			evt->setParams(params);
+			evt->execute();
+			if ( evt->bypassed() )
 				return;
-
-			victim->runAmxEvent( EVENT_CHR_ONSTOLEN, victim->getSerial(), s );
-			if (g_bByPass==true)
+		}
+	
+		evt = victim->getEvent(evtChrOnStolen);
+		if ( evt )
+		{
+			tVariantVector params = tVariantVector(2);
+			params[0] = victim->getSerial(); params[1] = thief->getSerial();
+			evt->setParams(params);
+			evt->execute();
+			if ( evt->bypassed() )
 				return;
-			*/
-
-			pItem pack= thief->getBackpack();
-			VALIDATEPI(pack);
-
-			pi->setContainer( pack );
-
-			thief->sysmsg(TRANSLATE("You successfully steal the item."));
-			pi->Refresh();
-
-			result=+200;
-			//all_items(s); why all item?
 		}
-		else
-		{
-			thief->sysmsg( TRANSLATE("You failed to steal the item."));
-			result=-200;
-			//Only onhide when player is caught!
-		}
+	
+		pItem pack= thief->getBackpack();
+		VALIDATEPI(pack);
 
-		if ( rand()%1000 > ( thief->skill[skStealing] + result )  )
-		{
-			thief->unHide();
-			thief->sysmsg(TRANSLATE("You have been caught!"));
-			thief->increaseKarma( - nSettings::Skills::getStealKarmaLoss() );
-			thief->modifyFame( - nSettings::Skills::getStealFameLoss() );
+		pi->setContainer( pack );
 
-			if ( victim->IsInnocent() && thief->attackerserial != victim->getSerial() && Guilds->Compare(thief,victim)==0)
-				//!\todo should be investigated
-				thief->setCrimGrey(ServerScp::g_nStealWillCriminal); //Blue and not attacker and not same guild
+		thief->sysmsg(TRANSLATE("You successfully steal the item."));
+		pi->Refresh();
 
-
-			std::string itmname;
-			
-			if ( pi->getCurrentName() != "#" )
-				itmname = pi->getCurrentName();
-			else
-				itmname = pi->getName();
-			
-			if ( victim->npc )
-				if( victim->HasHumanBody() )
-					victim->talkAll(TRANSLATE( "Guards!! A thief is amoung us!"),0);
-			else
-				victim->sysmsg(TRANSLATE("You notice %s trying to steal %s from you!"), thief->getCurrentName().c_str(), itmname.c_str());
-
-			char *temp;
-			asprintf(&temp,TRANSLATE("You notice %s trying to steal %s from %s!"), thief->getCurrentName().c_str(), itmname.c_str(), victim->getCurrentName().c_str());
-
-			//send to all player temp = thief are stealing victim if are more intelligent and a bonus of luck :D
-			NxwSocketWrapper sw;
-			sw.fillOnline( thief, true );
-			for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-
-				NXWCLIENT ps_i=sw.getClient();
-				if(ps_i==NULL ) continue;
-
-				pChar pc_i=ps_i->currChar();
-				if ( pc_i )
-					if( (rand()%10+10==17) || ( (rand()%2==1) && (pc_i->in>=thief->in)))
-						pc_i->sysmsg(temp);
-			}
-			free(temp);
-		}
+		result=+200;
+		//all_items(s); why all item?
 	}
 	else
 	{
-		thief->sysmsg(TRANSLATE("You are too far away to steal that item."));
+		thief->sysmsg( TRANSLATE("You failed to steal the item."));
+		result=-200;
+		//Only onhide when player is caught!
 	}
+
+	if ( rand()%1000 <= ( thief->skill[skStealing] + result )  )
+		return;
+	
+	thief->unHide();
+	thief->sysmsg(TRANSLATE("You have been caught!"));
+	thief->increaseKarma( - nSettings::Skills::getStealKarmaLoss() );
+	thief->modifyFame( - nSettings::Skills::getStealFameLoss() );
+
+	if ( victim->IsInnocent() && thief->attackerserial != victim->getSerial() && Guilds->Compare(thief,victim)==0)
+		//!\todo should be investigated
+		thief->setCrimGrey(ServerScp::g_nStealWillCriminal); //Blue and not attacker and not same guild
+
+
+	std::string itmname;
+	
+	if ( pi->getCurrentName() != "#" )
+		itmname = pi->getCurrentName();
+	else
+		itmname = pi->getName();
+	
+	if ( victim->npc )
+		if( victim->HasHumanBody() )
+			victim->talkAll("Guards!! A thief is amoung us!", false);
+	else
+		victim->sysmsg("You notice %s trying to steal %s from you!", thief->getCurrentName().c_str(), itmname.c_str());
+
+	char *temp;
+	asprintf(&temp,"You notice %s trying to steal %s from %s!", thief->getCurrentName().c_str(), itmname.c_str(), victim->getCurrentName().c_str());
+
+	//send to all player temp = thief are stealing victim if are more intelligent and a bonus of luck :D
+	NxwSocketWrapper sw;
+	sw.fillOnline( thief, true );
+	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
+
+		NXWCLIENT ps_i=sw.getClient();
+		if(ps_i==NULL ) continue;
+
+		pChar pc_i=ps_i->currChar();
+		if ( pc_i )
+			if( (rand()%10+10==17) || ( (rand()%2==1) && (pc_i->in>=thief->in)))
+				pc_i->sysmsg(temp);
+	}
+	free(temp);
 
 	AMXEXECSVTARGET( thief->getSerial(),AMXT_SKITARGS,skStealing,AMX_AFTER);
 }
@@ -325,121 +321,120 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 
 	thief->sysmsg(TRANSLATE("You reach into %s's pack to steal something ..."), victim->getCurrentName().c_str() );
 
-	if ( thief->hasInRange(victim, 1) )
+	if ( !thief->hasInRange(victim, 1) )
 	{
-		pItem pi = NULL;
+		thief->sysmsg( TRANSLATE("... and realise you're too far away."));
+		return;
+	}
+	pItem pi = NULL;
 
-		NxwItemWrapper si;
-		si.fillItemsInContainer( pack, false );
-		if( si.size()>0 ) {
-			int ra=rand()%si.size();
-			int c=0;
-			for( si.rewind(); !si.isEmpty(); si++ ) {
-				c++;
-				if( c==ra ) {
-					pi=si.getItem();
-					break;
-				}
+	NxwItemWrapper si;
+	si.fillItemsInContainer( pack, false );
+	if( si.size()>0 ) {
+		int ra=rand()%si.size();
+		int c=0;
+		for( si.rewind(); !si.isEmpty(); si++ ) {
+			c++;
+			if( c==ra ) {
+				pi=si.getItem();
+				break;
 			}
 		}
+	}
 
-		if( pi==NULL ) {
-			thief->sysmsg(TRANSLATE("... and discover your victim doesn't have any posessions"));
-			return;
-		}
+	if( pi==NULL ) {
+		thief->sysmsg(TRANSLATE("... and discover your victim doesn't have any posessions"));
+		return;
+	}
 
 
-		//Endy can't be not valid after this -^ loop, else error
-		if ( ! pi ) return;
+	//Endy can't be not valid after this -^ loop, else error
+	if ( ! pi ) return;
 
-		if( pi->isNewbie() )
-		{//newbie
-			thief->sysmsg(TRANSLATE("... and fail because it is of no value to you."));
-			return;
-		}
+	if( pi->isNewbie() )
+	{//newbie
+		thief->sysmsg(TRANSLATE("... and fail because it is of no value to you."));
+		return;
+	}
 
-		if(pi->isSecureContainer())
-		{
-			thief->sysmsg(TRANSLATE("... and fail because it's a locked container."));
-			return;
-		}
+	if(pi->isSecureContainer())
+	{
+		thief->sysmsg(TRANSLATE("... and fail because it's a locked container."));
+		return;
+	}
 
-		if ( thief->checkSkill( skStealing,0,999) )
-		{
-			// 0 stealing 2 stones, 10  3 stones, 99.9 12 stones, 100 17 stones !!!
-			int cansteal = thief->skill[skStealing] > 999 ? 1700 : thief->skill[skStealing] + 200;
+	if ( thief->checkSkill( skStealing,0,999) )
+	{
+		// 0 stealing 2 stones, 10  3 stones, 99.9 12 stones, 100 17 stones !!!
+		int cansteal = thief->skill[skStealing] > 999 ? 1700 : thief->skill[skStealing] + 200;
 
-			if ( pi->getWeightActual() > cansteam )
-				thief->sysmsg(TRANSLATE("... and fail because it is too heavy."));
-			else
-			{
-			#if 0
-				if (victim->amxevents[EVENT_CHR_ONSTOLEN])
-				{
-					g_bByPass = false;
-					victim->amxevents[EVENT_CHR_ONSTOLEN]->Call(victim->getSerial(), thief->getSerial());
-					if (g_bByPass==true)
-						return;
-				}
-			#endif
-
-				pItem thiefpack = thief->getBackpack();
-				if ( ! thiefpack ) return;
-				pi->setContainer( thiefpack );
-				thief->sysmsg(TRANSLATE("... and you succeed."));
-				pi->Refresh();
-				//all_items(s);
-			}
-		}
+		if ( pi->getWeightActual() > cansteam )
+			thief->sysmsg(TRANSLATE("... and fail because it is too heavy."));
 		else
-			thief->sysmsg(TRANSLATE(".. and fail because you're not good enough."));
-
-		if ( thief->skill[skStealing] < rand()%1001 )
 		{
-			thief->unHide();
-			thief->sysmsg(TRANSLATE("You have been caught!"));
-			thief->IncreaseKarma( - nSettings::Skills::getStealKarmaLoss() );
-			thief->modifyFame( - nSettings::Skills::getStealFameLoss() );
-
-			if (victim->IsInnocent() && thief->attackerserial!=victim->getSerial() && Guilds->Compare(thief,victim)==0)//AntiChrist
-				thief->setCrimGrey(ServerScp::g_nStealWillCriminal);//Blue and not attacker and not guild
-
-			std::string itmname = "";
-			if ( pi->getCurrentName() != "#" )
-				itmname = pi->getCurrentName();
-			else
-				itmname = pi->getName();
-
-			if ( victim->npc)
-				victim->talkAll(TRANSLATE( "Guards!! A thief is amoung us!"),0);
-			else
-				victim->sysmsg(TRANSLATE("You notice %s trying to steal %s from you!"), thief->getCurrentName().c_str(), itmname.c_str());
-
-			char *temp;
-			asprintf(&temp,TRANSLATE("You notice %s trying to steal %s from %s!"), thief->getCurrentName().c_str(), itmname.c_str(), victim->getCurrentName().c_str());
-			
-			//send to all player temp = thief are stealing victim if are more intelligent and a bonus of luck :D
-			NxwSocketWrapper sw;
-			sw.fillOnline( thief, true );
-			for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-
-				NXWCLIENT ps_i=sw.getClient();
-				if( ps_i==NULL ) continue;
-
-				pChar pc_i=ps_i->currChar();
-				if ( pc_i )
-					if( (rand()%10+10==17) || ( (rand()%2==1) && (pc_i->in>=thief->in)))
-						sysmessage(ps_i->toInt(),temp);
+			pFunctionHandle evt = victim->getEvent(evtChrOnStolen);
+			if ( evt )
+			{
+				tVariantVector params = tVariantVector(2);
+				params[0] = victim->getSerial(); params[1] = thief->getSerial();
+				evt->setParams(params);
+				evt->execute();
+				if ( evt->bypassed() )
+					return;
 			}
-			
-			free(temp);
+	
+		
+			pItem thiefpack = thief->getBackpack();
+			if ( ! thiefpack ) return;
+			pi->setContainer( thiefpack );
+			thief->sysmsg(TRANSLATE("... and you succeed."));
+			pi->Refresh();
+			//all_items(s);
 		}
 	}
 	else
-	{
-		thief->sysmsg( TRANSLATE("... and realise you're too far away."));
-	}
+		thief->sysmsg(TRANSLATE(".. and fail because you're not good enough."));
 
+	if ( thief->skill[skStealing] >= rand()%1001 )
+		return;
+	
+	thief->unHide();
+	thief->sysmsg(TRANSLATE("You have been caught!"));
+	thief->IncreaseKarma( - nSettings::Skills::getStealKarmaLoss() );
+	thief->modifyFame( - nSettings::Skills::getStealFameLoss() );
+
+	if (victim->IsInnocent() && thief->attackerserial!=victim->getSerial() && Guilds->Compare(thief,victim)==0)//AntiChrist
+		thief->setCrimGrey(ServerScp::g_nStealWillCriminal);//Blue and not attacker and not guild
+
+	std::string itmname = "";
+	if ( pi->getCurrentName() != "#" )
+		itmname = pi->getCurrentName();
+	else
+		itmname = pi->getName();
+
+	if ( victim->npc)
+		victim->talkAll(TRANSLATE( "Guards!! A thief is amoung us!"),0);
+	else
+		victim->sysmsg(TRANSLATE("You notice %s trying to steal %s from you!"), thief->getCurrentName().c_str(), itmname.c_str());
+
+	char *temp;
+	asprintf(&temp,TRANSLATE("You notice %s trying to steal %s from %s!"), thief->getCurrentName().c_str(), itmname.c_str(), victim->getCurrentName().c_str());
+	
+	//send to all player temp = thief are stealing victim if are more intelligent and a bonus of luck :D
+	NxwSocketWrapper sw;
+	sw.fillOnline( thief, true );
+	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
+
+		NXWCLIENT ps_i=sw.getClient();
+		if( ps_i==NULL ) continue;
+
+		pChar pc_i=ps_i->currChar();
+		if ( pc_i )
+			if( (rand()%10+10==17) || ( (rand()%2==1) && (pc_i->in>=thief->in)))
+				sysmessage(ps_i->toInt(),temp);
+	}
+	
+	free(temp);
 }
 
 
@@ -453,32 +448,29 @@ void Skills::target_lockpick( NXWCLIENT ps, pTarget t )
 {
 
 	pChar pc = ps->currChar();
-	if ( ! pc ) return;
-	pItem chest=cSerializable::findItemBySerial( t->getClicked() );
-	VALIDATEPI(chest);
-	pItem pick=MAKE_ITEM_REF( t->buffer[0] );
-	VALIDATEPI(pick);
-
+	pContainer chest = dynamic_cast<pContainer>(cSerializable::findBySerial( t->getClicked() ));
+	pItem pick = cSerializable::findBySerial(t->buffer[0]);
+	
+	if ( ! pc || ! pi || ! pick )
+		return;
+	
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skLockPicking,AMX_BEFORE);
 
-
-	if (chest->amxevents[EVENT_IONLOCKPICK]!=NULL)
+	pFunctionHandle evt = chest->getEvent(evtCntOnLockPick);
+	if ( evt )
 	{
-		g_bByPass = false;
-		chest->amxevents[EVENT_IONLOCKPICK]->Call(chest->getSerial(), pc->getSerial());
-		if (g_bByPass==true)
+		tVariantVector params = tVariantVector(2);
+		params[0] = chest->getSerial(); params[1] = pc->getSerial();
+		evt->setParams(params);
+		evt->execute();
+		if ( evt->bypassed() )
 			return;
 	}
-
-	/*
-	chest->runAmxEvent( EVENT_IONLOCKPICK, chest->getSerial(), s );
-	if (g_bByPass==true)
-		return;
-	*/
-
+	
 	if( !pc->hasInRange(pick, 1) )
 	{
 		pc->sysmsg(TRANSLATE("You are too far away!"));
+		return;
 	}
 
 	if (chest->magic==4)
@@ -492,36 +484,34 @@ void Skills::target_lockpick( NXWCLIENT ps, pTarget t )
 		return;
 	}
 
-	if(chest->more1==0 && chest->more2==0 && chest->more3==0 && chest->more4==0)
-	{ //Make sure it isn't an item that has a key (i.e. player house, chest..etc)
-		if(pc->checkSkill( skLockPicking, 0, 1000))
+	if( ! chest->getKeyCode() )
+	{
+		pc->sysmsg("That cannot be unlocked without a key.");
+		return;
+	}
+	
+	if(pc->checkSkill( skLockPicking, 0, 1000))
+	{
+		switch(chest->type)
 		{
-			switch(chest->type)
-			{
-				case 8: chest->type=1; break;
-				case 13: chest->type=12; break;
-				case 64: chest->type=63; break;
-				default:
-					LogError("switch reached default");
-					return;
-			}
-			soundeffect3(chest, 0x0241);
-			pc->sysmsg(TRANSLATE("You manage to pick the lock."));
+			case 8: chest->type=1; break;
+			case 13: chest->type=12; break;
+			case 64: chest->type=63; break;
+			default:
+				LogError("switch reached default");
+				return;
+		}
+		soundeffect3(chest, 0x0241);
+		pc->sysmsg(TRANSLATE("You manage to pick the lock."));
+	} else {
+		if((rand()%100)>50)
+		{
+			pc->sysmsg( TRANSLATE("You broke your lockpick!"));
+			pick->ReduceAmount(1);
 		}
 		else
-		{
-			if((rand()%100)>50)
-			{
-				pc->sysmsg( TRANSLATE("You broke your lockpick!"));
-				pick->ReduceAmount(1);
-			}
-			else
-				pc->sysmsg(TRANSLATE( "You fail to open the lock."));
-		}
+			pc->sysmsg(TRANSLATE( "You fail to open the lock."));
 	}
-	else
-		pc->sysmsg(TRANSLATE("That cannot be unlocked without a key."));
-
 
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skLockPicking,AMX_AFTER);
 }
