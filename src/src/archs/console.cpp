@@ -16,6 +16,10 @@
 #include "arch/console.h"
 #include "arch/signals.h"
 
+#ifdef HAVE_WINCON_H
+#include <wincon.h>
+#endif
+
 /*!
 \brief Do a low-level output on the console
 \param str String to print (printf-formatted)
@@ -122,7 +126,7 @@ void setWinTitle(char *str, ...)
 	
 	#ifdef __unix__
 		lowlevelOutput("\033]0;%s\007", temp); // xterm code
-	#elif defined(WIN32)
+	#elif defined(HAVE_WINCON_H)
 		SetConsoleTitle(temp);
 	#endif
 	
@@ -357,10 +361,6 @@ int main(int argc, char *argv[])
 
 	exitOnError(error); // LB prevents file corruption
 
-	lowlevelOutput(stdout, "Clearing all trades...");
-	clearalltrades();
-	lowlevelOutput(stdout, " [DONE]\n");
-
 	FD_ZERO(&conn);
 	starttime=getClockmSecs();
 	endtime=0;
@@ -440,16 +440,12 @@ int main(int argc, char *argv[])
 
 	Spawns->doSpawnAll();
 
-	//OnStart
-	AMXEXEC(AMXT_SPECIALS,0,0,AMX_AFTER);
 	while (keeprun)
 	{
-
 		keeprun = (!pollCloseRequests());
 		
 		checkkey();
 		//OnLoop
-		AMXEXEC(AMXT_SPECIALS,2,0,AMX_AFTER);
 
 		if(loopTimeCount >= 1000)
 		{
@@ -491,15 +487,6 @@ int main(int argc, char *argv[])
 
 			}
 		}
-		if( TIMEOUT( uiNextCheckConn ) ) // Cut lag on CheckConn by not doing it EVERY loop.
-		{
-			Network->CheckConn();
-			TelnetInterface.CheckConn();
-			uiNextCheckConn = (unsigned int)( getClockmSecs() + 250 );
-		}
-
-		Network->CheckMessage();
-		TelnetInterface.CheckInp();
 
 		tempTime = CheckMilliTimer(tempSecs, tempMilli);
 
@@ -533,10 +520,8 @@ int main(int argc, char *argv[])
 		autoTime += tempTime;
 		autoTimeCount++;
 
-		Network->ClearBuffers();
 		tempTime = CheckMilliTimer(loopSecs, loopMilli);
 		loopTime += tempTime;
-
 	}
 	
 	shutdownServer();

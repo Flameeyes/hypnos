@@ -45,8 +45,6 @@ void gmyell(char *txt)
 			client->sendPacket(&pk);
 		}
 	}
-
-	Network->ClearBuffers();
 }
 
 

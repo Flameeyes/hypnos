@@ -243,6 +243,10 @@ void loadServer()
 	Network->LoadHosts_deny();
 	outPlain("[  Ok  ]\n");
 
+	lowlevelOutput(stdout, "Clearing all trades...");
+	clearalltrades();
+	lowlevelOutput(stdout, " [DONE]\n");
+	
 	Guilds->CheckConsistancy(); // LB
 
 	StartClasses();

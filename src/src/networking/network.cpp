@@ -266,7 +266,6 @@ void cNetwork::GoodAuth(pClient client)
 	if(server_data.feature == 2) 	// LBR: NPC Popup Menu   (not currently impl.)
 		tail[3] = 0x08;
 	Xsend(s, tail, 4);
-//AoS/	Network->FlushBuffer(client);
 }
 
 void cNetwork::CharList(pClient client) // Gameserver login and character listing
@@ -393,26 +392,21 @@ void cNetwork::enterchar(pClient client)
 	clientInfo[s]->ingame=true;
 
 	Xsend(s, world, 6);
-	Network->FlushBuffer(client);
 
 	nPackets::Sent::LoginConfirmation pkLoginConf(pc);
 	client->sendPacket(&pkLoginConf);
 
 	pc->war=0;
 	Xsend(s, modeset, 5);
-	Network->FlushBuffer(client);
 
 	techstuff[3]=0x01;
 	Xsend(s, techstuff, 5);
-	Network->FlushBuffer(client);
 
 	techstuff[3]=0x02;
 	Xsend(s, techstuff, 5);
-	Network->FlushBuffer(client);
 
 	techstuff[3]=0x03;
 	Xsend(s, techstuff, 5);
-	Network->FlushBuffer(client);
 
 	nPackets::Sent::StartGame pkStartGame;
 	client->sendPacket(&pkStartGame);
@@ -463,10 +457,8 @@ void cNetwork::startchar(pClient client)
 	AMXEXECSV( pc->getSerial(),AMXT_SPECIALS, 4, AMX_BEFORE);
 
 	enterchar( s );
-	Network->FlushBuffer(client);
 
 	client->sysmessage(0x058, "Hypnos %s [%s]", strVersion, OS);
-	Network->FlushBuffer(client);
 
 	// log last time signed on
 	time_t ltime;
@@ -526,7 +518,6 @@ void cNetwork::startchar(pClient client)
 	strcat(idname, strSupportedClient);
 
 	client->sysmessage(idname);
-	Network->FlushBuffer(client);
 }
 
 char cNetwork::LogOut(pClient client)//Instalog

@@ -133,6 +133,9 @@
 /* Define to 1 if you have the <winbase.h> header file. */
 #undef HAVE_WINBASE_H
 
+/* Define to 1 if you have the <wincon.h> header file. */
+#undef HAVE_WINCON_H
+
 /* Define to 1 if you have the <winreg.h> header file. */
 #undef HAVE_WINREG_H
 

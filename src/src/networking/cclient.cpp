@@ -2245,7 +2245,6 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 	LongToCharPtr( LongFromCharPtr(buffer[s] +3), clearmsg +3);	// vendorID
 	clearmsg[7]=0x00;						// Flag:  0 => no more items  0x02 items following ...
 	Xsend(s, clearmsg, 8);
-//AoS/	Network->FlushBuffer(s);
 }
 
 /*!

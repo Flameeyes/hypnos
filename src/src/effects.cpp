@@ -82,7 +82,6 @@ void nEffects::staticFX(pSerializable source, uint16_t eff, uint8_t speed, uint8
 			if (a3!=0xff) { particleSystem[46] = a3; Xsend(j, particleSystem, 49); }
 			if (a4!=0xff) { particleSystem[46] = a4; Xsend(j, particleSystem, 49); }
 
-//AoS/			Network->FlushBuffer(j);
 		}
 		else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
 			LogError("Invalid Client Dimension: %i\n",clientDimension[j]);
@@ -272,11 +271,10 @@ void nEffects::boltFX(pSerializable target, bool bNoParticles)
 				//Magic->doStaticEffect(DEREF_pChar(this), 30);
 				unsigned char particleSystem[49];
 				Xsend(j, particleSystem, 49);
-//AoS/				Network->FlushBuffer(j);
 			}
 			else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
 			{
-				sprintf(temp, "Invalid Client Dimension: %i\n",clientDimension[j]); LogError(temp);
+				LogError("Invalid Client Dimension: %i\n",clientDimension[j]);
 			}
 		}
 	}
@@ -320,11 +318,10 @@ void nEffects::lightningFX(sLocation &target_pos, bool bNoParticles)
 				//Magic->doStaticEffect(DEREF_pChar(this), 30);
 				unsigned char particleSystem[49];
 				Xsend(j, particleSystem, 49);
-//AoS/				Network->FlushBuffer(j);
 			}
 			else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
 			{
-				sprintf(temp, "Invalid Client Dimension: %i\n",clientDimension[j]); LogError(temp);
+				LogError("Invalid Client Dimension: %i\n",clientDimension[j]);
 			}
 		}
 	}
