@@ -447,7 +447,7 @@ public:
 	*/
 	NotEquippableReason canEquip(pEquippable pi);
 
-	inline void setSkillDelay( uint32_t seconds = nSettings::Server::getDelaySkills() )
+	inline void setSkillDelay( uint32_t seconds = nSettings::Skills::getSkillDelay() )
 	{ skilldelay = getClockmSecs() + seconds * SECS; }
 
 	inline bool canDoSkillAction() const
