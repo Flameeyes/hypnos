@@ -155,4 +155,11 @@ The minimum number of seconds between snoops.
   </setting>
  </group>
  
+ <group name="Jails">
+  <setting name="JailAccountLevel" type="flag" default="on" flag="is">
+Set this on to Jail at Account Level. 
+Set this off to Jail at Character Level.
+  </setting>
+ </group>
+  
 </autosettings>
