@@ -679,9 +679,9 @@ void cPacketSendCharProfile::prepare()
         offset += who->getCurrentName().size() + 1;
         // here we cannot use wchar version of strcpy (wcscpy) because wchar is not guaranteed to be the 16bit char that uo protocol requires
         // so we use memcpy (to copy even the "0" higher bytes)
-        memcpy(offset, title.c_str(), title.size() * 2 + 2);		// the "+2" guarantees the copy of the 16 bit null terminator
+        memcpy(offset, title.rawBytes(), title.size() * 2 + 2);		// the "+2" guarantees the copy of the 16 bit null terminator
         offset += title.size() * 2 + 2;
-        memcpy(offset, who->getProfile().c_str(), who->getProfile().size() * 2 + 2);
+        memcpy(offset, who->getProfile().rawBytes(), who->getProfile().size() * 2 + 2);
 }
 
 void cPacketSendClientViewRange::prepare()
