@@ -23,6 +23,8 @@ cClient::cClient(int32_t sd, struct sockaddr_in* addr)
 	acc = NULL:
 	visualRange = VISRANGE;
 	dragItem = NULL;
+	target.clicked = NULL;
+	target.loc = sLocation(UINVALID16,UINVALID16,UINVALID16);
 	resetDragging();
 	clients.push_back(this);
 }
@@ -3283,12 +3285,41 @@ void cClient::resume()
 
 void cClient::sendTarget(processTarget callback)
 {
-	sTarget target;
-	nPackets::Sent::TargetingCursor pk(1,);
+	target.callback = callback;
+	target.type = ttAll;
+	nPackets::Sent::TargetingCursor pk(1,0);	//verify if cursorid has any sense (second argument)
+	sendPacket(&pk);
 }
-/*
-void cClient::sendObjectTarget(processTarget callback);		//!< senda an object target
-void cClient::sendCharTarget(processTarget callback);		//!< sends a char target
-void cClient::sendItemTarget(processTarget callback);		//!< sends an item target
-void cClient::sendLocationTarget(processTarget callback);	//!< sends a location target
-*/
+
+void cClient::sendObjectTarget(processTarget callback)
+{
+	target.callback = callback;
+	target.type = ttObject;
+	nPackets::Sent::TargetingCursor pk(0,0);	//verify if cursorid has any sense (second argument)
+	sendPacket(&pk);
+}
+
+void cClient::sendCharTarget(processTarget callback)
+{
+	target.callback = callback;
+	target.type = ttChar;
+	nPackets::Sent::TargetingCursor pk(0,0);	//verify if cursorid has any sense (second argument)
+	sendPacket(&pk);
+}
+
+void cClient::sendItemTarget(processTarget callback)
+{
+	target.callback = callback;
+	target.type = ttItem;
+	nPackets::Sent::TargetingCursor pk(0,0);	//verify if cursorid has any sense (second argument)
+	sendPacket(&pk);
+}
+
+void cClient::sendLocationTarget(processTarget callback)
+{
+	target.callback = callback;
+	target.type = ttLocation;
+	nPackets::Sent::TargetingCursor pk(1,0);	//verify if cursorid has any sense (second argument)
+	sendPacket(&pk);
+}
+

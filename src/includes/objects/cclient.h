@@ -194,7 +194,7 @@ public:
 	inline sTarget getTarget()
 	{ return target; }
 
-	inline void settarget(sTarget newtarget)
+	inline void setTarget(sTarget newtarget)
 	{ target = newtarget; }
 
 	void sendTarget(processTarget callback);		//!< sends a targeting cursor to client

@@ -32,7 +32,7 @@ void cParty::deleteParties()
 \param buffer Pointer to the actual package received
 \param size Size of the received package
 
-This function is here because there is too many things in the 0xBF packet, and
+This function is here because there are too many things in the 0xBF packet, and
 adding a new switch inside it is a true suicide.
 
 This isn't a clean way to do this, but it's the better one to have all the

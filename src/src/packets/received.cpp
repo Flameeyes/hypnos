@@ -199,9 +199,10 @@ bool nPackets::Received::CreateChar::execute(pClient client)
 	nNewbies::addHairs(charbody, HairStyle, HairColor, FacialHair, FacialHairColor);
 	nNewbies::giveItems(charbody, pants_color, shirt_color);
 	
-	//Now with the body completed and data verified, building cPC
 	pPC pc = new cPC();
+	charbody->setChar(pc);	//set the body link to its rightful "owner"
 
+	//Now with the body completed and data verified, building pPC pc
 	pc->setBody(charbody);
 	pc->setTrueBody(charbody);
 	pc->npc=false;
@@ -793,36 +794,52 @@ bool nPackets::Received::BookPage::execute(pClient client)
 bool nPackets::Received::TargetSelected::execute(pClient client)
 {
 	if (length != 19) return false;
-	pTarget target = client->getTarget();
-	if( !target) return false; //maybe it CAN return true if this packet is sent on targeting abortion. verify it! If true, add targeting abortion code instead of returning
+	sTarget target = client->getTarget();
+	if( target.loc.x == UINVALID16 || target.loc.y==UINVALID16) return false; //maybe it CAN return true if this packet is sent on targeting abortion. verify it! If true, add targeting abortion code instead of returning
 
-	if( target.location && ( target.loc.x==UINVALID16 || target.loc.y==UINVALID16 ) )
+	pSerializable clicked = cSerializable::findBySerial(LongFromCharPtr(buffer + 7);
+	sLocation loc;
+	loc.x = ShortFromCharPtr(buffer + 9);
+	loc.y = ShortFromCharPtr(buffer + 11);
+	loc.z = ShortFromCharPtr(buffer + 13);
+	model = ShortFromCharPtr(buffer + 15);
+
+	target.id = model;
+	target.clicked = clicked;
+	taget.loc = loc;
+
+	if( ((target.type == ttAll || target.type == ttLocation) && ( loc.x==UINVALID16 || loc.y==UINVALID16 )) ||	// if target need a location and it is not provided or...
+	    (target.type != ttAll && target.type != ttLocation && !clicked && !model))					// ... the target requires an object target but neither a serializable nor a static item was selected
+	{
+		// Resetting target data
+		target.clicked = NULL;
+		target.loc = sLocation(UINVALID16,UINVALID16,UINVALID16);
+		client->setTarget(target);	//replace client's target
 		return false;
-	if( !target.location && !clicked && !model )
-		return false;
-
-
+	}
+	bool valid;
 	switch( target.type )
 	{
 		case ttChar:
-			return new cCharTarget();
+			valid = dynamic_cast<pChar> clicked;
+			break;
 		case ttItem:
-			return new cItemTarget();
+			valid = dynamic_cast<pItem> clicked;
+			break;
 		case ttObject:
-			return new cObjectTarget();
-		case ttLocation:
-			return new cLocationTarget();
+			valid = clicked;
+			break;
 		case ttAll:
+			valid = clicked || model || (loc.x!=UINVALID16 && loc.y!=UINVALID16)
+			break;
 		default:
+			valid = loc.x!=UINVALID16 && loc.y!=UINVALID16;
 	}
-	//! \todo finish to update this when targets redone
-#if 0
-	target->receive( ps );
-						if( !target->isValid() )
-						target->error( ps );
-					else
-						target->code_callback( ps, target );
-#endif
+	if (valid) target.callback( client, target );
+	target.clicked = NULL;
+	target.loc = sLocation(UINVALID16,UINVALID16,UINVALID16);
+	client->setTarget(target);	//replace client's target
+	if (!valid) return false;
 	return true;
 }
 
@@ -1309,15 +1326,15 @@ bool nPackets::Received::DyeItem::execute(pClient client)
 \author Chronodt
 \param client client who sent the packet
 \note packet 0x9b
+\todo menu/gump update
 */
-
 
 bool nPackets::Received::RequestHelp::execute(pClient client)
 {
 	if (length != 258) return false;
 	//bytes from buffer + 1 to buffer + 257 i believe are the page text... i hope ...
 	//but 257 bytes is a STRANGE number. Check if there isn't a 2byte length or something in it
-	gmmenu(s, 1);
+	gmmenu(client, 1);
 	return true;
 }
 
@@ -1559,8 +1576,7 @@ bool nPackets::Received::CharProfileRequest::execute(pClient client)
 
 	if( buffer[3])
 	{ //update profile
-		if( ( serial!=pc->getSerial() ) && !pc->isGMorCounselor() )
-			return true; //lamer fix, but packet still processed
+		if( pc!=who && !pc->isGMorCounselor() ) return true; //lamer fix, but packet still processed
 		int profilesize = ShortFromCharPtr(buffer + 10);
 		cSpeech profile(buffer + 12, profilesize);
 		profile.clearPackeByteOrder();
