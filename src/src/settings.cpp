@@ -235,7 +235,7 @@ namespace Server {
 }
 
 namespace Hunger {
-	//! Is the Hunger system enabled?
+	// Is the Hunger system enabled?
 	bool isEnabled()
 	{ return flags & flagHungerSystemEnabled; }
 	

@@ -941,7 +941,7 @@ char cNetwork::LogOut(pClient client)//Instalog
 
 /*!
 \brief Receive data from a socket
-\param s the socket to receive from
+\param client the client to receive from
 \param x the number of bytes to receive
 \param a the buffer offset
 \return the number of actually read bytes

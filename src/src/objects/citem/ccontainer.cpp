@@ -222,7 +222,7 @@ pItem cContainer::findFirstType(uint16_t type, bool recurse)
 \param recurse if true, it will recurse in all the sub-containers
 \return how many items can't be removed (because not presents)
 */
-uint32_t cContainer::removeItems(uint32_t delAmount, uint16_t matchId, uint16_t matchColor, bool recures)
+uint32_t cContainer::removeItems(uint32_t delAmount, uint16_t matchId, uint16_t matchColor, bool recurse)
 {
 	uint32_t rest = amount;
 

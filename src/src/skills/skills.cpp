@@ -130,62 +130,62 @@ void nSkills::loadSkills()
 /*!
 \brief Loads the 'madewords' for the skills
 
-This function loads into the \ref skillinfo vector the data about the
+This function loads into the \ref infos vector the data about the
 'madeword' to use in the identification of the item's crafter.
 \see Made words
 */
 static inline void nSkills::loadSkillVars()
 {
 	// Note: lore, knowledge and combat skills can't made anything!	
-	skillinfo[skAnimalLore].madeword = strNull;
-	skillinfo[skItemID].madeword = strNull;
-	skillinfo[skArmsLore].madeword = strNull;
-	skillinfo[skParrying].madeword = strNull;
-	skillinfo[skBegging].madeword = strNull;
-	skillinfo[skDetectingHidden].madeword = strNull;
-	skillinfo[skEnticement].madeword = strNull;
-	skillinfo[skEvaluatingIntelligence].madeword = strNull;
-	skillinfo[skForensics].madeword = strNull;
-	skillinfo[skHerding].madeword = strNull;
-	skillinfo[skHiding].madeword = strNull;
-	skillinfo[skProvocation].madeword = strNull;
-	skillinfo[skLockPicking].madeword = strNull;
-	skillinfo[skMagicResistance].madeword = strNull;
-	skillinfo[skTactics].madeword = strNull;
-	skillinfo[skSnooping].madeword = strNull;
-	skillinfo[skArchery].madeword = strNull;
-	skillinfo[skSpiritSpeak].madeword = strNull;
-	skillinfo[skStealing].madeword = strNull;
-	skillinfo[skTasteID].madeword = strNull;
-	skillinfo[skTracking].madeword = strNull;
-	skillinfo[skVeterinary].madeword = strNull;
-	skillinfo[skSwordsmanship].madeword = strNull;
-	skillinfo[skMacefighting].madeword = strNull;
-	skillinfo[skFencing].madeword = strNull;
-	skillinfo[skWrestling].madeword = strNull;
-	skillinfo[skLumberjacking].madeword = strNull;
-	skillinfo[skStealth].madeword = strNull;
-	skillinfo[skRemoveTraps].madeword = strNull;
+	infos[skAnimalLore].madeword = strNull;
+	infos[skItemID].madeword = strNull;
+	infos[skArmsLore].madeword = strNull;
+	infos[skParrying].madeword = strNull;
+	infos[skBegging].madeword = strNull;
+	infos[skDetectingHidden].madeword = strNull;
+	infos[skEnticement].madeword = strNull;
+	infos[skEvaluatingIntelligence].madeword = strNull;
+	infos[skForensics].madeword = strNull;
+	infos[skHerding].madeword = strNull;
+	infos[skHiding].madeword = strNull;
+	infos[skProvocation].madeword = strNull;
+	infos[skLockPicking].madeword = strNull;
+	infos[skMagicResistance].madeword = strNull;
+	infos[skTactics].madeword = strNull;
+	infos[skSnooping].madeword = strNull;
+	infos[skArchery].madeword = strNull;
+	infos[skSpiritSpeak].madeword = strNull;
+	infos[skStealing].madeword = strNull;
+	infos[skTasteID].madeword = strNull;
+	infos[skTracking].madeword = strNull;
+	infos[skVeterinary].madeword = strNull;
+	infos[skSwordsmanship].madeword = strNull;
+	infos[skMacefighting].madeword = strNull;
+	infos[skFencing].madeword = strNull;
+	infos[skWrestling].madeword = strNull;
+	infos[skLumberjacking].madeword = strNull;
+	infos[skStealth].madeword = strNull;
+	infos[skRemoveTraps].madeword = strNull;
 	
-	skillinfo[skAlchemy].madeword = strMixed;
-	skillinfo[skAnatomy].madeword = strMade;
-	skillinfo[skBlacksmithing].madeword = strForged;
-	skillinfo[skBowcraft].madeword = strBowcrafted;
-	skillinfo[skCamping].madeword = strMade;
-	skillinfo[skCarpentry].madeword = strMade;
-	skillinfo[skCartography].madeword = strWrote;
-	skillinfo[skCooking].madeword = strCooked;
-	skillinfo[skHealing].madeword = strMade;
-	skillinfo[skFishing].madeword = strFished;
-	skillinfo[skInscription].madeword = strWrote;
-	skillinfo[skMagery].madeword = strEvoked;
-	skillinfo[skMusicianship].madeword = strPlayed;
-	skillinfo[skPoisoning].madeword = strMixed;
-	skillinfo[skTailoring].madeword = strSewn;
-	skillinfo[skTaming].madeword = strTamed;   
-	skillinfo[skTinkering].madeword = strMade;
-	skillinfo[skMining].madeword = strSmelted;
-	skillinfo[skMeditation].madeword = strEvoked;
+	infos[skAlchemy].madeword = strMixed;
+	infos[skAnatomy].madeword = strMade;
+	infos[skBlacksmithing].madeword = strForged;
+	infos[skBowcraft].madeword = strBowcrafted;
+	infos[skCamping].madeword = strMade;
+	infos[skCarpentry].madeword = strMade;
+	infos[skCartography].madeword = strWrote;
+	infos[skCooking].madeword = strCooked;
+	infos[skHealing].madeword = strMade;
+	infos[skFishing].madeword = strFished;
+	infos[skInscription].madeword = strWrote;
+	infos[skMagery].madeword = strEvoked;
+	infos[skMusicianship].madeword = strPlayed;
+	infos[skPoisoning].madeword = strMixed;
+	infos[skTailoring].madeword = strSewn;
+	infos[skTaming].madeword = strTamed;   
+	infos[skTinkering].madeword = strMade;
+	infos[skMining].madeword = strSmelted;
+	infos[skMeditation].madeword = strEvoked;
 }
 
 /*!
@@ -368,17 +368,18 @@ bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
 			//SDbgOut("Race advance failure for skill %d with base %d is %d\n", sk, pc->baseskill[sk], incval * 10 );
 		}
 		incval *= 10;
+
 	} else {
 		int i = 0;
 		int loopexit=0;
-		while ( (wpadvance[1+i+skillinfo[sk].advance_index].skill == sk &&
-			wpadvance[1+i+skillinfo[sk].advance_index].base  <= pc->baseskill[sk] ) &&
+		while ( (wpadvance[1+i+infos[sk].advance_index].skill == sk &&
+			wpadvance[1+i+infos[sk].advance_index].base  <= pc->baseskill[sk] ) &&
 			(++loopexit < MAXLOOPS) ) ++i;
 		
 		if(skillused)
-			incval=(wpadvance[i+skillinfo[sk].advance_index].success);
+			incval=(wpadvance[i+infos[sk].advance_index].success);
 		else
-			incval=(wpadvance[i+skillinfo[sk].advance_index].failure);
+			incval=(wpadvance[i+infos[sk].advance_index].failure);
 		
 		incval *= 10;
 	}
@@ -659,16 +660,16 @@ void Skills::AdvanceStats(pChar pc, int sk)
 
 	bool atCap = (pc->st3 + pc->dx3 + pc->in3) > statcap;
 	
-	int i = skillinfo[sk].advance_index;
+	int i = infos[sk].advance_index;
 	int mod	= SrvParms->statsadvancemodifier;
 //  int	*pi; // ptr to stat to be decreased
 	bool update = false;
 
 	if ( pc->statGainedToday <= nSettings::Skills::getStatDailyLimit() )
 	{
-		bool strCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceStrength( sk ) : skillinfo[sk].st ) > (uint32_t)(rand() % mod);
-    	bool dexCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceDexterity( sk ) : skillinfo[sk].dx ) > (uint32_t)(rand() % mod);
-    	bool intCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceIntelligence( sk ) : skillinfo[sk].in ) > (uint32_t)(rand() % mod);
+		bool strCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceStrength( sk ) : infos[sk].st ) > (uint32_t)(rand() % mod);
+    	bool dexCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceDexterity( sk ) : infos[sk].dx ) > (uint32_t)(rand() % mod);
+    	bool intCheck = ( Race::isRaceSystemActive() ? Race::getRace( pc->race )->getSkillAdvanceIntelligence( sk ) : infos[sk].in ) > (uint32_t)(rand() % mod);
 
        	if ( strCheck )
        		if ( AdvanceOneStat( sk, i, 'S', &update, STATCAP_STR, pc ) && atCap && !pc->isGM() )
@@ -790,7 +791,7 @@ void Skills::SkillUse(pClient client, int x)
 		return; //Luxor: cannot use skills if under invisible spell
 
 	//<Luxor> 7 dec 2001
-	if (skillinfo[x].unhide_onuse)
+	if (infos[x].unhide_onuse)
 		pc->unHide();
 	//</Luxor>
 
@@ -970,9 +971,9 @@ void Skills::updateSkillLevel(pChar pc, int s)
 		return;
 
 
-    int temp = (((skillinfo[s].st * pc->getBody()->getStrength()) / 100 +
-        (skillinfo[s].dx * pc->getBody()->getDexterity()) / 100 +
-        (skillinfo[s].in * pc->getBody()->getIntelligende()) / 100)
+    int temp = (((infos[s].st * pc->getBody()->getStrength()) / 100 +
+        (infos[s].dx * pc->getBody()->getDexterity()) / 100 +
+        (infos[s].in * pc->getBody()->getIntelligende()) / 100)
         *(1000-pc->baseskill[s]))/1000+pc->baseskill[s];
 
 

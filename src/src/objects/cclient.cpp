@@ -768,7 +768,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 \author Unknown, moved here by Chronodt (3/2/2004)
 \param pi item to be dropped (already in dragging mode)
 \param loc position to drop item at (eventually in cont)
-\param cont container into which *pi has to be dropped (NULL = world)
+\param dest container into which *pi has to be dropped (NULL = world)
 */
 void cClient::drop_item(pItem pi, sLocation &loc, pSerializable dest) // Item is dropped
 {

@@ -74,7 +74,7 @@ cScheduler::cEvent::cEvent(std::string funcName, uint32_t nInterval, cScheduler 
 
 /*!
 \brief Scheduler constructor
-\param in Input stream to read the XML datafile from
+\\param in Input stream to read the XML datafile from
 
 This functions loads the XML datafile from the given stream and creates all
 the instances for the scheduled events to run.
