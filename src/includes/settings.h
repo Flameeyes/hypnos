@@ -61,6 +61,8 @@ namespace nSettings {
 		uint32_t getDecayTimer();		//!< Decay timer
 
 		uint32_t getWeightPerStr();		//!< How much weight can take with one str point? [Default: 4]
+		
+		uint16_t getNewbiesGold();
 	}
 	
 	namespace MsgBoards {

@@ -146,10 +146,19 @@ The variables in this group are variables used for store the data about the
 items to add to the newbies.
 */
 
-//! Struct representing a newbie item
+/*!
+\brief Struct representing a newbie item
+\note \c color is represented by a string to allow the use of random colors,
+	which at the moment aren't actually implemented.
+*/
 struct sNewbieItem {
-	pItem item;	//!< Item to add
-	ItemPlace place;//!< Place where to add the item
+	std::string item;	//!< String code of the item to add
+		//!\todo Should change to use directly the item archetype
+	ItemPlace place;	//!< Place where to add the item
+	uint16_t amount;	//!< Amount of items to add
+	std::string color;	//!< Color of the items to add
+	
+	createItem(pChar pc);
 };
 
 //! Singly-linked list of sNewbieItem's
@@ -165,7 +174,38 @@ NBItemSList NewbiesFemale;
 NBItemSlist NewbiesSkills[skTrueSkills];
 //@}
 
-void giveItems(pChar pc)
+/*!
+\brief Creates the newbie item and set it to the given character
+\param pc Character to give the item to
+*/
+sNewbieItem::createItem(pPC pc)
+{
+	pItem pi = nArchetypes::createItem( item );
+	pi->setAmount(amount);
+	//!\todo Change the setColor to one which uses the random colors!
+	pi->setColor(0);
+	pi->setNewbie(true);
+	
+	switch( place )
+	{
+	case ipBackpack:
+		pi->setContainer( pc->getBody()->getBackpack(true) );
+		break;
+	case ipBankbox:
+		pi->getContainer( pc->getBody()->getBankBox() );
+		break;
+	case ipEquip:
+		{
+			pEquippable pe = dynamic_cast<pEquippable>(pi);
+			if ( ! pe ) continue; // pass over if not equippable
+			pc->getBody()->equip(pe);
+		}
+	}
+	
+	pi->refresh();
+}
+
+void giveItems(pPC pc)
 {
 	if ( ! pc ) return;
 	
@@ -173,105 +213,38 @@ void giveItems(pChar pc)
 	Skills second = pc->nextBestSkill(first);
 	Skills third = pc->nextBestSkill(second);
 	
-	if ( pc->getBody()->getSkill(third) )
+	if ( pc->getBody()->getSkill(third) < 190 )
 		third = skInvalid;
 	
-}
-
-void newbieitems(pChar pc)
-{
-	pClient ps=pc->getClient();
-	if(ps==NULL)
-		return;
-
-	int storeval, itemaddperskill, loopexit = 0;
-	char sect[512];
-	char whichsect[105];
-	cScpIterator* iter = NULL;
-
-	first = pc->bestSkill();
-	second = pc->nextBestSkill(first);
-	third = pc->nextBestSkill(second);
-	if (pc->baseskill[third] < 190)
-		third = 46;
-
-	for (itemaddperskill = 1; itemaddperskill <= 5; itemaddperskill++)
-	{
-		switch (itemaddperskill)
-		{
-			// first of all the general section with the backpack, else where we put items?
-			case 1: strcpy(whichsect, "SECTION ALLNEWBIES");		break;
-			case 2:
-				if ( (pc->getId() == BODY_MALE) && (pc->getOldId() == BODY_MALE) )
-					strcpy(whichsect, "SECTION MALENEWBIES");
-				else
-					strcpy(whichsect, "SECTION FEMALENEWBIES");
-				break;
-			case 3: sprintf(whichsect, "SECTION BESTSKILL %i", first);	break;
-			case 4: sprintf(whichsect, "SECTION BESTSKILL %i", second);	break;
-			case 5: sprintf(whichsect, "SECTION BESTSKILL %i", third);	break;
-			default:
-				ErrOut("Switch fallout. newbie.cpp, newbieitems()/n"); // Morrolan
-		}
-
-		sprintf(sect, whichsect);
-		char script1[1000], script2[1000];
-		safedelete(iter);
-		iter = Scripts::Newbie->getNewIterator(sect);
-		if (iter==NULL) return;
-
-		do
-		{
-			iter->parseLine(script1,script2);
-
-			if (script1[0] == '@') pc->loadEventFromScript(script1, script2); 	// Sparhawk: Huh loading character events 
-												// from newbie item scripts????
-
-			if (script1[0] != '}')
-			{
-				if (!(strcmp("PACKITEM", script1)))
-				{
-					std::string itemnum, amount;
-					splitLine( script2, itemnum, amount );
-					int amt = ( amount != "" )? str2num( amount ) : INVALID; //ndEndy defined amount
-					pItem pi_n = item::CreateFromScript( str2num( itemnum ), pc->getBackpack(), amt );
-					if ( pi_n ) {
-						pi_n->priv |= 0x02; // Mark as a newbie item
-					}
-					strcpy(script1, "DUMMY");
-				}
-				else if (!strcmp("BANKITEM", script1))
-				{
-					std::string itemnum, amount;
-					splitLine( script2, itemnum, amount );
-					int amt= (amount!="")? str2num( amount ) : INVALID;
-					pItem pi = item::CreateFromScript( str2num( itemnum ), pc->GetBankBox(), amt );
-					if (pi) {
-						pi->priv |= 0x02; // Mark as a newbie item
-					}
-					strcpy(script1, "DUMMY");
-				}
-				else if (!strcmp("EQUIPITEM", script1))
-				{
-					pItem pi = item::CreateFromScript( script2 );
-					if (pi)
-					{
-						pi->priv |= 0x02; // Mark as a newbie item
-						pi->setContainer(pc);
-						storeval = pi->getScriptID();
-					}
-					strcpy(script1, "DUMMY");
-				}
-			}
-		}
-		while ((script1[0] != '}') &&(++loopexit < MAXLOOPS));
+	for( NBItemSList::iterator it = NewbiesAll.begin(); it != NewbiesAll.end(); it++ )
+		(*it).createItem(pc);
 	
-		safedelete(iter);
-	}
+	if ( pc->getBody()->getId() == BODY_MALE )
+		for( NBItemSList::iterator it = NewbiesMale.begin(); it != NewbiesMale.end(); it++ )
+			(*it).createItem(pc);
+	else if ( pc->getBody()->getId() == BODY_FEMALE )
+		for( NBItemSList::iterator it = NewbiesFemale.begin(); it != NewbiesFemale.end(); it++ )
+			(*it).createItem(pc);
+	else
+		LogWarning("We are creating a new player which isn't an human.");
 	
-	// Give the character some gold
-	if ( goldamount > 0 )
+	for( NBItemSList::iterator it = NewbiesSkills[first].begin(); it != NewbiesSkills[first].end(); it++ )
+		(*it).createItem(pc);
+	
+	for( NBItemSList::iterator it = NewbiesSkills[second].begin(); it != NewbiesSkills[second].end(); it++ )
+		(*it).createItem(pc);
+	
+	if ( pc->getBody()->getSkill(third) >= 190 )
+		for( NBItemSList::iterator it = NewbiesSkills[third].begin(); it != NewbiesSkills[third].end(); it++ )
+			(*it).createItem(pc);
+	
+	if ( nSettings::Server::getNewbiesGold() )
 	{
-		item::CreateFromScript( "$item_gold_coin", pc->getBackpack(), goldamount );
+		pItem gold = nArchetypes::createItem(strGoldId);
+		gold->setAmount( nSettings::Server::getNewbiesGold() );
+		gold->setNewbie(true);
+		gold->setContainer( pc->getBody()->getBackpack() );
+		gold->setColor(0);
+		gold->refresh();
 	}
 }

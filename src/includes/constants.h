@@ -61,6 +61,15 @@ static const char strNull[] = "";
 
 //@{
 /*!
+\name Items identifiers
+
+These constants are the identifiers for some items of general use.
+*/
+	static const char strGoldId[] = "item_gold";
+//@}
+
+//@{
+/*!
 \name Made words
 
 These are constants used by sSkillInfo struct to define the made word for the

@@ -86,8 +86,8 @@ public:
 
 	const bool isWearing(pItem pi) const;
 
-	int32_t equip(pEquippable pi, bool drag = false);
-	int32_t unEquip(pEquippable pi, bool drag = false);
+	const uint8_t equip(pEquippable pi, bool drag = false);
+	const uint8_t unEquip(pEquippable pi, bool drag = false);
 
 	void checkEquipment();
 	

@@ -886,8 +886,6 @@ void saveserverscript()
 
 	fprintf(file, "SECTION NEWPLAYERS\n");
 	fprintf(file, "{\n");
-	fprintf(file, "// Initial gold for players  \n");
-	fprintf(file, "INITIALGOLD %i\n",goldamount);
 	fprintf(file, "// Initial priv1 value (don't touch if you don't know exactly what you're doing!)  \n");
 	fprintf(file, "INITIALPRIV1 %i\n",defaultpriv1);
 	fprintf(file, "// Initial priv2 value (don't touch if you don't know exactly what you're doing!)  \n");

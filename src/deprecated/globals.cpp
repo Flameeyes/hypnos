@@ -89,7 +89,6 @@ unsigned char worldfixedlevel=255;
 unsigned char worldcurlevel=0;
 unsigned char worldbrightlevel=0x00; //used to be 0x05
 unsigned char worlddarklevel=0x017; //used to be 0x1a - too dark
-int goldamount;
 int defaultpriv1;
 int defaultpriv2;
 unsigned int teffectcount=0; // No temp effects to start with

@@ -211,6 +211,9 @@ namespace Server {
 	//! How much weight can take with one str point?
 	SETTING(uint32_t, WeightPerStr, 4);
 
+	//! Initial gold coinst to give to the new players
+	SETTING(uint16_t, NewbiesGold, 300);
+
 	void load(MXML::Node *s)
 	{
 		MXML::Node *n = s->child();
@@ -224,6 +227,7 @@ namespace Server {
 			else XMLSETTING(DelayObjects, uint32_t, UInt32)
 			else XMLSETTING(DecayTimer, uint32_t, UInt32)
 			else XMLSETTING(WeightPerStr, uint32_t, UInt32)
+			else XMLSETTING(NewbiesGold, uint16_t, UInt16)
 			else BOOLSETTING(BookSystem, flagServerBookSystem)
 			else BOOLSETTING(TradeSystem, flagServerTradeSystem)
 			else BOOLSETTING(BountySystem, flagServerBountySystem)

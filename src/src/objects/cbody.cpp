@@ -38,8 +38,9 @@ uint32_t cBody::getSkillSum()
 /*!
 \author Flameeyes
 \brief Equip an item
-\return 0 if item equipped, 1 if not equipped (layer already used),
-	2 if event handler cancelled the equip
+\retval 0 The item is equipped correctly
+\retval 1 The item is not equipped because the layer is already used
+\retval 2 The event handler canceled the equip
 \param pi item to equip
 \param drag true if called in wear_item
 \todo Change event handling
