@@ -14,6 +14,8 @@
 #include "libhypnos/muls/mulfiles.hpp"
 #include "libhypnos/muls/mmappedfile.hpp"
 #include "libhypnos/commons.hpp"
+#include "libhypnos/hypstl/map.hpp"
+#include "libhypnos/hypstl/string.hpp"
 
 typedef map<uint32_t, string>::const_iterator constCliIterator;
 
