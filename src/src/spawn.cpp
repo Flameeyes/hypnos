@@ -67,7 +67,7 @@ void cSpawnScripted::safeCreate( pChar npc, cSpawnArea& single  )
 
 	sLocation location;
 	if( single.findValidLocation( location ) ) {
-		npc->npcWander = WANDER_FREELY_BOX;
+		npc->npcWander = cNPC::WANDER_FREELY_BOX;
 		npc->fx1 = single.where->second.x1;
 		npc->fy1 = single.where->second.y1;
 		npc->fx2 = single.where->second.x2;

@@ -131,7 +131,7 @@ void cNPC::heartbeat()
 				case 1: emoteall("* %s must eat very soon or he will die! *", true, getCurrentName().c_str() );
 					break;
 				case 0:	ftargserial = INVALID;
-					npcWander = WANDER_FREELY_CIRCLE;
+					npcWander = cNPC::WANDER_FREELY_CIRCLE;
 					setOwner(NULL);
 					emoteall("* %s appears to have decided that it is better off without a master *", false, getCurrentName().c_str());
 					playSFX( 0x01FE);
@@ -146,7 +146,7 @@ void cNPC::heartbeat()
 		hungertime = getclock() + ( SrvParms->hungerrate * SECS );
 	}
 
-	if( npcWander!=WANDER_FLEE ) {
+	if( npcWander!=cNPC::WANDER_FLEE ) {
 		if( hp < getStrength() * fleeat / 100 ) {
 			flee( cSerializable::findCharBySerial( ftargserial ) );
 			setNpcMoveTime();
@@ -158,7 +158,7 @@ void cNPC::heartbeat()
 		{
 			npcWander = oldnpcWander;
 			setNpcMoveTime();
-			oldnpcWander = WANDER_NOMOVE; // so it won't save this at the wsc file
+			oldnpcWander = cNPC::WANDER_NOMOVE; // so it won't save this at the wsc file
 			fleeTimer=INVALID;
 		}
 
@@ -391,7 +391,7 @@ void cNPC::createEscortQuest()
 	questType = cMsgBoards::ESCORTQUEST;
 
 	// Make sure they don't move until an player accepts the quest
-	npcWander       = WANDER_NOMOVE;	// Don't want our escort quest object to wander off.
+	npcWander       = cNPC::WANDER_NOMOVE;	// Don't want our escort quest object to wander off.
 	npcaitype = NPCAI_GOOD;                	// Remove any AI from the escort (should be dumb, just follow please :)
 	questOrigRegion = region;  // Store this in order to remeber where the original message was posted
 
@@ -451,7 +451,7 @@ void cNPC::clearedEscordQuest(pPC pc)
 	pc->getClient()->sysmessage("You have just received %d gold coins from %s %s", servicePay, getCurrentName().c_str(), title.c_str() );
 
 	// Take the NPC out of quest mode
-	npcWander = WANDER_FREELY_CIRCLE;         // Wander freely
+	npcWander = cNPC::WANDER_FREELY_CIRCLE;         // Wander freely
 	ftargserial = INVALID;            // Reset follow target
 	questType = QTINVALID;         // Reset quest type
 	questDestRegion = 0;   // Reset quest destination region

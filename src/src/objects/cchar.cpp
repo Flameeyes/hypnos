@@ -177,9 +177,9 @@ void cChar::resetData()
 	nextAiCheck=getclock();
 
 	npcmovetime=getclock(); // Next time npc will walk
-	npcWander=WANDER_NOMOVE; // NPC Wander Mode
+	npcWander=cNPC::WANDER_NOMOVE; // NPC Wander Mode
 	fleeTimer=INVALID;
-	oldnpcWander=WANDER_NOMOVE; // Used for fleeing npcs
+	oldnpcWander=cNPC::WANDER_NOMOVE; // Used for fleeing npcs
 	ftargserial=INVALID; // NPC Follow Target
 	fx1=-1; //NPC Wander Point 1 x
 	fx2=-1; //NPC Wander Point 2 x
@@ -1494,7 +1494,7 @@ void cChar::setOwner(pChar nowner)
 {
 	cObject::setOwner(nowner);
 	
-	npcWander=WANDER_NOMOVE;
+	npcWander=cNPC::WANDER_NOMOVE;
 	setTamed(true);
 	npcaitype=NPCAI_GOOD;
 }
@@ -1772,7 +1772,7 @@ void cChar::Kill()
 		if( pKiller->npcaitype==NPCAI_TELEPORTGUARD )
 		{
 			pKiller->summontimer=(getclock()+(SECS*20));
-			pKiller->npcWander=WANDER_FREELY_CIRCLE;
+			pKiller->npcWander=cNPC::WANDER_FREELY_CIRCLE;
 			pKiller->setNpcMoveTime();
 			pKiller->talkAll("Thou have suffered thy punishment, scoundrel.",0);
 		}
@@ -1876,7 +1876,7 @@ void cChar::Kill()
 		if (pk->npcaitype==NPCAI_TELEPORTGUARD)
 		{
 			pk->summontimer=(getclock()+(SECS*20));
-			pk->npcWander=WANDER_FREELY_CIRCLE;
+			pk->npcWander=cNPC::WANDER_FREELY_CIRCLE;
 			pk->setNpcMoveTime();
 			pk->talkAll("Thou have suffered thy punishment, scoundrel.", false);
 		}
@@ -2146,7 +2146,7 @@ void cChar::Kill()
 void cChar::setNpcMoveTime()
 {
 //	npcmovetime = getclock();
-	if ( npcWander == WANDER_FOLLOW )
+	if ( npcWander == cNPC::WANDER_FOLLOW )
 		npcmovetime = uint32_t( getclock() + ( float( npcFollowSpeed * SECS ) ) );
 	else
 		npcmovetime = uint32_t( getclock() + ( float( npcMoveSpeed * SECS ) ) );

@@ -254,4 +254,15 @@ enum ItemPlace {
 	ipEquip		//!< The item will be equipped to the character
 };
 
+/*!
+\brief Reputation change type
+\see cChar
+
+Used only to call the scripts callbacks
+*/
+enum ReputationChange {
+	repFame = 1,	//!< Fame changed
+	repKarma	//!< Karma changed
+};
+
 #endif

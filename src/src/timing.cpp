@@ -259,7 +259,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 				if( pNpc->lastNpcCheck != getclock() &&
 				    (TIMEOUT( checknpcs ) ||
 				    (TIMEOUT( checktamednpcs ) && pNpc->tamed) ||
-				    (TIMEOUT( checknpcfollow ) && pNpc->npcWander == WANDER_FOLLOW ) ) )
+				    (TIMEOUT( checknpcfollow ) && pNpc->npcWander == cNPC::WANDER_FOLLOW ) ) )
 				{
 					pNpc->heartbeat();
 					pNpc->lastNpcCheck = getclock();

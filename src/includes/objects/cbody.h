@@ -116,6 +116,8 @@ public:
 
 	Skill bestSkill() const;
 	Skill nextBestSkill(uint8_t previous) const;
+	
+	uint32_t getSkillSum();
 //@}
 
 //@{

@@ -441,7 +441,7 @@ void callguards( pChar caller )
 		if ((!character->IsInnocent() || character->npcaitype == NPCAI_EVIL) && !character->IsHidden() )
 			offenders = true;
 		else
-			if ((character->npcaitype == NPCAI_TELEPORTGUARD || character->npcaitype == NPCAI_GUARD) && !character->war && character->npcWander != WANDER_FOLLOW)
+			if ((character->npcaitype == NPCAI_TELEPORTGUARD || character->npcaitype == NPCAI_GUARD) && !character->war && character->npcWander != cNPC::WANDER_FOLLOW)
 				guards.push_back( character );
 	}
 	
@@ -454,7 +454,7 @@ void callguards( pChar caller )
 		if ( guard )
 		{
 			guard->npcaitype=NPCAI_TELEPORTGUARD;
-			guard->npcWander=WANDER_FREELY_CIRCLE;
+			guard->npcWander=cNPC::WANDER_FREELY_CIRCLE;
 			guard->setNpcMoveTime();
 			guard->summontimer = getclock() + SECS * 25 ;
 
@@ -472,7 +472,7 @@ void callguards( pChar caller )
 		{
 			guard = guards.back();
 			guard->oldnpcWander = guard->npcWander;
-			guard->npcWander = WANDER_FOLLOW;
+			guard->npcWander = cNPC::WANDER_FOLLOW;
 			guard->ftargserial = caller->getSerial();
 			guard->antiguardstimer=getclock()+(SECS*10); // Sparhawk this should become server configurable
 			guard->talkAll("Don't fear, help is on the way", false );

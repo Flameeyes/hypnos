@@ -64,7 +64,7 @@ void cNPC::checkAI()
 			if( war )
 				return;
 
-			if( npcWander == WANDER_FLEE )
+			if( npcWander == cNPC::WANDER_FLEE )
 				return;
 				
 			if ( ! shopkeeper )
@@ -131,7 +131,7 @@ void cNPC::checkAI()
 		{
 			if ( war )
 				return;
-			if ( npcWander == WANDER_FLEE )
+			if ( npcWander == cNPC::WANDER_FLEE )
 				return;
 
 			if (baseskill[skMagery] > 400)
@@ -294,14 +294,14 @@ void cNPC::checkAI()
 			// Sparhawk	Check wether a guard should continue walking towards the character who called him
 			//
 			int x, y;
-			if ( npcWander == WANDER_FOLLOW )
+			if ( npcWander == cNPC::WANDER_FOLLOW )
 			{
 				pChar guardcaller = cSerializable::findCharBySerial( ftargserial );
 
 				if ( ! guardcaller || TIMEOUT( antiguardstimer ) || distFrom( guardcaller ) <= 1 )
 				{
 					npcWander = oldnpcWander;
-					oldnpcWander = WANDER_NOMOVE;
+					oldnpcWander = cNPC::WANDER_NOMOVE;
 					ftargserial = INVALID;
 				}
 				else
@@ -340,10 +340,10 @@ void cNPC::checkAI()
 							character->IsCriminal()
 						   )
 						{
-							if ( npcWander == WANDER_FOLLOW )
+							if ( npcWander == cNPC::WANDER_FOLLOW )
 							{
 								npcWander = oldnpcWander;
-								oldnpcWander = WANDER_NOMOVE;
+								oldnpcWander = cNPC::WANDER_NOMOVE;
 								ftargserial = INVALID;
 							}
 

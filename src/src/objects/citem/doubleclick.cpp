@@ -677,7 +677,7 @@ void cItem::doubleClicked(pClient client)
 			vendor->unHide();
 			vendor->stealth=INVALID;
 			vendor->dir = pc->dir;
-			vendor->npcWander = WANDER_NOMOVE;
+			vendor->npcWander = cNPC::WANDER_NOMOVE;
 			vendor->SetInnocent();
 			vendor->setOwner( pc );
 			vendor->tamed = false;

@@ -49,6 +49,16 @@ public:
 		NPCAI_DRAGON1		= 96
 	};
 	
+	enum WanderMode {
+		WANDER_NOMOVE = 0,
+		WANDER_FOLLOW,
+		WANDER_FREELY_CIRCLE,
+		WANDER_FREELY_BOX,
+		WANDER_FREELY,
+		WANDER_FLEE,
+		WANDER_AMX
+	};
+	
 	cNPC();
 	cNPC(uint32_t serial);
 	virtual ~cNPC();

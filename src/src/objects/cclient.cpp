@@ -1580,7 +1580,7 @@ void cClient::droppedOnTrainer(pItem pi, pNPC npc)
 		uint8_t sk = npc->trainingplayerin;
 		npc->talk(this, "I thank thee for thy payment. That should give thee a good start on thy way. Farewell!", false);
 
-		int sum = pc->getSkillSum();
+		uint32_t sum = pc->getBody()->getSkillSum();
 		int delta = npc->getTeachingDelta(pc, sk, sum);
                 int amount = pi->getAmount();
 		if(amount > delta) // Paid too much

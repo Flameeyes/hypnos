@@ -402,7 +402,7 @@ int response(pClient client)
 						pc_map->ftargserial = pc->getSerial();
 
 						// Set the NPC to wander freely
-						pc_map->npcWander = WANDER_FOLLOW;
+						pc_map->npcWander = cNPC::WANDER_FOLLOW;
 
 						// Set the expire time if nobody excepts the quest
 						pc_map->summontimer = ( getclock() + ( SECS * SrvParms->escortactiveexpire ) );
@@ -559,7 +559,7 @@ int response(pClient client)
 							}
 							else
 							{
-								uint32_t sum = pc->getSkillSum();
+								uint32_t sum = pc->getBody()->getSkillSum();
 								if (sum >= SrvParms->skillcap * 10)
 									strcat(temp, "I can teach thee no more. Thou already knowest too much!");
 								else
@@ -602,7 +602,7 @@ int response(pClient client)
 							if ( requestFollowMe )
 							{
 								pc_map->ftargserial = pc->getSerial();
-								pc_map->npcWander = WANDER_FOLLOW;
+								pc_map->npcWander = cNPC::WANDER_FOLLOW;
 								pc_map->playMonsterSound(SND_STARTATTACK);
 								return 1;
 							}
@@ -715,7 +715,7 @@ int response(pClient client)
 						{
 							pc->guarded = false;
 							pc_map->ftargserial=pc->getSerial();
-							pc_map->npcWander=WANDER_FOLLOW;
+							pc_map->npcWander=cNPC::WANDER_FOLLOW;
 							client->sysmessage("Your pet begins following you.");
 							return 1;
 						}
@@ -768,7 +768,7 @@ int response(pClient client)
 							if ( pc_map->war )
 								pc_map->toggleCombat();	// Sparhawk Allmost all pet commands need to do this and non pet commands need
 												// to check for war status
-							pc_map->npcWander=WANDER_NOMOVE;
+							pc_map->npcWander=cNPC::WANDER_NOMOVE;
 							return 1;
 						}
 					}
@@ -827,7 +827,7 @@ int response(pClient client)
 							}
 							//pet release code here
 							pc_map->ftargserial=INVALID;
-							pc_map->npcWander=WANDER_FREELY_CIRCLE;
+							pc_map->npcWander=cNPC::WANDER_FREELY_CIRCLE;
 							pc_map->setOwner(NULL);
 							pc_map->taming=2000;//he cannot be retamed	Sparhawk	This is bullshit!!!
 							//taken from 6904t2(5/10/99) - AntiChrist
@@ -854,7 +854,7 @@ int response(pClient client)
 						}
 						//pet release code here
 						pc_map->ftargserial=INVALID;
-						pc_map->npcWander=WANDER_FREELY_CIRCLE;
+						pc_map->npcWander=cNPC::WANDER_FREELY_CIRCLE;
 						pc_map->setOwner(NULL);
 						pc_map->taming=2000;//he cannot be retamed
 						pc_map->tamed = false;

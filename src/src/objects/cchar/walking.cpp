@@ -161,7 +161,7 @@ void cChar::flee( pChar pc, int32_t seconds )
 		fleeTimer=INVALID;
 
 	oldnpcWander = npcWander;
-	npcWander = WANDER_FLEE;
+	npcWander = cNPC::WANDER_FLEE;
 	targserial=pc->getSerial();
 
 }
@@ -209,16 +209,16 @@ void cChar::walk()
 	if ( !pc_att )
 		war = 0;
 
-	if ( war && npcWander != WANDER_FLEE && ( pc_att->IsOnline() || pc_att->npc ) ) { //We are following a combat target
+	if ( war && npcWander != cNPC::WANDER_FLEE && ( pc_att->IsOnline() || pc_att->npc ) ) { //We are following a combat target
                 follow( pc_att );
                 return;
         }
 
 	switch( npcWander )
 	{
-		case WANDER_NOMOVE: //No movement
+		case cNPC::WANDER_NOMOVE: //No movement
 			break;
-		case WANDER_FOLLOW: //Follow the follow target
+		case cNPC::WANDER_FOLLOW: //Follow the follow target
 		{
 			pChar pc = cSerializable::findCharBySerial( ftargserial );
 			if ( !pc )
@@ -230,16 +230,16 @@ void cChar::walk()
 			follow( pc );
 		}
 			break;
-		case WANDER_FREELY_CIRCLE: // Wander freely, in a defined circle
+		case cNPC::WANDER_FREELY_CIRCLE: // Wander freely, in a defined circle
 			npcwalk( this, (chance( 20 ) ? rand()%8 : dir), 2 );
 			break;
-		case WANDER_FREELY_BOX: // Wander freely, within a defined box
+		case cNPC::WANDER_FREELY_BOX: // Wander freely, within a defined box
 			npcwalk( this, (chance( 20 ) ? rand()%8 : dir), 1 );
 			break;
-		case WANDER_FREELY: // Wander freely, avoiding obstacles
+		case cNPC::WANDER_FREELY: // Wander freely, avoiding obstacles
 			npcwalk( this, (chance( 20 ) ? rand()%8 : dir), 0 );
 			break;
-		case WANDER_FLEE: //FLEE!!!!!!
+		case cNPC::WANDER_FLEE: //FLEE!!!!!!
 		{
 			pChar target = cSerializable::findCharBySerial( targserial );
 			if ( target ) {
@@ -249,7 +249,7 @@ void cChar::walk()
 			}
 		}
 			break;
-		case WANDER_AMX: // Sparhawk: script controlled movement
+		case cNPC::WANDER_AMX: // Sparhawk: script controlled movement
 		{
 			uint32_t l = dir;
 

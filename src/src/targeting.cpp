@@ -562,7 +562,7 @@ void target_follow( pClient client, pTarget t )
 	if (!pc2) return;
 
 	pc->ftargserial=pc2->getSerial();
-	pc->npcWander=WANDER_FOLLOW;
+	pc->npcWander=cNPC::WANDER_FOLLOW;
 }
 
 void target_axe( pClient ps, pTarget t )
@@ -637,7 +637,7 @@ void target_guard( pClient client, pTarget t )
 	}
 	pPet->npcaitype = NPCAI_PETGUARD;
 	pPet->ftargserial=pc->getSerial();
-	pPet->npcWander=WANDER_FOLLOW;
+	pPet->npcWander=cNPC::WANDER_FOLLOW;
 	client->sysmessage( "Your pet is now guarding you.");
 	pc->guarded = true;
 }
@@ -663,9 +663,9 @@ void target_transfer( pClient client, pTarget t )
 	pc1->talkAll("* %s will now take %s as his master *",0, pc1->getCurrentName().c_str(), pc2->getCurrentName().c_str());
 	
 	pc1->setOwner( pc2 );
-	pc1->npcWander=WANDER_FOLLOW;
+	pc1->npcWander=cNPC::WANDER_FOLLOW;
 	pc1->ftargserial=INVALID;
-	pc1->npcWander=WANDER_NOMOVE;
+	pc1->npcWander=cNPC::WANDER_NOMOVE;
 }
 
  //Throws the potion and places it (unmovable) at that spot

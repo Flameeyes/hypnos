@@ -42,7 +42,7 @@ void SpawnGuard(pChar pc, pChar pc_i, sLocation where)
 	pc_c->setAttackFirst();
 	pc_c->attackerserial=pc->getSerial();
 	pc_c->targserial=pc->getSerial();
-	pc_c->npcWander=WANDER_FREELY_CIRCLE;  //set wander mode Tauriel
+	pc_c->npcWander=cNPC::WANDER_FREELY_CIRCLE;  //set wander mode Tauriel
 	pc_c->toggleCombat();
 	pc_c->setNpcMoveTime();
 	pc_c->summontimer=(getclock()+(SECS*25));

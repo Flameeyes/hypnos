@@ -42,7 +42,7 @@ void nSkills::target_enticement2(pClient client, pTarget t )
 	pChar pc_target = cSerializable::findCharBySerial( t->buffer[0] );
 	if ( ! pc_target ) return;
 	pc_target->ftargserial = pc_ftarg->getSerial();
-	pc_target->npcWander = WANDER_FOLLOW;
+	pc_target->npcWander = cNPC::WANDER_FOLLOW;
 	client->sysmessage("You play your hypnotic music, luring them near your target.");
 	nSkills::PlayInstrumentWell(client, inst);
 }

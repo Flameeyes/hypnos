@@ -23,21 +23,6 @@
 #include "settings.h"
 #include "enums.h"
 
-enum WanderMode {
-	WANDER_NOMOVE = 0,
-	WANDER_FOLLOW,
-	WANDER_FREELY_CIRCLE,
-	WANDER_FREELY_BOX,
-	WANDER_FREELY,
-	WANDER_FLEE,
-	WANDER_AMX
-};
-
-/*!
-\brief AMX Events for Characters
-\author Flameeyes
-*/
-
 enum StatCap
 {
 	STATCAP_CAP			= 0,
@@ -45,13 +30,6 @@ enum StatCap
 	STATCAP_DEX,
 	STATCAP_INT
 };
-
-#define REPUTATION_KARMA		1
-#define REPUTATION_FAME			2
-
-class cNxwClientObj;
-class cPath;
-class ClientCrypt;
 
 /*!
 \class cChar cchar.h "objects/cchar.h"
@@ -117,8 +95,8 @@ public:
 	
 protected:
 	pClient client;		//!< Client connected with the character
-	pBody body;		//! The body the character is currently "using"
-	pBody truebody;		//! true body. Holds native character body at all times. Used for reversion of polimorph-type effects
+	pBody body;		//!< The body the character is currently "using"
+	pBody truebody;		//!< true body. Holds native character body at all times. Used for reversion of polimorph-type effects
 
 public:
 	inline pClient getClient() const
@@ -292,7 +270,7 @@ public:
 	\return true if the char is over weight
 	\todo Reactivate GM Support
 	*/
-	inline const bool cChar::isOverWeight()
+	inline const bool isOverWeight()
 	{ return /*!isGM() && */body->overloadedTeleport(); }
 	
 	const bool canDoGestures() const;
@@ -353,19 +331,19 @@ public:
 
 	/*!
 	\brief Update character's flag (reputation)
-	\author Unknown - backport by Flameeyes
-	\return true if the flag has changed
+	\retval true The flag has changed
+	\retval false The flag hasn't changed
 	*/
 	virtual bool updateFlag() = 0;
 //@}
 
 public:
-	void			checkSafeStats();
-	virtual void		heartbeat() = 0;
+	void checkSafeStats();
+	virtual void heartbeat() = 0;
 
 private:
-	void			generic_heartbeat();
-	void 			do_lsd();
+	void generic_heartbeat();
+	void do_lsd();
 
 //@{
 /*!
@@ -379,7 +357,7 @@ public:
 
 //@{
 /*!
-\name Combat
+\name Combat & spells
 */
 private:
 	bool checkForCastingLoss(int damage);
@@ -420,8 +398,6 @@ public:
 	\brief Makes the char casting a spell
 	\param spellnumber Spell identifier
 	\param dest target location of the spell
-	\param flags /todo
-	\param param /todo
 	\todo Document parameters
 	*/
 	inline void castSpell(magic::SpellId spellnumber, TargetLocation& dest, int32_t flags = 0, int32_t param = 0)
@@ -436,7 +412,7 @@ protected:
 	cPath*		path;			//!< current path
 	void		walkNextStep();		//!< walk next path step
 	uint32_slist	sentObjects;
-	int8_t		dir;			//!< &0F=Direction
+	uint8_t		dir;			//!< &0F=Direction
 	uint32_t	LastMoveTime;		//!< server time of last move
 
 public:
@@ -491,22 +467,15 @@ public:
 	uint32_t skilldelay;
 	uint32_t objectdelay;
 public:
-	void singleClick(pClient client);	//!< "this" is the clicked char, client is the client of the clicker
+	void singleClick(pClient client);	//!< \c this is the clicked char, client is the client of the clicker
 	void doubleClick(pClient client);	//!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
 
 	/*!
-	returns a NotEquippableReason with the either nerEquipOK or a reason for failure if char cannot equip pi
-	NOTE:  it will report only the most lacking stat or skill if more than one is below required minimum
-	NOTE2: it doesn't check if item already in that layer
+	\brief Returns a NotEquippableReason with the either nerEquipOK or a reason for failure if char cannot equip pi
+	\note It will report only the most lacking stat or skill if more than one is below required minimum
+	\note It doesn't check if item already in that layer
 	*/
 	NotEquippableReason canEquip(pEquippable pi);
-
-	/*!
-	returns a NotEquippableReason with the either nerEquipOK or a reason for failure if char cannot equip pi
-	NOTE:  it will report only the most lacking stat or skill if more than one is below required minimum
-	NOTE2: it doesn't check if item already in that layer
-	*/
-	NotEquippableReason canEquip(pItem pi);
 
 	inline void setSkillDelay( uint32_t seconds = nSettings::Server::getDelaySkills() )
 	{ skilldelay = getclock() + seconds * SECS; }
@@ -537,16 +506,6 @@ public:
 	std::string getCompleteTitle() const;
 
 //@}
-
-	/********************************/
-	/*     TO REMOVE/REPLACE        */
-	/********************************/
-#if 0
-public:
-	inline const bool isOwnerOf(const cObject *obj) const
-	{ return this == obj->getOwner(); }
-#endif
-	/********************************/
 
 	pItem			nameKey;	//!< for renaming keys
 	pItem			nameRune;	//!< Used for naming runes
@@ -742,7 +701,6 @@ public:
 	// 2-6 = Sparkles
 	int32_t			gmMoveEff;
 
-	uint32_t		getSkillSum();
 	int32_t			getTeachingDelta(pChar pPlayer, int32_t skill, int32_t sum);
 	void			removeItemBonus(cItem* pi);
 

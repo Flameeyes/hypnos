@@ -10,6 +10,9 @@
 \brief cChar's reputation methods
 */
 
+#include "enums.h"
+#include "objects/cchar.h"
+
 const bool cChar::isGrey() const
 {
 	if ( npc || IsMurderer() || IsCriminal() )
@@ -23,8 +26,6 @@ const bool cChar::isGrey() const
 
 /*!
 \brief increase or decrease the fame of the char
-\author Endymion
-\since 0.82a
 \param value positive or negative value to add to fame
 \note every increase of karma have an event and stuff related
 */
@@ -75,7 +76,7 @@ void cChar::modifyFame( int32_t value )
 	if ( events[evtChrOnReputationChange] ) {
 		tVariantVector params = tVariantVector(3);
 		params[0] = getSerial(); params[1] = gained ? nChange : -nChange;
-		params[3] = REPUTATION_FAME;
+		params[3] = repFame;
 		events[evtChrOnReputationChange]->setParams(params);
 		events[evtChrOnReputationChange]->execute();
 		if ( events[evtChrOnReputationChange]->isBypassed() )
@@ -165,7 +166,7 @@ void cChar::increaseKarma( int32_t value, pChar pKilled )
 	if ( events[evtChrOnReputationChange] ) {
 		tVariantVector params = tVariantVector(3);
 		params[0] = getSerial(); params[1] = positiveKarmaEffect ? nChange : -nChange;
-		params[3] = REPUTATION_KARMA;
+		params[3] = repKarma;
 		events[evtChrOnReputationChange]->setParams(params);
 		events[evtChrOnReputationChange]->execute();
 		if ( events[evtChrOnReputationChange]->isBypassed() )
