@@ -129,7 +129,7 @@ defaults = []
 defaults.append("") # first flag
 
 for group in groups:
-	unitcpp.write("namespace n" + group.grName + " {\n")
+	unitcpp.write("namespace " + group.grName + " {\n")
 	for setting in group.settings:
 		if setting.type != 'flag': continue
 		
@@ -156,8 +156,8 @@ for i in range(0, flagvars):
 # Handle normal settings
 
 for group in groups:
-	unith.write("\tnamespace n" + group.grName + " {\n")
-	unitcpp.write("namespace n" + group.grName + " {\n")
+	unith.write("\tnamespace " + group.grName + " {\n")
+	unitcpp.write("namespace " + group.grName + " {\n")
 	
 	# First pass: declarations
 	for setting in group.settings:
@@ -211,7 +211,15 @@ for group in groups:
 			)
 		
 		if setting.type == 'flag':
-			unitcpp.write("TODO\n")
+			unitcpp.write(
+				'\t\t\t\tif ( ! n->hasAttribute("enabled") || \n'
+				'\t\t\t\t\t( n->getAttribute("enabled") != "false" && n->getAttribute("enabled") != "true" ) )\n'
+				'\t\t\t\t{\n'
+				'\t\t\t\t\tLogWarning("Invalid value for setting ' + setting.name + '");\n'
+				'\t\t\t\t} else {\n'
+				'\t\t\t\t\tset' + setting.name + '(n->getAttribute("enabled") == "true");\n'
+				'\t\t\t\t}\n'
+				)
 		else:
 			unitcpp.write(
 				"\t\t\t\tcVariant v = n->data();\n"
@@ -222,15 +230,55 @@ for group in groups:
 		
 		unitcpp.write("\t\t\t}\n")
 	
-	unitcpp.write(
-		"\t\t\telse LogWarning(\"Unknown node %s in settings.xml, ignoring\", n->name().c_str() );\n"
-		"\t\t\tn = n->next();\n"
-		"\t\t} while(n);\n"
-		"\t}\n"
-		)
+	unitcpp.write("""
+			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
+			n = n->next();
+		} while(n);
+	}
+""")
 	
-	unith.write("\t} // namespace n" + group.grName + "\n")
-	unitcpp.write("} // namespace n" + group.grName + "\n")
+	unith.write("\t} // namespace " + group.grName + "\n")
+	unitcpp.write("} // namespace " + group.grName + "\n")
+	
+# Second pass in groups: the global load() function!
+unitcpp.write("""
+void nSettings::load()
+{
+	//! \todo Need do define a better way to find out the default settings file.
+	std::ifstream xmlfile("xmls/settings.xml");
+	
+	try {
+		MXML::Document doc(xmlfile);
+		
+		MXML::Node *n = doc.main()->child();
+		do {
+""")
+
+first = True
+for group in groups:
+	unitcpp.write("\t\t\t")
+	
+	if not first:
+		unitcpp.write("else ")
+	else:
+		first = False
+	
+	unitcpp.write(
+		"if ( n->name() == \"" + group.grName + "\" )\n"
+		"\t\t\t\t" + group.grName + "::load(n);\n"
+		)
+
+unitcpp.write("""
+			else
+				LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
+			
+			n = n->next();
+		} while(n);
+	} catch ( MXML::MalformedError e) {
+		LogCritical("settings.xml file not well formed. Default loading");
+	}
+}
+""")
 
 # Cleanup...
 unitcpp.write("""
