@@ -25,44 +25,6 @@ static bool items_match(pItem pi1,pItem pi2)
 
 }
 
-
-
-void clearalltrades()
-{
-ConOut("... Sheeezzz ");
-/*        pItem pi = NULL;
-        pItem pj = NULL;
-        pChar pc = NULL;
-        pItem pack = NULL;
-        uint32_t i = 0;
-        for (i = 0; i < itemcount; i++) {
-                pi = MAKE_ITEM_REF(i);
-                if (!pi) continue;
-                if ((pi->type==1) && (pi->getPosition().x==26) && (pi->getPosition().y==0) && (pi->getPosition().z==0) &&
-			(pi->id()==0x1E5E))
-		{
-                        pc = cSerializable::findCharBySerial(pi->getContSerial());
-                        if (pc) {
-                                pack = pc->getBackpack();
-                                if (pack) {
-                                    NxwItemWrapper si;
-									si.fillItemsInContainer( pi );
-									for( si.rewind(); !si.isEmpty(); si++ ) {
-										pj = si.getItem();
-                                        if( pj) {
-                       						pj->setContainer(pack);
-                        				}
-									}
-                                    pi->deleteItem();
-        							InfoOut("trade cleared\n");
-                                }
-                        }
-                }
-        }*/
-}
-
-
-
 /*
 void restock(bool total)
 {

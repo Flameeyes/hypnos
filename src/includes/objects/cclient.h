@@ -129,8 +129,11 @@ protected:
 	std::list<sSecureTradeSession> SecureTrade;	//!< Holds the secure trade session of this client (begun and received both)
 
 public:
-	void addTradeSession(sSecureTradeSession &session);
-	sSecureTradeSession findTradeSession(pClient targetClient);
+	//! Adds a session to this client's list of open secure trading sessions
+	inline void addTradeSession(sSecureTradeSession &session)
+	{ SecureTrade.push_back(session); }
+	
+	sSecureTradeSession findTradeSession(pContainer tradecontainer);	//!< Finds the trade session between "this" and another client knowing "this" tradecontainer
 	pContainer tradestart(pClient targetClient);				//!< Opens a secure trade windows between this and targetClient. returns this client's ctrade container
 	static void sendtradestatus(pContainer cont1, pContainer cont2);	//!< updates secure trade window
 	static void dotrade(pContainer cont1,pContainer cont2);			//!< concludes trade (either swapping items or returning them)
