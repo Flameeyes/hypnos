@@ -1405,7 +1405,7 @@ static bool stablePet( pChar pc, pClient client, std::string &speech, NxwCharWra
 						if( ps==NULL )
 							continue;
 						
-						cPacketSendDeleteObj pk(pc_pet);
+						nPackets::Sent::DeleteObj pk(pc_pet);
 						client->sendPacket(&pk);
 
 					}

@@ -38,7 +38,7 @@ bool WalkHandleAllowance(pChar pc, int sequence)
 	{
 		if ((walksequence[s]+1!=sequence)&&(sequence!=256))
 		{
-			cPacketSendMoveReject(pc, sequence);
+			nPackets::Sent::MoveReject(pc, sequence);
                         pc->getClient()->sendPacket(&pk);
                        	walksequence[s]=INVALID;
 			return false;
@@ -54,7 +54,7 @@ bool WalkHandleAllowance(pChar pc, int sequence)
 				pc->sysmsg("You are too fatigued to move.");
 			  	walksequence[s]=INVALID;
 			  	pc->teleport( TELEFLAG_NONE );
-				cPacketSendMoveReject(pc, sequence);
+				nPackets::Sent::MoveReject(pc, sequence);
         	                pc->getClient()->sendPacket(&pk);
 	                       	walksequence[s]=INVALID;
 			  	return false;
@@ -71,7 +71,7 @@ bool WalkHandleAllowance(pChar pc, int sequence)
 				pc->sysmsg("You cannot move while casting.");
 			else
 				pc->sysmsg("You are frozen and cannot move.");
-			cPacketSendMoveReject(pc, sequence);
+			nPackets::Sent::MoveReject(pc, sequence);
                         pc->getClient()->sendPacket(&pk);
                        	walksequence[s]=INVALID;
 		}
@@ -208,7 +208,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 			ErrOut("\tcaused by chr %s. dir: %i dir&0x0f: %i dir-passed : %i dp&0x0f : %i\n", pc->getCurrentName().c_str(), pc->dir, pc->dir&0x0f, dir, dir&0x0f);
 			if (pc->getSocket() != INVALID)
                         {
-				cPacketSendMoveReject(pc, sequence);
+				nPackets::Sent::MoveReject(pc, sequence);
                         	pc->getClient()->sendPacket(&pk);
                        		walksequence[s]=INVALID;
                         }
@@ -297,7 +297,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 		pClient client = pc->getSocket();
 		if ( socket != INVALID )
                 {
-			cPacketSendMoveReject(pc, sequence);
+			nPackets::Sent::MoveReject(pc, sequence);
                         pc->getClient()->sendPacket(&pk);
                        	walksequence[s]=INVALID;
 		}
@@ -422,7 +422,7 @@ void walking(pChar pc, int dir, int sequence)
 		//if (pc->hidden==1) walkok.notoriety=0x00;
 		//if (pc->isHidden()) walkok.notoriety=0x00;
 
-	        cPacketSendMoveAcknowdledge pk(sequence, notoriety);
+	        nPackets::Sent::MoveAcknowdledge pk(sequence, notoriety);
                 getClient()->sendPacket(&pk);
 
 		walksequence[s]=sequence;
@@ -821,7 +821,7 @@ void sendToPlayers( pChar pc, int8_t dir )
 		else
 			hi_color = 3;		// grey
 
-                cPacketSendUpdatePlayer pk(pc, dir, flag, hi_color );
+                nPackets::Sent::UpdatePlayer pk(pc, dir, flag, hi_color );
                 ps_i->sendPacket(&pk);
 	}
 }

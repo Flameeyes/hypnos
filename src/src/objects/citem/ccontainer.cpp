@@ -279,7 +279,7 @@ void cContainer::addItem(pItem item, uint16_t xx, uint16_t yy)
 	sw.fillOnline( item );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
         {
-		cPacketSendDeleteObj pk(item);
+		nPackets::Sent::DeleteObj pk(item);
 		sw->sendPacket(&pk);
         }
 

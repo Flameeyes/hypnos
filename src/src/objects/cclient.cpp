@@ -122,10 +122,10 @@ void cClient::showContainer(pCont cont)
 	si.fillItemsInContainer( cont, false, false );
 	int32_t count=si.size();
 
-	cPacketSendDrawContainer pk(cont->getSerial(), cont->getGump());
+	nPackets::Sent::DrawContainer pk(cont->getSerial(), cont->getGump());
 	sendPacket(&pk);
 
-	cPacketSendContainerItem pk2;
+	nPackets::Sent::ContainerItem pk2;
 
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
@@ -154,7 +154,7 @@ void cClient::showItemInContainer(pItem item)
 	if ( ! item || pc->distFrom(pi) > VISRANGE )
 		return;
 
-	cPacketSendShowItemInContainer pk( item );
+	nPackets::Sent::ShowItemInContainer pk( item );
 
 	sendPacket(&pk);
 
@@ -177,7 +177,7 @@ void cClient::light(uint8_t level)
 	else if (pc->inDungeon())
 		level = dungeonlightlevel;
 
-	cPacketSendOverallLight pk(level);
+	nPackets::Sent::OverallLight pk(level);
 
 	sendPacket(&pk);
 }
@@ -185,7 +185,7 @@ void cClient::light(uint8_t level)
 
 void cClient::updatePaperdoll()
 {
-	cPacketSendPaperdollClothingUpdated pk();
+	nPackets::Sent::PaperdollClothingUpdated pk();
 	sendPacket(&pk);
 }
 
@@ -258,7 +258,7 @@ void cClient::statusWindow(pChar target, bool extended) //, bool canrename)  wil
         }
         else ext = 0x0;
 
-	cPacketSendStatus pk(sorg, ext, canrename);
+	nPackets::Sent::Status pk(sorg, ext, canrename);
 	sendPacket(&pk);
 }
 
@@ -326,7 +326,7 @@ void cClient::skillWindow() // Opens the skills list, updated for client 1.26.2b
 void sendMidi(char num1, char num2)
 {
 	UI16 music_id = (num1<<8)|(num2%256);
-	cPacketSendPlayMidi pk(music_id);
+	nPackets::Sent::PlayMidi pk(music_id);
 	sendPacket(&pk);
 }
 
@@ -358,7 +358,7 @@ void senditem(pItem pi) // Shows items to client (on the ground or inside contai
                 return;
 	}
 
-	cPacketSendObjectInformation pk(pi, pc);
+	nPackets::Sent::ObjectInformation pk(pi, pc);
         sendPacket(&pk);
 	if (pi->isCorpse()) backpack2(pi);
 }
@@ -374,7 +374,7 @@ void senditem_lsd(pItem pi, uint16_t color, Location position)
 	if ( pi->visible>=1 && !(pc->IsGM()) ) return; // workaround for missing gm-check client side for visibity since client 1.26.2
 	// for lsd we dont need extra work for type 1 as in senditem
 
-       	cPacketSendLSDObject pk(pi, pc, color, position);
+       	nPackets::Sent::LSDObject pk(pi, pc, color, position);
         sendPacket(&pk);
 }
 
@@ -441,7 +441,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 		if ( !pc_currchar->IsGM() && !pc_currchar->isOwnerOf(owner))
 		{
 	                //if not pets or player vendors (of this client's current char) bounce item
-			cPacketSendBounceItem pk(0);
+			nPackets::Sent::BounceItem pk(0);
 			sendPacket(&pk);
 			if (isDragging())
 			{
@@ -481,7 +481,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 			evt->execute();
 			if ( evt->isBypassed() )
 			{
-				cPacketSendBounceItem pk(5);
+				nPackets::Sent::BounceItem pk(5);
 				sendPacket(&pk);
 				if (isDragging())
 				{
@@ -518,7 +518,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 				evt->execute();
 				if ( evt->isBypassed() )
 				{
-					cPacketSendBounceItem pk(5);
+					nPackets::Sent::BounceItem pk(5);
 					sendPacket(&pk);
 					if (isDragging())
 					{
@@ -590,7 +590,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 		if (!pc_currchar->IsGM() && (( pi->magic == 2 || ((tile.weight == 255) && ( pi->magic != 1))) && !pc_currchar->canAllMove() )  ||
 			(( pi->magic == 3|| pi->magic == 4) && !pc_currchar->isOwnerOf( pi )))
 		{
-			cPacketSendBounceItem pk(0);
+			nPackets::Sent::BounceItem pk(0);
 			sendPacket(&pk);
 			if (isDragging()) // only restore item if it got dragged before !!!
 			{
@@ -657,7 +657,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
                                 //! \todo this packet has to be sent to all surrounding clients EXCEPT "this"
                                 //! \todo complete when sets remade
                                 //! \todo verify if picking up items from the ground while hidden should unhide
-				cPacketSendDragItem pk(pi, pc_currchar->getLocation(), amount);
+				nPackets::Sent::DragItem pk(pi, pc_currchar->getLocation(), amount);
                         	sw->sendPacket(&pk);		//this packets shows to those clients the item being dragged to the char
                         }
 			pi->setPosition( 0, 0, 0 );
@@ -764,7 +764,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
                      (npc && npc->npcaitype==NPCAI_PLAYERVENDOR && !pc->isOwnerOf(npc)))	// b) npc is not your player vendor
                 { // Luxor
 			sysmessage("This aint your backpack!");
-			cPacketSendBounceItem pk(5);
+			nPackets::Sent::BounceItem pk(5);
 			sendPacket(&pk);
 			if (isDragging()) {
 				resetDragging();
@@ -842,7 +842,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
                                 //! \todo this packet has to be sent to all surrounding clients INCLUDING "this" (not sure it is needed)
                                 //! \todo complete when sets remade
 
-				cPacketSendDragItem pk(pi, pc_currchar->getLocation(), pi->getAmount());
+				nPackets::Sent::DragItem pk(pi, pc_currchar->getLocation(), pi->getAmount());
                         	sw->sendPacket(&pk);		//this packets shows to those clients the item being dropped on the ground
 
 				pc->playSFX( itemsfx(pi->getId()) );
@@ -891,7 +891,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 	if ((((pi->magic==2)||((tile.weight==255)&&(pi->magic!=1)))&&!pc->canAllMove) ||
 				( (pi->magic==3|| pi->magic==4) && !(pi->getOwner()==pc)))
 	{
-		cPacketSendBounceItem pk(5);
+		nPackets::Sent::BounceItem pk(5);
 		sendPacket(&pk);
 		if (isDragging())
 		{
@@ -918,7 +918,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 		if (!pi->IsSpellScroll72())
 		{
 			sysmessage("You can only place spell scrolls in a spellbook!");
-			cPacketSendBounceItem pk(5);
+			nPackets::Sent::BounceItem pk(5);
 			sendPacket(&pk);
 			if (isDragging())
 			{
@@ -990,7 +990,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 			//the dragging of the item should not be shown if pc is a gm, is invisible or is trying to drop an item on his backpack (or bank)
 			//! \todo this packet has to be sent to all surrounding clients EXCEPT "this"
 			//! \todo complete when sets remade
-			cPacketSendDragItem pk(pi, dest->getWorldPosition(), pi->getAmount());
+			nPackets::Sent::DragItem pk(pi, dest->getWorldPosition(), pi->getAmount());
 			sw->sendPacket(&pk);		//this packets shows to those clients the item from the char to the destination container (or char if vendor)
 	       	}
 		pc->playSFX( itemsfx(pi->getId()) );
@@ -1019,7 +1019,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 			//the dragging of the item should not be shown if pc is a gm, is invisible or is trying to drop an item on his backpack (or bank). Since it is already checked is on the ground...
 			//! \todo this packet has to be sent to all surrounding clients EXCEPT "this"
 			//! \todo complete when sets remade
-			cPacketSendDragItem pk(pi, dest->getWorldPosition(), pi->getAmount());
+			nPackets::Sent::DragItem pk(pi, dest->getWorldPosition(), pi->getAmount());
 			sw->sendPacket(&pk);		//this packets shows to those clients the item from the char to the destination container (or char if vendor)
 	       	}
                 dest->setAmount(dest->getAmount() + pi->getAmount());
@@ -1040,7 +1040,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
                        	//the dragging of the item should not be shown if pc is a gm, is invisible or is trying to drop an item on his backpack (or bank)
                 	//! \todo this packet has to be sent to all surrounding clients EXCEPT "this"
                         //! \todo complete when sets remade
-			cPacketSendDragItem pk(pi, dest->getWorldPosition(), pi->getAmount());
+			nPackets::Sent::DragItem pk(pi, dest->getWorldPosition(), pi->getAmount());
                         sw->sendPacket(&pk);		//this packets shows to those clients the item being dragged to the char
 		}
                 if (dest->isCombinableWith(pi))
@@ -1121,7 +1121,7 @@ void cClient::dump_item(pItem pi, Location &loc) // Item is dropped on the groun
 	if ( !lineOfSight( pc->getPosition(), loc ) )
         {
                 sysmessage("You cannot place an item there!");
-		cPacketSendBounceItem pk(5);
+		nPackets::Sent::BounceItem pk(5);
 		sendPacket(&pk);
                	if (isDragging())
 		{
@@ -1140,7 +1140,7 @@ void cClient::dump_item(pItem pi, Location &loc) // Item is dropped on the groun
 		if (si.size() >= nSettings::Server::getMaximumItemsOnTile()) //Only those many items permitted on a tile
                 {
 			sysmessage("There is not enough space there!");
-			cPacketSendBounceItem pk(5);
+			nPackets::Sent::BounceItem pk(5);
 			sendPacket(&pk);
 			if (isDragging())
                         {
@@ -1170,14 +1170,14 @@ void cClient::dump_item(pItem pi, Location &loc) // Item is dropped on the groun
 	sw.fillOnline( pi );
         for( sw.rewind(); !sw.isEmpty(); sw++ )
         {
-		cPacketSendDeleteObj pk(pi);
+		nPackets::Sent::DeleteObj pk(pi);
 		sw->sendPacket(&pk);
 
 		if (!pc->isGM() && !pc->isHidden() && sw != this)
 		{
 	               	//the dragging of the item should not be shown if pc is a gm or if it's invisible
 	                //! \todo complete when sets remade
-			cPacketSendDragItem pk(pi, Loc, pi->getAmount());
+			nPackets::Sent::DragItem pk(pi, Loc, pi->getAmount());
 	                sw->sendPacket(&pk);		//this packets shows to those clients the item being dragged to the char
                 }
 	}
@@ -1237,7 +1237,7 @@ void cClient::droppedOnChar(pItem pi, pChar dest)
 				if(pc_currchar->getTrainer() != npc)
 				{
 					npc->talk(this, "Thank thee kindly, but I have done nothing to warrant a gift.", false);
-					cPacketSendBounceItem pk(5);
+					nPackets::Sent::BounceItem pk(5);
 					sendPacket(&pk);
 					if (isDragging())
 					{
@@ -1267,7 +1267,7 @@ void cClient::droppedOnChar(pItem pi, pChar dest)
 				}
 				else	// No pack, give it back to the GM
 				{
-					cPacketSendBounceItem pk(5);
+					nPackets::Sent::BounceItem pk(5);
 					sendPacket(&pk);
 					if (isDragging())
 					{
@@ -1289,7 +1289,7 @@ void cClient::droppedOnChar(pItem pi, pChar dest)
 				}
 				else
 				{
-					cPacketSendBounceItem pk(5);
+					nPackets::Sent::BounceItem pk(5);
 					sendPacket(&pk);
 					if (isDragging())
 					{
@@ -1345,7 +1345,7 @@ void cClient::droppedOnPet(pItem pi, pNPC pet)
 	} else
 	{	//! \todo a check for pack animals
 		sysmessage("It doesn't appear to want the item");
-		cPacketSendBounceItem pk(5);
+		nPackets::Sent::BounceItem pk(5);
 		sendPacket(&pk);
 		if (isDragging())
 		{
@@ -1431,7 +1431,7 @@ void cClient::droppedOnBeggar(pItem pi, pNPC npc)
 		asprintf(&temp, "Sorry %s i can only use gold", pc->getCurrentName().c_str());
 		npc->talk(this, temp, false);
                 free(temp);
-		cPacketSendBounceItem pk(5);
+		nPackets::Sent::BounceItem pk(5);
 		sendPacket(&pk);
 		if (isDragging())
 		{
@@ -1489,7 +1489,7 @@ void cClient::droppedOnTrainer(pItem pi, pNPC npc)
 		if(amount > delta) // Paid too much
 		{
 			pi->setAmount(amount - delta);
-			cPacketSendBounceItem pk(5);
+			nPackets::Sent::BounceItem pk(5);
 			sendPacket(&pk);
 			if (isDragging())
 			{
@@ -1516,7 +1516,7 @@ void cClient::droppedOnTrainer(pItem pi, pNPC npc)
 	else // Did not give gold
 	{
 		npc->talk(this, "I am sorry, but I can only accept gold.", false);
-		cPacketSendBounceItem pk(5);
+		nPackets::Sent::BounceItem pk(5);
 		sendPacket(&pk);
 		if (isDragging())
 		{
@@ -1720,7 +1720,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 	sws.fillOnline( pi );
 	for( sws.rewind(); !sws.isEmpty(); sws++ )
 	{
-		cPacketSendDeleteObj pk(pi);
+		nPackets::Sent::DeleteObj pk(pi);
 		sws->sendPacket(&pk);
 	}
 
@@ -1825,7 +1825,7 @@ void cClient::item_bounce5( const pItem pi)
 void cClient::item_bounce6(const pItem pi)
 {
 	if ( ! pi ) return;
-	cPacketSendBounceItem pk(5);
+	nPackets::Sent::BounceItem pk(5);
         sendPacket(&pk);
 	if ( isDragging() )
 	{
@@ -1986,7 +1986,7 @@ void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 
 	if (clear)
 	{
-                cPacketSendClearBuyWindow pk(npc);
+                nPackets::Sent::ClearBuyWindow pk(npc);
 	        sendPacket(&pk);
 	}
 	pc->getBody()->calcWeight();
@@ -2093,7 +2093,7 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 
 				for( sw.rewind(); !sw.isEmpty(); sw++ )
 				{
-					cPacketSendDeleteObj pk(pSell);
+					nPackets::Sent::DeleteObj pk(pSell);
 					sw->sendPacket(&pk);
 				}
 
@@ -2132,8 +2132,8 @@ void sendtradestatus(pContainer cont1, pContainer cont2)  //takes clients from c
 	if(!p1) return;
 	if(!p2) return;
 
-	cPacketSendSecureTradingStatus pk1(0x02, cont1->getSerial(), (uint32_t) (cont1->morez%256), (uint32_t) (cont2->morez%256));
-      	cPacketSendSecureTradingStatus pk2(0x02, cont2->getSerial(), (uint32_t) (cont2->morez%256), (uint32_t) (cont1->morez%256));
+	nPackets::Sent::SecureTradingStatus pk1(0x02, cont1->getSerial(), (uint32_t) (cont1->morez%256), (uint32_t) (cont2->morez%256));
+      	nPackets::Sent::SecureTradingStatus pk2(0x02, cont2->getSerial(), (uint32_t) (cont2->morez%256), (uint32_t) (cont1->morez%256));
 	p1->getClient()->sendPacket(&pk1);
 	p2->getClient()->sendPacket(&pk2);
 }
@@ -2245,12 +2245,12 @@ void endtrade(pContainer c1)
 
 	if (c1)	// player may have been disconnected (Duke)
         {
-        	cPacketSendSecureTradingStatus pk1(0x01, cont1->getSerial(), 0, 0);
+        	nPackets::Sent::SecureTradingStatus pk1(0x01, cont1->getSerial(), 0, 0);
 		c1->sendPacket(&pk1);
 	}
 	if (c2)	// player may have been disconnected (Duke)
         {
-              	cPacketSendSecureTradingStatus pk2(0x01, cont2->getSerial(), 0, 0);
+              	nPackets::Sent::SecureTradingStatus pk2(0x01, cont2->getSerial(), 0, 0);
               	c2->sendPacket(&pk2);
         }
 
@@ -2350,7 +2350,7 @@ void cClient::playMidi()
 */
 void cClient::playSFX(uint16_t sound, bool onlyMe)
 {
-	cPacketSendSoundFX pk(sound, pc->getPosition());
+	nPackets::Sent::SoundFX pk(sound, pc->getPosition());
 
 	if(onlyMe) {
 		client->send(&pk);

@@ -518,11 +518,11 @@ void cChar::unHide()
 		if ( ! pj ) continue;
 			
 		if (pj != this) { //to other players : recreate player object
-			cPacketSendDeleteObj pk(this);
+			nPackets::Sent::DeleteObj pk(this);
 			client->sendPacket(&pk);
 			impowncreate(i, this, 0);
 		} else {
-			cPacketSendDrawGamePlayer pk(this);
+			nPackets::Sent::DrawGamePlayer pk(this);
 			i->sendPacket(&pk);
 		}
 	}
@@ -866,7 +866,7 @@ void cChar::teleport( uint8_t flags, pClient cli )
     //
 	if ( socket != INVALID ) {
 
-		cPacketSendDrawGamePlayer pk(this);
+		nPackets::Sent::DrawGamePlayer pk(this);
 		ps->sendPacket(&pk);
 
 
@@ -1310,7 +1310,7 @@ void cChar::Delete()
 
 	pointers::delChar(this);	//Luxor
 
-	cPacketSendDeleteObject pk(serial);
+	nPackets::Sent::DeleteObject pk(serial);
 
         NxwSocketWrapper sc;
         sc.fillOnline( this );
@@ -2413,7 +2413,7 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 	}
 
 	//!\todo redo adding to cpeech all the data and verifying
-	cPacketSendSpeech pk(cSpeech(temp1));
+	nPackets::Sent::Speech pk(cSpeech(temp1));
 	client->sendPacket(&pk);
 
 	//SendSpeechMessagePkt(socket, getSerial(), 0x0101, 6, color, 0x0003, sysname, temp1);
@@ -2774,7 +2774,7 @@ void cChar::warUpdate()
 		{
 			if (!pc_i->isDead())
 			{
-				cPacketSendDeleteObj pk(pc_i->getSerial());
+				nPackets::Sent::DeleteObj pk(pc_i->getSerial());
 		                ps_i->sendPacket(&pk);
 				sendit = false;
 			}
@@ -2817,7 +2817,7 @@ void cChar::warUpdate()
 				hi_color = 3;  // show grey
 
 			// end of if sendit
-                        cPacketSendUpdatePlayer pk(this, ndir, flag, hi_color );
+                        nPackets::Sent::UpdatePlayer pk(this, ndir, flag, hi_color );
                         ps_i->sendPacket(&pk);
 		}
 	}

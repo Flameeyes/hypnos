@@ -349,7 +349,7 @@ void cChar::playAction(uint16_t action)
 	if ( ! action )
 		return;
 
-	cPacketSendAction pa(serial, action);
+	nPackets::Sent::Action pa(serial, action);
 
 	cClientSet cs;
 	cs.fillOnline( this, false );

@@ -21,7 +21,7 @@
 \author Flameeyes
 \note packet 0x11
 */
-void cPacketSendStatus::prepare()
+void nPackets::Sent::Status::prepare()
 {
 	length = 0;
 	if ( ! pc ) return;
@@ -93,7 +93,7 @@ void cPacketSendStatus::prepare()
 \author Chronodt
 \note packet 0x1a
 */
-void cPacketSendObjectInformation::prepare()
+void nPackets::Sent::ObjectInformation::prepare()
 {
         buffer = new uint8_t[20]; 	//MAXIMUM packet length
 
@@ -142,7 +142,7 @@ void cPacketSendObjectInformation::prepare()
 \note packet 0x1a
 */
 
-void cPacketSendLSDObject::prepare()
+void nPackets::Sent::LSDObject::prepare()
 {
         buffer = new uint8_t[20]; 	//MAXIMUM packet length
 
@@ -191,7 +191,7 @@ void cPacketSendLSDObject::prepare()
 \note packet 0x1b
 */
 
-void cPacketSendLoginConfirmation::prepare()
+void nPackets::Sent::LoginConfirmation::prepare()
 {
         buffer = new uint8_t[37];
         length= 37;
@@ -220,7 +220,7 @@ void cPacketSendLoginConfirmation::prepare()
 \note packet 0x1c
 */
 
-void cPacketSendSpeech::prepare()
+void nPackets::Sent::Speech::prepare()
 {
 	std::string text;
         if (ghost) text = speech.toGhost()
@@ -244,7 +244,7 @@ void cPacketSendSpeech::prepare()
 \note packet 0x1d
 */
 
-void cPacketSendDeleteObj::prepare()
+void nPackets::Sent::DeleteObj::prepare()
 {
 	length = 5;
 	buffer = new uint8_t[5];
@@ -259,7 +259,7 @@ void cPacketSendDeleteObj::prepare()
 \note packet 0x20
 */
 
-void cPacketSendDrawGamePlayer::prepare()
+void nPackets::Sent::DrawGamePlayer::prepare()
 {
 	length = 19;
 	buffer = new uint8_t[19];
@@ -292,7 +292,7 @@ void cPacketSendDrawGamePlayer::prepare()
 \note packet 0x21
 */
 
-void cPacketSendMoveReject::prepare()
+void nPackets::Sent::MoveReject::prepare()
 {
 	length = 8;
 	buffer = new uint8_t[8];
@@ -310,7 +310,7 @@ void cPacketSendMoveReject::prepare()
 \note packet 0x22
 */
 
-void cPacketSendMoveAcknowdledge::prepare()
+void nPackets::Sent::MoveAcknowdledge::prepare()
 {
 	buffer = new uint8_t[3];
         length = 3;
@@ -336,7 +336,7 @@ notoriety:
 \note packet 0x23
 */
 
-void cPacketSendDragItem::prepare()
+void nPackets::Sent::DragItem::prepare()
 {
 	buffer = new uint8_t[26];
         length = 26;
@@ -361,7 +361,7 @@ void cPacketSendDragItem::prepare()
 \note packet 0x27
 */
 
-void cPacketSendBounceItem::prepare()
+void nPackets::Sent::BounceItem::prepare()
 {
 	buffer = new uint8_t[2];
         length = 2;
@@ -370,7 +370,7 @@ void cPacketSendBounceItem::prepare()
 }
 
 
-void cPacketSendAction::prepare()
+void nPackets::Sent::Action::prepare()
 {
 	static const uint8_t templ[14] = {
 		0x6E, 0x01, 0x02, 0x03, 0x04, 0x01, 0x02,
@@ -398,7 +398,7 @@ void cPacketDrawContainer::prepare()
 	ShortToCharPtr(gump, buffer+5);
 }
 
-void cPacketSendContainerItem::prepare()
+void nPackets::Sent::ContainerItem::prepare()
 {
 	static const uint8_t templ1[5] = {
 		0x3C, 0x00, 0x05, 0x00, 0x00
@@ -438,7 +438,7 @@ void cPacketSendContainerItem::prepare()
 
 
 
-void cPacketSendShowItemInContainer::prepare()
+void nPackets::Sent::ShowItemInContainer::prepare()
 {
 	length = 20;
 	buffer = new uint8_t[20];
@@ -470,7 +470,7 @@ void cPacketSendShowItemInContainer::prepare()
 
 }
 
-void cPacketSendWornItem::prepare()
+void nPackets::Sent::WornItem::prepare()
 {
 	length = 15;
 	buffer = new uint8_t[15];
@@ -485,7 +485,7 @@ void cPacketSendWornItem::prepare()
 	ShortToCharPtr(item->getColor(), buffer+13);
 }
 
-void cPacketSendSoundFX::prepare()
+void nPackets::Sent::SoundFX::prepare()
 {
 	static const uint8_t templ[12] = {
 		0x54, 0x01, 0x12, 0x34, 0x00, 0x00,
@@ -505,7 +505,7 @@ void cPacketSendSoundFX::prepare()
 }
 
 
-void cPacketSendSkillState::prepare()
+void nPackets::Sent::SkillState::prepare()
 {
 	length = 4 + skTrueSkills*7 + 2;
 	buffer = new uint8_t[length];
@@ -530,7 +530,7 @@ void cPacketSendSkillState::prepare()
 	ShorToCharPtr(0, skill);
 }
 
-void cPacketSendUpdateSkill::prepare()
+void nPackets::Sent::UpdateSkill::prepare()
 {
 	length = 11;
 	buffer = new uint8_t[11];
@@ -547,7 +547,7 @@ void cPacketSendUpdateSkill::prepare()
 	buffer[10] = pc->getSkillLock(skill);
 }
 
-void cPacketSendOpenBrowser::prepare()
+void nPackets::Sent::OpenBrowser::prepare()
 {
 	length = url.size() + 3;
 	buffer = new uint8_t[length];
@@ -558,7 +558,7 @@ void cPacketSendOpenBrowser::prepare()
 	memcpy(buffer+3, url.c_str(), length-3);
 }
 
-void cPacketSendPlayMidi::prepare()
+void nPackets::Sent::PlayMidi::prepare()
 {
 	length = 3;
 	buffer = new uint8_t[3];
@@ -567,7 +567,7 @@ void cPacketSendPlayMidi::prepare()
 	ShortToCharPtr(id, buffer+1);
 }
 
-void cPacketSendOverallLight::prepare()
+void nPackets::Sent::OverallLight::prepare()
 {
 	length = 2;
 	buffer = new uint8_t[2];
@@ -578,7 +578,7 @@ void cPacketSendOverallLight::prepare()
 
 
 
-void cPacketSendClearBuyWindow::prepare()
+void nPackets::Sent::ClearBuyWindow::prepare()
 {
 	length = 8;
 	buffer = new uint8_t[8];
@@ -589,14 +589,14 @@ void cPacketSendClearBuyWindow::prepare()
 }
 
 
-void cPacketSendPaperdollClothingUpdated::prepare()
+void nPackets::Sent::PaperdollClothingUpdated::prepare()
 {
 	length = 1;
 	buffer = new uint8_t[1];
 	buffer[0] = 0x29;
 }
 
-void cPacketSendOpenMapGump::prepare()
+void nPackets::Sent::OpenMapGump::prepare()
 {
 	length = 19;
 	buffer = new uint8_t[19];
@@ -618,7 +618,7 @@ void cPacketSendOpenMapGump::prepare()
 	ShortToCharPtr(height, map1 +17);
 }
 
-void cPacketSendMapPlotCourse::prepare()
+void nPackets::Sent::MapPlotCourse::prepare()
 {
 	length = 11;
 	buffer = new uint8_t[11];
@@ -631,7 +631,7 @@ void cPacketSendMapPlotCourse::prepare()
         ShortToCharPtr(y, buffer + 9);
 }
 
-void cPacketSendBBoardCommand::prepare()
+void nPackets::Sent::BBoardCommand::prepare()
 {
 	switch (command)
         {
@@ -713,7 +713,7 @@ void cPacketSendBBoardCommand::prepare()
         }
 }
 
-void cPacketSendMsgBoardItemsinContainer::prepare()
+void nPackets::Sent::MsgBoardItemsinContainer::prepare()
 {
  	static const uint8_t templ1[5] = {
 		0x3C, 0x00, 0x05, 0x00, 0x00
@@ -752,7 +752,7 @@ void cPacketSendMsgBoardItemsinContainer::prepare()
 }
 
 
-void cPacketSendSecureTradingStatus::prepare()
+void nPackets::Sent::SecureTradingStatus::prepare()
 {
         buffer = new uint8_t[17];
         length = 17;
@@ -765,7 +765,7 @@ void cPacketSendSecureTradingStatus::prepare()
 	buffer[16]=0; 			// No name in this message
 }
 
-void cPacketSendUpdatePlayer::prepare()
+void nPackets::Sent::UpdatePlayer::prepare()
 {
 	buffer = new uint8_t[17];
         length = 17;
@@ -782,14 +782,14 @@ void cPacketSendUpdatePlayer::prepare()
 	buffer[16]=hi_color;
 }
 
-void cPacketSendWarModeStatus::prepare()
+void nPackets::Sent::WarModeStatus::prepare()
 {
 	buffer = new uint8_t[5];
         length = 5;
 	memcpy(buffer, buf, 5);
 }
 
-void cPacketSendPingReply::prepare()
+void nPackets::Sent::PingReply::prepare()
 {
 	buffer = new uint8_t[2];
         length = 2;
@@ -811,7 +811,7 @@ void cPacketSendPingReply::prepare()
  *      0x05 => Couldn't carry out your request.
  */
 
-void cPacketSendCharAfterDelete::prepare()
+void nPackets::Sent::CharAfterDelete::prepare()
 {
 	buffer = new uint8_t[2];
         length = 2;
@@ -820,7 +820,7 @@ void cPacketSendCharAfterDelete::prepare()
 }
 
 
-void cPacketSendCharAfterDelete::prepare()
+void nPackets::Sent::CharAfterDelete::prepare()
 {
 	buffer = new uint8_t[304];
         length = 304;
@@ -833,7 +833,7 @@ void cPacketSendCharAfterDelete::prepare()
                 	strcpy(buffer + (i*60) + 4, account->getChar(i)->getCurrentName().c_str());
 }
 
-void cPacketSendCharProfile::prepare()
+void nPackets::Sent::CharProfile::prepare()
 {
 // packet documentation is sketchy at best. Expect many implemetation errors here -_-
         length = 7;
@@ -858,7 +858,7 @@ void cPacketSendCharProfile::prepare()
         memcpy(offset, who->getProfile().rawBytes(), who->getProfile().size() * 2 + 2);
 }
 
-void cPacketSendClientViewRange::prepare()
+void nPackets::Sent::ClientViewRange::prepare()
 {
 	buffer = new uint8_t[2];
         length = 2;
@@ -867,7 +867,7 @@ void cPacketSendClientViewRange::prepare()
 }
 
 
-void cPacketSendLogoutStatus::prepare()
+void nPackets::Sent::LogoutStatus::prepare()
 {
 	buffer = new uint8_t[2];
         length = 2;
@@ -876,46 +876,46 @@ void cPacketSendLogoutStatus::prepare()
 }
 
 
-pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
+pPacketReceive nPackets::Received::::fromBuffer(uint8_t *buffer, uint16_t length)
 {
        switch(buffer[0])
        {
-                case 0x00: return new cPacketReceiveCreateChar(buffer, length);         // Create Character
-                case 0x01: return new cPacketReceiveDisconnectNotify(buffer, length);   // Disconnect Notification
-                case 0x02: return new cPacketReceiveMoveRequest(buffer, length);        // Move Request
-                case 0x03: return new cPacketReceiveTalkRequest(buffer, length);        // Talk Request
+                case 0x00: return new nPackets::Received::CreateChar(buffer, length);         // Create Character
+                case 0x01: return new nPackets::Received::DisconnectNotify(buffer, length);   // Disconnect Notification
+                case 0x02: return new nPackets::Received::MoveRequest(buffer, length);        // Move Request
+                case 0x03: return new nPackets::Received::TalkRequest(buffer, length);        // Talk Request
                 case 0x04: return NULL;							// God mode toggle
-                case 0x05: return new cPacketReceiveAttackRequest(buffer, length);      // Attack Request
-                case 0x06: return new cPacketReceiveDoubleclick(buffer, length);        // Double click
-                case 0x07: return new cPacketReceivePickUp(buffer, length);             // Pick Up Item(s)
-                case 0x08: return new cPacketReceiveDropItem(buffer, length);           // Drop Item(s)
-                case 0x09: return new cPacketReceiveSingleclick(buffer, length);        // Single click
-                case 0x12: return new cPacketReceiveActionRequest(buffer, length);      // Request Skill/Action/Magic Usage
-                case 0x13: return new cPacketReceiveWearItem(buffer, length);           // Drop - Wear Item
-                case 0x22: return new cPacketReceiveMoveACK_ResyncReq(buffer, length);  // when received, this packet is a Resync Request
-                case 0x2c: return new cPacketReceiveRessChoice(buffer, length);         // (Obsolete) Resurrection Menu Choice
-                case 0x34: return new cPacketReceiveStatusRequest(buffer, length);      // Get Player Status
+                case 0x05: return new nPackets::Received::AttackRequest(buffer, length);      // Attack Request
+                case 0x06: return new nPackets::Received::Doubleclick(buffer, length);        // Double click
+                case 0x07: return new nPackets::Received::PickUp(buffer, length);             // Pick Up Item(s)
+                case 0x08: return new nPackets::Received::DropItem(buffer, length);           // Drop Item(s)
+                case 0x09: return new nPackets::Received::Singleclick(buffer, length);        // Single click
+                case 0x12: return new nPackets::Received::ActionRequest(buffer, length);      // Request Skill/Action/Magic Usage
+                case 0x13: return new nPackets::Received::WearItem(buffer, length);           // Drop - Wear Item
+                case 0x22: return new nPackets::Received::MoveACK_ResyncReq(buffer, length);  // when received, this packet is a Resync Request
+                case 0x2c: return new nPackets::Received::RessChoice(buffer, length);         // (Obsolete) Resurrection Menu Choice
+                case 0x34: return new nPackets::Received::StatusRequest(buffer, length);      // Get Player Status
 
                 // packet 0x38 (pathfinding) is received or sent???
 
-                case 0x3a: return new cPacketReceiveSetSkillLock(buffer, length);       // Set Skill Lock (receive version of packet 0x3a)
-                case 0x3b: return new cPacketReceiveBuyItems(buffer, length);           // Buy Item(s)
-                case 0x56: return new cPacketReceiveMapPlotCourse(buffer, length);      // Map Related
-                case 0x5d: return new cPacketReceiveLoginChar(buffer, length); 		// Login Character
-                case 0x66: return new cPacketReceiveBookPage(buffer, length); 	 	// Books - Page (receive version)
+                case 0x3a: return new nPackets::Received::SetSkillLock(buffer, length);       // Set Skill Lock (receive version of packet 0x3a)
+                case 0x3b: return new nPackets::Received::BuyItems(buffer, length);           // Buy Item(s)
+                case 0x56: return new nPackets::Received::MapPlotCourse(buffer, length);      // Map Related
+                case 0x5d: return new nPackets::Received::LoginChar(buffer, length); 		// Login Character
+                case 0x66: return new nPackets::Received::BookPage(buffer, length); 	 	// Books - Page (receive version)
                 case 0x69: return NULL; 						// (Obsolete) Change Text/Emote Color
-                case 0x6c: return new cPacketReceiveTargetSelected(buffer, length);	// Targeting Cursor Commands
-                case 0x6f: return new cPacketReceiveSecureTrade(buffer,length);		// Secure Trading
-                case 0x71: return new cPacketReceiveBBoardMessage(buffer, length); 	// Bulletin Board Message
-                case 0x72: return new cPacketReceiveWarModeChange(buffer, length); 	// Request War Mode Change/Send War Mode status
-                case 0x73: return new cPacketReceivePing(buffer, length); 		// Ping message
-               	case 0x75: return new cPacketReceiveRenameCharacter(buffer, length); 	// New name for a character
-                case 0x7d: return new cPacketReceiveDialogResponse(buffer, length); 	// Client Response To Dialog
-                case 0x80: return new cPacketReceiveLoginRequest(buffer, length); 	// Login Request
-                case 0x83: return new cPacketReceiveDeleteCharacter(buffer, length); 	// Delete Character
-                case 0x91: return new cPacketReceiveGameServerLogin(buffer, length);	// Game Server Login (Server to play selected)
-                case 0x93: return new cPacketReceiveBookUpdateTitle(buffer, length);	// Books  Update Title Page (receive version of packet 0x93)
-                case 0x95: return new cPacketReceiveDyeItem(buffer, length); 		// Dye item
+                case 0x6c: return new nPackets::Received::TargetSelected(buffer, length);	// Targeting Cursor Commands
+                case 0x6f: return new nPackets::Received::SecureTrade(buffer,length);		// Secure Trading
+                case 0x71: return new nPackets::Received::BBoardMessage(buffer, length); 	// Bulletin Board Message
+                case 0x72: return new nPackets::Received::WarModeChange(buffer, length); 	// Request War Mode Change/Send War Mode status
+                case 0x73: return new nPackets::Received::Ping(buffer, length); 		// Ping message
+               	case 0x75: return new nPackets::Received::RenameCharacter(buffer, length); 	// New name for a character
+                case 0x7d: return new nPackets::Received::DialogResponse(buffer, length); 	// Client Response To Dialog
+                case 0x80: return new nPackets::Received::LoginRequest(buffer, length); 	// Login Request
+                case 0x83: return new nPackets::Received::DeleteCharacter(buffer, length); 	// Delete Character
+                case 0x91: return new nPackets::Received::GameServerLogin(buffer, length);	// Game Server Login (Server to play selected)
+                case 0x93: return new nPackets::Received::BookUpdateTitle(buffer, length);	// Books  Update Title Page (receive version of packet 0x93)
+                case 0x95: return new nPackets::Received::DyeItem(buffer, length); 		// Dye item
 
                 //Does this have to be implemented?
                 case 0x98: return NULL; 						// All-names 3D (3d clients only packet, receive version 7 bytes long)
@@ -923,27 +923,27 @@ pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
                 // in old nox is not implemented. Do we need it?
                 case 0x9a: return NULL; 						// Console Entry Prompt
 
-                case 0x9b: return new cPacketReceiveRequestHelp(buffer, length);       	// Request Help
-                case 0x9f: return new cPacketReceiveSellItems(buffer, length); 		// Sell Reply
-                case 0xa0: return new cPacketReceiveSelectServer(buffer, length); 	// Select Server
+                case 0x9b: return new nPackets::Received::RequestHelp(buffer, length);       	// Request Help
+                case 0x9f: return new nPackets::Received::SellItems(buffer, length); 		// Sell Reply
+                case 0xa0: return new nPackets::Received::SelectServer(buffer, length); 	// Select Server
                 case 0xa4: return NULL; 						// Client Machine info (It was a sort of lame spyware command .. we have no need for it :D)
-                case 0xa7: return new cPacketReceiveTipsRequest(buffer, length); 	// Request Tips/Notice
-                case 0xac: return new cPacketReceiveGumpTextDialogReply(buffer, length);// Gump Text Entry Dialog Reply
-                case 0xad: return new cPacketReceiveUnicodeSpeechReq(buffer, length);	// Unicode speech request
-                case 0xb1: return new cPacketReceiveGumpResponse(buffer, length);	// Gump Menu Selection
-                case 0xb2: return new cPacketReceiveChatMessage(buffer, length);	// Chat Message
-                case 0xb5: return new cPacketReceiveChatWindowOpen(buffer, length); 	// Open Chat window
-                case 0xb6: return new cPacketReceivePopupHelpRequest(buffer, length); 	// Send Help/Tip Request (popup help)
-                case 0xb8: return new cPacketReceiveCharProfileRequest(buffer, length);	// Request Char Profile
+                case 0xa7: return new nPackets::Received::TipsRequest(buffer, length); 	// Request Tips/Notice
+                case 0xac: return new nPackets::Received::GumpTextDialogReply(buffer, length);// Gump Text Entry Dialog Reply
+                case 0xad: return new nPackets::Received::UnicodeSpeechReq(buffer, length);	// Unicode speech request
+                case 0xb1: return new nPackets::Received::GumpResponse(buffer, length);	// Gump Menu Selection
+                case 0xb2: return new nPackets::Received::ChatMessage(buffer, length);	// Chat Message
+                case 0xb5: return new nPackets::Received::ChatWindowOpen(buffer, length); 	// Open Chat window
+                case 0xb6: return new nPackets::Received::PopupHelpRequest(buffer, length); 	// Send Help/Tip Request (popup help)
+                case 0xb8: return new nPackets::Received::CharProfileRequest(buffer, length);	// Request Char Profile
                 case 0xbb: return NULL; 						// Ultima Messenger (do we need this?)
-                case 0xbd: return new cPacketReceiveClientVersion(buffer, length); 	// Client Version Message
-                case 0xbe: return new cPacketReceiveAssistVersion(buffer, length);	// Assist Version.... does this packet really exist?
-                case 0xbf: return new cPacketReceiveMiscCommand(buffer, length); 	// Misc. Commands Packet
-                case 0xc2: return new cPacketReceiveTextEntryUnicode(buffer, length); 	// Textentry Unicode
-                case 0xc8: return new cPacketReceiveClientViewRange(buffer, length); 	// Client view range
-                case 0xd1: return new cPacketReceiveLogoutStatus(buffer, length); 	// Logout Status
-                case 0xd4: return new cPacketReceiveNewBookHeader(buffer, length); 	// new Book Header
-		case 0xd7: return new cPacketReceiveFightBookSelection(buffer, length);	// Fight Book: move selected
+                case 0xbd: return new nPackets::Received::ClientVersion(buffer, length); 	// Client Version Message
+                case 0xbe: return new nPackets::Received::AssistVersion(buffer, length);	// Assist Version.... does this packet really exist?
+                case 0xbf: return new nPackets::Received::MiscCommand(buffer, length); 	// Misc. Commands Packet
+                case 0xc2: return new nPackets::Received::TextEntryUnicode(buffer, length); 	// Textentry Unicode
+                case 0xc8: return new nPackets::Received::ClientViewRange(buffer, length); 	// Client view range
+                case 0xd1: return new nPackets::Received::LogoutStatus(buffer, length); 	// Logout Status
+                case 0xd4: return new nPackets::Received::NewBookHeader(buffer, length); 	// new Book Header
+		case 0xd7: return new nPackets::Received::FightBookSelection(buffer, length);	// Fight Book: move selected
                 default: return NULL;	// Discard received packet
        }
 }
@@ -956,7 +956,7 @@ pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
 
 Mostly taken from old noxwizard.cpp and (vastly :) ) modified to hypnos object system
 */
-bool cPacketReceiveCreateChar::execute(pClient client)
+bool nPackets::Received::CreateChar::execute(pClient client)
 {
         // Disconnect-level encryption or transfer error check
         if ((length !=104) ||                                           // packet length check
@@ -1155,7 +1155,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 \note packet 0x01
 */
 
-bool cPacketReceiveDisconnectNotify::execute(pClient client)
+bool nPackets::Received::DisconnectNotify::execute(pClient client)
 {
         if ((length != 5) || (LongFromCharPtr(buffer+1) != 0xffffffff)) return false;
         client->disconnect();
@@ -1169,7 +1169,7 @@ bool cPacketReceiveDisconnectNotify::execute(pClient client)
 \note packet 0x02
 */
 
-bool cPacketReceiveMoveRequest::execute (pClient client)
+bool nPackets::Received::MoveRequest::execute (pClient client)
 {
         if (length != 7) return false;
         pPC pc = client->currChar();
@@ -1188,7 +1188,7 @@ bool cPacketReceiveMoveRequest::execute (pClient client)
 \note packet 0x03
 */
 
-bool cPacketReceiveTalkRequest::execute (pClient client)
+bool nPackets::Received::TalkRequest::execute (pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -1206,7 +1206,7 @@ bool cPacketReceiveTalkRequest::execute (pClient client)
 \param client client who sent the packet
 \note packet 0x05
 */
-bool cPacketReceiveAttackRequest::execute (pClient client)
+bool nPackets::Received::AttackRequest::execute (pClient client)
 {
         if (length != 5) return false;
 
@@ -1229,7 +1229,7 @@ bool cPacketReceiveAttackRequest::execute (pClient client)
 \note packet 0x06
 */
 
-bool cPacketReceiveDoubleclick::execute(pClient client)
+bool nPackets::Received::Doubleclick::execute(pClient client)
 {
         if (length != 5) return false;
 
@@ -1261,7 +1261,7 @@ bool cPacketReceiveDoubleclick::execute(pClient client)
 \note packet 0x07
 */
 
-bool cPacketReceivePickUp::execute(pClient client)
+bool nPackets::Received::PickUp::execute(pClient client)
 {
         if (length != 7) return false;
 	pItem pi = cSerializable::findItemBySerial(LongFromCharPtr(buffer+1));
@@ -1279,7 +1279,7 @@ bool cPacketReceivePickUp::execute(pClient client)
 \note packet 0x08
 */
 
-bool cPacketReceiveDropItem::execute(pClient client)
+bool nPackets::Received::DropItem::execute(pClient client)
 {
         if (length != 14) return false;
 	pItem pi = cSerializable::findItemBySerial(LongFromCharPtr(buffer+1));
@@ -1300,7 +1300,7 @@ bool cPacketReceiveDropItem::execute(pClient client)
 \param client client who sent the packet
 \note packet 0x09
 */
-bool cPacketReceiveSingleclick::execute(pClient client)
+bool nPackets::Received::Singleclick::execute(pClient client)
 {
         if (length != 5) return false;
         uint32_t serial = LongFromCharPtr(buffer + 1);
@@ -1330,7 +1330,7 @@ bool cPacketReceiveSingleclick::execute(pClient client)
 \todo check the last if.... why does it do that check?????? it has no sense...
 */
 
-bool cPacketReceiveActionRequest::execute(pClient client)
+bool nPackets::Received::ActionRequest::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -1428,7 +1428,7 @@ bool cPacketReceiveActionRequest::execute(pClient client)
 */
 
 
-bool cPacketReceiveWearItem::execute(pClient client)
+bool nPackets::Received::WearItem::execute(pClient client)
 {
         if (length != 10) return false;
 
@@ -1450,7 +1450,7 @@ bool cPacketReceiveWearItem::execute(pClient client)
 \note packet 0x22
 */
 
-bool cPacketReceiveMoveACK_ResyncReq::execute(pClient client)
+bool nPackets::Received::MoveACK_ResyncReq::execute(pClient client)
 {
         if (length != 3) return false;
         pPC pc = client->currChar();
@@ -1472,7 +1472,7 @@ bool cPacketReceiveMoveACK_ResyncReq::execute(pClient client)
 \note packet 0x2c
 */
 
-bool cPacketReceiveRessChoice::execute(pClient client)
+bool nPackets::Received::RessChoice::execute(pClient client)
 {
         if (length != 2) return false;
         if(buffer[1]==0x02)
@@ -1496,7 +1496,7 @@ bool cPacketReceiveRessChoice::execute(pClient client)
 \note packet 0x34
 */
 
-bool cPacketReceiveStatusRequest::execute(pClient client)
+bool nPackets::Received::StatusRequest::execute(pClient client)
 {
         if (length != 10) return false;
         if ( client->currChar() != NULL )
@@ -1514,7 +1514,7 @@ bool cPacketReceiveStatusRequest::execute(pClient client)
 \note packet 0x3a
 */
 
-bool cPacketReceiveSetSkillLock::execute(pClient client)
+bool nPackets::Received::SetSkillLock::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -1536,7 +1536,7 @@ bool cPacketReceiveSetSkillLock::execute(pClient client)
 \note with current buffer implementation in csocket.cpp (1024 bytes) we can handle up to 135 different stacks of purchased items in a single go. Should be enough :D
 */
 
-bool cPacketReceiveBuyItems::execute(pClient client)
+bool nPackets::Received::BuyItems::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -1576,7 +1576,7 @@ bool cPacketReceiveBuyItems::execute(pClient client)
 \todo to be completed when treasure maps done
 */
 
-bool cPacketReceiveMapPlotCourse::execute(pClient client)
+bool nPackets::Received::MapPlotCourse::execute(pClient client)
 {
         if (length != 10) return false;
 
@@ -1617,7 +1617,7 @@ bool cPacketReceiveMapPlotCourse::execute(pClient client)
 \todo do the login sequence packets
 */
 
-bool cPacketReceiveLoginChar::execute(pClient client)
+bool nPackets::Received::LoginChar::execute(pClient client)
 {
         if (length != 73) return false;
         if (LongFromCharPtr(buffer+1) != 0xedededed) return false;	//pattern check
@@ -1688,7 +1688,7 @@ bool cPacketReceiveLoginChar::execute(pClient client)
 \note packet 0x66
 */
 
-bool cPacketReceiveBookPage::execute(pClient client)
+bool nPackets::Received::BookPage::execute(pClient client)
 {
 	uint16_t size = ShortFromCharPtr(buffer + 1);
 	if (length != size) return false;
@@ -1713,7 +1713,7 @@ bool cPacketReceiveBookPage::execute(pClient client)
 */
 
 
-bool cPacketReceiveTargetSelected::execute(pClient client)
+bool nPackets::Received::TargetSelected::execute(pClient client)
 {
         if (length != 19) return false;
 	pTarget target = client->getTarget();
@@ -1739,7 +1739,7 @@ bool cPacketReceiveTargetSelected::execute(pClient client)
 \note packet 0x6f
 */
 
-bool cPacketReceiveSecureTrade::execute(pClient client)
+bool nPackets::Received::SecureTrade::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
 	uint32_t serial = LongFromCharPtr(buffer +4);
@@ -1800,7 +1800,7 @@ the body of the message
 */
 
 
-bool cPacketReceiveBBoardMessage::execute(pClient client)
+bool nPackets::Received::BBoardMessage::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -1827,13 +1827,13 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                                 // and the first user deletes that message. The second still sees it in the summary
                                 // and can stil TRY to open it. We must tell the second player that the message is
                                 // no longer available and remove it from his/her list.
-                                cPacketSendDeleteObj pk(LongFromCharPtr(buffer + 8));
+                                nPackets::Sent::DeleteObj pk(LongFromCharPtr(buffer + 8));
                                 client->sendPacket(&pk);
                                 client->sysmessage("This message has just been deleted by someone else");
                         }
                         else
                         {
-	                        cPacketSendBBoardCommand pk(msgboard, SendMessageBody, message);
+	                        nPackets::Sent::BBoardCommand pk(msgboard, SendMessageBody, message);
         	                client->sendPacket(&pk);
                         }
 			break;
@@ -1903,7 +1903,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                         else
                         {
 				// Send "Add Item to Container" message to client
-		                cPacketSendShowItemInContainer pk(newmessage);
+		                nPackets::Sent::ShowItemInContainer pk(newmessage);
 		                client->sendPacket(&pk);
                 	}
 
@@ -1918,7 +1918,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                                 // and the first user deletes that message. The second still sees it in the summary.
                                 // Since both are trying to delete it, the result is the same, only we do not have
                                 // to delete the same item again :D
-                                cPacketSendDeleteObj pk(LongFromCharPtr(buffer + 8));
+                                nPackets::Sent::DeleteObj pk(LongFromCharPtr(buffer + 8));
                                 client->sendPacket(&pk);
                         }
                         else
@@ -1937,7 +1937,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                                         	// if onlyPosterCanDeleteMsgBoardMessage() is true, the only ones
                                                 // who can delete a post are: a gm, the poster and the owner of the
                                                 // msgboard, but the latter only if the message is local
-	                                	cPacketSendDeleteObj pk(LongFromCharPtr(buffer + 8));
+	                                	nPackets::Sent::DeleteObj pk(LongFromCharPtr(buffer + 8));
         	                        	client->sendPacket(&pk);
                                         	message->Delete();
                                         }
@@ -1961,7 +1961,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 \note packet 0x72
 */
 
-bool cPacketReceiveWarModeChange::execute(pClient client)
+bool nPackets::Received::WarModeChange::execute(pClient client)
 {
         if (length != 5) return false;
         pPC pc = client->currChar();
@@ -1973,7 +1973,7 @@ bool cPacketReceiveWarModeChange::execute(pClient client)
 			pc->targserial=INVALID;
                 }
 		// Now we send the packet back :D
-		cPacketSendWarModeStatus pk(buffer);
+		nPackets::Sent::WarModeStatus pk(buffer);
         	client->sendPacket(&pk);
 
 		if (pc->dead && pc->war) // Invisible ghost, resend.
@@ -1992,11 +1992,11 @@ bool cPacketReceiveWarModeChange::execute(pClient client)
 \note packet 0x73
 */
 
-bool cPacketReceivePing::execute(pClient client)
+bool nPackets::Received::Ping::execute(pClient client)
 {
 	if (length != 2) return false;
 	//All this function has to do is send back the packet to the client :D (well if it isn't a ping! :D)
-        cPacketSendPingReply pk(buffer);
+        nPackets::Sent::PingReply pk(buffer);
        	client->sendPacket(&pk);
         return true;
 }
@@ -2008,7 +2008,7 @@ bool cPacketReceivePing::execute(pClient client)
 \note packet 0x75
 */
 
-bool cPacketReceiveRenameCharacter::execute(pClient client)
+bool nPackets::Received::RenameCharacter::execute(pClient client)
 {
 	if (length != 35) return false;
 	pChar pc = cSerializable::findCharBySerial(LongFromCharPtr(buffer + 1));
@@ -2028,7 +2028,7 @@ bool cPacketReceiveRenameCharacter::execute(pClient client)
 */
 
 
-bool cPacketReceiveDialogResponse::execute(pClient client)
+bool nPackets::Received::DialogResponse::execute(pClient client)
 {
 	if (length != 13) return false;
 
@@ -2049,7 +2049,7 @@ bool cPacketReceiveDialogResponse::execute(pClient client)
 */
 
 
-bool cPacketReceiveLoginRequest::execute(pClient client)
+bool nPackets::Received::LoginRequest::execute(pClient client)
 {
 	//!This is the first packet a client sends to the server in the login sequence
 	if (length != 62) return false;
@@ -2073,7 +2073,7 @@ bool cPacketReceiveLoginRequest::execute(pClient client)
 \note packet 0x83
 */
 
-bool cPacketReceiveDeleteCharacter::execute(pClient client)
+bool nPackets::Received::DeleteCharacter::execute(pClient client)
 {
 	if (length != 39) return false;
         uint32_t index    = LongFromCharPtr (buffer + 31); // index of character to delete
@@ -2094,7 +2094,7 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
         if(!account->verifyPassword(buffer+1))
        	{
              	// Password invalid
-                cPacketSendCharDeleteError pk(0x0);
+                nPackets::Sent::CharDeleteError pk(0x0);
 	       	client->sendPacket(&pk);
         	return true;
         }
@@ -2106,7 +2106,7 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
 		if(!TrashMeUp)
                 {
 			// Character does not exist
-                	cPacketSendCharDeleteError pk(0x1);
+                	nPackets::Sent::CharDeleteError pk(0x1);
 	       		client->sendPacket(&pk);
                         return true;
 		}
@@ -2116,7 +2116,7 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
 			if( SrvParms->checkcharage && (getclockday() < TrashMeUp->getCreationDay() + 7) )
                         {
                         	// Character is too young to die :D
-                                cPacketSendCharDeleteError pk(0x3);
+                                nPackets::Sent::CharDeleteError pk(0x3);
 	       			client->sendPacket(&pk);
 				return true;
 			}
@@ -2124,21 +2124,21 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
 			if(TrashMeUp->isOnline())
                         {
                         	// Character is being played right now!
-                                cPacketSendCharDeleteError pk(0x2);
+                                nPackets::Sent::CharDeleteError pk(0x2);
 	       			client->sendPacket(&pk);
 				return true;
 			}
           		// Character Deletion
 			TrashMeUp->Delete();
 
-			cPacketSendCharAfterDelete pk(account);
+			nPackets::Sent::CharAfterDelete pk(account);
 		       	client->sendPacket(&pk);
 
 			return true; // All done ;]
 		}
 	}
         // sending message "0x05 => Couldn't carry out your request"
- 	cPacketSendCharDeleteError pk(0x5);
+ 	nPackets::Sent::CharDeleteError pk(0x5);
 	client->sendPacket(&pk);
         return true;
 }
@@ -2152,7 +2152,7 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
 \todo another login sequence packet. Still to do
 */
 
-bool cPacketReceiveGameServerLogin::execute(pClient client)
+bool nPackets::Received::GameServerLogin::execute(pClient client)
 {
 	if (length != 65) return false;
 
@@ -2174,7 +2174,7 @@ bool cPacketReceiveGameServerLogin::execute(pClient client)
 \note still sent by old clients, but usually it sends packet 0xd4 instead
 */
 
-bool cPacketReceiveBookUpdateTitle::execute(pClient client)
+bool nPackets::Received::BookUpdateTitle::execute(pClient client)
 {
 	if (length != 99) return false;
 	char author[30], title[60];
@@ -2200,7 +2200,7 @@ bool cPacketReceiveBookUpdateTitle::execute(pClient client)
 */
 
 
-bool cPacketReceiveDyeItem::execute(pClient client)
+bool nPackets::Received::DyeItem::execute(pClient client)
 {
 	if (length != 9) return false;
 	//!\todo: moving dyeitem from commands to cclient??
@@ -2216,7 +2216,7 @@ bool cPacketReceiveDyeItem::execute(pClient client)
 */
 
 
-bool cPacketReceiveRequestHelp::execute(pClient client)
+bool nPackets::Received::RequestHelp::execute(pClient client)
 {
 	if (length != 258) return false;
         //bytes from buffer + 1 to buffer + 257 i believe are the page text... i hope ...
@@ -2232,7 +2232,7 @@ bool cPacketReceiveRequestHelp::execute(pClient client)
 \note packet 0x9f
 */
 
-bool cPacketReceiveSellItems::execute(pClient client)
+bool nPackets::Received::SellItems::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -2270,7 +2270,7 @@ bool cPacketReceiveSellItems::execute(pClient client)
 \todo still another login packet. They begin to tire me.... :D
 */
 
-bool cPacketReceiveSelectServer::execute(pClient client)
+bool nPackets::Received::SelectServer::execute(pClient client)
 {
        	if (length != 3) return false;
         //!\todo another login packet, and another crypting function to update
@@ -2285,7 +2285,7 @@ bool cPacketReceiveSelectServer::execute(pClient client)
 \note packet 0xa7
 */
 
-bool cPacketReceiveTipsRequest::execute(pClient client)
+bool nPackets::Received::TipsRequest::execute(pClient client)
 {
        	if (length != 4) return false;
 	uint16_t i = ShortFromCharPtr(buffer + 1);
@@ -2372,7 +2372,7 @@ bool cPacketReceiveTipsRequest::execute(pClient client)
 \note packet 0xac
 */
 
-bool cPacketReceiveGumpTextDialogReply::execute(pClient client)
+bool nPackets::Received::GumpTextDialogReply::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -2387,7 +2387,7 @@ bool cPacketReceiveGumpTextDialogReply::execute(pClient client)
 \note packet 0xad
 */
 
-bool cPacketReceiveUnicodeSpeechReq::execute(pClient client)
+bool nPackets::Received::UnicodeSpeechReq::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -2424,7 +2424,7 @@ bool cPacketReceiveUnicodeSpeechReq::execute(pClient client)
 \note packet 0xb1
 */
 
-bool cPacketReceiveGumpResponse::execute(pClient client)
+bool nPackets::Received::GumpResponse::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -2440,7 +2440,7 @@ bool cPacketReceiveGumpResponse::execute(pClient client)
 \note packet 0xb2
 */
 
-bool cPacketReceiveChatMessage::execute(pClient client)
+bool nPackets::Received::ChatMessage::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -2456,7 +2456,7 @@ bool cPacketReceiveChatMessage::execute(pClient client)
 \note packet 0xb5
 */
 
-bool cPacketReceiveChatWindowOpen::execute(pClient client)
+bool nPackets::Received::ChatWindowOpen::execute(pClient client)
 {
        	if (length != 64) return false;
         //!\todo chat implementation
@@ -2471,7 +2471,7 @@ bool cPacketReceiveChatWindowOpen::execute(pClient client)
 \note packet 0xb6
 */
 
-bool cPacketReceivePopupHelpRequest::execute(pClient client)
+bool nPackets::Received::PopupHelpRequest::execute(pClient client)
 {
        	if (length != 9) return false;
 
@@ -2525,7 +2525,7 @@ bool cPacketReceivePopupHelpRequest::execute(pClient client)
 \note packet 0xb8
 */
 
-bool cPacketReceiveCharProfileRequest::execute(pClient client)
+bool nPackets::Received::CharProfileRequest::execute(pClient client)
 {
 	//NOTE: this packet is poorly documented -_-
 
@@ -2549,7 +2549,7 @@ bool cPacketReceiveCharProfileRequest::execute(pClient client)
 	}
 	else
 	{ //only send
-		cPacketSendCharProfile pk(serial, who);
+		nPackets::Sent::CharProfile pk(serial, who);
 		client->sendPacket(&pk)
 	}
         return true;
@@ -2562,7 +2562,7 @@ bool cPacketReceiveCharProfileRequest::execute(pClient client)
 \note packet 0xbd
 */
 
-bool cPacketReceiveClientVersion::execute(pClient client)
+bool nPackets::Received::ClientVersion::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -2605,7 +2605,7 @@ bool cPacketReceiveClientVersion::execute(pClient client)
 \note packet 0xbe
 */
 
-bool cPacketReceiveAssistVersion::execute(pClient client)
+bool nPackets::Received::AssistVersion::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -2635,7 +2635,7 @@ bool cPacketReceiveAssistVersion::execute(pClient client)
 \note packet 0xbf
 */
 
-bool cPacketReceiveMiscCommand::execute(pClient client)
+bool nPackets::Received::MiscCommand::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -2707,7 +2707,7 @@ bool cPacketReceiveMiscCommand::execute(pClient client)
 \note I totally have NO IDEA on what this packet does or when it is sent
 */
 
-bool cPacketReceiveTextEntryUnicode::execute(pClient client)
+bool nPackets::Received::TextEntryUnicode::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -2731,11 +2731,11 @@ bool cPacketReceiveTextEntryUnicode::execute(pClient client)
 \note packet 0xc8
 */
 
-bool cPacketReceiveClientViewRange::execute(pClient client)
+bool nPackets::Received::ClientViewRange::execute(pClient client)
 {
        	if (length != 2) return false;
         client->setVisualRange(buffer[1]); //!<\todo verify if this packet is really sent :)
-        cPacketSendClientViewRange(buffer[1]);
+        nPackets::Sent::ClientViewRange(buffer[1]);
         client->sendPacket(&pk);
         return true;
 }
@@ -2750,10 +2750,10 @@ bool cPacketReceiveClientViewRange::execute(pClient client)
 \note and this packet itself is totally useless...
 */
 
-bool cPacketReceiveLogoutStatus::execute(pClient client)
+bool nPackets::Received::LogoutStatus::execute(pClient client)
 {
        	if (length != 2) return false;
-	cPacketSendLogoutStatus pk();
+	nPackets::Sent::LogoutStatus pk();
         client->sendPacket(&pk);
         return true;
 }
@@ -2765,7 +2765,7 @@ bool cPacketReceiveLogoutStatus::execute(pClient client)
 \note packet 0xd4
 */
 
-bool cPacketReceiveNewBookHeader::execute(pClient client)
+bool nPackets::Received::NewBookHeader::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
@@ -2797,7 +2797,7 @@ bool cPacketReceiveNewBookHeader::execute(pClient client)
 \note packet 0xd7
 */
 
-bool cPacketReceiveFightBookSelection::execute(pClient client)
+bool nPackets::Received::FightBookSelection::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;

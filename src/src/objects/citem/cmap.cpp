@@ -78,7 +78,7 @@ bool cMap::toggleWritable()		//!< Toggle pin addability and replies to client ac
 {
 	if (!isTreasureMap()) writeable = !writeable;
         else writeable = false;
-      	cPacketSendMapPlotCourse pk(this, WriteableStatus, writeable, iter->x, iter->y);
+      	nPackets::Sent::MapPlotCourse pk(this, WriteableStatus, writeable, iter->x, iter->y);
 	client->sendPacket(&pk);
         return true;
 }

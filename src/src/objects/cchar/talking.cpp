@@ -88,7 +88,7 @@ void cChar::talk(pClient client, char *txt, bool antispam)
 			saycolor=0x005B;
 		}
 		//!\todo redo adding to cpeech all the data and verifying
-		cPacketSendSpeech pk(cSpeech(txt));
+		nPackets::Sent::Speech pk(cSpeech(txt));
 		getClient()->sendPacket(&pk);
 
 		SendSpeechMessagePkt(s, getSerial(), getId(), 0, saycolor, fonttype, name, txt);
@@ -129,7 +129,7 @@ void cChar::emote( pClient client, char *txt, bool antispam, ... )
 	strcpy((char *)name, getCurrentName().c_str());
 
 	//!\todo redo adding to cpeech all the data and verifying
-	cPacketSendSpeech pk(cSpeech(msg));
+	nPackets::Sent::Speech pk(cSpeech(msg));
 	getClient()->sendPacket(&pk);
 
 	SendSpeechMessagePkt(socket, getSerial(), getId(), 2, emotecolor, fonttype, name, msg);
@@ -208,7 +208,7 @@ void cChar::talkRunic(pClient client, char *txt, bool antispam)
 		strcpy((char *)name, getCurrentName().c_str());
 
                 //!\todo redo adding to cpeech all the data and verifying
-		cPacketSendSpeech pk(cSpeech(txt));
+		nPackets::Sent::Speech pk(cSpeech(txt));
 		getClient()->sendPacket(&pk);
 
 		SendSpeechMessagePkt(s, getSerial(), getId(), 0, 0x0001, 0x0008, name, txt);

@@ -315,7 +315,7 @@ void cChar::updateSkill(uint16_t skill)
 	if ( ! client )
 		return;
 
-	cPacketSendUpdateSkill pk(this, skill);
+	nPackets::Sent::UpdateSkill pk(this, skill);
 
 	client->sendPackage(&pk);
 }

@@ -752,7 +752,7 @@ void cItem::Delete()
 	if( isSpawner() || spawnserial!=INVALID )
 		Spawns->removeSpawnDinamic( this );
 
-	cPacketSendDeleteObj pk(serial);
+	nPackets::Sent::DeleteObj pk(serial);
 
 	NxwSocketWrapper sw;
 	sw.fillOnline( this );

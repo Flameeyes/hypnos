@@ -501,15 +501,15 @@ void cItem::doubleClicked(pClient client)
                 //! \todo map writing code
 		return;
 	case ITYPE_MAP:
-                cPacketSendOpenMapGump pk((pMap)this);
+                nPackets::Sent::OpenMapGump pk((pMap)this);
 		client->sendPacket(&pk);
-                cPacketSendMapPlotCourse pk2((pMap)this, ClearAllPins); //Sending clear all pins command
+                nPackets::Sent::MapPlotCourse pk2((pMap)this, ClearAllPins); //Sending clear all pins command
 		client->sendPacket(&pk2);
 
                 std::vector<pindataobject>::iterator iter = ((pMap)this)->pinData.begin()
                 for(int i = 1;i <= ((pMap)this)->getPinsNumber(); i++)
                 {
-                	cPacketSendMapPlotCourse pki((pMap)this, AddPin, 0, ((pMap)this)->getX(i), ((pMap)this)->getY(i));
+                	nPackets::Sent::MapPlotCourse pki((pMap)this, AddPin, 0, ((pMap)this)->getX(i), ((pMap)this)->getY(i));
 			client->sendPacket(&pki);
                 }
 
@@ -758,9 +758,9 @@ void cItem::doubleClicked(pClient client)
 
 	case ITYPE_DECIPHERED_MAP:
 
-                	cPacketSendOpenMapGump pk((pMap)this);
+                	nPackets::Sent::OpenMapGump pk((pMap)this);
 			client->sendPacket(&pk);
-	                cPacketSendMapPlotCourse pk2((pMap)this, ClearAllPins); //Sending clear all pins command
+	                nPackets::Sent::MapPlotCourse pk2((pMap)this, ClearAllPins); //Sending clear all pins command
 			client->sendPacket(&pk2);
         
 			// Generate message to add a map point
@@ -773,7 +773,7 @@ void cItem::doubleClicked(pClient client)
 			posx = (256 * (morex - tlx)) / (lrx - tlx);		// Generate location for point
 			posy = (256 * (morey - tly)) / (lry - tly);
                         
-                        cPacketSendMapPlotCourse pk3((pMap)this, AddPin,0,posx, posy);//Sending add pin command
+                        nPackets::Sent::MapPlotCourse pk3((pMap)this, AddPin,0,posx, posy);//Sending add pin command
 			client->sendPacket(&pk3);
 			return;
 		default:

@@ -527,7 +527,7 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 				pClient i=sw.getSocket();
 
 				//!\todo redo adding to cpeech all the data and verifying
-				cPacketSendSpeech pk(cSpeech(buffer+8));
+				nPackets::Sent::Speech pk(cSpeech(buffer+8));
 				sw->sendPacket(&pk);
 
 				//SendSpeechMessagePkt(i, id, model, 1, color, font, name, (char*)&buffer[s][8]);
@@ -766,7 +766,7 @@ void movingeffect3(SERIAL source, unsigned short x, unsigned short y, signed cha
 \brief Item effects
 \param pos Location where to send the effect
 \param eff ID of the effect
-\todo Replace with a cPacketSend class, maybe move it in a better place
+\todo Replace with a nPackets::Sent:: class, maybe move it in a better place
 */
 void staticeffect3(Location pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode)
 {
@@ -966,7 +966,7 @@ void impowncreate(pClient client, pChar pc, int z) //socket, player to send
 	if( !pc->npc && !pc->IsOnline()  && !pc_currchar->IsGM() )
 	{
 		sendit=false;
-		cPacketSendDeleteObj pk(pc);
+		nPackets::Sent::DeleteObj pk(pc);
 		client->sendPacket(&pk);
 	}
 	// hidden chars can only be seen "grey" by themselves or by gm's

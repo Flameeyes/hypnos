@@ -177,7 +177,7 @@ void cChar::mountHorse( pNPC mount )
 		pClient si=sw.getClient();
 		if( !si ) continue;
 			
-		cPacketSendDeleteObj pk(mount);
+		nPackets::Sent::DeleteObj pk(mount);
 		si->sendPacket(&pk);
 	}
 

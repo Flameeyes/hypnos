@@ -31,7 +31,7 @@ void cMsgBoardMessage::Delete()
 
 All in this comment range is done by cItem::Delete() at the bottom of this method...
 
-	cPacketSendDeleteObject pk(serial);
+	nPackets::Sent::DeleteObject pk(serial);
 
         //! \todo replace this when sets redone
 
@@ -353,13 +353,13 @@ requesting a list of messages posted on the board.
 void cMsgBoard::openBoard(pClient client)
 {
 	// Send Message Board open to client...
-	cPacketSendBBoardCommand pk(this, DisplayBBoard);
+	nPackets::Sent::BBoardCommand pk(this, DisplayBBoard);
 	client->sendPacket(&pk);
         // .. and immediately thereafter the "items" it contains (the serials of messages connected to that board)
         // but only if it has at least 1 message inside
       	if (BBRelations.find(getSerial()) != BBRelations.end())
 	{
-        	cPacketSendMsgBoardItemsinContainer pk2 (this);
+        	nPackets::Sent::MsgBoardItemsinContainer pk2 (this);
        		client->sendPacket(&pk2);
         }
 }
@@ -372,7 +372,7 @@ and this function is then called to send them
 */
 void cMsgBoard::sendMessageSummary( pClient client, pMsgBoardMessage message)
 {
-	cPacketSendBBoardCommand pk(this, SendMessageSummary, message);
+	nPackets::Sent::BBoardCommand pk(this, SendMessageSummary, message);
 	client->sendPacket(&pk);
 }
 
