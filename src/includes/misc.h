@@ -37,4 +37,6 @@ int RandomNum(int nLowNum, int nHighNum);
 bool isWaterTile(sPoint pt);
 bool isMovable(pChar pc, pItem pi);
 
+void StoreItemRandomValue(pItem pi,int tmpreg);
+
 #endif

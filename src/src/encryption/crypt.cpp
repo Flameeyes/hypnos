@@ -42,7 +42,7 @@
 #include "encryption/crypt.h"
 
 #include "encryption/common.h"
-#include "console.h"
+#include "archs/console.h"
 
 //////////////////////////////////////////////////////////////////////
 

@@ -16,16 +16,8 @@
 #include "typedefs.h"
 #include "libhypnos/muls/mulfiles.h"
 
-void StartClasses();
-void SetGlobalVars();
-void BuildPointerArray();
-void DeleteClasses();
-void StoreItemRandomValue(pItem pi,int tmpreg);
-void loadmetagm();
-
-// Profiling
-void StartMilliTimer(unsigned long &Seconds, unsigned long &Milliseconds);
-unsigned long CheckMilliTimer(unsigned long &Seconds, unsigned long &Milliseconds);
+void loadServer();
+void shutdownServer();
 
 extern nMULFiles::fTiledataLand *tiledataLand;
 extern nMULFiles::fTiledataStatic *tiledataStatic;

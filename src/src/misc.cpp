@@ -919,3 +919,34 @@ bool isMovable(pChar pc, pItem pi)
 		(pc->canAllMove() && ( pi->magic == 2 || ( tiledataStatic->getWeight(getId()) && (pi->magic != 1) ) ) )||
 		(pi->getOwner() == pc && ( pi->magic == 3 || pi->magic == 4 ));
 }
+
+void StoreItemRandomValue(pItem pi,int tmpreg)
+{ // Function Created by Magius(CHE) for trade System
+
+	int max=0,min=0;
+
+	if ( ! pi ) return;
+
+	if (pi->good<0) return;
+
+	if (tmpreg<0)
+	{
+		pItem pio=pi->getOutMostCont();
+		if (pio->isInWorld())
+			tmpreg=calcRegionFromXY( pio->getPosition() );
+		else
+		{
+			pChar pc=cSerializable::findCharBySerial(pio->getContSerial());
+			if (!pc) return;
+			tmpreg=calcRegionFromXY( pc->getPosition() );
+		}
+	}
+
+	if (tmpreg<0 || tmpreg>255 || pi->good<0 || pi->good>255) return;
+
+	min=region[tmpreg].goodrnd1[pi->good];
+	max=region[tmpreg].goodrnd2[pi->good];
+
+	if (max!=0 || min!=0)
+		pi->rndvaluerate=(int) RandomNum(min,max);
+}
