@@ -14,8 +14,9 @@ AM_PROG_LIBTOOL
 
 AM_DL()
 AM_PATH_WEFTS()
-AM_BINRELOC()
 AC_ICC_COMPILER()
+AC_WINENV()
+AC_HYPNOSRELOC()
 
 if test "$is_icc" == "yes"; then
 	# Disable warnings in specific way for Intel C++ Compiler
@@ -32,12 +33,6 @@ AC_EXEEXT
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([fcntl.h limits.h memory.h signal.h stdint.h stdlib.h sys/time.h sys/timeb.h sys/mman.h sys/utsname.h unistd.h netinet/in.h sstream iosfwd iostream ostream])
-
-AC_EGREP_CPP(yes,
-[#ifdef WIN32
-  yes
-#endif
-], is_win=yes, is_win=no)
 
 # Check for windows headers only under windows
 # And check for fork() or ntoh/hton functions only if not under windows
@@ -72,10 +67,6 @@ if test "$is_win" == "yes"; then
 else
 	AC_FUNC_FORK
 	AC_CHECK_FUNCS([ntohl ntohs htonl htons])
-	
-	# define FHS-compliant directories only if not under windows :)
-	
-	DEFDIRS="-DDATADIR=\"$datadir\" "
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.

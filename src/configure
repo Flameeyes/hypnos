@@ -19728,6 +19728,102 @@ rm -f conftest.err conftest.$ac_objext \
 
 
 
+	echo "$as_me:$LINENO: checking for Intel C++ Compiler" >&5
+echo $ECHO_N "checking for Intel C++ Compiler... $ECHO_C" >&6
+if test "${is_icc+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+		cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#ifdef __ICC
+		yes
+		#endif
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "yes" >/dev/null 2>&1; then
+  is_icc=yes
+else
+  is_icc=no
+fi
+rm -f conftest*
+
+
+fi
+echo "$as_me:$LINENO: result: $is_icc" >&5
+echo "${ECHO_T}$is_icc" >&6
+
+
+	echo "$as_me:$LINENO: checking for Windows environment" >&5
+echo $ECHO_N "checking for Windows environment... $ECHO_C" >&6
+if test "${is_win+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+		cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#ifdef WIN32
+		yes
+		#endif
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "yes" >/dev/null 2>&1; then
+  is_win=yes
+else
+  is_win=no
+fi
+rm -f conftest*
+
+
+fi
+echo "$as_me:$LINENO: result: $is_win" >&5
+echo "${ECHO_T}$is_win" >&6
+
+
+
+	echo "$as_me:$LINENO: checking for Windows environment" >&5
+echo $ECHO_N "checking for Windows environment... $ECHO_C" >&6
+if test "${is_win+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+		cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#ifdef WIN32
+		yes
+		#endif
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "yes" >/dev/null 2>&1; then
+  is_win=yes
+else
+  is_win=no
+fi
+rm -f conftest*
+
+
+fi
+echo "$as_me:$LINENO: result: $is_win" >&5
+echo "${ECHO_T}$is_win" >&6
+
+
+	if test "$is_win" == "no"; then
+
 	# Check whether --enable-binreloc or --disable-binreloc was given.
 if test "${enable_binreloc+set}" = set; then
   enableval="$enable_binreloc"
@@ -19927,34 +20023,9 @@ _ACEOF
 
 
 
-	echo "$as_me:$LINENO: checking for Intel C++ Compiler" >&5
-echo $ECHO_N "checking for Intel C++ Compiler... $ECHO_C" >&6
-	cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#ifdef __ICC
-	  yes
-	#endif
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "yes" >/dev/null 2>&1; then
-  is_icc=yes
-else
-  is_icc=no
-fi
-rm -f conftest*
-
-
-	if test "$is_icc" = "yes"; then
-		echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-	else
-		echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
+		if test "x$br_cv_binreloc" != "xyes"; then
+			DEFDIRS="-DDATADIR=\"$datadir\" "
+		fi
 	fi
 
 
@@ -20301,26 +20372,6 @@ _ACEOF
 fi
 
 done
-
-
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#ifdef WIN32
-  yes
-#endif
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "yes" >/dev/null 2>&1; then
-  is_win=yes
-else
-  is_win=no
-fi
-rm -f conftest*
 
 
 # Check for windows headers only under windows
@@ -21134,10 +21185,6 @@ _ACEOF
 fi
 done
 
-
-	# define FHS-compliant directories only if not under windows :)
-
-	DEFDIRS="-DDATADIR=\"$datadir\" "
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.

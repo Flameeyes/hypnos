@@ -8,16 +8,11 @@
 
 AC_DEFUN(AC_ICC_COMPILER,
 [
-	AC_MSG_CHECKING([for Intel C++ Compiler])
-	AC_EGREP_CPP(yes,
-	[#ifdef __ICC
-	  yes
-	#endif
-	], is_icc=yes, is_icc=no)
-	
-	if test "$is_icc" = "yes"; then
-		AC_MSG_RESULT(yes)
-	else
-		AC_MSG_RESULT(no)
-	fi
+	AC_CACHE_CHECK([for Intel C++ Compiler], [is_icc], [
+		AC_EGREP_CPP(yes,
+		[#ifdef __ICC
+		yes
+		#endif
+		], is_icc=yes, is_icc=no)
+	])
 ])

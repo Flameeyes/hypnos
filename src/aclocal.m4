@@ -7040,6 +7040,59 @@ AC_ARG_ENABLE(weftstest, [  --disable-weftstest       Do not try to compile and 
 
 ])
 
+# Configure check for Intel C++ Compiler
+# Copyright (c) Diego Pettenò <flameeyes@users.berlios.de>
+#
+#
+# This check is needed to allow warnings activation and deletion.
+# After calling that function, you'll have a $is_icc variable which is 'yes'
+# if the compiler is the Intel C++ Compiler.
+
+AC_DEFUN(AC_ICC_COMPILER,
+[
+	AC_CACHE_CHECK([for Intel C++ Compiler], [is_icc], [
+		AC_EGREP_CPP(yes,
+		[#ifdef __ICC
+		yes
+		#endif
+		], is_icc=yes, is_icc=no)
+	])
+])
+
+# Commodity file with check for Windows environment
+# This function is called whenever we need to check for Windows
+# caching the result.
+
+AC_DEFUN([AC_WINENV], 
+[
+	AC_CACHE_CHECK([for Windows environment], [is_win], [
+		AC_EGREP_CPP(yes,
+		[#ifdef WIN32
+		yes
+		#endif
+		], is_win=yes, is_win=no)
+	])
+])
+# Wrapper to binreloc function.
+# This function is a wrapper to the binreloc.m4 file which defines
+# the official function to check for binreloc.
+# This function, other than calling AM_BINRELOC() function, also
+# cheks for dir passed to the configure script when binreloc isn't
+# applicable (and we are in an unix environment).
+
+AC_DEFUN([AC_HYPNOSRELOC],
+[
+	AC_WINENV()
+
+	if test "$is_win" == "no"; then
+		AM_BINRELOC()
+		
+		if test "x$br_cv_binreloc" != "xyes"; then
+			DEFDIRS="-DDATADIR=\"$datadir\" "
+		fi
+	fi
+])
+
 # Check for binary relocation support
 # Hongli Lai
 # http://autopackage.org/
@@ -7116,29 +7169,5 @@ AC_DEFUN([AM_BINRELOC],
 	fi
 	AC_SUBST(BINRELOC_CFLAGS)
 	AC_SUBST(BINRELOC_LIBS)
-])
-
-# Configure check for Intel C++ Compiler
-# Copyright (c) Diego Pettenò <flameeyes@users.berlios.de>
-#
-#
-# This check is needed to allow warnings activation and deletion.
-# After calling that function, you'll have a $is_icc variable which is 'yes'
-# if the compiler is the Intel C++ Compiler.
-
-AC_DEFUN(AC_ICC_COMPILER,
-[
-	AC_MSG_CHECKING([for Intel C++ Compiler])
-	AC_EGREP_CPP(yes,
-	[#ifdef __ICC
-	  yes
-	#endif
-	], is_icc=yes, is_icc=no)
-	
-	if test "$is_icc" = "yes"; then
-		AC_MSG_RESULT(yes)
-	else
-		AC_MSG_RESULT(no)
-	fi
 ])
 
