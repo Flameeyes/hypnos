@@ -544,54 +544,6 @@ NATIVE(_CountColoredItems)
 }
 
 /*
-\brief make the character invulnerable
-\author Xanathar
-\since 0.54
-\param 1: the character
-\return 0 or INVALID if not valid character
-*/
-NATIVE(_makeInvulnerable)
-{
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
-    VALIDATEPCR(pc, INVALID);
-    pc->MakeInvulnerable();
-    return 0;
-}
-
-/*
-\brief make the character vulnerable
-\author Xanathar
-\since 0.10
-\param 1: the character
-\return 0 or INVALID if not valid character
-*/
-NATIVE(_makeVulnerable)
-{
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
-    VALIDATEPCR(pc, INVALID);
-    pc->MakeVulnerable(); return 0;
-}
-
-/*
-\brief teleport char to given position
-\author Xanathar
-\since 0.10
-\param 1: the character
-\param 2: x location
-\param 3: y location
-\param 4: z location
-\return 0 or INVALID if not valid character
-*/
-NATIVE(_moveTo)
-{
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
-    VALIDATEPCR(pc, INVALID);
-    pc->MoveTo( params[2],params[3],params[4] );
-	pc->teleport();
-	return 0;
-}
-
-/*
 \brief set the given character criminal
 \author Xanathar
 \since 0.10

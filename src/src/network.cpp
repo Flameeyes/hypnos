@@ -168,10 +168,6 @@ static unsigned int bit_table[257][2] =
 
 //unsigned long __stdcall ConnectionThread( void *Arg );
 
-void charGetPopUpHelp(char *str, P_CHAR pc);
-void itemGetPopUpHelp(char *str, P_ITEM pi);
-
-
 #ifdef USE_MTHREAD_SEND
 static NetThread* g_NT[MAXCLIENT];
 #endif
@@ -2240,9 +2236,9 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						else
 						{
 							if (ISVALIDPC(pc))
-								charGetPopUpHelp((char *)packet, pc);
+								pc->getPopUpHelp((char *)packet);
 							if (ISVALIDPI(pi))
-								itemGetPopUpHelp((char *)packet, pi);
+								pi->getPopUpHelp((char *)packet);
 						}
 
 						if ( !ISVALIDPC(pc) && !ISVALIDPI(pi))

@@ -12,11 +12,12 @@
 #ifndef __ITEMS_H
 #define __ITEMS_H
 
-#include "amx/amxcback.h"
 #include "object.h"
 #include "magic.h"
 #include "item.h"
 #include "globals.h"
+
+#include "itemid.h"
 
 //! Item class
 class cItem : public cObject
@@ -66,6 +67,35 @@ public:
 		ALLITEMEVENTS
 	};
 
+//@{
+/*!
+\name Weapon Types
+*/
+	static const UI16 weaponInvalid = 0x0000; //!< Not a weapon
+	static const UI16 weaponSword1H = 0x0001; //!< Sword 1 hand
+	static const UI16 weaponSword2H = 0x0002; //!< Sword 2 hands
+	static const UI16 weaponAxe1H	= 0x0004; //!< Axe 1 hand
+	static const UI16 weaponAxe2H	= 0x0008; //!< Axe 2 hands
+	static const UI16 weaponMace1H	= 0x0010; //!< Mace 1 hand
+	static const UI16 weaponMace2H	= 0x0020; //!< Mace 2 hands
+	static const UI16 weaponFenc1H	= 0x0040; //!< Fencing 1 hand
+	static const UI16 weaponFenc2H	= 0x0080; //!< Fencing 2 hands
+	static const UI16 weaponStave1H = 0x0100; //!< Staff 1 hand
+	static const UI16 weaponStave2H = 0x0200; //!< Staff 2 hands
+	static const UI16 weaponBow	= 0x0400; //!< Bow
+	static const UI16 weaponXBow	= 0x1000; //!< Crossbow
+	static const UI16 weaponHXBow	= 0x2000; //!< Heavy Crossbow
+
+	static void loadWeaponsInfo();
+	static const bool isWeaponLike(UI16 id, UI16 type);
+
+protected:
+	typedef std::map<UI16,UI16> WeaponMap;
+	//! Map with types of weapons
+	static WeaponMap weaponinfo;
+
+//@}
+
 protected:
 	UI32		flags; //!< Item flags
 
@@ -81,6 +111,7 @@ protected:
 	void		Refresh();
 	SI32		getName(char* itemname);
 	const char*	getRealItemName();
+	void		getPopupHelp(char *str);
 //@}
 
 //@{
@@ -232,7 +263,7 @@ public:
 	inline const bool isShield() const
 	{
 		return ((getId()>=0x1B72 && getId()<=0x1B7B) ||
-			IsChaosOrOrderShield());
+			isChaosOrOrderShield());
 	}
 
 	inline const bool isLog() const
@@ -245,7 +276,7 @@ public:
 	{ return ( getId()>=0x1BD7 && getId()<=0x1BDC ); }
 
 	inline const bool isFeather() const
-	{ return isBoard(getId()); }
+	{ return isFeather(getId()); }
 
 	inline const bool isCutLeather() const
 	{
@@ -265,7 +296,7 @@ public:
 	inline const bool isCloth() const
 	{
 		return ((getId()>=0x175D && getId()<=0x1765)
-			|| IsCutCloth() );
+			|| isCutCloth() );
 	}
 
 	inline const bool isChest() const

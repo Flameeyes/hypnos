@@ -17,10 +17,10 @@ WARNCC		= -Wall -Wno-switch
 WARNCXX		= -Wall -Wno-reorder -Wno-switch
 CFLAGS		= -pipe -D_REENTRANT -g $(WARNCC)
 CXXFLAGS	= -funsigned-char -pipe -D_REENTRANT -g $(WARNCXX)
-INCPATH =	-I ./
+INCPATH =	-I ./ -I python/ -I /usr/include/python2.3
 LINK		= g++
 LFLAGS		= -lc -lstdc++
-LIBS		= $(SUBLIBS) -lpthread
+LIBS		= $(SUBLIBS) -lpthread `python-config`
 MOC		= $(QTDIR)/bin/moc
 UIC		= $(QTDIR)/bin/uic
 

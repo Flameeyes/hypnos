@@ -129,11 +129,11 @@ class cChar : public cObject
 	private:
 		cNxwClientObj* m_client;
 	public:
-		static void		archive();
-		static void		safeoldsave();
-	public:
-		void			MoveTo(Location newloc);
-		void 			loadEventFromScript(TEXT *script1, TEXT *script2);
+		static void	archive();
+		static void	safeoldsave();
+		void		getPopupHelp(char *str)
+		void		MoveTo(Location newloc);
+		void 		loadEventFromScript(TEXT *script1, TEXT *script2);
 
 		inline void		MoveTo(SI32 x, SI32 y, SI08 z)
 		{ MoveTo( Loc(x, y, z) ); }

@@ -232,3 +232,54 @@ PYNATIVE(chr_isInvulnerable)
 	VALIDATEPCR( pc, Py_BuildValue("i", 0) );
 	return Py_BuildValue("i", pc->IsInvul());
 }
+
+//! check make the character invulnerable
+PYNATIVE(chr_makeInvulnerable)
+{
+	SI32 serial;
+	if ( !PyArg_ParseTuple(args, "i", &serial) )
+		return NULL;
+
+	P_CHAR pc = pointers::findCharBySerial(serial);
+	VALIDATEPCR( pc, Py_BuildValue("i", 0) );
+	pc->MakeInvulnerable();
+	return Py_BuildValue("i", 0);
+}
+
+//! check make the character vulnerable
+PYNATIVE(chr_makeVulnerable)
+{
+	SI32 serial;
+	if ( !PyArg_ParseTuple(args, "i", &serial) )
+		return NULL;
+
+	P_CHAR pc = pointers::findCharBySerial(serial);
+	VALIDATEPCR( pc, Py_BuildValue("i", 0) );
+	pc->MakeVulnerable();
+	return Py_BuildValue("i", 0);
+}
+
+/*
+\brief teleport char to given position
+\param 1: the character
+\param 2: x location
+\param 3: y location
+\param 4: z location
+\return 0 or INVALID if not valid character
+*/
+PYNATIVE(chr_moveTo)
+{
+	SI32 serial;
+	UI16 x, y;
+	SI08 z;
+
+	if ( !PyArg_ParseTuple(args, "iHHb", &serial, &x, &y, &z) )
+		return NULL;
+
+	P_CHAR pc = pointers::findCharBySerial(serial);
+	VALIDATEPCR( pc, Py_BuildValue("i", 0) );
+
+	pc->MoveTo(x,y,z);
+	pc->teleport();
+	return Py_BuildValue("i", 0);
+}

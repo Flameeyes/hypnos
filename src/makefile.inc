@@ -1,29 +1,3 @@
-AMXSRCS =	\
-		amx/amx.c \
-		amx/amxcback.cpp \
-		amx/amxcons.c \
-		amx/amxcore.c \
-		amx/amxfile.cpp \
-		amx/amxscript.cpp \
-		amx/amxvarserver.cpp \
-		amx/amxwrap2.cpp \
-		amx/amxwraps.cpp \
-		amx/amx_comp.c \
-		amx/amx_dbg.c
-
-AMXOBJS =	\
-		amx/amx.o \
-		amx/amxcback.o \
-		amx/amxcons.o \
-		amx/amxcore.o \
-		amx/amxfile.o \
-		amx/amxscript.o \
-		amx/amxvarserver.o \
-		amx/amxwrap2.o \
-		amx/amxwraps.o \
-		amx/amx_comp.o \
-		amx/amx_dbg.o
-
 SOURCES =	\
 		accounts.cpp \
 		addmenu.cpp \
@@ -51,7 +25,6 @@ SOURCES =	\
 		extractionskills.cpp \
 		encryption.cpp \
 		fishing.cpp \
-		amx/float.cpp \
 		gamedate.cpp \
 		globals.cpp \
 		guild.cpp \
@@ -70,7 +43,7 @@ SOURCES =	\
 		msgboard.cpp \
 		network.cpp \
 		newbie.cpp \
-		nox-wizard.cpp \
+		pyuo.cpp \
 		npcai.cpp \
 		npcs.cpp \
 		ntservice.cpp \
@@ -121,21 +94,13 @@ SOURCES =	\
 		walking.cpp \
 		weight.cpp \
 		worldmain.cpp \
-		abstraction/endian.cpp
+		abstraction/endian.cpp \
+		python/methods.cpp
 
 OBJECTS := $(SOURCES:.cpp=.o)
-SOURCES += $(AMXSRCS)
-OBJECTS += $(AMXOBJS)
 
 HEADERS =	\
 		accounts.h \
-		amx/amx.h \
-		amx/amxcback.h \
-		amx/amxscript.h \
-		amx/mxvarserver.h \
-		amx/amxwraps.h \
-		amx/amx_api.h \
-		amx/amx_comp.h \
 		ai.h \
 		archive.h \
 		area.h \

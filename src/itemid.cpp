@@ -20,58 +20,9 @@
 #include "inlines.h"
 #include "scripts.h"
 
-WEAPONINFOMAP weaponinfo;
 
 
-void loadweaponsinfo()
-{
-
-    cScpIterator* iter = NULL;
-    char script1[1024];
-    char script2[1024];
-	UI16 id=0xFFFF;
-	int type=SWORD1H;
-
-	int loopexit=0;
-	do
-	{
-		safedelete(iter);
-		iter = Scripts::WeaponInfo->getNewIterator("SECTION WEAPONTYPE %i", type );
-		if( iter==NULL ) continue;
-
-		do
-		{
-			iter->parseLine(script1, script2);
-			if ((script1[0]!='}')&&(script1[0]!='{'))
-			{
-				if (!strcmp("ID", script1)) {
-					id = str2num(script2);
-					weaponinfo[id]=static_cast<WEAPONTYPE>(type);
-				}
-			}
-
-		}
-        while ( (script1[0]!='}') && (++loopexit < MAXLOOPS) );
-
-		type++;
-    }
-	while ( (strcmp("EOF", script1)) && (++loopexit < MAXLOOPS) );
-
-    safedelete(iter);
-
-}
-
-bool isWeaponLike( UI16 id, WEAPONTYPE type1, WEAPONTYPE type2, WEAPONTYPE type3 )
-{
-	WEAPONINFOMAP::iterator iter( weaponinfo.find( id ) );
-	if( iter==weaponinfo.end() )
-		return false;
-	else {
-		return ( iter->second == type1 ) || ( iter->second==type2 ) || ( iter->second==type3 );
-	}
-}
-
-void itemGetPopUpHelp(char *str, P_ITEM pi)
+void itemGetPopUpHelp(char *str)
 {
 //	int id = (pi->id1<<8)+pi->id2;
 	int type = pi->type;
@@ -95,23 +46,3 @@ void itemGetPopUpHelp(char *str, P_ITEM pi)
 		sprintf(str, TRANSLATE("This is a potion! You can drink that when you need its effects... but beware of poison potions!"));
 }
 
-void charGetPopUpHelp(char *str, P_CHAR pc)
-{
-	if (!pc->npc) {
-		sprintf(str, TRANSLATE("He/She is a player like you. You've met new people!!"));
-
-		if (pc->IsCounselor()) {
-			sprintf(str, TRANSLATE("He/She is a Counselor. You can ask him if you need help on the game"));
-		}
-
-		if (pc->IsGM()) {
-			sprintf(str, TRANSLATE("He/She is a Game Master. You can ask his help if you're stuck or have bugs or other problems"));
-		}
-	}
-	else {
-		if (pc->npcaitype==NPCAI_PLAYERVENDOR)
-			sprintf(str, TRANSLATE("He/She is a vendor which sells items owned by a player. Good shopping!"));
-		else if (pc->npcaitype==NPCAI_EVIL)
-			sprintf(str, TRANSLATE("Run AWAY!!! It will kill you!!"));
-	}
-}

@@ -66,6 +66,58 @@ static const bool cItem::isHouse(UI16 id)
 	return false;
 }
 
+/*!
+\todo rewrite it, this will not work!
+*/
+static void cItem::loadWeaponsInfo()
+{
+	cScpIterator* iter = NULL;
+	char script1[1024];
+	char script2[1024];
+	UI16 id=0xFFFF;
+	UI16 type=weaponSword1H;
+
+	int loopexit=0;
+	do
+	{
+		safedelete(iter);
+		iter = Scripts::WeaponInfo->getNewIterator("SECTION WEAPONTYPE %i", type );
+		if( iter==NULL ) continue;
+
+		do
+		{
+			iter->parseLine(script1, script2);
+			if ((script1[0]!='}')&&(script1[0]!='{'))
+			{
+				if (!strcmp("ID", script1)) {
+					id = str2num(script2);
+					weaponinfo[id]=type;
+				}
+			}
+
+		}
+		while ( (script1[0]!='}') && (++loopexit < MAXLOOPS) );
+
+		type++;
+	}
+	while ( (strcmp("EOF", script1)) && (++loopexit < MAXLOOPS) );
+
+	safedelete(iter);
+}
+
+/*!
+\brief Say if an ID is a weapon of the specified type
+\param id id of the weapon
+\param type mask of weapon types to tests
+*/
+static const bool cItem::isWeaponLike( UI16 id, UI16 type )
+{
+	WeaponMap::iterator iter( weaponinfo.find( id ) );
+	if( iter==weaponinfo.end() )
+		return false;
+	else
+		return ( iter->second & type );
+}
 
 /*!
 \author Luxor
@@ -282,6 +334,28 @@ void setserial(int nChild, int nParent, int nType)
 cItem::~cItem()
 {
 
+}
+
+void cItem::getPopupHelp(char *str)
+{
+	if (isInstrument())
+		sprintf(str, TRANSLATE("This item is a musical instrument. You can use it for bardic skills like enticement or provocation"));
+	else if (type == ITYPE_DOOR)
+		sprintf(str, TRANSLATE("This a door. To open or close it, double click on it."));
+	else if (type == ITYPE_LOCKED_DOOR)
+		sprintf(str, TRANSLATE("This a locked door. To open or close it, click on the proper key and target it."));
+	else if (type == ITYPE_FOOD)
+		sprintf(str, TRANSLATE("This food you can eat when you're hungry. To eat, double click the food, but beware poisoned food!"));
+	else if (type == ITYPE_RUNE)
+		sprintf(str, TRANSLATE("This is a rune for use with recall, mark and gate travel spells"));
+	else if (type == ITYPE_RESURRECT)
+		sprintf(str, TRANSLATE("If you dye (or are dead) you can double click this item to resurrect!"));
+	else if (type == ITYPE_KEY)
+		sprintf(str, TRANSLATE("This is a key you can use (double click) to open doors"));
+	else if (type == ITYPE_SPELLBOOK)
+		sprintf(str, TRANSLATE("This is the spellbook, where you can write down your own spells for later use"));
+	else if (type == ITYPE_POTION)
+		sprintf(str, TRANSLATE("This is a potion! You can drink that when you need its effects... but beware of poison potions!"));
 }
 
 /*!
