@@ -39,20 +39,20 @@ class Race
 		//
 		//	private static methods
 		//
-		static	void		enlistDialog1( const NXWSOCKET socket );	// Main enlist menu
-		static	void		dialogRaceInfo( const NXWSOCKET socket );		// 	Information about races
-		static	void		dialogNotImplemented( const NXWSOCKET socket );	// 		General race information
-		static	void		dialogPlayerRaceInfo( const NXWSOCKET socket );	//		Player race list
-		static	void		dialogNonPlayerRaceInfo( const NXWSOCKET socket );	//		Non player race list
-		static	void		dialogAnyRaceInfo( const NXWSOCKET socket );	//		Any race list
-		static	void		dialogChoosePlayerRace( const NXWSOCKET socket );	//	Select race
-		static	void		enlistDialog121( const NXWSOCKET socket );	//		Race parameter dialog
+		static	void		enlistDialog1( const pClient client );	// Main enlist menu
+		static	void		dialogRaceInfo( const pClient client );		// 	Information about races
+		static	void		dialogNotImplemented( const pClient client );	// 		General race information
+		static	void		dialogPlayerRaceInfo( const pClient client );	//		Player race list
+		static	void		dialogNonPlayerRaceInfo( const pClient client );	//		Non player race list
+		static	void		dialogAnyRaceInfo( const pClient client );	//		Any race list
+		static	void		dialogChoosePlayerRace( const pClient client );	//	Select race
+		static	void		enlistDialog121( const pClient client );	//		Race parameter dialog
 
-		static	void		showRaceDescription( const NXWSOCKET socket, uint32_t raceId );
-//		static	void		showRaceDescription( const NXWSOCKET socket, const uint32_t raceId, short int gumpId, bool canClose, bool canMove, bool withOk );
-		static	void		showRaceDescription( const NXWSOCKET socket, const uint32_t raceId, uint8_t gumpId, bool canClose, bool canMove, bool withOk );
-//		static	void		showRaceNameList( const NXWSOCKET socket, const RACETYPE raceType, short int gumpId, bool canClose, bool canMove, bool withOk ); // race list pc | npc | both
-		static	void		showRaceNameList( const NXWSOCKET socket, const RACETYPE raceType, uint8_t gumpId, bool canClose, bool canMove, bool withOk ); // race list pc | npc | both
+		static	void		showRaceDescription( const pClient client, uint32_t raceId );
+//		static	void		showRaceDescription( const pClient client, const uint32_t raceId, short int gumpId, bool canClose, bool canMove, bool withOk );
+		static	void		showRaceDescription( const pClient client, const uint32_t raceId, uint8_t gumpId, bool canClose, bool canMove, bool withOk );
+//		static	void		showRaceNameList( const pClient client, const RACETYPE raceType, short int gumpId, bool canClose, bool canMove, bool withOk ); // race list pc | npc | both
+		static	void		showRaceNameList( const pClient client, const RACETYPE raceType, uint8_t gumpId, bool canClose, bool canMove, bool withOk ); // race list pc | npc | both
 
 		static	void		parseGlobalSection( void );
 		static	void		parseRaceSection( void );
@@ -73,7 +73,7 @@ class Race
 		static	void		reload( const char* scriptName );
 		static	void		parse( void );
 
-		static	void		enlist( const NXWSOCKET socket );
+		static	void		enlist( const pClient client );
 		//static	void		resurrect( const pChar pc );
 
 		static	bool		isRaceSystemActive( void );

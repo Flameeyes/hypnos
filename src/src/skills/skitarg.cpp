@@ -1029,11 +1029,10 @@ void target_provocation2(pClient client, pTarget t )
 		sw.fillOnline( Victim1, false );
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			NXWSOCKET i=sw.getSocket();
-			if( i!=INVALID )
-			{
-				itemmessage(i, temp, Victim1->getSerial());
-			}
+			pClient i = sw.getClient();
+			if( !i ) continue;
+			
+			itemmessage(i, temp, Victim1->getSerial());
 		}
 	}
 	else

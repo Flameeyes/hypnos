@@ -39,7 +39,7 @@ bool WalkHandleAllowance(pChar pc, int sequence)
 	VALIDATEPCR(pc,false);
 	if (pc->isStabled() || pc->mounted) return false; // shouldnt be called for stabled pets, just to be on the safe side
 
-	NXWSOCKET  s = pc->getSocket();
+	pClient client = pc->getSocket();
 	if(s!=INVALID)
 	{
 		if ((walksequence[s]+1!=sequence)&&(sequence!=256))
@@ -299,7 +299,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 		pcpos.x= oldx;
 		pcpos.y= oldy;
 		pc->setPosition( pcpos );
-		NXWSOCKET socket = pc->getSocket();
+		pClient client = pc->getSocket();
 		if ( socket != INVALID )
                 {
 			cPacketSendMoveReject(pc, sequence);
@@ -333,7 +333,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 void WalkingHandleRainSnow(pChar pc)
 {
 	if ( ! pc ) return;
-	NXWSOCKET s = pc->getSocket();
+	pClient client = pc->getSocket();
 
 	int i;
 	int wtype = region[pc->region].wtype;
@@ -393,7 +393,7 @@ void walking(pChar pc, int dir, int sequence)
 	int newx, newy;
 	if ( ! pc ) return;
 
-	NXWSOCKET  s = pc->getSocket();
+	pClient client = pc->getSocket();
 
 	if (!WalkHandleAllowance(pc,sequence))		// check sequence, frozen, weight etc.
 		return;

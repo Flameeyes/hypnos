@@ -173,7 +173,7 @@ void Skills::target_mine( NXWCLIENT ps, pTarget t )
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 	
 	pItem weapon = pc->GetItemOnLayer(1);
 	

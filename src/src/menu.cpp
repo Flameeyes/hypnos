@@ -62,7 +62,7 @@ bool cMenus::showMenu( uint32_t menu, pChar pc )
 	return false;	
 }
 
-bool isIconList( NXWSOCKET s )
+bool isIconList( pClient client )
 {
 	return isIconList( buffer[s][0] );
 }

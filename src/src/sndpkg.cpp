@@ -42,7 +42,7 @@ void gmyell(char *txt)
 		NXWCLIENT ps_i=sw.getClient();
 		if(ps_i==NULL) continue;
 		pChar pc=ps_i->currChar();
-		NXWSOCKET s = ps_i->toInt();
+		pClient client = ps_i->toInt();
 		if( pc && pc->IsGM())
 		{
 			SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 1, 0x0040, 0x0003, lang, sysname, unicodetext,  ucl);
@@ -55,7 +55,7 @@ void gmyell(char *txt)
 
 //keep the target highlighted so that we know who we're attacking =)
 //26/10/99//new packet
-void SndAttackOK(NXWSOCKET  s, int serial)
+void SndAttackOK(pClient client, int serial)
 {
 	uint8_t attackok[5]={ 0xAA, 0x00, };
 	LongToCharPtr(serial, attackok +1);
@@ -63,7 +63,7 @@ void SndAttackOK(NXWSOCKET  s, int serial)
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SndDyevat(NXWSOCKET  s, int serial, short id)
+void SndDyevat(pClient client, int serial, short id)
 {
 	uint8_t dyevat[9] ={ 0x95, 0x00, };
 	LongToCharPtr(serial, dyevat +1);
@@ -73,7 +73,7 @@ void SndDyevat(NXWSOCKET  s, int serial, short id)
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SndUpdscroll(NXWSOCKET  s, short txtlen, const char* txt)
+void SndUpdscroll(pClient client, short txtlen, const char* txt)
 {
 	uint8_t updscroll[10]={ 0xA6, };
 
@@ -86,7 +86,7 @@ void SndUpdscroll(NXWSOCKET  s, short txtlen, const char* txt)
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SndShopgumpopen(NXWSOCKET  s, uint32_t serial)	//it's really necessary ? It is used 1 time, perhaps replace it with the scriptable vers. :/
+void SndShopgumpopen(pClient client, uint32_t serial)	//it's really necessary ? It is used 1 time, perhaps replace it with the scriptable vers. :/
 {
 	uint8_t shopgumpopen[7]={ 0x24, 0x00, };
 	LongToCharPtr(serial, shopgumpopen +1);		// ItemID
@@ -206,7 +206,7 @@ void soundeffect3(pItem pi, uint16_t sound)
 	}
 }
 
-void soundeffect4(NXWSOCKET s, pItem pi, uint16_t sound)
+void soundeffect4(pClient client, pItem pi, uint16_t sound)
 {
 	if ( ! pi ) return;
 
@@ -219,7 +219,7 @@ void soundeffect4(NXWSOCKET s, pItem pi, uint16_t sound)
 
 //xan : fast weather function.. maybe we should find a more complete system like the
 //old one below!
-void weather(NXWSOCKET  s, unsigned char bolt)
+void weather(pClient client, unsigned char bolt)
 {
 	uint8_t packet[4] = { 0x65, 0xFF, 0x40, 0x20 };
 
@@ -231,7 +231,7 @@ void weather(NXWSOCKET  s, unsigned char bolt)
 //AoS/	Network->FlushBuffer(s);
 }
 
-void pweather(NXWSOCKET  s)
+void pweather(pClient client)
 {
 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
@@ -254,7 +254,7 @@ void pweather(NXWSOCKET  s)
 
 
 
-void itemmessage(NXWSOCKET  s, char *txt, int serial, short color)
+void itemmessage(pClient client, char *txt, int serial, short color)
 {
 // The message when an item is clicked (new interface, Duke)
 //Modified by N6 to use UNICODE packets
@@ -283,7 +283,7 @@ void itemmessage(NXWSOCKET  s, char *txt, int serial, short color)
 
 }
 
-void backpack2(NXWSOCKET s, uint32_t serial) // Send corpse stuff
+void backpack2(pClient client, uint32_t serial) // Send corpse stuff
 {
 	int count=0, count2;
 	uint8_t display1[7]={ 0x89, 0x00, };
@@ -383,7 +383,7 @@ pos1.z=0;
 	sw.fillOnline( pos1 );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWSOCKET sock=sw.getSocket();
+		pClient sock=sw.getSocket();
 		if( sock!=INVALID )
 		{
 			Xsend(sock, effect, 28);
@@ -433,7 +433,7 @@ void cChar::updateStats(int32_t stat)
 		sw.fillOnline( this, false );
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			NXWSOCKET i=sw.getSocket();
+			pClient i=sw.getSocket();
 			if( i!=INVALID )
 			{
 				Xsend(i, updater, 9);
@@ -441,7 +441,7 @@ void cChar::updateStats(int32_t stat)
 			}
 		}
 	} else {
-		NXWSOCKET s = getSocket();
+		pClient client = getSocket();
 		if (s != INVALID)
 		{
 			Xsend(s, updater, 9);
@@ -450,7 +450,7 @@ void cChar::updateStats(int32_t stat)
 	}
 }
 
-void updates(NXWSOCKET  s) // Update Window
+void updates(pClient client) // Update Window
 {
 	int x, y, j;
 	char temp[512];
@@ -527,7 +527,7 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 			sw.fillOnline();
 			for( sw.rewind(); !sw.isEmpty(); sw++ )
 			{
-				NXWSOCKET i=sw.getSocket();
+				pClient i=sw.getSocket();
 
 				//!\todo redo adding to cpeech all the data and verifying
 				cPacketSendSpeech pk(cSpeech(buffer+8));
@@ -559,7 +559,7 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 			sw.fillOnline();
 			for( sw.rewind(); !sw.isEmpty(); sw++ )
 			{
-				NXWSOCKET i=sw.getSocket();
+				pClient i=sw.getSocket();
 				SendUnicodeSpeechMessagePkt(i, id, model, 1, color, font, lang, name, unicodetext,  ucl);
 			}
 		}
@@ -576,7 +576,7 @@ void itemtalk(pItem pi, char *txt)
 	sw.fillOnline( pi );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWSOCKET s=sw.getSocket();
+		pClient client =sw.getSocket();
 		if(s==INVALID) continue;
 
 		uint8_t unicodetext[512];
@@ -625,7 +625,7 @@ MakeGraphicalEffectPkt_(effect, 0x03, pc->getSerial(), 0, eff, charpos, pos2, sp
 		 sw.fillOnline( pc, false );
 		 for( sw.rewind(); !sw.isEmpty(); sw++ )
 		 {
-			NXWSOCKET s = sw.getSocket();
+			pClient client = sw.getSocket();
 			Xsend(s, effect, 28);
 //AoS/			Network->FlushBuffer(s);
 		 }
@@ -642,7 +642,7 @@ MakeGraphicalEffectPkt_(effect, 0x03, pc->getSerial(), 0, eff, charpos, pos2, sp
 	    sw.fillOnline( pc, false );
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			 NXWSOCKET j=sw.getSocket();
+			 pClient j =sw.getSocket();
 			 if(j==INVALID) continue;
 			 if (clientDimension[j]==2 && !skip_old) // 2D client, send old style'd
 			 {
@@ -698,7 +698,7 @@ void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned ch
 		 sw.fillOnline( pi );
 		 for( sw.rewind(); !sw.isEmpty(); sw++ )
 		 {
-			 NXWSOCKET j=sw.getSocket();
+			 pClient j =sw.getSocket();
 			 if( j!=INVALID )
 			 {
 				Xsend(j, effect, 28);
@@ -714,7 +714,7 @@ void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned ch
 		 sw.fillOnline( pi );
 		 for( sw.rewind(); !sw.isEmpty(); sw++ )
 		 {
-			 NXWSOCKET j=sw.getSocket();
+			 pClient j =sw.getSocket();
 			 if( j!=INVALID )
 			 {
 				if (clientDimension[j]==2 && !skip_old) // 2D client, send old style'd
@@ -755,7 +755,7 @@ void movingeffect3(SERIAL source, unsigned short x, unsigned short y, signed cha
 	 sw.fillOnline( src );
 	 for( sw.rewind(); !sw.isEmpty(); sw++ )
 	 {
-		NXWSOCKET j=sw.getSocket();
+		pClient j =sw.getSocket();
 		if( j!=INVALID )
 		{
 			Xsend(j, effect, 28);
@@ -782,7 +782,7 @@ void staticeffect3(Location pos, uint16_t eff, uint8_t speed, uint8_t loop, uint
 	sw.fillOnline( pos );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWSOCKET j=sw.getSocket();
+		pClient j =sw.getSocket();
 		if( j!=INVALID )
 		{
 			Xsend(j, effect, 28);
@@ -812,7 +812,7 @@ MakeGraphicalEffectPkt_(effect, type, src->getSerial(), dst->getSerial(), eff, s
 	 sw.fillOnline( );
 	 for( sw.rewind(); !sw.isEmpty(); sw++ )
 	 {
-		NXWSOCKET j=sw.getSocket();
+		pClient j =sw.getSocket();
 		if( j!=INVALID )
 		{
 			Xsend(j, effect, 28);
@@ -821,7 +821,7 @@ MakeGraphicalEffectPkt_(effect, type, src->getSerial(), dst->getSerial(), eff, s
 	}
 }
 
-void SendPauseResumePkt(NXWSOCKET s, uint8_t flag)
+void SendPauseResumePkt(pClient client, uint8_t flag)
 {
 /* Flag: 0=pause, 1=resume */ // uhm.... O_o ... or viceversa ? -_-;
 	uint8_t m2[2]={ 0x33, 0x00 };
@@ -832,7 +832,7 @@ void SendPauseResumePkt(NXWSOCKET s, uint8_t flag)
 }
 
 
-void SendDrawObjectPkt(NXWSOCKET s, pChar pc, int z)
+void SendDrawObjectPkt(pClient client, pChar pc, int z)
 {
 	pChar pc_currchar=cSerializable::findCharBySerial(currchar[s]);
 	VALIDATEPC(pc_currchar);
@@ -912,7 +912,7 @@ void SendDrawObjectPkt(NXWSOCKET s, pChar pc, int z)
 }
 
 
-void SendUnicodeSpeechMessagePkt(NXWSOCKET s, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint32_t lang, uint8_t sysname[30], uint8_t *unicodetext, uint16_t unicodelen)
+void SendUnicodeSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint32_t lang, uint8_t sysname[30], uint8_t *unicodetext, uint16_t unicodelen)
 {
 	uint16_t tl;
 	uint8_t talk2[18]={ 0xAE, 0x00, };
@@ -933,7 +933,7 @@ void SendUnicodeSpeechMessagePkt(NXWSOCKET s, uint32_t id, uint16_t model, uint8
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SendPlaySoundEffectPkt(NXWSOCKET s, uint8_t mode, uint16_t sound_model, uint16_t unkn, Location pos, bool useDispZ)
+void SendPlaySoundEffectPkt(pClient client, uint8_t mode, uint16_t sound_model, uint16_t unkn, Location pos, bool useDispZ)
 {
 	uint8_t sfx[12]={ 0x54, 0x00, };
 	int16_t Z;
@@ -950,7 +950,7 @@ void SendPlaySoundEffectPkt(NXWSOCKET s, uint8_t mode, uint16_t sound_model, uin
 //AoS/	Network->FlushBuffer(s);
 }
 
-void impowncreate(NXWSOCKET s, pChar pc, int z) //socket, player to send
+void impowncreate(pClient client, pChar pc, int z) //socket, player to send
 {
         if ( s < 0 || s > now ) // Luxor
 		return;
@@ -1052,7 +1052,7 @@ void sendshopinfo(int s, pChar pc, pItem pi)
 	}
 }
 
-int sellstuff(NXWSOCKET s, pChar pc)
+int sellstuff(pClient client, pChar pc)
 {
 	if (s < 0 || s >= now) return 0; //Luxor
 
@@ -1436,7 +1436,7 @@ void itemeffectUO3D(pItem pi, ParticleFx *sta)
 
 }
 
-void wornitems(NXWSOCKET  s, pChar pc) // Send worn items of player
+void wornitems(pClient client, pChar pc) // Send worn items of player
 {
 	if ( ! pc ) return;
 

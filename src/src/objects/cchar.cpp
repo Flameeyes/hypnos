@@ -517,21 +517,19 @@ void cChar::unHide()
 	sw.fillOnline( this, false );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWSOCKET i = sw.getSocket();
-		NXWCLIENT ps_i = sw.getClient();
-		if( ps_i==NULL ) continue;
+		pClient i = sw.getClient();
+		if( !i ) continue;
 
-		pChar pj=ps_i->currChar();
-		if ( pj )
-		{
-			if (pj != *this) { //to other players : recreate player object
-				cPacketSendDeleteObj pk(this);
-                                client->sendPacket(&pk);
-				impowncreate(i, this, 0);
-			} else {
-                        	cPacketSendDrawGamePlayer pk(this);
-                                ps->sendPacket(&pk);
-			}
+		pChar pj = i->currChar();
+		if ( ! pj ) continue;
+			
+		if (pj != this) { //to other players : recreate player object
+			cPacketSendDeleteObj pk(this);
+			client->sendPacket(&pk);
+			impowncreate(i, this, 0);
+		} else {
+			cPacketSendDrawGamePlayer pk(this);
+			i->sendPacket(&pk);
 		}
 	}
 
@@ -662,7 +660,7 @@ void cChar::applyPoison(PoisonType poisontype, int32_t secs )
 		else
 			poisonwearofftime=getclock()+(MY_CLOCKS_PER_SEC*secs);
 
-		NXWSOCKET s = getSocket();
+		pClient client = getSocket();
 		if (s != -1) impowncreate(s, this, 1); //Lb, sends the green bar !
 		sysmsg("You have been poisoned!");
 		playSFX( 0x0246 ); //poison sound - SpaceDog
@@ -867,7 +865,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 
 	updateFlag();	//AntiChrist - Update highlight color
 
-	NXWSOCKET socket = getSocket();
+	pClient client = getSocket();
 
     //
     // Send the draw player packet
@@ -1236,7 +1234,7 @@ bool const cChar::CanDoGestures() const
 bool cChar::checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise)
 {
 	NXWCLIENT ps = getClient();;
-	NXWSOCKET s=INVALID;
+	pClient client =INVALID;
 
 	if ( sk < 0 || sk > skTrueSkills ) //Luxor
 		return false;
@@ -1638,7 +1636,7 @@ void cChar::possess(pChar pc)
 	if ( ! pc ) return;
 	bool bSwitchBack = false;
 
-	NXWSOCKET socket = getSocket();
+	pClient client = getSocket();
 	if ( socket == INVALID )
 		return;
 
@@ -2256,7 +2254,7 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 {
 	if ( ! showToWho ) return;
 	
-	NXWSOCKET socket = showToWho->getSocket();
+	pClient client = showToWho->getSocket();
 	if (socket < 0 || socket > now) return;
 
 	char temp[TEMP_STR_SIZE];

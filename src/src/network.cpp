@@ -158,7 +158,7 @@ static unsigned int bit_table[257][2] =
 static NetThread* g_NT[MAXCLIENT];
 #endif
 
-NXWCLIENT getClientFromSocket( NXWSOCKET socket )
+NXWCLIENT getClientFromSocket( pClient client )
 {
 	if( socket < 0 )
 		return NULL;
@@ -184,7 +184,7 @@ static void initClients()
 
 #ifdef USE_MTHREAD_SEND
 
-int MTsend( NXWSOCKET socket, char* xoutbuffer, int len, int boh )
+int MTsend( pClient client, char* xoutbuffer, int len, int boh )
 {
     g_NT[ socket ]->enqueue( xoutbuffer, len );
     return 0;
@@ -193,7 +193,7 @@ int MTsend( NXWSOCKET socket, char* xoutbuffer, int len, int boh )
 
 #else
 
-int MTsend( NXWSOCKET socket, char* xoutbuffer, int len, int boh )
+int MTsend( pClient client, char* xoutbuffer, int len, int boh )
 {
 	int sent, loopexit=30;
 	while( --loopexit>0 )
@@ -220,7 +220,7 @@ int MTsend( NXWSOCKET socket, char* xoutbuffer, int len, int boh )
 #endif
 
 
-void cNetwork::DoStreamCode( NXWSOCKET  socket )
+void cNetwork::DoStreamCode( pClient clientocket )
 {
 	int status ;
 /*
@@ -254,7 +254,7 @@ void cNetwork::DoStreamCode( NXWSOCKET  socket )
 }
 
 
-void cNetwork::FlushBuffer( NXWSOCKET socket ) // Sends buffered data at once
+void cNetwork::FlushBuffer( pClient client ) // Sends buffered data at once
 {
 
 	int status ;
@@ -281,7 +281,7 @@ void cNetwork::ClearBuffers() // Sends ALL buffered data
 		FlushBuffer( i );
 }
 
-void cNetwork::xSend( NXWSOCKET socket, const void *point, int length  ) // Buffering send function
+void cNetwork::xSend( pClient client, const void *point, int length  ) // Buffering send function
 {
 	if( socket == INVALID || socket > MAXCLIENT )
 	{
@@ -306,7 +306,7 @@ void cNetwork::xSend( NXWSOCKET socket, const void *point, int length  ) // Buff
 	}
 }
 
-void cNetwork::xSend(NXWSOCKET socket, wstring& p, bool alsoTermination )
+void cNetwork::xSend(pClient client, wstring& p, bool alsoTermination )
 {
 	if( socket == INVALID || socket > MAXCLIENT )
 	{
@@ -700,7 +700,7 @@ void cNetwork::Relay(int s) // Relay player to a certain IP
 	Network->FlushBuffer(s);
 }
 
-void cNetwork::ActivateFeatures(NXWSOCKET s)
+void cNetwork::ActivateFeatures(pClient client)
 {
 	uint8_t feat[3] = {0xB9, 0x00, 0x00};
 	uint16_t features = 0;  //<-- BitMask ?
@@ -1104,7 +1104,7 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	Network->FlushBuffer(s);
 }
 
-char cNetwork::LogOut(NXWSOCKET s)//Instalog
+char cNetwork::LogOut(pClient client)//Instalog
 {
 	if (s < 0 || s >= now) return 0; //Luxor
 
@@ -1172,7 +1172,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 	sw.fillOnline( pc, true );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWSOCKET s=sw.getSocket();
+		pClient client =sw.getSocket();
 		if( s!=INVALID )
 			impowncreate(s,pc,0);
 	}

@@ -423,7 +423,7 @@ bool cItem::doDecay(bool dontDelete = false)
 	return true;
 }
 
-void cItem::explode(NXWSOCKET  s)
+void cItem::explode(pClient client)
 {
 	if (s < 0 || s > now) return;	//Luxor
 
@@ -760,7 +760,7 @@ void cItem::Delete()
 	sw.fillOnline( this );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWSOCKET j=sw.getSocket();
+		pClient j =sw.getSocket();
 		if (j!=INVALID)
 			client->sendPacket(&pk);
 	}
@@ -806,9 +806,8 @@ void cItem::Refresh()
 		sw.fillOnline( this );
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			NXWSOCKET a=sw.getSocket();
-			if(a!=INVALID)
-				senditem(a, this);
+			if ( sw.getClient() )
+				sw.getClient()->senditem(this);
 		}
 		return;
 	}
@@ -824,9 +823,8 @@ void cItem::Refresh()
 		sw.fillOnline( charcont, false );
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			NXWSOCKET a=sw.getSocket();
-			if(a!=INVALID)
-				wearIt(a, this);
+			if ( sw.getClient() )
+				sw.getClient()->wearIt(this);
 		}
 		return;
 	}
@@ -836,12 +834,11 @@ void cItem::Refresh()
 		sw.fillOnline();
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			NXWSOCKET a=sw.getSocket();
-			if(a!=INVALID)
-                        //TODO: calculate client
-				client->showItemInContainer(this);	//NOTE: there's already the inrange check
-									//in the showItemInContainer() function, so it's unuseful
-									//to do a double check!!
+			if ( sw.getClient() )
+				sw.getClient()->showItemInContainer(this);
+				//NOTE: there's already the inrange check
+				//in the showItemInContainer() function, so it's unuseful
+				//to do a double check!!
 		}
 	}
 }

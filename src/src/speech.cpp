@@ -32,7 +32,7 @@ void char2wchar (const char* str);
 static int32_t findKeyword( const std::string &str, const std::string &keyword );
 static std::string trimString( const std::string &str );
 
-int response(NXWSOCKET  s)
+int response(pClient client)
 {
 	pChar pc= cSerializable::findCharBySerial( currchar[s] );
 	if ( ! pc || ! pc->IsOnline() ) return 0;
@@ -826,7 +826,7 @@ int response(NXWSOCKET  s)
 
 }
 
-void PlVGetgold(NXWSOCKET s, pChar pc_vendor)//PlayerVendors
+void PlVGetgold(pClient client, pChar pc_vendor)//PlayerVendors
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
@@ -878,7 +878,7 @@ void PlVGetgold(NXWSOCKET s, pChar pc_vendor)//PlayerVendors
 		pc_vendor->talk(s,"I don't work for you!",0);
 }
 
-void responsevendor(NXWSOCKET  s, pChar pc_vendor)
+void responsevendor(pClient client, pChar pc_vendor)
 {
 	pChar pc_currchar = cSerializable::findCharBySerial(currchar[s]);
 
@@ -1086,7 +1086,7 @@ void responsevendor(NXWSOCKET  s, pChar pc_vendor)
 }
 
 /*
-static bool respond( pChar pc, NXWSOCKET socket, string &speech )
+static bool respond( pChar pc, pClient client, string &speech )
 {
 	bool success = false;
 	pCharVector	nearbyPlayerVendors;
@@ -1106,7 +1106,7 @@ static bool respond( pChar pc, NXWSOCKET socket, string &speech )
 }
 */
 
-static bool pricePlayerVendorItem( pChar pc, NXWSOCKET socket, string &price )
+static bool pricePlayerVendorItem( pChar pc, pClient client, string &price )
 {
 	bool success = false;
 	if ( pc->fx2 == 17 )
@@ -1140,7 +1140,7 @@ static bool pricePlayerVendorItem( pChar pc, NXWSOCKET socket, string &price )
 	return success;
 }
 
-static bool describePlayerVendorItem( pChar pc, NXWSOCKET socket, string &description )
+static bool describePlayerVendorItem( pChar pc, pClient client, string &description )
 {
 	bool success = false;
 	if( pc->fx2 == 18 )
@@ -1161,7 +1161,7 @@ static bool describePlayerVendorItem( pChar pc, NXWSOCKET socket, string &descri
 	return success;
 }
 
-static bool renameRune( pChar pc, NXWSOCKET socket, string &name )
+static bool renameRune( pChar pc, pClient client, string &name )
 {
 	bool success = false;
 	pItem pi = cSerializable::findItemBySerial( pc->runeserial );
@@ -1175,7 +1175,7 @@ static bool renameRune( pChar pc, NXWSOCKET socket, string &name )
 	return success;
 }
 
-static bool renameSelf( pChar pc, NXWSOCKET socket, string &name )
+static bool renameSelf( pChar pc, pClient client, string &name )
 {
 	bool success = false;
 	if( pc->namedeedserial != INVALID )
@@ -1195,7 +1195,7 @@ static bool renameSelf( pChar pc, NXWSOCKET socket, string &name )
 	return success;
 }
 
-static bool renameKey( pChar pc, NXWSOCKET socket, string &name )
+static bool renameKey( pChar pc, pClient client, string &name )
 {
 	bool success = false;
 	pItem pi = cSerializable::findItemBySerial( pc->keyserial );
@@ -1209,7 +1209,7 @@ static bool renameKey( pChar pc, NXWSOCKET socket, string &name )
 	return success;
 }
 
-static bool pageCouncillor( pChar pc, NXWSOCKET socket, string &reason )
+static bool pageCouncillor( pChar pc, pClient client, string &reason )
 {
 	bool success = false;
 	if (pc->pagegm == 2) // Counselor page
@@ -1246,7 +1246,7 @@ static bool pageCouncillor( pChar pc, NXWSOCKET socket, string &reason )
 	return success;
 }
 
-static bool resignFromGuild( pChar pc, NXWSOCKET socket, string &resign )
+static bool resignFromGuild( pChar pc, pClient client, string &resign )
 {
 	bool success = false;
 	if (!resign.compare("I RESIGN FROM MY GUILD"))
@@ -1257,7 +1257,7 @@ static bool resignFromGuild( pChar pc, NXWSOCKET socket, string &resign )
 	return success;
 }
 
-static bool callGuards( pChar pc, NXWSOCKET socket, string &helpcall )
+static bool callGuards( pChar pc, pClient client, string &helpcall )
 {
 	bool success = false;
 	if( helpcall.find("GUARDS") != std::string::npos )
@@ -1275,11 +1275,11 @@ namespace Speech
 {
 namespace Stablemaster
 {
-static bool respond( pChar pc, NXWSOCKET socket, std::string &speech );
-static bool stablePet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters );
-static bool claimPet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters );
+static bool respond( pChar pc, pClient client, std::string &speech );
+static bool stablePet( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyStablemasters );
+static bool claimPet( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyStablemasters );
 
-static bool respond( pChar pc, NXWSOCKET socket, std::string &speech )
+static bool respond( pChar pc, pClient client, std::string &speech )
 {
 	bool 	success = false;
 	NxwCharWrapper	nearbyStablemasters;
@@ -1302,7 +1302,7 @@ static bool respond( pChar pc, NXWSOCKET socket, std::string &speech )
 	return success;
 }
 
-static bool stablePet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters )
+static bool stablePet( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyStablemasters )
 {
 /*
 	command					action
@@ -1441,7 +1441,7 @@ static bool stablePet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharW
 	return success;
 }
 
-static bool claimPet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters )
+static bool claimPet( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyStablemasters )
 {
 	/*
 		command					Action
@@ -1590,12 +1590,12 @@ stabledPets.rewind();	// GH!
 
 namespace Guard
 {
-static bool respond( pChar pc, NXWSOCKET socket, std::string &speech );
-static bool requestChaosShield( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
-static bool requestOrderShield( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
-static bool requestHelp( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
+static bool respond( pChar pc, pClient client, std::string &speech );
+static bool requestChaosShield( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyGuards );
+static bool requestOrderShield( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyGuards );
+static bool requestHelp( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyGuards );
 
-static bool respond( pChar pc, NXWSOCKET socket, std::string &speech )
+static bool respond( pChar pc, pClient client, std::string &speech )
 {
 	bool success = false;
 	NxwCharWrapper	nearbyGuards;
@@ -1639,7 +1639,7 @@ nearbyChaosGuards.rewind();
 	return success;
 }
 
-static bool requestChaosShield( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyChaosGuards )
+static bool requestChaosShield( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyChaosGuards )
 {
 	bool success = false;
 	int32_t tokenPosition = findKeyword( speech, "SHIELD");
@@ -1694,7 +1694,7 @@ static bool requestChaosShield( pChar pc, NXWSOCKET socket, std::string &speech,
 	return success;
 }
 
-static bool requestOrderShield( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyOrderGuards )
+static bool requestOrderShield( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyOrderGuards )
 {
 	bool success = false;
 	int32_t tokenPosition = findKeyword( speech, "SHIELD");
@@ -1749,7 +1749,7 @@ static bool requestOrderShield( pChar pc, NXWSOCKET socket, std::string &speech,
 	return success;
 }
 
-static bool requestHelp( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards )
+static bool requestHelp( pChar pc, pClient client, std::string &speech, NxwCharWrapper &nearbyGuards )
 {
 	bool success = false;
 	//if( region[pc->region].priv&0x01 && SrvParms->guardsactive || !TIMEOUT( pc->antiguardstimer ) )
@@ -1758,7 +1758,7 @@ static bool requestHelp( pChar pc, NXWSOCKET socket, std::string &speech, NxwCha
 
 } // namespace Guards
 
-static bool buyFromVendor( pChar pc, NXWSOCKET socket, string &speech, NxwCharWrapper &nearbyVendors )
+static bool buyFromVendor( pChar pc, pClient client, string &speech, NxwCharWrapper &nearbyVendors )
 {
 	bool success = false;
 //	int32_t tokenPosition = INVALID;

@@ -60,7 +60,7 @@ Space around the house with SPACEX/Y and CHAR offset CHARX/Y/Z
 */
 void buildhouse( NXWCLIENT ps, pTarget t )
 {
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 	int i = t->buffer[2];
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	int loopexit=0;//where they click, and the house/key items
@@ -495,7 +495,7 @@ void buildhouse( NXWCLIENT ps, pTarget t )
 \param s socket of player
 \param pi pointer to the house item
 */
-void deedhouse(NXWSOCKET s, pItem pi)
+void deedhouse(pClient client, pItem pi)
 {
 	uint32_t x1, y1, x2, y2;
 	if ( ! pi ) return;
@@ -809,7 +809,7 @@ int del_hlist(pChar pc, pItem pi)
 	return(hl);
 }
 
-bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
+bool house_speech( pChar pc, pClient client, std::string &talk)
 {
 	//
 	// NOTE: Socket and pc checking allready done in talking()
@@ -934,7 +934,7 @@ void target_houseOwner( NXWCLIENT ps, pTarget t )
 	pItem pHouse=cSerializable::findItemBySerial( pSign->more );
 	if ( ! pHouse ) return;
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 	if(pc->getSerial() == curr->getSerial())
 	{
 		sysmessage(s, "you already own this house!");
@@ -948,37 +948,34 @@ void target_houseOwner( NXWCLIENT ps, pTarget t )
 	killkeys( pHouse->getSerial() );
 
 
-	NXWCLIENT osc=pc->getClient();
-	NXWSOCKET os= (osc!=NULL)? osc->toInt() : INVALID;
+	pClient osc=pc->getClient();
 
 	pItem pi3=item::CreateFromScript( "$item_gold_key" ); //gold key for everything else
 	if ( ! pi3 ) return;
 	
 	pi3->setCurrentName( "a house key" );
-	if(os!=INVALID)
-	{
+	if(osc)
 		pi3->setContainer( pc->getBackpack() );
-	}
 	else
-	{
 		pi3->MoveTo( pc->getPosition() );
-	}
 	pi3->Refresh();
 	pi3->more = pHouse->getSerial();
 	pi3->type=7;
 
-	sysmessage(s, "You have transferred your house to %s.", pc->getCurrentName().c_str());
-	char temp[520];
-	sprintf(temp, "%s has transferred a house to %s.", curr->getCurrentName().c_str(), pc->getCurrentName().c_str());
+	client->sysmessage("You have transferred your house to %s.", pc->getCurrentName().c_str());
+	char *temp;
+	asprintf(&temp, "%s has transferred a house to %s.", curr->getCurrentName().c_str(), pc->getCurrentName().c_str());
 
 	NxwSocketWrapper sw;
 	sw.fillOnline( pc, false );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWSOCKET k=sw.getSocket();
-		if(k!=INVALID)
-			sysmessage(k, temp);
+		pClient k = sw.getClient();
+		if ( k )
+			k->sysmessage(temp);
 	}
+	
+	free(temp);
 }
 
 // buffer[0] house
@@ -989,7 +986,7 @@ void target_houseEject( NXWCLIENT ps, pTarget t )
 	pItem pi_h=MAKE_ITEM_REF(t->buffer[0]);
 	if ( ! pi_h ) return;
 
-	NXWSOCKET s=ps->toInt();
+	pClient client =ps->toInt();
 
 	Location pcpos= pc->getPosition();
 
@@ -1016,7 +1013,7 @@ void target_houseBan( NXWCLIENT ps, pTarget t )
 	pChar curr=ps->currChar();
 	if ( ! curr ) return;
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
 	pItem pi=cSerializable::findItemBySerial( t->buffer[0] );
 	if(pi)
@@ -1045,7 +1042,7 @@ void target_houseFriend( NXWCLIENT ps, pTarget t )
 	pChar curr=ps->currChar();
 	if ( ! curr ) return;
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
 	pItem pi=cSerializable::findItemBySerial( t->buffer[0] );
 
@@ -1075,7 +1072,7 @@ void target_houseUnlist( NXWCLIENT ps, pTarget t )
 {
 	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
 	pItem pi= cSerializable::findItemBySerial( t->buffer[0] );
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
     
 	if(pc && pi)
 	{
@@ -1095,7 +1092,7 @@ void target_houseLockdown( NXWCLIENT ps, pTarget t )
 
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
     pItem pi=cSerializable::findItemBySerial( t->getClicked() );
     if(pi)
@@ -1157,7 +1154,7 @@ void target_houseSecureDown( NXWCLIENT ps, pTarget t )
 {
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
     pItem pi=cSerializable::findItemBySerial( t->getClicked() );
     if(pi)
@@ -1218,7 +1215,7 @@ void target_houseRelease( NXWCLIENT ps, pTarget t )
 {
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
     pItem pi=cSerializable::findItemBySerial( t->getClicked() );
     if(pi)

@@ -75,7 +75,7 @@ pItem AddRandomLoot(pItem pack, char * lootlist)
 	return pi;
 }
 
-int AddRandomNPC(NXWSOCKET s, char * npclist)
+int AddRandomNPC(pClient client, char * npclist)
 {
 	std::string list( npclist );
 	std::string sNpc = cObject::getRandomScriptValue( "NPCLIST", list );
@@ -110,13 +110,13 @@ pChar AddRespawnNPC(pChar pc, int npcNum)
 }
 
 //<Anthalir>
-pChar AddNPCxyz(NXWSOCKET s, int npcNum, Location where)
+pChar AddNPCxyz(pClient client, int npcNum, Location where)
 {
 	return AddNPCxyz(s, npcNum, where.x, where.y, where.dispz);
 }
 //</Anthalir>
 
-pChar AddNPCxyz(NXWSOCKET s, int npcNum, int x1, int y1, signed char z1) //Morrolan - replacement for old npcs::AddNPCxyz(), fixes a LOT of problems.
+pChar AddNPCxyz(pClient client, int npcNum, int x1, int y1, signed char z1) //Morrolan - replacement for old npcs::AddNPCxyz(), fixes a LOT of problems.
 {
 
 	return AddNPC(s, NULL, npcNum, x1,y1,z1);
@@ -125,14 +125,14 @@ pChar AddNPCxyz(NXWSOCKET s, int npcNum, int x1, int y1, signed char z1) //Morro
 
 
 //<Anthalir>
-pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, Location where)
+pChar AddNPC(pClient client, pItem pi, int npcNum, Location where)
 {
 	return AddNPC(s, pi, npcNum, where.x, where.y, where.z);
 }
 //</Anthalir>
 
 // Xan -> compatible with new style scripts!! :D
-pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t z1)
+pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t z1)
 {
 	int32_t	npcNumSave	= npcNum;
 	short	postype		= 0;	// determines how xyz of the new NPC are set

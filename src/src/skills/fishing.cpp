@@ -67,7 +67,7 @@ pNPC SpawnFishingMonster(pChar pc, char* cScript, char* cList, char* cNpcID)
 	return NULL;
 }
 
-int SpawnFishingItem(NXWSOCKET  s,int nInPack, char* cScript, char* cList, char* cItemID)
+int SpawnFishingItem(pClient client,int nInPack, char* cScript, char* cList, char* cItemID)
 {
  	/*This function gets the random item number from the list and recalls
  	  SpawnItemBackpack2 passing the new number*/
@@ -108,7 +108,7 @@ int SpawnFishingItem(NXWSOCKET  s,int nInPack, char* cScript, char* cList, char*
 	return INVALID;
 }
 
-inline bool isWaterTarget(NXWSOCKET  s)
+inline bool isWaterTarget(pClient client)
 {
 	tile_st tile;
 	map_st map;
@@ -158,7 +158,7 @@ inline bool isWaterTarget(NXWSOCKET  s)
 
 void Fishing::target_fish( NXWCLIENT ps, pTarget t )
 {
-	NXWSOCKET  s=ps->toInt();
+	pClient client=ps->toInt();
 	pChar pPlayer=ps->currChar();
 	if ( ! pPlayer ) return;
 
@@ -205,7 +205,7 @@ void Fishing::Fish(pChar pc)
 
 	if ( ! pc ) return;
 	pItem pc_bp = pc->getBackpack();
-	NXWSOCKET s = pc->getSocket() ;
+	pClient client = pc->getSocket() ;
         
 	Location charpos= pc->getPosition();
 	if(pc->stm<=2) //Luxor bug fix

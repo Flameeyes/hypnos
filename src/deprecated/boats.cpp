@@ -304,7 +304,6 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 	if ( ! pi )
 		return;
 
-	NXWSOCKET 	Send[MAXCLIENT];
 	int32_t	id1,
 			id2,
 			serial,

@@ -268,7 +268,7 @@ void checkregion(pChar pc)
 {
 	if ( ! pc ) return;
 
-	NXWSOCKET s;
+	pClient s;
 	int calcreg, j;
 
 	calcreg=calcRegionFromXY( pc->getPosition() );

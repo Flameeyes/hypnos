@@ -638,7 +638,7 @@ static void exec_broadcast(char *txt)
 	NxwSocketWrapper sw;
 	sw.fillOnline();
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWSOCKET s=sw.getSocket();
+		pClient client =sw.getSocket();
 		if( s!=INVALID ) {
                         //!\todo redo adding to cpeech all the data and verifying
 			cPacketSendSpeech pk(cSpeech(txt));

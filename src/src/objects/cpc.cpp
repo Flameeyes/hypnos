@@ -93,7 +93,7 @@ void cPC::heartbeat()
 	int timer;
 
 	NXWCLIENT ps = getClient();
-	NXWSOCKET socket = getSocket();
+	pClient client = getSocket();
 
 	if     ( swingtargserial == INVALID )
 		doCombat();

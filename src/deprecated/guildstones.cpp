@@ -496,7 +496,7 @@ void cGuilds::Menu(int s, int page)
 // the guildstone. After Guildmaster resigns, the fealty of each remaining member calculates
 // a new guildmaster, if there is a draw then we'll have no master until they change their minds ;)
 
-void cGuilds::Resign( pChar pc, NXWSOCKET socket )
+void cGuilds::Resign( pChar pc, pClient client )
 {
 	int guildnumber = pc->GetGuildNumber();
 	if (guildnumber==-1)
@@ -870,7 +870,7 @@ void cGuilds::GumpInput(int s, int type, int index, char *text)
 // guildgumpchoice() branches the results of those checkbox gumps
 // Called by: choice()
 
-void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
+void cGuilds::GumpChoice(pClient client, int main, int sub)
 {
 	pChar pc = cSerializable::findCharBySerial( currchar[socket] );
 	if ( ! pc ) return;
@@ -1206,7 +1206,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 // (guildnumber gets calculated from the double clicked guildstones), and notifies all online
 // guildmambers about the change.
 
-void cGuilds::ChangeName(NXWSOCKET s, char *text)
+void cGuilds::ChangeName(pClient client, char *text)
 {
 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;

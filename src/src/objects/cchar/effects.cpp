@@ -68,7 +68,7 @@ void cChar::movingFX(pChar dst, uint16_t eff, uint8_t speed, uint8_t loop, bool 
 		sw.fillOnline( );
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			 NXWSOCKET j=sw.getSocket();
+			 pClient j =sw.getSocket();
 			 pChar pj = cSerializable::findCharBySerial(currchar[j]);
 			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
 			 {
@@ -84,7 +84,7 @@ void cChar::movingFX(pChar dst, uint16_t eff, uint8_t speed, uint8_t loop, bool 
 		sw.fillOnline();
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			 NXWSOCKET j=sw.getSocket();
+			 pClient j =sw.getSocket();
 			 pChar pj = cSerializable::findCharBySerial(currchar[j]);
 			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
 			 {
@@ -118,7 +118,7 @@ void cChar::movingFX2(pItem dest, uint16_t eff, uint8_t speed, uint8_t loop, boo
 	sw.fillOnline( );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWSOCKET j=sw.getSocket();
+		pClient j =sw.getSocket();
 		if( j!=INVALID )
 		{
 			Xsend(j, effect, 28);
@@ -168,7 +168,7 @@ void cChar::boltFX(bool bNoParticles)
 		sw.fillOnline( this, false );
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			NXWSOCKET j=sw.getSocket();
+			pClient j =sw.getSocket();
 			if( j!=INVALID )
 			{
 				Xsend(j, effect, 28);
@@ -183,7 +183,7 @@ void cChar::boltFX(bool bNoParticles)
 		 sw.fillOnline( this, false );
 		 for( sw.rewind(); !sw.isEmpty(); sw++ )
 		 {
-			 NXWSOCKET j=sw.getSocket();
+			 pClient j =sw.getSocket();
 			 if( j!=INVALID )
 			 {
 			 if (clientDimension[j]==2) // 2D client, send old style'd
@@ -236,7 +236,7 @@ void cChar::circleFX(short id)
 	 sw.fillOnline( pc );
 	 for( sw.rewind(); !sw.isEmpty(); sw++ )
 	 {
-		NXWSOCKET j=sw.getSocket();
+		pClient j =sw.getSocket();
 		if( j!=INVALID )
 		{
 			Xsend(j, effect, 28);

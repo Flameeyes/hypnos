@@ -2849,7 +2849,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 }
 
 
-void sysmessage(NXWSOCKET  s, const char *txt, ...) // System message (In lower left corner)
+void sysmessage(pClient client, const char *txt, ...) // System message (In lower left corner)
 {
 	if(s < 0)
 		return;
@@ -2889,7 +2889,7 @@ void sysmessage(NXWSOCKET  s, const char *txt, ...) // System message (In lower 
 
 }
 
-void sysmessage(NXWSOCKET  s, short color, const char *txt, ...) // System message (In lower left corner)
+void sysmessage(pClient client, short color, const char *txt, ...) // System message (In lower left corner)
 {
 	if( s < 0)
 		return;
@@ -2939,10 +2939,8 @@ void sysbroadcast(char *txt, ...) // System broadcast in bold text
 	sw.fillOnline();
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWSOCKET sock=sw.getSocket();
-		if( sock!=INVALID )
-		{
-			SendUnicodeSpeechMessagePkt(sock, 0x01010101, 0x0101, 6, 0x084D /*0x0040*/, 0x0000, lang, sysname, unicodetext,  ucl);
-		}
+		pClient ci = sw.getClient();
+		if ( ci )
+			SendUnicodeSpeechMessagePkt(ci, 0x01010101, 0x0101, 6, 0x084D /*0x0040*/, 0x0000, lang, sysname, unicodetext,  ucl);
 	}
 }

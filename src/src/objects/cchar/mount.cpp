@@ -152,9 +152,8 @@ void cChar::mountHorse( pNPC mount )
 	sw.fillOnline( this, false );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWSOCKET si=sw.getSocket();
-		if( si!=INVALID )
-			wornitems(si, this );
+		if ( sw.getClient() )
+			sw.getClient()->wornitems(this);
 	}
 
 	// if this is a gm lets tame the animal in the process
@@ -175,12 +174,11 @@ void cChar::mountHorse( pNPC mount )
 
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
-		NXWSOCKET si=sw.getSocket();
-		if(si!=INVALID)
-		{
-			cPacketSendDeleteObj pk(mount);
-			si->sendPacket(&pk);
-		}
+		pClient si=sw.getClient();
+		if( !si ) continue;
+			
+		cPacketSendDeleteObj pk(mount);
+		si->sendPacket(&pk);
 	}
 
 	sysmsg( "Now you are riding %s", mount->getCurrentName().c_str());

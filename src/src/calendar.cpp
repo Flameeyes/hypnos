@@ -96,7 +96,7 @@ void commitSeason(pChar pc)
 	if ( ! pc )
 		return;
 	
-	NXWSOCKET s = pc->getSocket();
+	pClient client = pc->getSocket();
 
 	uint8_t setseason[3]={ 0xBC, 0x00, 0x01 };
 	

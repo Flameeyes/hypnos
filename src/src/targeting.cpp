@@ -32,7 +32,7 @@
 #include "range.h"
 #include "utils.h"
 
-void CarveTarget(NXWSOCKET s, int feat, int ribs, int hides, int fur, int wool, int bird)
+void CarveTarget(pClient client, int feat, int ribs, int hides, int fur, int wool, int bird)
 {
         if ( s < 0 || s >= now )
 		return;
@@ -105,7 +105,7 @@ void CarveTarget(NXWSOCKET s, int feat, int ribs, int hides, int fur, int wool, 
 \note Human-corpse carving code added
 \note Scriptable carving product added
 */
-static void newCarveTarget(NXWSOCKET  s, ITEM i)
+static void newCarveTarget(pClient client, ITEM i)
 {
 	bool deletecorpse=false;
 	char sect[512];
@@ -285,7 +285,7 @@ static void CorpseTarget(const NXWCLIENT pC)
 {
 	if (pC == NULL) return;
     int n=0;
-    NXWSOCKET  s = pC->toInt();
+    pClient client = pC->toInt();
 
     uint32_t serial=LongFromCharPtr(buffer[s]+7);
     pItem pi = cSerializable::findItemBySerial( serial );
@@ -438,7 +438,7 @@ static void CorpseTarget(const NXWCLIENT pC)
 
 
 
-int BuyShop(NXWSOCKET s, pChar pc)
+int BuyShop(pClient client, pChar pc)
 {
     pItem buyRestockContainer=NULL, buyNoRestockContainer=NULL;
 
@@ -489,7 +489,7 @@ void target_playerVendorBuy( NXWCLIENT ps, pTarget t )
     pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
     pItem pBackpack= pc_currchar->getBackpack();
     if (!pBackpack) {sysmessage(s,"Time to buy a backpack"); return; } //LB
@@ -565,7 +565,7 @@ void target_key( NXWCLIENT ps, pTarget t )
 	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
     if ((pi->more1==0)&&(pi->more2==0)&&
             (pi->more3==0)&&(pi->more4==0))
@@ -661,7 +661,7 @@ void target_attack( NXWCLIENT ps, pTarget t )
 	pChar pc_t2=cSerializable::findCharBySerial( t->getClicked() );
 	if ( ! pc_t1 || ! pc_t2 ) return;
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 	client->currChar()->attackStuff(pc_t2); //this will (eventually) flag the owner if ordering to attack an innocent
 	npcattacktarget(pc_t1, pc_t2);
 }
@@ -789,7 +789,7 @@ void target_expPotion( NXWCLIENT ps, pTarget t )
 
 	Location loc=t->getLocation();
 
-	NXWSOCKET s=ps->toInt();
+	pClient client =ps->toInt();
 
 	if(!line_of_sight(s, pc->getPosition(), loc, WALLS_CHIMNEYS + DOORS + ROOFING_SLANTED))
 	{
@@ -833,7 +833,7 @@ void target_telestuff( NXWCLIENT ps, pTarget t )
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
 	pObject po = objects.findObject( t->getClicked() );
 

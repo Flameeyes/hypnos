@@ -986,7 +986,7 @@ void telltime( NXWCLIENT ps )
 {
 	//!\todo Here we can use static const char* instead of these strcpy, and asprintf instead of sprintf
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
 	char tstring[60];
 	char tstring2[60];
@@ -1218,7 +1218,7 @@ void usepotion(pChar pc, pItem pi)
 
 	if ( ! pc ) return;
 
-	NXWSOCKET s = pc->getSocket();
+	pClient client = pc->getSocket();
 
 	switch(pi->morey)
 	{
