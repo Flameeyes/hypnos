@@ -437,12 +437,14 @@ void cItem::explode(pClient client)
 	//Luxor - recursive explosions!! :DD
 	NxwItemWrapper si;
 	si.fillItemsNearXYZ( getPosition(), 5, true );
-    for( si.rewind(); !si.isEmpty(); si++ ) {
+	for( si.rewind(); !si.isEmpty(); si++ )
+	{
 		pItem p_nearbie=si.getItem();
-		if( p_nearbie && p_nearbie->type == ITYPE_POTION && p_nearbie->morey == 3) { //It's an explosion potion!
+		if( p_nearbie && p_nearbie->type == ITYPE_POTION && p_nearbie->morey == 3)
+		{ //It's an explosion potion!
 			p_nearbie->explode(s);
-    	}
-    }
+		}
+	}
 	//End Luxor recursive explosions
 
 	staticeffect2(this, 0x36, 0xB0, 0x10, 0x80, 0x00);
@@ -455,7 +457,7 @@ void cItem::explode(pClient client)
 		case 2:dmg=RandomNum(10,20) ;break;
 		case 3:dmg=RandomNum(20,40) ;break;
 		default:
-			ErrOut("Switch fallout. NoX-Wizard.cpp, explodeitem()\n"); //Morrolan
+			ErrOut("Switch fallout. citem.cpp, explode()\n"); //Morrolan
 			dmg=RandomNum(5,10);
 	}
 

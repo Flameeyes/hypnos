@@ -279,28 +279,28 @@ void remain(int argc, char *argv[])
    if (!scm)
    {
 		sprintf(stringona, "Error : can't connect to Service Control Manager ", PRODUCT, VERNUMB );
-		MessageBox(NULL, stringona, "NoX-Wizard Service Manager", MB_ICONSTOP);
+		MessageBox(NULL, stringona, "Hypnos Service Manager", MB_ICONSTOP);
 		return;
    } else //ConOut("[ OK ]\n");
 
    // Delete the OLD service
-   myService = OpenService(scm, "NoXWizard", DELETE);
+   myService = OpenService(scm, "Hypnos", DELETE);
 
    if (myService!=NULL) {
 			//ConOut("Deleting previous installation...");
 			if (!DeleteService(myService))
 			{
 				sprintf(stringona, "%s Service %s can't be removed. ", PRODUCT, VERNUMB );
-				MessageBox(NULL, stringona, "NoX-Wizard Service Manager", MB_ICONEXCLAMATION);
+				MessageBox(NULL, stringona, "Hypnos Service Manager", MB_ICONEXCLAMATION);
 			}
 			else {
 				   CloseServiceHandle(myService);
 				   CloseServiceHandle(scm);
 				   {
 					   sprintf(stringona, "%s Service %s successfully removed. ", PRODUCT,  VERNUMB );
-					   MessageBox(NULL, stringona, "NoX-Wizard Service Manager", MB_ICONINFORMATION);
+					   MessageBox(NULL, stringona, "Hypnos Service Manager", MB_ICONINFORMATION);
 				   }
-				   setHKLMRegistryString("SOFTWARE\\NoXWizard", "Service", "0");
+				   setHKLMRegistryString("SOFTWARE\\Hypnos", "Service", "0");
  				   return;
 			}
 		}
@@ -320,19 +320,19 @@ void remain(int argc, char *argv[])
 	if (!myService)
 	{
 				sprintf(stringona, "%s Service %s can't be installed. ", PRODUCT,  VERNUMB );
-				MessageBox(NULL, stringona, "NoX-Wizard Service Manager", MB_ICONSTOP);
+				MessageBox(NULL, stringona, "Hypnos Service Manager", MB_ICONSTOP);
 	}
 	else
 	{
 		sprintf(stringona, "%s Service %s successfully installed. ", PRODUCT, VERNUMB);
-		MessageBox(NULL, stringona, "NoX-Wizard Service Manager", MB_ICONINFORMATION);
+		MessageBox(NULL, stringona, "Hypnos Service Manager", MB_ICONINFORMATION);
 	}
 
 
 	char ss[800];
 	GetCurrentDirectory(790, ss);
- 	setHKLMRegistryString("SOFTWARE\\NoXWizard", "Path", ss);
-    setHKLMRegistryString("SOFTWARE\\NoXWizard", "Service", "1");
+ 	setHKLMRegistryString("SOFTWARE\\Hypnos", "Path", ss);
+    setHKLMRegistryString("SOFTWARE\\Hypnos", "Service", "1");
 
 	// clean up
 	CloseServiceHandle(myService);
@@ -345,7 +345,7 @@ static char s_strSrvcMsg[1024];
 void goToServiceDir ( void )
 {
 	char *sz;
-	sz = getHKLMRegistryString("SOFTWARE\\NoXWizard", "Path");
+	sz = getHKLMRegistryString("SOFTWARE\\Hypnos", "Path");
 
 	SetCurrentDirectory(sz);
 	delete sz;
@@ -357,7 +357,7 @@ int main(int argc, char *argv[])
 
 
 	char *sz;
-	sz = getHKLMRegistryString("SOFTWARE\\NoXWizard", "Service");
+	sz = getHKLMRegistryString("SOFTWARE\\Hypnos", "Service");
 
 	if (sz!=NULL) {
 		ServerScp::g_nDeamonMode = atoi(sz);

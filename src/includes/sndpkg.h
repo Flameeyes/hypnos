@@ -8,7 +8,6 @@
 /*!
 \file
 \brief Functions that send packages to the Client
-\note cut from NoX-Wizard.cpp by Duke, 25.10.00
 */
 
 #ifndef __SNDPKG_H__

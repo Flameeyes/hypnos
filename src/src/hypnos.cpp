@@ -607,7 +607,7 @@ int main(int argc, char *argv[])
 
 	ConOut("%s %s %s.%s [%s] compiled by %s\nProgrammed by: %s", PRODUCT, VER, VERNUMB, HOTFIX, OS, NAME, PROGRAMMERS);
 	ConOut("\nBased on NoX-Wizard 20031228");
-	ConOut("\nWeb-site : \n");
+	ConOut("\nWeb-site : http://hypnos.berlios.de/\n");
 	ConOut("\n");
 	ConOut("Copyright (C) 1997, 98 Marcus Rating (Cironian)\n\n");
 	ConOut("This program is free software; you can redistribute it and/or modify\n");

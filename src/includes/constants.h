@@ -95,7 +95,7 @@ enum
 	MAP0CACHE = 300,
 	PATHNUM = 2,
 
-	XYMAX = 256,		//!< Maximum items NoX-Wizard can handle on one X/Y square
+	XYMAX = 256,		//!< Maximum items which can be handle on one X/Y square
 	CMAX = 40,		//!< Maximum parameters in one line (Only for memory reasons)
 	
 	DOORTYPES = 17,

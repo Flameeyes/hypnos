@@ -16,28 +16,11 @@ class ClientCrypt;
 
 #define IPPRINTF(I) ((I)&(0xFF)),((I>>8)&(0xFF)),((I>>16)&(0xFF)),(I>>24)
 
-#define MTMAXBUFFER 65536
-
 typedef struct 
 {
 	unsigned long address;
 	unsigned long mask;
 }ip_block_st;
-
-class NetThread 
-{
-	public:
-		char outbuffer[MTMAXBUFFER];
-		tthreads::Atomic<int> outhead;
-		tthreads::Atomic<int> outtail;
-		bool lastopwasinsert;
-		tthreads::Mutex mtxrun;
-		int realsocket;
-		void run();
-		void enqueue (char*, int);
-		NetThread(pClient client);
-		void set(pClient client);
-};
 
 class cNetwork
 {
@@ -49,7 +32,6 @@ class cNetwork
 		void LoginMain(pClient client);
 		void xSend(pClient client, const void *point, int length );
 		void xSend(pClient client, unistring& p, bool alsoTermination = true );
-		void Disconnect(pClient client);
 		void ClearBuffers();
 		void CheckConn();
 		void CheckMessage();

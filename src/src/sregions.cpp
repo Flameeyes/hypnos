@@ -95,7 +95,6 @@ void loadregions()//New -- Zippy spawn regions
 						// Store the region index into the valid escort region array
 						validEscortRegion[escortRegions] = i;
 						escortRegions++;
-						//ConOut( "NoX-Wizard: loadregions() %i regions loaded so far\n", escortRegions );
 					}
 				} // End - Dupois
 				else if (!(strcmp("GUARDOWNER",script1)))	strcpy(regionRef.guardowner,script2);

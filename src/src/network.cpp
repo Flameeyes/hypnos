@@ -147,8 +147,6 @@ static unsigned int bit_table[257][2] =
 {0x0004, 0x000D}
 };
 
-//unsigned long __stdcall ConnectionThread( void *Arg );
-
 pClient getClientFromSocket( pClient client )
 {
 	if( socket < 0 )
@@ -160,14 +158,6 @@ pClient getClientFromSocket( pClient client )
 		return pc->getClient();
 	else
 		return NULL;
-}
-
-static void initClients()
-{
-	for (int i=0; i < MAXCLIENT; ++i)
-	{
-		loginchars[i] = NULL;
-	}
 }
 
 int MTsend( pClient client, char* xoutbuffer, int len, int boh )
@@ -193,9 +183,6 @@ int MTsend( pClient client, char* xoutbuffer, int len, int boh )
 	}
 	return sent;
 }
-
-#endif
-
 
 void cNetwork::DoStreamCode( pClient clientocket )
 {
@@ -437,10 +424,10 @@ void cNetwork::LoginMain(pClient client)
 
 void cNetwork::Login2(pClient client)
 {
-	const char msgLogin[] = "Client [%s] connected [first] using Account '%s'.\n";
+	static const char msgLogin[] = "Client [%s] connected [first] using Account '%s'.\n";
 
 	uint16_t i, tlen;
-	unsigned long int ip;
+	uint32_t ip;
 	uint8_t newlist1[6]={ 0xA8, 0x00, };
 	uint8_t newlist2[40]={ 0x00, };
 
@@ -472,7 +459,7 @@ void cNetwork::Login2(pClient client)
 
 void cNetwork::Relay(pClient client) // Relay player to a certain IP
 {
-	unsigned long int ip;
+	uint32_t ip;
 	int port;
 
 	ip=inet_addr(serv[buffer[s][2]-1][1]);
@@ -486,10 +473,10 @@ void cNetwork::Relay(pClient client) // Relay player to a certain IP
 		socklen_t n = sizeof(sockaddr_in);
                 sockaddr_in sa;
 		getsockname (client[s], (sockaddr*)(&sa), (socklen_t*)(&n));
-		unsigned long oldip = ip;
+		uint32_t oldip = ip;
 		//Luxor: REALLY tricky... i should change this soon, but no time to make it better by now :P
-		unsigned long pClient clienterverip = sa.sin_addr.s_addr;
-		unsigned long int clientip = client_addr.sin_addr.s_addr;
+		uint32_t pClient clienterverip = sa.sin_addr.s_addr;
+		uint32_t clientip = client_addr.sin_addr.s_addr;
 //		printf("IP: %d.%d.%d.%d\n", IPPRINTF(ip));
 //		printf("SERVER_IP: %d.%d.%d.%d\n", IPPRINTF(serverip));
 //		printf("CLIENT_IP: %d.%d.%d.%d\n", IPPRINTF(clientip));
@@ -501,12 +488,6 @@ void cNetwork::Relay(pClient client) // Relay player to a certain IP
                 if (ip != oldip)
 			InfoOut("client %d relayed to IP %d.%d.%d.%d instead of %d.%d.%d.%d\n", s, IPPRINTF(ip), IPPRINTF(oldip));
         }
-
-
-#ifdef RELAY_TO_NOXSNIFFER
-	port = 2595;
-	WarnOut("relaying client to NoX-Sniffer!!!\n");
-#endif
 
 	uint8_t login03[11]={ 0x8C, 0x00, };
 	uint32_t key = calcserial('a', 'K', 'E', 'Y');
@@ -664,7 +645,7 @@ void cNetwork::CharList(pClient client) // Gameserver login and character listin
 		GoodAuth(client);
 }
 
-void cNetwork::pSplit (char *pass0) // Split login password into NoX-Wizard password and UO password
+void cNetwork::pSplit (char *pass0) // Split login password into Hypnos password and UO password
 {
 
 	int i,loopexit=0;
@@ -847,7 +828,7 @@ void cNetwork::startchar(pClient client)
 	client->sendPacket(&pkMOTD);
 
 	const char * t;
-	std::vector<std::string>::const_iterator vis( clientsAllowed.begin() ), vis_end( clientsAllowed.end() );
+	stringVector::const_iterator vis( clientsAllowed.begin() ), vis_end( clientsAllowed.end() );
 
 	t = (*vis).c_str();
 	strcpy(temp,t);
@@ -1005,7 +986,7 @@ void cNetwork::sockInit()
 	err = WSAStartup(wVersionRequested, &wsaData);
 	if (err!=0)
 	{
-		if (ServerScp::g_nDeamonMode==0) MessageBox(NULL, "Winsock 2.0 not found. This program requires Winsock 2.0 or later. ", "NoX-Wizard Network initialization", MB_ICONSTOP);
+		if (ServerScp::g_nDeamonMode==0) MessageBox(NULL, "Winsock 2.0 not found. This program requires Winsock 2.0 or later. ", "Hypnos Network initialization", MB_ICONSTOP);
 		ErrOut("ERROR: Winsock 2.0 not found...\n");
 		keeprun=false;
 		error=1;
@@ -1075,10 +1056,9 @@ void cNetwork::sockInit()
 		ErrOut("ERROR: Unable to bind socket\n    Error code: %s\n",temp);
 
 	if (ServerScp::g_nDeamonMode==0) {
-		MessageBox(NULL, temp, "NoX-Wizard network error [bind]", MB_ICONSTOP);
+		MessageBox(NULL, temp, "Hypnos network error [bind]", MB_ICONSTOP);
 	}
-#endif //win32
-#ifndef WIN32
+#else
 		ErrOut("ERROR: Unable to bind socket - Error code: %i\n",bcode);
 #endif
 		keeprun=false;
@@ -1102,7 +1082,7 @@ void cNetwork::sockInit()
 	// Ok, we need to set this socket (or listening one as non blocking).  The reason is we d a
 	// select, and then do an accept.  However, if the client has terminated the connection between the small
 	// time from the select and accept, we would block (accept is blocking).  So, set it non blocking
-	unsigned long nonzero = 1;
+	uint32_t nonzero = 1;
 #if defined(__unix__)
 	ioctl(a_socket,FIONBIO,&nonzero) ;
 #endif
@@ -1133,83 +1113,74 @@ void cNetwork::CheckConn() // Check for connection requests
 	pClient client;
 	socklen_t len;
 
-	if (now<MAXIMUM)
+	if ( now > MAXIMUM )
+		return;
+	
+	FD_ZERO(&conn);
+	FD_SET(a_socket, &conn);
+	nfds=a_socket+1;
 
+	s=select(nfds, &conn, NULL, NULL, &nettimeout);
+
+	if (s>0)
 	{
-		FD_ZERO(&conn);
-		FD_SET(a_socket, &conn);
-		nfds=a_socket+1;
-
-		s=select(nfds, &conn, NULL, NULL, &nettimeout);
-
-		if (s>0)
+		len=sizeof (struct sockaddr_in);
+		client[now] = accept(a_socket, (struct sockaddr *)&client_addr, &len);
+		if ((client[now]<0))
 		{
-			len=sizeof (struct sockaddr_in);
-			client[now] = accept(a_socket, (struct sockaddr *)&client_addr, &len);
-			if ((client[now]<0))
-			{
-				ErrOut("Unknown error at client connection!\n");
-				error=1;
-				keeprun=true;
-				return;
-			}
-			if ( CheckForBlockedIP( client_addr ) )
-			{
-				InfoOut("IPBlocking: Blocking IP address [%s] listed in hosts_deny\n", inet_ntoa( client_addr.sin_addr ));
-
-				closesocket(client[now]);
-			}
-			else
-			{
-				unsigned long nonzero = 1;
-			#if defined(__unix__)
-				ioctl(client[now],FIONBIO,&nonzero) ;
-			#else
-				ioctlsocket(client[now],FIONBIO,&nonzero) ;
-			#endif
-
-				currchar[now] = INVALID;
-				cryptedClient[now]=true;
-				acctno[now]=-1;
-				binlength[now]=0;
-				boutlength[now]=0;
-				clientInfo[now]= new cClient();
-				walksequence[now]=-1;
-
-				clientDimension[now]=2;
-
-				++global_lis; // not 100% correct, but only cosmetical stuff, hence ok not to be 100% correct :>
-                          			// doesnt get correct status if kicked out due to worng pw etc.
-
-            			if (global_lis % 2 == 0) sprintf((char*)temp2, "connecting"); else sprintf((char*)temp2, "connected");
-
-				sprintf((char*)temp,"client %i [%s] %s [Total:%i].\n",now,inet_ntoa(client_addr.sin_addr), temp2, now+1);
-				InfoOut(temp);
-
-				if (SrvParms->server_log)
-					ServerLog.Write("%s", temp);
-
-#ifdef USE_MTHREAD_SEND
-                		if (g_NT[now]==NULL)
-					g_NT[now] = new NetThread(client[now]);
-                		else
-					g_NT[now]->set(client[now]);
-                		g_NT[now]->mtxrun.leave();
-#endif
-				++now;
-			}
-			return;
-
-		}
-		else if (s<0)
-		{
-			ErrOut("select (Conn) failed!\n");
-			keeprun=true;
+			ErrOut("Unknown error at client connection!\n");
 			error=1;
+			keeprun=true;
 			return;
 		}
-	}
+		if ( CheckForBlockedIP( client_addr ) )
+		{
+			InfoOut("IPBlocking: Blocking IP address [%s] listed in hosts_deny\n", inet_ntoa( client_addr.sin_addr ));
 
+			closesocket(client[now]);
+		}
+		else
+		{
+			uint32_t nonzero = 1;
+		#if defined(__unix__)
+			ioctl(client[now],FIONBIO,&nonzero) ;
+		#else
+			ioctlsocket(client[now],FIONBIO,&nonzero) ;
+		#endif
+
+			currchar[now] = INVALID;
+			cryptedClient[now]=true;
+			acctno[now]=-1;
+			binlength[now]=0;
+			boutlength[now]=0;
+			clientInfo[now]= new cClient();
+			walksequence[now]=-1;
+
+			clientDimension[now]=2;
+
+			++global_lis; // not 100% correct, but only cosmetical stuff, hence ok not to be 100% correct :>
+					// doesnt get correct status if kicked out due to worng pw etc.
+
+			if (global_lis % 2 == 0) sprintf((char*)temp2, "connecting"); else sprintf((char*)temp2, "connected");
+
+			sprintf((char*)temp,"client %i [%s] %s [Total:%i].\n",now,inet_ntoa(client_addr.sin_addr), temp2, now+1);
+			InfoOut(temp);
+
+			if (SrvParms->server_log)
+				ServerLog.Write("%s", temp);
+
+			++now;
+		}
+		return;
+
+	}
+	else if (s<0)
+	{
+		ErrOut("select (Conn) failed!\n");
+		keeprun=true;
+		error=1;
+		return;
+	}
 }
 
 void cNetwork::CheckMessage() // Check for messages from the clients
@@ -1221,7 +1192,8 @@ void cNetwork::CheckMessage() // Check for messages from the clients
 	oldnow = now;
 	loops = now / 64; //xan : we should do loops of 64 players
 
-	for (lp = 0; lp <= loops; lp++) {
+	for (lp = 0; lp <= loops; lp++)
+	{
 
 
 		FD_ZERO(&all);
@@ -1400,11 +1372,11 @@ void cNetwork::GetMsg(pClient client) // Receive message from client
 		socklen_t tmp_addr_len=sizeof(struct sockaddr_in);
 
 		if(getpeername(client[s],(struct sockaddr*)&tmp_addr,&tmp_addr_len)!=SOCKET_ERROR)
-			*(unsigned long*)&clientip[s]=tmp_addr.sin_addr.s_addr;
+			*(uint32_t*)&clientip[s]=tmp_addr.sin_addr.s_addr;
 		else
 		{
 			WarnOut("Unable to determine client's IP [s:%i]\n",s);
-			*(unsigned long*)&clientip[s]=0;
+			*(uint32_t*)&clientip[s]=0;
 		}
 
 		clientInfo[s]->newclient=false;
@@ -2179,10 +2151,10 @@ void cNetwork::LoadHosts_deny()
 					if (ip_address != INADDR_NONE)
 						ip_block.mask = ip_address;
 					else
-						ip_block.mask = static_cast<unsigned long>(~0); // mask is not required. (fills all bits with 1's)
+						ip_block.mask = static_cast<uint32_t>(~0); // mask is not required. (fills all bits with 1's)
 				}
 				else
-					ip_block.mask = static_cast<unsigned long>(~0);
+					ip_block.mask = static_cast<uint32_t>(~0);
 				hosts_deny.push_back(ip_block);
 			}
 		}
@@ -2204,68 +2176,3 @@ bool cNetwork::CheckForBlockedIP(sockaddr_in ip_address)
 
 	return false;
 }
-
-void NetThread::enqueue (char* buff, int len)
-{
-    for ( int i=0; i < len; ++i )
-    {
-        int p = ((int)(outtail)+i) % MTMAXBUFFER;
-        if ( p == outhead && lastopwasinsert )
-		return;
-        lastopwasinsert = true;
-        outbuffer[p] = buff[i];
-    }
-    outtail = ((int)(outtail)+len) % MTMAXBUFFER;
-}
-
-void NetThread::run()
-{
-    while(true)
-    {
-        mtxrun.enter();
-
-        if ((((int)outhead) != ((int)outtail))||(lastopwasinsert)) {
-            //now comes the worst of ever : the socket send in a circular buffer :]
-            int tail = outtail; // store our own tail, any following data will be out
-            int head = outhead; // just 'cos it's faster :]
-            if (tail > head) { // no wrappz :] phew!
-                send(realsocket, outbuffer+head, tail-head,0);
-            } else {
-                send(realsocket, outbuffer+head, MTMAXBUFFER-head,0);
-                send(realsocket, outbuffer, tail,0);
-            }
-            lastopwasinsert = false;
-            outhead = tail;
-        }
-
-        mtxrun.leave();
-        Sleep(10);
-   }
-
-}
-
-
-static TTHREAD startNetThread (void *ptr)
-{
-    NetThread *ns = static_cast<NetThread*>(ptr);
-    ns->run();
-    EXIT_TTHREAD;     // we don't dealloc mem since it's static :]
-}
-
-void NetThread::set(pClient client)
-{
-    realsocket=s;
-    outtail = 0;
-    outhead = 0;
-    lastopwasinsert = false;
-}
-
-NetThread::NetThread(pClient client)
-{
-    set(client);
-    mtxrun.enter();
-    int n = tthreads::startTThread(startNetThread, this);
-    InfoOut("Starting new network thread [%d]\n", n);
-}
-
-
