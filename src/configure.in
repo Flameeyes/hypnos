@@ -8,7 +8,7 @@ AC_PROG_CXX
 AM_PROG_LIBTOOL
 
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
-CXXFLAGS="$CXXFLAGS $INCLUDES"
+CXXFLAGS="$CXXFLAGS $INCLUDES -Wall -Wno-reorder"
 
 AC_SUBST(CXXFLAGS)
 

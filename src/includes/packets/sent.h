@@ -934,14 +934,16 @@ namespace nPackets {
 		{
 		protected:
 
-			EffectType type;		//!< movement type
-			pSerializable src, dst;		//!< source and destination of effect
-			uint16_t effect;		//!< visual id of effect
-			sLocation src_pos, dst_pos;	//!< souce and destination position of effect
-			uint8_t speed;			//!< speed of effect (SPPED OF ANIMATION)
-			uint8_t duration;		//!< travel speed of effect (update: maybe number of loops of the effects: should investigate)
-			bool fixeddir;  		//!< if true animation direction does not change during effect
-			bool explode;			//!< explosion once effect reaches target
+			EffectType type;	//!< Movement type
+			pSerializable src;	//!< Source of the effect
+			sLocation src_pos;	//!< Position of the source
+			pSerializable dst;	//!< Destionation of the effect
+			sLocation dst_pos;	//!< Position of the destination
+			uint16_t effect;	//!< visual id of effect
+			uint8_t speed;		//!< speed of effect (SPPED OF ANIMATION)
+			uint8_t duration;	//!< travel speed of effect (update: maybe number of loops of the effects: should investigate)
+			bool fixeddir;  	//!< if true animation direction does not change during effect
+			bool explode;		//!< explosion once effect reaches target
 
 
 		public:
