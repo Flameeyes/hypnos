@@ -1139,26 +1139,32 @@ void npcattacktarget(pChar pc, pChar pc_target)
 		!pc->losFrom(pc_target)
 	) return;
 	
-	if( pc->amxevents[ EVENT_CHR_ONBEGINATTACK ]!=NULL ) {
-		pc->amxevents[ EVENT_CHR_ONBEGINATTACK ]->Call( pc->getSerial(), pc_target->getSerial() );
-		if (g_bByPass==true)
+	pFunctionHandle evt;
+	evt = pc->getEvent(evtChrOnBeginAttack);
+	if (evt) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = pc->getSerial(); params[1] = pc_target->getSerial();
+		evt->setParams(params);
+		evt->execute();
+		if( evt->bypassed() )
 			return;
 	}
-	/*
-	pc->runAmxEvent( EVENT_CHR_ONBEGINATTACK, pc->getSerial(), pc_target->getSerial() );
-	if (g_bByPass==true)
-		return;
-	*/
-	if( pc->amxevents[ EVENT_CHR_ONBEGINDEFENSE ]!=NULL ) {
-		pc->amxevents[ EVENT_CHR_ONBEGINDEFENSE ]->Call( pc_target->getSerial(), pc->getSerial() );
-		if (g_bByPass==true)
+
+	if(evt)
+		free(evt);
+
+	evt = pc->getEvent(evtChrOnBeginDefence);
+	if (evt) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = pc->getSerial(); params[1] = pc_target->getSerial();
+		evt->setParams(params);
+		evt->execute();
+		if( evt->bypassed() )
 			return;
 	}
-	/*
-	pc->runAmxEvent( EVENT_CHR_ONBEGINDEFENSE, pc_target->getSerial(), pc->getSerial() );
-	if (g_bByPass==true)
-		return;
-	*/
+
+	if(evt)
+		free(evt);
 
 	pc->playMonsterSound(SND_STARTATTACK);
 
@@ -1187,7 +1193,6 @@ void npcattacktarget(pChar pc, pChar pc_target)
 
 	pc->emoteall( "You see %s attacking %s!", 1, pc->getCurrentName().c_str(), pc_target->getCurrentName().c_str() );
 
-	return;
 }
 
 

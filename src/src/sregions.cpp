@@ -266,7 +266,6 @@ short calcRegionFromXY(int x, int y)
 
 void checkregion(pChar pc)
 {
-//	pChar pc = MAKE_CHAR_REF( i );
 	if ( ! pc ) return;
 
 	NXWSOCKET s;
@@ -276,10 +275,15 @@ void checkregion(pChar pc)
 	if (calcreg!= pc->region)
 	{
 		
-		if ( pc->amxevents[EVENT_CHR_ONREGIONCHANGE] )
-			pc->amxevents[EVENT_CHR_ONREGIONCHANGE]->Call( pc->getSerial(), pc->region, calcreg);
-		
-		//pc->runAmxEvent( EVENT_CHR_ONREGIONCHANGE, pc->getSerial(), pc->region, calcreg);
+		pFunctionHandle evt = pc->getEvent(evtChrOnRegionChange);
+		if(evt) {
+			tVariantVector params = tVariantVector(3);
+			params[0] = pc->getSerial(); params[1] = pc->region; params[2] = calcreg;
+			evt->setParams(params);
+			evt->execute();
+			
+			free(evt);
+		}
 
 		s = pc->getSocket();
 		if (s!=INVALID)
