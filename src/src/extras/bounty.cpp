@@ -102,7 +102,7 @@ bool BountyCreate( P_CHAR pc, int nRewardAmount )
 
     // Attempt to post the message first
     pc->questBountyReward = nRewardAmount;
-    nPostSerial = cMsgBoard::MsgBoardPostQuest( pc->getSerial32(), cMsgBoard::BOUNTYQUEST );
+    nPostSerial = cMsgBoard::createQuest( pc->getSerial32(), cMsgBoard::BOUNTYQUEST );
 
     // If we received a valid serial number then the post was successfull
     if( nPostSerial > 0 )

@@ -444,12 +444,39 @@ void cPacketSendBBoardCommand::prepare()
 
 cPacketSendMsgBoardItemsinContainer::prepare()
 {
-	//TODO: this function
+ 	static const UI08 templ1[5] = {
+		0x3C, 0x00, 0x05, 0x00, 0x00
+		};
 
+	static const UI08 templ2[19] = {
+		0x00, 0x00, 0x00, 0x00, 0x0E, 0xB0, 0x00,
+		0x00, 0x00, 0x00, 0x3A, 0x00, 0x3A, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00
+		};
 
 	pair<cBBRelations::iterator, cBBRelations::iterator> it = cMsgBoard::BBRelations.equal_range(msgboard->getSerial32());
         // Now the *(it.first.second) is the serial of a message to be sent. and incrementing it.first
         // until it reaches it.second we obtain all the serials
+
+	UI16 count = distance (it.first, it.second); //It HAS at least 1 message or else this packet would not be asked for
+	UI16 length = 5 + count*19;
+
+	buffer = new UI08[length];
+	memcpy(buffer, templ1, 5);
+
+	ShortToCharPtr(length, buffer+1);
+	ShortToCharPtr(count, buffer+3);
+
+	UI08 *ptrItem = buffer+5;
+
+	for(;it.first != it.second; ++(it.first))
+	{
+		memcpy(ptrItem, templ2, 19);
+		LongToCharPtr((*it.first)->getSerial32(), ptrItem);
+		LongToCharPtr(msgboard->getSerial32(), ptrItem+13);
+                //all other parts are invaried in msgboards messages and are defaulted in templ2
+		ptrItem += 19;
+	}
 
 }
 

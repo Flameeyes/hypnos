@@ -127,14 +127,14 @@ public:
         ~cMsgBoard();
 
 
-      	void	getPostType( pClient client );
-	void	setPostType( pClient client, PostType nPostType );
-        void	openBoard(pClient client);
-	void 	sendMessageSummary( pClient client, pMsgBoardMessage message );
-        bool    addMessage( pMsgBoardMessage message, int msgType, bool autoPost );
+      	static void 	getPostType( pClient client );
+	static void 	setPostType( pClient client, PostType nPostType );
+        void		openBoard(pClient client);
+	void 		sendMessageSummary( pClient client, pMsgBoardMessage message );
+        bool    	addMessage( pMsgBoardMessage message );
+	static UI32 	createQuest( UI32 targetserial, QuestType questType. int region = -1 );
 
 
-	int	MsgBoardPostQuest( pClient client, QuestType nQuestType );
 	void	MsgBoardQuestEscortCreate( pClient client );
 	void	MsgBoardQuestEscortArrive( P_CHAR pc, P_CHAR pc_k );
 	void	MsgBoardQuestEscortDelete( int nNPCIndex );

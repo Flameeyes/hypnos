@@ -1,4 +1,4 @@
-tare  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
     ||                                                                         ||
     || This software is free software released under GPL2 license.             ||
@@ -83,7 +83,7 @@ void cMsgBoardMessage::Delete() : cItem::Delete()
                 more time efficient than a whole search from the beginning for each msgboard in region
                 */
                 cBBRelations::iterator bbit = cMsgBoards::BBRelations.begin();
-                for(; (distance(it.first, it.second) >= 0) || (bbit == cMsgBoards::BBRelations.end()); ++it.first)
+                for(; (it.first != it.second) || (bbit == cMsgBoards::BBRelations.end()); ++it.first)
                 {
                         //finding the current serial and set it for next search, since it will be only on following serials
 			bbit = find(bbit,cMsgBoards::BBRelations.end(), cBBRelations::pair((*itbegin)->getSerial32(), serial));
@@ -188,7 +188,7 @@ cMsgBoard::~cMsgBoard()
 Used to retrieve the current post type in order to tell the user what type of
 mode they are in.
 */
-void cMsgBoard::getPostType( pClient client )
+static void cMsgBoard::getPostType( pClient client )
 {
 	pPC pc = client->currChar();
 	VALIDATEPC(pc);
@@ -222,7 +222,7 @@ type.  Using the command to set the post type updates the
 value in the array for that player so that they can post
 different types of messages.
 */
-void cMsgBoard::setPostType( pClient client, PostType nPostType )
+static void cMsgBoard::setPostType( pClient client, PostType nPostType )
 {
 	pChar pc=client->currChar();
 	VALIDATEPC(pc);
@@ -258,8 +258,12 @@ void cMsgBoard::openBoard(pClient client)
 	cPacketSendBBoardCommand pk(this, DisplayBBoard);
 	client->sendPacket(&pk);
         // .. and immediately thereafter the "items" it contains (the serials of messages connected to that board)
-        cPacketSendMsgBoardItemsinContainer pk2 (this);
-       	client->sendPacket(&pk2);
+        // but only if it has at least 1 message inside
+      	if (BBRelations.find(getSerial32()) != BBRelations.end())
+	{
+        	cPacketSendMsgBoardItemsinContainer pk2 (this);
+       		client->sendPacket(&pk2);
+        }
 }
 
 /*!
@@ -294,7 +298,7 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
                 //mexes, but by posting regional or global messages this limit can be exceeded
                 
                	pair<cBBRelations::iterator, cBBRelations::iterator> it = BBRelations.equal_range(getSerial32());
-                if (distance(it.first, it.second) >= MAXPOSTS) return false;
+                if (distance(it.first, it.second) > MAXPOSTS) return false;
 
         	BBRelations.insert(cBBRelations::pair(getSerial32(), message->getSerial32()));
         	break;
@@ -302,8 +306,8 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
                	pair<cMsgBoards::iterator, cMsgBoards::iterator> it = getBoardsinRegion(region);
                 //if no msgboard in region, it should not post. Only significant if autopost... or else some very weird things are floating around :D
                 if (it.first == MsgBoards.end()) return false;
-                // We now have a range it.first-it.second of msgBoards that are in the same region as the message. (they may even be the same)
-		for (;distance(it.first,it.second) >= 0; ++it.first)
+                // We now have a range it.first-(it.second - 1) of msgBoards that are in the same region as the message.
+		for (;it.first != it.second; ++it.first)
                 	BBRelations.insert(cBBRelations::pair((*(it.first))->getSerial32(), message->getSerial32()));
         	break;
         case GLOBALPOST:
@@ -335,11 +339,25 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
 // NOTES:       Currently only escort quests work so this function us still
 //              in its early stages in regards to the questType parameter.
 //////////////////////////////////////////////////////////////////////////////
-int MsgBoardPostQuest( int serial, QuestType questType )
+
+/*!
+\brief creates an automatic quest
+/note Since they are always general or regional, method is static because no single msgboard is normally selected
+\param targetserial serial of the quest's target
+\param questtype type of quest
+\param region validity region of quest (where is to be posted)
+\return serial of message posted 
+*/
+
+static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int region )
 {
-	TEXT	subjectEscort[]     = "Escort: Needed for the day.";  // Default escort message
-	TEXT	subjectBounty[]     = "Bounty: Reward for capture.";  // Default bounty message
-	TEXT	subjectItem[]       = "Lost valuable item.";          // Default item message
+	static const char subjectEscort[]     = "Escort: Needed for the day.";  // Default escort message
+	static const char subjectBounty[]     = "Bounty: Reward for capture.";  // Default bounty message
+	static const char subjectItem[]       = "Lost valuable item.";          // Default item message
+
+
+
+        
 	TEXT	subject[50]         = "";                             // String that will hold the default subject
 	SI32	sectionEntrys[MAXENTRIES];                            // List of SECTION items to store for randomizing
 
@@ -740,7 +758,7 @@ void MsgBoardQuestEscortCreate( int npcIndex )
 	}
 
 	// Post the message to the message board in the same REGION as the NPC
-	if ( !MsgBoardPostQuest(npc->getSerial32(), ESCORTQUEST) )
+	if ( !createQuest(npc->getSerial32(), ESCORTQUEST, /* //TODO : add region*/) )
 	{
 		ConOut( "NoX-Wizard: MsgBoardQuestEscortCreate() Failed to add quest post for %s\n", npc->getCurrentNameC() );
 		ConOut( "NoX-Wizard: MsgBoardQuestEscortCreate() Deleting NPC %s\n", npc->getCurrentNameC() );
@@ -1436,19 +1454,20 @@ std::vector<std::string> MsgBoardGetFile( char* pattern, char* path)
 
 
 /*!
-\brief gets all MsgBoards in region. NOTE: iterators returned in pair are inclusive!
-\param region region to scan for msgboards
+\brief gets all MsgBoards in region.
+\note the first iterator in the pair is the first of the range, but the second is the first of NEXT board or end()
 \returns if any msgboard is found, returns range (even if both iterators are the same), else both iterators point to MsgBoards.end()
 */
 
 static pair<cMsgBoards::iterator, cMsgBoards::iterator> cMsgBoard::getBoardsinRegion(int region)
 {
         	cMsgBoards::iterator it = MsgBoards.begin();
-                for(;((*it)->getRegion() != region) && (it != MsgBoards.end()); ++it) {} //With this we find the first board in whick region number is the same as the message to be deleted
+                //With this we find the first board in which region number is the same as the message to be deleted
+                it = for(;((*it)->getRegion() != region) && (it != MsgBoards.end()); ++it) {}
                 //check if the last msgboard is of the right region, else break out
                 if ((it == MsgBoards.end()) return pair<cMsgBoards::iterator, cMsgBoards::iterator>(it, it);
                 cMsgBoards::iterator itbegin = it;
-       	        for(;((it+1) != MsgBoards.end() && ((*(it+1))->getRegion() == region)); ++it) {} //it at the end of the cycle contains the LAST Msgboard in region
+       	        for(;((it) != MsgBoards.end() && ((*(it))->getRegion() == region)); ++it) {} //it at the end of the cycle contains the iterator to the first Msgboard in next region or end() if it was already the last
                 return pair<cMsgBoards::iterator, cMsgBoards::iterator> (itbegin, it);
 }
 #endif
