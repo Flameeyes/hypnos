@@ -1,7 +1,7 @@
-CC		=@/opt/xmingw/bin/i386-mingw32msvc-gcc
-CXX		=@/opt/xmingw/bin/i386-mingw32msvc-g++
-LINK		=@/opt/xmingw/bin/i386-mingw32msvc-g++
-STRIP		=@/opt/xmingw/bin/i386-mingw32msvc-strip
+CC		=@gcc
+CXX		=@g++
+LINK		=@g++
+STRIP		=@strip
 
 CXXFLAGS	:= $(CXXFLAGS) -mno-cygwin
 LDFLAGS		:= $(LDFLAGS) -mno-cygwin

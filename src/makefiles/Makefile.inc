@@ -1,7 +1,5 @@
-CXXBASEFLAGS	=-Wall -I $(PWD)/includes/ -pipe 
-LIBADD		=-lpthread -lmxmlplus -lwefts 
-
-TARGET		= hypnos
+CXXBASEFLAGS	= -I $(PWD)/includes/ -pipe 
+LIBADD		= -lpthread -lmxmlplus -lwefts 
 
 SUBDIRS		= src src/abstraction src/archs src/backend src/encryption src/extras src/objects src/objects/cchar src/objects/citem src/objects/cnpc src/races src/skills
 
@@ -16,5 +14,3 @@ all: ${TARGET}
 	@echo -e "\tCXX   $@"
 	$(CXX) $(CXXBASEFLAGS) $(CXXFLAGS) -c -o $@ $<
 
-clean:
-	-rm -f $(OBJECTS) $(TARGET)
