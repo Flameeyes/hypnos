@@ -806,20 +806,19 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 		}
 	}
 
-	//!\todo update trade windows to a more functional mode
-	if (dest->layer==0 && dest->getId() == 0x1E5E && dest->getContainer() == pc->getBody())
+	if(destcont && SecureTrade.size())	//Secure trade check
 	{
-		// Trade window???
-		if(dest->moreb == INVALID) return;
-		pItem pi_z = cSerializable::findItemBySerial(dest->moreb);
-
-		if ( pi_z )
-			if ((pi_z->morez || dest->morez))
+		sSecureTradeSession session = findTradeSession(destcont);
+		if (session.tradepartner)
+		{
+			if (session.status1 || session.status2)
 			{
+			//!\todo reset status
 				pi_z->morez=0;
 				dest->morez=0;
 				sendtradestatus( pi_z, dest );
 			}
+		}
 	}
 
 	if(SrvParms->usespecialbank)//only if special bank is activated
@@ -1146,7 +1145,7 @@ void cClient::dump_item(pItem pi, Location &loc) // Item is dropped on the groun
                         {
 				resetDragging();
                                 item_bounce6(pi);
-	               		pi->Refresh();
+				pi->Refresh();
 				updateStatusWindow(pi);
 			}
                         return;
@@ -1233,7 +1232,7 @@ void cClient::droppedOnChar(pItem pi, pChar dest)
 				// Item dropped on a Guard (possible bounty quest)
 				if ( npc->npcaitype == NPCAI_TELEPORTGUARD ) droppedOnGuard(pi, npc);
 				if ( npc->npcaitype == NPCAI_BEGGAR )	droppedOnBeggar(pi, npc);
-                                //! \todo add a money-accepting part even for non-trainers. They won't give karma for it, but they will thank nonetheless :P
+				//! \todo add a money-accepting part even for non-trainers. They won't give karma for it, but they will thank nonetheless :P
 				if(pc_currchar->getTrainer() != npc)
 				{
 					npc->talk(this, "Thank thee kindly, but I have done nothing to warrant a gift.", false);
@@ -1279,28 +1278,38 @@ void cClient::droppedOnChar(pItem pi, pChar dest)
 			}
 			else
 			{
-                                //<Luxor>: secure trade
-				pContainer tradeCont = tradestart((dynamic_cast<pPC>dest)->getClient());
-				if ( tradeCont )
+				//Now finding if they have already a secure trade session open
+				pClient tradeClient = (dynamic_cast<pPC>dest)->getClient();
+				sSecureTradeSession session = findTradeSession(tradeClient);
+				if (session.tradepartner)
 				{
-					tradeCont->AddItem( pi, 30, 30 );
-					dragItem = NULL;
-                                        resetDragging();
-				}
-				else
-				{
-					nPackets::Sent::BounceItem pk(5);
-					sendPacket(&pk);
-					if (isDragging())
+					pContainer tradeCont = tradestart(tradeClient);
+					if ( tradeCont )
 					{
+						tradeCont->AddItem( pi, 30, 30 );
+						dragItem = NULL;
 						resetDragging();
-						item_bounce5(pi);
-		                 		updateStatusWindow(pi);
+						return
 					}
-		                }
-                 //</Luxor>
-		        }
-	        }
+					else
+					{
+						nPackets::Sent::BounceItem pk(5);
+						sendPacket(&pk);
+						if (isDragging())
+						{
+							resetDragging();
+							item_bounce5(pi);
+							updateStatusWindow(pi);
+						}
+					}
+				}
+				else	//if trade session already open, send item to that container
+				{
+					pack_item(pi, session.container1);
+					return;
+				}
+			}
+		}
 	}
 	else // dumping stuff to his own backpack !
 	{
@@ -2131,6 +2140,20 @@ sSecureTradeSession cClient::findTradeSession(pContainer tradecontainer)
 	return session;
 }
 
+/*!
+\brief Finds the trade session between "this" and another client knowing the other client
+\author Chronodt (14/8/04)
+*/
+
+
+sSecureTradeSession cClient::findTradeSession(pClient tradeclient)
+{
+	std::list<sSecureTradeSession>::iterator it = SecureTrade.begin();
+	while(it!= SecureTrade.end()) if (it->tradepartner == tradeclient) return *it;
+	sSecureTradeSession session;
+	session.tradepartner = NULL;
+	return session;
+}
 
 
 /*!

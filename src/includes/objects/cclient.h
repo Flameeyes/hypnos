@@ -134,6 +134,7 @@ public:
 	{ SecureTrade.push_back(session); }
 	
 	sSecureTradeSession findTradeSession(pContainer tradecontainer);	//!< Finds the trade session between "this" and another client knowing "this" tradecontainer
+	sSecureTradeSession findTradeSession(pClient tradeclient);		//!< Finds the trade session between "this" and another client knowing the other client
 	pContainer tradestart(pClient targetClient);				//!< Opens a secure trade windows between this and targetClient. returns this client's ctrade container
 	static void sendtradestatus(pContainer cont1, pContainer cont2);	//!< updates secure trade window
 	static void dotrade(pContainer cont1,pContainer cont2);			//!< concludes trade (either swapping items or returning them)
