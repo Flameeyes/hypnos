@@ -124,4 +124,18 @@ So if you want to add a list of something in Hypnos sources, please use slist
 if you know you'll not use the reverse order (or you'll use it so rarely that
 a cycle or two more can't create problems to the rest of the emulator).
 
+\section prefixes Type name's prefixes
+
+To simplify the search for a defined type, I want the prefixes for the type
+names to be standardized, in this form:
+
+\li \b n Namespace
+\li \b c Class
+\li \b s Struct
+\li \b t Thread (it's a special class, derived from Wefts::Thread class) in
+	this case you should also set the name of the class in a -ing form,
+	see for example tKilling, tListening.
+\li \b e Exception (it's a special class, derived from
+	nLibhypnos::eException class)
+
 */

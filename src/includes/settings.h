@@ -36,6 +36,9 @@ namespace nSettings {
 	\brief Server related settings
 	*/
 	namespace Server {
+		std::string getLocalHostname();		//!< Gets the server local's hostname to bind the socket to [Default: localhost]
+		std::string getLocalPort();		//!< Gets the server local's port to bind the socket to [Default: 2593]
+	
 		bool isEnabledBookSystem();		//!< Is the book system enabled? [Default: true]
 		bool isEnabledTradeSystem();		//!< Is the trade system enabled? [Default: true]
 		bool isEnabledBountySystem();		//!< Is the bounty system enabled? [Default: true]
