@@ -23,91 +23,6 @@
 #include "inlines.h"
 #include "skills/skills.h"
 
-void split( std::string& source, std::string& first, std::string& second )
-{
-	first = "";
-	second = "";
-
-	register int i=0;
-	int size=source.size();
-
-	for( i=0; i<size; ++i ) {
-		if( (  source[i]!=0x09 ) && (  source[i]!=' ' ) )
-			break;;
-	}
-
-	//now is to first character valid
-
-	for( ; i<size; ++i ) {
-		if( source[i]!=' ' )
-			first+=source[i];
-	}
-
-	for( ; i<size; ++i ) {
-		if( source[i]!=' ' )
-			second+=source[i];
-	}
-}
-
-
-cStringFile::cStringFile( std::string& path, const char* mode )
-{
-	f = fopen( path.c_str(), mode );
-}
-
-cStringFile::~cStringFile()
-{
-	if( f!=NULL )
-		fclose( f );
-}
-
-
-void cStringFile::read( std::string& line )
-{
-	line="";
-
-	while( !feof(f) )
-	{
-		char c=(char)fgetc(f);
-
-		if( c==10 )
-			continue;
-
-		if( c==13 )
-			break; //after eol
-
-		line += c;
-	}
-
-	if( ( line.size()>1 ) && ( line[0]=='/' && line[1]=='/' ) ) //commented
-		line="";
-}
-
-void cStringFile::read( std::string& first, std::string& second )
-{
-
-	first=""; second="";
-
-	std::string line;
-	read( line );
-
-	split( line, first, second );
-
-}
-
-void cStringFile::read( std::string& first, std::string& second, std::string& third )
-{
-	std::string b;
-	read( first, b );
-	split( b, second, third );
-}
-
-
-bool cStringFile::eof()
-{
-	return (f!=NULL)? feof(f) : true;
-}
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -136,31 +51,6 @@ CWorldMain::~CWorldMain()
 		fclose(gWsc);
 	if (jWsc)
 		fclose(jWsc);
-}
-
-/*!
-\brief read from a file an unicode string
-\author Endymion
-\note intput is like 00AE001232120000, hex ( Big Endian Format )
-\return the unicode string
-\todo re-document
-*/
-wstring HexVector2UnicodeString( char* s )
-{
-	std::wstring w;
-
-	int i=0;
-	char temp[6] = { '0','x', };
-	wchar_t baffer=0;
-	do {
-		memcpy( &temp[2], &s[i], 4 );
-		char* dummy;
-		baffer = static_cast<wchar_t>( strtol( temp, &dummy, 0 ) );
-		if( baffer!=0 )
-			w += baffer;
-		i+=4;
-	} while ( baffer!=0 );
-	return w;
 }
 
 void CWorldMain::loadChar() // Load a character from WSC
@@ -209,7 +99,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 					Accounts->AddCharToAccount( str2num(script2), pc );
 			}
 			else if (!strcmp(script1, "ALLMOVE"))
-				pc->SetPriv2(str2num(script2))
+				pc->SetPriv2(str2num(script2));
 			else if (!strcmp(script1, "ATT"))
 				pc->att=str2num(script2);
 			else if (!strcmp(script1, "ADVOBJ"))
