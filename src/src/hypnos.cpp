@@ -82,7 +82,7 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "menu.h"
 #include "telport.h"
 #include "mount.h"
-#include "extras/jail.h"
+#include "extras/jails.h"
 #include "ai.h"
 #include "worldmain.h"
 #include "pointer.h"
@@ -464,6 +464,7 @@ int main(int argc, char *argv[])
 	SetGlobalVars();
 
 	nSkills::loadSkills();
+	nJails::loadJails();
 
 	ConOut("Loading Weapon type...");
 	loadweaponsinfo();
@@ -830,33 +831,6 @@ int main(int argc, char *argv[])
 
 	}
 	return 0;
-}
-
-
-
-/*!
-\brief Initialize  jails
-\author Sabrewulf
-\todo Rename it or better remove it
-*/
-void initque()
-{
-//Sabrewulf: scriptable jails locations
-//jails are the locations 1-10
-
-	int jailx, jaily, jailz;
-
-	for (int loc = 1; loc <= 10; loc ++)
-	{
-		jailx = jaily = jailz =INVALID;
-
-		location2xyz(loc, jailx, jaily, jailz);
-		if (jailx < 0 || jaily < 0 || jailz < 0) //if location is not found
-			prison::standardJailxyz (loc, jailx, jaily, jailz); //uses the standard jails
-
-		prison::addCell( loc, jailx, jaily, jailz );
-	}
-
 }
 
 void StoreItemRandomValue(pItem pi,int tmpreg)

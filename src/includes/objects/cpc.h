@@ -5,15 +5,12 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Declaration of cPC class
-*/
 
 #ifndef __CPC_H__
 #define __CPC_H__
 
 #include "objects/cchar.h"
+#include "extras/jails.h"
 
 /*!
 \brief This class represent a playing character.
@@ -22,15 +19,20 @@ In this class there are members used only for PCs, and not for NPCs.
 */
 class cPC : public cChar
 {
+protected:
+	pAccount account;
 public:
 	enum {
 		evtPcOnFlagChange = evtChrMax,
 		evtPcMax
 	};
 	
-	cPC();
-	cPC(uint32_t serial);
+	cPC(pAccount acc);
+	cPC(uint32_t serial, pAccount acc);
 	virtual ~cPC();
+	
+	inline pAccount getAccount() const
+	{ return account; }
 	
 	uint16_t calcAtt();
 	
@@ -151,6 +153,37 @@ public:
 	void setCriminal();
 	void makeCriminal();
 //@}
+
+//@{
+/*!
+\name Jail stuff
+\see nJails namespace
+*/
+protected:
+	nJails::cJailInfo *jailInfo;		//!< Pointer to the instance which describes the jail
+	nJails::sJailPositions *jailPositions;	//!< Pointer to a struct with original and jailed positions
+public:
+	//! Gets the pointer to the jail info
+	inline nJails::cJailInfo *getJailInfo() const
+	{ return jailInfo; }
+	
+	//! Gets the pointer to the jail positions struct
+	inline nJails::sJailPositions *getJailPositions() const
+	{ return jailPositions; }
+	
+	/*!
+	\brief Sets pointers to jail stuff
+	\param info New jailInfo pointer
+	\param positions New jailPositions pointer
+	\note info should always be NULL if jail is account-level
+	*/
+	inline void setJail(nJails::cJailInfo *info, nJails::sJailPositions *positions)
+	{
+		jailInfo = info;
+		jailPositions = positions;
+	}
+//@}
+
 };
 
 #endif

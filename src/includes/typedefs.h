@@ -57,6 +57,7 @@ typedef std::map<uint32_t, pMenu> MenuMap;	//!< Map of menus
 typedef class cAccount *pAccount;		//!< Pointer to a cAccount
 typedef std::map<std::string, pAccount> cAccounts;
 						//!< Hashed-map of accounts
+typedef std::list<pAccount> AccountList;	//!< List of accounts
 
 typedef std::vector<struct sPoint> PointVector;	//!< Vector of (x,y) points (uint16_t coords)
 typedef std::list<struct sLocation> LocationList;
@@ -78,6 +79,7 @@ typedef class cChar *pChar;			//!< Pointer to a cChar (character)
 typedef std::list<pChar> CharList;		//!< List of characters
 typedef class cPC *pPC;				//!< Pointer to a pPC (playing character)
 typedef std::vector<pPC> PCVector;		//!< Vector of playing characters
+typedef std::list<pPC> PCList;			//!< List of playinc characters
 typedef class cNPC *pNPC;			//!< Pointer to a pNPC (non playing character)
 
 //@}

@@ -50,11 +50,11 @@ struct sLocation {
 	}
 
 	//! == operator redefinition for sLocation
-	inline bool operator ==(const sLocation &b)
+	inline bool operator ==(const sLocation &b) const
 	{ return x == b.x && y == b.y && z == b.z; }
 	
 	//! != operator redefinition for sLocation
-	inline bool operator !=(const sLocation &b)
+	inline bool operator !=(const sLocation &b) const
 	{ return x != b.x || y != b.y || z != b.z; }
 
 	//! Converts a location (x,y,z) into a point (x,y)

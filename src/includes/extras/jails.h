@@ -22,6 +22,47 @@ namespace nJails {
 	void loadJails();
 	
 	const sLocation getCurrentJail();
+	bool isJailed(pPC pc);
+	
+	void checkJailed();
+	
+	void release(pClient client);
+	void release(pPC pc);
+	void release(pAccount acc);
+	
+	/*!
+	\brief Info about a jail for an account or a player
+	*/
+	class cJailInfo
+	{
+	protected:
+		pPC author;
+		std::string reason;
+		uint32_t releasetime;
+	public:
+		//! Gets the jail's author
+		inline pPC getAuthor() const
+		{ return author; }
+		
+		//! Gets the jail's reason
+		inline const std::string &getReason() const
+		{ return reason; }
+		
+		//! Gets the jail's release time
+		inline uint32_t getReleaseTime() const
+		{ return releasetime; }
+		
+		cJailInfo(pPC auth, std::string &reas, uint32_t release) :
+			author(auth), reason(reas), releasetime(release)
+		{ }
+	};
+	
+	//! Info about the position of a jailed character
+	struct sJailPositions
+	{
+		sLocation original;	//!< Location where the character should be released
+		sLocation jailed;	//!< Location where the character is jailed
+	};
 };
 
 #endif

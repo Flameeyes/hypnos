@@ -49,7 +49,6 @@ protected:
 	int32_t creationdate;				//!< Epoch of creation date
 	pPC banAuthor;					//!< Ban Author (if banned)
 	int32_t banReleaseTime;				//!< Epoch of release time of ban
-	int32_t jailtime;				//!< Epoch of jail's release time
 	uint32_t lastConnIP;				//!< Last connection IP
 	int32_t lastConnTime;				//!< Last connection epoch
 
@@ -117,6 +116,24 @@ public:
 		//!< Constructor with database row
 	~cAccount();
 		//!< Default destructor
+
+//@{
+/*!
+\name Jail stuff
+\see nJails namespace
+*/
+protected:
+	nJails::cJailInfo *jailInfo;		//!< Pointer to the instance which describes the jail
+public:
+	//! Gets the pointer to the jail info
+	inline nJails::cJailInfo *getJailInfo() const
+	{ return jailInfo; }
+	
+	//! Sets the pointer to the jail info
+	inline void setJailInfo(nJails::cJailInfo *info)
+	{ jailInfo = info; }
+//@}
+
 };
 
 #endif

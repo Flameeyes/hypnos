@@ -89,6 +89,8 @@ The constants of this group are or-ed together to get the server boolean's setti
 	static const uint64_t flagSkillsStealthOnHorse	= 0x0000000000000800;
 	//! Use a skill by skill skillcap
 	static const uint64_t flagSkillBySkillCap	= 0x0000000000001000;
+	//! Is the jail account level
+	static const uint64_t flagJailsAccountLevel	= 0x0000000000002000;
 //@}
 
 /*!
@@ -101,7 +103,7 @@ uint64_t flags =
 	flagServerBookSystem | flagServerTradeSystem | flagServerBountySystem |
 	flagHungerSystemEnabled | flagServerPopupHelp | flagServerUOAssist |
 	flagServerPlayerDeletePC | flagServerShowPCNames | flagActionsEquipOnDClick |
-	flagSkillBySkillCap;
+	flagSkillBySkillCap | flagJailsAccountLevel;
 
 //! Sets a determined flag on or off
 void setFlag(const uint64_t flag, bool on = true)
@@ -383,6 +385,21 @@ namespace Logging {
 		} while(n);
 	}
 	
+}
+
+namespace Jails {
+	bool isJailAccountLevel()
+	{ return flags & flagJailsAccountLevel; }
+
+	void load(MXML::Node *s)
+	{
+		MXML::Node *n = s->child();
+		do {
+			BOOLSETTING(StealthOnHorse, flagJailsAccountLevel)
+			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
+			n = n->next();
+		} while(n);
+	}
 }
 
 void load(std::istream &xmlfile)

@@ -119,6 +119,11 @@ namespace nSettings {
 	namespace Logging {
 		std::string getLogPath();		//!< Gets the absolute path of the logs directory
 	}
+	
+	//! Jails related stuff
+	namespace Jails {
+		bool isJailAccountLevel();		//!< Is the jail valid account-level, or character-level? [Default: true]
+	}
 };
 
 #endif
