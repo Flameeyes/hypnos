@@ -919,44 +919,33 @@ void cNetwork::enterchar(int s)
 	sLocation charpos= pc->getPosition();
 
 	Xsend(s, world, 6);
-#ifdef ENCRYPTION
 	Network->FlushBuffer(s);
-#endif
+
 	nPackets::Sent::LoginConfirmation pkLoginConf(pc);
 	client->sendPacket(&pkLoginConf);
-#ifdef ENCRYPTION
-	Network->FlushBuffer(s);
-#endif
+
 	pc->war=0;
 	Xsend(s, modeset, 5);
-#ifdef ENCRYPTION
 	Network->FlushBuffer(s);
-#endif
+
 	techstuff[3]=0x01;
 	Xsend(s, techstuff, 5);
-#ifdef ENCRYPTION
 	Network->FlushBuffer(s);
-#endif
+
 	techstuff[3]=0x02;
 	Xsend(s, techstuff, 5);
-#ifdef ENCRYPTION
 	Network->FlushBuffer(s);
-#endif
+
 	techstuff[3]=0x03;
 	Xsend(s, techstuff, 5);
-#ifdef ENCRYPTION
 	Network->FlushBuffer(s);
-#endif
+
 	nPackets::Sent::StartGame pkStartGame;
 	client->sendPacket(&pkStartGame);
-#ifdef ENCRYPTION
-	Network->FlushBuffer(s);
-#endif
+
 	nPackets::Sent::GameTime pkGameTime;
 	client->sendPacket(&pkGameTime);
-#ifdef ENCRYPTION
-	Network->FlushBuffer(s);
-#endif
+
 	pc->spiritspeaktimer=getclock();
 	pc->begging_timer=getclock();
 
@@ -1002,8 +991,10 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 
 	enterchar( s );
 	Network->FlushBuffer(s);
+
 	sysmessage(s,0x058, "%s %s %s [%s] Compiled by %s", PRODUCT, VER, VERNUMB, OS , NAME);
 	Network->FlushBuffer(s);
+
 	sysmessage(s,0x038, "Programmed by: %s",PROGRAMMERS);
 	Network->FlushBuffer(s);
 	// log last time signed on
