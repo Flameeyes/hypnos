@@ -168,4 +168,16 @@ enum Skill {
 \author Endymion
 */
 enum VarType { VAR_EFF =0, VAR_DEC, VAR_REAL, VAR_ACT, };
+
+//! Commands for PlotCourse packet
+enum PlotCourseCommands {
+	pccAddPin = 1,		//!< Add map poin
+	pccInsertPin,		//!< Add new pin with pin number (insertion. other pins after the number are pushed back.)
+	pccChangePin,		//!< Change pin
+	pccRemovePin,		//!< Remove pin
+	pccClearAllPins,	//!< Remove all pins on the map
+	pccToggleWritable,	//!< Toggle the 'editable' state of the map
+	pccWriteableStatus	//!< Return message from the server to request 6 of the client
+};
+		
 #endif

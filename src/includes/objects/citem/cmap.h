@@ -9,14 +9,10 @@
 \file
 \brief Header defining cContainer class
 */
-#ifndef __MAPS_H
-#define __MAPS_H
-
-class cMap;
-typedef cMap* pMap;
+#ifndef __CMAP_H__
+#define __CMAP_H__
 
 #include "objects/citem.h"
-#include "rtti.h"
 #include "typedefs.h"
 
 /*!
@@ -26,44 +22,43 @@ that the item is a map
 */
 class cMap : public cItem
 {
-	protected:
-        	struct pindataobject		        //!< this structure will hold x and y positions of a single pin in map
-                {
-                	uint16_t x;
-                        uint16_t y;
-                }
-                std::vector<pindataobject> pinData;    	//!< this vector will hold all the pins data (= their placement in the map)
-                bool writeable;				//!< map pins can be altered?
-               	inline pindataobject getPin(int pin)	//!< Gets pin data for pin number "pin" (pin goes from 1 to 50, as it appears on client)
-                	{ return pinData[pin - 1]; }
-        public:
-        	cMap(uint32_t ser);
-                cMap &operator = (const cMap &oldmap); 	//!< assignment operator = (for duping maps)
+protected:
+	PointVector pinData;    		//!< this vector will hold all the pins data (= their placement in the map)
+	bool writeable;				//!< map pins can be altered? \todo change in flag
+	inline sPoint getPin(uint32_t pin)	//!< Gets pin data for pin number "pin" (pin goes from 1 to 50, as it appears on client)
+	{ return pinData[pin - 1]; }
+public:
+	cMap();
+	cMap(uint32_t ser);
+	cMap &operator = (const cMap &oldmap); 	//!< assignment operator = (for duping maps)
 
-               	inline const uint32_t rtti() const          //!< returns the right rtti
-		{ return rtti::cMap; }
+	bool addPin(uint16_t x, uint16_t y);		//!< Adds a new pin to the map
+	bool insertPin(uint16_t x, uint16_t y, uint32_t pin); //!< Inserts a pin between 2 existing ones. existing pins >= pin get shifted by one
+	bool changePin(uint16_t x, uint16_t y, uint32_t pin);	//!< Moves pin to another position
+	bool removePin(uint32_t pin);		//!< Removes pin
+	bool clearAllPins();			//!< Removes all pins
+	bool toggleWritable();			//!< Toggle pin addability and replies to client actual writeability status
 
+	//! Gets x "coordinate" for pin number "pin" (1<= pin <= 50)
+	inline uint16_t getX(uint32_t pin)
+	{ return pinData[pin - 1].x; }
+	
+	//! Gets y "coordinate" for pin number "pin" (1<= pin <= 50)
+	inline uint16_t getY(uint32_t pin)
+	{ return pinData[pin - 1].y; }
+	
+	//! Returns number of pins in map
+	inline int getPinsNumber()
+	{ return pinData.size(); }
 
-                bool addPin(uint16_t x, uint16_t y);		//!< Adds a new pin to the map
-                bool insertPin(uint16_t x,uint16_t y, int pin); //!< Inserts a pin between 2 existing ones. existing pins >= pin get shifted by one
-                bool changePin(uint16_t x,uint16_t y, int pin);	//!< Moves pin to another position
-                bool removePin(int pin);		//!< Removes pin
-                bool clearAllPins();			//!< Removes all pins
-                bool toggleWritable();			//!< Toggle pin addability and replies to client actual writeability status
+	inline bool isBlankMap()
+	{ return type == ITYPE_BLANK_MAP; }
+	inline bool isWrittenMap()
+	{ return type == ITYPE_MAP; }
+	inline bool isTreasureMap()
+	{ return (type == ITYPE_TREASURE_MAP) || (type == ITYPE_DECIPHERED_MAP); }
+	
+	void doubleClicked(pClient client);
+};
 
-
-                inline uint16_t getX(int pin)               //!< Gets x "coordinate" for pin number "pin" (1<= pin <= 50)
-			{ return pinData[pin - 1].x; }
-                inline uint16_t getY(int pin)               //!< Gets y "coordinate" for pin number "pin" (1<= pin <= 50)
-			{ return pinData[pin - 1].y; }
-		inline int getPinsNumber()              //!< Returns number of pins in map
-                	{ return pinData.size(); }
-
-
-                inline bool isBlankMap()
-	                { return type == ITYPE_BLANK_MAP; }
-                inline bool isWrittenMap()
-        	        { return type == ITYPE_MAP; }
-                inline bool isTreasureMap()
-                	{ return (type == ITYPE_TREASURE_MAP) || (type == ITYPE_DECIPHERED_MAP); }
-}
+#endif

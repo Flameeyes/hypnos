@@ -10,12 +10,15 @@
 \brief Implementation of packets classes
 */
 
+#include "settings.h"
+#include "inlines.h"
 #include "objects/cpacket.h"
 #include "objects/cchar.h"
 #include "objects/cpc.h"
 #include "objects/cbody.h"
-#include "settings.h"
-#include "inlines.h"
+#include "objects/cclient.h"
+#include "objects/citem/cbook.h"
+#include "objects/citem/cmap.h"
 
 /*!
 \brief Status window
@@ -106,8 +109,10 @@ void nPackets::Sent::ObjectInformation::prepare()
 	//....if not, the item is a normal
 	//invisible light source!
 	if(pc->isGM() && pi->getId()==0x1647) ShortToCharPtr(0x0A0F, buffer +7);
-	else 	if (pc->canViewHouseIcon() && pi->getId()>=0x4000 && pi->getId()<=0x40FF) ShortToCharPtr(0x14F0, buffer +7);         // LB, 25-dec-1999 litle bugfix for treasure multis, ( == changed to >=)
-		else ShortToCharPtr(pi->animid(), buffer +7);
+	else if (pc->canViewHouseIcon() && pi->getId()>=0x4000 && pi->getId()<=0x40FF) ShortToCharPtr(0x14F0, buffer +7);
+	// LB, 25-dec-1999 litle bugfix for treasure multis, ( == changed to >=)
+	else ShortToCharPtr(pi->getAnimId(), buffer +7);
+	
 	ShortToCharPtr(pi->amount, buffer +9);
 	ShortToCharPtr(pos.x, buffer +11);
 	ShortToCharPtr(pos.y | 0xC000, buffer +13);
@@ -124,7 +129,7 @@ void nPackets::Sent::ObjectInformation::prepare()
 	buffer[offset]= pos.z;
 
 
-	if(pc->IsGM() && pi->getId()==0x1647) ShortToCharPtr(0x00C6, buffer + offset +1);	//let's show the lightsource like a blue item
+	if(pc->isGM() && pi->getId()==0x1647) ShortToCharPtr(0x00C6, buffer + offset +1);	//let's show the lightsource like a blue item
 	else ShortToCharPtr(pi->getColor(), buffer + offset + 1);
 
 	buffer[offset +2]=0;
@@ -132,7 +137,7 @@ void nPackets::Sent::ObjectInformation::prepare()
 
 	if (pi->magic==1 || pc->canAllMove()) itmput[offset +2]|=0x20; //item can be moved even if normally cannot
 
-	if ((pi->magic==3 || pi->magic==4) && pc->getSerial()==pi->getOwnerSerial32()) itmput[offset +2]|=0x20; //Item can be moved by owner for those "magic levels"
+	if ((pi->magic==3 || pi->magic==4) && pc == pi->getOwner() ) itmput[offset +2]|=0x20; //Item can be moved by owner for those "magic levels"
 
 	length = offset +4;
 	ShortToCharPtr(length, buffer +1);
@@ -392,7 +397,7 @@ void nPackets::Sent::ShowItemInContainer::prepare()
 	//is shown like a candle (so that he can move it),
 	//....if not, the item is a normal
 	//invisible light source!
-	if(pc->IsGM() && item.id == 0x1647)
+	if(pc->isGM() && item.id == 0x1647)
 	{
 		ShortToCharPtr(0x0A0F, ptrItem+5);
 		ShortToCharPtr(0x00C6, ptrItem+18);
@@ -640,83 +645,89 @@ void nPackets::Sent::BBoardCommand::prepare()
 {
 	switch (command)
         {
-        case bbcDisplayBBoard: //Display bulletin board
-		length = 38;
-	        buffer = new uint8_t[38];
-	        buffer[0] = 0x71;
-	        ShortToCharPtr(38, buffer +1); 	//message length
-	        buffer[3] = 0; 			//subcommand 0
-	        LongToCharPtr(msgboard->getSerial(), buffer + 4);	//board serial
-	        memset(buffer + 8, 0, 22);				//filling boardname with 22 zeroes
-	        LongToCharPtr(0x402000FF, buffer + 30);			//gump id, i believe
-	        LongToCharPtr(0x0, buffer + 34);			//zero
-
-		// If the name the item (Bulletin Board) has been defined, display it
-		// instead of the default "Bulletin Board" title.
-		if ( msgboard->getCurrentName().length() )
-			strncpy( buffer + 8, msgboard->getCurrentName(), 20);
-				 //Copying just the first 20 chars or we go out of bounds in the gump
-	        else
-			strcpy( buffer + 8, "Bulletin Board");
-                break;
-        case bbcSendMessageSummary:
-        	//calculating length of packet  before building buffer
-        	length = 16; //BASE length, the length of fixed-length components
-                pChar poster = message->getPoster();
-                std::string timestring = message->getTimeString();
-                length += poster->getCurrentName().size() + 2;
-                length += message->subject.size() + 2;
-                length += timestring.size() + 2;
-                buffer = new uint8_t[length];
-	        buffer[0] = 0x71;
-	        ShortToCharPtr(length, buffer +1); 					//message length
-	        buffer[3] = 1; 								//subcommand 1
-	        LongToCharPtr(msgboard->getSerial(), buffer + 4);			//board serial
- 	        LongToCharPtr(message->getSerial(), buffer + 8);			//message serial
-                LongToCharPtr(message->replyof->getSerial(), buffer + 12);		//parent message serial
-                int offset = 16;
-                buffer[16] = poster->getCurrentName().size() + 1;		//size() does not count the endstring 0
-		strcpy( buffer + 17, poster->getCurrentName().c_str() );
-                offset += poster->getCurrentName().size() + 2;
-                buffer[offset] = message->subject.size() + 1;
-                strcpy( buffer + offset + 1, message->subject.c_str());
-                offset += message->subject.size() + 2;
-                buffer[offset] = timestring.size() + 1;
-                strcpy( buffer + offset + 1, timestring.c_str());
-                break;
-        case bbcSendMessageBody:
-        	static const char pattern[29] = { 0x01, 0x90, 0x83, 0xea, 0x06,
-                				  0x15, 0x2e, 0x07, 0x1d, 0x17,
-                                                  0x0f, 0x07, 0x37, 0x1f, 0x7b,
-                                                  0x05, 0xeb, 0x20, 0x3d, 0x04,
-                                                  0x66, 0x20, 0x4d, 0x04, 0x66,
-                                                  0x0e, 0x75, 0x00, 0x00};
-                //calculating length of packet  before building buffer
-        	length = 12; //BASE length, the length of fixed-length components
-                pChar poster = message->getPoster();
-                std::string timestring = message->getTimeString();
-                length += poster->getCurrentName().c_str().size() + 2;
-                length += message->subject.size() + 2;
-                length += timestring.size() + 2;
-                buffer = new uint8_t[length];
-	        buffer[0] = 0x71;
-	        ShortToCharPtr(length, buffer +1); 	//message length
-	        buffer[3] = 2; 				//subcommand 2
-	        LongToCharPtr(msgboard->getSerial(), buffer + 4);	//board serial
- 	        LongToCharPtr(message->getSerial(), buffer + 8);	//message serial
-                int offset = 12;
-                buffer[12] = poster->getCurrentName().c_str().size() + 1;	//size() does not count the endstring \0 :)
-		strcpy( buffer + 17, poster->getCurrentName().c_str().c_str());
-                offset += poster->getCurrentName().c_str().size() + 2;
-                buffer[offset] = message->subject.size() + 1;
-                strcpy( buffer + offset + 1, message->subject.c_str());
-                offset += message->subject.size() + 2;
-                buffer[offset] = timestring.size() + 1;
-                strcpy( buffer + offset + 1, timestring.c_str());
-                offset += message->timestring.size() + 2;
-		strncpy( buffer + offset + 1, pattern, 29);
-                offset +=29;
-                strncpy( buffer + offset + 1, message->body->data(),message->body.size());
+		case bbcDisplayBBoard: //Display bulletin board
+		{
+			length = 38;
+			buffer = new uint8_t[38];
+			buffer[0] = 0x71;
+			ShortToCharPtr(38, buffer +1); 	//message length
+			buffer[3] = 0; 			//subcommand 0
+			LongToCharPtr(msgboard->getSerial(), buffer + 4);	//board serial
+			memset(buffer + 8, 0, 22);				//filling boardname with 22 zeroes
+			LongToCharPtr(0x402000FF, buffer + 30);			//gump id, i believe
+			LongToCharPtr(0x0, buffer + 34);			//zero
+	
+			// If the name the item (Bulletin Board) has been defined, display it
+			// instead of the default "Bulletin Board" title.
+			if ( msgboard->getCurrentName().length() )
+				strncpy( buffer + 8, msgboard->getCurrentName(), 20);
+					//Copying just the first 20 chars or we go out of bounds in the gump
+			else
+				strcpy( buffer + 8, "Bulletin Board");
+			break;
+		}
+		case bbcSendMessageSummary:
+		{
+			//calculating length of packet  before building buffer
+			length = 16; //BASE length, the length of fixed-length components
+			pChar poster = message->getPoster();
+			std::string timestring = message->getTimeString();
+			length += poster->getCurrentName().size() + 2;
+			length += message->subject.size() + 2;
+			length += timestring.size() + 2;
+			buffer = new uint8_t[length];
+			buffer[0] = 0x71;
+			ShortToCharPtr(length, buffer +1); 					//message length
+			buffer[3] = 1; 								//subcommand 1
+			LongToCharPtr(msgboard->getSerial(), buffer + 4);			//board serial
+			LongToCharPtr(message->getSerial(), buffer + 8);			//message serial
+			LongToCharPtr(message->replyof->getSerial(), buffer + 12);		//parent message serial
+			int offset = 16;
+			buffer[16] = poster->getCurrentName().size() + 1;		//size() does not count the endstring 0
+			strcpy( buffer + 17, poster->getCurrentName().c_str() );
+			offset += poster->getCurrentName().size() + 2;
+			buffer[offset] = message->subject.size() + 1;
+			strcpy( buffer + offset + 1, message->subject.c_str());
+			offset += message->subject.size() + 2;
+			buffer[offset] = timestring.size() + 1;
+			strcpy( buffer + offset + 1, timestring.c_str());
+			break;
+		}
+		case bbcSendMessageBody:
+		{
+			static const char pattern[29] = { 0x01, 0x90, 0x83, 0xea, 0x06,
+							0x15, 0x2e, 0x07, 0x1d, 0x17,
+							0x0f, 0x07, 0x37, 0x1f, 0x7b,
+							0x05, 0xeb, 0x20, 0x3d, 0x04,
+							0x66, 0x20, 0x4d, 0x04, 0x66,
+							0x0e, 0x75, 0x00, 0x00};
+			//calculating length of packet  before building buffer
+			length = 12; //BASE length, the length of fixed-length components
+			pChar poster = message->getPoster();
+			std::string timestring = message->getTimeString();
+			length += poster->getCurrentName().c_str().size() + 2;
+			length += message->subject.size() + 2;
+			length += timestring.size() + 2;
+			buffer = new uint8_t[length];
+			buffer[0] = 0x71;
+			ShortToCharPtr(length, buffer +1); 	//message length
+			buffer[3] = 2; 				//subcommand 2
+			LongToCharPtr(msgboard->getSerial(), buffer + 4);	//board serial
+			LongToCharPtr(message->getSerial(), buffer + 8);	//message serial
+			int offset = 12;
+			buffer[12] = poster->getCurrentName().c_str().size() + 1;	//size() does not count the endstring \0 :)
+			strcpy( buffer + 17, poster->getCurrentName().c_str().c_str());
+			offset += poster->getCurrentName().c_str().size() + 2;
+			buffer[offset] = message->subject.size() + 1;
+			strcpy( buffer + offset + 1, message->subject.c_str());
+			offset += message->subject.size() + 2;
+			buffer[offset] = timestring.size() + 1;
+			strcpy( buffer + offset + 1, timestring.c_str());
+			offset += message->timestring.size() + 2;
+			strncpy( buffer + offset + 1, pattern, 29);
+			offset +=29;
+			strncpy( buffer + offset + 1, message->body->data(),message->body.size());
+		}
         }
 }
 
@@ -1610,7 +1621,7 @@ bool nPackets::Received::MapPlotCourse::execute(pClient client)
 {
         if (length != 10) return false;
 
-        pMap map = (pMap)cSerializable::findItemBySerial(LongFromCharPtr(buffer + 1));
+        pMap map = dynamic_cast<pMap>(cSerializable::findItemBySerial(LongFromCharPtr(buffer + 1)));
         if(!map) return false;
 
         PlotCourseCommands command     	= buffer[5];
@@ -1620,20 +1631,18 @@ bool nPackets::Received::MapPlotCourse::execute(pClient client)
 
         switch(command)
         {
-        	case AddPin:
+        	case pccAddPin:
                         return map->addPin(x, y);
-                case InsertPin:
+                case pccInsertPin:
                         return map->insertPin(x,y,pin);
-                case ChangePin:
+                case pccChangePin:
                 	return map->changePin(x,y,pin);
-                case RemovePin:
+                case pccRemovePin:
                 	return map->removePin(pin);
-                case ClearAllPins:
+                case pccClearAllPins:
                 	return map->clearAllPins();
-                case ToggleWritable:
+                case pccToggleWritable:
                 	return map->toggleWritable();
-                case WriteableStatus:  //this message is only sent, so if it is received, continues out of the switch and returns false :D
-                default:
         }
         return false;
 }
@@ -1646,7 +1655,6 @@ bool nPackets::Received::MapPlotCourse::execute(pClient client)
 
 \todo do the login sequence packets
 */
-
 bool nPackets::Received::LoginChar::execute(pClient client)
 {
         if (length != 73) return false;
@@ -2580,7 +2588,7 @@ bool nPackets::Received::CharProfileRequest::execute(pClient client)
 	else
 	{ //only send
 		nPackets::Sent::CharProfile pk(serial, who);
-		client->sendPacket(&pk)
+		client->sendPacket(&pk);
 	}
         return true;
 }
@@ -2597,12 +2605,12 @@ bool nPackets::Received::ClientVersion::execute(pClient client)
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
 
-	std::string clientNumber(buffer + 3); //char* constructor of std::string, takes the null-terminated string
+	std::string clientNumber((char*)(buffer + 3)); //char* constructor of std::string, takes the null-terminated string
 	if ( clientNumber.size() > 10) client->clientDimension = 3;
         			  else client->clientDimension = 2;
 	client->sysmessage("You are using a %iD client, version %s", client->clientDimension, clientNumber.c_str());
 
-	std::vestor<std::string>::const_iterator viter = find(clientsAllowed.begin(), clientsAllowed.end(), "ALL");
+	stringVector::const_iterator viter = std::find(clientsAllowed.begin(), clientsAllowed.end(), "ALL");
 	if ( viter != clientsAllowed.end() ) return true; // ALL mode found/activated -> quit
 
 	viter = find(clientsAllowed.begin(), clientsAllowed.end(), "SERVER_DEFAULT");
@@ -2670,60 +2678,67 @@ bool nPackets::Received::MiscCommand::execute(pClient client)
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
 	uint16_t subcommand = ShortFromCharPtr(buffer + 3);
-        pPC = client->currChar();
+        pPC pc = client->currChar();
 	// please don't remove the // unknowns ... want to have them as dokumentation
 	switch (subcommand)
 	{
-        case 0x04: // documentation tells me this is "Close generic gump". unverified (Chronodt 5/8/04)
-		break;
-	case 0x05: // Screen size
-	        uint16_t x = ShortFromCharPtr(buffer + 7);
-                uint16_t y = ShortFromCharPtr(buffer + 9);
-                //! \todo should we use this somehow?? Maybe in addition of viewrange?
-		break;
-       	case 0x06: //party subcommand
-        	//!\todo verify party
-        	Partys.receive( ps );
-		break;
-
-	case 0x09:	//Luxor: Wrestling Disarm Macro support
-		if ( pc ) pc->setWresMove(WRESDISARM);
-		break;
-	case 0x0a: //Luxor: Wrestling Stun punch Macro support
-		if ( pc ) pc->setWresMove(WRESSTUNPUNCH);
-		break;
-
-	case 0x0b: // client language, might be used for server localisation
-
-		// please no strcpy or memcpy optimization here, because the input ain't 0-termianted and memcpy might be overkill
-		client_lang[0]=buffer[5];
-		client_lang[1]=buffer[6];
-		client_lang[2]=buffer[7];
-		client_lang[3]=0;
-		// do dometihng with language information from client
-		// ...
-	   	break;
-
-        case 0x0e: // UO:3D menus
-		if ( pc ) pc->playAction(buffer[8]);
-		break;
-        case 0x0f: // unknown, sent once on login
-        	break;
-        case 0x13: // documentation tells me this is a "Request popup menu". unverified (Chronodt 5/8/04)
-                uint32_t character_id = LongFromCharPtr(buffer + 5);
-                //!\todo this subcommand..... but what does it do?? :D
-                break;
-	case 0x1a: // Extended stats (statlocks)
-		uint8_t  stat = buffer[5];
-		uint8_t  status = buffer[6]; // 0: up, 1:down, 2: locked
-                //!\todo this is the new client's statlock similar to skill locks, so link this in the statlimit
-                break;
-	case 0x1c: //Spell selected, client side
-		uint32_t serial = LongFromCharPtr(buffer + 5); // player
-		uint16_t selected_spell = ShortFromCharPtr(buffer + 9); // 4=heal, 5=magic arrow etc
-                //!\todo call magic stuff here. Obiously this packets sends necro & paladin stuff too (clients 4 and above)
-		break;
-	default:
+		case 0x04: // documentation tells me this is "Close generic gump". unverified (Chronodt 5/8/04)
+			break;
+		case 0x05: // Screen size
+		{
+			uint16_t x = ShortFromCharPtr(buffer + 7);
+			uint16_t y = ShortFromCharPtr(buffer + 9);
+			//! \todo should we use this somehow?? Maybe in addition of viewrange?
+			break;
+		}
+		case 0x06: //party subcommand
+			//!\todo verify party
+			Partys.receive( ps );
+			break;
+	
+		case 0x09:	//Luxor: Wrestling Disarm Macro support
+			if ( pc ) pc->setWresMove(WRESDISARM);
+			break;
+		case 0x0a: //Luxor: Wrestling Stun punch Macro support
+			if ( pc ) pc->setWresMove(WRESSTUNPUNCH);
+			break;
+	
+		case 0x0b: // client language, might be used for server localisation
+	
+			// please no strcpy or memcpy optimization here, because the input ain't 0-termianted and memcpy might be overkill
+			client_lang[0]=buffer[5];
+			client_lang[1]=buffer[6];
+			client_lang[2]=buffer[7];
+			client_lang[3]=0;
+			// do dometihng with language information from client
+			// ...
+			break;
+	
+		case 0x0e: // UO:3D menus
+			if ( pc ) pc->playAction(buffer[8]);
+			break;
+		case 0x0f: // unknown, sent once on login
+			break;
+		case 0x13: // documentation tells me this is a "Request popup menu". unverified (Chronodt 5/8/04)
+		{
+			uint32_t character_id = LongFromCharPtr(buffer + 5);
+			//!\todo this subcommand..... but what does it do?? :D
+			break;
+		}
+		case 0x1a: // Extended stats (statlocks)
+		{
+			uint8_t  stat = buffer[5];
+			uint8_t  status = buffer[6]; // 0: up, 1:down, 2: locked
+			//!\todo this is the new client's statlock similar to skill locks, so link this in the statlimit
+			break;
+		}
+		case 0x1c: //Spell selected, client side
+		{
+			uint32_t serial = LongFromCharPtr(buffer + 5); // player
+			uint16_t selected_spell = ShortFromCharPtr(buffer + 9); // 4=heal, 5=magic arrow etc
+			//!\todo call magic stuff here. Obiously this packets sends necro & paladin stuff too (clients 4 and above)
+			break;
+		}
 	}
 	return true;
 }
@@ -2736,7 +2751,6 @@ bool nPackets::Received::MiscCommand::execute(pClient client)
 
 \note I totally have NO IDEA on what this packet does or when it is sent
 */
-
 bool nPackets::Received::TextEntryUnicode::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
@@ -2747,7 +2761,7 @@ bool nPackets::Received::TextEntryUnicode::execute(pClient client)
 	uint32_t player_id = LongFromCharPtr(buffer + 3);
 	uint32_t message_id = LongFromCharPtr(buffer + 7);
 	uint32_t unknown = LongFromCharPtr(buffer + 11);	//always 1
-	char[3] language;
+	char language[3];
         memcpy(language, buffer +15, 3);
 	cSpeech text = cSpeech(buffer + 18);
         //!\todo finish this packet (and undestand when and why it is sent -_-)
@@ -2760,7 +2774,6 @@ bool nPackets::Received::TextEntryUnicode::execute(pClient client)
 \param client client who sent the packet
 \note packet 0xc8
 */
-
 bool nPackets::Received::ClientViewRange::execute(pClient client)
 {
        	if (length != 2) return false;
@@ -2783,7 +2796,7 @@ bool nPackets::Received::ClientViewRange::execute(pClient client)
 bool nPackets::Received::LogoutStatus::execute(pClient client)
 {
        	if (length != 2) return false;
-	nPackets::Sent::LogoutStatus pk();
+	nPackets::Sent::LogoutStatus pk;
         client->sendPacket(&pk);
         return true;
 }
@@ -2807,15 +2820,15 @@ bool nPackets::Received::NewBookHeader::execute(pClient client)
 //        uint16_t pagenumber = ShortFromCharPtr(buffer + 9);	//we don't really need this information (for now)
 
 	uint16_t authorsize = ShortFromCharPtr(buffer + 11);
-	std::string author  = string(buffer + 13);
+	std::string author  = std::string((char*)(buffer + 13));
         if (author.size() != authorsize) return false;
 
       	uint16_t titlesize  = ShortFromCharPtr(buffer + 13 + authorsize);
-        std::string title   = string(buffer + 15 + authorsize);
+        std::string title   = std::string((char*)(buffer + 15 + authorsize));
         if (title.size() != titlesize) return false;
 
-	book->changeAuthor(author);
-	book->changeTitle(title);
+	book->setAuthor(author);
+	book->setTitle(title);
 
 	return true;
 }
@@ -2826,7 +2839,6 @@ bool nPackets::Received::NewBookHeader::execute(pClient client)
 \param client client who sent the packet
 \note packet 0xd7
 */
-
 bool nPackets::Received::FightBookSelection::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);

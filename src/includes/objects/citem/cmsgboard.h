@@ -18,8 +18,39 @@
 #include "common_libs.h"
 #include "enums.h"
 #include "objects/citem.h"
+#include "objects/cpacket.h"
+#include <wefts_mutex.h>
 
-#include <wefts_mutes.h>
+
+/*!
+\brief Message board's message
+\author Chronodt & Flameeyes
+*/
+class cMessage : public cItem
+{
+friend class nPackets::Sent::BBoardCommand;
+protected:
+	pPC poster;		//!< Poster pc, NULL if autoposted
+	std::string subject;	//!< Subject of message (title)
+	std::string body;	//!< body of message
+	time_t posttime;	//!< time of posting
+	PostType availability;  //!< local/regional/general post
+	QuestType qtype;	//!< type of quest
+	uint32_t replyof;	//!< serial of post of whom this is reply of. If 0 this is a new post
+	bool autopost;		//!< true if autoposted by server
+	uint32_t targetnpc;	//!< if LOCAL post it is unused, if quest contains the serial of the target of the quest
+
+public:
+	cMessage();
+	cMessage(uint32_t serial);
+	~cMessage();
+	
+	std::string getTimeString();
+	
+	bool isExpired();	//!< expiration time check & delete. Returns true if post has been deleted for reaching expiration time
+	void refreshQuestMessage();
+};
+
 
 /*!
 \brief Message boards handling
@@ -28,42 +59,7 @@
 */
 class cMsgBoard : public cItem
 {
-friend class nPackets::Sent::MsgBoardItemsinContainer;
-public:
-	typedef class cMessage* pMessage;
-	typedef std::list<pMessage> MessageList;
-	typedef std::list<pMsgBoard> BoardsList;
-	/*!
-	\brief Message board message
-	\author Chronodt & Flameeyes
-	*/
-	class cMessage : public cItem
-	{
-	friend class nPackets::Sent::BBoardCommand;
-	protected:
-		pPC poster;		//!< Poster pc, NULL if autoposted
-		std::string subject;	//!< Subject of message (title)
-		std::string body;	//!< body of message
-		time_t posttime;	//!< time of posting
-		PostType availability;  //!< local/regional/general post
-		QuestType qtype;	//!< type of quest
-		uint32_t replyof;	//!< serial of post of whom this is reply of. If 0 this is a new post
-		bool autopost;		//!< true if autoposted by server
-		uint32_t targetnpc;	//!< if LOCAL post it is unused, if quest contains the serial of the target of the quest
-	
-	public:
-		cMessage();
-		cMessage(uint32_t serial);
-		~cMessage();
-		
-		std::string getTimeString();
-		
-		bool isExpired();	//!< expiration time check & delete. Returns true if post has been deleted for reaching expiration time
-		void refreshQuestMessage();
-	};
-	
-	friend class cMessage;
-
+friend class cMessage;
 protected:
 	static BoardsList boards;	//!< All the boards (used for maintenance)
 	static Wefts::Mutex boardsMutex;//!< Mutex for the access of cMsgBoard::boards variable

@@ -13,7 +13,6 @@
 #include "enums.h"
 #include "structs.h"
 #include "speech.h"
-#include "objects/citem/cmsgboard.h"
 
 namespace nPackets {
 
@@ -55,7 +54,8 @@ namespace nPackets {
 			return length;
 		}
 	
-		virtual void fixForClient(ClientType ct) = 0;
+		virtual void fixForClient(ClientType ct)
+		{ }
 	};
 	
 
@@ -117,7 +117,7 @@ namespace nPackets {
 		class LSDObject : public cPacketSend
 		{
 		protected:
-			pItem item;		//!< Item
+			pItem pi;		//!< Item
 			pPC pc;			//!< Player who sees the item
 			uint16_t color;		//!< new color of item
 			Location position;	//!< new position of item
@@ -129,7 +129,7 @@ namespace nPackets {
 			\param pos new position of item
 			*/
 			inline LSDObject(pItem i, pPC p, uint16_t c, Location pos) :
-				cPacketSend(NULL, 0), item(i), pc(p), color(c), position(pos)
+				cPacketSend(NULL, 0), pi(i), pc(p), color(c), position(pos)
 			{ }
 			void prepare();
 		};
@@ -281,7 +281,7 @@ namespace nPackets {
 			Location destination; 	//!< where the item is dragged to
 			uint16_t amount;	//!< how many items in stack
 		public:
-			inline DragItem(pItem aitem, Location aDestination, uint16_t aAmount) :
+			inline DragItem(pItem aItem, Location aDestination, uint16_t aAmount) :
 				cPacketSend(NULL, 0), item(aItem), destination(aDestination), amount(aAmount)
 			{ }
 
@@ -293,14 +293,13 @@ namespace nPackets {
 		\author Chronodt
 		\note packet 0x24
 		*/
-
 		class OpenGump : public cPacketSend
 		{
 		protected:
 			uint32_t serial; 		//!< serial of gump or gump-related item/char
 			uint16_t gump;			//!< gump id
 		public:
-			inline OpenGump(pItem aSerial, uint16_t aGump) :
+			inline OpenGump(uint32_t aSerial, uint16_t aGump) :
 				cPacketSend(NULL, 0), serial(aSerial), gump(aGump)
 			{ }
 
@@ -572,16 +571,6 @@ namespace nPackets {
 			void prepare();
 		};
 		
-		enum PlotCourseCommands {
-			pccAddPin = 1,		//!< Add map poin
-			pccInsertPin,		//!< Add new pin with pin number (insertion. other pins after the number are pushed back.)
-			pccChangePin,		//!< Change pin
-			pccRemovePin,		//!< Remove pin
-			pccClearAllPins,	//!< Remove all pins on the map
-			pccToggleWritable,	//!< Toggle the 'editable' state of the map
-			pccWriteableStatus	//!< Return message from the server to request 6 of the client
-		};
-		
 		class MapPlotCourse : public cPacketSend
 		{
 		protected:
@@ -619,7 +608,7 @@ namespace nPackets {
 		
 			const pMsgBoard msgboard;
 			const BBoardCommands command;
-			const cMsgBoard::cMessage *message;
+			const pMessage message;
 		
 		public:
 			/*!
@@ -627,7 +616,7 @@ namespace nPackets {
 			\param com command for the msgboard
 			\param mess message to be sent. May be omitted if command is DisplayBBoard
 			*/
-			inline BBoardCommand(pMsgBoard m, BBoardCommands com, cMsgBoard::cMessage *mess = NULL) :
+			inline BBoardCommand(pMsgBoard m, BBoardCommands com, pMessage mess = NULL) :
 				cPacketSend(NULL, 0), msgboard (m), command(com), message(mess)
 			{ }
 		

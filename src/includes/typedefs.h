@@ -59,6 +59,8 @@ typedef class cAccount *pAccount;		//!< Pointer to a cAccount
 typedef std::map<std::string, pAccount> cAccounts;
 						//!< Hashed-map of accounts
 
+typedef std::vector<struct sPoint> PointVector;	//!< Vector of (x,y) points (uint16_t coords)
+
 //@{
 /*!
 \name Objects and serializables
@@ -83,17 +85,20 @@ typedef class cNPC *pNPC;			//!< Pointer to a pNPC (non playing character)
 /*!
 \name Items and subclasses
 */
-
 typedef class cItem *pItem;			//!< Pointer to a cItem
 typedef std::list<pItem> ItemList;		//!< List of items
 typedef class cEquippable *pEquippable;		//!< Pointer to a cEquippable
 typedef class cBook *pBook;			//!< Pointer to a cBook
 typedef class cWeapon *pWeapon;			//!< Pointer to a cWeapon
 typedef class cContainer *pContainer;		//!< Pointer to a cContainer
-typedef class cMsgBoard *pMsgBoard;		//!< Pointer to a cMsgBoard
 typedef class cMap *pMap;			//!< Pointer to a cMap
 typedef class cEquippableContainer *pEquippableContainer;
 						//!< Pointer to a cEquippableContainer (backpacks, bank boxes)
+
+typedef class cMsgBoard *pMsgBoard;		//!< Pointer to a cMsgBoard
+typedef class cMessage* pMessage;
+typedef std::list<pMessage> MessageList;	//!< List of messages
+typedef std::list<pMsgBoard> BoardsList;	//!< List of message boards
 //@}
 
 #endif //__TYPEDEFS_H__

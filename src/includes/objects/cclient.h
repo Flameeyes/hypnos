@@ -124,7 +124,7 @@ protected:
 		pContainer container2;
 		bool status1;		//status of the secure trade: flagged or not
 		bool status2;		//status of the secure trade: flagged or not
-	}
+	};
 
 	std::list<sSecureTradeSession> SecureTrade;	//!< Holds the secure trade session of this client (begun and received both)
 

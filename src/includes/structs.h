@@ -69,6 +69,7 @@ struct sContainerItem
 struct sPoint {
 	uint16_t x;
 	uint16_t y;
+	sPoint(uint16_t X, uint16_t Y) : x(X), y(Y) { }
 };
 
 struct location_st

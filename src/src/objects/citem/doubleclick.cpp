@@ -499,21 +499,6 @@ void cItem::doubleClicked(pClient client)
     		  //TODO check if pc has a pen to write maps with
                 //! \todo map writing code
 		return;
-	case ITYPE_MAP:
-                nPackets::Sent::OpenMapGump pk((pMap)this);
-		client->sendPacket(&pk);
-                nPackets::Sent::MapPlotCourse pk2((pMap)this, ClearAllPins); //Sending clear all pins command
-		client->sendPacket(&pk2);
-
-                std::vector<pindataobject>::iterator iter = ((pMap)this)->pinData.begin()
-                for(int i = 1;i <= ((pMap)this)->getPinsNumber(); i++)
-                {
-                	nPackets::Sent::MapPlotCourse pki((pMap)this, AddPin, 0, ((pMap)this)->getX(i), ((pMap)this)->getY(i));
-			client->sendPacket(&pki);
-                }
-
-
-		return;
 	case ITYPE_DOOR:
 
 //TODO: redo when houses updated
@@ -750,31 +735,6 @@ void cItem::doubleClicked(pClient client)
 
 			return;
 			}
-	case ITYPE_TREASURE_MAP:
-                //TODO: redo when treasures redone
-			Skills::Decipher(this, client);
-			return;
-
-	case ITYPE_DECIPHERED_MAP:
-
-                	nPackets::Sent::OpenMapGump pk((pMap)this);
-			client->sendPacket(&pk);
-	                nPackets::Sent::MapPlotCourse pk2((pMap)this, ClearAllPins); //Sending clear all pins command
-			client->sendPacket(&pk2);
-        
-			// Generate message to add a map point
-			int16_t posx, posy;					// tempoary storage for map point
-			int16_t tlx, tly, lrx, lry;				// tempoary storage for map extends
-			tlx = (more1 << 8)  | more2;
-			tly = (more3 << 8)  | more4;
-			lrx = (moreb1 << 8) | moreb2;
-			lry = (moreb3 << 8) | moreb4;
-			posx = (256 * (morex - tlx)) / (lrx - tlx);		// Generate location for point
-			posy = (256 * (morey - tly)) / (lry - tly);
-                        
-                        nPackets::Sent::MapPlotCourse pk3((pMap)this, AddPin,0,posx, posy);//Sending add pin command
-			client->sendPacket(&pk3);
-			return;
 		default:
 			break;
 	}

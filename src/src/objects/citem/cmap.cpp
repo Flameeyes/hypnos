@@ -5,12 +5,16 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Implementation of cMap class
-*/
 
-#include "cmap.h"
+#include "enums.h"
+#include "skills/skills.h"
+#include "objects/citem/cmap.h"
+#include "objects/cpacket.h"
+#include "objects/cclient.h"
+
+cMap::cMap() : cItem()
+{
+}
 
 /*!
 \brief cMap constructor
@@ -19,48 +23,40 @@
 cMap::cMap(uint32_t ser) : cItem(ser)
 {
 	writeable = true;
-//        pinData.clear();  //should not be necessary
 }
 
-
-cMap &operator = (const cMap &oldmap)
+cMap &cMap::operator= (const cMap &oldmap)
 {
-        pinData.clear();	//if assigned map was not "empty" (without pins), now it is :D
-
-       	//Now copying pindata to the new map
-        for(int i = 1; i <= oldmap.getPinsNumber(); i++) pinData.push_back(oldmap.getPin(int pin))
-        *((pItem)this) = (cItem)oldmap; //using the parent operator = function to copy all other parameters
-	return *this;
+	pinData = oldmap.pinData;
+	return dynamic_cast<cMap&>(cItem::operator=(dynamic_cast<const cItem&>(oldmap)));//using the parent operator = function to copy all other parameters
 }
 
 
 /*!
 \brief Adds a new pin to the map
 */
-
-
 bool cMap::addPin(uint16_t x, uint16_t y)
 {
-	if ((pin > 50) || !writeable) return false;
-	pinData.push_back(pindataobject(x,y));
+	if ( pinData.size() > 50 || !writeable) return false;
+	pinData.push_back(sPoint(x,y));
         return true;
 }
 
-bool cMap::insertPin(uint16_t x,uint16_t y, int pin) 	//!< Inserts a pin between 2 existing ones. existing pins >= pin get shifted by one
+bool cMap::insertPin(uint16_t x,uint16_t y, uint32_t pin) 	//!< Inserts a pin between 2 existing ones. existing pins >= pin get shifted by one
 {
 	if (pin >= pinData.size() || !writeable) return false;
-	pinData.insert(pin - 1, pindataobject(x,y));
+	pinData.insert(pin - 1, sPoint(x,y));
         return true;
 }
 
-bool cMap::changePin(uint16_t x,uint16_t y, int pin)	//!< Moves pin to another position
+bool cMap::changePin(uint16_t x,uint16_t y, uint32_t pin)	//!< Moves pin to another position
 {
 	if (pin > pinData.size() || !writeable) return false;
-	pinData[pin - 1] = pindataobject(x,y);
+	pinData[pin - 1] = sPoint(x,y);
         return true;
 }
 
-bool cMap::removePin(int pin)		//!< Removes pin
+bool cMap::removePin(uint32_t pin)		//!< Removes pin
 {
 	if ((pin < 1) || (pin > pinData.size()) || !writeable ) return false;
         pinData.erase(pinData.begin() + pin - 1);
@@ -78,7 +74,47 @@ bool cMap::toggleWritable()		//!< Toggle pin addability and replies to client ac
 {
 	if (!isTreasureMap()) writeable = !writeable;
         else writeable = false;
-      	nPackets::Sent::MapPlotCourse pk(this, WriteableStatus, writeable, iter->x, iter->y);
+      	nPackets::Sent::MapPlotCourse pk(this, pccWriteableStatus, writeable, iter->x, iter->y);
+		//!\todo Chrono you should take a look to this!
 	client->sendPacket(&pk);
         return true;
+}
+
+void cMap::doubleClicked(pClient client)
+{
+	if ( type == ITYPE_TREASURE_MAP ) {
+		//! \todo: redo when treasures redone
+		nSkills::Decipher(this, client);
+		return;
+	}
+	
+	// This is common both for ITYPE_MAP and ITYPE_DECIPHERED_MAP
+	nPackets::Sent::OpenMapGump pk(this);
+	client->sendPacket(&pk);
+	nPackets::Sent::MapPlotCourse pk2(this, pccClearAllPins); //Sending clear all pins command
+	client->sendPacket(&pk2);
+	
+	//!\todo Replace this type thing with flags
+	if ( type == ITYPE_MAP )
+	{
+		for(PointVector::iterator it = pinData.begin(); it != pinData.end(); it++)
+		{
+			nPackets::Sent::MapPlotCourse pki(this, pccAddPin, 0, (*it).x, (*it).y);
+			client->sendPacket(&pki);
+		}
+	} else if ( type == ITYPE_DECIPHERED_MAP ) {
+		// Generate message to add a map point
+		uint16_t posx, posy;					// tempoary storage for map point
+		uint16_t tlx, tly, lrx, lry;				// tempoary storage for map extends
+		
+		tlx = (more1.moreb1 << 8)  | more1.moreb2;
+		tly = (more1.moreb3 << 8)  | more1.moreb4;
+		lrx = (more2.moreb1 << 8) | more2.moreb2;
+		lry = (more2.moreb3 << 8) | more2.moreb4;
+		posx = (256 * (morex - tlx)) / (lrx - tlx);		// Generate location for point
+		posy = (256 * (morey - tly)) / (lry - tly);
+		
+		nPackets::Sent::MapPlotCourse pk3(this, pccAddPin, 0,posx, posy);//Sending add pin command
+		client->sendPacket(&pk3);
+	}
 }
