@@ -178,8 +178,8 @@ namespace Skills {
 	\name Cartography Stuff
 	*/
 	void Cartography(NXWSOCKET s); //!< By Polygon - opens the cartography skillmenu
-	bool HasEmptyMap(CHARACTER cc); //!< By Polygon - checks if player has an empty map
-	bool DelEmptyMap(CHARACTER cc); //!< By Polygon - deletes an empty map from the player's pack
+	bool HasEmptyMap(pChar pc); //!< By Polygon - checks if player has an empty map
+	bool DelEmptyMap(pChar pc); //!< By Polygon - deletes an empty map from the player's pack
 	void Decipher(pItem tmap, NXWSOCKET s); //!< By Polygon - attempt to decipher a tattered treasure map
 	//@}
 

@@ -17,7 +17,7 @@
 
 void objTeleporters(pChar pc);
 int validtelepos(pChar pc);
-void advancementobjects(CHARACTER s, int x, int always);
+void advancementobjects(pChar pc, int x, int always);
 void teleporters(pChar pc);
 void read_in_teleport();
 

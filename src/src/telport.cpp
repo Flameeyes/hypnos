@@ -87,10 +87,10 @@ int validtelepos(pChar pc)
 
 }
 
-void advancementobjects(CHARACTER s, int x, int allways)
+void advancementobjects(pChar pc, int x, int allways)
 {
-	pChar pc = MAKE_CHAR_REF( s );
 	if ( ! pc ) return;
+
 	char sect[512];
 	int loopexit=0;
 	std::string script1, script2;
@@ -371,19 +371,19 @@ void objTeleporters(pChar pc)
 				if (pmi->more1 != 0 || pmi->more2 != 0 || pmi->more3 != 0 || pmi->more4 != 0)
 				{
 					if (pc->getSerial().ser1 == pmi->more1 && pc->getSerial().ser2 == pmi->more2 && pc->getSerial().ser3 == pmi->more3 && pc->getSerial().ser4 == pmi->more4)
-						advancementobjects(DEREF_pChar(pc), pmi->morex, 0);
+						advancementobjects(pc, pmi->morex, 0);
 				}
 				else
-					advancementobjects(DEREF_pChar(pc), pmi->morex, 0);
+					advancementobjects(pc, pmi->morex, 0);
 
 				if ((pmi->type == 81)&&!(pc->npc))
 					if (pmi->more1 != 0 || pmi->more2 != 0 || pmi->more3 != 0 || pmi->more4 != 0)
 					{
 						if (pc->getSerial().ser1 == pmi->more1 && pc->getSerial().ser2 == pmi->more2 && pc->getSerial().ser3 == pmi->more3 && pc->getSerial().ser4 == pmi->more4)
-						advancementobjects(DEREF_pChar(pc), pmi->morex, 1);
+						advancementobjects(pc, pmi->morex, 1);
 					}
 					else
-						advancementobjects(DEREF_pChar(pc), pmi->morex, 1);
+						advancementobjects(pc, pmi->morex, 1);
 				
 				// The above code lets you restrict a gate's use by setting its MORE values to a char's
 				// serial #

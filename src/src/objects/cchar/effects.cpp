@@ -69,7 +69,7 @@ void cChar::movingFX(pChar dst, uint16_t eff, uint8_t speed, uint8_t loop, bool 
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
 			 NXWSOCKET j=sw.getSocket();
-			 pChar pj = MAKE_CHAR_REF(currchar[j]);
+			 pChar pj = cSerializable::findCharBySerial(currchar[j]);
 			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
 			 {
 				Xsend(j, effect, 28);
@@ -85,7 +85,7 @@ void cChar::movingFX(pChar dst, uint16_t eff, uint8_t speed, uint8_t loop, bool 
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
 			 NXWSOCKET j=sw.getSocket();
-			 pChar pj = MAKE_CHAR_REF(currchar[j]);
+			 pChar pj = cSerializable::findCharBySerial(currchar[j]);
 			 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
 			 {
 				if (clientDimension[j]==2) // 2D client, send old style'd

@@ -74,7 +74,7 @@ int SpawnFishingItem(NXWSOCKET  s,int nInPack, char* cScript, char* cList, char*
  	/*This function gets the random item number from the list and recalls
  	  SpawnItemBackpack2 passing the new number*/
 	
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return INVALID;
 	
 	char sect[512];
@@ -205,10 +205,10 @@ void Fishing::Fish(CHARACTER i)
 	int idnum;
 	int16_t color;
 
-	pChar pc = MAKE_CHAR_REF(i);
+	pChar pc = cSerializable::findCharBySerial(i);
 	if ( ! pc ) return;
 	pItem pc_bp = pc->getBackpack();
-	NXWSOCKET s = pc->getSocket();
+	NXWSOCKET s = pc->getSocket() ;
         
 	Location charpos= pc->getPosition();
 	if(pc->stm<=2) //Luxor bug fix
@@ -270,7 +270,7 @@ void Fishing::Fish(CHARACTER i)
 		case 5:
             if(skill>=400) 
 			{ 
-				if (SpawnFishingMonster( MAKE_CHAR_REF(i),"fishing.scp", "MONSTERLIST", "7" ) != -1) // random monsters 
+				if (SpawnFishingMonster( pc, "fishing.scp", "MONSTERLIST", "7" ) != -1) // random monsters 
 					pc->sysmsg(  TRANSLATE("You fished up a hughe fish!") );
 				else
 					pc->sysmsg(  TRANSLATE("You wait for a while, but nothing happens"));

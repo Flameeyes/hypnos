@@ -441,7 +441,7 @@ void cItem::explode(NXWSOCKET  s)
 
 	unsigned int dmg=0,len=0;
 
-	pChar pc_current=MAKE_CHAR_REF(currchar[s]);
+	pChar pc_current=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc_current ) return;
 
 	if(!isInWorld())

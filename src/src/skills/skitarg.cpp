@@ -25,8 +25,7 @@
 
 pItem Check4Pack(NXWSOCKET  s)
 {
-
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
     pItem packnum= pc->getBackpack();
     if (packnum==NULL)
     {
@@ -212,7 +211,7 @@ void Skills::target_carpentry( NXWCLIENT ps, pTarget t )
 */
 static bool ForgeInRange(NXWSOCKET s)
 {
-    pChar pc = MAKE_CHAR_REF(currchar[s]);
+    pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	VALIDATEPCR(pc, false);
 
 	NxwItemWrapper si;
@@ -227,7 +226,7 @@ static bool ForgeInRange(NXWSOCKET s)
 
 static bool AnvilInRange(NXWSOCKET s)
 {
-    pChar pc = MAKE_CHAR_REF( currchar[s]);
+    pChar pc = cSerializable::findCharBySerial( currchar[s]);
 	VALIDATEPCR(pc, false);
 
 	NxwItemWrapper si;
@@ -254,8 +253,7 @@ checks for anvil in reach and enough material and invokes appropriate makemenu
 */
 static void AnvilTarget( NXWSOCKET s, pItem pi, int ma, int mm, char* matname)
 {
-
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
 	if ( ! pi ) return;
@@ -508,7 +506,7 @@ void Skills::target_tree( NXWCLIENT ps, pTarget t )
 
 void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
 {
-    pChar pc = MAKE_CHAR_REF(currchar[s]);
+    pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
     int nAmount, nFame;
@@ -1906,7 +1904,7 @@ public:
             sysmessage(s,TRANSLATE("You can't combine these."));
         else
         {
-            pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
+            pChar pc_currchar = cSerializable::findCharBySerial(currchar[s]);
 
             if (pc_currchar->skill[skTinkering]<minskill)
             {

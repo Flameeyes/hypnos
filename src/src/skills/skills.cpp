@@ -1736,7 +1736,7 @@ void Skills::Cartography(NXWSOCKET s)
 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
-    if( Skills::HasEmptyMap(pc->getSerial()) )
+    if( Skills::HasEmptyMap(pc) )
     {
         //itemmake[s].has = 1;
 		//Skills::MakeMenu(s, 1200, skCartography);

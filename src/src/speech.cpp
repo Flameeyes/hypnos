@@ -36,7 +36,7 @@ static std::string trimString( const std::string &str );
 
 int response(NXWSOCKET  s)
 {
-	pChar pc= MAKE_CHAR_REF( currchar[s] );
+	pChar pc= cSerializable::findCharBySerial( currchar[s] );
 	if ( ! pc || ! pc->IsOnline() ) return 0;
 
 	//Araknesh I morti non vengono cagati :)
@@ -849,8 +849,8 @@ void PlVGetgold(NXWSOCKET s, CHARACTER v)//PlayerVendors
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
-	pChar pc_currchar = MAKE_CHAR_REF( currchar[s] );
-	pChar pc_vendor = MAKE_CHAR_REF(v);
+	pChar pc_currchar = cSerializable::findCharBySerial( currchar[s] );
+	pChar pc_vendor = cSerializable::findCharBySerial(v);
 	
 	if ( ! pc_currchar || ! pc_vendor ) return;
 
@@ -903,8 +903,8 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 
 //	CHARACTER cc=currchar[s];
 
-	pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
-	pChar pc_vendor = MAKE_CHAR_REF(vendor);
+	pChar pc_currchar = cSerializable::findCharBySerial(currchar[s]);
+	pChar pc_vendor = cSerializable::findCharBySerial(vendor);
 	if ( ! pc_currChar || ! pc_vendor ) return;
 
 	static char buffer1[MAXBUFFER_REAL]; // static becasue maxbuffer_ral close to stack limit of win-machines

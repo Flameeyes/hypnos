@@ -1911,7 +1911,7 @@ void cChar::Kill()
 		++it;
 	}
 #else
-	pChar pk = MAKE_CHAR_REF(0);
+	pChar pk = NULL;
 
 	NxwCharWrapper sc;
 	sc.fillCharsNearXYZ( getPosition(), VISRANGE*2, false );
@@ -2003,8 +2003,6 @@ void cChar::Kill()
 				pk->toggleCombat(); // ripper
 
 		}
-
-
 	}
 #endif
 

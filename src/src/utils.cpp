@@ -304,7 +304,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 	if(s <0)
 		pc = NULL;
 	else
-		pc =MAKE_CHAR_REF(currchar[s]);
+		pc =cSerializable::findCharBySerial(currchar[s]);
 //	const pItem pi=MAKE_ITEMREF_LR(item);	// on error return
 
 	int i, db, x;//, z;
@@ -714,8 +714,7 @@ void getSextantCoords(int32_t x, int32_t y, bool t2a, char *sextant)
 */
 int calcGoodValue(CHARACTER npcnum2, int i, int value,int goodtype)
 {
-
-	pChar npc=MAKE_CHAR_REF(npcnum2);
+	pChar npc=cSerializable::findCharBySerial(npcnum2);
 	const pItem pi=MAKE_ITEM_REF(i);
 	if ( ! npc ) return 0;
 	if ( ! pi ) return value;
