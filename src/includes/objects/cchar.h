@@ -129,14 +129,14 @@ public:
 
 	inline void setClient(pClient c)
 	{ client = c; }
-        
-        inline pBody getBody() const
+
+	inline pBody getBody() const
 	{ return body; }
 
 	inline void setBody(pBody b)
 	{ body = b; }
 
-        inline pBody getTrueBody() const
+	inline pBody getTrueBody() const
 	{ return truebody; }
 
 	inline void setTrueBody(pBody b)
@@ -187,7 +187,7 @@ public:
 
 	static const uint64_t flagIsCasting		= 0x0000000000100000ull;
 	static const uint64_t flagIsGuarded		= 0x0000000000200000ull;
-	
+
 	static const uint64_t flagHolyDamaged		= 0x0000000000400000ull;
 	static const uint64_t flagLightDamaged		= 0x0000000000800000ull;
 
@@ -266,9 +266,9 @@ public:
 	inline const bool hasReflection() const
 	{ return flags & flagReflection; }
 
-        inline const bool hasTelekinesis() const
-        { return flags & flagSpellTelekinesys; }
-	
+	inline const bool hasTelekinesis() const
+	{ return flags & flagSpellTelekinesys; }
+
 	inline const bool isDead() const
 	{ return flags & flagDead; }
 
@@ -488,22 +488,22 @@ public:
 	uint32_t skilldelay;
 	uint32_t objectdelay;
 public:
-        void singleClick(pClient client);	//!< "this" is the clicked char, client is the client of the clicker
-        void doubleClick(pClient client);	//!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
+	void singleClick(pClient client);	//!< "this" is the clicked char, client is the client of the clicker
+	void doubleClick(pClient client);	//!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
 
-        /*!
-        returns a NotEquippableReason with the either nerEquipOK or a reason for failure if char cannot equip pi
-        NOTE:  it will report only the most lacking stat or skill if more than one is below required minimum
-        NOTE2: it doesn't check if item already in that layer
+	/*!
+	returns a NotEquippableReason with the either nerEquipOK or a reason for failure if char cannot equip pi
+	NOTE:  it will report only the most lacking stat or skill if more than one is below required minimum
+	NOTE2: it doesn't check if item already in that layer
 	*/
 	NotEquippableReason canEquip(pEquippable pi);
 
-        /*!
-        returns a NotEquippableReason with the either nerEquipOK or a reason for failure if char cannot equip pi
-        NOTE:  it will report only the most lacking stat or skill if more than one is below required minimum
-        NOTE2: it doesn't check if item already in that layer
+	/*!
+	returns a NotEquippableReason with the either nerEquipOK or a reason for failure if char cannot equip pi
+	NOTE:  it will report only the most lacking stat or skill if more than one is below required minimum
+	NOTE2: it doesn't check if item already in that layer
 	*/
-        NotEquippableReason canEquip(pItem pi);
+	NotEquippableReason canEquip(pItem pi);
 
 	inline void setSkillDelay( uint32_t seconds = nSettings::Server::getDelaySkills() )
 	{ skilldelay = getclock() + seconds * SECS; }

@@ -1085,76 +1085,11 @@ void nPackets::Sent::GraphicalEffect::prepare()
 	buffer[27]=explode ? 0x01 : 0x00;
 }
 
-
-void nPackets::Send::LoginDenied::prepare()
-{
-	buffer = new uint8_t[2];
-	length = 2;
-
-	buffer[0] = 0x82;
-	buffer[1] = reason;
-}
-
-void nPackets::Sent::OpenBrowser::prepare()
-{
-	length = url.size() + 3;
-	buffer = new uint8_t[length];
-
-	buffer[0] = 0xA5;
-	ShortToCharPtr(length, buffer+1);
-
-	memcpy(buffer+3, url.c_str(), length-3);
-}
-
-
-void nPackets::Sent::TipsWindow::prepare()
-{
-	uint16_t msg_size = message.size();
-	length = msg_size + 10;
-	buffer = new uint8_t[length];
-
-	buffer[0] = 0xA6;
-	ShortToCharPtr(length, buffer +1);
-	buffer[3] = type;
-	ShortToCharPtr(0x0000, buffer +4);
-	ShortToCharPtr(tip_num, buffer +6);
-	ShortToCharPtr(msg_size, buffer +8);
-	memcpy(buffer, message.c_str(), msg_size);
-}
-
-void nPackets::Sent::AttackAck::prepare()
-{
-	length = 5;
-	buffer = new buffer[5];
-	buffer[0] = 0xAA;
-	if ( victim )
-		LongToCharPtr(victim->getSerial(), buffer+1);
-	else
-		LongToCharPtr(0, buffer+1);
-}
-
-
-void nPackets::Sent::OpenMapGump::prepare()
-{
-	length = 19;
-	buffer = new uint8_t[19];
-	buffer[0] = 0x90;
-	LongToCharPtr(map->getSerial(), buffer +1);
-	ShortToCharPtr(0x139D, buffer + 5);
-	buffer[7]  = map->more1.moreb1;	// Assign topleft x
-	buffer[8]  = map->more1.moreb2;
-	buffer[9]  = map->more1.moreb3;	// Assign topleft y
-	buffer[10] = map->more1.moreb4;
-	buffer[11] = map->more2.moreb1;	// Assign lowright x
-	buffer[12] = map->more2.moreb2;
-	buffer[13] = map->more2.moreb3;	// Assign lowright y
-	buffer[14] = map->more2.moreb4;
-	int width, height;		// Temporary storage for w and h;
-	width = 134 + (134 * morez);	// Calculate new w and h
-	height = 134 + (134 * morez);
-	ShortToCharPtr(width, buffer +15);
-	ShortToCharPtr(height, buffer +17);
-}
+/*!
+\brief Sends bulletin boards commands
+\author Chronodt
+\note packet 0x71
+*/
 
 void nPackets::Sent::BBoardCommand::prepare()
 {
@@ -1245,6 +1180,76 @@ void nPackets::Sent::BBoardCommand::prepare()
 	}
 }
 
+/*!
+\brief Sends war mode actual status to client [packet 0x72]
+\author Chronodt
+\note packet 0x72
+*/
+void nPackets::Sent::WarModeStatus::prepare()
+{
+	buffer = new uint8_t[5];
+	length = 5;
+	memcpy(buffer, buf, 5);
+}
+
+/*!
+\brief Ping reply [packet 0x73]
+\author Chronodt
+\note packet 0x73
+*/
+
+void nPackets::Sent::PingReply::prepare()
+{
+	buffer = new uint8_t[2];
+	length = 2;
+	memcpy(buffer, buf, 2);
+}
+
+/*!
+\brief Open Buy Window [packet 0x74]
+\author Chronodt
+\note packet 0x74
+*/
+
+void nPackets::Sent::BuyWindow::prepare()
+{
+	length = 8;	//length of constant part
+	ItemSList items = container->getItems();
+
+	for(ItemSList::iterator it = items.begin(); it != items.end();++it)
+	{
+		//! \todo use a description instead of currentname
+		length += (*it)->getCurrentName().size() + 5;
+	}
+
+	//now length is the right length of packet. Now we can create the buffer ad fill it
+	buffer = new uint8_t[length];
+	buffer[0] = 0x74;
+	ShortToCharPtr(length, buffer +1);			// message length
+	LongToCharPtr(container->getSerial(), buffer+3); 	// Container serial number
+	buffer[7]=items.size(); 				// Count of items;
+	uint8_t* offset = buffer + 8;
+	for(ItemSList::iterator it = items.begin(); it != items.end();++it)
+	{
+		uint32_t price = (*it)->value;
+		//! \todo revise trade system
+		/*
+		price = pj->calcValue(price);
+
+		if ( nSettings::Server::isEnabledTradeSystem() )
+			value=calcGoodValue(pc, *it, price, 0); // by Magius(CHE)
+		*/
+		LongToCharPtr(price, offset); 	// price of item
+		//! \todo use a description instead of currentname
+		offset[4] = (*it)->getCurrentName().size();
+		offset += 5 + offset[4];
+	}
+}
+/*!
+\brief Updates player [packet 0x77]
+\author Chronodt
+\note packet 0x77
+*/
 
 void nPackets::Sent::UpdatePlayer::prepare()
 {
@@ -1263,21 +1268,76 @@ void nPackets::Sent::UpdatePlayer::prepare()
 	buffer[16]=hi_color;
 }
 
-void nPackets::Sent::WarModeStatus::prepare()
-{
-	buffer = new uint8_t[5];
-	length = 5;
-	memcpy(buffer, buf, 5);
-}
 
-void nPackets::Sent::PingReply::prepare()
+void nPackets::Send::LoginDenied::prepare()
 {
 	buffer = new uint8_t[2];
 	length = 2;
-	memcpy(buffer, buf, 2);
+
+	buffer[0] = 0x82;
+	buffer[1] = reason;
+}
+
+void nPackets::Sent::OpenBrowser::prepare()
+{
+	length = url.size() + 3;
+	buffer = new uint8_t[length];
+
+	buffer[0] = 0xA5;
+	ShortToCharPtr(length, buffer+1);
+
+	memcpy(buffer+3, url.c_str(), length-3);
 }
 
 
+void nPackets::Sent::TipsWindow::prepare()
+{
+	uint16_t msg_size = message.size();
+	length = msg_size + 10;
+	buffer = new uint8_t[length];
+
+	buffer[0] = 0xA6;
+	ShortToCharPtr(length, buffer +1);
+	buffer[3] = type;
+	ShortToCharPtr(0x0000, buffer +4);
+	ShortToCharPtr(tip_num, buffer +6);
+	ShortToCharPtr(msg_size, buffer +8);
+	memcpy(buffer, message.c_str(), msg_size);
+}
+
+void nPackets::Sent::AttackAck::prepare()
+{
+	length = 5;
+	buffer = new buffer[5];
+	buffer[0] = 0xAA;
+	if ( victim )
+		LongToCharPtr(victim->getSerial(), buffer+1);
+	else
+		LongToCharPtr(0, buffer+1);
+}
+
+
+void nPackets::Sent::OpenMapGump::prepare()
+{
+	length = 19;
+	buffer = new uint8_t[19];
+	buffer[0] = 0x90;
+	LongToCharPtr(map->getSerial(), buffer +1);
+	ShortToCharPtr(0x139D, buffer + 5);
+	buffer[7]  = map->more1.moreb1;	// Assign topleft x
+	buffer[8]  = map->more1.moreb2;
+	buffer[9]  = map->more1.moreb3;	// Assign topleft y
+	buffer[10] = map->more1.moreb4;
+	buffer[11] = map->more2.moreb1;	// Assign lowright x
+	buffer[12] = map->more2.moreb2;
+	buffer[13] = map->more2.moreb3;	// Assign lowright y
+	buffer[14] = map->more2.moreb4;
+	int width, height;		// Temporary storage for w and h;
+	width = 134 + (134 * morez);	// Calculate new w and h
+	height = 134 + (134 * morez);
+	ShortToCharPtr(width, buffer +15);
+	ShortToCharPtr(height, buffer +17);
+}
 
 
 /* PkG 0x85: Char Delete Error
@@ -1360,7 +1420,7 @@ void nPackets::Sent::BookHeader::prepare()
 {
 	buffer = new uint8_t[99];
 	length = 99;
-	
+
 	buffer[0] = 0x93;
 	LongToCharPtr( book->getSerial(), buffer+1 );
 	buffer[5] = readonly ? 0x00 : 0x01;
@@ -1376,10 +1436,10 @@ pPacketReceive nPackets::Received::cPacketReceive::fromBuffer(uint8_t *buffer, u
 {
 	switch(buffer[0])
 	{
-		case 0x00: return new nPackets::Received::CreateChar(buffer, length);      	  // Create Character
-		case 0x01: return new nPackets::Received::DisconnectNotify(buffer, length);   // Disconnect Notification
-		case 0x02: return new nPackets::Received::MoveRequest(buffer, length);        // Move Request
-		case 0x03: return new nPackets::Received::TalkRequest(buffer, length);        // Talk Request
+		case 0x00: return new nPackets::Received::CreateChar(buffer, length);      	// Create Character
+		case 0x01: return new nPackets::Received::DisconnectNotify(buffer, length);	// Disconnect Notification
+		case 0x02: return new nPackets::Received::MoveRequest(buffer, length);		// Move Request
+		case 0x03: return new nPackets::Received::TalkRequest(buffer, length);		// Talk Request
 		case 0x04: return NULL;								// God mode toggle
 		case 0x05: return new nPackets::Received::AttackRequest(buffer, length);	// Attack Request
 		case 0x06: return new nPackets::Received::Doubleclick(buffer, length);		// Double click
@@ -1452,52 +1512,52 @@ Mostly taken from old noxwizard.cpp and (vastly :) ) modified to hypnos object s
 bool nPackets::Received::CreateChar::execute(pClient client)
 {
 	// Disconnect-level encryption or transfer error check
-	if ((length !=104) ||                                           // packet length check
-	   (LongFromCharPtr(buffer+1) != 0xedededed) ||                 // pattern checking
-	   (LongFromCharPtr(buffer+5) != 0xffffffff) ||
-	   //(buffer[9] != 0x00) ||                                     // this pattern is different for some clients, so commented out (for now)
-	   (buffer[10] != 0x00) ||                                      // at least one "letter" in character name
-	   (buffer[40] != 0x00))                                        // at least one "letter" in character password
+	if	((length !=104) ||					// packet length check
+		(LongFromCharPtr(buffer+1) != 0xedededed) ||		// pattern checking
+		(LongFromCharPtr(buffer+5) != 0xffffffff) ||
+		//(buffer[9] != 0x00) ||				// this pattern is different for some clients, so commented out (for now)
+		(buffer[10] != 0x00) ||					// at least one "letter" in character name
+		buffer[40] != 0x00))					// at least one "letter" in character password
 	{
 		client->disconnect();
 		return false;
 	}
 
-	uint8_t sex                 = buffer[70];
-	uint16_t strength           = buffer[71];
-	uint16_t dexterity          = buffer[72];
-	uint16_t intelligence       = buffer[73];
-	uint16_t skill1             = buffer[74];
-	uint16_t skill1value1       = buffer[75];
-	uint16_t skill12            = buffer[76];
-	uint16_t skill1value2       = buffer[77];
-	uint16_t skill3             = buffer[78];
-	uint16_t skill1value3       = buffer[79];
-	uint16_t SkinColor          = ShortFromCharPtr(buffer + 80) | 0x8000;
-	uint16_t HairStyle          = ShortFromCharPtr(buffer + 82);
-	uint16_t HairColor          = ShortFromCharPtr(buffer + 84);
-	uint16_t FacialHair         = ShortFromCharPtr(buffer + 86);
-	uint16_t FacialHairColor    = ShortFromCharPtr(buffer + 88);
-	uint16_t StartingLocation   = ShortFromCharPtr(buffer + 90);        // from starting list
-	// uint16_t unknown         = ShortFromCharPtr(buffer + 92);
-	uint16_t slot               = ShortFromCharPtr(buffer + 94);
-	uint32_t clientIP           = LongFromCharPtr (buffer + 96);
-	uint16_t shirt_color        = ShortFromCharPtr(buffer + 100);
-	uint16_t pants_color        = ShortFromCharPtr(buffer + 102);
+	uint8_t sex			= buffer[70];
+	uint16_t strength		= buffer[71];
+	uint16_t dexterity		= buffer[72];
+	uint16_t intelligence		= buffer[73];
+	uint16_t skill1			= buffer[74];
+	uint16_t skill1value1		= buffer[75];
+	uint16_t skill12		= buffer[76];
+	uint16_t skill1value2		= buffer[77];
+	uint16_t skill3			= buffer[78];
+	uint16_t skill1value3		= buffer[79];
+	uint16_t SkinColor		= ShortFromCharPtr(buffer + 80) | 0x8000;
+	uint16_t HairStyle		= ShortFromCharPtr(buffer + 82);
+	uint16_t HairColor		= ShortFromCharPtr(buffer + 84);
+	uint16_t FacialHair		= ShortFromCharPtr(buffer + 86);
+	uint16_t FacialHairColor	= ShortFromCharPtr(buffer + 88);
+	uint16_t StartingLocation	= ShortFromCharPtr(buffer + 90);        // from starting list
+	// uint16_t unknown		= ShortFromCharPtr(buffer + 92);
+	uint16_t slot			= ShortFromCharPtr(buffer + 94);
+	uint32_t clientIP		= LongFromCharPtr (buffer + 96);
+	uint16_t shirt_color		= ShortFromCharPtr(buffer + 100);
+	uint16_t pants_color		= ShortFromCharPtr(buffer + 102);
 
 
 	// Disconnect-level protocol error check (possible client hack or too many chars already present in account)
 	if (
-		!(client->currAccount()->verifyPassword(buffer+40)) ||                  	//!< Password check
+		!(client->currAccount()->verifyPassword(buffer+40)) ||				//!< Password check
 		(client->currAccount()->getCharsNumber()>=nSettings::Server::getMaximumPCs()) ||//!< Max PCs per account check
-		((sex !=1) && (sex != 0)) ||                                                    //!< Sex validity check
-		(strength + dexterity + intelligence > 80) ||                                   //!< Stat check: stat sum must be <=80
-		(strength < 10)     || (strength > 60)     ||                                   //!< each stat must be >= 10 and <= 60
+		((sex !=1) && (sex != 0)) ||							//!< Sex validity check
+		(strength + dexterity + intelligence > 80) ||					//!< Stat check: stat sum must be <=80
+		(strength < 10)     || (strength > 60)     ||					//!< each stat must be >= 10 and <= 60
 		(dexterity < 10)    || (dexterity > 60)    ||
 		(intelligence < 10) || (intelligence > 60) ||
-		(skillvalue1 + skillvalue2 + skillvalue3 != 100) ||                             //!< Skill check : sum of skills selected must be 100
-		(skillvalue1 > 50)  || (skillvalue2 > 50)  || (skillvalue3 > 50) ||             //!< each skill must be >= 0 and <= 50. Since the 3 variables are uint8_t, if they are negative they will be seen as a number surely bigger than 127 :)
-		(skill1 == skill2)  || (skill2 == skill3)  || (skill3 == skill1)                //!< 3 different skills must be selected
+		(skillvalue1 + skillvalue2 + skillvalue3 != 100) ||				//!< Skill check : sum of skills selected must be 100
+		(skillvalue1 > 50)  || (skillvalue2 > 50)  || (skillvalue3 > 50) ||		//!< each skill must be >= 0 and <= 50. Since the 3 variables are uint8_t, if they are negative they will be seen as a number surely bigger than 127 :)
+		(skill1 == skill2)  || (skill2 == skill3)  || (skill3 == skill1)		//!< 3 different skills must be selected
 	   )
 	{
 		client->disconnect();
@@ -2384,7 +2444,7 @@ bool nPackets::Received::BBoardMessage::execute(pClient client)
 
 			if (!msgboard->addMessage( newmessage ))
 			{
-				if (pc->postType == LOCALPOST) client->sysmessage( tr("This Message Board has too many messages!") );
+				if (pc->postType == LOCALPOST) client->sysmessage("This Message Board has too many messages!" );
 				newmessage->Delete(); //if could not link, message should be deleted
 			}
 			else
@@ -2418,7 +2478,7 @@ bool nPackets::Received::BBoardMessage::execute(pClient client)
 				if ( (pc->isGM()) || (SrvParms->msgpostremove) )
 				{
 					if ( global::onlyPosterCanDeleteMsgBoardMessage() && (pc->getSerial() != message->poster && !pc->isGM() && (pc->getSerial() != msgboard->getOwner() || message->availability != LOCALPOST )))
-						client->sysmessage( tr("You are not allowed to delete this message") );
+						client->sysmessage("You are not allowed to delete this message");
 					else
 					{
 						// if onlyPosterCanDeleteMsgBoardMessage() is true, the only ones

@@ -36,9 +36,6 @@ void broadcast(pClient client);
 	//!< GM Broadcast (Done if a GM yells something);
 
 
-
-
-
 void staticeffectUO3D(int/*SERIAL*/ player, ParticleFx *sta);
 void movingeffectUO3D(int/*SERIAL*/ source, int/*SERIAL*/ dest, ParticleFx *sta);
 void itemeffectUO3D(pItem pi, ParticleFx *sta);
@@ -50,7 +47,7 @@ void SendUnicodeSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, ui
 void SendPlaySoundEffectPkt(pClient client, uint8_t mode, uint16_t sound_model, uint16_t unkn, sLocation pos, bool useDispZ = false);
 void impowncreate(pClient client, pChar pc, int z);
 	//!< socket, player to send
-void sendshopinfo(pClient client, pChar pc, pItem pi);
+
 pClient clientellstuff(pClient client, int i);
 
 

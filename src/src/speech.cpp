@@ -951,7 +951,7 @@ void responsevendor(pClient client, pChar pc_vendor)
 					targ->send( getClientFromSocket(s) );
 					return; // lb bugfix
 				}
-				else if(BuyShop(s, pc_vendor))
+				else if(client->buyShop(pc_vendor))
 					return; // lb bugfix
 			}
 		}
@@ -1017,7 +1017,7 @@ void responsevendor(pClient client, pChar pc_vendor)
 						return;
 					}
 					else
-						if(BuyShop(s, pc))
+						if(client->buyShop(pc))
 							return;
 				}
 			}
@@ -1792,7 +1792,7 @@ static bool buyFromVendor( pChar pc, pClient client, string &speech, NxwCharWrap
 		success = true;
 	}
 	else
-		if(BuyShop(socket, pc_vendor))
+		if(client->buyShop(pc_vendor))
 			success = true;
 	return success;
 

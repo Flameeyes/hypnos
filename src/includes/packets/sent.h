@@ -958,13 +958,6 @@ namespace nPackets {
 		\brief Sends a visual effect
 		\author Chronodt
 		\note packet 0x70
-
-		direction type
-		00 = go from source to dest
-		01 = lightning strike at source
-		02 = stay at current x,y,z
-		03 = stay with current source character id
-
 		*/
 		class GraphicalEffect : public cPacketSend
 		{
@@ -975,37 +968,145 @@ namespace nPackets {
 			uint16_t effect;		//!< visual id of effect
 			sLocation src_pos, dst_pos;	//!< souce and destination position of effect
 			uint8_t speed;			//!< speed of effect (SPPED OF ANIMATION)
-			uint8_t duration;		//!< travel speed of effect
+			uint8_t duration;		//!< travel speed of effect (update: maybe number of loops of the effects: should investigate)
 			bool fixeddir;  		//!< if true animation direction does not change during effect
 			bool explode;			//!< explosion once effect reaches target
 
 
 		public:
+			//! object to object constructor
 			inline GraphicalEffect(EffectType aType, pSerializable aSrc, pSerializable aDst, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
 				cPacketSend(NULL, 0), type(aType), src(aSrc), dst(aDst), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
 			{
 				src_pos = src->getWorldPosition();
 				dst_pos = (dst) ? dst->getWorldPosition() : sLocation(0,0,0);
 			}
-
+			//! object to position constructor
 			inline GraphicalEffect(EffectType aType, pSerializable aSrc, sLocation aDst_pos, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
 				cPacketSend(NULL, 0), type(aType), src(aSrc), dst(NULL), dst_pos(aDst_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
 			{
 				src_pos = src->getWorldPosition();
 			}
-
+			//! position to object constructor
 			inline GraphicalEffect(EffectType aType, sLocation aSrc_pos, pSerializable aDst, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
 				cPacketSend(NULL, 0), type(aType), src(NULL), dst(aDst), src_pos(aSrc_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
 			{
 				dst_pos = dst->getWorldPosition();
 			}
-
+			//! position to position constructor
 			inline GraphicalEffect(EffectType aType, sLocation aSrc_pos, sLocation aDst_pos, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
 				cPacketSend(NULL, 0), type(aType), src(NULL), dst(NULL), src_pos(aSrc_pos), dst_pos(aDst_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
 			{ }
 		
 			void prepare();
 		};
+
+
+		/*!
+		\brief Sends bulletin boards commands [packet 0x71)
+		\author Chronodt
+
+		Server-side Bulletin board commands
+		*/
+
+		enum BBoardCommands {bbcDisplayBBoard, bbcSendMessageSummary, bbcSendMessageBody};
+		class BBoardCommand : public cPacketSend
+		{
+		protected:
+		
+			const pMsgBoard msgboard;
+			const BBoardCommands command;
+			const pMessage message;
+		
+		public:
+			/*!
+			\param m msgboard used
+			\param com command for the msgboard
+			\param mess message to be sent. May be omitted if command is DisplayBBoard
+			*/
+			inline BBoardCommand(pMsgBoard m, BBoardCommands com, pMessage mess = NULL) :
+				cPacketSend(NULL, 0), msgboard (m), command(com), message(mess)
+			{ }
+		
+			void prepare();
+		};
+
+		/*!
+		\brief Sends war mode actual status to client [packet 0x72]
+		\author Chronodt
+		*/
+
+		class WarModeStatus : public cPacketSend
+		{
+		protected:
+		
+			uint8_t buf[5];
+		
+		public:
+			inline WarModeStatus(uint8_t* buffer) :
+				cPacketSend(NULL, 0)
+			{ memcpy(buf, buffer, 5);}
+
+			void prepare();
+		};
+
+		/*!
+		\brief Ping reply [packet 0x73]
+		\author Chronodt
+
+		Reply to client ping
+		*/
+		class PingReply : public cPacketSend
+		{
+		protected:
+			uint8_t buf[2];
+		public:
+			inline PingReply(uint8_t* buffer) :
+				cPacketSend(NULL, 0)
+			{ memcpy(buf, buffer, 2);}
+
+			void prepare();
+		};
+
+		/*!
+		\brief Open Buy Window [packet 0x74]
+		\author Chronodt
+		*/
+		class BuyWindow : public cPacketSend
+		{
+		protected:
+			pEquippableContainer container;
+		public:
+			inline BuyWindow(uint8_t* buffer) :
+				cPacketSend(NULL, 0)
+			{ }
+			void prepare();
+		};
+
+
+		/*!
+		\brief Updates player [packet 0x77]
+		\author Chronodt
+
+		Sent whenever player is modified
+		*/
+
+		class UpdatePlayer : public cPacketSend
+		{
+		protected:
+			pChar chr;
+			uint8_t dir, flag, hi_color;
+			uint32_t id1,id2,id3;
+		
+		public:
+			inline UpdatePlayer(pChar pc, uint8_t newdir, uint8_t newflag, uint8_t newhi_color) :
+				cPacketSend(NULL, 0), chr(pc), dir(newdir), flag(newflag), hi_color(newhi_color)
+			{ }
+		
+			void prepare();
+		};
+
+
 
 		/*!
 		\brief Login Denied
@@ -1066,7 +1167,7 @@ namespace nPackets {
 
 			void prepare();
 		};
-		
+
 		/*!
 		\brief Sends the OK/Not OK for an attack
 		\note Packet 0xAA
@@ -1110,74 +1211,6 @@ namespace nPackets {
 		};
 
 
-
-		enum BBoardCommands {bbcDisplayBBoard, bbcSendMessageSummary, bbcSendMessageBody};
-		class BBoardCommand : public cPacketSend
-		{
-		protected:
-		
-			const pMsgBoard msgboard;
-			const BBoardCommands command;
-			const pMessage message;
-		
-		public:
-			/*!
-			\param m msgboard used
-			\param com command for the msgboard
-			\param mess message to be sent. May be omitted if command is DisplayBBoard
-			*/
-			inline BBoardCommand(pMsgBoard m, BBoardCommands com, pMessage mess = NULL) :
-				cPacketSend(NULL, 0), msgboard (m), command(com), message(mess)
-			{ }
-		
-			void prepare();
-		};
-
-
-		class UpdatePlayer : public cPacketSend
-		{
-		protected:
-			pChar chr;
-			uint8_t dir, flag, hi_color;
-			uint32_t id1,id2,id3;
-		
-		public:
-			inline UpdatePlayer(pChar pc, uint8_t newdir, uint8_t newflag, uint8_t newhi_color) :
-				cPacketSend(NULL, 0), chr(pc), dir(newdir), flag(newflag), hi_color(newhi_color)
-			{ }
-		
-			void prepare();
-		};
-		
-		class WarModeStatus : public cPacketSend
-		{
-		protected:
-		
-			uint8_t buf[5];
-		
-		public:
-			inline WarModeStatus(uint8_t* buffer) :
-				cPacketSend(NULL, 0)
-			{ memcpy(buf, buffer, 5);}
-		
-			void prepare();
-		};
-		
-		
-		class PingReply : public cPacketSend
-		{
-		protected:
-		
-			uint8_t buf[2];
-		
-		public:
-			inline PingReply(uint8_t* buffer) :
-				cPacketSend(NULL, 0)
-			{ memcpy(buf, buffer, 2);}
-		
-			void prepare();
-		};
-		
 		class CharDeleteError : public cPacketSend
 		{
 		protected:

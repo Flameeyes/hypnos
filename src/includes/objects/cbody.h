@@ -208,7 +208,7 @@ protected:
 	uint16_t damageMin;	//!< Minimum damage of the character [UO4]
 	uint16_t damageMax;	//!< Maximum damage of the character [UO4]
 
-        uint16_t skinColor;	//!< Skin color of the character
+	uint16_t skinColor;	//!< Skin color of the character
 public:
 	//! Gets the character strength
 	inline const uint16_t getStrength() const
@@ -286,7 +286,7 @@ public:
 	inline const uint16_t getDamageMax() const
 	{ return damageMax; }
 
-        //! Gets the skin color of the character
+	//! Gets the skin color of the character
 	inline const uint16_t getSkinColor() const
 	{ return skinColor; }
 

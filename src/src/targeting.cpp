@@ -381,51 +381,6 @@ static void CorpseTarget(pClient client)
 	}// switch
 }
 
-int BuyShop(pClient client, pChar pc)
-{
-	pItem buyRestockContainer=NULL, buyNoRestockContainer=NULL;
-
-	if(!client || !pc) return 0;
-
-	pChar curr = client->currChar();
-	if(!curr) return 0;
-
-	//!\todo Update to new layer system
-	NxwItemWrapper si;
-	si.fillItemWeared( pc, true, true, false );
-	for( si.rewind(); !si.isEmpty(); si++ )
-	{
-		pItem pi=si.getItem();
-		if(!pi) continue;
-	
-		if( pi->layer==LAYER_TRADE_RESTOCK )
-			buyRestockContainer=pi;
-	
-		if( pi->layer==LAYER_TRADE_NORESTOCK )
-			buyNoRestockContainer=pi;
-
-		if( buyRestockContainer && buyNoRestockContainer )
-			break;
- 	}
-
-    if (!buyRestockContainer || !buyNoRestockContainer )
-        return 0;
-
-    impowncreate(s, pc, 0); // Send the NPC again to make sure info is current. (OSI does this we might not have to)
-
-    sendshopinfo(s, pc, buyRestockContainer); // Send normal shop items
-//  sendshopinfo(s, c, buyNoRestockContainer); // Send items sold to shop by players
-    nPackets::Sent::OpenGump ok(pc->getSerial(), 0x0030);
-    client->sendPacket(&pk);
-
-    //! \todo check second argument
-    client->statusWindow(curr,true); // Make sure the gold total has been sent.
-
-    return 1;
-}
-
-
-
 void target_playerVendorBuy( pClient client, pTarget t )
 {
 	pChar pc = cSerializable::findCharBySerial(t->buffer[0]);

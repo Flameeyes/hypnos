@@ -265,7 +265,7 @@ void cClient::showContainer(pContainer cont)
 		if ( (*it)->getPosition().x > 150 ) (*it)->setPositionX(150);
 		if ( (*it)->getPosition().y > 150 ) (*it)->setPositionY(150);
 		
-		pk2.addItem(pi);
+		pk2.addItem(*it);
 	}
 	cont->unlockItemsMutex();
 	
@@ -1869,6 +1869,57 @@ void cClient::item_bounce6(const pItem pi)
 /*------------------------------------------------------------------------------
                              TRADING METHODS
 ------------------------------------------------------------------------------*/
+/*!
+\brief opensa buy gump on client
+\author Chronodt
+\param npc vendor whose goods client is trying to purchase
+*/
+bool buyShop(pNPC npc)
+{
+	if(!npc) return false;
+	pEquippableContainer buyRestockContainer=NULL, buyNoRestockContainer=NULL;
+	buyRestockContainer = dynamic_cast<pEquippableContainer>(npc->getBody()->getLayerItem(layNPCBuyR));
+	buyNoRestockContainer = dynamic_cast<pEquippableContainer>(npc->getBody()->getLayerItem(layNPCBuyN));
+	if (!buyRestockContainer || !buyNoRestockContainer ) return false;
+
+	impowncreate(client, pc, 0); // Send the NPC again to make sure info is current. (OSI does this we might not have to)
+
+	nPackets::Sent::ContainerItem pk1;
+	buyRestockContainer->lockItemsMutex();
+	for(ItemSLIst::const_iterator it = buyRestockContainer->getItems().begin(); it != buyRestockContainer->getItems().end() )
+	{
+		if ( ! (*it) ) continue;
+		pk1.addItem(*it);
+	}
+	buyRestockContainer->unlockItemsMutex();
+
+	nPackets::Sent::BuyWindow pk2(buyRestockContainer);
+
+	nPackets::Sent::ContainerItem pk3;
+	buyNoRestockContainer->lockItemsMutex();
+	for(ItemSLIst::const_iterator it = buyNoRestockContainer->getItems().begin(); it != buyNoRestockContainer->getItems().end() )
+	{
+		if ( ! (*it) ) continue;
+		pk3.addItem(*it);
+	}
+	buyNoRestockContainer->unlockItemsMutex();
+
+	nPackets::Sent::BuyWindow pk4(buyNoRestockContainer);
+
+	//! \todo verify if we have to send only 2 packets with the information of both containers instead
+	client->sendPacket(&pk1);
+	client->sendPacket(&pk2);
+	client->sendPacket(&pk3);
+	client->sendPacket(&pk4);
+
+	nPackets::Sent::OpenGump pk(pc->getSerial(), 0x0030);
+	client->sendPacket(&pk);
+
+	//! \todo check second argument
+	client->statusWindow(curr,true); // Make sure the gold total has been sent.
+
+	return true;
+}
 
 /*!
 \brief concludes buying of items

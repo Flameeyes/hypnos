@@ -163,6 +163,7 @@ public:
 	void sendtradestatus(sSecureTradeSession &session);			//!< updates secure trade window
 	void dotrade(sSecureTradeSession &session);				//!< concludes trade (either swapping items or returning them)
 	void endtrade(sSecureTradeSession &session);				//!< closing trade window : called when one client ends the transaction (closing the trade window) or one client crashes (client destruction)
+	bool buyShop(pNPC vendor);						//!< sends list of buyable items to client (opens buy gump)
 	void buyaction(pNPC npc, std::list< sBoughtItem > &allitemsbought);	//!< Getting purchased item and gold/availability check
 	void sellaction(pNPC npc, std::list< sBoughtItem > &allitemssold);	//!< Sellig of items. Moving from char and getting paid :D
 	
