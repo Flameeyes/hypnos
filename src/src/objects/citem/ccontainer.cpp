@@ -141,7 +141,7 @@ bool cContainer::pileItem(pItem &item)
 */
 void cContainer::setRandPos(pItem item)
 {
-	Location p = item->getPosition();
+	sLocation p = item->getPosition();
 	p.z = 9;
 
 	mapContainerGumps::iterator iter = containers.find( getId() );

@@ -21,7 +21,7 @@ namespace npcs {	//Luxor
 
 
 //<Anthalir>
-void SpawnGuard(pChar pc, pChar pc_i, Location where)
+void SpawnGuard(pChar pc, pChar pc_i, sLocation where)
 {
 	SpawnGuard(pc, pc_i, where.x, where.y, where.z);
 }
@@ -107,7 +107,7 @@ pChar AddRespawnNPC(pChar pc, int npcNum)
 }
 
 //<Anthalir>
-pChar AddNPCxyz(pClient client, int npcNum, Location where)
+pChar AddNPCxyz(pClient client, int npcNum, sLocation where)
 {
 	return AddNPCxyz(s, npcNum, where.x, where.y, where.dispz);
 }
@@ -122,7 +122,7 @@ pChar AddNPCxyz(pClient client, int npcNum, int x1, int y1, signed char z1) //Mo
 
 
 //<Anthalir>
-pChar AddNPC(pClient client, pItem pi, int npcNum, Location where)
+pChar AddNPC(pClient client, pItem pi, int npcNum, sLocation where)
 {
 	return AddNPC(s, pi, npcNum, where.x, where.y, where.z);
 }
@@ -999,7 +999,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 									if ((pi_i->getPosition().x+xos<1) || (pi_i->getPosition().y+yos<1))
 										lb=0; /* lord binary, fixes crash when calling npcvalid with negative coordiantes */
 									else { //<Luxor>
-										Location newpos = Location( pi_i->getPosition().x+xos, pi_i->getPosition().y+yos, pi_i->getPosition().z );
+										sLocation newpos = sLocation( pi_i->getPosition().x+xos, pi_i->getPosition().y+yos, pi_i->getPosition().z );
 										lb = ( isWalkable( newpos ) != illegal_z );
 									}//</Luxor>
 
@@ -1051,7 +1051,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 							break;
 						} // no default coz we tested on entry to function
 
-						Location charpos= pc->getPosition();
+						sLocation charpos= pc->getPosition();
 						// now we have a position, let's set the borders
 						switch (pc->npcWander)
 						{

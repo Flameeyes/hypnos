@@ -683,8 +683,8 @@ void target_sword( pClient client, pTarget t )
 	uint16_t id = t->getModel();
 	if (itemById::IsTree2(id))
 	{
-		Location pcpos= pc->getPosition();
-		Location location = t->getLocation();
+		sLocation pcpos= pc->getPosition();
+		sLocation location = t->getPosition();
 
 		if( dist( location, pcpos )>5 )
 		{
@@ -772,7 +772,7 @@ void target_expPotion( pClient client, pTarget t )
 	pChar pc = client->currChar();
 	if (!pc) return;
 
-	Location loc = t->getLocation();
+	sLocation loc = t->getPosition();
 
 	if(!line_of_sight(s, pc->getPosition(), loc, losWallsChimneys | losDoors | losRoofingSlanted))
 	{
@@ -825,7 +825,7 @@ void target_telestuff( pClient client, pTarget t )
 		client->sysmessage( "Select location to put this object.");
 	} else { //on ground.. so move it
 
-		Location loc=t->getLocation();
+		sLocation loc=t->getPosition();
 		loc.z+=tileHeight( t->getModel() );
 
 		uint32_t serial = t->buffer[0];
@@ -882,4 +882,3 @@ void target_xTeleport( pClient client, pTarget t )
 		pi->Refresh();
 	}
 }
-

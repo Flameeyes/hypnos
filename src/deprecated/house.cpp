@@ -74,7 +74,7 @@ void buildhouse( pClient ps, pTarget t )
 	char name[512];
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
-	Location charpos= pc->getPosition();
+	sLocation charpos= pc->getPosition();
 
 	int16_t id = INVALID; //house ID
 
@@ -223,14 +223,14 @@ void buildhouse( pClient ps, pTarget t )
 			for (uint32_t l=0;l<sy;l++)
 			{
 
-				Location loc;
+				sLocation loc;
 
 				loc.x=x+k;
 
 				loc.y=y+l;
 
 				loc.z=z;
-				Location newpos = Location( x+k, y+l, z );
+				sLocation newpos = sLocation( x+k, y+l, z );
 				if ( (isWalkable( newpos ) == illegal_z ) &&
 					((charpos.x != x+k)&&(charpos.y != y+l)) )
 					/*This will take the char making the house out of the space check, be careful
@@ -498,7 +498,7 @@ void deedhouse(pClient client, pItem pi)
 	if ( ! pi ) return;
 	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
-	Location charpos= pc->getPosition();
+	sLocation charpos= pc->getPosition();
 
 
 	if(pi->getOwnerSerial32() == pc->getSerial() || pc->IsGM()) // bugfix LB, was =
@@ -519,7 +519,7 @@ void deedhouse(pClient client, pItem pi)
 			pChar p_index=sc.getChar();
 			if( p_index ) {
 
-				Location charpos2= p_index->getPosition();
+				sLocation charpos2= p_index->getPosition();
 				if( (charpos2.x >= (uint32_t)x1) && (charpos2.y >= (uint32_t)y1) && (charpos2.x <= (uint32_t)x2) && (charpos2.y <= (uint32_t)y2) )
 				{
 
@@ -591,7 +591,7 @@ void killhouse(ITEM i)
 	for (a = 0; a < charcount; a++) // deleting npc-vendors attched to the decying house
 	{
 		pc = cSerializable::findCharBySerial(a); /// !!!!!!!!!!!!!!
-		Location charpos= pc->getPosition();
+		sLocation charpos= pc->getPosition();
 
 		if ((charpos.x >= x1) && (charpos.y >= y1) && (charpos.x <= x2) && (charpos.y <= y2) && !pc->free)
 		{
@@ -749,7 +749,7 @@ int add_hlist(pChar pc, pItem pi_h, int t)
 	getMultiCorners(pi_h, sx,sy,ex,ey);
 	// Make an object with the character's serial & the list type
 	// and put it "inside" the house item.
-	Location charpos= pc->getPosition();
+	sLocation charpos= pc->getPosition();
 
 	if((charpos.x >= (uint32_t)sx) && (charpos.y >= (uint32_t)sy) && (charpos.x <= (uint32_t)ex) && (charpos.y <= (uint32_t)ey))
 	{
@@ -985,7 +985,7 @@ void target_houseEject( pClient ps, pTarget t )
 
 	pClient client =ps->toInt();
 
-	Location pcpos= pc->getPosition();
+	sLocation pcpos= pc->getPosition();
 
 	uint32_t sx, sy, ex, ey;
 	getMultiCorners(pi_h, sx,sy,ex,ey);

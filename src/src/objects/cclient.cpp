@@ -346,7 +346,7 @@ void senditem(pItem pi) // Shows items to client (on the ground or inside contai
 
 // sends item in differnt color and position than it actually is
 // used for LSd potions now, LB 5'th nov 1999
-void senditem_lsd(pItem pi, uint16_t color, Location position)
+void senditem_lsd(pItem pi, uint16_t color, sLocation position)
 {
 	if ( ! pi ) return;
 	pChar pc= currChar();
@@ -642,7 +642,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 				//! \todo this packet has to be sent to all surrounding clients EXCEPT "this"
 				//! \todo complete when sets remade
 				//! \todo verify if picking up items from the ground while hidden should unhide
-				nPackets::Sent::DragItem pk(pi, pc_currchar->getLocation(), amount);
+				nPackets::Sent::DragItem pk(pi, pc_currchar->getPosition(), amount);
 				sw->sendPacket(&pk);		//this packets shows to those clients the item being dragged to the char
 			}
 			pi->setPosition( 0, 0, 0 );
@@ -663,7 +663,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 \param cont container into which *pi has to be dropped (NULL = world)
 */
 
-void cClient::drop_item(pItem pi, Location &loc, pSerializable dest) // Item is dropped
+void cClient::drop_item(pItem pi, sLocation &loc, pSerializable dest) // Item is dropped
 {
 
     //#define debug_dragg
@@ -731,7 +731,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 
 	tile_st tile;
 
-	Location charpos = pc->getPosition();
+	sLocation charpos = pc->getPosition();
 
 
 	if (pi->getId() >= 0x4000)
@@ -829,7 +829,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 				//! \todo this packet has to be sent to all surrounding clients INCLUDING "this" (not sure it is needed)
 				//! \todo complete when sets remade
 
-				nPackets::Sent::DragItem pk(pi, pc_currchar->getLocation(), pi->getAmount());
+				nPackets::Sent::DragItem pk(pi, pc_currchar->getPosition(), pi->getAmount());
                         	sw->sendPacket(&pk);		//this packets shows to those clients the item being dropped on the ground
 
 				pc->playSFX( itemsfx(pi->getId()) );
@@ -1052,7 +1052,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 \param loc position to drop item at
 */
 
-void cClient::dump_item(pItem pi, Location &loc) // Item is dropped on the ground
+void cClient::dump_item(pItem pi, sLocation &loc) // Item is dropped on the ground
 {
 	if ( ! pi ) return;
 
@@ -1208,7 +1208,7 @@ void cClient::droppedOnChar(pItem pi, pChar dest)
 	pChar pc_currchar = currChar();
 	if(!pc_currchar) return false;
 
-	Location charpos = pc_currchar->getPosition();
+	sLocation charpos = pc_currchar->getPosition();
 	pNPC npc = dynamic_cast<pNPC> dest;
 
 	if (pc_currchar != dest)
@@ -1538,7 +1538,7 @@ void cClient::droppedOnSelf(pItem pi)
 	pChar pc = currChar();
 	if(!pc) return;
 
-	Location charpos = pc->getPosition();
+	sLocation charpos = pc->getPosition();
 
 	if (pi->getId() >= 0x4000 ) // crashfix , prevents putting multi-objects ni your backback
 	{

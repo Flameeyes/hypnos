@@ -68,7 +68,7 @@ public:
 	virtual const std::string getPopupHelp() const = 0;
 	
 	//! Gets the location of the instance
-	virtual Location getWorldLocation() const = 0;
+	virtual sLocation getWorldLocation() const = 0;
 //@}
 
 //@{

@@ -35,13 +35,13 @@ void cResources::setDimArea( uint32_t areawidth, uint32_t areaheight )
 	area_height=areaheight;
 }
 
-uint64_t cResources::getBlocks( Location location  )
+uint64_t cResources::getBlocks( sLocation location  )
 {
 	return (uint64_t)( (uint64_t)(location.x / this->area_width) <<32 ) + ( location.y / this->area_height );
 }
 
 
-pResource cResources::getResource( Location location )
+pResource cResources::getResource( sLocation location )
 {
 
 	uint64_t p = this->getBlocks( location );
@@ -53,7 +53,7 @@ pResource cResources::getResource( Location location )
 		return &(iter->second); 
 }
 
-pResource cResources::createBlock( Location location )
+pResource cResources::createBlock( sLocation location )
 {
 	uint64_t p = this->getBlocks( location );
 	
@@ -62,7 +62,7 @@ pResource cResources::createBlock( Location location )
 	return &iter->second;
 }
 
-void cResources::checkResource( Location location, pResource& res )
+void cResources::checkResource( sLocation location, pResource& res )
 {
 
 	if( res==NULL )
@@ -75,7 +75,7 @@ void cResources::checkResource( Location location, pResource& res )
 
 }
 
-void cResources::decreaseResource( Location location, pResource res )
+void cResources::decreaseResource( sLocation location, pResource res )
 {
 	if( res == NULL ) { //create it!
 		res = this->createBlock( location );
@@ -129,7 +129,7 @@ void cResources::checkAll()
 	}
 }
 
-void cResources::deleteBlock( Location location ) 
+void cResources::deleteBlock( sLocation location ) 
 {
 	uint64_t p = this->getBlocks( location );
 	
@@ -178,7 +178,7 @@ void Skills::target_mine( pClient client, pTarget t )
 	if( !canMine( client, weapon ) )
 		return;
 
-	Location target = t->getLocation();
+	sLocation target = t->getPosition();
 
 	pc->facexy( target.x, target.y );
 

@@ -91,7 +91,7 @@ void nSkills::target_provocation2(pClient client, pTarget t )
 	pChar Player = client->currChar();
 	if(!Player) return;
 
-	Location charpos= Player->getBody()->getPosition();
+	sLocation charpos= Player->getBody()->getPosition();
 
 	if (Victim2->InGuardedArea())
 	{

@@ -158,8 +158,8 @@ void Fishing::target_fish( pClient client, pTarget t )
 	pChar pPlayer = client->currChar();
 	if ( ! pPlayer ) return;
 
-	Location charpos= pPlayer->getPosition();
-	Location whereFish = t->getLocation();
+	sLocation charpos= pPlayer->getPosition();
+	sLocation whereFish = t->getPosition();
 
 	int px = whereFish.x;
 	int py = whereFish.y;
@@ -203,7 +203,7 @@ void Fishing::Fish(pClient client)
 	int idnum;
 	int16_t color;
         
-	Location charpos= pc->getPosition();
+	sLocation charpos= pc->getPosition();
 	if(pc->stm<=2) //Luxor bug fix
 	{
 		pc->stm=0;

@@ -140,7 +140,7 @@ bool checkGateCollision( pChar pc )
 
 	pItem pgate = NULL;
 
-        Location charpos = pc->getPosition();
+        sLocation charpos = pc->getPosition();
 
 	NxwItemWrapper si;
 	// WIntermute: Only check items beneath the feet or neighbouring items may be triggered first
@@ -157,7 +157,7 @@ bool checkGateCollision( pChar pc )
         if ( !pgate )
 		return false;
 
-	Location gatepos = pgate->getPosition();
+	sLocation gatepos = pgate->getPosition();
 
 	if ( charpos.x != gatepos.x || charpos.y != gatepos.y || uint32_t(charpos.z - gatepos.z) > 2 )
 		return false;
@@ -931,7 +931,7 @@ static bool checkDistance(pChar caster, pChar target)
 \param caster a Little poor boy
 \param destpos position of a little crazy girl ;]
 */
-static bool checkLos(pChar caster, Location destpos)
+static bool checkLos(pChar caster, sLocation destpos)
 {
 	if(!caster) return false;
 
@@ -1131,7 +1131,7 @@ pChar summon (pChar owner, int npctype, int duration, bool bTamed, int x, int y,
 
 	if (x == INVALID || y == INVALID || z == INVALID)
 	{
-		Location charpos= owner->getPosition();
+		sLocation charpos= owner->getPosition();
 		x = charpos.x;
 		y = charpos.y;
 		z = charpos.z;
@@ -1201,8 +1201,8 @@ void castFieldSpell( pChar pc, int x, int y, int z, int spellnumber)
 
 	for( j=0; j<=fieldLen; j++ )
 	{
-		int8_t nz=getHeight( Location( fx[j], fy[j], z ) );
-		pItem pi = cItem::addByID(id, 1, "#", 0, Location(fx[j], fy[j], nz));
+		int8_t nz=getHeight( sLocation( fx[j], fy[j], z ) );
+		pItem pi = cItem::addByID(id, 1, "#", 0, sLocation(fx[j], fy[j], nz));
 
 		if (pi)
 		{
@@ -1242,7 +1242,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 	int x,y,z;
 	dest.getXYZ(x,y,z);
 
-        Location srcpos= src->getPosition();
+        sLocation srcpos= src->getPosition();
 
 	//
         //Luxor:	Line of sight check
@@ -1250,7 +1250,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 	//Sparhawk:	Don't check los for spells on items in containers
 	//
 	if( ( ( pi != 0 ) && pi->isInWorld() ) || pd != 0 )
-		if (!checkLos(src, Location(x,y,z)))
+		if (!checkLos(src, sLocation(x,y,z)))
 			return;
 
 	int nSkill = skMagery;
@@ -2202,7 +2202,7 @@ void cSummonCreatureMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	std::map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
 	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
-	Location pos = pc->getPosition();
+	sLocation pos = pc->getPosition();
 	pChar pc_monster = npcs::addNpc( data, pos.x, pos.y, pos.z );
 	if(!pc_monster) return;
 

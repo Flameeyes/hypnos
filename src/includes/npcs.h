@@ -34,20 +34,20 @@ namespace npcs
 		MAGIC_MAXSPHERES
 	};
 
-	void SpawnGuard( pChar pc, pChar pc_i, Location where);		// added by Anthalir
+	void SpawnGuard( pChar pc, pChar pc_i, sLocation where);		// added by Anthalir
 	void SpawnGuard( pChar pc, pChar pc_i, int x, int y, signed char z);
 	void initNpcSpells();
 	void npcCastSpell(pChar pc_att, pChar pc_def);
 	void npcMagicAttack(pChar pc_att, pChar pc_def);
 
 	pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t z1);
-	pChar AddNPC(pClient client, pItem pi, int npcNum, Location where);	// added by Anthalir
+	pChar AddNPC(pClient client, pItem pi, int npcNum, sLocation where);	// added by Anthalir
 	pChar addNpc(int npcNum, int x, int y, int z);
 
 	pChar AddRespawnNPC(pItem pi, int npcNum);
 	pChar AddRespawnNPC(pChar pc, int npcNum);
 
-	pChar AddNPCxyz(pClient client, int npcNum, Location where);		// added by anthalir
+	pChar AddNPCxyz(pClient client, int npcNum, sLocation where);		// added by anthalir
 	pChar AddNPCxyz(pClient client, int npcNum, int x1, int y1, signed char z1);
 
 	pItem AddRandomLoot(pItem pack, char * lootlist);

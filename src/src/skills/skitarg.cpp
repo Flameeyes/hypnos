@@ -372,8 +372,8 @@ void nSkills::target_tree(pClient client, pTarget t )
 		return;
 	}
 
-	Location charpos = pc->getPosition();
-	Location location = t->getLocation();
+	sLocation charpos = pc->getPosition();
+	sLocation location = t->getPosition();
 
 
     if( dist( charpos, location )>2 )
@@ -780,12 +780,12 @@ void nSkills::target_detectHidden(pClient client, pTarget t )
 
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skDetectingHidden,AMX_BEFORE);
 
-	Location location = t->getLocation();
+	sLocation location = t->getPosition();
 
 	int32_t nSkill = pc->skill[skDetectingHidden];
 	int32_t nRange = int32_t( VISRANGE * nSkill/2000.0 );
 	int32_t nLow = 0;
-	Location lCharPos = pc->getPosition();
+	sLocation lCharPos = pc->getPosition();
 
 	if ( int32_t(dist(lCharPos, location)) > 15 ) {
 		client->sysmessage( "You cannot see for hidden objects so far.");

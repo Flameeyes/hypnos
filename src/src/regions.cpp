@@ -129,7 +129,7 @@ void cRegion::addNow( pItem pi )
 	this->regions[p.a][p.b].itemsInRegions.insert( pi->getSerial() );
 }
 
-RegCoordPoint::RegCoordPoint( Location location )
+RegCoordPoint::RegCoordPoint( sLocation location )
 {
 	 this->a=location.x/REGION_GRIDSIZE;
 	 this->b=location.y/REGION_COLSIZE;

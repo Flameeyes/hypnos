@@ -668,7 +668,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 
 	uint32_t max_x = map_width  * 8;
 	uint32_t max_y = map_height * 8;
-	Location pcpos= pc->getPosition();
+	sLocation pcpos= pc->getPosition();
 
 	if( ((pcpos.x<100) && (pcpos.y<100)) || ((pcpos.x>max_x) || (pcpos.y>max_y) || (pcpos.x<0) || (pcpos.y<0)))
 	{
@@ -1345,7 +1345,7 @@ void CWorldMain::SaveChar( pChar pc )
 
 	static cChar dummy(false);
 
-	Location pcpos= pc->getPosition();
+	sLocation pcpos= pc->getPosition();
 
 	//Luxor safe stats system
 	if (pc->getStrength() != pc->st3) pc->setStrength(pc->st3);

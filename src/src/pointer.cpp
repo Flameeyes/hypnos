@@ -44,11 +44,11 @@ namespace pointers {
 	static XY 		lowerRight	;
 	PCHARLOCATIONMAP	pCharLocationMap;
 
-	static uint32_t locationTokey( const Location& l );
+	static uint32_t locationTokey( const sLocation& l );
 	static uint32_t locationToKey( const uint32_t x, const uint32_t y );
 	static void calculateBoundary( const uint32_t x, const uint32_t y, const uint32_t range );
 
-	static uint32_t locationToKey( const Location& l )
+	static uint32_t locationToKey( const sLocation& l )
 	{
 		return locationToKey( l.x, l.y );
 	}
@@ -137,13 +137,13 @@ namespace pointers {
 
 	void addCharToLocationMap( const pChar pWho )
 	{
-		pWho->setLocationKey();
-		pCharLocationMap.insert( pair< uint32_t, pChar >( pWho->getLocationKey(), pWho ) );
+		pWho->setPositionKey();
+		pCharLocationMap.insert( pair< uint32_t, pChar >( pWho->getPositionKey(), pWho ) );
 	}
 
 	void delCharFromLocationMap( const pChar pWho )
 	{
-		pair< PCHARLOCATIONMAPIT, PCHARLOCATIONMAPIT > it = pCharLocationMap.equal_range( pWho->getLocationKey() );
+		pair< PCHARLOCATIONMAPIT, PCHARLOCATIONMAPIT > it = pCharLocationMap.equal_range( pWho->getPositionKey() );
 		uint32_t pWhoSerial = pWo->getSerial();
 
 		for( ; it.first != it.second; ++it.first )
@@ -289,13 +289,13 @@ namespace pointers {
 
 	void addItemToLocationMap( const pItem pWhat )
 	{
-		pWhat->setLocationKey();
-		pItemLocationMap.insert( pair< uint32_t, pItem >( pWhat->getLocationKey(), pWhat ) );
+		pWhat->setPositionKey();
+		pItemLocationMap.insert( pair< uint32_t, pItem >( pWhat->getPositionKey(), pWhat ) );
 	}
 
 	void delItemFromLocationMap( const pItem pWhat )
 	{
-		pair< PITEMLOCATIONMAPIT, PITEMLOCATIONMAPIT > it = pItemLocationMap.equal_range( pWhat->getLocationKey() );
+		pair< PITEMLOCATIONMAPIT, PITEMLOCATIONMAPIT > it = pItemLocationMap.equal_range( pWhat->getPositionKey() );
 		uint32_t	pWhatSerial = pWhat->getSerial();
 
 		for( ; it.first != it.second; ++it.first )

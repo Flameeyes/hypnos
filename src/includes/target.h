@@ -24,7 +24,7 @@ private:
 	static uint32_t serial_current;
 
 protected:
-	Location loc;
+	sLocation loc;
 	uint16_t model;
 	pSerializable clicked;		//!< Object (char or item) clicked
 
@@ -44,7 +44,7 @@ public:
 	virtual bool isValid();
 	virtual void error( pClient client );
 
-	const Location cTarget::getLocation() const
+	const sLocation cTarget::getPosition() const
 	{ return loc; }
 	
 	const pSerializable cTarget::getClicked() const

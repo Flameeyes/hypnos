@@ -97,7 +97,7 @@ void dooruse(pChar pc, pItem pi)
 		if (x==(db+0))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition( Location(pi->getPosition().x-1, pi->getPosition().y+1, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x-1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -106,7 +106,7 @@ void dooruse(pChar pc, pItem pi)
 		} else if (x==(db+1))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition( Location(pi->getPosition().x+1, pi->getPosition().y-1, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x+1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);
@@ -114,7 +114,7 @@ void dooruse(pChar pc, pItem pi)
 		} else if (x==(db+2))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition( Location(pi->getPosition().x+1, pi->getPosition().y+1, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x+1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -123,7 +123,7 @@ void dooruse(pChar pc, pItem pi)
 		} else if (x==(db+3))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition( Location(pi->getPosition().x-1, pi->getPosition().y-1, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x-1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);
@@ -131,7 +131,7 @@ void dooruse(pChar pc, pItem pi)
 		} else if (x==(db+4))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition( Location(pi->getPosition().x-1, pi->getPosition().y, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x-1, pi->getPosition().y, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -140,7 +140,7 @@ void dooruse(pChar pc, pItem pi)
 		} else if (x==(db+5))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition( Location(pi->getPosition().x+1, pi->getPosition().y, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x+1, pi->getPosition().y, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);
@@ -148,7 +148,7 @@ void dooruse(pChar pc, pItem pi)
 		} else if (x==(db+6))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition( Location(pi->getPosition().x+1, pi->getPosition().y-1, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x+1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -157,7 +157,7 @@ void dooruse(pChar pc, pItem pi)
 		} else if (x==(db+7))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition( Location(pi->getPosition().x-1, pi->getPosition().y+1, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x-1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);
@@ -165,7 +165,7 @@ void dooruse(pChar pc, pItem pi)
 		} else if (x==(db+8))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition( Location(pi->getPosition().x+1, pi->getPosition().y+1, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x+1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -174,7 +174,7 @@ void dooruse(pChar pc, pItem pi)
 		} else if (x==(db+9))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition( Location(pi->getPosition().x-1, pi->getPosition().y-1, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x-1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);
@@ -182,7 +182,7 @@ void dooruse(pChar pc, pItem pi)
 		} else if (x==(db+10))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition( Location(pi->getPosition().x+1, pi->getPosition().y-1, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x+1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -191,7 +191,7 @@ void dooruse(pChar pc, pItem pi)
 		} else if (x==(db+11))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition( Location(pi->getPosition().x-1, pi->getPosition().y+1, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x-1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);
@@ -215,7 +215,7 @@ void dooruse(pChar pc, pItem pi)
 		} else if (x==(db+14))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition( Location(pi->getPosition().x, pi->getPosition().y-1, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -224,7 +224,7 @@ void dooruse(pChar pc, pItem pi)
 		} else if (x==(db+15))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition( Location(pi->getPosition().x, pi->getPosition().y+1, pi->getPosition().z) );
+			pi->setPosition( sLocation(pi->getPosition().x, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);
@@ -296,7 +296,7 @@ int checkBoundingBox(int xPos, int yPos, int fx1, int fy1, int fz1, int fx2, int
 {
 	if (xPos>=((fx1<fx2)?fx1:fx2) && xPos<=((fx1<fx2)?fx2:fx1))
 		if (yPos>=((fy1<fy2)?fy1:fy2) && yPos<=((fy1<fy2)?fy2:fy1))
-			if (fz1==INVALID || abs(fz1-getHeight(Location(xPos, yPos, fz1)))<=5)
+			if (fz1==INVALID || abs(fz1-getHeight(sLocation(xPos, yPos, fz1)))<=5)
 				return 1;
 			return 0;
 }
@@ -304,7 +304,7 @@ int checkBoundingBox(int xPos, int yPos, int fx1, int fy1, int fz1, int fx2, int
 int checkBoundingCircle(int xPos, int yPos, int fx1, int fy1, int fz1, int radius)
 {
 	if ( (xPos-fx1)*(xPos-fx1) + (yPos-fy1)*(yPos-fy1) <= radius * radius)
-		if (fz1==INVALID || abs(fz1-getHeight(Location(xPos, yPos, fz1)))<=5)
+		if (fz1==INVALID || abs(fz1-getHeight(sLocation(xPos, yPos, fz1)))<=5)
 			return 1;
 		return 0;
 }

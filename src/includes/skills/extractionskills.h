@@ -37,9 +37,9 @@ private:
 
 	RESOURCE_MAP resources; //!< all resources
 
-	uint64_t getBlocks( Location location  );
-	pResource createBlock( Location location );
-	void deleteBlock( Location Location );
+	uint64_t getBlocks( sLocation location  );
+	pResource createBlock( sLocation location );
+	void deleteBlock( sLocation sLocation );
 	bool checkRes( pResource res );
 
 public:
@@ -57,9 +57,9 @@ public:
 
 	void setDimArea( uint32_t areawidth, uint32_t areaheight );
 	
-	pResource getResource( Location location );
-	void checkResource( Location location, pResource& res );
-	void decreaseResource( Location location, pResource res = NULL );
+	pResource getResource( sLocation location );
+	void checkResource( sLocation location, pResource& res );
+	void decreaseResource( sLocation location, pResource res = NULL );
 	bool thereAreSomething( pResource res );
 
 	void checkAll();

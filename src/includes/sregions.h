@@ -10,7 +10,7 @@
 
 void loadregions();
 void checkregion(pChar pc);
-short calcRegionFromXY(Location pos);	// added by Anthalir
+short calcRegionFromXY(sLocation pos);	// added by Anthalir
 short calcRegionFromXY(int x, int y);
 void check_region_weatherchange ();
 

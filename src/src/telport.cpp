@@ -345,7 +345,7 @@ void objTeleporters(pChar pc)
 {
 	if ( ! pc ) return;
 
-	Location charpos= pc->getPosition();
+	sLocation charpos= pc->getPosition();
 	
 
 	NxwItemWrapper si;
@@ -416,7 +416,7 @@ void teleporters(pChar pc)
 {
 	if ( ! pc ) return;
 
-	Location charpos= pc->getPosition();
+	sLocation charpos= pc->getPosition();
 
 	std::multimap<int, tele_locations_st>::iterator iter_tele_locations( tele_locations.find(charpos.x) ),
 							iter_tele_locations_end( tele_locations.end() );

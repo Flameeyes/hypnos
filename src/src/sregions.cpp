@@ -235,7 +235,7 @@ void loadregions()//New -- Zippy spawn regions
 }
 
 //<Anthalir>
-short calcRegionFromXY(Location pos)
+short calcRegionFromXY(sLocation pos)
 {
 	return calcRegionFromXY(pos.x, pos.y);
 }

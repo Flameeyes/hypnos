@@ -34,7 +34,7 @@
 \author Luxor
 \brief Constructs a line from a location A to a location B
 */
-cLine::cLine( Location A, Location B )
+cLine::cLine( sLocation A, sLocation B )
 {
 	m_xDist = int32_t( A.x - B.x );
 	m_yDist = int32_t( A.y - B.y );
@@ -57,9 +57,9 @@ int8_t cLine::calcZAtX( uint32_t x )
 /*!
 \author Luxor
 */
-Location cLine::getPosAtX( uint32_t x )
+sLocation cLine::getPosAtX( uint32_t x )
 {
-	Location pos = Location( x, 0, 0 );
+	sLocation pos = sLocation( x, 0, 0 );
 	pos.y = uint32_t( ( float( ( int32_t(x - x1) * m_yDist ) + ( int32_t(y1) * m_xDist) ) / R32( m_xDist ) ) + 0.5);
 	pos.z = calcZAtX( pos.x );
 	return pos;
@@ -68,9 +68,9 @@ Location cLine::getPosAtX( uint32_t x )
 /*!
 \author Luxor
 */
-Location cLine::getPosAtY( uint32_t y )
+sLocation cLine::getPosAtY( uint32_t y )
 {
-	Location pos = Location( 0, y, 0 );
+	sLocation pos = sLocation( 0, y, 0 );
 	pos.x = uint32_t( ( float( ( int32_t(y - y1) * m_xDist ) + ( int32_t(x1) * m_yDist) ) / R32( m_yDist ) ) + 0.5);
 	pos.z = calcZAtX( pos.x );
 	return pos;
@@ -80,10 +80,10 @@ Location cLine::getPosAtY( uint32_t y )
 
 /*!
 \author Luxor
-\brief Looks if a char can walk on the given Location
+\brief Looks if a char can walk on the given sLocation
 \return The next z value of char position, illegal_z if the tile isn't walkable
 */
-int8_t isWalkable( Location pos, uint8_t flags, pChar pc )
+int8_t isWalkable( sLocation pos, uint8_t flags, pChar pc )
 {
 	int8_t zRes = 0;
 	int32_t height = 0;
@@ -222,7 +222,7 @@ int8_t isWalkable( Location pos, uint8_t flags, pChar pc )
 \brief Tells if the line of sight between two locations is not interrupted
 \return True if the line of sight is clean, false if not
 */
-bool lineOfSight( Location A, Location B )
+bool lineOfSight( sLocation A, sLocation B )
 {
 	cLine line( A, B );
 
@@ -231,7 +231,7 @@ bool lineOfSight( Location A, Location B )
 	uint32_t max_i = max( max_x, max_y );
 	uint32_t i = ( max_i == max_x ) ? min( A.x, B.x ) : min( A.y, B.y );
 
-	Location pos;
+	sLocation pos;
 	for ( i++; i < max_i; i++ ) {
 		pos = ( max_i == max_x ) ? line.getPosAtX( i ) : line.getPosAtY( i );
 		if ( isWalkable( pos, WALKFLAG_DYNAMIC+WALKFLAG_MAP+WALKFLAG_STATIC ) == illegal_z )
@@ -245,7 +245,7 @@ bool lineOfSight( Location A, Location B )
 \brief Tells if an npc can move in the given position
 \todo Implement special features based on the npc (fire elemental should walk on lava passages etc...)
 */
-bool canNpcWalkHere( Location pos )
+bool canNpcWalkHere( sLocation pos )
 {
 	return ( isWalkable( pos ) != illegal_z );
 }
@@ -253,7 +253,7 @@ bool canNpcWalkHere( Location pos )
 /*!
 \author Luxor
 */
-int8_t staticTop( Location pos )
+int8_t staticTop( sLocation pos )
 {
 	int8_t max_z = illegal_z, temp_z;
 
@@ -329,7 +329,7 @@ int8_t mapAverageElevation( uint32_t x, uint32_t y )
 /*!
 \author Luxor
 */
-int8_t dynamicElevation( Location pos )
+int8_t dynamicElevation( sLocation pos )
 {
 	int8_t max_z = illegal_z, temp_z;
 	NxwItemWrapper si;
@@ -348,7 +348,7 @@ int8_t dynamicElevation( Location pos )
 \author Luxor
 \brief Returns the estimated height of walker's position.
 */
-int8_t getHeight( Location pos )
+int8_t getHeight( sLocation pos )
 {
 	int8_t final_z = illegal_z, item_z = illegal_z, temp_z, base_z;
 	uint32_t item_flags;

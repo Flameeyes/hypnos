@@ -78,7 +78,7 @@ public:
 	{ return cGMs; }
 public:
 	void get_item(pItem pi, uint16_t amount);                   	//!< Client grabs an item
-	void drop_item(pItem pi, Location &loc, pSerializable dest);   	//!< Item is dropped on ground, char or item
+	void drop_item(pItem pi, sLocation &loc, pSerializable dest);   	//!< Item is dropped on ground, char or item
 
 protected:
 	bool dragging; 	//!< true if is dragging
@@ -86,7 +86,7 @@ protected:
 	pItem dragItem;	//!< to use as safekeeping against client disconnection
 	// internally used by drop_item:
 	void pack_item(pItem pi, pItem dest);				//!< Item is dropped on another item
-	void dump_item(pItem pi, Location &loc);			//!< Item is dropped on the ground
+	void dump_item(pItem pi, sLocation &loc);			//!< Item is dropped on the ground
 	void droppedOnChar(pItem pi, pChar dest);			//!< Item is dropped on a character
 	// internally used by droppedOnChar
 	void droppedOnPet(pItem pi, pNPC pet);				//!< Item is dropped on a pet
@@ -190,7 +190,7 @@ public:
 	void updatePaperdoll();					//!< tells to the client that something has changed in his paperdoll
 	void sendMidi(char num1, char num2);			//!< plays midi on client (note: if client disabled music it will not play :D)
 	void sendItem(pItem pi);				//!< Shows items to client (on the ground or inside containers)
-	void senditem_lsd(pItem pi, uint16_t color, Location position);	//!< warps item in world for hallucinatory effect (sets new color and location) 	
+	void senditem_lsd(pItem pi, uint16_t color, sLocation position);	//!< warps item in world for hallucinatory effect (sets new color and location) 	
 
 	//! audio packets (sound effects & music)
 	void playMidi();

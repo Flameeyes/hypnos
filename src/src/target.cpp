@@ -37,7 +37,7 @@ void cTarget::receive(pClient client)
 
 	clicked = pkg.clicked.get();
 	model= pkg.model.get();
-	loc = Location( pkg.x.get(), pkg.y.get(), pkg.z );
+	loc = sLocation( pkg.x.get(), pkg.y.get(), pkg.z );
 }
 
 bool cTarget::isValid()
@@ -139,7 +139,7 @@ void amxCallback(pClient client, pTarget t )
 		return;
 	}
 	else {
-	    Location loc = t->getLocation();
+	    sLocation loc = t->getPosition();
         t->amx_callback->Call( t->serial, ps->currCharIdx(), INVALID, loc.x, loc.y, loc.z, model, t->buffer[0] );
 	}
 }
@@ -186,7 +186,7 @@ pTarget createTarget( TARG_TYPE type )
 // Changes           : none yet
 void TargetLocation::init(pChar pc)
 {
-	Location pcpos= pc->getPosition();
+	sLocation pcpos= pc->getPosition();
 
 	m_pc = pc;
 	m_x = pcpos.x;
@@ -279,7 +279,7 @@ void TargetLocation::extendItemTarget()
 // Changes           : none yet
 TargetLocation::TargetLocation( pTarget pp )
 {
-	Location loc = pp->getLocation();
+	sLocation loc = pp->getPosition();
 	init( loc.x, loc.y, loc.z );
 	if( pp->type==0 ) {
 

@@ -26,9 +26,9 @@ enum {
 
 class cLine {
 public:
-	cLine( Location A, Location B );
-	Location getPosAtX( uint32_t x );
-	Location getPosAtY( uint32_t y );
+	cLine( sLocation A, sLocation B );
+	sLocation getPosAtX( uint32_t x );
+	sLocation getPosAtY( uint32_t y );
 	int8_t calcZAtX( uint32_t x );
 private:
 	uint32_t x1, y1;
@@ -36,21 +36,21 @@ private:
 	int32_t m_xDist, m_yDist, m_zDist;
 };
 
-int8_t isWalkable( Location pos, uint8_t flags = WALKFLAG_ALL, pChar pc = NULL );
-bool lineOfSight( Location pos1, Location pos2 );
-bool canNpcWalkHere( Location pos );
-int8_t staticTop( Location pos );
+int8_t isWalkable( sLocation pos, uint8_t flags = WALKFLAG_ALL, pChar pc = NULL );
+bool lineOfSight( sLocation pos1, sLocation pos2 );
+bool canNpcWalkHere( sLocation pos );
+int8_t staticTop( sLocation pos );
 int8_t tileHeight( uint16_t id );
 int8_t mapElevation( uint32_t x, uint32_t y );
-int8_t dynamicElevation( Location pos );
-int8_t getHeight( Location pos );
+int8_t dynamicElevation( sLocation pos );
+int8_t getHeight( sLocation pos );
 void getMultiCorners( pItem pi, uint32_t &x1, uint32_t &y1, uint32_t &x2, uint32_t &y2 );
 
-inline int32_t line_of_sight( int32_t s, Location a, Location b, int32_t checkfor )
+inline int32_t line_of_sight( int32_t s, sLocation a, sLocation b, int32_t checkfor )
 { return lineOfSight( a, b ); }
 
 inline int32_t line_of_sight( int32_t s, int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2, int32_t checkfor )
-{ return lineOfSight( Location( x1, y1, z1 ), Location( x2, y2, z2 ) ); }
+{ return lineOfSight( sLocation( x1, y1, z1 ), sLocation( x2, y2, z2 ) ); }
 
 
 #endif //__MAP_H__

@@ -221,7 +221,7 @@ void cItem::doubleClick(pClient client)
 	if (!checkItemUsability(pc, ITEM_USE_DBLCLICK))
 		return;
 
-	Location charpos= pc->getPosition();
+	sLocation charpos= pc->getPosition();
 
 	// Luxor: cannot use items if under invisible spell
 	// Chronodt: 1/2/2004 added a server parameter check to allow servers to let items be used when invisible
@@ -258,7 +258,7 @@ void cItem::doubleClick(pClient client)
 
 	//<Luxor>: Circle of transparency bug fix
 	pContainer cont;
-	Location dst;
+	sLocation dst;
 
 	cont = getOutMostCont();
 
@@ -271,7 +271,7 @@ void cItem::doubleClick(pClient client)
 		dst = pg_dst->getPosition();
 	}
 
-	Location charPos = pc->getPosition();
+	sLocation charPos = pc->getPosition();
 	charPos.z = dst.z;
 	charPos.dispz = dst.dispz;
 

@@ -32,7 +32,7 @@ void cChar::facexy(uint16_t facex, uint16_t facey)
 \author Luxor
 \brief Calls the pathfinding algorithm and creates a new path
 */
-void cChar::pathFind( Location pos, bool bOverrideCurrentPath )
+void cChar::pathFind( sLocation pos, bool bOverrideCurrentPath )
 {
 	if ( hasPath() ) {
 		if ( bOverrideCurrentPath )
@@ -42,61 +42,61 @@ void cChar::pathFind( Location pos, bool bOverrideCurrentPath )
 	}
 
         bool bOk = true;
-	Location loc = pos;
+	sLocation loc = pos;
 	if ( isWalkable( pos, WALKFLAG_ALL, this ) == illegal_z ) { // If it isn't walkable, we can only reach the nearest tile
 		bOk = false;
 		for ( uint32_t i = 1; i < 4; i++ ) {
                         // East
-			loc = Location( pos.x + i, pos.y, pos.z );
+			loc = sLocation( pos.x + i, pos.y, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// West
-			loc = Location( pos.x - i, pos.y, pos.z );
+			loc = sLocation( pos.x - i, pos.y, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// South
-			loc = Location( pos.x, pos.y + i, pos.z );
+			loc = sLocation( pos.x, pos.y + i, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// North
-			loc = Location( pos.x, pos.y - i, pos.z );
+			loc = sLocation( pos.x, pos.y - i, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// North-East
-			loc = Location( pos.x + i, pos.y - i, pos.z );
+			loc = sLocation( pos.x + i, pos.y - i, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// North-West
-			loc = Location( pos.x - i, pos.y - i, pos.z );
+			loc = sLocation( pos.x - i, pos.y - i, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// South-East
-			loc = Location( pos.x + i, pos.y + i, pos.z );
+			loc = sLocation( pos.x + i, pos.y + i, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
 			}
 
 			// South-West
-			loc = Location( pos.x - i, pos.y + i, pos.z );
+			loc = sLocation( pos.x - i, pos.y + i, pos.z );
 			if ( isWalkable( loc, WALKFLAG_ALL, this ) != illegal_z ) {
 				bOk = true;
 				break;
@@ -120,7 +120,7 @@ void cChar::walkNextStep()
 	if ( !path->pathFound() )
 		path->exec();
 
-	Location pos = path->getNextPos();
+	sLocation pos = path->getNextPos();
 
 	if ( pos == getPosition() )
 		return;
@@ -287,7 +287,7 @@ void cChar::walk()
 uint8_t cChar::getDirFromXY( uint16_t targetX, uint16_t targetY )
 {
 	uint8_t direction = dir;
-	Location pcpos= getPosition();
+	sLocation pcpos= getPosition();
 
 	if ( targetX < pcpos.x )
 		if ( targetY < pcpos.y )

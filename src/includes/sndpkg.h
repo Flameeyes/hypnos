@@ -45,20 +45,20 @@ void itemtalk( pItem pi, char *txt);
 void staticeffect (pChar player, uint16_t effect, unsigned char speed, unsigned char loop, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false );
 void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false);
 
-void staticeffect3(Location pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode);
+void staticeffect3(sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode);
 void movingeffect3(int/*SERIAL*/ source, unsigned short x, unsigned short y, signed char z, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode);
 void movingeffect3(int/*SERIAL*/ source, int/*SERIAL*/ dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode,unsigned char unk1,unsigned char unk2,unsigned char ajust,unsigned char type);
 
 void staticeffectUO3D(int/*SERIAL*/ player, ParticleFx *sta);
 void movingeffectUO3D(int/*SERIAL*/ source, int/*SERIAL*/ dest, ParticleFx *sta);
 void itemeffectUO3D(pItem pi, ParticleFx *sta);
-void MakeGraphicalEffectPkt_(uint8_t pkt[28], uint8_t type, uint32_t src_serial, uint32_t dst_serial, uint16_t model_id, Location src_pos, Location dst_pos, uint8_t speed, uint8_t duration, uint8_t adjust, uint8_t explode );
+void MakeGraphicalEffectPkt_(uint8_t pkt[28], uint8_t type, uint32_t src_serial, uint32_t dst_serial, uint16_t model_id, sLocation src_pos, sLocation dst_pos, uint8_t speed, uint8_t duration, uint8_t adjust, uint8_t explode );
 
 void SendDrawObjectPkt(pClient client, pChar pc, int z);
 
 void SendUnicodeSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint32_t lang, uint8_t sysname[30], uint8_t *unicodetext, uint16_t unicodelen);
 
-void SendPlaySoundEffectPkt(pClient client, uint8_t mode, uint16_t sound_model, uint16_t unkn, Location pos, bool useDispZ = false);
+void SendPlaySoundEffectPkt(pClient client, uint8_t mode, uint16_t sound_model, uint16_t unkn, sLocation pos, bool useDispZ = false);
 void impowncreate(pClient client, pChar pc, int z);
 	//!< socket, player to send
 void sendshopinfo(pClient client, pChar pc, pItem pi);

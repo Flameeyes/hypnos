@@ -170,7 +170,7 @@ void cmdNextCall(pClient cli)
 				pChar pj=cSerializable::findCharBySerial( gmpages[i].serial.serial32 );
 				if(pj)
 				{
-					Location dest= pj->getPosition();
+					sLocation dest= pj->getPosition();
 					
 					pc_currchar->sysmsg("");
 					pc_currchar->sysmsg("Transporting to next call: %s", gmpages[i].name);
@@ -198,7 +198,7 @@ void cmdNextCall(pClient cli)
 				pChar pj=cSerializable::findCharBySerial( counspages[i].serial.serial32 );
 				if(pj)
 				{
-					Location dest= pj->getPosition();
+					sLocation dest= pj->getPosition();
 					
 					pc_currchar->sysmsg("");
 					pc_currchar->sysmsg("Transporting to next call: %s", counspages[i].name);

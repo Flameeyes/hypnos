@@ -139,7 +139,7 @@ namespace nPackets {
 			pItem pi;		//!< Item
 			pPC pc;			//!< Player who sees the item
 			uint16_t color;		//!< new color of item
-			Location position;	//!< new position of item
+			sLocation position;	//!< new position of item
 		public:
 			/*!
 			\param i item
@@ -147,14 +147,14 @@ namespace nPackets {
 			\param c new color of item
 			\param pos new position of item
 			*/
-			inline LSDObject(pItem i, pPC p, uint16_t c, Location pos) :
+			inline LSDObject(pItem i, pPC p, uint16_t c, sLocation pos) :
 				cPacketSend(NULL, 0), pi(i), pc(p), color(c), position(pos)
 			{ }
 			void prepare();
 		};
 		
 		/*!
-		\brief Char Location and body type (Login confirmation)
+		\brief Char sLocation and body type (Login confirmation)
 		\author Chronodt
 		\note packet 0x1b
 		*/
@@ -297,10 +297,10 @@ namespace nPackets {
 		{
 		protected:
 			pItem item; 		//!< dragged item
-			Location destination; 	//!< where the item is dragged to
+			sLocation destination; 	//!< where the item is dragged to
 			uint16_t amount;	//!< how many items in stack
 		public:
-			inline DragItem(pItem aItem, Location aDestination, uint16_t aAmount) :
+			inline DragItem(pItem aItem, sLocation aDestination, uint16_t aAmount) :
 				cPacketSend(NULL, 0), item(aItem), destination(aDestination), amount(aAmount)
 			{ }
 
@@ -511,9 +511,9 @@ namespace nPackets {
 		class Pathfinding : public cPacketSend
 		{
 		protected:
-			Location loc;		//!< destination
+			sLocation loc;		//!< destination
 		public:
-			inline Pathfinding(Location aLoc) :
+			inline Pathfinding(sLocation aLoc) :
 				cPacketSend(NULL, 0), loc(aLoc)
 			{ }
 
@@ -656,7 +656,7 @@ namespace nPackets {
 		{
 		protected:
 			uint16_t model;	//!< Sound model
-			Location loc;	//!< Location where the sound is played
+			sLocation loc;	//!< sLocation where the sound is played
 			bool rep;	//!< If true, the sound will be repeated
 		public:
 			/*!
@@ -664,7 +664,7 @@ namespace nPackets {
 			\param l where the sound will be played
 			\param r should the sound be repeated?
 			*/
-			inline SoundFX(uint16_t m, Location l, bool r) :
+			inline SoundFX(uint16_t m, sLocation l, bool r) :
 				cPacketSend(NULL, 0), model(m), loc(l), rep(r)
 			{ }
 

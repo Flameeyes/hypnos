@@ -26,7 +26,7 @@ struct sPoint {
 };
 
 //! Represent a location on one map
-struct Location {
+struct sLocation {
 	uint16_t x;		//!< X-Coordinate of the location
 	uint16_t y;		//!< Y-Coordinate of the location
 	int8_t z;		//!< Z-Coordinate of the location
@@ -34,24 +34,24 @@ struct Location {
 	uint8_t map;		//!< Map the location (if 255 -> every map)
 	
 	/*!
-	\brief Constructor for Location structure
+	\brief Constructor for sLocation structure
 	\param X x of the new location
 	\param Y y of the new location
 	\param Z z of the new location
 	\param DISPZ dispz of the new location
 	\param MAP map of the new location
 	*/
-	inline Location(uint16_t X, uint16_t Y, int8_t Z, int8_t DISPZ = 0, uint8_t MAP = 255)
+	inline sLocation(uint16_t X, uint16_t Y, int8_t Z, int8_t DISPZ = 0, uint8_t MAP = 255)
 	{
 		x = X; y = Y; z = Z; dispz = DISPZ ? DISPZ : z; map = MAP;
 	}
 
-	//! == operator redefinition for Location
-	inline bool operator ==(const Location &b)
+	//! == operator redefinition for sLocation
+	inline bool operator ==(const sLocation &b)
 	{ return x == b.x && y == b.y && z == b.z; }
 	
-	//! != operator redefinition for Location
-	inline bool operator !=(const Location &b)
+	//! != operator redefinition for sLocation
+	inline bool operator !=(const sLocation &b)
 	{ return x != b.x || y != b.y || z != b.z; }
 
 	//! Converts a location (x,y,z) into a point (x,y)
@@ -103,19 +103,19 @@ struct path_st {
 //REPSYS
 struct repsys_st
 {
-	int32_t		murderdecay;
-	uint32_t	maxkills;
-	int32_t		crimtime;
+	int32_t murderdecay;
+	uint32_t maxkills;
+	int32_t crimtime;
 };
 
 struct resource_st
 {
-	uint32_t		logs;
-	uint32_t	logtime;
-	uint32_t	lograte;//AntiChrist
-	uint32_t		logarea;
-	int32_t		logtrigger;//AntiChrist
-	int32_t		logstamina;//AntiChrist
+	uint32_t logs;
+	uint32_t logtime;
+	uint32_t lograte;//AntiChrist
+	uint32_t logarea;
+	int32_t logtrigger;//AntiChrist
+	int32_t logstamina;//AntiChrist
 };
 
 struct creat_st
@@ -179,7 +179,7 @@ struct sTitle
 };
 
 struct tele_locations_st {
-	Location destination, origem;
+	sLocation destination, origem;
 };
 
 
@@ -189,10 +189,10 @@ struct tele_locations_st {
 \since 0.83
 \note regeneration rage is in milliseconds
 */
-typedef struct {
+typedef regen_st {
 	uint32_t timer; //!< the timer
 	uint32_t rate_eff; //!< regeneration rate current
 	uint32_t rate_real; //!< regeneration rate real
-} regen_st;
+};
 
 #endif

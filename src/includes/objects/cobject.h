@@ -65,36 +65,36 @@ public:
 \brief Position related stuff
 */
 protected:
-	Location		old_position;		//!< old position of object
-	Location		position;		//!< current position of object
+	sLocation		old_position;		//!< old position of object
+	sLocation		position;		//!< current position of object
 
 public:
 	//! return the position of the object
-	inline const Location getPosition() const
+	inline const sLocation getPosition() const
 	{ return position; }
 
-	void setPosition(Location where);
+	void setPosition(sLocation where);
 	
 	//! Sets the position's X-coordinate
 	void setPositionX(uint16_t x)
-	{ setPosition( Location(x, position.y, position.z) ); }
+	{ setPosition( sLocation(x, position.y, position.z) ); }
 	
 	//! Sets the position's Y-coordinate
 	void setPositionY(uint16_t y)
-	{ setPosition( Location(position.x, y, position.z) ); }
+	{ setPosition( sLocation(position.x, y, position.z) ); }
 	
 	//! Sets the position's Z-coordinate
 	void setPositionZ(int8_t z)
-	{ setPosition( Location(position.x, position.y, z) ); }
+	{ setPosition( sLocation(position.x, position.y, z) ); }
 
-	inline const Location getOldPosition() const
+	inline const sLocation getOldPosition() const
 	{ return old_position; }
 
-	inline void setOldPosition(const Location where)
+	inline void setOldPosition(const sLocation where)
 	{ old_position = where; }
 
 	inline void setOldPosition(int32_t x, int32_t y, signed char z, signed char dispz)
-	{ setOldPosition( Location(x, y, z, dispz) ); }
+	{ setOldPosition( sLocation(x, y, z, dispz) ); }
 //@}
 
 //@{

@@ -114,7 +114,7 @@ public:
 	~cChar();
 
 	virtual const std::string getPopupHelp() const = 0;
-	void MoveTo(Location newloc);
+	void MoveTo(sLocation newloc);
 	void loadEventFromScript(char *script1, char *script2);
 	void doGmEffect();
 	
@@ -149,9 +149,9 @@ public:
 	/*!
 	\brief Gets the location of a serial instance in the world
 	\author Flameeyes
-	\note This function is a wrapper to cBody::getLocation()
+	\note This function is a wrapper to cBody::getPosition()
 	*/
-	Location getWorldLocation() const
+	sLocation getWorldLocation() const
 	{ return getBody()->getPosition(); }
 
 //@{
@@ -467,7 +467,7 @@ public:
 	void		walk();			//!< execute walk code <Luxor>
 	void		follow( pChar pc ); //!< follow pc
 	void 		flee( pChar pc, int32_t seconds=INVALID ); //!< flee from pc
-	void		pathFind( Location pos, bool bOverrideCurrentPath = true );
+	void		pathFind( sLocation pos, bool bOverrideCurrentPath = true );
 	uint8_t		getDirFromXY( uint16_t targetX, uint16_t targetY );
 //@}
 

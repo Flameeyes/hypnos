@@ -182,7 +182,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 	if (pc->npc)
 		pc->setNpcMoveTime(); //reset move timer
 
-	Location pcpos= pc->getPosition();
+	sLocation pcpos= pc->getPosition();
 
 	switch(dir&0x0F)
 	{
@@ -273,7 +273,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 				{
 					getMultiCorners(pi_multi,sx,sy,ex,ey);
 					pc->sysmsg("You are banned from that location.");
-					Location pcpos= pc->getPosition();
+					sLocation pcpos= pc->getPosition();
 					pcpos.x= ex;
 					pcpos.y= ey+1;
 					pc->setPosition( pcpos );
@@ -289,7 +289,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 
 	if ( z == illegal_z )
 	{
-		Location pcpos= pc->getPosition();
+		sLocation pcpos= pc->getPosition();
 		pcpos.x= oldx;
 		pcpos.y= oldy;
 		pc->setPosition( pcpos );
@@ -538,7 +538,7 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 {
 	if( !pc_i || pc_i->isFrozen() ) return;
 
-	Location charpos= pc_i->getPosition();
+	sLocation charpos= pc_i->getPosition();
 
 	/////////// LB's flying creatures stuff, flying animation if they stand still ///////
 
@@ -561,7 +561,7 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 	int newY = charpos.y;
 	getXYfromDir( pc_i->dir, newX, newY );	// get coords of the location we want to walk
 	//<Luxor>
-	Location newpos = Location( newX, newY, charpos.z );
+	sLocation newpos = sLocation( newX, newY, charpos.z );
 	valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
 	//</Luxor>
 	if ( valid )
@@ -576,7 +576,7 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 			uint8_t direction = pc_i->getDirFromXY(pc_i->fx1, pc_i->fy1);
 			getXYfromDir( direction, newX, newY );
 			//<Luxor>
-			newpos = Location( newX, newY, charpos.z );
+			newpos = sLocation( newX, newY, charpos.z );
 			valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
 			//</Luxor>
 			if ( !valid ) // try to bounce around obstacle
@@ -584,7 +584,7 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 				direction = pc_i->dir;
 				getXYfromDir( pc_i->dir, newX, newY );
 				//<Luxor>
-				newpos = Location( newX, newY, charpos.z );
+				newpos = sLocation( newX, newY, charpos.z );
 				valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
 				//</Luxor>
 				bool clockwise = chance( 50 );
@@ -596,7 +596,7 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 						direction = getLeftDir( direction );
 					getXYfromDir( pc_i->dir, newX, newY );
 					//<Luxor>
-					newpos = Location( newX, newY, charpos.z );
+					newpos = sLocation( newX, newY, charpos.z );
 					valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
 					//</Luxor>
 				}
@@ -620,7 +620,7 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 		{
 			getXYfromDir( direction, newX, newY );
 			//<Luxor>
-			newpos = Location( newX, newY, charpos.z );
+			newpos = sLocation( newX, newY, charpos.z );
 			valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
 			//</Luxor>
 			if ( clockwise )
@@ -694,7 +694,7 @@ bool handleItemsAtNewPos(pChar pc, int oldx, int oldy, int newx, int newy)
 	if ( ps == NULL ) //Luxor
 		return false;
 
-	Location pcpos=pc->getPosition();
+	sLocation pcpos=pc->getPosition();
 
 	NxwItemWrapper si;
 	si.fillItemsNearXYZ( pcpos, VISRANGE + 1, false );

@@ -38,7 +38,7 @@ int response(pClient client)
 	//!\todo SPARHAWK --- Hmmm but what about ghost speak????? MUST CHECK THIS OUT
 	if ( pc->dead ) return 0;
 
-	Location charpos= pc->getPosition();
+	sLocation charpos= pc->getPosition();
 
 	int32_t i, j, skill=-1;
 

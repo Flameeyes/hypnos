@@ -504,7 +504,7 @@ void cChar::unHide()
 	updateFlag();//AntiChrist - bugfix for highlight color not being updated
 
 	uint32_t my_serial = getSerial();
-	Location my_pos = getPosition();
+	sLocation my_pos = getPosition();
 
 	NxwSocketWrapper sw;
 	sw.fillOnline( this, false );
@@ -582,7 +582,7 @@ bool cChar::isInBackpack( pItem pi )
 	return pi->getOutMostCont() == body->getBackpack();
 }
 
-void cChar::MoveTo(Location newloc)
+void cChar::MoveTo(sLocation newloc)
 {
 	// Avoid crash if go to 0,0
 	if ((newloc.x < 1) || (newloc.y < 1))
@@ -849,7 +849,7 @@ void cChar::teleport( uint8_t flags, pClient cli )
 	pItem p_boat = Boats->GetBoat(getPosition());
 	if( p_boat ) {
 		setMultiSerial(p_boat->getSerial());
-		Location boatpos = getPosition();
+		sLocation boatpos = getPosition();
 		boatpos.z = p_boat->getPosition().z +3;
 		boatpos.dispz = p_boat->getPosition().dispz +3;
 		setPosition( boatpos );
@@ -2148,7 +2148,7 @@ void cChar::Kill()
 
 		pi_j->setContainer( pCorpse );
 		//General Lee
-		Location lj = pi_j->getPosition();
+		sLocation lj = pi_j->getPosition();
 		lj.y = RandomNum(85,160);
 		lj.x = RandomNum(20,70);
 		pi_j->setPosition( lj );
@@ -2200,7 +2200,7 @@ void cChar::checkEquipment()
 
 	if (npc) return;
 
-	Location charpos = getPosition();
+	sLocation charpos = getPosition();
 
 	NxwItemWrapper si;
 	si.fillItemWeared( this, false, false, true );
@@ -2747,7 +2747,7 @@ void cChar::warUpdate()
 {
 	bool sendit;
 
-	Location charpos= getPosition();
+	sLocation charpos= getPosition();
 
 	if (!inWarMode())
 	// we have to execute this no matter if invisble or not LB

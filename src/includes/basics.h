@@ -138,18 +138,18 @@ inline int hex2num ( std::string& s )
 }
 //@}
 
-// double dist( Location a, Location b, bool countZ = !server_data.disable_z_checking);
+// double dist( sLocation a, sLocation b, bool countZ = !server_data.disable_z_checking);
 //!\todo Reinsert the configurable option
-const double dist( Location a, Location b, bool countZ = true);
+const double dist( sLocation a, sLocation b, bool countZ = true);
 
 /*!
 \brief Check if a location is in the range of another one
 \param a Base location to check
-\param b Location to check if in range
+\param b sLocation to check if in range
 \param range range to use
 \deprecated No one is using it, maybe should be removed...
 */
-inline const bool inRange(const Location a, const Location b, const uint16_t range = VISRANGE)
+inline const bool inRange(const sLocation a, const sLocation b, const uint16_t range = VISRANGE)
 {
 	return (dist(a,b)<= range);
 }

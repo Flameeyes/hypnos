@@ -158,7 +158,7 @@ void cChar::boltFX(bool bNoParticles)
 
  	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
-	Location pos2;
+	sLocation pos2;
 	pos2.x = 0; pos2.y = 0; pos2.z = 0;
 	MakeGraphicalEffectPkt_(effect, 0x01, getSerial(), 0, 0, getPosition(), pos2, 0, 0, 1, 0);
 
@@ -215,7 +215,7 @@ void cChar::circleFX(short id)
 	uint8_t effect[28]={ 0x70, 0x00, };
 
 	int x,y;
-	Location charpos = getPosition(), pos2;
+	sLocation charpos = getPosition(), pos2;
 
 	y=rand()%36;
 	x=rand()%36;
@@ -264,28 +264,28 @@ void cChar::doGmEffect()
 	switch( gmMoveEff )
 	{
 	case 1:	// flamestrike
-		staticeffect3( Location(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x3709, 9, 25, 0);
+		staticeffect3( sLocation(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x3709, 9, 25, 0);
 		client->playSFX( 0x0802);
 		break;
 
 	case 2: // sparklie (fireworks wand style)
-		staticeffect3( Location(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x373A, 9, 25, 0);
+		staticeffect3( sLocation(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x373A, 9, 25, 0);
 		break;
 
 	case 3: // sparklie (fireworks wand style)
-		staticeffect3( Location(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x374A, 9, 25, 0);
+		staticeffect3( sLocation(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x374A, 9, 25, 0);
 		break;
 
 	case 4: // sparklie (fireworks wand style)
-		staticeffect3( Location(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x375A, 9, 25, 0);
+		staticeffect3( sLocation(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x375A, 9, 25, 0);
 		break;
 
 	case 5: // sparklie (fireworks wand style)
-		staticeffect3( Location(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x376A, 9, 25, 0);
+		staticeffect3( sLocation(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x376A, 9, 25, 0);
 		break;
 
 	case 6: // sparklie (fireworks wand style)
-		staticeffect3( Location(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x377A, 9, 25, 0);
+		staticeffect3( sLocation(getPosition().x+1, getPosition().y+1, getPosition().z+10), 0x377A, 9, 25, 0);
 		break;
 	}
 }

@@ -13,7 +13,7 @@
 class cSpawnArea {
 
 public:
-	bool findValidLocation( Location& location );
+	bool findValidLocation( sLocation& location );
 	bool disabled;
 
 public:

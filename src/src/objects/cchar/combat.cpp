@@ -232,7 +232,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 			if ( chance( chanceToHit ) ) {
 				pItem dWeapon=pc_def->getWeapon();
 				if (dWeapon!=NULL) {
-					Location charpos = pc_def->getPosition();
+					sLocation charpos = pc_def->getPosition();
 
 					wresmove = 0;
 					dWeapon->setContainer(0);

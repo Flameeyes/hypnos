@@ -28,7 +28,7 @@ protected:
 	virtual uint16_t eventsNumber() const
 	{ return evtItmMax; }
 public:
-	static pItem addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, Location where);
+	static pItem addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, sLocation where);
 //@{
 /*!
 \name Constructors and Operators
@@ -485,15 +485,15 @@ public:
 \name Position
 */
 public:
-	void MoveTo(Location newloc);
+	void MoveTo(sLocation newloc);
 
 	inline const bool isInWorld() const
 	{ return !cont; }
 
 	inline void MoveTo(int32_t x, int32_t y, int8_t z)
-	{ MoveTo( Location(x, y, z) ); }
+	{ MoveTo( sLocation(x, y, z) ); }
 	
-	virtual Location getWorldLocation() const;
+	virtual sLocation getWorldLocation() const;
 //@}
 
 //@{

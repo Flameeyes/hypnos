@@ -47,9 +47,9 @@ uint32_t cItem::newSerial()
 \param nAmount amount of items to add
 \param cName name of the item to add
 \param color color of the item
-\param where Location to add the item to
+\param where sLocation to add the item to
 */
-static pItem cItem::addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, Location where)
+static pItem cItem::addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, sLocation where)
 {
 	pItem pi = item::spawnItemByIdInternal(nAmount, cName, id, color);
 	if ( where.x != 0xFFFF )
@@ -535,7 +535,7 @@ void cItem::SetMultiSerial(int32_t mulser)
 /*!
 \author Anthalir
 */
-void cItem::MoveTo(Location newloc)
+void cItem::MoveTo(sLocation newloc)
 {
 #ifdef SPAR_I_LOCATION_MAP
 	setPosition( newloc );
@@ -553,12 +553,12 @@ void cItem::MoveTo(Location newloc)
 \note This function returns the location of the player with the object or with
 the outmost container for it.
 */
-Location cItem::getWorldLocation() const
+sLocation cItem::getWorldLocation() const
 {
 	pObject inworld = NULL;
 	pItem outmost = getOutMostCont();
 	if ( ! outmost )
-		return Location(0,0,0);
+		return sLocation(0,0,0);
 	
 	inworld = outmost->isInWorld() ? outmost : outmost->getContainer();
 	return inworld->getPosition();

@@ -101,7 +101,7 @@ void nPackets::Sent::ObjectInformation::prepare()
 {
 	buffer = new uint8_t[20]; 	//MAXIMUM packet length
 
-	Location pos = pi->getPosition();
+	sLocation pos = pi->getPosition();
 	LongToCharPtr(pi->getSerial() | 0x80000000, buffer +3);
 
 	//if item is a lightsource and player is a gm,
@@ -193,7 +193,7 @@ void nPackets::Sent::LSDObject::prepare()
 
 
 /*!
-\brief Char Location and body type (Login confirmation)
+\brief Char sLocation and body type (Login confirmation)
 \author Chronodt
 \note packet 0x1b
 */
@@ -210,7 +210,7 @@ void nPackets::Sent::LoginConfirmation::prepare()
 	        0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 		};
 	memcpy(buffer, templ, 37);
-	Location charpos= pc->getPosition();
+	sLocation charpos= pc->getPosition();
 
 	LongToCharPtr(pc->getSerial(), buffer +1);
 	ShortToCharPtr(pc->getId(), buffer +9);
@@ -284,7 +284,7 @@ void nPackets::Sent::DrawGamePlayer::prepare()
 
 	buffer[10] = flag;
 
-	Location pos = pc->getPosition();
+	sLocation pos = pc->getPosition();
 	ShortToCharPtr(pos.x, buffer +11);
 	ShortToCharPtr(pos.y, buffer +13);
 	ShortToCharPtr(0, buffer +15);
@@ -352,7 +352,7 @@ void nPackets::Sent::DragItem::prepare()
 	memset(buffer + 3, 0, 3); //sets 3 unknown bytes to 0
 	ShortToCharPtr(amount, buffer + 6);
 	LongToCharPtr(item->getSerial(), buffer + 8);
-	Location worldpos = item->getWorldPosition()
+	sLocation worldpos = item->getWorldPosition()
 	ShortToCharPtr(worldpos.x, buffer + 12);
 	ShortToCharPtr(worldpos.y, buffer + 14);
 	buffer[16] = worldpos.z;
@@ -408,8 +408,8 @@ void nPackets::Sent::ShowItemInContainer::prepare()
 		ShortToCharPtr(item->getColor(), buffer + 18);
 	}
 	ShortToCharPtr(item->getAmount(), buffer + 8);
-	ShortToCharPtr(item->getLocation().x, buffer + 10);
-	ShortToCharPtr(item->getLocation().y, buffer + 12);
+	ShortToCharPtr(item->getPosition().x, buffer + 10);
+	ShortToCharPtr(item->getPosition().y, buffer + 12);
 	LongToCharPtr(item->getContainer()->getSerial(), buffer + 14);
 }
 
@@ -1026,7 +1026,7 @@ void nPackets::Sent::UpdatePlayer::prepare()
 	buffer = new uint8_t[17];
         length = 17;
 	buffer[0]=0x77;
-	Location pos = chr->getPosition();
+	sLocation pos = chr->getPosition();
 	LongToCharPtr(chr->getSerial(), buffer +1);
 	ShortToCharPtr(chr->getId(), buffer +5);
 	ShortToCharPtr(pos.x, buffer +7);
@@ -1396,7 +1396,7 @@ bool nPackets::Received::CreateChar::execute(pClient client)
 	pc->SetPriv2(defaultpriv2);
 	pc->setProfile("");
 
-	Location charpos;
+	sLocation charpos;
 	charpos.x= str2num(start[StartingLocation][2]);
 	charpos.y= str2num(start[StartingLocation][3]);
 	charpos.dispz= charpos.z= str2num(start[StartingLocation][4]);
@@ -1622,7 +1622,7 @@ bool nPackets::Received::DropItem::execute(pClient client)
 	pItem pi = cSerializable::findItemBySerial(LongFromCharPtr(buffer+1));
 	if(!pi) return false;
 
-	Location drop_at = Location(ShortFromCharPtr(buffer+5), ShortFromCharPtr(buffer+7), buffer[9]);
+	sLocation drop_at = sLocation(ShortFromCharPtr(buffer+5), ShortFromCharPtr(buffer+7), buffer[9]);
 	uint32_t destserial LongFromCharPtr(buffer+10);
 	if (destserial == 0xffffffff) client->drop_item(pi, drop_at, NULL); //if dropped in world, there is no item/char with that serial (avoiding a serial search)
 	pSerializable destination = cSerializable::findBySerial(destserial);

@@ -78,8 +78,8 @@ cObject::cObject() : cEventThroewr(eventsNumber())
 	serial.serial32 = INVALID;
 	multi_serial.serial32 = INVALID;
 	OwnerSerial.serial32 = INVALID;
-	old_position = Location(0,0,0);
-	position = Location(0,0,0);
+	old_position = sLocation(0,0,0);
+	position = sLocation(0,0,0);
 	ScriptID = 0;
 
 	color = color_old = 0;
@@ -119,9 +119,9 @@ void cObject::setSerial(int32_t newserial)
 \brief Set the position of the object
 \author Anthalir
 \since 0.82a
-\param where Location structure representing the new position
+\param where sLocation structure representing the new position
 */
-void cObject::setPosition(Location where)
+void cObject::setPosition(sLocation where)
 {
         old_position = position; // Luxor
 	position = where;

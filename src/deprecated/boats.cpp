@@ -66,7 +66,7 @@ char cShipItems[4][6]=
 \brief A sort of getboart() only more general
 \todo delete or write it
 */
-pItem findmulti(Location where)
+pItem findmulti(sLocation where)
 {
 /*	int lastdist=30;
 	pItem pmulti=NULL;
@@ -80,7 +80,7 @@ pItem findmulti(Location where)
 
 		if (pi->id1>=0x40)
 		{
-			Location itmpos= pi->getPosition();
+			sLocation itmpos= pi->getPosition();
 
 			int dx=abs((int)where.x - (int)itmpos.x);
 			int dy=abs((int)where.y - (int)itmpos.y);
@@ -99,7 +99,7 @@ pItem findmulti(Location where)
 	return NULL;
 }
 
-bool inmulti(Location where, pItem pi)//see if they are in the multi at these chords (Z is NOT checked right now)
+bool inmulti(sLocation where, pItem pi)//see if they are in the multi at these chords (Z is NOT checked right now)
 // PARAM WARNING: z is unreferenced
 {
 	if ( ! pi )
@@ -108,7 +108,7 @@ bool inmulti(Location where, pItem pi)//see if they are in the multi at these ch
 	multiVector m;
 
 	data::seekMulti( pi->getId()-0x4000, m );
-	Location itmpos= pi->getPosition();
+	sLocation itmpos= pi->getPosition();
 	for( uint32_t i = 0; i < m.size(); i++ ) {
 		if(/*(multi.visible)&&*/((itmpos.x+m[i].x) == where.x) && ((itmpos.y+m[i].y) == where.y))
 		{
@@ -150,7 +150,7 @@ void cBoat::PlankStuff(pChar pc , pItem pi)//If the plank is opened, double clic
 
 		if( pc_b )
 		{
-			Location boatpos= boat2->getPosition();
+			sLocation boatpos= boat2->getPosition();
 			pc_b->MoveTo( boatpos.x+1, boatpos.y+1, boatpos.z+2 );
 			pc_b->setMultiSerial( boat2->getSerial() );
 			pc_b->teleport();
@@ -161,7 +161,7 @@ void cBoat::PlankStuff(pChar pc , pItem pi)//If the plank is opened, double clic
 
 	OpenPlank(pi); //lb
 
-	Location boatpos= boat2->getPosition();
+	sLocation boatpos= boat2->getPosition();
 	pc->MoveTo( boatpos.x+1, boatpos.y+1, boatpos.z+3 );
 	pc->teleport();
 	pc->sysmsg("you entered a boat");
@@ -187,7 +187,7 @@ void cBoat::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open p
 	{
 		for(y=y2-6;y<=y2+66;y++)
 		{
-			sz=(signed char) staticTop(Location(x,y,z)); // MapElevation() doesnt work cauz we are in a multi !!
+			sz=(signed char) staticTop(sLocation(x,y,z)); // MapElevation() doesnt work cauz we are in a multi !!
 
 			mz=(signed char) mapElevation(x,y);
 			if (sz==illegal_z) typ=0;
@@ -211,7 +211,7 @@ void cBoat::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open p
 			}
 
 			pc->setMultiSerial(INVALID);
-			pc->getBody()->setPosition( Location( x, y, typ ? sz : mz, typ ? sz : mz ) );
+			pc->getBody()->setPosition( sLocation( x, y, typ ? sz : mz, typ ? sz : mz ) );
 			pointers::updateLocationMap(pc);
 			pc->sysmsg("You left the boat.");
 			pc->teleport();//Show them they moved.
@@ -230,8 +230,8 @@ void cBoat::TurnStuff_i(pItem p_b, pItem pi, int dir, int type)//Turn an item th
 
 	int dx, dy;
 
-	Location bpos	= p_b->getPosition();
-	Location itmpos(bpos.x, bpos.y, pi->getPosition().z, pi->getPosition().dispz);
+	sLocation bpos	= p_b->getPosition();
+	sLocation itmpos(bpos.x, bpos.y, pi->getPosition().z, pi->getPosition().dispz);
 
 	dx= pi->getPosition().x - bpos.x;//get their distance x
 	dy= pi->getPosition().y - bpos.y;//and distance Y
@@ -258,8 +258,8 @@ void cBoat::TurnStuff_c(pItem p_b, pChar pc, int dir, int type)//Turn an item th
 		return;
 	
 	int dx, dy;
-	Location bpos= p_b->getPosition();
-	Location charpos= pc->getPosition();
+	sLocation bpos= p_b->getPosition();
+	sLocation charpos= pc->getPosition();
 	dx= charpos.x - bpos.x;
 	dy= charpos.y - bpos.y;
 	charpos.x= bpos.x;
@@ -380,7 +380,7 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 	char *pShipItems = cShipItems[ dir ];
 
 	//set it's Z to 0,0 inside the boat
-	Location bpos= pi->getPosition();
+	sLocation bpos= pi->getPosition();
 
 	p1->MoveTo( bpos.x, bpos.y, p1->getPosition().z );
 	p1->setId( p1->getId() | pShipItems[PORT_P_C] );//change the ID
@@ -412,7 +412,7 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 
 void cBoat::TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, pItem pTiller, pItem pHold )
 {
-	Location itmpos;
+	sLocation itmpos;
 	signed short int *pShipOffsets;
 
 	switch( size )
@@ -713,7 +713,7 @@ bool cBoat::tile_check(multi_st multi,pItem pBoat,map_st map,int x, int y,int di
 \param where
 \param dir
 */
-bool cBoat::good_position(pItem pBoat, Location where, int dir)
+bool cBoat::good_position(pItem pBoat, sLocation where, int dir)
 {
 	uint32_t x= where.x, y= where.y, i;
 	bool good_pos = false;
@@ -848,30 +848,30 @@ bool cBoat::Build(pClient client, pItem pBoat, char id2)
 	pBoat->morey= pPlankR->getSerial();
 	pBoat->morez= pHold->getSerial();
 
-	Location boatpos= pBoat->getPosition();
+	sLocation boatpos= pBoat->getPosition();
 
 	switch(id2)//Give everything the right Z for it size boat
 	{
 	case 0x00:
 	case 0x04:
-		pTiller->setPosition( Location( boatpos.x + 1, boatpos.y + 4, pTiller->getPosition().z ) );
-		pPlankR->setPosition( Location( boatpos.x + 2, boatpos.y, pPlankR->getPosition().z ) );
-		pPlankL->setPosition( Location( boatpos.x - 2, boatpos.y, pPlankL->getPosition().z ) );
-		pHold->setPosition( Location( boatpos.x, boatpos.y - 4, pHold->getPosition().z ) );
+		pTiller->setPosition( sLocation( boatpos.x + 1, boatpos.y + 4, pTiller->getPosition().z ) );
+		pPlankR->setPosition( sLocation( boatpos.x + 2, boatpos.y, pPlankR->getPosition().z ) );
+		pPlankL->setPosition( sLocation( boatpos.x - 2, boatpos.y, pPlankL->getPosition().z ) );
+		pHold->setPosition( sLocation( boatpos.x, boatpos.y - 4, pHold->getPosition().z ) );
 		break;
 	case 0x08:
 	case 0x0C:
-		pTiller->setPosition( Location( boatpos.x + 1, boatpos.y + 5, pTiller->getPosition().z ) );
-		pPlankR->setPosition( Location( boatpos.x + 2, boatpos.y, pPlankR->getPosition().z ) );
-		pPlankL->setPosition( Location( boatpos.x - 2, boatpos.y, pPlankL->getPosition().z ) );
-		pHold->setPosition( Location( boatpos.x, boatpos.y - 4, pHold->getPosition().z ) );
+		pTiller->setPosition( sLocation( boatpos.x + 1, boatpos.y + 5, pTiller->getPosition().z ) );
+		pPlankR->setPosition( sLocation( boatpos.x + 2, boatpos.y, pPlankR->getPosition().z ) );
+		pPlankL->setPosition( sLocation( boatpos.x - 2, boatpos.y, pPlankL->getPosition().z ) );
+		pHold->setPosition( sLocation( boatpos.x, boatpos.y - 4, pHold->getPosition().z ) );
 		break;
 	case 0x10:
 	case 0x14:
-		pTiller->setPosition( Location( boatpos.x + 1, boatpos.y + 5, pTiller->getPosition().z ) );
-		pPlankR->setPosition( Location( boatpos.x + 2, boatpos.y -1, pPlankR->getPosition().z ) );
-		pPlankL->setPosition( Location( boatpos.x - 2, boatpos.y -1, pPlankL->getPosition().z ) );
-		pHold->setPosition( Location( boatpos.x, boatpos.y - 5, pHold->getPosition().z ) );
+		pTiller->setPosition( sLocation( boatpos.x + 1, boatpos.y + 5, pTiller->getPosition().z ) );
+		pPlankR->setPosition( sLocation( boatpos.x + 2, boatpos.y -1, pPlankR->getPosition().z ) );
+		pPlankL->setPosition( sLocation( boatpos.x - 2, boatpos.y -1, pPlankL->getPosition().z ) );
+		pHold->setPosition( sLocation( boatpos.x, boatpos.y - 5, pHold->getPosition().z ) );
 		break;
 	}
 
@@ -898,7 +898,7 @@ bool cBoat::Build(pClient client, pItem pBoat, char id2)
 \param dir
 \return true if collided, else false
 */
-bool cBoat::collision(pItem pi,Location where,int dir)
+bool cBoat::collision(pItem pi,sLocation where,int dir)
 {
 	int x= where.x, y= where.y;
 	std::map<int,boat_db>::iterator iter_boat;
@@ -1006,7 +1006,7 @@ void cBoat::OpenPlank(pItem pi)
 \return the pointer to the boat or NULL
 \author Elcabesa
 */
-pItem cBoat::GetBoat(Location pos)
+pItem cBoat::GetBoat(sLocation pos)
 {
 	uint32_t i;
 	BOATS::iterator iter( s_boat.begin() ), end( s_boat.end() );
@@ -1115,7 +1115,7 @@ void cBoat::iMove(pClient client, int dir, pItem pBoat, bool forced)
 #define XBORDER 200u
 #define YBORDER 200u
 
-	Location boatpos= pBoat->getPosition();
+	sLocation boatpos= pBoat->getPosition();
 
 	if( (boatpos.x+tx<=XBORDER || boatpos.x+tx>=((map_width*8)-XBORDER))
 		|| (boatpos.y+ty<=YBORDER || boatpos.y+ty>=((map_height*8)-YBORDER))) //bugfix LB
@@ -1150,19 +1150,19 @@ void cBoat::iMove(pClient client, int dir, pItem pBoat, bool forced)
 		return;
 	}
 
-	Location tillerpos= tiller->getPosition();
+	sLocation tillerpos= tiller->getPosition();
 	tillerpos.x+= tx;
 	tillerpos.y+= ty;
 
-	Location p1pos= p1->getPosition();
+	sLocation p1pos= p1->getPosition();
 	p1pos.x+= tx;
 	p1pos.y+= ty;
 
-	Location p2pos= p2->getPosition();
+	sLocation p2pos= p2->getPosition();
 	p2pos.x+= tx;
 	p2pos.y+= ty;
 
-	Location holdpos= hold->getPosition();
+	sLocation holdpos= hold->getPosition();
 	holdpos.x+= tx;
 	holdpos.y+= ty;
 
@@ -1185,7 +1185,7 @@ void cBoat::iMove(pClient client, int dir, pItem pBoat, bool forced)
 			if(!err)
 			{
 				mapRegions->remove(pi);
-				Location itmpos= pi->getPosition();
+				sLocation itmpos= pi->getPosition();
 				itmpos.x+= tx;
 				itmpos.y+= ty;
 				pi->setPosition( itmpos );
@@ -1203,7 +1203,7 @@ void cBoat::iMove(pClient client, int dir, pItem pBoat, bool forced)
 		   pc_c=MAKE_CHARREF_LOGGED(c,err);
 		   if (!err)
 		   {
-			   Location charpos= pc_c->getPosition();
+			   sLocation charpos= pc_c->getPosition();
 			   mapRegions->remove(pc_c);
 			   charpos.x+= tx;
 			   charpos.y+= ty;

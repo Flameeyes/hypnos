@@ -612,7 +612,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 			case 'l':
 				{
                                 	char tempString[32] = "";
-					Location charpos= npc->getPosition();
+					sLocation charpos= npc->getPosition();
 					sprintf( tempString, "%d, %d", charpos.x, charpos.y );
 					script1.replace(flagpos, 2, tempString);
 					break;

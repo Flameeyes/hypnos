@@ -918,7 +918,7 @@ void cNetwork::enterchar(int s)
 
 	clientInfo[s]->ingame=true;
 
-	Location charpos= pc->getPosition();
+	sLocation charpos= pc->getPosition();
 
 	LongToCharPtr(pc->getSerial(), startup +1);
 	ShortToCharPtr(pc->getId(), startup +9);
@@ -1105,7 +1105,7 @@ char cNetwork::LogOut(pClient client)//Instalog
 	if ( ! pc ) return 0;
 
 	uint32_t a, valid=0;
-	Location charpos= pc->getPosition();
+	sLocation charpos= pc->getPosition();
 	uint32_t x= charpos.x, y= charpos.y;
 
 

@@ -58,8 +58,8 @@ struct boat_db
 };
 
 
-pItem findmulti(Location where);
-bool inmulti(Location where,pItem pi);
+pItem findmulti(sLocation where);
+bool inmulti(sLocation where,pItem pi);
 void insert_boat(pItem pi);
 boat_db* search_boat(int32_t ser);
 pItem search_boat_by_plank(pItem pl);
@@ -68,8 +68,8 @@ class cBoat
 {
 	protected:
 		bool boat_collision(pItem pBoat1,int x1, int y1,int dir,pItem pBoat2);
-		bool collision(pItem pi, Location where,int dir);
-		bool good_position(pItem pBoat, Location where, int dir);
+		bool collision(pItem pi, sLocation where,int dir);
+		bool good_position(pItem pBoat, sLocation where, int dir);
 		bool tile_check(multi_st multi,pItem pBoat,map_st map,int x, int y ,int dir);
 		void LeaveBoat(pChar pc, pItem pi);
 		void TurnStuff_i(pItem, pItem, int, int);
@@ -81,7 +81,7 @@ class cBoat
 	public:
 
 		cBoat();
-		pItem GetBoat(Location pos);
+		pItem GetBoat(sLocation pos);
 		virtual ~cBoat();
 		bool Speech(pChar pc, pClient clientocket, std::string &talk );
 		void OpenPlank(pItem pi);

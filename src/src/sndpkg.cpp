@@ -284,7 +284,7 @@ void backpack2(pClient client, uint32_t serial) // Send corpse stuff
 //AoS/	Network->FlushBuffer(s);
 }
 
-void MakeGraphicalEffectPkt_(uint8_t pkt[28], uint8_t type, uint32_t src_serial, uint32_t dst_serial, uint16_t model_id, Location src_pos, Location dst_pos, uint8_t speed, uint8_t duration, uint8_t adjust, uint8_t explode )
+void MakeGraphicalEffectPkt_(uint8_t pkt[28], uint8_t type, uint32_t src_serial, uint32_t dst_serial, uint16_t model_id, sLocation src_pos, sLocation dst_pos, uint8_t speed, uint8_t duration, uint8_t adjust, uint8_t explode )
 {
 	pkt[1]=type;
 	LongToCharPtr(src_serial, pkt +2);
@@ -309,7 +309,7 @@ void tileeffect(int x, int y, int z, char eff1, char eff2, char speed, char loop
 	uint16_t eff = (eff1<<8)|(eff2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
 
-	Location pos1={ x, y, z, 0}, pos2={ 0, 0, 0, 0};
+	sLocation pos1={ x, y, z, 0}, pos2={ 0, 0, 0, 0};
 	
 	MakeGraphicalEffectPkt_(effect, 0x02, 0, 0, eff, pos1, pos2, speed, loop, 1, 0);
 	
@@ -545,11 +545,11 @@ void staticeffect(pChar player, uint16_t eff, unsigned char speed, unsigned char
 	uint8_t effect[28]={ 0x70, 0x00, };
 
 	 int a0,a1,a2,a3,a4;
-	 Location charpos= pc->getPosition();
+	 sLocation charpos= pc->getPosition();
 
 	 if (!skip_old)
 	 {
-		Location pos2;
+		sLocation pos2;
 		pos2.x = 0; pos2.y = 0; pos2.z = 0;
 		MakeGraphicalEffectPkt_(effect, 0x03, pc->getSerial(), 0, eff, charpos, pos2, speed, loop, 1, 0);
 	 }
@@ -621,7 +621,7 @@ void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned ch
 	uint16_t eff = (eff1<<8)|(eff2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
 
-	Location pos = pi->getPosition();
+	sLocation pos = pi->getPosition();
 
 	if (!skip_old)
 	{
@@ -683,7 +683,7 @@ void movingeffect3(SERIAL source, unsigned short x, unsigned short y, signed cha
 	uint16_t eff = (eff1<<8)|(eff2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
 
-	Location srcpos= src->getPosition(), pos2 = { x, y, z, 0};
+	sLocation srcpos= src->getPosition(), pos2 = { x, y, z, 0};
 
 	MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial(), 0, eff, srcpos, pos2, speed, loop, 0, explode);
 
@@ -703,11 +703,11 @@ void movingeffect3(SERIAL source, unsigned short x, unsigned short y, signed cha
 
 /*!
 \brief Item effects
-\param pos Location where to send the effect
+\param pos sLocation where to send the effect
 \param eff ID of the effect
 \todo Replace with a nPackets::Sent:: class, maybe move it in a better place
 */
-void staticeffect3(Location pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode)
+void staticeffect3(sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode)
 {
 	uint8_t effect[28]={ 0x70, 0x00, };
 
@@ -740,8 +740,8 @@ void movingeffect3(SERIAL source, SERIAL dest, unsigned char eff1, unsigned char
 	uint16_t eff = (eff1<<8)|(eff2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
 
-	Location srcpos= src->getPosition();
-	Location destpos= dst->getPosition();
+	sLocation srcpos= src->getPosition();
+	sLocation destpos= dst->getPosition();
 
 	MakeGraphicalEffectPkt_(effect, type, src->getSerial(), dst->getSerial(), eff, srcpos, destpos, speed, loop, ajust, explode);
 
@@ -766,7 +766,7 @@ void SendDrawObjectPkt(pClient client, pChar pc, int z)
 	uint32_t k;
 	uint8_t oc[1024]={ 0x78, 0x00, };
 
-	Location charpos = pc->getPosition();
+	sLocation charpos = pc->getPosition();
 
 	LongToCharPtr(pc->getSerial(), oc +3);
 	ShortToCharPtr(pc->getId(), oc +7); 	// Character art id
@@ -1128,7 +1128,7 @@ void staticeffectUO3D(SERIAL player, ParticleFx *sta)
    pChar pc_cs=cSerializable::findCharBySerial(player);
    if(!pc_cs) return;
 
-   Location charpos= pc_cs->getPosition();
+   sLocation charpos= pc_cs->getPosition();
 
    // please no optimization of p[...]=0's yet :)
 
@@ -1218,8 +1218,8 @@ void movingeffectUO3D(SERIAL source, SERIAL dest, ParticleFx *sta)
    pChar pc_cd=cSerializable::findCharBySerial(dest);
    if(!pc_cd) return;
 
-   Location srcpos= pc_cs->getPosition();
-   Location destpos= pc_cd->getPosition();
+   sLocation srcpos= pc_cs->getPosition();
+   sLocation destpos= pc_cd->getPosition();
 
    unsigned char particleSystem[49];
    particleSystem[0]=0xc7;

@@ -26,7 +26,7 @@ public:
 	~cJailed();
 	
 	uint32_t	serial;		//!< serial of char jailed
-	Location oldpos;	//!< old position
+	sLocation oldpos;	//!< old position
 	std::string	why;	//!< guilty description
 	uint32_t	sec;		//!< duration of jail
 	uint32_t	timer;		//!< timer for jail
@@ -49,7 +49,7 @@ public:
 	~cPrisonCell();
 
 	uint32_t serial;		//!< serial of the cell
-	Location pos;		//!< position of the cell
+	sLocation pos;		//!< position of the cell
 	bool free;		//!< free
 
 };

@@ -223,7 +223,7 @@ void cPC::do_lsd()
 	int ctr = 0,xx,yy,icnt=0;
 	int8_t zz;
 
-	Location charpos = getPosition();
+	sLocation charpos = getPosition();
 
 	NxwItemWrapper si;
 	si.fillItemsNearXYZ( charpos, client->getVisualRange(), false );
@@ -245,7 +245,7 @@ void cPC::do_lsd()
 
 		if( color<0x0002 || color>0x03E9 ) color = 0x03E9;
 
-                Location pos = pi->getPosition();
+                sLocation pos = pi->getPosition();
 
 		if (rand()%10==0) pos.x= pi->getPosition().x + rand()%3;
 		if (rand()%10==0) pos.y= pi->getPosition().y + rand()%3;
