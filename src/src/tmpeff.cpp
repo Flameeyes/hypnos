@@ -1136,9 +1136,9 @@ cTempfx::cTempfx( uint32_t nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t
 	//	If a duration is given, use it. Otherwise, use the standard value.
 	//
 	if ( dur > 0 )
-		m_nExpireTime = uiCurrentTime + (dur*MY_CLOCKS_PER_SEC);
+		m_nExpireTime = getClock() + (dur*MY_CLOCKS_PER_SEC);
 	else
-		m_nExpireTime = uiCurrentTime + (getTempFxTime(cSerializable::findCharBySerial(m_nSrc), num, more1, more2, more3)*MY_CLOCKS_PER_SEC);
+		m_nExpireTime = getClock() + (getTempFxTime(cSerializable::findCharBySerial(m_nSrc), num, more1, more2, more3)*MY_CLOCKS_PER_SEC);
 
 	if ( m_nNum == AMXCUSTOM && amxcback <= INVALID )
 		return;

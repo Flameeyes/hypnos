@@ -358,7 +358,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		if (!pc_def->onhorse) pc_def->playAction(0x14);
 	}
         if (nTimeOut != 0) {
-                timeout = uiCurrentTime + nTimeOut;
+                timeout = getClock() + nTimeOut;
         }
 }
 
@@ -504,7 +504,7 @@ void cChar::doCombat()
 
 						x = (15000 / ((stm+100) * j)*MY_CLOCKS_PER_SEC);
 					}
-					timeout = uiCurrentTime+x;
+					timeout = getClock()+x;
        				}
 
         			stm += SrvParms->attackstamina;
@@ -552,7 +552,7 @@ void cChar::doCombat()
 				}
 				x = (15000 / ((dx+100) * j)*MY_CLOCKS_PER_SEC);
 			}
-       			timeout = uiCurrentTime+x;
+       			timeout = getClock()+x;
 			timeout2 = timeout;
 			x = j = 0;
 

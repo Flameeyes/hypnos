@@ -418,8 +418,8 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 	{
 		pc->setClient( NULL );
 
-		if( pc->murderrate>uiCurrentTime ) //save murder decay
-			pc->murdersave= (pc->murderrate -uiCurrentTime) / MY_CLOCKS_PER_SEC;
+		if( pc->murderrate>getClock() ) //save murder decay
+			pc->murdersave= (pc->murderrate -getClock()) / MY_CLOCKS_PER_SEC;
 
 	}
 
@@ -676,7 +676,7 @@ void cNetwork::Relay(int s) // Relay player to a certain IP
 	ip = htonl(ip);			// host order -> network order !!!!
 	LongToCharPtr(ip, login03 +1);
 	ShortToCharPtr(port, login03 +5);
-	srand(ip+acctno[s]+now+uiCurrentTime); // Perform randomize
+	srand(ip+acctno[s]+now+getClock()); // Perform randomize
 #ifdef ENCRYPTION
 	if ( clientCrypter[s] != NULL )
 	{
@@ -973,8 +973,8 @@ void cNetwork::enterchar(int s)
 #ifdef ENCRYPTION
 	Network->FlushBuffer(s);
 #endif
-	pc->spiritspeaktimer=uiCurrentTime;
-	pc->begging_timer=uiCurrentTime;
+	pc->spiritspeaktimer=getClock();
+	pc->begging_timer=getClock();
 
 	pc->stealth=INVALID;
 	if (!(pc->IsGMorCounselor()))
@@ -1036,8 +1036,8 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	sprintf(zbuf,"%s Logged in the game",pc->getCurrentName().c_str()); //for logging to UOXmon
 
 	// very stupid stuff
-	//pc->murderrate=uiCurrentTime+repsys.murderdecay*MY_CLOCKS_PER_SEC; // LB, bugfix for murder-count getting --'ed each start
-	pc->murderrate=uiCurrentTime+pc->murdersave*MY_CLOCKS_PER_SEC;
+	//pc->murderrate=getClock()+repsys.murderdecay*MY_CLOCKS_PER_SEC; // LB, bugfix for murder-count getting --'ed each start
+	pc->murderrate=getClock()+pc->murdersave*MY_CLOCKS_PER_SEC;
 
 	updates(s);
 
@@ -1163,7 +1163,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 	} else {
 		if ( clientInfo[s]->ingame )
 		{
-		    pc->logout=uiCurrentTime+SrvParms->quittime*MY_CLOCKS_PER_SEC;
+		    pc->logout=getClock()+SrvParms->quittime*MY_CLOCKS_PER_SEC;
 		}
 	}
 
@@ -1717,7 +1717,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 			if (readstat > SOCKET_ERROR)
 			{
 				if (pc_currchar && packet !=0x73 && packet!=0x80 && packet!=0xA4 && packet!=0xA0 && packet!=0x90 && packet!=0x91 ) {
-					pc_currchar->clientidletime=SrvParms->inactivitytimeout*MY_CLOCKS_PER_SEC+uiCurrentTime;
+					pc_currchar->clientidletime=SrvParms->inactivitytimeout*MY_CLOCKS_PER_SEC+getClock();
 				}
         		    // LB, client activity-timestamp !!! to detect client crashes, ip changes etc and disconnect in that case
         		    // 0x73 (idle packet) also counts towards client idle time

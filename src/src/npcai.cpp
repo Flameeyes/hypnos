@@ -24,7 +24,7 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 	if ( ! pc_att || ! pc_def )
 		return;
 	
-	int spattackbit, spattacks, currenttime = uiCurrentTime;
+	int spattackbit, spattacks, currenttime = getClock();
 	// early return if prerequisites for spellcasting aren't true!
 	// dirty,but helps losing some KG of code later :)
 

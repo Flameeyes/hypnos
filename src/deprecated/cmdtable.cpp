@@ -805,7 +805,7 @@ void command_shutdown()
 {
 	if (tnum==2)
 	{
-		endtime=uiCurrentTime+(MY_CLOCKS_PER_SEC*strtonum(1));
+		endtime=getClock()+(MY_CLOCKS_PER_SEC*strtonum(1));
 		if (strtonum(1)==0)
 		{
 			endtime=0;
@@ -1703,7 +1703,7 @@ void target_squelch( pClient client, pTarget t )
 
             if( t->buffer[0]!=INVALID )
             {
-                pc->mutetime = uiCurrentTime+ t->buffer[0]*MY_CLOCKS_PER_SEC;
+                pc->mutetime = getClock()+ t->buffer[0]*MY_CLOCKS_PER_SEC;
                 pc->squelched=2;
             }
 			else

@@ -118,7 +118,7 @@ namespace Commands
 		pChar pc=MAKE_CHAR_REF(currchar[s]);
 		if ( ! pc ) return;
 
-	//	unsigned int currenttime=uiCurrentTime;
+	//	unsigned int currenttime=getClock();
 
 		sysbroadcast("Spawn %d is spawning all items/NPCs, this will cause some lag.", r);
 
@@ -130,7 +130,7 @@ namespace Commands
 	void RegSpawnNum (NXWSOCKET s, int r, int n) // rewrite by LB
 	{
 	/*	int i, spawn=0;
-		unsigned int currenttime=uiCurrentTime;
+		unsigned int currenttime=getClock();
 		char *temps;
 
 		r++;

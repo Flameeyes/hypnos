@@ -21,7 +21,7 @@
 class cResource {
 public:
 
-	cResource( ) { this->consumed=0; timer=uiCurrentTime; }
+	cResource( ) { this->consumed=0; timer=getClock(); }
 
 	TIMERVAL timer; //!< timer for respawn
 	uint32_t consumed; //!< amount of resource consumed

@@ -331,7 +331,7 @@ int response(NXWSOCKET  s)
 						pc_map->npcWander = WANDER_FOLLOW;
 
 						// Set the expire time if nobody excepts the quest
-						pc_map->summontimer = ( uiCurrentTime + ( MY_CLOCKS_PER_SEC * SrvParms->escortactiveexpire ) );
+						pc_map->summontimer = ( getClock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortactiveexpire ) );
 
 						// Send out the rant about accepting the escort
 						pc_map->talkAll("Lead on! Payment shall be made when we arrive at %s.", false, region[pc_map->questDestRegion].name);
@@ -749,7 +749,7 @@ int response(NXWSOCKET  s)
 							pc->guarded = false; // Sparhawk	How about when more than 1 pets is guarding me??
 							if (pc_map->summontimer)
 							{
-								pc_map->summontimer=uiCurrentTime;
+								pc_map->summontimer=getClock();
 							}
 							//pet release code here
 							pc_map->ftargserial=INVALID;
@@ -776,7 +776,7 @@ int response(NXWSOCKET  s)
 					{
 						if (pc_map->summontimer)
 						{
-							pc_map->summontimer=uiCurrentTime;
+							pc_map->summontimer=getClock();
 						}
 						//pet release code here
 						pc_map->ftargserial=INVALID;

@@ -1010,7 +1010,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
 
-	if( (pc->skilldelay>uiCurrentTime) && (!pc->IsGM()) )
+	if( (pc->skilldelay>getClock()) && (!pc->IsGM()) )
 	{
 		sysmessage(s, "You must wait a few moments before using another skill.");
 		return;
@@ -1540,7 +1540,7 @@ void Skills::Persecute (NXWSOCKET  s)
 	
 	int decrease=(pc->in/10)+3;
 	
-	if( pc->skilldelay > uiCurrentTime && !pc->IsGM() )
+	if( pc->skilldelay > getClock() && !pc->IsGM() )
 	{
 		pc->sysmsg("You are unable to persecute him now...rest a little...");
 		return;
@@ -1822,7 +1822,7 @@ void Skills::Decipher(pItem tmap, NXWSOCKET s)
     cScpIterator* iter = NULL;
     char script1[1024];
 
-    if(pc->skilldelay<=uiCurrentTime || pc->IsGM()) // Char doin something?
+    if(pc->skilldelay<=getClock() || pc->IsGM()) // Char doin something?
     {
         if (pc->checkSkill( skCartography, tmap->morey * 10, 1000)) // Is the char skilled enaugh to decipher the map
         {

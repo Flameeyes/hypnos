@@ -156,7 +156,7 @@ void cChar::flee( pChar pc, int32_t seconds )
 	if ( ! pc ) return;
 
 	if( seconds!=INVALID )
-		fleeTimer=uiCurrentTime +MY_CLOCKS_PER_SEC*seconds;
+		fleeTimer=getClock() +MY_CLOCKS_PER_SEC*seconds;
 	else
 		fleeTimer=INVALID;
 

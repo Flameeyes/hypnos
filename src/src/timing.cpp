@@ -92,12 +92,12 @@ void checkFieldEffects( uint32_t currenttime, pChar pc, char timecheck )
 void checktimers() // Check shutdown timers
 {
 
-	overflow = (lclock > uiCurrentTime);
+	overflow = (lclock > getClock());
 	if (endtime)
 	{
-		if ( endtime <= uiCurrentTime ) keeprun=false;
+		if ( endtime <= getClock() ) keeprun=false;
 	}
-	lclock = uiCurrentTime;
+	lclock = getClock();
 
 }
 
@@ -128,7 +128,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 	{
 		if (Calendar::advanceMinute())
 			day++;
-		uotickcount=uiCurrentTime+secondsperuominute*MY_CLOCKS_PER_SEC;
+		uotickcount=getClock()+secondsperuominute*MY_CLOCKS_PER_SEC;
 		if (Calendar::g_nMinute%8==0)
 			moon1=(moon1+1)%8;
 		if (Calendar::g_nMinute%3==0)
@@ -199,7 +199,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 			worldcurlevel = lightLevel;
 			lightChanged  = true;
 		}
-		lighttime=uiCurrentTime+secondsperuominute*5*MY_CLOCKS_PER_SEC;
+		lighttime=getClock()+secondsperuominute*5*MY_CLOCKS_PER_SEC;
 	}
 
 	//
@@ -212,7 +212,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 		/////////////////////
 		if( SrvParms->housedecay_secs != UINVALID )
 			check_house_decay();
-		housedecaytimer = uiCurrentTime+MY_CLOCKS_PER_SEC*60*60; // check only each hour
+		housedecaytimer = getClock()+MY_CLOCKS_PER_SEC*60*60; // check only each hour
 	}
 	//
 	// Spawns
@@ -268,13 +268,13 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 			while( it != end )
 			{
 				pNpc = (*it);
-				if( pNpc->lastNpcCheck != uiCurrentTime &&
+				if( pNpc->lastNpcCheck != getClock() &&
 				    (TIMEOUT( checknpcs ) ||
 				    (TIMEOUT( checktamednpcs ) && pNpc->tamed) ||
 				    (TIMEOUT( checknpcfollow ) && pNpc->npcWander == WANDER_FOLLOW ) ) )
 				{
 					pNpc->heartbeat();
-					pNpc->lastNpcCheck = uiCurrentTime;
+					pNpc->lastNpcCheck = getClock();
 				}
 				++it;
 			}
@@ -288,13 +288,13 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 				if(! npc || !npc->npc )
 					continue;
 
-				if( npc->lastNpcCheck != uiCurrentTime &&
+				if( npc->lastNpcCheck != getClock() &&
 				    (TIMEOUT( checknpcs ) ||
 				    (TIMEOUT( checktamednpcs ) && npc->tamed) ||
 				    (TIMEOUT( checknpcfollow ) && npc->npcWander == WANDER_FOLLOW ) ) )
 				{
 					npc->heartbeat();
-					npc->lastNpcCheck = uiCurrentTime;
+					npc->lastNpcCheck = getClock();
 				}
 			}
 #endif
@@ -348,7 +348,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 									dir%=8;
 									Boats->Move(ps->toInt(),dir,pi);
 								}
-								pi->gatetime=(TIMERVAL)(uiCurrentTime + (double)(SrvParms->boatspeed*MY_CLOCKS_PER_SEC));
+								pi->gatetime=(TIMERVAL)(getClock() + (double)(SrvParms->boatspeed*MY_CLOCKS_PER_SEC));
 							}
 						break;
 				}
@@ -358,22 +358,22 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 
 
 	if( TIMEOUT( checkitemstime ) )
-		checkitemstime = (TIMERVAL)((double) uiCurrentTime+(speed.itemtime*MY_CLOCKS_PER_SEC));
+		checkitemstime = (TIMERVAL)((double) getClock()+(speed.itemtime*MY_CLOCKS_PER_SEC));
 	if( TIMEOUT( checknpcs ) )
-		checknpcs = (TIMERVAL)((double) uiCurrentTime+(speed.npctime*MY_CLOCKS_PER_SEC));
+		checknpcs = (TIMERVAL)((double) getClock()+(speed.npctime*MY_CLOCKS_PER_SEC));
 	if( TIMEOUT( checktamednpcs ) )
-		checktamednpcs=(TIMERVAL)((double) uiCurrentTime+(speed.tamednpctime*MY_CLOCKS_PER_SEC));
+		checktamednpcs=(TIMERVAL)((double) getClock()+(speed.tamednpctime*MY_CLOCKS_PER_SEC));
 	if( TIMEOUT( checknpcfollow ) )
-		checknpcfollow=(TIMERVAL)((double) uiCurrentTime+(speed.npcfollowtime*MY_CLOCKS_PER_SEC));
+		checknpcfollow=(TIMERVAL)((double) getClock()+(speed.npcfollowtime*MY_CLOCKS_PER_SEC));
 	//
 	// Finish
 	//
 	if ( TIMEOUT( nextfieldeffecttime ) )
-		nextfieldeffecttime = (TIMERVAL)((double) uiCurrentTime + (0.5*MY_CLOCKS_PER_SEC));
+		nextfieldeffecttime = (TIMERVAL)((double) getClock() + (0.5*MY_CLOCKS_PER_SEC));
 	if ( TIMEOUT( nextdecaytime ) )
-		nextdecaytime = uiCurrentTime + (15*MY_CLOCKS_PER_SEC);
+		nextdecaytime = getClock() + (15*MY_CLOCKS_PER_SEC);
         if( TIMEOUT( checktempfx ) )
-		checktempfx = (TIMERVAL)((double) uiCurrentTime+(0.5*MY_CLOCKS_PER_SEC));
+		checktempfx = (TIMERVAL)((double) getClock()+(0.5*MY_CLOCKS_PER_SEC));
 }
 
 static int32_t linInterpolation (int32_t ix1, int32_t iy1, int32_t ix2, int32_t iy2, int32_t ix)

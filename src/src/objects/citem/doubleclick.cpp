@@ -242,13 +242,13 @@ void cItem::doubleClick(pClient client)
         // Chronodt: 1/2/2004 added a server parameter check to allow servers to let items be used when invisible
         if (pc->IsHiddenBySpell() && !nSettings::Actions::canUseItemsWhenInvisible()) return;
 
-	if ( !pc->IsGM() && pc->objectdelay >= uiCurrentTime )
+	if ( !pc->IsGM() && pc->objectdelay >= getClock() )
 	{
 		pc->sysmsg("You must wait to perform another action.");
 		return;
 	}
 	else
-		pc->objectdelay = SrvParms->objectdelay * MY_CLOCKS_PER_SEC + uiCurrentTime;
+		pc->objectdelay = SrvParms->objectdelay * MY_CLOCKS_PER_SEC + getClock();
 
 	///MODIFY, CANT CLICK ITEM AT DISTANCE >2//////////////
 	if ( (pc->distFrom(pi)>2) && !pc->IsGM() && !(pc->hasTelekinesis()) ) //Luxor: let's check also for the telekinesys spell
@@ -1123,7 +1123,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			telltime(ps);
 			return;
 		case 0x0E9B: // Mortar for Alchemy
-			pc->objectdelay = ((SrvParms->objectdelay * MY_CLOCKS_PER_SEC)*3) + uiCurrentTime;
+			pc->objectdelay = ((SrvParms->objectdelay * MY_CLOCKS_PER_SEC)*3) + getClock();
 			if (pi->type == ITYPE_MANAREQ_WAND)
 			{
 				targ = clientInfo[s]->newTarget( new cItemTarget() );

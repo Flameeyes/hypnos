@@ -67,7 +67,7 @@ void snooping( pPC snooper, pItem cont )
 			return;
 	}
 	
-	snooper->objectdelay=SrvParms->snoopdelay * MY_CLOCKS_PER_SEC + uiCurrentTime;
+	snooper->objectdelay=SrvParms->snoopdelay * MY_CLOCKS_PER_SEC + getClock();
 	if ( owner->IsGMorCounselor())
 	{
 		snooper->sysmsg("You can't peek into that container or you'll be jailed.");// AntiChrist

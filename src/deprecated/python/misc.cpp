@@ -13,6 +13,6 @@
 //! Returns the current time
 PYNATIVE(getCurrentTime)
 {
-	return Py_BuildValue("l", uiCurrentTime);
+	return Py_BuildValue("l", getClock());
 }
 

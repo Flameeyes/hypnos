@@ -188,7 +188,7 @@ void cChar::mountHorse( pNPC mount )
 	mount->attackerserial=INVALID;
 
 	mount->time_unused = 0;
-	mount->timeused_last = uiCurrentTime;
+	mount->timeused_last = getClock();
 }
 
 /*!

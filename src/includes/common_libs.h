@@ -106,7 +106,7 @@ warnings/errors/issues.
 	#include "archs/pywin32.h"
 #endif
 
-//#define TIMEOUT(X) (((X) <= uiCurrentTime) || overflow)
+//#define TIMEOUT(X) (((X) <= getClock()) || overflow)
 #define TIMEOUT(X) false
 
 extern char* getOSVersionString();

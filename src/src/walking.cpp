@@ -436,7 +436,7 @@ void walking(pChar pc, int dir, int sequence)
 		if (s!=INVALID)
 		{
 			handleCharsAtNewPos( pc );
-			pc->LastMoveTime = uiCurrentTime;
+			pc->LastMoveTime = getClock();
 		}
 
 		if( !pc->npc || pc->questType || pc->tamed )
@@ -455,8 +455,8 @@ void walking(pChar pc, int dir, int sequence)
     {                                        //  possibly weapon speed?? maybe not, cause crossbows notta running shooting
 		if ( pc->targserial!= INVALID)
         {
-            if( pc->timeout>= uiCurrentTime)
-               pc->timeout= uiCurrentTime + (3*CLOCKS_PER_SEC);
+            if( pc->timeout>= getClock())
+               pc->timeout= getClock() + (3*CLOCKS_PER_SEC);
 
 		}
     }

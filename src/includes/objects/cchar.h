@@ -520,13 +520,13 @@ public:
         void singleClick(pClient client);	//!< "this" is the clicked char, client is the client of the clicker
         void doubleClick(pClient client);	//!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
 	inline void setSkillDelay( uint32_t seconds = nSettings::Server::getDelaySkills() )
-	{ skilldelay = /*uiCurrentTime + */seconds * MY_CLOCKS_PER_SEC; }
+	{ skilldelay = getClock() + seconds * MY_CLOCKS_PER_SEC; }
 
 	inline const bool canDoSkillAction() const
 	{ return TIMEOUT( skilldelay ); }
 
 	inline void setObjectDelay( uint32_t seconds = nSettings::Server::getDelayObjects() )
-	{ objectdelay = /*uiCurrentTime + */seconds * MY_CLOCKS_PER_SEC; }
+	{ objectdelay = getClock() + seconds * MY_CLOCKS_PER_SEC; }
 
 	inline const bool canDoObjectAction() const
 	{ return TIMEOUT( objectdelay ); }
@@ -683,12 +683,12 @@ public:
 		//int32_t skilluse[skTrueSkills][1]; //Morrolan - stat/skill cap
 		uint8_t			lockSkill[ALLSKILLS+1]; // LB, client 1.26.2b skill managment
 		int32_t			stealth; //AntiChrist - stealth ( steps already done, -1=not using )
-		uint32_t			running; //AntiChrist - Stamina Loose while running
-		uint32_t			lastRunning; //Luxor
+		uint32_t		running; //AntiChrist - Stamina Loose while running
+		uint32_t		lastRunning; //Luxor
 		int32_t			logout; //Time till logout for this char -1 means in the world or already logged out //Instalog
 		//uint32_t swing;
 
-		uint32_t			holdg; // Gold a player vendor is holding for Owner
+		uint32_t		holdg; // Gold a player vendor is holding for Owner
 		char			fly_steps; // number of step the creatures flies if it can fly
 		TIMERVAL		smoketimer; // LB
 		TIMERVAL		smokedisplaytimer;
@@ -705,9 +705,9 @@ public:
 		int32_t			questDestRegion;
 		int32_t			questOrigRegion;
 		int32_t			questBountyReward;		// The current reward amount for the return of this chars head
-		uint32_t			questBountyPostSerial;	// The global posting serial number of the bounty message
-                uint32_t			questEscortPostSerial;	// The global posting serial number of the escort message
-		uint32_t			murdererSer;			// Serial number of last person that murdered this char
+		uint32_t		questBountyPostSerial;	// The global posting serial number of the bounty message
+                uint32_t		questEscortPostSerial;	// The global posting serial number of the escort message
+		uint32_t		murdererSer;			// Serial number of last person that murdered this char
 
 		// COORDINATE	previousLocation;
 
@@ -735,10 +735,10 @@ public:
 	public:
 		//! tells if a character is running
 		inline const bool isRunning() const
-		{ return ( (/*uiCurrentTime -*/ lastRunning) <= 100 ); }
+		{ return ( (getClock() - lastRunning) <= 100 ); }
 
 		inline void setRunning()
-		{ lastRunning = /*uiCurrentTime*/0; }
+		{ lastRunning = getClock(); }
 
 		void 			updateStats(int32_t stat);
 
@@ -748,7 +748,7 @@ public:
 		void                    drink(pItem pi);       //Luxor: delayed drinking
 		void 			hideBySkill();
 		void 			hideBySpell(int32_t timer = INVALID);
-		uint32_t  			countItems(uint16_t ID, uint16_t col= 0xFFFF);
+		uint32_t  		countItems(uint16_t ID, uint16_t col= 0xFFFF);
 
 		inline const uint32_t CountGold()
 		{ return countItems(ITEMID_GOLD); }
@@ -763,7 +763,7 @@ public:
 		// 2-6 = Sparkles
 		int32_t			gmMoveEff;
 
-		uint32_t			getSkillSum();
+		uint32_t		getSkillSum();
 		int32_t			getTeachingDelta(pChar pPlayer, int32_t skill, int32_t sum);
 		void			removeItemBonus(cItem* pi);
 		inline const bool	isSameAs(pChar pc) const
@@ -803,8 +803,8 @@ public:
 	void			talkAllRunic(char *txt, bool antispam = 0);
 //@}
 
-	uint16_t			distFrom(pChar pc);
-	uint16_t			distFrom(pItem pi);
+	uint16_t		distFrom(pChar pc);
+	uint16_t		distFrom(pItem pi);
 	
 	/*!
 	\brief Check if a specified char is in range from this char

@@ -208,7 +208,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 	int	j,
 		loops = 0;
 
-	pc->hungertime=uiCurrentTime+(SrvParms->hungerrate*MY_CLOCKS_PER_SEC/2);    // avoid loss of one hungerpoint for each restart (Duke, 6.6.2001)
+	pc->hungertime=getClock()+(SrvParms->hungerrate*MY_CLOCKS_PER_SEC/2);    // avoid loss of one hungerpoint for each restart (Duke, 6.6.2001)
 
 	amxVS.setServerMode();
 	do
@@ -357,7 +357,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 			else if (!strcmp(script1, "DEATHS"))			{ pc->deaths=str2num(script2);  }
 			else if (!strcmp(script1, "DEAD"))			{ pc->dead = true; } // dead only appears in file if it's true.
 			else if (!strcmp(script1, "DEF"))			{ pc->def=str2num(script2);}
-			else if (!strcmp(script1, "DISABLED"))		{ pc->disabled=uiCurrentTime+(str2num(script2)*MY_CLOCKS_PER_SEC);}//AntiChrist
+			else if (!strcmp(script1, "DISABLED"))		{ pc->disabled=getClock()+(str2num(script2)*MY_CLOCKS_PER_SEC);}//AntiChrist
 			else if (!strcmp(script1, "DISABLEMSG"))	{ pc->disabledmsg = new std::string( script2 );}
 			else if (!strcmp(script1, "DOORUSE"))			{ pc->doorUse=str2num(script2);}
 		break;
@@ -565,7 +565,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 			{//AntiChrist - let's restore remaining seconds!
 				i=str2num(script2);
 
-				pc->summontimer=uiCurrentTime+(i*MY_CLOCKS_PER_SEC);
+				pc->summontimer=getClock()+(i*MY_CLOCKS_PER_SEC);
 
 			}
 //			else if (!strcmp(script1, "SHOP"))			{ pc->shopkeeper;} // no effect
@@ -844,7 +844,7 @@ void loaditem()
 			if (!(strcmp(script1, "DISABLEMSG")))
 				pi->disabledmsg = new std::string( script2 );
 			else if (!(strcmp(script1, "DISABLED")))
-				pi->disabled=uiCurrentTime+(str2num(script2)*MY_CLOCKS_PER_SEC);
+				pi->disabled=getClock()+(str2num(script2)*MY_CLOCKS_PER_SEC);
 			else if (!(strcmp(script1, "DIR")))
 				pi->dir=str2num(script2);
 			else if (!(strcmp(script1, "DOORFLAG")))
@@ -1349,7 +1349,7 @@ void CWorldMain::saveNewWorld()
 
 	ConOut(" [DONE]\n");
 
-	uiCurrentTime = getclock();
+	getClock() = getclock();
 }
 
 bool CWorldMain::Saving()
@@ -1651,8 +1651,8 @@ void CWorldMain::SaveChar( pChar pc )
 				fprintf(cWsc, "POISON %i\n", pc->poison);
 			if (pc->poisoned!=dummy.poisoned)
 				fprintf(cWsc, "POISONED %i\n", pc->poisoned);
-			if ( pc->IsMurderer() && ( pc->murderrate>uiCurrentTime ) )
-				fprintf(cWsc, "MURDERSAVE %i\n", ( ( pc->murderrate-uiCurrentTime) / MY_CLOCKS_PER_SEC ) );
+			if ( pc->IsMurderer() && ( pc->murderrate>getClock() ) )
+				fprintf(cWsc, "MURDERSAVE %i\n", ( ( pc->murderrate-getClock()) / MY_CLOCKS_PER_SEC ) );
 			if (pc->fleeat!=dummy.fleeat)
 				fprintf(cWsc, "FLEEAT %i\n", pc->fleeat);
 			if (pc->race!=dummy.race)
@@ -2057,7 +2057,7 @@ void CWorldMain::savePrison()
 		fprintf(jWsc, "OLDZ %i\n",	iter->oldpos.z);
 		fprintf(jWsc, "OLDDISPZ %i\n", 	iter->oldpos.dispz);
 		fprintf(jWsc, "CELL %i\n",	iter->cell);
-		fprintf(jWsc, "SECS %i\n", 	(iter->timer - uiCurrentTime) / MY_CLOCKS_PER_SEC );
+		fprintf(jWsc, "SECS %i\n", 	(iter->timer - getClock()) / MY_CLOCKS_PER_SEC );
 		fprintf(jWsc, "WHY %s\n",	iter->why.c_str() );
 		fprintf(jWsc, "}\n\n");
 	}
@@ -2107,7 +2107,7 @@ void CWorldMain::loadjailed()
 	}  while (strcmp(script1, "}"));
 	pChar pc = cSerializable::findCharBySerial( j.serial );
 	if(pc && (j.sec > 0)) {
-		j.timer=uiCurrentTime+(MY_CLOCKS_PER_SEC * j.sec );
+		j.timer=getClock()+(MY_CLOCKS_PER_SEC * j.sec );
 		prison::jailed.push_back( j );
 		pc->jailed=true;
 	}

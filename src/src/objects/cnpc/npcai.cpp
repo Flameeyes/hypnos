@@ -27,7 +27,7 @@ void cNPC::beginCasting(pChar target, magic::SpellId spell)
 	nextact = 1;
 	spellaction = 6;
 	spelltime = magic::getCastingTime( spell );
-	addTempfx( *pc, tempfx::SPELL_PARALYZE, 0, 0, 0, ( pc->spelltime - uiCurrentTime ) / MY_CLOCKS_PER_SEC );
+	addTempfx( *pc, tempfx::SPELL_PARALYZE, 0, 0, 0, ( pc->spelltime - getClock() ) / MY_CLOCKS_PER_SEC );
 	emoteall("*Begins casting a spell*", false);
 }
 
@@ -39,7 +39,7 @@ void cNPC::checkAI()
 	if ( !TIMEOUT( nextAiCheck ) )
 		return;
 
-	nextAiCheck = (uint32_t) ((double)uiCurrentTime + (speed.npcaitime*MY_CLOCKS_PER_SEC));
+	nextAiCheck = (uint32_t) ((double)getClock() + (speed.npcaitime*MY_CLOCKS_PER_SEC));
 
 //!\todo Need to be rewrote after arrays are implemented in tVariant
 	if( amxevents[ EVENT_CHR_ONCHECKNPCAI ]!=NULL ) {
@@ -50,7 +50,7 @@ void cNPC::checkAI()
 		amxSet::copy( set, sc );
 
 		g_bByPass = false;
-		amxevents[ EVENT_CHR_ONCHECKNPCAI ]->Call( getSerial(), set, uiCurrentTime );
+		amxevents[ EVENT_CHR_ONCHECKNPCAI ]->Call( getSerial(), set, getClock() );
 
 		amxSet::deleteSet( set );
 
