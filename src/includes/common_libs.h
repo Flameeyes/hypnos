@@ -7,7 +7,8 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file common_libs.h
-\brief header
+\brief Common library header
+
 This is a small abstraction layer for threading and STL including
 with the explicit purpose of tearing away some platform dependant
 warnings/errors/issues.
@@ -16,41 +17,11 @@ warnings/errors/issues.
 #ifndef __COMMON_LIBS_H__
 #define __COMMON_LIBS_H__
 
+// First of all, include the libhypnos commons
+#include "libhypnos/commons.h"
+
 #if defined(__GNUC__) && ( __GNUC__ < 3 || ( __GNUC__ == 3 && __GNUC_MINOR__ < 1 ) )
 	#error You need at least GCC 3.2 to compile this!
-#endif
-
-#if defined(DOXYGEN)
-	/*!
-	\brief Defines a structure that needs the packaging
-	
-	This attribute is used for structs in \ref data.h which loasd the data
-	raw from the files, and needs to not be padded.
-	*/
-	#define PACK_NEEDED
-	
-	//! Declare a function as deprecated
-	#define DEPRECATED
-	
-	//! Define a function as pure (that don't use external source variables)
-	#define PURE
-	
-	//! Define a function to conforms to the printf arguments formatting
-	//! \see http://gcc.gnu.org/onlinedocs/gcc-3.3.3/gcc/Function-Attributes.html#Function%20Attributes
-	#define PRINTF_LIKE(A,B) ;
-
-#elif defined( __GNUC__ )
-	#define PACK_NEEDED __attribute__ ((packed))
-	#define DEPRECATED __attribute__ ((deprecated))
-	#define PURE __attribute__ ((pure))
-	#define PRINTF_LIKE(A,B) __attribute__ ((format (printf, A, B)));
-#else
-	#define PACK_NEEDED
-	#define DEPRECATED
-	#define PURE
-	#define PRINTF_LIKE(A,B) ;
-	#define strncasecmp strncmpi
-	#define strcasecmp strcmpi
 #endif
 
 #ifdef __BORLANDC__
@@ -58,6 +29,9 @@ warnings/errors/issues.
 	#define WIN32
 	#define _CONSOLE
 	#include <stlport/hash_map>
+
+	#define strncasecmp strncmpi
+	#define strcasecmp strcmpi
 #endif
 
 #if defined WIN32 || defined _WIN32
@@ -88,8 +62,6 @@ warnings/errors/issues.
 #include <utility>
 #include <set>
 
-#include <assert.h>
-
 #ifdef __GNUC__
 	#include <ext/slist>
 	#include <ext/hash_map>
@@ -107,7 +79,6 @@ warnings/errors/issues.
 #include <sys/timeb.h>
 
 #include <ctype.h>
-#include <stdint.h>
 #include <unistd.h>
 
 // Only the one which is used it's actually included, the others will be
@@ -140,19 +111,5 @@ uint32_t getsysclock();
 uint32_t getclockday();
 void initclock();
 //@}
-
-/*!
-\class eException common_libs.h "common_libs.h"
-\brief Base class for Hypnos' exceptions
-
-This class is inherited by all the specific exceptions thrown by Hypnos emulator
-(and by libhypmul), which can be used by the exception handler to find all the
-exception which wasn't handled in other ways (at least the ones thrown by Hypnos
-and not by external libraries).
-*/
-class eException {
-protected:		
-	eException() { }
-};
 
 #endif //__COMMON_LIBS_H__

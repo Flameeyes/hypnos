@@ -9,11 +9,26 @@
 #ifndef __LIBHYPMUL_EXCEPTIONS_H__
 #define __LIBHYPMUL_EXCEPTIONS_H__
 
-#include "common_libs.h"
+#include "libhypnos/commons.h"
 
 namespace nLibhypnos {
 	/*!
-	\class eOutOfBound exceptions.h "libhypnos/muls/exceptions.h"
+	\class eException exceptions.h "libhypnos/exceptions.h"
+	\brief Base class for Hypnos' exceptions
+	
+	This class is inherited by all the specific exceptions thrown by Hypnos emulator
+	(and by libhypmul), which can be used by the exception handler to find all the
+	exception which wasn't handled in other ways (at least the ones thrown by Hypnos
+	and not by external libraries).
+	*/
+	class eException {
+	protected:		
+		eException() { }
+	};
+
+	
+	/*!
+	\class eOutOfBound exceptions.h "libhypnos/exceptions.h"
 	\brief Exception thrown when trying to access an index out of the bound
 		of a vector (or a file)
 		

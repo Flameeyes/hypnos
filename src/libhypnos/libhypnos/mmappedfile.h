@@ -9,7 +9,7 @@
 #ifndef __LIBHYPMUL_MMAPPDEFILE_H__
 #define __LIBHYPMUL_MMAPPDEFILE_H__
 
-#include "common_libs.h"
+#include "libhypnos/commons.h"
 
 namespace nLibhypnos {
 

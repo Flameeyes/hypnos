@@ -9,7 +9,7 @@
 #ifndef __LIBHYPMUL_MULFILES_H__
 #define __LIBHYPMUL_MULFILES_H__
 
-#include "common_libs.h"
+#include "libhypnos/commons.h"
 
 namespace nLibhypnos {
 
