@@ -1211,7 +1211,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ->code_callback=Skills::target_tinkerAxel;
 			targ->buffer[0]=pi->getSerial();
 			targ->send(client);
-			ps->sysmsg("Select part to combine that with.");
+			client->sysmessage("Select part to combine that with.");
 			return;
 		
 		case 0x1051:
@@ -1224,7 +1224,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ->code_callback=Skills::target_tinkerAwg;
 			targ->buffer[0]=pi->getSerial();
 			targ->send(client);
-			ps->sysmsg("Select part to combine it with.");
+			client->sysmessage("Select part to combine it with.");
 			return;
 		
 		case 0x104F:
