@@ -922,13 +922,20 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 		statusWindow(pc_currchar);
 		if (destOwner) destOwner->getBody()->calcWeight();
         } // end of if isContainer(dest). From here dest is supposed to be a simple item
-	else if (dest->isInWorld()
+	else if (dest->isInWorld())
         {
-        	if (!dest->isCombinableWith(pi) || dest->getAmount() + pi->getAmount() > 65535))
-		{ //If target is not a container, but an item in the world that is not stackable with dragged item, bounce!
+        	if (!dest->isCombinableWith(pi))
+                {
+                	dump_item (pi, dest->getPosition()); //if items are not stackable, we dump the item in the same tile
+                        return;
+                }
+        	if (dest->getAmount() + pi->getAmount() > 65535))
+		{ //If target is not a container, but an item in the world that is not stackable with dragged item, bounce.. but only if combined amount is too big!
+                	message("Too many of %s are already stacked there", pi->getCurrentName)
 			item_bounce6(pi);
 			return;
 		}
+                else
 		if (!pc_currchar->isGM() && !pc_currchar->isHidden())
 		{
 			//the dragging of the item should not be shown if pc is a gm, is invisible or is trying to drop an item on his backpack (or bank). Since it is already checked is on the ground...
@@ -1060,8 +1067,8 @@ void cClient::dump_item(pItem pi, Location &loc) // Item is dropped on the groun
 	{
 		NxwItemWrapper si;
 		si.fillItemsAtXY( loc->x, loc->y );
-		if (si.size() >= 2)
-                { //Only 2 items permitted
+		if (si.size() >= nSettings::Server::getMaximumItemsOnTile()) //Only those many items permitted on a tile
+                {
 			sysmessage("There is not enough space there!");
 			cPacketSendBounceItem pk(5);
 			sendPacket(&pk);
@@ -1350,7 +1357,7 @@ bool cClient::droppedOnBeggar(pItem pi, Location &loc, pItem cont)
 	if(pi->getId()!=ITEMID_GOLD)
 	{
 		pc_t->talk(this, "Sorry %s i can only use gold", false, pc->getCurrentName().c_str());
-		cPacketSendBounceItem pk(5;
+		cPacketSendBounceItem pk(5);
 		sendPacket(&pk);
 		if (isDragging())
 		{

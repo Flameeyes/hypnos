@@ -65,6 +65,7 @@ namespace nSettings {
 		bool canPlayersDeletePCs();		//!< Can a player delete one of his characters? [Default: true]
 
 		uint16_t getBankMaxItems();		//!< Maximum items a player can put in a bank. 0 = Unlimited [Default: 0]
+                uint8_t getMaximumItemsOnTile();	//!< Maximum number of items in a single world tile  [Default: \b missing]
 		
 		bool hasInstantGuards();		//!< Should guards instantly teleport over new criminals? [Default: false]
 		
