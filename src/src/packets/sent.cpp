@@ -103,8 +103,9 @@ void nPackets::Sent::Status::prepare()
 void nPackets::Sent::ObjectInformation::prepare()
 {
 	buffer = new uint8_t[20]; 	//MAXIMUM packet length
-
 	sLocation pos = pi->getPosition();
+
+	buffer[0] = 0x1A;
 	LongToCharPtr(pi->getSerial() | 0x80000000, buffer +3);
 
 	//if item is a lightsource and player is a gm,
@@ -156,6 +157,7 @@ void nPackets::Sent::LSDObject::prepare()
 {
 	buffer = new uint8_t[20]; 	//MAXIMUM packet length
 
+	buffer[0] = 0x1A;
 	LongToCharPtr(pi->getSerial() | 0x80000000, buffer +3);
 
 	//if item is a lightsource and player is a gm,
@@ -237,6 +239,7 @@ void nPackets::Sent::Speech::prepare()
 	else text = speech.toString();	// reducing unicode string to simple text
 	length = 44 + text.size() + 1;
 	buffer = new uint8_t[length];
+
 	buffer[0] = 0x1c;
 	ShortToCharPtr(length, buffer+1);
 	LongToCharPtr(ps ? ps->getSerial() : 0xffffffff, buffer+3);
@@ -306,6 +309,7 @@ void nPackets::Sent::MoveReject::prepare()
 {
 	length = 8;
 	buffer = new uint8_t[8];
+
 	buffer[0] = 0x21;
 	buffer[1] = sequence;
 	ShortToCharPtr(pc->getPosition().x, buffer + 2);
@@ -324,6 +328,7 @@ void nPackets::Sent::MoveAcknowdledge::prepare()
 {
 	buffer = new uint8_t[3];
 	length = 3;
+
 	buffer[0] = 0x22;
 	buffer[1] = sequence;
 	buffer[2] = notoriety;
@@ -350,6 +355,7 @@ void nPackets::Sent::DragItem::prepare()
 {
 	buffer = new uint8_t[26];
 	length = 26;
+
 	buffer[0] = 0x23;
 	ShortToCharPtr(item->getId(), buffer + 1);
 	memset(buffer + 3, 0, 3); //sets 3 unknown bytes to 0
@@ -375,6 +381,7 @@ void nPackets::Sent::OpenGump::prepare()
 {
 	buffer = new uint8_t[7];
 	length = 7;
+
 	buffer[0] = 0x24;
 	LongToCharPtr(serial, buffer + 1);
 	ShortToCharPtr(gump, buffer + 5);
@@ -775,6 +782,7 @@ void nPackets::Sent::Action::prepare()
 {
 	buffer = new uint8_t[6];
 	length = 6;
+	buffer[0] = 0x4E;
 	LongToCharPtr(pc->getSerial(), buffer+1);
 	buffer[5] = light;
 }
@@ -840,7 +848,7 @@ void nPackets::Sent::StartGame::prepare()
 {
 	length = 1;
 	buffer = new uint8_t[1];
-	buffer[0] = 0x53;
+	buffer[0] = 0x55;
 }
 
 /*!
@@ -1246,12 +1254,12 @@ void nPackets::Sent::BuyWindow::prepare()
 		offset += 5 + offset[4];
 	}
 }
+
 /*!
 \brief Updates player [packet 0x77]
 \author Chronodt
 \note packet 0x77
 */
-
 
 void nPackets::Sent::UpdatePlayer::prepare()
 {
@@ -1308,10 +1316,11 @@ void nPackets::Sent::DrawObject::prepare()
 	int guild;
 	guild=Guilds->Compare(client->currChar(),pc);
 	if (guild==1)					//Same guild (Green)
-		buffer[18]=2;
+		buffer[18] = 2;
 	else if (guild==2) 				// Enemy guild.. set to orange
-		buffer[18]=5;
-	else if (pc->IsGrey()) buffer[18] = 3;
+		buffer[18] = 5;
+	else if (pc->IsGrey())
+		buffer[18] = 3;
 	else switch(pc->flag)
 	{//1=blue 2=green 5=orange 6=Red 7=Transparent(Like skin 66 77a)
 		case 0x01: buffer[18]=6; break;// If a bad, show as red.
@@ -1439,6 +1448,7 @@ void nPackets::Sent::CorpseClothing::prepare()
 {
 	length = 7 + 5 * items.size() + 1; 		//7 header + 5 for each item and + 1 for terminator
 	buffer = new uint8_t[length];
+	buffer[0] = 0x89;
 	ShortToCharPtr(length, buffer + 1);
 	LongToCharPtr(corpse->getSerial(), buffer + 3);
 
@@ -1582,6 +1592,7 @@ void nPackets::Sent::SellList::prepare()
 		length+= 14 + (*it)->getCurrentName().size();
 	}
 	buffer = new uint8_t[length];
+	buffer[0] = 0x9E;
 	ShortToCharPtr(length, buffer + 1);
 	LongToCharPtr(vendor->getSerial(), buffer + 3);
 	ShortToCharPtr(items.size(), buffer + 7);	// number of items to be sent to gump
