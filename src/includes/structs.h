@@ -77,37 +77,6 @@ struct sContainerItem
 	uint16_t color;		//!< Color of the item
 };
 
-struct location_st
-{
- int32_t x1;
- int32_t y1;
- int32_t x2;
- int32_t y2;
- //char region;
- uint8_t region;
-};
-
-struct logout_st//Instalog
-{
-        uint32_t x1;
-        uint32_t y1;
-        uint32_t x2;
-        uint32_t y2;
-};
-
-struct path_st {
-	uint32_t x;
-	uint32_t y;
-};
-
-//REPSYS
-struct repsys_st
-{
-	int32_t murderdecay;
-	uint32_t maxkills;
-	int32_t crimtime;
-};
-
 struct resource_st
 {
 	uint32_t logs;

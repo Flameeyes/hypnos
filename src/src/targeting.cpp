@@ -246,32 +246,29 @@ static void newCarveTarget(pClient client, pItem pi3)
 						pi->layer=0;
 						pi->Refresh();//let's finally refresh the item
 					}
-                }
-            }
-        }
-        while ( (script1[0]!='}') && (++loopexit < MAXLOOPS) );
+				}
+			}
+		} while ( (script1[0]!='}') && (++loopexit < MAXLOOPS) );
+	
+		safedelete(iter);
+	}
 
-        safedelete(iter);
-    }
-
-
-    if(deletecorpse)//if corpse has to be deleted
-    {
-
+	if(deletecorpse)//if corpse has to be deleted
+	{
 		NxwItemWrapper si;
 		si.fillItemsInContainer( pi3, false );
 		for( si.rewind(); !si.isEmpty(); si++ )
-        {
-            pItem pj=si.getItem();
+		{
+			pItem pj=si.getItem();
 			if(pj) {
 				pj->setContainer(0);
 				pj->MoveTo( pi3->getPosition() );
 				pj->setDecayTime();
 				pj->Refresh();
 			}
-        }
-        pi3->Delete();
-    }
+		}
+		pi3->Delete();
+	}
 }
 
 static void CorpseTarget(pClient client)
@@ -439,23 +436,23 @@ int BuyShop(pClient client, pChar pc)
 	pChar curr=MAKE_CHAR_REF(currchar[s]);
 	if(!curr) return 0;
 
-
+	//!\todo Update to new layer system
 	NxwItemWrapper si;
-	/si.fillItemWeared( pc, true, true, false );
+	si.fillItemWeared( pc, true, true, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
-    {
-        pItem pi=si.getItem();
+	{
+		pItem pi=si.getItem();
 		if(!pi) continue;
-
+	
 		if( pi->layer==LAYER_TRADE_RESTOCK )
-            buyRestockContainer=pi;
-
-        if( pi->layer==LAYER_TRADE_NORESTOCK )
-            buyNoRestockContainer=pi;
+			buyRestockContainer=pi;
+	
+		if( pi->layer==LAYER_TRADE_NORESTOCK )
+			buyNoRestockContainer=pi;
 
 		if( buyRestockContainer && buyNoRestockContainer )
 			break;
-    }
+ 	}
 
     if (!buyRestockContainer || !buyNoRestockContainer )
         return 0;
@@ -503,31 +500,29 @@ void target_playerVendorBuy( pClient client, pTarget t )
 
 	pChar npc = thepack->getPackOwner();               // the vendor
 
-    if(npc->getSerial() != pc->getSerial() || pc->npcaitype!=NPCAI_PLAYERVENDOR) return;
-
-    if (pc_currchar->isOwnerOf(pc))
-    {
-        pc->talk(s, "I work for you, you need not buy things from me!",0);
-        return;
-    }
-
-    int gleft=pc_currchar->CountGold();
-    if (gleft<pi->value)
-    {
-        pc->talk(s, "You cannot afford that.",0);
-        return;
-    }
-    pBackpack->DeleteAmount(price,0x0EED);  // take gold from player
-
-    pc->talk(s, "Thank you.",0);
-    pc->holdg+=pi->value; // putting the gold to the vendor's "pocket"
-
-    // sends item to the proud new owner's pack
-    pi->setContainer( pBackpack );
-    pi->Refresh();
-
+	if(npc->getSerial() != pc->getSerial() || pc->npcaitype!=NPCAI_PLAYERVENDOR) return;
+	
+	if (pc_currchar->isOwnerOf(pc))
+	{
+		pc->talk(s, "I work for you, you need not buy things from me!",0);
+		return;
+	}
+	
+	int gleft=pc_currchar->CountGold();
+	if (gleft<pi->value)
+	{
+		pc->talk(s, "You cannot afford that.",0);
+		return;
+	}
+	pBackpack->DeleteAmount(price,0x0EED);  // take gold from player
+	
+	pc->talk(s, "Thank you.",0);
+	pc->holdg+=pi->value; // putting the gold to the vendor's "pocket"
+	
+	// sends item to the proud new owner's pack
+	pi->setContainer( pBackpack );
+	pi->Refresh();
 }
-
 
 void target_envoke( pClient client, pTarget t )
 {
@@ -859,8 +854,8 @@ void target_allAttack( pClient client, pTarget t )
 	if(!pc_target) return;
 
 	NxwCharWrapper sc;
-    sc.fillOwnedNpcs( pc, false, true );
-    pc->attackStuff(pc_target);
+	sc.fillOwnedNpcs( pc, false, true );
+	pc->attackStuff(pc_target);
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pChar pet=sc.getChar();
 		if( pet )
