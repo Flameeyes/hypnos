@@ -36,65 +36,6 @@ inline void SetTimerSec( uint32_t *timer, const short seconds)
 	*timer=seconds * SECS + getclock();
 }
 
-inline std::string toString(int value)
-{
-	char *s;
-	asprintf(&s, "%d", value);
-	std::string ret(s);
-	free(s);
-	
-	return ret;
-}
-
-inline std::string toString(double value)
-{
-	char *s;
-	asprintf(&s, "%f", value);
-	std::string ret(s);
-	free(s);
-	
-	return ret;
-}
-
-/*!
-\brief Convert a string to a wstring
-\author Endymion
-\param from the source string
-\param to the dest wstring
-\deprecated This shouldn't be used.. endymion's code warning!
-*/
-inline void string2wstring( std::string from, std::wstring& to )
-{
-	to.erase();
-	for( std::string::iterator iter = from.begin(); iter != from.end(); iter++ )
-		to += static_cast<wchar_t>(*iter);
-} DEPRECATED;
-
-/*!
-\brief Convert a wstring to a string
-\author Endymion
-\param from the source wstring
-\param to the dest string
-\deprecated This shouldn't be used.. endymion's code warning!
-*/
-inline void wstring2string( std::wstring from, std::string& to )
-{
-	to.erase();
-	for( std::wstring::iterator iter = from.begin(); iter != from.end(); iter++ )
-		to += static_cast<char>(*iter);
-} DEPRECATED;
-
-/*!
-\brief Converts an std::string to a number
-\param str string to convert
-\return the number represented by the string or 0 if error
-\author Flameeyes
-
-This is a mere overload for atoi(char*) function
-*/
-inline int32_t atoi(std::string str)
-{ return atoi(str.c_str()); }
-
 /*!
 \brief play sound
 \param goldtotal Total of gold "moved"
@@ -130,60 +71,6 @@ inline const int numbitsset( int number )
 		number >>= 1;
 	}
 	return bitsset;
-}
-
-/*!
-\brief Converts an ip-string to a long value
-\param ip ip-string
-\param ris integer to store the ip to
-\return true if the string is a valid ip, else false
-
-\note this is not a "clean" function, because uses goto
-	but it works great!
-
-\author Flameeyes
-*/
-bool ip2long(char *ip, int &ris)
-{
-  char buffer[16], *a = NULL, *b = NULL, *c = NULL;
-  bool ret = true;
-
-  a = strchr(buffer, '.');
-  if ( ! a ) { ret = false; goto end; }
-  *(a++) = 0;
-
-  b = strchr(a, '.');
-  if ( ! b ) { ret = false; goto end; }
-  *(b++) = 0;
-
-  c = strchr(b, '.');
-  if ( ! c ) { ret = false; goto end; }
-  *(c++) = 0;
-
-  ris = ( atoi(a) << 24 ) + ( atoi(b) << 16 ) + ( atoi(c) << 8 ) + atoi(c);
-
-  end:
-    if ( a ) *(--a) = '.';
-    if ( b ) *(--b) = '.';
-    if ( c ) *(--c) = '.';
-
-    return ret;
-}
-
-/*!
-\brief Converts a long value into an ip-string
-\param l long value
-\param out output string - must be prealloccated
-\return pointer to the out string
-
-\author Flameeyes
-*/
-char *long2ip(int l, char *out)
-{
-  char a = l >> 24, b = ( l >> 16 ) & 0xFF,
-       c = ( l >> 8 ) & 0xFF, d = l & 0xFF;
-  sprintf(out, "%u.%u.%u.%u", a, b, c, d);
-  return out;
 }
 
 /*!

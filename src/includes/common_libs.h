@@ -137,17 +137,4 @@ uint32_t getclockday();
 void initclock();
 //@}
 
-//@{
-/*!
-\name Strings
-\brief Strings functions
-*/
-
-char *linestart(char *line);
-void strupr(std::string &str);
-void strlwr(std::string &str);
-
-int strtonum(int countx, int base= 0);
-//@}
-
 #endif //__COMMON_LIBS_H__
