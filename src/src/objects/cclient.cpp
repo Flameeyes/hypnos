@@ -238,8 +238,7 @@ void cClient::showSpecialBankBox(pPC dest)
 
 void cClient::statusWindow(pChar target, bool extended) //, bool canrename)  will be calculated from client data
 {
-
-	VALIDATEPC(target);
+	if(!target) return;
         cChar pc = currChar();  // pc who will get the status window
 
         bool canrename;
@@ -392,7 +391,7 @@ void senditem_lsd(pItem pi, uint16_t color, Location position)
 void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 {
 	pChar pc_currchar = currChar();
-	VALIDATEPC( pc_currchar );
+	if( !pc_currchar ) return;
 
 	//Luxor: not-movable items
 	/*if (pi->magic == 2 || (isCharSerial(pi->getContSerial()) && pi->getContSerial() != pc_currchar->getSerial()) ) {
@@ -1216,12 +1215,15 @@ void cClient::dump_item(pItem pi, Location &loc) // Item is dropped on the groun
 
 void cClient::droppedOnChar(pItem pi, pChar dest)
 {
-	VALIDATEPIR(pi, false);
-	VALIDATEPCR(dest, false);
+	if(!pi) return false;
+	if(!dest) false;
+
 	pChar pc_currchar = currChar();
-	VALIDATEPCR(pc_currchar, false);
+	if(!pc_currchar) return false;
+
 	Location charpos = pc_currchar->getPosition();
 	pNPC npc = dynamic_cast<pNPC> dest;
+
 	if (pc_currchar != dest)
 	{
 		if (npc)
@@ -1318,9 +1320,10 @@ void cClient::droppedOnChar(pItem pi, pChar dest)
 
 void cClient::droppedOnPet(pItem pi, pNPC pet)
 {
-	VALIDATEPC(pet);
+	if(!pet) return;
+
 	pChar pc = currChar();
-	VALIDATEPC(pc);
+	if(!pc) return;
 
 	//!\todo a better hunger system
 	if((pet->hunger<6) && (pi->type==ITYPE_FOOD))//AntiChrist new hunger code for npcs
@@ -1366,16 +1369,17 @@ void cClient::droppedOnPet(pItem pi, pNPC pet)
 
 void cClient::droppedOnGuard(pItem pi, pNPC npc)
 {
-	VALIDATEPI(pi);
-	VALIDATEPC(npc);
+	if(!pi) return;
+	if(!npc) return;
+
 	pChar pc = currChar();
-	VALIDATEPC(pc);
+	if(!pc) return;
 
 	if( pi->getId() == 0x1da0 || pi->getId() == 0x1dae )
 	{
 		// This is a head of someone, see if the owner has a bounty on them
 		pChar own=cSerializable::findCharBySerial(pi->getOwner());
-		VALIDATEPC(own);
+		if(!own) return;
 
 		if( own->questBountyReward > 0 )
 		{
@@ -1471,10 +1475,11 @@ void cClient::droppedOnBeggar(pItem pi, pNPC npc)
 
 void cClient::droppedOnTrainer(pItem pi, pNPC npc)
 {
-	VALIDATEPI(pi);
-	VALIDATEPC(npc);
+	if(!pi) return;
+	if(!npc) return;
+
 	pChar pc = currChar();
-	VALIDATEPC(pc);
+	if(!pc) return;
 
 	if( pi->getId() == ITEMID_GOLD )
 	{ 	// They gave the NPC gold
@@ -1533,10 +1538,10 @@ void cClient::droppedOnTrainer(pItem pi, pNPC npc)
 
 void cClient::droppedOnSelf(pItem pi)
 {
+	if(!pi) return;
 
-	VALIDATEPI(pi);
 	pChar pc = currChar();
-	VALIDATEPC(pc);
+	if(!pc) return;
 
 	Location charpos = pc->getPosition();
 
@@ -1826,7 +1831,8 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 
 void cClient::item_bounce3(const pItem pi)
 {
-	VALIDATEPI( pi );
+	if(!pi) return;
+
         pEquippable equipitem = dynamic_cast<pEquippable> pi;
 	if (equipitem && !equipitem->getOldLayer())
         {
@@ -1921,7 +1927,6 @@ void cClient::item_bounce6(const pItem pi)
 */
 void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 {
-
 	int i, j;
 
 	int playergoldtotal;
@@ -1929,10 +1934,10 @@ void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 	int tmpvalue=0; // Fixed for adv trade system -- Magius(CHE) 
 
 	pChar pc = currChar();
-	if ( ! pc ) return;
+	if(!pc) return;
 
 	pItem pack = pc->getBackpack();
-	VALIDATEPI(pack);
+	if(!pack) return;
 
 	int itemtotal=allitemsbought.size();
 	if (itemtotal>256)
@@ -2072,13 +2077,13 @@ void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 
 void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 {
+	if(!npc) return;
+
 	pChar pc=currChar();
-	VALIDATEPC(pc);
+	if(!pc) return;
 
 	pItem np_a=NULL, np_b=NULL, np_c=NULL;
 	int i, amt, value=0, totgold=0;
-
-	VALIDATEPC(npc);
 
 	NxwItemWrapper si;
 	si.fillItemWeared( npc, true, true, false );
@@ -2197,15 +2202,16 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 
 void sendtradestatus(pContainer cont1, pContainer cont2)  //takes clients from containers' owners
 {
-	VALIDATEPI(cont1);
-	VALIDATEPI(cont2);
+	if(!cont1) return;
+	if(!cont2) return;
 
 	pChar p1, p2;
 
 	p1 = cSerializable::findCharBySerial(cont1->getContSerial());
-	VALIDATEPC(p1);
 	p2 = cSerializable::findCharBySerial(cont2->getContSerial());
-	VALIDATEPC(p2);
+
+	if(!p1) return;
+	if(!p2) return;
 
 	cPacketSendSecureTradingStatus pk1(0x02, cont1->getSerial(), (uint32_t) (cont1->morez%256), (uint32_t) (cont2->morez%256));
       	cPacketSendSecureTradingStatus pk2(0x02, cont2->getSerial(), (uint32_t) (cont2->morez%256), (uint32_t) (cont1->morez%256));
@@ -2215,16 +2221,21 @@ void sendtradestatus(pContainer cont1, pContainer cont2)  //takes clients from c
 
 void dotrade(pContainer cont1, pContainer cont2)
 {
-        VALIDATEPI(cont1);
-        VALIDATEPI(cont2);
+	if(!cont1) return;
+	if(!cont2) return;
+
         pPC pc1 = cSerializable::findCharBySerial(cont1->getContSerial());
         pPC pc2 = cSerializable::findCharBySerial(cont2->getContSerial());
-        VALIDATEPC(pc1);
-        VALIDATEPC(pc2);
+
+	if(!pc1) return;
+	if(!pc2) return;
+
         pContainer bp1 = pc1->getBackpack();
         pContainer bp2 = pc2->getBackpack();
-        VALIDATEPI(bp1);
-        VALIDATEPI(bp2);
+
+	if(!bp1) return;
+	if(!bp2) return;
+
         if (pc1->getClient() == NULL || pc2->getClient() == NULL) return;
 
         if (cont1->morez == 0 || cont2->morez == 0) {
@@ -2293,31 +2304,32 @@ void dotrade(pContainer cont1, pContainer cont2)
 
 void endtrade(pContainer c1)
 {
-	VALIDATEPI(c1);
+	if(!c1) return;
+
 	pItem c2=cSerializable::findItemBySerial( c1->moreb );
-	VALIDATEPI(c2);
+	if(!c2) return;
 
 	pChar pc1=cSerializable::findCharBySerial(c1->getContSerial());
-	VALIDATEPC(pc1);
+	if(!pc1) return;
 
 	pChar pc2=cSerializable::findCharBySerial(c2->getContSerial());
-	VALIDATEPC(pc2);
-
+	if(!pc2) return;
 
 	pItem bp1= pc1->getBackpack();
-	VALIDATEPI(bp1);
+	if(!bp) return;
+
 	pItem bp2= pc2->getBackpack();
-	VALIDATEPI(bp2);
+	if(!bp2) return;
 
 	pClient c1 = pc1->getClient();
 	pClient c2 = pc2->getClient();
 
-	if (c1 != NULL)	// player may have been disconnected (Duke)
+	if (c1)	// player may have been disconnected (Duke)
         {
         	cPacketSendSecureTradingStatus pk1(0x01, cont1->getSerial(), 0, 0);
 		c1->sendPacket(&pk1);
 	}
-	if (c2 != NULL)	// player may have been disconnected (Duke)
+	if (c2)	// player may have been disconnected (Duke)
         {
               	cPacketSendSecureTradingStatus pk2(0x01, cont2->getSerial(), 0, 0);
               	c2->sendPacket(&pk2);

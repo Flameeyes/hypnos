@@ -46,10 +46,10 @@ uint32_t getCastingTime( SpellId spell )
 */
 bool checkMagicalSpeech( pChar pc, char* speech )
 {
-	VALIDATEPCR( pc, false );
+	if(!pc) return false;
+
 	pClient client = pc->getClient();
-	if ( client == NULL )
-		return false;
+	if(!client) return false;
 
 	strupr( speech );
 	string sSpeech( speech );
@@ -132,7 +132,7 @@ void loadSpellsFromScript()
 */
 bool checkGateCollision( pChar pc )
 {
-	VALIDATEPCR( pc, false );
+	if(!pc) return false;
 
         if ( pc->npc )
 		return false;
@@ -191,8 +191,7 @@ bool checkGateCollision( pChar pc )
 */
 static inline bool checkTownLimits(SpellId spellnum, pChar pa, pChar pd, int spellflags, int param, bool areaspell = false)
 {
-	//VALIDATEPCR(pa, false);
-	VALIDATEPCR(pd, false);
+	if(!pd) return false;
 
 	if ((g_Spells[spellnum].attackSpell)&&(SrvParms->guardsactive)&&(region[pd->region].priv&RGNPRIV_GUARDED))
 	{
@@ -220,7 +219,7 @@ static inline bool checkTownLimits(SpellId spellnum, pChar pa, pChar pd, int spe
 */
 static inline bool checkMana(pChar pc, SpellId num)
 {
-	VALIDATEPCR(pc, false);
+	if(!pc) return false;
 
 //	if( pc->IsGM() ) return true;
 	if ( pc->dontUseMana() ) return true;
@@ -260,8 +259,9 @@ static inline void subtractMana(pChar pc, SpellId spellnumber)
 */
 static bool checkReflection(pChar &pa, pChar &pd)
 {
-	VALIDATEPCR(pa, false);
-	VALIDATEPCR(pd, false);
+	if(!pa) return false;
+	if(!pd) return false;
+
 	if ( pd->hasReflection() ) {
 		pd->setReflection(false);
 		pd->staticFX(0x373A, 0, 15);
@@ -327,7 +327,8 @@ static inline bool isAreaSpell(SpellId spell)
 static bool checkResist(pChar pa, pChar pd, SpellId spellnumber)
 {	// This function uses informations found at http://uo.stratics.com !
 
-	VALIDATEPCR(pd, false);
+	if(!pd) return false;
+
 	int circle = (spellnumber) / 8;
 	// just to give skill a chance to raise :)
 	pd->checkSkill( skMagicResistance, 80*circle, 1000, !isFieldSpell(spellnumber));
@@ -608,7 +609,7 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 */
 static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int param = 0)
 {
-	VALIDATEPC(pd);
+	if(!pd) return false;
 
 	pChar p_realattacker = pa;
 	pChar p_realdefender = pd;
@@ -677,7 +678,8 @@ static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int
 */
 bool checkReagents(pChar pc, reag_st reagents)
 {
-	VALIDATEPCR(pc, false);
+	if(!pc) return false;
+
 	reag_st fail;
 
 //	if( pc->IsGM() ) return true;
@@ -893,8 +895,9 @@ bool spellRequiresTarget(SpellId spellnum)
 */
 static bool checkDistance(pChar caster, pChar target)
 {
-	VALIDATEPCR(caster, false);
-	VALIDATEPCR(target, false);
+	if(!caster) return false;
+	if(!target) return false;
+
 	if (caster->distFrom(target) > 15) {
 		caster->sysmsg("You are too far away from the target.");
 		return false;
@@ -915,7 +918,8 @@ static bool checkDistance(pChar caster, pChar target)
 */
 static bool checkLos(pChar caster, Location destpos)
 {
-	VALIDATEPCR(caster, false);
+	if(!caster) return false;
+
         if (!line_of_sight(INVALID, caster->getPosition(), destpos, INVALID)) {
 		caster->sysmsg("There is something between you and your target that makes the casting impossible.");
 		return false;
@@ -1103,7 +1107,8 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 */
 pChar summon (pChar owner, int npctype, int duration, bool bTamed, int x, int y, int z)
 {
-	VALIDATEPCR(owner, NULL);
+	if(!owner) return NULL;
+
 	if (x == INVALID || y == INVALID || z == INVALID)
 	{
 		Location charpos= owner->getPosition();
@@ -1111,8 +1116,10 @@ pChar summon (pChar owner, int npctype, int duration, bool bTamed, int x, int y,
 		y = charpos.y;
 		z = charpos.z;
 	}
+
 	pChar pc = npcs::addNpc(npctype, x, y, z);
-	VALIDATEPCR(pc, NULL);
+	if(!pc) return NULL;
+
 	if (bTamed) {
 		pc->setOwner(owner);
 		pc->tamed = true;
@@ -1463,7 +1470,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_POLYMORPH: //Luxor
 			{
 			P_MENU menu = Menus.insertMenu( new cPolymorphMenu( src ) );
-			VALIDATEPM( menu );
+			if(!menu) return;
+
 			menu->show( src );
 			}
 			break;
@@ -1475,7 +1483,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 						src->sysmsg("The rune is not marked yet.");
 					} else {
 						pItem pgate = item::CreateFromScript( "$item_a_blue_moongate" );
-						VALIDATEPI( pgate );
+						if(!pgate) return;
+
 						pgate->MoveTo( srcpos );
 						pgate->morex = pi->morex;
 						pgate->morey = pi->morey;
@@ -1486,7 +1495,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 						pgate->Refresh();
 
 						pItem pgate2 = item::CreateFromScript( "$item_a_blue_moongate" );
-						VALIDATEPI( pgate2 );
+						if(!pgate2) return;
+
 						pgate2->MoveTo( pi->morex, pi->morey, pi->morez );
 						pgate2->morex = srcpos.x;
 						pgate2->morey = srcpos.y;
@@ -1684,7 +1694,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_SUMMON:
 			if (src!=NULL) { // Luxor
 				P_MENU menu = Menus.insertMenu( new cSummonCreatureMenu( src ) );
-				VALIDATEPM( menu );
+				if(!menu) return;
+
 				menu->show( src );
 			}
 			break;
@@ -1782,7 +1793,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_CREATEFOOD:
 			{ // Luxor
 			P_MENU menu = Menus.insertMenu( new cCreateFoodMenu( src ) );
-			VALIDATEPM( menu );
+			if(!menu) return;
+
 			menu->show( src );
 			}
 			break;
@@ -1920,10 +1932,12 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 */
 bool beginCasting (SpellId num, pClient s, CastingType type)
 {
-	if (s == NULL) return true;
+	if (!s) return true;
+
 	// override for spellcasting (?)
 	pChar pc = s->currChar();
-	VALIDATEPCR(pc, false);
+	if(!pc) retun false;
+
 	if (pc->dead) return false;
 
 	// caster jailed ?
@@ -2168,7 +2182,7 @@ void cSummonCreatureMenu::handleButton( pClient ps, cClientPacket* pkg  )
 
 	Location pos = pc->getPosition();
 	pChar pc_monster = npcs::addNpc( data, pos.x, pos.y, pos.z );
-	VALIDATEPC( pc_monster );
+	if(!pc_monster) return;
 
 	pc_monster->setOwner( pc );
 	pc_monster->tamed = true;

@@ -35,10 +35,13 @@ void CarveTarget(pClient client, int feat, int ribs, int hides, int fur, int woo
 	if ( ! pc ) return;
 
 	pItem pi1 = item::CreateFromScript( "$item_blood_puddle" );
-	VALIDATEPI(pi1);
+	if(!pi1) return;
+
 	pi1->setId( 0x122A );
+
 	pItem pi2=MAKE_ITEM_REF(npcshape[0]);
-	VALIDATEPI(pi2);
+	if(!pi2) return;
+
 	mapRegions->remove(pi1);
 	pi1->setPosition( pi2->getPosition() );
 	mapRegions->add(pi1); // lord Binary
@@ -109,12 +112,16 @@ static void newCarveTarget(pClient client, ITEM i)
 	if ( ! pc ) return;
 
 	pItem pi1 = item::CreateFromScript( "$item_blood_puddle" );
-	VALIDATEPI(pi1);
+	if(!pi1) return;
+
 	pi1->setId( 0x122A );
+
 	pItem pi2=MAKE_ITEM_REF(npcshape[0]);
-	VALIDATEPI(pi2);
+	if(!pi2) return;
+
 	pItem pi3=MAKE_ITEM_REF(i);
-	VALIDATEPI(pi3);
+	if(!pi3) return;
+
 	mapRegions->remove(pi1);
 	pi1->setPosition( pi2->getPosition() );
 	mapRegions->add(pi1); // lord Binary
@@ -435,16 +442,16 @@ static void CorpseTarget(const pClient pC)
 
 int BuyShop(pClient client, pChar pc)
 {
-    pItem buyRestockContainer=NULL, buyNoRestockContainer=NULL;
+	pItem buyRestockContainer=NULL, buyNoRestockContainer=NULL;
 
 	if(!pc) return 0;
 
 	pChar curr=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPCR(curr,0);
+	if(!curr) return 0;
 
 
 	NxwItemWrapper si;
-	si.fillItemWeared( pc, true, true, false );
+	/si.fillItemWeared( pc, true, true, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
     {
         pItem pi=si.getItem();
@@ -479,10 +486,11 @@ int BuyShop(pClient client, pChar pc)
 
 void target_playerVendorBuy( pClient ps, pTarget t )
 {
-    pChar pc = MAKE_CHAR_REF(t->buffer[0]);
-	if ( ! pc ) return;
-    pChar pc_currchar = ps->currChar();
-	VALIDATEPC(pc_currchar);
+	pChar pc = MAKE_CHAR_REF(t->buffer[0]);
+	if (!pc) return;
+
+	pChar pc_currchar = ps->currChar();
+	if(!pc_currchar) return;
 
 	pClient client = ps->toInt();
 
@@ -497,7 +505,8 @@ void target_playerVendorBuy( pClient ps, pTarget t )
 
 
 	pItem thepack=(pItem)pi->getContainer();
-	VALIDATEPI(thepack);
+	if(!thepack) return;
+
 	pChar npc = thepack->getPackOwner();               // the vendor
 
     if(npc->getSerial() != pc->getSerial() || pc->npcaitype!=NPCAI_PLAYERVENDOR) return;
@@ -664,10 +673,10 @@ void target_attack( pClient ps, pTarget t )
 void target_follow( pClient ps, pTarget t )
 {
 	pChar pc = cSerializable::findCharBySerial( t->buffer[0] );
-	if ( ! pc ) return;
+	if (!pc) return;
 
 	pChar pc2 = cSerializable::findCharBySerial( t->getClicked() );
-	VALIDATEPC(pc2);
+	if (!pc2) return;
 
 	pc->ftargserial=pc2->getSerial();
 	pc->npcWander=WANDER_FOLLOW;
@@ -846,7 +855,7 @@ void target_telestuff( pClient ps, pTarget t )
 		uint32_t serial = t->buffer[0];
 		if( isCharSerial(serial) ) {
 			pChar pt = cSerializable::findCharBySerial( serial );
-			VALIDATEPC(pt);
+			if(!pt) return;
 
 			pt->MoveTo( loc );
 			pt->teleport();
@@ -869,11 +878,10 @@ void target_allAttack( pClient ps, pTarget t )
 {
 
 	pChar pc=ps->currChar();
-	if ( ! pc ) return;
+	if (!pc) return;
 
-    pChar pc_target = cSerializable::findCharBySerial( t->getClicked() );
-    VALIDATEPC(pc_target);
-
+	pChar pc_target = cSerializable::findCharBySerial( t->getClicked() );
+	if(!pc_target) return;
 
 	NxwCharWrapper sc;
     sc.fillOwnedNpcs( pc, false, true );

@@ -792,9 +792,10 @@ void staticeffect3(Location pos, uint16_t eff, uint8_t speed, uint8_t loop, uint
 void movingeffect3(SERIAL source, SERIAL dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode,unsigned char unk1,unsigned char unk2,unsigned char ajust,unsigned char type)
 {
 	pChar src=cSerializable::findCharBySerial(source);
-	if ( ! src ) return;
+	if (!src) return;
+
 	pChar dst=cSerializable::findCharBySerial(dest);
-	VALIDATEPC(dst);
+	if (!dst) return;
 
 
 	//0x0f 0x42 = arrow 0x1b 0xfe=bolt
@@ -833,7 +834,8 @@ void SendPauseResumePkt(pClient client, uint8_t flag)
 void SendDrawObjectPkt(pClient client, pChar pc, int z)
 {
 	pChar pc_currchar=cSerializable::findCharBySerial(currchar[s]);
-	VALIDATEPC(pc_currchar);
+	if(!pc_currchar) return;
+
 	uint32_t k;
 	uint8_t oc[1024]={ 0x78, 0x00, };
 
@@ -953,7 +955,7 @@ void impowncreate(pClient client, pChar pc, int z) //socket, player to send
         if ( s < 0 || s > now ) // Luxor
 		return;
 	pChar pc_currchar=cSerializable::findCharBySerial(currchar[s]);
-	VALIDATEPC(pc_currchar);
+	if(!pc_currchar) return;
 
 	if (pc->isStabled() || pc->mounted)
 		return; // dont **show** stabled pets
@@ -1070,12 +1072,12 @@ int sellstuff(pClient client, pChar pc)
 	//<Luxor>
 
 	pItem pp=pc->GetItemOnLayer(LAYER_TRADE_BOUGHT);
-	VALIDATEPIR(pp,0);
+	if(!pp) return 0;
 
 	SendPauseResumePkt(s, 0x01);
 
 	pItem pack= pcs->getBackpack();
-	VALIDATEPIR(pack, 0);
+	if(!pack) return 0;
 
 	uint8_t m1[2048]={ 0x9E, 0x00, };
 
@@ -1212,8 +1214,9 @@ void tellmessage(int i, int s, char *txt)
 void staticeffectUO3D(SERIAL player, ParticleFx *sta)
 {
 
-   PC_CHAR pc_cs=cSerializable::findCharBySerial(player);
-   VALIDATEPC(pc_cs);
+   pChar pc_cs=cSerializable::findCharBySerial(player);
+   if(!pc_cs) return;
+
    Location charpos= pc_cs->getPosition();
 
    // please no optimization of p[...]=0's yet :)
@@ -1298,10 +1301,11 @@ void movingeffectUO3D(SERIAL source, SERIAL dest, ParticleFx *sta)
 {
 
 
-   PC_CHAR pc_cs=cSerializable::findCharBySerial(source);
-   VALIDATEPC(pc_cs);
-   PC_CHAR pc_cd=cSerializable::findCharBySerial(dest);
-   VALIDATEPC(pc_cd);
+   pChar pc_cs=cSerializable::findCharBySerial(source);
+   if(!pc_cs) return;
+
+   pChar pc_cd=cSerializable::findCharBySerial(dest);
+   if(!pc_cd) return;
 
    Location srcpos= pc_cs->getPosition();
    Location destpos= pc_cd->getPosition();
