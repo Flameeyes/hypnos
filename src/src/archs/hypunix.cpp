@@ -22,20 +22,6 @@ void sockManageError(int bcode)
 
 termios termstate;
 unsigned long int oldtime, newtime;
-	
-/*!
-\brief Sleeps some milliseconds
-\author AnomCwrd
-
-\note thread-safe
-*/
-void Sleep(unsigned long msec)
-{
-	timeval timeout;
-	timeout.tv_sec = 0;
-	timeout.tv_usec = msec * 1000;
-	select(0, 0, 0, 0, &timeout);
-}
 
 std::string getOSVersionString()
 {

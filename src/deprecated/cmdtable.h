@@ -186,8 +186,6 @@ CMD_HANDLER(command_unbanacct);*/
 CMD_HANDLER(command_letusin);
 CMD_HANDLER(command_readaccounts);
 
-CMD_HANDLER(command_serversleep);
-
 //taken from 6904t2(5/10/99) - AntiChrist
 CMD_HANDLER(command_setmurder);
 CMD_HANDLER(command_jail);

@@ -93,46 +93,6 @@ void command_bounty( pClient client )
 
 }
 
-
-void command_serversleep( pClient client )
-{
-	pChar pc = client->currChar();
-
-	int seconds;
-
-	if (tnum==2)
-	{
-		seconds = strtonum(1);
-		sysbroadcast("server is going to sleep for %i seconds!",seconds); // broadcast server sleep
-
-		NxwSocketWrapper sw;
-		sw.fillOnline();
-
-		for( ; !sw.getClient(); sw++ ) {
-			NXWCLIENT ps=sw.getClient();
-			if( ps!=NULL )
-				Network->FlushBuffer(ps->toInt());
-		}
-
-		seconds=seconds*1000;
-		Sleep(seconds);
-		sysbroadcast("server is back from a %i second break",seconds/1000);
-
-		sw.clear();
-		sw.fillOnline();
-
-		for( ; !sw.getClient(); sw++ ) { //not absolutely necessary
-			NXWCLIENT ps=sw.getClient();
-			if( ps!=NULL )
-				Network->FlushBuffer(ps->toInt());
-		}
-	}
-	else
-	{
-		pc->sysmsg("Invalid number of arguments");
-	}
-}
-
 //
 // Sparhawk enable online reloading of race scripts, race scripts are NOT cached all data is converted to binary
 //

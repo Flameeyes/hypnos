@@ -491,19 +491,6 @@ int main(int argc, char *argv[])
 		//OnLoop
 		AMXEXEC(AMXT_SPECIALS,2,0,AMX_AFTER);
 
-		switch(speed.nice)
-		{
-			case 0: break;	// very unnice - hog all cpu time
-			case 1: if (now!=0) Sleep(10); else Sleep(100); break;
-			case 2: Sleep(10); break;
-			case 3: Sleep(40); break;// very nice
-			case 4: if (now!=0) Sleep(10); else Sleep(400); break; // anti busy waiting
-			case 5: if (now!=0) Sleep(40); else Sleep(500); break;
-
-			default: Sleep(10); break;
-		}
-
-
 		if(loopTimeCount >= 1000)
 		{
 			loopTimeCount = 0;

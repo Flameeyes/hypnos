@@ -134,22 +134,6 @@ struct spiritspeak_st
 };
 
 /*!
-\brief struct for manage lag fix
-\note extended by AntiChrist and Ripper
-*/
-struct sSpeed
-{
-	int32_t nice;
-	float itemtime;
-	uint32_t srtime;
-	float npctime;
-	float tamednpctime;
-	float npcfollowtime;
-	float npcaitime;
-};
-
-
-/*!
 \brief struct for manage custom titles
 \todo Verify if it's actually used or not
 */

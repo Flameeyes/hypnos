@@ -10,6 +10,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "archs/signals.h"
+#include <wefts_sleep.h>
 
 // If not USE_SIGNALS simply compile an empty unit
 #ifdef USE_SIGNALS
@@ -116,7 +117,7 @@ static void* SignalThread(void*)
 			return NULL;
 			//pthread_exit(0);
 		}
-		Sleep(100);
+		Wefts::OSSleep(0, 100*1000*1000);
 	}
 }
 
