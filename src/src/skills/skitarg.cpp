@@ -81,7 +81,7 @@ void Skills::target_tailoring( NXWCLIENT ps, pTarget t )
 
 	NXWSOCKET s = ps->toInt();
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,TAILORING,AMX_BEFORE);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skTailoring,AMX_BEFORE);
 
     if( pi->magic==4)
 		return;
@@ -104,7 +104,7 @@ void Skills::target_tailoring( NXWCLIENT ps, pTarget t )
 			}
             else {
 				if( tailoring == NULL )
-					tailoring = new AmxFunction( AMXTAILORING );
+					tailoring = new AmxFunction( AMXskTailoring );
 				if( tailoring != NULL )
 					tailoring->Call( pc->getSerial(), pi->getSerial32() );
 			}
@@ -114,7 +114,7 @@ void Skills::target_tailoring( NXWCLIENT ps, pTarget t )
     }
 	else pc->sysmsg(TRANSLATE("You cannot use that material for tailoring."));
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,TAILORING,AMX_AFTER);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skTailoring,AMX_AFTER);
 }
 
 void Skills::target_fletching( NXWCLIENT ps, pTarget t )
@@ -680,7 +680,7 @@ void Skills::target_wheel( NXWCLIENT ps, pTarget t )	//Spinning wheel
     {
         if( pc_currchar->hasInRange(pi, 3) )
         {
-            if (!pc_currchar->checkSkill(TAILORING, 0, 1000))
+            if (!pc_currchar->checkSkill(skTailoring, 0, 1000))
             {
                 pc_currchar->sysmsg(TRANSLATE("You failed to spin your material."));
                 return;
@@ -738,7 +738,7 @@ void Skills::target_loom( NXWCLIENT ps, pTarget t )
 					return;
 				}
 
-				if (!pc_currchar->checkSkill(TAILORING, 300, 1000))
+				if (!pc_currchar->checkSkill(skTailoring, 300, 1000))
 				{
 					pc_currchar->sysmsg(TRANSLATE("You failed to make cloth."));
 					pc_currchar->sysmsg(TRANSLATE("You have broken and lost some material!"));
@@ -1251,11 +1251,11 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
 	}
     else //Bandages used on a non-human
 	{
-		if (!ph->checkSkill(VETERINARY,0,1000))
+		if (!ph->checkSkill(skVeterinary,0,1000))
 			ph->sysmsg(TRANSLATE("You are not skilled enough to heal that creature."));
 		else
 		{
-			j=((3*ph->skill[VETERINARY])/100) + rand()%6;
+			j=((3*ph->skill[skVeterinary])/100) + rand()%6;
 			pp->hp=qmin(pp->getStrength(), j+pp->hp);
 			pp->updateStats(0);
 			ph->sysmsg(TRANSLATE("You apply the bandages and the creature looks a bit healthier."));
@@ -1485,7 +1485,7 @@ void Skills::target_tame( NXWCLIENT ps, pTarget t )
 	if(line_of_sight(INVALID, pc->getPosition(), target->getPosition(), WALLS_CHIMNEYS+DOORS+FLOORS_FLAT_ROOFING)==0)
 		return;
 
-	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,TAMING,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skTaming,AMX_BEFORE);
 
 	if(buffer[s][7]==0xFF) return;
 
@@ -1522,7 +1522,7 @@ void Skills::target_tame( NXWCLIENT ps, pTarget t )
 			}
 		}
 
-		if ( (!pc->checkSkill(TAMING, 0, 1000)) || (pc->skill[TAMING] < target->taming) )
+		if ( (!pc->checkSkill(skTaming, 0, 1000)) || (pc->skill[skTaming] < target->taming) )
 		{
 			pc->sysmsg(TRANSLATE("You were unable to tame it."));
 			return;
@@ -1543,7 +1543,7 @@ void Skills::target_tame( NXWCLIENT ps, pTarget t )
 
 	if (tamed==0) pc->sysmsg(TRANSLATE("You can't tame that!"));
 
-	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,TAMING,AMX_AFTER);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skTaming,AMX_AFTER);
 }
 
 
@@ -1795,7 +1795,7 @@ void Skills::target_tinkering( NXWCLIENT ps, pTarget t )
 
 	NXWSOCKET s = ps->toInt();
 
-    AMXEXECSVTARGET( pc_currchar->getSerial(),AMXT_SKITARGS,TINKERING,AMX_BEFORE);
+    AMXEXECSVTARGET( pc_currchar->getSerial(),AMXT_SKITARGS,skTinkering,AMX_BEFORE);
 
     if ( pi->magic!=4) // Ripper
     {
@@ -1817,11 +1817,11 @@ void Skills::target_tinkering( NXWCLIENT ps, pTarget t )
                         sysmessage(s,TRANSLATE("You don't have enough log's to make anything."));
                         return;
                     }
-                    else Skills::MakeMenu(pc_currchar,70,TINKERING,pi);
+                    else Skills::MakeMenu(pc_currchar,70,skTinkering,pi);
                 }
                 else
                 {
-                    Skills::MakeMenu(pc_currchar,80,TINKERING,pi);
+                    Skills::MakeMenu(pc_currchar,80,skTinkering,pi);
                 }
             }
             return;
@@ -1829,7 +1829,7 @@ void Skills::target_tinkering( NXWCLIENT ps, pTarget t )
     }
     sysmessage(s,TRANSLATE("You cannot use that material for tinkering."));
 
-    AMXEXECSVTARGET(pc_currchar->getSerial(),AMXT_SKITARGS,TINKERING,AMX_AFTER);
+    AMXEXECSVTARGET(pc_currchar->getSerial(),AMXT_SKITARGS,skTinkering,AMX_AFTER);
 }
 
 //////////////////////////////////
@@ -1908,12 +1908,12 @@ public:
         {
             pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
 
-            if (pc_currchar->skill[TINKERING]<minskill)
+            if (pc_currchar->skill[skTinkering]<minskill)
             {
                 sysmessage(s,TRANSLATE("You aren't skilled enough to even try that!"));
                 return;
             }
-            if( !pc_currchar->checkSkill( TINKERING, minskill, 1000 ) )
+            if( !pc_currchar->checkSkill( skTinkering, minskill, 1000 ) )
             {
                 failmsg(s);
                 pItem piLoser= rand()%2 ? piTarg : piClick;

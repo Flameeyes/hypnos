@@ -598,7 +598,7 @@ void target_key( NXWCLIENT ps, pTarget t )
         {
             if ( pi->type==ITYPE_KEY && (pc->hasInRange(pi, 2) || (!pi->isInWorld()) ) )
             {
-                if (!pc->checkSkill(TINKERING, 400, 1000))
+                if (!pc->checkSkill(skTinkering, 400, 1000))
                 {
                     sysmessage(s,TRANSLATE("You fail and destroy the key blank."));
                     // soundeffect3( pi, <whatever> );

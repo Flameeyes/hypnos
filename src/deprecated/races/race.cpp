@@ -341,7 +341,7 @@ void Race::parseRaceSection( void )
 						  			lha == "SPIRITSPEAK")				race->parseSkill( rha );
 					else if ( lha == "STARTITEM" ) 				race->parseStartItem( rha );
 					else if ( lha == "STATCAP" ) 					race->statCap = str2num( rha );
-					else if ( lha == "STEALING" ||
+					else if ( lha == "skStealing" ||
 						  			lha == "STEALTH")						race->parseSkill( rha );
 					else if ( lha == "STRCAP" ) 					race->strCap = str2num( rha );
 					else if	( lha == "STRMOD" )						race->parseAbilityModifiers( STRENGTH, rha );
@@ -349,16 +349,16 @@ void Race::parseRaceSection( void )
 					else if ( lha == "SWORDMANSHIP" )			race->parseSkill( rha );
 					break;
 				case 'T':
-					if 			( lha == "TAILORING" ||
-					     			lha == "TAMING" ||
-					     			lha == "TASTEID" ||
+					if 			( lha == "skTailoring" ||
+					     			lha == "skTaming" ||
+					     			lha == "skTasteID" ||
 					     			lha == "skTactics")						race->parseSkill( rha );
 					else if ( lha == "TILEID" ) 					race->tileId = str2num( rha );
-					else if ( lha == "TINKERING" ||
-						  			lha == "TRACKING")					race->parseSkill( rha );
+					else if ( lha == "skTinkering" ||
+						  			lha == "skTracking")					race->parseSkill( rha );
 					break;
 				case 'V':
-					if 			( lha == "VETERINARY" )				race->parseSkill( rha );
+					if 			( lha == "skVeterinary" )				race->parseSkill( rha );
 					break;
 				case 'W':
 					if 			( lha == "WEBLINK" ) 					race->webLink = rha;

@@ -1090,7 +1090,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 			case skEvaluatingIntelligence:
 				break;
 
-			case TAMING:
+			case skTaming:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=target_tame;
 				targ->send( ps );
@@ -1134,7 +1134,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				Skills::SpiritSpeak(s);
 				break;
 
-			case STEALING:
+			case skStealing:
 				if (SrvParms->rogue) {
 					targ=clientInfo[s]->newTarget( new cObjectTarget() );
 					targ->code_callback=target_stealing;
@@ -1151,7 +1151,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 			case skInscription:
 				break;
 
-			case TRACKING:
+			case skTracking:
 				break;
 
 			case skBegging:
@@ -1182,7 +1182,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				ps->sysmsg( TRANSLATE("What poison do you want to apply?"));
 				break;
 
-			case TASTEID:
+			case skTasteID:
 				break;
 
 			case MEDITATION:  //Morrolan - Meditation
@@ -1685,13 +1685,13 @@ void SkillVars()
     strcpy(skillinfo[skPoisoning].madeword,"made");
     strcpy(skillinfo[skArchery].madeword,"made");
     strcpy(skillinfo[SPIRITSPEAK].madeword,"made");
-    strcpy(skillinfo[STEALING].madeword,"made");
-    strcpy(skillinfo[TAILORING].madeword,"sewn");
-    strcpy(skillinfo[TAMING].madeword,"made");
-    strcpy(skillinfo[TASTEID].madeword,"made");
-    strcpy(skillinfo[TINKERING].madeword,"made");
-    strcpy(skillinfo[TRACKING].madeword,"made");
-    strcpy(skillinfo[VETERINARY].madeword,"made");
+    strcpy(skillinfo[skStealing].madeword,"made");
+    strcpy(skillinfo[skTailoring].madeword,"sewn");
+    strcpy(skillinfo[skTaming].madeword,"made");
+    strcpy(skillinfo[skTasteID].madeword,"made");
+    strcpy(skillinfo[skTinkering].madeword,"made");
+    strcpy(skillinfo[skTracking].madeword,"made");
+    strcpy(skillinfo[skVeterinary].madeword,"made");
     strcpy(skillinfo[SWORDSMANSHIP].madeword,"made");
     strcpy(skillinfo[MACEFIGHTING].madeword,"made");
     strcpy(skillinfo[FENCING].madeword,"made");

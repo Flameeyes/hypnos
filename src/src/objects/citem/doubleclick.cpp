@@ -1258,7 +1258,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			return;
 		case 0x1059:
 		case 0x105A:// tinker sextant
-			if (pc->checkSkill(  TINKERING, 500, 1000))
+			if (pc->checkSkill(  skTinkering, 500, 1000))
 			{
 				pc->sysmsg(TRANSLATE("You create the sextant."));
 				pItem pi_c = item::CreateFromScript( "$item_sextant", pc->getBackpack() );

@@ -893,9 +893,9 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									pc->splitchnc=str2num(script2);
 								else if ( "STABLEMASTER" == script1 )
 									pc->npc_type=1;
-								else if ( "STEALING" == script1 )
+								else if ( "skStealing" == script1 )
 								{
-									pc->baseskill[STEALING] = getRangedValue(script2);
+									pc->baseskill[skStealing] = getRangedValue(script2);
 								}
 								else if ( "STEALTH" == script1 )
 								{
@@ -916,20 +916,20 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 							case 'T':
 								if	( "skTactics" == script1 )
 									pc->baseskill[skTactics] = getRangedValue(script2);
-								else if ( "TAILORING" == script1 )
-									pc->baseskill[TAILORING] = getRangedValue(script2);
-								else if ( "TAMING" == script1 )
-									pc->baseskill[TAMING] = getRangedValue(script2);
-								else if ( "TASTEID" == script1 )
-									pc->baseskill[TASTEID] = getRangedValue(script2);
-								else if ( "TINKERING" == script1 )
-									pc->baseskill[TINKERING] = getRangedValue(script2);
+								else if ( "skTailoring" == script1 )
+									pc->baseskill[skTailoring] = getRangedValue(script2);
+								else if ( "skTaming" == script1 )
+									pc->baseskill[skTaming] = getRangedValue(script2);
+								else if ( "skTasteID" == script1 )
+									pc->baseskill[skTasteID] = getRangedValue(script2);
+								else if ( "skTinkering" == script1 )
+									pc->baseskill[skTinkering] = getRangedValue(script2);
 								else if ( "TITLE" == script1 )
 									pc->title = script2;
-								else if ( "TOTAME" == script1 || "TAMING" == script1 )
+								else if ( "TOTAME" == script1 || "skTaming" == script1 )
 									pc->taming=str2num(script2);
-								else if ( "TRACKING" == script1 )
-									pc->baseskill[TRACKING] = getRangedValue(script2);
+								else if ( "skTracking" == script1 )
+									pc->baseskill[skTracking] = getRangedValue(script2);
 								else if ( "TRIGGER" == script1 )
 									pc->trigger=str2num(script2);
 								else if ( "TRIGWORD" == script1 )
@@ -941,8 +941,8 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									if ( pi_n )
 										pi_n->value=(str2num(script2));
 								}
-								else if ( "VETERINARY" == script1 )
-									pc->baseskill[VETERINARY] = getRangedValue(script2);
+								else if ( "skVeterinary" == script1 )
+									pc->baseskill[skVeterinary] = getRangedValue(script2);
 								else if ( "VULNERABLE" == script1 )
 									pc->MakeVulnerable();
 								break;

@@ -598,7 +598,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 		case 'T':
 		case 't':
 			if (!strcmp(script1, "TITLE"))				{ pc->title =script2; }
-			else if (!strcmp(script1, "TAMING"))			{ pc->taming=str2num(script2);}
+			else if (!strcmp(script1, "skTaming"))			{ pc->taming=str2num(script2);}
 			else if (!strcmp(script1, "TRIGGER"))		{ pc->trigger=str2num(script2);;}
 			else if (!strcmp(script1, "TRIGWORD"))		{ pc->trigword=script2;}
 			else if (!strcmp(script1, "TIME_UNUSED"))	{ pc->time_unused=str2num(script2);}
@@ -1642,7 +1642,7 @@ void CWorldMain::SaveChar( pChar pc )
 			if (pc->mounted!=dummy.mounted)
 				fprintf(cWsc, "MOUNTED\n");
 			if (pc->taming!=dummy.taming)
-				fprintf(cWsc, "TAMING %i\n", pc->taming);
+				fprintf(cWsc, "skTaming %i\n", pc->taming);
 /*			if (pc->summontimer)//AntiChrist //XAN : useless, we don't save summonz
 				fprintf(cWsc, "SUMMONREMAININGSECONDS %i\n", (pc->summontimer/MY_CLOCKS_PER_SEC));
 */			if (pc->advobj!=dummy.advobj)

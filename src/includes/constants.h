@@ -106,7 +106,7 @@ enum Skill {
 	skCooking, skDetectingHidden, skEnticement, skEvaluatingIntelligence, skHealing, skFishing,
 	skForensics, skHerding, skHiding, skProvocation, skInscription, skLockPicking, skMagery,
 	skMagicResistance, skTactics, skSnooping, skMusicianship, skPoisoning, skArchery, skSpiritSpeak,
-	skStealing, skTailoring, skTaming, skTasteID, skTinkering, skTracking, skVeerinary, skSwordsmanship,
+	skStealing, skTailoring, skTaming, skTasteID, skTinkering, skTracking, skVeterinary, skSwordsmanship,
 	skMacefighting, skFencing, skWrestling, skLumberjacking, skMining, skMeditation, skStealth
 	skRemoveTraps, skTrueSkills
 };

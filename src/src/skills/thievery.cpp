@@ -103,7 +103,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 	VALIDATEPC(thief);
 	uint32_t target_serial = t->getClicked();
 
-	AMXEXECSVTARGET( thief->getSerial(),AMXT_SKITARGS,STEALING,AMX_BEFORE);
+	AMXEXECSVTARGET( thief->getSerial(),AMXT_SKITARGS,skStealing,AMX_BEFORE);
 
 	//steal a char
 	if ( isCharSerial(target_serial) )
@@ -151,10 +151,10 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 
 		float we = pi->getWeightActual();
 		int bonus= (int)( (1800 - we)/5 );
-		if ( thief->checkSkill( STEALING,0,(1000-bonus)) )
+		if ( thief->checkSkill( skStealing,0,(1000-bonus)) )
 		{
 			// 0 stealing 2 stones, 10  3 stones, 99.9 12 stones, 100 17 stones !!!
-			int cansteal = thief->skill[STEALING] > 999 ? 1700 : thief->skill[STEALING] + 200;
+			int cansteal = thief->skill[skStealing] > 999 ? 1700 : thief->skill[skStealing] + 200;
 
 			if ( we > cansteal )
 			{
@@ -207,7 +207,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 			//Only onhide when player is caught!
 		}
 
-		if ( rand()%1000 > ( thief->skill[STEALING] + result )  )
+		if ( rand()%1000 > ( thief->skill[skStealing] + result )  )
 		{
 			thief->unHide();
 			thief->sysmsg(TRANSLATE("You have been caught!"));
@@ -256,7 +256,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 		thief->sysmsg(TRANSLATE("You are too far away to steal that item."));
 	}
 
-	AMXEXECSVTARGET( thief->getSerial(),AMXT_SKITARGS,STEALING,AMX_AFTER);
+	AMXEXECSVTARGET( thief->getSerial(),AMXT_SKITARGS,skStealing,AMX_AFTER);
 }
 
 /*!
@@ -270,10 +270,10 @@ void Skills::PickPocketTarget(NXWCLIENT ps)
 	pChar Me = ps->currChar();
 	VALIDATEPC(Me);
 
-	if (Me->skill[STEALING] < 300)
+	if (Me->skill[skStealing] < 300)
 	// check if under 30 in stealing
 	{
-		Me->checkSkill( STEALING, 0, 1000);
+		Me->checkSkill( skStealing, 0, 1000);
 		// check their skill
 		Me->playSFX(0x0249);
 		// rustling sound..dont know if right but it works :)
@@ -364,10 +364,10 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 			return;
 		}
 
-		if ( thief->checkSkill( STEALING,0,999) )
+		if ( thief->checkSkill( skStealing,0,999) )
 		{
 			// 0 stealing 2 stones, 10  3 stones, 99.9 12 stones, 100 17 stones !!!
-			int cansteal = thief->skill[STEALING] > 999 ? 1700 : thief->skill[STEALING] + 200;
+			int cansteal = thief->skill[skStealing] > 999 ? 1700 : thief->skill[skStealing] + 200;
 
 			if ( pi->getWeightActual() > cansteam )
 				thief->sysmsg(TRANSLATE("... and fail because it is too heavy."));
@@ -394,7 +394,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 		else
 			thief->sysmsg(TRANSLATE(".. and fail because you're not good enough."));
 
-		if ( thief->skill[STEALING] < rand()%1001 )
+		if ( thief->skill[skStealing] < rand()%1001 )
 		{
 			thief->unHide();
 			thief->sysmsg(TRANSLATE("You have been caught!"));

@@ -552,9 +552,9 @@ public:
 	Note by Magius: Value range to -ALLSKILLS-1 to ALLSKILLS+1<br>
 	To calculate skill used to made this item:<br>
 	if is a positive value, substract 1 it.<br>
-		Ex) madewith=34 , 34-1=33 , 33=STEALING<br>
+		Ex) madewith=34 , 34-1=33 , 33=skStealing<br>
 	if is a negative value, add 1 from it and invert value.<br>
-		Ex) madewith=-34 , -34+1=-33 , Abs(-33)=33=STEALING.<br>
+		Ex) madewith=-34 , -34+1=-33 , Abs(-33)=33=skStealing.<br>
 	0 = NULL<br>
 
 	So... a positive value is used when the item is made by a
