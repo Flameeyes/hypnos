@@ -21,6 +21,7 @@
 #include "objects/citem/cmap.h"
 #include "extras/motd.h"
 #include "extras/jails.h"
+#include "newbie.h"
 
 /*!
 \brief Status window

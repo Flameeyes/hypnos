@@ -23,6 +23,7 @@
 #include "inlines.h"
 #include "skills.h"
 #include "encryption/clientcrypt.h"
+#include "newbie.h"
 
 cNetwork	*Network;
 
