@@ -5,30 +5,38 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "map.h"
-#include "data.h"
-#include "inlines.h"
-
-
-// Luxor: If we've got a bridge flagged tile or we're moving in map0 (stairs or whatever) we can elevate our Z by 14.
-#define MAX_Z_CLIMB_BRIDGE 14
-
-// Luxor: If we are simply climbing to get on a new surface, the client tolerates only a Z step of 2.
-#define MAX_Z_CLIMB 2
-
-// Luxor: If our Z is lowering more than 6 tiles, we're falling.
-#define MIN_Z_FALL 6
-
-// Luxor: A char cannot fall more than 20 tiles in altitude.
-#define MAX_Z_FALL 20
-
 /*!
 \file
 \author Luxor
 \brief Map related functions
 */
 
+#include "common_libs.h"
+#include "map.h"
+#include "data.h"
+#include "inlines.h"
+
+//@{
+/*!
+\author Luxor
+\name Client Z-values
+\brief Values used by the client to acknowledge Z-moving
+*/
+	//! If we've got a bridge flagged tile or we're moving in map0
+	//! (stairs or whatever) we can elevate our Z by 14.
+	static const int8_t MAX_Z_CLIMB_BRIDGE = 14;
+	
+	//! If we are simply climbing to get on a new surface, the client
+	//! tolerates only a Z step of 2.
+	static const int8_t MAX_Z_CLIMB = 2;
+	
+	//! If our Z is lowering more than 6 tiles, we're falling.
+	static const int8_t MIN_Z_FALL = 6;
+	
+	//! A char cannot fall more than 20 tiles in altitude.
+	//! \todo Check if this is true
+	static const int8_t MAX_Z_FALL = 20;
+//@}
 
 /*!
 \author Luxor
