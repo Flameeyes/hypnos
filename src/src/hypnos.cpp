@@ -76,8 +76,9 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "extras/loginserver.h"
 #include "objects/citem.h"
 #include "objects/cchar.h"
-#include "networking/remadmin.h"
-#include "networking/network.h"
+#include "networking/tkiller.h"
+#include "networking/tuoreceiver.h"
+#include "networking/tracreceiver.h"
 #include "skills/skills.h"
 
 RemoteAdmin TelnetInterface;	//!< remote administration
@@ -107,7 +108,6 @@ void DeleteClasses()
 	delete cwmWorldState;
 	delete mapRegions;
 
-	delete Network;
 	delete Spawns;
 	delete Areas;
 
@@ -218,38 +218,44 @@ void loadServer()
 
 	TelnetInterface.Init();	// initialise remote admin interface
 
+	outPlain("Loading scheduler thread...");
 	cScheduler::init();
+	outPlain("[  Ok  ]\n");
 
-	outPlain(" [DONE]\nLoading custom titles...");
+	outPlain("Loading custom titles...");
 	loadcustomtitle();
-	outPlain(" [DONE]\n");
+	outPlain("[  Ok  ]\n");
 
 	outPlain("Initializing creatures... ");
 	creatures.load();
-	outPlain("[DONE]\n");
+	outPlain("[  Ok  ]\n");
 
 	outPlain("Initializing magic... ");
 	//Magic->InitSpells();
 	magic::loadSpellsFromScript();
-	outPlain("[DONE]\n");
+	outPlain("[  Ok  ]\n");
 
 	outPlain("Initializing races... ");
 	Race::parse();
-	outPlain("[DONE]\n");
+	outPlain("[  Ok  ]\n");
 
 	outPlain("Loading IP blocking rules... ");
 	Network->LoadHosts_deny();
-	outPlain("[DONE]\n");
+	outPlain("[  Ok  ]\n");
 
 	Guilds->CheckConsistancy(); // LB
 
 	StartClasses();
 	
-	new tListening(nSettings::Server::getLocalHostname(), nSettings::Server::getLocalPort());
+	outPlain("Starting network threads...");
+	new tUOListener(nSettings::Server::getLocalHostname(), nSettings::Server::getLocalPort());
+	new tRemoteAdmin(nSettings::Server::getLocalHostname(), nSettings::Server::getRACPort());
 	new tKiller();
 	
-	tListening::instance->start();
+	tUOListener::instance->start();
+	tRemoteAdmin::instance->start();
 	tKiller::instance->start();
+	outPlain("[  Ok  ]\n");
 }
 
 /*!
@@ -264,17 +270,34 @@ void shutdownServer()
 
 	sysbroadcast("The server is shutting down.");
 	
-	outPlain("Closing sockets...");
-	tListening::instance->closeServer();
-	tListening::instance->join();
-	delete tListening::instance;
-	outPlain(" Done.\n");
+	outPlain("Closing listening sockets...");
+	
+	tUOListener::instance->closeServer();
+	tUOListener::instance->join();
+	delete tUOListener::instance;
+	
+	tRemoteAdmin::instance->closeServer();
+	tRemoteAdmin::instance->join();
+	delete tRemoteAdmin::instance;
+	
+	outPlain("[  Ok  ]\n");
 	
 	outPlain("Saving server.cfg...\n");
 	saveserverscript();
-	outPlain("\n");
+	outPlain("[  Ok  ]\n");
+	
 	outPlain("Deleting Classes...");
 	DeleteClasses();
 	data::shutdown(); // Luxor
-	outPlain("[DONE]\n");
+	outPlain("[  Ok  ]\n");
+	
+	outPlain("Killing scheduler thread...");
+	cScheduler::close();
+	outPlain("[  Ok  ]\n");
+	
+	outPlain("Killing killer thread...");
+	tKiller::instance->stop();
+	tKiller::instance->join();
+	delete tKiller::instance;
+	outPlain("[  Ok  ]\n");
 }

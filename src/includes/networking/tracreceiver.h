@@ -12,33 +12,33 @@
 \brief Receiving thread
 */
 
-#ifndef __NETWORKING_TRECEIVING_H__
-#define __NETWORKING_TRECEIVING_H__
+#ifndef __NETWORKING_TRACRECEIVER_H__
+#define __NETWORKING_TRACRECEIVER_H__
 
 #include "common_libs.h"
 #include <wefts_thread.h>
 #include <cabal_tcpsocket.h>
 
 /*!
-\class tUOReceiver tuoreceiver.h "networking/tuoreceiver.h"
+\class tRACReceiver tracreceiver.h "networking/tracreceiver.h"
 \brief Thread which receive data from a socket
 
-This class is spawned by tUOListener when a new connection is accepted, and
+This class is spawned by tRemoteAdmin when a new connection is accepted, and
 takes care of receive the buffer and then call the right functions to mangle
 it.
-Instances of this class are deleted by tKiller thread, see tUOReceiver::run()
+Instances of this class are deleted by tKiller thread, see tRACReceiver::run()
 method for more information.
 */
-class tUOReceiver : public tReceiver
+class tRACReceiver : public tReceiver
 {
 protected:
 	Cabal::TCPSocket *sock;
 public:
-	tUOReceiver(Cabal::TCPSocket *aSock);
+	tRACReceiver(Cabal::TCPSocket *aSock);
 	
 	void *run();
 };
 
-typedef tplListener<tUOReceiver> tUOListener;
+typedef tplListener<tRACReceiver> tRemoteAdmin;
 
 #endif

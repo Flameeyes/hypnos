@@ -14,35 +14,18 @@
 #ifndef _HYPNOS_UNIX_
 #define _HYPNOS_UNIX_
 
-#include <netdb.h>
 #include <unistd.h>
 #include <termios.h>
-#include <fcntl.h>
 #include <unistd.h>
-#include <libgen.h>
 
-#include <sys/errno.h>
 #include <sys/utsname.h>
 #include <sys/signal.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/time.h>
-
-#include <arpa/inet.h>
-#include <netinet/in.h>
-
-#define SOCKET_ERROR -1
-
-#define SLPMULTI 1000
 
 void initclock();
 extern termios termstate ;
 extern unsigned long int oldtime, newtime;
-
-#define closesocket(s)	close(s)
-#define ioctlsocket ioctl
 
 /*!
 \brief Checks if a file exists already

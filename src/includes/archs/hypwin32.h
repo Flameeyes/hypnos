@@ -21,7 +21,6 @@
 #include <limits.h>
 #include <conio.h>
 #include <process.h>
-#include <errno.h>
 
 char *basename(char *path);
 

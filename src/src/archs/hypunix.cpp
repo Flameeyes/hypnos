@@ -15,11 +15,6 @@
 #include "logsystem.h"
 #include <fstream>
 
-void sockManageError(int bcode)
-{
-	LogError("ERROR: Unable to bind socket - Error code: %i\n", bcode);
-}
-
 termios termstate;
 unsigned long int oldtime, newtime;
 

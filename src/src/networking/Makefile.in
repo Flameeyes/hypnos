@@ -99,7 +99,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 noinst_LTLIBRARIES = libnetworking.la
-libnetworking_la_SOURCES = misccommand.cpp received.cpp sent.cpp cclient.cpp remadmin.cpp network.cpp tkilling.cpp tlistening.cpp treceiving.cpp huffman.cpp
+libnetworking_la_SOURCES = misccommand.cpp received.cpp sent.cpp cclient.cpp network.cpp huffman.cpp tpllistener.cpp tkiller.cpp tuoreceiver.cpp tracreceiver.cpp
 subdir = src/networking
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -109,8 +109,8 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 libnetworking_la_LDFLAGS =
 libnetworking_la_LIBADD =
 am_libnetworking_la_OBJECTS = misccommand.lo received.lo sent.lo \
-	cclient.lo remadmin.lo network.lo tkilling.lo tlistening.lo \
-	treceiving.lo huffman.lo
+	cclient.lo network.lo huffman.lo tpllistener.lo tkiller.lo \
+	tuoreceiver.lo tracreceiver.lo
 libnetworking_la_OBJECTS = $(am_libnetworking_la_OBJECTS)
 
 DEFS = @DEFS@
@@ -121,10 +121,10 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/cclient.Plo ./$(DEPDIR)/huffman.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/misccommand.Plo ./$(DEPDIR)/network.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/received.Plo ./$(DEPDIR)/remadmin.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/sent.Plo ./$(DEPDIR)/tkilling.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/tlistening.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/treceiving.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/received.Plo ./$(DEPDIR)/sent.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/tkiller.Plo ./$(DEPDIR)/tpllistener.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/tracreceiver.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/tuoreceiver.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -169,11 +169,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misccommand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/network.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/received.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/remadmin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sent.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tkilling.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tlistening.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/treceiving.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tkiller.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tpllistener.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tracreceiver.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tuoreceiver.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)

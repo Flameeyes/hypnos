@@ -66,23 +66,6 @@ extern std::string getOSVersionString();
 enum OSVersion { OSVER_UNKNOWN, OSVER_WIN9X, OSVER_WINNT, OSVER_NONWINDOWS };
 extern OSVersion getOSVersion();
 
-//@{
-/*!
-\name System dependent functions
-
-Functions defined into archs/hypunix and archs/hypwin32
-*/
-
-/*!
-\brief Manages a socket error
-\param bcode Return value of bind() call
-
-\note This is an OS-dependant function, because WinSock version diregard
-	\c bcode parameter and get a new one from WinSock system.
-*/
-void sockManageError(int bcode);
-//@}
-
 using namespace nLibhypnos;
 
 #endif //__COMMON_LIBS_H__

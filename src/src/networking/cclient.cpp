@@ -132,7 +132,7 @@ void cClient::disconnect()
 	//! \todo revise from here
 	FlushBuffer( client );
 
-	closesocket( client[ socket ] ); //so it bombs and free the mutex :]
+	sock->close();
 
 #ifdef ENCRYPTION
 	if ( clientCrypter[socket] != NULL && !clientCrypter[socket]->getEntering())

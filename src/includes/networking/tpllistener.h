@@ -23,7 +23,7 @@
 \class tplListener tpllistener.h "networking/tpllistener.h"
 \brief Abstraction for listening threads
 
-This template abstractize the listening threads, like the old tListening and
+This template abstractize the listening threads, like the old tUOListener and
 tRACListening threads (from SVN revision 704), using a single template to do
 all the work.
 */

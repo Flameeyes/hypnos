@@ -8,21 +8,21 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "networking/tuoreceiver.h"
+#include "networking/tracreceiver.h"
 #include "networking/tkilling.h"
 
 /*!
-\brief Constructor for tUOReceiver thread
+\brief Constructor for tRACReceiver thread
 
-This function register the thread in tUOListener::threads set and also starts
+This function register the thread in tRemoteAdmin::threads set and also starts
 the thread itself.
 */
-tUOReceiver::tUOReceiver(Cabal::TCPSocket *aSock) : tReceiver(aSock)
+tRACReceiver::tRACReceiver(Cabal::TCPSocket *aSock) : tReceiver(aSock)
 {
 	// Lock the threads set
-	tUOListener::instance->threads_m.lock();
+	tRemoteAdmin::instance->threads_m.lock();
 	threads.insert(this);
-	tUOListener::instance->threads_m.unlock();
+	tRemoteAdmin::instance->threads_m.unlock();
 	// Unlock the threads set
 	
 	start();
@@ -31,16 +31,15 @@ tUOReceiver::tUOReceiver(Cabal::TCPSocket *aSock) : tReceiver(aSock)
 /*!
 \brief Receiving loop function
 
-This function does all the dirt work for tUOReceiver thread, looping until the
-socket is closed, receiving data in the buffer and transforming it into
-packets to be executed.
+This function does all the dirt work for tRACReceiver thread, getting lines and
+parsing them.
 
 This function also register the socket as dead in tKiller after the socket is
 closed.
 
 \todo Missing all the work in this :)
 */
-void *tUOReceiver::run()
+void *tRACReceiver::run()
 {
 	if ( ! sock ) return NULL;
 	
@@ -50,9 +49,9 @@ void *tUOReceiver::run()
 	}
 	
 	// Lock the threads set
-	tUOListener::instance->threads_m.lock();
+	tRemoteAdmin::instance->threads_m.lock();
 	threads.erase(this);
-	tUOListener::instance->threads_m.unlock();
+	tRemoteAdmin::instance->threads_m.unlock();
 	// Unlock the threads set
 	
 	tKiller::instance->deadSockets->push(this);
