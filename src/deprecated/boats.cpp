@@ -398,12 +398,12 @@ bool Speech(pClient client, std::string &talk)
 	
 	if( talk == "FORWARD" || talk == "UNFURL SAIL" )
 	{
-		itemtalk(tiller, "Aye, sir.");
+		tiller->talk("Aye, sir.");
 		
 		pb->type2=1;//Moving
 		pb->step(client);
 	} else  if( talk == "BACKWARD" ) {
-		itemtalk(tiller, "Aye, sir.");
+		tiller->talk("Aye, sir.");
 		
 		pb->type2=2;//Moving backward
 		if(dir>=4)
@@ -414,49 +414,49 @@ bool Speech(pClient client, std::string &talk)
 		pb->step(client, dir);
 	} else if( talk == "ONE LEFT" || talk == "DRIFT LEFT" )
 	{
-		itemtalk(tiller,"Aye, sir.");
+		tiller->talk("Aye, sir.");
 		
 		pb->step(client, (dir-2)%8);
 	} else if( talk == "ONE RIGHT" || talk == "DRIFT RIGHT" )
 	{
-		itemtalk(tiller,"Aye, sir.");
+		tiller->talk("Aye, sir.");
 		
 		pb->step(client, (dir+2)%8);
 	} else if( talk == "STOP" || talk == "FURL SAIL" )
 	{
-		itemtalk(tiller,"Aye, sir.");
+		tiller->talk("Aye, sir.");
 		pb->type2=0;
 	} else if( talk == "TURN LEFT" || talk == "TURN PORT" )
 	{
 		if (good_position(pb, pb->getPosition(), -1) && !collision(pb,pb->getPosition(),-1))
 		{
-			itemtalk(tiller, "Aye, sir.");
+			tiller->talk("Aye, sir.");
 			pb->turn(false);
 		} else {
 			pb->type2=0;
-			itemtalk(tiller, "Arr, somethings in the way");
+			tiller->talk("Arr, somethings in the way");
 		}
 	} else if( talk == "TURN RIGHT" || talk == "TURN STARBOARD" )
 	{
 		if (good_position(pb, pb->getPosition(), 1) && !collision(pb,pb->getPosition(),1))
 		{
-			itemtalk(tiller, "Aye, sir.");
+			tiller->talk("Aye, sir.");
 			pb->turn(true);
 		} else {
 			pb->type2=0;
-			itemtalk(tiller, "Arr, somethings in the way");
+			tiller->talk("Arr, somethings in the way");
 		}
 	}else if( talk == "COME ABOUT" || talk == "TURN ABOUT" )
 	{
 
 		if (good_position(pb, pb->getPosition(), 2) && !collision(pb,pb->getPosition(),2))
 		{
-			itemtalk(tiller, "Aye, sir.");
+			tiller->talk("Aye, sir.");
 			pb->turn(true);
 			pb->turn(true);
 		} else {
 			pb->type2=0;
-			itemtalk(tiller, "Arr, somethings in the way");
+			tiller->talk("Arr, somethings in the way");
 		}
 	} else if( talk.substr(0, 9) == "SET NAME " ) {
 		tiller->setCurrentName( talk.substr( 9 ) );

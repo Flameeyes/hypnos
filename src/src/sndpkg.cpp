@@ -415,35 +415,6 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 	}
 }
 
-void itemtalk(pItem pi, char *txt)
-// Item "speech"
-//Modified by N6 to use UNICODE packets
-{
-
-	if ( ! pi ) return;
-
-	NxwSocketWrapper sw;
-	sw.fillOnline( pi );
-	for( sw.rewind(); !sw.isEmpty(); sw++ )
-	{
-		pClient client =sw.getSocket();
-		if(s==INVALID) continue;
-
-		uint8_t unicodetext[512];
-		uint16_t ucl = ( strlen ( txt ) * 2 ) + 2 ;
-
-		char2wchar(txt);
-		memcpy(unicodetext, Unicode::temp, ucl);
-
-		uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-		uint8_t name[30]={ 0x00, };
-		strcpy((char *)name, pi->getCurrentName().c_str());
-
-		SendUnicodeSpeechMessagePkt(s, pi->getSerial(), pi->getId(), 0, 0x0481, 0x0003, lang, name, unicodetext,  ucl);
-
-	}
-}
-
 // Last touch: LB 8'th April 2001 for particleSystem
 
 // if UO_3DonlyEffect is true, sta has to be valid and contain particleSystem data (if not, crash)

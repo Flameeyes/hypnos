@@ -116,6 +116,7 @@ public:
 	
 	void setDirection(uint8_t newdir);
 
+	void talk(const std::string &msg);
 //@{
 /*!
 \name itemid

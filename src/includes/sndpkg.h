@@ -34,9 +34,6 @@ void weblaunch(pClient client, const char *txt);
 	//!< Direct client to a web page
 void broadcast(pClient client);
 	//!< GM Broadcast (Done if a GM yells something);
-void itemtalk( pItem pi, char *txt);
-	//!< Item "speech"
-
 
 void staticeffect (pChar player, uint16_t effect, unsigned char speed, unsigned char loop, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false );
 void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt=false, ParticleFx *str=NULL, bool skip_old=false);

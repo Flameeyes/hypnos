@@ -59,7 +59,7 @@ void cBoat::step(pClient client, uint8_t dir)
 	if ( ! navigable.isInside(boatpos) )
 	{
 		type2=0;
-		itemtalk(tillerMan,"Arr, Sir, we've hit rough waters!");
+		tillerMan->talk("Arr, Sir, we've hit rough waters!");
 		client->resume();
 		return;
 	}
@@ -67,14 +67,14 @@ void cBoat::step(pClient client, uint8_t dir)
 	if( ! good_position(this, boatpos, 0) )
 	{
 		type2=0;
-		itemtalk(tillerMan, "Arr, somethings in the way!");
+		tillerMan->talk("Arr, somethings in the way!");
 		client->resume();
 		return;
 	}
 	if( collision(this, boatpos,0) )
 	{
 		type2=0;
-		itemtalk(tillerMan, "Arr, another ship in the way");
+		tillerMan->talk("Arr, another ship in the way");
 		client->resume();
 		return;
 	}
