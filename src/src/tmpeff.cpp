@@ -128,7 +128,7 @@ bool isSrcRepeatable(int num)
 
 	switch(num)
 	{
-		case SPELL_INCOGNITO:
+		case spellIncognito:
 		case SPELL_INVISIBILITY:
 		case SPELL_POLYMORPH:
 		case DRINK_FINISHED:
@@ -159,7 +159,7 @@ bool isDestRepeatable(int num)
 		case spellCunning:
 		case spellBless:
 		case spellCurse:
-		case SPELL_INCOGNITO:
+		case spellIncognito:
 		case SPELL_POLYMORPH:
 		case SPELL_INVISIBILITY:
 		case CRIMINAL:
@@ -189,7 +189,7 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 		case FIELD_DAMAGE:
 			dur = 2;
 			break;
-		case SPELL_PARALYZE:
+		case spellParalyze:
 			if(!src) return 0;
 			dur = src->skill[skMagery]/100;
 			break;
@@ -217,7 +217,7 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 			dur = polyduration;
 			break;
 
-		case SPELL_INCOGNITO:
+		case spellIncognito:
 			dur = 90;
 			break;
 
@@ -330,7 +330,7 @@ void cTempfx::start()
 			dest->damage(m_nMore1, static_cast<DamageType>(m_nMore2));
 			dest->playSFX(0x0208);
 			break;
-		case SPELL_PARALYZE:
+		case spellParalyze:
 			if (dest->resistFreeze())
 				return;
 			dest->freeze();
@@ -449,7 +449,7 @@ void cTempfx::start()
 			dest->polymorph = true;
 			break;
 
-		case SPELL_INCOGNITO:
+		case spellIncognito:
 			//Luxor's incognito code :)
 			if (dest->morphed)
 				dest->morph();	//if the char is morphed, unmorph him
@@ -638,7 +638,7 @@ void cTempfx::executeExpireCode()
 
 	switch(m_nNum)
 	{
-		case SPELL_PARALYZE:
+		case spellParalyze:
 			if ( ! dest ) return;
 			if (dest->isFrozen())
 				dest->unfreeze( true );
@@ -794,7 +794,7 @@ void cTempfx::executeExpireCode()
 			dest->polymorph = false;
 			break;
 
-		case SPELL_INCOGNITO:
+		case spellIncognito:
 			if ( ! dest ) return;
 			dest->morph();
 			dest->setIncognito(false);
@@ -906,7 +906,7 @@ void cTempfx::activate()
 
 	switch(m_nNum)
 	{
-		case SPELL_PARALYZE:
+		case spellParalyze:
 			dest->freeze();
 			break;
 
@@ -989,7 +989,7 @@ void cTempfx::deactivate()
 
 	switch(m_nNum)
 	{
-		case SPELL_PARALYZE:
+		case spellParalyze:
 			if (dest->isFrozen())
 				dest->unfreeze( true );
 			break;

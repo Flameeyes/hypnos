@@ -74,10 +74,10 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 				pc_att->beginCasting(pc_def, magic::spellLightning );
 				break;
 			case 9:
-				pc_att->beginCasting(pc_def, magic::SPELL_PARALYZE );
+				pc_att->beginCasting(pc_def, magic::spellParalyze );
 				break;
 			case 10:
-				pc_att->beginCasting(pc_def, magic::SPELL_MINDBLAST );
+				pc_att->beginCasting(pc_def, magic::spellMindBlast );
 				break;
 			case 11:
 				pc_att->beginCasting(pc_def, magic::SPELL_ENERGYBOLT );
@@ -89,13 +89,13 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 				pc_att->beginCasting(pc_def, magic::SPELL_FLAMESTRIKE );
 				break;
 			case 14:
-				pc_att->beginCasting(pc_def, magic::SPELL_MINDBLAST );
+				pc_att->beginCasting(pc_def, magic::spellMindBlast );
 				break;
 			case 15:
-				pc_att->beginCasting(pc_def, magic::SPELL_MINDBLAST );
+				pc_att->beginCasting(pc_def, magic::spellMindBlast );
 				break;
 			case 16:
-				pc_att->beginCasting(pc_def, magic::SPELL_MINDBLAST );
+				pc_att->beginCasting(pc_def, magic::spellMindBlast );
 				break;
 			default:
 				break;
@@ -231,10 +231,10 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::spellLightning );
 			break;
 		case 9:
-			pc_att->beginCasting(pc_def, magic::SPELL_PARALYZE );
+			pc_att->beginCasting(pc_def, magic::spellParalyze );
 			break;
 		case 10:
-			pc_att->beginCasting(pc_def, magic::SPELL_MINDBLAST );
+			pc_att->beginCasting(pc_def, magic::spellMindBlast );
 			break;
 		case 11:
 			pc_att->beginCasting(pc_def, magic::SPELL_ENERGYBOLT );
@@ -249,10 +249,10 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::spellFireField );
 			break;
 		case 15:
-			pc_att->beginCasting(pc_def, magic::spellPoisonFIELD );
+			pc_att->beginCasting(pc_def, magic::spellPoisonField );
 			break;
 		case 16:
-			pc_att->beginCasting(pc_def, magic::SPELL_PARALYZEFIELD );
+			pc_att->beginCasting(pc_def, magic::spellParalyzeFIELD );
 			break;
 		case 17:
 			pc_att->beginCasting(pc_att, magic::spellHeal );
@@ -273,7 +273,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::SPELL_MANAVAMPIRE );
 			break;
 		case 27:
-			pc_att->beginCasting(pc_att, magic::SPELL_REFLECTION );
+			pc_att->beginCasting(pc_att, magic::spellReflection );
 			break;
 		default :
 			WarnOut("NPC-Spell %d not yet implemented, sorry :(\n", spherespells[sphere][spell]);

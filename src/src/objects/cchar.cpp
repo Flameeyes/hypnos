@@ -659,7 +659,7 @@ void cChar::applyPoison(PoisonType poisontype, int32_t secs )
 void cChar::unfreeze( bool calledByTempfx )
 {
 	if( !calledByTempfx )
-		delTempfx( tempfx::SPELL_PARALYZE, false ); //Luxor
+		delTempfx( tempfx::spellParalyze, false ); //Luxor
 	
 	if ( ! isFrozen() ) return;
 

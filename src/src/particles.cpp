@@ -353,7 +353,7 @@ void ParticleFx::initWithSpellStatEffects_pre( magic::SpellId num)
 	te11=0; te12=1;
 	te4=0x00; te5=0x00; te6=0x0a; te7=0x05; te8=0x23; te10=0xffff0102;
 
-	if (num == magic::SPELL_BLADESPIRITS) te10=0x02010102;
+	if (num == magic::spellBladeSpirit) te10=0x02010102;
 	int arte9[magic::MAX_SPELLS] = {
 		0x47, 0x33, 0x47, 0x65, 0x51, 0x47, 0x33, 0x47,
 		0x65, 0x65, 0x65, 0x51, 0x29, 0x29, 0x33, 0x65,
@@ -392,10 +392,10 @@ void ParticleFx::initWithSpellStatEffects_post( magic::SpellId num)
 		case magic::spellNightSight:    
 			te4=0x37; te5=0x6a; te6=0x09; te7=0x20; te8=0x13; te9=0x8f; te10=0xffff0003; 
 			break;        
-		case magic::SPELL_MINDBLAST:   
+		case magic::spellMindBlast:   
 			te4=0x37; te5=0x4a; te6=0x0a; te7=0x0f; te8=0x13; te9=0xae; te10=0xffff0000; 
 			break;
-		case magic::SPELL_PARALYZE:   
+		case magic::spellParalyze:   
 			te4=0x00; te5=0x00; te6=0x0a; te7=0x05; te8=0x13; te9=0xaf; te10=0xffffff05; te11=0x27; te12=0x0f; 
 			break;
 		default: te4=-1; te5=-1; te6=-1; te7=-1; break;

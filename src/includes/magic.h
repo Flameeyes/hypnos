@@ -152,14 +152,14 @@ namespace magic {
 		spellManaDrain,
 		spellRecall,
 		// Level 5
-		SPELL_BLADESPIRITS,
-		SPELL_DISPELFIELD,
-		SPELL_INCOGNITO,
-		SPELL_REFLECTION,
-		SPELL_MINDBLAST,
-		SPELL_PARALYZE,
-		spellPoisonFIELD,
-		SPELL_SUMMON,
+		spellBladeSpirit,
+		spellDispelField,
+		spellIncognito,
+		spellReflection,
+		spellMindBlast,
+		spellParalyze,
+		spellPoisonField,
+		spellSummon,
 		// Level 6
 		SPELL_DISPEL,
 		SPELL_ENERGYBOLT,
@@ -167,7 +167,7 @@ namespace magic {
 		SPELL_INVISIBILITY,
 		SPELL_MARK,
 		SPELL_MASSCURSE,
-		SPELL_PARALYZEFIELD,
+		spellParalyzeFIELD,
 		SPELL_REVEAL,
 		// Level 7
 		SPELL_CHAINLIGHTNING,
@@ -182,11 +182,11 @@ namespace magic {
 		SPELL_EARTHQUAKE,
 		SPELL_ENERGYVORTEX,
 		SPELL_RESURRECTION,
-		SPELL_SUMMON_AIR,
-		SPELL_SUMMON_DEAMON,
-		SPELL_SUMMON_EARTH,
-		SPELL_SUMMON_FIRE,
-		SPELL_SUMMON_WATER,
+		spellSummon_AIR,
+		spellSummon_DEAMON,
+		spellSummon_EARTH,
+		spellSummon_FIRE,
+		spellSummon_WATER,
 
 		MAX_SPELLS
 	};

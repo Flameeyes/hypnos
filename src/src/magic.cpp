@@ -325,8 +325,8 @@ static inline bool isFieldSpell(SpellId spell)
 {
 	switch (spell) {
 		case spellFireField:
-		case spellPoisonFIELD:
-		case SPELL_PARALYZEFIELD:
+		case spellPoisonField:
+		case spellParalyzeFIELD:
 		case SPELL_ENERGYFIELD:
 		case spellWallStone:
 			return true;
@@ -500,7 +500,7 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
 		case spellFireField:
-		case spellPoisonFIELD:
+		case spellPoisonField:
 			pcfrom->playSFX( 0x20C );
 			break;
 		case spellGreatHeal:
@@ -522,29 +522,29 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 		case spellRecall:
 			pcfrom->playSFX( 0x1FC );
 			break;
-		case SPELL_BLADESPIRITS:
+		case spellBladeSpirit:
 			pcfrom->playSFX( 0x212 );
 			break;
-		case SPELL_DISPELFIELD:
+		case spellDispelField:
 			pcfrom->playSFX( 0x201 );
 			break;
-		case SPELL_INCOGNITO:
+		case spellIncognito:
 		case SPELL_POLYMORPH:
 			pcfrom->playSFX( 0x20F );
 			break;
-		case SPELL_REFLECTION:
+		case spellReflection:
 			pcfrom->playSFX( 0x1E9 );
 			staticFX(pcfrom, 0x375A, 0, 10, &spfx );
 			break;
-		case SPELL_MINDBLAST:
+		case spellMindBlast:
 			pcto->playSFX( 0x213 );
 			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
-		case SPELL_PARALYZE:
+		case spellParalyze:
 			pcto->playSFX( 0x204 );
 			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
-		case SPELL_SUMMON:
+		case spellSummon:
 			pcfrom->playSFX( 0x215 );
 			break;
 		case SPELL_DISPEL:
@@ -571,7 +571,7 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			pcto->playSFX( 0x1FB );
 			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
-		case SPELL_PARALYZEFIELD:
+		case spellParalyzeFIELD:
 			pcfrom->playSFX( 0x20B );
 			break;
 		case SPELL_REVEAL:
@@ -613,13 +613,13 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 		case SPELL_RESURRECTION:
 			pcfrom->playSFX( 0x214 );
 			break;
-		case SPELL_SUMMON_AIR:
-		case SPELL_SUMMON_EARTH:
-		case SPELL_SUMMON_FIRE:
-		case SPELL_SUMMON_WATER:
+		case spellSummon_AIR:
+		case spellSummon_EARTH:
+		case spellSummon_FIRE:
+		case spellSummon_WATER:
 			pcfrom->playSFX( 0x217 );
 			break;
-		case SPELL_SUMMON_DEAMON:
+		case spellSummon_DEAMON:
 			pcfrom->playSFX( 0x216 );
 			break;
 		default:
@@ -827,7 +827,7 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellClumsy:
 		case spellFeebleMind:
 		case spellWeaken:
-		case SPELL_PARALYZE:
+		case spellParalyze:
 		case SPELL_DISPEL:
 		case spellCurse:
 		case spellPoison:
@@ -846,7 +846,7 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellLightning:
 		case SPELL_ENERGYBOLT:
 		case spellHarm:
-		case SPELL_MINDBLAST:
+		case spellMindBlast:
 		case spellManaDrain:
 		case SPELL_MANAVAMPIRE:
 			return TARGTYPE_CHAR;
@@ -854,16 +854,16 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellReactiveArmour:
 		case spellProtection:
 		case spellArchProtection:
-		case SPELL_INCOGNITO:
-		case SPELL_REFLECTION:
+		case spellIncognito:
+		case spellReflection:
 		case spellNightSight:
 		case SPELL_INVISIBILITY:
-		case SPELL_SUMMON:
-		case SPELL_SUMMON_AIR:
-		case SPELL_SUMMON_DEAMON:
-		case SPELL_SUMMON_EARTH:
-		case SPELL_SUMMON_FIRE:
-		case SPELL_SUMMON_WATER:
+		case spellSummon:
+		case spellSummon_AIR:
+		case spellSummon_DEAMON:
+		case spellSummon_EARTH:
+		case spellSummon_FIRE:
+		case spellSummon_WATER:
 		case SPELL_EARTHQUAKE:
 		case spellCreateFood:
 		case SPELL_POLYMORPH:
@@ -882,7 +882,7 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellRecall:
 			return TARGTYPE_RUNE;
 
-		case SPELL_BLADESPIRITS:
+		case spellBladeSpirit:
 		case SPELL_ENERGYVORTEX:
 		case spellWallStone:
 		case spellTeleport:
@@ -890,9 +890,9 @@ static inline int spellTargetType(SpellId spellnum)
 		case SPELL_MASSCURSE:
 		case SPELL_REVEAL:
 		case spellFireField:
-		case SPELL_DISPELFIELD:
-		case spellPoisonFIELD:
-		case SPELL_PARALYZEFIELD:
+		case spellDispelField:
+		case spellPoisonField:
+		case spellParalyzeFIELD:
 		case SPELL_ENERGYFIELD:
 		case SPELL_CHAINLIGHTNING:
 		case SPELL_METEORSWARM:
@@ -1185,9 +1185,9 @@ void castFieldSpell( pChar pc, sPosition pos, int spellnumber)
 			id = 0x0080; fieldLen = 2; break;
 		case spellFireField:
 			id = (j) ? 0x3996 : 0x398c; break;
-		case spellPoisonFIELD:
+		case spellPoisonField:
 			id = (j) ? 0x3920 : 0x3915; break;
-		case SPELL_PARALYZEFIELD:
+		case spellParalyzeFIELD:
 			id = (j) ? 0x3979 : 0x3967; break;
 		case SPELL_ENERGYFIELD:
 			id = (j) ? 0x3956 : 0x3946; break;
@@ -1289,11 +1289,11 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				castStatPumper(spellnumber, dest, src, flags|SPELLFLAG_IGNORERESISTANCE, param);
 			}
 			break;
-		case SPELL_PARALYZE:
+		case spellParalyze:
 			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
-				tempfx::add(src, pd, tempfx::SPELL_PARALYZE);
+				tempfx::add(src, pd, tempfx::spellParalyze);
 			}
 			break;
 		case spellPoison:
@@ -1337,7 +1337,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_MINDBLAST:
+		case spellMindBlast:
 			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
@@ -1596,16 +1596,16 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_INCOGNITO:
+		case spellIncognito:
 			spellFX(spellnumber, src, pd);
 			if ( !pd && src ) pd = src;
 			if (pd) {
 				if (nTime==INVALID) nTime = 90;
-				tempfx::add(pd,pd, tempfx::SPELL_INCOGNITO, 0,0,0, nTime);
+				tempfx::add(pd,pd, tempfx::spellIncognito, 0,0,0, nTime);
 			}
 			break;
 
-		case SPELL_REFLECTION:
+		case spellReflection:
 			spellFX(spellnumber, src, pd);
 			if ( !pd && src ) pd = src;
 			if (pd) pd->setReflection(true);
@@ -1694,15 +1694,15 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 
 		case spellFireField:
-		case spellPoisonFIELD:
-		case SPELL_PARALYZEFIELD:
+		case spellPoisonField:
+		case spellParalyzeFIELD:
 		case SPELL_ENERGYFIELD:
 		case spellWallStone:
 			spellFX(spellnumber, src, src);
 			castFieldSpell( src, loc, spellnumber);
 			break;
 
-		case SPELL_DISPELFIELD:
+		case spellDispelField:
 			if ( pi!=NULL )
 			{
 				if( pi->isDispellable() )
@@ -1713,7 +1713,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_SUMMON:
+		case spellSummon:
 			if (src!=NULL) { // Luxor
 				P_MENU menu = Menus.insertMenu( new cSummonCreatureMenu( src ) );
 				if(!menu) return;
@@ -1722,7 +1722,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_SUMMON_AIR:
+		case spellSummon_AIR:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				nTime = (nTime==INVALID) ? (int)(src->skill[nSkill] * 0.4) : nTime;
@@ -1730,7 +1730,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_SUMMON_DEAMON:
+		case spellSummon_DEAMON:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
@@ -1738,7 +1738,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_SUMMON_EARTH:
+		case spellSummon_EARTH:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
@@ -1746,7 +1746,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_SUMMON_FIRE:
+		case spellSummon_FIRE:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
@@ -1754,7 +1754,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 		
-		case SPELL_SUMMON_WATER:
+		case spellSummon_WATER:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
@@ -1762,7 +1762,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 		
-		case SPELL_BLADESPIRITS:
+		case spellBladeSpirit:
 			if (src!=NULL) {
 				spellFX(spellnumber, src, pd);
 				if (nTime==INVALID) nTime = int(src->skill[nSkill] * 0.4);
@@ -2210,7 +2210,7 @@ void cSummonCreatureMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	pc_monster->summontimer = getclock() + uint32_t(pc->skill[skMagery] * 0.4) * SECS;
 	pc_monster->MoveTo(pos);
 	pc_monster->teleport();
-	spellFX( SPELL_SUMMON, pc, pc );
+	spellFX( spellSummon, pc, pc );
 }
 
 

@@ -27,7 +27,7 @@ void cNPC::beginCasting(pChar target, magic::SpellId spell)
 	nextact = 1;
 	spellaction = 6;
 	spelltime = magic::getCastingTime( spell );
-	addTempfx( *pc, tempfx::SPELL_PARALYZE, 0, 0, 0, ( pc->spelltime - getclock() ) / SECS );
+	addTempfx( *pc, tempfx::spellParalyze, 0, 0, 0, ( pc->spelltime - getclock() ) / SECS );
 	emoteall("*Begins casting a spell*", false);
 }
 
@@ -468,7 +468,7 @@ void cNPC::checkAI()
 							talkAll("Die unusefull mortal!", 1);
 							break;
 						case 2:
-							beginCasting(pj, magic::SPELL_PARALYZE);
+							beginCasting(pj, magic::spellParalyze);
 							talkAll("What are you doing? Come here and Die!", 1);
 							break;
 						case 3:

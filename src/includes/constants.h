@@ -247,7 +247,7 @@ enum { BANK_GOLD = 1, BANK_ITEM = 0, MOREY_GOLDONLYBANK = 123, MOREX_BANK = 1 };
 */
 namespace tempfx {
 	enum {
-		SPELL_PARALYZE = 1,
+		spellParalyze = 1,
 		SPELL_LIGHT,
 		spellClumsy,
 		spellFeebleMind,
@@ -265,7 +265,7 @@ namespace tempfx {
 		EXPLOTIONMSG,
 		EXPLOTIONEXP,
 		SPELL_POLYMORPH,
-		SPELL_INCOGNITO,
+		spellIncognito,
 		LSD,
 		spellProtection,
 		HEALING_HEAL,

@@ -70,7 +70,7 @@ void checkFieldEffects( uint32_t currenttime, pChar pc, char timecheck )
 				case 0x3979:
 				case 0x3967: //Para Field
 					if (chance(50)) {
-						tempfx::add(pc, pc, tempfx::SPELL_PARALYZE, 0, 0, 0, 3);
+						tempfx::add(pc, pc, tempfx::spellParalyze, 0, 0, 0, 3);
 						pc->playSFX( 0x0204 );
 					}
 					return;
