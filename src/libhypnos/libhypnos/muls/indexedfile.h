@@ -13,19 +13,54 @@
 
 #include "libhypnos/muls/mulfiles.h"
 #include "libhypnos/muls/mmappedfile.h"
+#include "libhypnos/exceptions.h"
 #include "libhypnos/types.h"
 
 namespace nLibhypnos {
 namespace nMULFiles {
 
-template<class cData> class tplIndexFile : public tplMMappedFile<cData>
+template<class cData> class tplIndexFile
 {
-public:
-	tplIndexFile(std::string filename);
-	virtual ~tplIndexFile();
+protected:
+	cMMappedFile file;
 	
-	uint32_t getLookup(uint16_t index) const;
-	uint32_t getSize(uint16_t index) const;
+	cData *getArray() const
+	{ return reinterpret_cast<cData*>(file.getArray()); }
+public:
+	tplIndexFile(std::string filename)
+		: file(sizeof(cData), filename)
+	{ }
+	
+	virtual ~tplIndexFile()
+	{ }
+	
+	/*!
+	\brief Gets the offset of the given record in the indexed file
+	\param index ID of the record (index to search for). Zero-based.
+	\return The offset of the requested record in the indexed file
+	\throw eOutOfBound If the requested index is greater than the count of records
+	*/
+	uint32_t getLookup(uint16_t index) const
+	{
+		if ( index >= file.getCount() )
+			throw eOutOfBound(file.getCount()-1, index);
+		
+		return getArray()[index].getLookup();
+	}
+	
+	/*!
+	\brief Gets the length of the given record in the indexed file
+	\param index ID of the record (index to search for). Zero-based.
+	\return The length of the requested record in the indexed file
+	\throw eOutOfBound If the requested index is greater than the count of records
+	*/
+	uint32_t getSize(uint16_t index) const
+	{
+		if ( index >= file.getCount() )
+			throw eOutOfBound(file.getCount()-1, index);
+		
+		return getArray()[index].getSize();
+	}
 };
 
 /*!
@@ -38,12 +73,16 @@ is usually named as the main mul file with extension .idx.
 This class uses an index file to look up the actual address of the record.
 This is used by many different classes, such as cMulti.
 */
-template<class cData> class tplIndexedFile : public tplMMappedFile<char>
+template<class cData> class tplIndexedFile
 {
 protected:
+	cMMappedFile file;
 	tplIndexFile<cData> *idx;	//!< Index file to use
 public:
-	tplIndexedFile(tplIndexFile<cData> *idx, std::string filename);
+	tplIndexedFile(tplIndexFile<cData> *aIdx, std::string filename)
+		: file(1, filename), idx(aIdx)
+	{ }
+	
 	virtual ~tplIndexedFile()
 	{ }
 	
@@ -55,7 +94,7 @@ public:
 		index file (is actually thrown by tplIndexFile::getLookup() )
 	*/
 	inline void *getAddress(uint16_t id)
-	{ return tplMMappedFile<char>::array + idx->getLookup(id); }
+	{ return reinterpret_cast<char*>(file.getArray()) + idx->getLookup(id); }
 
 	/*!
 	\brief Gets the size of the record at the given index

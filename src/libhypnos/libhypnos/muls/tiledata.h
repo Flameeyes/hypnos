@@ -145,16 +145,23 @@ This class handles the access to the tiledata.mul file, restricted to the 512
 land blocks.
 
 */
-class fTiledataLand : public tplMMappedFile<cTiledataLand>
+class fTiledataLand
 {
 protected:
-	cTiledataLand::cEntry &tile(uint16_t id) const
+	const cTiledataLand::cEntry &tile(uint16_t id) const
 	{
 		if ( id >= 512 ) throw eOutOfBound(511, id);
-		return array[id/32].entries[id%32];
+		return getArray()[id/32].entries[id%32];
 	}
+	
+	cMMappedFile file;
+	
+	//! Gets the mmapped array. Commodity function.
+	inline cTiledataLand *getArray() const
+	{ return reinterpret_cast<cTiledataLand *>(file.getArray()); }
 public:
 	fTiledataLand();
+	fTiledataLand(const std::string &filename);
 	~fTiledataLand();
 	
 	uint32_t getFlags(uint16_t id) const
@@ -248,18 +255,25 @@ This class handles the access to the tiledata.mul file, restricted to the
 variables static blocks.
 
 */
-class fTiledataStatic : public tplMMappedFile<cTiledataStatic>
+class fTiledataStatic
 {
 protected:
-	cTiledataStatic::cEntry &tile(uint16_t id) const
+	const cTiledataStatic::cEntry &tile(uint16_t id) const
 	{
-		if ( id >= getCount()*32 )
-			throw eOutOfBound(getCount()*32-1, id);
+		if ( id >= file.getCount()*32 )
+			throw eOutOfBound(file.getCount()*32-1, id);
 		
-		return array[id/32].entries[id%32];
+		return getArray()[id/32].entries[id%32];
 	}
+	
+	cMMappedFile file;
+	
+	//! Gets the mmapped array. Commodity function.
+	inline cTiledataStatic *getArray() const
+	{ return reinterpret_cast<cTiledataStatic *>(file.getArray()); }
 public:
 	fTiledataStatic();
+	fTiledataStatic(const std::string &);
 	~fTiledataStatic();
 	
 	uint32_t getFlags(uint16_t id) const

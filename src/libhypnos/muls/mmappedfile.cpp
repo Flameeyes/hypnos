@@ -30,18 +30,24 @@
 #include <winbase.h>
 #endif
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 namespace nLibhypnos {
 
 	/*!
 	\brief Default constructor for mmapped files
+	\param recordsize Size of a single mmapped record (used by getCount())
 	*/
-	template<class MUL> tplMMappedFile<MUL>::tplMMappedFile<MUL>()
+	cMMappedFile::cMMappedFile(uint16_t recordsize)
+		: recSize(recordsize), array(NULL)
 	{
-		array = NULL;
 	}
 	
 	/*!
 	\brief Constructor for mmapped files
+	\param recordsize Size of a single mmapped record (used by getCount())
 	\param filename Valid filename of the file to open.
 	\param offset Offset in the file to start mmapping
 	\param length Part of the file to mmap. If 0 all the file will be
@@ -52,9 +58,9 @@ namespace nLibhypnos {
 		offset before the file can be mmapped, \b must call the default
 		constructor which does nothing.
 	*/
-	template<class MUL> tplMMappedFile<MUL>::tplMMappedFile<MUL>(std::string filename, uint32_t offset, uint32_t length)
+	cMMappedFile::cMMappedFile(uint16_t recordsize, std::string filename, uint32_t offset, uint32_t length)
+		: recSize(recordsize), array(NULL)
 	{
-		array = NULL;
 		open(filename);
 		mmap(offset, length);
 	}
@@ -65,10 +71,10 @@ namespace nLibhypnos {
 	This function closes the file descriptor and unmap the file from the
 	memory.
 	*/
-	template<class MUL> tplMMappedFile<MUL>::~tplMMappedFile<MUL>()
+	cMMappedFile::~cMMappedFile()
 	{
 		#ifdef HAVE_MUNMAP
-		munmap(array);
+		munmap(array, getSize());
 		#elif defined (WIN32)
 		UnmapViewOfFile(array);
 		#endif
@@ -81,9 +87,9 @@ namespace nLibhypnos {
 	
 	\note The mmapped files are all opened read only.
 	*/
-	template<class MUL> void tplMMappedFile<MUL>::open(std::string filename)
+	void cMMappedFile::open(std::string filename)
 	{
-		fd = open(filename.c_str(), O_RDONLY);
+		fd = ::open(filename.c_str(), O_RDONLY);
 		if ( fd == -1 )
 		{
 			/*!
@@ -109,7 +115,7 @@ namespace nLibhypnos {
 	open the file and read something from that before mmap (to load offsets
 	or length) can call it if it wasn't called by the constructor.
 	*/
-	template<class MUL> void tplMMappedFile<MUL>::mmap(uint32_t offset, uint32_t length)
+	void cMMappedFile::mmap(uint32_t offset, uint32_t length)
 	{
 		if ( array )
 		{
@@ -139,7 +145,7 @@ namespace nLibhypnos {
 		
 		// And here we mmap the file
 		#ifdef HAVE_MMAP
-		array = (MUL*)mmap(NULL, length, PROT_READ, MAP_SHARED, fd, offset);
+		array = ::mmap(NULL, length, PROT_READ, MAP_SHARED, fd, offset);
 		#elif defined(WIN32)
 		HANDLE hMapObject = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READ, 0, SHMEMSIZE, fn.c_str());
 		if ( ! hMapObject )
@@ -151,7 +157,7 @@ namespace nLibhypnos {
 			return;
 		}
 		
-		array = (MUL*)MapViewOfFile(hMapObject, FILE_MAP_READ, 0, offset, length);
+		array = MapViewOfFile(hMapObject, FILE_MAP_READ, 0, offset, length);
 		if ( ! array )
 			/*!
 			\todo Here we should throw an exception of unable-to-mmap

@@ -35,10 +35,10 @@ fGumpIDX::fGumpIDX()
 */
 sPoint fGumpIDX::getDimensions(uint16_t index)
 {
-	if ( index >= getCount() )
-		throw eOutOfBound(getCount()-1, index);
+	if ( index >= file.getCount() )
+		throw eOutOfBound(file.getCount()-1, index);
 	
-	return sPoint(array[index].getHeight(), array[index].getWidth());
+	return sPoint(getArray()[index].getHeight(), getArray()[index].getWidth());
 }
 
 }}

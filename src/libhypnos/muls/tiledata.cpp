@@ -33,16 +33,27 @@ std::string cTiledataStatic::cEntry::getName() const
 }
 
 fTiledataLand::fTiledataLand()
-	: tplMMappedFile<cTiledataLand>(nMULFiles::getMULpath() + "tiledata.mul", 0, 512*sizeof(cTiledataLand))
+	: file(sizeof(cTiledataLand), nMULFiles::getMULpath() + "tiledata.mul", 0, 512*sizeof(cTiledataLand))
+{
+}
+
+fTiledataLand::fTiledataLand(const std::string &filepath)
+	: file(sizeof(cTiledataLand), filepath, 0, 512*sizeof(cTiledataLand))
 {
 }
 
 fTiledataStatic::fTiledataStatic()
-	: tplMMappedFile<cTiledataStatic>()
+	: file(sizeof(cTiledataStatic))
 {
-	open(nMULFiles::getMULpath() + "tiledata.mul");
-	
-	mmap(512*sizeof(cTiledataLand));
+	file.open(nMULFiles::getMULpath() + "tiledata.mul");
+	file.mmap(512*sizeof(cTiledataLand));
+}
+
+fTiledataStatic::fTiledataStatic(const std::string &filepath)
+	: file(sizeof(cTiledataStatic))
+{
+	file.open(filepath);
+	file.mmap(512*sizeof(cTiledataLand));
 }
 
 }}

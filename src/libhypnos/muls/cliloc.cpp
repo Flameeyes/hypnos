@@ -18,11 +18,11 @@ namespace nMULFiles {
 \param filename File path and name of the cliloc file to open.
 */
 fCliloc::fCliloc(std::string filename)
-	: tplMMappedFile<char>(filename)
+	: file(1, filename)
 {
-	char *ptr = array+6;
+	char *ptr = reinterpret_cast<char*>(file.getArray())+6;
 	
-	char *end = (array+tplMMappedFile<char>::getCount());
+	char *end = (reinterpret_cast<char*>(file.getArray())+file.getCount());
 	
 	while(ptr < end)
 	{

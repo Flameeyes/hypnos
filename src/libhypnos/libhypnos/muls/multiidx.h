@@ -54,8 +54,10 @@ Information grabbed from WolfPack files formats guide.
 */
 class fMultiIDX : public tplIndexFile<cMultiIDX>
 {
+protected:
 public:
 	fMultiIDX();
+	fMultiIDX(const std::string &);
 };
 
 }}

@@ -22,7 +22,7 @@
 namespace nLibhypnos {
 
 /*!
-\class tplMMappedFile mmappedfile.h "libhypnos/mmappedfile.h"
+\class cMMappedFile mmappedfile.h "libhypnos/mmappedfile.h"
 \brief Memory Mapped File
 \author Flameeyes
 
@@ -60,24 +60,32 @@ programs which are loaded in the same system. This is on by default.
 	methods which fixes the endianness of the file to be the same of the
 	system.
 */
-template<class MUL> class tplMMappedFile {
+class cMMappedFile {
 protected:
-	MUL *array;	//!< Pointer to the mmapped file
+	void *array;	//!< Pointer to the mmapped file
 	uint32_t size;	//!< Size of the mmap in bytes
 	int fd;		//!< Descriptor of the mmapped file
+	uint16_t recSize;//!< Size of a single mmapped record
 #ifdef WIN32
 	std::string fn;	//!< Name of the file (needed for Windows mmapping)
 #endif
 	
+public:
+	cMMappedFile(uint16_t recordsize = 1);
+	cMMappedFile(uint16_t recordsize, std::string filename, uint32_t offset = 0, uint32_t length = 0);
+	virtual ~cMMappedFile();
+	
 	void open(std::string filename);
 	void mmap(uint32_t offset = 0, uint32_t length = 0);
-public:
-	tplMMappedFile();
-	tplMMappedFile(std::string filename, uint32_t offset = 0, uint32_t length = 0);
-	virtual ~tplMMappedFile();
 	
-	virtual uint32_t getCount() const
-	{ return size / sizeof(MUL); }
+	uint32_t getSize() const
+	{ return size; }
+	
+	uint32_t getCount() const
+	{ return size / recSize; }
+	
+	void *getArray() const
+	{ return array; }
 };
 
 }

@@ -39,7 +39,7 @@ byte 00
 ushort textLen
 char[textLen] text (not null terminated)
 */
-class fCliloc : public tplMMappedFile<char>
+class fCliloc
 {
 public:
 	fCliloc(std::string filepath);
@@ -47,6 +47,7 @@ public:
 	const std::string &getEntry(uint32_t index);
 	uint32_t getCount();
 protected:
+	cMMappedFile file;
 	stringVector entries;
 };
 
