@@ -14,9 +14,9 @@
 #include "data.h"
 #include "hypnos.h"
 #include "logsystem.h"
+#include "mainloop.h"
 #include "version.h"
 #include "archs/console.h"
-#include "archs/daemon.h"
 #include "archs/signals.h"
 #include "backend/admincmds.h"
 
@@ -57,9 +57,6 @@ tConsoleInterface::tConsoleInterface() : tInterface()
 	#endif
 	
 	#ifdef WIN32
-	if ( ServerScp::g_nDeamonMode )
-		return;
-		
 	HANDLE Buff = GetStdHandle(STD_OUTPUT_HANDLE);
 	COORD coord; coord.X = 80; coord.Y = (short)ServerScp::g_nLineBuffer;
 	WORD arr[80];
@@ -79,7 +76,6 @@ tConsoleInterface::tConsoleInterface() : tInterface()
 	
 	for (coord.Y = 0; coord.Y<1024; coord.Y++)
 		WriteConsoleOutputAttribute(Buff, (CONST WORD *)arr,80,coord,(LPDWORD )&w);       // actual number written
-
 	#endif
 }
 
@@ -181,11 +177,21 @@ void *tConsoleInterface::run()
 
 int main(int argc, char *argv[])
 {
+	bool daemon = false;
+
+#ifdef HAVE_FORK
 	// Better way to handle daemons on nix platforms: --daemon argument :)
 	if ( argc > 1 && ! strcmp(argv[1], "--daemon") )
-		init_daemon();
+		daemon = true;
+#endif
+
+	if ( daemon )
+	{
+		std::cout << "Going into daemon mode." << std::endl;
+		new tNullInterface();
+	} else
+		new tConsoleInterface();
 	
-	new tConsoleInterface();
 	new tMainLoop();
 	
 	tMainLoop::instance->join();
@@ -194,58 +200,3 @@ int main(int argc, char *argv[])
 	
 	return 0;
 }
-
-#if 0
-	if (SrvParms->server_log)
-		ServerLog.Write(
-			"-=Server Startup=-\n"
-			"=======================================================================\n");
-
-	std::cout << "Map size :" << map_width << " x " << map_height;
-
-	if ((map_width==768)&&(map_height==512))
-		std::cout << " [standard Britannia/Sosaria map size]" << std::endl;
-	else if ((map_width==288)&&(map_height==200))
-		std::cout << " [standard Ilshenar map size]" << std::endl;
-	else
-		std::cout << " [custom map size]" << std::endl;
-
-	// print allowed clients
-	std::vector<std::string>::const_iterator vis( clientsAllowed.begin() ), vis_end( clientsAllowed.end() );
-
-	std::cout << std::endl << "Allowed clients : ";
-	for ( ; vis != vis_end;  ++vis)
-	{
-		if ( (*vis) == "SERVER_DEFAULT" )
-		{
-			std::cout << (*vis) << " : " << strSupportedClient << std::endl;
-			break;
-		}
-		else if ( t == "ALL" )
-		{
-			std::cout << "ALL" << std::endl;
-			break;
-		}
-
-		std::cout << (*vis) << ", ";
-	}
-	std::cout << std::endl;
-	
-	std::cout << "Server started" << std::endl;
-	
-	shutdownServer();
-
-	if (error) {
-		std::cerr << "ERROR: Server terminated by error!" << std::endl;
-
-		if (SrvParms->server_log)
-			ServerLog.Write("Server Shutdown by Error!\n");
-	} else {
-		std::cout << "Hypnos: Server shutdown complete!" << std::endl;
-		if (SrvParms->server_log)
-			ServerLog.Write("Server Shutdown!\n");
-	}
-	
-	return 0;
-}
-#endif
