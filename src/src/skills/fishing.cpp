@@ -334,9 +334,9 @@ void Fishing::Fish(CHARACTER i)
 				color= color%0x03E9; 
 				if((color <0x0002) || (color > 0x03E9)) color = 0x03E9;
 
-				if( ((color&0x4000)>>14) + ((color&0x8000)>>15) )
+				if( ((color&0x4000)>>14) | ((color&0x8000)>>15) )
 				{
-					color = Duint8_t2WORD(0x01, rand()%255);
+					color = (0x0010 | (rand()%255));
 				}
 			} else color=0;
 		
