@@ -38,6 +38,7 @@ watching at its prefix.
 \li \b weapon Weapon type
 \li \b sa SuspectAction values
 \li \b ip ItemPlace values
+\li \b skill SkillId values 
 
 \see enums.h
 
