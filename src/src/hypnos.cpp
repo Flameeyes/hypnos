@@ -313,4 +313,10 @@ void shutdownServer()
 	tKiller::instance->join();
 	delete tKiller::instance;
 	outPlain("[  Ok  ]\n");
+	
+	if (NewErrorsLogged())
+		outError("New ERRORS have been logged. Please send the logs/error*.log and logs/critical*.log files to the dev team !\n");
+	
+	if (NewWarningsLogged())
+		outWarning("New WARNINGS have been logged. Probably scripting errors. See the logs/warnings*.log for details !\n");
 }

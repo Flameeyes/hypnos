@@ -138,7 +138,8 @@ void constart( void )
 {
 	setWinTitle("Hypnos %s", strVersion);
 	#ifdef WIN32
-	if (ServerScp::g_nDeamonMode==0) {
+	if (! ServerScp::g_nDeamonMode )
+	{
 		HANDLE Buff = GetStdHandle(STD_OUTPUT_HANDLE);
 		COORD coord; coord.X = 80; coord.Y = (short)ServerScp::g_nLineBuffer;
 		WORD arr[80];
@@ -162,24 +163,6 @@ void constart( void )
 
 	}
 	#endif
-}
-
-void initConsole()
-{
-	if ((ServerScp::g_nRedirectOutput)||(ServerScp::g_nDeamonMode)) {
-		if(s_fileStdOut==NULL) s_fileStdOut = fopen(ServerScp::g_szOutput,"wt");
-		if(s_fileStdOut==NULL) s_fileStdOut = fopen("nxwout","wt");
-		if(s_fileStdOut==NULL) exit(1);
-	} else s_fileStdOut = stdout;
-}
-
-static inline void exitOnError(bool error)
-{
-	//! \todo Replace with exception handling
-	if ( ! error ) return;
-	
-	shutdownServer();
-	exit(-1);
 }
 
 // Define stubs to avoid conditional compilation inside the loop
@@ -216,104 +199,54 @@ void checkkey ()
 
 int main(int argc, char *argv[])
 {
-	int i;
-	unsigned long tempSecs;
-	unsigned long tempMilli;
-	unsigned long loopSecs;
-	unsigned long loopMilli;
-	unsigned long tempTime;
-	unsigned int uiNextCheckConn=0;//CheckConnection rate - AntiChrist ( thnx to LB )
-	unsigned long CheckClientIdle=0;
-	int r;
-
 	initclock();
 
-	serverstarttime=getClockmSecs();
-
-	initConsole();
-	lowlevelOutput(std::cout, "Starting Hypnos...\n\n");
+	std::cout << "Starting Hypnos..." << std::endl << std::endl;
 
 	loadServer();
 
-	if (ServerScp::g_nDeamonMode!=0) {
-		lowlevelOutput(std::cout, "Going into deamon mode... bye...\n");
+	if (ServerScp::g_nDeamonMode!=0)
 		init_deamon();
-	}
 
-	lowlevelOutput(std::cout, "Applying interface settings... ");
+	std::cout << "Applying interface settings... ";
 	constart();
-	lowlevelOutput(std::cout, "[ OK ]\n");
-
-	openings = 0;
-
-	serverstarttime=getClockmSecs();
+	std::cout << "[ OK ]" << std::endl;
 
 	lowlevelOutput(std::cout, "\n");
 	cwmWorldState->loadNewWorld();
 
-	exitOnError(error); // LB prevents file corruption
-
-	FD_ZERO(&conn);
-	starttime=getClockmSecs();
 	endtime=0;
 	lclock=0;
 
-	lowlevelOutput(std::cout, "\n\n");
+	std::cout << std::endl << std::endl;
 
 	clearscreen();
 
-	lowlevelOutput(std::cout,
-		"Hypnos UO Server Emulator %s\n
-		"Programmed by: %s\n"
-		"Based on NoX-Wizard 20031228\n"
-		"Website: http://hypnos.berlios.de/\n"
-		"\n"
-		"Original copyright (C) 1997, 98 Marcus Rating (Cironian)\n\n"
-		"This program is free software; you can redistribute it and/or modify\n"
-		"it under the terms of the GNU General Public License as published by\n"
-		"the Free Software Foundation; either version 2 of the License, or\n"
-		"(at your option) any later version.\n
-		"See LICENSE file for more information\n"
-		"\n"
-		"Running on %s\n",
-		strVersion, strDevelopers,
-		getOSVersionString().c_str() );
+	outputHypnosIntro(std::cout);
 	
 	if (SrvParms->server_log)
 		ServerLog.Write(
 			"-=Server Startup=-\n"
 			"=======================================================================\n");
 
-	serverstarttime=getClockmSecs(); // dont remove, its absolutly necassairy that its 3 times in the startup sequence for several timing reasons.
-
-	exitOnError(error);
-
-	lowlevelOutput(std::cout, "\nMap size : %dx%d", map_width, map_height);
+	std::cout << "Map size :" << map_width << " x " << map_height;
 
 	if ((map_width==768)&&(map_height==512))
-		lowlevelOutput(std::cout, " [standard Britannia/Sosaria map size]\n");
+		std::cout << " [standard Britannia/Sosaria map size]" << std::endl;
 	else if ((map_width==288)&&(map_height==200))
-		lowlevelOutput(std::cout, " [standard Ilshenar map size]\n");
-	else lowlevelOutput(std::cout, " [custom map size]\n");
-
-	if (ServerScp::g_nAutoDetectIP==1)  {
-		lowlevelOutput(std::cout, "\nServer waiting connections on all interfaces at TCP port %i\n", g_nMainTCPPort);
-	} else {
-		lowlevelOutput(std::cout, "\nServer waiting connections at IP %s, TCP port %i\n", serv[0][1], g_nMainTCPPort);
-	}
+		std::cout << " [standard Ilshenar map size]" << std::endl;
+	else
+		std::cout << " [custom map size]" << std::endl;
 
 	// print allowed clients
-	std::string t;
 	std::vector<std::string>::const_iterator vis( clientsAllowed.begin() ), vis_end( clientsAllowed.end() );
 
 	lowlevelOutput(std::cout, "\nAllowed clients : ");
 	for ( ; vis != vis_end;  ++vis)
 	{
-		t = (*vis);  // a bit pervert to store c++ strings and operate with c strings, admitably
-
-		if ( t == "SERVER_DEFAULT" )
+		if ( (*vis) == "SERVER_DEFAULT" )
 		{
-			lowlevelOutput(std::cout, "%s : %s\n", t.c_str(), strSupportedClient);
+			lowlevelOutput(std::cout, "%s : %s\n", (*vis).c_str(), strSupportedClient);
 			break;
 		}
 		else if ( t == "ALL" )
@@ -322,13 +255,13 @@ int main(int argc, char *argv[])
 			break;
 		}
 
-		lowlevelOutput(std::cout, "%s,", t.c_str());
+		lowlevelOutput(std::cout, "%s,", (*vis).c_str());
 	}
 	lowlevelOutput(std::cout, "\n");
 	
 	pointers::init(); //Luxor
 
-	lowlevelOutput(std::cout, "Server started\n");
+	std::cout << "Server started" << std::endl;
 
 	Spawns->doSpawnAll();
 
@@ -346,82 +279,32 @@ int main(int argc, char *argv[])
 		}
 		loopTimeCount++;
 
-		getClock(loopSecs, loopMilli);
-                //testAI();
-		if(networkTimeCount >= 1000)
+		CheckClientIdle=((SrvParms->inactivitytimeout/2)*SECS)+getClockmSecs();
+
+		for (int r=0;r<now;r++)
 		{
-			networkTimeCount = 0;
-			networkTime = 0;
-		}
-
-		getClock(tempSecs, tempMilli);
-
-		if ( TIMEOUT( CheckClientIdle ) )
-		{
-			CheckClientIdle=((SrvParms->inactivitytimeout/2)*SECS)+getClockmSecs();
-
-			for (r=0;r<now;r++)
+			pChar pc_r=cSerializable::findCharBySerial(currchar[r]);
+			if(! pc_r )
+				continue;
+			if (!pc_r->IsGM()
+				&& pc_r->clientidletime<getClockmSecs()
+				&& clientInfo[r]->ingame
+				)
 			{
-				pChar pc_r=cSerializable::findCharBySerial(currchar[r]);
-				if(! pc_r )
-					continue;
-				if (!pc_r->IsGM()
-					&& pc_r->clientidletime<getClockmSecs()
-					&& clientInfo[r]->ingame
-					)
-				{
-					lowlevelOutput(std::cout, "Player %s disconnected due to inactivity !\n", pc_r->getCurrentName().c_str());
-					//sysmessage(r,"you have been idle for too long and have been disconnected!");
-					nPackets::Sent::IdleWarning pk(0x7);
-					client->sendPacket(&pk);
-					Network->Disconnect(r);
-				}
-
+				lowlevelOutput(std::cout, "Player %s disconnected due to inactivity !\n", pc_r->getCurrentName().c_str());
+				//sysmessage(r,"you have been idle for too long and have been disconnected!");
+				nPackets::Sent::IdleWarning pk(0x7);
+				client->sendPacket(&pk);
+				Network->Disconnect(r);
 			}
+
 		}
-
-		tempTime = CheckMilliTimer(tempSecs, tempMilli);
-
-		networkTime += tempTime;
-		networkTimeCount++;
-
-		if(timerTimeCount >= 1000)
-		{
-			timerTimeCount = 0;
-			timerTime = 0;
-		}
-
-		getClock(tempSecs, tempMilli);
 
 		checktimers();
-
-		tempTime = CheckMilliTimer(tempSecs, tempMilli);
-		timerTime += tempTime;
-		timerTimeCount++;
-
-		if(autoTimeCount >= 1000)
-		{
-			autoTimeCount = 0;
-			autoTime = 0;
-		}
-		getClock(tempSecs, tempMilli);
-
 		checkauto();
-
-		tempTime = CheckMilliTimer(tempSecs, tempMilli);
-		autoTime += tempTime;
-		autoTimeCount++;
-
-		tempTime = CheckMilliTimer(loopSecs, loopMilli);
-		loopTime += tempTime;
 	}
 	
 	shutdownServer();
-
-	if (NewErrorsLogged())
-		lowlevelOutput(stderr, "New ERRORS have been logged. Please send the logs/error*.log and logs/critical*.log files to the dev team !\n");
-	if (NewWarningsLogged())
-		lowlevelOutput(stderr, "New WARNINGS have been logged. Probably scripting errors. See the logs/warnings*.log for details !\n");
 
 	if (error) {
 		lowlevelOutput(stderr, "ERROR: Server terminated by error!\n");

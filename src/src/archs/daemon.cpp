@@ -10,9 +10,11 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "archs/daemon.h"
+#include <iostream>
 
 void init_deamon()
 {
+	std::cout << "Going into deamon mode... bye..." << std::endl;
 	int i ;
 	pid_t pid ;
 

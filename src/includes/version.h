@@ -11,6 +11,9 @@
 #ifndef __VERSION_H__
 #define __VERSION_H__
 
+#include "common_libs"
+#include <iostream>
+
 /*!
 \brief List of version's developers
 
@@ -32,6 +35,8 @@ Don't change it unless you are sure that its packets structure is in synch with 
 */
 static const char *strSupportedClient = "4.0.3";
 
-extern std::string getOSVersionString();
+std::string getOSVersionString();
+
+void outputHypnosIntro(std::ostream &outs);
 
 #endif

@@ -77,3 +77,21 @@ std::string getOSVersionString()
 	return "Unknown";
 #endif
 }
+
+void outputHypnosIntro(std::ostream &outs)
+{
+	outs << "Hypnos UO Server Emulator " << strVersion << std::endl
+		"Programmed by: " << strDevelopers << std::endl
+		"Based on NoX-Wizard 20031228" << std::endl
+		"Website: http://hypnos.berlios.de/" << std::endl
+		<< std::endl
+		"Original copyright (C) 1997, 98 Marcus Rating (Cironian)" << std::endl
+		<< std::endl
+		"This program is free software; you can redistribute it and/or modify" << std::endl
+		"it under the terms of the GNU General Public License as published by" << std::endl
+		"the Free Software Foundation; either version 2 of the License, or" << std::endl
+		"(at your option) any later version." << std::endl
+		"See LICENSE file for more information" << std::endl
+		<< std::endl
+		"Running on " << getOSVersionString().c_str() << std::endl;
+}
