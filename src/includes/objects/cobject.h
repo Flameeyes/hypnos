@@ -73,10 +73,10 @@ public:
 	inline const Location getPosition() const
 	{ return position; }
 
-	void			setPosition(Location where);
+	void setPosition(Location where);
 
 	//! Set the position of the object
-	inline void		setPosition(uint32_t x, uint32_t y, int8_t z)
+	inline void setPosition(uint32_t x, uint32_t y, int8_t z)
 	{ setPosition( Location( x, y, z ) ); }
 
 	inline const Location getOldPosition() const

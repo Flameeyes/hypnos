@@ -44,7 +44,7 @@ public:
 			tVariantVector params;
 	};
 
-	cFunctionHandle *getFunction(std::string funcName);
+	pFunctionHandle getFunction(std::string funcName);
 	
 protected:
 	cScriptingEngine();

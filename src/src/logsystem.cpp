@@ -48,21 +48,19 @@ void WriteGMLog(pChar pc, char *msg, ...)
 */
 LogFile::LogFile(char *format, ...)
 {
-	char *tmp = NULL, *tmp2 = NULL;
+	char *tmp = NULL;
 	va_list vargs;
 
 	va_start(vargs, format);
-	vasprintf(&tmp2, format, vargs);
+	vasprintf(&tmp, format, vargs);
 	va_end(vargs);
 
 	// add path
-	asprintf(&tmp, "%s/%s", nSettings::Logging::getLogPath().c_str(), tmp2);
-
-	filename = std::string(tmp);
+	filename = nSettings::Logging::getLogPath() + "/" + tmp2;
+	free(tmp2);
 
 	file = fopen(tmp, "a");
 
-	free(tmp); free(tmp2);
 	if( file==NULL )
 	{
 		ErrOut("unable to open/create log file %s", tmp);

@@ -371,13 +371,16 @@ public:
 
 //@{
 /*!
-\name Container
+\name Containers
 */
 protected:
 	pObject cont;
 	pObject oldcont;
 
 public:
+	pItem getOutMostCont( uint16_t rec=50 );
+	pBody getPackOwner();
+	
 	inline const pObject getContainer() const
 	{ return cont; }
 
@@ -453,10 +456,12 @@ public:
 	void MoveTo(Location newloc);
 
 	inline const bool isInWorld() const
-	{ return cont; }
+	{ return !cont; }
 
 	inline void MoveTo(int32_t x, int32_t y, int8_t z)
 	{ MoveTo( Location(x, y, z) ); }
+	
+	virtual Location getWorldLocation() const;
 //@}
 
 //@{
@@ -635,9 +640,6 @@ public:
 
 	inline const TIMERVAL getDecayTime() const
 	{ return decaytime; }
-
-	pItem getOutMostCont( uint16_t rec=50 );
-	pBody getPackOwner();
 
 	uint32_t distFrom( pChar pc );
 	uint32_t distFrom( pItem pi );

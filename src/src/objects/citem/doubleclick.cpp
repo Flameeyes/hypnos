@@ -82,14 +82,15 @@ void cItem::singleClick(pClient client )
 
 	pChar pj;
 
-	if (amxevents[EVENT_IONCLICK]!=NULL)
-	{
-		g_bByPass = false;
-		amxevents[EVENT_IONCLICK]->Call(getSerial(), client->currChar()->getSerial() );
-		if ( g_bByPass==true )
+	if ( events[evtItmOnClick] ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = client->currChar()->getSerial();
+		events[evtItmOnClick]->setParams(params);
+		events[evtItmOnClick]->execute();
+		if ( events[evtItmOnClick]->bypassed() )
 			return;
 	}
-
+	
 	getName( itemname );
 
 	if ( type == ITYPE_SPELLBOOK )
@@ -226,13 +227,15 @@ void cItem::doubleClick(pClient client)
 	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
-	if (amxevents[EVENT_IONDBLCLICK]!=NULL) {
-		g_bByPass = false;
-		amxevents[EVENT_IONDBLCLICK]->Call( getSerial(), pc->getSerial() );
-		if (g_bByPass==true)
+	if ( events[evtItmOnDoubleClick] ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = pc->getSerial();
+		events[evtItmOnDoubleClick]->setParams(params);
+		events[evtItmOnDoubleClick]->execute();
+		if ( events[evtItmOnDoubleClick]->bypassed() )
 			return;
 	}
-
+	
 	if (!checkItemUsability(pc, ITEM_USE_DBLCLICK))
 		return;
 
@@ -350,7 +353,7 @@ void cItem::doubleClick(pClient client)
 	{
 		if (trigtype == 0)
 		{
-			if ( TIMEOUT( disabled ) ) // changed by Magius(CHE) §
+			if ( TIMEOUT( disabled ) ) // changed by Magius(CHE) 
 			{
 				triggerItem(client, TRIGTYPE_DBLCLICK); // if players uses trigger
 				return;
@@ -1351,17 +1354,18 @@ bool cItem::checkItemUsability(pChar pc, int type)
 		}
 	}
 
-	if (pc->getClient() != NULL)
-	{
-
-		if (amxevents[EVENT_IONCHECKCANUSE]==NULL) return true;
-		return (0!=amxevents[EVENT_IONCHECKCANUSE]->Call(getSerial(), pc->getSerial(), g_nType));
-		/*
-		AmxEvent* event = pi->getAmxEvent( EVENT_IONCHECKCANUSE );
-		if ( !event ) return true;
-		return ( 0 != event->Call(pi->getSerial(), s, g_nType ) );
-		*/
+	if ( ! pc->getClient() )
+		return true;
+		
+	if ( events[evtItmOnCheckCanUse] ) {
+		tVariantVector params = tVariantVector(3);
+		params[0] = getSerial(); params[1] = pc->getSerial();
+		params[2] = g_nType;
+		events[evtItmOnCheckCanUse]->setParams(params);
+		tVariant ret = events[evtItmOnCheckCanUse]->execute();
+		return ret.toBoolean();
 	}
+	
 	return true;
 }
 
@@ -1373,16 +1377,18 @@ bool cItem::checkItemUsability(pChar pc, int type)
 */
 bool cItem::ToolWearOut(pClient client)
 {
-	if (client == NULL) return false;
-	pChar pc = client->currChar();
-	VALIDATEPCR(pc, false);
-	if( chance(5) ) { // has item been destroyed ??
-		hp--;
-		if ( hp <= 0 ) {
-			pc->sysmsg("Your %s has been destroyed", getCurrentName().c_str());
-			Delete();
-			return true;
-		}
-	}
-	return false;
+	pChar pc;
+	if ( ! client || ! (pc = client->currChar()) )
+		return false;
+	
+	if( ! chance(5) ) // has item been destroyed ??
+		return false;
+		
+	hp--;
+	if ( hp )
+		return false
+		
+	pc->sysmsg("Your %s has been destroyed", getCurrentName().c_str());
+	Delete();
+	return true;
 }

@@ -34,13 +34,18 @@ public:
 
 	virtual void setContainer(pObject obj);
 	
+	//! Gets the layer where the item \b is equipped
 	inline const Layer getLayer() const
 	{ return layer; }
+	
+	//! Gets the layer where the item \b can be equipped
+	inline const Layer getPossibleLayer() const
+	{ return findLayerFromID(getId()); }
 	
 	void doubleClicked(pClient client);
 
 protected:
-	Layer layer;
+	Layer layer;	//!< Layer where the item \b is equipped
 	static Layer findLayerFromID(uint16_t id);
 };
 

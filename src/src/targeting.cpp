@@ -138,13 +138,10 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pc->sysmsg(("You lost some fame and karma!");
 		pc->setCrimGrey(ServerScp::g_nChopWillCriminal);//Blue and not attacker and not guild
 
-		char *temp;
-		
 		//create the Head
 		pItem pi = item::CreateFromScript( "$item_hardcoded" );
 		if ( ! pi ) return;
-		asprintf(&temp,"the head of %s",pi3->getSecondaryNameC());
-		pi->setCurrentName( temp );
+		pi->setCurrentName( "the head of " + pi3->getSecondaryName() );
 		pi->setId( 0x1DA0 );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
@@ -155,13 +152,11 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pi->setSameOwnerAs(pi3);
 		pi->setDecay();
 		pi->Refresh();
-		free(temp);
 
 		//create the Heart
 		pi=item::CreateFromScript( "$item_a_heart" );
 		if ( ! pi ) return;
-		asprintf(&temp,"the heart of %s",pi3->getSecondaryNameC());
-		pi->setCurrentName( temp );
+		pi->setCurrentName( "the heart of " + pi3->getSecondaryName() );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
@@ -170,85 +165,69 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
-		free(temp);
 
 		//create the Body
 		pi = item::CreateFromScript( "$item_hardcoded" );
-		asprintf(&temp,"the body of %s",pi3->getSecondaryNameC());
 		if ( ! pi ) return;
+		pi->setCurrentName( "the body of " + pi3->getSecondaryName() );
 		pi->setId( 0x1DAD );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
-		pi->layer=0x01;
 		pi->att=5;
 		pi->setSameOwnerAs(pi3);  // see above
-		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
-		free(temp);
 
 		//create the Left Arm
 		pi = item::CreateFromScript( "$item_hardcoded" );
 		if ( ! pi ) return;
-		asprintf(&temp,"the left arm of %s",pi3->getSecondaryNameC());
+		pi->setCurrentName( "the left arm of " + pi3->getSecondaryName() );
 		pi->setId( 0x1DA1 );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
-		pi->layer=0x01;
 		pi->att=5;
 		pi->setSameOwnerAs(pi3);  // see above
-		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
-		free(temp);
 
 		//create the Right Arm
 		pi = item::CreateFromScript( "$item_hardcoded" );
 		if ( ! pi ) return;
-		asprintf(&temp,"the right arm of %s",pi3->getSecondaryNameC());
+		pi->setCurrentName( "the right arm of " + pi3->getSecondaryName() );
 		pi->setId( 0x1DA2 );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
-		pi->layer=0x01;
 		pi->att=5;
 		pi->setSameOwnerAs(pi3);  // see above
-		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
-		free(temp);
 
 		//create the Left Leg
 		pi = item::CreateFromScript( "$item_hardcoded" );
 		if ( ! pi ) return;
-		asprintf(&temp,"the left leg of %s",pi3->getSecondaryNameC());
+		pi->setCurrentName( "the left leg of " + pi3->getSecondaryName() );
 		pi->setId( 0x1DAE );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
-		pi->layer=0x01;
 		pi->att=5;
 		pi->setSameOwnerAs(pi3);  // see above
-		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
-		free(temp);
 
 		//create the Rigth Leg
 		pi = item::CreateFromScript( "$item_hardcoded" );
 		if ( ! pi ) return;
-		asprintf(&temp,"the right leg of %s",pi3->getSecondaryNameC());
+		pi->setCurrentName( "the right leg of " + pi3->getSecondaryName() );
 		pi->setId( 0x1DA4 );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
-		pi->layer=0x01;
 		pi->att=5;
 		pi->setSameOwnerAs(pi3);  // see above
-		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
-		free(temp)
 
 		//human: always delete corpse!
-		deletecorpse=true;
+		deletecorpse = true;
 	} else {
 		cScpIterator* iter = NULL;
 		char script1[1024];

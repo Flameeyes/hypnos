@@ -148,6 +148,14 @@ public:
 	inline const bool isOnline() const
 	{ return client; }
 
+	/*!
+	\brief Gets the location of a serial instance in the world
+	\author Flameeyes
+	\note This function is a wrapper to cBody::getLocation()
+	*/
+	Location getWorldLocation() const
+	{ return getBody()->getPosition(); }
+
 //@{
 /*!
 \name Character's Flag
@@ -501,7 +509,7 @@ public:
 \name Stats regen rate info
 */
 private:
-	regen_st 	regens[ALL_STATS]; //!< stats regen info
+	regen_st regens[ALL_STATS]; //!< stats regen info
 public:
 	void setRegenRate( StatType stat, uint32_t rate, VarType type );
 	uint32_t getRegenRate( StatType stat, VarType type );
@@ -564,227 +572,227 @@ public:
 #endif
 	/********************************/
 
-		pItem			nameKey;	//!< for renaming keys
-		pItem			nameRune;	//!< Used for naming runes
-		pItem			nameDeed;
+	pItem			nameKey;	//!< for renaming keys
+	pItem			nameRune;	//!< Used for naming runes
+	pItem			nameDeed;
 
-		pChar			target;		//!< Current combat target
-		pChar			attacker;	//!< Character who attacked this character
-		pChar			followtarget;	//!< NPC Follow Target
-		pChar			swingtarget;	//!< Target they are going to hit after they swing
+	pChar			target;		//!< Current combat target
+	pChar			attacker;	//!< Character who attacked this character
+	pChar			followtarget;	//!< NPC Follow Target
+	pChar			swingtarget;	//!< Target they are going to hit after they swing
 
-		pAccount		account;
+	pAccount		account;
 
-	public:
-		std::wstring profile; //!< player profile
+public:
+	std::wstring profile; //!< player profile
 
-	protected:
-		std::wstring* speechCurrent;
-	public:
-		//! Return current speech
-		inline const std::wstring* getSpeechCurrent() const
-		{ return speechCurrent; }
+protected:
+	std::wstring* speechCurrent;
+public:
+	//! Return current speech
+	inline const std::wstring* getSpeechCurrent() const
+	{ return speechCurrent; }
 
-		//! Set current speech
-		inline void setSpeechCurrent( std::wstring* speech )
-		{ speechCurrent=speech; }
+	//! Set current speech
+	inline void setSpeechCurrent( std::wstring* speech )
+	{ speechCurrent=speech; }
 
-		//! Reset current speech
-		inline void resetSpeechCurrent()
-		{ setSpeechCurrent(NULL); }
+	//! Reset current speech
+	inline void resetSpeechCurrent()
+	{ setSpeechCurrent(NULL); }
 
-		void deleteSpeechCurrent();
+	void deleteSpeechCurrent();
 
-	public:
-		uint32_t oldmenu; //!< old menu serial
+public:
+	uint32_t oldmenu; //!< old menu serial
 
-		int32_t			stat3crc; // xan : future use to keep safe stats
-		
-		int32_t			hp;  // Hitpoint32_ts
-		int32_t			stm; // Stamina
-		int32_t			mn;  // Mana
-		int32_t			mn2; // Reserved for calculation
-		uint16_t		baseskill[ALLSKILLS+1]; // Base skills without stat modifiers
-		uint16_t		skill[ALLSKILLS+1]; // List of skills (with stat modifiers)
+	int32_t			stat3crc; // xan : future use to keep safe stats
+	
+	int32_t			hp;  // Hitpoint32_ts
+	int32_t			stm; // Stamina
+	int32_t			mn;  // Mana
+	int32_t			mn2; // Reserved for calculation
+	uint16_t		baseskill[ALLSKILLS+1]; // Base skills without stat modifiers
+	uint16_t		skill[ALLSKILLS+1]; // List of skills (with stat modifiers)
 
-		uint32_t			robe; // Serial number of generated death robe (If char is a ghost)
-		uint8_t			fixedlight; // Fixed lighting level (For chars in dungeons, where they dont see the night)
-		char			speech; // For NPCs: Number of the assigned speech block
-		uint32_t			att; // Intrinsic attack (For monsters that cant carry weapons)
-		uint32_t			def; // Intrinsic defense
-		char			wresmove; // Luxor: for Wrestling's special moves
+	uint32_t			robe; // Serial number of generated death robe (If char is a ghost)
+	uint8_t			fixedlight; // Fixed lighting level (For chars in dungeons, where they dont see the night)
+	char			speech; // For NPCs: Number of the assigned speech block
+	uint32_t			att; // Intrinsic attack (For monsters that cant carry weapons)
+	uint32_t			def; // Intrinsic defense
+	char			wresmove; // Luxor: for Wrestling's special moves
 
-		TIMERVAL		timeout; // Combat timeout (For hitting)
-		TIMERVAL		timeout2; // memory of last shot timeout
+	TIMERVAL		timeout; // Combat timeout (For hitting)
+	TIMERVAL		timeout2; // memory of last shot timeout
 
-		TIMERVAL		invistimeout;
-		int32_t			hunger;  // Level of hungerness, 6 = full, 0 = "empty"
-		TIMERVAL		hungertime; // Timer used for hunger, one point is dropped every 20 min
-		int32_t			callnum; //GM Paging
-		int32_t			playercallnum; //GM Paging
-		int32_t			pagegm; //GM Paging
-		//char region;
-		uint8_t			region;
+	TIMERVAL		invistimeout;
+	int32_t			hunger;  // Level of hungerness, 6 = full, 0 = "empty"
+	TIMERVAL		hungertime; // Timer used for hunger, one point is dropped every 20 min
+	int32_t			callnum; //GM Paging
+	int32_t			playercallnum; //GM Paging
+	int32_t			pagegm; //GM Paging
+	//char region;
+	uint8_t			region;
 
-		int32_t			combathitmessage;
-		int32_t			making; // skill number of skill using to make item, 0 if not making anything.
-		char			blocked;
-		char			dir2;
-		TIMERVAL		spiritspeaktimer; // Timer used for duration of spirit speak
-		int32_t			spattack;
-		TIMERVAL		spadelay;
-		TIMERVAL		spatimer;
-		int32_t			taming; //Skill level required for taming
-		TIMERVAL		summontimer; //Timer for summoned creatures.
-		TIMERVAL		fishingtimer; // Timer used to delay the catching of fish
+	int32_t			combathitmessage;
+	int32_t			making; // skill number of skill using to make item, 0 if not making anything.
+	char			blocked;
+	char			dir2;
+	TIMERVAL		spiritspeaktimer; // Timer used for duration of spirit speak
+	int32_t			spattack;
+	TIMERVAL		spadelay;
+	TIMERVAL		spatimer;
+	int32_t			taming; //Skill level required for taming
+	TIMERVAL		summontimer; //Timer for summoned creatures.
+	TIMERVAL		fishingtimer; // Timer used to delay the catching of fish
 
-		//<Luxor>
-		int32_t			resists[MAX_RESISTANCE_INDEX];
-		DamageType		damagetype;
-		//</Luxor>
-		int32_t			advobj;		//!< Has used advance gate?
+	//<Luxor>
+	int32_t			resists[MAX_RESISTANCE_INDEX];
+	DamageType		damagetype;
+	//</Luxor>
+	int32_t			advobj;		//!< Has used advance gate?
 
-		int32_t			poison;		//!< used for poison skill
-		PoisonType		poisoned;	//!< type of poison
-		TIMERVAL		poisontime;	//!< poison damage timer
-		TIMERVAL		poisontxt;	//!< poision text timer
-		TIMERVAL		poisonwearofftime; //!< LB, makes poision wear off ...
+	int32_t			poison;		//!< used for poison skill
+	PoisonType		poisoned;	//!< type of poison
+	TIMERVAL		poisontime;	//!< poison damage timer
+	TIMERVAL		poisontxt;	//!< poision text timer
+	TIMERVAL		poisonwearofftime; //!< LB, makes poision wear off ...
 
-		int32_t			fleeat;
-		int32_t			reattackat;
-		int32_t			trigger;	//!< Trigger number that character activates
-		std::string		trigword;	//!< Word that character triggers on.
-		uint16_t			envokeid;
-		int32_t			envokeitem;
-		int32_t			split;
-		int32_t			splitchnc;
-		int32_t			targtrig;	//!< Stores the number of the trigger the character for targeting
-		char			ra;		//!< Reactive Armor spell
+	int32_t			fleeat;
+	int32_t			reattackat;
+	int32_t			trigger;	//!< Trigger number that character activates
+	std::string		trigword;	//!< Word that character triggers on.
+	uint16_t			envokeid;
+	int32_t			envokeitem;
+	int32_t			split;
+	int32_t			splitchnc;
+	int32_t			targtrig;	//!< Stores the number of the trigger the character for targeting
+	char			ra;		//!< Reactive Armor spell
 
-		TIMERVAL		tempflagtime;
+	TIMERVAL		tempflagtime;
 
-		std::wstring* staticProfile;			//!< player static profile
-
-
-		TIMERVAL		murderrate; //!< # of ticks until one murder decays //REPSYS
-		TIMERVAL		murdersave; //!< # of second for murder decay
-
-		TIMERVAL		crimflag; //!< Time when No longer criminal -1=Not Criminal
-		TIMERVAL		spelltime; //Time when they are done casting....
-		magic::SpellId		spell; //current spell they are casting....
-		int32_t			spellaction; //Action of the current spell....
-		magic::CastingType	spelltype;
-		TIMERVAL		nextact; //time to next spell action....
-		TargetLocation*		spellTL; //Luxor: npc spell targetlocation
-
-		int32_t			squelched; // zippy  - squelching
-		TIMERVAL		mutetime; //Time till they are UN-Squelched.
-		//int32_t statuse[3]; //Morrolan - stat/skill cap STR/INT/DEX in that order
-		//int32_t skilluse[skTrueSkills][1]; //Morrolan - stat/skill cap
-		uint8_t			lockSkill[ALLSKILLS+1]; // LB, client 1.26.2b skill managment
-		int32_t			stealth; //AntiChrist - stealth ( steps already done, -1=not using )
-		uint32_t		running; //AntiChrist - Stamina Loose while running
-		uint32_t		lastRunning; //Luxor
-		int32_t			logout; //Time till logout for this char -1 means in the world or already logged out //Instalog
-		//uint32_t swing;
-
-		uint32_t		holdg; // Gold a player vendor is holding for Owner
-		char			fly_steps; // number of step the creatures flies if it can fly
-		TIMERVAL		smoketimer; // LB
-		TIMERVAL		smokedisplaytimer;
-
-		TIMERVAL		antispamtimer;//LB - anti spam
-
-		TIMERVAL		antiguardstimer;//AntiChrist - anti "GUARDS" spawn
-
-		int32_t			carve; //AntiChrist - for new carve system
-
-		TIMERVAL		begging_timer;
-		PostType		postType;
-		QuestType		questType;
-		int32_t			questDestRegion;
-		int32_t			questOrigRegion;
-		int32_t			questBountyReward;		// The current reward amount for the return of this chars head
-		uint32_t		questBountyPostSerial;	// The global posting serial number of the bounty message
-                uint32_t		questEscortPostSerial;	// The global posting serial number of the escort message
-		uint32_t		murdererSer;			// Serial number of last person that murdered this char
-
-		// COORDINATE	previousLocation;
-
-		TIMERVAL 		time_unused;
-		TIMERVAL 		timeused_last;
+	std::wstring* staticProfile;			//!< player static profile
 
 
+	TIMERVAL		murderrate; //!< # of ticks until one murder decays //REPSYS
+	TIMERVAL		murdersave; //!< # of second for murder decay
 
-	private:
-		inline void resetBaseSkill()
-		{ memset(baseskill, 0, sizeof(baseskill)); }
+	TIMERVAL		crimflag; //!< Time when No longer criminal -1=Not Criminal
+	TIMERVAL		spelltime; //Time when they are done casting....
+	magic::SpellId		spell; //current spell they are casting....
+	int32_t			spellaction; //Action of the current spell....
+	magic::CastingType	spelltype;
+	TIMERVAL		nextact; //time to next spell action....
+	TargetLocation*		spellTL; //Luxor: npc spell targetlocation
 
-		inline void resetSkill()
-		{ memset(skill, 0, sizeof(skill)); }
+	int32_t			squelched; // zippy  - squelching
+	TIMERVAL		mutetime; //Time till they are UN-Squelched.
+	//int32_t statuse[3]; //Morrolan - stat/skill cap STR/INT/DEX in that order
+	//int32_t skilluse[skTrueSkills][1]; //Morrolan - stat/skill cap
+	uint8_t			lockSkill[ALLSKILLS+1]; // LB, client 1.26.2b skill managment
+	int32_t			stealth; //AntiChrist - stealth ( steps already done, -1=not using )
+	uint32_t		running; //AntiChrist - Stamina Loose while running
+	uint32_t		lastRunning; //Luxor
+	int32_t			logout; //Time till logout for this char -1 means in the world or already logged out //Instalog
+	//uint32_t swing;
 
-		inline void resetFlags()
-		{ flags = 0; }
+	uint32_t		holdg; // Gold a player vendor is holding for Owner
+	char			fly_steps; // number of step the creatures flies if it can fly
+	TIMERVAL		smoketimer; // LB
+	TIMERVAL		smokedisplaytimer;
 
-		inline void resetResists()
-		{ memset(resists, 0, sizeof(resists)); }
+	TIMERVAL		antispamtimer;//LB - anti spam
 
-		inline void resetLockSkills()
-		{ memset(lockSkill, 0, sizeof(lockSkill)); }
+	TIMERVAL		antiguardstimer;//AntiChrist - anti "GUARDS" spawn
 
-	public:
-		//! tells if a character is running
-		inline const bool isRunning() const
-		{ return ( (getClock() - lastRunning) <= 100 ); }
+	int32_t			carve; //AntiChrist - for new carve system
 
-		inline void setRunning()
-		{ lastRunning = getClock(); }
+	TIMERVAL		begging_timer;
+	PostType		postType;
+	QuestType		questType;
+	int32_t			questDestRegion;
+	int32_t			questOrigRegion;
+	int32_t			questBountyReward;		// The current reward amount for the return of this chars head
+	uint32_t		questBountyPostSerial;	// The global posting serial number of the bounty message
+	uint32_t		questEscortPostSerial;	// The global posting serial number of the escort message
+	uint32_t		murdererSer;			// Serial number of last person that murdered this char
 
-		void 			updateStats(int32_t stat);
+	// COORDINATE	previousLocation;
 
-		void 			setNextMoveTime(short tamediv=1);
-		void 			disturbMed();
+	TIMERVAL 		time_unused;
+	TIMERVAL 		timeused_last;
 
-		void                    drink(pItem pi);       //Luxor: delayed drinking
-		void 			hideBySkill();
-		void 			hideBySpell(int32_t timer = INVALID);
-		uint32_t  		countItems(uint16_t ID, uint16_t col= 0xFFFF);
 
-		inline const uint32_t CountGold()
-		{ return countItems(ITEMID_GOLD); }
 
-		bool			isInBackpack( pItem pi );
-		void			addGold(uint16_t totgold);
+private:
+	inline void resetBaseSkill()
+	{ memset(baseskill, 0, sizeof(baseskill)); }
 
-		// The bit for setting what effect gm movement
-		// commands shows
-		// 0 = off
-		// 1 = FlameStrike
-		// 2-6 = Sparkles
-		int32_t			gmMoveEff;
+	inline void resetSkill()
+	{ memset(skill, 0, sizeof(skill)); }
 
-		uint32_t		getSkillSum();
-		int32_t			getTeachingDelta(pChar pPlayer, int32_t skill, int32_t sum);
-		void			removeItemBonus(cItem* pi);
-		inline const bool	isSameAs(pChar pc) const
-		{ return this == pc; }
+	inline void resetFlags()
+	{ flags = 0; }
 
-		//! Return the resistance for a defined type
-		inline const bool resist(uint32_t n) const
-		{ return flags & n; }
+	inline void resetResists()
+	{ memset(resists, 0, sizeof(resists)); }
 
-		void			sysmsg(const char *txt, ...);
+	inline void resetLockSkills()
+	{ memset(lockSkill, 0, sizeof(lockSkill)); }
 
-                void                    attackStuff (pChar victim);
-		void			helpStuff(pChar pc_i);
-		void			applyPoison(PoisonType poisontype, int32_t secs = INVALID);
-		void			setOwner(pChar owner);
-		void			curePoison();
-		void			resurrect(pClient healer = NULL);
-		void			unfreeze( bool calledByTempfx = false );
-		void			damage(int32_t amount, DamageType typeofdamage = damPure, StatType stattobedamaged = STAT_HP);
-		void			playAction(uint16_t action);
-		void			impAction(uint16_t action);
+public:
+	//! tells if a character is running
+	inline const bool isRunning() const
+	{ return ( (getClock() - lastRunning) <= 100 ); }
+
+	inline void setRunning()
+	{ lastRunning = getClock(); }
+
+	void 			updateStats(int32_t stat);
+
+	void 			setNextMoveTime(short tamediv=1);
+	void 			disturbMed();
+
+	void                    drink(pItem pi);       //Luxor: delayed drinking
+	void 			hideBySkill();
+	void 			hideBySpell(int32_t timer = INVALID);
+	uint32_t  		countItems(uint16_t ID, uint16_t col= 0xFFFF);
+
+	inline const uint32_t CountGold()
+	{ return countItems(ITEMID_GOLD); }
+
+	bool			isInBackpack( pItem pi );
+	void			addGold(uint16_t totgold);
+
+	// The bit for setting what effect gm movement
+	// commands shows
+	// 0 = off
+	// 1 = FlameStrike
+	// 2-6 = Sparkles
+	int32_t			gmMoveEff;
+
+	uint32_t		getSkillSum();
+	int32_t			getTeachingDelta(pChar pPlayer, int32_t skill, int32_t sum);
+	void			removeItemBonus(cItem* pi);
+	inline const bool	isSameAs(pChar pc) const
+	{ return this == pc; }
+
+	//! Return the resistance for a defined type
+	inline const bool resist(uint32_t n) const
+	{ return flags & n; }
+
+	void			sysmsg(const char *txt, ...);
+
+	void                    attackStuff (pChar victim);
+	void			helpStuff(pChar pc_i);
+	void			applyPoison(PoisonType poisontype, int32_t secs = INVALID);
+	void			setOwner(pChar owner);
+	void			curePoison();
+	void			resurrect(pClient healer = NULL);
+	void			unfreeze( bool calledByTempfx = false );
+	void			damage(int32_t amount, DamageType typeofdamage = damPure, StatType stattobedamaged = STAT_HP);
+	void			playAction(uint16_t action);
+	void			impAction(uint16_t action);
 
 //@{
 /*!

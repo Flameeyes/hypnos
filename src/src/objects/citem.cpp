@@ -562,7 +562,24 @@ void cItem::MoveTo(Location newloc)
 #endif
 }
 
-/*
+/*!
+\brief Gets the location of a serial instance in the world
+\author Flameeyes
+\note This function returns the location of the player with the object or with
+the outmost container for it.
+*/
+Location cItem::getWorldLocation() const
+{
+	pObject inworld = NULL;
+	pItem outmost = getOutMostCont();
+	if ( ! outmost )
+		return Location(0,0,0);
+	
+	inworld = outmost->isInWorld() ? outmost : outmost->getContainer();
+	return inworld->getPosition();
+}
+
+/*!
 \brief Check if two item are similar so pileable
 \author Endymion
 \note if same item is compared, false is returned

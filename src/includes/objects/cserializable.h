@@ -64,7 +64,11 @@ protected:
 	but doesn't derive directly by the serialization
 */
 public:
+	//! Gets the popup help for the instance
 	virtual const std::string getPopupHelp() const = 0;
+	
+	//! Gets the location of the instance
+	virtual Location getWorldLocation() const = 0;
 //@}
 
 //@{
