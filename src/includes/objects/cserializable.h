@@ -125,6 +125,8 @@ public:
 protected:
 	//! Gets the new serial for the object
 	virtual uint32_t getNewSerial() = 0;
+	
+	void resetData();
 
 //@{
 /*!

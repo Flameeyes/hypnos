@@ -14,6 +14,7 @@
 #define __SETTINGS_H__
 
 #include "common_libs.h"
+#include "enums.h"
 
 /*!
 \author Flameeyes

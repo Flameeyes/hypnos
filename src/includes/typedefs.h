@@ -45,7 +45,7 @@ typedef std::map< std::string, pCommand > CommandMap;
 typedef class cCreatureInfo* pCreatureInfo;
 
 typedef class cGMPage *pGMPage;			//!< Pointer to a GM Page
-typedef std::slist<pGMPage> GMPageSList;	//!< Singly-linked list of GM Pages
+typedef std::list<pGMPage> GMPageList;		//!< List of GM Pages
 
 typedef class cClient *pClient;			//!< Pointer to a cClient
 typedef std::slist<pClient> ClientSList;	//!< Singly-linked list of connected clients

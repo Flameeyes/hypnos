@@ -917,7 +917,7 @@ namespace nPackets {
 		class Action : public cPacketSend
 		{
 		protected:
-			const uint32_t chr;	//!< char who performs the action
+			const pChar pc;	//!< char who performs the action
 			const uint16_t action;	//!< id of the action to execute
 
 		public:
@@ -926,7 +926,7 @@ namespace nPackets {
 			\param a id of the action to execute
 			*/
 			inline Action(pChar aChr, uint16_t a) :
-				cPacketSend(NULL, 0), chr(aChr), action(a)
+				cPacketSend(NULL, 0), pc(aChr), action(a)
 			{ }
 			void prepare();
 		};

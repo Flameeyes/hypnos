@@ -26,6 +26,14 @@ struct sPoint {
 };
 
 /*!
+\brief Coordinates of (INVALID, INVALID)
+
+This constant is here because we are having a circular dependency of structs.h
+and constants.h.
+*/
+static const sPoint InvalidCoord(0xFFFF, 0xFFFF);
+
+/*!
 \brief Rectangle definition
 
 This struct is used to define a rectangle and test if a point is inside it.

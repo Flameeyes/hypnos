@@ -14,7 +14,6 @@
 #define __CONSTANTS_H__
 
 #include "common_libs.h"
-#include "structs.h"
 
 static const uint32_t DAYSECONDS = 86400;	//!< Number of seconds in a day. To don't repeat it
 static const uint32_t DAYMSECONDS = 86400000;	//!< Number of milliseconds in a day. To don't repeat it
@@ -113,8 +112,6 @@ enum
 #define UINVALID08 0xFF
 #define UINVALID16 0xFFFF
 #define UINVALID32 0xFFFFFFFF
-
-static const sPoint InvalidCoord(0xFFFF, 0xFFFF);
 
 //@{
 /*!
