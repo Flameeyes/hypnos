@@ -977,10 +977,9 @@ void cNetwork::enterchar(int s)
 		pc->setHidden(htUnhidden);
 
 	pc->wresmove=0;	//Luxor
-	pc->teleport();
 
 	Calendar::commitSeason(pc);
-
+	pc->teleport();
 }
 
 
