@@ -101,7 +101,7 @@ void cChar::doubleClick(pClient client)
 						clicker->sysmsg( TRANSLATE("You failed to snoop the pack animal.") );
 						clicker->IncreaseKarma( - nSettings::Skills::getSnoopKarmaLoss() );
 						clicker->modifyFame( - nSettings::Skills::getSnoopFameLoss() );
-						//!\TODO should investigate
+						//!\todo should investigate
 						clicker->setCrimGrey(ServerScp::g_nSnoopWillCriminal);
 						SetTimerSec( &(clicker->objectdelay), SrvParms->objectdelay+SrvParms->snoopdelay );
 					}

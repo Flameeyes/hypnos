@@ -458,11 +458,11 @@ void cItem::doubleClicked(pClient client)
 			}
 		}
 		if( itmowner )
-			snooping(pc, pi );  //!\TODO: revise when snooping redone or updated
+			snooping(pc, pi );  //!\todo: revise when snooping redone or updated
 		return;
 	case ITYPE_TELEPORTRUNE:
 
-        //!\TODO: REVISE WHEN TARGETS REDONE!!
+        //!\todo: REVISE WHEN TARGETS REDONE!!
 
 		targ = clientInfo[s]->newTarget( new cLocationTarget() );
 		targ->code_callback = target_tele;
@@ -471,7 +471,7 @@ void cItem::doubleClicked(pClient client)
 		return;
 	case ITYPE_KEY:
 
-        //!\TODO: REVISE WHEN TARGETS REDONE!!
+        //!\todo: REVISE WHEN TARGETS REDONE!!
 
 		targ = clientInfo[s]->newTarget( new cItemTarget() );
 		targ->code_callback = target_key;
@@ -712,12 +712,12 @@ void cItem::doubleClicked(pClient client)
 			return;
 	case ITYPE_GUILDSTONE:
 
-                //!\TODO: redo when guilds fixed
+                //!\todo: redo when guilds fixed
 
 			if ( getId() == 0x14F0  ||  getId() == 0x1869 )	// Check for Deed/Teleporter + Guild Type
 			{
-				pc->fx1 = DEREF_pItem(pi);   //!\TODO: <- check this
-				Guilds->StonePlacement(s);    //!\TODO: <- and this
+				pc->fx1 = DEREF_pItem(pi);   //!\todo: <- check this
+				Guilds->StonePlacement(s);    //!\todo: <- and this
 				return;
 			}
 			else if (getId() == 0x0ED5)	// Check for Guildstone + Guild Type

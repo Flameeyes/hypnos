@@ -81,7 +81,7 @@ void snooping( pPC snooper, pItem cont )
 					}
 					snooper->IncreaseKarma( - nSettings::Skills::getSnoopKarmaLoss() );
 					snooper->modifyFame( - nSettings::Skills::getSnoopFameLoss() );
-					//!\TODO This should be investigated
+					//!\todo This should be investigated
 					snooper->setCrimGrey(ServerScp::g_nSnoopWillCriminal);
 				}
 			}
@@ -215,7 +215,7 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 			thief->modifyFame( - nSettings::Skills::getStealFameLoss() );
 
 			if ( victim->IsInnocent() && thief->attackerserial != victim->getSerial() && Guilds->Compare(thief,victim)==0)
-				//!\TODO should be investigated
+				//!\todo should be investigated
 				thief->setCrimGrey(ServerScp::g_nStealWillCriminal); //Blue and not attacker and not same guild
 
 

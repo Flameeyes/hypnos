@@ -1131,7 +1131,7 @@ void cChar::attackStuff(pChar victim)
 		return;
 	}
 
-        //!\TODO: modify this to send a packet
+        //!\todo: modify this to send a packet
 	SndAttackOK(s, victim->getSerial());	//keep the target highlighted
 
 
@@ -1144,7 +1144,7 @@ void cChar::attackStuff(pChar victim)
 	attackerserial=victim->getSerial();
 
 
-        //!\TODO once set are done revise this
+        //!\todo once set are done revise this
 	if( victim->guarded )
 	{
 		NxwCharWrapper sc;

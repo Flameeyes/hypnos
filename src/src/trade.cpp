@@ -76,7 +76,7 @@ pItem tradestart(pChar pc1, pChar pc2)
 	cont1->setDyeable(false);
 	cont2->setDyeable(false);
         
-	//!\TODO find client1 & client2
+	//!\todo find client1 & client2
         client1->addItemToContainer(cont1);
         client2->addItemToContainer(cont1);
         client1->addItemToContainer(cont2);
