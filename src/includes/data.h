@@ -24,40 +24,14 @@ extern bool map_cache;
 */
 enum {
 	MAP_HEADER_SIZE = 4, MAP_BLOCK_SIZE = 196,
-	TILE_HEADER_SIZE = 4, TILEDATA_LAND_SIZE = 0x68800,
-	VERDATA_HEADER_SIZE = 4
-};
-
-/*!
-\author Luxor
-*/
-enum VerFile {
-	VerMap = 0x00,
-	VerStaIdx,
-	VerStatics,
-	VerArtIdx,
-	VerArt,
-	VerAnimIdx,
-	VerAnim,
-	VerSoundIdx,
-	VerSound,
-	VerTexIdx,
-	VerTexMaps,
-	VerGumpIdx,
-	VerGumpArt,
-	VerMultiIdx,
-	VerMulti,
-	VerSkillsIdx,
-	VerSkills,
-	VerTileData = 0x1E,
-	VerAnimData
+	TILE_HEADER_SIZE = 4, TILEDATA_LAND_SIZE = 0x68800
 };
 
 /*!
 \author Luxor
 */
 enum MulFileId {
-	Map_File = 0, StaIdx_File, Statics_File, Multi_File, MultiIdx_File, TileData_File, VerData_File
+	Map_File = 0, StaIdx_File, Statics_File, Multi_File, MultiIdx_File, TileData_File
 };
 
 
@@ -98,19 +72,6 @@ struct multi_st {
 
 typedef std::vector< multi_st > multiVector;
 
-/*!
-\author Luxor
-*/
-struct verdata_st
-{
-	int32_t fileid;
-	int32_t block;
-	int32_t pos;
-	int32_t size;
-	int32_t various;
-} PACK_NEEDED;
-
-const uint8_t verdata_st_size = sizeof( verdata_st );
 const uint8_t multi_st_size = sizeof( multi_st );
 const uint8_t multiIdx_st_size = sizeof( multiIdx_st );
 const uint8_t static_st_size = sizeof( static_st );
@@ -130,8 +91,6 @@ std::string getPath( MulFileId id );
 bool seekMap( uint32_t x, uint32_t y, map_st& m, uint8_t nMap = 0 ); //<! Luxor: nMap will be used for future multiple maps support.
 bool collectStatics( uint32_t x, uint32_t y, staticVector& s_vec );
 bool seekMulti( uint16_t id, multiVector& m_vec );
-bool seekVerTile( uint16_t id, tile_st& tile );
-bool seekVerLand( uint16_t id, land_st& land );
 
 /*!
 \author Luxor

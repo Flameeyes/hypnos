@@ -30,13 +30,10 @@ cMULFile< static_st >* statics; // statics.mul
 cMULFile< multiIdx_st >* multiIdx; // multi.idx
 cMULFile< multi_st >* multi; // multi.mul
 
-static int32_t verdataEntries;
-
 static std::string map_path;
 static std::string staIdx_path;
 static std::string statics_path;
 static std::string tiledata_path;
-static std::string verdata_path;
 static std::string multi_path;
 static std::string multiIdx_path;
 
@@ -129,80 +126,6 @@ static void cacheStatics()
 	outPlain( "[Done]" );
 }
 
-/*!
-\author Luxor
-\brief Caches the verdata index, trying to maintain a sequential reading to get the best speed.
-*/
-static void cacheVerdataIndex()
-{
-	if ( !verIdx->isReady() )
-		return;
-
-	std::map< uint32_t, verdata_st >* verIdx_cache = new std::map< uint32_t, verdata_st >;
-	verIdx->getData( 0, (uint8_t*)(&verdataEntries), 4 );
-
-	verdata_st v;
-	int32_t i;
-	uint32_t pos;
-
-	outPlain( "\nCaching verdata index ( verdata.mul ) \t\t" );
-	for ( i = 0; i < verdataEntries; i++ ) {
-		pos = VERDATA_HEADER_SIZE + ( i * verdata_st_size );
-		if ( verIdx->getData( pos, v ) )
-			verIdx_cache->insert( std::pair< uint32_t, verdata_st >( pos, v ) );
-	}
-	outPlain( "[Done]" );
-	verIdx->setCache( verIdx_cache );
-}
-
-/*!
-\author Luxor
-\brief Caches the verdata info, trying to maintain a sequential reading to get the best speed.
-*/
-static void cacheVerdata()
-{
-	if ( !verIdx->isReady() && !verTile->isReady() && !verLand->isReady() )
-		return;
-
-	std::map< uint32_t, tile_st >* verTile_cache = new std::map< uint32_t, tile_st >;
-	std::map< uint32_t, land_st >* verLand_cache = new std::map< uint32_t, land_st >;
-	verdata_st v;
-	tile_st t;
-	land_st l;
-	uint32_t block, pos;
-	uint8_t index;
-	int32_t i;
-
-	outPlain( "\nCaching verdata tiledata info ( verdata.mul ) \t\t" );
-	for ( i = 0; i < verdataEntries; i++ ) {
-		pos = VERDATA_HEADER_SIZE + ( i * verdata_st_size );
-		if ( !verIdx->getData( pos, v ) )
-			continue;
-		if ( v.fileid != VerTileData )
-			continue;
-
-		if ( v.block >= 512 ) {
-			block = v.block - 512;
-
-			for ( index = 0; index < 32; index++ ) {
-				pos = TILE_HEADER_SIZE + v.pos + index * tile_st_size;
-				if ( verTile->getData( pos, t ) )
-					verTile_cache->insert( std::pair< uint32_t, tile_st >( pos, t ) );
-			}
-		} else {
-			for ( index = 0; index < 32; index++ ) {
-				pos = TILE_HEADER_SIZE + v.pos + index * land_st_size;
-				if ( verLand->getData( pos, l ) )
-					verLand_cache->insert( std::pair< uint32_t, land_st >( pos, l ) );
-			}
-		}
-	}
-	outPlain( "[Done]" );
-	verTile->setCache( verTile_cache );
-	verLand->setCache( verLand_cache );
-}
-
-
 #define CHECKMUL( A, B ) if ( !A->isReady() ) { LogError( "ERROR: Mul File %s not found...\n", B ); return; }
 
 /*!
@@ -230,24 +153,10 @@ void init()
 	multi = new cMULFile< multi_st > ( multi_path, "rb" );
 	CHECKMUL( multi, multi_path.c_str() );
 
-	verIdx = new cMULFile< verdata_st > ( verdata_path, "rb" );
-	CHECKMUL( verIdx, verdata_path.c_str() );
-	verLand = new cMULFile< land_st > ( verdata_path, "rb" );
-	verTile = new cMULFile< tile_st > ( verdata_path, "rb" );
-
 	//
 	// We cache always the tiledata, it's very small and it really improves performances.
 	//
-	cacheVerdataIndex();
-	cacheVerdata();
 	cacheTileData();
-
-	//
-	// After tiledata caching, verdata's cache becomes useless. Let's free some memory.
-	//
-	verIdx->setCache( NULL );
-	verLand->setCache( NULL );
-	verTile->setCache( NULL );
 
 	//
 	// Check for statics and map caching
@@ -317,9 +226,6 @@ void setPath( MulFileId id, std::string path )
 		case TileData_File:
 			tiledata_path = path;
 			break;
-		case VerData_File:
-			verdata_path = path;
-			break;
 		default:
 			break;
 	}
@@ -349,9 +255,6 @@ std::string getPath( MulFileId id )
 			break;
 		case TileData_File:
 			return tiledata_path;
-			break;
-		case VerData_File:
-			return verdata_path;
 			break;
 		default:
 			break;
@@ -438,65 +341,6 @@ bool seekMulti( uint16_t id, multiVector& m_vec )
 	}
 	return ( m_vec.size() > 0 );
 }
-
-/*!
-\author Luxor
-*/
-bool seekVerTile( uint16_t id, tile_st& tile )
-{
-	if ( !verIdx->isReady() || !verTile->isReady() )
-		return false;
-
-	int32_t i, block = id / 32 + 512;
-	verdata_st v;
-	uint32_t pos;
-
-	for ( i = 0; i < verdataEntries; i++ ) {
-		pos = VERDATA_HEADER_SIZE + ( i * verdata_st_size );
-		if ( !verIdx->getData( pos, v ) )
-			continue;
-		if ( v.fileid != VerTileData || v.block < 512 )
-			continue;
-
-		if ( block != v.block )
-			continue;
-
-		pos = TILE_HEADER_SIZE + v.pos + ( id % 32 ) * tile_st_size;
-		return verTile->getData( pos, tile );
-	}
-	return false;
-}
-
-/*!
-\author Luxor
-*/
-bool seekVerLand( uint16_t id, land_st& land )
-{
-	if ( !verIdx->isReady() || !verLand->isReady() )
-		return false;
-
-	uint32_t pos;
-	verdata_st v;
-	int32_t i, block = id / 32;
-
-	for ( i = 0; i < verdataEntries; i++ ) {
-		pos = VERDATA_HEADER_SIZE + ( i * verdata_st_size );
-		if ( !verIdx->getData( pos, v ) )
-			continue;
-		if ( v.fileid != VerTileData || v.block >= 512 )
-			continue;
-
-
-		if ( block != v.block )
-			continue;
-
-		pos = TILE_HEADER_SIZE + v.pos + ( id % 32 ) * land_st_size;
-		return verLand->getData( pos, land );
-	}
-	return false;
-}
-
-
 
 /*!
 \author Luxor
