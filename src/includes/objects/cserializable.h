@@ -80,8 +80,9 @@ class cSerializable
 These functions allow sto find the pointer starting from a serial, and are used
 usually when parsing data from the 'external' system (like savegames, scripts
 or the network protocol).
-The main function for this all is the findBySerial() function, which is called
-by findCharBySerial() and findItemBySerial() to get a specific type instance.
+The main function for this all is the cSerializable::findBySerial() function,
+which is called by cSerializable::findCharBySerial() and
+cSerializable::findItemBySerial() to get a specific type instance.
 */
 private:
 	static SerializableMap objects;	//!< Map of all serialized object

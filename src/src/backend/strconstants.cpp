@@ -10,11 +10,26 @@
 #include "objects/citem/cweapon.h"
 
 /*!
+\brief Translate an unknown string constant into a c++ constant
+\param str String representing the constant
+\return The C++ constant represented by the string or an undefined value if not
+	a valid constant
+
+This functions test the prefix of a string to find out which can be it's mean
+and then calls the right function to get the C++ constant.
+*/
+uint32_t nStrConstants::generic(std::string str)
+{
+	if ( strcmp(str.c_str(), "sk", 2) == 0 )
+		return skills(str);
+	if ( strcmp(str.c_str(), "weapon", 6) == 0 )
+		return weaponsTypes(str);
+}
+
+/*!
 \brief Translate a sk??? string into the c++ constant
 \param str String representing the skill
 \return The skill constant or skInvalid if invalid string
-\note The function is case sensitive
-\todo Make it case insensitive, maybe?
 */
 Skill nStrConstants::skills(std::string str)
 {

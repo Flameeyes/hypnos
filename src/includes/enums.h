@@ -10,11 +10,20 @@
 \brief Enum types
 \author Flameeyes
 
-I created this file because in many place I'm including headers in header
-files only to access their enums (like cmsgboard.h in cchar.h). Here we
-create less dependencies, also if they are externed from their original
-content.
-For this, I'll add a \\see tag on all the enums to find the original context.
+Enumerations are often used by the code to allow the developers to use mnemonic
+string constants instead of rough and raw hexadecimal constants. And quite
+always we need to access these constants also in header files to define default
+parameters of functions.
+
+And as staded in the coding standards, we shouldn't include the header of the
+class which the enums are related to have them declared (because we create
+a chain of dependencies in header files which is unsafe), so we need a way
+to declare all the enums without their own class. The solution is this file.
+
+In this file there are different enums, documented when needed, and with a
+refernece to the class which primary uses them (with a \\see link).
+
+\todo Complete the documentation of types and enumerated constantas
 */
 
 #ifndef __ENUMS_H__
@@ -102,7 +111,20 @@ enum PoisonType {
 	poisonDeadly	//!< Deadly poison
 };
 
-//! Directions
+/*!
+\brief Directions
+
+Directions are represented in the UO protocol as a byte, where are used only
+the three LSBs, and the MSB states the 'running' action.
+
+This enumeration type can be used both for get only the three LSBs of the
+direction (but is faster use var&0x07), and to access the direction constasnts
+without remember the right index of them.
+
+\see cBody
+\see cItem
+\see cBoat
+*/
 enum Direction {
 	dirNorth, dirNorthEast, dirEast, dirSouthEast, dirSouth, dirSouthWest, dirWest, dirNorthWest
 };
@@ -209,4 +231,5 @@ enum EffectType {
 	etStayAtTarget,	//!< effect stays at source xyz
 	etStayAtObject	//!< effect follows source
 }
+
 #endif
