@@ -873,9 +873,8 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 			for ( int32_t idx = 0; idx < now; idx++ ) {
 				if ( pc_k == loginchars[idx] ) {
 					// TODO We need to fix this!!!
-					uint8_t msg2[2]={ 0x53, 0x05 };
-					Xsend(s, msg2, 2);
-//AoS/					Network->FlushBuffer(s);
+					nPackets::Sent::IdleWarning pk(0x5);
+					client->sendPacket(&pk);
 					Disconnect(s);
 					Disconnect(idx);
 					return;
@@ -892,10 +891,9 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 		}
 		else
 		{
-			uint8_t msg[2]={ 0x53, 0x05 };
-			Xsend(s, msg, 2);
-//AoS/			Network->FlushBuffer(s);
-			Disconnect(s);
+					nPackets::Sent::IdleWarning pk(0x5);
+					client->sendPacket(&pk);
+					Disconnect(s);
 		}
 	}
 }
@@ -910,7 +908,7 @@ void cNetwork::enterchar(int s)
 	uint8_t techstuff[5]={ 0x69, 0x00, 0x05, 0x01, 0x00 };
 	uint8_t world[6]={0xBF, 0x00, 0x06, 0x00, 0x08, 0x00};
 	uint8_t modeset[5]={0x72, 0x00, 0x00, 0x32, 0x00};
-	uint8_t LoginOK[1] = {0x55}, TimeZ[4]={0x5B, 0x0C, 0x13, 0x03};
+	uint8_t TimeZ[4]={0x5B, 0x0C, 0x13, 0x03};
 
 	if (map_height<300) world[5]=0x02;
 
@@ -961,7 +959,8 @@ void cNetwork::enterchar(int s)
 #ifdef ENCRYPTION
 	Network->FlushBuffer(s);
 #endif
-	Xsend(s, LoginOK, 1);
+	nPackets::Sent::StartGame pkStartGgame;
+	client->sendPacket(pkStartGame);
 #ifdef ENCRYPTION
 	Network->FlushBuffer(s);
 #endif

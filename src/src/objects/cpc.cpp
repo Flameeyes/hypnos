@@ -315,7 +315,7 @@ void cChar::updateSkill(uint16_t skill)
 	if ( ! client )
 		return;
 
-	nPackets::Sent::UpdateSkill pk(this, skill);
+	nPackets::Sent::SendSkills pk(this, skill);	//sending just skill "skill" to client
 
 	client->sendPackage(&pk);
 }

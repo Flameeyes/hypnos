@@ -739,10 +739,8 @@ int main(int argc, char *argv[])
 				{
 					ConOut("Player %s disconnected due to inactivity !\n", pc_r->getCurrentName().c_str());
 					//sysmessage(r,"you have been idle for too long and have been disconnected!");
-					char msg[3];
-					msg[0]=0x53;
-					msg[1]=0x07;
-					Xsend(r, msg, 2);
+					nPackets::Sent::IdleWarning pk(0x7);
+					client->sendPacket(&pk);
 					Network->Disconnect(r);
 				}
 

@@ -320,7 +320,7 @@ namespace Skills {
 	SETTING(uint16_t, StealthToDropItemsWhileHid, 960);
 
 	//! Maximum skill an npc trainer can teach to a PC
-	SETTING(uint16_t, MaximumSkillTraining, 250);
+	SETTING(uint16_t, MaximumSkillTraining, 300);
 
 	void loadHiding(MXML::Node *s)
 	{

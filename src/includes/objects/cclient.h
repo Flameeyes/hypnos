@@ -184,7 +184,7 @@ public:
 	void showSpecialBankBox(pChar dest);
 	void statusWindow(pChar target, bool extended = true);
 	void updateStatusWindow(pItem item);
-	void skillWindow();
+	void skillWindow();					//!< send the skill level info to the skill window of client
 	void updatePaperdoll();					//!< tells to the client that something has changed in his paperdoll
 	void sendMidi(char num1, char num2);			//!< plays midi on client (note: if client disabled music it will not play :D)
 	void sendItem(pItem pi);				//!< Shows items to client (on the ground or inside containers)

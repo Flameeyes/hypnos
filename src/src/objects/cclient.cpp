@@ -295,41 +295,12 @@ void cClient::updateStatusWindow(pItem item)
 /*!
 \brief brings up the skill window in client
 */
-void cClient::skillWindow() // Opens the skills list, updated for client 1.26.2b by LB
+void cClient::skillWindow() // Opens the skills list
 {
-
 	pChar pc = currChar();
 	if ( ! pc ) return;
-
-	//!  \todo: port this into cPackets since it is a raw packet
-
-	uint8_t skillstart[4]={ 0x3A, 0x00, };
-	uint8_t skillmid[7]={ 0x00, };
-	uint8_t skillend[2]={ 0x00, };
-	uint16_t len;
-	char x;
-
-	len = 0x015D;					// Hardcoded -_-;  // hack for that 3 new skills+1.26.2 client, LB 4'th dec 1999
-	ShortToCharPtr(len, skillstart +1);
-	skillstart[3] = 0x00;				// Type:
-							// 0x00 = full list, 0xFF = single skill update,
-							// 0x02 = full list with skillcap, 0xDF = single skill update with cap
-
-	Xsend(s, skillstart, 4);
-	for (int i=0;i<skTrueSkills;i++)
-	{
-		Skills::updateSkillLevel(pc,i);
-		ShortToCharPtr(i+1, skillmid +0);
-		ShortToCharPtr(pc->skill[i], skillmid +2);
-		ShortToCharPtr(pc->baseskill[i], skillmid +4);
-
-		x=pc->lockSkill[i];
-		if (x!=0 && x!=1 && x!=2) x=0;
-		skillmid[6]=x; // leave it unlocked, regardless
-		Xsend(s, skillmid, 7);
-	}
-	Xsend(s, skillend, 2);
-//AoS/	Network->FlushBuffer(s);
+	nPackets::Sent::SendSkills pk(pc);
+	sendPacket(&pk);
 }
 
 
@@ -381,8 +352,8 @@ void senditem_lsd(pItem pi, uint16_t color, Location position)
 	pChar pc= currChar();
 	if ( ! pc ) return;
 
-	if ( pi->visible>=1 && !(pc->IsGM()) ) return; // workaround for missing gm-check client side for visibity since client 1.26.2
-	// for lsd we dont need extra work for type 1 as in senditem
+	if ( pi->visible>=1 && !(pc->IsGM()) ) return;
+	// for lsd we dont need extra work nor type 1 as in senditem
 
 	nPackets::Sent::LSDObject pk(pi, pc, color, position);
 	sendPacket(&pk);
@@ -661,7 +632,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 
 			} // end if not corpse
 #ifdef SPAR_I_LOCATION_MAP
-			pointers::delFromLocationMap( pi );
+			pointezs::delFromLocationMap( pi );
 #else
 			mapRegions->remove( pi );
 #endif
@@ -1531,7 +1502,7 @@ void cClient::droppedOnTrainer(pItem pi, pNPC npc)
 			pi->Delete();
 		}
                 pBody body = pc->getTrueBody(); 	//training ONLY goes to true body
-		pc->setSkill(sk, pc->getSkill(sk) + delta);
+		pc->setSkillBase(sk, pc->getSkillBase(sk) + delta);
 		Skills::updateSkillLevel(pc, sk);
 		pc->updateSkill(sk);
 

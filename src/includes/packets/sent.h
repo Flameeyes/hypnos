@@ -500,6 +500,228 @@ namespace nPackets {
 			void prepare();
 		};
 
+		/*!
+		\brief pathfinding
+		\author Chronodt
+		\note packet 0x38
+
+		\note this packet should be sent at least 19 times consecutively to have any effect (unverified)
+		*/
+
+		class Pathfinding : public cPacketSend
+		{
+		protected:
+			Location loc;		//!< destination
+		public:
+			inline Pathfinding(Location aLoc) :
+				cPacketSend(NULL, 0), loc(aLoc)
+			{ }
+
+			void prepare();
+		};
+
+
+		/*!
+		\brief Send skill list or updates a single skill
+		\author Chronodt
+		\note packet 0x3a
+		*/
+
+		class SendSkills : public cPacketSend
+		{
+		protected:
+			pChar pc;
+			uint8_t skill;
+		public:
+			/*!
+			\param aPc Character to send the skill of
+			\param aSkill skill to send. if INVALID (or omitted) sends all the skills
+			*/
+			inline SendSkills(pChar aPc, uint8_t aSkill = UINVALID16) :
+				cPacketSend(NULL, 0), pc(aPc), skill(aSkill)
+			{ }
+
+			void prepare();
+		};
+
+		/*!
+		\brief tells client which items are in the given container
+		\author Flameeyes
+		\note packet 0x3c
+		*/
+
+		class ContainerItem : public cPacketSend
+		{
+		protected:
+			std::list<sContainerItem> items;
+		public:
+			/*!
+			\param aContainer the container (for all items)
+			*/
+			inline ContainerItem() :
+				cPacketSend(NULL, 0)
+			{ }
+
+			/*!
+			\brief add an item to the list of items in the container
+			\param item item to add to the container
+			*/
+			inline void addItem(pItem item)
+			{ items.push_back(sContainerItem(item)); }
+
+			void prepare();
+		};
+
+		/*!
+		\brief Personal Light Level
+		\author Chronodt
+		\note packet 0x4e
+		*/
+
+		class PersonalLight : public cPacketSend
+		{
+		protected:
+			pChar pc;	//!< Character
+			uint8_t light	//!< light level
+		public:
+			/*!
+			\param aPc Character to send the light level of
+			\param aLight light level ( 0x00=day, 0x09=OSI night, 0x1F=Black )
+			*/
+			inline PersonalLight(pChar aPc, uint8_t aLight) :
+				cPacketSend(NULL, 0), pc(aPc), light(aLight)
+			{ }
+
+			void prepare();
+		};
+
+		/*!
+		\brief Overall Light Level
+		\author Flameeyes
+		\note packet 0x4f
+		*/
+		class OverallLight : public cPacketSend
+		{
+		protected:
+			uint8_t level;	//!< Light level to send
+		public:
+			/*!
+			\param l Light level
+			*/
+			inline OverallLight(uint8_t l) :
+				cPacketSend(NULL, 0), level(l)
+			{ }
+		
+			void prepare();
+		};
+
+		/*!
+		\brief Idle warning
+		\author Chronodt
+		\note packet 0x53
+		*/
+
+		class IdleWarning : public cPacketSend
+		{
+		protected:
+		/* type is:
+
+			1=no character
+			2=char exists
+			3=can't connect
+			4=can't connect
+			5=character already in world
+			6=login problem
+			7=idle
+			8=can't connect
+		*/
+			uint8_t type;
+		public:
+			/*!
+			\param aType Warning type
+			*/
+			inline IdleWarning(uint8_t aType) :
+				cPacketSend(NULL, 0), type(aType)
+			{ }
+
+			void prepare();
+		};
+
+		/*!
+		\brief Sound effect
+		\author Flameeyes
+		\note packet 0x54
+		*/
+
+		class SoundFX : public cPacketSend
+		{
+		protected:
+			uint16_t model;	//!< Sound model
+			Location loc;	//!< Location where the sound is played
+		public:
+			/*!
+			\param m sound model
+			\param l where the sound will be played
+			*/
+			inline SoundFX(uint16_t m, Location l) :
+				cPacketSend(NULL, 0), model(m), loc(l)
+			{ }
+
+			void prepare();
+		};
+
+		/*!
+		\brief StartGame
+		\author Chronodt
+		\note packet 0x55
+		*/
+
+		class StartGame : public cPacketSend
+		{
+		protected:
+		public:
+			inline StartGame() :
+				cPacketSend(NULL, 0), model(m), loc(l)
+			{ }
+
+			void prepare();
+		};
+
+		/*!
+		\brief Sets/resets pins in a map
+		\author Chronodt
+		\note packet 0x56
+		*/
+
+		class MapPlotCourse : public cPacketSend
+		{
+		protected:
+			const pMap map;
+			const PlotCourseCommands command;
+			
+			/*!
+			if command is pccWriteableStatus, it is plotting state (1=on, 0=off)
+			if command is pccInsertPin, it is the pin number that the new pin must have (all others must be "pushed onward")
+			
+			Apparently you can have no more than 50 pins in a map, and it appears a client side limitation (and it appears really messy if you put them all :D)
+			*/
+			const uint16_t pin;
+			const uint32_t x;
+			const uint32_t y;
+		public:
+			/*!
+			\param aMap map used
+			\param aCommand command to be sent to client
+			\param aPin pin modified (or writeability status if comm == 6)
+			\param xx x position of pin (map relative, pixels from topleft corner)
+			\param yy y position of pin (map relative, pixels from topleft corner)
+			*/
+			inline MapPlotCourse(pMap aMap, PlotCourseCommands aCommand, uint16_t aPin = 0, uint32_t xx = 0, uint32_t yy = 0) :
+				cPacketSend(NULL, 0), map (aMap), command (aCommand), pin (aPin),  x (xx), y (yy)
+			{ }
+		
+			void prepare();
+		};
 
 
 		/*!
@@ -523,89 +745,11 @@ namespace nPackets {
 		
 			void prepare();
 		};
-		
-		/*!
-		\brief Send an item in container
-		\author Flameeyes
-		*/
-		class ContainerItem : public cPacketSend
-		{
-		protected:
-			std::list<sContainerItem> items;
-			uint32_t contSerial;
-		public:
-			/*!
-			\param s serial of the container (for all items)
-			*/
-			inline ContainerItem(uint32_t s) :
-				cPacketSend(NULL, 0), contSerial(s)
-			{ }
-		
-			/*!
-			\brief add an item to the list of items in the container
-			\param item item to add to the container
-			*/
-			inline void addItem(pItem item)
-			{ items.push_back(sContainerItem(item)); }
-		
-			void prepare();
-		};
 
 
-		
-		//! Sound FX
-		class SoundFX : public cPacketSend
-		{
-		protected:
-			uint16_t model;	//!< Sound model
-			Location loc;	//!< Location where the sound is played
-		public:
-			/*!
-			\param m sound model
-			\param l where the sound will be played
-			*/
-			inline SoundFX(uint16_t m, Location l) :
-				cPacketSend(NULL, 0), model(m), loc(l)
-			{ }
-		
-			void prepare();
-		};
-		
-		
-		
-		//! Send skill status
-		class SkillState : public cPacketSend
-		{
-		protected:
-			pChar pc;
-		public:
-			/*!
-			\param c Character to send the skill of
-			*/
-			inline SkillState(pChar c) :
-				cPacketSend(NULL, 0), pc(c)
-			{ }
-		
-			void prepare();
-		};
-		
-		//! Update a skill
-		class UpdateSkill : public cPacketSend
-		{
-		protected:
-			pChar pc;
-			uint16_t skill;
-		public:
-			/*!
-			\param c Character to send the skill of
-			\param sk Skill to update
-			*/
-			inline UpdateSkill(pChar c, uint16_t sk) :
-				cPacketSend(NULL, 0), pc(c), skill(sk)
-			{ }
-		
-			void prepare();
-		};
+
+
+
 		
 		//! Open Web Browser
 		class OpenBrowser : public cPacketSend
@@ -639,24 +783,8 @@ namespace nPackets {
 			void prepare();
 		};
 		
-		//! Overall Light Level
-		class OverallLight : public cPacketSend
-		{
-		protected:
-			uint8_t level;	//!< Light level to send
-		public:
-			/*!
-			\param l Light level
-			*/
-			inline OverallLight(uint8_t l) :
-				cPacketSend(NULL, 0), level(l)
-			{ }
-		
-			void prepare();
-		};
-		
-		
-		
+
+
 		/*!
 		\brief Packet to confirm processing of buy (or sell) window
 		\author Chronodt
@@ -674,7 +802,7 @@ namespace nPackets {
 			inline ClearBuyWindow(pNPC n) :
 				cPacketSend(NULL, 0), npc(n)
 			{ }
-		
+
 			void prepare();
 		};
 		
@@ -699,37 +827,9 @@ namespace nPackets {
 		
 			void prepare();
 		};
-		
-		class MapPlotCourse : public cPacketSend
-		{
-		protected:
-			const pMap map;
-			const PlotCourseCommands command;
-			
-			/*!
-			if command is pccWriteableStatus, it is plotting state (1=on, 0=off)
-			if command is pccInsertPin, it is the pin number that the new pin must have (all others must be "pushed onward")
-			
-			Apparently you can have no more than 50 pins in a map, and it appears a client side limitation (and it appears really messy if you put them all :D)
-			*/
-			const uint16_t pin;
-			const uint32_t x;
-			const uint32_t y;
-		public:
-			/*!
-			\param m map used
-			\param comm command to be sent to client
-			\param p pin modified (or writeability status if comm == 6)
-			\param xx x position of pin (map relative)
-			\param yy y position of pin (map relative)
-			*/
-			inline MapPlotCourse(pMap m, PlotCourseCommands comm, uint16_t p = 0, uint32_t xx = 0, uint32_t yy = 0) :
-				cPacketSend(NULL, 0), map (m), command (comm), pin (p),  x (xx), y (yy)
-			{ }
-		
-			void prepare();
-		};
-		
+
+
+
 		enum BBoardCommands {bbcDisplayBBoard, bbcSendMessageSummary, bbcSendMessageBody};
 		class BBoardCommand : public cPacketSend
 		{

@@ -38,25 +38,26 @@ namespace nSettings {
 		bool isEnabledBookSystem();		//!< Is the book system enabled? [Default: true]
 		bool isEnabledTradeSystem();		//!< Is the trade system enabled? [Default: true]
 		bool isEnabledBountySystem();		//!< Is the bounty system enabled? [Default: true]
-		
+		bool isEnabledSkillBySkillCap();	//!< Recent uo clients allow setting of a skillcap for each skill. If enabled allows server side support for that [Default: true]
+
 		bool isEnabledPopupHelp();		//!< popup help (since T2A) is enabled [Default:true]
 		bool isEnabledUOAssist();		//!< UO Assist enabled? [Default: true]
-                uint32_t getAllowedAssistVersion();	//!< Returns allowed version of UO assist [Default: \b missing ]
+		uint32_t getAllowedAssistVersion();	//!< Returns allowed version of UO assist [Default: \b missing ]
 
 		uint8_t getMaximumPCs();		//!< Maximum characters for account [Default: 5]
 		bool canPlayersDeletePCs();		//!< Can a player delete one of his characters? [Default: true]
 
 		uint16_t getBankMaxItems();		//!< Maximum items a player can put in a bank. 0 = Unlimited [Default: 0]
-                uint8_t getMaximumItemsOnTile();	//!< Maximum number of items in a single world tile  [Default: \b missing]
-		
+		uint8_t getMaximumItemsOnTile();	//!< Maximum number of items in a single world tile  [Default: \b missing]
+
 		bool hasInstantGuards();		//!< Should guards instantly teleport over new criminals? [Default: false]
-		
+
 		bool shouldShowPCNames();		//!< Should the playing characters' names be shown on single click? [Default: true]
-		
+
 		uint32_t getDelaySkills();		//!< Delay between two skill uses
 		uint32_t getDelayObjects();		//!< Delay between two object uses
 		uint32_t getDecayTimer();		//!< Decay timer
-		
+
 		uint32_t getWeightPerStr();		//!< How much weight can take with one str point? [Default: 4]
 	}
 	
@@ -64,7 +65,7 @@ namespace nSettings {
 		uint16_t getMaxPosts();			//!< Maximum post possible [Default: 128]
 		uint16_t getMaxEntries();		//!< Maximum entries in ESCORTS [Default: 256]
 		uint8_t getMessageRetention();		//!< Maximum number of days to maintain a post [Default: 30]
-		uint32_t getEscortInitExpire();		//!< Number of seconds until an escorting quest expries [Default: 1 day]
+		uint32_t getEscortInitExpire();		//!< Number of seconds until an escorting quest expires [Default: 1 day]
 		uint32_t getEscortActiveExpire();	//!< Don't know actually.. [Default: 1/2 hour]
 	}
 	
@@ -79,7 +80,7 @@ namespace nSettings {
 	//! Actions related settings
 	namespace Actions {
 		bool shouldEquipOnDClick();		//!< Should an item be equipped on double click? [Default: true]
-                bool canUseItemsWhenInvisible();	//!< When invisible (by spell) can a player use items? [Default: false]
+		bool canUseItemsWhenInvisible();	//!< When invisible (by spell) can a player use items? [Default: false]
 		uint16_t getBountyKarmaGain();		//!< How much karma is gained for bounty hunting? [Default: \b missing ]
 		uint16_t getBountyFameGain();		//!< How much fame is gained for bounty hunting? [Default: \b missing ]
 	}
@@ -88,7 +89,7 @@ namespace nSettings {
 	namespace Skills {
 		uint16_t getStatDailyLimit();		//!< Maximum stat gain in a (real) day [Default: \b missing ]
 		uint16_t getLimitPlayerSparring();	//!< Defending player must have N skill points more than the attacker for the attacker to gain skill (in PvP only). [Default: 0]
-                uint16_t getMaximumSkillTraining();	//!< maximum skill an npc trainer can teach to a PC [Default: 250]
+		uint16_t getMaximumSkillTraining();	//!< maximum skill an npc trainer can teach to a PC [Default: 300]
 		
 		//@{
 		/*!
