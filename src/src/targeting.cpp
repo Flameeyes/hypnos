@@ -563,21 +563,19 @@ void target_envoke( NXWCLIENT ps, pTarget t )
 	uint32_t serial=t->getClicked();
 	if( isItemSerial( serial ) )
 	{
-        pItem pi = MAKE_ITEM_REF(serial);
-		VALIDATEPI( pi );
-        triggerItem( ps->toInt(),pi, TRIGTYPE_ENVOKED );
-        curr->envokeid=0x0000;
-    }
-	else if( isCharSerial( serial ) )
+		pItem pi = MAKE_ITEM_REF(serial);
+		if ( ! pi ) return;
+		triggerItem( ps->toInt(),pi, TRIGTYPE_ENVOKED );
+		curr->envokeid=0x0000;
+	} else if( isCharSerial( serial ) )
 	{
-        pChar pc = MAKE_CHAR_REF(serial);
+		pChar pc = MAKE_CHAR_REF(serial);
 		if ( ! pc ) return;
-        triggerNpc( ps->toInt(), pc, TRIGTYPE_NPCENVOKED );
-        curr->envokeid=0x0000;
-    }
-	else {
-        triggerTile( ps->toInt() );
-        curr->envokeid=0x0000;
+		triggerNpc( ps->toInt(), pc, TRIGTYPE_NPCENVOKED );
+		curr->envokeid=0x0000;
+	} else {
+		triggerTile( ps->toInt() );
+		curr->envokeid=0x0000;
 	}
 }
 
@@ -680,41 +678,38 @@ void target_key( NXWCLIENT ps, pTarget t )
         }//else
 }
 
-//TODO modify the parameter to get client instead of socket
 void target_attack( NXWCLIENT ps, pTarget t )
 {
-
-    pChar pc_t1= cSerializable::findCharBySerial( t->buffer[0] );
-    VALIDATEPC(pc_t1);
+	//!\TODO modify the parameter to get client instead of socket
+	pChar pc_t1= cSerializable::findCharBySerial( t->buffer[0] );
 	pChar pc_t2=cSerializable::findCharBySerial( t->getClicked() );
-	VALIDATEPC(pc_t2);
+	if ( ! pc_t1 || ! pc_t2 ) return;
 
 	NXWSOCKET s = ps->toInt();
-    client->currChar()->attackStuff(pc_t2); //this will (eventually) flag the owner if ordering to attack an innocent
-    npcattacktarget(pc_t1, pc_t2);
+	client->currChar()->attackStuff(pc_t2); //this will (eventually) flag the owner if ordering to attack an innocent
+	npcattacktarget(pc_t1, pc_t2);
 }
 
 void target_follow( NXWCLIENT ps, pTarget t )
 {
-
-    pChar pc = cSerializable::findCharBySerial( t->buffer[0] );
-    if ( ! pc ) return;
+	pChar pc = cSerializable::findCharBySerial( t->buffer[0] );
+	if ( ! pc ) return;
 
 	pChar pc2 = cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc2);
 
-    pc->ftargserial=pc2->getSerial();
-    pc->npcWander=WANDER_FOLLOW;
+	pc->ftargserial=pc2->getSerial();
+	pc->npcWander=WANDER_FOLLOW;
 }
 
 void target_axe( NXWCLIENT ps, pTarget t )
 {
-    uint16_t id=t->getModel();
-    if (itemById::IsTree(id))
+	uint16_t id=t->getModel();
+	if (itemById::IsTree(id))
 		Skills::target_tree( ps, t );
-    else if (itemById::IsCorpse(id))
-        CorpseTarget(ps);
-    else if (itemById::IsLog(id)) //Luxor bug fix
+	else if (itemById::IsCorpse(id))
+		CorpseTarget(ps);
+	else if (itemById::IsLog(id)) //Luxor bug fix
 		Skills::target_bowcraft( ps, t );
 }
 
@@ -767,32 +762,29 @@ void target_fetch( NXWCLIENT ps, pTarget t )
 
 void target_guard( NXWCLIENT ps, pTarget t )
 {
-    pChar pc=ps->currChar();
-	if ( ! pc ) return;
-
+	pChar pc=ps->currChar();
 	pChar pPet = cSerializable::findCharBySerial(t->buffer[0]);
-    VALIDATEPC(pPet);
+	if ( ! pc || ! pPet ) return;
 
-    pChar pToGuard = cSerializable::findCharBySerial( t->getClicked() );
-    if( !pToGuard || pToGuard->getSerial() != pPet->getOwnerSerial32() )
-    {
-        ps->sysmsg( TRANSLATE("Currently can't guard anyone but yourself!" ));
-        return;
-    }
-    pPet->npcaitype = NPCAI_PETGUARD;
-    pPet->ftargserial=pc->getSerial();
-    pPet->npcWander=WANDER_FOLLOW;
-    ps->sysmsg( TRANSLATE("Your pet is now guarding you."));
-    pc->guarded = true;
+	pChar pToGuard = cSerializable::findCharBySerial( t->getClicked() );
+	if( !pToGuard || pToGuard->getSerial() != pPet->getOwnerSerial32() )
+	{
+		ps->sysmsg( TRANSLATE("Currently can't guard anyone but yourself!" ));
+		return;
+	}
+	pPet->npcaitype = NPCAI_PETGUARD;
+	pPet->ftargserial=pc->getSerial();
+	pPet->npcWander=WANDER_FOLLOW;
+	ps->sysmsg( TRANSLATE("Your pet is now guarding you."));
+	pc->guarded = true;
 }
 
 void target_transfer( NXWCLIENT ps, pTarget t )
 {
-
-    pChar pc1 = cSerializable::findCharBySerial( t->buffer[0] );
-	VALIDATEPC(pc1);
-    pChar pc2 = cSerializable::findCharBySerial( t->getClicked() );
-	VALIDATEPC(pc2);
+	pChar pc1 = cSerializable::findCharBySerial( t->buffer[0] );
+	pChar pc2 = cSerializable::findCharBySerial( t->getClicked() );
+	if ( ! pc1 || ! pc2 )
+		return;
 
 	pFunctionHandle evt = pc1->getEvent(evtNpcOnTransfer);
 	if ( evt )
@@ -805,14 +797,12 @@ void target_transfer( NXWCLIENT ps, pTarget t )
 			return;
 	}
 
-    char bb[120];
-    sprintf(bb,TRANSLATE("* %s will now take %s as his master *"), pc1->getCurrentName().c_str(), pc2->getCurrentName().c_str());
-    pc1->talkAll(bb,0);
-
-    pc1->setOwner( pc2 );
-    pc1->npcWander=WANDER_FOLLOW;
-    pc1->ftargserial=INVALID;
-    pc1->npcWander=WANDER_NOMOVE;
+	pc1->talkAll("* %s will now take %s as his master *",0, pc1->getCurrentName().c_str(), pc2->getCurrentName().c_str());
+	
+	pc1->setOwner( pc2 );
+	pc1->npcWander=WANDER_FOLLOW;
+	pc1->ftargserial=INVALID;
+	pc1->npcWander=WANDER_NOMOVE;
 }
 
  //Throws the potion and places it (unmovable) at that spot
@@ -821,40 +811,36 @@ void target_expPotion( NXWCLIENT ps, pTarget t )
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
 
-    Location loc=t->getLocation();
+	Location loc=t->getLocation();
 
 	NXWSOCKET s=ps->toInt();
 
-    if(line_of_sight(s, pc->getPosition(), loc, WALLS_CHIMNEYS + DOORS + ROOFING_SLANTED))
-    {
-        pItem pi=cSerializable::findItemBySerial( t->buffer[0] );
-        if (pi) // crashfix LB
-        {
-            pi->MoveTo( loc );
-            pi->setContainer(0);
-            pi->magic=2; //make item unmovable once thrown
-            movingeffect2(DEREF_pChar(pc), DEREF_pItem(pi), 0x0F, 0x0D, 0x11, 0x00, 0x00);
-            pi->Refresh();
-        }
-    }
-    else
+	if(!line_of_sight(s, pc->getPosition(), loc, WALLS_CHIMNEYS + DOORS + ROOFING_SLANTED))
+	{
 		pc->sysmsg(TRANSLATE("You cannot throw the potion there!"));
+		return;
+	}
+		
+	pItem pi=cSerializable::findItemBySerial( t->buffer[0] );
+	if ( ! pi ) return;
+		
+	pi->MoveTo( loc );
+	pi->setContainer(0);
+	pi->magic=2; //make item unmovable once thrown
+	movingeffect2(DEREF_pChar(pc), DEREF_pItem(pi), 0x0F, 0x0D, 0x11, 0x00, 0x00);
+	pi->Refresh();
 }
-
 
 void target_trigger( NXWCLIENT ps, pTarget t )
 {
-
-	pItem pi = MAKE_ITEM_REF(t->getClicked());
+	pItem pi = cSerializable::findItemBySerial(t->getClicked());
 	if ( ! pi ) return;
 
 	triggerItem(ps->toInt(), pi, TRIGTYPE_TARGET);
-
 }
 
 void target_npcMenu( NXWCLIENT ps, pTarget t )
 {
-
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
 

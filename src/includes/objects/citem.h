@@ -95,11 +95,11 @@ public:
 */
 protected:
 	uint16_t	animid;		//!< animation id
-	int8_t		layer;		//!< Layer if equipped on paperdoll
-	int8_t		oldlayer;	//!< Old layer - used for bouncing bugfix - AntiChrist
 
 	int8_t		magic;		//!< 0=Default as stored in client, 1=Always movable, 2=Never movable, 3=Owner movable.
+					//!< \todo Change to enum
 	int8_t		visible;	//!< 0=Normally Visible, 1=Owner & GM Visible, 2=GM Visible
+					//!< \todo Change to enum
 	int16_t		dir;
 
 
@@ -374,8 +374,8 @@ public:
 \name Container
 */
 protected:
-	pObject		cont;
-	pObject		oldcont;
+	pObject cont;
+	pObject oldcont;
 
 public:
 	inline const pObject getContainer() const
@@ -430,7 +430,7 @@ public:
         inline const uint16_t getAmount()
 	{ return amount; }
 
-	int32_t			DeleteAmount(int amount, short id, short color=-1);
+	int32_t DeleteAmount(int amount, short id, short color=-1);
 //@}
 
 //@{
@@ -449,6 +449,7 @@ public:
 /*!
 \name Position
 */
+public:
 	void MoveTo(Location newloc);
 
 	inline const bool isInWorld() const
@@ -485,8 +486,8 @@ public:
 	int32_t		in;		//!< The intelligence needed to equip the item
 	int32_t		in2;		//!< The intelligence the item gives
 	PoisonType	poisoned;	//!< type of poison that poisoned item
-	uint32_t		ammo;		//!< Ammo used (firing weapon)
-	uint32_t		ammoFx;		//!< Flying ammo animation (firing weapon)
+	uint32_t	ammo;		//!< Ammo used (firing weapon)
+	uint32_t	ammoFx;		//!< Flying ammo animation (firing weapon)
 //@}
 
 //@{
@@ -561,8 +562,8 @@ public:
 /*!
 \name Spawn
 */
-	uint32_t		spawnserial;
-	uint32_t		spawnregion;
+	uint32_t	spawnserial;
+	uint32_t	spawnregion;
 	void		SetMultiSerial(int32_t mulser);
 //@}
 
@@ -582,14 +583,14 @@ public:
 \name Item Use
 */
 protected:
-        bool            ToolWearOut(pClient client);            //!< Check for tool consumption. Used in doubleClick
-	virtual void	doubleClicked(pClient client);		//!< After an accepted doubleclick, call this virtual
+	bool ToolWearOut(pClient client);			//!< Check for tool consumption. Used in doubleClick
+	virtual void doubleClicked(pClient client);		//!< After an accepted doubleclick, call this virtual
 
 public:
-        void            singleClick(pClient client);            //!< Single click on item
-        bool            usableWhenLockedDown(pPC pc = NULL);	//!< Item can be used when locked down (e.g. in a house)
-        bool            checkItemUsability(pChar pc, int type); //!< If item can be used with "type" method by pc
-        void            doubleClick(pClient client);            //!< Use of item by doubleclicking on it
+	void singleClick(pClient client);			//!< Single click on item
+	bool usableWhenLockedDown(pPC pc = NULL);		//!< Item can be used when locked down (e.g. in a house)
+	bool checkItemUsability(pChar pc, int type);		//!< If item can be used with "type" method by pc
+	void doubleClick(pClient client);			//!< Use of item by doubleclicking on it
 
 //@{
 /*!
@@ -604,12 +605,12 @@ public:
 /*!
 \name Special Use
 */
-	uint32_t		type;		//!< For things that do special things on doubleclicking
-	uint32_t		type2;
+	uint32_t	type;		//!< For things that do special things on doubleclicking
+	uint32_t	type2;
 	int32_t		carve;		//!< for new carve system
 	int32_t		wipe;		//!< Should this item be wiped with the /wipe command
-	uint32_t		time_unused;	//!< used for house decay and possibly for more in future, gets saved
-	uint32_t		timeused_last;	//!< helper attribute for time_unused, doesnt get saved
+	uint32_t	time_unused;	//!< used for house decay and possibly for more in future, gets saved
+	uint32_t	timeused_last;	//!< helper attribute for time_unused, doesnt get saved
 //@}
 
 /********************************
@@ -635,11 +636,11 @@ public:
 	inline const TIMERVAL getDecayTime() const
 	{ return decaytime; }
 
-	pItem		getOutMostCont( uint16_t rec=50 );
-	pBody		getPackOwner();
+	pItem getOutMostCont( uint16_t rec=50 );
+	pBody getPackOwner();
 
-	uint32_t		distFrom( pChar pc );
-	uint32_t		distFrom( pItem pi );
+	uint32_t distFrom( pChar pc );
+	uint32_t distFrom( pItem pi );
 
 	inline void setAnimid(uint16_t id)
 	{ animid = id; }

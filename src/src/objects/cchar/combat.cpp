@@ -62,10 +62,10 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		evt->execute();
 		if( evt->bypassed() )
 			return;
+		if( isDead() )	// Killed as result of script action
+			return;
 	}
-
-	if( isDead() )	// Killed as result of script action
-		return;
+	
 	bool hit, los;
 	int dist, basedamage, damage, def, x;
 	Skill fightskill, def_fightskill;
