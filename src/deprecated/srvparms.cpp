@@ -52,8 +52,6 @@
 #include "inlines.h"
 #include "scripts.h"
 
-static int loadnxwoptions (char *script1, char *script2);
-
 static char temp_map[120];
 static char temp_statics[120];
 static char temp_staidx[120];
@@ -133,7 +131,6 @@ int g_nBankLimit = 0;
 TIMERVAL g_nRestockTimeRate = 15;
 
 }
-
 
 extern bool g_bNTService;
 
@@ -215,10 +212,8 @@ void loadserverdefaults()
 	server_data.lootdecayswithcorpse=1;			// JM - 0 Loot disappears with corpse, 1 loot gets left when corpse decays
 
 	server_data.auto_a_create = 1;                     // for auto accounts
-	server_data.auto_a_reload = 0;
 
 	server_data.invisibiliytimer=INVISTIMER;
-	server_data.bandagedelay=6;					// in seconds
 	server_data.bandageincombat=1;				// 0=no, 1=yes; can use bandages while healer and/or patient are in combat ?
 	server_data.inactivitytimeout=300;			// seconds of inactivity until player will be disconnected
 	server_data.hitpointrate=REGENRATE1;
@@ -331,7 +326,6 @@ void loadserverdefaults()
 	server_data.disable_z_checking=0;
  	server_data.archivePath="save/";
  	server_data.savePath="backup/";
- 	server_data.worldfileExtension=".wsc";
  	server_data.characterWorldfile="nxwchars";
  	server_data.itemWorldfile="nxwitems";
  	server_data.guildWorldfile="nxwguild";
@@ -339,157 +333,7 @@ void loadserverdefaults()
 	server_data.bookWorldfile="nxwbook";
 }
 
-static int block_acc(char *script1, char *script2) // elcabesa tempblock
-{													// elcabesa tempblock
-		if(!(strcmp(script1,"BLOCKACCBADPASS"))) server_data.blockaccbadpass=str2num(script2);		// elcabesa tempblock
-		else if(!(strcmp(script1,"N_BADPASS"))) server_data.n_badpass=str2num(script2);				// elcabesa tempblock
-		else if(!(strcmp(script1,"TIME_BLOCKED"))) server_data.time_badpass=str2num(script2);		// elcabesa tempblock
-		else return -1;																						// elcabesa tempblock
-		return 0;																							// elcabesa tempblock
-}																											// elcabesa tempblock
-
 extern bool g_bInMainCycle;
-
-static int loadstartlocs (char *script1, char *script2)
-{
-	static bool bCompleted = false;
-
-	if (g_bInMainCycle) return 0;
-
-	if (strlen(script2)<3) return 0;
-
-	if (bCompleted) {
-		ConOut("Attempt to load more than 9 starting locations. Further locations will be ignored\n");
-		return -13;
-	}
-
-	if(!(strcmp(script1,"CITY"))) strcpy(start[startcount][0], script2);
-	else if(!(strcmp(script1,"PLACE"))) strcpy(start[startcount][1], script2);
-	else if(!(strcmp(script1,"POSITION")))
-	{
-		int i, j=0, k = 2, ln = strlen(script2);
-		//set defaults to 0,0,0 to avoid parsing errors :)
-		start[startcount][2][0]=start[startcount][3][0]=start[startcount][4][0] = '0';
-		start[startcount][2][0]=start[startcount][3][0]=start[startcount][4][0] = '\0';
-
-		for (i=0; i<=ln; i++) {
-			if (script2[i]=='\0') break;
-			if (script2[i]==',')
-			{
-				start[startcount][k][j] = '\0';
-				k++;
-				j = 0;
-			}
-			else start[startcount][k][j++] = script2[i];
-		}
-
-		if ((++startcount)==9) bCompleted = true;
-	} else return -1;
-	return 0;
-}
-
-static int loadPreloads(char *script1, char *script2) // by Xan
-{
-		if(!(strcmp(script1,"CONSOLEONFILE"))) ServerScp::g_nRedirectOutput=str2num(script2);
-		else if(!(strcmp(script1,"STDOUTFILE"))) strcpy(ServerScp::g_szOutput,script2);
-		else return 0; //never error on preloads!
-		return 0;
-
-}
-
-
-void preloadSections(char *fn)
-{
-	int loopexit=0;
-	wscfile=fopen(fn, "r");
-
-	if(wscfile==NULL) return;
-
-	do
-	{
-		readw2();
-		if (!(strcmp(script1, "SECTION"))) {
-			if(!(strcmp(script2, "PRELOAD"))) {
-				chooseSection(script2, parseSection);
-			}
-		}
-	}
-	while ( (strcmp(script1, "EOF")) && (++loopexit < MAXLOOPS) );
-	fclose(wscfile);
-}
-
-void loadshardlist()
-{
-	FILE *F = fopen("custom/shards.cfg", "rt");
-	
-	ConOut("Loading Shards list...");
-	if(!F) {
-		ConOut(" [ KO ]\n");
-		return;
-	}
-	do
-	{
-		if(servcount >= MAXSERV) {
-			ConOut(" [FULL]\n");
-			fclose(F);
-			return;
-		}
-		
-		do
-		{
-			readSplitted(F, script1, script2);
-			if (!strcmp(script1, "NAME")) {
-				strncpy(serv[servcount][0], script2, 30);
-			} else if (!strcmp(script1, "IP")){
-				strncpy(serv[servcount][1], script2, 30);
-			} else if (!strcmp(script1, "PORT")) {
-				strncpy(serv[servcount][2], script2, 30);
-			}
-		}
-		while ( (!feof(F)) &&
-			(strcmp(script1, "}")) &&
-			(strcmp(script1, "EOF")) );
-		if (!strcmp(script1, "}"))
-			servcount++;
-	}while (!feof(F));
-	fclose(F);
-	ConOut(" [ OK ]\n");
-}
-
-void loadserverscript(char *fn) // Load a server script
-{
-	int loopexit=0;
-	wscfile=fopen(fn, "r");
-	ConOut("Loading server settings [%s]...", fn);
-	if(wscfile==NULL)
-	{
-		ConOut(" [FAIL]\n",fn);
-		return;
-	}
-	do
-	{
-		readw2();
-		if (!(strcmp(script1, "SECTION")))
-		{
-			if(!(strcmp(script2, "CLIENTS_ALLOWED"))) loadclientsallowed();
-			else chooseSection(script2, parseSection);
-			// end addons by Magius(CHE)
-		}
-	}
-	while ( (strcmp(script1, "EOF")) && (++loopexit < MAXLOOPS) );
-	fclose(wscfile);
-	ConOut(" [ OK ]\n",fn);
-}
-
-void loadserverscript() // Load server script
-{
-	loadserverscript("config/server.cfg");
-	loadserverscript("custom/server.cfg");
-	servcount=1;		//In NoX-Wizard you can have ONLY one server running :)
-				// ^-- Are you sure !? ;) default shard is the first =)
-
-	loadshardlist();	// and now .. the others ... =)
-}
 
 void commitserverscript() // second phase setup
 {
@@ -671,7 +515,6 @@ void saveserverscript()
 	fprintf(file, "MULTIIDX %s\n", data::getPath( MultiIdx_File ).c_str());
 	fprintf(file, "}\n\n");
 
-
 	fprintf(file, "SECTION SKILLS\n");
 	fprintf(file, "{\n");
 	fprintf(file, "// sets the skillcap for players \n");
@@ -685,7 +528,7 @@ void saveserverscript()
 	fprintf(file, "// the higher the value, the slower players will gain skill \n");
 	fprintf(file, "SKILLADVANCEMODIFIER %i\n",server_data.skilladvancemodifier);
 	fprintf(file, "// the higher the value, the slower players will gain stats (values between 1000\n");
-		fprintf(file, "// -2000 resemble OSI standards) \n");
+	fprintf(file, "// -2000 resemble OSI standards) \n");
 	fprintf(file, "STATSADVANCEMODIFIER %i\n",server_data.statsadvancemodifier);
 	fprintf(file, "// This value multiplied by an item's minskill value indicates the maximum skill diff to create \n");
 	fprintf(file, "SKILLLEVEL %i\n",server_data.skilllevel); // By Magius(CHE)
@@ -787,15 +630,11 @@ void saveserverscript()
 	fprintf(file, "LOOTDECAYSWITHCORPSE %i\n", server_data.lootdecayswithcorpse);
 	fprintf(file, "// Sets the duration (seconds) of the invisibility spell \n");
 	fprintf(file, "INVISTIMER %i\n",server_data.invisibiliytimer);
-	fprintf(file, "// Prevents permanent healing, sets delay time (seconds) between bandage usage \n");
-	fprintf(file, "BANDAGEDELAY %i\n",server_data.bandagedelay);
 	fprintf(file, "}\n\n");
 
 	fprintf(file, "SECTION SERVER\n");
 	fprintf(file, "{\n");
 	
-	fprintf(file, "// Worldfile extension\n");
-	fprintf(file, "WORLDFILEEXTENSION %s\n", server_data.worldfileExtension.c_str() );
 	fprintf(file, "// Character worldfile name\n");
 	fprintf(file, "CHARACTERWORLDFILE %s\n", server_data.characterWorldfile.c_str() );
 	fprintf(file, "// Item worldfile name\n");
@@ -822,9 +661,7 @@ void saveserverscript()
 	fprintf(file, "// 1= Allow auto creation of accounts, 0=disable auto account creation \n");
 	fprintf(file, "// If you disable it, you can easily create accounts using the ADDACCT\n");
 	fprintf(file, "// command in the Remote Administration console\n");
-	fprintf(file, "AUTO_CREATE_ACCTS %i\n", server_data.auto_a_create);
-	fprintf(file, "// Actually ignored \n");
-	fprintf(file, "AUTO_RELOAD_ACCTS %i\n", server_data.auto_a_reload);
+	fprintf(file, "AUTO_CREATE_ACCTS %i\n", server_data. create);
 	fprintf(file, "// if 0 it won't do char age checking. Else it's the number of days before a\n");
 	fprintf(file, "// user is able to delete a character \n");
 	fprintf(file, "CHECKCHARAGE %i\n", server_data.checkcharage) ;
@@ -859,8 +696,6 @@ void saveserverscript()
 	fprintf(file, "// Set if players can delete their charachters \n");
 	fprintf(file, "PLAYERCANDELETEROLES %d\n", ServerScp::g_nPlayersCanDeleteRoles ); // Ripper
 	fprintf(file, "// Set to enable books\n");
-	fprintf(file, "ENABLEBOOKS %d\n", ServerScp::g_nEnableBooks ); // Sparhawk;
-	fprintf(file, "// Set to unable unequipping items when equipping equivalent ones\n");
 	fprintf(file, "UNEQUIPONREEQUIP %d\n", ServerScp::g_nUnequipOnReequip ); // juliunus
 	fprintf(file, "// Set to equip on double-clicking\n");
 	fprintf(file, "EQUIPONDCLICK %d\n", ServerScp::g_nEquipOnDclick ); // Anthalir
@@ -1185,50 +1020,7 @@ void saveserverscript()
 	fprintf(file, "// time in minutes the account stay blocked\n");							//elcabesa tempblock
 	fprintf(file, "TIME_BLOCKED %i\n",server_data.time_badpass);							//elcabesa tempblock
 	fprintf(file, "}\n\n");
-
-
-	fprintf(file, "// Please *do not remove* this line and don't put any data after this line\n");
-	fprintf(file, "EOF\n\n");
-	fclose(file);
 }
-
-//xan : the road to madness : two level of fn ptrs calls... mmm one day I'll rewrite this!
-static int chooseSection(char *section,  int (*parseSec)(int (*parseLine)(char *s1, char *s2 )))
-{
-	if(!(strcmp(section, "SERVER"))) return parseSec(loadserver);
-	else if(!(strcmp(section, "BANK"))) return parseSec(loadserver);
-	else if(!(strcmp(section, "LOG"))) return parseSec(loadserver);
-	else if(!(strcmp(section, "BILLBOARDS"))) return parseSec(loadserver);
-	else if(!(strcmp(section, "STAMINA"))) return parseSec(loadserver);
-	else if(!(strcmp(section, "SKILLS"))) return parseSec(loadserver);
-	else if(!(strcmp(section, "TIMERS"))) return parseSec(loadserver);
-	else if(!(strcmp(section, "SPEED"))) return parseSec(loadspeed); // Zippy
-	else if(!(strcmp(section, "RESOURCE"))) return parseSec(loadresources);
-	else if(!(strcmp(section, "REPSYS"))) return parseSec(loadrepsys);
-	else if(!(strcmp(section, "TIME_LIGHT"))) return parseSec(loadtime_light);
-	else if(!(strcmp(section, "COMBAT"))) return parseSec(loadcombat);
-	else if(!(strcmp(section, "VENDOR"))) return parseSec(loadvendor);
-	else if(!(strcmp(section, "REGENERATE"))) return parseSec(loadregenerate);
-	else if(!(strcmp(section, "MAGIC_RESISTANCE"))) return parseSec(loadnxwoptions);
-	else if(!(strcmp(section, "REMOTE_ADMIN"))) return parseSec(loadnxwoptions);
-	else if(!(strcmp(section, "NOXWIZARD_SYSTEM"))) return parseSec(loadnxwoptions);
-	else if(!(strcmp(section, "WALKING"))) return parseSec(loadnxwoptions);
-	else if(!(strcmp(section, "PARTYSYSTEM"))) return parseSec(loadnxwoptions);
-	else if(!(strcmp(section, "WINDOWS"))) return parseSec(loadnxwoptions);
-	else if(!(strcmp(section, "LINUX"))) return parseSec(loadnxwoptions);
-	else if(!(strcmp(section, "MAP"))) return parseSec(loadnxwoptions);
-	else if(!(strcmp(section, "SHARD"))) return parseSec(loadinioptions);
-	else if(!(strcmp(section, "MULFILES"))) return parseSec(loadinioptions);
-	else if(!(strcmp(section, "START_LOCATIONS"))) return parseSec(loadstartlocs);
-	else if(!(strcmp(section, "PRELOAD"))) return parseSec(loadPreloads);
-	else if(!(strcmp(section, "NEWPLAYERS"))) return parseSec(loadnxwoptions);
-	else if(!(strcmp(section, "BLOCK_ACC_PSS"))) return parseSec(block_acc);	//elcabesa tempblock
-	return -90;
-}
-
-
-
-
 
 int cfg_command (char *commandstr)
 {
@@ -1281,5 +1073,3 @@ int cfg_command (char *commandstr)
 	//now we have section, property and value.. parse them all :)
 	return chooseSection(section, parseCfgLine);
 }
-
-

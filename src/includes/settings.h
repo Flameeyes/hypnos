@@ -82,6 +82,7 @@ namespace nSettings {
 		bool canUseItemsWhenInvisible();	//!< When invisible (by spell) can a player use items? [Default: false]
 		
 		uint32_t getObjectsDelay();
+		uint32_t getBandageDelay();
 	}
 	
 	//! Reputation system settings
