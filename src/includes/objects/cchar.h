@@ -362,16 +362,6 @@ public:
 	virtual bool updateFlag() = 0;
 //@}
 
-//@{
-/*!
-\name Races
-\brief Race related functions and attributes
-*/
-public:
-	int32_t 			race;				//!< Race index
-//@}
-
-
 public:
 	void			checkSafeStats();
 	virtual void		heartbeat() = 0;

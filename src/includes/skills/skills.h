@@ -195,7 +195,6 @@ namespace nSkills {
 	*/
 	void Cartography(pClient client);
 	pMap getEmptyMap(pChar pc);
-	void Decipher(pMap tmap, pClient client);
 	//@}
 
 	int GetAntiMagicalArmorDefence(pChar pc); //!< blackwind meditation armor stuff

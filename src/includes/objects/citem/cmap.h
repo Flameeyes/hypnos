@@ -74,6 +74,7 @@ public:
 	{ return pinData.size(); }
 
 	void doubleClicked(pClient client);
+	void decipher(pClient client);
 };
 
 #endif

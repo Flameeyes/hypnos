@@ -133,7 +133,7 @@ tests for internal data to show and internal functions to call.
 
 \li If the map is not a treasure map it plots the course of the pins in it.
 \li If the map is a treasure map and is not deciphered, it calls the
-nSkills::Decipher() function to decipher it.
+decipher() function to decipher it.
 \li If the map is a deciphere treasure map I actually don't know what it does :)
 
 \todo Add documentation about the third case described over here.
@@ -142,7 +142,7 @@ void cMap::doubleClicked(pClient client)
 {
 	if ( (flags & flagTreasure) && !(flags & flagDeciphered) ) {
 		//! \todo redo when treasures redone
-		nSkills::Decipher(this, client);
+		decipher(client);
 		return;
 	}
 	
@@ -174,4 +174,132 @@ void cMap::doubleClicked(pClient client)
 			client->sendPacket(&pki);
 		}
 	}
+}
+
+/*!
+\brief Attempt to decipher a tattered map
+\param client Client of the decipher
+
+Called by cMap::doubleClicked() when called for a not deciphered treasure map.
+*/
+void nSkills::decipher(pClient client)
+{
+	if ( ! client ) return;
+ 	pChar pc = client->currChar();
+	if ( ! pc ) return;
+
+	char sect[512];         // Needed for script search
+	int regtouse;           // Stores the region-number of the TH-region
+	int i;                  // Loop variable
+	int btlx, btly, blrx, blry; // Stores the borders of the tresure region (topleft x-y, lowright x-y)
+	int tlx, tly, lrx, lry;     // Stores the map borders
+	int x, y;                   // Stores the final treasure location
+	cScpIterator* iter = NULL;
+	char script1[1024];
+	
+	// Set the skill delay, no matter if it was a success or not
+	SetTimerSec(&pc->skilldelay, nSettings::Skills::getSkillDelay() );
+	pc->playSFX(0x0249);
+	
+	if( pc->skilldelay > getclock() && !pc->isGM()) // Char doin something?
+	{
+		client->sysmessage("You must wait to perform another action");
+		return;
+	}
+    
+	if ( ! pc->checkSkill( skCartography, morey * 10, 1000)) // Is the char skilled enaugh to decipher the map
+	{
+		client->sysmessage("You fail to decipher the map");
+		return;
+	}
+	
+	// Stores the new map
+	pItem nmap=item::CreateFromScript( 70025, pc->getBackpack() );
+	if (!nmap)
+	{
+		LogWarning("bad script item # 70025(Item Not found).");
+		return; //invalid script item
+	}
+
+	nmap->setCurrentName("a deciphered lvl.%d treasure map", morez);   // Give it the correct name
+	nmap->morez = morez;              // Give it the correct level
+	nmap->creator = pc->getCurrentName();  // Store the creator
+
+
+	sprintf(sect, "SECTION TREASURE %i", nmap->morez);
+
+	iter = Scripts::Regions->getNewIterator(sect);
+
+	if (iter == NULL)
+	{
+		LogWarning("Treasure hunting cMap::decipher : Unable to find 'SECTION TREASURE %d' in regions-script", nmap->morez);
+		return;
+	}
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());               // skip the {
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());               // Get the number of areas
+	regtouse = rand()%str2num(script1); // Select a random one
+	for (i = 0; i < regtouse; i++)      // Skip the ones before the correct one
+	{
+		strcpy(script1, iter->getEntry()->getFullLine().c_str());
+		strcpy(script1, iter->getEntry()->getFullLine().c_str());
+		strcpy(script1, iter->getEntry()->getFullLine().c_str());
+		strcpy(script1, iter->getEntry()->getFullLine().c_str());
+	}
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());
+	btlx = str2num(script1);
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());
+	btly = str2num(script1);
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());
+	blrx = str2num(script1);
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());
+	blry = str2num(script1);
+
+	safedelete(iter);
+
+	if ((btlx < 0) || (btly < 0) || (blrx > 0x13FF) || (blry > 0x0FFF)) // Valid region?
+	{
+		sprintf(sect, "Treasure Hunting cMap::decipher : Invalid region borders for lvl.%d , region %d", nmap->morez, regtouse+1);   // Give out detailed warning :D
+		LogWarning(sect);
+		return;
+	}
+	x = btlx + (rand()%(blrx-btlx));    // Generate treasure location
+	y = btly + (rand()%(blry-btly));
+	tlx = x - 250;      // Generate map borders
+	tly = y - 250;
+	lrx = x + 250;
+	lry = y + 250;
+	// Check if we are over the borders and correct errors
+	if (tlx < 0)    // Too far left?
+	{
+		lrx -= tlx; // Add the stuff too far left to the right border (tlx is neg. so - and - gets + ;)
+		tlx = 0;    // Set tlx to correct value
+	}
+	else if (lrx > 0x13FF) // Too far right?
+	{
+		tlx -= lrx - 0x13FF;    // Subtract what is to much from the left border
+		lrx = 0x13FF;   // Set lrx to correct value
+	}
+	if (tly < 0)    // Too far top?
+	{
+		lry -= tly; // Add the stuff too far top to the bottom border (tly is neg. so - and - gets + ;)
+		tly = 0;    // Set tly to correct value
+	}
+	else if (lry > 0x0FFF) // Too far bottom?
+	{
+		tly -= lry - 0x0FFF;    // Subtract what is to much from the top border
+		lry = 0x0FFF;   // Set lry to correct value
+	}
+	nmap->more1 = tlx>>8;   // Store the map extends
+	nmap->more2 = tlx%256;
+	nmap->more3 = tly>>8;
+	nmap->more4 = tly%256;
+	nmap->moreb1 = lrx>>8;
+	nmap->moreb2 = lrx%256;
+	nmap->moreb3 = lry>>8;
+	nmap->moreb4 = lry%256;
+	nmap->morex = x;        // Store the treasure's location
+	nmap->morey = y;
+	Delete();    // Delete the tattered map
+
+	client->sysmessage("You put the deciphered tresure map in your pack");
 }

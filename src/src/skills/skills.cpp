@@ -741,7 +741,7 @@ void Skills::SpiritSpeak(pClient client)
 {
 	if ( ! client ) //Luxor
 		return;
-	pChar pc=cSerializable::findCharBySerial(currchar[s]);
+	pChar pc = client->currChar();
 	//  Unsure if spirit speaking should they attempt again?
 	//  Suggestion: If they attempt the skill and the timer is !0 do not have it raise the skill
 	
@@ -791,7 +791,7 @@ void Skills::SkillUse(pClient client, int x)
 		return; //Luxor: cannot use skills if under invisible spell
 
 	//<Luxor> 7 dec 2001
-	if (skillinfo[x].unhide_onuse == 1)
+	if (skillinfo[x].unhide_onuse)
 		pc->unHide();
 	//</Luxor>
 
@@ -808,148 +808,149 @@ void Skills::SkillUse(pClient client, int x)
 
 	bool setSkillDelay = true;
 
+#if 0
 	if( Race::isRaceSystemActive() && !(Race::getRace( pc->race )->getCanUseSkill( (uint32_t) x )) )
 	{
 		client->sysmessage("Your race cannot use that skill");
 		setSkillDelay = false;
+		AMXEXECSV( pc->getSerial(),AMXT_SKILLS, x, AMX_AFTER);
+		return;
 	}
-	else
+#endif
+	
+	pTarget targ=NULL;
+	switch(x)
 	{
-		pTarget targ=NULL;
-		switch(x)
-		{
-			case skArmsLore:
-				targ=clientInfo[s]->newTarget( new cItemTarget() );
-				targ->code_callback=target_armsLore;
-				targ->send( ps );
-				client->sysmessage( "What item do you wish to get information about?");
-				break;
+	case skArmsLore:
+		targ=clientInfo[s]->newTarget( new cItemTarget() );
+		targ->code_callback=target_armsLore;
+		targ->send( ps );
+		client->sysmessage( "What item do you wish to get information about?");
+		break;
 
-			case skAnatomy:
-				break;
+	case skAnatomy:
+		break;
 
-			case skItemID:
-				targ=clientInfo[s]->newTarget( new cItemTarget() );
-				targ->code_callback=Skills::target_itemId;
-				targ->send( ps );
-				client->sysmessage( "What do you wish to appraise and identify?");
-				break;
+	case skItemID:
+		targ=clientInfo[s]->newTarget( new cItemTarget() );
+		targ->code_callback=Skills::target_itemId;
+		targ->send( ps );
+		client->sysmessage( "What do you wish to appraise and identify?");
+		break;
 
-			case skEvaluatingIntelligence:
-				break;
+	case skEvaluatingIntelligence:
+		break;
 
-			case skTaming:
-				targ=clientInfo[s]->newTarget( new cCharTarget() );
-				targ->code_callback=target_tame;
-				targ->send( ps );
-				client->sysmessage( "Tame which animal?");
-				break;
+	case skTaming:
+		targ=clientInfo[s]->newTarget( new cCharTarget() );
+		targ->code_callback=target_tame;
+		targ->send( ps );
+		client->sysmessage( "Tame which animal?");
+		break;
 
-			case skHiding:
-				Skills::Hide(s);
-				break;
+	case skHiding:
+		Skills::Hide(s);
+		break;
 
-			case skStealth:
-				Skills::Stealth(s);
-				break;
+	case skStealth:
+		Skills::Stealth(s);
+		break;
 
-			case skDetectingHidden:
-				targ=clientInfo[s]->newTarget( new cLocationTarget() );
-				targ->code_callback=target_detectHidden;
-				targ->send( ps );
-				client->sysmessage( "Where do you wish to search for hidden characters?");
-				break;
+	case skDetectingHidden:
+		targ=clientInfo[s]->newTarget( new cLocationTarget() );
+		targ->code_callback=target_detectHidden;
+		targ->send( ps );
+		client->sysmessage( "Where do you wish to search for hidden characters?");
+		break;
 
-			case skPeacemaking:
-				Skills::PeaceMaking(s);
-				break;
+	case skPeacemaking:
+		Skills::PeaceMaking(s);
+		break;
 
-			case skProvocation:
-				targ=clientInfo[s]->newTarget( new cCharTarget() );
-				targ->code_callback=target_provocation1;
-				targ->send( ps );
-				client->sysmessage( "Whom do you wish to incite?");
-				break;
+	case skProvocation:
+		targ=clientInfo[s]->newTarget( new cCharTarget() );
+		targ->code_callback=target_provocation1;
+		targ->send( ps );
+		client->sysmessage( "Whom do you wish to incite?");
+		break;
 
-			case skEnticement:
-				targ=clientInfo[s]->newTarget( new cCharTarget() );
-				targ->code_callback=target_enticement1;
-				targ->send( ps );
-				client->sysmessage( "Whom do you wish to entice?");
-				break;
+	case skEnticement:
+		targ=clientInfo[s]->newTarget( new cCharTarget() );
+		targ->code_callback=target_enticement1;
+		targ->send( ps );
+		client->sysmessage( "Whom do you wish to entice?");
+		break;
 
-			case skSpiritSpeak:
-				Skills::SpiritSpeak(s);
-				break;
+	case skSpiritSpeak:
+		Skills::SpiritSpeak(s);
+		break;
 
-			case skStealing:
-				targ=clientInfo[s]->newTarget( new cObjectTarget() );
-				targ->code_callback=target_stealing;
-				targ->send( ps );
-				client->sysmessage( "What do you wish to steal?");
-				break;
+	case skStealing:
+		targ=clientInfo[s]->newTarget( new cObjectTarget() );
+		targ->code_callback=target_stealing;
+		targ->send( ps );
+		client->sysmessage( "What do you wish to steal?");
+		break;
 
-			case skInscription:
-				break;
+	case skInscription:
+		break;
 
-			case skTracking:
-				break;
+	case skTracking:
+		break;
 
-			case skBegging:
-				targ=clientInfo[s]->newTarget( new cCharTarget() );
-				targ->code_callback = Begging::target;
-				targ->send( ps );
-				client->sysmessage( "Whom do you wish to annoy?");
-				break;
+	case skBegging:
+		targ=clientInfo[s]->newTarget( new cCharTarget() );
+		targ->code_callback = Begging::target;
+		targ->send( ps );
+		client->sysmessage( "Whom do you wish to annoy?");
+		break;
 
-			case skAnimalLore:
-				targ=clientInfo[s]->newTarget( new cCharTarget() );
-				targ->code_callback=Skills::target_animalLore;
-				targ->send( ps );
-				client->sysmessage( "What animal do you wish to get information about?");
-				break;
+	case skAnimalLore:
+		targ=clientInfo[s]->newTarget( new cCharTarget() );
+		targ->code_callback=Skills::target_animalLore;
+		targ->send( ps );
+		client->sysmessage( "What animal do you wish to get information about?");
+		break;
 
-			case skForensics:
-				targ=clientInfo[s]->newTarget( new cItemTarget() );
-				targ->code_callback=Skills::target_forensics;
-				targ->send( ps );
-				client->sysmessage( "What corpse do you want to examine?");
-				break;
+	case skForensics:
+		targ=clientInfo[s]->newTarget( new cItemTarget() );
+		targ->code_callback=Skills::target_forensics;
+		targ->send( ps );
+		client->sysmessage( "What corpse do you want to examine?");
+		break;
 
-			case skPoisoning:
-				targ=clientInfo[s]->newTarget( new cItemTarget() );
-				targ->code_callback=Skills::target_poisoning;
-				targ->send( ps );
-				client->sysmessage( "What poison do you want to apply?");
-				break;
+	case skPoisoning:
+		targ=clientInfo[s]->newTarget( new cItemTarget() );
+		targ->code_callback=Skills::target_poisoning;
+		targ->send( ps );
+		client->sysmessage( "What poison do you want to apply?");
+		break;
 
-			case skTasteID:
-				break;
+	case skTasteID:
+		break;
 
-			case skMeditation:  //Morrolan - Meditation
-				Skills::Meditation(s);
-				break;
+	case skMeditation:  //Morrolan - Meditation
+		Skills::Meditation(s);
+		break;
 
-			case skRemoveTraps:
-				targ=clientInfo[s]->newTarget( new cItemTarget() );
-				targ->code_callback=target_removeTraps;
-				targ->send( ps );
-				client->sysmessage( "What do you want to untrap?");
-				break;
+	case skRemoveTraps:
+		targ=clientInfo[s]->newTarget( new cItemTarget() );
+		targ->code_callback=target_removeTraps;
+		targ->send( ps );
+		client->sysmessage( "What do you want to untrap?");
+		break;
 
-			case skCartography:
-				Skills::Cartography(s);
-				break;
+	case skCartography:
+		Skills::Cartography(s);
+		break;
 
-			default:
-				client->sysmessage("That skill has not been implemented yet.");
-				setSkillDelay = false;
-				break;
-		}
-        //<Luxor>: Complete skills handling by AMX
-		AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMX_SKILLS_MAIN), s, x);
-        //</Luxor>
+	default:
+		client->sysmessage("That skill has not been implemented yet.");
+		setSkillDelay = false;
+		break;
 	}
+	//<Luxor>: Complete skills handling by AMX
+	AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMX_SKILLS_MAIN), s, x);
 
 	if ( setSkillDelay )
 		SetSkillDelay(pc);
@@ -1375,132 +1376,3 @@ pMap nSkills::getEmptyMap(pChar pc)
 	return false;
 }
 
-/*!
-\brief Attempt to decipher a tattered map
-\param tmap Map to decipher
-\param client Client of the decipher
-
-Called by cMap::doubleClicked() when called for a not deciphered treasure map.
-*/
-void nSkills::Decipher(pMap tmap, pClient client)
-{
-	if ( ! client ) //Luxor
-		return;
- 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return;
-
-	char sect[512];         // Needed for script search
-	int regtouse;           // Stores the region-number of the TH-region
-	int i;                  // Loop variable
-	int btlx, btly, blrx, blry; // Stores the borders of the tresure region (topleft x-y, lowright x-y)
-	int tlx, tly, lrx, lry;     // Stores the map borders
-	int x, y;                   // Stores the final treasure location
-	cScpIterator* iter = NULL;
-	char script1[1024];
-	
-	// Set the skill delay, no matter if it was a success or not
-	SetTimerSec(&pc->skilldelay, nSettings::Skills::getSkillDelay() );
-	pc->playSFX(0x0249);
-	
-	if( pc->skilldelay > getclock() && !pc->isGM()) // Char doin something?
-	{
-		client->sysmessage("You must wait to perform another action");
-		return;
-	}
-    
-	if ( ! pc->checkSkill( skCartography, tmap->morey * 10, 1000)) // Is the char skilled enaugh to decipher the map
-	{
-		client->sysmessage("You fail to decipher the map");
-		return;
-	}
-	
-	// Stores the new map
-	pItem nmap=item::CreateFromScript( 70025, pc->getBackpack() );
-	if (!nmap)
-	{
-		LogWarning("bad script item # 70025(Item Not found).");
-		return; //invalid script item
-	}
-
-	nmap->setCurrentName("a deciphered lvl.%d treasure map", tmap->morez);   // Give it the correct name
-	nmap->morez = tmap->morez;              // Give it the correct level
-	nmap->creator = pc->getCurrentName();  // Store the creator
-
-
-	sprintf(sect, "SECTION TREASURE %i", nmap->morez);
-
-	iter = Scripts::Regions->getNewIterator(sect);
-
-	if (iter == NULL)
-	{
-		LogWarning("Treasure hunting cSkills::Decipher : Unable to find 'SECTION TREASURE %d' in regions-script", nmap->morez);
-		return;
-	}
-	strcpy(script1, iter->getEntry()->getFullLine().c_str());               // skip the {
-	strcpy(script1, iter->getEntry()->getFullLine().c_str());               // Get the number of areas
-	regtouse = rand()%str2num(script1); // Select a random one
-	for (i = 0; i < regtouse; i++)      // Skip the ones before the correct one
-	{
-		strcpy(script1, iter->getEntry()->getFullLine().c_str());
-		strcpy(script1, iter->getEntry()->getFullLine().c_str());
-		strcpy(script1, iter->getEntry()->getFullLine().c_str());
-		strcpy(script1, iter->getEntry()->getFullLine().c_str());
-	}
-	strcpy(script1, iter->getEntry()->getFullLine().c_str());
-	btlx = str2num(script1);
-	strcpy(script1, iter->getEntry()->getFullLine().c_str());
-	btly = str2num(script1);
-	strcpy(script1, iter->getEntry()->getFullLine().c_str());
-	blrx = str2num(script1);
-	strcpy(script1, iter->getEntry()->getFullLine().c_str());
-	blry = str2num(script1);
-
-	safedelete(iter);
-
-	if ((btlx < 0) || (btly < 0) || (blrx > 0x13FF) || (blry > 0x0FFF)) // Valid region?
-	{
-		sprintf(sect, "Treasure Hunting cSkills::Decipher : Invalid region borders for lvl.%d , region %d", nmap->morez, regtouse+1);   // Give out detailed warning :D
-		LogWarning(sect);
-		return;
-	}
-	x = btlx + (rand()%(blrx-btlx));    // Generate treasure location
-	y = btly + (rand()%(blry-btly));
-	tlx = x - 250;      // Generate map borders
-	tly = y - 250;
-	lrx = x + 250;
-	lry = y + 250;
-	// Check if we are over the borders and correct errors
-	if (tlx < 0)    // Too far left?
-	{
-		lrx -= tlx; // Add the stuff too far left to the right border (tlx is neg. so - and - gets + ;)
-		tlx = 0;    // Set tlx to correct value
-	}
-	else if (lrx > 0x13FF) // Too far right?
-	{
-		tlx -= lrx - 0x13FF;    // Subtract what is to much from the left border
-		lrx = 0x13FF;   // Set lrx to correct value
-	}
-	if (tly < 0)    // Too far top?
-	{
-		lry -= tly; // Add the stuff too far top to the bottom border (tly is neg. so - and - gets + ;)
-		tly = 0;    // Set tly to correct value
-	}
-	else if (lry > 0x0FFF) // Too far bottom?
-	{
-		tly -= lry - 0x0FFF;    // Subtract what is to much from the top border
-		lry = 0x0FFF;   // Set lry to correct value
-	}
-	nmap->more1 = tlx>>8;   // Store the map extends
-	nmap->more2 = tlx%256;
-	nmap->more3 = tly>>8;
-	nmap->more4 = tly%256;
-	nmap->moreb1 = lrx>>8;
-	nmap->moreb2 = lrx%256;
-	nmap->moreb3 = lry>>8;
-	nmap->moreb4 = lry%256;
-	nmap->morex = x;        // Store the treasure's location
-	nmap->morey = y;
-	tmap->Delete();    // Delete the tattered map
-
-	client->sysmessage("You put the deciphered tresure map in your pack");
-}
