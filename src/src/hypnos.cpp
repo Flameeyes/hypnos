@@ -449,6 +449,8 @@ int main(int argc, char *argv[])
 	tiledataLand = new nMULFiles::fTiledataLand();
 	
 	// Load datafiles
+	nMOTD::loadMOTD();
+	nLoginServer::loadLoginServer();
 	nNewbies::loadStartLocations();
 	nNewbies::loadNewbieItems();
 	nSkills::loadSkills();
