@@ -16,56 +16,69 @@
 WSADATA wsaData;
 WORD wVersionRequested;
 long int oldtime, newtime;
-	
-/*!
-\brief Gets a string value from the KHEY_LOCAL_MACHINE registry
-\author Xanathar [NoX]
-\param key the key name
-\param subjey subkey name
-*/
-char* getHKLMRegistryString(char *key, char *subkey)
+
+bool winSockInit()
 {
-	// Get values from registry, use REGEDIT to see how data is stored
-	HKEY hTestKey;
-	DWORD dwRegType, dwBuffSize;
-	unsigned char val[5000];
-
-	if (RegOpenKeyEx (HKEY_LOCAL_MACHINE, key, 0, KEY_READ,  &hTestKey) == ERROR_SUCCESS)
+	wVersionRequested=0x0002;
+	int err = WSAStartup(wVersionRequested, &wsaData);
+	if (err!=0)
 	{
-		dwBuffSize = 4096;
-
-		int ret = RegQueryValueEx (hTestKey, subkey, NULL,  &dwRegType,  val,  &dwBuffSize);
-		if (ret!=ERROR_SUCCESS) return NULL;
-		int n = strlen((const char *)val);
-		char *p = new char[n+4];
-		strcpy(p,(const char *)val);
-		RegCloseKey (hTestKey);
-		return p;
+		if (ServerScp::g_nDeamonMode==0)
+			MessageBox(NULL,
+				"Winsock 2.0 not found. This program requires Winsock 2.0 or later.",
+				"Hypnos Network initialization",
+				MB_ICONSTOP
+				);
+		
+		ErrOut("ERROR: Winsock 2.0 not found...\n");
+		return false;
 	}
-
-	return NULL;
-
+	return true;
 }
 
-/*!
-\brief Sets a key in the HKEY_LOCAL_MACHINE registry
-\author Xanathar [NoX]
-\param key the key name
-\param subkey subkey name
-\param value value to set the key to
-*/
-void setHKLMRegistryString(char *key, char *subkey, char *value)
+void sockManageError(int na)
 {
-	// Demonstrate registry open and create functions
-	HKEY hTestKey;
-	DWORD dwCreateResult;
-
-	// Access using preferred 'Ex' functions
-	if (RegCreateKeyEx (HKEY_LOCAL_MACHINE, key, 0, subkey, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,  &hTestKey,  &dwCreateResult) == ERROR_SUCCESS)
-	{
-		RegSetValueEx(hTestKey, subkey, 0, REG_SZ, (CONST uint8_t *)value, strlen(value));
-		RegCloseKey (hTestKey);
+	int bcode = WSAGetLastError ();
+	
+	const char char *strError = NULL;
+	switch(bcode) {
+		case WSANOTINITIALISED :
+			strError = "Winsock2 initialization problems";
+			break;
+		case WSAENETDOWN:
+			strError = "Network subsystem failure";
+			break;
+		case WSAEADDRINUSE:
+			strError = "Address+port already in use";
+			break;
+		case WSAEADDRNOTAVAIL:
+			strError = "Address use not valid for this machine";
+			break;
+		case WSAEFAULT:
+			strError = "Access violation during binding";
+			break;
+		case WSAEINPROGRESS:
+			strError = "Service provider busy";
+			break;
+		case WSAEINVAL:
+			strError = "Socket already bound";
+			break;
+		case WSAENOBUFS:
+			strError = "Not enough buffers available";
+			break;
+		case WSAENOTSOCK:
+			strError = "Invalid socket";
+			break;
+		default:
+			strError = "Unknown error";
+			break;
 	}
+	
+	ErrOut("ERROR: Unable to bind socket (code %d)\n"
+		"\tError string: %s\n", bcode, strError);
+
+	if (ServerScp::g_nDeamonMode==0)
+		MessageBox(NULL, strError, "Hypnos network error [bind]", MB_ICONSTOP);
 }
 
 /*!
@@ -209,9 +222,11 @@ uint32_t getsysclock()
 
 char *basename(char *path)
 {
-	char *ret= path+strlen(path);				// ret= end of string path
+	// ret= end of string path
+	char *ret= path+strlen(path);
 
-	while( (*ret!='\\') && (*ret!='/') ) ret--;	// stop on the first '/' or '\' encountered
+	// stop on the first '/' or '\' encountered
+	while( (*ret!='\\') && (*ret!='/') ) ret--;
 	return ++ret;
 }
 

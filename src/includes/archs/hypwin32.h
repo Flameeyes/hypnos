@@ -28,8 +28,6 @@
 
 char *basename(char *path);
 
-char *getHKLMRegistryString(char *key, char *subkey);
-void setHKLMRegistryString(char *key, char *subkey, char *value);
 char *splitPath (char *p);
 
 void init_deamon();
@@ -43,6 +41,8 @@ inline void start_signal_thread() {return;}
 extern WSADATA wsaData;
 extern WORD wVersionRequested;
 extern long int oldtime, newtime;
+
+bool winSockInit();
 
 typedef int FAR socklen_t ;
 

@@ -791,7 +791,7 @@ char cNetwork::LogOut(pClient client)//Instalog
 	if ( p_multi && !valid && (pack = pc->getBackpack()) )
 	{ //It they are in a multi... and it's not already valid (if it is why bother checking?)
 	
-		pItem key = NULL
+		pItem key = NULL;
 		
 		while( (key = pack->searchForType(ITYPE_KEY)) )
 		{
@@ -859,20 +859,14 @@ void cNetwork::sockInit()
 	kr=1;
 	faul=0;
 
-#ifndef __unix__
-	wVersionRequested=0x0002;
-	err = WSAStartup(wVersionRequested, &wsaData);
-	if (err!=0)
+#ifdef WIN32
+	if ( ! winSockInit() )
 	{
-		if (ServerScp::g_nDeamonMode==0) MessageBox(NULL, "Winsock 2.0 not found. This program requires Winsock 2.0 or later. ", "Hypnos Network initialization", MB_ICONSTOP);
-		ErrOut("ERROR: Winsock 2.0 not found...\n");
 		keeprun=false;
 		error=1;
 		kr=0;
 		faul=1;
-		return;
 	}
-	static char temp[600];
 #endif
 
 	a_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -897,48 +891,8 @@ void cNetwork::sockInit()
 
 	if (bcode!=0)
 	{
-#ifdef WIN32
-		bcode = WSAGetLastError ();
-		switch(bcode) {
-			case WSANOTINITIALISED :
-				sprintf(temp, "Winsock2 initialization problems (%d)", bcode);
-				break;
-			case WSAENETDOWN:
-				sprintf(temp, "Network subsystem failure (%d)", bcode);
-				break;
-			case WSAEADDRINUSE:
-				sprintf(temp, "Address+port already in use (%d)", bcode);
-				break;
-			case WSAEADDRNOTAVAIL:
-				sprintf(temp, "Address use not valid for this machine (%d)", bcode);
-				break;
-			case WSAEFAULT:
-				sprintf(temp, "Access violation during binding (%d)", bcode);
-				break;
-			case WSAEINPROGRESS:
-				sprintf(temp, "Service provider busy (%d)", bcode);
-				break;
-			case WSAEINVAL:
-				sprintf(temp, "Socket already bound (%d)", bcode);
-				break;
-			case WSAENOBUFS:
-				sprintf(temp, "Not enough buffers available (%d)", bcode);
-				break;
-			case WSAENOTSOCK:
-				sprintf(temp, "Invalid socket (%d)", bcode);
-				break;
-			default:
-				sprintf(temp, "Unknown error (%d)", bcode);
-				break;
-		}
-		ErrOut("ERROR: Unable to bind socket\n    Error code: %s\n",temp);
-
-	if (ServerScp::g_nDeamonMode==0) {
-		MessageBox(NULL, temp, "Hypnos network error [bind]", MB_ICONSTOP);
-	}
-#else
-		ErrOut("ERROR: Unable to bind socket - Error code: %i\n",bcode);
-#endif
+		sockManageError(bcode); // OS-Dependant error managing
+		
 		keeprun=false;
 		error=1;
 		kr=0;
@@ -957,17 +911,16 @@ void cNetwork::sockInit()
 		faul=1;
 		return;
 	}
+	
 	// Ok, we need to set this socket (or listening one as non blocking).  The reason is we d a
 	// select, and then do an accept.  However, if the client has terminated the connection between the small
 	// time from the select and accept, we would block (accept is blocking).  So, set it non blocking
 	uint32_t nonzero = 1;
 #if defined(__unix__)
 	ioctl(a_socket,FIONBIO,&nonzero) ;
-#endif
-#ifdef _CONSOLE
+#elif defined _CONSOLE
 	ioctlsocket(a_socket,FIONBIO,&nonzero) ;
-#endif
-#ifdef _WINDOWS
+#elif defined _WINDOWS
 	bcode = WSAAsyncSelect (a_socket, g_HWnd, 0, 0);
 #endif
 

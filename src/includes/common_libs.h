@@ -86,6 +86,15 @@ uint32_t getclock();
 uint32_t getsysclock();
 uint32_t getclockday();
 void initclock();
+
+/*!
+\brief Manages a socket error
+\param bcode Return value of bind() call
+
+\note This is an OS-dependant function, because WinSock version diregard
+	\c bcode parameter and get a new one from WinSock system.
+*/
+void sockManageError(int bcode);
 //@}
 
 using namespace nLibhypnos;

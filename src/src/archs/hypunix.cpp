@@ -11,6 +11,11 @@
 #include "common_libs.h"
 #include <fstream>
 
+void sockManageError(int bcode)
+{
+	ErrOut("ERROR: Unable to bind socket - Error code: %i\n", bcode);
+}
+
 termios termstate;
 unsigned long int oldtime, newtime;
 	

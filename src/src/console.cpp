@@ -11,11 +11,6 @@
 
 static FILE *s_fileStdOut = NULL;
 
-void clearscreen( void )
-{
-	ConOut("__________________________________________________________________________\n\n");
-}
-
 void setWinTitle(char *str, ...)
 {
 	if (ServerScp::g_nDeamonMode!=0) return;
