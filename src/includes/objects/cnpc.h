@@ -49,6 +49,27 @@ public:
 protected:
 	//! Heartbeat for NPCs
 	void heartbeat();
+public:
+	bool updateFlag();
+
+//@{
+/*!
+\name Stabling
+*/
+protected:
+	pNPC stablemaster;	//!< The stablemaster
+public:
+	//! Check if char is stabled
+	inline const bool isStabled() const
+	{ return stablemaster; }
+
+	//! Get the character's stablemaster
+	inline const pNPC getStablemaster() const
+	{ return stablemaster; }
+
+	void stable( pNPC sm );
+	void unStable();
+//@}
 
 };
 

@@ -36,9 +36,6 @@ void callguards( int p );
 void charcreate(NXWSOCKET  s);			//!< All the character creation stuff
 void usepotion(P_CHAR pc, P_ITEM pi);
 
-void setcharflag(P_CHAR pc);
-LOGICAL setcharflag2(P_CHAR pc);
-
 void newScriptsInit();
 void deleteNewScripts();
 

@@ -873,8 +873,7 @@ void cChar::unHide()
 		stealth=-1;
 		hidden=UNHIDDEN;
 
-		// unhidesendchar port by Akron
-		setcharflag2(this);//AntiChrist - bugfix for highlight color not being updated
+		updateFlag();//AntiChrist - bugfix for highlight color not being updated
 
 		SERIAL my_serial = getSerial32();
 		Location my_pos = getPosition();
@@ -998,9 +997,9 @@ void cChar::MoveTo(Location newloc)
 		return;
 
 	// <Luxor>
-	if ( newloc != getPosition() && (flags2 & flag2IsCasting) && !npc ) {
+	if ( newloc != getPosition() && (flags & flagIsCasting) && !npc ) {
 		sysmsg( "You stop casting the spell." );
-		flags2 &= ~flag2IsCasting;
+		flags &= ~flagIsCasting;
 		spell = magic::SPELL_INVALID;
 		spelltime = 0;
 	}
@@ -1157,7 +1156,7 @@ void cChar::unfreeze( LOGICAL calledByTempfx )
 	if ( isFrozen() )
 	{
 		priv2 &= ~flagPriv2Frozen;
-		if (!(flags2 & flag2IsCasting)) //Luxor
+		if (!(flags & flagIsCasting)) //Luxor
 			sysmsg(TRANSLATE("You are no longer frozen."));
 	}
 }
@@ -1615,7 +1614,7 @@ void cChar::teleport( UI08 flags, NXWCLIENT cli )
 	} else
 		setMultiSerial(INVALID);
 
-	setcharflag2( this ); //AntiChrist - Update highlight color
+	updateFlag();	//AntiChrist - Update highlight color
 
 	NXWSOCKET socket = getSocket();
 
@@ -2815,7 +2814,7 @@ void cChar::Kill()
 
 					if (pKiller->kills==(unsigned)repsys.maxkills)
 						pKiller->sysmsg(TRANSLATE("You are now a murderer!"));
-					setcharflag(pKiller);
+					pKiller->updateFlag();
 
 				if (SrvParms->pvp_log)
 				{
@@ -2901,7 +2900,7 @@ void cChar::Kill()
 
 					if (pk->kills==(unsigned)repsys.maxkills)
 						pk->sysmsg(TRANSLATE("You are now a murderer!"));
-					setcharflag(pk);
+					pk->updateFlag();
 
 				if (SrvParms->pvp_log)
 				{
@@ -3960,9 +3959,9 @@ void cChar::pc_heartbeat()
 		murderrate = ( repsys.murderdecay * MY_CLOCKS_PER_SEC ) + uiCurrentTime;
 	}
 
-	setcharflag2( this );
+	updateFlag();
 
-	if ( flags2 & flag2IsCasting )
+	if ( flags & flagIsCasting )
 	{
 		if ( TIMEOUT( spelltime ) )//Spell is complete target it.
 		{
@@ -3978,7 +3977,7 @@ void cChar::pc_heartbeat()
 		    		TargetLocation TL( this );
 				magic::castSpell( spell, TL, this );
 			}
-			flags &= ~flag2IsCasting;
+			flags &= ~flagIsCasting;
 			spelltime = 0;
 		}
 		else if ( TIMEOUT( nextact ) ) //redo the spell action
@@ -4182,17 +4181,16 @@ void cChar::npc_heartbeat()
 		if( TIMEOUT( timeout )  )
 			combatHit( pointers::findCharBySerial( swingtargserial ) );
 
-	setcharflag2( this );
-
+	updateFlags();
 
 	//
 	//	Handle spell casting (Luxor)
 	//
-	if ( flags2 & flag2IsCasting ) {
+	if ( flags & flagIsCasting ) {
 		if ( TIMEOUT( spelltime ) ) {
 			if ( spellTL != NULL ) {
 	    			magic::castSpell( spell, *spellTL, this, NPCMAGIC_FLAGS );
-				flags2 &= flag2IsCasting;
+				flags &= flagIsCasting;
 				spelltime = 0;
 				safedelete( spellTL );
 			}
@@ -4465,39 +4463,6 @@ void cChar::updateRegenTimer( StatType stat )
 	if( stat>=ALL_STATS ) return;
 	regens[stat].timer= uiCurrentTime+ regens[stat].rate_eff*MY_CLOCKS_PER_SEC;
 }
-/*
-LOGICAL cChar::isValidAmxEvent( UI32 eventId )
-{
-	if( eventId < ALLCHAREVENTS )
-		return true;
-	else
-		return false;
-}
-*/
-
-/*
-\brief Stable the character
-\author Endymion
-\param stablemaster the stablemaster
-*/
-void cChar::stable( P_CHAR stablemaster )
-{
-	VALIDATEPC(stablemaster);
-	if( !this->npc ) return;
-	this->stablemaster_serial=stablemaster->getSerial32();
-	pointers::addToStableMap( this );
-}
-
-/*
-\brief Unstable the character
-\author Endymion
-*/
-void cChar::unStable()
-{
-	if( !isStabled() ) return;
-	pointers::delFromStableMap( this );
-	this->stablemaster_serial=INVALID;
-}
 
 /*!
 \brief increase or decrease the karma of the char
@@ -4709,12 +4674,15 @@ const LOGICAL cChar::checkSkillSparrCheck(Skill sk, SI32 low, SI32 high, P_CHAR 
 */
 void cChar::useHairDye(pItem bottle)
 {
-	if ( ! bottle ) return;
+	if ( ! bottle || ! body ) return;
+
+	pItem beard = body->getLayerItem(layBeard),
+		hair = body->getLayerItem(layHair);
 
 	if ( beard )
 		beard->setColor( bottle->getColor() );
-	if ( hairs )
-		hairs->setColor( bottle->getColor() );
+	if ( hair )
+		hair->setColor( bottle->getColor() );
 
 	bottle->Delete();	//Now delete the hair dye bottle!
 }

@@ -27,7 +27,7 @@
 
 /*!
 \brief Add item by ID
-\author Anthalir - Rewrote by Flmaeeyes
+\author Anthalir - Rewrote by Flameeyes
 \param id id of the item to add
 \param nAmount amount of items to add
 \param cName name of the item to add
@@ -430,13 +430,15 @@ void cItem::getPopupHelp(char *str)
 }
 
 /*!
+\author Flameeyes
 \brief Set the item's container
 \param obj New (actual) container
-\param update Update the container map?
+\note This function insert the item in the container's list or in the layers
+	of the wearing body.
 */
 void cItem::setContainer(pObject obj)
 {
-	if ( obj->rtti() != rtti::cContainer && obj->rtti() != rtti::cBody )
+	if ( obj && obj->rtti() != rtti::cContainer && obj->rtti() != rtti::cBody )
 		return;
 
 	oldcont = cont;
@@ -445,8 +447,10 @@ void cItem::setContainer(pObject obj)
 	if ( ! obj )
 		setDecayTime();
 
-	if ( update )
-		pointers::updContMap(this);
+	if ( cont && cont->rtti() == rtti::cContainer )
+		(reinterpret_cast<pContainer>cont)->insertItem(this);
+	else if (cont && cont->rtti() == rtti::cBody )
+		(reinterpret_cast<pBody>cont)->setLayerItem(layer, this);
 }
 
 /*!
@@ -704,7 +708,7 @@ int cItem::handleEvent(UI08 code, UI08 nParams, UI32 *params)
 */
 const std::string cItem::getRealItemName()
 {
-	if ( current_name == "#" 0
+	if ( current_name == "#" )
 	{
 		tile_st tile;
 		data::seekTile(getId(), tile);

@@ -27,15 +27,12 @@ public:
 	inline cPC() : cChar()
 	{ }
 
-	inline cPC(UI32 serial) : cChar(serial)
-	{ }
-
 protected:
 	//! Heartbeat for PCs
 	void		heartbeat();
 
 public:
-
+	bool		updateFlag();
 //@{
 /*!
 \name Trainer

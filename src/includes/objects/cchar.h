@@ -295,12 +295,11 @@ public:
 	const bool canDoGestures() const;
 	const bool inDungeon() const;
 
-
-	//! Set the karma of the char
-	inline void		SetKarma(SI32 newkarma)
+	//! Sets char's karma
+	inline void setKarma(SI32 newkarma)
 	{ karma = newkarma; }
 
-	inline void		SetFame(SI32 newfame)
+	inline void setFame(SI32 newfame)
 	{ fame=newfame; }
 
 	inline void setFrozen(bool set = true)
@@ -331,7 +330,7 @@ public:
 	{ setFlag(flagInvulnerable, set); }
 
 	//! Makes a character temporary grey
-	inline void SetGrey()
+	inline void setGrey()
 	{ if (!npc) tempfx::add(this, this, tempfx::GREY, 0, 0, 0, 0x7FFF); }
 
 	/*!
@@ -353,6 +352,12 @@ public:
 
 	void unHide();
 
+	/*!
+	\brief Update character's flag (reputation)
+	\author Unknown - backport by Flameeyes
+	\return true if the flag has changed
+	*/
+	virtual bool updateFlag() = 0;
 //@}
 
 //@{
@@ -566,20 +571,6 @@ public:
 
 		void deleteSpeechCurrent();
 
-	private:
-		pChar stablemaster;	//!< The stablemaster
-	public:
-		//! Check if char is stabled
-		inline const bool isStabled() const
-		{ return stablemaster; }
-
-		//! Get the character's stablemaster
-		inline const pChar getStablemaster() const
-		{ return stablemaster; }
-
-		void stable( pChar sm );
-		void unStable();
-
 	public:
 		SERIAL oldmenu; //!< old menu serial
 
@@ -720,7 +711,7 @@ public:
 		{ memset(skill, 0, sizeof(skill)); }
 
 		inline void resetFlags()
-		{ flags = 0; flags2 = 0; }
+		{ flags = 0; }
 
 		inline void resetAmxEvents()
 		{ memset(amxevents, 0, sizeof(amxevents)); }

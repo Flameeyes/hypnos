@@ -48,6 +48,7 @@ public:
 	UI32		countItems(UI32 scriptID, bool total = false);
 	UI32		countSpellsInSpellBook(bool stdOnly = true);
 	bool		containsSpell(magic::SpellId spellnum);
+	void		insertItem(pItem itm);
 } PACK_NEEDED;
 
 #endif

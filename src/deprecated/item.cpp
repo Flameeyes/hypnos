@@ -592,45 +592,6 @@ namespace item
 		return pi;
 	}*/
 
-	SI32 getname(int i, char* itemname)
-	{
-		tile_st tile;
-		int j, len, mode, used, ok, namLen;
-		P_ITEM pi=MAKE_ITEM_REF(i);
-		VALIDATEPIR(pi,1)
-		if ( strncmp(pi->getCurrentNameC(), "#", 1) )	// if name[0] != '#'
-		{
-			strcpy(itemname, pi->getCurrentNameC());
-			return strlen(itemname)+1;
-		}
-		data::seekTile(pi->getId(), tile);
-		if (tile.flags&TILEFLAG_PREFIX_AN) strcpy(itemname, "an ");
-		else if (tile.flags&TILEFLAG_PREFIX_A) strcpy(itemname, "a ");
-		else itemname[0]=0;
-		namLen = strlen( itemname );
-		mode=0;
-		used=0;
-		len=strlen((char *) tile.name);
-		for (j=0;j<len;j++)
-		{
-			ok=0;
-			if ((tile.name[j]=='%')&&(mode==0)) mode=2;
-			else if ((tile.name[j]=='%')&&(mode!=0)) mode=0;
-			else if ((tile.name[j]=='/')&&(mode==2)) mode=1;
-			else if (mode==0) ok=1;
-			else if ((mode==1)&&(pi->amount==1)) ok=1;
-			else if ((mode==2)&&(pi->amount>1)) ok=1;
-			if (ok)
-			{
-				itemname[namLen++] = tile.name[j];
-				itemname[namLen] = '\0';
-				if (mode) used=1;
-			}
-		}
-		return strlen(itemname)+1;
-
-	}
-
 	/*!
 	\author Magius(CHE), bugfixed by AntiChrist
 	*/

@@ -32,7 +32,6 @@ namespace item
 	SI32		CreateRandomItem( char *sItemList );
 
 	void		GetScriptItemSetting(P_ITEM pi); // by Magius(CHE)
-	SI32		getname(SI32 i, char* itemname);
 
 	P_ITEM		CreateScriptItem(NXWSOCKET s, SI32 itemnum, LOGICAL nSpawned, cObject* cont=NULL );
 

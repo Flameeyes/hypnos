@@ -224,8 +224,13 @@ public:
 */
 
 protected:
-	UI64 flags;
+	UI64 flags;	//!< Common flags for objects
 
+	/*!
+	\brief Set a given flag on or off
+	\param flag Flag to set
+	\param set true if the flag must be set on, else false
+	*/
 	inline void setFlag(UI64 flag, bool set)
 	{
 		if ( set ) flags |= flag;
@@ -233,9 +238,11 @@ protected:
 	}
 
 public:
+	//! Gets the character flags
 	inline const UI64 getFlags() const
 	{ return flags; }
 
+	//! Sets the character flags
 	inline void setFlags(UI64 newFlags)
 	{ flags = newFlags; }
 

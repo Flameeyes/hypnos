@@ -290,3 +290,14 @@ bool cContainer::containsSpell(magic::SpellId spellnum)
 	return false;
 }
 
+/*!
+\brief Adds an item to the internal items list
+\param itm Item to add
+\note Should be called <b>only</b> by cItem::setContainer() function
+*/
+void cContainer::insertItem(pItem itm)
+{
+	if ( items.find(itm) != items.end() )
+		return;
+	items.push_back(itm);
+}
