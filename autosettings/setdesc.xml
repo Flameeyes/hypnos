@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<autosettings>
+ <group name="Server">
+  <setting name="LocalHostname" type="string" default="127.0.0.1">
+Local hostname to bind the listening socket to. Quite everytime you don't need
+to change the default from 127.0.0.1.
+  </setting>
+  <setting name="LocalPort" type="uint16" default="2593">
+Local port to bind the listening socket to. Quite everytime you don't need to
+change the default from 2593.
+  </setting>
+ </group>
+</autosettings>
