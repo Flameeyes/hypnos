@@ -24,7 +24,7 @@ This file contains the function used for the graphical effects
 \param explode If true should do a final explosion
 \param part particle effects structure
 */
-void movingFX(pSerializable source, pSerializable destination, uint16_t eff, uint8_t speed, uint8_t loops, bool explode, ParticleFx* part)
+void nEffects::movingFX(pSerializable source, pSerializable destination, uint16_t eff, uint8_t speed, uint8_t loops, bool explode, ParticleFx* part)
 {
 	if ( !source || !destination ) return;
 
@@ -80,7 +80,7 @@ void movingFX(pSerializable source, pSerializable destination, uint16_t eff, uin
 \param part optional particles data
 \note if part == NULL then id, speed and loop MUST be >= 0
 */
-void staticFX(pSerializable source, uint16_t eff, uint8_t speed, uint8_t loop, ParticleFx* part)
+void nEffects::staticFX(pSerializable source, uint16_t eff, uint8_t speed, uint8_t loop, ParticleFx* part)
 {
 	if (part)
 	{
@@ -158,7 +158,7 @@ void staticFX(pSerializable source, uint16_t eff, uint8_t speed, uint8_t loop, P
 \param eff Effect's ID
 \param speed Effect's speed
 */
-void locationFX(sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode)
+void nEffects::locationFX(sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode)
 {
 
 	nPackets::Sent::GraphicalEffect pk(etStayInPlace, pos, pos, eff, speed, loop, true, explode);
@@ -173,7 +173,7 @@ void locationFX(sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_
 	}
 }
 
-void throwFX(pSerializable source, sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
+void nEffects::throwFX(pSerializable source, sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
 {
 	if ( ! source ) return;
 
@@ -188,7 +188,7 @@ void throwFX(pSerializable source, sLocation pos, uint16_t eff, uint8_t speed, u
 	}
 }
 
-void pullFX(sLocation src_pos, pSerializable destination, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
+void nEffects::pullFX(sLocation src_pos, pSerializable destination, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
 {
 	if ( ! destination ) return;
 
@@ -203,7 +203,7 @@ void pullFX(sLocation src_pos, pSerializable destination, uint16_t eff, uint8_t 
 	}
 }
 
-void locationtolocationFX(sLocation src_pos, sLocation dst_loc, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
+void nEffects::locationtolocationFX(sLocation src_pos, sLocation dst_loc, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
 {
 
 	nPackets::Sent::GraphicalEffect pk(etBolt, src_pos, dst_pos, eff, speed, loop, false, explode);
@@ -222,7 +222,7 @@ void locationtolocationFX(sLocation src_pos, sLocation dst_loc, uint16_t eff, ui
 \param target Target of the effect
 \param bNoParticles If true \b not use particles
 */
-void boltFX(pSerializable target, bool bNoParticles)
+void nEffects::boltFX(pSerializable target, bool bNoParticles)
 {
 	nPackets::Sent::GraphicalEffect pk(etLightning, target, NULL, 0, 0, 0, true, false);
 
@@ -270,7 +270,7 @@ void boltFX(pSerializable target, bool bNoParticles)
 \param target Target of the effect
 \param id Effect's ID
 */
-void circleFX(pSerializable target, uint16_t id)
+void nEffects::circleFX(pSerializable target, uint16_t id)
 {
 
 	sint_16 x,y;

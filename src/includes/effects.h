@@ -22,30 +22,33 @@
 \todo put it in a namespace "nEffects" ?
 */
 
-//! static effect that follows source
-void staticFX(pSerializable source, uint16_t eff, uint8_t speed, uint8_t loop, class ParticleFx* part = NULL);
+namespace nEffects {
 
-//! static effect on xyz (unmoving)
-void locationFX(sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, bool explode);
+	//! static effect that follows source
+	void staticFX(pSerializable source, uint16_t eff, uint8_t speed, uint8_t loop, class ParticleFx* part = NULL);
+	
+	//! static effect on xyz (unmoving)
+	void locationFX(sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, bool explode);
+	
+	//! moving effect from source to another cSerializable
+	void movingFX(pSerializable source, pSerializable destination, uint16_t eff, uint8_t speed, uint8_t duration, bool explode, class ParticleFx* part = NULL);
+	
+	//! moving effect from a cSerializable to an xyz
+	void throwFX(pSerializable source, sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, bool explode);
+	
+	//! moving effect from xyz to a pSerializable
+	void pullFX(sLocation src_pos, pSerializable destination, uint16_t eff, uint8_t speed, uint8_t loop, bool explode);
+	
+	//! moving effect from an xyz to another xyz
+	void locationtolocationFX(sLocation src_pos, sLocation dst_loc, uint16_t eff, uint8_t speed, uint8_t loop, bool explode);
+	
+	//! sends a lighning bolt to a cSerializable
+	void boltFX(pSerializable target, bool bNoParticles);
+	
+	//! sends a lighning bolt to an xyz
+	void lighningFX(sLocation target_pos, bool bNoParticles);
+	
+	//! sends a "id" around target (random displacement)
+	void circleFX(pSerializable target, uint16_t id);
 
-//! moving effect from source to another cSerializable
-void movingFX(pSerializable source, pSerializable destination, uint16_t eff, uint8_t speed, uint8_t duration, bool explode, class ParticleFx* part = NULL);
-
-//! moving effect from a cSerializable to an xyz
-void throwFX(pSerializable source, sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, bool explode);
-
-//! moving effect from xyz to a pSerializable
-void pullFX(sLocation src_pos, pSerializable destination, uint16_t eff, uint8_t speed, uint8_t loop, bool explode);
-
-//! moving effect from an xyz to another xyz
-void locationtolocationFX(sLocation src_pos, sLocation dst_loc, uint16_t eff, uint8_t speed, uint8_t loop, bool explode);
-
-//! sends a lighning bolt to a cSerializable
-void boltFX(pSerializable target, bool bNoParticles);
-
-//! sends a lighning bolt to an xyz
-void lighningFX(sLocation target_pos, bool bNoParticles);
-
-//! sends a "id" around target (random displacement)
-void circleFX(pSerializable target, uint16_t id);
-
+};
