@@ -16,6 +16,7 @@ service entry.
 
 #ifdef WIN32
 
+#include "common_libs.h"
 #include "archs/win32registry.h"
 
 #ifdef HAVE_WINNT_H
