@@ -68,11 +68,11 @@ public:
 	P_OBJECT getObject();
 	SERIAL getSerial();
 
-	cAllObjectsIter& operator++(int);          
+	cAllObjectsIter& operator++(int);
 
 };
 
-	
+
 class cAllCharsIter : public cAllObjectsIter{
 
 private:
@@ -86,7 +86,7 @@ public:
 	bool IsEmpty();
 	P_CHAR getChar();
 
-	cAllCharsIter& operator++(int);          
+	cAllCharsIter& operator++(int);
 
 };
 
@@ -103,8 +103,8 @@ public:
 	bool IsEmpty();
 	P_CHAR getItem();
 
-	
-	cAllItemsIter& operator++(int);          
+
+	cAllItemsIter& operator++(int);
 
 };
 
@@ -114,9 +114,6 @@ namespace archive {
 	{
 		P_ITEM	New( LOGICAL forCopyPurpose = false );
 	}
-
-	void	deleteItem( P_ITEM pi );
-	void	deleteItem( SERIAL i );
 
 	namespace character
 	{

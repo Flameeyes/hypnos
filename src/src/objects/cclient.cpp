@@ -221,6 +221,10 @@ void cClient::playSFX(UI16 sound, bool onlyMe)
 */
 }
 
+/*!
+\brief Set the light level
+\param level base light level
+*/
 void cClient::light(UI08 level)
 {
 	if ( ! pc ) return;
@@ -236,4 +240,3 @@ void cClient::light(UI08 level)
 
 	sendPacket(&pk);
 }
-

@@ -97,53 +97,6 @@ namespace archive {
 		}
 	}
 
-void deleteItem( P_ITEM pi )
-{
-	VALIDATEPI( pi );
-
-	SI32 serial = pi->getSerial32();
-
-	amxVS.deleteVariable( serial );
-
-	if (pi->spawnregion!=INVALID )
-	{
-		Spawns->removeObject( pi->spawnregion, pi );
-	}
-
-	if( pi->isSpawner() || pi->spawnserial!=INVALID )
-	{
-		Spawns->removeSpawnDinamic( pi );
-	}
-
-	NxwSocketWrapper sw;
-	sw.fillOnline( pi );
-	for( sw.rewind(); !sw.isEmpty(); sw++ )
-	{
-		NXWSOCKET j=sw.getSocket();			
-		if (j!=INVALID)
-			SendDeleteObjectPkt( j, serial );
-	}
-
-	// - remove from pointer arrays
-	pointers::delItem(pi);	//Luxor
-
-	pi->setOwnerSerial32(INVALID);
-
-	if (pi->type==ITYPE_BOOK && (pi->morex==666 || pi->morey==999) && pi->morez)
-		// make sure that the book is really there
-		if ( Books::books.find(pi->morez) != Books::books.end() )
-			Books::books.erase( Books::books.find(pi->morez) );
-        // if a new book gets deleted also delete the corresponding map element
-
-	safedelete(pi);
-
-}
-
-void deleteItem( SERIAL i )
-{
-	deleteItem( MAKE_ITEM_REF(i) );
-}
-
 namespace character
 {
 	P_CHAR New()

@@ -844,8 +844,8 @@ cItem::cItem( SERIAL ser )
 	setPosition(100, 100, 0);
 	setOldPosition( getPosition() );
 	setColor( 0x0000 ); // Hue
-	contserial.serial32= INVALID; // Container that this item is found in
-	oldcontserial.serial32= INVALID;
+	cont = NULL;
+	oldcont = NULL;
 	layer=oldlayer=0; // Layer if equipped on paperdoll
 	scriptlayer=0;	//Luxor
 	itmhand=0; // Layer if equipped on paperdoll
@@ -1061,7 +1061,33 @@ bool cItem::containsSpell(magic::SpellId spellnum)
 */
 void cItem::Delete()
 {
-	archive::deleteItem(this);
+	if (spawnregion!=INVALID )
+		Spawns->removeObject( spawnregion, this );
+
+	if( isSpawner() || spawnserial!=INVALID )
+		Spawns->removeSpawnDinamic( this );
+
+	cPacketSendDeleteObj pk(serial);
+
+	NxwSocketWrapper sw;
+	sw.fillOnline( this );
+	for( sw.rewind(); !sw.isEmpty(); sw++ )
+	{
+		NXWSOCKET j=sw.getSocket();
+		if (j!=INVALID)
+			client->sendPacket(&pk);
+	}
+
+	// - remove from pointer arrays
+	pointers::delItem(this);	//Luxor
+
+	if (type==ITYPE_BOOK && (morex==666 || morey==999) && morez)
+		// make sure that the book is really there
+		if ( Books::books.find(morez) != Books::books.end() )
+			Books::books.erase( Books::books.find(morez) );
+        // if a new book gets deleted also delete the corresponding map element
+
+	safedelete(this);
 }
 
 /*!
