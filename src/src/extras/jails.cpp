@@ -235,7 +235,7 @@ void nJails::release(pPC pc)
 	
 	pc->setJail(NULL, NULL);
 	
-	PCList::iterator it = jailedPlayers.find(pc);
+	PCList::iterator it = std::find(jailedPlayers.begin(), jailedPlayers.end(), pc);
 	if ( it != jailedPlayers.end() )
 		jailedPlayers.erase(it);
 	
@@ -272,7 +272,7 @@ void nJails::release(pAccount acc)
 	if ( acc->currClient() )
 		acc->currClient()->sysmessage("You're now free");
 	
-	AccountList::iterator it = jailedAccounts.find(acc);
+	AccountList::iterator it = std::find(jailedAccounts.begin(), jailedAccounts.end(), acc);
 	if ( it != jailedAccounts.end() )
 		jailedAccounts.erase(it);
 }
