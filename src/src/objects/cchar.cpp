@@ -263,7 +263,6 @@ cChar::cChar( SERIAL ser ) : cObject()
 	murdersave=0;
 
 	crimflag=0; //Time when No longer criminal
-	casting=0; // 0/1 is the cast casting a spell?
 	spelltime=0; //Time when they are done casting....
 	spell=magic::SPELL_INVALID; //current spell they are casting....
 	spellaction=0; //Action of the current spell....
@@ -1064,9 +1063,9 @@ void cChar::MoveTo(Location newloc)
 		return;
 
 	// <Luxor>
-	if ( newloc != getPosition() && casting && !npc ) {
+	if ( newloc != getPosition() && (flags2 & flag2IsCasting) && !npc ) {
 		sysmsg( "You stop casting the spell." );
-		casting = 0;
+		flags2 &= ~flag2IsCasting;
 		spell = magic::SPELL_INVALID;
 		spelltime = 0;
 	}
@@ -1223,7 +1222,7 @@ void cChar::unfreeze( LOGICAL calledByTempfx )
 	if ( isFrozen() )
 	{
 		priv2 &= ~flagPriv2Frozen;
-		if (!casting) //Luxor
+		if (!(flags2 & flag2IsCasting)) //Luxor
 			sysmsg(TRANSLATE("You are no longer frozen."));
 	}
 }
@@ -3375,7 +3374,7 @@ const LOGICAL cChar::IsGrey() const
 			return false;
 }
 
-void cChar::SetMurderer()
+void cChar::setMurderer()
 {
 
 	if (amxevents[EVENT_CHR_ONFLAGCHG])
@@ -3385,7 +3384,7 @@ void cChar::SetMurderer()
 	flag=flagKarmaMurderer;
 }
 
-void cChar::SetInnocent()
+void cChar::setInnocent()
 {
 
 	if (amxevents[EVENT_CHR_ONFLAGCHG])
@@ -3394,7 +3393,7 @@ void cChar::SetInnocent()
 	flag=flagKarmaInnocent;
 }
 
-void cChar::SetCriminal()
+void cChar::setCriminal()
 {
 
 	if (amxevents[EVENT_CHR_ONFLAGCHG])
@@ -4168,7 +4167,7 @@ void cChar::pc_heartbeat()
 
 	setcharflag2( this );
 
-	if ( casting )
+	if ( flags2 & flag2IsCasting )
 	{
 		if ( TIMEOUT( spelltime ) )//Spell is complete target it.
 		{
@@ -4184,7 +4183,7 @@ void cChar::pc_heartbeat()
 		    		TargetLocation TL( this );
 				magic::castSpell( spell, TL, this );
 			}
-			casting   = 0;
+			flags &= ~flag2IsCasting;
 			spelltime = 0;
 		}
 		else if ( TIMEOUT( nextact ) ) //redo the spell action
@@ -4394,11 +4393,11 @@ void cChar::npc_heartbeat()
 	//
 	//	Handle spell casting (Luxor)
 	//
-	if ( casting ) {
+	if ( flags2 & flag2IsCasting ) {
 		if ( TIMEOUT( spelltime ) ) {
 			if ( spellTL != NULL ) {
 	    			magic::castSpell( spell, *spellTL, this, NPCMAGIC_FLAGS );
-				casting   = 0;
+				flags2 &= flag2IsCasting;
 				spelltime = 0;
 				safedelete( spellTL );
 			}
@@ -4908,24 +4907,20 @@ const LOGICAL cChar::checkSkillSparrCheck(Skill sk, SI32 low, SI32 high, P_CHAR 
 	return Skills::CheckSkillSparrCheck(DEREF_P_CHAR(this),sk, low, high, pcd);
 }
 
-void cChar::useHairDye(P_ITEM bottle)
+/*!
+\brief Uses an hair dye bottle
+\author Flameeyes
+\param bottle the Hair Dye bottle used
+*/
+void cChar::useHairDye(pItem bottle)
 {
-	VALIDATEPI(bottle);
+	if ( ! bottle ) return;
 
-	NxwItemWrapper si;
-	si.fillItemWeared( this, true, true, true );
-	for( si.rewind(); !si.isEmpty(); si++ )
-	{
-		P_ITEM pi=si.getItem();
-		if(!ISVALIDPI(pi))
-			continue;
-		if(pi->layer==LAYER_BEARD || pi->layer==LAYER_HAIR)
-		{
-			pi->setColor( bottle->getColor() );
-			//Now change the color to the hair dye bottle color!
-			pi->Refresh();
-		}
-	}
+	if ( beard )
+		beard->setColor( bottle->getColor() );
+	if ( hairs )
+		hairs->setColor( bottle->getColor() );
+
 	bottle->Delete();	//Now delete the hair dye bottle!
 }
 

@@ -12,6 +12,9 @@
 #ifndef __CHARS_H
 #define __CHARS_H
 
+class cChar;
+typedef cChar *pChar;
+
 #include "ai.h"
 #include "object.h"
 #include "magic.h"
@@ -130,9 +133,7 @@ public:
 	void		getPopupHelp(char *str)
 	void		MoveTo(Location newloc);
 	void 		loadEventFromScript(TEXT *script1, TEXT *script2);
-
-	inline void		MoveTo(SI32 x, SI32 y, SI08 z)
-	{ MoveTo( Loc(x, y, z) ); }
+	void		doGmEffect();
 
 protected:
 	pClient client;
@@ -144,245 +145,219 @@ public:
 	inline void setClient(pClient c)
 	{ client = c; }
 
-public:
+	//! get online status
+	inline const bool isOnline() const
+	{ return client; }
+
 //@{
 /*!
-\name nxwflags_chars
+\name char_flags
 \brief Flags used for the char
 */
-	static const UI08 flagGrey		= 0x01; //!< Char is grey
-	static const UI08 flagPermaGrey		= 0x02; //!< Char is permanent grey
-	static const UI08 flagResistFire	= 0x04; //!< Char resists to fire (unused)
-	static const UI08 flagResistParalisys	= 0x08; //!< Char resists to paralisys (unused)
-	static const UI08 flagResistPoison	= 0x10; //!< Char resists to poison (unused)
-	static const UI08 flagWaterWalk		= 0x20;	//!< Char walks on water (npc only)
-	static const UI08 flagSpellTelekinesys	= 0x40; //!< Char under telekinesys spell (Luxor)
-	static const UI08 flagSpellProtection	= 0x80; //!< Char under protection spell (Luxor)
+public:
+	static const UI32 flagGrey		= 0x00000001; //!< Char is grey
+	static const UI32 flagPermaGrey		= 0x00000002; //!< Char is permanent grey
+	static const UI32 flagResistFire	= 0x00000004; //!< Char resists to fire (unused)
+	static const UI32 flagResistParalisys	= 0x00000008; //!< Char resists to paralisys (unused)
+	static const UI32 flagResistPoison	= 0x00000010; //!< Char resists to poison (unused)
+	static const UI32 flagWaterWalk		= 0x00000020; //!< Char walks on water (npc only)
+	static const UI32 flagSpellTelekinesys	= 0x00000040; //!< Char under telekinesys spell (Luxor)
+	static const UI32 flagSpellProtection	= 0x00000080; //!< Char under protection spell (Luxor)
 
-	static const UI08 flagKarmaInnocent	= 0x04; //!< Char is innocent
-	static const UI08 flagKarmaMurderer	= 0x01; //!< Char is murderer
-	static const UI08 flagKarmaCriminal	= 0x02; //!< Char is criminal
-//@}
-	char			nxwflags[4]; // for special nxw features
+	static const UI32 flagKarmaInnocent	= 0x00000100; //!< Char is innocent
+	static const UI32 flagKarmaMurderer	= 0x00000200; //!< Char is murderer
+	static const UI32 flagKarmaCriminal	= 0x00000400; //!< Char is criminal
 
-	inline const LOGICAL resistsFire() const
-	{ return nxwflags[0] & flagResistFire; }
+	static const UI32 flagInvulnerable	= 0x00000800; //!< Char is invulnerable
+	static const UI32 flagCanViewSerials	= 0x00001000; //!< Char can view serial codes
+	static const UI32 flagNoSkillTitle	= 0x00002000; //!< Char hasn't skill title
+	static const UI32 flagPageAble		= 0x00004000;
+	static const UI32 flagCanSnoopAll	= 0x00008000;
 
-	inline const LOGICAL resistsFreeze() const
-	{ return nxwflags[0] & flagResistParalisys; }
+	static const UI32 flagAllMove		= 0x00010000;
+	static const UI32 flagFrozen		= 0x00020000;
+	static const UI32 flagViewHouseIcon	= 0x00040000;
+	static const UI32 flagPermaHidden	= 0x00080000;
+	static const UI32 flagNoUseMana		= 0x00100000;
+	static const UI32 flagDispellable	= 0x00200000;
+	static const UI32 flagReflection	= 0x00400000;
+	static const UI32 flagNoUseReagents	= 0x00800000;
 
-//@{
-/*!
-\name cchar_privs
-\brief Priv variables used by priv and priv2
-*/
+	static const UI32 flagIncognito		= 0x01000000;
+	static const UI32 flagPolymorphed	= 0x02000000;
+	static const UI32 flagDead		= 0x04000000;
 
-	static const UI08 flagPrivGM		= 0x01; //!< Char is GM
-	static const UI08 flagPrivBroadcast	= 0x02; //!< Char can broadcast
-	static const UI08 flagPrivInvulnerable	= 0x04; //!< Char is invulnerable
-	static const UI08 flagPrivCanViewSerials= 0x08; //!< Char can view serial codes
-	static const UI08 flagPrivNoSkillTitle	= 0x10; //!< Char hasn't skill title
-	static const UI08 flagPrivPageAble	= 0x20;
-	static const UI08 flagPrivCanSnoopAll	= 0x40;
-	static const UI08 flagPrivCounselor	= 0x80;
+	static const UI32 flagAttackFirst	= 0x08000000;
+	static const UI32 flagDoorUse		= 0x10000000;
+	static const UI32 flagShopKeeper	= 0x20000000;
 
-	static const UI08 flagPriv2AllMove	= 0x01;
-	static const UI08 flagPriv2Frozen	= 0x02;
-	static const UI08 flagPriv2ViewHouseIcon= 0x04;
-	static const UI08 flagPriv2PermaHidden	= 0x08;
-	static const UI08 flagPriv2NoUseMana	= 0x10;
-	static const UI08 flagPriv2Dispellable	= 0x20;
-	static const UI08 flagPriv2Reflection	= 0x40;
-	static const UI08 flagPriv2NoUseReagents= 0x80;
-//@}
+	static const UI32 flagNPC		= 0x40000000;
+	static const UI32 flagCanTrain		= 0x80000000;
 
-//@{
-/*!
-\name Priviledges
-*/
-protected:
-	// We really need so many vars?
-	UI08 priv;	//!< see cchar_privs
-	UI08 priv2;	//!< see cchar_privs
-	UI08 privLevel; //!< privilege level
-
-	inline void setPriv2(UI08 priv, LOGICAL set)
-	{
-		if ( set )
-			priv2 |= priv;
-		else
-			priv2 &= ~priv;
-	}
-
-	public:
-		const LOGICAL		IsTrueGM() const;
-
-		inline const LOGICAL	IsGM() const
-		{ return ( privLevel > PRIVLEVEL_GM ); }
-
-		inline const LOGICAL	IsCounselor() const
-		{ return ( privLevel > PRIVLEVEL_CNS ); }
-
-		const LOGICAL		IsGMorCounselor() const;
-
-		inline const LOGICAL	IsInvul() const
-		{ return priv & flagPrivInvulnerable; }
-
-		inline const LOGICAL	CanSnoop() const
-		{ return priv & flagPrivCanSnoopAll; }
-
-		inline const LOGICAL	CanBroadcast() const
-		{ return priv & flagPrivBroadcast; }
-
-		inline const LOGICAL	CanSeeSerials() const
-		{ return priv & flagPrivCanViewSerials; }
-
-		inline const LOGICAL	isFrozen() const
-		{ return (priv2 & flagPriv2Frozen); }
-
-		inline const LOGICAL	isPermaHidden() const
-		{ return priv2 & flagPriv2PermaHidden; }
-
-		inline const LOGICAL	isDispellable() const
-		{ return priv2 & flagPriv2Dispellable; }
-
-		inline const LOGICAL	canAllMove() const
-		{ return priv2 & flagPriv2AllMove; }
-
-		inline const LOGICAL	dontUseMana() const
-		{ return priv2 & flagPriv2NoUseMana; }
-
-		inline const LOGICAL	dontUseReagents() const
-		{ return priv2 & flagPriv2NoUseReagents; }
-
-		inline const LOGICAL	hasReflection() const
-		{ return priv2 & flagPriv2Reflection; }
-
-		inline void setAllMove(LOGICAL set = true)
-		{ setPriv2(flagPriv2AllMove, set); }
-
-		inline void setViewHouseIcon(LOGICAL set = true)
-		{ setPriv2(flagPriv2ViewHouseIcon, set); }
-
-		inline void setPermaHidden(LOGICAL set = true)
-		{ setPriv2(flagPriv2PermaHidden, set); }
-
-		inline void setReflection(LOGICAL set = true)
-		{ setPriv2(flagPriv2Reflection, set); }
-
-
-		inline const UI08 	GetPriv() const
-		{ return priv; }
-
-		inline void 		SetPriv(UI08 p)
-		{ priv = p; }
-
-		inline void 		MakeInvulnerable()
-		{ priv |= flagPrivInvulnerable; }
-
-		inline void 		MakeVulnerable()
-		{ priv &= ~flagPrivInvulnerable; }
-
-		inline const UI08	GetPriv2() const
-		{ return priv2; }
-
-		inline void		SetPriv2(SI08 p)
-		{ priv2 = p; }
+	static const UI32 flag2Mounted		= 0x00000001;
+	static const UI32 flag2OnHorse		= 0x00000002;
+	static const UI32 flag2IsCasting	= 0x00000004;
+	static const UI32 flag2IsTamed		= 0x00000008;
+	static const UI32 flag2IsGuarded	= 0x00000010;
 //@}
 
-//@{
+//@}
 /*!
 \name Char Status
 */
-	private:
-		SI32		karma;		//!< karma of the char
-		SI32    	fame;		//!< fame of the char
-	public: // will become private
-		LOGICAL		incognito;	//!< AntiChrist - true if under incognito effect
-		LOGICAL		polymorph;	//!< AntiChrist - true if under polymorph effect
+protected:
+	UI32 flags;	//!< Flags for the character
+	UI32 flags2;	//!< Other flags for the character
+	UI08 privLevel; //!< privilege level
 
-		UI32        	kills;		//!< PvP Kills
-		UI32        	deaths;		//!< Number of deaths
-		LOGICAL		dead;		//!< Is the character dead ?
-		R32		fstm;		//!< Unavowed - stamina to remove the next step
+	SI32 karma;	//!< karma of the char
+	SI32 fame;	//!< fame of the char
 
-	public:
-		inline const LOGICAL IsInnocent() const
-		{ return (flag & flagKarmaInnocent); }
+	UI16 kills;	//!< PvP Kills
+	UI16 deaths;	//!< Number of deaths
+	R32  fstm;	//!< Unavowed - stamina to remove the next step
 
-		inline const LOGICAL IsMurderer() const
-		{ return (flag & flagKarmaMurderer); }
+	inline void setFlag(UI32 flag, bool set)
+	{
+		if ( set ) flags |= flag;
+		else flags &= ~flag;
+	}
 
-		inline const LOGICAL IsCriminal() const
-		{ return (flag & flagKarmaCriminal); }
+public:
+	//! Return the karma of the char
+	inline const SI32 getKarma() const
+	{ return karma; }
 
-		LOGICAL const		IsGrey() const;
+	//! Return the fame of the char
+	inline const SI32 getFame() const
+	{ return fame; }
 
-		inline const LOGICAL	IsHidden() const
-		{ return (hidden != UNHIDDEN); }
+	inline const bool isInvul() const
+	{ return flags & flagInvulnerable; }
 
-		inline const LOGICAL	IsHiddenBySpell() const
-		{ return (hidden & HIDDEN_BYSPELL); }
+	inline const bool isFrozen() const
+	{ return flags & flagFrozen; }
 
-		inline const LOGICAL	IsHiddenBySkill() const
-		{ return (hidden & HIDDEN_BYSKILL); }
+	inline const bool isPermaHidden() const
+	{ return flags & flagPermaHidden; }
 
-		LOGICAL const		IsOverWeight();
+	inline const bool isDispellable() const
+	{ return flags & flagDispellable; }
 
-		//! get online status
-		LOGICAL const		isOnline() const
-		{ return client; }
+	inline const bool isInnocent() const
+	{ return (flags & flagKarmaInnocent); }
 
-		inline const LOGICAL	InGuardedArea() const
-		{ return ::region[region].priv & RGNPRIV_GUARDED; }
+	inline const bool isMurderer() const
+	{ return (flags & flagKarmaMurderer); }
 
-		LOGICAL const		CanDoGestures() const;
+	inline const bool isCriminal() const
+	{ return (flags & flagKarmaCriminal); }
 
-		void 			SetMurderer();
-		void 			SetInnocent();
-		void 			SetCriminal();
-		void			makeCriminal();
+	inline const bool isHidden() const
+	{ return (hidden != UNHIDDEN); }
 
-		inline void 		SetPermaGrey()
-		{ nxwflags[0] |= flagGrey|flagPermaGrey; }
+	inline const bool isHiddenBySpell() const
+	{ return (hidden & HIDDEN_BYSPELL); }
 
-		//! Makes a character temporary grey
-		void 			SetGrey()
-		{ if (!npc) tempfx::add(this, this, tempfx::GREY, 0, 0, 0, 0x7FFF); }
+	inline const bool isHiddenBySkill() const
+	{ return (hidden & HIDDEN_BYSKILL); }
 
-		/*!
-		\brief Sets criminal or grey depending on a server.cfg setting
-		\param mode server.cfg setting to test (1 | 2)
-		*/
-		inline void cChar::setCrimGrey(int mode)
-		{
-			if ( mode == 1 )
-				SetGrey();
-			else
-				makeCriminal();
-		}
+	inline const bool isNPC() const
+	{ return flags & flagNPC; }
 
-		void 			unHide();
+	inline const bool canAllMove() const
+	{ return flags & flagAllMove; }
 
-		//! Return the karma of the char
-		inline const SI32	GetKarma() const
-		{ return karma; }
+	inline const bool canUseDoor() const
+	{ return flags & flagDoorUse; }
 
-		//! Set the karma of the char
-		inline void		SetKarma(SI32 newkarma)
-		{ karma = newkarma; }
+	inline const bool canShopKeeper() const
+	{ return flags & flagShopKeeper; }
 
-		//! Return the fame of the char
-		inline const SI32	GetFame() const
-		{ return fame; }
+	inline const bool canSnoop() const
+	{ return flags & flagCanSnoopAll; }
 
-		inline void		SetFame(SI32 newfame)
-		{ fame=newfame; }
+	inline const bool canBroadcast() const
+	{ return flags & flagBroadcast; }
 
-		void			IncreaseKarma(SI32 value, P_CHAR pKilled = 0 );
-		void			modifyFame( SI32 value );
+	inline const bool canSeeSerials() const
+	{ return flags & flagCanViewSerials; }
 
-		const bool		inDungeon() const;
+	inline const bool dontUseMana() const
+	{ return flags & flagNoUseMana; }
+
+	inline const bool dontUseReagents() const
+	{ return flags & flagNoUseReagents; }
+
+	inline const bool hasReflection() const
+	{ return flags & flagReflection; }
+
+	inline const bool inGuardedArea() const
+	{ return ::region[region].priv & RGNPRIV_GUARDED; }
+
+	const bool isGrey() const;
+	const bool isOverWeight();
+	const bool canDoGestures() const;
+	const bool inDungeon() const;
+
+
+	//! Set the karma of the char
+	inline void		SetKarma(SI32 newkarma)
+	{ karma = newkarma; }
+
+	inline void		SetFame(SI32 newfame)
+	{ fame=newfame; }
+
+	inline void setFrozen(bool set = true)
+	{ setFlag(flagFrozen, set); }
+
+	inline void setAllMove(bool set = true)
+	{ setFlag(flagAllMove, set); }
+
+	inline void setViewHouseIcon(bool set = true)
+	{ setFlag(flagViewHouseIcon, set); }
+
+	inline void setPermaHidden(bool set = true)
+	{ setFlag(flagPermaHidden, set); }
+
+	inline void setReflection(bool set = true)
+	{ setFlag(flagReflection, set); }
+
+	inline void setPermaGrey(bool set = true)
+	{ setFlag(flagGrey|flagPermaGrey, set); }
+
+	inline void setCanUseDoor(bool set = true)
+	{ setFlag(flagDoorUse, set); }
+
+	inline void setShopKeeper(bool set = true)
+	{ setFlag(flagShopKeeper, set); }
+
+	inline void makeInvulnerable(bool set = true)
+	{ setFlag(flagInvulnerable, set); }
+
+	//! Makes a character temporary grey
+	inline void SetGrey()
+	{ if (!npc) tempfx::add(this, this, tempfx::GREY, 0, 0, 0, 0x7FFF); }
+
+	/*!
+	\brief Sets criminal or grey depending on a server.cfg setting
+	\param mode server.cfg setting to test (1 | 2)
+	*/
+	inline void cChar::setCrimGrey(int mode)
+	{
+		if ( mode == 1 ) SetGrey();
+		else makeCriminal();
+	}
+
+	void setMurderer();
+	void setInnocent();
+	void setCriminal();
+	void makeCriminal();
+	void increaseKarma(SI32 value, P_CHAR pKilled = 0 );
+	void modifyFame( SI32 value );
+
+	void unHide();
+
 //@}
 
 //@{
@@ -399,16 +374,17 @@ protected:
 \name Date/Time
 \brief Date/Time related functions and attributes
 */
-	private:
-		TIMERVAL		creationday;			//!< Day since EPOCH this character was created on
-	public:
-		//! Set the creation day of a character
-		inline void		SetCreationDay(TIMERVAL day)
-		{ creationday = day; }
+protected:
+	//! Day since EPOCH this character was created on
+	TIMERVAL creationday;
+public:
+	//! Set the creation day of a character
+	inline void setCreationDay(TIMERVAL day)
+	{ creationday = day; }
 
-		//! Get the creation day of a character
-		inline const TIMERVAL	GetCreationDay() const
-		{ return creationday; }
+	//! Get the creation day of a character
+	inline const TIMERVAL getCreationDay() const
+	{ return creationday; }
 //@}
 
 //@{
@@ -450,30 +426,38 @@ protected:
 		{ setStrength( str.value + mod, check ); }
 //@}
 
-	public:
-		void			heartbeat();
+public:
+	void			heartbeat();
 
-	private:
-		void			generic_heartbeat();
-		void			pc_heartbeat();
-		void 			do_lsd();
-		void			npc_heartbeat();
+private:
+	void			generic_heartbeat();
+	void 			do_lsd();
 
 //@{
 /*!
 \name Appearence
 */
-	public:
-		std::string	title;
-		UI16			oldhairstyle;
-		UI16			oldbeardstyle;
-		UI16			oldhaircolor;
-		UI16			oldbeardcolor;
+protected:
+	std::string	title;
+	UI16		oldhairstyle;
+	UI16		oldbeardstyle;
+	UI16		oldhaircolor;
+	UI16		oldbeardcolor;
+	pItem		hairs;
+	pItem		beard;
 
-		inline const LOGICAL	HasHumanBody() const
-		{ return (getId()==BODY_MALE) || (getId()==BODY_FEMALE); }
+public:
+	inline const bool HasHumanBody() const
+	{ return (getId()==BODY_MALE) || (getId()==BODY_FEMALE); }
 
-		void 			showLongName( P_CHAR showToWho, LOGICAL showSerials );
+	void showLongName( P_CHAR showToWho, bool showSerials );
+
+	pItem getBeardItem() const
+	{ return beard; }
+
+	pItem getHairItem() const
+	{ return hairs; }
+
 //@}
 
 
@@ -481,196 +465,114 @@ protected:
 /*!
 \name Combat
 */
-	private:
-		LOGICAL			attackfirst;		//!< 0 = defending, 1 = attacked first
+protected:
+	bool			combatTimerOk();
+	void			checkPoisoning(P_CHAR pc_def);
+	void			doMissedSoundEffect();
+	SI32			combatHitMessage(SI32 damage);
+	void			doCombatSoundEffect(SI32 fightskill, P_ITEM pWeapon);
+	void			undoCombat();
 
-	public:
-		LOGICAL			HasAttackedFirst()
-		{ return attackfirst; }
+public:
+	inline const bool hasAttackedFirst() const
+	{ return flags & flagAttackFirst; }
 
-		inline void 		SetAttackFirst(LOGICAL af = true)
-		{ attackfirst = af; }
+	inline void setAttackFirst(bool set = true)
+	{ setFlag(flagAttackFirst, set); }
 
-		inline void 		ResetAttackFirst()
-		{ SetAttackFirst(false); }
+	void			checkPoisoning();
+	void 			fight(P_CHAR pOpponent);
+	void			combatHit( P_CHAR pc_def, SI32 nTimeOut = 0 );
+	void			doCombat();
+	void			combatOnHorse();
+	void			combatOnFoot();
+	void			playCombatAction();
+	SI32			calcAtt();
+	SI32			calcDef(SI32 x = 0);
+	void			setWresMove(SI32 move = 0);
+	SI32			calcResist(DamageType typeofdamage);
+	void			toggleCombat();
+	SI32			getCombatSkill();
 
-	private:
-		LOGICAL			combatTimerOk();
-		void			checkPoisoning(P_CHAR pc_def);
-		void			doMissedSoundEffect();
-		SI32			combatHitMessage(SI32 damage);
-		void			doCombatSoundEffect(SI32 fightskill, P_ITEM pWeapon);
-		void			undoCombat();
-
-	public:
-		void			checkPoisoning();
-		void 			fight(P_CHAR pOpponent);
-		void			npcSimpleAttack(pChar pc_target);
-		void			combatHit( P_CHAR pc_def, SI32 nTimeOut = 0 );
-		void			doCombat();
-		void			combatOnHorse();
-		void			combatOnFoot();
-		void			playCombatAction();
-		SI32			calcAtt();
-		SI32			calcDef(SI32 x = 0);
-		void			setWresMove(SI32 move = 0);
-		SI32			calcResist(DamageType typeofdamage);
-		void			toggleCombat();
-		SI32			getCombatSkill();
-
-		/*!
-		\author Luxor
-		\brief Makes the char casting a spell
-		\param spellnumber Spell identifier
-		\param dest target location of the spell
-		\todo Document parameters
-		*/
-		inline void		castSpell(magic::SpellId spellnumber, TargetLocation& dest, SI32 flags = 0, SI32 param = 0)
-		{ magic::castSpell(spellnumber, dest, this, flags, param); }
+	/*!
+	\author Luxor
+	\brief Makes the char casting a spell
+	\param spellnumber Spell identifier
+	\param dest target location of the spell
+	\todo Document parameters
+	*/
+	inline void castSpell(magic::SpellId spellnumber, TargetLocation& dest, SI32 flags = 0, SI32 param = 0)
+	{ magic::castSpell(spellnumber, dest, this, flags, param); }
 //@}
 
 //@{
 /*!
 \name Char Equipment
 */
-	public:
-		inline const LOGICAL	IsWearing(P_ITEM pi) const
-		{ return getSerial32() == pi->getContSerial(); }
+public:
+	inline const bool isWearing(pItem pi) const
+	{ return this == pi->getContainer(); }
 
-		SI32			Equip(P_ITEM pi, LOGICAL drag = false);
-		SI32			UnEquip(P_ITEM pi, LOGICAL drag = false);
-		void			checkEquipement();
-	#ifdef ENDY_NEW_WEAR
-	public:
-		SERIAL wear[LAYER_COUNT];	//!< wear serial list indexed by layer
-	#endif
+	SI32 Equip(pItem pi, bool drag = false);
+	SI32 UnEquip(pItem pi, bool drag = false);
+	void checkEquipement();
 //@}
 
 //@{
 /*!
 \name Movement
 */
-	private:
-		cPath*			path;			//!< current path
-		void			walkNextStep();		//!< walk next path step
-		SERIAL_SLIST		sentObjects;
-	public:
-		LOGICAL			canSee( cObject &obj );	//!< can it see the object?
-		LOGICAL			seeForFirstTime( cObject &obj );	//!< does it see the object for the first time?
-		LOGICAL			seeForLastTime( cObject &obj ); //!< does it see the object for the first time?
-		void			walk();			//!< execute walk code <Luxor>
-		inline LOGICAL		hasPath() { return (path!=NULL); } //!< has a path set?
-		void			follow( P_CHAR pc ); //!< follow pc
-		void flee( P_CHAR pc, SI32 seconds=INVALID ); //!< flee from pc
-		void			pathFind( Location pos, LOGICAL bOverrideCurrentPath = true );	//!< Walk to position
-		SI08			dir;			//!< &0F=Direction
-		UI32			LastMoveTime;		//!< server time of last move
+protected:
+	cPath*		path;			//!< current path
+	void		walkNextStep();		//!< walk next path step
+	SERIAL_SLIST	sentObjects;
+	SI08		dir;			//!< &0F=Direction
+	UI32		LastMoveTime;		//!< server time of last move
+
+public:
+	//! has a path set?
+	inline const bool hasPath() const
+	{ return path; }
+
+	bool		canSee( cObject &obj );	//!< can it see the object?
+	bool		seeForFirstTime( cObject &obj );	//!< does it see the object for the first time?
+	bool		seeForLastTime( cObject &obj ); //!< does it see the object for the first time?
+	void		walk();			//!< execute walk code <Luxor>
+	void		follow( P_CHAR pc ); //!< follow pc
+	void 		flee( P_CHAR pc, SI32 seconds=INVALID ); //!< flee from pc
+	void		pathFind( Location pos, bool bOverrideCurrentPath = true );	//!< Walk to position
 //@}
-
-
-//@{
-/*!
-\name Party
-*/
-	public:
-		SI32			party;
-//@}
-
-//@{
-/*!
-\name NPCs
-*/
-	public:
-		UI32			lastNpcCheck; // timestamp used to reduce # of checkNPC calls in checkAuto() to 1 (Sparhawk)
-		char			npc;				//!< 1=Character is an NPC
-		LOGICAL			doorUse;			//!< True if npc can open doors
-		LOGICAL			shopkeeper;			//!< true=npc shopkeeper
-
-	public:
-		// Skyfire's NPC advancments.
-		Location workloc;	                //!< work location (not used for now)
-		Location homeloc;	                //!< home location (not used for now)
-		Location foodloc;	                //!< food location (not used for now)
-		//Skyfire - End NPC's home/work/food vars'
-
-		/*UI08			pathnum;
-		path_st			path[PATHNUM];*/
-
-		TIMERVAL		nextAiCheck;
-
-		SI32			hidamage;           //!< NPC Hi Damage
-		SI32			lodamage;           //!< NPC Lo Damage
-//@}
-
-//@{
-/*!
-\name Others
-*/
-	public:
-		FUNCIDX		targetcallback;
-		UI08			gmrestrict;			//!< for restricting GMs to certain regions
-
-		void			doGmEffect();
-//@}
-
-	public:
-		bool jailed;
-
-//@{
-/*!
-\name Menu
-*/
-	public:
-		SERIAL custmenu;	//!< legacy code, used for old mnu_ and hard coded menu
-
-//@}
-
 
 //@{
 /*!
 \name Trainer
 */
-	public:
-		SERIAL	trainer;		//!< Serial of the NPC training the char, -1 if none.
-		UI08	trainingplayerin;	//!< Index in skillname of the skill the NPC is training the player in
-		LOGICAL	cantrain;
+public:
+	pChar	trainer;		//!< NPC training the char
+	UI08	trainingplayerin;	//!< Index in skillname of the skill the NPC is training the player in
 
-	public:
-		inline const LOGICAL	isBeingTrained() const
-		{ return (trainer != INVALID); }
+public:
+	inline const bool	isBeingTrained() const
+	{ return trainer; }
 
-		inline const SERIAL	getTrainer() const
-		{ return trainer; }
+	inline const pChar	getTrainer() const
+	{ return trainer; }
 
-		inline const UI08	getSkillTaught() const
-		{ return trainingplayerin; }
-
-		inline const LOGICAL	canTrain() const
-		{ return cantrain; }
-
-		inline void		setCanTrain(LOGICAL c = true)
-		{ cantrain = c; }
-
-		inline void		resetCanTrain()
-		{ setCanTrain(false); }
+	inline const UI08	getSkillTaught() const
+	{ return trainingplayerin; }
 //@}
 
 //@{
 /*!
 \name Mount
 */
-	public:
-		bool			mounted; //!< if now is mounted by a char
-
-	private:
-		LOGICAL			onhorse; //!< On a horse
-	public:
-		SI32				unmountHorse();
-		void			mounthorse( P_CHAR mount );
-		SERIAL			getHorse();
-		void			setOnHorse();
-		bool			isMounting( );
-		bool			isMounting( P_CHAR horse );
+public:
+	SI32			unmountHorse();
+	void			mounthorse( pChar mount );
+	pChar			getHorse();
+	void			setOnHorse();
+	bool			isMounting( );
+	bool			isMounting( pChar horse );
 //@}
 
 //@{
@@ -719,15 +621,15 @@ public:
 	TIMERVAL objectdelay;
 public:
 	inline void setSkillDelay( UI32 seconds = server_data.skilldelay )
-	{ skilldelay =  uiCurrentTime + seconds * MY_CLOCKS_PER_SEC; }
+	{ skilldelay = uiCurrentTime + seconds * MY_CLOCKS_PER_SEC; }
 
-	inline const LOGICAL canDoSkillAction() const
+	inline const bool canDoSkillAction() const
 	{ return TIMEOUT( skilldelay ); }
 
 	inline void setObjectDelay( UI32 seconds = server_data.objectdelay )
 	{ objectdelay = uiCurrentTime + seconds * MY_CLOCKS_PER_SEC; }
 
-	inline const LOGICAL canDoObjectAction() const
+	inline const bool canDoObjectAction() const
 	{ return TIMEOUT( objectdelay ); }
 
 
@@ -737,8 +639,8 @@ public:
 	public:
 		void 			setMultiSerial(long mulser);
 
-		inline const LOGICAL	isOwnerOf(const cObject *obj) const
-		{ return getSerial32() == obj->getOwnerSerial32(); }
+		inline const bool isOwnerOf(const cObject *obj) const
+		{ return this == obj->getOwner(); }
 
 	/********************************/
 
@@ -751,7 +653,7 @@ public:
 		pChar			followtarget;	//!< NPC Follow Target
 		pChar			swingtarget;	//!< Target they are going to hit after they swing
 
-		SI32 			account; // changed to signed, lb
+		pAccount		account;
 
 	public:
 		wstring profile; //!< player profile
@@ -774,25 +676,20 @@ public:
 		void deleteSpeechCurrent();
 
 	private:
-		SERIAL	stablemaster_serial; //!< the stablemaster serial
+		pChar stablemaster;	//!< The stablemaster
 	public:
 		//! Check if char is stabled
-		inline const LOGICAL isStabled() const
-		{ return getStablemaster()!=INVALID; }
+		inline const bool isStabled() const
+		{ return stablemaster; }
 
 		//! Get the character's stablemaster
-		inline const SERIAL getStablemaster() const
-		{ return stablemaster_serial; }
+		inline const pChar getStablemaster() const
+		{ return stablemaster; }
 
-		void stable( P_CHAR stablemaster );
+		void stable( pChar sm );
 		void unStable();
 
 	public:
-		SI32		npcaitype; //!< NPC ai
-
-	public:
-
-
 		SERIAL oldmenu; //!< old menu serial
 
 		SI32			stat3crc; // xan : future use to keep safe stats
@@ -817,18 +714,6 @@ public:
 		TIMERVAL		timeout; // Combat timeout (For hitting)
 		TIMERVAL		timeout2; // memory of last shot timeout
 
-		TIMERVAL		npcmovetime; // Next time npc will walk
-		char			npcWander; // NPC Wander Mode
-		char			oldnpcWander; // Used for fleeing npcs
-		SI32			fleeTimer;
-		R32			npcMoveSpeed; // Used to controll npc walking speed
-		R32			npcFollowSpeed; // Used to controll npc walking speed when following a target (npcwander = 1)
-		SI32			fx1; //NPC Wander PoSI32 1 x
-		SI32			fx2; //NPC Wander Point 2 x
-		SI32			fy1; //NPC Wander Point 1 y
-		SI32			fy2; //NPC Wander Point 2 y
-		signed char		fz1; //NPC Wander Point 1 z
-
 		UI08			hidden; // 0 = not hidden, 1 = hidden, 2 = invisible spell
 		TIMERVAL		invistimeout;
 		SI32			hunger;  // Level of hungerness, 6 = full, 0 = "empty"
@@ -838,7 +723,6 @@ public:
 		SI32			pagegm; //GM Paging
 		//char region;
 		UI08			region;
-
 
 		SI32			combathitmessage;
 		SI32			making; // skill number of skill using to make item, 0 if not making anything.
@@ -852,45 +736,40 @@ public:
 		TIMERVAL		summontimer; //Timer for summoned creatures.
 		TIMERVAL		fishingtimer; // Timer used to delay the catching of fish
 
-	//SI32			amxflags[16]; // for special things implemented by scripts :)
-		SI32			magicsphere; // for npc ai
 		//<Luxor>
 		SI32			resists[MAX_RESISTANCE_INDEX];
-		LOGICAL			holydamaged;
-		LOGICAL			lightdamaged;
+		bool			holydamaged;
+		bool			lightdamaged;
 		DamageType		damagetype;
 		//</Luxor>
-		SI32			advobj; //Has used advance gate?
+		SI32			advobj;		//!< Has used advance gate?
 
-		SI32			poison; // used for poison skill
-		PoisonType		poisoned; // type of poison
-		TIMERVAL		poisontime; // poison damage timer
-		TIMERVAL		poisontxt; // poision text timer
-		TIMERVAL		poisonwearofftime; // LB, makes poision wear off ...
+		SI32			poison;		//!< used for poison skill
+		PoisonType		poisoned;	//!< type of poison
+		TIMERVAL		poisontime;	//!< poison damage timer
+		TIMERVAL		poisontxt;	//!< poision text timer
+		TIMERVAL		poisonwearofftime; //!< LB, makes poision wear off ...
 
 		SI32			fleeat;
 		SI32			reattackat;
-		SI32			trigger; //Trigger number that character activates
-		std::string		trigword; //Word that character triggers on.
+		SI32			trigger;	//!< Trigger number that character activates
+		std::string		trigword;	//!< Word that character triggers on.
 		UI16			envokeid;
 		SI32			envokeitem;
 		SI32			split;
 		SI32			splitchnc;
-		SI32			targtrig; //Stores the number of the trigger the character for targeting
-		char			ra;  // Reactive Armor spell
+		SI32			targtrig;	//!< Stores the number of the trigger the character for targeting
+		char			ra;		//!< Reactive Armor spell
 
-		char			flag; //1=red 2=grey 4=Blue 8=green 10=Orange
 		TIMERVAL		tempflagtime;
-		// End of Guild Related Character information
 
-		wstring* staticProfile; //!< player static profile
+		wstring* staticProfile;			//!< player static profile
 
 
-		TIMERVAL		murderrate; //# of ticks until one murder decays //REPSYS
-		TIMERVAL		murdersave; //# of second for murder decay
+		TIMERVAL		murderrate; //!< # of ticks until one murder decays //REPSYS
+		TIMERVAL		murdersave; //!< # of second for murder decay
 
-		TIMERVAL		crimflag; //Time when No longer criminal -1=Not Criminal
-		SI32			casting; // 0/1 is the cast casting a spell?
+		TIMERVAL		crimflag; //!< Time when No longer criminal -1=Not Criminal
 		TIMERVAL		spelltime; //Time when they are done casting....
 		magic::SpellId		spell; //current spell they are casting....
 		SI32			spellaction; //Action of the current spell....
@@ -908,16 +787,10 @@ public:
 		UI32			running; //AntiChrist - Stamina Loose while running
 		UI32			lastRunning; //Luxor
 		SI32			logout; //Time till logout for this char -1 means in the world or already logged out //Instalog
-		TIMERVAL		clientidletime; // LB
 		//UI32 swing;
 
 		UI32			holdg; // Gold a player vendor is holding for Owner
-		//SI32			weather;	//!< Weather!
 		char			fly_steps; // number of step the creatures flies if it can fly
-		//taken from 6904t2(5/10/99) - AntiChrist
-		LOGICAL			tamed;
-		//taken from 6904t2(5/10/99) - AntiChrist
-		LOGICAL			guarded;							// (Abaddon) if guarded
 		TIMERVAL		smoketimer; // LB
 		TIMERVAL		smokedisplaytimer;
 
@@ -926,9 +799,6 @@ public:
 		TIMERVAL		antiguardstimer;//AntiChrist - anti "GUARDS" spawn
 
 		SI32			carve; //AntiChrist - for new carve system
-
-		SERIAL			hairserial;
-		SERIAL			beardserial;
 
 		TIMERVAL		begging_timer;
 		MsgBoards::PostType	postType;
@@ -944,15 +814,6 @@ public:
 		SI32 			prevX; // fix for looping gate travel bug (bounce back problem)
 		SI32 			prevY;
 		signed char 		prevZ;
-		LOGICAL			morphed;
-
-		UI08			commandLevel; 			// 0 = player, 1 = counselor, 2 = GM
-
-		SERIAL			spawnserial; //!< Spawned by dinamic
-		SERIAL			spawnregion; //!< Spawned by scripted
-
-		char			npc_type;		// currently only used for stabling, (type==1 -> stablemaster)
-							// can be used for other npc types too of course
 
 		TIMERVAL 		time_unused;
 		TIMERVAL 		timeused_last;
@@ -961,22 +822,22 @@ public:
 		void			onSingleClick( P_CHAR clickedBy );
 
 	private:
-		inline void	resetBaseSkill()
+		inline void resetBaseSkill()
 		{ memset(baseskill, 0, sizeof(baseskill)); }
 
-		inline void	resetSkill()
+		inline void resetSkill()
 		{ memset(skill, 0, sizeof(skill)); }
 
-		inline void	resetNxwFlags()
-		{ memset(nxwflags, 0, sizeof(nxwflags)); }
+		inline void resetFlags()
+		{ flags = 0; flags2 = 0; }
 
-		inline void	resetAmxEvents()
+		inline void resetAmxEvents()
 		{ memset(amxevents, 0, sizeof(amxevents)); }
 
-		inline void	resetResists()
+		inline void resetResists()
 		{ memset(resists, 0, sizeof(resists)); }
 
-		inline void	resetLockSkills()
+		inline void resetLockSkills()
 		{ memset(lockSkill, 0, sizeof(lockSkill)); }
 
 	private:
@@ -986,10 +847,10 @@ public:
 
 	public:
 		//! tells if a character is running
-		inline const LOGICAL	isRunning() const
+		inline const bool isRunning() const
 		{ return ( (uiCurrentTime - lastRunning) <= 100 ); }
 
-		inline void		setRunning()
+		inline void setRunning()
 		{ lastRunning = uiCurrentTime; }
 
 		void 			updateStats(SI32 stat);
@@ -1000,9 +861,9 @@ public:
 		void                    drink(P_ITEM pi);       //Luxor: delayed drinking
 		void 			hideBySkill();
 		void 			hideBySpell(SI32 timer = INVALID);
-		UI32  			CountItems(short ID, short col= INVALID);
+		UI32  			CountItems(UI16 ID, UI16 col= INVALID);
 
-		inline const UI32 	CountGold()
+		inline const UI32 CountGold()
 		{ return CountItems(ITEMID_GOLD); }
 
 		P_ITEM 			GetItemOnLayer(UI08 layer);
@@ -1010,17 +871,14 @@ public:
 		void			openBankBox( P_CHAR pc );
 		void 			openSpecialBank( P_CHAR pc );
 		SI32  			countBankGold();
-	//	void 			addHalo(P_ITEM pi);
-	//	void 			removeHalo(P_ITEM pi);
-	//	void 			glowHalo(P_ITEM pi);
 		P_ITEM 			getWeapon();
 		P_ITEM 			getShield();
 		P_ITEM 			getBackpack();
-		LOGICAL			isInBackpack( P_ITEM pi );
+		bool			isInBackpack( P_ITEM pi );
 		void			addGold(UI16 totgold);
 
 		//! Show Backpack to player
-		inline void		showBackpack()
+		inline void showBackpack()
 		{ showContainer( getBackpack() ); }
 
 		// The bit for setting what effect gm movement
@@ -1033,8 +891,12 @@ public:
 		UI32			getSkillSum();
 		SI32			getTeachingDelta(P_CHAR pPlayer, SI32 skill, SI32 sum);
 		void			removeItemBonus(cItem* pi);
-		LOGICAL			isSameAs(P_CHAR pc) {if (pc && (pc->getSerial32() == getSerial32())) return true; else return false;}
-		LOGICAL			resist(SI32 n)		 { return ((nxwflags[0]&n)!=0); }    // <-- what is this ?, xan
+		inline const bool	isSameAs(pChar pc) const
+		{ return this == pc; }
+
+		//! Return the resistance for a defined type
+		inline const bool resist(UI32 n) const
+		{ return flags & n; }
 
 		void			sysmsg(const TEXT *txt, ...);
 		void			attackStuff(P_CHAR pc);
@@ -1043,7 +905,7 @@ public:
 		void			setOwner(P_CHAR owner);
 		void			curePoison();
 		void			resurrect(NXWCLIENT healer = NULL);
-		void			unfreeze( LOGICAL calledByTempfx = false );
+		void			unfreeze( bool calledByTempfx = false );
 		void			damage(SI32 amount, DamageType typeofdamage = DAMAGE_PURE, StatType stattobedamaged = STAT_HP);
 		void			playAction(UI16 action);
 		void			impAction(UI16 action);
@@ -1055,48 +917,40 @@ public:
 		UI16			emotecolor;		//!< Color for emote messages
 		UI08			fonttype;		//!< Speech font to use
 		UI16			saycolor;		//!< Color for say messages
-		LOGICAL			unicode;		//!< This is set to 1 if the player uses unicode speech, 0 if not
 
-		void			talkAll(TEXT *txt, LOGICAL antispam = 1);
-		void			talk(NXWSOCKET s, TEXT *txt, LOGICAL antispam = 1);
-		void			emote(NXWSOCKET s,TEXT *txt, LOGICAL antispam, ...);
-		void			emoteall(char *txt, LOGICAL antispam, ...);
-		void			talkRunic(NXWSOCKET s, TEXT *txt, LOGICAL antispam = 1);
-		void			talkAllRunic(TEXT *txt, LOGICAL antispam = 0);
+		void			talkAll(TEXT *txt, bool antispam = 1);
+		void			talk(NXWSOCKET s, TEXT *txt, bool antispam = 1);
+		void			emote(NXWSOCKET s,TEXT *txt, bool antispam, ...);
+		void			emoteall(char *txt, bool antispam, ...);
+		void			talkRunic(NXWSOCKET s, TEXT *txt, bool antispam = 1);
+		void			talkAllRunic(TEXT *txt, bool antispam = 0);
 //@}
 
-		UI32			distFrom(P_CHAR pc);
-		UI32			distFrom(P_ITEM pi);
+		UI32			distFrom(pChar pc);
+		UI32			distFrom(pItem pi);
 		void			teleport( UI08 flags = TELEFLAG_SENDALL, NXWCLIENT cli = NULL );
 		void			facexy(SI32 facex, SI32 facey);
-		LOGICAL			losFrom(P_CHAR pc);
-		void			playSFX(SI16 sound, LOGICAL onlyToMe = false);
+		bool			losFrom(P_CHAR pc);
+		void			playSFX(SI16 sound, bool onlyToMe = false);
 		void			playMonsterSound(MonsterSound sfx);
 
-		//! Freeze the char
-		inline void		freeze()
-		{ priv2 |= flagPriv2Frozen; }
-
-		LOGICAL			checkSkill(Skill sk, SI32 low, SI32 high, LOGICAL bRaise = true);
+		bool			checkSkill(Skill sk, SI32 low, SI32 high, bool bRaise = true);
 		SI32			delItems(UI16 id, SI32 amount = 1, UI16 color = INVALID);
 
-		const LOGICAL	checkSkillSparrCheck(Skill sk, SI32 low, SI32 high, P_CHAR pcd);
+		const bool	checkSkillSparrCheck(Skill sk, SI32 low, SI32 high, P_CHAR pcd);
 
 		UI32			getAmount(short id, short col=INVALID, bool onlyPrimaryBackpack=false );
 
-		void			movingFX(P_CHAR destination, short id, SI32 speed, SI32 loop, LOGICAL explode, class ParticleFx* part = NULL);
+		void			movingFX(P_CHAR destination, short id, SI32 speed, SI32 loop, bool explode, class ParticleFx* part = NULL);
 		void			staticFX(short id, SI32 speed, SI32 loop, class ParticleFx* part = NULL);
-		void			boltFX(LOGICAL bNoParticles);
+		void			boltFX(bool bNoParticles);
 		void			circleFX(short id);
-
-		P_ITEM			getBeardItem();
-		P_ITEM			getHairItem();
 
 		void			useHairDye(P_ITEM bottle);
 
 		void			morph ( short bodyid = INVALID, short skincolor = INVALID,
 								short hairstyle = INVALID, short haircolor = INVALID, short beardstyle = INVALID,
-								short beardcolor = INVALID, const char* newname = NULL, LOGICAL bBackup = true);
+								short beardcolor = INVALID, const char* newname = NULL, bool bBackup = true);
 
 
 //@{
@@ -1109,13 +963,9 @@ public:
 		void		possess( P_CHAR pc );
 //@}
 
-		void		jail (SI32 seconds = 60*60*24);
 		void		Kill();
-		void		kick();
 		void		goPlace(SI32);
-		LOGICAL		knowsSpell(magic::SpellId spellnumber);
-
-		void		setNpcMoveTime();
+		bool		knowsSpell(magic::SpellId spellnumber);
 
 	public:
 	#ifdef SPAR_NEW_WR_SYSTEM
@@ -1126,7 +976,5 @@ public:
 		std::vector< UI32 >	lootVector;
 		virtual void		Delete();
 } PACK_NEEDED;
-
-typedef cChar *pChar;
 
 #endif
