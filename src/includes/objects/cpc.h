@@ -131,7 +131,6 @@ public:
 	inline const TIMERVAL getCreationDay() const
 	{ return creationday; }
 //@}
-
 };
 
 #endif

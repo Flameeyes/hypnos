@@ -474,12 +474,12 @@ public:
 \name Mount
 */
 public:
-	int32_t			unmountHorse();
-	void			mounthorse( pChar mount );
-	pChar			getHorse();
-	void			setOnHorse();
-	bool			isMounting( );
-	bool			isMounting( pChar horse );
+	bool unmountHorse();
+	void mounthorse(pNPC mount);
+	pNPC getHorse();
+	void setOnHorse();
+	bool isMounting( );
+	bool isMounting(pNPC horse);
 //@}
 
 //@{
@@ -727,9 +727,6 @@ public:
 
 		inline void resetFlags()
 		{ flags = 0; }
-
-		inline void resetAmxEvents()
-		{ memset(amxevents, 0, sizeof(amxevents)); }
 
 		inline void resetResists()
 		{ memset(resists, 0, sizeof(resists)); }

@@ -1906,18 +1906,18 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 	}
 	// do the event :]
 
-	if (src->amxevents[EVENT_CHR_ONCASTSPELL]) {
-		g_bByPass = false;
-		src->amxevents[EVENT_CHR_ONCASTSPELL]->Call(src->getSerial(), spellnumber, src->spelltype, INVALID);
-		if (g_bByPass==true) return;
+	pFunctionHandle evt = src->getEvent(evtChrOnCastSpell);
+	if ( evt )
+	{
+		tVariantVector params = tVariantVector(4);
+		params[0] = src->getSerial(); params[1] = spellnumber;
+		params[2] = src->spelltype; params[3] = INVALID;
+		evt->setParams(params);
+		evt->execute();
+		if ( evt->bypassed() )
+			return;
 	}
-
-	/*
-	src->runAmxEvent( EVENT_CHR_ONCASTSPELL, src->getSerial(), spellnumber, src->spelltype, INVALID );
-	if (g_bByPass==true)
-		return;
-	*/
-
+	
 	// check mana, don't bother the rest if no mana
 	if ((!(flags&SPELLFLAG_NOUSEMANA)) && (!checkMana(src, spellnumber))) return;
 
@@ -2002,17 +2002,18 @@ bool beginCasting (SpellId num, NXWCLIENT s, CastingType type)
 	}
 
 
-	if (pc->amxevents[EVENT_CHR_ONCASTSPELL]) {
-		g_bByPass = false;
-		pc->amxevents[EVENT_CHR_ONCASTSPELL]->Call(pc->getSerial(), num, type, INVALID );
-		if (g_bByPass==true) return false;
+	pFunctionHandle evt = src->getEvent(evtChrOnCastSpell);
+	if ( evt )
+	{
+		tVariantVector params = tVariantVector(4);
+		params[0] = src->getSerial(); params[1] = num;
+		params[2] = type; params[3] = INVALID;
+		evt->setParams(params);
+		evt->execute();
+		if ( evt->bypassed() )
+			return;
 	}
-	/*
-	pc->runAmxEvent( EVENT_CHR_ONCASTSPELL, pc->getSerial(), num, type, s->toInt() );
-	if (g_bByPass==true)
-		return false;
-	*/
-
+	
 	pc->unHide();
 	pc->disturbMed();
 

@@ -28,26 +28,26 @@
 \brief single clicks over PC/NPCs
 \param client client of player who clicks "this"
 */
-
 void cChar::singleClick( pClient client )
 {
         pPC clickedBy = client->currChar();
-	if ( clickedBy )
+	if ( ! clickedBy )
 	{
-                if ( amxevents[EVENT_CHR_ONCLICK] != NULL )
-	        {
-		        g_bByPass = false;
-		        amxevents[EVENT_CHR_ONCLICK]->Call( getSerial(), clickedBy->getSerial32() );
-		        if ( g_bByPass==true )
+		LogMessage("cChar::singleClick couldn't find char serial: %d\n", serial);
+		return;
+	}
+	
+	if ( events[evtChrOnClick] ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = clickedBy->getSerial32();
+		events[evtChrOnClick]->setParams(params);
+		events[evtChrOnClick]->execute();
+		if ( events[evtChrOnClick]->bypassed() )
 			return;
-	        }
-                if ( nSettings::Server::shouldShowPCNames() || npc || getSerial() == clickedBy->getSerial32()) showLongName( clickedBy, false );
 	}
-	else
-	{
-		LogMessage("<%d> cChar::singleClick couldn't find char serial: %d\n", __LINE__, serial);
-	}
-
+	
+	if ( nSettings::Server::shouldShowPCNames() || npc || clickedBy == this )
+		showLongName( clickedBy, false );
 }
 
 
@@ -122,11 +122,9 @@ void cChar::doubleClick(pClient client)
 				if ( pack)
                                         clicker->showContainer(pack);
 			}
-			else if ( clicker->getSerial() == getSerial32() )
-			{//dbl-click self
-				if (  !clicker->unmountHorse() ) return; //on horse
+			else if ( clicker == this )
+				if ( unmountHorse() ) return; //on horse
 				//if not on horse, treat ourselves as any other char
-			}//self
 
 
                         //! \todo when paperdoll send packet done, rewrite this

@@ -365,6 +365,4 @@ void cPC::deadAttack (pChar victim)
 			sysmessage(s,TRANSLATE("You are dead and cannot do that."));
 		}
 	}//if npc
-
 }
-
