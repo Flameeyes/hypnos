@@ -137,10 +137,7 @@ void cChar::doubleClick(pClient client, int keyboard)
 
 			LongToCharPtr(getSerial(), pdoll +1);
 
-			completetitle = complete_title(this);   //<- had a parameter which become this with merging. Still to be updated
-			if ( strlen(completetitle) >= 60 )
-				completetitle[60]=0;
-			strcpy((char*)&pdoll[5], completetitle);
+			strncpy((char*)&pdoll[5], getCompleteTitle().c_str(), 60);
 			Xsend(s, pdoll, 66);
 //AoS/			Network->FlushBuffer(s);
 			return;

@@ -526,6 +526,25 @@ public:
 
 	inline const bool canDoObjectAction() const
 	{ return TIMEOUT( objectdelay ); }
+	
+	uint8_t bestSkill() const;
+	uint8_t nextBestSkill(uint8_t previous) const;
+	
+	//! Gets the overridden title 
+	inline std::string getTitle() const
+	{ return title; }
+	
+	std::string getTitle1() const;
+
+	/*!
+	\brief Gets the paperdoll title [2]
+	\return A string with the character's title
+	*/
+	inline std::string getTitle2() const
+	{ return std::string(title[ pc->bestSkill()+1 ].skill); }
+	
+	std::string getTitle3() const;
+	std::string getCompleteTitle() const;
 
 //@}
 
@@ -580,8 +599,8 @@ public:
 		int32_t			stm; // Stamina
 		int32_t			mn;  // Mana
 		int32_t			mn2; // Reserved for calculation
-		uint16_t			baseskill[ALLSKILLS+1]; // Base skills without stat modifiers
-		uint16_t			skill[ALLSKILLS+1]; // List of skills (with stat modifiers)
+		uint16_t		baseskill[ALLSKILLS+1]; // Base skills without stat modifiers
+		uint16_t		skill[ALLSKILLS+1]; // List of skills (with stat modifiers)
 
 
 		uint32_t			robe; // Serial number of generated death robe (If char is a ghost)

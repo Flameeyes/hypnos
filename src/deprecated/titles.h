@@ -15,14 +15,6 @@
 #ifndef __TITLES_H__
 #define __TITLES_H__
 
-char *title1(pChar pc);
-char *title2(pChar pc);
-char *title3(pChar pc);
-char *complete_title(pChar pc);
-
-// for newbie stuff
-int bestskill(pChar p);
-
 //For custom titles
 void loadcustomtitle();
 

@@ -20,6 +20,8 @@
 
 template<typename T> inline T qmax(T a, T b) { a > b ? a : b; }
 template<typename T> inline T qmin(T a, T b) { a < b ? a : b; }
+template<typename T> inline bool between(T val, T min, T max)
+{ return val => min && val <= max; }
 
 // this delete is safe from multiple deletes of same ptr
 template<typename T> inline void safedelete(T*& p) { delete p; p = NULL; }

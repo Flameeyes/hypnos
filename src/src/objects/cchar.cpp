@@ -1068,6 +1068,196 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 }
 
 /*!
+\brief Gets the character's best skill
+\return baseskill's index for the best skill of the character
+*/
+uint8_t cChar::bestSkill() const
+{
+	uint8_t a=0;
+
+	for(uint8_t i=0; i < TRUESKILLS; i++)
+		if ( baseskill[i] > baseskill[a] )
+			a = i;
+	
+	return a;
+}
+
+/*!
+\brief Gets the second or third character's best skill
+\param previous index of the previous find best skill
+\return baseskill's index for the next best skill of the character
+*/
+uint8_t cChar::nextBestSkill(uint8_t previous) const
+{
+	uint8_t a = previous ? 0 : 1; // if previous == 0 skip it
+
+	for(uint8_t i = a; i < TRUESKILLS; i++)
+		if ( baseskill[i] > baseskill[a] && i != previous )
+			a = i;
+	
+	return a;
+}
+
+/*!
+\brief Paperdoll title for character [1]
+\return A string with the title
+*/
+std::string cChar::getTitle1() const
+{
+	int titlenum = 0;
+	uint16_t x = baseskill[bestSkill()];
+
+	if (x>=1000) titlenum=8;
+	else if (x>=900) titlenum=7;
+	else if (x>=800) titlenum=6;
+	else if (x>=700) titlenum=5;
+	else if (x>=600) titlenum=4;
+	else if (x>=500) titlenum=3;
+	else if (x>=400) titlenum=2;
+	else if (x>=300) titlenum=1;
+
+	return std::string(title[titlenum].prowess);
+}
+
+/*!
+\brief Paperdoll title for the character [3]
+\return a string with the paperdoll title
+*/
+std::string cChar::getTitle3() // Paperdoll title for character p (3)
+{
+	int titlenum=0;
+
+	if ( getKarma() >= 10000)
+	{
+		titlenum=3;
+		if (getFame() >= 5000) titlenum=0;
+		else if (getFame() >= 2500) titlenum=1;
+		else if (getFame() >= 1250) titlenum=2;
+	}
+	else if ( between(getKarma(), 5000, 9999) )
+	{
+		titlenum=7;
+		if (getFame() >= 5000) titlenum=4;
+		else if (getFame() >= 2500) titlenum=5;
+		else if (getFame() >= 1250) titlenum=6;
+	}
+	else if ( between(getKarma(), 2500, 4999) )
+	{
+		titlenum=11;
+		if (getFame() >= 5000) titlenum=8;
+		else if (getFame() >= 2500) titlenum=9;
+		else if (getFame() >= 1250) titlenum=10;
+	}
+	else if ( between(getKarma(), 1250, 2499) )
+	{
+		titlenum=15;
+		if (getFame() >= 5000) titlenum=12;
+		else if (getFame() >= 2500) titlenum=13;
+		else if (getFame() >= 1250) titlenum=14;
+	}
+	else if ( between(getKarma(), 625, 1249) )
+	{
+		titlenum=19;
+		if (getFame() >= 5000) titlenum=16;
+		else if (getFame() >= 1000) titlenum=17;
+		else if (getFame() >= 500) titlenum=18;
+	}
+	else if ( between(getKarma(), -625, 624) )
+	{
+		titlenum=23;
+		if (getFame() >= 5000) titlenum=20;
+		else if (getFame() >= 2500) titlenum=21;
+		else if (getFame() >= 1250) titlenum=22;
+	}
+	else if ( between(getKarma(), -1250, -626) )
+	{
+		titlenum=24;
+		if (getFame() >= 10000) titlenum=28;
+		else if (getFame() >= 5000) titlenum=27;
+		else if (getFame() >= 2500) titlenum=26;
+		else if (getFame() >= 1250) titlenum=25;
+	}
+	else if ( between(getKarma(), -2500, -1251) )
+	{
+		titlenum=29;
+		if (getFame() >= 5000) titlenum=32;
+		else if (getFame() >= 2500) titlenum=31;
+		else if (getFame() >= 1250) titlenum=30;
+	}
+	else if ( between(getKarma(), -5000, -2501) )
+	{
+		titlenum=33;
+		if (getFame() >= 10000) titlenum=37;
+		else if (getFame() >= 5000) titlenum=36;
+		else if (getFame() >= 2500) titlenum=35;
+		else if (getFame() >= 1250) titlenum=34;
+	}
+	else if ( between(getKarma(), -10000, -5001) )
+	{
+		titlenum=38;
+		if (getFame() >= 5000) titlenum=41;
+		else if (getFame() >= 2500) titlenum=40;
+		else if (getFame() >= 1250) titlenum=39;
+	}
+	else if ( getKarma() < -10000)
+	{
+		titlenum=42;
+		if (getFame() >= 5000) titlenum=45;
+		else if (getFame() >= 2500) titlenum=44;
+		else if (getFame() >= 1250) titlenum=43;
+	}
+	
+	if ( getFame() >= 10000 )
+	{
+		if ( pc->kills >= repsys.maxkills )
+		{
+			if ( pc->getId() == BODY_FEMALE )
+				return std::string("The Murderous Lady ");
+			else
+				return std::string("The Murderer Lord ");
+		} else {
+			if ( pc->getId() == BODY_FEMALE )
+				return std::string("The ") + title[titlenum].fame + std::string(" Lady ");
+			else
+				return std::string("The ") + title[titlenum].fame + std::string(" Lord ");
+		}
+	} else {
+		if ( pc->kills >= repsys.maxkills )
+			return std::string("The Murderer ");
+		else
+			return std::string("The ") + title[titlenum].fame;
+	}
+}
+
+/*!
+\brief Generates the entire title plus criminal stuff
+*/
+std::string cChar::getCompleteTitle() const
+{
+	//!\todo The gm stuff needs to be changed here
+	if (/*IsGM() && account!=0*/ false)
+		return getCurrentName() + " " + title;
+	else if ( ! isDead() && ( isCriminal() || kills ) ) {
+		int titleindex = 0;
+		if ( kills >= 100 )
+			titleindex = 5;
+		else if ( kills >= 50 )
+			titleindex = 4;
+		else if ( kills >= 20 )
+			titleindex = 3;
+		else if ( kills >= 10 )
+			titleindex = 2;
+		else if ( kills >= 5 )
+			titleindex = 1
+		
+		return std::string(title[titleindex].other) + " " + getCurrentName() + ", " + title + getTitle1() + " " + getTitle2();
+	} else 
+		return getTitle3() + getCurrentName() + 
+			(title.lenght() > 0 ? " " + title : title) +
+			", " + getTitle1() + " " + getTitle2();
+}
+
+/*!
 \author Luxor
 \brief returns char's combat skill
 \return the index of the char's combat skill
@@ -2803,7 +2993,3 @@ void cChar::warUpdate()
 		}
 	}
 }
-
-
-
-

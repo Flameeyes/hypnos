@@ -17,46 +17,23 @@
 #include "basics.h"
 #include "inlines.h"
 
-static int nextbestskill(pChar pc, int bstskll)  // Which skill is the second highest
-{
-	if ( ! pc ) return 0;
-	
-	int i, a = 0, b = 0;
-
-	for (i = 0; i < TRUESKILLS; i++)
-	{
-		if (pc->baseskill[i] > b && pc->baseskill[i] < pc->baseskill[bstskll] && bstskll != i )
-		{
-			a = i;
-			b = pc->baseskill[i];
-		}
-		if ( pc->baseskill[i] == pc->baseskill[bstskll] && bstskll != i)
-		{
-			a = i;
-			b = pc->baseskill[i];
-		}
-	}
-	return a;
-
-}
-
 void newbieitems(pChar pc)
 {
-
 	if ( ! pc ) return;
 	
 	NXWCLIENT ps=pc->getClient();
 	if(ps==NULL)
 		return;
 
-	int first, second, third, storeval, itemaddperskill, loopexit = 0;
+	int storeval, itemaddperskill, loopexit = 0;
+	uint8_t first, second, third;
 	char sect[512];
 	char whichsect[105];
 	cScpIterator* iter = NULL;
 
-	first = bestskill(pc);
-	second = nextbestskill(pc, first);
-	third = nextbestskill(pc, second);
+	first = pc->bestSkill();
+	second = pc->nextBestSkill(first);
+	third = pc->nextBestSkill(second);
 	if (pc->baseskill[third] < 190)
 		third = 46;
 
