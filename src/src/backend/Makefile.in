@@ -100,7 +100,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 noinst_LTLIBRARIES = libbackend.la
-libbackend_la_SOURCES = scheduler.cpp scripting.cpp strconstants.cpp
+libbackend_la_SOURCES = scheduler.cpp scripting.cpp strconstants.cpp admincmds.cpp notify.cpp
 subdir = src/backend
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -109,7 +109,8 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 
 libbackend_la_LDFLAGS =
 libbackend_la_LIBADD =
-am_libbackend_la_OBJECTS = scheduler.lo scripting.lo strconstants.lo
+am_libbackend_la_OBJECTS = scheduler.lo scripting.lo strconstants.lo \
+	admincmds.lo notify.lo
 libbackend_la_OBJECTS = $(am_libbackend_la_OBJECTS)
 
 DEFS = @DEFS@
@@ -118,8 +119,8 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/scheduler.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/scripting.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/admincmds.Plo ./$(DEPDIR)/notify.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/scheduler.Plo ./$(DEPDIR)/scripting.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/strconstants.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -160,6 +161,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/admincmds.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/notify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scheduler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scripting.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strconstants.Plo@am__quote@
