@@ -81,8 +81,9 @@ public:
         void drop_item(pItem pi, Location &loc, pSerializable dest);   	//!< Item is dropped on ground, char or item
 
 protected:
-       	bool dragging; //!< true if is dragging
-	bool evilDrag; //!< evil dragging, we need this for UO3D clients to save dragging history
+       	bool dragging; 	//!< true if is dragging
+	bool evilDrag; 	//!< evil dragging, we need this for UO3D clients to save dragging history
+        pItem dragItem;	//!< to use as safekeeping against client disconnection
         // internally used by drop_item:
         void pack_item(pItem pi, pItem dest);				//!< Item is dropped on another item
         void dump_item(pItem pi, Location &loc); 			//!< Item is dropped on the ground

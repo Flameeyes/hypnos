@@ -1053,6 +1053,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
         pPC pc = new cPC();
 
         pc->setBody(charbody);
+        pc->setTrueBody(charbody);
         pc->npc=false;
       	pc->SetPriv(defaultpriv1);
 	pc->SetPriv2(defaultpriv2);
@@ -1064,36 +1065,31 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 	charpos.dispz= charpos.z= str2num(start[StartingLocation][4]);
 	pc->MoveTo( charpos );
 
-	pc->dir=4;
+	pc->dir=4;	//should be facing north. not that it matters :D
 	pc->namedeedserial=INVALID;
         for (int ii = 0; ii < skTrueSkills; i++) Skills::updateSkillLevel(pc, ii);  //updating skill levels for pc
 
-	pItem pi;
 
       	if (HairStyle)  // If HairStyle was invalid, is now 0, so baldy pg :D
 	{
-		pi = item::CreateFromScript( "$item_short_hair" );
+		pEquippable pi = item::CreateFromScript( "$item_short_hair" ); //!< \todo update createfromscript function to get subclasses of items
 		VALIDATEPIR(pi, false);
 		pi->setId(HairStyle);
 		pi->setColor(HairColor);
-		pi->setContainer(pc);
-		pi->layer=LAYER_HAIR;
                 charbody->setLayerItem(layHair, pi);
 	}
 
 	if (FacialHair) // if FacialHair was invalid (or unselected) or pg is female, no beard is added
 	{
-		pi = item::CreateFromScript( "$item_short_beard" );
+		pEquippable pi = item::CreateFromScript( "$item_short_beard" );
 		VALIDATEPIR(pi, false);
 		pi->setId(FacialHair);
 		pi->setColor(FacialHairColor);
-		pi->setContainer(pc);
-		pi->layer=LAYER_BEARD;
                 charbody->setLayerItem(layBeard, pi);
 	}
 
         // - create the backpack
-	pi= item::CreateFromScript( "$item_backpack");
+	pEquippableContainer pi= item::CreateFromScript( "$item_backpack");
 	VALIDATEPIR(pi, false);
 	pc->packitemserial= pi->getSerial();
         pi->setContainer(pc);

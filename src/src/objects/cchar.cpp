@@ -497,6 +497,7 @@ void cChar::disturbMed()
 /*!
 \brief Reveals the char if he was hidden
 \author Duke and Flameeyes
+\todo adding a comment to player? (like "you have been revealed" ? :D)
 */
 void cChar::unHide()
 {

@@ -216,11 +216,12 @@ void cNPC::heartbeat()
 */
 int32_t cNPC::getTeachingDelta(pPC pPlayer, int32_t skill, int32_t sum)
 {
-	uint32_t delta = qmin(250,baseskill[skill]/2); 	// half the trainers skill, but not more than 250
+	uint32_t delta = qmin(getMaximumSkillTraining(),baseskill[skill]/2); 	// half the trainers skill, but not more than 250
 	delta -= pPlayer->baseskill[skill]; 				// calc difference
 	if (delta <= 0)
 		return 0;
 
+        //!\todo a script hook to customize skillcap
 	if (sum+delta >= SrvParms->skillcap * 10)			// would new skill value be above cap ?
 		delta = (SrvParms->skillcap * 10) - sum;		// yes, so reduce it
 	return delta;

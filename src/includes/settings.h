@@ -80,15 +80,17 @@ namespace nSettings {
 		uint16_t getBountyKarmaGain();		//!< How much karma is gained for bounty hunting? [Default: \b missing ]
 		uint16_t getBountyFameGain();		//!< How much fame is gained for bounty hunting? [Default: \b missing ]
 	}
-	
+
 	/*!
 	\brief Skill related settings
 	*/
 	namespace Skills {
 		bool canStealthOnHorse();		//!< Can a character stealth on an horse? [Default: false ]
 		uint16_t getStatDailyLimit();		//!< Maximum stat gain in a (real) day [Default: \b missing ]
-
+                uint16_t getStealthToTakeItemsWhileHid();	//!< Stealth necessary to pick up an item and remain hidden. if UINVALID16 pc is always unhid while picking up items from the ground [Default: 960]
+                uint16_t getStealthToDropItemsWhileHid();	//!< Stealth necessary to drop an item and remain hidden. if UINVALID16 pc is always unhid while dropping items on the ground [Default: 960
 		uint16_t getLimitPlayerSparring();	//!< Defending player must have N skill points more than the attacker for the attacker to gain skill (in PvP only). [Default: 0]
+                uint16_t getMaximumSkillTraining();	//!< maximum skill an npc trainer can teach to a PC [Default: 250]
 		
 		//@{
 		/*!
