@@ -927,13 +927,7 @@ void Skills::SkillUse(pClient client, int x)
 				break;
 
 			case skMeditation:  //Morrolan - Meditation
-				//if(SrvParms->armoraffectmana)
-					Skills::Meditation(s);
-				/*else
-				{
-					sysmessage(s, "Meditation is turned off.  Tell your GM to enable ARMOR_AFFECT_MANA_REGEN in server.cfg to enable it.");
-					setSkillDelay = false;
-				}*/
+				Skills::Meditation(s);
 				break;
 
 			case skRemoveTraps:
