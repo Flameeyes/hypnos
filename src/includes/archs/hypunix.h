@@ -47,9 +47,6 @@ void initclock();
 extern termios termstate ;
 extern unsigned long int oldtime, newtime;
 
-char *strlwr(char *);
-char *strupr(char *);
-
 void Sleep(unsigned long msec);
 
 #define closesocket(s)	close(s)

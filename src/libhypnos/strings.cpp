@@ -179,3 +179,19 @@ int vasprintf(char **strp, const char *fmt, va_list ap)
 }
 //@}
 #endif
+
+#ifndef HAVE_STRLWR
+char *strlwr(char *str) {
+  for (unsigned int i=0;i<strlen(str);i++)
+    str[i]=tolower(str[i]);
+  return str;
+}
+#endif
+
+#ifndef HAVE_STRUPR
+char *strupr(char *str) {
+  for (unsigned int i=0;i<strlen(str);i++)
+    str[i]=toupper(str[i]);
+  return str;
+}
+#endif

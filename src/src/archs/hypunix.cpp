@@ -76,18 +76,6 @@ void init_deamon()
 	signal(SIGTERM,&signal_handler);
 }
 
-char *strlwr(char *str) {
-  for (unsigned int i=0;i<strlen(str);i++)
-    str[i]=tolower(str[i]);
-  return str;
-}
-
-char *strupr(char *str) {
-  for (unsigned int i=0;i<strlen(str);i++)
-    str[i]=toupper(str[i]);
-  return str;
-}
-
 /*!
 \brief Sleeps some milliseconds
 \author AnomCwrd

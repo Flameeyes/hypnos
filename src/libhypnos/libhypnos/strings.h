@@ -195,4 +195,12 @@ int asprintf(char **strp, const char *fmt, ...) PRINTF_LIKE(2,3)
 int vasprintf(char **strp, const char *fmt, va_list ap);
 #endif
 
+#ifndef HAVE_STRLWR
+char *strlwr(char *);
+#endif
+
+#ifndef HAVE_STRUPR
+char *strupr(char *);
+#endif
+
 #endif
