@@ -1,0 +1,18 @@
+<!-- elements in hypnoscommands -->
+<!ELEMENT hypnoscommands (builtins, user?)>
+<!ELEMENT builtins (bcommand)+>
+<!ELEMENT user (ucommand)+>
+
+<!ELEMENT bcommand EMPTY>
+<!ATTLIST bcommand
+    name CDATA #REQUIRED
+    level CDATA #REQUIRED
+    disabled CDATA "false"
+>
+
+<!ELEMENT ucommand EMPTY>
+<!ATTLIST ucommand
+    name CDATA #REQUIRED
+    level CDATA #REQUIRED
+    callback CDATA #REQUIRED
+>

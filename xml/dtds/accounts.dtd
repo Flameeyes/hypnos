@@ -1,3 +1,4 @@
+<!-- elements in settings -->
 <!ELEMENT accounts accounts+>
 
 <!ELEMENT account password, ban, lastconn, character+>
