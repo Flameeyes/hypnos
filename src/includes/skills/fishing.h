@@ -23,7 +23,7 @@ namespace Fishing
 };
 
 pNPC SpawnFishingMonster(pChar pc, char* cScript, char* cList, char* cNpcID);
-int SpawnFishingItem(int nCharID,int nInPack, char* cScript, char* cList, char* cItemID);
+pItem SpawnFishingItem(pChar pc, int nInPack, char* cScript, char* cList, char* cItemID);
 
 
 

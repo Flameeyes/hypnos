@@ -33,12 +33,13 @@ pNPC SpawnFishingMonster(pChar pc, char* cScript, char* cList, char* cNpcID)
 	char sect[512];
 	int i=0,item[256]={0};
 
-    cScpIterator* iter = NULL;
-    char script1[1024];
+	cScpIterator* iter = NULL;
+	char script1[1024];
 	
 	sprintf(sect, "SECTION %s %s", cList, cNpcID);
-    iter = Scripts::Fishing->getNewIterator(sect);
-    if (iter==NULL) return NULL
+    
+	iter = Scripts::Fishing->getNewIterator(sect);
+	if (!iter) return NULL
 
 	int loopexit=0;
  	do
@@ -64,23 +65,20 @@ pNPC SpawnFishingMonster(pChar pc, char* cScript, char* cList, char* cNpcID)
 	return NULL;
 }
 
-int SpawnFishingItem(pClient client,int nInPack, char* cScript, char* cList, char* cItemID)
+pItem SpawnFishingItem(pChar pc, int nInPack, char* cScript, char* cList, char* cItemID)
 {
- 	/*This function gets the random item number from the list and recalls
- 	  SpawnItemBackpack2 passing the new number*/
-	
-	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return INVALID;
+	if ( !pc ) return NULL;
 	
 	char sect[512];
 	int i=0,item[256]={0};
     
 	cScpIterator* iter = NULL;
-    char script1[1024];
+	char script1[1024];
 
 	sprintf(sect, "SECTION %s %s", cList, cItemID);
-    iter = Scripts::Fishing->getNewIterator(sect);
-    if (iter==NULL) return -1;
+
+	iter = Scripts::Fishing->getNewIterator(sect);
+    	if (!iter) return NULL;
 	int loopexit=0;
 
  	do
@@ -97,12 +95,10 @@ int SpawnFishingItem(pClient client,int nInPack, char* cScript, char* cList, cha
  	if(i>0)
  	{
   		i=rand()%(i);
-		if((item[i]!=INVALID) && (nInPack) ) {
-			item::CreateFromScript( item[i], pc->getBackpack());
-			return item[i];
-		}
+		if( (item[i]!=INVALID) && (nInPack) )
+			return item::CreateFromScript( item[i], pc->getBackpack());
 	}
-	return INVALID;
+	return NULL;
 }
 
 inline bool isWaterTarget(pClient client)
@@ -111,14 +107,18 @@ inline bool isWaterTarget(pClient client)
 	map_st map;
 	land_st land;
 
-	if(buffer[s][0x11]==0x17 && buffer[s][0x12]==0x98 || buffer[s][0x11]==0x17 && buffer[s][0x12]==0x9B || buffer[s][0x11]==0x17 && buffer[s][0x12]==0x9C || buffer[s][0x11]==0x17 && buffer[s][0x12]==0x99 || buffer[s][0x11]==0x17 && buffer[s][0x12]==0x97 || buffer[s][0x11]==0x17 && buffer[s][0x12]==0x9A)
+	uint16_t x = ShortFromCharPtr(buffer[s] +11);
+	uint16_t y = ShortFromCharPtr(buffer[s] +13);
+	int16_t z = ShortFromCharPtr(buffer[s] +15);
+	uint16_t id_tile = ShortFromCharPtr(buffer[s] +18);
+
+	if(	id_tile == 0x1798 || id_tile == 0x179B || id_tile == 0x179C ||
+		id_tile == 0x1799 || id_tile == 0x1797 || id_tile == 0x1712	)
 	{
 		return true;
 	} 
-	if(buffer[s][0x1]!=0x01) return false;
 
-	int x = ShortFromCharPtr(buffer[s] +0xB);
-	int y = ShortFromCharPtr(buffer[s] +0xD);
+	if(buffer[s][1]!=0x01) return false; // 0x00 => Target object, 0x01 => Target ground.
 
 	data::seekMap(x, y,map);
 	switch(map.id)
@@ -139,7 +139,7 @@ inline bool isWaterTarget(pClient client)
 			break;
 	}
 
-	data::seekTile( LongFromCharPtr(buffer[s] +0x11), tile);
+	data::seekTile( id_tile, tile);
 	if( !(strstr((char *) tile.name, "water") || strstr((char *) tile.name, "lava")) )
 	{
 		data::seekLand(map.id, land);
@@ -224,93 +224,93 @@ void Fishing::Fish(pClient client)
 	unsigned short skill=pc->skill[FISHING];
 	int fishup=(RandomNum(0,100));
 	switch (fishup)
-		{
+	{
 		case 0:
-            if(skill>=200) 
+			if(skill>=200) 
 			{ 
-				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "5" ); // random boots
+				SpawnFishingItem( pc, 1, "fishing.scp", "FISHLIST", "5" ); // random boots
 				client->sysmessage("You fished up an old pair of boots!");
 			} 
-            break;
+			break;
 		case 1:
-            if(skill>=970) 
+			if(skill>=970) 
 			{ 
-				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "1" ); // random paintings 
+				SpawnFishingItem( pc, 1, "fishing.scp", "FISHLIST", "1" ); // random paintings 
 				client->sysmessage("You fished up an ancient painting!"); 
 			} 
-            break;
+			break;
 		case 2:
-            if(skill>=950) 
+			if(skill>=950) 
 			{ 
-				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "2" ); // random weapons 
+				SpawnFishingItem( pc, 1, "fishing.scp", "FISHLIST", "2" ); // random weapons 
 				client->sysmessage("You fished up an ancient weapon!");
 			} 
-            break;
+			break;
 		case 3:
-            if(skill>=950) 
+			if(skill>=950) 
 			{ 
-				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "3" ); // random armor 
+				SpawnFishingItem( pc, 1, "fishing.scp", "FISHLIST", "3" ); // random armor 
 				client->sysmessage("You fished up an ancient armor!");
 			} 
-            break;
+			break;
 		case 4:
-            if(skill>=700) 
+			if(skill>=700) 
 			{ 
-				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "4" ); // random treasure
+				SpawnFishingItem( pc, 1, "fishing.scp", "FISHLIST", "4" ); // random treasure
 				client->sysmessage("You fished up some treasure!");
 			} 
-            break;
+			break;
 		case 5:
-            if(skill>=400) 
+			if(skill>=400) 
 			{ 
 				if (SpawnFishingMonster( pc, "fishing.scp", "MONSTERLIST", "7" ) != -1) // random monsters 
 					client->sysmessage("You fished up a hughe fish!");
 				else
 					client->sysmessage("You wait for a while, but nothing happens");
 			} 
-            break;
+			break;
 		case 6:
-            if(skill>=800) 
+			if(skill>=800) 
 			{
-				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "6" ); // random chests
+				SpawnFishingItem( pc, 1, "fishing.scp", "FISHLIST", "6" ); // random chests
 				client->sysmessage("You fished up an old chest!");
 			} 
-            break;
+			break;
 		case 7:
-            if(skill>=700) 
+			if(skill>=700) 
 			{
-				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "8" ); // random seashells
+				SpawnFishingItem( pc, 1, "fishing.scp", "FISHLIST", "8" ); // random seashells
 				client->sysmessage("You fished up a seashell!");
 			} 
-            break;
+			break;
 		case 8:
-            if(skill>=700) 
+			if(skill>=700) 
 			{
-				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "9" ); // random skulls
+				SpawnFishingItem( pc, 1, "fishing.scp", "FISHLIST", "9" ); // random skulls
 				client->sysmessage("You fished up a skull!");
 			} 
-            break;
+			break;
 		case 9:
-            if(skill>=900) 
+			if(skill>=900) 
 			{
-				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "10" ); // random nets
+				SpawnFishingItem( pc, 1, "fishing.scp", "FISHLIST", "10" ); // random nets
 				client->sysmessage("You fished up a net!");
 			} 
-            break;
+			break;
 		case 10:
-            if(skill>=900) 
+			if(skill>=900) 
 			{
-				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "11" ); // random gold
+				SpawnFishingItem( pc, 1, "fishing.scp", "FISHLIST", "11" ); // random gold
 				client->sysmessage("You fished up some gold!");
 			} 
-            break;
+			break;
 		case 11:
-            if(skill>=400) 
+			if(skill>=400) 
 			{
-				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "12" ); // random bones
+				SpawnFishingItem( pc, 1, "fishing.scp", "FISHLIST", "12" ); // random bones
 				client->sysmessage("You fished up some bones!");
 			} 
-            break;
+			break;
 		default: {
 
 			ii=rand()%3;
@@ -333,15 +333,6 @@ void Fishing::Fish(pClient client)
 		
 			/**** end of exotic fish stuff stuff */
 		
-			//fishes_around_player=item::Find_items_around_player(i, 0x09, idnum, 2, 2, max_fish_piles, fish_sers); // lets search for fish in a 2*2 rectangle around the player
-			
-			//pItem pFish;
-			//if (fishes_around_player<=0) // no fish around -> spawn a new one
-		
-				//Luxor - Now fishes are spawned into backpack
-			//{
-				//Luxor: fishes should be read from items.xss
-				//pFish=item::SpawnItem(i,1,"#",1,0x0900+idnum,(c1<<8)+c2,0);
 			pItem fish = item::CreateFromScript( "$item_fish" );
 			if ( ! fish ) return;
 		

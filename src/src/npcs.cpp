@@ -778,7 +778,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 										if( amt <= 0 )
 											amt=server_data.defaultSelledItem;
 
-										pi_n=item::CreateFromScript( str2num(itmnum), MAKE_ITEM_REF( buyRestockContainer ), amt );
+										pi_n=item::CreateFromScript( str2num(itmnum), cSerializable::findItemBySerial( buyRestockContainer ), amt );
 										if (pi_n)
 										{
 											if (pi_n->getSecondaryNameC() && (strcmp(pi_n->getSecondaryNameC(),"#")))
@@ -807,7 +807,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 									if ( sellContainer != INVALID )
 									{
 										storeval=str2num(script2);
-										pi_n=item::CreateFromScript( storeval, MAKE_ITEM_REF(sellContainer));
+										pi_n=item::CreateFromScript( storeval, cSerializable::findItemBySerial(sellContainer));
 										if (pi_n)
 										{
 											pi_n->value=pi_n->value/2;
@@ -832,7 +832,7 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 									if ( buyNoRestockContainer != INVALID )
 									{
 										storeval=str2num(script2);
-										pi_n=item::CreateFromScript( storeval, MAKE_ITEM_REF(buyNoRestockContainer));
+										pi_n=item::CreateFromScript( storeval, cSerializable::findItemBySerial(buyNoRestockContainer));
 										if (pi_n)
 										{
 											if (pi_n->getSecondaryNameC() && (strcmp(pi_n->getSecondaryNameC(),"#")))
