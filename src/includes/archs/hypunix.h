@@ -37,11 +37,6 @@
 
 #define SLPMULTI 1000
 
-extern bool pollHUPStatus ();
-extern bool pollCloseRequests ();
-extern void setup_signals ();
-extern void start_signal_thread();
-
 void init_deamon();
 void initclock();
 extern termios termstate ;

@@ -98,7 +98,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 noinst_LIBRARIES = libarchs.a
-libarchs_a_SOURCES = hypunix.cpp hypwin32.cpp ntservice.cpp win32registry.cpp
+libarchs_a_SOURCES = hypunix.cpp hypwin32.cpp ntservice.cpp win32registry.cpp signals.cpp
 subdir = src/archs
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -108,7 +108,7 @@ LIBRARIES = $(noinst_LIBRARIES)
 libarchs_a_AR = $(AR) cru
 libarchs_a_LIBADD =
 am_libarchs_a_OBJECTS = hypunix.$(OBJEXT) hypwin32.$(OBJEXT) \
-	ntservice.$(OBJEXT) win32registry.$(OBJEXT)
+	ntservice.$(OBJEXT) win32registry.$(OBJEXT) signals.$(OBJEXT)
 libarchs_a_OBJECTS = $(am_libarchs_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -118,7 +118,7 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/hypunix.Po ./$(DEPDIR)/hypwin32.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/ntservice.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ntservice.Po ./$(DEPDIR)/signals.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/win32registry.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -158,6 +158,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypunix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypwin32.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ntservice.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/signals.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/win32registry.Po@am__quote@
 
 distclean-depend:
