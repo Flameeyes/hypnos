@@ -24,7 +24,7 @@ private:
         pChar speaker;
         bool packet_byteorder;
 public:
-	inline isPacketByteOrder()
+	inline bool isPacketByteOrder()
 	        { return packet_byteOrder}
         void setPacketByteOrder();				//!< Sets byteorder and swaps unicode_text to the protocol byteorder (if needed)
         void clearPackeByteOrder();  				//!< Clears byteorder and swaps unicode_text if it is necessary to machine byte order

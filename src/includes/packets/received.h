@@ -565,6 +565,27 @@ public:
 	void prepare();
 };
 
+class cPacketSendCharProfile : cPacketSend
+{
+protected:
+	uint32_t serial;
+        cSpeech speech;
+        pChar who;
+        bool update;
+
+public:
+	inline cPacketSendCharProfile(uint32_t se, cSpeech& sp, pChar w) :
+        	serial(se), speech(sp), who(w), update(false),
+		buffer(NULL), length(NULL)
+	{ }
+	inline cPacketSendCharProfile(uint32_t se, pChar w) :		//Update Profile constructor
+        	serial(se), who(w), update(true),
+		buffer(NULL), length(NULL)
+	{ }
+
+	void prepare();
+};
+
 /*!
 \brief Packet received
 \author Flameeyes

@@ -567,6 +567,25 @@ void cPacketSendCharAfterDelete::prepare()
                 	strcpy(buffer + (i*60) + 4, account->getChar(i)->getCurrentName().c_str());
 }
 
+void cPacketSendCharProfile::prepare()
+{
+// packet documentation is sketchy at best. Expect many implemetation errors here -_-
+        length = 6;
+	length += who->getCurrentName().size() + 1;	//null terminator included
+        length += who->getTitle().size() * 2;		//unicode title, so double characters of title
+        length +=2; //unicode null terminator for title
+	length += who->getProfile().size();
+	buffer = new uint8_t[length];
+        buffer[0] = 0xb8;
+        ShortToCharPtr(length, buffer + 1);
+        LongToCharPtr(serial, buffer + 3);
+        if (update)
+        {
+        }
+        else
+        {
+        }
+}
 
 pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
 {
@@ -2076,7 +2095,7 @@ bool cPacketReceiveCharProfileRequest::execute(pClient client)
 
 
 
-        
+
 	else { //only send
 		cPacketCharProfile resp;
 		resp.chr=p.chr;
