@@ -99,7 +99,7 @@ void nSkills::target_provocation2(pClient client, pTarget t )
 		client->sysmessage("You cant do that in town!");
 		return;
 	}
-	if (Victim1->isSameAs(Victim2))
+	if (Victim1 == Victim2)
 	{
 		client->sysmessage("Silly bard! You can't get something to attack itself.");
 		return;

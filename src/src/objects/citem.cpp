@@ -50,27 +50,6 @@ uint32_t cItem::getNewSerial()
 }
 
 /*!
-\brief Add item by ID
-\author Anthalir - Rewrote by Flameeyes
-\param id id of the item to add
-\param nAmount amount of items to add
-\param cName name of the item to add
-\param color color of the item
-\param where sLocation to add the item to
-*/
-static pItem cItem::addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, sLocation where)
-{
-	pItem pi = item::spawnItemByIdInternal(nAmount, cName, id, color);
-	if ( where.x != 0xFFFF )
-	{
-		z = getHeight(where);
-		pi->moveTo(where);
-		pi->Refresh();
-	}
-	return pi;
-}
-
-/*!
 \brief Tells if an id is a house
 \param id id to check
 */

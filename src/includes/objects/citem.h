@@ -5,12 +5,9 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Header defining cItem class
-*/
-#ifndef __ITEMS_H
-#define __ITEMS_H
+
+#ifndef __OBJECTS_CITEM_H__
+#define __OBJECTS_CITEM_H__
 
 #include "common_libs.h"
 #include "objects/cobject.h"
@@ -27,8 +24,6 @@ protected:
 
 	virtual uint16_t eventsNumber() const
 	{ return evtItmMax; }
-public:
-	static pItem addByID(int32_t id, uint16_t nAmount, const char *cName, uint16_t color, sLocation where);
 //@{
 /*!
 \name Constructors and Operators
@@ -121,8 +116,10 @@ public:
 	void dyeItem(pClient client, uint16_t color); //!< Rehue an item
 //@{
 /*!
-\name itemid
-\brief Static funcions to identify items. Most inlines
+\name Item Identifiers
+\brief Static (and non static) functions to identify items. Most inlines
+\todo Change them to use between() function instead of the unreadable current
+	checking code
 */
 
 	inline static const bool isCorpse(uint16_t id)
@@ -142,7 +139,6 @@ public:
 	}
 
 	//! this is used in SwordTarget() to give kindling.
-	//  Donno why it's different
 	inline static const bool isTree2(uint16_t id)
 	{
 		return (id==0x0CD0 || id==0x0CD3 || id==0x0CD6 ||
@@ -216,7 +212,7 @@ public:
 	{ return isShaft(getId()); }
 
 	inline const bool isBoard() const
-	{ return ( getId()>=0x1BD7 && getId()<=0x1BDC ); }
+	{ return between(getId(), 0x1BD7, 0x1BDC); }
 
 	inline const bool isFeather() const
 	{ return isFeather(getId()); }
@@ -231,7 +227,7 @@ public:
 	{ return ( getId()==0x1078 || getId()==0x1079 ); }
 
 	inline const bool isBoltOfCloth() const
-	{ return ( getId()>=0x0F95 && getId()<=0x0F9C ); }
+	{ return between(getId(), 0x0F95, 0x0F9C); }
 
 	inline const bool isCutCloth() const
 	{ return ( getId()>=0x1766 && getId()<=0x1768 ); }
@@ -424,6 +420,9 @@ members.
 Please note that in Hypnos, moreb stands for 'byte', and not for the second
 more variable. The two mores are more1 and more2. There's also morex, morey
 and morez which are used to save locations.
+
+\deprecated We shouldn't use this anymore, subclasses must be created when
+	more values must be stored.
 */
 	union tMore {
 		uint32_t more;
@@ -501,9 +500,7 @@ public:
 
 //@{
 /*!
-\name weapon and armour related
-\brief weapon, armour, wear related stuff
-\author Xan & Luxor (mostly)
+\name Weapon and armour related
 */
 	uint32_t	att;		//!< Item attack
 	uint32_t	def;		//!< Item defense
@@ -539,6 +536,7 @@ public:
 //@{
 /*!
 \name Corpse related
+\todo Move them to cContainer at least, or crate cCorpse
 */
 protected:
 	std::string	murderer;	//!< char's name who killed the char (forensic ev.)
@@ -597,6 +595,7 @@ public:
 //@{
 /*!
 \name Spawn
+\todo Create cSpawn and move there all the spawn stuff
 */
 	uint32_t	spawnserial;
 	uint32_t	spawnregion;
@@ -673,15 +672,6 @@ public:
 
 //@{
 /*!
-\name Trigger
-*/
-	int32_t		trigger;	//!< Trigger number that item activates
-	int32_t		trigtype;	//!< Type of trigger
-	int32_t		tuses;		//!< Number of uses for trigger
-//@}
-
-//@{
-/*!
 \name Special Use
 */
 	uint32_t	type;		//!< For things that do special things on doubleclicking
@@ -727,7 +717,5 @@ public:
 public:
 	virtual void	Delete();
 };
-
-extern bool LoadItemEventsFromScript (pItem pi, char *script1, char *script2);
 
 #endif

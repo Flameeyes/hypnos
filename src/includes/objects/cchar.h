@@ -636,13 +636,10 @@ public:
 
 	int32_t			fleeat;
 	int32_t			reattackat;
-	int32_t			trigger;	//!< Trigger number that character activates
-	std::string		trigword;	//!< Word that character triggers on.
 	uint16_t			envokeid;
 	int32_t			envokeitem;
 	int32_t			split;
 	int32_t			splitchnc;
-	int32_t			targtrig;	//!< Stores the number of the trigger the character for targeting
 	char			ra;		//!< Reactive Armor spell
 
 	uint32_t		tempflagtime;
@@ -748,8 +745,6 @@ public:
 	uint32_t		getSkillSum();
 	int32_t			getTeachingDelta(pChar pPlayer, int32_t skill, int32_t sum);
 	void			removeItemBonus(cItem* pi);
-	inline const bool	isSameAs(pChar pc) const
-	{ return this == pc; }
 
 	//! Return the resistance for a defined type
 	inline const bool resist(uint32_t n) const
@@ -773,20 +768,20 @@ public:
 \name Talk and Emote stuff
 */
 protected:
-	uint16_t			emotecolor;		//!< Color for emote messages
-	uint8_t			fonttype;		//!< Speech font to use
-	uint16_t			saycolor;		//!< Color for say messages
+	uint16_t emotecolor;		//!< Color for emote messages
+	uint8_t fonttype;		//!< Speech font to use
+	uint16_t saycolor;		//!< Color for say messages
 public:
-	void			talkAll(char *txt, bool antispam = true);
-	void			talk(pClient client, char *txt, bool antispam = true);
-	void			emote(pClient client,char *txt, bool antispam, ...) PRINTF_LIKE(3,5)
-	void			emoteall(char *txt, bool antispam, ...) PRINTF_LIKE(2,4)
-	void			talkRunic(pClient client, char *txt, bool antispam = 1);
-	void			talkAllRunic(char *txt, bool antispam = 0);
+	void talkAll(char *txt, bool antispam = true);
+	void talk(pClient client, char *txt, bool antispam = true);
+	void emote(pClient client,char *txt, bool antispam, ...) PRINTF_LIKE(3,5)
+	void emoteall(char *txt, bool antispam, ...) PRINTF_LIKE(2,4)
+	void talkRunic(pClient client, char *txt, bool antispam = 1);
+	void talkAllRunic(char *txt, bool antispam = 0);
 //@}
 
-	uint16_t		distFrom(pChar pc);
-	uint16_t		distFrom(pItem pi);
+	uint16_t distFrom(pChar pc);
+	uint16_t distFrom(pItem pi);
 	
 	/*!
 	\brief Check if a specified char is in range from this char
@@ -804,8 +799,8 @@ public:
 	inline const bool hasInRange(pItem pi, uint16_t range = VISRANGE)
 	{ return pi && distFrom( pi ) <= range; }
 	
-	void			teleport( uint8_t flags = teleAll, pClient cli = NULL );
-	void			facexy(uint16_t facex, uint16_t facey);
+	void teleport( uint8_t flags = teleAll, pClient cli = NULL );
+	void facexy(uint16_t facex, uint16_t facey);
 
 	/*!
 	\author Luxor
@@ -816,8 +811,8 @@ public:
 	inline const bool losFrom(const pChar pc) const
 	{ return pc && pc->getBody() ? lineOfSight( body->getPosition(), pc->getBody()->getPosition() ) : false; }
 
-	bool			checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise = true);
-	bool			checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, pChar defend);
+	bool checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise = true);
+	bool checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, pChar defend);
 
 	/*!
 	\author Xanathar
@@ -826,11 +821,10 @@ public:
 	\param amount amount of item to delete
 	\param color color of item to delete
 	\return number of items deleted
-	\todo Implement cEquippableContainer
+	\todo Use the new archetypes stuff
 	*/
 	inline const uint32_t delItems(uint16_t id, uint32_t amount = 1, uint16_t color = 0xFFFF)
 	{ return body->getBackpack() ? /*body->getBackpack()->removeItems(amount, id, color)*/ amount : amount; }
-
 
 	/*!
 	\brief Get the amount of the given id, color
@@ -839,6 +833,7 @@ public:
 	\param id the id
 	\param col the color ( 0xFFFF for all colors )
 	\param onlyPrimaryBackpack false if search also in th subpack
+	\todo Use the new archetypes stuff
 	*/
 	inline const uint32_t getAmount(uint16_t id, uint16_t col=0xFFFF, bool onlyPrimaryBackpack=false )
 	{ return body->getBackpack() ? /*body->getBackpack()->countItems(id, col, !onlyPrimaryBackpack)*/ 0 : 0; }
@@ -854,19 +849,13 @@ public:
 	void		goPlace(int32_t);
 	bool		knowsSpell(magic::SpellId spellnumber);
 
-	public:
-	#ifdef SPAR_NEW_WR_SYSTEM
-		NxwCharWrapper*		nearbyChars;
-		NxwItemWrapper*		nearbyItems;
-	#endif
-
+public:
 	uint32_vector lootVector;
 	virtual void Delete();
 //@{
 /*!
 \name Sound and Visual effects
 */
-
 	void playSFX(int16_t sound, bool onlyToMe = false);
 	void playMonsterSound(MonsterSound sfx);
 //@}
