@@ -42,7 +42,6 @@
 /*
 \brief Constructor
 \author Endymion
-\since 0.82
 */
 cOldMenu::cOldMenu() : cBasicMenu( MENUTYPE_TRASPARENCY )
 {
@@ -57,7 +56,6 @@ cOldMenu::cOldMenu() : cBasicMenu( MENUTYPE_TRASPARENCY )
 /*
 \brief Destructor
 \author Endymion
-\since 0.82
 */
 cOldMenu::~cOldMenu()
 {
@@ -71,7 +69,6 @@ cOldMenu::~cOldMenu()
 \param numPerPage number of item for page
 \param numpages the page count
 \attention is useless now
-\since 0.82
 */
 void cOldMenu::setParameters( int rowForPage, int pageCount )
 {
@@ -81,7 +78,6 @@ void cOldMenu::setParameters( int rowForPage, int pageCount )
 /*!
 \brief adds an item at a given position of a correctly inizialized menu
 \author Endymion
-\since 0.82
 \param page the page number
 \param idx the index number
 \param desc the text
@@ -137,7 +133,6 @@ cServerPacket* cOldMenu::build()
 /*!
 \brief Build a classic menu
 \author Endymion
-\since 0.82
 */
 void cOldMenu::buildClassic()
 {

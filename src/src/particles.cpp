@@ -8,13 +8,11 @@
 #include "particles.h"
 #include "magic.h"
 
-///////////////////////////////////////////////////////////////////
-// Function name     : ParticleFx::initWithSpellMoveEffect
-// Description       : init moving particle effect for casted spell
-// Return type       : void 
-// Author            : Lord Binary, Xanathar 
-// Argument          : magic::SpellId num -> casted spell
-// Changes           : none yet
+/*!
+\brief Init moving particle effect for casted spell
+\author Lord Binary (LB), Xanatar
+\param num casted spell
+*/
 void ParticleFx::initWithSpellMoveEffect( magic::SpellId num )
 {
     switch( num ) {
@@ -52,15 +50,11 @@ void ParticleFx::initWithSpellMoveEffect( magic::SpellId num )
 }
 
 
-
-
-///////////////////////////////////////////////////////////////////
-// Function name     : ParticleFx::initWithSpellStatEffect
-// Description       : init particle stat effect with effect for spell casted
-// Return type       : void
-// Author            : Lord Binary, Xanathar
-// Argument          : magic::SpellId num -> spell casted
-// Changes           : none yet
+/*!
+\brief Init particle stat effect with effect for spell casted
+\author Lord Binary (LB), Xanatar
+\param num casted spell
+*/
 void ParticleFx::initWithSpellStatEffect( magic::SpellId num )
 {
     int te0,te1,te2,te3,te4;      // 2d effects
@@ -263,14 +257,11 @@ void ParticleFx::initWithSpellStatEffect( magic::SpellId num )
 }
 
 
-
-///////////////////////////////////////////////////////////////////
-// Function name     : ParticleFx::initWithSpellStatEffects_pre
-// Description       : inits stat effect particle for spell casting
-// Return type       : void 
-// Author            : Lord Binary, Xanathar 
-// Argument          : magic::SpellId num -> spell number
-// Changes           : none yet
+/*!
+\brief Init stat effect particle for spell casting
+\author Lord Binary (LB), Xanatar
+\param num casted spell
+*/
 void ParticleFx::initWithSpellStatEffects_pre( magic::SpellId num)
 {
    
@@ -304,13 +295,11 @@ void ParticleFx::initWithSpellStatEffects_pre( magic::SpellId num)
 }
 
 
-///////////////////////////////////////////////////////////////////
-// Function name     : ParticleFx::initWithSpellStatEffects_post
-// Description       : inits particle effects with fx for end of casting
-// Return type       : void 
-// Author            : Lord Binary, Xanathar 
-// Argument          : magic::SpellId num -> spell number
-// Changes           : none yet
+/*!
+\brief Inits particle effects with fx for end of casting
+\author Lord Binary (LB), Xanatar
+\param num casted spell
+*/
 void ParticleFx::initWithSpellStatEffects_post( magic::SpellId num)
 {
 	for (int i = 0; i<=18; i++) effect[i] = -1;
@@ -337,15 +326,11 @@ void ParticleFx::initWithSpellStatEffects_post( magic::SpellId num)
 }
 
 
-
-
-///////////////////////////////////////////////////////////////////
-// Function name     : ParticleFx::initWithSpellStatEffects_item
-// Description       : inits stat effect particle for item casting
-// Return type       : void 
-// Author            : Lord Binary, Xanathar 
-// Argument          : magic::SpellId num -> spell number
-// Changes           : none yet
+/*!
+\brief Inits stat effect particle for item casting
+\author Lord Binary (LB), Xanatar
+\param num casted spell
+*/
 void ParticleFx::initWithSpellStatEffects_item( magic::SpellId num)
 {
 	for (int i = 0; i<=18; i++) effect[i] = -1;
