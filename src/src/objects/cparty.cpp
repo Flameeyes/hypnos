@@ -117,9 +117,23 @@ void cParty::executeCommand(pClient client, char *buffer, uint16_t size)
 		}
 		break;
 		
-	case 0x04: // Party broadcast (needs unicode support)
+	case 0x04: // Party broadcast
 		{
-			if  
+			// Not in a party? ingnore it
+			if ( ! pc->getParty() ) return;
+			
+			cSpeech msg(partyPkg+1);
+			
+			nPackets::Sent::PartyBroadcast pk(pc, msg);
+			
+			PCSList members = pc->getParty()->getMembersList();
+			
+			for(PCSList::iterator it = members.begin(); it != members.end(); it++)
+			{
+				if ( ! pc->getClient() ) continue;
+				
+				pc->getClient()->sendPacket(&pk);
+			}
 		}
 		break;
 	
@@ -212,6 +226,8 @@ void cParty::inviteMember(pClient client, pPC member)
 		return;
 	}
 	
+	invited.push_front(pc);
+	
 	member->setParty(this);
 	
 	invclient->sysmessage("%s has just invited you to join his party.", client->currChar()->getBody()->getCurrentName().c_str());
@@ -221,7 +237,32 @@ void cParty::inviteMember(pClient client, pPC member)
 	//!\todo Also, we need to set a timer after which 
 }
 
-void cParty::addMember(pPC member);
+void cParty::addMember(pPC member)
+{
+	sPartyMember pm;
+	pm.player = member;
+	pm.canloot = true;
+	
+	PCSList::iterator it = find(member, invited.begin(); invited.end();
+	if ( it == invited.end() )
+	{
+		if ( ! pc->getClient() ) return;
+		pc->getClient()->sysmessage("You aren't invited to join the party");
+		
+		return;
+	}
+	
+	inbited.erase(it);
+	members.push_front(pm);
+	
+	nPackets::Sent::PartyAddMember pk(this);
+	for( PCSList::iterator it = members.begin(); it != members.end(); it++)
+	{
+		if ( ! (*it).player->getClient() ) continue;
+		
+		(*it)->getClient()->sendPacket(*pk);
+	}
+}
 
 /*!
 \brief Removes a member from the party
@@ -265,6 +306,18 @@ bool cParty::removeMember(pPC member)
 	
 	member->setParty(NULL);
 	//! \todo Send the remove from the party status to the player
+
+	nPackets::Sent::PartyRemoveMember pk(this);
+	for( PCSList::iterator it = members.begin(); it != members.end(); it++)
+	{
+		if ( ! (*it).player->getClient() ) continue;
+		
+		(*it)->getClient()->sendPacket(&pk);
+	}
+	
+	if ( ! member->getClient() ) return false;
+	
+	member->getClient()->sendPacket(&pk);
 }                                      
 
 /*!
@@ -284,7 +337,7 @@ void cParty::disband()
 		(*it)->setParty(NULL);
 		//! \todo Here we should make the invites timeout and fail
 		
-		if ( (*it)->getClient() )    
+		if ( (*it)->getClient() )
 			(*it)->getClient()->sysmessage("The party you were invited to join is now disbanded");
 	}
 	
