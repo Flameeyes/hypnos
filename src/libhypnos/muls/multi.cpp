@@ -20,8 +20,8 @@ This function simply calls the tplIndexedFile constructor with the path given by
 getMULpath() function and the filename \c multi.mul .
 
 */
-fMulti::fMulti()
-	: tplIndexedFile<cMultiIDX>( nMULFiles::getMULpath() + "multi.mul" )
+fMulti::fMulti(fMultiIDX *aIdx)
+	: tplIndexedFile<cMultiIDX>( aIdx, nMULFiles::getMULpath() + "multi.mul" )
 {
 }
 
@@ -31,7 +31,7 @@ fMulti::fMulti()
 \return The item id for the given multi block item
 \throw eOutOfBound If the requested index is greater than the count of items
 */
-uint16_t cMultiItem::getItemID(uint16_t index)
+uint16_t cMultiBlock::getItemID(uint16_t index) const
 {
 	if ( index >= getCount() )
 		throw eOutOfBound(getCount()-1, index);
@@ -45,7 +45,7 @@ uint16_t cMultiItem::getItemID(uint16_t index)
 \return The x coord for the given multi block item
 \throw eOutOfBound If the requested index is greater than the count of items
 */
-uint16_t cMultiItem::getX(uint16_t index)
+uint16_t cMultiBlock::getX(uint16_t index) const
 {
 	if ( index >= getCount() )
 		throw eOutOfBound(getCount()-1, index);
@@ -59,7 +59,7 @@ uint16_t cMultiItem::getX(uint16_t index)
 \return The y coord for the given multi block item
 \throw eOutOfBound If the requested index is greater than the count of items
 */
-uint16_t cMultiItem::getY(uint16_t index)
+uint16_t cMultiBlock::getY(uint16_t index) const
 {
 	if ( index >= getCount() )
 		throw eOutOfBound(getCount()-1, index);
@@ -73,7 +73,7 @@ uint16_t cMultiItem::getY(uint16_t index)
 \return The z coord for the given multi block item
 \throw eOutOfBound If the requested index is greater than the count of items
 */
-uint16_t cMultiItem::getZ(uint16_t index)
+uint16_t cMultiBlock::getZ(uint16_t index) const
 {
 	if ( index >= getCount() )
 		throw eOutOfBound(getCount()-1, index);
@@ -87,7 +87,7 @@ uint16_t cMultiItem::getZ(uint16_t index)
 \return The flags for the given multi block item
 \throw eOutOfBound If the requested index is greater than the count of items
 */
-uint16_t cMultiItem::getFlags(uint16_t index)
+uint32_t cMultiBlock::getFlags(uint16_t index) const
 {
 	if ( index >= getCount() )
 		throw eOutOfBound(getCount()-1, index);

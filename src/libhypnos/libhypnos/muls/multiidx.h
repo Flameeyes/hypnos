@@ -21,7 +21,7 @@ namespace nMULFiles {
 /*!
 \brief Internal structure of multi.idx file
 */
-class cMultiIdx
+class cMultiIDX
 {
 protected:
 	uint32_t lookup;	//!< Offset to seek to to have the

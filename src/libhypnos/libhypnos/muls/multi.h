@@ -94,7 +94,7 @@ Information grabbed from WolfPack files formats guide.
 class fMulti : public tplIndexedFile<cMultiIDX>
 {
 public:
-	fMulti();
+	fMulti(fMultiIDX *aIdx);
 
 	/*!
 	\brief Gets the multi block at the given id.
@@ -103,8 +103,8 @@ public:
 	\throw eOutOfBound If the id is greater than the count of indexed blocks (is
 		actually thrown by tplIndexedFile::getAddress() ).
 	*/
-	cMultiBlock getBlock(uint16_t id) const
-	{ return cMultiBlock(getAddress(id), getSize(id)); }
+	cMultiBlock getBlock(uint16_t id)
+	{ return cMultiBlock(reinterpret_cast<cMultiItem*>(getAddress(id)), getSize(id)); }
 };
 
 }}
