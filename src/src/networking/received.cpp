@@ -10,6 +10,7 @@
 \brief Implementation of packets classes
 */
 
+#include "version.h"
 #include "settings.h"
 #include "inlines.h"
 #include "networking/received.h"

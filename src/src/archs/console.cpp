@@ -181,6 +181,18 @@ static inline void exitOnError(bool error)
 	exit(-1);
 }
 
+// Define stubs to avoid conditional compilation inside the loop
+
+#ifndef HAVE_KBHIT
+static inline bool kbhit()
+{ return true; }
+#endif
+
+#ifndef HAVE_GETCH
+static inline char getch()
+{ return '\0'; }
+#endif
+
 /*!
 \brief facilitate console control. SysOp keys and localhost controls
 */
@@ -192,121 +204,106 @@ void checkkey ()
 	// Flameeyes: borland c++ builder doesn't accept kbhit() in windows mode
 	// Also to force only remote admin under unix, we can remove the kbhit() test
 
-	if ( INKEY != '\0'
-#if defined(HAVE_KBHIT) && defined(HAVE_GETCH)
-		|| kbhit()
-#endif
-	) {
-		if (INKEY!='\0') {
-			c = toupper(INKEY);
-			INKEY = '\0';
-			secure = 0;
-		}
-		#if defined(HAVE_KBHIT) && defined(HAVE_GETCH)
-		else {
-			c = toupper(getch());
-		}
-		#endif
+	if ( ! kbhit() ) return;
+	
+	c = toupper(INKEY ? INKEY : getch());
+	
+	if ( c == '\0' ) return;
 
-		if (c=='S')
+	if ( c == 'S' )
+	{
+		if (secure)
+			lowlevelOutput(stdout, "Secure mode disabled. Press ? for a commands list.\n");
+		else
+			lowlevelOutput(stdout, "Secure mode re-enabled.\n");
+		
+		secure = ! secure;
+		return;
+	}
+	
+	if (secure && c != '?')  //Allows help in secure mode.
+	{
+		lowlevelOutput(stdout, "Secure mode prevents keyboard commands! Press 'S' to disable.\n");
+		return;
+	}
+
+	switch(c)
+	{
+	case '\x1B':
+		keeprun=false;
+		break;
+	case 'Q':
+	case 'q':
+		lowlevelOutput(stdout, "Immediate Shutdown initialized!\n");
+		keeprun=false;
+		break;
+	case 'T':
+	case 't':
+		endtime=getClockmSecs()+(SECS*60*2);
+		endmessage(0);
+		break;
+	case '#':
+		if ( !cwmWorldState->Saving() )
 		{
-			if (secure)
-			{
-				lowlevelOutput(stdout, "Secure mode disabled. Press ? for a commands list.\n");
-				secure=0;
-				return;
-			}
-			else
-			{
-				lowlevelOutput(stdout, "Secure mode re-enabled.\n");
-				secure=1;
-				return;
-			}
-		} else {
-			if (secure && c != '?')  //Allows help in secure mode.
-			{
-				lowlevelOutput(stdout, "Secure mode prevents keyboard commands! Press 'S' to disable.\n");
-				return;
-			}
-
-			switch(c)
-			{
-			case '\x1B':
-				keeprun=false;
-				break;
-			case 'Q':
-			case 'q':
-				lowlevelOutput(stdout, "Immediate Shutdown initialized!\n");
-				keeprun=false;
-				break;
-			case 'T':
-			case 't':
-				endtime=getClockmSecs()+(SECS*60*2);
-				endmessage(0);
-				break;
-			case '#':
-				if ( !cwmWorldState->Saving() )
+			cwmWorldState->saveNewWorld();
+		}
+		break;
+	case 'D':	// Disconnect account 0 (useful when client crashes)
+	case 'd':
+		{
+			int found = 0;
+			lowlevelOutput(stdout, "Disconnecting account 0 players... ");
+			for (int i=0; i<now; i++)
+				if (acctno[i]==0 && clientInfo[i]->ingame)
 				{
-					cwmWorldState->saveNewWorld();
+					found++;
+					Network->Disconnect(i);
 				}
-				break;
-			case 'D':	// Disconnect account 0 (useful when client crashes)
-			case 'd':
-				{
-					int found = 0;
-					lowlevelOutput(stdout, "Disconnecting account 0 players... ");
-					for (i=0;i<now;i++)
-						if (acctno[i]==0 && clientInfo[i]->ingame)
-						{
-							found++;
-							Network->Disconnect(i);
-						}
-					if (found>0)
-						lowlevelOutput(stdout, "[ OK ] (%d disconnected)\n", found);
-					else	
-						lowlevelOutput(stdout, "[FAIL] (no account 0 players online)\n", found);
-				}
-				break;
-			case 'W':
-			case 'w':				// Display logged in chars
-				lowlevelOutput(stdout, "----------------------------------------------------------------\n");
-				lowlevelOutput(stdout, "Current Users in the World:\n");
-				j = 0;  //Fix bug counting ppl online.
-				for (i=0;i<now;i++)
-				{
-					pChar pc_i=cSerializable::findCharBySerial(currchar[i]);
-					if(pc_i && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
-					{
-						lowlevelOutput(stdout, "%i) %s [ %08x ]\n", j, pc_i->getCurrentName().c_str(), pc_i->getSerial());
-						j++;
-					}
-				}
-				lowlevelOutput(stdout, "Total Users Online: %d\n", j);
-				break;
-			case 'r':
-			case 'R':
-				lowlevelOutput(stdout, "Hypnos: Total server reload!");
-				//! \todo Need to freeze and unfreeze all the clients here for the resync
-				//! \todo Need to call a function exported by hypnos.h
-				loadServer();
-				break;
-			case '?':
-				lowlevelOutput(stdout, "Console commands:\n");
-				lowlevelOutput(stdout, "\t<Esc> or Q: Shutdown the server.\n");
-				lowlevelOutput(stdout, "\tT - System Message: The server is shutting down in 2 minutes.\n");
-				lowlevelOutput(stdout, "\t# - Save world\n");
-				lowlevelOutput(stdout, "\tD - Disconnect Account 0\n");
-				lowlevelOutput(stdout, "\tW - Display logged in characters\n");
-				lowlevelOutput(stdout, "\tR - Total server reload\n");
-				lowlevelOutput(stdout, "\tS - Toggle Secure mode %s\n", secure ? "[enabled]" : "[disabled]" );
-				lowlevelOutput(stdout, "\t? - Commands list (this)\n");
-				lowlevelOutput(stdout, "End of commands list.\n");
-				break;
-			default:
-				lowlevelOutput(stdout, "Key %c [%x] does not preform a function.\n",c,c);
-				break;
+			if (found>0)
+				lowlevelOutput(stdout, "[  OK  ] (%d disconnected)\n", found);
+			else	
+				lowlevelOutput(stdout, "[FAILED] (no account 0 players online)\n", found);
+		}
+		break;
+	case 'W':
+	case 'w':				// Display logged in chars
+		lowlevelOutput(stdout, "----------------------------------------------------------------\n");
+		lowlevelOutput(stdout, "Current Users in the World:\n");
+		//!\todo Fix this with a better way
+		j = 0;  //Fix bug counting ppl online.
+		for (int i=0;i<now;i++)
+		{
+			pChar pc_i=cSerializable::findCharBySerial(currchar[i]);
+			if(pc_i && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
+			{
+				lowlevelOutput(stdout, "%i) %s [ %08x ]\n", j, pc_i->getCurrentName().c_str(), pc_i->getSerial());
+				j++;
 			}
 		}
+		lowlevelOutput(stdout, "Total Users Online: %d\n", j);
+		break;
+	case 'r':
+	case 'R':
+		lowlevelOutput(stdout, "Hypnos: Total server reload!");
+		//! \todo Need to freeze and unfreeze all the clients here for the resync
+		//! \todo Need to call a function exported by hypnos.h
+		loadServer();
+		break;
+	case '?':
+		lowlevelOutput(stdout, "Console commands:\n");
+		lowlevelOutput(stdout, "\t<Esc> or Q: Shutdown the server.\n");
+		lowlevelOutput(stdout, "\tT - System Message: The server is shutting down in 2 minutes.\n");
+		lowlevelOutput(stdout, "\t# - Save world\n");
+		lowlevelOutput(stdout, "\tD - Disconnect Account 0\n");
+		lowlevelOutput(stdout, "\tW - Display logged in characters\n");
+		lowlevelOutput(stdout, "\tR - Total server reload\n");
+		lowlevelOutput(stdout, "\tS - Toggle Secure mode %s\n", secure ? "[enabled]" : "[disabled]" );
+		lowlevelOutput(stdout, "\t? - Commands list (this)\n");
+		lowlevelOutput(stdout, "End of commands list.\n");
+		break;
+	default:
+		lowlevelOutput(stdout, "Key %c [%x] does not preform a function.\n",c,c);
+		break;
 	}
 }
 
@@ -322,7 +319,7 @@ int main(int argc, char *argv[])
 	unsigned long CheckClientIdle=0;
 	int r;
 
-	initclock() ;
+	initclock();
 
 	serverstarttime=getClockmSecs();
 
@@ -348,13 +345,7 @@ int main(int argc, char *argv[])
 
 	openings = 0;
 
-	keeprun=(Network->kr); //LB. for some technical reasons global varaibles CANT be changed in constructors in c++.
-	error=Network->faul; // i hope i can find a cleaner solution for that, but this works !!!
-	// has to here and not at the cal cause it would get overriten later
-
 	serverstarttime=getClockmSecs();
-
-	exitOnError(error);
 
 	lowlevelOutput(stdout, "\n");
 	cwmWorldState->loadNewWorld();
@@ -536,12 +527,11 @@ int main(int argc, char *argv[])
 
 		if (SrvParms->server_log)
 			ServerLog.Write("Server Shutdown by Error!\n");
-
 	} else {
 		lowlevelOutput(stdout, "Hypnos: Server shutdown complete!\n");
 		if (SrvParms->server_log)
 			ServerLog.Write("Server Shutdown!\n");
-
 	}
+	
 	return 0;
 }

@@ -48,7 +48,6 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "common_libs.h"
 #include "sndpkg.h"
 #include "sregions.h"
-#include "version.h"
 #include "calendar.h"
 #include "magic.h"
 #include "party.h"
@@ -80,8 +79,6 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "networking/tuoreceiver.h"
 #include "networking/tracreceiver.h"
 #include "skills/skills.h"
-
-RemoteAdmin TelnetInterface;	//!< remote administration
 
 nMULFiles::fTiledataLand *tiledataLand = NULL;
 nMULFiles::fTiledataStatic *tiledataStatic = NULL;
@@ -215,8 +212,6 @@ void loadServer()
 	outPlain("[DONE]\n");
 
 	npcs::initNpcSpells();
-
-	TelnetInterface.Init();	// initialise remote admin interface
 
 	outPlain("Loading scheduler thread...");
 	cScheduler::init();

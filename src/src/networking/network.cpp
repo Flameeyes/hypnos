@@ -19,8 +19,7 @@
 #include "newbies.h"
 #include "skills/skills.h"
 #include "encryption/clientcrypt.h"
-
-cNetwork	*Network;
+#include "version.h"
 
 void cNetwork::LoginMain(pClient client)
 {
@@ -458,7 +457,7 @@ void cNetwork::startchar(pClient client)
 
 	enterchar( s );
 
-	client->sysmessage(0x058, "Hypnos %s [%s]", strVersion, OS);
+	client->sysmessage(0x058, "Hypnos %s [%s]", strVersion, getOSVersionString().c_str());
 
 	// log last time signed on
 	time_t ltime;
