@@ -17,6 +17,7 @@ AM_PATH_WEFTS()
 AC_ICC_COMPILER()
 AC_WINENV()
 AC_HYPNOSRELOC()
+AC_PCH()
 
 AC_OBJEXT
 AC_EXEEXT
@@ -36,7 +37,7 @@ AC_CHECK_HEADERS([ios ios.h sstream sstream.h iosfwd iosfwd.h iostream iostream.
 
 if test "$is_win" == "yes"; then
 	DEFS="$DEFS -DWIN32_LEAN_AND_MEAN"
-	CXXFLAGS="$CXXFLAGS -DWIN32_LEAN_AND_MEAN"
+	CPPFLAGS="$CPPFLAGS -DWIN32_LEAN_AND_MEAN"
 	
 	AC_CHECK_HEADERS([conio.h windows.h winnt.h winsock2.h winbase.h winreg.h wincon.h shlwapi.h],,,
 	[[#ifdef HAVE_WINDOWS_H
@@ -92,14 +93,20 @@ else
 fi
 
 # Adding include dirs and WEFTS_ variables
-INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
+INCLUDES='-I$(top_builddir) -I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
+if test "$use_pch" == "yes"; then
+	PCHINCLUDES='-I$(top_builddir)/libhypnos/ -I$(top_builddir)/includes/'
+else
+	PCHINCLUDES=''
+fi
 
 TMPFLAGS="$WEFTS_CXXFLAGS -Wall"
 AC_TEST_CFLAGS($TMPFLAGS)
 AC_TEST_CXXFLAGS($TMPFLAGS)
 
-CFLAGS="$CFLAGS $INCLUDES $WORKING_CFLAGS $DEFDIRS"
-CXXFLAGS="$CXXFLAGS $INCLUDES $WORKING_CXXFLAGS $DEFDIRS"
+CPPFLAGS="$INCLUDES $CPPFLAGS $WEFTS_CXXFLAGS $MXML_CXXFLAGS $DEFDIRS $BINRELOC_CFLAGS -DHAVE_CONFIG_H "
+CFLAGS="$CFLAGS $WORKING_CFLAGS $PCHINCLUDES $CPPFLAGS"
+CXXFLAGS="$CXXFLAGS $WORKING_CXXFLAGS $PCHINCLUDES $CPPFLAGS"
 
 if test "x$is_icc" == "xyes"; then
 	CFLAGS="$CFLAGS -wd143 -wd177 -wd279 -wd383 -wd810 -wd981 "
@@ -118,6 +125,7 @@ AC_SUBST(LDFLAGS)
 AC_SUBST(WEFTS_LIBS)
 AC_SUBST(BINRELOC_LIBS)
 AC_SUBST(BINRELOC_CFLAGS)
+AC_SUBST(CPPFLAGS)
 
 AC_CONFIG_FILES([Makefile
                  libhypnos/Makefile

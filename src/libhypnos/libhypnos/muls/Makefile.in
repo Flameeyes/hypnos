@@ -74,6 +74,7 @@ BINRELOC_LIBS = @BINRELOC_LIBS@
 CC = @CC@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
+CPPFLAGS = @CPPFLAGS@
 CPPLIB = @CPPLIB@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
@@ -103,9 +104,11 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 libincludedir = $(includedir)/libhypnos/muls
-libinclude_HEADERS = cliloc.h gumpidx.h indexedfile.h mmappedfile.h mulfiles.h \
-	multi.h multiidx.h tiledata.h
+libinclude_HEADERS = cliloc.hpp gumpidx.hpp indexedfile.hpp mmappedfile.hpp mulfiles.hpp \
+	multi.hpp multiidx.hpp tiledata.hpp
 
+
+@HAVE_PCH_TRUE@libinclude_PCH = $(addsuffix .gch, $(libinclude_HEADERS))
 subdir = libhypnos/libhypnos/muls
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -291,6 +294,13 @@ uninstall-am: uninstall-info-am uninstall-libincludeHEADERS
 	mostlyclean-libtool tags uninstall uninstall-am \
 	uninstall-info-am uninstall-libincludeHEADERS
 
+
+@HAVE_PCH_TRUE@all: $(libinclude_PCH)
+
+@HAVE_PCH_TRUE@%.h.gch: %.h
+@HAVE_PCH_TRUE@	$(CC) $< -o $@
+@HAVE_PCH_TRUE@%.hpp.gch: %.hpp
+@HAVE_PCH_TRUE@	$(CC) -x c++-header $(CPPFLAGS) $< -o $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

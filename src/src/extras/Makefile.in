@@ -74,6 +74,7 @@ BINRELOC_LIBS = @BINRELOC_LIBS@
 CC = @CC@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
+CPPFLAGS = @CPPFLAGS@
 CPPLIB = @CPPLIB@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
@@ -118,7 +119,6 @@ libextras_a_OBJECTS = $(am_libextras_a_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
-CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles

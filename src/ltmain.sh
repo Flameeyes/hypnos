@@ -130,7 +130,7 @@ if test -z "$max_cmd_len"; then
              = "XX$testring") >/dev/null 2>&1 &&
           new_result=`expr "X$testring" : ".*" 2>&1` &&
           max_cmd_len="$new_result" &&
-          test $i != 17 # 1/2 MB should be enough
+          test "$i" != 17 # 1/2 MB should be enough
   do
     i=`expr $i + 1`
     testring="$testring$testring"
@@ -563,7 +563,9 @@ if test -z "$show_help"; then
 	    # user sometimes does CC=<HOST>-gcc so we need to match that to 'gcc'
 	    trimedcc="${CC/${host}-}"
 	    case "$base_compile " in
-	    "gcc "* | " gcc "* | "${host}-gcc "* | " ${host}-gcc "*) tagname=CC ; break ;;
+	    "gcc "* | " gcc "* | "${host}-gcc "* | " ${host}-gcc "*)
+	    tagname=CC
+	    break ;;
 	    "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*|\
 	    "$trimedcc "* | " $trimedcc "* | "`$echo $trimedcc` "* | " `$echo $trimedcc` "*)
 	      # The compiler in the base compile command matches
@@ -954,7 +956,9 @@ EOF
 	    # user sometimes does CC=<HOST>-gcc so we need to match that to 'gcc'
 	    trimedcc="${CC/${host}-}"
 	    case $base_compile in
-	    "gcc "* | " gcc "* | "${host}-gcc "* | " ${host}-gcc "*) tagname=CC ; break ;;
+	    "gcc "* | " gcc "* | "${host}-gcc "* | " ${host}-gcc "*)
+	    tagname=CC
+	    break ;;
 	    "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*|\
 	    "$trimedcc "* | " $trimedcc "* | "`$echo $trimedcc` "* | " `$echo $trimedcc` "*)
 	      # The compiler in $compile_command matches
