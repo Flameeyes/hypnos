@@ -2738,9 +2738,9 @@ bool nPackets::Received::TipsRequest::execute(pClient client)
 
 	if (i==0) i=1;
 
-	msg = getTip(i);
+	msg = nMOTD::getTip(i);
 
-	nPackets::Sent::TipsWindow pkTips(0x00, i, msg);
+	nPackets::Sent::TipsWindow pkTips(msg, 0x00, i);
 	client->sendPacket(&pkTips);
 	return true;
 }

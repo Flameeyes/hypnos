@@ -347,9 +347,7 @@ void cChar::updateStats(int32_t stat)
 
 void updates(pClient client) // Update Window
 {
-	std::string msg = nMOTD::getMOTD();
-
-	nPackets::Sent::TipsWindow pkMOTD(0x02, 0x0000, msg);
+	nPackets::Sent::TipsWindow pkMOTD(nMOTD::getMOTD());
 	client->sendPacket(&pkMOTD);
 }
 
