@@ -463,6 +463,27 @@ namespace nPackets {
 
 
 		/*!
+		\brief pause/resume client
+		\author Chronodt
+		\note packet 0x33
+		*/
+
+		class PauseClient : public cPacketSend
+		{
+		protected:
+			uint8_t pausestatus;	//!< 0 = pause, 1 = resume
+
+		public:
+			inline PauseClient(uint8_t aPauseStatus) :
+				cPacketSend(NULL, 0), pausestatus(aPauseStatus)
+			{ }
+
+			void prepare();
+		};
+
+
+
+		/*!
 		\brief cChar::action() packet
 		\author Flameeyes
 		*/

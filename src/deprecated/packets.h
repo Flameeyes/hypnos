@@ -128,26 +128,6 @@ public:
 
 } PACK_NEEDED;
 
-
-#define PKG_PAUSE_RESUME 0x33;
-/*!
-\brief Pause/Resume Client
-\author Endymion
-\since 0.83
-\note 0x33
-\todo can be use while world data saving?
-\todo use misanderstood
-\warning not sure from who
-*/
-class cPacketPauseResumeClient : public cServerPacket {
-public:
-
-	uint8_t	mode;	//!< action ( 0=pause, 1=resume )
-
-	cPacketPauseResumeClient();	
-
-} PACK_NEEDED;
-
 #define PKG_PLAYER_STATUS 0x34;
 /*!
 \brief Get Player Status

@@ -346,7 +346,8 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 
 		//////////////FOR ELCABESA VERY WARNING BY ENDYMION
 		//////THIS PACKET PAUSE THE CLIENT
-		SendPauseResumePkt(ps_i->toInt(), 0x01);
+		nPackets::Sent::PauseClient pk(0x01);
+		ps_i->sendPacket(&pk);
 		d++;
 	}
 
@@ -404,7 +405,8 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 	{
 		/////////FOR ELCABESA VERY IMPORTAT BY ENDY
 		///////THIS PACKET RESUME CLIENT
-		SendPauseResumePkt( Send[a], 0x00 );
+		nPackets::Sent::PauseClient pk(0x00);
+		Send[a]->sendPacket(&pk);
 	}
 }
 
@@ -1068,7 +1070,9 @@ void cBoat::iMove(pClient client, int dir, pItem pBoat, bool forced)
 	pItem hold=boat->p_container;
 
 	//////THIS PACKET PAUSE THE CLIENT
-	SendPauseResumePkt(s, 0x01);
+	nPackets::Sent::PauseClient pk(0x01);
+	client->sendPacket(&pk);
+
 
 	switch(dir&0x0F)//Which DIR is it going in?
 	{
@@ -1118,7 +1122,9 @@ void cBoat::iMove(pClient client, int dir, pItem pBoat, bool forced)
 	{
 		pBoat->type2=0;
 		itemtalk(tiller,"Arr, Sir, we've hit rough waters!");
-		SendPauseResumePkt(s, 0x00);
+		nPackets::Sent::PauseClient pk(0x00);
+		client->sendPacket(&pk);
+
 		return;
 	}
 
@@ -1130,14 +1136,17 @@ void cBoat::iMove(pClient client, int dir, pItem pBoat, bool forced)
 	{
 		pBoat->type2=0;
 		itemtalk(tiller, "Arr, somethings in the way!");
-		SendPauseResumePkt(s, 0x00);
+		nPackets::Sent::PauseClient pk(0x00);
+		client->sendPacket(&pk);
 		return;
 	}
 	if(collision(pBoat, boatpos,0))
 	{
 		pBoat->type2=0;
 		itemtalk(tiller, "Arr, another ship in the way");
-		SendPauseResumePkt(s, 0x00);
+		nPackets::Sent::PauseClient pk(0x00);
+		client->sendPacket(&pk);
+
 		return;
 	}
 
@@ -1206,7 +1215,8 @@ void cBoat::iMove(pClient client, int dir, pItem pBoat, bool forced)
 	}
 */
 
-	SendPauseResumePkt(s, 0x00);
+	nPackets::Sent::PauseClient pk(0x00);
+	client->sendPacket(&pk);
 	pBoat->Refresh();
 	tiller->Refresh();
 	p1->Refresh();

@@ -538,6 +538,22 @@ void nPackets::Sent::FightOnScreen::prepare()
 	LongToCharPtr(defender->getSerial(), buffer+6);
 }
 
+/*!
+\brief pause/resume client
+\author Chronodt
+\note packet 0x33
+
+\todo awaiting new save system to implement client pause
+*/
+
+void nPackets::Sent::PauseClient::prepare()
+{
+	length = 2;
+	buffer = new uint8_t[2];
+
+	buffer[0] = 0x33;
+	buffer[1] = pausestatus;
+}
 
 void nPackets::Sent::Action::prepare()
 {

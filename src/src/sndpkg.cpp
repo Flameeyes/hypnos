@@ -809,16 +809,6 @@ MakeGraphicalEffectPkt_(effect, type, src->getSerial(), dst->getSerial(), eff, s
 	}
 }
 
-void SendPauseResumePkt(pClient client, uint8_t flag)
-{
-/* Flag: 0=pause, 1=resume */ // uhm.... O_o ... or viceversa ? -_-;
-	uint8_t m2[2]={ 0x33, 0x00 };
-
-	m2[1]=flag;
-	Xsend(s, m2, 2);
-//AoS/	Network->FlushBuffer(s);
-}
-
 void SendDrawObjectPkt(pClient client, pChar pc, int z)
 {
 	pChar pc_currchar=cSerializable::findCharBySerial(currchar[s]);
@@ -1063,7 +1053,9 @@ int sellstuff(pClient client, pChar pc)
 	pItem pp=pc->GetItemOnLayer(LAYER_TRADE_BOUGHT);
 	if(!pp) return 0;
 
-	SendPauseResumePkt(s, 0x01);
+	nPackets::Sent::PauseClient pk(0x01);
+	client->sendPacket(&pk);
+
 
 	pItem pack= pcs->getBackpack();
 	if(!pack) return 0;
@@ -1150,7 +1142,8 @@ int sellstuff(pClient client, pChar pc)
 			pc->talkAll("Sorry i cannot take so many items.."), false);
 	}
 
-	SendPauseResumePkt(s, 0x00);
+	nPackets::Sent::PauseClient pk(0x00);
+	client->sendPacket(&pk);
 
 	return 1;
 }
