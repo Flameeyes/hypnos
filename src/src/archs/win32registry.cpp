@@ -18,7 +18,13 @@ service entry.
 
 #include "archs/win32registry.h"
 
+#ifdef HAVE_WINNT_H
+#include <winnt.h>
+#endif
+
+#ifdef HAVE_WINREG_H
 #include <winreg.h>
+#endif
 
 /*!
 \brief Gets a string value from the KHEY_LOCAL_MACHINE registry

@@ -35,10 +35,29 @@ AC_EGREP_CPP(yes,
 # Fork is used to daemonize on unix environments, on Windows we use the service stuff
 
 if test "$is_win" == "yes"; then
-	AC_CHECK_HEADERS([winsock2.h winbase.h winreg.h wincon.h])
+	DEFS="$DEFS -DWIN32_LEAN_AND_MEAN"
+	CXXFLAGS="$CXXFLAGS -DWIN32_LEAN_AND_MEAN"
+	
+	AC_CHECK_HEADERS([conio.h windows.h winnt.h winsock2.h winbase.h winreg.h wincon.h],,,
+	[[#ifdef HAVE_WINDOWS_H
+	#include <windows.h>
+	#endif
+	
+	#ifdef HAVE_WINNT_H
+	#include <winnt.h>
+	#endif
+	]])
 
 	if test "$ac_cv_header_winsock2_h" != "yes"; then
-		AC_CHECK_HEADERS([winsock.h])
+		AC_CHECK_HEADERS([winsock.h],,,
+		[[#ifdef HAVE_WINDOWS_H
+		#include <windows.h>
+		#endif
+		
+		#ifdef HAVE_WINNT_H
+		#include <winnt.h>
+		#endif
+		]])
 	fi
 else
 	AC_FUNC_FORK

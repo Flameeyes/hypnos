@@ -27,4 +27,6 @@ uint32_t getClockmSecs();
 uint32_t getClockSys();
 uint32_t getClockDay();
 
+#define TIMEOUT(X) ((X) <= getClockmSecs())
+
 #endif

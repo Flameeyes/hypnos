@@ -6,6 +6,9 @@
 /* Define to 1 if you have the `basename' function. */
 #undef HAVE_BASENAME
 
+/* Define to 1 if you have the <conio.h> header file. */
+#undef HAVE_CONIO_H
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
@@ -159,6 +162,12 @@
 
 /* Define to 1 if you have the <wincon.h> header file. */
 #undef HAVE_WINCON_H
+
+/* Define to 1 if you have the <windows.h> header file. */
+#undef HAVE_WINDOWS_H
+
+/* Define to 1 if you have the <winnt.h> header file. */
+#undef HAVE_WINNT_H
 
 /* Define to 1 if you have the <winreg.h> header file. */
 #undef HAVE_WINREG_H

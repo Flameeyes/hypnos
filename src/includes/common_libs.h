@@ -51,13 +51,15 @@ warnings/errors/issues.
 #include <unistd.h>
 #endif
 
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>
+#endif
+
 #include <ctype.h>
 
 #include "typedefs.h"
 #include "constants.h"
 #include "clock.h"
-
-#define TIMEOUT(X) ((X) <= getClockmSecs())
 
 using namespace nLibhypnos;
 

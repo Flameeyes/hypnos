@@ -12,4 +12,4 @@
 char *getHKLMRegistryString(char *key, char *subkey);
 void setHKLMRegistryString(char *key, char *subkey, char *value);
 
-#endinf
+#endif

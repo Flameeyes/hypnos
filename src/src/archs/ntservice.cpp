@@ -10,14 +10,17 @@
 
 bool g_bNTService = false;
 
+#include "common_libs.h"
 #include "arch/ntservice.h"
 #include "version.h"
 
-#define WIN32_LEAN_AND_MEAN
+#ifdef HAVE_WINDOWS_H
 #include <windows.h>
-#include <stdio.h>
+#endif
+
+#ifdef HAVE_CONIO_H
 #include <conio.h>
-#include <stdlib.h>
+#endif
 
 //! The name of the service
 char *SERVICE_NAME = "Hypnos Server Emulator";
