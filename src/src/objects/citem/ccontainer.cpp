@@ -356,3 +356,17 @@ bool cContainer::doDecay(bool dontDelete = false)
 	Delete();
 	return true;
 }
+
+/*!
+\author Flameeyes
+\brief Gets the first instrument found in the container
+\return A pointer to the first instrument found or NULL if not found
+*/
+pItem cContainer::getInstrument()
+{
+	for ( ItemList::iterator it = items.begin(); it != items.end(); it++ )
+		if ( (*it)->isInstument() )
+			return (*it);
+	
+	return NULL;
+}

@@ -45,9 +45,9 @@ namespace Skills {
 	\name Musicianship stuff
 	*/
 	void PeaceMaking(pClient client);
-	void PlayInstrumentWell(pClient client, int i);
-	void PlayInstrumentPoor(pClient client, int i);
-	int GetInstrument(pClient client);
+	void PlayInstrumentWell(pClient client, pItem pi);
+	void PlayInstrumentPoor(pClient client, pItem pi);
+	pItem GetInstrument(pClient client);
 	void target_provocation1( pClient client, pTarget t );
 	void target_enticement1( pClient client, pTarget t );
 	//@}
@@ -77,8 +77,8 @@ namespace Skills {
 	/*!
 	\name Alchemy stuff
 	*/
-	void CreatePotion(pChar pc, char type, char sub, int mortar);
-	void DoPotion(pClient client, int32_t type, int32_t sub, pItem mortar);
+	void CreatePotion(pChar pc, uint8_t type, uint8_t sub, pItem mortar);
+	void DoPotion(pClient client, uint8_t type, uint8_t sub, pItem mortar);
 	void target_alchemy( pClient client, pTarget t );
 	void target_bottle( pClient client, pTarget t );
 	void PotionToBottle(pChar pc, pItem mortar);

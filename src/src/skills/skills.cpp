@@ -27,11 +27,11 @@ inline void SetSkillDelay(pChar pc)
 /*!
 \author Luxor
 \brief Implements the hiding skill
-\param s socket requesting hiding
+\param client client requesting hiding
 */
-void Skills::Hide(NXWSOCKET s)
+void Skills::Hide(pClient client)
 {
-	if ( s < 0 || s >= now )
+	if ( ! client )
 		return;
 
 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
@@ -54,211 +54,198 @@ void Skills::Hide(NXWSOCKET s)
 /*!
 \author AntiChrist
 \brief Stealths a char
-\param s socket requesting stealthing
+\param c client requesting stealthing
 */
-void Skills::Stealth(NXWSOCKET s)
+void Skills::Stealth(pClient client)
 {
-	if ( s < 0 || s >= now ) //Luxor
+	pChar pc = NULL;
+	if ( ! client || ! (pc = client->currChar()) ) //Luxor
 		return;
-	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return;
 
-    if ( pc->isMounting() && ! nSettings::Skills::canStealthOnHorse() ) {
-        sysmessage(s,"You can't stealth on horse!");
-        return;
-    }
-
-    if (pc->hidden==0) {
-        sysmessage(s,"You must hide first.");
-        return;
-    }
-
-    if (pc->skill[HIDING]<800)
-    {
-        sysmessage(s,"You are not hidden well enough. Become better at hiding.");
-        pc->stealth = INVALID;
-	pc->unHide();
-        return;
-    }
-
-    //XAN : more osi-like
-
-    int def = pc->calcDef(0);
-    int min = 0, max = 1000;
-    if (def <= 5) { min = 0; max = 650; }
-    if (def == 6) { min = 450; max = 700; }
-    if (def == 7) { min = 500; max = 750; }
-    if (def == 8) { min = 550; max = 800; }
-    if (def == 9) { min = 600; max = 850; }
-    if (def == 10) { min = 650; max = 900; }
-    if (def == 11) { min = 650; max = 900; }
-    if (def == 12) { min = 700; max = 950; }
-    if (def == 13) { min = 700; max = 950; }
-    if (def == 14) { min = 750; max = 1000; }
-    if (def >= 15) { min = 800; max = 1100; }
-
-    if (ServerScp::g_nStealthArLimit==0) {
-        def = 0;
-        min = 0;
-        max = 1000;
-    }
-    // do not invert the two parts of the || operator otherwise
-    // it stops raising skills when training with plate-armor ! :)
-    if ((!pc->checkSkill(skStealth, min, max))||(def>20))
-    {
-	pc->setHidden(htUnhidden);
-        pc->stealth = INVALID;
-	pc->teleport( TELEFLAG_SENDWORNITEMS );
-        return;
-    }
-
-    sysmessage(s,"You can move %i steps unseen.", ((SrvParms->maxstealthsteps*pc->skill[skStealth])/1000) );
-    pc->stealth = 0; //AntiChrist -- init. steps already done
-    pc->hideBySkill();
+	if ( pc->isMounting() && ! nSettings::Skills::canStealthOnHorse() ) {
+		sysmessage(s,"You can't stealth on horse!");
+		return;
+	}
+	
+	if (pc->hidden==0) {
+		client->sysmessage("You must hide first.");
+		return;
+	}
+	
+	if (pc->skill[HIDING]<800)
+	{
+		client->sysmessage("You are not hidden well enough. Become better at hiding.");
+		pc->stealth = INVALID;
+		pc->unHide();
+		return;
+	}
+	
+	//XAN : more osi-like
+	
+	int def = pc->calcDef(0);
+	int min = 0, max = 1000;
+	if (def <= 5) { min = 0; max = 650; }
+	if (def == 6) { min = 450; max = 700; }
+	if (def == 7) { min = 500; max = 750; }
+	if (def == 8) { min = 550; max = 800; }
+	if (def == 9) { min = 600; max = 850; }
+	if (def == 10) { min = 650; max = 900; }
+	if (def == 11) { min = 650; max = 900; }
+	if (def == 12) { min = 700; max = 950; }
+	if (def == 13) { min = 700; max = 950; }
+	if (def == 14) { min = 750; max = 1000; }
+	if (def >= 15) { min = 800; max = 1100; }
+	
+	if (ServerScp::g_nStealthArLimit==0) {
+		def = 0;
+		min = 0;
+		max = 1000;
+	}
+	// do not invert the two parts of the || operator otherwise
+	// it stops raising skills when training with plate-armor ! :)
+	if ((!pc->checkSkill(skStealth, min, max))||(def>20))
+	{
+		pc->setHidden(htUnhidden);
+		pc->stealth = INVALID;
+		pc->teleport( TELEFLAG_SENDWORNITEMS );
+		return;
+	}
+	
+	client->sysmessage("You can move %i steps unseen.", ((SrvParms->maxstealthsteps*pc->skill[skStealth])/1000) );
+	pc->stealth = 0; //AntiChrist -- init. steps already done
+	pc->hideBySkill();
 }
 
-void Skills::PeaceMaking(NXWSOCKET s)
+void Skills::PeaceMaking(pClient client)
 {
-	if ( s < 0 || s >= now ) //Luxor
+	pChar pc = NULL;
+	if ( ! client || ! (pc = client->currChar()) ) //Luxor
 		return;
 
-	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return;
-
-    int inst = Skills::GetInstrument( s );
-    if( inst == INVALID )
-    {
-        pc->sysmsg( "You do not have an instrument to play on!");
-        return;
-    }
-
-    if ( pc->checkSkill( skPeacemaking, 0, 1000) && pc->checkSkill( skMusicianship, 0, 1000) )
-    {
-		Skills::PlayInstrumentWell(s, inst);
-		pc->sysmsg("You play your hypnotic music, stopping the battle.");
-
-		NxwCharWrapper sc;
-		sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
-		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-			pChar pcm = sc.getChar();
-			if( pcm ) {
-				if (pcm->war && pc->getSerial()!=pcm->getSerial())
-                {
-                    pcm->sysmsg("You hear some lovely music, and forget about fighting.");
-					if (pcm->war)
-						pcm->toggleCombat();
-                    pcm->targserial = INVALID;
-					pcm->attackerserial = INVALID;
-					pcm->ResetAttackFirst();
-                }
-            }
-        }
-    }
-	else
-    {
+	pItem inst = Skills::GetInstrument( s );
+	if( ! inst )
+	{
+		client->sysmessage( "You do not have an instrument to play on!");
+		return;
+	}
+	
+	if ( ! pc->checkSkill( skPeacemaking, 0, 1000) || ! pc->checkSkill( skMusicianship, 0, 1000) )
+	{
 		Skills::PlayInstrumentPoor(s, inst);
-        pc->sysmsg("You attempt to calm everyone, but fail.");
-    }
-
-}
-
-void Skills::PlayInstrumentWell(NXWSOCKET s, int i)
-{
-	if ( s < 0 || s >= now ) //Luxor
+		client->sysmessage("You attempt to calm everyone, but fail.");
 		return;
-
-	pItem pi=MAKE_ITEM_REF(i);
-	if ( ! pi ) return;
-
-	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return;
-
-    switch(pi->getId())
-    {
-    case 0x0E9C:    pc->playSFX( 0x0038);  break;
-    case 0x0E9D:
-    case 0x0E9E:    pc->playSFX( 0x0052);  break;
-    case 0x0EB1:
-    case 0x0EB2:    pc->playSFX( 0x0045);  break;
-    case 0x0EB3:
-    case 0x0EB4:    pc->playSFX( 0x004C);  break;
-    default:
-        LogError("switch reached default");
-    }
-
-}
-
-void Skills::PlayInstrumentPoor(NXWSOCKET s, int i)
-{
-	if ( s < 0 || s >= now ) //Luxor
-		return;
-
-	pItem pi=MAKE_ITEM_REF(i);
-	if ( ! pi ) return;
-
-	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return;
-
-    switch(pi->getId())
-    {
-    case 0x0E9C:    pc->playSFX( 0x0039);  break;
-    case 0x0E9D:
-    case 0x0E9E:    pc->playSFX( 0x0053);  break;
-    case 0x0EB1:
-    case 0x0EB2:    pc->playSFX( 0x0046);  break;
-    case 0x0EB3:
-    case 0x0EB4:    pc->playSFX( 0x004D);  break;
-    default:
-        LogError("switch reached default");
-    }
-
-}
-
-int Skills::GetInstrument(NXWSOCKET s)
-{
-	if ( s < 0 || s >= now ) //Luxor
-		return INVALID;
-
-	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-	VALIDATEPCR(pc,INVALID);
-
-	pItem pack= pc->getBackpack();
-    VALIDATEPIR(pack,INVALID);
-
-    NxwItemWrapper si;
-	si.fillItemsInContainer( pack, false );
-	for( si.rewind(); !si.isEmpty(); si++ ) {
-        pItem pi=si.getItem();
-		if ( pi && pi->IsInstrument() )
-            return DEREF_pItem(pi);
 	}
 
-    return INVALID;
+	Skills::PlayInstrumentWell(s, inst);
+	client->sysmessage("You play your hypnotic music, stopping the battle.");
 
+	NxwCharWrapper sc;
+	sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
+	for( sc.rewind(); !sc.isEmpty(); sc++ )
+	{
+		pChar pcm = sc.getChar();
+		if ( ! pcm )
+			continue;
+		
+		if ( !pcm->war || pc == pcm )
+			continue;
+		
+		pcm->sysmsg("You hear some lovely music, and forget about fighting.");
+		if (pcm->war)
+			pcm->toggleCombat();
+		pcm->targserial = INVALID;
+		pcm->attackerserial = INVALID;
+		pcm->ResetAttackFirst();
+	}
+}
+
+/*!
+\brief Plays the 'well' sound effect for the instrument
+\param client Client who's playing (so the one who effectly play the SFX)
+\param pi Instrument to play
+*/
+void Skills::PlayInstrumentWell(pClient client, pItem pi)
+{
+	pChar pc = NULL;
+	if ( ! client || ! (pc = client->currChar()) || ! pi ) //Luxor
+		return;
+
+	switch(pi->getId())
+	{
+		case 0x0E9C:    pc->playSFX( 0x0038);  break;
+		case 0x0E9D:
+		case 0x0E9E:    pc->playSFX( 0x0052);  break;
+		case 0x0EB1:
+		case 0x0EB2:    pc->playSFX( 0x0045);  break;
+		case 0x0EB3:
+		case 0x0EB4:    pc->playSFX( 0x004C);  break;
+		default:
+			LogError("switch reached default");
+	}
+}
+
+/*!
+\brief Plays the 'poor' sound effect for the instrument
+\param client Client who's playing (so the one who effectly play the SFX)
+\param pi Instrument to play
+*/
+void Skills::PlayInstrumentPoor(pClient client, pItem pi)
+{
+	pChar pc = NULL;
+	if ( ! client || ! (pc = client->currChar()) || ! pi ) //Luxor
+		return;
+
+	switch(pi->getId())
+	{
+	case 0x0E9C:    pc->playSFX( 0x0039);  break;
+	case 0x0E9D:
+	case 0x0E9E:    pc->playSFX( 0x0053);  break;
+	case 0x0EB1:
+	case 0x0EB2:    pc->playSFX( 0x0046);  break;
+	case 0x0EB3:
+	case 0x0EB4:    pc->playSFX( 0x004D);  break;
+	default:
+		LogError("switch reached default");
+	}
+}
+
+/*!
+\brief Gets the instrument for a client
+\author Flameeyes
+\param client Client to get the instrument from
+\return A pointer to the first instrument found or NULL if not found
+*/
+pItem Skills::getInstrument(pClient client)
+{
+	pChar pc = NULL;
+	if ( ! client || ! client->currChar() ||
+		! client->currChar()->getBody() ||
+		! client->currChar()->getBody()->getBackpack() )
+			return NULL;
+
+	return client->currChar()->getBody()->getBackpack()->getInstrument();
 }
 
 /*!
 \author Duke
 \date 20/04/2000
 \brief Helper function for DoPotion()
-\param s socket of the crafter
+\param client client of the crafter
 \param regid reagent identifier
 \param regamount amount of reagents
 \param regname name of the reagent
 
 checks if player has enough regs for selected potion and delets them
 */
-static bool DoOnePotion(NXWSOCKET s, uint16_t regid, uint32_t regamount, char* regname)
+static bool DoOnePotion(pClient client, uint16_t regid, uint16_t regamount, std::string regname)
 {
-	if ( s < 0 || s >= now ) //Luxor
-		return false;
-
-	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return false;
+	pChar pc = NULL;
+	if ( ! client || ! (pc = client->currChar()) ) //Luxor
+		return;
 
 	if (pc->getAmount(regid) < regamount)
 	{
-		sysmessage(s, "You do not have enough reagents for that potion.");
+		client->sysmessage("You do not have enough reagents for that potion.");
 		return false;
 	}
 	
@@ -271,41 +258,42 @@ static bool DoOnePotion(NXWSOCKET s, uint16_t regid, uint32_t regamount, char* r
 /*!
 \author Duke
 \brief Determines regs and quantity, creates working sound
-indirectly calls CreatePotion() on success
+	indirectly calls CreatePotion() on success
+\param client Client who's creating the potion
+\param type Type of the potion
+\param sub Subtype of the potion
+\param mortar Pointer to the mortar
 */
-void Skills::DoPotion(NXWSOCKET s, int32_t type, int32_t sub, pItem pi_mortar)
+void Skills::DoPotion(pClient client, uint8_t type, uint8_t sub, pItem mortar)
 {
-	if ( s < 0 || s >= now ) //Luxor
+	pChar pc = NULL;
+	if ( ! client || ! (pc = client->currChar()) || ! mortar ) //Luxor
 		return;
-	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return;
-
-	VALIDATEPI(pi_mortar);
 
 	bool success=false;
 
 	switch((type*10)+sub)
 	{
-		case 11: success=DoOnePotion(s,0x0F7B, 1,"blood moss");     break;//agility
-		case 12: success=DoOnePotion(s,0x0F7B, 3,"blood moss");     break;//greater agility
-		case 21: success=DoOnePotion(s,0x0F84, 1,"garlic");         break;//lesser cure
-		case 22: success=DoOnePotion(s,0x0F84, 3,"garlic");         break;//cure
-		case 23: success=DoOnePotion(s,0x0F84, 6,"garlic");         break;//greater cure
-		case 31: success=DoOnePotion(s,0x0F8C, 3,"sulfurous ash");  break;//lesser explosion
-		case 32: success=DoOnePotion(s,0x0F8C, 5,"sulfurous ash");  break;//explosion
-		case 33: success=DoOnePotion(s,0x0F8C,10,"sulfurous ash");  break;//greater explosion
-		case 41: success=DoOnePotion(s,0x0F85, 1,"ginseng");        break;//lesser heal
-		case 42: success=DoOnePotion(s,0x0F85, 3,"ginseng");        break;//heal
-		case 43: success=DoOnePotion(s,0x0F85, 7,"ginseng");        break;//greater heal
-		case 51: success=DoOnePotion(s,0x0F8D, 1,"spider's silk");  break;//night sight
-		case 61: success=DoOnePotion(s,0x0F88, 1,"nightshade");     break;//lesser poison
-		case 62: success=DoOnePotion(s,0x0F88, 2,"nightshade");     break;//poison
-		case 63: success=DoOnePotion(s,0x0F88, 4,"nightshade");     break;//greater poison
-		case 64: success=DoOnePotion(s,0x0F88, 8,"nightshade");     break;//deadly poison
-		case 71: success=DoOnePotion(s,0x0F7A, 1,"black pearl");    break;//refresh
-		case 72: success=DoOnePotion(s,0x0F7A, 5,"black pearl");    break;//total refreshment
-		case 81: success=DoOnePotion(s,0x0F86, 2,"mandrake");       break;//strength
-		case 82: success=DoOnePotion(s,0x0F86, 5,"mandrake");       break;//greater strength
+		case 11: success = DoOnePotion(client, 0x0F7B, 1,"blood moss");     break;//agility
+		case 12: success = DoOnePotion(client, 0x0F7B, 3,"blood moss");     break;//greater agility
+		case 21: success = DoOnePotion(client, 0x0F84, 1,"garlic");         break;//lesser cure
+		case 22: success = DoOnePotion(client, 0x0F84, 3,"garlic");         break;//cure
+		case 23: success = DoOnePotion(client, 0x0F84, 6,"garlic");         break;//greater cure
+		case 31: success = DoOnePotion(client, 0x0F8C, 3,"sulfurous ash");  break;//lesser explosion
+		case 32: success = DoOnePotion(client, 0x0F8C, 5,"sulfurous ash");  break;//explosion
+		case 33: success = DoOnePotion(client, 0x0F8C,10,"sulfurous ash");  break;//greater explosion
+		case 41: success = DoOnePotion(client, 0x0F85, 1,"ginseng");        break;//lesser heal
+		case 42: success = DoOnePotion(client, 0x0F85, 3,"ginseng");        break;//heal
+		case 43: success = DoOnePotion(client, 0x0F85, 7,"ginseng");        break;//greater heal
+		case 51: success = DoOnePotion(client, 0x0F8D, 1,"spider's silk");  break;//night sight
+		case 61: success = DoOnePotion(client, 0x0F88, 1,"nightshade");     break;//lesser poison
+		case 62: success = DoOnePotion(client, 0x0F88, 2,"nightshade");     break;//poison
+		case 63: success = DoOnePotion(client, 0x0F88, 4,"nightshade");     break;//greater poison
+		case 64: success = DoOnePotion(client, 0x0F88, 8,"nightshade");     break;//deadly poison
+		case 71: success = DoOnePotion(client, 0x0F7A, 1,"black pearl");    break;//refresh
+		case 72: success = DoOnePotion(client, 0x0F7A, 5,"black pearl");    break;//total refreshment
+		case 81: success = DoOnePotion(client, 0x0F86, 2,"mandrake");       break;//strength
+		case 82: success = DoOnePotion(client, 0x0F86, 5,"mandrake");       break;//greater strength
 		default:
 			 LogError("switch reached default",(type*10)+sub);
 			 return;
@@ -317,7 +305,7 @@ void Skills::DoPotion(NXWSOCKET s, int32_t type, int32_t sub, pItem pi_mortar)
 		tempfx::add(pc, pc, tempfx::ALCHEMY_GRIND, 0, 3, 0);
 		tempfx::add(pc, pc, tempfx::ALCHEMY_GRIND, 0, 6, 0);
 		tempfx::add(pc, pc, tempfx::ALCHEMY_GRIND, 0, 9, 0);
-		tempfx::add(pc, pi_mortar, tempfx::ALCHEMY_END, type, sub, 0);  // this will indirectly call CreatePotion()
+		tempfx::add(pc, mortar, tempfx::ALCHEMY_END, type, sub, 0);  // this will indirectly call CreatePotion()
 	}
 }
 
@@ -330,17 +318,11 @@ in the mortar on success and tries to put it into a bottle
 \param sub subtype of potion
 \param mortar serial of the mortar
 */
-void Skills::CreatePotion(pChar pc, char type, char sub, int mortar)
+void Skills::CreatePotion(pChar pc, uint8_t type, uint8_t sub, pItem mortar)
 {
-//	pChar pc=cSerializable::findCharBySerial(s);
-	if ( ! pc ) return;
-
-	NXWCLIENT ps=pc->getClient();
-	if( ps==NULL )	return;
-
-	pItem pi_mortar=MAKE_ITEM_REF(mortar);
-	VALIDATEPI(pi_mortar);
-
+	pClient client = NULL;
+	if ( ! pc || ! (client = pc->getClient()) )
+		return;
 
 	int success=0;
 
@@ -372,16 +354,16 @@ void Skills::CreatePotion(pChar pc, char type, char sub, int mortar)
 			return;
 	}
 
-	if (success==0 && !pc->IsGM()) // AC bugfix
+	if (! success && !pc->IsGM()) // AC bugfix
 	{
 		pc->emoteall("*%s tosses the failed mixture from the mortar, unable to create a potion from it.*", false, pc->getCurrentName().c_str());
 		return;
 	}
 
-	pi_mortar->type=17;
-	pi_mortar->more1=type;
-	pi_mortar->more2=sub;
-	pi_mortar->morex=pc->skill[ALCHEMY];
+	mortar->type=17;
+	mortar->more1=type;
+	mortar->more2=sub;
+	mortar->morex=pc->skill[ALCHEMY];
 
 	if (pc->getAmount(0x0F0E)<1)
 	{
@@ -396,7 +378,7 @@ void Skills::CreatePotion(pChar pc, char type, char sub, int mortar)
 		pc->playSFX(0x0240); // Liquid sfx
 		pc->emoteall("*%s pours the completed potion into a bottle.*", 0, pc->getCurrentName().c_str());
 		pc->delItems(0x0F0E);
-		Skills::PotionToBottle(pc, pi_mortar);
+		Skills::PotionToBottle(pc, mortar);
 	}
 }
 
@@ -404,7 +386,7 @@ void Skills::CreatePotion(pChar pc, char type, char sub, int mortar)
 \author Duke
 \brief Uses the targeted potion bottle <b>outside</b> the backpack to
 pour in the potion from the mortar
-\param s socket of the crafter
+\param client client of the crafter
 */
 void Skills::target_bottle( NXWCLIENT ps, pTarget t )
 {
@@ -414,7 +396,7 @@ void Skills::target_bottle( NXWCLIENT ps, pTarget t )
 	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
-	NXWSOCKET s = ps->toInt();
+	pClient client = ps->toInt();
 
 	if(pi->magic==4)
 		return;    // Ripper
@@ -951,7 +933,7 @@ void Skills::AdvanceStats(pChar pc, int sk)
 		if ( update )
 		{
 
-			NXWSOCKET socket = pc->getSocket();
+			pClient clientocket = pc->getSocket();
 
 			++pc->statGainedToday;
 
@@ -971,11 +953,11 @@ void Skills::AdvanceStats(pChar pc, int sk)
 
 /*!
 \brief Spirit speack time on a base of 30 seconds + skill[SPIRITSPEAK]/50 + INT
-\param s socket to the character
+\param client client to the character
 */
-void Skills::SpiritSpeak(NXWSOCKET s)
+void Skills::SpiritSpeak(pClient client)
 {
-	if ( s < 0 || s >= now ) //Luxor
+	if ( ! client ) //Luxor
 		return;
 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	//  Unsure if spirit speaking should they attempt again?
@@ -995,10 +977,10 @@ void Skills::SpiritSpeak(NXWSOCKET s)
 
 /*!
 \brief Skill is clicked on the skill list
-\param s socket to the character that used skill
+\param client client to the character that used skill
 \param x skill identifier
 */
-void Skills::SkillUse(NXWSOCKET s, int x)
+void Skills::SkillUse(pClient client, int x)
 {
 	if ( s < 0 || s >= now || x < 0 || x >= skTrueSkills) //Luxor
 		return;
@@ -1236,9 +1218,9 @@ void Skills::updateSkillLevel(pChar pc, int s)
 
 }
 
-void Skills::TDummy(NXWSOCKET s)
+void Skills::TDummy(pClient client)
 {
-	if ( s < 0 || s >= now ) //Luxor
+	if ( ! client ) //Luxor
 		return;
 	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
@@ -1307,7 +1289,7 @@ void Skills::TDummy(NXWSOCKET s)
 
 }
 
-void Skills::AButte(NXWSOCKET s1, pItem pButte)
+void Skills::AButte(pClient client1, pItem pButte)
 {
 	if ( s1 < 0 || s1 >= now ) //Luxor
 		return;
@@ -1466,7 +1448,7 @@ void Skills::AButte(NXWSOCKET s1, pItem pButte)
 */
 void Skills::Meditation (NXWSOCKET  s)
 {
-	if ( s < 0 || s >= now )
+	if ( ! client )
 		return;
 
 	pChar pc = cSerializable::findCharBySerial(currchar[s]);
@@ -1519,7 +1501,7 @@ void Skills::Meditation (NXWSOCKET  s)
 //
 /*!
 \author AntiChrist
-\param s socket of the persecuter
+\param client client of the persecuter
 
 If you are a ghost and attack a player, you can PERSECUTE him
 and his mana decreases each time you try to persecute him
@@ -1527,7 +1509,7 @@ decrease=3+(your int/10)
 */
 void Skills::Persecute (NXWSOCKET  s)
 {
-	if ( s < 0 || s >= now ) //Luxor
+	if ( ! client ) //Luxor
 		return;
 
 	pChar pc = cSerializable::findCharBySerial(currchar[s]);
@@ -1716,13 +1698,13 @@ int Skills::GetAntiMagicalArmorDefence(pChar pc)
 /*!
 \author Polygon
 \brief Builds the cartography menu
-\param s socket of the crafter
+\param client client of the crafter
 
 Function is called when clicked on the <i>Cartography</i> button
 */
-void Skills::Cartography(NXWSOCKET s)
+void Skills::Cartography(pClient client)
 {
-	if ( s < 0 || s >= now ) //Luxor
+	if ( ! client ) //Luxor
 		return;
 
 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
@@ -1802,13 +1784,13 @@ bool Skills::DelEmptyMap(pChar pc)
 \author Polygon
 \brief Attempt to decipher a tattered map
 \param tmap item pointer to the map
-\param s socket of the decipher
+\param client client of the decipher
 
 Called when double-click such a map
 */
-void Skills::Decipher(pItem tmap, NXWSOCKET s)
+void Skills::Decipher(pItem tmap, pClient client)
 {
-	if ( s < 0 || s >= now ) //Luxor
+	if ( ! client ) //Luxor
 		return;
  	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
