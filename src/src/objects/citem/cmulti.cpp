@@ -7,6 +7,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "objects/citem/cmulti.h"
+#include "objects/cchar.h"
 #include "networking/cclient.h"
 
 /*!

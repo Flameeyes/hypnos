@@ -9,6 +9,7 @@
 #include "enums.h"
 #include "skills/skills.h"
 #include "objects/citem/cmap.h"
+#include "objects/cchar.h"
 #include "networking/sent.h"
 #include "networking/cclient.h"
 

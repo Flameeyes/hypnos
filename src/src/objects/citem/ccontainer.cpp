@@ -7,6 +7,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "objects/citem/ccontainer.h"
+#include "objects/citem/cmap.h"
 #include "logsystem.h"
 #include <mxml.h>
 

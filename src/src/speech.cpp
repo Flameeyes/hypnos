@@ -10,11 +10,13 @@
 #include "calendar.h"
 #include "house.h"
 #include "npcai.h"
-#include "networking/network.h"
 #include "commands.h"
 #include "boats.h"
 #include "inlines.h"
 #include "misc.h"
+#include "networking/network.h"
+#include "objects/cchar.h"
+#include "objects/citem.h"
 
 #define MAXBUFFER_REAL MAXBUFFER
 

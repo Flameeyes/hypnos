@@ -5,8 +5,8 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+
 #include "common_libs.h"
-#include "networking/network.h"
 #include "magic.h"
 #include "house.h"
 #include "npcai.h"
@@ -14,8 +14,13 @@
 #include "boats.h"
 #include "map.h"
 #include "inlines.h"
-#include "skills/skills.h"
 #include "fishing.h"
+#include "networking/cclient.h"
+#include "objects/cchar.h"
+#include "objects/citem.h"
+#include "objects/citem/ccontainer.h"
+#include "objects/cchar/cpc.h"
+#include "skills/skills.h"
 
 bool cItem::usableWhenLockedDown(pPc pc)
 {
@@ -78,9 +83,9 @@ void cItem::singleClick(pClient client )
 	if ( CanSeeSerials() )
 	{
 		if (amount > 1)
-			sprintf( &temp, "%s [%x]: %i", itemname, getSerial(), amount);
+			asprintf( &temp, "%s [%x]: %i", itemname, getSerial(), amount);
 		else
-			sprintf( &temp, "%s [%x]", itemname, getSerial());
+			asprintf( &temp, "%s [%x]", itemname, getSerial());
 
 		itemmessage(client, temp, this);
 		free(temp);

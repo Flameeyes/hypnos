@@ -12,6 +12,7 @@
 
 #include "objects/citem/cequippable.h"
 #include "objects/cchar.h"
+#include "networking/cclient.h"
 #include "settings.h"
 
 cEquippable::cEquippable()

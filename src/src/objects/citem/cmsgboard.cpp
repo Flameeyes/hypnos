@@ -6,7 +6,10 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#include "networking/cclient.h"
 #include "objects/citem/cmsgboard.h"
+#include "objects/cchar/cnpc.h"
+#include "objects/cchar/cpc.h"
 
 /*!
 \brief Deleting an MsgBoard message
@@ -24,7 +27,7 @@ void cMessage::Delete()
 			
 			board->boardMutex.lock();
 			
-			MessageList::iterator it = board->boardMsgs.find(this);
+			MessageList::iterator it = std::find(this, board->boardMsgs.begin(); board->boardMsgs.end());
 			
 			if ( it != board->boardMsgs.end() )
 				board->boardMsgs.erase(it);
@@ -40,7 +43,7 @@ void cMessage::Delete()
 			cMsgBoard::globalMutex.lock();
 			
 			// Here we need only to remove it from the global message list
-			MessageList::iterator it = cMsgBoard::globalMsgs.find(this);
+			MessageList::iterator it = std::find(this, cMsgBoard::globalMsgs.begin(); cMsgBoard::globalMsgs.end());
 			if ( it != cMsgBoard::globalMsgs.end() )
 				cMsgBoard::globalMsgs.erase(it);
 			
