@@ -39,7 +39,7 @@ void mtarget(int s, int a1, int a2, int a3, int a4, char b1, char b2, char *txt)
 	multitarcrs[5]=a4;
 	multitarcrs[18]=b1;
 	multitarcrs[19]=b2;
-	sysmessage(s, txt);
+	client->sysmessage(txt);
 	Xsend(s, multitarcrs, 26);
 //AoS/	Network->FlushBuffer(s);
 }
@@ -187,7 +187,7 @@ void buildhouse( pClient ps, pTarget t )
 		{
 			if ((region[pc->region].priv & RGNPRIV_GUARDED) && itemById::IsHouse(id) ) // popy
 			{
-			    sysmessage(s," You cannot build houses in town!");
+			    client->sysmessage(" You cannot build houses in town!");
 			    return;
 			}
 		}
@@ -202,7 +202,7 @@ void buildhouse( pClient ps, pTarget t )
 		//XAN : House placing fix :)
 		if ( (( x<XBORDER || y <YBORDER ) || ( x>(uint32_t)((map_width*8)-XBORDER) || y >(uint32_t)((map_height*8)-YBORDER) ))  )
 		{
-			sysmessage(s, "You cannot build your structure there!");
+			client->sysmessage("You cannot build your structure there!");
 			return;
 		}
 
@@ -212,7 +212,7 @@ void buildhouse( pClient ps, pTarget t )
 		{
 			if(!(CheckBuildSite(x,y,z,sx,sy)))
 			{
-				sysmessage(s,"Can not build a house at that location (CBS)!");
+				client->sysmessage("Can not build a house at that location (CBS)!");
 				return;
 			}
 		}*/
@@ -237,15 +237,14 @@ void buildhouse( pClient ps, pTarget t )
 					you don't build a house on top of your self..... this had to be done So you
 					could extra space around houses, (12+) and they would still be buildable.*/
 				{
-					sysmessage(s, "You cannot build your stucture there.");
+					client->sysmessage("You cannot build your stucture there.");
 					return;
 					//ConOut("Invalid %i,%i [%i,%i]\n",k,l,x+k,y+l);
 				} //else ConOut("DEBUG: Valid at %i,%i [%i,%i]\n",k,l,x+k,y+l);
 
-				pItem pi_ii=findmulti(loc);
-				if ( pi_ii && !(norealmulti))
+				if ( !norealmulti && cMulti::getAt(loc) )
 				{
-					sysmessage(s,"You cant build structures inside structures");
+					client->sysmessage("You cant build structures inside structures");
 					return;
 				}
 			}
@@ -507,7 +506,7 @@ void deedhouse(pClient client, pHouse pi)
 
 	sysmessage( s, "Demolishing House %s", pi->getCurrentName().c_str());
 	pi->Delete();
-	sysmessage(s, "Converted into a %s.", pi_ii->getCurrentName().c_str());
+	client->sysmessage("Converted into a %s.", pi_ii->getCurrentName().c_str());
 	// door/sign delete
 
 	NxwCharWrapper sc;
@@ -543,7 +542,7 @@ void deedhouse(pClient client, pHouse pi)
 	}
 
 	killkeys( pi->getSerial() );
-	sysmessage(s,"All house items and keys removed.");
+	client->sysmessage("All house items and keys removed.");
 	/*
 	charpos.z= charpos.dispz= Map->MapElevation(charpos.x, charpos.y);
 	pc->setPosition( charpos );
@@ -789,7 +788,7 @@ bool house_speech( pChar pc, pClient client, std::string &talk)
 	// NOTE: Socket and pc checking allready done in talking()
 	//
 	int  fr;
-	pItem pi = findmulti( pc->getPosition() );
+	pHouse pi = dynamic_cast<pHouse>(cMulti::getAt( pc->getPosition() ));
 	
 	if( !pi )
 		return false;
@@ -910,7 +909,7 @@ void target_houseOwner( pClient ps, pTarget t )
 
 	if(pc == curr)
 	{
-		sysmessage(s, "you already own this house!");
+		client->sysmessage("you already own this house!");
 		return;
 	}
 
@@ -967,7 +966,7 @@ void target_houseEject( pClient ps, pTarget t )
 	
 	pc->MoveTo( ex+1, ey+1, pcpos.z );
 	pc->teleport();
-	sysmessage(s, "Player ejected.");
+	client->sysmessage("Player ejected.");
 }
 
 //buffer[0] house
@@ -991,14 +990,14 @@ void target_houseBan( pClient ps, pTarget t )
 		int r=add_hlist(pc, pi, H_BAN);
 		if(r==1)
 		{
-			sysmessage(s, "%s has been banned from this house.", pc->getCurrentName().c_str());
+			client->sysmessage("%s has been banned from this house.", pc->getCurrentName().c_str());
 		}
 		else if(r==2)
 		{
-			sysmessage(s, "That player is already on a house register.");
+			client->sysmessage("That player is already on a house register.");
 		}
 		else
-			sysmessage(s, "That player is not on the property.");
+			client->sysmessage("That player is not on the property.");
 	}
 }
 
@@ -1018,20 +1017,20 @@ void target_houseFriend( pClient ps, pTarget t )
 	{
 		if(Friend == curr)
 		{
-			sysmessage(s,"You cant do that!");
+			client->sysmessage("You cant do that!");
 			return;
 		}
 		int r=add_hlist(Friend, pi, H_FRIEND);
 		if(r==1)
 		{
-			sysmessage(s, "%s has been made a friend of the house.", Friend->getCurrentName().c_str());
+			client->sysmessage("%s has been made a friend of the house.", Friend->getCurrentName().c_str());
 		}
 		else if(r==2)
 		{
-			sysmessage(s, "That player is already on a house register.");
+			client->sysmessage("That player is already on a house register.");
 		}
 		else
-			sysmessage(s, "That player is not on the property.");
+			client->sysmessage("That player is not on the property.");
 	}
 }
 
@@ -1045,76 +1044,73 @@ void target_houseUnlist( pClient ps, pTarget t )
 	if(pc && pi)
 	{
         	if ( del_hlist(pc, pi) >0)
-			sysmessage(s, "%s has been removed from the house registry.", pc->getCurrentName().c_str());
+			client->sysmessage("%s has been removed from the house registry.", pc->getCurrentName().c_str());
 		else 
-			sysmessage(s, "That player is not on the house registry.");
+			client->sysmessage("That player is not on the house registry.");
 	}
 }
 
-void target_houseLockdown( pClient ps, pTarget t )
+void target_houseLockdown( pClient client, pTarget t )
 // PRE:     S is the socket of a valid owner/coowner and is in a valid house
 // POST:    either locks down the item, or puts a message to the owner saying he's a moron
 // CODER:   Abaddon
 // DATE:    17th December, 1999
 {
-
-	pChar pc=ps->currChar();
+	pChar pc = client->currChar();
 	if ( ! pc ) return;
-	pClient client = ps->toInt();
 
-    pItem pi=cSerializable::findItemBySerial( t->getClicked() );
-    if(pi)
-    {
+	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
+	
+	if ( ! pi )
+	{
+		client->sysmessage("Invalid item!");
+		return;
+	}
+	
+	// time to lock it down!
 
-        // time to lock it down!
+	if( pi->isFieldSpellItem() )
+	{
+		client->sysmessage("you cannot lock this down!");
+		return;
+	}
+	//!\todo Change these types with mnemonics
+	if (pi->type==12 || pi->type==13 || pi->type==203)
+	{
+		client->sysmessage("You cant lockdown doors or signs!");
+		return;
+	}
+	if ( pi->isAnvil() )
+	{
+		client->sysmessage("You cant lockdown anvils!");
+		return;
+	}
+	if ( pi->isForge() )
+	{
+		client->sysmessage("You cant lockdown forges!");
+		return;
+	}
 
-        if( pi->isFieldSpellItem() )
-        {
-            sysmessage(s,"you cannot lock this down!");
-            return;
-        }
-        if (pi->type==12 || pi->type==13 || pi->type==203)
-        {
-            sysmessage(s, "You cant lockdown doors or signs!");
-            return;
-        }
-        if ( pi->IsAnvil() )
-        {
-            sysmessage(s, "You cant lockdown anvils!");
-            return;
-        }
-        if ( pi->IsForge() )
-        {
-            sysmessage(s, "You cant lockdown forges!");
-            return;
-        }
-
-        pItem multi = findmulti( pi->getPosition() );
-        if( multi )
-        {
-            if(pi->magic==4)
-            {
-                sysmessage(s,"That item is already locked down, release it first!");
-                return;
-            }
-            pi->magic = 4;  // LOCKED DOWN!
-            clientInfo[s]->dragging=false;
-            pi->setOwner(pc);
-            pi->Refresh();
-            return;
-        }
-        else
-        {
-            // not in a multi!
-            sysmessage( s, "That item is not in your house!" );
-            return;
-        }
-    }
-    else
-    {
-        sysmessage( s, "Invalid item!" );
-        return;
-    }
+	//!\todo Take a look if this check do all the stuff needed
+	if( ! cMulti::getAt(pi->getPosition()) )
+	{
+		// not in a multi!
+		sysmessage( s, "That item is not in your house!" );
+		return;
+	}
+	
+	{
+		
+	if(pi->magic==4)
+	{
+		client->sysmessage("That item is already locked down, release it first!");
+		return;
+	}
+	pi->magic = 4;  // LOCKED DOWN!
+	clientInfo[s]->dragging=false;
+	pi->setOwner(pc);
+	pi->Refresh();
+	return;
 }
 
 void target_houseSecureDown( pClient ps, pTarget t )
@@ -1124,54 +1120,52 @@ void target_houseSecureDown( pClient ps, pTarget t )
 	if ( ! pc ) return;
 	pClient client = ps->toInt();
 
-    pItem pi=cSerializable::findItemBySerial( t->getClicked() );
-    if(pi)
-    {
-        // time to lock it down!
+	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
+	if ( ! pi )
+	{
+		sysmessage( s, "Invalid item!" );
+		return;
+	}
+        
+	// time to lock it down!
 
         if( pi->isFieldSpellItem() )
         {
-            sysmessage(s,"you cannot lock this down!");
-            return;
+		client->sysmessage("you cannot lock this down!");
+		return;
         }
         if (pi->type==12 || pi->type==13 || pi->type==203)
         {
-            sysmessage(s, "You cant lockdown doors or signs!");
-            return;
+		client->sysmessage("You cant lockdown doors or signs!");
+		return;
         }
         if(pi->magic==4)
         {
-            sysmessage(s,"That item is already locked down, release it first!");
-            return;
+		client->sysmessage("That item is already locked down, release it first!");
+		return;
         }
 
-        pItem multi = findmulti( pi->getPosition() );
+        pMulti multi = cMulti::getAt( pi->getPosition() );
         if( multi && pi->type==1)
         {
-            pi->magic = 4;  // LOCKED DOWN!
-            pi->secureIt = 1;
-            clientInfo[s]->dragging=false;
-            pi->setOwner(pc);
-            pi->Refresh();
-            return;
+		pi->magic = 4;  // LOCKED DOWN!
+		pi->secureIt = 1;
+		clientInfo[s]->dragging=false;
+		pi->setOwner(pc);
+		pi->Refresh();
+		return;
         }
         if(pi->type!=1)
         {
-            sysmessage(s,"You can only secure chests!");
-            return;
+		client->sysmessage("You can only secure chests!");
+		return;
         }
         else
         {
-            // not in a multi!
-            sysmessage( s, "That item is not in your house!" );
-            return;
+		// not in a multi!
+		sysmessage( s, "That item is not in your house!" );
+		return;
         }
-    }
-    else
-    {
-        sysmessage( s, "Invalid item!" );
-        return;
-    }
 }
 
 void target_houseRelease( pClient ps, pTarget t )
@@ -1190,21 +1184,21 @@ void target_houseRelease( pClient ps, pTarget t )
     {
         if(pi->getOwner() != pc)
         {
-            sysmessage(s,"This is not your item!");
+            client->sysmessage("This is not your item!");
             return;
         }
         if( pi->isFieldSpellItem() )
         {
-            sysmessage(s,"you cannot release this!");
+            client->sysmessage("you cannot release this!");
             return;
         }
         if (pi->type==12 || pi->type==13 || pi->type==203)
         {
-            sysmessage(s, "You cant release doors or signs!");
+            client->sysmessage("You cant release doors or signs!");
             return;
         }
         // time to lock it down!
-        pItem multi = findmulti( pi->getPosition() );
+	pMulti multi = cMulti::getAt( pi->getPosition() );
         if( multi && pi->magic==4 || pi->type==1)
         {
             pi->magic = 1;  // Default as stored by the client, perhaps we should keep a backup?

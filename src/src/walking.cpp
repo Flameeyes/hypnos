@@ -228,7 +228,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 	//!\todo Should this actually be used only for npcs? Sure the owner and banned stuff, but the rest?
 	if (pc->npc==0) // this is also called for npcs .. LB ?????? Sparhawk Not if you're excluding npc's
 	{
-		pMulti pi_multi=findmulti( pc->getPosition() );
+		pMulti pi_multi = cMulti::getAt( pc->getPosition() );
 		
 		if ( ! pi_multi )
 			pc->setMulti(NULL);

@@ -48,43 +48,6 @@ static const int16_t iLargeShipOffsets[4][4][2]=
 };
 //============================================================================================
 
-/*!
-\brief A sort of getboart() only more general
-\todo delete or write it
-*/
-pItem findmulti(sLocation where)
-{
-/*	int lastdist=30;
-	pItem pmulti=NULL;
-	
-	NxwItemWrapper si;
-	si.fillItemsNearXYZ( where );
-	for( ; !si.isEmpty(); si++ ) {
-		pItem pi=si.getItem();
-		if(!pi)
-			continue;
-
-		if (pi->id1>=0x40)
-		{
-			sLocation itmpos= pi->getPosition();
-
-			int dx=abs((int)where.x - (int)itmpos.x);
-			int dy=abs((int)where.y - (int)itmpos.y);
-			int ret=(int)(hypot(dx, dy));
-
-			if (ret<=lastdist)
-			{
-				lastdist=ret;
-				if (inmulti(where,pi))
-					pmulti=pi;
-			}
-		}
-	}
-
-	return pmulti;*/
-	return NULL;
-}
-
 bool inmulti(sLocation where, pItem pi)//see if they are in the multi at these chords (Z is NOT checked right now)
 {
 	if ( ! pi )

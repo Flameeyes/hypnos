@@ -36,7 +36,6 @@ extern signed short int iLargeShipOffsets[4][4][2];
 
 //bool check_boat_position(pClient client,pItem pBoat);
 
-pItem findmulti(sLocation where);
 bool inmulti(sLocation where,pItem pi);
 
 bool boat_collision(pItem pBoat1,int x1, int y1,int dir,pItem pBoat2);
@@ -51,7 +50,6 @@ void iMove(pClient client, int dir, pItem pBoat, bool forced = true);
 
 void TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, pItem pTiller, pItem pHold );
 
-pItem GetBoat(sLocation pos);
 bool Speech(pChar pc, pClient clientocket, std::string &talk );
 void OpenPlank(pItem pi);
 void PlankStuff(pChar pc, pItem pi);

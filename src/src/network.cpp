@@ -897,9 +897,9 @@ char cNetwork::LogOut(pClient client)//Instalog
 
 	if(pc->IsGMorCounselor() || pc->account==0) valid=1;
 
-	pItem p_multi=NULL;
-	if (! ( p_multi = pc->getMulti() ) )
-		p_multi = findmulti( pc->getPosition() );
+	pMulti p_multi = pc->getMulti();
+	if ( !p_multi )
+		p_multi = cMulti::getAt( pc->getPosition() );
 
 	if ( p_multi && !valid && (pack = pc->getBackpack()) )
 	{ //It they are in a multi... and it's not already valid (if it is why bother checking?)

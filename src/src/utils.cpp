@@ -245,7 +245,7 @@ void dooruse(pChar pc, pItem pi)
 	// house refreshment when a house owner or friend of a houe opens the house door
 
 	int j, houseowner_serial,ds;
-	pItem pi_house=findmulti( pi->getPosition() );
+	pMulti pi_house = cMulti::getAt(pi->getPosition());
 	
 	if ( ! pi_house )
 		return;

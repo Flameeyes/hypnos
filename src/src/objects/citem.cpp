@@ -405,11 +405,11 @@ bool cItem::doDecay(bool dontDelete = false)
 			return false;
 		}
 		
-		pItem pi_multi = findmulti(getPosition());
+		pItem pi_multi = cMulti::getAt(getPosition());
 		if ( pi_multi && pi_multi->more1.moreb4 == 0 )
 		{
 			setDecayTime();
-			SetMultiSerial(pi_multi->getSerial());
+			setMulti(pi_multi);
 			return false;
 		}
 	}
