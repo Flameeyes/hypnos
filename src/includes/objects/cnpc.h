@@ -32,6 +32,8 @@ public:
 	cNPC(uint32_t serial);
 	virtual ~cNPC();
 
+	virtual const std::string getPopupHelp() const;
+
 protected:
 	pChar owner;	//! NPC's owner
 

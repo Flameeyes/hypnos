@@ -11,6 +11,22 @@
 */
 
 #include "objects/cpc.h"
+#include "objects/caccount.h"
+
+const std::string cPC::getPopupHelp() const
+{
+	pAccount acc = getAccount();
+	
+	if ( ! acc )
+		return std::string("Error, missing account");
+	
+	if ( acc->getPrivLevel() >= cAccount::privGM )
+		return std::string("He/She is a Game Master. You can ask his help if you're stuck or have bugs or other problems");
+	else if ( acc->getPrivLevel() >= cAccount::privCounselor )
+		return std::string("He/She is a Counselor. You can ask him if you need help on the game");
+	else
+		return std::string("He/She is a player like you. You've met new people!!");
+}
 
 void cPC::heartbeat()
 {

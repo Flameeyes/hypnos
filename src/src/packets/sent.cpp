@@ -2030,44 +2030,42 @@ bool cPacketReceivePopupHelpRequest::execute(pClient client)
 	if (!nSettings::Server::isEnabledPopupHelp()) return false;
 
 	uint32_t serial = LongCharFromPtr(buffer +1);
-
-        //Based on cSerializable::findxxxxBySerial, only the "right" one is not NULL
-        pChar pc = cSerializable::findCharBySerial(serial);
-	pItem pi = cSerializable::findItemBySerial(serial);
-	if ( !pc && !pi) return false;
-
-	int len = 0;
-	uint8_t packet[4000]; packet[0] = '\0';
-	if ( client->currChar() && client->currChar()->canSeeSerials())
-        {
-		if (pc)	sprintf((char *)packet, "char serial : %x", pc->getSerial());
-		if (pi)	sprintf((char *)packet, "item serial : %x", pi->getSerial());
-	}
-	else
+	
+	pSerializable p = cSerializable::findBySerial(serial);
+	if ( ! p ) return false;
+	
+	std::string descr;
+	if ( client->currChar() && client->currChar()->canSeeSerials() )
 	{
-		if (pc)	pc->getPopUpHelp((char *)packet);
-		if (pi)	pi->getPopUpHelp((char *)packet);
-	}
+		char *temp;
+		asprintf(&temp, "serial : %x", p->getSerial());
+		descr = std::string(temp);
+		free(temp);
+	} else {
+		descr = p->getPopupHelp();
 
-	if (packet[0]=='\0') return true; //We have parsed the packet, but nothing had to return... :D
+	if ( descr.length() == 0 )
+		return true;	//We have parsed the packet, but nothing had to return...
+	
+	//!\todo cspeech implementation here, for unicode "conversion" and then use it for packet sending
 #if 0
-        //!\todo cspeech implementation here, for unicode "conversion" and then use it for packet sending
-
-						char2wchar((char *)packet);
-						packet[0] = 0xB7;
-						LongToCharPtr( LongFromCharPtr(buffer[s] +1), packet +3);
-						int p = 0;
-						while (p<600) {
-							packet[7+p] = (uint8_t) Unicode::temp[p];
-							packet[8+p] = (uint8_t) Unicode::temp[p+1];
-							if ((Unicode::temp[p]=='\0')&&(Unicode::temp[p+1]=='\0')) break;
-							p += 2;
-						}
-						p += 2;
-						len = 7+p;
-						ShortToCharPtr(len, packet +1);
-						Xsend(s, packet, len);
-//AoS/						Network->FlushBuffer(s);
+	uint8_t packet = new packet[ ];			// Must be counted from the descr length
+	char2wchar((char *)packet); // Change this
+	
+	packet[0] = 0xB7;
+	LongToCharPtr( LongFromCharPtr(buffer[s] +1), packet +3);
+	int p = 0;
+	while (p<600) {
+		packet[7+p] = (uint8_t) Unicode::temp[p];
+		packet[8+p] = (uint8_t) Unicode::temp[p+1];
+		if ((Unicode::temp[p]=='\0')&&(Unicode::temp[p+1]=='\0')) break;
+		p += 2;
+	}
+	p += 2;
+	len = 7+p;
+	ShortToCharPtr(len, packet +1);
+	Xsend(s, packet, len);
+//AoS/	Network->FlushBuffer(s);
 #endif
 	return true;
 }

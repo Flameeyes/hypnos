@@ -391,27 +391,6 @@ void cChar::loadEventFromScript(char *script1, TEXT *script2)
 	else if (!strcmp("@ONCREATION",script1)) 	newAmxEvent(script2)->Call(getSerial(), INVALID);
 }
 
-void cChar::getPopupHelp(char *str)
-{
-	if (!npc) {
-		sprintf(str, TRANSLATE("He/She is a player like you. You've met new people!!"));
-
-		if (IsCounselor()) {
-			sprintf(str, TRANSLATE("He/She is a Counselor. You can ask him if you need help on the game"));
-		}
-
-		if (IsGM()) {
-			sprintf(str, TRANSLATE("He/She is a Game Master. You can ask his help if you're stuck or have bugs or other problems"));
-		}
-	}
-	else {
-		if (npcaitype==NPCAI_PLAYERVENDOR)
-			sprintf(str, TRANSLATE("He/She is a vendor which sells items owned by a player. Good shopping!"));
-		else if (npcaitype==NPCAI_EVIL)
-			sprintf(str, TRANSLATE("Run AWAY!!! It will kill you!!"));
-	}
-}
-
 /*!
 \author Luxor
 \brief Checks if the stats are regular

@@ -1,12 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| PyUO Server Emulator                                                     |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in pyuo.cpp file.              |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
 \brief Declarations of extern extern constants and enumerated types
@@ -14,7 +12,8 @@
 
 #ifndef __CONSTANTS_H__
 #define __CONSTANTS_H__
-#include "typedefs.h"
+
+#include "common_libs.h"
 
 //@{
 //! \name Colors
@@ -45,6 +44,7 @@ static const uint16_t ITEMID_GOLD	= 0x0EED;
 static const uint16_t MY_CLOCKS_PER_SEC	= 10000;
 static const uint16_t SPIRITSPEAKTIMER	= 30;
 			//!< spiritspeak lasts at least 30 seconds, additional time is calculated by Skill & INT
+static const uint16_t VERY_VERY_FAR = 50000; //!< Used as distance between invalid objects
 
 // Miscellaneous constants
 enum
@@ -79,8 +79,6 @@ enum
 #define UINVALID08 0xFF
 #define UINVALID16 0xFFFF
 #define UINVALID32 0xFFFFFFFF
-
-static const uint16_t VERY_VERY_FAR = 50000; //!< Used as distance between invalid objects
 
 //@{
 /*!
@@ -181,16 +179,14 @@ enum {	ITEM_TYPE_CHOICES = 6,
 	\name Guilds related
 	\author DasRaetsels'
 	*/
-	enum
-	{
-		MAXGUILDS=100,
-		MAXGUILDMEMBERS=30,
-		MAXGUILDRECRUITS=30,
-		MAXGUILDWARS=10,
-		MAXMEMRECWAR=30, //!< max of max guildmembers, max recruits and max war
-	};
-	#define DEFAULTCHARTER "NoX-Wizard Guildstone"
-	#define DEFAULTWEBPAGE "http://www.noxwizard.com"
+	
+	static const uint16_t MAXGUILDS = 100;
+	static const uint16_t MAXGUILDMEMBERS = 30;
+	static const uint16_t MAXGUILDRECRUITS = 30;
+	static const uint16_t MAXGUILDWARS = 10;
+	static const uint16_t MAXMEMRECWAR = 30; //!< max of max guildmembers, max recruits and max war
+	static const char[] DEFAULTCHARTER = "Guildstone";
+	static const char[] DEFAULTWEBPAGE = "";
 //@}
 
 /*!

@@ -14,6 +14,15 @@
 
 #define NPCMAGIC_FLAGS (SPELLFLAG_DONTCRIMINAL+SPELLFLAG_DONTREQREAGENTS+SPELLFLAG_DONTCHECKSPELLBOOK+SPELLFLAG_IGNORETOWNLIMITS+SPELLFLAG_DONTCHECKSKILL)
 
+
+const std::string cNPC::getPopupHelp() const
+{
+	if (npcaitype==NPCAI_PLAYERVENDOR)
+		return std::string("He/She is a vendor which sells items owned by a player. Good shopping!");
+	else if (npcaitype==NPCAI_EVIL)
+		return std::string("Run AWAY!!! It will kill you!!");
+}
+
 cNPC::cNPC()
 	: cChar()
 {

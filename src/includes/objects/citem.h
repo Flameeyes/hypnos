@@ -83,9 +83,9 @@ protected:
 	int32_t			maxhp;	//!< Max number of hit points an item can have.
 public:
 	void			Refresh();
-	const std::string	getName();
-	const std::string	getRealItemName();
-	void			getPopupHelp(char *str);
+	const std::string getName();
+	const std::string getRealItemName();
+	virtual const std::string getPopupHelp() const;
 
 	inline const int32_t getHP() const
 	{ return hp; }

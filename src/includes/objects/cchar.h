@@ -127,13 +127,14 @@ class cChar : public cSerializable
 protected:
 	static uint32_t nextSerial;
 	uint32_t newSerial();
-public:
+	
 	cChar();
 	cChar(uint32_t ser);
-	~cChar();
 	void resetData();
+public:
+	~cChar();
 
-	void getPopupHelp(char *str);
+	virtual const std::string getPopupHelp() const = 0;
 	void MoveTo(Location newloc);
 	void loadEventFromScript(char *script1, char *script2);
 	void doGmEffect();

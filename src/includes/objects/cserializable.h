@@ -59,6 +59,16 @@ protected:
 
 //@{
 /*!
+\name Extras
+\brief Functions and attributes which are shared by all the serializable objects
+	but doesn't derive directly by the serialization
+*/
+public:
+	virtual const std::string getPopupHelp() const = 0;
+//@}
+
+//@{
+/*!
 \name Operators
 */
 public:

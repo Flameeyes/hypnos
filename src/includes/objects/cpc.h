@@ -24,15 +24,18 @@ In this class there are members used only for PCs, and not for NPCs.
 class cPC : public cChar
 {
 public:
-	inline cPC() : cChar()
-	{ }
-
+	cPC();
+	cPC(uint32_t serial);
+	virtual ~cPC();
+	
 protected:
 	//! Heartbeat for PCs
-	void		heartbeat();
+	void heartbeat();
 
 public:
-	bool		updateFlag();
+	virtual const std::string getPopupHelp() const;
+	
+	bool updateFlag();
 
 	//! Makes a character temporary grey
 	//!\todo Rewrite!
