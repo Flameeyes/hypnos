@@ -64,12 +64,14 @@ static unsigned int bit_table[257][2] =
 void cClient::compress(uint8_t *&out_buffer, uint32_t& out_len)
 {
 	uint8_t *new_buffer = new uint8_t[out_len];
-	uint32_t new_len=0, tmp_len=out_len;
+	uint32_t new_len=0;
+	
+	int n_bits = 0, value = 0, bit_4_byte = 0;
 
 	if(out_len <= 0)
 		return;
 
-	for(i = 0; i < out_len; i++ ) {
+	for(int i = 0; i < out_len; i++) {
 
 		n_bits = bit_table[out_buffer[i]][0];
 		value = bit_table[out_buffer[i]][1];

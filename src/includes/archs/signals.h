@@ -21,28 +21,47 @@ similar.
 
 #include "common_libs.h"
 
-#ifndef WIN32
-// For now I hope we can use signals anywhere but Windows, in the future
-// we'll see better
-#define USE_SIGNALS
-#endif
+#ifdef HAVE_SIGNAL_H
 
-#ifdef USE_SIGNALS
+#include <wefts_thread.h>
 
-#include <sys/signal.h>
+/*!
+\brief Signal handling class
 
-bool pollHUPStatus();
-bool pollCloseRequests();
-void setup_signals();
-void start_signal_thread();
-void init_deamon();
+This class is used to allow signal handling on platform which supports it.
+At the moment are supported Linux, the *BSD platforms and Windows (that in
+a lighter way).
 
-#else
-inline bool pollHUPStatus () { return false; }
-inline bool pollCloseRequests () { return false; }
-inline void setup_signals (){ return; }
-inline void start_signal_thread() { return; }
-inline void init_daemon() { return; }
-#endif // USE_SIGNALS
+This class can be only used when the target has signal.h header (and so
+supports signals handling).
+
+The handled signals (where present) are these:
+	\li \b SIGHUP reloads all the scripts' data (Resync)
+	\li \b SIGUSR1 reloads the account file, deleting the old accounts
+		and adding the new ones
+	\li \b SIGUSR2 saves the world
+	\li \b SIGTERM, \b SIGQUIT, \b SIGINT Close the server (gracefully)
+
+\note Windows hasn't SIGHUP, SIGUSR1 and SIGUSR2 signals, so we must check for
+	single signals to be sure to not harm...
+
+\todo The handlers functions are for now undefined, must be wrote.
+*/
+class tSigHandler : public Wefts::Thread
+{
+private:
+	void handleHup();
+	void handleUsr1();
+	void handleUsr2();
+	void handleTerm();
+public:
+	static tSigHandler *instance;
+	
+	tSigHandler();
+	
+	void *run();
+};
+
+#endif // HAVE_SIGNAL_H
 
 #endif // __ARCHS_SIGNALS_H__

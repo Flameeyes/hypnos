@@ -80,6 +80,10 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "networking/tracreceiver.h"
 #include "skills/skills.h"
 
+#ifdef HAVE_SIGNAL_H
+#include "archs/signal.h"
+#endif
+
 nMULFiles::fTiledataLand *tiledataLand = NULL;
 nMULFiles::fTiledataStatic *tiledataStatic = NULL;
 
@@ -255,6 +259,12 @@ void loadServer()
 	tRemoteAdmin::instance->start();
 	tKiller::instance->start();
 	outPlain("[  Ok  ]\n");
+	
+#ifdef HAVE_SIGNAL_H
+	// Only if we have signal.h try to star the signal thread
+	// Anyway, don't publish this
+	new tSigHandler();
+#endif
 }
 
 /*!
@@ -265,6 +275,10 @@ it down, destroying the classes and cleaning up memory.
 */
 void shutdownServer()
 {
+#ifdef HAVE_SIGNAL_H
+	tSigHandler::instance->stop();
+#endif
+
 	cwmWorldState->saveNewWorld();
 
 	sysbroadcast("The server is shutting down.");

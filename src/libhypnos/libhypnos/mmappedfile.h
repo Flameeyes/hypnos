@@ -4,6 +4,8 @@
 | This software is free software released under GPL2 license.              |
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
+| Copyright (c) 2004 - Hypnos Project                                      |
+|                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #ifndef __LIBHYPNOS_MMAPPDEFILE_H__
@@ -11,10 +13,10 @@
 
 #include "libhypnos/commons.h"
 
-#ifndef HAVE_MMAP
-#error mmap() function (or equivalent) is needed to compile this unit. \
-	Probably this will fail under Windows. There we should add a mmap() \
-	alike function.
+#if ! defined(HAVE_MMAP) && ! defined(WIN32)
+# error Your platform miss a way to memory map a file, or we don't know \
+	how to do that on your platform. Please contact Flameeyes at \
+	flameeyes@users.berlios.de with the description of your platform data.
 #endif
 
 namespace nLibhypnos {
@@ -66,6 +68,9 @@ protected:
 	MUL *array;	//!< Pointer to the mmapped file
 	uint32_t size;	//!< Size of the mmap in bytes
 	int fd;		//!< Descriptor of the mmapped file
+	#ifdef WIN32
+	std::string fn;	//!< Name of the file (needed for Windows mmapping)
+	#endif
 	
 	void open(std::string filename);
 	void mmap(uint32_t offset = 0, uint32_t length = 0);

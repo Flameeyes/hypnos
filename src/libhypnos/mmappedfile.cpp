@@ -4,14 +4,31 @@
 | This software is free software released under GPL2 license.              |
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
+| Copyright (c) 2004 - Hypnos Project                                      |
+|                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "libhypnos/mmappedfile.h"
 
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
+
+#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#endif
+
+#ifdef HAVE_SYS_MMAN_H
 #include <sys/mman.h>
+#endif
+
+#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
+#endif
+
+#ifdef HAVE_WINBASE_H
+#include <winbase.h>
+#endif
 
 namespace nLibhypnos {
 
@@ -50,7 +67,11 @@ namespace nLibhypnos {
 	*/
 	template<class MUL> tplMMappedFile<MUL>::~tplMMappedFile()
 	{
+		#ifdef HAVE_MUNMAP
 		munmap(array);
+		#elif defined (WIN32)
+		UnmapViewOfFile(array);
+		#endif
 		close(fd);
 	}
 	
@@ -71,6 +92,10 @@ namespace nLibhypnos {
 			exception handler.
 			*/
 		}
+		
+		#ifdef WIN32
+		fn = filename;
+		#endif
 	}
 	
 	/*!
@@ -113,6 +138,25 @@ namespace nLibhypnos {
 		}
 		
 		// And here we mmap the file
+		#ifdef HAVE_MMAP
 		array = (MUL*)mmap(NULL, length, PROT_READ, MAP_SHARED, fd, offset);
+		#elif defined(WIN32)
+		HANDLE hMapObject = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READ, 0, SHMEMSIZE, fn.c_str());
+		if ( ! hMapObject )
+		{
+			/*!
+			\todo Here we should throw an exception of unable-to-mmap
+			*/
+			array = NULL;
+			return;
+		}
+		
+		array = (MUL*)MapViewOfFile(hMapObject, FILE_MAP_READ, 0, offset, length);
+		if ( ! array )
+			/*!
+			\todo Here we should throw an exception of unable-to-mmap
+			*/
+			CloseHandle(hMapObject);
+		#endif
 	}
 }
