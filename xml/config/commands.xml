@@ -1,0 +1,13 @@
+<!DOCTYPE settings SYSTEM "http://flameeyes.is-a-geek.org/uodtds/emusettings.dtd">
+<hypnoscommands>
+  <builtins>
+    <command name="where" level="0" disabled="true" />
+    <command name="appetite" level="0" />
+    <command name="kick" level="4" />
+    <command name="disconnect" level="3" />
+    <command name="lights" level="2" disabled="true" />
+  </builtins>
+  <user>
+    <command name="pippo" callback="micio" />
+  </user>
+</hypnoscommands>
