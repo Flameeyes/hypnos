@@ -130,6 +130,12 @@
 /* Define to 1 if you have the `vprintf' function. */
 #undef HAVE_VPRINTF
 
+/* Define to 1 if you have the <winbase.h> header file. */
+#undef HAVE_WINBASE_H
+
+/* Define to 1 if you have the <winreg.h> header file. */
+#undef HAVE_WINREG_H
+
 /* Define to 1 if `fork' works. */
 #undef HAVE_WORKING_FORK
 

@@ -51,15 +51,6 @@ warnings/errors/issues.
 #include <ctype.h>
 #include <unistd.h>
 
-#ifdef WIN32
-#include <winbase.h>
-#include <io.h>
-#include <dos.h>
-#include <limits.h>
-#include <conio.h>
-#include <process.h>
-#endif
-
 #ifndef MSG_NOSIGNAL
     #define MSG_NOSIGNAL 0
 #endif
@@ -69,9 +60,6 @@ warnings/errors/issues.
 
 #define TIMEOUT(X) ((X) <= getclock())
 
-extern std::string getOSVersionString();
-enum OSVersion { OSVER_UNKNOWN, OSVER_WIN9X, OSVER_WINNT, OSVER_NONWINDOWS };
-extern OSVersion getOSVersion();
 
 using namespace nLibhypnos;
 

@@ -32,4 +32,6 @@ Don't change it unless you are sure that its packets structure is in synch with 
 */
 static const char *strSupportedClient = "4.0.3";
 
-#endif 
+extern std::string getOSVersionString();
+
+#endif

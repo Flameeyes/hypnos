@@ -111,7 +111,7 @@ hypnos_SOURCES = area.cpp calendar.cpp console.cpp data.cpp effects.cpp\
 	menu.cpp misc.cpp newbies.cpp npcai.cpp npcs.cpp oldmenu.cpp\
 	particles.cpp pointer.cpp settings.cpp\
 	sndpkg.cpp spawn.cpp speech.cpp sregions.cpp structs.cpp\
-	targeting.cpp telport.cpp timing.cpp tmpeff.cpp trade.cpp walking.cpp
+	targeting.cpp telport.cpp timing.cpp tmpeff.cpp trade.cpp walking.cpp version.cpp
 
 
 SUBDIRS = archs backend encryption extras objects skills networking archetypes
@@ -131,7 +131,8 @@ am_hypnos_OBJECTS = area.$(OBJEXT) calendar.$(OBJEXT) console.$(OBJEXT) \
 	settings.$(OBJEXT) sndpkg.$(OBJEXT) spawn.$(OBJEXT) \
 	speech.$(OBJEXT) sregions.$(OBJEXT) structs.$(OBJEXT) \
 	targeting.$(OBJEXT) telport.$(OBJEXT) timing.$(OBJEXT) \
-	tmpeff.$(OBJEXT) trade.$(OBJEXT) walking.$(OBJEXT)
+	tmpeff.$(OBJEXT) trade.$(OBJEXT) walking.$(OBJEXT) \
+	version.$(OBJEXT)
 hypnos_OBJECTS = $(am_hypnos_OBJECTS)
 hypnos_DEPENDENCIES = $(top_builddir)/src/skills/libskills.la \
 	$(top_builddir)/libhypnos/libhypnos.la \
@@ -167,7 +168,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/structs.Po ./$(DEPDIR)/targeting.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/telport.Po ./$(DEPDIR)/timing.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/tmpeff.Po ./$(DEPDIR)/trade.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/walking.Po
+@AMDEP_TRUE@	./$(DEPDIR)/version.Po ./$(DEPDIR)/walking.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -264,6 +265,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tmpeff.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/trade.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/version.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walking.Po@am__quote@
 
 distclean-depend:

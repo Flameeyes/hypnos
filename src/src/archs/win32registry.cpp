@@ -18,6 +18,8 @@ service entry.
 
 #include "archs/win32registry.h"
 
+#include <winreg.h>
+
 /*!
 \brief Gets a string value from the KHEY_LOCAL_MACHINE registry
 \author Xanathar [NoX]

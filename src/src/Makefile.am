@@ -10,6 +10,6 @@ hypnos_SOURCES = area.cpp calendar.cpp console.cpp data.cpp effects.cpp\
 	menu.cpp misc.cpp newbies.cpp npcai.cpp npcs.cpp oldmenu.cpp\
 	particles.cpp pointer.cpp settings.cpp\
 	sndpkg.cpp spawn.cpp speech.cpp sregions.cpp structs.cpp\
-	targeting.cpp telport.cpp timing.cpp tmpeff.cpp trade.cpp walking.cpp
+	targeting.cpp telport.cpp timing.cpp tmpeff.cpp trade.cpp walking.cpp version.cpp
 
 SUBDIRS = archs backend encryption extras objects skills networking archetypes
