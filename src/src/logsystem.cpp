@@ -8,6 +8,7 @@
 #include "logsystem.h"
 #include "inlines.h"
 #include "settings.h"
+#include "version.h"
 #include "objects/cpc.h"
 #include "objects/cbody.h"
 #include "objects/caccount.h"
@@ -156,18 +157,6 @@ SpeechLogFile::SpeechLogFile(pPC pc) : LogFile(MakeFilename(pc))
 
 }
 
-std::string CurrentFile;
-
-int CurrentLine;
-char LogType= 'M';
-
-void prepareLogs(char type, char *fpath, int lnum)
-{
-	CurrentFile = std::string(basename(fpath));
-	CurrentLine= lnum;
-	LogType= type;
-}
-
 /*!
 \brief Function to be called when a string is ready to be written to the log.
 \author LB
@@ -175,9 +164,9 @@ void prepareLogs(char type, char *fpath, int lnum)
 Insert access to your log in this function.
 \todo Need to get the right ip from the server
 */
-static void MessageReady(char *OutputMessage)
+static void MessageReady(char logType, char *OutputMessage)
 {
-	char file_name[256];
+	std::string fileName;
 	char b1[16],b2[16],b3[16],b4[16];
 //	unsigned long int ip=inet_addr(serv[0][1]);
 	uint32_t ip = 0;
@@ -193,22 +182,31 @@ static void MessageReady(char *OutputMessage)
 	numtostr(i2, b3);
 	numtostr(i1, b4);
 
-	switch (LogType)
+	switch (logType)
 	{
-	   case 'E': { strcpy(file_name,"errors_log_");          entries_e++; break; }
-	   case 'C': { strcpy(file_name,"critical_errors_log_"); entries_c++; break; }
-	   case 'W': { strcpy(file_name,"warnings_log_");        entries_w++; break; }
-	   case 'M': { strcpy(file_name,"messages_log_");        entries_m++; break; }
+	case 'E':
+		fileName = "errors_log_";
+		entries_e++;
+		break;
+	case 'C':
+		fileName = "critical_errors_log_";
+		entries_c++;
+		break;
+	case 'W':
+		fileName = "warnings_log_";
+		entries_w++;
+		break;
+	case 'M':
+		fileName = "messages_log_";
+		entries_m++;
+		break;
 	}
 
-	strcat(file_name,b1);strcat(file_name,"_");
-	strcat(file_name,b2);strcat(file_name,"_");
-	strcat(file_name,b3);strcat(file_name,"_");
-	strcat(file_name,b4);strcat(file_name,".txt");
+	fileName += std::string(b1) + "_" + std::string(b2) + "_" + std::string(b3) + "_" + std::string(b4) + ".txt";
 
-	LogFile logerr(file_name);
+	LogFile logerr(fileName);
 
-	if (entries_c==1 && LogType=='C') // @serverstart, write out verison# !!!
+	if (entries_c == 1 && logType == 'C') // @serverstart, write out verison# !!!
 	{
 		logerr.Write("\nRunning Hypnos Version: %s\n\n", strVersion);
 		logerr.Write("******************************************************************************************************************************************\n");
@@ -217,7 +215,7 @@ static void MessageReady(char *OutputMessage)
 
 	}
 
-	if ( (entries_e==1 && LogType=='E') || (entries_w==1 && LogType=='W') || (entries_m==1 && LogType=='M'))
+	if ( (entries_e==1 && logType=='E') || (entries_w==1 && logType=='W') || (entries_m==1 && logType=='M'))
 	{
 		logerr.Write("\nRunning Hypnos Version: %s\n\n", strVersion);
 	}
@@ -230,7 +228,7 @@ static void MessageReady(char *OutputMessage)
  *  Rountine to process and stamp a message.            *
  *                                                      *
  ********************************************************/
-void LogMessageF(char *Message, ...)
+void LogMessageF(char type, char *fpath, int lnum, char *Message, ...)
 {
 	char *fullMessage = NULL, *fullMessage2 = NULL;
 	va_list argptr;
@@ -239,7 +237,7 @@ void LogMessageF(char *Message, ...)
 	vasprintf(&fullMessage, Message, argptr);
 	va_end(argptr);
 
-	switch( LogType )
+	switch( type )
 	{
 //		case 'M': outInformationf("%s\n", fullMessage); break;
 		case 'W': outWarningf("%s\n",fullMessage); break;
@@ -247,19 +245,18 @@ void LogMessageF(char *Message, ...)
 		case 'C': outPanicf("%s\n",fullMessage); break;
 	}
 
-	if( LogType != 'M' )
-		asprintf(&fullMessage2, "[%s:%d] %s\n", CurrentFile.c_str(), CurrentLine, fullMessage);
+	if( type != 'M' )
+		asprintf(&fullMessage2, "[%s:%d] %s\n", basename(fpath), lnum, fullMessage);
 	else
 		asprintf(&fullMessage2, "%s\n", fullMessage);
 
-	MessageReady(fullMessage2);
+	MessageReady(type, fullMessage2);
 }
 
 void LogSocketError(char* message, int err) {
-	#ifndef __unix__
-   		LogError("Socket Send error WSA_%i\n", WSAGetLastError());
-	#else
-   		LogError("Socket Send error %i (%s)\n", err, strerror(err)) ;
-	#endif
+#ifndef __unix__
+	LogError("Socket Send error WSA_%i\n", WSAGetLastError());
+#else
+	LogError("Socket Send error %i (%s)\n", err, strerror(err)) ;
+#endif
 }
-

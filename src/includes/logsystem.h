@@ -76,17 +76,16 @@ inline bool NewErrorsLogged()
 inline bool NewWarningsLogged()
 { return (entries_w > 0); }
 
-void LogMessageF(char *Message, ...) PRINTF_LIKE(1,2)
-void prepareLogs(char type, char *fpath, int lnum);
+void LogMessageF(char type, char *fpath, int lnum, char *Message, ...) PRINTF_LIKE(4,5)
 
 //---------------------------------------------------------------------------
 //     Translator macros for functions
 //---------------------------------------------------------------------------
 
-#define LogMessage	prepareLogs('M', __FILE__, __LINE__);LogMessageF
-#define LogWarning	prepareLogs('W', __FILE__, __LINE__);LogMessageF
-#define LogError	prepareLogs('E', __FILE__, __LINE__);LogMessageF
-#define LogCritical	prepareLogs('C', __FILE__, __LINE__);LogMessageF
+#define LogMessage(...)		LogMessageF('M', __FILE__, __LINE__, __VA_ARGS__)
+#define LogWarning(...)		LogMessageF('W', __FILE__, __LINE__, __VA_ARGS__)
+#define LogError(...)		LogMessageF('E', __FILE__, __LINE__, __VA_ARGS__)
+#define LogCritical(...)	LogMessageF('C', __FILE__, __LINE__, __VA_ARGS__)
 
 void LogSocketError(char* message, int err);
 
