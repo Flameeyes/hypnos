@@ -123,7 +123,6 @@ Round down to 128 messages allowable on a message board (better safe than sorry)
 Outbound packets now can have any length, so the maxpost is only used to have a
 REASONABLE sized packet to send (Chronodt 10/3/04)
 */
-
 namespace MsgBoards {
 	//! Maximum post possible
 	SETTING(uint16_t, MaxPosts, 128);
@@ -131,11 +130,23 @@ namespace MsgBoards {
 	//! Maximum entries in ESCORST
 	SETTING(uint16_t, MaxEntries, 256);
 	
+	//! Maximum days to maintain a post
+	SETTING(uint8_t, MessageRetention, 30);
+	
+	//! Number of seconds until an escorting quest expries
+	SETTING(uint32_t, EscortInitExpire, DAYSECONDS);
+	
+	//! \todo Find out what actually is this!
+	SETTING(uint32_t, EscortActiveExpire, 1800);
+	
 	void load(MXML::Node *n)
 	{
 		do {
 			XMLSETTING(MaxPosts, uint16_t, UInt16)
 			else XMLSETTING(MaxEntries, uint16_t, UInt16)
+			else XMLSETTING(MessageRetention, uint8_t, UInt8)
+			else XMLSETTING(EscortInitExpire, uint32_t, UInt32)
+			else XMLSETTING(EscortActiveExpire, uint32_t, UInt32)
 			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
 			n = n->next();
 		} while(n);

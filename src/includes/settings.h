@@ -63,6 +63,9 @@ namespace nSettings {
 	namespace MsgBoards {
 		uint16_t getMaxPosts();			//!< Maximum post possible [Default: 128]
 		uint16_t getMaxEntries();		//!< Maximum entries in ESCORTS [Default: 256]
+		uint8_t getMessageRetention();		//!< Maximum number of days to maintain a post [Default: 30]
+		uint32_t getEscortInitExpire();		//!< Number of seconds until an escorting quest expries [Default: 1 day]
+		uint32_t getEscortActiveExpire();	//!< Don't know actually.. [Default: 1/2 hour]
 	}
 	
 	//! Hunger System settings

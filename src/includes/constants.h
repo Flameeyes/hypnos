@@ -15,6 +15,10 @@
 
 #include "common_libs.h"
 
+static const uint32_t DAYSECONDS = 86400;	//!< Number of seconds in a day. To don't repeat it
+static const uint32_t DAYMSECONDS = 86400000;	//!< Number of milliseconds in a day. To don't repeat it
+static const uint16_t SECS = 1000;		//!< Used to convert seconds to milliseconds ( getclock() returns msecs )
+
 static const uint16_t T2A = 0x0001;
 static const uint16_t LBR = 0x0002;
 
@@ -44,7 +48,6 @@ static const uint16_t ITEMID_BANKBOX	= 0x09AB;
 static const uint16_t ITEMID_GOLD	= 0x0EED;
 //@}
 
-static const uint16_t MY_CLOCKS_PER_SEC	= 10000;
 static const uint16_t SPIRITSPEAKTIMER	= 30;
 			//!< spiritspeak lasts at least 30 seconds, additional time is calculated by Skill & INT
 static const uint16_t VERY_VERY_FAR = 50000; //!< Used as distance between invalid objects

@@ -32,7 +32,7 @@ enum PostType { ptLocalPost = 0, ptRegionalPost, ptGlobalPost };
 
 \see cMsgBoard
 */
-enum QuestType { qtEscort = 0xFF, qtBoundy = 0xFE, qtItem = 0xFD, qtInvalid = 0x0 };
+enum QuestType { qtEscort = 0xFF, qtBounty = 0xFE, qtItem = 0xFD, qtInvalid = 0x0 };
 
 /*!
 \brief Layer index as used by client

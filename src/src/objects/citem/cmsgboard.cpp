@@ -16,47 +16,56 @@
 
 /*!
 \brief Deleting an MsgBoard message
-\author Chronodt
+\author Chronodt and Flameeyes
 */
-
-void cMsgBoardMessage::Delete()
+void cMsgBoard::cMessage::Delete()
 {
         switch (availability)
         {
-        case ptLocalPost: //Here we need only to disconnect local MsgBoard
+        case ptLocalPost:
+		//Here we need only to disconnect local MsgBoard
                 // Disconnecting relations from bullettin board which was linked to
-        	cBBRelations::iterator it = find(cMsgBoards::BBRelations.begin(),cMsgBoards::BBRelations.end(), cBBRelations::pair(getContainer()->getSerial(), serial));
-	        if (it != cMsgBoards::BBRelations.end()) cMsgBoards::BBRelations.erase(it);
+		pMsgBoard board = dynamic_cast<pMsgBoard>(getContainer());
+		
+		board->boardMutex.lock();
+		
+		MessageList::iterator it = board->boardMsgs.find(this);
+		
+		if ( it != board->boardMsgs.end() )
+			board->boardMsgs.erase(it);
+		
+		board->boardMutex.unlock();
                 break;
         case ptRegionalPost:
 		//! \todo Need to rewrite the Regional Post when Regions are completed, until that, break
 		break;
-        case GLOBALPOST:  //Obiously, we need to disconnect this from ALL MsgBoards
-                for(cMsgBoards::iterator it = cMsgBoards::MsgBoards.begin(); (it != cMsgBoards::MsgBoards.end()); ++it)
-                {
-                        //Removing a global post is not as efficient as removing a regional post.... :(
-                        //but since most autopost for quests will be regional, it is best to get THAT as the most efficient :P
-                        cBBRelations::iterator it2 = find(cMsgBoards::BBRelations.begin(),cMsgBoards::BBRelations.end(), cBBRelations::pair((*it)->getSerial(), serial));
-                        if (it2 != cMsgBoards::BBRelations.end()) cMsgBoards::BBRelations.erase(it2);
-                }
+        case ptGlobalPost:
+		cMsgBoard::globalMutex.lock();
+		
+		// Here we need only to remove it from the global message list
+		MessageList::iterator it = cMsgBoard::globalMsgs.find(this);
+		if ( it != cMsgBoard::globalMsgs.end() )
+			cMsgBoard::globalMsgs.erase(it);
+		
+		cMsgBoard::globalMutex.unlock();
                 break;
         }
 	cItem::Delete();  //this will do the safedelete, too
 }
 
-cMsgBoardMessage::cMsgBoardMessage()
+cMsgBoard::cMessage::cMessage()
 {
-	cMsgBoardMessage(nextSerial());
+	cMsgBoard::cMessage(nextSerial());
 }
 
-cMsgBoardMessage::cMsgBoardMessage(uint32_t serial) : cItem(serial)
+cMsgBoard::cMessage::cMessage(uint32_t serial, pMsgBoard board) : cItem(serial)
 {
         region = -1;
 
-        availability = LOCALPOST;
+        availability = ptLocalPost;
         poster = NULL;
-        replyof = NULL;
-        qtype = QTINVALID;
+        replyof = 0;
+        qtype = qtInvalid;
 	autopost = false;
         targetnpc = -1;
 
@@ -66,10 +75,9 @@ cMsgBoardMessage::cMsgBoardMessage(uint32_t serial) : cItem(serial)
 
         setAnimId(0xeb0): //Model ID for msgboards items
 
-        MsgBoardMessages.push_back(this)
 }
 
-cMsgBoardMessage::~cMsgBoardMessage()
+cMsgBoard::cMessage::~cMessage()
 {
 }
 
@@ -78,21 +86,22 @@ cMsgBoardMessage::~cMsgBoardMessage()
 \todo check if there is space for a full time string comprehensive of date in letters rather than "day xxx"
 \author Chronodt
 */
-std::string cMsgBoardMessage::getTimeString()
+std::string cMsgBoard::cMessage::getTimeString()
 {
-	char result[25];
+	char *result;
         struct tm timest = localtime( &posttime);
-        sprintf( result, "Day %i @ %i:%02i", timest.tm_yday + 1, timest.tm_hour, timest.tm_min );
-        return std::string(result);
+        asprintf( &result, "Day %i @ %i:%02i", timest.tm_yday + 1, timest.tm_hour, timest.tm_min );
+        std::string ret = result;
+	free(result);
+	return ret;
 }
 
 /*!
 \brief check expiration time of message. If message is expired, it is deleted
 \returns true if message expired (and deleted)
-\author Chronodt
+\author Chronodt and Flameeyes
 */
-
-bool cMsgBoardMessage::expired()
+bool cMsgBoard::cMessage::expired()
 {
 	time_t now;
 	time( &now );
@@ -100,41 +109,42 @@ bool cMsgBoardMessage::expired()
         //here we check if post has a timeout and if it has expired
         switch (qtype)
         {
-        case QTINVALID:
-        	if (!SrvParms->msgretention && messagelife > (SrvParms->msgretention * 86400))  //86400 = 24 * 60 * 60 -> msgretention is expressed in days while messagelife in seconds
+        case qtInvalid:
+        	if ( nSettings::MsgBoards::getMessageRetention() && messagelife > (nSettings::MsgBoards::getMessageRetention() * DAYSECONDS) )
                 {
                 	//If it isn't a quest, we simply delete the message
 			Delete();
                         return true;
                 }
 		break;
-        case ESCORTQUEST:
-               	if (!SrvParms->escortinitexpire && messagelife > SrvParms->escortinitexpire)	//escortinitexpire is expressed in seconds
+        case qtEscort:
+               	if (nSettings::MsgBoards::getEscortInitExpire() && messagelife > nSettings::MsgBoards::getEscortInitExpire()) // This is in second
                 {
-                	pNPC npc = cSerializable::findCharBySerial(targetnpc);
-                        if (!npc && npc->questEscortPostSerial == getSerial()) npc->Delete();	//If it has not yet disappeared, but the serial is still the right escort npc (the serial may have been reused!!) we delete it
+			pNPC npc = dynamic_cast<pNPC>(targetnpc);
+                        if ( npc && npc->getQuestEscortPost() == this ) npc->Delete();
+				//If it has not yet disappeared, but the post is still the right we delete it
                         Delete();
                         return true;
                 }
 		break;
-	case BOUNTYQUEST:
-        	if (!SrvParms->bountysexpire && messagelife > (SrvParms->bountysexpire * 86400))	//86400 = 24 * 60 * 60 -> bountysexpire is expressed in days while messagelife in seconds
+	case qtBounty: //! \todo The server parameter requires a different section for bounty system
+        	if (!SrvParms->bountysexpire && messagelife > (SrvParms->bountysexpire * DAYSECONDS ))
                 {
-                        pChar pc = cSerializable::findCharBySerial(targetnpc);
+			pPC pc = NULL; pNPC npc = NULL;
+			if ( ( npc = dynamic_cast<pNPC>(targetnpc) ) && npc->getQuestEscortPost() == this ) npc->Delete();
                         // If it is an npc created just for the bounty (function not yet implemented) but it has not yet
-                        // disappeared and the serial is still the right npc (the serial may have been reused!!) we delete it
-                        if (!pc && pc->rtti() == rtti::cNPC && pc->questBountyPostSerial == getSerial()) pc->Delete();
-			if (!pc && pc->rtti() == rtti::cPC && pc->questBountyPostSerial == getSerial())
+                        // disappeared and the serial is still the right npc we delete it
+			if ( ( pc = dynamic_cast<pPC>(targetnpc) ) && pc->getQuestEscortPost() == this )
                         {
                         	//Deleting bounty
-				pc->questBountyReward     = 0;
-				pc->questBountyPostSerial = 0;
+				pc->setQuestBountyReward(0);
+				pc->setQuestBountyPost(NULL);
                         }
                         Delete();
                         return true;
 		}
 		break;
-	case ITEMQUEST:  //not yet implemented, so we always put it to be deleted, as the default
+	case qtItem:  //not yet implemented, so we always put it to be deleted, as the default
         default:
         	Delete();
                 return true;
@@ -147,59 +157,52 @@ bool cMsgBoardMessage::expired()
 \author Chronodt
 \note this should be called by MsgBoardMainteinance. It refreshes the timers of quests
 */
-void cMsgBoardMessage::refreshQuestMessage()
+void cMsgBoard::cMessage::refreshQuestMessage()
 {
-	pChar pc=cSerializable::findCharBySerial(targetnpc);
-        pItem item = cSerializable::findItemBySerial(targetitem);
+	pPC pc = dynamic_cast<pPC>(targetnpc); pNPC npc = dynamic_cast<pNPC>(targetnpc);
         switch (qtype)
         {
-	case ESCORTQUEST:
-		if (pc)
+	case qtEscort:
+		if ( ! npc || npc->getQuestEscortPost() != this )
+			return;
+		
+		// Now lets reset all of the escort timers after the server has reloaded the WSC file
+		// And it doesn't have a player escorting it yet
+		if ( pc->ftargserial==INVALID )
 		{
-			if ( pc->rtti() == rtti::cNPC &&  pc->questType == ESCORTQUEST  )
-			{
-				// Now lets reset all of the escort timers after the server has reloaded the WSC file
-				// And it doesn't have a player escorting it yet
-				if ( pc->ftargserial==INVALID )
-				{
-					// Lets reset the summontimer to the escortinit
-				        pc->summontimer = ( getclock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortinitexpire ) );
-				}
-				else // It must have an escort in progress so set the escortactiveexpire timer
-				{
-					// Lets reset the summontimers to the escortactive value
-					pc->summontimer = ( getclock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortactiveexpire ) );
-				}
-			}
+			// Lets reset the summontimer to the escortinit
+			pc->summontimer = ( getclock() + ( SECS * nSettings::MsgBoards::getEscortInitExpire() ) );
+		}
+		else // It must have an escort in progress so set the escortactiveexpire timer
+		{
+			// Lets reset the summontimers to the escortactive value
+			pc->summontimer = ( getclock() + ( SECS * nSettings::MsgBoards::getEscortActiveExpire() ) );
 		}
 		break;
 
-	case BOUNTYQUEST:
-		if (pc)
-		{
-			if ( pc->rtti() == rtti::cNPC &&  pc->questType == BOUNTYQUEST )
-			{
+	case qtBounty: //! \todo Bounty system need to be wrote
+		if ( ! npc || npc->getQuestEscortPost() != this )
+			return;
+
 /*
 	NPC bounty code, not yet implemented
 ******** this is just a cut&paste of escort code quest, update to bounty when activating :D *************
 
-				// Now lets reset all of the escort timers after the server has reloaded the WSC file
-				// And it doesn't have a player escorting it yet
-				if ( pc->ftargserial==INVALID )
-				{
-					// Lets reset the summontimer to the escortinit
-				        pc->summontimer = ( getclock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortinitexpire ) );
-				}
-				else // It must have an escort in progress so set the escortactiveexpire timer
-				{
-					// Lets reset the summontimers to the escortactive value
-					pc->summontimer = ( getclock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortactiveexpire ) );
-				}
-*/
-			}
+		// Now lets reset all of the escort timers after the server has reloaded the WSC file
+		// And it doesn't have a player escorting it yet
+		if ( pc->ftargserial==INVALID )
+		{
+			// Lets reset the summontimer to the escortinit
+			pc->summontimer = ( getclock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortinitexpire ) );
 		}
+		else // It must have an escort in progress so set the escortactiveexpire timer
+		{
+			// Lets reset the summontimers to the escortactive value
+			pc->summontimer = ( getclock() + ( MY_CLOCKS_PER_SEC * SrvParms->escortactiveexpire ) );
+		}
+*/
 		break;
-	case ITEMQUEST:
+	case qtItem: //! \todo Item quest needs to be wrote
         	//Yet to be implemented
         	break;
 	default:
@@ -217,7 +220,9 @@ cMsgBoard::cMsgBoard()
 
 cMsgBoard::cMsgBoard(uint32_t serial) : cItem(serial)
 {
-	
+	boardsMutex.lock();
+	boards.push_back(this);
+	boardsMutex.unlock();
 }
 
 cMsgBoard::~cMsgBoard()
@@ -236,17 +241,17 @@ void cMsgBoard::getPostType( pClient client )
 
 	switch ( pc->postType )
 	{
-		case ptLocalPost:
-			client->sysmessage("Currently posting LOCAL messages");
-			break;
+	case ptLocalPost:
+		client->sysmessage("Currently posting regional messages");
+		break;
 
-		case ptRegionalPost:
-			client->sysmessage("Currently posting REGIONAL messages");
-			break;
+	case ptRegionalPost:
+		client->sysmessage("Currently posting regional messages");
+		break;
 
-		case ptGlobalPost:
-			client->sysmessage("Currently posting GLOBAL messages");
-			break;
+	case ptGlobalPost:
+		client->sysmessage("Currently posting global messages");
+		break;
 	}
 	return;
 }
@@ -270,15 +275,15 @@ void cMsgBoard::setPostType( pClient client, PostType nPostType )
 
 	switch ( nPostType )
 	{
-		case LOCALPOST: // LOCAL post
+		case ptLocalPost: // LOCAL post
 			client->sysmessage("Post type set to local");
 			break;
 
-		case REGIONALPOST: // REGIONAL post
+		case ptRegionalPost: // REGIONAL post
 			client->sysmessage("Post type set to regional");
 			break;
 
-		case GLOBALPOST: // GLOBAL POST
+		case ptGlobalPost: // GLOBAL POST
 			client->sysmessage("Post type set to global");
 			break;
 	}
@@ -296,9 +301,11 @@ void cMsgBoard::openBoard(pClient client)
 	// Send Message Board open to client...
 	nPackets::Sent::BBoardCommand pk(this, DisplayBBoard);
 	client->sendPacket(&pk);
-        // .. and immediately thereafter the "items" it contains (the serials of messages connected to that board)
+        
+	// .. and immediately thereafter the "items" it contains (the serials of messages connected to that board)
         // but only if it has at least 1 message inside
-      	if (BBRelations.find(getSerial()) != BBRelations.end())
+	//! \todo Need to test for regional messages also
+	if ( boardsMsgs.size() || globalMsgs.size() )
 	{
         	nPackets::Sent::MsgBoardItemsinContainer pk2 (this);
        		client->sendPacket(&pk2);
@@ -307,11 +314,11 @@ void cMsgBoard::openBoard(pClient client)
 
 /*!
 \param client player client
-\param messageserial serial of the message sent by client requiring message's summary
+\param message message sent by client requiring message's summary
 After Bulletin Board is displayed, client asks for summary for each message serial it has received
 and this function is then called to send them
 */
-void cMsgBoard::sendMessageSummary( pClient client, pMsgBoardMessage message)
+void cMsgBoard::sendMessageSummary( pClient client, pMessage message)
 {
 	nPackets::Sent::BBoardCommand pk(this, SendMessageSummary, message);
 	client->sendPacket(&pk);
@@ -321,33 +328,23 @@ void cMsgBoard::sendMessageSummary( pClient client, pMsgBoardMessage message)
 \brief links message to msgboard
 \param message message to be added
 */
-
-bool cMsgBoard::addMessage(pMsgBoardMessage message)
+bool cMsgBoard::addMessage(pMessage message)
 {
 	switch (message->availability)
         {
-	case LOCALPOST:
+	case ptLocal:
         	//only one insertion needed here, but we first have to verify msgboard capacity against MAXPOSTS
 		//Note that this only means that normal players cannot bring a MsgBoard to have more than MAXPOSTS
                 //mexes, but by posting regional or global messages this limit can be exceeded
-                
-               	pair<cBBRelations::iterator, cBBRelations::iterator> it = BBRelations.equal_range(getSerial());
-                if ( distance(it.first, it.second) > nSettings::MsgBoards::getMaxPosts() ) return false;
-
-        	BBRelations.insert(cBBRelations::pair(getSerial(), message->getSerial()));
+		
+		if ( boardsMsgs.size() > nSettings::MsgBoards::getMaxPosts() ) return false;
+		boardMsgs.push_back(message);
+		message->setContainer(this);
         	break;
-        case REGIONALPOST;
-               	pair<cMsgBoards::iterator, cMsgBoards::iterator> it = getBoardsinRegion(region);
-                //if no msgboard in region, it should not post. Only significant if autopost... or else some very weird things are floating around :D
-                if (it.first == MsgBoards.end()) return false;
-                // We now have a range it.first-(it.second - 1) of msgBoards that are in the same region as the message.
-		for (;it.first != it.second; ++it.first)
-                	BBRelations.insert(cBBRelations::pair((*(it.first))->getSerial(), message->getSerial()));
+        case ptRegional: //!\todo Regional posts...
         	break;
-        case GLOBALPOST:
-        	if (MsgBoards.empty()) return false; //Obiously, even general posts cannot be done when NO msgboards are present at all....
-        	for(cMsgBoards::iterator it = MsgBoards.begin(), it != MsgBoards.end(), ++it)
-                      	BBRelations.insert(cBBRelations::pair((*it)->getSerial(), message->getSerial()));
+        case ptGlobal:
+		globalMsgs.push_back(message);
         }
 	return true;
 }
@@ -358,17 +355,16 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
 \param targetserial serial of the quest's target
 \param questtype type of quest
 \param region validity region of quest (where is to be posted)
-\return serial of message posted 
+\return serial of message posted
+\todo All this should be rewrote using XMLs
 */
-
 uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem item, int region )
 {
 	static const char subjectEscort[]     = "Escort: Needed for the day.";  // Default escort message
 	static const char subjectBounty[]     = "Bounty: Reward for capture.";  // Default bounty message
 	static const char subjectItem[]       = "Lost valuable item.";          // Default item message
 
-
-        pMsgBoardMessage message = new cMsgBoardMessage();
+        pMsgBoardMessage message = new cMsgBoard::cMessage();
 
 	message->qtype = questType;
 	message->autopost = true;
@@ -385,44 +381,44 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 
 	switch ( questType )
 	{
-		case ITEMQUEST:
-                	message->subject = string(subjectItem);
-			message->availability = REGIONALPOST;
-                        if (!npc || !item)
-                        {
-	                        ErrOut("cMsgBoard::createQuestMessage() missing valid npc or item for ITEMQUEST\n");
-              	        	message->Delete;
-				return 0;
-                        }
-			break;
-
-		case BOUNTYQUEST:
-	                message->subject = string(subjectBounty);
-			message->availability = GLOBALPOST;
-			if (!npc)
-                        {
-				ErrOut("cMsgBoard::createQuestMessage() missing valid npc for BOUNTYQUEST\n");
-              	        	message->Delete;
-				return 0;
-                        }
-
-                        break;
-
-		case ESCORTQUEST:
-	                message->subject = string(subjectEscort);
-			message->availability = REGIONALPOST;
-                        if (!npc)
-                        {
-				ErrOut("cMsgBoard::createQuestMessage() missing valid npc for ESCORTQUEST\n");
-              	        	message->Delete;
-				return 0;
-                        }
-
-			break;
-		default:
-			ErrOut("cMsgBoard::createQuestMessage() invalid quest type\n");
-	        	message->Delete;
+	case ITEMQUEST:
+		message->subject = string(subjectItem);
+		message->availability = REGIONALPOST;
+		if (!npc || !item)
+		{
+			ErrOut("cMsgBoard::createQuestMessage() missing valid npc or item for ITEMQUEST\n");
+			message->Delete;
 			return 0;
+		}
+		break;
+
+	case BOUNTYQUEST:
+		message->subject = string(subjectBounty);
+		message->availability = GLOBALPOST;
+		if (!npc)
+		{
+			ErrOut("cMsgBoard::createQuestMessage() missing valid npc for BOUNTYQUEST\n");
+			message->Delete;
+			return 0;
+		}
+
+		break;
+
+	case ESCORTQUEST:
+		message->subject = string(subjectEscort);
+		message->availability = REGIONALPOST;
+		if (!npc)
+		{
+			ErrOut("cMsgBoard::createQuestMessage() missing valid npc for ESCORTQUEST\n");
+			message->Delete;
+			return 0;
+		}
+
+		break;
+	default:
+		ErrOut("cMsgBoard::createQuestMessage() invalid quest type\n");
+		message->Delete;
+		return 0;
 	}
 
         pMsgBoard MsgBoard = NULL;
@@ -487,9 +483,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 
 		// Choose a random number between 1 and listCount to use as a message
 		entryToUse = RandomNum( 1, listCount );
-#ifdef DEBUG
-		ErrOut("cMsgBoard::createQuestMessage() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
-#endif
+		
 		// Open the script again and find the section choosen by the randomizer
 		char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
@@ -543,9 +537,7 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 
 		// Choose a random number between 1 and listCount to use as a message
 		entryToUse = RandomNum( 1, listCount );
-#ifdef DEBUG
-		ErrOut("cMsgBoard::createQuestMessage() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
-#endif
+		
 		// Open the script again and find the section choosen by the randomizer
 		char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
@@ -686,22 +678,19 @@ uint32_t cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem ite
 
 /*!
 \brief removes an automatic quest message
-\param messageserial serial of the message to delete
+\param message to remove
 */
-
-void cMsgBoard::removeQuestMessage(uint32_t messageserial)
+void cMsgBoard::removeQuestMessage(pMessage message)
 {
-	cMsgBoardMessages::iterator it = MsgBoardMessages.begin();
-        for (; (*it)->getSerial() != messageserial && it != MsgBoardMessages.end(); ++it) {}
-        if (it != MsgBoardMessages.end()) (*it)->Delete();
+	message->Delete();
 }
 
 /*!
 \brief Message board mainteinance
 \note Message retention check, link consistency check and refreshing of quests
-\todo check if moving msgboards with regional posts outside its region causes trouble, and if so do a region check and relink here 
+\note This function should hold and release the mutexes!
+\todo Rewrote this, so that the maintenance thread can use it
 */
-
 void cMsgBoard::MsgBoardMaintenance()
 {
 	// Display progress message
@@ -712,7 +701,7 @@ void cMsgBoard::MsgBoardMaintenance()
         // the second all the serial linked by bsgboards. If the two are not identical, there are some unlinked
         // posts, to be deleted or moved, depending on the type of message
         std::set<uint32_t> serialsm, serialsb, serialdiff;
-        cMsgBoardMessages::iterator it = MsgBoardMessages.begin();
+        cMsgBoard::cMessages::iterator it = MsgBoardMessages.begin();
 	ConOut("Message expiration check : ");
         //checking the expiration time while we insert the posts in the set
         int expired = 0;
@@ -780,31 +769,10 @@ void cMsgBoard::MsgBoardMaintenance()
       	ConOut("[DONE]\n");
 }
 
-
-
-/*!
-\brief gets all MsgBoards in region.
-\note the first iterator in the pair is the first of the range, but the second is the first of NEXT board or end()
-\returns if any msgboard is found, returns as range [first,second[ , else both iterators point to MsgBoards.end()
-*/
-
-pair<cMsgBoards::iterator, cMsgBoards::iterator> cMsgBoard::getBoardsinRegion(int region)
-{
-        	cMsgBoards::iterator it = MsgBoards.begin();
-                //With this we find the first board in which region number is the same as the message to be deleted
-                for(;((*it)->getRegion() != region) && (it != MsgBoards.end()); ++it) {}
-                //check if the last msgboard is of the right region, else break out
-                if ((it == MsgBoards.end()) return pair<cMsgBoards::iterator, cMsgBoards::iterator>(it, it);
-                cMsgBoards::iterator itbegin = it;
-       	        for(;(it != MsgBoards.end() && ((*it)->getRegion() == region)); ++it) {} //it at the end of the cycle contains the iterator to the first Msgboard in next region or end() if it was already the last
-                return pair<cMsgBoards::iterator, cMsgBoards::iterator> (itbegin, it);
-}
-
 /*!
 \brief returns the region of msgboard
 \returns region number of msgboard
 */
-
 int cMsgBoard::getRegion()
 {
 	return calcRegionFromXY(position);

@@ -640,7 +640,7 @@ void nPackets::Sent::BBoardCommand::prepare()
 {
 	switch (command)
         {
-        case DisplayBBoard: //Display bulletin board
+        case bbcDisplayBBoard: //Display bulletin board
 		length = 38;
 	        buffer = new uint8_t[38];
 	        buffer[0] = 0x71;
@@ -653,36 +653,38 @@ void nPackets::Sent::BBoardCommand::prepare()
 
 		// If the name the item (Bulletin Board) has been defined, display it
 		// instead of the default "Bulletin Board" title.
-		if ( strncmp(msgboard->getCurrentName().c_str(), "#", 1) )
-			strncpy( buffer + 8, msgboard->getCurrentName().c_str(), 20);  //Copying just the first 20 chars or we go out of bounds in the gump
-	        else    strcpy( buffer + 8, "Bulletin Board");
+		if ( msgboard->getCurrentName().length() )
+			strncpy( buffer + 8, msgboard->getCurrentName(), 20);
+				 //Copying just the first 20 chars or we go out of bounds in the gump
+	        else
+			strcpy( buffer + 8, "Bulletin Board");
                 break;
-        case SendMessageSummary:
+        case bbcSendMessageSummary:
         	//calculating length of packet  before building buffer
         	length = 16; //BASE length, the length of fixed-length components
                 pChar poster = message->getPoster();
                 std::string timestring = message->getTimeString();
-                length += poster->getCurrentName().c_str().size() + 2;
+                length += poster->getCurrentName().size() + 2;
                 length += message->subject.size() + 2;
                 length += timestring.size() + 2;
                 buffer = new uint8_t[length];
 	        buffer[0] = 0x71;
-	        ShortToCharPtr(length, buffer +1); 	//message length
-	        buffer[3] = 1; 				//subcommand 1
-	        LongToCharPtr(msgboard->getSerial(), buffer + 4);	//board serial
- 	        LongToCharPtr(message->getSerial(), buffer + 8);	//message serial
-                LongToCharPtr(message->replyof, buffer + 12);		//parent message serial
+	        ShortToCharPtr(length, buffer +1); 					//message length
+	        buffer[3] = 1; 								//subcommand 1
+	        LongToCharPtr(msgboard->getSerial(), buffer + 4);			//board serial
+ 	        LongToCharPtr(message->getSerial(), buffer + 8);			//message serial
+                LongToCharPtr(message->replyof->getSerial(), buffer + 12);		//parent message serial
                 int offset = 16;
-                buffer[16] = poster->getCurrentName().c_str().size() + 1;	//size() does not count the endstring 0
-		strcpy( buffer + 17, poster->getCurrentName().c_str().c_str());
-                offset += poster->getCurrentName().c_str().size() + 2;
+                buffer[16] = poster->getCurrentName().size() + 1;		//size() does not count the endstring 0
+		strcpy( buffer + 17, poster->getCurrentName().c_str() );
+                offset += poster->getCurrentName().size() + 2;
                 buffer[offset] = message->subject.size() + 1;
                 strcpy( buffer + offset + 1, message->subject.c_str());
                 offset += message->subject.size() + 2;
                 buffer[offset] = timestring.size() + 1;
                 strcpy( buffer + offset + 1, timestring.c_str());
                 break;
-        case SendMessageBody:
+        case bbcSendMessageBody:
         	static const char pattern[29] = { 0x01, 0x90, 0x83, 0xea, 0x06,
                 				  0x15, 0x2e, 0x07, 0x1d, 0x17,
                                                   0x0f, 0x07, 0x37, 0x1f, 0x7b,
@@ -718,6 +720,9 @@ void nPackets::Sent::BBoardCommand::prepare()
         }
 }
 
+/*!
+\note This functions holds and releases the cMsgBoard::globalMutex and cMsgBloard::boardMutex mutexes
+*/
 void nPackets::Sent::MsgBoardItemsinContainer::prepare()
 {
  	static const uint8_t templ1[5] = {
@@ -730,12 +735,13 @@ void nPackets::Sent::MsgBoardItemsinContainer::prepare()
 		0x00, 0x00, 0x00, 0x00, 0x00
 		};
 
-	pair<cBBRelations::iterator, cBBRelations::iterator> it = cMsgBoard::BBRelations.equal_range(msgboard->getSerial());
-        // Now the *(it.first.second) is the serial of a message to be sent. and incrementing it.first
-        // until it reaches it.second we obtain all the serials
+	msgboard->boardMutex.lock();
+	cMsgBoard::globalMutex.lock();
+	
+	uint16_t count = msgboard->boardMsgs.size() + cMsgBoard::globalMsgs.size();
+		//! \todo We need to add support for regional posts here!
 
-	uint16_t count = distance (it.first, it.second); //It HAS at least 1 message or else this packet would not be asked for
-	uint16_t length = 5 + count*19;
+	length = 5 + count*19;
 
 	buffer = new uint8_t[length];
 	memcpy(buffer, templ1, 5);
@@ -745,15 +751,28 @@ void nPackets::Sent::MsgBoardItemsinContainer::prepare()
 
 	uint8_t *ptrItem = buffer+5;
 
-	for(;it.first != it.second; ++(it.first))
-	{
+	for( cMsgBoard::MessageList iterator it = msgboard->boardMsgs.begin(); it != msgboard->boardMsgs.end(); it++ )
+	{ // First of all, local messages
 		memcpy(ptrItem, templ2, 19);
-		LongToCharPtr((*it.first)->getSerial(), ptrItem);
-		LongToCharPtr(msgboard->getSerial(), ptrItem+13);
-                //all other parts are invaried in msgboards messages and are defaulted in templ2
+		LongToCharPtr( (*it)->getSerial(), ptrItem);
+		LongToCharPtr( msgboard->getSerial(), ptrItem+13);
+		//all other parts are invaried in msgboards messages and are defaulted in templ2
 		ptrItem += 19;
 	}
-
+	
+	//! \todo We need to add support for regional posts here!
+	
+	for( cMsgBoard::MessageList iterator it = cMsgBoard::glboalMsgs.begin(); it != cMsgBoard::glboalMsgs.end(); it++ )
+	{ // At last, global messages
+		memcpy(ptrItem, templ2, 19);
+		LongToCharPtr( (*it)->getSerial(), ptrItem);
+		LongToCharPtr( msgboard->getSerial(), ptrItem+13);
+		//all other parts are invaried in msgboards messages and are defaulted in templ2
+		ptrItem += 19;
+	}
+	
+	msgboard->boardMutex.unlock();
+	cMsgBoard::globalMutex.unlock();
 }
 
 
