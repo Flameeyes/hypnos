@@ -7,38 +7,36 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "libhypnos/strings.h"
+#include "libhypnos/exceptions.h"
+
+namespace nLibhypnos {
 
 /*!
 \brief Converts an ip-string to a long value
 \author Flameeyes
-\param ip ip-string
-\param[out] ris integer to store the ip to
-\retval true The \c ip string is a valid IP address, so the \c ris parameter is
-	set to the value of the address string (in host endian)
-\retval false The \c ip string isn't a valid IP address. The \c ris parameter is
-	undefined (actually, isn't touched at all from the one passed)
+\param ip String representing the IP to convert (in dotted decimal form)
+\return The long value of the IP passed (in host endian)
+\throw eInvalidIP If the \c ip string is not a valid dotted decimal IP
 */
-bool ip2long(std::string ip, int &ris)
+uint32_t ip2long(std::string ip)
 {
 	char buffer[16], *a = NULL, *b = NULL, *c = NULL;
 	strncpy(buffer, ip.c_str(), 15);
 	
 	a = strchr(buffer, '.');
-	if ( ! a ) throw(false);
+	if ( ! a ) throw eInvalidIP(ip);
 	*(a++) = 0;
 	
 	b = strchr(a, '.');
-	if ( ! b ) throw(false);
+	if ( ! b ) throw eInvalidIP(ip);
 	*(b++) = 0;
 	
 	c = strchr(b, '.');
-	if ( ! c ) throw(false);
+	if ( ! c ) throw eInvalidIP(ip);
 	*(c++) = 0;
 
-	ris = ( atoi(buffer) << 24 ) + ( atoi(a) << 16 ) +
-		( atoi(b) << 8 ) + atoi(d);
-
-	return ret;
+	return ( atoi(buffer) << 24 ) + ( atoi(a) << 16 ) +
+		( atoi(b) << 8 ) + atoi(c);
 }
 
 /*!
@@ -98,7 +96,7 @@ stringVector tokenize(std::string str)
 	char *s = strtok(tmp, " ");
 	
 	int loopexit=0;
-	while ( (s!=NULL) && (++loopexit < MAXLOOPS) )
+	while ( s != NULL )
 	{
 		ret.push_back( std::string(s) );
 		s=strtok(NULL, " ");
@@ -109,3 +107,4 @@ stringVector tokenize(std::string str)
 	return ret;
 }
 
+}

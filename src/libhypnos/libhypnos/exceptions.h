@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#ifndef __LIBHYPMUL_EXCEPTIONS_H__
-#define __LIBHYPMUL_EXCEPTIONS_H__
+#ifndef __LIBHYPNOS_EXCEPTIONS_H__
+#define __LIBHYPNOS_EXCEPTIONS_H__
 
 #include "libhypnos/commons.h"
 
@@ -47,6 +47,24 @@ namespace nLibhypnos {
 		*/
 		eOutOfBound(uint32_t pMax, uint32_t pRequested)
 			: max(pMax), requested(pRequested)
+		{ }
+	};
+	
+	/*!
+	\class eInvalidIP exceptions.h "libhypnos/exceptions.h"
+	\brief Exception thrown when trying to convert a string which isn't a 
+		valid dotted-decimal IP.
+	*/
+	class eInvalidIP : public eException {
+	public:
+		const std::string invalidIP; //!< String which isn't a valid IP
+		
+		/*!
+		\brief Constructor
+		\param pInvalidIP Value to assign to \c invalidIP attribute
+		*/
+		eInvalidIP(std::string pInvalidIP)
+			: invalidIP(pInvalidIP)
 		{ }
 	};
 }

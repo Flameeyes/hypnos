@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#ifndef __LIBHYPMUL_GUMPIDX_H__
-#define __LIBHYPMUL_GUMPIDX_H__
+#ifndef __LIBHYPNOS_MULS_GUMPIDX_H__
+#define __LIBHYPNOS_MULS_GUMPIDX_H__
 
 #include "libhypnos/muls/mulfiles.h"
 #include "libhypnos/mmappedfile.h"

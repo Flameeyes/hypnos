@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#ifndef __LIBHYPMUL_MMAPPDEFILE_H__
-#define __LIBHYPMUL_MMAPPDEFILE_H__
+#ifndef __LIBHYPNOS_MMAPPDEFILE_H__
+#define __LIBHYPNOS_MMAPPDEFILE_H__
 
 #include "libhypnos/commons.h"
 

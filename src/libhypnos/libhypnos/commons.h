@@ -56,5 +56,29 @@ suite to access the common defines without need of complete hypnos sources.
 
 // STL includes
 #include <string>
+#include <vector>
+#include <map>
+#include <queue>
+#include <list>
+#include <iterator>
+#include <algorithm>
+#include <stack>
+#include <fstream>
+#include <utility>
+#include <set>
+
+#ifdef __GNUC__
+	#include <ext/slist>
+	#include <ext/hash_map>
+	namespace std {
+		using __gnu_cxx::slist;
+		using __gnu_cxx::hash_map;
+	}
+#else
+	#include <slist>
+	#include <hash_map>
+#endif
+
+#include "libhypnos/types.h"
 
 #endif

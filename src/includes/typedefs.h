@@ -24,12 +24,6 @@ typedef int32_t				FUNCIDX;
 typedef class cVariant *pVariant;		//!< Pointer to a variant instance
 typedef std::vector<cVariant> cVariantVector;	//!< Vector of variants
 
-typedef std::set<uint32_t> uint32_set;		//!< A set of uint32_t
-typedef std::vector<uint32_t> uint32_vector;	//!< A vector of uint32_t
-typedef std::slist<uint32_t> uint32_slist;	//!< Singly-linked list of uint32_t
-
-typedef std::vector<std::string> stringVector;	//!< A vector of strings
-
 typedef std::basic_string<uint16_t> unistring;	//!< Unicode string
 //@}
 

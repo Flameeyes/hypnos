@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#ifndef __LIBHYPMUL_MULFILES_H__
-#define __LIBHYPMUL_MULFILES_H__
+#ifndef __LIBHYPNOS_MULS_MULFILES_H__
+#define __LIBHYPNOS_MULS_MULFILES_H__
 
 #include "libhypnos/commons.h"
 

@@ -11,7 +11,6 @@
 
 #include "common_libs.h"
 #include "structs.h"
-#include "utils/strings.h"
 
 void npcattacktarget(pChar npc, pChar target);
 void callguards( int p );
