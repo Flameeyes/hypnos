@@ -2,6 +2,7 @@ AC_INIT(configure.in)
 
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(hypnos, 0.1)
+PACKAGE_BUGREPORT = flameeyes@users.berlios.de
 
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
@@ -25,6 +26,7 @@ if test "$is_icc" == "yes"; then
 	WEFTS_LIBS=$(echo $WEFTS_LIBS | sed -e 's/-lstdc++//')
 else
 	WARNS="-Wno-reorder -Wno-switch-enum "
+	CXXFLAGS="$CXXFLAGS -fno-implicit-templates"
 fi
 
 AC_OBJEXT
@@ -91,7 +93,7 @@ AC_CHECK_FUNCS([basename ftime gettimeofday memset munmap strchr strstr strtol s
 
 # Adding include dirs and WEFTS_ variables
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
-CXXFLAGS="$CXXFLAGS $INCLUDES $WEFTS_CXXFLAGS -Wall $WARNS $DEFDIRS -frepo"
+CXXFLAGS="$CXXFLAGS $INCLUDES $WEFTS_CXXFLAGS -Wall $WARNS $DEFDIRS"
 CFLAGS="$CXXFLAGS"
 LDFLAGS="$LDFLAGS"
 

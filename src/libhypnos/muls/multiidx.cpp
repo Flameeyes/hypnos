@@ -26,7 +26,7 @@ fMultiIDX::fMultiIDX()
 }
 
 fMultiIDX::fMultiIDX(const std::string &filepath)
-	: tplIndexFile( filepath )
+	: tplIndexFile<cMultiIDX>( filepath )
 {
 }
 

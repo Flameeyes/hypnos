@@ -31,9 +31,6 @@ public:
 		: file(sizeof(cData), filename)
 	{ }
 	
-	virtual ~tplIndexFile()
-	{ }
-	
 	/*!
 	\brief Gets the offset of the given record in the indexed file
 	\param index ID of the record (index to search for). Zero-based.
@@ -81,9 +78,6 @@ protected:
 public:
 	tplIndexedFile(tplIndexFile<cData> *aIdx, std::string filename)
 		: file(1, filename), idx(aIdx)
-	{ }
-	
-	virtual ~tplIndexedFile()
 	{ }
 	
 	/*!
