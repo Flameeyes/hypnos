@@ -471,6 +471,34 @@ void cClient::senditem_lsd(pItem pi, uint16_t color, sLocation position)
 	sendPacket(&pk);
 }
 
+/*!
+\brief shows char to client
+\param pc character to show
+\param z use z coordinate? (else use dispz)
+*/
+void cClient::sendchar(pChar pc, bool z)
+{
+
+	pChar pc_currchar = currChar();
+	if(!pc_currchar) return;
+
+	if (pc->isStabled() || pc->mounted) return; // dont **show** stabled pets
+
+	if (pc->IsHidden() && pc!=pc_currchar && !pc_currchar->IsGM()) return;
+
+	if( !pc->npc && !pc->IsOnline()  && !pc_currchar->IsGM() )
+	{
+		nPackets::Sent::DeleteObj pk(pc);
+		sendPacket(&pk);
+		return;
+	}
+	// hidden chars can only be seen "grey" by themselves or by gm's
+	// other wise they are invisible=dont send the packet
+
+	nPackets::Sent::DrawObject pk(this, pc, z);
+	sendPacket(&pk);
+}
+
 /*------------------------------------------------------------------------------
 			DRAG & DROP METHODS
 ------------------------------------------------------------------------------*/
@@ -1882,7 +1910,7 @@ bool buyShop(pNPC npc)
 	buyNoRestockContainer = dynamic_cast<pEquippableContainer>(npc->getBody()->getLayerItem(layNPCBuyN));
 	if (!buyRestockContainer || !buyNoRestockContainer ) return false;
 
-	impowncreate(client, pc, 0); // Send the NPC again to make sure info is current. (OSI does this we might not have to)
+	sendchar(pc, false); // Send the NPC again to make sure info is current. (OSI does this we might not have to)
 
 	nPackets::Sent::ContainerItem pk1;
 	buyRestockContainer->lockItemsMutex();

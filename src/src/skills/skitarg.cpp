@@ -1430,8 +1430,9 @@ void target_poisoning2(pClient client, pTarget t )
 			if(pi->hp<=0)
 			{
 				client->sysmessage("Your weapon has been destroyed");
-                                //<Luxor>
-				client->sendRemoveObject( static_cast<pObject>(pi) );
+				//<Luxor>
+				nPackets::Sent::DeleteObj pk(pi);
+				client->sendPacket(&pk);
 				pi->Delete();
 			}
 		}

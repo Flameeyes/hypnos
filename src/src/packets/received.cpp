@@ -1252,6 +1252,7 @@ void nPackets::Sent::BuyWindow::prepare()
 \note packet 0x77
 */
 
+
 void nPackets::Sent::UpdatePlayer::prepare()
 {
 	buffer = new uint8_t[17];
@@ -1267,6 +1268,83 @@ void nPackets::Sent::UpdatePlayer::prepare()
 	ShortToCharPtr(chr->getColor(), buffer +13);
 	buffer[15]=flag;
 	buffer[16]=hi_color;
+}
+
+/*!
+\brief Draws a player [packet 0x78]
+\author Chronodt
+\note packet 0x78
+*/
+
+void nPackets::Sent::DrawObject::prepare()
+{
+	length = 23;	// length of the fixed parts (19) + the 4 0-bytes used as terminator
+
+	NxwItemWrapper si;
+	si.fillItemWeared( pc, true, true, false );	//! \todo i suppose fillItemWeared will be updated correctly (with only the equipped items on pc's body))
+	for( si.rewind(); !si.isEmpty(); ++si, length+=5 ) if (!si.getItem()->getColor()) length+=2;
+	buffer = new uint8_t[length];
+	buffer[0] = 0x78;
+	ShortToCharPtr(length, buffer +1);
+	LongToCharPtr(pc->getSerial(), buffer + 3);
+	ShortToCharPtr(pc->getBody()->getId(), buffer + 7); 		// Character art id
+
+	sLocation charpos = pc->getPosition();
+	ShortToCharPtr(charpos.x, buffer + 9);
+	ShortToCharPtr(charpos.y, buffer + 11);
+	if (usedispz)
+		buffer[13]= charpos.dispz; 				// Character z position
+	else
+		buffer[13]= charpos.z;
+	buffer[14]= pc->dir; 						// Character direction
+	ShortToCharPtr(pc->getBody()->getSkinColor(), buffer +15);	// Character skin color
+	buffer[17]=0; 							// Character flags
+	if (pc->IsHidden() || !(pc->IsOnline()||pc->npc))
+		buffer[17]|=0x80; 					// .... show hidden state correctly
+	if (pc->poisoned)
+		buffer[17]|=0x04;
+
+	//! \todo verify guilds
+	int guild;
+	guild=Guilds->Compare(client->currChar(),pc);
+	if (guild==1)					//Same guild (Green)
+		buffer[18]=2;
+	else if (guild==2) 				// Enemy guild.. set to orange
+		buffer[18]=5;
+	else if (pc->IsGrey()) buffer[18] = 3;
+	else switch(pc->flag)
+	{//1=blue 2=green 5=orange 6=Red 7=Transparent(Like skin 66 77a)
+		case 0x01: buffer[18]=6; break;// If a bad, show as red.
+		case 0x04: buffer[18]=1; break;// If a good, show as blue.
+		case 0x08: buffer[18]=2; break; //green (guilds)
+		case 0x10: buffer[18]=5; break;//orange (guilds)
+		default: buffer[18]=3; break;//grey (Can be pretty much any number.. I like 3 :-)
+	}
+
+	uint8_t *offset = buffer + 19;
+	si.fillItemWeared( pc, true, true, false );	//! \todo i suppose fillItemWeared will be updated correctly (with only the equipped items on pc's body))
+	for( si.rewind(); !si.isEmpty(); si++ )
+	{
+		//! \todo when sets remade, verify if all these checks are still necessary
+		pEquippable pj=dynamic_cast<pEquippable> si.getItem();
+		if (pj)
+			if ( true /* pj->layers[pj->layer] == 0*/ )
+			{
+				LongToCharPtr(pj->getSerial(), offset);
+				ShortToCharPtr(pj->getId(), offset+4);
+				offset[6]=pj->getLayer();
+				if (!pj->getColor())
+				{
+					offset[4]|=0x80;
+					ShortToCharPtr(pj->getColor(), offset + 7);
+					offset+= 2;
+				}
+				offset += 7;
+				// layers[pj->layer] = 1;	<--- what was the use of this? :D
+			}
+	}
+
+	LongToCharPtr(0, offset);	// adding the 4-bytes 0-terminator
 }
 
 
@@ -1353,7 +1431,7 @@ void nPackets::Sent::OpenMapGump::prepare()
  *      0x05 => Couldn't carry out your request.
  */
 
-void nPackets::Sent::CharAfterDelete::prepare()
+void nPackets::Sent::CharDeleteError::prepare()
 {
 	buffer = new uint8_t[2];
 	length = 2;
@@ -2747,8 +2825,14 @@ bool nPackets::Received::BookUpdateTitle::execute(pClient client)
 bool nPackets::Received::DyeItem::execute(pClient client)
 {
 	if (length != 9) return false;
-	//!\todo moving dyeitem from commands to cclient??
-	Commands::DyeItem(client);
+
+	uint32_t serial = LongCharFromPtr(buffer + 1);
+	pItem pi = cSerializable::findItemBySerial(serial);
+	pChar pc = cSerializable::findCharBySerial(serial);
+	color = ShortFromCharPtr(buffer + 7);
+	if (pi) pi->dyeItem(client, color);
+	else if (pc) pc->dyeChar(client, color);
+	else return false;
 	return true;
 }
 
@@ -2896,6 +2980,7 @@ bool nPackets::Received::UnicodeSpeechReq::execute(pClient client)
 	}
 	cSpeech text = cSpeech(buffer + offset);
 	text.assignPacketByteOrder(true);
+	//! \todo set the other cSpeech parameters
 	client->talking(text);
 	return true;
 }

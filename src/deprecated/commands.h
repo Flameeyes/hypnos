@@ -38,7 +38,6 @@ namespace Commands
 	void GMPage(pClient client, std::string reason);
 	void Command(pClient client, char * );
 	void MakeShop(pChar pc);
-	void DyeItem(pClient client);
 	void DupeItem(pClient client, pItem pi_from, uint16_t amount);
 	void Possess(pClient client);
 };

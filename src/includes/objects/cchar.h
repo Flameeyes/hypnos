@@ -376,6 +376,7 @@ private:
 */
 public:
 	void showLongName( pChar showToWho, bool showSerials );
+	void dyeChar(pClient client, uint16_t color);
 //@}
 
 

@@ -519,7 +519,7 @@ void cChar::unHide()
 		if (pj != this) { //to other players : recreate player object
 			nPackets::Sent::DeleteObj pk(this);
 			client->sendPacket(&pk);
-			impowncreate(i, this, 0);
+			i->sendchar(this, false);
 		} else {
 			nPackets::Sent::DrawGamePlayer pk(this);
 			i->sendPacket(&pk);
@@ -647,7 +647,7 @@ void cChar::applyPoison(PoisonType poisontype, int32_t secs )
 			poisonwearofftime=getclock()+(SECS*secs);
 
 		pClient client = getClient();
-		impowncreate(client, this, 1); //Lb, sends the green bar !
+		client->sendchar(this);
 		client->sysmessage("You have been poisoned!");
 		playSFX( 0x0246 ); //poison sound - SpaceDog
 	}
@@ -869,31 +869,39 @@ void cChar::teleport( uint8_t flags, pClient cli )
 			if ( ps_w == NULL )
 				continue;
 			pChar pc = ps_w->currChar();
-            if ( pc )
-	            if ( distFrom( pc ) > VISRANGE || !canSee( *pc ) )
-					ps_w->sendRemoveObject(static_cast<pObject>(this));
+			if ( pc )
+				if ( distFrom( pc ) > VISRANGE || !canSee( *pc ) )
+				{
+					nPackets::Sent::DeleteObj pk(this);
+					ps_w->sendPacket(&pk);
+				}
 		}
 	} else
-		cli->sendRemoveObject(static_cast<pObject>(this));
+	{
+		nPackets::Sent::DeleteObj pk(this);
+		cli->sendPacket(&pk);
+	}
 
         //
         // Send worn items and the char itself to the char (if online) and other players
         //
-	if ( cli == NULL ) {
+	if ( !cli )
+	{
 		NxwSocketWrapper sw;
 		sw.fillOnline( this, false );
 		for ( sw.rewind(); !sw.isEmpty(); sw++ ) {
 			pClient ps_i = sw.getClient();
 			if( ps_i != NULL ) {
-				impowncreate( ps_i->toInt(), this, 1 );
+				ps_i->sendchar(this);
 				//ndEndy not too sure of this
 				if ( flags&TELEFLAG_SENDWORNITEMS )
 					wornitems( ps_i->toInt(), this );
 			}
 		}
 		sw.clear();
-	} else {
-		impowncreate( cli->toInt(), this, 1 );
+	} else
+	{
+		cli->sendchar(this);
 		if ( flags&TELEFLAG_SENDWORNITEMS )
 			wornitems( cli->toInt(), this );
 	}
@@ -919,13 +927,16 @@ void cChar::teleport( uint8_t flags, pClient cli )
 							if ( !pc->IsOnline() && !pc->npc )
 							{
 								if ( seeForLastTime( *pc ))
-									getClient()->sendRemoveObject( pObject(pc) );
+								{
+									nPackets::Sent::DeleteObj pk(pc);
+									getClient()->sendPacket(&pk);
+								}
 							}
 							else
 							{
 								seeForLastTime( *pc );
 								seeForFirstTime( *pc );
-								impowncreate( socket, pc, 1 );
+								cli->sendchar(pc);
 							}
 						}
 					}
@@ -1444,7 +1455,7 @@ void cChar::curePoison()
 {
 	poisoned = poisonNone;
 	poisonwearofftime = getclock();
-	if (getClient() != NULL) impowncreate(getClient(), this, 1);
+	if (getClient()) getClient()->sendchar(this);
 }
 
 /*!
@@ -2587,7 +2598,7 @@ void cChar::checkPoisoning()
 			else
 			{
 				poisoned = poisonNone;
-				impowncreate( getSocket(), this, 1 ); // updating to blue stats-bar ...
+				getChar()->sendchar(this); // updating to blue stats-bar ...
 				if ( !npc )
 					sysmsg("The poison has worn off.");
 			}
@@ -2859,5 +2870,28 @@ void cChar::setCrimGrey(SuspectAction mode)
 		case saGrey:
 			setGrey();
 			return;
+	}
+}
+
+
+void cChar::dyeChar(pClient client, uint16_t color)
+{
+
+	pc = client->currChar();
+	if( pc->IsGMorCounselor() )
+	{
+		bodyid = getBody()->getId();
+
+		if( color < 0x8000  && bodyid >= BODY_MALE && bodyid <= BODY_DEADFEMALE ) color |= 0x8000; // why 0x8000 ?! ^^;
+
+		if ((color & 0x4000) && (bodyid >= BODY_MALE && bodyid<= 0x03E1)) color = 0xF000; // but assigning the only "transparent" value that works, namly semi-trasnparency.
+
+		if (color != 0x8000)
+		{
+			setColor(color);
+			setOldColor(color);
+			teleport( TELEFLAG_NONE );
+			client->playSFX(0x023E);
+		}
 	}
 }

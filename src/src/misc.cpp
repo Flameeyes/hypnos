@@ -223,7 +223,7 @@ void usepotion(pChar pc, pItem pi)
 				if(client) client->sysmessage("The poison was cured.");
 			}
 		}
-		impowncreate(s,pc,1); //Lb, makes the green bar blue or the blue bar blue !
+		client->sendchar(pc);
 		break;
 
 	case 3: {// Explosion Potion
@@ -285,7 +285,7 @@ void usepotion(pChar pc, pItem pi)
 		if(pi->morez>4)
 			pi->morez=4;
 		pc->poisonwearofftime=getclock()+(SECS*SrvParms->poisontimer); // lb, poison wear off timer setting
-		impowncreate(s,pc,1); //Lb, sends the green bar !
+		client->sendchar(pc);
 		pc->playSFX(0x0246); //poison sound - SpaceDog
 		if(client) client->sysmessage("You poisoned yourself! *sigh*"); //message -SpaceDog
 		break;

@@ -520,36 +520,6 @@ void SendUnicodeSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, ui
 //AoS/	Network->FlushBuffer(s);
 }
 
-void impowncreate(pClient client, pChar pc, int z) //socket, player to send
-{
-        if(!client)
-		return;
-
-	pChar pc_currchar = client->currChar();
-	if(!pc_currchar) return;
-
-	if (pc->isStabled() || pc->mounted)
-		return; // dont **show** stabled pets
-
-	bool sendit = true; //Luxor bug fix
-	if (pc->IsHidden() && pc->getSerial()!=pc_currchar->getSerial() && !pc_currchar->IsGM())
-		sendit=false;
-
-	if( !pc->npc && !pc->IsOnline()  && !pc_currchar->IsGM() )
-	{
-		sendit=false;
-		nPackets::Sent::DeleteObj pk(pc);
-		client->sendPacket(&pk);
-	}
-	// hidden chars can only be seen "grey" by themselves or by gm's
-	// other wise they are invisible=dont send the packet
-	if (!sendit)
-		return;
-
-	SendDrawObjectPkt(s, pc, z);
-	//pc_currchar->sysmsg( "sended %s", pc->getCurrentName().c_str() );
-}
-
 
 bool sellstuff(pClient client, pChar pc)
 {

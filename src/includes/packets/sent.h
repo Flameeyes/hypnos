@@ -1097,15 +1097,33 @@ namespace nPackets {
 			pChar chr;
 			uint8_t dir, flag, hi_color;
 			uint32_t id1,id2,id3;
-		
+
 		public:
 			inline UpdatePlayer(pChar pc, uint8_t newdir, uint8_t newflag, uint8_t newhi_color) :
 				cPacketSend(NULL, 0), chr(pc), dir(newdir), flag(newflag), hi_color(newhi_color)
 			{ }
-		
+
 			void prepare();
 		};
 
+		/*!
+		\brief Draws a player [packet 0x78]
+		\author Chronodt
+		\note this packet must be personalized for each client who receives it, since it calculates guild status between receiver and drawn char
+		*/
+
+		class DrawObject : public cPacketSend
+		{
+		protected:
+			pClient client;		//!< receiver of packet
+			pChar pc;		//!< player to be drawn to client
+			bool usedispz;		//!< use dispz instead of z as z-coordinate
+		public:
+			inline DrawObject(pClient aClient, pChar aPc, bool aUseDispZ) :
+				cPacketSend(NULL, 0), client(aClient), pc(aPc), usedispz(aUseDispZ)
+			{ }
+			void prepare();
+		};
 
 
 		/*!

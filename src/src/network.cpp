@@ -936,7 +936,7 @@ char cNetwork::LogOut(pClient client)//Instalog
 		pClient client = sw.getSocket();
 		if ( ! client ) return;
 		
-		client->impOwnCreate(pc, 0);
+		client->sendchar(pc, false);
 	}
 	return valid;
 }
@@ -1803,7 +1803,7 @@ void cNetwork::GetMsg(pClient client) // Receive message from client
 							statwindow(pc_currchar, cSerializable::findCharBySerial(LongFromCharPtr(buffer[s] +6)));
 
 						if (buffer[s][5]==5)
-							skillwindow(client);
+							client->skillwindow();
 					}
 					break;
 

@@ -728,9 +728,13 @@ void sendToPlayers( pChar pc, int8_t dir )
 			if ( cli != NULL )
 				cli->sendRemoveObject( pObject(pc_curr) );
 		}
-		if ( pc->seeForFirstTime( *pc_curr ) ) {
-			if ( cli != NULL )
-				SendDrawObjectPkt( cli->toInt(), pc_curr, 1);
+		if ( pc->seeForFirstTime( *pc_curr ) )
+		{
+			if ( cli )
+			{
+				nPackets::Sent::DrawObject pk(cli, pc_curr, true);
+				cli->sendPacket(&pk);
+			}
 		}
 
 		ps = pc_curr->getClient();
@@ -738,14 +742,18 @@ void sendToPlayers( pChar pc, int8_t dir )
 			continue;
 
 		// pc has just walked out pc_curr's vis circle
-		if ( pc_curr->seeForLastTime( *pc ) ) {
-			ps->sendRemoveObject( pObject(pc) );
+		if ( pc_curr->seeForLastTime( *pc ) )
+		{
+			nPackets::Sent::DeleteObj pk(pc);
+			ps->sendPacket(&pk);
 			continue;
 		}
 
 		// It's seen for the first time, send a draw packet
-		if ( pc_curr->seeForFirstTime( *pc ) ) {
-			SendDrawObjectPkt( ps->toInt(), pc, 1 );
+		if ( pc_curr->seeForFirstTime( *pc ) )
+		{
+			nPackets::Sent::DrawObject pk(ps, pc, true);
+			ps->sendPacket(&pk);
 			continue;
 		}
 

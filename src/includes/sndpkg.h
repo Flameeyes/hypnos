@@ -28,8 +28,6 @@ void updatechar(pChar pc);
 	//!< If character status has been changed (Polymorph);, resend him
 void target(pClient client, int a1, int a2, int a3, int a4, char *txt);
 	//!< Send targetting cursor to client
-void skillwindow(pClient client);
-	//!< Opens the skills list, updated for client 1.26.2b by LB
 void weblaunch(pClient client, const char *txt);
 	//!< Direct client to a web page
 void broadcast(pClient client);
@@ -45,8 +43,7 @@ void SendDrawObjectPkt(pClient client, pChar pc, int z);
 void SendUnicodeSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint32_t lang, uint8_t sysname[30], uint8_t *unicodetext, uint16_t unicodelen);
 
 void SendPlaySoundEffectPkt(pClient client, uint8_t mode, uint16_t sound_model, uint16_t unkn, sLocation pos, bool useDispZ = false);
-void impowncreate(pClient client, pChar pc, int z);
-	//!< socket, player to send
+
 
 pClient clientellstuff(pClient client, int i);
 

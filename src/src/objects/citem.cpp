@@ -746,8 +746,11 @@ void cItem::Refresh()
 	sw.fillOnline();
 	for ( sw.rewind(); !sw.isEmpty(); sw++ ) {
 		pClient ps_w = sw.getClient();
-		if ( ps_w != NULL )
-			ps_w->sendRemoveObject(static_cast<pObject>(this));
+		if ( ps_w )
+		{
+			nPackets::Sent::DeleteObj pk(this);
+			ps_w->sendPacket(&pk);
+		}
 	}
 
 	//first check: let's check if it's on the ground....
@@ -1026,4 +1029,41 @@ void talk(const std::string &msg)
 		SendUnicodeSpeechMessagePkt(s, getSerial(), getId(), 0, 0x0481, 0x0003, lang, name, unicodetext,  ucl);
 
 	}
+}
+
+void cItem::DyeItem(pClient client, uint16_t color) // Rehue an item
+{
+	uint16_t color, body;
+
+	pPC Me = client->currChar();
+	if ( ! Me ) return;
+
+	if( !Me->IsGMorCounselor() )
+	{
+		if( !pi->isDyeable() ) return;
+
+		pChar owner = pi->getCurrentOwner();
+		if( owner != Me) return;
+		if( pi->magic==4 ) return;	//locked down items can not be dyed
+	}
+
+	if (( color<0x0002) || (color>0x03E9))
+	{
+		color = 0x03E9;
+	}
+
+
+	if (! ((color & 0x4000) || (color & 0x8000)) )
+	{
+		pi->setColor( color );
+	}
+
+	if (color == 0x4631)
+	{
+		pi->setColor( color );
+	}
+
+	pi->Refresh();
+
+	Me->playSFX(0x023E);
 }

@@ -550,7 +550,7 @@ void cTempfx::start()
 			clientInfo[index]->lsd = true;
 			dest->hp = dest->st;
 			dest->mn = dest->in;
-			impowncreate(index, dest, 0);*/
+			dest->getClient()->sendchar(dest, false);*/
 			break;
 
 		case SPELL_PROTECTION:
@@ -808,7 +808,7 @@ void cTempfx::executeExpireCode()
 			dest->stm = 3;
 			dest->mn = 3;
 			dest->hp /= 7;
-			impowncreate(index, dest, 0);
+			dest->getClient()->sendchar(dest, false);
 			all_items(index);
 			pChar p_nearchar;
 			forEachCharNearby(dest->x, dest->y, 15, p_nearchar) {
