@@ -16,6 +16,7 @@
 #include "objects/citem/cequippablecontainer.h"
 #include "objects/cbody.h"
 #include "archetypes/generic.h"
+#include "backend/strconstants.h"
 
 #include <mxml.h>
 #include <fstream>
@@ -41,6 +42,8 @@ namespace nNewbies {
 	
 	static void padMissingLocations();
 	void deleteLocations();
+	
+	NBItemSList loadItemsList(MXML::Node *n);
 	
 	void giveItemsMale(pBody body, uint16_t pantsColor, uint16_t shirtColor);
 	void giveItemsFemale(pBody body, uint16_t pantsColor, uint16_t shirtColor);
@@ -174,6 +177,126 @@ void nNewbies::loadStartLocations()
 }
 
 /*!
+\brief Loads the newbies.xml datafile and saves it into the items' lists.
+
+This function clears the items' lists and fill them with the items load from 
+the datafile.
+
+To accomplish that, the function calls loadItemsList() function for the nodes
+after their identiifcation.
+
+The function also loads the nSettings::Server::varNewbiesGold value from the
+same datafile.
+*/
+void nNewbies::loadNewbieItems()
+{
+	NewbiesAll.clear(); NewbiesMale.clear(); NewbiesFemale.clear();
+	for(register int i = 0; i < skTrueSkills; i++)
+	{
+		NewbiesSkills[i].clear();
+	}
+	
+	//!\todo Add code to cleanup the items' lists
+	ConOut("Loading newbies' items...\t\t");
+	
+	std::ifstream xmlfile("config/newbies.xml");
+	if ( ! xmlfile )
+	{
+		ConOut("[ Failed ]\n");
+		LogCritical("Unable to open newbies.xml file.");
+		return;
+	}
+
+	try {
+		MXML::Document doc(xmlfile);
+		
+		MXML::Node *n = doc.main()->child();
+		
+		if ( doc.main()->name() != "newbies" )
+		{
+			ConOut("[ Failed ]\n");
+			LogCritical("Unknown document node %s in newbies.xml, failing out", n->name().c_str() );
+			return;
+		}
+		
+		if ( doc.main()->hasAttribute("gold") )
+			nSettings::Server::setNewbiesGold(tVariant(doc.main()->getAttribute("gold")));
+		
+		if ( ! n )
+			return;
+		
+		int i = 0;
+		
+		do {
+			if ( n->name() == "allnewbies" )
+				NewbiesAll = loadItemsList(n);
+			else if ( n->name() == "malenewbies" )
+				NewbiesMale = loadItemsList(n);
+			else if ( n->name() == "femalenewbies" )
+				NewbiesFemale = loadItemsList(n);
+			else if ( n->name() == "bestskill" )
+			{
+				try {
+					Skill sk = nStrConstants::skills(n->getAttribute("skill"));
+					if ( sk == skInvalid )
+					{
+						LogWarning("Incomplete node in newbies.xml, ignoring");
+						continue;
+					}
+					NewbiesSkills[sk] = loadItemsList(n);
+				} catch( MXML::NotFoundError e ) {
+					LogWarning("Incomplete node in newbies.xml, ignoring");
+					continue;
+				}
+			} else {
+				LogWarning("Unknown node %s in newbies.xml, ignoring", n->name().c_str() );
+				continue;
+			}
+		} while((n = n->next()));
+		
+		padMissingLocations();
+		
+		ConOut("[   OK   ]\n");
+	} catch ( MXML::MalformedError e) {
+		ConOut("[ Failed ]\n");
+		LogCritical("start.xml file not well formed.");
+	}
+}
+
+/*!
+\brief Function used for load a newbies' items' list from xmldatafile
+\param n Node to start the load from
+*/
+nNewbies::NBItemSList nNewbies::loadItemsList(MXML::Node *n)
+{
+	NBItemSList ret;
+	MXML::Node *itm = n->child();
+	if ( ! itm ) return ret;
+	
+	do {
+		try {
+			sNewbieItem i;
+			
+			i.item = itm->getAttribute("id");
+			if ( itm->hasAttribute("color") )
+				i.color = itm->getAttribute("color");
+			if ( itm->hasAttribute("place") )
+				i.place = nStrConstants::itemPlace(itm->getAttribute("place"));
+			if ( itm->hasAttribute("amount") )
+				i.amount = tVariant(itm->getAttribute("amount"));
+			
+			ret.push_front(i);
+			
+		} catch ( MXML::NotFoundError e ) {
+			LogWarning("Incomplete node in newbies.xml, ignoring");
+			continue;
+		}
+	} while((itm = itm->next()));
+	
+	return ret;
+}
+
+/*!
 \brief Creates the newbie item and set it to the given character
 \param body Body of the player to give the newbie's items to
 */
@@ -236,15 +359,15 @@ void nNewbies::giveItems(pBody body, uint16_t pantsColor, uint16_t shirtColor)
 		LogWarning("We are creating a new player which isn't an human.");
 
 	// Add items by skill
-	for( NBItemSList::iterator it = NewbiesSkills[first].begin(); it != NewbiesSkills[first].end(); it++ )
-		(*it).createItem(body);
+	if ( body->getSkill(third) >= 190 )
+		for( NBItemSList::iterator it = NewbiesSkills[third].begin(); it != NewbiesSkills[third].end(); it++ )
+			(*it).createItem(body);
 	
 	for( NBItemSList::iterator it = NewbiesSkills[second].begin(); it != NewbiesSkills[second].end(); it++ )
 		(*it).createItem(body);
 	
-	if ( body->getSkill(third) >= 190 )
-		for( NBItemSList::iterator it = NewbiesSkills[third].begin(); it != NewbiesSkills[third].end(); it++ )
-			(*it).createItem(body);
+	for( NBItemSList::iterator it = NewbiesSkills[first].begin(); it != NewbiesSkills[first].end(); it++ )
+		(*it).createItem(body);
 	
 	// Add the gold
 	if ( ! nSettings::Server::getNewbiesGold() )

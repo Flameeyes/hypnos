@@ -58,11 +58,16 @@ namespace nNewbies {
 		uint16_t amount;	//!< Amount of items to add
 		std::string color;	//!< Color of the items to add
 		
+		sNewbieItem()
+		{ place = ipBackpack; amount = 1; color = "colorNeutral"; }
+		
 		void createItem(pBody body);
 	};
 	
 	//! Singly-linked list of sNewbieItem's
 	typedef std::slist<sNewbieItem> NBItemSList;
+	
+	void loadNewbieItems();
 	
 	void giveItems(pBody body, uint16_t pantsColor, uint16_t shirtColor);
 	void giveHairs(pBody body, uint16_t hairStyle, uint16_t hairColor, uint16_t facialStyle, uint16_t facialColor);

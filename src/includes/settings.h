@@ -63,6 +63,7 @@ namespace nSettings {
 		uint32_t getWeightPerStr();		//!< How much weight can take with one str point? [Default: 4]
 		
 		uint16_t getNewbiesGold();
+		void setNewbiesGold(uint16_t val);
 	}
 	
 	namespace MsgBoards {

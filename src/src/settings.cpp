@@ -213,6 +213,10 @@ namespace Server {
 
 	//! Initial gold coinst to give to the new players
 	SETTING(uint16_t, NewbiesGold, 300);
+	
+	//! Function to set the newbies' gold
+	void setNewbiesGold(uint16_t val)
+	{ varNewbiesGold = val; }
 
 	void load(MXML::Node *s)
 	{
