@@ -191,7 +191,6 @@ void Skills::target_mine( pClient client, pTarget t )
 	bool mountain= false;
 
 	map_st map;
-	land_st land;
 
 	pc->stm+=ores.stamina;
 	if(pc->stm<0) 
@@ -201,7 +200,6 @@ void Skills::target_mine( pClient client, pTarget t )
 	pc->updateStamina();
 
 	
-
 	int cx = abs( (int) (pc->getPosition().x - target.x) );
 	int cy = abs( (int) (pc->getPosition().y - target.y) );
 
@@ -216,11 +214,10 @@ void Skills::target_mine( pClient client, pTarget t )
 	if( SrvParms->minecheck > 0 && !id )
 	{
 		// mountains are "map0's" and no statics !!!
-
 		data::seekMap( target.x, target.y, map );
-		data::seekLand( map.id, land );
 
-		if ( !strcmp(land.name,"rock") || !(strcmp(land.name, "mountain")) || !(strcmp(land.name, "cave")))
+		std::string name = tiledataLand->getName(map.id);
+		if ( !strcmp(name.c_str(),"rock") || !(strcmp(name.c_str(), "mountain")) || !(strcmp(name.c_str(), "cave")))
 			mountain = true;
 	}
 

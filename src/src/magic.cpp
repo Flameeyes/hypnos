@@ -1822,37 +1822,13 @@ static void applySpell(SpellId spellnumber, sTarget& dest, pChar src, int flags,
 			break;
 
 		case spellTeleport:
-			//Luxor: now a mage cannot teleport to water
-			/*bool isWater = false;
-			map_st map;
-			data::seekMap(loc.x, loc.y, map);
-			switch(map.id)
+			if ( ! isWaterTile(loc) )
 			{
-				//water tiles:
-				case 0x00A8:
-				case 0x00A9:
-				case 0x00AA:
-				case 0x00Ab:
-				case 0x0136:
-				case 0x0137:
-				case 0x3FF0:
-				case 0x3FF1:
-				case 0x3FF2:
-				case 0x2FF3:
-					isWater = true;
-					break;
-				default:
-					break;
-			}
-			land_st land;
-			data::seekLand(map.id, land);
-			if (land.flags&TILEFLAG_WET) isWater = true;*/
-			//if (!isWater) {
 				src->MoveTo(loc);
 	                        src->teleport();
                         	spellFX(spellnumber, src, pd);
-			//}
-		break;
+			}
+			break;
 	}
 	if (spellsData[spellnumber].attackSpell) src->attackStuff(pd);	//Luxor
 }
