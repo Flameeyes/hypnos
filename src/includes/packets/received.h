@@ -351,4 +351,5 @@ public:
 class cPacketReceiveCreateChar          : public cPacketReceive;
 class cPacketReceiveDisconnectNotify    : public cPacketReceive;
 class cPacketReceiveMoveRequest         : public cPacketReceive;
+class cPacketReceiveTalkRequest         : public cPacketReceive;
 #endif

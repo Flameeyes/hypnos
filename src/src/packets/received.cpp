@@ -313,7 +313,7 @@ static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
                 case 0x00: return new cPacketReceiveCreateChar(buffer, length);         // Create Character
                 case 0x01: return new cPacketReceiveDisconnectNotify(buffer, length);   // Disconnect Notification
                 case 0x02: return new cPacketReceiveMoveRequest(buffer, length);        // Move Request
-                case 0x03: length = ???; break; // Talk Request
+                case 0x03: return new cPacketReceiveTalkRequest(buffer, length);        // Talk Request
                 case 0x05: length =   5; break; // Attack Request
                 case 0x06: length =   5; break; // Double click
                 case 0x07: length =   7; break; // Pick Up Item(s)
@@ -362,9 +362,6 @@ static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
                 case 0xa0: length =   3; break; // Select Server
 //                case 0xa4: length =   5; break; // Client Machine info (Apparently was a sort of lame spyware command .. unknown if it still works)
                 case 0xa7: length =   4; break; // Request Tips/Notice
-
-                //packet 0xa9 has a receiving part?? (Characters / Starting Locations)
-
                 case 0xaa: length =   5; break; // Attack Request Reply
                 case 0xac: length = ???; break; // Gump Text Entry Dialog Reply
                 case 0xad: length = ???; break; // Unicode speech request
@@ -593,7 +590,7 @@ virtual bool cPacketReceiveCreateChar::execute(pClient client)
 
 virtual bool cPacketReceiveDisconnectNotify::execute(pClient client)
 {
-        if ((length |= 5) || (LongFromCharPtr(buffer+1) != 0xffffffff)) return false;
+        if ((length != 5) || (LongFromCharPtr(buffer+1) != 0xffffffff)) return false;
         Network->Disconnect(client);
         return true;
 }
@@ -601,14 +598,23 @@ virtual bool cPacketReceiveDisconnectNotify::execute(pClient client)
 
 virtual bool cPacketReceiveMoveRequest::execute (pClient client)
 {
-        if (length |= 7) return false;
-/*
-Move Request (7 bytes)
-BYTE cmd
-BYTE direction
-BYTE sequence number
-BYTE[4] fastwalk prevention key
 
-The festwalk prevention key is a number sent by the server into the MOVE ACK, telling the client the next key to be used. This is used to prevent exploits where client sends "MOVE" message without waitting for the MOVE ACK from the server. Note: Sequence number starts at 0, is reseted when reaches 255. However, when it's reseted, the next sequence number is 1, not 0.
-*/
+        if( (length == 7) && (client->currChar()!= NULL ))
+        {
+	        walking(client->currChar(), buffer[1], buffer[2]); // buffer[1] = direction, buffer[2] = sequence number
+	        client->currChar()->disturbMed();
+                return true;
+        } else return false;
+}
+
+virtual bool cPacketReceiveTalkRequest::execute (pClient client)
+{
+	if( (client->currChar()!=NULL) && (length != ShortFromCharPtr(buffer + 1)))
+        {
+        	unsigned char nonuni[512];
+		client->currChar()->unicode = false;
+	        strcpy((char*)nonuni, (char*)&buffer[8]);
+		talking(client, (char*)nonuni);
+                return true;
+	} else return false;
 }
