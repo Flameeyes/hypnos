@@ -741,7 +741,7 @@ void NxwCharWrapper::fillNpcsNearXY( UI16 x, UI16 y, int nDistance )
 							if( !pc->npc )
 								continue;
 							if(  !pc->isStabled() && !pc->mounted ) {
-								int iDist=(int)dist(x,y,0,pc->getPosition().x,pc->getPosition().y,0);
+								int iDist=(int)dist(Location(x,y,0),pc->getPosition(), false);
 								if (iDist <= nDistance)
 									this->insertSerial(pc->getSerial32());
 							}
@@ -986,7 +986,7 @@ void NxwItemWrapper::fillItemsNearXYZ ( UI16 x, UI16 y, int nDistance, bool bExc
 							P_ITEM pi=pointers::findItemBySerial( *iter );
 							if( pi != 0 )
 								if( pi->isInWorld() ) {
-									int iDist=(int)dist(x,y,0, pi->getPosition("x"), pi->getPosition("y"), 0 );
+									int iDist=(int)dist(Location(x,y,0), pi->getPosition(), false);
 									if (iDist <= nDistance) {
 										if ((!bExcludeNotMovableItems) || (pi->magic != 2 && pi->magic != 3))
 										{

@@ -3946,7 +3946,7 @@ NATIVE(_map_canMoveHere)
 */
 NATIVE(_map_distance)
 {
-	return cell(dist( params[1], params[2], params[3], params[4], params[5], params[6] ));
+	return cell(dist( Location(params[1], params[2], params[3]), Location(params[4], params[5], params[6]) ));
 }
 
 /*
