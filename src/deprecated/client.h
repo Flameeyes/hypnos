@@ -22,21 +22,14 @@
 typedef std::vector< std::string > td_cmdparams;
 
 class cNxwClientObj {
-public:
+private:
 	NXWSOCKET m_sck;
 public:
 	cNxwClientObj( NXWSOCKET s );
 	void setLegacySocket(NXWSOCKET s);
 
-	inline NXWSOCKET toLegacySocket() const
-	{
-		return m_sck;
-	}
-
-	inline int toInt() const
-	{
-		return m_sck;
-	}
+	inline const NXWsocket toInt() const
+	{ return m_sck; }
 
 	//@{
 	/*!
@@ -66,20 +59,7 @@ public:
 
 };
 
-
-
-/*typedef std::map< SERIAL, cNxwClientObj > CLIENTS_MAP;
-extern CLIENTS_MAP allclients;*/
-
-typedef std::vector< SERIAL > SOCKETS_VECT;
-//extern SOCKETS_VECT currchar;
-extern SERIAL currchar[MAXCLIENT];
-
-
-
-
-
-
+extern P_CHAR loginchars[MAXCLIENT];
 
 class cClient {
 
@@ -105,8 +85,5 @@ public:
 	~cClient();
 
 };
-
-
-
 
 #endif

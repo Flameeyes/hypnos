@@ -21,7 +21,7 @@
 #define PYNATIVE(_func) \
 	static PyObject* _func(PyObject *self, PyObject *args)
 
-#define PYINVALID Py_BuildValue("i", -1)
+#define PYNULL Py_BuildValue("i", NULL)
 
 /*!
 \brief Contains all Python related methods, and variables.

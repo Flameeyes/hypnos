@@ -101,61 +101,56 @@ void cNxwClientObj::sysmsg(char* txt, ...)
 //AoS/	Network->FlushBuffer(m_sck);
 }
 
-NXWSOCKET cNxwClientObj::toLegacySocket() 
-{ 
-	return m_sck; 
-}
-
-void cNxwClientObj::setLegacySocket(NXWSOCKET s) 
-{ 
+void cNxwClientObj::setLegacySocket(NXWSOCKET s)
+{
 	if (s < 0 || s > MAXCLIENT) return;
 	m_sck = s;
 }
 
-bool cNxwClientObj::isDragging() 
-{ 
+bool cNxwClientObj::isDragging()
+{
 	return clientInfo[m_sck]->dragging;
 }
 
-void cNxwClientObj::setDragging() 
-{ 
-	clientInfo[m_sck]->dragging=true; 
+void cNxwClientObj::setDragging()
+{
+	clientInfo[m_sck]->dragging=true;
 }
 
-void cNxwClientObj::resetDragging() 
-{ 
-	clientInfo[m_sck]->dragging=false; 
+void cNxwClientObj::resetDragging()
+{
+	clientInfo[m_sck]->dragging=false;
 }
 
 bool cNxwClientObj::inGame()
-{ 
-	return clientInfo[m_sck]->ingame; 
+{
+	return clientInfo[m_sck]->ingame;
 }
 
-P_CHAR cNxwClientObj::currChar() 
-{ 
-	
-	return MAKE_CHAR_REF(currchar[m_sck]); 
+P_CHAR cNxwClientObj::currChar()
+{
+
+	return MAKE_CHAR_REF(currchar[m_sck]);
 }
 
 int cNxwClientObj::currCharIdx()
-{ 
-	return currchar[m_sck]; 
+{
+	return currchar[m_sck];
 }
 
-int cNxwClientObj::getRealSocket() 
-{ 
-	return client[m_sck]; 
+int cNxwClientObj::getRealSocket()
+{
+	return client[m_sck];
 }
 
 BYTE *cNxwClientObj::getRcvBuffer()
-{ 
+{
 	return &buffer[m_sck][0];
 }
 
 
 void cNxwClientObj::send(const void *point, int length)
-{ 
+{
 	if (m_sck>-1 && m_sck < now) Xsend(m_sck,point,length);
 }
 
@@ -297,7 +292,7 @@ void cNxwClientObj::sendSFX(unsigned char a, unsigned char b, bool bIncludeNearb
 	sfx[7]= charpos.x % 256;
 	sfx[8]= charpos.y >> 8;
 	sfx[9]= charpos.y % 256;
-	
+
 	if (bIncludeNearby) {
 		NxwSocketWrapper sw;
 		sw.fillOnline( pc );

@@ -1100,18 +1100,18 @@ public:
 \name possess stuff
 \author Luxor
 */
-		SERIAL			possessorSerial;
-		SERIAL			possessedSerial;
-		void			possess( P_CHAR pc );
+		P_CHAR		possessor;
+		P_CHAR		possessed;
+		void		possess( P_CHAR pc );
 //@}
 
-		void			jail (SI32 seconds = 60*60*24);
-		void			Kill();
-		void			kick();
-		void			goPlace(SI32);
-		LOGICAL			knowsSpell(magic::SpellId spellnumber);
+		void		jail (SI32 seconds = 60*60*24);
+		void		Kill();
+		void		kick();
+		void		goPlace(SI32);
+		LOGICAL		knowsSpell(magic::SpellId spellnumber);
 
-		void			setNpcMoveTime();
+		void		setNpcMoveTime();
 
 	public:
 	#ifdef SPAR_NEW_WR_SYSTEM

@@ -366,7 +366,7 @@ void cItem::getPopupHelp(char *str)
 \param old set the saved cont serial or the actual one ?
 \param update update the container map ?
 */
-void cItem::setContSerial(SI32 serial, LOGICAL old, LOGICAL update )
+void cItem::setContSerial(SI32 serial, bool old, bool update )
 {
 	if( old ) {
 		oldcontserial.serial32= serial;
@@ -381,7 +381,7 @@ void cItem::setContSerial(SI32 serial, LOGICAL old, LOGICAL update )
 		pointers::updContMap(this);
 }
 
-void cItem::setContSerialByte(UI32 nByte, BYTE value, LOGICAL old/*= false*/)
+void cItem::setContSerialByte(UI32 nByte, BYTE value, bool old/*= false*/)
 {
 	Serial *cont;
 
@@ -400,7 +400,7 @@ void cItem::setContSerialByte(UI32 nByte, BYTE value, LOGICAL old/*= false*/)
 	}
 }
 
-BYTE cItem::getContSerialByte(UI32 nByte, LOGICAL old/*= false*/) const
+BYTE cItem::getContSerialByte(UI32 nByte, bool old/*= false*/) const
 {
 	const Serial *cont;
 
@@ -421,7 +421,7 @@ BYTE cItem::getContSerialByte(UI32 nByte, LOGICAL old/*= false*/) const
 	return 0;
 }
 
-SI32 cItem::getContSerial(LOGICAL old/*= 0*/) const
+SI32 cItem::getContSerial(bool old/*= 0*/) const
 {
 	if(old)
 		return oldcontserial.serial32;
@@ -447,7 +447,7 @@ const cObject* cItem::getContainer() const
 \brief execute decay on the item
 \return true if decayed (so deleted), false else
 */
-LOGICAL cItem::doDecay()
+bool cItem::doDecay()
 {
 	if ( !canDecay() )
 		return false;
@@ -705,7 +705,7 @@ void cItem::MoveTo(Location newloc)
 \param xx the x location or INVALID if use rand pos
 \param yy the y location or INVALID if use rand pos
 */
-LOGICAL cItem::AddItem(P_ITEM pItem, short xx, short yy)
+bool cItem::AddItem(P_ITEM pItem, short xx, short yy)
 {
 
 	VALIDATEPIR(pItem,false);
@@ -1047,7 +1047,7 @@ cItem::cItem( SERIAL ser )
 
 }
 
-LOGICAL LoadItemEventsFromScript (P_ITEM pi, char *script1, char *script2)
+bool LoadItemEventsFromScript (P_ITEM pi, char *script1, char *script2)
 {
 
 #define CASEITEMEVENT( NAME, ID ) 	else if (!(strcmp(NAME,script1))) pi->amxevents[ID] = newAmxEvent(script2);
@@ -1142,9 +1142,9 @@ int cItem::countSpellsInSpellBook()
 \param spellnum spell identifier
 \return true if the spell is in the spellbook else false
 */
-LOGICAL cItem::containsSpell(magic::SpellId spellnum)
+bool cItem::containsSpell(magic::SpellId spellnum)
 {
-    LOGICAL raflag = false;
+    bool raflag = false;
 
     if (spellnum==magic::SPELL_REACTIVEARMOUR) raflag = true;
     if ((spellnum>=magic::SPELL_CLUMSY) && (spellnum < magic::SPELL_REACTIVEARMOUR))
@@ -1244,7 +1244,7 @@ void cItem::Refresh()
 	}
 }
 
-cContainerItem::cContainerItem(LOGICAL ser/*= true*/) : cItem(ser)
+cContainerItem::cContainerItem(bool ser/*= true*/) : cItem(ser)
 {
 	ItemList.empty();
 }
@@ -1311,7 +1311,7 @@ SI16 cContainerItem::getGumpType()
 	}
 }
 
-LOGICAL cContainerItem::pileItem( P_ITEM pItem)	// try to find an item in the container to stack with
+bool cContainerItem::pileItem( P_ITEM pItem)	// try to find an item in the container to stack with
 {
 
 	NxwItemWrapper si;
@@ -1380,7 +1380,7 @@ void cContainerItem::setRandPos(P_ITEM pItem)
 	}
 }
 
-UI32 cContainerItem::countItems(UI32 scriptID, LOGICAL bAddAmounts/*= false*/)
+UI32 cContainerItem::countItems(UI32 scriptID, bool bAddAmounts/*= false*/)
 {
 	UI32 count= 0;
 	vector<SI32>::iterator it= ItemList.begin();
@@ -1539,7 +1539,7 @@ UI32 cItem::distFrom( P_ITEM pi )
 	}
 }
 
-void cItem::setDecay( const LOGICAL on )
+void cItem::setDecay( const bool on )
 {
 	if( on )
 		priv |= 0x01;
@@ -1547,7 +1547,7 @@ void cItem::setDecay( const LOGICAL on )
 		priv &= ~0x01;
 }
 
-void cItem::setNewbie( const LOGICAL on )
+void cItem::setNewbie( const bool on )
 {
 	if( on )
 		priv |= 0x02;
@@ -1555,20 +1555,12 @@ void cItem::setNewbie( const LOGICAL on )
 		priv &= ~0x02;
 }
 
-void cItem::setDispellable( const LOGICAL on )
+void cItem::setDispellable( const bool on )
 {
 	if( on )
 		priv |= 0x04;
 	else
 		priv &= ~0x04;
 }
-/*
-LOGICAL cItem::isValidAmxEvent( UI32 eventId )
-{
-	if( eventId < ALLITEMEVENTS )
-		return true;
-	else
-		return false;
-}
-*/
+
 

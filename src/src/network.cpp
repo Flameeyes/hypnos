@@ -178,7 +178,7 @@ NXWCLIENT getClientFromSocket( NXWSOCKET socket )
 		return NULL;
 	if( socket >= now )
 		return NULL;
-	P_CHAR pc = pointers::findCharBySerial( currchar[socket] );
+	P_CHAR pc = loginchars[socket];
 	if( ISVALIDPC( pc ) )
 		return pc->getClient();
 	else
@@ -189,7 +189,7 @@ static void initClients()
 {
 	for (int i=0; i < MAXCLIENT; ++i)
 	{
-		currchar[i] = INVALID;
+		loginchars[i] = NULL;
 #ifdef USE_MTHREAD_SEND
 	        g_NT[i] = NULL;
 #endif
@@ -361,7 +361,7 @@ void cNetwork::Disconnect ( NXWSOCKET socket ) // Force disconnection of player 
         if ( socket < 0 || socket >= now )
 		return;
 
-	P_CHAR pc = MAKE_CHAR_REF( currchar[ socket ] );
+	P_CHAR pc = loginchars[socket];
 
 	int j,i;
 
@@ -408,7 +408,7 @@ void cNetwork::Disconnect ( NXWSOCKET socket ) // Force disconnection of player 
 
 			for ( i = 0; i < now; ++i )
 			{
-				P_CHAR pi= MAKE_CHAR_REF( currchar[i] );
+				P_CHAR pi= loginchars[i];
 				if (ISVALIDPC(pi))
 					if( pc != pi && char_inVisRange( pc, pi ) && clientInfo[ i ]->ingame )
 					{
@@ -441,7 +441,7 @@ void cNetwork::Disconnect ( NXWSOCKET socket ) // Force disconnection of player 
 
 	}
 
-	currchar[ socket ] = INVALID;
+	loginchars[socket] = NULL;
 
 	safedelete( clientInfo[socket] );
 
@@ -449,7 +449,7 @@ void cNetwork::Disconnect ( NXWSOCKET socket ) // Force disconnection of player 
 	{
 		int jj = j+1;
 		client[j]=client[jj];
-		currchar[j]=currchar[jj];
+		loginchars[socket] = loginchars[jj];
 		cryptedClient[j]=cryptedClient[jj];
 #ifdef ENCRYPTION
 		clientCrypter[jj] = clientCrypter[j];
@@ -478,18 +478,18 @@ void cNetwork::Disconnect ( NXWSOCKET socket ) // Force disconnection of player 
 
 	P_CHAR pj = NULL;
 	for ( i = 0; i < MAXCLIENT; ++i ) {
-		pj = pointers::findCharBySerial(currchar[i]);
+		pj = loginchars[i];
 		if ( ISVALIDPC(pj) )
 			pj->setClient(NULL);
 
 		if ( i >= now )
-			currchar[i] = INVALID;
+			loginchars[i] = INVALID;
 	}
 
 	--now;
 
 	for ( i = 0; i < now; ++i ) {
-		pj = pointers::findCharBySerial(currchar[i]);
+		pj = loginchars[i];
 		if( ISVALIDPC(pj) )
 			pj->setClient(new cNxwClientObj(i));
 	}
@@ -564,17 +564,17 @@ void cNetwork::LoginMain(int s)
 		switch(i)  //Let's check for the error message
 		{
 		case BAD_PASSWORD:
-			currchar[s] = INVALID;
+			loginchars[s] = NULL;
 			Xsend(s, nopass, 2);
 			return;
 		case ACCOUNT_BANNED:
-			currchar[s] = INVALID;
+			loginchars[s] = NULL;
 			Xsend(s, acctblock, 2);
 			return;
 		case LOGIN_NOT_FOUND:
 			if( !SrvParms->auto_a_create )
 			{
-				currchar[s] = INVALID;
+				loginchars[s] = NULL;
 				Xsend(s, noaccount, 2);
 				return;
 			} else {
@@ -603,7 +603,7 @@ void cNetwork::LoginMain(int s)
 		P_CHAR pc = pointers::findCharBySerial(chrSerial);
 		VALIDATEPC(pc);
 		pc->kick();
-		currchar[s] = INVALID;
+		loginchars[s] = NULL;
 		return;
 		//</Luxor>
 	}
@@ -830,17 +830,17 @@ void cNetwork::CharList(int s) // Gameserver login and character listing
 		{
 		case BAD_PASSWORD:
 			Xsend(s, nopass, 2);
-			currchar[s] = INVALID;
+			loginchars[s] = NULL;
 //AoS/			Network->FlushBuffer(s);
 			return;
 		case ACCOUNT_BANNED:
 			Xsend(s, acctblock, 2);
-			currchar[s] = INVALID;
+			loginchars[s] = NULL;
 //AoS/			Network->FlushBuffer(s);
 			return;
 		case LOGIN_NOT_FOUND:
 			Xsend(s, noaccount, 2);
-			currchar[s] = INVALID;
+			loginchars[s] = NULL;
 //AoS/			Network->FlushBuffer(s);
 			return;
 		}
@@ -868,7 +868,7 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 	if ( s < 0 || s >= now )
 		return;
 
-	currchar[s] = INVALID;
+	loginchars[s] = NULL;
 
 	P_CHAR pc_k=NULL;
 
@@ -894,7 +894,8 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 			pc_k->setClient(NULL);
 			SI32 nSer = pc_k->getSerial32();
 			for ( SI32 idx = 0; idx < now; idx++ ) {
-				if ( nSer == currchar[idx] ) {
+				if ( pc_k == loginchars[idx] ) {
+					// TODO We need to fix this!!!
 					UI08 msg2[2]={ 0x53, 0x05 };
 					Xsend(s, msg2, 2);
 //AoS/					Network->FlushBuffer(s);
@@ -907,7 +908,7 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 			Accounts->SetOnline(acctno[s], pc_k);
 			pc_k->logout=INVALID;
 
-			currchar[s] = pc_k->getSerial32();
+			loginchars[s] = pc_k;
 
 			pc_k->setClient(new cNxwClientObj(s));
 			startchar(s);
