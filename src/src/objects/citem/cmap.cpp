@@ -74,8 +74,7 @@ bool cMap::toggleWritable()		//!< Toggle pin addability and replies to client ac
 {
 	if (!isTreasureMap()) flags ^= flagWritable;
         else flags &= ~flagWritable;
-      	nPackets::Sent::MapPlotCourse pk(this, pccWriteableStatus, writeable, iter->x, iter->y);
-		//!\todo Chrono you should take a look to this!
+	nPackets::Sent::MapPlotCourse pk(this, pccWriteableStatus, writeable, 0, 0);
 	client->sendPacket(&pk);
         return true;
 }

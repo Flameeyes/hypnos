@@ -484,8 +484,8 @@ void nPackets::Sent::PaperdollClothingUpdated::prepare()
 */
 void nPackets::Sent::MobileAttributes::prepare()
 {
-	length = 16;
-	buffer = new uint8_t[16];
+	length = 17;
+	buffer = new uint8_t[17];
 	buffer[0] = 0x2d;
 	LongToCharPtr(chr->getSerial(), buffer + 1);
 	ShortToCharPtr(chr->getMaxHp(), buffer + 5);
