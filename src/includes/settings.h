@@ -38,7 +38,6 @@ namespace nSettings {
 		bool isEnabledBookSystem();		//!< Is the book system enabled? [Default: true]
 		bool isEnabledTradeSystem();		//!< Is the trade system enabled? [Default: true]
 		bool isEnabledBountySystem();		//!< Is the bounty system enabled? [Default: true]
-		bool isEnabledSkillBySkillCap();	//!< Recent uo clients allow setting of a skillcap for each skill. If enabled allows server side support for that [Default: true]
 
 		bool isEnabledPopupHelp();		//!< popup help (since T2A) is enabled [Default:true]
 		bool isEnabledUOAssist();		//!< UO Assist enabled? [Default: true]
@@ -90,7 +89,8 @@ namespace nSettings {
 		uint16_t getStatDailyLimit();		//!< Maximum stat gain in a (real) day [Default: \b missing ]
 		uint16_t getLimitPlayerSparring();	//!< Defending player must have N skill points more than the attacker for the attacker to gain skill (in PvP only). [Default: 0]
 		uint16_t getMaximumSkillTraining();	//!< maximum skill an npc trainer can teach to a PC [Default: 300]
-		
+		bool isEnabledSkillBySkillCap();	//!< Recent uo clients allow setting of a skillcap for each skill. If enabled allows server side support for that [Default: true]
+
 		//@{
 		/*!
 		\name Hiding and Stealth

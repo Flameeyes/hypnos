@@ -87,6 +87,8 @@ The constants of this group are or-ed together to get the server boolean's setti
 	static const uint64_t flagActionsUseInvisible	= 0x0000000000000400;
 	//! Stealth on horse
 	static const uint64_t flagSkillsStealthOnHorse	= 0x0000000000000800;
+	//! Use a skill by skill skillcap
+	static const uint64_t flagSkillBySkillCap	= 0x0000000000001000;
 //@}
 
 /*!
@@ -95,10 +97,11 @@ The constants of this group are or-ed together to get the server boolean's setti
 This variable stores all the boolean settings as bits. The flags are used or-ing
 the flags found in <b>Flags constants</b> group.
 */
-uint64_t flags = 
+uint64_t flags =
 	flagServerBookSystem | flagServerTradeSystem | flagServerBountySystem |
-	flagHungerSystemEnabled | flagServerPopupHelp | flagServerUOAssist | 
-	flagServerPlayerDeletePC | flagServerShowPCNames | flagActionsEquipOnDClick;
+	flagHungerSystemEnabled | flagServerPopupHelp | flagServerUOAssist |
+	flagServerPlayerDeletePC | flagServerShowPCNames | flagActionsEquipOnDClick |
+	flagSkillBySkillCap;
 
 //! Sets a determined flag on or off
 void setFlag(const uint64_t flag, bool on = true)
@@ -322,6 +325,9 @@ namespace Skills {
 	//! Maximum skill an npc trainer can teach to a PC
 	SETTING(uint16_t, MaximumSkillTraining, 300);
 
+	bool isEnabledSkillBySkillCap()
+	{ return flags & flagSkillBySkillCap; }
+
 	void loadHiding(MXML::Node *s)
 	{
 		MXML::Node *n = s->child();
@@ -329,6 +335,7 @@ namespace Skills {
 			BOOLSETTING(StealthOnHorse, flagSkillsStealthOnHorse)
 			else XMLSETTING(StealthToTakeItemsWhileHid, uint16_t, UInt16)
 			else XMLSETTING(StealthToDropItemsWhileHid, uint16_t, UInt16)
+			else BOOLSETTING(SkillbySkillCap, flagSkillBySkillCap)
 			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
 			n = n->next();
 		} while(n);
