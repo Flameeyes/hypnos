@@ -1073,7 +1073,8 @@ bool cPacketReceiveCreateChar::execute(pClient client)
       	if (HairStyle)  // If HairStyle was invalid, is now 0, so baldy pg :D
 	{
 		pEquippable pi = item::CreateFromScript( "$item_short_hair" ); //!< \todo update createfromscript function to get subclasses of items
-		VALIDATEPIR(pi, false);
+		if(!pi) return false;
+
 		pi->setId(HairStyle);
 		pi->setColor(HairColor);
                 charbody->setLayerItem(layHair, pi);
@@ -1082,7 +1083,8 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 	if (FacialHair) // if FacialHair was invalid (or unselected) or pg is female, no beard is added
 	{
 		pEquippable pi = item::CreateFromScript( "$item_short_beard" );
-		VALIDATEPIR(pi, false);
+		if(!pi) return false;
+
 		pi->setId(FacialHair);
 		pi->setColor(FacialHairColor);
                 charbody->setLayerItem(layBeard, pi);
@@ -1090,7 +1092,8 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 
         // - create the backpack
 	pEquippableContainer pi= item::CreateFromScript( "$item_backpack");
-	VALIDATEPIR(pi, false);
+	if(!pi) return false;
+
 	pc->packitemserial= pi->getSerial();
         pi->setContainer(pc);
 
@@ -1113,7 +1116,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 			pi= item::CreateFromScript( "$item_a_kilt");
 	}
 
-	VALIDATEPIR(pi, false);
+	if(!pi) return false;
 
 	// pant/skirt color -> old client code, random color
 	pi->setColor(pants_color);
@@ -1124,7 +1127,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 	else
 		pi= item::CreateFromScript( "$item_shirt");
 
-	VALIDATEPIR(pi, false);
+	if(!pi) return false;
 	pi->setColor(shirt_color);
 	pi->setContainer(pc);
 
@@ -1170,7 +1173,7 @@ bool cPacketReceiveMoveRequest::execute (pClient client)
 {
         if (length != 7) return false;
         pPC pc = client->currChar();
-	VALIDATEPCR( pc, false );
+	if(!pc) return false;
 
         walking(pc, buffer[1], buffer[2]); // buffer[1] = direction, buffer[2] = sequence number
         pc->disturbMed();
@@ -1190,7 +1193,8 @@ bool cPacketReceiveTalkRequest::execute (pClient client)
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
         pPC pc = client->currChar();
-	VALIDATEPCR( pc, false );
+	if(!pc) return false;
+
 	cSpeech speech = cSpeech(std::string(buffer + 8));
 	client->talking(speech);
         return true;
@@ -1205,10 +1209,12 @@ bool cPacketReceiveTalkRequest::execute (pClient client)
 bool cPacketReceiveAttackRequest::execute (pClient client)
 {
         if (length != 5) return false;
+
 	pPC pc = client->currChar();
-	VALIDATEPCR( pc, false );
+	if(!pc) return false;
+
 	pChar victim = cSerializable::findCharBySerial(LongFromCharPtr(buffer + 1));  //victim may be an npc too, so it is a pChar
-	VALIDATEPCR( victim, false );
+	if(!victim) return false;
 
 	if( pc->dead ) pc->deadAttack(victim);
 	else    if( pc->jailed ) client->sysmessage("There is no fighting in the jail cells!");
@@ -1226,19 +1232,24 @@ bool cPacketReceiveAttackRequest::execute (pClient client)
 bool cPacketReceiveDoubleclick::execute(pClient client)
 {
         if (length != 5) return false;
+
 	pPC pc = client->currChar();
-	VALIDATEPCR( pc, false );
+	if(!pc) return false;
+
 	uint32_t serial = LongFromCharPtr(buffer +1);
 
 	if (isCharSerial(serial))
 	{
 		pChar pd = cSerializable::findCharBySerial(serial);
-		VALIDATEPCR(pd, false);
+		if(!pd) return false;
+
 		pd->doubleClick(client);
 		return true;
 	}
+
 	pItem pi = cSerializable::findItemBySerial(serial);
-	VALIDATEPIR(pi, false);  //If it's neither a char nor an item, then it's invalid
+	if(!pi) return false; //If it's neither a char nor an item, then it's invalid
+
         pi->doubleClick(client);
         return true;
 }
@@ -1254,7 +1265,8 @@ bool cPacketReceivePickUp::execute(pClient client)
 {
         if (length != 7) return false;
 	pItem pi = cSerializable::findItemBySerial(LongFromCharPtr(buffer+1));
-      	VALIDATEPIR(pi, false);
+      	if(!pi) return false;
+
         uint16_t amount = ShortFromCharPtr(buffer+5);
         client->get_item(pi, amount);  //!< if refused, the get_item automatically bounces the item back
         return true;
@@ -1271,7 +1283,8 @@ bool cPacketReceiveDropItem::execute(pClient client)
 {
         if (length != 14) return false;
 	pItem pi = cSerializable::findItemBySerial(LongFromCharPtr(buffer+1));
-        VALIDATEPIR(pi, false);
+      	if(!pi) return false;
+
         Location drop_at = Location(ShortFromCharPtr(buffer+5), ShortFromCharPtr(buffer+7), buffer[9]);
         uint32_t destserial LongFromCharPtr(buffer+10);
         if (destserial == 0xffffffff) client->drop_item(pi, drop_at, NULL); //if dropped in world, there is no item/char with that serial (avoiding a serial search)
@@ -1294,13 +1307,15 @@ bool cPacketReceiveSingleclick::execute(pClient client)
 	if ( isCharSerial( serial ) )
         {
                 pChar pc = cSerializable::findCharBySerial(serial);
-                VALIDATEPCR(pc, false);
+                if(!pc) return false;
+
 		pc->SingleClick( client);
         }
 	else
         {
         	pItem pi = cSerializable::findItemBySerial(serial);
-                VALIDATEPIR(pi, false);
+                if(!pi) return false;
+
 		pi->SingleClick( client );
         }
         return true;
@@ -1322,7 +1337,8 @@ bool cPacketReceiveActionRequest::execute(pClient client)
 
         uint8_t type = buffer[3];
         pChar pc = client->currChar();
-        VALIDATEPCR(pc, false);
+        if(!pc) return false;
+
 	if (type==0xC7) // Action
 	{
 		if (pc->isMounting()) return true;
@@ -1417,9 +1433,10 @@ bool cPacketReceiveWearItem::execute(pClient client)
         if (length != 10) return false;
 
 	pChar pc = cSerializable::findCharBySerial(LongFromCharPtr(buffer+6));
-	VALIDATEPCR(pck, false);
+	if(!pck) return false;
+
 	pItem pi = cSerializable::findItemBySerial(LongFromCharPtr(buffer+1));
-	VALIDATEPIR(pi, false);
+	if(!pir) return false;
 
         client->wear_item(pc, pi);
         return true;
@@ -1437,7 +1454,8 @@ bool cPacketReceiveMoveACK_ResyncReq::execute(pClient client)
 {
         if (length != 3) return false;
         pPC pc = client->currChar();
-        VALIDATEPCR(pc, false);
+	if(!pc) return false;
+
         uint8_t sequence  = buffer[1];
 	if( !sequence && !buffer[2] ) client->currChar()->teleport();  //Resync request
         else
@@ -1526,7 +1544,7 @@ bool cPacketReceiveBuyItems::execute(pClient client)
         std::list< sBoughtItem > allitemsbought;
 
 	pNpc npc = dynamic_cast<pNpc>(cSerializable::findCharBySerial(LongFromCharPtr(buffer +3)));  //only npc can sell you items with a menu :D
-	VALIDATEPCR(npc, false);
+	if(!npc) return false;
 
 	uint16_t itemtotal=(size - 8)/7;
 	if (itemtotal>256) return false;
@@ -1563,7 +1581,7 @@ bool cPacketReceiveMapPlotCourse::execute(pClient client)
         if (length != 10) return false;
 
         pMap map = (pMap)cSerializable::findItemBySerial(LongFromCharPtr(buffer + 1));
-        VALIDATEPIR( map, false);
+        if(!map) return false;
 
         PlotCourseCommands command     	= buffer[5];
         int pin 	 		= buffer[6];
@@ -1676,7 +1694,7 @@ bool cPacketReceiveBookPage::execute(pClient client)
 	if (length != size) return false;
 
 	pItem book = dynamic_cast<pBook>(cSerializable::findItemBySerial(LongFromCharPtr(buffer + 3)));
-	VALIDATEPIR(book, false);
+	if(!book) return false;
 
 	if ( book->isReadOnly() )
 		book->sendPageReadOnly(client, book, ShortFromCharPtr(buffer + 9));
@@ -1794,7 +1812,8 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
         pMsgBoard msgboard = dynamic_cast<pMsgBoard>(cSerializable::findItemBySerial(LongFromCharPtr(buffer + 4)));
         pMsgBoardMessage message = dynamic_cast<pMsgBoardMessage>(cSerializable::findItemBySerial(LongFromCharPtr(buffer + 8)));
         //for msgtypes 3, 4, 6 message is the message on which operate, on message 5 it is parent message (message reply)
-        VALIDATEPIR( msgboard, false);
+        if(!msgboard) return false;
+
 	// message is validated inside the switch because subcommand 5 does not need it and may me invalid without consequences
         // in addition an unvalid message means that it has just been deleted by someone else
 
@@ -1823,7 +1842,8 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 		case 4:  // Client->Server: Client has ACK'ed servers download of posting serial numbers
                		 // and requires the summary of (buffer + 8) message (topic, poster id and date)
 		{
-		        VALIDATEPIR( message, false);
+		        if(!message) return false;
+
 			// Server needs to handle ACK from client that contains the posting serial numbers
 			msgboard->sendMessageSummary( client, message );
 			break;
@@ -1833,7 +1853,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 		{        //                 Reply just switches to the Post item.
 
 			pChar pc = client->currChar();
-			VALIDATEPCR(pc, false);
+		        if(!pc) return false;
 
 			// Check privledge level against server.cfg msgpostaccess
 	                if ( !(pc->IsGM()) && !(SrvParms->msgpostaccess) )
@@ -1847,7 +1867,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                 	// If this is a reply to anything other than a LOCAL post, abort
 			if ( msgSN>0)
 			{
-				VALIDATEPIR( message, false);
+				if(!message) return false;
                                 if ( (message->availability != LOCALPOST) && !global::canReplytoGlobalMsgBoardPosts() )
                                 {
 					#ifdef DEBUG
@@ -1903,9 +1923,11 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                         }
                         else
                         {
-	                        VALIDATEPIR( message, false);
+	                        if(!message) return false;
+
 				pChar pc= client->currChar();
-				VALIDATEPCR(pc, false);
+	                        if(!pc) return false;
+
 				if ( (pc->IsGM()) || (SrvParms->msgpostremove) )
 	                        {
                                 	if ( global::onlyPosterCanDeleteMsgBoardMessage() && (pc->getSerial() != message->poster && !pc->IsGM() && (pc->getSerial() != msgboard->getOwner() || message->availability != LOCALPOST )))
@@ -2218,7 +2240,7 @@ bool cPacketReceiveSellItems::execute(pClient client)
         std::list< sBoughtItem > allitemssold;
 
 	pNpc npc = (pNpc)cSerializable::findCharBySerial(LongFromCharPtr(buffer + 3));
-	VALIDATEPCR(npc, false);
+	if(!npc) return false;
 
 	int itemtotal=ShortFromCharPtr(buffer + 7);
 	if ((itemtotal>256) || (itemtotal == 0)) return false;
@@ -2510,11 +2532,11 @@ bool cPacketReceiveCharProfileRequest::execute(pClient client)
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
         uint32_t serial = LongCharFromPtr(buffer + 4);
-	pPC pc = client->currChar();
-	VALIDATEPCR(pc, false );
 
+	pPC pc = client->currChar();
 	pPC who= dynamic_cast<pPC>(cSerializable::findCharBySerial(serial));
-	VALIDATEPCR( who, false );
+
+	if( !pc || !who ) return false;
 
 	if( buffer[3])
         { //update profile

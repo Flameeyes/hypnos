@@ -1191,9 +1191,9 @@ void Skills::target_itemId(pClient client, pTarget t )
 void Skills::target_tame(pClient client, pTarget t )
 {
 	pChar pc = ps->currChar();
-	if ( ! pc ) return;
 	pChar target = cSerializable::findCharBySerial( t->getClicked() );
-	VALIDATEPC(target);
+
+	if ( !pc || !target ) return;
 
 	pClient client=ps->toInt();
 
@@ -1267,10 +1267,9 @@ void Skills::target_tame(pClient client, pTarget t )
 void Skills::target_animalLore(pClient client, pTarget t )
 {
 	pChar pc = ps->currChar();
-	if ( ! pc ) return;
-
 	pChar target = cSerializable::findCharBySerial( t->getClicked() );
-	VALIDATEPC(target);
+
+	if ( !pc || !target ) return;
 
 	pClient client = ps->toInt();
 
@@ -1299,7 +1298,7 @@ void Skills::target_animalLore(pClient client, pTarget t )
         	if (target->checkSkill( skAnimalLore, 0, 1000))
         	{
 			pChar target_owner = cSerializable::findCharBySerial( target->getOwnerSerial32() );
-			VALIDATEPC(target_owner);
+			if(!target_owner) return;
 
 			sprintf(temp, "Attack [%i] Defense [%i] Taming [%i] Hit Points [%i] Is Loyal to: [%s]", target->att, target->def, target->taming/10, target->hp, (target->tamed)? target_owner->getCurrentName().c_str() : "himself" );
 			target->emote(s,temp,1);
@@ -1376,7 +1375,7 @@ void target_poisoning2(pClient client, pTarget t )
 
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skPoisoning,AMX_BEFORE);
     pItem poison=cSerializable::findItemBySerial(t->buffer[0]);
-    VALIDATEPI(poison);
+    if(!poison) return;
 
     if(poison->type!=ITYPE_POTION || poison->morey!=6)
     {
@@ -1498,7 +1497,7 @@ void target_poisoning2(pClient client, pTarget t )
 void Skills::target_poisoning(pClient client, pTarget t )
 {
 	pItem poison = cSerializable::findItemBySerial( t->getClicked() );
-	VALIDATEPI(poison);
+	if(!poison) return;
 
 	pTarget targ = clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
 	targ->code_callback=target_poisoning2;
@@ -1512,9 +1511,8 @@ void Skills::target_poisoning(pClient client, pTarget t )
 void Skills::target_tinkering(pClient client, pTarget t )
 {
     pChar pc_currchar = ps->currChar();
-	VALIDATEPC(pc_currchar);
     pItem pi=cSerializable::findItemBySerial( t->getClicked() );
-	if ( ! pi ) return;
+	if ( !pc_currchar || !pi ) return;
 
 	pClient client = ps->toInt();
 

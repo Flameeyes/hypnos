@@ -111,8 +111,8 @@ void checktempeffects()
 */
 static void callCustomTempFx(pObject poSrc, pObject poDest, int mode, int amxcallback, int more1, int more2, int more3)
 {
-	VALIDATEPO(poSrc);
-	VALIDATEPO(poDest);
+	if(!poSrc || !poDest) return;
+
 	if (amxcallback <= -2) return;
 
 	int more = (more3<<16) + (more2<<8) + more1;
@@ -191,12 +191,12 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 			dur = 2;
 			break;
 		case SPELL_PARALYZE:
-			VALIDATEPCR(src, 0);
+			if(!src) return 0;
 			dur = src->skill[skMagery]/100;
 			break;
 
 		case SPELL_LIGHT:
-			VALIDATEPCR(src, 0);
+			if(!src) return 0;
 			dur = src->skill[skMagery]*10;
 			break;
 
@@ -210,7 +210,7 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 		case SPELL_CURSE:
 		case SPELL_REACTARMOR:
 		case SPELL_PROTECTION:
-			VALIDATEPCR(src, 0);
+			if(!src) return 0;
 			dur = src->skill[skMagery]/10;
 			break;
 
@@ -738,13 +738,14 @@ void cTempfx::executeExpireCode()
 
 
 		case ALCHEMY_END:
-			if ( ! src ) return;
-			VALIDATEPI(pi_dest);
+			if ( !src || !pi_dest ) return;
+
 			Skills::CreatePotion(src, m_nMore1, m_nMore2, pi_dest);
 			break;
 
 		case AUTODOOR:
-			VALIDATEPI(pi_dest);
+			if(!pi_dest) return;
+
 			if (pi_dest->dooropen == 0)
 				break;
 			pi_dest->dooropen = 0;
@@ -752,7 +753,8 @@ void cTempfx::executeExpireCode()
 			break;
 
 		case TRAINDUMMY:
-			VALIDATEPI(pi_dest);
+			if(!pi_dest) return;
+
 			if (pi_dest->getId() == 0x1071)
 			{
 				pi_dest->setId(0x1070);
@@ -768,24 +770,24 @@ void cTempfx::executeExpireCode()
 			break;
 
 		case SPELL_REACTARMOR:
-			if ( ! dest ) return;
+			if (!dest) return;
 			dest->ra = 0;
 			break;
 
 		case EXPLOTIONMSG:
-			if ( ! dest ) return;
+			if (!dest) return;
 			dest->sysmsg("%i", m_nMore3);
 			break;
 
 		case EXPLOTIONEXP:
-			if ( ! src ) return;
-			VALIDATEPI(pi_dest);
+			if ( !src || !pi_dest ) return;
+
 			if (src->getClient())
 				pi_dest->explode(src->getClient()->toInt());
 			break;
 
 		case SPELL_POLYMORPH:
-			if ( ! dest ) return;
+			if (!dest) return;
 			dest->morph();
 			dest->polymorph = false;
 			break;
@@ -820,32 +822,32 @@ void cTempfx::executeExpireCode()
 			break;
 
 		case DRINK_EMOTE:
-			if ( ! src ) return;
+			if (!src) return;
 			src->emote(src->getSocket(),"*glu*",1);
 			break;
 
 		case DRINK_FINISHED:
-			if ( ! src ) return;
-			VALIDATEPI(pi_dest);
+			if ( !src || !pi_dest ) return;
+
 			usepotion(src, pi_dest);
 			break;
 
 		case GM_HIDING:
-			if ( ! dest ) return;
+			if (!dest) return;
 			dest->sysmsg("You have hidden yourself well.");
 			dest->setHidden(htBySkill);
 			dest->teleport( TELEFLAG_NONE );
 			break;
 
 		case GM_UNHIDING:
-			if ( ! dest ) return;
+			if (!dest) return;
 			dest->unHide();
 			dest->sysmsg("You are now visible.");
 			break;
 
 		case HEALING_DELAYHEAL:
-			if ( ! src ) return;
-			if ( ! dest ) return;
+			if ( !src || !dest ) return;
+
 			if (src->war) {
 				src->sysmsg("You cannot heal while you are in a fight.");
 				return;
@@ -858,24 +860,24 @@ void cTempfx::executeExpireCode()
 			break;
 
 		case AMXCUSTOM:
-			if ( ! src ) return;
-			if ( ! dest ) return;
+			if ( !src || !dest ) return;
+
 			callCustomTempFx(src, dest, MODE_END, m_nAmxcback, m_nMore1, m_nMore2, m_nMore3);
 			break;
 
 		case GREY:
-			if ( ! dest ) return;
+			if (!dest) return;
 			dest->nxwflags[0] &= ~cChar::flagGrey;
 			break;
 
 		case CRIMINAL:
-			VALIDATEPC( dest );
+			if(!dest) return;
 			dest->SetInnocent();
 			dest->sysmsg("You are no longer a criminal.");
 			break;
 
 		case SPELL_TELEKINESYS:
-			VALIDATEPC( dest );
+			if(!dest) return;
 			dest->nxwflags[0] &= ~cChar::flagSpellTelekinesys;
 			break;
 
@@ -1100,7 +1102,7 @@ cTempfx::cTempfx( uint32_t nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t
 	//	Set serials
 	//
 	if ( isCharSerial(nSrc) ) {
-		if ( !cSerializable::findCharBySerial(nSrc)
+		if ( !cSerializable::findCharBySerial(nSrc) )
 			return;
 	}
 
@@ -1150,8 +1152,7 @@ cTempfx::cTempfx( uint32_t nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t
 */
 bool add(pObject src, pObject dest, int num, unsigned char more1, unsigned char more2, unsigned char more3, short dur, int amxcback)
 {
-	VALIDATEPOR(src, false);
-	VALIDATEPOR(dest, false);
+	if( !src || !dest ) return false;
 
 	return dest->addTempfx( *src, num, (int)more1, (int)more2, (int)more3, (int)dur, amxcback );
 }
@@ -1162,7 +1163,7 @@ bool add(pObject src, pObject dest, int num, unsigned char more1, unsigned char 
 void addTempfxCheck( uint32_t serial )
 {
 	pObject po = objects.findObject( serial );
-	VALIDATEPO( po );
+	if(!po) return;
 
 	if ( find( tempfxCheck.begin(), tempfxCheck.end(), serial ) != tempfxCheck.end() )
 		return;

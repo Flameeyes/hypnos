@@ -30,7 +30,8 @@
 */
 bool WalkHandleAllowance(pChar pc, int sequence)
 {
-	VALIDATEPCR(pc,false);
+	if(!pc) return false;
+
 	if (pc->isStabled() || pc->mounted) return false; // shouldnt be called for stabled pets, just to be on the safe side
 
 	pClient client = pc->getSocket();
@@ -88,7 +89,7 @@ bool WalkHandleAllowance(pChar pc, int sequence)
 //
 bool WalkingHandleHiding (pChar pc, int dir)
 {
-	VALIDATEPCR(pc, false);
+	if(!pc) return false;
 
 	if (dir&0x80)
 		//AntiChrist - we have to unhide always if running
@@ -119,7 +120,7 @@ bool WalkingHandleHiding (pChar pc, int dir)
 //
 bool WalkHandleRunning(pChar pc, int dir)
 {
-	VALIDATEPCR(pc, false);
+	if(!pc) return false;
 
 	if (dir&0x80)
 	{ //AntiChrist -- if running
@@ -178,7 +179,8 @@ bool WalkHandleRunning(pChar pc, int dir)
 
 bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 {
-	VALIDATEPCR(pc, false);
+	if(!pc) return false;
+
 	if (pc->npc)
 		pc->setNpcMoveTime(); //reset move timer
 
@@ -326,7 +328,8 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 
 void WalkingHandleRainSnow(pChar pc)
 {
-	if ( ! pc ) return;
+	if (!pc) return;
+
 	pClient client = pc->getSocket();
 
 	int i;
@@ -476,7 +479,8 @@ void walking(pChar pc, int dir, int sequence)
 //</XAN>
 int npcSelectDir(pChar pc_i, int j)
 {
-	VALIDATEPCR(pc_i, INVALID);
+	if(!pc_i) return INVALID;
+
 	if (pc_i->blocked)
 	{
 		short x=0;
@@ -497,7 +501,8 @@ int npcSelectDir(pChar pc_i, int j)
 
 int npcSelectDirWarOld(pChar pc_i, int j)
 {
-	VALIDATEPCR(pc_i, INVALID);
+	if(!pc_i) return INVALID;
+
 	if (pc_i->blocked)
 	{
 		short x=0;
@@ -518,7 +523,8 @@ int npcSelectDirWarOld(pChar pc_i, int j)
 
 int checkBounds(pChar pc, int newX, int newY, int type)
 {
-	VALIDATEPCR(pc, 0);
+	if(!pc) return 0;
+
 	int move=0;
 	switch (type)
 	{
@@ -532,9 +538,7 @@ int checkBounds(pChar pc, int newX, int newY, int type)
 
 void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mode (0 for normal, 1 for box, 2 for circle) // Sparhawk should be changed to npcwander
 {
-	VALIDATEPC(pc_i);
-
-	if (pc_i->isFrozen()) return;
+	if( !pc_i || pc_i->isFrozen() ) return;
 
 	Location charpos= pc_i->getPosition();
 

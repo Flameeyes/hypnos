@@ -249,7 +249,7 @@ void cItem::doubleClick(pClient client)
 	tile_st item;
 
 	pContainer pack = pc->getBackpack();
-	VALIDATEPI( pack );
+	if(!pack) return;
 
 
 	data::seekTile( getId(), item );
@@ -266,7 +266,8 @@ void cItem::doubleClick(pClient client)
 		dst = cont->getPosition();
 	} else {
 		pChar pg_dst = cSerializable::findCharBySerial( cont->getContSerial() );  //TODO: verify if doing a getContSerial to a body returns a char
-		VALIDATEPC(pg_dst);
+		if(!pg_dist) return;
+
 		dst = pg_dst->getPosition();
 	}
 
@@ -1305,9 +1306,9 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 */
 bool cItem::checkItemUsability(pChar pc, int type)
 {
+	if(!pc) return;
+
 	g_nType = type;
-//	VALIDATEPIR(pi, false);
-	VALIDATEPCR(pc, false);
 
 	if( !isNewbie() )
 	{

@@ -44,12 +44,9 @@ void Skills::target_enticement2(pClient client, pTarget t )
 
 void Skills::target_enticement1(pClient client, pTarget t )
 {
-
 	pChar current=ps->currChar();
-	VALIDATEPC(current);
-
 	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
-	if ( ! pc ) return;
+	if ( !current || !pc ) return;
 
 	pClient client = ps->toInt();
 
@@ -85,14 +82,14 @@ void Skills::target_enticement1(pClient client, pTarget t )
 void target_provocation2(pClient client, pTarget t )
 {
 	pChar Victim2 = cSerializable::findCharBySerial( t->getClicked() );
-	VALIDATEPC(Victim2);
+	pChar Victim1 = cSerializable::findCharBySerial( t->buffer[0] );
+	if( !Victim1 || !Victim2 ) return;
 
 	pChar Player = ps->currChar();
-	VALIDATEPC(Player);
+	if(!Player) return;
+
 	Location charpos= Player->getPosition();
 
-	pChar Victim1 = cSerializable::findCharBySerial( t->buffer[0] );
-	VALIDATEPC(Victim1);
 
 	pClient client =ps->toInt();
 
@@ -157,10 +154,9 @@ void target_provocation2(pClient client, pTarget t )
 void Skills::target_provocation1(pClient client, pTarget t )
 {
 	pChar current=ps->currChar();
-	VALIDATEPC(current);
-
 	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
-	if ( ! pc ) return;
+
+	if(!current || !pc ) return;
 
 	pClient client =ps->toInt();
 

@@ -193,7 +193,7 @@ void Skills::target_bottle( pClient ps, pTarget t )
 		pi->ReduceAmount(1);
 
 		pItem pi_mortar=cSerializable::findItemBySerial( t->buffer[0] );
-		VALIDATEPI(pi_mortar);
+		if(!pi_mortar) return;
 
 		if (pi_mortar->type==17)
 		{
@@ -220,7 +220,7 @@ void Skills::PotionToBottle( pChar pc, pItem pi_mortar )
 	pClient ps=pc->getClient();
 	if( ps==NULL ) return;
 
-	VALIDATEPI(pi_mortar);
+	if(!pi_mortar) return;
 
 	pItem pi=NULL;
 

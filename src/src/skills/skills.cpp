@@ -1350,8 +1350,8 @@ bool Skills::HasEmptyMap(pChar pc)
 	/*
 	if(!pc) return false;
 
-    pItem pack = pc->getBackpack();    // Get the packitem
-	VALIDATEPIR(pack,false);
+	pItem pack = pc->getBackpack();    // Get the packitem
+	if(!pack) return false;
 
 	int ci = 0, loopexit = 0;
 	pItem pi;
@@ -1378,8 +1378,8 @@ bool Skills::DelEmptyMap(pChar pc)
  	/*
 	if(!pc) return false;
 
-    pItem pack = pc->getBackpack();    // Get the packitem
-	VALIDATEPIR(pack,false);
+	pItem pack = pc->getBackpack();    // Get the packitem
+	if(!pack) return false;
 
     int ci=0;       // Stores the last found item
     int loopexit=0; // Avoids the loop to take too much time
