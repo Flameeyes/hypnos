@@ -62,7 +62,7 @@ void cParty::executeCommand(pClient client, const uint8_t *buffer, uint16_t size
 			uint32_t newMemberSerial = LongFromCharPtr(partyPkg+1);
 			if ( ! newMemberSerial )
 			{
-				client->sendCharTarget(&cParty::inviteMemberCB);
+				client->sendCharTarget(pc, &cParty::inviteMemberCB);
 			} else {
 				pPC newMember = dynamic_cast<pPC>(cSerializable::findBySerial(newMemberSerial));
 			
@@ -82,7 +82,7 @@ void cParty::executeCommand(pClient client, const uint8_t *buffer, uint16_t size
 			uint32_t removedSerial = LongFromCharPtr(partyPkg+1);
 			if ( ! removedSerial )
 			{
-				client->sendCharTarget(&cParty::removeMemberCB);
+				client->sendCharTarget(pc, &cParty::removeMemberCB);
 			} else {
 				pPC removed = dynamic_cast<pPC>(cSerializable::findBySerial(removedSerial));
 				
@@ -173,12 +173,12 @@ void cParty::executeCommand(pClient client, const uint8_t *buffer, uint16_t size
 \param targ Target of the client
 \note This is a target callback function
 */
-void cParty::inviteMemberCB(pClient client, sTarget *targ)
+void cParty::inviteMemberCB(pClient client, const sTarget &targ)
 {
 	pParty party = client->currChar()->getParty();
 	if ( ! party ) return;
 	
-	pPC pc_target = dynamic_cast<pPC>(targ->clicked);
+	pPC pc_target = dynamic_cast<pPC>(targ.clicked);
 	
 	if ( ! pc_target )
 	{
@@ -195,12 +195,12 @@ void cParty::inviteMemberCB(pClient client, sTarget *targ)
 \param targ Target of the client
 \note This is a target callback function
 */
-void cParty::removeMemberCB(pClient client, sTarget *targ)
+void cParty::removeMemberCB(pClient client, const sTarget &targ)
 {
 	pParty party = client->currChar()->getParty();
 	if ( ! party ) return;
 	
-	pPC pc_target = dynamic_cast<pPC>(targ->clicked);
+	pPC pc_target = dynamic_cast<pPC>(targ.clicked);
 	
 	if ( ! pc_target )
 	{
@@ -247,7 +247,7 @@ cParty::~cParty()
 \param member Player whose invited to join the party
 
 \note This function has to be called by the target callback after the party
-	instance is find out and finished.
+	instance is found out and finished.
 */                                                      
 void cParty::inviteMember(pClient client, pPC member)
 {                                  

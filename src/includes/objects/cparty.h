@@ -71,8 +71,8 @@ public:
 	static void deleteParties();
 	static void executeCommand(pClient, const uint8_t *buffer, uint16_t size);
 
-	static void inviteMemberCB(pClient client, sTarget *targ);
-	static void removeMemberCB(pClient client, sTarget *targ);
+	static void inviteMemberCB(pClient client, const sTarget &targ);
+	static void removeMemberCB(pClient client, const sTarget &targ);
 
 public:
 	cParty(pPC leader);

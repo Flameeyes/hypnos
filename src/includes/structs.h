@@ -230,9 +230,6 @@ struct sRegen {
 	uint32_t rate_real; //!< regeneration rate real
 };
 
-//! Target callback
-typedef void (*processTarget)( pClient, struct sTarget );
-
 /*!
 \brief Struct for a target callback
 \author Chronodt
