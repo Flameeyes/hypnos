@@ -324,8 +324,6 @@ void loadserverdefaults()
  	server_data.savePath="backup/";
 }
 
-extern bool g_bInMainCycle;
-
 void commitserverscript() // second phase setup
 {
 	data::setPath( Map_File, std::string( temp_map ) );

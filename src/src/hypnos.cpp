@@ -84,7 +84,6 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "arch/signals.h"
 #endif
 
-bool g_bInMainCycle = false;
 void LoadOverrides ();
 extern "C" int g_nTraceMode;
 
@@ -307,14 +306,6 @@ void checkkey ()
 					else ConOut( "[FAIL] (no account 0 players online)\n", found);
 				}
 				break;
-			case 'H':
-			case 'h':				// Enable/Disable heartbeat
-				if (heartbeat)
-					InfoOut("Hypnos: Heartbeat Disabled\n");
-				else
-					InfoOut("Hypnos: Heartbeat Enabled\n");
-				heartbeat = !heartbeat;
-				break;
 			case 'W':
 			case 'w':				// Display logged in chars
 				ConOut("----------------------------------------------------------------\n");
@@ -331,19 +322,6 @@ void checkkey ()
 				}
 				ConOut("Total Users Online: %d\n", j);
 				break;
-			case 'A': //reload the accounts file
-			case 'a':
-				InfoOut("Reloading accounts file...");
-				Accounts->LoadAccounts();
-				ConOut("[DONE]\n");
-				break;
-			case 'x':
-			case 'X':
-				InfoOut("Reloading XSS scripts...\n");
-				deleteNewScripts();
-				newScriptsInit();
-				ConOut("[DONE]\n");
-				break;
 			case 'r':
 			case 'R':
 				InfoOut("Hypnos: Total server reload!");
@@ -357,11 +335,8 @@ void checkkey ()
 				ConOut("	# - Save world\n");
 				ConOut("	D - Disconnect Account 0\n");
 				ConOut("	W - Display logged in characters\n");
-				ConOut("	A - Reload accounts file\n");
-				ConOut("	X - Reload XSS scripts\n");
+				ConOut("	R - Total server reload\n");
 				ConOut("	S - Toggle Secure mode %s\n", secure ? "[enabled]" : "[disabled]" );
-				ConOut("	B - Set breakpoint on first amx function [DEBUG MODE ONLY]\n");
-				ConOut("	C - Set breakpoint on first legacy trigger [DEBUG MODE ONLY]\n\n");
 				ConOut("	? - Commands list (this)\n");
 				ConOut("End of commands list.\n");
 				break;
@@ -543,7 +518,6 @@ int main(int argc, char *argv[])
 
 	//OnStart
 	AMXEXEC(AMXT_SPECIALS,0,0,AMX_AFTER);
-	g_bInMainCycle = true;
 	while (keeprun)
 	{
 
