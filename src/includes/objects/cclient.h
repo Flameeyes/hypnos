@@ -38,8 +38,8 @@ class cClient
 {
 friend class cGMPage;
 protected:
-	static ClientList clients;	//!< All the clients
-	static ClientList cGMs;		//!< GMs' clients \todo Need to be used
+	static ClientSList clients;	//!< All the clients
+	static ClientSList cGMs;		//!< GMs' clients \todo Need to be used
 
 public:
 	static const uint32_t clientHasCrypto		= 0x00000001;
@@ -76,7 +76,7 @@ public:
 	void encrypt(uint8_t *&);
 
 	//! Gets the online GMs
-	static ClientList getOnlineGMs()
+	static ClientSList getOnlineGMs()
 	{ return cGMs; }
 public:
 	void get_item(pItem pi, uint16_t amount);                   	//!< Client grabs an item

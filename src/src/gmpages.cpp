@@ -35,7 +35,7 @@ cGMPage::cGMPage(pPC pc, std::string &pageReason, bool onlyGM)
 	asprintf(&msg, "GM Page from %s: %s", pc->getBody()->getCurrentName().c_str(), pageReason.c_str());
 
 	bool notified = false;
-	for( ClientList::iterator it = cClient::clients.begin(); it != cClient::clients.end(); it++)
+	for( ClientSList::iterator it = cClient::clients.begin(); it != cClient::clients.end(); it++)
 	{
 		if ( onlyGM ? (*it)->currAccount()->seeGMPages() : (*it)->currAccount()->seeConsPages() )
 		{

@@ -247,6 +247,6 @@ void cBoat::turn(bool turnRight)
 	tillerMan->Refresh();
 
 	nPackets::Sent::PauseClient pk(0x00);
-	for ( ClientList::iterator it = toResume.begin(); it != toResume.end(); it++ )
+	for ( ClientSList::iterator it = toResume.begin(); it != toResume.end(); it++ )
 		(*it)->sendPacket(&pk);
 }

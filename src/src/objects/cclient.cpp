@@ -13,8 +13,8 @@
 #include "cclient.h"
 #include "settings.h"
 
-static ClientList cClient::clients;
-static ClientList cClient::cGMs;
+static ClientSList cClient::clients;
+static ClientSList cClient::cGMs;
 
 cClient::cClient(int32_t sd, struct sockaddr_in* addr)
 {

@@ -49,8 +49,7 @@ typedef class cGMPage *pGMPage;			//!< Pointer to a GM Page
 typedef std::list<pGMPage> GMPageList;		//!< List of GM Pages
 
 typedef class cClient *pClient;			//!< Pointer to a cClient
-typedef std::list<pClient> ClientList;		//!< List of connected clients
-typedef std::slist<PClietn ClientSList;		//!< Singly list of connected clients
+typedef std::slist<PClient> ClientSList;	//!< Singly list of connected clients
 
 typedef class cMenu *pMenu;			//!< Pointer to a cMenu
 typedef std::map<uint32_t, pMenu> MenuMap;	//!< Map of menus
