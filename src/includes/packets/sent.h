@@ -13,34 +13,9 @@
 #ifndef __CPACKET_H__
 #define __CPACKET_H__
 
-class cPacketSend;
-typedef cPacketSend *pPacketSend;
-
-class cPacketReceive;
-typedef cPacketReceive *pPacketReceive;
-
-#include "cclient.h"
-
-//! Item in a container
-struct sContainerItem
-{
-	sContainerItem() { }
-	sContainerItem(pItem item)
-	{
-		it.serial	= item->getSerial();
-		it.id		= item->getAnimId();
-		it.amount	= item->getAmount();
-		it.x		= item->getPosition().x;
-		it.y		= item->getPosition().y;
-		it.color	= item->getColor();
-	};
-
-	uint32_t serial;
-	uint16_t id;
-	uint16_t amount;
-	uint16_t x, y;
-	uint16_t color;
-};
+#include "common_libs.h"
+#include "enums.h"
+#include "structs.h"
 
 /*!
 \author Flameeyes
@@ -51,10 +26,13 @@ class cPacketSend
 protected:
 	uint8_t *buffer;	//!< Pointer to the buffer
 	uint16_t length;	//!< Length of the buffer
+	
+	cPacketSend(uint8_t *aBuffer, uint16_t aLenght)
+	{ buffer = aBuffer; length = aLenght; }
 
 public:
-	inline virtual ~cPacketSend
-	{ if ( buffer ) safedeletearray(buffer); }
+	inline virtual ~cPacketSend()
+	{ if ( buffer ) delete[] buffer; }
 
 	//! Prepare the buffer to be sent
 	virtual void prepare() = 0;
@@ -77,18 +55,14 @@ public:
 		return length;
 	}
 
-	virtual void fixForClient(cClient::ClientType ct)
-	{ }
-
-private:
-	cPacketSend();
+	virtual void fixForClient(ClientType ct) = 0;
 };
 
 /*!
 \brief cChar::action() packet
 \author Flameeyes
 */
-class cPacketSendAction : cPacketSend
+class cPacketSendAction : public cPacketSend
 {
 protected:
 	const uint32_t serial;	//!< Serial of the char which do the action
@@ -100,8 +74,7 @@ public:
 	\param a id of the action to execute
 	*/
 	inline cPacketSendAction(uint32_t s, uint16_t a) :
-		serial(s), action(a),
-		buffer(NULL), length(NULL)
+		cPacketSend(NULL, 0), serial(s), action(a)
 	{ }
 
 	void prepare();
@@ -111,7 +84,7 @@ public:
 \brief Draws a container on the user script
 \author Flameeyes
 */
-class cPacketSendDrawContainer : cPacketSend
+class cPacketSendDrawContainer : public cPacketSend
 {
 protected:
 	const uint32_t serial;	//!< Serial of the container to draw
@@ -123,8 +96,7 @@ public:
 	\param g gump of the container
 	*/
 	inline cPacketSendDrawContainer(uint32_t s, uint16_t g) :
-		serial(s), gump(g),
-		buffer(NULL), length(NULL)
+		cPacketSend(NULL, 0), serial(s), gump(g)
 	{ }
 
 	void prepare();
@@ -134,29 +106,32 @@ public:
 \brief Send an item in container
 \author Flameeyes
 */
-class cPacketSendContainerItem : cPacketSend
+class cPacketSendContainerItem : public cPacketSend
 {
 protected:
 	std::list<sContainerItem> items;
+	uint32_t contSerial;
 public:
 	/*!
 	\param s serial of the container (for all items)
 	*/
-	inline cPacketSendContainerItem(uint32_t s)
+	inline cPacketSendContainerItem(uint32_t s) :
+		cPacketSend(NULL, 0), contSerial(s)
+	{ }
 
 	/*!
 	\brief add an item to the list of items in the container
 	\param item item to add to the container
 	*/
 	inline void addItem(pItem item)
-	{ list.push_back(sContainerItem(item)); }
+	{ items.push_back(sContainerItem(item)); }
 
 	void prepare();
 };
 
 //! Add item to container
 //! \note packet has to be sent AFTER the real moving of the item. This only tells the client where it has gone to
-class cPacketSendAddItemtoContainer : cPacketSend
+class cPacketSendAddItemtoContainer : public cPacketSend
 {
 protected:
 	pItem item;
@@ -166,27 +141,27 @@ public:
 	\param cont serial of container item
 	*/
 	inline cPacketSendAddItemtoContainer(pItem itm) :
-		item(itm)
+		cPacketSend(NULL, 0), item(itm)
 	{ }
 
 	void prepare();
 };
 
 //! Work item
-class cPacketSendWornItem : cPacketSend
+class cPacketSendWornItem : public cPacketSend
 {
 protected:
 	pItem item;
 public:
 	inline cPacketSendWornItem(pItem itm) :
-		item(itm)
+		cPacketSend(NULL, 0), item(itm)
 	{ }
 
 	void prepare();
 };
 
 //! Sound FX
-class cPacketSendSoundFX : cPacketSend
+class cPacketSendSoundFX : public cPacketSend
 {
 protected:
 	uint16_t model;	//!< Sound model
@@ -197,14 +172,14 @@ public:
 	\param l where the sound will be played
 	*/
 	inline cPacketSendSoundFX(uint16_t m, Location l) :
-		model(m), loc(l)
+		cPacketSend(NULL, 0), model(m), loc(l)
 	{ }
 
 	void prepare();
 };
 
 //! Delete object
-class cPacketSendDeleteObj : cPacketSend
+class cPacketSendDeleteObj : public cPacketSend
 {
 protected:
 	uint32_t serial;
@@ -213,14 +188,14 @@ public:
 	\param s serial of the object to remove
 	*/
 	inline cPacketSendDeleteObj(uint32_t s) :
-		serial(s)
+		cPacketSend(NULL, 0), serial(s)
 	{ }
 
 	void prepare();
 };
 
 //! Send skill status
-class cPacketSendSkillState : cPacketSend
+class cPacketSendSkillState : public cPacketSend
 {
 protected:
 	pChar pc;
@@ -229,14 +204,14 @@ public:
 	\param c Character to send the skill of
 	*/
 	inline cPacketSendSkillState(pChar c) :
-		pc(c)
+		cPacketSend(NULL, 0), pc(c)
 	{ }
 
 	void prepare();
 };
 
 //! Update a skill
-class cPacketSendUpdateSkill : cPacketSend
+class cPacketSendUpdateSkill : public cPacketSend
 {
 protected:
 	pChar pc;
@@ -247,14 +222,14 @@ public:
 	\param sk Skill to update
 	*/
 	inline cPacketSendUpdateSkill(pChar c, uint16_t sk) :
-		pc(c), skill(sk)
+		cPacketSend(NULL, 0), pc(c), skill(sk)
 	{ }
 
 	void prepare();
 };
 
 //! Open Web Browser
-class cPacketSendOpenBrowser : cPacketSend
+class cPacketSendOpenBrowser : public cPacketSend
 {
 protected:
 	std::string url;
@@ -263,46 +238,46 @@ public:
 	\param url Url to open the browser to
 	*/
 	inline cPacketSendOpenBrowser(std::string str) :
-		url(str)
+		cPacketSend(NULL, 0), url(str)
 	{ }
 
 	void prepare();
 };
 
 //! Play midi file
-class cPacketSendPlayMidi : cPacketSend
+class cPacketSendPlayMidi : public cPacketSend
 {
 protected:
-	uint16_t id;
+	uint16_t id;	//!< ID of the MIDI to play
 public:
 	/*!
 	\param midi Midi file id
 	*/
 	inline cPacketSendPlayMidi(uint16_t midi) :
-		id(midi)
+		cPacketSend(NULL, 0), id(midi)
 	{ }
 
 	void prepare();
 };
 
 //! Overall Light Level
-class cPacketSendOverallLight : cPacketSend
+class cPacketSendOverallLight : public cPacketSend
 {
 protected:
-	uint8_t level;
+	uint8_t level;	//!< Light level to send
 public:
 	/*!
 	\param l Light level
 	*/
 	inline cPacketSendOverallLight(uint8_t l) :
-		level(l)
+		cPacketSend(NULL, 0), level(l)
 	{ }
 
 	void prepare();
 };
 
 //! Status window
-class cPacketSendStatus : cPacketSend
+class cPacketSendStatus : public cPacketSend
 {
 protected:
 	pChar pc;	//!< Character
@@ -315,7 +290,7 @@ public:
         \param canrename client who receives this packet can rename char p
 	*/
 	inline cPacketSendStatus(pChar p, uint8_t t, bool r) :
-		pc(p), type(t), canrename(r)
+		cPacketSend(NULL, 0), pc(p), type(t), canrename(r)
 	{ }
 
 	void prepare();
@@ -329,18 +304,17 @@ public:
 \author Chronodt
 */
 
-class cPacketSendClearBuyWindow : cPacketSend
+class cPacketSendClearBuyWindow : public cPacketSend
 {
 protected:
-	const pNpc npc;	        //!< Vendor
+	const pNPC npc;	        //!< Vendor
 
 public:
 	/*!
 	\param n npc vendor
 	*/
-	inline cPacketSendClearBuyWindow(pNpc n) :
-		npc(n),
-		buffer(NULL), length(NULL)
+	inline cPacketSendClearBuyWindow(pNPC n) :
+		cPacketSend(NULL, 0), npc(n)
 	{ }
 
 	void prepare();
@@ -351,11 +325,11 @@ public:
 \author Chronodt
 */
 
-class cPacketSendPaperdollClothingUpdated : cPacketSend
+class cPacketSendPaperdollClothingUpdated : public cPacketSend
 {
 public:
 	inline cPacketSendPaperdollClothingUpdated() :
-		buffer(NULL), length(NULL)
+		cPacketSend(NULL, 0)
 	{ }
 
 	void prepare();
@@ -366,55 +340,47 @@ public:
 \author Chronodt
 */
 
-class cPacketSendOpenMapGump : cPacketSend
+class cPacketSendOpenMapGump : public cPacketSend
 {
 protected:
 
-	const pMap map;
+	const pMap map;	//!< Map's gump
 public:
 	/*!
 	\param m map
 	*/
 	inline cPacketSendOpenMapGump(pMap m) :
-        	map (m),
-		buffer(NULL), length(NULL)
+        	cPacketSend(NULL, 0), map (m)
 	{ }
 
 	void prepare();
 };
 
+enum PlotCourseCommands {
+	pccAddPin = 1,		//!< Add map poin
+	pccInsertPin,		//!< Add new pin with pin number (insertion. other pins after the number are pushed back.)
+	pccChangePin,		//!< Change pin
+	pccRemovePin,		//!< Remove pin
+	pccClearAllPins,	//!< Remove all pins on the map
+	pccToggleWritable,	//!< Toggle the 'editable' state of the map
+	pccWriteableStatus	//!< Return message from the server to request 6 of the client
+};
 
-
-/*!
-command:
-1 = add map point
-2 = add new pin with pin number. (insertion. other pins after the number are pushed back.)
-3 = change pin
-4 = remove pin
-5 = remove all pins on the map
-6 = toggle the 'editable' state of the map.
-7 = return msg from the server to the request 6 of the client.
-pin:
-if command is 7, it is plotting state (1=on, 0=off)
-if command is 2, it is the pin number that the new pin must have (all others must be "pushed onward" :D
-
-Apparently you can have no more than 50 pins in a map, and it appears a client side limitation (and it appears really messy if you put them all :D)
-*/
-
-
-//!the following enum is used for both incoming and outgoing 0x56 packet
-
-enum PlotCourseCommands (AddPin = 1, InsertPin, ChangePin, RemovePin, ClearAllPins, ToggleWritable, WriteableStatus);
-
-class cPacketSendMapPlotCourse : cPacketSend
+class cPacketSendMapPlotCourse : public cPacketSend
 {
 protected:
-
 	const pMap map;
         const PlotCourseCommands command;
-        const short int pin;
-        const int x;
-        const int y;
+	
+	/*!
+	if command is pccWriteableStatus, it is plotting state (1=on, 0=off)
+	if command is pccInsertPin, it is the pin number that the new pin must have (all others must be "pushed onward")
+	
+	Apparently you can have no more than 50 pins in a map, and it appears a client side limitation (and it appears really messy if you put them all :D)
+	*/
+        const uint16_t pin;
+        const uint32_t x;
+        const uint32_t y;
 public:
 	/*!
 	\param m map used
@@ -423,16 +389,15 @@ public:
         \param xx x position of pin (map relative)
         \param yy y position of pin (map relative)
 	*/
-	inline cPacketSendMapPlotCourse(pMap m, PlotCourseCommands comm, short int p = 0, int xx = 0, int yy = 0) :
-        	map (m), command (comm), pin (p),  x (xx), y (yy),
-		buffer(NULL), length(NULL)
+	inline cPacketSendMapPlotCourse(pMap m, PlotCourseCommands comm, uint16_t p = 0, uint32_t xx = 0, uint32_t yy = 0) :
+        	cPacketSend(NULL, 0), map (m), command (comm), pin (p),  x (xx), y (yy)
 	{ }
 
 	void prepare();
 };
 
-enum BBoardCommands (DisplayBBoard = 0, SendMessageSummary = 1, SendMessageBody = 2);
-class cPacketSendBBoardCommand : cPacketSend
+enum BBoardCommands {bbcDisplayBBoard, bbcSendMessageSummary, bbcSendMessageBody};
+class cPacketSendBBoardCommand : public cPacketSend
 {
 protected:
 
@@ -447,15 +412,14 @@ public:
         \param mess message to be sent. May be omitted if command is DisplayBBoard
 	*/
 	inline cPacketSendMapPlotCourse(pMsgBoard m, BBoardCommands com, pMsgBoardMessage mess = NULL) :
-        	msgboard (m), command(com), message(mess),
-		buffer(NULL), length(NULL)
+        	cPacketSend(NULL, 0), msgboard (m), command(com), message(mess)
 	{ }
 
 	void prepare();
 };
 
 
-class cPacketSendMsgBoardItemsinContainer : cPacketSend
+class cPacketSendMsgBoardItemsinContainer : public cPacketSend
 {
 protected:
 
@@ -467,14 +431,13 @@ public:
 	\param m msgboard used. This is called only on msgboard first opening
 	*/
 	inline cPacketSendMsgBoardItemsinContainer(pMsgBoard m) :
-        	msgboard (m),
-		buffer(NULL), length(NULL)
+        	cPacketSend(NULL, 0), msgboard (m)
 	{ }
 
 	void prepare();
 };
 
-class cPacketSendSecureTradingStatus : cPacketSend
+class cPacketSendSecureTradingStatus : public cPacketSend
 {
 protected:
 
@@ -483,32 +446,29 @@ protected:
 
 public:
 	inline cPacketSendSecureTradingStatus(uint8_t act, uint32_t i1, uint32_t i2, uint32_t i3) :
-        	action(act), id1(i1), id2(i2), id3(i3),
-		buffer(NULL), length(NULL)
+        	cPacketSend(NULL, 0), action(act), id1(i1), id2(i2), id3(i3)
 	{ }
 
 	void prepare();
 };
 
 
-class cPacketSendUpdatePlayer : cPacketSend
+class cPacketSendUpdatePlayer : public cPacketSend
 {
 protected:
-
-	const pChar chr;
-        const uint8_t dir, flag, hi_color;
-        const uint32_t id1,id2,id3;
+	pChar chr;
+	uint8_t dir, flag, hi_color;
+	uint32_t id1,id2,id3;
 
 public:
 	inline cPacketSendUpdatePlayer(pChar pc, uint8_t newdir, uint8_t newflag, uint8_t newhi_color) :
-        	chr(pc), dir(newdir), flag(newflag), hi_color(newhi_color),
-		buffer(NULL), length(NULL)
+        	cPacketSend(NULL, 0), chr(pc), dir(newdir), flag(newflag), hi_color(newhi_color)
 	{ }
 
 	void prepare();
 };
 
-class cPacketSendWarModeStatus : cPacketSend
+class cPacketSendWarModeStatus : public cPacketSend
 {
 protected:
 
@@ -516,14 +476,14 @@ protected:
 
 public:
 	inline cPacketSendWarModeStatus(uint8_t* buffer) :
-		buffer(NULL), length(NULL)
+		cPacketSend(NULL, 0)
 	{ memcpy(buf, buffer, 5);}
 
 	void prepare();
 };
 
 
-class cPacketSendPingReply : cPacketSend
+class cPacketSendPingReply : public cPacketSend
 {
 protected:
 
@@ -531,41 +491,39 @@ protected:
 
 public:
 	inline cPacketSendPingReply(uint8_t* buffer) :
-		buffer(NULL), length(NULL)
+		cPacketSend(NULL, 0)
 	{ memcpy(buf, buffer, 2);}
 
 	void prepare();
 };
 
-class cPacketSendCharDeleteError : cPacketSend
+class cPacketSendCharDeleteError : public cPacketSend
 {
 protected:
 	uint8_t reason;
 
 public:
 	inline cPacketSendCharDeleteError(uint8_t r) :
-        	reason(r),
-		buffer(NULL), length(NULL)
+        	cPacketSend(NULL, 0), reason(r)
 	{ }
 
 	void prepare();
 };
 
-class cPacketSendCharAfterDelete : cPacketSend
+class cPacketSendCharAfterDelete : public cPacketSend
 {
 protected:
 	pAccount account;
 
 public:
 	inline cPacketSendCharAfterDelete(pAccount a) :
-        	account(a),
-		buffer(NULL), length(NULL)
+        	cPacketSend(NULL, 0), account(a)
 	{ }
 
 	void prepare();
 };
 
-class cPacketSendCharProfile : cPacketSend
+class cPacketSendCharProfile : public cPacketSend
 {
 protected:
 	uint32_t serial;
@@ -575,12 +533,11 @@ protected:
 
 public:
 	inline cPacketSendCharProfile(uint32_t se, cSpeech& sp, pChar w) :
-        	serial(se), speech(sp), who(w), update(false),
-		buffer(NULL), length(NULL)
+        	cPacketSend(NULL, 0), serial(se), speech(sp), who(w), update(false)
 	{ }
+	
 	inline cPacketSendCharProfile(uint32_t se, pChar w) :		//Update Profile constructor
-        	serial(se), who(w), update(true),
-		buffer(NULL), length(NULL)
+        	cPacketSend(NULL, 0), serial(se), who(w), update(true)
 	{ }
 
 	void prepare();
@@ -594,17 +551,18 @@ class cPacketReceive
 {
 protected:
 
-        uint8_t *buffer;           // needed in all derived classes
-        uint16_t length;
+        uint8_t *buffer;	//!< Pointer to the buffer (needed in all derived classes)
+        uint16_t length;	//!< Length of the buffer
 public:
-//	cPacketReceive();
       	inline cPacketReceive(uint8_t *buf, uint16_t len) :
 		buffer(buf), length(len)
 	{ } 
-//	~cPacketReceive();
+	
+	virtual ~cPacketReceive() = 0;
+	
 	static pPacketReceive fromBuffer(uint8_t *buffer, uint16_t length);
-	inline virtual bool execute(pClient client) = 0;
-
+	virtual bool execute(pClient client) = 0;
+};
 
 //@{
 /*!

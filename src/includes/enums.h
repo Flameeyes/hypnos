@@ -84,4 +84,13 @@ enum CryptoType {
 	cryptoSHA1	//! SHA1 hash
 };
 
+/*!
+\brief Type of clients
+
+\see cPacketSend
+*/
+enum ClientType {
+	ctNormal	//!< Normal client
+};
+
 #endif

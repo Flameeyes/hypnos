@@ -36,6 +36,7 @@ typedef std::vector<std::string> stringVector;	//!< A vector of strings
 typedef class cTarget* pTarget;			//!< Pointer to a cTarget
 typedef class cSocket *pSocket;			//!< Pointer to a cSocket
 typedef class cPacketSend *pPacketSend;		//!< Pointer to a cPacketSend
+typedef class cPacketReceive *pPacketReceive;	//!< Pointer to a cPacketReceive
 
 typedef class cCommand* pCommand;		//!< Pointer to a cCommand
 typedef std::map< std::string, pCommand > CommandMap;

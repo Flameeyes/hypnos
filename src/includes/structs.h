@@ -47,6 +47,24 @@ struct Location {
 
 };
 
+/*!
+\brief Item in a container
+
+\see cpacket.h
+*/
+struct sContainerItem
+{
+	//! Default null constructor
+	sContainerItem() { }
+	sContainerItem(pItem item);
+	
+	uint32_t serial;	//!< Serial of the item
+	uint16_t id;		//!< ID of the item
+	uint16_t amount;	//!< Amount of items
+	uint16_t x, y;		//!< Position of the item
+	uint16_t color;		//!< Color of the item
+};
+
 struct location_st
 {
  int32_t x1;

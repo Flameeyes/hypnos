@@ -10,7 +10,7 @@
 \brief Implementation of packets classes
 */
 
-#include "cpacket.h"
+#include "objects/cpacket.h"
 #include "settings.h"
 
 void cPacketSendAction::prepare()

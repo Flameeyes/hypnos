@@ -13,6 +13,9 @@
 #ifndef __CCLIENT_H__
 #define __CCLIENT_H__
 
+#include "common_libs.h"
+#include "structs.h"
+
 //! Used in trading methods
 struct sBoughtItem
 {
@@ -20,10 +23,6 @@ struct sBoughtItem
 	pItem item;
 	int amount;
 };
-
-
-
-#include "common_libs.h"
 
 /*!
 \author Flameeyes
