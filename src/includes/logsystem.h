@@ -16,7 +16,6 @@
 #include "common_libs.h"
 #include "constants.h"
 #include "typedefs.h"
-#include "version.h"
 
 class LogFile;
 

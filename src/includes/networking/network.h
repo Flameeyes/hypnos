@@ -10,7 +10,6 @@
 #define __NETWORK_H__
 
 #include "common_libs.h"
-#include "version.h"
 
 class ClientCrypt;
 

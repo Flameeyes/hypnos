@@ -469,18 +469,6 @@ int main(int argc, char *argv[])
 	clearalltrades();
 	ConOut(" [DONE]\n");
 
-	//ndEndy.. Very laggy stuff, not very usefull, modify house db and boat db insted of search avery time
-	//
-	//Boats --Check the multi status of every item character at start up to get them set!
-	//ConOut("Initializing multis...");
-	//InitMultis();
-	//ConOut(" [DONE]\n");
-	//ConOut(" [FAIL]  <-!!! DISABLED FOR THIS DEBUG VERSION\n");
-	//End Boats --^
-
-//	ConOut("Initializing glowing-items...");
-//	start_glow();
-//	ConOut(" [DONE]\n"); // Magius(CHE) (1)
 	FD_ZERO(&conn);
 	starttime=getclock();
 	endtime=0;
@@ -814,8 +802,6 @@ void SetGlobalVars()
 
 	w_anim[0]=0; w_anim[1]=0; w_anim[2]=0;
 
-	for (i=0; i>ALLSKILLS; i++) { strcpy(title[i].other, "old titles.scp error"); }
-
 	save_counter=0;
 
 	nettimeout.tv_sec=0;
@@ -828,30 +814,4 @@ void SetGlobalVars()
 	wtype=0;
 
 	ConOut(" [ OK ]\n");
-}
-
-/*!
-\brief initialise multis
-\author unknown, modified by Luxor
-\note Really slow because it uses the cAllObjectsIter, must change this soon.
-*/
-void InitMultis()
-{
-	cAllObjectsIter objs;
-	for( objs.rewind(); !objs.IsEmpty(); objs++ )
-	{
-		pChar pc = dynamic_cast<pChar>(objs.getObject());
-		pItem pi = dynamic_cast<pItem>(objs.getObject());
-		
-		// At least one of the two...
-		if ( ! pc && ( ! pi || ! pi->isInWorld() ) ) continue;
-		
-		pMulti multi = findMulti( pi ? pi->getPosition() : pc->getBody()->getPosition() );
-		
-		if ( pc )
-			//!\todo Check what is this type and change with a constant
-			pc->setMulti( (multi && multi->type==117) ? multi : NULL );
-		else
-			pi->setMulti(multi);
-	}
 }
