@@ -143,7 +143,7 @@ inline void ShortToCharPtr(const uint16_t i, unsigned char *p)
 
 \todo Fix this up with the new map.mul handler
 */
-inline bool isValidCoord( sPoint p );
+inline bool isValidCoord( sPoint p )
 {
 	// return p.x < map_width*8 && p.y < map_height*8;
 	return false;
