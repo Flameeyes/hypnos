@@ -97,20 +97,20 @@ void cPacketSendObjectInformation::prepare()
 {
         buffer = new uint8_t[20]; 	//MAXIMUM packet length
 
-	Location pos = pi->getPosition();
+	Location pos = lsd ? position : pi->getPosition();
 	LongToCharPtr(pi->getSerial() | 0x80000000, buffer +3);
 
 	//if item is a lightsource and player is a gm,
 	//is shown like a candle (so that he can move it),
 	//....if not, the item is a normal
 	//invisible light source!
-	if(pc->IsGM() && pi->getId()==0x1647) ShortToCharPtr(0x0A0F, buffer +7);
+	if(pc->IsGM() && pi->getId()==0x1647 && !lsd) ShortToCharPtr(0x0A0F, buffer +7);
 	else 	if (pc->canViewHouseIcon() && pi->getId()>=0x4000 && pi->getId()<=0x40FF) ShortToCharPtr(0x14F0, buffer +7);         // LB, 25-dec-1999 litle bugfix for treasure multis, ( == changed to >=)
                 else ShortToCharPtr(pi->animid(), buffer +7);
 	ShortToCharPtr(pi->amount, buffer +9);
 	ShortToCharPtr(pos.x, buffer +11);
 	ShortToCharPtr(pos.y | 0xC000, buffer +13);
-        
+
         uint8_t offset = 15;
 
         if (pi->dir)
@@ -122,8 +122,8 @@ void cPacketSendObjectInformation::prepare()
 
 	buffer[offset]= pos.z;
 
-	if(pc->IsGM() && pi->getId()==0x1647) ShortToCharPtr(0x00C6, buffer + offset +1);	//let's show the lightsource like a blue item
-        else ShortToCharPtr(pi->getColor(), buffer + offset + 1);
+	if(pc->IsGM() && pi->getId()==0x1647 && !lsd) ShortToCharPtr(0x00C6, buffer + offset +1);	//let's show the lightsource like a blue item
+        else ShortToCharPtr(lsd ? color : pi->getColor(), buffer + offset + 1);
 
 	buffer[offset +2]=0;
         if (pc->isGM() && (pi->visible ==1 || pi->visible==2)) buffer[offset +2]|=0x80;

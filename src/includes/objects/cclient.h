@@ -144,6 +144,7 @@ public:
 	void updatePaperdoll();
 	void sendMidi(char num1, char num2);			//!< plays midi on client (note: if client disabled music it will not play :D)
         void sendItem(pItem pi);				//!< Shows items to client (on the ground or inside containers)
+        void senditem_lsd(pItem pi, uint16_t color, Location position);	//!< warps item in world for hallucinatory effect (sets new color and location) 	
 
 	//! audio packets (sound effects & music)
 	void playMidi();

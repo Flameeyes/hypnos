@@ -96,14 +96,16 @@ class cPacketSendObjectInformation : public cPacketSend
 protected:
 	pItem item;	//!< Item
         pPC pc;		//!< Player who sees the item
+        bool lsd;
+        uint_16 color
+        Location position
 public:
 	/*!
 	\param i item
 	*/
-	inline cPacketSendObjectInformation(pItem i, pPC p) :
-		cPacketSend(NULL, 0), item(i), pc(p)
+	inline cPacketSendObjectInformation(pItem i, pPC p, bool l = false, uint_16 c = 0, Location pos = Location(0,0,0)) :
+		cPacketSend(NULL, 0), item(i), pc(p), lsd(l), color(c), position(pos)
 	{ }
-
 	void prepare();
 };
 

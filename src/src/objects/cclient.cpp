@@ -324,15 +324,12 @@ void sendMidi(char num1, char num2)
 void senditem(pItem pi) // Shows items to client (on the ground or inside containers)
 {
 	if ( ! pi ) return;
-
 	pChar pc= currChar();
 	if ( ! pc ) return;
 
-	uint16_t len;
-	uint8_t itmput[20]={ 0x1A, 0x00, };
-
-	if ( pi->visible>1 && !(pc->isGM()) ) return;
-        if ( pi->visible==1 && pc->getSerial()!=pi->getOwnerSerial32()) return;
+       	if (!pc->hasInRange(pi, visualRange) ) return; //we must check on client's selected visual range for items to send (see packet 0xc8)
+	if ( pi->visible==2 && !pc->isGM()) return;
+        if ( pi->visible==1 && pc->getSerial()!=pi->getOwnerSerial32() && !pc->isGM()) return; //On visible set to 1, only owners or GMs see the item
 	// meaning of the item's attribute visible
 	// Visible 0 -> visible to everyone
 	// Visible 1 -> only visible to owner and gm's (for owners normal for gm's grayish/hidden color)
@@ -351,15 +348,24 @@ void senditem(pItem pi) // Shows items to client (on the ground or inside contai
 		}
                 return;
 	}
-	if( ! pc->hasInRange(pi, visualRange) ) return; //we must check on client's selected visual range for items to send (see packet 0xc8)
-
-
-	if (pi->visible==1 && pc->getSerial()!=pi->getOwnerSerial32() && !pc->isGM()) return;	//On visible set to 1, only owners or GMs see the item
-	if (pi->visible==2 && !pc->isGM()) return;
 
 	cPacketSendObjectInformation pk(pi, pc);
         sendPacket(&pk);
 	if (pi->isCorpse()) backpack2(pi);
+}
+
+// sends item in differnt color and position than it actually is
+// used for LSd potions now, LB 5'th nov 1999
+void senditem_lsd(pItem pi, uint16_t color, Location position)
+{
+	if ( ! pi ) return;
+	pChar pc= currChar();
+	if ( ! pc ) return;
+
+	if ( pi->visible>=1 && !(pc->IsGM()) ) return; // workaround for missing gm-check client side for visibity since client 1.26.2
+	// for lsd we dont need extra work for type 1 as in senditem
+       	cPacketSendObjectInformation pk(pi, pc, true, color, position);
+        sendPacket(&pk);
 }
 
 /*------------------------------------------------------------------------------

@@ -36,6 +36,7 @@ public:
 protected:
 	//! Heartbeat for PCs
 	void heartbeat();
+	void do_lsd();		//!< called by pc heartbeat when under lsd effects
 	virtual const uint16_t eventsNumber() const
 	{ return evtPcMax; }
 

@@ -219,6 +219,65 @@ void cPC::heartbeat()
 		SetFame(0);
 }
 
+
+void cPC::do_lsd()
+{
+	//!\todo add char scrambling to item mess-up in lsd effect?
+
+	if (rand()%15) return;	//only about 1 every 15 heartbeats we do an lsd twist
+
+	pClient client = getClient();
+
+	int ctr = 0,xx,yy,icnt=0;
+	int8_t zz;
+
+	Location charpos = getPosition();
+
+	NxwItemWrapper si;
+	si.fillItemsNearXYZ( charpos, client->getVisualRange(), false );
+	for( si.rewind(); !si.isEmpty(); si++ )
+        {
+
+		pItem pi=si.getItem();
+		if( ! pi ) continue;
+
+		uint16_t color=pi->getColor(); // fetch item's color
+		if (rand()%44==0) color+= pi->getPosition().x  - pi->getPosition().y;
+		else color+= charpos.x + charpos.y;
+
+		color+= rand()%3; // add random "noise"
+                if( (color&0x4000) || (color&0x8000) ) color = 0x1000 + rand()%255;
+
+		// lots of color consistancy checks
+		color=color%0x03E9;
+
+		if( color<0x0002 || color>0x03E9 ) color = 0x03E9;
+
+                Location pos = pi->getPosition();
+
+		if (rand()%10==0) pos.x= pi->getPosition().x + rand()%3;
+		if (rand()%10==0) pos.y= pi->getPosition().y + rand()%3;
+		if (rand()%10==0) pos.z= pi->getPosition().z + rand()%33;
+
+		if (distFrom(pi)<13 && rand()%7==0) //Only one item every seven is twisted
+		{
+			icnt++;
+			if (icnt%10==0 || icnt<10) client->senditem_lsd(pi,color,pos); // attempt to cut packet-bombing by this thing
+		}
+	}
+
+	if (rand()%33==0)
+	{
+		if (rand()%10>3) client->playSFX(0x00F8, true);
+		else
+		{
+			int snd=rand()%19;
+			if (snd>9) client->playSFX((0x01<<8)|((snd-10)%256), true);
+			else client->playSFX(246+snd, true);
+		}
+	}
+}
+
 /*!
 \brief PC-related implementation of the cChar::updateFlag() method
 \todo Check the comments inside it
