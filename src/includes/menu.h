@@ -54,10 +54,8 @@ class cBasicMenu {
 
 	protected:
 
-		AmxFunction* callback; //!< function callback
-
-		virtual cServerPacket* createPacket();
-		virtual cServerPacket* build();
+		virtual void /*cServerPacket*/* createPacket();
+		virtual void /*cServerPacket*/* build();
 
 	public:
 
@@ -72,12 +70,9 @@ class cBasicMenu {
 		void setCallBack( std::string arg );
 		void setCallBack( FUNCIDX fn );
 
-		virtual void handleButton( pClient client, cClientPacket* pkg  );
+		virtual void handleButton( pClient client, void /*cClientPacket*/* pkg  );
 		virtual void show( pChar pc );
-
-
 };
-
 
 #define MENU_BUFF_COUNT 4
 #define ISVALIDMENUBUFFER( I ) ( (I>INVALID) && (I<MENU_BUFF_COUNT) )
@@ -112,11 +107,11 @@ class cMenu : public cBasicMenu
 		void removeCommand( std::string command );
 		void removeCommand( char* s, ... );
 
-		void setPropertyField( uint32_t type, SERIAL obj, int prop, int subProp, int subProp2, bool data );
-		void setPropertyField( uint32_t type, SERIAL obj, int prop, int subProp, int subProp2, std::wstring data );
+		void setPropertyField( uint32_t type, uint32_t obj, int prop, int subProp, int subProp2, bool data );
+		void setPropertyField( uint32_t type, uint32_t obj, int prop, int subProp, int subProp2, std::wstring data );
 		
-		bool getPropertyFieldBool( uint32_t type, SERIAL obj, int prop, int subProp, int subProp2 );
-		std::wstring getPropertyField( uint32_t type, SERIAL obj, int prop, int subProp, int subProp2 );
+		bool getPropertyFieldBool( uint32_t type, uint32_t obj, int prop, int subProp, int subProp2 );
+		std::wstring getPropertyField( uint32_t type, uint32_t obj, int prop, int subProp, int subProp2 );
 
 		int32_t getIntFromProps( int prop, int prop2, int prop3 );
 		void getPropsFromInt( int32_t returnCode, int& prop, int& prop2, int& prop3 );
@@ -125,7 +120,7 @@ class cMenu : public cBasicMenu
 		std::vector< std::string >	commands; //!< all commands
 		std::vector< std::wstring >	texts; //!< all strings
 	
-		virtual cServerPacket* createPacket();
+		virtual void /*cServerPacket*/* createPacket();
 
 	public:
 				
@@ -146,7 +141,7 @@ class cMenu : public cBasicMenu
 		void setMoveable( bool canMove );
 		bool getMoveable();
 
-		virtual void handleButton( pClient client,  cClientPacket* pkg  );
+		virtual void handleButton( pClient client,  void /*cClientPacket*/* pkg  );
 
 		void addCommand( std::string command );
 		void addCommand( char* s, ... );
@@ -159,7 +154,7 @@ class cMenu : public cBasicMenu
 		void addCroppedText( uint32_t x, uint32_t y, uint32_t width, uint32_t height, std::wstring text, uint32_t hue );
 		void addGump( uint32_t x, uint32_t y, uint32_t gump, uint32_t hue );
 		void addHtmlGump( uint32_t x, uint32_t y, uint32_t width, uint32_t height, std::wstring html, uint32_t hasBack, uint32_t canScroll );
-		void addInputField( uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t textId, STD::wstring data, uint32_t hue = 0 );
+		void addInputField( uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint16_t textId, std::wstring data, uint32_t hue = 0 );
 		void addPropertyField( uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t property, uint32_t subProperty, uint32_t hue = 0, uint32_t subProperty2 = 0 );
 		void addRadioButton( uint32_t x, uint32_t y, uint32_t off, uint32_t on, uint32_t checked, int32_t result  );
 		void addResizeGump( uint32_t x, uint32_t y, uint32_t gumpId, uint32_t width, uint32_t height );
@@ -183,8 +178,8 @@ class cIconListMenu : public cBasicMenu
 
 	protected:
 
-		virtual cServerPacket* createPacket();
-		std::vector< pkg_icon_list_menu_st > icons;
+		virtual void /*cServerPacket*/* createPacket();
+//		std::vector< pkg_icon_list_menu_st > icons;
 		std::map< uint32_t, int32_t > iconData;
 
 	public:
@@ -194,17 +189,15 @@ class cIconListMenu : public cBasicMenu
 		cIconListMenu();
 		~cIconListMenu();
 
-		virtual void handleButton( pClient client,  cClientPacket* pkg  );
-		void addIcon( uint16_t model, COLOR color, std::string response );
-		void addIcon( uint16_t model, COLOR color, int32_t data, std::string response );
+		virtual void handleButton( pClient client,  void /*cClientPacket*/* pkg  );
+		void addIcon( uint16_t model, uint16_t color, std::string response );
+		void addIcon( uint16_t model, uint16_t color, int32_t data, std::string response );
 
 };
 
 
-bool isIconList( NXWSOCKET s );
+bool isIconList( pClient client );
 bool isIconList( uint8_t cmd );
-
-typedef std::map< uint32_t, P_MENU > MENU_MAP;
 
 /*!
 \brief all Menus
@@ -216,21 +209,21 @@ class cMenus
 
 	private:
 		uint32_t current_serial; //!< current serial
-		MENU_MAP menuMap; //!< every opened menus
+		MenuMap menuMap; //!< every opened menus
 
-		std::map< uint32_t, std::set<SERIAL> > whoSeeWhat; //!< player see menus
+		std::map< uint32_t, std::set<uint32_t> > whoSeeWhat; //!< player see menus
 
-		bool removeFromView( P_MENU menu, uint32_t chr );
+		bool removeFromView( pMenu menu, uint32_t chr );
 
 	public:
 
 		cMenus();
 		~cMenus();
 
-		P_MENU insertMenu( P_MENU menu );
-		uint32_t removeMenu( SERIAL menu, pChar pc = NULL );
+		pMenu insertMenu( pMenu menu );
+		uint32_t removeMenu( uint32_t menu, pChar pc = NULL );
 		bool handleMenu( pClient client );
-		P_MENU getMenu( uint32_t menu );
+		pMenu getMenu( uint32_t menu );
 		bool showMenu( uint32_t menu, pChar pc );
 
 };

@@ -39,11 +39,11 @@ struct Location {
 
 	//! == operator redefinition for Location
 	inline bool operator ==(const Location &b)
-	{ return (a.x==b.x) && (y==b.y) && (z==b.z); }
+	{ return x == b.x && y == b.y && z == b.z; }
 	
 	//! != operator redefinition for Location
 	inline bool operator !=(const Location &b)
-	{ return (x!=b.x) || (y!=b.y) || (z!=b.z); }
+	{ return x != b.x || y != b.y || z != b.z; }
 
 };
 

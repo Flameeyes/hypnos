@@ -51,7 +51,7 @@ P_MENU cMenus::insertMenu( P_MENU menu )
 
 P_MENU cMenus::getMenu( uint32_t menu )
 {
-	MENU_MAP::iterator iter( menuMap.find( menu ) );
+	MenuMap::iterator iter( menuMap.find( menu ) );
 	if( iter != menuMap.end() )
 		return iter->second;
 	return NULL;	
@@ -59,7 +59,7 @@ P_MENU cMenus::getMenu( uint32_t menu )
 
 bool cMenus::showMenu( uint32_t menu, pChar pc )
 {
-	MENU_MAP::iterator iter( menuMap.find( menu ) );
+	MenuMap::iterator iter( menuMap.find( menu ) );
 	if( iter != menuMap.end() )
 	{
 		iter->second->show( pc );
@@ -102,7 +102,7 @@ bool cMenus::removeFromView( P_MENU menu, uint32_t chr )
 uint32_t cMenus::removeMenu( SERIAL menu, pChar pc )
 {
 
-	MENU_MAP::iterator iter( menuMap.find( menu ) );
+	MenuMap::iterator iter( menuMap.find( menu ) );
 	if( iter != menuMap.end() )
 	{		
 		bool needDelete = removeFromView( iter->second, pc->getSerial() );

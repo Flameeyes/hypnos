@@ -84,6 +84,8 @@ protected:
         bool droppedOnBeggar(pItem pi, Location &loc, pItem cont);      //!< Item is dropped on a beggar
         bool droppedOnTrainer(pItem pi, Location &loc, pItem cont);     //!< Item is dropped on a trainer
         bool droppedOnSelf(pItem pi, Location &loc, pItem cont);        //!< Item is dropped on self
+        void get_item(pItem pi, uint16_t amount);                   //!< Client grabs an item
+        void drop_item(pItem pi, Location &loc, pItem cont);    //!< Item is dropped on ground, char or item
         void wear_item(pChar pck, pItem pi);                            //!< Item is dropped on paperdoll
         void item_bounce3(const pItem pi);                              //!< simple bouncing
         void item_bounce4(const pItem pi);                              //!< bounce & checkid before resending item
@@ -100,34 +102,38 @@ public:
         inline void resetDragging()
         { dragging=false; }
 
-        void get_item(pItem pi, uint16_t amount);                   //!< Client grabs an item
-        void drop_item(pItem pi, Location &loc, pItem cont);    //!< Item is dropped on ground, char or item
-        void wear_item(pChar pck, pItem pi);	                //!< Item is dropped on paperdoll
 
-        //! trading methods
-
+//@{
+/*!
+\name Trading stuff
+*/
 public:
         void buyaction(pNPC npc, std::list< sBoughtItem > &allitemsbought);    	//!< Getting purchased item and gold/availability check
         void sellaction(pNPC npc, std::list< sBoughtItem > &allitemssold);	//!< Sellig of items. Moving from char and getting paid :D
         static void sendtradestatus(pContainer cont1, pContainer cont2);  	//!< updates secure trade window
         static void dotrade(pContainer cont1,pContainer cont2);			//!< concludes trade (either swapping items or returning them)
 	static void endtrade(uint32_t serial);					//!< closing trade window : called when one client ends the transaction (either accepted or canceled)
-        //! packet methods
+//@}
 
+//@{
+/*!
+\brief Packets
+*/
 public:
 	void showContainer(pItem pCont);
 	void light();
 	void showBankBox(pChar dest);
 	void showSpecialBankBox(pChar dest);
 	void statusWindow(pChar target, bool extended = true);
-        void updateStatusWindow(pItem item);
-        void skillWindow();
-        void updatePaperdoll();
-        void sendMidi(char num1, char num2);
+	void updateStatusWindow(pItem item);
+	void skillWindow();
+	void updatePaperdoll();
+	void sendMidi(char num1, char num2);
 
-        //! audio packets (sound effects & music)
+	//! audio packets (sound effects & music)
 	void playMidi();
-      	void playSFX(uint16_t sound, bool onlyMe = false);
+	void playSFX(uint16_t sound, bool onlyMe = false);
+//@}
 };
 
 #endif

@@ -82,7 +82,7 @@ namespace magic {
 	class cPolymorphMenu : public cIconListMenu {
 	public:
 		cPolymorphMenu( pChar pc );
-		virtual void handleButton( NXWCLIENT ps, cClientPacket* pkg  );
+		virtual void handleButton( pClient client, void /*cClientPacket*/* pkg  );
 	};
 
 	/*!
@@ -92,7 +92,7 @@ namespace magic {
 	class cCreateFoodMenu : public cIconListMenu {
 	public:
 		cCreateFoodMenu( pChar pc );
-		virtual void handleButton( NXWCLIENT ps, cClientPacket* pkg  );
+		virtual void handleButton( pClient client, void /*cClientPacket*/* pkg  );
 	};
 
 	/*!
@@ -102,7 +102,7 @@ namespace magic {
 	class cSummonCreatureMenu : public cIconListMenu {
 	public:
 		cSummonCreatureMenu( pChar pc );
-		virtual void handleButton( NXWCLIENT ps, cClientPacket* pkg  );
+		virtual void handleButton( pClient client, void /*cClientPacket*/* pkg  );
 	};
 
 
@@ -240,7 +240,7 @@ namespace magic {
 	extern g_Spell g_Spells[MAX_SPELLS];
 
 	bool checkMagicalSpeech( pChar pc, char* speech );
-	bool beginCasting (SpellId num, NXWCLIENT s, CastingType type);
+	bool beginCasting (SpellId num, pClient client, CastingType type);
 	SpellId spellNumberFromScrollId(int id);
 	void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src = NULL, int flags = 0, int param = 0);
 	void castAreaAttackSpell (int x, int y, SpellId spellnum, pChar pcaster = NULL);

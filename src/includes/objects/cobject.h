@@ -16,6 +16,7 @@
 
 #include "common_libs.h"
 #include "tmpeff.h"
+#include "structs.h"
 
 typedef slist< tempfx::cTempfx > TempfxVector;
 

@@ -15,12 +15,14 @@
 #ifndef NPCS_INCLUDE
 #define NPCS_INCLUDE
 
+#include "common_libs.h"
+
 #include "objects/cchar.h"
 #include "objects/citem.h"
 
 char* getRandomName(char * namelist);
 void setrandomname(pChar pc, char * namelist);
-COLOR addrandomcolor(cObject* po, char *colorlist);
+uint16_t addrandomcolor(cObject* po, char *colorlist);
 
 namespace npcs
 {
@@ -43,15 +45,15 @@ namespace npcs
 	void npcCastSpell(pChar pc_att, pChar pc_def);
 	void npcMagicAttack(pChar pc_att, pChar pc_def);
 
-	pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t z1);
-	pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, Location where);	// added by Anthalir
+	pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t z1);
+	pChar AddNPC(pClient client, pItem pi, int npcNum, Location where);	// added by Anthalir
 	pChar addNpc(int npcNum, int x, int y, int z);
 
 	pChar AddRespawnNPC(pItem pi, int npcNum);
 	pChar AddRespawnNPC(pChar pc, int npcNum);
 
-	pChar AddNPCxyz(NXWSOCKET s, int npcNum, Location where);		// added by anthalir
-	pChar AddNPCxyz(NXWSOCKET s, int npcNum, int x1, int y1, signed char z1);
+	pChar AddNPCxyz(pClient client, int npcNum, Location where);		// added by anthalir
+	pChar AddNPCxyz(pClient client, int npcNum, int x1, int y1, signed char z1);
 
 	pItem AddRandomLoot(pItem pack, char * lootlist);
 
@@ -67,7 +69,7 @@ namespace npcs
 
 typedef struct {
 	uint32_t script;
-	COLOR color;
+	uint16_t color;
 	uint32_t amount;
 	uint32_t id;
 } vendor_item;
@@ -95,7 +97,7 @@ class cCreatureInfo {
 
 private:
 
-	std::vector<SOUND>* sounds[ALL_MONSTER_SOUND];
+	std::vector<uint16_t>* sounds[ALL_MONSTER_SOUND];
 
 public:
 
@@ -107,18 +109,16 @@ public:
 
 	bool canFly() {	return flag&CREATURE_CAN_FLY; }
 	bool needAntiBlink() { return flag&CREATURE_ANTI_BLINK; }
-	SOUND getSound( MonsterSound type );
-	void addSound( MonsterSound type, SOUND sound );
+	uint16_t getSound( MonsterSound type );
+	void addSound( MonsterSound type, uint16_t sound );
 
 };
-
-typedef cCreatureInfo* P_CREATURE_INFO;
 
 #define CREATURE_COUNT 2048
 
 class cAllCreatures {
 
-	P_CREATURE_INFO allCreatures[CREATURE_COUNT];
+	pCreatureInfo allCreatures[CREATURE_COUNT];
 
 public:
 
@@ -126,7 +126,7 @@ public:
 	~cAllCreatures();
 
 	void load();
-	P_CREATURE_INFO getCreature( uint16_t id );
+	pCreatureInfo getCreature( uint16_t id );
 
 };
 

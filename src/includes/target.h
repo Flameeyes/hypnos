@@ -37,7 +37,6 @@ public:
 
 	uint32_t buffer[4];
 	std::string buffer_str[4];
-	AmxFunction* amx_callback;
 	processTarget code_callback;
 
 	cTarget( bool selectLocation=true );

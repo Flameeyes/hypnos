@@ -725,7 +725,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 				for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
 					pChar pj=sc.getChar();
-					if ( !pj->IsInvul() && !pj->dead && pj->hidden == UNHIDDEN && pj->npcaitype != NPCAI_MADNESS) {
+					if ( !pj->IsInvul() && !pj->dead && ! pj->isHidden() && pj->npcaitype != NPCAI_MADNESS) {
 						pc->fight(pj);
 						return;
 					}
@@ -752,7 +752,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 						pj->npcaitype == NPCAI_DRAGON1 ||
 						pj->npcaitype == NPCAI_DRAGON2 || pj == pc) continue;
 
-				if (pj->hidden == UNHIDDEN) {
+				if ( ! pj->isHidden() ) {
 					switch(RandomNum(0, 6))
 					{
 						case 0:

@@ -25,6 +25,16 @@ pSerializable cSerializable::findBySerial(uint32_t serial)
 	return it == objects.end() ? NULL : *it;
 }
 
+static pChar findCharBySerial(uint32_t serial)
+{
+	return dynamic_cast<pChar>(findBySerial(serial));
+}
+
+static pItem findItemBySerial(uint32_t serial)
+{
+	return dynamic_cast<pItem>(findBySerial(serial));
+}
+
 /*!
 \brief Constructor with new serial
 

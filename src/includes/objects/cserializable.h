@@ -39,12 +39,8 @@ private:
 	static SerializableMap objects;	//!< Map of all serialized object
 	uint32_t	serial;		//!< Serial of the object
 public:
-	inline static pChar findCharBySerial(uint32_t serial)
-	{ return dynamic_cast<pChar>(findBySerial(serial)); }
-	
+	static pChar findCharBySerial(uint32_t serial);
 	static pItem findItemBySerial(uint32_t serial);
-	{ return dynamic_cast<pItem>(findBySerial(serial)); }
-	
 	static pSerializable findBySerial(uint32_t serial);
 //@}
 
@@ -84,6 +80,6 @@ public:
 	inline bool operator!=(const cSerializable& obj) const
 	{ return getSerial() != obj.getSerial(); }
 //@}
-}
+};
 
 #endif

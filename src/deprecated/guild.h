@@ -27,7 +27,7 @@ class cGuildRecruit
 	public:
 
 		uint32_t	serial; //!< the recruit
-		P_GUILD_MEMBER	recruiter; //!< the recruiter
+		pGuildMember	recruiter; //!< the recruiter
 		
 		cGuildRecruit( uint32_t recruit );
 		~cGuildRecruit();
@@ -145,19 +145,19 @@ class cGuild
 
 	public:
 
-		std::map< uint32_t, P_GUILD_MEMBER > members;	//!< all members of this guild
+		std::map< uint32_t, pGuildMember > members;	//!< all members of this guild
 
-		P_GUILD_MEMBER addMember( pChar pc );
+		pGuildMember addMember( pChar pc );
 		void resignMember( pChar pc );
-		P_GUILD_MEMBER getMember( uint32_t member );
+		pGuildMember getMember( uint32_t member );
 
 	public:
 
-		std::map< uint32_t, P_GUILD_RECRUIT > recruits;	//!< all who want become member of this guild
+		std::map< uint32_t, pGuildRecruit > recruits;	//!< all who want become member of this guild
 		
-		P_GUILD_RECRUIT addNewRecruit( pChar recruit, pChar recruiter );
+		pGuildRecruit addNewRecruit( pChar recruit, pChar recruiter );
 		void refuseRecruit( pChar pc );
-		P_GUILD_RECRUIT getRecruit( uint32_t recruit );
+		pGuildRecruit getRecruit( uint32_t recruit );
 
 	public:
 
@@ -185,13 +185,13 @@ class cGuildz
 
 	public:
 
-		std::map< uint32_t, P_GUILD > guilds;
+		std::map< uint32_t, pGuild > guilds;
 
 		cGuildz();
 		~cGuildz();
 
-		P_GUILD getGuild( uint32_t guild );
-		P_GUILD addGuild( uint32_t stone );
+		pGuild getGuild( uint32_t guild );
+		pGuild addGuild( uint32_t stone );
 
 };
 

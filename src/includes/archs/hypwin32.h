@@ -10,6 +10,8 @@
 \brief Win32 Architecture specific
 */
 
+#ifdef WIN32
+
 #ifndef _PYUO_WIN32_
 #define _PYUO_WIN32_
 
@@ -20,6 +22,8 @@
 #include <limits.h>
 #include <conio.h>
 #include <process.h>
+
+char *basename(char *path);
 
 namespace arch {
 
@@ -163,5 +167,7 @@ public :
 int startTThread( TTHREAD ( *funk )( void * ), void* param = NULL );
 
 };
+
+#endif
 
 #endif

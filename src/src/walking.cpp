@@ -533,7 +533,7 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 
 	/////////// LB's flying creatures stuff, flying animation if they stand still ///////
 
-	P_CREATURE_INFO creature = creatures.getCreature( pc_i->getId() );
+	pCreatureInfo creature = creatures.getCreature( pc_i->getId() );
 	if( creature!=NULL )
 		if( creature->canFly() && ( pc_i->fly_steps>0 ) )
 			if ( chance( 20 ) )
@@ -774,7 +774,7 @@ void sendToPlayers( pChar pc, int8_t dir )
 
 		if ( pc->npc && !(dir&0x80) ) { // If npc and it isn't already running
 
-			P_CREATURE_INFO creature = creatures.getCreature( pc->getId() );
+			pCreatureInfo creature = creatures.getCreature( pc->getId() );
 			if( creature!=NULL )
 				if( creature->canFly() )
 					if( pc->fly_steps > 0 )

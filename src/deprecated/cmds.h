@@ -28,30 +28,21 @@ enum PrivLevel
 };
 
 
-typedef class cCommand* P_COMMAND;
-
 /*
 \brief Declaration of cCommand Class
 */
 
-class cCommand {
+class cCommand
+{
+private:
+	std::string cmd_name;
+	int8_t cmd_level;  
 
-	private:
-	
-		std::string cmd_name;
-		int8_t cmd_level;  
-		AmxFunction* cmd_callback;
-
-	public:
-
-		cCommand( std::string& cmd_name, int8_t cmd_number, AmxFunction* callback );
-		int8_t getCommandLevel(P_COMMAND cmd);
-		void call( std::string params );
-
+public:
+	cCommand( std::string& cmd_name, int8_t cmd_number, void/*AmxFunction*/* callback );
+	int8_t getCommandLevel(pCommand cmd);
+	void call( std::string params );
 };
-
-
-
 
 /*
 \brief Declaration of cCallCommand Class
@@ -79,9 +70,6 @@ public:
 
 };
  
-
-
-
 /*
 \brief Declaration of cCommandMap Class
 */
@@ -89,17 +77,13 @@ class cCommandMap {
 
 private:
 
-	static std::map< std::string, P_COMMAND > command_map; //!< all commands
+	static CommandMap command_map; //!< all commands
 public:
 	
 	cCommandMap();
-	P_COMMAND addGmCommand(std::string name, int8_t number ,AmxFunction* callback);
-	static bool Check(string& text);
-	P_COMMAND findCommand(std::string name);
-
+	pCommand addGmCommand(std::string name, int8_t number ,void/*AmxFunction*/* callback);
+	static bool Check(std::string& text);
+	pCommand findCommand(std::string name);
 };
 
-
-
 #endif
-

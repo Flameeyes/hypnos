@@ -136,7 +136,7 @@ void Skills::Stealth(NXWSOCKET s)
     // it stops raising skills when training with plate-armor ! :)
     if ((!pc->checkSkill(STEALTH, min, max))||(def>20))
     {
-        pc->hidden = UNHIDDEN;
+	pc->setHidden(htUnhidden);
         pc->stealth = INVALID;
 	pc->teleport( TELEFLAG_SENDWORNITEMS );
         return;

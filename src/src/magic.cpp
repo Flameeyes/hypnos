@@ -1625,7 +1625,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 		case SPELL_INVISIBILITY:
 			spellFX(spellnumber, src, pd);
-			if ( src->hidden == HIDDEN_BYSPELL ) {
+			if ( src->isHiddenBySpell() ) {
 				src->delTempfx( tempfx::SPELL_INVISIBILITY );
 			} else {
 				if (nTime==INVALID) nTime = 90;

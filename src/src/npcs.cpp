@@ -1228,7 +1228,7 @@ void cAllCreatures::load()
 		if( iter )
 		{
 
-			P_CREATURE_INFO cinfo = new cCreatureInfo;
+			pCreatureInfo cinfo = new cCreatureInfo;
 			int loopexit=0;
 
 			do
@@ -1284,7 +1284,7 @@ void cAllCreatures::load()
 
 }
 
-P_CREATURE_INFO cAllCreatures::getCreature( uint16_t id )
+pCreatureInfo cAllCreatures::getCreature( uint16_t id )
 {
 	if( id>=CREATURE_COUNT )
 		return NULL;

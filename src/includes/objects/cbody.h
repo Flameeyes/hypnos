@@ -15,7 +15,7 @@
 
 #include "common_libs.h"
 #include "objects/cobject.h"
-#include "objects/equippable.h"
+#include "objects/citem/cequippable.h"
 
 static const uint16_t bodyMale		= 0x190;
 static const uint16_t bodyFemale	= 0x191;
@@ -31,6 +31,7 @@ be moved here.
 */
 class cBody : public cObject
 {
+friend class cChar;
 protected:
 	std::string name;
 	std::string title;
@@ -74,14 +75,14 @@ protected:
 	pEquippable layers[0x1E];
 public:
 	//! Gets the item on the specified layer
-	inline pEquippable getLayerItem(cEquippable::Layer layer) const
+	inline pEquippable getLayerItem(cEquippable::Layers layer) const
 	{ return layers[layer]; }
 
 	//! Sets the item on the specified layer
-	inline void setLayerItem(cEquippable::Layer layer, pEquippable item)
+	inline void setLayerItem(cEquippable::Layers layer, pEquippable item)
 	{ layers[layer] = item; }
 
-	pBackpack getBackpack(bool create = false);
+	pEquippableContainer getBackpack(bool create = false);
 
 	inline const bool isWearing(pItem pi) const
 	{ return this == pi->getContainer(); }
@@ -326,12 +327,12 @@ public:
 	void unmount();
 
 	inline const bool isMounted() const
-	{ return horse; }
+	{ return mounting; }
 
 	inline const bool isMouting(pNPC horse) const
 	{ return mounting == horse; }
 
-	inline pChar getHorse() const
+	inline pNPC getHorse() const
 	{ return mounting; }
 //@}
 
@@ -345,7 +346,7 @@ protected:
 private:
 	//! Gets the weight of the body, calculating it when necessary
 	inline const float getWeight()
-	{ weight > 0 || calcWeight(); return weight; }
+	{ if ( weight <= 0 ) calcWeight(); return weight; }
 	
 	void calcWeight();
 	bool overloadedWalking();

@@ -23,20 +23,17 @@
 #include "basics.h"
 #include "scripts.h"
 
-using namespace std;
-
 //
 //	STATIC DATA
 //
 
 bool	Race::activeRaceSystem	= false;
-string	Race::globalWebRoot;
-string  Race::globalWebLink;
+std::string	Race::globalWebRoot;
+std::string  Race::globalWebLink;
 short	Race::startLocation[3]	= { 0, 0, 0 };
 bool	Race::teleportOnEnlist	= false;
 bool	Race::withWebInterface	= false;
 std::map<uint32_t, class Race*> Race::raceMap;
-cScpScript* Race::script ;
 
 //
 //	STATIC FUNCTIONS
@@ -274,7 +271,7 @@ void Race::parseRaceSection( void )
 					     			lha == "COOKING")						race->parseSkill( rha );
 				case 'D':
 					if 			( lha == "DESCRIPTION" )			race->parseRaceDescription( rha );
-					else if ( lha == "DETECTHIDDEN" )			race->parseSkill( rha );
+					else if ( lha == "DETECTINGHIDDEN" )			race->parseSkill( rha );
 					else if ( lha == "DEXCAP" ) 					race->dexCap = str2num( rha );
 					else if	( lha == "DEXMOD" )						race->parseAbilityModifiers( DEXTERITY, rha );
 					else if	( lha == "DEXSTART" )					race->dexStart = str2num( rha );

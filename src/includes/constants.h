@@ -173,9 +173,6 @@ enum {	ITEMID_DEATHSHROUD = 0x204E, ITEMID_CORPSEBASE = 0x2006, ITEMID_BANKBOX =
 	ITEMID_GOLD = 0x0EED
 };
 
-//! Type of hiding
-enum { UNHIDDEN = 0, HIDDEN_BYSKILL, HIDDEN_BYSPELL };
-
 //! House list type
 enum { H_FRIEND = 1, H_BAN };
 

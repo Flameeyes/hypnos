@@ -1350,7 +1350,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 		case 0x1074: // training dummies
 			if ( pc->hasInRange(pi, 1) )
 			{
-				if (pc->hidden==HIDDEN_BYSKILL)
+				if ( pc->isHiddenBySkill() )
 					pc->unHide();
 				Skills::TDummy(s);
 			}

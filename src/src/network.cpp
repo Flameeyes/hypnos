@@ -991,7 +991,7 @@ void cNetwork::enterchar(int s)
 
 	pc->stealth=INVALID;
 	if (!(pc->IsGMorCounselor()))
-		pc->hidden=UNHIDDEN;
+		pc->setHidden(htUnhidden);
 
 	pc->wresmove=0;	//Luxor
 	pc->teleport();

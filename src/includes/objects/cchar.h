@@ -13,21 +13,19 @@
 #define __CHARS_H
 
 #include "common_libs.h"
-
+#include "objects/citem/cmsgboard.h"
+#include "objects/cbody.h"
 #include "ai.h"
 #include "magic.h"
-
 #include "npcs.h"
-#include "msgboard.h"
 #include "target.h"
 #include "constants.h"
 #include "menu.h"
 #include "logsystem.h"
 #include "globals.h"
-
 #include "basics.h"
-#include "items.h"
 #include "cmds.h"
+#include "map.h"
 
 #ifndef TIMEOUT
 #define TIMEOUT(X) (((X) <= uiCurrentTime) || overflow)
@@ -41,6 +39,13 @@ enum WanderMode {
 	WANDER_FREELY,
 	WANDER_FLEE,
 	WANDER_AMX
+};
+
+//! Type of hiding
+enum HideType {
+	htUnhidden,	//!< Not hidden
+	htBySkill,	//!< Hidden by hiding skill
+	htBySpell	//!< Hidden by invisible spell
 };
 
 /*!
@@ -120,23 +125,23 @@ class ClientCrypt;
 */
 class cChar
 {
+protected:
+	uint32_t newSerial();
 public:
-	static uint32_t nextSerial();
-
-	cChar( uint32_t ser );
+	cChar();
+	cChar(uint32_t ser);
 	~cChar();
+	void resetData();
 
-	static void	archive();
-	static void	safeoldsave();
-	void		getPopupHelp(char *str);
-	void		MoveTo(Location newloc);
-	void 		loadEventFromScript(char *script1, char *script2);
-	void		doGmEffect();
+	void getPopupHelp(char *str);
+	void MoveTo(Location newloc);
+	void loadEventFromScript(char *script1, char *script2);
+	void doGmEffect();
 
 protected:
-	pClient client;
-        pBody body;     //! The body the character is currently "using"
-        pBody oldbody;  //! Old body. To use in polimorph-type effects
+	pClient client;	//!< Client connected with the character
+	pBody body;     //! The body the character is currently "using"
+	pBody oldbody;  //! Old body. To use in polimorph-type effects
 
 public:
 	inline pClient getClient() const
@@ -203,13 +208,15 @@ public:
 \name Char Status
 */
 protected:
+	HideType hidden; //!< Hide status of the char \see HideType
+	
 	uint64_t flags;	//!< Flags for the character
 
 	int32_t karma;	//!< karma of the char
 	int32_t fame;	//!< fame of the char
 
 	uint16_t kills;	//!< PvP Kills
-	uint16_t deaths;	//!< Number of deaths
+	uint16_t deaths;//!< Number of deaths
 	float  fstm;	//!< Unavowed - stamina to remove the next step
 
 	inline void setFlag(uint64_t flag, bool set)
@@ -219,6 +226,18 @@ protected:
 	}
 
 public:
+	inline void setHidden(HideType ht)
+	{ hidden = ht; }
+
+	inline const bool isHidden() const
+	{ return hidden != htUnhidden; }
+
+	inline const bool isHiddenBySpell() const
+	{ return hidden == htBySpell; }
+
+	inline const bool isHiddenBySkill() const
+	{ return hidden == htBySkill; }
+
 	//! Return the karma of the char
 	inline const int32_t getKarma() const
 	{ return karma; }
@@ -245,15 +264,6 @@ public:
 	inline const bool isCriminal() const
 	{ return (flags & flagKarmaCriminal); }
 
-	inline const bool isHidden() const
-	{ return (hidden != UNHIDDEN); }
-
-	inline const bool isHiddenBySpell() const
-	{ return (hidden & HIDDEN_BYSPELL); }
-
-	inline const bool isHiddenBySkill() const
-	{ return (hidden & HIDDEN_BYSKILL); }
-
 	inline const bool canUseDoor() const
 	{ return flags & flagDoorUse; }
 
@@ -267,26 +277,25 @@ public:
 	{ return flags & flagReflection; }
 
         inline const bool hasTelekinesis() const
-        { return flags & flagSpellTelekinesys }
+        { return flags & flagSpellTelekinesys; }
 
 	inline const bool inGuardedArea() const
 	{ return ::region[region].priv & RGNPRIV_GUARDED; }
 
-
-
 	const bool isGrey() const;
+	
 	/*!
 	\author Xanathar
 	\brief Checks char weight
 	\note this function modify the class variable, very bad...
 	\return true if the char is over weight
+	\todo Reactivate GM Support
 	*/
 	inline const bool cChar::isOverWeight()
-	{ return !isGM() && getBody()->overloadedTeleport(); }
+	{ return /*!isGM() && */body->overloadedTeleport(); }
 	
 	const bool canDoGestures() const;
 	const bool inDungeon() const;
-
 
 	//! Sets char's karma
 	inline void setKarma(int32_t newkarma)
@@ -332,8 +341,8 @@ public:
 	*/
 	inline void cChar::setCrimGrey(int mode)
 	{
-		if ( mode == 1 ) SetGrey();
-		else makeCriminal();
+		/*if ( mode == 1 ) setGrey();
+		else*/ makeCriminal();
 	}
 
 	void setMurderer();
@@ -435,9 +444,9 @@ public:
 protected:
 	cPath*		path;			//!< current path
 	void		walkNextStep();		//!< walk next path step
-	uint32_t_SLIST	sentObjects;
+	uint32_slist	sentObjects;
 	int8_t		dir;			//!< &0F=Direction
-	uint32_t		LastMoveTime;		//!< server time of last move
+	uint32_t	LastMoveTime;		//!< server time of last move
 
 public:
 	//! has a path set?
@@ -472,14 +481,14 @@ public:
 \name Guilds
 */
 	private:
-		P_GUILD guild; //!< the guild
-		P_GUILD_MEMBER member; //!< the guild member info
+		pGuild guild; //!< the guild
+		pGuildMember member; //!< the guild member info
 
 	public:
 		bool	isGuilded();
-		void	setGuild( P_GUILD guild, P_GUILD_MEMBER member );
-		P_GUILD	getGuild();
-		P_GUILD_MEMBER getGuildMember();
+		void	setGuild( pGuild guild, pGuildMember member );
+		pGuild	getGuild();
+		pGuildMember getGuildMember();
 //@}
 
 
@@ -521,10 +530,10 @@ public:
 	uint8_t bestSkill() const;
 	uint8_t nextBestSkill(uint8_t previous) const;
 	
-	//! Gets the overridden title 
+/*	//! Gets the overridden title 
 	inline std::string getTitle() const
 	{ return title; }
-	
+*/	
 	std::string getTitle1() const;
 
 	/*!
@@ -532,7 +541,7 @@ public:
 	\return A string with the character's title
 	*/
 	inline std::string getTitle2() const
-	{ return std::string(title[ pc->bestSkill()+1 ].skill); }
+	{ return std::string(title[ bestSkill()+1 ].skill); }
 	
 	std::string getTitle3() const;
 	std::string getCompleteTitle() const;
@@ -542,12 +551,13 @@ public:
 	/********************************/
 	/*     TO REMOVE/REPLACE        */
 	/********************************/
-	public:
-		void 			setMultiSerial(long mulser);
+#if 0
+public:
+	void 			setMultiSerial(long mulser);
 
-		inline const bool isOwnerOf(const cObject *obj) const
-		{ return this == obj->getOwner(); }
-
+	inline const bool isOwnerOf(const cObject *obj) const
+	{ return this == obj->getOwner(); }
+#endif
 	/********************************/
 
 		pItem			nameKey;	//!< for renaming keys
@@ -562,17 +572,17 @@ public:
 		pAccount		account;
 
 	public:
-		wstring profile; //!< player profile
+		std::wstring profile; //!< player profile
 
 	private:
-		wstring* speechCurrent;
+		std::wstring* speechCurrent;
 	public:
 		//! Return current speech
-		inline const wstring* getSpeechCurrent() const
+		inline const std::wstring* getSpeechCurrent() const
 		{ return speechCurrent; }
 
 		//! Set current speech
-		inline void setSpeechCurrent( wstring* speech )
+		inline void setSpeechCurrent( std::wstring* speech )
 		{ speechCurrent=speech; }
 
 		//! Reset current speech
@@ -604,7 +614,6 @@ public:
 		TIMERVAL		timeout; // Combat timeout (For hitting)
 		TIMERVAL		timeout2; // memory of last shot timeout
 
-		uint8_t			hidden; // 0 = not hidden, 1 = hidden, 2 = invisible spell
 		TIMERVAL		invistimeout;
 		int32_t			hunger;  // Level of hungerness, 6 = full, 0 = "empty"
 		TIMERVAL		hungertime; // Timer used for hunger, one point is dropped every 20 min
@@ -653,7 +662,7 @@ public:
 
 		TIMERVAL		tempflagtime;
 
-		wstring* staticProfile;			//!< player static profile
+		std::wstring* staticProfile;			//!< player static profile
 
 
 		TIMERVAL		murderrate; //!< # of ticks until one murder decays //REPSYS
@@ -691,8 +700,8 @@ public:
 		int32_t			carve; //AntiChrist - for new carve system
 
 		TIMERVAL		begging_timer;
-		cMsgBoard::PostType	postType;
-		cMsgBoard::QuestType	questType;
+		PostType		postType;
+		QuestType		questType;
 		int32_t			questDestRegion;
 		int32_t			questOrigRegion;
 		int32_t			questBountyReward;		// The current reward amount for the return of this chars head
@@ -774,7 +783,7 @@ public:
 		void			applyPoison(PoisonType poisontype, int32_t secs = INVALID);
 		void			setOwner(pChar owner);
 		void			curePoison();
-		void			resurrect(NXWCLIENT healer = NULL);
+		void			resurrect(pClient healer = NULL);
 		void			unfreeze( bool calledByTempfx = false );
 		void			damage(int32_t amount, DamageType typeofdamage = DAMAGE_PURE, StatType stattobedamaged = STAT_HP);
 		void			playAction(uint16_t action);
@@ -790,10 +799,10 @@ protected:
 	uint16_t			saycolor;		//!< Color for say messages
 public:
 	void			talkAll(char *txt, bool antispam = 1);
-	void			talk(NXWSOCKET s, char *txt, bool antispam = 1);
-	void			emote(NXWSOCKET s,char *txt, bool antispam, ...);
+	void			talk(pClient client, char *txt, bool antispam = 1);
+	void			emote(pClient client,char *txt, bool antispam, ...);
 	void			emoteall(char *txt, bool antispam, ...);
-	void			talkRunic(NXWSOCKET s, char *txt, bool antispam = 1);
+	void			talkRunic(pClient client, char *txt, bool antispam = 1);
 	void			talkAllRunic(char *txt, bool antispam = 0);
 //@}
 
@@ -805,18 +814,18 @@ public:
 	\param pc Char to check if in range
 	\param range Maximum distance from this char
 	*/
-	inline const bool       hasInRange(pChar pc, uint16_t range = VISRANGE)
+	inline const bool hasInRange(pChar pc, uint16_t range = VISRANGE)
 	{ return pc && distFrom( pc ) <= range; }
 	
 	/*!
 	\brief Check if a specified char is in range from this char
-	\param pc Char to check if in range
+	\param pi Char to check if in range
 	\param range Maximum distance from this char
 	*/
-	inline const bool       hasInRange(pItem pc, uint16_t range = VISRANGE)
+	inline const bool hasInRange(pItem pi, uint16_t range = VISRANGE)
 	{ return pi && distFrom( pi ) <= range; }
 	
-	void			teleport( uint8_t flags = TELEFLAG_SENDALL, NXWCLIENT cli = NULL );
+	void			teleport( uint8_t flags = TELEFLAG_SENDALL, pClient cli = NULL );
 	void			facexy(uint16_t facex, uint16_t facey);
 
 	/*!
@@ -826,7 +835,7 @@ public:
 	\return true if is in line of sight
 	*/
 	inline const bool losFrom(const pChar pc) const
-	{ return pc ? lineOfSight( getPosition(), pc->getPosition() ) : false; }
+	{ return pc && pc->getBody() ? lineOfSight( body->getPosition(), pc->getBody()->getPosition() ) : false; }
 
 	void			playSFX(int16_t sound, bool onlyToMe = false);
 	void			playMonsterSound(MonsterSound sfx);
@@ -840,9 +849,10 @@ public:
 	\param amount amount of item to delete
 	\param color color of item to delete
 	\return number of items deleted
+	\todo Implement cEquippableContainer
 	*/
 	inline const uint32_t delItems(uint16_t id, uint32_t amount = 1, uint16_t color = 0xFFFF)
-	{ return body->getBackpack() ? body->getBackpack()->removeItems(amount,id, color) : amount; }
+	{ return body->getBackpack() ? /*body->getBackpack()->removeItems(amount, id, color)*/ amount : amount; }
 
 	const bool	checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, pChar pcd);
 
@@ -854,8 +864,8 @@ public:
 	\param col the color ( 0xFFFF for all colors )
 	\param onlyPrimaryBackpack false if search also in th subpack
 	*/
-	inline const bool uint32_t getAmount(uint16_t id, uint16_t col=0xFFFF, bool onlyPrimaryBackpack=false )
-	{ return body->getBackpack() ? body->getBackpack()->countItems(id, col, !onlyPrimaryBackpack); }
+	inline const uint32_t getAmount(uint16_t id, uint16_t col=0xFFFF, bool onlyPrimaryBackpack=false )
+	{ return body->getBackpack() ? /*body->getBackpack()->countItems(id, col, !onlyPrimaryBackpack)*/ 0 : 0; }
 
 	void			movingFX(pChar destination, short id, int32_t speed, int32_t loop, bool explode, class ParticleFx* part = NULL);
 	void			staticFX(short id, int32_t speed, int32_t loop, class ParticleFx* part = NULL);

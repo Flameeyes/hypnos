@@ -165,7 +165,6 @@ inline bool isWaterTarget(NXWSOCKET  s)
 
 void Fishing::target_fish( NXWCLIENT ps, P_TARGET t )
 {
-
 	NXWSOCKET  s=ps->toInt();
 	pChar pPlayer=ps->currChar();
 	if ( ! pPlayer ) return;
@@ -195,9 +194,9 @@ void Fishing::target_fish( NXWCLIENT ps, P_TARGET t )
 	else
 		pPlayer->fishingtimer=basetime;
 	pPlayer->playSFX(0x023F);
-//	pPlayer->hidden=UNHIDDEN;
 	pPlayer->unHide();
-	Fish(DEREF_pChar(pPlayer));		
+	pPlayer->fish();
+//	Fish(DEREF_pChar(pPlayer));
 }
 
 

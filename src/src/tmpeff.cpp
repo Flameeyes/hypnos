@@ -427,7 +427,7 @@ void cTempfx::start()
 			break;
 
 		case SPELL_INVISIBILITY:
-			dest->hidden = HIDDEN_BYSPELL;
+			dest->setHidden(htBySpell);
 			dest->morph(0);
 			break;
 
@@ -728,8 +728,8 @@ void cTempfx::executeExpireCode()
 
 		case SPELL_INVISIBILITY:
 			if ( ! dest ) return;
-			if (dest->IsHiddenBySpell()) {
-				dest->hidden = UNHIDDEN;
+			if (dest->isHiddenBySpell()) {
+				dest->setHidden(htUnhidden);
 				dest->morph();
 				dest->playSFX(0x203);
 			}
@@ -844,8 +844,7 @@ void cTempfx::executeExpireCode()
 		case GM_HIDING:
 			if ( ! dest ) return;
 			dest->sysmsg(TRANSLATE("You have hidden yourself well."));
-			//dest->hideBySkill();
-			dest->hidden = HIDDEN_BYSKILL;
+			dest->setHidden(htBySkill);
 			dest->teleport( TELEFLAG_NONE );
 			break;
 

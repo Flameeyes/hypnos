@@ -59,7 +59,7 @@ protected:
 		
 		bool isExpired();	//!< expiration time check & delete. Returns true if post has been deleted for reaching expiration time
 		void refreshQuestMessage();
-	}
+	};
 	
 	static MessageList globalMsgs;
 	static std::map<uint32_t, MessageList> regionalMsgs;

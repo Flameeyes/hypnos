@@ -16,11 +16,9 @@
 #ifndef __LOGSYSTEM_H
 #define __LOGSYSTEM_H
 
-#include <stdarg.h>
 #include "common_libs.h"
 #include "constants.h"
 #include "typedefs.h"
-#include "translation.h"
 #include "version.h"
 
 class LogFile;
@@ -29,9 +27,6 @@ extern int32_t entries_e, entries_c, entries_w;
 extern LogFile ServerLog;	//! global log object
 
 void WriteGMLog(pChar, char *msg, ...);
-#ifdef WIN32
-char *basename(char *path);
-#endif
 
 /*!
 \brief Manage a log file
@@ -41,14 +36,14 @@ char *basename(char *path);
 class LogFile
 {
 private:
-	FILE *file;			//! pointer to opened file
-	char *filename;		//! name of the file
+	FILE *file;		//!< pointer to opened file
+	char *filename;		//!< name of the file
 
 public:
-	LogFile(string name);
-	LogFile(char *format, ...);	// path + filename
+	LogFile(std::string name);
+	LogFile(char *format, ...);	//!< path + filename
 	~LogFile();
-	void Write(string str);
+	void Write(std::string str);
 	void Write(char *format, ...);
 };
 
@@ -60,11 +55,11 @@ public:
 class SpeechLogFile : public LogFile
 {
 private:
-	cChar *pc;
-	string MakeFilename(pChar pc);
+	pChar pc;
+	std::string MakeFilename(pChar pc);
 
 public:
-	SpeechLogFile(cChar *pc);
+	SpeechLogFile(pChar pc);
 };
 
 

@@ -828,10 +828,10 @@ void NxwCharWrapper::fillPartyFriend( pChar pc, uint32_t nDistance, bool bExclud
 */
 void NxwCharWrapper::fillGuildMembers( uint32_t guild )
 {
-	P_GUILD pGuild = Guildz.getGuild( guild );
+	pGuild pGuild = Guildz.getGuild( guild );
 	if( pGuild != 0 )
 	{
-		std::map< uint32_t, P_GUILD_MEMBER >::iterator iter( pGuild->members.begin() ), end( pGuild->members.end() );
+		std::map< uint32_t, pGuildMember >::iterator iter( pGuild->members.begin() ), end( pGuild->members.end() );
 		for( ; iter!=end; iter++ ) {
 			insertSerial( iter->first );
 		}
@@ -846,10 +846,10 @@ void NxwCharWrapper::fillGuildMembers( uint32_t guild )
 */
 void NxwCharWrapper::fillGuildRecruits( uint32_t guild )
 {
-	P_GUILD pGuild = Guildz.getGuild( guild );
+	pGuild pGuild = Guildz.getGuild( guild );
 	if( pGuild != NULL )
 	{
-		std::map< uint32_t, P_GUILD_RECRUIT >::iterator iter( pGuild->recruits.begin() ), end( pGuild->recruits.end() );
+		std::map< uint32_t, pGuildRecruit >::iterator iter( pGuild->recruits.begin() ), end( pGuild->recruits.end() );
 		for( ; iter!=end; iter++ ) {
 			insertSerial( iter->first );
 		}
@@ -1076,14 +1076,14 @@ void NxwItemWrapper::fillItemWeared( pChar pc, bool bIncludeLikeHair, bool bIncl
 void NxwItemWrapper::fillGuilds( uint32_t guild )
 {
 	if( guild == INVALID ) { //all guilds
-		std::map< uint32_t, P_GUILD >::iterator iter( Guildz.guilds.begin() ), end( Guildz.guilds.end() );
+		std::map< uint32_t, pGuild >::iterator iter( Guildz.guilds.begin() ), end( Guildz.guilds.end() );
 		for( ; iter!=end; ++iter ) {
 			insertSerial( iter->first );
 		}
 	}/*
 	else {
 
-		P_GUILD pGuild = Guildz.getGuild( guild );
+		pGuild pGuild = Guildz.getGuild( guild );
 		if( pGuild != 0 )
 			if( options == GUILD_WAR ) {
 				std::vector<uint32_t>::iterator iter( pGuild->war.begin() ), end( pGuild->war.end() );

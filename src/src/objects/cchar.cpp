@@ -16,7 +16,6 @@
 #include "sndpkg.h"
 #include "magic.h"
 #include "debug.h"
-#include "amx/amxcback.h"
 #include "set.h"
 #include "tmpeff.h"
 #include "race.h"
@@ -34,7 +33,6 @@
 #include "rcvpkg.h"
 #include "map.h"
 
-
 #include "inlines.h"
 #include "basics.h"
 #include "magic.h"
@@ -42,59 +40,34 @@
 #include "range.h"
 #include "classes.h"
 #include "utils.h"
-#include "nox-wizard.h"
 #include "targeting.h"
 #include "cmds.h"
 
-
-void cChar::archive()
+cChar::cChar()
+	: cSerializable()
 {
-	std::string saveFileName( SrvParms->savePath + SrvParms->characterWorldfile + SrvParms->worldfileExtension );
-	std::string timeNow( getNoXDate() );
-	for( int32_t i = timeNow.length() - 1; i >= 0; --i )
-		switch( timeNow[i] )
-		{
-			case '/' :
-			case ' ' :
-			case ':' :
-				timeNow[i]= '-';
-		}
-	std::string archiveFileName( SrvParms->archivePath + SrvParms->characterWorldfile + timeNow + SrvParms->worldfileExtension );
-
-
-	if( rename( saveFileName.c_str(), archiveFileName.c_str() ) != 0 )
-	{
-		LogWarning("Could not rename/move file '%s' to '%s'\n", saveFileName.c_str(), archiveFileName.c_str() );
-	}
-	else
-	{
-		InfoOut("Renamed/moved file '%s' to '%s'\n", saveFileName.c_str(), archiveFileName.c_str() );
-	}
+	resetData();
 }
 
-void cChar::safeoldsave()
+cChar::cChar( uint32_t ser )
+	: cSerializable(ser)
 {
-	std::string oldFileName( SrvParms->savePath + SrvParms->characterWorldfile + SrvParms->worldfileExtension );
-	std::string newFileName( SrvParms->savePath + SrvParms->characterWorldfile + SrvParms->worldfileExtension + "$" );
-	remove( newFileName.c_str() );
-	rename( oldFileName.c_str(), newFileName.c_str() );
+	resetData();
 }
 
-cChar::cChar( uint32_t ser ) : cObject()
+//! Resets data in the newly created instances
+void cChar::resetData()
 {
-
-	m_client = NULL;
-
-	setSerial(ser);
+	client = NULL;
+	hidden = htUnhidden;
+	// PyUO OK!
 
 	setMultiSerial32Only(INVALID);//Multi serial
 	setOwnerSerial32Only(INVALID);
 
-
 	setCurrentName("<this is a bug>");
 	setRealName("<this is a bug>");
 	title[0]=0x00;
-
 
 	///TIMERS
 	antiguardstimer=uiCurrentTime;
@@ -206,7 +179,6 @@ cChar::cChar( uint32_t ser ) : cObject()
 	fz1=0; //NPC Wander Point 1 z
 
 	spawnserial=INVALID; // Spawned by
-	hidden=UNHIDDEN;
 	invistimeout=0;
 	ResetAttackFirst(); // 0 = defending, 1 = attacked first
 	onhorse=false; // On a horse?
@@ -330,14 +302,6 @@ cChar::cChar( uint32_t ser ) : cObject()
 	vendorItemsBuy = NULL;
 
 	oldmenu=INVALID;
-
-	commandLevel=0;
-	// initializing crypt
-#ifdef ENCRYPTION
-	crypter = NULL;
-#endif
-	// initializing amx
-	resetAmxEvents();
 }
 
 /*
@@ -570,10 +534,10 @@ void cChar::disturbMed()
 void cChar::unHide()
 {
 	//if hidden but not permanently or forced unhide requested
-	if ( IsHiddenBySkill() && isPermaHidden() )
+	if ( isHiddenBySkill() && isPermaHidden() )
 	{
 		stealth=-1;
-		hidden=UNHIDDEN;
+		hidden = htUnhidden;
 
 		updateFlag();//AntiChrist - bugfix for highlight color not being updated
 
@@ -1306,7 +1270,7 @@ bool const cChar::CanDoGestures() const
 {
 	if (!IsGM())
 	{
-		if (hidden == HIDDEN_BYSPELL) return false;	//Luxor: cannot do magic gestures if under invisible spell
+		if ( isHiddenBySpell() ) return false;	//Luxor: cannot do magic gestures if under invisible spell
 
 		NxwItemWrapper si;
 		si.fillItemWeared( (pChar)this, false, false, true );
@@ -1552,7 +1516,7 @@ void cChar::hideBySkill()
 	if ( !npc )
 		sysmsg( TRANSLATE("You have hidden yourself well.") );
 
-	hidden = HIDDEN_BYSKILL;
+	hidden = htBySkill;
 	teleport( TELEFLAG_NONE );
 }
 

@@ -131,7 +131,7 @@ void cChar::walkNextStep()
 	}
 
 
-	P_CREATURE_INFO creature = creatures.getCreature( getId() );
+	pCreatureInfo creature = creatures.getCreature( getId() );
 	if( creature!=NULL ) {
 		if( creature->canFly() && ( fly_steps>0 ) )
 			if ( chance( 20 ) )

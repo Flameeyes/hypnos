@@ -34,7 +34,7 @@ void cChar::doMissedSoundEffect()
 */
 void cChar::playMonsterSound(MonsterSound sfx)
 {
-	P_CREATURE_INFO creature = creatures.getCreature( getId() );
+	pCreatureInfo creature = creatures.getCreature( getId() );
 	if( creature==NULL )
 		return;
 

@@ -1551,9 +1551,7 @@ void cClient::item_bounce3(const pItem pi)
 \param pck char to "dressup" :)
 \param pi item to be put on pc
 */
-
-
-void wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
+void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 {
 
 	pChar pc = currChar();

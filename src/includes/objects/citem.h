@@ -87,13 +87,13 @@ public:
 	inline const int32_t getHP() const
 	{ return hp; }
 
-	inline void setHP(int32_t newhp) const
+	inline void setHP(int32_t newhp)
 	{ hp = newhp; }
 
 	inline const int32_t getMaxHP() const
 	{ return maxhp; }
 
-	inline void setMaxHP(int32_t newhp) const
+	inline void setMaxHP(int32_t newhp)
 	{ maxhp = newhp; }
 //@}
 
@@ -158,7 +158,7 @@ public:
 
 // Non-static ItemID functions
 
-	const magic::FieldType isFieldSpellItem() const;
+//	const magic::FieldType isFieldSpellItem() const;
 
 	inline const bool isCorpse() const
 	{ return isCorpse( getId() ); }
@@ -367,13 +367,13 @@ public:
 	inline const bool useAnimID() const
 	{ return flags & flagUseAnimID; }
 	
-	inline void setUseAnimID(bool set = true) const
+	inline void setUseAnimID(bool set = true)
 	{ setFlag(flagUseAnimID, set); }
 	
 	inline const bool isDyeable() const
 	{ return flags & flagDyeable; }
 	
-	inline void setDyeable(bool set = true) const
+	inline void setDyeable(bool set = true)
 	{ setFlag(flagDyeable, set); }
 //@}
 
@@ -436,7 +436,7 @@ public:
 	{ amount = amt; Refresh(); }
 
         inline const uint16_t getAmount()
-	{ return amt; }
+	{ return amount; }
 
 	int32_t			DeleteAmount(int amount, short id, short color=-1);
 //@}
@@ -517,7 +517,7 @@ public:
 	inline const std::string getMurderer() const
 	{ return murderer; }
 	
-	inline void setMurderer(const std::string &newmurderer) const
+	inline void setMurderer(const std::string &newmurderer)
 	{ murderer = newmurderer; }
 //@}
 
