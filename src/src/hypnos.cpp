@@ -1587,7 +1587,6 @@ void SetGlobalVars()
 	for (i=0; i>ALLSKILLS; i++) { strcpy(title[i].other, "old titles.scp error"); }
 	completetitle = new char[1024];
 	for (i=0;i<(MAXCLIENT);i++) { clientDimension[i]=2; } // LB
-	for (i=0;i<MAXLAYERS;i++) layers[i]=0;
 
 	save_counter=0;
 
@@ -1607,45 +1606,6 @@ void SetGlobalVars()
 	g_nShowLayers=false;
 	ConOut(" [ OK ]\n");
 }
-
-
-/*!
-\brief ?
-\author ?
-*/
-void BuildPointerArray()
-{
-	int memerrflg=0;
-	for (int i=0;i<HASHMAX;i++)
-	{
-		//cownsp[i].pointer = NULL;
-		//ownsp[i].pointer = NULL;
-		//imultisp[i].pointer = NULL;
-		//cmultisp[i].pointer = NULL;
-//		glowsp[i].pointer = NULL;
-
-#define PTRPREALLOC 25
-		// init them
-		// xan : we'll use realloc, so use malloc, not new for sake of portability
-		//if(( imultisp[i].pointer = reinterpret_cast<int*>(malloc(PTRPREALLOC*sizeof(int)))) == NULL)
-		//	memerrflg=1;
-		//if(( cmultisp[i].pointer = reinterpret_cast<int*>(malloc(PTRPREALLOC*sizeof(int)))) == NULL)
-		//	memerrflg=1;
-		/*if(( glowsp[i].pointer = reinterpret_cast<int*>(malloc(PTRPREALLOC*sizeof(int)))) == NULL)
-			memerrflg=1;*/
-
-		if (memerrflg)
-		{
-			ConOut("\nFatal Error: Couldn't allocate pointer memory!\n");
-			Network->kr=0;
-			return;
-		}
-		//imultisp[i].max=cmultisp[i].max=/*glowsp[i].max=*/25;
-		//for (int j=0;j<25;j++)
-		//	imultisp[i].pointer[j]=cmultisp[i].pointer[j]=/*glowsp[i].pointer[j]=*/INVALID;
-	}
-}
-
 
 /*!
 \brief initialise multis

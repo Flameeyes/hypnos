@@ -170,7 +170,7 @@ bool cBody::overloadedWalking()
 {
 	const static char steps[4] = { 25, 50, 75, 100 };
 	
-	int     limit = pc->getStrength()*WEIGHT_PER_STR+30,
+	int     limit = pc->getStrength()*nSettings::Server::getWeightPerStr()+30,
 		percelt = int(((float)pc->weight/(float)limit)*100.0f),
 		result;
 	bool ret = true;
@@ -220,7 +220,7 @@ bool cBody::overloadedWalking()
 */
 bool cBody::overloadedTeleport()
 {
-	if ( getWeight() > (getStrength()*WEIGHT_PER_STR)+30)
+	if ( getWeight() > (getStrength()*nSettings::Server::getWeightPerStr())+30)
 	{
 		/*! \todo Need to chek what does this...
 		pc->mn -= 30;

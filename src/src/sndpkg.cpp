@@ -1462,7 +1462,8 @@ void SendDrawObjectPkt(NXWSOCKET s, pChar pc, int z)
 		default: oc[18]=3; break;//grey (Can be pretty much any number.. I like 3 :-)
 	}
 
-	for (int j=0;j<MAXLAYERS;j++) layers[j] = 0;
+#if 0
+// layers was a global variable, and global variables are evil. Please rewrite this code from scratch
 
 	NxwItemWrapper si;
 	si.fillItemWeared( pc, true, true, false );
@@ -1485,7 +1486,7 @@ void SendDrawObjectPkt(NXWSOCKET s, pChar pc, int z)
 				layers[pj->layer] = 1;
 			}
 	}
-
+#endif
 	uint32_t ser = 0; 	// Not well understood. It's a serial number. I set this to my serial number,
 			// and all of my messages went to my paperdoll gump instead of my character's
 			// head, when I was a character with serial number 0 0 0 1.

@@ -69,6 +69,8 @@ namespace nSettings {
 		uint32_t getDelaySkills();		//!< Delay between two skill uses
 		uint32_t getDelayObjects();		//!< Delay between two object uses
 		uint32_t getDecayTimer();		//!< Decay timer
+		
+		uint32_t getWeightPerStr();		//!< How much weight can take with one str point? [Default: 4]
 	}
 	
 	/*!
@@ -76,7 +78,7 @@ namespace nSettings {
 	*/
 	namespace Actions {
 		bool shouldEquipOnDClick();		//!< Should an item be equipped on double click? [Default: true]
-                bool canUseItemsWhenInvisible();	//!< When invisible (by spell) can a player use items? [Default: \b missing]
+                bool canUseItemsWhenInvisible();	//!< When invisible (by spell) can a player use items? [Default: \b missing ]
 		uint16_t getBountyKarmaGain();		//!< How much karma is gained for bounty hunting? [Default: \b missing ]
 		uint16_t getBountyFameGain();		//!< How much fame is gained for bounty hunting? [Default: \b missing ]
 	}

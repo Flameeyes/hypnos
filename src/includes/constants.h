@@ -16,6 +16,36 @@
 #define __CONSTANTS_H__
 #include "typedefs.h"
 
+//@{
+//! \name Colors
+static const uint16_t COLOR_LIGHTBLUE	= 0x0489;
+static const uint16_t COLOR_VIOLET	= 0x000D;
+static const uint16_t COLOR_WHITE	= 0x0481;
+static const uint16_t COLOR_BLACK	= 0x0001;
+static const uint16_t COLOR_NONE	= 0x0000;
+//@}
+
+//@{
+//! \name Human bodies
+static const uint16_t BODY_MALE		= 0x0190;	//!< Male body
+static const uint16_t BODY_FEMALE	= 0x0191;	//!< Female body
+static const uint16_t BODY_DEADMALE	= 0x0192;	//!< Dead male body
+static const uint16_t BODY_DEADFEMALE	= 0x0193;	//!< Dead female body
+static const uint16_t BODY_GMSTAFF	= 0x03DB;	//!< GM Staff body
+//@}
+
+//@{
+//! \name Some items
+static const uint16_t ITEMID_DEATHSHROUD= 0x204E;
+static const uint16_t ITEMID_CORPSEBASE	= 0x2006;
+static const uint16_t ITEMID_BANKBOX	= 0x09AB;
+static const uint16_t ITEMID_GOLD	= 0x0EED;
+//@}
+
+static const uint16_t MY_CLOCKS_PER_SEC	= 10000;
+static const uint16_t SPIRITSPEAKTIMER	= 30;
+			//!< spiritspeak lasts at least 30 seconds, additional time is calculated by Skill & INT
+
 // Miscellaneous constants
 enum
 {
@@ -36,19 +66,12 @@ enum
 	PATHNUM = 2,
 
 	XYMAX = 256,		//!< Maximum items NoX-Wizard can handle on one X/Y square
-	MAXLAYERS = 50,	//!< Maximum number of Layers in paperdolls (still not sure how many)
 	CMAX = 40,		//!< Maximum parameters in one line (Only for memory reasons)
-	SPIRITSPEAKTIMER = 30,
-				//!< spiritspeak lasts at least 30 seconds, additional time is calculated by Skill & INT
-
-	HASHMAX = 8191,		//!< lord binary, hashmax must be a prime for maximum performce
-	MY_CLOCKS_PER_SEC = 1000,
-
+	
 	DOORTYPES = 17,
-	WEIGHT_PER_STR = 4,
 	POLYMORPHMENUOFFSET = 8196,
 				//!< polymorph spell menu offset
-	MAKEMENUOFFSET = 2048,
+	MAKEMENUOFFSET = 2048
 
 }; //enum
 
@@ -138,32 +161,6 @@ enum ItemType {
 
 //! Bank Type
 enum { BANK_GOLD = 1, BANK_ITEM = 0, MOREY_GOLDONLYBANK = 123, MOREX_BANK = 1 };
-
-//@{
-//! \name Colors
-static const uint16_t COLOR_LIGHTBLUE	= 0x0489;
-static const uint16_t COLOR_VIOLET	= 0x000D;
-static const uint16_t COLOR_WHITE	= 0x0481;
-static const uint16_t COLOR_BLACK	= 0x0001;
-static const uint16_t COLOR_NONE	= 0x0000;
-//@}
-
-//@{
-//! \name Human bodies
-static const uint16_t BODY_MALE		= 0x0190;	//!< Male body
-static const uint16_t BODY_FEMALE	= 0x0191;	//!< Female body
-static const uint16_t BODY_DEADMALE	= 0x0192;	//!< Dead male body
-static const uint16_t BODY_DEADFEMALE	= 0x0193;	//!< Dead female body
-static const uint16_t BODY_GMSTAFF	= 0x03DB;	//!< GM Staff body
-//@}
-
-//@{
-//! \name Some items
-static const uint16_t ITEMID_DEATHSHROUD= 0x204E;
-static const uint16_t ITEMID_CORPSEBASE	= 0x2006;
-static const uint16_t ITEMID_BANKBOX	= 0x09AB;
-static const uint16_t ITEMID_GOLD	= 0x0EED;
-//@}
 
 //! House list type
 enum { H_FRIEND = 1, H_BAN };
