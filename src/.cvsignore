@@ -10,3 +10,6 @@ stamp-h1
 hypnos.kdevses
 debug
 hypnos.kdevelop.pcs
+libtool
+Makefile
+config.status
