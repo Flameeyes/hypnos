@@ -18,6 +18,6 @@
 
 
 
-void profileStuff( NXWCLIENT ps, cPacketCharProfileReq& p );
+
 
 #endif

@@ -622,14 +622,11 @@ pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
                 case 0xa7: return new cPacketReceiveTipsRequest(buffer, length); 	// Request Tips/Notice
                 case 0xac: return new cPacketReceiveGumpTextDialogReply(buffer, length);// Gump Text Entry Dialog Reply
                 case 0xad: return new cPacketReceiveUnicodeSpeechReq(buffer, length);	// Unicode speech request
-                case 0xb1: length = ???; break; // Gump Menu Selection
-
-                //unsure about this message if received, sent or both
-                case 0xb2: length = ???; break; // Chat Message
-
-                case 0xb5: length =  64; break; // Open Chat window
-                case 0xb6: length =   9; break; // Send Help/Tip Request
-                case 0xb8: length = ???; break; // Request Char Profile
+                case 0xb1: return new cPacketReceiveGumpResponse(buffer, length);	// Gump Menu Selection
+                case 0xb2: return new cPacketReceiveChatMessage(buffer, length);	// Chat Message
+                case 0xb5: return new cPacketReceiveChatWindowOpen(buffer, length); 	// Open Chat window
+                case 0xb6: return new cPacketReceivePopupHelpRequest(buffer, length); 	// Send Help/Tip Request (popup help)
+                case 0xb8: return new cPacketReceiveCharProfileRequest(buffer, length);	// Request Char Profile
                 case 0xbb: length =   9; break; // Ultima Messenger (do we need this?)
                 case 0xbd: length = ???; break; // Client Version Message
                 case 0xbe: length = ???; break; // Assist Version
@@ -666,7 +663,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 	        return false;
 	}
 
-        uint8_t sex                = buffer[70];
+        uint8_t sex                 = buffer[70];
         uint16_t strength           = buffer[71];
         uint16_t dexterity          = buffer[72];
         uint16_t intelligence       = buffer[73];
@@ -691,7 +688,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 
         // Disconnect-level protocol error check (possible client hack or too many chars already present in account)
         if (
-                !(client->currAccount()->comparePassword(buffer+40)) ||                  //!< Password check
+                !(client->currAccount()->verifyPassword(buffer+40)) ||                  //!< Password check
                 (client->currAccount()->getCharsNumber() >= nSettings::Server::getMaximumPCs()) ||  //!< Max PCs per account check
                 ((sex !=1) && (sex != 0)) ||                                                    //!< Sex validity check
                 (strength + dexterity + intelligence > 80) ||                                   //!< Stat check: stat sum must be <=80
@@ -838,7 +835,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 
 
         newbieitems(pc);
-        client->startchar(); //TODO: move startchar from network to cClient
+        client->startchar(); //!\TODO: move startchar from network to cClient
       	//clientInfo[s]->ingame=true;
         return true;
 }
@@ -866,7 +863,7 @@ Mostly taken from old network.cpp and modified to pyuo object system
 
 bool cPacketReceiveMoveRequest::execute (pClient client)
 {
-        if( (length == 7) && (client->currChar()!= NULL ))
+        if( (length == 7) && (client->currChar()))
         {
 	        walking(client->currChar(), buffer[1], buffer[2]); // buffer[1] = direction, buffer[2] = sequence number
 	        client->currChar()->disturbMed();
@@ -886,12 +883,11 @@ bool cPacketReceiveTalkRequest::execute (pClient client)
 {
 	if( (client->currChar()!=NULL) && (length != ShortFromCharPtr(buffer + 1)))
         {
-        // the buffer should be invalid only on the next packet reception by the same client....
-        // ... but is a copy really needed?
+        //!\todo use cSpeech instead and rewrite this packet
         	unsigned char nonuni[512];
 		client->currChar()->unicode = false;
 	        strcpy((char*)nonuni, buffer + 8);
-		talking(client, (char*)nonuni);
+		client->talking((char*)nonuni);
                 return true;
 	} else return false;
 }
@@ -912,7 +908,7 @@ bool cPacketReceiveAttackRequest::execute (pClient client)
 	VALIDATEPCR( victim, false );
 
 	if( pc->dead ) pc->deadAttack(victim);
-	else    if( pc->jailed ) sysmessage(s,TRANSLATE("There is no fighting in the jail cells!"));
+	else    if( pc->jailed ) client->sysmessage(TRANSLATE("There is no fighting in the jail cells!"));
 	        else pc->attackStuff(victim);
         return true;
 }
@@ -1258,8 +1254,8 @@ bool cPacketReceiveMapPlotCourse::execute(pClient client)
 
         PlotCourseCommands command     	= buffer[5];
         int pin 	 		= buffer[6];
-        uint16_t x 				= ShortFromCharPtr(buffer + 7);
-        uint16_t y 				= ShortFromCharPtr(buffer + 9);
+        uint16_t x 			= ShortFromCharPtr(buffer + 7);
+        uint16_t y 			= ShortFromCharPtr(buffer + 9);
 
         switch(command)
         {
@@ -1959,17 +1955,136 @@ bool cPacketReceiveUnicodeSpeechReq::execute(pClient client)
 	}
 	std::string text = "";
 
+
+
+
+
+        //!\todo implement cSpeech here and complete
+
+
 	//Unicode to ascii "truncation"
 	//Remember that it is a BIG ENDIAN unicode indifferently from machine endian (due to packet protocol)
 	//so the ascii byte is the second one
 	++offset;	//This places the offset on the first "second byte" of text
 	for (;buffer[offset] && offset<size;offset +=2) text += buffer[offset];
-
-
-
 	client->talking(text, mode, color, font);
 
 
-
         return true;
+}
+
+
+bool cPacketReceiveGumpResponse::execute(pClient client)
+{
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+        //!\todo gump remake
+        Menus.handleMenu( ps );
+        return true;
+}
+
+bool cPacketReceiveChatMessage::execute(pClient client)
+{
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+        //!\todo chat implementation
+        //NOTE: old nox had absolutely NO support for ingame chat. We have to write it from scrap
+        return true;
+}
+
+bool cPacketReceiveChatWindowOpen::execute(pClient client)
+{
+       	if (length != 64) return false;
+        //!\todo chat implementation
+        //NOTE: old nox had absolutely NO support for ingame chat. We have to write it from scrap
+        return true;
+}
+
+
+bool cPacketReceivePopupHelpRequest::execute(pClient client)
+{
+       	if (length != 9) return false;
+
+	// T2A Popuphelp request
+	if (!nSettings::Server::isEnabledPopupHelp()) return false;
+
+	uint32_t serial = LongCharFromPtr(buffer +1);
+
+        //Based on cSerializable::findxxxxBySerial, only the "right" one is not NULL
+        pChar pc = cSerializable::findCharBySerial(serial);
+	pItem pi = cSerializable::findItemBySerial(serial);
+	if ( !pc && !pi) return false;
+
+	int len = 0;
+	uint8_t packet[4000]; packet[0] = '\0';
+	if ( client->currChar() && client->currChar()->canSeeSerials())
+        {
+		if (pc)	sprintf((char *)packet, "char serial : %x", pc->getSerial());
+		if (pi)	sprintf((char *)packet, "item serial : %x", pi->getSerial());
+	}
+	else
+	{
+		if (pc)	pc->getPopUpHelp((char *)packet);
+		if (pi)	pi->getPopUpHelp((char *)packet);
+	}
+
+	if (packet[0]=='\0') return true; //We have parsed the packet, but nothing had to return... :D
+
+        //!\todo cspeech implementation here, for unicode "conversion" and then use it for packet sending
+
+						char2wchar((char *)packet);
+						packet[0] = 0xB7;
+						LongToCharPtr( LongFromCharPtr(buffer[s] +1), packet +3);
+						int p = 0;
+						while (p<600) {
+							packet[7+p] = (uint8_t) Unicode::temp[p];
+							packet[8+p] = (uint8_t) Unicode::temp[p+1];
+							if ((Unicode::temp[p]=='\0')&&(Unicode::temp[p+1]=='\0')) break;
+							p += 2;
+						}
+						p += 2;
+						len = 7+p;
+						ShortToCharPtr(len, packet +1);
+						Xsend(s, packet, len);
+//AoS/						Network->FlushBuffer(s);
+}
+
+bool cPacketReceiveCharProfileRequest::execute(pClient client)
+{
+	//NOTE: this packet is poorly documented -_-
+
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+	pPC pc = client->currChar();
+	VALIDATEPCR(pc, false );
+
+	pPC who= dynamic_cast<pPC>(cSerializable::findCharBySerial(LongCharFromPtr(buffer + 4)));
+	VALIDATEPCR( who, false );
+
+	if( buffer[3])
+        { //update profile
+		if( ( who->getSerial32()!=pc->getSerial32() ) && !pc->IsGMorCounselor() )
+			return true; //lamer fix, but packet still processed
+                int profilesize = ShortFromCharPtr(buffer + 10);
+                cSpeech profile(buffer + 12, profilesize);
+		who->setProfile(profile);
+	}
+
+
+
+
+
+
+
+        
+	else { //only send
+		cPacketCharProfile resp;
+		resp.chr=p.chr;
+		resp.title+= who->getCurrentName();
+		resp.staticProfile = who->staticProfile;
+		resp.profile = &who->profile;
+		resp.send( ps );
+
+	}
+
 }

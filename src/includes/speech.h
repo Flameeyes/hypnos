@@ -11,17 +11,29 @@
 #define __SPEECH_H__
 
 //! Used in speech methods
+//!\todo complete cSpeech and do the implementations
+//!\note it is called simply cSpeech because i had no heart to call it cUnicode, since it is not a true unicode support, but a "cut-down" one, just enough to work with UO protocol
 class cSpeech
 {
-	std::wstring unicode_text;	//warning: wchar is not guaranteed to be a 16 bit char in all systems
+private:
+	std::wstring unicode_text;	//warning: wchar is not guaranteed to be a 16 bit char on all systems
         uint8_t mode;	//0=say,2=emote,8=whisper,9=yell
 	uint16_t color;
 	uint16_t font;
         char[4] language;
         pChar speaker;
-        inline char operator[](int i)
-        { return unicode_text[i] & 0xff; }
-        cSpeech(char* buffer); //Only from packet buffer, because it updates endian from packet to machine
+        bool packet_byteorder;
+public:
+	inline isPacketByteOrder()
+	        { return packet_byteOrder}
+        void setPacketByteOrder();				//!< Sets byteorder and swaps unicode_text to the protocol byteorder (if needed)
+        void clearPackeByteOrder();  				//!< Clears byteorder and swaps unicode_text if it is necessary to machine byte order
+        inline void assignPacketByteOrder(bool byteorder)	//!< sets byteorder without changing unicode_text
+        	{ packet_byteorder = byteorder; }
+        char operator[](int i);                           	//!< gets 8-bit ascii char in location "i" in either byteorder
+        cSpeech& operator= (std::string s);     //!< Assignment operator from a non unicode string. Converts to unicode and stores it
+        cSpeech& operator= (cSpeech& s);
+        cSpeech(char* buffer, int size = 0); 	//!< Size is used only for not null-terminated strings, if it is 0 is ignored, else reads size bytes wherever \0 is present or not
         std::string toString();	//!< returns a normal char-based string obtained truncating unicode to ascii values
         std::string toGhost();	//!< returns a randomized "ooooOOoo" based on current string content (not unicode)
 }

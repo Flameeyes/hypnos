@@ -23,30 +23,4 @@
 #include "skills.h"
 #include "nox-wizard.h"
 
-void profileStuff( NXWCLIENT ps, cPacketCharProfileReq& p )
-{
-
-	if( ps==NULL ) return;
-	pChar pc= ps->currChar();
-	if ( ! pc ) return;
-	
-	pChar who=pointers::findCharBySerial( p.chr.get() );
-	if ( ! who ) return;
-
-	if( p.update ) { //update profile
-		if( ( who->getSerial()!=pc->getSerial32() ) && !pc->IsGMorCounselor() ) 
-			return; //lamer fix
-		who->profile = p.profile;
-	}
-	else { //only send
-		cPacketCharProfile resp;
-		resp.chr=p.chr;
-		resp.title+= who->getCurrentName();
-		resp.staticProfile = who->staticProfile;
-		resp.profile = &who->profile;
-		resp.send( ps );
-
-	}
-					
-}
 

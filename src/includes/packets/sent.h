@@ -594,44 +594,49 @@ class cPacketReceiveCreateChar          : public cPacketReceive;	//!< Character 
 class cPacketReceiveDisconnectNotify    : public cPacketReceive;	//!< "software disconnect"
 class cPacketReceiveMoveRequest         : public cPacketReceive;	//!< move (or run) 1 step
 class cPacketReceiveTalkRequest         : public cPacketReceive;	//!< character speech (NOT UNICODE!!)
-class cPacketReceiveAttackRequest       : public cPacketReceive; 
-class cPacketReceiveDoubleclick         : public cPacketReceive;
-class cPacketReceivePickUp              : public cPacketReceive;
-class cPacketReceiveDropItem            : public cPacketReceive;
-class cPacketReceiveSingleclick         : public cPacketReceive;
-class cPacketReceiveActionRequest       : public cPacketReceive;
-class cPacketReceiveWearItem            : public cPacketReceive;
-class cPacketReceiveResyncRequest       : public cPacketReceive;
-class cPacketReceiveRessChoice          : public cPacketReceive;
-class cPacketReceiveStatusRequest       : public cPacketReceive;
-class cPacketReceiveSetSkillLock        : public cPacketReceive;
-class cPacketReceiveBuyItems            : public cPacketReceive;
-class cPacketReceiveMapPlotCourse       : public cPacketReceive;
+class cPacketReceiveAttackRequest       : public cPacketReceive;        //!< Clients requests an armed/unarmed attack request against someone
+class cPacketReceiveDoubleclick         : public cPacketReceive;	//!< Use of item or info on char
+class cPacketReceivePickUp              : public cPacketReceive;	//!< trying to pick up an item
+class cPacketReceiveDropItem            : public cPacketReceive;	//!< releasing mouse button and dropping item dragged. Position check too
+class cPacketReceiveSingleclick         : public cPacketReceive;	//!< info/name request for item/char
+class cPacketReceiveActionRequest       : public cPacketReceive;	//!< skill/magic use (spells from macros i believe) and generic action, like salute or bow
+class cPacketReceiveWearItem            : public cPacketReceive;	//!< drag of item on paperdoll. Check if equippable too
+class cPacketReceiveResyncRequest       : public cPacketReceive;	//!< resends data to client
+class cPacketReceiveRessChoice          : public cPacketReceive;	//!< once it was used for a ress choice(ghost or revive with skill penalties?) now only used for bounty placement
+class cPacketReceiveStatusRequest       : public cPacketReceive;	//!< statusbar request about a char
+class cPacketReceiveSetSkillLock        : public cPacketReceive;	//!< skill lock change (up, down, lock)
+class cPacketReceiveBuyItems            : public cPacketReceive;	//!< receive list of items selected from a buy list of vendor
+class cPacketReceiveMapPlotCourse       : public cPacketReceive;	//!< pin change for a course on map. Also all pin-related action on map
 class cPacketReceiveLoginChar       	: public cPacketReceive;
-class cPacketReceiveBookPage		: public cPacketReceive;
-class cPacketReceiveTargetSelected      : public cPacketReceive;
-class cPacketReceiveBBoardMessage       : public cPacketReceive;
-class cPacketReceiveSecureTrade         : public cPacketReceive;
-class cPacketReceiveWarModeChange       : public cPacketReceive;
-class cPacketReceivePing	        : public cPacketReceive;
-class cPacketReceiveRenameCharacter     : public cPacketReceive;
+class cPacketReceiveBookPage		: public cPacketReceive;        //!< receives a changed book page
+class cPacketReceiveTargetSelected      : public cPacketReceive;        //!< target selected (for whatever asked for it :D)
+class cPacketReceiveSecureTrade         : public cPacketReceive;	//!< secure trade conclusion (change in the secure trade window's checkmark)
+class cPacketReceiveBBoardMessage       : public cPacketReceive;	//!< almost all msgboard activity except opening the board itself comes here
+class cPacketReceiveWarModeChange       : public cPacketReceive;        //!< warmode change request
+class cPacketReceivePing	        : public cPacketReceive;        //!< Ping of client. Obiously server answers :D
+class cPacketReceiveRenameCharacter     : public cPacketReceive;	//!< client tries to rename a character
 class cPacketReceiveDialogResponse      : public cPacketReceive;
 class cPacketReceiveLoginRequest        : public cPacketReceive;
-class cPacketReceiveDeleteCharacter     : public cPacketReceive;
+class cPacketReceiveDeleteCharacter     : public cPacketReceive;        //!< client tries to delete a char from login window
 class cPacketReceiveGameServerLogin     : public cPacketReceive;
-class cPacketReceiveBookUpdateTitle     : public cPacketReceive;
-class cPacketReceiveDyeItem             : public cPacketReceive;
-class cPacketReceiveRequestHelp	        : public cPacketReceive;
-class cPacketReceiveSellItems           : public cPacketReceive;
+class cPacketReceiveBookUpdateTitle     : public cPacketReceive;	//!< change title of book
+class cPacketReceiveDyeItem             : public cPacketReceive;	//!< dye item (opens dye dialog)
+class cPacketReceiveRequestHelp	        : public cPacketReceive;        //!< gm/conselor page request
+class cPacketReceiveSellItems           : public cPacketReceive;        //!< receive list of items selected from a sell list of vendor
 class cPacketReceiveSelectServer        : public cPacketReceive;
 class cPacketReceiveTipsRequest         : public cPacketReceive;
 class cPacketReceiveGumpTextDialogReply : public cPacketReceive;
-class cPacketReceiveUnicodeSpeechReq    : public cPacketReceive;
+class cPacketReceiveUnicodeSpeechReq    : public cPacketReceive;	//!< unicode speech request from client
+class cPacketReceiveGumpResponse        : public cPacketReceive;
+class cPacketReceiveChatMessage       	: public cPacketReceive;
+class cPacketReceiveChatWindowOpen      : public cPacketReceive;
+class cPacketReceivePopupHelpRequest    : public cPacketReceive;
+class cPacketReceiveCharProfileRequest  : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
-class        : public cPacketReceive;
+
 //@}
 
 #endif

@@ -53,6 +53,7 @@ namespace nSettings {
 	*/
 	namespace Server {
 		bool isEnabledBookSystem();	//!< Is the book system is enabled or not? [Default: true]
+                bool isEnabledPopupHelp();	//!< popup help (since T2A) is enabled [Default:true]
 		
 		uint8_t getMaximumPCs();	//!< Maximum characters for account [Default: 5]
 		bool canPlayersDeletePCs();	//!< Can a player delete one of his characters? [Default: true]
@@ -73,6 +74,7 @@ namespace nSettings {
 	*/
 	namespace Actions {
 		bool shouldEquipOnDClick();	//!< Should an item be equipped on double click? [Default: true]
+                bool canUseItemsWhenInvisible();//!< When invisible (by spell) can a player use items? [Default: \b missing]
 		uint16_t getBountyKarmaGain();	//!< How much karma is gained for bounty hunting? [Default: \b missing ]
 		uint16_t getBountyFameGain();	//!< How much fame is gained for bounty hunting? [Default: \b missing ]
 	}

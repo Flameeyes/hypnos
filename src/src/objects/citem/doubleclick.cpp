@@ -253,7 +253,7 @@ void cItem::doubleClick(pClient client)
 
         // Luxor: cannot use items if under invisible spell
         // Chronodt: 1/2/2004 added a server parameter check to allow servers to let items be used when invisible
-        if (pc->IsHiddenBySpell() && !global::canUseItemsWhenInvisible()) return;
+        if (pc->IsHiddenBySpell() && !nSettings::Actions::canUseItemsWhenInvisible()) return;
 
 	if ( !pc->IsGM() && pc->objectdelay >= uiCurrentTime )
 	{

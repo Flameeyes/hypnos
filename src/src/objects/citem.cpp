@@ -365,7 +365,7 @@ void cItem::getPopupHelp(char *str)
 	else if (type == ITYPE_RUNE)
 		sprintf(str, TRANSLATE("This is a rune for use with recall, mark and gate travel spells"));
 	else if (type == ITYPE_RESURRECT)
-		sprintf(str, TRANSLATE("If you dye (or are dead) you can double click this item to resurrect!"));
+		sprintf(str, TRANSLATE("If you die (or are dead) you can double click this item to be resurrected!"));
 	else if (type == ITYPE_KEY)
 		sprintf(str, TRANSLATE("This is a key you can use (double click) to open doors"));
 	else if (type == ITYPE_SPELLBOOK)
