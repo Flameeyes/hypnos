@@ -413,7 +413,7 @@ void cContainer::doubleClicked()
 {
 	// Wintermute: GMs or Counselors should be able to open trapped containers always
 	if (moreb1 > 0 && !pc->IsGMorCounselor()) {
-		magic::castAreaAttackSpell(getPosition().x, getPosition().y, magic::SPELL_EXPLOSION);
+		magic::castAreaAttackSpell(getPosition().x, getPosition().y, magic::spellExplosion);
 		moreb1--;
 	}
 	//Magic->MagicTrap(currchar[s], pi); // added by AntiChrist

@@ -326,7 +326,7 @@ static inline bool isFieldSpell(SpellId spell)
 	switch (spell) {
 		case spellFireField:
 		case spellPoisonField:
-		case spellParalyzeFIELD:
+		case spellParalyzeField:
 		case SPELL_ENERGYFIELD:
 		case spellWallStone:
 			return true;
@@ -547,34 +547,34 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 		case spellSummon:
 			pcfrom->playSFX( 0x215 );
 			break;
-		case SPELL_DISPEL:
+		case spellDispel:
 			pcto->playSFX( 0x1E1 );
 			break;
-		case SPELL_ENERGYBOLT:
+		case spellEnergyBolt:
 			pcfrom->playSFX( 0x20A );
 			movingFX(pcfrom, pcto, 0x379F, 5, 0, true, &mpfx );
 			break;
-		case SPELL_EXPLOSION:
+		case spellExplosion:
 			if ( pcfrom->skill[skMagery] < 800 )	// First level explosion
 				pcto->playSFX( 0x11D );
 			else					// Second level explosion
 				pcto->playSFX( 0x207 );
 			staticFX(pcto, 0x36B0, 0, 10, &spfx );
 			break;
-		case SPELL_INVISIBILITY:
+		case spellInvisibility:
 			pcfrom->playSFX( 0x203 );
 			break;
-		case SPELL_MARK:
+		case spellMark:
 			pcfrom->playSFX( 0x1FA );
 			break;
-		case SPELL_MASSCURSE:
+		case spellMassCurse:
 			pcto->playSFX( 0x1FB );
 			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
-		case spellParalyzeFIELD:
+		case spellParalyzeField:
 			pcfrom->playSFX( 0x20B );
 			break;
-		case SPELL_REVEAL:
+		case spellReveal:
 			pcfrom->playSFX( 0x1FD );
 			break;
 		case SPELL_CHAINLIGHTNING:
@@ -778,7 +778,7 @@ void castAreaAttackSpell (sPoint epi, SpellId spellnum, pChar pcaster)
 {
 	NxwCharWrapper sc;
 	uint32_t range = VISRANGE -2;
-	if ( spellnum == SPELL_EXPLOSION )
+	if ( spellnum == spellExplosion )
 		range = 4;
 
 	sc.fillCharsNearXYZ( epi.x, epi.y, range );
@@ -828,7 +828,7 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellFeebleMind:
 		case spellWeaken:
 		case spellParalyze:
-		case SPELL_DISPEL:
+		case spellDispel:
 		case spellCurse:
 		case spellPoison:
 		case spellCunning:
@@ -842,9 +842,9 @@ static inline int spellTargetType(SpellId spellnum)
 		case SPELL_RESURRECTION:
 		case spellMagicArrow:
 		case SPELL_FLAMESTRIKE:
-		case SPELL_EXPLOSION:
+		case spellExplosion:
 		case spellLightning:
-		case SPELL_ENERGYBOLT:
+		case spellEnergyBolt:
 		case spellHarm:
 		case spellMindBlast:
 		case spellManaDrain:
@@ -857,7 +857,7 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellIncognito:
 		case spellReflection:
 		case spellNightSight:
-		case SPELL_INVISIBILITY:
+		case spellInvisibility:
 		case spellSummon:
 		case spellSummon_AIR:
 		case spellSummon_DEAMON:
@@ -878,7 +878,7 @@ static inline int spellTargetType(SpellId spellnum)
 			return TARGTYPE_CONTAINERORDOOR;
 
 		case SPELL_GATE:
-		case SPELL_MARK:
+		case spellMark:
 		case spellRecall:
 			return TARGTYPE_RUNE;
 
@@ -887,12 +887,12 @@ static inline int spellTargetType(SpellId spellnum)
 		case spellWallStone:
 		case spellTeleport:
 		case SPELL_MASSDISPEL:
-		case SPELL_MASSCURSE:
-		case SPELL_REVEAL:
+		case spellMassCurse:
+		case spellReveal:
 		case spellFireField:
 		case spellDispelField:
 		case spellPoisonField:
-		case spellParalyzeFIELD:
+		case spellParalyzeField:
 		case SPELL_ENERGYFIELD:
 		case SPELL_CHAINLIGHTNING:
 		case SPELL_METEORSWARM:
@@ -1187,7 +1187,7 @@ void castFieldSpell( pChar pc, sPosition pos, int spellnumber)
 			id = (j) ? 0x3996 : 0x398c; break;
 		case spellPoisonField:
 			id = (j) ? 0x3920 : 0x3915; break;
-		case spellParalyzeFIELD:
+		case spellParalyzeField:
 			id = (j) ? 0x3979 : 0x3967; break;
 		case SPELL_ENERGYFIELD:
 			id = (j) ? 0x3956 : 0x3946; break;
@@ -1312,14 +1312,14 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case spellFireball:
 		case SPELL_FLAMESTRIKE:
 		case spellLightning:
-		case SPELL_EXPLOSION:
-		case SPELL_ENERGYBOLT:
+		case spellExplosion:
+		case spellEnergyBolt:
 		case spellHarm:
 		case SPELL_METEORSWARM:
 		case SPELL_CHAINLIGHTNING:
 		case SPELL_EARTHQUAKE:
 			if (pd) {
-				if (spellsData[spellnumber].areasize<=0 && (spellnumber!=SPELL_EXPLOSION || src->skill[skMagery] < 800)) //Luxor
+				if (spellsData[spellnumber].areasize<=0 && (spellnumber!=spellExplosion || src->skill[skMagery] < 800)) //Luxor
 				{
 					CHECKDISTANCE(src, pd);
 					spellFX(spellnumber, src, pd);
@@ -1329,7 +1329,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				{
 					if ( spellnumber == SPELL_EARTHQUAKE ) {  //Luxor
 						pos = sPoint(srcpos);
-					} else if ( spellnumber == SPELL_EXPLOSION ) {
+					} else if ( spellnumber == spellExplosion ) {
 						pos = sPoint(pd->getPosition());
 					}
 					castAreaAttackSpell(pos, spellnumber, src);
@@ -1450,7 +1450,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			tempfx::add(src,src, tempfx::SPELL_REACTARMOR, 0, 0, 0, nTime);
 			break;
 
-		case SPELL_DISPEL:	//Luxor
+		case spellDispel:	//Luxor
 			if ( pd && pd->summontimer > 0 ) { //Only if it's a summoned creature
 				pd->emoteall( "%s begins disappearing", true, pd->getCurrentName().c_str() );
 				//3 seconds left
@@ -1479,7 +1479,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					if ( pc_curr->summontimer > (getclock() + 3*SECS) )
 						pc_curr->summontimer = getclock() + 3*SECS;
 				}
-				spellFX( SPELL_DISPEL, pc_curr );
+				spellFX( spellDispel, pc_curr );
 			}
 			}
 			break;
@@ -1535,7 +1535,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_MASSCURSE:
+		case spellMassCurse:
 			{
 
 			NxwCharWrapper sc;
@@ -1550,16 +1550,16 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_REVEAL: //Luxor
+		case spellReveal: //Luxor
 			{
 			spellFX(spellnumber, src);
 			NxwCharWrapper sc;
 			sc.fillCharsNearXYZ( loc.x, loc.y, src->skill[skMagery] / 100, true);
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
-				if ( pd && pd->IsHidden() && !checkResist(src, pd, SPELL_REVEAL)) {
+				if ( pd && pd->IsHidden() && !checkResist(src, pd, spellReveal)) {
 					if ( pd->IsHiddenBySpell() )
-						pd->delTempfx( tempfx::SPELL_INVISIBILITY );
+						pd->delTempfx( tempfx::spellInvisibility );
 					else
 						pd->unHide();
 				}
@@ -1611,10 +1611,10 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if (pd) pd->setReflection(true);
 			break;
 
-		case SPELL_INVISIBILITY:
+		case spellInvisibility:
 			spellFX(spellnumber, src, pd);
 			if ( src->isHiddenBySpell() ) {
-				src->delTempfx( tempfx::SPELL_INVISIBILITY );
+				src->delTempfx( tempfx::spellInvisibility );
 			} else {
 				if (nTime==INVALID) nTime = 90;
 				src->hideBySpell(nTime);
@@ -1695,7 +1695,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 		case spellFireField:
 		case spellPoisonField:
-		case spellParalyzeFIELD:
+		case spellParalyzeField:
 		case SPELL_ENERGYFIELD:
 		case spellWallStone:
 			spellFX(spellnumber, src, src);
@@ -1778,7 +1778,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_MARK:
+		case spellMark:
 			if ((src!=NULL)&&(pi!=NULL)) {
 				if (pi->type==ITYPE_RUNE) {
 					pi->morex = srcpos.x;

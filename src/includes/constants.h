@@ -272,7 +272,7 @@ namespace tempfx {
 		HEALING_RESURRECT,
 		HEALING_CURE,
 		POTION_DELAY,
-		SPELL_INVISIBILITY,
+		spellInvisibility,
 		DRINK_EMOTE,
 		DRINK_FINISHED,
 		GM_HIDING = 33,

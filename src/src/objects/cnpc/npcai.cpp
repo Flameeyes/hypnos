@@ -480,11 +480,11 @@ void cNPC::checkAI()
 							talkAll("Stupid Mortal I'll crush you as a fly", 1);
 							break;
 						case 5:
-							beginCasting(pj, magic::SPELL_EXPLOSION);
+							beginCasting(pj, magic::spellExplosion);
 							talkAll("Die unusefull mortal!", 1);
 							break;
 						case 6:
-							beginCasting(pj, magic::SPELL_EXPLOSION);
+							beginCasting(pj, magic::spellExplosion);
 							talkAll("Die unusefull mortal!", 1);
 							break;
 					}
@@ -499,7 +499,7 @@ void cNPC::checkAI()
 				}
 				if ( pj->isDispellable() ) {
 					talkAll("An Ort", 1);
-					beginCasting(pj, magic::SPELL_DISPEL );
+					beginCasting(pj, magic::spellDispel );
 				}
 
 				if ( !pj->IsHidden() ) npcattacktarget(this, pj);

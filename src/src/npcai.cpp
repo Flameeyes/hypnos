@@ -37,7 +37,7 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 
 	if ( pc_def->summontimer && pc_att->baseskill[skMagery] > 700 ) {
 		pc_att->facexy( pc_def->getPosition().x, pc_def->getPosition().y );
-		pc_att->beginCasting(pc_def, magic::SPELL_DISPEL);
+		pc_att->beginCasting(pc_def, magic::spellDispel);
 		return;
 	}
 	// We're here.. let's spellcast ;)
@@ -80,10 +80,10 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 				pc_att->beginCasting(pc_def, magic::spellMindBlast );
 				break;
 			case 11:
-				pc_att->beginCasting(pc_def, magic::SPELL_ENERGYBOLT );
+				pc_att->beginCasting(pc_def, magic::spellEnergyBolt );
 				break;
 			case 12:
-				pc_att->beginCasting(pc_def, magic::SPELL_EXPLOSION );
+				pc_att->beginCasting(pc_def, magic::spellExplosion );
 				break;
 			case 13:
 				pc_att->beginCasting(pc_def, magic::SPELL_FLAMESTRIKE );
@@ -237,10 +237,10 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::spellMindBlast );
 			break;
 		case 11:
-			pc_att->beginCasting(pc_def, magic::SPELL_ENERGYBOLT );
+			pc_att->beginCasting(pc_def, magic::spellEnergyBolt );
 			break;
 		case 12:
-			pc_att->beginCasting(pc_def, magic::SPELL_EXPLOSION );
+			pc_att->beginCasting(pc_def, magic::spellExplosion );
 			break;
 		case 13:
 			pc_att->beginCasting(pc_def, magic::SPELL_FLAMESTRIKE );
@@ -252,7 +252,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::spellPoisonField );
 			break;
 		case 16:
-			pc_att->beginCasting(pc_def, magic::spellParalyzeFIELD );
+			pc_att->beginCasting(pc_def, magic::spellParalyzeField );
 			break;
 		case 17:
 			pc_att->beginCasting(pc_att, magic::spellHeal );

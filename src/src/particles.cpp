@@ -31,7 +31,7 @@ void ParticleFx::initWithSpellMoveEffect( magic::SpellId num )
 			effect[13]=0x1; effect[14]=0x60;effect[15]=0; effect[16]=1; effect[17]=0;
 			break;
 
-		case magic::SPELL_EXPLOSION:
+		case magic::spellExplosion:
 			effect[0]=0x37; effect[1]=0x9F; effect[2]=0x07; effect[3]=0x00; effect[4]=0x01; 
 			effect[5]=0x37; effect[6]=0x9f; effect[7]=0x07; effect[8]=0x00; effect[9]=0x0b; 
 			effect[10]=0xe3; effect[11]=0x0f; effect[12]=0xcb; effect[13]=0x2; effect[14]=0x11; 

@@ -129,7 +129,7 @@ bool isSrcRepeatable(int num)
 	switch(num)
 	{
 		case spellIncognito:
-		case SPELL_INVISIBILITY:
+		case spellInvisibility:
 		case SPELL_POLYMORPH:
 		case DRINK_FINISHED:
 			return false;
@@ -161,7 +161,7 @@ bool isDestRepeatable(int num)
 		case spellCurse:
 		case spellIncognito:
 		case SPELL_POLYMORPH:
-		case SPELL_INVISIBILITY:
+		case spellInvisibility:
 		case CRIMINAL:
 		case FIELD_DAMAGE:
 			return false;
@@ -221,7 +221,7 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 			dur = 90;
 			break;
 
-		case SPELL_INVISIBILITY:
+		case spellInvisibility:
 			dur = 90;
 			break;
 
@@ -414,7 +414,7 @@ void cTempfx::start()
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_INVISIBILITY:
+		case spellInvisibility:
 			dest->setHidden(htBySpell);
 			dest->morph(0);
 			break;
@@ -717,7 +717,7 @@ void cTempfx::executeExpireCode()
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_INVISIBILITY:
+		case spellInvisibility:
 			if ( ! dest ) return;
 			if (dest->isHiddenBySpell()) {
 				dest->setHidden(htUnhidden);
@@ -950,7 +950,7 @@ void cTempfx::activate()
 			dest->in -= m_nMore3;
 			break;
 
-		case SPELL_INVISIBILITY:
+		case spellInvisibility:
                         break;
 
 		case AMXCUSTOM:
@@ -1034,7 +1034,7 @@ void cTempfx::deactivate()
 			dest->in += m_nMore3;
 			break;
 
-		case SPELL_INVISIBILITY:
+		case spellInvisibility:
 			break;
 
 		case AMXCUSTOM:

@@ -454,7 +454,7 @@ void cItem::doubleClicked(pClient client)
 		if ( !pc->IsGMorCounselor() )
 		{
 			if (more2.moreb1 > 0 ) {
-				magic::castAreaAttackSpell(getPosition(), magic::SPELL_EXPLOSION);
+				magic::castAreaAttackSpell(getPosition(), magic::spellExplosion);
 				more2.moreb1--;
 			}
 

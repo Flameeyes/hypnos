@@ -1412,7 +1412,7 @@ void cChar::hideBySkill()
 void cChar::hideBySpell(int32_t timer)
 {
 	if (timer == INVALID) timer = SrvParms->invisibiliytimer;
-	tempfx::add(this, this, tempfx::SPELL_INVISIBILITY, 0,0,0, timer);
+	tempfx::add(this, this, tempfx::spellInvisibility, 0,0,0, timer);
 }
 
 /*!
