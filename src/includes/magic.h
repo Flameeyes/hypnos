@@ -29,41 +29,41 @@ namespace magic {
 	*/
 	
 	//! Don't use up mana
-	static const uint8_t SPELLFLAG_NOUSEMANA		= 0x0001;
+	static const uint16_t SPELLFLAG_NOUSEMANA		= 0x0001;
 	//! Don't check criminal stuff
-	static const uint8_t SPELLFLAG_DONTCRIMINAL		= 0x0002;
+	static const uint16_t SPELLFLAG_DONTCRIMINAL		= 0x0002;
 	//! Don't use up reagents
-	static const uint8_t SPELLFLAG_DONTREQREAGENTS		= 0x0004;
+	static const uint16_t SPELLFLAG_DONTREQREAGENTS		= 0x0004;
 	//! Don't check spellbook for spell presence
-	static const uint8_t SPELLFLAG_DONTCHECKSPELLBOOK	= 0x0008;
+	static const uint16_t SPELLFLAG_DONTCHECKSPELLBOOK	= 0x0008;
 	//! Optional parameter is the skill to be used instead of magery
-	static const uint8_t SPELLFLAG_PARAMISSKILLTOUSE	= 0x0010;
+	static const uint16_t SPELLFLAG_PARAMISSKILLTOUSE	= 0x0010;
 	//! optional parameter is the damage to be done or healed
-	static const uint8_t SPELLFLAG_PARAMISDAMAGE		= 0x0020;
+	static const uint16_t SPELLFLAG_PARAMISDAMAGE		= 0x0020;
 	//! optional parameter is the bonus/malus to be applied
-	static const uint8_t SPELLFLAG_PARAMISBONUS		= 0x0040;
+	static const uint16_t SPELLFLAG_PARAMISBONUS		= 0x0040;
 	//! optional parameter is the npc to be invoked
-	static const uint8_t SPELLFLAG_PARAMISNPCNUMBER		= 0x0080;
+	static const uint16_t SPELLFLAG_PARAMISNPCNUMBER	= 0x0080;
 	//! optional parameter is the duration of some tempfx
-	static const uint8_t SPELLFLAG_PARAMISDURATION		= 0x0100;
+	static const uint16_t SPELLFLAG_PARAMISDURATION		= 0x0100;
 	//! Don't check magic reflection
-	static const uint8_t SPELLFLAG_DONTREFLECT		= 0x0200;
+	static const uint16_t SPELLFLAG_DONTREFLECT		= 0x0200;
 	//! Don't check magic resistance
-	static const uint8_t SPELLFLAG_IGNORERESISTANCE		= 0x0400;
+	static const uint16_t SPELLFLAG_IGNORERESISTANCE	= 0x0400;
 	//! Don't check if in town
-	static const uint8_t SPELLFLAG_IGNORETOWNLIMITS		= 0x0800;
+	static const uint16_t SPELLFLAG_IGNORETOWNLIMITS	= 0x0800;
 	//! Don't check skill
-	static const uint8_t SPELLFLAG_DONTCHECKSKILL		= 0x1000;
+	static const uint16_t SPELLFLAG_DONTCHECKSKILL		= 0x1000;
 	//! Spell is silent
-	static const uint8_t SPELLFLAG_SILENTSPELL		= 0x2000;
+	static const uint16_t SPELLFLAG_SILENTSPELL		= 0x2000;
 	//! Spell is immoble
-	static const uint8_t SPELLFLAG_IMMOBLESPELL		= 0x4000;
+	static const uint16_t SPELLFLAG_IMMOBLESPELL		= 0x4000;
 	//! Spell has a great chance to hit (scrolls)
-	static const uint8_t SPELLFLAG_BONUSCHANCE		= 0x8000;
+	static const uint16_t SPELLFLAG_BONUSCHANCE		= 0x8000;
 	//@}
 	
 	//! this is the default for NPC casting :]
-	static const uint8_t SPELLFLAGS_NPCDEFAULT = 
+	static const uint16_t SPELLFLAGS_NPCDEFAULT = 
 		SPELLFLAG_DONTCRIMINAL|
 		SPELLFLAG_DONTREQREAGENTS|
 		SPELLFLAG_DONTCHECKSPELLBOOK|
@@ -199,39 +199,40 @@ namespace magic {
 		CASTINGTYPE_NPC
 	};
 
-	struct reag_st
+	struct sReagents
 	{
-		uint32_t ginseng;
-		uint32_t moss;
-		uint32_t drake;
-		uint32_t pearl;
-		uint32_t silk;
-		uint32_t ash;
-		uint32_t shade;
-		uint32_t garlic;
+		uint16_t ginseng;
+		uint16_t moss;
+		uint16_t drake;
+		uint16_t pearl;
+		uint16_t silk;
+		uint16_t ash;
+		uint16_t shade;
+		uint16_t garlic;
 	};
 
-	struct g_Spell
+	//! Spells' data
+	struct sSpell
 	{
-		bool enabled;		// spell enabled?
-		int circle; 		// circle number
-		int mana;			// mana requirements
-		int loskill;		// low magery skill req.
-		int hiskill;		// high magery skill req.
-		int sclo;			// low magery skill req. if using scroll
-		int schi;			// high magery skill req. if using scroll
-		//char mantra[27];	// words of power
-		std::string mantra;	// words of power
-		int action; 		// character action
-		int delay;			// spell delay
-		reag_st reagents;	// reagents req.
-		//char strToSay[102]; // string visualized with targ. system
-		std::string strToSay; // string visualized with targ. system
-		bool reflect;		// 1=spell reflectable, 0=spell not reflectable
-		bool runic;
-		int lodamage;
-		int hidamage;
-		bool attackSpell;
+		static const uint8_t flagEnabled	= 0x01; //!< Is the spell enabled?
+		static const uint8_t flagReflect	= 0x02; //!< Is the spell reflectable?
+		static const uint8_t flagRunic		= 0x04; //!< Should the wop said in runic?
+		static const uint8_t flagAttack		= 0x04; //!< Is the spell an attack spell?
+		
+		uint8_t flags;		//!< Flags used
+		uint8_t circle;		//!< Circle number
+		uint16_t mana;		//!< Mana requirements
+		uint16_t loskill;	//!< Low magery skill req.
+		uint16_t hiskill;	//!< high magery skill req.
+		uint16_t sclo;		//!< low magery skill req. if using scroll
+		uint16_t schi;		//!< high magery skill req. if using scroll
+		std::string mantra;	//!< Words of power
+		uint16_t action;	//!< character action
+		uint16_t delay;		//!< spell delay
+		sReagents reagents;	//!< reagents req.
+		std::string strToSay;	//!< string visualized with targ. system
+		uint16_t lodamage;
+		uint16_t hidamage;
 		int areasize;
 		int alwaysflag;
 		DamageType damagetype;
@@ -240,13 +241,13 @@ namespace magic {
 	enum {	TARGTYPE_NONE = 0, TARGTYPE_XYZ, TARGTYPE_ITEM, TARGTYPE_CHAR,
 		TARGTYPE_CONTAINERORDOOR, TARGTYPE_CONTAINER, TARGTYPE_RUNE };
 
-	extern g_Spell g_Spells[MAX_SPELLS];
+	extern sSpell sSpells[MAX_SPELLS];
 
 	bool checkMagicalSpeech( pChar pc, char* speech );
 	bool beginCasting (SpellId num, pClient client, CastingType type);
 	SpellId spellNumberFromScrollId(int id);
 	void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src = NULL, int flags = 0, int param = 0);
-	void castAreaAttackSpell (int x, int y, SpellId spellnum, pChar pcaster = NULL);
+	void castAreaAttackSpell (sPoint epi, SpellId spellnum, pChar pcaster = NULL);
 	void loadSpellsFromScript();
 	bool spellRequiresTarget(SpellId spellnum);
 	pChar summon (pChar owner, int npctype, int duration, bool bTamed = true, int x = INVALID, int y = INVALID, int z = INVALID);

@@ -19,7 +19,7 @@
 
 namespace magic {
 
-g_Spell g_Spells[MAX_SPELLS];
+sSpell sSpells[MAX_SPELLS];
 std::map< std::string, SpellId > speechMap;
 
 /*!
@@ -76,7 +76,7 @@ static bool fielddir(pChar pc, sPoint p)
 */
 uint32_t getCastingTime( SpellId spell )
 {
-	return ( ( (g_Spells[spell].delay/10) * SECS ) + getclock() );
+	return ( ( (sSpells[spell].delay/10) * SECS ) + getclock() );
 }
 
 /*!
@@ -115,8 +115,8 @@ void loadSpellsFromScript()
 
 	for (register int curspell = 0; curspell < MAX_SPELLS; curspell++) {
 		// in XSS script, numeration starts from 1 :[
-		g_Spells[curspell].attackSpell = false;
-		g_Spells[curspell].areasize = INVALID;
+		sSpells[curspell].attackSpell = false;
+		sSpells[curspell].areasize = INVALID;
 		sprintf(script1, "SECTION SPELL %s", g_szSpellName[curspell]);
 		safedelete(iter);
 		iter = Scripts::Spells->getNewIterator(script1);
@@ -125,39 +125,39 @@ void loadSpellsFromScript()
 		do
 		{
 			iter->parseLine(script1, script2);
-			if (!strcmp("ENABLED", script1)) 		g_Spells[curspell].enabled = true;
-			else if (!strcmp("DISABLED", script1))	g_Spells[curspell].enabled = false;
-			else if (!strcmp("CIRCLE", script1)) 	g_Spells[curspell].circle = str2num(script2);
-			else if (!strcmp("MANA", script1))		g_Spells[curspell].mana = str2num(script2);
-			else if (!strcmp("HISKILL", script1))	g_Spells[curspell].hiskill = str2num(script2);
-			else if (!strcmp("LOSKILL", script1))	g_Spells[curspell].loskill = str2num(script2);
-			else if (!strcmp("SCLO", script1))		g_Spells[curspell].sclo = str2num(script2);
-			else if (!strcmp("SCHI", script1))		g_Spells[curspell].schi = str2num(script2);
-			else if (!strcmp("LODAMAGE", script1))	g_Spells[curspell].lodamage = str2num(script2);
-			else if (!strcmp("HIDAMAGE", script1))	g_Spells[curspell].hidamage = str2num(script2);
-			else if (!strcmp("DAMAGETYPE", script1)) g_Spells[curspell].damagetype = static_cast<DamageType>(str2num(script2));
-			else if (!strcmp("ATTACKSPELL", script1))g_Spells[curspell].attackSpell = true;
-			else if (!strcmp("ALWAYSFLAG", script1)) g_Spells[curspell].alwaysflag = str2num(script2);
-			else if (!strcmp("AREASIZE", script1))	g_Spells[curspell].areasize = str2num(script2);
-			else if (!strcmp("MANTRA", script1)) 	{ g_Spells[curspell].mantra += script2;
+			if (!strcmp("ENABLED", script1)) 		sSpells[curspell].enabled = true;
+			else if (!strcmp("DISABLED", script1))	sSpells[curspell].enabled = false;
+			else if (!strcmp("CIRCLE", script1)) 	sSpells[curspell].circle = str2num(script2);
+			else if (!strcmp("MANA", script1))		sSpells[curspell].mana = str2num(script2);
+			else if (!strcmp("HISKILL", script1))	sSpells[curspell].hiskill = str2num(script2);
+			else if (!strcmp("LOSKILL", script1))	sSpells[curspell].loskill = str2num(script2);
+			else if (!strcmp("SCLO", script1))		sSpells[curspell].sclo = str2num(script2);
+			else if (!strcmp("SCHI", script1))		sSpells[curspell].schi = str2num(script2);
+			else if (!strcmp("LODAMAGE", script1))	sSpells[curspell].lodamage = str2num(script2);
+			else if (!strcmp("HIDAMAGE", script1))	sSpells[curspell].hidamage = str2num(script2);
+			else if (!strcmp("DAMAGETYPE", script1)) sSpells[curspell].damagetype = static_cast<DamageType>(str2num(script2));
+			else if (!strcmp("ATTACKSPELL", script1))sSpells[curspell].attackSpell = true;
+			else if (!strcmp("ALWAYSFLAG", script1)) sSpells[curspell].alwaysflag = str2num(script2);
+			else if (!strcmp("AREASIZE", script1))	sSpells[curspell].areasize = str2num(script2);
+			else if (!strcmp("MANTRA", script1)) 	{ sSpells[curspell].mantra += script2;
 				//Luxor: speech cast
 				strupr( script2 );
 				speechMap.insert( pair< std::string, SpellId >( std::string( script2 ), static_cast<SpellId>(curspell) ) );
 			}
-			else if (!strcmp("ACTION", script1)) 	g_Spells[curspell].action = hex2num(script2);
-			else if (!strcmp("DELAY", script1))		g_Spells[curspell].delay = str2num(script2);
-			else if (!strcmp("ASH", script1))		g_Spells[curspell].reagents.ash = str2num(script2);
-			else if (!strcmp("DRAKE", script1))		g_Spells[curspell].reagents.drake = str2num(script2);
-			else if (!strcmp("GARLIC", script1)) 	g_Spells[curspell].reagents.garlic = str2num(script2);
-			else if (!strcmp("GINSING", script1))	g_Spells[curspell].reagents.ginseng = str2num(script2);
-			else if (!strcmp("MOSS", script1))		g_Spells[curspell].reagents.moss = str2num(script2);
-			else if (!strcmp("PEARL", script1))		g_Spells[curspell].reagents.pearl = str2num(script2);
-			else if (!strcmp("SHADE", script1))		g_Spells[curspell].reagents.shade = str2num(script2);
-			else if (!strcmp("SILK", script1))		g_Spells[curspell].reagents.silk = str2num(script2);
-			else if (!strcmp("TARG", script1))		g_Spells[curspell].strToSay += script2;
-			else if (!strcmp("REFLECTABLE", script1))	g_Spells[curspell].reflect = true;
-			else if (!strcmp("UNREFLECTABLE", script1))	  g_Spells[curspell].reflect = false;
-			else if (!strcmp("RUNIC", script1))		g_Spells[curspell].runic = str2num(script2)!=0;
+			else if (!strcmp("ACTION", script1)) 	sSpells[curspell].action = hex2num(script2);
+			else if (!strcmp("DELAY", script1))		sSpells[curspell].delay = str2num(script2);
+			else if (!strcmp("ASH", script1))		sSpells[curspell].reagents.ash = str2num(script2);
+			else if (!strcmp("DRAKE", script1))		sSpells[curspell].reagents.drake = str2num(script2);
+			else if (!strcmp("GARLIC", script1)) 	sSpells[curspell].reagents.garlic = str2num(script2);
+			else if (!strcmp("GINSING", script1))	sSpells[curspell].reagents.ginseng = str2num(script2);
+			else if (!strcmp("MOSS", script1))		sSpells[curspell].reagents.moss = str2num(script2);
+			else if (!strcmp("PEARL", script1))		sSpells[curspell].reagents.pearl = str2num(script2);
+			else if (!strcmp("SHADE", script1))		sSpells[curspell].reagents.shade = str2num(script2);
+			else if (!strcmp("SILK", script1))		sSpells[curspell].reagents.silk = str2num(script2);
+			else if (!strcmp("TARG", script1))		sSpells[curspell].strToSay += script2;
+			else if (!strcmp("REFLECTABLE", script1))	sSpells[curspell].reflect = true;
+			else if (!strcmp("UNREFLECTABLE", script1))	  sSpells[curspell].reflect = false;
+			else if (!strcmp("RUNIC", script1))		sSpells[curspell].runic = str2num(script2)!=0;
 		}
 		while (script1[0]!='}');
 	}
@@ -232,7 +232,7 @@ static inline bool checkTownLimits(SpellId spellnum, pChar pa, pChar pd, int spe
 {
 	if(!pd) return false;
 
-	if ((g_Spells[spellnum].attackSpell)&&(SrvParms->guardsactive)&&(region[pd->region].priv&rgnFlagGuarded))
+	if ((sSpells[spellnum].attackSpell)&&(SrvParms->guardsactive)&&(region[pd->region].priv&rgnFlagGuarded))
 	{
 		if (spellflags&SPELLFLAG_IGNORETOWNLIMITS) return false;
 		if (areaspell) return false; // do *NOT* change order of these lines!! :]
@@ -266,7 +266,7 @@ static inline bool checkMana(pChar pc, SpellId num)
 
 	if ( pc->dontUseMana() ) return true;
 
-	if (pc->mn >= g_Spells[num].mana) return true;
+	if (pc->mn >= sSpells[num].mana) return true;
 
 	client->sysmessage("You have insufficient mana to cast that spell.");
 	return false;
@@ -284,7 +284,7 @@ static inline void subtractMana(pChar pc, SpellId spellnumber)
 
 	if ( pc->dontUseMana() ) return;
 
-	if (pc->mn >= g_Spells[spellnumber].mana) pc->mn -= g_Spells[spellnumber].mana;
+	if (pc->mn >= sSpells[spellnumber].mana) pc->mn -= sSpells[spellnumber].mana;
 	else pc->mn = 0;
 
 	pc->updateMana();//AntiChrist - bugfix
@@ -345,7 +345,7 @@ static inline bool isFieldSpell(SpellId spell)
 */
 static inline bool isBoxSpell(SpellId spell)
 {
-	return !(g_Spells[spell].areasize == 0);
+	return !(sSpells[spell].areasize == 0);
 }
 
 /*!
@@ -646,7 +646,7 @@ static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int
 
 	// check resistances :)
 	if ((pa)&&(!(spellflags&SPELLFLAG_DONTREFLECT)))
-		if (g_Spells[spellnum].reflect)
+		if (sSpells[spellnum].reflect)
 			checkReflection(pa, pd);
 
 	// early return for invulz
@@ -660,7 +660,7 @@ static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int
 	if (spellflags&SPELLFLAG_IGNORERESISTANCE) bResists = false;
 
 	// calculate basic spell damage
-	double damage = static_cast<double>(RandomNum(g_Spells[spellnum].lodamage, g_Spells[spellnum].hidamage));
+	double damage = static_cast<double>(RandomNum(sSpells[spellnum].lodamage, sSpells[spellnum].hidamage));
 	if (spellflags&SPELLFLAG_PARAMISDAMAGE) damage = static_cast<double>(param);
 
 	// calculates evint/resist modifier
@@ -696,7 +696,7 @@ static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int
 
 	StatType stattodamage = STAT_HP;
 	if ((spellnum==SPELL_MANADRAIN)||(spellnum==SPELL_MANAVAMPIRE)) stattodamage = STAT_MANA;
-	pd->damage(amount, g_Spells[spellnum].damagetype, stattodamage);
+	pd->damage(amount, sSpells[spellnum].damagetype, stattodamage);
 }
 
 
@@ -706,14 +706,14 @@ static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int
 \param pc caster
 \param reagents reagents
 */
-bool checkReagents(pChar pc, reag_st reagents)
+bool checkReagents(pChar pc, sReagents reagents)
 {
 	if(!pc) return false;
 
 	pPC pc_tmp;
 	pClient client = (pc_tmp = dynamic_cast<pPC>(pc))? pc_tmp->getClient() : NULL;
 
-	reag_st fail;
+	sReagents fail;
 
 //	if( pc->IsGM() ) return true;
 
@@ -786,7 +786,7 @@ void castAreaAttackSpell (sPoint epi, SpellId spellnum, pChar pcaster)
 
 	sc.fillCharsNearXYZ( epi.x, epi.y, range );
 
-	int damagetobedone = RandomNum(g_Spells[spellnum].lodamage, g_Spells[spellnum].hidamage);
+	int damagetobedone = RandomNum(sSpells[spellnum].lodamage, sSpells[spellnum].hidamage);
 	int divider = (sc.size() / 4) + 1;
 	if (divider!=0) damagetobedone /= divider;
 
@@ -1007,7 +1007,7 @@ bool checkRequiredTargetType(SpellId spellnum, TargetLocation& t)
 \param pc caster
 \param reags reagents
 */
-void consumeReagents( pChar pc, reag_st reags )
+void consumeReagents( pChar pc, sReagents reags )
 {
 	if ( ! pc ) return;
 	if ( pc->dontUseReagents() ) return;
@@ -1067,12 +1067,12 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 
 
 	if ((pa!=NULL)&&(!(flags&SPELLFLAG_DONTREFLECT)))
-		if (g_Spells[spellnumber].reflect) checkReflection(pa, pd);
+		if (sSpells[spellnumber].reflect) checkReflection(pa, pd);
 
 	if (pd == NULL) return; //paranoia >:]
 
 	// early return for invulz : no bonus, no malus
-	if ((g_Spells[spellnumber].attackSpell)&&(pd->IsInvul())) return;
+	if ((sSpells[spellnumber].attackSpell)&&(pd->IsInvul())) return;
 
 	// check resistance for damage resistance
 	bool bResists = checkResist(pa, pd, spellnumber);
@@ -1081,13 +1081,13 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 	// early return if in town and target should not be damaged
 	if (checkTownLimits(spellnumber, pa, pd, flags, param)) return;
 
-	if ((g_Spells[spellnumber].attackSpell)&&(pa!=NULL)&&(!(flags&SPELLFLAG_DONTCRIMINAL)))
+	if ((sSpells[spellnumber].attackSpell)&&(pa!=NULL)&&(!(flags&SPELLFLAG_DONTCRIMINAL)))
 		p_realAttacker->attackStuff(p_realDefender);
 
-	if ((!g_Spells[spellnumber].attackSpell)&&(pa!=NULL)&&(!(flags&SPELLFLAG_DONTCRIMINAL)))
+	if ((!sSpells[spellnumber].attackSpell)&&(pa!=NULL)&&(!(flags&SPELLFLAG_DONTCRIMINAL)))
 		p_realAttacker->helpStuff(p_realDefender);
 
-	if ((g_Spells[spellnumber].attackSpell)&&(bResists)) return;
+	if ((sSpells[spellnumber].attackSpell)&&(bResists)) return;
 
 	switch (spellnumber)
 	{
@@ -1322,7 +1322,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_CHAINLIGHTNING:
 		case SPELL_EARTHQUAKE:
 			if (pd) {
-				if (g_Spells[spellnumber].areasize<=0 && (spellnumber!=SPELL_EXPLOSION || src->skill[skMagery] < 800)) //Luxor
+				if (sSpells[spellnumber].areasize<=0 && (spellnumber!=SPELL_EXPLOSION || src->skill[skMagery] < 800)) //Luxor
 				{
 					CHECKDISTANCE(src, pd);
 					spellFX(spellnumber, src, pd);
@@ -1857,7 +1857,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			//}
 		break;
 	}
-	if (g_Spells[spellnumber].attackSpell) src->attackStuff(pd);	//Luxor
+	if (sSpells[spellnumber].attackSpell) src->attackStuff(pd);	//Luxor
 }
 
 
@@ -1885,13 +1885,13 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 	if ( src->spelltype !=CASTINGTYPE_ITEM && src->spelltype !=CASTINGTYPE_NOMANAITEM )
 	{
 		if ( src->skill[skMagery] < 900 ) //Luxor
-			src->talkAll((char*)g_Spells[src->spell].mantra.c_str(), false);
+			src->talkAll((char*)sSpells[src->spell].mantra.c_str(), false);
 		else
-			src->talkAllRunic((char*)g_Spells[src->spell].mantra.c_str(), false);
+			src->talkAllRunic((char*)sSpells[src->spell].mantra.c_str(), false);
 		if (src->isMounting()) { //Luxor
 			src->playAction(0x1B); // General Lee
 		} else {
-			src->playAction(g_Spells[src->spell].action);
+			src->playAction(sSpells[src->spell].action);
 		}
 	}
 	// do the event :]
@@ -1913,8 +1913,8 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 
 	// check regs and consume them
 	if (!(flags&SPELLFLAG_DONTREQREAGENTS)) {
-		if (!checkReagents(src, g_Spells[spellnumber].reagents)) return;
-		consumeReagents( src, g_Spells[spellnumber].reagents );
+		if (!checkReagents(src, sSpells[spellnumber].reagents)) return;
+		consumeReagents( src, sSpells[spellnumber].reagents );
 	}
 
 	// if a skill needs to be checked.. check it :]
@@ -1928,13 +1928,13 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 		int loskill, hiskill;
 		if ( ( flags & SPELLFLAG_BONUSCHANCE ) && ( SrvParms->cutscrollreq ) )
 		{
-			loskill=g_Spells[spellnumber].sclo;
-			hiskill=g_Spells[spellnumber].schi;
+			loskill=sSpells[spellnumber].sclo;
+			hiskill=sSpells[spellnumber].schi;
 		}
 		else
 		{
-			loskill=g_Spells[spellnumber].loskill;
-			hiskill=g_Spells[spellnumber].hiskill;
+			loskill=sSpells[spellnumber].loskill;
+			hiskill=sSpells[spellnumber].hiskill;
 		}
 		if (!src->checkSkill(static_cast<Skill>(skilltobechecked), loskill, hiskill)) {
 			spellFailFX(src);
@@ -1974,7 +1974,7 @@ bool beginCasting (SpellId num, pClient s, CastingType type)
 	}
 
 	// spell disabled ?
-	if( g_Spells[num].enabled != true )
+	if( sSpells[num].enabled != true )
 	{
 		s->sysmessage("Unseen forces make thou unable to cast that spell.");
 		return false;
@@ -2004,7 +2004,7 @@ bool beginCasting (SpellId num, pClient s, CastingType type)
 	pc->unHide();
 	pc->disturbMed();
 
-	if (type==CASTINGTYPE_SPELL && (!checkReagents(pc, g_Spells[num].reagents))) return false;
+	if (type==CASTINGTYPE_SPELL && (!checkReagents(pc, sSpells[num].reagents))) return false;
 
 	if ((type != CASTINGTYPE_ITEM) && (!checkMana(pc, num))) return false;
 
@@ -2012,7 +2012,7 @@ bool beginCasting (SpellId num, pClient s, CastingType type)
 	pc->spell = num;
 	pc->casting = 1;
 	pc->nextact = 1;
-	pc->spellaction = g_Spells[num].action;
+	pc->spellaction = sSpells[num].action;
 
 	if ((type==CASTINGTYPE_SPELL)&&(!pc->IsGM()))
 		pc->spelltime = getCastingTime( num );
