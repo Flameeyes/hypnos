@@ -152,3 +152,84 @@ void cHouse::redeed(pClient client)
 void cHouse::killKeys()
 {
 }
+
+/*!
+\brief Checks for a house's speec
+\param client Client who's performing the speech
+\param speech Speech performed
+\retval true The \c speech is recognized as a house's speech and is executed
+\retval false The \c speech isn't recognized, or the player can't do speech in
+	this house
+\todo Change this to use a regexp capture using the pcreplus library when
+	available
+\todo Rewrite the target code when target rewrote
+\note Socket and pc checking already done in cClient::talking() so here we
+	assert them
+*/
+bool cHouse::doSpeech(pClient client, const std::string &speech)
+{
+	assert(client); assert(client->currChar());
+	
+	pPC pc = client->currChar();
+	int fr;
+
+	// if pc is not a friend or owner, we don't care what he says
+	if ( ! canPerformCommand(pc) )
+		return false;
+	
+	// house ban
+	if ( speech == "I BAN THEE" )
+	{
+		pTarget targ = clientInfo[socket]->newTarget( new cCharTarget() );
+		targ->code_callback = target_houseBan;
+		targ->buffer[0] = pi->getSerial();
+		targ->send(client);
+		client->sysmessage("Select person to ban from house.");
+		return true;
+	}
+	
+	// kick out of house
+	if ( speech == "REMOVE THYSELF" )
+	{
+		pTarget targ = clientInfo[socket]->newTarget( new cCharTarget() );
+		targ->code_callback=target_houseEject;
+		targ->buffer[0] = getSerial();
+		targ->send(client);
+		client->sysmessage("Select person to eject from house.");
+		return true;
+	}
+	
+	// Lock down item
+	if ( speech == "I WISH TO LOCK THIS DOWN" )
+	{
+		pTarget targ = clientInfo[socket]->newTarget( new cItemTarget() );
+		targ->code_callback=target_houseLockdown;
+		targ->buffer[0] = getSerial();
+		targ->send(client);
+		client->sysmessage("Select item to lock down");
+		return true;
+	}
+	
+	// Unlock down item
+	if ( speech == "I WISH TO RELEASE THIS" )
+	{
+		pTarget targ = clientInfo[socket]->newTarget( new cItemTarget() );
+		targ->code_callback=target_houseRelease;
+		targ->buffer[0] = getSerial();
+		targ->send(client);
+		client->sysmessage("Select item to release");
+		return true;
+	}
+	
+	// Secure item
+	if ( speech == "I WISH TO SECURE THIS" )
+	{
+		pTarget targ = clientInfo[socket]->newTarget( new cItemTarget() );
+		targ->code_callback=target_houseSecureDown;
+		targ->buffer[0] = getSerial();
+		targ->send(client);
+		client->sysmessage("Select item to secure");
+		return true;
+	}
+	return false;
+}

@@ -2912,11 +2912,19 @@ void cClient::talking(cSpeech &speech) // PC speech
 	if( callGuards( pc, socket, speech ) )
 		return;
 
-	if( Boats->Speech( pc, socket, speech ) )
-		return;
-
-	if( house_speech( pc, socket, speech ) )
-		return;
+	// Check for multi-talks
+	if ( pc->getMulti() )
+	{
+		pBoat pb = dynamic_cast<pBoat>(pc->getMulti());
+		pHouse ph = dynamic_cast<pHouse>(pc->getMulti());
+		
+		if ( pb && Boats->Speech( pc, socket, speech ) )
+			return;
+		
+		if ( ph && ph->doSpeech(this, speech) )
+			return;
+	}
+	
 	//
 	// Collect all npcs in visual range
 	//

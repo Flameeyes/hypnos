@@ -88,6 +88,8 @@ public:
 	
 	void redeed(pClient client);
 	void killKeys();
+	
+	bool doSpeech(pClient client, const std::string &speech);
 };
 
 #endif

@@ -16,7 +16,6 @@ extern std::map< uint32_t, pChar > houses;
 
 void buildhouse( pClient client, pTarget t );
 int check_house_decay();
-bool house_speech( pChar pc, pClient clientocket, std::string &talk);
 void killkeys(uint32_t serial);
 
 void target_houseOwner( pClient client, pTarget t );
