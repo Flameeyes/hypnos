@@ -19,9 +19,7 @@
 void StartClasses();
 void SetGlobalVars();
 void BuildPointerArray();
-void InitMultis();
 void DeleteClasses();
-void enlist(int s, int listnum);		//!< For enlisting in army
 void StoreItemRandomValue(pItem pi,int tmpreg);
 void loadmetagm();
 

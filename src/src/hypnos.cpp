@@ -761,37 +761,6 @@ unsigned long CheckMilliTimer(unsigned long &Seconds, unsigned long &Millisecond
 	return( 1000 * ( newSec - Seconds ) + ( newMill - Milliseconds ) );
 }
 
-void enlist(int s, int listnum) // listnum is stored in items morex
-{
-	pChar pc = cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return;
-
-	int x,j;
-//	char sect[512];
-	cScpIterator* iter = NULL;
-	char script1[1024];
-
-	//sprintf(sect, "SECTION ITEMLIST %i", listnum);
-
-	iter = Scripts::Items->getNewIterator("SECTION ITEMLIST %i", listnum);
-	if (iter==NULL) return;
-
-	int loopexit=0;
-	do
-	{
-		strcpy(script1, iter->getEntry()->getFullLine().c_str());
-		if ((script1[0]!='}')&&(script1[0]!='{'))
-		{
-			x=str2num(script1);
-			pItem pj=item::CreateFromScript( x, pc->getBackpack() );
-			if ( ! pj ) return;
-			pj->Refresh();
-		}
-	}
-	while((strcmp(script1,"}")) && (++loopexit < MAXLOOPS) );
-    safedelete(iter);
-}
-
 /*!
 \brief initialise globals variables
 \todo Remove this!

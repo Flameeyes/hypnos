@@ -616,12 +616,6 @@ void cItem::doubleClicked(pClient client)
 			pc->teleport();
 			type = ITYPE_POLYMORPH;
 			return;
-	case ITYPE_ARMY_ENLIST:
-
-        //! \todo redo this
-			enlist(s, morex);
-			Delete();
-			return;
 	case ITYPE_TELEPORT:
 			pc->MoveTo(morex, morey, morez);
 			pc->teleport();
