@@ -754,7 +754,7 @@ bool checkReagents(pChar pc, sReagents reagents)
 /*!
 \brief Plays failure effects
 \author Xanatar
-\param pc Little happy caster
+\param pc Character caster
 */
 void spellFailFX(pChar pc)
 {
@@ -918,8 +918,8 @@ bool spellRequiresTarget(SpellId spellnum)
 /*!
 \brief Check if the target is too far from the caster
 \author Luxor
-\param caster Little wannabe caster
-\param target a poor guinea pig ;]
+\param caster Character caster
+\param target Character target
 */
 static bool checkDistance(pChar caster, pChar target)
 {
@@ -946,8 +946,8 @@ static bool checkDistance(pChar caster, pChar target)
 /*!
 \brief Check if there's something between the caster and the target
 \author Luxor
-\param caster a Little poor boy
-\param destpos position of a little crazy girl ;]
+\param caster Character caster
+\param destpos Target destination
 */
 static bool checkLos(pChar caster, sLocation destpos)
 {
@@ -1160,8 +1160,8 @@ pChar summon (pChar owner, int npctype, int duration, bool bTamed, sLocation pos
 
 /*!
 \brief Cast a Field
-\param pc HarryPotter wannabe
-\param pos position of mighty caster
+\param pc Character caster
+\param pos Destination of FieldSpell
 \param spellnumber spell to cast
 */
 void castFieldSpell( pChar pc, sPosition pos, int spellnumber)
@@ -2127,7 +2127,6 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 /*!
 \brief Constructor
 \author Luxor
-\since 0.82
 */
 cCreateFoodMenu::cCreateFoodMenu( pChar pc ) : cIconListMenu()
 {
@@ -2166,7 +2165,6 @@ void cCreateFoodMenu::handleButton( pClient ps, cClientPacket* pkg  )
 /*!
 \brief Constructor
 \author Luxor
-\since 0.82
 */
 cSummonCreatureMenu::cSummonCreatureMenu( pChar pc ) : cIconListMenu()
 {
