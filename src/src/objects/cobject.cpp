@@ -135,12 +135,13 @@ void cObject::setPosition(Location where)
 */
 void cObject::setCurrentName( char *format, ... )
 {
-	char tmp[150];
+	char *tmp;
 	va_list vargs;
 	va_start(vargs, format);
-	vsnprintf(tmp, sizeof(tmp)-1, format, vargs);
+	vasprintf(&tmp, format, vargs);
 	va_end(vargs);
 	current_name=string( tmp );
+	free(tmp);
 }
 
 /*!
@@ -152,14 +153,14 @@ void cObject::setCurrentName( char *format, ... )
 */
 void cObject::setSecondaryName(const char *format, ...)
 {
-	char tmp[150];
+	char *tmp;
         va_list vargs;
         va_start(vargs, format);
-        vsnprintf(tmp, sizeof(tmp)-1, format, vargs);
+	vasprintf(&tmp, format, vargs);
         va_end(vargs);
 
-        tmp[sizeof(tmp)-1] = '\0';
 	secondary_name = string(tmp);
+	free(tmp);
 }
 
 /*!

@@ -44,20 +44,22 @@ inline bool isItemSerial( long ser ) { return ( /*ser >= 0 && */ser >= 0x4000000
 
 inline std::string toString(int value)
 {
-	char s[21];
-	snprintf(s, 20, "%d", value);
-	s[19]=0x00;
-
-	return std::string(s);
+	char *s;
+	snprintf(&s, "%d", value);
+	std::string ret(s)
+	free(s);
+	
+	return ret;
 }
 
 inline std::string toString(double value)
 {
-	char s[21];
-	snprintf(s, 20, "%f", value);
-	s[19]=0x00;
-
-	return std::string(s);
+	char *s;
+	snprintf(&s, "%f", value);
+	std::string ret(s)
+	free(s);
+	
+	return ret;
 }
 
 /*!

@@ -1,3 +1,5 @@
+	MAX_GUILDTYPE = 2,	//!< Code to support the Chaos/order system
+
 //@{
 	/*!
 	\name Guilds related

@@ -2880,10 +2880,9 @@ void sysmessage(pClient client, short color, const char *txt, ...) // System mes
 	uint8_t unicodetext[512];
 
 	va_list argptr;
-	char msg[512];
+	char *msg;
 	va_start( argptr, txt );
-	//vsnprintf( msg, sizeof(msg)-1, txt, argptr );
-        vsprintf( msg, txt, argptr );
+        vasprintf( &msg, txt, argptr );
 	va_end( argptr );
 	uint16_t ucl = ( strlen ( msg ) * 2 ) + 2 ;
 
@@ -2896,6 +2895,7 @@ void sysmessage(pClient client, short color, const char *txt, ...) // System mes
 
 	SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 0, color, 0x0003, lang, sysname, unicodetext,  ucl);
 
+	free(msg);
 }
 
 void sysbroadcast(char *txt, ...) // System broadcast in bold text
@@ -2904,9 +2904,9 @@ void sysbroadcast(char *txt, ...) // System broadcast in bold text
 	uint8_t unicodetext[512];
 
 	va_list argptr;
-	char msg[512];
+	char *msg;
 	va_start( argptr, txt );
-	vsprintf( msg, txt, argptr );
+	vasprintf( msg, txt, argptr );
 	va_end( argptr );
 
 	int ucl = ( strlen ( msg ) * 2 ) + 2 ;
@@ -2926,4 +2926,6 @@ void sysbroadcast(char *txt, ...) // System broadcast in bold text
 		if ( ci )
 			SendUnicodeSpeechMessagePkt(ci, 0x01010101, 0x0101, 6, 0x084D /*0x0040*/, 0x0000, lang, sysname, unicodetext,  ucl);
 	}
+	
+	free(msg);
 }

@@ -18,14 +18,17 @@
 */
 void cChar::sysmsg(const char *txt, ...)
 {
+	if ( ! getClient() )
+		return;
+	
 	va_list argptr;
-	char msg[512];
+	char *msg;
 	va_start( argptr, txt );
 
-	vsnprintf( msg, sizeof(msg)-1,(const char *)txt, argptr );
+	vasprintf( &msg, txt, argptr );
 	va_end( argptr );
-	if (getClient() != NULL)
-		getClient()->sysmsg(msg);
+	getClient()->sysmsg(msg);
+	free(msg);
 }
 
 /*!
@@ -113,23 +116,25 @@ void cChar::emote( pClient client, char *txt, bool antispam, ... )
 			sendEmote = false;
 	}
 
-	if ( sendEmote )
-	{
-		va_list argptr;
-		char msg[512];
-		va_start( argptr, antispam );
-		vsnprintf( msg, sizeof( msg ) - 1, txt, argptr );
-		va_end( argptr );
+	if ( ! sendEmote )
+		return;
+	
+	va_list argptr;
+	char *msg;
+	va_start( argptr, antispam );
+	vasprintf( &msg, txt, argptr );
+	va_end( argptr );
 
-		uint8_t name[30]={ 0x00, };
-		strcpy((char *)name, getCurrentName().c_str());
+	uint8_t name[30]={ 0x00, };
+	strcpy((char *)name, getCurrentName().c_str());
 
-		//!\todo redo adding to cpeech all the data and verifying
-		cPacketSendSpeech pk(cSpeech(msg));
-		getClient()->sendPacket(&pk);
+	//!\todo redo adding to cpeech all the data and verifying
+	cPacketSendSpeech pk(cSpeech(msg));
+	getClient()->sendPacket(&pk);
 
-		SendSpeechMessagePkt(socket, getSerial(), getId(), 2, emotecolor, fonttype, name, msg);
-	}
+	SendSpeechMessagePkt(socket, getSerial(), getId(), 2, emotecolor, fonttype, name, msg);
+	
+	free(msg);
 }
 
 /*!
@@ -150,24 +155,25 @@ void cChar::emoteall( char *txt, bool antispam, ... )
 			sendEmote = false;
 	}
 
-	if( sendEmote )
-	{
-		va_list argptr;
-		char msg[512];
-		va_start( argptr, antispam );
-		vsnprintf( msg, sizeof( msg ) - 1, txt, argptr );
-		va_end( argptr );
+	if( ! sendEmote )
+		return;
+		
+	va_list argptr;
+	char *msg;
+	va_start( argptr, antispam );
+	vasprintf( &msg, txt, argptr );
+	va_end( argptr );
 
-		NxwSocketWrapper sw;
-		sw.fillOnline( this, false );
-		for( sw.rewind(); !sw.isEmpty(); sw++ )
-		{
-			pClient ps=sw.getClient();
-			if( ps!=NULL )
-				emote( ps->toInt(), msg, 0 );
-		}
+	NxwSocketWrapper sw;
+	sw.fillOnline( this, false );
+	for( sw.rewind(); !sw.isEmpty(); sw++ )
+	{
+		pClient ps=sw.getClient();
+		if( ps!=NULL )
+			emote( ps->toInt(), msg, 0 );
 	}
 
+	free(msg);
 }
 
 /*!

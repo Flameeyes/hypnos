@@ -339,16 +339,17 @@ void RemoteAdmin::Printf(int s, char *txt, ...) // System message (In lower left
 	if (rac_port==0) return;
 	if(s==-1) return;
 	va_list argptr;
-	char msg[512];
+	char *msg;
 
 	va_start( argptr, txt );
-	vsnprintf( msg, sizeof(msg)-1, txt, argptr );
+	vasprintf( &msg, txt, argptr );
 	va_end( argptr );
 
 	if (s==DBG) 
 		send(debugSocket, msg, strlen(msg), 0);
 	else 
 		send(sockets[s], msg, strlen(msg), 0);
+	free(msg);
 }
 
 

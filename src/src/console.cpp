@@ -92,7 +92,7 @@ extern "C" void ConOut(char *txt, ...)
 	va_list argptr;
 
 	va_start( argptr, txt );
-	vsnprintf( s_strSrvcMsg, sizeof(s_strSrvcMsg)-1, txt, argptr );
+	vasprintf( &s_strSrvcMsg, txt, argptr );
 	va_end( argptr );
 
 #ifndef _WINDOWS
@@ -101,6 +101,7 @@ extern "C" void ConOut(char *txt, ...)
 #else
 	xwprintf("%s", s_strSrvcMsg);
 #endif
+	free(s_strSrvcMsg);
 }
 
 extern void setWinTitle(char *str, ...);
@@ -142,7 +143,7 @@ extern "C" void SDbgOut(char *txt, ...)
 	va_list argptr;
 
 	va_start( argptr, txt );
-	vsnprintf( s_strSrvcMsg, sizeof(s_strSrvcMsg)-1, txt, argptr );
+	vasprintf( &s_strSrvcMsg, txt, argptr );
 	va_end( argptr );
 
 #ifndef _WINDOWS
@@ -173,7 +174,7 @@ extern "C" void SDbgOut(char *txt, ...)
 #else
 	xwprintf("\x80%s", s_strSrvcMsg);
 #endif
-
+	free(s_strSrvcMsg);
 }
 
 extern "C" void STraceOut(char *txt, ...)
