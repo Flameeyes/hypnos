@@ -58,6 +58,8 @@ protected:
 public:
 	cContainer();
 	cContainer(uint32_t serial);
+	
+	virtual void doubleClicked();
 
 	bool addItem(pItem item, uint16_t xx=-1, uint16_t yy=-1);
 	void insertItem(pItem itm);

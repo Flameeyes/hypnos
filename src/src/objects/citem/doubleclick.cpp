@@ -373,58 +373,46 @@ void cItem::doubleClick(pClient client)
 		return;
 	}
 	// END trigger stuff
-	// BEGIN Check items by type
 
-	int los = 0;
-
-	pTarget targ = NULL;
-	
 	doubleClicked(client);
 }
 
 void cItem::doubleClicked(pClient client)
 {
+	int los = 0;
+
+	pTarget targ = NULL;
+	
+	pPC pc = client->currChar();
 	switch (type)
 	{
 	case ITYPE_RESURRECT:
 		// Check for 'resurrect item type' this is the ONLY type one can use if dead.
-		if (pc->dead)
+		if (pc->isDead())
 		{
 			pc->resurrect();
 			client->sysmessage("You have been resurrected.");
-			return;
 		}
 		else
 		{
 			client->sysmessage("You are already living!");
-			return;
 		}
-	case ITYPE_BOATS:// backpacks - snooping a la Zippy - add check for SrvParms->rogue later- Morrolan
-
-		if (type2 == 3)
-		{
-			switch( getId() & 0xFF ) {
-				case 0x84:
-				case 0xD5:
-				case 0xD4:
-				case 0x89:
-					Boats->PlankStuff(client, this);
-					break;
-				default:
-					pc->sysmessage( "That is locked.");
-					break;
-			}
-			return;
+		return;
+	case ITYPE_BOATS:
+		if ( type2 != 3 ) return;
+		
+		switch( getId() & 0xFF ) {
+			case 0x84:
+			case 0xD5:
+			case 0xD4:
+			case 0x89:
+				Boats->PlankStuff(client, this);
+				break;
+			default:
+				client->sysmessage( "That is locked.");
+				break;
 		}
-	case ITYPE_CONTAINER: // bugfix for snooping not working, lb
-	case ITYPE_UNLOCKED_CONTAINER:
-		// Wintermute: GMs or Counselors should be able to open trapped containers always
-		if (moreb1 > 0 && !pc->IsGMorCounselor()) {
-			magic::castAreaAttackSpell(getPosition().x, getPosition().y, magic::SPELL_EXPLOSION);
-			moreb1--;
-		}
-		//Magic->MagicTrap(currchar[s], pi); // added by AntiChrist
-		// only 1 and 63 can be trapped, so pleaz leave it here :) - Anti
+		return;
 	case ITYPE_NODECAY_ITEM_SPAWNER: // nodecay item spawner..Ripper
 	case ITYPE_DECAYING_ITEM_SPAWNER: // decaying item spawner..Ripper
 		if (isInWorld() || (pc->IsGMorCounselor()) || // Backpack in world - free access to everyone
@@ -605,30 +593,6 @@ void cItem::doubleClicked(pClient client)
 			}
 		}
 		return; // case 15 (magic items)
-#if 0 // REMOVE
-	case 18: // crystal ball?
-		switch (RandomNum(0, 9))
-		{
-		case 0: itemmessage(s, "Seek out the mystic llama herder.", pi->getSerial());
-			break;
-		case 1: itemmessage(s, "Wherever you go, there you are.", pi->getSerial());
-			break;
-		case 4: itemmessage(s, "The message appears to be too cloudy to make anything out of it.", pi->getSerial());
-			break;
-		case 5: itemmessage(s, "You have just lost five strength.. not!", pi->getSerial());
-			break;
-		case 6: itemmessage(s, "You're really playing a game you know", pi->getSerial());
-			break;
-		case 7: itemmessage(s, "You will be successful in all you do.", pi->getSerial());
-			break;
-		case 8: itemmessage(s, "You are a person of culture.", pi->getSerial());
-			break;
-		default: itemmessage(s, "Give me a break! How much good fortune do you expect!", pi->getSerial());
-			break;
-		}// switch
-		soundeffect2(pc_currchar, 0x01EC);
-		return;// case 18 (crystal ball?)
-#endif  // ENDREMOVE
 	case ITYPE_POTION: // potions
 			if (morey != 3)
 				pc->drink(this);   //Luxor: delayed potions drinking
@@ -692,7 +656,7 @@ void cItem::doubleClicked(pClient client)
 	case ITYPE_GUILDSTONE:
 
                 //!\todo: redo when guilds fixed
-
+#if 0
 			if ( getId() == 0x14F0  ||  getId() == 0x1869 )	// Check for Deed/Teleporter + Guild Type
 			{
 				pc->fx1 = pi->getSerial();   //!\todo: <- check this
@@ -708,6 +672,7 @@ void cItem::doubleClicked(pClient client)
 			else
 				WarnOut("Unhandled guild item type named: %s with ID of: %X\n", getCurrentName().c_str(), getId());
 			return;
+#endif
 	case ITYPE_PLAYER_VENDOR_DEED:			// PlayerVendors deed
 			{
 			pNpc vendor = npcs::AddNPCxyz(-1, 2117, charpos.x, charpos.y, charpos.z);

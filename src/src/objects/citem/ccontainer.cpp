@@ -419,3 +419,14 @@ pItem cContainer::getInstrument()
 	
 	return NULL;
 }
+
+void cContainer::doubleClicked()
+{
+		// Wintermute: GMs or Counselors should be able to open trapped containers always
+		if (moreb1 > 0 && !pc->IsGMorCounselor()) {
+			magic::castAreaAttackSpell(getPosition().x, getPosition().y, magic::SPELL_EXPLOSION);
+			moreb1--;
+		}
+		//Magic->MagicTrap(currchar[s], pi); // added by AntiChrist
+		// only 1 and 63 can be trapped, so pleaz leave it here :) - Anti
+}
