@@ -1550,6 +1550,7 @@ void command_cq( pClient client )
 // Attend to the next call in the counselor queue.
 void command_cnext( pClient client )
 {
+#error ///FLAMEEE
 
 	NXWSOCKET s = ps->toInt();
 
@@ -1560,6 +1561,7 @@ void command_cnext( pClient client )
 // Remove the current call from the counselor queue.
 void command_cclear( pClient client )
 {
+#error ///FLAMEEE
 
 	NXWSOCKET s = ps->toInt();
 
@@ -1574,6 +1576,7 @@ void command_minecheck( pClient client )
 }
 
 
+#error ///FLAMEEE
 void target_invul( pClient client, P_TARGET t )
 {
 	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
@@ -1625,7 +1628,6 @@ void command_guardsoff( pClient client )
 {
 	SrvParms->guardsactive=0;
 	sysbroadcast(TRANSLATE("Warning: Guards have been deactivated globally."));
-
 }
 
 // Enables decay on an object.
@@ -1642,35 +1644,21 @@ void command_decay( pClient client )
 // Display some performance information.
 void command_pdump( pClient client )
 {
+	pChar pc = client->currChar();
 
-	NXWSOCKET s = ps->toInt();
+	pc->sysmsg("Performace Dump:");
 
-	sysmessage(s, "Performace Dump:");
-
-	sprintf(s_szCmdTableTemp, "Network code: %fmsec [%i]" , (float)((float)networkTime/(float)networkTimeCount) , networkTimeCount);
-	sysmessage(s, s_szCmdTableTemp);
-
-	sprintf(s_szCmdTableTemp, "Timer code: %fmsec [%i]" , (float)((float)timerTime/(float)timerTimeCount) , timerTimeCount);
-	sysmessage(s, s_szCmdTableTemp);
-
-	sprintf(s_szCmdTableTemp, "Auto code: %fmsec [%i]" , (float)((float)autoTime/(float)autoTimeCount) , autoTimeCount);
-	sysmessage(s, s_szCmdTableTemp);
-
-	sprintf(s_szCmdTableTemp, "Loop Time: %fmsec [%i]" , (float)((float)loopTime/(float)loopTimeCount) , loopTimeCount);
-	sysmessage(s, s_szCmdTableTemp);
-
-	sprintf(s_szCmdTableTemp, "Simulation Cycles/Sec: %f" , (1000.0*(1.0/(float)((float)loopTime/(float)loopTimeCount))));
-	sysmessage(s, s_szCmdTableTemp);
+	pc->sysmsg("Network code: %fmsec [%i]" , (float)((float)networkTime/(float)networkTimeCount) , networkTimeCount);
+	pc->sysmsg("Timer code: %fmsec [%i]" , (float)((float)timerTime/(float)timerTimeCount) , timerTimeCount);
+	pc->sysmsg("Auto code: %fmsec [%i]" , (float)((float)autoTime/(float)autoTimeCount) , autoTimeCount);
+	pc->sysmsg("Loop Time: %fmsec [%i]" , (float)((float)loopTime/(float)loopTimeCount) , loopTimeCount);
+	pc->sysmsg("Simulation Cycles/Sec: %f" , (1000.0*(1.0/(float)((float)loopTime/(float)loopTimeCount))));
 }
 
 // (text) GM Yell - Announce a message to all online GMs.
 void command_gy( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
-
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	pChar pc = client->currChar();
 
 	if(now==1) {
 		pc->sysmsg("There are no other users connected.");
@@ -1678,7 +1666,7 @@ void command_gy( pClient client )
 	}
 
 	std::string message( "(GM ONLY): " );
-	message+=&tbuffer[Commands::cmd_offset+3];
+	message += &tbuffer[Commands::cmd_offset+3];
 
 	UI32 id;
 	UI16 model, color, font;
@@ -1691,7 +1679,7 @@ void command_gy( pClient client )
 	UI08 name[30]={ 0x00, };
 	strcpy((char *)name, pc->getCurrentNameC());
 
-
+#error ///FLAME!
 	NxwSocketWrapper sw;
 	sw.fillOnline();
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
@@ -1711,11 +1699,7 @@ void command_gy( pClient client )
 // (text) GM Yell - Announce a message to all online players.
 void command_yell( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
-
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	pChar pc = client->currChar();
 
 	if(now==1) {
 		pc->sysmsg("There are no other users connected.");
@@ -1736,6 +1720,7 @@ void command_yell( pClient client )
 	UI08 name[30]={ 0x00, };
 	strcpy((char *)name, pc->getCurrentNameC());
 
+#error ///FLAME! (come sopra -.-')
 	NxwSocketWrapper sw;
 	sw.fillOnline();
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
@@ -1754,12 +1739,12 @@ void command_yell( pClient client )
 
 void target_squelch( pClient client, P_TARGET t )
 {
-	P_CHAR curr = ps->currChar();
-	VALIDATEPC(curr);
+	pChar curr = client->currChar();
 
 	P_CHAR pc =pointers::findCharBySerial( t->getClicked() );
 	if(ISVALIDPC(pc))
-    {
+	{
+
         if(pc->IsGM())
         {
             curr->sysmsg(TRANSLATE("You cannot squelch GMs."));
@@ -2172,15 +2157,14 @@ void target_remove( pClient client, P_TARGET t )
 
 void target_dye( pClient client, P_TARGET t )
 {
-
 	SERIAL serial = t->getClicked();
 
 	UI16 color = t->buffer[0];
 
-	P_CHAR curr = ps->currChar();
+	pChar curr = client->currChar();
 	VALIDATEPC(curr);
 
-    if( isItemSerial(serial) ) {
+	if( isItemSerial(serial) ) {
 		P_ITEM pi=pointers::findItemBySerial(serial);
 		if (ISVALIDPI(pi))
 		{
@@ -2202,8 +2186,7 @@ void target_dye( pClient client, P_TARGET t )
 				pi->Refresh();
 			}
 		}
-	}
-	else {
+	} else {
 		P_CHAR pc=pointers::findCharBySerial(serial);
 		if(ISVALIDPC(pc))
 		{
@@ -2215,21 +2198,21 @@ void target_dye( pClient client, P_TARGET t )
 
 				UI16 body = pc->getId();
 
-				if(  color < 0x8000  && body >= BODY_MALE && body <= BODY_DEADFEMALE ) color |= 0x8000; // why 0x8000 ?! ^^;
+				if( color < 0x8000 && body >= BODY_MALE && body <= BODY_DEADFEMALE )
+					color |= 0x8000; // why 0x8000 ?! ^^;
 
-				if ((color & 0x4000) && (body >= BODY_MALE && body<= 0x03E1)) color = 0xF000; // but assigning the only "transparent" value that works, namly semi-trasnparency.
+				if ((color & 0x4000) && (body >= BODY_MALE && body<= 0x03E1))
+					color = 0xF000; // but assigning the only "transparent" value that works, namly semi-trasnparency.
 
 				if (color != 0x8000)
 				{
 					pc->setColor(color);
 					pc->setOldColor(color);
 					pc->teleport( TELEFLAG_NONE );
-
 				}
 			}
 		}
-    }
-
+	}
 }
 
 
@@ -2386,7 +2369,7 @@ void target_possess( pClient client, P_TARGET t )
 	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
-	P_CHAR curr=ps->currChar();
+	P_CHAR curr=client->currChar();
 
 	curr->possess( pc );
 }
@@ -2412,7 +2395,6 @@ void target_hide( pClient client, P_TARGET t )
 		pc->playSFX(0x0208);
 		tempfx::add(pc, pc, tempfx::GM_HIDING, 1, 0, 0);
 	}
-
 }
 
 void target_unhide( pClient client, P_TARGET t )
