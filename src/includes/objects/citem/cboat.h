@@ -19,7 +19,7 @@
 This class represent and manages the boats, taking care of turn them and
 get the commands.
 */
-class cBoat : public cItem
+class cBoat : public cMulti
 {
 public:
 	cBoat();
