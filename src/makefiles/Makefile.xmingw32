@@ -2,10 +2,10 @@
 	CXX		=@/opt/xmingw/bin/i386-mingw32msvc-g++
 	LINK		=@/opt/xmingw/bin/i386-mingw32msvc-g++
 
-export	CXXFLAGS	=-Wall -I $(PWD)/includes/ -pipe -D_REENTRANT -O3 -fshort-enums
-export	LDFLAGS		=-lpthread -lmxmlplus
+export	CXXFLAGS	=-Wall -I $(PWD)/includes/ -pipe -D_REENTRANT -O3 -fshort-enums -mno-cygwin
+export	LDFLAGS		=-lpthread -lmxmlplus -lwefts -mno-cygwin
 
-	TARGET		=pyuo
+	TARGET		= hypnos
 
 	SUBDIRS		= src src/abstraction src/archs src/backend src/encryption src/extras src/objects src/objects/cchar src/objects/citem src/objects/cnpc src/races src/skills
 	

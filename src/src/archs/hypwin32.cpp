@@ -139,7 +139,7 @@ std::string getOSVersionString()
 
 OSVersion getOSVersion()
 {
-    if (g_OSVer==OSVER_UNKNOWN) {
+    if (OSVer==OSVER_UNKNOWN) {
         getOSVersionString();
     }
     return OSVer;
@@ -223,7 +223,7 @@ char *basename(char *path)
 	in Windows' library
 */
 
-static const char as_buffer[4096];
+static char as_buffer[4096];
 static Wefts::Mutex as_mutex;
 
 int asprintf(char **strp, const char *fmt, ...)
@@ -243,7 +243,7 @@ int asprintf(char **strp, const char *fmt, ...)
 	{
 		*strp = (char*)malloc(retval+1);
 		va_start( argptr, fmt );
-		int retval2 = vsnprintf( tempbuff, retval+1, fmt, argptr );
+		int retval2 = vsnprintf( *strp, retval+1, fmt, argptr );
 		va_end( argptr );
 		as_mutex.unlock();
 		return retval2;
@@ -270,7 +270,7 @@ int vasprintf(char **strp, const char *fmt, va_list ap)
 	{
 		va_end( ap );
 		*strp = (char*)malloc(retval+1);
-		int retval2 = vsnprintf( tempbuff, retval+1, fmt, ap );
+		int retval2 = vsnprintf( *strp, retval+1, fmt, ap );
 		as_mutex.unlock();
 		return retval2;
 	}

@@ -10,6 +10,7 @@
 \brief Unix Architecture specific
 */
 
+#ifdef __unix__
 #ifndef _HYPNOS_UNIX_
 #define _HYPNOS_UNIX_
 
@@ -57,4 +58,5 @@ void Sleep(unsigned long msec);
 // For Wefts
 #define HAVE_LIBPTHREAD
 
+#endif
 #endif

@@ -11,7 +11,6 @@
 */
 
 #ifdef WIN32
-
 #ifndef _HYPNOS_WIN32_
 #define _HYPNOS_WIN32_
 
@@ -50,5 +49,4 @@ int asprintf(char **strp, const char *fmt, ...);
 int vasprintf(char **strp, const char *fmt, va_list ap);
 
 #endif
-
 #endif
