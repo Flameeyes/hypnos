@@ -38,7 +38,7 @@ bool CheckInPack(pClient client, pItem pi)
 void nSkills::target_removeTraps(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
-	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 	if ( !pc || !pi ) return;
 
 	pFunctionHandle evt = pi->getEvent(cItem::evtItmOnRemoveTrap);
@@ -58,7 +58,7 @@ void nSkills::target_removeTraps(pClient client, pTarget t )
 void nSkills::target_tailoring(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
-	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 
 	if ( !pc || !pi ) return;
 
@@ -101,7 +101,7 @@ void nSkills::target_tailoring(pClient client, pTarget t )
 void nSkills::target_fletching(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
-	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 
 	if ( !pc || !pi ) return;
 
@@ -126,7 +126,7 @@ void nSkills::target_bowcraft(pClient client, pTarget t )
 
 	pc->playAction(pc->isMounting() ? 0x1C : 0x0D);
 
-	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
+	pItem pi=dynamic_cast<pItem>( t->getClicked() );
 	if ( ! pi ) return;
 
 	AMXEXECSVTARGET(pc->getSerial(),AMXT_SKITARGS,skBowcraft,AMX_BEFORE);
@@ -159,7 +159,7 @@ void nSkills::target_bowcraft(pClient client, pTarget t )
 void nSkills::target_carpentry(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
-	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 
 	if ( !pc || !pi ) return;
 
@@ -258,7 +258,7 @@ extern int ingottype;
 
 void nSkills::target_smith(pClient client, pTarget t )
 {
-    pItem pi = cSerializable::findItemBySerial( t->getClicked() );
+    pItem pi = dynamic_cast<pItem>( t->getClicked() );
 	if ( !pi ) return;
 
     if (pi->magic!=4) // Ripper
@@ -606,7 +606,7 @@ void nSkills::GraveDig(pClient client) // added by Genesis 11-4-98
 void nSkills::target_smeltOre(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
-	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 
 	if ( !pc || !pi ) return;
 
@@ -963,7 +963,7 @@ void nSkills::target_healingSkill(pClient client, pTarget t )
 void nSkills::target_armsLore(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
-	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 	if ( !pc || !pi ) return;
 
 	int total;
@@ -1078,7 +1078,7 @@ void nSkills::target_armsLore(pClient client, pTarget t )
 void nSkills::target_itemId(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
-	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 
 	if ( !pc || !pi ) return;
 
@@ -1714,7 +1714,7 @@ void nSkills::target_tinkerClock(pClient client, pTarget t )
 
 void nSkills::target_repair(pClient client, pTarget t )
 {
-	pChar pc = ps->currChar();
+	pChar pc = client->currChar();
 	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 	if ( !pc || !pi ) return;
 
