@@ -40,7 +40,7 @@
 \param sequence walksequence
 \return true if the walk is allowed
 */
-bool WalkHandleAllowance(P_CHAR pc, int sequence)
+bool WalkHandleAllowance(pChar pc, int sequence)
 {
 	VALIDATEPCR(pc,false);
 	if (pc->isStabled() || pc->mounted) return false; // shouldnt be called for stabled pets, just to be on the safe side
@@ -92,7 +92,7 @@ bool WalkHandleAllowance(P_CHAR pc, int sequence)
 // history:	cut from WalkHandleRunning() by Xanathar, 14.06.2001
 // Purpose:	handles stealth/hiding
 //
-bool WalkingHandleHiding (P_CHAR pc, int dir)
+bool WalkingHandleHiding (pChar pc, int dir)
 {
 	VALIDATEPCR(pc, false);
 
@@ -123,7 +123,7 @@ bool WalkingHandleHiding (P_CHAR pc, int dir)
 // history:	cut from walking() by Duke, 27.10.2000
 // Purpose:	handles running, stamina
 //
-bool WalkHandleRunning(P_CHAR pc, int dir)
+bool WalkHandleRunning(pChar pc, int dir)
 {
 	VALIDATEPCR(pc, false);
 
@@ -182,7 +182,7 @@ bool WalkHandleRunning(P_CHAR pc, int dir)
 // Purpose:	Handles a 'real move' if the Char is not only changing direction
 //
 
-bool WalkHandleBlocking(P_CHAR pc, int sequence, int dir, int oldx, int oldy)
+bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 {
 	VALIDATEPCR(pc, false);
 	if (pc->npc)
@@ -231,7 +231,7 @@ bool WalkHandleBlocking(P_CHAR pc, int sequence, int dir, int oldx, int oldy)
 
 	if (pc->npc==0) // this is also called for npcs .. LB ?????? Sparhawk Not if you're excluding npc's
 	{
-		P_ITEM pi_multi=findmulti( pc->getPosition() );
+		pItem pi_multi=findmulti( pc->getPosition() );
 
 		if((!ISVALIDPI(pi_multi))&&(pc->getMultiSerial32() != INVALID))
 		{
@@ -247,7 +247,7 @@ bool WalkHandleBlocking(P_CHAR pc, int sequence, int dir, int oldx, int oldy)
 			{
 				//xan : probably the plr has entered the boat walking!
 				pc->setMultiSerial32Only(INVALID);
-				P_ITEM boat = Boats->GetBoat(pc->getPosition());
+				pItem boat = Boats->GetBoat(pc->getPosition());
 				if (boat!=NULL) {
 					pc->setMultiSerial( boat->getSerial32() );
 
@@ -255,7 +255,7 @@ bool WalkHandleBlocking(P_CHAR pc, int sequence, int dir, int oldx, int oldy)
 					pets.fillOwnedNpcs( pc, false, true );
 					for( pets.rewind(); !pets.isEmpty(); pets++ ) {
 
-						P_CHAR pc_b=pets.getChar();
+						pChar pc_b=pets.getChar();
 						if(ISVALIDPC(pc_b)) {
 							pc->MoveTo( boat->getPosition("x")+1, boat->getPosition("y")+1, boat->getPosition("z")+2 );
 							pc->setMultiSerial( boat->getSerial32() );
@@ -321,7 +321,7 @@ bool WalkHandleBlocking(P_CHAR pc, int sequence, int dir, int oldx, int oldy)
 }
 
 
-void WalkingHandleRainSnow(P_CHAR pc)
+void WalkingHandleRainSnow(pChar pc)
 {
 	VALIDATEPC(pc);
 	NXWSOCKET s = pc->getSocket();
@@ -353,7 +353,7 @@ void WalkingHandleRainSnow(P_CHAR pc)
 }
 
 
-/*void WalkingHandleGlowingItems(P_CHAR pc)
+/*void WalkingHandleGlowingItems(pChar pc)
 {
 	VALIDATEPC(pc);
 
@@ -379,7 +379,7 @@ void WalkingHandleRainSnow(P_CHAR pc)
 }*/
 
 
-void walking(P_CHAR pc, int dir, int sequence)
+void walking(pChar pc, int dir, int sequence)
 {
 	int newx, newy;
 	VALIDATEPC( pc );
@@ -467,7 +467,7 @@ void walking(P_CHAR pc, int dir, int sequence)
 }
 
 //</XAN>
-int npcSelectDir(P_CHAR pc_i, int j)
+int npcSelectDir(pChar pc_i, int j)
 {
 	VALIDATEPCR(pc_i, INVALID);
 	if (pc_i->blocked)
@@ -488,7 +488,7 @@ int npcSelectDir(P_CHAR pc_i, int j)
 	return j;
 }
 
-int npcSelectDirWarOld(P_CHAR pc_i, int j)
+int npcSelectDirWarOld(pChar pc_i, int j)
 {
 	VALIDATEPCR(pc_i, INVALID);
 	if (pc_i->blocked)
@@ -509,7 +509,7 @@ int npcSelectDirWarOld(P_CHAR pc_i, int j)
 	return j;
 }
 
-int checkBounds(P_CHAR pc, int newX, int newY, int type)
+int checkBounds(pChar pc, int newX, int newY, int type)
 {
 	VALIDATEPCR(pc, 0);
 	int move=0;
@@ -523,7 +523,7 @@ int checkBounds(P_CHAR pc, int newX, int newY, int type)
 	return move;
 }
 
-void npcwalk( P_CHAR pc_i, uint8_t newDirection, int type)   //type is npcwalk mode (0 for normal, 1 for box, 2 for circle) // Sparhawk should be changed to npcwander
+void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mode (0 for normal, 1 for box, 2 for circle) // Sparhawk should be changed to npcwander
 {
 	VALIDATEPC(pc_i);
 
@@ -651,12 +651,12 @@ void npcwalk( P_CHAR pc_i, uint8_t newDirection, int type)   //type is npcwalk m
 /*!
 \author Luxor
 */
-void handleCharsAtNewPos( P_CHAR pc )
+void handleCharsAtNewPos( pChar pc )
 {
 	VALIDATEPC( pc );
 
 	NxwCharWrapper sc;
-	P_CHAR pc_curr;
+	pChar pc_curr;
 	sc.fillCharsAtXY( pc->getPosition(), !pc->IsGM(), false );
 
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
@@ -684,7 +684,7 @@ void handleCharsAtNewPos( P_CHAR pc )
 // history:	cut from walking() by Duke, 27.10.2000
 // Purpose:	sends the newly visible items to the screen and checks for item effects
 //
-bool handleItemsAtNewPos(P_CHAR pc, int oldx, int oldy, int newx, int newy)
+bool handleItemsAtNewPos(pChar pc, int oldx, int oldy, int newx, int newy)
 {
 	VALIDATEPCR(pc, false);
 
@@ -698,7 +698,7 @@ bool handleItemsAtNewPos(P_CHAR pc, int oldx, int oldy, int newx, int newy)
 	si.fillItemsNearXYZ( pcpos, VISRANGE + 1, false );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 
-		P_ITEM pi=si.getItem();
+		pItem pi=si.getItem();
 		if(!ISVALIDPI(pi))
 			continue;
 			if( pi->getId()>=0x407C && pi->getId()<=0x407E )
@@ -724,7 +724,7 @@ bool handleItemsAtNewPos(P_CHAR pc, int oldx, int oldy, int newx, int newy)
 /*!
 \author Luxor
 */
-void sendToPlayers( P_CHAR pc, int8_t dir )
+void sendToPlayers( pChar pc, int8_t dir )
 {
 	VALIDATEPC( pc );
 
@@ -734,13 +734,13 @@ void sendToPlayers( P_CHAR pc, int8_t dir )
 	sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE + 1, !pc->IsGM() );
 
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-		P_CHAR pc_curr = sc.getChar();
+		pChar pc_curr = sc.getChar();
 		if( !ISVALIDPC(pc_curr) )
 			continue;
 
 		if ( pc->seeForLastTime( *pc_curr ) ) {
 			if ( cli != NULL )
-				cli->sendRemoveObject( P_OBJECT(pc_curr) );
+				cli->sendRemoveObject( pObject(pc_curr) );
 		}
 		if ( pc->seeForFirstTime( *pc_curr ) ) {
 			if ( cli != NULL )
@@ -753,7 +753,7 @@ void sendToPlayers( P_CHAR pc, int8_t dir )
 
 		// pc has just walked out pc_curr's vis circle
 		if ( pc_curr->seeForLastTime( *pc ) ) {
-			ps->sendRemoveObject( P_OBJECT(pc) );
+			ps->sendRemoveObject( pObject(pc) );
 			continue;
 		}
 

@@ -16,7 +16,7 @@
 \brief cMap constructor
 \param ser serial number
 */
-cMap::cMap(SERIAL ser) : cItem(ser)
+cMap::cMap(uint32_t ser) : cItem(ser)
 {
 	writeable = true;
 //        pinData.clear();  //should not be necessary

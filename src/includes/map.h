@@ -38,7 +38,7 @@ private:
 	int32_t m_xDist, m_yDist, m_zDist;
 };
 
-int8_t isWalkable( Location pos, uint8_t flags = WALKFLAG_ALL, P_CHAR pc = NULL );
+int8_t isWalkable( Location pos, uint8_t flags = WALKFLAG_ALL, pChar pc = NULL );
 bool lineOfSight( Location pos1, Location pos2 );
 bool canNpcWalkHere( Location pos );
 int8_t staticTop( Location pos );
@@ -46,7 +46,7 @@ int8_t tileHeight( uint16_t id );
 int8_t mapElevation( uint32_t x, uint32_t y );
 int8_t dynamicElevation( Location pos );
 int8_t getHeight( Location pos );
-void getMultiCorners( P_ITEM pi, uint32_t &x1, uint32_t &y1, uint32_t &x2, uint32_t &y2 );
+void getMultiCorners( pItem pi, uint32_t &x1, uint32_t &y1, uint32_t &x2, uint32_t &y2 );
 
 inline int32_t line_of_sight( int32_t s, Location a, Location b, int32_t checkfor )
 { return lineOfSight( a, b ); }

@@ -64,17 +64,17 @@ class cCallCommand
 
 private:
 
-	static SERIAL current_serial;
-	std::map< SERIAL, cCallCommand* > callcommand_map;
+	static uint32_t current_serial;
+	std::map< uint32_t, cCallCommand* > callcommand_map;
 
 public:
 
 	cCallCommand(std::string all_params);
 	~cCallCommand();
 	std::string all_params;
-	cCallCommand* findCallCommand(SERIAL cmd);
-	SERIAL addCallCommand(cCallCommand* called_command);	
-	void delCommand(SERIAL cmd);
+	cCallCommand* findCallCommand(uint32_t cmd);
+	uint32_t addCallCommand(cCallCommand* called_command);	
+	void delCommand(uint32_t cmd);
 	//std::vector< string >* single_param;
 
 };

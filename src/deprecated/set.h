@@ -21,8 +21,8 @@
 class NxwWrapper {
 
 private:
-	SERIAL_VECTOR vect;
-	SERIAL_VECTOR::iterator current;
+	uint32_t_VECTOR vect;
+	uint32_t_VECTOR::iterator current;
 
 protected:
 	void next();
@@ -39,8 +39,8 @@ public:
 	NxwWrapper& operator++(int);
 
 
-	SERIAL get();
-	void insert( SERIAL s );
+	uint32_t get();
+	void insert( uint32_t s );
 	
 	void copyQ( const NxwWrapper& from );
 };
@@ -48,15 +48,15 @@ public:
 class NxwSerialWrapper : public NxwWrapper {
 
 protected: 
-	void fillSerialInContainer( SERIAL serial, bool bIncludeSubContained = true, bool bIncludeOnlyFirstSubcont=false );
+	void fillSerialInContainer( uint32_t serial, bool bIncludeSubContained = true, bool bIncludeOnlyFirstSubcont=false );
 	void fillSerialInContainer( cObject* obj, bool bIncludeSubContained = true, bool bIncludeOnlyFirstSubcont=false );
 
 public:
 	NxwSerialWrapper();
 	~NxwSerialWrapper();
 
-	SERIAL getSerial();
-	void insertSerial( SERIAL s );
+	uint32_t getSerial();
+	void insertSerial( uint32_t s );
 	void insertSerial( cObject* obj );
 
 
@@ -70,20 +70,20 @@ public:
 	NxwCharWrapper( const NxwCharWrapper& that );
 	~NxwCharWrapper();
 
-	P_CHAR getChar();
-	void insertChar( P_CHAR pc );
+	pChar getChar();
+	void insertChar( pChar pc );
 
-	void fillOwnedNpcs( P_CHAR pc, bool bIncludeStabled = true, bool bOnlyFollowing = false );
+	void fillOwnedNpcs( pChar pc, bool bIncludeStabled = true, bool bOnlyFollowing = false );
 	void fillCharsAtXY( Location location, bool bExcludeOfflinePlayers = true, bool bOnlyPlayer = false );
 	void fillCharsAtXY( uint16_t x, uint16_t y, bool bExcludeOfflinePlayers = true, bool bOnlyPlayer = false );
 	void fillCharsNearXYZ ( uint16_t x, uint16_t y, int nDistance = VISRANGE, bool bExcludeOfflinePlayers = true, bool bOnlyPlayer = false );
 	void fillCharsNearXYZ ( Location location, int nDistance = VISRANGE, bool bExcludeOfflinePlayers = true, bool bOnlyPlayer = false );
-	void fillPartyFriend( P_CHAR pc, uint32_t nDistance = VISRANGE, bool bExcludeThis = false );
+	void fillPartyFriend( pChar pc, uint32_t nDistance = VISRANGE, bool bExcludeThis = false );
 	void fillNpcsNearXY( uint16_t x, uint16_t y, int nDistance = VISRANGE );
-	void fillNpcsNear( P_CHAR pc, int nDistance = VISRANGE );
-	void fillNpcsNear( P_ITEM pi, int nDistance = VISRANGE );
-	void fillGuildMembers( SERIAL guild );
-	void fillGuildRecruits( SERIAL guild );
+	void fillNpcsNear( pChar pc, int nDistance = VISRANGE );
+	void fillNpcsNear( pItem pi, int nDistance = VISRANGE );
+	void fillGuildMembers( uint32_t guild );
+	void fillGuildRecruits( uint32_t guild );
 
 };
 
@@ -94,16 +94,16 @@ public:
 	NxwItemWrapper( const NxwItemWrapper& that );
 	~NxwItemWrapper();
 
-	P_ITEM getItem();
-	void insertItem( P_ITEM pi );
+	pItem getItem();
+	void insertItem( pItem pi );
 
-	void fillItemsInContainer ( P_ITEM pi, bool bIncludeSubContained = true, bool bIncludeOnlyFirstSubcont=false);
-	void fillItemWeared( P_CHAR pc, bool bIncludeLikeHair = false, bool bIncludeProtectedLayer = false, bool bExcludeIllegalLayer=true );
+	void fillItemsInContainer ( pItem pi, bool bIncludeSubContained = true, bool bIncludeOnlyFirstSubcont=false);
+	void fillItemWeared( pChar pc, bool bIncludeLikeHair = false, bool bIncludeProtectedLayer = false, bool bExcludeIllegalLayer=true );
 	void fillItemsAtXY( uint16_t x, uint16_t y, int32_t type = INVALID, int32_t id = INVALID );
 	void fillItemsAtXY( Location location, int32_t type = INVALID, int32_t id = INVALID );
 	void fillItemsNearXYZ ( uint16_t x, uint16_t y, int nDistance = VISRANGE, bool bExcludeNotMovableItems = true);
 	void fillItemsNearXYZ ( Location location, int nDistance = VISRANGE, bool bExcludeNotMovableItems = true);
-	void fillGuilds( SERIAL guild );
+	void fillGuilds( uint32_t guild );
 
 };
 
@@ -113,14 +113,14 @@ public:
 	NxwSocketWrapper();
 	~NxwSocketWrapper();
 
-	SERIAL getSocket();
+	uint32_t getSocket();
 	NXWCLIENT getClient();
 	void insertSocket( NXWSOCKET s );
 	void insertClient( NXWCLIENT ps );
 
-	void fillOnline( P_CHAR onlyNearThis, bool bExcludeThis = true, uint32_t nDistance = VISRANGE );
+	void fillOnline( pChar onlyNearThis, bool bExcludeThis = true, uint32_t nDistance = VISRANGE );
 	void fillOnline( Location location, int nDistance = VISRANGE );
-	void fillOnline( P_ITEM onlyNearThis,int nDistance = VISRANGE );
+	void fillOnline( pItem onlyNearThis,int nDistance = VISRANGE );
 	void fillOnline( );
 
 };
@@ -128,42 +128,42 @@ public:
 
 const int RS_BACKPACK_ITEM = 1;
 const int RS_BANK_ITEM = 2;
-const int RS_EQUIP_ITEM = 3;
+const int RS_EQUIpItem = 3;
 
 
 namespace amxSet {
 
-	typedef std::map< SERIAL, NxwWrapper* > AMX_WRAPPER_DB;
+	typedef std::map< uint32_t, NxwWrapper* > AMX_WRAPPER_DB;
 
 	
-	SERIAL create(  );
-	void deleteSet( SERIAL iSet );
-	bool end( SERIAL iSet );
-	void rewind( SERIAL iSet );
-	void next( SERIAL iSet );
-	uint32_t size( SERIAL iSet);
+	uint32_t create(  );
+	void deleteSet( uint32_t iSet );
+	bool end( uint32_t iSet );
+	void rewind( uint32_t iSet );
+	void next( uint32_t iSet );
+	uint32_t size( uint32_t iSet);
 
-	SERIAL get( SERIAL iSet );
-	void add( SERIAL iSet, SERIAL nVal );
-	void copy( SERIAL iSet, const NxwWrapper& from );
+	uint32_t get( SERIAL iSet );
+	void add( uint32_t iSet, SERIAL nVal );
+	void copy( uint32_t iSet, const NxwWrapper& from );
 
-	void addOwnedNpcs( SERIAL iSet, P_CHAR pc, bool includeStabled, bool onlyFollowing );
- 	void addPartyFriend( SERIAL iSet, P_CHAR pc, int distance, bool excludeThis );
- 	void addNpcsNearXY( SERIAL iSet, uint16_t x, uint16_t y, int distance );
-	void addNpcsNearObj( SERIAL iSet, P_CHAR pc, int nDistance );
-	void addNpcsNearObj( SERIAL iSet, P_ITEM pi, int nDistance );
- 	void addItemsInContainer( SERIAL iSet, P_ITEM pi, bool includeSubCont, bool includeOnlyFirstSubCont );
- 	void addItemWeared( SERIAL iSet, P_CHAR pc, bool includeLikeHair, bool includeProtectedLayer, bool excludeIllegalLayer );
- 	void addItemsAtXY( SERIAL iSet, uint16_t x, uint16_t y, uint32_t type );
- 	void addItemsNearXY( SERIAL iSet, uint16_t x, uint16_t y, int distance, bool excludeNotMovable );
- 	void addAllOnlinePlayers( SERIAL iSet );
-	void addOnlinePlayersNearChar( SERIAL iSet, P_CHAR pc, bool excludeThis, int distance );
-	void addOnlinePlayersNearItem( SERIAL iSet, P_ITEM pi, int distance );
-	void addOnlinePlayersNearXY( SERIAL iSet, uint16_t x, uint16_t y, int distance );
+	void addOwnedNpcs( uint32_t iSet, pChar pc, bool includeStabled, bool onlyFollowing );
+ 	void addPartyFriend( uint32_t iSet, pChar pc, int distance, bool excludeThis );
+ 	void addNpcsNearXY( uint32_t iSet, uint16_t x, uint16_t y, int distance );
+	void addNpcsNearObj( uint32_t iSet, pChar pc, int nDistance );
+	void addNpcsNearObj( uint32_t iSet, pItem pi, int nDistance );
+ 	void addItemsInContainer( uint32_t iSet, pItem pi, bool includeSubCont, bool includeOnlyFirstSubCont );
+ 	void addItemWeared( uint32_t iSet, pChar pc, bool includeLikeHair, bool includeProtectedLayer, bool excludeIllegalLayer );
+ 	void addItemsAtXY( uint32_t iSet, uint16_t x, uint16_t y, uint32_t type );
+ 	void addItemsNearXY( uint32_t iSet, uint16_t x, uint16_t y, int distance, bool excludeNotMovable );
+ 	void addAllOnlinePlayers( uint32_t iSet );
+	void addOnlinePlayersNearChar( uint32_t iSet, pChar pc, bool excludeThis, int distance );
+	void addOnlinePlayersNearItem( uint32_t iSet, pItem pi, int distance );
+	void addOnlinePlayersNearXY( uint32_t iSet, uint16_t x, uint16_t y, int distance );
 
-	void addGuildMembers( SERIAL iSet, SERIAL guild );
-	void addGuildRecruits( SERIAL iSet, SERIAL guild );
-	void addGuilds( SERIAL iSet, SERIAL guild );
+	void addGuildMembers( uint32_t iSet, SERIAL guild );
+	void addGuildRecruits( uint32_t iSet, SERIAL guild );
+	void addGuilds( uint32_t iSet, SERIAL guild );
 
 }
 

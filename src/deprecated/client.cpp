@@ -108,14 +108,14 @@ bool cNxwClientObj::inGame()
 	return clientInfo[m_sck]->ingame;
 }
 
-void cNxwClientObj::sendSpellBook(P_ITEM pi)
+void cNxwClientObj::sendSpellBook(pItem pi)
 {
 	if (pi==NULL) // item number send by client?
 		pi=pointers::findItemBySerPtr(getRcvBuffer()+1);
 
-	P_CHAR pc_currchar = this->currChar();
+	pChar pc_currchar = this->currChar();
 
-	P_ITEM p_back=pc_currchar->getBackpack();
+	pItem p_back=pc_currchar->getBackpack();
 
 
 	if (!pi )
@@ -125,7 +125,7 @@ void cNxwClientObj::sendSpellBook(P_ITEM pi)
 			si.fillItemsInContainer( p_back, false );
 			for( si.rewind(); !si.isEmpty(); si++ )
 			{
-	            P_ITEM pj=si.getItem();
+	            pItem pj=si.getItem();
 				if( ISVALIDPI(pj) && pj->type==ITYPE_SPELLBOOK)
 				{
 	                pi=pj;
@@ -139,7 +139,7 @@ void cNxwClientObj::sendSpellBook(P_ITEM pi)
 			si.fillItemWeared( pc_currchar, true, true, true );
 			for( si.rewind(); !si.isEmpty(); si++ )
 			{
-	            P_ITEM pj=si.getItem();
+	            pItem pj=si.getItem();
 	            if( ISVALIDPI(pj) && pj->type==ITYPE_SPELLBOOK )
 				{
 	                pi=pj;
@@ -175,7 +175,7 @@ void cNxwClientObj::sendSpellBook(P_ITEM pi)
 	gri.fillItemsInContainer( pi, false );
 	for( gri.rewind(); !gri.isEmpty(); gri++ )
     {
-		P_ITEM pj=gri.getItem(); //Luxor: added support for all-spell scroll
+		pItem pj=gri.getItem(); //Luxor: added support for all-spell scroll
 		if(ISVALIDPI(pj))
 			if( pj->IsSpellScroll() || pi->CountItems(0x1F6D,-1,false) > 0)
 			{

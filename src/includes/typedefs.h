@@ -23,24 +23,17 @@ typedef int32_t				ACCOUNT;
 typedef int32_t				FUNCIDX;
 
 // typedef std::vector<uint32_t>		uint32_tVECTOR;	//!< vector of unsigned 32 bits integers
-// typedef std::vector<SERIAL>		SERIAL_VECTOR;	//!< vector of serials
-// typedef slist<SERIAL>                   SERIAL_SLIST;	//!< slist of serials
+// typedef std::vector<uint32_t>		SERIAL_VECTOR;	//!< vector of serials
+// typedef slist<uint32_t>                   SERIAL_SLIST;	//!< slist of serials
 
-// typedef SERIAL 				SCRIPTID; 	//!< a script id
-// typedef std::set<SERIAL>		SERIAL_SET;	//!< set of serials
-// typedef std::vector< P_OBJECT >		POBJECT_VECTOR;	//!<  a vector of pointers to cObject
-// typedef POBJECT_VECTOR::iterator	POBJECT_VECTOR_IT;//!< an iterator to a vector of pointers to cObject
-// typedef std::vector< P_CHAR >		PCHAR_VECTOR;	//!< a vector of pointers to cChar
-// typedef PCHAR_VECTOR::iterator		PCHAR_VECTOR_IT;//!< an iterator to a vector of pointers to cChar
-// typedef std::vector< P_ITEM >		PITEM_VECTOR;	//!<  a vector of pointers to cItem
-// typedef PITEM_VECTOR::iterator		PITEM_VECTOR_IT;//!< an iterator to a vector of pointers to cChar
+// typedef uint32_t 				SCRIPTID; 	//!< a script id
+// typedef std::set<uint32_t>		SERIAL_SET;	//!< set of serials
 // typedef class cPartyMember* P_PARTY_MEMBER;
 // typedef class cParty*	P_PARTY;
 // typedef class cBasicMenu* P_MENU;
 // typedef class cGuild* P_GUILD;
 // typedef class cGuildMember* P_GUILD_MEMBER;
 // typedef class cGuildRecruit* P_GUILD_RECRUIT;
-// typedef class cClient* P_CLIENT;
 
 #ifdef __BORLANDC__
 	#include <stlport/hash_map>
@@ -133,7 +126,7 @@ struct skill_st
  int32_t unhide_onuse;
  int32_t unhide_onfail;
  int32_t advance_index;
- TEXT madeword[50]; // Added by Magius(CHE)
+ char madeword[50]; // Added by Magius(CHE)
 };
 
 /*!
@@ -147,18 +140,6 @@ struct advance_st
  int32_t success;
  int32_t failure;
 };
-
-/*!
-\todo Use std::string instead of c-strings
-*/
-struct sGMPage
-{
-	TEXT reason[80];
-	Serial serial;
-	TEXT timeofcall[9];
-	TEXT name[20];
-	int32_t handled;
-} PACK_NEEDED;
 
 /*!
 \todo We really need it? It's only a value!

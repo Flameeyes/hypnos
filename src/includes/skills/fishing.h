@@ -24,7 +24,7 @@ namespace Fishing
 	void Fish(CHARACTER c);
 };
 
-int SpawnFishingMonster(P_CHAR pc, char* cScript, char* cList, char* cNpcID);
+int SpawnFishingMonster(pChar pc, char* cScript, char* cList, char* cNpcID);
 int SpawnFishingItem(int nCharID,int nInPack, char* cScript, char* cList, char* cItemID);
 
 

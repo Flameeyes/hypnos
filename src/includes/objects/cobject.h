@@ -257,12 +257,12 @@ protected:
 
 public:
 	bool			addTempfx( cObject& src, int32_t num, int32_t more1 = 0, int32_t more2 = 0, int32_t more3 = 0, int32_t dur = 0, int32_t amxcback = INVALID );
-	void			delTempfx( int32_t num, bool executeExpireCode = true, SERIAL funcidx = INVALID );
+	void			delTempfx( int32_t num, bool executeExpireCode = true, uint32_t funcidx = INVALID );
 	void			checkTempfx();
 	void			tempfxOn();
 	void			tempfxOff();
 	bool			hasTempfx();
-	tempfx::cTempfx*	getTempfx( int32_t num, SERIAL funcidx = INVALID );
+	tempfx::cTempfx*	getTempfx( int32_t num, uint32_t funcidx = INVALID );
 //@}
 
 	uint32_t	disabled;	//!< Disabled object timer, cant trigger.

@@ -21,28 +21,28 @@ class cTriggerContext
 		int m_nTriggerType;
 
 		NXWSOCKET  m_socket;
-		P_ITEM m_pi;
-		P_ITEM m_piEnvoked; //!< the envoker item
-		P_ITEM m_piAdded; //!< the added item
-		P_ITEM m_piNeededItem;
-		P_CHAR m_pcNpc;
-		P_CHAR m_pcCurrChar;
-		P_CHAR m_pcAdded;
+		pItem m_pi;
+		pItem m_piEnvoked; //!< the envoker item
+		pItem m_piAdded; //!< the added item
+		pItem m_piNeededItem;
+		pChar m_pcNpc;
+		pChar m_pcCurrChar;
+		pChar m_pcAdded;
 		bool m_bStop;
 		int m_nNumber;
 		cScpIterator* m_iter;
 
 		void parseIfCommand(char* cmd, char* par, int comparevalue);
 		void parseIAddCommand(char* par);
-		void parseMaxDurCommand(P_ITEM pi, char* par);
-		void parseDurCommand(P_ITEM pi, char* par);
+		void parseMaxDurCommand(pItem pi, char* par);
+		void parseDurCommand(pItem pi, char* par);
 		void parseLine(char* cmd, char* par);
 		void init(int number, NXWSOCKET  s, int trigtype, uint16_t id = 0);
 		void checkPtrsValidity();
 
 	public:
-		cTriggerContext(int number, NXWSOCKET  s, P_ITEM itm, int trigtype);
-		cTriggerContext(int number, NXWSOCKET  s, P_CHAR itm, int trigtype);
+		cTriggerContext(int number, NXWSOCKET  s, pItem itm, int trigtype);
+		cTriggerContext(int number, NXWSOCKET  s, pChar itm, int trigtype);
 		~cTriggerContext();
 		void exec();
 };
@@ -63,8 +63,8 @@ bool checkenvoke( uint16_t eid );
 /*!
 \name Entry points
 */
-void triggerItem(NXWSOCKET ts, P_ITEM pi, int eventType);
-void triggerNpc(NXWSOCKET ts, P_CHAR pc, int eventType);
+void triggerItem(NXWSOCKET ts, pItem pi, int eventType);
+void triggerNpc(NXWSOCKET ts, pChar pc, int eventType);
 void triggerTile(NXWSOCKET ts);
 //@}
 

@@ -26,7 +26,7 @@ void ErrOut(char *txt, ...);
 \param msg message
 \remarks \remark msg is formatted so you can use "file_%s", my_str as a filename
 */
-void WriteGMLog(P_CHAR pc, char *msg, ...)
+void WriteGMLog(pChar pc, char *msg, ...)
 {
 	va_list vargs;
 	char tmp[MAXLINESIZE];
@@ -144,7 +144,7 @@ void LogFile::Write(string str)
 	}
 }
 
-string SpeechLogFile::MakeFilename(P_CHAR pc)
+string SpeechLogFile::MakeFilename(pChar pc)
 {
 	char tmp[MAXLINESIZE];
 

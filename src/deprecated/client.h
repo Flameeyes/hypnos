@@ -37,7 +37,7 @@ public:
 	*/
 
 	bool inGame();
-	P_CHAR currChar();
+	pChar currChar();
 	int currCharIdx();
 	int getRealSocket();
 	BYTE *getRcvBuffer();
@@ -48,9 +48,9 @@ public:
 	\name Packets
 	*/
 	void send(const void *point, int length);
-	void sendSpellBook(P_ITEM pi);
+	void sendSpellBook(pItem pi);
 	void sendSFX(unsigned char a, unsigned char b, bool bIncludeNearby = true);
-	void sendRemoveObject(P_OBJECT po);
+	void sendRemoveObject(pObject po);
 	void sysmsg(char* szFormat, ...);
 	void sysmsg(short color, char* szFormat, ...);
 	//@}
@@ -67,7 +67,7 @@ public:
 	P_TARGET newTarget( P_TARGET newTarget );
 	P_TARGET getTarget();
 
-	SERIAL spyTo; //!< used for spy command
+	uint32_t spyTo; //!< used for spy command
 	bool compressOut; //!< compress output with huffman coding
 	bool noweather; //!< not weather
 	bool lsd; //!< lsd stuff

@@ -18,7 +18,7 @@
 #include "typedefs.h"
 #include "target.h"
 
-int BuyShop(NXWSOCKET s, SERIAL c);
+int BuyShop(NXWSOCKET s, uint32_t c);
 
 void target_envoke( NXWCLIENT ps, P_TARGET t );
 void target_key( NXWCLIENT ps, P_TARGET t );

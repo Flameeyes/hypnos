@@ -26,8 +26,8 @@ public:
 	uint32_t current; //!< currente number of spawned
 	TIMERVAL nextspawn; //!< next spawn
 
-	SERIAL_SET items_spawned;
-	SERIAL_SET npcs_spawned;
+	uint32_t_SET items_spawned;
+	uint32_t_SET npcs_spawned;
 	AREA_ITER where;
 
 	bool needSpawn();
@@ -41,23 +41,23 @@ class cSpawnScripted {
 
 private:
 
-	void safeCreate( P_CHAR npc, cSpawnArea& single );
-	void safeCreate( P_ITEM pi, cSpawnArea& single  );
+	void safeCreate( pChar npc, cSpawnArea& single );
+	void safeCreate( pItem pi, cSpawnArea& single  );
 
 
 public:
 
-	cSpawnScripted( SERIAL serial );
+	cSpawnScripted( uint32_t serial );
 	~cSpawnScripted();
 
-	SERIAL serial; //!< region serial
+	uint32_t serial; //!< region serial
 
 	TIMERVAL mintime; //!< min time value	
 	TIMERVAL maxtime; //!< max time value
-	SERIAL_VECTOR npclists; //!< npclist to spawn
-	SERIAL_VECTOR npcs; //!< npc to spawn
-	SERIAL_VECTOR itemlists; //!< itemlist to spawn
-	SERIAL_VECTOR itms; //!< item to spawn
+	uint32_t_VECTOR npclists; //!< npclist to spawn
+	uint32_t_VECTOR npcs; //!< npc to spawn
+	uint32_t_VECTOR itemlists; //!< itemlist to spawn
+	uint32_t_VECTOR itms; //!< item to spawn
 	std::string name; //!< region name
 	uint32_t max; //!< max number of spanwed
 
@@ -67,31 +67,31 @@ public:
 	void doSpawn( );
 	void doSpawnAll();
 
-	void removeObject( P_ITEM pi );
-	void removeObject( P_CHAR pc );
+	void removeObject( pItem pi );
+	void removeObject( pChar pc );
 
 };
 
 class cSpawnDinamic {
 public:
 
-	cSpawnDinamic( P_ITEM pi );
+	cSpawnDinamic( pItem pi );
 	~cSpawnDinamic();
 
-	SERIAL item; //!< the spawner
-	SERIAL_SET item_spawned; //!< spawned items
-	SERIAL_SET npc_spawned; //!< spawned npcs
+	uint32_t item; //!< the spawner
+	uint32_t_SET item_spawned; //!< spawned items
+	uint32_t_SET npc_spawned; //!< spawned npcs
 
 	uint32_t current;
 	TIMERVAL nextspawn; //!< next spawn
 
 	void doSpawn();
 	bool needSpawn();
-	void remove( SERIAL serial );
+	void remove( uint32_t serial );
 };
 
-typedef std::map< SERIAL, cSpawnScripted > SPAWN_SCRIPTED_DB;
-typedef std::map< SERIAL, cSpawnDinamic  > SPAWN_DINAMIC_DB;
+typedef std::map< uint32_t, cSpawnScripted > SPAWN_SCRIPTED_DB;
+typedef std::map< uint32_t, cSpawnDinamic  > SPAWN_DINAMIC_DB;
 
 class cSpawns {
 private:
@@ -106,18 +106,18 @@ public:
 	TIMERVAL check; //!< check respawn
 
 	void loadFromScript();
-	void loadFromItem( P_ITEM pi );
+	void loadFromItem( pItem pi );
 
 	void clearDynamic();
-	void doSpawnScripted( SERIAL spawn );
+	void doSpawnScripted( uint32_t spawn );
 	void doSpawn();
 	void doSpawnAll( );
-	void doSpawnAll( SERIAL spawn );
+	void doSpawnAll( uint32_t spawn );
 
-	void removeObject( SERIAL spawn, P_ITEM pi );
-	void removeObject( SERIAL spawn, P_CHAR pc );
-	void removeSpawnDinamic( P_ITEM pi );
-	void removeSpawnDinamic( P_CHAR pc );
+	void removeObject( uint32_t spawn, pItem pi );
+	void removeObject( uint32_t spawn, pChar pc );
+	void removeSpawnDinamic( pItem pi );
+	void removeSpawnDinamic( pChar pc );
 
 };
 

@@ -125,7 +125,7 @@ namespace Books
 	\brief add a new book to the map with book as bookitem
 	\param book pointer to the book item
 	*/
-	void addNewBook(P_ITEM book)
+	void addNewBook(pItem book)
 	{
 		cBook b(book);
 		books[b.GetIndex()] = b;
@@ -139,9 +139,9 @@ namespace Books
 	\param book pointer to the book item
 	\todo complete the support for xss-generated books
 	*/
-	void DoubleClickBook(NXWSOCKET s, P_ITEM book)
+	void DoubleClickBook(NXWSOCKET s, pItem book)
 	{
-		P_CHAR pc = MAKE_CHAR_REF(currchar[s]);
+		pChar pc = MAKE_CHAR_REF(currchar[s]);
 		if ( !ServerScp::g_nEnableBooks )
 		{
 			pc->sysmsg(TRANSLATE("Books are currently disabled, sorry :("));
@@ -195,7 +195,7 @@ namespace Books
 	/*!
 	\param book pointer to the book item to bound the book to
 	*/
-	cBook::cBook(P_ITEM book)
+	cBook::cBook(pItem book)
 	{
 		index = ++books_index;
 		readonly = false;
@@ -489,7 +489,7 @@ namespace Books
 	\param book pointer to book item
 	\note it sends <b>a lot</b> of data to client....
 	*/
-	void cBook::OpenBookReadWrite(NXWSOCKET s, P_ITEM book)
+	void cBook::OpenBookReadWrite(NXWSOCKET s, pItem book)
 	{
 		uint8_t bookopen[10]=   "\x93\x40\x01\x02\x03\x01\x01\x00\x02";
 
@@ -563,7 +563,7 @@ namespace Books
 		}
 	}
 
-	void cBook::OpenBookReadOnly(NXWSOCKET s, P_ITEM book)
+	void cBook::OpenBookReadOnly(NXWSOCKET s, pItem book)
 	{
 		uint8_t bookopen[9] = { 0x93, 0x40, 0x01, 0x02, 0x03, 0x00, 0x01, 0x00, 0x02 };
 
@@ -597,7 +597,7 @@ namespace Books
 	\param book pointer to book item
 	\param p index of page to send
 	*/
-	void cBook::SendPageReadOnly(NXWSOCKET  s, P_ITEM book, uint16_t p)
+	void cBook::SendPageReadOnly(NXWSOCKET  s, pItem book, uint16_t p)
 	{
 		uint8_t bookpage[13] =
 		//	  cmd   -blocksize  --------book id-------  --pages---  --pagenum-  -linenum--

@@ -31,7 +31,7 @@
 TIMERVAL Fishing::basetime = FISHINGTIMEBASE;
 TIMERVAL Fishing::randomtime = FISHINGTIMER;
 
-int SpawnFishingMonster(P_CHAR pc, char* cScript, char* cList, char* cNpcID)
+int SpawnFishingMonster(pChar pc, char* cScript, char* cList, char* cNpcID)
 {
 	/*This function gets the random monster number from
 	the script and list specified.
@@ -68,7 +68,7 @@ int SpawnFishingMonster(P_CHAR pc, char* cScript, char* cList, char* cNpcID)
   		i=rand()%(i);
 		if(item[i]!=-1)
 		{
-			return DEREF_P_CHAR(npcs::AddRespawnNPC(pc,item[i]));
+			return DEREF_pChar(npcs::AddRespawnNPC(pc,item[i]));
 		}
 	}
 	return INVALID;
@@ -79,7 +79,7 @@ int SpawnFishingItem(NXWSOCKET  s,int nInPack, char* cScript, char* cList, char*
  	/*This function gets the random item number from the list and recalls
  	  SpawnItemBackpack2 passing the new number*/
 	
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPCR( pc, INVALID )
 	
 	char sect[512];
@@ -167,7 +167,7 @@ void Fishing::target_fish( NXWCLIENT ps, P_TARGET t )
 {
 
 	NXWSOCKET  s=ps->toInt();
-	P_CHAR pPlayer=ps->currChar();
+	pChar pPlayer=ps->currChar();
 	VALIDATEPC( pPlayer );
 
 	Location charpos= pPlayer->getPosition();
@@ -197,7 +197,7 @@ void Fishing::target_fish( NXWCLIENT ps, P_TARGET t )
 	pPlayer->playSFX(0x023F);
 //	pPlayer->hidden=UNHIDDEN;
 	pPlayer->unHide();
-	Fish(DEREF_P_CHAR(pPlayer));		
+	Fish(DEREF_pChar(pPlayer));		
 }
 
 
@@ -211,9 +211,9 @@ void Fishing::Fish(CHARACTER i)
 	int idnum;
 	int16_t color;
 
-	P_CHAR pc = MAKE_CHAR_REF(i);
+	pChar pc = MAKE_CHAR_REF(i);
 	VALIDATEPC(pc);
-	P_ITEM pc_bp = pc->getBackpack();
+	pItem pc_bp = pc->getBackpack();
 	NXWSOCKET s = pc->getSocket();
         
 	Location charpos= pc->getPosition();
@@ -350,14 +350,14 @@ void Fishing::Fish(CHARACTER i)
 		
 			//fishes_around_player=item::Find_items_around_player(i, 0x09, idnum, 2, 2, max_fish_piles, fish_sers); // lets search for fish in a 2*2 rectangle around the player
 			
-			//P_ITEM pFish;
+			//pItem pFish;
 			//if (fishes_around_player<=0) // no fish around -> spawn a new one
 		
 				//Luxor - Now fishes are spawned into backpack
 			//{
 				//Luxor: fishes should be read from items.xss
 				//pFish=item::SpawnItem(i,1,"#",1,0x0900+idnum,(c1<<8)+c2,0);
-			P_ITEM fish = item::CreateFromScript( "$item_fish" );
+			pItem fish = item::CreateFromScript( "$item_fish" );
 			VALIDATEPI(fish);
 		
 			fish->setColor(color);

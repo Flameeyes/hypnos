@@ -104,7 +104,7 @@ void prison::checkForFree()
 	{
 		next=j; next++;
 		if( TIMEOUT( (*j).timer ) ) {
-			P_CHAR pc = pointers::findCharBySerial( (*j).serial );
+			pChar pc = pointers::findCharBySerial( (*j).serial );
 			if( ISVALIDPC( pc ) ) {
 				prison::release( NULL, pc );
 			}
@@ -126,7 +126,7 @@ void prison::checkForFree()
 \param releaser the releaser
 \param pc the player jailed
 */
-void prison::release( P_CHAR releaser, P_CHAR pc )
+void prison::release( pChar releaser, pChar pc )
 {
 	VALIDATEPC(pc);
 	JAILEDVECTOR::iterator j = prison::jailed.begin();
@@ -165,7 +165,7 @@ void prison::release( P_CHAR releaser, P_CHAR pc )
 \param cell the cell serial
 \note only use internal.. use release for release a player
 */
-void prison::freePrisonCell( SERIAL cell )
+void prison::freePrisonCell( uint32_t cell )
 {
 	PRISONCELLVECTOR::iterator iter= prison::cells.begin();
 	while( iter!=prison::cells.end() && (*iter).serial!=cell ) iter++;
@@ -180,7 +180,7 @@ void prison::freePrisonCell( SERIAL cell )
 }
 
 
-void prison::addCell( SERIAL serial, uint32_t x, uint32_t y, uint32_t z )
+void prison::addCell( uint32_t serial, uint32_t x, uint32_t y, uint32_t z )
 {
 	for( PRISONCELLVECTOR::iterator j = prison::cells.begin(); j!=prison::cells.end(); j++ )
 		if( (*j).serial == serial )

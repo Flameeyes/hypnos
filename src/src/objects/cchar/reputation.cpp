@@ -163,7 +163,7 @@ void cChar::modifyFame( int32_t value )
 \note every increase of karma has a related event
 \note Sparhawk: karma increase now can also be applied to npc's
 */
-void cChar::IncreaseKarma( int32_t value, P_CHAR pKilled )
+void cChar::IncreaseKarma( int32_t value, pChar pKilled )
 {
 	int32_t nCurKarma		= GetKarma();
 

@@ -60,12 +60,12 @@ inline void getXYfromDir(uint8_t dir, uint16_t &x, uint16_t &y)
 	}
 }
 
-void handleCharsAtNewPos( P_CHAR pc );
-bool handleItemsAtNewPos(P_CHAR pc, uint16_t oldx, uint16_t oldy, uint16_t newx, uint16_t newy);
-void sendToPlayers( P_CHAR pc, int8_t dir );
+void handleCharsAtNewPos( pChar pc );
+bool handleItemsAtNewPos(pChar pc, uint16_t oldx, uint16_t oldy, uint16_t newx, uint16_t newy);
+void sendToPlayers( pChar pc, int8_t dir );
 
-void walking(P_CHAR pc, uint8_t dir, int sequence);
-void npcwalk( P_CHAR pc_i, uint8_t newDirection, int type);
+void walking(pChar pc, uint8_t dir, int sequence);
+void npcwalk( pChar pc_i, uint8_t newDirection, int type);
 
 
 #endif

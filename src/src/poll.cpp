@@ -19,12 +19,12 @@ cPoll::~cPoll()
 {
 }
 
-SERIAL cPoll::getSerial()
+uint32_t cPoll::getSerial()
 {
 	return serial;
 }
 
-void cPoll::setSerial( const SERIAL serial )
+void cPoll::setSerial( const uint32_t serial )
 {
 	this->serial = serial;
 }
@@ -66,7 +66,7 @@ void cPoll::setPollOption( const uint32_t option, const std::string &optionText 
 	pollOptions[ option ] = optionText;
 }
 
-bool cPoll::castVote( const SERIAL voterSerial, const uint32_t option )
+bool cPoll::castVote( const uint32_t voterSerial, const uint32_t option )
 {
 	if( pollVoters.find( voterSerial ) != pollVoters.end() )
 	{

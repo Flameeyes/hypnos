@@ -44,55 +44,55 @@ extern char cShipItems[4][6];
 
 //NEW BOAT SYSTEM
 
-//bool check_boat_position(NXWSOCKET  s,P_ITEM pBoat);
+//bool check_boat_position(NXWSOCKET  s,pItem pBoat);
 
 struct boat_db
 {
-	SERIAL serial;
-	SERIAL tiller_serial;
-	SERIAL l_plank_serial;
-	SERIAL r_plank_serial;
-	SERIAL container;
-	P_ITEM p_serial;
-	P_ITEM p_tiller;
-	P_ITEM p_l_plank;
-	P_ITEM p_r_plank;
-	P_ITEM p_container;
+	uint32_t serial;
+	uint32_t tiller_serial;
+	uint32_t l_plank_serial;
+	uint32_t r_plank_serial;
+	uint32_t container;
+	pItem p_serial;
+	pItem p_tiller;
+	pItem p_l_plank;
+	pItem p_r_plank;
+	pItem p_container;
 
 };
 
 
-P_ITEM findmulti(Location where);
-bool inmulti(Location where,P_ITEM pi);
-void insert_boat(P_ITEM pi);
+pItem findmulti(Location where);
+bool inmulti(Location where,pItem pi);
+void insert_boat(pItem pi);
 boat_db* search_boat(int32_t ser);
-P_ITEM search_boat_by_plank(P_ITEM pl);
+pItem search_boat_by_plank(pItem pl);
 
 class cBoat
 {
 	protected:
-		bool boat_collision(P_ITEM pBoat1,int x1, int y1,int dir,P_ITEM pBoat2);
-		bool collision(P_ITEM pi, Location where,int dir);
-		bool good_position(P_ITEM pBoat, Location where, int dir);
-		bool tile_check(multi_st multi,P_ITEM pBoat,map_st map,int x, int y ,int dir);
-		void LeaveBoat(P_CHAR pc, P_ITEM pi);
-		void TurnStuff_i(P_ITEM, P_ITEM, int, int);
+		bool boat_collision(pItem pBoat1,int x1, int y1,int dir,pItem pBoat2);
+		bool collision(pItem pi, Location where,int dir);
+		bool good_position(pItem pBoat, Location where, int dir);
+		bool tile_check(multi_st multi,pItem pBoat,map_st map,int x, int y ,int dir);
+		void LeaveBoat(pChar pc, pItem pi);
+		void TurnStuff_i(pItem, pItem, int, int);
 
-		void TurnStuff_c(P_ITEM, P_CHAR, int, int);
-		void iMove(NXWSOCKET  s, int dir, P_ITEM pBoat, bool forced = true);
+		void TurnStuff_c(pItem, pChar, int, int);
+		void iMove(NXWSOCKET  s, int dir, pItem pBoat, bool forced = true);
 
-		void TurnShip( uint8_t size, int32_t dir, P_ITEM pPort, P_ITEM pStarboard, P_ITEM pTiller, P_ITEM pHold );
+		void TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, P_ITEM pTiller, P_ITEM pHold );
 	public:
 
 		cBoat();
-		P_ITEM GetBoat(Location pos);
+		pItem GetBoat(Location pos);
 		virtual ~cBoat();
-		bool Speech(P_CHAR pc, NXWSOCKET socket, std::string &talk );
-		void OpenPlank(P_ITEM pi);
-		void PlankStuff(P_CHAR pc, P_ITEM pi);
-		bool Build(NXWSOCKET s, P_ITEM pBoat, char);
-		void Move(NXWSOCKET  s, int dir, P_ITEM pBoat);
-		void Turn(P_ITEM, int);
+		bool Speech(pChar pc, NXWSOCKET socket, std::string &talk );
+		void OpenPlank(pItem pi);
+		void PlankStuff(pChar pc, pItem pi);
+		bool Build(NXWSOCKET s, pItem pBoat, char);
+		void Move(NXWSOCKET  s, int dir, pItem pBoat);
+		void Turn(pItem, int);
 };
 
 typedef std::map<int,boat_db> BOATS;

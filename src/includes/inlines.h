@@ -43,7 +43,7 @@ inline int calcCharFromPtr(unsigned char *p)
 {
 	int serial;
 	if((serial=LongFromCharPtr(p)) < 0) return INVALID;
-	if (ISVALIDPC(pointers::findCharBySerial(serial))) return (DEREF_P_CHAR(pointers::findCharBySerial(serial)));
+	if (ISVALIDPC(pointers::findCharBySerial(serial))) return (DEREF_pChar(pointers::findCharBySerial(serial)));
 	else return (INVALID);
 }
 
@@ -51,19 +51,19 @@ inline int calcItemFromPtr(unsigned char *p)
 {
 	int serial;
 	if((serial=LongFromCharPtr(p)) < 0) return INVALID;
-	if (ISVALIDPI(pointers::findItemBySerial(serial))) return (DEREF_P_ITEM(pointers::findItemBySerial(serial)));
+	if (ISVALIDPI(pointers::findItemBySerial(serial))) return (DEREF_pItem(pointers::findItemBySerial(serial)));
 	else return (INVALID);
 }
 
 inline int calcItemFromSer(int ser) // Aded by Magius(CHE) (2)
 {
-	if (ISVALIDPI(pointers::findItemBySerial(ser))) return (DEREF_P_ITEM(pointers::findItemBySerial(ser)));
+	if (ISVALIDPI(pointers::findItemBySerial(ser))) return (DEREF_pItem(pointers::findItemBySerial(ser)));
 	else return (INVALID);
 }
 
 inline int calcCharFromSer(int serial)
 {
-	if (ISVALIDPC(pointers::findCharBySerial(serial))) return (DEREF_P_CHAR(pointers::findCharBySerial(serial)));
+	if (ISVALIDPC(pointers::findCharBySerial(serial))) return (DEREF_pChar(pointers::findCharBySerial(serial)));
 	else return (INVALID);
 }
 

@@ -45,7 +45,7 @@ static std::string trimString( const std::string &str );
 
 int response(NXWSOCKET  s)
 {
-	P_CHAR pc= MAKE_CHAR_REF( currchar[s] );
+	pChar pc= MAKE_CHAR_REF( currchar[s] );
 	VALIDATEPCR( pc, 0 );
 
 	if( !pc->IsOnline() ) return 0;
@@ -198,7 +198,7 @@ int response(NXWSOCKET  s)
 
 	for( sc.rewind(); !sc.isEmpty(); sc++ )
 	{
-		P_CHAR pc_map = sc.getChar();
+		pChar pc_map = sc.getChar();
 		if(ISVALIDPC(pc_map)) {
 		
 			//
@@ -283,9 +283,9 @@ int response(NXWSOCKET  s)
 					int pvDeed;
 					// lets make the deed and place in your pack and delete vendor.
 					strcpy( temp, "Employment deed" );
-					P_ITEM pDeed = item::CreateFromScript( "$item_employment_deed", pc->getBackpack() );
+					pItem pDeed = item::CreateFromScript( "$item_employment_deed", pc->getBackpack() );
 					VALIDATEPIR(pDeed, true);
-					pvDeed= DEREF_P_ITEM(pDeed);
+					pvDeed= DEREF_pItem(pDeed);
 
 					pDeed->Refresh();
 					sprintf(temp, TRANSLATE("Packed up vendor %s."), pc_map->getCurrentNameC());
@@ -387,7 +387,7 @@ int response(NXWSOCKET  s)
 						else // They must be enroute
 						{
 							// Send out a message saying we are already being escorted
-							P_CHAR pc_ftarg=pointers::findCharBySerial(pc_map->ftargserial);
+							pChar pc_ftarg=pointers::findCharBySerial(pc_map->ftargserial);
 							if(ISVALIDPC(pc_ftarg)) {
 								sprintf(temp, TRANSLATE("I am already being escorted to %s by %s."), region[pc_map->questDestRegion].name, pc_ftarg->getCurrentNameC() );
 								pc_map->talkAll(temp, 0);
@@ -861,9 +861,9 @@ void PlVGetgold(NXWSOCKET s, CHARACTER v)//PlayerVendors
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
-	P_CHAR pc_currchar = MAKE_CHAR_REF( currchar[s] );
+	pChar pc_currchar = MAKE_CHAR_REF( currchar[s] );
 	VALIDATEPC( pc_currchar );
-	P_CHAR pc_vendor = MAKE_CHAR_REF(v);
+	pChar pc_vendor = MAKE_CHAR_REF(v);
 	VALIDATEPC( pc_vendor );
 
 	unsigned int pay=0, give=pc_vendor->holdg, t=0;
@@ -915,9 +915,9 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 
 //	CHARACTER cc=currchar[s];
 
-	P_CHAR pc_currchar = MAKE_CHAR_REF(currchar[s]);
+	pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc_currchar);
-	P_CHAR pc_vendor = MAKE_CHAR_REF(vendor);
+	pChar pc_vendor = MAKE_CHAR_REF(vendor);
 	VALIDATEPC(pc_vendor);
 
 	static char buffer1[MAXBUFFER_REAL]; // static becasue maxbuffer_ral close to stack limit of win-machines
@@ -990,7 +990,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 					targ->send( getClientFromSocket(s) );
 					return; // lb bugfix
 				}
-				else if(BuyShop(s, DEREF_P_CHAR(pc_vendor)))
+				else if(BuyShop(s, DEREF_pChar(pc_vendor)))
 					return; // lb bugfix
 			}
 		}
@@ -1005,7 +1005,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 			{
 				if (pc_vendor->npcaitype==NPCAI_PLAYERVENDOR)
 				{
-					PlVGetgold(s, DEREF_P_CHAR(pc_vendor));
+					PlVGetgold(s, DEREF_pChar(pc_vendor));
 					return;
 				}
 			}
@@ -1020,7 +1020,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 		{
 			if (response2 || response1)
 			{
-				sellstuff(s, DEREF_P_CHAR(pc_vendor));
+				sellstuff(s, DEREF_pChar(pc_vendor));
 				return;
 			}
 		}
@@ -1038,7 +1038,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 			NxwCharWrapper sc;
 			sc.fillCharsNearXYZ( pc_currchar->getPosition(), 2, true, false );
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-				P_CHAR pc = sc.getChar();
+				pChar pc = sc.getChar();
 				if(!ISVALIDPC(pc))
 					continue;
 				strcpy(search3, pc->getCurrentNameC());
@@ -1056,7 +1056,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 						return;
 					}
 					else
-						if(BuyShop(s, DEREF_P_CHAR(pc)))
+						if(BuyShop(s, DEREF_pChar(pc)))
 							return;
 				}
 			}
@@ -1075,7 +1075,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ )
 			{
-				P_CHAR pc = sc.getChar();
+				pChar pc = sc.getChar();
 				if(!ISVALIDPC(pc))
 					continue;
 
@@ -1086,7 +1086,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 				{
 					if (pc->npcaitype==NPCAI_PLAYERVENDOR)
 					{
-						PlVGetgold(s, DEREF_P_CHAR(pc));
+						PlVGetgold(s, DEREF_pChar(pc));
 						return;
 					}
 				}
@@ -1105,7 +1105,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ )
 			{
-				P_CHAR pc = sc.getChar();
+				pChar pc = sc.getChar();
 				if(!ISVALIDPC(pc))
 					continue;
 				strcpy(search3, pc->getCurrentNameC());
@@ -1113,7 +1113,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 				response3=(strstr( comm, search3));
 				if (response3)
 				{
-					sellstuff(s, DEREF_P_CHAR(pc));
+					sellstuff(s, DEREF_pChar(pc));
 					return;
 				}
 			}
@@ -1122,7 +1122,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 }
 
 /*
-static bool respond( P_CHAR pc, NXWSOCKET socket, string &speech )
+static bool respond( pChar pc, NXWSOCKET socket, string &speech )
 {
 	bool success = false;
 	pCharVector	nearbyPlayerVendors;
@@ -1142,13 +1142,13 @@ static bool respond( P_CHAR pc, NXWSOCKET socket, string &speech )
 }
 */
 
-static bool pricePlayerVendorItem( P_CHAR pc, NXWSOCKET socket, string &price )
+static bool pricePlayerVendorItem( pChar pc, NXWSOCKET socket, string &price )
 {
 	bool success = false;
 	if ( pc->fx2 == 17 )
 	{
 		int i = str2num( const_cast<char*>(price.c_str()) );
-		P_ITEM pi = MAKE_ITEM_REF( pc->fx1 );
+		pItem pi = MAKE_ITEM_REF( pc->fx1 );
 		if( ISVALIDPI( pi ) )
 		{
 			if (i>0)
@@ -1176,12 +1176,12 @@ static bool pricePlayerVendorItem( P_CHAR pc, NXWSOCKET socket, string &price )
 	return success;
 }
 
-static bool describePlayerVendorItem( P_CHAR pc, NXWSOCKET socket, string &description )
+static bool describePlayerVendorItem( pChar pc, NXWSOCKET socket, string &description )
 {
 	bool success = false;
 	if( pc->fx2 == 18 )
 	{
-		P_ITEM pi = MAKE_ITEM_REF( pc->fx1 );
+		pItem pi = MAKE_ITEM_REF( pc->fx1 );
 		if( ISVALIDPI( pi ) )
 		{
 			//strcpy( pi->desc, description.c_str() );
@@ -1197,10 +1197,10 @@ static bool describePlayerVendorItem( P_CHAR pc, NXWSOCKET socket, string &descr
 	return success;
 }
 
-static bool renameRune( P_CHAR pc, NXWSOCKET socket, string &name )
+static bool renameRune( pChar pc, NXWSOCKET socket, string &name )
 {
 	bool success = false;
-	P_ITEM pi = pointers::findItemBySerial( pc->runeserial );
+	pItem pi = pointers::findItemBySerial( pc->runeserial );
 	if( ISVALIDPI( pi ) )
 	{
 		pi->setCurrentName( TRANSLATE("Rune to %s"), name.c_str() );
@@ -1211,12 +1211,12 @@ static bool renameRune( P_CHAR pc, NXWSOCKET socket, string &name )
 	return success;
 }
 
-static bool renameSelf( P_CHAR pc, NXWSOCKET socket, string &name )
+static bool renameSelf( pChar pc, NXWSOCKET socket, string &name )
 {
 	bool success = false;
 	if( pc->namedeedserial != INVALID )
 	{
-		P_ITEM pi = pointers::findItemBySerial( pc->namedeedserial );
+		pItem pi = pointers::findItemBySerial( pc->namedeedserial );
 		if( ISVALIDPI( pi ) )
 		{
 			pi->setCurrentName( name.c_str());
@@ -1231,10 +1231,10 @@ static bool renameSelf( P_CHAR pc, NXWSOCKET socket, string &name )
 	return success;
 }
 
-static bool renameKey( P_CHAR pc, NXWSOCKET socket, string &name )
+static bool renameKey( pChar pc, NXWSOCKET socket, string &name )
 {
 	bool success = false;
-	P_ITEM pi = pointers::findItemBySerial( pc->keyserial );
+	pItem pi = pointers::findItemBySerial( pc->keyserial );
 	if( ISVALIDPI( pi ) )
 	{
 		pi->setCurrentName( name.c_str() );
@@ -1245,7 +1245,7 @@ static bool renameKey( P_CHAR pc, NXWSOCKET socket, string &name )
 	return success;
 }
 
-static bool pageCouncillor( P_CHAR pc, NXWSOCKET socket, string &reason )
+static bool pageCouncillor( pChar pc, NXWSOCKET socket, string &reason )
 {
 	bool success = false;
 	if (pc->pagegm == 2) // Counselor page
@@ -1254,7 +1254,7 @@ static bool pageCouncillor( P_CHAR pc, NXWSOCKET socket, string &reason )
 		strcpy( counspages[pc->playercallnum].reason, reason.c_str() );
 		sprintf(temp, TRANSLATE("Counselor Page from %s [%08x]: %s"),pc->getCurrentNameC(), pc->getSerial32(), counspages[pc->playercallnum].reason);
 		bool foundCons = false;
-		P_CHAR councillor;
+		pChar councillor;
 		
 		NxwSocketWrapper sw;
 		sw.fillOnline( );
@@ -1283,7 +1283,7 @@ static bool pageCouncillor( P_CHAR pc, NXWSOCKET socket, string &reason )
 	return success;
 }
 
-static bool resignFromGuild( P_CHAR pc, NXWSOCKET socket, string &resign )
+static bool resignFromGuild( pChar pc, NXWSOCKET socket, string &resign )
 {
 	bool success = false;
 	if (!resign.compare("I RESIGN FROM MY GUILD"))
@@ -1294,7 +1294,7 @@ static bool resignFromGuild( P_CHAR pc, NXWSOCKET socket, string &resign )
 	return success;
 }
 
-static bool callGuards( P_CHAR pc, NXWSOCKET socket, string &helpcall )
+static bool callGuards( pChar pc, NXWSOCKET socket, string &helpcall )
 {
 	bool success = false;
 	if( helpcall.find("GUARDS") != std::string::npos )
@@ -1312,15 +1312,15 @@ namespace Speech
 {
 namespace Stablemaster
 {
-static bool respond( P_CHAR pc, NXWSOCKET socket, std::string &speech );
-static bool stablePet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters );
-static bool claimPet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters );
+static bool respond( pChar pc, NXWSOCKET socket, std::string &speech );
+static bool stablePet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters );
+static bool claimPet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters );
 
-static bool respond( P_CHAR pc, NXWSOCKET socket, std::string &speech )
+static bool respond( pChar pc, NXWSOCKET socket, std::string &speech )
 {
 	bool 	success = false;
 	NxwCharWrapper	nearbyStablemasters;
-	P_CHAR		pc_a_npc;
+	pChar		pc_a_npc;
 
 	for( nearbyNpcs->rewind(); !nearbyNpcs->isEmpty(); (*nearbyNpcs)++ )
 	{
@@ -1339,7 +1339,7 @@ static bool respond( P_CHAR pc, NXWSOCKET socket, std::string &speech )
 	return success;
 }
 
-static bool stablePet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters )
+static bool stablePet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters )
 {
 /*
 	command					action
@@ -1375,9 +1375,9 @@ static bool stablePet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwChar
 		//
 		// Find stable master, in case of multiple stable masters the one nearest will be selected
 		//
-		P_CHAR		pc_stablemaster = 0;
-		P_CHAR		pc_pet = 0;
-		P_CHAR		pc_a_npc;
+		pChar		pc_stablemaster = 0;
+		pChar		pc_pet = 0;
+		pChar		pc_a_npc;
 		NxwCharWrapper	petsToStable;
 		bool		petFound = false;
 
@@ -1435,7 +1435,7 @@ static bool stablePet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwChar
 				{
 					pc_pet = petsToStable.getChar();
 					
-					SERIAL pc_pet_serial = pc_pet->getSerial32();
+					uint32_t pc_pet_serial = pc_pet->getSerial32();
 		 
 					NxwSocketWrapper sw;
 					sw.fillOnline( pc_pet, false );
@@ -1476,7 +1476,7 @@ static bool stablePet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwChar
 	return success;
 }
 
-static bool claimPet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters )
+static bool claimPet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyStablemasters )
 {
 	/*
 		command					Action
@@ -1501,9 +1501,9 @@ static bool claimPet( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharW
 		if( claimAllPets )
 			petName = trimString( petName.substr( 3 ) );
 		bool 	findPetByName = (petName.length() != 0);
-		P_CHAR		pc_a_npc = 0;
-		P_CHAR		pc_stablemaster = 0;
-		P_CHAR		pc_pet = 0;
+		pChar		pc_a_npc = 0;
+		pChar		pc_stablemaster = 0;
+		pChar		pc_pet = 0;
 		bool 	found = false;
 		NxwCharWrapper	stabledPets;
 		for( nearbyStablemasters.rewind(); !nearbyStablemasters.isEmpty() && !found; nearbyStablemasters++ )
@@ -1628,18 +1628,18 @@ stabledPets.rewind();	// GH!
 
 namespace Guard
 {
-static bool respond( P_CHAR pc, NXWSOCKET socket, std::string &speech );
-static bool requestChaosShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
-static bool requestOrderShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
-static bool requestHelp( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
+static bool respond( pChar pc, NXWSOCKET socket, std::string &speech );
+static bool requestChaosShield( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
+static bool requestOrderShield( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
+static bool requestHelp( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards );
 
-static bool respond( P_CHAR pc, NXWSOCKET socket, std::string &speech )
+static bool respond( pChar pc, NXWSOCKET socket, std::string &speech )
 {
 	bool success = false;
 	NxwCharWrapper	nearbyGuards;
 	NxwCharWrapper	nearbyOrderGuards;
 	NxwCharWrapper	nearbyChaosGuards;
-	P_CHAR		pc_a_npc;
+	pChar		pc_a_npc;
 
 	for( nearbyNpcs->rewind(); !nearbyNpcs->isEmpty(); (*nearbyNpcs)++ )
 	{
@@ -1677,7 +1677,7 @@ nearbyChaosGuards.rewind();
 	return success;
 }
 
-static bool requestChaosShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyChaosGuards )
+static bool requestChaosShield( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyChaosGuards )
 {
 	bool success = false;
 	int32_t tokenPosition = findKeyword( speech, "SHIELD");
@@ -1688,8 +1688,8 @@ static bool requestChaosShield( P_CHAR pc, NXWSOCKET socket, std::string &speech
 		{
 			std::string 	guardName( trimString( speech.substr( 0, tokenPosition ) ) );
 			bool 	findGuardByName = (guardName.length() != 0);
-			P_CHAR		pc_a_npc;
-			P_CHAR		chaosGuard = 0;
+			pChar		pc_a_npc;
+			pChar		chaosGuard = 0;
 			for( nearbyChaosGuards.rewind(); !nearbyChaosGuards.isEmpty(); nearbyChaosGuards++  )
 			{
 				pc_a_npc = nearbyChaosGuards.getChar();
@@ -1706,7 +1706,7 @@ static bool requestChaosShield( P_CHAR pc, NXWSOCKET socket, std::string &speech
 				{
 					if( !pc->getAmount(0x1BC3) )
 					{
-						P_ITEM pi =  pc->GetItemOnLayer( 2 );
+						pItem pi =  pc->GetItemOnLayer( 2 );
 						if( ISVALIDPI( pi ) )
 						{
 							if( pi->getId() != 0x1BC3 )
@@ -1732,7 +1732,7 @@ static bool requestChaosShield( P_CHAR pc, NXWSOCKET socket, std::string &speech
 	return success;
 }
 
-static bool requestOrderShield( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyOrderGuards )
+static bool requestOrderShield( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyOrderGuards )
 {
 	bool success = false;
 	int32_t tokenPosition = findKeyword( speech, "SHIELD");
@@ -1743,8 +1743,8 @@ static bool requestOrderShield( P_CHAR pc, NXWSOCKET socket, std::string &speech
 		{
 			std::string 	guardName( trimString( speech.substr( 0, tokenPosition ) ) );
 			bool 	findGuardByName = (guardName.length() != 0);
-			P_CHAR		pc_a_npc;
-			P_CHAR		orderGuard = 0;
+			pChar		pc_a_npc;
+			pChar		orderGuard = 0;
 			for( nearbyOrderGuards.rewind(); !nearbyOrderGuards.isEmpty(); nearbyOrderGuards++  )
 			{
 				pc_a_npc = nearbyOrderGuards.getChar();
@@ -1761,7 +1761,7 @@ static bool requestOrderShield( P_CHAR pc, NXWSOCKET socket, std::string &speech
 				{
 					if( !pc->getAmount(0x1BC4) )
 					{
-						P_ITEM pi =  pc->GetItemOnLayer( 2 );
+						pItem pi =  pc->GetItemOnLayer( 2 );
 						if( ISVALIDPI( pi ) )
 						{
 							if( pi->getId() != 0x1BC4 )
@@ -1787,7 +1787,7 @@ static bool requestOrderShield( P_CHAR pc, NXWSOCKET socket, std::string &speech
 	return success;
 }
 
-static bool requestHelp( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards )
+static bool requestHelp( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharWrapper &nearbyGuards )
 {
 	bool success = false;
 	//if( region[pc->region].priv&0x01 && SrvParms->guardsactive || !TIMEOUT( pc->antiguardstimer ) )
@@ -1796,7 +1796,7 @@ static bool requestHelp( P_CHAR pc, NXWSOCKET socket, std::string &speech, NxwCh
 
 } // namespace Guards
 
-static bool buyFromVendor( P_CHAR pc, NXWSOCKET socket, string &speech, NxwCharWrapper &nearbyVendors )
+static bool buyFromVendor( pChar pc, NXWSOCKET socket, string &speech, NxwCharWrapper &nearbyVendors )
 {
 	bool success = false;
 //	int32_t tokenPosition = INVALID;
@@ -1816,8 +1816,8 @@ static bool buyFromVendor( P_CHAR pc, NXWSOCKET socket, string &speech, NxwCharW
 	//
 
 	nearbyVendors.rewind();
-	P_CHAR	pc_vendor = nearbyVendors.getChar(); //first
-	P_CHAR	pc_a_npc;
+	pChar	pc_vendor = nearbyVendors.getChar(); //first
+	pChar	pc_a_npc;
 	for( nearbyVendors.rewind(); !nearbyVendors.isEmpty(); nearbyVendors++ )
 	{
 		pc_a_npc = nearbyVendors.getChar();
@@ -1833,7 +1833,7 @@ static bool buyFromVendor( P_CHAR pc, NXWSOCKET socket, string &speech, NxwCharW
 		success = true;
 	}
 	else
-		if( BuyShop( socket, DEREF_P_CHAR( pc_vendor ) ) )
+		if( BuyShop( socket, DEREF_pChar( pc_vendor ) ) )
 			success = true;
 	return success;
 
@@ -1865,7 +1865,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 	if (socket < 0 || socket >= now) //Luxor
 		return;
 
-	P_CHAR pc = MAKE_CHAR_REF( currchar[socket] );
+	pChar pc = MAKE_CHAR_REF( currchar[socket] );
 	VALIDATEPC( pc );
 
 	uint32_t i, j;
@@ -2016,7 +2016,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 		NXWCLIENT ps=sw.getClient();
 		if( ps==NULL )
 			continue;
-		P_CHAR a_pc= ps->currChar();
+		pChar a_pc= ps->currChar();
 		if(!ISVALIDPC(a_pc))
 			continue;
 
@@ -2093,7 +2093,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 			NXWCLIENT ps=sw.getClient();
 			if(ps==NULL)
 				continue;
-			P_CHAR pc_new_char = ps->currChar();
+			pChar pc_new_char = ps->currChar();
 			if( ISVALIDPC( pc_new_char ) )
 			{
 				namelist+= "[" + string( pc_new_char->getCurrentNameC() ) + "] ";
@@ -2163,7 +2163,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 	// Process npc triggers
 	//
 
-	P_CHAR pc_found = NULL;
+	pChar pc_found = NULL;
 
 	NxwCharWrapper sc;
 	sc.fillCharsNearXYZ( pc->getPosition(), 2, true, false );
@@ -2172,9 +2172,9 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 
 	//for( ; scIt != scEnd; ++scIt )
 	//{
-	//P_CHAR pj = (*scIt);
+	//pChar pj = (*scIt);
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-		P_CHAR pj=sc.getChar();
+		pChar pj=sc.getChar();
 		if(ISVALIDPC(pj)) {
 			if ((pc->getSerial32() != pj->getSerial32()) && (pj->npc) )
 			{
@@ -2189,7 +2189,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 
 		if(abs(pc_found->getPosition("z")-pc->getPosition("z")) >3 ) return;
 
-		responsevendor(socket, DEREF_P_CHAR(pc_found));
+		responsevendor(socket, DEREF_pChar(pc_found));
 
 		cScpIterator* iter = NULL;
 		char script1[1024];
@@ -2198,7 +2198,7 @@ void talking( NXWSOCKET socket, string speech) // PC speech
 		iter = Scripts::Speech->getNewIterator("SECTION SPEECH %i", pc_found->speech);
 		if (iter==NULL) return;
 		match = 0;
-		strcpy(sect, "NO DEFAULT TEXT DEFINED");
+		strcpy(sect, "NO DEFAULT char DEFINED");
 		int loopexit2 = 0;
 		do
 		{

@@ -19,10 +19,10 @@ class cPoll
 				cPoll();
 				~cPoll();
 	private:
-		SERIAL		serial;
+		uint32_t		serial;
 	public:
-		SERIAL		getSerial();
-		void		setSerial( const SERIAL serial );
+		uint32_t		getSerial();
+		void		setSerial( const uint32_t serial );
 	private:
 		std::string	question;
 	public:
@@ -43,13 +43,13 @@ class cPoll
 		std::string	getPollOption( const uint32_t option );
 		void		setPollOption( const uint32_t option, const std::string &optionText );
 	
-	typedef map< SERIAL, cGameDate > mPollVoter;
+	typedef map< uint32_t, cGameDate > mPollVoter;
 	typedef mPollVoter::iterator miPollVoter;
 	
 	private:
 		mPollVoter	pollVoters;
 	public:
-		bool		castVote( const SERIAL voterSerial, const uint32_t option );
+		bool		castVote( const uint32_t voterSerial, const uint32_t option );
 };
 
 #endif

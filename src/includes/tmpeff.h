@@ -25,10 +25,10 @@ enum {
 	MODE_REVERSE
 };
 
-bool	add(P_OBJECT src, P_OBJECT dest, int num, unsigned char more1 = 0, unsigned char more2 = 0, unsigned char more3 = 0,short dur=INVALID, int amxcback = INVALID);
+bool	add(pObject src, pObject dest, int num, unsigned char more1 = 0, unsigned char more2 = 0, unsigned char more3 = 0,short dur=INVALID, int amxcback = INVALID);
 bool	isSrcRepeatable(int num);
 bool	isDestRepeatable(int num);
-void	addTempfxCheck( SERIAL serial );
+void	addTempfxCheck( uint32_t serial );
 
 	
 /*
@@ -38,8 +38,8 @@ void	addTempfxCheck( SERIAL serial );
 
 class cTempfx {
 private:
-	SERIAL m_nSrc;
-	SERIAL m_nDest;
+	uint32_t m_nSrc;
+	uint32_t m_nDest;
 	int32_t m_nNum;
 	int32_t m_nMode;
 	uint32_t m_nExpireTime;
@@ -51,7 +51,7 @@ private:
 	bool m_bSrcRepeatable;
 	bool m_bDestRepeatable;
 public:
-	cTempfx( SERIAL nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t more1, int32_t more2, int32_t more3, int32_t amxcback );
+	cTempfx( uint32_t nSrc, uint32_t nDest, int32_t num, int32_t dur, int32_t more1, int32_t more2, int32_t more3, int32_t amxcback );
 	int getExpireTime() { return m_nExpireTime; }
 	bool isDispellable() { return m_bDispellable; }
 	void activate();
@@ -61,7 +61,7 @@ public:
 	void executeExpireCode();
 	void start();
 	int getNum() { return m_nNum; }
-	SERIAL getAmxCallback() { return m_nAmxcback; }
+	uint32_t getAmxCallback() { return m_nAmxcback; }
 };
 
 void tempeffectson();

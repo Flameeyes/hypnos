@@ -54,13 +54,13 @@ void CarveTarget(NXWSOCKET s, int feat, int ribs, int hides, int fur, int wool, 
 {
         if ( s < 0 || s >= now )
 		return;
-	P_CHAR pc = MAKE_CHAR_REF( currchar[s] );
+	pChar pc = MAKE_CHAR_REF( currchar[s] );
 	VALIDATEPC( pc );
 
-	P_ITEM pi1 = item::CreateFromScript( "$item_blood_puddle" );
+	pItem pi1 = item::CreateFromScript( "$item_blood_puddle" );
 	VALIDATEPI(pi1);
 	pi1->setId( 0x122A );
-	P_ITEM pi2=MAKE_ITEM_REF(npcshape[0]);
+	pItem pi2=MAKE_ITEM_REF(npcshape[0]);
 	VALIDATEPI(pi2);
 	mapRegions->remove(pi1);
 	pi1->setPosition( pi2->getPosition() );
@@ -71,14 +71,14 @@ void CarveTarget(NXWSOCKET s, int feat, int ribs, int hides, int fur, int wool, 
 
 	if(feat>0)
 	{
-		P_ITEM pi=item::CreateFromScript( "$item_feathers", pc->getBackpack(), feat );
+		pItem pi=item::CreateFromScript( "$item_feathers", pc->getBackpack(), feat );
 		VALIDATEPI(pi);
 		pi->Refresh();
 		sysmessage(s,TRANSLATE("You pluck the bird and get some feathers."));
 	}
 	if(ribs>0)
 	{
-		P_ITEM pi=item::CreateFromScript( "$item_cuts_of_raw_ribs", pc->getBackpack(), ribs );
+		pItem pi=item::CreateFromScript( "$item_cuts_of_raw_ribs", pc->getBackpack(), ribs );
 		VALIDATEPI(pi);
 		pi->Refresh();
 		pc->sysmsg(TRANSLATE("You carve away some meat."));
@@ -86,28 +86,28 @@ void CarveTarget(NXWSOCKET s, int feat, int ribs, int hides, int fur, int wool, 
 
 	if(hides>0)
 	{
-		P_ITEM pi=item::CreateFromScript( "$item_hide", pc->getBackpack(), hides );
+		pItem pi=item::CreateFromScript( "$item_hide", pc->getBackpack(), hides );
 		VALIDATEPI(pi);
 		pi->Refresh();
 		pc->sysmsg(TRANSLATE("You skin the corpse and get the hides."));
 	}
 	if(fur>0)
 	{
-		P_ITEM pi=item::CreateFromScript( "$item_hide", pc->getBackpack(), fur );
+		pItem pi=item::CreateFromScript( "$item_hide", pc->getBackpack(), fur );
 		VALIDATEPI(pi);
 		pi->Refresh();
 		pc->sysmsg(TRANSLATE("You skin the corpse and get the hides."));
 	}
 	if(wool>0)
 	{
-		P_ITEM pi=item::CreateFromScript( "$item_piles_of_wool", pc->getBackpack(), wool );
+		pItem pi=item::CreateFromScript( "$item_piles_of_wool", pc->getBackpack(), wool );
 		VALIDATEPI(pi);
 		pi->Refresh();
 		pc->sysmsg(TRANSLATE("You skin the corpse and get some unspun wool."));
 	}
 	if(bird>0)
 	{
-		P_ITEM pi = item::CreateFromScript( "$item_raw_bird", pc->getBackpack(), bird );
+		pItem pi = item::CreateFromScript( "$item_raw_bird", pc->getBackpack(), bird );
 		VALIDATEPI(pi);
 		pi->Refresh();
 		pc->sysmsg(TRANSLATE("You carve away some raw bird."));
@@ -129,15 +129,15 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 	char sect[512];
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
-	P_ITEM pi1 = item::CreateFromScript( "$item_blood_puddle" );
+	pItem pi1 = item::CreateFromScript( "$item_blood_puddle" );
 	VALIDATEPI(pi1);
 	pi1->setId( 0x122A );
-	P_ITEM pi2=MAKE_ITEM_REF(npcshape[0]);
+	pItem pi2=MAKE_ITEM_REF(npcshape[0]);
 	VALIDATEPI(pi2);
-	P_ITEM pi3=MAKE_ITEM_REF(i);
+	pItem pi3=MAKE_ITEM_REF(i);
 	VALIDATEPI(pi3);
 	mapRegions->remove(pi1);
 	pi1->setPosition( pi2->getPosition() );
@@ -157,7 +157,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 
 		//create the Head
 		sprintf(temp,"the head of %s",pi3->getSecondaryNameC());
-		P_ITEM pi = item::CreateFromScript( "$item_hardcoded" );
+		pItem pi = item::CreateFromScript( "$item_hardcoded" );
 		VALIDATEPI(pi);
 		pi->setId( 0x1DA0 );
 		pi->setContainer(0);
@@ -281,7 +281,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 					int amt = str2num( amount );
 					if( amt == 0 )
 						amt=INVALID;
-					P_ITEM pi = item::CreateFromScript( (char*)itemnum.c_str(), pi3, amt );
+					pItem pi = item::CreateFromScript( (char*)itemnum.c_str(), pi3, amt );
 					if( ISVALIDPI(pi) ) {
 						pi->layer=0;
 						pi->Refresh();//let's finally refresh the item
@@ -302,7 +302,7 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		si.fillItemsInContainer( pi3, false );
 		for( si.rewind(); !si.isEmpty(); si++ )
         {
-            P_ITEM pj=si.getItem();
+            pItem pj=si.getItem();
 			if(ISVALIDPI(pj)) {
 				pj->setContainer(0);
 				pj->MoveTo( pi3->getPosition() );
@@ -320,11 +320,11 @@ static void CorpseTarget(const NXWCLIENT pC)
     int n=0;
     NXWSOCKET  s = pC->toInt();
 
-    SERIAL serial=LongFromCharPtr(buffer[s]+7);
+    uint32_t serial=LongFromCharPtr(buffer[s]+7);
     int i=calcItemFromSer(serial);
-    P_ITEM pi=MAKE_ITEM_REF(i);
+    pItem pi=MAKE_ITEM_REF(i);
 	VALIDATEPI(pi);
-    P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+    pChar pc=MAKE_CHAR_REF(currchar[s]);
     if(ISVALIDPI(pi))
     {
         if( pc->hasInRange(pi, 1) )
@@ -473,13 +473,13 @@ static void CorpseTarget(const NXWCLIENT pC)
 
 
 
-int BuyShop(NXWSOCKET s, SERIAL c)
+int BuyShop(NXWSOCKET s, uint32_t c)
 {
-    P_ITEM buyRestockContainer=NULL, buyNoRestockContainer=NULL;
+    pItem buyRestockContainer=NULL, buyNoRestockContainer=NULL;
 
-    P_CHAR pc = MAKE_CHAR_REF(c);
+    pChar pc = MAKE_CHAR_REF(c);
 	VALIDATEPCR(pc,0);
-	P_CHAR curr=MAKE_CHAR_REF(currchar[s]);
+	pChar curr=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPCR(curr,0);
 
 
@@ -487,7 +487,7 @@ int BuyShop(NXWSOCKET s, SERIAL c)
 	si.fillItemWeared( pc, true, true, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
     {
-        P_ITEM pi=si.getItem();
+        pItem pi=si.getItem();
 		if(!ISVALIDPI(pi)) continue;
 
 		if( pi->layer==LAYER_TRADE_RESTOCK )
@@ -505,7 +505,7 @@ int BuyShop(NXWSOCKET s, SERIAL c)
 
     impowncreate(s, pc, 0); // Send the NPC again to make sure info is current. (OSI does this we might not have to)
 
-    sendshopinfo(s, DEREF_P_CHAR(pc), buyRestockContainer); // Send normal shop items
+    sendshopinfo(s, DEREF_pChar(pc), buyRestockContainer); // Send normal shop items
 //  sendshopinfo(s, c, buyNoRestockContainer); // Send items sold to shop by players
     SndShopgumpopen(s,pc->getSerial32());
 
@@ -519,28 +519,28 @@ int BuyShop(NXWSOCKET s, SERIAL c)
 
 void target_playerVendorBuy( NXWCLIENT ps, P_TARGET t )
 {
-    P_CHAR pc = MAKE_CHAR_REF(t->buffer[0]);
+    pChar pc = MAKE_CHAR_REF(t->buffer[0]);
 	VALIDATEPC(pc);
-    P_CHAR pc_currchar = ps->currChar();
+    pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
 
 	NXWSOCKET s = ps->toInt();
 
-    P_ITEM pBackpack= pc_currchar->getBackpack();
+    pItem pBackpack= pc_currchar->getBackpack();
     if (!pBackpack) {sysmessage(s,TRANSLATE("Time to buy a backpack")); return; } //LB
 
-    SERIAL serial=LongFromCharPtr(buffer[s]+7);
-    P_ITEM pi=pointers::findItemBySerial(serial);     // the item
+    uint32_t serial=LongFromCharPtr(buffer[s]+7);
+    pItem pi=pointers::findItemBySerial(serial);     // the item
     if (pi==NULL) return;
     if (pi->isInWorld()) return;
     int price=pi->value;
 
 
-	P_ITEM thepack=(P_ITEM)pi->getContainer();
+	pItem thepack=(pItem)pi->getContainer();
 	VALIDATEPI(thepack);
-	P_CHAR pNpc= thepack->getPackOwner();               // the vendor
+	pChar pNpc= thepack->getPackOwner();               // the vendor
 
-    if(DEREF_P_CHAR(pNpc)!=pc->getSerial32() || pc->npcaitype!=NPCAI_PLAYERVENDOR) return;
+    if(DEREF_pChar(pNpc)!=pc->getSerial32() || pc->npcaitype!=NPCAI_PLAYERVENDOR) return;
 
     if (pc_currchar->isOwnerOf(pc))
     {
@@ -569,19 +569,19 @@ void target_playerVendorBuy( NXWCLIENT ps, P_TARGET t )
 void target_envoke( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR curr=ps->currChar();
+	pChar curr=ps->currChar();
 
-	SERIAL serial=t->getClicked();
+	uint32_t serial=t->getClicked();
 	if( isItemSerial( serial ) )
 	{
-        P_ITEM pi = MAKE_ITEM_REF(serial);
+        pItem pi = MAKE_ITEM_REF(serial);
 		VALIDATEPI( pi );
         triggerItem( ps->toInt(),pi, TRIGTYPE_ENVOKED );
         curr->envokeid=0x0000;
     }
 	else if( isCharSerial( serial ) )
 	{
-        P_CHAR pc = MAKE_CHAR_REF(serial);
+        pChar pc = MAKE_CHAR_REF(serial);
 		VALIDATEPC(pc);
         triggerNpc( ps->toInt(), pc, TRIGTYPE_NPCENVOKED );
         curr->envokeid=0x0000;
@@ -596,10 +596,10 @@ void target_envoke( NXWCLIENT ps, P_TARGET t )
 void target_key( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 
-	P_ITEM pi = pointers::findItemBySerial( t->getClicked() );
+	pItem pi = pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
 	NXWSOCKET s = ps->toInt();
@@ -695,9 +695,9 @@ void target_key( NXWCLIENT ps, P_TARGET t )
 void target_attack( NXWCLIENT ps, P_TARGET t )
 {
 
-    P_CHAR pc_t1= pointers::findCharBySerial( t->buffer[0] );
+    pChar pc_t1= pointers::findCharBySerial( t->buffer[0] );
     VALIDATEPC(pc_t1);
-	P_CHAR pc_t2=pointers::findCharBySerial( t->getClicked() );
+	pChar pc_t2=pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc_t2);
 
 	NXWSOCKET s = ps->toInt();
@@ -708,10 +708,10 @@ void target_attack( NXWCLIENT ps, P_TARGET t )
 void target_follow( NXWCLIENT ps, P_TARGET t )
 {
 
-    P_CHAR pc = pointers::findCharBySerial( t->buffer[0] );
+    pChar pc = pointers::findCharBySerial( t->buffer[0] );
     VALIDATEPC(pc);
 
-	P_CHAR pc2 = pointers::findCharBySerial( t->getClicked() );
+	pChar pc2 = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc2);
 
     pc->ftargserial=pc2->getSerial32();
@@ -732,7 +732,7 @@ void target_axe( NXWCLIENT ps, P_TARGET t )
 
 void target_sword( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC(pc);
 
 	uint16_t id = t->getModel();
@@ -750,7 +750,7 @@ void target_sword( NXWCLIENT ps, P_TARGET t )
 		pc->playAction( pc->isMounting() ? 0x0D : 0x01D );
 		pc->playSFX(0x013E);
 
-		P_ITEM pi=item::CreateFromScript( "$item_kindling" );
+		pItem pi=item::CreateFromScript( "$item_kindling" );
 		VALIDATEPI(pi);
 
 		pi->setPosition( pcpos );
@@ -778,13 +778,13 @@ void target_fetch( NXWCLIENT ps, P_TARGET t )
 
 void target_guard( NXWCLIENT ps, P_TARGET t )
 {
-    P_CHAR pc=ps->currChar();
+    pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 
-	P_CHAR pPet = pointers::findCharBySerial(t->buffer[0]);
+	pChar pPet = pointers::findCharBySerial(t->buffer[0]);
     VALIDATEPC(pPet);
 
-    P_CHAR pToGuard = pointers::findCharBySerial( t->getClicked() );
+    pChar pToGuard = pointers::findCharBySerial( t->getClicked() );
     if( !ISVALIDPC(pToGuard) || pToGuard->getSerial32() != pPet->getOwnerSerial32() )
     {
         ps->sysmsg( TRANSLATE("Currently can't guard anyone but yourself!" ));
@@ -800,9 +800,9 @@ void target_guard( NXWCLIENT ps, P_TARGET t )
 void target_transfer( NXWCLIENT ps, P_TARGET t )
 {
 
-    P_CHAR pc1 = pointers::findCharBySerial( t->buffer[0] );
+    pChar pc1 = pointers::findCharBySerial( t->buffer[0] );
 	VALIDATEPC(pc1);
-    P_CHAR pc2 = pointers::findCharBySerial( t->getClicked() );
+    pChar pc2 = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc2);
 
 	//Araknesh Call OnTransfer Event Passing Animal,NewOwner
@@ -831,7 +831,7 @@ void target_transfer( NXWCLIENT ps, P_TARGET t )
  //Throws the potion and places it (unmovable) at that spot
 void target_expPotion( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 
     Location loc=t->getLocation();
@@ -840,13 +840,13 @@ void target_expPotion( NXWCLIENT ps, P_TARGET t )
 
     if(line_of_sight(s, pc->getPosition(), loc, WALLS_CHIMNEYS + DOORS + ROOFING_SLANTED))
     {
-        P_ITEM pi=pointers::findItemBySerial( t->buffer[0] );
+        pItem pi=pointers::findItemBySerial( t->buffer[0] );
         if (ISVALIDPI(pi)) // crashfix LB
         {
             pi->MoveTo( loc );
             pi->setContainer(0);
             pi->magic=2; //make item unmovable once thrown
-            movingeffect2(DEREF_P_CHAR(pc), DEREF_P_ITEM(pi), 0x0F, 0x0D, 0x11, 0x00, 0x00);
+            movingeffect2(DEREF_pChar(pc), DEREF_pItem(pi), 0x0F, 0x0D, 0x11, 0x00, 0x00);
             pi->Refresh();
         }
     }
@@ -858,7 +858,7 @@ void target_expPotion( NXWCLIENT ps, P_TARGET t )
 void target_trigger( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_ITEM pi = MAKE_ITEM_REF(t->getClicked());
+	pItem pi = MAKE_ITEM_REF(t->getClicked());
 	VALIDATEPI(pi);
 
 	triggerItem(ps->toInt(), pi, TRIGTYPE_TARGET);
@@ -868,7 +868,7 @@ void target_trigger( NXWCLIENT ps, P_TARGET t )
 void target_npcMenu( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 
 	npcs::AddRespawnNPC(pc,t->buffer[0]);
@@ -881,12 +881,12 @@ void target_npcMenu( NXWCLIENT ps, P_TARGET t )
 void target_telestuff( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC(pc);
 
 	NXWSOCKET s = ps->toInt();
 
-	P_OBJECT po = objects.findObject( t->getClicked() );
+	pObject po = objects.findObject( t->getClicked() );
 
 	if( ISVALIDPO(po) ) { //clicked on obj to move
 		P_TARGET targ=clientInfo[s]->newTarget( new cLocationTarget() );
@@ -899,15 +899,15 @@ void target_telestuff( NXWCLIENT ps, P_TARGET t )
 		Location loc=t->getLocation();
 		loc.z+=tileHeight( t->getModel() );
 
-		SERIAL serial = t->buffer[0];
+		uint32_t serial = t->buffer[0];
 		if( isCharSerial(serial) ) {
-			P_CHAR pt = pointers::findCharBySerial( serial );
+			pChar pt = pointers::findCharBySerial( serial );
 			VALIDATEPC(pt);
 
 			pt->MoveTo( loc );
 			pt->teleport();
 		} else if ( isItemSerial(serial) ) {
-			P_ITEM pi = pointers::findItemBySerial( serial );
+			pItem pi = pointers::findItemBySerial( serial );
 			VALIDATEPI(pi);
 
 			pi->MoveTo(loc);
@@ -924,10 +924,10 @@ void target_telestuff( NXWCLIENT ps, P_TARGET t )
 void target_allAttack( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 
-    P_CHAR pc_target = pointers::findCharBySerial( t->getClicked() );
+    pChar pc_target = pointers::findCharBySerial( t->getClicked() );
     VALIDATEPC(pc_target);
 
 
@@ -935,7 +935,7 @@ void target_allAttack( NXWCLIENT ps, P_TARGET t )
     sc.fillOwnedNpcs( pc, false, true );
     pc->attackStuff(pc_target);
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-		P_CHAR pet=sc.getChar();
+		pChar pet=sc.getChar();
 		if( ISVALIDPC(pet))
 			npcattacktarget(pet, pc_target);
     }
@@ -946,12 +946,12 @@ void target_allAttack( NXWCLIENT ps, P_TARGET t )
 
 void target_xTeleport( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 
-	SERIAL serial = t->getClicked();
+	uint32_t serial = t->getClicked();
 	if( isCharSerial( serial ) ) {
-		P_CHAR pc_i = pointers::findCharBySerial( serial );
+		pChar pc_i = pointers::findCharBySerial( serial );
 		if( ISVALIDPC( pc_i ) )
 		{
 			pc_i->MoveTo( pc->getPosition() );
@@ -959,7 +959,7 @@ void target_xTeleport( NXWCLIENT ps, P_TARGET t )
 		}
 	}
 	else if( isItemSerial( serial ) ) {
-		P_ITEM pi = pointers::findItemBySerial( serial );
+		pItem pi = pointers::findItemBySerial( serial );
 		if( ISVALIDPI( pi ) ) {
 			pi->MoveTo( pc->getPosition() );
 			pi->Refresh();

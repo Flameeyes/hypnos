@@ -49,7 +49,7 @@ P_MENU cMenus::insertMenu( P_MENU menu )
 }
 
 
-P_MENU cMenus::getMenu( SERIAL menu )
+P_MENU cMenus::getMenu( uint32_t menu )
 {
 	MENU_MAP::iterator iter( menuMap.find( menu ) );
 	if( iter != menuMap.end() )
@@ -57,7 +57,7 @@ P_MENU cMenus::getMenu( SERIAL menu )
 	return NULL;	
 }
 
-bool cMenus::showMenu( SERIAL menu, P_CHAR pc )
+bool cMenus::showMenu( uint32_t menu, pChar pc )
 {
 	MENU_MAP::iterator iter( menuMap.find( menu ) );
 	if( iter != menuMap.end() )
@@ -83,12 +83,12 @@ bool isIconList( uint8_t cmd )
 \author Endymion
 \return true if menu need delete
 */
-bool cMenus::removeFromView( P_MENU menu, SERIAL chr )
+bool cMenus::removeFromView( P_MENU menu, uint32_t chr )
 {
 	
 	menu->whoSeeThis.erase( chr );
 
-	std::map<SERIAL, std::set<SERIAL> >::iterator i( whoSeeWhat.find( menu->serial ) );
+	std::map<uint32_t, std::set<SERIAL> >::iterator i( whoSeeWhat.find( menu->serial ) );
 	if( i!=whoSeeWhat.end() ) {
 		i->second.erase( chr );
 
@@ -99,7 +99,7 @@ bool cMenus::removeFromView( P_MENU menu, SERIAL chr )
 	return menu->whoSeeThis.empty();
 }
 
-SERIAL cMenus::removeMenu( SERIAL menu, P_CHAR pc )
+uint32_t cMenus::removeMenu( SERIAL menu, pChar pc )
 {
 
 	MENU_MAP::iterator iter( menuMap.find( menu ) );
@@ -124,13 +124,13 @@ bool cMenus::handleMenu( NXWCLIENT ps )
 	if( ps==NULL )
 		return false;
 
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPCR( pc, false );
 
 	
 	cClientPacket* p =  NULL;
 
-	SERIAL serial;
+	uint32_t serial;
 	if( isIconList( ps->toInt() ) ) {
 		p = new cPacketResponseToDialog();
 		p->receive( ps );
@@ -146,7 +146,7 @@ bool cMenus::handleMenu( NXWCLIENT ps )
 	P_MENU menu = Menus.getMenu( serial );
 	VALIDATEPMR( menu, false );
 
-	SERIAL menu_serial = menu->serial;
+	uint32_t menu_serial = menu->serial;
 
 	menu->handleButton( ps, p );
 
@@ -197,7 +197,7 @@ void cBasicMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 {
 }
 
-void cBasicMenu::show( P_CHAR pc )
+void cBasicMenu::show( pChar pc )
 {
 	VALIDATEPC( pc );
 
@@ -431,7 +431,7 @@ void cMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 	
 	cPacketMenuSelection* p = (cPacketMenuSelection*)pkg;
 
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC( pc )
 
 	uint32_t button = p->buttonId.get();
@@ -444,7 +444,7 @@ void cMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 
 		buttonReturnCode = getButton( button );
 
-		std::map< SERIAL, FUNCIDX >::iterator iter( buttonCallbacks.find( button ) );
+		std::map< uint32_t, FUNCIDX >::iterator iter( buttonCallbacks.find( button ) );
 		if( iter!=buttonCallbacks.end() ) {
 
 			AmxFunction func( iter->second );
@@ -460,7 +460,7 @@ void cMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 	//set property if there are
 
 	if( ( buttonReturnCode!=MENU_CLOSE ) && ( buttonReturnCode==buffer[3] ) ) { 
-		std::map< SERIAL, int32_t >::iterator propIter( editProps.begin() ), lastProp( editProps.end() );
+		std::map< uint32_t, int32_t >::iterator propIter( editProps.begin() ), lastProp( editProps.end() );
 		for( ; propIter!=lastProp; ++propIter ) {
 
 			int32_t props = propIter->first;
@@ -485,20 +485,20 @@ void cMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 }
 
 
-bool cMenu::getPropertyFieldBool( SERIAL type, SERIAL obj, SERIAL prop, SERIAL subProp, SERIAL subProp2 )
+bool cMenu::getPropertyFieldBool( uint32_t type, SERIAL obj, SERIAL prop, SERIAL subProp, SERIAL subProp2 )
 {
 	
 	switch( type ) {
 	
-		case PROP_CHARACTER: {
-			P_CHAR pc = pointers::findCharBySerial( obj );
+		case PROpCharACTER: {
+			pChar pc = pointers::findCharBySerial( obj );
 			VALIDATEPCR( pc, false );
 
 			return getCharBoolProperty( pc, prop, subProp );
 
 		}
-		case PROP_ITEM : {
-			P_ITEM pi = pointers::findItemBySerial( obj );
+		case PROpItem : {
+			pItem pi = pointers::findItemBySerial( obj );
 			VALIDATEPIR( pi, false );
 
 			return getItemBoolProperty( pi, prop, subProp );
@@ -512,19 +512,19 @@ bool cMenu::getPropertyFieldBool( SERIAL type, SERIAL obj, SERIAL prop, SERIAL s
 
 }
 
-void cMenu::setPropertyField( SERIAL type, SERIAL obj, SERIAL prop, SERIAL subProp, SERIAL subProp2, bool data )
+void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL subProp, SERIAL subProp2, bool data )
 {
 	switch( type ) {
 	
-		case PROP_CHARACTER: {
-			P_CHAR pc = pointers::findCharBySerial( obj );
+		case PROpCharACTER: {
+			pChar pc = pointers::findCharBySerial( obj );
 			VALIDATEPC(pc);
 			if( data!=getCharBoolProperty( pc, prop, subProp ) )
 				setCharBoolProperty( pc, prop, subProp, subProp2, data );
 			}
 			break;
-		case PROP_ITEM : {
-			P_ITEM pi = pointers::findItemBySerial( obj );
+		case PROpItem : {
+			pItem pi = pointers::findItemBySerial( obj );
 			VALIDATEPI(pi);
 			if( data!=getItemBoolProperty( pi, prop, subProp ) )
 				setItemBoolProperty( pi, prop, subProp, data );
@@ -538,13 +538,13 @@ void cMenu::setPropertyField( SERIAL type, SERIAL obj, SERIAL prop, SERIAL subPr
 		
 }
 
-void cMenu::setPropertyField( SERIAL type, SERIAL obj, SERIAL prop, SERIAL subProp, SERIAL subProp2, std::wstring data )
+void cMenu::setPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL subProp, SERIAL subProp2, std::wstring data )
 {
 	VAR_TYPE t = getPropertyType( prop );
 	switch( type ) {
 	
-		case PROP_CHARACTER: {
-			P_CHAR pc = pointers::findCharBySerial( obj );
+		case PROpCharACTER: {
+			pChar pc = pointers::findCharBySerial( obj );
 			VALIDATEPC(pc);
 
 			switch( t ) {
@@ -581,8 +581,8 @@ void cMenu::setPropertyField( SERIAL type, SERIAL obj, SERIAL prop, SERIAL subPr
 			}
 		}
 		break;
-		case PROP_ITEM : {
-			P_ITEM pi = pointers::findItemBySerial( obj );
+		case PROpItem : {
+			pItem pi = pointers::findItemBySerial( obj );
 			VALIDATEPI(pi);
 
 			switch( t ) {
@@ -648,14 +648,14 @@ std::wstring toWstr( const char* s )
 }
 
 
-std::wstring cMenu::getPropertyField( SERIAL type, SERIAL obj, SERIAL prop, SERIAL subProp, SERIAL subProp2 )
+std::wstring cMenu::getPropertyField( uint32_t type, SERIAL obj, SERIAL prop, SERIAL subProp, SERIAL subProp2 )
 {
 	
 	VAR_TYPE t = getPropertyType( prop );
 	switch( type ) {
 	
-		case PROP_CHARACTER: {
-			P_CHAR pc = pointers::findCharBySerial( obj );
+		case PROpCharACTER: {
+			pChar pc = pointers::findCharBySerial( obj );
 			VALIDATEPCR(pc, std::wstring());
 
 			switch( t ) {
@@ -672,8 +672,8 @@ std::wstring cMenu::getPropertyField( SERIAL type, SERIAL obj, SERIAL prop, SERI
 			}
 		}
 		break;
-		case PROP_ITEM : {
-			P_ITEM pi = pointers::findItemBySerial( obj );
+		case PROpItem : {
+			pItem pi = pointers::findItemBySerial( obj );
 			VALIDATEPIR(pi, std::wstring());
 
 			switch( t ) {
@@ -745,7 +745,7 @@ bool cMenu::getDisposeable()
 	return disposeable;
 }
 
-bool cMenu::getCheckBox( SERIAL checkbox, bool raw )
+bool cMenu::getCheckBox( uint32_t checkbox, bool raw )
 {
 	if( raw )
 		return find( switchs->begin(), switchs->end(), checkbox )!=switchs->end();
@@ -753,7 +753,7 @@ bool cMenu::getCheckBox( SERIAL checkbox, bool raw )
 		return find( switchs->begin(), switchs->end(), rc_checkbox[checkbox] )!=switchs->end();
 }
 
-bool cMenu::getRadio( SERIAL radio, bool raw )
+bool cMenu::getRadio( uint32_t radio, bool raw )
 {
 	if( raw )
 		return find( switchs->begin(), switchs->end(), radio )!=switchs->end();
@@ -761,9 +761,9 @@ bool cMenu::getRadio( SERIAL radio, bool raw )
 		return find( switchs->begin(), switchs->end(), rc_radio[radio] )!=switchs->end();
 }
 
-std::wstring* cMenu::getText( SERIAL text, bool raw )
+std::wstring* cMenu::getText( uint32_t text, bool raw )
 {
-	std::map< SERIAL, std::wstring >::iterator iter;
+	std::map< uint32_t, std::wstring >::iterator iter;
 	if( raw )
 		iter= textResp->find( text );
 	else {
@@ -845,12 +845,12 @@ void cIconListMenu::addIcon( uint16_t model, COLOR color, int32_t data, std::str
 void cIconListMenu::handleButton( NXWCLIENT ps,  cClientPacket* pkg  )
 {
 
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC( pc )
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
 
-	SERIAL index = p->index.get();
+	uint32_t index = p->index.get();
 	
 	callback->Call( serial, pc->getSerial32(), index, icons[index-1].model.get(), icons[index-1].color.get(), iconData[index-1] );
 

@@ -146,7 +146,7 @@
 #define ID_STATUSBAR                    32924
 #define ID_RELOAD_RELOADAMX             32925
 #define ID_DEBUG_BREAKONNEXTLEGACYTRIGGER 32928
-#define ID_DEBUG_DUMPLEGACYTRIGGERCONTEXT 32930
+#define ID_DEBUG_DUMPLEGACYTRIGGERCONchar 32930
 #define ID_BUTTON32931                  32931
 #define ID_BUTTON32932                  32932
 #define IDC_STATIC                      -1

@@ -17,8 +17,8 @@
 #include "inlines.h"
 
 OBJECT_MAP cAllObjects::all;
-SERIAL cAllObjects::current_item_serial=0x40000000;
-SERIAL cAllObjects::current_char_serial=1; // ndEndy not 0 because target return 0 if invalid target, so OSI think 0 like INVALID
+uint32_t cAllObjects::current_item_serial=0x40000000;
+uint32_t cAllObjects::current_char_serial=1; // ndEndy not 0 because target return 0 if invalid target, so OSI think 0 like INVALID
 
 
 cAllObjects objects; //All objects
@@ -41,7 +41,7 @@ void cAllObjects::clear()
 	}
 }
 
-P_OBJECT cAllObjects::findObject(SERIAL nSerial)
+pObject cAllObjects::findObject(uint32_t nSerial)
 {
 	if (nSerial < 0) return NULL;
     OBJECT_MAP::iterator iter( this->all.find(nSerial) );
@@ -51,35 +51,35 @@ P_OBJECT cAllObjects::findObject(SERIAL nSerial)
 	return iter->second;
 }
 
-void cAllObjects::insertObject( P_OBJECT obj )
+void cAllObjects::insertObject( pObject obj )
 {
 	all.insert( make_pair( obj->getSerial32(), obj ) );
 }
 
-void cAllObjects::eraseObject( P_OBJECT obj )
+void cAllObjects::eraseObject( pObject obj )
 {
 	OBJECT_MAP::iterator iter( all.find( obj->getSerial32() ) );
 	if( iter!=all.end() )
 		all.erase( iter );
 }
 
-SERIAL cAllObjects::getNextCharSerial()
+uint32_t cAllObjects::getNextCharSerial()
 {
 	return ++this->current_char_serial;
 }
 
-SERIAL cAllObjects::getNextItemSerial()
+uint32_t cAllObjects::getNextItemSerial()
 {
 	return ++this->current_item_serial;
 }
 
-void cAllObjects::updateCharSerial( SERIAL ser )
+void cAllObjects::updateCharSerial( uint32_t ser )
 {
 	if( ser > this->current_char_serial )
 		this->current_char_serial=ser;
 }
 
-void cAllObjects::updateItemSerial( SERIAL ser )
+void cAllObjects::updateItemSerial( uint32_t ser )
 {
 	if( ser > this->current_item_serial )
 		this->current_item_serial=ser;
@@ -107,12 +107,12 @@ bool cAllObjectsIter::IsEmpty()
 	return ( curr==objects.all.end() );
 }
 
-P_OBJECT cAllObjectsIter::getObject()
+pObject cAllObjectsIter::getObject()
 {
 	return curr->second;
 }
 
-SERIAL cAllObjectsIter::getSerial()
+uint32_t cAllObjectsIter::getSerial()
 {
 	return curr->first;
 }

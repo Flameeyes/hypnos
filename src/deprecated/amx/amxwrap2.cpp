@@ -71,7 +71,7 @@ VAR_TYPE getPropertyType(int property)
 
 NATIVE2(_getItemProperty)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 
 	if( ISVALIDPI( pi ) )
 	{
@@ -132,7 +132,7 @@ NATIVE2(_setItemProperty)
 	// params[3] = subproperty
 	// params[4] = value to set property to
 
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	if (!ISVALIDPI( pi ) )
 		return 0;
 
@@ -190,7 +190,7 @@ NATIVE2(_setItemProperty)
 	}
 }
 
-void setItemUniProperty( P_ITEM pi, int property, int prop2, std::wstring& value )
+void setItemUniProperty( pItem pi, int property, int prop2, std::wstring& value )
 {
 	switch( property )
 	{
@@ -204,7 +204,7 @@ void setItemUniProperty( P_ITEM pi, int property, int prop2, std::wstring& value
 
 
 
-void setItemBoolProperty(P_ITEM pi, int property, int prop2, bool value )
+void setItemBoolProperty(pItem pi, int property, int prop2, bool value )
 {
 	switch( property )
 	{
@@ -217,7 +217,7 @@ void setItemBoolProperty(P_ITEM pi, int property, int prop2, bool value )
 	}
 }
 
-void setItemIntProperty(P_ITEM pi, int property, int prop2, int value )
+void setItemIntProperty(pItem pi, int property, int prop2, int value )
 {
 	switch( property )
 	{
@@ -227,7 +227,7 @@ void setItemIntProperty(P_ITEM pi, int property, int prop2, int value )
 		case NXW_IP_I_CARVE :					   //dec value :  201;
 			pi->carve = value;
 			break;
-		case NXW_IP_I_CONTAINERSERIAL :				   //dec value :  202;
+		case NXW_IP_I_CONTAINERuint32_t :				   //dec value :  202;
 			//pi->contserial = value;
 			pi->setContSerial(value, false, false);
 			break;
@@ -294,13 +294,13 @@ void setItemIntProperty(P_ITEM pi, int property, int prop2, int value )
 					pi->morez = value;
 					break;
 			} break;
-		case NXW_IP_I_MULTISERIAL :				   //dec value :  221;
+		case NXW_IP_I_MULTIuint32_t :				   //dec value :  221;
 			pi->setMultiSerial32Only(value);
 			break;
 		case NXW_IP_I_MURDERTIME :				   //dec value :  222;
 			pi->murdertime = value;
 			break;
-		case NXW_IP_I_OLDCONTAINERSERIAL :			   //dec value :  223;
+		case NXW_IP_I_OLDCONTAINERuint32_t :			   //dec value :  223;
 			pi->setContSerial(value, true, false);
 			break;
 		case NXW_IP_I_OLDPOSITION:								//dec value : 224;
@@ -315,7 +315,7 @@ void setItemIntProperty(P_ITEM pi, int property, int prop2, int value )
 					pi->setOldPosition("z", value);
 					break;
 			} break;
-		case NXW_IP_I_OWNERSERIAL :				   //dec value :  225;
+		case NXW_IP_I_OWNERuint32_t :				   //dec value :  225;
 			pi->setOwnerSerial32Only(value);
 			break;
 		case NXW_IP_I_POISONED :				   //dec value :  226;
@@ -348,7 +348,7 @@ void setItemIntProperty(P_ITEM pi, int property, int prop2, int value )
 		case NXW_IP_I_SECUREIT :				   //dec value :  232;
 			pi->secureIt = value;
 			break;
-		case NXW_IP_I_SERIAL :					   //dec value :  233;
+		case NXW_IP_I_uint32_t :					   //dec value :  233;
 			pi->setSerial32(value);
 			break;
 		case NXW_IP_I_SMELT :					   //dec value :  234;
@@ -357,7 +357,7 @@ void setItemIntProperty(P_ITEM pi, int property, int prop2, int value )
 		case NXW_IP_I_SPAWNREGION :				   //dec value :  235;
 			pi->spawnregion = value;
 			break;
-		case NXW_IP_I_SPAWNSERIAL :				   //dec value :  236;
+		case NXW_IP_I_SPAWNuint32_t :				   //dec value :  236;
 			pi->spawnserial = value;
 			break;
 		case NXW_IP_I_SPEED :					   //dec value :  237;
@@ -431,7 +431,7 @@ void setItemIntProperty(P_ITEM pi, int property, int prop2, int value )
 	}
 }
 
-void setItemShortProperty(P_ITEM pi, int property, int prop2, short value )
+void setItemShortProperty(pItem pi, int property, int prop2, short value )
 {
 	switch( property )
 	{
@@ -456,7 +456,7 @@ void setItemShortProperty(P_ITEM pi, int property, int prop2, short value )
 	}
 }
 
-void setItemCharProperty(P_ITEM pi, int property, int prop2, char value )
+void setItemCharProperty(pItem pi, int property, int prop2, char value )
 {
 	switch( property )
 	{
@@ -546,7 +546,7 @@ void setItemCharProperty(P_ITEM pi, int property, int prop2, char value )
 	}
 }
 
-void setItemStrProperty(P_ITEM pi, int property, int prop2, char* value )
+void setItemStrProperty(pItem pi, int property, int prop2, char* value )
 {
 	switch( property )
 	{
@@ -579,7 +579,7 @@ void setItemStrProperty(P_ITEM pi, int property, int prop2, char* value )
 }
 
 
-wstring& getItemUniProperty( P_ITEM pi, int property, int prop2 )
+wstring& getItemUniProperty( pItem pi, int property, int prop2 )
 {
 	switch( property )
 	{
@@ -591,7 +591,7 @@ wstring& getItemUniProperty( P_ITEM pi, int property, int prop2 )
 }
 
 
-bool getItemBoolProperty( P_ITEM pi, int property, int prop2)
+bool getItemBoolProperty( pItem pi, int property, int prop2)
 {
 	switch( property )
 	{
@@ -602,13 +602,13 @@ bool getItemBoolProperty( P_ITEM pi, int property, int prop2)
 	}
 }
 
-int getItemIntProperty( P_ITEM pi, int property, int prop2)
+int getItemIntProperty( pItem pi, int property, int prop2)
 {
 	switch( property )
 	{
 		CHECK(NXW_IP_I_ATT, pi->att )							//dec value :  200;
 		CHECK(NXW_IP_I_CARVE, pi->carve )						//dec value :  201;
-		CHECK(NXW_IP_I_CONTAINERSERIAL, pi->getContSerial() )	//dec value :  202;
+		CHECK(NXW_IP_I_CONTAINERuint32_t, pi->getContSerial() )	//dec value :  202;
 		CHECK(NXW_IP_I_DECAYTIME, pi->getDecayTime() )				//dec value :  203;
 		CHECK(NXW_IP_I_DEF, pi->def )							//dec value :  204;
 		CHECK(NXW_IP_I_DEXBONUS, pi->dx2 )						//dec value :  205;
@@ -632,16 +632,16 @@ int getItemIntProperty( P_ITEM pi, int property, int prop2)
 				case NXW_CI2_Y: return pi->morey;
 				default :	return pi->morez;
 			}
-		CHECK(NXW_IP_I_MULTISERIAL, pi->getMultiSerial32() )	//dec value :  221;
+		CHECK(NXW_IP_I_MULTIuint32_t, pi->getMultiSerial32() )	//dec value :  221;
 		CHECK(NXW_IP_I_MURDERTIME, pi->murdertime )				//dec value :  222;
-		CHECK(NXW_IP_I_OLDCONTAINERSERIAL, pi->getContSerial(true) )  //dec value :  223;
+		CHECK(NXW_IP_I_OLDCONTAINERuint32_t, pi->getContSerial(true) )  //dec value :  223;
 		case NXW_IP_I_OLDPOSITION:																		//dec value :  224;
 			switch(prop2) {
 				case NXW_CI2_X: return pi->getOldPosition().x;
 				case NXW_CI2_Y: return pi->getOldPosition().y;
 				default :	return pi->getOldPosition().z;
 			}
-		CHECK(NXW_IP_I_OWNERSERIAL, pi->getOwnerSerial32() )				//dec value :  225;
+		CHECK(NXW_IP_I_OWNERuint32_t, pi->getOwnerSerial32() )				//dec value :  225;
 		CHECK(NXW_IP_I_POISONED, pi->poisoned )					//dec value :  226;
 		case NXW_IP_I_POSITION:													//dec value : 227;
 			switch(prop2) {
@@ -654,10 +654,10 @@ int getItemIntProperty( P_ITEM pi, int property, int prop2)
 		CHECK(NXW_IP_I_RESTOCK, pi->restock )					//dec value :  230;
 		CHECK(NXW_IP_I_RNDVALUERATE, pi->rndvaluerate )			//dec value :  231;
 		CHECK(NXW_IP_I_SECUREIT, pi->secureIt )					//dec value :  232;
-		CHECK(NXW_IP_I_SERIAL, pi->getSerial32() )				//dec value :  233;
+		CHECK(NXW_IP_I_uint32_t, pi->getSerial32() )				//dec value :  233;
 		CHECK(NXW_IP_I_SMELT, pi->smelt )						//dec value :  234;
 		CHECK(NXW_IP_I_SPAWNREGION, pi->spawnregion )			//dec value :  235;
-		CHECK(NXW_IP_I_SPAWNSERIAL, pi->spawnserial )			//dec value :  236;
+		CHECK(NXW_IP_I_SPAWNuint32_t, pi->spawnserial )			//dec value :  236;
 		CHECK(NXW_IP_I_SPEED, pi->spd )							//dec value :  237;
 		CHECK(NXW_IP_I_STRBONUS, pi->st2 )						//dec value :  238;
 		CHECK(NXW_IP_I_STRREQUIRED, pi->st )					//dec value :  239;
@@ -694,7 +694,7 @@ int getItemIntProperty( P_ITEM pi, int property, int prop2)
 	}
 }
 
-short getItemShortProperty( P_ITEM pi, int property, int prop2)
+short getItemShortProperty( pItem pi, int property, int prop2)
 {
 	switch( property )
 	{
@@ -709,7 +709,7 @@ short getItemShortProperty( P_ITEM pi, int property, int prop2)
 	}
 }
 
-char getItemCharProperty( P_ITEM pi, int property, int prop2)
+char getItemCharProperty( pItem pi, int property, int prop2)
 {
 	switch( property )
 	{
@@ -746,7 +746,7 @@ char getItemCharProperty( P_ITEM pi, int property, int prop2)
 	}
 }
 
-const char* getItemStrProperty( P_ITEM pi, int property, int prop2)
+const char* getItemStrProperty( pItem pi, int property, int prop2)
 {
 	switch( property )
 	{
@@ -776,7 +776,7 @@ const char* getItemStrProperty( P_ITEM pi, int property, int prop2)
 
 NATIVE2(_getCharProperty)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 
 	if ( ISVALIDPC( pc ) )
 	{
@@ -838,7 +838,7 @@ NATIVE2(_setCharProperty)
 	// params[5] = another sub property
 
 
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	if (!ISVALIDPC( pc ))
 		return INVALID;
 
@@ -895,7 +895,7 @@ NATIVE2(_setCharProperty)
   	return 0;
 }
 
-void setCharStrProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, char* value )
+void setCharStrProperty( pChar pc, int property, int subproperty, int subsubproperty, char* value )
 {
 	switch( property )
 	{
@@ -933,7 +933,7 @@ void setCharStrProperty( P_CHAR pc, int property, int subproperty, int subsubpro
 	}
 }
 
-void setCharShortProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, short value )
+void setCharShortProperty( pChar pc, int property, int subproperty, int subsubproperty, short value )
 {
 	switch( property )
 	{
@@ -967,7 +967,7 @@ void setCharShortProperty( P_CHAR pc, int property, int subproperty, int subsubp
 }
 
 
-void setCharCharProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, char value )
+void setCharCharProperty( pChar pc, int property, int subproperty, int subsubproperty, char value )
 {
 	switch( property )
 	{
@@ -1052,7 +1052,7 @@ void setCharCharProperty( P_CHAR pc, int property, int subproperty, int subsubpr
 	}
 }
 
-void setCharBoolProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, bool value )
+void setCharBoolProperty( pChar pc, int property, int subproperty, int subsubproperty, bool value )
 {
 	switch( property )
 	{
@@ -1116,7 +1116,7 @@ void setCharBoolProperty( P_CHAR pc, int property, int subproperty, int subsubpr
 	}
 }
 
-void setCharIntProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, int value )
+void setCharIntProperty( pChar pc, int property, int subproperty, int subsubproperty, int value )
 {
 	switch( property )
 	{
@@ -1135,7 +1135,7 @@ void setCharIntProperty( P_CHAR pc, int property, int subproperty, int subsubpro
 		case NXW_CP_I_BEARDCOLOR :					//dec value: 204;
 			// obsolete
 			break;
-		case NXW_CP_I_BEARDSERIAL :			  		//dec value: 205;
+		case NXW_CP_I_BEARDuint32_t :			  		//dec value: 205;
 			pc->beardserial = value;
 			break;
 		case NXW_CP_I_BEARDSTYLE :					//dec value: 206;
@@ -1250,7 +1250,7 @@ void setCharIntProperty( P_CHAR pc, int property, int subproperty, int subsubpro
 		case NXW_CP_I_HAIRCOLOR :						//dec value: 228;
 			//obsolete
 			break;
-		case NXW_CP_I_HAIRSERIAL :				  		//dec value: 229;
+		case NXW_CP_I_HAIRuint32_t :				  		//dec value: 229;
 			pc->hairserial = value;
 			break;
 		case NXW_CP_I_HAIRSTYLE :						//dec value: 230;
@@ -1321,7 +1321,7 @@ void setCharIntProperty( P_CHAR pc, int property, int subproperty, int subsubpro
 		case NXW_CP_I_MEDITATING :			  			//dec value: 243;
 			pc->med = value;
 			break;
-		case NXW_CP_I_MULTISERIAL :						//dec value: 245;
+		case NXW_CP_I_MULTIuint32_t :						//dec value: 245;
 			pc->setMultiSerial( value );
 			break;
 		case NXW_CP_I_MURDERERSER :				  		//dec value: 246;
@@ -1362,7 +1362,7 @@ void setCharIntProperty( P_CHAR pc, int property, int subproperty, int subsubpro
 					break;
 			}
 			break;
-		case NXW_CP_I_OWNSERIAL :				  		//dec value: 255;
+		case NXW_CP_I_OWNuint32_t :				  		//dec value: 255;
 			pc->setOwnerSerial32( value );
 			break;
 		case NXW_CP_I_PACKITEM :			  			//dec value: 256;
@@ -1412,7 +1412,7 @@ void setCharIntProperty( P_CHAR pc, int property, int subproperty, int subsubpro
 					break;
 			}
 			break;
-		case NXW_CP_I_QUESTBOUNTYPOSTSERIAL :					  //dec value: 266;
+		case NXW_CP_I_QUESTBOUNTYPOSTuint32_t :					  //dec value: 266;
 			pc->questBountyPostSerial = value;
 			break;
 		case NXW_CP_I_QUESTBOUNTYREWARD :				  	//dec value: 267;
@@ -1442,7 +1442,7 @@ void setCharIntProperty( P_CHAR pc, int property, int subproperty, int subsubpro
 		case NXW_CP_I_RUNNING :				  			//dec value: 275;
 			pc->running = value;
 			break;
-		case NXW_CP_I_SERIAL :				  			//dec value: 276;
+		case NXW_CP_I_uint32_t :				  			//dec value: 276;
 			pc->setSerial32(value);
 			break;
 		case NXW_CP_I_SKILLDELAY :				  		//dec value: 277;
@@ -1466,7 +1466,7 @@ void setCharIntProperty( P_CHAR pc, int property, int subproperty, int subsubpro
 		case NXW_CP_I_SPAWNREGION :				  		//dec value: 284;
 			pc->spawnregion = value;
 			break;
-		case NXW_CP_I_SPAWNSERIAL :				  		//dec value: 285;
+		case NXW_CP_I_SPAWNuint32_t :				  		//dec value: 285;
 			pc->spawnserial = value;
 			break;
 		case NXW_CP_I_SPELL :			  				//dec value: 286;
@@ -1590,7 +1590,7 @@ void setCharIntProperty( P_CHAR pc, int property, int subproperty, int subsubpro
 
 }
 
-void setCharUniProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, wstring& value )
+void setCharUniProperty( pChar pc, int property, int subproperty, int subsubproperty, wstring& value )
 {
 	switch( property )
 	{
@@ -1609,7 +1609,7 @@ void setCharUniProperty( P_CHAR pc, int property, int subproperty, int subsubpro
 	}
 }
 
-bool getCharBoolProperty( P_CHAR pc, int property, int prop2 )
+bool getCharBoolProperty( pChar pc, int property, int prop2 )
 {
 	switch( property )
 	{
@@ -1636,7 +1636,7 @@ bool getCharBoolProperty( P_CHAR pc, int property, int prop2 )
 	}
 }
 
-int getCharIntProperty( P_CHAR pc, int property, int prop2, int prop3 )
+int getCharIntProperty( pChar pc, int property, int prop2, int prop3 )
 {
 	switch( property )
 	{
@@ -1645,7 +1645,7 @@ int getCharIntProperty( P_CHAR pc, int property, int prop2, int prop3 )
 		CHECK(  NXW_CP_I_ATT , pc->att )  				//dec value: 202;
 		CHECK(  NXW_CP_I_ATTACKER , pc->attackerserial )  			//dec value: 203;
 		//obsolete CHECK(  NXW_CP_I_BEARDCOLOR , (prop2>1) ? &chars[i].beardcolor1 : &chars[i].beardcolor2 )  //dec value: 204;
-		CHECK(  NXW_CP_I_BEARDSERIAL , pc->beardserial )  		//dec value: 205;
+		CHECK(  NXW_CP_I_BEARDuint32_t , pc->beardserial )  		//dec value: 205;
 		//obsolete CHECK(  NXW_CP_I_BEARDSTYLE , (prop2>1) ? &chars[i].beardstyle1 : &chars[i].beardstyle2 )  //dec value: 206;
 		CHECK(  NXW_CP_I_CALLNUM , pc->callnum )  			//dec value: 207;
 		CHECK(  NXW_CP_I_CARVE , pc->carve )  				//dec value: 208;
@@ -1693,7 +1693,7 @@ int getCharIntProperty( P_CHAR pc, int property, int prop2, int prop3 )
 		CHECK(  NXW_CP_I_GUILDFEALTY , pc->GetGuildFealty() )  		//dec value: 225;
 		CHECK(  NXW_CP_I_GUILDNUMBER , pc->GetGuildNumber() )  		//dec value: 226;
 		//obsolete CHECK(  NXW_CP_I_HAIRCOLOR , (prop2>1) ? &chars[i].haircolor1 : &chars[i].haircolor2 )  //dec value: 228;
-		CHECK(  NXW_CP_I_HAIRSERIAL , pc->hairserial )  		//dec value: 229;
+		CHECK(  NXW_CP_I_HAIRuint32_t , pc->hairserial )  		//dec value: 229;
 		//obsolete CHECK(  NXW_CP_I_HAIRSTYLE , (prop2>1) ? &chars[i].hairstyle1 : &chars[i].hairstyle2 )  //dec value: 230;
 		CHECK(  NXW_CP_I_HIDAMAGE , pc->hidamage )  			//dec value: 231;
 		CHECK(  NXW_CP_I_HOLDGOLD , pc->holdg )  			//dec value: 232;
@@ -1721,7 +1721,7 @@ int getCharIntProperty( P_CHAR pc, int property, int prop2, int prop3 )
 		CHECK(  NXW_CP_I_LOGOUT , pc->logout )  			//dec value: 241;
 		CHECK(  NXW_CP_I_MAKING , pc->making )  			//dec value: 242;
 		CHECK(  NXW_CP_I_MEDITATING , pc->med )  			//dec value: 243;
-		CHECK(  NXW_CP_I_MULTISERIAL , pc->getMultiSerial32() )  	//dec value: 245;
+		CHECK(  NXW_CP_I_MULTIuint32_t , pc->getMultiSerial32() )  	//dec value: 245;
 		CHECK(  NXW_CP_I_MURDERERSER , pc->murdererSer )  		//dec value: 246;
 		CHECK(  NXW_CP_I_MURDERRATE , pc->murderrate )  		//dec value: 247;
 		CHECK(  NXW_CP_I_MUTETIME , pc->mutetime )  			//dec value: 248;
@@ -1737,7 +1737,7 @@ int getCharIntProperty( P_CHAR pc, int property, int prop2, int prop3 )
 				case NXW_CP2_Z: return pc->getOldPosition().z;
 				default : return pc->getOldPosition().z;
 			}
-		CHECK(  NXW_CP_I_OWNSERIAL , pc->getOwnerSerial32() )  		//dec value: 255;
+		CHECK(  NXW_CP_I_OWNuint32_t , pc->getOwnerSerial32() )  		//dec value: 255;
 		CHECK(  NXW_CP_I_PACKITEM , pc->packitemserial )  			//dec value: 256;
 		CHECK(  NXW_CP_I_POISON , pc->poison )  			//dec value: 257;
 		CHECK(  NXW_CP_I_POISONED , pc->poisoned )  			//dec value: 258;
@@ -1759,7 +1759,7 @@ int getCharIntProperty( P_CHAR pc, int property, int prop2, int prop3 )
 				case NXW_CP2_Z: return pc->prevZ;
 				default : return pc->prevZ;
 			}
-		CHECK(  NXW_CP_I_QUESTBOUNTYPOSTSERIAL , pc->questBountyPostSerial )  //dec value: 266;
+		CHECK(  NXW_CP_I_QUESTBOUNTYPOSTuint32_t , pc->questBountyPostSerial )  //dec value: 266;
 		CHECK(  NXW_CP_I_QUESTBOUNTYREWARD , pc->questBountyReward )  	//dec value: 267;
 		CHECK(  NXW_CP_I_QUESTDESTREGION , pc->questDestRegion )  	//dec value: 268;
 		CHECK(  NXW_CP_I_QUESTORIGREGION , pc->questOrigRegion )  	//dec value: 269;
@@ -1769,7 +1769,7 @@ int getCharIntProperty( P_CHAR pc, int property, int prop2, int prop3 )
 		CHECK(	NXW_CP_I_GUILD, (pc->getGuild()!=NULL)? pc->getGuild()->serial : INVALID )			//dec value: 273
 		CHECK(  NXW_CP_I_ROBE , pc->robe )  				//dec value: 274;
 		CHECK(  NXW_CP_I_RUNNING , pc->running )  			//dec value: 275;
-		CHECK(  NXW_CP_I_SERIAL , pc->getSerial32() )  			//dec value: 276;
+		CHECK(  NXW_CP_I_uint32_t , pc->getSerial32() )  			//dec value: 276;
 		CHECK(  NXW_CP_I_SKILLDELAY , pc->skilldelay )  		//dec value: 277;
 		CHECK(  NXW_CP_I_SMOKEDISPLAYTIME , pc->smokedisplaytimer )  	//dec value: 279;
 		CHECK(  NXW_CP_I_SMOKETIMER , pc->smoketimer )  		//dec value: 280;
@@ -1777,14 +1777,14 @@ int getCharIntProperty( P_CHAR pc, int property, int prop2, int prop3 )
 		CHECK(  NXW_CP_I_SPATIMER , pc->spatimer )  			//dec value: 282;
 		CHECK(  NXW_CP_I_SPATTACK , pc->spattack )  			//dec value: 283;
 		CHECK(  NXW_CP_I_SPAWNREGION , pc->spawnregion )  		//dec value: 284;
-		CHECK(  NXW_CP_I_SPAWNSERIAL , pc->spawnserial )  		//dec value: 285;
+		CHECK(  NXW_CP_I_SPAWNuint32_t , pc->spawnserial )  		//dec value: 285;
 		CHECK(  NXW_CP_I_SPELL , pc->spell )  				//dec value: 286;
 		CHECK(  NXW_CP_I_SPELLACTION , pc->spellaction )  		//dec value: 287;
 		CHECK(  NXW_CP_I_SPELLTIME , pc->spelltime )  			//dec value: 288;
 		CHECK(  NXW_CP_I_SPLIT , pc->split )  				//dec value: 290;
 		CHECK(  NXW_CP_I_SPLITCHNC , pc->splitchnc )  			//dec value: 291;
 		CHECK(  NXW_CP_I_SQUELCHED , pc->squelched )  			//dec value: 292;
-		CHECK(  NXW_CP_I_STABLEMASTER_SERIAL , pc->getStablemaster() )  //dec value: 293;
+		CHECK(  NXW_CP_I_STABLEMASTER_uint32_t , pc->getStablemaster() )  //dec value: 293;
 		CHECK(  NXW_CP_I_STEALTH , pc->stealth )  			//dec value: 294;
 		case NXW_CP_I_STRENGHT:						//dec value: 295;
 			switch(prop2) {
@@ -1839,7 +1839,7 @@ int getCharIntProperty( P_CHAR pc, int property, int prop2, int prop3 )
 }
 
 
-short getCharShortProperty( P_CHAR pc, int property, int prop2 )
+short getCharShortProperty( pChar pc, int property, int prop2 )
 {
 	switch( property )
 	{
@@ -1866,7 +1866,7 @@ short getCharShortProperty( P_CHAR pc, int property, int prop2 )
 	}
 }
 
-char getCharCharProperty( P_CHAR pc, int property, int prop2 )
+char getCharCharProperty( pChar pc, int property, int prop2 )
 {
 	switch( property )
 	{
@@ -1901,7 +1901,7 @@ char getCharCharProperty( P_CHAR pc, int property, int prop2 )
 	}
 }
 
-const char* getCharStrProperty( P_CHAR pc, int property, int prop2 )
+const char* getCharStrProperty( pChar pc, int property, int prop2 )
 {
 	switch( property )
 	{
@@ -1920,7 +1920,7 @@ const char* getCharStrProperty( P_CHAR pc, int property, int prop2 )
 	}
 }
 
-wstring& getCharUniProperty( P_CHAR pc, int property, int prop2 )
+wstring& getCharUniProperty( pChar pc, int property, int prop2 )
 {
 	switch( property )
 	{
@@ -2056,7 +2056,7 @@ NATIVE2(_guild_setProperty)
 	// params[3] = subproperty
 	// params[4] = value to set property to
 
-	SERIAL guild = params[1];
+	uint32_t guild = params[1];
 	P_GUILD pGuild = Guildz.getGuild( guild );
 	if( pGuild==NULL )
 	{
@@ -2185,7 +2185,7 @@ NATIVE2(_guild_setProperty)
 NATIVE2(_guild_getProperty)
 {
 
-	SERIAL guild = params[1];
+	uint32_t guild = params[1];
 	P_GUILD pGuild = Guildz.getGuild( guild );
 	if( pGuild==NULL )
 	{
@@ -2322,9 +2322,9 @@ NATIVE2(_guildMember_setProperty)
 	// params[3] = subproperty
 	// params[4] = value to set property to
 
-	SERIAL member_serial = params[1];
+	uint32_t member_serial = params[1];
 
-	P_CHAR pc = pointers::findCharBySerial( member_serial );
+	pChar pc = pointers::findCharBySerial( member_serial );
 	VALIDATEPCR( pc, INVALID );
 
 	P_GUILD_MEMBER member = pc->getGuildMember();
@@ -2451,9 +2451,9 @@ NATIVE2(_guildMember_setProperty)
 NATIVE2(_guildMember_getProperty)
 {
 
-	SERIAL member_serial = params[1];
+	uint32_t member_serial = params[1];
 
-	P_CHAR pc = pointers::findCharBySerial( member_serial );
+	pChar pc = pointers::findCharBySerial( member_serial );
 	VALIDATEPCR( pc, INVALID );
 
 	P_GUILD_MEMBER member = pc->getGuildMember();
@@ -2590,9 +2590,9 @@ NATIVE2(_guildRecruit_setProperty)
 	// params[3] = subproperty
 	// params[4] = value to set property to
 
-	SERIAL recruit_serial = params[1];
+	uint32_t recruit_serial = params[1];
 
-	P_CHAR recruiter = pointers::findCharBySerial( recruit_serial );
+	pChar recruiter = pointers::findCharBySerial( recruit_serial );
 	VALIDATEPCR( recruiter, INVALID );
 
 	P_GUILD guild = recruiter->getGuild();
@@ -2718,7 +2718,7 @@ NATIVE2(_guildRecruit_setProperty)
 NATIVE2(_guildRecruit_getProperty)
 {
 
-	SERIAL guild = params[1];
+	uint32_t guild = params[1];
 	P_GUILD pGuild = Guildz.getGuild( guild );
 	if( pGuild==NULL )
 	{
@@ -3131,7 +3131,7 @@ NATIVE2(_getMenuProperty)
 		wstring* w=NULL;
 		switch( params[2] )
 		{
-			case NXW_MP_UNI_TEXT :
+			case NXW_MP_UNI_char :
 				w = menu->getText( params[3] );
 				break;
 			default :

@@ -48,7 +48,7 @@ int ingottype=0;//will hold number of ingot type to be deleted
 
 inline void SetSkillDelay(CHARACTER cc)
 {
-	P_CHAR pc_cc=MAKE_CHAR_REF(cc);
+	pChar pc_cc=MAKE_CHAR_REF(cc);
 	VALIDATEPC(pc_cc);
 	SetTimerSec(&pc_cc->skilldelay,SrvParms->skilldelay);
 }
@@ -64,11 +64,11 @@ void Skills::Hide(NXWSOCKET s)
 	if ( s < 0 || s >= now )
 		return;
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	NxwCharWrapper sc;
-	P_CHAR pj = NULL;
+	pChar pj = NULL;
 	sc.fillCharsNearXYZ( pc->getPosition(), 4 );
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 		pj = sc.getChar();
@@ -90,7 +90,7 @@ void Skills::Stealth(NXWSOCKET s)
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
     if ( (pc->isMounting()) && (ServerScp::g_nStealthOnHorse==0) ) {
@@ -152,7 +152,7 @@ void Skills::PeaceMaking(NXWSOCKET s)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
     int inst = Skills::GetInstrument( s );
@@ -170,7 +170,7 @@ void Skills::PeaceMaking(NXWSOCKET s)
 		NxwCharWrapper sc;
 		sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
 		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-			P_CHAR pcm = sc.getChar();
+			pChar pcm = sc.getChar();
 			if( ISVALIDPC( pcm ) ) {
 				if (pcm->war && pc->getSerial32()!=pcm->getSerial32())
                 {
@@ -197,10 +197,10 @@ void Skills::PlayInstrumentWell(NXWSOCKET s, int i)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 
-	P_ITEM pi=MAKE_ITEM_REF(i);
+	pItem pi=MAKE_ITEM_REF(i);
 	VALIDATEPI(pi);
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
     switch(pi->getId())
@@ -223,10 +223,10 @@ void Skills::PlayInstrumentPoor(NXWSOCKET s, int i)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 
-	P_ITEM pi=MAKE_ITEM_REF(i);
+	pItem pi=MAKE_ITEM_REF(i);
 	VALIDATEPI(pi);
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
     switch(pi->getId())
@@ -249,18 +249,18 @@ int Skills::GetInstrument(NXWSOCKET s)
 	if ( s < 0 || s >= now ) //Luxor
 		return INVALID;
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPCR(pc,INVALID);
 
-	P_ITEM pack= pc->getBackpack();
+	pItem pack= pc->getBackpack();
     VALIDATEPIR(pack,INVALID);
 
     NxwItemWrapper si;
 	si.fillItemsInContainer( pack, false );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
-        P_ITEM pi=si.getItem();
+        pItem pi=si.getItem();
 		if ( ISVALIDPI(pi) && pi->IsInstrument() )
-            return DEREF_P_ITEM(pi);
+            return DEREF_pItem(pi);
 	}
 
     return INVALID;
@@ -283,7 +283,7 @@ static bool DoOnePotion(NXWSOCKET s, uint16_t regid, uint32_t regamount, char* r
 	if ( s < 0 || s >= now ) //Luxor
 		return false;
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPCR(pc,false);
 
     bool success=false;
@@ -308,11 +308,11 @@ static bool DoOnePotion(NXWSOCKET s, uint16_t regid, uint32_t regamount, char* r
 \brief Determines regs and quantity, creates working sound
 indirectly calls CreatePotion() on success
 */
-void Skills::DoPotion(NXWSOCKET s, int32_t type, int32_t sub, P_ITEM pi_mortar)
+void Skills::DoPotion(NXWSOCKET s, int32_t type, int32_t sub, pItem pi_mortar)
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	VALIDATEPI(pi_mortar);
@@ -367,13 +367,13 @@ in the mortar on success and tries to put it into a bottle
 */
 void Skills::CreatePotion(CHARACTER s, char type, char sub, int mortar)
 {
-	P_CHAR pc=MAKE_CHAR_REF(s);
+	pChar pc=MAKE_CHAR_REF(s);
 	VALIDATEPC(pc);
 
 	NXWCLIENT ps=pc->getClient();
 	if( ps==NULL )	return;
 
-	P_ITEM pi_mortar=MAKE_ITEM_REF(mortar);
+	pItem pi_mortar=MAKE_ITEM_REF(mortar);
 	VALIDATEPI(pi_mortar);
 
 
@@ -443,10 +443,10 @@ pour in the potion from the mortar
 */
 void Skills::target_bottle( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 
-	P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
 	NXWSOCKET s = ps->toInt();
@@ -458,7 +458,7 @@ void Skills::target_bottle( NXWCLIENT ps, P_TARGET t )
 	{
 		pi->ReduceAmount(1);
 
-		P_ITEM pi_mortar=pointers::findItemBySerial( t->buffer[0] );
+		pItem pi_mortar=pointers::findItemBySerial( t->buffer[0] );
 		VALIDATEPI(pi_mortar);
 
 		if (pi_mortar->type==17)
@@ -479,7 +479,7 @@ void Skills::target_bottle( NXWCLIENT ps, P_TARGET t )
 \param pc pointer to the crafter's character
 \param pi_mortar pointer to the mortar's item
 */
-void Skills::PotionToBottle( P_CHAR pc, P_ITEM pi_mortar )
+void Skills::PotionToBottle( pChar pc, pItem pi_mortar )
 {
 	VALIDATEPC(pc);
 
@@ -488,7 +488,7 @@ void Skills::PotionToBottle( P_CHAR pc, P_ITEM pi_mortar )
 
 	VALIDATEPI(pi_mortar);
 
-	P_ITEM pi=NULL;
+	pItem pi=NULL;
 
 	int potionType= (10*pi_mortar->more1)+pi_mortar->more2;
 
@@ -547,9 +547,9 @@ void Skills::PotionToBottle( P_CHAR pc, P_ITEM pi_mortar )
     pi_mortar->type=0;
 }
 
-char Skills::CheckSkillSparrCheck(int c, unsigned short int sk, int low, int high, P_CHAR pcd)
+char Skills::CheckSkillSparrCheck(int c, unsigned short int sk, int low, int high, pChar pcd)
 {
-    P_CHAR pc=MAKE_CHAR_REF(c);
+    pChar pc=MAKE_CHAR_REF(c);
 	VALIDATEPCR(pc, 0);
 
     bool bRaise = false;
@@ -565,7 +565,7 @@ char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 	if ( sk < 0 || sk >= TRUESKILLS ) //Luxor
 		return 0;
 
-    P_CHAR pc = MAKE_CHAR_REF(s);
+    pChar pc = MAKE_CHAR_REF(s);
 	VALIDATEPCR(pc,0);
 
     int a,ges=0,d=0;
@@ -745,7 +745,7 @@ and cuts it down to 100 if necessary
 \param pc pointer to character to advance the stats to
 \todo document missing paramteres
 */
-static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type, P_CHAR pc)
+static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type, pChar pc)
 {
 	if ( sk < 0 || sk >= TRUESKILLS ) //Luxor
 		return 0;
@@ -912,7 +912,7 @@ void Skills::AdvanceStats(CHARACTER s, int sk)
 		return;
 
 
-	P_CHAR pc = MAKE_CHAR_REF(s);
+	pChar pc = MAKE_CHAR_REF(s);
 	VALIDATEPC(pc);
 
     	// Begin: Determine statcap
@@ -1018,7 +1018,7 @@ void Skills::SpiritSpeak(NXWSOCKET s)
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
     //  Unsure if spirit speaking should they attempt again?
     //  Suggestion: If they attempt the skill and the timer is !0 do not have it raise the skill
 
@@ -1048,7 +1048,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 	if( ps==NULL )
 		return;
 
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC(pc);
 
 	if( (pc->skilldelay>uiCurrentTime) && (!pc->IsGM()) )
@@ -1259,7 +1259,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 \param pc pointer to the character
 \param s skill identifier
 */
-void Skills::updateSkillLevel(P_CHAR pc, int s)
+void Skills::updateSkillLevel(pChar pc, int s)
 {
 	VALIDATEPC(pc);
 	if ( s < 0 || s >= TRUESKILLS ) //Luxor
@@ -1281,12 +1281,12 @@ void Skills::TDummy(NXWSOCKET s)
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
-	P_CHAR pc = MAKE_CHAR_REF(currchar[s]);
+	pChar pc = MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	int hit;
 
-	P_ITEM pWeapon = pc->getWeapon();
+	pItem pWeapon = pc->getWeapon();
 
 	if (ISVALIDPI(pWeapon))
 	{
@@ -1322,7 +1322,7 @@ void Skills::TDummy(NXWSOCKET s)
 			return;
 	}
 
-	P_ITEM pj = pointers::findItemBySerial( LongFromCharPtr(buffer[s] +1) & 0x7FFFFFFF );
+	pItem pj = pointers::findItemBySerial( LongFromCharPtr(buffer[s] +1) & 0x7FFFFFFF );
 
 	if (ISVALIDPI(pj))
 	{
@@ -1348,11 +1348,11 @@ void Skills::TDummy(NXWSOCKET s)
 
 }
 
-void Skills::AButte(NXWSOCKET s1, P_ITEM pButte)
+void Skills::AButte(NXWSOCKET s1, pItem pButte)
 {
 	if ( s1 < 0 || s1 >= now ) //Luxor
 		return;
-	P_CHAR pc = MAKE_CHAR_REF( currchar[s1] );
+	pChar pc = MAKE_CHAR_REF( currchar[s1] );
 	VALIDATEPC(pc);
 
 
@@ -1378,14 +1378,14 @@ void Skills::AButte(NXWSOCKET s1, P_ITEM pButte)
         if(pButte->more1>0)
         {
 
-			P_ITEM pi = item::CreateFromScript( "$item_arrow", pc->getBackpack(), pButte->more1/2 );
+			pItem pi = item::CreateFromScript( "$item_arrow", pc->getBackpack(), pButte->more1/2 );
 			VALIDATEPI(pi);
             pi->Refresh();
         }
 
         if(pButte->more2>0)
         {
-			P_ITEM pi = item::CreateFromScript( "$item_crossbow_bolt", pc->getBackpack(), pButte->more2/2 );
+			pItem pi = item::CreateFromScript( "$item_crossbow_bolt", pc->getBackpack(), pButte->more2/2 );
 			VALIDATEPI(pi);
             pi->Refresh();
         }
@@ -1512,10 +1512,10 @@ void Skills::Meditation (NXWSOCKET  s)
 	if ( s < 0 || s >= now )
 		return;
 
-	P_CHAR pc = pointers::findCharBySerial(currchar[s]);
+	pChar pc = pointers::findCharBySerial(currchar[s]);
 	VALIDATEPC(pc);
 
-	P_ITEM pi = NULL;
+	pItem pi = NULL;
 
 	pc->med = 0;
 
@@ -1574,10 +1574,10 @@ void Skills::Persecute (NXWSOCKET  s)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
-	P_CHAR pc_targ=pointers::findCharBySerial(pc->targserial);
+	pChar pc_targ=pointers::findCharBySerial(pc->targserial);
 	VALIDATEPC(pc_targ);
 
     char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
@@ -1597,7 +1597,7 @@ void Skills::Persecute (NXWSOCKET  s)
             pc_targ->updateStats(1);//update
 		pc->sysmsg(TRANSLATE("Your spiritual forces disturb the enemy!"));
 		pc_targ->sysmsg(TRANSLATE("A damned soul is disturbing your mind!"));
-            SetSkillDelay(DEREF_P_CHAR(pc));
+            SetSkillDelay(DEREF_pChar(pc));
 
             sprintf(temp, TRANSLATE("%s is persecuted by a ghost!!"), pc_targ->getCurrentNameC());
 
@@ -1747,7 +1747,7 @@ void SkillVars()
 int Skills::GetAntiMagicalArmorDefence(CHARACTER p)
 {// blackwind
 
-	P_CHAR pc= MAKE_CHAR_REF( p );
+	pChar pc= MAKE_CHAR_REF( p );
 	VALIDATEPCR( pc, 0 );
 
     int ar = 0;
@@ -1757,7 +1757,7 @@ int Skills::GetAntiMagicalArmorDefence(CHARACTER p)
 		si.fillItemWeared( pc, false, true, true );
 		for( si.rewind(); !si.isEmpty(); si++ )
         {
-            P_ITEM pi=si.getItem();
+            pItem pi=si.getItem();
 			if( ISVALIDPI(pi) && pi->layer>1 && pi->layer < 25)
             {
                 if (!(strstr(pi->getCurrentNameC(), "leather") || strstr(pi->getCurrentNameC(), "magic") ||
@@ -1780,7 +1780,7 @@ void Skills::Cartography(NXWSOCKET s)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
     if( Skills::HasEmptyMap(pc->getSerial32()) )
@@ -1802,14 +1802,14 @@ void Skills::Cartography(NXWSOCKET s)
 bool Skills::HasEmptyMap(CHARACTER cc)
 {
 
-	/*P_CHAR pc=MAKE_CHAR_REF(cc);
+	/*pChar pc=MAKE_CHAR_REF(cc);
 	VALIDATEPCR(pc,false);
 
-    P_ITEM pack = pc->getBackpack();    // Get the packitem
+    pItem pack = pc->getBackpack();    // Get the packitem
 	VALIDATEPIR(pack,false);
 
 	int ci = 0, loopexit = 0;
-	P_ITEM pi;
+	pItem pi;
 	while (((pi = ContainerSearch(pack->getSerial32(), &ci)) != NULL) &&(++loopexit < MAXLOOPS))
 	{
         if(!ISVALIDPI(pi))
@@ -1831,15 +1831,15 @@ bool Skills::HasEmptyMap(CHARACTER cc)
 bool Skills::DelEmptyMap(CHARACTER cc)
 {
 
- 	/*P_CHAR pc=MAKE_CHAR_REF(cc);
+ 	/*pChar pc=MAKE_CHAR_REF(cc);
 	VALIDATEPCR(pc,false);
 
-    P_ITEM pack = pc->getBackpack();    // Get the packitem
+    pItem pack = pc->getBackpack();    // Get the packitem
 	VALIDATEPIR(pack,false);
 
     int ci=0;       // Stores the last found item
     int loopexit=0; // Avoids the loop to take too much time
-	P_ITEM cand=NULL;
+	pItem cand=NULL;
 	while (((cand = ContainerSearch(pack->getSerial32(), &ci)) != NULL) &&(++loopexit < MAXLOOPS))
 	{
         if(!ISVALIDPI(cand))
@@ -1863,11 +1863,11 @@ bool Skills::DelEmptyMap(CHARACTER cc)
 
 Called when double-click such a map
 */
-void Skills::Decipher(P_ITEM tmap, NXWSOCKET s)
+void Skills::Decipher(pItem tmap, NXWSOCKET s)
 {
 	if ( s < 0 || s >= now ) //Luxor
 		return;
- 	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+ 	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
     char sect[512];         // Needed for script search
@@ -1884,7 +1884,7 @@ void Skills::Decipher(P_ITEM tmap, NXWSOCKET s)
         if (pc->checkSkill( CARTOGRAPHY, tmap->morey * 10, 1000)) // Is the char skilled enaugh to decipher the map
         {
             // Stores the new map
-            P_ITEM nmap=item::CreateFromScript( 70025, pc->getBackpack() );
+            pItem nmap=item::CreateFromScript( 70025, pc->getBackpack() );
             if (!ISVALIDPI(nmap))
             {
                 LogWarning("bad script item # 70025(Item Not found).");

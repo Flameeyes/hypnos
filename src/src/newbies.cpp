@@ -17,7 +17,7 @@
 #include "basics.h"
 #include "inlines.h"
 
-static int nextbestskill(P_CHAR pc, int bstskll)  // Which skill is the second highest
+static int nextbestskill(pChar pc, int bstskll)  // Which skill is the second highest
 {
 
 	VALIDATEPCR(pc,0);
@@ -41,7 +41,7 @@ static int nextbestskill(P_CHAR pc, int bstskll)  // Which skill is the second h
 
 }
 
-void newbieitems(P_CHAR pc)
+void newbieitems(pChar pc)
 {
 
 	VALIDATEPC(pc);
@@ -100,7 +100,7 @@ void newbieitems(P_CHAR pc)
 					std::string itemnum, amount;
 					splitLine( script2, itemnum, amount );
 					int amt = ( amount != "" )? str2num( amount ) : INVALID; //ndEndy defined amount
-					P_ITEM pi_n = item::CreateFromScript( str2num( itemnum ), pc->getBackpack(), amt );
+					pItem pi_n = item::CreateFromScript( str2num( itemnum ), pc->getBackpack(), amt );
 					if (ISVALIDPI(pi_n)) {
 						pi_n->priv |= 0x02; // Mark as a newbie item
 					}
@@ -111,7 +111,7 @@ void newbieitems(P_CHAR pc)
 					std::string itemnum, amount;
 					splitLine( script2, itemnum, amount );
 					int amt= (amount!="")? str2num( amount ) : INVALID;
-					P_ITEM pi = item::CreateFromScript( str2num( itemnum ), pc->GetBankBox(), amt );
+					pItem pi = item::CreateFromScript( str2num( itemnum ), pc->GetBankBox(), amt );
 					if (ISVALIDPI(pi)) {
 						pi->priv |= 0x02; // Mark as a newbie item
 					}
@@ -119,7 +119,7 @@ void newbieitems(P_CHAR pc)
 				}
 				else if (!strcmp("EQUIPITEM", script1))
 				{
-					P_ITEM pi = item::CreateFromScript( script2 );
+					pItem pi = item::CreateFromScript( script2 );
 					if (ISVALIDPI(pi))
 					{
 						pi->priv |= 0x02; // Mark as a newbie item

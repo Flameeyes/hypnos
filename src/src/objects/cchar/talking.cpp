@@ -16,7 +16,7 @@
 \param txt as default
 \param ... as default
 */
-void cChar::sysmsg(const TEXT *txt, ...)
+void cChar::sysmsg(const char *txt, ...)
 {
 	va_list argptr;
 	char msg[512];
@@ -34,7 +34,7 @@ void cChar::sysmsg(const TEXT *txt, ...)
 \param txt the speech
 \param antispam use or not antispam
 */
-void cChar::talkAll(TEXT *txt, bool antispam)
+void cChar::talkAll(char *txt, bool antispam)
 {
 	NxwSocketWrapper sw;
 	sw.fillOnline( this, false );
@@ -54,7 +54,7 @@ void cChar::talkAll(TEXT *txt, bool antispam)
 \param txt the speech
 \param antispam use or not antispam
 */
-void cChar::talk(NXWSOCKET s, TEXT *txt, bool antispam)
+void cChar::talk(NXWSOCKET s, char *txt, bool antispam)
 {
 	if( s < 0 || s >= now )
 		return;
@@ -97,7 +97,7 @@ void cChar::talk(NXWSOCKET s, TEXT *txt, bool antispam)
 \param antispam use or not antispam
 \todo document extra parameters
 */
-void cChar::emote( NXWSOCKET socket, TEXT *txt, bool antispam, ... )
+void cChar::emote( NXWSOCKET socket, char *txt, bool antispam, ... )
 {
 	bool sendEmote = true;
 	emotecolor = 0x0026;
@@ -170,7 +170,7 @@ void cChar::emoteall( char *txt, bool antispam, ... )
 \param txt speech
 \param antispam use or not antispam
 */
-void cChar::talkRunic(NXWSOCKET s, TEXT *txt, bool antispam)
+void cChar::talkRunic(NXWSOCKET s, char *txt, bool antispam)
 {
 	bool machwas;
 
@@ -204,7 +204,7 @@ void cChar::talkRunic(NXWSOCKET s, TEXT *txt, bool antispam)
 \param txt the speech
 \param antispam use or not antispam
 */
-void cChar::talkAllRunic(TEXT *txt, bool antispam)
+void cChar::talkAllRunic(char *txt, bool antispam)
 {
 
 	NxwSocketWrapper sw;

@@ -28,7 +28,7 @@ cGuildz Guildz;
 /*!
 \brief Contructor of cGuild
 */
-cGuild::cGuild( SERIAL guildstone )
+cGuild::cGuild( uint32_t guildstone )
 {
 	serial	= guildstone;
 }
@@ -38,11 +38,11 @@ cGuild::cGuild( SERIAL guildstone )
 */
 cGuild::~cGuild()
 {
-	std::map< SERIAL, P_GUILD_MEMBER >::iterator member( members.begin() ), member_end( members.end() );
+	std::map< uint32_t, P_GUILD_MEMBER >::iterator member( members.begin() ), member_end( members.end() );
 	for( ; member!=member_end; ++member )
 		delete member->second;
 
-	std::map< SERIAL, P_GUILD_RECRUIT >::iterator recruit( recruits.begin() ), recruit_end( recruits.end() );
+	std::map< uint32_t, P_GUILD_RECRUIT >::iterator recruit( recruits.begin() ), recruit_end( recruits.end() );
 	for( ; recruit!=recruit_end; ++recruit )
 		delete recruit->second;
 }
@@ -80,7 +80,7 @@ void cGuild::load( cStringFile& file )
 			case 'm':
 				if( l=="MEMBER" )
 				{
-					SERIAL memberSerial = str2num( r );
+					uint32_t memberSerial = str2num( r );
 					pChar pc = pointers::findCharBySerial( memberSerial );
 					if( ISVALIDPC( pChar ) )
 					{
@@ -105,8 +105,8 @@ void cGuild::load( cStringFile& file )
 				{
 					std::string f, s;
 					split( r, f, s );
-					P_CHAR re = pointers::findCharBySerial( str2num( f ) );
-					P_CHAR by = pointers::findCharBySerial( str2num( s ) ); 
+					pChar re = pointers::findCharBySerial( str2num( f ) );
+					pChar by = pointers::findCharBySerial( str2num( s ) ); 
 
 					if( ISVALIDPC( re ) && ISVALIDPC( by ) )
 					{
@@ -139,13 +139,13 @@ void cGuild::save( FILE* file )
 	fprintWstring(  file, "CHARTER", charter );
 	fprintf( file, "WEBPAGE %s\n", webpage.c_str());
 
-	std::map< SERIAL, P_GUILD_MEMBER >::iterator member( members.begin() ), member_end( members.end() );
+	std::map< uint32_t, P_GUILD_MEMBER >::iterator member( members.begin() ), member_end( members.end() );
 	for( ; member!=member_end; ++member )
 	{
 		member->second->save( file );
 	}
 
-	std::map< SERIAL, P_GUILD_RECRUIT >::iterator recruit( recruits.begin() ), recruit_end( recruits.end() );
+	std::map< uint32_t, P_GUILD_RECRUIT >::iterator recruit( recruits.begin() ), recruit_end( recruits.end() );
 	for( ; recruit!=recruit_end; ++recruit )
 	{
 		recruit->second->save( file );
@@ -204,7 +204,7 @@ std::string cGuild::getAbbreviation()
 \author Endymion
 \param pc the player
 */
-P_GUILD_MEMBER cGuild::addMember( P_CHAR pc )
+P_GUILD_MEMBER cGuild::addMember( pChar pc )
 {
 
 	P_GUILD_MEMBER member = new cGuildMember( pc->getSerial32() );
@@ -219,7 +219,7 @@ P_GUILD_MEMBER cGuild::addMember( P_CHAR pc )
 \author Endymion
 \param pc the player
 */
-void cGuild::resignMember( P_CHAR pc )
+void cGuild::resignMember( pChar pc )
 {
 	pc->setGuild( NULL, NULL );
 	members.erase( pc->getSerial32() );
@@ -230,10 +230,10 @@ void cGuild::resignMember( P_CHAR pc )
 \author Endymion
 \param member the member
 */
-P_GUILD_MEMBER cGuild::getMember( SERIAL member )
+P_GUILD_MEMBER cGuild::getMember( uint32_t member )
 {
 
-	std::map< SERIAL, P_GUILD_MEMBER >::iterator iter( members.find( member ) );
+	std::map< uint32_t, P_GUILD_MEMBER >::iterator iter( members.find( member ) );
 	return ( iter!=members.end() )? iter->second: NULL;
 
 }
@@ -243,7 +243,7 @@ P_GUILD_MEMBER cGuild::getMember( SERIAL member )
 \brief Add a new recruit
 \author Endymion
 */
-P_GUILD_RECRUIT cGuild::addNewRecruit( P_CHAR recruit, P_CHAR recruiter )
+P_GUILD_RECRUIT cGuild::addNewRecruit( pChar recruit, pChar recruiter )
 {
 	P_GUILD_RECRUIT re = new cGuildRecruit( recruit->getSerial32() );
 	re->recruiter = this->getMember( recruiter->getSerial32() );
@@ -256,9 +256,9 @@ P_GUILD_RECRUIT cGuild::addNewRecruit( P_CHAR recruit, P_CHAR recruiter )
 \author Endymion
 \return pc the player
 */
-void cGuild::refuseRecruit( P_CHAR pc )
+void cGuild::refuseRecruit( pChar pc )
 {
-	std::map< SERIAL, P_GUILD_RECRUIT>::iterator iter( recruits.find( pc->getSerial32() ) ), end( recruits.end() );
+	std::map< uint32_t, P_GUILD_RECRUIT>::iterator iter( recruits.find( pc->getSerial32() ) ), end( recruits.end() );
 	if( iter != end ) {
 		recruits.erase( iter );
 	}
@@ -269,10 +269,10 @@ void cGuild::refuseRecruit( P_CHAR pc )
 \author Endymion
 \param recruit the recruit
 */
-P_GUILD_RECRUIT cGuild::getRecruit( SERIAL recruit )
+P_GUILD_RECRUIT cGuild::getRecruit( uint32_t recruit )
 {
 
-	std::map< SERIAL, P_GUILD_RECRUIT >::iterator iter( recruits.find( recruit ) );
+	std::map< uint32_t, P_GUILD_RECRUIT >::iterator iter( recruits.find( recruit ) );
 	return ( iter!=recruits.end() )? iter->second: NULL;
 
 }
@@ -285,7 +285,7 @@ P_GUILD_RECRUIT cGuild::getRecruit( SERIAL recruit )
 /*!
 \brief Contructor of cGuilded
 */
-cGuildMember::cGuildMember( SERIAL serial )
+cGuildMember::cGuildMember( uint32_t serial )
 {
 	toggle = GUILD_TOGGLE_ALL;
 	title = "Novice";
@@ -339,7 +339,7 @@ void cGuildMember::save( FILE* file )
 
 
 
-cGuildRecruit::cGuildRecruit( SERIAL recruit )
+cGuildRecruit::cGuildRecruit( uint32_t recruit )
 {
 	this->serial = recruit;
 	this->recruiter = NULL;
@@ -409,7 +409,7 @@ cGuildz::cGuildz()
 
 cGuildz::~cGuildz()
 {
-	std::map< SERIAL, P_GUILD >::iterator iter( guilds.begin() ), end( guilds.end() );
+	std::map< uint32_t, P_GUILD >::iterator iter( guilds.begin() ), end( guilds.end() );
 	for( ; iter!=end; iter++ )
 	{
 		delete iter->second;
@@ -478,7 +478,7 @@ bool cGuildz::save( )
 	fprintf( file, "// || Requires NoX-Wizard version 0.82 to be read correctly               ||\n");
 	fprintf( file, "// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n\n\n");
 
-	std::map< SERIAL, P_GUILD >::iterator iter( guilds.begin() ), end( guilds.end() );
+	std::map< uint32_t, P_GUILD >::iterator iter( guilds.begin() ), end( guilds.end() );
 	for( ; iter!=end; iter++ )
 	{
 		iter->second->save( file );
@@ -522,7 +522,7 @@ bool cGuildz::load()
 
 }
 
-P_GUILD cGuildz::addGuild( SERIAL stone ) {
+P_GUILD cGuildz::addGuild( uint32_t stone ) {
 
 	P_GUILD guild = new cGuild( stone );
 	guilds.insert( make_pair( guild->serial, guild ) );
@@ -530,9 +530,9 @@ P_GUILD cGuildz::addGuild( SERIAL stone ) {
 
 }
 
-P_GUILD cGuildz::getGuild( SERIAL guild )
+P_GUILD cGuildz::getGuild( uint32_t guild )
 {
-	std::map< SERIAL, P_GUILD >::iterator iter( guilds.find( guild ) );
+	std::map< uint32_t, P_GUILD >::iterator iter( guilds.find( guild ) );
 	if( iter!=guilds.end() )
 		return iter->second;
 	else

@@ -24,20 +24,20 @@ class cTarget {
 
 private:
 
-	static SERIAL serial_current;
+	static uint32_t serial_current;
 
 protected:
 
 	Location loc;
 	uint16_t model;
-	SERIAL clicked;
+	uint32_t clicked;
 
 public:
 
-	SERIAL serial;
+	uint32_t serial;
 	bool type;
 
-	SERIAL buffer[4];
+	uint32_t buffer[4];
 	std::string buffer_str[4];
 	AmxFunction* amx_callback;
 	processTarget code_callback;
@@ -51,7 +51,7 @@ public:
 	virtual void error( NXWCLIENT ps );
 
 	Location getLocation();
-	SERIAL getClicked();
+	uint32_t getClicked();
 	uint16_t getModel();
 
 };
@@ -128,22 +128,22 @@ P_TARGET createTarget( TARG_TYPE type );
 class TargetLocation
 {
 private:
-	P_CHAR m_pc;
+	pChar m_pc;
 	int    m_pcSerial;
-	P_ITEM m_pi;
+	pItem m_pi;
 	int    m_piSerial;
 	int    m_x;
 	int    m_y;
 	int    m_z;
 	void   init(int x, int y, int z);
-	void   init(P_CHAR pc);
-	void   init(P_ITEM pi);
+	void   init(pChar pc);
+	void   init(pItem pi);
 
 public:
 	//!creates a target loc from a character
-	TargetLocation(P_CHAR pc) { init(pc); }
+	TargetLocation(pChar pc) { init(pc); }
 	//!creates a target loc from an item
-	TargetLocation(P_ITEM pi) { init(pi); }
+	TargetLocation(pItem pi) { init(pi); }
 	//!creates a target loc from a target net packet
 	TargetLocation( P_TARGET pp );
 	//!creates a target loc from a xyz position in the map
@@ -153,12 +153,12 @@ public:
 	void revalidate();
 
 	//!gets the targetted char if any, NULL otherwise
-	inline P_CHAR getChar() { return m_pc; }
+	inline pChar getChar() { return m_pc; }
 	//!gets the targetted item if any, NULL otherwise
-	inline P_ITEM getItem() { return m_pi; }
+	inline pItem getItem() { return m_pi; }
 	//!gets the XYZ location of this target location
 	inline void getXYZ(int& x, int& y, int& z) { x = m_x; y = m_y; z = m_z; }
-	//!extends a P_ITEM data to P_CHAR and x,y,z
+	//!extends a pItem data to pChar and x,y,z
 	void extendItemTarget();
 };
 

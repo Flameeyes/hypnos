@@ -50,20 +50,20 @@ public:
 	unsigned long lastlogin;	//!< Last login time
 	struct in_addr lastip;		//!< Last ip
 	ACCOUNT_STATE state;		//!< Account state
-	std::vector<SERIAL> pgs;	//!< list of pg of this account
-	SERIAL pc_online;		//!< the online player
+	std::vector<uint32_t> pgs;	//!< list of pg of this account
+	uint32_t pc_online;		//!< the online player
 
 	cAccount( ACCOUNT num = INVALID );
 
-	SERIAL getInWorld();
+	uint32_t getInWorld();
 	void setEntering( );
-	void setOnline( P_CHAR pc );
+	void setOnline( pChar pc );
 	void setOffline();
 	void onLogin( NXWSOCKET socket );
 	bool isOnline();
 	void changePassword( std::string password);
 	void getAllChars( NxwCharWrapper& sc );
-	void addCharToAccount( P_CHAR pc );
+	void addCharToAccount( pChar pc );
 
 };
 
@@ -107,15 +107,15 @@ public:
 	ACCOUNT CreateAccount(std::string username, std::string password);
 
 	bool IsOnline( ACCOUNT acctnum );
-	SERIAL GetInWorld( ACCOUNT acctnum );
+	uint32_t GetInWorld( ACCOUNT acctnum );
 
-	void SetOnline( ACCOUNT acctnum, P_CHAR pc );
+	void SetOnline( ACCOUNT acctnum, pChar pc );
 	void SetEntering( ACCOUNT acctnum );
 	void SetOffline( ACCOUNT acctnum );
 	void OnLogin( ACCOUNT acctnum, NXWSOCKET socket );
 	int32_t verifyPassword(std::string username, std::string password);
 	int32_t ChangePassword( ACCOUNT acctnum, std::string password);
-	void AddCharToAccount( ACCOUNT acctnum, P_CHAR pc );
+	void AddCharToAccount( ACCOUNT acctnum, pChar pc );
 	void GetAllChars( ACCOUNT acctnum, NxwCharWrapper& sc );
 	ACCOUNT GetAccountByName(std::string name);
 	bool RemoveAccount( std::string name );

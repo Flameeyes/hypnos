@@ -56,7 +56,7 @@ uint32_t getCastingTime( SpellId spell )
 /*!
 \author Luxor
 */
-bool checkMagicalSpeech( P_CHAR pc, char* speech )
+bool checkMagicalSpeech( pChar pc, char* speech )
 {
 	VALIDATEPCR( pc, false );
 	NXWCLIENT client = pc->getClient();
@@ -144,14 +144,14 @@ void loadSpellsFromScript()
 \author Luxor
 \brief Checks for gate collisions
 */
-bool checkGateCollision( P_CHAR pc )
+bool checkGateCollision( pChar pc )
 {
 	VALIDATEPCR( pc, false );
 
         if ( pc->npc )
 		return false;
 
-	P_ITEM pgate = NULL;
+	pItem pgate = NULL;
 
         Location charpos = pc->getPosition();
 
@@ -175,7 +175,7 @@ bool checkGateCollision( P_CHAR pc )
 	if ( charpos.x != gatepos.x || charpos.y != gatepos.y || uint32_t(charpos.z - gatepos.z) > 2 )
 		return false;
 
-        P_CHAR pnpc = NULL;
+        pChar pnpc = NULL;
         NxwCharWrapper sc;
         sc.fillOwnedNpcs( pc, false, true );
         for ( sc.rewind(); !sc.isEmpty(); sc++ ) {
@@ -200,13 +200,13 @@ bool checkGateCollision( P_CHAR pc )
 // Return type		 : static
 // Author			 : Xanathar
 // Argument 		 : int spellnum -> the spell number
-// Argument 		 : P_CHAR pa -> attacker, can be NULL
-// Argument 		 : P_CHAR pd -> defender
+// Argument 		 : pChar pa -> attacker, can be NULL
+// Argument 		 : pChar pd -> defender
 // Argument 		 : int spellflags -> spell flags
 // Argument 		 : int param -> spell param
 // Argument 		 : bool areaspell = false -> is an area spell ?
 // Changes			 : none yet
-static inline bool checkTownLimits(SpellId spellnum, P_CHAR pa, P_CHAR pd, int spellflags, int param, bool areaspell = false)
+static inline bool checkTownLimits(SpellId spellnum, pChar pa, pChar pd, int spellflags, int param, bool areaspell = false)
 {
 	//VALIDATEPCR(pa, false);
 	VALIDATEPCR(pd, false);
@@ -234,7 +234,7 @@ static inline bool checkTownLimits(SpellId spellnum, P_CHAR pa, P_CHAR pd, int s
 \param num spell id
 \return true if the pc has enough mana, else false
 */
-static inline bool checkMana(P_CHAR pc, SpellId num)
+static inline bool checkMana(pChar pc, SpellId num)
 {
 	VALIDATEPCR(pc, false);
 
@@ -253,10 +253,10 @@ static inline bool checkMana(P_CHAR pc, SpellId num)
 // Description		 : subtracts mana from char
 // Return type		 : static
 // Author			 : Xanathar
-// Argument 		 : P_CHAR pc -> -- as default --
+// Argument 		 : pChar pc -> -- as default --
 // Argument 		 : int mana -> -- as default --
 // Changes			 : none yet
-static inline void subtractMana(P_CHAR pc, SpellId spellnumber)
+static inline void subtractMana(pChar pc, SpellId spellnumber)
 {
 	VALIDATEPC(pc);
 
@@ -276,10 +276,10 @@ static inline void subtractMana(P_CHAR pc, SpellId spellnumber)
 //					   eventually changes attacker/defender roles
 // Return type		 : bool (true if roles changed)
 // Author			 : Xanathar
-// Argument 		 : P_CHAR pa -> attacker
-// Argument 		 : P_CHAR pd -> defender
+// Argument 		 : pChar pa -> attacker
+// Argument 		 : pChar pd -> defender
 // Changes			 : none yet
-static bool checkReflection(P_CHAR &pa, P_CHAR &pd)
+static bool checkReflection(pChar &pa, pChar &pd)
 {
 	VALIDATEPCR(pa, false);
 	VALIDATEPCR(pd, false);
@@ -326,11 +326,11 @@ static inline bool isAreaSpell(SpellId spell)
 // Description		 : check if defender can resist a spell
 // Return type		 : bool
 // Author			 : Xanathar
-// Argument 		 : P_CHAR pa -> attacker
-// Argument 		 : P_CHAR pd -> defender
+// Argument 		 : pChar pa -> attacker
+// Argument 		 : pChar pd -> defender
 // Argument 		 : int spellnumber -> spell
 // Changes			 : none yet
-static bool checkResist(P_CHAR pa, P_CHAR pd, SpellId spellnumber)
+static bool checkResist(pChar pa, pChar pd, SpellId spellnumber)
 {	// This function uses informations found at http://uo.stratics.com !
 
 	VALIDATEPCR(pd, false);
@@ -360,10 +360,10 @@ static bool checkResist(P_CHAR pa, P_CHAR pd, SpellId spellnumber)
 \brief Plays the spell effect
 \note Completely rewritten in 12 sep 2003
 */
-static void spellFX(SpellId spellnum, P_CHAR pcaster = NULL, P_CHAR pctarget = NULL, P_ITEM pitarget = NULL )
+static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NULL, pItem pitarget = NULL )
 {
-	P_CHAR pcfrom = pcaster;
-	P_CHAR pcto = pctarget;
+	pChar pcfrom = pcaster;
+	pChar pcto = pctarget;
 	if ( !ISVALIDPC( pcfrom ) && !ISVALIDPC( pcto ) )
 		return;
 	if ( !ISVALIDPC( pcfrom ) && ISVALIDPC( pcto ) )
@@ -606,18 +606,18 @@ static void spellFX(SpellId spellnum, P_CHAR pcaster = NULL, P_CHAR pctarget = N
 // Description		 : inflicts magic damage from a spell
 // Return type		 : void
 // Author			 : Xanathar
-// Argument 		 : P_CHAR pa -> attacker
-// Argument 		 : P_CHAR pd -> defender
+// Argument 		 : pChar pa -> attacker
+// Argument 		 : pChar pd -> defender
 // Argument 		 : int spellnum -> spell number
 // Argument 		 : int spellflags = 0 -> spell flags
 // Argument 		 : int param = 0 -> optional parameter for some spellflags
 // Changes			 : none yet
-static void damage(P_CHAR pa, P_CHAR pd, SpellId spellnum, int spellflags = 0, int param = 0)
+static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int param = 0)
 {
 	VALIDATEPC(pd);
 
-	P_CHAR p_realattacker = pa;
-	P_CHAR p_realdefender = pd;
+	pChar p_realattacker = pa;
+	pChar p_realdefender = pd;
 
 	// check resistances :)
 	if ((ISVALIDPC(pa))&&(!(spellflags&SPELLFLAG_DONTREFLECT)))
@@ -683,10 +683,10 @@ static void damage(P_CHAR pa, P_CHAR pd, SpellId spellnum, int spellflags = 0, i
 // Description		 : check reagents for presence
 // Return type		 : bool
 // Author			 : Xanathar
-// Argument 		 : P_CHAR pc -> -- as default --
+// Argument 		 : pChar pc -> -- as default --
 // Argument 		 : reag_st reagents -> -- as default --
 // Changes			 : none yet
-bool checkReagents(P_CHAR pc, reag_st reagents)
+bool checkReagents(pChar pc, reag_st reagents)
 {
 	VALIDATEPCR(pc, false);
 	reag_st fail;
@@ -736,9 +736,9 @@ bool checkReagents(P_CHAR pc, reag_st reagents)
 // Description		 : plays failure effects
 // Return type		 : void
 // Author			 : Xanathar
-// Argument 		 : P_CHAR pc -> wannabe caster
+// Argument 		 : pChar pc -> wannabe caster
 // Changes			 : none yet
-void spellFailFX(P_CHAR pc)
+void spellFailFX(pChar pc)
 {
 	VALIDATEPC(pc);
 	if ((pc->spell < 0)||( pc->spell>89)) return;
@@ -758,9 +758,9 @@ void spellFailFX(P_CHAR pc)
 // Argument 		 : int x -> x coord of epicenter
 // Argument 		 : int y -> y coord of epicenter
 // Argument 		 : int spellnum -> spell number
-// Argument 		 : P_CHAR pcaster -> caster (can be NULL)
+// Argument 		 : pChar pcaster -> caster (can be NULL)
 // Changes			 : none yet
-void castAreaAttackSpell (int x, int y, SpellId spellnum, P_CHAR pcaster)
+void castAreaAttackSpell (int x, int y, SpellId spellnum, pChar pcaster)
 {
 	NxwCharWrapper sc;
 	uint32_t range = VISRANGE -2;
@@ -780,7 +780,7 @@ void castAreaAttackSpell (int x, int y, SpellId spellnum, P_CHAR pcaster)
 	}
 
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-		P_CHAR pd = sc.getChar();
+		pChar pd = sc.getChar();
 		if ( ISVALIDPC(pd) ) {
 			if ( ISVALIDPC( pcaster ) ) {
 				if ( spellnum == SPELL_EARTHQUAKE || spellnum == SPELL_CHAINLIGHTNING ) {
@@ -939,10 +939,10 @@ bool spellRequiresTarget(SpellId spellnum)
 // Description		 : check if the target is too far from the caster
 // Return type		 : bool
 // Author			 : Luxor
-// Argument 		 : P_CHAR caster -> the caster
-// Argument 		 : P_CHAR target -> the target
+// Argument 		 : pChar caster -> the caster
+// Argument 		 : pChar target -> the target
 // Changes			 : none yet
-static bool checkDistance(P_CHAR caster, P_CHAR target)
+static bool checkDistance(pChar caster, pChar target)
 {
 	VALIDATEPCR(caster, false);
 	VALIDATEPCR(target, false);
@@ -964,7 +964,7 @@ static bool checkDistance(P_CHAR caster, P_CHAR target)
 // Return type		 : bool
 // Author                : Luxor
 // Changes		 : none yet
-static bool checkLos(P_CHAR caster, Location destpos)
+static bool checkLos(pChar caster, Location destpos)
 {
 	VALIDATEPCR(caster, false);
         if (!line_of_sight(INVALID, caster->getPosition(), destpos, INVALID)) {
@@ -985,7 +985,7 @@ static bool checkLos(P_CHAR caster, Location destpos)
 bool checkRequiredTargetType(SpellId spellnum, TargetLocation& t)
 {
 			// 0:none,1:xyz,2:item,3:char,4:container or door,6:rune,5:container
-	P_ITEM pi = t.getItem();
+	pItem pi = t.getItem();
 	int x,y,z;
 	t.getXYZ(x,y,z);
 
@@ -1020,10 +1020,10 @@ bool checkRequiredTargetType(SpellId spellnum, TargetLocation& t)
 // Description		 : delete reagents
 // Return type		 : void
 // Author			 : Xanathar
-// Argument 		 :	P_CHAR pc -> -- as default --
+// Argument 		 :	pChar pc -> -- as default --
 // Argument 		 : reag_st reags -> -- as default --
 // Changes			 : none yet
-void consumeReagents( P_CHAR pc, reag_st reags )
+void consumeReagents( pChar pc, reag_st reags )
 {
 	VALIDATEPC(pc);
 	if ( pc->dontUseReagents() ) return;
@@ -1061,10 +1061,10 @@ SpellId spellNumberFromScrollId(int id)
 \author Xanathar & Luxor
 \brief Casting function for stat pumping spells
 */
-static void castStatPumper(SpellId spellnumber, TargetLocation& dest, P_CHAR pa, int flags, int param)
+static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, int flags, int param)
 {
 	int bonus = 10; //default
-	P_CHAR pd = NULL;
+	pChar pd = NULL;
 	int duration = 60; // one minute default
 
 	if (ISVALIDPC(pa)) {
@@ -1079,8 +1079,8 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, P_CHAR pa,
 
 	if ((pd = dest.getChar())==NULL) return;
 
-	P_CHAR p_realAttacker = pa;
-	P_CHAR p_realDefender = pd;
+	pChar p_realAttacker = pa;
+	pChar p_realDefender = pd;
 
 
 	if ((pa!=NULL)&&(!(flags&SPELLFLAG_DONTREFLECT)))
@@ -1149,10 +1149,10 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, P_CHAR pa,
 ///////////////////////////////////////////////////////////////////
 // Function name	 : summon
 // Description		 : summons an npc for the caster :]
-// Return type		 : P_CHAR
+// Return type		 : pChar
 // Author			 : Xanathar & Luxor
 // Changes			 : Luxor -> added code for uncontrollable npcs. added code for xyz target.
-P_CHAR summon (P_CHAR owner, int npctype, int duration, bool bTamed, int x, int y, int z)
+pChar summon (pChar owner, int npctype, int duration, bool bTamed, int x, int y, int z)
 {
 	VALIDATEPCR(owner, NULL);
 	if (x == INVALID || y == INVALID || z == INVALID)
@@ -1162,7 +1162,7 @@ P_CHAR summon (P_CHAR owner, int npctype, int duration, bool bTamed, int x, int 
 		y = charpos.y;
 		z = charpos.z;
 	}
-	P_CHAR pc = npcs::addNpc(npctype, x, y, z);
+	pChar pc = npcs::addNpc(npctype, x, y, z);
 	VALIDATEPCR(pc, NULL);
 	if (bTamed) {
 		pc->setOwner(owner);
@@ -1182,14 +1182,14 @@ P_CHAR summon (P_CHAR owner, int npctype, int duration, bool bTamed, int x, int 
 
 
 
-void castFieldSpell( P_CHAR pc, int x, int y, int z, int spellnumber)
+void castFieldSpell( pChar pc, int x, int y, int z, int spellnumber)
 {
 	VALIDATEPC(pc);
 	int /*snr,*/ j = 0, fieldLen = 4/*, i*/;
 	int fx[5], fy[5]; // bugfix LB, was fx[4] ...
 	short id;
 
-	if (pc!=NULL) j=fielddir(DEREF_P_CHAR(pc), x, y, z); // lb bugfix, socket char# confusion
+	if (pc!=NULL) j=fielddir(DEREF_pChar(pc), x, y, z); // lb bugfix, socket char# confusion
 
 	if (j)
 	{	fx[0]=fx[1]=fx[2]=fx[3]=fx[4]=x; fy[0]=y; fy[1]=y+1; fy[2]=y-1; fy[3]=y+2; fy[4]=y-2;}
@@ -1250,12 +1250,12 @@ void castFieldSpell( P_CHAR pc, int x, int y, int z, int spellnumber)
 // Changes			 : none yet.
 #define CHECKDISTANCE(A,B) if(!checkDistance(A,B) || !A->losFrom(B)) return; //Luxor
 
-static void applySpell(SpellId spellnumber, TargetLocation& dest, P_CHAR src, int flags, int param)
+static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, int param)
 {
 	VALIDATEPC(src);
 
-	P_CHAR pd = dest.getChar();
-	P_ITEM pi = dest.getItem();
+	pChar pd = dest.getChar();
+	pItem pi = dest.getItem();
 	int x,y,z;
 	dest.getXYZ(x,y,z);
 
@@ -1486,7 +1486,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, P_CHAR src, in
 				y = pi->getPosition().y;
 			}
 			NxwCharWrapper sc;
-			P_CHAR pc_curr;
+			pChar pc_curr;
 			sc.fillCharsNearXYZ( x, y, src->skill[MAGERY] / 100, true, false );
 			for ( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pc_curr = sc.getChar();
@@ -1518,7 +1518,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, P_CHAR src, in
 					if ((pi->morex < 10)&&(pi->morey < 10)) {
 						src->sysmsg("The rune is not marked yet.");
 					} else {
-						P_ITEM pgate = item::CreateFromScript( "$item_a_blue_moongate" );
+						pItem pgate = item::CreateFromScript( "$item_a_blue_moongate" );
 						VALIDATEPI( pgate );
 						pgate->MoveTo( srcpos );
 						pgate->morex = pi->morex;
@@ -1529,7 +1529,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, P_CHAR src, in
 						pgate->setDecayTime( uiCurrentTime + 30*MY_CLOCKS_PER_SEC );
 						pgate->Refresh();
 
-						P_ITEM pgate2 = item::CreateFromScript( "$item_a_blue_moongate" );
+						pItem pgate2 = item::CreateFromScript( "$item_a_blue_moongate" );
 						VALIDATEPI( pgate2 );
 						pgate2->MoveTo( pi->morex, pi->morey, pi->morez );
 						pgate2->morex = srcpos.x;
@@ -1553,7 +1553,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, P_CHAR src, in
 			sc.fillCharsNearXYZ( x, y, src->skill[MAGERY] / 100, true);
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-				P_CHAR pd = sc.getChar();
+				pChar pd = sc.getChar();
 				if ( ISVALIDPC(pd) && pd->getSerial32()!=src->getSerial32()) {
 					spellFX(spellnumber, src, pd);
 					castStatPumper(SPELL_CURSE, dest, src, flags, param);
@@ -1567,7 +1567,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, P_CHAR src, in
 			NxwCharWrapper sc;
 			sc.fillCharsNearXYZ( x, y, src->skill[MAGERY] / 100, true);
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-				P_CHAR pd = sc.getChar();
+				pChar pd = sc.getChar();
 				if (ISVALIDPC(pd) && pd->IsHidden() && !checkResist(src, pd, SPELL_REVEAL)) {
 					if ( pd->IsHiddenBySpell() )
 						pd->delTempfx( tempfx::SPELL_INVISIBILITY );
@@ -1599,7 +1599,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, P_CHAR src, in
 			sc.fillCharsNearXYZ( x, y, src->skill[MAGERY] / 100, true);
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-				P_CHAR pd = sc.getChar();
+				pChar pd = sc.getChar();
 				if(ISVALIDPC(pd)) {
 					tempfx::add(pd,pd, tempfx::SPELL_PROTECTION, nValue, 0, 0, nTime);
 					spellFX(spellnumber, src, pd);
@@ -1671,7 +1671,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, P_CHAR src, in
 			sc.fillCharsNearXYZ( x, y, src->skill[MAGERY] / 100, true);
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-				P_CHAR pd = sc.getChar();
+				pChar pd = sc.getChar();
 				if(ISVALIDPC(pd))
 					pd->curePoison();
 			}
@@ -1887,11 +1887,11 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, P_CHAR src, in
 // Author			 : Xanathar
 // Argument 		 : int spellnumber -> the spell number
 // Argument 		 : TargetLocation& dest -> the target
-// Argument 		 : P_CHAR src = NULL -> the caster, if any
+// Argument 		 : pChar src = NULL -> the caster, if any
 // Argument 		 : int flags = 0 -> spell flags, if any
 // Argument 		 : int param = 0 -> optional parameters, if any
 // Changes			 : Luxor -> some checks to improve stability
-void castSpell(SpellId spellnumber, TargetLocation& dest, P_CHAR src, int flags, int param)
+void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, int param)
 {
 
 	if (!checkRequiredTargetType(spellnumber, dest)) return;
@@ -1985,7 +1985,7 @@ bool beginCasting (SpellId num, NXWCLIENT s, CastingType type)
 {
 	if (s == NULL) return true;
 	// override for spellcasting (?)
-	P_CHAR pc = s->currChar();
+	pChar pc = s->currChar();
 	VALIDATEPCR(pc, false);
 	if (pc->dead) return false;
 
@@ -2052,7 +2052,7 @@ bool beginCasting (SpellId num, NXWCLIENT s, CastingType type)
 \author Luxor
 \since 0.82
 */
-cPolymorphMenu::cPolymorphMenu( P_CHAR pc ) : cIconListMenu()
+cPolymorphMenu::cPolymorphMenu( pChar pc ) : cIconListMenu()
 {
 	VALIDATEPC( pc );
 	if ( pc->getTempfx( tempfx::SPELL_POLYMORPH ) != NULL )
@@ -2084,11 +2084,11 @@ cPolymorphMenu::cPolymorphMenu( P_CHAR pc ) : cIconListMenu()
 */
 void cPolymorphMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 {
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC( pc );
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
-	std::map<SERIAL, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
+	std::map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
 	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
 	pc->delTempfx( tempfx::SPELL_STRENGHT );
@@ -2157,7 +2157,7 @@ void cPolymorphMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 \author Luxor
 \since 0.82
 */
-cCreateFoodMenu::cCreateFoodMenu( P_CHAR pc ) : cIconListMenu()
+cCreateFoodMenu::cCreateFoodMenu( pChar pc ) : cIconListMenu()
 {
 	VALIDATEPC( pc );
 
@@ -2180,11 +2180,11 @@ cCreateFoodMenu::cCreateFoodMenu( P_CHAR pc ) : cIconListMenu()
 */
 void cCreateFoodMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 {
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC( pc );
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
-	std::map<SERIAL, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
+	std::map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
 	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
 	item::CreateFromScript( data, pc->getBackpack() );
@@ -2196,7 +2196,7 @@ void cCreateFoodMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 \author Luxor
 \since 0.82
 */
-cSummonCreatureMenu::cSummonCreatureMenu( P_CHAR pc ) : cIconListMenu()
+cSummonCreatureMenu::cSummonCreatureMenu( pChar pc ) : cIconListMenu()
 {
 	VALIDATEPC( pc );
 
@@ -2222,15 +2222,15 @@ cSummonCreatureMenu::cSummonCreatureMenu( P_CHAR pc ) : cIconListMenu()
 */
 void cSummonCreatureMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 {
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC( pc );
 
 	cPacketResponseToDialog* p = (cPacketResponseToDialog*)pkg;
-	std::map<SERIAL, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
+	std::map<uint32_t, int32_t>::iterator iter( iconData.find( p->index.get()-1 ) );
 	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
 	Location pos = pc->getPosition();
-	P_CHAR pc_monster = npcs::addNpc( data, pos.x, pos.y, pos.z );
+	pChar pc_monster = npcs::addNpc( data, pos.x, pos.y, pos.z );
 	VALIDATEPC( pc_monster );
 
 	pc_monster->setOwner( pc );

@@ -39,7 +39,7 @@ path_node* cPath::create_node( Location pos, path_node* parentNode, uint32_t cos
 /*!
 \author Luxor
 */
-cPath::cPath( Location startPos, Location finalPos, P_CHAR pc )
+cPath::cPath( Location startPos, Location finalPos, pChar pc )
 {
 	if ( pc == NULL )
 		pc_serial = INVALID;
@@ -75,7 +75,7 @@ cPath::cPath( Location startPos, Location finalPos, P_CHAR pc )
 */
 void cPath::exec()
 {
-	P_CHAR pc = pointers::findCharBySerial( pc_serial );
+	pChar pc = pointers::findCharBySerial( pc_serial );
 	uint32_t min_cost, curr_cost, heuristic, loops = 0;
 	NODE_LIST::iterator it;
 
@@ -167,7 +167,7 @@ void cPath::exec()
 */
 uint8_t cPath::addReachableNodes( path_node* node )
 {
-	P_CHAR pc = pointers::findCharBySerial( pc_serial );
+	pChar pc = pointers::findCharBySerial( pc_serial );
 
 	bool bWalkable[ 4 ];
 

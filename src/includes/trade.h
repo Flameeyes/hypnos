@@ -11,7 +11,7 @@
 #define __TRADE_H__
 
 void sellaction(int s);
-P_ITEM tradestart(P_CHAR pc1, P_CHAR pc2);
+pItem tradestart(pChar pc1, pChar pc2);
 void clearalltrades();
 void trademsg(int s);
 
@@ -19,7 +19,7 @@ void trademsg(int s);
 
 typedef struct {
 	int layer;
-	P_ITEM item;
+	pItem item;
 	int amount;
 } buyeditem;
 
@@ -33,8 +33,8 @@ class cRestockMng {
 private:
 
 	TIMERVAL timer;
-	std::queue< SERIAL > needrestock;
-	std::queue< SERIAL > restocked;
+	std::queue< uint32_t > needrestock;
+	std::queue< uint32_t > restocked;
 
 	void rewindList();
 	void updateTimer();
@@ -48,7 +48,7 @@ public:
 	void doRestock();
 	void doRestockAll();
 
-	void addNewRestock( P_ITEM pi );
+	void addNewRestock( pItem pi );
 
 };
 

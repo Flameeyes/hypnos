@@ -225,7 +225,7 @@ NATIVE(_cfgServerOption)
 NATIVE(_mnu_Prepare)
 {
 
-	P_CHAR pc = pointers::findCharBySerial( params[1] );
+	pChar pc = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( pc, INVALID );
 
 	if ( !pc->IsOnline() )
@@ -253,7 +253,7 @@ NATIVE(_mnu_Prepare)
 */
 NATIVE(_mnu_SetStyle)
 {
-	P_CHAR pc = pointers::findCharBySerial( params[1] );
+	pChar pc = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( pc, INVALID );
 
 	if ( !pc->IsOnline() )
@@ -278,7 +278,7 @@ NATIVE(_mnu_SetStyle)
 NATIVE(_mnu_SetTitle)
 {
 
-	P_CHAR pc = pointers::findCharBySerial( params[1] );
+	pChar pc = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( pc, INVALID );
 
 	if ( !pc->IsOnline() )
@@ -309,7 +309,7 @@ NATIVE(_mnu_SetTitle)
 */
 NATIVE(_mnu_SetColor)
 {
-	P_CHAR pc = pointers::findCharBySerial( params[1] );
+	pChar pc = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( pc, INVALID );
 
 	if ( !pc->IsOnline() )
@@ -332,7 +332,7 @@ NATIVE(_mnu_SetColor)
 */
 NATIVE(_mnu_AddItem)
 {
-	P_CHAR pc = pointers::findCharBySerial( params[1] );
+	pChar pc = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( pc, INVALID );
 
 	if ( !pc->IsOnline() )
@@ -361,7 +361,7 @@ NATIVE(_mnu_AddItem)
 */
 NATIVE(_mnu_Show)
 {
-	P_CHAR pc = pointers::findCharBySerial( params[1] );
+	pChar pc = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( pc, INVALID );
 
 	if ( !pc->IsOnline() )
@@ -383,7 +383,7 @@ NATIVE(_mnu_Show)
 */
 NATIVE(_mnu_SetCallback)
 {
-	P_CHAR pc = pointers::findCharBySerial( params[1] );
+	pChar pc = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( pc, INVALID );
 
 	if ( !pc->IsOnline() )
@@ -478,7 +478,7 @@ NATIVE(_sprintf)
 NATIVE(_chr_message)
 {
 
-	P_CHAR pc = pointers::findCharBySerial( params[1] );
+	pChar pc = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( pc, false );
 
 	NXWCLIENT ps = pc->getClient();
@@ -508,9 +508,9 @@ NATIVE(_chr_message)
 NATIVE(_chr_jail)
 {
 
-	P_CHAR jailer = pointers::findCharBySerial( params[1] );
+	pChar jailer = pointers::findCharBySerial( params[1] );
 
-	P_CHAR pc = pointers::findCharBySerial( params[2] );
+	pChar pc = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, false );
 
 	if( params[3]==0 ) {
@@ -538,7 +538,7 @@ NATIVE(_chr_jail)
 */
 NATIVE(_CountColoredItems)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR( pc, INVALID );
 	return pc->CountItems(params[2], params[3]);
 }
@@ -552,7 +552,7 @@ NATIVE(_CountColoredItems)
 */
 NATIVE(_setCriminal)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR( pc, INVALID );
 	pc->SetCriminal();
 	return 0;
@@ -567,7 +567,7 @@ NATIVE(_setCriminal)
 */
 NATIVE(_setGrey)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR( pc, INVALID );
 	pc->SetGrey();
 	return 0;
@@ -582,7 +582,7 @@ NATIVE(_setGrey)
 */
 NATIVE(_setPermaGrey)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR( pc, INVALID );
 	pc->SetPermaGrey();
 	return 0;
@@ -597,7 +597,7 @@ NATIVE(_setPermaGrey)
 */
 NATIVE(_setInnocent)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR( pc, INVALID );
 	pc->SetInnocent();
 	return 0;
@@ -612,7 +612,7 @@ NATIVE(_setInnocent)
 */
 NATIVE(_setMurderer)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR( pc, INVALID );
 	pc->SetMurderer();
 	return 0;
@@ -628,7 +628,7 @@ NATIVE(_setMurderer)
 */
 NATIVE(_setPriv)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR( pc, INVALID );
 	pc->SetPriv(params[2]); return 0;
 }
@@ -642,7 +642,7 @@ NATIVE(_setPriv)
 */
 NATIVE(_unhide)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR( pc, INVALID );
 	pc->unHide();
 	return 0;
@@ -659,7 +659,7 @@ NATIVE(_unhide)
 */
 NATIVE(_setMultiSerial)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR( pc, INVALID );
 	pc->setMultiSerial(params[2]);
 	return 0;
@@ -675,7 +675,7 @@ NATIVE(_setMultiSerial)
 */
 NATIVE(_setOwnSerial)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR( pc, INVALID );
 	pc->setOwnerSerial32(params[2]);
 	return 0;
@@ -691,7 +691,7 @@ NATIVE(_setOwnSerial)
 */
 NATIVE(_setOwnSerialOnly)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR( pc, INVALID );
 	pc->setOwnerSerial32Only(params[2]);
 	return 0;
@@ -709,9 +709,9 @@ NATIVE(_setOwnSerialOnly)
 */
 NATIVE(_contAddItem)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, false );
-	P_ITEM pi1 = pointers::findItemBySerial(params[2]);
+	pItem pi1 = pointers::findItemBySerial(params[2]);
 	VALIDATEPIR( pi1, false );
 	return pi->AddItem(pi1, params[3],params[4]);
 }
@@ -726,7 +726,7 @@ NATIVE(_contAddItem)
 */
 NATIVE(_color)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, INVALID );
 	return pi->getColor();
 }
@@ -741,9 +741,9 @@ NATIVE(_color)
 */
 NATIVE(_contPileItem)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, false );
-	P_ITEM pi1 = pointers::findItemBySerial(params[2]);
+	pItem pi1 = pointers::findItemBySerial(params[2]);
 	VALIDATEPIR( pi1, false );
 	return pi->AddItem(pi1);
 }
@@ -759,7 +759,7 @@ NATIVE(_contPileItem)
 */
 NATIVE(_contCountItems)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, INVALID );
 	return pi->CountItems(params[2], params[3]);
 }
@@ -774,7 +774,7 @@ NATIVE(_contCountItems)
 */
 NATIVE(_countItemsByID)
 {
-   P_ITEM pi = pointers::findItemBySerial(params[1]);
+   pItem pi = pointers::findItemBySerial(params[1]);
    VALIDATEPIR( pi, INVALID );
    return pi->CountItemsByID (params[2], true);
 }
@@ -795,7 +795,7 @@ NATIVE(_countItemsByID)
 */
 NATIVE(_contDelAmount)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, INVALID );
 	return pi->DeleteAmount(params[2], params[3],params[4]);
 }
@@ -811,7 +811,7 @@ NATIVE(_contDelAmount)
 */
 NATIVE(_DelAmountByID)
 {
-   P_ITEM pi = pointers::findItemBySerial(params[1]);
+   pItem pi = pointers::findItemBySerial(params[1]);
    VALIDATEPIR( pi, INVALID );
    return pi->DeleteAmountByID(params[2], params[3]);
 }
@@ -828,7 +828,7 @@ NATIVE(_DelAmountByID)
 */
 NATIVE(_imoveto)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, INVALID );
 	pi->MoveTo( params[2], params[3],params[4] );
 	pi->Refresh();
@@ -846,9 +846,9 @@ NATIVE(_imoveto)
 */
 NATIVE(_pileitem)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, false );
-	P_ITEM pi1 = pointers::findItemBySerial(params[2]);
+	pItem pi1 = pointers::findItemBySerial(params[2]);
 	VALIDATEPIR( pi1, false );
 	return pi->PileItem(pi1);
 }
@@ -863,7 +863,7 @@ NATIVE(_pileitem)
 */
 NATIVE(_reduceamount)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, INVALID );
 	return pi->ReduceAmount(params[2]);
 }
@@ -878,7 +878,7 @@ NATIVE(_reduceamount)
 */
 NATIVE(_isetContSerial)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, INVALID );
 	pi->setContSerial(params[2]);
 	return 0;
@@ -895,7 +895,7 @@ NATIVE(_isetContSerial)
 */
 NATIVE(_isetContSerialonly)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, INVALID );
 	pi->setContSerial(params[2], false, false);
 	return 0;
@@ -911,7 +911,7 @@ NATIVE(_isetContSerialonly)
 */
 NATIVE(_isetMultiSerial)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, INVALID );
 	pi->SetMultiSerial(params[2]);
 	return 0;
@@ -927,7 +927,7 @@ NATIVE(_isetMultiSerial)
 */
 NATIVE(_isetOwnSerial)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, INVALID );
 	pi->setOwnerSerial32(params[2]); return 0;
 }
@@ -943,7 +943,7 @@ NATIVE(_isetOwnSerial)
 */
 NATIVE(_isetOwnSerialOnly)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, INVALID );
 	pi->setOwnerSerial32Only(params[2]);
 	return 0;
@@ -960,7 +960,7 @@ NATIVE(_isetOwnSerialOnly)
 */
 NATIVE(_isetSerial)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR( pi, INVALID );
 	pi->setSerial32(params[2]);
 	return 0;
@@ -978,11 +978,11 @@ NATIVE(_isetSerial)
 */
 NATIVE(_itm_createFromScript)
 {
-	P_OBJECT po = NULL;
+	pObject po = NULL;
 	if ( params[2] != INVALID )
 		po = objects.findObject( params[2] );
 
-    P_ITEM pi = item::CreateFromScript(params[1], po, params[3]);
+    pItem pi = item::CreateFromScript(params[1], po, params[3]);
 	VALIDATEPIR(pi, INVALID);
     pi->Refresh();
 	return pi->getSerial32();
@@ -998,11 +998,11 @@ NATIVE(_itm_createFromScript)
 */
 NATIVE(_itm_createByDef)
 {
-	P_OBJECT po = NULL;
+	pObject po = NULL;
 	if ( params[2] != INVALID )
 		po = objects.findObject( params[2] );
 
-        P_ITEM pi = NULL;
+        pItem pi = NULL;
 	cell *cstr;
 	amx_GetAddr( amx, params[1], &cstr );
 	printstring( amx, cstr, params+1, (int)(params[0]/sizeof(cell))-1 );
@@ -1026,10 +1026,10 @@ NATIVE(_itm_createByDef)
 */
 NATIVE(_itm_createInBp)
 {
-	P_CHAR pc = pointers::findCharBySerial( params[2] );
+	pChar pc = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, INVALID );
 
-	P_ITEM pi = item::CreateFromScript( params[1], pc->getBackpack(), params[3] );
+	pItem pi = item::CreateFromScript( params[1], pc->getBackpack(), params[3] );
 
 	return ISVALIDPI( pi )? pi->getSerial32() : INVALID;
 
@@ -1045,7 +1045,7 @@ NATIVE(_itm_createInBp)
 */
 NATIVE(_itm_createInBpDef)
 {
-	P_CHAR pc = pointers::findCharBySerial( params[2] );
+	pChar pc = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, INVALID );
 
 	cell *cstr;
@@ -1053,7 +1053,7 @@ NATIVE(_itm_createInBpDef)
 	printstring( amx, cstr, params+1, (int)(params[0]/sizeof(cell))-1 );
 	g_cAmxPrintBuffer[g_nAmxPrintPtr] = '\0';
 
-	P_ITEM pi = item::CreateFromScript( g_cAmxPrintBuffer, pc->getBackpack(), params[3] );
+	pItem pi = item::CreateFromScript( g_cAmxPrintBuffer, pc->getBackpack(), params[3] );
 	g_nAmxPrintPtr = 0;
 	return ISVALIDPI( pi )? pi->getSerial32() : INVALID;
 
@@ -1069,10 +1069,10 @@ NATIVE(_itm_createInBpDef)
 */
 NATIVE(_itm_createInBank)
 {
-	P_CHAR pc = pointers::findCharBySerial( params[2] );
+	pChar pc = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, INVALID );
 
-	P_ITEM pi = item::CreateFromScript( params[1], pc->GetBankBox(), params[3] );
+	pItem pi = item::CreateFromScript( params[1], pc->GetBankBox(), params[3] );
 
 	return ISVALIDPI( pi )? pi->getSerial32() : INVALID;
 
@@ -1088,7 +1088,7 @@ NATIVE(_itm_createInBank)
 */
 NATIVE(_itm_createInBankDef)
 {
-	P_CHAR pc = pointers::findCharBySerial( params[2] );
+	pChar pc = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, INVALID );
 
 	cell *cstr;
@@ -1096,7 +1096,7 @@ NATIVE(_itm_createInBankDef)
 	printstring( amx, cstr, params+1, (int)(params[0]/sizeof(cell))-1 );
 	g_cAmxPrintBuffer[g_nAmxPrintPtr] = '\0';
 
-	P_ITEM pi = item::CreateFromScript( g_cAmxPrintBuffer, pc->GetBankBox(), params[3] );
+	pItem pi = item::CreateFromScript( g_cAmxPrintBuffer, pc->GetBankBox(), params[3] );
 	g_nAmxPrintPtr = 0;
 	return ISVALIDPI( pi )? pi->getSerial32() : INVALID;
 
@@ -1126,11 +1126,11 @@ NATIVE(_itm_isWeaponLike)
 */
 NATIVE(_chr_getBackpack)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR( pc, INVALID );
-	P_ITEM pi= pc->getBackpack();
+	pItem pi= pc->getBackpack();
 	if( !ISVALIDPI( pi ) ) {
-		P_ITEM bp = item::CreateFromScript( "$item_backpack", pc );
+		pItem bp = item::CreateFromScript( "$item_backpack", pc );
 		if( ISVALIDPI(bp) )
 		{
 			pc->packitemserial=bp->getSerial32();
@@ -1152,7 +1152,7 @@ NATIVE(_chr_getBackpack)
 */
 NATIVE(_chr_CheckEquipment)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
     pc->checkEquipement();
     return 0;
@@ -1167,7 +1167,7 @@ NATIVE(_chr_CheckEquipment)
 */
 NATIVE(_itm_checkDecay)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR(pi, INVALID);
 	pi->doDecay();
 	return 0;
@@ -1182,7 +1182,7 @@ NATIVE(_itm_checkDecay)
 */
 NATIVE(_itm_remove)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR(pi, INVALID);
 	pi->Delete();
 	return 0;
@@ -1200,7 +1200,7 @@ NATIVE(_itm_remove)
 */
 NATIVE(_chr_addNPC) //addNPC npcnum, x,y,z
 {
-    P_CHAR pc = npcs::AddNPC(INVALID, NULL, params[1], params[2], params[3], params[4]);
+    pChar pc = npcs::AddNPC(INVALID, NULL, params[1], params[2], params[3], params[4]);
     VALIDATEPCR(pc, INVALID);
     return pc->getSerial32();
 }
@@ -1214,7 +1214,7 @@ NATIVE(_chr_addNPC) //addNPC npcnum, x,y,z
 */
 NATIVE(_chr_remove)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
     pc->Delete();
     return 0;
@@ -1229,7 +1229,7 @@ NATIVE(_chr_remove)
 */
 NATIVE(_chr_calcAtt)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
     return pc->calcAtt();
 }
@@ -1244,7 +1244,7 @@ NATIVE(_chr_calcAtt)
 */
 NATIVE(_chr_calcDef)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
     return pc->calcDef(params[2]);
 }
@@ -1258,9 +1258,9 @@ NATIVE(_chr_calcDef)
 */
 NATIVE(_chr_fish)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
-	Fishing::Fish (DEREF_P_CHAR(pc));
+	Fishing::Fish (DEREF_pChar(pc));
     return 0;
 }
 
@@ -1273,7 +1273,7 @@ NATIVE(_chr_fish)
 */
 NATIVE( _chr_getGuild )
 {
-	P_CHAR pChar = pointers::findCharBySerial( params[1] );
+	pChar pChar = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( pChar, INVALID);
 
 	P_GUILD guild = pChar->getGuild();
@@ -1304,9 +1304,9 @@ NATIVE( _chr_setGuild )
 */
 NATIVE(_chr_guildCompare)
 {
-    P_CHAR pc1 = pointers::findCharBySerial(params[1]);
+    pChar pc1 = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc1, INVALID);
-    P_CHAR pc2 = pointers::findCharBySerial(params[2]);
+    pChar pc2 = pointers::findCharBySerial(params[2]);
     VALIDATEPCR(pc2, INVALID);
     return Guilds->Compare (pc1,pc2);
 }
@@ -1332,7 +1332,7 @@ NATIVE(_chr_guildCompare)
 NATIVE(_magic_castFieldSpell)
 {
 
-	P_CHAR mage = pointers::findCharBySerial( params[1] );
+	pChar mage = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( mage, INVALID );
 	TargetLocation targ(params[2],params[3],params[4]);
 	mage->castSpell(static_cast<magic::SpellId>( params[5] ), targ, SPELLFLAG_DONTCHECKSPELLBOOK|SPELLFLAG_DONTCHECKSKILL|SPELLFLAG_SILENTSPELL|SPELLFLAG_NOUSEMANA|SPELLFLAG_DONTREQREAGENTS );
@@ -1381,9 +1381,9 @@ NATIVE(_magic_checkMana)
 
 #define CASTTOPC(ATT,DEF,SPELL) \
  \
-	P_CHAR pc_att = pointers::findCharBySerial( ATT ); \
+	pChar pc_att = pointers::findCharBySerial( ATT ); \
 	VALIDATEPCR( pc_att, INVALID ); \
-	P_CHAR pc_def = pointers::findCharBySerial( DEF ); \
+	pChar pc_def = pointers::findCharBySerial( DEF ); \
 	VALIDATEPCR( pc_def, INVALID ); \
 	TargetLocation targ(pc_def);\
 	pc_att->castSpell( SPELL , targ, SPELLFLAG_DONTCHECKSPELLBOOK|SPELLFLAG_DONTCHECKSKILL|SPELLFLAG_SILENTSPELL|SPELLFLAG_NOUSEMANA|SPELLFLAG_DONTREQREAGENTS );\
@@ -1471,7 +1471,7 @@ NATIVE(_magic_castWeaken)
 NATIVE(_send_send)
 {
 
-	P_CHAR pc = pointers::findCharBySerial( params[1] );
+	pChar pc = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( pc, false );
 
 	NXWCLIENT ps = pc->getClient();
@@ -1506,9 +1506,9 @@ NATIVE(_send_send)
 */
 NATIVE(_chr_attackStuff)
 {
-    P_CHAR pc1 = pointers::findCharBySerial(params[1]);
+    pChar pc1 = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc1, INVALID);
-    P_CHAR pc2 = pointers::findCharBySerial(params[2]);
+    pChar pc2 = pointers::findCharBySerial(params[2]);
     VALIDATEPCR(pc2, INVALID);
     if (pc2->getClient() != NULL) {
 		pc2->attackStuff( pc1 );
@@ -1529,10 +1529,10 @@ NATIVE(_chr_attackStuff)
 */
 NATIVE(_send_confirmAttack)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[2]);
+    pChar pc = pointers::findCharBySerial(params[2]);
     VALIDATEPCR( pc, INVALID );
 
-	P_CHAR who = pointers::findCharBySerial( params[1] );
+	pChar who = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( who, INVALID );
 
 	NXWCLIENT ps = who->getClient();
@@ -1605,7 +1605,7 @@ NATIVE(_tempfx_activate)
 NATIVE(_tempfx_delete)
 {
 
-	P_CHAR pc = pointers::findCharBySerial( params[1] );
+	pChar pc = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( pc, INVALID )
 
 	pc->delTempfx( params[2], params[3], params[4] );
@@ -1624,7 +1624,7 @@ NATIVE(_tempfx_delete)
 NATIVE(_tempfx_isActive)
 {
 
-	P_CHAR pc = pointers::findCharBySerial( params[1] );
+	pChar pc = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( pc, INVALID )
 
 	return ( pc->getTempfx( params[2], params[3] ) != NULL )? 1 : 0;
@@ -1642,10 +1642,10 @@ NATIVE(_tempfx_isActive)
 */
 NATIVE(_chr_flee)
 {
-	P_CHAR npc=pointers::findCharBySerial( params[1] );
+	pChar npc=pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( npc, INVALID );
 
-	P_CHAR from=pointers::findCharBySerial( params[2] );
+	pChar from=pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( from, INVALID );
 
 	npc->flee( from, params[3] );
@@ -1663,7 +1663,7 @@ NATIVE(_chr_flee)
 */
 NATIVE(_chr_getEventHandler)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
   VALIDATEPCR(pc, INVALID);
   if( params[2] < 0 || params[2] >= ALLCHAREVENTS )
   	return INVALID;
@@ -1699,7 +1699,7 @@ NATIVE(_chr_getEventHandler)
 */
 NATIVE(_chr_setEventHandler)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 
 	cell *cstr;
@@ -1724,7 +1724,7 @@ NATIVE(_chr_setEventHandler)
 */
 NATIVE(_itm_getEventHandler)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
   VALIDATEPIR(pi, INVALID);
   if( params[2] < 0 || params[2] >= ALLITEMEVENTS )
   	return INVALID;
@@ -1760,7 +1760,7 @@ NATIVE(_itm_getEventHandler)
 */
 NATIVE(_itm_setEventHandler)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR(pi, INVALID);
 
 	cell *cstr;
@@ -1787,7 +1787,7 @@ NATIVE(_chr_delEventHandler)
 {
 	//we don't clear the event in other ways since it's contained in amxcback hash
 	//queues :)
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	pc->amxevents[params[2]] = NULL;
 	//pc->delAmxEvent( params[2] );
@@ -1804,7 +1804,7 @@ NATIVE(_chr_delEventHandler)
 */
 NATIVE(_itm_delEventHandler)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR(pi, INVALID);
 	pi->amxevents[ params[2] ]=NULL;
 	//pi->delAmxEvent( params[2] );
@@ -1825,12 +1825,12 @@ NATIVE(_itm_delEventHandler)
 */
 NATIVE (_send_movingfx)
 {
-    P_CHAR pc1 = pointers::findCharBySerial(params[1]);
+    pChar pc1 = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc1, INVALID);
-    P_CHAR pc2 = pointers::findCharBySerial(params[2]);
+    pChar pc2 = pointers::findCharBySerial(params[2]);
     VALIDATEPCR(pc2, INVALID);
 
-    movingeffect(DEREF_P_CHAR(pc1), DEREF_P_CHAR(pc2), (params[3]>>8)&0xFF, params[3]&0xFF, params[4], params[5],
+    movingeffect(DEREF_pChar(pc1), DEREF_pChar(pc2), (params[3]>>8)&0xFF, params[3]&0xFF, params[4], params[5],
 		params[6]);
 
 	return 0;
@@ -1847,7 +1847,7 @@ NATIVE (_send_movingfx)
 */
 NATIVE (_send_statUpdate)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
     pc->updateStats(STAT_HP);
     pc->updateStats(STAT_MANA);
@@ -1866,9 +1866,9 @@ NATIVE (_send_statUpdate)
 */
 NATIVE (_chr_helpStuff)
 {
-    P_CHAR pc1 = pointers::findCharBySerial(params[1]);
+    pChar pc1 = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc1, INVALID);
-    P_CHAR pc2 = pointers::findCharBySerial(params[2]);
+    pChar pc2 = pointers::findCharBySerial(params[2]);
     VALIDATEPCR(pc2, INVALID);
 	pc2->helpStuff(pc1);
 	return 0;
@@ -2098,7 +2098,7 @@ NATIVE( _rgn_getName )
 */
 NATIVE (_send_boltfx)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	pc->boltFX();
 	return 0;
@@ -2115,7 +2115,7 @@ NATIVE (_send_boltfx)
 */
 NATIVE (_send_questArrow)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
 	cPacketQuestArrow pkg;
@@ -2137,7 +2137,7 @@ NATIVE (_send_questArrow)
 */
 NATIVE (_chr_action)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 	pc->playAction(params[2]);
 	return 0;
@@ -2157,7 +2157,7 @@ NATIVE (_chr_action)
 */
 NATIVE (_chr_checkSkill)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
     return pc->checkSkill( static_cast<Skill>(params[2]), params[3], params[4], params[5]!=0);
 }
@@ -2172,7 +2172,7 @@ NATIVE (_chr_checkSkill)
 */
 NATIVE (_chr_unmountHorse)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
     pc->unmountHorse();
 	return 0;
@@ -2190,9 +2190,9 @@ NATIVE (_chr_mountHorse)
 {
     NXWCLIENT s = getClientFromSocket(params[1]);
 	if(s==NULL) return INVALID;
-    P_CHAR pc = s->currChar();
+    pChar pc = s->currChar();
     VALIDATEPCR(pc, INVALID);
-    P_CHAR horse = pointers::findCharBySerial(params[2]);
+    pChar horse = pointers::findCharBySerial(params[2]);
     VALIDATEPCR(horse, INVALID);
 
 	pc->mounthorse( horse );
@@ -2209,7 +2209,7 @@ NATIVE (_chr_mountHorse)
 */
 NATIVE(_chr_sound)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
     pc->playSFX(params[2]);
 	return 0;
@@ -2225,7 +2225,7 @@ NATIVE(_chr_sound)
 */
 NATIVE(_itm_sound)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
     VALIDATEPIR(pi, INVALID);
 	soundeffect3(pi, params[2]);
 	return 0;
@@ -2341,7 +2341,7 @@ NATIVE( _set_get )
 */
 NATIVE( _set_getChar )
 {
-	P_CHAR pc=pointers::findCharBySerial( amxSet::get( params[1] ) );
+	pChar pc=pointers::findCharBySerial( amxSet::get( params[1] ) );
 	return ISVALIDPC(pc)? pc->getSerial32() : INVALID;
 }
 
@@ -2355,7 +2355,7 @@ NATIVE( _set_getChar )
 */
 NATIVE( _set_getItem )
 {
-	P_ITEM pi=pointers::findItemBySerial( amxSet::get( params[1] ) );
+	pItem pi=pointers::findItemBySerial( amxSet::get( params[1] ) );
 	return ISVALIDPI(pi)? pi->getSerial32() : INVALID;
 }
 
@@ -2385,7 +2385,7 @@ NATIVE( _set_add )
 */
 NATIVE( _set_addOwnedNpcs )
 {
-	P_CHAR pc=pointers::findCharBySerial( params[2] );
+	pChar pc=pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, INVALID );
 	amxSet::addOwnedNpcs( params[1], pc, params[3]!=0, params[4]!=0 );
 	return 0;
@@ -2439,7 +2439,7 @@ NATIVE( _set_addNpcsNearObj )
 */
 NATIVE( _set_addPartyFriend )
 {
-	P_CHAR pc=pointers::findCharBySerial( params[2] );
+	pChar pc=pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, INVALID );
 	amxSet::addPartyFriend( params[1], pc, params[3], params[4]!=0 );
 	return 0;
@@ -2457,7 +2457,7 @@ NATIVE( _set_addPartyFriend )
 */
 NATIVE( _set_addItemsInCont )
 {
-	P_ITEM pi=pointers::findItemBySerial( params[2] );
+	pItem pi=pointers::findItemBySerial( params[2] );
 	VALIDATEPIR( pi, INVALID )
 	amxSet::addItemsInContainer( params[1], pi, params[3]!=0, params[4]!=0 );
 	return 0;
@@ -2476,7 +2476,7 @@ NATIVE( _set_addItemsInCont )
 */
 NATIVE( _set_addItemWeared )
 {
-	P_CHAR pc=pointers::findCharBySerial( params[2] );
+	pChar pc=pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, INVALID );
 	amxSet::addItemWeared( params[1], pc, params[3]!=0, params[4]!=0, params[5]!=0 );
 	return 0;
@@ -2544,12 +2544,12 @@ NATIVE( _set_addAllOnlinePl )
 NATIVE( _set_addOnlinePlNearObj )
 {
 	if( isCharSerial(params[2]) ) {
-		P_CHAR pc=pointers::findCharBySerial( params[2] );
+		pChar pc=pointers::findCharBySerial( params[2] );
 		VALIDATEPCR( pc, INVALID );
 		amxSet::addOnlinePlayersNearChar( params[1], pc, params[3]!=0, params[4] );
 	}
 	else {
-		P_ITEM pi=pointers::findItemBySerial( params[2] );
+		pItem pi=pointers::findItemBySerial( params[2] );
 		VALIDATEPIR( pi, INVALID );
 		amxSet::addOnlinePlayersNearItem( params[1], pi, params[4] );
 	}
@@ -2670,7 +2670,7 @@ NATIVE( _set_getRaceStuff )
 */
 NATIVE(_chr_resurrect)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc,INVALID);
 	if (pc->dead && pc->IsOnline() ) {
 		pc->resurrect();
@@ -2695,8 +2695,8 @@ NATIVE(_chr_resurrect)
 */
 NATIVE(_chr_speech)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[2]);
-    P_CHAR pc2 = pointers::findCharBySerial(params[3]);
+    pChar pc = pointers::findCharBySerial(params[2]);
+    pChar pc2 = pointers::findCharBySerial(params[3]);
     VALIDATEPCR(pc2, INVALID);
 
 	switch( params[1] )
@@ -2746,9 +2746,9 @@ NATIVE(_chr_speech)
 */
 NATIVE( _chr_showMessage )
 {
-	P_CHAR pc1 = pointers::findCharBySerial(params[1]);
+	pChar pc1 = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc1, INVALID);
-	P_CHAR pc2 = pointers::findCharBySerial(params[2]);
+	pChar pc2 = pointers::findCharBySerial(params[2]);
 	VALIDATEPCR(pc2, INVALID);
 
 	if (pc1->getClient() != NULL)
@@ -2778,9 +2778,9 @@ NATIVE( _chr_showMessage )
 */
 NATIVE(_chr_distance)
 {
-    P_CHAR pc1 = pointers::findCharBySerial(params[1]);
+    pChar pc1 = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc1, INVALID);
-    P_CHAR pc2 = pointers::findCharBySerial(params[2]);
+    pChar pc2 = pointers::findCharBySerial(params[2]);
     VALIDATEPCR(pc2, INVALID);
 
     return pc1->distFrom(pc2);
@@ -2796,9 +2796,9 @@ NATIVE(_chr_distance)
 */
 NATIVE(_chr_npcattack)
 {
-    P_CHAR pc1 = pointers::findCharBySerial(params[1]);
+    pChar pc1 = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc1, INVALID);
-    P_CHAR pc2 = pointers::findCharBySerial(params[2]);
+    pChar pc2 = pointers::findCharBySerial(params[2]);
     VALIDATEPCR(pc2, INVALID);
 
     npcattacktarget(pc1, pc2);
@@ -2814,7 +2814,7 @@ NATIVE(_chr_npcattack)
 */
 NATIVE(_chr_updatechar)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	pc->teleport();
 	return 0;
@@ -2831,7 +2831,7 @@ NATIVE(_chr_updatechar)
 NATIVE(_send_staticfx)
 {
 //Magic->doStaticEffect(params[1], params[2]);
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
     pc->staticFX(params[2], 0, 10, NULL);
     return 0;
@@ -2846,7 +2846,7 @@ NATIVE(_send_staticfx)
 */
 NATIVE(_chr_npcRelease)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 	if (pc->summontimer)
 	{
@@ -2870,9 +2870,9 @@ NATIVE(_chr_npcRelease)
 NATIVE(_chr_owns)
 {
 //	if (chars[params[1]].Owns(&chars[params[2]]))
-    P_CHAR pc1 = pointers::findCharBySerial(params[1]);
+    pChar pc1 = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc1, INVALID);
-    P_CHAR pc2 = pointers::findCharBySerial(params[2]);
+    pChar pc2 = pointers::findCharBySerial(params[2]);
     VALIDATEPCR(pc2, INVALID);
 
     if( pc1->isOwnerOf(pc2) )
@@ -2890,7 +2890,7 @@ NATIVE(_chr_owns)
 */
 NATIVE(_chr_teleport)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
 	pc->teleport();
@@ -2906,7 +2906,7 @@ NATIVE(_chr_teleport)
 */
 NATIVE(_itm_refresh)
 {
-    P_ITEM pi = pointers::findItemBySerial(params[1]);
+    pItem pi = pointers::findItemBySerial(params[1]);
     VALIDATEPIR(pi, INVALID);
 
     pi->Refresh();
@@ -2943,7 +2943,7 @@ NATIVE(_chr_lineOfSight)
 */
 NATIVE( _chr_getGuildType )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 	return pc->GetGuildType();
 }
@@ -2957,7 +2957,7 @@ NATIVE( _chr_getGuildType )
 */
 NATIVE( _chr_setGuildType )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 	pc->SetGuildType( static_cast<short>(params[2]) );
 	return 0;
@@ -2972,7 +2972,7 @@ NATIVE( _chr_setGuildType )
 */
 NATIVE( _chr_isGuildTraitor )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 	return pc->IsGuildTraitor();
 }
@@ -2986,7 +2986,7 @@ NATIVE( _chr_isGuildTraitor )
 */
 NATIVE( _chr_setGuildTraitor )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 	params[2] ? pc->SetGuildTraitor() :pc->ResetGuildTraitor();
 	return 0;
@@ -3001,7 +3001,7 @@ NATIVE( _chr_setGuildTraitor )
 */
 NATIVE( _chr_hasGuildToggle )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 	return pc->HasGuildTitleToggle();
 }
@@ -3014,7 +3014,7 @@ NATIVE( _chr_hasGuildToggle )
 */
 NATIVE( _chr_setGuildToggle )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 	if (params[2])
 		pc->SetGuildTitleToggle();
@@ -3032,7 +3032,7 @@ NATIVE( _chr_setGuildToggle )
 */
 NATIVE( _chr_getGuildFealty )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
 	return pc->GetGuildFealty();
@@ -3046,10 +3046,10 @@ NATIVE( _chr_getGuildFealty )
 */
 NATIVE( _chr_setGuildFealty )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
-	pc->SetGuildFealty( static_cast<SERIAL>(params[2]) );
+	pc->SetGuildFealty( static_cast<uint32_t>(params[2]) );
 	return 0;
 }
 
@@ -3062,7 +3062,7 @@ NATIVE( _chr_setGuildFealty )
 */
 NATIVE( _chr_getGuildNumber )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
 	return pc->GetGuildNumber();
@@ -3076,7 +3076,7 @@ NATIVE( _chr_getGuildNumber )
 */
 NATIVE( _chr_setGuildNumber )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
 	pc->SetGuildNumber( static_cast<int32_t>(params[2]) );
@@ -3093,7 +3093,7 @@ NATIVE( _chr_setGuildNumber )
 */
 NATIVE( _chr_getGuildTitle )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
 	char str[100];
@@ -3116,7 +3116,7 @@ NATIVE( _chr_getGuildTitle )
 
 NATIVE( _chr_setGuildTitle )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
 	cell *cstr;
@@ -3138,7 +3138,7 @@ NATIVE( _chr_setGuildTitle )
 */
 NATIVE( _chr_getCreationDay )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
 	return pc->GetCreationDay();
@@ -3153,7 +3153,7 @@ NATIVE( _chr_getCreationDay )
 */
 NATIVE( _chr_setCreationDay )
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
 	pc->SetCreationDay( static_cast<TIMERVAL>(params[2]) );
@@ -3179,7 +3179,7 @@ NATIVE( _chr_setCreationDay )
 */
 NATIVE(_chr_morph)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
     cell *cstr;
@@ -3202,7 +3202,7 @@ NATIVE(_chr_morph)
 */
 NATIVE(_chr_unmorph)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
     pc->morph();
@@ -3221,9 +3221,9 @@ NATIVE(_chr_unmorph)
 NATIVE(_itm_speech)
 {
 
-	P_CHAR pc = pointers::findCharBySerial( params[1] );
+	pChar pc = pointers::findCharBySerial( params[1] );
 
-	P_ITEM cur = pointers::findItemBySerial(params[2]);
+	pItem cur = pointers::findItemBySerial(params[2]);
 	VALIDATEPIR(cur,INVALID);
 
 	cell *cstr;
@@ -3256,9 +3256,9 @@ NATIVE(_itm_speech)
 */
 NATIVE(_chr_equip)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
-    P_ITEM pi = pointers::findItemBySerial(params[2]);
+    pItem pi = pointers::findItemBySerial(params[2]);
     VALIDATEPIR(pi, INVALID);
 
     return pc->Equip(pi);
@@ -3275,9 +3275,9 @@ NATIVE(_chr_equip)
 */
 NATIVE(_ItemBounceToPack)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
-    P_ITEM pi = pointers::findItemBySerial(params[2]);
+    pItem pi = pointers::findItemBySerial(params[2]);
     VALIDATEPIR(pi, INVALID);
 	return pc->UnEquip( pi );
 }
@@ -3375,7 +3375,7 @@ NATIVE(_getIntFromDefine) {
 */
 NATIVE(_chr_poison)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
     pc->applyPoison(static_cast<PoisonType>(params[2]), params[3]);
 	return params[2];
@@ -3390,7 +3390,7 @@ NATIVE(_chr_poison)
 */
 NATIVE(_itm_getCombatSkill)
 {
-        P_ITEM pi = pointers::findItemBySerial(params[1]);
+        pItem pi = pointers::findItemBySerial(params[1]);
         VALIDATEPIR(pi, INVALID);
         return pi->getCombatSkill();
 }
@@ -3408,7 +3408,7 @@ NATIVE(_itm_getCombatSkill)
 */
 NATIVE(_chr_skillMakeMenu)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
     if (pc->getClient() == NULL) return INVALID;
 
@@ -3426,7 +3426,7 @@ NATIVE(_chr_skillMakeMenu)
 */
 NATIVE(_chr_hide)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
     switch(params[2])
@@ -3458,7 +3458,7 @@ NATIVE(_chr_hide)
 */
 NATIVE(_chr_applyDamage)
 {
-    P_CHAR pc = pointers::findCharBySerial(params[1]);
+    pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
 
     pc->damage(params[2], static_cast<DamageType>(params[3]), static_cast<StatType>(params[4]));
@@ -3475,7 +3475,7 @@ NATIVE(_chr_applyDamage)
 */
 NATIVE(_chr_setRandomName)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 
 	cell *cstr;
@@ -3498,9 +3498,9 @@ NATIVE(_chr_setRandomName)
 */
 NATIVE(_chr_possess)
 {
-	P_CHAR possessor = pointers::findCharBySerial(params[1]);
+	pChar possessor = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(possessor, INVALID);
-	P_CHAR possessed = pointers::findCharBySerial(params[2]);
+	pChar possessed = pointers::findCharBySerial(params[2]);
 	VALIDATEPCR(possessed, INVALID);
 
 	possessor->possess(possessed);
@@ -3529,7 +3529,7 @@ NATIVE(_chr_getLocalVarErr)
 */
 NATIVE(_chr_isaLocalVar)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	return amxVS.existsVariable( pc->getSerial32(), params[2], params[3] );
 }
@@ -3544,7 +3544,7 @@ NATIVE(_chr_isaLocalVar)
 */
 NATIVE(_chr_delLocalVar)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	return amxVS.deleteVariable( pc->getSerial32(), params[2] );
 }
@@ -3560,7 +3560,7 @@ NATIVE(_chr_delLocalVar)
 */
 NATIVE(_chr_addLocalIntVar)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	return amxVS.insertVariable( pc->getSerial32(), params[2], params[3] );
 }
@@ -3575,7 +3575,7 @@ NATIVE(_chr_addLocalIntVar)
 */
 NATIVE(_chr_getLocalIntVar)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	int32_t value;
 	amxVS.selectVariable( pc->getSerial32(), params[2], value );
@@ -3593,7 +3593,7 @@ NATIVE(_chr_getLocalIntVar)
 */
 NATIVE (_chr_setLocalIntVar)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	return amxVS.updateVariable( pc->getSerial32(), params[2], params[3] );
 }
@@ -3610,7 +3610,7 @@ NATIVE (_chr_setLocalIntVar)
 */
 NATIVE( _chr_addLocalIntVec )
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	return amxVS.insertVariable( pc->getSerial32(), params[2], params[3], params[4] );
 }
@@ -3626,7 +3626,7 @@ NATIVE( _chr_addLocalIntVec )
 */
 NATIVE(_chr_getLocalIntVec)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	int32_t value;
 	amxVS.selectVariable( pc->getSerial32(), params[2], params[3], value );
@@ -3645,7 +3645,7 @@ NATIVE(_chr_getLocalIntVec)
 */
 NATIVE (_chr_setLocalIntVec)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	return amxVS.updateVariable( pc->getSerial32(), params[2], params[3], params[4] );
 }
@@ -3661,7 +3661,7 @@ NATIVE (_chr_setLocalIntVec)
 */
 NATIVE(_chr_addLocalStrVar)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	cell *cstr;
 	amx_GetAddr(amx,params[3],&cstr);
@@ -3685,7 +3685,7 @@ NATIVE(_chr_addLocalStrVar)
 */
 NATIVE(_chr_getLocalStrVar)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	g_cAmxPrintBuffer[0] = '\0';
 	cell *cptr;
@@ -3740,7 +3740,7 @@ NATIVE ( _var_sizeofLocalVar )
 */
 NATIVE(_chr_setLocalStrVar)
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
 	cell *cstr;
 	amx_GetAddr(amx,params[3],&cstr);
@@ -3774,7 +3774,7 @@ NATIVE(_itm_getLocalVarErr)
 */
 NATIVE(_itm_isaLocalVar)
 {
-    P_ITEM pi = pointers::findItemBySerial(params[1]);
+    pItem pi = pointers::findItemBySerial(params[1]);
     VALIDATEPIR(pi, INVALID);
 		return amxVS.existsVariable( pi->getSerial32(), params[2], params[3] );
 }
@@ -3790,7 +3790,7 @@ NATIVE(_itm_isaLocalVar)
 */
 NATIVE(_itm_delLocalVar)
 {
-    P_ITEM pi = pointers::findItemBySerial(params[1]);
+    pItem pi = pointers::findItemBySerial(params[1]);
     VALIDATEPIR(pi, INVALID);
     //return pi->localProperty->deleteVar( params[2], params[3] );
 		return amxVS.deleteVariable( pi->getSerial32(), params[2] );
@@ -3807,7 +3807,7 @@ NATIVE(_itm_delLocalVar)
 */
 NATIVE(_itm_addLocalIntVar)
 {
-    P_ITEM pi = pointers::findItemBySerial(params[1]);
+    pItem pi = pointers::findItemBySerial(params[1]);
     VALIDATEPIR(pi, INVALID);
 	return amxVS.insertVariable( pi->getSerial32(), params[2], params[3] );
 }
@@ -3823,7 +3823,7 @@ NATIVE(_itm_addLocalIntVar)
 */
 NATIVE(_itm_getLocalIntVar)
 {
-    P_ITEM pi = pointers::findItemBySerial(params[1]);
+    pItem pi = pointers::findItemBySerial(params[1]);
     VALIDATEPIR(pi, INVALID);
 		int32_t value;
 		amxVS.selectVariable( pi->getSerial32(), params[2], value );
@@ -3841,7 +3841,7 @@ NATIVE(_itm_getLocalIntVar)
 */
 NATIVE (_itm_setLocalIntVar)
 {
-    P_ITEM pi = pointers::findItemBySerial(params[1]);
+    pItem pi = pointers::findItemBySerial(params[1]);
     VALIDATEPIR(pi, INVALID);
 		return amxVS.updateVariable( pi->getSerial32(), params[2], params[3] );
 }
@@ -3857,7 +3857,7 @@ NATIVE (_itm_setLocalIntVar)
 */
 NATIVE(_itm_addLocalStrVar)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR(pi, INVALID);
 	cell *cstr;
 	amx_GetAddr(amx,params[3],&cstr);
@@ -3881,7 +3881,7 @@ NATIVE(_itm_addLocalStrVar)
 */
 NATIVE(_itm_getLocalStrVar)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR(pi, INVALID);
 	g_cAmxPrintBuffer[0] = '\0';
 	cell *cptr;
@@ -3907,7 +3907,7 @@ NATIVE(_itm_getLocalStrVar)
 */
 NATIVE(_itm_setLocalStrVar)
 {
-	P_ITEM pi = pointers::findItemBySerial(params[1]);
+	pItem pi = pointers::findItemBySerial(params[1]);
 	VALIDATEPIR(pi, INVALID);
 	cell *cstr;
 	amx_GetAddr(amx,params[3],&cstr);
@@ -4106,7 +4106,7 @@ NATIVE(_guild_addMember)
 	P_GUILD guild = Guildz.getGuild( params[1] );
 	if ( guild==NULL )	return INVALID;
 
-	P_CHAR pc=pointers::findCharBySerial( params[2] );
+	pChar pc=pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, INVALID );
 
 
@@ -4144,7 +4144,7 @@ NATIVE(_guild_resignMember)
 	P_GUILD guild = Guildz.getGuild( params[1] );
 	if ( guild==NULL )	return false;
 
-	P_CHAR pc=pointers::findCharBySerial( params[2] );
+	pChar pc=pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, false );
 
 	guild->resignMember( pc );
@@ -4167,10 +4167,10 @@ NATIVE(_guild_addRecruit)
 	P_GUILD guild = Guildz.getGuild( params[1] );
 	if ( guild==NULL )	return INVALID;
 
-	P_CHAR recruit=pointers::findCharBySerial( params[2] );
+	pChar recruit=pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( recruit, INVALID );
 
-	P_CHAR recruiter=pointers::findCharBySerial( params[3] );
+	pChar recruiter=pointers::findCharBySerial( params[3] );
 	VALIDATEPCR( recruiter, INVALID );
 
 	P_GUILD_RECRUIT guild_recruit = guild->addNewRecruit( recruit, recruiter );
@@ -4191,7 +4191,7 @@ NATIVE(_guild_refuseRecruit)
 	P_GUILD guild = Guildz.getGuild( params[1] );
 	if ( guild==NULL )	return false;
 
-	P_CHAR recruit=pointers::findCharBySerial( params[2] );
+	pChar recruit=pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( recruit, false );
 
 	guild->refuseRecruit( recruit );
@@ -4433,7 +4433,7 @@ NATIVE( _callFunction5P )
 */
 NATIVE( _chr_isOnline )
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, 0);
 	return pc->IsOnline();
 }
@@ -4445,7 +4445,7 @@ NATIVE( _chr_isOnline )
 */
 NATIVE( _chr_isFrozen )
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, 0);
 	return pc->isFrozen();
 }
@@ -4457,7 +4457,7 @@ NATIVE( _chr_isFrozen )
 */
 NATIVE( _chr_doCombatAction )
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, 0);
 	pc->playCombatAction();
 	return 1;
@@ -4472,10 +4472,10 @@ NATIVE( _chr_doCombatAction )
 */
 NATIVE( _chr_stable )
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, 0);
 	if( !pc->npc ) return 0;
-	P_CHAR stablemaster = pointers::findCharBySerial(params[2]);
+	pChar stablemaster = pointers::findCharBySerial(params[2]);
 	VALIDATEPCR( stablemaster, 0 );
 	pc->stable( stablemaster );
 	return 1;
@@ -4489,7 +4489,7 @@ NATIVE( _chr_stable )
 */
 NATIVE( _chr_unStable )
 {
-	P_CHAR pc = pointers::findCharBySerial(params[1]);
+	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, 0);
 	pc->unStable( );
 	return 1;
@@ -4549,7 +4549,7 @@ NATIVE ( _gui_delete )
 */
 NATIVE ( _gui_show )
 {
-	P_CHAR pc = pointers::findCharBySerial( params[2] );
+	pChar pc = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, 0 );
 
 	P_MENU menu = Menus.getMenu( params[1] );
@@ -5078,7 +5078,7 @@ NATIVE( _gui_addIcon )
 */
 NATIVE( _target_create )
 {
-	P_CHAR pc = pointers::findCharBySerial( params[1] );
+	pChar pc = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( pc, INVALID );
 
 	NXWCLIENT ps = pc->getClient();
@@ -5115,7 +5115,7 @@ NATIVE( _target_create )
 */
 NATIVE( _target_do )
 {
-	P_CHAR pc = pointers::findCharBySerial( params[2] );
+	pChar pc = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, false );
 
 	NXWCLIENT ps = pc->getClient();
@@ -5147,7 +5147,7 @@ NATIVE( _target_do )
 */
 NATIVE( _party_create )
 {
-	P_CHAR leader = pointers::findCharBySerial( params[1] );
+	pChar leader = pointers::findCharBySerial( params[1] );
 	VALIDATEPCR( leader, INVALID );
 
 	P_PARTY party = Partys.createParty();
@@ -5170,7 +5170,7 @@ NATIVE( _party_addMember )
 	if( party==NULL )
 		return false;
 
-	P_CHAR pc = pointers::findCharBySerial( params[2] );
+	pChar pc = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, false );
 
 	party->addMember( pc );
@@ -5192,7 +5192,7 @@ NATIVE( _party_delMember )
 	if( party==NULL )
 		return false;
 
-	P_CHAR pc = pointers::findCharBySerial( params[2] );
+	pChar pc = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, false );
 
 	party->removeMember( pc );
@@ -5214,10 +5214,10 @@ NATIVE( _party_addCandidate )
 	if( party==NULL )
 		return false;
 
-	P_CHAR leader = pointers::findCharBySerial( params[2] );
+	pChar leader = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( leader, false );
 
-	P_CHAR cand = pointers::findCharBySerial( params[3] );
+	pChar cand = pointers::findCharBySerial( params[3] );
 	VALIDATEPCR( cand, false );
 
 	party->addCandidate( leader, cand );
@@ -5238,7 +5238,7 @@ NATIVE( _party_delCandidate )
 	if( party==NULL )
 		return false;
 
-	P_CHAR pc = pointers::findCharBySerial( params[2] );
+	pChar pc = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, false );
 
 	party->removeCandidate( pc->getSerial32() );
@@ -5259,7 +5259,7 @@ NATIVE( _party_isCandidate )
 	if( party==NULL )
 		return false;
 
-	P_CHAR pc = pointers::findCharBySerial( params[2] );
+	pChar pc = pointers::findCharBySerial( params[2] );
 	VALIDATEPCR( pc, false );
 
 	return party->isCandidate( pc->getSerial32() );

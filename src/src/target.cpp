@@ -15,7 +15,7 @@
 #include "archive.h"
 
 
-SERIAL cTarget::serial_current = 0;
+uint32_t cTarget::serial_current = 0;
 
 cTarget::cTarget( bool selectLocation )
 {
@@ -63,7 +63,7 @@ Location cTarget::getLocation()
 	return loc;
 }
 
-SERIAL cTarget::getClicked()
+uint32_t cTarget::getClicked()
 {
 	return clicked;
 }
@@ -153,13 +153,13 @@ void amxCallbackOld( NXWCLIENT ps, P_TARGET t )
 	if( t->amx_callback==NULL) 
 		return;
 	
-	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = pointers::findCharBySerial( t->getClicked() );
 	if( ISVALIDPC(pc) ) {
         t->amx_callback->Call( ps->currCharIdx(), pc->getSerial32(), INVALID, INVALID, INVALID, INVALID );
         return;
     }
 
-    P_ITEM pi = pointers::findItemBySerial( t->getClicked() );
+    pItem pi = pointers::findItemBySerial( t->getClicked() );
     if( ISVALIDPI(pi) ) {
 		t->amx_callback->Call( ps->currCharIdx(), INVALID, pi->getSerial32(), INVALID, INVALID, INVALID );
         return;
@@ -180,7 +180,7 @@ void amxCallback( NXWCLIENT ps, P_TARGET t )
 
 	/// targ_serial, chr, obj, x, y, z, model, param
 
-	P_OBJECT po = objects.findObject( t->getClicked() );
+	pObject po = objects.findObject( t->getClicked() );
 	if( ISVALIDPO(po) ) {
         t->amx_callback->Call( t->serial, ps->currCharIdx(), po->getSerial32(), INVALID, INVALID, INVALID, model, t->buffer[0] );
         return;
@@ -231,7 +231,7 @@ P_TARGET createTarget( TARG_TYPE type )
 // Function name     : TargetLocation::TargetLocation
 // Author            : Xanathar
 // Changes           : none yet
-void TargetLocation::init(P_CHAR pc)
+void TargetLocation::init(pChar pc)
 {
 	Location pcpos= pc->getPosition();
 
@@ -247,7 +247,7 @@ void TargetLocation::init(P_CHAR pc)
 // Function name     : void TargetLocation::init
 // Author            : Xanathar
 // Changes           : none yet
-void TargetLocation::init(P_ITEM pi)
+void TargetLocation::init(pItem pi)
 {
 	m_pc = NULL;
 	if (pi->isInWorld()) {
@@ -339,13 +339,13 @@ TargetLocation::TargetLocation( P_TARGET pp )
 	init( loc.x, loc.y, loc.z );
 	if( pp->type==0 ) {
 
-		P_CHAR pc= pointers::findCharBySerial( pp->getClicked() );
+		pChar pc= pointers::findCharBySerial( pp->getClicked() );
 		if(ISVALIDPC(pc)) {
 			init(pc);
 			return;
 		}
 
-		P_ITEM pi= pointers::findItemBySerial( pp->getClicked() );
+		pItem pi= pointers::findItemBySerial( pp->getClicked() );
 		if (ISVALIDPI(pi))  {
 			init(pi);
 			return;

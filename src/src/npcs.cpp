@@ -33,13 +33,13 @@ namespace npcs {	//Luxor
 
 
 //<Anthalir>
-void SpawnGuard(P_CHAR pc, P_CHAR pc_i, Location where)
+void SpawnGuard(pChar pc, pChar pc_i, Location where)
 {
 	SpawnGuard(pc, pc_i, where.x, where.y, where.z);
 }
 //</Anthalir>
 
-void SpawnGuard(P_CHAR pc, P_CHAR pc_i, int x, int y, signed char z)
+void SpawnGuard(pChar pc, pChar pc_i, int x, int y, signed char z)
 {
 
 	VALIDATEPC(pc);
@@ -54,7 +54,7 @@ void SpawnGuard(P_CHAR pc, P_CHAR pc_i, int x, int y, signed char z)
 	{
 		t=RandomNum(1000,1001);
 		t=region[pc_i->region].guardnum[(rand()%10)+1];
-		P_CHAR pc_c = npcs::AddNPCxyz(pc->getSocket(), t, x, y, z);
+		pChar pc_c = npcs::AddNPCxyz(pc->getSocket(), t, x, y, z);
 
 		if (ISVALIDPC(pc_c))
 		{
@@ -68,7 +68,7 @@ void SpawnGuard(P_CHAR pc, P_CHAR pc_i, int x, int y, signed char z)
 		  pc_c->summontimer=(getclock()+(MY_CLOCKS_PER_SEC*25));
 
 		  pc_c->playSFX(0x01FE);
-		  staticeffect(DEREF_P_CHAR(pc_c), 0x37, 0x2A, 0x09, 0x06);
+		  staticeffect(DEREF_pChar(pc_c), 0x37, 0x2A, 0x09, 0x06);
 
 		  pc_c->teleport();
 		  pc_c->talkAll(TRANSLATE("Thou shalt regret thine actions, swine!"),1);
@@ -77,12 +77,12 @@ void SpawnGuard(P_CHAR pc, P_CHAR pc_i, int x, int y, signed char z)
 
 }
 
-P_ITEM AddRandomLoot(P_ITEM pack, char * lootlist)
+pItem AddRandomLoot(pItem pack, char * lootlist)
 {
 	VALIDATEPIR(pack, NULL);
 	std::string	value( lootlist );
 	std::string 	loot( cObject::getRandomScriptValue( "LOOTLIST", value ) );
-	P_ITEM 		pi = item::CreateFromScript( (SCRIPTID) str2num( loot ), pack );
+	pItem 		pi = item::CreateFromScript( (SCRIPTID) str2num( loot ), pack );
 	return pi;
 }
 
@@ -107,27 +107,27 @@ int AddRandomNPC(NXWSOCKET s, char * npclist)
 //| Remarks    : This function was created from the former AddRespawnNPC() and
 //| 			 AddNPCxyz() that were 95% identical
 //o---------------------------------------------------------------------------o
-P_CHAR AddRespawnNPC(P_ITEM pi, int npcNum)
+pChar AddRespawnNPC(pItem pi, int npcNum)
 {
         //type 1 remember
         VALIDATEPIR(pi, NULL);
         return AddNPC(INVALID, pi, npcNum, 0,0,0);
 }
 
-P_CHAR AddRespawnNPC(P_CHAR pc, int npcNum)
+pChar AddRespawnNPC(pChar pc, int npcNum)
 {
         VALIDATEPCR(pc, NULL);
         return AddNPC(pc->getSocket(), NULL, npcNum, 0,0,0);
 }
 
 //<Anthalir>
-P_CHAR AddNPCxyz(NXWSOCKET s, int npcNum, Location where)
+pChar AddNPCxyz(NXWSOCKET s, int npcNum, Location where)
 {
 	return AddNPCxyz(s, npcNum, where.x, where.y, where.dispz);
 }
 //</Anthalir>
 
-P_CHAR AddNPCxyz(NXWSOCKET s, int npcNum, int x1, int y1, signed char z1) //Morrolan - replacement for old npcs::AddNPCxyz(), fixes a LOT of problems.
+pChar AddNPCxyz(NXWSOCKET s, int npcNum, int x1, int y1, signed char z1) //Morrolan - replacement for old npcs::AddNPCxyz(), fixes a LOT of problems.
 {
 
 	return AddNPC(s, NULL, npcNum, x1,y1,z1);
@@ -136,18 +136,18 @@ P_CHAR AddNPCxyz(NXWSOCKET s, int npcNum, int x1, int y1, signed char z1) //Morr
 
 
 //<Anthalir>
-P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, Location where)
+pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, Location where)
 {
 	return AddNPC(s, pi, npcNum, where.x, where.y, where.z);
 }
 //</Anthalir>
 
 // Xan -> compatible with new style scripts!! :D
-P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8_t z1)
+pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t z1)
 {
 	int32_t	npcNumSave	= npcNum;
 	short	postype		= 0;	// determines how xyz of the new NPC are set
-	P_CHAR	pc		= 0;
+	pChar	pc		= 0;
 
 	if	(x1 > 0 && y1 > 0)
 		postype = 3;	// take position from parms
@@ -187,7 +187,7 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8
 					fz1			= 0,
 					loopexit		= 0;
 
-			P_ITEM		pi_n			= 0,
+			pItem		pi_n			= 0,
 					mypack			= 0;
 
 			//char 		script1[1024],
@@ -517,7 +517,7 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8
 										splitLine( script2, lo, hi );
 										int amt = RandomNum( str2num(lo), str2num(hi) );
 
-										P_ITEM pi_sp = item::CreateFromScript( "$item_gold_coin", mypack, amt );
+										pItem pi_sp = item::CreateFromScript( "$item_gold_coin", mypack, amt );
 										if( ISVALIDPI( pi_sp ) )
 										{
 											pi_sp->priv|=0x01;
@@ -775,7 +775,7 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8
 									if ( buyRestockContainer == INVALID )
 									{
 
-										P_ITEM pi_z=pc->GetItemOnLayer(LAYER_TRADE_RESTOCK);
+										pItem pi_z=pc->GetItemOnLayer(LAYER_TRADE_RESTOCK);
 										if (ISVALIDPI(pi_z))
 										{
 											buyRestockContainer = pi_z->getSerial32();
@@ -813,9 +813,9 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8
 								{
 									if ( sellContainer == INVALID )
 									{
-										P_ITEM pi_z=pc->GetItemOnLayer(0x1C);
+										pItem pi_z=pc->GetItemOnLayer(0x1C);
 										{
-											sellContainer = DEREF_P_ITEM(pi_z);
+											sellContainer = DEREF_pItem(pi_z);
 										}
 									}
 									if ( sellContainer != INVALID )
@@ -837,10 +837,10 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8
 								{
 									if ( buyNoRestockContainer == INVALID )
 									{
-										P_ITEM pi_z=pc->GetItemOnLayer(0x1B);
+										pItem pi_z=pc->GetItemOnLayer(0x1B);
 										if (ISVALIDPI(pi_z))
 										{
-											buyNoRestockContainer = DEREF_P_ITEM(pi_z);
+											buyNoRestockContainer = DEREF_pItem(pi_z);
 										}
 									}
 									if ( buyNoRestockContainer != INVALID )
@@ -858,7 +858,7 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8
 										WarnOut("Bad NPC Script %d with problem no buyNoRestockContainer for item %s.\n", npcNum, script2.c_str());
 								}
 								else if ( "SHOPKEEPER" == script1 )
-									Commands::MakeShop(DEREF_P_CHAR(pc));
+									Commands::MakeShop(DEREF_pChar(pc));
 								else if ( "SKILL" == script1 )
 								{
 									gettokennum(script2, 0);
@@ -987,7 +987,7 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8
 						place will be chosen, if a valid place cannot be found in a certain # of tries (50),
 							the NPC will be placed directly on the spawner and the server op will be warned. */
 
-							P_ITEM pi_i=pi;
+							pItem pi_i=pi;
 							if (ISVALIDPI(pi_i) && ((pi_i->type==69 || pi_i->type==125)&& pi_i->isInWorld()) )
 							{
 								if (pi_i->more3==0) pi_i->more3=10;
@@ -1111,7 +1111,7 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8
 					// After the NPC has been fully initialized, then post the message (if its a quest spawner) type==125
 					if (postype==1) // lb crashfix
 					{
-							P_ITEM pi_i=pi;
+							pItem pi_i=pi;
 							if ( ISVALIDPI(pi_i) && pi_i->type == 125 )
 							{
 								pc->createEscortQuest();
@@ -1135,11 +1135,11 @@ P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8
 
 }
 
-P_CHAR addNpc(int npcNum, int x, int y, int z) {
+pChar addNpc(int npcNum, int x, int y, int z) {
 	return AddNPC(INVALID, NULL, npcNum, x, y, z);
 }
 
-P_CHAR SpawnRandomMonster(P_CHAR pc, char* cList, char* cNpcID)
+pChar SpawnRandomMonster(pChar pc, char* cList, char* cNpcID)
 {
 	std::string	section( cList ),
 			sectionId( cNpcID ),

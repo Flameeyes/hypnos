@@ -522,9 +522,9 @@ void CWorldMain::loadChar() // Load a character from WSC
 			else if (!strcmp(script1, "POISON"))			{ pc->poison=str2num(script2);}
 			else if (!strcmp(script1, "POISONED"))		{ pc->poisoned=(PoisonType)str2num(script2);}
 
-			else if (!strcmp( script1, "PC_FTARG" ) )   { P_CHAR temp=MAKE_CHAR_REF(str2num(script2)); pc->ftargserial = ISVALIDPC(temp)? temp->getSerial32() : INVALID;} //legacy code
+			else if (!strcmp( script1, "PC_FTARG" ) )   { pChar temp=MAKE_CHAR_REF(str2num(script2)); pc->ftargserial = ISVALIDPC(temp)? temp->getSerial32() : INVALID;} //legacy code
 			else if (!strcmp( script1, "PC_FTARGSER" ) )   {pc->ftargserial=str2num(script2); }
-			else if (!strcmp( script1, "POSSESSEDSERIAL" ) )   {pc->possessedSerial=str2num(script2); }
+			else if (!strcmp( script1, "POSSESSEDuint32_t" ) )   {pc->possessedSerial=str2num(script2); }
 			else if (!(strcmp(script1, "PROFILE"))) {
 				pc->profile = HexVector2UnicodeString( script2 );
 			}
@@ -535,7 +535,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 			if (!strcmp(script1, "QUESTTYPE"))			  pc->questType=(cMsgBoard::QuestType)str2num(script2);
 			else if (!strcmp(script1, "QUESTDESTREGION"))  pc->questDestRegion=str2num(script2);
 			else if (!strcmp(script1, "QUESTORIGREGION"))  pc->questOrigRegion=str2num(script2);
-			else if (!strcmp(script1, "QUESTBOUNTYPOSTSERIAL")) pc->questBountyPostSerial=str2num(script2);
+			else if (!strcmp(script1, "QUESTBOUNTYPOSTuint32_t")) pc->questBountyPostSerial=str2num(script2);
 			else if (!strcmp(script1, "QUESTBOUNTYREWARD")) pc->questBountyReward=str2num(script2);
 		break;
 
@@ -558,7 +558,7 @@ void CWorldMain::loadChar() // Load a character from WSC
 
 		case 'S':
 		case 's':
-			if (!strcmp(script1, "SERIAL"))
+			if (!strcmp(script1, "uint32_t"))
 			{
 				i = str2num(script2);
 				//if (charcount2<=i) charcount2=i+1;
@@ -1023,7 +1023,7 @@ void loaditem()
 				pi->setScriptID( str2num(script2) );
 			else if (!(strcmp(script1, "SK_MADE")))
 				pi->madewith=str2num(script2);
-			else if (!(strcmp(script1, "SERIAL")))
+			else if (!(strcmp(script1, "uint32_t")))
 			{
 				i=str2num(script2);
 				//if (itemcount2<=i)
@@ -1238,14 +1238,14 @@ void CWorldMain::loadNewWorld() // Load world from NXW*.WSC
 	//Luxor: reload dynamic spawners here.
 	Spawns->clearDynamic();
 	cAllObjectsIter objs;
-	P_CHAR pc = NULL;
-	P_ITEM pi = NULL;
+	pChar pc = NULL;
+	pItem pi = NULL;
 	for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
-		if ( isCharSerial( objs.getSerial() ) && ISVALIDPC( (pc=static_cast<P_CHAR>(objs.getObject())) ) ) {
+		if ( isCharSerial( objs.getSerial() ) && ISVALIDPC( (pc=static_cast<pChar>(objs.getObject())) ) ) {
 			if( pc->dead && pc->HasHumanBody() )
 				pc->morph( ((pc->getId() == BODY_FEMALE) ? BODY_DEADFEMALE : BODY_DEADMALE ), 0, 0, 0, 0, 0, NULL, true);
 		}
-		if ( isItemSerial( objs.getSerial() ) && ISVALIDPI( (pi=static_cast<P_ITEM>(objs.getObject())) ) ) {
+		if ( isItemSerial( objs.getSerial() ) && ISVALIDPI( (pi=static_cast<pItem>(objs.getObject())) ) ) {
 			if ( pi->isSpawner() )
 				Spawns->loadFromItem(pi);
 		}
@@ -1393,7 +1393,7 @@ void fprintWstring( FILE* f, char* name, wstring c )
 //#define DESTROY_REFERENCES
 
 
-void CWorldMain::SaveChar( P_CHAR pc )
+void CWorldMain::SaveChar( pChar pc )
 {
 	char valid=0;
 	int j;
@@ -1424,7 +1424,7 @@ void CWorldMain::SaveChar( P_CHAR pc )
 	{
 			fprintf(cWsc, "SECTION CHARACTER %i\n", this->chr_curr++);
 			fprintf(cWsc, "{\n");
-			fprintf(cWsc, "SERIAL %i\n", pc->getSerial32());
+			fprintf(cWsc, "uint32_t %i\n", pc->getSerial32());
 			//Luxor: if the char is morphed, we have to save the original values.
 			if(pc->morphed!=dummy.morphed)
 			{//save original name
@@ -1552,7 +1552,7 @@ void CWorldMain::SaveChar( P_CHAR pc )
                                 fprintf(cWsc, "NPC %i\n", 1);
 
 			if (pc->possessedSerial != INVALID) //Luxor
-                                fprintf(cWsc, "POSSESSEDSERIAL %i\n", pc->possessedSerial);
+                                fprintf(cWsc, "POSSESSEDuint32_t %i\n", pc->possessedSerial);
 
 			if (pc->holdg!=dummy.holdg) // bugfix lb, holdgold value never saved !!!
                 fprintf(cWsc, "HOLDGOLD %i\n", pc->holdg);
@@ -1726,7 +1726,7 @@ void CWorldMain::SaveChar( P_CHAR pc )
 			if (pc->questOrigRegion!=dummy.questOrigRegion && pc->questOrigRegion<1000)
 				fprintf(cWsc, "QUESTORIGREGION %i\n", pc->questOrigRegion);
 			if (pc->questBountyPostSerial !=dummy.questBountyPostSerial)
-				fprintf(cWsc, "QUESTBOUNTYPOSTSERIAL %i\n", pc->questBountyPostSerial);
+				fprintf(cWsc, "QUESTBOUNTYPOSTuint32_t %i\n", pc->questBountyPostSerial);
 
 			if (pc->questBountyReward !=dummy.questBountyReward)
 				fprintf(cWsc, "QUESTBOUNTYREWARD %i\n", pc->questBountyReward);
@@ -1817,7 +1817,7 @@ void CWorldMain::SaveChar( P_CHAR pc )
 	};
 }
 
-void CWorldMain::SaveItem( P_ITEM pi )
+void CWorldMain::SaveItem( pItem pi )
 {
 
 	VALIDATEPI( pi );
@@ -1848,11 +1848,11 @@ void CWorldMain::SaveItem( P_ITEM pi )
 	{
 		fprintf(iWsc, "SECTION WORLDITEM %i\n", this->itm_curr++);
 		fprintf(iWsc, "{\n");
-		fprintf(iWsc, "SERIAL %i\n", pi->getSerial32());
+		fprintf(iWsc, "uint32_t %i\n", pi->getSerial32());
 		fprintf(iWsc, "NAME %s\n", pi->getCurrentNameC());
 		//<Luxor>: if the item is beard or hair of a morphed char, we must save the original ID and COLOR value
 		if ( (pi->layer == LAYER_BEARD || pi->layer == LAYER_HAIR) && isCharSerial( pi->getContSerial() ) ) {
-			P_CHAR pc_morphed = (P_CHAR)(pi->getContainer());
+			pChar pc_morphed = (pChar)(pi->getContainer());
 			if (ISVALIDPC(pc_morphed)) {
 				if (pc_morphed->morphed) {
 					if (pi->layer == LAYER_BEARD) { //beard
@@ -2064,7 +2064,7 @@ void CWorldMain::savePrison()
 	{
 		fprintf(jWsc, "SECTION JAILED\n");
 		fprintf(jWsc, "{\n");
-		fprintf(jWsc, "SERIAL %i\n",	iter->serial);
+		fprintf(jWsc, "uint32_t %i\n",	iter->serial);
 		fprintf(jWsc, "OLDX %i\n",	iter->oldpos.x);
 		fprintf(jWsc, "OLDY %i\n",	iter->oldpos.y);
 		fprintf(jWsc, "OLDZ %i\n",	iter->oldpos.z);
@@ -2110,7 +2110,7 @@ void CWorldMain::loadjailed()
 				break;
 			case 'S':
 			case 's':
-				if(!(strcmp(script1, "SERIAL")))
+				if(!(strcmp(script1, "uint32_t")))
 					j.serial=str2num(script2);
 				else if(!(strcmp(script1, "SECS")))
 					j.sec=str2num(script2);
@@ -2118,7 +2118,7 @@ void CWorldMain::loadjailed()
 		}
 
 	}  while (strcmp(script1, "}"));
-	P_CHAR pc = pointers::findCharBySerial( j.serial );
+	pChar pc = pointers::findCharBySerial( j.serial );
 	if(ISVALIDPC(pc) && (j.sec > 0)) {
 		j.timer=uiCurrentTime+(MY_CLOCKS_PER_SEC * j.sec );
 		prison::jailed.push_back( j );
@@ -2177,13 +2177,13 @@ void CWorldMain::realworldsave ()
 	cAllObjectsIter objs;
 	this->chr_curr=0;
 	this->itm_curr=0;
-	P_ITEM pi = NULL;
+	pItem pi = NULL;
 	for( objs.rewind(); !objs.IsEmpty(); objs++ )
 	{
 		if( isCharSerial( objs.getSerial() ) )
-			SaveChar( (P_CHAR)(objs.getObject()) );
+			SaveChar( (pChar)(objs.getObject()) );
 		else {
-			pi = static_cast<P_ITEM>(objs.getObject());
+			pi = static_cast<pItem>(objs.getObject());
 			if ( pi->isSpawner() )
 				Spawns->loadFromItem(pi);
 			SaveItem( pi );

@@ -151,7 +151,7 @@ void cChar::ResetGuildTitleToggle()
 \since 0.82
 \return serial of guild fealty
 */
-SERIAL cChar::GetGuildFealty()
+uint32_t cChar::GetGuildFealty()
 {
 	return guildFealty;
 }
@@ -163,7 +163,7 @@ SERIAL cChar::GetGuildFealty()
 \since 0.82
 \param newGuildFealty serial of char to set the guild fealty
 */
-void cChar::SetGuildFealty(SERIAL newGuildFealty)
+void cChar::SetGuildFealty(uint32_t newGuildFealty)
 {
 	guildFealty = newGuildFealty;
 }
@@ -199,7 +199,7 @@ void cChar::SetGuildNumber(int32_t newGuildNumber)
 \since 0.82
 \return guild title
 */
-TEXT* cChar::GetGuildTitle()
+char* cChar::GetGuildTitle()
 {
 	return guildTitle;
 }
@@ -211,7 +211,7 @@ TEXT* cChar::GetGuildTitle()
 \since 0.82
 \param newGuildTitle guild title
 */
-void cChar::SetGuildTitle(TEXT* newGuildTitle)
+void cChar::SetGuildTitle(char* newGuildTitle)
 {
 	if ( strlen( newGuildTitle ) < sizeof( guildTitle ) )
 		strcpy( guildTitle, newGuildTitle );

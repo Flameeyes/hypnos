@@ -30,26 +30,26 @@
 namespace amxSet {
 
 AMX_WRAPPER_DB g_oSet;
-static SERIAL currentIndex=INVALID;
+static uint32_t currentIndex=INVALID;
 
-SERIAL create( )
+uint32_t create( )
 {
 	++currentIndex;
 
-	SERIAL iSet=currentIndex;
+	uint32_t iSet=currentIndex;
 	g_oSet.insert( make_pair( iSet, new NxwWrapper() ) );
 	return iSet;
 }
 
 
-void deleteSet( SERIAL iSet )
+void deleteSet( uint32_t iSet )
 {
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
 	if( iter!=g_oSet.end() )
 		g_oSet.erase( iter );
 }
 
-bool end( SERIAL iSet )
+bool end( uint32_t iSet )
 {
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
 	if( iter!=g_oSet.end() )
@@ -59,7 +59,7 @@ bool end( SERIAL iSet )
 	return true;
 }
 
-void rewind( SERIAL iSet )
+void rewind( uint32_t iSet )
 {
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
 	if( iter!=g_oSet.end() )
@@ -68,7 +68,7 @@ void rewind( SERIAL iSet )
 		}
 }
 
-void next( SERIAL iSet )
+void next( uint32_t iSet )
 {
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
 	if( iter!=g_oSet.end() )
@@ -78,9 +78,9 @@ void next( SERIAL iSet )
 }
 
 
-SERIAL get( SERIAL iSet)
+uint32_t get( SERIAL iSet)
 {
-	SERIAL ser = INVALID;
+	uint32_t ser = INVALID;
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
 	if( iter!=g_oSet.end() )
 		if( iter->second!=NULL ) {
@@ -91,7 +91,7 @@ SERIAL get( SERIAL iSet)
 }
 
 
-void add( SERIAL iSet, SERIAL nVal )
+void add( uint32_t iSet, SERIAL nVal )
 {
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
 	if( iter!=g_oSet.end() )
@@ -99,7 +99,7 @@ void add( SERIAL iSet, SERIAL nVal )
 			iter->second->insert(nVal);
 }
 
-void copy( SERIAL iSet, const NxwWrapper& from )
+void copy( uint32_t iSet, const NxwWrapper& from )
 {
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
 	if( iter!=g_oSet.end() )
@@ -107,7 +107,7 @@ void copy( SERIAL iSet, const NxwWrapper& from )
 			iter->second->copyQ( from );
 }
 
-uint32_t size( SERIAL iSet)
+uint32_t size( uint32_t iSet)
 {
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
 	if( iter!=g_oSet.end() )
@@ -117,7 +117,7 @@ uint32_t size( SERIAL iSet)
 }
 
 
-void addOwnedNpcs( SERIAL iSet, P_CHAR pc, bool includeStabled, bool onlyFollowing )
+void addOwnedNpcs( uint32_t iSet, pChar pc, bool includeStabled, bool onlyFollowing )
 {
 
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -129,7 +129,7 @@ void addOwnedNpcs( SERIAL iSet, P_CHAR pc, bool includeStabled, bool onlyFollowi
 	}
 }
 
-void addNpcsNearXY( SERIAL iSet, uint16_t x, uint16_t y, int distance )
+void addNpcsNearXY( uint32_t iSet, uint16_t x, uint16_t y, int distance )
 {
 
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -141,7 +141,7 @@ void addNpcsNearXY( SERIAL iSet, uint16_t x, uint16_t y, int distance )
 	}
 }
 
-void addNpcsNearObj( SERIAL iSet, P_CHAR pc, int nDistance )
+void addNpcsNearObj( uint32_t iSet, pChar pc, int nDistance )
 {
 
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -153,7 +153,7 @@ void addNpcsNearObj( SERIAL iSet, P_CHAR pc, int nDistance )
 	}
 }
 
-void addNpcsNearObj( SERIAL iSet, P_ITEM pi, int nDistance )
+void addNpcsNearObj( uint32_t iSet, pItem pi, int nDistance )
 {
 
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -165,7 +165,7 @@ void addNpcsNearObj( SERIAL iSet, P_ITEM pi, int nDistance )
 	}
 }
 
-void addPartyFriend( SERIAL iSet, P_CHAR pc, int distance, bool excludeThis )
+void addPartyFriend( uint32_t iSet, pChar pc, int distance, bool excludeThis )
 {
 
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -177,7 +177,7 @@ void addPartyFriend( SERIAL iSet, P_CHAR pc, int distance, bool excludeThis )
 	}
 }
 
-void addItemsInContainer( SERIAL iSet, P_ITEM pi, bool includeSubCont, bool includeOnlyFirstSubCont )
+void addItemsInContainer( uint32_t iSet, pItem pi, bool includeSubCont, bool includeOnlyFirstSubCont )
 {
 
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -189,7 +189,7 @@ void addItemsInContainer( SERIAL iSet, P_ITEM pi, bool includeSubCont, bool incl
 	}
 }
 
-void addItemWeared( SERIAL iSet, P_CHAR pc, bool includeLikeHair, bool includeProtectedLayer, bool excludeIllegalLayer )
+void addItemWeared( uint32_t iSet, pChar pc, bool includeLikeHair, bool includeProtectedLayer, bool excludeIllegalLayer )
 {
 
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -201,7 +201,7 @@ void addItemWeared( SERIAL iSet, P_CHAR pc, bool includeLikeHair, bool includePr
 	}
 }
 
-void addItemsAtXY( SERIAL iSet, uint16_t x, uint16_t y, uint32_t type )
+void addItemsAtXY( uint32_t iSet, uint16_t x, uint16_t y, uint32_t type )
 {
 
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -213,7 +213,7 @@ void addItemsAtXY( SERIAL iSet, uint16_t x, uint16_t y, uint32_t type )
 	}
 }
 
-void addItemsNearXY( SERIAL iSet, uint16_t x, uint16_t y, int distance, bool excludeNotMovable )
+void addItemsNearXY( uint32_t iSet, uint16_t x, uint16_t y, int distance, bool excludeNotMovable )
 {
 
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -230,14 +230,14 @@ inline void NxwSocketWrapper2NxwCharWrapper( NxwSocketWrapper& sw, NxwCharWrappe
 	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
 		NXWCLIENT ps = sw.getClient();
 		if( ps != 0 ) {
-			P_CHAR pc=ps->currChar();
+			pChar pc=ps->currChar();
 			if(ISVALIDPC(pc))
 				sc->insert( pc->getSerial32() );
 		}
 	}
 }
 
-void addAllOnlinePlayers( SERIAL iSet )
+void addAllOnlinePlayers( uint32_t iSet )
 {
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
 	if( iter != g_oSet.end() )
@@ -250,7 +250,7 @@ void addAllOnlinePlayers( SERIAL iSet )
 	}
 }
 
-void addOnlinePlayersNearChar( SERIAL iSet, P_CHAR pc, bool excludeThis, int distance )
+void addOnlinePlayersNearChar( uint32_t iSet, pChar pc, bool excludeThis, int distance )
 {
 
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -264,7 +264,7 @@ void addOnlinePlayersNearChar( SERIAL iSet, P_CHAR pc, bool excludeThis, int dis
 	}
 }
 
-void addOnlinePlayersNearItem( SERIAL iSet, P_ITEM pi, int distance )
+void addOnlinePlayersNearItem( uint32_t iSet, pItem pi, int distance )
 {
 
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -278,7 +278,7 @@ void addOnlinePlayersNearItem( SERIAL iSet, P_ITEM pi, int distance )
 	}
 }
 
-void addOnlinePlayersNearXY( SERIAL iSet, uint16_t x, uint16_t y, int distance )
+void addOnlinePlayersNearXY( uint32_t iSet, uint16_t x, uint16_t y, int distance )
 {
  
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -293,7 +293,7 @@ void addOnlinePlayersNearXY( SERIAL iSet, uint16_t x, uint16_t y, int distance )
 	}
 }
 
-void addGuildMembers( SERIAL iSet, SERIAL guild )
+void addGuildMembers( uint32_t iSet, SERIAL guild )
 {
  
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -305,7 +305,7 @@ void addGuildMembers( SERIAL iSet, SERIAL guild )
 	}
 }
 
-void addGuildRecruits( SERIAL iSet, SERIAL guild )
+void addGuildRecruits( uint32_t iSet, SERIAL guild )
 {
  
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -317,7 +317,7 @@ void addGuildRecruits( SERIAL iSet, SERIAL guild )
 	}
 }
 
-void addGuilds( SERIAL iSet, SERIAL guild )
+void addGuilds( uint32_t iSet, SERIAL guild )
 {
  
 	AMX_WRAPPER_DB::iterator iter( g_oSet.find( iSet ) );
@@ -411,7 +411,7 @@ void NxwWrapper::rewind()
 \author Endymion
 \return the current value
 */
-SERIAL NxwWrapper::get()
+uint32_t NxwWrapper::get()
 {
 	if( isEmpty() )
 		return INVALID;
@@ -436,9 +436,9 @@ void NxwWrapper::copyQ( const NxwWrapper& from )
 \author Endymion
 \param s the value
 */
-void NxwWrapper::insert( SERIAL s )
+void NxwWrapper::insert( uint32_t s )
 {
-	SERIAL_VECTOR::const_iterator i = std::find( vect.begin(), vect.end(), s);
+	uint32_t_VECTOR::const_iterator i = std::find( vect.begin(), vect.end(), s);
 	if( i==vect.end() ) //unique
 		vect.push_back( s );
 };
@@ -460,7 +460,7 @@ NxwSerialWrapper::~NxwSerialWrapper() { };
 \author Endymion
 \return the current serial
 */
-SERIAL NxwSerialWrapper::getSerial()
+uint32_t NxwSerialWrapper::getSerial()
 {
 	return get();
 };
@@ -470,7 +470,7 @@ SERIAL NxwSerialWrapper::getSerial()
 \author Endymion
 \param s the serial
 */
-void NxwSerialWrapper::insertSerial( SERIAL s )
+void NxwSerialWrapper::insertSerial( uint32_t s )
 {
 	if( s!=INVALID )
 		insert( s );
@@ -495,14 +495,14 @@ void NxwSerialWrapper::insertSerial( cObject* obj )
 \param bIncludeSubContained if true recurse subcontainers
 \param bIncludeOnlyFirstSubcont if true only recurse first sub container
 */
-void NxwSerialWrapper::fillSerialInContainer( SERIAL serial, bool bIncludeSubContained, bool bIncludeOnlyFirstSubcont )
+void NxwSerialWrapper::fillSerialInContainer( uint32_t serial, bool bIncludeSubContained, bool bIncludeOnlyFirstSubcont )
 {
 	
-	std::map< SERIAL , vector<P_ITEM> >::iterator cont( pointers::pContMap.find( serial ) );
+	std::map< uint32_t , vector<pItem> >::iterator cont( pointers::pContMap.find( serial ) );
 	if( cont != pointers::pContMap.end() && !cont->second.empty() )
 	{
-		std::vector<P_ITEM>::iterator iter( cont->second.begin() ), end( cont->second.end() );
-		P_ITEM pi;
+		std::vector<pItem>::iterator iter( cont->second.begin() ), end( cont->second.end() );
+		pItem pi;
 		for( ; iter != end; ++iter )
 		{
 
@@ -553,7 +553,7 @@ NxwCharWrapper::~NxwCharWrapper() { };
 \author Endymion
 \return ptr to the current char
 */
-P_CHAR NxwCharWrapper::getChar()
+pChar NxwCharWrapper::getChar()
 {
 	return pointers::findCharBySerial( getSerial() );
 };
@@ -563,7 +563,7 @@ P_CHAR NxwCharWrapper::getChar()
 \author Endymion
 \param pc the char
 */
-void NxwCharWrapper::insertChar( P_CHAR pc )
+void NxwCharWrapper::insertChar( pChar pc )
 {
 	VALIDATEPC(pc);
 	insertSerial( pc->getSerial32() );
@@ -577,16 +577,16 @@ void NxwCharWrapper::insertChar( P_CHAR pc )
 \param bOnlyFollowing if true only following pets should be included
 \warning this function ADD new char to current list
 */
-void NxwCharWrapper::fillOwnedNpcs( P_CHAR pc, bool bIncludeStabled, bool bOnlyFollowing )
+void NxwCharWrapper::fillOwnedNpcs( pChar pc, bool bIncludeStabled, bool bOnlyFollowing )
 {
 
 	VALIDATEPC( pc );
 
-	std::map< SERIAL, std::vector< P_CHAR > >::iterator vect( pointers::pOwnCharMap.find( pc->getSerial32() ) );
+	std::map< uint32_t, std::vector< pChar > >::iterator vect( pointers::pOwnCharMap.find( pc->getSerial32() ) );
 	if( ( vect!=pointers::pOwnCharMap.end() ) && !vect->second.empty() ) {
 
-		std::vector< P_CHAR >::iterator iter( vect->second.begin() ), end( vect->second.end() );
-		P_CHAR poOwnedChr;
+		std::vector< pChar >::iterator iter( vect->second.begin() ), end( vect->second.end() );
+		pChar poOwnedChr;
 		for( ; iter != end; ++iter ) {
 			poOwnedChr = (*iter);
 
@@ -616,10 +616,10 @@ void NxwCharWrapper::fillCharsAtXY( uint16_t x, uint16_t y, bool bExcludeOffline
 
 		if( !mapRegions->regions[nowx][nowy].charsInRegions.empty() )
 		{
-			SERIAL_SET::iterator	it( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
+			uint32_t_SET::iterator	it( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
 						end( mapRegions->regions[nowx][nowy].charsInRegions.end() );
 			for( ; it != end; ++it ) {
-				P_CHAR pc = pointers::findCharBySerial( *it );
+				pChar pc = pointers::findCharBySerial( *it );
 				if ( pc == 0 )
 					continue;
 				if ( pc->getPosition().x != x || pc->getPosition().y != y )
@@ -671,10 +671,10 @@ void NxwCharWrapper::fillCharsNearXYZ ( uint16_t x, uint16_t y, int nDistance, b
 						if( mapRegions->regions[nowx][nowy].charsInRegions.empty() )
 							continue;
 
-						SERIAL_SET::iterator	iter( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
+						uint32_t_SET::iterator	iter( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
 									end( mapRegions->regions[nowx][nowy].charsInRegions.end() );
 						for( ; iter != end; ++iter ) {
-							P_CHAR pc=pointers::findCharBySerial( *iter );
+							pChar pc=pointers::findCharBySerial( *iter );
 							if( pc == 0 )
 								continue;
 							if( pc->isStabled() || pc->mounted )
@@ -732,10 +732,10 @@ void NxwCharWrapper::fillNpcsNearXY( uint16_t x, uint16_t y, int nDistance )
 						if( mapRegions->regions[nowx][nowy].charsInRegions.empty() )
 							continue;
 
-						SERIAL_SET::iterator iter( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
+						uint32_t_SET::iterator iter( mapRegions->regions[nowx][nowy].charsInRegions.begin() ),
 									end( mapRegions->regions[nowx][nowy].charsInRegions.end() );
 						for( ; iter != end; ++iter ) {
-							P_CHAR pc=pointers::findCharBySerial( *iter );
+							pChar pc=pointers::findCharBySerial( *iter );
 							if( pc == 0 )
 								continue;
 							if( !pc->npc )
@@ -759,7 +759,7 @@ void NxwCharWrapper::fillNpcsNearXY( uint16_t x, uint16_t y, int nDistance )
 \param nDistance the distance requested
 \warning this function ADD new char to current list
 */
-void NxwCharWrapper::fillNpcsNear( P_CHAR pc, int nDistance )
+void NxwCharWrapper::fillNpcsNear( pChar pc, int nDistance )
 {
 	VALIDATEPC(pc)
 	fillNpcsNearXY(pc->getPosition().x, pc->getPosition().y, nDistance );
@@ -773,11 +773,11 @@ void NxwCharWrapper::fillNpcsNear( P_CHAR pc, int nDistance )
 \warning this function ADD new char to current list
 \note location is true, of the in world container
 */
-void NxwCharWrapper::fillNpcsNear( P_ITEM pi, int nDistance )
+void NxwCharWrapper::fillNpcsNear( pItem pi, int nDistance )
 {
 	VALIDATEPI(pi)
 
-	P_ITEM out=pi->getOutMostCont();
+	pItem out=pi->getOutMostCont();
 	if( out->isInWorld() ) {
 		fillNpcsNearXY( out->getPosition().x, out->getPosition().y, nDistance );
 	}
@@ -798,14 +798,14 @@ void NxwCharWrapper::fillNpcsNear( P_ITEM pi, int nDistance )
 \warning this function ADD new char to current list
 \note offline player are not added
 */
-void NxwCharWrapper::fillPartyFriend( P_CHAR pc, uint32_t nDistance, bool bExcludeThis )
+void NxwCharWrapper::fillPartyFriend( pChar pc, uint32_t nDistance, bool bExcludeThis )
 {
 	VALIDATEPC(pc);
 	if( pc->party != INVALID )
 	{
 		NxwCharWrapper sc;
 		sc.fillCharsNearXYZ( pc->getPosition(), nDistance, true, true );
-		P_CHAR pj;
+		pChar pj;
 		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 			pj=sc.getChar();
 			if( ISVALIDPC(pj) )
@@ -826,12 +826,12 @@ void NxwCharWrapper::fillPartyFriend( P_CHAR pc, uint32_t nDistance, bool bExclu
 \param guild the guild
 \warning this function ADD new char to current list
 */
-void NxwCharWrapper::fillGuildMembers( SERIAL guild )
+void NxwCharWrapper::fillGuildMembers( uint32_t guild )
 {
 	P_GUILD pGuild = Guildz.getGuild( guild );
 	if( pGuild != 0 )
 	{
-		std::map< SERIAL, P_GUILD_MEMBER >::iterator iter( pGuild->members.begin() ), end( pGuild->members.end() );
+		std::map< uint32_t, P_GUILD_MEMBER >::iterator iter( pGuild->members.begin() ), end( pGuild->members.end() );
 		for( ; iter!=end; iter++ ) {
 			insertSerial( iter->first );
 		}
@@ -844,12 +844,12 @@ void NxwCharWrapper::fillGuildMembers( SERIAL guild )
 \param guild the guild
 \warning this function ADD new char to current list
 */
-void NxwCharWrapper::fillGuildRecruits( SERIAL guild )
+void NxwCharWrapper::fillGuildRecruits( uint32_t guild )
 {
 	P_GUILD pGuild = Guildz.getGuild( guild );
 	if( pGuild != NULL )
 	{
-		std::map< SERIAL, P_GUILD_RECRUIT >::iterator iter( pGuild->recruits.begin() ), end( pGuild->recruits.end() );
+		std::map< uint32_t, P_GUILD_RECRUIT >::iterator iter( pGuild->recruits.begin() ), end( pGuild->recruits.end() );
 		for( ; iter!=end; iter++ ) {
 			insertSerial( iter->first );
 		}
@@ -876,7 +876,7 @@ NxwItemWrapper::~NxwItemWrapper() { };
 \author Endymion
 \return the current item
 */
-P_ITEM NxwItemWrapper::getItem()
+pItem NxwItemWrapper::getItem()
 {
 	return pointers::findItemBySerial( getSerial() );
 };
@@ -886,7 +886,7 @@ P_ITEM NxwItemWrapper::getItem()
 \author Endymion
 \param pi the item
 */
-void NxwItemWrapper::insertItem( P_ITEM pi )
+void NxwItemWrapper::insertItem( pItem pi )
 {
 	VALIDATEPI(pi);
 	insertSerial( pi->getSerial32() );
@@ -899,7 +899,7 @@ void NxwItemWrapper::insertItem( P_ITEM pi )
 \param bIncludeSubContained if true recurse subcontainers
 \param bIncludeOnlyFirstSubcont if true only recurse first sub container
 */
-void NxwItemWrapper::fillItemsInContainer( P_ITEM pi, bool bIncludeSubContained, bool bIncludeOnlyFirstSubcont )
+void NxwItemWrapper::fillItemsInContainer( pItem pi, bool bIncludeSubContained, bool bIncludeOnlyFirstSubcont )
 {
 	VALIDATEPI(pi);
 	fillSerialInContainer( pi, bIncludeSubContained, bIncludeOnlyFirstSubcont );
@@ -926,12 +926,12 @@ void NxwItemWrapper::fillItemsAtXY( uint16_t x, uint16_t y, int32_t type, int32_
 	if( mapRegions->regions[nowx][nowy].itemsInRegions.empty() )
 		return;
 
-	SERIAL_SET::iterator	iter( mapRegions->regions[nowx][nowy].itemsInRegions.begin() ),
+	uint32_t_SET::iterator	iter( mapRegions->regions[nowx][nowy].itemsInRegions.begin() ),
 				end( mapRegions->regions[nowx][nowy].itemsInRegions.end() );\
 
 	for( ; iter != end; ++iter ) {
 		// <Luxor bug fix>
-		P_ITEM pi=pointers::findItemBySerial( *iter );
+		pItem pi=pointers::findItemBySerial( *iter );
 		if ( pi == 0 )
 			continue;
 		if ( !pi->isInWorld() )
@@ -980,10 +980,10 @@ void NxwItemWrapper::fillItemsNearXYZ ( uint16_t x, uint16_t y, int nDistance, b
 						if( mapRegions->regions[nowx][nowy].itemsInRegions.empty() )
 							continue;
 
-						SERIAL_SET::iterator	iter( mapRegions->regions[nowx][nowy].itemsInRegions.begin() ),
+						uint32_t_SET::iterator	iter( mapRegions->regions[nowx][nowy].itemsInRegions.begin() ),
 									end( mapRegions->regions[nowx][nowy].itemsInRegions.end() );
 						for( ; iter != end; ++iter ) {
-							P_ITEM pi=pointers::findItemBySerial( *iter );
+							pItem pi=pointers::findItemBySerial( *iter );
 							if( pi != 0 )
 								if( pi->isInWorld() ) {
 									int iDist=(int)dist(Location(x,y,0), pi->getPosition(), false);
@@ -1023,21 +1023,21 @@ void NxwItemWrapper::fillItemsNearXYZ ( Location location, int nDistance, bool b
 \param bIncludeProtectedLayer if true add also protected layer
 \warning this function ADD new char to current list
 */
-void NxwItemWrapper::fillItemWeared( P_CHAR pc, bool bIncludeLikeHair, bool bIncludeProtectedLayer, bool bExcludeIllegalLayer )
+void NxwItemWrapper::fillItemWeared( pChar pc, bool bIncludeLikeHair, bool bIncludeProtectedLayer, bool bExcludeIllegalLayer )
 {
 	
 	VALIDATEPC(pc);
 
-	std::map< SERIAL , vector<P_ITEM> >::iterator cont( pointers::pContMap.find( pc->getSerial32() ) );
+	std::map< uint32_t , vector<pItem> >::iterator cont( pointers::pContMap.find( pc->getSerial32() ) );
 	if( cont==pointers::pContMap.end() || cont->second.empty() )
 		return;
 
-	std::vector<P_ITEM>::iterator	iter( cont->second.begin() ),
+	std::vector<pItem>::iterator	iter( cont->second.begin() ),
 					end( cont->second.end() );
 	for( ; iter != end; ++iter )
 	{
 	
-		P_ITEM pi_j=(*iter);
+		pItem pi_j=(*iter);
 		if(!ISVALIDPI(pi_j) )			// just to be sure ;-)
 			continue;
 		
@@ -1073,10 +1073,10 @@ void NxwItemWrapper::fillItemWeared( P_CHAR pc, bool bIncludeLikeHair, bool bInc
 \param options 
 \warning this function ADD new char to current list
 */
-void NxwItemWrapper::fillGuilds( SERIAL guild )
+void NxwItemWrapper::fillGuilds( uint32_t guild )
 {
 	if( guild == INVALID ) { //all guilds
-		std::map< SERIAL, P_GUILD >::iterator iter( Guildz.guilds.begin() ), end( Guildz.guilds.end() );
+		std::map< uint32_t, P_GUILD >::iterator iter( Guildz.guilds.begin() ), end( Guildz.guilds.end() );
 		for( ; iter!=end; ++iter ) {
 			insertSerial( iter->first );
 		}
@@ -1086,13 +1086,13 @@ void NxwItemWrapper::fillGuilds( SERIAL guild )
 		P_GUILD pGuild = Guildz.getGuild( guild );
 		if( pGuild != 0 )
 			if( options == GUILD_WAR ) {
-				std::vector<SERIAL>::iterator iter( pGuild->war.begin() ), end( pGuild->war.end() );
+				std::vector<uint32_t>::iterator iter( pGuild->war.begin() ), end( pGuild->war.end() );
 				for( ; iter!=end; ++iter ) {
 					insertSerial( *iter );
 				}
 			}
 			else if( options == GUILD_ALLIED ) {
-				std::vector<SERIAL>::iterator iter( pGuild->allied.begin() ), end( pGuild->allied.end() );
+				std::vector<uint32_t>::iterator iter( pGuild->allied.begin() ), end( pGuild->allied.end() );
 				for( ; iter!=end; ++iter ) {
 					insertSerial( *iter );
 				}
@@ -1118,7 +1118,7 @@ NxwSocketWrapper::~NxwSocketWrapper() { };
 \author Endymion
 \return the current socket
 */
-SERIAL NxwSocketWrapper::getSocket()
+uint32_t NxwSocketWrapper::getSocket()
 {
 	return get();
 }
@@ -1169,9 +1169,9 @@ void NxwSocketWrapper::insertClient( NXWCLIENT ps )
 \warning this function ADD new char to current list
 \note Akron - Changed nDistance to uint32_t and doxygen documented it
 */
-void NxwSocketWrapper::fillOnline( P_CHAR onlyNearThis, bool bExcludeThis, uint32_t nDistance )
+void NxwSocketWrapper::fillOnline( pChar onlyNearThis, bool bExcludeThis, uint32_t nDistance )
 {
-	P_CHAR	pc;
+	pChar	pc;
 	bool	validOnlyNearThis = ISVALIDPC(onlyNearThis);
 
 	for (int32_t i = 0; i < now; ++i )
@@ -1199,7 +1199,7 @@ void NxwSocketWrapper::fillOnline( P_CHAR onlyNearThis, bool bExcludeThis, uint3
 */
 void NxwSocketWrapper::fillOnline( Location location, int nDistance )
 {
-	P_CHAR pc;
+	pChar pc;
 	for (int32_t i = 0; i < now; ++i )
 	{
 		pc = pointers::findCharBySerial( currchar[i] );
@@ -1219,16 +1219,16 @@ void NxwSocketWrapper::fillOnline( Location location, int nDistance )
 \param nDistance the distance requested
 \warning this function ADD new char to current list
 */
-void NxwSocketWrapper::fillOnline( P_ITEM onlyNearThis, int nDistance )
+void NxwSocketWrapper::fillOnline( pItem onlyNearThis, int nDistance )
 {
 	VALIDATEPI(onlyNearThis);
 
-	P_ITEM out=onlyNearThis->getOutMostCont();
+	pItem out=onlyNearThis->getOutMostCont();
 	if( out->isInWorld() ) {
 		fillOnline(onlyNearThis->getPosition(), nDistance );
 	}
 	else {
-		P_CHAR own=pointers::findCharBySerial( out->getContSerial() );
+		pChar own=pointers::findCharBySerial( out->getContSerial() );
 		if( ISVALIDPC( own ) )
 			fillOnline( own->getPosition(), nDistance );
 		else

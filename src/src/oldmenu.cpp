@@ -99,7 +99,7 @@ void cOldMenu::addMenuItem( int page, int idx, std::wstring desc )
 void cOldMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 {
 	
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC( pc )
 
 	uint32_t button;

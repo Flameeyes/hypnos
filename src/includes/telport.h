@@ -15,10 +15,10 @@
 #ifndef __TELPORT_H__
 #define __TELPORT_H__
 
-void objTeleporters(P_CHAR pc);
-int validtelepos(P_CHAR pc);
+void objTeleporters(pChar pc);
+int validtelepos(pChar pc);
 void advancementobjects(CHARACTER s, int x, int always);
-void teleporters(P_CHAR pc);
+void teleporters(pChar pc);
 void read_in_teleport();
 
 #endif

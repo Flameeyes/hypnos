@@ -28,14 +28,14 @@
 \param snooper the snooper
 \param cont the contanier
 */
-void snooping( P_CHAR snooper, P_ITEM cont )
+void snooping( pChar snooper, pItem cont )
 {
 	VALIDATEPC(snooper);
 	NXWCLIENT ps = snooper->getClient();
 	if( ps == NULL ) return;
 	NXWSOCKET s = ps->toInt();
 	VALIDATEPI(cont);
-	P_CHAR owner = cont->getPackOwner();
+	pChar owner = cont->getPackOwner();
 	VALIDATEPC(owner);
 	char temp[TEMP_STR_SIZE];
 
@@ -107,9 +107,9 @@ void snooping( P_CHAR snooper, P_ITEM cont )
 */
 void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR thief = ps->currChar();
+	pChar thief = ps->currChar();
 	VALIDATEPC(thief);
-	SERIAL target_serial = t->getClicked();
+	uint32_t target_serial = t->getClicked();
 
 	AMXEXECSVTARGET( thief->getSerial32(),AMXT_SKITARGS,STEALING,AMX_BEFORE);
 
@@ -120,7 +120,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
         	return;
 	}
 
-	const P_ITEM pi = pointers::findItemBySerial( target_serial );
+	const pItem pi = pointers::findItemBySerial( target_serial );
 	VALIDATEPI(pi);
 
 	//steal a pickpocket, a steal training dummy
@@ -137,7 +137,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
        	return;
 	}
 
-	P_CHAR victim = pi->getPackOwner();
+	pChar victim = pi->getPackOwner();
 	VALIDATEPC(victim);
 
 	if (victim->npcaitype == NPCAI_PLAYERVENDOR)
@@ -197,7 +197,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 				return;
 			*/
 
-			P_ITEM pack= thief->getBackpack();
+			pItem pack= thief->getBackpack();
 			VALIDATEPI(pack);
 
 			pi->setContainer( pack );
@@ -253,7 +253,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 				NXWCLIENT ps_i=sw.getClient();
 				if(ps_i==NULL ) continue;
 
-				P_CHAR pc_i=ps_i->currChar();
+				pChar pc_i=ps_i->currChar();
 				if ( ISVALIDPC(pc_i) )
 					if( (rand()%10+10==17) || ( (rand()%2==1) && (pc_i->in>=thief->in)))
 						pc_i->sysmsg(temp2);
@@ -276,7 +276,7 @@ void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
 void Skills::PickPocketTarget(NXWCLIENT ps)
 {
 	if( ps == 0 ) return;
-	P_CHAR Me = ps->currChar();
+	pChar Me = ps->currChar();
 	VALIDATEPC(Me);
 
 	if (Me->skill[STEALING] < 300)
@@ -301,9 +301,9 @@ void Skills::PickPocketTarget(NXWCLIENT ps)
 void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR thief=ps->currChar();
+	pChar thief=ps->currChar();
 	VALIDATEPC(thief);
-	P_CHAR victim = pointers::findCharBySerial( t->getClicked() );
+	pChar victim = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(victim);
 
 
@@ -325,7 +325,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 		return;
 	}
 
-	P_ITEM pack= victim->getBackpack();
+	pItem pack= victim->getBackpack();
 	if ( !ISVALIDPI(pack))
 	{
 		thief->sysmsg(TRANSLATE("bad luck, your victim doesn't have a backpack"));
@@ -339,7 +339,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 
 	if ( thief->hasInRange(victim, 1) )
 	{
-		P_ITEM pi = NULL;
+		pItem pi = NULL;
 
 		NxwItemWrapper si;
 		si.fillItemsInContainer( pack, false );
@@ -393,7 +393,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 						return;
 				}
 
-				P_ITEM thiefpack = thief->getBackpack();
+				pItem thiefpack = thief->getBackpack();
 				VALIDATEPI(thiefpack);
 				pi->setContainer( thiefpack );
 				thief->sysmsg(TRANSLATE("... and you succeed."));
@@ -441,7 +441,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 				NXWCLIENT ps_i=sw.getClient();
 				if( ps_i==NULL ) continue;
 
-				P_CHAR pc_i=ps_i->currChar();
+				pChar pc_i=ps_i->currChar();
 				if ( ISVALIDPC(pc_i) )
 					if( (rand()%10+10==17) || ( (rand()%2==1) && (pc_i->in>=thief->in)))
 						sysmessage(ps_i->toInt(),temp2);
@@ -465,11 +465,11 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 void Skills::target_lockpick( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC(pc);
-	P_ITEM chest=pointers::findItemBySerial( t->getClicked() );
+	pItem chest=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(chest);
-	P_ITEM pick=MAKE_ITEM_REF( t->buffer[0] );
+	pItem pick=MAKE_ITEM_REF( t->buffer[0] );
 	VALIDATEPI(pick);
 
 	AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,LOCKPICKING,AMX_BEFORE);

@@ -15,7 +15,7 @@
 #include "scripts.h"
 
 
-int bestskill(P_CHAR p) // Which skill is the highest for character p
+int bestskill(pChar p) // Which skill is the highest for character p
 {
 
 	VALIDATEPCR(p, 0);
@@ -142,7 +142,7 @@ void loadcustomtitle() // for custom titles
 
 }
 
-char *title1(P_CHAR pc) // Paperdoll title for character p (1)
+char *title1(pChar pc) // Paperdoll title for character p (1)
 {
 	VALIDATEPCR(pc, 0);
 	int titlenum = 0;
@@ -163,7 +163,7 @@ char *title1(P_CHAR pc) // Paperdoll title for character p (1)
 	return prowesstitle;
 }
 
-char *title2(P_CHAR pc) // Paperdoll title for character p (2)
+char *title2(pChar pc) // Paperdoll title for character p (2)
 {
 	VALIDATEPCR(pc, 0);
 
@@ -177,7 +177,7 @@ char *title2(P_CHAR pc) // Paperdoll title for character p (2)
 	return skilltitle;
 }
 
-char *title3(P_CHAR pc) // Paperdoll title for character p (3)
+char *title3(pChar pc) // Paperdoll title for character p (3)
 {
 	VALIDATEPCR(pc, 0);
 	char thetitle[50];
@@ -294,7 +294,7 @@ char *title3(P_CHAR pc) // Paperdoll title for character p (3)
 }
 
 
-char *complete_title(P_CHAR pc) // generates the ENTIRE title plus criminal stuff
+char *complete_title(pChar pc) // generates the ENTIRE title plus criminal stuff
 {
 	VALIDATEPCR(pc, 0);
 	char tempstr[1024];

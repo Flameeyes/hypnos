@@ -113,7 +113,7 @@ void cPC::heartbeat()
 		if ( TIMEOUT( smokedisplaytimer ) )
 		{
 			smokedisplaytimer = uiCurrentTime + 5 * MY_CLOCKS_PER_SEC;
-			staticeffect( DEREF_P_CHAR( this ), 0x37, 0x35, 0, 30 );
+			staticeffect( DEREF_pChar( this ), 0x37, 0x35, 0, 30 );
 			playSFX( 0x002B );
 			switch( RandomNum( 0, 6 ) )
 			{
@@ -197,7 +197,7 @@ void cPC::heartbeat()
 		timer = SrvParms->bg_sounds * 100;
 		if ( !timer ) ++timer;
 		if( rand() % timer == timer / 2 )
-			bgsound( DEREF_P_CHAR(this) );
+			bgsound( DEREF_pChar(this) );
 	}
 
 	if( TIMEOUT( spiritspeaktimer ) && spiritspeaktimer > 0 )
@@ -206,7 +206,7 @@ void cPC::heartbeat()
 
 	if( onhorse )
 	{
-		P_ITEM pHorse = GetItemOnLayer(LAYER_MOUNT);
+		pItem pHorse = GetItemOnLayer(LAYER_MOUNT);
 		if(!pHorse)
 			onhorse = false;	// turn it off, we aren't on one because there's no item!
 		else

@@ -38,8 +38,8 @@ namespace Books
 	void SaveBooks();
 	void safeoldsave();
 	void archive();
-	void addNewBook(P_ITEM book);
-	void DoubleClickBook(NXWSOCKET s, P_ITEM book);
+	void addNewBook(pItem book);
+	void DoubleClickBook(NXWSOCKET s, pItem book);
 
 	/*!
 	\brief Item class for books
@@ -90,7 +90,7 @@ namespace Books
 			*/
 			cBook();					//!< default constructor
 			cBook(const cBook &oldbook);			//!< copy constructor
-			cBook(P_ITEM book);				//!< item constructor
+			cBook(pItem book);				//!< item constructor
 			cBook(std::istream &s);				//!< constructor that read the book from stream (see cBooks::ReadFrom)
 			cBook &operator = (const cBook & oldbook); 	//!< assignment operator =
 			//@}
@@ -106,9 +106,9 @@ namespace Books
 			bool ReadFrom(std::istream &s);			//!< read the book from a stream
 			//@}
 
-			void OpenBookReadOnly(NXWSOCKET s, P_ITEM book);
-			void OpenBookReadWrite(NXWSOCKET s, P_ITEM book);
-			void SendPageReadOnly(NXWSOCKET s, P_ITEM book, uint16_t p);
+			void OpenBookReadOnly(NXWSOCKET s, pItem book);
+			void OpenBookReadWrite(NXWSOCKET s, pItem book);
+			void SendPageReadOnly(NXWSOCKET s, pItem book, uint16_t p);
 
 			void ChangeAuthor(char *auth);
 			void ChangeTitle(char *titl);

@@ -679,9 +679,9 @@ static int loadserver(char *script1, char *script2)
 		else if(!strcmp(script1,"HOUSEDECAY_SECS"))		server_data.housedecay_secs=str2num( script2 );
 		else if(!strcmp(script1,"BEGGING_TIME"))		Begging::timer=str2num(script2);
 		else if(!strcmp(script1,"BEGGING_RANGE"))		Begging::range=str2num(script2);
-		else if(!strcmp(script1,"BEGGING_TEXT0"))		Begging::text[0]=script2;
-		else if(!strcmp(script1,"BEGGING_TEXT1"))		Begging::text[1]=script2;
-		else if(!strcmp(script1,"BEGGING_TEXT2"))		Begging::text[2]=script2;
+		else if(!strcmp(script1,"BEGGING_char0"))		Begging::text[0]=script2;
+		else if(!strcmp(script1,"BEGGING_char1"))		Begging::text[1]=script2;
+		else if(!strcmp(script1,"BEGGING_char2"))		Begging::text[2]=script2;
 		else if(!strcmp(script1,"BASE_FISHING_TIME"))		Fishing::basetime=str2num(script2);
 		else if(!strcmp(script1,"RANDOM_FISHING_TIME"))		Fishing::randomtime=str2num(script2);
 		else if(!strcmp(script1,"SPIRITSPEAKTIMER"))		spiritspeak_data.spiritspeaktimer=str2num(script2);
@@ -1139,9 +1139,9 @@ void saveserverscript()
 	fprintf(file, "BEGGING_RANGE %i\n",Begging::range);
 	fprintf(file, "BEGGING_TIME %i\n",Begging::timer);
 	fprintf(file, "// Text players will say when using the begging skill\n");
-	fprintf(file, "BEGGING_TEXT0 %s\n",begging_data.text[0]);
-	fprintf(file, "BEGGING_TEXT1 %s\n",begging_data.text[1]);
-	fprintf(file, "BEGGING_TEXT2 %s\n",begging_data.text[2]);
+	fprintf(file, "BEGGING_char0 %s\n",begging_data.text[0]);
+	fprintf(file, "BEGGING_char1 %s\n",begging_data.text[1]);
+	fprintf(file, "BEGGING_char2 %s\n",begging_data.text[2]);
 	fprintf(file, "// Minimum amount of time needed for fishing \n");
 	fprintf(file, "BASE_FISHING_TIME %i\n",fishing_data.basetime);
 	fprintf(file, "// Random amount of time on top of the base time \n");

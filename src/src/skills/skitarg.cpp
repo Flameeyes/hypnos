@@ -44,11 +44,11 @@
 #define AMXTANNERING "__nxw_sk_tannering"
 
 
-P_ITEM Check4Pack(NXWSOCKET  s)
+pItem Check4Pack(NXWSOCKET  s)
 {
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-    P_ITEM packnum= pc->getBackpack();
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
+    pItem packnum= pc->getBackpack();
     if (packnum==NULL)
     {
         sysmessage(s,TRANSLATE("Time to buy a backpack"));
@@ -58,9 +58,9 @@ P_ITEM Check4Pack(NXWSOCKET  s)
         return packnum;
 }
 
-bool CheckInPack(NXWSOCKET  s, P_ITEM pi)
+bool CheckInPack(NXWSOCKET  s, pItem pi)
 {
-    P_ITEM pPack=Check4Pack(s);
+    pItem pPack=Check4Pack(s);
     VALIDATEPIR(pPack, false);
     if (pi->getContSerial()!=pPack->getSerial32())
     {
@@ -74,9 +74,9 @@ bool CheckInPack(NXWSOCKET  s, P_ITEM pi)
 void Skills::target_removeTraps( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
-	P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 	NXWSOCKET s = ps->toInt();
 
@@ -94,10 +94,10 @@ void Skills::target_removeTraps( NXWCLIENT ps, P_TARGET t )
 void Skills::target_tailoring( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 
-	P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
 	NXWSOCKET s = ps->toInt();
@@ -140,12 +140,12 @@ void Skills::target_tailoring( NXWCLIENT ps, P_TARGET t )
 
 void Skills::target_fletching( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 
 	NXWSOCKET s = ps->toInt();
 
-	P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
     AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,BOWCRAFT,AMX_BEFORE);
@@ -164,14 +164,14 @@ void Skills::target_fletching( NXWCLIENT ps, P_TARGET t )
 
 void Skills::target_bowcraft( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR pc_currchar = ps->currChar();
+	pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
 
 	NXWSOCKET s = ps->toInt();
 
 	pc_currchar->playAction(pc_currchar->isMounting() ? 0x1C : 0x0D);
 
-	const P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+	const pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
 	AMXEXECSVTARGET(pc_currchar->getSerial32(),AMXT_SKITARGS,BOWCRAFT,AMX_BEFORE);
@@ -204,10 +204,10 @@ void Skills::target_bowcraft( NXWCLIENT ps, P_TARGET t )
 void Skills::target_carpentry( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 
-	P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
     AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,CARPENTRY,AMX_BEFORE);
@@ -233,13 +233,13 @@ void Skills::target_carpentry( NXWCLIENT ps, P_TARGET t )
 */
 static bool ForgeInRange(NXWSOCKET s)
 {
-    P_CHAR pc = MAKE_CHAR_REF(currchar[s]);
+    pChar pc = MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPCR(pc, false);
 
 	NxwItemWrapper si;
 	si.fillItemsNearXYZ( pc->getPosition(), 3, false );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
-        P_ITEM pi=si.getItem();
+        pItem pi=si.getItem();
 		if( ISVALIDPI(pi) && pi->IsForge())
 			return true;
     }
@@ -248,13 +248,13 @@ static bool ForgeInRange(NXWSOCKET s)
 
 static bool AnvilInRange(NXWSOCKET s)
 {
-    P_CHAR pc = MAKE_CHAR_REF( currchar[s]);
+    pChar pc = MAKE_CHAR_REF( currchar[s]);
 	VALIDATEPCR(pc, false);
 
 	NxwItemWrapper si;
 	si.fillItemsNearXYZ( pc->getPosition(), 3, false );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
-        P_ITEM pi=si.getItem();
+        pItem pi=si.getItem();
         if(pi->IsAnvil())
 			return true;
     }
@@ -273,10 +273,10 @@ static bool AnvilInRange(NXWSOCKET s)
 
 checks for anvil in reach and enough material and invokes appropriate makemenu
 */
-static void AnvilTarget( NXWSOCKET s, P_ITEM pi, int ma, int mm, char* matname)
+static void AnvilTarget( NXWSOCKET s, pItem pi, int ma, int mm, char* matname)
 {
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	VALIDATEPI(pi);
@@ -307,7 +307,7 @@ extern int ingottype;
 
 void Skills::target_smith( NXWCLIENT ps, P_TARGET t )
 {
-    P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
     if (pi->magic!=4) // Ripper
@@ -390,7 +390,7 @@ const short NumberOfOres = sizeof(OreTable)/sizeof(Ore);
                         char *orename)          // first letter should be uppercase
 {
     CHARACTER cc = currchar[s];
-    P_CHAR pc = MAKE_CHARREF_LRV(cc, false);
+    pChar pc = MAKE_CHARREF_LRV(cc, false);
 
     if(pc->skill[MINING] >= minskill)
     {
@@ -411,7 +411,7 @@ const short NumberOfOres = sizeof(OreTable)/sizeof(Ore);
 void Skills::target_tree( NXWCLIENT ps, P_TARGET t )
 {
 
-    P_CHAR pc = ps->currChar();
+    pChar pc = ps->currChar();
 
 	NXWSOCKET s = ps->toInt();
 
@@ -438,7 +438,7 @@ void Skills::target_tree( NXWCLIENT ps, P_TARGET t )
         return;
     }
 
-	P_ITEM weapon = pc->getWeapon();
+	pItem weapon = pc->getWeapon();
 	if( !( ISVALIDPI(weapon) && ( weapon->IsAxe() || weapon->IsSword() ) ) )
 	{
 		pc->sysmsg(TRANSLATE("You must have a weapon in hand in order to chop."));
@@ -502,7 +502,7 @@ void Skills::target_tree( NXWCLIENT ps, P_TARGET t )
         return;
     }
 
-    P_ITEM packnum = pc->getBackpack();
+    pItem packnum = pc->getBackpack();
     if( !ISVALIDPI(packnum) ) {
     	pc->sysmsg(TRANSLATE("No backpack to store logs"));
 		return;
@@ -529,7 +529,7 @@ void Skills::target_tree( NXWCLIENT ps, P_TARGET t )
 
 void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
 {
-    P_CHAR pc = MAKE_CHAR_REF(currchar[s]);
+    pChar pc = MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
     int nAmount, nFame;
@@ -557,7 +557,7 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
         break;
     case 4:
 		{
-			P_ITEM pi=item::SpawnRandomItem(s,"ITEMLIST","1001"); // Armor and shields - Random
+			pItem pi=item::SpawnRandomItem(s,"ITEMLIST","1001"); // Armor and shields - Random
 			if(ISVALIDPI(pi))
 				if((pi->getId()>=7026)&&(pi->getId()<=7035))
 					pc->sysmsg(TRANSLATE("You unearthed an old shield and placed it in your pack"));
@@ -570,7 +570,7 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
         nRandnum=rand()%2;
         if(nRandnum)
         { // randomly create a gem and place in backpack
-            P_ITEM pi=item::SpawnRandomItem(s,"ITEMLIST","999");
+            pItem pi=item::SpawnRandomItem(s,"ITEMLIST","999");
             if(ISVALIDPI(pi))
 				pc->sysmsg(TRANSLATE("You place a gem in your pack."));
         }
@@ -594,7 +594,7 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
         break;
     case 8:
 		{
-			P_ITEM pi=item::SpawnRandomItem(s,"ITEMLIST","1000");
+			pItem pi=item::SpawnRandomItem(s,"ITEMLIST","1000");
 			if(ISVALIDPI(pi))
 				pc->sysmsg(TRANSLATE("You unearthed a old weapon and placed it in your pack."));
 		}
@@ -615,7 +615,7 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
         break;
     default:
         nRandnum=rand()%2;
-        P_ITEM pBone = NULL;
+        pItem pBone = NULL;
         switch(nRandnum)
         {
             case 1:
@@ -660,9 +660,9 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
 //
 void Skills::target_smeltOre( NXWCLIENT ps, P_TARGET t )
 {
-    P_CHAR pc = ps->currChar();
+    pChar pc = ps->currChar();
 	VALIDATEPC(pc);
-    P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
     if ( pi->magic!=4) // Ripper
@@ -673,7 +673,7 @@ void Skills::target_smeltOre( NXWCLIENT ps, P_TARGET t )
                 pc->sysmsg(TRANSLATE("You cant smelt here."));
             else
             {
-                P_ITEM pix=pointers::findItemBySerial( t->buffer[0] );
+                pItem pix=pointers::findItemBySerial( t->buffer[0] );
 				VALIDATEPI( pix );
 
                 AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMXSMELTORE), pc->getSerial32(), pix->getColor(), pix->getSerial32());
@@ -687,9 +687,9 @@ void Skills::target_smeltOre( NXWCLIENT ps, P_TARGET t )
 
 void Skills::target_wheel( NXWCLIENT ps, P_TARGET t )	//Spinning wheel
 {
-    P_CHAR pc_currchar = ps->currChar();
+    pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
-    P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=pointers::findItemBySerial( t->getClicked() );
     VALIDATEPI(pi);
 
 	int mat = t->buffer[0];
@@ -707,7 +707,7 @@ void Skills::target_wheel( NXWCLIENT ps, P_TARGET t )	//Spinning wheel
                 return;
             }
 
-            P_ITEM pti=pointers::findItemBySerial( t->buffer[1] );   // on error return
+            pItem pti=pointers::findItemBySerial( t->buffer[1] );   // on error return
 			VALIDATEPI(pti);
 
             pc_currchar->sysmsg(TRANSLATE("You have successfully spun your material."));
@@ -737,9 +737,9 @@ void Skills::target_wheel( NXWCLIENT ps, P_TARGET t )	//Spinning wheel
 
 void Skills::target_loom( NXWCLIENT ps, P_TARGET t )
 {
-    P_CHAR pc_currchar = ps->currChar();
+    pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
-	P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
 	int tailme=0;
@@ -750,7 +750,7 @@ void Skills::target_loom( NXWCLIENT ps, P_TARGET t )
 		{
 			if( pc_currchar->hasInRange(pi, 3) )
 			{
-				P_ITEM pti=pointers::findItemBySerial( t->buffer[0] );
+				pItem pti=pointers::findItemBySerial( t->buffer[0] );
 				VALIDATEPI(pti);
 
 				if(pti->amount<5)
@@ -808,10 +808,10 @@ void Skills::target_loom( NXWCLIENT ps, P_TARGET t )
 void Skills::target_cookOnFire( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 
-	P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
 	short id = t->buffer[0];
@@ -819,7 +819,7 @@ void Skills::target_cookOnFire( NXWCLIENT ps, P_TARGET t )
 
     if (pi->magic!=4) // Ripper
     {
-        P_ITEM piRaw=MAKE_ITEM_REF( t->buffer[1] );
+        pItem piRaw=MAKE_ITEM_REF( t->buffer[1] );
 		VALIDATEPI(piRaw);
         if (pc->isInBackpack(piRaw))
         {
@@ -835,7 +835,7 @@ void Skills::target_cookOnFire( NXWCLIENT ps, P_TARGET t )
                     }
                     else
                     {
-                        P_ITEM pi=item::CreateFromScript( "$item_raw_fish", pc->getBackpack(), piRaw->amount );
+                        pItem pi=item::CreateFromScript( "$item_raw_fish", pc->getBackpack(), piRaw->amount );
                         VALIDATEPI(pi);
 
                         pi->setCurrentName( "#" );
@@ -868,7 +868,7 @@ void Skills::target_cookOnFire( NXWCLIENT ps, P_TARGET t )
 void Skills::target_detectHidden( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC(pc);
 
 	AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,DETECTINGHIDDEN,AMX_BEFORE);
@@ -887,7 +887,7 @@ void Skills::target_detectHidden( NXWCLIENT ps, P_TARGET t )
 
 	NxwCharWrapper sw;
 	bool bFound = false;
-	P_CHAR pc_curr = NULL;
+	pChar pc_curr = NULL;
 	int32_t nDist = 0;
 	sw.fillCharsNearXYZ( location, nRange, true, true );
 
@@ -922,10 +922,10 @@ void Skills::target_detectHidden( NXWCLIENT ps, P_TARGET t )
 void target_enticement2( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 
-	P_CHAR pc_ftarg=pointers::findCharBySerial( t->getClicked() );
+	pChar pc_ftarg=pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc_ftarg);
 
 	NXWSOCKET s= ps->toInt();
@@ -939,7 +939,7 @@ void target_enticement2( NXWCLIENT ps, P_TARGET t )
 
 	if (pc->checkSkill( ENTICEMENT, 0, 1000) && pc->checkSkill( MUSICIANSHIP, 0, 1000) )
 	{
-		P_CHAR pc_target = pointers::findCharBySerial( t->buffer[0] );
+		pChar pc_target = pointers::findCharBySerial( t->buffer[0] );
 		VALIDATEPC(pc_target);
 		pc_target->ftargserial = pc_ftarg->getSerial32();
 		pc_target->npcWander = WANDER_FOLLOW;
@@ -956,10 +956,10 @@ void target_enticement2( NXWCLIENT ps, P_TARGET t )
 void Skills::target_enticement1( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR current=ps->currChar();
+	pChar current=ps->currChar();
 	VALIDATEPC(current);
 
-	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
 	NXWSOCKET s = ps->toInt();
@@ -996,14 +996,14 @@ void Skills::target_enticement1( NXWCLIENT ps, P_TARGET t )
 
 void target_provocation2( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR Victim2 = pointers::findCharBySerial( t->getClicked() );
+	pChar Victim2 = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(Victim2);
 
-	P_CHAR Player = ps->currChar();
+	pChar Player = ps->currChar();
 	VALIDATEPC(Player);
 	Location charpos= Player->getPosition();
 
-	P_CHAR Victim1 = pointers::findCharBySerial( t->buffer[0] );
+	pChar Victim1 = pointers::findCharBySerial( t->buffer[0] );
 	VALIDATEPC(Victim1);
 
 	NXWSOCKET s =ps->toInt();
@@ -1069,10 +1069,10 @@ void target_provocation2( NXWCLIENT ps, P_TARGET t )
 
 void Skills::target_provocation1( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR current=ps->currChar();
+	pChar current=ps->currChar();
 	VALIDATEPC(current);
 
-	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
 	NXWSOCKET s =ps->toInt();
@@ -1108,25 +1108,25 @@ void Skills::target_provocation1( NXWCLIENT ps, P_TARGET t )
 void Skills::target_alchemy( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR pc_currchar = ps->currChar();
+	pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
 
-	P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
-	P_ITEM pack= pc_currchar->getBackpack();    // Get the packitem
+	pItem pack= pc_currchar->getBackpack();    // Get the packitem
 	VALIDATEPI(pack);
 
 	NXWSOCKET s = ps->toInt();
 
 
-	P_ITEM pfbottle=NULL; //candidate of the bottle
+	pItem pfbottle=NULL; //candidate of the bottle
 
 	NxwItemWrapper si;
 	si.fillItemsInContainer( pack, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
-		P_ITEM piii=si.getItem();
+		pItem piii=si.getItem();
 		if( ISVALIDPI(piii) && piii->type==0) {
 			pfbottle=pi;
 			break;
@@ -1163,19 +1163,19 @@ void Skills::target_alchemy( NXWCLIENT ps, P_TARGET t )
 void Skills::target_healingSkill( NXWCLIENT ps, P_TARGET t )
 {
 
-    P_CHAR ph = ps->currChar();   // points to the healer
+    pChar ph = ps->currChar();   // points to the healer
 	VALIDATEPC(ph);
-    P_CHAR pp = pointers::findCharBySerial( t->getClicked() );; // pointer to patient
+    pChar pp = pointers::findCharBySerial( t->getClicked() );; // pointer to patient
 	VALIDATEPC(pp);
 
     int j;
-    P_ITEM pib=MAKE_ITEM_REF( t->buffer[0] );    // item index of bandage
+    pItem pib=MAKE_ITEM_REF( t->buffer[0] );    // item index of bandage
 	VALIDATEPI(pib);
 
     AMXEXECSVTARGET( ph->getSerial32(),AMXT_SKITARGS,HEALING,AMX_BEFORE);
 
     if (!SrvParms->bandageincombat ) {
-		//P_CHAR pc_att=pointers::findCharBySerial(ph->attackerserial);
+		//pChar pc_att=pointers::findCharBySerial(ph->attackerserial);
 		if( ph->war/* || pp->war || ( ISVALIDPC(pc_att) && pc_att->war)*/)
 		{
 			ph->sysmsg(TRANSLATE("You can't heal while in a fight!"));
@@ -1292,12 +1292,12 @@ void Skills::target_healingSkill( NXWCLIENT ps, P_TARGET t )
 
 void Skills::target_armsLore( NXWCLIENT ps, P_TARGET t )
 {
-    P_CHAR pc = ps->currChar();
+    pChar pc = ps->currChar();
 	VALIDATEPC(pc);
 
     char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
-    P_ITEM pi = pointers::findItemBySerial( t->getClicked() );
+    pItem pi = pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
     int total;
@@ -1408,10 +1408,10 @@ void Skills::target_armsLore( NXWCLIENT ps, P_TARGET t )
 
 void Skills::target_itemId( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 
-    const P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+    const pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
     char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
@@ -1492,9 +1492,9 @@ void Skills::target_itemId( NXWCLIENT ps, P_TARGET t )
 
 void Skills::target_tame( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC(pc);
-	P_CHAR target = pointers::findCharBySerial( t->getClicked() );
+	pChar target = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(target);
 
 	NXWSOCKET s=ps->toInt();
@@ -1570,10 +1570,10 @@ void Skills::target_tame( NXWCLIENT ps, P_TARGET t )
 
 void Skills::target_animalLore( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC(pc);
 
-	P_CHAR target = pointers::findCharBySerial( t->getClicked() );
+	pChar target = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(target);
 
 	NXWSOCKET s = ps->toInt();
@@ -1602,7 +1602,7 @@ void Skills::target_animalLore( NXWCLIENT ps, P_TARGET t )
 	{
         	if (target->checkSkill( ANIMALLORE, 0, 1000))
         	{
-			P_CHAR target_owner = pointers::findCharBySerial( target->getOwnerSerial32() );
+			pChar target_owner = pointers::findCharBySerial( target->getOwnerSerial32() );
 			VALIDATEPC(target_owner);
 
 			sprintf(temp, TRANSLATE("Attack [%i] Defense [%i] Taming [%i] Hit Points [%i] Is Loyal to: [%s]"), target->att, target->def, target->taming/10, target->hp, (target->tamed)? target_owner->getCurrentNameC() : "himself" );
@@ -1619,9 +1619,9 @@ void Skills::target_animalLore( NXWCLIENT ps, P_TARGET t )
 
 void Skills::target_forensics( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC(pc);
-	P_ITEM pi = pointers::findItemBySerial( t->getClicked() );
+	pItem pi = pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
 	AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,FORENSICS,AMX_BEFORE);
@@ -1667,12 +1667,12 @@ void Skills::target_forensics( NXWCLIENT ps, P_TARGET t )
 */
 void target_poisoning2( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
     VALIDATEPC(pc);
 	NXWSOCKET s = ps->toInt();
 
     AMXEXECSVTARGET( pc->getSerial32(),AMXT_SKITARGS,POISONING,AMX_BEFORE);
-    P_ITEM poison=pointers::findItemBySerial(t->buffer[0]);
+    pItem poison=pointers::findItemBySerial(t->buffer[0]);
     VALIDATEPI(poison);
 
     if(poison->type!=ITYPE_POTION || poison->morey!=6)
@@ -1689,7 +1689,7 @@ void target_poisoning2( NXWCLIENT ps, P_TARGET t )
     }
 
 
-    const P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+    const pItem pi=pointers::findItemBySerial( t->getClicked() );
     if( !ISVALIDPI(pi) ) {
         pc->sysmsg(TRANSLATE("You can't poison that item."));
 		pc->objectdelay = 0;
@@ -1773,7 +1773,7 @@ void target_poisoning2( NXWCLIENT ps, P_TARGET t )
 			{
 				pc->sysmsg(TRANSLATE("Your weapon has been destroyed"));
                                 //<Luxor>
-				ps->sendRemoveObject( static_cast<P_OBJECT>(pi) );
+				ps->sendRemoveObject( static_cast<pObject>(pi) );
 				pi->Delete();
 			}
 		}
@@ -1795,7 +1795,7 @@ void target_poisoning2( NXWCLIENT ps, P_TARGET t )
 
 void Skills::target_poisoning( NXWCLIENT ps, P_TARGET t )
 {
-	P_ITEM poison = pointers::findItemBySerial( t->getClicked() );
+	pItem poison = pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(poison);
 
 	P_TARGET targ = clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
@@ -1809,9 +1809,9 @@ void Skills::target_poisoning( NXWCLIENT ps, P_TARGET t )
 
 void Skills::target_tinkering( NXWCLIENT ps, P_TARGET t )
 {
-    P_CHAR pc_currchar = ps->currChar();
+    pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
-    P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
 	NXWSOCKET s = ps->toInt();
@@ -1896,14 +1896,14 @@ public:
     {
         NXWSOCKET s = ps->toInt();
 
-		P_ITEM piClick = pointers::findItemBySerial( t->buffer[0] );
+		pItem piClick = pointers::findItemBySerial( t->buffer[0] );
         if( piClick == NULL )
         {
             sysmessage( s,TRANSLATE("Original part no longer exists" ));
             return;
         }
 
-        const P_ITEM piTarg=pointers::findItemBySerial( t->getClicked() );
+        const pItem piTarg=pointers::findItemBySerial( t->getClicked() );
         if (piTarg==NULL || piTarg->magic==4)
         {
             sysmessage(s,TRANSLATE("You can't combine these."));
@@ -1911,7 +1911,7 @@ public:
         }
 
         // make sure both items are in the player's backpack
-        P_ITEM pPack=Check4Pack(s);
+        pItem pPack=Check4Pack(s);
         if (pPack==NULL) return;
         if ( piTarg->getContSerial()!=pPack->getSerial32()
             || piClick->getContSerial()!=pPack->getSerial32())
@@ -1927,7 +1927,7 @@ public:
             sysmessage(s,TRANSLATE("You can't combine these."));
         else
         {
-            P_CHAR pc_currchar = MAKE_CHAR_REF(currchar[s]);
+            pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
 
             if (pc_currchar->skill[TINKERING]<minskill)
             {
@@ -1937,7 +1937,7 @@ public:
             if( !pc_currchar->checkSkill( TINKERING, minskill, 1000 ) )
             {
                 failmsg(s);
-                P_ITEM piLoser= rand()%2 ? piTarg : piClick;
+                pItem piLoser= rand()%2 ? piTarg : piClick;
                 piLoser->ReduceAmount(1);
                 playbad(s);
             }
@@ -1964,7 +1964,7 @@ public:
     }
     virtual void createIt(NXWSOCKET s)
     {
-		P_CHAR pc=pointers::findCharBySerial( currchar[s] );
+		pChar pc=pointers::findCharBySerial( currchar[s] );
 		VALIDATEPC(pc);
 		item::CreateFromScript( "$item_axles_with_gears", pc->getBackpack() );
     }
@@ -1990,7 +1990,7 @@ public:
     {
 	            if ( s < 0 || s >= now )
 		return;
-	P_CHAR pc = pointers::findCharBySerial( currchar[s] );
+	pChar pc = pointers::findCharBySerial( currchar[s] );
 	VALIDATEPC( pc );
 
 
@@ -2015,7 +2015,7 @@ public:
     {
         if ( s < 0 || s >= now )
 		return;
-	P_CHAR pc = pointers::findCharBySerial( currchar[s] );
+	pChar pc = pointers::findCharBySerial( currchar[s] );
 	VALIDATEPC( pc );
         item::CreateFromScript( "$item_clock", pc->getBackpack() );
     }
@@ -2057,10 +2057,10 @@ void Skills::target_tinkerClock( NXWCLIENT ps, P_TARGET t )
 void Skills::target_repair( NXWCLIENT ps, P_TARGET t )
 {
 
-    P_CHAR pc = ps->currChar();
+    pChar pc = ps->currChar();
 	VALIDATEPC(pc);
 
-    P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
 	NXWSOCKET s = ps->toInt();

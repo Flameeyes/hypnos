@@ -56,6 +56,6 @@ typedef uint8_t euint8_t;		//!< fake endian-independent uint8_t
 typedef int8_t eint8_t;		//!< fake endian-independent int8_t
 typedef bool eBool;		//!< fake endian-independent bool
 typedef euint16_t eCOLOR;	//!< endian-independent color
-typedef euint32_t eSERIAL;	//!< endian-independent serial
+typedef euint32_t euint32_t;	//!< endian-independent serial
 
 #endif

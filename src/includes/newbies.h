@@ -15,7 +15,7 @@
 #ifndef __NEWBIE_H__
 #define __NEWBIE_H__
 
-void newbieitems(P_CHAR pc);
+void newbieitems(pChar pc);
 
 
 #endif

@@ -51,10 +51,10 @@ private:
 
 	uint32_t itm_curr, chr_curr;
 
-	void SaveChar( P_CHAR pc );
+	void SaveChar( pChar pc );
 	void loadChar();
 
-	void SaveItem( P_ITEM pi );
+	void SaveItem( pItem pi );
 	void loadItem();
 
 	void realworldsave();

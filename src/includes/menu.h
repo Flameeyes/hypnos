@@ -52,7 +52,7 @@ class cBasicMenu {
 
 	private:
 
-		std::set<SERIAL> whoSeeThis; //!< who are seeing this menu
+		std::set<uint32_t> whoSeeThis; //!< who are seeing this menu
 
 	protected:
 
@@ -69,13 +69,13 @@ class cBasicMenu {
 		cBasicMenu( MENU_TYPE id );
 		virtual ~cBasicMenu();
 
-		SERIAL	serial; //!< serial
+		uint32_t	serial; //!< serial
 
 		void setCallBack( std::string arg );
 		void setCallBack( FUNCIDX fn );
 
 		virtual void handleButton( NXWCLIENT ps, cClientPacket* pkg  );
-		virtual void show( P_CHAR pc );
+		virtual void show( pChar pc );
 
 
 };
@@ -101,28 +101,28 @@ class cMenu : public cBasicMenu
 		bool moveable;
 		bool disposeable;
 		
-		SERIAL rc_serialCurrent;	//!< current code serial current
-		std::map< SERIAL, int32_t > rc_button;	//!< return code for for button
-		std::map< SERIAL, int32_t > rc_radio;	//!< return code for for radio
-		std::map< SERIAL, int32_t > rc_checkbox;	//!< return code for for checkbox
-		std::map< SERIAL, int32_t > rc_edit;	//!< return code for for edit
+		uint32_t rc_serialCurrent;	//!< current code serial current
+		std::map< uint32_t, int32_t > rc_button;	//!< return code for for button
+		std::map< uint32_t, int32_t > rc_radio;	//!< return code for for radio
+		std::map< uint32_t, int32_t > rc_checkbox;	//!< return code for for checkbox
+		std::map< uint32_t, int32_t > rc_edit;	//!< return code for for edit
 
-		std::map< SERIAL, FUNCIDX > buttonCallbacks;	//!< all callback for button
-		std::map< SERIAL, int32_t > editProps;	//!< all edit property
+		std::map< uint32_t, FUNCIDX > buttonCallbacks;	//!< all callback for button
+		std::map< uint32_t, int32_t > editProps;	//!< all edit property
 
-		std::vector< SERIAL >* switchs; //!< switch ids on after menu selection
-		std::map< SERIAL, std::wstring >* textResp; //!< edit field response
+		std::vector< uint32_t >* switchs; //!< switch ids on after menu selection
+		std::map< uint32_t, std::wstring >* textResp; //!< edit field response
 
 		uint32_t addString( wstring s );
 
 		void removeCommand( std::string command );
 		void removeCommand( char* s, ... );
 
-		void setPropertyField( SERIAL type, SERIAL obj, int prop, int subProp, int subProp2, bool data );
-		void setPropertyField( SERIAL type, SERIAL obj, int prop, int subProp, int subProp2, std::wstring data );
+		void setPropertyField( uint32_t type, SERIAL obj, int prop, int subProp, int subProp2, bool data );
+		void setPropertyField( uint32_t type, SERIAL obj, int prop, int subProp, int subProp2, std::wstring data );
 		
-		bool getPropertyFieldBool( SERIAL type, SERIAL obj, int prop, int subProp, int subProp2 );
-		std::wstring getPropertyField( SERIAL type, SERIAL obj, int prop, int subProp, int subProp2 );
+		bool getPropertyFieldBool( uint32_t type, SERIAL obj, int prop, int subProp, int subProp2 );
+		std::wstring getPropertyField( uint32_t type, SERIAL obj, int prop, int subProp, int subProp2 );
 
 		int32_t getIntFromProps( int prop, int prop2, int prop3 );
 		void getPropsFromInt( int32_t returnCode, int& prop, int& prop2, int& prop3 );
@@ -139,7 +139,7 @@ class cMenu : public cBasicMenu
 		uint32_t y; //!< y location where show
 		uint32_t pageCount;	//!< page count
 		uint32_t pageCurrent;	//!< current page
-		SERIAL buffer[MENU_BUFF_COUNT];
+		uint32_t buffer[MENU_BUFF_COUNT];
 		std::string buffer_str[MENU_BUFF_COUNT];
 
 		cMenu( MENU_TYPE id, uint32_t x, uint32_t y, bool canMove, bool canClose, bool canDispose );
@@ -177,9 +177,9 @@ class cMenu : public cBasicMenu
 		void addPage( uint32_t page );
 		void addPageButton( uint32_t x, uint32_t y, uint32_t up, uint32_t down, uint32_t page );
 
-		bool getCheckBox( SERIAL checkbox, bool raw=false );
-		bool getRadio( SERIAL radio, bool raw=false );
-		std::wstring* getText( SERIAL text, bool raw=false );
+		bool getCheckBox( uint32_t checkbox, bool raw=false );
+		bool getRadio( uint32_t radio, bool raw=false );
+		std::wstring* getText( uint32_t text, bool raw=false );
 		int32_t getButton( int32_t rawButton );
 };
 
@@ -191,7 +191,7 @@ class cIconListMenu : public cBasicMenu
 
 		virtual cServerPacket* createPacket();
 		std::vector< pkg_icon_list_menu_st > icons;
-		std::map< SERIAL, int32_t > iconData;
+		std::map< uint32_t, int32_t > iconData;
 
 	public:
 
@@ -221,12 +221,12 @@ class cMenus
 	friend class cBasicMenu;
 
 	private:
-		SERIAL current_serial; //!< current serial
+		uint32_t current_serial; //!< current serial
 		MENU_MAP menuMap; //!< every opened menus
 
-		std::map< SERIAL, std::set<SERIAL> > whoSeeWhat; //!< player see menus
+		std::map< uint32_t, std::set<SERIAL> > whoSeeWhat; //!< player see menus
 
-		bool removeFromView( P_MENU menu, SERIAL chr );
+		bool removeFromView( P_MENU menu, uint32_t chr );
 
 	public:
 
@@ -234,10 +234,10 @@ class cMenus
 		~cMenus();
 
 		P_MENU insertMenu( P_MENU menu );
-		SERIAL removeMenu( SERIAL menu, P_CHAR pc = NULL );
+		uint32_t removeMenu( SERIAL menu, pChar pc = NULL );
 		bool handleMenu( NXWCLIENT ps );
-		P_MENU getMenu( SERIAL menu );
-		bool showMenu( SERIAL menu, P_CHAR pc );
+		P_MENU getMenu( uint32_t menu );
+		bool showMenu( uint32_t menu, pChar pc );
 
 };
 

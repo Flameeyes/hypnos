@@ -27,10 +27,10 @@ void profileStuff( NXWCLIENT ps, cPacketCharProfileReq& p )
 {
 
 	if( ps==NULL ) return;
-	P_CHAR pc= ps->currChar();
+	pChar pc= ps->currChar();
 	VALIDATEPC( pc );
 	
-	P_CHAR who=pointers::findCharBySerial( p.chr.get() );
+	pChar who=pointers::findCharBySerial( p.chr.get() );
 	VALIDATEPC( who );
 
 	if( p.update ) { //update profile

@@ -345,7 +345,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 	//Luxor: not-movable items
 	/*if (pi->magic == 2 || (isCharSerial(pi->getContSerial()) && pi->getContSerial() != pc_currchar->getSerial32()) ) {
 		if (isCharSerial(pi->getContSerial())) {
-			P_CHAR pc_i = pointers::findCharBySerial(pi->getContSerial());
+			pChar pc_i = pointers::findCharBySerial(pi->getContSerial());
 			if (ISVALIDPC(pc_i))
 				pc_i->sysmsg("Warning, backpack bug located!");
 		}
@@ -426,7 +426,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 		if ( container->layer == 0 && container->getId() == 0x1E5E)
 		{
 			// Trade window???
-			SERIAL serial = calcserial( pi->moreb1, pi->moreb2, pi->moreb3, pi->moreb4);
+			uint32_t serial = calcserial( pi->moreb1, pi->moreb2, pi->moreb3, pi->moreb4);
 			if ( serial == INVALID )
 				return;
 
@@ -846,7 +846,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 			sii.fillItemsInContainer( cont, false );
 			for( sii.rewind(); !sii.isEmpty(); sii++ ) {
 
-				P_ITEM pi_ci=sii.getItem();
+				pItem pi_ci=sii.getItem();
 
 					if (ISVALIDPI(pi_ci))
 					{
@@ -883,7 +883,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 		{
 			if ( (contOwner->npcaitype==NPCAI_PLAYERVENDOR) && (contOwner->npc) && (contOwner->getOwnerSerial32()==pc->getSerial32()) )
 			{
-				pc->fx1= DEREF_P_ITEM(pi);
+				pc->fx1= DEREF_pItem(pi);
 				pc->fx2=17;
 				pc->sysmsg(TRANSLATE("Set a price for this item."));
 			}
@@ -995,7 +995,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 	if( pi->getId()==0x1BC3 || pi->getId()==0x1BC4 )
 	{
 		pc->playSFX( 0x01FE);
-		staticeffect(DEREF_P_CHAR(pc), 0x37, 0x2A, 0x09, 0x06);
+		staticeffect(DEREF_pChar(pc), 0x37, 0x2A, 0x09, 0x06);
 		pi->Delete();
 		return;
 	}
@@ -1111,7 +1111,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 			{
 				multi=findmulti( pi->getPosition() );
 				if (ISVALIDPI(multi))
-					//setserial(DEREF_P_ITEM(pi),DEREF_P_ITEM(multi),7);
+					//setserial(DEREF_pItem(pi),DEREF_pItem(multi),7);
 					pi->SetMultiSerial(multi->getSerial32());
 			}
 		}
@@ -1141,7 +1141,7 @@ bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
 
 	if (!pTC) return true;
 
-	if (pc_currchar->getSerial32() != pTC->getSerial32() /*DEREF_P_CHAR(pTC)!=cc*/)
+	if (pc_currchar->getSerial32() != pTC->getSerial32() /*DEREF_pChar(pTC)!=cc*/)
 	{
 		if (pTC->npc)
 		{
@@ -1647,7 +1647,7 @@ void wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 
 		pItem pj = NULL;
  		pChar pc_currchar= pck;
-// 		P_ITEM pack= pc_currchar->getBackpack();
+// 		pItem pack= pc_currchar->getBackpack();
                 //<Luxor>
 
 		pItem pW = pc_currchar->getWeapon();
@@ -2102,7 +2102,7 @@ void dotrade(pContainer cont1, pContainer cont2)
 	si.fillItemsInContainer( cont2, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
-		P_ITEM pi = si.getItem();
+		pItem pi = si.getItem();
 		if( ISVALIDPI(pi))
 		{
 

@@ -179,7 +179,7 @@ void cServerPacket::send( NXWCLIENT ps ) {
 \since 0.83a
 \param pc the player who send to
 */
-void cServerPacket::send( P_CHAR pc ) {
+void cServerPacket::send( pChar pc ) {
 	VALIDATEPC( pc )
 	send( pc->getClient() );
 };
@@ -238,7 +238,7 @@ CREATE( DoubleClick, PKG_DB_CLICK, 0x05 )
 
 CREATE( PickUpItem, PKG_PICK_UP, 0x07 )
 
-CREATE( DropItem, PKG_DROP_ITEM, 0x0E )
+CREATE( DropItem, PKG_DROpItem, 0x0E )
 
 CREATE( SingleClick, PKG_SINGLE_CLICK, 0x05 )
 
@@ -528,7 +528,7 @@ RECEIVE( MenuSelection ) {
 	
 	int si = switchcount.get();
 	while( si-- ) {
-		eSERIAL sw;
+		euint32_t sw;
 		getFromSocket( s, (char*)&sw, sizeof(sw) );
 		switchs.push_back( sw.get() );
 	}
@@ -627,7 +627,7 @@ void clPacketAddPartyMember::receive( NXWCLIENT ps )
 	NXWSOCKET s = ps->toInt();
 
 	offset=headerSize;
-	this->getFromSocket( s, (char*)&this->member, sizeof( eSERIAL ) );
+	this->getFromSocket( s, (char*)&this->member, sizeof( euint32_t ) );
 }
 
 csPacketAddPartyMembers::csPacketAddPartyMembers()
@@ -642,13 +642,13 @@ void csPacketAddPartyMembers::send( NXWCLIENT ps )
 	NXWSOCKET s = ps->toInt();
 
 	count = members->size();
-	size = headerSize + count*sizeof(eSERIAL);
+	size = headerSize + count*sizeof(euint32_t);
 	Xsend( s, getBeginValid(), headerSize );
 
 	std::vector<P_PARTY_MEMBER>::iterator iter( members->begin() ), end( members->end () );
 	for( ; iter!=end; ++iter ) {
-		eSERIAL b = (*iter)->serial;
-		Xsend( s, &b, sizeof( eSERIAL ) );
+		euint32_t b = (*iter)->serial;
+		Xsend( s, &b, sizeof( euint32_t ) );
 	}
 }
 
@@ -663,14 +663,14 @@ void clPacketRemovePartyMember::receive( NXWCLIENT ps )
 	NXWSOCKET s = ps->toInt();
 
 	offset=headerSize;
-	this->getFromSocket( s, (char*)&this->member, sizeof( eSERIAL ) );
+	this->getFromSocket( s, (char*)&this->member, sizeof( euint32_t ) );
 }
 
 
 csPacketRemovePartyMembers::csPacketRemovePartyMembers()
 {
 	subsubcommand = 2;
-	headerSize += sizeof( euint8_t ) +sizeof(eSERIAL);
+	headerSize += sizeof( euint8_t ) +sizeof(euint32_t);
 }
 
 void csPacketRemovePartyMembers::send( NXWCLIENT ps )
@@ -679,13 +679,13 @@ void csPacketRemovePartyMembers::send( NXWCLIENT ps )
 	NXWSOCKET s = ps->toInt();
 
 	count = members->size();
-	size = headerSize + count*sizeof(eSERIAL);
+	size = headerSize + count*sizeof(euint32_t);
 	Xsend( s, getBeginValid(), headerSize );
 
 	std::vector<P_PARTY_MEMBER>::iterator iter( members->begin() ), end( members->end () );
 	for( ; iter!=end; ++iter ) {
-		eSERIAL b = (*iter)->serial;
-		Xsend( s, &b, sizeof( eSERIAL ) );
+		euint32_t b = (*iter)->serial;
+		Xsend( s, &b, sizeof( euint32_t ) );
 	}
 }
 
@@ -700,7 +700,7 @@ void clPacketPartyTellMessage::receive( NXWCLIENT ps )
 	NXWSOCKET s = ps->toInt();
 
 	offset=headerSize;
-	getFromSocket( s, (char*)&this->member, sizeof(eSERIAL) );
+	getFromSocket( s, (char*)&this->member, sizeof(euint32_t) );
 	this->offset+=4;
 	getUnicodeStringFromSocket( s, message );
 
@@ -709,7 +709,7 @@ void clPacketPartyTellMessage::receive( NXWCLIENT ps )
 csPacketPartyTellMessage::csPacketPartyTellMessage()
 {
 	subsubcommand = 3;
-	headerSize += sizeof( eSERIAL );
+	headerSize += sizeof( euint32_t );
 }
 
 void csPacketPartyTellMessage::send( NXWCLIENT ps )
@@ -726,7 +726,7 @@ void csPacketPartyTellMessage::send( NXWCLIENT ps )
 csPacketPartyTellAllMessage::csPacketPartyTellAllMessage()
 {
 	subsubcommand = 4;
-	headerSize += sizeof( eSERIAL );
+	headerSize += sizeof( euint32_t );
 }
 
 void csPacketPartyTellAllMessage::send( NXWCLIENT ps )
@@ -772,7 +772,7 @@ void clPacketPartyCanLoot::receive( NXWCLIENT ps )
 csPacketPartyInvite::csPacketPartyInvite()
 {
 	subsubcommand = 7;
-	headerSize += sizeof(eSERIAL);
+	headerSize += sizeof(euint32_t);
 }
 
 void csPacketPartyInvite::send( NXWCLIENT ps )
@@ -795,7 +795,7 @@ void clPacketPartyAccept::receive( NXWCLIENT ps )
 	NXWSOCKET s = ps->toInt();
 	
 	this->offset = headerSize;
-	this->getFromSocket( s, (char*)&this->leader, sizeof(eSERIAL) );
+	this->getFromSocket( s, (char*)&this->leader, sizeof(euint32_t) );
 }
 
 clPacketPartyDecline::clPacketPartyDecline()
@@ -809,7 +809,7 @@ void clPacketPartyDecline::receive( NXWCLIENT ps )
 	NXWSOCKET s = ps->toInt();
 	
 	this->offset = headerSize;
-	this->getFromSocket( s, (char*)&this->leader, sizeof(eSERIAL) );
+	this->getFromSocket( s, (char*)&this->leader, sizeof(euint32_t) );
 }
 
 

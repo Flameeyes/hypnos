@@ -269,9 +269,9 @@ short calcRegionFromXY(int x, int y)
 
 }
 
-void checkregion(P_CHAR pc)
+void checkregion(pChar pc)
 {
-//	P_CHAR pc = MAKE_CHAR_REF( i );
+//	pChar pc = MAKE_CHAR_REF( i );
 	VALIDATEPC( pc );
 
 	NXWSOCKET s;

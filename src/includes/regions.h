@@ -24,11 +24,11 @@
 struct region_st
 {
 	bool inUse;
- 	TEXT name[50];
+ 	char name[50];
  	int32_t midilist;
  	uint8_t priv;	// 0x01 guarded, 0x02, mark allowed, 0x04, gate allowed, 0x08, recall
 			// 0x10 raining, 0x20, snowing, 0x40 magic damage reduced to 0
-	TEXT guardowner[50];
+	char guardowner[50];
 	uint8_t snowchance;
 	uint8_t rainchance;
 	uint8_t drychance;
@@ -46,8 +46,8 @@ struct region_st
 extern region_st region[256];
 
 typedef struct {
-	SERIAL_SET charsInRegions;
-	SERIAL_SET itemsInRegions;
+	uint32_t_SET charsInRegions;
+	uint32_t_SET itemsInRegions;
 } region_db_st;
 
 class RegCoordPoint : public cPoint< uint16_t > {
@@ -56,7 +56,7 @@ public:
 	RegCoordPoint( Location location );
 };
 
-typedef std::map< SERIAL, RegCoordPoint > WHERE_IS_NOW_MAP;
+typedef std::map< uint32_t, RegCoordPoint > WHERE_IS_NOW_MAP;
 
 class cRegion
 {
@@ -64,10 +64,10 @@ private:
 
 	WHERE_IS_NOW_MAP item_where_is_now;
 	WHERE_IS_NOW_MAP char_where_is_now;
-	void removeNow( P_CHAR pc );
-	void removeNow( P_ITEM pi );
-	void addNow( P_CHAR pc );
-	void addNow( P_ITEM pi );
+	void removeNow( pChar pc );
+	void removeNow( pItem pi );
+	void addNow( pChar pc );
+	void addNow( pItem pi );
 
 	region_db_st regions[REGION_X_CELLS][REGION_Y_CELLS];
 
@@ -81,10 +81,10 @@ public:
 	cRegion(); //constructor
 	~cRegion(); //destructor
 	
-	void add( P_CHAR pc );
-	void add( P_ITEM pi );
-	void remove( P_CHAR pc );
-	void remove( P_ITEM pi );
+	void add( pChar pc );
+	void add( pItem pi );
+	void remove( pChar pc );
+	void remove( pItem pi );
 
 
 };

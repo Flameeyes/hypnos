@@ -86,7 +86,7 @@ void command_bounty( pClient client )
 		int nAmount = strtonum(1);
 		if( BountyWithdrawGold( pc, nAmount ) )
 		{
-			P_CHAR pc_murderer = pointers::findCharBySerial(pc->murdererSer);
+			pChar pc_murderer = pointers::findCharBySerial(pc->murdererSer);
 			if( BountyCreate( pc_murderer, nAmount ) )
 			{
 				if(ISVALIDPC(pc_murderer))
@@ -225,7 +225,7 @@ void command_lpost( pClient client );
 
 void target_setMurderCount( P_TARGET t )
 {
-    P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
 	pc->kills = t->buffer[0];
@@ -383,7 +383,7 @@ void command_fix( pClient client )
 
 void target_xgo( P_TARGET t )
 {
-	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = pointers::findCharBySerial( t->getClicked() );
 	if(ISVALIDPC(pc))
 	{
 		pc->MoveTo( t->buffer[0], t->buffer[1], t->buffer[2] );
@@ -422,7 +422,7 @@ void command_showids( pClient client )
 	NxwCharWrapper sc;
 	sc.fillCharsNearXYZ( pc->getPosition() );
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-		P_CHAR pc_sc=sc.getChar();
+		pChar pc_sc=sc.getChar();
 		if(ISVALIDPC(pc_sc)) {
 			pc_sc->showLongName( pc, true );
 		}
@@ -575,7 +575,7 @@ void command_zerokills( pClient client )
                         /*sysmessage(s,"Zeroing all player kills...");
 			for(int a=0;a<charcount;a++)
 			{
-				P_CHAR pc = MAKE_CHARREF_LR(a);
+				pChar pc = MAKE_CHARREF_LR(a);
 				pc->kills=0;
 				setcharflag(pc);//AntiChrist
 			}
@@ -608,7 +608,7 @@ void command_appetite( pClient client )
 //! Adds an item when using 'add # #
 void target_addTarget( P_TARGET t )
 {
-	P_ITEM pi = item::CreateFromScript( "$item_hardcoded" );
+	pItem pi = item::CreateFromScript( "$item_hardcoded" );
 	VALIDATEPI(pi);
 
 	uint16_t id = DBYTE2WORD( t->buffer[0], t->buffer[1] );
@@ -681,7 +681,7 @@ void command_addx( pClient client )
 
 void target_rename( P_TARGET t )
 {
-	P_OBJECT po = objects.findObject( t->getClicked() );
+	pObject po = objects.findObject( t->getClicked() );
 	VALIDATEPO( po );
 
 	po->setCurrentName( t->buffer_str[0] );
@@ -744,7 +744,7 @@ void target_setpriv( pClient client, P_TARGET t )
 
 void target_setprivItem( P_TARGET t )
 {
-	P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
 	switch( t->buffer[0] )
@@ -1020,14 +1020,14 @@ void target_additem( pClient client, P_TARGET t )
 {
 	Location loc=t->getLocation();
 
-	P_ITEM pi = item::CreateFromScript( t->buffer[0], NULL, INVALID );
+	pItem pi = item::CreateFromScript( t->buffer[0], NULL, INVALID );
 	VALIDATEPI(pi);
 
 	pi->MoveTo( loc );
 	pi->Refresh();
 }
 
-void menu_additem( P_MENU menu, pClient client, SERIAL button )
+void menu_additem( P_MENU menu, pClient client, uint32_t button )
 {
 	if( button<=MENU_CLOSE )
 		return;
@@ -1051,7 +1051,7 @@ void command_additem( pClient client )
 
 #error ///FLAMEEEE !
 /*	NXWSOCKET s = ps->toInt();
-	P_CHAR pc = MAKE_CHAR_REF(currchar[s]);
+	pChar pc = MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);    */
 	if (tnum==2)
 	{
@@ -1095,7 +1095,7 @@ void target_dupe( pClient client, P_TARGET t )
     int n = t->buffer[0];
 	if( n>=1)
     {
-        P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+        pItem pi=pointers::findItemBySerial( t->getClicked() );
         if (ISVALIDPI(pi))
         {
             for (int j=0; j<n; j++ )
@@ -1196,7 +1196,7 @@ void command_hidehs( pClient client )
 void target_allSet( pClient client, P_TARGET t )
 {
 #error ///FLAMEEEE
-	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
 	NXWSOCKET k = ps->toInt();
@@ -1465,7 +1465,7 @@ void command_regspawnmax( pClient client )
 #error // FLAMEE !
 	pChar pc = client->currChar();
 /*	NXWSOCKET s = ps->toInt();
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc); */
 
 	if (tnum==2)
@@ -1482,7 +1482,7 @@ void command_regspawn( pClient client )
 	pChar pc = client->currChar();
 
 /*	NXWSOCKET s = ps->toInt();
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);*/
 
 	if (tnum==3)
@@ -1550,7 +1550,7 @@ void command_minecheck( pClient client )
 #error ///FLAMEEE
 void target_invul( pClient client, P_TARGET t )
 {
-	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
 	if( t->buffer[0]==1 )
@@ -1658,7 +1658,7 @@ void command_gy( pClient client )
 		if( ps_i==NULL )
 			continue;
 
-		P_CHAR pc_i = ps_i->currChar();
+		pChar pc_i = ps_i->currChar();
 		if (ISVALIDPC(pc_i) && pc_i->IsGM())
 		{
 			NXWSOCKET allz = ps_i->toInt();
@@ -1699,7 +1699,7 @@ void command_yell( pClient client )
 		if( ps_i==NULL )
 			continue;
 
-		P_CHAR pc_i = ps_i->currChar();
+		pChar pc_i = ps_i->currChar();
 		if (ISVALIDPC(pc_i) )
 		{
 			NXWSOCKET allz = ps_i->toInt();
@@ -1712,7 +1712,7 @@ void target_squelch( pClient client, P_TARGET t )
 {
 	pChar curr = client->currChar();
 
-	P_CHAR pc =pointers::findCharBySerial( t->getClicked() );
+	pChar pc =pointers::findCharBySerial( t->getClicked() );
 	if(ISVALIDPC(pc))
 	{
 
@@ -1835,7 +1835,7 @@ void command_who( pClient client )
 
 	NXWSOCKET s = ps->toInt();
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	if(now==1) {
@@ -1852,7 +1852,7 @@ void command_who( pClient client )
 		NXWCLIENT ps_i=sw.getClient();
 		if(ps_i!=NULL)
 		{
-			P_CHAR pc_i=ps_i->currChar();
+			pChar pc_i=ps_i->currChar();
 			if(ISVALIDPC(pc_i)) {
 				j++;
 				sprintf(s_szCmdTableTemp, "%i) %s [%x]", (j-1), pc_i->getCurrentNameC(), pc_i->getSerial32());
@@ -1872,7 +1872,7 @@ void command_gms( pClient client )
 
 	int j=0;
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	pc->sysmsg("Current GMs and Counselors in the world:");
@@ -1883,7 +1883,7 @@ void command_gms( pClient client )
 		NXWCLIENT ps_i=sw.getClient();
 		if(ps_i!=NULL)
 		{
-			P_CHAR pc_i=ps_i->currChar();
+			pChar pc_i=ps_i->currChar();
 			if(ISVALIDPC(pc_i) && pc_i->IsGMorCounselor() ) {
 				j++;
 				pc->sysmsg("%s", pc_i->getCurrentNameC());
@@ -1922,7 +1922,7 @@ void command_sysm( pClient client )
 
 void target_jail( pClient client, P_TARGET t )
 {
-	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC( pc );
 
 	prison::jail( ps->currChar(), pc, t->buffer[0] );
@@ -1957,7 +1957,7 @@ void command_setGmMoveEff( pClient client )
 
 	NXWSOCKET s = ps->toInt();
 
-	P_CHAR pc_cs=MAKE_CHAR_REF(currchar[s]);
+	pChar pc_cs=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc_cs);
 	 if (tnum==2)
 		pc_cs->gmMoveEff = strtonum(1);
@@ -1972,7 +1972,7 @@ void command_password( pClient client )
 	NXWSOCKET s = ps->toInt();
 
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	if (tnum>1)
@@ -2002,7 +2002,7 @@ void command_password( pClient client )
 void target_tele( pClient client, P_TARGET t )
 {
 
-	P_CHAR pc= ps->currChar();
+	pChar pc= ps->currChar();
 	VALIDATEPC(pc);
 
 	Location location = t->getLocation();
@@ -2023,10 +2023,10 @@ void target_tele( pClient client, P_TARGET t )
 void target_remove( pClient client, P_TARGET t )
 {
 
-	SERIAL serial = t->getClicked();
+	uint32_t serial = t->getClicked();
 
 	if( isCharSerial( serial ) )	{
-		P_CHAR pc=pointers::findCharBySerial( serial );
+		pChar pc=pointers::findCharBySerial( serial );
 		VALIDATEPC(pc);
 
 		if (pc->amxevents[EVENT_CHR_ONDISPEL]) {
@@ -2043,7 +2043,7 @@ void target_remove( pClient client, P_TARGET t )
 		pc->Delete();
 	}
 	else {
-		P_ITEM pi=pointers::findItemBySerial( serial );
+		pItem pi=pointers::findItemBySerial( serial );
 		VALIDATEPI(pi);
 
 		ps->sysmsg( TRANSLATE("Removing item.") );
@@ -2058,7 +2058,7 @@ void target_remove( pClient client, P_TARGET t )
 
 void target_dye( pClient client, P_TARGET t )
 {
-	SERIAL serial = t->getClicked();
+	uint32_t serial = t->getClicked();
 
 	uint16_t color = t->buffer[0];
 
@@ -2066,7 +2066,7 @@ void target_dye( pClient client, P_TARGET t )
 	VALIDATEPC(curr);
 
 	if( isItemSerial(serial) ) {
-		P_ITEM pi=pointers::findItemBySerial(serial);
+		pItem pi=pointers::findItemBySerial(serial);
 		if (ISVALIDPI(pi))
 		{
 			if( color==UINVALID16 ) //open dye vat
@@ -2088,7 +2088,7 @@ void target_dye( pClient client, P_TARGET t )
 			}
 		}
 	} else {
-		P_CHAR pc=pointers::findCharBySerial(serial);
+		pChar pc=pointers::findCharBySerial(serial);
 		if(ISVALIDPC(pc))
 		{
 			if( color==UINVALID16 ) //open dye vat
@@ -2149,10 +2149,10 @@ void command_dye( pClient client )
 void target_newz( pClient client, P_TARGET t )
 {
 
-    SERIAL serial = t->getClicked();
+    uint32_t serial = t->getClicked();
 
 	if( isCharSerial( serial ) ) {
-		P_CHAR pc=pointers::findCharBySerial( serial );
+		pChar pc=pointers::findCharBySerial( serial );
 		VALIDATEPC(pc);
 
 		Location location = pc->getPosition();
@@ -2161,7 +2161,7 @@ void target_newz( pClient client, P_TARGET t )
 		pc->teleport();
 	}
 	else {
-		P_ITEM pi=pointers::findItemBySerial( serial );
+		pItem pi=pointers::findItemBySerial( serial );
 		VALIDATEPI(pi);
 
 		Location location = pi->getPosition();
@@ -2188,11 +2188,11 @@ void command_newz( pClient client )
 void target_setid( pClient client, P_TARGET t )
 {
 
-    SERIAL serial = t->getClicked();
+    uint32_t serial = t->getClicked();
 	uint16_t value = DBYTE2WORD( t->buffer[0], t->buffer[1] );
 
 	if( isCharSerial( serial ) ) {
-		P_CHAR pc=pointers::findCharBySerial( serial );
+		pChar pc=pointers::findCharBySerial( serial );
 		VALIDATEPC(pc);
 
 		pc->setId( value );
@@ -2200,7 +2200,7 @@ void target_setid( pClient client, P_TARGET t )
 		pc->teleport();
 	}
 	else {
-		P_ITEM pi=pointers::findItemBySerial( serial );
+		pItem pi=pointers::findItemBySerial( serial );
 		VALIDATEPI(pi);
 
 		pi->setId( value );
@@ -2210,9 +2210,9 @@ void target_setid( pClient client, P_TARGET t )
 
 void target_spy( pClient client, P_TARGET t )
 {
-	P_CHAR curr= ps->currChar();
+	pChar curr= ps->currChar();
 
-	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
 	if( pc->getSerial32()!=curr->getSerial32() ) {
@@ -2235,20 +2235,20 @@ void target_ban( pClient client, P_TARGET t )
 
 void target_emptypack( pClient client, P_TARGET t )
 {
-	SERIAL serial = t->getClicked();
-	P_ITEM pack=NULL;
+	uint32_t serial = t->getClicked();
+	pItem pack=NULL;
 
 	if( isCharSerial( serial ) ) {
-		P_CHAR pc=pointers::findCharBySerial( serial );
+		pChar pc=pointers::findCharBySerial( serial );
 		VALIDATEPC(pc);
 
-		P_ITEM backpack=pc->getBackpack();
+		pItem backpack=pc->getBackpack();
 		VALIDATEPI(backpack);
 
 		pack=backpack;
 	}
 	else if( isItemSerial( serial ) ) {
-		P_ITEM pi=pointers::findItemBySerial( serial );
+		pItem pi=pointers::findItemBySerial( serial );
 		VALIDATEPI(pi);
 
 		pack=pi;
@@ -2258,7 +2258,7 @@ void target_emptypack( pClient client, P_TARGET t )
 		NxwItemWrapper si;
 		si.fillItemsInContainer( pack, false );
 		for( si.rewind(); !si.isEmpty(); si++ ) {
-			P_ITEM item=si.getItem();
+			pItem item=si.getItem();
 			if( ISVALIDPI(item) )
 				item->Delete();
 		}
@@ -2267,10 +2267,10 @@ void target_emptypack( pClient client, P_TARGET t )
 
 void target_possess( pClient client, P_TARGET t )
 {
-	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
-	P_CHAR curr=client->currChar();
+	pChar curr=client->currChar();
 
 	curr->possess( pc );
 }
@@ -2278,7 +2278,7 @@ void target_possess( pClient client, P_TARGET t )
 
 void target_hide( pClient client, P_TARGET t )
 {
-	P_CHAR pc = MAKE_CHAR_REF(t->getClicked());
+	pChar pc = MAKE_CHAR_REF(t->getClicked());
 	VALIDATEPC(pc);
 
 	Location pcpos= pc->getPosition();
@@ -2300,7 +2300,7 @@ void target_hide( pClient client, P_TARGET t )
 
 void target_unhide( pClient client, P_TARGET t )
 {
-	P_CHAR pc = MAKE_CHAR_REF( t->getClicked() );
+	pChar pc = MAKE_CHAR_REF( t->getClicked() );
 	VALIDATEPC(pc);
 
 	Location pcpos= pc->getPosition();
@@ -2322,7 +2322,7 @@ void target_unhide( pClient client, P_TARGET t )
 
 void target_fullstats( pClient client, P_TARGET t )
 {
-    P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = pointers::findCharBySerial( t->getClicked() );
     if (ISVALIDPC(pc))
     {
         pc->playSFX( 0x01F2);
@@ -2338,7 +2338,7 @@ void target_fullstats( pClient client, P_TARGET t )
 
 void target_heal( pClient client, P_TARGET t )
 {
-    P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = pointers::findCharBySerial( t->getClicked() );
     if (ISVALIDPC(pc))
     {
         pc->playSFX( 0x01F2);
@@ -2350,7 +2350,7 @@ void target_heal( pClient client, P_TARGET t )
 
 void target_mana( pClient client, P_TARGET t )
 {
-    P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = pointers::findCharBySerial( t->getClicked() );
     if (ISVALIDPC(pc))
     {
         pc->playSFX( 0x01F2);
@@ -2362,7 +2362,7 @@ void target_mana( pClient client, P_TARGET t )
 
 void target_stamina( pClient client, P_TARGET t )
 {
-    P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = pointers::findCharBySerial( t->getClicked() );
     if( ISVALIDPC(pc) )
     {
         pc->playSFX( 0x01F2);
@@ -2415,7 +2415,7 @@ void target_tiledata( pClient client, P_TARGET t )
 
 void target_freeze( pClient client, P_TARGET t )
 {
-	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=pointers::findCharBySerial( t->getClicked() );
 	if( ISVALIDPC(pc) ) {
 		pc->freeze();
 		pc->teleport();
@@ -2424,7 +2424,7 @@ void target_freeze( pClient client, P_TARGET t )
 
 void target_unfreeze( pClient client, P_TARGET t )
 {
-	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=pointers::findCharBySerial( t->getClicked() );
 	if( ISVALIDPC(pc) ) {
 		pc->unfreeze();
 		pc->teleport();
@@ -2434,7 +2434,7 @@ void target_unfreeze( pClient client, P_TARGET t )
 void target_setamount( pClient client, P_TARGET t )
 {
 
-	P_ITEM pi= MAKE_ITEM_REF( t->getClicked() );
+	pItem pi= MAKE_ITEM_REF( t->getClicked() );
 	VALIDATEPI(pi);
 
     pi->amount=t->buffer[0];
@@ -2444,7 +2444,7 @@ void target_setamount( pClient client, P_TARGET t )
 
 void target_npcaction( pClient client, P_TARGET t )
 {
-	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC( pc );
 
 	pc->playAction( t->buffer[0] );
@@ -2452,7 +2452,7 @@ void target_npcaction( pClient client, P_TARGET t )
 
 void target_kick( pClient client, P_TARGET t )
 {
-	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=pointers::findCharBySerial( t->getClicked() );
     if( ISVALIDPC(pc) )
     {
 		ps->sysmsg( TRANSLATE("Kicking player"));
@@ -2462,7 +2462,7 @@ void target_kick( pClient client, P_TARGET t )
 
 void target_kill( pClient client, P_TARGET t )
 {
-    P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = pointers::findCharBySerial( t->getClicked() );
     if(ISVALIDPC(pc) )
     {
         if(!pc->dead)
@@ -2480,7 +2480,7 @@ void target_kill( pClient client, P_TARGET t )
 
 void target_bolt( pClient client, P_TARGET t )
 {
-    P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
+    pChar pc=pointers::findCharBySerial( t->getClicked() );
 	if( ISVALIDPC(pc) ) {
         pc->boltFX(true);
     }
@@ -2488,16 +2488,16 @@ void target_bolt( pClient client, P_TARGET t )
 
 void target_resurrect( pClient client, P_TARGET t )
 {
-    P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+    pChar pc = pointers::findCharBySerial( t->getClicked() );
 	if(ISVALIDPC(pc) && pc->dead)
 		pc->resurrect();
 }
 
 void target_killhair( pClient client, P_TARGET t )
 {
-	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=pointers::findCharBySerial( t->getClicked() );
 	if( ISVALIDPC(pc) ) {
-		P_ITEM pi = pc->getHairItem();
+		pItem pi = pc->getHairItem();
 		if( ISVALIDPI(pi) )
 			pi->Delete();
 	}
@@ -2505,9 +2505,9 @@ void target_killhair( pClient client, P_TARGET t )
 
 void target_killbeard( pClient client, P_TARGET t )
 {
-	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=pointers::findCharBySerial( t->getClicked() );
 	if( ISVALIDPC(pc) ) {
-		P_ITEM pi = pc->getBeardItem();
+		pItem pi = pc->getBeardItem();
 		if( ISVALIDPI(pi) )
 			pi->Delete();
 	}
@@ -2517,13 +2517,13 @@ void target_killbeard( pClient client, P_TARGET t )
 void target_makegm( pClient client, P_TARGET t )
 {
 
-	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
     if (pc->dead)
 		return;
 
-	P_CHAR curr=ps->currChar();
+	pChar curr=ps->currChar();
 	VALIDATEPC(curr);
 
     if (SrvParms->gm_log)
@@ -2558,12 +2558,12 @@ void target_makegm( pClient client, P_TARGET t )
 
 	pc->setCurrentName( "GM %s", pc->getCurrentNameC() );
 
-	P_ITEM pack=pc->getBackpack();
+	pItem pack=pc->getBackpack();
 
 	NxwItemWrapper si;
 	si.fillItemWeared( pc, true, true, true );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
-		P_ITEM pi=si.getItem();
+		pItem pi=si.getItem();
 		if( ISVALIDPI(pi) ) {
 			if( pi->layer!=LAYER_BEARD && pi->layer!=LAYER_HAIR ) {
 				if( ISVALIDPI(pack) )
@@ -2586,10 +2586,10 @@ void target_makegm( pClient client, P_TARGET t )
 void target_makecns( pClient client, P_TARGET t )
 {
 
-	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
+	pChar pc=pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
-	P_CHAR curr=ps->currChar();
+	pChar curr=ps->currChar();
 	VALIDATEPC(curr);
 
     if (SrvParms->gm_log)
@@ -2604,12 +2604,12 @@ void target_makecns( pClient client, P_TARGET t )
     pc->gmrestrict = 0;
 	pc->setCurrentName("Counselor %s", pc->getCurrentNameC());
 
-	P_ITEM pack=pc->getBackpack();
+	pItem pack=pc->getBackpack();
 
 	NxwItemWrapper si;
 	si.fillItemWeared( pc, true, true, true );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
-		P_ITEM pi=si.getItem();
+		pItem pi=si.getItem();
 		if( ISVALIDPI(pi) ) {
 			if( pi->layer!=LAYER_BEARD && pi->layer!=LAYER_HAIR ) {
 				if( ISVALIDPI(pack) )
@@ -2631,10 +2631,10 @@ void target_makecns( pClient client, P_TARGET t )
 void target_xbank( pClient client, P_TARGET t )
 {
 
-	P_CHAR pc2 = pointers::findCharBySerial( t->getClicked() );
+	pChar pc2 = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc2);
 
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 
 	pc->openBankBox(pc2);
 }
@@ -2642,10 +2642,10 @@ void target_xbank( pClient client, P_TARGET t )
 void target_xsbank( pClient client, P_TARGET t )
 {
 
-	P_CHAR pc2 = pointers::findCharBySerial( t->getClicked() );
+	pChar pc2 = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc2);
 
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 
     pc->openSpecialBank(pc2);
 }
@@ -2653,10 +2653,10 @@ void target_xsbank( pClient client, P_TARGET t )
 void target_release( pClient client, P_TARGET t )
 {
 
-	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
-	P_CHAR rel = ps->currChar();
+	pChar rel = ps->currChar();
 
 	prison::release( rel, pc  );
 }
@@ -2664,7 +2664,7 @@ void target_release( pClient client, P_TARGET t )
 void target_title( pClient client, P_TARGET t )
 {
 
-	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
 	pc->title = t->buffer_str[0];

@@ -37,7 +37,7 @@ public:
         static void	archive();
 	static void	safeoldsave();
 
-	cItem(SERIAL serial);
+	cItem(uint32_t serial);
         cItem();
 	~cItem();
 
@@ -476,7 +476,7 @@ public:
 	{ return type==8 || type==13 || type==64; }
 
 	int32_t		secureIt; // secured chests
-	void		putInto( P_ITEM pi );
+	void		putInto( pItem pi );
 //@}
 
 /********************************
@@ -645,8 +645,8 @@ public:
 /*!
 \name Spawn
 */
-	SERIAL		spawnserial;
-	SERIAL		spawnregion;
+	uint32_t		spawnserial;
+	uint32_t		spawnregion;
 	void		SetMultiSerial(int32_t mulser);
 //@}
 
@@ -725,8 +725,8 @@ public:
 	pItem		getOutMostCont( uint16_t rec=50 );
 	pBody		getPackOwner();
 
-	uint32_t		distFrom( P_CHAR pc );
-	uint32_t		distFrom( P_ITEM pi );
+	uint32_t		distFrom( pChar pc );
+	uint32_t		distFrom( pItem pi );
 
 	inline void setAnimid(uint16_t id)
 	{ animid = id; }
@@ -741,10 +741,10 @@ public:
 class cWeapon : public cItem
 {
 public:
-        cWeapon(SERIAL serial);
+        cWeapon(uint32_t serial);
 } PACK_NEEDED;
 
-extern bool LoadItemEventsFromScript (P_ITEM pi, char *script1, char *script2);
+extern bool LoadItemEventsFromScript (pItem pi, char *script1, char *script2);
 
 
 #define MAKE_ITEM_REF(i) pointers::findItemBySerial(i)

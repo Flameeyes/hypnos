@@ -79,10 +79,6 @@ extern int escortRegions;
 /////////////////////////////////////////////
 // maximum too cause maxclient = maximum +1
 
-
-
-extern P_CLIENT clientInfo[MAXCLIENT];
-
 extern bool cryptedClient[MAXCLIENT];
 
 extern unsigned char  buffer[MAXCLIENT][MAXBUFFER];
@@ -94,9 +90,6 @@ extern unsigned char clientip[MAXCLIENT][4];
 extern int binlength[MAXIMUM+1];
 extern int boutlength[MAXIMUM+1];
 extern unsigned char clientDimension[MAXCLIENT]; // stores if the client is the new 3d or old 2d one
-
-
-
 
 //////////////////////////////////////////////
 //              MAxBuffer                  //

@@ -73,7 +73,7 @@ public:
 class cServerPacket : public cPacket {
 public:
 	virtual void send( NXWCLIENT ps );
-	virtual void send( P_CHAR pc );
+	virtual void send( pChar pc );
 	virtual ~cServerPacket() { };
 
 } PACK_NEEDED;
@@ -218,7 +218,7 @@ class cPacketAttackRequest : public cClientPacket {
 
 public:
 
-	eSERIAL	att;	//!< serial of to be attacked
+	euint32_t	att;	//!< serial of to be attacked
 
 	cPacketAttackRequest();	
 
@@ -261,7 +261,7 @@ public:
 } PACK_NEEDED;
 
 
-#define PKG_DROP_ITEM 0x08;
+#define PKG_DROpItem 0x08;
 /*!
 \brief User drop an item
 \author Endymion
@@ -1337,7 +1337,7 @@ class cPacketResponseToDialog : public cClientPacket {
 
 public:
 
-	eSERIAL	serial;		//!< the dialog serial ( echoed back from 7C packet )
+	euint32_t	serial;		//!< the dialog serial ( echoed back from 7C packet )
 	euint16_t	id;		//!< the model id ( echoed back from 7C packet )
 	euint16_t	index;		//!< index of choice ( 1 based )
 	euint16_t	model;		//!< model of choice
@@ -1444,12 +1444,12 @@ class cPacketUnicodeSpeech : public cServerPacket {
 private:
 	euint16_t	size; 
 public:
-	eSERIAL	obj;		//!< from ( 0xFFFFFFFF=system message)
+	euint32_t	obj;		//!< from ( 0xFFFFFFFF=system message)
 	euint16_t model;		//!< item hex number | 0xFFFF=system
 	euint8_t	type;		//!< text type
 	eCOLOR	color;		//!< text color
 	euint16_t	font;		//!< text font
-	eSERIAL	language;   //!< language
+	euint32_t	language;   //!< language
 	string	name;		//!< name of who speech ( 30 character )
 	wstring*	msg;	//!< message
 
@@ -1484,7 +1484,7 @@ command:
 class cPacketMap : public cServerPacket {
 
 public:
-	eSERIAL	obj;		//!< the map
+	euint32_t	obj;		//!< the map
 	euint8_t	command;	//!< command see note
 	euint8_t	plotting;	//!< plotting state ( 1=on, 0=off only valid if command 7)
 	euint16_t	x;		//!< x location (relative to upper left corner of the map, in pixels)
@@ -1504,7 +1504,7 @@ public:
 class cPacketMapMessage : public cServerPacket {
 
 public:
-	eSERIAL	key;	//!< the key used
+	euint32_t	key;	//!< the key used
 	euint16_t	id;		//!< gump art id (0x139D)
 	euint16_t	xa;		//!< x location (relative to upper left corner of the map, in pixels)
 	euint16_t	ya;		//!< y location (relative to upper left corner of the map, in pixels)
@@ -1613,7 +1613,7 @@ private:
 	euint16_t	size; //!< size
 public:
 	eBool	update; //!< update
-	eSERIAL chr; //!< character
+	euint32_t chr; //!< character
 
 	cPacketCharProfileReqOnly();
 
@@ -1630,7 +1630,7 @@ private:
 	euint16_t	size;	//!< size
 public:
 	eBool	update; //!< update
-	eSERIAL	chr;	//!< character
+	euint32_t	chr;	//!< character
     euint16_t	type;	//!< type (0x0001 – Update)
 private:
 	euint16_t	len;	//!< # of unicode characters
@@ -1652,7 +1652,7 @@ class cPacketCharProfile : public cServerPacket {
 private:
 	euint16_t size;	//!< size
 public:
-	eSERIAL chr;	//!< character
+	euint32_t chr;	//!< character
 
 	std::string title;	//!< title
 
@@ -1761,8 +1761,8 @@ private:
 	euint16_t size; //<! size
 public:
 
-	eSERIAL serial; //!< the serial
-	eSERIAL id; //!< gump serial
+	euint32_t serial; //!< the serial
+	euint32_t id; //!< gump serial
 	euint32_t	x; //!< x location
 	euint32_t	y; //!< x location
 
@@ -1808,19 +1808,19 @@ private:
 	euint16_t	size;	//!< size
 public:
 
-	eSERIAL serial; //!< the serial ( first Id in PKG_MENU )
-	eSERIAL id; //!< gump serial (second Id in PKG_MENU )
+	euint32_t serial; //!< the serial ( first Id in PKG_MENU )
+	euint32_t id; //!< gump serial (second Id in PKG_MENU )
 	euint32_t	buttonId; //!< which button pressed or 0 if closed
 
 private:
 	euint32_t	switchcount; //!<  response info for radio buttons and checkboxes, any switches listed here are switched on
 public:
-	std::vector<SERIAL> switchs; //!< switch ids
+	std::vector<uint32_t> switchs; //!< switch ids
 private:
 	euint32_t textcount; //!< response info for textentries
 public:
 //	std::vector<text_entry_st> text_entries; //!< text entries
-	std::map< SERIAL, std::wstring> text_entries; //!< text entries
+	std::map< uint32_t, std::wstring> text_entries; //!< text entries
 
 	cPacketMenuSelection();
 	void receive( NXWCLIENT PS );
@@ -1850,7 +1850,7 @@ private:
 	euint16_t size; //<! size
 public:
 
-	eSERIAL serial; //!< the serial
+	euint32_t serial; //!< the serial
 	euint16_t id; //!< the gump
 private:
 	euint8_t question_length; //!< question length
@@ -2046,7 +2046,7 @@ public:
 */
 class clPacketPartyTellMessage : public cSubPacketParty< cClientPacket > {
 public:
-	eSERIAL member; //!< to member
+	euint32_t member; //!< to member
 	std::wstring message; //!< the message
 
 	clPacketPartyTellMessage();
@@ -2063,7 +2063,7 @@ public:
 */
 class csPacketPartyTellMessage : public cSubPacketParty< cServerPacket > {
 public:
-	eSERIAL member; //!< from member
+	euint32_t member; //!< from member
 	std::wstring* message; //!< the message
 
 	csPacketPartyTellMessage();
@@ -2082,7 +2082,7 @@ public:
 */
 class csPacketPartyTellAllMessage : public cSubPacketParty< cServerPacket > {
 public:
-	eSERIAL from; //!< from member
+	euint32_t from; //!< from member
 	std::wstring* message; //!< the message
 
 	csPacketPartyTellAllMessage();
@@ -2132,7 +2132,7 @@ public:
 */
 class csPacketPartyInvite : public cSubPacketParty< cServerPacket > {
 public:
-	eSERIAL leader; //!< party leader
+	euint32_t leader; //!< party leader
 
 	csPacketPartyInvite();
 	void send( NXWCLIENT ps );
@@ -2148,7 +2148,7 @@ public:
 */
 class clPacketPartyAccept : public cSubPacketParty< cClientPacket > {
 public:
-	eSERIAL leader; //!< party leader
+	euint32_t leader; //!< party leader
 
 	clPacketPartyAccept();
 	void receive( NXWCLIENT ps );
@@ -2164,7 +2164,7 @@ public:
 */
 class clPacketPartyDecline : public cSubPacketParty< cClientPacket > {
 public:
-	eSERIAL leader; //!< party leader
+	euint32_t leader; //!< party leader
 
 	clPacketPartyDecline();
 	void receive( NXWCLIENT ps );

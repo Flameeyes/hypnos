@@ -41,7 +41,7 @@ extern bool g_bMustExecAICode;
 
 static int32_t linInterpolation (int32_t ix1, int32_t iy1, int32_t ix2, int32_t iy2, int32_t ix);
 
-void checkFieldEffects( uint32_t currenttime, P_CHAR pc, char timecheck )
+void checkFieldEffects( uint32_t currenttime, pChar pc, char timecheck )
 {
 
 	VALIDATEPC(pc);
@@ -53,13 +53,13 @@ void checkFieldEffects( uint32_t currenttime, P_CHAR pc, char timecheck )
 
 	for( ; itemIt != itemEnd; ++itemIt ) {
 
-		P_ITEM pi= (*itemIt);
+		pItem pi= (*itemIt);
 #else
 	NxwItemWrapper si;
 	si.fillItemsNearXYZ( pc->getPosition(), 2, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
-		P_ITEM pi=si.getItem();
+		pItem pi=si.getItem();
 #endif
 		if(ISVALIDPI(pi) ) {
 
@@ -257,7 +257,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 		if( ps == NULL )
 			continue;
 
-		P_CHAR pc=ps->currChar();
+		pChar pc=ps->currChar();
 		if( !ISVALIDPC( pc ) )
 			continue;
 
@@ -269,9 +269,9 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 		if( TIMEOUT( checknpcs ) || TIMEOUT( checktamednpcs ) || TIMEOUT( checknpcfollow ) )
 		{
 #ifdef SPAR_C_LOCATION_MAP
-			PCHAR_VECTOR *pCV = pointers::getNearbyChars( pc, VISRANGE, pointers::NPC );
-			PCHAR_VECTOR it( pCV->begin() ), end( pCV->end() );
-			P_CHAR pNpc = 0;
+			CharList *pCV = pointers::getNearbyChars( pc, VISRANGE, pointers::NPC );
+			CharList it( pCV->begin() ), end( pCV->end() );
+			pChar pNpc = 0;
 			while( it != end )
 			{
 				pNpc = (*it);
@@ -290,7 +290,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 			sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
 			for( sc.rewind(); !sc.isEmpty(); sc++ )
 			{
-				P_CHAR npc=sc.getChar();
+				pChar npc=sc.getChar();
 
 				if(!ISVALIDPC(npc) || !npc->npc )
 					continue;
@@ -313,7 +313,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 			si.fillItemsNearXYZ( pc->getPosition(), 2*VISRANGE, false );
 			for( si.rewind(); !si.isEmpty(); si++ )
 			{
-				P_ITEM pi=si.getItem();
+				pItem pi=si.getItem();
 
 				if( !ISVALIDPI( pi ) )
 					continue;

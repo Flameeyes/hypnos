@@ -929,7 +929,7 @@ bool cPacketReceiveDoubleclick::execute(pClient client)
 	VALIDATEPCR( pc, false );
 
 	// the 0x80 bit in the first byte is used later for "keyboard" and should be ignored
-	SERIAL serial = LongFromCharPtr(buffer +1) & 0x7FFFFFFF;
+	uint32_t serial = LongFromCharPtr(buffer +1) & 0x7FFFFFFF;
 
 	if (isCharSerial(serial))
 	{
@@ -988,7 +988,7 @@ bool cPacketReceiveDropItem::execute(pClient client)
 bool cPacketReceiveSingleclick::execute(pClient client)
 {
         if (length != 5) return false;
-        SERIAL serial = LongFromCharPtr(buffer + 1);
+        uint32_t serial = LongFromCharPtr(buffer + 1);
 	if ( isCharSerial( serial ) )
         {
                 pChar pc = pointers::findCharBySerial(serial);
@@ -1291,7 +1291,7 @@ bool cPacketReceiveLoginChar::execute(pClient client)
 
 	loginchars[s] = NULL;
 
-	P_CHAR pc_k=NULL;
+	pChar pc_k=NULL;
 
 	if (acctno[s]>INVALID)
 	{
@@ -1300,7 +1300,7 @@ bool cPacketReceiveLoginChar::execute(pClient client)
 		NxwCharWrapper sc;
 		Accounts->GetAllChars( acctno[s], sc );
 		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-			P_CHAR pc_i=sc.getChar();
+			pChar pc_i=sc.getChar();
 			if(!ISVALIDPC(pc_i))
 				continue;
 			if (j==buffer[s][0x44]) {

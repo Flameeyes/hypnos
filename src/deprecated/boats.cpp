@@ -70,15 +70,15 @@ char cShipItems[4][6]=
 \brief A sort of getboart() only more general
 \todo delete or write it
 */
-P_ITEM findmulti(Location where)
+pItem findmulti(Location where)
 {
 /*	int lastdist=30;
-	P_ITEM pmulti=NULL;
+	pItem pmulti=NULL;
 	
 	NxwItemWrapper si;
 	si.fillItemsNearXYZ( where );
 	for( ; !si.isEmpty(); si++ ) {
-		P_ITEM pi=si.getItem();
+		pItem pi=si.getItem();
 		if(!ISVALIDPI(pi))
 			continue;
 
@@ -103,7 +103,7 @@ P_ITEM findmulti(Location where)
 	return NULL;
 }
 
-bool inmulti(Location where, P_ITEM pi)//see if they are in the multi at these chords (Z is NOT checked right now)
+bool inmulti(Location where, pItem pi)//see if they are in the multi at these chords (Z is NOT checked right now)
 // PARAM WARNING: z is unreferenced
 {
 	VALIDATEPIR(pi,false);
@@ -121,11 +121,11 @@ bool inmulti(Location where, P_ITEM pi)//see if they are in the multi at these c
 	return false;
 }
 
-void cBoat::PlankStuff(P_CHAR pc , P_ITEM pi)//If the plank is opened, double click Will send them here
+void cBoat::PlankStuff(pChar pc , pItem pi)//If the plank is opened, double click Will send them here
 {
 	VALIDATEPC(pc);
 
-	P_ITEM boat =GetBoat(pc->getPosition());
+	pItem boat =GetBoat(pc->getPosition());
 	if (boat!=NULL) //we are on boat
 	{
 		boat->type2 = 0; //STOP the BOAT
@@ -134,7 +134,7 @@ void cBoat::PlankStuff(P_CHAR pc , P_ITEM pi)//If the plank is opened, double cl
 	else // we are not on boat
 	{
 
-		P_ITEM boat2;
+		pItem boat2;
 
 		boat2=search_boat_by_plank(pi);
 		if (boat2 == NULL)
@@ -149,7 +149,7 @@ void cBoat::PlankStuff(P_CHAR pc , P_ITEM pi)//If the plank is opened, double cl
 		sc.fillOwnedNpcs( pc, false, true );
 		for( sc.rewind(); !sc.isEmpty(); sc++ ) 
 		{
-			P_CHAR pc_b=sc.getChar();
+			pChar pc_b=sc.getChar();
 
 			if( ISVALIDPC( pc_b ))
 			{
@@ -173,7 +173,7 @@ void cBoat::PlankStuff(P_CHAR pc , P_ITEM pi)//If the plank is opened, double cl
 
 }
 
-void cBoat::LeaveBoat(P_CHAR pc, P_ITEM pi)//Get off a boat (dbl clicked an open plank while on the boat.
+void cBoat::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open plank while on the boat.
 {
 	VALIDATEPC(pc);
 
@@ -182,7 +182,7 @@ void cBoat::LeaveBoat(P_CHAR pc, P_ITEM pi)//Get off a boat (dbl clicked an open
 	uint32_t y,y2= pi->getPosition("y");
 	int8_t z= pi->getPosition("z");
 	int8_t mz,sz,typ;
-	P_ITEM pBoat=GetBoat(pc->getPosition());
+	pItem pBoat=GetBoat(pc->getPosition());
 
 
 	if (pBoat==NULL) return;
@@ -207,7 +207,7 @@ void cBoat::LeaveBoat(P_CHAR pc, P_ITEM pi)//Get off a boat (dbl clicked an open
 				for( sc.rewind(); !sc.isEmpty(); sc++ )
 				{
 
-					P_CHAR pc_b=sc.getChar();
+					pChar pc_b=sc.getChar();
 					if( ISVALIDPC(pc_b))
 					{
 							
@@ -240,7 +240,7 @@ void cBoat::LeaveBoat(P_CHAR pc, P_ITEM pi)//Get off a boat (dbl clicked an open
 }
 
 
-void cBoat::TurnStuff_i(P_ITEM p_b, P_ITEM pi, int dir, int type)//Turn an item that was on the boat when the boat was turned.
+void cBoat::TurnStuff_i(pItem p_b, pItem pi, int dir, int type)//Turn an item that was on the boat when the boat was turned.
 {
 	VALIDATEPI(p_b);
 	VALIDATEPI(pi);
@@ -275,7 +275,7 @@ void cBoat::TurnStuff_i(P_ITEM p_b, P_ITEM pi, int dir, int type)//Turn an item 
 }
 
 
-void cBoat::TurnStuff_c(P_ITEM p_b, P_CHAR pc, int dir, int type)//Turn an item that was on the boat when the boat was turned.
+void cBoat::TurnStuff_c(pItem p_b, pChar pc, int dir, int type)//Turn an item that was on the boat when the boat was turned.
 {
 	VALIDATEPI(p_b);
 	VALIDATEPC(pc);
@@ -309,7 +309,7 @@ void cBoat::TurnStuff_c(P_ITEM p_b, P_CHAR pc, int dir, int type)//Turn an item 
 	pc->teleport();
 }
 
-void cBoat::Turn(P_ITEM pi, int turn)//Turn the boat item, and send all the people/items on the boat to turnboatstuff()
+void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the people/items on the boat to turnboatstuff()
 {
 	VALIDATEPI(pi);
 
@@ -323,7 +323,7 @@ void cBoat::Turn(P_ITEM pi, int turn)//Turn the boat item, and send all the peop
 			ihold,
 			dir,
 			d=0;
-	P_ITEM	tiller,
+	pItem	tiller,
 			p1,
 			p2,
 			hold;
@@ -429,7 +429,7 @@ void cBoat::Turn(P_ITEM pi, int turn)//Turn the boat item, and send all the peop
 	}
 }
 
-void cBoat::TurnShip( uint8_t size, int32_t dir, P_ITEM pPort, P_ITEM pStarboard, P_ITEM pTiller, P_ITEM pHold )
+void cBoat::TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, P_ITEM pTiller, P_ITEM pHold )
 {
 	Location itmpos;
 	signed short int *pShipOffsets;
@@ -665,12 +665,12 @@ void cBoat::TurnShip( uint8_t size, int32_t dir, P_ITEM pPort, P_ITEM pStarboard
 }
 
 
-bool cBoat::Speech(P_CHAR pc, NXWSOCKET socket, std::string &talk)//See if they said a command.
+bool cBoat::Speech(pChar pc, NXWSOCKET socket, std::string &talk)//See if they said a command.
 {
 	/*
 		pc & socket validation done in talking()
 	*/
-	P_ITEM pBoat=GetBoat(pc->getPosition());
+	pItem pBoat=GetBoat(pc->getPosition());
 	//
 	// As we don't want a message logged when not on a boat we cannot use VALIDATEPIR
 	if( !ISVALIDPI( pBoat ) )
@@ -686,7 +686,7 @@ bool cBoat::Speech(P_CHAR pc, NXWSOCKET socket, std::string &talk)//See if they 
 	if(boat==NULL)
 		return  false;
 
-	P_ITEM tiller=boat->p_tiller;
+	pItem tiller=boat->p_tiller;
 	VALIDATEPIR(tiller,false); // get the tiller man
 	//
 	// Sparhawk: talk has allready been capitalized in talking
@@ -812,7 +812,7 @@ bool cBoat::Speech(P_CHAR pc, NXWSOCKET socket, std::string &talk)//See if they 
 // Called form		 : cBoat:good_position()
 
 
-bool cBoat::tile_check(multi_st multi,P_ITEM pBoat,map_st map,int x, int y,int dir)
+bool cBoat::tile_check(multi_st multi,pItem pBoat,map_st map,int x, int y,int dir)
 {
 	int dx,dy;
 	switch(dir)
@@ -868,7 +868,7 @@ bool cBoat::tile_check(multi_st multi,P_ITEM pBoat,map_st map,int x, int y,int d
 // Changes           : none yet
 // Called form		 : cBoat:build()
 
-bool cBoat::good_position(P_ITEM pBoat, Location where, int dir)
+bool cBoat::good_position(pItem pBoat, Location where, int dir)
 {
 	uint32_t x= where.x, y= where.y, i;
 	bool good_pos=false;
@@ -938,11 +938,11 @@ bool cBoat::good_position(P_ITEM pBoat, Location where, int dir)
 // Author            : Elcabesa
 // Changes           : none yet
 // Called form	     : buildhouse()
-bool cBoat::Build(NXWSOCKET  s, P_ITEM pBoat, char id2)
+bool cBoat::Build(NXWSOCKET  s, pItem pBoat, char id2)
 {
 	if ( s < 0 || s >= now )
 		return false;
-	P_CHAR pc_cs=MAKE_CHAR_REF(currchar[s]);
+	pChar pc_cs=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPCR( pc_cs, false );
 
 	int nid2=id2;
@@ -977,12 +977,12 @@ bool cBoat::Build(NXWSOCKET  s, P_ITEM pBoat, char id2)
 //	strcpy(pBoat->name,"a mast");//Name is something other than "%s's house"
 	pBoat->setCurrentName("a mast");
 
-	P_ITEM pTiller=item::CreateFromScript( "$item_tillerman" );
+	pItem pTiller=item::CreateFromScript( "$item_tillerman" );
 	if( !pTiller ) return false;
 	pTiller->setPosition("z", -5);
 	pTiller->priv=0;
 
-	P_ITEM pPlankR=item::CreateFromScript( "$item_plank2" );//Plank2 is on the RIGHT side of the boat
+	pItem pPlankR=item::CreateFromScript( "$item_plank2" );//Plank2 is on the RIGHT side of the boat
 	if( !pPlankR ) return false;
 	pPlankR->type=ITYPE_BOATS;
 	pPlankR->type2=3;
@@ -993,7 +993,7 @@ bool cBoat::Build(NXWSOCKET  s, P_ITEM pBoat, char id2)
 	pPlankR->setPosition("z", -5);
 	pPlankR->priv=0;//Nodecay
 
-	P_ITEM pPlankL=item::CreateFromScript( "$item_plank1" );//Plank1 is on the LEFT side of the boat
+	pItem pPlankL=item::CreateFromScript( "$item_plank1" );//Plank1 is on the LEFT side of the boat
 	if( !pPlankL ) return false;
 	pPlankL->type=ITYPE_BOATS;//Boat type
 	pPlankL->type2=3;//Plank sub type
@@ -1004,7 +1004,7 @@ bool cBoat::Build(NXWSOCKET  s, P_ITEM pBoat, char id2)
 	pPlankL->setPosition("z", -5);
 	pPlankL->priv=0;
 
-	P_ITEM pHold=item::CreateFromScript( "$item_hold1" );
+	pItem pHold=item::CreateFromScript( "$item_hold1" );
 	if( !pHold ) return false;
 	pHold->more1= pBoat->getSerial().ser1;//Lock this too :-)
 	pHold->more2= pBoat->getSerial().ser2;
@@ -1086,7 +1086,7 @@ bool cBoat::Build(NXWSOCKET  s, P_ITEM pBoat, char id2)
 	boatpos.dispz=boatpos.z;
 
 	pc_cs->MoveTo(boatpos);
-	//setserial(DEREF_P_CHAR(pc_cs),DEREF_P_ITEM(pBoat),8);
+	//setserial(DEREF_pChar(pc_cs),DEREF_pItem(pBoat),8);
 	pc_cs->setMultiSerial( pBoat->getSerial32() );
 	insert_boat(pBoat); // insert the boat in the boat_database
 	return true;
@@ -1097,7 +1097,7 @@ bool cBoat::Build(NXWSOCKET  s, P_ITEM pBoat, char id2)
 // Description       : handle if at these coord there is another boat
 // Return type       : bool TRUE boat collision,FALSE not obat collision
 // Author            : Elcabesa
-bool cBoat::collision(P_ITEM pi,Location where,int dir)
+bool cBoat::collision(pItem pi,Location where,int dir)
 {
 	int x= where.x, y= where.y;
 	std::map<int,boat_db>::iterator iter_boat;
@@ -1131,7 +1131,7 @@ bool cBoat::collision(P_ITEM pi,Location where,int dir)
 // Called from		 : cBoat:collision()
 
 
-bool cBoat::boat_collision(P_ITEM pBoat1,int x1, int y1,int dir,P_ITEM pBoat2)
+bool cBoat::boat_collision(pItem pBoat1,int x1, int y1,int dir,pItem pBoat2)
 {
 	uint32_t i1, i2;
 	int x,y;
@@ -1189,7 +1189,7 @@ bool cBoat::boat_collision(P_ITEM pBoat1,int x1, int y1,int dir,P_ITEM pBoat2)
 // Author            : unknow
 // Changes           : none yet
 
-void cBoat::OpenPlank(P_ITEM pi)
+void cBoat::OpenPlank(pItem pi)
 {
 	switch(pi->getId()&0xFF)
 	{
@@ -1204,7 +1204,7 @@ void cBoat::OpenPlank(P_ITEM pi)
 		case 0xD5: pi->setId( 0xD5B1 ); break;
 		case 0xD4: pi->setId( 0xD4B2 ); break;
 		case 0x89: pi->setId( 0x898A ); break;
-		default: LogWarning("WARNING: Invalid plank ID called! Plank %i '%s' [ %04x ]\n",DEREF_P_ITEM(pi),pi->getCurrentNameC(),pi->getId()); break;
+		default: LogWarning("WARNING: Invalid plank ID called! Plank %i '%s' [ %04x ]\n",DEREF_pItem(pi),pi->getCurrentNameC(),pi->getId()); break;
 	}
 }
 
@@ -1213,14 +1213,14 @@ void cBoat::OpenPlank(P_ITEM pi)
 \return the pointer to the boat or NULL
 \author Elcabesa
 */
-P_ITEM cBoat::GetBoat(Location pos)
+pItem cBoat::GetBoat(Location pos)
 {
 	uint32_t i;
 	BOATS::iterator iter( s_boat.begin() ), end( s_boat.end() );
 	for( ; iter!=end; iter++) {
 
 		boat_db boat=iter->second;
-		P_ITEM pBoat=boat.p_serial;
+		pItem pBoat=boat.p_serial;
 		if(!ISVALIDPI(pBoat))
 			continue;
 		if( dist( pos, pBoat->getPosition() ) < 10.0 )
@@ -1246,7 +1246,7 @@ P_ITEM cBoat::GetBoat(Location pos)
 // Author            : unknow
 // Changes           : none yet
 
-void cBoat::Move(NXWSOCKET  s, int dir, P_ITEM pBoat)
+void cBoat::Move(NXWSOCKET  s, int dir, pItem pBoat)
 {
 	iMove(s,dir,pBoat,false);
 }
@@ -1260,7 +1260,7 @@ void cBoat::Move(NXWSOCKET  s, int dir, P_ITEM pBoat)
 // Author            : Elcabesa
 // Changes           : none yet
 
-void cBoat::iMove(NXWSOCKET  s, int dir, P_ITEM pBoat, bool forced)
+void cBoat::iMove(NXWSOCKET  s, int dir, pItem pBoat, bool forced)
 {
 	int tx=0,ty=0;
 	int serial;
@@ -1270,10 +1270,10 @@ void cBoat::iMove(NXWSOCKET  s, int dir, P_ITEM pBoat, bool forced)
 
 	if(boat==NULL)
 		return;
-	P_ITEM tiller=boat->p_tiller;
-	P_ITEM p1=boat->p_l_plank;
-	P_ITEM p2=boat->p_r_plank;
-	P_ITEM hold=boat->p_container;
+	pItem tiller=boat->p_tiller;
+	pItem p1=boat->p_l_plank;
+	pItem p2=boat->p_r_plank;
+	pItem hold=boat->p_container;
 
 	//////////////FOR ELCABESA VERY WARNING BY ENDYMION
 	//////THIS PACKET PAUSE THE CLIENT
@@ -1381,7 +1381,7 @@ void cBoat::iMove(NXWSOCKET  s, int dir, P_ITEM pBoat, bool forced)
 		c=imultisp[serial%HASHMAX].pointer[a];
 		if(c!=-1)
 		{
-			P_ITEM pi= MAKE_ITEMREF_LOGGED(c,err);
+			pItem pi= MAKE_ITEMREF_LOGGED(c,err);
 			if(!err)
 			{
 				mapRegions->remove(pi);
@@ -1441,7 +1441,7 @@ cBoat::~cBoat()//Destructor
 \param pi pointer to the boat to be inserted
 \since 0.8
 */
-void insert_boat(P_ITEM pi)
+void insert_boat(pItem pi)
 {
 	boat_db boat;
 	boat.serial= pi->getSerial32();
@@ -1469,7 +1469,7 @@ boat_db* search_boat(int32_t ser)
 }
 
 
-P_ITEM search_boat_by_plank(P_ITEM pl)
+pItem search_boat_by_plank(pItem pl)
 {
 	VALIDATEPIR(pl,NULL);
 	Serial ser;

@@ -23,7 +23,7 @@ typedef struct {
 	uint16_t y2;
 } Area;
 
-typedef std::map< SERIAL, Area > AREA_DB;
+typedef std::map< uint32_t, Area > AREA_DB;
 typedef AREA_DB::iterator AREA_ITER;
 
 
@@ -32,7 +32,7 @@ class cAreas {
 private:
 
 	AREA_DB allareas;
-	SERIAL currarea;
+	uint32_t currarea;
 
 public:
 
@@ -41,7 +41,7 @@ public:
 	cAreas();
 	~cAreas();
 
-	SERIAL insert( Area& newarea, SERIAL index = INVALID );
+	uint32_t insert( Area& newarea, SERIAL index = INVALID );
 	void loadareas();
 
 

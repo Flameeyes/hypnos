@@ -10,6 +10,9 @@
 #ifndef __AI_H__
 #define __AI_H__
 
+#include "common_libs.h"
+#include "objects/cchar.h"
+
 /*!
 \file
 \author Luxor
@@ -39,10 +42,10 @@ public:
 */
 /*class cAttackAction : public cAction {
 private:
-	SERIAL m_target;
+	uint32_t m_target;
 public:
 	void run();
-	inline P_CHAR getTarget() { return pointers::findCharBySerial( m_target ); }
+	inline pChar getTarget() { return pointers::findCharBySerial( m_target ); }
 };*/
 
 /*!
@@ -50,10 +53,10 @@ public:
 */
 /*class cDefendAction : public cAction {
 private:
-	SERIAL m_attacker;
+	uint32_t m_attacker;
 public:
 	void run();
-	inline P_CHAR getAttacker() { return pointers::findCharBySerial( m_attacker ); }
+	inline pChar getAttacker() { return pointers::findCharBySerial( m_attacker ); }
 };*/
 
 /*!
@@ -62,7 +65,7 @@ public:
 */
 /*class cAI {
 private:
-	SERIAL m_pc;
+	uint32_t m_pc;
 	cAction *currAction;
 public:
 	cAI( cChar &pc, int32_t type );
@@ -70,7 +73,7 @@ public:
 	cAction* getAction()
 	void setAction();
 	inline bool hasAction() { return ( currAction != NULL ); }
-	inline P_CHAR getChar() { return pointers::findCharBySerial( m_pc ); }
+	inline pChar getChar() { return pointers::findCharBySerial( m_pc ); }
 };*/
 
 
@@ -109,7 +112,7 @@ typedef slist<Location> LOCATION_LIST;
 */
 class cPath {
 public:
-	cPath( Location startPos, Location finalPos, P_CHAR pc = NULL );
+	cPath( Location startPos, Location finalPos, pChar pc = NULL );
 	void exec();
 	Location getNextPos();
 	inline Location getFinalPos() { return m_finalPos; }
@@ -118,11 +121,11 @@ public:
 private:
 	bool m_pathFound;
 	uint32_t m_loops;
-	SERIAL pc_serial;
+	uint32_t pc_serial;
 	path_node* currNode;
 	path_node* nextNode;
 	path_node* create_node( Location pos, path_node* parentNode, uint32_t cost );
-        queue<path_node> nodes_vector;
+        std::queue<path_node> nodes_vector;
 	uint8_t addReachableNodes( path_node* node );
 	void dropToClosedList( path_node* node );
 	void addToOpenList( Location pos, path_node* parentNode, uint32_t cost = STRAIGHT_COST );

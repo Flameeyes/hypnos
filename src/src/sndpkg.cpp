@@ -53,7 +53,7 @@ void gmyell(char *txt)
 	{
 		NXWCLIENT ps_i=sw.getClient();
 		if(ps_i==NULL) continue;
-		P_CHAR pc=ps_i->currChar();
+		pChar pc=ps_i->currChar();
 		NXWSOCKET s = ps_i->toInt();
 		if( ISVALIDPC(pc) && pc->IsGM())
 		{
@@ -98,7 +98,7 @@ void SndUpdscroll(NXWSOCKET  s, short txtlen, const char* txt)
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SndShopgumpopen(NXWSOCKET  s, SERIAL serial)	//it's really necessary ? It is used 1 time, perhaps replace it with the scriptable vers. :/
+void SndShopgumpopen(NXWSOCKET  s, uint32_t serial)	//it's really necessary ? It is used 1 time, perhaps replace it with the scriptable vers. :/
 {
 	uint8_t shopgumpopen[7]={ 0x24, 0x00, };
 	LongToCharPtr(serial, shopgumpopen +1);		// ItemID
@@ -148,20 +148,20 @@ uint16_t itemsfx(uint16_t item)
 \brief Plays background sounds of the game
 \author LB & Duke
 \param s the character index
-\todo convert to P_CHAR or add to cChar class
+\todo convert to pChar or add to cChar class
 */
 void bgsound(CHARACTER s)
 {
-    P_CHAR pc_curr=MAKE_CHAR_REF(s);
+    pChar pc_curr=MAKE_CHAR_REF(s);
 	VALIDATEPC(pc_curr);
 
-	P_CHAR inrange[15];
+	pChar inrange[15];
 	int y=0;
 
 	NxwCharWrapper sc;
 	sc.fillCharsNearXYZ( pc_curr->getPosition(), VISRANGE+5, true, false );
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-		P_CHAR pc=sc.getChar();
+		pChar pc=sc.getChar();
 		if( pc->npc && !pc->dead && !pc->war )
 		{
 			inrange[y++]=pc;
@@ -172,7 +172,7 @@ void bgsound(CHARACTER s)
 
 	if (y>0)
 	{
-		P_CHAR pc_inr=inrange[ rand()%y ];
+		pChar pc_inr=inrange[ rand()%y ];
         if( chance(20) )
 			pc_inr->playMonsterSound(SND_IDLE);
 	}
@@ -198,7 +198,7 @@ void bgsound(CHARACTER s)
 	}
 }
 
-void soundeffect3(P_ITEM pi, uint16_t sound)
+void soundeffect3(pItem pi, uint16_t sound)
 {
 	VALIDATEPI(pi);
 
@@ -212,7 +212,7 @@ void soundeffect3(P_ITEM pi, uint16_t sound)
 	{
 		NXWCLIENT ps_i=sw.getClient();
 		if(ps_i==NULL) continue;
-		P_CHAR pc_j=ps_i->currChar();
+		pChar pc_j=ps_i->currChar();
 		if( ISVALIDPC(pc_j))
 		{
 			SendPlaySoundEffectPkt(ps_i->toInt(), 0x01, sound, 0x0000, pos);
@@ -220,7 +220,7 @@ void soundeffect3(P_ITEM pi, uint16_t sound)
 	}
 }
 
-void soundeffect4(NXWSOCKET s, P_ITEM pi, uint16_t sound)
+void soundeffect4(NXWSOCKET s, pItem pi, uint16_t sound)
 {
 	VALIDATEPI(pi);
 
@@ -247,7 +247,7 @@ void weather(NXWSOCKET  s, unsigned char bolt)
 
 void pweather(NXWSOCKET  s)
 {
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	uint8_t packet[4] = { 0x65, 0xFF, 0x40, 0x20 };
@@ -306,9 +306,9 @@ void sysmessage(NXWSOCKET  s, const char *txt, ...) // System message (In lower 
     vsprintf( msg, txt, argptr );
 	va_end( argptr );
 
-	SERIAL spyTo = clientInfo[s]->spyTo;
+	uint32_t spyTo = clientInfo[s]->spyTo;
 	if( spyTo!=INVALID ) { //spy client
-		P_CHAR pc=pointers::findCharBySerial( spyTo );
+		pChar pc=pointers::findCharBySerial( spyTo );
 		if( ISVALIDPC( pc ) ) {
 			NXWCLIENT gm = pc->getClient();
 			if( gm!=NULL )
@@ -368,7 +368,7 @@ void itemmessage(NXWSOCKET  s, char *txt, int serial, short color)
 	uint8_t unicodetext[512];
 	uint16_t ucl = ( strlen ( txt ) * 2 ) + 2 ;
 
-	P_ITEM pi=pointers::findItemBySerial(serial);
+	pItem pi=pointers::findItemBySerial(serial);
 	VALIDATEPI(pi);
 
 	if ((pi->type == ITYPE_CONTAINER && color == 0x0000)||
@@ -389,20 +389,20 @@ void itemmessage(NXWSOCKET  s, char *txt, int serial, short color)
 
 }
 
-void backpack2(NXWSOCKET s, SERIAL serial) // Send corpse stuff
+void backpack2(NXWSOCKET s, uint32_t serial) // Send corpse stuff
 {
 	int count=0, count2;
 	uint8_t display1[7]={ 0x89, 0x00, };
 	uint8_t display2[5]={ 0x00, };
 	uint8_t bpopen2[5]={ 0x3C, 0x00, };
 
-	P_ITEM cont=pointers::findItemBySerial( serial );
+	pItem cont=pointers::findItemBySerial( serial );
 
 	NxwItemWrapper si;
 	si.fillItemsInContainer( cont, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
-		P_ITEM pi=si.getItem();
+		pItem pi=si.getItem();
 		if( ISVALIDPI(pi) && (pi->layer!=0) )
 		{
 			count++;
@@ -415,7 +415,7 @@ void backpack2(NXWSOCKET s, SERIAL serial) // Send corpse stuff
 
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
-		P_ITEM pi=si.getItem();
+		pItem pi=si.getItem();
 		if( ISVALIDPI(pi) && (pi->layer!=0) )
 		{
 			display2[0]= pi->layer;
@@ -436,7 +436,7 @@ void backpack2(NXWSOCKET s, SERIAL serial) // Send corpse stuff
 
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
-		P_ITEM pi=si.getItem();
+		pItem pi=si.getItem();
 		if( ISVALIDPI(pi) && (pi->layer!=0) )
 		{
 			LongToCharPtr(pi->getSerial32(), bpitem);
@@ -499,11 +499,11 @@ pos1.z=0;
 
 }
 
-void senditem(NXWSOCKET  s, P_ITEM pi) // Send items (on ground)
+void senditem(NXWSOCKET  s, pItem pi) // Send items (on ground)
 {
 	VALIDATEPI(pi);
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	bool pack;
@@ -523,7 +523,7 @@ void senditem(NXWSOCKET  s, P_ITEM pi) // Send items (on ground)
 		pack=true;
 		if (isCharSerial(pi->getContSerial()))
 		{
-			P_CHAR pj=pointers::findCharBySerial(pi->getContSerial());
+			pChar pj=pointers::findCharBySerial(pi->getContSerial());
 			if (ISVALIDPC(pj))
 				pack=false;
 		}
@@ -635,10 +635,10 @@ void senditem(NXWSOCKET  s, P_ITEM pi) // Send items (on ground)
 // used for LSd potions now, LB 5'th nov 1999
 void senditem_lsd(NXWSOCKET  s, ITEM i,char color1, char color2, int x, int y, signed char z)
 {
-	const P_ITEM pi=MAKE_ITEM_REF(i);
+	const pItem pi=MAKE_ITEM_REF(i);
 	VALIDATEPI(pi);
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	uint16_t color = (color1<<8)|(color2%256);
@@ -736,14 +736,14 @@ void chardel (NXWSOCKET  s) // Deletion of character
 	uint8_t delete_resend_char_1[6]={0x86, 0x01, 0x30, 0x00}; // 1 + 2 + 1 + 5*60 = 304 = 0x0130
 	uint8_t delete_resend_char_2[61];
 
-	P_CHAR TrashMeUp = NULL;
+	pChar TrashMeUp = NULL;
 	NxwCharWrapper sc;
 
 	Accounts->GetAllChars( acctno[s], sc );
 
 	for ( i=0, sc.rewind(); !sc.isEmpty(); sc++)
 	{
-		P_CHAR pc_a=sc.getChar();
+		pChar pc_a=sc.getChar();
 		if(!ISVALIDPC(pc_a))
 			continue;
 
@@ -788,7 +788,7 @@ void chardel (NXWSOCKET  s) // Deletion of character
 			Xsend(s, delete_resend_char_1, 4);
 
 			for ( i=0, sc.rewind(); !sc.isEmpty(); sc++) {
-				P_CHAR pc_a=sc.getChar();
+				pChar pc_a=sc.getChar();
 				if(!ISVALIDPC(pc_a))
 					continue;
 
@@ -986,7 +986,7 @@ void tips(NXWSOCKET s, uint16_t i, uint8_t want_next) // Tip of the day window
 }
 
 
-void deny(NXWSOCKET  s, P_CHAR pc, int sequence)
+void deny(NXWSOCKET  s, pChar pc, int sequence)
 {
 	cPacketWalkReject walkdeny;
 	walkdeny.sequence= sequence;
@@ -1001,11 +1001,11 @@ void deny(NXWSOCKET  s, P_CHAR pc, int sequence)
 void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 //Modified by N6 to use UNICODE packets
 {
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	int i;
-	TEXT nonuni[512];
+	char nonuni[512];
 
 	if(pc->unicode)
 		for (i=13;i<ShortFromCharPtr(buffer[s] +1);i=i+2)
@@ -1063,7 +1063,7 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 		}
 }
 
-void itemtalk(P_ITEM pi, char *txt)
+void itemtalk(pItem pi, char *txt)
 // Item "speech"
 //Modified by N6 to use UNICODE packets
 {
@@ -1102,7 +1102,7 @@ void itemtalk(P_ITEM pi, char *txt)
 
 void staticeffect(CHARACTER player, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop,  bool UO3DonlyEffekt, ParticleFx *sta, bool skip_old)
 {
-	P_CHAR pc=MAKE_CHAR_REF(player);
+	pChar pc=MAKE_CHAR_REF(player);
 	VALIDATEPC(pc);
 
 	uint16_t eff = (eff1<<8)|(eff2%256);
@@ -1184,9 +1184,9 @@ MakeGraphicalEffectPkt_(effect, 0x03, pc->getSerial32(), 0, eff, charpos, pos2, 
 void movingeffect(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt, ParticleFx *str, bool skip_old )
 {
 
-	P_CHAR src=MAKE_CHAR_REF(source);
+	pChar src=MAKE_CHAR_REF(source);
 	VALIDATEPC(src);
-	P_CHAR dst=MAKE_CHAR_REF(dest);
+	pChar dst=MAKE_CHAR_REF(dest);
 	VALIDATEPC(dst);
 
 	uint16_t eff = (eff1<<8)|(eff2%256);
@@ -1249,7 +1249,7 @@ MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial32(), dst->getSerial32(), ef
 }
 
 // staticeffect2 is for effects on items
-void staticeffect2(P_ITEM pi, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt,  ParticleFx *str, bool skip_old )
+void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode, bool UO3DonlyEffekt,  ParticleFx *str, bool skip_old )
 {
 	VALIDATEPI(pi);
 
@@ -1312,7 +1312,7 @@ void staticeffect2(P_ITEM pi, unsigned char eff1, unsigned char eff2, unsigned c
 
 void bolteffect2(CHARACTER player,char a1,char a2)	// experimenatal, lb
 {
-	P_CHAR pc=MAKE_CHAR_REF(player);
+	pChar pc=MAKE_CHAR_REF(player);
 	VALIDATEPC(pc);
 
 	uint16_t eff = (a1<<8)|(a2%256);
@@ -1356,7 +1356,7 @@ MakeGraphicalEffectPkt_(effect, 0x00, pc->getSerial32(), 0, eff, charpos, pos2, 
 void movingeffect3(CHARACTER source, unsigned short x, unsigned short y, signed char z, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode)
 {
 
-	P_CHAR src=MAKE_CHAR_REF(source);
+	pChar src=MAKE_CHAR_REF(source);
 	VALIDATEPC(src);
 
 	uint16_t eff = (eff1<<8)|(eff2%256);
@@ -1407,9 +1407,9 @@ pos.z = 0;
 
 void movingeffect3(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned char eff2, unsigned char speed, unsigned char loop, unsigned char explode,unsigned char unk1,unsigned char unk2,unsigned char ajust,unsigned char type)
 {
-	P_CHAR src=MAKE_CHAR_REF(source);
+	pChar src=MAKE_CHAR_REF(source);
 	VALIDATEPC(src);
-	P_CHAR dst=MAKE_CHAR_REF(dest);
+	pChar dst=MAKE_CHAR_REF(dest);
 	VALIDATEPC(dst);
 
 
@@ -1443,9 +1443,9 @@ void movingeffect2(CHARACTER source, int dest, unsigned char eff1, unsigned char
 {
 	//0x0f 0x42 = arrow 0x1b 0xfe=bolt
 
-	const P_ITEM pi=MAKE_ITEM_REF(dest);
+	const pItem pi=MAKE_ITEM_REF(dest);
 	VALIDATEPI(pi);
-	P_CHAR pc_source = MAKE_CHAR_REF(source);
+	pChar pc_source = MAKE_CHAR_REF(source);
 	VALIDATEPC(pc_source);
 
 	uint16_t eff = (eff1<<8)|(eff2%256);
@@ -1478,7 +1478,7 @@ void SendPauseResumePkt(NXWSOCKET s, uint8_t flag)
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SendDeleteObjectPkt(NXWSOCKET s, SERIAL serial)
+void SendDeleteObjectPkt(NXWSOCKET s, uint32_t serial)
 {
 	uint8_t removeitem[5] = { 0x1D, 0x00, };
 	LongToCharPtr(serial, removeitem +1);
@@ -1505,9 +1505,9 @@ void SendDrawGamePlayerPkt(NXWSOCKET s, uint32_t player_id, uint16_t model, uint
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SendDrawObjectPkt(NXWSOCKET s, P_CHAR pc, int z)
+void SendDrawObjectPkt(NXWSOCKET s, pChar pc, int z)
 {
-	P_CHAR pc_currchar=MAKE_CHAR_REF(currchar[s]);
+	pChar pc_currchar=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc_currchar);
 	uint32_t k;
 	uint8_t oc[1024]={ 0x78, 0x00, };
@@ -1553,7 +1553,7 @@ void SendDrawObjectPkt(NXWSOCKET s, P_CHAR pc, int z)
 	si.fillItemWeared( pc, true, true, false );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 
-		P_ITEM pj=si.getItem();
+		pItem pj=si.getItem();
 		if (ISVALIDPI(pj))
 			if ( layers[pj->layer] == 0 )
 			{
@@ -1644,11 +1644,11 @@ void SendPlaySoundEffectPkt(NXWSOCKET s, uint8_t mode, uint16_t sound_model, uin
 //AoS/	Network->FlushBuffer(s);
 }
 
-void impowncreate(NXWSOCKET s, P_CHAR pc, int z) //socket, player to send
+void impowncreate(NXWSOCKET s, pChar pc, int z) //socket, player to send
 {
         if ( s < 0 || s > now ) // Luxor
 		return;
-	P_CHAR pc_currchar=MAKE_CHAR_REF(currchar[s]);
+	pChar pc_currchar=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc_currchar);
 
 	if (pc->isStabled() || pc->mounted)
@@ -1672,7 +1672,7 @@ void impowncreate(NXWSOCKET s, P_CHAR pc, int z) //socket, player to send
 	//pc_currchar->sysmsg( "sended %s", pc->getCurrentNameC() );
 }
 
-void sendshopinfo(int s, int c, P_ITEM pi)
+void sendshopinfo(int s, int c, pItem pi)
 {
 	VALIDATEPI(pi);
 
@@ -1696,7 +1696,7 @@ void sendshopinfo(int s, int c, P_ITEM pi)
 	int loopexit=0;
 	for( si.rewind(); !si.isEmpty(); si++, ++loopexit )
 	{
-		P_ITEM pj=si.getItem();
+		pItem pj=si.getItem();
 		if (ISVALIDPI(pj))
 			if ((m2[7]!=255) && (pj->amount!=0) ) // 255 items max per shop container
 			{
@@ -1714,9 +1714,9 @@ void sendshopinfo(int s, int c, P_ITEM pi)
 				m1[4]++; // Increase item count.
 				m1t += 19;
 				value=pj->value;
-				value=calcValue(DEREF_P_ITEM(pj), value);
+				value=calcValue(DEREF_pItem(pj), value);
 				if (SrvParms->trade_system==1)
-					value=calcGoodValue(c,DEREF_P_ITEM(pj),value,0); // by Magius(CHE)
+					value=calcGoodValue(c,DEREF_pItem(pj),value,0); // by Magius(CHE)
 				LongToCharPtr(value, m2+m2t+0);		// Item value/price
 				namelen = pj->getName((char *)itemname);
 				m2[m2t+4]=namelen; 			// Item name length
@@ -1746,9 +1746,9 @@ void sendshopinfo(int s, int c, P_ITEM pi)
 int sellstuff(NXWSOCKET s, CHARACTER i)
 {
 	if (s < 0 || s >= now) return 0; //Luxor
-    P_CHAR pc = MAKE_CHAR_REF(i);
+    pChar pc = MAKE_CHAR_REF(i);
 	VALIDATEPCR(pc, 0);
-	P_CHAR pcs = MAKE_CHAR_REF(currchar[s]);
+	pChar pcs = MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPCR(pcs,0);
 
 	char itemname[256];
@@ -1762,12 +1762,12 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 	{*/
 	//<Luxor>
 
-	P_ITEM pp=pc->GetItemOnLayer(LAYER_TRADE_BOUGHT);
+	pItem pp=pc->GetItemOnLayer(LAYER_TRADE_BOUGHT);
 	VALIDATEPIR(pp,0);
 
 	SendPauseResumePkt(s, 0x01);
 
-	P_ITEM pack= pcs->getBackpack();
+	pItem pack= pcs->getBackpack();
 	VALIDATEPIR(pack, 0);
 
 	uint8_t m1[2048]={ 0x9E, 0x00, };
@@ -1787,7 +1787,7 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 	si.fillItemsInContainer( pp, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
-		P_ITEM pj=si.getItem();
+		pItem pj=si.getItem();
 		if (ISVALIDPI(pj))
 		{
 
@@ -1795,7 +1795,7 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 			{
 				if (m1[8] >= 50) continue;
 
-				P_ITEM pj1 = s_pack.getItem();
+				pItem pj1 = s_pack.getItem();
 				if (ISVALIDPI(pj1)) // LB crashfix
 				{
 					sprintf(ciname,"'%s'",pj1->getCurrentNameC()); // Added by Magius(CHE)
@@ -1813,9 +1813,9 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 						ShortToCharPtr(pj1->getColor(),m1+m1t+6);
 						ShortToCharPtr(pj1->amount,m1+m1t+8);
 						value=pj->value;
-						value=calcValue(DEREF_P_ITEM(pj1), value);
+						value=calcValue(DEREF_pItem(pj1), value);
 						if (SrvParms->trade_system==1)
-							value=calcGoodValue(i,DEREF_P_ITEM(pj1),value,1); // by Magius(CHE)
+							value=calcGoodValue(i,DEREF_pItem(pj1),value,1); // by Magius(CHE)
 						ShortToCharPtr(value, m1+m1t+10);
 						namelen = pj1->getName(itemname);
 						m1[m1t+12]=0;// Unknown... 2nd length byte for string?
@@ -1863,7 +1863,7 @@ void tellmessage(int i, int s, char *txt)
 //Modified by N6 to use UNICODE packets
 {
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	uint8_t unicodetext[512];
@@ -2077,7 +2077,7 @@ void movingeffectUO3D(CHARACTER source, CHARACTER dest, ParticleFx *sta)
 }
 
 // same sta-layout as staticeffectuo3d
-void itemeffectUO3D(P_ITEM pi, ParticleFx *sta)
+void itemeffectUO3D(pItem pi, ParticleFx *sta)
 {
 	// please no optimization of p[...]=0's yet :)
 
@@ -2179,7 +2179,7 @@ void sysmessageflat(NXWSOCKET  s, short color, const char *txt)
 
 }
 
-void wornitems(NXWSOCKET  s, P_CHAR pc) // Send worn items of player
+void wornitems(NXWSOCKET  s, pChar pc) // Send worn items of player
 {
 	VALIDATEPC(pc);
 
@@ -2187,7 +2187,7 @@ void wornitems(NXWSOCKET  s, P_CHAR pc) // Send worn items of player
 	si.fillItemWeared( pc, true, true, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
-		P_ITEM pi=si.getItem();
+		pItem pi=si.getItem();
 		if(ISVALIDPI(pi))
 			wearIt(s,pi);
 	}

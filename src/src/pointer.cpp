@@ -32,16 +32,16 @@ void getWorldCoordsFromSerial (int sr, int& px, int& py, int& pz, int& ch, int& 
     int loop = 0;
     it = ch = INVALID;
 
-	P_CHAR pc=0;
-	P_ITEM pi=0;
+	pChar pc=0;
+	pItem pi=0;
 
     while ((++loop) < 500)
     {
 
 		pc=pointers::findCharBySerial(serial);
-		ch = DEREF_P_CHAR(pc);
+		ch = DEREF_pChar(pc);
 		pi=pointers::findItemBySerial(serial);
-        it = DEREF_P_ITEM(pi);
+        it = DEREF_pItem(pi);
         if (ISVALIDPI(pi)) {
             if (pi->getContSerial()!=INVALID) {
                 serial = pi->getContSerial();
@@ -72,16 +72,16 @@ void getWorldCoordsFromSerial (int sr, int& px, int& py, int& pz, int& ch, int& 
 
 namespace pointers {
 
-	std::map<SERIAL, vector <P_CHAR> > pStableMap;
-	std::map<SERIAL, P_CHAR > pMounted;
+	std::map<uint32_t, vector <pChar> > pStableMap;
+	std::map<uint32_t, pChar > pMounted;
 
-	std::map<SERIAL, vector <P_CHAR> > pOwnCharMap;
-	std::map<SERIAL, vector <P_ITEM> > pOwnItemMap;
+	std::map<uint32_t, vector <pChar> > pOwnCharMap;
+	std::map<uint32_t, vector <pItem> > pOwnItemMap;
 
-	std::map<SERIAL, vector <P_ITEM> > pContMap;
+	std::map<uint32_t, vector <pItem> > pContMap;
 
-	std::map<SERIAL, vector <P_CHAR> > pMultiCharMap;
-	std::map<SERIAL, vector <P_ITEM> > pMultiItemMap;
+	std::map<uint32_t, vector <pChar> > pMultiCharMap;
+	std::map<uint32_t, vector <pItem> > pMultiItemMap;
 
 #ifdef SPAR_LOCATION_MAP
 	//
@@ -93,7 +93,7 @@ namespace pointers {
 	//	1.	Add coded xy coordinate to cObject and always use that one
 	//	2.	if object not found, walk through the map until it is found then delete it
 	//
-	typedef std::multimap< uint32_t, P_CHAR >	PCHARLOCATIONMAP;
+	typedef std::multimap< uint32_t, pChar >	PCHARLOCATIONMAP;
 	typedef PCHARLOCATIONMAP::iterator	PCHARLOCATIONMAPIT;
 
 	struct XY
@@ -143,70 +143,70 @@ namespace pointers {
 			lowerRight.y = y + range;
 	}
 
-	void addToLocationMap( const P_OBJECT pObject )
+	void addToLocationMap( const pObject pObject )
 	{
 		if( pObject != 0 )
 		{
 			if( isItemSerial( pObject->getSerial32() ) )
 			{
-				if( static_cast<P_ITEM>(pObject)->isInWorld() )
-					addItemToLocationMap( static_cast<P_ITEM>(pObject) );
+				if( static_cast<pItem>(pObject)->isInWorld() )
+					addItemToLocationMap( static_cast<pItem>(pObject) );
 			}
 			else
 			{
-				addCharToLocationMap( static_cast<P_CHAR>(pObject) );
+				addCharToLocationMap( static_cast<pChar>(pObject) );
 			}
 		}
 	}
 
-	void updateLocationMap( const P_OBJECT pObject )
+	void updateLocationMap( const pObject pObject )
 	{
 		if( pObject != 0 )
 		{
 			if( isItemSerial( pObject->getSerial32() ) )
 			{
-				if( static_cast<P_ITEM>(pObject)->isInWorld() )
+				if( static_cast<pItem>(pObject)->isInWorld() )
 				{
-					delItemFromLocationMap( static_cast<P_ITEM>(pObject) );
-					addItemToLocationMap( static_cast<P_ITEM>(pObject) );
+					delItemFromLocationMap( static_cast<pItem>(pObject) );
+					addItemToLocationMap( static_cast<pItem>(pObject) );
 				}
 			}
 			else
 			{
-				delCharFromLocationMap( static_cast<P_CHAR>(pObject) );
-				addCharToLocationMap( static_cast<P_CHAR>(pObject) );
+				delCharFromLocationMap( static_cast<pChar>(pObject) );
+				addCharToLocationMap( static_cast<pChar>(pObject) );
 			}
 		}
 	}
 
-	void delFromLocationMap( const P_OBJECT pObject )
+	void delFromLocationMap( const pObject pObject )
 	{
 		if( pObject != 0 )
 		{
 			if( isItemSerial( pObject->getSerial32() ) )
 			{
-				if( static_cast<P_ITEM>(pObject)->isInWorld() )
+				if( static_cast<pItem>(pObject)->isInWorld() )
 				{
-					delItemFromLocationMap( static_cast<P_ITEM>(pObject) );
+					delItemFromLocationMap( static_cast<pItem>(pObject) );
 				}
 			}
 			else
 			{
-				delCharFromLocationMap( static_cast<P_CHAR>(pObject) );
+				delCharFromLocationMap( static_cast<pChar>(pObject) );
 			}
 		}
 	}
 
-	void addCharToLocationMap( const P_CHAR pWho )
+	void addCharToLocationMap( const pChar pWho )
 	{
 		pWho->setLocationKey();
-		pCharLocationMap.insert( pair< uint32_t, P_CHAR >( pWho->getLocationKey(), pWho ) );
+		pCharLocationMap.insert( pair< uint32_t, pChar >( pWho->getLocationKey(), pWho ) );
 	}
 
-	void delCharFromLocationMap( const P_CHAR pWho )
+	void delCharFromLocationMap( const pChar pWho )
 	{
 		pair< PCHARLOCATIONMAPIT, PCHARLOCATIONMAPIT > it = pCharLocationMap.equal_range( pWho->getLocationKey() );
-		SERIAL pWhoSerial = pWo->getSerial32();
+		uint32_t pWhoSerial = pWo->getSerial32();
 
 		for( ; it.first != it.second; ++it.first )
 			if( it.first->second->getSerial32() == pWhoSerial32 )
@@ -223,13 +223,13 @@ namespace pointers {
 		ConOut( "--------------------------------\n" );
 		ConOut( "|      CHAR LOCATION MAP       |\n" );
 		ConOut( "--------------------------------\n" );
-		ConOut( "|   Key   | X  | Y  |  SERIAL  |\n" );
+		ConOut( "|   Key   | X  | Y  |  uint32_t  |\n" );
 		ConOut( "--------------------------------\n" );
 
 		uint32_t 	invalidCount	=  0;
 		int32_t 	x	  	=  0;
 		int32_t 	y		=  0;
-		SERIAL	serial		= INVALID;
+		uint32_t	serial		= INVALID;
 		for( ; it != end; ++it )
 		{
 			x = it->first >> 16;
@@ -249,22 +249,22 @@ namespace pointers {
 		ConOut( "--------------------------------\n" );
 	}
 
-	PCHAR_VECTOR* getNearbyChars( P_OBJECT pObject, int32_t range, uint32_t flags )
+	CharList* getNearbyChars( pObject pObject, int32_t range, uint32_t flags )
 	{
-		PCHAR_VECTOR* 	pvCharsInRange	= 0;
+		CharList* 	pvCharsInRange	= 0;
 		bool		validCall	= false;
-		P_CHAR		pSelf		= 0;
+		pChar		pSelf		= 0;
 
 		if( pObject != 0 )
 		{
 			if( isItemSerial( pObject->getSerial32() ) )
 			{
-				if( static_cast<P_ITEM>(pObject)->isInWorld() )
+				if( static_cast<pItem>(pObject)->isInWorld() )
 					validCall = true;
 			}
 			else
 			{
-				pSelf = static_cast<P_CHAR>(pObject);
+				pSelf = static_cast<pChar>(pObject);
 				validCall = true;
 			}
 			if( validCall )
@@ -273,19 +273,19 @@ namespace pointers {
 		return pvCharsInRange;
 	}
 
-	PCHAR_VECTOR* getNearbyChars( uint32_t x, uint32_t y, uint32_t range, uint32_t flags, P_CHAR pSelf )
+	CharList* getNearbyChars( uint32_t x, uint32_t y, uint32_t range, uint32_t flags, pChar pSelf )
 	{
-		PCHAR_VECTOR* pvCharsInRange = 0;
+		CharList* pvCharsInRange = 0;
 
 		if( x > 0 && x < 6145 && y > 0 && y < 4097 )
 		{
-			pvCharsInRange = new PCHAR_VECTOR();
+			pvCharsInRange = new CharList();
 
 			calculateBoundary( x, y, range );
 
 			PCHARLOCATIONMAPIT it(  pCharLocationMap.lower_bound( locationToKey( upperLeft.x,  upperLeft.y ) ) ),
 					   end( pCharLocationMap.upper_bound( locationToKey( lowerRight.x, lowerRight.y) ) );
-			P_CHAR pc = 0;
+			pChar pc = 0;
 
 			for( ; it != end; ++it )
 			{
@@ -343,22 +343,22 @@ namespace pointers {
 		return pvCharsInRange;
 	}
 
-	typedef std::multimap< uint32_t, P_ITEM >	PITEMLOCATIONMAP;
+	typedef std::multimap< uint32_t, pItem >	PITEMLOCATIONMAP;
 	typedef PITEMLOCATIONMAP::iterator	PITEMLOCATIONMAPIT;
 
 	PITEMLOCATIONMAP	pItemLocationMap;
 
 
-	void addItemToLocationMap( const P_ITEM pWhat )
+	void addItemToLocationMap( const pItem pWhat )
 	{
 		pWhat->setLocationKey();
-		pItemLocationMap.insert( pair< uint32_t, P_ITEM >( pWhat->getLocationKey(), pWhat ) );
+		pItemLocationMap.insert( pair< uint32_t, pItem >( pWhat->getLocationKey(), pWhat ) );
 	}
 
-	void delItemFromLocationMap( const P_ITEM pWhat )
+	void delItemFromLocationMap( const pItem pWhat )
 	{
 		pair< PITEMLOCATIONMAPIT, PITEMLOCATIONMAPIT > it = pItemLocationMap.equal_range( pWhat->getLocationKey() );
-		SERIAL	pWhatSerial = pWhat->getSerial32();
+		uint32_t	pWhatSerial = pWhat->getSerial32();
 
 		for( ; it.first != it.second; ++it.first )
 			if( it.first->second->getSerial32() == pWhatSerial32 )
@@ -369,17 +369,17 @@ namespace pointers {
 	}
 
 
-	PITEM_VECTOR* getNearbyItems( cObject* pObject, uint32_t range, uint32_t flags )
+	ItemList* getNearbyItems( cObject* pObject, uint32_t range, uint32_t flags )
 	{
-		PITEM_VECTOR* 	pvItemsInRange	= 0;
+		ItemList* 	pvItemsInRange	= 0;
 		bool		validCall	= false;
-		P_ITEM		pSelf		= 0;
+		pItem		pSelf		= 0;
 
 		if( pObject != 0 )
 		{
 			if( isItemSerial( pObject->getSerial32() ) )
 			{
-				pSelf = static_cast<P_ITEM>(pObject);
+				pSelf = static_cast<pItem>(pObject);
 				if( pSelf->isInWorld() )
 				{
 					validCall = true;
@@ -395,20 +395,20 @@ namespace pointers {
 		return pvItemsInRange;
 	}
 
-	PITEM_VECTOR* getNearbyItems( uint32_t x, uint32_t y, uint32_t range, uint32_t flags, P_ITEM pSelf )
+	ItemList* getNearbyItems( uint32_t x, uint32_t y, uint32_t range, uint32_t flags, pItem pSelf )
 	{
-		PITEM_VECTOR* pvItemsInRange = 0;
+		ItemList* pvItemsInRange = 0;
 
 		if( x > 0 && x < 6145 && y > 0 && y < 4097 )
 		{
-			pvItemsInRange = new PITEM_VECTOR();
+			pvItemsInRange = new ItemList();
 
 			calculateBoundary( x, y, range );
 
 			PITEMLOCATIONMAPIT it(  pItemLocationMap.lower_bound( locationToKey( upperLeft.x,  upperLeft.y ) ) ),
 					   end( pItemLocationMap.upper_bound( locationToKey( lowerRight.x, lowerRight.y) ));
 
-			P_ITEM pi = 0;
+			pItem pi = 0;
 
 			for( ; it != end; ++it )
 			{
@@ -441,13 +441,13 @@ namespace pointers {
 		ConOut( "--------------------------------\n" );
 		ConOut( "|      ITEM LOCATION MAP       |\n" );
 		ConOut( "--------------------------------\n" );
-		ConOut( "|   Key   | X  | Y  |  SERIAL  |\n" );
+		ConOut( "|   Key   | X  | Y  |  uint32_t  |\n" );
 		ConOut( "--------------------------------\n" );
 
 		uint32_t 	invalidCount	=  0;
 		int32_t 	x	  	=  0;
 		int32_t 	y		=  0;
-		SERIAL	serial		= INVALID;
+		uint32_t	serial		= INVALID;
 		for( ; it != end; ++it )
 		{
 			x = it->first >> 16;
@@ -481,14 +481,14 @@ namespace pointers {
 		pOwnCharMap.clear();
 		pOwnItemMap.clear();
 		//Chars and Stablers
-		P_CHAR pc = 0;
+		pChar pc = 0;
 
 		cAllObjectsIter objs;
 
 		for( objs.rewind(); !objs.IsEmpty(); objs++ )
 		{
 			if( isCharSerial( objs.getSerial() ) ) {
-				pc=(P_CHAR)objs.getObject();
+				pc=(pChar)objs.getObject();
 				{
 					if( pc->isStabled() ) {
 						pStableMap[pc->getStablemaster()].push_back(pc);
@@ -496,22 +496,22 @@ namespace pointers {
 					if( pc->mounted )
 						pMounted[pc->getOwnerSerial32()]=pc;
 
-					P_CHAR own=pointers::findCharBySerial(pc->getOwnerSerial32());
-					pc->setOwnerSerial32( DEREF_P_CHAR(own), true );
+					pChar own=pointers::findCharBySerial(pc->getOwnerSerial32());
+					pc->setOwnerSerial32( DEREF_pChar(own), true );
 				}
 			}
 			else {
 
-				P_ITEM pi = (P_ITEM)objs.getObject();
+				pItem pi = (pItem)objs.getObject();
 
 				updContMap(pi);
 
-				P_CHAR own=pointers::findCharBySerial(pi->getOwnerSerial32());
-				pi->setOwnerSerial32( DEREF_P_CHAR(own), true );
+				pChar own=pointers::findCharBySerial(pi->getOwnerSerial32());
+				pi->setOwnerSerial32( DEREF_pChar(own), true );
 			}
 		}
 
-		std::map< SERIAL, P_CHAR >::iterator iter( pMounted.begin() ), end( pMounted.end() );
+		std::map< uint32_t, pChar >::iterator iter( pMounted.begin() ), end( pMounted.end() );
 		for( ; iter!=end; iter++)
 		{
 			pc = pointers::findCharBySerial(iter->first);
@@ -525,10 +525,10 @@ namespace pointers {
 	\author Luxor
 	\param pi the item which the function will update in the containers map
 	*/
-	void updContMap(P_ITEM pi)
+	void updContMap(pItem pi)
 	{
 		VALIDATEPI(pi);
-		vector<P_ITEM>::iterator contIter;
+		vector<pItem>::iterator contIter;
 		int32_t ser;
 
 		ser= pi->getContSerial(true);
@@ -555,10 +555,10 @@ namespace pointers {
 	/*!
 	\author Luxor
 	*/
-	void addToStableMap(P_CHAR pet)
+	void addToStableMap(pChar pet)
 	{
 		VALIDATEPC(pet);
-		SERIAL stablemaster=pet->getStablemaster();
+		uint32_t stablemaster=pet->getStablemaster();
 		if( stablemaster !=INVALID ) {
 
 			delFromStableMap( pet );
@@ -570,16 +570,16 @@ namespace pointers {
 	/*!
 	\author Luxor
 	*/
-	void delFromStableMap(P_CHAR pet)
+	void delFromStableMap(pChar pet)
 	{
 		VALIDATEPC(pet);
-		SERIAL stablemaster=pet->getStablemaster();
+		uint32_t stablemaster=pet->getStablemaster();
 		if( stablemaster != INVALID ) {
 
-			std::map<SERIAL, vector <P_CHAR> >::iterator vect( pStableMap.find( stablemaster ) );
+			std::map<uint32_t, vector <pChar> >::iterator vect( pStableMap.find( stablemaster ) );
 			if( ( vect!=pStableMap.end() ) && !vect->second.empty() ) {
 
-				vector<P_CHAR>::iterator stableIter;
+				vector<pChar>::iterator stableIter;
 				stableIter = find( vect->second.begin(), vect->second.end(), pet);
 				if( stableIter != vect->second.end())
 					vect->second.erase(stableIter);
@@ -590,10 +590,10 @@ namespace pointers {
 	/*!
 	\author Endymion
 	*/
-	void addToOwnerMap(P_CHAR pet)
+	void addToOwnerMap(pChar pet)
 	{
 		VALIDATEPC(pet);
-		SERIAL own=pet->getOwnerSerial32();
+		uint32_t own=pet->getOwnerSerial32();
 		if ( own!=INVALID ) {
 
 			delFromOwnerMap( pet );
@@ -605,17 +605,17 @@ namespace pointers {
 	/*!
 	\author Endymion
 	*/
-	void delFromOwnerMap(P_CHAR pet)
+	void delFromOwnerMap(pChar pet)
 	{
 		VALIDATEPC(pet);
-		SERIAL own=pet->getOwnerSerial32();
+		uint32_t own=pet->getOwnerSerial32();
 		if ( own!=INVALID ) {
 
-			std::map<SERIAL, vector <P_CHAR> >::iterator vect( pOwnCharMap.find( own ) );
+			std::map<uint32_t, vector <pChar> >::iterator vect( pOwnCharMap.find( own ) );
 			if( ( vect!=pOwnCharMap.end() ) && !vect->second.empty() )
 			{
 
-				vector<P_CHAR>::iterator iter;
+				vector<pChar>::iterator iter;
 				iter = find(vect->second.begin(), vect->second.end(), pet);
 				if( iter != vect->second.end() )
 					vect->second.erase(iter);
@@ -628,10 +628,10 @@ namespace pointers {
 	/*!
 	\author Endymion
 	*/
-	void addToOwnerMap(P_ITEM pi)
+	void addToOwnerMap(pItem pi)
 	{
 		VALIDATEPI(pi);
-		SERIAL own=pi->getOwnerSerial32();
+		uint32_t own=pi->getOwnerSerial32();
 		if ( own!=INVALID ) {
 
 			delFromOwnerMap( pi );
@@ -643,17 +643,17 @@ namespace pointers {
 	/*!
 	\author Endymion
 	*/
-	void delFromOwnerMap(P_ITEM pi)
+	void delFromOwnerMap(pItem pi)
 	{
 		VALIDATEPI(pi);
-		SERIAL own=pi->getOwnerSerial32();
+		uint32_t own=pi->getOwnerSerial32();
 		if ( own!=INVALID ) {
 
-			std::map<SERIAL, vector <P_ITEM> >::iterator vect( pOwnItemMap.find( own ) );
+			std::map<uint32_t, vector <pItem> >::iterator vect( pOwnItemMap.find( own ) );
 			if( ( vect!=pOwnItemMap.end() ) && !vect->second.empty() )
 			{
 
-				vector<P_ITEM>::iterator iter;
+				vector<pItem>::iterator iter;
 				iter = find(vect->second.begin(), vect->second.end(), pi);
 				if( iter != vect->second.end() )
 					vect->second.erase(iter);
@@ -665,10 +665,10 @@ namespace pointers {
 	/*!
 	\author Endymion
 	*/
-	void addToMultiMap( P_CHAR pc )
+	void addToMultiMap( pChar pc )
 	{
 		VALIDATEPC(pc);
-		SERIAL multi=pc->getMultiSerial32();
+		uint32_t multi=pc->getMultiSerial32();
 		if ( multi!=INVALID ) {
 
 			delFromMultiMap( pc );
@@ -681,17 +681,17 @@ namespace pointers {
 	/*!
 	\author Endymion
 	*/
-	void delFromMultiMap( P_CHAR pc )
+	void delFromMultiMap( pChar pc )
 	{
 		VALIDATEPC(pc);
-		SERIAL multi=pc->getMultiSerial32();
+		uint32_t multi=pc->getMultiSerial32();
 		if ( multi!=INVALID ) {
 
-			std::map<SERIAL, vector <P_CHAR> >::iterator vect( pMultiCharMap.find( multi ) );
+			std::map<uint32_t, vector <pChar> >::iterator vect( pMultiCharMap.find( multi ) );
 			if( ( vect!=pMultiCharMap.end() ) && !vect->second.empty() )
 			{
 
-				vector<P_CHAR>::iterator iter;
+				vector<pChar>::iterator iter;
 				iter = find(vect->second.begin(), vect->second.end(), pc);
 				if( iter != vect->second.end() )
 					vect->second.erase(iter);
@@ -705,10 +705,10 @@ namespace pointers {
 	/*!
 	\author Endymion
 	*/
-	void addToMultiMap( P_ITEM pi )
+	void addToMultiMap( pItem pi )
 	{
 		VALIDATEPI(pi);
-		SERIAL multi=pi->getMultiSerial32();
+		uint32_t multi=pi->getMultiSerial32();
 		if ( multi!=INVALID ) {
 
 			delFromMultiMap( pi );
@@ -722,17 +722,17 @@ namespace pointers {
 	/*!
 	\author Endymion
 	*/
-	void delFromMultiMap( P_ITEM pi )
+	void delFromMultiMap( pItem pi )
 	{
 		VALIDATEPI(pi);
-		SERIAL multi=pi->getMultiSerial32();
+		uint32_t multi=pi->getMultiSerial32();
 		if ( multi!=INVALID ) {
 
-			std::map<SERIAL, vector <P_ITEM> >::iterator vect( pMultiItemMap.find( multi ) );
+			std::map<uint32_t, vector <pItem> >::iterator vect( pMultiItemMap.find( multi ) );
 			if( ( vect!=pMultiItemMap.end() ) && !vect->second.empty() )
 			{
 
-				vector<P_ITEM>::iterator iter;
+				vector<pItem>::iterator iter;
 				iter = find(vect->second.begin(), vect->second.end(), pi);
 				if( iter != vect->second.end() )
 					vect->second.erase(iter);
@@ -747,15 +747,15 @@ namespace pointers {
 
 
 
-	void eraseContainerInfo( SERIAL ser )
+	void eraseContainerInfo( uint32_t ser )
 	{
 
-		std::map<SERIAL, vector <P_ITEM> >::iterator vect( pContMap.find( ser ) );
+		std::map<uint32_t, vector <pItem> >::iterator vect( pContMap.find( ser ) );
 		if( vect!=pContMap.end() ) {
 
 			if( !vect->second.empty() ) {
 
-				vector<P_ITEM>::iterator iter( vect->second.begin() );
+				vector<pItem>::iterator iter( vect->second.begin() );
 				for( ; iter!=vect->second.end(); iter++ ) {
 					(*iter)->setContainer(0);
 					(*iter)->setOldContainer(0);
@@ -772,7 +772,7 @@ namespace pointers {
 	\param pc the character
 	\author Luxor
 	*/
-	void delChar(P_CHAR pc)
+	void delChar(pChar pc)
 	{
 		VALIDATEPC(pc);
 
@@ -795,7 +795,7 @@ namespace pointers {
 	\author Luxor
 	\param pi the item
 	*/
-	void delItem(P_ITEM pi)
+	void delItem(pItem pi)
 	{
 		VALIDATEPI(pi);
 
@@ -812,13 +812,13 @@ namespace pointers {
 
 		eraseContainerInfo( pi->getSerial32() );
 
-		SERIAL cont=pi->getContSerial();
+		uint32_t cont=pi->getContSerial();
 		if ( cont > INVALID ) {
 
-			std::map<SERIAL, vector <P_ITEM> >::iterator vect( pContMap.find( cont ) );
+			std::map<uint32_t, vector <pItem> >::iterator vect( pContMap.find( cont ) );
 			if( ( vect!=pContMap.end() ) && !vect->second.empty() ) {
 
-				vector<P_ITEM>::iterator contIter;
+				vector<pItem>::iterator contIter;
 				contIter = find( vect->second.begin(), vect->second.end(), pi);
 				if( contIter != vect->second.end() )
 					vect->second.erase(contIter);
@@ -833,11 +833,11 @@ namespace pointers {
 	\return the corrispondent char of the serial passed in the params
 	\param serial the serial of the char which we're searching for
 	*/
-	P_CHAR findCharBySerial(int serial)
+	pChar findCharBySerial(int serial)
 	{
 		if (serial < 0 || !isCharSerial(serial)) return 0;
 
-		return static_cast<P_CHAR>( objects.findObject(serial) );
+		return static_cast<pChar>( objects.findObject(serial) );
 
 	}
 
@@ -847,11 +847,11 @@ namespace pointers {
 	\return the corrispondent item of the serial passed in the params
 	\param serial the serial of the item which we're searching for
 	*/
-	P_ITEM findItemBySerial(SERIAL serial)
+	pItem findItemBySerial(uint32_t serial)
 	{
 		if (serial < 0 || !isItemSerial(serial)) return 0;
 
-		return static_cast<P_ITEM>( objects.findObject(serial) );
+		return static_cast<pItem>( objects.findObject(serial) );
 	}
 
 	/*!
@@ -860,7 +860,7 @@ namespace pointers {
 	\author Luxor
 	\return the char we're looking for
 	*/
-	P_CHAR findCharBySerPtr(uint8_t *p)
+	pChar findCharBySerPtr(uint8_t *p)
 	{
 		int serial=LongFromCharPtr(p);
 		if (serial < 0) return 0;
@@ -871,10 +871,10 @@ namespace pointers {
 	\brief returns the corrispondent item of a serial
 	\author Luxor
 	\param p the pointer to serial
-	\return P_ITEM of the found item
+	\return pItem of the found item
 	\author Luxor
 	*/
-	P_ITEM findItemBySerPtr(unsigned char *p)
+	pItem findItemBySerPtr(unsigned char *p)
 	{
 		int serial=LongFromCharPtr(p);
 		if(serial < 0) return 0;
@@ -887,16 +887,16 @@ namespace pointers {
 	\param serial the serial of the container
 	\index the pointer to the integer which we're using for the search
 	\note *index should be 0 at the beginning of the search
-	\return P_ITEM of the item found
+	\return pItem of the item found
 	*/
-	P_ITEM containerSearch(int serial, int *index)
+	pItem containerSearch(int serial, int *index)
 	{
 		if (serial < 0 || (*index) < 0)
 			return 0;
 
-		P_ITEM pi = 0;
+		pItem pi = 0;
 
-		vector<P_ITEM> &pcm = pContMap[serial];
+		vector<pItem> &pcm = pContMap[serial];
 
 		for (pi = 0; pi == 0; (*index)++)
 		{
@@ -924,13 +924,13 @@ namespace pointers {
 	}
 
 
-	P_CHAR stableSearch(int serial, int *index)
+	pChar stableSearch(int serial, int *index)
 	{
 		if (serial < 0 || (*index) < 0)
 			return 0;
 		if (pStableMap[serial].empty()) return 0;
 		if ((uint32_t)*index >= pStableMap[serial].size()) return 0;
-		P_CHAR pet = 0;
+		pChar pet = 0;
 		pet = pStableMap[serial][*index];
 		(*index)++;
 		VALIDATEPCR(pet, 0);
@@ -947,9 +947,9 @@ namespace pointers {
 	\return the item we're searching for
 	\note *index should be 0 at the beginning of the search
 	*/
-	P_ITEM containerSearchFor(const int serial, int *index, short id, short color)
+	pItem containerSearchFor(const int serial, int *index, short id, short color)
 	{
-		P_ITEM pi;
+		pItem pi;
 		int loopexit=0;
 		while ( ((pi = containerSearch(serial,index)) != 0) && (++loopexit < MAXLOOPS) )
 		{
@@ -970,20 +970,20 @@ namespace pointers {
 	\param bAddAmounts if true we want to add the amount of the items to the return value
 	\param recurseSubpack if true we search also in subpack
 	*/
-	uint32_t containerCountItems(SERIAL serial, short id, short color, bool bAddAmounts, LOGICAL recurseSubpack)
+	uint32_t containerCountItems(uint32_t serial, short id, short color, bool bAddAmounts, LOGICAL recurseSubpack)
 	{
 
-		std::map< SERIAL , vector<P_ITEM> >::iterator cont( pointers::pContMap.find( serial ) );
+		std::map< uint32_t , vector<pItem> >::iterator cont( pointers::pContMap.find( serial ) );
 		if( cont==pointers::pContMap.end() || cont->second.empty() )
 			return 0;
 
 		uint32_t total=0;
 
-		std::vector<P_ITEM>::iterator iter( cont->second.begin() );
+		std::vector<pItem>::iterator iter( cont->second.begin() );
 		for( ; iter!=cont->second.end(); iter++ )
 		{
 
-			P_ITEM pi=(*iter);
+			pItem pi=(*iter);
 			if (pi->isContainer() && recurseSubpack) {
 				total += containerCountItems(pi->getSerial32(), id, color, bAddAmounts, true);
 				continue;
@@ -1004,19 +1004,19 @@ namespace pointers {
 	\param scriptID the scriptID which we're searching for
 	\param bAddAmounts if true we want to add the amount of the items to the return value
 	*/
-	uint32_t containerCountItemsByID(SERIAL serial, uint32_t scriptID, bool bAddAmounts)
+	uint32_t containerCountItemsByID(uint32_t serial, uint32_t scriptID, bool bAddAmounts)
 	{
-		std::map< SERIAL , vector<P_ITEM> >::iterator cont( pointers::pContMap.find( serial ) );
+		std::map< uint32_t , vector<pItem> >::iterator cont( pointers::pContMap.find( serial ) );
 		if( cont==pointers::pContMap.end() || cont->second.empty() )
 			return 0;
 
 		uint32_t total=0;
 
-		std::vector<P_ITEM>::iterator iter( cont->second.begin() );
+		std::vector<pItem>::iterator iter( cont->second.begin() );
 		for( ; iter!=cont->second.end(); iter++ )
 		{
 
-			P_ITEM pi=(*iter);
+			pItem pi=(*iter);
 			if (pi->type == 1)	// container
 			{
 				total += containerCountItemsByID(pi->getSerial32(), scriptID, bAddAmounts);

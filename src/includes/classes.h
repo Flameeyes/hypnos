@@ -28,11 +28,11 @@ cMapStuff, cFishing, cSkills, cNetworkStuff and a lot of structures
 struct guild_st
 {
 	uint8_t	free;				//!< Guild slot used?
-	TEXT	name[41];			//!< Name of the guild
-	TEXT	abbreviation[4];		//!< Abbreviation of the guild
+	char	name[41];			//!< Name of the guild
+	char	abbreviation[4];		//!< Abbreviation of the guild
 	int32_t	type;				//!< Type of guild (0=standard/1=chaos/2=order)
-	TEXT	charter[51];			//!< Charter of guild
-	TEXT	webpage[51];			//!< Web url of guild
+	char	charter[51];			//!< Charter of guild
+	char	webpage[51];			//!< Web url of guild
 	int32_t	stone;				//!< The serial of the guildstone
 	int32_t	master;				//!< The serial of the guildmaster
 	int32_t	recruits;			//!< Amount of recruits
@@ -71,11 +71,11 @@ public:
 	int  GetType(int guildnumber);
 	void StonePlacement(int s);
 	void Menu(int s, int page);
-	void Resign(P_CHAR pc, NXWSOCKET socket);
+	void Resign(pChar pc, NXWSOCKET socket);
 	void Recruit(int s);
 	void TargetWar(int s);
 	void StoneMove(int s);
-	int Compare(P_CHAR player1,P_CHAR player2);
+	int Compare(pChar player1,pChar player2);
 	void GumpInput(int s, int type, int index, char *text);
 	void GumpChoice(NXWSOCKET s, int main, int sub);
 	int SearchByStone(int s);

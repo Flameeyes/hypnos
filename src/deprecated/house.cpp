@@ -32,7 +32,7 @@
 #include "classes.h"
 #include "scripts.h"
 
-std::map< SERIAL, P_CHAR > houses;
+std::map< uint32_t, pChar > houses;
 
 bool CheckBuildSite(int x, int y, int z, int sx, int sy);
 
@@ -80,7 +80,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 	int hdeed=0;//deed id #
 	int norealmulti=0,nokey=0,othername=0;
 	char name[512];
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 	Location charpos= pc->getPosition();
 
@@ -250,7 +250,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 					//ConOut("Invalid %i,%i [%i,%i]\n",k,l,x+k,y+l);
 				} //else ConOut("DEBUG: Valid at %i,%i [%i,%i]\n",k,l,x+k,y+l);
 
-				P_ITEM pi_ii=findmulti(loc);
+				pItem pi_ii=findmulti(loc);
 				if (ISVALIDPI(pi_ii) && !(norealmulti))
 				{
 					sysmessage(s,TRANSLATE("You cant build structures inside structures"));
@@ -274,7 +274,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 		if (id == INVALID)
 			return;
 
-		P_ITEM pHouse = item::CreateFromScript( "$item_hardcoded" );
+		pItem pHouse = item::CreateFromScript( "$item_hardcoded" );
 		VALIDATEPI(pHouse);
 		pHouse->setId( id );
 		pHouse->setCurrentName( temp );
@@ -309,7 +309,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 
 		if (i)//Boats->.. Moved from up there ^
 		{
-			P_ITEM pFx1 = MAKE_ITEM_REF( pc->fx1 );
+			pItem pFx1 = MAKE_ITEM_REF( pc->fx1 );
 			if ( pFx1 != 0 )
 				pFx1->Delete(); // this will del the deed no matter where it is
 		}
@@ -317,10 +317,10 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 		pc->fx1=-1; //reset fx1 so it does not interfere
 		// bugfix LB ... was too early reseted
 
-		P_ITEM pKey=NULL;
-		P_ITEM pKey2=NULL;
+		pItem pKey=NULL;
+		pItem pKey2=NULL;
 
-		P_ITEM pBackPack = pc->getBackpack();
+		pItem pBackPack = pc->getBackpack();
 
 		//Key...
 		//Altered key naming to include pc's name. Integrated backpack and bankbox handling (Sparhawk)
@@ -368,11 +368,11 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 		pKey2->type=ITYPE_KEY;
 		pKey2->setNewbie();
 
-		P_ITEM bankbox = pc->GetBankBox();
+		pItem bankbox = pc->GetBankBox();
 		if(bankbox!=NULL) // we sould add a key in bankbox only if the player has a bankbox =)
 		{
 
-			P_ITEM p_key3=item::CreateFromScript( "$item_gold_key" );
+			pItem p_key3=item::CreateFromScript( "$item_gold_key" );
 			VALIDATEPI(p_key3);
 			p_key3->setCurrentName( "a house key" );
 			p_key3->more1=pHouse->getSerial().ser1;
@@ -399,7 +399,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 
 			if (iter!=NULL)
 			{
-				P_ITEM pi_l=NULL;
+				pItem pi_l=NULL;
 				loopexit=0;
 				do
 				{
@@ -490,7 +490,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 			NXWCLIENT ps_i = sw.getClient();
 			if(ps_i==NULL)
 				continue;
-			P_CHAR pc_i=ps_i->currChar();
+			pChar pc_i=ps_i->currChar();
 			if(ISVALIDPC(pc_i))
 				pc_i->teleport();
 		}
@@ -514,11 +514,11 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 \param s socket of player
 \param pi pointer to the house item
 */
-void deedhouse(NXWSOCKET s, P_ITEM pi)
+void deedhouse(NXWSOCKET s, pItem pi)
 {
 	uint32_t x1, y1, x2, y2;
 	VALIDATEPI(pi);
-	P_CHAR pc = MAKE_CHAR_REF(currchar[s]);
+	pChar pc = MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 	Location charpos= pc->getPosition();
 
@@ -527,7 +527,7 @@ void deedhouse(NXWSOCKET s, P_ITEM pi)
 	{
 		getMultiCorners(pi, x1,y1,x2,y2);
 
-		P_ITEM pi_ii=item::CreateFromScript( pi->morex, pc->getBackpack() ); // need to make before delete
+		pItem pi_ii=item::CreateFromScript( pi->morex, pc->getBackpack() ); // need to make before delete
 		VALIDATEPI(pi_ii);
 
 		sysmessage( s, TRANSLATE("Demolishing House %s"), pi->getCurrentNameC());
@@ -538,7 +538,7 @@ void deedhouse(NXWSOCKET s, P_ITEM pi)
 		NxwCharWrapper sc;
 		sc.fillCharsNearXYZ( charpos, BUILDRANGE, true, false );
 		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-			P_CHAR p_index=sc.getChar();
+			pChar p_index=sc.getChar();
 			if( ISVALIDPC(p_index) ) {
 
 				Location charpos2= p_index->getPosition();
@@ -550,7 +550,7 @@ void deedhouse(NXWSOCKET s, P_ITEM pi)
 						char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
 						sprintf( temp, TRANSLATE("A vendor deed for %s"), p_index->getCurrentNameC() );
-						P_ITEM pDeed = item::CreateFromScript( "$item_employment_deed", pc->getBackpack() );
+						pItem pDeed = item::CreateFromScript( "$item_employment_deed", pc->getBackpack() );
 						VALIDATEPI(pDeed);
 
 						pDeed->Refresh();
@@ -566,7 +566,7 @@ void deedhouse(NXWSOCKET s, P_ITEM pi)
 		si.fillItemsNearXYZ( charpos, BUILDRANGE, false );
 		for( si.rewind(); !si.isEmpty(); si++ ) {
 		{
-			P_ITEM p_item=si.getItem();
+			pItem p_item=si.getItem();
 			if(ISVALIDPI(p_item)) {
 				if( (p_item->getPosition().x >= (uint32_t)x1) &&
 					(p_item->getPosition().x <= (uint32_t)x2) &&
@@ -600,15 +600,15 @@ void deedhouse(NXWSOCKET s, P_ITEM pi)
 */
 void killhouse(ITEM i)
 {
-/*	P_CHAR pc;
-	P_ITEM pi;
+/*	pChar pc;
+	pItem pi;
 	int x1, y1, x2, y2;
 
 
 	pi = MAKE_ITEM_REF(i);
 
 	Map->MultiArea(pi, &x1, &y1, &x2, &y2);
-	SERIAL serial = pi->getSerial32();
+	uint32_t serial = pi->getSerial32();
 
 	int a;
 	for (a = 0; a < charcount; a++) // deleting npc-vendors attched to the decying house
@@ -655,7 +655,7 @@ checks all items if they are houses. if so, check its time stamp. if its too old
 int check_house_decay()
 {
 /*	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	P_ITEM pi;
+	pItem pi;
 	bool is_house;
 	int houses=0;
 	int decayed_houses=0;
@@ -704,18 +704,18 @@ int check_house_decay()
 \author Luxor
 \note This function use a BAD method based on cAllObjects, will be substituted with a map system.
 */
-void killkeys(SERIAL serial) // Crackerjack 8/11/99
+void killkeys(uint32_t serial) // Crackerjack 8/11/99
 {
 	if ( serial <= INVALID )
 		return;
 
 	cAllObjectsIter objs;
-	P_ITEM pi = NULL;
+	pItem pi = NULL;
 	for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
 		if ( !isItemSerial( objs.getSerial() ) )
 			continue;
 
-		if ( ISVALIDPI( (pi=static_cast<P_ITEM>(objs.getObject())) ) ) {
+		if ( ISVALIDPI( (pi=static_cast<pItem>(objs.getObject())) ) ) {
 			if ( pi->type == ITYPE_KEY && calcserial(pi->more1, pi->more2, pi->more3, pi->more4) == serial )
 				pi->Delete();
 		}
@@ -733,14 +733,14 @@ void killkeys(SERIAL serial) // Crackerjack 8/11/99
 \return 0 if character is not on house list, else the type of list
 \todo change the 4 chars to a single serial32
 */
-int on_hlist(P_ITEM pi, unsigned char s1, unsigned char s2, unsigned char s3, unsigned char s4, int *li)
+int on_hlist(pItem pi, unsigned char s1, unsigned char s2, unsigned char s3, unsigned char s4, int *li)
 {
 
 	VALIDATEPIR( pi, 0);
 	if( !pi->isInWorld() )
 		return 0;
 
-	P_ITEM p_ci=NULL;
+	pItem p_ci=NULL;
 
 	NxwItemWrapper si;
 	si.fillItemsNearXYZ( pi->getPosition(), BUILDRANGE, false );
@@ -753,7 +753,7 @@ int on_hlist(P_ITEM pi, unsigned char s1, unsigned char s2, unsigned char s3, un
 			   (p_ci->more1== s1)&&(p_ci->more2==s2)&&
 			   (p_ci->more3== s3)&&(p_ci->more4==s4))
 				{
-				    if(li!=NULL) *li=DEREF_P_ITEM(p_ci);
+				    if(li!=NULL) *li=DEREF_pItem(p_ci);
 						return p_ci->morex;
 				}
 		}
@@ -798,10 +798,10 @@ int add_hlist(int c, int h, int t)
 {
 	uint32_t sx, sy, ex, ey;
 
-	P_CHAR pc=MAKE_CHAR_REF(c);
+	pChar pc=MAKE_CHAR_REF(c);
 	VALIDATEPCR(pc,3);
 
-	P_ITEM pi_h=MAKE_ITEM_REF(h);
+	pItem pi_h=MAKE_ITEM_REF(h);
 	VALIDATEPIR(pi_h,3);
 
 	if(on_hlist(pi_h, pc->getSerial().ser1, pc->getSerial().ser2, pc->getSerial().ser3, pc->getSerial().ser4, NULL))
@@ -846,22 +846,22 @@ int add_hlist(int c, int h, int t)
 \brief Remove somebody from a house list
 \param c chars[] index
 \param h items[] index for house
-\todo change to P_CHAR & P_ITEM
+\todo change to pChar & pItem
 \return 0 if the player was not on a list, else the list which the player was in.
 */
 int del_hlist(int c, int h)
 {
 	int hl, li;
 
-	P_CHAR pc=MAKE_CHAR_REF(c);
+	pChar pc=MAKE_CHAR_REF(c);
 	VALIDATEPCR(pc,0);
 
-	P_ITEM pi=MAKE_ITEM_REF(h);
+	pItem pi=MAKE_ITEM_REF(h);
 	VALIDATEPIR(pi,0);
 
 	hl=on_hlist(pi, pc->getSerial().ser1, pc->getSerial().ser2, pc->getSerial().ser3, pc->getSerial().ser4, &li);
 	if(hl) {
-		P_ITEM pli=MAKE_ITEM_REF(li);
+		pItem pli=MAKE_ITEM_REF(li);
 		if(ISVALIDPI(pli)) {
 #ifdef SPAR_I_LOCATION_MAP
 			//
@@ -877,13 +877,13 @@ int del_hlist(int c, int h)
 	return(hl);
 }
 
-bool house_speech( P_CHAR pc, NXWSOCKET socket, std::string &talk)
+bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 {
 	//
 	// NOTE: Socket and pc checking allready done in talking()
 	//
 	int  fr;
-	P_ITEM pi = findmulti( pc->getPosition() );
+	pItem pi = findmulti( pc->getPosition() );
 	//
 	// As we don't want a error logged when not in a house we cannot use VALIDATEPIR here
 	//
@@ -992,16 +992,16 @@ bool CheckBuildSite(int x, int y, int z, int sx, int sy)
 // buffer 0 the sign
 void target_houseOwner( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR curr=ps->currChar();
+	pChar curr=ps->currChar();
 	VALIDATEPC(curr);
 
-	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
-	P_ITEM pSign=pointers::findItemBySerial( t->buffer[0] );
+	pItem pSign=pointers::findItemBySerial( t->buffer[0] );
 	VALIDATEPI(pSign);
 
-	P_ITEM pHouse=pointers::findItemBySerial(calcserial(pSign->more1, pSign->more2, pSign->more3, pSign->more4));
+	pItem pHouse=pointers::findItemBySerial(calcserial(pSign->more1, pSign->more2, pSign->more3, pSign->more4));
 	VALIDATEPI(pHouse);
 
 
@@ -1022,7 +1022,7 @@ void target_houseOwner( NXWCLIENT ps, P_TARGET t )
 	NXWCLIENT osc=pc->getClient();
 	NXWSOCKET os= (osc!=NULL)? osc->toInt() : INVALID;
 
-	P_ITEM pi3=item::CreateFromScript( "$item_gold_key" ); //gold key for everything else
+	pItem pi3=item::CreateFromScript( "$item_gold_key" ); //gold key for everything else
 	VALIDATEPI(pi3);
 	pi3->setCurrentName( "a house key" );
 	if(os!=INVALID)
@@ -1057,9 +1057,9 @@ void target_houseOwner( NXWCLIENT ps, P_TARGET t )
 // buffer[0] house
 void target_houseEject( NXWCLIENT ps, P_TARGET t )
 {
-    P_CHAR pc = MAKE_CHAR_REF(t->getClicked());
+    pChar pc = MAKE_CHAR_REF(t->getClicked());
 	VALIDATEPC(pc);
-	P_ITEM pi_h=MAKE_ITEM_REF(t->buffer[0]);
+	pItem pi_h=MAKE_ITEM_REF(t->buffer[0]);
 	VALIDATEPI(pi_h);
 
 	NXWSOCKET s=ps->toInt();
@@ -1084,20 +1084,20 @@ void target_houseBan( NXWCLIENT ps, P_TARGET t )
 {
 	target_houseEject(ps, t);	// first, eject the player
 
-	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
+	pChar pc = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
 
-	P_CHAR curr=ps->currChar();
+	pChar curr=ps->currChar();
 	VALIDATEPC(curr);
 
 	NXWSOCKET s = ps->toInt();
 
-	P_ITEM pi=pointers::findItemBySerial( t->buffer[0] );
+	pItem pi=pointers::findItemBySerial( t->buffer[0] );
 	if(ISVALIDPI(pi))
 	{
 		if(pc->getSerial32() == curr->getSerial32())
 			return;
-		int r=add_hlist(DEREF_P_CHAR(pc), DEREF_P_ITEM(pi), H_BAN);
+		int r=add_hlist(DEREF_pChar(pc), DEREF_pItem(pi), H_BAN);
 		if(r==1)
 		{
 			sysmessage(s, "%s has been banned from this house.", pc->getCurrentNameC());
@@ -1114,14 +1114,14 @@ void target_houseBan( NXWCLIENT ps, P_TARGET t )
 // buffer[0] the house
 void target_houseFriend( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR Friend = pointers::findCharBySerial( t->getClicked() );
+	pChar Friend = pointers::findCharBySerial( t->getClicked() );
 
-	P_CHAR curr=ps->currChar();
+	pChar curr=ps->currChar();
 	VALIDATEPC(curr);
 
 	NXWSOCKET s = ps->toInt();
 
-	P_ITEM pi=pointers::findItemBySerial( t->buffer[0] );
+	pItem pi=pointers::findItemBySerial( t->buffer[0] );
 
 	if(ISVALIDPC(Friend) && ISVALIDPI(pi))
 	{
@@ -1130,7 +1130,7 @@ void target_houseFriend( NXWCLIENT ps, P_TARGET t )
 			sysmessage(s,"You cant do that!");
 			return;
 		}
-		int r=add_hlist(DEREF_P_CHAR(Friend), DEREF_P_ITEM(pi), H_FRIEND);
+		int r=add_hlist(DEREF_pChar(Friend), DEREF_pItem(pi), H_FRIEND);
 		if(r==1)
 		{
 			sysmessage(s, "%s has been made a friend of the house.", Friend->getCurrentNameC());
@@ -1147,12 +1147,12 @@ void target_houseFriend( NXWCLIENT ps, P_TARGET t )
 // bugffer[0] the hose
 void target_houseUnlist( NXWCLIENT ps, P_TARGET t )
 {
-	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
-    P_ITEM pi= pointers::findItemBySerial( t->buffer[0] );
+	pChar pc = pointers::findCharBySerial( t->getClicked() );
+    pItem pi= pointers::findItemBySerial( t->buffer[0] );
 	NXWSOCKET s = ps->toInt();
     if(ISVALIDPC(pc) && ISVALIDPI(pi))
     {
-        int r=del_hlist(DEREF_P_CHAR(pc), DEREF_P_ITEM(pi));
+        int r=del_hlist(DEREF_pChar(pc), DEREF_pItem(pi));
         if(r>0)
         {
             sysmessage(s, TRANSLATE("%s has been removed from the house registry."), pc->getCurrentNameC());
@@ -1168,11 +1168,11 @@ void target_houseLockdown( NXWCLIENT ps, P_TARGET t )
 // DATE:    17th December, 1999
 {
 
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 	NXWSOCKET s = ps->toInt();
 
-    P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=pointers::findItemBySerial( t->getClicked() );
     if(ISVALIDPI(pi))
     {
 
@@ -1199,7 +1199,7 @@ void target_houseLockdown( NXWCLIENT ps, P_TARGET t )
             return;
         }
 
-        P_ITEM multi = findmulti( pi->getPosition() );
+        pItem multi = findmulti( pi->getPosition() );
         if( ISVALIDPI(multi))
         {
             if(pi->magic==4)
@@ -1230,11 +1230,11 @@ void target_houseLockdown( NXWCLIENT ps, P_TARGET t )
 void target_houseSecureDown( NXWCLIENT ps, P_TARGET t )
 // For locked down and secure chests
 {
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 	NXWSOCKET s = ps->toInt();
 
-    P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=pointers::findItemBySerial( t->getClicked() );
     if(ISVALIDPI(pi))
     {
         // time to lock it down!
@@ -1255,7 +1255,7 @@ void target_houseSecureDown( NXWCLIENT ps, P_TARGET t )
             return;
         }
 
-        P_ITEM multi = findmulti( pi->getPosition() );
+        pItem multi = findmulti( pi->getPosition() );
         if( ISVALIDPI(multi) && pi->type==1)
         {
             pi->magic = 4;  // LOCKED DOWN!
@@ -1291,11 +1291,11 @@ void target_houseRelease( NXWCLIENT ps, P_TARGET t )
 // DATE:    17th December, 1999
 // update: 5-8-00
 {
-	P_CHAR pc=ps->currChar();
+	pChar pc=ps->currChar();
 	VALIDATEPC(pc);
 	NXWSOCKET s = ps->toInt();
 
-    P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+    pItem pi=pointers::findItemBySerial( t->getClicked() );
     if(ISVALIDPI(pi))
     {
         if(pi->getOwnerSerial32() != pc->getSerial32())
@@ -1314,7 +1314,7 @@ void target_houseRelease( NXWCLIENT ps, P_TARGET t )
             return;
         }
         // time to lock it down!
-        P_ITEM multi = findmulti( pi->getPosition() );
+        pItem multi = findmulti( pi->getPosition() );
         if( ISVALIDPI(multi) && pi->magic==4 || pi->type==1)
         {
             pi->magic = 1;  // Default as stored by the client, perhaps we should keep a backup?

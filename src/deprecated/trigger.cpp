@@ -169,7 +169,7 @@ void cTriggerContext::parseIAddCommand(char* par)
     }
     triggerz = charpos.z;
 
-	P_ITEM pi = NULL;
+	pItem pi = NULL;
 	if (!InBackpack) 
 	{
 		pi=item::CreateFromScript( itmNumber, NULL, itmamount );
@@ -289,7 +289,7 @@ void cTriggerContext::init(int number, NXWSOCKET  s, int trigtype, uint16_t id)
 \param itm pointer the item, if not static
 \param trigtype the trigger type
 */
-cTriggerContext::cTriggerContext(int number, NXWSOCKET  s, P_ITEM itm, int trigtype)
+cTriggerContext::cTriggerContext(int number, NXWSOCKET  s, pItem itm, int trigtype)
 {
 	if (trigtype==TRIGMODE_ENVOKED) {
 		init(number, s, trigtype, itm->getId());
@@ -302,7 +302,7 @@ cTriggerContext::cTriggerContext(int number, NXWSOCKET  s, P_ITEM itm, int trigt
 		m_pi = itm;
 	}
 	if ((trigtype==TRIGMODE_ENVOKED)||(trigtype==TRIGMODE_STATIC)) {
-		P_ITEM pi = pointers::findItemBySerial(m_pcCurrChar->envokeitem);
+		pItem pi = pointers::findItemBySerial(m_pcCurrChar->envokeitem);
 		if ( pi ) {
 			m_piEnvoked = pi;
 		} else  { //panic
@@ -320,12 +320,12 @@ cTriggerContext::cTriggerContext(int number, NXWSOCKET  s, P_ITEM itm, int trigt
 \param pc the npc
 \param trigtype trigger type
 */
-cTriggerContext::cTriggerContext(int number, NXWSOCKET  s, P_CHAR pc, int trigtype)
+cTriggerContext::cTriggerContext(int number, NXWSOCKET  s, pChar pc, int trigtype)
 {
 	init(number, s, trigtype, pc->getId());
 	m_pcNpc = pc;
 	if (trigtype==TRIGMODE_NPCENVOKE) {
-		P_ITEM pi = pointers::findItemBySerial(m_pcCurrChar->envokeitem);
+		pItem pi = pointers::findItemBySerial(m_pcCurrChar->envokeitem);
 		if (ISVALIDPI(pi)) {
 			m_piEnvoked = pi;
 		} else { //panic
@@ -416,11 +416,11 @@ void cTriggerContext::exec()
 \param pi the item triggered
 \param eventType the type of trigger
 */
-void triggerItem(NXWSOCKET  ts, P_ITEM pi, int eventType)
+void triggerItem(NXWSOCKET  ts, pItem pi, int eventType)
 {
 	VALIDATEPI(pi);
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[ts]);
+	pChar pc=MAKE_CHAR_REF(currchar[ts]);
 	VALIDATEPC(pc);
 
 	if ( (pi->disabled>0)&&(!TIMEOUT(pi->disabled))) {
@@ -462,7 +462,7 @@ void triggerItem(NXWSOCKET  ts, P_ITEM pi, int eventType)
 \param pc the npc
 \param eventType the type of trigger
 */
-void triggerNpc(NXWSOCKET  ts, P_CHAR pc, int eventType)
+void triggerNpc(NXWSOCKET  ts, pChar pc, int eventType)
 {
 	if (ts < 0) return;
 	if (pc == 0) return;
@@ -490,7 +490,7 @@ void triggerTile(NXWSOCKET  ts)
 {
 	if (ts < 0) return;
 
-	cTriggerContext ltc(-1, ts, static_cast<P_ITEM>(0), TRIGMODE_STATIC);
+	cTriggerContext ltc(-1, ts, static_cast<pItem>(0), TRIGMODE_STATIC);
 	ltc.exec();
 }
 
@@ -504,7 +504,7 @@ void triggerTile(NXWSOCKET  ts)
 */
 void cTriggerContext::parseLine(char* cmd, char* par)
 {
-	P_CHAR pc;
+	pChar pc;
 	switch(cmd[0])
 	{
 		case '@':
@@ -633,7 +633,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 
 		case 'E':
 			if (!(strcmp("EMT", cmd))) {  // Player says something when trigger is activated
-				P_CHAR pc_emt=MAKE_CHAR_REF(currchar[m_socket]);
+				pChar pc_emt=MAKE_CHAR_REF(currchar[m_socket]);
 				if(ISVALIDPC(pc_emt))
 					pc_emt->emote(m_socket,par,1);
 			} else if (!(strcmp("EVDUR", cmd))) {
@@ -648,7 +648,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 
 		case 'F':
 			if (!(strcmp("FAME", cmd))) {
-				P_CHAR pc_curr=MAKE_CHAR_REF(currchar[m_socket]);
+				pChar pc_curr=MAKE_CHAR_REF(currchar[m_socket]);
 				VALIDATEPC(pc_curr);
 				pc_curr->modifyFame(str2num(par));
 			} else if (!(strcmp("FMSG", cmd))) { // Set fail message
@@ -752,7 +752,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 				if ((r < 0)||(r > 65535)) r = 1;
 				if (r == 0) return;
 
-				P_ITEM pc = item::CreateFromScript( "$item_hardcoded" );
+				pItem pc = item::CreateFromScript( "$item_hardcoded" );
 				if (!ISVALIDPI(pc)) STOPTRIGGER;
 
 				pc->setId( DBYTE2WORD( array[0], array[1] ) );
@@ -760,7 +760,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 					pc->setColor( DBYTE2WORD( m_nColor1, m_nColor2 ) );
 
 				if( ISVALIDPC( m_pcCurrChar ) ) {
-					P_ITEM pack=m_pcCurrChar->getBackpack();
+					pItem pack=m_pcCurrChar->getBackpack();
 					if( ISVALIDPI(pack) )
 						pack->AddItem( pc );
 					else {
@@ -816,7 +816,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 
 		case 'K' :
 			if (!(strcmp("KARMA", cmd))) {
-				P_CHAR pc_curr=MAKE_CHAR_REF(currchar[m_socket]);
+				pChar pc_curr=MAKE_CHAR_REF(currchar[m_socket]);
 				VALIDATEPC(pc_curr);
 				pc_curr->IncreaseKarma(str2num(par));
 			}
@@ -829,7 +829,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 				array[2] = array[3] = 16;
 				fillIntArray(par, array, 4, -1, BASE_INARRAY);
 
-				P_CHAR pc_make=MAKE_CHAR_REF(currchar[m_socket]);
+				pChar pc_make=MAKE_CHAR_REF(currchar[m_socket]);
 				VALIDATEPC(pc_make);
 
 				//ndEndy PDFARE
@@ -844,11 +844,11 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 			} else if (!(strcmp("MISC", cmd))) {
 				strlwr(par);
 				if (!strcmp("bank", par)) {
-						P_CHAR pc_curr=MAKE_CHAR_REF(currchar[m_socket]);
+						pChar pc_curr=MAKE_CHAR_REF(currchar[m_socket]);
 						VALIDATEPC(pc_curr);
 						pc_curr->openBankBox(pc_curr);
 				} else if (!strcmp("ware", par)) {
-						P_CHAR pc_curr=MAKE_CHAR_REF(currchar[m_socket]);
+						pChar pc_curr=MAKE_CHAR_REF(currchar[m_socket]);
 						VALIDATEPC(pc_curr);
 						pc_curr->openSpecialBank(pc_curr);
 				} else if (!strcmp("balance", par)) {
@@ -1108,7 +1108,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 		if (!(strcmp("RANGE", cmd))) { // Set the color check on REQUIRED item by Magius(CHE) §
 			int x1,y1,x2,y2,z2,p,param = str2num(par);
 
-					P_ITEM pack;
+					pItem pack;
 					Location charpos= m_pcCurrChar->getPosition();
 					x1 = charpos.x;
 			y1 = charpos.y;
@@ -1399,7 +1399,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 \param pi the item to be DURed
 \param par parameters
 */
-void cTriggerContext::parseDurCommand(P_ITEM pi, char *par)
+void cTriggerContext::parseDurCommand(pItem pi, char *par)
 {
 	if (pi == 0)
 		STOPTRIGGER;
@@ -1451,7 +1451,7 @@ void cTriggerContext::parseDurCommand(P_ITEM pi, char *par)
 \param pi the item to be MAXDURed
 \param par parameteres
 */
-void cTriggerContext::parseMaxDurCommand(P_ITEM pi, char *par)
+void cTriggerContext::parseMaxDurCommand(pItem pi, char *par)
 {
 	if (pi == 0)
 		STOPTRIGGER;

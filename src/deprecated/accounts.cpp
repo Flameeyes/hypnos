@@ -60,7 +60,7 @@ void cAccount::setEntering( )
 \author Endymion
 \param pc the char
 */
-void cAccount::setOnline( P_CHAR pc )
+void cAccount::setOnline( pChar pc )
 {
 	if(!ISVALIDPC(pc))
 		setOffline();
@@ -86,7 +86,7 @@ bool cAccount::isOnline( )
 \author Endymion
 \return serial of char
 */
-SERIAL cAccount::getInWorld( )
+uint32_t cAccount::getInWorld( )
 {
 	return ( isOnline() && (state==LOG_INGAME) )? pc_online : INVALID;
 }
@@ -161,7 +161,7 @@ void cAccount::getAllChars(  NxwCharWrapper& sc )
 \author Endymion
 \param pc the char
 */
-void cAccount::addCharToAccount( P_CHAR pc )
+void cAccount::addCharToAccount( pChar pc )
 {
 	if( this->pgs.size() < 5 ) {
 		this->pgs.push_back( pc->getSerial32() );
@@ -567,7 +567,7 @@ bool cAccounts::IsOnline( ACCOUNT acctnum )
 \return Serial if exist, else INVALID
 \param acctnum Account Number
 */
-SERIAL cAccounts::GetInWorld( ACCOUNT acctnum )
+uint32_t cAccounts::GetInWorld( ACCOUNT acctnum )
 {
 	if (acctnum <= INVALID )
 		return INVALID;
@@ -585,7 +585,7 @@ SERIAL cAccounts::GetInWorld( ACCOUNT acctnum )
 \param acctnum Account number
 \param pc The Character
 */
-void cAccounts::SetOnline( ACCOUNT acctnum, P_CHAR pc )
+void cAccounts::SetOnline( ACCOUNT acctnum, pChar pc )
 {
 	VALIDATEPC(pc);
 	ACCOUNT_LIST::iterator iter( this->acctlist.find(pc->account) );
@@ -693,7 +693,7 @@ void cAccounts::GetAllChars( ACCOUNT acctnum, NxwCharWrapper& sc )
 \param acctnum the account
 \param pc the char
 */
-void cAccounts::AddCharToAccount( ACCOUNT acctnum, P_CHAR pc )
+void cAccounts::AddCharToAccount( ACCOUNT acctnum, pChar pc )
 {
 	if(!ISVALIDPC(pc)  || pc->npc || acctnum==INVALID ) {
 		pc->account=INVALID;
@@ -749,7 +749,7 @@ bool cAccounts::RemoveAccount(std::string name)
 	GetAllChars( acc, acc_chars );
 	for( acc_chars.rewind(); !acc_chars.isEmpty(); acc_chars++ )
 	{
-		P_CHAR pc = acc_chars.getChar();
+		pChar pc = acc_chars.getChar();
 		if(ISVALIDPC(pc))
 			pc->Delete();
 	}

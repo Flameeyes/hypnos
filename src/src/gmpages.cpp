@@ -149,7 +149,7 @@ void cmdNextCall(pClient cli)
 	int i;
 	int x=0;
 	
-	P_CHAR pc_currchar = MAKE_CHAR_REF(currchar[s]);
+	pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
 	
 	if(pc_currchar->callnum!=0)
 	{
@@ -162,7 +162,7 @@ void cmdNextCall(pClient cli)
 		{
 			if(gmpages[i].handled==0)
 			{
-				P_CHAR pj=pointers::findCharBySerial( gmpages[i].serial.serial32 );
+				pChar pj=pointers::findCharBySerial( gmpages[i].serial.serial32 );
 				if(ISVALIDPC(pj))
 				{
 					Location dest= pj->getPosition();
@@ -190,7 +190,7 @@ void cmdNextCall(pClient cli)
 		{
 			if(counspages[i].handled==0)
 			{
-				P_CHAR pj=pointers::findCharBySerial( counspages[i].serial.serial32 );
+				pChar pj=pointers::findCharBySerial( counspages[i].serial.serial32 );
 				if(ISVALIDPC(pj))
 				{
 					Location dest= pj->getPosition();

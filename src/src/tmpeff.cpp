@@ -26,7 +26,7 @@
 
 namespace tempfx {
 
-SERIAL_SLIST tempfxCheck;
+uint32_t_SLIST tempfxCheck;
 
 /*!
 \author Luxor
@@ -36,9 +36,9 @@ void tempeffectson()
 	if ( tempfxCheck.empty() )
 		return;
 
-	P_OBJECT po = NULL;
+	pObject po = NULL;
 
-	SERIAL_SLIST::iterator it( tempfxCheck.begin() );
+	uint32_t_SLIST::iterator it( tempfxCheck.begin() );
 	for ( ; it != tempfxCheck.end(); ) {
 		po = objects.findObject( (*it) );
 
@@ -66,9 +66,9 @@ void tempeffectsoff()
         if ( tempfxCheck.empty() )
 		return;
 
-	P_OBJECT po = NULL;
+	pObject po = NULL;
 
-	SERIAL_SLIST::iterator it( tempfxCheck.begin() );
+	uint32_t_SLIST::iterator it( tempfxCheck.begin() );
         for ( ; it != tempfxCheck.end(); ) {
                 po = objects.findObject( (*it) );
 
@@ -95,9 +95,9 @@ void checktempeffects()
         if ( tempfxCheck.empty() )
 		return;
 
-	P_OBJECT po = NULL;
+	pObject po = NULL;
 
-	SERIAL_SLIST::iterator it( tempfxCheck.begin() );
+	uint32_t_SLIST::iterator it( tempfxCheck.begin() );
         for ( ; it != tempfxCheck.end(); ) {
                 po = objects.findObject( (*it) );
 
@@ -120,7 +120,7 @@ void checktempeffects()
 \author Luxor
 \brief Calls a custom tempfx defined in small code
 */
-static void callCustomTempFx(P_OBJECT poSrc, P_OBJECT poDest, int mode, int amxcallback, int more1, int more2, int more3)
+static void callCustomTempFx(pObject poSrc, P_OBJECT poDest, int mode, int amxcallback, int more1, int more2, int more3)
 {
 	VALIDATEPO(poSrc);
 	VALIDATEPO(poDest);
@@ -189,7 +189,7 @@ bool isDestRepeatable(int num)
 /*!
 \author Luxor
 */
-int32_t getTempFxTime(P_CHAR src, int num, int more1, int more2, int more3)
+int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 {
 	int dur = 0;
 
@@ -330,8 +330,8 @@ int32_t getTempFxTime(P_CHAR src, int num, int more1, int more2, int more3)
 */
 void cTempfx::start()
 {
-	P_CHAR src = pointers::findCharBySerial(m_nSrc);
-	P_CHAR dest = pointers::findCharBySerial(m_nDest);
+	pChar src = pointers::findCharBySerial(m_nSrc);
+	pChar dest = pointers::findCharBySerial(m_nDest);
 
 	if ( !ISVALIDPC(dest) )
 		return;
@@ -616,7 +616,7 @@ void cTempfx::start()
 			break;
 	}
 
-	//if (ISVALIDPC(dest)) item::CheckEquipment(DEREF_P_CHAR(dest));
+	//if (ISVALIDPC(dest)) item::CheckEquipment(DEREF_pChar(dest));
 }
 
 /*!
@@ -629,7 +629,7 @@ int8_t cTempfx::checkForExpire()
 
 	executeExpireCode();
 
-        P_OBJECT po = objects.findObject( m_nDest );
+        pObject po = objects.findObject( m_nDest );
 	if ( !ISVALIDPO( po ) )
 		return INVALID;
 
@@ -641,9 +641,9 @@ int8_t cTempfx::checkForExpire()
 */
 void cTempfx::executeExpireCode()
 {
-	P_CHAR src = pointers::findCharBySerial(m_nSrc);
-	P_CHAR dest = pointers::findCharBySerial(m_nDest);
-	P_ITEM pi_dest = pointers::findItemBySerial(m_nDest);
+	pChar src = pointers::findCharBySerial(m_nSrc);
+	pChar dest = pointers::findCharBySerial(m_nDest);
+	pItem pi_dest = pointers::findItemBySerial(m_nDest);
 
 	switch(m_nNum)
 	{
@@ -751,7 +751,7 @@ void cTempfx::executeExpireCode()
 		case ALCHEMY_END:
 			VALIDATEPC(src);
 			VALIDATEPI(pi_dest);
-			Skills::CreatePotion(DEREF_P_CHAR(src), m_nMore1, m_nMore2, DEREF_P_ITEM(pi_dest));
+			Skills::CreatePotion(DEREF_pChar(src), m_nMore1, m_nMore2, DEREF_pItem(pi_dest));
 			break;
 
 		case AUTODOOR:
@@ -817,7 +817,7 @@ void cTempfx::executeExpireCode()
 			dest->hp /= 7;
 			impowncreate(index, dest, 0);
 			all_items(index);
-			P_CHAR p_nearchar;
+			pChar p_nearchar;
 			forEachCharNearby(dest->x, dest->y, 15, p_nearchar) {
 				if ((p_nearchar!=NULL)) {
 					p_chearchar->teleport();
@@ -907,8 +907,8 @@ void cTempfx::executeExpireCode()
 */
 void cTempfx::activate()
 {
-	P_CHAR src = pointers::findCharBySerial(m_nSrc);
-	P_CHAR dest = pointers::findCharBySerial(m_nDest);
+	pChar src = pointers::findCharBySerial(m_nSrc);
+	pChar dest = pointers::findCharBySerial(m_nDest);
 
 	if ( !ISVALIDPC(dest) ) return;
 
@@ -989,8 +989,8 @@ void cTempfx::activate()
 */
 void cTempfx::deactivate()
 {
-	P_CHAR src = pointers::findCharBySerial(m_nSrc);
-	P_CHAR dest = pointers::findCharBySerial(m_nDest);
+	pChar src = pointers::findCharBySerial(m_nSrc);
+	pChar dest = pointers::findCharBySerial(m_nDest);
 
 	if ( !ISVALIDPC(dest) )
 		return;
@@ -1080,8 +1080,8 @@ bool cTempfx::isValid()
 	if ( m_nNum == AMXCUSTOM && m_nAmxcback <= INVALID )
 		return false;
 
-	P_OBJECT src = objects.findObject(m_nSrc);
-	P_OBJECT dest = objects.findObject(m_nDest);
+	pObject src = objects.findObject(m_nSrc);
+	pObject dest = objects.findObject(m_nDest);
 
 	if ( !ISVALIDPO(src) || !ISVALIDPO(dest) )
 		return false;
@@ -1093,7 +1093,7 @@ bool cTempfx::isValid()
 \author Luxor
 \brief cTempfx constructor
 */
-cTempfx::cTempfx( SERIAL nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t more1, int32_t more2, int32_t more3, int32_t amxcback )
+cTempfx::cTempfx( uint32_t nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t more1, int32_t more2, int32_t more3, int32_t amxcback )
 {
 	m_nSrc = INVALID;
 	m_nDest = INVALID;
@@ -1160,7 +1160,7 @@ cTempfx::cTempfx( SERIAL nSrc, SERIAL nDest, int32_t num, int32_t dur, int32_t m
 \author Luxor
 \brief	Adds a temp effect
 */
-bool add(P_OBJECT src, P_OBJECT dest, int num, unsigned char more1, unsigned char more2, unsigned char more3, short dur, int amxcback)
+bool add(pObject src, P_OBJECT dest, int num, unsigned char more1, unsigned char more2, unsigned char more3, short dur, int amxcback)
 {
 	VALIDATEPOR(src, false);
 	VALIDATEPOR(dest, false);
@@ -1171,9 +1171,9 @@ bool add(P_OBJECT src, P_OBJECT dest, int num, unsigned char more1, unsigned cha
 /*!
 \author Luxor
 */
-void addTempfxCheck( SERIAL serial )
+void addTempfxCheck( uint32_t serial )
 {
-	P_OBJECT po = objects.findObject( serial );
+	pObject po = objects.findObject( serial );
 	VALIDATEPO( po );
 
 	if ( find( tempfxCheck.begin(), tempfxCheck.end(), serial ) != tempfxCheck.end() )

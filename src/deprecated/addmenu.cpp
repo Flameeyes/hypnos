@@ -17,13 +17,13 @@
 #include "scripts.h"
 #include "skills.h"
 
-cMakeMenu::cMakeMenu( SERIAL section ) : cBasicMenu( MENUTYPE_CUSTOM )
+cMakeMenu::cMakeMenu( uint32_t section ) : cBasicMenu( MENUTYPE_CUSTOM )
 {
 	oldmenu = new cOldMenu();
 	this->section=section;
 }
 
-cMakeMenu::cMakeMenu( SERIAL section, P_CHAR pc, int skill, uint16_t firstId, COLOR firstColor, uint16_t secondId, COLOR secondColor ) : cBasicMenu( MENUTYPE_CUSTOM )
+cMakeMenu::cMakeMenu( uint32_t section, pChar pc, int skill, uint16_t firstId, COLOR firstColor, uint16_t secondId, COLOR secondColor ) : cBasicMenu( MENUTYPE_CUSTOM )
 {
 	oldmenu = new cOldMenu();
 	this->section=section;
@@ -63,7 +63,7 @@ std::string cMakeMenu::cleanString( std::string s )
 	return s;
 }
 
-void cMakeMenu::loadFromScript( P_CHAR pc )
+void cMakeMenu::loadFromScript( pChar pc )
 {
 	VALIDATEPC(pc);
 
@@ -274,7 +274,7 @@ cServerPacket* cMakeMenu::build()
 
 void cMakeMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 {
-	SERIAL button;
+	uint32_t button;
 	if( isIconList( pkg->cmd ) )
 		button = ((cPacketResponseToDialog*)pkg)->index.get();
 	else {
@@ -299,7 +299,7 @@ void cMakeMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 void cMakeMenu::execMake( NXWCLIENT ps, uint32_t item )
 {
     
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 
     if( pc->dead ) {
         pc->sysmsg(TRANSLATE("Ever thought an ethereal soul can't really do some actions ?"));
@@ -375,7 +375,7 @@ void cMakeMenu::execMake( NXWCLIENT ps, uint32_t item )
 	splitLine( mi->command->param, script, amount );
 
 	if( !failed ) {
-		P_ITEM pi = item::CreateFromScript( str2num( script ), pc->getBackpack(), (amount!="")? str2num( amount ) : INVALID );
+		pItem pi = item::CreateFromScript( str2num( script ), pc->getBackpack(), (amount!="")? str2num( amount ) : INVALID );
 		VALIDATEPI(pi);
 
 		ps->sysmsg(TRANSLATE("You create the item and place it in your backpack."));
@@ -403,7 +403,7 @@ void cMakeMenu::execMake( NXWCLIENT ps, uint32_t item )
 \param inMenu if write a sysmessage on error
 \todo Add message if haven't enough item..
 */
-bool cMakeItem::checkReq( P_CHAR pc, bool inMenu, cRawItem* def )
+bool cMakeItem::checkReq( pChar pc, bool inMenu, cRawItem* def )
 {
 
     if( pc->IsGM() ) 
@@ -432,7 +432,7 @@ bool cMakeItem::checkReq( P_CHAR pc, bool inMenu, cRawItem* def )
 }
 
 
-void Skills::MakeMenu( P_CHAR pc, int m, int skill, P_ITEM first, P_ITEM second )
+void Skills::MakeMenu( pChar pc, int m, int skill, pItem first, pItem second )
 {
 
 	Skills::MakeMenu( 
@@ -442,7 +442,7 @@ void Skills::MakeMenu( P_CHAR pc, int m, int skill, P_ITEM first, P_ITEM second 
 	
 }
 
-void Skills::MakeMenu( P_CHAR pc, int m, int skill, uint16_t firstId, COLOR firstColor, uint16_t secondId, COLOR secondColor )
+void Skills::MakeMenu( pChar pc, int m, int skill, uint16_t firstId, COLOR firstColor, uint16_t secondId, COLOR secondColor )
 {
 
 	if( ( skill < 0 ) || ( skill >= TRUESKILLS ) )	//Luxor
@@ -467,7 +467,7 @@ void Skills::MakeMenu( P_CHAR pc, int m, int skill, uint16_t firstId, COLOR firs
 
 
 
-cAddMenu::cAddMenu( SERIAL section, P_CHAR pc ) : cMakeMenu( section )
+cAddMenu::cAddMenu( uint32_t section, pChar pc ) : cMakeMenu( section )
 {
 	loadFromScript( pc );
 }
@@ -477,7 +477,7 @@ cAddMenu::~cAddMenu(  )
 
 }
 
-void cAddMenu::loadFromScript( P_CHAR pc )
+void cAddMenu::loadFromScript( pChar pc )
 {
 	VALIDATEPC(pc);
 	
@@ -562,7 +562,7 @@ void cAddMenu::loadFromScript( P_CHAR pc )
 void cAddMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 {
 	
-	SERIAL button;
+	uint32_t button;
 	if( isIconList( pkg->cmd ) )
 		button = ((cPacketResponseToDialog*)pkg)->index.get();
 	else {
@@ -638,7 +638,7 @@ cMakeItem::~cMakeItem()
 \param pc the char to send the menu to
 \param menu the itemmenu number
 */
-void showAddMenu( P_CHAR pc, int menu )
+void showAddMenu( pChar pc, int menu )
 {
 	VALIDATEPC( pc );
 	

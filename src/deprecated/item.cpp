@@ -23,7 +23,7 @@ namespace item
 	/*!
 	\author Anthalir
 	*/
-	P_ITEM CreateFromScript( char *itemname, cObject* cont, int amount )
+	pItem CreateFromScript( char *itemname, cObject* cont, int amount )
 	{
 		int scid= xss::getIntFromDefine(itemname);
 		if( scid==0 )
@@ -41,7 +41,7 @@ namespace item
 	\param itemnum scriptid of the item
 	\param cont container to add the item to
 	*/
-	P_ITEM CreateFromScript( SCRIPTID itemnum, cObject* cont, int amount )
+	pItem CreateFromScript( SCRIPTID itemnum, cObject* cont, int amount )
 	{
 		char 		sect[512];
 		std::string 	lha;
@@ -159,7 +159,7 @@ namespace item
 									if ( itemAmount < 1 )
 										itemAmount = 1;
 
-									P_ITEM pItem = CreateFromScript( scriptId, pi, itemAmount );
+									pItem pItem = CreateFromScript( scriptId, pi, itemAmount );
 
 									if( !ISVALIDPI( pItem ) )
 										WarnOut( "CreateFromScript: invalid attribute %s %s", lha.c_str(), rha.c_str() );
@@ -401,7 +401,7 @@ namespace item
 		if ( ISVALIDPO( cont ) )
 			if( isItemSerial( cont->getSerial32() ) )
 			{
-				((P_ITEM)cont)->AddItem(pi);
+				((pItem)cont)->AddItem(pi);
 			}
 			else
 				pi->setContainer( cont );
@@ -438,7 +438,7 @@ namespace item
 
 	}
 
-	P_ITEM CreateScriptRandomItem( char * sItemList, cObject* cont )
+	pItem CreateScriptRandomItem( char * sItemList, cObject* cont )
 	{
 		int k=CreateRandomItem(sItemList);   // -- Get random Item #
 		return (k>0)? item::CreateFromScript( k, cont ) : NULL;
@@ -450,7 +450,7 @@ namespace item
 	\warning for internal use only
 	\author Luxor
 	*/
-	static P_ITEM spawnItemByIdInternal(int nAmount, const char* cName, short id, short color)
+	static pItem spawnItemByIdInternal(int nAmount, const char* cName, short id, short color)
 	{
 		bool pile=false;
 
@@ -458,7 +458,7 @@ namespace item
 		data::seekTile(id, tile);
 		pile = (tile.flags&TILEFLAG_STACKABLE);
 
-		P_ITEM pi = item::CreateFromScript( "$item_hardcoded" );
+		pItem pi = item::CreateFromScript( "$item_hardcoded" );
    		VALIDATEPIR( pi, NULL );
     	pi->setId( id );
 		pi->setColor( color );
@@ -481,9 +481,9 @@ namespace item
 	\param nSpawned is spawned?
 	\param cont container to add the item to
 	*/
-	P_ITEM CreateScriptItem(NXWSOCKET s, int32_t itemnum, bool nSpawned, cObject* cont )
+	pItem CreateScriptItem(NXWSOCKET s, int32_t itemnum, bool nSpawned, cObject* cont )
 	{
-		P_ITEM pi= NULL;
+		pItem pi= NULL;
 		pi = item::CreateFromScript( itemnum,cont);
 		if (!ISVALIDPI(pi))
 		{
@@ -551,7 +551,7 @@ namespace item
 	what fur said about the assert only partially applies to this version. Duke
 
 	*/
-	/*P_ITEM SpawnItem(NXWSOCKET  nSocket, int nAmount, char* cName, bool nStackable,
+	/*pItem SpawnItem(NXWSOCKET  nSocket, int nAmount, char* cName, bool nStackable,
 						int16_t cItemId, int16_t cColorId,
 						bool nPack, LOGICAL nSend)
 	{
@@ -577,15 +577,15 @@ namespace item
 	\param nPack if true the item is spawned in socket's backpack
 	\param nSend if true the item is sent to all clients
 */
-	/*P_ITEM SpawnItem(NXWSOCKET  nSocket, CHARACTER ch,
+	/*pItem SpawnItem(NXWSOCKET  nSocket, CHARACTER ch,
 						int32_t nAmount, char* cName, bool nStackable,
 						int16_t cItemId, int16_t cColorId,
 						bool nPack, LOGICAL nSend)
 	{
-		P_ITEM pi= item::SpawnItem(ch, nAmount, cName, nStackable, cItemId, cColorId, nPack);
+		pItem pi= item::SpawnItem(ch, nAmount, cName, nStackable, cItemId, cColorId, nPack);
 		if (pi==NULL) return NULL;
 		if (nSend && nSocket!=INVALID) {
-			P_CHAR pc=MAKE_CHAR_REF(currchar[nSocket]);
+			pChar pc=MAKE_CHAR_REF(currchar[nSocket]);
 			VALIDATEPCR(pc,NULL);
 			statwindow(pc,MAKE_CHAR_REF(ch));
 		}
@@ -595,7 +595,7 @@ namespace item
 	/*!
 	\author Magius(CHE), bugfixed by AntiChrist
 	*/
-	void GetScriptItemSetting(P_ITEM pi)
+	void GetScriptItemSetting(pItem pi)
 	{
 		//ConOut("GetScriptItemSetting....");//debug
 
@@ -784,10 +784,10 @@ namespace item
 		safedelete(iter);
 	}
 
-	P_ITEM SpawnRandomItem(NXWSOCKET s, char* cList, char* cItemID)
+	pItem SpawnRandomItem(NXWSOCKET s, char* cList, char* cItemID)
 	{
 
-		P_CHAR pc=MAKE_CHAR_REF( currchar[s] );
+		pChar pc=MAKE_CHAR_REF( currchar[s] );
 		VALIDATEPCR( pc, NULL );
 
 		char sect[512];

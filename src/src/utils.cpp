@@ -132,7 +132,7 @@ void cScriptCommand::execute( pClient client )
 		}
 	} else if ( command == "ADDBYID" ) {
 		if (s<=INVALID) return;
-		P_ITEM pb = pc->getBackpack();
+		pItem pb = pc->getBackpack();
 		if (!pb) return;
 
 		uint32_t i = param.find(' ');
@@ -250,7 +250,7 @@ int hexnumber(int countx)
 \author Dupois
 \since Oct 8, 1998
 */
-static void doorsfx(P_ITEM pi, int x, int y)
+static void doorsfx(pItem pi, int x, int y)
 {
 
 	static const int OPENWOOD = 0x00EA;
@@ -302,15 +302,15 @@ static void doorsfx(P_ITEM pi, int x, int y)
 } // doorsfx() END
 
 
-void dooruse(NXWSOCKET  s, P_ITEM pi /* was ITEM item*/)
+void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 {
-	P_CHAR pc;
+	pChar pc;
 //!!! NOT VALIDATE !!, this function is called with invalid socket when automatic door close
 	if(s <0)
 		pc = NULL;
 	else
 		pc =MAKE_CHAR_REF(currchar[s]);
-//	const P_ITEM pi=MAKE_ITEMREF_LR(item);	// on error return
+//	const pItem pi=MAKE_ITEMREF_LR(item);	// on error return
 
 	int i, db, x;//, z;
 	char changed=0;
@@ -480,10 +480,10 @@ void dooruse(NXWSOCKET  s, P_ITEM pi /* was ITEM item*/)
 		// house refreshment when a house owner or friend of a houe opens the house door
 
 		int j, houseowner_serial,ds;
-		P_ITEM pi_house=findmulti( pi->getPosition() );
+		pItem pi_house=findmulti( pi->getPosition() );
 		if(ISVALIDPI(pi_house))
 		{
-			const P_ITEM pi2=pi_house;
+			const pItem pi2=pi_house;
 			if ( pi_house->IsHouse() )
 			{
 				houseowner_serial=pi2->getOwnerSerial32();
@@ -731,10 +731,10 @@ void getSextantCoords(int32_t x, int32_t y, bool t2a, char *sextant)
 int calcGoodValue(CHARACTER npcnum2, int i, int value,int goodtype)
 {
 
-	P_CHAR npc=MAKE_CHAR_REF(npcnum2);
+	pChar npc=MAKE_CHAR_REF(npcnum2);
 	VALIDATEPCR(npc,0);
 
-	const P_ITEM pi=MAKE_ITEM_REF(i);
+	const pItem pi=MAKE_ITEM_REF(i);
 	VALIDATEPIR(pi,value);
 
 	int actreg=calcRegionFromXY( npc->getPosition() );

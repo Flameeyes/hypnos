@@ -78,7 +78,7 @@ class Race
 		static	void		parse( void );
 
 		static	void		enlist( const NXWSOCKET socket );
-		//static	void		resurrect( const P_CHAR pc );
+		//static	void		resurrect( const pChar pc );
 
 		static	bool		isRaceSystemActive( void );
 		static	const 	string*	getName( const uint32_t raceId );

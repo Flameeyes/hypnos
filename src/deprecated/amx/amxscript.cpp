@@ -796,7 +796,7 @@ bool AmxOverride::ExecTarget(int moment, int socket)
 		return false;
 	}
 
-	SERIAL obj_serial = targ_amx->getClicked();
+	uint32_t obj_serial = targ_amx->getClicked();
 	if( isCharSerial( obj_serial) ) {
 		obj_serial = ISVALIDPC( MAKE_CHAR_REF( obj_serial) )? obj_serial : INVALID;
 	} else if( isItemSerial( obj_serial ) ) {
@@ -1115,7 +1115,7 @@ void LoadOverrides (void)
 \param chr player who spoken
 \param speech speech of socket s
 */
-void checkAmxSpeech( SERIAL chr, char *speech)
+void checkAmxSpeech( uint32_t chr, char *speech)
 {
 	if( ServerScp::g_css_override_case_sensitive==0 )
 		strupr( speech );

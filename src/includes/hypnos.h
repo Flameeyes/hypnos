@@ -21,11 +21,11 @@ void BuildPointerArray();
 void InitMultis();
 void DeleteClasses();
 void telltime( NXWCLIENT ps );
-void npcattacktarget(P_CHAR npc, P_CHAR target);
+void npcattacktarget(pChar npc, pChar target);
 void enlist(int s, int listnum);		//!< For enlisting in army
 void gcollect();
 void initque();
-void StoreItemRandomValue(P_ITEM pi,int tmpreg);
+void StoreItemRandomValue(pItem pi,int tmpreg);
 void loadmetagm();
 
 // Profiling
@@ -33,7 +33,7 @@ void StartMilliTimer(unsigned long &Seconds, unsigned long &Milliseconds);
 unsigned long CheckMilliTimer(unsigned long &Seconds, unsigned long &Milliseconds);
 
 void callguards( int p );
-void usepotion(P_CHAR pc, P_ITEM pi);
+void usepotion(pChar pc, pItem pi);
 
 void newScriptsInit();
 void deleteNewScripts();

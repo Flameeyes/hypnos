@@ -37,7 +37,7 @@ class cMap : public cItem
                	inline pindataobject getPin(int pin)	//!< Gets pin data for pin number "pin" (pin goes from 1 to 50, as it appears on client)
                 	{ return pinData[pin - 1]; }
         public:
-        	cMap(SERIAL ser);
+        	cMap(uint32_t ser);
                 cMap &operator = (const cMap &oldmap); 	//!< assignment operator = (for duping maps)
 
                	inline const uint32_t rtti() const          //!< returns the right rtti

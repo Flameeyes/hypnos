@@ -78,7 +78,7 @@ void read_in_teleport()
 
 }
 
-int validtelepos(P_CHAR pc)
+int validtelepos(pChar pc)
 {
 	VALIDATEPCR(pc,INVALID);
 	int z=INVALID;
@@ -96,7 +96,7 @@ int validtelepos(P_CHAR pc)
 
 void advancementobjects(CHARACTER s, int x, int allways)
 {
-	P_CHAR pc = MAKE_CHAR_REF( s );
+	pChar pc = MAKE_CHAR_REF( s );
 	VALIDATEPC( pc );
 	char sect[512];
 	int loopexit=0;
@@ -104,12 +104,12 @@ void advancementobjects(CHARACTER s, int x, int allways)
 	cScpIterator* iter = NULL;
 	int i;
 
-	P_ITEM packnum=NULL;
-	P_ITEM hairobject=NULL, beardobject=NULL;
+	pItem packnum=NULL;
+	pItem hairobject=NULL, beardobject=NULL;
 
 	if ((pc->advobj==0)||(allways==1))
 	{
-		staticeffect(DEREF_P_CHAR(pc), 0x37, 0x3A, 0, 15);
+		staticeffect(DEREF_pChar(pc), 0x37, 0x3A, 0, 15);
 		pc->playSFX( 0x01E9);
 		pc->advobj=x;
 		sprintf(sect, "SECTION ADVANCEMENT %i", x);
@@ -199,7 +199,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 						if (serial > INVALID)
 							for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 							{
-								P_ITEM pii_i=pointers::pContMap[serial][ci];
+								pItem pii_i=pointers::pContMap[serial][ci];
 								if (ISVALIDPI(pii_i))
 									if ((pii_i->layer==LAYER_HAIR) && (pii_i->getContSerial()==serial))
 									{
@@ -207,7 +207,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 										break;
 									}
 							}
-						P_ITEM phair= hairobject;
+						pItem phair= hairobject;
 						if(ISVALIDPI(phair)) {
 
 							phair->setColor( hex2num(script2) );
@@ -223,7 +223,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 						if (serial > INVALID)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 						{
-							P_ITEM pii_i=pointers::pContMap[serial][ci];
+							pItem pii_i=pointers::pContMap[serial][ci];
 							if (ISVALIDPI(pii_i))
 								if ((pii_i->layer==LAYER_BEARD) && (pii_i->getContSerial()==serial))
 								{
@@ -233,7 +233,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 						}
 						if (true)
 						{
-							P_ITEM pbeard= beardobject;
+							pItem pbeard= beardobject;
 							if(ISVALIDPI(pbeard)) {
 								pbeard->setColor( hex2num(script2) );
 								pbeard->Refresh();
@@ -249,7 +249,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 						if (serial > INVALID)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 						{
-							P_ITEM pii_i=pointers::pContMap[serial][ci];
+							pItem pii_i=pointers::pContMap[serial][ci];
 							if (ISVALIDPI(pii_i))
 								if ((pii_i->layer==LAYER_HAIR) && (pii_i->getContSerial()==serial))
 								{
@@ -266,7 +266,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 						if (serial > INVALID)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 						{
-							P_ITEM pii_i=pointers::pContMap[serial][ci];
+							pItem pii_i=pointers::pContMap[serial][ci];
 							if (ISVALIDPI(pii_i))
 								if ((pii_i->layer==LAYER_BEARD) && (pii_i->getContSerial()==serial))
 								{
@@ -283,7 +283,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 						if (serial > INVALID)
 						for (ci=0;ci<pointers::pContMap[serial].size();ci++)
 						{
-							P_ITEM pii_i=pointers::pContMap[serial][ci];
+							pItem pii_i=pointers::pContMap[serial][ci];
 							if (ISVALIDPI(pii_i))
 								if ((pii_i->layer==LAYER_BACKPACK) && (pii_i->getContSerial()==serial))
 								{
@@ -299,7 +299,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 						int amt = str2num( amount );
 						if( amt == 0 )
 							amt=INVALID;
-						P_ITEM pi= item::CreateFromScript( itmnum, NULL, amt );
+						pItem pi= item::CreateFromScript( itmnum, NULL, amt );
 						packnum= pc->getBackpack();
 
 						if (ISVALIDPI(pi))
@@ -350,7 +350,7 @@ void advancementobjects(CHARACTER s, int x, int allways)
 // Aldur
 //////////////////////////////////
 
-void objTeleporters(P_CHAR pc)
+void objTeleporters(pChar pc)
 {
 	VALIDATEPC(pc);
 
@@ -360,7 +360,7 @@ void objTeleporters(P_CHAR pc)
 	NxwItemWrapper si;
 	si.fillItemsAtXY( charpos );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
-		P_ITEM pmi=si.getItem();
+		pItem pmi=si.getItem();
 		if(!ISVALIDPI(pmi))
 			continue;
 
@@ -378,19 +378,19 @@ void objTeleporters(P_CHAR pc)
 				if (pmi->more1 != 0 || pmi->more2 != 0 || pmi->more3 != 0 || pmi->more4 != 0)
 				{
 					if (pc->getSerial().ser1 == pmi->more1 && pc->getSerial().ser2 == pmi->more2 && pc->getSerial().ser3 == pmi->more3 && pc->getSerial().ser4 == pmi->more4)
-						advancementobjects(DEREF_P_CHAR(pc), pmi->morex, 0);
+						advancementobjects(DEREF_pChar(pc), pmi->morex, 0);
 				}
 				else
-					advancementobjects(DEREF_P_CHAR(pc), pmi->morex, 0);
+					advancementobjects(DEREF_pChar(pc), pmi->morex, 0);
 
 				if ((pmi->type == 81)&&!(pc->npc))
 					if (pmi->more1 != 0 || pmi->more2 != 0 || pmi->more3 != 0 || pmi->more4 != 0)
 					{
 						if (pc->getSerial().ser1 == pmi->more1 && pc->getSerial().ser2 == pmi->more2 && pc->getSerial().ser3 == pmi->more3 && pc->getSerial().ser4 == pmi->more4)
-						advancementobjects(DEREF_P_CHAR(pc), pmi->morex, 1);
+						advancementobjects(DEREF_pChar(pc), pmi->morex, 1);
 					}
 					else
-						advancementobjects(DEREF_P_CHAR(pc), pmi->morex, 1);
+						advancementobjects(DEREF_pChar(pc), pmi->morex, 1);
 				
 				// The above code lets you restrict a gate's use by setting its MORE values to a char's
 				// serial #
@@ -421,7 +421,7 @@ void objTeleporters(P_CHAR pc)
 
 }
 
-void teleporters(P_CHAR pc)
+void teleporters(pChar pc)
 {
 	VALIDATEPC(pc);
 
@@ -444,7 +444,7 @@ void teleporters(P_CHAR pc)
 					sc.fillCharsNearXYZ( pc->getPosition(), 4 );
 					for( sc.rewind(); !sc.isEmpty(); sc++ )
 					{
-						P_CHAR pc_i=sc.getChar();
+						pChar pc_i=sc.getChar();
 						// That is following this player character
 						if ( (pc_i->npc) && (pc_i->ftargserial==pc->getSerial32()) )
 						{

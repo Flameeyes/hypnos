@@ -122,11 +122,11 @@ static void item_char_test()
 	cAllObjectsIter objs;
 	for( objs.rewind(); !objs.IsEmpty(); objs++ )
 	{
-		SERIAL ser=objs.getSerial();
+		uint32_t ser=objs.getSerial();
 
 		if( isItemSerial( ser ) ) {
 
-			P_ITEM pi=(P_ITEM)(objs.getObject() );
+			pItem pi=(pItem)(objs.getObject() );
 
 			if (pi->getSerial32()==INVALID) {
 				WarnOut("item %s [serial: %i] has invalid serial!",pi->getCurrentNameC(),pi->getSerial32());
@@ -151,11 +151,11 @@ static void item_char_test()
 
 		}
 		else {
-			P_CHAR p_pet = (P_CHAR)(objs.getObject());
+			pChar p_pet = (pChar)(objs.getObject());
 
 			if (p_pet->isStabled())
 			{
-				P_CHAR stablemaster=pointers::findCharBySerial(p_pet->getStablemaster());
+				pChar stablemaster=pointers::findCharBySerial(p_pet->getStablemaster());
 				if (!ISVALIDPC(stablemaster))
 				{
 					p_pet->unStable();
@@ -183,7 +183,7 @@ static void item_char_test()
 */
 void callguards( CHARACTER p )
 {
-	P_CHAR	caller = MAKE_CHAR_REF( p );
+	pChar	caller = MAKE_CHAR_REF( p );
 
 	if ( !ISVALIDPC( caller ) )
 		return;
@@ -198,7 +198,7 @@ void callguards( CHARACTER p )
 			2. when instant guard is not set and offender nearby caller walk toward caller and leave attacking to checkAI
 	*/
 	bool offenders = false;
-	vector < P_CHAR > guards;
+	vector < pChar > guards;
 
 //	int loopexit=0; // unused variable
 
@@ -206,7 +206,7 @@ void callguards( CHARACTER p )
 	sc.fillCharsNearXYZ( caller->getPosition(), VISRANGE, true, false  );
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
-		P_CHAR character=sc.getChar();
+		pChar character=sc.getChar();
 		if(!ISVALIDPC(character))
 			continue;
 		if( caller->getSerial32() != character->getSerial32() && caller->distFrom( character )  <= 15 && !character->dead && !character->IsHidden())
@@ -222,7 +222,7 @@ void callguards( CHARACTER p )
 	{
 		if ( guards.empty() && ServerScp::g_nInstantGuard == 1 )
 		{
-			P_CHAR  guard = npcs::AddNPCxyz( caller->getSocket(), region[caller->region].guardnum[(rand()%10)+1], caller->getPosition());
+			pChar  guard = npcs::AddNPCxyz( caller->getSocket(), region[caller->region].guardnum[(rand()%10)+1], caller->getPosition());
 
 			if ( ISVALIDPC( guard ) )
 			{
@@ -232,7 +232,7 @@ void callguards( CHARACTER p )
 				guard->summontimer = uiCurrentTime + MY_CLOCKS_PER_SEC * 25 ;
 
 				guard->playSFX( 0x01FE );
-				staticeffect( DEREF_P_CHAR( guard ), 0x37, 0x2A, 0x09, 0x06);
+				staticeffect( DEREF_pChar( guard ), 0x37, 0x2A, 0x09, 0x06);
 
 				guard->teleport();
 				guard->talkAll( TRANSLATE("Don't fear, help is near"), 0 );
@@ -240,7 +240,7 @@ void callguards( CHARACTER p )
 		}
 		else
 		{
-			P_CHAR guard;
+			pChar guard;
 			while( !guards.empty() )
 			{
 				guard = guards.back();
@@ -410,7 +410,7 @@ void checkkey ()
 				j = 0;  //Fix bug counting ppl online.
 				for (i=0;i<now;i++)
 				{
-					P_CHAR pc_i=MAKE_CHAR_REF(currchar[i]);
+					pChar pc_i=MAKE_CHAR_REF(currchar[i]);
 					if(ISVALIDPC(pc_i) && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
 					{
 						ConOut("%i) %s [ %08x ]\n", j, pc_i->getCurrentNameC(), pc_i->getSerial32());
@@ -806,16 +806,16 @@ int main(int argc, char *argv[])
 		AmxFunction checkPlayers( "__check_Player" );
 
 		cAllObjectsIter objs;
-		P_CHAR pc = NULL;
-		P_ITEM pi = NULL;
+		pChar pc = NULL;
+		pItem pi = NULL;
 		for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
-			if ( isCharSerial( objs.getSerial() ) && ISVALIDPC( ( pc=static_cast<P_CHAR>(objs.getObject())) ) ) {
+			if ( isCharSerial( objs.getSerial() ) && ISVALIDPC( ( pc=static_cast<pChar>(objs.getObject())) ) ) {
 				if( pc->npc )
 					checkNpcs.Call( pc->getSerial32() );
 				else
 					checkPlayers.Call( pc->getSerial32() );
 			}
-			else if ( isItemSerial( objs.getSerial() ) && ISVALIDPI( ( pi=static_cast<P_ITEM>(objs.getObject())) ) ) {
+			else if ( isItemSerial( objs.getSerial() ) && ISVALIDPI( ( pi=static_cast<pItem>(objs.getObject())) ) ) {
 				checkItems.Call( pi->getSerial32() );
 			}
 		}
@@ -891,7 +891,7 @@ int main(int argc, char *argv[])
 
 			for (r=0;r<now;r++)
 			{
-				P_CHAR pc_r=MAKE_CHAR_REF(currchar[r]);
+				pChar pc_r=MAKE_CHAR_REF(currchar[r]);
 				if(!ISVALIDPC(pc_r))
 					continue;
 				if (!pc_r->IsGM()
@@ -1068,7 +1068,7 @@ void telltime( NXWCLIENT ps )
 */
 int chardirxyz(int a, int x, int y)
 {
-	P_CHAR pc = MAKE_CHAR_REF( a );
+	pChar pc = MAKE_CHAR_REF( a );
 	VALIDATEPCR( pc, INVALID );
 
 	int dir,xdif,ydif;
@@ -1094,7 +1094,7 @@ int fielddir(CHARACTER s, int x, int y, int z)
 {
 //WARNING: unreferenced formal parameter z
 
-	P_CHAR pc=MAKE_CHAR_REF(s);
+	pChar pc=MAKE_CHAR_REF(s);
 	VALIDATEPCR(pc,0);
 
 	int dir=chardirxyz(s, x, y);
@@ -1143,7 +1143,7 @@ int fielddir(CHARACTER s, int x, int y, int z)
 \param pc the npc attacker
 \param pc_target the victim
 */
-void npcattacktarget(P_CHAR pc, P_CHAR pc_target)
+void npcattacktarget(pChar pc, pChar pc_target)
 {
 	VALIDATEPC(pc);
 	VALIDATEPC(pc_target);
@@ -1191,7 +1191,7 @@ void npcattacktarget(P_CHAR pc, P_CHAR pc_target)
 		pc->toggleCombat();
 	pc->setNpcMoveTime();
 
-	P_CHAR pc_target_targ = pointers::findCharBySerial(pc_target->targserial);
+	pChar pc_target_targ = pointers::findCharBySerial(pc_target->targserial);
 	if ( !ISVALIDPC(pc_target_targ) || pc_target_targ->dead || pc_target->distFrom(pc_target_targ) > 15 ) {
 		if (!pc_target->npc && pc_target->war) {
 			pc_target->targserial = pc->getSerial32();
@@ -1237,7 +1237,7 @@ void initque()
 
 }
 
-void usepotion(P_CHAR pc, P_ITEM pi)
+void usepotion(pChar pc, pItem pi)
 {
 	int x;
 
@@ -1248,7 +1248,7 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 	switch(pi->morey)
 	{
 	case 1: // Agility Potion
-		staticeffect(DEREF_P_CHAR(pc), 0x37, 0x3a, 0, 15);
+		staticeffect(DEREF_pChar(pc), 0x37, 0x3a, 0, 15);
 		switch(pi->morez)
 		{
 		case 1:
@@ -1304,7 +1304,7 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 				pc->sysmsg(TRANSLATE("The potion was not able to cure this poison."));
 			else
 			{
-				staticeffect(DEREF_P_CHAR(pc), 0x37, 0x3A, 0, 15);
+				staticeffect(DEREF_pChar(pc), 0x37, 0x3A, 0, 15);
 				pc->playSFX( 0x01E0); //cure sound - SpaceDog
 				pc->sysmsg(TRANSLATE("The poison was cured."));
 			}
@@ -1355,12 +1355,12 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 		if (s!=INVALID)
 			pc->updateStats(0);
 
-		staticeffect(DEREF_P_CHAR(pc), 0x37, 0x6A, 0x09, 0x06); // Sparkle effect
+		staticeffect(DEREF_pChar(pc), 0x37, 0x6A, 0x09, 0x06); // Sparkle effect
 		pc->playSFX(0x01F2); //Healing Sound - SpaceDog
 		break;
 
 	case 5: // Night Sight Potion
-		staticeffect(DEREF_P_CHAR(pc), 0x37, 0x6A, 0x09, 0x06);
+		staticeffect(DEREF_pChar(pc), 0x37, 0x6A, 0x09, 0x06);
 		tempfx::add(pc, pc, tempfx::SPELL_LIGHT, 0, 0, 0,(720*secondsperuominute*MY_CLOCKS_PER_SEC));
 		pc->playSFX(0x01E3);
 		break;
@@ -1395,12 +1395,12 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 		}
 		if (s!=INVALID)
 			pc->updateStats(2);
-		staticeffect(DEREF_P_CHAR(pc), 0x37, 0x6A, 0x09, 0x06); // Sparkle effect
+		staticeffect(DEREF_pChar(pc), 0x37, 0x6A, 0x09, 0x06); // Sparkle effect
 		pc->playSFX(0x01F2); //Healing Sound
 		break;
 
 	case 8: // Strength Potion
-		staticeffect(DEREF_P_CHAR(pc), 0x37, 0x3a, 0, 15);
+		staticeffect(DEREF_pChar(pc), 0x37, 0x3a, 0, 15);
 		switch(pi->morez)
 		{
 		case 1:
@@ -1435,7 +1435,7 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 		}
 		if (s!=INVALID)
 			pc->updateStats(1);
-		staticeffect(DEREF_P_CHAR(pc), 0x37, 0x6A, 0x09, 0x06); // Sparkle effect
+		staticeffect(DEREF_pChar(pc), 0x37, 0x6A, 0x09, 0x06); // Sparkle effect
 		pc->playSFX(0x01E7); //agility sound - SpaceDog
 		break;
 
@@ -1448,7 +1448,7 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 			return;
 		}
 		tempfx::add(pc, pc, tempfx::LSD, 60+RandomNum(1,120), 0, 0); // trigger effect
-		staticeffect(DEREF_P_CHAR(pc), 0x37, 0x6A, 0x09, 0x06); // Sparkle effect
+		staticeffect(DEREF_pChar(pc), 0x37, 0x6A, 0x09, 0x06); // Sparkle effect
 		pc->playSFX(0x00F8, true); // lsd sound :)
 		break;
 
@@ -1478,7 +1478,7 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 
 		pi->pileable=1;
 
-		P_ITEM pack=pc->getBackpack();
+		pItem pack=pc->getBackpack();
 		if (ISVALIDPI(pack)) {
 			pack->AddItem( pi );
 		}
@@ -1490,7 +1490,7 @@ void usepotion(P_CHAR pc, P_ITEM pi)
 	}
 }
 
-void StoreItemRandomValue(P_ITEM pi,int tmpreg)
+void StoreItemRandomValue(pItem pi,int tmpreg)
 { // Function Created by Magius(CHE) for trade System
 
 	int max=0,min=0;
@@ -1501,12 +1501,12 @@ void StoreItemRandomValue(P_ITEM pi,int tmpreg)
 
 	if (tmpreg<0)
 	{
-		P_ITEM pio=pi->getOutMostCont();
+		pItem pio=pi->getOutMostCont();
 		if (pio->isInWorld())
 			tmpreg=calcRegionFromXY( pio->getPosition() );
 		else
 		{
-			P_CHAR pc=pointers::findCharBySerial(pio->getContSerial());
+			pChar pc=pointers::findCharBySerial(pio->getContSerial());
 			if (!pc) return;
 			tmpreg=calcRegionFromXY( pc->getPosition() );
 		}
@@ -1565,7 +1565,7 @@ unsigned long CheckMilliTimer(unsigned long &Seconds, unsigned long &Millisecond
 
 void enlist(int s, int listnum) // listnum is stored in items morex
 {
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	int x,j;
@@ -1585,9 +1585,9 @@ void enlist(int s, int listnum) // listnum is stored in items morex
 		if ((script1[0]!='}')&&(script1[0]!='{'))
 		{
 			x=str2num(script1);
-			P_ITEM pj=item::CreateFromScript( x, pc->getBackpack() );
+			pItem pj=item::CreateFromScript( x, pc->getBackpack() );
 			VALIDATEPI(pj);
-			j= DEREF_P_ITEM(pj);
+			j= DEREF_pItem(pj);
 			pj->Refresh();
 		}
 	}
@@ -1679,44 +1679,44 @@ void InitMultis()
 //	unsigned int i ; // unused variable
 
 	cAllObjectsIter objs;
-//	P_CHAR pc; // unused variable
+//	pChar pc; // unused variable
 	for( objs.rewind(); !objs.IsEmpty(); objs++ )
 	{
 	/*for (i=0;i<charcount;i++)
 	{*/
 		if ( !isCharSerial(objs.getSerial()) ) continue;
-		P_CHAR pc_i = (P_CHAR)(objs.getObject());
+		pChar pc_i = (pChar)(objs.getObject());
 		if(!ISVALIDPC(pc_i))
 			continue;
 
-		P_ITEM multi=findmulti( pc_i->getPosition() );
+		pItem multi=findmulti( pc_i->getPosition() );
 		if (ISVALIDPI(multi))
 		{
 			if (multi->type==117)
-				//setserial(i,DEREF_P_ITEM(multi),8);
+				//setserial(i,DEREF_pItem(multi),8);
 				pc_i->setMultiSerial(multi->getSerial32());
 			else
 				pc_i->setMultiSerial32Only(INVALID);
 		}
 	}
 
-	P_ITEM pi;
+	pItem pi;
 	for( objs.rewind(); !objs.IsEmpty(); objs++ )
 	{
 	/*for (i=0;i<itemcount;i++)
 	{*/
 		if ( isCharSerial(objs.getSerial()) ) continue;
-		pi=(P_ITEM)(objs.getObject());
+		pi=(pItem)(objs.getObject());
 		if(!ISVALIDPI(pi))
 			continue;
 
 		//Endymion modified from !pi->isInWorld() to pi->isInWorld()
 		if (pi->isInWorld() && (pi->getSerial32()!=INVALID))
 		{
-			P_ITEM multi=findmulti( pi->getPosition() );
+			pItem multi=findmulti( pi->getPosition() );
 			if (ISVALIDPI(multi))
 				if (multi->getSerial32()!=pi->getSerial32())
-					//setserial(DEREF_P_ITEM(pi),DEREF_P_ITEM(multi),7);
+					//setserial(DEREF_pItem(pi),DEREF_pItem(multi),7);
 					pi->SetMultiSerial(multi->getSerial32());
 				else
 					pi->setMultiSerial32Only(INVALID);
@@ -1803,9 +1803,9 @@ void checkGarbageCollect () // Remove items which were in deleted containers
 			if( isCharSerial( objs.getSerial() ) )
 			{
 				if( first ) {
-					P_CHAR pc=(P_CHAR)(objs.getObject());
+					pChar pc=(pChar)(objs.getObject());
 					if( pc->getOwnerSerial32()!=INVALID ) {
-						P_CHAR own=pointers::findCharBySerial( pc->getOwnerSerial32() );
+						pChar own=pointers::findCharBySerial( pc->getOwnerSerial32() );
 						if(!ISVALIDPC(own)) {
 							pc->setOwnerSerial32( INVALID );
 							++corrected;
@@ -1815,14 +1815,14 @@ void checkGarbageCollect () // Remove items which were in deleted containers
 			}
 			else {
 
-				P_ITEM pi=(P_ITEM)(objs.getObject());
+				pItem pi=(pItem)(objs.getObject());
 
 				if( pi->isInWorld() )
 					continue;
 
 				// find the container if theres one.
-				P_CHAR pc_j= pointers::findCharBySerial(pi->getContSerial());
-				P_ITEM pi_j= pointers::findItemBySerial(pi->getContSerial());
+				pChar pc_j= pointers::findCharBySerial(pi->getContSerial());
+				pItem pi_j= pointers::findItemBySerial(pi->getContSerial());
 
 				// if container serial is invalid
 				if( ((pc_j==NULL) ) &&

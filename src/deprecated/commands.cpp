@@ -33,12 +33,12 @@ namespace Commands
 
 	void MakeShop(int c)
 	{
-		P_CHAR pc = MAKE_CHAR_REF( c );
+		pChar pc = MAKE_CHAR_REF( c );
 		VALIDATEPC( pc );
 
 		pc->shopkeeper = true;
 
-		P_ITEM pi;
+		pItem pi;
 		if (pc->GetItemOnLayer(LAYER_TRADE_RESTOCK) == NULL)
 		{
 			pi = item::CreateFromScript( "$item_restock", pc );
@@ -90,7 +90,7 @@ namespace Commands
 
 		for(i=0;i<charcount;i++)
 		{
-			P_CHAR pc_i=MAKE_CHAR_REF(i);
+			pChar pc_i=MAKE_CHAR_REF(i);
 			if(ISVALIDPC(pc_i)) {
 
 				if(pc_i->spawnregion==r && !pc_i->free)
@@ -106,7 +106,7 @@ namespace Commands
 
 		for(i=0;i<itemcount;i++)
 		{
-			P_ITEM pi =MAKE_ITEM_REF(i);
+			pItem pi =MAKE_ITEM_REF(i);
 			if(ISVALIDPI(pi))
 			{
 				if(pi->spawnregion==r && !pi->free)
@@ -125,7 +125,7 @@ namespace Commands
 
 	void RegSpawnMax (NXWSOCKET s, int r ) // rewrite LB
 	{
-		P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+		pChar pc=MAKE_CHAR_REF(currchar[s]);
 		VALIDATEPC(pc);
 
 	//	unsigned int currenttime=uiCurrentTime;
@@ -179,7 +179,7 @@ namespace Commands
 		sysbroadcast(sysmsg);
 		for(i=0;i<charcount;i++)
 		{
-			P_CHAR pj=MAKE_CHAR_REF(i);
+			pChar pj=MAKE_CHAR_REF(i);
 			if(!ISVALIDPC(pj))
 				continue;
 
@@ -206,11 +206,11 @@ namespace Commands
 	void CPage(NXWSOCKET s, std::string reason) // Help button (Calls Counselor Call Menus up)
 	{
 		int i;
-		SERIAL a;
+		uint32_t a;
 		int x2=0;
 		char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
-		P_CHAR pc_currchar = MAKE_CHAR_REF(currchar[s]);
+		pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
 		VALIDATEPC( pc_currchar );
 
 		a = pc_currchar->getSerial32();
@@ -254,7 +254,7 @@ namespace Commands
 					NXWCLIENT ps_i=sw.getClient();
 					if(ps_i==NULL)
 						continue;
-					P_CHAR pj=ps_i->currChar();
+					pChar pj=ps_i->currChar();
 					if ( ISVALIDPC(pj) && pj->IsCounselor() )
 					{
 						found=true;
@@ -275,10 +275,10 @@ namespace Commands
 	{
 		uint16_t color, body;
 
-		P_CHAR Me = MAKE_CHAR_REF(currchar[s]);
+		pChar Me = MAKE_CHAR_REF(currchar[s]);
 		VALIDATEPC(Me);
 
-		P_ITEM pi = pointers::findItemBySerPtr(buffer[s] +1);
+		pItem pi = pointers::findItemBySerPtr(buffer[s] +1);
 		if( ISVALIDPI(pi) )
 		{
 
@@ -287,14 +287,14 @@ namespace Commands
 				if( !pi->dye )
 					return;
 
-				P_ITEM outmost = pi->getOutMostCont();
-				SERIAL cont = outmost->getContSerial();
+				pItem outmost = pi->getOutMostCont();
+				uint32_t cont = outmost->getContSerial();
 				if( isCharSerial( cont ) ) {
 					if( cont!=Me->getSerial32() )
 						return;
 				}
 				else if( isItemSerial( cont ) ) {
-					P_ITEM backpack = Me->getBackpack();
+					pItem backpack = Me->getBackpack();
 					if( ISVALIDPI( backpack ) && ( cont!=backpack->getSerial32() ) )
 						return;
 				}
@@ -329,7 +329,7 @@ namespace Commands
 			return;
 		}
 
-		P_CHAR pc = pointers::findCharBySerPtr(buffer[s] +1);
+		pChar pc = pointers::findCharBySerPtr(buffer[s] +1);
 		if( ISVALIDPC(pc) && Me->IsGMorCounselor() )
 		{
 			color = ShortFromCharPtr(buffer[s] +7);
@@ -363,14 +363,14 @@ namespace Commands
 		data::seekTile( id, tile);
 		if (tile.flags&TILEFLAG_STACKABLE) pileable=true;
 
-		P_ITEM pi = item::CreateFromScript( "$item_hardcoded" );
+		pItem pi = item::CreateFromScript( "$item_hardcoded" );
 		VALIDATEPI( pi );
 		pi->setId( id );
 		pi->pileable = pileable;
 
 		if(ISVALIDPI(pi))//AntiChrist - to preview crashes
 		{
-			P_CHAR pc_currchar = MAKE_CHAR_REF(currchar[s]);
+			pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
 			Location charpos= pc_currchar->getPosition();
 
 			pi->MoveTo( charpos.x, charpos.y, z );
@@ -416,11 +416,11 @@ namespace Commands
 		if (s < 0 || s >= now)
 			return;
 
-		P_CHAR pc = pointers::findCharBySerial(currchar[s]);
+		pChar pc = pointers::findCharBySerial(currchar[s]);
 		VALIDATEPC(pc);
 		InfoOut( "%s has initiated an item wipe\n", pc->getCurrentNameC() );
 		cAllObjectsIter objs;
-		P_ITEM pi = NULL;
+		pItem pi = NULL;
 		for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
 			pi = pointers::findItemBySerial( objs.getSerial() );
 			if ( ISVALIDPI(pi) && pi->isInWorld() && pi->wipe == 0 )
@@ -439,9 +439,9 @@ namespace Commands
 	*/
 	void Possess(NXWSOCKET s)
 	{
-		P_CHAR pc = MAKE_CHAR_REF(currchar[s]);
+		pChar pc = MAKE_CHAR_REF(currchar[s]);
 		VALIDATEPC(pc);
-		P_CHAR pcPos = pointers::findCharBySerPtr(buffer[s]+7);
+		pChar pcPos = pointers::findCharBySerPtr(buffer[s]+7);
 		VALIDATEPC(pcPos);
 
 		pc->possess(pcPos);

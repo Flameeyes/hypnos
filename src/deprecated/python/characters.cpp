@@ -18,7 +18,7 @@ using namespace PythonInterface;
 //! get if the character Yell is a server broadcast
 PYNATIVE(chr_canBroadcast)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
@@ -29,7 +29,7 @@ PYNATIVE(chr_canBroadcast)
 //! get if the character can see serial number
 PYNATIVE(chr_canSeeSerials)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
@@ -40,7 +40,7 @@ PYNATIVE(chr_canSeeSerials)
 //! get if the character can snoop everywhere always
 PYNATIVE(chr_canSnoop)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
@@ -51,7 +51,7 @@ PYNATIVE(chr_canSnoop)
 //! get the total gold in character bank box
 PYNATIVE(chr_countBankGold)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
@@ -62,7 +62,7 @@ PYNATIVE(chr_countBankGold)
 //! get the total gold in character backpack
 PYNATIVE(chr_countGold)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
@@ -76,7 +76,7 @@ PYNATIVE(chr_countGold)
 */
 PYNATIVE(chr_disturbMeditation)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
@@ -94,13 +94,13 @@ PYNATIVE(chr_disturbMeditation)
 */
 PYNATIVE(chr_getBankBox)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	int32_t bank_type = BANK_GOLD;
 	if ( !PyArg_ParseTuple(args, "i|i", &pc, &bank_type) )
 		return NULL;
 
 	if ( ! pc ) return PYNULL;
-        P_ITEM pi = pc->GetBankBox(bank_type);
+        pItem pi = pc->GetBankBox(bank_type);
         if ( ! pi ) return PYNULL;
         return Py_BuildValue("i", pi);
 }
@@ -108,14 +108,14 @@ PYNATIVE(chr_getBankBox)
 //! get character's shield
 PYNATIVE(chr_getShield)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
-	P_CHAR pc = pointers::findCharBySerial(serial);
+	pChar pc = pointers::findCharBySerial(serial);
 	if ( ! pi
 
-	P_ITEM pi = pc->getShield();
+	pItem pi = pc->getShield();
 	if ( ! pi ) return PYNULL;
 	return Py_BuildValue("i", pi);
 }
@@ -123,14 +123,14 @@ PYNATIVE(chr_getShield)
 //! get character's weapon
 PYNATIVE(chr_getWeapon)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
-	P_CHAR pc = pointers::findCharBySerial(serial);
+	pChar pc = pointers::findCharBySerial(serial);
 	if ( ! pc ) return PYNULL;
 
-	P_ITEM pi = pc->getWeapon();
+	pItem pi = pc->getWeapon();
 	if ( ! pi ) return PYNULL;
 	return Py_BuildValue("i", pi);
 }
@@ -144,14 +144,14 @@ PYNATIVE(chr_getWeapon)
 PYNATIVE(chr_getItemOnLayer)
 {
 	int32_t layer;
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "ii", &pc, &layer) )
 		return NULL;
 
-	P_CHAR pc = pointers::findCharBySerial(serial);
+	pChar pc = pointers::findCharBySerial(serial);
 	if ( ! pc ) return PYNULL;
 
-	P_ITEM pi = pc->GetItemOnLayer(layer);
+	pItem pi = pc->GetItemOnLayer(layer);
 	if ( ! pi ) return PYNULL;
 	return Py_BuildValue("i", pi);
 }
@@ -159,11 +159,11 @@ PYNATIVE(chr_getItemOnLayer)
 //! check if character is criminal
 PYNATIVE(chr_isCriminal)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
-	P_CHAR pc = pointers::findCharBySerial(serial);
+	pChar pc = pointers::findCharBySerial(serial);
 	VALIDATEPCR( pc, Py_BuildValue("i", 0) );
 	return Py_BuildValue("i", pc->isCriminal());
 }
@@ -171,11 +171,11 @@ PYNATIVE(chr_isCriminal)
 //! check if character is Grey for any reason
 PYNATIVE(chr_isGrey)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
-	P_CHAR pc = pointers::findCharBySerial(serial);
+	pChar pc = pointers::findCharBySerial(serial);
 	VALIDATEPCR( pc, Py_BuildValue("i", 0) );
 	return Py_BuildValue("i", pc->isGrey());
 }
@@ -183,11 +183,11 @@ PYNATIVE(chr_isGrey)
 //! check if character is a murderer
 PYNATIVE(chr_isMurderer)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
-	P_CHAR pc = pointers::findCharBySerial(serial);
+	pChar pc = pointers::findCharBySerial(serial);
 	VALIDATEPCR( pc, Py_BuildValue("i", 0) );
 	return Py_BuildValue("i", pc->isMurderer());
 }
@@ -195,11 +195,11 @@ PYNATIVE(chr_isMurderer)
 //! check if character is blue flagged
 PYNATIVE(chr_isInnocent)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
-	P_CHAR pc = pointers::findCharBySerial(serial);
+	pChar pc = pointers::findCharBySerial(serial);
 	VALIDATEPCR( pc, Py_BuildValue("i", 0) );
 	return Py_BuildValue("i", pc->isInnocent());
 }
@@ -207,11 +207,11 @@ PYNATIVE(chr_isInnocent)
 //! check if character have human body
 PYNATIVE(chr_isHuman)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
-	P_CHAR pc = pointers::findCharBySerial(serial);
+	pChar pc = pointers::findCharBySerial(serial);
 	VALIDATEPCR( pc, Py_BuildValue("i", 0) );
 	return Py_BuildValue("i", pc->HasHumanBody());
 }
@@ -219,11 +219,11 @@ PYNATIVE(chr_isHuman)
 //! check if character is invulnerable
 PYNATIVE(chr_isInvulnerable)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
-	P_CHAR pc = pointers::findCharBySerial(serial);
+	pChar pc = pointers::findCharBySerial(serial);
 	VALIDATEPCR( pc, Py_BuildValue("i", 0) );
 	return Py_BuildValue("i", pc->IsInvul());
 }
@@ -231,11 +231,11 @@ PYNATIVE(chr_isInvulnerable)
 //! check make the character invulnerable
 PYNATIVE(chr_makeInvulnerable)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
-	P_CHAR pc = pointers::findCharBySerial(serial);
+	pChar pc = pointers::findCharBySerial(serial);
 	VALIDATEPCR( pc, Py_BuildValue("i", 0) );
 	pc->MakeInvulnerable();
 	return Py_BuildValue("i", 0);
@@ -244,11 +244,11 @@ PYNATIVE(chr_makeInvulnerable)
 //! check make the character vulnerable
 PYNATIVE(chr_makeVulnerable)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	if ( !PyArg_ParseTuple(args, "i", &pc) )
 		return NULL;
 
-	P_CHAR pc = pointers::findCharBySerial(serial);
+	pChar pc = pointers::findCharBySerial(serial);
 	VALIDATEPCR( pc, Py_BuildValue("i", 0) );
 	pc->MakeVulnerable();
 	return Py_BuildValue("i", 0);
@@ -264,7 +264,7 @@ PYNATIVE(chr_makeVulnerable)
 */
 PYNATIVE(chr_moveTo)
 {
-	P_CHAR pc = NULL;
+	pChar pc = NULL;
 	uint16_t x, y;
 	int8_t z;
 

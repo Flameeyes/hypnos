@@ -15,8 +15,10 @@
 #ifndef __POINTERS_H__
 #define __POINTERS_H__
 
-void getWorldCoordsFromSerial (int sr, int& px, int& py, int& pz, int& ch, int& it);
+#include "objects/cchar.h"
+#include "objects/citem.h"
 
+void getWorldCoordsFromSerial (int sr, int& px, int& py, int& pz, int& ch, int& it);
 
 /*!
 \brief Pointer related stuff
@@ -28,46 +30,46 @@ namespace pointers {
 	\name Maps declarations
 	\author Luxor
 	*/
-	extern std::map<SERIAL, vector <P_CHAR> > pStableMap;
-	extern std::map<SERIAL, P_CHAR > pMounted;
+	extern std::map<uint32_t, CharList> pStableMap;
+	extern std::map<uint32_t, pChar> pMounted;
 
-	extern std::map<SERIAL, vector <P_CHAR> > pOwnCharMap;
-	extern std::map<SERIAL, vector <P_ITEM> > pOwnItemMap;
+	extern std::map<uint32_t, CharList> pOwnCharMap;
+	extern std::map<uint32_t, ItemList> pOwnItemMap;
 
-	extern std::map<SERIAL, vector <P_ITEM> > pContMap;
+	extern std::map<uint32_t, ItemList> pContMap;
 
-	extern std::map<SERIAL, vector <P_CHAR> > pMultiCharMap;
-	extern std::map<SERIAL, vector <P_ITEM> > pMultiItemMap;
+	extern std::map<uint32_t, CharList> pMultiCharMap;
+	extern std::map<uint32_t, ItemList> pMultiItemMap;
 	//@}
 
 	void init();
-	void delChar(P_CHAR pc);
-	void delItem(P_ITEM pi);
+	void delChar(pChar pc);
+	void delItem(pItem pi);
 	
-	void updContMap(P_ITEM pi);
+	void updContMap(pItem pi);
 	
-	void addToStableMap(P_CHAR pet);
-	void delFromStableMap(P_CHAR pet);
+	void addToStableMap(pChar pet);
+	void delFromStableMap(pChar pet);
 
-	void addToOwnerMap( P_CHAR pet );
-	void delFromOwnerMap( P_CHAR pet );
-	void addToOwnerMap( P_ITEM pi );
-	void delFromOwnerMap( P_ITEM pi );
+	void addToOwnerMap( pChar pet );
+	void delFromOwnerMap( pChar pet );
+	void addToOwnerMap( pItem pi );
+	void delFromOwnerMap( pItem pi );
 
-	void addToMultiMap( P_CHAR pc );
-	void delFromMultiMap( P_CHAR pc );
-	void addToMultiMap( P_ITEM pi );
-	void delFromMultiMap( P_ITEM pi );
+	void addToMultiMap( pChar pc );
+	void delFromMultiMap( pChar pc );
+	void addToMultiMap( pItem pi );
+	void delFromMultiMap( pItem pi );
 	
-	P_CHAR findCharBySerial(int serial);
-	P_ITEM findItemBySerial(int serial);
-	P_CHAR findCharBySerPtr(unsigned char *p);
-	P_ITEM findItemBySerPtr(unsigned char *p);
-	P_ITEM containerSearch(int serial, int *index);
-	P_ITEM containerSearchFor(const int serial, int *index, short id, short color);
-	uint32_t containerCountItems(SERIAL serial, short id, short color, bool bAddAmounts = true, LOGICAL recurseSubpack=true);
-	uint32_t containerCountItemsByID(SERIAL serial, uint32_t scriptID, bool bAddAmounts);
-	P_CHAR stableSearch(int serial, int *index);
+	pChar findCharBySerial(int serial);
+	pItem findItemBySerial(int serial);
+	pChar findCharBySerPtr(unsigned char *p);
+	pItem findItemBySerPtr(unsigned char *p);
+	pItem containerSearch(int serial, int *index);
+	pItem containerSearchFor(const int serial, int *index, short id, short color);
+	uint32_t containerCountItems(uint32_t serial, short id, short color, bool bAddAmounts = true, LOGICAL recurseSubpack=true);
+	uint32_t containerCountItemsByID(uint32_t serial, uint32_t scriptID, bool bAddAmounts);
+	pChar stableSearch(int serial, int *index);
 #ifdef SPAR_LOCATION_MAP
 	//
 	// Sparhawk:	mapRegion replacement (work in progress)
@@ -85,21 +87,21 @@ namespace pointers {
 		COMBATTARGET	= 128
 	};
 
-	void 		addToLocationMap( const P_OBJECT pObject );
-	void 		updateLocationMap( const P_OBJECT pObject );
-	void 		delFromLocationMap( const P_OBJECT pObject );
+	void 		addToLocationMap( const pObject pObject );
+	void 		updateLocationMap( const pObject pObject );
+	void 		delFromLocationMap( const pObject pObject );
 
 	void		showCharLocationMap();
-	void		addCharToLocationMap( const P_CHAR who );
-	void 		delCharFromLocationMap( const P_CHAR who );
-	PCHAR_VECTOR*	getNearbyChars( P_OBJECT pObject, uint32_t range, uint32_t flags = 0 );
-	PCHAR_VECTOR*	getNearbyChars( uint32_t x, uint32_t y, uint32_t range, uint32_t flags = 0, P_CHAR pSelf = 0 );
+	void		addCharToLocationMap( const pChar who );
+	void 		delCharFromLocationMap( const pChar who );
+	CharList*	getNearbyChars( pObject pObject, uint32_t range, uint32_t flags = 0 );
+	CharList*	getNearbyChars( uint32_t x, uint32_t y, uint32_t range, uint32_t flags = 0, pChar pSelf = 0 );
 
 	void		showItemLocationMap();
-	void		addItemToLocationMap( const P_ITEM what );
-	void		delItemFromLocationMap( const P_ITEM what );
-	PITEM_VECTOR*	getNearbyItems( cObject* pObject, uint32_t range, uint32_t flags = 0 );
-	PITEM_VECTOR*	getNearbyItems( uint32_t x, uint32_t y, uint32_t range, uint32_t flags = 0, P_ITEM pSelf = 0 );
+	void		addItemToLocationMap( const pItem what );
+	void		delItemFromLocationMap( const pItem what );
+	ItemList*	getNearbyItems( cObject* pObject, uint32_t range, uint32_t flags = 0 );
+	ItemList*	getNearbyItems( uint32_t x, uint32_t y, uint32_t range, uint32_t flags = 0, pItem pSelf = 0 );
 #endif
 }
 

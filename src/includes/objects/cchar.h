@@ -12,11 +12,14 @@
 #ifndef __CHARS_H
 #define __CHARS_H
 
+#include "common_libs.h"
+
 class cChar;
-typedef cChar *pChar;
+typedef cChar *pChar;			//!< Pointer to a Char
+typedef std::list<pChar> CharList;	//!< List of pointers to Char
 
 #include "ai.h"
-#include "object.h"
+#include "objects/cobject.h"
 #include "magic.h"
 
 #include "npcs.h"
@@ -125,14 +128,14 @@ class cChar : public cObject
 public:
 	static uint32_t nextSerial();
 
-	cChar( SERIAL ser );
+	cChar( uint32_t ser );
 	~cChar();
 
 	static void	archive();
 	static void	safeoldsave();
 	void		getPopupHelp(char *str)
 	void		MoveTo(Location newloc);
-	void 		loadEventFromScript(TEXT *script1, TEXT *script2);
+	void 		loadEventFromScript(char *script1, TEXT *script2);
 	void		doGmEffect();
 
 protected:
@@ -342,7 +345,7 @@ public:
 	void setInnocent();
 	void setCriminal();
 	void makeCriminal();
-	void increaseKarma(int32_t value, P_CHAR pKilled = 0 );
+	void increaseKarma(int32_t value, pChar pKilled = 0 );
 	void modifyFame( int32_t value );
 
 	void unHide();
@@ -378,7 +381,7 @@ private:
 \name Appearence
 */
 public:
-	void showLongName( P_CHAR showToWho, bool showSerials );
+	void showLongName( pChar showToWho, bool showSerials );
 
 //@}
 
@@ -392,10 +395,10 @@ protected:
 	inline const bool combatTimerOk()
 	{ return TIMEOUT(timeout); }
 
-	void			checkPoisoning(P_CHAR pc_def);
+	void			checkPoisoning(pChar pc_def);
 	void			doMissedSoundEffect();
 	int32_t			combatHitMessage(int32_t damage);
-	void			doCombatSoundEffect(int32_t fightskill, P_ITEM pWeapon);
+	void			doCombatSoundEffect(int32_t fightskill, pItem pWeapon);
 	void			undoCombat();
 
 public:
@@ -406,8 +409,8 @@ public:
 	{ setFlag(flagAttackFirst, set); }
 
 	void			checkPoisoning();
-	void 			fight(P_CHAR pOpponent);
-	void			combatHit( P_CHAR pc_def, int32_t nTimeOut = 0 );
+	void 			fight(pChar pOpponent);
+	void			combatHit( pChar pc_def, int32_t nTimeOut = 0 );
 	void			doCombat();
 	void			combatOnHorse();
 	void			combatOnFoot();
@@ -437,7 +440,7 @@ public:
 protected:
 	cPath*		path;			//!< current path
 	void		walkNextStep();		//!< walk next path step
-	SERIAL_SLIST	sentObjects;
+	uint32_t_SLIST	sentObjects;
 	int8_t		dir;			//!< &0F=Direction
 	uint32_t		LastMoveTime;		//!< server time of last move
 
@@ -450,8 +453,8 @@ public:
 	bool		seeForFirstTime( cObject &obj );	//!< does it see the object for the first time?
 	bool		seeForLastTime( cObject &obj ); //!< does it see the object for the first time?
 	void		walk();			//!< execute walk code <Luxor>
-	void		follow( P_CHAR pc ); //!< follow pc
-	void 		flee( P_CHAR pc, int32_t seconds=INVALID ); //!< flee from pc
+	void		follow( pChar pc ); //!< follow pc
+	void 		flee( pChar pc, int32_t seconds=INVALID ); //!< flee from pc
 	void		pathFind( Location pos, bool bOverrideCurrentPath = true );
 	uint8_t		getDirFromXY( uint16_t targetX, uint16_t targetY );
 //@}
@@ -565,7 +568,7 @@ public:
 		void deleteSpeechCurrent();
 
 	public:
-		SERIAL oldmenu; //!< old menu serial
+		uint32_t oldmenu; //!< old menu serial
 
 		int32_t			stat3crc; // xan : future use to keep safe stats
 		class			AmxEvent *amxevents[ALLCHAREVENTS];
@@ -577,7 +580,7 @@ public:
 		uint16_t			skill[ALLSKILLS+1]; // List of skills (with stat modifiers)
 
 
-		SERIAL			robe; // Serial number of generated death robe (If char is a ghost)
+		uint32_t			robe; // Serial number of generated death robe (If char is a ghost)
 		uint8_t			fixedlight; // Fixed lighting level (For chars in dungeons, where they dont see the night)
 		char			speech; // For NPCs: Number of the assigned speech block
 		uint32_t			att; // Intrinsic attack (For monsters that cant carry weapons)
@@ -679,9 +682,9 @@ public:
 		int32_t			questDestRegion;
 		int32_t			questOrigRegion;
 		int32_t			questBountyReward;		// The current reward amount for the return of this chars head
-		SERIAL			questBountyPostSerial;	// The global posting serial number of the bounty message
-                SERIAL			questEscortPostSerial;	// The global posting serial number of the escort message
-		SERIAL			murdererSer;			// Serial number of last person that murdered this char
+		uint32_t			questBountyPostSerial;	// The global posting serial number of the bounty message
+                uint32_t			questEscortPostSerial;	// The global posting serial number of the escort message
+		uint32_t			murdererSer;			// Serial number of last person that murdered this char
 
 		// COORDINATE	previousLocation;
 
@@ -722,7 +725,7 @@ public:
 		void 			setNextMoveTime(short tamediv=1);
 		void 			disturbMed();
 
-		void                    drink(P_ITEM pi);       //Luxor: delayed drinking
+		void                    drink(pItem pi);       //Luxor: delayed drinking
 		void 			hideBySkill();
 		void 			hideBySpell(int32_t timer = INVALID);
 		uint32_t  			countItems(uint16_t ID, uint16_t col= 0xFFFF);
@@ -730,7 +733,7 @@ public:
 		inline const uint32_t CountGold()
 		{ return countItems(ITEMID_GOLD); }
 
-		bool			isInBackpack( P_ITEM pi );
+		bool			isInBackpack( pItem pi );
 		void			addGold(uint16_t totgold);
 
 		// The bit for setting what effect gm movement
@@ -741,7 +744,7 @@ public:
 		int32_t			gmMoveEff;
 
 		uint32_t			getSkillSum();
-		int32_t			getTeachingDelta(P_CHAR pPlayer, int32_t skill, int32_t sum);
+		int32_t			getTeachingDelta(pChar pPlayer, int32_t skill, int32_t sum);
 		void			removeItemBonus(cItem* pi);
 		inline const bool	isSameAs(pChar pc) const
 		{ return this == pc; }
@@ -750,12 +753,12 @@ public:
 		inline const bool resist(uint32_t n) const
 		{ return flags & n; }
 
-		void			sysmsg(const TEXT *txt, ...);
+		void			sysmsg(const char *txt, ...);
 
                 void                    attackStuff (pChar victim);
-		void			helpStuff(P_CHAR pc_i);
+		void			helpStuff(pChar pc_i);
 		void			applyPoison(PoisonType poisontype, int32_t secs = INVALID);
-		void			setOwner(P_CHAR owner);
+		void			setOwner(pChar owner);
 		void			curePoison();
 		void			resurrect(NXWCLIENT healer = NULL);
 		void			unfreeze( bool calledByTempfx = false );
@@ -772,12 +775,12 @@ protected:
 	uint8_t			fonttype;		//!< Speech font to use
 	uint16_t			saycolor;		//!< Color for say messages
 public:
-	void			talkAll(TEXT *txt, bool antispam = 1);
-	void			talk(NXWSOCKET s, TEXT *txt, bool antispam = 1);
-	void			emote(NXWSOCKET s,TEXT *txt, bool antispam, ...);
+	void			talkAll(char *txt, bool antispam = 1);
+	void			talk(NXWSOCKET s, char *txt, bool antispam = 1);
+	void			emote(NXWSOCKET s,char *txt, bool antispam, ...);
 	void			emoteall(char *txt, bool antispam, ...);
-	void			talkRunic(NXWSOCKET s, TEXT *txt, bool antispam = 1);
-	void			talkAllRunic(TEXT *txt, bool antispam = 0);
+	void			talkRunic(NXWSOCKET s, char *txt, bool antispam = 1);
+	void			talkAllRunic(char *txt, bool antispam = 0);
 //@}
 
 	uint16_t			distFrom(pChar pc);
@@ -827,7 +830,7 @@ public:
 	inline const uint32_t delItems(uint16_t id, uint32_t amount = 1, uint16_t color = 0xFFFF)
 	{ return body->getBackpack() ? body->getBackpack()->removeItems(amount,id, color) : amount; }
 
-	const bool	checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, P_CHAR pcd);
+	const bool	checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, pChar pcd);
 
 	/*!
 	\brief Get the amount of the given id, color
@@ -840,12 +843,12 @@ public:
 	inline const bool uint32_t getAmount(uint16_t id, uint16_t col=0xFFFF, bool onlyPrimaryBackpack=false )
 	{ return body->getBackpack() ? body->getBackpack()->countItems(id, col, !onlyPrimaryBackpack); }
 
-	void			movingFX(P_CHAR destination, short id, int32_t speed, int32_t loop, bool explode, class ParticleFx* part = NULL);
+	void			movingFX(pChar destination, short id, int32_t speed, int32_t loop, bool explode, class ParticleFx* part = NULL);
 	void			staticFX(short id, int32_t speed, int32_t loop, class ParticleFx* part = NULL);
 	void			boltFX(bool bNoParticles);
 	void			circleFX(short id);
 
-	void			useHairDye(P_ITEM bottle);
+	void			useHairDye(pItem bottle);
 
 	void			morph ( short bodyid = INVALID, short skincolor = INVALID,
 							short hairstyle = INVALID, short haircolor = INVALID, short beardstyle = INVALID,

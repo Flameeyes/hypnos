@@ -80,7 +80,7 @@ void cChar::safeoldsave()
 	rename( oldFileName.c_str(), newFileName.c_str() );
 }
 
-cChar::cChar( SERIAL ser ) : cObject()
+cChar::cChar( uint32_t ser ) : cObject()
 {
 
 	m_client = NULL;
@@ -362,7 +362,7 @@ cChar::~cChar()
 \note Don't add onstart events in npc scripts, because then they'll also be executed when character is created
 add onstart event to character programmatically
 */
-void cChar::loadEventFromScript(TEXT *script1, TEXT *script2)
+void cChar::loadEventFromScript(char *script1, TEXT *script2)
 {
 
 #define CASECHAREVENT( NAME, ID ) 	else if (!strcmp( NAME,script1))	amxevents[ID] = newAmxEvent(script2);
@@ -452,7 +452,7 @@ void cChar::checkSafeStats()
 	//
 	tempfx::tempeffectsoff();
 	NxwItemWrapper si;
-	P_ITEM pi;
+	pItem pi;
 	si.fillItemWeared( this, true, true, false );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 		pi = si.getItem();
@@ -517,7 +517,7 @@ void cChar::setStrength(uint32_t val, bool check/*= true*/)
 	BANK_ITEM (only if specialbank) are the bank region of player
 \todo make sure that the bank exists
 */
-P_ITEM cChar::getBankBox( uint8_t banktype )
+pItem cChar::getBankBox( uint8_t banktype )
 {
 	if ( ! SrvParms->usespecialbank || banktype == BANK_GOLD )
 		return bank
@@ -577,7 +577,7 @@ void cChar::unHide()
 
 		updateFlag();//AntiChrist - bugfix for highlight color not being updated
 
-		SERIAL my_serial = getSerial32();
+		uint32_t my_serial = getSerial32();
 		Location my_pos = getPosition();
 
 		NxwSocketWrapper sw;
@@ -588,7 +588,7 @@ void cChar::unHide()
 			NXWCLIENT ps_i = sw.getClient();
 			if( ps_i==NULL ) continue;
 
-			P_CHAR pj=ps_i->currChar();
+			pChar pj=ps_i->currChar();
 			if (ISVALIDPC(pj))
 			{
 				if (pj->getSerial32() != my_serial) { //to other players : recreate player object
@@ -762,11 +762,11 @@ void cChar::damage(int32_t amount, DamageType typeofdamage, StatType stattobedam
 {
 	if (!npc && !IsOnline())
 		return;
-	P_CHAR myself=pointers::findCharBySerial(getSerial32());
+	pChar myself=pointers::findCharBySerial(getSerial32());
 	if ( ! ISVALIDPC(myself) )
 		return;
-	P_CHAR pc_att=pointers::findCharBySerial(attackerserial);
-	SERIAL serial_att= ISVALIDPC(pc_att)? pc_att->getSerial32() : INVALID;
+	pChar pc_att=pointers::findCharBySerial(attackerserial);
+	uint32_t serial_att= ISVALIDPC(pc_att)? pc_att->getSerial32() : INVALID;
 
 	if (amxevents[EVENT_CHR_ONWOUNDED]) {
 		g_bByPass = false;
@@ -825,7 +825,7 @@ int32_t cChar::calcResist(DamageType typeofdamage)
 	si.fillItemWeared( this, true, true, true );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
-		P_ITEM pi=si.getItem();
+		pItem pi=si.getItem();
 		if (ISVALIDPI(pi)) {
 			total += pi->resists[typeofdamage];
 		}
@@ -851,7 +851,7 @@ void cChar::addGold(uint16_t totgold)
 \return distance ( if invalid is returned VERY_VERY_FAR )
 \param pc the char
 */
-uint32_t cChar::distFrom(P_CHAR pc)
+uint32_t cChar::distFrom(pChar pc)
 {
 	VALIDATEPCR(pc, VERY_VERY_FAR); //Endymion, fix: if not valid very far :P
 	return (uint32_t)dist(getPosition(),pc->getPosition());
@@ -864,10 +864,10 @@ uint32_t cChar::distFrom(P_CHAR pc)
 \param pi the item
 \note it check also if is subcontainer, or weared. so np call freely
 */
-uint32_t cChar::distFrom(P_ITEM pi)
+uint32_t cChar::distFrom(pItem pi)
 {
 	VALIDATEPIR(pi, VERY_VERY_FAR);
-	P_ITEM cont=pi->getOutMostCont(); //return at least itself
+	pItem cont=pi->getOutMostCont(); //return at least itself
 	VALIDATEPIR(cont, VERY_VERY_FAR);
 
 	if(cont->isInWorld())
@@ -895,9 +895,9 @@ bool cChar::canSee( cObject &obj )
 	if ( distance > VISRANGE ) // We cannot see it!
 		return false;
 
-	SERIAL ser = obj.getSerial32();
+	uint32_t ser = obj.getSerial32();
 	if ( isCharSerial( ser ) ) {
-		P_CHAR pc = P_CHAR( &obj );
+		pChar pc = pChar( &obj );
 		if ( !IsGM() ) { // Players only
 			if ( pc->IsHidden() ) // Hidden chars cannot be seen by Players
 				return false;
@@ -925,7 +925,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 {
 
 
-	P_ITEM p_boat = Boats->GetBoat(getPosition());
+	pItem p_boat = Boats->GetBoat(getPosition());
 	if( ISVALIDPI(p_boat) ) {
 		setMultiSerial(p_boat->getSerial32());
 		Location boatpos = getPosition();
@@ -970,13 +970,13 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 			NXWCLIENT ps_w = sw.getClient();
 			if ( ps_w == NULL )
 				continue;
-			P_CHAR pc = ps_w->currChar();
+			pChar pc = ps_w->currChar();
             if ( ISVALIDPC( pc ) )
 	            if ( distFrom( pc ) > VISRANGE || !canSee( *pc ) )
-					ps_w->sendRemoveObject(static_cast<P_OBJECT>(this));
+					ps_w->sendRemoveObject(static_cast<pObject>(this));
 		}
 	} else
-		cli->sendRemoveObject(static_cast<P_OBJECT>(this));
+		cli->sendRemoveObject(static_cast<pObject>(this));
 
         //
         // Send worn items and the char itself to the char (if online) and other players
@@ -1013,7 +1013,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 				sc.fillCharsNearXYZ( getPosition(), VISRANGE, IsGM() ? false : true );
 				for( sc.rewind(); !sc.isEmpty(); sc++ )
 				{
-					P_CHAR pc=sc.getChar();
+					pChar pc=sc.getChar();
 					if( ISVALIDPC( pc ) )
 					{
 						if( getSerial32() != pc->getSerial32() )
@@ -1021,7 +1021,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 							if ( !pc->IsOnline() && !pc->npc )
 							{
 								if ( seeForLastTime( *pc ))
-									getClient()->sendRemoveObject( P_OBJECT(pc) );
+									getClient()->sendRemoveObject( pObject(pc) );
 							}
 							else
 							{
@@ -1039,7 +1039,7 @@ void cChar::teleport( uint8_t flags, NXWCLIENT cli )
 					si.fillItemsNearXYZ( getPosition(), VISRANGE, false );
 					for( si.rewind(); !si.isEmpty(); si++ )
 					{
-						P_ITEM pi = si.getItem();
+						pItem pi = si.getItem();
 						if( ISVALIDPI( pi ) )
 							senditem( socket, pi );
 					}
@@ -1077,7 +1077,7 @@ int32_t cChar::getCombatSkill()
 	si.fillItemWeared( this, false, false, true );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 
-		P_ITEM pi = si.getItem();
+		pItem pi = si.getItem();
 		if( ISVALIDPI( pi ) )
 		{
 			if( pi->layer == LAYER_1HANDWEAPON || pi->layer == LAYER_2HANDWEAPON )
@@ -1117,10 +1117,10 @@ bool const cChar::CanDoGestures() const
 		if (hidden == HIDDEN_BYSPELL) return false;	//Luxor: cannot do magic gestures if under invisible spell
 
 		NxwItemWrapper si;
-		si.fillItemWeared( (P_CHAR)this, false, false, true );
+		si.fillItemWeared( (pChar)this, false, false, true );
 		for( si.rewind(); !si.isEmpty(); si++ ) {
 
-			P_ITEM pj=si.getItem();
+			pItem pj=si.getItem();
 
 			if( ISVALIDPI( pj ) )
 			{
@@ -1206,7 +1206,7 @@ bool cChar::checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise)
 	{
 		if (bRaise)
 		{
-			if(Skills::AdvanceSkill(DEREF_P_CHAR(this), sk, skillused))
+			if(Skills::AdvanceSkill(DEREF_pChar(this), sk, skillused))
 			{
 				Skills::updateSkillLevel(this, sk);
 				if(!npc && IsOnline())
@@ -1250,7 +1250,7 @@ void cChar::Delete()
 */
 bool cChar::seeForFirstTime( cObject &obj )
 {
-	SERIAL objser = obj.getSerial32();
+	uint32_t objser = obj.getSerial32();
 
 	//
         // The char cannot see itself for the first time ;)
@@ -1267,7 +1267,7 @@ bool cChar::seeForFirstTime( cObject &obj )
 	//
 	// Check if the object was sent before
 	//
-	SERIAL_SLIST::iterator it( find( sentObjects.begin(), sentObjects.end(), objser ) );
+	uint32_t_SLIST::iterator it( find( sentObjects.begin(), sentObjects.end(), objser ) );
 
 	if ( it != sentObjects.end() ) // Already sent before
 		return false;
@@ -1287,7 +1287,7 @@ bool cChar::seeForFirstTime( cObject &obj )
 */
 bool cChar::seeForLastTime( cObject &obj )
 {
-	SERIAL objser = obj.getSerial32();
+	uint32_t objser = obj.getSerial32();
 
         //
         // The char cannot see itself for the last time ;)
@@ -1304,7 +1304,7 @@ bool cChar::seeForLastTime( cObject &obj )
 	//
 	// Check if the object was sent before
 	//
-	SERIAL_SLIST::iterator it( find( sentObjects.begin(), sentObjects.end(), objser ) );
+	uint32_t_SLIST::iterator it( find( sentObjects.begin(), sentObjects.end(), objser ) );
 
 	if ( it == sentObjects.end() ) // Never sent before, so why remove it from the display?
 		return false;
@@ -1323,7 +1323,7 @@ bool cChar::seeForLastTime( cObject &obj )
 */
 void cChar::hideBySkill()
 {
-	P_CHAR pc_att=pointers::findCharBySerial(attackerserial);
+	pChar pc_att=pointers::findCharBySerial(attackerserial);
 
 	if ( ISVALIDPC(pc_att) && hasInRange(pc_att) )
     	{
@@ -1348,7 +1348,7 @@ void cChar::hideBySkill()
 
     	if ( IsGM() )
     	{
-        	staticeffect( DEREF_P_CHAR(this), 0x37, 0x09, 0x09, 0x19);
+        	staticeffect( DEREF_pChar(this), 0x37, 0x09, 0x09, 0x19);
         	playSFX( 0x0208 );
         	tempfx::add(this, this, tempfx::GM_HIDING, 1, 0, 0);
         	// immediate hiding overwrites the effect.
@@ -1429,7 +1429,7 @@ void cChar::resurrect( NXWCLIENT healer )
 		si.fillItemWeared( this, false, false, true );
 		for( si.rewind(); !si.isEmpty(); si++ )
 		{
-			P_ITEM pj=si.getItem();
+			pItem pj=si.getItem();
 			if(!ISVALIDPI(pj))
 				continue;
 			if( pj->layer == LAYER_NECK )
@@ -1439,11 +1439,11 @@ void cChar::resurrect( NXWCLIENT healer )
 			}
 		}
 
-		P_ITEM pj= pointers::findItemBySerial(robe);
+		pItem pj= pointers::findItemBySerial(robe);
 		if( ISVALIDPI(pj))
 			pj->Delete();
 
-		P_ITEM pi = item::CreateFromScript( "$item_robe_1", this );
+		pItem pi = item::CreateFromScript( "$item_robe_1", this );
 		if(ISVALIDPI(pi)) {
 			pi->setCurrentName( "a resurrect robe" );
 			pi->layer = LAYER_OUTER_TORSO;
@@ -1462,7 +1462,7 @@ void cChar::resurrect( NXWCLIENT healer )
 \brief Sets owner fields
 \param owner new owner
 */
-void cChar::setOwner(P_CHAR owner)
+void cChar::setOwner(pChar owner)
 {
 	setOwnerSerial32(owner->getSerial32());
 	npcWander=WANDER_NOMOVE;
@@ -1499,8 +1499,8 @@ void cChar::morph ( short bodyid, short skincolor, short hairstyle, short hairco
 	if ((morphed)&&(bBackup))
 		morph();
 
-	P_ITEM phair = getHairItem();
-	P_ITEM pbeard = getBeardItem();
+	pItem phair = getHairItem();
+	pItem pbeard = getBeardItem();
 
 	if (bBackup)
 	{
@@ -1556,7 +1556,7 @@ void cChar::morph ( short bodyid, short skincolor, short hairstyle, short hairco
 \author Luxor
 \param pc the character to possess
 */
-void cChar::possess(P_CHAR pc)
+void cChar::possess(pChar pc)
 {
 	if ( !IsOnline() )
 		return;
@@ -1569,7 +1569,7 @@ void cChar::possess(P_CHAR pc)
 		return;
 
 	if ( possessorSerial != INVALID ) { //We're in a possessed Char! Switch back to possessor
-		P_CHAR pcPossessor = pointers::findCharBySerial( possessorSerial );
+		pChar pcPossessor = pointers::findCharBySerial( possessorSerial );
 		if ( ISVALIDPC( pcPossessor ) ) {
 			bSwitchBack = true;
 			pc = pcPossessor;
@@ -1737,9 +1737,9 @@ void cChar::Kill()
 
 	//--------------------- reputation stuff
 #ifdef SPAR_C_LOCATION_MAP
-	PCHAR_VECTOR *pCV = pointers::getNearbyChars( this, VISRANGE*2, pointers::COMBATTARGET );
-	PCHAR_VECTOR it( pCV->begin() ), end( pCV->end() );
-	P_CHAR pKiller = 0;
+	CharList *pCV = pointers::getNearbyChars( this, VISRANGE*2, pointers::COMBATTARGET );
+	CharList it( pCV->begin() ), end( pCV->end() );
+	pChar pKiller = 0;
 	while( it != end )
 	{
 		pKiller = (*it);
@@ -1754,7 +1754,7 @@ void cChar::Kill()
 		pKiller->targserial=INVALID;
 		pKiller->timeout=0;
 
-		P_CHAR pk_att = pointers::findCharBySerial( pKiller->attackerserial );
+		pChar pk_att = pointers::findCharBySerial( pKiller->attackerserial );
 		if ( pk_att )
 		{
 			pk_att->ResetAttackFirst();
@@ -1776,9 +1776,9 @@ void cChar::Kill()
 
 			if( pKiller->party != INVALID )
 			{
-				PCHAR_VECTOR *pcvParty = pointers::getNearbyChars( pKiller, VISRANGE, pointers::PARTYMEMBER );
-				PCHAR_VECTOR partyIt( pcvParty->begin() ), partyEnd( pcvParty->end() );
-				P_CHAR pMember = 0;
+				CharList *pcvParty = pointers::getNearbyChars( pKiller, VISRANGE, pointers::PARTYMEMBER );
+				CharList partyIt( pcvParty->begin() ), partyEnd( pcvParty->end() );
+				pChar pMember = 0;
 				while( partyIt != partyEnd )
 				{
 					pMember = (*partyIt);
@@ -1827,7 +1827,7 @@ void cChar::Kill()
 		++it;
 	}
 #else
-	P_CHAR pk = MAKE_CHAR_REF(0);
+	pChar pk = MAKE_CHAR_REF(0);
 
 	NxwCharWrapper sc;
 	sc.fillCharsNearXYZ( getPosition(), VISRANGE*2, false );
@@ -1848,7 +1848,7 @@ void cChar::Kill()
 		pk->targserial=INVALID;
 		pk->timeout=0;
 
-		P_CHAR pk_att=pointers::findCharBySerial(pk->attackerserial);
+		pChar pk_att=pointers::findCharBySerial(pk->attackerserial);
 		if (ISVALIDPC(pk_att))
 		{
 			pk_att->ResetAttackFirst();
@@ -1866,7 +1866,7 @@ void cChar::Kill()
 			party.fillPartyFriend( pk, VISRANGE, true );
 			for( party.rewind(); !party.isEmpty(); party++ )
 			{
-				P_CHAR fr=party.getChar();
+				pChar fr=party.getChar();
 				if( ISVALIDPC(fr) )
 				{
 					fr->IncreaseKarma( (0-(karma)), this  );
@@ -1929,7 +1929,7 @@ void cChar::Kill()
 	weared.fillItemWeared( this, true, true, false );
 	for( weared.rewind(); !weared.isEmpty(); weared++ ) {
 
-		P_ITEM pi_j=weared.getItem();
+		pItem pi_j=weared.getItem();
 
 		if(!ISVALIDPI(pi_j))
 			continue;
@@ -2013,7 +2013,7 @@ void cChar::Kill()
 
 	//--------------------- dropping items to corpse
 
-	P_ITEM pBackPack = getBackpack();
+	pItem pBackPack = getBackpack();
 	if (!ISVALIDPI(pBackPack))
 		pBackPack = pCorpse;
 	//
@@ -2042,7 +2042,7 @@ void cChar::Kill()
 
 	for( si.rewind(); !si.isEmpty(); si++ ) {
 
-		P_ITEM pi_j=si.getItem();
+		pItem pi_j=si.getItem();
 		if( !ISVALIDPI(pi_j) )
 			continue;
 
@@ -2116,7 +2116,7 @@ void cChar::setNpcMoveTime()
 void cChar::checkEquipement()
 {
 	char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	P_ITEM pi;
+	pItem pi;
 
 	if (npc) return;
 
@@ -2164,7 +2164,7 @@ void cChar::checkEquipement()
 	}
 }
 
-void cChar::showLongName( P_CHAR showToWho, bool showSerials )
+void cChar::showLongName( pChar showToWho, bool showSerials )
 {
 	VALIDATEPC( showToWho );
 	NXWSOCKET socket = showToWho->getSocket();
@@ -2294,7 +2294,7 @@ void cChar::showLongName( P_CHAR showToWho, bool showSerials )
 		}
 	}
 
-	Guilds->Title( socket, DEREF_P_CHAR(this) );
+	Guilds->Title( socket, DEREF_pChar(this) );
 
 	uint16_t color;
 	int32_t guild = Guilds->Compare(showToWho,this);
@@ -2427,7 +2427,7 @@ void cChar::generic_heartbeat()
 				updateStats( i );
 }
 
-void checkFieldEffects(uint32_t currenttime, P_CHAR pc, char timecheck );
+void checkFieldEffects(uint32_t currenttime, pChar pc, char timecheck );
 
 void target_castSpell( NXWCLIENT ps, P_TARGET t )
 {
@@ -2547,7 +2547,7 @@ void cChar::do_lsd()
 		si.fillItemsNearXYZ( charpos, VISRANGE, false );
 		for( si.rewind(); !si.isEmpty(); si++ ) {
 
-			P_ITEM pi=si.getItem();
+			pItem pi=si.getItem();
 			if(!ISVALIDPI(pi))
 				continue;
 
@@ -2585,7 +2585,7 @@ void cChar::do_lsd()
 			{
 				icnt++;
 				if (icnt%10==0 || icnt<10)
-					senditem_lsd(socket, DEREF_P_ITEM(pi),c1,c2,xx,yy,zz); // attempt to cut packet-bombing by this thing
+					senditem_lsd(socket, DEREF_pItem(pi),c1,c2,xx,yy,zz); // attempt to cut packet-bombing by this thing
 			}
 		}// end of if item
 
@@ -2665,9 +2665,9 @@ void cChar::updateRegenTimer( StatType stat )
 \todo document pcd parameter
 \todo backport from Skills::
 */
-const bool cChar::checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, P_CHAR pcd)
+const bool cChar::checkSkillSparrCheck(Skill sk, int32_t low, int32_t high, pChar pcd)
 {
-	return Skills::CheckSkillSparrCheck(DEREF_P_CHAR(this),sk, low, high, pcd);
+	return Skills::CheckSkillSparrCheck(DEREF_pChar(this),sk, low, high, pcd);
 }
 
 /*!

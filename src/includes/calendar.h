@@ -31,7 +31,7 @@ namespace Calendar {
 	void loadCalendarScp ();
 	bool advanceMinute();
 	void setSeason(int nSeason);
-	void commitSeason(P_CHAR pc);
+	void commitSeason(pChar pc);
 
 	/*!
 	\brief Class cMonth

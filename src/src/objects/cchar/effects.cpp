@@ -54,9 +54,9 @@ void cChar::playMonsterSound(MonsterSound sfx)
 \param part particle effects structure
 \todo backport
 */
-void cChar::movingFX(P_CHAR destination, short id, int32_t speed, int32_t loop, bool explode, ParticleFx* part)
+void cChar::movingFX(pChar destination, short id, int32_t speed, int32_t loop, bool explode, ParticleFx* part)
 {
-	movingeffect(DEREF_P_CHAR(this), DEREF_P_CHAR(destination), id >> 8, id & 0xFF,
+	movingeffect(DEREF_pChar(this), DEREF_pChar(destination), id >> 8, id & 0xFF,
 		speed & 0xFF, loop & 0xFF, explode ? '\1' : '\0', part!=NULL, part);
 }
 
@@ -76,7 +76,7 @@ void cChar::staticFX(short id, int32_t speed, int32_t loop, ParticleFx* part)
 		if (speed<=-1) speed = part->effect[2];
 		if (loop<=-1) loop = part->effect[3];
 	}
-	staticeffect(DEREF_P_CHAR(this), id >> 8, id & 0xFF, speed, loop, part!=NULL, part);
+	staticeffect(DEREF_pChar(this), id >> 8, id & 0xFF, speed, loop, part!=NULL, part);
 }
 
 /*!
@@ -126,7 +126,7 @@ void cChar::boltFX(bool bNoParticles)
 			 } else if (clientDimension[j]==3) // 3d client, send 3d-Particles
 			 {
 				//TODO!!!! fix it!
-				//Magic->doStaticEffect(DEREF_P_CHAR(this), 30);
+				//Magic->doStaticEffect(DEREF_pChar(this), 30);
 				unsigned char particleSystem[49];
 				Xsend(j, particleSystem, 49);
 //AoS/				Network->FlushBuffer(j);
@@ -145,7 +145,7 @@ void cChar::boltFX(bool bNoParticles)
 */
 void cChar::circleFX(short id)
 {
-	bolteffect2(DEREF_P_CHAR(this),id >> 8,id & 0xFF);
+	bolteffect2(DEREF_pChar(this),id >> 8,id & 0xFF);
 }
 
 /*!

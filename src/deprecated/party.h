@@ -27,25 +27,25 @@ class cParty
 	
 	public:
 		std::vector< P_PARTY_MEMBER >	members;	//!< all members
-		std::vector< SERIAL > candidates;	//!< all candidates
+		std::vector< uint32_t > candidates;	//!< all candidates
 
-		SERIAL serial;	//!< party serial
+		uint32_t serial;	//!< party serial
 
 		cParty();
 		~cParty();
 			
-		void addMember( P_CHAR member );
-		void removeMember( P_CHAR member );
-		P_PARTY_MEMBER getMember( SERIAL member );
+		void addMember( pChar member );
+		void removeMember( pChar member );
+		P_PARTY_MEMBER getMember( uint32_t member );
 
-		SERIAL getLeader();
+		uint32_t getLeader();
 
-		void addCandidate( P_CHAR leader, P_CHAR candidate );
-		void removeCandidate( SERIAL serial );
-		bool isCandidate( SERIAL serial );
+		void addCandidate( pChar leader, pChar candidate );
+		void removeCandidate( uint32_t serial );
+		bool isCandidate( uint32_t serial );
 
-		void privateMessage( SERIAL from, SERIAL to, std::wstring& s, COLOR color=PARTY_PRIVATE_COLOR );
-		void talkToOthers( SERIAL from, std::wstring& s, COLOR color=PARTY_BROADCAST_COLOR );
+		void privateMessage( uint32_t from, SERIAL to, std::wstring& s, COLOR color=PARTY_PRIVATE_COLOR );
+		void talkToOthers( uint32_t from, std::wstring& s, COLOR color=PARTY_BROADCAST_COLOR );
 		void talkToAll( std::wstring& s, COLOR color=PARTY_BROADCAST_COLOR );
 			
 };
@@ -54,18 +54,18 @@ class cPartyMember {
 	
 public:
 
-	SERIAL serial;
+	uint32_t serial;
 	bool canLoot;
 
-	cPartyMember( SERIAL member );
+	cPartyMember( uint32_t member );
 
 };
 
 class cPartys {
 
 	private:
-		std::map< SERIAL, P_PARTY > partys;	//!< all partys
-		SERIAL currentSerial;	//!< current serial
+		std::map< uint32_t, P_PARTY > partys;	//!< all partys
+		uint32_t currentSerial;	//!< current serial
 	public:
 		bool shareKarma;
 		bool shareFame;
@@ -73,8 +73,8 @@ class cPartys {
 		bool canBroadcast;
 
 		P_PARTY	createParty( );
-		P_PARTY	getParty( SERIAL serial );
-		void removeParty( SERIAL serial );
+		P_PARTY	getParty( uint32_t serial );
+		void removeParty( uint32_t serial );
 		void recive( NXWCLIENT ps );
 
 		cPartys();

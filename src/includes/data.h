@@ -88,7 +88,7 @@ struct land_st
 {
 	uint32_t flags;
 	uint16_t id;
-	TEXT name[20];
+	char name[20];
 } PACK_NEEDED;
 
 struct tile_st
@@ -104,7 +104,7 @@ struct tile_st
 	uint8_t hue;
 	uint16_t unknown3;
 	int8_t height;
-	TEXT name[20];
+	char name[20];
 } PACK_NEEDED;
 
 struct multiIdx_st {

@@ -152,7 +152,7 @@ void cResources::deleteBlock( Location location )
 
 
 
-static bool canMine( P_CHAR pc, P_ITEM weapon )
+static bool canMine( pChar pc, pItem weapon )
 {
 
 	VALIDATEPCR(pc,false);
@@ -185,12 +185,12 @@ static bool canMine( P_CHAR pc, P_ITEM weapon )
 void Skills::target_mine( NXWCLIENT ps, P_TARGET t )
 {
 
-	P_CHAR pc = ps->currChar();
+	pChar pc = ps->currChar();
 	VALIDATEPC( pc );
 
 	NXWSOCKET s = ps->toInt();
 	
-	P_ITEM weapon = pc->GetItemOnLayer(1);
+	pItem weapon = pc->GetItemOnLayer(1);
 	
 	if( !canMine( pc, weapon ) )
 		return;

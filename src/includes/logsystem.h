@@ -28,7 +28,7 @@ class LogFile;
 extern int32_t entries_e, entries_c, entries_w;
 extern LogFile ServerLog;	//! global log object
 
-void WriteGMLog(P_CHAR, char *msg, ...);
+void WriteGMLog(pChar, char *msg, ...);
 #ifdef WIN32
 char *basename(char *path);
 #endif
@@ -61,7 +61,7 @@ class SpeechLogFile : public LogFile
 {
 private:
 	cChar *pc;
-	string MakeFilename(P_CHAR pc);
+	string MakeFilename(pChar pc);
 
 public:
 	SpeechLogFile(cChar *pc);

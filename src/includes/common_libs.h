@@ -73,6 +73,7 @@ warnings/errors/issues.
 
 #include <map>
 #include <queue>
+#include <list>
 #include <iterator>
 #include <algorithm>
 #include <stack>

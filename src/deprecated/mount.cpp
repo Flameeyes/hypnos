@@ -262,7 +262,7 @@ jump_mountevent:
 	sw.clear();
 	sw.fillOnline( this, false );
 
-	SERIAL mount_serial = mount->getSerial32();
+	uint32_t mount_serial = mount->getSerial32();
 
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
@@ -310,18 +310,18 @@ int cChar::unmountHorse()
 	si.fillItemWeared( this, true, true, false );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
-		P_ITEM pi=si.getItem();
+		pItem pi=si.getItem();
 		if( ISVALIDPI(pi) && pi->layer == LAYER_MOUNT)
 		{
 
 			onhorse = false;
 
 
-			std::map< SERIAL, P_CHAR >::iterator iter( pointers::pMounted.find( getSerial32() ) );
+			std::map< uint32_t, pChar >::iterator iter( pointers::pMounted.find( getSerial32() ) );
 
 			if( ( iter!=pointers::pMounted.end() ) ) {
 
-				P_CHAR p_pet=iter->second;
+				pChar p_pet=iter->second;
 				pointers::pMounted.erase( iter );
 
 				if( ISVALIDPC( p_pet ) ) {

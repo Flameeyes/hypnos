@@ -101,15 +101,15 @@ inline void pack_little_uint16(uint8 * buf, uint16 x)
 
 //// Common constants:
 
-const uint32 INVALID_SERIAL = 0xffffffff;
+const uint32 INVALID_uint32_t = 0xffffffff;
 
 // Message codes used when creating new messages:
 const int CODE_CLIENT_TALK = 0x03;
 const int CODE_DOUBLE_CLICK_ITEM = 0x06;
-const int CODE_PICK_UP_ITEM = 0x07;
-const int CODE_DROP_ITEM = 0x08;
+const int CODE_PICK_UpItem = 0x07;
+const int CODE_DROpItem = 0x08;
 const int CODE_CAST_SPELL_USE_SKILL = 0x12;
-const int CODE_CLIENT_EQUIP_ITEM = 0x13;
+const int CODE_CLIENT_EQUIpItem = 0x13;
 const int CODE_SERVER_TALK = 0x1c;
 const int CODE_PAUSE_CONTROL = 0x33;
 const int CODE_VENDOR_BUY_REPLY = 0x3b;

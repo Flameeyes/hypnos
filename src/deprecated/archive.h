@@ -16,7 +16,7 @@
 #define __ARCHIVE_H__
 
 
-typedef std::map< SERIAL, P_OBJECT > OBJECT_MAP;
+typedef std::map< uint32_t, pObject > OBJECT_MAP;
 
 class cAllObjects {
 
@@ -29,21 +29,21 @@ protected:
 
 	static OBJECT_MAP all; //!< all objects
 
-	static SERIAL current_char_serial; //!< current char serial
-	static SERIAL current_item_serial; //!< current item serial
+	static uint32_t current_char_serial; //!< current char serial
+	static uint32_t current_item_serial; //!< current item serial
 
 public:
 
 	cAllObjects();
 	~cAllObjects();
 
-	void insertObject( P_OBJECT obj );
-	void eraseObject( P_OBJECT obj );
-	P_OBJECT findObject(SERIAL nSerial);
-	SERIAL getNextCharSerial();
-	SERIAL getNextItemSerial();
-	void updateCharSerial( SERIAL ser );
-	void updateItemSerial( SERIAL ser );
+	void insertObject( pObject obj );
+	void eraseObject( pObject obj );
+	pObject findObject(uint32_t nSerial);
+	uint32_t getNextCharSerial();
+	uint32_t getNextItemSerial();
+	void updateCharSerial( uint32_t ser );
+	void updateItemSerial( uint32_t ser );
 	void clear();
 
 };
@@ -65,8 +65,8 @@ public:
 
 	void rewind();
 	bool IsEmpty();
-	P_OBJECT getObject();
-	SERIAL getSerial();
+	pObject getObject();
+	uint32_t getSerial();
 
 	cAllObjectsIter& operator++(int);
 
@@ -84,7 +84,7 @@ public:
 
 	void rewind();
 	bool IsEmpty();
-	P_CHAR getChar();
+	pChar getChar();
 
 	cAllCharsIter& operator++(int);
 
@@ -101,7 +101,7 @@ public:
 
 	void rewind();
 	bool IsEmpty();
-	P_CHAR getItem();
+	pChar getItem();
 
 
 	cAllItemsIter& operator++(int);

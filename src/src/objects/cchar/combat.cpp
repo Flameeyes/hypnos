@@ -37,7 +37,7 @@
 \param damage the damage applied to the char
 \return true if the caster has loss his concentration, false if not
 */
-static bool checkForCastingLoss(P_CHAR pc, int damage)
+static bool checkForCastingLoss(pChar pc, int damage)
 {
 	if ( ! pc ) return false;
 	int chanceToResist = qmin(10, int((pc->body->getSkill(skillMeditation)/10.0)-(damage*2.0)));
@@ -84,7 +84,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	los = losFrom(pc_def);
 
-	P_ITEM weapon=getWeapon();
+	pItem weapon=getWeapon();
 
 	(ISVALIDPI(weapon)) ? fightskill = weapon->getCombatSkill() : fightskill=WRESTLING;
 	dist = distFrom(pc_def);
@@ -94,7 +94,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	if ( pc_def->npc && !npc ) {
 		if ( pc_def->IsInvul() )
 			return;
-		P_CHAR pc_target = pc_def->target;
+		pChar pc_target = pc_def->target;
 		if ( ISVALIDPC( pc_target ) ) {
                         int32_t att_value = pc_target->hp/10 + pc_def->distFrom( pc_target ) / 2;
                         int32_t this_value = hp/10 + distFrom( pc_def ) / 2;
@@ -163,7 +163,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		}
 		if (fightskill == ARCHERY) {
 			if (chance(33)) {
-                                P_ITEM pi = NULL;
+                                pItem pi = NULL;
 				if (weapon->IsBow()) {
 					pi = item::CreateFromScript( "$item_arrow" );
 				} else {
@@ -224,7 +224,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 			chanceToHit += int( skill[TACTICS]/100.0 - pc_def->skill[TACTICS]/100.0 );
 			chanceToHit += int( str1/10.0 - str2/10.0 );
 			if ( chance( chanceToHit ) ) {
-				P_ITEM dWeapon=pc_def->getWeapon();
+				pItem dWeapon=pc_def->getWeapon();
 				if (dWeapon!=NULL) {
 					Location charpos = pc_def->getPosition();
 
@@ -265,7 +265,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		}
 	}
 
-	P_ITEM pShield=pc_def->getShield();
+	pItem pShield=pc_def->getShield();
 	if(ISVALIDPI(pShield)) {
 		if ( chance(pc_def->skill[PARRYING]/20) ) { // chance to block with shield
 			pc_def->checkSkill(PARRYING, 0, 1000);
@@ -390,7 +390,7 @@ void cChar::doCombat()
 		x = 0,
 		j = 0,
 		arrowsquant = 0;
-	P_ITEM	weapon = getWeapon();
+	pItem	weapon = getWeapon();
 	bool	validWeapon = ISVALIDPI( weapon );
 
 	if( !target )
@@ -615,14 +615,14 @@ void cChar::doCombat()
 \brief Checks for poisoning attack
 \param pc_def Defender character
 */
-void cChar::checkPoisoning(P_CHAR pc_def)
+void cChar::checkPoisoning(pChar pc_def)
 {
 	if ( npc ) { //NPC poisoning
 		if ( poison && pc_def->poisoned < poison && chance(33) ) {
 			pc_def->applyPoison( static_cast<PoisonType>(poison) );
 		}
 	} else { //PC poisoning
-		P_ITEM weapon = getWeapon();
+		pItem weapon = getWeapon();
 		if ( ISVALIDPI(weapon) && weapon->poisoned > 0 && pc_def->poisoned < weapon->poisoned ) {
 			if ( chance(33) ) {
 				pc_def->applyPoison( static_cast<PoisonType>(weapon->poisoned) );
@@ -744,7 +744,7 @@ int cChar::combatHitMessage(int32_t damage)
 				if (damage > 1) strcpy(temp, TRANSLATE("hits you in Right Hand!"));
 		}
 	}
-	P_CHAR pc_attacker = pointers::findCharBySerial(attackerserial);
+	pChar pc_attacker = pointers::findCharBySerial(attackerserial);
 	if (ISVALIDPC(pc_attacker)) {
 		sysmsg("%s %s",pc_attacker->getCurrentNameC(), temp);
 	}
@@ -764,7 +764,7 @@ int cChar::calcDef(int32_t x)
 
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
-	P_ITEM pj = NULL;
+	pItem pj = NULL;
 	int total = 0;
 	int armordef = 0;
 
@@ -772,7 +772,7 @@ int cChar::calcDef(int32_t x)
 	si.fillItemWeared( this, false, true, true );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
-		P_ITEM pi=si.getItem();
+		pItem pi=si.getItem();
 		if (!ISVALIDPI(pi)) continue;
 		if (pi->layer > LAYER_1HANDWEAPON && pi->layer < LAYER_MOUNT) {
 			if (pi->def>0)
@@ -943,7 +943,7 @@ int cChar::calcAtt()
 		return RandomNum(lodamage, hidamage);
 	}
 
-	P_ITEM pi = getWeapon();
+	pItem pi = getWeapon();
 	//if(pi==NULL)
 	//	return 0;
 	VALIDATEPIR(pi, skill[WRESTLING]/100);
@@ -1005,7 +1005,7 @@ void cChar::doCombatSoundEffect(uint16_t fightskill, pItem weapon)
 */
 void cChar::combatOnFoot()
 {
-	P_ITEM weapon = getWeapon();
+	pItem weapon = getWeapon();
 	int m = RandomNum(0,3);
 
 	if (ISVALIDPI(weapon)) {
@@ -1067,7 +1067,7 @@ void cChar::combatOnFoot()
 */
 void cChar::combatOnHorse()
 {
-	P_ITEM weapon = getWeapon();
+	pItem weapon = getWeapon();
 	if (ISVALIDPI(weapon)) {
 		short weapId = weapon->getId();
 
@@ -1157,7 +1157,7 @@ void cChar::attackStuff(pChar victim)
 		sc.fillOwnedNpcs( victim, false, false );
 		for ( sc.rewind(); !sc.isEmpty(); sc++ )
 		{
-			P_CHAR guard = sc.getChar();
+			pChar guard = sc.getChar();
 			if ( ISVALIDPC( guard ) )
 				if ( guard->npcaitype == NPCAI_PETGUARD && ( distFrom( guard )<= 10 ) )
 					npcattacktarget(pc, guard);
@@ -1185,7 +1185,7 @@ void cChar::attackStuff(pChar victim)
 		{
 			victim->talkAll( TRANSLATE("Help! Guards! I've been attacked!"), 1);
 			criminal( victim );
-			callguards(DEREF_P_CHAR(victim)); // Sparhawk must check if npcs can call guards
+			callguards(DEREF_pChar(victim)); // Sparhawk must check if npcs can call guards
 		}
 		else if( victim->npc && victim->npcaitype==NPCAI_TELEPORTGUARD)
 		{

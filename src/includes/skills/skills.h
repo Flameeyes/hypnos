@@ -27,9 +27,9 @@ namespace Skills {
 	*/
 	char AdvanceSkill(CHARACTER s, int sk, char skillused);
 	void AdvanceStats(CHARACTER s, int sk);
-	char CheckSkillSparrCheck(int c, unsigned short int sk, int low, int high, P_CHAR pcd);
+	char CheckSkillSparrCheck(int c, unsigned short int sk, int low, int high, pChar pcd);
 	void SkillUse(NXWSOCKET s, int x);
-	void updateSkillLevel(P_CHAR pc, int s);
+	void updateSkillLevel(pChar pc, int s);
 	//@}
 
 
@@ -79,10 +79,10 @@ namespace Skills {
 	\name Alchemy stuff
 	*/
 	void CreatePotion(CHARACTER s, char type, char sub, int mortar);
-	void DoPotion(NXWSOCKET s, int32_t type, int32_t sub, P_ITEM mortar);
+	void DoPotion(NXWSOCKET s, int32_t type, int32_t sub, pItem mortar);
 	void target_alchemy( NXWCLIENT ps, P_TARGET t );
 	void target_bottle( NXWCLIENT ps, P_TARGET t );
-	void PotionToBottle(P_CHAR pc, P_ITEM mortar);
+	void PotionToBottle(pChar pc, pItem mortar);
 	//@}
 
 	//@{
@@ -122,8 +122,8 @@ namespace Skills {
 	
 	void target_carpentry( NXWCLIENT ps, P_TARGET t );
 
-	void MakeMenu( P_CHAR pc, int m, int skill, P_ITEM first, P_ITEM second = NULL );
-	void MakeMenu( P_CHAR pc, int m, int skill, uint16_t firstId=0, COLOR firstColor=0, uint16_t secondId=0, COLOR secondColor=0 );
+	void MakeMenu( pChar pc, int m, int skill, pItem first, pItem second = NULL );
+	void MakeMenu( pChar pc, int m, int skill, uint16_t firstId=0, COLOR firstColor=0, uint16_t secondId=0, COLOR secondColor=0 );
 
 	//@{
 	/*!
@@ -170,7 +170,7 @@ namespace Skills {
 	
 	void target_tinkering( NXWCLIENT ps, P_TARGET t );
 	
-	void AButte(NXWSOCKET s1, P_ITEM pButte);
+	void AButte(NXWSOCKET s1, pItem pButte);
 
 	void Persecute(NXWSOCKET s); //!< AntiChrist persecute stuff
 
@@ -181,12 +181,12 @@ namespace Skills {
 	void Cartography(NXWSOCKET s); //!< By Polygon - opens the cartography skillmenu
 	bool HasEmptyMap(CHARACTER cc); //!< By Polygon - checks if player has an empty map
 	bool DelEmptyMap(CHARACTER cc); //!< By Polygon - deletes an empty map from the player's pack
-	void Decipher(P_ITEM tmap, NXWSOCKET s); //!< By Polygon - attempt to decipher a tattered treasure map
+	void Decipher(pItem tmap, NXWSOCKET s); //!< By Polygon - attempt to decipher a tattered treasure map
 	//@}
 
 	int GetAntiMagicalArmorDefence(CHARACTER p); //!< blackwind meditation armor stuff
 };
-void snooping( P_CHAR snooper, P_ITEM cont );
+void snooping( pChar snooper, pItem cont );
 
 
 void SkillVars();

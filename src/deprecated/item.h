@@ -26,17 +26,17 @@
 namespace item
 {
 
-	P_ITEM		CreateFromScript( char* itemname, cObject* cont=NULL, int amount = INVALID );
-	P_ITEM		CreateFromScript( SCRIPTID itemnum, cObject* cont=NULL, int amount = INVALID );
-	P_ITEM		CreateScriptRandomItem( char* sItemList, cObject* cont=NULL );
+	pItem		CreateFromScript( char* itemname, cObject* cont=NULL, int amount = INVALID );
+	pItem		CreateFromScript( SCRIPTID itemnum, cObject* cont=NULL, int amount = INVALID );
+	pItem		CreateScriptRandomItem( char* sItemList, cObject* cont=NULL );
 	int32_t		CreateRandomItem( char *sItemList );
 
-	void		GetScriptItemSetting(P_ITEM pi); // by Magius(CHE)
+	void		GetScriptItemSetting(pItem pi); // by Magius(CHE)
 
-	P_ITEM		CreateScriptItem(NXWSOCKET s, int32_t itemnum, bool nSpawned, cObject* cont=NULL );
+	pItem		CreateScriptItem(NXWSOCKET s, int32_t itemnum, bool nSpawned, cObject* cont=NULL );
 
 	void		AddRespawnItem(int s, int x, int y);
-	P_ITEM		SpawnRandomItem(NXWSOCKET s, char* cList, char* cItemID);
+	pItem		SpawnRandomItem(NXWSOCKET s, char* cList, char* cItemID);
 };
 
 #endif

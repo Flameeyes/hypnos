@@ -85,7 +85,7 @@ void cNPC::heartbeat()
 		// Only need to remove the post if the NPC does not have a follow target set
 		if ( questType == cMsgBoard::ESCORTQUEST && ftargserial == INVALID )
 		{
-			cMsgBoard::MsgBoardQuestEscortRemovePost( DEREF_P_CHAR(this) );
+			cMsgBoard::MsgBoardQuestEscortRemovePost( DEREF_pChar(this) );
 			deleteEscortQuest();
 		}
 		else

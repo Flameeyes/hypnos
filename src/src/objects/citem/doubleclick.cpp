@@ -224,8 +224,8 @@ static void doubleclick_itemid( pClient client, pChar pc, pItem pi, pContainer p
 \author Ripper, rewrite by Endymion, then by Chronodt (1/2/2004)
 \param ps client of player dbclick
 \note Completely redone by Morrolan 20-07-99
-\warning I use a define CASE for make more readable the code, if you change name of P_ITEM pi chage also the macro
-\note P_ITEM pi removed since merging with cItem, so the macro has been changed too (1/2/2004)
+\warning I use a define CASE for make more readable the code, if you change name of pItem pi chage also the macro
+\note pItem pi removed since merging with cItem, so the macro has been changed too (1/2/2004)
 \todo review when sets redone
 \todo los
 */
@@ -792,13 +792,13 @@ void cItem::doubleClick(pClient client);
 
 			if ( getId() == 0x14F0  ||  getId() == 0x1869 )	// Check for Deed/Teleporter + Guild Type
 			{
-				pc->fx1 = DEREF_P_ITEM(pi);   //TODO: <- check this
+				pc->fx1 = DEREF_pItem(pi);   //TODO: <- check this
 				Guilds->StonePlacement(s);    //TODO: <- and this
 				return;
 			}
 			else if (getId() == 0x0ED5)	// Check for Guildstone + Guild Type
 			{
-				pc->fx1 = DEREF_P_ITEM(pi);
+				pc->fx1 = DEREF_pItem(pi);
 				Guilds->Menu(s, 1);
 				return;
 			}
@@ -915,7 +915,7 @@ void cItem::doubleClick(pClient client);
 
 void target_selectdyevat( pClient client, P_TARGET t )
 {
-    P_ITEM pi=pointers::findItemBySerial(t->getClicked());
+    pItem pi=pointers::findItemBySerial(t->getClicked());
     VALIDATEPI(pi);
 
     if( pi->getId()==0x0FAB ||                     //dye vat
@@ -1106,7 +1106,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
   					//</Luxor>
 			if (pc->checkSkill(  CAMPING, 0, 500)) // Morrolan TODO: insert logout code for campfires here
 			{
-				P_ITEM pFire = item::CreateFromScript( "$item_a_campfire" );
+				pItem pFire = item::CreateFromScript( "$item_a_campfire" );
 				if(ISVALIDPI(pFire))
 				{
 					pFire->type = 45;
@@ -1296,7 +1296,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 				else
 					pc->playAction(0x1D);
 				pc->playSFX(0x013E);
-				P_ITEM itm = item::CreateFromScript( "$item_bales_of_cotton", pc->getBackpack() );
+				pItem itm = item::CreateFromScript( "$item_bales_of_cotton", pc->getBackpack() );
 				if (ISVALIDPI(itm)) {
 					pc->sysmsg(TRANSLATE("You reach down and pick some cotton."));
 				}
@@ -1339,7 +1339,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			if (pc->checkSkill(  TINKERING, 500, 1000))
 			{
 				pc->sysmsg(TRANSLATE("You create the sextant."));
-				P_ITEM pi_c = item::CreateFromScript( "$item_sextant", pc->getBackpack() );
+				pItem pi_c = item::CreateFromScript( "$item_sextant", pc->getBackpack() );
 				if (ISVALIDPI(pi_c))
 					pi_c->setDecay();
 				pi->ReduceAmount(1);
@@ -1365,7 +1365,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			pc->sysmsg(TRANSLATE("You must wait for it to stop swinging !"));
 			return;
 		//case 0x1EA8:
-		//	slotmachine(s, DEREF_P_ITEM(pi));
+		//	slotmachine(s, DEREF_pItem(pi));
 		//	return; // Ripper
 		case 0x1EBC: // tinker's tools
 			targ = clientInfo[s]->newTarget( new cItemTarget() );

@@ -523,7 +523,7 @@ static void exec_whologow(char *dummy)
 		if( ps==NULL )
 			continue;
 		
-		P_CHAR pj=ps->currChar();
+		pChar pj=ps->currChar();
 		if( ISVALIDPC(pj) ) //Keeps NPC's from appearing on the list
 		{
 			j++;
@@ -560,7 +560,7 @@ static void exec_wholog(char *dummy)
 		NXWCLIENT ps=sw.getClient();
 		if( ps==NULL )
 			continue;
-		P_CHAR pj=ps->currChar();
+		pChar pj=ps->currChar();
 		if( ISVALIDPC(pj) ) //Keeps NPC's from appearing on the list
 		{
 			j++;
@@ -624,7 +624,7 @@ static void exec_zerokills (char *dummy)
 return;
 /*	for(int a=0;a<charcount;a++)
 	{
-		P_CHAR pc = MAKE_CHARREF_LR(a);
+		pChar pc = MAKE_CHARREF_LR(a);
 		pc->kills=0;
 		setcharflag(pc);//AntiChrist
 	}		
@@ -670,7 +670,7 @@ static void exec_gy(char *txt)
 		NXWCLIENT ps=sw.getClient();
 		if( ps==NULL )
 			continue;
-		P_CHAR pj=ps->currChar();
+		pChar pj=ps->currChar();
 		if (ISVALIDPC(pj) && pj->IsGM())
 		{
 			SendSpeechMessagePkt(ps->toInt(), 0x01010101, 0x0101, 1, 0x0040, 0x0003, name, txt);
@@ -717,7 +717,7 @@ static void exec_resetdailylimit(char *params)
 		if ( !isCharSerial(objs.getSerial()) )
 			continue;
 
-		P_CHAR pc = static_cast<P_CHAR>(objs.getObject());
+		pChar pc = static_cast<pChar>(objs.getObject());
 		if(ISVALIDPC(pc))
 			pc->statGainedToday = 0;
 	}

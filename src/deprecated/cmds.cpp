@@ -72,7 +72,7 @@ int8_t cCommand::getCommandLevel(P_COMMAND cmd) {
 
 //Implementation of cCallCommand Class
 
-SERIAL cCallCommand::current_serial = 0;
+uint32_t cCallCommand::current_serial = 0;
 
 
 
@@ -141,9 +141,9 @@ P_COMMAND cCommandMap::findCommand(std::string name){
 //Implementation of cCallCommandMap Class
 
 
-cCallCommand* cCallCommand::findCallCommand(SERIAL cmd){
+cCallCommand* cCallCommand::findCallCommand(uint32_t cmd){
 
-	std::map< SERIAL, cCallCommand* >::iterator iter( callcommand_map.find( cmd ) );
+	std::map< uint32_t, cCallCommand* >::iterator iter( callcommand_map.find( cmd ) );
 
 	if ( iter != callcommand_map.end() )	//command exists
 		return iter->second;
@@ -154,7 +154,7 @@ cCallCommand* cCallCommand::findCallCommand(SERIAL cmd){
 
 
 
-SERIAL cCallCommand::addCallCommand(cCallCommand* called){
+uint32_t cCallCommand::addCallCommand(cCallCommand* called){
 
 	callcommand_map[++current_serial]=called;
 	return current_serial;
@@ -163,7 +163,7 @@ SERIAL cCallCommand::addCallCommand(cCallCommand* called){
 
 
 
-void cCallCommand::delCommand(SERIAL cmd){
+void cCallCommand::delCommand(uint32_t cmd){
 
 	callcommand_map.erase(cmd);
 }
@@ -199,7 +199,7 @@ void Command(NXWSOCKET  s, char* speech) // Client entred a command like 'ADD
 		//cCallCommandMap* callcommands = new cCallCommandMap()
 		
 		
-		P_CHAR pc_currchar = MAKE_CHAR_REF(currchar[s]);
+		pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
 		VALIDATEPC( pc_currchar );
 
 		strcpy((char*)nonuni, speech);
@@ -234,7 +234,7 @@ void Command(NXWSOCKET  s, char* speech) // Client entred a command like 'ADD
 		cCallCommand* called= new cCallCommand(speech);
 
 
-		SERIAL cmd_serial=called->addCallCommand(called);
+		uint32_t cmd_serial=called->addCallCommand(called);
 
 		
 		

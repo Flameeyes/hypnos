@@ -233,7 +233,7 @@ bool cObject::addTempfx( cObject& src, int32_t num, int32_t more1, int32_t more2
 \author Luxor
 \brief Deletes every tempfx of the specified number
 */
-void cObject::delTempfx( int32_t num, bool executeExpireCode, SERIAL funcidx )
+void cObject::delTempfx( int32_t num, bool executeExpireCode, uint32_t funcidx )
 {
 	if ( num < 0 || num >= tempfx::MAX_TEMPFX_INDEX )
 		return;
@@ -330,7 +330,7 @@ bool cObject::hasTempfx()
 \brief Get the tempfx from given num and funcidx
 \author Luxor
 */
-tempfx::cTempfx* cObject::getTempfx( int32_t num, SERIAL funcidx )
+tempfx::cTempfx* cObject::getTempfx( int32_t num, uint32_t funcidx )
 {
 	if ( num < 0 || num >= tempfx::MAX_TEMPFX_INDEX )
 		return NULL;

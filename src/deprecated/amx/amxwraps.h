@@ -56,8 +56,8 @@ typedef enum {
 VAR_TYPE getPropertyType(int property);
 
 enum PROP_TYPE{
-	PROP_CHARACTER = 0,
-	PROP_ITEM, 
+	PROpCharACTER = 0,
+	PROpItem, 
 	PROP_CALENDAR,
 	PROP_GUILD
 };
@@ -116,17 +116,17 @@ const int NXW_CP_C_GMRESTRICT = 109;
 const int NXW_CP_C_HIDDEN = 110;
 //const int NXW_CP_C_ID = 111;  moved to short
 const int NXW_CP_C_LOCKSKILL = 112;
-//const int NXW_CP_C_MULTISERIAL2 = 113;  removed
+//const int NXW_CP_C_MULTIuint32_t2 = 113;  removed
 const int NXW_CP_C_NPC = 114;
 const int NXW_CP_C_NPCTYPE = 115;
 const int NXW_CP_C_NPCWANDER = 116;
 const int NXW_CP_C_OLDNPCWANDER = 117;
 const int NXW_CP_C_ORGSKIN = 118;
-//const int NXW_CP_C_OWNSERIAL2 = 119; removed
+//const int NXW_CP_C_OWNuint32_t2 = 119; removed
 const int NXW_CP_C_PRIV2 = 121;
 const int NXW_CP_C_REACTIVEARMORED = 122;
 const int NXW_CP_C_REGION = 123;
-//const int NXW_CP_C_SERIAL2 = 124; removed
+//const int NXW_CP_C_uint32_t2 = 124; removed
 const int NXW_CP_C_SHOP = 125; // Sparhawk: DEPRECIATED, only for backwards compatability, has been changed to const int NXW_CP_B_SHOPKEEPER = 11;
 //const int NXW_CP_C_SKIN = 126; moved to short
 const int NXW_CP_C_SPEECH = 127;
@@ -144,7 +144,7 @@ const int NXW_CP_I_ADVOBJ = 201;
 const int NXW_CP_I_ATT = 202;
 const int NXW_CP_I_ATTACKER = 203;
 const int NXW_CP_I_BEARDCOLOR = 204;
-const int NXW_CP_I_BEARDSERIAL = 205;
+const int NXW_CP_I_BEARDuint32_t = 205;
 const int NXW_CP_I_BEARDSTYLE = 206;
 const int NXW_CP_I_CALLNUM = 207;
 const int NXW_CP_I_CARVE = 208;
@@ -167,7 +167,7 @@ const int NXW_CP_I_GMMOVEEFF = 224;
 const int NXW_CP_I_GUILDFEALTY = 225;
 const int NXW_CP_I_GUILDNUMBER = 226;
 const int NXW_CP_I_HAIRCOLOR = 228;
-const int NXW_CP_I_HAIRSERIAL = 229;
+const int NXW_CP_I_HAIRuint32_t = 229;
 const int NXW_CP_I_HAIRSTYLE = 230;
 const int NXW_CP_I_HIDAMAGE = 231;
 const int NXW_CP_I_HOLDGOLD = 232;
@@ -182,7 +182,7 @@ const int NXW_CP_I_LODAMAGE = 240;
 const int NXW_CP_I_LOGOUT = 241;
 const int NXW_CP_I_MAKING = 242;
 const int NXW_CP_I_MEDITATING = 243;
-const int NXW_CP_I_MULTISERIAL = 245;
+const int NXW_CP_I_MULTIuint32_t = 245;
 const int NXW_CP_I_MURDERERSER = 246;
 const int NXW_CP_I_MURDERRATE = 247;
 const int NXW_CP_I_MUTETIME = 248;
@@ -192,7 +192,7 @@ const int NXW_CP_I_NPCAI = 251;
 const int NXW_CP_I_NPCMOVETIME = 252;
 const int NXW_CP_I_OBJECTDELAY = 253;
 const int NXW_CP_I_OLDPOS = 254;
-const int NXW_CP_I_OWNSERIAL = 255;
+const int NXW_CP_I_OWNuint32_t = 255;
 const int NXW_CP_I_PACKITEM = 256;
 const int NXW_CP_I_POISON = 257;
 const int NXW_CP_I_POISONED = 258;
@@ -203,7 +203,7 @@ const int NXW_CP_I_POSITION = 262;
 const int NXW_CP_I_POSTTYPE = 263;
 const int NXW_CP_I_PREVPOS = 264;
 //const int NXW_CP_I_PRIV3 = 265;
-const int NXW_CP_I_QUESTBOUNTYPOSTSERIAL = 266;
+const int NXW_CP_I_QUESTBOUNTYPOSTuint32_t = 266;
 const int NXW_CP_I_QUESTBOUNTYREWARD = 267;
 const int NXW_CP_I_QUESTDESTREGION = 268;
 const int NXW_CP_I_QUESTORIGREGION = 269;
@@ -213,7 +213,7 @@ const int NXW_CP_I_SCRIPTID = 272;
 const int NXW_CP_I_GUILD = 273;
 const int NXW_CP_I_ROBE = 274;
 const int NXW_CP_I_RUNNING = 275;
-const int NXW_CP_I_SERIAL = 276;
+const int NXW_CP_I_uint32_t = 276;
 const int NXW_CP_I_SKILLDELAY = 277;
 const int NXW_CP_I_SMOKEDISPLAYTIME = 279;
 const int NXW_CP_I_SMOKETIMER = 280;
@@ -221,14 +221,14 @@ const int NXW_CP_I_SPADELAY = 281;
 const int NXW_CP_I_SPATIMER = 282;
 const int NXW_CP_I_SPATTACK = 283;
 const int NXW_CP_I_SPAWNREGION = 284;
-const int NXW_CP_I_SPAWNSERIAL = 285;
+const int NXW_CP_I_SPAWNuint32_t = 285;
 const int NXW_CP_I_SPELL = 286;
 const int NXW_CP_I_SPELLACTION = 287;
 const int NXW_CP_I_SPELLTIME = 288;
 const int NXW_CP_I_SPLIT = 290;
 const int NXW_CP_I_SPLITCHNC = 291;
 const int NXW_CP_I_SQUELCHED = 292;
-const int NXW_CP_I_STABLEMASTER_SERIAL = 293;
+const int NXW_CP_I_STABLEMASTER_uint32_t = 293;
 const int NXW_CP_I_STEALTH = 294;
 const int NXW_CP_I_STRENGHT = 295;
 const int NXW_CP_I_SUMMONTIMER = 296;
@@ -278,25 +278,25 @@ const int NXW_CP_UNI_SPEECH_CURRENT = 500;
 const int NXW_CP_UNI_PROFILE = 501;
 
 
-bool  		getCharBoolProperty(P_CHAR pc, int property, int prop2);
-int   		getCharIntProperty(P_CHAR pc, int property, int prop2, int prop3=INVALID );
-short 		getCharShortProperty(P_CHAR pc, int property, int prop2);
-char			getCharCharProperty(P_CHAR pc, int property, int prop2);
-const char*	getCharStrProperty(P_CHAR pc, int property, int prop2);
-wstring&		getCharUniProperty( P_CHAR pc, int property, int prop2 );
+bool  		getCharBoolProperty(pChar pc, int property, int prop2);
+int   		getCharIntProperty(pChar pc, int property, int prop2, int prop3=INVALID );
+short 		getCharShortProperty(pChar pc, int property, int prop2);
+char			getCharCharProperty(pChar pc, int property, int prop2);
+const char*	getCharStrProperty(pChar pc, int property, int prop2);
+wstring&		getCharUniProperty( pChar pc, int property, int prop2 );
 
-void	setCharIntProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, int value );
-void	setCharBoolProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, bool value );
-void	setCharShortProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, short value );
-void	setCharCharProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, char value );
-void	setCharStrProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, char* value );
-void	setCharUniProperty( P_CHAR pc, int property, int subproperty, int subsubproperty, wstring& value );
+void	setCharIntProperty( pChar pc, int property, int subproperty, int subsubproperty, int value );
+void	setCharBoolProperty( pChar pc, int property, int subproperty, int subsubproperty, bool value );
+void	setCharShortProperty( pChar pc, int property, int subproperty, int subsubproperty, short value );
+void	setCharCharProperty( pChar pc, int property, int subproperty, int subsubproperty, char value );
+void	setCharStrProperty( pChar pc, int property, int subproperty, int subsubproperty, char* value );
+void	setCharUniProperty( pChar pc, int property, int subproperty, int subsubproperty, wstring& value );
 
 
 ///// NOW ITEM PROPS :)
 const int NXW_IP_B_INCOGNITO = 0;
 //const int NXW_IP_C_COLOR = 100; moved to short
-//const int NXW_IP_C_CONTAINERSERIAL2 = 101; removed
+//const int NXW_IP_C_CONTAINERuint32_t2 = 101; removed
 const int NXW_IP_C_CORPSE = 102;
 const int NXW_IP_C_DOORDIR = 103;
 const int NXW_IP_C_DOOROPEN = 104;
@@ -311,17 +311,17 @@ const int NXW_IP_C_MORE = 112;
 const int NXW_IP_C_MOREB = 113;
 const int NXW_IP_C_OFFSPELL = 114;
 const int NXW_IP_C_OLDLAYER = 115;
-//const int NXW_IP_C_OWNERSERIAL2 = 116; removed
+//const int NXW_IP_C_OWNERuint32_t2 = 116; removed
 const int NXW_IP_C_PILEABLE = 117;
 const int NXW_IP_C_PRIV = 118;
-//const int NXW_IP_C_SERIAL2 = 119; removed
+//const int NXW_IP_C_uint32_t2 = 119; removed
 const int NXW_IP_C_VISIBLE = 120;
 const int NXW_IP_C_DAMAGETYPE = 121;
 const int NXW_IP_C_AUXDAMAGETYPE = 122;
 
 const int NXW_IP_I_ATT = 200;
 const int NXW_IP_I_CARVE = 201;
-const int NXW_IP_I_CONTAINERSERIAL = 202;
+const int NXW_IP_I_CONTAINERuint32_t = 202;
 const int NXW_IP_I_DECAYTIME = 203;
 const int NXW_IP_I_DEF = 204;
 const int NXW_IP_I_DEXBONUS = 205;
@@ -340,11 +340,11 @@ const int NXW_IP_I_LODAMAGE = 217;
 const int NXW_IP_I_MADEWITH = 218;
 const int NXW_IP_I_MAXHP = 219;
 const int NXW_IP_I_MOREPOSITION = 220;
-const int NXW_IP_I_MULTISERIAL = 221;
+const int NXW_IP_I_MULTIuint32_t = 221;
 const int NXW_IP_I_MURDERTIME = 222;
-const int NXW_IP_I_OLDCONTAINERSERIAL = 223;
+const int NXW_IP_I_OLDCONTAINERuint32_t = 223;
 const int NXW_IP_I_OLDPOSITION = 224;
-const int NXW_IP_I_OWNERSERIAL = 225;
+const int NXW_IP_I_OWNERuint32_t = 225;
 const int NXW_IP_I_POISONED = 226;
 const int NXW_IP_I_POSITION = 227;
 const int NXW_IP_I_RANK = 228;
@@ -352,10 +352,10 @@ const int NXW_IP_I_REQSKILL = 229;
 const int NXW_IP_I_RESTOCK = 230;
 const int NXW_IP_I_RNDVALUERATE = 231;
 const int NXW_IP_I_SECUREIT = 232;
-const int NXW_IP_I_SERIAL = 233;
+const int NXW_IP_I_uint32_t = 233;
 const int NXW_IP_I_SMELT = 234;
 const int NXW_IP_I_SPAWNREGION = 235;
-const int NXW_IP_I_SPAWNSERIAL = 236;
+const int NXW_IP_I_SPAWNuint32_t = 236;
 const int NXW_IP_I_SPEED = 237;
 const int NXW_IP_I_STRBONUS = 238;
 const int NXW_IP_I_STRREQUIRED = 239;
@@ -391,19 +391,19 @@ const int NXW_IP_STR_NAME = 454;
 const int NXW_IP_STR_NAME2 = 455;
 
 
-bool  		getItemBoolProperty(P_ITEM pi, int property, int prop2);
-int   		getItemIntProperty(P_ITEM pi, int property, int prop2);
-short 		getItemShortProperty(P_ITEM pi, int property, int prop2);
-char			getItemCharProperty(P_ITEM pi, int property, int prop2);
-const char*	getItemStrProperty(P_ITEM pi, int property, int prop2);
-wstring&		getItemUniProperty( P_ITEM pi, int property, int prop2 );
+bool  		getItemBoolProperty(pItem pi, int property, int prop2);
+int   		getItemIntProperty(pItem pi, int property, int prop2);
+short 		getItemShortProperty(pItem pi, int property, int prop2);
+char			getItemCharProperty(pItem pi, int property, int prop2);
+const char*	getItemStrProperty(pItem pi, int property, int prop2);
+wstring&		getItemUniProperty( pItem pi, int property, int prop2 );
 
-void setItemBoolProperty(P_ITEM pi, int property, int prop2, bool value );
-void setItemIntProperty(P_ITEM pi, int property, int prop2, int value );
-void setItemShortProperty(P_ITEM pi, int property, int prop2, short value );
-void setItemCharProperty(P_ITEM pi, int property, int prop2, char value );
-void setItemStrProperty(P_ITEM pi, int property, int prop2, char* value );
-void setItemUniProperty( P_ITEM pi, int property, int prop2, std::wstring& value );
+void setItemBoolProperty(pItem pi, int property, int prop2, bool value );
+void setItemIntProperty(pItem pi, int property, int prop2, int value );
+void setItemShortProperty(pItem pi, int property, int prop2, short value );
+void setItemCharProperty(pItem pi, int property, int prop2, char value );
+void setItemStrProperty(pItem pi, int property, int prop2, char* value );
+void setItemUniProperty( pItem pi, int property, int prop2, std::wstring& value );
 
 
 // calendar properties added by Sparhawk
@@ -484,7 +484,7 @@ const int NXW_MP_I_ID = 202;
 const int NXW_MP_I_BUFFER = 203;
 const int NXW_MP_STR_CALLBACK = 450;
 const int NXW_MP_STR_BUFFER = 451;
-const int NXW_MP_UNI_TEXT = 500;
+const int NXW_MP_UNI_char = 500;
 
 
 ///

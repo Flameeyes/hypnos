@@ -14,16 +14,16 @@
 #ifndef _HOUSE_H_
 #define _HOUSE_H_
 
-extern std::map< SERIAL, P_CHAR > houses;
+extern std::map< uint32_t, pChar > houses;
 
 int 	add_hlist(int c, int h, int t);
 void buildhouse( NXWCLIENT ps, P_TARGET t );
 int 	check_house_decay();
-void 	deedhouse(NXWSOCKET  s, P_ITEM pi);
+void 	deedhouse(NXWSOCKET  s, pItem pi);
 int 	del_hlist(int c, int h);
-int		on_hlist(P_ITEM pi, unsigned char s1, unsigned char s2, unsigned char s3, unsigned char s4, int *li);
-bool house_speech( P_CHAR pc, NXWSOCKET socket, std::string &talk);
-void 	killkeys(SERIAL serial);
+int		on_hlist(pItem pi, unsigned char s1, unsigned char s2, unsigned char s3, unsigned char s4, int *li);
+bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk);
+void 	killkeys(uint32_t serial);
 void 	mtarget(int s, int a1, int a2, int a3, int a4, char b1, char b2, char *txt);
 
 

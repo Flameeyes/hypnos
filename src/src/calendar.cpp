@@ -96,7 +96,7 @@ void setSeason(int nSeason)
 \param pc poniter to char which will rcv season changes
 \since 0.52a
 */
-void commitSeason(P_CHAR pc)
+void commitSeason(pChar pc)
 {
 	VALIDATEPC(pc);
 	NXWSOCKET s = pc->getSocket();

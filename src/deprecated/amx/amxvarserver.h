@@ -66,8 +66,8 @@ class amxIntegerVector : public amxVariable
 						amxIntegerVector( const int32_t size, const int32_t initialValue = 0 );
 						~amxIntegerVector();
 		AMXVARSRV_DATATYPE		getType();
-		int32_t				getValue( const SERIAL index );
-		void				setValue( const SERIAL index, const int32_t newValue );
+		int32_t				getValue( const uint32_t index );
+		void				setValue( const uint32_t index, const int32_t newValue );
 		int32_t				getSize( const int32_t index = -1 );
 };
 
@@ -87,17 +87,17 @@ class amxStringVariable : public amxVariable
 class amxScriptIdVariable : public amxVariable
 {
 	private:
-		SERIAL	value; //!< script id serial ( is a number into core, string only on save and load )
+		uint32_t	value; //!< script id serial ( is a number into core, string only on save and load )
 	public:
 						
 		amxScriptIdVariable( char* initialValue );
-		amxScriptIdVariable( SERIAL initialValue = INVALID );
+		amxScriptIdVariable( uint32_t initialValue = INVALID );
 		~amxScriptIdVariable();
 	
 		AMXVARSRV_DATATYPE getType();
-		SERIAL getValue();
+		uint32_t getValue();
 		void setValue( char* newValue );
-		void setValue( SERIAL initialValue = INVALID );
+		void setValue( uint32_t initialValue = INVALID );
 		int32_t getSize();
 };
 
@@ -123,40 +123,40 @@ class amxVariableServer
 		void				setUserMode();
 		void				setServerMode();
 		int32_t				getError();
-		int32_t				firstVariable( const SERIAL serial );
-		int32_t				nextVariable( const SERIAL serial, const int32_t previous );
-		AMXVARSRV_DATATYPE		typeOfVariable( const SERIAL serial, const int32_t variable );
+		int32_t				firstVariable( const uint32_t serial );
+		int32_t				nextVariable( const uint32_t serial, const int32_t previous );
+		AMXVARSRV_DATATYPE		typeOfVariable( const uint32_t serial, const int32_t variable );
 		//
 		//	Integer variable
 		//
-		bool				insertVariable( const SERIAL serial, const int32_t variable, const int32_t value );
-		bool				updateVariable( const SERIAL serial, const int32_t variable, const int32_t value );
-		bool				selectVariable( const SERIAL serial, const int32_t variable, int32_t& value );
+		bool				insertVariable( const uint32_t serial, const int32_t variable, const int32_t value );
+		bool				updateVariable( const uint32_t serial, const int32_t variable, const int32_t value );
+		bool				selectVariable( const uint32_t serial, const int32_t variable, int32_t& value );
 		//
 		//	String variable
 		//
-		bool				insertVariable( const SERIAL serial, const int32_t variable, const std::string& value );
-		bool				updateVariable( const SERIAL serial, const int32_t variable, const std::string& value );
-		bool				selectVariable( const SERIAL serial, const int32_t variable, std::string& value );
+		bool				insertVariable( const uint32_t serial, const int32_t variable, const std::string& value );
+		bool				updateVariable( const uint32_t serial, const int32_t variable, const std::string& value );
+		bool				selectVariable( const uint32_t serial, const int32_t variable, std::string& value );
 		//
 		//	Integer vectors
 		//
-		bool 			insertVariable( const SERIAL serial, const int32_t variable, const int32_t size, const int32_t value );
-		bool				updateVariable( const SERIAL serial, const int32_t variable, const int32_t index, const int32_t value );
-		bool				selectVariable( const SERIAL serial, const int32_t variable, const int32_t index, int32_t& value );
+		bool 			insertVariable( const uint32_t serial, const int32_t variable, const int32_t size, const int32_t value );
+		bool				updateVariable( const uint32_t serial, const int32_t variable, const int32_t index, const int32_t value );
+		bool				selectVariable( const uint32_t serial, const int32_t variable, const int32_t index, int32_t& value );
 		//
 		//	Type aspecific methods
 		//
-		bool				deleteVariable( const SERIAL serial );
-		bool				deleteVariable( const SERIAL serial, const int32_t variable );
-		bool				existsVariable( const SERIAL serial, const int32_t variable, const int32_t type );
+		bool				deleteVariable( const uint32_t serial );
+		bool				deleteVariable( const uint32_t serial, const int32_t variable );
+		bool				existsVariable( const uint32_t serial, const int32_t variable, const int32_t type );
 		int32_t				countVariable();
-		int32_t				countVariable( const SERIAL serial );
-		int32_t				countVariable( const SERIAL serial, const SERIAL type );
-		bool				copyVariable( const SERIAL fromSerial, const SERIAL toSerial );
-		bool				moveVariable( const SERIAL fromSerial, const SERIAL toSerial );
-		void				saveVariable( const SERIAL serial, FILE * stream );
-		int32_t				size( const SERIAL serial, const int32_t variable, const int32_t index = -1 );
+		int32_t				countVariable( const uint32_t serial );
+		int32_t				countVariable( const uint32_t serial, const SERIAL type );
+		bool				copyVariable( const uint32_t fromSerial, const SERIAL toSerial );
+		bool				moveVariable( const uint32_t fromSerial, const SERIAL toSerial );
+		void				saveVariable( const uint32_t serial, FILE * stream );
+		int32_t				size( const uint32_t serial, const int32_t variable, const int32_t index = -1 );
 };
 
 extern amxVariableServer amxVS;

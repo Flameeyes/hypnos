@@ -65,7 +65,7 @@ cNetwork	*Network;
 #define PACKET_BUYITEM			0x3B
 #define PACKET_CHARACTERSELECT		0x5D
 #define PACKET_READBOOK			0x66
-#define PACKET_CHANGE_TEXTCOLOR		0x69
+#define PACKET_CHANGE_charCOLOR		0x69
 #define PACKET_TARGETING		0x6C
 #define PACKET_SECURETRADING 		0x6F
 #define PACKET_MSGBOARD			0x71
@@ -83,7 +83,7 @@ cNetwork	*Network;
 #define PACKET_SELECTSERVER		0xA0
 #define PACKET_SPYCLIENT		0xA4
 #define PACKET_REQUEST_TIP		0xA7
-#define PACKET_GUMP_TEXTENTRY_INPUT	0xAC
+#define PACKET_GUMP_charENTRY_INPUT	0xAC
 #define PACKET_UNICODE_TALKREQUEST	0xAD
 #define PACKET_GUMPMENU_SELECT		0xB1
 #define PACKET_TIPS_REQUEST      	0xB6
@@ -177,7 +177,7 @@ NXWCLIENT getClientFromSocket( NXWSOCKET socket )
 		return NULL;
 	if( socket >= now )
 		return NULL;
-	P_CHAR pc = loginchars[socket];
+	pChar pc = loginchars[socket];
 	if( ISVALIDPC( pc ) )
 		return pc->getClient();
 	else
@@ -253,7 +253,7 @@ void cNetwork::DoStreamCode( NXWSOCKET  socket )
 	// ConOut("Packed %d bytes input to %d bytes out\n", boutlength[socket], len);
 	NXWCLIENT ps = getClientFromSocket(socket);
 #ifdef ENCRYPTION
-	P_CHAR pc_currchar= (ps!=NULL)? ps->currChar() : NULL;
+	pChar pc_currchar= (ps!=NULL)? ps->currChar() : NULL;
 	if ( clientCrypter[socket] != NULL && clientCrypter[socket]->getCryptVersion() >= CRYPT_3_0_0c )
 		clientCrypter[socket] ->encrypt((unsigned char *) &xoutbuffer[0], (unsigned char *) &xoutbuffer[0], len);
 	else if (pc_currchar != NULL && pc_currchar->getCrypter() != NULL && pc_currchar->getCrypter()->getCryptVersion() >= CRYPT_3_0_0c )
@@ -392,7 +392,7 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 			}
 
 
-			SERIAL pc_serial = pc->getSerial32();
+			uint32_t pc_serial = pc->getSerial32();
 
 			for (cClients::iterator i = cClient::clients.begin(); cClient::clients.end(); i++ )
 			{
@@ -470,7 +470,7 @@ void cNetwork::Disconnect (pClient client)              // Force disconnection o
 	g_NT[now] = NT;
 #endif
 
-	P_CHAR pj = NULL;
+	pChar pj = NULL;
 	for ( i = 0; i < MAXCLIENT; ++i ) {
 		pj = loginchars[i];
 		if ( ISVALIDPC(pj) )
@@ -498,7 +498,7 @@ void cNetwork::LoginMain(int s)
 	unsigned char acctblock[2]={0x82, 0x02};
 	unsigned char nopass[2]={0x82, 0x03};
 
-	SERIAL chrSerial;
+	uint32_t chrSerial;
 
 	acctno[s]=INVALID;
 #ifdef ENCRYPTION
@@ -595,7 +595,7 @@ void cNetwork::LoginMain(int s)
 		chrSerial = Accounts->GetInWorld(acctno[s]);
 		if (chrSerial == INVALID)
 			return;
-		P_CHAR pc = pointers::findCharBySerial(chrSerial);
+		pChar pc = pointers::findCharBySerial(chrSerial);
 		VALIDATEPC(pc);
 		pc->kick();
 		loginchars[s] = NULL;
@@ -767,7 +767,7 @@ void cNetwork::GoodAuth(int s)
 
 	for ( sc.rewind(); !sc.isEmpty(); sc++ )
 	{
-		P_CHAR pc_a=sc.getChar();
+		pChar pc_a=sc.getChar();
 		if(!ISVALIDPC(pc_a) )
 			continue;
 
@@ -865,7 +865,7 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 
 	loginchars[s] = NULL;
 
-	P_CHAR pc_k=NULL;
+	pChar pc_k=NULL;
 
 	if (acctno[s]>INVALID)
 	{
@@ -874,7 +874,7 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 		NxwCharWrapper sc;
 		Accounts->GetAllChars( acctno[s], sc );
 		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-			P_CHAR pc_i=sc.getChar();
+			pChar pc_i=sc.getChar();
 			if(!ISVALIDPC(pc_i))
 				continue;
 			if (j==buffer[s][0x44]) {
@@ -921,7 +921,7 @@ void cNetwork::charplay (int s) // After hitting "Play Character" button //Insta
 void cNetwork::enterchar(int s)
 {
 	if (s < 0 || s >= now) return; //Luxor
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
 	uint8_t startup[38]="\x1B\x00\x05\xA8\x90\x00\x00\x00\x00\x01\x90\x06\x08\x06\x49\x00\x0A\x04\x00\x00\x00\x7F\x00\x00\x00\x00\x00\x07\x80\x09\x60\x00\x00\x00\x00\x00\x00";
@@ -1006,14 +1006,14 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 
 	if ( s < 0 || s >= now ) //Luxor
 		return;
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 #ifdef ENCRYPTION
 	pc->setCrypter(clientCrypter[s]);
 #endif
 	//<Luxor>: possess stuff
 	if (pc->possessedSerial != INVALID) {
-		P_CHAR pcPos = pointers::findCharBySerial(pc->possessedSerial);
+		pChar pcPos = pointers::findCharBySerial(pc->possessedSerial);
 		if (ISVALIDPC(pcPos)) {
 			currchar[s] = pcPos->getSerial32();
 			pcPos->setClient(new cNxwClientObj(s));
@@ -1139,7 +1139,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 {
 	if (s < 0 || s >= now) return 0; //Luxor
 
-	P_CHAR pc = pointers::findCharBySerial(currchar[s]);
+	pChar pc = pointers::findCharBySerial(currchar[s]);
 	VALIDATEPCR(pc, 0);
 
 	uint32_t a, valid=0;
@@ -1149,7 +1149,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 
 	AMXEXECSVNR(pc->getSerial32(),AMXT_SPECIALS, 8, AMX_BEFORE);
 
-	P_ITEM pack;
+	pItem pack;
 	for(a=0;a<logoutcount;a++)
 	{
 		if (logout[a].x1<=x && logout[a].y1<=y && logout[a].x2>=x && logout[a].y2>=y)
@@ -1161,7 +1161,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 
 	if(pc->IsGMorCounselor() || pc->account==0) valid=1;
 
-	P_ITEM p_multi=NULL;
+	pItem p_multi=NULL;
 	if (pc->getMultiSerial32() == INVALID )
 		p_multi=findmulti( pc->getPosition() );
 	else
@@ -1176,7 +1176,7 @@ char cNetwork::LogOut(NXWSOCKET s)//Instalog
 			si.fillItemsInContainer( pack, false );
 			for( si.rewind(); !si.isEmpty(); si++ ) {
 
-				P_ITEM p_ci=si.getItem();
+				pItem p_ci=si.getItem();
 				if (!ISVALIDPI(p_ci))
 					if (p_ci->type==ITYPE_KEY &&
 						(p_multi->getSerial32() == calcserial(p_ci->more1, p_ci->more2, p_ci->more3, p_ci->more4)) )
@@ -1607,7 +1607,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 	ClientCrypt *crypter=NULL;
 #endif
 	NXWCLIENT ps = getClientFromSocket(s);
-	P_CHAR pc_currchar= (ps!=NULL)? ps->currChar() : NULL;
+	pChar pc_currchar= (ps!=NULL)? ps->currChar() : NULL;
 #ifdef ENCRYPTION
 	if ( pc_currchar != NULL )
 	{
@@ -2008,8 +2008,8 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					}
 					else if ((buffer[s][3]==0x27)||(buffer[s][3]==0x56))  // Spell
 					{
-						P_ITEM p_j = NULL;
-						P_ITEM pack= pc_currchar->getBackpack();
+						pItem p_j = NULL;
+						pItem pack= pc_currchar->getBackpack();
 						if(ISVALIDPI(pack)) //lb
 						{
 							NxwItemWrapper gri;
@@ -2017,7 +2017,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 							gri.fillItemWeared( pc_currchar, true, true, false );
 							for( gri.rewind(); !gri.isEmpty(); gri++ )
 							{
-								P_ITEM pj=gri.getItem();
+								pItem pj=gri.getItem();
 								if (ISVALIDPI(pj))
 									if (pj->type==ITYPE_SPELLBOOK)
 									{
@@ -2089,7 +2089,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 
 				case PACKET_RENAMECHARACTER: ///Lag Fix -- Zippy //Bug Fix -- Zippy
 					{
-						P_CHAR pc_t=pointers::findCharBySerPtr(buffer[s]+1);
+						pChar pc_t=pointers::findCharBySerPtr(buffer[s]+1);
 						if(ISVALIDPC(pc_t) && ( pc_currchar->IsGMorCounselor() || pc_currchar->isOwnerOf( pc_t ) ) )
 							pc_t->setCurrentName( (char*)&buffer[s][5] );
 
@@ -2100,7 +2100,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					{
 					int size;
 					size=dyn_length;
-					P_ITEM pBook=pointers::findItemBySerPtr(buffer[s]+3);
+					pItem pBook=pointers::findItemBySerPtr(buffer[s]+3);
 					if(ISVALIDPI(pBook))
 					{
 						if (pBook->morez == 0)
@@ -2126,7 +2126,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						int j= 9;
 						char author[31],title[61],ch= 1;
 
-						P_ITEM pBook=pointers::findItemBySerPtr(buffer[s]+1);
+						pItem pBook=pointers::findItemBySerPtr(buffer[s]+1);
 						if(!ISVALIDPI(pBook))
 							break;
 
@@ -2183,14 +2183,14 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					*/
 					break;
 
-				case PACKET_GUMP_TEXTENTRY_INPUT:
+				case PACKET_GUMP_charENTRY_INPUT:
 					//gumps::Input(s);
 					break;
 
 				case PACKET_RESURRECT_CHOICE:
 					if(buffer[s][1]==0x02)
 					{
-						P_CHAR murderer=pointers::findCharBySerial(pc_currchar->murdererSer);
+						pChar murderer=pointers::findCharBySerial(pc_currchar->murdererSer);
 						if( ( ISVALIDPC(murderer) ) && SrvParms->bountysactive )
 						{
 							sysmessage( s,TRANSLATE("To place a bounty on %s, use the command BOUNTY <Amount>."),
@@ -2218,16 +2218,16 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					{
 						if (ServerScp::g_nPopUpHelp==0) break;
 
-						P_CHAR pc=pointers::findCharBySerPtr(buffer[s]+1);
-						P_ITEM pi=pointers::findItemBySerPtr(buffer[s]+1);
+						pChar pc=pointers::findCharBySerPtr(buffer[s]+1);
+						pItem pi=pointers::findItemBySerPtr(buffer[s]+1);
 
 						int len = 0;
 						uint8_t packet[4000]; packet[0] = '\0';
 						if ( ISVALIDPC(pc_currchar) && pc_currchar->IsGM()) {
 							if (ISVALIDPC(pc) )
-								sprintf((char *)packet, "char n°%d serial : %x", DEREF_P_CHAR(pc), pc->getSerial32());
+								sprintf((char *)packet, "char n°%d serial : %x", DEREF_pChar(pc), pc->getSerial32());
 							if (ISVALIDPI(pi) )
-								sprintf((char *)packet, "item n°%d serial : %x", DEREF_P_ITEM(pi), pi->getSerial32());
+								sprintf((char *)packet, "item n°%d serial : %x", DEREF_pItem(pi), pi->getSerial32());
 						}
 						else
 						{

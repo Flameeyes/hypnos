@@ -26,10 +26,10 @@ class cGuildRecruit
 {
 	public:
 
-		SERIAL	serial; //!< the recruit
+		uint32_t	serial; //!< the recruit
 		P_GUILD_MEMBER	recruiter; //!< the recruiter
 		
-		cGuildRecruit( SERIAL recruit );
+		cGuildRecruit( uint32_t recruit );
 		~cGuildRecruit();
 
 		void load( cStringFile& file );
@@ -50,12 +50,12 @@ class cGuildMember
 {
 	public:
 		
-		SERIAL serial;	//!< the member
+		uint32_t serial;	//!< the member
 		std::string	title;	//!< title
 		GUILD_TITLE_TOGGLE toggle; //!< title toggle
 		uint32_t rank; //!< the rank
 
-		cGuildMember( SERIAL serial );
+		cGuildMember( uint32_t serial );
 		~cGuildMember();
 
 		void load( cStringFile& file );
@@ -89,7 +89,7 @@ class cGuildPolitics {
 
 	public:
 
-		SERIAL serial; //!< the guild
+		uint32_t serial; //!< the guild
 		GUILD_POLITICS_COLOR color; //!< guild member see member of this in this color
 		uint8_t type; //!< the type, war or allied
 		bool forever;	//!< used for chaos or order guild
@@ -121,7 +121,7 @@ class cGuild
 
 	public:
 
-		SERIAL serial;	//!< guild serial, is equal to the guildstone serial
+		uint32_t serial;	//!< guild serial, is equal to the guildstone serial
 		GUILD_TYPE type;	//!< guild type
 
 
@@ -134,7 +134,7 @@ class cGuild
 		std::wstring	charter;	//!< charter
 		std::string webpage;	//!< web page
 
-		cGuild( SERIAL guildstone );
+		cGuild( uint32_t guildstone );
 		~cGuild();
 		void load();
 
@@ -145,23 +145,23 @@ class cGuild
 
 	public:
 
-		std::map< SERIAL, P_GUILD_MEMBER > members;	//!< all members of this guild
+		std::map< uint32_t, P_GUILD_MEMBER > members;	//!< all members of this guild
 
-		P_GUILD_MEMBER addMember( P_CHAR pc );
-		void resignMember( P_CHAR pc );
-		P_GUILD_MEMBER getMember( SERIAL member );
+		P_GUILD_MEMBER addMember( pChar pc );
+		void resignMember( pChar pc );
+		P_GUILD_MEMBER getMember( uint32_t member );
 
 	public:
 
-		std::map< SERIAL, P_GUILD_RECRUIT > recruits;	//!< all who want become member of this guild
+		std::map< uint32_t, P_GUILD_RECRUIT > recruits;	//!< all who want become member of this guild
 		
-		P_GUILD_RECRUIT addNewRecruit( P_CHAR recruit, P_CHAR recruiter );
-		void refuseRecruit( P_CHAR pc );
-		P_GUILD_RECRUIT getRecruit( SERIAL recruit );
+		P_GUILD_RECRUIT addNewRecruit( pChar recruit, pChar recruiter );
+		void refuseRecruit( pChar pc );
+		P_GUILD_RECRUIT getRecruit( uint32_t recruit );
 
 	public:
 
-		std::map< SERIAL, cGuildPolitics > political_to_guild;	//!< all guild politics related to other guild
+		std::map< uint32_t, cGuildPolitics > political_to_guild;	//!< all guild politics related to other guild
 
 };
 
@@ -185,13 +185,13 @@ class cGuildz
 
 	public:
 
-		std::map< SERIAL, P_GUILD > guilds;
+		std::map< uint32_t, P_GUILD > guilds;
 
 		cGuildz();
 		~cGuildz();
 
-		P_GUILD getGuild( SERIAL guild );
-		P_GUILD addGuild( SERIAL stone );
+		P_GUILD getGuild( uint32_t guild );
+		P_GUILD addGuild( uint32_t stone );
 
 };
 

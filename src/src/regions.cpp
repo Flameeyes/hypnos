@@ -35,7 +35,7 @@ bool cRegion::isValidCoord( uint16_t x, uint16_t y )
 }
 
 
-void cRegion::add( P_CHAR pc )
+void cRegion::add( pChar pc )
 {
 
 	if(!ISVALIDPC(pc) )
@@ -50,7 +50,7 @@ void cRegion::add( P_CHAR pc )
 
 }
 
-void cRegion::add( P_ITEM pi )
+void cRegion::add( pItem pi )
 {
 
 	VALIDATEPI(pi);
@@ -65,7 +65,7 @@ void cRegion::add( P_ITEM pi )
 	this->addNow( pi );
 }
 
-void cRegion::remove( P_CHAR pc )
+void cRegion::remove( pChar pc )
 {
 
 	VALIDATEPC(pc);
@@ -77,7 +77,7 @@ void cRegion::remove( P_CHAR pc )
 
 }
 
-void cRegion::remove( P_ITEM pi )
+void cRegion::remove( pItem pi )
 {
 
 	VALIDATEPI(pi);
@@ -88,42 +88,42 @@ void cRegion::remove( P_ITEM pi )
 	this->removeNow( pi );
 }
 
-void cRegion::removeNow( P_CHAR pc )
+void cRegion::removeNow( pChar pc )
 {
 
 	WHERE_IS_NOW_MAP::iterator iternow( this->char_where_is_now.find( pc->getSerial32() ) );
 	if( iternow!=this->char_where_is_now.end() ) {
 		RegCoordPoint* p = &iternow->second;
 	
-		SERIAL_SET* iter = &this->regions[p->a][p->b].charsInRegions;
-		SERIAL_SET::iterator i( iter->find(pc->getSerial32()) );
+		uint32_t_SET* iter = &this->regions[p->a][p->b].charsInRegions;
+		uint32_t_SET::iterator i( iter->find(pc->getSerial32()) );
 		if( i!=iter->end() )
 			iter->erase( i );
 	}
 }
 
-void cRegion::removeNow( P_ITEM pi )
+void cRegion::removeNow( pItem pi )
 {
 
 	WHERE_IS_NOW_MAP::iterator iternow( this->item_where_is_now.find( pi->getSerial32() ) );
 	if( iternow!=this->item_where_is_now.end() ) {
 		RegCoordPoint* p = &iternow->second;
 	
-		SERIAL_SET* iter = &this->regions[p->a][p->b].itemsInRegions;
-		SERIAL_SET::iterator i( iter->find(pi->getSerial32()) );
+		uint32_t_SET* iter = &this->regions[p->a][p->b].itemsInRegions;
+		uint32_t_SET::iterator i( iter->find(pi->getSerial32()) );
 		if( i!=iter->end() )
 			iter->erase( i );
 	}
 }
 
-void cRegion::addNow( P_CHAR pc )
+void cRegion::addNow( pChar pc )
 {
 	RegCoordPoint p( pc->getPosition() ); 
 	this->char_where_is_now.insert( make_pair( pc->getSerial32(), p ) );
 	this->regions[p.a][p.b].charsInRegions.insert( pc->getSerial32() );
 }
 
-void cRegion::addNow( P_ITEM pi )
+void cRegion::addNow( pItem pi )
 {
 	RegCoordPoint p( pi->getPosition() ); 
 	this->item_where_is_now.insert( make_pair( pi->getSerial32(), p ) );

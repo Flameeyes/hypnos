@@ -43,7 +43,7 @@ void setabovelight(unsigned char);
 
 void scriptcommand (NXWSOCKET s, std::string script1, std::string script2);
 void endmessage(int x);
-void dooruse(NXWSOCKET s, P_ITEM pi/*int item*/);
+void dooruse(NXWSOCKET s, pItem pi/*int item*/);
 int calcGoodValue(int npcnum, int i, int value,int goodtype); // by Magius(CHE) for trade system
 
 int whichbit( int number, int bit );

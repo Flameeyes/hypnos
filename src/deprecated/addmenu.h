@@ -55,7 +55,7 @@ public:
     
 	cMakeItem();
 	~cMakeItem();
-    bool checkReq( P_CHAR pc, bool inMenu = false, cRawItem* def = NULL );
+    bool checkReq( pChar pc, bool inMenu = false, cRawItem* def = NULL );
 };
 
 class cMakeMenu : public cBasicMenu 
@@ -66,10 +66,10 @@ class cMakeMenu : public cBasicMenu
 
 	protected:
 
-		SERIAL section;
+		uint32_t section;
 		P_OLDMENU oldmenu;
 
-		virtual void loadFromScript( P_CHAR pc );
+		virtual void loadFromScript( pChar pc );
 		std::string cleanString( std::string s );
 		void execMake( NXWCLIENT ps, uint32_t item );
 
@@ -81,8 +81,8 @@ class cMakeMenu : public cBasicMenu
 		int skill;
 		cRawItem mat[2];
 		
-		cMakeMenu( SERIAL section );
-		cMakeMenu( SERIAL section, P_CHAR pc, int skill, uint16_t firstId=0, COLOR firstColor=0, uint16_t secondId=0, COLOR secondColor=0 );
+		cMakeMenu( uint32_t section );
+		cMakeMenu( uint32_t section, pChar pc, int skill, uint16_t firstId=0, COLOR firstColor=0, uint16_t secondId=0, COLOR secondColor=0 );
 
 		~cMakeMenu();
 
@@ -95,17 +95,17 @@ class cAddMenu : public cMakeMenu
 
 	private:
 		std::vector< cScriptCommand > commands;
-		virtual void loadFromScript( P_CHAR pc );
+		virtual void loadFromScript( pChar pc );
 
 	public:
-		cAddMenu( SERIAL section, P_CHAR pc );
+		cAddMenu( uint32_t section, pChar pc );
 		~cAddMenu();
 
 		virtual void handleButton( NXWCLIENT ps, cClientPacket* pkg  );
 
 };
 
-void showAddMenu( P_CHAR pc, int menu );
+void showAddMenu( pChar pc, int menu );
 
 /*!
 \brief Open a scripted menu
@@ -113,7 +113,7 @@ void showAddMenu( P_CHAR pc, int menu );
 */
 inline void itemmenu( NXWSOCKET s, int32_t m )
 {
-	P_CHAR pc = MAKE_CHAR_REF( currchar[s] );
+	pChar pc = MAKE_CHAR_REF( currchar[s] );
 	if( ISVALIDPC( pc ) )
 	{
 		showAddMenu( pc, m ); 

@@ -16,7 +16,7 @@
 #define NPCS_INCLUDE
 
 char* getRandomName(char * namelist);
-void setrandomname(P_CHAR pc, char * namelist);
+void setrandomname(pChar pc, char * namelist);
 COLOR addrandomcolor(cObject* po, char *colorlist);
 
 namespace npcs
@@ -34,36 +34,36 @@ namespace npcs
 		MAGIC_MAXSPHERES
 	};
 
-	void SpawnGuard( P_CHAR pc, P_CHAR pc_i, Location where);		// added by Anthalir
-	void SpawnGuard( P_CHAR pc, P_CHAR pc_i, int x, int y, signed char z);
+	void SpawnGuard( pChar pc, pChar pc_i, Location where);		// added by Anthalir
+	void SpawnGuard( pChar pc, pChar pc_i, int x, int y, signed char z);
 	void initNpcSpells();
-	void npcCastSpell(P_CHAR pc_att, P_CHAR pc_def);
-	void npcMagicAttack(P_CHAR pc_att, P_CHAR pc_def);
+	void npcCastSpell(pChar pc_att, pChar pc_def);
+	void npcMagicAttack(pChar pc_att, pChar pc_def);
 
-	P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, uint16_t x1, uint16_t y1, int8_t z1);
-	P_CHAR AddNPC(NXWSOCKET s, P_ITEM pi, int npcNum, Location where);	// added by Anthalir
-	P_CHAR addNpc(int npcNum, int x, int y, int z);
+	pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t z1);
+	pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, Location where);	// added by Anthalir
+	pChar addNpc(int npcNum, int x, int y, int z);
 
-	P_CHAR AddRespawnNPC(P_ITEM pi, int npcNum);
-	P_CHAR AddRespawnNPC(P_CHAR pc, int npcNum);
+	pChar AddRespawnNPC(pItem pi, int npcNum);
+	pChar AddRespawnNPC(pChar pc, int npcNum);
 
-	P_CHAR AddNPCxyz(NXWSOCKET s, int npcNum, Location where);		// added by anthalir
-	P_CHAR AddNPCxyz(NXWSOCKET s, int npcNum, int x1, int y1, signed char z1);
+	pChar AddNPCxyz(NXWSOCKET s, int npcNum, Location where);		// added by anthalir
+	pChar AddNPCxyz(NXWSOCKET s, int npcNum, int x1, int y1, signed char z1);
 
-	P_ITEM AddRandomLoot(P_ITEM pack, char * lootlist);
+	pItem AddRandomLoot(pItem pack, char * lootlist);
 
 	int AddRandomNPC(int s, char *npclist);
 	
-	void checkAI(P_CHAR pc );
+	void checkAI(pChar pc );
 
-	P_CHAR SpawnRandomMonster(P_CHAR pc, char* cList, char* cNpcID);
+	pChar SpawnRandomMonster(pChar pc, char* cList, char* cNpcID);
 
 
 }	//namespace npcs
 
 
 typedef struct {
-	SERIAL script;
+	uint32_t script;
 	COLOR color;
 	uint32_t amount;
 	uint32_t id;
@@ -97,7 +97,7 @@ private:
 public:
 
 	uint8_t flag;
-	SERIAL icon;
+	uint32_t icon;
 
 	cCreatureInfo();
 	~cCreatureInfo();

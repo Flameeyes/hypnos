@@ -143,7 +143,7 @@ cItem::cItem()
 \brief Constructor with serial known
 \todo a check to ensure nextSerial() will still be valid even after adding this one 
 */
-cItem::cItem( SERIAL ser )
+cItem::cItem( uint32_t ser )
 {
 
 	setSerial32( ser );
@@ -502,7 +502,7 @@ bool cItem::doDecay()
 		{
 			if ( getMultiSerial32() == INVALID )
 			{
-				P_ITEM pi_multi = findmulti(getPosition());
+				pItem pi_multi = findmulti(getPosition());
 				if ( ISVALIDPI(pi_multi) )
 				{
 					if ( pi_multi->more4 == 0 )
@@ -527,7 +527,7 @@ bool cItem::doDecay()
 			si.fillItemsInContainer( this, false );
 			for( si.rewind(); !si.isEmpty(); si++ )
 			{
-				P_ITEM pj = si.getItem();
+				pItem pj = si.getItem();
 				if( ISVALIDPI(pj) )
 				{
 					pj->setContainer(0);
@@ -551,7 +551,7 @@ void cItem::explode(NXWSOCKET  s)
 
 	unsigned int dmg=0,len=0;
 
-	P_CHAR pc_current=MAKE_CHAR_REF(currchar[s]);
+	pChar pc_current=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc_current);
 
 	if(!isInWorld())
@@ -563,7 +563,7 @@ void cItem::explode(NXWSOCKET  s)
 	NxwItemWrapper si;
 	si.fillItemsNearXYZ( getPosition(), 5, true );
     for( si.rewind(); !si.isEmpty(); si++ ) {
-		P_ITEM p_nearbie=si.getItem();
+		pItem p_nearbie=si.getItem();
 		if(ISVALIDPI(p_nearbie) && p_nearbie->type == ITYPE_POTION && p_nearbie->morey == 3) { //It's an explosion potion!
 			p_nearbie->explode(s);
     	}
@@ -591,7 +591,7 @@ void cItem::explode(NXWSOCKET  s)
 	sc.fillCharsNearXYZ( getPosition(), len, true );
 	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
-		P_CHAR pc=sc.getChar();
+		pChar pc=sc.getChar();
 		if( ISVALIDPC(pc) ) {
 			pc->damage( dmg+(2-pc->distFrom(this)), DAMAGE_FIRE );
 		}
@@ -815,7 +815,7 @@ const float cItem::getWeightActual()
 	return (amount>1)? getWeight()*amount : getWeight();
 }
 
-bool LoadItemEventsFromScript (P_ITEM pi, char *script1, char *script2)
+bool LoadItemEventsFromScript (pItem pi, char *script1, char *script2)
 {
 
 #define CASEITEMEVENT( NAME, ID ) 	else if (!(strcmp(NAME,script1))) pi->amxevents[ID] = newAmxEvent(script2);
@@ -914,7 +914,7 @@ void cItem::Refresh()
 	for ( sw.rewind(); !sw.isEmpty(); sw++ ) {
 		NXWCLIENT ps_w = sw.getClient();
 		if ( ps_w != NULL )
-			ps_w->sendRemoveObject(static_cast<P_OBJECT>(this));
+			ps_w->sendRemoveObject(static_cast<pObject>(this));
 	}
 
 	//first check: let's check if it's on the ground....

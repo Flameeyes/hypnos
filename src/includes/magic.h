@@ -81,7 +81,7 @@ namespace magic {
 	*/
 	class cPolymorphMenu : public cIconListMenu {
 	public:
-		cPolymorphMenu( P_CHAR pc );
+		cPolymorphMenu( pChar pc );
 		virtual void handleButton( NXWCLIENT ps, cClientPacket* pkg  );
 	};
 
@@ -91,7 +91,7 @@ namespace magic {
 	*/
 	class cCreateFoodMenu : public cIconListMenu {
 	public:
-		cCreateFoodMenu( P_CHAR pc );
+		cCreateFoodMenu( pChar pc );
 		virtual void handleButton( NXWCLIENT ps, cClientPacket* pkg  );
 	};
 
@@ -101,7 +101,7 @@ namespace magic {
 	*/
 	class cSummonCreatureMenu : public cIconListMenu {
 	public:
-		cSummonCreatureMenu( P_CHAR pc );
+		cSummonCreatureMenu( pChar pc );
 		virtual void handleButton( NXWCLIENT ps, cClientPacket* pkg  );
 	};
 
@@ -239,15 +239,15 @@ namespace magic {
 
 	extern g_Spell g_Spells[MAX_SPELLS];
 
-	bool checkMagicalSpeech( P_CHAR pc, char* speech );
+	bool checkMagicalSpeech( pChar pc, char* speech );
 	bool beginCasting (SpellId num, NXWCLIENT s, CastingType type);
 	SpellId spellNumberFromScrollId(int id);
-	void castSpell(SpellId spellnumber, TargetLocation& dest, P_CHAR src = NULL, int flags = 0, int param = 0);
-	void castAreaAttackSpell (int x, int y, SpellId spellnum, P_CHAR pcaster = NULL);
+	void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src = NULL, int flags = 0, int param = 0);
+	void castAreaAttackSpell (int x, int y, SpellId spellnum, pChar pcaster = NULL);
 	void loadSpellsFromScript();
 	bool spellRequiresTarget(SpellId spellnum);
-	P_CHAR summon (P_CHAR owner, int npctype, int duration, bool bTamed = true, int x = INVALID, int y = INVALID, int z = INVALID);
-	bool checkGateCollision( P_CHAR pc );
+	pChar summon (pChar owner, int npctype, int duration, bool bTamed = true, int x = INVALID, int y = INVALID, int z = INVALID);
+	bool checkGateCollision( pChar pc );
 	uint32_t getCastingTime( SpellId spell );
 
 

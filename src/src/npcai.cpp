@@ -26,7 +26,7 @@ namespace npcs {
 /*!
 \author Luxor
 */
-static void npcBeginCasting( P_CHAR pc, P_CHAR target, magic::SpellId spell )
+static void npcBeginCasting( pChar pc, pChar target, magic::SpellId spell )
 {
 	VALIDATEPC( pc );
 	VALIDATEPC( target );
@@ -52,7 +52,7 @@ static void npcBeginCasting( P_CHAR pc, P_CHAR target, magic::SpellId spell )
 
 int spherespells[256][256];
 
-void npcMagicAttack(P_CHAR pc_att, P_CHAR pc_def)
+void npcMagicAttack(pChar pc_att, pChar pc_def)
 {
 	VALIDATEPC(pc_att);
 	VALIDATEPC(pc_def);
@@ -204,7 +204,7 @@ void initNpcSpells ()
 }
 #undef CHECKSPELL
 
-void npcCastSpell(P_CHAR pc_att, P_CHAR pc_def)
+void npcCastSpell(pChar pc_att, pChar pc_def)
 {
 	VALIDATEPC(pc_att);
 	VALIDATEPC(pc_def);
@@ -322,10 +322,10 @@ void npcCastSpell(P_CHAR pc_att, P_CHAR pc_def)
 /*!
 \author Luxor
 */
-void checkAI(P_CHAR pc) //Lag Fix -- Zippy
+void checkAI(pChar pc) //Lag Fix -- Zippy
 {
 	VALIDATEPC(pc);
-	P_CHAR pc_att = pc;	//Dirty... but now we can use NPC_CASTSPELL macro :P
+	pChar pc_att = pc;	//Dirty... but now we can use NPC_CASTSPELL macro :P
 	if ( !pc->npc ) return;
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	if ( !TIMEOUT( pc->nextAiCheck ) )
@@ -337,7 +337,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 
 		NxwCharWrapper sc;
 		sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
-		SERIAL set = amxSet::create();
+		uint32_t set = amxSet::create();
 		amxSet::copy( set, sc );
 
 		g_bByPass = false;
@@ -363,7 +363,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 				NxwCharWrapper sc;
 				sc.fillCharsNearXYZ( pc->getPosition(), 3, true, true );
 				for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-					P_CHAR pj=sc.getChar();
+					pChar pj=sc.getChar();
 					if (pj->getSerial32() == pc->getSerial32()) continue; //Luxor
 
 					if( pj->dead )
@@ -390,7 +390,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
-				P_CHAR pj=sc.getChar();
+				pChar pj=sc.getChar();
 
 				if ( !ISVALIDPC(pj) || !pj->dead )
 			  		continue;
@@ -442,8 +442,8 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 #ifdef SPAR_NEW_WR_SYSTEM
 			pointers::pCharVector *pcv = pointers::getCharsNearLocation( pc, VISRANGE, pointers::NPC );
 			pointers::pCharVectorIt it( pcv->begin() ), end( pcv->end() );
-			P_CHAR	pj = 0;
-			P_CHAR	pc_target = NULL;
+			pChar	pj = 0;
+			pChar	pc_target = NULL;
 			int32_t	att_value = 0, curr_value = 0;
 			while( it != end )
 			{
@@ -482,11 +482,11 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 #else
 			NxwCharWrapper sc;
 			sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
-			P_CHAR pc_target = NULL;
+			pChar pc_target = NULL;
 			int32_t att_value = 0, curr_value = 0;
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
-				P_CHAR pj=sc.getChar();
+				pChar pj=sc.getChar();
 				if (!ISVALIDPC(pj) || pc->getSerial32()==pj->getSerial32() )
 					continue;
 
@@ -526,7 +526,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 			sc.fillCharsNearXYZ( pc->getPosition(), 3, true, true );
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-				P_CHAR pj=sc.getChar();
+				pChar pj=sc.getChar();
 				if ( !ISVALIDPC( pj ) || !pj->dead )
 					continue;
 				if (pj->getSerial32() == pc->getSerial32()) continue; //Luxor
@@ -559,7 +559,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
-				P_CHAR pj=sc.getChar();
+				pChar pj=sc.getChar();
 				if (!ISVALIDPC(pj)) continue;
 
 				if (pj->getSerial32() == pc->getSerial32()) continue; //Luxor
@@ -591,7 +591,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 			int x, y;
 			if ( pc->npcWander == WANDER_FOLLOW )
 			{
-				P_CHAR guardcaller = pointers::findCharBySerial( pc->ftargserial );
+				pChar guardcaller = pointers::findCharBySerial( pc->ftargserial );
 
 				if ( (!(ISVALIDPC( guardcaller ))) || TIMEOUT( pc->antiguardstimer ) || pc->distFrom( guardcaller ) <= 1 )
 				{
@@ -620,7 +620,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
-				P_CHAR character=sc.getChar();
+				pChar character=sc.getChar();
 				if ( ISVALIDPC( character ) )
 				{
 					if ( character->getSerial32() != pc->getSerial32() &&
@@ -660,7 +660,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
-				P_CHAR pj=sc.getChar();
+				pChar pj=sc.getChar();
 
 				if (pj->getSerial32() == pc->getSerial32()) continue; //Luxor
 				if( ISVALIDPC(pj) && pj->npc && pj->npcaitype==NPCAI_EVIL)
@@ -679,7 +679,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
-				P_CHAR pj=sc.getChar();
+				pChar pj=sc.getChar();
 				if (!ISVALIDPC(pj)) continue;
 				if (pj->getSerial32() == pc->getSerial32()) continue; //Luxor
 				if ( pj->IsInvul() || pj->dead || (pj->npcaitype != NPCAI_EVIL && !pj->IsCriminal() && !pj->IsMurderer())) continue;
@@ -697,12 +697,12 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
-				P_CHAR pj=sc.getChar();
+				pChar pj=sc.getChar();
 				if (!(ISVALIDPC(pj))) continue;
 				if (pj->npc || pj->dead || pj->guarded == false) continue;
 				if (pc->getOwnerSerial32() == pj->getSerial32()) {
 					if (pj->IsOnline()) {
-						P_CHAR pc_attacker = pointers::findCharBySerial(pj->attackerserial);
+						pChar pc_attacker = pointers::findCharBySerial(pj->attackerserial);
 						VALIDATEPC(pc_attacker);
 						if (pc->distFrom(pc_attacker) <= 10) {
 							npcattacktarget(pc, pc_attacker);
@@ -723,7 +723,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 
 				for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
-					P_CHAR pj=sc.getChar();
+					pChar pj=sc.getChar();
 					if ( !pj->IsInvul() && !pj->dead && pj->hidden == UNHIDDEN && pj->npcaitype != NPCAI_MADNESS) {
 						pc->fight(pj);
 						return;
@@ -741,7 +741,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 
-				P_CHAR pj=sc.getChar();
+				pChar pj=sc.getChar();
 				if (!(ISVALIDPC(pj))) continue;
 				if (pj->dead ||
 						pj->IsInvul() ||
@@ -806,7 +806,7 @@ void checkAI(P_CHAR pc) //Lag Fix -- Zippy
 			WarnOut("cCharStuff::CheckAI-> Error npc %i ( %08x ) has invalid AI type %i\n", pc->getSerial32(), pc->getSerial32(), pc->npcaitype);
 			return;
 	}	//switch(pc->npcaitype)
-} //void checkAI(unsigned int currenttime, P_CHAR pc)
+} //void checkAI(unsigned int currenttime, pChar pc)
 
 
 } //namespace

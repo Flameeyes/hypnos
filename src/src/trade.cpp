@@ -28,7 +28,7 @@
 
 
 // this is a q&d fix for 'sell price higher than buy price' bug (Duke, 30.3.2001)
-static bool items_match(P_ITEM pi1,P_ITEM pi2)
+static bool items_match(pItem pi1,pItem pi2)
 {
 	VALIDATEPIR(pi1,false);
 	VALIDATEPIR(pi2,false);
@@ -48,22 +48,22 @@ void sellaction(NXWSOCKET s)
 	if ( s < 0 || s >= now )
 		return;
 
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPC(pc);
 
-	P_ITEM npa=NULL, npb=NULL, npc=NULL;
+	pItem npa=NULL, npb=NULL, npc=NULL;
 	int i, amt, value=0, totgold=0;
 
 	if (buffer[s][8]!=0)
 	{
-		P_CHAR pc_n=pointers::findCharBySerPtr(buffer[s]+3);
+		pChar pc_n=pointers::findCharBySerPtr(buffer[s]+3);
 		VALIDATEPC(pc_n);
 
 		NxwItemWrapper si;
 		si.fillItemWeared( pc_n, true, true, false );
 		for( si.rewind(); !si.isEmpty(); si++ )
 		{
-			P_ITEM pi=si.getItem();
+			pItem pi=si.getItem();
 			if(ISVALIDPI(pi)) {
 				if (pi->layer == LAYER_TRADE_RESTOCK) npa=pi;	// Buy Restock container
 				if (pi->layer == LAYER_TRADE_NORESTOCK) npb=pi;	// Buy no restock container
@@ -73,7 +73,7 @@ void sellaction(NXWSOCKET s)
 
 		// Pre Calculate Total Amount of selling items to STOPS if the items if greater than SELLMAXITEM - Magius(CHE)
 
-		P_ITEM join=NULL;
+		pItem join=NULL;
 		uint32_t maxsell=0;
 		i=buffer[s][8];
 		if (i>256) return;
@@ -92,7 +92,7 @@ void sellaction(NXWSOCKET s)
 
 		for (i=0;i<buffer[s][8];i++)
 		{
-			P_ITEM pSell=pointers::findItemBySerPtr(buffer[s]+9+(6*i));	// the item to sell
+			pItem pSell=pointers::findItemBySerPtr(buffer[s]+9+(6*i));	// the item to sell
 			if (!ISVALIDPI(pSell))
 				continue;
 			amt=ShortFromCharPtr(buffer[s]+9+(6*i)+4);
@@ -110,7 +110,7 @@ void sellaction(NXWSOCKET s)
 				si2.fillItemsInContainer( npa, false );
 				for( si2.rewind(); !si2.isEmpty(); si2++ )
 				{
-					P_ITEM pi=si2.getItem();
+					pItem pi=si2.getItem();
 					if( ISVALIDPI(pi) && items_match(pi,pSell))
 						join=pi;
 				}
@@ -122,13 +122,13 @@ void sellaction(NXWSOCKET s)
 				si2.fillItemsInContainer( npc, false );
 				for( si2.rewind(); !si2.isEmpty(); si2++ )
 				{
-					P_ITEM pi=si2.getItem();
+					pItem pi=si2.getItem();
 					if( ISVALIDPI(pi) && items_match(pi,pSell))
 					{
 						value = pi->value;
 						value = pSell->calcValue(value);
 						if (SrvParms->trade_system==1)
-							value=calcGoodValue(s,DEREF_P_ITEM(pSell),value,1); // Fixed for adv trade --- by Magius(CHE) §
+							value=calcGoodValue(s,DEREF_pItem(pSell),value,1); // Fixed for adv trade --- by Magius(CHE) §
 						break;	// let's take the first match
 					}
 				}
@@ -156,7 +156,7 @@ void sellaction(NXWSOCKET s)
 
 					pSell->setContainer( npb );
 					if (pSell->amount!=amt)
-						Commands::DupeItem(s, DEREF_P_ITEM(pSell), pSell->amount-amt);
+						Commands::DupeItem(s, DEREF_pItem(pSell), pSell->amount-amt);
 				}
 			}
 		}
@@ -174,7 +174,7 @@ void sellaction(NXWSOCKET s)
 
 ///////////////////////////////////////////////////////////////////
 // Function name     : tradestart
-// Return type       : P_ITEM
+// Return type       : pItem
 // Author            : Luxor
 pItem tradestart(pChar pc1, pChar pc2)
 {
@@ -258,10 +258,10 @@ pItem tradestart(pChar pc1, pChar pc2)
 
 void clearalltrades()
 {
-/*        P_ITEM pi = NULL;
-        P_ITEM pj = NULL;
-        P_CHAR pc = NULL;
-        P_ITEM pack = NULL;
+/*        pItem pi = NULL;
+        pItem pj = NULL;
+        pChar pc = NULL;
+        pItem pack = NULL;
         uint32_t i = 0;
         for (i = 0; i < itemcount; i++) {
                 pi = MAKE_ITEM_REF(i);
@@ -297,13 +297,13 @@ void restock(bool total)
         //Luxor: new cAllObjects system -> this should be changed soon... too slow!!
 
 	cAllObjectsIter objs;
-	P_ITEM pi;
+	pItem pi;
 	for( objs.rewind(); !objs.IsEmpty(); objs++ )
 	{
 		if( isCharSerial( objs.getSerial() ) )
 			continue;
 
-		pi = (P_ITEM)(objs.getObject());
+		pi = (pItem)(objs.getObject());
 
 		if(!ISVALIDPI(pi) || pi->layer!=0x1A )
 			continue;
@@ -311,7 +311,7 @@ void restock(bool total)
 		NxwItemWrapper si;
 		si.fillItemsInContainer( pi, false ); //ndEndy We don't need subcontainer right?
 		for( si.rewind(); !si.isEmpty(); si++ ) {
-			P_ITEM pj=si.getItem();
+			pItem pj=si.getItem();
 			if( !ISVALIDPI(pj) || !pj->restock )
 				continue;
 
@@ -363,7 +363,7 @@ void cRestockMng::doRestock()
 
 	while( ( --count>0 ) && ( !needrestock.empty() ) ) {
 
-		P_ITEM pi= pointers::findItemBySerial( needrestock.front() );
+		pItem pi= pointers::findItemBySerial( needrestock.front() );
 		this->needrestock.pop();
 		if( ISVALIDPI(pi) && pi->layer==LAYER_TRADE_RESTOCK  ) {
 
@@ -371,7 +371,7 @@ void cRestockMng::doRestock()
 			si.fillItemsInContainer( pi, false ); //ndEndy We don't need subcontainer right?
 			for( si.rewind(); !si.isEmpty(); si++ ) {
 
-				P_ITEM pj=si.getItem();
+				pItem pj=si.getItem();
 				if( !ISVALIDPI(pj) || ( pj->restock <= 0 ) )
 					continue;
 
@@ -399,7 +399,7 @@ void cRestockMng::doRestockAll()
 
 	while( !needrestock.empty() ) {
 
-		P_ITEM pi= pointers::findItemBySerial( needrestock.front() );
+		pItem pi= pointers::findItemBySerial( needrestock.front() );
 		this->needrestock.pop();
 		if( ISVALIDPI(pi) && pi->layer==LAYER_TRADE_RESTOCK ) {
 
@@ -407,7 +407,7 @@ void cRestockMng::doRestockAll()
 			si.fillItemsInContainer( pi, false ); //ndEndy We don't need subcontainer right?
 			for( si.rewind(); !si.isEmpty(); si++ ) {
 
-				P_ITEM pj=si.getItem();
+				pItem pj=si.getItem();
 				if( !ISVALIDPI(pj) || ( pj->restock <= 0 ) )
 					continue;
 
@@ -426,7 +426,7 @@ void cRestockMng::doRestockAll()
 
 }
 
-void cRestockMng::addNewRestock( P_ITEM pi )
+void cRestockMng::addNewRestock( pItem pi )
 {
 	VALIDATEPI(pi);
 	this->needrestock.push( pi->getSerial32() );

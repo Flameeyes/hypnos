@@ -33,8 +33,8 @@ void BountyAskVictim( int nVictimSerial, int nMurdererSerial )
   int err2;
   char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
-  P_CHAR pcc_nVictimIdx=MAKE_CHARREF_LOGGED(nVictimIdx,err);
-  P_CHAR pcc_nMurderIdx=MAKE_CHARREF_LOGGED(nMurderIdx,err2);
+  pChar pcc_nVictimIdx=MAKE_CHARREF_LOGGED(nVictimIdx,err);
+  pChar pcc_nMurderIdx=MAKE_CHARREF_LOGGED(nMurderIdx,err2);
 
   if (err || err2) return;
 
@@ -81,7 +81,7 @@ void BountyAskVictim( int nVictimSerial, int nMurdererSerial )
 // RETURNS:     TRUE  Bounty post successfully created
 //              FALSE Bounty post could not be created
 //////////////////////////////////////////////////////////////////////////////
-bool BountyCreate( P_CHAR pc, int nRewardAmount )
+bool BountyCreate( pChar pc, int nRewardAmount )
 {
 	VALIDATEPCR(pc,false);
 
@@ -123,7 +123,7 @@ bool BountyCreate( P_CHAR pc, int nRewardAmount )
 } // BountyCreate()
 
 
-bool BountyDelete( P_CHAR pc)
+bool BountyDelete( pChar pc)
 {
 	VALIDATEPCR(pc,false);
 	bool  bReturn = true;
@@ -137,13 +137,13 @@ bool BountyDelete( P_CHAR pc)
 } // BountyDelete()
 
 
-bool BountyWithdrawGold( P_CHAR pVictim, int nAmount )
+bool BountyWithdrawGold( pChar pVictim, int nAmount )
 {
 	int has = pVictim->countBankGold();
 	if (has < nAmount)
 		return false;
 
-	P_ITEM pBox = pVictim->GetBankBox();
+	pItem pBox = pVictim->GetBankBox();
 	if (!pBox)
 		return false;	// shouldn't happen coz it's needed in CountBankGold...
 

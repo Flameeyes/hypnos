@@ -29,7 +29,7 @@ cAreas::~cAreas()
 }
 
 
-SERIAL cAreas::insert( Area& newarea, SERIAL index )
+uint32_t cAreas::insert( Area& newarea, SERIAL index )
 {
 	AREA_DB::iterator iter( this->allareas.find( index ) );
 	if( iter==this->allareas.end() && index!=INVALID ) {
@@ -58,7 +58,7 @@ void cAreas::loadareas()
 	do
 	{
 		safedelete(iter);
-		SERIAL current=idxarea;
+		uint32_t current=idxarea;
 		iter = Scripts::Areas->getNewIterator("SECTION AREA %i", idxarea++);
 		if( iter )
 		{

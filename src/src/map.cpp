@@ -91,7 +91,7 @@ Location cLine::getPosAtY( uint32_t y )
 \brief Looks if a char can walk on the given Location
 \return The next z value of char position, illegal_z if the tile isn't walkable
 */
-int8_t isWalkable( Location pos, uint8_t flags, P_CHAR pc )
+int8_t isWalkable( Location pos, uint8_t flags, pChar pc )
 {
 	int8_t zRes = 0;
 	int32_t height = 0;
@@ -101,7 +101,7 @@ int8_t isWalkable( Location pos, uint8_t flags, P_CHAR pc )
         //
 	if ( flags & WALKFLAG_DYNAMIC ) {
 		NxwItemWrapper si;
-		P_ITEM pi = NULL;
+		pItem pi = NULL;
 		si.fillItemsAtXY( pos );
 
 		for( si.rewind(); !si.isEmpty(); si++ )	{
@@ -207,7 +207,7 @@ int8_t isWalkable( Location pos, uint8_t flags, P_CHAR pc )
 	//
 	if ( flags & WALKFLAG_CHARS ) {
 		NxwCharWrapper sc;
-		P_CHAR pc_curr = NULL;
+		pChar pc_curr = NULL;
 		sc.fillCharsAtXY( pos );
 
 		for( sc.rewind(); !sc.isEmpty(); sc++ )	{
@@ -343,7 +343,7 @@ int8_t dynamicElevation( Location pos )
 	NxwItemWrapper si;
 	si.fillItemsAtXY( pos.x, pos.y );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
-		P_ITEM pi = si.getItem();
+		pItem pi = si.getItem();
 
 		temp_z = pi->getPosition().z + tileHeight( pi->getId() );
 		if ( temp_z < ( pos.z + MaxZstep ) && temp_z > max_z )
@@ -365,7 +365,7 @@ int8_t getHeight( Location pos )
 	NxwItemWrapper si;
 	si.fillItemsAtXY( pos.x, pos.y );
 	for( si.rewind(); !si.isEmpty(); si++ ) {
-		P_ITEM pi = si.getItem();
+		pItem pi = si.getItem();
 
 		data::seekTile( pi->getId(), tile );
 
@@ -461,7 +461,7 @@ int8_t getHeight( Location pos )
 /*!
 \author Luxor
 */
-void getMultiCorners( P_ITEM pi, uint32_t &x1, uint32_t &y1, uint32_t &x2, uint32_t &y2 )
+void getMultiCorners( pItem pi, uint32_t &x1, uint32_t &y1, uint32_t &x2, uint32_t &y2 )
 {
 	VALIDATEPI( pi );
 
