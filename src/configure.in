@@ -10,11 +10,18 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AC_PROG_RANLIB
 AM_PROG_LIBTOOL
 
 AM_DL()
 AM_PATH_WEFTS()
+
+AC_ICC_COMPILER()
+
+if test "$is_icc" == "yes"; then
+	WARNS="-wd383 -wd981"
+else
+	WARNS="-Wno-reorder -Wno-switch-enum "
+fi
 
 AC_OBJEXT
 AC_EXEEXT
@@ -84,7 +91,7 @@ AC_CHECK_FUNCS([basename ftime gettimeofday memset munmap strchr strstr strtol s
 
 # Adding include dirs and WEFTS_ variables
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
-CXXFLAGS="$CXXFLAGS $INCLUDES -Wall -Wno-reorder -Wno-switch-enum $WEFTS_CXXFLAGS"
+CXXFLAGS="$CXXFLAGS $INCLUDES $WEFTS_CXXFLAGS -Wall $WARNS"
 CFLAGS="$CXXFLAGS"
 LDFLAGS="$LDFLAGS $WEFTS_LIBS"
 
