@@ -541,8 +541,7 @@ namespace Commands
 			pItem pi_to = new cItem(cItem::nextSerial());
 			(*pi_to)=(*pi_from);
 
-			pi_to->setContainer( pack );
-			pi_to->SetRandPosInCont( pack );
+			pack->AddItem(pi_to);
 
 			pi_to->setAmount(amount);
 

@@ -501,10 +501,10 @@ namespace item
 		}
 		else
 		{
-			if( cont!=NULL ) {
+			if( cont ) {
 				pi->setCont( cont );
 				if( isItemSerial( cont->getSerial32() ) )
-					pi->SetRandPosInCont( (P_ITEM)cont );
+					cont->AddItem(pi);
 				pi->Refresh();
 			}
 			else

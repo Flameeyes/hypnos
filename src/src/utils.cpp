@@ -144,8 +144,7 @@ void cScriptCommand::execute( pClient client )
 
 		pItem pi = cItem::addByID(str2num(param), 1, p.c_str(), 0, Location(100, 100, 100));
 		if (!pi) return;
-		pi->setContainer(pb);
-		pi->SetRandPosInCont(pb);
+		pb->AddItem(pi);
 		pi->refresh();
 	} else if ( command == "@CALL" ) {
 		AmxFunction::g_prgOverride->CallFn(param.c_str());

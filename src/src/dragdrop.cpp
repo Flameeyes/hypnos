@@ -1203,8 +1203,7 @@ void dump_item(NXWCLIENT ps, PKGx08 *pp) // Item is dropped on ground or a chara
 						UpdateStatusWindow(s,pi);
 					}
 					if (ISVALIDPI(pc->getBackpack())) {
-						pi->setCont(pc->getBackpack());
-						pi->SetRandPosInCont(pc->getBackpack());
+						pc->getBackpack()->AddItem(pi);
 					} else {
 						pi->setContSerial( pi->getContSerial(true) );
 						pi->setPosition( pi->getOldPosition() );

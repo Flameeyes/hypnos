@@ -107,7 +107,7 @@ void cClient::showContainer(pItem pCont)
 	si.fillItemsInContainer( pCont, false, false );
 	SI32 count=si.size();
 
-	cPacketSendDrawContainer pk(pCont->getSerial(), pCont->getContGump());
+	cPacketSendDrawContainer pk(pCont->getSerial(), pCont->getGump());
 	sendPacket(&pk);
 
 	cPacketSendContainerItem pk2;

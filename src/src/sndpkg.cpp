@@ -2036,9 +2036,8 @@ void endtrade(SERIAL serial)
 		P_ITEM pj=si.getItem(); //</Luxor>
 		if (ISVALIDPI(pj))
 		{
-			pj->setContSerial(bp1->getSerial32());
+			bp1->AddItem(pj);
 
-			pj->SetRandPosInCont( bp1 );
 			if (s1!=INVALID)
 				pj->Refresh();
 		}
@@ -2052,9 +2051,8 @@ void endtrade(SERIAL serial)
 		P_ITEM pj=si2.getItem();
 		if (ISVALIDPI(pj))
 		{
-			pj->setContSerial( bp2->getSerial32() );
+			bp2->AddItem(pj);
 
-			pj->SetRandPosInCont( bp2 );
 			if (s2!=INVALID)
 				pj->Refresh();
 		}
