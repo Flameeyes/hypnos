@@ -122,10 +122,10 @@ public:
 	checking code
 */
 
-	inline static const bool isCorpse(uint16_t id)
+	inline static bool isCorpse(uint16_t id)
 	{ return id==0x2006; }
 
-	inline static const bool isTree(uint16_t id)
+	inline static bool isTree(uint16_t id)
 	{
 		return (id==0x0CD0 || id==0x0CD3 || id==0x0CD6 ||
 			id==0x0CD8 || id==0x0CDA || id==0x0CDD ||
@@ -139,7 +139,7 @@ public:
 	}
 
 	//! this is used in SwordTarget() to give kindling.
-	inline static const bool isTree2(uint16_t id)
+	inline static bool isTree2(uint16_t id)
 	{
 		return (id==0x0CD0 || id==0x0CD3 || id==0x0CD6 ||
 			id==0x0CD8 || id==0x0CDA || id==0x0CDD ||
@@ -148,13 +148,13 @@ public:
 			(id>=0x12B8 && id<=0x12BB) );
 	}
 
-	inline static const bool isLog(uint16_t id)
+	inline static bool isLog(uint16_t id)
 	{ return ( id>=0x1BDD && id<=0x1BE2 ); }
 
-	inline static const bool isShaft(uint16_t id)
+	inline static bool isShaft(uint16_t id)
 	{ return ( id>=0x1BD4 && id<=0x1BD6 ); }
 
-	inline static const bool isFeather(uint16_t id)
+	inline static bool isFeather(uint16_t id)
 	{ return ( id>=0x1BD1 && id<=0x1BD3 ); }
 
 	static const bool isHouse(uint16_t id);

@@ -13,6 +13,9 @@
 #ifndef __INLINES_H__
 #define __INLINES_H__
 
+#include "common_libs.h"
+#include "data.h"
+
 #ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #endif
@@ -153,8 +156,7 @@ inline void ShortToCharPtr(const uint16_t i, unsigned char *p)
 */
 inline bool isValidCoord( sPoint p )
 {
-	// return p.x < map_width*8 && p.y < map_height*8;
-	return false;
+	return p.x < map_width*8 && p.y < map_height*8;
 }
 
 /*!
