@@ -8,11 +8,9 @@
 
 #include "misc.h"
 
-void telltime( pClient ps )
+void telltime( pClient client )
 {
 	//!\todo Here we can use static const char* instead of these strcpy, and asprintf instead of sprintf
-
-	pClient client = ps->toInt();
 
 	char tstring[60];
 	char tstring2[60];
@@ -66,7 +64,7 @@ void telltime( pClient ps )
 		else sprintf(tstring,"%s in the morning.",tstring2);
 	}
 
-	sysmessage(s,tstring);
+	client->sysmessage(tstring);
 }
 
 /*!
@@ -217,7 +215,8 @@ void usepotion(pChar pc, pItem pi)
 
 	if ( ! pc ) return;
 
-	pClient client = pc->getSocket();
+	pPC tmp;
+	pClient client = (tmp = dynamic_cast<pPC>(pc))? tmp->getClient() : NULL;
 
 	switch(pi->morey)
 	{
@@ -227,11 +226,11 @@ void usepotion(pChar pc, pItem pi)
 		{
 		case 1:
 			tempfx::add(pc, pc, tempfx::SPELL_AGILITY, 5+RandomNum(1,10), 0, 0, 120);
-			pc->sysmsg("You feel more agile!");
+			if(client) client->sysmessage("You feel more agile!");
 			break;
 		case 2:
 			tempfx::add(pc, pc, tempfx::SPELL_AGILITY, 10+RandomNum(1,20), 0, 0, 120);
-			pc->sysmsg("You feel much more agile!");
+			if(client) client->sysmessage("You feel much more agile!");
 			break;
 		default:
 			ErrOut("Switch fallout. hypnos.cpp, usepotion()\n");
@@ -244,7 +243,7 @@ void usepotion(pChar pc, pItem pi)
 
 	case 2: // Cure Potion
 		if ( pc->getBody()->getPoisoned() == poisonNone )
-			pc->sysmsg("The potion had no effect.");
+			if(client) client->sysmessage("The potion had no effect.");
 		else
 		{
 			switch(pi->morez)
@@ -275,12 +274,12 @@ void usepotion(pChar pc, pItem pi)
 				return;
 			}
 			if (pc->poisoned)
-				pc->sysmsg("The potion was not able to cure this poison.");
+				if(client) client->sysmessage("The potion was not able to cure this poison.");
 			else
 			{
 				pc->staticFX(0x373A, 0, 15);
 				pc->playSFX(0x01E0); //cure sound - SpaceDog
-				pc->sysmsg("The poison was cured.");
+				if(client) client->sysmessage("The poison was cured.");
 			}
 		}
 		impowncreate(s,pc,1); //Lb, makes the green bar blue or the blue bar blue !
@@ -289,10 +288,10 @@ void usepotion(pChar pc, pItem pi)
 	case 3: {// Explosion Potion
 		if (region[pc->region].priv&0x01) // Ripper 11-14-99
 		{
-			pc->sysmsg(" You cant use that in town!");
+			if(client) client->sysmessage(" You cant use that in town!");
 			return;
 		}
-		pc->sysmsg("Now would be a good time to throw it!");
+		if(client) client->sysmessage("Now would be a good time to throw it!");
 		tempfx::add(pc, pc, tempfx::EXPLOTIONMSG, 0, 1, 3);
 		tempfx::add(pc, pc, tempfx::EXPLOTIONMSG, 0, 2, 2);
 		tempfx::add(pc, pc, tempfx::EXPLOTIONMSG, 0, 3, 1);
@@ -302,7 +301,7 @@ void usepotion(pChar pc, pItem pi)
 		targ->code_callback=target_expPotion;
 		targ->buffer[0]= pi->getSerial();
 		targ->send( getClientFromSocket(s) );
-		sysmessage( s, "*throw*" );
+		client->sysmessage( "*throw*" );
 		return;
 	}
 	case 4: // Heal Potion
@@ -310,15 +309,15 @@ void usepotion(pChar pc, pItem pi)
 		{
 		case 1:
 			pc->hp=qmin(pc->hp+5+RandomNum(1,5)+pc->skill[17]/100,pc->getStrength());
-			pc->sysmsg("You feel better!");
+			if(client) client->sysmessage("You feel better!");
 			break;
 		case 2:
 			pc->hp=qmin(pc->hp+15+RandomNum(1,10)+pc->skill[17]/50,pc->getStrength());
-			pc->sysmsg("You feel more healty!");
+			if(client) client->sysmessage("You feel more healty!");
 			break;
 		case 3:
 			pc->hp=qmin(pc->hp+20+RandomNum(1,20)+pc->skill[17]/40, pc->getStrength());
-			pc->sysmsg("You feel much more healty!");
+			if(client) client->sysmessage("You feel much more healty!");
 			break;
 
 		default:
@@ -326,7 +325,7 @@ void usepotion(pChar pc, pItem pi)
 			return;
 		}
 
-		if (s!=INVALID)
+		if (client)
 			pc->updateStats(0);
 
 		pc->staticFX(0x376A, 9, 6); // Sparkle effect
@@ -347,7 +346,7 @@ void usepotion(pChar pc, pItem pi)
 		pc->poisonwearofftime=getclock()+(MY_CLOCKS_PER_SEC*SrvParms->poisontimer); // lb, poison wear off timer setting
 		impowncreate(s,pc,1); //Lb, sends the green bar !
 		pc->playSFX(0x0246); //poison sound - SpaceDog
-		pc->sysmsg("You poisoned yourself! *sigh*"); //message -SpaceDog
+		if(client) client->sysmessage("You poisoned yourself! *sigh*"); //message -SpaceDog
 		break;
 
 	case 7: // Refresh Potion
@@ -355,12 +354,12 @@ void usepotion(pChar pc, pItem pi)
 		{
 			case 1:
 				pc->stm=qmin(pc->stm+20+RandomNum(1,10), pc->dx);
-				pc->sysmsg("You feel more energetic!");
+				if(client) client->sysmessage("You feel more energetic!");
 				break;
 
 			case 2:
 				pc->stm=qmin(pc->stm+40+RandomNum(1,30), pc->dx);
-				pc->sysmsg("You feel much more energetic!");
+				if(client) client->sysmessage("You feel much more energetic!");
 				break;
 
 			default:
@@ -380,11 +379,11 @@ void usepotion(pChar pc, pItem pi)
 		{
 		case 1:
 			tempfx::add(pc, pc, tempfx::SPELL_STRENGHT, 5+RandomNum(1,10), 0, 0, 120);
-			pc->sysmsg("You feel more strong!");
+			if(client) client->sysmessage("You feel more strong!");
 			break;
 		case 2:
 			tempfx::add(pc, pc, tempfx::SPELL_STRENGHT, 10+RandomNum(1,20), 0, 0, 120);
-			pc->sysmsg("You feel much more strong!");
+			if(client) client->sysmessage("You feel much more strong!");
 			break;
 		default:
 			ErrOut("Switch fallout. hypnos.cpp, usepotion()\n");
@@ -408,7 +407,7 @@ void usepotion(pChar pc, pItem pi)
 			ErrOut("Switch fallout. hypnos.cpp, usepotion()\n");
 			return;
 		}
-		if (s!=INVALID)
+		if (client)
 			pc->updateStats(1);
 		pc->staticFX(0x376A, 9, 6); // Sparkle effect
 		pc->playSFX(0x01E7); //agility sound - SpaceDog
@@ -416,10 +415,10 @@ void usepotion(pChar pc, pItem pi)
 
 	case 10: //LB's LSD potion, 5'th november 1999
 		if (pi->getId()!=0x1841) return; // only works with an special flask
-		if (s==INVALID) return;
+		if (client) return;
 		if( clientInfo[s]->lsd )
 		{
-			pc->sysmsg("no,no,no,cant you get enough ?");
+			if(client) client->sysmessage("no,no,no,cant you get enough ?");
 			return;
 		}
 		tempfx::add(pc, pc, tempfx::LSD, 60+RandomNum(1,120), 0, 0); // trigger effect

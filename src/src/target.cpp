@@ -84,7 +84,7 @@ bool cObjectTarget::isValid()
 
 void cObjectTarget::error(pClient client)
 {
-	ps->sysmsg( "Invalid object" );
+	client->sysmessage( "Invalid object" );
 }
 
 cCharTarget::cCharTarget() : cObjectTarget()
@@ -102,7 +102,7 @@ bool cCharTarget::isValid()
 
 void cCharTarget::error(pClient client)
 {
-	ps->sysmsg( "Invalid character" );
+	client->sysmessage( "Invalid character" );
 }
 
 cItemTarget::cItemTarget() : cObjectTarget()
@@ -120,7 +120,7 @@ bool cItemTarget::isValid()
 
 void cItemTarget::error(pClient client)
 {
-	ps->sysmsg( "Invalid item" );
+	client->sysmessage( "Invalid item" );
 }
 
 cLocationTarget::cLocationTarget() : cTarget( true )
@@ -138,7 +138,7 @@ bool cLocationTarget::isValid()
 
 void cLocationTarget::error(pClient client)
 {
-	ps->sysmsg( "Invalid location" );
+	client->sysmessage( "Invalid location" );
 }
 
 

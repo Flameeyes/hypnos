@@ -230,8 +230,8 @@ void weather(pClient client, unsigned char bolt)
 
 void pweather(pClient client)
 {
-	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return;
+	pChar pc = client->currChar();
+	if (!pc) return;
 
 	uint8_t packet[4] = { 0x65, 0xFF, 0x40, 0x20 };
 

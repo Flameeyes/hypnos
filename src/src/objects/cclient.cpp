@@ -398,7 +398,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 		if (isCharSerial(pi->getContSerial())) {
 			pChar pc_i = cSerializable::findCharBySerial(pi->getContSerial());
 			if ( pc_i )
-				pc_i->sysmsg("Warning, backpack bug located!");
+//				pc_i->getClient()->sysmessage("Warning, backpack bug located!");
 		}
 		if (client->isDragging()) {
         		client->resetDragging();

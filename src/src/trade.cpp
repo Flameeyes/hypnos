@@ -44,13 +44,13 @@ pItem tradestart(pPC pc1, pPC pc2)
         pItem bp1 = pc1->getBody()->getBackpack();
 	if ( ! bp1 )
 	{
-		pc1->sysmsg("Time to buy a backpack!");
+		pc1->getClient()->sysmessage("Time to buy a backpack!");
 		return NULL;
 	}
         pItem bp2 = pc2->getBody()->getBackpack();
 	if ( ! bp2 )
 	{
-		pc1->sysmsg("Time to buy a backpack!");
+		pc1->getClient()->sysmessage("Time to buy a backpack!");
 		return NULL;
 	}
 

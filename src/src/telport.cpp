@@ -88,6 +88,9 @@ void advancementobjects(pChar pc, int x, int allways)
 {
 	if ( ! pc ) return;
 
+	pPC tmp;
+	pClient client = (tmp = dynamic_cast<pPC>(tmp))? tmp-getClient(): NULL; 
+
 	char sect[512];
 	int loopexit=0;
 	std::string script1, script2;
@@ -331,7 +334,7 @@ void advancementobjects(pChar pc, int x, int allways)
 			while ((script1[0]!='}') && (++loopexit < MAXLOOPS) );
 			safedelete(iter);
 	}
-	else pc->sysmsg("You have already used an advancement object with this character.");
+	else client->sysmessage("You have already used an advancement object with this character.");
 }
 
 

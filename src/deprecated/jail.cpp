@@ -126,9 +126,15 @@ void prison::release( pChar releaser, pChar pc )
 	if ( ! pc ) return;
 	JAILEDVECTOR::iterator j = prison::jailed.begin();
 	while(  j!=prison::jailed.end() && (*j).serial!=pc->getSerial() )	j++;
+
+	pPC tmp;
+	pClient pc_client, releaser_client;
+	pc_client = (tmp = dynamic_cast<pPC>(pc))? tmp->getClient() : NULL;
+	releaser_client = (tmp = dynamic_cast<pPC>(releaser))? tmp->getClient() : NULL;
+
 	if(j==prison::jailed.end()) {
-		if( releaser )
-			releaser->sysmsg( "The player isn't jailed" );
+		if( releaser_client )
+			releaser_client->sysmessage( "The player isn't jailed" );
 		return;
 	}
 
@@ -142,14 +148,12 @@ void prison::release( pChar releaser, pChar pc )
 
 	if( ! releaser ) {
 		ServerLog.Write("%s is auto-released from jail \n", pc->getCurrentName().c_str());
-		pc->sysmsg("Your jail time is over!");
+		pc_client->sysmessage("Your jail time is over!");
 	}
 	else {
-		releaser->sysmsg("%s is now free", pc->getCurrentName().c_str());
-		pc->sysmsg( "%s have released you", releaser->getCurrentName().c_str() );
+		releaser_client->sysmessage("%s is now free", pc->getCurrentName().c_str());
+		pc_client->sysmessage( "%s have released you", releaser->getCurrentName().c_str() );
 	}
-
-
 }
 
 /*!

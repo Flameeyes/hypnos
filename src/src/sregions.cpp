@@ -268,7 +268,9 @@ void checkregion(pChar pc)
 {
 	if ( ! pc ) return;
 
-	pClient s;
+	pClient client;
+	pPC tmp;
+
 	int calcreg, j;
 
 	calcreg=calcRegionFromXY( pc->getPosition() );
@@ -283,18 +285,18 @@ void checkregion(pChar pc)
 			evt->execute();
 		}
 
-		s = pc->getSocket();
-		if (s!=INVALID)
+		client = (tmp = dynamic_cast<pPC>(pc))? tmp->getClient() : NULL;
+		if (client)
 		{
-			pweather(s);
+			pweather(client);
 			Calendar::commitSeason(pc);
 			if (region[ pc->region ].name[0]!=0)
 			{
-				pc->sysmsg("You have left %s.", region[ pc->region].name);
+				client->sysmessage("You have left %s.", region[ pc->region].name);
 			}
 			if (region[calcreg].name[0]!=0)
 			{
-				pc->sysmsg("You have entered %s.", region[calcreg].name);
+				client->sysmessage("You have entered %s.", region[calcreg].name);
 			}
 			j=strcmp(region[calcreg].guardowner, region[pc->region].guardowner);
 			if ( (region[calcreg].priv & RGNPRIV_GUARDED)!=(region[pc->region].priv & RGNPRIV_GUARDED) ||
@@ -303,29 +305,24 @@ void checkregion(pChar pc)
 				if (region[calcreg].priv & RGNPRIV_GUARDED)
 				{
 					if (region[calcreg].guardowner[0]==0)
-					{
-						pc->sysmsg("You are now under the protection of the guards.");
-					}
+						client->sysmessage("You are now under the protection of the guards.");
 					else
-					{
-						pc->sysmsg("You are now under the protection of %s guards.", region[calcreg].guardowner);
-					}
+						client->sysmessage("You are now under the protection of %s guards.", region[calcreg].guardowner);
 				}
 				else
 				{
 					if (region[pc->region].guardowner[0]==0)
-					{
-						pc->sysmsg("You are no longer under the protection of the guards.");
-					}
+						client->sysmessage("You are no longer under the protection of the guards.");
 					else
-					{
-						pc->sysmsg("You are no longer under the protection of %s guards.", region[pc->region].guardowner);
-					}
+						client->sysmessage("You are no longer under the protection of %s guards.", region[pc->region].guardowner);
 				}
 			}
 		}
+
 		pc->region=calcreg;
-		if (s!=INVALID) client->playMidi();
+
+		if (client)
+			 client->playMidi();
 	}
 }
 
@@ -365,12 +362,8 @@ void check_region_weatherchange ()
 
 	//here : we should commit weather changes to players
    wtype=0;
-	unsigned char packet[4] = { 0x65, 0xFF, 0x00, 0x20 };
 
-	for (i=0;i<now;i++) { if (clientInfo[i]->ingame) { Xsend(i, packet, 4);
-//AoS/	Network->FlushBuffer(i);
-} }
-
+	for (i=0;i<now;i++) { if (clientInfo[i]->ingame) { weather(i); } }
 	for (i=0;i<now;i++) { if (clientInfo[i]->ingame) { pweather(i); } }
 
    ConOut("[ OK ]\n");

@@ -28,9 +28,9 @@
 
 void CarveTarget(pClient client, int feat, int ribs, int hides, int fur, int wool, int bird)
 {
-        if ( s < 0 || s >= now )
-		return;
-	pChar pc = MAKE_CHAR_REF( currchar[s] );
+	if(!client) return;
+
+	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
 	pItem pi1 = item::CreateFromScript( "$item_blood_puddle" );
@@ -38,7 +38,7 @@ void CarveTarget(pClient client, int feat, int ribs, int hides, int fur, int woo
 
 	pi1->setId( 0x122A );
 
-	pItem pi2=MAKE_ITEM_REF(npcshape[0]);
+	pItem pi2 = cSerializable::findItemBySerial(npcshape[0]);
 	if(!pi2) return;
 
 	mapRegions->remove(pi1);
@@ -53,43 +53,43 @@ void CarveTarget(pClient client, int feat, int ribs, int hides, int fur, int woo
 		pItem pi=item::CreateFromScript( "$item_feathers", pc->getBackpack(), feat );
 		if ( ! pi ) return;
 		pi->Refresh();
-		sysmessage(s,"You pluck the bird and get some feathers.");
+		client->sysmessage("You pluck the bird and get some feathers.");
 	}
 	if(ribs>0)
 	{
 		pItem pi=item::CreateFromScript( "$item_cuts_of_raw_ribs", pc->getBackpack(), ribs );
 		if ( ! pi ) return;
 		pi->Refresh();
-		pc->sysmsg("You carve away some meat.");
+		client->sysmessage("You carve away some meat.");
 	}
 
 	if(hides>0)
 	{
 		pItem pi=item::CreateFromScript( "$item_hide", pc->getBackpack(), hides );
-		if ( ! pi ) return;
+		if (!pi) return;
 		pi->Refresh();
-		pc->sysmsg("You skin the corpse and get the hides.");
+		client->sysmessage("You skin the corpse and get the hides.");
 	}
 	if(fur>0)
 	{
 		pItem pi=item::CreateFromScript( "$item_hide", pc->getBackpack(), fur );
 		if ( ! pi ) return;
 		pi->Refresh();
-		pc->sysmsg("You skin the corpse and get the hides.");
+		client->sysmessage("You skin the corpse and get the hides.");
 	}
 	if(wool>0)
 	{
 		pItem pi=item::CreateFromScript( "$item_piles_of_wool", pc->getBackpack(), wool );
 		if ( ! pi ) return;
 		pi->Refresh();
-		pc->sysmsg("You skin the corpse and get some unspun wool.");
+		client->sysmessage("You skin the corpse and get some unspun wool.");
 	}
 	if(bird>0)
 	{
 		pItem pi = item::CreateFromScript( "$item_raw_bird", pc->getBackpack(), bird );
 		if ( ! pi ) return;
 		pi->Refresh();
-		pc->sysmsg("You carve away some raw bird.");
+		client->sysmessage("You carve away some raw bird.");
 	}
 
 	pc->getBody()->calcWeight();
@@ -102,24 +102,20 @@ void CarveTarget(pClient client, int feat, int ribs, int hides, int fur, int woo
 \note Human-corpse carving code added
 \note Scriptable carving product added
 */
-static void newCarveTarget(pClient client, ITEM i)
+static void newCarveTarget(pClient client, pItem pi3)
 {
+	pChar pc = client->currChar();
+	pItem pi1 = item::CreateFromScript( "$item_blood_puddle" );
+	if( !pc || !pi1 || !pi3 ) return;
+
 	bool deletecorpse=false;
 	char sect[512];
 
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
-	if ( ! pc ) return;
-
-	pItem pi1 = item::CreateFromScript( "$item_blood_puddle" );
-	if(!pi1) return;
 
 	pi1->setId( 0x122A );
 
-	pItem pi2=MAKE_ITEM_REF(npcshape[0]);
+	pItem pi2i = cSerializable::findItemBySerial(npcshape[0]);
 	if(!pi2) return;
-
-	pItem pi3=MAKE_ITEM_REF(i);
-	if(!pi3) return;
 
 	mapRegions->remove(pi1);
 	pi1->setPosition( pi2->getPosition() );
@@ -134,7 +130,7 @@ static void newCarveTarget(pClient client, ITEM i)
 	{
 		pc->modifyFame(ServerScp::g_nChopFameLoss); // Ripper..lose fame and karma and criminal.
 		pc->IncreaseKarma(+ServerScp::g_nChopKarmaLoss);
-		pc->sysmsg(("You lost some fame and karma!");
+		client->sysmessage("You lost some fame and karma!");
 		pc->setCrimGrey(ServerScp::g_nChopWillCriminal);//Blue and not attacker and not guild
 
 		//create the Head
@@ -282,15 +278,14 @@ static void newCarveTarget(pClient client, ITEM i)
     }
 }
 
-static void CorpseTarget(const pClient pC)
+static void CorpseTarget(pClient client)
 {
-	if (pC == NULL) return;
+	if (!client) return;
     int n=0;
-    pClient client = pC->toInt();
 
     uint32_t serial=LongFromCharPtr(buffer[s]+7);
     pItem pi = cSerializable::findItemBySerial( serial );
-    pChar pc=MAKE_CHAR_REF(currchar[s]);
+    pChar pc = client->currChar();
     if(pi)
     {
         if( pc->hasInRange(pi, 1) )
@@ -304,51 +299,51 @@ static void CorpseTarget(const pClient pC)
 
                 if(pi->morey || pi->carve>-1)
                 {//if specified, use enhanced carving system!
-                    newCarveTarget(s, i);//AntiChrist
+                    newCarveTarget(client, pi);//AntiChrist
                 } else
                 {//else use standard carving
                     switch(pi->amount) {
-                    case 0x01: CarveTarget(s, 0, 2, 0, 0, 0, 0); break; //Ogre
-                    case 0x02: CarveTarget(s, 0, 5, 0, 0, 0, 0); break; //Ettin
+                    case 0x01: CarveTarget(client, 0, 2, 0, 0, 0, 0); break; //Ogre
+                    case 0x02: CarveTarget(client, 0, 5, 0, 0, 0, 0); break; //Ettin
                     case 0x03: break;   //Zombie
                     case 0x04: break;   //Gargoyle
-                    case 0x05: CarveTarget(s,36, 0, 0, 0, 0, 1); break; //Eagle
-                    case 0x06: CarveTarget(s,25, 0, 0, 0, 0, 1); break; //Bird
-                    case 0x07: CarveTarget(s, 0, 1, 0, 0, 0, 0); break; //Orc w/axe
+                    case 0x05: CarveTarget(client,36, 0, 0, 0, 0, 1); break; //Eagle
+                    case 0x06: CarveTarget(client,25, 0, 0, 0, 0, 1); break; //Bird
+                    case 0x07: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Orc w/axe
                     case 0x08: break;   //Corpser
-                    case 0x09: CarveTarget(s, 0, 1, 0, 0, 0, 0); break; //Deamon
-                    case 0x0A: CarveTarget(s, 0, 1, 0, 0, 0, 0); break; //Deamon w/sword
+                    case 0x09: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Deamon
+                    case 0x0A: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Deamon w/sword
                     case 0x0B: break;   //-NULL-
-                    case 0x0C: CarveTarget(s, 0,19,20, 0, 0, 0); break; //Dragon (green)
+                    case 0x0C: CarveTarget(client, 0,19,20, 0, 0, 0); break; //Dragon (green)
                     case 0x0D: break;   //Air Elemental
                     case 0x0E: break;   //Earth Elemental
                     case 0x0F: break;   //Fire Elemental
                     case 0x10: break;   //Water Elemental
-                    case 0x11: CarveTarget(s, 0, 3, 0, 0, 0, 0); break; //Orc
-                    case 0x12: CarveTarget(s, 0, 5, 0, 0, 0, 0); break; //Ettin w/club
+                    case 0x11: CarveTarget(client, 0, 3, 0, 0, 0, 0); break; //Orc
+                    case 0x12: CarveTarget(client, 0, 5, 0, 0, 0, 0); break; //Ettin w/club
                     case 0x13: break; //-NULL-
                     case 0x14: break; //-NULL-
-                    case 0x15: CarveTarget(s, 0, 4,20, 0, 0, 0); break; //Giant Serpent
-                    case 0x16: CarveTarget(s, 0, 1, 0, 0, 0, 0); break; //Gazer
+                    case 0x15: CarveTarget(client, 0, 4,20, 0, 0, 0); break; //Giant Serpent
+                    case 0x16: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Gazer
                     case 0x17: break;   //-NULL-
                     case 0x18: break;   //Liche
                     case 0x19: break;   //-NULL-
                     case 0x1A: break;   //Ghoul
                     case 0x1B: break;   //-NULL-
                     case 0x1C: break;   //Spider
-                    case 0x1D: CarveTarget(s, 0, 1, 0, 1, 0, 0); break; //Gorilla
-                    case 0x1E: CarveTarget(s,50, 0, 0, 0, 0, 1); break; //Harpy
-                    case 0x1F: CarveTarget(s, 0, 1, 0, 0, 0, 0); break; //Headless
+                    case 0x1D: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Gorilla
+                    case 0x1E: CarveTarget(client,50, 0, 0, 0, 0, 1); break; //Harpy
+                    case 0x1F: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Headless
                     case 0x20: break;   //-NULL-
-                    case 0x21: CarveTarget(s, 0, 1,12, 0, 0, 0); break; //Lizardman
-                    case 0x0122: CarveTarget(s, 0,10, 0, 0, 0, 0); break; // Boar
-                    case 0x23: CarveTarget(s, 0, 1,12, 0, 0, 0); break; //Lizardman w/spear
-                    case 0x24: CarveTarget(s, 0, 1,12, 0, 0, 0); break; //Lizardman w/mace
+                    case 0x21: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Lizardman
+                    case 0x0122: CarveTarget(client, 0,10, 0, 0, 0, 0); break; // Boar
+                    case 0x23: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Lizardman w/spear
+                    case 0x24: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Lizardman w/mace
                     case 0x25: break;   //-NULL-
                     case 0x26: break;   //-NULL-
-                    case 0x27: CarveTarget(s, 0, 1, 0, 0, 0, 0); break; //Mongbat
+                    case 0x27: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Mongbat
                     case 0x28: break;   //-NULL-
-                    case 0x29: CarveTarget(s, 0, 1, 0, 0, 0, 0); break; //Orc w/club
+                    case 0x29: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Orc w/club
                     case 0x2A: break;   //Ratman
                     case 0x2B: break;   //-NULL-
                     case 0x2C: break;   //Ratman w/axe
@@ -359,81 +354,81 @@ static void CorpseTarget(const pClient pC)
                     case 0x31: break;   //-NULL-
                     case 0x32: break;   //Skeleton
                     case 0x33: break;   //Slime
-                    case 0x34: CarveTarget(s, 0, 1, 0, 0, 0, 0); break; //Snake
-                    case 0x35: CarveTarget(s, 0, 2, 0, 0, 0, 0); break; //Troll w/axe
-                    case 0x36: CarveTarget(s, 0, 2, 0, 0, 0, 0); break; //Troll
-                    case 0x37: CarveTarget(s, 0, 2, 0, 0, 0, 0); break; //Troll w/club
+                    case 0x34: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Snake
+                    case 0x35: CarveTarget(client, 0, 2, 0, 0, 0, 0); break; //Troll w/axe
+                    case 0x36: CarveTarget(client, 0, 2, 0, 0, 0, 0); break; //Troll
+                    case 0x37: CarveTarget(client, 0, 2, 0, 0, 0, 0); break; //Troll w/club
                     case 0x38: break;   //Skeleton w/axe
                     case 0x39: break;   //Skeleton w/sword
                     case 0x3A: break;   //Wisp
-                    case 0x3B: CarveTarget(s, 0,19,20, 0, 0, 0); break; //Dragon (red)
-                    case 0x3C: CarveTarget(s, 0,10,20, 0, 0, 0); break; //Drake (green)
-                    case 0x3D: CarveTarget(s, 0,10,20, 0, 0, 0); break; //Drake (red)
-                    case 0x46: CarveTarget(s, 0, 0, 0, 0, 0, 0); break; //Terathen Matriarche - t2a
-                    case 0x47: CarveTarget(s, 0, 0, 0, 0, 0, 0); break; //Terathen drone - t2a
-                    case 0x48: CarveTarget(s, 0, 0, 0, 0, 0, 0); break; //Terathen warrior, Terathen Avenger - t2a
-                    case 0x4B: CarveTarget(s, 0,4, 0, 0, 0, 0); break; //Titan - t2a
-                    case 0x4C: CarveTarget(s, 0, 4, 0, 0, 0, 0); break; //Cyclopedian Warrior - t2a
-                    case 0x50: CarveTarget(s, 0,10, 2, 0, 0, 0); break; //Giant Toad - t2a
-                    case 0x51: CarveTarget(s, 0, 4, 1, 0, 0, 0); break; //Bullfrog - t2a
-                    case 0x55: CarveTarget(s, 0, 5, 7, 0, 0, 0); break; //Ophidian apprentice, Ophidian Shaman - t2a
-                    case 0x56: CarveTarget(s, 0, 5, 7, 0, 0, 0); break; //Ophidian warrior, Ophidian Enforcer, Ophidian Avenger - t2a
-                    case 0x57: CarveTarget(s, 0, 5, 7, 0, 0, 0); break; //Ophidian Matriarche - t2a
-                    case 0x5F: CarveTarget(s, 0,19,20, 0, 0, 0); break; //Kraken - t2a
+                    case 0x3B: CarveTarget(client, 0,19,20, 0, 0, 0); break; //Dragon (red)
+                    case 0x3C: CarveTarget(client, 0,10,20, 0, 0, 0); break; //Drake (green)
+                    case 0x3D: CarveTarget(client, 0,10,20, 0, 0, 0); break; //Drake (red)
+                    case 0x46: CarveTarget(client, 0, 0, 0, 0, 0, 0); break; //Terathen Matriarche - t2a
+                    case 0x47: CarveTarget(client, 0, 0, 0, 0, 0, 0); break; //Terathen drone - t2a
+                    case 0x48: CarveTarget(client, 0, 0, 0, 0, 0, 0); break; //Terathen warrior, Terathen Avenger - t2a
+                    case 0x4B: CarveTarget(client, 0,4, 0, 0, 0, 0); break; //Titan - t2a
+                    case 0x4C: CarveTarget(client, 0, 4, 0, 0, 0, 0); break; //Cyclopedian Warrior - t2a
+                    case 0x50: CarveTarget(client, 0,10, 2, 0, 0, 0); break; //Giant Toad - t2a
+                    case 0x51: CarveTarget(client, 0, 4, 1, 0, 0, 0); break; //Bullfrog - t2a
+                    case 0x55: CarveTarget(client, 0, 5, 7, 0, 0, 0); break; //Ophidian apprentice, Ophidian Shaman - t2a
+                    case 0x56: CarveTarget(client, 0, 5, 7, 0, 0, 0); break; //Ophidian warrior, Ophidian Enforcer, Ophidian Avenger - t2a
+                    case 0x57: CarveTarget(client, 0, 5, 7, 0, 0, 0); break; //Ophidian Matriarche - t2a
+                    case 0x5F: CarveTarget(client, 0,19,20, 0, 0, 0); break; //Kraken - t2a
                         //case 0x3E-case 0x95: break; //-NULL-
-                    case 0x96: CarveTarget(s, 0,10, 0, 0, 0, 0); break; //Sea Monster
-                    case 0x97: CarveTarget(s, 0, 1, 0, 0, 0, 0); break; //Dolphin
+                    case 0x96: CarveTarget(client, 0,10, 0, 0, 0, 0); break; //Sea Monster
+                    case 0x97: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Dolphin
                         //case 0x98-case 0xC7: break; //-NULL-
-                    case 0xC8: CarveTarget(s, 0, 3,10, 0, 0, 0); break; //Horse (tan)
-                    case 0xC9: CarveTarget(s, 0, 1, 0, 1, 0, 0); break; //Cat
-                    case 0xCA: CarveTarget(s, 0, 1,12, 0, 0, 0); break; //Alligator
-                    case 0xCB: CarveTarget(s, 0, 6, 0, 0, 0, 0); break; //Pig
-                    case 0xCC: CarveTarget(s, 0, 3,10, 0, 0, 0); break; //Horse (dark)
-                    case 0xCD: CarveTarget(s, 0, 1, 0, 1, 0, 0); break; //Rabbit
-                    case 0xCE: CarveTarget(s, 0, 1,12, 0 ,0, 0); break; //Lava Lizard - t2a
-                    case 0xCF: CarveTarget(s, 0, 3, 0, 0, 1, 0); break; //Sheep
-                    case 0xD0: CarveTarget(s,25, 0, 0, 0, 0, 1); break; //Chicken
-                    case 0xD1: CarveTarget(s, 0, 2, 8, 0, 0, 0); break; //Goat
-                    case 0xD2: CarveTarget(s, 0,15, 0, 0, 0, 0); break; //Desert Ostarge - t2a
-                    case 0xD3: CarveTarget(s, 0, 1, 12, 0, 0, 0); break; //Bear
-                    case 0xD4: CarveTarget(s, 0, 1, 0, 2, 0, 0); break; //Grizzly Bear
-                    case 0xD5: CarveTarget(s, 0, 2, 0, 3, 0, 0); break; //Polar Bear
-                    case 0xD6: CarveTarget(s, 0, 1, 10, 0, 0, 0); break; //Cougar
-                    case 0xD7: CarveTarget(s, 0, 1, 0, 1, 0, 0); break; //Giant Rat
-                    case 0xD8: CarveTarget(s, 0, 8,12, 0, 0, 0); break; //Cow (black)
-                    case 0xD9: CarveTarget(s, 0, 1, 0, 0, 0, 0); break; //Dog
-                    case 0xDA: CarveTarget(s, 0,15, 0, 0, 0, 0); break; //Frenzied Ostard - t2a
-                    case 0xDB: CarveTarget(s, 0,15, 0, 0, 0, 0); break; //Forest Ostard - t2a
-                    case 0xDC: CarveTarget(s, 0, 1, 12,0, 0, 0); break; //Llama
-                    case 0xDD: CarveTarget(s, 0, 1,12, 0, 0, 0); break; //Walrus
+                    case 0xC8: CarveTarget(client, 0, 3,10, 0, 0, 0); break; //Horse (tan)
+                    case 0xC9: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Cat
+                    case 0xCA: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Alligator
+                    case 0xCB: CarveTarget(client, 0, 6, 0, 0, 0, 0); break; //Pig
+                    case 0xCC: CarveTarget(client, 0, 3,10, 0, 0, 0); break; //Horse (dark)
+                    case 0xCD: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Rabbit
+                    case 0xCE: CarveTarget(client, 0, 1,12, 0 ,0, 0); break; //Lava Lizard - t2a
+                    case 0xCF: CarveTarget(client, 0, 3, 0, 0, 1, 0); break; //Sheep
+                    case 0xD0: CarveTarget(client,25, 0, 0, 0, 0, 1); break; //Chicken
+                    case 0xD1: CarveTarget(client, 0, 2, 8, 0, 0, 0); break; //Goat
+                    case 0xD2: CarveTarget(client, 0,15, 0, 0, 0, 0); break; //Desert Ostarge - t2a
+                    case 0xD3: CarveTarget(client, 0, 1, 12, 0, 0, 0); break; //Bear
+                    case 0xD4: CarveTarget(client, 0, 1, 0, 2, 0, 0); break; //Grizzly Bear
+                    case 0xD5: CarveTarget(client, 0, 2, 0, 3, 0, 0); break; //Polar Bear
+                    case 0xD6: CarveTarget(client, 0, 1, 10, 0, 0, 0); break; //Cougar
+                    case 0xD7: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Giant Rat
+                    case 0xD8: CarveTarget(client, 0, 8,12, 0, 0, 0); break; //Cow (black)
+                    case 0xD9: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Dog
+                    case 0xDA: CarveTarget(client, 0,15, 0, 0, 0, 0); break; //Frenzied Ostard - t2a
+                    case 0xDB: CarveTarget(client, 0,15, 0, 0, 0, 0); break; //Forest Ostard - t2a
+                    case 0xDC: CarveTarget(client, 0, 1, 12,0, 0, 0); break; //Llama
+                    case 0xDD: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Walrus
                     case 0xDE: break;   //-NULL-
-                    case 0xDF: CarveTarget(s, 0, 3, 0, 0, 0, 0); break; //Sheep (BALD)
-                    case 0xE1: CarveTarget(s, 0, 1, 0, 1, 0, 0); break; //Timber Wolf
-                    case 0xE2: CarveTarget(s, 0, 3,10, 0, 0, 0); break; //Horse (Silver)
+                    case 0xDF: CarveTarget(client, 0, 3, 0, 0, 0, 0); break; //Sheep (BALD)
+                    case 0xE1: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Timber Wolf
+                    case 0xE2: CarveTarget(client, 0, 3,10, 0, 0, 0); break; //Horse (Silver)
                     case 0xE3: break;   //-NULL-
-                    case 0xE4: CarveTarget(s, 0, 3,10, 0, 0, 0); break; //Horse (tan)
+                    case 0xE4: CarveTarget(client, 0, 3,10, 0, 0, 0); break; //Horse (tan)
                     case 0xE5: break;   //-NULL-
                     case 0xE6: break;   //-NULL-
-                    case 0xE7: CarveTarget(s, 0, 8,12, 0, 0, 0); break; //Cow (brown)
-                    case 0xE8: CarveTarget(s, 0,10,15, 0, 0, 0); break; //Bull (brown)
-                    case 0xE9: CarveTarget(s, 0,10,15, 0, 0, 0); break; //Bull (d-brown)
-                    case 0xEA: CarveTarget(s, 0, 6,15, 0, 0, 0); break; //Great Heart
+                    case 0xE7: CarveTarget(client, 0, 8,12, 0, 0, 0); break; //Cow (brown)
+                    case 0xE8: CarveTarget(client, 0,10,15, 0, 0, 0); break; //Bull (brown)
+                    case 0xE9: CarveTarget(client, 0,10,15, 0, 0, 0); break; //Bull (d-brown)
+                    case 0xEA: CarveTarget(client, 0, 6,15, 0, 0, 0); break; //Great Heart
                     case 0xEB: break;   //-NULL-
                     case 0xEC: break;   //-NULL-
-                    case 0xED: CarveTarget(s, 0, 5, 8, 0, 0, 0); break; //Hind
-                    case 0xEE: CarveTarget(s, 0, 1, 0, 0, 0, 0); break; //Rat
+                    case 0xED: CarveTarget(client, 0, 5, 8, 0, 0, 0); break; //Hind
+                    case 0xEE: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Rat
                         //case 0xEF-case 0xFF: break; //-NULL-
                     default:
                         LogError("Fallout of switch statement, corpsetarget()");
                     }// switch
                 }//if morey || carve>-1
             } else {
-                 sysmessage(s, "You carve the corpse but find nothing usefull.");
+                 client->sysmessage("You carve the corpse but find nothing usefull.");
             }// if more1==0
         //break;
         }
     }// if i!=-1
-    if (!n) sysmessage(s, "That is too far away.");
+    if (!n) client->sysmessage("That is too far away.");
 }
 
 
@@ -483,24 +478,27 @@ int BuyShop(pClient client, pChar pc)
 
 
 
-void target_playerVendorBuy( pClient ps, pTarget t )
+void target_playerVendorBuy( pClient client, pTarget t )
 {
 	pChar pc = MAKE_CHAR_REF(t->buffer[0]);
 	if (!pc) return;
 
-	pChar pc_currchar = ps->currChar();
+	pChar pc_currchar = client->currChar();
 	if(!pc_currchar) return;
 
-	pClient client = ps->toInt();
+	pItem pBackpack= pc_currchar->getBackpack();
+	if (!pBackpack) {
+		client->sysmessage("Time to buy a backpack");
+		return; 
+	}
 
-    pItem pBackpack= pc_currchar->getBackpack();
-    if (!pBackpack) {sysmessage(s,"Time to buy a backpack"); return; } //LB
+	uint32_t serial = LongFromCharPtr(buffer[s] +7);
+	pItem pi=cSerializable::findItemBySerial(serial);     // the item
+    
+	if ( !pc || pi->isInWorld() )
+		return;
 
-    uint32_t serial=LongFromCharPtr(buffer[s]+7);
-    pItem pi=cSerializable::findItemBySerial(serial);     // the item
-    if (pi==NULL) return;
-    if (pi->isInWorld()) return;
-    int price=pi->value;
+	int price=pi->value;
 
 
 	pItem thepack=(pItem)pi->getContainer();
@@ -534,23 +532,19 @@ void target_playerVendorBuy( pClient ps, pTarget t )
 }
 
 
-void target_envoke( pClient ps, pTarget t )
+void target_envoke( pClient client, pTarget t )
 {
-
-	pChar curr=ps->currChar();
+	pChar curr = client->currChar();
+	pItem pi = NULL; pChar pc = NULL;
 
 	uint32_t serial=t->getClicked();
-	if( isItemSerial( serial ) )
+	if( pi = dynamic_cast<pItem>(t->getClicked()) )
 	{
-		pItem pi = MAKE_ITEM_REF(serial);
-		if ( ! pi ) return;
-		triggerItem( ps->toInt(),pi, TRIGTYPE_ENVOKED );
+		pi->triggerItem(client, TRIGTYPE_ENVOKED );
 		curr->envokeid=0x0000;
-	} else if( isCharSerial( serial ) )
+	} else if( pc = dynamic_cast<pChar>(t->getClicked()) )
 	{
-		pChar pc = MAKE_CHAR_REF(serial);
-		if ( ! pc ) return;
-		triggerNpc( ps->toInt(), pc, TRIGTYPE_NPCENVOKED );
+		triggerNpc(client, pc, TRIGTYPE_NPCENVOKED );
 		curr->envokeid=0x0000;
 	} else {
 		triggerTile( ps->toInt() );
@@ -559,42 +553,34 @@ void target_envoke( pClient ps, pTarget t )
 }
 
 
-void target_key( pClient ps, pTarget t )
+void target_key( pClient client, pTarget t )
 {
-
-	pChar pc=ps->currChar();
+	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
-	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 	if ( ! pi ) return;
 
-	pClient client = ps->toInt();
-
-    if ((pi->more1==0)&&(pi->more2==0)&&
-            (pi->more3==0)&&(pi->more4==0))
+    if ( !pi->more )
         {
             if ( pi->type==ITYPE_KEY && (pc->hasInRange(pi, 2) || (!pi->isInWorld()) ) )
             {
                 if (!pc->checkSkill(skTinkering, 400, 1000))
                 {
-                    sysmessage(s,"You fail and destroy the key blank.");
+                    client->sysmessage("You fail and destroy the key blank.");
                     // soundeffect3( pi, <whatever> );
                     pi->Delete();
                 }
                 else
                 {
-                    pi->more1=t->buffer[0];
-                    pi->more2=t->buffer[1];
-                    pi->more3=t->buffer[2];
-                    pi->more4=t->buffer[3];
+                    pi->more = LongFromCharPtr( t->buffer +0);
                     // soundeffect3( pi, <whatever> );
-                    sysmessage(s, "You copy the key."); //Morrolan can copy keys
+                    client->sysmessage("You copy the key."); //Morrolan can copy keys
                 }
             }
             return;
         }//if
-        else if (((pi->more1==t->buffer[0])&&(pi->more2==t->buffer[1])&&
-            (pi->more3==t->buffer[2])&&(pi->more4==t->buffer[3]))||
+        else if ( (pi->more == LongFromCharPtr( t->buffer +0)) ||
             (t->buffer[0]==(unsigned char) 0xFF))
         {
             if (((pi->type==ITYPE_CONTAINER)||(pi->type==ITYPE_UNLOCKED_CONTAINER))&&(pc->hasInRange(pi, 2)))
@@ -602,13 +588,13 @@ void target_key( pClient ps, pTarget t )
                 if(pi->type==ITYPE_CONTAINER) pi->type=ITYPE_LOCKED_ITEM_SPAWNER;
                 if(pi->type==ITYPE_UNLOCKED_CONTAINER) pi->type=ITYPE_LOCKED_CONTAINER;
                 // soundeffect3( pi, <whatever> );
-                sysmessage(s, "You lock the container.");
+                client->sysmessage("You lock the container.");
                 return;
             }
             else if ((pi->type==ITYPE_KEY)&&(pc->hasInRange(pi, 2)))
             {
                 pc->keyserial=pi->getSerial();
-                sysmessage(s,"Enter new name for key.");//morrolan rename keys
+                client->sysmessage("Enter new name for key.");//morrolan rename keys
                 return;
             }
             else if ((pi->type==ITYPE_LOCKED_ITEM_SPAWNER)||(pi->type==ITYPE_LOCKED_CONTAINER)&& pc->hasInRange(pi, 2) )
@@ -616,27 +602,27 @@ void target_key( pClient ps, pTarget t )
                 if(pi->type==ITYPE_LOCKED_ITEM_SPAWNER) pi->type=ITYPE_CONTAINER;
                 if(pi->type==ITYPE_LOCKED_CONTAINER) pi->type=ITYPE_UNLOCKED_CONTAINER;
                 // soundeffect3( pi, <whatever> );
-                sysmessage(s, "You unlock the container.")
+                client->sysmessage("You unlock the container.")
                 return;
             }
             else if ((pi->type==ITYPE_DOOR)&& pc->hasInRange(pi, 2) )
             {
                 pi->type=ITYPE_LOCKED_DOOR;
                 // soundeffect3( pi, <whatever> );
-                sysmessage(s, "You lock the door.");
+                client->sysmessage("You lock the door.");
                 return;
             }
             else if ((pi->type==ITYPE_LOCKED_DOOR)&& pc->hasInRange(pi, 2) )
             {
                 pi->type=ITYPE_DOOR;
                 // soundeffect3( pi, <whatever> );
-                sysmessage(s, "You unlock the door.");
+                client->sysmessage("You unlock the door.");
                 return;
             }
             else if (pi->getId()==0x0BD2)
             {
-                sysmessage(s, "What do you wish the sign to say?");
-                pc->keyserial=pi->getSerial(); //Morrolan sign kludge
+                client->sysmessage("What do you wish the sign to say?");
+                pc->keyserial = pi->getSerial(); //Morrolan sign kludge
                 return;
             }
 
@@ -650,31 +636,30 @@ void target_key( pClient ps, pTarget t )
         }//else if
         else
         {
-            if (pi->type==ITYPE_KEY) sysmessage (s, "That key is not blank!");
-            else if (pi->more1==0x00) sysmessage(s, "That does not have a lock.");
-            else sysmessage(s, "The key does not fit into that lock.");
+            if (pi->type==ITYPE_KEY) client->sysmessage("That key is not blank!");
+            else if (pi->more1==0x00) client->sysmessage("That does not have a lock.");
+            else client->sysmessage("The key does not fit into that lock.");
             return;
         }//else
 }
 
-void target_attack( pClient ps, pTarget t )
+void target_attack( pClient client, pTarget t )
 {
 	//!\TODO modify the parameter to get client instead of socket
-	pChar pc_t1= cSerializable::findCharBySerial( t->buffer[0] );
-	pChar pc_t2=cSerializable::findCharBySerial( t->getClicked() );
+	pChar pc_t1 = cSerializable::findCharBySerial( t->buffer[0] );
+	pChar pc_t2 = dynamic_cast<pChar>( t->getClicked() );
 	if ( ! pc_t1 || ! pc_t2 ) return;
 
-	pClient client = ps->toInt();
 	client->currChar()->attackStuff(pc_t2); //this will (eventually) flag the owner if ordering to attack an innocent
 	npcattacktarget(pc_t1, pc_t2);
 }
 
-void target_follow( pClient ps, pTarget t )
+void target_follow( pClient client, pTarget t )
 {
 	pChar pc = cSerializable::findCharBySerial( t->buffer[0] );
 	if (!pc) return;
 
-	pChar pc2 = cSerializable::findCharBySerial( t->getClicked() );
+	pChar pc2 = dynamic_cast<pChar>( t->getClicked() );
 	if (!pc2) return;
 
 	pc->ftargserial=pc2->getSerial();
@@ -693,9 +678,9 @@ void target_axe( pClient ps, pTarget t )
 }
 
 
-void target_sword( pClient ps, pTarget t )
+void target_sword( pClient client, pTarget t )
 {
-	pChar pc = ps->currChar();
+	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
 	uint16_t id = t->getModel();
@@ -706,7 +691,7 @@ void target_sword( pClient ps, pTarget t )
 
 		if( dist( location, pcpos )>5 )
 		{
-			pc->sysmsg("You are to far away to reach that");
+			client->sysmessage("You are to far away to reach that");
 			return;
 		}
 
@@ -720,48 +705,48 @@ void target_sword( pClient ps, pTarget t )
 		mapRegions->add(pi);
 
 		pi->Refresh();
-		pc->sysmsg("You hack at the tree and produce some kindling.");
+		client->sysmessage("You hack at the tree and produce some kindling.");
 	}
 	else if(itemById::IsLog(id)) // vagrant
 	{
-		Skills::target_bowcraft( ps, t );
+		Skills::target_bowcraft( client, t );
 	}
 	else if(itemById::IsCorpse(id))
 	{
-		CorpseTarget(ps);
+		CorpseTarget(client);
 	}
 	else
-		pc->sysmsg("You can't think of a way to use your blade on that.");
+		client->sysmessage("You can't think of a way to use your blade on that.");
 }
 
-void target_fetch( pClient ps, pTarget t )
+void target_fetch( pClient client, pTarget t )
 {
-    ps->sysmsg( "Fetch is not available at this time.");
+    client->sysmessage( "Fetch is not available at this time.");
 }
 
-void target_guard( pClient ps, pTarget t )
+void target_guard( pClient client, pTarget t )
 {
-	pChar pc=ps->currChar();
+	pChar pc = client->currChar();
 	pChar pPet = cSerializable::findCharBySerial(t->buffer[0]);
 	if ( ! pc || ! pPet ) return;
 
-	pChar pToGuard = cSerializable::findCharBySerial( t->getClicked() );
+	pChar pToGuard = dynamic_cast<pChar>( t->getClicked() );
 	if( !pToGuard || pToGuard->getSerial() != pPet->getOwnerSerial32() )
 	{
-		ps->sysmsg( "Currently can't guard anyone but yourself!" );
+		client->sysmessage( "Currently can't guard anyone but yourself!" );
 		return;
 	}
 	pPet->npcaitype = NPCAI_PETGUARD;
 	pPet->ftargserial=pc->getSerial();
 	pPet->npcWander=WANDER_FOLLOW;
-	ps->sysmsg( "Your pet is now guarding you.");
+	client->sysmessage( "Your pet is now guarding you.");
 	pc->guarded = true;
 }
 
-void target_transfer( pClient ps, pTarget t )
+void target_transfer( pClient client, pTarget t )
 {
 	pChar pc1 = cSerializable::findCharBySerial( t->buffer[0] );
-	pChar pc2 = cSerializable::findCharBySerial( t->getClicked() );
+	pChar pc2 = dynamic_cast<pChar>( t->getClicked() );
 	if ( ! pc1 || ! pc2 )
 		return;
 
@@ -785,18 +770,16 @@ void target_transfer( pClient ps, pTarget t )
 }
 
  //Throws the potion and places it (unmovable) at that spot
-void target_expPotion( pClient ps, pTarget t )
+void target_expPotion( pClient client, pTarget t )
 {
-	pChar pc=ps->currChar();
-	if ( ! pc ) return;
+	pChar pc = client->currChar();
+	if (!pc) return;
 
-	Location loc=t->getLocation();
-
-	pClient client =ps->toInt();
+	Location loc = t->getLocation();
 
 	if(!line_of_sight(s, pc->getPosition(), loc, losWallsChimneys | losDoors | losRoofingSlanted))
 	{
-		pc->sysmsg("You cannot throw the potion there!");
+		client->sysmessage("You cannot throw the potion there!");
 		return;
 	}
 		
@@ -810,12 +793,12 @@ void target_expPotion( pClient ps, pTarget t )
 	pi->Refresh();
 }
 
-void target_trigger( pClient ps, pTarget t )
+void target_trigger( pClient client, pTarget t )
 {
-	pItem pi = cSerializable::findItemBySerial(t->getClicked());
-	if ( ! pi ) return;
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
+	if (!pi) return;
 
-	triggerItem(ps->toInt(), pi, TRIGTYPE_TARGET);
+	pi->triggerItem(client, TRIGTYPE_TARGET);
 }
 
 void target_npcMenu( pClient ps, pTarget t )
@@ -830,22 +813,19 @@ void target_npcMenu( pClient ps, pTarget t )
 \brief implements the 'telestuff GM command
 \author Endymion
 */
-void target_telestuff( pClient ps, pTarget t )
+void target_telestuff( pClient client, pTarget t )
 {
+	pChar pc = client->currChar();
+	if ( !pc ) return;
 
-	pChar pc = ps->currChar();
-	if ( ! pc ) return;
-
-	pClient client = ps->toInt();
 
 	pObject po = objects.findObject( t->getClicked() );
-
 	if( po ) { //clicked on obj to move
 		pTarget targ=clientInfo[s]->newTarget( new cLocationTarget() );
 		targ->code_callback=target_telestuff;
 		targ->buffer[0]=po->getSerial();
-		targ->send(ps);
-		ps->sysmsg( "Select location to put this object.");
+		targ->send(client);
+		client->sysmessage( "Select location to put this object.");
 	} else { //on ground.. so move it
 
 		Location loc=t->getLocation();
@@ -873,13 +853,12 @@ void target_telestuff( pClient ps, pTarget t )
 \param s socket to attack
 \brief Manages all attack command
 */
-void target_allAttack( pClient ps, pTarget t )
+void target_allAttack( pClient client, pTarget t )
 {
-
-	pChar pc=ps->currChar();
+	pChar pc = client->currChar();
 	if (!pc) return;
 
-	pChar pc_target = cSerializable::findCharBySerial( t->getClicked() );
+	pChar pc_target = dynamic_cast<pChar>( t->getClicked() );
 	if(!pc_target) return;
 
 	NxwCharWrapper sc;
@@ -890,34 +869,20 @@ void target_allAttack( pClient ps, pTarget t )
 		if( pet )
 			npcattacktarget(pet, pc_target);
     }
-
 }
 
-
-
-void target_xTeleport( pClient ps, pTarget t )
+void target_xTeleport( pClient client, pTarget t )
 {
-	pChar pc=ps->currChar();
-	if ( ! pc ) return;
+	pChar me = client->currChar();
+	if ( !me ) return;
 
-	uint32_t serial = t->getClicked();
-	if( isCharSerial( serial ) ) {
-		pChar pc_i = cSerializable::findCharBySerial( serial );
-		if( pc_i )
-		{
-			pc_i->MoveTo( pc->getPosition() );
-			pc_i->teleport();
-		}
+	if(pc = dynamic_cast<pChar>( t->getClicked() )) {
+		pc->MoveTo( me->getPosition() );
+		pc->teleport();
 	}
-	else if( isItemSerial( serial ) ) {
-		pItem pi = cSerializable::findItemBySerial( serial );
-		if( pi ) {
-			pi->MoveTo( pc->getPosition() );
-			pi->Refresh();
-		}
+	else if(pi = dynamic_cast<pItem>( t->getClicked() )) {
+		pi->MoveTo( me->getPosition() );
+		pi->Refresh();
 	}
 }
-
-
-
 

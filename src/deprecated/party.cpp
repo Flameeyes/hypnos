@@ -125,8 +125,8 @@ void cParty::talkToAll( std::wstring& s, COLOR color )
 		pChar pc = cSerializable::findCharBySerial( (*iter)->serial );
 		if( pc ) {
 			pClient ps = pc->getClient();
-			if( ps!=NULL )
-				ps->sysmsg( color, (char*)m.c_str() );
+			if(ps)
+				ps->sysmessage( color, (char*)m.c_str() );
 		}
 	}
 }
