@@ -148,9 +148,7 @@ void buildhouse( pClient client, pTarget t )
 			if (norealmulti) {
 				pTarget targ = clientInfo[s]->newTarget( new cLocationTarget() );
 				targ->code_callback=buildhouse;
-				targ->buffer[0]=0x40;
-				targ->buffer[1]=100;
-				//targ->buffer[2]; never setted
+				ShortToCharPtr(0x4064, t->buffer);
 				targ->send( ps );
 				ps->sysmsg( "Select a place for your structure: ");
 			}
@@ -162,7 +160,7 @@ void buildhouse( pClient client, pTarget t )
 		else
 		{
 			client->sysmessage("Select location for building.");
-			nPackets::Sent::TargetMulti pk(0x00010000/*serial*/, ((t->buffer[0]<<8)|(t->buffer[1]%256)) -0x4000/*model*/);
+			nPackets::Sent::TargetMulti pk(0x00010000/*serial*/, ShortFromCharPtr(t->buffer) -0x4000/*model*/);
 			client->sendPacket(&pk);
 		}
 		looptimes++;//for when we come back after they target something
@@ -884,7 +882,7 @@ void target_houseOwner( pClient ps, pTarget t )
 	pChar pc = dynamic_cast<pChar>( t->getClicked() );
 	if ( ! pc ) return;
 
-	pItem pSign=cSerializable::findItemBySerial( t->buffer[0] );
+	pItem pSign=cSerializable::findItemBySerial( t->buffer );
 	if ( ! pSign ) return;
 
 	pItem pHouse=cSerializable::findItemBySerial( pSign->more );
@@ -939,7 +937,7 @@ void target_houseEject( pClient client, pTarget t )
 	pChar pc = dynamic_cast<pChar>( t->getClicked() );
 	if ( ! pc ) return;
 
-	pHouse ph = dynamic_cast<pHouse>( cSerializable::findBySerial(t->buffer[0]) );
+	pHouse ph = dynamic_cast<pHouse>( cSerializable::findBySerial(t->buffer) );
 	if ( ! ph ) return;
 
 	if ( ! pi_h->getArea().isInside(pc->getPosition()) )
@@ -964,7 +962,7 @@ void target_houseBan( pClient client, pTarget t )
 	pChar curr = client->currChar();
 	if ( ! curr ) return;
 
-	pItem pi=cSerializable::findItemBySerial( t->buffer[0] );
+	pItem pi=cSerializable::findItemBySerial( t->buffer );
 	if(pi)
 	{
 		if(pc == curr)
@@ -987,7 +985,7 @@ void target_houseFriend( pClient client, pTarget t )
 	pChar curr = client->currChar();
 	if ( ! curr ) return;
 
-	pItem pi=cSerializable::findItemBySerial( t->buffer[0] );
+	pItem pi=cSerializable::findItemBySerial( t->buffer );
 
 	if( Friend && pi)
 	{
@@ -1011,7 +1009,7 @@ void target_houseFriend( pClient client, pTarget t )
 void target_houseUnlist( pClient client, pTarget t )
 {
 	pChar pc = dynamic_cast<pChar>( t->getClicked() );
-	pItem pi = cSerializable::findItemBySerial( t->buffer[0] );
+	pItem pi = cSerializable::findItemBySerial( t->buffer );
     
 	if(pc && pi)
 	{
