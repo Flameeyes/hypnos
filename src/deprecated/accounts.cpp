@@ -1,13 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| PyUO Server Emulator                                                     |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in pyuo.cpp file.              |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "nxwcommn.h"
 #include "accounts.h"
 #include "debug.h"
@@ -22,7 +19,7 @@
 #include "basics.h"
 #include "inlines.h"
 #include "items.h"
- 
+
 
 cAccounts* Accounts=NULL;
 
@@ -76,7 +73,7 @@ void cAccount::setOnline( P_CHAR pc )
 /*!
 \brief Check if online
 \author Endymion
-\return true if online 
+\return true if online
 \note Also when entering is online
 */
 bool cAccount::isOnline( )
@@ -116,7 +113,7 @@ void cAccount::onLogin( NXWSOCKET socket )
 		lastip.s_addr=*(unsigned long*)&clientip[socket];
 		state=LOG_ENTERING;
 	}
-	else 
+	else
 		setOffline();
 
 }
@@ -170,7 +167,7 @@ void cAccount::addCharToAccount( P_CHAR pc )
 		this->pgs.push_back( pc->getSerial32() );
 		pc->account=this->number;
 	}
-	else 
+	else
 		pc->account=INVALID;
 }
 
@@ -365,7 +362,7 @@ SI32 cAccounts::verifyPassword(std::string username, std::string password)
 			char str[100];
 			strcpy(str,password.c_str());
 			char *pwd = pwdcypher(str, (iter_account->second.pass[1])-'A');
-			if (pwd==NULL) 
+			if (pwd==NULL)
 				return LOGIN_NOT_FOUND;
 			str[0] = '!'; str[1] = '\0';
 			strcat(str,pwd);
@@ -405,7 +402,7 @@ SI32 cAccounts::Authenticate(std::string username, std::string password)
 			char str[100];
 			strcpy(str,password.c_str());
 			char *pwd = pwdcypher(str, (iter_account->second.pass[1])-'A');
-			if (pwd==NULL) 
+			if (pwd==NULL)
 				return LOGIN_NOT_FOUND;
 			str[0] = '!'; str[1] = '\0';
 			strcat(str,pwd);
@@ -450,7 +447,7 @@ SI32 cAccounts::Authenticate(std::string username, std::string password)
 \return true if can, false else
 \param username Username
 \param password Password
-\remarks Always the Account n° 0 can use Ras 
+\remarks Always the Account n° 0 can use Ras
 */
 bool cAccounts::AuthenticateRAS(std::string username, std::string password)
 {
@@ -501,7 +498,7 @@ ACCOUNT cAccounts::CreateAccount(std::string username, std::string password)
 
 	if ( accbyname.count(username) )	// if there's another account with this name..
 		return INVALID;
-	
+
 	if (ServerScp::g_nUseAccountEncryption) { //xan : for account DES encryption :)
 		char str[1000];
 		strcpy(str,password.c_str());
@@ -560,8 +557,8 @@ bool cAccounts::IsOnline( ACCOUNT acctnum )
 	if (iter != this->acctlist.end())
 	{
 		return iter->second.isOnline();
-	} 
-	else 
+	}
+	else
 		return false;
 }
 
@@ -578,8 +575,8 @@ SERIAL cAccounts::GetInWorld( ACCOUNT acctnum )
 	if (iter != this->acctlist.end())
 	{
 		return iter->second.getInWorld();
-	} 
-	else 
+	}
+	else
 		return INVALID;
 }
 
@@ -623,7 +620,7 @@ void cAccounts::SetOffline( ACCOUNT acctnum )
 */
 void cAccounts::OnLogin(ACCOUNT acct, NXWSOCKET sck)
 {
-	if(sck<=INVALID) 
+	if(sck<=INVALID)
 		return;
 
 	ACCOUNT_LIST::iterator iter_account( this->acctlist.find(acct) );
@@ -639,7 +636,7 @@ void cAccounts::OnLogin(ACCOUNT acct, NXWSOCKET sck)
 \brief Account are loggin into
 \param acctnum Account number
 */
-void cAccounts::SetEntering( ACCOUNT acctnum ) 
+void cAccounts::SetEntering( ACCOUNT acctnum )
 {
 	ACCOUNT_LIST::iterator iter_account( this->acctlist.find(acctnum) );
 
@@ -669,8 +666,8 @@ SI32 cAccounts::ChangePassword( ACCOUNT acctnum, std::string password)
 	}
 	else
 		return INVALID;
-	
-	
+
+
 }
 
 /*!
@@ -708,7 +705,7 @@ void cAccounts::AddCharToAccount( ACCOUNT acctnum, P_CHAR pc )
 	{
 		iter->second.addCharToAccount( pc );
 	}
-	else 
+	else
 		pc->account=INVALID;
 }
 
@@ -741,13 +738,13 @@ bool cAccounts::RemoveAccount(std::string name)
 		return false;
 	else
 		acc = iter->second;
-	
+
 	if ( IsOnline(acc) )
 	{
 		unsigned int r = pointers::findCharBySerial(GetInWorld(acc))->getClient()->toInt();
 		Network->Disconnect(r);
 	}
-	
+
 	NxwCharWrapper acc_chars;
 	GetAllChars( acc, acc_chars );
 	for( acc_chars.rewind(); !acc_chars.isEmpty(); acc_chars++ )
@@ -756,7 +753,7 @@ bool cAccounts::RemoveAccount(std::string name)
 		if(ISVALIDPC(pc))
 			pc->Delete();
 	}
-	
+
 	accbyname.erase( name );
 	acctlist.erase( acc );
 	SaveAccounts();

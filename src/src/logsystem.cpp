@@ -217,7 +217,7 @@ static void MessageReady(char *OutputMessage)
 	numtostr(i2, b3);
 	numtostr(i1, b4);
 
-    switch (LogType)
+	switch (LogType)
 	{
 	   case 'E': { strcpy(file_name,"errors_log_");          entries_e++; break; }
 	   case 'C': { strcpy(file_name,"critical_errors_log_"); entries_c++; break; }
@@ -225,25 +225,25 @@ static void MessageReady(char *OutputMessage)
 	   case 'M': { strcpy(file_name,"messages_log_");        entries_m++; break; }
 	}
 
-    strcat(file_name,b1);strcat(file_name,"_");
-    strcat(file_name,b2);strcat(file_name,"_");
-    strcat(file_name,b3);strcat(file_name,"_");
-    strcat(file_name,b4);strcat(file_name,".txt");
+	strcat(file_name,b1);strcat(file_name,"_");
+	strcat(file_name,b2);strcat(file_name,"_");
+	strcat(file_name,b3);strcat(file_name,"_");
+	strcat(file_name,b4);strcat(file_name,".txt");
 
 	LogFile logerr(file_name);
 
 	if (entries_c==1 && LogType=='C') // @serverstart, write out verison# !!!
 	{
-		logerr.Write("\nRunning NoX-Wizard Version: %s\n\n",VERNUMB);
+		logerr.Write("\nRunning PyUO Version: %s\n\n",VERNUMB);
 		logerr.Write("******************************************************************************************************************************************\n");
-		logerr.Write("* to increase the stability and quality of this software please send this file to the NoXWizard developers - thanks for your support !!! *\n");
+		logerr.Write("* to increase the stability and quality of this software please send this file to the PyUO developers - thanks for your support !!! *\n");
 		logerr.Write("******************************************************************************************************************************************\n\n");
 
 	}
 
     if ( (entries_e==1 && LogType=='E') || (entries_w==1 && LogType=='W') || (entries_m==1 && LogType=='M'))
 	{
-	   logerr.Write("\nRunning NoX-Wizard Version: %s\n\n",VERNUMB);
+	   logerr.Write("\nRunning PyUO Version: %s\n\n",VERNUMB);
 	}
 
 	logerr.Write("%s", OutputMessage);
@@ -267,9 +267,9 @@ void LogMessageF(char *Message, ...)
 	switch( LogType )
 	{
 //	case 'M': InfoOut("%s\n", fullMessage); break;
-    case 'W': WarnOut("%s\n",fullMessage); break;
-    case 'E': ErrOut("%s\n",fullMessage); break;
-    case 'C': PanicOut("%s\n",fullMessage); break;
+		case 'W': WarnOut("%s\n",fullMessage); break;
+		case 'E': ErrOut("%s\n",fullMessage); break;
+		case 'C': PanicOut("%s\n",fullMessage); break;
 	}
 
 	if( LogType != 'M' )

@@ -1,13 +1,11 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
-/*! 
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| PyUO Server Emulator                                                     |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in pyuo.cpp file.              |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+/*!
 \file
 \brief Account Stuff
 */
@@ -78,7 +76,7 @@ typedef map<std::string, ACCOUNT > ACCOUNT_LIST_BY_NAME;
 */
 class cAccounts
 {
-	
+
 private:
 	ACCOUNT_LIST acctlist;	//!< All Account, with info
 	ACCOUNT_LIST_BY_NAME accbyname;	//!< All Account by name
@@ -101,7 +99,7 @@ public:
 	void LoadAccounts();
 	void SaveAccounts();
 	void CheckAccountFile();
-	
+
 	int Count();
 
 	SI32 Authenticate(std::string username, std::string password);
