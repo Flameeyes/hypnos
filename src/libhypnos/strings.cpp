@@ -95,7 +95,6 @@ stringVector tokenize(std::string str)
 		
 	char *s = strtok(tmp, " ");
 	
-	int loopexit=0;
 	while ( s != NULL )
 	{
 		ret.push_back( std::string(s) );
