@@ -7,22 +7,26 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
-\brief effect functions
+\brief Effect functions
+
+This file contains the function used for the graphical effects
 */
 
 #include "effects.h"
+#include "objects/cpacket.h"
+#include "logsystem.h"	
 
 /*!
 \brief Plays a moving effect from this to target serializable
-\param destination the target
-\param speed speed of the effect
-\param loops loops
-\param explode true if should do a final explosion
+\param source Source of the effect
+\param destination Target of the effect
+\param speed Speed of the effect
+\param explode If true should do a final explosion
 \param part particle effects structure
 */
 void movingFX(pSerializable source, pSerializable destination, uint16_t eff, uint8_t speed, uint8_t loops, bool explode, ParticleFx* part)
 {
-	if ( !source || !destination) return;
+	if ( !source || !destination ) return;
 
 	nPackets::Sent::GraphicalEffect pk(etBolt, source, destination, eff, speed, loops, false, explode);
 
@@ -69,7 +73,7 @@ void movingFX(pSerializable source, pSerializable destination, uint16_t eff, uin
 
 /*!
 \brief Plays a static effect on a serializable
-\param source UNDOCUMENTED
+\param source Object where to show the effect
 \param eff id of 2d effect; if -1, 2d effect is get from particles obj
 \param speed speed of effect, -1 and it will be get from particles data
 \param loop loop factor - -1 and it will be get from particles data
@@ -149,9 +153,10 @@ void staticFX(pSerializable source, uint16_t eff, uint8_t speed, uint8_t loop, P
 
 
 /*!
-\brief Item effects
-\param pos sLocation where to send the effect
-\param eff ID of the effect
+\brief Do an effect on a specified location
+\param pos Position where to send the effect
+\param eff Effect's ID
+\param speed Effect's speed
 */
 void locationFX(sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, uint8_t explode)
 {
@@ -214,7 +219,8 @@ void locationtolocationFX(sLocation src_pos, sLocation dst_loc, uint16_t eff, ui
 
 /*!
 \brief Bolts a cSerializable
-\param bNoParticles true if NOT to use particles
+\param target Target of the effect
+\param bNoParticles If true \b not use particles
 */
 void boltFX(pSerializable target, bool bNoParticles)
 {
@@ -261,7 +267,8 @@ void boltFX(pSerializable target, bool bNoParticles)
 
 /*!
 \brief Plays <i>circle of blood</i> or similar effect
-\param id effect id
+\param target Target of the effect
+\param id Effect's ID
 */
 void circleFX(pSerializable target, uint16_t id)
 {
