@@ -54,6 +54,9 @@ static const uint16_t VERY_VERY_FAR = 50000; //!< Used as distance between inval
 
 static const int8_t illegal_z = -128;	//!< An illegal z-value to return in case of error
 
+static const uint16_t MAP_WIDTH = 6144;		//!< Width of the UO Map
+static const uint16_t MAP_HEIGHT = 4096;	//!< Height of the UO Map
+
 static const char strNull[] = "";
 
 //@{

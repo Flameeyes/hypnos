@@ -23,18 +23,6 @@ cRegion::~cRegion()
 
 }
 
-/*!
-\brief Tells if a given point is a valid coordinate
-\param p Point to test
-\return true if the point is in the map, else false
-\todo Export it to all the emulator (some places needs something like that)
-\todo Change the MAP_WIDTH, MAP_HEIGHT with the REAL map dimensions
-*/
-bool cRegion::isValidCoord( sPoint p )
-{
-	return ( p.x < MAP_WIDTH && p.y < MAP_HEIGHT );
-}
-
 void cRegion::add( pChar pc )
 {
 

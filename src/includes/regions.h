@@ -13,9 +13,6 @@ static const uint16_t MAX_MAP_CELLS = 0xFFFF;	//!< Maximum count of cells
 static const uint8_t REGION_GRIDSIZE = 32;	//!< Horizontal size of the grid
 static const uint8_t REGION_COLSIZE = 32;	//!< Vertical size of the grid
 
-static const uint16_t MAP_WIDTH = 6144;		//!< Width of the UO Map
-static const uint16_t MAP_HEIGHT = 4096;	//!< Height of the UO Map
-
 static const uint16_t REGION_X_CELLS = MAP_WIDTH/REGION_GRIDSIZE;
 						//!< Count of X Cells
 static const uint16_t REGION_Y_CELLS = MAP_HEIGHT/REGION_COLSIZE;
@@ -64,8 +61,6 @@ private:
 	void addNow( pItem pi );
 
 	region_db_st regions[REGION_X_CELLS][REGION_Y_CELLS];
-
-	bool isValidCoord( uint16_t x, uint16_t y );
 
 public:
 

@@ -236,4 +236,15 @@ inline void ShortToCharPtr(const uint16_t i, unsigned char *p)
 	*b = htons(i);
 }
 
+/*!
+\brief Tells if a given point is a valid coordinate
+\param p Point to test
+\return true if the point is in the map, else false
+\todo Change the MAP_WIDTH, MAP_HEIGHT with the REAL map dimensions
+*/
+bool isValidCoord( sPoint p )
+{
+	return ( p.x < MAP_WIDTH && p.y < MAP_HEIGHT );
+}
+
 #endif //__INLINES_H__

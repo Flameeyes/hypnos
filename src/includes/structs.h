@@ -33,6 +33,9 @@ struct sLocation {
 	int8_t dispz;		//!< Displayed Z of the location
 	uint8_t map;		//!< Map the location (if 255 -> every map)
 	
+	inline sLocation()
+	{ x = 0; y = 0; z = 0; dispz = 0; map = 0; }
+	
 	/*!
 	\brief Constructor for sLocation structure
 	\param X x of the new location

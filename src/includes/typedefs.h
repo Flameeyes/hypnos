@@ -59,6 +59,8 @@ typedef std::map<std::string, pAccount> cAccounts;
 						//!< Hashed-map of accounts
 
 typedef std::vector<struct sPoint> PointVector;	//!< Vector of (x,y) points (uint16_t coords)
+typedef std::list<struct sLocation> LocationList;
+						//!< List of locations (used for jails)
 
 //@{
 /*!
