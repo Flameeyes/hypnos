@@ -16,6 +16,7 @@
 
 #include <Python.h>
 #include "globals.h"
+#include "chars.h"
 
 #define PYNATIVE(_func) \
 	static PyObject* _func(PyObject *self, PyObject *args)
