@@ -620,6 +620,10 @@ class cPacketReceiveRenameCharacter     : public cPacketReceive;
 class cPacketReceiveDialogResponse      : public cPacketReceive;
 class cPacketReceiveLoginRequest        : public cPacketReceive;
 class cPacketReceiveDeleteCharacter     : public cPacketReceive;
+class cPacketReceiveGameServerLogin     : public cPacketReceive;
+class cPacketReceiveBookUpdateTitle     : public cPacketReceive;
+class cPacketReceiveDyeItem             : public cPacketReceive;
+class cPacketRequestHelp	        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
@@ -628,4 +632,8 @@ class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+
 #endif
+

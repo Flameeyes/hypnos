@@ -604,14 +604,17 @@ static pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t lengt
                 case 0x7d: return new cPacketReceiveDialogResponse(buffer, length); 	// Client Response To Dialog
                 case 0x80: return new cPacketReceiveLoginRequest(buffer, length); 	// Login Request
                 case 0x83: return new cPacketReceiveDeleteCharacter(buffer, length); 	// Delete Character
-                case 0x86: length = 304; break; // Resend Characters After Delete
-                case 0x91: length =  65; break; // Game Server Login (Server to play selected)
-                case 0x93: length =  99; break; // Books – Update Title Page (receive version of packet 0x93)
-                case 0x95: length =   9; break; // Dye Window
-                case 0x98: length =   7; break; // All-names “3D” (3d clients only packet, receive version 7 bytes long)
-                case 0x99: length =  26; break; // Bring Up House/Boat Placement View
-                case 0x9a: length =  16; break; // Console Entry Prompt
-                case 0x9b: length = 258; break; // Request Help
+                case 0x91: return new cPacketReceiveGameServerLogin(buffer, length);	// Game Server Login (Server to play selected)
+                case 0x93: return new cPacketReceiveBookUpdateTitle(buffer, length);	// Books – Update Title Page (receive version of packet 0x93)
+                case 0x95: return new cPacketReceiveDyeItem(buffer, length); 		// Dye item
+
+                //Does this have to be implemented?
+                case 0x98: return NULL; 						// All-names “3D” (3d clients only packet, receive version 7 bytes long)
+
+                // in old nox is not implemented. Do we need it?
+                case 0x9a: return NULL; 						// Console Entry Prompt
+
+                case 0x9b: return new cPacketRequestHelp(buffer, length); 	      	// Request Help
                 case 0x9f: length = ???; break; // Sell Reply
                 case 0xa0: length =   3; break; // Select Server
                 case 0xa4: length =   5; break; // Client Machine info (Apparently was a sort of lame spyware command .. unknown if it still works)
@@ -1215,7 +1218,7 @@ bool cPacketReceiveBuyItems::execute(pClient client)
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
 
-        std::vector< buyeditem > allitemsbought;
+        std::vector< boughtitem > allitemsbought;
 
 	pNpc npc = (pNpc)pointers::findCharBySerPtr(buffer + 3);
 	VALIDATEPCR(npc, false);
@@ -1227,7 +1230,7 @@ bool cPacketReceiveBuyItems::execute(pClient client)
 	{
 		int pos=8+(7*i);
 
-		buyeditem b;
+		boughtitem b;
 
 		b.layer=buffer[pos];
 		b.item=pointers::findItemBySerPtr(buffer + pos + 1);
@@ -1362,7 +1365,7 @@ bool cPacketReceiveBookPage::execute(pClient client)
 		if (book->morex!=666 && book->morex!=999)
 			book->morex = 666;
 		if (book->morex==666) // writeable book -> copy page data send by client to the class-page buffer
-			Books::books[book->morez].ChangePages((char*)(buffer + 13), ShortFromCharPtr(buffer + 9), ShortFromCharPtr(buffer + 11), size - 13 );
+			Books::books[book->morez].ChangePages(buffer + 13, ShortFromCharPtr(buffer + 9), ShortFromCharPtr(buffer + 11), size - 13 );
 		else if (pBook->morex==999)
 			Books::books[book->morez].SendPageReadOnly(client, book, ShortFromCharPtr(buffer + 9));
 	}
@@ -1697,7 +1700,7 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
  */
 
         pAccount account = client->currAccount();
-        if(!account->comparePassword(buffer+1))
+        if(!account->verifyPassword(buffer+1))
        	{
              	// Password invalid
                 cPacketSendCharDeleteError pk(0x0);
@@ -1707,11 +1710,8 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
 
 	pPC TrashMeUp = account->getChar(index);	//PC to delete. if index is too large or invalid, it returns NULL
 
-
-
 	if (ServerScp::g_nPlayersCanDeleteRoles)
         {
-	/// Do Character Deletion ... and return if all ok
 		if(!TrashMeUp)
                 {
 			// Character does not exist
@@ -1737,6 +1737,7 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
 	       			client->sendPacket(&pk);
 				return true;
 			}
+          		// Character Deletion
 			TrashMeUp->Delete();
 
 			cPacketSendCharAfterDelete pk(account);
@@ -1748,5 +1749,59 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
         // sending message "0x05 => Couldn't carry out your request" ???????
  	cPacketSendCharDeleteError pk(0x5);
 	client->sendPacket(&pk);
+        return true;
+}
+
+
+
+bool cPacketReceiveGameServerLogin::execute(pClient client)
+{
+	if (length != 65) return false;
+
+        //! \todo another login packet. Revise when encryption done
+        /*
+	clientInfo[s]->firstpacket=false;
+	clientInfo[s]->compressOut=true;
+	if ( clientCrypter[s] != NULL )	clientCrypter[s]->setEntering(false);
+	CharList(s);  */
+        return true;
+}
+
+
+
+
+bool cPacketReceiveBookUpdateTitle::execute(pClient client)
+{
+	if (length != 99) return false;
+	int j= 9;
+	char author[31],title[61];
+        pItem pBook=pointers::findItemBySerPtr(buffer+1);
+  	if(!ISVALIDPI(pBook)) return false;
+        strncpy(title, buffer + 9, 60);
+        strncpy(author, buffer + 69, 30);
+        //so if clients somehow does not send a null terminated string, we zero the last character to be sure
+        title[60] = 0;
+        author[30] = 0;
+	Books::books[pBook->morez].ChangeAuthor(author);
+	Books::books[pBook->morez].ChangeTitle(title);
+        return true;
+}
+
+
+
+bool cPacketReceiveDyeItem::execute(pClient client)
+{
+	if (length != 9) return false;
+        //TODO: moving dyeitem from commands to cclient??
+        Commands::DyeItem(client);
+        return true;
+}
+
+
+bool cPacketRequestHelp::execute(pClient client)
+{
+	if (length != 258) return false;
+        //! \todo whem menu's are revised, look at this...
+	gmmenu(s, 1);
         return true;
 }
