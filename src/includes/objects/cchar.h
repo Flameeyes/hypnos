@@ -502,8 +502,8 @@ public:
 \name Skills and doubleclicking
 */
 public:
-	TIMERVAL skilldelay;
-	TIMERVAL objectdelay;
+	uint32_t skilldelay;
+	uint32_t objectdelay;
 public:
         void singleClick(pClient client);	//!< "this" is the clicked char, client is the client of the clicker
         void doubleClick(pClient client);	//!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
@@ -617,12 +617,12 @@ public:
 	uint32_t			def; // Intrinsic defense
 	char			wresmove; // Luxor: for Wrestling's special moves
 
-	TIMERVAL		timeout; // Combat timeout (For hitting)
-	TIMERVAL		timeout2; // memory of last shot timeout
+	uint32_t		timeout; // Combat timeout (For hitting)
+	uint32_t		timeout2; // memory of last shot timeout
 
-	TIMERVAL		invistimeout;
+	uint32_t		invistimeout;
 	int32_t			hunger;  // Level of hungerness, 6 = full, 0 = "empty"
-	TIMERVAL		hungertime; // Timer used for hunger, one point is dropped every 20 min
+	uint32_t		hungertime; // Timer used for hunger, one point is dropped every 20 min
 	int32_t			callnum; //GM Paging
 	int32_t			playercallnum; //GM Paging
 	int32_t			pagegm; //GM Paging
@@ -633,13 +633,13 @@ public:
 	int32_t			making; // skill number of skill using to make item, 0 if not making anything.
 	char			blocked;
 	char			dir2;
-	TIMERVAL		spiritspeaktimer; // Timer used for duration of spirit speak
+	uint32_t		spiritspeaktimer; // Timer used for duration of spirit speak
 	int32_t			spattack;
-	TIMERVAL		spadelay;
-	TIMERVAL		spatimer;
+	uint32_t		spadelay;
+	uint32_t		spatimer;
 	int32_t			taming; //Skill level required for taming
-	TIMERVAL		summontimer; //Timer for summoned creatures.
-	TIMERVAL		fishingtimer; // Timer used to delay the catching of fish
+	uint32_t		summontimer; //Timer for summoned creatures.
+	uint32_t		fishingtimer; // Timer used to delay the catching of fish
 
 	//<Luxor>
 	int32_t			resists[MAX_RESISTANCE_INDEX];
@@ -649,9 +649,9 @@ public:
 
 	int32_t			poison;		//!< used for poison skill
 	PoisonType		poisoned;	//!< type of poison
-	TIMERVAL		poisontime;	//!< poison damage timer
-	TIMERVAL		poisontxt;	//!< poision text timer
-	TIMERVAL		poisonwearofftime; //!< LB, makes poision wear off ...
+	uint32_t		poisontime;	//!< poison damage timer
+	uint32_t		poisontxt;	//!< poision text timer
+	uint32_t		poisonwearofftime; //!< LB, makes poision wear off ...
 
 	int32_t			fleeat;
 	int32_t			reattackat;
@@ -664,24 +664,24 @@ public:
 	int32_t			targtrig;	//!< Stores the number of the trigger the character for targeting
 	char			ra;		//!< Reactive Armor spell
 
-	TIMERVAL		tempflagtime;
+	uint32_t		tempflagtime;
 
 	std::wstring* staticProfile;			//!< player static profile
 
 
-	TIMERVAL		murderrate; //!< # of ticks until one murder decays //REPSYS
-	TIMERVAL		murdersave; //!< # of second for murder decay
+	uint32_t		murderrate; //!< # of ticks until one murder decays //REPSYS
+	uint32_t		murdersave; //!< # of second for murder decay
 
-	TIMERVAL		crimflag; //!< Time when No longer criminal -1=Not Criminal
-	TIMERVAL		spelltime; //Time when they are done casting....
+	uint32_t		crimflag; //!< Time when No longer criminal -1=Not Criminal
+	uint32_t		spelltime; //Time when they are done casting....
 	magic::SpellId		spell; //current spell they are casting....
 	int32_t			spellaction; //Action of the current spell....
 	magic::CastingType	spelltype;
-	TIMERVAL		nextact; //time to next spell action....
+	uint32_t		nextact; //time to next spell action....
 	TargetLocation*		spellTL; //Luxor: npc spell targetlocation
 
 	int32_t			squelched; // zippy  - squelching
-	TIMERVAL		mutetime; //Time till they are UN-Squelched.
+	uint32_t		mutetime; //Time till they are UN-Squelched.
 	//int32_t statuse[3]; //Morrolan - stat/skill cap STR/INT/DEX in that order
 	//int32_t skilluse[skTrueSkills][1]; //Morrolan - stat/skill cap
 	uint8_t			lockSkill[ALLSKILLS+1]; // LB, client 1.26.2b skill managment
@@ -693,16 +693,16 @@ public:
 
 	uint32_t		holdg; // Gold a player vendor is holding for Owner
 	char			fly_steps; // number of step the creatures flies if it can fly
-	TIMERVAL		smoketimer; // LB
-	TIMERVAL		smokedisplaytimer;
+	uint32_t		smoketimer; // LB
+	uint32_t		smokedisplaytimer;
 
-	TIMERVAL		antispamtimer;//LB - anti spam
+	uint32_t		antispamtimer;//LB - anti spam
 
-	TIMERVAL		antiguardstimer;//AntiChrist - anti "GUARDS" spawn
+	uint32_t		antiguardstimer;//AntiChrist - anti "GUARDS" spawn
 
 	int32_t			carve; //AntiChrist - for new carve system
 
-	TIMERVAL		begging_timer;
+	uint32_t		begging_timer;
 	PostType		postType;
 	QuestType		questType;
 	int32_t			questDestRegion;
@@ -714,8 +714,8 @@ public:
 
 	// COORDINATE	previousLocation;
 
-	TIMERVAL 		time_unused;
-	TIMERVAL 		timeused_last;
+	uint32_t 		time_unused;
+	uint32_t 		timeused_last;
 
 
 

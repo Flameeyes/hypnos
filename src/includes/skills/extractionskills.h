@@ -21,7 +21,7 @@ public:
 
 	cResource( ) { this->consumed=0; timer=getclock(); }
 
-	TIMERVAL timer; //!< timer for respawn
+	uint32_t timer; //!< timer for respawn
 	uint32_t consumed; //!< amount of resource consumed
 
 };
@@ -46,8 +46,8 @@ public:
 
 
 	uint32_t		n; //!< number of resource max
-	TIMERVAL	time; //!< 
-	TIMERVAL	rate; //!< respawn rate
+	uint32_t	time; //!< 
+	uint32_t	rate; //!< respawn rate
 	int32_t		stamina; //!< stamina used
 	uint32_t		area_width; //!< resource area width
 	uint32_t		area_height; //!< resource area height

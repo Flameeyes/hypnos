@@ -114,7 +114,7 @@ bool cResources::checkRes( pResource res )
 void cResources::checkAll()
 {
 
-	static TIMERVAL timer=getclock()+2*60*SECS;
+	static uint32_t timer=getclock()+2*60*SECS;
 
 	if(TIMEOUT( timer ) ) {
 

@@ -1085,7 +1085,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 		case 0x104B:
 		case 0x104C:
 		case 0x1086: // Clock and bracelet
-			telltime(ps);
+			ps->telltime();
 			return;
 		case 0x0E9B: // Mortar for Alchemy
 			pc->objectdelay = ((SrvParms->objectdelay * SECS)*3) + getclock();

@@ -106,8 +106,8 @@ struct repsys_st
 struct resource_st
 {
 	uint32_t		logs;
-	TIMERVAL	logtime;
-	TIMERVAL	lograte;//AntiChrist
+	uint32_t	logtime;
+	uint32_t	lograte;//AntiChrist
 	uint32_t		logarea;
 	int32_t		logtrigger;//AntiChrist
 	int32_t		logstamina;//AntiChrist
@@ -142,7 +142,7 @@ struct unitile_st
 */
 struct spiritspeak_st
 {
- TIMERVAL spiritspeaktimer;
+ uint32_t spiritspeaktimer;
 };
 
 /*!
@@ -153,7 +153,7 @@ struct sSpeed
 {
 	int32_t nice;
 	float itemtime;
-	TIMERVAL srtime;
+	uint32_t srtime;
 	float npctime;
 	float tamednpctime;
 	float npcfollowtime;
@@ -185,7 +185,7 @@ struct tele_locations_st {
 \note regeneration rage is in milliseconds
 */
 typedef struct {
-	TIMERVAL timer; //!< the timer
+	uint32_t timer; //!< the timer
 	uint32_t rate_eff; //!< regeneration rate current
 	uint32_t rate_real; //!< regeneration rate real
 } regen_st;

@@ -17,10 +17,9 @@
 #include "sndpkg.h"
 #include "calendar.h"
 #include "magic.h"
-#include "race.h"
 #include "tmpeff.h"
 #include "house.h"
-#include "jail.h"
+#include "extras/jail.h"
 #include "timers.h"
 #include "boats.h"
 #include "spawn.h"
@@ -39,49 +38,46 @@ void checkFieldEffects( uint32_t currenttime, pChar pc, char timecheck )
 	if ( (timecheck && !(nextfieldeffecttime<=currenttime)) ) //changed by Luxor
 		return;
 	
-	pItemVectorIt itemIt( pc->nearbyItems->begin() ), itemEnd( pc->nearbyItems->end() );
-
-	for( ; itemIt != itemEnd; ++itemIt ) {
+	for( pc->nearbyItems->begin(); itemIt != pc->nearbyItems->end(); ++itemIt ) {
 
 		pItem pi= (*itemIt);
 	
-	NxwItemWrapper si;
-	si.fillItemsNearXYZ( pc->getPosition(), 2, false );
-	for( si.rewind(); !si.isEmpty(); si++ )
-	{
-		pItem pi=si.getItem();
-#endif
-		if(pi ) {
-
-			if ( pi->getPosition().x == pc->getPosition().x && pi->getPosition().y == pc->getPosition().y )
-
-				//Luxor: added new field damage handling
-				switch( pi->getId() )
-				{
-					case 0x3996:
-					case 0x398C: //Fire Field
-						if (!pc->resistsFire())
-							tempfx::add(pc, pc, tempfx::FIELD_DAMAGE, int32_t(pi->morex/100.0), damFire, 0, 1);
-						return;
-					case 0x3915:
-					case 0x3920: //Poison Field
-						if ((pi->morex<997)) {
-							tempfx::add(pc, pc, tempfx::FIELD_DAMAGE, 2, damPoison, 0, 2);
-							pc->applyPoison(poisonWeak);
-						} else {
-							tempfx::add(pc, pc, tempfx::FIELD_DAMAGE, 3, damPoison, 0, 2); // gm mages can cast greater poison field, LB
-							pc->applyPoison(poisonNormal);
-						}
-						return;
-					case 0x3979:
-					case 0x3967: //Para Field
-						if (chance(50)) {
-							tempfx::add(pc, pc, tempfx::SPELL_PARALYZE, 0, 0, 0, 3);
-							pc->playSFX( 0x0204 );
-						}
-						return;
-				}
+		NxwItemWrapper si;
+		si.fillItemsNearXYZ( pc->getPosition(), 2, false );
+		for( si.rewind(); !si.isEmpty(); si++ )
+		{
+			pItem pi=si.getItem();
+			if ( !pi || pi->getPosition().x != pc->getPosition().x || pi->getPosition().y != pc->getPosition().y )
+				continue;
+			
+			//Luxor: added new field damage handling
+			switch( pi->getId() )
+			{
+				case 0x3996:
+				case 0x398C: //Fire Field
+					if (!pc->resistsFire())
+						tempfx::add(pc, pc, tempfx::FIELD_DAMAGE, int32_t(pi->morex/100.0), damFire, 0, 1);
+					return;
+				case 0x3915:
+				case 0x3920: //Poison Field
+					if ((pi->morex<997)) {
+						tempfx::add(pc, pc, tempfx::FIELD_DAMAGE, 2, damPoison, 0, 2);
+						pc->applyPoison(poisonWeak);
+					} else {
+						tempfx::add(pc, pc, tempfx::FIELD_DAMAGE, 3, damPoison, 0, 2); // gm mages can cast greater poison field, LB
+						pc->applyPoison(poisonNormal);
+					}
+					return;
+				case 0x3979:
+				case 0x3967: //Para Field
+					if (chance(50)) {
+						tempfx::add(pc, pc, tempfx::SPELL_PARALYZE, 0, 0, 0, 3);
+						pc->playSFX( 0x0204 );
+					}
+					return;
+			}
 		}
+	
 	}
 }
 
@@ -99,14 +95,14 @@ void checktimers() // Check shutdown timers
 
 void checkauto() // Check automatic/timer controlled stuff (Like fighting and regeneration)
 {
-//	static TIMERVAL checkspawnregions=0;
-       	static TIMERVAL checktempfx=0;
-	static TIMERVAL checknpcs=0;
-	static TIMERVAL checktamednpcs=0;
-	static TIMERVAL checknpcfollow=0;
-	static TIMERVAL checkitemstime=0;
-	static TIMERVAL lighttime=0;
-	static TIMERVAL housedecaytimer=0;
+//	static uint32_t checkspawnregions=0;
+       	static uint32_t checktempfx=0;
+	static uint32_t checknpcs=0;
+	static uint32_t checktamednpcs=0;
+	static uint32_t checknpcfollow=0;
+	static uint32_t checkitemstime=0;
+	static uint32_t lighttime=0;
+	static uint32_t housedecaytimer=0;
 
 	bool lightChanged = false;
 
@@ -257,7 +253,6 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 
 		if( TIMEOUT( checknpcs ) || TIMEOUT( checktamednpcs ) || TIMEOUT( checknpcfollow ) )
 		{
-#ifdef SPAR_C_LOCATION_MAP
 			CharList *pCV = pointers::getNearbyChars( pc, VISRANGE, pointers::NPC );
 			CharList it( pCV->begin() ), end( pCV->end() );
 			pChar pNpc = 0;
@@ -274,26 +269,6 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 				}
 				++it;
 			}
-#else
-			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
-			for( sc.rewind(); !sc.isEmpty(); sc++ )
-			{
-				pChar npc=sc.getChar();
-
-				if(! npc || !npc->npc )
-					continue;
-
-				if( npc->lastNpcCheck != getclock() &&
-				    (TIMEOUT( checknpcs ) ||
-				    (TIMEOUT( checktamednpcs ) && npc->tamed) ||
-				    (TIMEOUT( checknpcfollow ) && npc->npcWander == WANDER_FOLLOW ) ) )
-				{
-					npc->heartbeat();
-					npc->lastNpcCheck = getclock();
-				}
-			}
-#endif
 		}
 
 		if( TIMEOUT( checkitemstime ) )
@@ -344,7 +319,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 									dir%=8;
 									Boats->Move(ps->toInt(),dir,pi);
 								}
-								pi->gatetime=(TIMERVAL)(getclock() + (double)(SrvParms->boatspeed*SECS));
+								pi->gatetime=(uint32_t)(getclock() + (double)(SrvParms->boatspeed*SECS));
 							}
 						break;
 				}
@@ -354,40 +329,30 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 
 
 	if( TIMEOUT( checkitemstime ) )
-		checkitemstime = (TIMERVAL)((double) getclock()+(speed.itemtime*SECS));
+		checkitemstime = (uint32_t)((double) getclock()+(speed.itemtime*SECS));
 	if( TIMEOUT( checknpcs ) )
-		checknpcs = (TIMERVAL)((double) getclock()+(speed.npctime*SECS));
+		checknpcs = (uint32_t)((double) getclock()+(speed.npctime*SECS));
 	if( TIMEOUT( checktamednpcs ) )
-		checktamednpcs=(TIMERVAL)((double) getclock()+(speed.tamednpctime*SECS));
+		checktamednpcs=(uint32_t)((double) getclock()+(speed.tamednpctime*SECS));
 	if( TIMEOUT( checknpcfollow ) )
-		checknpcfollow=(TIMERVAL)((double) getclock()+(speed.npcfollowtime*SECS));
+		checknpcfollow=(uint32_t)((double) getclock()+(speed.npcfollowtime*SECS));
 	//
 	// Finish
 	//
 	if ( TIMEOUT( nextfieldeffecttime ) )
-		nextfieldeffecttime = (TIMERVAL)((double) getclock() + (0.5*SECS));
+		nextfieldeffecttime = (uint32_t)((double) getclock() + (0.5*SECS));
 	if ( TIMEOUT( nextdecaytime ) )
 		nextdecaytime = getclock() + (15*SECS);
         if( TIMEOUT( checktempfx ) )
-		checktempfx = (TIMERVAL)((double) getclock()+(0.5*SECS));
+		checktempfx = (uint32_t)((double) getclock()+(0.5*SECS));
 }
 
 static int32_t linInterpolation (int32_t ix1, int32_t iy1, int32_t ix2, int32_t iy2, int32_t ix)
 {
-	#define NSIN(X) ((static_cast<float>(1.0+sin((2.0*X-1.0)*PI)))/2.0f)
-	#define NLIN(X) (X)
+	float X2 = ix2 - ix1;
+	float Y2 = iy2 - iy1;
+	float  X =  ix - ix1;
+	float  Y = (X/X2)*Y2)+iy1;
 
-	float x1 = static_cast<R32>(ix1);
-	float x2 = static_cast<R32>(ix2);//reinterpret_cast
-	float y1 = static_cast<R32>(iy1);
-	float y2 = static_cast<R32>(iy2);
-	float  x = static_cast<R32>(ix);
-	float X2 = x2 - x1;
-	float Y2 = y2 - y1;
-	float  X =  x - x1;
-	float  Y = (NLIN((X/X2))*Y2)+y1;
-
-	int32_t y = static_cast<int32_t>(Y);
-
-	return y;
+	return static_cast<int32_t>(Y);
 }

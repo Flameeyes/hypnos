@@ -18,7 +18,6 @@
 /*!
 \name Generic types
 */
-typedef uint32_t			TIMERVAL;
 typedef int32_t				ACCOUNT;
 typedef int32_t				FUNCIDX;
 

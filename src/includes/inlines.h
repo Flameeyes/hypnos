@@ -33,7 +33,7 @@ template<typename T> inline void qswap(T& a, T& b) { T dummy; dummy = a; a = b; 
 
 inline bool chance(uint8_t percent) { return ( (rand()%100) < percent); }
 
-inline void SetTimerSec( TIMERVAL *timer, const short seconds)
+inline void SetTimerSec( uint32_t *timer, const short seconds)
 {
 	*timer=seconds * SECS /*+ getclock()*/;
 }

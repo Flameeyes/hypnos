@@ -10,7 +10,7 @@
 \brief Begging methods implementation
 */
 
-TIMERVAL Begging::timer;
+uint32_t Begging::timer;
 uint32_t Begging::range;
 std::string Begging::text[3];
 

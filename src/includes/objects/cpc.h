@@ -123,14 +123,14 @@ public:
 */
 protected:
 	//! Day since EPOCH this character was created on
-	TIMERVAL creationday;
+	uint32_t creationday;
 public:
 	//! Set the creation day of a character
-	inline void setCreationDay(TIMERVAL day)
+	inline void setCreationDay(uint32_t day)
 	{ creationday = day; }
 
 	//! Get the creation day of a character
-	inline const TIMERVAL getCreationDay() const
+	inline const uint32_t getCreationDay() const
 	{ return creationday; }
 //@}
 

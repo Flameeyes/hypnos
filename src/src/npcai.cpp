@@ -25,7 +25,7 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 	// early return if prerequisites for spellcasting aren't true!
 	// dirty,but helps losing some KG of code later :)
 
-	if ((pc_att->spatimer > (TIMERVAL)currenttime)) return;
+	if ((pc_att->spatimer > (uint32_t)currenttime)) return;
 
 	//note : if magicsphere!=0, spattack has a different meaning!!
 	spattacks = numbitsset( pc_att->spattack );

@@ -705,15 +705,15 @@ public:
 	void		explode(pClient client);
 
 protected:
-	TIMERVAL	decaytime;
+	uint32_t	decaytime;
 
 public:
 	virtual bool doDecay(bool dontDelete = false);
 
-	inline const void setDecayTime( const TIMERVAL delay = /*getclock()+*/(nSettings::Server::getDecayTimer()*SECS) )
+	inline const void setDecayTime( const uint32_t delay = /*getclock()+*/(nSettings::Server::getDecayTimer()*SECS) )
 	{ decaytime = delay; }
 
-	inline const TIMERVAL getDecayTime() const
+	inline const uint32_t getDecayTime() const
 	{ return decaytime; }
 
 	uint32_t distFrom( pChar pc );

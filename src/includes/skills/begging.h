@@ -15,7 +15,7 @@ This file contains Begging namespace with begging functions and paramters
 #include "typedefs.h"
 
 namespace Begging {
-	extern TIMERVAL timer;
+	extern uint32_t timer;
 	extern uint32_t range;
 	extern std::string text[3];
 	

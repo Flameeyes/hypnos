@@ -361,7 +361,7 @@ void nSkills::target_tree(pClient client, pTarget t )
 
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skLumberjacking,AMX_BEFORE);
 
-    static TIMERVAL logtime[max_res_x][max_res_y];//see mine for values...they were 1000 also here
+    static uint32_t logtime[max_res_x][max_res_y];//see mine for values...they were 1000 also here
     static uint32_t logamount[max_res_x][max_res_y];
     int a, b;
     unsigned int c;

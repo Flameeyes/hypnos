@@ -2837,7 +2837,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 }
 
 
-void sysmessage(pClient client, const char *txt, ...) // System message (In lower left corner)
+void cClient::sysmessage(const char *txt, ...) // System message (In lower left corner)
 {
 	if(s < 0)
 		return;
@@ -2878,7 +2878,7 @@ void sysmessage(pClient client, const char *txt, ...) // System message (In lowe
 	free(msg);
 }
 
-void sysmessage(pClient client, short color, const char *txt, ...) // System message (In lower left corner)
+void cClient::sysmessage(uint16_t color, const char *txt, ...) // System message (In lower left corner)
 {
 	if( s < 0)
 		return;
@@ -2904,7 +2904,7 @@ void sysmessage(pClient client, short color, const char *txt, ...) // System mes
 	free(msg);
 }
 
-void sysbroadcast(char *txt, ...) // System broadcast in bold text
+void cClient::sysbroadcast(char *txt, ...) // System broadcast in bold text
 //Modified by N6 to use UNICODE packets
 {
 	uint8_t unicodetext[512];
@@ -2934,4 +2934,87 @@ void sysbroadcast(char *txt, ...) // System broadcast in bold text
 	}
 	
 	free(msg);
+}
+
+/*!
+\brief Tells the client the current (game) time
+*/
+void cClient::telltime()
+{
+	static const char strTIs[]		= "It is";
+	static const char strTQuarterPast[]	= "It is a quarter past";
+	static const char strTHalfPast[]	= "It is half past";
+	static const char strTQuarterTill[]	= "It is a quarter till";
+	static const char strHours[12][] =
+	{
+		strNull,
+		"one o'clock",
+		"two o'clock",
+		"three o'clock",
+		"four o'clock",
+		"five o'clock",
+		"six o'clock",
+		"seven o'clock",
+		"eight o'clock",
+		"nine o'clock",
+		"ten o'clock",
+		"eleven o'clock"
+	};
+	static const char strAfternoon[]	= "in the afternoon.";
+	static const char strEvening[]		= "in the evening.";
+	static const char strNight[]		= "at night.";
+	static const char strMorning[]		= "in the morning.";
+
+	char *prefix = NULL;
+	char *strhour = NULL;
+	char *suffix = NULL;
+	
+	uint8_t hour = Calendar::g_nHour % 12;
+	if (hour==0) hour = 12;
+	bool ampm = (Calendar::g_nHour>=12) ? 1 : 0;
+	uint8_t minute = Calendar::g_nMinute;
+	uint8_t lhour = hour;
+
+	if ((minute>=0)&&(minute<=14))
+		prefix = strTIs;
+	else if ((minute>=15)&&(minute<=30))
+		prefix = strTQuarterPast;
+	else if ((minute>=30)&&(minute<=45))
+		prefix = strTHalfPast;
+	else
+	{
+		prefix = strTQuarterTill;
+		lhour++;
+		if (lhour==0) lhour=12;
+	}
+	
+	if ( lhour == 12 ) // No AM/PM stuff and no array stuff
+	{
+		if ( ampm )
+			sysmessage("%s midnight.", prefix);
+		else
+			sysmessage("%s noon.", prefix);
+		return;
+	}
+	
+	strhour = strHours[lhour];
+	
+	if (ampm)
+	{
+		if ((lhour>=1)&&(lhour<6))
+			suffix = strAfternoon;
+		else if ((lhour>=6)&&(lhour<9))
+			suffix = strEvening;
+		else
+			suffix = strNight;
+	}
+	else
+	{
+		if ((lhour>=1)&&(lhour<5))
+			suffix = strNight;
+		else
+			suffix = strMorning;
+	}
+	
+	sysmessage("%s %s %s", prefix, strhour, suffix);
 }

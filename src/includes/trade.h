@@ -17,7 +17,7 @@ class cRestockMng {
 
 private:
 
-	TIMERVAL timer;
+	uint32_t timer;
 	std::queue< uint32_t > needrestock;
 	std::queue< uint32_t > restocked;
 

@@ -15,8 +15,8 @@
 
 namespace Fishing
 {
-	extern TIMERVAL basetime;
-	extern TIMERVAL randomtime;
+	extern uint32_t basetime;
+	extern uint32_t randomtime;
 	
 	void target_fish( pClient client, pTarget t );
 	void Fish(pClient client);

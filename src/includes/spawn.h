@@ -22,7 +22,7 @@ public:
 	~cSpawnArea();
 
 	uint32_t current; //!< currente number of spawned
-	TIMERVAL nextspawn; //!< next spawn
+	uint32_t nextspawn; //!< next spawn
 
 	uint32_set items_spawned;
 	uint32_set npcs_spawned;
@@ -50,8 +50,8 @@ public:
 
 	uint32_t serial; //!< region serial
 
-	TIMERVAL mintime; //!< min time value	
-	TIMERVAL maxtime; //!< max time value
+	uint32_t mintime; //!< min time value	
+	uint32_t maxtime; //!< max time value
 	uint32_vector npclists; //!< npclist to spawn
 	uint32_vector npcs; //!< npc to spawn
 	uint32_vector itemlists; //!< itemlist to spawn
@@ -81,7 +81,7 @@ public:
 	uint32_set npc_spawned; //!< spawned npcs
 
 	uint32_t current;
-	TIMERVAL nextspawn; //!< next spawn
+	uint32_t nextspawn; //!< next spawn
 
 	void doSpawn();
 	bool needSpawn();
@@ -101,7 +101,7 @@ public:
 	cSpawns();
 	~cSpawns();
 
-	TIMERVAL check; //!< check respawn
+	uint32_t check; //!< check respawn
 
 	void loadFromScript();
 	void loadFromItem( pItem pi );

@@ -18,8 +18,8 @@
 #include "basics.h"
 #include "inlines.h"
 
-TIMERVAL Fishing::basetime = FISHINGTIMEBASE;
-TIMERVAL Fishing::randomtime = FISHINGTIMER;
+uint32_t Fishing::basetime = FISHINGTIMEBASE;
+uint32_t Fishing::randomtime = FISHINGTIMER;
 
 pNPC SpawnFishingMonster(pChar pc, char* cScript, char* cList, char* cNpcID)
 {

@@ -9,7 +9,6 @@
 #ifndef __MISC_H__
 #define __MISC_H__
 
-void telltime( pClient ps );
 void npcattacktarget(pChar npc, pChar target);
 void callguards( int p );
 void usepotion(pChar pc, pItem pi);
