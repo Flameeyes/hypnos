@@ -858,15 +858,7 @@ int cChar::calcDef(int32_t x)
 				--pj->hp; //Take off a hit point
 				if( pj->hp <= 0 )
 				{
-					if ( strncmp(pj->getCurrentName().c_str(), "#", 1) )
-					{
-						sysmsg("Your %s has been destroyed", pj->getCurrentName().c_str());
-					} else
-					{
-						tile_st tile;
-						Map->SeekTile(pj->id(), &tile);
-						sysmsg("Your %s has been destroyed", tile.name);
-					}
+					getClient()->sysmessage("Your %s has been destroyed", pj->getRealItemName().c_str());
 					modifyStrength(-pj->st2);
 					dx -= pj->dx2;
 					in -= pj->in2;
@@ -881,13 +873,7 @@ int cChar::calcDef(int32_t x)
 			if(chance(5))
 				pj->hp--; //Take off a hit point
 			if(pj->hp<=0) {
-				if ( strncmp(pj->getCurrentName().c_str(), "#", 1) ) {
-					sysmsg("Your %s has been destroyed", pj->getCurrentName().c_str());
-				} else {
-					tile_st tile;
-					data::seekTile(pj->getId(), tile);
-					sysmsg("Your %s has been destroyed", tile.name);
-				}
+				getClient()->sysmessage("Your %s has been destroyed", pj->getRealItemName().c_str());
 				//LB bugfix !!! -- remove BONUS STATS given by equipped special items
 				// LB, lets pray st2,dx2,in2 values are set correctly :)
 				modifyStrength(-pj->st2);
