@@ -8,7 +8,7 @@
 
 #ifdef _WIN32
 
-#include "pywin32.h"
+#include "hypwin32.h"
 #include <process.h>
 
 namespace arch {

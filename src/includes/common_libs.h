@@ -101,9 +101,9 @@ warnings/errors/issues.
 #include "console.h"
 
 #ifdef __unix__
-	#include "archs/pyunix.h"
+	#include "archs/hypunix.h"
 #else
-	#include "archs/pywin32.h"
+	#include "archs/hypwin32.h"
 #endif
 
 //#define TIMEOUT(X) (((X) <= getClock()) || overflow)
@@ -117,7 +117,7 @@ extern OSVersion getOSVersion();
 /*!
 \name System dependent functions
 
-Functions defined into archs/pyunix and archs/pywin32
+Functions defined into archs/hypunix and archs/hypwin32
 */
 uint32_t getclock();
 uint32_t getsysclock();

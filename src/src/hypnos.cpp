@@ -79,9 +79,9 @@
 #include "hypnos.h"
 
 #ifdef WIN32
-	#include "archs/pywin32.h"
+	#include "archs/hypwin32.h"
 #elif defined (__unix__)
-	#include "archs/pyunix.h"
+	#include "archs/hypunix.h"
 #endif
 
 extern void initSignalHandlers();
