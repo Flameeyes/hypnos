@@ -104,8 +104,6 @@ cObject::~cObject()
 
 /*!
 \brief Set the serial of the object
-\author Anthalir
-\since 0.82a
 \param newserial the new serial
 */
 void cObject::setSerial(int32_t newserial)
@@ -117,8 +115,6 @@ void cObject::setSerial(int32_t newserial)
 
 /*!
 \brief Set the position of the object
-\author Anthalir
-\since 0.82a
 \param where sLocation structure representing the new position
 */
 void cObject::setPosition(sLocation where)
@@ -129,25 +125,21 @@ void cObject::setPosition(sLocation where)
 
 /*!
 \brief Set the current name of object
-\author Anthalir, rewritten by Luxor
-\since 0.82a
 \param format formatted C string
 */
-void cObject::setCurrentName( char *format, ... )
+void cObject::setCurrentName(char *format, ...)
 {
 	char *tmp;
 	va_list vargs;
 	va_start(vargs, format);
 	vasprintf(&tmp, format, vargs);
 	va_end(vargs);
-	current_name=string( tmp );
+	current_name = string( tmp );
 	free(tmp);
 }
 
 /*!
 \brief Set the secondary name of the object
-\author Anthalir, rewritten by Luxor
-\since 0.82a
 \param format C char pointer - see printf
 \warning This function must only be used by items because it use same var than real name
 */

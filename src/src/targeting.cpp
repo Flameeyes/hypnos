@@ -93,7 +93,6 @@ void CarveTarget(pClient client, int feat, int ribs, int hides, int fur, int woo
 
 /*!
 \author AntiChrist
-\date 03/11/1999
 \brief New Carving System
 \note Human-corpse carving code added
 \note Scriptable carving product added
