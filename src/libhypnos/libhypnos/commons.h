@@ -48,8 +48,7 @@ suite to access the common defines without need of complete hypnos sources.
 	//! \see http://gcc.gnu.org/onlinedocs/gcc-3.3.3/gcc/Function-Attributes.html#Function%20Attributes
 	#define PRINTF_LIKE(A,B) 
 
-#elif defined( __GNUC__ ) || defined(__ICC)
-// Intel C++ Compiler supports attributes (seems)
+#elif defined( __GNUC__ )
 	#define PACK_NEEDED __attribute__ ((packed))
 	#define DEPRECATED __attribute__ ((deprecated))
 	#define PURE __attribute__ ((pure))
