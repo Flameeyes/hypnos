@@ -1563,4 +1563,38 @@ void cItem::setDispellable( const bool on )
 		priv &= ~0x04;
 }
 
+/*!
+\brief Calculate the value of the item
+\param bvalue base value
+*/
+const SI32 cItem::calcValue(SI32 bvalue)
+{
+	int mod=10;
 
+	if (type==19)
+	{
+		if (morex>500) mod=mod+1;
+		if (morex>900) mod=mod+1;
+		if (morex>1000) mod=mod+1;
+		if (morez>1) mod=mod+(3*(pi->morez -1));
+		bvalue=(bvalue*mod)/10;
+	}
+
+	// Lines added for Rank System by Magius(CHE)
+	if (rank>0 && rank<10 && SrvParms->rank_system==1)
+	{
+		bvalue=(int) (pi->rank*bvalue)/10;
+	}
+	if (bvalue<1) bvalue=1;
+	// end addon
+
+	// Lines added for Trade System by Magius(CHE) (2)
+	if (rndvaluerate<0) rndvaluerate=0;
+	if (rndvaluerate!=0 && SrvParms->trade_system==1) {
+		bvalue+=(int) (bvalue*rndvaluerate)/1000;
+	}
+	if (bvalue<1) bvalue=1;
+	// end addon
+
+	return bvalue;
+}

@@ -75,8 +75,8 @@ void buyaction(int s)
 
 		b.item->rank=10;
 		// Fixed for adv trade system -- Magius(CHE) §
-		tmpvalue=b.item->value;
-		tmpvalue=calcValue(DEREF_P_ITEM(b.item), tmpvalue);
+		tmpvalue = b.item->value;
+		tmpvalue = b.item->calcValue(tmpvalue);
 		if (SrvParms->trade_system==1)
 			tmpvalue=calcGoodValue(s,DEREF_P_ITEM(b.item),tmpvalue,0);
 		goldtotal+=b.amount*tmpvalue;
@@ -323,8 +323,8 @@ void sellaction(NXWSOCKET s)
 					P_ITEM pi=si2.getItem();
 					if( ISVALIDPI(pi) && items_match(pi,pSell))
 					{
-						value=pi->value;
-						value=calcValue(DEREF_P_ITEM(pSell), value);
+						value = pi->value;
+						value = pSell->calcValue(value);
 						if (SrvParms->trade_system==1)
 							value=calcGoodValue(s,DEREF_P_ITEM(pSell),value,1); // Fixed for adv trade --- by Magius(CHE) §
 						break;	// let's take the first match

@@ -101,7 +101,7 @@ void cPacketSendAddContainerItem::prepare()
 	ShortToCharPtr(item->getAmount(), ptrItem+8);
 	ShortToCharPtr(item->getLocation().x, ptrItem+10);
 	ShortToCharPtr(item->getLocation().y, ptrItem+12);
-	LongToCharPtr(item->getCont()->getSerial(), ptrItem+14);
+	LongToCharPtr(item->getContainr()->getSerial(), ptrItem+14);
 	ShortToCharPtr(item->getColor(), ptrItem+18);
 }
 
@@ -115,7 +115,7 @@ void cPacketSendWornItem::prepare()
 	LongToCharPtr(item->getSerial(), buffer+1);
 	ShortToCharPtr(item->getAnimId(), buffer+5);
 	buffer[8] = item->getLayer();
-	LongToCharPtr(item->getCont()->getSerial(), buffer+9);
+	LongToCharPtr(item->getContainr()->getSerial(), buffer+9);
 	ShortToCharPtr(item->getColor(), buffer+13);
 }
 

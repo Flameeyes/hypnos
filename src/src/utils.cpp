@@ -795,47 +795,6 @@ void donewithcall(int s, int type)
 }
 
 /*!
-\brief calculates the value of an item (maybe)
-\return int value
-\param i item
-\param value unknown
-\todo write documentation
-*/
-int calcValue(int i, int value)
-{
-	int mod=10;
-	const P_ITEM pi=MAKE_ITEM_REF(i);
-	VALIDATEPIR(pi, value );
-
-	if (pi->type==19)
-	{
-		if (pi->morex>500) mod=mod+1;
-		if (pi->morex>900) mod=mod+1;
-		if (pi->morex>1000) mod=mod+1;
-		if (pi->morez>1) mod=mod+(3*(pi->morez -1));
-		value=(value*mod)/10;
-	}
-
-	// Lines added for Rank System by Magius(CHE)
-	if (pi->rank>0 && pi->rank<10 && SrvParms->rank_system==1)
-	{
-		value=(int) (pi->rank*value)/10;
-	}
-	if (value<1) value=1;
-	// end addon
-
-	// Lines added for Trade System by Magius(CHE) (2)
-	if (pi->rndvaluerate<0) pi->rndvaluerate=0;
-	if (pi->rndvaluerate!=0 && SrvParms->trade_system==1) {
-		value+=(int) (value*pi->rndvaluerate)/1000;
-	}
-	if (value<1) value=1;
-	// end addon
-
-	return value;
-}
-
-/*!
 \brief trade System
 \author Magius(CHE)
 \return int ?

@@ -12,6 +12,9 @@
 #ifndef __ITEMS_H
 #define __ITEMS_H
 
+class cItem;
+typedef cItem* pItem;
+
 #include "object.h"
 #include "magic.h"
 #include "item.h"
@@ -396,13 +399,11 @@ public:
 \name Container
 */
 private:
-	Serial 		contserial;
-	Serial		oldcontserial;
+	pObject		cont;
+	pObject		oldcont;
 
 public:
-	SI32		getContSerial(bool old= 0) const;
-	BYTE		getContSerialByte(UI32 nByte, bool old= false) const;
-	const cObject*	getContainer() const;
+	const pObject	getContainer() const;
 
 	inline void	setCont(P_OBJECT obj)
 	{ setContSerial(obj->getSerial32()); }
@@ -603,8 +604,11 @@ public:
 /*!
 \name Buy & Sell
 */
+protected:
 	SI32		value;		//!< Price shopkeeper sells item at.
 	SI32		restock;	//!< Number up to which shopkeeper should restock this item
+public:
+	const SI32 calcValue(SI32 bvalue);
 //@}
 
 //@{
