@@ -122,29 +122,6 @@ void cLocationTarget::error(pClient client)
 	client->sysmessage( "Invalid location" );
 }
 
-
-/*
-void amxCallbackOld(pClient client, pTarget t )
-{
-	if( t->amx_callback==NULL) 
-		return;
-	
-	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
-	if( pc ) {
-        t->amx_callback->Call( ps->currCharIdx(), pc->getSerial(), INVALID, INVALID, INVALID, INVALID );
-        return;
-    }
-
-    pItem pi = cSerializable::findItemBySerial( t->getClicked() );
-    if( pi ) {
-		t->amx_callback->Call( ps->currCharIdx(), INVALID, pi->getSerial(), INVALID, INVALID, INVALID );
-        return;
-    }
-
-    Location loc = t->getLocation();
-	t->amx_callback->Call( ps->currCharIdx(), INVALID, INVALID, loc.x, loc.y, loc.z );
-}*/
-
 void amxCallback(pClient client, pTarget t )
 {
 	if( t->amx_callback==NULL) 

@@ -105,10 +105,16 @@ protected:
 					//!< \todo Change to enum
 	int8_t		visible;	//!< 0=Normally Visible, 1=Owner & GM Visible, 2=GM Visible
 					//!< \todo Change to enum
-	int16_t		dir;
+	uint8_t		dir;		//!< Item's direction (?)
 
 
 public:
+	//! Gets the direction of the item (?)
+	const uint8_t getDirection() const
+	{ return dir; }
+	
+	void setDirection(uint8_t newdir);
+
 //@{
 /*!
 \name itemid
@@ -405,37 +411,33 @@ public:
 	void		putInto( pItem pi );
 //@}
 
-/********************************
-	Extra info
-********************************/
-/*	uint8_t		more1;		// For various stuff
-	uint8_t		more2;
-	uint8_t		more3;
-	uint8_t		more4;
-	int8_t		moreb1;
-	int8_t		moreb2;
-	int8_t		moreb3;
-	int8_t		moreb4;   */
+//@{
+/*!
+\name More values
 
+These variables are used to store informations in the item without add new
+members.
+Please note that in Hypnos, moreb stands for 'byte', and not for the second
+more variable. The two mores are more1 and more2. There's also morex, morey
+and morez which are used to save locations.
+*/
 	union tMore {
 		uint32_t more;
-
-		struct {
-		uint8_t more1, more2, more3, more4;
-		};
-	};
-
-	union tMoreB {
-		uint32_t moreb;
 
 		struct {
 		uint8_t moreb1, moreb2, moreb3, moreb4;
 		};
 	};
-	uint32_t	morex;
-	uint32_t	morey;
-	uint32_t	morez;
+	
+	tMore more1;	//!< First more value
+	tMore more2;	//!< Secondo more value
 
+	uint16_t morex;
+	uint16_t morey;
+	int8_t morez;
+//@}
+
+	
 //@{
 /*!
 \name Amount
@@ -622,8 +624,8 @@ protected:
         uint16_t minUsingStrength;				//!< Minimum strength to use item
         uint16_t minUsingIntelligence;				//!< Minimum inteligence to use item
         uint16_t minUsingDexterity;				//!< Minimum dexterity to use item
-        uint16_t minUsingSkill[3];				//!< holds up to 3 skills to be checked for usability. if INVALID no skill check is done
-        uint16_t minUsingSkillvalue[3];				//!< holds the 3 skill values of skills Minimum in the minUsingSkill array
+        Skill minUsingSkill[3];					//!< holds up to 3 skills to be checked for usability. if skInvalid no skill check is done
+        uint16_t minUsingSkillValue[3];				//!< holds the 3 skill values of skills Minimum in the minUsingSkill array
 
 public:
 	void singleClick(pClient client);			//!< Single click on item
@@ -649,19 +651,19 @@ public:
 	inline uint16_t getMinUsingIntelligence()
         { return minUsingIntelligence; }
 
-	inline uint16_t getMinUsingSkill1()
+	inline Skill getMinUsingSkill1()
         { return minUsingSkill[1]; }
 
         inline uint16_t getMinUsingSkillValue1()
 	{ return minUsingSkillValue[1]; }
 
-	inline uint16_t getMinUsingSkill2()
+	inline Skill getMinUsingSkill2()
         { return minUsingSkill[2]; }
 
         inline uint16_t getMinUsingSkillValue2()
 	{ return minUsingSkillValue[2]; }
 
-	inline uint16_t getMinUsingSkill3()
+	inline Skill getMinUsingSkill3()
         { return minUsingSkill[3]; }
 
         inline uint16_t getMinUsingSkillValue3()

@@ -6,10 +6,12 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "backend/scheduler.h"
-#include "backend/scripting.h"
-#include "logsystem.h"
+// Request limits
+#define __STDC_LIMIT_MACROS
 
+#include "backend/scheduler.h"
+#include "logsystem.h"
+#include "inlines.h"
 #include <mxml.h>
 
 cScheduler *cScheduler::scheduler = NULL;
@@ -38,12 +40,13 @@ void cScheduler::restart()
 \brief Constructor for new scheduled events
 \param funcName name of the scripts' function to call
 \param nInterval Interval to set for the events scheduling
+\param parent Parent scheduler, the one to add the evnet to
 \note This function deletes the newly-created instance if called with wrong
 	parameters.
 \note This function also set the minimum interval time for the scheduler to
 	sleep.
 */
-cScheduler::cEvent::cEvent(std::string funcName, uint32_t nInterval)
+cScheduler::cEvent::cEvent(std::string funcName, uint32_t nInterval, cScheduler *parent)
 {
 	if ( funcName.length() == 0 || ! nInterval )
 	{
@@ -63,10 +66,10 @@ cScheduler::cEvent::cEvent(std::string funcName, uint32_t nInterval)
 	interval = nInterval;
 	lastrun = 0;
 	
-	events.push_back(this);
+	parent->events.push_back(this);
 	
-	if ( cEvents::minInteval > interval )
-		cEvents::minInterval = interval;
+	if ( parent->minInterval > interval )
+		parent->minInterval = interval;
 }
 
 /*!
@@ -82,9 +85,9 @@ the instances for the scheduled events to run.
 */
 cScheduler::cScheduler()
 {
-	ConOut("Loading scheduler...\t\t")
+	ConOut("Loading scheduler...\t\t");
 	
-	std::istream xmlfile("config/scheduler.xml");
+	std::ifstream xmlfile("config/scheduler.xml");
 	if ( ! xmlfile )
 	{
 		ConOut("[ Failed ]\n");
@@ -105,7 +108,7 @@ cScheduler::cScheduler()
 			}
 			
 			try {
-				new cEvent( n->getData(), tVariant( n->getAttribute("interval") ).toUInt32() );
+				new cEvent( n->data(), tVariant( n->getAttribute("interval") ).toUInt32(), this );
 			} catch ( MXML::NotFoundError e ) {
 				LogWarning("Incomplete node in schedules.xml, ignoring");
 				continue;
@@ -122,7 +125,7 @@ cScheduler::cScheduler()
 cScheduler::~cScheduler()
 {
 	LogMessage("Closing scheduler...");
-	for(EventList::iterator it = events.begin(); it != events.end(); it++)
+	for(EventsList::iterator it = events.begin(); it != events.end(); it++)
 		delete (*it);
 	LogMessage("\t\t[   OK   ]");
 }
@@ -133,12 +136,12 @@ cScheduler::~cScheduler()
 This metod is called when the thread is started, and it's actually the core of
 the scheduler itself. Here the events are 
 */
-cScheduler::run()
+void *cScheduler::run()
 {
 	while ( true )
 	{
-		Wefts::OSSleep(minInterval);
-		for(EventList::iterator it = events.begin(); it != events.end(); it++)
+		Wefts::OSSleep(minInterval, 0);
+		for(EventsList::iterator it = events.begin(); it != events.end(); it++)
 			if ( getclock() > ( (*it)->lastrun + (*it)->interval ) )
 				(*it)->callback->execute();
 	}

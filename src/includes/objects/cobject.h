@@ -74,10 +74,18 @@ public:
 	{ return position; }
 
 	void setPosition(Location where);
-
-	//! Set the position of the object
-	inline void setPosition(uint32_t x, uint32_t y, int8_t z)
-	{ setPosition( Location( x, y, z ) ); }
+	
+	//! Sets the position's X-coordinate
+	void setPositionX(uint16_t x)
+	{ setPosition( Location(x, position.y, position.z) ); }
+	
+	//! Sets the position's Y-coordinate
+	void setPositionY(uint16_t y)
+	{ setPosition( Location(position.x, y, position.z) ); }
+	
+	//! Sets the position's Z-coordinate
+	void setPositionZ(int8_t z)
+	{ setPosition( Location(position.x, position.y, z) ); }
 
 	inline const Location getOldPosition() const
 	{ return old_position; }

@@ -13,6 +13,7 @@
 #include "objects/citem.h"
 #include "objects/cchar.h"
 #include "objects/cbody.h"
+#include "objects/cobject.h"
 
 BOATS	s_boat;
 
@@ -177,15 +178,14 @@ void cBoat::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open p
 	uint16_t y,y2= pi->getPosition().y;
 	int8_t z= pi->getPosition().z;
 	int8_t mz,sz,typ;
-	pItem pBoat=GetBoat(pc->getPosition());
+	pItem pBoat=GetBoat(pc->getBody()->getPosition());
 
 
 	if (pBoat==NULL) return;
-#define XX 6
-#define YY 6
-	for(x=x2-XX;x<=x2+XX;x++)
+	
+	for(x=x2-6;x<=x2+6;x++)
 	{
-		for(y=y2-YY;y<=y2+YY;y++)
+		for(y=y2-6;y<=y2+66;y++)
 		{
 			sz=(signed char) staticTop(Location(x,y,z)); // MapElevation() doesnt work cauz we are in a multi !!
 
@@ -205,20 +205,14 @@ void cBoat::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open p
 				pChar pc_b=sc.getChar();
 				if ( ! pc_b ) return;
 				
-				pc_b->MoveTo( x,y, typ ? sz : mz );
-				pc_b->setMultiSerial(INVALID);
+				pc_b->getBody()->MoveTo( x,y, typ ? sz : mz );
+				pc_b->setMulti(NULL);
 				pc_b->teleport();
 			}
 
 			pc->setMultiSerial(INVALID);
-#ifdef SPAR_C_LOCATION_MAP
-			pc->setPosition( Location( x, y, typ ? sz : mz, typ ? sz : mz ) );
+			pc->getBody()->setPosition( Location( x, y, typ ? sz : mz, typ ? sz : mz ) );
 			pointers::updateLocationMap(pc);
-#else
-			mapRegions->remove(pc);
-			pc->setPosition( Location( x, y, typ ? sz : mz, typ ? sz : mz ) );
-			mapRegions->add(pc);
-#endif
 			pc->sysmsg("You left the boat.");
 			pc->teleport();//Show them they moved.
 			return;
@@ -237,7 +231,7 @@ void cBoat::TurnStuff_i(pItem p_b, pItem pi, int dir, int type)//Turn an item th
 	int dx, dy;
 
 	Location bpos	= p_b->getPosition();
-	Location itmpos = { bpos.x, bpos.y, pi->getPosition().z, pi->getPosition().dispz };
+	Location itmpos(bpos.x, bpos.y, pi->getPosition().z, pi->getPosition().dispz);
 
 	dx= pi->getPosition().x - bpos.x;//get their distance x
 	dy= pi->getPosition().y - bpos.y;//and distance Y
@@ -252,14 +246,8 @@ void cBoat::TurnStuff_i(pItem p_b, pItem pi, int dir, int type)//Turn an item th
 		itmpos.x+=dy;
 		itmpos.y+=dx*-1;
 	}
-#ifdef SPAR_I_LOCATION_MAP
 	pi->setPosition( itmpos );
 	pointers::updateLocationMap(pi);
-#else
-	mapRegions->remove(pi);
-	pi->setPosition( itmpos );
-	mapRegions->add(pi);
-#endif
 	pi->Refresh();
 }
 
@@ -303,21 +291,17 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 	if ( ! pi )
 		return;
 
-	int32_t	id1,
-			id2,
-			serial,
+	uint32_t	serial,
 			itiller,
 			i1,
 			i2,
 			ihold,
-			dir,
 			d=0;
+	uint8_t dir;
 	pItem	tiller,
 			p1,
 			p2,
 			hold;
-
-	WORD2Duint8_t( pi->getId(), id1, id2 );
 
 	//Of course we need the boat items!
 	serial = pi->moreb;  //calcserial(pi->moreb1,pi->moreb2,pi->moreb3,pi->moreb4);
@@ -368,32 +352,29 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 
 	if(turn)//Right
 	{
-		pi->dir+=2;
+		pi->setDirection(pi->getDirection()+2);
 		id2++;
 	}
 	else
 	{//Left
-		pi->dir-=2;
+		pi->setDirection(pi->getDirection()-2);
 		id2--;
 	}
-	if(pi->dir>7)
-		pi->dir-=8;//Make sure we dont have any DIR errors
-	if(pi->dir<0)
-		pi->dir+=8;
-	if(id2<pi->more1)
+	
+	if(id2 < pi->more1.more)
 		id2+=4;//make sure we don't have any id errors either
-	if(id2>pi->more2)
+	if(id2 > pi->more2.more)
 		id2-=4;//Now you know what the min/max id is for :-)
 
 	pi->setId( Duint8_t2WORD( id1, id2 ) );//set the id
 
-	if(id2==pi->more1)
-		pi->dir=0;//extra DIR error checking
-	if(id2==pi->more2)
-		pi->dir=6;
+	if(id2==pi->more1.more)
+		pi->setDirection(0);//extra DIR error checking
+	if(id2==pi->more2.more)
+		pi->setDirection(6);
 
 	//Set the DIR for use in the Offsets/IDs array
-	dir=(pi->dir&0x0F)/2;
+	dir=(pi->getDirection() &0x0F)/2;
 
 	char *pShipItems = cShipItems[ dir ];
 
@@ -432,7 +413,6 @@ void cBoat::TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, 
 	Location itmpos;
 	signed short int *pShipOffsets;
 
-#ifdef SPAR_I_LOCATION_MAP
 	switch( size )
 	{
 		case 0x00:
@@ -535,123 +515,6 @@ void cBoat::TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, 
 			LogWarning("Turnboatstuff() more1 error! more1 = %c not found!\n", size);
 			break;
 	}
-#else
-	switch( size )
-	{
-		case 0x00:
-		case 0x04:
-			pShipOffsets = iSmallShipOffsets[dir][PORT_PLANK];
-
-			mapRegions->remove( pPort );
-			itmpos= pPort->getPosition();
-			itmpos.x+= pShipOffsets[X];
-			itmpos.y+= pShipOffsets[Y];
-			pPort->setPosition( itmpos );
-			mapRegions->add( pPort );
-
-			pShipOffsets = iSmallShipOffsets[dir][STARB_PLANK];
-			mapRegions->remove( pStarboard );
-			itmpos= pStarboard->getPosition();
-			itmpos.x+= pShipOffsets[X];
-			itmpos.y+= pShipOffsets[Y];
-			pStarboard->setPosition( itmpos );
-			mapRegions->add( pStarboard );
-
-			pShipOffsets = iSmallShipOffsets[dir][TILLER];
-			mapRegions->remove( pTiller );
-			itmpos= pTiller->getPosition();
-			itmpos.x+= pShipOffsets[X];
-			itmpos.y+= pShipOffsets[Y];
-			pTiller->setPosition( itmpos );
-			mapRegions->add( pTiller );
-
-			pShipOffsets = iSmallShipOffsets[dir][HOLD];
-			mapRegions->remove( pHold );
-			itmpos= pHold->getPosition();
-			itmpos.x+= pShipOffsets[X];
-			itmpos.y+= pShipOffsets[Y];
-			pHold->setPosition( itmpos );
-			mapRegions->add( pHold );
-
-			break;
-
-		case 0x08:
-		case 0x0C:
-			pShipOffsets = iMediumShipOffsets[dir][PORT_PLANK];
-			mapRegions->remove( pPort );
-			itmpos= pPort->getPosition();
-			itmpos.x+= pShipOffsets[X];
-			itmpos.y+= pShipOffsets[Y];
-			pPort->setPosition( itmpos );
-			mapRegions->add( pPort );
-
-			pShipOffsets = iMediumShipOffsets[dir][STARB_PLANK];
-			mapRegions->remove( pStarboard );
-			itmpos= pStarboard->getPosition();
-			itmpos.x+= pShipOffsets[X];
-			itmpos.y+= pShipOffsets[Y];
-			pStarboard->setPosition( itmpos );
-			mapRegions->add( pStarboard );
-
-			pShipOffsets = iMediumShipOffsets[dir][TILLER];
-			mapRegions->remove( pTiller );
-			itmpos= pTiller->getPosition();
-			itmpos.x+= pShipOffsets[X];
-			itmpos.y+= pShipOffsets[Y];
-			pTiller->setPosition( itmpos );
-			mapRegions->add( pTiller );
-
-			pShipOffsets = iMediumShipOffsets[dir][HOLD];
-			mapRegions->remove( pHold );
-			itmpos= pHold->getPosition();
-			itmpos.x+= pShipOffsets[X];
-			itmpos.y+= pShipOffsets[Y];
-			pHold->setPosition( itmpos );
-			mapRegions->add( pHold );
-
-			break;
-		case 0x10:
-		case 0x14:
-
-			pShipOffsets = iLargeShipOffsets[dir][PORT_PLANK];
-			mapRegions->remove( pPort );
-			itmpos= pPort->getPosition();
-			itmpos.x+= pShipOffsets[X];
-			itmpos.y+= pShipOffsets[Y];
-			pPort->setPosition( itmpos );
-			mapRegions->add( pPort );
-
-			pShipOffsets = iLargeShipOffsets[dir][STARB_PLANK];
-			mapRegions->remove( pStarboard );
-			itmpos= pStarboard->getPosition();
-			itmpos.x+= pShipOffsets[X];
-			itmpos.y+= pShipOffsets[Y];
-			pStarboard->setPosition( itmpos );
-			mapRegions->add( pStarboard );
-
-			pShipOffsets = iLargeShipOffsets[dir][TILLER];
-			mapRegions->remove( pTiller );
-			itmpos= pTiller->getPosition();
-			itmpos.x+= pShipOffsets[X];
-			itmpos.y+= pShipOffsets[Y];
-			pTiller->setPosition( itmpos );
-			mapRegions->add( pTiller );
-
-			pShipOffsets = iLargeShipOffsets[dir][HOLD];
-			mapRegions->remove( pHold );
-			itmpos= pHold->getPosition();
-			itmpos.x+= pShipOffsets[X];
-			itmpos.y+= pShipOffsets[Y];
-			pHold->setPosition( itmpos );
-			mapRegions->add( pHold );
-
-			break;
-
-		default:
-			LogWarning("Turnboatstuff() more1 error! more1 = %c not found!\n", size);
-			break;
-	}
-#endif
 }
 
 
@@ -913,25 +776,24 @@ bool cBoat::good_position(pItem pBoat, Location where, int dir)
 */
 bool cBoat::Build(pClient client, pItem pBoat, char id2)
 {
-	if ( s < 0 || s >= now )
+	pPC pc_cs = NULL
+	if ( ! client || ! ( pc_cs = client->currChar() ) )
 		return false;
-
-	pChar pc_cs = cSerializable::findCharBySerial(currchar[s]);
-	if ( !pc_cs ) return false;
 
 	int nid2=id2;
 
 	if( !pBoat )
 	{
-		pc_cs->sysmsg("There was an error creating that boat.");
+		client->sysmessage("There was an error creating that boat.");
 		return false;
 	}
 
 	if(id2!=0x00 && id2!=0x04 && id2!=0x08 && id2!=0x0C && id2!=0x10 && id2!=0x14)//Valid boat ids (must start pointing north!)
 	{
-		pc_cs->sysmsg("The deed is broken, please contact a Game Master.");
+		client->sysmessage("The deed is broken, please contact a Game Master.");
 		return false;
 	}
+	
 	//Start checking for a valid position:
 	if (! good_position(pBoat, pBoat->getPosition(), 0))
 		return false;
@@ -941,44 +803,45 @@ bool cBoat::Build(pClient client, pItem pBoat, char id2)
 	// Okay we found a good  place....
 
 	pBoat->setOwnerSerial32(pc_cs->getSerial());
-	pBoat->more1=id2;//Set min ID
-	pBoat->more2=nid2+3;//set MAX id
+	pBoat->more1.moreb1 = id2;//Set min ID
+	pBoat->more1.moreb2 = nid2+3;//set MAX id
 	pBoat->type=ITYPE_BOATS;//Boat type
-	pBoat->setPosition("z", -5);//Z in water
+	pBoat->setPositionZ(-5);//Z in water
 //	strcpy(pBoat->name,"a mast");//Name is something other than "%s's house"
 	pBoat->setCurrentName("a mast");
 
 	pItem pTiller=item::CreateFromScript( "$item_tillerman" );
 	if( !pTiller ) return false;
-	pTiller->setPosition("z", -5);
+	pTiller->setPositionZ(-5);
 	pTiller->priv=0;
 
 	pItem pPlankR=item::CreateFromScript( "$item_plank2" );//Plank2 is on the RIGHT side of the boat
 	if( !pPlankR ) return false;
 	pPlankR->type=ITYPE_BOATS;
 	pPlankR->type2=3;
-	pPlankR->more = pBoat->getSerial();	//Lock this item!
-	pPlankR->setPosition("z", -5);
+	pPlankR->more1.more = pBoat->getSerial();	//Lock this item!
+	pPlankR->setPositionZ(-5);
 	pPlankR->priv=0;//Nodecay
 
 	pItem pPlankL=item::CreateFromScript( "$item_plank1" );//Plank1 is on the LEFT side of the boat
 	if( !pPlankL ) return false;
 	pPlankL->type=ITYPE_BOATS;//Boat type
 	pPlankL->type2=3;//Plank sub type
-	pPlankL->more = pBoat->getSerial();
-	pPlankL->setPosition("z", -5);
+	pPlankL->more.more = pBoat->getSerial();
+	pPlankL->setPositionZ(-5);
 	pPlankL->priv=0;
 
 	pItem pHold=item::CreateFromScript( "$item_hold1" );
 	if( !pHold ) return false;
-	pHold->more = pBoat->getSerial();	//Lock this too :-)
+	pHold->more.more = pBoat->getSerial();	//Lock this too :-)
 
 	pHold->type=ITYPE_CONTAINER;//Container
-	pHold->setPosition("z", -5);
+	pHold->setPositionZ(-5);
 	pHold->priv=0;
 	pHold->setContainer(0);
 
-	pBoat->moreb = pTiller->getSerial();	//Tiller ser stored in boat's Moreb
+	//!\todo Now morex morey and morez aren't uint32_t, and boats must be different class objects
+	pBoat->more2.more = pTiller->getSerial();	//Tiller ser stored in boat's Moreb
 	pBoat->morex= pPlankL->getSerial();	//Store the other stuff anywhere it will fit :-)
 	pBoat->morey= pPlankR->getSerial();
 	pBoat->morez= pHold->getSerial();
@@ -989,52 +852,32 @@ bool cBoat::Build(pClient client, pItem pBoat, char id2)
 	{
 	case 0x00:
 	case 0x04:
-		pTiller->setPosition("x", boatpos.x + 1);
-		pTiller->setPosition("y", boatpos.y + 4);
-		pPlankR->setPosition("x", boatpos.x + 2);
-		pPlankR->setPosition("y", boatpos.y);
-		pPlankL->setPosition("x", boatpos.x - 2);
-		pPlankL->setPosition("y", boatpos.y);
-		pHold->setPosition("x", boatpos.x);
-		pHold->setPosition("y", boatpos.y - 4);
+		pTiller->setPosition( Location( boatpos.x + 1, boatpos.y + 4, pTiller->getPosition().z ) );
+		pPlankR->setPosition( Location( boatpos.x + 2, boatpos.y, pPlankR->getPosition().z ) );
+		pPlankL->setPosition( Location( boatpos.x - 2, boatpos.y, pPlankL->getPosition().z ) );
+		pHold->setPosition( Location( boatpos.x, boatpos.y - 4, pHold->getPosition().z ) );
 		break;
 	case 0x08:
 	case 0x0C:
-		pTiller->setPosition("x", boatpos.x + 1);
-		pTiller->setPosition("y", boatpos.y + 5);
-		pPlankR->setPosition("x", boatpos.x + 2);
-		pPlankR->setPosition("y", boatpos.y);
-		pPlankL->setPosition("x", boatpos.x - 2);
-		pPlankL->setPosition("y", boatpos.y);
-		pHold->setPosition("x", boatpos.x);
-		pHold->setPosition("y", boatpos.y - 4);
+		pTiller->setPosition( Location( boatpos.x + 1, boatpos.y + 5, pTiller->getPosition().z ) );
+		pPlankR->setPosition( Location( boatpos.x + 2, boatpos.y, pPlankR->getPosition().z ) );
+		pPlankL->setPosition( Location( boatpos.x - 2, boatpos.y, pPlankL->getPosition().z ) );
+		pHold->setPosition( Location( boatpos.x, boatpos.y - 4, pHold->getPosition().z ) );
 		break;
 	case 0x10:
 	case 0x14:
-		pTiller->setPosition("x", boatpos.x + 1);
-		pTiller->setPosition("y", boatpos.y + 5);
-		pPlankR->setPosition("x", boatpos.x + 2);
-		pPlankR->setPosition("y", boatpos.y - 1);
-		pPlankL->setPosition("x", boatpos.x - 2);
-		pPlankL->setPosition("y", boatpos.y - 1);
-		pHold->setPosition("x", boatpos.x);
-		pHold->setPosition("y", boatpos.y - 5);
+		pTiller->setPosition( Location( boatpos.x + 1, boatpos.y + 5, pTiller->getPosition().z ) );
+		pPlankR->setPosition( Location( boatpos.x + 2, boatpos.y -1, pPlankR->getPosition().z ) );
+		pPlankL->setPosition( Location( boatpos.x - 2, boatpos.y -1, pPlankL->getPosition().z ) );
+		pHold->setPosition( Location( boatpos.x, boatpos.y - 5, pHold->getPosition().z ) );
 		break;
 	}
 
-#ifdef SPAR_I_LOCATION_MAP
 	pointers::addToLocationMap( pTiller );
 	pointers::addToLocationMap( pPlankL );
 	pointers::addToLocationMap( pPlankR );
 	pointers::addToLocationMap( pHold );
 	pointers::addToLocationMap( pBoat );
-#else
-	mapRegions->add(pTiller);//Make sure everything is in da regions!
-	mapRegions->add(pPlankL);
-	mapRegions->add(pPlankR);
-	mapRegions->add(pHold);
-	mapRegions->add(pBoat);
-#endif
 	//their x pos is set by BuildHouse(), so just fix their Z...
 	boatpos.z+=3;
 	boatpos.dispz=boatpos.z;
@@ -1392,7 +1235,7 @@ void insert_boat(pItem pi)
 {
 	boat_db boat;
 	boat.serial = pi->getSerial();
-	boat.tiller_serial = pi->moreb;
+	boat.tiller_serial = pi->more2.more;
 	boat.l_plank_serial = pi->morex;
 	boat.r_plank_serial = pi->morey;
 	boat.container = pi->morez;
@@ -1420,6 +1263,6 @@ pItem search_boat_by_plank(pItem pl)
 	if ( ! pl )
 		return NULL;
 
-	boat_db*  boat=search_boat(pl->more);
+	boat_db*  boat=search_boat(pl->more1.more);
 	return boat->p_serial;
 }

@@ -56,4 +56,7 @@ void Sleep(unsigned long msec);
 #define closesocket(s)	close(s)
 #define ioctlsocket ioctl
 
+// For Wefts
+#define HAVE_LIBPTHREAD
+
 #endif

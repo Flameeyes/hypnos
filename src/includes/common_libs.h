@@ -79,11 +79,10 @@ warnings/errors/issues.
 #include <stdint.h>
 #include <unistd.h>
 
-#ifdef __unix__
-	#include "archs/hypunix.h"
-#else
-	#include "archs/hypwin32.h"
-#endif
+// Only the one which is used it's actually included, the others will be
+// ignored.
+#include "archs/hypunix.h"
+#include "archs/hypwin32.h"
 
 #ifndef MSG_NOSIGNAL
     #define MSG_NOSIGNAL 0
@@ -93,7 +92,7 @@ warnings/errors/issues.
 #include "constants.h"
 #include "console.h"
 
-#define TIMEOUT(X) (((X) <= getclock()) || overflow)
+#define TIMEOUT(X) ((X) <= getclock())
 
 extern char* getOSVersionString();
 enum OSVersion { OSVER_UNKNOWN, OSVER_WIN9X, OSVER_WINNT, OSVER_NONWINDOWS };

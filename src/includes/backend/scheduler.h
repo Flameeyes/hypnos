@@ -9,6 +9,7 @@
 #ifndef __SCHEDULER_H__
 #define __SCHEDULER_H__
 
+#include "backend/scripting.h"
 #include "common_libs.h"
 #include <wefts_thread.h>
 
@@ -45,10 +46,10 @@ protected:
 		uint32_t lastrun;
 			//!< Time at the call of the last run of the schedule
 		
-		sEvent(std::string funcName, uint32_t interval);
+		cEvent(std::string funcName, uint32_t interval, cScheduler *parent);
 	};
 	
-	typedef std::list<sEvent*> EventsList;
+	typedef std::list<cEvent*> EventsList;
 				//!< List of scheduled events
 	
 	EventsList events;	//!< Scheduled events
@@ -57,7 +58,8 @@ protected:
 	
 	static cScheduler *scheduler;
 public:
-	cScheduler(std::istream &in);
+	cScheduler();
+	~cScheduler();
 	void *run();
 	
 	static void init();

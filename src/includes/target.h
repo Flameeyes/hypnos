@@ -98,10 +98,7 @@ public:
 	virtual void error( pClient client );
 };
 
-
-void amxCallbackOld( pClient client, pTarget t );
 void amxCallback( pClient client, pTarget t );
-
 
 typedef enum {
 	TARG_ALL = 0,
