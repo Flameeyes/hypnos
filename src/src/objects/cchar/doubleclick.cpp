@@ -56,7 +56,7 @@ void cChar::singleClick( pClient client )
 \param client client of player who dclicks "this"
 \param keyboard ??? highest bit of first serial byte from packet
 */
-void cChar::doubleClick(pClient client, int keyboard)
+void cChar::doubleClick(pClient client)
 {
 	if (client==NULL) return;
 	pChar clicker = client->currChar();
@@ -124,7 +124,7 @@ void cChar::doubleClick(pClient client, int keyboard)
 			}
 			else if ( clicker->getSerial() == getSerial32() )
 			{//dbl-click self
-				if ( (!keyboard) && ( clicker->unmountHorse() == 0 ) ) return; //on horse
+				if (  !clicker->unmountHorse() ) return; //on horse
 				//if not on horse, treat ourselves as any other char
 			}//self
 

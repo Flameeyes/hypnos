@@ -538,6 +538,47 @@ public:
 	void prepare();
 };
 
+
+class cPacketSendLogoutStatus : public cPacketSend
+{
+protected:
+
+public:
+	inline cPacketSendLogoutStatus() :
+		buffer(NULL), length(NULL)
+	{ }
+
+	void prepare();
+};
+
+class cPacketSendClientViewRange : public cPacketSend
+{
+protected:
+	uint8_t range;
+public:
+	inline cPacketSendClientViewRange(uint8_t r) :
+        	range(r),
+		buffer(NULL), length(NULL)
+	{ }
+
+	void prepare();
+};
+
+class cPacketSendMoveAcknowdledge : public cPacketSend
+{
+protected:
+	uint8_t sequence;
+	uint8_t notoriety;
+public:
+	inline cPacketSendMoveAcknowdledge(uint8_t s, uint8_t n) :
+        	sequence(s), notoriety(n),
+		buffer(NULL), length(NULL)
+	{ }
+
+	void prepare();
+};
+
+
 /*!
 \brief Packet received
 \author Flameeyes
@@ -575,7 +616,7 @@ class cPacketReceiveDropItem            : public cPacketReceive;	//!< releasing 
 class cPacketReceiveSingleclick         : public cPacketReceive;	//!< info/name request for item/char
 class cPacketReceiveActionRequest       : public cPacketReceive;	//!< skill/magic use (spells from macros i believe) and generic action, like salute or bow
 class cPacketReceiveWearItem            : public cPacketReceive;	//!< drag of item on paperdoll. Check if equippable too
-class cPacketReceiveResyncRequest       : public cPacketReceive;	//!< resends data to client
+class cPacketReceiveMoveACK_ResyncReq   : public cPacketReceive;	//!< move acknowdlege or if it sends a 0x220000, resends data to client
 class cPacketReceiveRessChoice          : public cPacketReceive;	//!< once it was used for a ress choice(ghost or revive with skill penalties?) now only used for bounty placement
 class cPacketReceiveStatusRequest       : public cPacketReceive;	//!< statusbar request about a char
 class cPacketReceiveSetSkillLock        : public cPacketReceive;	//!< skill lock change (up, down, lock)
@@ -610,11 +651,10 @@ class cPacketReceiveClientVersion       : public cPacketReceive;        //!< dur
 class cPacketReceiveAssistVersion       : public cPacketReceive;
 class cPacketReceiveMiscCommand         : public cPacketReceive;	//!< multipurpouse packet. It ranges from party commands to fastwalk prevention, gumps and menu
 class cPacketReceiveTextEntryUnicode    : public cPacketReceive;
-class cPacketReceiveClientViewRange     : public cPacketReceive;
-class        : public cPacketReceive;
-class        : public cPacketReceive;
-class        : public cPacketReceive;
-
+class cPacketReceiveClientViewRange     : public cPacketReceive;	//!< Client sends its (wanted) view area in "squares" (from 5 to 18). If server replyes with same packet, it gets activated
+class cPacketReceiveLogoutStatus        : public cPacketReceive;	//!< if client receives a certain flag on packet 0xa9 on login, sends this packet when logging out and expects a reply before disconnecting
+class cPacketReceiveNewBookHeader       : public cPacketReceive;	//!< more up-to-date book header communication (only difference found: variable-length title and author)
+class cPacketReceiveFightBookSelection  : public cPacketReceive;	//!< fightbook icon selection
 //@}
 
 #endif

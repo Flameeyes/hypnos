@@ -519,8 +519,8 @@ public:
 	TIMERVAL skilldelay;
 	TIMERVAL objectdelay;
 public:
-        void singleClick(pClient client);  // "this" is the clicked char, client is the client of the clicker
-        void doubleClick(pClient client, int keyboard);       //!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
+        void singleClick(pClient client);	//!< "this" is the clicked char, client is the client of the clicker
+        void doubleClick(pClient client);	//!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
 	inline void setSkillDelay( uint32_t seconds = nSettings::Server::getDelaySkills() )
 	{ skilldelay = uiCurrentTime + seconds * MY_CLOCKS_PER_SEC; }
 

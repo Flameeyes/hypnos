@@ -575,6 +575,7 @@ void cPacketSendCharProfile::prepare()
         length += who->getTitle().size() * 2;		//unicode title, so double characters of title
         length +=2; //unicode null terminator for title
 	length += who->getProfile().size();
+        length +=2; //unicode null terminator for profile
 	buffer = new uint8_t[length];
         buffer[0] = 0xb8;
         ShortToCharPtr(length, buffer + 1);
@@ -589,6 +590,43 @@ void cPacketSendCharProfile::prepare()
         memcpy(offset, title.c_str(), title.size() * 2 + 2);		// the "+2" guarantees the copy of the 16 bit null terminator
         offset += title.size() * 2 + 2;
         memcpy(offset, who->getProfile().c_str(), who->getProfile().size() * 2 + 2);
+}
+
+void cPacketSendClientViewRange::prepare()
+{
+	buffer = new uint8_t[2];
+        length = 2;
+        buffer[0] = 0xc8;
+        buffer[1] = range;
+}
+
+
+void cPacketSendLogoutStatus::prepare()
+{
+	buffer = new uint8_t[2];
+        length = 2;
+        buffer[0] = 0xd1;
+        buffer[1] = 0x01;
+}
+
+void cPacketSendMoveAcknowdledge::prepare()
+{
+	buffer = new uint8_t[3];
+        length = 3;
+        buffer[0] = 0x22;
+        buffer[1] = sequence;
+	buffer[2] = notoriety; //!\ todo change to real notoriety of pg
+/*
+notoriety:
+0 = invalid/across server line
+1 = innocent (blue)
+2 = guilded/ally (green)
+3 = attackable but not criminal (gray)
+4 = criminal (gray)
+5 = enemy (orange)
+6 = murderer (red)
+7 = unknown use (translucent (like 0x4000 hue))
+*/
 }
 
 pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
@@ -607,7 +645,7 @@ pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
                 case 0x09: return new cPacketReceiveSingleclick(buffer, length);        // Single click
                 case 0x12: return new cPacketReceiveActionRequest(buffer, length);      // Request Skill/Action/Magic Usage
                 case 0x13: return new cPacketReceiveWearItem(buffer, length);           // Drop - Wear Item
-                case 0x22: return new cPacketReceiveResyncRequest(buffer, length);      // when received, this packet is a Resync Request
+                case 0x22: return new cPacketReceiveMoveACK_ResyncReq(buffer, length);  // when received, this packet is a Resync Request
                 case 0x2c: return new cPacketReceiveRessChoice(buffer, length);         // (Obsolete) Resurrection Menu Choice
                 case 0x34: return new cPacketReceiveStatusRequest(buffer, length);      // Get Player Status
 
@@ -656,9 +694,9 @@ pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
                 case 0xbf: return new cPacketReceiveMiscCommand(buffer, length); 	// Misc. Commands Packet
                 case 0xc2: return new cPacketReceiveTextEntryUnicode(buffer, length); 	// Textentry Unicode
                 case 0xc8: return new cPacketReceiveClientViewRange(buffer, length); 	// Client view range
-                case 0xd1: length =   2; break; // Logout Status
-		case 0xd7: 								// Fight Book: move selected
-                case 0xd4: length = ???; break; // new Book Header
+                case 0xd1: return new cPacketReceiveLogoutStatus(buffer, length); 	// Logout Status
+                case 0xd4: return new cPacketReceiveNewBookHeader(buffer, length); 	// new Book Header
+		case 0xd7: return new cPacketReceiveFightBookSelection(buffer, length);	// Fight Book: move selected
                 default: return NULL;	// Discard received packet
        }
 }
@@ -667,6 +705,7 @@ pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
 \brief Character creation packet
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x00
 
 Mostly taken from old noxwizard.cpp and (vastly :) ) modified to pyuo object system
 */
@@ -709,8 +748,8 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 
         // Disconnect-level protocol error check (possible client hack or too many chars already present in account)
         if (
-                !(client->currAccount()->verifyPassword(buffer+40)) ||                  //!< Password check
-                (client->currAccount()->getCharsNumber() >= nSettings::Server::getMaximumPCs()) ||  //!< Max PCs per account check
+                !(client->currAccount()->verifyPassword(buffer+40)) ||                  	//!< Password check
+                (client->currAccount()->getCharsNumber()>=nSettings::Server::getMaximumPCs()) ||//!< Max PCs per account check
                 ((sex !=1) && (sex != 0)) ||                                                    //!< Sex validity check
                 (strength + dexterity + intelligence > 80) ||                                   //!< Stat check: stat sum must be <=80
                 (strength < 10)     || (strength > 60)     ||                                   //!< each stat must be >= 10 and <= 60
@@ -737,7 +776,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 
         // From here building a cBody
         pBody charbody = new cBody();
-        charbody->setSerial(charbody->getNextSerial());
+//        charbody->setSerial(charbody->getNextSerial());
 
         if (sex) charbody->setId(bodyFemale) else charbody->setId(bodyMale);     // 0 = male 1 = female
 
@@ -753,17 +792,18 @@ bool cPacketReceiveCreateChar::execute(pClient client)
         charbody->setMana(intelligence);
         charbody->setMaxMana(intelligence);
 
-        // all skills are set to 0 in the constructor, so the only skills needing to be set are the 3 selected
+        // all skills are set to 0 in the cBody constructor, so the only skills needing to be set are the 3 selected
         charbody->SetSkill(skill1, skillvalue1 * 10);
         charbody->SetSkill(skill2, skillvalue2 * 10);
         charbody->SetSkill(skill3, skillvalue3 * 10);
 
         charbody->setSkinColor(SkinColor);
       	charbody->setName((const char*)&buffer[10]);
-	charbody->setTitle("");                         //TODO check if this is enough to have a clean title
+	charbody->setTitle("");                         //!\todo change this setTitle to something like calculateTitle or DefaultTitle, to have standard title behaviour
+      	charbody->setProfile("");
 
         //Now with the body completed and data verified, building cPC
-        pPC pc = new cPC( cPC::nextSerial() );
+        pPC pc = new cPC();
 
         pc->setBody(charbody);
         pc->npc=false;
@@ -856,7 +896,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 
 
         newbieitems(pc);
-        client->startchar(); //!\TODO: move startchar from network to cClient
+        client->startchar(); //!\todo: move startchar from network to cClient
       	//clientInfo[s]->ingame=true;
         return true;
 }
@@ -865,6 +905,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 \brief Disconnection Request packet
 \param client client who sent the packet
 \author Chronodt
+\note packet 0x01
 */
 
 bool cPacketReceiveDisconnectNotify::execute(pClient client)
@@ -878,54 +919,51 @@ bool cPacketReceiveDisconnectNotify::execute(pClient client)
 \brief Move Request packet: client trying to move PC
 \author Chronodt
 \param client client who sent the packet
-
-Mostly taken from old network.cpp and modified to pyuo object system
+\note packet 0x02
 */
 
 bool cPacketReceiveMoveRequest::execute (pClient client)
 {
-        if( (length == 7) && (client->currChar()))
-        {
-	        walking(client->currChar(), buffer[1], buffer[2]); // buffer[1] = direction, buffer[2] = sequence number
-	        client->currChar()->disturbMed();
-                return true;
-        } else return false;
+        if (length != 7) return false;
+        pPC pc = client->currChar();
+	VALIDATEPCR( pc, false );
+
+        walking(pc, buffer[1], buffer[2]); // buffer[1] = direction, buffer[2] = sequence number
+        pc->disturbMed();
+	return true;
+
 }
 
 /*!
 \brief Talk Request packet (NOT unicode!)
 \author Chronodt
 \param client client who sent the packet
-
-Mostly taken from old network.cpp and modified to pyuo object system
+\note packet 0x03
 */
 
 bool cPacketReceiveTalkRequest::execute (pClient client)
 {
-	if( (client->currChar()!=NULL) && (length != ShortFromCharPtr(buffer + 1)))
-        {
-        //!\todo use cSpeech instead and rewrite this packet
-        	unsigned char nonuni[512];
-		client->currChar()->unicode = false;
-	        strcpy((char*)nonuni, buffer + 8);
-		client->talking((char*)nonuni);
-                return true;
-	} else return false;
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+        pPC pc = client->currChar();
+	VALIDATEPCR( pc, false );
+	cSpeech speech = cSpeech(std::string(buffer + 8));
+	client->talking(speech);
+        return true;
 }
 
 /*!
 \brief Attack Request Packet
 \author Chronodt
 \param client client who sent the packet
-
-Mostly taken from old network.cpp and rcvpkg.cpp and modified to pyuo object system
+\note packet 0x05
 */
 bool cPacketReceiveAttackRequest::execute (pClient client)
 {
         if (length != 5) return false;
 	pPC pc = client->currChar();
 	VALIDATEPCR( pc, false );
-	pChar victim = cSerializable::findCharBySerial(LongFromCharPtr(buffer + 1));  //victim may be an npc too, so it is a cChar
+	pChar victim = cSerializable::findCharBySerial(LongFromCharPtr(buffer + 1));  //victim may be an npc too, so it is a pChar
 	VALIDATEPCR( victim, false );
 
 	if( pc->dead ) pc->deadAttack(victim);
@@ -938,6 +976,7 @@ bool cPacketReceiveAttackRequest::execute (pClient client)
 \brief Doubleclick Packet
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x06
 */
 
 bool cPacketReceiveDoubleclick::execute(pClient client)
@@ -945,18 +984,14 @@ bool cPacketReceiveDoubleclick::execute(pClient client)
         if (length != 5) return false;
 	pPC pc = client->currChar();
 	VALIDATEPCR( pc, false );
-
-	// the 0x80 bit in the first byte is used later for "keyboard" and should be ignored
-	uint32_t serial = LongFromCharPtr(buffer +1) & 0x7FFFFFFF;
+	uint32_t serial = LongFromCharPtr(buffer +1);
 
 	if (isCharSerial(serial))
 	{
 		pChar pd = cSerializable::findCharBySerial(serial);
-		if (pd)
-                {
-                        pd->doubleClick(client, buffer[1] & 0x80);
-		        return true;
-                }
+		VALIDATEPCR(pd, false);
+		pd->doubleClick(client);
+		return true;
 	}
 	pItem pi = cSerializable::findItemBySerial(serial);
 	VALIDATEPIR(pi, false);  //If it's neither a char nor an item, then it's invalid
@@ -968,31 +1003,34 @@ bool cPacketReceiveDoubleclick::execute(pClient client)
 \brief Pickup Item Packet
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x07
 */
 
 bool cPacketReceivePickUp::execute(pClient client)
 {
         if (length != 7) return false;
 	pItem pi = cSerializable::findItemBySerial(LongFromCharPtr(buffer+1));
-        uint16_t amount = ShortFromCharPtr(buffer+5);
       	VALIDATEPIR(pi, false);
+        uint16_t amount = ShortFromCharPtr(buffer+5);
         client->get_item(pi, amount);  //!< if refused, the get_item automatically bounces the item back
         return true;
-
 }
 
 /*!
 \brief Drop Item Packet
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x08
 */
 
 bool cPacketReceiveDropItem::execute(pClient client)
 {
         if (length != 14) return false;
 	pItem pi = cSerializable::findItemBySerial(LongFromCharPtr(buffer+1));
+        VALIDATEPIR(pi, false);
         Location drop_at = Location(ShortFromCharPtr(buffer+5), ShortFromCharPtr(buffer+7), buffer[9]);
-        pItem container = cSerializable::findItemBySerial(LongFromCharPtr(buffer+10));
+        pContainer container = dynamic_cast<pContainer>(cSerializable::findItemBySerial(LongFromCharPtr(buffer+10)));
+        VALIDATEPIR(container, false);
         client->drop_item(pi, drop_at, container);  //!< if refused, the drop_item automatically bounces the item back
         return true;
 }
@@ -1002,6 +1040,7 @@ bool cPacketReceiveDropItem::execute(pClient client)
 \brief Singleclick Packet
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x09
 */
 bool cPacketReceiveSingleclick::execute(pClient client)
 {
@@ -1026,6 +1065,8 @@ bool cPacketReceiveSingleclick::execute(pClient client)
 \brief Action Request Packet
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x12
+
 \todo check the last if.... why does it do that check?????? it has no sense...
 */
 
@@ -1040,16 +1081,16 @@ bool cPacketReceiveActionRequest::execute(pClient client)
 	if (type==0xC7) // Action
 	{
 		if (pc->isMounting()) return true;
-		if (!(strcmp((char*)&buffer[4],"bow"))) pc->playAction(0x20);
-		if (!(strcmp((char*)&buffer[4],"salute"))) pc->playAction(0x21);
+		if (!(strcmp(buffer + 4,"bow"))) pc->playAction(0x20);
+		if (!(strcmp(buffer + 4,"salute"))) pc->playAction(0x21);
 	        return true; // Morrolan
 	}
 	else if (type) // Skill
 	{
-		int i=4;
+		uint16_t i=4;
 		while ( (buffer[i]!=' ') && (i < size) ) i++;
 		buffer[i]=0;
-		Skills::SkillUse(client, str2num((char*)&buffer[4]));
+		Skills::SkillUse(client, str2num(buffer + 4));
 		return true;
 	}
 	else if ((type==0x27)||(type==0x56))  // Spell
@@ -1122,44 +1163,42 @@ bool cPacketReceiveActionRequest::execute(pClient client)
 \brief Wear Item Packet
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x13
 */
 
 
 bool cPacketReceiveWearItem::execute(pClient client)
-
 {
-
         if (length != 10) return false;
 
 	pChar pc = cSerializable::findCharBySerial(LongFromCharPtr(buffer+6));
-
 	VALIDATEPCR(pck, false);
 	pItem pi = cSerializable::findItemBySerial(LongFromCharPtr(buffer+1));
 	VALIDATEPIR(pi, false);
 
         client->wear_item(pc, pi);
-
         return true;
-
 }
 
 
 /*!
-
 \brief Resync Request Packet
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x22
 */
 
-
-
-bool cPacketReceiveResyncRequest::execute(pClient client)
-
+bool cPacketReceiveMoveACK_ResyncReq::execute(pClient client)
 {
         if (length != 3) return false;
-	if( client->currChar()!=NULL ) {
-        	client->currChar()->teleport();
-	}
+        pPC pc = client->currChar();
+        VALIDATEPCR(pc, false);
+        uint8_t sequence  = buffer[1];
+	if( !sequence && !buffer[2] ) client->currChar()->teleport();  //Resync request
+        else
+        {
+        //!\todo verification of sequence for move acknowdledge
+        }
         return true;
 }
 
@@ -1167,6 +1206,7 @@ bool cPacketReceiveResyncRequest::execute(pClient client)
 \brief (probably very much obsolete) Resurrection Choice Menu Packet
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x2c
 */
 
 bool cPacketReceiveRessChoice::execute(pClient client)
@@ -1190,12 +1230,14 @@ bool cPacketReceiveRessChoice::execute(pClient client)
 \brief Receive Status Request Packet: client asks for status or skilllist
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x34
 */
 
 bool cPacketReceiveStatusRequest::execute(pClient client)
 {
         if (length != 10) return false;
-        if ( client->currChar() != NULL ) {
+        if ( client->currChar() != NULL )
+	{
 	        if (buffer[5]==4) client->statusWindow(cSerializable::findCharBySerial(LongFromCharPtr(buffer + 6)), false); //!< NOTE: packet description states sending basic stats, so second argument is false. Correct if necessary
                 if (buffer[5]==5) client->skillWindow();
 	}
@@ -1206,6 +1248,7 @@ bool cPacketReceiveStatusRequest::execute(pClient client)
 \brief Set Skill Lock Packet
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x3a
 */
 
 bool cPacketReceiveSetSkillLock::execute(pClient client)
@@ -1224,6 +1267,8 @@ bool cPacketReceiveSetSkillLock::execute(pClient client)
 \brief Buy Items Packet
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x3b
+
 \note this packet contains all items purchased by player in buy gump
 \note with current buffer implementation in csocket.cpp (1024 bytes) we can handle up to 135 different stacks of purchased items in a single go. Should be enough :D
 */
@@ -1235,15 +1280,15 @@ bool cPacketReceiveBuyItems::execute(pClient client)
 
         std::list< sBoughtItem > allitemsbought;
 
-	pNpc npc = (pNpc)cSerializable::findCharBySerial(LongFromCharPtr(buffer +3));
+	pNpc npc = dynamic_cast<pNpc>(cSerializable::findCharBySerial(LongFromCharPtr(buffer +3)));  //only npc can sell you items with a menu :D
 	VALIDATEPCR(npc, false);
 
-	int itemtotal=(size - 8)/7;
+	uint16_t itemtotal=(size - 8)/7;
 	if (itemtotal>256) return false;
 
-        for(i=0;i<itemtotal;i++)
+        for(register int i=0;i<itemtotal;i++)
 	{
-		int pos=8+(7*i);
+		uint16_t pos=8+(7*i);
 
 		sBoughtItem b;
 
@@ -1263,6 +1308,8 @@ bool cPacketReceiveBuyItems::execute(pClient client)
 \brief Receive map pins commands (add, remove, etc.)
 \author Chronodt
 \param client client who sent the packet
+\note packet 0x56
+
 \todo to be completed when treasure maps done
 */
 
@@ -1298,6 +1345,14 @@ bool cPacketReceiveMapPlotCourse::execute(pClient client)
         return false;
 }
 
+/*!
+\brief One packet of the login sequence
+\author Chronodt
+\param client client who sent the packet
+\note packet 0x5d
+
+\todo do the login sequence packets
+*/
 
 bool cPacketReceiveLoginChar::execute(pClient client)
 {
@@ -1305,7 +1360,7 @@ bool cPacketReceiveLoginChar::execute(pClient client)
         if (LongFromCharPtr(buffer+1) != 0xedededed) return false;	//pattern check
 
 
-        //TODO revise this
+        //!\todo revise from here
 
 
 	loginchars[s] = NULL;
@@ -1367,47 +1422,58 @@ bool cPacketReceiveLoginChar::execute(pClient client)
 \brief Receive changed book page
 \author Akron & Chronodt
 \param client client who sent the packet
+\note packet 0x66
 */
+
 bool cPacketReceiveBookPage::execute(pClient client)
 {
 	uint16_t size = ShortFromCharPtr(buffer + 1);
 	if (length != size) return false;
 
-	pItem item = cSerializable::findItemBySerial(LongFromCharPtr(buffer + 3));
-	pBook book = NULL;
-	
-	if ( item && ( book = item->toBook() ) )
-	{
-		if ( book->isReadOnly() )
-			book->sendPageReadOnly(client, book, ShortFromCharPtr(buffer + 9));
-		else
-			book->changePages(buffer + 13, ShortFromCharPtr(buffer + 9), ShortFromCharPtr(buffer + 11), size - 13);
-	}
+	pItem book = dynamic_cast<pBook>(cSerializable::findItemBySerial(LongFromCharPtr(buffer + 3)));
+	VALIDATEPIR(book, false);
+
+	if ( book->isReadOnly() )
+		book->sendPageReadOnly(client, book, ShortFromCharPtr(buffer + 9));
+	else
+		book->changePages(buffer + 13, ShortFromCharPtr(buffer + 9), ShortFromCharPtr(buffer + 11), size - 13);
         return true;
 }
 
+/*!
+\brief Receive the target selected by player
+\author Chronodt
+\param client client who sent the packet
+\note packet 0x6c
+
+\todo finish when targets redone
+*/
 
 
 bool cPacketReceiveTargetSelected::execute(pClient client)
 {
         if (length != 19) return false;
 	pTarget target = client->getTarget();
-        if( target==NULL ) return true;
+        if( !target) return false; //maybe it CAN return true if this packet is sent on targeting abortion. verify it! If true, add targeting abortion code instead of returning
 
 
         //! \todo finish to update this when targets redone
-        
+#if 0
 	target->receive( ps );
 
 					if( !target->isValid() )
 						target->error( ps );
 					else
 						target->code_callback( ps, target );
+#endif
+	return true;
 }
 
 /*!
 \brief Receive secure trading message
+\author Chronodt
 \param client client who sent the packet
+\note packet 0x6f
 */
 
 bool cPacketReceiveSecureTrade::execute(pClient client)
@@ -1422,10 +1488,10 @@ bool cPacketReceiveSecureTrade::execute(pClient client)
 	case 0://Start trade - Never happens, sent out by the server only.
 		break;
 	case 2://Change check marks. Possibly conclude trade
-		cont1 = cSerializable::findItemBySerial(LongFromCharPtr(buffer + 4));
+		cont1 = dynamic_cast<pContainer>(cSerializable::findItemBySerial(LongFromCharPtr(buffer + 4)));
                 //cont1 is now this client's secure trading container (a temporary container wich holds the trade items)
 
-		if (cont1) cont2 = cSerializable::findItemBySerial(calcserial(cont1->moreb1, cont1->moreb2, cont1->moreb3, cont1->moreb4));
+		if (cont1) cont2 = dynamic_cast<pContainer>(cSerializable::findItemBySerial(calcserial(cont1->moreb1, cont1->moreb2, cont1->moreb3, cont1->moreb4)));
 		else cont2=NULL;
 
 		if (cont2)
@@ -1784,20 +1850,18 @@ bool cPacketReceiveGameServerLogin::execute(pClient client)
 bool cPacketReceiveBookUpdateTitle::execute(pClient client)
 {
 	if (length != 99) return false;
-	char author[31], title[61];
+	char author[30], title[60];
 
-	pItem item = cSerializable::findItemBySerial(LongFromCharPtr(buffer + 1));
-	pBook book = NULL;
-	if ( ! item || ! ( book = item->toBook() ) )
-		return false;
-	
+        pBook book = dynamic_cast<pBook>(cSerializable::findItemBySerial(serial));
+	if ( !book ) return false;
+
 	//so if clients somehow does not send a null terminated string, we zero the last character to be sure
-	strncpy(title, buffer + 9, 60); title[60] = 0;
-	strncpy(author, buffer + 69, 30); author[30] = 0;
-	
+	strncpy(title, buffer + 9, 59); title[59] = 0;
+	strncpy(author, buffer + 69, 29); author[29] = 0;
+
 	book->changeAuthor(author);
 	book->changeTitle(title);
-	
+
 	return true;
 }
 
@@ -2030,10 +2094,9 @@ bool cPacketReceivePopupHelpRequest::execute(pClient client)
 	if (!nSettings::Server::isEnabledPopupHelp()) return false;
 
 	uint32_t serial = LongCharFromPtr(buffer +1);
-	
 	pSerializable p = cSerializable::findBySerial(serial);
 	if ( ! p ) return false;
-	
+
 	std::string descr;
 	if ( client->currChar() && client->currChar()->canSeeSerials() )
 	{
@@ -2131,7 +2194,7 @@ bool cPacketReceiveClientVersion::execute(pClient client)
    		if (viter == clientsAllowed.end() )
 		{
                 	//!\todo find a better InfoOut than socket number :D
-//			InfoOut("client %i disconnected by Client Version Control System\n", s);
+			//InfoOut("client %i disconnected by Client Version Control System\n", s);
 			client->disconnect();
 		}
 	}
@@ -2246,5 +2309,54 @@ bool cPacketReceiveClientViewRange::execute(pClient client)
 {
        	if (length != 2) return false;
         client->setViewRange(buffer[1]); //!<\todo verify if this packet is really sent :)
+        cPacketSendClientViewRange(buffer[1]);
+        client->sendPacket(&pk);
+        return true;
+}
+
+
+bool cPacketReceiveLogoutStatus::execute(pClient client)
+{
+       	if (length != 2) return false;
+	cPacketSendLogoutStatus pk();
+        client->sendPacket(&pk);
+        return true;
+}
+
+bool cPacketReceiveNewBookHeader::execute(pClient client)
+{
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+        uint32_t serial = LongFromCharPtr(buffer + 3);
+        pBook book = dynamic_cast<pBook>(cSerializable::findItemBySerial(serial));
+	if ( !book ) return false;
+        uint8_t flag1 = buffer[7];
+	uint8_t flag2 = buffer[8];
+//        uint16_t pagenumber = ShortFromCharPtr(buffer + 9);	//we don't really need this information (for now)
+
+	uint16_t authorsize = ShortFromCharPtr(buffer + 11);
+	std::string author  = string(buffer + 13);
+        if (author.size() != authorsize) return false;
+
+      	uint16_t titlesize  = ShortFromCharPtr(buffer + 13 + authorsize);
+        std::string title   = string(buffer + 15 + authorsize);
+        if (title.size() != titlesize) return false;
+
+	book->changeAuthor(author);
+	book->changeTitle(title);
+
+	return true;
+}
+
+bool cPacketReceiveFightBookSelection::execute(pClient client)
+{
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+	uint32_t serial = LongFromCharPtr(buffer + 3);
+        //uint16_t unknown1 = ShortFromCharPtr(buffer + 7);
+        //uint32_t unknown2 = LongFromCharPtr(buffer + 9);
+        uint8_t ability = buffer[13]; //This is the ability selected from fightbook
+        //uint8_t unknown3 = buffer[14];
+        //!\todo the fightbook system. Remember that if client switches weapon, the fightbook list of abilities changes automatically without server intervention... or server notification, so check weapon first :D 
         return true;
 }

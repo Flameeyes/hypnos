@@ -328,7 +328,7 @@ public:
 	inline const bool isMounted() const
 	{ return mounting; }
 
-	inline const bool isMouting(pNPC horse) const
+	inline const bool isMounting(pNPC horse) const
 	{ return mounting == horse; }
 
 	inline pNPC getHorse() const

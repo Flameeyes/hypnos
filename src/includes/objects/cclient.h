@@ -123,7 +123,7 @@ public:
 */
 
 public:
-	void talking(std::string &speech)	//!< The PC talks, and this finds out who will hear (and send it to them)
+	void talking(cSpeech &speech)	//!< The PC talks, and this finds out who will hear (and send it to them)
 
 //@}
 

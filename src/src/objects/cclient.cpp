@@ -2391,7 +2391,7 @@ void cClient::playSFX(uint16_t sound, bool onlyMe)
 ------------------------------------------------------------------------------*/
 
 
-void cClient::talking(std::string &speech) // PC speech
+void cClient::talking(cSpeech &speech) // PC speech
 {
 	pChar pc = currChar();
 	if ( ! pc ) return;
