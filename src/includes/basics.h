@@ -18,54 +18,48 @@
 
 /*!
 \author Duke
-\brief Calculates a long int from 4 subsequent bytes pointed to by p
+\brief Calculates a long int from 4 subsequent bytes pointed to by p in network endian
 \param p pointer to the 4 subsequent bytes
 \return the value of the long found
-\note assuming 'normal' (big endian, ndAkron) byte order (NOT intel style)
 */
-inline int32_t LongFromCharPtr(const unsigned char *p)
+inline uint32_t LongFromCharPtr(const unsigned char *p)
 {
-	return (*p<<24) | (*(p+1)<<16) | (*(p+2)<<8) | *(p+3);
+	return ntohl( *(reinterpret_cast<uint32_t *>(p)) );
 }
 
 /*!
 \author Duke
-\brief Calculates a short int from 2 subsequent bytes pointed to by p
+\brief Calculates a short int from 2 subsequent bytes pointed to by p in network endian
 \param p pointer to the 2 subsequent bytes
 \return the value of the short found
-\note assuming 'normal' (big endian, ndAkron) byte order (NOT intel style)
 */
-inline int16_t ShortFromCharPtr(const unsigned char *p)
+inline uint16_t ShortFromCharPtr(const unsigned char *p)
 {
-	return static_cast<short>((*p<<8) | *(p+1));
+	return ntohs( *(reinterpret_cast<uint16_t *>(p)) );
 }
 
 /*!
 \author Duke
-\brief Stores a long int into 4 subsequent bytes pointed to by 'p'
+\brief Stores a long int into 4 subsequent bytes pointed to by p in network endian
 \param i value to store
 \param p pointer to the char array
-\note assuming 'normal' (big endian, ndAkron) byte order (NOT intel style)
 */
 inline void LongToCharPtr(const uint32_t i, unsigned char *p)
 {
-	*p=static_cast<unsigned char>(i>>24); 
-	*(p+1)=static_cast<unsigned char>(i>>16); 
-	*(p+2)=static_cast<unsigned char>(i>>8); 
-	*(p+3)=static_cast<unsigned char>(i);
+	uint32_t *b = reinterpret_cast<uint32_t*>(p);
+	*b = htonl(i);
 }
 
 /*!
 \author Duke
-\brief Stores a short int into 2 subsequent bytes pointed to by 'p'
+\brief Stores a short int into 2 subsequent bytes pointed to by p in network endian
 \param i value to store
 \param p pointer to the char array
-\note assuming 'normal' (big endian, ndAkron) byte order (NOT intel style)
 */
 inline void ShortToCharPtr(const uint16_t i, unsigned char *p)
 {
-	*p=static_cast<unsigned char>(i>>8);
-	*(p+1)=static_cast<unsigned char>(i);	// no %256 for 2nd byte, truncation will occur anyway
+	uint16_t *b = reinterpret_cast<uint16_t*>(p);
+	*b = htons(i);
 }
 
 //@{
