@@ -1,13 +1,11 @@
-
 /*!
-\mainpage Nox-Wizard documentation
+\mainpage PyUO documentation
 
-	<h1>NoX-Wizard Emu (NXW)</h1>
+	<h1>PyUO Emulator</h1>
 	UO Server Emulation Program
-	<i>Work based on the Wolfpack and UOX Projects.</i>
+	<i>Work based on NoX-Wizard project.</i>
 
-	This Project started on June 2001, by Xanathar and Ummon
-	Currently it's coded by Luxor, Sparhawk, Elcabesa, Anthalir and Endymion
+	This Project started on January 2004, by Kheru & Flameeyes
 
 	Copyright 1997, 98 by Marcus Rating (Cironian)
 
@@ -30,24 +28,12 @@
 	the version used by you available or provide people with a location to
 	download it.</b>
 
-	-----------------------------------------------------------------------------
-
-	NoX-Wizard also contains portions of code from the Small toolkit.
-
-	The software toolkit "Small", the compiler, the abstract machine and the
-	documentation, are copyright (c) 1997-2001 by ITB CompuPhase.
-	See amx_vm.c and/or small_license.txt for more information about this.
-
-	==============================================================================
+<hr />
 
 	You can find info about the authors in the AUTHORS file.
 
-	<a href="http://noxwizard.sourceforge.net/">NoX-Wizard Homepage</a>
-
-	\section link Some links
-	Link to documentation page that can be useful
-	\subsection uo_protocol UO Protocol
-	Here is a page regarding the uo protocol: <a href='http://gonzo.kiev.ua/guide/node1.html'>http://gonzo.kiev.ua/guide/node1.html</a>
+	NoX-Wizard project can be found at <a
+	href="http://noxwizard.sf.net/">NoX-Wizard site</a>
 
 */
 
@@ -107,12 +93,6 @@
 #include "map.h"
 #include "scripts.h"
 
-
-
-#ifdef _WINDOWS
-	#include "nxwgui.h"
-#endif
-
 extern void initSignalHandlers();
 
 extern void checkGarbageCollect(); //!< Remove items which were in deleted containers
@@ -128,6 +108,9 @@ extern "C" int g_nTraceMode;
 
 RemoteAdmin TelnetInterface;	//!< remote administration
 
+/*!
+\todo clean and broke up
+*/
 static void item_char_test()
 {
 	LogMessage("Starting item consistancy check");
@@ -800,47 +783,6 @@ void checkkey ()
 	}
 }
 
-
-
-/*!
-\brief ?
-\author ?
-\since <ver>
-\remark better to make an extra function cauze in loaditem it could be the case that the
-        glower is loaded before the pack
-\note TO REMOVE
-*//*
-void start_glow()
-{
-
-	for(int i=0; i<itemcount; i++)
-	{
-		const P_ITEM pi = MAKE_ITEM_REF(i);
-		if( ISVALIDPI( pi ) )
-		{
-			if (pi->glow>0 && pi->free==0)
-			{
-				if (!pi->isInWorld())
-				{
-					P_CHAR pc = pointers::findCharBySerial( pi->getContSerial() ); // find equipped glowing items
-					if ( !ISVALIDPC( pc )  )
-					{
-						P_ITEM cont = (P_ITEM)pi->getContainer();
-						if(ISVALIDPI( cont )) {
-							pc = pi->getPackOwner(); // find equipped glowing items
-							if( ISVALIDPC( pc ) )
-							{
-								pc->addHalo(pi);
-								pc->glowHalo(pi);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}*/
-
 #if defined(__unix__)
 /*!
 \brief signal handlers
@@ -875,10 +817,8 @@ void signal_handler(int signal)
 	}
 }
 #endif
-/*!
-\brief initialize daemon
-\author ?
-*/
+
+//! initialize daemon
 void init_deamon()
 {
 #if defined(__unix__)
@@ -917,27 +857,10 @@ void init_deamon()
 #endif
 }
 
-#ifdef _WINDOWS
-void updateMenus();
-#endif
-
-#ifndef _WINDOWS
-	#ifndef USES_QT
-		int main(int argc, char *argv[])
-	#else
-		int qtmain(int argc, char *argv[])
-	#endif
-#else
-	extern "C" int win32_main(int argc, char *argv[])
-#endif
+int main(int argc, char *argv[])
 {
-#ifdef WIN32
-	#define CIAO_IF_ERROR if (error==1) { Network->SockClose();  DeleteClasses(); 	if (ServerScp::g_nDeamonMode==0) {MessageBox(NULL, "Startup failure. System halted.\nYou can look at the last output to determine the cause of the error.\nPress OK to terminate.", "NoX-Wizard Fatal Error", MB_ICONSTOP);} exit(INVALID); }
-#else
-	#define CIAO_IF_ERROR if (error==1) { Network->SockClose();  DeleteClasses(); exit(INVALID); }
-#endif //win32
-
-
+#define CIAO_IF_ERROR if (error==1) { Network->SockClose();  \
+	DeleteClasses(); exit(INVALID); }
 
 	int i;
 	unsigned long tempSecs;
@@ -965,7 +888,7 @@ void updateMenus();
 
 	initConsole();
 
-	ConOut("Starting NoX-Wizard...\n\n");
+	ConOut("Starting PyUO...\n\n");
 
 	//XAN : moved here 'cos nxw needs early initialization
 	//(has vital data in server.cfg, needed for proper "bootstrap" :))
@@ -973,8 +896,8 @@ void updateMenus();
 	loadserverscript();
 
 #ifdef __unix__
-    //thx to punt and Plastique :]
-    signal(SIGPIPE, SIG_IGN);
+	//thx to punt and Plastique :]
+	signal(SIGPIPE, SIG_IGN);
 	if (ServerScp::g_nDeamonMode!=0) {
 		ConOut("Going into deamon mode... bye...\n");
 		init_deamon();
@@ -1075,11 +998,7 @@ void updateMenus();
 
 
 	if (!keeprun) error = 1;
-#ifdef WIN32
-	if (error==1) { Network->SockClose(); DeleteClasses(); if (ServerScp::g_nDeamonMode==0) {MessageBox(NULL, "Startup failure. System halted.\nSome MUL files couldn't be loaded. Fix pathnames in server.cfg.\nPress OK to terminate.", "NoX-Wizard Fatal Error", MB_ICONSTOP);} exit(INVALID); }
-#else
-	if (error==1) { Network->SockClose(); DeleteClasses(); exit(INVALID); }
-#endif //win32
+	CIAO_IF_ERROR
 
 	ConOut("Loading Teleport...");
 	read_in_teleport();
@@ -1241,30 +1160,11 @@ void updateMenus();
 	initSignalHandlers();
 
 
-#ifdef _WINDOWS
-	updateMenus();
-#endif
 	if (ServerScp::g_nLoadDebugger) {
 		SDbgOut("                         -=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
 		SDbgOut("                         ||  RUNNING IN DEBUG MODE  ||\n");
 		SDbgOut("                         -=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
 	}
-
-	if (ServerScp::g_nCheckBySmall) {
-		SDbgOut("                         -=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
-		SDbgOut("                         ||  RUNNING IN CHECK MODE  ||\n");
-		SDbgOut("                         -=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
-	}
-
-#ifdef EXTREMELY_UNTESTED
-	if (!ServerScp::g_nLoadDebugger) {
-		SDbgOut("\nWARNING!\n");
-		SDbgOut("This version needs much much tests. This should be considered a test only\n");
-		SDbgOut("release and should *NOT* be used on production shards. \n");
-		SDbgOut("Please test it deeply [with XWolf if you can] and report bugs on noxwizard \n");
-		SDbgOut("forums. \n\n");
-	}
-#endif
 
 	pointers::init(); //Luxor
 
@@ -1432,17 +1332,9 @@ void updateMenus();
 
 	}
 
-	AMXEXEC(AMXT_SPECIALS,1,0,AMX_AFTER);
-
 	cwmWorldState->saveNewWorld();
 
 	sysbroadcast(TRANSLATE("The server is shutting down."));
-	if (SrvParms->html>0)
-	{
-		ConOut("Writing offline HTML page...");
-		offlinehtml();//HTML	// lb, the if prevents a crash on shutdown if html deactivated ...
-		ConOut(" Done.\n");
-	}
 	ConOut("Closing sockets...");
 
 	Network->SockClose();
@@ -2543,5 +2435,3 @@ void checkGarbageCollect () // Remove items which were in deleted containers
 		WarnOut("Gargbage Collector corrected %i char\n",corrected);
 	}
 }
-
-
