@@ -9,10 +9,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#include "clock.h"
 #include "common_libs.h"
 #include "hypnos.h"
+#include "notify.h"
 #include "version.h"
-#include "clock.h"
 #include "archs/console.h"
 #include "archs/signals.h"
 
@@ -22,27 +23,6 @@
 
 #include <stdarg.h>
 #include <iostream>
-
-/*!
-\brief Do a low-level output on the console
-\param str String to print (printf-formatted)
-
-This function is used by consoleOutput to actually do an output. Must \b not
-be accessed in other ways!
-*/
-void lowlevelOutput(std::ostream &outs, const char *str, ...)
-{
-	char *buf = NULL;
-	va_list argptr;
-
-	va_start( argptr, str );
-	vasprintf( &buf, str, argptr );
-	va_end( argptr );
-
-	outs << buf;
-	
-	free(buf);
-}
 
 // Only on unix-es we do colored output
 #if defined(__unix__)
@@ -73,30 +53,30 @@ void consoleOutput(nNotify::Level lev, const std::string str)
 	// Set the color
 	switch(lev)
 	{
-	case levPlain:
+	case nNotify::levPlain:
 		break;
-	case levError:
+	case nNotify::levError:
 		outs = std::cerr;
 		AnsiOut(outs, "\x1B[1;31m");
-		lowlevelOutput(outs, "E %s - ", nNotify::getDate().c_str());
+		outs << "E " << nNotify::getDate() << " - ";
 		break;
-	case levWarning:
+	case nNotify::levWarning:
 		outs = std::cerr;
 		AnsiOut(outs, "\x1B[1;33m");
-		lowlevelOutput(outs, "W %s - ", nNotify::getDate().c_str());
+		outs << "W " << nNotify::getDate() << " - ";
 		break;
-	case levInformation:
+	case nNotify::levInformation:
 		AnsiOut(outs, "\x1B[1;34m");
-		lowlevelOutput(outs, "i %s - ", nNotify::getDate().c_str());
+		outs << "i " << nNotify::getDate() << " - ";
 		break;
-	case levPanic:
+	case nNotify::levPanic:
 		outs = std::cerr;
 		AnsiOut(outs, "\x1B[1;31m");
-		lowlevelOutput(outs, "! %s - ", nNotify::getDate().c_str());
+		outs << "! " << nNotify::getDate() << " - ";
 		break;
 	}
 	
-	lowlevelOutput(outfp, str.c_str());
+	outs << str;
 	
 	// Close the colored part
 	if ( lev != levPlain )
@@ -117,7 +97,7 @@ void setWinTitle(char *str, ...)
 	va_end( argptr );
 	
 	#ifdef __unix__
-		lowlevelOutput(std::cout, "\033]0;%s\007", temp); // xterm code
+		std::cout << "\033]0;" << temp << "\007";
 	#elif defined(HAVE_WINCON_H)
 		SetConsoleTitle(temp);
 	#endif
@@ -170,9 +150,9 @@ void checkkey ()
 	if ( str == "S" )
 	{
 		if (secure)
-			lowlevelOutput(std::cout, "Secure mode disabled. Press ? for a commands list.\n");
+			std::cout << "Secure mode disabled. Press ? for a commands list." << std::endl;
 		else
-			lowlevelOutput(std::cout, "Secure mode re-enabled.\n");
+			std::cout << "Secure mode re-enabled." << std::endl;
 		
 		secure = ! secure;
 		return;
@@ -180,7 +160,7 @@ void checkkey ()
 	
 	if (secure && str != "?")  //Allows help in secure mode.
 	{
-		lowlevelOutput(std::cout, "Secure mode prevents keyboard commands! Press 'S' to disable.\n");
+		std::cout << "Secure mode prevents keyboard commands! Press 'S' to disable." << std::endl;
 		return;
 	}
 	
@@ -200,9 +180,9 @@ int main(int argc, char *argv[])
 
 	std::cout << "Applying interface settings... ";
 	constart();
-	std::cout << "[ OK ]" << std::endl;
-
-	lowlevelOutput(std::cout, "\n");
+	std::cout << "[ OK ]" << std::endl
+		<< std::endl;
+	
 	cwmWorldState->loadNewWorld();
 
 	endtime=0;
@@ -231,23 +211,23 @@ int main(int argc, char *argv[])
 	// print allowed clients
 	std::vector<std::string>::const_iterator vis( clientsAllowed.begin() ), vis_end( clientsAllowed.end() );
 
-	lowlevelOutput(std::cout, "\nAllowed clients : ");
+	std::cout << std::endl << "Allowed clients : ";
 	for ( ; vis != vis_end;  ++vis)
 	{
 		if ( (*vis) == "SERVER_DEFAULT" )
 		{
-			lowlevelOutput(std::cout, "%s : %s\n", (*vis).c_str(), strSupportedClient);
+			std::cout << (*vis) << " : " << strSupportedClient << std::endl;
 			break;
 		}
 		else if ( t == "ALL" )
 		{
-			lowlevelOutput(std::cout, "ALL\n");
+			std::cout << "ALL" << std::endl;
 			break;
 		}
 
-		lowlevelOutput(std::cout, "%s,", (*vis).c_str());
+		std::cout << (*vis) << ", ";
 	}
-	lowlevelOutput(std::cout, "\n");
+	std::cout << std::endl;
 	
 	pointers::init(); //Luxor
 
@@ -274,8 +254,7 @@ int main(int argc, char *argv[])
 				&& clientInfo[r]->ingame
 				)
 			{
-				lowlevelOutput(std::cout, "Player %s disconnected due to inactivity !\n", pc_r->getCurrentName().c_str());
-				//sysmessage(r,"you have been idle for too long and have been disconnected!");
+				std::cout << "Player " << pc_r->getCurrentName() << " disconnected due to inactivity !" << std::endl;
 				nPackets::Sent::IdleWarning pk(0x7);
 				client->sendPacket(&pk);
 				Network->Disconnect(r);
@@ -290,12 +269,12 @@ int main(int argc, char *argv[])
 	shutdownServer();
 
 	if (error) {
-		lowlevelOutput(stderr, "ERROR: Server terminated by error!\n");
+		std::cerr << "ERROR: Server terminated by error!" << std::endl;
 
 		if (SrvParms->server_log)
 			ServerLog.Write("Server Shutdown by Error!\n");
 	} else {
-		lowlevelOutput(std::cout, "Hypnos: Server shutdown complete!\n");
+		std::cout << "Hypnos: Server shutdown complete!" << std::endl;
 		if (SrvParms->server_log)
 			ServerLog.Write("Server Shutdown!\n");
 	}
