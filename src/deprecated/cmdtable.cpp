@@ -286,25 +286,18 @@ void command_where( pClient client )
 //! Shows the GM or Counsellor queue.
 void command_q( pClient client )
 {
-	pChar pc = client->currChar();
-
-#error //FLAME!!!
-	if (!pc->IsGM()) //They are not a GM
-		Commands::ShowGMQue(s, 0);
-	else
-		Commands::ShowGMQue(s, 1); // They are a GM
+	cGMPages::showQueue(client);
 }
 
 //! For Counselor's and GM's, removes current call from queue.
 void command_clear( pClient client )
 {
-	pChar pc = client->currChar();
-
-#error //FLAME!!!
-	if (!pc->IsGM()) //They are not a GM
-	   donewithcall(s, 0);
-	else
-	   donewithcall(s, 1); // They are a GM
+	if ( client->currAccount()->getLevel() < 3 )
+		return;
+	
+	pGMPage call = cGMPage::findCall( client );
+	if ( call )
+		call->close();
 }
 
 //! (d) Teleports you to a location from the LOCATIONS.SCP file.
@@ -1537,11 +1530,13 @@ void command_cq( pClient client )
 // Remove the current call from the counselor queue.
 void command_cclear( pClient client )
 {
-#error ///FLAMEEE
-
-	NXWSOCKET s = ps->toInt();
-
-	donewithcall(s, 0); // Show the Counselor queue, not GM queue
+	pGMPage call = cGMPage::findCall(client);
+	if ( call )
+	{
+		client->sysmessage("Call removed from the queue.");
+		delete call;
+	} else
+		client->sysmessage("You are not on a call.");
 }
 
 // (d) Set the server mine check interval in minutes.
@@ -1815,93 +1810,23 @@ void command_options( pClient client )
 // Goes to the current call in the GM/Counsellor Queue
 void command_gotocur( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
-
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
-
-	if(pc->callnum==0)
+	pGMPage call = cGMPage::findCall(client);
+	if ( ! call )
 	{
-		pc->sysmsg("You are not currently on a call.");
+		client->sysmessage("You are not currently on a call.");
 	}
-	else
-	{
-		P_CHAR pc_i = pointers::findCharBySerial( gmpages[pc->callnum].serial.serial32 );
-		if(ISVALIDPC(pc_i))
-		{
-			Location charpos= pc_i->getPosition();
-
-			pc->MoveTo( charpos );
-			pc->sysmsg("Transporting to your current call.");
-			pc->teleport();
-			return;
-		}
-
-		pc_i = pointers::findCharBySerial( counspages[pc->callnum].serial.serial32 );
-		if(ISVALIDPC(pc_i))
-		{
-			Location charpos= pc_i->getPosition();
-
-			pc->MoveTo( charpos );
-			sysmessage(s,"Transporting to your current call.");
-			pc->teleport();
-		}
-	}
+	
+	call->moveToCaller();
 }
 
 // Escilate a Counsellor Page into the GM Queue
 void command_gmtransfer( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
-
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
-
-	int i;
-	int x2=0;
-
-	if(pc->callnum!=0)
-	{
-		if(!pc->IsGM()) //Char is a counselor
-		{
-			for(i=1;i<MAXPAGES;i++)
-			{
-				if(gmpages[i].handled==1)
-				{
-					gmpages[i].handled=0;
-					strcpy(gmpages[i].name,counspages[pc->callnum].name);
-					strcpy(gmpages[i].reason,counspages[pc->callnum].reason);
-
-					gmpages[i].serial= counspages[pc->callnum].serial;
-					time_t current_time = time(0);
-					struct tm *local = localtime(&current_time);
-					sprintf(gmpages[i].timeofcall, "%02d:%02d:%02d", local->tm_hour, local->tm_min, local->tm_sec);
-					x2++;
-					break;
-				}
-			}
-			if (x2==0)
-			{
-				pc->sysmsg("The GM Queue is currently full. Contact the shard operator");
-				pc->sysmsg("and ask them to increase the size of the queue.");
-			}
-			else
-			{
-				pc->sysmsg("Call successfully transferred to the GM queue.");
-				donewithcall(s,1);
-			}
-		}
-		else
-		{
-			pc->sysmsg("Only Counselors may use this command.");
-		}
-	}
+	pGMPage call = cGMPage::findCall(client);
+	if ( call )
+		call->requeueGMOnly();
 	else
-	{
-		pc->sysmsg("You are not currently on a call");
-	}
+		client->sysmessage("You are not currently on a call");
 }
 
 // Displays a list of users currently online.

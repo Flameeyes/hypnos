@@ -72,7 +72,7 @@ void cScriptCommand::execute( pClient client )
 		sysmessage(s, param.c_str());
 		return;
 	} else if ( command == "GMPAGE" ) {
-		Commands::GMPage(s, param);
+		new cGMPage(this, std::string(param));
 		return;
 	} else if ( command == "CPAGE" ) {
 		Commands::CPage(s, param);
@@ -716,37 +716,6 @@ void getSextantCoords(int32_t x, int32_t y, bool t2a, char *sextant)
    strcat(sextant, yMs);
    strcat(sextant,"' ");
    if (yH>=0) strcat(sextant,"S"); else strcat(sextant,"N");
-}
-
-void donewithcall(int s, int type)
-{
-	P_CHAR pc = MAKE_CHAR_REF( currchar[s] );
-	VALIDATEPC( pc );
-	int cn = pc->callnum;
-	if(cn!=0) //Player is on a call
-	{
-		if(type==1) //Player is a GM
-		{
-			gmpages[cn].handled=1;
-			gmpages[cn].name[0]='\0';
-			gmpages[cn].reason[0]='\0';
-			gmpages[cn].serial.serial32= 0;
-			sysmessage(s,"Call removed from the GM queue.");
-		}
-		else //Player is a counselor
-		{
-			counspages[cn].handled=1;
-			counspages[cn].name[0]='\0';
-			counspages[cn].reason[0]='\0';
-			gmpages[cn].serial.serial32= 0;
-			sysmessage(s,"Call removed from the Counselor queue.");
-		}
-		pc->callnum=0;
-	}
-	else
-	{
-		sysmessage(s,"You are currently not on a call");
-	}
 }
 
 /*!

@@ -23,12 +23,12 @@ uint32_t cGMPage::nextID = 0;
 \param onlyGM if true only complete GMs will be paged
 \note This function already add the page to the list
 */
-cGMPage::cGMPage(pChar pc, std::string &pageReason, bool onlyGM)
+cGMPage::cGMPage(pPC pc, std::string &pageReason, bool onlyGM)
 {
 	reason = pageReason;
 	
 	char *msg;
-	asprintf(&msg, "GM Page from %s [%08x]: %s", pc->getCurrentName().c_str(), pc->getSerial(), pageReason.c_str());
+	asprintf(&msg, "GM Page from %s: %s", pc->getCurrentName().c_str(), pageReason.c_str());
 
 	bool notified = false;
 	for( cClients::iterator it = cClient::clients.begin(); it != cClient::clients.end(); it++)
@@ -45,10 +45,28 @@ cGMPage::cGMPage(pChar pc, std::string &pageReason, bool onlyGM)
 		"There was no Game Master available to take your call."
 		);
 	
-	pc->pagegm = false;
+	pc->pagegm = 0;
 	
 	free(msg);
 	pages.push_back(this);
+	caller = pc;
+	handler = NULL;
+	gm = onlyGM;
+}
+
+/*!
+\brief Constructor from a previous page
+\param old Previous page to copy
+
+Used by requeueGMOnly()
+*/
+cGMPage::cGMPage(pGMPage old)
+{
+	pages.push_back(this);
+	caller = old->getCaller();
+	handler = old->getHandler();
+	reason = old->getReason();
+	gm = true;
 }
 
 /*!
@@ -57,7 +75,67 @@ cGMPage::cGMPage(pChar pc, std::string &pageReason, bool onlyGM)
 */
 cGMPage::~cGMPage()
 {
+	pages.remove(this);
+}
+
+/*!
+\brief Finds the page handled by the requested handler
+\param handler pClient of the GM handling the page
+\return pointer to the page handled, or NULL if no pages found for it
+*/
+pGMPage cGMPage::findPage(pClient handler)
+{
+	for( GMPageList::iterator it = pages.begin(); it != pages.end(); it++ )
+		if ( (*it)->getHandler() == handler )
+			return (*it);
 	
+	return NULL;
+}
+
+/*!
+\brief Shows the page list to the given client
+\param viewer Client who's reading the page list
+*/
+void cGMPage::showQueue(pClient viewer)
+{
+	//!\todo Need to add configure option for the minimum level
+	if ( viewer->currAccount()->level() < 2 )
+		return;
+	
+	//!\todo Need to add configure also for this!
+	bool gmpages = viewer->currAccount()->leve() >= 4;
+	for( GMPageList::iterator it = pages.begin(); it != pages.end(); it++ )
+	{
+		if ( !(*it)->getHandler() && ( gmpages || ! (*it)->getGMOnly() ) )
+		{
+			viewer->sysmessage( "Next unhandled page from %s", (*it)->getCaller()->getPlayerName().c_str() );
+			viewer->sysmessage( "Problem: %s.", (*it)->getReason().c_str() );
+			//!\todo Need to add support for time
+//			viewer->sysmessage("Paged at %s.", gmpages[i].timeofcall);
+		}
+	}
+	
+	viewer->sysmessage( "");
+	viewer->sysmessage( "Total pages in queue: %i", pages.count() );
+}
+
+//! Moves the handler to the caller
+void cGMPage::moveToCaller()
+{
+	if ( ! handler || ! caller )
+		return;
+
+	handler->currChar()->MoveTo( caller->getPosition );
+	handler->sysmessage("Transporting to your current call.")
+	handler->currChar()->teleport();
+}
+
+//! Requeue a page in the GM only queue
+void cGMPage::requeueGMOnly()
+{
+	new cGMPage(this);
+	handler->sysmessage("Call successfully transferred to the GM queue.");
+	delete this;
 }
 
 /*!

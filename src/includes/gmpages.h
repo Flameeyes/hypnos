@@ -10,22 +10,41 @@
 \brief GM Pages management declarations
 */
 
+#include "common_libs.h"
+#include "objects/cclient.h"
+#include "objects/cpc.h"
+
 class cGMPage;
 typedef cGMPage *pGMPage;		//!< Pointer to a GM Page
 typedef std::list<pGMPage> GMPageList;	//!< List of GM Pages
 
 class cGMPage {
 public:
-	enum HandledStatus {
-		eNotHandled,		//!< The query was never handled
-		eHandling,		//!< Query's handling in progress
-		eHandled,		//!< Query already handled
-		eReQueued		//!< Query was handled, but it was requeued
-	};
-	cGMPage(pChar pc, std::string &pageReason, bool onlyGM = false);
+	cGMPage(pPC pc, std::string &pageReason, bool onlyGM = false);
+	cGMPage(pGMPage old);
 	
+	inline pPC getCaller() const
+	{ return caller; }
+	
+	inline pClient getHandler() const
+	{ return handler; }
+	
+	inline bool getGMOnly() const
+	{ return gm; }
+	
+	inline std::string getReason() const
+	{ return reason; }
+	
+	void moveToCaller();
+	void requeueGMOnly();
+	
+	static pGMPage findPage(pClient handler);
+	static void showQueue(pClient viewer);
 protected:
 	std::string reason;		//!< Reason of the page (from the user)
+	pPC caller;			//!< Player who requested the page
+	pClient handler;		//!< GM who's responding at the page
+	bool gm;			//!< If trye is only for GM, else is in main queue
 
 	static GMPageList pages;	//!< List of pages
 	static uint32_t nextID;		//!< ID to assign to the next instance

@@ -684,7 +684,7 @@ int main(int argc, char *argv[])
 	endtime=0;
 	lclock=0;
 	ConOut("Initializing Que System...");
-	initque(); // Initialize gmpages[] array
+	initque();
 
 	ConOut(" [DONE]\nLoading custom titles...");
 	loadcustomtitle();
