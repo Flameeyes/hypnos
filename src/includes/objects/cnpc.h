@@ -5,13 +5,9 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Declaration of cNPC class
-*/
 
-#ifndef __CNPC_H__
-#define __CNPC_H__
+#ifndef __OBJECTS_CNPC_H__
+#define __OBJECTS_CNPC_H__
 
 #include "objects/cchar.h"
 

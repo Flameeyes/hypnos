@@ -108,7 +108,7 @@ void cChar::resetData()
 	party=INVALID;
 	privLevel = PRIVLEVEL_GUEST;
 
-	setId( BODY_MALE );
+	setId( bodyMale );
 	race=INVALID;
 	custmenu=INVALID;
 	unicode = false; // This is set to 1 if the player uses unicode speech, 0 if not
@@ -1087,12 +1087,12 @@ std::string cChar::getTitle3() // Paperdoll title for character p (3)
 	{
 		if ( pc->kills >= repsys.maxkills )
 		{
-			if ( pc->getId() == BODY_FEMALE )
+			if ( pc->getId() == bodyFemale )
 				return std::string("The Murderous Lady ");
 			else
 				return std::string("The Murderer Lord ");
 		} else {
-			if ( pc->getId() == BODY_FEMALE )
+			if ( pc->getId() == bodyFemale )
 				return std::string("The ") + title[titlenum].fame + std::string(" Lady ");
 			else
 				return std::string("The ") + title[titlenum].fame + std::string(" Lord ");
@@ -1730,7 +1730,7 @@ void cChar::Kill()
 	poisoned = poisonNone;
 	poison = hp = 0;
 
-	if( getOldId() == BODY_FEMALE)
+	if( getOldId() == bodyFemale)
 	{
 		switch(RandomNum(0, 3)) // AntiChrist - uses all the sound effects
 		{
@@ -1740,7 +1740,7 @@ void cChar::Kill()
 			case 3:	playSFX( 0x0153 ); break;// Female Death
 		}
 	}
-	else if ( getOldId()  == BODY_MALE)
+	else if ( getOldId()  == bodyMale)
 	{
 		switch( RandomNum(0, 3) ) // AntiChrist - uses all the sound effects
 		{
@@ -1987,7 +1987,7 @@ void cChar::Kill()
 	//--------------------- corpse & ghost stuff
 
 	bool hadHumanBody=HasHumanBody();
-	int32_t corpseid = (getId() == BODY_FEMALE)? BODY_DEADFEMALE : BODY_DEADMALE;
+	int32_t corpseid = (getId() == bodyFemale)? bodyFemaleDead : bodyMaleDead;
 
 	if( ps!=NULL )
 		morph( corpseid, 0, 0, 0, 0, 0, NULL, true);
@@ -2226,14 +2226,14 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 	{ // adding Lord/Lady to title overhead
 		switch ( getId() )
 		{
-			case BODY_FEMALE :
+			case bodyFemale :
 				if ( strcmp(::title[9].other,"") )
 				{
 					sprintf(temp,"%s ",::title[9].other);
 					strcat(temp1,temp);
 				}
 				break;
-			case BODY_MALE	:
+			case bodyMale	:
 				if (strcmp(::title[10].other,""))
 				{
 					sprintf(temp,"%s ",::title[10].other);
@@ -2836,7 +2836,7 @@ NotEquippableReason cChar::canEquip(pEquippable pi)
 	if (!body->isHumanBody()) return nerNotHumanBody;
         sint16_t st,dx,in,sk1,sk2,sk3;
 
-	if ( (body->getId() == BODY_MALE) && ( pi->getId()==0x1c00 || pi->getId()==0x1c02 || pi->getId()==0x1c04 || pi->getId()==0x1c06 || pi->getId()==0x1c08 || pi->getId()==0x1c0a || pi->getId()==0x1c0c ) ) // Ripper...so males cant wear female armor
+	if ( (body->getId() == bodyMale) && ( pi->getId()==0x1c00 || pi->getId()==0x1c02 || pi->getId()==0x1c04 || pi->getId()==0x1c06 || pi->getId()==0x1c08 || pi->getId()==0x1c0a || pi->getId()==0x1c0c ) ) // Ripper...so males cant wear female armor
 		return nerMaleEquippingFemaleArmor;
 
 	// Minimum stats & skill check
@@ -2899,9 +2899,9 @@ void cChar::dyeChar(pClient client, uint16_t color)
 	{
 		bodyid = getBody()->getId();
 
-		if( color < 0x8000  && bodyid >= BODY_MALE && bodyid <= BODY_DEADFEMALE ) color |= 0x8000; // why 0x8000 ?! ^^;
+		if( color < 0x8000  && bodyid >= bodyMale && bodyid <= bodyFemaleDead ) color |= 0x8000; // why 0x8000 ?! ^^;
 
-		if ((color & 0x4000) && (bodyid >= BODY_MALE && bodyid<= 0x03E1)) color = 0xF000; // but assigning the only "transparent" value that works, namly semi-trasnparency.
+		if ((color & 0x4000) && (bodyid >= bodyMale && bodyid<= 0x03E1)) color = 0xF000; // but assigning the only "transparent" value that works, namly semi-trasnparency.
 
 		if (color != 0x8000)
 		{

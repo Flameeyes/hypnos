@@ -212,8 +212,8 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	if (pc_def->isInvul()) return;
 
 	checkSkillSparrCheck(skTactics, 0, 1000, pc_def);
-	if (pc_def->getBody()->getId()==BODY_FEMALE) pc_def->playSFX(0x014B);
-	if (pc_def->getBody()->getId()==BODY_MALE) pc_def->playSFX(0x0156);
+	if (pc_def->getBody()->getId()==bodyFemale) pc_def->playSFX(0x014B);
+	if (pc_def->getBody()->getId()==bodyMale) pc_def->playSFX(0x0156);
 	pc_def->playMonsterSound( SND_DEFEND );
 
 	checkPoisoning(pc_def);	// attacker poisons defender

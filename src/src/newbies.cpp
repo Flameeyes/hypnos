@@ -350,9 +350,9 @@ void nNewbies::giveItems(pBody body, uint16_t pantsColor, uint16_t shirtColor)
 	for( NBItemSList::iterator it = NewbiesAll.begin(); it != NewbiesAll.end(); it++ )
 		(*it).createItem(body);
 	
-	if ( body->getId() == BODY_MALE )
+	if ( body->getId() == bodyMale )
 		giveItemsMale(body, pantsColor, shirtColor);
-	else if ( body->getId() == BODY_FEMALE )
+	else if ( body->getId() == bodyFemale )
 		giveItemsFemale(body, pantsColor, shirtColor);
 	else
 		LogWarning("We are creating a new player which isn't an human.");

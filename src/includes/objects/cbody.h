@@ -5,21 +5,14 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Declaration of cBody class
-*/
 
-#ifndef __CBODY_H__
-#define __CBODY_H__
+#ifndef __OBJECTS_CBODY_H__
+#define __OBJECTS_CBODY_H__
 
 #include "common_libs.h"
 #include "objects/cobject.h"
 #include "objects/citem/cequippablecontainer.h"
 #include "enums.h"
-
-static const uint16_t bodyMale		= 0x190;
-static const uint16_t bodyFemale	= 0x191;
 
 /*!
 \brief This class represent a body of a character

@@ -14,13 +14,13 @@
 #include "utils.h"
 
 /*!
-\brief plays the proper door sfx for doors/gates/secretdoors
-\author Dupois
-\since Oct 8, 1998
+\brief Plays the proper door sfx for doors/gates/secretdoors
+\param pi Door item (to call the cItem::playSFX() function of)
+\param id Base ID of the door
+\param close If true, the door will be closed, else opened
 */
-static void doorsfx(pItem pi, int x, int y)
+static void doorsfx(pItem pi, uint16_t id, bool close)
 {
-
 	static const uint16_t OPENWOOD = 0x00EA;
 	static const uint16_t OPENGATE = 0x00EB;
 	static const uint16_t OPENSTEEL = 0x00EC;
@@ -29,45 +29,46 @@ static void doorsfx(pItem pi, int x, int y)
 	static const uint16_t CLOSEGATE = 0x00F2;
 	static const uint16_t CLOSESTEEL = 0x00F3;
 	static const uint16_t CLOSESECRET = 0x00F4;
-
-	if (y==0) // Request open door sfx
+	
+	if ( close ) // Request close door sfx
 	{
-		if (((x>=0x0695)&&(x<0x06C5))|| // Open wooden / ratan door
-			((x>=0x06D5)&&(x<=0x06F4)))
-			pi->playSFX(OPENWOOD);
-
-		if (((x>=0x0839)&&(x<=0x0848))|| // Open gate
-			((x>=0x084C)&&(x<=0x085B))||
-			((x>=0x0866)&&(x<=0x0875)))
-			pi->playSFX(OPENGATE);
-
-		if (((x>=0x0675)&&(x<0x0695))|| // Open metal
-			((x>=0x06C5)&&(x<0x06D5)))
-			pi->playSFX(OPENSTEEL);
-
-		if ((x>=0x0314)&&(x<=0x0365)) // Open secret
-			pi->playSFX(OPENSECRET);
-	}
-	else if (y==1) // Request close door sfx
-	{
-		if (((x>=0x0695)&&(x<0x06C5))|| // close wooden / ratan door
-			((x>=0x06D5)&&(x<=0x06F4)))
+		// Close wooden / ratan door
+		if ( between(id, 0x0695, 0x06C4) || between(id, 0x06D5, 0x06F4) )
 			pi->playSFX(CLOSEWOOD);
 
-		if (((x>=0x0839)&&(x<=0x0848))|| // close gate
-			((x>=0x084C)&&(x<=0x085B))||
-			((x>=0x0866)&&(x<=0x0875)))
-			pi->playSFX(CLOSEGATE);
+		// Close gate
+		if (	between(id, 0x0839, 0x0848) ||
+			between(id, 0x084C, 0x085B) ||
+			between(id, 0x0866, 0x0875) )
+				pi->playSFX(CLOSEGATE);
 
-		if (((x>=0x0675)&&(x<0x0695))|| // close metal
-			((x>=0x06C5)&&(x<0x06D5)))
+		// Close metal
+		if ( between(id, 0x0675, 0x0694) || between(id, 0x06C5, 0x06D4) )
 			pi->playSFX(CLOSESTEEL);
 
-		if ((x>=0x0314)&&(x<=0x0365)) // close secret
+		// Close secret
+		if ( between(x, 0x0314, 0x0365) )
 			pi->playSFX(CLOSESECRET);
-	}
+	} else { // Request open door sfx
+		// Open wooden / ratan door
+		if ( between(id, 0x0695, 0x06C4) || between(id, 0x06D5, 0x06F4) )
+			pi->playSFX(OPENWOOD);
 
-} // doorsfx() END
+		// Open gate
+		if (	between(id, 0x0839, 0x0848) ||
+			between(id, 0x084C, 0x085B) ||
+			between(id, 0x0866, 0x0875) )
+				pi->playSFX(OPENGATE);
+
+		// Open metal
+		if ( between(id, 0x0675, 0x0694) || between(id, 0x06C5, 0x06D4) )
+			pi->playSFX(OPENSTEEL);
+
+		// Open secret
+		if ( between(x, 0x0314, 0x0365) )
+			pi->playSFX(OPENSECRET);
+	}
+}
 
 
 /*!
@@ -102,7 +103,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x-1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 0);
+			doorsfx(pi, x, false);
 			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+1))
@@ -111,7 +112,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x+1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 1);
+			doorsfx(pi, x, true);
 			pi->dooropen=0;
 		} else if (x==(db+2))
 		{
@@ -119,7 +120,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x+1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 0);
+			doorsfx(pi, x, false);
 			tempfx::add(pc , pi, tempfx::AUTODOOR, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+3))
@@ -128,7 +129,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x-1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 1);
+			doorsfx(pi, x, true);
 			pi->dooropen=0;
 		} else if (x==(db+4))
 		{
@@ -136,7 +137,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x-1, pi->getPosition().y, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 0);
+			doorsfx(pi, x, false);
 			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+5))
@@ -145,7 +146,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x+1, pi->getPosition().y, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 1);
+			doorsfx(pi, x, true);
 			pi->dooropen=0;
 		} else if (x==(db+6))
 		{
@@ -153,7 +154,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x+1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 0);
+			doorsfx(pi, x, false);
 			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+7))
@@ -162,7 +163,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x-1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 1);
+			doorsfx(pi, x, true);
 			pi->dooropen=0;
 		} else if (x==(db+8))
 		{
@@ -170,7 +171,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x+1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 0);
+			doorsfx(pi, x, false);
 			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+9))
@@ -179,7 +180,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x-1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 1);
+			doorsfx(pi, x, true);
 			pi->dooropen=0;
 		} else if (x==(db+10))
 		{
@@ -187,7 +188,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x+1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 0);
+			doorsfx(pi, x, false);
 			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+11))
@@ -196,7 +197,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x-1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 1);
+			doorsfx(pi, x, true);
 			pi->dooropen=0;
 		}
 		else if (x==(db+12))
@@ -204,7 +205,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setId( pi->getId()+1 );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 0);
+			doorsfx(pi, x, false);
 			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+13))
@@ -212,7 +213,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setId( pi->getId()-1 );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 1);
+			doorsfx(pi, x, true);
 			pi->dooropen=0;
 		} else if (x==(db+14))
 		{
@@ -220,7 +221,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 0);
+			doorsfx(pi, x, false);
 			tempfx::add(pc, pi, tempfx::AUTODOOR, 0, 0, 0);
 			pi->dooropen=1;
 		} else if (x==(db+15))
@@ -229,7 +230,7 @@ void dooruse(pChar pc, pItem pi)
 			pi->setPosition( sLocation(pi->getPosition().x, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
-			doorsfx(pi, x, 1);
+			doorsfx(pi, x, true);
 			pi->dooropen=0;
 		}
 	}
@@ -247,13 +248,9 @@ void dooruse(pChar pc, pItem pi)
 	// house refreshment when a house owner or friend of a houe opens the house door
 
 	int j, houseowner_serial,ds;
-	pMulti pi_house = cMulti::getAt(pi->getPosition());
+	pHouse pi_house = reinterpret_cast<pHouse>(cMulti::getAt(pi->getPosition()));
 	
 	if ( ! pi_house )
-		return;
-	
-	const pItem pi2=pi_house;
-	if ( ! pi_house->isHouse() )
 		return;
 	
 	// Coowner also tests if owner
@@ -275,8 +272,8 @@ void dooruse(pChar pc, pItem pi)
 			client->sysmessage("You refreshed the house");
 	}
 
-	pi2->time_unused=0;
-	pi2->timeused_last=getclock();
+	pi_house->time_unused=0;
+	pi_house->timeused_last=getclock();
 }
 
 void endmessage(int x) // If shutdown is initialized

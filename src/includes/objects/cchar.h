@@ -5,12 +5,9 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Declaration of cChar class
-*/
-#ifndef __CCHAR_H__
-#define __CCHAR_H__
+
+#ifndef __OBJECTS_CCHAR_H__
+#define __OBJECTS_CCHAR_H__
 
 #include "common_libs.h"
 #include "objects/cbody.h"

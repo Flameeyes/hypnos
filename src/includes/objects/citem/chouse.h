@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#ifndef __OBJECTS_CHOUSE_H__
-#define __OBJECTS_CHOUSE_H__
+#ifndef __OBJECTS_CITEM_CHOUSE_H__
+#define __OBJECTS_CITEM_CHOUSE_H__
 
 #include "common_libs.h"
 #include "objects/citem/cmulti.h"

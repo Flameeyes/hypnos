@@ -864,7 +864,7 @@ void nSkills::target_healingSkill(pClient client, pTarget t )
 		return;
 	}
 
-	if( ((pp->getId() != BODY_MALE) || (pp->getId() != BODY_FEMALE)) && !pp->tamed) //Used on non-human and controls if tamed
+	if( ((pp->getId() != bodyMale) || (pp->getId() != bodyFemale)) && !pp->tamed) //Used on non-human and controls if tamed
 
         if ( ph->isInnocent() && ph != pp )
         {

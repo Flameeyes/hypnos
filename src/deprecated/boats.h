@@ -12,13 +12,6 @@
 #include "structs.h"
 #include "data.h"
 
-/*!
-\file
-\author Elcabesa
-\brief Boat System Stuff
-\note over an existing old boat system
-*/
-
 //For iSizeShipOffsets->
 #define PORT_PLANK 0
 #define STARB_PLANK 1

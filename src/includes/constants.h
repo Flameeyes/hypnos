@@ -35,11 +35,11 @@ static const uint16_t COLOR_NONE	= 0x0000;
 
 //@{
 //! \name Human bodies
-static const uint16_t BODY_MALE		= 0x0190;	//!< Male body
-static const uint16_t BODY_FEMALE	= 0x0191;	//!< Female body
-static const uint16_t BODY_DEADMALE	= 0x0192;	//!< Dead male body
-static const uint16_t BODY_DEADFEMALE	= 0x0193;	//!< Dead female body
-static const uint16_t BODY_GMSTAFF	= 0x03DB;	//!< GM Staff body
+static const uint16_t bodyMale		= 0x0190;	//!< Male human body
+static const uint16_t bodyFemale	= 0x0191;	//!< Female body
+static const uint16_t bodyMaleDead	= 0x0192;	//!< Dead male body
+static const uint16_t bodyFemaleDead	= 0x0193;	//!< Dead female body
+static const uint16_t bodyGM		= 0x03DB;	//!< GM Staff body
 //@}
 
 //@{

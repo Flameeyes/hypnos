@@ -9,8 +9,8 @@
 \file
 \brief House Related Stuff
 */
-#ifndef _HOUSE_H_
-#define _HOUSE_H_
+#ifndef __HOUSE_H__
+#define __HOUSE_H__
 
 void buildhouse( pClient client, pTarget t );
 

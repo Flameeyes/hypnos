@@ -101,11 +101,11 @@ void cChar::doubleClick(pClient client)i
 
 	// Handle humanoids
 
-	case BODY_MALE		:
-	case BODY_FEMALE	:
-	case BODY_DEADMALE	:
-	case BODY_DEADFEMALE	:
-	case BODY_GMSTAFF	:
+	case bodyMale		:
+	case bodyFemale	:
+	case bodyMaleDead	:
+	case bodyFemaleDead	:
+	case bodyGM	:
 
 		if (npc && npcaitype==NPCAI_PLAYERVENDOR)//PlayerVendors
 

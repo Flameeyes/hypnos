@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#ifndef __CBOAT_H__
-#define __CBOAT_H__
+#ifndef __OBJECTS_CITEM_CBOAT_H__
+#define __OBJECTS_CITEM_CBOAT_H__
 
 #include "common_libs.h"
 #include "objects/citem/cmulti.h"

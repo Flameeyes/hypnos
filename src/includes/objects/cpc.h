@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#ifndef __CPC_H__
-#define __CPC_H__
+#ifndef __OBJECTS_CPC_H__
+#define __OBJECTS_CPC_H__
 
 #include "objects/cchar.h"
 #include "extras/jails.h"

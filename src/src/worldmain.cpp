@@ -1003,7 +1003,7 @@ void CWorldMain::loadNewWorld() // Load world from NXW*.WSC
 	for( objs.rewind(); !objs.IsEmpty(); objs++ ) {
 		if ( cSerializable::isCharSerial( objs.getSerial() ) && (pc=static_cast<pChar>(objs.getObject())) ) {
 			if( pc->dead && pc->HasHumanBody() )
-				pc->morph( ((pc->getId() == BODY_FEMALE) ? BODY_DEADFEMALE : BODY_DEADMALE ), 0, 0, 0, 0, 0, NULL, true);
+				pc->morph( ((pc->getId() == bodyFemale) ? bodyFemaleDead : bodyMaleDead ), 0, 0, 0, 0, 0, NULL, true);
 		}
 		if ( cSerializable::isItemSerial( objs.getSerial() ) && (pi=static_cast<pItem>(objs.getObject())) ) {
 			if ( pi->isSpawner() )

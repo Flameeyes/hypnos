@@ -457,7 +457,7 @@ void cTempfx::start()
 			uint16_t body, skincolor, hairstyle, haircolor, beardstyle, beardcolor, x;
 
 			//--Sex--
-			body = change(50) ? BODY_MALE : BODY_FEMALE;
+			body = change(50) ? bodyMale : bodyFemale;
 			//--Skin color--
 			x=rand()%6;
 			switch(x)
@@ -487,7 +487,7 @@ void cTempfx::start()
 				default: hairstyle = 0x204A;break;
 			}
 			//--Beard Style--
-			if (body == BODY_MALE)
+			if (body == bodyMale)
 			{
 				x=rand()%7;
 				switch(x)
@@ -529,7 +529,7 @@ void cTempfx::start()
 			
 			{
 				std::string newname;
-				if( body == BODY_MALE )
+				if( body == bodyMale )
 				{
 					std::string value("1");
 					newname = cObject::getRandomScriptValue( std::string("RANDOMNAME"), value );

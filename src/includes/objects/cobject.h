@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#ifndef __OBJECT_H
-#define __OBJECT_H
+#ifndef __OBJECTS_COBJECT_H__
+#define __OBJECTS_COBJECT_H__
 
 #include "common_libs.h"
 #include "tmpeff.h"

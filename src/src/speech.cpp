@@ -281,8 +281,8 @@ int response(pClient client)
 				{
 					switch ( pc_map->getId() )
 					{
-						case BODY_MALE		:
-						case BODY_FEMALE	:
+						case bodyMale		:
+						case bodyFemale	:
 							pc_map->talkAll("Leave me alone!" , false);
 							break;
 						default		:
@@ -305,8 +305,8 @@ int response(pClient client)
 					{
 						switch ( pc_map->getId() )
 						{
-							case BODY_MALE:
-							case BODY_FEMALE:
+							case bodyMale:
+							case bodyFemale:
 								pc_map->talkAll( "I am %s.", 0, pc_map->getCurrentName().c_str());
 								break;
 							default		:
@@ -319,8 +319,8 @@ int response(pClient client)
 					{
 						switch ( pc_map->getId() )
 						{
-							case BODY_MALE		:
-							case BODY_FEMALE	:
+							case bodyMale		:
+							case bodyFemale	:
 								pc_map->talkAll( "I %s will kill you.", false, pc_map->getCurrentName().c_str());
 								break;
 							default		:

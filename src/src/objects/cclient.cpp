@@ -371,7 +371,7 @@ void cClient::statusWindow(pChar target, bool extended) //, bool canrename)  wil
 	if (pc->IsGM() || (target->getOwner() == pc && target != pc) ) canrename = true;
 	else canrename = false;
 
-	if ((pc->getBody()->getId() == BODY_DEADMALE) || (pc->getBody()->getId() == BODY_DEADFEMALE)) canrename = false;
+	if ((pc->getBody()->getId() == bodyMaleDead) || (pc->getBody()->getId() == bodyFemaleDead)) canrename = false;
 	uint8_t ext;
 	if (extended)
 	{

@@ -23,7 +23,6 @@
 \brief Checks if the Char is allowed to move at all (not frozen, overloaded...)
 \author Duke
 \param pc ptr to the car
-\param sequence UNDOCUMENTED
 \return true if the walk is allowed
 \todo document missing parameters
 */
@@ -185,40 +184,8 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 		pc->setNpcMoveTime(); //reset move timer
 
 	sLocation pcpos= pc->getPosition();
-
-	//! \todo Change this to a simpler call to a 'movement' function which calculates the position
-	switch(dir&0x0F)
-	{
-		case 0: pc->setPosition("y", pcpos.y-1);
-			break;
-		case 1: { pc->setPosition("x", pcpos.x+1); pc->setPosition("y", pcpos.y-1); }
-			break;
-		case 2: pc->setPosition("x", pcpos.x+1);
-			break;
-		case 3: { pc->setPosition("x", pcpos.x+1); pc->setPosition("y", pcpos.y+1);}
-			break;
-		case 4: pc->setPosition("y", pcpos.y+1);
-			break;
-		case 5: { pc->setPosition("x", pcpos.x-1); pc->setPosition("y", pcpos.y+1);}
-			break;
-		case 6: pc->setPosition("x", pcpos.x-1);
-			break;
-		case 7: { pc->setPosition("x", pcpos.x-1); pc->setPosition("y", pcpos.y-1);}
-			break;
-		default:
-			ErrOut("Switch fallout. walking.cpp, walking()\n"); //Morrolan
-			ErrOut("\tcaused by chr %s. dir: %i dir&0x0f: %i dir-passed : %i dp&0x0f : %i\n", pc->getCurrentName().c_str(), pc->dir, pc->dir&0x0f, dir, dir&0x0f);
-			if (pc->getSocket() != INVALID)
-                        {
-				nPackets::Sent::MoveReject(pc, sequence);
-                        	pc->getClient()->sendPacket(&pk);
-                       		walksequence[s]=INVALID;
-                        }
-			return false;
-	}
-
-	//uint32_t blockers = WalkCollectBlockers(pc);
-
+	pcpos.move(dir&0x07, 1); // This calculate the new position
+	
 	int8_t z;
 
 	if ( pc->npc )
@@ -270,36 +237,24 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 
 	if ( z == illegal_z )
 	{
-		sLocation pcpos= pc->getPosition();
-		pcpos.x= oldx;
-		pcpos.y= oldy;
-		pc->setPosition( pcpos );
-		pClient client = pc->getSocket();
-		if ( socket != INVALID )
-                {
-			nPackets::Sent::MoveReject(pc, sequence);
-                        pc->getClient()->sendPacket(&pk);
-                       	walksequence[s]=INVALID;
-		}
-		else
+		pc->setPosition( sLocation(oldx, oldy) );
+		pClient client = pc->getClient();
+		if ( ! client )
+		{
 			pc->blocked = 1;
+			return false
+		}
+			
+		nPackets::Sent::MoveReject(pc, sequence);
+		pc->getClient()->sendPacket(&pk);
+		walksequence[s]=INVALID;
 		return false;
 	}
 
-	int nowx2,nowy2;
+	sPoint now2 = pc->getPosition();
 
-	//Char mapRegions
-	pcpos= pc->getPosition();
-
-	nowx2= pcpos.x;
-	nowy2= pcpos.y;
-	/*
-	pc->x= oldx;
-	pc->y= oldy; // we have to remove it with OLD x,y ... LB, very important
-	pc->MoveTo(nowx2,nowy2,z);
-	*/
 	pc->setPositionX(oldx);
-	pc->setPositionT(oldy);
+	pc->setPositionY(oldy);
 	pc->MoveTo( nowx2, nowy2, z );
 	return true;
 }
