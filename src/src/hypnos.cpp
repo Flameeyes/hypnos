@@ -45,8 +45,8 @@ Also thanks to Judas for translating this text from italian to english :)
 
 */
 
-#include "common_libs.h"
-#include "hypnos.h"
+#include "common_libs.hpp"
+#include "hypnos.hpp"
 
 nMULFiles::fTiledataLand *tiledataLand = NULL;
 nMULFiles::fTiledataStatic *tiledataStatic = NULL;

@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "backend/strconstants.h"
-#include "objects/citem/cweapon.h"
+#include "backend/strconstants.hpp"
+#include "objects/citem/cweapon.hpp"
 
 /*!
 \brief Translate an unknown string constant into a c++ constant

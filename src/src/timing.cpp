@@ -11,18 +11,18 @@
 \author Duke
 \note not necessarily ALL those functions
 */
-#include "common_libs.h"
-#include "sregions.h"
-#include "sndpkg.h"
-#include "magic.h"
-#include "tmpeff.h"
-#include "timers.h"
-#include "spawn.h"
-#include "trade.h"
-#include "inlines.h"
-#include "networking/cclient.h"
-#include "objects/cchar.h"
-#include "objects/citem/chouse.h"
+#include "common_libs.hpp"
+#include "sregions.hpp"
+#include "sndpkg.hpp"
+#include "magic.hpp"
+#include "tmpeff.hpp"
+#include "timers.hpp"
+#include "spawn.hpp"
+#include "trade.hpp"
+#include "inlines.hpp"
+#include "networking/cclient.hpp"
+#include "objects/cchar.hpp"
+#include "objects/citem/chouse.hpp"
 
 extern bool g_bMustExecAICode;
 

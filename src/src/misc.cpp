@@ -6,13 +6,13 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "misc.h"
-#include "objects/cchar.h"
-#include "objects/cpc.h"
-#include "objects/cnpc.h"
-#include "objects/citem.h"
-#include "hypnos.h"
-#include "libhypnos/muls/tiledata.h"
+#include "misc.hpp"
+#include "objects/cchar.hpp"
+#include "objects/cpc.hpp"
+#include "objects/cnpc.hpp"
+#include "objects/citem.hpp"
+#include "hypnos.hpp"
+#include "libhypnos/muls/tiledata.hpp"
 
 #ifdef HAVE_OSTRINGSTREAM
 #include <ostringstream>

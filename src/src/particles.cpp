@@ -5,8 +5,8 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "particles.h"
-#include "magic.h"
+#include "particles.hpp"
+#include "magic.hpp"
 
 /*!
 \brief Init moving particle effect for casted spell

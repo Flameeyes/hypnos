@@ -6,9 +6,9 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "common_libs.h"
-#include "objects/citem.h"
-#include "objects/cpc.h"
+#include "common_libs.hpp"
+#include "objects/citem.hpp"
+#include "objects/cpc.hpp"
 
 // this is a q&d fix for 'sell price higher than buy price' bug (Duke, 30.3.2001)
 static bool items_match(pItem pi1,pItem pi2)

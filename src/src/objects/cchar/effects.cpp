@@ -10,8 +10,8 @@
 \brief cChar's effects (graphics and sound) methods
 */
 
-#include "enums.h"
-#include "objects/cchar.h"
+#include "enums.hpp"
+#include "objects/cchar.hpp"
 
 /*!
 \author Luxor

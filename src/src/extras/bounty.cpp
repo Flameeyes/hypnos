@@ -5,11 +5,11 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "logsystem.h"
-#include "extras/bounty.h"
-#include "objects/cchar.h"
-#include "objects/citem/cmsgboard.h"
+#include "common_libs.hpp"
+#include "logsystem.hpp"
+#include "extras/bounty.hpp"
+#include "objects/cchar.hpp"
+#include "objects/citem/cmsgboard.hpp"
 
 /*
 //////////////////////////////////////////////////////////////////////////////

@@ -5,10 +5,10 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "spawn.h"
-#include "map.h"
-#include "inlines.h"
+#include "common_libs.hpp"
+#include "spawn.hpp"
+#include "map.hpp"
+#include "inlines.hpp"
 
 cSpawns* Spawns=NULL;
 

@@ -10,10 +10,10 @@
 \brief Implementation of class cEquippable
 */
 
-#include "objects/citem/cequippable.h"
-#include "objects/cchar.h"
-#include "networking/cclient.h"
-#include "settings.h"
+#include "objects/citem/cequippable.hpp"
+#include "objects/cchar.hpp"
+#include "networking/cclient.hpp"
+#include "settings.hpp"
 
 cEquippable::cEquippable()
 	: cItem()

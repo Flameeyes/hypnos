@@ -9,7 +9,7 @@
 #ifndef __LIBHYPNOS_EXCEPTIONS_H__
 #define __LIBHYPNOS_EXCEPTIONS_H__
 
-#include "libhypnos/commons.h"
+#include "libhypnos/commons.hpp"
 
 namespace nLibhypnos {
 	/*!

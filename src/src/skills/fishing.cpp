@@ -11,11 +11,11 @@
 \author Ripper
 \date 31/01/2001
 */
-#include "common_libs.h"
-#include "sndpkg.h"
-#include "skills/fishing.h"
-#include "misc.h"
-#include "inlines.h"
+#include "common_libs.hpp"
+#include "sndpkg.hpp"
+#include "skills/fishing.hpp"
+#include "misc.hpp"
+#include "inlines.hpp"
 
 uint32_t Fishing::basetime = FISHINGTIMEBASE;
 uint32_t Fishing::randomtime = FISHINGTIMER;

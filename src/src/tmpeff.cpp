@@ -5,14 +5,14 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "tmpeff.h"
-#include "sndpkg.h"
-#include "inlines.h"
-#include "misc.h"
-#include "skills/skills.h"
-#include "objects/cchar.h"
-#include "objects/citem.h"
+#include "common_libs.hpp"
+#include "tmpeff.hpp"
+#include "sndpkg.hpp"
+#include "inlines.hpp"
+#include "misc.hpp"
+#include "skills/skills.hpp"
+#include "objects/cchar.hpp"
+#include "objects/citem.hpp"
 
 namespace tempfx {
 

@@ -8,9 +8,9 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "logsystem.h"
-#include "archs/tinterface.h"
-#include "extras/motd.h"
+#include "logsystem.hpp"
+#include "archs/tinterface.hpp"
+#include "extras/motd.hpp"
 
 #include <mxml.h>
 

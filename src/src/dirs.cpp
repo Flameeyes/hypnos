@@ -8,10 +8,10 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "dirs.h"
+#include "dirs.hpp"
 
 #ifdef ENABLE_BINRELOC
-#include "libhypnos/prefix.h"
+#include "libhypnos/prefix.hpp"
 #endif
 
 #ifdef WIN32

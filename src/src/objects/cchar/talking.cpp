@@ -10,7 +10,7 @@
 \brief cChar's talking methods
 */
 
-#include "objects/cchar.h"
+#include "objects/cchar.hpp"
 
 /*!
 \author Luxor

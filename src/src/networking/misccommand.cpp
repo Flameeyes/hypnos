@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "networking/sent.h"
-#include "objects/cparty.h"
+#include "networking/sent.hpp"
+#include "objects/cparty.hpp"
 
 /*!
 \brief Utility function for 0xBF subcommands

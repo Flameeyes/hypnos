@@ -85,6 +85,6 @@ suite to access the common defines without need of complete hypnos sources.
 	#include <algo.h>
 #endif
 
-#include "libhypnos/types.h"
+#include "libhypnos/types.hpp"
 
 #endif

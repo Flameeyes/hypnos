@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "objects/ceventthrower.h"
-#include "logsystem.h"
+#include "objects/ceventthrower.hpp"
+#include "logsystem.hpp"
 
 /*!
 \brief Default constructor

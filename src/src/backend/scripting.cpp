@@ -6,7 +6,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "backend/scripting.h"
+#include "backend/scripting.hpp"
 
 cScriptingEngine *cScriptingEngine::engine = NULL;
 

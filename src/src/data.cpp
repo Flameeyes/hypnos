@@ -10,10 +10,10 @@
 \author Luxor
 \brief Data files handling system
 */
-#include "common_libs.h"
-#include "data.h"
-#include "inlines.h"
-#include "logsystem.h"
+#include "common_libs.hpp"
+#include "data.hpp"
+#include "inlines.hpp"
+#include "logsystem.hpp"
 
 bool statics_cache = false;
 bool map_cache = false;

@@ -20,10 +20,10 @@ if it makes the error handling more difficult).
 */
 
 #include <mxml.h>
-#include "settings.h"
-#include "logsystem.h"
-#include "libhypnos/cvariant.h"
-#include "backend/strconstants.h"
+#include "settings.hpp"
+#include "logsystem.hpp"
+#include "libhypnos/cvariant.hpp"
+#include "backend/strconstants.hpp"
 
 #define SETTING(type, name, default) \
 	type val##name = default; \

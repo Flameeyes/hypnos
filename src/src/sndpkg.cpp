@@ -5,17 +5,17 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "particles.h"
-#include "sndpkg.h"
-#include "sregions.h"
-#include "tmpeff.h"
-#include "speech.h"
-#include "inlines.h"
-#include "misc.h"
-#include "networking/network.h"
-#include "objects/citem.h"
-#include "skills/skills.h"
+#include "common_libs.hpp"
+#include "particles.hpp"
+#include "sndpkg.hpp"
+#include "sregions.hpp"
+#include "tmpeff.hpp"
+#include "speech.hpp"
+#include "inlines.hpp"
+#include "misc.hpp"
+#include "networking/network.hpp"
+#include "objects/citem.hpp"
+#include "skills/skills.hpp"
 
 void gmyell(char *txt)
 {

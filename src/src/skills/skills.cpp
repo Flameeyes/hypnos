@@ -6,14 +6,14 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "common_libs.h"
-#include "settings.h"
-#include "backend/strconstants.h"
-#include "extras/jails.h"
-#include "objects/cchar.h"
-#include "objects/cpc.h"
-#include "objects/cnpc.h"
-#include "skills/skills.h"
+#include "common_libs.hpp"
+#include "settings.hpp"
+#include "backend/strconstants.hpp"
+#include "extras/jails.hpp"
+#include "objects/cchar.hpp"
+#include "objects/cpc.hpp"
+#include "objects/cnpc.hpp"
+#include "skills/skills.hpp"
 
 #include <mxml.h>
 

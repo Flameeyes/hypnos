@@ -6,12 +6,12 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "enums.h"
-#include "skills/skills.h"
-#include "objects/citem/cmap.h"
-#include "objects/cchar.h"
-#include "networking/sent.h"
-#include "networking/cclient.h"
+#include "enums.hpp"
+#include "skills/skills.hpp"
+#include "objects/citem/cmap.hpp"
+#include "objects/cchar.hpp"
+#include "networking/sent.hpp"
+#include "networking/cclient.hpp"
 
 cMap::cMap() : cItem()
 {

@@ -5,20 +5,20 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "networking/network.h"
-#include "commands.h"
-#include "menu.h"
-#include "speech.h"
-#include "data.h"
-#include "trade.h"
-#include "sndpkg.h"
-#include "walking.h"
-#include "inlines.h"
-#include "newbies.h"
-#include "skills/skills.h"
-#include "encryption/clientcrypt.h"
-#include "version.h"
+#include "common_libs.hpp"
+#include "networking/network.hpp"
+#include "commands.hpp"
+#include "menu.hpp"
+#include "speech.hpp"
+#include "data.hpp"
+#include "trade.hpp"
+#include "sndpkg.hpp"
+#include "walking.hpp"
+#include "inlines.hpp"
+#include "newbies.hpp"
+#include "skills/skills.hpp"
+#include "encryption/clientcrypt.hpp"
+#include "version.hpp"
 
 void cNetwork::LoginMain(pClient client)
 {

@@ -8,18 +8,18 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "clock.h"
-#include "dirs.h"
-#include "hypnos.h"
-#include "logsystem.h"
-#include "mainloop.h"
-#include "archs/tinterface.h"
-#include "networking/tkiller.h"
-#include "networking/tuoreceiver.h"
-#include "networking/tracreceiver.h"
+#include "clock.hpp"
+#include "dirs.hpp"
+#include "hypnos.hpp"
+#include "logsystem.hpp"
+#include "mainloop.hpp"
+#include "archs/tinterface.hpp"
+#include "networking/tkiller.hpp"
+#include "networking/tuoreceiver.hpp"
+#include "networking/tracreceiver.hpp"
 
 #ifdef HAVE_SIGNAL_H
-#include "archs/signal.h"
+#include "archs/signal.hpp"
 #endif
 
 #ifdef HAVE_FSTREAM

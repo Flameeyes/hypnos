@@ -8,8 +8,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypnos/muls/gumpidx.h"
-#include "libhypnos/exceptions.h"
+#include "libhypnos/muls/gumpidx.hpp"
+#include "libhypnos/exceptions.hpp"
 
 namespace nLibhypnos {
 namespace nMULFiles {

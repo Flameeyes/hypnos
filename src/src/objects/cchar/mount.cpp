@@ -10,7 +10,7 @@
 \brief cChar's mount methods
 */
 
-#include "objects/cchar.h"
+#include "objects/cchar.hpp"
 
 /*!
 \brief Mount a creature

@@ -53,7 +53,7 @@
 	#include <string.h>
 #endif
 
-#include "libhypnos/prefix.h"
+#include "libhypnos/prefix.hpp"
 
 #ifdef __cplusplus
 extern "C" {
@@ -97,8 +97,8 @@ extern "C" {
  *
  * Example:
  * --> main.c
- * #include "prefix.h"
- * #include "libfoo.h"
+ * #include "prefix.hpp"
+ * #include "libfoo.hpp"
  *
  * int main (int argc, char *argv[]) {
  *	printf ("Full path of this app: %s\n", br_locate (&argc));
@@ -107,7 +107,7 @@ extern "C" {
  * }
  *
  * --> libfoo.c starts here
- * #include "prefix.h"
+ * #include "prefix.hpp"
  *
  * void libfoo_start () {
  *	--> "" is a symbol that belongs to libfoo (because it's called

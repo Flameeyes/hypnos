@@ -6,11 +6,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "common_libs.h"
-#include "networking/network.h"
-#include "sndpkg.h"
-#include "sregions.h"
-#include "inlines.h"
+#include "common_libs.hpp"
+#include "networking/network.hpp"
+#include "sndpkg.hpp"
+#include "sregions.hpp"
+#include "inlines.hpp"
 
 void loadregions()//New -- Zippy spawn regions
 {

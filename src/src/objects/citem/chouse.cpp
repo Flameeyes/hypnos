@@ -6,12 +6,12 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "objects/citem/chouse.h"
-#include "objects/cnpc.h"
-#include "objects/cpc.h"
-#include "networking/cclient.h"
-#include "archetypes/generic.h"
-#include "map.h"
+#include "objects/citem/chouse.hpp"
+#include "objects/cnpc.hpp"
+#include "objects/cpc.hpp"
+#include "networking/cclient.hpp"
+#include "archetypes/generic.hpp"
+#include "map.hpp"
 
 /*!
 \brief Delets a house

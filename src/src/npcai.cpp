@@ -5,10 +5,10 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "magic.h"
-#include "misc.h"
-#include "inlines.h"
+#include "common_libs.hpp"
+#include "magic.hpp"
+#include "misc.hpp"
+#include "inlines.hpp"
 
 namespace npcs {
 

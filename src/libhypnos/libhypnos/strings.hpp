@@ -23,7 +23,7 @@ more of them.
 #ifndef __LIBHYPNOS_STRINGS_H__
 #define __LIBHYPNOS_STRINGS_H__
 
-#include "libhypnos/commons.h"
+#include "libhypnos/commons.hpp"
 
 namespace nLibhypnos {
 

@@ -10,10 +10,10 @@
 \brief functions that handle the teleporting
 \author Duke
 */
-#include "common_libs.h"
-#include "inlines.h"
-#include "objects/cchar.h"
-#include "objects/citem.h"
+#include "common_libs.hpp"
+#include "inlines.hpp"
+#include "objects/cchar.hpp"
+#include "objects/citem.hpp"
 
 void read_in_teleport()
 {

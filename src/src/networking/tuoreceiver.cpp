@@ -8,8 +8,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "networking/tuoreceiver.h"
-#include "networking/tkiller.h"
+#include "networking/tuoreceiver.hpp"
+#include "networking/tkiller.hpp"
 
 /*!
 \brief Constructor for tUOReceiver thread

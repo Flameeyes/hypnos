@@ -10,11 +10,11 @@
 \brief cChar's reputation methods
 */
 
-#include "enums.h"
-#include "networking/cclient.h"
-#include "objects/cchar.h"
-#include "objects/cpc.h"
-#include "objects/cnpc.h"
+#include "enums.hpp"
+#include "networking/cclient.hpp"
+#include "objects/cchar.hpp"
+#include "objects/cpc.hpp"
+#include "objects/cnpc.hpp"
 
 const bool cChar::isGrey() const
 {

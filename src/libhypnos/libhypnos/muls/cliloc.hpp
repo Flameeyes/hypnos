@@ -11,9 +11,9 @@
 #ifndef __LIBHYPNOS_MULS_CLILOC_H__
 #define __LIBHYPNOS_MULS_CLILOC_H__
 
-#include "libhypnos/muls/mulfiles.h"
-#include "libhypnos/muls/mmappedfile.h"
-#include "libhypnos/commons.h"
+#include "libhypnos/muls/mulfiles.hpp"
+#include "libhypnos/muls/mmappedfile.hpp"
+#include "libhypnos/commons.hpp"
 
 typedef map<uint32_t, string>::const_iterator constCliIterator;
 

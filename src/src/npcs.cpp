@@ -5,16 +5,16 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "magic.h"
-#include "sregions.h"
-#include "sndpkg.h"
-#include "commands.h"
-#include "data.h"
-#include "map.h"
-#include "inlines.h"
-#include "skills/skills.h"
-#include "misc.h"
+#include "common_libs.hpp"
+#include "magic.hpp"
+#include "sregions.hpp"
+#include "sndpkg.hpp"
+#include "commands.hpp"
+#include "data.hpp"
+#include "map.hpp"
+#include "inlines.hpp"
+#include "skills/skills.hpp"
+#include "misc.hpp"
 
 namespace npcs {	//Luxor
 

@@ -10,8 +10,8 @@
 \brief Alchemy stuff
 */
 
-#include "skills/skills.h"
-#include "skills/alchemy.h"
+#include "skills/skills.hpp"
+#include "skills/alchemy.hpp"
 
 /*!
 \brief Helper function for DoPotion()

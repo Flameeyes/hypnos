@@ -9,8 +9,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "common_libs.h"
-#include "version.h"
+#include "common_libs.hpp"
+#include "version.hpp"
 
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>

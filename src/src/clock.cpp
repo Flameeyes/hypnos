@@ -8,7 +8,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "clock.h"
+#include "clock.hpp"
 
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>

@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypnos/muls/multiidx.h"
-#include "libhypnos/exceptions.h"
+#include "libhypnos/muls/multiidx.hpp"
+#include "libhypnos/exceptions.hpp"
 
 namespace nLibhypnos {
 namespace nMULFiles {

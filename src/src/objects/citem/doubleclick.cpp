@@ -6,18 +6,18 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "common_libs.h"
-#include "magic.h"
-#include "mount.h"
-#include "map.h"
-#include "inlines.h"
-#include "networking/cclient.h"
-#include "objects/cchar.h"
-#include "objects/citem.h"
-#include "objects/cpc.h"
-#include "objects/citem/ccontainer.h"
-#include "skills/fishing.h"
-#include "skills/skills.h"
+#include "common_libs.hpp"
+#include "magic.hpp"
+#include "mount.hpp"
+#include "map.hpp"
+#include "inlines.hpp"
+#include "networking/cclient.hpp"
+#include "objects/cchar.hpp"
+#include "objects/citem.hpp"
+#include "objects/cpc.hpp"
+#include "objects/citem/ccontainer.hpp"
+#include "skills/fishing.hpp"
+#include "skills/skills.hpp"
 
 bool cItem::usableWhenLockedDown(pPC pc)
 {

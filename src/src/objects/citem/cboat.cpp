@@ -6,11 +6,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "objects/citem/cboat.h"
-#include "objects/citem/ccontainer.h"
-#include "objects/cpc.h"
-#include "networking/cclient.h"
-#include "misc.h"
+#include "objects/citem/cboat.hpp"
+#include "objects/citem/ccontainer.hpp"
+#include "objects/cpc.hpp"
+#include "networking/cclient.hpp"
+#include "misc.hpp"
 
 /*!
 \brief Ship items for directions

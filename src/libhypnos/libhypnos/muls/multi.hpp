@@ -11,10 +11,10 @@
 #ifndef __LIBHYPNOS_MULS_MULTI_H__
 #define __LIBHYPNOS_MULS_MULTI_H__
 
-#include "libhypnos/muls/mulfiles.h"
-#include "libhypnos/muls/indexedfile.h"
-#include "libhypnos/muls/multiidx.h"
-#include "libhypnos/types.h"
+#include "libhypnos/muls/mulfiles.hpp"
+#include "libhypnos/muls/indexedfile.hpp"
+#include "libhypnos/muls/multiidx.hpp"
+#include "libhypnos/types.hpp"
 
 namespace nLibhypnos {
 namespace nMULFiles {

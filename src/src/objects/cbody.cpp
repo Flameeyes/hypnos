@@ -10,7 +10,7 @@
 \brief Implementation of cBody class
 */
 
-#include "objects/cbody.h"
+#include "objects/cbody.hpp"
 
 cBody::cBody()
 {

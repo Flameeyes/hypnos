@@ -39,10 +39,10 @@
 // To be continued ... =)
 //
 //////////////////////////////////////////////////////////////////////
-#include "encryption/crypt.h"
+#include "encryption/crypt.hpp"
 
-#include "encryption/common.h"
-#include "archs/console.h"
+#include "encryption/common.hpp"
+#include "archs/console.hpp"
 
 //////////////////////////////////////////////////////////////////////
 

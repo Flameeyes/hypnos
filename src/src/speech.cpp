@@ -5,17 +5,17 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "sndpkg.h"
-#include "house.h"
-#include "npcai.h"
-#include "commands.h"
-#include "boats.h"
-#include "inlines.h"
-#include "misc.h"
-#include "networking/network.h"
-#include "objects/cchar.h"
-#include "objects/citem.h"
+#include "common_libs.hpp"
+#include "sndpkg.hpp"
+#include "house.hpp"
+#include "npcai.hpp"
+#include "commands.hpp"
+#include "boats.hpp"
+#include "inlines.hpp"
+#include "misc.hpp"
+#include "networking/network.hpp"
+#include "objects/cchar.hpp"
+#include "objects/citem.hpp"
 
 #define MAXBUFFER_REAL MAXBUFFER
 

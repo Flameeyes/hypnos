@@ -6,10 +6,10 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "logsystem.h"
-#include "archs/tinterface.h"
-#include "objects/citem/ccontainer.h"
-#include "objects/citem/cmap.h"
+#include "logsystem.hpp"
+#include "archs/tinterface.hpp"
+#include "objects/citem/ccontainer.hpp"
+#include "objects/citem/cmap.hpp"
 
 #include <mxml.h>
 

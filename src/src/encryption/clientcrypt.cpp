@@ -1,4 +1,4 @@
-#include "encryption/clientcrypt.h"
+#include "encryption/clientcrypt.hpp"
 
 void ClientCrypt::decrypt(unsigned char *in, unsigned char *out, int length)
 {

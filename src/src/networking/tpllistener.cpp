@@ -8,9 +8,9 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "networking/tpllistener.h"
-#include "networking/tkiller.h"
-#include "settings.h"
+#include "networking/tpllistener.hpp"
+#include "networking/tkiller.hpp"
+#include "settings.hpp"
 
 template <class tHandler> tplListener<tHandler> *tplListener<tHandler>::instance = NULL;
 

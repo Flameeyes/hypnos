@@ -5,11 +5,11 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "skills/extractionskills.h"
-#include "data.h"
-#include "skills/skills.h"
-#include "inlines.h"
+#include "common_libs.hpp"
+#include "skills/extractionskills.hpp"
+#include "data.hpp"
+#include "skills/skills.hpp"
+#include "inlines.hpp"
 
 
 cResources ores;

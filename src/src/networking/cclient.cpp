@@ -10,10 +10,10 @@
 \brief Implementation of cClient class
 */
 
-#include "misc.h"
-#include "settings.h"
-#include "networking/cclient.h"
-#include "common_libs.h"
+#include "misc.hpp"
+#include "settings.hpp"
+#include "networking/cclient.hpp"
+#include "common_libs.hpp"
 
 #ifdef HAVE_IOMANIP
 	#include <iomanip>

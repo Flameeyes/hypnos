@@ -8,8 +8,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "common_libs.h"
-#include "archs/tinterface.h"
+#include "common_libs.hpp"
+#include "archs/tinterface.hpp"
 
 #include <sstream>
 #include <stdarg.h>

@@ -8,7 +8,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypnos/muls/cliloc.h"
+#include "libhypnos/muls/cliloc.hpp"
 
 namespace nLibhypnos {
 namespace nMULFiles {

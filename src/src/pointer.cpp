@@ -5,8 +5,8 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "inlines.h"
+#include "common_libs.hpp"
+#include "inlines.hpp"
 
 namespace pointers {
 

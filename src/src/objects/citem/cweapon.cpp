@@ -6,10 +6,10 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "logsystem.h"
-#include "archs/tinterface.h"
-#include "backend/strconstants.h"
-#include "objects/citem/cweapon.h"
+#include "logsystem.hpp"
+#include "archs/tinterface.hpp"
+#include "backend/strconstants.hpp"
+#include "objects/citem/cweapon.hpp"
 
 #include <fstream>
 #include <mxml.h>

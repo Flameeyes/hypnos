@@ -11,10 +11,10 @@
 \brief Map related functions
 */
 
-#include "common_libs.h"
-#include "map.h"
-#include "data.h"
-#include "inlines.h"
+#include "common_libs.hpp"
+#include "map.hpp"
+#include "data.hpp"
+#include "inlines.hpp"
 
 //@{
 /*!

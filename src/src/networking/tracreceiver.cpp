@@ -8,10 +8,10 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "backend/admincmds.h"
-#include "networking/tracreceiver.h"
-#include "networking/tkiller.h"
-#include "networking/exception.h"
+#include "backend/admincmds.hpp"
+#include "networking/tracreceiver.hpp"
+#include "networking/tkiller.hpp"
+#include "networking/exception.hpp"
 
 #ifdef HAVE_SSTREAM
 	#include <sstream>

@@ -6,8 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypnos/muls/multi.h"
-#include "libhypnos/exceptions.h"
+#include "libhypnos/muls/multi.hpp"
+#include "libhypnos/exceptions.hpp"
 
 namespace nLibhypnos {
 namespace nMULFiles {

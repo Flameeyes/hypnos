@@ -9,8 +9,8 @@
 #ifndef __LIBHYPNOS_CVARIANT_H__
 #define __LIBHYPNOS_CVARIANT_H__
 
-#include "commons.h"
-#include "exceptions.h"
+#include "commons.hpp"
+#include "exceptions.hpp"
 
 // Only if not included by the hypnos complete sources defines the pointers
 #ifndef __TYPEDEFS_H__

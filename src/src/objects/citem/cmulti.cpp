@@ -6,9 +6,9 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "objects/citem/cmulti.h"
-#include "objects/cchar.h"
-#include "networking/cclient.h"
+#include "objects/citem/cmulti.hpp"
+#include "objects/cchar.hpp"
+#include "networking/cclient.hpp"
 
 /*!
 \brief Moves a multi, with all its content

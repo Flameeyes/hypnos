@@ -10,20 +10,20 @@
 \brief Implementation of packets classes
 */
 
-#include "version.h"
-#include "settings.h"
-#include "inlines.h"
-#include "networking/received.h"
-#include "networking/sent.h"
-#include "objects/cchar.h"
-#include "objects/cpc.h"
-#include "objects/cbody.h"
-#include "networking/cclient.h"
-#include "objects/citem/cbook.h"
-#include "objects/citem/cmap.h"
-#include "extras/motd.h"
-#include "extras/jails.h"
-#include "newbies.h"
+#include "version.hpp"
+#include "settings.hpp"
+#include "inlines.hpp"
+#include "networking/received.hpp"
+#include "networking/sent.hpp"
+#include "objects/cchar.hpp"
+#include "objects/cpc.hpp"
+#include "objects/cbody.hpp"
+#include "networking/cclient.hpp"
+#include "objects/citem/cbook.hpp"
+#include "objects/citem/cmap.hpp"
+#include "extras/motd.hpp"
+#include "extras/jails.hpp"
+#include "newbies.hpp"
 
 cPacketReceive::cPacketReceive(uint8_t *buf, uint16_t len, uint8_t *&newbuf, uint16_t &newlen) throw eBufferIncomplete
 {

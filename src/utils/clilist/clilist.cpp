@@ -8,7 +8,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypnos/muls/cliloc.h"
+#include "libhypnos/muls/cliloc.hpp"
 
 #ifdef HAVE_IOSTREAM
 	#include <iostream>

@@ -5,18 +5,18 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "tmpeff.h"
-#include "constants.h"
-#include "map.h"
-#include "skills/skills.h"
-#include "inlines.h"
-#include "backend/scripting.h"
-#include "networking/cclient.h"
-#include "objects/cchar.h"
-#include "objects/cpc.h"
-#include "objects/cbody.h"
-#include "objects/citem.h"
+#include "common_libs.hpp"
+#include "tmpeff.hpp"
+#include "constants.hpp"
+#include "map.hpp"
+#include "skills/skills.hpp"
+#include "inlines.hpp"
+#include "backend/scripting.hpp"
+#include "networking/cclient.hpp"
+#include "objects/cchar.hpp"
+#include "objects/cpc.hpp"
+#include "objects/cbody.hpp"
+#include "objects/citem.hpp"
 
 static bool CheckInPack(pClient client, pItem pi)
 {

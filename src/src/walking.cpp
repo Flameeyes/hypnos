@@ -5,18 +5,18 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "walking.h"
-#include "sregions.h"
-#include "sndpkg.h"
-#include "tmpeff.h"
-#include "telport.h"
-#include "map.h"
-#include "inlines.h"
-#include "networking/network.h"
-#include "libhypnos/cvariant.h"
-#include "objects/cchar.h"
-#include "objects/cpc.h"
+#include "common_libs.hpp"
+#include "walking.hpp"
+#include "sregions.hpp"
+#include "sndpkg.hpp"
+#include "tmpeff.hpp"
+#include "telport.hpp"
+#include "map.hpp"
+#include "inlines.hpp"
+#include "networking/network.hpp"
+#include "libhypnos/cvariant.hpp"
+#include "objects/cchar.hpp"
+#include "objects/cpc.hpp"
 
 /*!
 \brief Checks if the Char is allowed to move at all (not frozen, overloaded...)

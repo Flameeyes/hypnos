@@ -10,7 +10,7 @@
 \brief Begging methods implementation
 */
 
-#include "common_libs.h"
+#include "common_libs.hpp"
 
 uint32_t Begging::timer;
 uint32_t Begging::range;

@@ -10,15 +10,15 @@
 \brief Implementation of packets classes
 */
 
-#include "settings.h"
-#include "inlines.h"
-#include "networking/sent.h"
-#include "objects/cchar.h"
-#include "objects/cpc.h"
-#include "objects/cbody.h"
-#include "networking/cclient.h"
-#include "objects/citem/cbook.h"
-#include "objects/citem/cmap.h"
+#include "settings.hpp"
+#include "inlines.hpp"
+#include "networking/sent.hpp"
+#include "objects/cchar.hpp"
+#include "objects/cpc.hpp"
+#include "objects/cbody.hpp"
+#include "networking/cclient.hpp"
+#include "objects/citem/cbook.hpp"
+#include "objects/citem/cmap.hpp"
 
 /*!
 \brief Status window

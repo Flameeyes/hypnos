@@ -5,8 +5,8 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "oldmenu.h"
-#include "inlines.h"
+#include "oldmenu.hpp"
+#include "inlines.hpp"
 
 /* Classic menu
 	mnu_prepare(s, 1, 3);

@@ -8,7 +8,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypnos/muls/mulfiles.h"
+#include "libhypnos/muls/mulfiles.hpp"
 
 namespace nLibhypnos {
 namespace nMULFiles {

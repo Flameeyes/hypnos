@@ -10,14 +10,14 @@
 \brief Musicianship, Provocation, Enticement, and so on
 */
 
-#include "logsystem.h"
-#include "settings.h"
-#include "networking/cclient.h"
-#include "objects/cpc.h"
-#include "objects/cbody.h"
-#include "ojbects/citem/ccontainer.h"
-#include "skills/skills.h"
-#include "skills/music.h"
+#include "logsystem.hpp"
+#include "settings.hpp"
+#include "networking/cclient.hpp"
+#include "objects/cpc.hpp"
+#include "objects/cbody.hpp"
+#include "ojbects/citem/ccontainer.hpp"
+#include "skills/skills.hpp"
+#include "skills/music.hpp"
 
 void nSkills::target_enticement2(pClient client, pTarget t )
 {

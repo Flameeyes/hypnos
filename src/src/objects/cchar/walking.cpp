@@ -10,8 +10,8 @@
 \brief cChar's walking methods
 */
 
-#include "objects/cchar.h"
-#include "walking.h"
+#include "objects/cchar.hpp"
+#include "walking.hpp"
 
 /*!
 \brief Changes the orientation of a player

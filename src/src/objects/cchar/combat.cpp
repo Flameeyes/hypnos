@@ -11,15 +11,15 @@
 \note Completely rewritten by Luxor in January 2002
 */
 
-#include "objects/cchar.h"
-#include "objects/cnpc.h"
-#include "objects/cpc.h"
-#include "networking/cclient.h"
-#include "objects/citem/cweapon.h"
-#include "common_libs.h"
-#include "tmpeff.h"
-#include "inlines.h"
-#include "settings.h"
+#include "objects/cchar.hpp"
+#include "objects/cnpc.hpp"
+#include "objects/cpc.hpp"
+#include "networking/cclient.hpp"
+#include "objects/citem/cweapon.hpp"
+#include "common_libs.hpp"
+#include "tmpeff.hpp"
+#include "inlines.hpp"
+#include "settings.hpp"
 
 /*!
 \author Luxor

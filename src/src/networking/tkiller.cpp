@@ -8,8 +8,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "networking/tkiller.h"
-#include "networking/tpllistener.h"
+#include "networking/tkiller.hpp"
+#include "networking/tpllistener.hpp"
 
 tKiller *tKiller::instance = NULL;
 

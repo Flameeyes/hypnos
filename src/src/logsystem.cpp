@@ -9,11 +9,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "dirs.h"
-#include "logsystem.h"
-#include "inlines.h"
-#include "version.h"
-#include "archs/tinterface.h"
+#include "dirs.hpp"
+#include "logsystem.hpp"
+#include "inlines.hpp"
+#include "version.hpp"
+#include "archs/tinterface.hpp"
 
 #ifdef HAVE_STDARG_H
 	#include <stdarg.h>

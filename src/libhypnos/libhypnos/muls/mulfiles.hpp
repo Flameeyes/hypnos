@@ -11,7 +11,7 @@
 #ifndef __LIBHYPNOS_MULS_MULFILES_H__
 #define __LIBHYPNOS_MULS_MULFILES_H__
 
-#include "libhypnos/commons.h"
+#include "libhypnos/commons.hpp"
 
 namespace nLibhypnos {
 

@@ -6,14 +6,14 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "common_libs.h"
-#include "data.h"
-#include "inlines.h"
-#include "logsystem.h"
-#include "magic.h"
-#include "pointer.h"
-#include "sndpkg.h"
-#include "objects/citem.h"
+#include "common_libs.hpp"
+#include "data.hpp"
+#include "inlines.hpp"
+#include "logsystem.hpp"
+#include "magic.hpp"
+#include "pointer.hpp"
+#include "sndpkg.hpp"
+#include "objects/citem.hpp"
 
 #include <wefts_mutex.h>
 

@@ -16,7 +16,7 @@ This file contains function and data to compress packets with Huffman
 compression (the one used by UO).
 */
 
-#include "networking/cclient.h"
+#include "networking/cclient.hpp"
 
 //! Bit table for Huffman compression
 static unsigned int bit_table[257][2] =

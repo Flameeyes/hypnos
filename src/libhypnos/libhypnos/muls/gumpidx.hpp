@@ -11,9 +11,9 @@
 #ifndef __LIBHYPNOS_MULS_GUMPIDX_H__
 #define __LIBHYPNOS_MULS_GUMPIDX_H__
 
-#include "libhypnos/muls/mulfiles.h"
-#include "libhypnos/muls/indexedfile.h"
-#include "libhypnos/types.h"
+#include "libhypnos/muls/mulfiles.hpp"
+#include "libhypnos/muls/indexedfile.hpp"
+#include "libhypnos/types.hpp"
 
 namespace nLibhypnos {
 namespace nMULFiles {

@@ -6,18 +6,18 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "common_libs.h"
-#include "sregions.h"
-#include "sndpkg.h"
-#include "magic.h"
-#include "tmpeff.h"
-#include "networking/network.h"
-#include "boats.h"
-#include "walking.h"
-#include "map.h"
-#include "inlines.h"
-#include "magic.h"
-#include "skills/skills.h"
+#include "common_libs.hpp"
+#include "sregions.hpp"
+#include "sndpkg.hpp"
+#include "magic.hpp"
+#include "tmpeff.hpp"
+#include "networking/network.hpp"
+#include "boats.hpp"
+#include "walking.hpp"
+#include "map.hpp"
+#include "inlines.hpp"
+#include "magic.hpp"
+#include "skills/skills.hpp"
 
 #include <wefts_mutex.h>
 

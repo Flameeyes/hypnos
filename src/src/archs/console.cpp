@@ -9,18 +9,18 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "clock.h"
-#include "common_libs.h"
-#include "data.h"
-#include "hypnos.h"
-#include "logsystem.h"
-#include "mainloop.h"
-#include "version.h"
-#include "archs/console.h"
-#include "archs/signals.h"
-#include "backend/admincmds.h"
+#include "clock.hpp"
+#include "common_libs.hpp"
+#include "data.hpp"
+#include "hypnos.hpp"
+#include "logsystem.hpp"
+#include "mainloop.hpp"
+#include "version.hpp"
+#include "archs/console.hpp"
+#include "archs/signals.hpp"
+#include "backend/admincmds.hpp"
 
-#include "libhypnos/strings.h"
+#include "libhypnos/strings.hpp"
 
 #ifdef HAVE_WINCON_H
 #include <wincon.h>

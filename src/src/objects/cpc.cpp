@@ -10,9 +10,9 @@
 \brief Implementation of cPC class
 */
 
-#include "networking/cclient.h"
-#include "objects/cpc.h"
-#include "objects/caccount.h"
+#include "networking/cclient.hpp"
+#include "objects/cpc.hpp"
+#include "objects/caccount.hpp"
 
 const string cPC::getPopupHelp() const
 {

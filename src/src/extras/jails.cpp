@@ -6,15 +6,15 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "logsystem.h"
-#include "inlines.h"
-#include "archs/tinterface.h"
-#include "extras/jails.h"
-#include "libhypnos/cvariant.h"
-#include "networking/cclient.h"
-#include "objects/caccount.h"
-#include "objects/cbody.h"
-#include "objects/cpc.h"
+#include "logsystem.hpp"
+#include "inlines.hpp"
+#include "archs/tinterface.hpp"
+#include "extras/jails.hpp"
+#include "libhypnos/cvariant.hpp"
+#include "networking/cclient.hpp"
+#include "objects/caccount.hpp"
+#include "objects/cbody.hpp"
+#include "objects/cpc.hpp"
 
 #include <mxml.h>
 #include <wefts_mutex.h>

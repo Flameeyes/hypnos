@@ -10,10 +10,10 @@
 
 bool g_bNTService = false;
 
-#include "common_libs.h"
-#include "version.h"
-#include "archs/ntservice.h"
-#include "archs/win32registry.h"
+#include "common_libs.hpp"
+#include "version.hpp"
+#include "archs/ntservice.hpp"
+#include "archs/win32registry.hpp"
 
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>

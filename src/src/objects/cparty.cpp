@@ -6,11 +6,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "common_libs.h"
-#include "networking/cclient.h"
-#include "networking/sent.h"
-#include "objects/cparty.h"
-#include "objects/cpc.h"
+#include "common_libs.hpp"
+#include "networking/cclient.hpp"
+#include "networking/sent.hpp"
+#include "objects/cparty.hpp"
+#include "objects/cpc.hpp"
 
 /*!
 \brief Delete the pointers of the parties.

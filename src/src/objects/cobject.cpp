@@ -6,10 +6,10 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "common_libs.h"
-#include "objects/cobject.h"
-#include "inlines.h"
-#include "misc.h"
+#include "common_libs.hpp"
+#include "objects/cobject.hpp"
+#include "inlines.hpp"
+#include "misc.hpp"
 
 string cObject::getRandomScriptValue( string section, string& sectionId )
 {

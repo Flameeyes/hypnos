@@ -9,8 +9,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypnos/strings.h"
-#include "libhypnos/exceptions.h"
+#include "libhypnos/strings.hpp"
+#include "libhypnos/exceptions.hpp"
 
 #ifdef HAVE_SSTREAM
 	#include <sstream>

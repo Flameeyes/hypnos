@@ -9,10 +9,10 @@
 // Request limits
 #define __STDC_LIMIT_MACROS
 
-#include "logsystem.h"
-#include "inlines.h"
-#include "backend/scheduler.h"
-#include "archs/tinterface.h"
+#include "logsystem.hpp"
+#include "inlines.hpp"
+#include "backend/scheduler.hpp"
+#include "archs/tinterface.hpp"
 
 #include <mxml.h>
 

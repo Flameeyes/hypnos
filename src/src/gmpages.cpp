@@ -10,12 +10,12 @@
 \brief GM Pages management implementations
 */
 
-#include "gmpages.h"
-#include "common_libs.h"
-#include "objects/cchar.h"
-#include "networking/cclient.h"
-#include "objects/cpc.h"
-#include "objects/caccount.h"
+#include "gmpages.hpp"
+#include "common_libs.hpp"
+#include "objects/cchar.hpp"
+#include "networking/cclient.hpp"
+#include "objects/cpc.hpp"
+#include "objects/caccount.hpp"
 
 GMPageList cGMPage::pages;
 uint32_t cGMPage::nextID = 0;

@@ -6,16 +6,16 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "newbies.h"
-#include "inlines.h"
-#include "constants.h"
-#include "enums.h"
-#include "logsystem.h"
-#include "objects/citem.h"
-#include "objects/citem/cequippablecontainer.h"
-#include "objects/cbody.h"
-#include "archetypes/generic.h"
-#include "backend/strconstants.h"
+#include "newbies.hpp"
+#include "inlines.hpp"
+#include "constants.hpp"
+#include "enums.hpp"
+#include "logsystem.hpp"
+#include "objects/citem.hpp"
+#include "objects/citem/cequippablecontainer.hpp"
+#include "objects/cbody.hpp"
+#include "archetypes/generic.hpp"
+#include "backend/strconstants.hpp"
 
 #include <mxml.h>
 #include <fstream>

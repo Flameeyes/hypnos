@@ -6,9 +6,9 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "effects.h"
-#include "networking/sent.h"
-#include "logsystem.h"	
+#include "effects.hpp"
+#include "networking/sent.hpp"
+#include "logsystem.hpp"	
 
 /*!
 \brief Plays a static effect that follows a cSerializable

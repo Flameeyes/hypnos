@@ -10,11 +10,11 @@
 \brief Implementation of cAccount class
 */
 
-#include "objects/caccount.h"
-#include "objects/cserializable.h"
-#include "objects/cpc.h"
-#include "settings.h"
-#include "inlines.h"
+#include "objects/caccount.hpp"
+#include "objects/cserializable.hpp"
+#include "objects/cpc.hpp"
+#include "settings.hpp"
+#include "inlines.hpp"
 
 Wefts::Mutex cAccount::global_mt;
 cAccounts cAccount::accounts;

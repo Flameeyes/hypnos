@@ -10,10 +10,10 @@
 \brief Contains constructors and functions for structs defined in structs.h
 */
 
-#include "structs.h"
-#include "objects/citem.h"
-#include "data.h"
-#include "inlines.h"
+#include "structs.hpp"
+#include "objects/citem.hpp"
+#include "data.hpp"
+#include "inlines.hpp"
 
 /*!
 \brief Moves a location

@@ -5,15 +5,15 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "sndpkg.h"
-#include "inlines.h"
-#include "settings.h"
-#include "backend/scripting.h"
-#include "objects/cchar.h"
-#include "objects/cpc.h"
-#include "objects/cnpc.h"
-#include "skills/skills.h"
+#include "common_libs.hpp"
+#include "sndpkg.hpp"
+#include "inlines.hpp"
+#include "settings.hpp"
+#include "backend/scripting.hpp"
+#include "objects/cchar.hpp"
+#include "objects/cpc.hpp"
+#include "objects/cnpc.hpp"
+#include "skills/skills.hpp"
 
 /*!
 \brief Snoop into container

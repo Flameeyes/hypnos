@@ -9,9 +9,9 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "mainloop.h"
-#include "backend/admincmds.h"
-#include "networking/cclient.h"
+#include "mainloop.hpp"
+#include "backend/admincmds.hpp"
+#include "networking/cclient.hpp"
 
 #ifdef HAVE_OSTREAM
 	#include <ostream>

@@ -10,7 +10,7 @@
 // UINT16_MAX and sibling constants to calc the size of the integer values.
 #define __STDC_LIMIT_MACROS
 
-#include "libhypnos/cvariant.h"
+#include "libhypnos/cvariant.hpp"
 
 #define throw_if_not_int case isNotInt: throw eInvalidInteger(this);
 

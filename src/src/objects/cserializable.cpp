@@ -6,11 +6,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "objects/cserializable.h"
-#include "objects/cchar.h"
-#include "objects/citem.h"
-#include "objects/citem/cmulti.h"
-#include "logsystem.h"
+#include "objects/cserializable.hpp"
+#include "objects/cchar.hpp"
+#include "objects/citem.hpp"
+#include "objects/citem/cmulti.hpp"
+#include "logsystem.hpp"
 
 SerializableMap cSerializable::objects;
 

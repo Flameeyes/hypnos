@@ -5,15 +5,15 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "common_libs.h"
-#include "magic.h"
-#include "tmpeff.h"
-#include "particles.h"
-#include "sndpkg.h"
-#include "data.h"
-#include "map.h"
-#include "inlines.h"
-#include "extras/jails.h"
+#include "common_libs.hpp"
+#include "magic.hpp"
+#include "tmpeff.hpp"
+#include "particles.hpp"
+#include "sndpkg.hpp"
+#include "data.hpp"
+#include "map.hpp"
+#include "inlines.hpp"
+#include "extras/jails.hpp"
 
 namespace magic {
 

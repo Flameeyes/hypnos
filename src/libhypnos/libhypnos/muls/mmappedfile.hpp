@@ -11,7 +11,7 @@
 #ifndef __LIBHYPNOS_MMAPPDEFILE_H__
 #define __LIBHYPNOS_MMAPPDEFILE_H__
 
-#include "libhypnos/commons.h"
+#include "libhypnos/commons.hpp"
 
 #if ! defined(HAVE_MMAP) && ! defined(WIN32)
 # error "Your platform miss a way to memory map a file, or we don't know " \

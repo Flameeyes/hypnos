@@ -9,10 +9,10 @@
 \file
 \brief Implementation of cBook Class
 */
-#include "logsystem.h"
-#include "objects/citem/cbook.h"
-#include "networking/cclient.h"
-#include "networking/sent.h"
+#include "logsystem.hpp"
+#include "objects/citem/cbook.hpp"
+#include "networking/cclient.hpp"
+#include "networking/sent.hpp"
 
 //! Base constructor
 cBook::cBook()

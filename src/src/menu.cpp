@@ -5,8 +5,8 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-#include "menu.h"
-#include "inlines.h"
+#include "menu.hpp"
+#include "inlines.hpp"
 
 cMenus Menus;
 

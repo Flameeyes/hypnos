@@ -8,8 +8,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "libhypnos/muls/tiledata.h"
-#include "libhypnos/exceptions.h"
+#include "libhypnos/muls/tiledata.hpp"
+#include "libhypnos/exceptions.hpp"
 
 namespace nLibhypnos {
 namespace nMULFiles {
