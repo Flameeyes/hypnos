@@ -16,7 +16,7 @@
 #define __NETWORKING_TRACRECEIVER_H__
 
 #include "common_libs.h"
-#include <wefts_thread.h>
+#include "networking/tpllistener.h"
 #include <cabal_tcpsocket.h>
 
 /*!
@@ -32,10 +32,13 @@ method for more information.
 class tRACReceiver : public tReceiver
 {
 protected:
-	Cabal::TCPSocket *sock;
+	Cabal::TCPSocket *sock;		//!< Sockets connected
+	bool logon;			//!< The connection is already logged on
+	
+	void outf(char *str, ...) PRINTF_LIKE(2, 3);
+	void doLogin();
 public:
 	tRACReceiver(Cabal::TCPSocket *aSock);
-	
 	void *run();
 };
 

@@ -162,7 +162,7 @@ void RemoteAdmin::CheckConn ()
 	inputptrs[racnow] = 0;
 
 	// disable local echo for client
-	Printf(racnow, "%c%c%c", IAC, WILL, ECHO);
+	Printf("%c%c%c", IAC, WILL, ECHO);
 
 	Printf("Hypnos %s [%s]\r\nRemote Administration Console\r\nProgrammed by: %s", strVersion, OS, strDevelopers);
 	Printf("\r\nBased on NoX-Wizard 20031228");
