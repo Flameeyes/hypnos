@@ -104,16 +104,6 @@ void consoleOutput(nNotify::Level lev, const std::string str)
 	m.unlock();
 }
 
-static inline uint32_t CheckMilliTimer(uint32_t &Seconds, uint32_t &Milliseconds)
-{
-	uint32_t newSec, newMill;
-	getClock(newSec, newMill);
-
-	return( 1000 * ( newSec - Seconds ) + ( newMill - Milliseconds ) );
-}
-
-static FILE *s_fileStdOut = NULL;
-
 void setWinTitle(char *str, ...)
 {
 	if (ServerScp::g_nDeamonMode!=0) return;
@@ -134,38 +124,37 @@ void setWinTitle(char *str, ...)
 	free(temp);
 }
 
-void constart( void )
+void constart()
 {
 	setWinTitle("Hypnos %s", strVersion);
 	#ifdef WIN32
-	if (! ServerScp::g_nDeamonMode )
-	{
-		HANDLE Buff = GetStdHandle(STD_OUTPUT_HANDLE);
-		COORD coord; coord.X = 80; coord.Y = (short)ServerScp::g_nLineBuffer;
-		WORD arr[80];
-		DWORD  w;
-
-		SetConsoleScreenBufferSize(Buff, coord);
-
-		unsigned short color;
-
-		color=FOREGROUND_BLUE|FOREGROUND_RED|FOREGROUND_GREEN;
-
-
+	if ( ServerScp::g_nDeamonMode )
+		return;
 		
-		SetConsoleTextAttribute(Buff,color);
+	HANDLE Buff = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD coord; coord.X = 80; coord.Y = (short)ServerScp::g_nLineBuffer;
+	WORD arr[80];
+	DWORD  w;
 
-		coord.X = coord.Y = 0;
-		for (int i = 0; i<80; i++)
-			arr[i] = color;
-		
-		for (coord.Y = 0; coord.Y<1024; coord.Y++) WriteConsoleOutputAttribute(Buff, (CONST WORD *)arr,80,coord,(LPDWORD )&w);       // actual number written
+	SetConsoleScreenBufferSize(Buff, coord);
 
-	}
+	unsigned short color;
+
+	color=FOREGROUND_BLUE|FOREGROUND_RED|FOREGROUND_GREEN;
+
+
+	
+	SetConsoleTextAttribute(Buff,color);
+
+	coord.X = coord.Y = 0;
+	for (int i = 0; i<80; i++)
+		arr[i] = color;
+	
+	for (coord.Y = 0; coord.Y<1024; coord.Y++)
+		WriteConsoleOutputAttribute(Buff, (CONST WORD *)arr,80,coord,(LPDWORD )&w);       // actual number written
+
 	#endif
 }
-
-// Define stubs to avoid conditional compilation inside the loop
 
 /*!
 \brief facilitate console control. SysOp keys and localhost controls
@@ -271,13 +260,6 @@ int main(int argc, char *argv[])
 		
 		checkkey();
 		//OnLoop
-
-		if(loopTimeCount >= 1000)
-		{
-			loopTimeCount = 0;
-			loopTime = 0;
-		}
-		loopTimeCount++;
 
 		CheckClientIdle=((SrvParms->inactivitytimeout/2)*SECS)+getClockmSecs();
 
