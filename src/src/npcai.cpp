@@ -50,19 +50,19 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 		switch(whichbit(pc_att->spattack, spattackbit))
 		{
 			case 1:
-				pc_att->beginCasting(pc_def, magic::SPELL_MAGICARROW );
+				pc_att->beginCasting(pc_def, magic::spellMagicArrow );
 				break;
 			case 2:
 				pc_att->beginCasting(pc_def, magic::SPELL_HARM );
 				break;
 			case 3:
-				pc_att->beginCasting(pc_def, magic::SPELL_CLUMSY );
+				pc_att->beginCasting(pc_def, magic::spellClumsy );
 				break;
 			case 4:
-				pc_att->beginCasting(pc_def, magic::SPELL_FEEBLEMIND );
+				pc_att->beginCasting(pc_def, magic::spellFeebleMind );
 				break;
 			case 5:
-				pc_att->beginCasting(pc_def, magic::SPELL_WEAKEN );
+				pc_att->beginCasting(pc_def, magic::spellWeaken );
 				break;
 			case 6:
 				pc_att->beginCasting(pc_def, magic::SPELL_FIREBALL );
@@ -207,19 +207,19 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 	switch(spherespells[sphere][spell])
 	{
 		case 1:
-			pc_att->beginCasting(pc_def, magic::SPELL_MAGICARROW );
+			pc_att->beginCasting(pc_def, magic::spellMagicArrow );
 			break;
 		case 2:
 			pc_att->beginCasting(pc_def, magic::SPELL_HARM );
 			break;
 		case 3:
-			pc_att->beginCasting(pc_def, magic::SPELL_CLUMSY );
+			pc_att->beginCasting(pc_def, magic::spellClumsy );
 			break;
 		case 4:
-			pc_att->beginCasting(pc_def, magic::SPELL_FEEBLEMIND );
+			pc_att->beginCasting(pc_def, magic::spellFeebleMind );
 			break;
 		case 5:
-			pc_att->beginCasting(pc_def, magic::SPELL_WEAKEN );
+			pc_att->beginCasting(pc_def, magic::spellWeaken );
 			break;
 		case 6:
 			pc_att->beginCasting(pc_def, magic::SPELL_FIREBALL );
@@ -255,7 +255,7 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 			pc_att->beginCasting(pc_def, magic::SPELL_PARALYZEFIELD );
 			break;
 		case 17:
-			pc_att->beginCasting(pc_att, magic::SPELL_HEAL );
+			pc_att->beginCasting(pc_att, magic::spellHeal );
 			break;
 		case 18:
 			pc_att->beginCasting(pc_att, magic::SPELL_GREATHEAL );

@@ -16,7 +16,7 @@
 void ParticleFx::initWithSpellMoveEffect( magic::SpellId num )
 {
 	switch( num ) {
-		case magic::SPELL_MAGICARROW:
+		case magic::spellMagicArrow:
 			effect[0]=0x36; effect[1]=0xE4; effect[2]=0x05; effect[3]=0x00; 
 			effect[4]=0x01; effect[5]=0x36; effect[6]=0xe4; effect[7]=0x07; 
 			effect[8]=0x00; effect[9]=0x0b; effect[10]=0xbe; effect[11]=0x0f; 
@@ -389,7 +389,7 @@ void ParticleFx::initWithSpellStatEffects_post( magic::SpellId num)
 
 	switch( num+1 )
 	{
-		case magic::SPELL_NIGHTSIGHT:    
+		case magic::spellNightSight:    
 			te4=0x37; te5=0x6a; te6=0x09; te7=0x20; te8=0x13; te9=0x8f; te10=0xffff0003; 
 			break;        
 		case magic::SPELL_MINDBLAST:   

@@ -151,9 +151,9 @@ bool isDestRepeatable(int num)
 
 	switch(num)
 	{
-		case SPELL_CLUMSY:
-		case SPELL_FEEBLEMIND:
-		case SPELL_WEAKEN:
+		case spellClumsy:
+		case spellFeebleMind:
+		case spellWeaken:
 		case SPELL_AGILITY:
 		case SPELL_STRENGHT:
 		case SPELL_CUNNING:
@@ -199,9 +199,9 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 			dur = src->skill[skMagery]*10;
 			break;
 
-		case SPELL_CLUMSY:
-		case SPELL_FEEBLEMIND:
-		case SPELL_WEAKEN:
+		case spellClumsy:
+		case spellFeebleMind:
+		case spellWeaken:
 		case SPELL_AGILITY:
 		case SPELL_STRENGHT:
 		case SPELL_CUNNING:
@@ -342,7 +342,7 @@ void cTempfx::start()
 				dolight(dest->getClient()->toInt(), worldbrightlevel);
 			break;
 
-		case SPELL_CLUMSY:
+		case spellClumsy:
 			if (dest->dx < m_nMore1)
 				m_nMore1 = dest->dx;
 			dest->dx -= m_nMore1;
@@ -351,7 +351,7 @@ void cTempfx::start()
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_FEEBLEMIND:
+		case spellFeebleMind:
 			if (dest->in < m_nMore1)
 				m_nMore1 = dest->in;
 			dest->in -= m_nMore1;
@@ -359,7 +359,7 @@ void cTempfx::start()
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_WEAKEN:
+		case spellWeaken:
 			if (dest->getStrength() < m_nMore1)
 				m_nMore1 = dest->getStrength();
 			dest->modifyStrength(-m_nMore1);
@@ -651,21 +651,21 @@ void cTempfx::executeExpireCode()
 				dolight(dest->getClient()->toInt(), worldbrightlevel);
 			break;
 
-		case SPELL_CLUMSY:
+		case spellClumsy:
 			if ( ! dest ) return;
 			dest->dx += m_nMore1;
 			if (dest->getClient())
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_FEEBLEMIND:
+		case spellFeebleMind:
 			if ( ! dest ) return;
 			dest->in += m_nMore1;
 			if (dest->getClient())
                 		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
-		case SPELL_WEAKEN:
+		case spellWeaken:
 			if ( ! dest ) return;
 			dest->modifyStrength(m_nMore1);
 			if (dest->getClient())
@@ -914,15 +914,15 @@ void cTempfx::activate()
 			dest->fixedlight = worldbrightlevel;
 			break;
 
-		case SPELL_CLUMSY:
+		case spellClumsy:
 			dest->dx -= m_nMore1;
 			break;
 
-		case SPELL_FEEBLEMIND:
+		case spellFeebleMind:
 			dest->in -= m_nMore1;
 			break;
 
-		case SPELL_WEAKEN:
+		case spellWeaken:
 			dest->modifyStrength(-m_nMore1);
 			break;
 
@@ -998,15 +998,15 @@ void cTempfx::deactivate()
 			dest->fixedlight = 0xFF;
 			break;
 
-		case SPELL_CLUMSY:
+		case spellClumsy:
 			dest->dx += m_nMore1;
 			break;
 
-		case SPELL_FEEBLEMIND:
+		case spellFeebleMind:
 			dest->in += m_nMore1;
 			break;
 
-		case SPELL_WEAKEN:
+		case spellWeaken:
 			dest->modifyStrength(m_nMore1);
 			break;
 

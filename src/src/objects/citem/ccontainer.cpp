@@ -344,9 +344,9 @@ bool cContainer::containsSpell(magic::SpellId spellnum)
 {
 	bool raflag = false;
 
-	if (spellnum==magic::SPELL_REACTIVEARMOUR)
+	if (spellnum==magic::spellReactiveArmour)
 		raflag = true;
-	if ((spellnum>=magic::SPELL_CLUMSY) && (spellnum < magic::SPELL_REACTIVEARMOUR))
+	if ((spellnum>=magic::spellClumsy) && (spellnum < magic::spellReactiveArmour))
 			spellnum = static_cast<magic::SpellId>(static_cast<int>(spellnum)+1);
 	if (raflag)
 		spellnum=static_cast<magic::SpellId>(0);

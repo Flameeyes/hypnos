@@ -228,7 +228,7 @@ bool checkGateCollision( pChar pc )
 \param param spell param
 \param areaspell Is an spell area?
 */
-static inline bool checkTownLimits(SpellId spellnum, pChar pa, pChar pd, int spellflags, int param, bool areaspell = false)
+static inline bool checkTownLimits(SpellId spellnum, pChar pa, pChar pd, uint16_t spellflags, int param, bool areaspell = false)
 {
 	if(!pd) return false;
 
@@ -406,33 +406,33 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 
 	switch( spellnum )
 	{
-		case SPELL_CLUMSY:
+		case spellClumsy:
 			pcto->playSFX( 0x1DF );
 			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
-		case SPELL_CREATEFOOD:
+		case spellCreateFood:
 			pcfrom->playSFX( 0x1E2 );
 			break;
-		case SPELL_FEEBLEMIND:
+		case spellFeebleMind:
 			pcto->playSFX( 0x1E4 );
 			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
-		case SPELL_HEAL:
+		case spellHeal:
 			staticFX(pcto, 0x376A, 0, 10, &spfx );
 			pcto->playSFX( 0x1F2 );
 			break;
-		case SPELL_MAGICARROW:
+		case spellMagicArrow:
 			movingFX(pcfrom, pcto, 0x36E4, 5, 0, true, &mpfx );
 			pcfrom->playSFX( 0x1E5 );
 			break;
-		case SPELL_NIGHTSIGHT:
+		case spellNightSight:
 			pcfrom->playSFX( 0x1E3 );
 			break;
-		case SPELL_REACTIVEARMOUR:
+		case spellReactiveArmour:
 			pcfrom->playSFX( 0x211 );
 			staticFX(pcfrom, 0x373A, 0, 10, &spfx );
 			break;
-		case SPELL_WEAKEN:
+		case spellWeaken:
 			pcto->playSFX( 0x1E6 );
 			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
@@ -637,7 +637,7 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 \param spellflags spell flags
 \param param optional parameter for some spellflags
 */
-static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int param = 0)
+static void damage(pChar pa, pChar pd, SpellId spellnum, uint16_t spellflags = 0, int param = 0)
 {
 	if(!pd) return false;
 
@@ -702,9 +702,6 @@ static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int
 
 /*!
 \brief Check presence of reagents
-\author Xanatar
-\param pc caster
-\param reagents reagents
 */
 bool checkReagents(pChar pc, sReagents reagents)
 {
@@ -827,9 +824,9 @@ static inline int spellTargetType(SpellId spellnum)
 {
 	switch(spellnum) {
 		case SPELL_FIREBALL:
-		case SPELL_CLUMSY:
-		case SPELL_FEEBLEMIND:
-		case SPELL_WEAKEN:
+		case spellClumsy:
+		case spellFeebleMind:
+		case spellWeaken:
 		case SPELL_PARALYZE:
 		case SPELL_DISPEL:
 		case SPELL_CURSE:
@@ -838,12 +835,12 @@ static inline int spellTargetType(SpellId spellnum)
 		case SPELL_AGILITY:
 		case SPELL_STRENGHT:
 		case SPELL_BLESS:
-		case SPELL_HEAL:
+		case spellHeal:
 		case SPELL_GREATHEAL:
 		case SPELL_CURE:
 		case SPELL_ARCHCURE:
 		case SPELL_RESURRECTION:
-		case SPELL_MAGICARROW:
+		case spellMagicArrow:
 		case SPELL_FLAMESTRIKE:
 		case SPELL_EXPLOSION:
 		case SPELL_LIGHTNING:
@@ -854,12 +851,12 @@ static inline int spellTargetType(SpellId spellnum)
 		case SPELL_MANAVAMPIRE:
 			return TARGTYPE_CHAR;
 
-		case SPELL_REACTIVEARMOUR:
+		case spellReactiveArmour:
 		case SPELL_PROTECTION:
 		case SPELL_ARCHPROTECTION:
 		case SPELL_INCOGNITO:
 		case SPELL_REFLECTION:
-		case SPELL_NIGHTSIGHT:
+		case spellNightSight:
 		case SPELL_INVISIBILITY:
 		case SPELL_SUMMON:
 		case SPELL_SUMMON_AIR:
@@ -868,7 +865,7 @@ static inline int spellTargetType(SpellId spellnum)
 		case SPELL_SUMMON_FIRE:
 		case SPELL_SUMMON_WATER:
 		case SPELL_EARTHQUAKE:
-		case SPELL_CREATEFOOD:
+		case spellCreateFood:
 		case SPELL_POLYMORPH:
 			return TARGTYPE_NONE;
 
@@ -1030,7 +1027,7 @@ void consumeReagents( pChar pc, sReagents reags )
 */
 SpellId spellNumberFromScrollId(int id)
 {
-	if (id==0x1F2D) 		return SPELL_REACTIVEARMOUR;			// Reactive Armor
+	if (id==0x1F2D) 		return spellReactiveArmour;			// Reactive Armor
 	if (id>=0x1F2E && id<=0x1F33)	return static_cast<SpellId>(id-0x1F2D-1);	// first circle without weaken
 	if (id>=0x1F34 && id<=0x1F6C)	return static_cast<SpellId>(id-0x1F2D);		// 2 to 8 circle spell scrolls plus weaken
 	return SPELL_INVALID;
@@ -1091,17 +1088,17 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 
 	switch (spellnumber)
 	{
-		case SPELL_CLUMSY:
+		case spellClumsy:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 6;
-			tempfx::add(pa, pd, tempfx::SPELL_CLUMSY, bonus, 0, 0, duration);
+			tempfx::add(pa, pd, tempfx::spellClumsy, bonus, 0, 0, duration);
 			break;
-		case SPELL_FEEBLEMIND:
+		case spellFeebleMind:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 6;
-			tempfx::add(pa, pd, tempfx::SPELL_FEEBLEMIND, bonus, 0, 0, duration);
+			tempfx::add(pa, pd, tempfx::spellFeebleMind, bonus, 0, 0, duration);
 			break;
-		case SPELL_WEAKEN:
+		case spellWeaken:
 			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 6;
-			tempfx::add(pa, pd, tempfx::SPELL_WEAKEN, bonus, 0, 0, duration);
+			tempfx::add(pa, pd, tempfx::spellWeaken, bonus, 0, 0, duration);
 			break;
 		case SPELL_CURSE:
 			duration = int( pa->skill[skMagery] * 0.12 );
@@ -1282,9 +1279,9 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				castStatPumper(spellnumber, dest, src, flags|SPELLFLAG_IGNORERESISTANCE, param);
 			}
 			break;
-		case SPELL_CLUMSY:
-		case SPELL_FEEBLEMIND:
-		case SPELL_WEAKEN:
+		case spellClumsy:
+		case spellFeebleMind:
+		case spellWeaken:
 		case SPELL_CURSE:
 			if (pd) {
 				CHECKDISTANCE(src, pd);
@@ -1311,7 +1308,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					pd->applyPoison(poisonGreater);
 			}
 			break;
-		case SPELL_MAGICARROW:
+		case spellMagicArrow:
 		case SPELL_FIREBALL:
 		case SPELL_FLAMESTRIKE:
 		case SPELL_LIGHTNING:
@@ -1447,7 +1444,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_REACTIVEARMOUR:
+		case spellReactiveArmour:
 			if (nTime==INVALID) nTime = src->skill[nSkill]/15;
 			spellFX(spellnumber, src, src);
 			tempfx::add(src,src, tempfx::SPELL_REACTARMOR, 0, 0, 0, nTime);
@@ -1624,7 +1621,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_HEAL:
+		case spellHeal:
 		case SPELL_GREATHEAL:
 			if ( !pd ) pd = src;
 			if (pd) {
@@ -1634,9 +1631,9 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					damage(src, pd, spellnumber, flags|SPELLFLAG_DONTCRIMINAL, param);
 				} else {
 					if (nValue==INVALID) {
-						(spellnumber==SPELL_HEAL) ? nValue = (1+src->skill[nSkill]/100) : nValue = (src->skill[nSkill]/30);
+						(spellnumber==spellHeal) ? nValue = (1+src->skill[nSkill]/100) : nValue = (src->skill[nSkill]/30);
 					/*} else if ((nValue==INVALID)&&(src==NULL)) {
-						nValue = (spellnumber==SPELL_HEAL) ? 5 : 15;*/
+						nValue = (spellnumber==spellHeal) ? 5 : 15;*/
 					}
 					pd->hp = min(pd->hp+nValue, pd->getStrength());
 					src->helpStuff(pd);
@@ -1681,7 +1678,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			break;
 
-		case SPELL_NIGHTSIGHT:
+		case spellNightSight:
 			if (pd==NULL) pd = src;
                         CHECKDISTANCE(src, pd);
                         if (pd!=NULL) {
@@ -1815,7 +1812,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			} // if src & pi valids
 			break;
 
-		case SPELL_CREATEFOOD:
+		case spellCreateFood:
 			{ // Luxor
 			P_MENU menu = Menus.insertMenu( new cCreateFoodMenu( src ) );
 			if(!menu) return;
@@ -2069,11 +2066,11 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	pc->delTempfx( tempfx::SPELL_STRENGHT );
 	pc->delTempfx( tempfx::SPELL_CUNNING );
 	pc->delTempfx( tempfx::SPELL_AGILITY );
-	pc->delTempfx( tempfx::SPELL_FEEBLEMIND );
-	pc->delTempfx( tempfx::SPELL_CLUMSY );
+	pc->delTempfx( tempfx::spellFeebleMind );
+	pc->delTempfx( tempfx::spellClumsy );
 	pc->delTempfx( tempfx::SPELL_CURSE );
 	pc->delTempfx( tempfx::SPELL_BLESS);
-	pc->delTempfx( tempfx::SPELL_WEAKEN );
+	pc->delTempfx( tempfx::spellWeaken );
 
 
 	if ( pc->getTempfx( tempfx::SPELL_POLYMORPH ) != NULL && data == pc->getOldId() ) {
@@ -2093,8 +2090,8 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 			pc->addTempfx( *pc, tempfx::SPELL_CURSE, 0, 15, 20, polyduration );
 			break;
 		case 0xd0:
-			pc->delTempfx( tempfx::SPELL_WEAKEN );
-			pc->addTempfx( *pc, tempfx::SPELL_WEAKEN, 20, 0, 0, polyduration );
+			pc->delTempfx( tempfx::spellWeaken );
+			pc->addTempfx( *pc, tempfx::spellWeaken, 20, 0, 0, polyduration );
 			break;
 		case 0x9:
 			pc->addTempfx( *pc, tempfx::SPELL_BLESS, 10, 10, 10, polyduration );
@@ -2119,7 +2116,7 @@ void cPolymorphMenu::handleButton( pClient ps, cClientPacket* pkg  )
 			break;
 		case 0x32:
 			pc->addTempfx( *pc, tempfx::SPELL_STRENGHT, 10, 0, 0, polyduration );
-			pc->addTempfx( *pc, tempfx::SPELL_FEEBLEMIND, 20, 0, 0, polyduration );
+			pc->addTempfx( *pc, tempfx::spellFeebleMind, 20, 0, 0, polyduration );
 			break;
 	}
 
@@ -2163,7 +2160,7 @@ void cCreateFoodMenu::handleButton( pClient ps, cClientPacket* pkg  )
 	uint16_t data = ( iter!=iconData.end() )? iter->second : INVALID;
 
 	item::CreateFromScript( data, pc->getBackpack() );
-	spellFX( SPELL_CREATEFOOD, pc, pc );
+	spellFX( spellCreateFood, pc, pc );
 }
 
 /*!

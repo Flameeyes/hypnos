@@ -249,9 +249,9 @@ namespace tempfx {
 	enum {
 		SPELL_PARALYZE = 1,
 		SPELL_LIGHT,
-		SPELL_CLUMSY,
-		SPELL_FEEBLEMIND,
-		SPELL_WEAKEN,
+		spellClumsy,
+		spellFeebleMind,
+		spellWeaken,
 		SPELL_AGILITY,
 		SPELL_CUNNING,
 		SPELL_STRENGHT,

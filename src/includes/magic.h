@@ -115,14 +115,14 @@ namespace magic {
 	*/
 	enum SpellId {
 		// Level 1
-		SPELL_CLUMSY = 0,
-		SPELL_CREATEFOOD,
-		SPELL_FEEBLEMIND,
-		SPELL_HEAL,
-		SPELL_MAGICARROW,
-		SPELL_NIGHTSIGHT,
-		SPELL_REACTIVEARMOUR,
-		SPELL_WEAKEN,
+		spellClumsy = 0,
+		spellCreateFood,
+		spellFeebleMind,
+		spellHeal,
+		spellMagicArrow,
+		spellNightSight,
+		spellReactiveArmour,
+		spellWeaken,
 		// Level 2
 		SPELL_AGILITY,
 		SPELL_CUNNING,
