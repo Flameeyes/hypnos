@@ -14,51 +14,70 @@
 #include "structs.h"
 #include "speech.h"
 
-namespace nPackets {
+/*!
+\author Flameeyes
+\brief Packet to be sent
+*/
+class cPacketSend
+{
+protected:
+	uint8_t *buffer;	//!< Pointer to the buffer
+	uint16_t length;	//!< Length of the buffer
 
-	/*!
-	\author Flameeyes
-	\brief Packet to be sent
-	*/
-	class cPacketSend
+	cPacketSend(uint8_t *aBuffer, uint16_t aLenght)
+	{ buffer = aBuffer; length = aLenght; }
+
+public:
+	inline virtual ~cPacketSend()
+	{ delete[] buffer; }
+
+	//! Prepare the buffer to be sent
+	virtual void prepare() = 0;
+
+	//! Prepare the packet if not prepared and return the buffer
+	inline const uint8_t *getBuffer()
 	{
-	protected:
-		uint8_t *buffer;	//!< Pointer to the buffer
-		uint16_t length;	//!< Length of the buffer
-	
-		cPacketSend(uint8_t *aBuffer, uint16_t aLenght)
-		{ buffer = aBuffer; length = aLenght; }
-	
-	public:
-		inline virtual ~cPacketSend()
-		{ delete[] buffer; }
-	
-		//! Prepare the buffer to be sent
-		virtual void prepare() = 0;
-	
-		//! Prepare the packet if not prepared and return the buffer
-		inline const uint8_t *getBuffer()
-		{
-			if ( ! length )
-				prepare();
-	
-			return buffer;
-		}
-	
-		//! Prepare the packet if not prepared and return the length of the buffer
-		inline const uint16_t getLength()
-		{
-			if ( ! length )
-				prepare();
-	
-			return length;
-		}
-	
-		virtual void fixForClient(ClientType ct)
-		{ }
-	};
-	
+		if ( ! length )
+			prepare();
 
+		return buffer;
+	}
+
+	//! Prepare the packet if not prepared and return the length of the buffer
+	inline const uint16_t getLength()
+	{
+		if ( ! length )
+			prepare();
+
+		return length;
+	}
+
+	virtual void fixForClient(ClientType ct)
+	{ }
+};
+
+/*!
+\brief Base class for a received packet
+\author Flameeyes
+*/
+class cPacketReceive
+{
+protected:
+
+	uint8_t *buffer;	//!< Pointer to the buffer (needed in all derived classes)
+	uint16_t length;	//!< Length of the buffer
+public:
+	inline cPacketReceive(uint8_t *buf, uint16_t len) :
+		buffer(buf), length(len)
+	{ } 
+	
+	virtual ~cPacketReceive() = 0;
+	
+	static pPacketReceive fromBuffer(uint8_t *buffer, uint16_t length);
+	virtual bool execute(pClient client) = 0;
+};
+
+namespace nPackets {
 	namespace Sent {	
 		/*!
 		\brief Status window
@@ -881,27 +900,6 @@ namespace nPackets {
 		
 	} // Sent
 	
-	/*!
-	\brief Base class for a received packet
-	\author Flameeyes
-	*/
-	class cPacketReceive
-	{
-	protected:
-	
-		uint8_t *buffer;	//!< Pointer to the buffer (needed in all derived classes)
-		uint16_t length;	//!< Length of the buffer
-	public:
-		inline cPacketReceive(uint8_t *buf, uint16_t len) :
-			buffer(buf), length(len)
-		{ } 
-		
-		virtual ~cPacketReceive() = 0;
-		
-		static pPacketReceive fromBuffer(uint8_t *buffer, uint16_t length);
-		virtual bool execute(pClient client) = 0;
-	};
-
 	/*!
 	\brief Received packet
 	\author Chronodt
