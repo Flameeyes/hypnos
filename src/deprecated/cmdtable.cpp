@@ -2253,7 +2253,7 @@ void target_hide( pClient client, pTarget t )
 	}
 	else {
 		pc->setPermaHidden(true);
-		staticeffect3( Location(pcpos.x+1, pcpos.y+1, pcpos.z+10), 0x3709, 9, 25, 0);
+		locationFX( Location(pcpos.x+1, pcpos.y+1, pcpos.z+10), 0x3709, 9, 25, false);
 		pc->playSFX(0x0208);
 		tempfx::add(pc, pc, tempfx::GM_HIDING, 1, 0, 0);
 	}
@@ -2275,7 +2275,7 @@ void target_unhide( pClient client, pTarget t )
 	}
 	else {
 		pc->setPermaHidden(false);
-		staticeffect3( Location(pcpos.x+1, pcpos.y+1, pcpos.z+10), 0x3709, 9, 25, 0);
+		locationFX( Location(pcpos.x+1, pcpos.y+1, pcpos.z+10), 0x3709, 9, 25, false);
 		pc->playSFX(0x0208);
 		tempfx::add(pc, pc, tempfx::GM_UNHIDING, 1, 0, 0);
 	}
@@ -2283,54 +2283,54 @@ void target_unhide( pClient client, pTarget t )
 
 void target_fullstats( pClient client, pTarget t )
 {
-    pChar pc = cSerializable::findCharBySerial( t->getClicked() );
-    if (pc)
-    {
-        pc->playSFX(0x01F2);
-	pc->staticFX(0x376A, 9, 6);
-        pc->mn=pc->in;
-        pc->hp=pc->getStrength();
-        pc->stm=pc->dx;
-        pc->updateStats(0);
-        pc->updateStats(1);
-        pc->updateStats(2);
-    }
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
+	if (pc)
+	{
+		pc->playSFX(0x01F2);
+		staticFX(pc, 0x376A, 9, 6);
+		pc->mn=pc->in;
+		pc->hp=pc->getStrength();
+		pc->stm=pc->dx;
+		pc->updateStats(0);
+		pc->updateStats(1);
+		pc->updateStats(2);
+	}
 }
 
 void target_heal( pClient client, pTarget t )
 {
-    pChar pc = cSerializable::findCharBySerial( t->getClicked() );
-    if (pc)
-    {
-        pc->playSFX(0x01F2);
-	pc->staticFX(0x376A, 9, 6);
-        pc->hp=pc->getStrength();
-        pc->updateStats(0);
-    }
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
+	if (pc)
+	{
+		pc->playSFX(0x01F2);
+		staticFX(pc, 0x376A, 9, 6);
+		pc->hp=pc->getStrength();
+		pc->updateStats(0);
+	}
 }
 
 void target_mana( pClient client, pTarget t )
 {
-    pChar pc = cSerializable::findCharBySerial( t->getClicked() );
-    if (pc)
-    {
-        pc->playSFX(0x01F2);
-	pc->staticFX(0x376A, 9, 6);
-        pc->mn=pc->in;
-        pc->updateStats(1);
-    }
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
+	if (pc)
+	{
+		pc->playSFX(0x01F2);
+		staticFX(pc, 0x376A, 9, 6);
+		pc->mn=pc->in;
+		pc->updateStats(1);
+	}
 }
 
 void target_stamina( pClient client, pTarget t )
 {
-    pChar pc = cSerializable::findCharBySerial( t->getClicked() );
-    if( pc )
-    {
-        pc->playSFX( 0x01F2);
-	pc->staticFX(0x376A, 9, 6);
-        pc->stm=pc->dx;
-        pc->updateStats(2);
-    }
+	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
+	if( pc )
+	{
+		pc->playSFX( 0x01F2);
+		staticFX(pc, 0x376A, 9, 6);
+		pc->stm=pc->dx;
+		pc->updateStats(2);
+	}
 }
 
 void target_tiledata( pClient client, pTarget t )
@@ -2429,7 +2429,7 @@ void target_kill( pClient client, pTarget t )
         if(!pc->dead)
         {
 			pc->attackerserial=pc->getSerial();
-			pc->boltFX( true );
+			boltFX(pc, true );
 			pc->playSFX( 0x0029 );
 			pc->Kill();
         }
@@ -2441,10 +2441,8 @@ void target_kill( pClient client, pTarget t )
 
 void target_bolt( pClient client, pTarget t )
 {
-    pChar pc=cSerializable::findCharBySerial( t->getClicked() );
-	if( pc ) {
-        pc->boltFX(true);
-    }
+	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
+	if( pc ) boltFX(pc, true);
 }
 
 void target_resurrect( pClient client, pTarget t )

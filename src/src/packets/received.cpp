@@ -137,9 +137,9 @@ void nPackets::Sent::ObjectInformation::prepare()
 	buffer[offset +2]=0;
 	If (pc->isGM() && (pi->visible ==1 || pi->visible==2)) buffer[offset +2]|=0x80;
 
-	if (pi->magic==1 || pc->canAllMove()) itmput[offset +2]|=0x20; //item can be moved even if normally cannot
+	if (pi->magic==1 || pc->canAllMove()) buffer[offset +2]|=0x20; //item can be moved even if normally cannot
 
-	if ((pi->magic==3 || pi->magic==4) && pc == pi->getOwner() ) itmput[offset +2]|=0x20; //Item can be moved by owner for those "magic levels"
+	if ((pi->magic==3 || pi->magic==4) && pc == pi->getOwner() ) buffer[offset +2]|=0x20; //Item can be moved by owner for those "magic levels"
 
 	length = offset +4;
 	ShortToCharPtr(length, buffer +1);
@@ -185,9 +185,9 @@ void nPackets::Sent::LSDObject::prepare()
 	buffer[offset +2]=0;
 	if (pc->isGM() && (pi->visible ==1 || pi->visible==2)) buffer[offset +2]|=0x80;
 
-	if (pi->magic==1 || pc->canAllMove()) itmput[offset +2]|=0x20; //item can be moved even if normally cannot
+	if (pi->magic==1 || pc->canAllMove()) buffer[offset +2]|=0x20; //item can be moved even if normally cannot
 
-	if ((pi->magic==3 || pi->magic==4) && pc == pi->getOwner()) itmput[offset +2]|=0x20; //Item can be moved by owner for those "magic levels"
+	if ((pi->magic==3 || pi->magic==4) && pc == pi->getOwner()) buffer[offset +2]|=0x20; //Item can be moved by owner for those "magic levels"
 
 	length = offset +4;
 	ShortToCharPtr(length, buffer +1);
@@ -1063,15 +1063,15 @@ void nPackets::Sent::SecureTrading::prepare()
 \note packet 0x70
 */
 
-void nPackets::Sent::GraphicalEffect()
+void nPackets::Sent::GraphicalEffect::prepare()
 {
 	length = 28;
 	buffer = new uint8_t[28];
 	buffer[0] = 0x70;
 	buffer[1] = type;
-	LongToCharPtr(src->getSerial(), buffer +2);
-	LongToCharPtr(dst->getSerial(), buffer +6);
-	ShortToCharPtr(model_id, buffer + 10);
+	LongToCharPtr(src ? src->getSerial() : 0, buffer +2);
+	LongToCharPtr(dst ? dst->getSerial() : 0, buffer +6);
+	ShortToCharPtr(effect, buffer + 10);
 	ShortToCharPtr(src_pos.x, buffer + 12);
 	ShortToCharPtr(src_pos.y, buffer + 14);
 	buffer[16]=src_pos.z;

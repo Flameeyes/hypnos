@@ -54,7 +54,7 @@ void SpawnGuard(pChar pc, pChar pc_i, int x, int y, signed char z)
 		  pc_c->summontimer=(getclock()+(SECS*25));
 
 		  pc_c->playSFX(0x01FE);
-		  pc_c->staticFX(0x372A, 9, 6);
+		  staticFX(pc_c, 0x372A, 9, 6);
 
 		  pc_c->teleport();
 		  pc_c->talkAll("Thou shalt regret thine actions, swine!",1);

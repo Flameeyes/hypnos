@@ -160,16 +160,16 @@ enum Karma {
 enum NotEquippableReason {
 	nerUnknown = -1,		//!< unknown reason
 	nerEquipOk = 0,			//!< item can be equipped
-        nerNotEquippableItem,		//!< item is not convertible to a cEquippable
-        nerNotHumanBody,		//!< char cannot equip item because it is not human
-        nerInsufficientStrength,	//!< Insufficient strength
-        nerInsufficientDexterity,	//!< Insufficient dexterity
+	nerNotEquippableItem,		//!< item is not convertible to a cEquippable
+	nerNotHumanBody,		//!< char cannot equip item because it is not human
+	nerInsufficientStrength,	//!< Insufficient strength
+	nerInsufficientDexterity,	//!< Insufficient dexterity
 	nerInsufficientIntelligence,	//!< Insufficient intelligence
-        nerInsufficientSkil1,		//!< Insufficient skill 1
-        nerInsufficientSkil2,		//!< Insufficient skill 2
-        nerInsufficientSkil3,		//!< Insufficient skill 3
-        nerCharDead,			//!< Char is dead. Dead people cannot wear anything :D
-        nerMaleEquippingFemaleArmor	//!< It wouldn't fit anyway :D
+	nerInsufficientSkil1,		//!< Insufficient skill 1
+	nerInsufficientSkil2,		//!< Insufficient skill 2
+	nerInsufficientSkil3,		//!< Insufficient skill 3
+	nerCharDead,			//!< Char is dead. Dead people cannot wear anything :D
+	nerMaleEquippingFemaleArmor	//!< It wouldn't fit anyway :D
 
 };
 
@@ -228,8 +228,8 @@ enum WeatherType {
 enum EffectType {
 	etBolt = 0,	//!< effect travels from source to target
 	etLightning,	//!< lighning effect at source
-	etStayAtTarget,	//!< effect stays at source xyz
-	etStayAtObject	//!< effect follows source
+	etStayInPlace,	//!< effect stays at source xyz
+	etFollowObject	//!< effect follows source
 }
 
 #endif

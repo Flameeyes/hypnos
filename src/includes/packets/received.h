@@ -972,8 +972,8 @@ namespace nPackets {
 
 			EffectType type;		//!< movement type
 			pSerializable src, dst;		//!< source and destination of effect
-			uint16_t model_id;		//!< visual id of effect
-			sLocation src_pos, des_pos;	//!< souce and destination position of effect
+			uint16_t effect;		//!< visual id of effect
+			sLocation src_pos, dst_pos;	//!< souce and destination position of effect
 			uint8_t speed;			//!< speed of effect (SPPED OF ANIMATION)
 			uint8_t duration;		//!< travel speed of effect
 			bool fixeddir;  		//!< if true animation direction does not change during effect
@@ -981,15 +981,27 @@ namespace nPackets {
 
 
 		public:
-			inline GraphicalEffect(EffectType aType, pSerializable aSrc, pSerializable aDst, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
-				cPacketSend(NULL, 0), type(aType), src(aSrc), dst(aDst), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
+			inline GraphicalEffect(EffectType aType, pSerializable aSrc, pSerializable aDst, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
+				cPacketSend(NULL, 0), type(aType), src(aSrc), dst(aDst), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
 			{
-				src_pos = src->getPosition();
-				des_pos = (dst) ? dst->getPosition() : sLocation(0,0,0);
+				src_pos = src->getWorldPosition();
+				dst_pos = (dst) ? dst->getWorldPosition() : sLocation(0,0,0);
 			}
 
-			inline GraphicalEffect(EffectType aType, sLocation aSrc_pos, sLocation aDes_pos, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
-				cPacketSend(NULL, 0), type(aType), src(NULL), dst(NULL), src_pos(aSrc_pos), des_pos(aDes_pos), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
+			inline GraphicalEffect(EffectType aType, pSerializable aSrc, sLocation aDst_pos, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
+				cPacketSend(NULL, 0), type(aType), src(aSrc), dst(NULL), dst_pos(aDst_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
+			{
+				src_pos = src->getWorldPosition();
+			}
+
+			inline GraphicalEffect(EffectType aType, sLocation aSrc_pos, pSerializable aDst, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
+				cPacketSend(NULL, 0), type(aType), src(NULL), dst(aDst), src_pos(aSrc_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
+			{
+				dst_pos = dst->getWorldPosition();
+			}
+
+			inline GraphicalEffect(EffectType aType, sLocation aSrc_pos, sLocation aDst_pos, uint16_t aEffect, uint8_t aSpeed, uint8_t aDuration, bool aFixedDir, bool aExplode) :
+				cPacketSend(NULL, 0), type(aType), src(NULL), dst(NULL), src_pos(aSrc_pos), dst_pos(aDst_pos), effect(aEffect), speed(aSpeed), duration(aDuration), fixeddir(aFixedDir), explode(aExplode)
 			{ }
 		
 			void prepare();

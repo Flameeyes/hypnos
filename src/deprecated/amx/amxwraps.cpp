@@ -2099,7 +2099,7 @@ NATIVE (_send_boltfx)
 {
 	pChar pc = pointers::findCharBySerial(params[1]);
 	VALIDATEPCR(pc, INVALID);
-	pc->boltFX();
+	boltFX(pc, false);
 	return 0;
 }
 
@@ -2836,7 +2836,7 @@ NATIVE(_send_staticfx)
 //Magic->doStaticEffect(params[1], params[2]);
     pChar pc = pointers::findCharBySerial(params[1]);
     VALIDATEPCR(pc, INVALID);
-    pc->staticFX(params[2], 0, 10, NULL);
+    staticFX(pc, params[2], 0, 10, NULL);
     return 0;
 }
 

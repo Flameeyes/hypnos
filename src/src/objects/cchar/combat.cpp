@@ -341,7 +341,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
                 		pc_def->damage(weapon->auxdamage, weapon->auxdamagetype);
             		}
 			pc_def->damage(int(damage - (damage/100.0)*20.0), dmgtype);
-			pc_def->staticFX(0x374A, 0, 15);
+			staticFX(pc_def, 0x374A, 0, 15);
 		} else {
 			pc_def->damage(damage, dmgtype);
 		        if ( weapon && weapon->auxdamage ) {
@@ -568,18 +568,18 @@ void cChar::doCombat()
 					if (weapon->isBow())
 					{
 						delItems(0x0F3F, 1);
-						movingeffect3( getSerial(), targserial, 0x0F, 0x42, 0x08, 0x00, 0x00,0,0,0,0);
+						movingFX( this, target, 0x0F42, 0x08, 0x00, false);
 					}
 					else
 					{
 						delItems(0x1BFB, 1);
-						movingeffect3( getSerial(), targserial, 0x1B, 0xFE, 0x08, 0x00, 0x00,0,0,0,0);
+						movingFX( this, target, 0x1BFE, 0x08, 0x00, false);
 					}
 				}
 				else   //new ammo system
 				{
 					(getBackpack())->DeleteAmountByID(1, weapon->ammo);
-					movingeffect3( getSerial(), targserial, (weapon->ammoFx>>8)&0xFF, weapon->ammoFx & 0xFF, 0x08, 0x00, 0x00,0,0,0,0);
+					movingFX( this, target, weapon->ammoFx, 0x08, 0x00, false);
 				}
 
 			if ( dist < 2 || fightskill == skArchery )

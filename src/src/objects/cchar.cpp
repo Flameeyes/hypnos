@@ -1395,35 +1395,35 @@ void cChar::hideBySkill()
 	pClient client = (ppc = dynamic_cast<pPC>(this))? ppc->getClient() : NULL;
 
 	if ( pc_att && hasInRange(pc_att) )
-    	{
-    		if (client)
-        		client->sysmessage("You cannot hide while fighting.");
-        	return;
-    	}
+	{
+		if (client)
+			client->sysmessage("You cannot hide while fighting.");
+		return;
+	}
 
-    	if ( IsHidden() )
-    	{
-    		if (client)
-        		client->sysmessage("You are already hidden");
-        	return;
-    	}
+	if ( IsHidden() )
+	{
+		if (client)
+			client->sysmessage("You are already hidden");
+		return;
+	}
 
-    	if ( !checkSkill(HIDING, 0, 1000) )
-    	{
-    		if (client)
-        		sysmessage("You are unable to hide here.");
-        	return;
-    	}
+	if ( !checkSkill(HIDING, 0, 1000) )
+	{
+		if (client)
+			sysmessage("You are unable to hide here.");
+		return;
+	}
 
-    	if ( IsGM() )
-    	{
-		staticFX(0x3709, 9, 25);
-        	playSFX( 0x0208 );
-        	tempfx::add(this, this, tempfx::GM_HIDING, 1, 0, 0);
-        	// immediate hiding overwrites the effect.
-        	// so lets hide after 4 secs.
-        	// 1 sec works fine now so changed to this.
-        	return;
+	if ( IsGM() )
+	{
+		staticFX(this, 0x3709, 9, 25);
+		playSFX( 0x0208 );
+		tempfx::add(this, this, tempfx::GM_HIDING, 1, 0, 0);
+		// immediate hiding overwrites the effect.
+		// so lets hide after 4 secs.
+		// 1 sec works fine now so changed to this.
+		return;
 	}
 
 	if (client)

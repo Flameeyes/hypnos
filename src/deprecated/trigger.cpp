@@ -521,7 +521,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 			break;
 		case 'B':
 			if (!(strcmp("BOLT", cmd))) { // bolts the player
-				m_pcCurrChar->boltFX(false);
+				boltFX(m_pcCurrChar, false);
 			}
 			break;
 
@@ -773,7 +773,7 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 				if (m_pi==0) m_pi = m_piAdded;
 				if (m_piAdded==0) STOPTRIGGER;
 			} else if (!(strcmp("IDFX", cmd))) { // Makes an effect at players by ID
-				m_pcCurrChar->boltFX(false);
+				boltFX(m_pcCurrChar, false);
 				// TODO IDFX command needs to be changed
 			} else if (!(strcmp("INT", cmd))) { // Do math on players intelligence
 				int params[2];
@@ -906,10 +906,10 @@ void cTriggerContext::parseLine(char* cmd, char* par)
 				}
 			} else if (!(strcmp("NPCBOLT", cmd))) { // bolts the player
 				if ( m_pcNpc==0) return;
-				m_pcNpc->boltFX(false);
+				boltFX(m_pcNpc, false);
 			} else if (!(strcmp("NEWNPCBOLT", cmd))) { // bolts the player
 				if ( m_pcAdded==0) return;
-				m_pcAdded->boltFX(false);
+				boltFX(m_pcAdded, false);
 			} else if (!(strcmp("NPCACT", cmd))) { // Make npc perform an action
 				if (m_pcNpc!=0) m_pcNpc->playAction(hex2num(par));
 			} else if (!(strcmp("NADD", cmd))) {  // Add a NPC at given location - AntiChrist -- Fixed here by Magius(CHE) §

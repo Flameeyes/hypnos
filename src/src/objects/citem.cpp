@@ -439,15 +439,15 @@ void cItem::explode(pClient client)
 	si.fillItemsNearXYZ( getPosition(), 5, true );
 	for( si.rewind(); !si.isEmpty(); si++ )
 	{
-		pItem p_nearbie=si.getItem();
-		if( p_nearbie && p_nearbie->type == ITYPE_POTION && p_nearbie->morey == 3)
+		pItem p_nearby=si.getItem();
+		if( p_nearby && p_nearby->type == ITYPE_POTION && p_nearby->morey == 3)
 		{ //It's an explosion potion!
-			p_nearbie->explode(s);
+			p_nearby->explode(s);
 		}
 	}
 	//End Luxor recursive explosions
 
-	staticeffect2(this, 0x36, 0xB0, 0x10, 0x80, 0x00);
+	staticFX(this, 0x36b0,0x10,0x80);
 	playSFX(0x0207);
 
 	len=morex/250; //4 square max damage at 100 alchemy

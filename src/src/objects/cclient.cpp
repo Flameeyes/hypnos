@@ -785,7 +785,6 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 \param loc position to drop item at (eventually in cont)
 \param cont container into which *pi has to be dropped (NULL = world)
 */
-
 void cClient::drop_item(pItem pi, sLocation &loc, pSerializable dest) // Item is dropped
 {
 
@@ -803,7 +802,7 @@ void cClient::drop_item(pItem pi, sLocation &loc, pSerializable dest) // Item is
 		else sysmessage("blocked: %04x %02x %02x %01x %04x i-name: invalid item EVILDRAG-old: %i\n",pi->getSerial(), loc->x, loc->y, loc->z, cont ? cont->getSerial(): -1, evilDrag);
 	#endif
 
-		if  ( (loc->x==-1) && (loc->y==-1) && (loc->z==0)  && (evilDrag) )
+		if  ( (loc.x==0xffff) && (loc.y==0xffff) && (loc.z==0)  && (evilDrag) )
 		{
 			evilDrag=false;
 		#ifdef debug_dragg
@@ -812,7 +811,7 @@ void cClient::drop_item(pItem pi, sLocation &loc, pSerializable dest) // Item is
 			return;
 		}	 // swallow! note: previous evildrag !
 
-		else if ( (loc->x==-1) && (loc->y==-1) && (loc->z==0)  && (!evilDrag) )
+		else if ( (loc.x==0xffff) && (loc.y==0xffff) && (loc.z==0)  && (!evilDrag) )
 		{
 	#ifdef debug_dragg
 			sysmessage("Bounce & Swallow\n");
@@ -820,7 +819,7 @@ void cClient::drop_item(pItem pi, sLocation &loc, pSerializable dest) // Item is
 			item_bounce6( pi);
 			return;
 		}
-		else if ( ( (loc->x!=-1) && (loc->y!=-1) &&  !cont) || ( (pi->getSerial()>=0x40000000) && (cont && cont->getSerial()>=0x40000000) ) )
+		else if ( ( (loc.x!=0xffff) && (loc.y!=0xffff) &&  !cont) || ( (pi->getSerial()>=0x40000000) && (cont && cont->getSerial()>=0x40000000) ) )
 			evilDrag=true; // calc new evildrag value
 		     else evilDrag=false;
 		}
@@ -1188,7 +1187,7 @@ void cClient::dump_item(pItem pi, sLocation &loc) // Item is dropped on the grou
 	if( pi->getId()==0x1BC3 || pi->getId()==0x1BC4 )
 	{
 		pc->playSFX( 0x01FE);
-		pc->staticFX(0x372A, 9, 6);
+		staticFX(pc, 0x372A, 9, 6);
 		pi->Delete();
 		dragItem = NULL;
 		resetDragging();

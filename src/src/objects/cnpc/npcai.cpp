@@ -114,7 +114,7 @@ void cNPC::checkAI()
 
 				playAction(0x10);
 				pj->resurrect();
-				pj->staticFX(0x376A, 1, 0, NULL);
+				staticFX(pj, 0x376A, 1, 0, NULL);
 				switch(RandomNum(0, 4))
 				{
 					case 0: talkAll("Thou art dead, but 'tis within my power to resurrect thee. Live!", 1); break;
@@ -242,7 +242,7 @@ void cNPC::checkAI()
 				}
 				playAction(0x10);
 				pj->resurrect();
-				pj->staticFX(0x3709, 1, 0, NULL);
+				staticFX(pj, 0x3709, 1, 0, NULL);
 				switch (RandomNum(0,4))
 				{
 					case 0:	talkAll("Fellow minion of Mondain, Live!!", 1); break;

@@ -103,7 +103,7 @@ void cPC::heartbeat()
 		if ( TIMEOUT( smokedisplaytimer ) )
 		{
 			smokedisplaytimer = getclock() + 5 * SECS;
-			staticFX(0x3735, 0, 30);
+			staticFX(this, 0x3735, 0, 30);
 			playSFX( 0x002B );
 			switch( RandomNum( 0, 6 ) )
 			{
@@ -333,7 +333,7 @@ void cPC::deadAttack (pChar victim)
 				{//let's resurrect him!
 					victim->playAction(0x10);
 					resurrect();
-					victim->staticFX(0x376A, 9, 6);
+					staticFX(victim, 0x376A, 9, 6);
 					switch(RandomNum(0, 4))
 					{
 					case 0: victim->talkAll("Thou art dead, but 'tis within my power to resurrect thee.  Live!", false); break;
@@ -361,7 +361,7 @@ void cPC::deadAttack (pChar victim)
 				{//let's resurrect him!
 					victim->playAction(0x10);
 					resurrect();
-					victim->staticFX(0x3709, 9, 25); //Flamestrike effect
+					staticFX(victim, 0x3709, 9, 25); //Flamestrike effect
 					switch(rand()%5)
 					{
 						case 0: victim->talkAll("Fellow minion of Mondain, Live!!", false); break;

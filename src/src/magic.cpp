@@ -175,7 +175,7 @@ bool checkGateCollision( pChar pc )
 	pc->MoveTo( pgate->morex, pgate->morey, pgate->morez );
 	pc->teleport();
 	pc->playSFX( 0x01FE );
-	pc->staticFX( 0x372A, 0x09, 0x06 );
+	staticFX(pc, 0x372A, 0x09, 0x06 );
 
 	return true;
 }
@@ -268,7 +268,7 @@ static bool checkReflection(pChar &pa, pChar &pd)
 
 	if ( pd->hasReflection() ) {
 		pd->setReflection(false);
-		pd->staticFX(0x373A, 0, 15);
+		staticFX(pd, 0x373A, 0, 15);
 		qswap(pa, pd);
 		return !checkReflection(pa, pd);
 	}
@@ -385,21 +385,21 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 	{
 		case SPELL_CLUMSY:
 			pcto->playSFX( 0x1DF );
-			pcto->staticFX( 0x374A, 0, 10, &spfx );
+			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
 		case SPELL_CREATEFOOD:
 			pcfrom->playSFX( 0x1E2 );
 			break;
 		case SPELL_FEEBLEMIND:
 			pcto->playSFX( 0x1E4 );
-			pcto->staticFX( 0x374A, 0, 10, &spfx );
+			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
 		case SPELL_HEAL:
-			pcto->staticFX( 0x376A, 0, 10, &spfx );
+			staticFX(pcto, 0x376A, 0, 10, &spfx );
 			pcto->playSFX( 0x1F2 );
 			break;
 		case SPELL_MAGICARROW:
-			pcfrom->movingFX( pcto, 0x36E4, 5, 0, true, &mpfx );
+			movingFX(pcfrom, pcto, 0x36E4, 5, 0, true, &mpfx );
 			pcfrom->playSFX( 0x1E5 );
 			break;
 		case SPELL_NIGHTSIGHT:
@@ -407,39 +407,39 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			break;
 		case SPELL_REACTIVEARMOUR:
 			pcfrom->playSFX( 0x211 );
-			pcfrom->staticFX( 0x373A, 0, 10, &spfx );
+			staticFX(pcfrom, 0x373A, 0, 10, &spfx );
 			break;
 		case SPELL_WEAKEN:
 			pcto->playSFX( 0x1E6 );
-			pcto->staticFX( 0x374A, 0, 10, &spfx );
+			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
 		case SPELL_AGILITY:
 			pcto->playSFX( 0x1E7 );
-			pcto->staticFX( 0x375A, 0, 10, &spfx );
+			staticFX(pcto, 0x375A, 0, 10, &spfx );
 			break;
 		case SPELL_CUNNING:
 			pcto->playSFX( 0x1EB );
-			pcto->staticFX( 0x375A, 0, 10, &spfx );
+			staticFX(pcto, 0x375A, 0, 10, &spfx );
 			break;
 		case SPELL_CURE:
 			pcto->playSFX( 0x1E0 );
-			pcto->staticFX( 0x376A, 0, 10, &spfx );
+			staticFX(pcto, 0x376A, 0, 10, &spfx );
 			break;
 		case SPELL_HARM:
 			pcto->playSFX( 0x1F1 );
-			pcto->staticFX( 0x374A, 0, 10, &spfx );
+			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
 		case SPELL_PROTECTION:
 			pcto->playSFX( 0x1ED );
-			pcto->staticFX( 0x373A, 0, 10, &spfx );
+			staticFX(pcto, 0x373A, 0, 10, &spfx );
 			break;
 		case SPELL_STRENGHT:
 			pcto->playSFX( 0x1EE );
-			pcto->staticFX( 0x375A, 0, 10, &spfx );
+			staticFX(pcto, 0x375A, 0, 10, &spfx );
 			break;
 		case SPELL_BLESS:
 			pcto->playSFX( 0x1EA );
-			pcto->staticFX( 0x375A, 0, 10, &spfx );
+			staticFX(pcto, 0x375A, 0, 10, &spfx );
 			break;
 		case SPELL_FIREBALL:
 			if ( pcfrom->skill[skMagery] < 500 )	// First level fireball
@@ -448,33 +448,33 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 				pcfrom->playSFX( 0x15F );
 			else					// Third level fireball
 				pcfrom->playSFX( 0x1F3 );
-			pcfrom->movingFX( pcto, 0x36D5, 5, 0, true, &mpfx );
+			movingFX(pcfrom, pcto, 0x36D5, 5, 0, true, &mpfx );
 			break;
 		case SPELL_POISON:
 			pcto->playSFX( 0xF5 );
-			pcto->staticFX( 0x374A, 0, 10, &spfx );
+			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
 		case SPELL_TELEKINESYS:
 			pcfrom->playSFX( 0x1F5 );
 			break;
 		case SPELL_TELEPORT:
 			pcfrom->playSFX( 0x1FE );
-			pcfrom->staticFX( 0x3727, 0, 10, &spfx );
+			staticFX(pcfrom, 0x3727, 0, 10, &spfx );
 			break;
 		case SPELL_WALLSTONE:
 			pcfrom->playSFX( 0x1F6 );
 			break;
 		case SPELL_ARCHCURE:
 			pcto->playSFX( 0x1E8 );
-			pcto->staticFX( 0x376A, 0, 10, &spfx );
+			staticFX(pcto, 0x376A, 0, 10, &spfx );
 			break;
 		case SPELL_ARCHPROTECTION:
 			pcto->playSFX( 0x1F7 );
-			pcto->staticFX( 0x373A, 0, 10, &spfx );
+			staticFX(pcto, 0x373A, 0, 10, &spfx );
 			break;
 		case SPELL_CURSE:
 			pcto->playSFX( 0x1E1 );
-			pcto->staticFX( 0x374A, 0, 10, &spfx );
+			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
 		case SPELL_FIREFIELD:
 		case SPELL_POISONFIELD:
@@ -482,7 +482,7 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			break;
 		case SPELL_GREATHEAL:
 			pcto->playSFX( 0x202 );
-			pcto->staticFX( 0x376A, 0, 10, &spfx );
+			staticFX(pcto, 0x376A, 0, 10, &spfx );
 			break;
 		case SPELL_LIGHTNING:
 			if ( pcfrom->skill[skMagery] < 500 )	// First level lightning
@@ -491,7 +491,7 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 				pcto->playSFX( 0x29 );
 			else					// Third level lightning
 				pcto->playSFX( 0x206 );
-			pcto->boltFX( false );
+			boltFX(pcto, false );
 			break;
 		case SPELL_MANADRAIN:
 			pcto->playSFX( 0x1F8 );
@@ -511,15 +511,15 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			break;
 		case SPELL_REFLECTION:
 			pcfrom->playSFX( 0x1E9 );
-			pcfrom->staticFX( 0x375A, 0, 10, &spfx );
+			staticFX(pcfrom, 0x375A, 0, 10, &spfx );
 			break;
 		case SPELL_MINDBLAST:
 			pcto->playSFX( 0x213 );
-			pcto->staticFX( 0x374A, 0, 10, &spfx );
+			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
 		case SPELL_PARALYZE:
 			pcto->playSFX( 0x204 );
-			pcto->staticFX( 0x374A, 0, 10, &spfx );
+			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
 		case SPELL_SUMMON:
 			pcfrom->playSFX( 0x215 );
@@ -529,14 +529,14 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			break;
 		case SPELL_ENERGYBOLT:
 			pcfrom->playSFX( 0x20A );
-			pcfrom->movingFX( pcto, 0x379F, 5, 0, true, &mpfx );
+			movingFX(pcfrom, pcto, 0x379F, 5, 0, true, &mpfx );
 			break;
 		case SPELL_EXPLOSION:
 			if ( pcfrom->skill[skMagery] < 800 )	// First level explosion
 				pcto->playSFX( 0x11D );
 			else					// Second level explosion
 				pcto->playSFX( 0x207 );
-			pcto->staticFX( 0x36B0, 0, 10, &spfx );
+			staticFX(pcto, 0x36B0, 0, 10, &spfx );
 			break;
 		case SPELL_INVISIBILITY:
 			pcfrom->playSFX( 0x203 );
@@ -546,7 +546,7 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			break;
 		case SPELL_MASSCURSE:
 			pcto->playSFX( 0x1FB );
-			pcto->staticFX( 0x374A, 0, 10, &spfx );
+			staticFX(pcto, 0x374A, 0, 10, &spfx );
 			break;
 		case SPELL_PARALYZEFIELD:
 			pcfrom->playSFX( 0x20B );
@@ -556,13 +556,13 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			break;
 		case SPELL_CHAINLIGHTNING:
 			pcto->playSFX( 0x206 );
-			pcto->boltFX( false );
+			boltFX(pcto, false );
 			break;
 		case SPELL_ENERGYFIELD:
 			pcfrom->playSFX( 0x210 );
 			break;
 		case SPELL_FLAMESTRIKE:
-			pcto->staticFX( 0x3709, 0, 10, &spfx );
+			staticFX(pcto, 0x3709, 0, 10, &spfx );
 			pcto->playSFX( 0x208 );
 			break;
 		case SPELL_GATE:
@@ -570,14 +570,14 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			break;
 		case SPELL_MANAVAMPIRE:
 			pcto->playSFX( 0x1F9 );
-			pcto->movingFX( pcfrom, 0x36F4, 5, 0, true, &mpfx );
+			movingFX(pcto, pcfrom, 0x36F4, 5, 0, true, &mpfx );
 			break;
 		case SPELL_MASSDISPEL:
 			pcto->playSFX( 0x209 );
 			break;
 		case SPELL_METEORSWARM:
 			pcto->playSFX( 0x11B );
-			pcto->staticFX( 0x36B0, 0, 10, &spfx );
+			staticFX(pcto, 0x36B0, 0, 10, &spfx );
 			break;
 		case SPELL_EARTHQUAKE:
 			pcto->playSFX( 0x20D );
@@ -741,7 +741,7 @@ void spellFailFX(pChar pc)
 	if ( ! pc ) return;
 	if ((pc->spell < 0)||( pc->spell>89)) return;
 
-	pc->staticFX(0x3735, 0, 30);
+	staticFX(pc, 0x3735, 0, 30);
 	pc->playSFX(0x005C);
 	pc->emote(pc->getSocket(), "The spell fizzles.",1);
 }

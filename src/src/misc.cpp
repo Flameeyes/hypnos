@@ -162,7 +162,7 @@ void usepotion(pChar pc, pItem pi)
 	switch(pi->morey)
 	{
 	case 1: // Agility Potion
-		pc->staticFX(0x373A, 0, 15);
+		staticFX(pc, 0x373A, 0, 15);
 		switch(pi->morez)
 		{
 		case 1:
@@ -218,7 +218,7 @@ void usepotion(pChar pc, pItem pi)
 				if(client) client->sysmessage("The potion was not able to cure this poison.");
 			else
 			{
-				pc->staticFX(0x373A, 0, 15);
+				staticFX(pc, 0x373A, 0, 15);
 				pc->playSFX(0x01E0); //cure sound - SpaceDog
 				if(client) client->sysmessage("The poison was cured.");
 			}
@@ -269,12 +269,12 @@ void usepotion(pChar pc, pItem pi)
 		if (client)
 			pc->updateStats(0);
 
-		pc->staticFX(0x376A, 9, 6); // Sparkle effect
+		staticFX(pc, 0x376A, 9, 6); // Sparkle effect
 		pc->playSFX(0x01F2); //Healing Sound - SpaceDog
 		break;
 
 	case 5: // Night Sight Potion
-		pc->staticFX(0x376A, 9, 6);
+		staticFX(pc, 0x376A, 9, 6);
 		tempfx::add(pc, pc, tempfx::SPELL_LIGHT, 0, 0, 0,(720*secondsperuominute*SECS));
 		pc->playSFX(0x01E3);
 		break;
@@ -310,12 +310,12 @@ void usepotion(pChar pc, pItem pi)
 		if (s!=INVALID)
 			pc->updateStats(2);
 		
-		pc->staticFX(0x376A, 9, 6);
+		staticFX(pc, 0x376A, 9, 6);
 		pc->playSFX(0x01F2); //Healing Sound
 		break;
 
 	case 8: // Strength Potion
-		pc->staticFX(0x373A, 0, 15);
+		staticFX(pc, 0x373A, 0, 15);
 		switch(pi->morez)
 		{
 		case 1:
@@ -350,7 +350,7 @@ void usepotion(pChar pc, pItem pi)
 		}
 		if (client)
 			pc->updateStats(1);
-		pc->staticFX(0x376A, 9, 6); // Sparkle effect
+		staticFX(pc, 0x376A, 9, 6); // Sparkle effect
 		pc->playSFX(0x01E7); //agility sound - SpaceDog
 		break;
 
@@ -363,7 +363,7 @@ void usepotion(pChar pc, pItem pi)
 			return;
 		}
 		tempfx::add(pc, pc, tempfx::LSD, 60+RandomNum(1,120), 0, 0); // trigger effect
-		pc->staticFX(0x376A, 9, 6); // Sparkle effect
+		staticFX(pc, 0x376A, 9, 6); // Sparkle effect
 		pc->playSFX(0x00F8, true); // lsd sound :)
 		break;
 
@@ -459,7 +459,7 @@ void callguards( pChar caller )
 			guard->summontimer = getclock() + SECS * 25 ;
 
 			guard->playSFX( 0x01FE );
-			guard->staticFX(0x372A, 9, 6);
+			staticFX(guard, 0x372A, 9, 6);
 
 			guard->teleport();
 			guard->talkAll("Don't fear, help is near", false );

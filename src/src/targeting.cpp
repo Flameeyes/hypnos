@@ -733,7 +733,7 @@ void target_expPotion( pClient client, pTarget t )
 	pi->MoveTo( loc );
 	pi->setContainer(0);
 	pi->magic=2; //make item unmovable once thrown
-	pc->movingFX2(pi, 0x0F0D, 17, 0, 0);
+	movingFX(pc, pi, 0x0F0D, 17, 0, 0);
 	pi->Refresh();
 }
 

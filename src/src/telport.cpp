@@ -100,7 +100,7 @@ void advancementobjects(pChar pc, int x, int allways)
 
 	if ((pc->advobj==0)||(allways==1))
 	{
-		pc->staticFX(0x373A, 0, 15);
+		staticFX(pc, 0x373A, 0, 15);
 		pc->playSFX(0x01E9);
 		pc->advobj=x;
 		sprintf(sect, "SECTION ADVANCEMENT %i", x);
