@@ -491,7 +491,7 @@ void cChar::disturbMed()
 	}
 
 	setMeditating(false);
-	if ( getClient() ) getClient()->sysmsg(TRANSLATE("You break your concentration."));
+	if ( getClient() ) getClient()->sysmsg("You break your concentration.");
 }
 
 /*!
@@ -628,7 +628,7 @@ void cChar::helpStuff(pPC pc_i)
 	{
 		if ((pc_i->GetKarma()>0)&&((pc_i->GetKarma()-GetKarma())>100)) {
 			IncreaseKarma(+5);
-			sysmsg(TRANSLATE("You've gained a little karma."));
+			sysmsg("You've gained a little karma.");
 		}
 		return;
 	}
@@ -661,7 +661,7 @@ void cChar::applyPoison(PoisonType poisontype, int32_t secs )
 
 		NXWSOCKET s = getSocket();
 		if (s != -1) impowncreate(s, this, 1); //Lb, sends the green bar !
-		sysmsg( TRANSLATE("You have been poisoned!"));
+		sysmsg("You have been poisoned!");
 		playSFX( 0x0246 ); //poison sound - SpaceDog
 	}
 }
@@ -679,7 +679,7 @@ void cChar::unfreeze( bool calledByTempfx )
 
 	setFrozen(false);
 	if (!isCasting()) //Luxor
-		sysmsg(TRANSLATE("You are no longer frozen."));
+		sysmsg("You are no longer frozen.");
 }
 
 /*!
@@ -1418,21 +1418,21 @@ void cChar::hideBySkill()
 	if ( pc_att && hasInRange(pc_att) )
     	{
     		if ( !npc )
-        		sysmsg( TRANSLATE("You cannot hide while fighting.") );
+        		sysmsg("You cannot hide while fighting.");
         	return;
     	}
 
     	if ( IsHidden() )
     	{
     		if ( !npc )
-        		sysmsg( TRANSLATE("You are already hidden") );
+        		sysmsg("You are already hidden");
         	return;
     	}
 
-    	if ( !checkSkill( HIDING, 0, 1000) )
+    	if ( !checkSkill(HIDING, 0, 1000) )
     	{
     		if ( !npc )
-        		sysmsg( TRANSLATE("You are unable to hide here.") );
+        		sysmsg("You are unable to hide here.");
         	return;
     	}
 
@@ -1448,7 +1448,7 @@ void cChar::hideBySkill()
 	}
 
 	if ( !npc )
-		sysmsg( TRANSLATE("You have hidden yourself well.") );
+		sysmsg("You have hidden yourself well.");
 
 	hidden = htBySkill;
 	teleport( TELEFLAG_NONE );
@@ -1822,7 +1822,7 @@ void cChar::Kill()
 			pKiller->summontimer=(uiCurrentTime+(MY_CLOCKS_PER_SEC*20));
 			pKiller->npcWander=WANDER_FREELY_CIRCLE;
 			pKiller->setNpcMoveTime();
-			pKiller->talkAll(TRANSLATE("Thou have suffered thy punishment, scoundrel."),0);
+			pKiller->talkAll("Thou have suffered thy punishment, scoundrel.",0);
 		}
 
 		pKiller->targserial=INVALID;
@@ -1872,10 +1872,10 @@ void cChar::Kill()
 				{
 					murdererSer = pKiller->getSerial();
 					++pKiller->kills;
-					pKiller->sysmsg(TRANSLATE("You have killed %i innocent people."), pKiller->kills);
+					pKiller->sysmsg("You have killed %i innocent people.", pKiller->kills);
 
 					if (pKiller->kills==(unsigned)repsys.maxkills)
-						pKiller->sysmsg(TRANSLATE("You are now a murderer!"));
+						pKiller->sysmsg("You are now a murderer!");
 					pKiller->updateFlag();
 
 					if (SrvParms->pvp_log)
@@ -1926,7 +1926,7 @@ void cChar::Kill()
 			pk->summontimer=(uiCurrentTime+(MY_CLOCKS_PER_SEC*20));
 			pk->npcWander=WANDER_FREELY_CIRCLE;
 			pk->setNpcMoveTime();
-			pk->talkAll(TRANSLATE("Thou have suffered thy punishment, scoundrel."),0);
+			pk->talkAll("Thou have suffered thy punishment, scoundrel.", false);
 		}
 
 		pk->targserial=INVALID;
@@ -1968,10 +1968,10 @@ void cChar::Kill()
 				{
 					murdererSer = pk->getSerial();
 					pk->kills++;
-					pk->sysmsg(TRANSLATE("You have killed %i innocent people."), pk->kills);
+					pk->sysmsg("You have killed %i innocent people.", pk->kills);
 
 					if (pk->kills==(unsigned)repsys.maxkills)
-						pk->sysmsg(TRANSLATE("You are now a murderer!"));
+						pk->sysmsg("You are now a murderer!");
 					pk->updateFlag();
 
 					if (SrvParms->pvp_log)
@@ -2227,7 +2227,7 @@ void cChar::checkEquipment()
 			else
 				strcpy(temp2,pi->getCurrentName().c_str());
 
-			if( pi->st > getStrength()) sysmsg(TRANSLATE("You are not strong enough to keep %s equipped!"), temp2);
+			if( pi->st > getStrength()) sysmsg("You are not strong enough to keep %s equipped!", temp2);
 			playSFX( itemsfx(pi->getId()) );
 
 			//Subtract stats bonus and poison
@@ -2489,7 +2489,7 @@ void cChar::generic_heartbeat()
 		else if (med)
 		{
 			if( !npc )
-				sysmsg(TRANSLATE("You are at peace."));
+				sysmsg("You are at peace.");
 			med = 0;
 		}
 
@@ -2586,7 +2586,7 @@ void cChar::checkPoisoning()
 				{
 					Kill();
 					if ( !npc )
-						sysmsg( TRANSLATE("The poison has killed you.") );
+						sysmsg("The poison has killed you.");
 				}
 				else
 				{
@@ -2597,16 +2597,16 @@ void cChar::checkPoisoning()
 						switch ( poisoned )
 						{
 						case poisonWeak:
-							emoteall( TRANSLATE("* %s looks a bit nauseous *"), 1, getCurrentName().c_str() );
+							emoteall("* %s looks a bit nauseous *", true, getCurrentName().c_str() );
 							break;
 						case poisonNormal:
-							emoteall( TRANSLATE("* %s looks disoriented and nauseous! *"), 1, getCurrentName().c_str());
+							emoteall("* %s looks disoriented and nauseous! *", true, getCurrentName().c_str());
 							break;
 						case poisonGreater:
-							emoteall( TRANSLATE("* %s is in severe pain! *"), 1, getCurrentName().c_str());
+							emoteall("* %s is in severe pain! *", true, getCurrentName().c_str());
 							break;
 						case poisonDeadly:
-							emoteall( TRANSLATE("* %s looks extremely weak and is wrecked in pain! *"), 1, getCurrentName().c_str());
+							emoteall("* %s looks extremely weak and is wrecked in pain! *", true, getCurrentName().c_str());
 							break;
 						}
 						poisontxt = uiCurrentTime + ( 10 * MY_CLOCKS_PER_SEC );
@@ -2618,7 +2618,7 @@ void cChar::checkPoisoning()
 				poisoned = poisonNone;
 				impowncreate( getSocket(), this, 1 ); // updating to blue stats-bar ...
 				if ( !npc )
-					sysmsg( TRANSLATE( "The poison has worn off." ) );
+					sysmsg("The poison has worn off.");
 			}
 		}
 	}

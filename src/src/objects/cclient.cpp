@@ -624,7 +624,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 						pc_currchar->IncreaseKarma(-5);
 						//!\todo should be investigated
 						pc_currchar->setCrimGrey(ServerScp::g_nLootingWillCriminal);
-						pc_currchar->sysmsg( TRANSLATE("You are loosing karma!"));
+						pc_currchar->sysmsg("You are loosing karma!");
 					}
 				}
 			} // corpse stuff
@@ -806,7 +806,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 	if (pi->getId() >= 0x4000)
 	{
 //		abort=true; // LB crashfix that prevents moving multi objcts in BP's
-		sysmsg(TRANSLATE("Hey, putting houses in your pack crashes your back and client!"));
+		sysmsg("Hey, putting houses in your pack crashes your back and client!");
 	}
 
 	//ndEndy recurse only a time
@@ -817,7 +817,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 	if( contOwner ) {
 		//if ((contOwner->npcaitype==NPCAI_PLAYERVENDOR) && (contOwner->npc) && (contOwner->getOwnerSerial32()!=pc->getSerial()) )
 		if ( contOwner->getSerial() != pc->getSerial() && contOwner->getOwnerSerial32() != pc->getSerial() && !pc->IsGM() ) { // Luxor
-			sysmsg(TRANSLATE("This aint your backpack!"));
+			sysmsg("This aint your backpack!");
                         //! \todo the sendpacket stuff here
 			Sndbounce5(s);
 			if (isDragging()) {
@@ -866,7 +866,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 				pc->playSFX( goldsfx(2) );
 			} else
 			{//if they're not gold..bounce on ground
-				sysmsg(TRANSLATE("You can only put golds in this bank box!"));
+				sysmsg("You can only put golds in this bank box!");
 
 				pi->setContainer(0);
 				pi->MoveTo( charpos );
@@ -889,7 +889,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 			else
 				++n;
 			if( n > nSettings::Server::getBankMaxItems() ) {
-				sysmsg(TRANSLATE("You exceeded the number of maximimum items in bank of %d"), nSettings::Server::getBankMaxItems());
+				sysmsg("You exceeded the number of maximimum items in bank of %d", nSettings::Server::getBankMaxItems());
 				item_bounce6(pi);
 				return;
 			}
@@ -925,7 +925,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 	if( cont->type==ITYPE_TRASH)
 	{
 		pi->Delete();
-		sysmsg(TRANSLATE("As you let go of the item it disappears."));
+		sysmsg("As you let go of the item it disappears.");
 		return;
 	}
 	// - Spell Book
@@ -933,7 +933,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 	{
 		if (!pi->IsSpellScroll72())
 		{
-			sysmsg(TRANSLATE("You can only place spell scrolls in a spellbook!"));
+			sysmsg("You can only place spell scrolls in a spellbook!");
                         //! \todo the sendpacket stuff here
 			Sndbounce5(s);
 			if (isDragging())
@@ -950,7 +950,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 		{
 			if ((cont->getContainer() != pc ) && (cont->getContainer()!=pack) && (!pc->CanSnoop()))
 			{
-				sysmsg(TRANSLATE("You cannot place spells in other peoples spellbooks."));
+				sysmsg("You cannot place spells in other peoples spellbooks.");
 				item_bounce6(pi);
 				return;
 			}
@@ -976,7 +976,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 
 						if(!(strcmp(temp,temp2)) || !(strcmp(temp,"All-Spell Scroll")))
 						{
-							sysmsg(TRANSLATE("You already have that spell!"));
+							sysmsg("You already have that spell!");
 							item_bounce6(pi);
 							return;
 						}
@@ -984,7 +984,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 				// Juliunus, to prevent ppl from wasting scrolls.
 				if (pi->amount > 1)
 				{
-					sysmsg(TRANSLATE("You can't put more than one scroll at a time in your book."));
+					sysmsg("You can't put more than one scroll at a time in your book.");
 					item_bounce6(pi);
 					return;
 				}
@@ -1003,7 +1003,7 @@ void cClient::pack_item(pItem pi, Location &loc, pItem cont) // Item is put into
 			{
 				pc->fx1= DEREF_pItem(pi);
 				pc->fx2=17;
-				pc->sysmsg(TRANSLATE("Set a price for this item."));
+				pc->sysmsg("Set a price for this item.");
 			}
 		}
 
@@ -1170,7 +1170,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 
 			//-----
 			if ( !lineOfSight( pc->getPosition(), loc ) ) {
-		                ps->sysmsg(TRANSLATE("You cannot place an item there!"));
+		                ps->sysmsg("You cannot place an item there!");
                                 //! \todo the sendpacket stuff here
         	        	Sndbounce5(s);
 	                	if (isDragging()) {
@@ -1190,7 +1190,7 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 				NxwItemWrapper si;
 				si.fillItemsAtXY( loc->x, loc->y );
 				if (si.size() >= 2) { //Only 2 items permitted
-					ps->sysmsg(TRANSLATE("There is not enough space there!"));
+					ps->sysmsg("There is not enough space there!");
                                         //! \todo the sendpacket stuff here
 					Sndbounce5(s);
 					if (isDragging()) {
@@ -1277,7 +1277,7 @@ bool cClient::droppedOnChar(pItem pi, Location &loc, pItem cont)
 				if(pc_currchar->trainer != pTC->getSerial())
 
 				{
-					pTC->talk(this, TRANSLATE("Thank thee kindly, but I have done nothing to warrant a gift."),0);
+					pTC->talk(this, "Thank thee kindly, but I have done nothing to warrant a gift.", false);
                                         //! \todo the sendpacket stuff here
 					Sndbounce5(s);
 					if (isDragging())
@@ -1384,11 +1384,11 @@ bool cClient::droppedOnPet(pItem pi, Location &loc, pItem cont)
 		else itmname = pi->getCurrentName();
 
 		pet->emotecolor = 0x0026;
-		pet->emoteall(TRANSLATE("* You see %s eating %s *"), 1, pet->getCurrentName().c_str(), itmname.c_str() );
+		pet->emoteall("* You see %s eating %s *", true, pet->getCurrentName().c_str(), itmname.c_str() );
 		pet->hunger++;
 	} else
 	{
-		ps->sysmsg(TRANSLATE("It doesn't appear to want the item"));
+		ps->sysmsg("It doesn't appear to want the item");
                 //! \todo the sendpacket stuff here
 		Sndbounce5(s);
 		if (isDragging())
@@ -1439,8 +1439,7 @@ bool cClient::droppedOnGuard(pItem pi, Location &loc, pItem cont)
 				pc->playSFX( goldsfx( own->questBountyReward ) );
 
 				// Now thank them for their hard work
-				sprintf( temp, TRANSLATE("Excellent work! You have brought us the head of %s. Here is your reward of %d gold coins."),
-					own->getCurrentName().c_str(), own->questBountyReward );
+				sprintf( temp, "Excellent work! You have brought us the head of %s. Here is your reward of %d gold coins.", own->getCurrentName().c_str(), own->questBountyReward );
 				pc_t->talk( this, temp, 0);
 
 				// Delete the Bounty from the bulletin board
@@ -1451,7 +1450,7 @@ bool cClient::droppedOnGuard(pItem pi, Location &loc, pItem cont)
 				pc->modifyFame( nSettings::Actions::getBountyFameGain() );
 			}
 			else
-				pc_t->talk(this, TRANSLATE("You can not claim that prize scoundrel. You are lucky I don't strike you down where you stand!"),0);
+				pc_t->talk(this, "You can not claim that prize scoundrel. You are lucky I don't strike you down where you stand!",0);
 
 			// Delete the item
 			pi->Delete();
@@ -1471,22 +1470,13 @@ bool cClient::droppedOnGuard(pItem pi, Location &loc, pItem cont)
 
 bool cClient::droppedOnBeggar(pItem pi, Location &loc, pItem cont)
 {
-
-	VALIDATEPIR(pi, false);
-
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-
-
-	pChar pc=currChar();
-	VALIDATEPCR(pc,false);
-
 	pChar pc_t=cSerializable::findCharBySerial(cont->getSerial()); //beggar
-	VALIDATEPCR(pc_t,false);
+	if ( ! pi || ! currChar() || ! pc_t )
+		return false;
 
 	if(pi->getId()!=ITEMID_GOLD)
 	{
-		sprintf(temp,TRANSLATE("Sorry %s i can only use gold"), pc->getCurrentName().c_str());
-		pc_t->talk(this,temp,0);
+		pc_t->talk(this, "Sorry %s i can only use gold", false, pc->getCurrentName().c_str());
                 //! \todo the sendpacket stuff here
 		Sndbounce5(s);
 		if (isDragging())
@@ -1498,17 +1488,16 @@ bool cClient::droppedOnBeggar(pItem pi, Location &loc, pItem cont)
 	}
 	else
 	{
-		sprintf(temp,TRANSLATE("Thank you %s for the %i gold!"), pc->getCurrentName().c_str(), pi->amount);
-		pc_t->talk(this,temp,0);
+		pc_t->talk(this, "Thank you %s for the %i gold!", false, pc->getCurrentName().c_str(), pi->amount);
 		if(pi->amount<=100)
 		{
 			pc->IncreaseKarma(10);
-			ps->sysmsg(TRANSLATE("You have gain a little karma!"));
+			ps->sysmsg("You have gain a little karma!");
 		}
 		else if(pi->amount>100)
 		{
 			pc->IncreaseKarma(50);
-			ps->sysmsg(TRANSLATE("You have gain some karma!"));
+			ps->sysmsg("You have gain some karma!");
 		}
 		pi->Delete();
 		return true;
@@ -1538,7 +1527,7 @@ bool cClient::droppedOnTrainer(pItem pi, Location &loc, pItem cont)
 	if( pi->getId() == ITEMID_GOLD )
 	{ // They gave the NPC gold
 		uint8_t sk=pc_t->trainingplayerin;
-		pc_t->talk(this, TRANSLATE("I thank thee for thy payment. That should give thee a good start on thy way. Farewell!"),0);
+		pc_t->talk(this, "I thank thee for thy payment. That should give thee a good start on thy way. Farewell!", false);
 
 		int sum = pc->getSkillSum();
 		int delta = pc_t->getTeachingDelta(pc, sk, sum);
@@ -1570,7 +1559,7 @@ bool cClient::droppedOnTrainer(pItem pi, Location &loc, pItem cont)
 	}
 	else // Did not give gold
 	{
-		pc_t->talk(this, TRANSLATE("I am sorry, but I can only accept gold."),0);
+		pc_t->talk(this, "I am sorry, but I can only accept gold.", false);
                 //! \todo the sendpacket stuff here
 		Sndbounce5(s);
 		if (isDragging())
@@ -1603,7 +1592,7 @@ bool cClient::droppedOnSelf(pItem pi, Location &loc, pItem cont)
 
 	if (pi->getId() >= 0x4000 ) // crashfix , prevents putting multi-objects ni your backback
 	{
-		sysmsg(TRANSLATE("Hey, putting houses in your pack crashes your back and client !"));
+		sysmsg("Hey, putting houses in your pack crashes your back and client !");
 		pi->MoveTo( charpos );
 		pi->Refresh();//AntiChrist
 		return true;
@@ -1691,7 +1680,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 
 	if( ( clientDimension == 3 ) &&  (tile.quality == 0) )
 	{
-		sysmsg(TRANSLATE("You can't wear that"));
+		sysmsg("You can't wear that");
 		resetDragging = true;
 	}
 	else {
@@ -1720,7 +1709,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 
 		if ( !pc->IsGM() && pi->st > pck->getStrength() && !pi->isNewbie() ) // now you can equip anything if it's newbie
 		{
-			sysmsg(TRANSLATE("You are not strong enough to use that."));
+			sysmsg("You are not strong enough to use that.");
 			resetDragging = true;
 		}
 		else if ( !pc->IsGM() && !pi->checkItemUsability(pc, ITEM_USE_WEAR) )
@@ -1729,7 +1718,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 		}
 		else if ( (pc->getId() == BODY_MALE) && ( pi->getId()==0x1c00 || pi->getId()==0x1c02 || pi->getId()==0x1c04 || pi->getId()==0x1c06 || pi->getId()==0x1c08 || pi->getId()==0x1c0a || pi->getId()==0x1c0c ) ) // Ripper...so males cant wear female armor
 		{
-			sysmsg(TRANSLATE("You cant wear female armor!"));
+			sysmsg("You cant wear female armor!");
 			resetDragging = true;
 		}
 		else if ((((pi->magic==2)||((tile.weight==255)&&(pi->magic!=1))) && !pc->canAllMove()) ||
@@ -1875,7 +1864,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 		{
 			if ((pck->getSerial() != pc->getSerial())/*&&(chars[s].npc!=k)*/) //-> really don't understand this! :|, xan
 			{
-				sysmsg(TRANSLATE("You can't put items on other people!"));
+				sysmsg("You can't put items on other people!");
 				item_bounce6(pi);
 				return;
 			}
@@ -1989,7 +1978,6 @@ void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 	int playergoldtotal;
 
 	int tmpvalue=0; // Fixed for adv trade system -- Magius(CHE) §
- 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
 	pChar pc = currChar();
 	if ( ! pc ) return;
@@ -2029,35 +2017,28 @@ void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 
 	if ((playergoldtotal<goldtotal)&&(!pc->IsGM()))
 	{
-		npc->talkAll( TRANSLATE("Alas, thou dost not possess sufficient gold for this purchase!"),0);
+		npc->talkAll("Alas, thou dost not possess sufficient gold for this purchase!", false);
 	}
 	else {
                 if (soldout)
 		{
-			npc->talk(this, TRANSLATE("Alas, I no longer have all those goods in stock. Let me know if there is something else thou wouldst buy."),0);
+			npc->talk(this, "Alas, I no longer have all those goods in stock. Let me know if there is something else thou wouldst buy.", false);
 			clear=1;
 		}
 		else
 		{
 			if (pc->IsGM())
 			{
-				sprintf(temp, TRANSLATE("Here you are, %s. Someone as special as thee will receive my wares for free of course."), pc->getCurrentName().c_str());
-			}
-			else
-			{
+				npc->talkAll("Here you are, %s. Someone as special as thee will receive my wares for free of course.", false, pc->getCurrentName().c_str());
+			} else {
 				if(useBank)
 				{
-					sprintf(temp, TRANSLATE("Here you are, %s. %d gold coin%s will be deducted from your bank account.  I thank thee for thy business."),
-					pc->getCurrentName().c_str(), goldtotal, (goldtotal==1) ? "" : "s");
-				}
-			    else
-				{
-				    sprintf(temp, TRANSLATE("Here you are, %s.  That will be %d gold coin%s.  I thank thee for thy business."),
-					pc->getCurrentName().c_str(), goldtotal, (goldtotal==1) ? "" : "s");
+					npc->talkAll("Here you are, %s. %d gold coin%s will be deducted from your bank account.  I thank thee for thy business.", false, pc->getCurrentName().c_str(), goldtotal, (goldtotal==1) ? "" : "s");
+				} else {
+					npc->talkAll("Here you are, %s.  That will be %d gold coin%s.  I thank thee for thy business.", false, pc->getCurrentName().c_str(), goldtotal, (goldtotal==1) ? "" : "s");
 				}
 			    pc->playSFX( goldsfx(goldtotal) );
 			}
-			npc->talkAll(temp,0);
 			npc->playAction(0x20);	// bow (Duke, 17/03/2001)
 
 			clear=1;
@@ -2174,9 +2155,7 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 
 	if (maxsell>SrvParms->sellmaxitem)
 	{
-		char tmpmsg[256];
-		sprintf(tmpmsg,TRANSLATE("Sorry %s but i can buy only %i items at time!"), currChar()->getCurrentName().c_str(), SrvParms->sellmaxitem);
-		npc->talkAll(tmpmsg,0);
+		npc->talkAll("Sorry %s but i can buy only %i items at time!", false, currChar()->getCurrentName().c_str(), SrvParms->sellmaxitem);
 		return;
 	}
 
@@ -2189,7 +2168,7 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 		// player may have taken items out of his bp while the sell menu was up ;-)
 		if (pSell->amount<amt)
 		{
-			npc->talkAll(TRANSLATE("Cheating scum! Leave now, before I call the guards!"),0);
+			npc->talkAll("Cheating scum! Leave now, before I call the guards!",0);
 			return;
                 }
 
@@ -2599,7 +2578,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 	
 	if ( pc->squelched )
 	{
-		pc->sysmsg(TRANSLATE("You have been squelched."));
+		pc->sysmsg("You have been squelched.");
 		return;
 	}
 

@@ -50,22 +50,22 @@ void command_bounty( pClient client )
 {
 	pChar pc = client->currChar();
 
-	if( !SrvParms->bountysactive )
+	if( !nSettings::Server::isEnabledBountySystem() )
 	{
-		pc_cs->sysmsg(TRANSLATE("The bounty system is not active."));
+		pc_cs->sysmsg("The bounty system is not active.");
 		return;
 	}
 
-	if( !pc->dead )
+	if( !pc->isDead() )
 	{
-		pc->sysmsg(TRANSLATE("You can only place a bounty while you are a ghost."));
+		pc->sysmsg("You can only place a bounty while you are a ghost.");
 		pc->murdererSer = 0;
 		return;
 	}
 
 	if( pc->murdererSer == 0 )
 	{
-		pc->sysmsg(TRANSLATE("You can only place a bounty once after someone has murdered you."));
+		pc->sysmsg("You can only place a bounty once after someone has murdered you.");
 		return;
 	}
 
@@ -78,20 +78,20 @@ void command_bounty( pClient client )
 			if( BountyCreate( pc_murderer, nAmount ) )
 			{
 				if( pc_murderer )
-					pc->sysmsg(TRANSLATE("You have placed a bounty of %d gold coins on %s."),
+					pc->sysmsg("You have placed a bounty of %d gold coins on %s.",
 						nAmount, pc_murderer->getCurrentName().c_str() );
 			} else
-				pc->sysmsg(TRANSLATE("You were not able to place a bounty (System Error)") );
+				pc->sysmsg("You were not able to place a bounty (System Error)");
 
 			// Set murdererSer to 0 after a bounty has been
 			// placed so it can only be done once
 			pc->murdererSer = 0;
 		}
 		else
-			pc->sysmsg(TRANSLATE("You do not have enough gold to cover the bounty."));
+			pc->sysmsg("You do not have enough gold to cover the bounty.");
 	}
 	else
-		pc_cs->sysmsg(TRANSLATE("To place a bounty on a murderer, use BOUNTY <amount>"));
+		pc_cs->sysmsg("To place a bounty on a murderer, use BOUNTY <amount>");
 
 }
 
@@ -102,14 +102,10 @@ void command_serversleep( pClient client )
 
 	int seconds;
 
-#ifdef __BEOS__
-	pc->sysmsg("Command not supported under BeOS");
-#else
-
 	if (tnum==2)
 	{
 		seconds = strtonum(1);
-		sysbroadcast(TRANSLATE("server is going to sleep for %i seconds!"),seconds); // broadcast server sleep
+		sysbroadcast("server is going to sleep for %i seconds!",seconds); // broadcast server sleep
 
 		NxwSocketWrapper sw;
 		sw.fillOnline();
@@ -122,7 +118,7 @@ void command_serversleep( pClient client )
 
 		seconds=seconds*1000;
 		Sleep(seconds);
-		sysbroadcast(TRANSLATE("server is back from a %i second break"),seconds/1000);
+		sysbroadcast("server is back from a %i second break",seconds/1000);
 
 		sw.clear();
 		sw.fillOnline();
@@ -137,7 +133,6 @@ void command_serversleep( pClient client )
 	{
 		pc->sysmsg("Invalid number of arguments");
 	}
-#endif
 }
 
 //
@@ -578,18 +573,18 @@ void command_appetite( pClient client )
 	switch( pc->IsGMorCounselor()? 6 : pc->hunger )
 	{
 		case 6:
-		case 5: pc->sysmsg(TRANSLATE("You are still stuffed from your last meal"));
-						break;
-		case 4: pc->sysmsg(TRANSLATE("You are not very hungry but could eat more"));
-						break;
-		case 3: pc->sysmsg(TRANSLATE("You are feeling fairly hungry"));
-						break;
-		case 2: pc->sysmsg(TRANSLATE("You are extremely hungry"));
-						break;
-		case 1: pc->sysmsg(TRANSLATE("You are very weak from starvation"));
-						break;
-		case 0:	pc->sysmsg(TRANSLATE("You must eat very soon or you will die!"));
-						break;
+		case 5: pc->sysmsg("You are still stuffed from your last meal");
+			break;
+		case 4: pc->sysmsg("You are not very hungry but could eat more");
+			break;
+		case 3: pc->sysmsg("You are feeling fairly hungry");
+			break;
+		case 2: pc->sysmsg("You are extremely hungry");
+			break;
+		case 1: pc->sysmsg("You are very weak from starvation");
+			break;
+		case 0:	pc->sysmsg("You must eat very soon or you will die!");
+			break;
 	}
 }
 
@@ -831,7 +826,7 @@ void command_shutdown()
 		if (strtonum(1)==0)
 		{
 			endtime=0;
-			sysbroadcast(TRANSLATE("Shutdown has been interrupted."));
+			sysbroadcast("Shutdown has been interrupted.");
 		}
 		else endmessage(0);
 	}
@@ -1442,7 +1437,7 @@ void command_respawn( pClient client )
 {
 	pChar pc = client->currChar();
 
-	sysbroadcast(TRANSLATE("World is now respawning, expect some lag!"));
+	sysbroadcast("World is now respawning, expect some lag!");
 	LogMessage("Respawn command called by %s.\n", pc->getCurrentName().c_str());
 	//Respawn->Start();
 }
@@ -1578,7 +1573,7 @@ void command_noinvul( pClient client )
 void command_guardson( pClient client )
 {
 	SrvParms->guardsactive=1;
-	sysbroadcast(TRANSLATE("Guards have been reactivated."));
+	sysbroadcast("Guards have been reactivated.");
 
 }
 
@@ -1586,7 +1581,7 @@ void command_guardson( pClient client )
 void command_guardsoff( pClient client )
 {
 	SrvParms->guardsactive=0;
-	sysbroadcast(TRANSLATE("Warning: Guards have been deactivated globally."));
+	sysbroadcast("Warning: Guards have been deactivated globally.");
 }
 
 // Enables decay on an object.
@@ -1706,22 +1701,22 @@ void target_squelch( pClient client, pTarget t )
 
         if(pc->IsGM())
         {
-            curr->sysmsg(TRANSLATE("You cannot squelch GMs."));
+            curr->sysmsg("You cannot squelch GMs.");
             return;
         }
 
         if (pc->squelched)
         {
             pc->squelched=0;
-            curr->sysmsg(TRANSLATE("Un-squelching..."));
-            pc->sysmsg(TRANSLATE("You have been unsquelched!"));
+            curr->sysmsg("Un-squelching...");
+            pc->sysmsg("You have been unsquelched!");
             pc->mutetime=0;
         }
         else
         {
             pc->mutetime=0;
-            curr->sysmsg( TRANSLATE("Squelching...") );
-            pc->sysmsg( TRANSLATE("You have been squelched!") );
+            curr->sysmsg("Squelching...");
+            pc->sysmsg("You have been squelched!");
 
             if( t->buffer[0]!=INVALID )
             {
@@ -1888,7 +1883,7 @@ void command_regspawnall( pClient client )
 
 	NXWSOCKET s = ps->toInt();
 
-	sysbroadcast(TRANSLATE("ALL Regions Spawning to MAX, this will cause some lag."));
+	sysbroadcast("ALL Regions Spawning to MAX, this will cause some lag.");
 
 	Spawns->doSpawnAll();
 
@@ -2269,9 +2264,9 @@ void target_hide( pClient client, pTarget t )
 	if( pc->IsHidden() )
 	{
 		if( pc->getSerial() == ps->currCharIdx() )
-			ps->sysmsg( TRANSLATE("You are already hiding.") );
+			ps->sysmsg("You are already hiding.");
 		else
-			ps->sysmsg(  TRANSLATE("He is already hiding.") );
+			ps->sysmsg("He is already hiding.");
 	}
 	else {
 		pc->setPermaHidden(true);
@@ -2291,9 +2286,9 @@ void target_unhide( pClient client, pTarget t )
 	if( !pc->IsHidden() )
 	{
 		if( pc->getSerial()==ps->currCharIdx() )
-			ps->sysmsg( TRANSLATE("You are not hiding."));
+			ps->sysmsg("You are not hiding.");
 		else
-			ps->sysmsg( TRANSLATE("He is not hiding."));
+			ps->sysmsg("He is not hiding.");
 	}
 	else {
 		pc->setPermaHidden(false);
@@ -2393,7 +2388,7 @@ void target_tiledata( pClient client, pTarget t )
 	    ConOut("\n");
     }
 
-	ps->sysmsg( TRANSLATE("Item info has been dumped to the console.") );
+	ps->sysmsg("Item info has been dumped to the console.");
 }
 
 void target_freeze( pClient client, pTarget t )
@@ -2438,7 +2433,7 @@ void target_kick( pClient client, pTarget t )
 	pChar pc=cSerializable::findCharBySerial( t->getClicked() );
     if( pc )
     {
-		ps->sysmsg( TRANSLATE("Kicking player"));
+		ps->sysmsg("Kicking player");
         pc->kick();
     }
 }
@@ -2456,7 +2451,7 @@ void target_kill( pClient client, pTarget t )
 			pc->Kill();
         }
         else
-            ps->sysmsg( TRANSLATE("That player is already dead.") );
+            ps->sysmsg("That player is already dead.");
     }
 }
 

@@ -53,7 +53,8 @@ namespace nSettings {
 	*/
 	namespace Server {
 		bool isEnabledBookSystem();		//!< Is the book system enabled? [Default: true]
-		bool isEnabledTradeSystem();		//!< Is the trade sysem enabled? [Default: true]
+		bool isEnabledTradeSystem();		//!< Is the trade system enabled? [Default: true]
+		bool isEnabledBountySystem();		//!< Is the bounty system enabled? [Default: true]
 		bool isEnabledPopupHelp();		//!< popup help (since T2A) is enabled [Default:true]
 		bool isEnabledUOAssist();		//!< UO Assist enabled? [Default: true]
                 uint32_t getAllowedAssistVersion();	//!< Returns allowed version of UO assist [Default: \b missing]

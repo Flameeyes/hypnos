@@ -55,7 +55,7 @@ bool WalkHandleAllowance(pChar pc, int sequence)
 		{
 			if (s!=INVALID)
 			{
-			  pc->sysmsg(TRANSLATE("You are too fatigued to move."));
+			  pc->sysmsg("You are too fatigued to move.");
 			  walksequence[s]=INVALID;
 			  pc->teleport( TELEFLAG_NONE );
 			  deny(s, pc, sequence); // !!!
@@ -70,9 +70,9 @@ bool WalkHandleAllowance(pChar pc, int sequence)
 		if (s>INVALID)
 		{
 			if (pc->casting)
-				pc->sysmsg(TRANSLATE("You cannot move while casting."));
+				pc->sysmsg("You cannot move while casting.");
 			else
-				pc->sysmsg(TRANSLATE("You are frozen and cannot move."));
+				pc->sysmsg("You are frozen and cannot move.");
 			deny(s, pc, sequence); // !!!
 		}
 		return false;
@@ -267,7 +267,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 				if(j==H_BAN)
 				{
 					getMultiCorners(pi_multi,sx,sy,ex,ey);
-					pc->sysmsg(TRANSLATE("You are banned from that location."));
+					pc->sysmsg("You are banned from that location.");
 					Location pcpos= pc->getPosition();
 					pcpos.x= ex;
 					pcpos.y= ey+1;
@@ -539,78 +539,55 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 	/////////////////////////////////////////////////////////////////////////////////////
 
 	bool valid, move;
-	if ( pc_i->dir == newDirection )  // If we're moving, not changing direction
+	if ( pc_i->dir != newDirection )  // If we're moving, not changing direction
 	{
-		int newX = charpos.x;
-		int newY = charpos.y;
-		getXYfromDir( pc_i->dir, newX, newY );	// get coords of the location we want to walk
-                //<Luxor>
-		Location newpos = Location( newX, newY, charpos.z );
-		valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
-		//</Luxor>
-		if ( valid )
+		walking(  pc_i , newDirection, 256);
+		return;
+	}	
+	
+	int newX = charpos.x;
+	int newY = charpos.y;
+	getXYfromDir( pc_i->dir, newX, newY );	// get coords of the location we want to walk
+	//<Luxor>
+	Location newpos = Location( newX, newY, charpos.z );
+	valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
+	//</Luxor>
+	if ( valid )
+	{
+		move = checkBounds( pc_i, newX, newY, type );
+		if ( move )
 		{
-			move = checkBounds( pc_i, newX, newY, type );
-			if ( move )
+			walking(  pc_i , newDirection, 256 );
+		}
+		else 	// We're out of the boundary, so we need to get back
+		{
+			uint8_t direction = pc_i->getDirFromXY(pc_i->fx1, pc_i->fy1);
+			getXYfromDir( direction, newX, newY );
+			//<Luxor>
+			newpos = Location( newX, newY, charpos.z );
+			valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
+			//</Luxor>
+			if ( !valid ) // try to bounce around obstacle
 			{
-				walking(  pc_i , newDirection, 256 );
-			}
-			else 	// We're out of the boundary, so we need to get back
-			{
-				uint8_t direction = pc_i->getDirFromXY(pc_i->fx1, pc_i->fy1);
-				getXYfromDir( direction, newX, newY );
+				direction = pc_i->dir;
+				getXYfromDir( pc_i->dir, newX, newY );
 				//<Luxor>
 				newpos = Location( newX, newY, charpos.z );
 				valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
 				//</Luxor>
-				if ( !valid ) // try to bounce around obstacle
+				bool clockwise = chance( 50 );
+				while( direction != pc_i->dir && !valid )
 				{
-					direction = pc_i->dir;
+					if ( clockwise )
+						direction = getRightDir( direction );
+					else
+						direction = getLeftDir( direction );
 					getXYfromDir( pc_i->dir, newX, newY );
 					//<Luxor>
 					newpos = Location( newX, newY, charpos.z );
 					valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
 					//</Luxor>
-					bool clockwise = chance( 50 );
-					while( direction != pc_i->dir && !valid )
-					{
-						if ( clockwise )
-							direction = getRightDir( direction );
-						else
-							direction = getLeftDir( direction );
-						getXYfromDir( pc_i->dir, newX, newY );
-						//<Luxor>
-						newpos = Location( newX, newY, charpos.z );
-						valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
-						//</Luxor>
-					}
 				}
-				if ( valid )
-				{
-					move = true;
-					walking(  pc_i , direction, 256 );
-				}
-			}
-		}
-		else	// avoid obstacle
-		{
-			int direction;
-			bool clockwise = chance( 50 );
-			if ( clockwise )
-				direction = getRightDir( pc_i->dir );
-			else
-				direction = getLeftDir( pc_i->dir );
-			while( !valid && direction != pc_i->dir )
-			{
-				getXYfromDir( direction, newX, newY );
-				//<Luxor>
-				newpos = Location( newX, newY, charpos.z );
-				valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
-				//</Luxor>
-				if ( clockwise )
-					direction = getRightDir( direction );
-				else
-					direction = getLeftDir( direction );
 			}
 			if ( valid )
 			{
@@ -618,21 +595,43 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 				walking(  pc_i , direction, 256 );
 			}
 		}
-
-		pFunctionHandle evt = pc_i->getEvent(evtChrOnBlock);
-		if ( (!valid || !move) && evt )
+	}
+	else	// avoid obstacle
+	{
+		int direction;
+		bool clockwise = chance( 50 );
+		if ( clockwise )
+			direction = getRightDir( pc_i->dir );
+		else
+			direction = getLeftDir( pc_i->dir );
+		while( !valid && direction != pc_i->dir )
 		{
-			tVariantVector params = tVariantVector(4);
-			params[0] = pc_i->getSerial(); params[1] = newX; params[2] = newY; params[3] = charpos.z;
-			evt->setParams(params);
-			evt->execute();
-			if( evt->bypassed() )
-				return;
+			getXYfromDir( direction, newX, newY );
+			//<Luxor>
+			newpos = Location( newX, newY, charpos.z );
+			valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
+			//</Luxor>
+			if ( clockwise )
+				direction = getRightDir( direction );
+			else
+				direction = getLeftDir( direction );
+		}
+		if ( valid )
+		{
+			move = true;
+			walking(  pc_i , direction, 256 );
 		}
 	}
-	else	// Change direction
+
+	pFunctionHandle evt = pc_i->getEvent(evtChrOnBlock);
+	if ( (!valid || !move) && evt )
 	{
-		walking(  pc_i , newDirection, 256);
+		tVariantVector params = tVariantVector(4);
+		params[0] = pc_i->getSerial(); params[1] = newX; params[2] = newY; params[3] = charpos.z;
+		evt->setParams(params);
+		evt->execute();
+		if( evt->bypassed() )
+			return;
 	}
 }
 
@@ -659,9 +658,9 @@ void handleCharsAtNewPos( pChar pc )
 		if ( pc_curr->dead || pc_curr->IsInvul() )
 			continue;
 		if ( pc_curr->IsHidden() )
-			pc->sysmsg( TRANSLATE("You shoved something invisible aside.") );
+			pc->sysmsg("You shoved something invisible aside.");
 		else
-			pc->sysmsg( TRANSLATE("Being perfectly rested, you shove %s out of the way."), pc_curr->getCurrentName().c_str() );
+			pc->sysmsg("Being perfectly rested, you shove %s out of the way.", pc_curr->getCurrentName().c_str() );
 
 		pc->stm = qmax( pc->stm-ServerScp::g_nShoveStmDamage, 0 );
 		pc->updateStats( STAT_STAMINA );
@@ -677,7 +676,7 @@ void handleCharsAtNewPos( pChar pc )
 //
 bool handleItemsAtNewPos(pChar pc, int oldx, int oldy, int newx, int newy)
 {
-	VALIDATEPCR(pc, false);
+	if ( ! pc ) return false;
 
 	NXWCLIENT ps=pc->getClient();
 	if ( ps == NULL ) //Luxor
