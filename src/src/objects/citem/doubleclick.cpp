@@ -728,13 +728,13 @@ void cItem::doubleClicked(pClient client)
 
 			if ( getId() == 0x14F0  ||  getId() == 0x1869 )	// Check for Deed/Teleporter + Guild Type
 			{
-				pc->fx1 = DEREF_pItem(pi);   //!\todo: <- check this
+				pc->fx1 = pi->getSerial();   //!\todo: <- check this
 				Guilds->StonePlacement(s);    //!\todo: <- and this
 				return;
 			}
 			else if (getId() == 0x0ED5)	// Check for Guildstone + Guild Type
 			{
-				pc->fx1 = DEREF_pItem(pi);
+				pc->fx1 = pi->getSerial();
 				Guilds->Menu(s, 1);
 				return;
 			}
@@ -1299,7 +1299,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			pc->sysmsg("You must wait for it to stop swinging !");
 			return;
 		//case 0x1EA8:
-		//	slotmachine(s, DEREF_pItem(pi));
+		//	slotmachine(s, pi);
 		//	return; // Ripper
 		case 0x1EBC: // tinker's tools
 			targ = clientInfo[s]->newTarget( new cItemTarget() );

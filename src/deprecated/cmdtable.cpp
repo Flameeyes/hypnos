@@ -1064,7 +1064,7 @@ void target_dupe( pClient client, pTarget t )
         {
             for (int j=0; j<n; j++ )
             {
-                Commands::DupeItem( ps->toInt(), pi->getSerial(), pi->amount );
+                Commands::DupeItem(client, pi, pi->amount );
                 ps->sysmsg( "DupeItem done.");
             }
         }

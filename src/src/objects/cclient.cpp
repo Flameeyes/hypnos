@@ -900,7 +900,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
         {
 		if ( npc && npc->npcaitype==NPCAI_PLAYERVENDOR && npc->getOwner()==pc )
 		{
-			pc->fx1= DEREF_pItem(pi);
+			pc->fx1= pi->getSerial();
 			pc->fx2=17;
 			pc->sysmsg("Set a price for this item.");
 	        }
@@ -2108,7 +2108,7 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 
 				pSell->setContainer( np_b );
 				if (pSell->amount!=amt)
-					Commands::DupeItem(s, DEREF_pItem(pSell), pSell->amount-amt);
+					Commands::DupeItem(this, pSell, pSell->amount-amt);
                         }
                 }
         }

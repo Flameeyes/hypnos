@@ -804,7 +804,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									{
 										pItem pi_z=pc->GetItemOnLayer(0x1C);
 										{
-											sellContainer = DEREF_pItem(pi_z);
+											sellContainer = pi_z->getSerial();
 										}
 									}
 									if ( sellContainer != INVALID )
@@ -829,7 +829,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 										pItem pi_z=pc->GetItemOnLayer(0x1B);
 										if (pi_z)
 										{
-											buyNoRestockContainer = DEREF_pItem(pi_z);
+											buyNoRestockContainer = pi_z->getSerial();
 										}
 									}
 									if ( buyNoRestockContainer != INVALID )

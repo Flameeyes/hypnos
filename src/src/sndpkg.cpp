@@ -1124,7 +1124,7 @@ int sellstuff(NXWSOCKET s, pChar pc)
 						value=pj->value;
 						value = pj1->calcValue(value);
 						if ( nSettings::Server::isEnabledTradeSystem() )
-							value=calcGoodValue(i,DEREF_pItem(pj1),value,1); // by Magius(CHE)
+							value=calcGoodValue(pc, pj1,value,1); // by Magius(CHE)
 						ShortToCharPtr(value, m1+m1t+10);
 						namelen = pj1->getName(itemname);
 						m1[m1t+12]=0;// Unknown... 2nd length byte for string?

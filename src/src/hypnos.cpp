@@ -1628,7 +1628,6 @@ void InitMultis()
 		if( multi )
 		{
 			if (multi->type==117)
-				//setserial(i,DEREF_pItem(multi),8);
 				pc_i->setMultiSerial(multi->getSerial());
 			else
 				pc_i->setMultiSerial32Only(INVALID);
@@ -1651,7 +1650,6 @@ void InitMultis()
 			pItem multi=findmulti( pi->getPosition() );
 			if ( multi )
 				if (multi->getSerial()!=pi->getSerial())
-					//setserial(DEREF_pItem(pi),DEREF_pItem(multi),7);
 					pi->SetMultiSerial(multi->getSerial());
 				else
 					pi->setMultiSerial32Only(INVALID);

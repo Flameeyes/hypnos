@@ -39,7 +39,7 @@ namespace Commands
 	void Command(pClient client, char * );
 	void MakeShop(pChar pc);
 	void DyeItem(pClient client);
-	void DupeItem(pClient client, int i, int amount);
+	void DupeItem(pClient client, pItem pi_from, uint16_t amount);
 	void Possess(pClient client);
 };
 

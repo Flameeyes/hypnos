@@ -263,12 +263,10 @@ int response(NXWSOCKET  s)
 				//
 				if ( requestPackup && pc_map->npcaitype == NPCAI_PLAYERVENDOR && (pc->isOwnerOf( pc_map ) || pc->IsGM()))
 				{
-					int pvDeed;
 					// lets make the deed and place in your pack and delete vendor.
 					strcpy( temp, "Employment deed" );
 					pItem pDeed = item::CreateFromScript( "$item_employment_deed", pc->getBackpack() );
 					if ( ! pDeed ) return true;
-					pvDeed= DEREF_pItem(pDeed);
 
 					pDeed->Refresh();
 					pc_map->playMonsterSound(SND_DIE);

@@ -740,9 +740,9 @@ int on_hlist(pItem pi, uint32_t serial, int *li)
 		if( p_ci ) {
 
 			if((p_ci->morey== (uint32_t)pi->getSerial())&&
-			   (calcserial( p_ci->more1i, p_ci->more2, p_ci->more3, p_ci->more4) == serial) )
+			   (calcserial( p_ci->more1, p_ci->more2, p_ci->more3, p_ci->more4) == serial) )
 				{
-				    if(li!=NULL) *li=DEREF_pItem(p_ci);
+				    if(li!=NULL) *li=p_ci->getSerial();
 						return p_ci->morex;
 				}
 		}
