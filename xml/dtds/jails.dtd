@@ -1,0 +1,14 @@
+<!-- elements in jails -->
+<!ELEMENT jails jail+>
+
+<!ATTLIST jails
+	jailtype (account|player) #REQUIRED
+>
+
+<!ELEMENT jail>
+
+<!ATTLIST jail
+	x CDATA #REQUIRED
+	y CDATA #REQUIRED
+	z CDATA #REQUIRED
+>

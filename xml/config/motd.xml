@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE hypnosmotd SYSTEM "http://hypnos.berlios.de/dtds/weapons.dtd">
+<!DOCTYPE hypnosmotd SYSTEM "http://hypnos.berlios.de/dtds/motd.dtd">
 <hypnosmotd>
   <motd>Message of the day</motd>
   <tip>Tip n.1</tip>

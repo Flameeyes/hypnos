@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE jails SYSTEM "http://hypnos.berlios.de/dtds/jails.dtd">
+<jails jailtype="account">
+  <jail x="5276" y="1164" z="0" />
+  <jail x="5286" y="1164" z="0" />
+  <jail x="5290" y="1164" z="0" />
+  <jail x="5306" y="1164" z="0" />
+  <jail x="5276" y="1174" z="0" />
+  <jail x="5286" y="1174" z="0" />
+  <jail x="5296" y="1174" z="0" />
+  <jail x="5306" y="1174" z="0" />
+  <jail x="5283" y="1184" z="0" />
+  <jail x="5304" y="1184" z="0" />
+</jails>

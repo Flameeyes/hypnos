@@ -1,4 +1,4 @@
 <!-- elements in hypnosmotd -->
 <!ELEMENT hypnosmotd motd, (tip)*>
-<!ELEMENT motd>
-<!ELEMENT tip>
+<!ELEMENT motd (#PCDATA)>
+<!ELEMENT tip (#PCDATA)>

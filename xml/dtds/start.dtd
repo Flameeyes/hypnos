@@ -1,0 +1,14 @@
+<!-- elements in start -->
+<!ELEMENT start (location+)>
+
+<!-- data inside schedules is the name of the function to call -->
+<!ELEMENT location (city|place|position)>
+<!ELEMENT city (#PCDATA) >
+<!ELEMENT place (#PCDATA) >
+<!ELEMENT position EMPTY>
+
+<!ATTLIST position
+	x CDATA #REQUIRED
+	y CDATA #REQUIRED
+	z CDATA #REQUIRED
+>
