@@ -532,6 +532,41 @@ void cPacketSendPingReply::prepare()
 
 
 
+/* PkG 0x85: Char Delete Error
+ *	reason:
+ *      0x00 => That character password is invalid.
+ *      0x01 => That character doesn't exist.
+ *      0x02 => That character is being played right now.
+ *      0x03 => That charater is not old enough to delete.
+                The character must be 7days old before it can be deleted.
+ *      0x04 => That character is currently queued for backup and cannot be
+ *              deleted.
+ *      0x05 => Couldn't carry out your request.
+ */
+
+void cPacketSendCharAfterDelete::prepare()
+{
+	buffer = new uint8_t[2];
+        length = 2;
+        buffer[0] = 0x85;
+	buffer[1] = reason;
+}
+
+
+void cPacketSendCharAfterDelete::prepare()
+{
+	buffer = new uint8_t[304];
+        length = 304;
+        memset(buffer, 304,0); //filling the buffer with zeroes
+        buffer[0] = 0x86;
+        ShortToCharPtr(304, buffer + 1);
+        buffer[3] = account->getCharsNumber();
+        for(int i = 0;i<5; ++i)
+                if (i<= buffer[3])
+                	strcpy(buffer + (i*60) + 4, account->getChar(i)->getCurrentNameC());
+}
+
+
 static pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
 {
        switch(buffer[0])
@@ -1665,6 +1700,8 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
         if(!account->comparePassword(buffer+1))
        	{
              	// Password invalid
+                cPacketSendCharDeleteError pk(0x0);
+	       	client->sendPacket(&pk);
         	return true;
         }
 
@@ -1678,6 +1715,8 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
 		if(!TrashMeUp)
                 {
 			// Character does not exist
+                	cPacketSendCharDeleteError pk(0x1);
+	       		client->sendPacket(&pk);
                         return true;
 		}
 
@@ -1685,23 +1724,29 @@ bool cPacketReceiveDeleteCharacter::execute(pClient client)
 		{
 			if( SrvParms->checkcharage && (getclockday() < TrashMeUp->getCreationDay() + 7) )
                         {
-                        	// Character too young to die :D
+                        	// Character is too young to die :D
+                                cPacketSendCharDeleteError pk(0x3);
+	       			client->sendPacket(&pk);
 				return true;
 			}
 
 			if(TrashMeUp->isOnline())
                         {
                         	// Character is being played right now!
+                                cPacketSendCharDeleteError pk(0x2);
+	       			client->sendPacket(&pk);
 				return true;
 			}
 			TrashMeUp->Delete();
 
-			//TODO: resend characters after delete
-
+			cPacketSendCharAfterDelete pk(account);
+		       	client->sendPacket(&pk);
 
 			return true; // All done ;]
 		}
 	}
         // sending message "0x05 => Couldn't carry out your request" ???????
+ 	cPacketSendCharDeleteError pk(0x5);
+	client->sendPacket(&pk);
         return true;
 }

@@ -537,6 +537,33 @@ public:
 	void prepare();
 };
 
+class cPacketSendCharDeleteError : cPacketSend
+{
+protected:
+	uint8_t reason;
+
+public:
+	inline cPacketSendCharDeleteError(uint8_t r) :
+        	reason(r),
+		buffer(NULL), length(NULL)
+	{ }
+
+	void prepare();
+};
+
+class cPacketSendCharAfterDelete : cPacketSend
+{
+protected:
+	pAccount account;
+
+public:
+	inline cPacketSendCharAfterDelete(pAccount a) :
+        	account(a),
+		buffer(NULL), length(NULL)
+	{ }
+
+	void prepare();
+};
 
 /*!
 \brief Packet received
