@@ -1,12 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| PyUO Server Emulator                                                     |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in pyuo.cpp file.              |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "nxwcommn.h"
 #include "sndpkg.h"
 #include "amx/amxcback.h"
@@ -40,6 +38,34 @@ otherwise, more memory will be allocated in the mainloop (Duke)
 cWeapon::cWeapon(SERIAL serial) : cItem (serial)
 {
 }
+
+static const bool cItem::isHouse(UI16 id)
+{
+	if (id < 0x0040) return false;
+
+	if ( (id >= 0x0064) && (id <= 0x007f) ) return true;
+
+	if( id==0x0bb8 || id==0x1388 )
+		return true;
+
+	switch(id&0xFF)
+	{
+		case 0x87:
+		case 0x8c:
+		case 0x8d:
+		case 0x96:
+		case 0x98:
+		case 0x9a:
+		case 0x9c:
+		case 0x9e:
+		case 0xa0:
+		case 0xa2:
+			return true;
+	}
+
+	return false;
+}
+
 
 /*!
 \author Luxor
@@ -513,6 +539,16 @@ SI32 cItem::IncreaseAmount(const SI16 amt)
 	amount+= amt;
 	Refresh();
 	return amount;
+}
+
+const magic::FieldType cItem::isFieldSpellItem() const
+{
+	if( (getId()==0x3996) || (getId()==0x398C) ) return magic::fieldFire;
+	if( (getId()==0x3915) || (getId()==0x3920) ) return magic::fieldPoison;
+	if( (getId()==0x3979) || (getId()==0x3967) ) return magic::fieldParalyse;
+	if( (getId()==0x3956) || (getId()==0x3946) ) return magic::fieldEnergy;
+
+	return fieldInvalid;
 }
 
 /*

@@ -66,6 +66,14 @@
 \brief Magic related stuff
 */
 namespace magic {
+	enum FieldType
+	{
+		fieldInvalid = 0,
+		fieldFire,
+		fieldPoison,
+		fieldParalyse,
+		fieldEnergy
+	};
 
 	/*!
 	\author Luxor
@@ -199,7 +207,7 @@ namespace magic {
 		UI32 shade;
 		UI32 garlic;
 	};
-	
+
 	struct g_Spell
 	{
 		bool enabled;		// spell enabled?
