@@ -147,7 +147,7 @@ but it works great!
 */
 bool ip2long(char *ip, int &ris)
 {
-  char buffer[16], *a, *b, *c;
+  char buffer[16], *a = NULL, *b = NULL, *c = NULL;
   bool ret = true;
 
   a = strchr(buffer, '.');

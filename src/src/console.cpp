@@ -9,10 +9,6 @@
 #include "debug.h"
 #include <signal.h>
 #include "version.h"
-#include "globals.h"
-
-#include <stdio.h>
-#include <stdarg.h>
 #include "console.h"
 
 static FILE *s_fileStdOut = NULL;

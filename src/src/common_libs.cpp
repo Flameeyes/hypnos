@@ -84,5 +84,6 @@ stringVector splitline(std::string str)
 		ret.push_back( std::string(s) );
 		s=strtok(NULL, " ");
 	}
+	
+	return ret;
 }
-

@@ -10,11 +10,10 @@
 \author Luxor
 \brief Data files handling system
 */
-
 #include "common_libs.h"
 #include "data.h"
 #include "inlines.h"
-#include "nxw_utils.h"
+#include "logsystem.h"
 
 bool statics_cache = false;
 bool map_cache = false;
@@ -80,7 +79,7 @@ static void cacheMap()
 							( yOffset * 8 * map_st_size ) + ( xOffset * map_st_size );
 
 						if ( maps[i]->getData( pos, m ) )
-							map_cache->insert( pair< uint32_t, map_st >( pos, m ) );
+							map_cache->insert( std::pair< uint32_t, map_st >( pos, m ) );
 					}
 				}
 			}
@@ -120,14 +119,14 @@ static void cacheStatics()
 
 			if ( !staticIdx->getData( pos, staidx ) || staidx.start < 0 || staidx.length <= 0 )
 				continue;
-			staidx_cache->insert( pair< uint32_t, staticIdx_st >( pos, staidx ) );
+			staidx_cache->insert( std::pair< uint32_t, staticIdx_st >( pos, staidx ) );
 
 			num = staidx.length / static_st_size;
 
 			for ( i = 0; i < num; i++ ) {
 				pos = staidx.start + ( i * static_st_size );
 				if ( statics->getData( pos, s ) )
-					statics_cache->insert( pair< uint32_t, static_st >( pos, s ) );
+					statics_cache->insert( std::pair< uint32_t, static_st >( pos, s ) );
 			}
 		}
 	}
@@ -160,9 +159,9 @@ static void cacheTileData()
 				// Each block contains 32 land_st.
 				( (block + 1) * TILE_HEADER_SIZE ) + ( land_st_size * (index + block * 32) );
 			if ( verLand->getData( pos, l ) )
-				land_cache->insert( pair< uint32_t, land_st >( pos, l ) );
+				land_cache->insert( std::pair< uint32_t, land_st >( pos, l ) );
 			else if ( tdLand->getData( pos, l ) )
-				land_cache->insert( pair< uint32_t, land_st >( pos, l ) );
+				land_cache->insert( std::pair< uint32_t, land_st >( pos, l ) );
 		}
 	}
 	ConOut( "[Done]" );
@@ -177,9 +176,9 @@ static void cacheTileData()
 				// Each block contains 32 tile_st.
 				( (block + 1) * TILE_HEADER_SIZE ) + ( tile_st_size * (index + block * 32) );
 			if ( verTile->getData( pos, t ) )
-				tile_cache->insert( pair< uint32_t, tile_st >( pos, t ) );
+				tile_cache->insert( std::pair< uint32_t, tile_st >( pos, t ) );
 			else if ( tdTile->getData( pos, t ) )
-				tile_cache->insert( pair< uint32_t, tile_st >( pos, t ) );
+				tile_cache->insert( std::pair< uint32_t, tile_st >( pos, t ) );
 		}
 	}
 	ConOut( "[Done]" );
@@ -206,7 +205,7 @@ static void cacheVerdataIndex()
 	for ( i = 0; i < verdataEntries; i++ ) {
 		pos = VERDATA_HEADER_SIZE + ( i * verdata_st_size );
 		if ( verIdx->getData( pos, v ) )
-			verIdx_cache->insert( pair< uint32_t, verdata_st >( pos, v ) );
+			verIdx_cache->insert( std::pair< uint32_t, verdata_st >( pos, v ) );
 	}
 	ConOut( "[Done]" );
 	verIdx->setCache( verIdx_cache );
@@ -244,13 +243,13 @@ static void cacheVerdata()
 			for ( index = 0; index < 32; index++ ) {
 				pos = TILE_HEADER_SIZE + v.pos + index * tile_st_size;
 				if ( verTile->getData( pos, t ) )
-					verTile_cache->insert( pair< uint32_t, tile_st >( pos, t ) );
+					verTile_cache->insert( std::pair< uint32_t, tile_st >( pos, t ) );
 			}
 		} else {
 			for ( index = 0; index < 32; index++ ) {
 				pos = TILE_HEADER_SIZE + v.pos + index * land_st_size;
 				if ( verLand->getData( pos, l ) )
-					verLand_cache->insert( pair< uint32_t, land_st >( pos, l ) );
+					verLand_cache->insert( std::pair< uint32_t, land_st >( pos, l ) );
 			}
 		}
 	}
@@ -270,8 +269,6 @@ void init()
 	//
 	// If MULs loading fails, stop the server!
 	//
-	keeprun = false;
-
 	ConOut("Preparing to open *.mul files...\n(If they don't open, fix your paths in server.cfg)\n");
 
 	maps.push_back( new cMULFile< map_st > ( map_path, "rb" ) );
@@ -323,7 +320,6 @@ void init()
 	// MULs loaded, keep the server running
 	//
 	ConOut("MUL files loaded succesfully.\n" );
-	keeprun = true;
 }
 
 /*!

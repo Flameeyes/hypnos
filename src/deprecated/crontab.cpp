@@ -41,14 +41,12 @@
 
 #include "common_libs.h"
 #include "network.h"
-#include "cmdtable.h"
 #include "sregions.h"
-#include "bounty.h"
+#include "extras/bounty.h"
 #include "sndpkg.h"
 #include "debug.h"
-#include "jail.h"
+#include "extras/jail.h"
 #include "worldmain.h"
-#include "set.h"
 #include "trade.h"
 #include "inlines.h"
 
