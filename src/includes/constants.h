@@ -101,13 +101,14 @@ typedef enum { SND_STARTATTACK = 0, SND_IDLE, SND_ATTACK, SND_DEFEND, SND_DIE } 
 
 //! Skills
 enum Skill {
-	ALCHEMY = 0, ANATOMY, ANIMALLORE, ITEMID, ARMSLORE, PARRYING, BEGGING, BLACKSMITHING,
-	BOWCRAFT, PEACEMAKING, CAMPING, CARPENTRY, CARTOGRAPHY, COOKING, DETECTINGHIDDEN,
-	ENTICEMENT, EVALUATINGINTEL, HEALING, FISHING, FORENSICS, HERDING, HIDING, PROVOCATION,
-	INSCRIPTION, LOCKPICKING, MAGERY, MAGICRESISTANCE, TACTICS, SNOOPING, MUSICIANSHIP,
-	POISONING, ARCHERY, SPIRITSPEAK, STEALING, TAILORING, TAMING, TASTEID, TINKERING,
-	TRACKING, VETERINARY, SWORDSMANSHIP, MACEFIGHTING, FENCING, WRESTLING, LUMBERJACKING,
-	MINING, MEDITATION, STEALTH, REMOVETRAPS, TRUESKILLS, INVALID_SKILL = -1
+	skInvalid = -1, skAlchemy = 0, skAnatomy, skAnimalLore, skItemID, skArmsLore, skParrying,
+	skBegging, skBlacksmithing, skBowcraft, skPeacemaking, skCamping, skCarpentry, skCartography,
+	skCooking, skDetectingHidden, skEnticement, skEvaluatingIntelligence, skHealing, skFishing,
+	skForensics, skHerding, skHiding, skProvocation, skInscription, skLockPicking, skMagery,
+	skMagicResistance, skTactics, skSnooping, skMusicianship, skPoisoning, skArchery, skSpiritSpeak,
+	skStealing, skTailoring, skTaming, skTasteID, skTinkering, skTracking, skVeerinary, skSwordsmanship,
+	skMacefighting, skFencing, skWrestling, skLumberjacking, skMining, skMeditation, skStealth
+	skRemoveTraps, skTrueSkills
 };
 
 enum { ALLSKILLS = 49, STR , DEX, INTEL, FAME, KARMA,

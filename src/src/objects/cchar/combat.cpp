@@ -200,7 +200,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	if (pc_def->IsInvul()) return;
 
-	checkSkillSparrCheck(TACTICS, 0, 1000, pc_def);
+	checkSkillSparrCheck(skTactics, 0, 1000, pc_def);
 	if (pc_def->getId()==BODY_FEMALE) pc_def->playSFX(0x014B);
 	if (pc_def->getId()==BODY_MALE) pc_def->playSFX(0x0156);
 	pc_def->playMonsterSound( SND_DEFEND );
@@ -216,7 +216,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 		//Luxor (6 dec 2001): Wrestling Disarm & Stun punch
 		if ( wresmove == WRESDISARM ) {
-			chanceToHit += int( skill[TACTICS]/100.0 - pc_def->skill[TACTICS]/100.0 );
+			chanceToHit += int( skill[skTactics]/100.0 - pc_def->skill[skTactics]/100.0 );
 			chanceToHit += int( str1/10.0 - str2/10.0 );
 			if ( chance( chanceToHit ) ) {
 				pItem dWeapon=pc_def->getWeapon();
@@ -235,7 +235,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		}
 
 		if ( wresmove == WRESSTUNPUNCH ) {
-			chanceToHit += int( skill[TACTICS]/100.0 - pc_def->skill[TACTICS]/100.0 );
+			chanceToHit += int( skill[skTactics]/100.0 - pc_def->skill[skTactics]/100.0 );
 			chanceToHit += int( str1/10.0 - str2/10.0 );
 			if ( chance( chanceToHit ) ) {
 				wresmove = 0;
@@ -247,14 +247,14 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		}
 		//Luxor <End>
 	}
-	pc_def->checkSkill(TACTICS, 0, 1000, 1);
+	pc_def->checkSkill(skTactics, 0, 1000, 1);
 
 
-	damage = basedamage + (int)(basedamage/100.0 * ((skill[TACTICS])/16.0)); //Bonus damage for tactics
+	damage = basedamage + (int)(basedamage/100.0 * ((skill[skTactics])/16.0)); //Bonus damage for tactics
 	damage += (int)(damage/100.0 * getStrength()/5.0); //Bonus damage for strenght
-	if (checkSkillSparrCheck(ANATOMY, 0, 1000, pc_def)) { //Bonus damage for anatomy
-		if ( skill[ANATOMY] < 1000 ) {
-			damage += (int)( damage/100.0 * skill[ANATOMY]/50.0 );
+	if (checkSkillSparrCheck(skAnatomy, 0, 1000, pc_def)) { //Bonus damage for anatomy
+		if ( skill[skAnatomy] < 1000 ) {
+			damage += (int)( damage/100.0 * skill[skAnatomy]/50.0 );
 		} else { //GM anatomist
 			damage += (int)( damage/100.0 * 30.0 );
 		}
@@ -262,8 +262,8 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	pItem pShield=pc_def->getShield();
 	if( pShield ) {
-		if ( chance(pc_def->skill[PARRYING]/20) ) { // chance to block with shield
-			pc_def->checkSkill(PARRYING, 0, 1000);
+		if ( chance(pc_def->skill[skParrying]/20) ) { // chance to block with shield
+			pc_def->checkSkill(skParrying, 0, 1000);
 			//pc_def->emoteall( "*Parries the attack*", 1 );
 			if (pShield->def!=0 && fightskill!=ARCHERY) damage -= pShield->def/2; // damage absorbed by shield
 			if (pShield->def!=0 && fightskill==ARCHERY) damage -= pShield->def; // damage absorbed by shield
@@ -902,7 +902,7 @@ void cChar::setWresMove(int32_t move)
 	switch (move)
 	{
 		case WRESDISARM:
-			if (skill[WRESTLING] >= 800 && skill[ARMSLORE] >= 800) {
+			if (skill[WRESTLING] >= 800 && skill[skArmsLore] >= 800) {
 				sysmsg(TRANSLATE("You prepare yourself for a disarm move."));
 				wresmove = 1;	//set wresmove to disarm
 			} else {
@@ -911,7 +911,7 @@ void cChar::setWresMove(int32_t move)
 			break;
 
 		case WRESSTUNPUNCH:
-			if (skill[WRESTLING] >= 800 && skill[ANATOMY] >= 800) {
+			if (skill[WRESTLING] >= 800 && skill[skAnatomy] >= 800) {
 				sysmsg(TRANSLATE("You prepare yourself for a stunning punch."));
 				wresmove = 2;	//set wresmove to stun punch
 			} else {

@@ -65,7 +65,7 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 	pc_att->spatimer=currenttime+(pc_att->spadelay*MY_CLOCKS_PER_SEC); //LB bugkilling
 
 
-	if ( pc_def->summontimer && pc_att->baseskill[MAGERY] > 700 ) {
+	if ( pc_def->summontimer && pc_att->baseskill[skMagery] > 700 ) {
 		pc_att->facexy( pc_def->getPosition().x, pc_def->getPosition().y );
 		NPC_CASTSPELL( magic::SPELL_DISPEL, pc_def );
 		return;
@@ -425,7 +425,7 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 			if ( pc->npcWander == WANDER_FLEE )
 				return;
 
-			if (pc->baseskill[MAGERY] > 400)
+			if (pc->baseskill[skMagery] > 400)
 			{
 				if ( chance( 50 ) )
 				{

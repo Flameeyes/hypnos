@@ -33,7 +33,7 @@ void Begging::target(NXWCLIENT ps, pTarget t)
 		return;
 	
 	// TODO! Convertire a interfaccia eventi migliorata
-	// AMXEXECSVTARGET( pcc->getSerial(),AMXT_SKITARGS,BEGGING,AMX_BEFORE);
+	// AMXEXECSVTARGET( pcc->getSerial(),AMXT_SKITARGS,skBegging,AMX_BEFORE);
 	
 	if(pc->IsOnline())
 	{
@@ -100,6 +100,6 @@ void Begging::target(NXWCLIENT ps, pTarget t)
 	sysmessage(s,TRANSLATE("Some gold is placed in your pack."));
 
 	// TODO need to update to new event system
-//	AMXEXECSVTARGET( pcc->getSerial(),AMXT_SKITARGS,BEGGING,AMX_AFTER);
+//	AMXEXECSVTARGET( pcc->getSerial(),AMXT_SKITARGS,skBegging,AMX_AFTER);
 }
 

@@ -85,7 +85,7 @@ void cChar::doubleClick(pClient client, int keyboard)
 				}
 				else
 				{
-					if ( clicker->checkSkill( SNOOPING, 0, 1000 ) )
+					if ( clicker->checkSkill( skSnooping, 0, 1000 ) )
 					{
 						if (pack )
 						{

@@ -248,39 +248,39 @@ void Race::parseRaceSection( void )
 					break;
 				case 'A':
 					if 			( lha == "ALCHEMY" ||
-					     			lha == "ANATOMY" ||
-					     			lha == "ANIMALLORE" ||
-					     			lha == "ARMSLORE" ||
+					     			lha == "skAnatomy" ||
+					     			lha == "skAnimalLore" ||
+					     			lha == "skArmsLore" ||
 					     			lha == "ARCHERY")						race->parseSkill( rha );
 					break;
 				case 'B':
 					if 			( lha == "BEARD" )						race->beardPerm = rha;
 					else if ( lha == "BEARDCOLOR" )				race->parseBeardColor( rha );
-					else if ( lha == "BEGGING" ||
-						  			lha == "BLACKSMITHING" ||
-						  			lha == "BOWCRAFTING")				race->parseSkill( rha );
+					else if ( lha == "skBegging" ||
+						  			lha == "skBlacksmithing" ||
+						  			lha == "skBowcraftING")				race->parseSkill( rha );
 					break;
 				case 'C':
-					if 			( lha == "CAMPING" ||
-					     			lha == "CARPENTRY" ||
-					     			lha == "CARTOGRAPHY" ||
-					     			lha == "COOKING")						race->parseSkill( rha );
+					if 			( lha == "skCamping" ||
+					     			lha == "" ||
+					     			lha == "skCartography" ||
+					     			lha == "skCooking")						race->parseSkill( rha );
 				case 'D':
 					if 			( lha == "DESCRIPTION" )			race->parseRaceDescription( rha );
-					else if ( lha == "DETECTINGHIDDEN" )			race->parseSkill( rha );
+					else if ( lha == "skDetectingHidden" )			race->parseSkill( rha );
 					else if ( lha == "DEXCAP" ) 					race->dexCap = str2num( rha );
 					else if	( lha == "DEXMOD" )						race->parseAbilityModifiers( DEXTERITY, rha );
 					else if	( lha == "DEXSTART" )					race->dexStart = str2num( rha );
 					break;
 				case 'E':
 					if 			( lha == "ENEMY" )						race->m_mapRacialRelations[ (uint32_t) str2num( rha ) ] = ENEMY;
-					else if ( lha == "ENTICEMENT" ||
+					else if ( lha == "skEnticement" ||
 						  			lha == "EVALUATEINTELLECT")	race->parseSkill( rha );
 					break;
 				case 'F':
 					if 			( lha == "FENCING" ||
 					     			lha == "FISHING" ||
-					     			lha == "FORENSICS")					race->parseSkill( rha );
+					     			lha == "skForensics")					race->parseSkill( rha );
 					else if ( lha == "FRIEND" ) 					race->m_mapRacialRelations[ (uint32_t) str2num( rha ) ] = FRIEND;
 					break;
 				case 'G':
@@ -290,23 +290,23 @@ void Race::parseRaceSection( void )
 					if 			( lha == "HAIR" )							race->hairPerm = rha;
 					else if ( lha == "HAIRCOLOR" )				race->parseHairColor( rha );
 					else if ( lha == "HEALING" ||
-						  			lha == "HERDING" ||
+						  			lha == "skHerding" ||
 						  			lha == "HIDING")						race->parseSkill( rha );
 					break;
 				case 'I':
-					if 			( lha == "INSCRIPTION" )			race->parseSkill( rha );
+					if 			( lha == "skInscription" )			race->parseSkill( rha );
 					else if ( lha == "INTCAP" ) 					race->intCap = str2num( rha );
 					else if	( lha == "INTMOD" )						race->parseAbilityModifiers( INTELLIGENCE, rha );
 					else if	( lha == "INTSTART" )					race->intStart = str2num( rha );
 					else if ( lha == "ITEMID" )						race->parseSkill( rha );
 					break;
 				case 'L':
-					if 			( lha == "LOCKPICKING" ||
+					if 			( lha == "skLockPicking" ||
 					     			lha == "LUMBERJACKING")			race->parseSkill( rha );
 				case 'M':
 					if 			( lha == "MACEFIGHTING" ||
-					     			lha == "MAGERY" ||
-					     			lha == "MAGICRESISTANCE")		race->parseSkill( rha );
+					     			lha == "skMagery" ||
+					     			lha == "skMagicResistance")		race->parseSkill( rha );
 					else if ( lha == "MAGICRESISTANT" )		race->magicResistant = true; // may need to change this to %
 					else if ( lha == "MEDITATION" ||
 						  			lha == "MINING")						race->parseSkill( rha );
@@ -318,7 +318,7 @@ void Race::parseRaceSection( void )
 							WarnOut("%s invalid %s %s\n", sectionName.c_str(), lha.c_str(), rha.c_str() );
 							race->activeRace = false;
 						}
-					else if ( lha == "MUSICIANSHIP" )			race->parseSkill( rha );
+					else if ( lha == "skMusicianship" )			race->parseSkill( rha );
 					break;
 				case 'N':
 					if 			( lha == "NAME" ) 						race->name = rha;
@@ -328,7 +328,7 @@ void Race::parseRaceSection( void )
 					if 			( lha == "PLURALNAME" ) 			race->pluralName = rha;
 					else if ( lha == "POISONING" )				race->parseSkill( rha );
 					else if ( lha == "POISONRESISTANCE" ) race->parsePoisonResistance( rha );
-					else if ( lha == "PROVOCATION" )			race->parseSkill( rha );
+					else if ( lha == "skProvocation" )			race->parseSkill( rha );
 					break;
 				case 'R':
 					if 			( lha == "RACETYPE" ) 				race->raceType = rha;
@@ -337,7 +337,7 @@ void Race::parseRaceSection( void )
 				case 'S':
 					if 			( lha == "SKILLCAP" )					race->skillCap = str2num( rha );
 					else if ( lha == "SKINCOLOR" ) 				race->parseSkinColor( rha );
-					else if ( lha == "SNOOPING" ||
+					else if ( lha == "skSnooping" ||
 						  			lha == "SPIRITSPEAK")				race->parseSkill( rha );
 					else if ( lha == "STARTITEM" ) 				race->parseStartItem( rha );
 					else if ( lha == "STATCAP" ) 					race->statCap = str2num( rha );
@@ -352,7 +352,7 @@ void Race::parseRaceSection( void )
 					if 			( lha == "TAILORING" ||
 					     			lha == "TAMING" ||
 					     			lha == "TASTEID" ||
-					     			lha == "TACTICS")						race->parseSkill( rha );
+					     			lha == "skTactics")						race->parseSkill( rha );
 					else if ( lha == "TILEID" ) 					race->tileId = str2num( rha );
 					else if ( lha == "TINKERING" ||
 						  			lha == "TRACKING")					race->parseSkill( rha );

@@ -197,12 +197,12 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 			break;
 		case SPELL_PARALYZE:
 			VALIDATEPCR(src, 0);
-			dur = src->skill[MAGERY]/100;
+			dur = src->skill[skMagery]/100;
 			break;
 
 		case SPELL_LIGHT:
 			VALIDATEPCR(src, 0);
-			dur = src->skill[MAGERY]*10;
+			dur = src->skill[skMagery]*10;
 			break;
 
 		case SPELL_CLUMSY:
@@ -216,7 +216,7 @@ int32_t getTempFxTime(pChar src, int num, int more1, int more2, int more3)
 		case SPELL_REACTARMOR:
 		case SPELL_PROTECTION:
 			VALIDATEPCR(src, 0);
-			dur = src->skill[MAGERY]/10;
+			dur = src->skill[skMagery]/10;
 			break;
 
 		case SPELL_POLYMORPH:

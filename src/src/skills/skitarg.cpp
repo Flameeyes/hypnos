@@ -127,18 +127,18 @@ void Skills::target_fletching( NXWCLIENT ps, pTarget t )
 	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,BOWCRAFT,AMX_BEFORE);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skBowcraft,AMX_BEFORE);
     if ( pi->magic!=4) // Ripper
     {
         if (CheckInPack(s,pi))
         {
-            MakeMenu(pc,60,BOWCRAFT, cSerializable::findItemBySerial( t->buffer[0] ), pi );
+            MakeMenu(pc,60,skBowcraft, cSerializable::findItemBySerial( t->buffer[0] ), pi );
         }
     }
 	else
 		pc->sysmsg(TRANSLATE("You cannot use that for fletching."));
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,BOWCRAFT,AMX_AFTER);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skBowcraft,AMX_AFTER);
 }
 
 void Skills::target_bowcraft( NXWCLIENT ps, pTarget t )
@@ -153,7 +153,7 @@ void Skills::target_bowcraft( NXWCLIENT ps, pTarget t )
 	const pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
-	AMXEXECSVTARGET(pc_currchar->getSerial(),AMXT_SKITARGS,BOWCRAFT,AMX_BEFORE);
+	AMXEXECSVTARGET(pc_currchar->getSerial(),AMXT_SKITARGS,skBowcraft,AMX_BEFORE);
 
 	pc_currchar->playAction(pc_currchar->isMounting() ? 0x1C : 0x0D);
 	if ( pi->magic!=4) // Ripper
@@ -163,12 +163,12 @@ void Skills::target_bowcraft( NXWCLIENT ps, pTarget t )
 		{
 			if (CheckInPack(s,pi))
 			{
-				MakeMenu(pc_currchar,65,BOWCRAFT,pi);
+				MakeMenu(pc_currchar,65,skBowcraft,pi);
 			}
 		}
 	}
 
-	AMXEXECSVTARGET( pc_currchar->getSerial(),AMXT_SKITARGS,BOWCRAFT,AMX_AFTER);
+	AMXEXECSVTARGET( pc_currchar->getSerial(),AMXT_SKITARGS,skBowcraft,AMX_AFTER);
 }
 
 ////////////////////
@@ -189,7 +189,7 @@ void Skills::target_carpentry( NXWCLIENT ps, pTarget t )
 	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,CARPENTRY,AMX_BEFORE);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skCarpentry,AMX_BEFORE);
     if ( pi->magic!=4)
     {
         if( pi->IsLog() || pi->IsBoard() ) // logs or boards
@@ -197,14 +197,14 @@ void Skills::target_carpentry( NXWCLIENT ps, pTarget t )
            if (CheckInPack(ps->toInt(),pi))
            {
               short mm = pi->IsLog() ? 19 : 20; // 19 = Makemenu to create boards from logs
-              MakeMenu(pc,mm,CARPENTRY,pi);
+              MakeMenu(pc,mm,skCarpentry,pi);
            }
         }
     }
     else
         pc->sysmsg(TRANSLATE("You cannot use that material for carpentry."));
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,CARPENTRY,AMX_AFTER);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skCarpentry,AMX_AFTER);
 }
 
 /*!
@@ -266,7 +266,7 @@ static void AnvilTarget( NXWSOCKET s, pItem pi, int ma, int mm, char* matname)
     {
         if (CheckInPack(s,pi))
         {
-			Skills::MakeMenu(pc,mm,BLACKSMITHING,pi);
+			Skills::MakeMenu(pc,mm,skBlacksmithing,pi);
 		}
 
     }
@@ -807,7 +807,7 @@ void Skills::target_cookOnFire( NXWCLIENT ps, pTarget t )
                 if( pc->hasInRange(pi, 3) )
                 {
                     pc->playSFX(0x01DD);   // cooking sound
-                    if (!pc->checkSkill(COOKING, 0, 1000))
+                    if (!pc->checkSkill(skCooking, 0, 1000))
                     {
                         piRaw->ReduceAmount(1+(rand() %(piRaw->amount)));
                         pc->sysmsg(TRANSLATE("You failed to cook the %s and drop some into the ashes."),matname.c_str());
@@ -850,11 +850,11 @@ void Skills::target_detectHidden( NXWCLIENT ps, pTarget t )
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
 
-	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,DETECTINGHIDDEN,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skDetectingHidden,AMX_BEFORE);
 
 	Location location = t->getLocation();
 
-	int32_t nSkill = pc->skill[DETECTINGHIDDEN];
+	int32_t nSkill = pc->skill[skDetectingHidden];
 	int32_t nRange = int32_t( VISRANGE * nSkill/2000.0 );
 	int32_t nLow = 0;
 	Location lCharPos = pc->getPosition();
@@ -883,7 +883,7 @@ void Skills::target_detectHidden( NXWCLIENT ps, pTarget t )
 				nLow = 0;
 			else if ( nLow > 999 )
 				nLow = 999;
-			if ( pc->checkSkill(DETECTINGHIDDEN, nLow, 1000) ) {
+			if ( pc->checkSkill(skDetectingHidden, nLow, 1000) ) {
 				pc_curr->unHide();
 				pc_curr->sysmsg( TRANSLATE("You have been revealed!") );
 				pc->sysmsg( TRANSLATE("You revelaled %s"), pc_curr->getCurrentName().c_str() );
@@ -895,7 +895,7 @@ void Skills::target_detectHidden( NXWCLIENT ps, pTarget t )
 	if( !bFound )
 		pc->sysmsg( TRANSLATE("You fail to find anyone.") );
 
-	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,DETECTINGHIDDEN,AMX_AFTER);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skDetectingHidden,AMX_AFTER);
 }
 
 void target_enticement2( NXWCLIENT ps, pTarget t )
@@ -916,7 +916,7 @@ void target_enticement2( NXWCLIENT ps, pTarget t )
 		return;
 	}
 
-	if (pc->checkSkill( ENTICEMENT, 0, 1000) && pc->checkSkill( MUSICIANSHIP, 0, 1000) )
+	if (pc->checkSkill( skEnticement, 0, 1000) && pc->checkSkill( skMusicianship, 0, 1000) )
 	{
 		pChar pc_target = cSerializable::findCharBySerial( t->buffer[0] );
 		VALIDATEPC(pc_target);
@@ -1004,10 +1004,10 @@ void target_provocation2( NXWCLIENT ps, pTarget t )
 		sysmessage(s, "You do not have an instrument to play on!");
 		return;
 	}
-	if (Player->checkSkill( MUSICIANSHIP, 0, 1000))
+	if (Player->checkSkill( skMusicianship, 0, 1000))
 	{
 		Skills::PlayInstrumentWell(s, inst);
-		if (Player->checkSkill( PROVOCATION, 0, 1000))
+		if (Player->checkSkill( skProvocation, 0, 1000))
 		{
 			if (Player->InGuardedArea() && ServerScp::g_nInstantGuard == 1) //Luxor
 				npcs::SpawnGuard(Player, Player, charpos.x+1, charpos.y, charpos.z); //ripper
@@ -1177,11 +1177,11 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
 
 	if (pp->dead)
 	{
-		if (ph->baseskill[HEALING] < 800 || ph->baseskill[ANATOMY]<800)
+		if (ph->baseskill[HEALING] < 800 || ph->baseskill[skAnatomy]<800)
 			ph->sysmsg(TRANSLATE("You are not skilled enough to resurrect"));
 		else
 		{
-			if(ph->checkSkill(HEALING,800,1000) && ph->checkSkill(ANATOMY,800,1000) ) {
+			if(ph->checkSkill(HEALING,800,1000) && ph->checkSkill(skAnatomy,800,1000) ) {
 				pp->resurrect();
 				ph->sysmsg(TRANSLATE("Because of your skill, you were able to resurrect the ghost."));
 			}
@@ -1197,14 +1197,14 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
 
 	if (pp->poisoned>0)
 	{
-		if (ph->baseskill[HEALING]<=600 || ph->baseskill[ANATOMY]<=600)
+		if (ph->baseskill[HEALING]<=600 || ph->baseskill[skAnatomy]<=600)
 		{
 			ph->sysmsg(TRANSLATE("You are not skilled enough to cure poison."));
 			ph->sysmsg(TRANSLATE("The poison in your target's system counters the bandage's effect."));
 		}
 		else
 		{
-			if (ph->checkSkill( HEALING,600,1000) && ph->checkSkill(ANATOMY,600,1000))
+			if (ph->checkSkill( HEALING,600,1000) && ph->checkSkill(skAnatomy,600,1000))
 			{
 				pp->poisoned=poisonNone;
 				ph->sysmsg(TRANSLATE("Because of your skill, you were able to counter the poison."));
@@ -1235,7 +1235,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
 		else
 		{
 			j=ph->skill[HEALING]/100*2 + 1 + rand()%2;      // a GM healer gives 42-44,
-			j+=ph->skill[ANATOMY]/100*2 + 1 + rand()%2;     // a 20.0 healer 10-12. Ok ?
+			j+=ph->skill[skAnatomy]/100*2 + 1 + rand()%2;     // a 20.0 healer 10-12. Ok ?
 			//pp->hp = qmin(pp->st, j+pp->hp);
 			//updatestats(i, 0);
 			//sysmessage(s,"You apply the bandages and the patient looks a bit healthier.");
@@ -1283,7 +1283,7 @@ void Skills::target_armsLore( NXWCLIENT ps, pTarget t )
     float totalhp;
     char p2[100];
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ARMSLORE,AMX_BEFORE);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skArmsLore,AMX_BEFORE);
 
     if ( (pi->def==0 || pi->pileable)
         && ((pi->lodamage==0 && pi->hidamage==0) && (pi->rank<1 || pi->rank>9)))
@@ -1297,7 +1297,7 @@ void Skills::target_armsLore( NXWCLIENT ps, pTarget t )
         return;
     }
 
-    if (!pc->checkSkill( ARMSLORE, 0, 250))
+    if (!pc->checkSkill( skArmsLore, 0, 250))
         pc->sysmsg(TRANSLATE("You are not certain..."));
     else
     {
@@ -1322,7 +1322,7 @@ void Skills::target_armsLore( NXWCLIENT ps, pTarget t )
             sprintf(temp2," [%.1f %%]",totalhp*100);
             strcat(temp,temp2);  // Magius(CHE) §
         }
-        if (pc->checkSkill(ARMSLORE, 250, 510))
+        if (pc->checkSkill(skArmsLore, 250, 510))
         {
             if (pi->hidamage)
             {
@@ -1336,7 +1336,7 @@ void Skills::target_armsLore( NXWCLIENT ps, pTarget t )
                 else              strcpy(p2, TRANSLATE(" Might scratch your opponent slightly."));
                 strcat(temp,p2);
 
-                if (pc->checkSkill( ARMSLORE, 500, 1000))
+                if (pc->checkSkill( skArmsLore, 500, 1000))
                 {
                     if  (pi->spd > 35) strcpy(p2, TRANSLATE(" And is very fast."));
                     else if (pi->spd > 25) strcpy(p2, TRANSLATE(" And is fast."));
@@ -1362,7 +1362,7 @@ void Skills::target_armsLore( NXWCLIENT ps, pTarget t )
 
         if (!(pi->rank<1 || pi->rank>10 || SrvParms->rank_system==0))
         {
-            if (pc->checkSkill(ARMSLORE, 250, 500))
+            if (pc->checkSkill(skArmsLore, 250, 500))
             {
                 switch(pi->rank)
                 {
@@ -1381,7 +1381,7 @@ void Skills::target_armsLore( NXWCLIENT ps, pTarget t )
             }
         }
     }
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ARMSLORE,AMX_AFTER);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skArmsLore,AMX_AFTER);
 
 }
 
@@ -1566,7 +1566,7 @@ void Skills::target_animalLore( NXWCLIENT ps, pTarget t )
 		return;
 	}
 
-	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ANIMALLORE,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skAnimalLore,AMX_BEFORE);
 
 	if (target->IsGMorCounselor())
 	{
@@ -1579,7 +1579,7 @@ void Skills::target_animalLore( NXWCLIENT ps, pTarget t )
 	}
 	else // Lore used on a non-human
 	{
-        	if (target->checkSkill( ANIMALLORE, 0, 1000))
+        	if (target->checkSkill( skAnimalLore, 0, 1000))
         	{
 			pChar target_owner = cSerializable::findCharBySerial( target->getOwnerSerial32() );
 			VALIDATEPC(target_owner);
@@ -1593,7 +1593,7 @@ void Skills::target_animalLore( NXWCLIENT ps, pTarget t )
         	}
 	}
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ANIMALLORE,AMX_AFTER);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skAnimalLore,AMX_AFTER);
 }
 
 void Skills::target_forensics( NXWCLIENT ps, pTarget t )
@@ -1603,7 +1603,7 @@ void Skills::target_forensics( NXWCLIENT ps, pTarget t )
 	pItem pi = cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
 
-	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,FORENSICS,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skForensics,AMX_BEFORE);
 
 	int curtim=uiCurrentTime;
 
@@ -1616,7 +1616,7 @@ void Skills::target_forensics( NXWCLIENT ps, pTarget t )
 	if(pc->IsGM()) {
     		pc->sysmsg(TRANSLATE("The %s is %i seconds old and the killer was %s."), pi->getCurrentName().c_str(), (curtim-pi->murdertime)/MY_CLOCKS_PER_SEC, pi->murderer.c_str());
 	} else {
-		if (!pc->checkSkill( FORENSICS, 0, 500)) pc->sysmsg(TRANSLATE("You are not certain about the corpse.")); else
+		if (!pc->checkSkill( skForensics, 0, 500)) pc->sysmsg(TRANSLATE("You are not certain about the corpse.")); else
     		{
 			char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
@@ -1626,14 +1626,14 @@ void Skills::target_forensics( NXWCLIENT ps, pTarget t )
 
 			pc->sysmsg(TRANSLATE("The %s is %s seconds old."), pi->getCurrentName().c_str(), temp2);
 
-			if (!pc->checkSkill( FORENSICS, 500, 1000) || pi->murderer.empty())
+			if (!pc->checkSkill( skForensics, 500, 1000) || pi->murderer.empty())
 				pc->sysmsg(TRANSLATE("You can't say who was the killer."));
 			else
 				pc->sysmsg(TRANSLATE("The killer was %s."), pi->murderer.c_str());
 		}
 	}
 
-	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,FORENSICS,AMX_AFTER);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skForensics,AMX_AFTER);
 }
 
 
@@ -2044,7 +2044,7 @@ void Skills::target_repair( NXWCLIENT ps, pTarget t )
 
 	NXWSOCKET s = ps->toInt();
 
-    short smithing=pc->baseskill[BLACKSMITHING];
+    short smithing=pc->baseskill[skBlacksmithing];
 
     if (smithing < 500)
     {
@@ -2076,7 +2076,7 @@ void Skills::target_repair( NXWCLIENT ps, pTarget t )
         else if ((smithing>=700)) dmg=2;
         else if ((smithing>=500)) dmg=3;
 
-        if (pc->checkSkill(BLACKSMITHING, 0, 1000))
+        if (pc->checkSkill(skBlacksmithing, 0, 1000))
         {
             pi->maxhp-=dmg;
             pi->hp=pi->maxhp;

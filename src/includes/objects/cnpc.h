@@ -13,9 +13,6 @@
 #ifndef __CNPC_H__
 #define __CNPC_H__
 
-class cNPC;
-typedef cNPC *pNPC;
-
 #include "objects/cchar.h"
 #include "objects/cpc.h"
 

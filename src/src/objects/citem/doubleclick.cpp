@@ -898,28 +898,28 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			Skills::AButte(s, pi);
 			return;// archery butte
 		case 0x0E9C:
-			if (pc->checkSkill( MUSICIANSHIP, 0, 1000))
+			if (pc->checkSkill( skMusicianship, 0, 1000))
 				pc->playSFX( 0x38);
 			else
 				pc->playSFX( 0x39);
 			return;
 		case 0x0E9D:
 		case 0x0E9E:
-			if (pc->checkSkill(  MUSICIANSHIP, 0, 1000))
+			if (pc->checkSkill(  skMusicianship, 0, 1000))
 				pc->playSFX( 0x52 );
 			else
 				pc->playSFX( 0x53 );
 			return;
 		case 0x0EB1:
 		case 0x0EB2:
-			if (pc->checkSkill( MUSICIANSHIP, 0, 1000))
+			if (pc->checkSkill( skMusicianship, 0, 1000))
 				pc->playSFX(0x45);
 			else
 				pc->playSFX( 0x46);
 			return;
 		case 0x0EB3:
 		case 0x0EB4:
-			if (pc->checkSkill( MUSICIANSHIP, 0, 1000))
+			if (pc->checkSkill( skMusicianship, 0, 1000))
 				pc->playSFX( 0x4C);
 			else
 				pc->playSFX( 0x4D);
@@ -1026,7 +1026,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 				return;
   			}
   					//</Luxor>
-			if (pc->checkSkill(  CAMPING, 0, 500)) // Morrolan TODO: insert logout code for campfires here
+			if (pc->checkSkill(  skCamping, 0, 500)) // Morrolan TODO: insert logout code for campfires here
 			{
 				pItem pFire = item::CreateFromScript( "$item_a_campfire" );
 				if(pFire)

@@ -328,13 +328,13 @@ static bool checkResist(pChar pa, pChar pd, SpellId spellnumber)
 	VALIDATEPCR(pd, false);
 	int circle = (spellnumber) / 8;
 	// just to give skill a chance to raise :)
-	pd->checkSkill( MAGICRESISTANCE, 80*circle, 1000, !isFieldSpell(spellnumber));
+	pd->checkSkill( skMagicResistance, 80*circle, 1000, !isFieldSpell(spellnumber));
 
-	int resist = pd->skill[MAGICRESISTANCE] / 10;
+	int resist = pd->skill[skMagicResistance] / 10;
 	int resistchance = resist / 5;
 
 	if (pa) {
-		int magery = pa->skill[MAGERY]/10;
+		int magery = pa->skill[skMagery]/10;
 		int secondresist = (resist) - ( (magery/2) + (circle*5));
 		resistchance = qmax(resistchance, secondresist);
 	}
@@ -429,9 +429,9 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			pcto->staticFX( 0x375A, 0, 10, &spfx );
 			break;
 		case SPELL_FIREBALL:
-			if ( pcfrom->skill[MAGERY] < 500 )	// First level fireball
+			if ( pcfrom->skill[skMagery] < 500 )	// First level fireball
 				pcfrom->playSFX( 0x15E );
-			else if ( pcfrom->skill[MAGERY] < 800 )	// Second level fireball
+			else if ( pcfrom->skill[skMagery] < 800 )	// Second level fireball
 				pcfrom->playSFX( 0x15F );
 			else					// Third level fireball
 				pcfrom->playSFX( 0x1F3 );
@@ -472,9 +472,9 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			pcto->staticFX( 0x376A, 0, 10, &spfx );
 			break;
 		case SPELL_LIGHTNING:
-			if ( pcfrom->skill[MAGERY] < 500 )	// First level lightning
+			if ( pcfrom->skill[skMagery] < 500 )	// First level lightning
 				pcto->playSFX( 0x28 );
-			else if ( pcfrom->skill[MAGERY] < 800 )	// Second level lightning
+			else if ( pcfrom->skill[skMagery] < 800 )	// Second level lightning
 				pcto->playSFX( 0x29 );
 			else					// Third level lightning
 				pcto->playSFX( 0x206 );
@@ -519,7 +519,7 @@ static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NUL
 			pcfrom->movingFX( pcto, 0x379F, 5, 0, true, &mpfx );
 			break;
 		case SPELL_EXPLOSION:
-			if ( pcfrom->skill[MAGERY] < 800 )	// First level explosion
+			if ( pcfrom->skill[skMagery] < 800 )	// First level explosion
 				pcto->playSFX( 0x11D );
 			else					// Second level explosion
 				pcto->playSFX( 0x207 );
@@ -631,11 +631,11 @@ static void damage(pChar pa, pChar pd, SpellId spellnum, int spellflags = 0, int
 	if (spellflags&SPELLFLAG_PARAMISDAMAGE) damage = static_cast<double>(param);
 
 	// calculates evint/resist modifier
-	double resist = static_cast<double>(pd->skill[MAGICRESISTANCE]) / 10.0;
+	double resist = static_cast<double>(pd->skill[skMagicResistance]) / 10.0;
 	double evint = resist; //no bonus/malus if no attacker
 
 	if (pa) {
-		evint = static_cast<double>(pd->skill[EVALUATINGINTEL]) / 10.0;
+		evint = static_cast<double>(pd->skill[skEvaluatingIntelligence]) / 10.0;
 	}
 
 	if (bResists) damage/=2.0;
@@ -1052,7 +1052,7 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 	int duration = 60; // one minute default
 
 	if (pa) {
-		int skilltouse = MAGERY;
+		int skilltouse = skMagery;
 		if (flags&SPELLFLAG_PARAMISSKILLTOUSE) skilltouse = param;
 		bonus = pa->skill[skilltouse] / 50;
 		duration = pa->skill[skilltouse] / 10;
@@ -1093,35 +1093,35 @@ static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, 
 	switch (spellnumber)
 	{
 		case SPELL_CLUMSY:
-			duration = ( ( pa->skill[EVALUATINGINTEL] / 50 ) + 1 ) * 6;
+			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 6;
 			tempfx::add(pa, pd, tempfx::SPELL_CLUMSY, bonus, 0, 0, duration);
 			break;
 		case SPELL_FEEBLEMIND:
-			duration = ( ( pa->skill[EVALUATINGINTEL] / 50 ) + 1 ) * 6;
+			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 6;
 			tempfx::add(pa, pd, tempfx::SPELL_FEEBLEMIND, bonus, 0, 0, duration);
 			break;
 		case SPELL_WEAKEN:
-			duration = ( ( pa->skill[EVALUATINGINTEL] / 50 ) + 1 ) * 6;
+			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 6;
 			tempfx::add(pa, pd, tempfx::SPELL_WEAKEN, bonus, 0, 0, duration);
 			break;
 		case SPELL_CURSE:
-			duration = int( pa->skill[MAGERY] * 0.12 );
+			duration = int( pa->skill[skMagery] * 0.12 );
 			tempfx::add(pa, pd, tempfx::SPELL_CURSE, bonus, bonus, bonus, duration);
 			break;
 		case SPELL_CUNNING:
-			duration = ( ( pa->skill[EVALUATINGINTEL] / 50 ) + 1 ) * 12;
+			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
 			tempfx::add(pa, pd, tempfx::SPELL_CUNNING, bonus, 0, 0, duration);
 			break;
 		case SPELL_AGILITY:
-			duration = ( ( pa->skill[EVALUATINGINTEL] / 50 ) + 1 ) * 12;
+			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
 			tempfx::add(pa, pd, tempfx::SPELL_AGILITY, bonus, 0, 0, duration);
 			break;
 		case SPELL_STRENGHT:
-			duration = ( ( pa->skill[EVALUATINGINTEL] / 50 ) + 1 ) * 12;
+			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
 			tempfx::add(pa, pd, tempfx::SPELL_STRENGHT, bonus, 0, 0, duration);
 			break;
 		case SPELL_BLESS:
-			duration = ( ( pa->skill[EVALUATINGINTEL] / 50 ) + 1 ) * 12;
+			duration = ( ( pa->skill[skEvaluatingIntelligence] / 50 ) + 1 ) * 12;
 			tempfx::add(pa, pd, tempfx::SPELL_BLESS, bonus, bonus, bonus, duration);
 			break;
 		default :
@@ -1215,8 +1215,8 @@ void castFieldSpell( pChar pc, int x, int y, int z, int spellnumber)
 		{
 			pi->setDecay();
 			pi->setDispellable();
-			pi->setDecayTime( (uiCurrentTime+(int(pc->skill[MAGERY]/20)+4)*MY_CLOCKS_PER_SEC) );
-			pi->morex=pc->skill[MAGERY]; // remember casters magery skill for damage, LB
+			pi->setDecayTime( (uiCurrentTime+(int(pc->skill[skMagery]/20)+4)*MY_CLOCKS_PER_SEC) );
+			pi->morex=pc->skill[skMagery]; // remember casters magery skill for damage, LB
 			pi->dir=29;
 			pi->magic=2;
 			pi->refresh();
@@ -1254,7 +1254,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		if (!checkLos(src, Location(x,y,z)))
 			return;
 
-	int nSkill = MAGERY;
+	int nSkill = skMagery;
 	int nValue = INVALID;
 	int nTime = INVALID;
 
@@ -1297,9 +1297,9 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if (pd != NULL) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
-				if ( src->skill[MAGERY] < 700 )
+				if ( src->skill[skMagery] < 700 )
 					pd->applyPoison(poisonWeak);
-				else if ( src->skill[MAGERY] < 900 )
+				else if ( src->skill[skMagery] < 900 )
 					pd->applyPoison(poisonNormal);
 				else
 					pd->applyPoison(poisonGreater);
@@ -1316,7 +1316,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_CHAINLIGHTNING:
 		case SPELL_EARTHQUAKE:
 			if (pd!=NULL) {
-				if (g_Spells[spellnumber].areasize<=0 && (spellnumber!=SPELL_EXPLOSION || src->skill[MAGERY] < 800)) //Luxor
+				if (g_Spells[spellnumber].areasize<=0 && (spellnumber!=SPELL_EXPLOSION || src->skill[skMagery] < 800)) //Luxor
 				{
 					CHECKDISTANCE(src, pd);
 					spellFX(spellnumber, src, pd);
@@ -1476,7 +1476,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			}
 			NxwCharWrapper sc;
 			pChar pc_curr;
-			sc.fillCharsNearXYZ( x, y, src->skill[MAGERY] / 100, true, false );
+			sc.fillCharsNearXYZ( x, y, src->skill[skMagery] / 100, true, false );
 			for ( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pc_curr = sc.getChar();
 				if ( !pc_curr )
@@ -1539,7 +1539,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_MASSCURSE: {
 
 			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( x, y, src->skill[MAGERY] / 100, true);
+			sc.fillCharsNearXYZ( x, y, src->skill[skMagery] / 100, true);
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
@@ -1554,7 +1554,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_REVEAL: { //Luxor
 			spellFX(spellnumber, src);
 			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( x, y, src->skill[MAGERY] / 100, true);
+			sc.fillCharsNearXYZ( x, y, src->skill[skMagery] / 100, true);
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
 				if ( pd && pd->IsHidden() && !checkResist(src, pd, SPELL_REVEAL)) {
@@ -1585,7 +1585,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			  if (nValue==INVALID) nValue = src->skill[nSkill]/10;
 			}
 			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( x, y, src->skill[MAGERY] / 100, true);
+			sc.fillCharsNearXYZ( x, y, src->skill[skMagery] / 100, true);
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
@@ -1657,7 +1657,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			CHECKDISTANCE(src, pd);
             		spellFX(spellnumber, src, pd);
 			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( x, y, src->skill[MAGERY] / 100, true);
+			sc.fillCharsNearXYZ( x, y, src->skill[skMagery] / 100, true);
 
 			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
 				pChar pd = sc.getChar();
@@ -1894,7 +1894,7 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 	src->spell=spellnumber;
 	if ( src->spelltype !=CASTINGTYPE_ITEM && src->spelltype !=CASTINGTYPE_NOMANAITEM )
 	{
-		if ( src->skill[MAGERY] < 900 ) //Luxor
+		if ( src->skill[skMagery] < 900 ) //Luxor
 			src->talkAll((char*)g_Spells[src->spell].mantra.c_str(), false);
 		else
 			src->talkAllRunic((char*)g_Spells[src->spell].mantra.c_str(), false);
@@ -1932,7 +1932,7 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 	//if ((!src->npc)&&(!(flags&SPELLFLAG_DONTCHECKSKILL))) {
 	if ( !( flags & SPELLFLAG_DONTCHECKSKILL ) )
 	{
-		int skilltobechecked = MAGERY;
+		int skilltobechecked = skMagery;
 		if ( flags&SPELLFLAG_PARAMISSKILLTOUSE )
 			skilltobechecked = param;
 		int loskill, hiskill;
@@ -2224,7 +2224,7 @@ void cSummonCreatureMenu::handleButton( NXWCLIENT ps, cClientPacket* pkg  )
 
 	pc_monster->setOwner( pc );
 	pc_monster->tamed = true;
-	pc_monster->summontimer = uiCurrentTime + uint32_t(pc->skill[MAGERY] * 0.4) * MY_CLOCKS_PER_SEC;
+	pc_monster->summontimer = uiCurrentTime + uint32_t(pc->skill[skMagery] * 0.4) * MY_CLOCKS_PER_SEC;
 	pc_monster->MoveTo( pos.x, pos.y, pos.z );
 	pc_monster->teleport();
 	spellFX( SPELL_SUMMON, pc, pc );

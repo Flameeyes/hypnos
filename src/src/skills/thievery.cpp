@@ -66,7 +66,7 @@ void snooping( pPC snooper, pItem cont )
 					owner->sysmsg(TRANSLATE("%s is trying to snoop you!"), snooper->getCurrentName().c_str());
 					return;
 				}
-				else if (snooper->checkSkill( SNOOPING, 0, 1000))
+				else if (snooper->checkSkill( skSnooping, 0, 1000))
 				{
 					snooper->showContainer(cont);
 					snooper->sysmsg( TRANSLATE("You successfully peek into that container."));
@@ -459,7 +459,7 @@ void Skills::target_lockpick( NXWCLIENT ps, pTarget t )
 	pItem pick=MAKE_ITEM_REF( t->buffer[0] );
 	VALIDATEPI(pick);
 
-	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,LOCKPICKING,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skLockPicking,AMX_BEFORE);
 
 
 	if (chest->amxevents[EVENT_IONLOCKPICK]!=NULL)
@@ -494,7 +494,7 @@ void Skills::target_lockpick( NXWCLIENT ps, pTarget t )
 
 	if(chest->more1==0 && chest->more2==0 && chest->more3==0 && chest->more4==0)
 	{ //Make sure it isn't an item that has a key (i.e. player house, chest..etc)
-		if(pc->checkSkill( LOCKPICKING, 0, 1000))
+		if(pc->checkSkill( skLockPicking, 0, 1000))
 		{
 			switch(chest->type)
 			{
@@ -523,5 +523,5 @@ void Skills::target_lockpick( NXWCLIENT ps, pTarget t )
 		pc->sysmsg(TRANSLATE("That cannot be unlocked without a key."));
 
 
-	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,LOCKPICKING,AMX_AFTER);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skLockPicking,AMX_AFTER);
 }

@@ -131,7 +131,7 @@ void Skills::PeaceMaking(NXWSOCKET s)
         return;
     }
 
-    if ( pc->checkSkill( PEACEMAKING, 0, 1000) && pc->checkSkill( MUSICIANSHIP, 0, 1000) )
+    if ( pc->checkSkill( skPeacemaking, 0, 1000) && pc->checkSkill( skMusicianship, 0, 1000) )
     {
 		Skills::PlayInstrumentWell(s, inst);
         pc->sysmsg( TRANSLATE("You play your hypnotic music, stopping the battle."));
@@ -1070,14 +1070,14 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 		pTarget targ=NULL;
 		switch(x)
 		{
-			case ARMSLORE:
+			case skArmsLore:
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=target_armsLore;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("What item do you wish to get information about?"));
 				break;
 
-			case ANATOMY:
+			case skAnatomy:
 				break;
 
 			case ITEMID:
@@ -1087,7 +1087,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				ps->sysmsg( TRANSLATE("What do you wish to appraise and identify?"));
 				break;
 
-			case EVALUATINGINTEL:
+			case skEvaluatingIntelligence:
 				break;
 
 			case TAMING:
@@ -1105,25 +1105,25 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				Skills::Stealth(s);
 				break;
 
-			case DETECTINGHIDDEN:
+			case skDetectingHidden:
 				targ=clientInfo[s]->newTarget( new cLocationTarget() );
 				targ->code_callback=target_detectHidden;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("Where do you wish to search for hidden characters?"));
 				break;
 
-			case PEACEMAKING:
+			case skPeacemaking:
 				Skills::PeaceMaking(s);
 				break;
 
-			case PROVOCATION:
+			case skProvocation:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=target_provocation1;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("Whom do you wish to incite?"));
 				break;
 
-			case ENTICEMENT:
+			case skEnticement:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=target_enticement1;
 				targ->send( ps );
@@ -1148,27 +1148,27 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				}
 				break;
 
-			case INSCRIPTION:
+			case skInscription:
 				break;
 
 			case TRACKING:
 				break;
 
-			case BEGGING:
+			case skBegging:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback = Begging::target;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("Whom do you wish to annoy?"));
 				break;
 
-			case ANIMALLORE:
+			case skAnimalLore:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
 				targ->code_callback=Skills::target_animalLore;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("What animal do you wish to get information about?"));
 				break;
 
-			case FORENSICS:
+			case skForensics:
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_forensics;
 				targ->send( ps );
@@ -1202,7 +1202,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				ps->sysmsg( TRANSLATE("What do you want to untrap?"));
 				break;
 
-			case CARTOGRAPHY:
+			case skCartography:
 				Skills::Cartography(s);
 				break;
 
@@ -1309,8 +1309,8 @@ void Skills::TDummy(NXWSOCKET s)
 	{
 		pc->checkSkill( static_cast<Skill>(skillused), 0, 1000);
 
-		if(pc->skill[TACTICS] < 300)
-			pc->checkSkill(TACTICS, 0, 250);  //Dupois - Increase tactics but only by a fraction of the normal rate
+		if(pc->skill[skTactics] < 300)
+			pc->checkSkill(skTactics, 0, 250);  //Dupois - Increase tactics but only by a fraction of the normal rate
 	}
 	else
 		sysmessage(s, TRANSLATE("You feel you would gain no more from using that."));
@@ -1653,35 +1653,35 @@ void loadskills()
 void SkillVars()
 {
     strcpy(skillinfo[ALCHEMY].madeword,"mixed");
-    strcpy(skillinfo[ANATOMY].madeword,"made");
-    strcpy(skillinfo[ANIMALLORE].madeword,"made");
+    strcpy(skillinfo[skAnatomy].madeword,"made");
+    strcpy(skillinfo[skAnimalLore].madeword,"made");
     strcpy(skillinfo[ITEMID].madeword,"made");
-    strcpy(skillinfo[ARMSLORE].madeword,"made");
-    strcpy(skillinfo[PARRYING].madeword,"made");
-    strcpy(skillinfo[BEGGING].madeword,"made");
-    strcpy(skillinfo[BLACKSMITHING].madeword,"forged");
-    strcpy(skillinfo[BOWCRAFT].madeword,"bowcrafted");
-    strcpy(skillinfo[PEACEMAKING].madeword,"made");
-    strcpy(skillinfo[CAMPING].madeword,"made");
-    strcpy(skillinfo[CARPENTRY].madeword,"made");
-    strcpy(skillinfo[CARTOGRAPHY].madeword,"wrote");
-    strcpy(skillinfo[COOKING].madeword,"cooked");
-    strcpy(skillinfo[DETECTINGHIDDEN].madeword,"made");
-    strcpy(skillinfo[ENTICEMENT].madeword,"made");
-    strcpy(skillinfo[EVALUATINGINTEL].madeword,"made");
+    strcpy(skillinfo[skArmsLore].madeword,"made");
+    strcpy(skillinfo[skParrying].madeword,"made");
+    strcpy(skillinfo[skBegging].madeword,"made");
+    strcpy(skillinfo[skBlacksmithing].madeword,"forged");
+    strcpy(skillinfo[skBowcraft].madeword,"bowcrafted");
+    strcpy(skillinfo[skPeacemaking].madeword,"made");
+    strcpy(skillinfo[skCamping].madeword,"made");
+    strcpy(skillinfo[skCarpentry].madeword,"made");
+    strcpy(skillinfo[skCartography].madeword,"wrote");
+    strcpy(skillinfo[skCooking].madeword,"cooked");
+    strcpy(skillinfo[skDetectingHidden].madeword,"made");
+    strcpy(skillinfo[skEnticement].madeword,"made");
+    strcpy(skillinfo[skEvaluatingIntelligence].madeword,"made");
     strcpy(skillinfo[HEALING].madeword,"made");
     strcpy(skillinfo[FISHING].madeword,"made");
-    strcpy(skillinfo[FORENSICS].madeword,"made");
-    strcpy(skillinfo[HERDING].madeword,"made");
+    strcpy(skillinfo[skForensics].madeword,"made");
+    strcpy(skillinfo[skHerding].madeword,"made");
     strcpy(skillinfo[HIDING].madeword,"made");
-    strcpy(skillinfo[PROVOCATION].madeword,"made");
-    strcpy(skillinfo[INSCRIPTION].madeword,"wrote");
-    strcpy(skillinfo[LOCKPICKING].madeword,"made");
-    strcpy(skillinfo[MAGERY].madeword,"envoked");
-    strcpy(skillinfo[MAGICRESISTANCE].madeword,"made");
-    strcpy(skillinfo[TACTICS].madeword,"made");
-    strcpy(skillinfo[SNOOPING].madeword,"made");
-    strcpy(skillinfo[MUSICIANSHIP].madeword,"made");
+    strcpy(skillinfo[skProvocation].madeword,"made");
+    strcpy(skillinfo[skInscription].madeword,"wrote");
+    strcpy(skillinfo[skLockPicking].madeword,"made");
+    strcpy(skillinfo[skMagery].madeword,"envoked");
+    strcpy(skillinfo[skMagicResistance].madeword,"made");
+    strcpy(skillinfo[skTactics].madeword,"made");
+    strcpy(skillinfo[skSnooping].madeword,"made");
+    strcpy(skillinfo[skMusicianship].madeword,"made");
     strcpy(skillinfo[POISONING].madeword,"made");
     strcpy(skillinfo[ARCHERY].madeword,"made");
     strcpy(skillinfo[SPIRITSPEAK].madeword,"made");
@@ -1746,7 +1746,7 @@ void Skills::Cartography(NXWSOCKET s)
     if( Skills::HasEmptyMap(pc->getSerial()) )
     {
         //itemmake[s].has = 1;
-		//Skills::MakeMenu(s, 1200, CARTOGRAPHY);
+		//Skills::MakeMenu(s, 1200, skCartography);
     }
     else
         sysmessage(s, TRANSLATE("You don't have an empty map to draw on"));
@@ -1841,7 +1841,7 @@ void Skills::Decipher(pItem tmap, NXWSOCKET s)
 
     if(pc->skilldelay<=uiCurrentTime || pc->IsGM()) // Char doin something?
     {
-        if (pc->checkSkill( CARTOGRAPHY, tmap->morey * 10, 1000)) // Is the char skilled enaugh to decipher the map
+        if (pc->checkSkill( skCartography, tmap->morey * 10, 1000)) // Is the char skilled enaugh to decipher the map
         {
             // Stores the new map
             pItem nmap=item::CreateFromScript( 70025, pc->getBackpack() );
