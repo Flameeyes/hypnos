@@ -198,6 +198,7 @@ void cItem::singleClick(pClient client )
 
 	itemmessage(client, temp, serial);
 
+	/*! \todo This should be changed to a virtual function
 	// Send the item/weight as the last line in case of containers
 	if (type == ITYPE_CONTAINER || type == ITYPE_UNLOCKED_CONTAINER || type == ITYPE_NODECAY_ITEM_SPAWNER || type == ITYPE_TRASH)
 	{
@@ -210,6 +211,7 @@ void cItem::singleClick(pClient client )
 		else
 			itemmessage( client, TRANSLATE("[0 items, 0 stones]"), serial);
 	}
+	*/
 
 }
 

@@ -1805,7 +1805,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, P_CHAR src, in
 
 		case SPELL_RECALL:
 			if ((src!=NULL)&&(pi!=NULL)) {
-				if (src->IsOverWeight()) {
+				if (src->isOverWeight()) {
 					src->sysmsg("You're too heavy!");
 				} else {
 					if (pi->type==ITYPE_RUNE) {

@@ -1627,7 +1627,7 @@ bool getCharBoolProperty( P_CHAR pc, int property, int prop2 )
 		CHECK(  NXW_CP_B_ATTACKFIRST , pc->HasAttackedFirst() )  	//dec value: 12;
 		CHECK(  NXW_CP_B_ISBEINGTRAINED, pc->isBeingTrained() )  	//dec value: 13;
 		CHECK(  NXW_CP_B_GUILDTOGGLE , pc->HasGuildTitleToggle() )  	//dec value: 14;
-		CHECK(  NXW_CP_B_OVERWEIGHTED, pc->IsOverWeight() )     	//dec value: 15;
+		CHECK(  NXW_CP_B_OVERWEIGHTED, pc->isOverWeight() )     	//dec value: 15;
 		CHECK(  NXW_CP_B_MOUNTED, pc->mounted )     	//dec value: 15;
 		CHECK(  NXW_CP_B_FROZEN, pc->isFrozen() )     	//dec value: 15;
 		default:

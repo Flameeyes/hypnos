@@ -277,7 +277,15 @@ public:
 
 
 	const bool isGrey() const;
-	const bool isOverWeight();
+	/*!
+	\author Xanathar
+	\brief Checks char weight
+	\note this function modify the class variable, very bad...
+	\return true if the char is over weight
+	*/
+	inline const bool cChar::isOverWeight()
+	{ return !isGM() && getBody()->overloadedTeleport(); }
+	
 	const bool canDoGestures() const;
 	const bool inDungeon() const;
 

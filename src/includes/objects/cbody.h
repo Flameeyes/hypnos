@@ -407,9 +407,9 @@ private:
 	{ weight > 0 || calcWeight(); return weight; }
 	
 	void calcWeight();
+	bool overloadedWalking();
+	bool overloadedTeleport();
 //@}
-	
-	void checkEquipment();
 };
 
 #endif

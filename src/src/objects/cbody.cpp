@@ -152,3 +152,74 @@ void cBody::calcWeight()
 		if ( layers[i] && i != LAYER_MOUNT )
 			weight += layers[i]->getWeightActual();
 }
+
+/*!
+\brief Check if player is overloaded when walking
+\author Flameeyes over unknown work
+\todo Clean up, use real stamina variables
+*/
+bool cBody::overloadedWalking()
+{
+	const static char steps[4] = { 25, 50, 75, 100 };
+	
+	int     limit = pc->getStrength()*WEIGHT_PER_STR+30,
+		percelt = int(((float)pc->weight/(float)limit)*100.0f),
+		result;
+	bool ret = true;
+	UI08 index,x;
+	float amount;
+	
+	if(getWeight() > limit) index=5; //overweight
+	else if(percent==100) index=4; //100% weight
+	else for(x=0;x<4;x++) if(percent<steps[x]) { index=x; break; } //less than 100%
+		
+	/*	if(index<4)
+	{
+			float stepdiff		= float(steps[index]-steps2[index]),
+			percentdiff	= float(percent-steps2[index]),
+			stadiff		= ServerScp::g_fStaminaUsage[index+1]-ServerScp::g_fStaminaUsage[index];
+			
+			amount=ServerScp::g_fStaminaUsage[index]+(percentdiff/stepdiff)*stadiff;
+	}
+		else 
+		*/		amount=ServerScp::g_fStaminaUsage[index];
+	
+	if(isRunning()) amount*=2; //if running, double the amount of stamina used
+	if(isMounting()) amount*=(float)server_data.staminaonhorse;
+	
+	pc->fstm+=amount; //increase the amount of stamina to be subtracted
+	
+	if(fstm>=1.0f) //if stamina to be removed is less than 1, wait
+	{
+		result=(int)fstm; //round it
+		fstm-=result;
+		stm-=result;
+		if(stm<=0)
+		{
+			stm=0;
+			ret = false;
+		}
+		updateStats(2);
+	}
+	
+	return ret;
+	
+}
+
+/*!
+\brief Check if player is overloaded when teleporting
+\author Flameeyes over Morrolan work
+*/
+bool cBody::overloadedTeleport()
+{
+	if ( getWeight() > (getStrength()*WEIGHT_PER_STR)+30)
+	{
+		/*! \todo Need to chek what does this...
+		pc->mn -= 30;
+		if ( pc->mn <= 0 )
+			pc->mn = 0;
+		*/
+		return true;
+	}
+	return false;
+}

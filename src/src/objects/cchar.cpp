@@ -1458,19 +1458,6 @@ void cChar::resurrect( NXWCLIENT healer )
 
 /*!
 \author Xanathar
-\brief Checks char weight
-\note this function modify the class variable, very bad...
-\return true if the char is over weight
-\todo backport
-*/
-bool const cChar::IsOverWeight()
-{
-	if (IsGM()) return false;
-	return !isGM() && weights::CheckWeight2(this)!=0;
-}
-
-/*!
-\author Xanathar
 \brief Sets owner fields
 \param owner new owner
 */

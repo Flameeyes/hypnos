@@ -57,7 +57,7 @@ bool WalkHandleAllowance(P_CHAR pc, int sequence)
 
 	if (!pc->dead && !pc->npc && !(pc->IsGMorCounselor()))
 	{
-		if (!weights::CheckWeight(pc) || (pc->stm<1)) // this has to executes, even if s==-1, thus that many !=-1's
+		if (! pc->getBody()->overloadedWalking() || (pc->stm<1)) // this has to executes, even if s==-1, thus that many !=-1's
 		{
 			if (s!=INVALID)
 			{

@@ -658,9 +658,7 @@ void cClient::get_item( pItem pi, UI16 amount ) // Client grabs an item
 		}
 	}
 
-	int amt = 0, wgt;
-	wgt = (int)weights::LockeddownWeight( pi, &amt);
-	pc_currchar->weight += wgt;
+	pc_currchar->weight += pi->getWeightActual();
 	statusWindow(pc_currchar, true);
 }
 
