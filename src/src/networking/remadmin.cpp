@@ -23,22 +23,22 @@
 \name Telnet Protocol
 \brief Telnet protocol flags for define telnet works.
 */
-#define IAC		0xFF	//!< all command start by this
+static const uint8_t IAC 	= 0xFF; //!< all command start by this
 
-#define SE		0xF0
-#define	SB		0xFA
-#define GA		0xF9
-#define	WILL		0xFB
-#define DO		0xFC
-#define WONT		0xFD
-#define DONT		0xFE
+static const uint8_t SE 	= 0xF0;
+static const uint8_t SB		= 0xFA;
+static const uint8_t GA		= 0xF9;
+static const uint8_t WILL	= 0xFB;
+static const uint8_t DO		= 0xFC;
+static const uint8_t WONT	= 0xFD;
+static const uint8_t DONT	= 0xFE;
 
-#define ECHO		0x01
-#define TIMINGMARK	0x06
-#define LINEMODE	0x22
-#define SLC		0x03
-#define SLC_FLUSHOUT	0x20
-#define SLC_FLUSHIN	0x40
+static const uint8_t ECHO	= 0x01;
+static const uint8_t TIMINGMARK	= 0x06;
+static const uint8_t LINEMODE	= 0x22;
+static const uint8_t SLC	= 0x03;
+static const uint8_t SLC_FLUSHOUT = 0x20;
+static const uint8_t SLC_FLUSHIN = 0x40;
 //@}
 
 RemoteAdmin::RemoteAdmin()
@@ -56,7 +56,6 @@ RemoteAdmin::~RemoteAdmin()
 		closesocket(sockets[i]);
 
 }
-
 
 /*!
 \brief Initialize remote adm. console socket(s)
@@ -109,14 +108,9 @@ void RemoteAdmin::Init()
 
 	unsigned long nonzero = 1;
 
-	#if defined(__unix__)
-		ioctl(racSocket,FIONBIO,&nonzero) ;
-	#else
-		ioctlsocket(racSocket,FIONBIO,&nonzero) ;
-	#endif
+	ioctlsocket(racSocket,FIONBIO,&nonzero) ;
 
 	ConOut("[ OK ]\n");
-
 }
 
 
@@ -174,7 +168,6 @@ void RemoteAdmin::CheckConn ()
 	racnow++;
 
 }
-
 
 /*!
 \brief Check sockets for input

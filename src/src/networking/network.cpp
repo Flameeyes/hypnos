@@ -916,12 +916,10 @@ void cNetwork::sockInit()
 	// select, and then do an accept.  However, if the client has terminated the connection between the small
 	// time from the select and accept, we would block (accept is blocking).  So, set it non blocking
 	uint32_t nonzero = 1;
-#if defined(__unix__)
-	ioctl(a_socket,FIONBIO,&nonzero) ;
-#elif defined _CONSOLE
-	ioctlsocket(a_socket,FIONBIO,&nonzero) ;
-#elif defined _WINDOWS
+#ifdef WINSOCK
 	bcode = WSAAsyncSelect (a_socket, g_HWnd, 0, 0);
+#else
+	ioctlsocket(a_socket,FIONBIO,&nonzero) ;
 #endif
 
 }
@@ -973,11 +971,7 @@ void cNetwork::CheckConn() // Check for connection requests
 		else
 		{
 			uint32_t nonzero = 1;
-		#if defined(__unix__)
-			ioctl(client[now],FIONBIO,&nonzero) ;
-		#else
 			ioctlsocket(client[now],FIONBIO,&nonzero) ;
-		#endif
 
 			currchar[now] = INVALID;
 			cryptedClient[now]=true;
