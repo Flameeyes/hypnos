@@ -8,15 +8,7 @@
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
 #include "common_libs.h"
-#include "network.h"
-#include "books.h"
-#include "spawn.h"
-#include "set.h"
-#include "archive.h"
-#include "sndpkg.h"
-#include "inlines.h"
 
-OBJECT_MAP cAllObjects::all;
 uint32_t cAllObjects::current_item_serial=0x40000000;
 uint32_t cAllObjects::current_char_serial=1; // ndEndy not 0 because target return 0 if invalid target, so OSI think 0 like INVALID
 
