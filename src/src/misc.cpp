@@ -241,7 +241,7 @@ void usepotion(pChar pc, pItem pi)
 		pTarget targ= clientInfo[s]->newTarget( new cTarget() );
 		targ->code_callback=target_expPotion;
 		targ->buffer[0]= pi->getSerial();
-		targ->send( getClientFromSocket(s) );
+		targ->send(client);
 		client->sysmessage( "*throw*" );
 		return;
 	}

@@ -788,8 +788,8 @@ bool house_speech( pChar pc, pClient client, std::string &talk)
 		pTarget targ = clientInfo[socket]->newTarget( new cCharTarget() );
 		targ->code_callback=target_houseBan;
 		targ->buffer[0]=pi->getSerial();
-		targ->send( getClientFromSocket( socket) );
-		sysmessage( socket, "Select person to ban from house.");
+		targ->send(client);
+		client->sysmessage("Select person to ban from house.");
 		return true;
 	}
 	//
@@ -800,8 +800,8 @@ bool house_speech( pChar pc, pClient client, std::string &talk)
 		pTarget targ = clientInfo[socket]->newTarget( new cCharTarget() );
 		targ->code_callback=target_houseEject;
 		targ->buffer[0]=pi->getSerial();
-		targ->send( getClientFromSocket( socket) );
-		sysmessage( socket, "Select person to eject from house.");
+		targ->send(client);
+		client->sysmessage("Select person to eject from house.");
 		return true;
 	}
 	//
@@ -812,8 +812,8 @@ bool house_speech( pChar pc, pClient client, std::string &talk)
 		pTarget targ = clientInfo[socket]->newTarget( new cItemTarget() );
 		targ->code_callback=target_houseLockdown;
 		targ->buffer[0]=pi->getSerial();
-		targ->send( getClientFromSocket( socket) );
-		sysmessage( socket, "Select item to lock down");
+		targ->send(client);
+		client->sysmessage("Select item to lock down");
 		return true;
 	}
 	//
@@ -824,8 +824,8 @@ bool house_speech( pChar pc, pClient client, std::string &talk)
 		pTarget targ = clientInfo[socket]->newTarget( new cItemTarget() );
 		targ->code_callback=target_houseRelease;
 		targ->buffer[0]=pi->getSerial();
-		targ->send( getClientFromSocket( socket) );
-		sysmessage( socket, "Select item to release");
+		targ->send(client);
+		client->sysmessage("Select item to release");
 		return true;
 	}
 	//
@@ -836,8 +836,8 @@ bool house_speech( pChar pc, pClient client, std::string &talk)
 		pTarget targ = clientInfo[socket]->newTarget( new cItemTarget() );
 		targ->code_callback=target_houseSecureDown;
 		targ->buffer[0]=pi->getSerial();
-		targ->send( getClientFromSocket( socket) );
-		sysmessage( socket, "Select item to secure");
+		targ->send(client);
+		client->sysmessage("Select item to secure");
 		return true;
 	}
 	return false;

@@ -148,19 +148,6 @@ static unsigned int bit_table[257][2] =
 {0x0004, 0x000D}
 };
 
-pClient getClientFromSocket( pClient client )
-{
-	if( socket < 0 )
-		return NULL;
-	if( socket >= now )
-		return NULL;
-	pChar pc = loginchars[socket];
-	if( pc )
-		return pc->getClient();
-	else
-		return NULL;
-}
-
 int MTsend( pClient client, char* xoutbuffer, int len, int boh )
 {
 	pClient clientent, loopexit=30;
@@ -203,14 +190,13 @@ void cNetwork::DoStreamCode( pClient clientocket )
 */
 	int len = Pack( outbuffer[socket], xoutbuffer, boutlength[socket] );
 	// ConOut("Packed %d bytes input to %d bytes out\n", boutlength[socket], len);
-	pClient ps = getClientFromSocket(socket);
-#ifdef ENCRYPTION
-	pChar pc_currchar= (ps!=NULL)? ps->currChar() : NULL;
+	
+	pChar pc_currchar= (client)? client->currChar() : NULL;
 	if ( clientCrypter[socket] != NULL && clientCrypter[socket]->getCryptVersion() >= CRYPT_3_0_0c )
 		clientCrypter[socket] ->encrypt((unsigned char *) &xoutbuffer[0], (unsigned char *) &xoutbuffer[0], len);
 	else if (pc_currchar != NULL && pc_currchar->getCrypter() != NULL && pc_currchar->getCrypter()->getCryptVersion() >= CRYPT_3_0_0c )
 		pc_currchar->getCrypter()->encrypt((unsigned char *) &xoutbuffer[0], (unsigned char *) &xoutbuffer[0], len);
-#endif
+	
 	if ((status = MTsend(socket, xoutbuffer, len, MSG_NOSIGNAL)) == SOCKET_ERROR)
 	{
    		LogSocketError("Socket Send error %s\n", errno) ;
@@ -284,9 +270,9 @@ void cNetwork::xSend(pClient client, wstring& p, bool alsoTermination )
 
 	int32_t size = sizeof( uint16_t );
 	int32_t length = p.length() * size;
-    if ( alsoTermination ) length += size;
-
-    if ( boutlength[ socket ] + length > MAXBUFFER )
+	if ( alsoTermination ) length += size;
+	
+	if ( boutlength[ socket ] + length > MAXBUFFER )
 		FlushBuffer( socket );
 
 	wstring::iterator point( p.begin() ), end( p.end() );
@@ -308,8 +294,6 @@ void cNetwork::LoginMain(pClient client)
 	uint32_t chrSerial;
 
 	acctno[s]=INVALID;
-#ifdef ENCRYPTION
-	pClient ps = getClientFromSocket(client);
 	int length=0x3e;
 	int j;
 	unsigned char decryptPacket[MAXBUFFER+1];
@@ -327,35 +311,32 @@ void cNetwork::LoginMain(pClient client)
 			crypter->setGameEncryption(j+1);
 			crypter->init(&clientSeed[s][0]);
 			crypter->decrypt(&cryptPacket[0], decryptPacket, length);
-			if ( decryptPacket[0x3e-1] == 0xFF )
+			if ( decryptPacket[0x3e-1] != 0xFF )
+				continue;
+				
+			// crypt key is correct only if Authentication is ok
+			memcpy (&cryptPacket[0], decryptPacket, length);
+			pSplit((char*)&cryptPacket[31]);
+			i = Accounts->verifyPassword((char*)&cryptPacket[1], (char*)pass1);
+			if ( i < 0 )
+				continue;
+			
+			memcpy(&buffer[s][0],&cryptPacket[0] ,length);
+			// is this client logged in already ?
+			if ( ! Accounts->IsOnline(i) )
+				break;
+				
+			// Look for accountno
+			for ( int j = 0;j < s;++j)
 			{
-				// crypt key is correct only if Authentication is ok
-				memcpy (&cryptPacket[0], decryptPacket, length);
-				pSplit((char*)&cryptPacket[31]);
-				i = Accounts->verifyPassword((char*)&cryptPacket[1], (char*)pass1);
-				if( i >= 0 )
-				{
-					memcpy(&buffer[s][0],&cryptPacket[0] ,length);
-					// is this client logged in already ?
-					if ( Accounts->IsOnline(i) )
-					{
-						// Look for accountno
-						for ( int j = 0;j < s;++j)
-						{
-							if ( acctno[j] == i )
-							{
-								// Found logged in account
-								acctno[j]->disconnect();
-								break;
-							}
-						}
-					}
-					break;
-				}
+				if ( acctno[j] != i ) continue;
+					
+				// Found logged in account
+				acctno[j]->disconnect();
+				break;
 			}
 		}
 	}
-#endif
 	pSplit((char*)&buffer[s][31]);
 	i = Accounts->Authenticate((char*)&buffer[s][1], (char*)pass1);
 
@@ -410,8 +391,6 @@ void cNetwork::LoginMain(pClient client)
 		
 		acc->currClient()->kick();
 		return;
-		
-		//</Luxor>
 	}
 
 	//ndEndy now better
@@ -421,7 +400,6 @@ void cNetwork::LoginMain(pClient client)
 		Login2(client);
 	}
 }
-
 
 void cNetwork::Login2(pClient client)
 {
@@ -1324,12 +1302,10 @@ unsigned char cNetwork::calculateLoginKey(unsigned char loginKey[4], unsigned ch
 
 void cNetwork::GetMsg(pClient client) // Receive message from client
 {
-#ifdef ENCRYPTION
 	ClientCrypt *crypter=NULL;
-#endif
-	pClient ps = getClientFromSocket(client);
-	pChar pc_currchar= (ps!=NULL)? ps->currChar() : NULL;
-#ifdef ENCRYPTION
+	
+	pChar pc_currchar= client ? client->currChar() : NULL;
+	
 	if ( pc_currchar != NULL )
 	{
 		crypter=pc_currchar->getCrypter();
@@ -1338,7 +1314,6 @@ void cNetwork::GetMsg(pClient client) // Receive message from client
 	{
 		crypter=clientCrypter[s];
 	}
-#endif
 
 	int count, i, book,length, dyn_length,loopexit=0, fb;
 	unsigned char nonuni[512];

@@ -613,7 +613,7 @@ int response(pClient client)
 							pTarget targ = clientInfo[s]->newTarget( new cCharTarget() );
 							targ->buffer[0]=pc_map->getSerial();
 							targ->code_callback=target_follow;
-							targ->send( getClientFromSocket(s) );
+							targ->send( client );
 							sysmessage( s, "Click on the target to follow." );
 							return 1;
 						}
@@ -642,7 +642,7 @@ int response(pClient client)
 					pc->guarded = false;
 					pTarget targ=clientInfo[s]->newTarget( new cCharTarget() );
 					targ->code_callback=target_allAttack;
-					targ->send( getClientFromSocket( s ) );
+					targ->send(client);
 					sysmessage( s, "Select the target to attack.");
 					return 1;
 				}
@@ -670,7 +670,7 @@ int response(pClient client)
 							pTarget targ = clientInfo[s]->newTarget( new cCharTarget() );
 							targ->code_callback=target_playerVendorBuy;
 							targ->buffer[0] = pc_map->getSerial();
-							targ->send( getClientFromSocket(s) );
+							targ->send( client );
 							//pet kill code here
 							sysmessage( s, "Select the target to attack.");
 							return 1;
@@ -694,7 +694,7 @@ int response(pClient client)
 							pTarget targ = clientInfo[s]->newTarget( new cObjectTarget() );
 							targ->code_callback=target_fetch;
 							targ->buffer[0]=pc_map->getSerial();
-							targ->send( getClientFromSocket(s) );							
+							targ->send( client );							
 							sysmessage( s, "Click on the object to fetch.");
 							return 1;
 						}
@@ -741,7 +741,7 @@ int response(pClient client)
 							if ( requestGuardMe )
 								targ->buffer[1]=1;	// indicates we already know whom to guard (for future use)
 										// for now they still must click on themselves (Duke)
-							targ->send( getClientFromSocket( s ) );
+							targ->send(client);
 							sysmessage( s, "Click on the char to guard.") ;
 
 							return 1;
@@ -802,7 +802,7 @@ int response(pClient client)
 							pTarget targ = clientInfo[s]->newTarget( new cCharTarget() );
 							targ->code_callback=target_transfer;
 							targ->buffer[0]=pc_map->getSerial();
-							targ->send( getClientFromSocket(s) );
+							targ->send( client );
 							sysmessage( s, "Select character to transfer your pet to.");
 							return 1;
 						}
@@ -1029,7 +1029,7 @@ void responsevendor(pClient client, pChar pc_vendor)
 					pTarget targ = clientInfo[s]->newTarget( new cItemTarget() );
 					targ->code_callback=target_playerVendorBuy;
 					targ->buffer[0]=pc_vendor->getSerial();
-					targ->send( getClientFromSocket(s) );
+					targ->send( client );
 					return; // lb bugfix
 				}
 				else if(client->buyShop(pc_vendor))
@@ -1094,7 +1094,7 @@ void responsevendor(pClient client, pChar pc_vendor)
 						pTarget targ= clientInfo[s]->newTarget( new cItemTarget() );
 						targ->code_callback = target_playerVendorBuy;
 						targ->buffer[0]=pc->getSerial();
-						targ->send( getClientFromSocket(s) );
+						targ->send( client );
 						return;
 					}
 					else
@@ -1869,7 +1869,7 @@ static bool buyFromVendor( pChar pc, pClient client, string &speech, NxwCharWrap
 		pc_vendor->talk( socket, "What would you like to buy?", 0 );
 		pTarget targ = clientInfo[socket]->newTarget( new cItemTarget() );
 		targ->buffer[0]= pc_vendor->getSerial();
-		targ->send( getClientFromSocket( socket ) );
+		targ->send(client);
 		success = true;
 	}
 	else

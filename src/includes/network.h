@@ -66,6 +66,4 @@ class cNetwork
 
 extern class cNetwork *Network;
 
-pClient getClientFromSocket(pClient client);
-
 #endif
