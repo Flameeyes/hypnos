@@ -220,7 +220,7 @@ static bool AnvilInRange(pClient client)
 \author Duke
 \date 28/03/2000
 \brief Little helper function for nSkills::target_smith()
-\param s socket number
+\param client the client
 \param pi pointer to material item
 \param ma maximum amount
 \param mm makemenu number to invoke from create.scp
@@ -1324,6 +1324,7 @@ void nSkills::target_forensics(pClient client, pTarget t )
 \brief Poison target
 \author AntiChrist, rewritten by Endymion
 \param client the client
+\param t the target
 \note pi->morez is the poison type
 */
 void target_poisoning2(pClient client, pTarget t )

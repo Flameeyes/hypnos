@@ -17,7 +17,7 @@
 \brief Changes the orientation of a player
 \author Flameeyes
 \param facex X-coord to face to	
-\param faxey Y-coord to face to
+\param facey Y-coord to face to
 */
 void cChar::facexy(uint16_t facex, uint16_t facey)
 {

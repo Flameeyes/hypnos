@@ -447,7 +447,7 @@ public:
 	bool		canSee( pObject obj );	//!< can it see the object?
 	bool		seeForFirstTime( pObject obj );	//!< does it see the object for the first time?
 	bool		seeForLastTime( pObject obj ); //!< does it see the object for the first time?
-	void		walk();			//!< execute walk code <Luxor>
+	void		walk();			//!< execute walk code (Luxor)
 	void		follow( pChar pc ); //!< follow pc
 	void 		flee( pChar pc, int32_t seconds=INVALID ); //!< flee from pc
 	void		pathFind( sLocation pos, bool bOverrideCurrentPath = true );

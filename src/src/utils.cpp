@@ -309,10 +309,8 @@ int checkBoundingCircle(int xPos, int yPos, int fx1, int fy1, int fz1, int radiu
 /*!
 \brief converts x,y coords to sextant coords
 \author LB
-\param x X-coord of object
-\param y Y-coord of object
-\param cx Central x-coord
-\param cy Central y-coord
+\param p Coordinates of object
+\param center Central coordinates
 \note thanks goes to Balxan / UOAM for the basic alogithm
 	could be optimized a lot, but the freuqency of being called is probably very low
 

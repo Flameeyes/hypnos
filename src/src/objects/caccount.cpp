@@ -91,8 +91,8 @@ cAccount::cAccount(std::string aName, std::string aPassword)
 }
 
 /*!
-\brief Consstructor from database
-\param row The row returned by SQLite query
+\brief Constructor from database
+\param r The row returned by SQLite query
 
 This function creates the account reading the 16 columns from the
 supplied row.

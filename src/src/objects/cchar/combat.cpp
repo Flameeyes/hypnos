@@ -654,7 +654,7 @@ void cChar::checkPoisoning(pChar pc_def)
 /*!
 \author Luxor
 \brief Determines part of body hit and show to pc_def the hit message (?)
-\param damaage Damage inflicted
+\param damage Damage inflicted
 \return part of body hit
 */
 int cChar::combatHitMessage(int32_t damage)

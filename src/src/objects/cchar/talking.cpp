@@ -53,7 +53,7 @@ void cChar::talkAll(char *txt, bool antispam)
 /*!
 \author Luxor
 \brief Shows speech text of a char to the given char
-\param s socket to send the speech to
+\param client client to send the speech to
 \param txt the speech
 \param antispam use or not antispam
 */
@@ -98,7 +98,7 @@ void cChar::talk(pClient client, char *txt, bool antispam)
 /*!
 \brief Shows emote text of a char
 \author Luxor
-\param socket socket to send the emote to
+\param client client to send the emote to
 \param txt the emote
 \param antispam use or not antispam
 \todo document extra parameters
@@ -179,7 +179,7 @@ void cChar::emoteall( char *txt, bool antispam, ... )
 /*!
 \author Luxor
 \brief Shows runic speech text of a char to the given socket
-\param s socket to send the speech to
+\param client client to send the speech to
 \param txt speech
 \param antispam use or not antispam
 */
