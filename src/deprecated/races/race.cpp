@@ -251,7 +251,7 @@ void Race::parseRaceSection( void )
 					     			lha == "skAnatomy" ||
 					     			lha == "skAnimalLore" ||
 					     			lha == "skArmsLore" ||
-					     			lha == "ARCHERY")						race->parseSkill( rha );
+					     			lha == "skArchery")						race->parseSkill( rha );
 					break;
 				case 'B':
 					if 			( lha == "BEARD" )						race->beardPerm = rha;
@@ -326,7 +326,7 @@ void Race::parseRaceSection( void )
 					break;
 				case 'P':
 					if 			( lha == "PLURALNAME" ) 			race->pluralName = rha;
-					else if ( lha == "POISONING" )				race->parseSkill( rha );
+					else if ( lha == "skPoisoning" )				race->parseSkill( rha );
 					else if ( lha == "POISONRESISTANCE" ) race->parsePoisonResistance( rha );
 					else if ( lha == "skProvocation" )			race->parseSkill( rha );
 					break;

@@ -349,8 +349,8 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									pc->baseskill[skAnatomy] = getRangedValue(script2);
 								else if ( "skAnimalLore" == script1 )
 									pc->baseskill[skAnimalLore] = getRangedValue(script2);
-								else if ( "ARCHERY" == script1 )
-									pc->baseskill[ARCHERY] = getRangedValue(script2);
+								else if ( "skArchery" == script1 )
+									pc->baseskill[skArchery] = getRangedValue(script2);
 								else if ( "skArmsLore" == script1 )
 									pc->baseskill[skArmsLore] = getRangedValue(script2);
 								break;
@@ -720,8 +720,8 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									pc->baseskill[skPeacemaking] = getRangedValue(script2);
 								else if ( "POISON" == script1)
 									pc->poison=str2num(script2);
-								else if ( "POISONING" == script1 )
-									pc->baseskill[POISONING] = getRangedValue(script2);
+								else if ( "skPoisoning" == script1 )
+									pc->baseskill[skPoisoning] = getRangedValue(script2);
 								else if ( "PRIV1" == script1 )
 									pc->SetPriv(str2num(script2));
 								else if ( "PRIV2" == script1 )

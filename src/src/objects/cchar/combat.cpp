@@ -84,7 +84,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	fightskill = weapon ? weapon->getCombatSkill() : WRESTLING;
 	dist = distFrom(pc_def);
 
-	if((dist > 1 && fightskill != ARCHERY) || !los) return;
+	if((dist > 1 && fightskill != skArchery) || !los) return;
 
 	if ( pc_def->npc && !npc ) {
 		if ( pc_def->IsInvul() )
@@ -116,13 +116,13 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
         // Luxor: we must calculate the chance depending on which combat situation we are.
         //
         int32_t chanceToHit = 0;
-        if ( fightskill != ARCHERY && def_fightskill != ARCHERY ) { //Melee VS Melee
+        if ( fightskill != skArchery && def_fightskill != skArchery ) { //Melee VS Melee
 		chanceToHit = int( ( (fs1+500.0) / ((fs2+500.0)*2.0) )*100.0 - dex2/7.0 + dex1/7.0 );
-	} else if ( fightskill == ARCHERY && def_fightskill == ARCHERY ) { //Ranged VS Ranged
+	} else if ( fightskill == skArchery && def_fightskill == skArchery ) { //Ranged VS Ranged
 		chanceToHit = int( (fs1/10.0) - dex2/2.0 + dex1/5.0 );
-	} else if ( fightskill == ARCHERY && def_fightskill != ARCHERY ) { //Ranged VS Melee
+	} else if ( fightskill == skArchery && def_fightskill != skArchery ) { //Ranged VS Melee
 		chanceToHit = int( ((fs1+500.0) / ((fs2+300.0)*2.0)) *100.0 - dex2/6.0 + dex1/5.0 );
-	} else if ( fightskill != ARCHERY && def_fightskill == ARCHERY ) { //Melee VS Ranged
+	} else if ( fightskill != skArchery && def_fightskill == skArchery ) { //Melee VS Ranged
 		chanceToHit = int( ((fs1+500.0) / (fs2*2.0)) *100.0 - dex2/7.0 + dex1/7.0 );
 	}
 
@@ -137,7 +137,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	checkSkillSparrCheck(fightskill, 0, 1000, pc_def);
 	swingtarget = NULL;
 
-	if ( fightskill == ARCHERY && isRunning() )
+	if ( fightskill == skArchery && isRunning() )
 		hit = false;
 
 	if (!hit) {
@@ -149,14 +149,14 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		}
 
 		if (!npc) {
-			if ( chance(30) || def_fightskill == ARCHERY )
+			if ( chance(30) || def_fightskill == skArchery )
 				doMissedSoundEffect();
 			else {
 				pc_def->doCombatSoundEffect( def_fightskill, def_Weapon );
 				pc_def->emoteall( "*Parries the attack*", 1 );
 			}
 		}
-		if (fightskill == ARCHERY) {
+		if (fightskill == skArchery) {
 			if (chance(33)) {
                                 pItem pi = NULL;
 				if (weapon->IsBow()) {
@@ -265,8 +265,8 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		if ( chance(pc_def->skill[skParrying]/20) ) { // chance to block with shield
 			pc_def->checkSkill(skParrying, 0, 1000);
 			//pc_def->emoteall( "*Parries the attack*", 1 );
-			if (pShield->def!=0 && fightskill!=ARCHERY) damage -= pShield->def/2; // damage absorbed by shield
-			if (pShield->def!=0 && fightskill==ARCHERY) damage -= pShield->def; // damage absorbed by shield
+			if (pShield->def!=0 && fightskill!=skArchery) damage -= pShield->def/2; // damage absorbed by shield
+			if (pShield->def!=0 && fightskill==skArchery) damage -= pShield->def; // damage absorbed by shield
 			if (chance(5)) pShield->hp--;
 			if (pShield->hp<=0) {
 				pc_def->sysmsg(TRANSLATE("Your shield has been destroyed"));
@@ -436,7 +436,7 @@ void cChar::doCombat()
 	{
 		fightskill = weapon ? weapon->getCombatSkill() : WRESTLING;
 
-		if (fightskill==ARCHERY)
+		if (fightskill==skArchery)
 		{
 			if (weapon->ammo == 0)   //old ammo system
 			{
@@ -545,7 +545,7 @@ void cChar::doCombat()
 			playCombatAction();
 
 			// New ammo system for bows and crossbows by Keldan
-			if (fightskill==ARCHERY)
+			if (fightskill==skArchery)
 				if (weapon->ammo == 0)   //old ammo system
 				{
 					if (weapon->IsBow())
@@ -565,16 +565,16 @@ void cChar::doCombat()
 					movingeffect3( getSerial(), targserial, (weapon->ammoFx>>8)&0xFF, weapon->ammoFx & 0xFF, 0x08, 0x00, 0x00,0,0,0,0);
 				}
 
-			if ( dist < 2 || fightskill == ARCHERY )
+			if ( dist < 2 || fightskill == skArchery )
 				(reinterpret_cast<pNPC>this)->simpleAttack(target);
 
-			if (fightskill == ARCHERY)
+			if (fightskill == skArchery)
 				combatHit( pc_def );
 			else
 				swingtarget = pc_def;
 		}	//End -> if (x)
 
-		if (fightskill != ARCHERY)
+		if (fightskill != skArchery)
 			combatHit( pc_def, x);
 		return;
 	}	//End -> else if (dist<=10 && combatTimerOk())
@@ -969,7 +969,7 @@ void cChar::doCombatSoundEffect(uint16_t fightskill, pItem weapon)
 
 	switch(fightskill)
 	{
-		case ARCHERY:
+		case skArchery:
 			playSFX(0x0234);
 			break;
 		case FENCING:

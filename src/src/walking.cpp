@@ -448,7 +448,7 @@ void walking(pChar pc, int dir, int sequence)
 	}
 
 
-	if(pc->getCombatSkill() ==ARCHERY)  // -Frazurbluu- add in changes for archery skill, and dexterity
+	if(pc->getCombatSkill() ==skArchery)  // -Frazurbluu- add in changes for archery skill, and dexterity
     {                                        //  possibly weapon speed?? maybe not, cause crossbows notta running shooting
 		if ( pc->targserial!= INVALID)
         {

@@ -1650,7 +1650,7 @@ void target_poisoning2( NXWCLIENT ps, pTarget t )
     if ( ! pc ) return;
 	NXWSOCKET s = ps->toInt();
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,POISONING,AMX_BEFORE);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skPoisoning,AMX_BEFORE);
     pItem poison=cSerializable::findItemBySerial(t->buffer[0]);
     VALIDATEPI(poison);
 
@@ -1712,23 +1712,23 @@ void target_poisoning2( NXWCLIENT ps, pTarget t )
     switch(poison->morez)
 	{
         case 0: break;
-        case 1: success=pc->checkSkill( POISONING, 0, 500);	break; //lesser poison
+        case 1: success=pc->checkSkill( skPoisoning, 0, 500);	break; //lesser poison
         case 2:
 			{
-				success=pc->checkSkill( POISONING, 251, 651);
-				if (pc->skill[POISONING]<650) success=0;
+				success=pc->checkSkill( skPoisoning, 251, 651);
+				if (pc->skill[skPoisoning]<650) success=0;
 				break;//poison
 			}
         case 3:
 			{
-				success=pc->checkSkill( POISONING, 851, 1051);
-				if (pc->skill[POISONING]<850) success=0;
+				success=pc->checkSkill( skPoisoning, 851, 1051);
+				if (pc->skill[skPoisoning]<850) success=0;
 				break;//greater poison
 			}
         case 4:
 			{
-				success=pc->checkSkill( POISONING, 1201, 1401);
-				if (pc->skill[POISONING]<950) success=0;
+				success=pc->checkSkill( skPoisoning, 1201, 1401);
+				if (pc->skill[skPoisoning]<950) success=0;
 				break;//deadly poison
 			}
         default:
@@ -1768,7 +1768,7 @@ void target_poisoning2( NXWCLIENT ps, pTarget t )
 	emptybottle->priv|=0x01;
 	emptybottle->Refresh();
 
-	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,POISONING,AMX_AFTER);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skPoisoning,AMX_AFTER);
 }
 
 

@@ -1175,7 +1175,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				ps->sysmsg( TRANSLATE("What corpse do you want to examine?"));
 				break;
 
-			case POISONING:
+			case skPoisoning:
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_poisoning;
 				targ->send( ps );
@@ -1426,12 +1426,12 @@ void Skills::AButte(NXWSOCKET s1, pItem pButte)
         else
 			pc->combatOnFoot();
 
-        if( pc->skill[ARCHERY] < 350 )
-            pc->checkSkill( ARCHERY, 0, 1000 );
+        if( pc->skill[skArchery] < 350 )
+            pc->checkSkill( skArchery, 0, 1000 );
         else
             pc->sysmsg( TRANSLATE("You learn nothing from practicing here") );
 
-        switch( ( pc->skill[ARCHERY]+ ( (rand()%200) -100) ) /100 )
+        switch( ( pc->skill[skArchery]+ ( (rand()%200) -100) ) /100 )
         {
 		case -1:
 		case 0:
@@ -1682,8 +1682,8 @@ void SkillVars()
     strcpy(skillinfo[skTactics].madeword,"made");
     strcpy(skillinfo[skSnooping].madeword,"made");
     strcpy(skillinfo[skMusicianship].madeword,"made");
-    strcpy(skillinfo[POISONING].madeword,"made");
-    strcpy(skillinfo[ARCHERY].madeword,"made");
+    strcpy(skillinfo[skPoisoning].madeword,"made");
+    strcpy(skillinfo[skArchery].madeword,"made");
     strcpy(skillinfo[SPIRITSPEAK].madeword,"made");
     strcpy(skillinfo[STEALING].madeword,"made");
     strcpy(skillinfo[TAILORING].madeword,"sewn");

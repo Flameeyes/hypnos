@@ -165,8 +165,8 @@ void advancementobjects(CHARACTER s, int x, int allways)
 					else if ("skTactics" == script1 ||"SKILL27" == script1 ) pc->baseskill[skTactics] = getRangedValue(script2);
 					else if ("skSnooping" == script1 ||"SKILL28" == script1 ) pc->baseskill[skSnooping] = getRangedValue(script2);
 					else if ("skMusicianship" == script1 ||"SKILL29" == script1 ) pc->baseskill[skMusicianship] = getRangedValue(script2);
-					else if ("POISONING" == script1 ||"SKILL30" == script1 ) pc->baseskill[POISONING] = getRangedValue(script2);
-					else if ("ARCHERY" == script1 ||"SKILL31" == script1 ) pc->baseskill[ARCHERY] = getRangedValue(script2);
+					else if ("skPoisoning" == script1 ||"SKILL30" == script1 ) pc->baseskill[skPoisoning] = getRangedValue(script2);
+					else if ("skArchery" == script1 ||"SKILL31" == script1 ) pc->baseskill[skArchery] = getRangedValue(script2);
 					else if ("SPIRITSPEAK" == script1 ||"SKILL32" == script1 ) pc->baseskill[SPIRITSPEAK] = getRangedValue(script2);
 					else if ("STEALING" == script1 ||"SKILL33" == script1 ) pc->baseskill[STEALING] = getRangedValue(script2);
 					else if ("TAILORING" == script1 ||"SKILL34" == script1 ) pc->baseskill[TAILORING] = getRangedValue(script2);

@@ -781,7 +781,7 @@ Skill cItem::getCombatSkill()
 	else if (IsSwordType())		return SWORDSMANSHIP;
 	else if (IsMaceType() || IsSpecialMace())		return MACEFIGHTING;
 	else if (IsFencingType())	return FENCING;
-	else if (IsBowType())		return ARCHERY;
+	else if (IsBowType())		return skArchery;
 	return WRESTLING;
 }
 

@@ -1248,7 +1248,7 @@ int32_t cChar::getCombatSkill()
 				}
 				else if (pi->IsBowType() )
 				{
-					return ARCHERY;
+					return skArchery;
 				}
 			}
 		}
