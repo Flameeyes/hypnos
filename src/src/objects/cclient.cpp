@@ -1864,12 +1864,12 @@ void cClient::item_bounce6(const pItem pi)
 \brief concludes buying of items
 \author Unknown, updated to pyuo Chronodt (24/2/04)
 \param npc vendor whose goods player is buying
-\param allitemsbought vector of items selected from player (layer, pItem and amount for each item)
+\param allitemsbought list of items selected from player (layer, pItem and amount for each item)
 */
 
 
 
-void cClient::buyaction(pNpc npc, std::vector< buyeditem > &allitemsbought)
+void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 {
 
 	int i, j;
@@ -1893,7 +1893,7 @@ void cClient::buyaction(pNpc npc, std::vector< buyeditem > &allitemsbought)
 	int goldtotal=0;
 	int soldout=0;
 
-        std::vector<buyeditem>::iterator iter( allitemsbought.begin()), end( allitemsbought.end() );
+        std::list<boughtitem>::iterator iter( allitemsbought.begin()), end( allitemsbought.end() );
 	for (; iter!=end; iter++)
 	{
 		iter.item->rank=10;     //Just to be on the safe side... :)
@@ -1901,7 +1901,7 @@ void cClient::buyaction(pNpc npc, std::vector< buyeditem > &allitemsbought)
 		tmpvalue = iter.item->value;
 		tmpvalue = iter.item->calcValue(tmpvalue);
 		if (SrvParms->trade_system==1)
-			tmpvalue=calcGoodValue(client,iter.item,tmpvalue,0);
+			tmpvalue=calcGoodValue(this,iter.item,tmpvalue,0);
 		goldtotal+=iter.amount*tmpvalue;
 		// End Fix for adv trade system -- Magius(CHE) §
                 if (iter->item->amount < iter->amount) soldout=1;
@@ -2025,6 +2025,132 @@ void cClient::buyaction(pNpc npc, std::vector< buyeditem > &allitemsbought)
 	}
 	pc->getBody()->calcWeight();
 	statusWindow(pc,true);  //!< \todo check second argument
+}
+
+
+void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
+{
+	pChar pc=currChar();
+	VALIDATEPC(pc);
+
+	pItem np_a=NULL, np_b=NULL, np_c=NULL;
+	int i, amt, value=0, totgold=0;
+
+	VALIDATEPC(npc);
+
+	NxwItemWrapper si;
+	si.fillItemWeared( npc, true, true, false );
+	for( si.rewind(); !si.isEmpty(); si++ )
+	{
+		pItem pi=si.getItem();
+		if(ISVALIDPI(pi))
+                {
+			if (pi->layer == LAYER_TRADE_RESTOCK) np_a=pi;	// Buy Restock container
+			if (pi->layer == LAYER_TRADE_NORESTOCK) np_b=pi;	// Buy no restock container
+			if (pi->layer == LAYER_TRADE_BOUGHT) np_c=pi;	// Sell container
+		}
+        }
+
+	// Pre Calculate Total Amount of selling items to STOPS if the items if greater than SELLMAXITEM - Magius(CHE)
+
+	pItem join=NULL;
+	uint32_t maxsell=0;
+	int nitems=allitemssold.size();
+	if (nitems>256) return;
+        std::list< boughtitem >::iterator it = allitemssold.begin();
+	for (;it!=allitemssold.end();it++) maxsell+=it->amount;
+
+	if (maxsell>SrvParms->sellmaxitem)
+	{
+		char tmpmsg[256];
+		sprintf(tmpmsg,TRANSLATE("Sorry %s but i can buy only %i items at time!"), currChar()->getCurrentNameC(), SrvParms->sellmaxitem);
+		npc->talkAll(tmpmsg,0);
+		return;
+	}
+
+	for (it = allitemssold.begin();it!=allitemssold.end();it++)
+	{
+		pItem pSell=it->item;	// the item to sell
+		if (!ISVALIDPI(pSell)) continue;
+		amt=it->amount;
+
+		// player may have taken items out of his bp while the sell menu was up ;-)
+		if (pSell->amount<amt)
+		{
+			npc->talkAll(TRANSLATE("Cheating scum! Leave now, before I call the guards!"),0);
+			return;
+                }
+
+		// Search the buy restock Container
+		if( ISVALIDPI(np_a) )
+                {
+			NxwItemWrapper si2;
+			si2.fillItemsInContainer( np_a, false );
+			for( si2.rewind(); !si2.isEmpty(); si2++ )
+			{
+				P_ITEM pi=si2.getItem();
+				if( ISVALIDPI(pi) && items_match(pi,pSell)) join=pi;
+			}
+		}
+
+		// Search the sell Container to determine the price
+		if( ISVALIDPI(np_c) )
+                {
+			NxwItemWrapper si2;
+			si2.fillItemsInContainer( np_c, false );
+			for( si2.rewind(); !si2.isEmpty(); si2++ )
+			{
+				pItem pi=si2.getItem();
+				if( ISVALIDPI(pi) && items_match(pi,pSell))
+				{
+					value = pi->value;
+					value = pSell->calcValue(value);
+					if (SrvParms->trade_system==1)
+						value=calcGoodValue(this,pSell,value,1); // Fixed for adv trade --- by Magius(CHE) §
+					break;	// let's take the first match
+				}
+                        }
+                }
+		totgold+=(amt*value);	// add to the bill
+
+		if (join!=NULL)	// The item goes to the container with restockable items
+		{
+
+			join->amount+=amt;
+			join->restock-=amt;
+			pSell->ReduceAmount(amt);
+		}
+		else
+		{
+			if(ISVALIDPI(np_b))
+                        {
+				NxwSocketWrapper sw;
+				sw.fillOnline( pSell );
+
+				for( sw.rewind(); !sw.isEmpty(); sw++ )
+				{
+					SendDeleteObjectPkt( sw.getSocket(), pSell->getSerial32() );
+				}
+
+				pSell->setContainer( np_b );
+				if (pSell->amount!=amt)
+					Commands::DupeItem(s, DEREF_P_ITEM(pSell), pSell->amount-amt);
+                        }
+                }
+        }
+	currChar()->addGold(totgold);
+	playSFX( goldsfx(totgold) );
+
+
+
+        
+
+	uint8_t clearmsg[8] = { 0x3B, 0x00, };
+	ShortToCharPtr(0x08, clearmsg +1); 				// Packet len
+	LongToCharPtr( LongFromCharPtr(buffer[s] +3), clearmsg +3);	// vendorID
+	clearmsg[7]=0x00;						// Flag:  0 => no more items  0x02 items following ...
+	Xsend(s, clearmsg, 8);
+//AoS/	Network->FlushBuffer(s);
 }
 
 

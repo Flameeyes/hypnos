@@ -622,7 +622,7 @@ class cPacketReceiveGameServerLogin     : public cPacketReceive;
 class cPacketReceiveBookUpdateTitle     : public cPacketReceive;
 class cPacketReceiveDyeItem             : public cPacketReceive;
 class cPacketRequestHelp	        : public cPacketReceive;
-class        : public cPacketReceive;
+class cPacketReceiveSellItems           : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;

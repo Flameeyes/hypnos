@@ -615,7 +615,7 @@ pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t length)
                 case 0x9a: return NULL; 						// Console Entry Prompt
 
                 case 0x9b: return new cPacketRequestHelp(buffer, length); 	      	// Request Help
-                case 0x9f: length = ???; break; // Sell Reply
+                case 0x9f: return new cPacketReceiveSellItems(buffer, length); 		// Sell Reply
                 case 0xa0: length =   3; break; // Select Server
                 case 0xa4: length =   5; break; // Client Machine info (Apparently was a sort of lame spyware command .. unknown if it still works)
                 case 0xa7: length =   4; break; // Request Tips/Notice
@@ -890,7 +890,7 @@ bool cPacketReceiveTalkRequest::execute (pClient client)
         // ... but is a copy really needed?
         	unsigned char nonuni[512];
 		client->currChar()->unicode = false;
-	        strcpy((char*)nonuni, (char*)&buffer[8]);
+	        strcpy((char*)nonuni, buffer + 8);
 		talking(client, (char*)nonuni);
                 return true;
 	} else return false;
@@ -908,7 +908,7 @@ bool cPacketReceiveAttackRequest::execute (pClient client)
         if (length != 5) return false;
 	pPC pc = client->currChar();
 	VALIDATEPCR( pc, false );
-	pChar victim = pointers::findCharBySerPtr(buffer + 1);  //victim may be an npc too, so it is a cChar
+	pChar victim = pointers::findCharBySerPtr(LongFromCharPtr(buffer + 1));  //victim may be an npc too, so it is a cChar
 	VALIDATEPCR( victim, false );
 
 	if( pc->dead ) pc->deadAttack(victim);
@@ -1114,10 +1114,10 @@ bool cPacketReceiveWearItem::execute(pClient client)
 
         if (length != 10) return false;
 
-	pChar pc = pointers::findCharBySerPtr(buffer+6);
+	pChar pc = pointers::findCharBySerPtr(LongFromCharPtr(buffer + 6));
 
 	VALIDATEPCR(pck, false);
-	pItem pi = pointers::findItemBySerPtr(buffer+1);
+	pItem pi = pointers::findItemBySerPtr(LongFromCharPtr(buffer + 1));
 	VALIDATEPIR(pi, false);
 
         client->wear_item(pc, pi);
@@ -1179,7 +1179,7 @@ bool cPacketReceiveStatusRequest::execute(pClient client)
 {
         if (length != 10) return false;
         if ( client->currChar() != NULL ) {
-	        if (buffer[5]==4) client->statusWindow(pointers::findCharBySerPtr(buffer + 6), false); //!< NOTE: packet description states sending basic stats, so second argument is false. Correct if necessary 
+	        if (buffer[5]==4) client->statusWindow(pointers::findCharBySerPtr(LongFromCharPtr(buffer + 6)), false); //!< NOTE: packet description states sending basic stats, so second argument is false. Correct if necessary
                 if (buffer[5]==5) client->skillWindow();
 	}
         return true
@@ -1216,9 +1216,9 @@ bool cPacketReceiveBuyItems::execute(pClient client)
         uint16_t size = ShortFromCharPtr(buffer + 1);
         if (length != size) return false;
 
-        std::vector< boughtitem > allitemsbought;
+        std::list< boughtitem > allitemsbought;
 
-	pNpc npc = (pNpc)pointers::findCharBySerPtr(buffer + 3);
+	pNpc npc = (pNpc)pointers::findCharBySerPtr(LongFromCharPtr(buffer + 3));
 	VALIDATEPCR(npc, false);
 
 	int itemtotal=(size - 8)/7;
@@ -1231,7 +1231,8 @@ bool cPacketReceiveBuyItems::execute(pClient client)
 		boughtitem b;
 
 		b.layer=buffer[pos];
-		b.item=pointers::findItemBySerPtr(buffer + pos + 1);
+                uint32_t itemserial = LongFromCharPtr(buffer + pos + 1);
+		b.item=pointers::findItemBySerPtr(itemserial);
 		if(!b.item)
 			continue;
 		b.amount=ShortFromCharPtr(buffer + pos + 5);
@@ -1354,8 +1355,8 @@ bool cPacketReceiveBookPage::execute(pClient client)
 {
 	uint16_t size = ShortFromCharPtr(buffer + 1);
 	if (length != size) return false;
-	
-	pItem item = pointers::findItemBySerPtr(buffer+3);
+
+	pItem item = pointers::findItemBySerPtr(LongFromCharPtr(buffer + 3));
 	pBook book = NULL;
 	
 	if ( item && ( book = item->toBook() ) )
@@ -1404,7 +1405,7 @@ bool cPacketReceiveSecureTrade::execute(pClient client)
 	case 0://Start trade - Never happens, sent out by the server only.
 		break;
 	case 2://Change check marks. Possibly conclude trade
-		cont1 = pointers::findItemBySerPtr(buffer + 4);
+		cont1 = pointers::findItemBySerPtr(LongFromCharPtr(buffer + 4));
                 //cont1 is now this client's secure trading container (a temporary container wich holds the trade items)
 
 		if (cont1) cont2 = pointers::findItemBySerial(calcserial(cont1->moreb1, cont1->moreb2, cont1->moreb3, cont1->moreb4));
@@ -1767,8 +1768,8 @@ bool cPacketReceiveBookUpdateTitle::execute(pClient client)
 {
 	if (length != 99) return false;
 	char author[31], title[61];
-	
-	pItem item = pointers::findItemBySerPtr(buffer+1);
+
+	pItem item = pointers::findItemBySerPtr(LongFromCharPtr(buffer + 1));
 	pBook book = NULL;
 	if ( ! item || ! ( book = item->toBook() ) )
 		return false;
@@ -1802,3 +1803,34 @@ bool cPacketRequestHelp::execute(pClient client)
 	gmmenu(s, 1);
         return true;
 }
+
+bool cPacketReceiveSellItems::execute(pClient client)
+{
+        uint16_t size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+
+        std::list< boughtitem > allitemssold;
+
+	pNpc npc = (pNpc)pointers::findCharBySerPtr(LongFromCharPtr(buffer + 3));
+	VALIDATEPCR(npc, false);
+
+	int itemtotal=ShortFromCharPtr(buffer + 7);
+	if ((itemtotal>256) || (itemtotal == 0)) return false;
+
+        for(i=0;i<itemtotal;i++)
+	{
+		int pos=9+(6*i);
+
+		boughtitem b;
+
+                uint32_t itemserial = LongFromCharPtr(buffer + pos);
+		b.item=pointers::findItemBySerPtr(itemserial);
+		if(!b.item)
+			continue;
+		b.amount=ShortFromCharPtr(buffer + pos + 4);
+		allitemssold.push_back( b );
+	}
+        client->sellaction(npc, allitemssold);
+        return true;
+}
+

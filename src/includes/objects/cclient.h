@@ -23,7 +23,7 @@ typedef struct {
 	int layer;
 	pItem item;
 	int amount;
-} buyeditem;                    // Used in trading methods
+} boughtitem;                    // Used in trading methods
 
 
 #include "cchar.h"
@@ -114,7 +114,8 @@ public:
         //! trading methods
 
 public:
-        void buyaction(pNpc npc, std::vector< buyeditem > &allitemsbought);    	//!< Getting purchased item and gold/availability check
+        void buyaction(pNpc npc, std::list< boughtitem > &allitemsbought);    	//!< Getting purchased item and gold/availability check
+        void sellaction(pNpc npc, std::list< boughtitem > &allitemssold);	//!< Sellig of items. Moving from char and getting paid :D
         static void sendtradestatus(pContainer cont1, pContainer cont2);  	//!< updates secure trade window
         static void dotrade(pContainer cont1,pContainer cont2);			//!< concludes trade (either swapping items or returning them)
 	static void endtrade(uint32_t serial);					//!< closing trade window : called when one client ends the transaction (either accepted or canceled)
