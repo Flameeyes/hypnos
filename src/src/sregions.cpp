@@ -5,6 +5,8 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+
+
 /*!
 \file
 \brief Functions that handle the spawn regions
@@ -328,12 +330,10 @@ void checkregion(pChar pc)
 }
 
 
-///////////////////////////////////////////////////////////////////
-// Function name     : check_region_weatherchange
-// Description       : do the periodical check for weather change
-// Return type       : void
-// Author            : Xanathar
-// Changes           : none yet
+/*!
+\brief Do periodical checks for weather change
+\author Xanatar
+*/
 void check_region_weatherchange ()
 {
 	int r,sn=0, rn=0, dr=0, sm, i;

@@ -5,20 +5,20 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+
 #include "races/racerequiredtype.h"
 #include "races/racetokenizer.h"
 
 string RequiredType::requiredTypeNames[3] = { "OPTIONAL", "PROHIBITED", "MANDATORY" };
 
-///////////////////////////////////////////////////////////////////
-// Function name	: RequiredType::RequiredType
-// Purpose		: construct new CRequiredType object
-// Return type		: constructor
-// Author            	: Sparhawk
-// Argument          	: none
-// Note			: we could introduce unknown as racetype
-//			  and set value to this on construction
-// History		:
+
+/*!
+\brief Construct new CRequiredType object
+\author Sparhawk
+
+We could introduce unknown as racetype and set value to this on construction
+
+*/
 RequiredType::RequiredType( void )
 {
 	this->value = RT_OPTIONAL;

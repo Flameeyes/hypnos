@@ -5,6 +5,7 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+
 #include "common_libs.h"
 #include "objects/citem.h"
 #include "objects/cpc.h"
@@ -25,10 +26,11 @@ static bool items_match(pItem pi1,pItem pi2)
 }
 
 
-///////////////////////////////////////////////////////////////////
-// Function name     : tradestart
-// Return type       : pItem
-// Author            : Luxor
+/*!
+\brief The Trade must go on ... 
+\author Luxor
+\todo Rewrite to cPacket !!!!
+*/
 pItem tradestart(pPC pc1, pPC pc2)
 {
 	if (
@@ -103,7 +105,7 @@ pItem tradestart(pPC pc1, pPC pc2)
 	msg2[1]=0;      //Size
 	msg2[2]=47;     //Size
 	msg2[3]=0;      //Initiate
-	LongToCharPtr(pc1->getSerial(),msg2+4);
+	LongToCharPtr(pc1->getSerial(),   msg2+4);
 	LongToCharPtr(cont2->getSerial(), msg2+8);
 	LongToCharPtr(cont1->getSerial(), msg2+12);
 	msg2[16]=1;
@@ -116,6 +118,7 @@ pItem tradestart(pPC pc1, pPC pc2)
 
 void clearalltrades()
 {
+ConOut("... Sheeezzz ");
 /*        pItem pi = NULL;
         pItem pj = NULL;
         pChar pc = NULL;

@@ -5,19 +5,18 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+
 #include "races/racetype.h"
 #include "races/racetokenizer.h"
 
 
-///////////////////////////////////////////////////////////////////
-// Function name	: RaceType::RaceType
-// Purpose		: construct new RaceType object
-// Return type		: constructor
-// Author            	: Sparhawk
-// Argument          	: none
-// Note			: we could introduce unknown as racetype
-//			  and set value to this on construction
-// History		:
+/*!
+\brief Construct new RaceType object
+\author Sparhawk
+
+We could introduce unknown as racetype and set value to this on construction
+
+*/
 RaceType::RaceType( void )
 {
 	this->value = PCNPCRACE;

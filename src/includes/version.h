@@ -123,5 +123,6 @@
 
 #define EMAIL ""
 
+#define URL "http://hypnos.domain.com/"
 
 #endif //__VERSION_H__

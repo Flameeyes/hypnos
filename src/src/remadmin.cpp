@@ -59,12 +59,10 @@ RemoteAdmin::~RemoteAdmin()
 }
 
 
-///////////////////////////////////////////////////////////////////
-// Function name     : racInit
-// Description       : Initializes remote adm. console socket(s)
-// Return type       : void 
-// Author            : Xanathar 
-// Changes           : none yet
+/*!
+\brief Initialize remote adm. console socket(s)
+\author Xanatar
+*/
 void RemoteAdmin::Init()
 {
 	int bcode;
@@ -125,12 +123,10 @@ void RemoteAdmin::Init()
 }
 
 
-///////////////////////////////////////////////////////////////////
-// Function name     : racCheckConn 
-// Description       : checks periodically for new connections on rac socket
-// Return type       : void 
-// Author            : Xanathar 
-// Changes           : none yet
+/*!
+\brief Check periodically for new connections on rac socket
+\author Xanatar
+*/
 void RemoteAdmin::CheckConn ()
 {
 	int s;
@@ -175,7 +171,7 @@ void RemoteAdmin::CheckConn ()
 	Printf(racnow, "%s %s.%s [%s]\r\n", PRODUCT, VERNUMB, HOTFIX, OS);
 	Printf(racnow, "Remote Administration Console\r\n");
 	Printf(racnow, "Program by Xanathar and Ummon\r\n");
-	Printf(racnow, "http://nox-wizard.sunsite.dk\r\n");
+	Printf(racnow, "%s\r\n", URL);
 	Printf(racnow, "\r\n");
 	Printf(racnow, "INFO: character typed for login and password\r\n");
 	Printf(racnow, "are not echoed, this is not a bug.\r\n");
@@ -188,13 +184,10 @@ void RemoteAdmin::CheckConn ()
 }
 
 
-
-///////////////////////////////////////////////////////////////////
-// Function name     : racCheckInp 
-// Description       : checks sockets for input
-// Return type       : void 
-// Author            : Xanathar 
-// Changes           : none yet
+/*!
+\brief Check sockets for input
+\author Xanatar
+*/
 void RemoteAdmin::CheckInp ()
 {
 	int s, i, oldnow;
@@ -237,13 +230,11 @@ void RemoteAdmin::CheckInp ()
 }
 
 
-///////////////////////////////////////////////////////////////////
-// Function name     : racDisconnect
-// Description       : disconnect rac socket s
-// Return type       : void 
-// Author            : Xanathar 
-// Argument          : int s -> socket to be disconnected
-// Changes           : none yet
+/*!
+\brief Disconnect rac client
+\author Xanatar
+\param s client Client to be disconnected
+*/
 void RemoteAdmin::Disconnect(int s)
 {
 	if (rac_port==0) return;
@@ -272,13 +263,11 @@ void RemoteAdmin::Disconnect(int s)
 }
 
 
-///////////////////////////////////////////////////////////////////
-// Function name     : racRcv 
-// Description       : receives data from socket s
-// Return type       : void 
-// Author            : Xanathar 
-// Argument          : int s -> socket to rcv data from
-// Changes           : none yet
+/*!
+\brief Receives data from remote client
+\author Xanatar
+\param s client Client to recieve data from
+*/
 void RemoteAdmin::Rcv (int s)
 {
 	unsigned char buff[1024];
@@ -338,15 +327,13 @@ void RemoteAdmin::Rcv (int s)
 
 }
 
-///////////////////////////////////////////////////////////////////
-// Function name     : Printf
-// Description       : sends data as a printf format
-// Return type       : void 
-// Author            : Xanathar 
-// Argument          : int s -> socket to send to
-// Argument          : char *txt -> format of text
-// Argument          : ... -> printf parameters
-// Changes           : none yet
+/*!
+\brief Sends data as printf format
+\author Xanatar
+\param s socket
+\param txt format string of text
+\param ... printf parameters
+*/
 void RemoteAdmin::Printf(int s, char *txt, ...) // System message (In lower left corner)
 {
 	if (rac_port==0) return;
@@ -367,26 +354,24 @@ void RemoteAdmin::Printf(int s, char *txt, ...) // System message (In lower left
 
 extern "C" { 
 
-///////////////////////////////////////////////////////////////////
-// Function name     : compiler_main
-// Description       : compiles a small file
-// Return type       : int 
-// Author            : ITB Compuphase 
-// Argument          : int argc -> number of command line parameters to compiler
-// Argument          : char **argv -> array of cmd line parameters
-// Changes           : adapted by Xanathar
+/*!
+\brief Compiles a SMALL(scripting language) file
+\author ITB Compuphase
+\param argc number of command line parameters to compiler
+\param argv array of cmd line parameters
+
+	Changes:
+		Adapted by Xanathar
+*/
 int compiler_main(int argc, char **argv);
 }
 
 
-
-///////////////////////////////////////////////////////////////////
-// Function name     : racProcessInput
-// Description       : processes input from socket s
-// Return type       : void 
-// Author            : Xanathar 
-// Argument          : int s -> socket to process input
-// Changes           : rewritten by Anthalir
+/*!
+\brief Processes input from socket s
+\author Xanatar, Anthalir
+\param s socket to process input
+*/
 void RemoteAdmin::ProcessInput(int s)
 {
 	char inp2[1024]= {'\0'};
@@ -622,7 +607,7 @@ void RemoteAdmin::ProcessInput(int s)
 	}
 
 	if (!strcmp(inp,"SHUTDOWN")) {
-			ConOut("NoX-Wizard: Immediate Shutdown initialized from Remote Console!\n");
+			ConOut("!!!: Immediate Shutdown initialized from Remote Console!\n");
 			Printf(s, "Bye! :)\r\n\r\n");
 			keeprun=0;
 			return;
@@ -750,7 +735,7 @@ void RemoteAdmin::ProcessInput(int s)
 		Printf(s,"Building...");
 		char *argv[4];
 		
-		argv[0] = "noxwizard.internal.compiler";
+		argv[0] = "hypnos.small.internal.compiler";
 		argv[1] = new char[50];
 		argv[2] = new char[50];
 		argv[3] = new char[50];
