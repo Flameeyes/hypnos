@@ -55,11 +55,9 @@ bool cItem::usableWhenLockedDown(pPc pc)
 
 void cItem::singleClick(pClient client )
 {
-	char temp[TEMP_STR_SIZE];
 	int32_t amt = 0, wgt;
 	char itemname[100];
-	char temp2[100];
-//	extern skill_st skill[SKILLS + 1]; // unused variable
+	char *temp, *temp2;
 
 	pChar pj;
 
@@ -76,17 +74,20 @@ void cItem::singleClick(pClient client )
 
 	if ( type == ITYPE_SPELLBOOK )
 	{
-		sprintf( temp, "[%i spells]", countSpellsInSpellBook() );
+		asprintf( &temp, "[%i spells]", countSpellsInSpellBook() );
 		itemmessage(client, temp, serial, 0x0481);
+		free(temp);
 	}
 
 	if ( CanSeeSerials() )
 	{
 		if (amount > 1)
-			sprintf( temp, "%s [%x]: %i", itemname, getSerial(), amount);
+			sprintf( &temp, "%s [%x]: %i", itemname, getSerial(), amount);
 		else
-			sprintf( temp, "%s [%x]", itemname, getSerial());
+			sprintf( &temp, "%s [%x]", itemname, getSerial());
+
 		itemmessage(client, temp, serial);
+		free(temp);
 		return;
 	}
 
@@ -101,12 +102,14 @@ void cItem::singleClick(pClient client )
 				if( pj->npcaitype==NPCAI_PLAYERVENDOR )
 				{
 					if ( !creator.empty() && madewith>0)
-						sprintf( temp2, "%s %s by %s", vendorDescription.c_str(), ::skillinfo[madewith - 1].madeword, creator.c_str());
+						asprintf( &temp2, "%s %s by %s", vendorDescription.c_str(), ::skillinfo[madewith - 1].madeword, creator.c_str());
 					else
-						strcpy( temp2, vendorDescription.c_str() );
+						asprintf( &temp2, "%s", vendorDescription.c_str() );
 
-					sprintf( temp, "%s at %igp", temp2, value );
+					asprintf( &temp, "%s at %igp", temp2, value );
+
 					itemmessage(client, temp, serial);
+					free(temp); free(temp2);
 					return;
 				}
 			}
@@ -116,35 +119,33 @@ void cItem::singleClick(pClient client )
 	// From now on, we will build the message into temp, and let itemname with just the name info
 	// Add amount info.
 	if (!pileable || amount == 1)
-		strncpy( temp, itemname, 100);
+		asprintf( &temp, "%s", itemname);
 	else
 		if (itemname[strlen(itemname) - 1] != 's') // avoid iron ingotss : x
-			sprintf( temp, "%ss : %i", itemname, amount);
+			asprintf( &temp, "%ss : %i", itemname, amount);
 		else
-			sprintf( temp, "%s : %i", itemname, amount);
+			asprintf( &temp, "%s : %i", itemname, amount);
 
 	// Add creator's mark (if any)
-	if ( !creator.empty() && madewith > 0)
-		sprintf( temp, "%s %s by %s", temp, ::skillinfo[madewith - 1].madeword, creator.c_str());
+	if ( !creator.empty() && madewith > 0) {
+		asprintf( &temp2, "%s %s by %s", temp, ::skillinfo[madewith - 1].madeword, creator.c_str());
+		free(temp);
+		temp = temp2;
+	}
 
-	if (type == ITYPE_WAND) // Fraz
+	if (type == ITYPE_WAND || type == ITYPE_ITEMID_WAND || type == ITYPE_FIREWORKS_WAND ) // Fraz
 	{
 		if (!(strcmp(getSecondaryNameC(), getCurrentName().c_str())))
 		{
-			sprintf( temp, "%s %i charge", temp, morez);
-			if (morez != 1)
-				strcat(temp, "s");
+			uint32_t n;
+
+			if( type == ITYPE_WAND) n = morez;
+			else n = morex;
+
+			asprintf( &temp2, "%s %i ", temp, n, (n == 1)?  "charge" : "charges");
 		}
 	}
-	else if (type == ITYPE_ITEMID_WAND || type == ITYPE_FIREWORKS_WAND)
-	{
-			if (!(strcmp(getSecondaryNameC(), getCurrentName().c_str())))
-			{
-				sprintf( temp, "%s %i charge", temp, morex);
-				if (morex != 1)
-					strcat(temp, "s");
-			}
-	}
+
 	// Corpse highlighting...Ripper
 	if (corpse==1)
 	{
@@ -165,6 +166,7 @@ void cItem::singleClick(pClient client )
 	}
 
 	itemmessage(client, temp, serial);
+	free(temp); free(temp2);
 
 	/*! \todo This should be changed to a virtual function */
 #if 0
@@ -203,8 +205,7 @@ static void doubleclick_itemid( pClient client, pChar pc, pItem pi, pContainer p
 */
 void cItem::doubleClick(pClient client)
 {
-
-	if (client==NULL) return;
+	if (!client) return;
 	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
@@ -228,7 +229,7 @@ void cItem::doubleClick(pClient client)
 
 	if ( !pc->IsGM() && pc->objectdelay >= getclock() )
 	{
-		pc->sysmsg("You must wait to perform another action.");
+		client->sysmessage("You must wait to perform another action.");
 		return;
 	}
 	else
@@ -237,7 +238,7 @@ void cItem::doubleClick(pClient client)
 	///MODIFY, CANT CLICK ITEM AT DISTANCE >2//////////////
 	if ( (pc->distFrom(pi)>2) && !pc->IsGM() && !(pc->hasTelekinesis()) ) //Luxor: let's check also for the telekinesys spell
 	{
-		pc->sysmsg( "Must be closer to use this!");
+		client->sysmessage( "Must be closer to use this!");
 		pc->objectdelay=0;
 		return;
 	}
@@ -275,7 +276,7 @@ void cItem::doubleClick(pClient client)
 	charPos.dispz = dst.dispz;
 
 	if ( !pc->IsGM() && !lineOfSight( charPos, dst ) && !pc->hasTelekinesis() ) {
-		pc->sysmsg(  "You cannot reach the item" );
+		client->sysmessage(  "You cannot reach the item" );
 		return;
 	}
 	//</Luxor>
@@ -303,27 +304,27 @@ void cItem::doubleClick(pClient client)
 	{
 		if (!pc->isOwnerOf(this) || !pc->IsGMorCounselor())
 		{
-			pc->sysmsg( "That is a secured chest!");
+			client->sysmessage( "That is a secured chest!");
 			return;
 		}
 	}
 
 	if ((magic == 4) && !usableWhenLockedDown())  // Chronodt: without this last check, locked down chests could not be opened by nonowners even if unlocked
 	{
-		pc->sysmsg( "That item is locked down.");
+		client->sysmessage( "That item is locked down.");
 		return;
 	}
 
 	if (pc->dead && >type!=ITYPE_RESURRECT) // if you are dead and it's not an ankh, FORGET IT!
 	{
-		pc->sysmsg("You may not do that as a ghost.");
+		client->sysmessage("You may not do that as a ghost.");
 		return;
 	}
 	else if (!pc->IsGMorCounselor() && layer!=0 && !pc->IsWearing(this))
 	{// can't use other people's things!
 		if (!(layer==LAYER_BACKPACK  && SrvParms->rogue==1)) // bugfix for snooping not working, LB
 		{
-			pc->sysmsg("You cannot use items equipped by other players.");
+			client->sysmessage("You cannot use items equipped by other players.");
 			return;
 		}
 	}
@@ -343,15 +344,15 @@ void cItem::doubleClick(pClient client)
 			else
 			{
 				if ( disabledmsg!=NULL )
-					pc->sysmsg("%s", disabledmsg->c_str());
+					client->sysmessage("%s", disabledmsg->c_str());
 				else
-					pc->sysmsg("That doesnt seem to work right now.");
+					client->sysmessage("That doesnt seem to work right now.");
 				return;
 			}
 		}
 		else
 		{
-			pc->sysmsg( "You are not close enough to use that.");
+			client->sysmessage( "You are not close enough to use that.");
 			return;
 		}
 	}
@@ -368,7 +369,7 @@ void cItem::doubleClick(pClient client)
 		pTarget targ = clientInfo[s]->newTarget( new cObjectTarget() );
 		targ->code_callback=target_envoke;
 		targ->send( client );
-		client->sysmsg( "What will you use this on?");
+		client->sysmessage( "What will you use this on?");
 		return;
 	}
 	// END trigger stuff
@@ -390,12 +391,12 @@ void cItem::doubleClicked(pClient client)
 		if (pc->dead)
 		{
 			pc->resurrect();
-			pc->sysmsg("You have been resurrected.");
+			client->sysmessage("You have been resurrected.");
 			return;
 		}
 		else
 		{
-			pc->sysmsg("You are already living!");
+			client->sysmessage("You are already living!");
 			return;
 		}
 	case ITYPE_BOATS:// backpacks - snooping a la Zippy - add check for SrvParms->rogue later- Morrolan
@@ -410,7 +411,7 @@ void cItem::doubleClicked(pClient client)
 					Boats->PlankStuff(client, this);
 					break;
 				default:
-					pc->sysmsg( "That is locked.");
+					pc->sysmessage( "That is locked.");
 					break;
 			}
 			return;
@@ -453,7 +454,7 @@ void cItem::doubleClicked(pClient client)
 		targ = clientInfo[s]->newTarget( new cLocationTarget() );
 		targ->code_callback = target_tele;
 		targ->send( client );
-		client->sysmsg( "Select teleport target.");
+		client->sysmessage( "Select teleport target.");
 		return;
 	case ITYPE_KEY:
 
@@ -466,7 +467,7 @@ void cItem::doubleClicked(pClient client)
 		targ->buffer[2]= pi->more3;
 		targ->buffer[3]= pi->more4;
 		targ->send( client );
-		client->sysmsg( "Select item to use the key on.");
+		client->sysmessage( "Select item to use the key on.");
 		return;
 	case ITYPE_LOCKED_ITEM_SPAWNER:
 	case ITYPE_LOCKED_CONTAINER:
@@ -480,7 +481,7 @@ void cItem::doubleClicked(pClient client)
 				>moreb1--;
 			}
 
-			pc->sysmsg("This item is locked.");
+			client->sysmessage("This item is locked.");
 			return;
 		}
 		else
@@ -493,7 +494,7 @@ void cItem::doubleClicked(pClient client)
 			if(getContSerial()==pack->getSerial() || pc->IsWearing(this))
 				client->sendSpellBook(this);
 			else
-				pc->sysmsg("If you wish to open a spellbook, it must be equipped or in your main backpack.");
+				client->sysmessage("If you wish to open a spellbook, it must be equipped or in your main backpack.");
 			return;
 	case ITYPE_BLANK_MAP:
     		  //TODO check if pc has a pen to write maps with
@@ -523,10 +524,9 @@ void cItem::doubleClicked(pClient client)
 			{
 				pItem pj = si.getItem();
 				if (pj && pj->type==ITYPE_KEY)
-					if (((pj->more1 == more1) && (pj->more2 == more2) &&
-						 (pj->more3 == more3) && (pj->more4 == more4)) )
+					if ( pj->more1.more == more1.more )
 					{
-						pc->sysmsg("You quickly unlock, use, and then relock the door.");
+						client->sysmessage("You quickly unlock, use, and then relock the door.");
 
                                         //TODO: redo when houses updated
 
@@ -535,13 +535,13 @@ void cItem::doubleClicked(pClient client)
 					}
 			}
 		}
-		pc->sysmsg("This door is locked.");
+		client->sysmessage("This door is locked.");
 		return;
 	case ITYPE_FOOD:
 
 		if (pc->hunger >= 6)
 		{
-			pc->sysmsg( "You are simply too full to eat any more!");
+			client->sysmessage( "You are simply too full to eat any more!");
 			return;
 		}
 		else
@@ -555,18 +555,18 @@ void cItem::doubleClicked(pClient client)
 
 			switch (pc->hunger)
 			{
-				case 0:  pc->sysmsg( "You eat the food, but are still extremely hungry."); break;
-				case 1:  pc->sysmsg( "You eat the food, but are still extremely hungry."); break;
-				case 2:  pc->sysmsg( "After eating the food, you feel much less hungry."); break;
-				case 3:  pc->sysmsg( "You eat the food, and begin to feel more satiated."); break;
-				case 4:  pc->sysmsg( "You feel quite full after consuming the food."); break;
-				case 5:  pc->sysmsg( "You are nearly stuffed, but manage to eat the food.");	break;
-				default: pc->sysmsg( "You are simply too full to eat any more!"); break;
+				case 0:  client->sysmessage("You eat the food, but are still extremely hungry."); break;
+				case 1:  client->sysmessage("You eat the food, but are still extremely hungry."); break;
+				case 2:  client->sysmessage("After eating the food, you feel much less hungry."); break;
+				case 3:  client->sysmessage("You eat the food, and begin to feel more satiated."); break;
+				case 4:  client->sysmessage("You feel quite full after consuming the food."); break;
+				case 5:  client->sysmessage("You are nearly stuffed, but manage to eat the food.");	break;
+				default: client->sysmessage("You are simply too full to eat any more!"); break;
 			}
 
 			if (poisoned)
 			{
-				pc->sysmsg("The food was poisoned!");
+				client->sysmessage("The food was poisoned!");
 				pc->applyPoison(PoisonType(poisoned));
 
 			}
@@ -601,7 +601,7 @@ void cItem::doubleClicked(pClient client)
 			}
 			else
 			{
-				pc->sysmsg("If you wish to use this, it must be equipped or in your backpack.");
+				client->sysmessage("If you wish to use this, it must be equipped or in your backpack.");
 			}
 		}
 		return; // case 15 (magic items)
@@ -640,12 +640,12 @@ void cItem::doubleClicked(pClient client)
 	case ITYPE_RUNE:
 			if (morex==0 && morey==0 && morez==0)
 			{
-				pc->sysmsg( "That rune is not yet marked!");
+				client->sysmessage("That rune is not yet marked!");
 			}
 			else
 			{
 				pc->runeserial = getSerial();
-				pc->sysmsg( "Enter new rune name.");
+				client->sysmessage("Enter new rune name.");
 			}
 			return;
 	case ITYPE_SMOKE:
@@ -654,7 +654,7 @@ void cItem::doubleClicked(pClient client)
 			return;
 	case ITYPE_RENAME_DEED:
 			pc->namedeedserial = getSerial();
-			pc->sysmsg( "Enter your new name.");
+			client->sysmessage("Enter your new name.");
 			ReduceAmount(1);
 			return;
 	case ITYPE_POLYMORPH:
@@ -687,7 +687,7 @@ void cItem::doubleClicked(pClient client)
 				case 1: pc->playSFX(0x0030); break;
 			}
 			ReduceAmount(1);
-			pc->sysmsg( "Gulp !");
+			client->sysmessage("Gulp !");
 			return;
 	case ITYPE_GUILDSTONE:
 
@@ -729,9 +729,11 @@ void cItem::doubleClicked(pClient client)
 			vendor->tamed = false;
 			Delete();
 			vendor->teleport();
-			char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-			sprintf( temp, "Hello sir! My name is %s and i will be working for you.", vendor->getCurrentName().c_str());
+			
+			char *temp;
+			asprintf( &temp, "Hello sir! My name is %s and i will be working for you.", vendor->getCurrentName().c_str());
 			vendor->talk(client, temp, 0);
+			free(temp);
 
 			return;
 			}
@@ -751,14 +753,14 @@ void cItem::doubleClicked(pClient client)
 				if ((spn>=0)&&(magic::beginCasting(spn, client, magic::CASTINGTYPE_SCROLL)))
 					ReduceAmount(1);							// remove scroll if successful
 			}
-			else pc->sysmsg("The scroll must be in your backpack to envoke its magic.");
+			else client->sysmessage("The scroll must be in your backpack to envoke its magic.");
 	}
 	CASE(IsAnvil) {
         //TODO: redo when targets redone
 		targ = clientInfo[s]->newTarget( new cItemTarget() );
 		targ->code_callback=Skills::target_repair;
 		targ->send( client );
-		client->sysmsg( "Select item to be repaired.");
+		client->sysmessage("Select item to be repaired.");
 	}
 	CASE(IsAxe) {
         //TODO: redo when targets redone
@@ -766,7 +768,7 @@ void cItem::doubleClicked(pClient client)
 		targ->code_callback=target_axe;
 		targ->buffer[0]=pi->getSerial();
 		targ->send( client );
-		client->sysmsg( "What would you like to use that on ?");
+		client->sysmessage("What would you like to use that on ?");
 	}
 	CASEOR(IsFeather, IsShaft) {
         //TODO: redo when targets redone
@@ -774,14 +776,14 @@ void cItem::doubleClicked(pClient client)
 		targ->buffer[0]= pi->getSerial();
 		targ->code_callback=Skills::target_fletching;
 		targ->send( client );
-		client->sysmsg( "What would you like to use this with?");
+		client->sysmessage("What would you like to use this with?");
 	}
 	CASEOR( IsFencing1H, IsSword ) {
         //TODO: redo when targets redone
 		targ = clientInfo[s]->newTarget( new cTarget() );
 		targ->code_callback=target_sword;
 		targ->send( client );
-		client->sysmsg( "What would you like to use that on ?");
+		client->sysmessage("What would you like to use that on ?");
 	}
 	else ///BEGIN IDENTIFICATION BY ID ( RAW MODE, DEPRECATED )
 		doubleclick_itemid( client, pc, pi, pack );
@@ -792,14 +794,14 @@ void cItem::doubleClicked(pClient client)
 
 void target_selectdyevat( pClient client, pTarget t )
 {
-    pItem pi=cSerializable::findItemBySerial(t->getClicked());
+    pItem pi = dynamic_cast<pItem>( t->getClicked() );
     if ( ! pi ) return;
 
     if( pi->getId()==0x0FAB ||                     //dye vat
         pi->getId()==0x0EFF || pi->getId()==0x0E27 )  //hair dye
             client->sndDyevat(pi->getSerial(), pi->getId() );
         else
-            client->sysmsg( "You can only use this item on a dye vat.");
+            client->sysmessage("You can only use this item on a dye vat.");
 }
 
 void target_dyevat( pClient client, pTarget t )
@@ -807,7 +809,7 @@ void target_dyevat( pClient client, pTarget t )
 	pChar curr = client->currChar();
 	if ( ! curr ) return;
 
-	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 	if ( ! pi ) return;
 
 	if( pi->isDyeable() )
@@ -821,10 +823,10 @@ void target_dyevat( pClient client, pTarget t )
 			curr->playSFX(0x023E); // plays the dye sound, LB
 		}
 		else
-			curr->sysmsg("That is not yours!!");
+			client->sysmessage("That is not yours!!");
 	}
 	else
-		curr->sysmsg( "You can only dye clothes with this.");
+		client->sysmessage("You can only dye clothes with this.");
 }
 
 
@@ -837,26 +839,30 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 		case 0x0FA9: // dye
 			targ = client->clientInfo->newTarget( new cItemTarget() );
 			targ->code_callback=target_selectdyevat;
-			targ->send( client );
-			client->sysmsg( "Which dye vat will you use this on?");
+			targ->send(client);
+			client->sysmessage("Which dye vat will you use this on?");
 			return;// dye
+
 		case 0x0FAB:// dye vat
 			targ = client->clientInfo->newTarget( new cItemTarget() );
 			targ->code_callback=target_dyevat;
 			targ->buffer[0]=pi->getColor();
-			targ->send( ps );
-			ps->sysmsg( "Select the clothing to use this on.");
+			targ->send(client);
+			client->sysmessage("Select the clothing to use this on.");
 			return;// dye vat
+
 		case 0x100A:
 		case 0x100B:// archery butte
 			Skills::AButte(s, pi);
 			return;// archery butte
+
 		case 0x0E9C:
 			if (pc->checkSkill( skMusicianship, 0, 1000))
 				pc->playSFX( 0x38);
 			else
 				pc->playSFX( 0x39);
 			return;
+
 		case 0x0E9D:
 		case 0x0E9E:
 			if (pc->checkSkill(  skMusicianship, 0, 1000))
@@ -864,6 +870,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			else
 				pc->playSFX( 0x53 );
 			return;
+
 		case 0x0EB1:
 		case 0x0EB2:
 			if (pc->checkSkill( skMusicianship, 0, 1000))
@@ -871,6 +878,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			else
 				pc->playSFX( 0x46);
 			return;
+
 		case 0x0EB3:
 		case 0x0EB4:
 			if (pc->checkSkill( skMusicianship, 0, 1000))
@@ -878,6 +886,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			else
 				pc->playSFX( 0x4D);
 			return;
+
 		case 0x102A:// Hammer
 		case 0x102B:
 		case 0x0FBB:// tongs
@@ -889,10 +898,11 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			if (!ToolWearOut(client)) {
 				targ = clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_smith;
-				targ->send( ps );
-				ps->sysmsg( "Select material to use.");
+				targ->send(client);
+				client->sysmessage("Select material to use.");
 			}
 			return; // Smithy
+
 		case 0x1026:// Chisels
 		case 0x1027:
 		case 0x1028:// Dove Tail Saw
@@ -909,9 +919,10 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 		case 0x1035:
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_carpentry;
-			targ->send( ps );
-			ps->sysmsg( "Select material to use.");
+			targ->send(client);
+			client->sysmessage("Select material to use.");
 			return; // carpentry
+
 		case 0x0E85:// pickaxes
 		case 0x0E86:
 		case 0x0F39:// shovels
@@ -921,26 +932,29 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 				targ = clientInfo[s]->newTarget( new cLocationTarget() );
 				targ->code_callback=Skills::target_mine;
 				targ->buffer[0]=pi->getSerial();
-				targ->send( ps );
-				ps->sysmsg( "Where do you want to dig?");
+				targ->send(client);
+				client->sysmessage( "Where do you want to dig?");
 			}
 			return; // mining
+
 		case 0x0DF9:
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_wheel;
 			targ->buffer[0]=THREAD;
 			targ->buffer[1]=pi->getSerial();
-			targ->send( ps );
-			ps->sysmsg( "Select spinning wheel to spin cotton.");
+			targ->send(client);
+			client->sysmessage("Select spinning wheel to spin cotton.");
 			return;
+
 		case 0x0DF8: // wool to yarn
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_wheel;
 			targ->buffer[0]=YARN;
 			targ->buffer[1]=pi->getSerial();
-			targ->send( ps );
-			ps->sysmsg( "Select your spin wheel to spin wool.");
+			targ->send(client);
+			client->sysmessage("Select your spin wheel to spin wool.");
 			return;
+
 		case 0x0FA0:
 		case 0x0FA1: // thread to Bolt
 		case 0x0E1D:
@@ -949,15 +963,17 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_loom;
 			targ->buffer[0]=pi->getSerial();
-			targ->send( ps );
-			ps->sysmsg( "Select loom to make your cloth");
+			targ->send(client);
+			client->sysmessage("Select loom to make your cloth");
 			return;
+
 		case 0x0F9D: // sewing kit for tailoring
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_tailoring;
-			targ->send( ps );
-			ps->sysmsg( "Select material to use.");
+			targ->send(client);
+			client->sysmessage("Select material to use.");
 			return;
+
 		case 0x19B7:
 		case 0x19B9:
 		case 0x19BA:
@@ -965,18 +981,20 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_smeltOre;
 			targ->buffer[0]=pi->getSerial();
-			targ->send( ps );
-			ps->sysmsg( "Select forge to smelt ore on.");// smelting  for all ore changed by Myth 11/12/98
+			targ->send(client);
+			client->sysmessage("Select forge to smelt ore on.");// smelting  for all ore changed by Myth 11/12/98
 			return;
+
 		case 0x1E5E:
 		case 0x1E5F: // Message board opening
 			((pMsgBoard)this)->openBoard( client );
 			return;
+
 		case 0x0DE1:
 		case 0x0DE2: // camping
   			if ( !pc->hasInRange(pi, 3) )
   			{
-				pc->sysmsg("You are to far away to reach that");
+				client->sysmessage("You are to far away to reach that");
 				return;
   			}
   					//</Luxor>
@@ -999,9 +1017,10 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			}
 			else
 			{
-				pc->sysmsg("You fail to light a fire.");
+				client->sysmessage("You fail to light a fire.");
 			}
 			return; // camping
+
 		case 0x1508: // magic statue?
 			if (pc->checkSkill( ITEMID, 0, 10))
 			{
@@ -1011,9 +1030,10 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			}
 			else
 			{
-				pc->sysmsg("You failed to use this statue.");
+				client->sysmessage("You failed to use this statue.");
 			}
 			return;
+
 		case 0x1509:
 			if (pc->checkSkill(  ITEMID, 0, 10))
 			{
@@ -1023,7 +1043,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			}
 			else
 			{
-				pc->sysmsg("You failed to use this statue.");
+				client->sysmessage("You failed to use this statue.");
 			}
 			return;
 		case 0x1230:
@@ -1036,7 +1056,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			}
 			else
 			{
-				pc->sysmsg("You failed to use this.");
+				client->sysmessage("You failed to use this.");
 			}
 			return;
 		case 0x1245: // Guillotine stop animation
@@ -1048,7 +1068,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			}
 			else
 			{
-				pc->sysmsg("You failed to use this.");
+				client->sysmessage("You failed to use this.");
 			}
 			return;
 		case 0x0DBF:
@@ -1056,11 +1076,11 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			if( pi->getContSerial()==pc->getSerial() || pi->getContSerial()==pack->getSerial() ) {
 				targ = clientInfo[s]->newTarget( new cLocationTarget() );
 				targ->code_callback = Fishing::target_fish;
-				targ->send( ps );
-				ps->sysmsg("Fish where?");
+				targ->send(client);
+				client->sysmessage("Fish where?");
 			}
 			else
-				pc->sysmsg("If you wish to use this, it must be equipped or in your backpack.");
+				client->sysmessage("If you wish to use this, it must be equipped or in your backpack.");
 			return;
 		case 0x104B:
 		case 0x104C:
@@ -1074,31 +1094,29 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 				targ = clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_bottle;
 				targ->buffer[0]=pi->getSerial();
-				targ->send( ps );
-				ps->sysmsg( "Where is an empty bottle for your potion?");
+				targ->send(client);
+				client->sysmessage("Where is an empty bottle for your potion?");
 			}
 			else
 			{
 				targ = clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=Skills::target_alchemy;
 				targ->buffer[0]=pi->getSerial();
-				targ->send( ps );
-				ps->sysmsg( "What do you wish to grind with your mortar and pestle?");
+				targ->send(client);
+				client->sysmessage("What do you wish to grind with your mortar and pestle?");
 			}
 			return; // alchemy
 		case 0x0E21: // healing
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_healingSkill;
 			targ->buffer[0]=pi->getSerial();
-			targ->send( ps );
-			ps->sysmsg( "Who will you use the bandages on?");
+			targ->send(client);
+			client->sysmessage("Who will you use the bandages on?");
 			return;
 		case 0x1057:
 		case 0x1058: // sextants
 			{
-				char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp2 var
-				getSextantCoords( pc->getPosition().x, pc->getPosition().y, (pc->getPosition().x >= 5121), temp);
-				pc->sysmsg("You are at: %s", temp);
+// \todo !			client->sysmessage("You are at: %s", getSextantCoords( pc->getPosition().x, pc->getPosition().y, (pc->getPosition().x >= 5121)).c_str() );
 			}
 			return;
 		case 0x0E27:
@@ -1112,54 +1130,60 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_lockpick;
 			targ->buffer[0]=pi->getSerial();
-			targ->send( ps );
-			ps->sysmsg( "What lock would you like to pick?");
+			targ->send(client);
+			client->sysmessage("What lock would you like to pick?");
 			return;
+		
 		case 0x097A: // Raw Fish steaks
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_cookOnFire;
 			targ->buffer[0]=0x097B;
 			targ->buffer[1]=pi->getSerial();
 			targ->buffer_str[0] = "fish steaks";
-			targ->send( ps );
-			ps->sysmsg( "What would you like to cook this on?");
+			targ->send(client);
+			client->sysmessage("What would you like to cook this on?");
 			return;
+		
 		case 0x09b9: // Raw Bird
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_cookOnFire;
 			targ->buffer[0]=0x09B7;
 			targ->buffer[1]=pi->getSerial();
 			targ->buffer_str[0] = "bird";
-			targ->send( ps );
-			ps->sysmsg( "What would you like to cook this on?");
+			targ->send(client);
+			client->sysmessage("What would you like to cook this on?");
 			return;
+		
 		case 0x1609: // Raw Lamb
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_cookOnFire;
 			targ->buffer[0]=0x160A;
 			targ->buffer[1]=pi->getSerial();
 			targ->buffer_str[0] = "lamb";
-			targ->send( ps );
-			ps->sysmsg( "What would you like to cook this on?");
+			targ->send(client);
+			client->sysmessage("What would you like to cook this on?");
 			return;
+		
 		case 0x09F1: // Raw Ribs
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_cookOnFire;
 			targ->buffer[0]=0x09F2;
 			targ->buffer[1]=pi->getSerial();
 			targ->buffer_str[0] = "ribs";
-			targ->send( ps );
-			ps->sysmsg( "What would you like to cook this on?");
+			targ->send(client);
+			ps->sysmessage("What would you like to cook this on?");
 			return;
+		
 		case 0x1607: // Raw Chicken Legs
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_cookOnFire;
 			targ->buffer[0]=0x1608;
 			targ->buffer[1]=pi->getSerial();
 			targ->buffer_str[0] = "chicken legs";
-			targ->send( ps );
-			ps->sysmsg( "What would you like to cook this on?");
+			targ->send(client);
+			client->sysmessage("What would you like to cook this on?");
 			return;
+		
 		case 0x0C4F:
 		case 0x0C50:
 		case 0x0C51:
@@ -1174,10 +1198,11 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 				pc->playSFX(0x013E);
 				pItem itm = item::CreateFromScript( "$item_bales_of_cotton", pc->getBackpack() );
 				if (itm) {
-					pc->sysmsg("You reach down and pick some cotton.");
+					client->sysmessage("You reach down and pick some cotton.");
 				}
 			}
 			return; // cotton
+		
 		case 0x105B:
 		case 0x105C:
 		case 0x1053:
@@ -1185,9 +1210,10 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_tinkerAxel;
 			targ->buffer[0]=pi->getSerial();
-			targ->send( ps );
-			ps->sysmsg( "Select part to combine that with.");
+			targ->send(client);
+			ps->sysmsg("Select part to combine that with.");
 			return;
+		
 		case 0x1051:
 		case 0x1052:
 		case 0x1055:
@@ -1197,9 +1223,10 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_tinkerAwg;
 			targ->buffer[0]=pi->getSerial();
-			targ->send( ps );
-			ps->sysmsg( "Select part to combine it with.");
+			targ->send(client);
+			ps->sysmsg("Select part to combine it with.");
 			return;
+		
 		case 0x104F:
 		case 0x1050:
 		case 0x104D:
@@ -1207,22 +1234,24 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback=Skills::target_tinkerClock;
 			targ->buffer[0]=pi->getSerial();
-			targ->send( ps );
-			ps->sysmsg( "Select part to combine with");
+			targ->send(client);
+			client->sysmessage("Select part to combine with.");
 			return;
+		
 		case 0x1059:
 		case 0x105A:// tinker sextant
 			if (pc->checkSkill(  skTinkering, 500, 1000))
 			{
-				pc->sysmsg("You create the sextant.");
+				client->sysmessage("You create the sextant.");
 				pItem pi_c = item::CreateFromScript( "$item_sextant", pc->getBackpack() );
 				if (pi_c)
 					pi_c->setDecay();
 				pi->ReduceAmount(1);
 			}
 			else
-				pc->sysmsg("you fail to create the sextant.");
+				client->sysmessage("you fail to create the sextant.");
 			return;
+		
 		case 0x1070:
 		case 0x1074: // training dummies
 			if ( pc->hasInRange(pi, 1) )
@@ -1232,25 +1261,28 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 				Skills::TDummy(s);
 			}
 			else
-				pc->sysmsg("You need to be closer to use that.");
+				client->sysmessage("You need to be closer to use that.");
 				return;
 		case 0x1071:
 		case 0x1073:
 		case 0x1075:
 		case 0x1077:// swinging training dummy
-			pc->sysmsg("You must wait for it to stop swinging !");
+			client->sysmessage("You must wait for it to stop swinging !");
 			return;
+		
 		//case 0x1EA8:
 		//	slotmachine(s, pi);
 		//	return; // Ripper
+		
 		case 0x1EBC: // tinker's tools
 			targ = clientInfo[s]->newTarget( new cItemTarget() );
 			targ->code_callback = Skills::target_tinkering;
-			targ->send( ps );
-			ps->sysmsg( "Select material to use.");
+			targ->send(client);
+			client->sysmessage( "Select material to use.");
 			return;
+		
 		default:
-			pc->sysmsg( "You can't think of a way to use that item.");
+			client->sysmessage( "You can't think of a way to use that item.");
 			break;
 	}
 }
@@ -1265,40 +1297,42 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 */
 bool cItem::checkItemUsability(pChar pc, int type)
 {
-	if(!pc) return;
+	if(!pc) return false;
 
+	pPC pc_tmp;
+	pClient client = (pc_tmp = dynamic_cast<pPC>(pc))? pc_tmp->getClient() : NULL;
+
+	if(!client) return true;
+		
 	g_nType = type;
 
 	if( !isNewbie() )
 	{
 		if ( st > pc->getStrength() )
 		{
-			pc->sysmsg("You are not strong enough to use that.");
+			client->sysmessage("You are not strong enough to use that.");
 			return false;
 		}
 		if ( dx > pc->getDexterity() )
 		{
-			pc->sysmsg("You are not quick enough to use that.");
+			client->sysmessage("You are not quick enough to use that.");
 			return false;
 		}
 		if ( in > pc->getIntelligence() )
 		{
-			pc->sysmsg("You are not intelligent enough to use that.");
+			client->sysmessage("You are not intelligent enough to use that.");
 			return false;
 		}
 		//Luxor: REQSKILL command support
 		if (reqskill[0] > 0 && reqskill[1] > 0 )
 		{
 			if (reqskill[1] > skill[reqskill[0]]) {
-				pc->sysmsg("You are not skilled enough to use that.");
+				client->sysmessage("You are not skilled enough to use that.");
 				return false;
 			}
 		}
 	}
 
-	if ( ! pc->getClient() )
-		return true;
-		
 	if ( events[evtItmOnCheckCanUse] ) {
 		tVariantVector params = tVariantVector(3);
 		params[0] = getSerial(); params[1] = pc->getSerial();
@@ -1330,7 +1364,7 @@ bool cItem::ToolWearOut(pClient client)
 	if ( hp )
 		return false
 		
-	pc->sysmsg("Your %s has been destroyed", getCurrentName().c_str());
+	client->sysmessage("Your %s has been destroyed", getCurrentName().c_str());
 	Delete();
 	return true;
 }

@@ -840,7 +840,7 @@ void nSkills::target_detectHidden(pClient client, pTarget t )
 void nSkills::target_healingSkill(pClient client, pTarget t )
 {
 	pChar ph = client->currChar();
-	pChar pp = cSerializable::findCharBySerial( t->getClicked() );
+	pChar pp = dynamic_cast<pChar>( t->getClicked() );
 	if ( ! ph || ! pp ) return;
 
 	int j;

@@ -180,7 +180,7 @@ void Skills::target_bottle( pClient client, pTarget t )
 	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
-	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 	if ( ! pi ) return;
 
 	if(pi->magic==4)

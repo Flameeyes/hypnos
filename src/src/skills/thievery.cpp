@@ -100,31 +100,31 @@ void snooping( pPC snooper, pItem cont )
 /*!
 \brief Steal something
 \author Unknow, completly rewritten by Endymion
-\param ps the client
+\param client the client
+\param t target object
 */
 void Skills::target_stealing( pClient client, pTarget t )
 {
 	pPC thief = client->currChar();
 	if ( !thief ) return;
 	
-	uint32_t target_serial = t->getClicked();
 
 	AMXEXECSVTARGET( thief->getSerial(),AMXT_SKITARGS,skStealing,AMX_BEFORE);
 
 	//steal a char
-	if ( isCharSerial(target_serial) )
+	if ( dynamic_cast<pChar>( t->getClicked() ) )
 	{
-		Skills::target_randomSteal(ps,t);
+		Skills::target_randomSteal(client, t);
         	return;
 	}
 
-	const pItem pi = cSerializable::findItemBySerial( target_serial );
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 	if ( ! pi ) return;
 
 	//steal a pickpocket, a steal training dummy
 	if( pi->getId() == 0x1E2D || pi->getId() == 0x1E2C )
 	{
-		Skills::PickPocketTarget(ps);
+		Skills::PickPocketTarget(client);
         	return;
 	}
 
@@ -452,7 +452,7 @@ void Skills::target_randomSteal( pClient client, pTarget t )
 void Skills::target_lockpick( pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
-	pContainer chest = dynamic_cast<pContainer>(cSerializable::findBySerial( t->getClicked() ));
+	pContainer chest = dynamic_cast<pContainer>( t->getClicked() );
 	pItem pick = cSerializable::findBySerial(t->buffer[0]);
 	
 	if ( !pc || !chest || !pick )
