@@ -340,7 +340,7 @@ void cNetwork::Login2(pClient client)
 		strcpy((char*)&newlist2[2], serv[i][0]);
 		newlist2[34]=0x12;		// %Full
 		newlist2[35]=0x01;		// Timezone
-		ip=inet_addr(serv[i][1]); 	  // Host-Order
+		ip = inet_addr(serv[i][1]); 	  // Host-Order
 		ip = htonl(ip);			  // swap if needs
 		LongToCharPtr(ip, newlist2 +36);  //Network order ...
 		Xsend(s, newlist2, 40);
@@ -354,8 +354,8 @@ void cNetwork::Relay(pClient client) // Relay player to a certain IP
 	uint32_t ip;
 	int port;
 
-	ip=inet_addr(serv[buffer[s][2]-1][1]);
-	port=str2num(serv[buffer[s][2]-1][2]);
+	ip = inet_addr(serv[buffer[s][2]-1][1]);
+	port =str2num(serv[buffer[s][2]-1][2]);
 
 	// Enable autodetect unless you bind to a specific ip address
         // otherwise you should lead in some security issue
@@ -384,9 +384,6 @@ void cNetwork::Relay(pClient client) // Relay player to a certain IP
 
 	uint32_t key = calcserial('a', 'K', 'E', 'Y');
 
-	nPackets::Sent::ConnectToGameServer pk(ip, port, key);
-	client->sendPacket(&pk);
-
 	srand(ip+acctno[s]+now+getclock()); // Perform randomize
 #ifdef ENCRYPTION
 	if ( clientCrypter[s] != NULL )
@@ -403,9 +400,9 @@ void cNetwork::Relay(pClient client) // Relay player to a certain IP
 //		LongToCharPtr (ip, login03 +1); // set game server ip
 	}
 #endif
-	LongToCharPtr(key, login03 +7);	// New Server Key!
-	Xsend(s, login03, 11);
-	Network->FlushBuffer(client);
+
+	nPackets::Sent::ConnectToGameServer pk(ip, port, key);
+	client->sendPacket(&pk);
 }
 
 void cNetwork::ActivateFeatures(pClient client)
