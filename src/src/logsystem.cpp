@@ -131,32 +131,6 @@ void LogFile::Write(std::string str)
 	}
 }
 
-std::string SpeechLogFile::MakeFilename(pPC pc)
-{
-	if( !pc ) return "bad npc";
-	
-	char *tmp;
-
-	asprintf(&tmp, "speech/speech_[%s][%d][%s].txt", pc->getClient()->currAccount()->getName().c_str(), pc->getSerial(), pc->getBody()->getCurrentName().c_str());
-	std::string str(tmp);
-
-	free(tmp);
-	return str;
-}
-
-// SpeechLogFile
-
-/*!
-\brief Constructor of speech log file
-\author Anthalir
-\since 0.82a
-\param pc character pointer
-*/
-SpeechLogFile::SpeechLogFile(pPC pc) : LogFile(MakeFilename(pc))
-{
-
-}
-
 /*!
 \brief Function to be called when a string is ready to be written to the log.
 \author LB

@@ -45,22 +45,6 @@ public:
 };
 
 /*!
-\brief Manage a speech log file
-\author Anthalir
-\since 0.82a
-*/
-class SpeechLogFile : public LogFile
-{
-private:
-	pChar pc;
-	std::string MakeFilename(pPC pc);
-
-public:
-	SpeechLogFile(pPC pc);
-};
-
-
-/*!
 \brief Check if new errors has been logged
 \retval true New errors had been logged, warn the user
 \retval false No new errors had been logged

@@ -2845,39 +2845,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 	{
 		pc->saycolor = ShortFromCharPtr(buffer[socket] +4);
 	}
-	//
-	// Advanced speech logging by elcabesa
-	//
-	if (SrvParms->speech_log)
-	{
-		SpeechLogFile logfile(pc);
-		logfile.Write("%s [%08x] [%i] said: %s\n", pc->getCurrentName().c_str(), pc->getSerial(), pc->account, speech.c_str());
-
-		int n= 0;
-		string namelist= "to: ";
-
-		
-		NxwSocketWrapper sw;
-		sw.fillOnline( pc );
-
-		for( sw.rewind(); !sw.isEmpty(); sw++ )
-		{
-			
-			pClient ps=sw.getClient();
-			if(ps==NULL)
-				continue;
-			pChar pc_new_char = ps->currChar();
-			if( pc_new_char )
-			{
-				namelist+= "[" + string( pc_new_char->getCurrentName().c_str() ) + "] ";
-				++n;
-			}
-		}
-		if( n==0 )
-			namelist+= "himself or NPC";
-
-		logfile.Write(namelist + "\n");
-	}
+	
 	//
 	// Make npcs, houses, boats etc not respond to dead people
 	//
