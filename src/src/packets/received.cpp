@@ -1384,20 +1384,20 @@ bool cPacketReceiveActionRequest::execute(pClient client)
 			}
 			if (pc->dead)
                         {
-			        pc->sysmsg("Ethereal souls really can't cast spells");
+			        client->sysmessage("Ethereal souls really can't cast spells");
        			}
                         else
                         {
 			        if (pc->isFrozen())
                                 {
-				        if (pc->casting) client->sysmsg("You are already casting a spell.");
-				        else client->sysmsg("You cannot cast spells while frozen.");
+				        if (pc->casting) client->sysmessage("You are already casting a spell.");
+				        else client->sysmessage("You cannot cast spells while frozen.");
         		        }
                                 else
                                 {
 	        		        if (!pc->knowsSpell(static_cast<magic::SpellId>(book-1)))
                                         {
-					        client->sysmsg("You don't know that spell yet.");
+					        client->sysmessage("You don't know that spell yet.");
 				        }
                                         else
                                         {
@@ -1829,7 +1829,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
                                 // no longer available and remove it from his/her list.
                                 cPacketSendDeleteObj pk(LongFromCharPtr(buffer + 8));
                                 client->sendPacket(&pk);
-                                client->sysmsg("This message has just been deleted by someone else");
+                                client->sysmessage("This message has just been deleted by someone else");
                         }
                         else
                         {
@@ -1858,7 +1858,7 @@ bool cPacketReceiveBBoardMessage::execute(pClient client)
 			// Check privledge level against server.cfg msgpostaccess
 	                if ( !(pc->IsGM()) && !(SrvParms->msgpostaccess) )
                         {
-				client->sysmsg("Thou art not allowed to post messages.");
+				client->sysmessage("Thou art not allowed to post messages.");
                                 return false;
                         }
 

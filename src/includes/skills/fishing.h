@@ -18,8 +18,8 @@ namespace Fishing
 	extern TIMERVAL basetime;
 	extern TIMERVAL randomtime;
 	
-	void target_fish( pClient ps, pTarget t );
-	void Fish(pChar pc);
+	void target_fish( pClient client, pTarget t );
+	void Fish(pClient client);
 };
 
 pNPC SpawnFishingMonster(pChar pc, char* cScript, char* cList, char* cNpcID);

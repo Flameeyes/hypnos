@@ -951,9 +951,10 @@ void SendPlaySoundEffectPkt(pClient client, uint8_t mode, uint16_t sound_model, 
 
 void impowncreate(pClient client, pChar pc, int z) //socket, player to send
 {
-        if ( s < 0 || s > now ) // Luxor
+        if(!client)
 		return;
-	pChar pc_currchar=cSerializable::findCharBySerial(currchar[s]);
+
+	pChar pc_currchar = client->currChar();
 	if(!pc_currchar) return;
 
 	if (pc->isStabled() || pc->mounted)

@@ -138,12 +138,13 @@ void cResources::deleteBlock( Location location )
 		this->resources.erase( iter );
 }
 
-static bool canMine( pChar pc, pItem weapon )
+static bool canMine( pClient client, pItem weapon )
 {
+	pChar pc = client->currChar();
 	if ( ! pc ) return false;
 	
 	if( !weapon )
-		pc->sysmsg("You can't mine with nothing in your hand !!");
+		client->sysmessage("You can't mine with nothing in your hand !!");
 	else
 		switch( weapon->getId() )
 		{
@@ -152,32 +153,29 @@ static bool canMine( pChar pc, pItem weapon )
 			case 0x0F39	:
 			case 0x0F3A	:
 				if (pc->isMounting())
-					pc->sysmsg( "You cant mine while on a horse!");
+					client->sysmessage( "You cant mine while on a horse!");
 				else
 					if( !pc->IsGM() && (ores.stamina<0) && (abs( ores.stamina )>pc->stm) )
-						pc->sysmsg( "You are too tired to mine.");
+						client->sysmessage( "You are too tired to mine.");
 					else
 						return true;
 				break;
 			default :
-				pc->sysmsg( "You must have a pickaxe or shovel in hand in order to mine.");
+				client->sysmessage( "You must have a pickaxe or shovel in hand in order to mine.");
 		}
 
 	return false;
 }
 
 
-void Skills::target_mine( pClient ps, pTarget t )
+void Skills::target_mine( pClient client, pTarget t )
 {
-
-	pChar pc = ps->currChar();
+	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
-	pClient client = ps->toInt();
-	
 	pItem weapon = pc->GetItemOnLayer(1);
 	
-	if( !canMine( pc, weapon ) )
+	if( !canMine( client, weapon ) )
 		return;
 
 	Location target = t->getLocation();
@@ -209,7 +207,7 @@ void Skills::target_mine( pClient ps, pTarget t )
 
 	if( (cx>5) || (cy>5) )
 	{
-		pc->sysmsg("You are to far away to reach that");
+		client->sysmessage("You are to far away to reach that");
 		return;
 	}
 
@@ -238,7 +236,7 @@ void Skills::target_mine( pClient ps, pTarget t )
 		case 0x0EE1:
 		case 0x0EE2:
 		case 0x0EE8:
-			Skills::GraveDig( s );
+			Skills::GraveDig(client);
 			return;
 		default:
 			break;
@@ -269,7 +267,7 @@ void Skills::target_mine( pClient ps, pTarget t )
 
 	if ((SrvParms->minecheck!=0)&&(!floor)&&(!mountain))//Mine only mountains & floors
 	{
-		pc->sysmsg("You can't mine that!");
+		client->sysmessage("You can't mine that!");
 		return;
 	}
 
@@ -279,7 +277,7 @@ void Skills::target_mine( pClient ps, pTarget t )
 
 	if( !ores.thereAreSomething( res ) )
 	{
-		pc->sysmsg("There is no metal here to mine.");
+		client->sysmessage("There is no metal here to mine.");
 		return;
 	}
 
@@ -292,7 +290,7 @@ void Skills::target_mine( pClient ps, pTarget t )
 
 	if(!pc->checkSkill(skMining, 0, 1000))
 	{
-		pc->sysmsg("You sifted thru the dirt and rocks, but found nothing useable.");
+		clien->sysmessage("You sifted thru the dirt and rocks, but found nothing useable.");
 		if( rand()%2==1)
 			return; //Randomly deplete resources even when they fail 1/2 chance you'll loose ore.
 	}

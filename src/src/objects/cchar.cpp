@@ -485,7 +485,7 @@ void cChar::disturbMed()
 	}
 
 	setMeditating(false);
-	if ( getClient() ) getClient()->sysmsg("You break your concentration.");
+	if ( getClient() ) getClient()->sysmessage("You break your concentration.");
 }
 
 /*!
@@ -590,8 +590,8 @@ void cChar::MoveTo(Location newloc)
 		return;
 
 	// <Luxor>
-	if ( newloc != getPosition() && (flags & flagIsCasting) && !npc ) {
-		sysmsg( "You stop casting the spell." );
+	if ( newloc != getPosition() && (flags & flagIsCasting) && (dynamic_cast<pPC>(this)) ) {
+		getClient()->sysmessage( "You stop casting the spell." );
 		flags &= ~flagIsCasting;
 		spell = magic::SPELL_INVALID;
 		spelltime = 0;
@@ -614,7 +614,7 @@ void cChar::MoveTo(Location newloc)
 */
 void cChar::helpStuff(pPC pc_i)
 {
-	if (! pc_i || this == pc_i )
+	if (!pc_i || this == pc_i )
 		return;
 
 	if (pc_i->IsGrey()) setCrimGrey (this, ServerScp::g_nHelpingGreyWillCriminal);
@@ -623,7 +623,7 @@ void cChar::helpStuff(pPC pc_i)
 	{
 		if ((pc_i->GetKarma()>0)&&((pc_i->GetKarma()-GetKarma())>100)) {
 			IncreaseKarma(+5);
-			sysmsg("You've gained a little karma.");
+			getClient()->sysmessage("You've gained a little karma.");
 		}
 		return;
 	}
@@ -654,9 +654,9 @@ void cChar::applyPoison(PoisonType poisontype, int32_t secs )
 		else
 			poisonwearofftime=getclock()+(MY_CLOCKS_PER_SEC*secs);
 
-		pClient client = getSocket();
-		if (s != -1) impowncreate(s, this, 1); //Lb, sends the green bar !
-		sysmsg("You have been poisoned!");
+		pClient client = getClient();
+		impowncreate(client, this, 1); //Lb, sends the green bar !
+		client->sysmessage("You have been poisoned!");
 		playSFX( 0x0246 ); //poison sound - SpaceDog
 	}
 }
@@ -1402,26 +1402,27 @@ bool cChar::seeForLastTime( cObject &obj )
 */
 void cChar::hideBySkill()
 {
-	pChar pc_att=cSerializable::findCharBySerial(attackerserial);
+	pChar pc_att = cSerializable::findCharBySerial(attackerserial);
+	pClient client = (ppc = dynamic_cast<pPC>(this))? ppc->getClient() : NULL;
 
 	if ( pc_att && hasInRange(pc_att) )
     	{
-    		if ( !npc )
-        		sysmsg("You cannot hide while fighting.");
+    		if (client)
+        		client->sysmessage("You cannot hide while fighting.");
         	return;
     	}
 
     	if ( IsHidden() )
     	{
-    		if ( !npc )
-        		sysmsg("You are already hidden");
+    		if (client)
+        		client->sysmessage("You are already hidden");
         	return;
     	}
 
     	if ( !checkSkill(HIDING, 0, 1000) )
     	{
-    		if ( !npc )
-        		sysmsg("You are unable to hide here.");
+    		if (client)
+        		sysmessage("You are unable to hide here.");
         	return;
     	}
 
@@ -1436,8 +1437,8 @@ void cChar::hideBySkill()
         	return;
 	}
 
-	if ( !npc )
-		sysmsg("You have hidden yourself well.");
+	if (client)
+		client->sysmessage("You have hidden yourself well.");
 
 	hidden = htBySkill;
 	teleport( TELEFLAG_NONE );
@@ -1461,7 +1462,7 @@ void cChar::curePoison()
 {
 	poisoned = poisonNone;
 	poisonwearofftime = getclock();
-	if (getClient() != NULL) impowncreate(getClient()->toInt(), this, 1);
+	if (getClient() != NULL) impowncreate(getClient(), this, 1);
 }
 
 /*!

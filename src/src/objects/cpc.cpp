@@ -69,13 +69,13 @@ void cPC::heartbeat()
 		hungerdamagetimer=getclock()+(nSettings::Hunger::getDamageRate()*MY_CLOCKS_PER_SEC); /** set new hungertime **/
 		if (hp > 0 && hunger<2 && !IsCounselor() && !dead)
 		{
-			sysmsg("You are starving !");
+			client->sysmessage("You are starving !");
 			hp -= nSettings::Hunger::getDamage();
 			updateStats(0);
 			if(hp<=0)
 			{
 				Kill();
-				sysmsg("You have died of starvation");
+				client->sysmessage("You have died of starvation");
 			}
 		}
 	}
@@ -91,9 +91,6 @@ void cPC::heartbeat()
 		return;
 
 	int timer;
-
-	pClient ps = getClient();
-	pClient client = getSocket();
 
 	if     ( swingtargserial == INVALID )
 		doCombat();
@@ -129,12 +126,12 @@ void cPC::heartbeat()
 	{
 		squelched = 0;
 		mutetime  = 0;
-		sysmsg("You are no longer squelched!");
+		client->sysmessage("You are no longer squelched!");
 	}
 
 /*	if ( IsCriminal() && ( crimflag <= getclock()  ) )
 	{
-		sysmsg("You are no longer a criminal.");
+		client->sysmessage("You are no longer a criminal.");
 		crimflag = 0;
 		SetInnocent();
 	}*/ //Luxor: now criminal flag is handled by CRIMINAL tempfx
@@ -145,7 +142,7 @@ void cPC::heartbeat()
 			--kills;
 		if ( kills == repsys.maxkills && repsys.maxkills > 0 )
 		{
-			sysmsg("You are no longer a murderer.");
+			client->sysmessage("You are no longer a murderer.");
 			SetInnocent();
 		}
 		murderrate = ( repsys.murderdecay * MY_CLOCKS_PER_SEC ) + getclock();
@@ -161,8 +158,8 @@ void cPC::heartbeat()
 				pTarget targ = clientInfo[socket]->newTarget( new cTarget() );
 				targ->code_callback = target_castSpell;
 				targ->buffer[0]=spell;
-				targ->send( ps );
-				ps->sysmsg("Select your target");
+				targ->send(client);
+				client->sysmessage("Select your target");
 			}
 			else
 			{
@@ -414,17 +411,17 @@ void cPC::sayHunger()
 	switch( hunger )
 	{
 		case 6:
-		case 5: sysmsg("You are still stuffed from your last meal");
+		case 5: client->sysmessage("You are still stuffed from your last meal");
 			break;
-		case 4: sysmsg("You are not very hungry but could eat more");
+		case 4: client->sysmessage("You are not very hungry but could eat more");
 			break;
-		case 3: sysmsg("You are feeling fairly hungry");
+		case 3: client->sysmessage("You are feeling fairly hungry");
 			break;
-		case 2: sysmsg("You are extremely hungry");
+		case 2: client->sysmessage("You are extremely hungry");
 			break;
-		case 1: sysmsg("You are very weak from starvation");
+		case 1: client->sysmessage("You are very weak from starvation");
 			break;
-		case 0:	sysmsg("You must eat very soon or you will die!");
+		case 0:	client->sysmessage("You must eat very soon or you will die!");
 			break;
 	}
 }

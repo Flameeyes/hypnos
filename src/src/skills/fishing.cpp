@@ -118,8 +118,8 @@ inline bool isWaterTarget(pClient client)
 	} 
 	if(buffer[s][0x1]!=0x01) return false;
 
-	int x = (buffer[s][0xB] << 8) + buffer[s][0xC];
-	int y = (buffer[s][0xD] << 8) + buffer[s][0xE];
+	int x = ShortFromCharPtr(buffer[s] +0xB);
+	int y = ShortFromCharPtr(buffer[s] +0xD);
 
 	data::seekMap(x, y,map);
 	switch(map.id)
@@ -140,8 +140,8 @@ inline bool isWaterTarget(pClient client)
 			break;
 	}
 
-	data::seekTile(((buffer[s][0x11]<<8)+buffer[s][0x12]), tile);
-	if(!(strstr((char *) tile.name, "water") || strstr((char *) tile.name, "lava")))
+	data::seekTile( LongFromCharPtr(buffer[s] +0x11), tile);
+	if( !(strstr((char *) tile.name, "water") || strstr((char *) tile.name, "lava")) )
 	{
 		data::seekLand(map.id, land);
 		if (!(land.flags&TILEFLAG_WET))//not a "wet" tile
@@ -154,10 +154,9 @@ inline bool isWaterTarget(pClient client)
 }
 
 
-void Fishing::target_fish( pClient ps, pTarget t )
+void Fishing::target_fish( pClient client, pTarget t )
 {
-	pClient client=ps->toInt();
-	pChar pPlayer=ps->currChar();
+	pChar pPlayer = client->currChar();
 	if ( ! pPlayer ) return;
 
 	Location charpos= pPlayer->getPosition();
@@ -168,13 +167,13 @@ void Fishing::target_fish( pClient ps, pTarget t )
 
 	if( dist( charpos, whereFish )>6.0 )	// too far away from target
 	{
-		ps->sysmsg("You are too far away to reach that");
+		client->sysmessage("You are too far away to reach that");
 		return;
 	}
 
-	if( !isWaterTarget(s) )	// target is not a water tile
+	if( !isWaterTarget(client) )	// target is not a water tile
 	{
-		ps->sysmsg("You can only fish in water !!");
+		client->sysmessage("You can only fish in water !!");
 		return;
 	}
 	
@@ -187,29 +186,29 @@ void Fishing::target_fish( pClient ps, pTarget t )
 	pPlayer->playSFX(0x023F);
 	pPlayer->unHide();
 	pPlayer->fish();
-//	Fish(pPlayer);
+//	Fish(client);
 }
 
 
 // LB: added fish stacking !!
-void Fishing::Fish(pChar pc)
+void Fishing::Fish(pClient client)
 {
 //	const int max_fish_piles = 1;		// attention: thats per fish *type*, so the efffective limit of piles is *3
 //	const int max_fish_stacksize = 15;	// attention: rela max size = value+1
+	pChar pc = client->currChar();
+	if (!pc) return;
+
+	pItem pc_bp = pc->getBackpack();
 
 	int ii;
 	int idnum;
 	int16_t color;
-
-	if ( ! pc ) return;
-	pItem pc_bp = pc->getBackpack();
-	pClient client = pc->getSocket() ;
         
 	Location charpos= pc->getPosition();
 	if(pc->stm<=2) //Luxor bug fix
 	{
 		pc->stm=0;
-		pc->sysmsg("You are too tired to fish, you need to rest!");
+		client->sysmessage("You are too tired to fish, you need to rest!");
 		return;
 	}
 
@@ -217,7 +216,7 @@ void Fishing::Fish(pChar pc)
 		
 	if(!pc->checkSkill( FISHING, 0, 1000))
 	{
-		pc->sysmsg("You fish for a while, but fail to catch anything.");
+		client->sysmessage("You fish for a while, but fail to catch anything.");
 		return;
 	}
 
@@ -231,86 +230,86 @@ void Fishing::Fish(pChar pc)
             if(skill>=200) 
 			{ 
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "5" ); // random boots
-				pc->sysmsg("You fished up an old pair of boots!");
+				client->sysmessage("You fished up an old pair of boots!");
 			} 
             break;
 		case 1:
             if(skill>=970) 
 			{ 
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "1" ); // random paintings 
-				pc->sysmsg("You fished up an ancient painting!"); 
+				client->sysmessage("You fished up an ancient painting!"); 
 			} 
             break;
 		case 2:
             if(skill>=950) 
 			{ 
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "2" ); // random weapons 
-				pc->sysmsg("You fished up an ancient weapon!");
+				client->sysmessage("You fished up an ancient weapon!");
 			} 
             break;
 		case 3:
             if(skill>=950) 
 			{ 
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "3" ); // random armor 
-				pc->sysmsg("You fished up an ancient armor!");
+				client->sysmessage("You fished up an ancient armor!");
 			} 
             break;
 		case 4:
             if(skill>=700) 
 			{ 
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "4" ); // random treasure
-				pc->sysmsg("You fished up some treasure!");
+				client->sysmessage("You fished up some treasure!");
 			} 
             break;
 		case 5:
             if(skill>=400) 
 			{ 
 				if (SpawnFishingMonster( pc, "fishing.scp", "MONSTERLIST", "7" ) != -1) // random monsters 
-					pc->sysmsg("You fished up a hughe fish!");
+					client->sysmessage("You fished up a hughe fish!");
 				else
-					pc->sysmsg("You wait for a while, but nothing happens");
+					client->sysmessage("You wait for a while, but nothing happens");
 			} 
             break;
 		case 6:
             if(skill>=800) 
 			{
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "6" ); // random chests
-				pc->sysmsg("You fished up an old chest!");
+				client->sysmessage("You fished up an old chest!");
 			} 
             break;
 		case 7:
             if(skill>=700) 
 			{
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "8" ); // random seashells
-				pc->sysmsg("You fished up a seashell!");
+				client->sysmessage("You fished up a seashell!");
 			} 
             break;
 		case 8:
             if(skill>=700) 
 			{
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "9" ); // random skulls
-				pc->sysmsg("You fished up a skull!");
+				client->sysmessage("You fished up a skull!");
 			} 
             break;
 		case 9:
             if(skill>=900) 
 			{
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "10" ); // random nets
-				pc->sysmsg("You fished up a net!");
+				client->sysmessage("You fished up a net!");
 			} 
             break;
 		case 10:
             if(skill>=900) 
 			{
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "11" ); // random gold
-				pc->sysmsg("You fished up some gold!");
+				client->sysmessage("You fished up some gold!");
 			} 
             break;
 		case 11:
             if(skill>=400) 
 			{
 				SpawnFishingItem( s, 1, "fishing.scp", "FISHLIST", "12" ); // random bones
-				pc->sysmsg("You fished up some bones!");
+				client->sysmessage("You fished up some bones!");
 			} 
             break;
 		default: {
@@ -360,7 +359,7 @@ void Fishing::Fish(pChar pc)
 	}
 
 	if(color)
-		pc->sysmsg("You pull out an exotic fish!");
+		client->sysmessage("You pull out an exotic fish!");
 	else
-		pc->sysmsg("You pull out a fish!");
+		client->sysmessage("You pull out a fish!");
 }

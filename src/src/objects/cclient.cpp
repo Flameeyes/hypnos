@@ -527,7 +527,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 					}
 					if (equipitem && !equipitem->getOldLayer())
 	                                {
-	                                	if ((body->equip(equipitem, true) == 1)
+	                                	if (body->equip(equipitem, true) == 1)
 	                                        {
 	                                        	equipitem->setOldLayer(0);
 	                                        	pack_item(pi, pc_currchar->getBackpack()); // If reequip canceled due to script bypass, dump item to the backpack
@@ -567,7 +567,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 					pc_currchar->IncreaseKarma(-5);
 					//!\todo should be investigated
 					pc_currchar->setCrimGrey(ServerScp::g_nLootingWillCriminal);
-					pc_currchar->sysmsg("You are loosing karma!");
+					sysmessage("You are loosing karma!");
 				}
 			}
 		} // corpse stuff
@@ -741,11 +741,10 @@ void cClient::drop_item(pItem pi, Location &loc, pSerializable dest) // Item is 
 
 void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 {
-
-	tile_st tile;
-
 	pChar pc= currChar();
 	if ( ! pc ) return;
+
+	tile_st tile;
 
 	Location charpos = pc->getPosition();
 
@@ -762,7 +761,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 	if( destOwner )
         {				 	               					// it has to bounce if:
 		if ( (destOwner != pc && !pnc && !pc->IsGM())  ||				// a) trying to put item on another pc's pack
-                     (npc && npc->npcaitype==NPCAI_PLAYERVENDOR && !pc->isOwnerOf(npc))		// b) npc is not your player vendor
+                     (npc && npc->npcaitype==NPCAI_PLAYERVENDOR && !pc->isOwnerOf(npc)))	// b) npc is not your player vendor
                 { // Luxor
 			sysmessage("This aint your backpack!");
 			cPacketSendBounceItem pk(5);
@@ -833,7 +832,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 			}
 			else
 			{	//if they're not gold..bounce on ground
-				sysmsg("You can only put golds in this bank box!");
+				sysmessage("You can only put golds in this bank box!");
 
 				pi->setContainer(NULL);
 				pi->MoveTo( charpos );
@@ -908,7 +907,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 	{
 		pi->Delete();
                 //!\ todo when tempfx revised, do a timed deletion
-		sysmsg("As you let go of the item it disappears.");
+		sysmessage("As you let go of the item it disappears.");
                 dragItem = NULL;
                 resetDragging();
 		return;
@@ -981,7 +980,7 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 		{
 			pc->fx1= pi->getSerial();
 			pc->fx2=17;
-			pc->sysmsg("Set a price for this item.");
+			sysmessage("Set a price for this item.");
 	        }
 
 
@@ -1320,10 +1319,8 @@ void cClient::droppedOnChar(pItem pi, pChar dest)
 
 void cClient::droppedOnPet(pItem pi, pNPC pet)
 {
-	if(!pet) return;
-
 	pChar pc = currChar();
-	if(!pc) return;
+	if( !pc || !pet ) return;
 
 	//!\todo a better hunger system
 	if((pet->hunger<6) && (pi->type==ITYPE_FOOD))//AntiChrist new hunger code for npcs
@@ -1347,7 +1344,7 @@ void cClient::droppedOnPet(pItem pi, pNPC pet)
 		dragItem = NULL;
 	} else
 	{	//! \todo a check for pack animals
-		ps->sysmsg("It doesn't appear to want the item");
+		sysmessage("It doesn't appear to want the item");
 		cPacketSendBounceItem pk(5);
 		sendPacket(&pk);
 		if (isDragging())
@@ -1426,7 +1423,7 @@ void cClient::droppedOnGuard(pItem pi, pNPC npc)
 void cClient::droppedOnBeggar(pItem pi, pNPC npc)
 {
 	pChar pc = currChar();
-	if ( ! pi || ! pc || ! npc ) return;
+	if ( !pi || !pc || !npc ) return;
 
        	char* temp;
 	if(pi->getId()!=ITEMID_GOLD)
@@ -1451,12 +1448,12 @@ void cClient::droppedOnBeggar(pItem pi, pNPC npc)
 		if(pi->amount<=100)
 		{
 			pc->IncreaseKarma(10);
-			ps->sysmsg("You have gained a little karma!");
+			sysmessage("You have gained a little karma!");
 		}
 		else if(pi->amount>100)
 		{
 			pc->IncreaseKarma(50);
-			ps->sysmsg("You have gained some karma!");
+			sysmessage("You have gained some karma!");
 		}
 		resetDragging();
 		dragItem = NULL;
@@ -1582,7 +1579,6 @@ void cClient::droppedOnSelf(pItem pi)
 
 void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 {
-
 	pChar pc = currChar();
 	if ( ! pc ) return;
 
@@ -1612,7 +1608,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 
 		if ( !pc->IsGM() && pi->st > pck->getStrength() && !pi->isNewbie() ) // now you can equip anything if it's newbie
 		{
-			sysmsg("You are not strong enough to use that.");
+			sysmessage("You are not strong enough to use that.");
 			resetDragging = true;
 		}
 		else if ( !pc->IsGM() && !pi->checkItemUsability(pc, ITEM_USE_WEAR) )
@@ -1621,7 +1617,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 		}
 		else if ( (pc->getId() == BODY_MALE) && ( pi->getId()==0x1c00 || pi->getId()==0x1c02 || pi->getId()==0x1c04 || pi->getId()==0x1c06 || pi->getId()==0x1c08 || pi->getId()==0x1c0a || pi->getId()==0x1c0c ) ) // Ripper...so males cant wear female armor
 		{
-			sysmsg("You cant wear female armor!");
+			sysmessage("You cant wear female armor!");
 			resetDragging = true;
 		}
 		else if ((((pi->magic==2)||((tile.weight==255)&&(pi->magic!=1))) && !pc->canAllMove()) ||
@@ -1658,7 +1654,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 		{ //weapons layers
 			if ( (pi->layer == LAYER_2HANDWEAPON && pc_currchar->getShield()) )
 			{
-				sysmsg("You cannot wear two weapons.");
+				sysmessage("You cannot wear two weapons.");
 				cPacketSendBounceItem pk(5);
 				sendPacket(&pk);
 				if (isDragging())
@@ -1676,7 +1672,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 			{
 				if (pi->itmhand != 3 && pi->lodamage != 0 && pi->itmhand == pW->itmhand)
 				{
-					sysmsg("You cannot wear two weapons.");
+					sysmessage("You cannot wear two weapons.");
 					cPacketSendBounceItem pk(5);
 					sendPacket(&pk);
 					if (isDragging())
@@ -1767,7 +1763,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 		{
 			if ((pck->getSerial() != pc->getSerial())/*&&(chars[s].npc!=k)*/) //-> really don't understand this! :|, xan
 			{
-				sysmsg("You can't put items on other people!");
+				sysmessage("You can't put items on other people!");
 				item_bounce6(pi);
 				return;
 			}
@@ -2539,7 +2535,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 	
 	if ( pc->squelched )
 	{
-		pc->sysmsg("You have been squelched.");
+		sysmessage("You have been squelched.");
 		return;
 	}
 
@@ -2863,7 +2859,7 @@ void sysmessage(pClient client, const char *txt, ...) // System message (In lowe
 		if( pc ) {
 			pClient gm = pc->getClient();
 			if( gm!=NULL )
-				gm->sysmsg( "spy %s : %s", pc->getCurrentName().c_str(), msg );
+				gm->sysmessage( "spy %s : %s", pc->getCurrentName().c_str(), msg );
 			else
 				clientInfo[s]->spyTo=INVALID;
 		}
