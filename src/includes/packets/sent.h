@@ -898,6 +898,53 @@ namespace nPackets {
 			void prepare();
 		};
 		
+		//! Sends a book's header
+		class BookHeader : public cPacketSend
+		{
+		protected:
+			pBook book;	//!< Book to send header of
+			bool readonly;	//!< Is the book read only?
+		public:
+			inline BookHeader(pBook abook, bool ro) :
+				cPacketSend(NULL, 0), book(abook), readonly(ro)
+			{ }
+		
+			void prepare();
+		};
+		
+		//! Sends the pages of a writable book
+		class BookPagesReadWrite : public cPacketSend
+		{
+		protected:
+			pBook book;
+			
+			void preparePagesReadOnly();
+			void preparePagesReadWrite();
+		public:
+			inline BookPagesReadWrite(pBook abook) :
+				cPacketSend(NULL, 0), book(abook)
+			{ }
+		
+			void prepare();
+		};
+		
+		//! Sends the requested page of a readonly book
+		class BookPageReadOnly : public cPacketSend
+		{
+		protected:
+			pBook book;
+			uint16_t p;	//!< Index of the page to send
+			
+			void preparePagesReadOnly();
+			void preparePagesReadWrite();
+		public:
+			inline BookPageReadOnly(pBook abook, uint16_t page) :
+				cPacketSend(NULL, 0), book(abook), p(page)
+			{ }
+		
+			void prepare();
+		};
+		
 	} // Sent
 	
 	/*!

@@ -11,7 +11,7 @@
 */
 #include "objects/citem/cbook.h"
 #include "objects/cclient.h"
-#include "basics.h"
+#include "objects/cpacket.h"
 
 //! Base constructor
 cBook::cBook()
@@ -123,74 +123,17 @@ void cBook::doubleClicked(pClient client)
 \brief Sends to the client data for opening book in read/write mode
 \param client client to send the book to
 \note it sends <b>a lot</b> of data to client....
+
+Here we <b>have to</b> send the \b entire book, because in writable mode the 
+client only sends out packets if something gets changed.
 */
 void cBook::openBookReadWrite(pClient client)
 {
-	uint8_t bookopen[9] = { 0x93, 0x40, 0x01, 0x02, 0x03, 0x01, 0x01, 0x00, 0x02 };
-
-	uint16_t bytes;
-
-	char booktitle[61];
-	char bookauthor[31];
-
-	strncpy(bookauthor, author.c_str(), 30);
-	bookauthor[30] = '\0';
+	nPackets::Sent::BookHeader pk1(this, false);
+	client->sendPacket(&pk1);
 	
-	strncpy(booktitle, title.c_str(), 60);
-	booktitle[60] = '\0';
-	
-	LongToCharPtr(getSerial(), bookopen+1);
-	ShortToCharPtr(pages.size(), bookopen+7);
-
-	Xsend(s, bookopen, 9);
-
-	Xsend(s, booktitle, 60);
-	Xsend(s, bookauthor, 30);
-
-	//////////////////////////////////////////////////////////////
-	// Now we HAVE to send the ENTIRE Book                       /
-	// Cauz in writeable mode the client only sends out packets  /
-	// if something  gets changed                                /
-	// this also means -> for each bookopening in writeable mode /
-	// lots of data has to be send.                              /
-	//////////////////////////////////////////////////////////////
-
-	uint8_t bookpage_pre[9] = { 0x66, 0x01, 0x02, 0x40, 0x01, 0x02, 0x03, 0x00, 0x01 };
-	uint8_t bookpage[4] = { 0x00, 0x00, 0x00, 0x08 };
-
-	bytes=9;
-
-	LongToCharPtr(getSerial(), bookpage_pre+3);
-
-	tpages::iterator it ( pages.begin() );
-	for ( ; it != pages.end(); it++ )
-	{
-		bytes += 4; // 4 bytes for each page
-		uint16_t j = 0;
-		for( std::vector<std::string>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++ )
-			bytes += (*it2).size() + 1;
-		while ( j++ < 8 )
-			bytes += 2;
-	}
-
-	ShortToCharPtr(pages.size(), bookpage_pre+7);
-	ShortToCharPtr(bytes, bookpage_pre+1);
-	Xsend(s, bookpage_pre, 9);
-
-	i = 1;
-	it = pages.begin();
-	for ( ; it != pages.end(); it++, i++ )
-	{
-		ShortToCharPtr(i, bookpage);
-
-		Xsend(s, bookpage, 4);
-
-		uint16_t j = 0;
-		for( std::vector<std::string>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++ )
-			Xsend(s, (*it2).c_str(), (*it2).size()+1);
-		while ( j++ < 8 )
-			Xsend(s, " ", 2);
-	}
+	nPackets::Sent::BookPagesReadWrite pk2(this);
+	client->sendPacket(&pk2);
 }
 
 /*!
@@ -199,23 +142,8 @@ void cBook::openBookReadWrite(pClient client)
 */
 void cBook::openBookReadOnly(pClient client)
 {
-	uint8_t bookopen[9] = { 0x93, 0x40, 0x01, 0x02, 0x03, 0x00, 0x01, 0x00, 0x02 };
-
-	char booktitle[61];
-	char bookauthor[31];
-
-	strncpy(bookauthor, author.c_str(), 30);
-	bookauthor[30] = '\0';
-	
-	strncpy(booktitle, title.c_str(), 60);
-	booktitle[60] = '\0';
-
-	LongToCharPtr(getSerial(), bookopen+1);
-	ShortToCharPtr(pages.size(), bookopen+7);
-
-	Xsend(s, bookopen, 9);
-	Xsend(s, booktitle, 60);
-	Xsend(s, bookauthor, 30);
+	nPackets::Sent::BookHeader pk(this, false);
+	client->sendPacket(&pk);
 }
 
 /*!
@@ -226,28 +154,9 @@ void cBook::openBookReadOnly(pClient client)
 */
 void cBook::sendPageReadOnly(pClient client, uint16_t p)
 {
-	uint8_t bookpage[13] =
-	//	  cmd   -blocksize  --------book id-------  --pages---  --pagenum-  -linenum--
-		{ 0x66, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08 };
-	//	   0     1     2     3     4     5     6     7     8     9     10    11    12
-	uint16_t bytes=13;
-
 	if ( p >= pages.size() )
 		return;
-
-	std::vector<std::string> selpage = pages[p];
-
-	for(std::vector<std::string>::iterator it = selpage.begin(); it != selpage.end(); it++)
-		bytes += (*it).size() + 1;
-
-	ShortToCharPtr(bytes, bookpage+1);
-	LongToCharPtr(getSerial(), bookpage+3);
-	ShortToCharPtr(p, bookpage+9);
-	ShortToCharPtr(selpage.size(), bookpage+11);
-
-	Xsend(s, bookpage, 13);
-
-	uint16_t j = 0;
-	for(std::vector<std::string>::iterator its = selpage.begin(); its != selpage.end(); its++, j++)
-		Xsend(s, (*its).c_str(), (*its).size()+1);
+	
+	nPackets::Sent::BookPageReadOnly pk(this, p);
+	client->sendPacket(&pk);
 }

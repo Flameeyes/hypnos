@@ -28,7 +28,7 @@ public:
 \name Static members and Typedefs
 */
 	//! List of pages (vector of vectors of strings)
-	typedef std::vector< std::vector<std::string> > tpages;
+	typedef std::vector< stringVector > tpages;
 //@}
 	
 
@@ -64,7 +64,7 @@ public:
 	void sendPageReadOnly(pClient client, uint16_t p);
 	void changePages(char *packet, uint16_t p, uint16_t l, uint16_t s);
 
-	//!< Returns the author of the book
+	//! Returns the author of the book
 	inline std::string getAuthor() const
 	{ return author; }
 	
@@ -75,7 +75,7 @@ public:
 	inline void setAuthor(std::string auth)
 	{ author = auth; }
 	
-	//!< Returns the title of the book
+	//! Returns the title of the book
 	inline std::string getTitle() const
 	{ return title; }
 	
@@ -86,12 +86,21 @@ public:
 	void cBook::setTitle(std::string titl)
 	{ title = titl; }
 
-	//!< Passes the pages of the book
+	//! Passes the pages of the book
 	inline void getPages(tpages &pags) const
 	{ pags = pages; }
+	 
+	//! Gets a given page
+	inline stringVector getPage(uint16_t n) const
+	{
+		if ( n < pages.size() )
+			return pages[n];
+		else
+			return stringVector();
+	}
 	
-	//!< return the number of pages of the book
-	inline uint32_t getNumPages() const
+	//! return the number of pages of the book
+	inline uint16_t getNumPages() const
 	{ return pages.size(); }
 
 protected:

@@ -1024,6 +1024,90 @@ void nPackets::Sent::LogoutStatus::prepare()
         buffer[1] = 0x01;
 }
 
+void nPackets::Sent::BookHeader::prepare()
+{
+	buffer = new uint8_t[99];
+	length = 99;
+	
+	buffer[0] = 0x93;
+	LongToCharPtr( book->getSerial(), buffer+1 );
+	buffer[5] = readonly ? 0x00 : 0x01;
+	buffer[6] = 0x01; // Seems to be fixed
+	ShortToCharPtr( book->getNumPages(), buffer+7 )
+	strncpy( buffer+9, book->getTitle().c_str(), 60 );
+	strncpy( buffer+69, book->getAuthor().c_str(), 30 );
+}
+
+void nPackets::Send::BookPagesReadWrite::prepare()
+{
+	cBook::tpages pages = book->getPages(pages);
+	
+	length = 9;
+	for( cBook::tpages::iterator it = pages.begin(); it != pages.end(); it++ )
+	{
+		bytes += 4;
+		uint16_t j = 0;
+		for ( stringVector::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++)
+			length += (*it2).size() + 1; // null-terminated string
+		
+		if ( j < 8 )
+			length += 2 * (j-8)
+	}
+	
+	buffer = new uint8_t[length];
+	
+	buffer[0] = 0x66;
+	ShortToCharPtr(length, buffer+1);
+	LongToCharPtr(book->getSerial(), buffer+3);
+	ShortToCharPtr(page.size(), buffer+7);
+	
+	uint8_t *page = 9;
+	uint16_t i = 1;
+	for( cBook::tpages::iterator it = pages.begin(); it != pages.end(); it++ )
+	{
+		ShortToCharPtr(i, page);
+		ShortToCharPtr(8, page+2);
+		
+		uint8_t *line = page+4;
+		int j = 0;
+		for( stringVector::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++, j++)
+		{
+			strcpy( page, (*it2).c_str() );
+			page += (*it2).size() +1;
+		}
+		while ( j++ < 8 )
+		{
+			strcpy( page, " " );
+			page += 2;
+		}
+	}
+}
+
+void nPackets::Send::BookPageReadOnly::prepare()
+{
+	stringVector page = book->getPage(p);
+	
+	length = 13;
+	for ( stringVector::iterator it = page.begin(); it != page.end(); it++)
+		length += (*it2).size() + 1; // null-terminated string
+	
+	buffer = new uint8_t[length];
+	
+	buffer[0] = 0x66;
+	ShortToCharPtr(length, buffer+1);
+	LongToCharPtr(book->getSerial(), buffer+3);
+	ShortToCharPtr(page.size(), buffer+7);
+	ShortToCharPtr(p, bookpage+9);
+	ShortToCharPtr(page.size(), bookpage+11);
+	
+	uint8_t *line = buffer+13;
+	
+	for( stringVector::iterator it = page.begin(); it != page.end(); it++)
+	{
+		strcpy( line, (*it2).c_str() );
+		line += (*it2).size() +1;
+	}
+}
 
 pPacketReceive nPackets::Received::::fromBuffer(uint8_t *buffer, uint16_t length)
 {
