@@ -13,6 +13,7 @@
 #include "objects/cpacket.h"
 #include "objects/cchar.h"
 #include "objects/cpc.h"
+#include "objects/cbody.h"
 #include "settings.h"
 #include "inlines.h"
 
@@ -79,7 +80,7 @@ void nPackets::Sent::Status::prepare()
 		ShortToCharPtr(body->getMaxMana(), buffer+56);
 
                 pPC pctest = dynamic_cast<pPC>pc;
-		uint32_t gold = pctest ? pctest->getGold : 0;
+		uint32_t gold = pctest ? pctest->getGold() : 0;
 		LongToCharPtr(gold, buffer+58);
 
 		ShortToCharPtr(body->getArmor(), buffer+62);
@@ -104,7 +105,7 @@ void nPackets::Sent::ObjectInformation::prepare()
 	//is shown like a candle (so that he can move it),
 	//....if not, the item is a normal
 	//invisible light source!
-	if(pc->IsGM() && pi->getId()==0x1647) ShortToCharPtr(0x0A0F, buffer +7);
+	if(pc->isGM() && pi->getId()==0x1647) ShortToCharPtr(0x0A0F, buffer +7);
 	else 	if (pc->canViewHouseIcon() && pi->getId()>=0x4000 && pi->getId()<=0x40FF) ShortToCharPtr(0x14F0, buffer +7);         // LB, 25-dec-1999 litle bugfix for treasure multis, ( == changed to >=)
                 else ShortToCharPtr(pi->animid(), buffer +7);
 	ShortToCharPtr(pi->amount, buffer +9);
@@ -122,7 +123,7 @@ void nPackets::Sent::ObjectInformation::prepare()
 
 	buffer[offset]= pos.z;
 
-	if(pc->IsGM() && pi->getId()==0x1647) ShortToCharPtr(0x00C6, buffer + offset +1);	//let's show the lightsource like a blue item
+	if(pc->isGM() && pi->getId()==0x1647) ShortToCharPtr(0x00C6, buffer + offset +1);	//let's show the lightsource like a blue item
         else ShortToCharPtr(pi->getColor(), buffer + offset + 1);
 
 	buffer[offset +2]=0;
@@ -152,7 +153,7 @@ void nPackets::Sent::LSDObject::prepare()
 	//is shown like a candle (so that he can move it),
 	//....if not, the item is a normal
 	//invisible light source!
-	if(pc->IsGM() && pi->getId()==0x1647) ShortToCharPtr(0x0A0F, buffer +7);
+	if(pc->isGM() && pi->getId()==0x1647) ShortToCharPtr(0x0A0F, buffer +7);
 	else 	if (pc->canViewHouseIcon() && pi->getId()>=0x4000 && pi->getId()<=0x40FF) ShortToCharPtr(0x14F0, buffer +7);         // LB, 25-dec-1999 litle bugfix for treasure multis, ( == changed to >=)
                 else ShortToCharPtr(pi->animid(), buffer +7);
 	ShortToCharPtr(pi->amount, buffer +9);
@@ -170,7 +171,7 @@ void nPackets::Sent::LSDObject::prepare()
 
 	buffer[offset]= position.z;
 
-	if(pc->IsGM() && pi->getId()==0x1647) ShortToCharPtr(0x00C6, buffer + offset +1);	//let's show the lightsource like a blue item
+	if(pc->isGM() && pi->getId()==0x1647) ShortToCharPtr(0x00C6, buffer + offset +1);	//let's show the lightsource like a blue item
         else ShortToCharPtr(color, buffer + offset + 1);
 
 	buffer[offset +2]=0;
@@ -453,7 +454,7 @@ void nPackets::Sent::ShowItemInContainer::prepare()
 	//is shown like a candle (so that he can move it),
 	//....if not, the item is a normal
 	//invisible light source!
-        if(pc->IsGM() && item.id == 0x1647)
+        if(pc->isGM() && item.id == 0x1647)
         {
         	ShortToCharPtr(0x0A0F, ptrItem+5);
                 ShortToCharPtr(0x00C6, ptrItem+18);
@@ -1856,7 +1857,7 @@ bool nPackets::Received::BBoardMessage::execute(pClient client)
 		        if(!pc) return false;
 
 			// Check privledge level against server.cfg msgpostaccess
-	                if ( !(pc->IsGM()) && !(SrvParms->msgpostaccess) )
+	                if ( !(pc->isGM()) && !(SrvParms->msgpostaccess) )
                         {
 				client->sysmessage("Thou art not allowed to post messages.");
                                 return false;
@@ -1928,9 +1929,9 @@ bool nPackets::Received::BBoardMessage::execute(pClient client)
 				pChar pc= client->currChar();
 	                        if(!pc) return false;
 
-				if ( (pc->IsGM()) || (SrvParms->msgpostremove) )
+				if ( (pc->isGM()) || (SrvParms->msgpostremove) )
 	                        {
-                                	if ( global::onlyPosterCanDeleteMsgBoardMessage() && (pc->getSerial() != message->poster && !pc->IsGM() && (pc->getSerial() != msgboard->getOwner() || message->availability != LOCALPOST )))
+                                	if ( global::onlyPosterCanDeleteMsgBoardMessage() && (pc->getSerial() != message->poster && !pc->isGM() && (pc->getSerial() != msgboard->getOwner() || message->availability != LOCALPOST )))
                                         	client->sysmessage( tr("You are not allowed to delete this message") );
                                         else
                                         {
@@ -2012,7 +2013,7 @@ bool nPackets::Received::RenameCharacter::execute(pClient client)
 {
 	if (length != 35) return false;
 	pChar pc = cSerializable::findCharBySerial(LongFromCharPtr(buffer + 1));
-        if(pc && ( client->currChar()->IsGMorCounselor() || client->currChar()->isOwnerOf( pc ) ) )
+        if(pc && ( client->currChar()->isGMorCounselor() || client->currChar()->isOwnerOf( pc ) ) )
         {
         	pc->setCurrentName( buffer + 5 );
                 return true;
@@ -2540,7 +2541,7 @@ bool nPackets::Received::CharProfileRequest::execute(pClient client)
 
 	if( buffer[3])
         { //update profile
-		if( ( serial!=pc->getSerial() ) && !pc->IsGMorCounselor() )
+		if( ( serial!=pc->getSerial() ) && !pc->isGMorCounselor() )
 			return true; //lamer fix, but packet still processed
                 int profilesize = ShortFromCharPtr(buffer + 10);
                 cSpeech profile(buffer + 12, profilesize);

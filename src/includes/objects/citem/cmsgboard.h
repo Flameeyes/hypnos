@@ -26,10 +26,9 @@
 */
 class cMsgBoard : public cItem
 {
-protected:
+public:
 	typedef class cMessage* pMessage;
 	typedef std::list<pMessage> MessageList;
-	
 	/*!
 	\brief Message board message
 	\author Chronodt & Flameeyes
@@ -59,6 +58,8 @@ protected:
 		bool isExpired();	//!< expiration time check & delete. Returns true if post has been deleted for reaching expiration time
 		void refreshQuestMessage();
 	};
+
+protected:
 	
 	static MessageList globalMsgs;
 	static std::map<uint32_t, MessageList> regionalMsgs;

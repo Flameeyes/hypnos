@@ -5,10 +5,6 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file 
-\brief Declaration of class cEventThrower
-*/
 
 #ifndef __CEVENTTHROWER_H__
 #define __CEVENTTHROWER_H__
@@ -30,7 +26,7 @@ at construction time.
 */
 class cEventThrower {
 protected:
-	cEventThrower();
+	cEventThrower(uint16_t n);
 	FunctionVector events;	//!< Handlers to call for events
 	virtual uint16_t eventsNumber() const = 0;
 public:

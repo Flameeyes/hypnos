@@ -53,7 +53,7 @@ uint32_t cChar::newSerial()
 }
 
 cChar::cChar()
-	: cSerializable()
+	: cSerializable(), cEventThroewr(eventsNumber())
 {
 	resetData();
 }

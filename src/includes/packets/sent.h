@@ -16,6 +16,8 @@
 #include "common_libs.h"
 #include "enums.h"
 #include "structs.h"
+#include "speech.h"
+#include "objects/citem/cmsgboard.h"
 
 namespace nPackets {
 
@@ -105,7 +107,7 @@ namespace nPackets {
 			\param p pc who sees the item
 			*/
 			inline ObjectInformation(pItem i, pPC p) :
-				cPacketSend(NULL, 0), item(i), pc(p)
+				cPacketSend(NULL, 0), pi(i), pc(p)
 			{ }
 			void prepare();
 		};
@@ -196,7 +198,7 @@ namespace nPackets {
 			\param s serializable object to remove
 			*/
 			inline DeleteObj(pSerializable s) :
-				cPacketSend(NULL, 0), ps(s)
+				cPacketSend(NULL, 0), pser(s)
 			{ }
 		
 			void prepare();
@@ -283,7 +285,7 @@ namespace nPackets {
 			Location destination; 	//!< where the item is dragged to
 			uint16_t amount;	//!< how many items in stack
 		public:
-			inline MoveAcknowdledge(pItem aitem, Location aDestination, uint16_t aAmount) :
+			inline DragItem(pItem aItem, Location aDestination, uint16_t aAmount) :
 				cPacketSend(NULL, 0), item(aItem), destination(aDestination), amount(aAmount)
 			{ }
 		
@@ -299,7 +301,7 @@ namespace nPackets {
 		class BounceItem : public cPacketSend
 		{
 		protected:
-			uint8_t mode 		//!< I dont' really know. Sometimes you send a 5, sometimes a 0....
+			uint8_t mode; 		//!< I dont' really know. Sometimes you send a 5, sometimes a 0....
 		public:
 			inline BounceItem(uint8_t aMode = 0) :
 				cPacketSend(NULL, 0), mode(aMode)
@@ -620,7 +622,7 @@ namespace nPackets {
 		
 			const pMsgBoard msgboard;
 			const BBoardCommands command;
-			const pMsgBoardMessage message;
+			const cMsgBoard::cMessage *message;
 		
 		public:
 			/*!
@@ -628,7 +630,7 @@ namespace nPackets {
 			\param com command for the msgboard
 			\param mess message to be sent. May be omitted if command is DisplayBBoard
 			*/
-			inline BBoardCommand(pMsgBoard m, BBoardCommands com, pMsgBoardMessage mess = NULL) :
+			inline BBoardCommand(pMsgBoard m, BBoardCommands com, cMsgBoard::cMessage *mess = NULL) :
 				cPacketSend(NULL, 0), msgboard (m), command(com), message(mess)
 			{ }
 		
@@ -796,7 +798,7 @@ namespace nPackets {
 			buffer(buf), length(len)
 		{ } 
 		
-		virtual ~() = 0;
+		virtual ~cPacketReceive() = 0;
 		
 		static pPacketReceive fromBuffer(uint8_t *buffer, uint16_t length);
 		virtual bool execute(pClient client) = 0;

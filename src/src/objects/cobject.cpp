@@ -71,7 +71,7 @@ std::string cObject::getRandomScriptValue( std::string section, std::string& sec
 	return value;
 }
 
-cObject::cObject()
+cObject::cObject() : cEventThroewr(eventsNumber())
 {
 	setCurrentName("");
 	setSecondaryName("");

@@ -5,16 +5,16 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file 
-\brief Implementation of class cEventThrower
-*/
 
 #include "objects/ceventthrower.h"
 #include "logsystem.h"
 
-cEventThrower::cEventThrower() :
-	events(eventsNumber())
+/*!
+\brief Default constructor
+\param n Return of eventsNumber() abstract function
+*/
+cEventThrower::cEventThrower(uint16_t n) :
+	events(n)
 {
 }
 
@@ -23,7 +23,7 @@ cEventThrower::cEventThrower() :
 \param index Event index, must be in the range of events of the derived class
 \return The handler of the given event, or NULL if not present or index out of bound
 */
-pFunctionHandler cEventThrower::getEvent(uint16_t index)
+pFunctionHandle cEventThrower::getEvent(uint16_t index)
 {
 	if ( index >= eventsNumber() )
 	{
