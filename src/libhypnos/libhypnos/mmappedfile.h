@@ -11,6 +11,12 @@
 
 #include "libhypnos/commons.h"
 
+#ifndef HAVE_MMAP
+#error mmap() function (or equivalent) is needed to compile this unit. \
+	Probably this will fail under Windows. There we should add a mmap() \
+	alike function.
+#endif
+
 namespace nLibhypnos {
 
 /*!

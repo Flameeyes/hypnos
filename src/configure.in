@@ -6,12 +6,42 @@ AM_INIT_AUTOMAKE(hypnos, 0.1)
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AM_PROG_LIBTOOL
+AC_PROG_RANLIB
 
 AM_DL()
 AM_PATH_WEFTS()
 
-AC_CHECK_FUNCS(strlwr strupr)
+# Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h inttypes.h limits.h memory.h netdb.h netinet/in.h stdint.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h sys/timeb.h termios.h unistd.h])
 
+# Checks for typedefs, structures, and compiler characteristics.
+AC_HEADER_STDBOOL
+AC_C_CONST
+AC_C_INLINE
+AC_TYPE_PID_T
+AC_C_RESTRICT
+#AC_TYPE_SIZE_T # See after
+AC_HEADER_TIME
+AC_STRUCT_TM
+AC_C_VOLATILE
+AC_CHECK_TYPE(ssize_t, :, AC_DEFINE(ssize_t, __int64, [define ssize_t to __int64 if it's missing in defaul
+t includes]))
+
+# Checks for library functions.
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_FORK
+AC_PROG_GCC_TRADITIONAL
+AC_FUNC_MALLOC
+AC_FUNC_MEMCMP
+AC_FUNC_MMAP
+AC_FUNC_SELECT_ARGTYPES
+AC_TYPE_SIGNAL
+AC_FUNC_STAT
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS(floor ftime gethostbyname gettimeofday inet_ntoa memset munmap select socket strcasecmp strchr strdup strerror strrchr strstr strtol strtoul strtoull strlwr strupr uname)
+
+# Adding include dirs and WEFTS_ variables
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
 CXXFLAGS="$CXXFLAGS $INCLUDES -Wall -Wno-reorder -Wno-switch-enum $WEFTS_CXXFLAGS"
 LDFLAGS="$LDFLAGS $WEFTS_LIBS"
@@ -19,4 +49,20 @@ LDFLAGS="$LDFLAGS $WEFTS_LIBS"
 AC_SUBST(CXXFLAGS)
 AC_SUBST(LDFLAGS)
 
-AC_OUTPUT(Makefile libhypnos/Makefile libhypnos/muls/Makefile src/archs/Makefile src/backend/Makefile src/encryption/Makefile src/extras/Makefile src/objects/cchar/Makefile src/objects/citem/Makefile src/objects/cnpc/Makefile src/objects/Makefile src/skills/Makefile src/networking/Makefile src/archetypes/Makefile src/Makefile)
+AC_CONFIG_FILES([Makefile
+                 libhypnos/Makefile
+                 libhypnos/muls/Makefile
+                 src/Makefile
+                 src/archetypes/Makefile
+                 src/archs/Makefile
+                 src/backend/Makefile
+                 src/encryption/Makefile
+                 src/extras/Makefile
+                 src/networking/Makefile
+                 src/objects/Makefile
+                 src/objects/cchar/Makefile
+                 src/objects/citem/Makefile
+                 src/objects/cnpc/Makefile
+                 src/skills/Makefile])
+
+AC_OUTPUT

@@ -407,7 +407,7 @@ int main(int argc, char *argv[])
 
 	loadserverscript();
 
-#ifdef __unix__
+#ifdef USE_SIGNALS
 	//thx to punt and Plastique :]
 	signal(SIGPIPE, SIG_IGN);
 #endif

@@ -65,6 +65,7 @@ void Sleep(unsigned long msec)
 
 std::string getOSVersionString()
 {
+#ifdef HAVE_UNAME
 	char *temp;
 	struct utsname info;
 	uname(&info);
@@ -74,6 +75,9 @@ std::string getOSVersionString()
 	free(temp);
 	
 	return s;
+#else
+	return "Unix";
+#endif
 }
 
 OSVersion getOSVersion()
