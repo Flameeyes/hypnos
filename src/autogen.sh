@@ -241,20 +241,6 @@ run_aclocal () {
   echo "done." 
 }
 
-#--------------------
-# CONFIGURE
-#-------------------
-run_configure () {
-  rm -f config.cache
-  echo " + Running 'configure $@':"
-  if [ -z "$*" ]; then
-    echo "   ** If you wish to pass arguments to ./configure, please"
-    echo "   ** specify them on the command line."
-  fi
-  ./configure "$@" 
-}
-
-
 #---------------
 # MAIN
 #---------------
@@ -266,7 +252,7 @@ detect_aclocal
 
 
 #   help: print out usage message
-#   *) run aclocal, autoheader, automake, autoconf, configure
+#   *) run aclocal, autoheader, automake, autoconf
 case "$1" in
   aclocal)
     run_aclocal
@@ -298,6 +284,5 @@ case "$1" in
     run_autoheader
     run_automake
     run_autoconf
-    run_configure $@
     ;;
 esac

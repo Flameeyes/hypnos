@@ -37,9 +37,6 @@
 
 #define SLPMULTI 1000
 
-// For Wefts
-#define HAVE_LIBPTHREAD
-
 extern bool pollHUPStatus ();
 extern bool pollCloseRequests ();
 extern void setup_signals ();

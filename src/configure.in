@@ -7,11 +7,14 @@ AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AM_PROG_LIBTOOL
 
+AM_DL()
+AM_PATH_WEFTS()
+
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
-CXXFLAGS="$CXXFLAGS $INCLUDES -Wall -Wno-reorder -Wno-switch-enum"
+CXXFLAGS="$CXXFLAGS $INCLUDES -Wall -Wno-reorder -Wno-switch-enum $WEFTS_CXXFLAGS"
+LDFLAGS="$LDFLAGS $WEFTS_LIBS"
 
 AC_SUBST(CXXFLAGS)
-
-AM_DL()
+AC_SUBST(LDFLAGS)
 
 AC_OUTPUT(Makefile libhypnos/Makefile libhypnos/muls/Makefile src/archs/Makefile src/backend/Makefile src/encryption/Makefile src/extras/Makefile src/objects/cchar/Makefile src/objects/citem/Makefile src/objects/cnpc/Makefile src/objects/Makefile src/skills/Makefile src/networking/Makefile src/archetypes/Makefile src/Makefile)
