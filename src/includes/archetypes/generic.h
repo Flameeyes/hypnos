@@ -25,7 +25,9 @@ These functions are used to create new items or characters based on a given
 XML datafile identifier (a string).
 */
 
+	pItem createItem(uint16_t baseid);
 	pItem createItem(std::string id);
+	
 	pPC createPlayer(std::string id);
 	pNPC createCharacter(std::string id);
 

@@ -1919,9 +1919,11 @@ bool nPackets::Received::CreateChar::execute(pClient client)
 
 	// From here building a cBody
 	pBody charbody = new cBody();
-//        charbody->setSerial(charbody->getNextSerial());
 
-	if (sex) charbody->setId(bodyFemale) else charbody->setId(bodyMale);     // 0 = male 1 = female
+	if (sex) // 0 = male 1 = female
+		charbody->setId(bodyFemale)
+	else
+		charbody->setId(bodyMale);
 
 	charbody->setStrength(strength);
 	charbody->setHitPoints(strength);
@@ -1961,80 +1963,12 @@ bool nPackets::Received::CreateChar::execute(pClient client)
 	pc->namedeedserial=INVALID;
 	for (int ii = 0; ii < skTrueSkills; i++) Skills::updateSkillLevel(pc, ii);  //updating skill levels for pc
 
-
-	if (HairStyle)  // If HairStyle was invalid, is now 0, so baldy pg :D
-	{
-		pEquippable pi = item::CreateFromScript( "$item_short_hair" ); //!< \todo update createfromscript function to get subclasses of items
-		if(!pi) return false;
-
-		pi->setId(HairStyle);
-		pi->setColor(HairColor);
-		charbody->setLayerItem(layHair, pi);
-	}
-
-	if (FacialHair) // if FacialHair was invalid (or unselected) or pg is female, no beard is added
-	{
-		pEquippable pi = item::CreateFromScript( "$item_short_beard" );
-		if(!pi) return false;
-
-		pi->setId(FacialHair);
-		pi->setColor(FacialHairColor);
-		charbody->setLayerItem(layBeard, pi);
-	}
-
-	// - create the backpack
-	pEquippableContainer pi= item::CreateFromScript( "$item_backpack");
-	if(!pi) return false;
-
-	pc->packitemserial= pi->getSerial();
-	pi->setContainer(pc);
-
-	// has to be set to its layer???
-
-
-	// - create pants
-	if( !RandomNum(0, 1) )
-	{
-		if(!sex)
-			pi= item::CreateFromScript( "$item_long_pants");
-		else
-			pi= item::CreateFromScript( "$item_a_skirt");
-	}
-	else
-	{
-		if(!sex)
-			pi= item::CreateFromScript( "$item_short_pants");
-		else
-			pi= item::CreateFromScript( "$item_a_kilt");
-	}
-
-	if(!pi) return false;
-
-	// pant/skirt color -> old client code, random color
-	pi->setColor(pants_color);
-	pi->setContainer(pc);
-
-	if( !(rand()%2) )
-		pi= item::CreateFromScript( "$item_fancy_shirt");
-	else
-		pi= item::CreateFromScript( "$item_shirt");
-
-	if(!pi) return false;
-	pi->setColor(shirt_color);
-	pi->setContainer(pc);
-
-	// Give the character some gold
-	if ( goldamount > 0 )
-	{
-		pi = item::CreateFromScript( "$item_gold_coin", pc->getBackpack(), goldamount );
-	}
-
-
+	nNewbies::addHairs(pc, HairStyle, HairColor, FacialHair, FacialHairColor);
+	nNewbies::giveItems(pc, pants_color, shirt_color);
+	
 	// Assignation of new Char to user account
 	client->currAccount()->addChartoAccount( pc );
 
-
-	newbieitems(pc);
 	client->startchar(); //!\todo move startchar from network to cClient
 	//clientInfo[s]->ingame=true;
 	return true;
