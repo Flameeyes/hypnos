@@ -2025,17 +2025,13 @@ void itemeffectUO3D(pItem pi, ParticleFx *sta)
 	particleSystem[10]=sta->effect[4]; // tileid1
 	particleSystem[11]=sta->effect[5]; // tileid2
 
-	particleSystem[12]= pi->getPosition("x") >> 8;
-	particleSystem[13]= pi->getPosition("x") % 256;
-	particleSystem[14]= pi->getPosition("y") >> 8;
-	particleSystem[15]= pi->getPosition("y") % 256;
-	particleSystem[16]= pi->getPosition("z");
+	ShortToCharPtr(particleSystem+12, pi->getPosition().x);
+	ShortToCharPtr(particleSystem+14, pi->getPosition().y);
+	particleSystem[16]= reinterpret_cast<uint8_t>(pi->getPosition().z);
 
-	particleSystem[17]= pi->getPosition("x") >> 8;
-	particleSystem[18]= pi->getPosition("x") % 256;
-	particleSystem[19]= pi->getPosition("y") >> 8;
-	particleSystem[20]= pi->getPosition("y") % 256;
-	particleSystem[21]= pi->getPosition("z") ;
+	ShortToCharPtr(particleSystem+17, pi->getPosition().x);
+	ShortToCharPtr(particleSystem+19, pi->getPosition().y);
+	particleSystem[21]= reinterpret_cast<uint8_t>(pi->getPosition().z);
 
 	particleSystem[22]= sta->effect[6]; // unkown1
 	particleSystem[23]= sta->effect[7]; // unkown2

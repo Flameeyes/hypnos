@@ -132,7 +132,7 @@ void clearalltrades()
         for (i = 0; i < itemcount; i++) {
                 pi = MAKE_ITEM_REF(i);
                 if (!pi) continue;
-                if ((pi->type==1) && (pi->getPosition("x")==26) && (pi->getPosition("y")==0) && (pi->getPosition("z")==0) &&
+                if ((pi->type==1) && (pi->getPosition().x==26) && (pi->getPosition().y==0) && (pi->getPosition().z==0) &&
 			(pi->id()==0x1E5E))
 		{
                         pc = cSerializable::findCharBySerial(pi->getContSerial());

@@ -1129,7 +1129,7 @@ void loaditem()
 			insert_boat(pi);
 		}
 
-		if ((pi->getPosition("x")<0) || (pi->getPosition("y")<0) || (pi->getPosition("x")>max_x) || (pi->getPosition("y")>max_y))	// lord bianry
+		if ((pi->getPosition().x<0) || (pi->getPosition().y<0) || (pi->getPosition().x>max_x) || (pi->getPosition().y>max_y))	// lord bianry
 			pi->Delete();
 	}
 
@@ -1831,7 +1831,7 @@ void CWorldMain::SaveItem( pItem pi )
 
 	}
 
-	if ( ( !pi->isInWorld() || ((pi->getPosition("x") > 1) && (pi->getPosition("x") < 6144) && (pi->getPosition("y") < 4096))))
+	if ( ( !pi->isInWorld() || ((pi->getPosition().x > 1) && (pi->getPosition().x < 6144) && (pi->getPosition().y < 4096))))
 	{
 		fprintf(iWsc, "SECTION WORLDITEM %i\n", this->itm_curr++);
 		fprintf(iWsc, "{\n");

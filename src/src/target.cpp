@@ -248,9 +248,9 @@ void TargetLocation::init(pItem pi)
 {
 	m_pc = NULL;
 	if (pi->isInWorld()) {
-		m_x = pi->getPosition("x");
-		m_y = pi->getPosition("y");
-		m_z = pi->getPosition("z");
+		m_x = pi->getPosition().x;
+		m_y = pi->getPosition().y;
+		m_z = pi->getPosition().z;
 	} else {
 		m_x = m_y = m_z = 0;
 	}

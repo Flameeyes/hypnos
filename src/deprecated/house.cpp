@@ -622,10 +622,10 @@ void killhouse(ITEM i)
 	for (a = 0; a < itemcount; a++) // deleting itmes inside house
 	{
 		pi = MAKE_ITEM_REF(a);
-		if ((pi->getPosition("x") >= x1) &&
-			(pi->getPosition("y") >= y1) &&
-			(pi->getPosition("x") <= x2) &&
-			(pi->getPosition("y") <= y2) &&
+		if ((pi->getPosition().x >= x1) &&
+			(pi->getPosition().y >= y1) &&
+			(pi->getPosition().x <= x2) &&
+			(pi->getPosition().y <= y2) &&
 			(!pi->free))
 		{
 			if (pi->type != ITYPE_GUILDSTONE) // dont delete guild stones !

@@ -602,14 +602,14 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 					//	Guard is still walking towards char who called
 					//	In that case check whether guard can see targets within visual range of caller
 					//
-					x = guardcaller->getPosition("x");
-					y = guardcaller->getPosition("y");
+					x = guardcaller->getPosition().x;
+					y = guardcaller->getPosition().y;
 				}
 			}
 			else
 			{
-				x = pc->getPosition("x");
-				y = pc->getPosition("y");
+				x = pc->getPosition().x;
+				y = pc->getPosition().y;
 			}
 
 			NxwCharWrapper sc;

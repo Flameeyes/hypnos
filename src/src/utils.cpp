@@ -323,8 +323,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		if (x==(db+0))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition("x", pi->getPosition("x") - 1);
-			pi->setPosition("y", pi->getPosition("y") + 1);
+			pi->setPosition( Location(pi->getPosition().x-1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -333,8 +332,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		} else if (x==(db+1))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition("x", pi->getPosition("x") + 1);
-			pi->setPosition("y", pi->getPosition("y") - 1);
+			pi->setPosition( Location(pi->getPosition().x+1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);
@@ -342,8 +340,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		} else if (x==(db+2))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition("x", pi->getPosition("x") + 1);
-			pi->setPosition("y", pi->getPosition("y") + 1);
+			pi->setPosition( Location(pi->getPosition().x+1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -352,8 +349,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		} else if (x==(db+3))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition("x", pi->getPosition("x") - 1);
-			pi->setPosition("y", pi->getPosition("y") - 1);
+			pi->setPosition( Location(pi->getPosition().x-1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);
@@ -361,7 +357,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		} else if (x==(db+4))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition("x", pi->getPosition("x") - 1);
+			pi->setPosition( Location(pi->getPosition().x-1, pi->getPosition().y, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -370,7 +366,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		} else if (x==(db+5))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition("x", pi->getPosition("x") + 1);
+			pi->setPosition( Location(pi->getPosition().x+1, pi->getPosition().y, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);
@@ -378,8 +374,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		} else if (x==(db+6))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition("x", pi->getPosition("x") + 1);
-			pi->setPosition("y", pi->getPosition("y") - 1);
+			pi->setPosition( Location(pi->getPosition().x+1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -388,8 +383,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		} else if (x==(db+7))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition("x", pi->getPosition("x") - 1);
-			pi->setPosition("y", pi->getPosition("y") + 1);
+			pi->setPosition( Location(pi->getPosition().x-1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);
@@ -397,8 +391,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		} else if (x==(db+8))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition("x", pi->getPosition("x") + 1);
-			pi->setPosition("y", pi->getPosition("y") + 1);
+			pi->setPosition( Location(pi->getPosition().x+1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -407,8 +400,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		} else if (x==(db+9))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition("x", pi->getPosition("x") - 1);
-			pi->setPosition("y", pi->getPosition("y") - 1);
+			pi->setPosition( Location(pi->getPosition().x-1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);
@@ -416,8 +408,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		} else if (x==(db+10))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition("x", pi->getPosition("x") + 1);
-			pi->setPosition("y", pi->getPosition("y") - 1);
+			pi->setPosition( Location(pi->getPosition().x+1, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -426,8 +417,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		} else if (x==(db+11))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition("x", pi->getPosition("x") - 1);
-			pi->setPosition("y", pi->getPosition("y") + 1);
+			pi->setPosition( Location(pi->getPosition().x-1, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);
@@ -451,7 +441,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		} else if (x==(db+14))
 		{
 			pi->setId( pi->getId()+1 );
-			pi->setPosition("y", pi->getPosition("y") - 1);
+			pi->setPosition( Location(pi->getPosition().x, pi->getPosition().y-1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 0);
@@ -460,7 +450,7 @@ void dooruse(NXWSOCKET  s, pItem pi /* was ITEM item*/)
 		} else if (x==(db+15))
 		{
 			pi->setId( pi->getId()-1 );
-			pi->setPosition("y", pi->getPosition("y") + 1);
+			pi->setPosition( Location(pi->getPosition().x, pi->getPosition().y+1, pi->getPosition().z) );
 			pi->Refresh();
 			changed=1;
 			doorsfx(pi, x, 1);

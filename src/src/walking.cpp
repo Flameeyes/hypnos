@@ -251,7 +251,7 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 
 						pChar pc_b=pets.getChar();
 						if( pc_b ) {
-							pc->MoveTo( boat->getPosition("x")+1, boat->getPosition("y")+1, boat->getPosition("z")+2 );
+							pc->MoveTo( boat->getPosition().x+1, boat->getPosition().y+1, boat->getPosition().z+2 );
 							pc->setMultiSerial( boat->getSerial() );
 							pc_b->teleport();
 						}

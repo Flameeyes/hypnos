@@ -659,7 +659,7 @@ void command_addx( pClient client )
 //	NXWSOCKET s = ps->toInt();
 
 	if (tnum==3)
-		Commands::AddHere(s, Duint8_t2WORD( strtonum(1), strtonum(2) ), pc->getPosition("z"));
+		Commands::AddHere(s, Duint8_t2WORD( strtonum(1), strtonum(2) ), pc->getPosition().z);
 
 	if (tnum==4)
 		Commands::AddHere(s, Duint8_t2WORD( strtonum(1), strtonum(2) ), strtonum(3));

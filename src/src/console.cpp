@@ -29,7 +29,7 @@ void setWinTitle(char *str, ...)
 {
 	if (ServerScp::g_nDeamonMode!=0) return;
 
-	char temp; //xan -> this overrides the global temp var
+	char *temp; //xan -> this overrides the global temp var
 	va_list argptr;
 
 	va_start( argptr, str );

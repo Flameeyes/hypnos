@@ -181,9 +181,9 @@ void cBoat::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open p
 		return;
 
 	//long int pos, pos2, length;
-	uint32_t x,x2= pi->getPosition("x");
-	uint32_t y,y2= pi->getPosition("y");
-	int8_t z= pi->getPosition("z");
+	uint16_t x,x2= pi->getPosition().x;
+	uint16_t y,y2= pi->getPosition().y;
+	int8_t z= pi->getPosition().z;
 	int8_t mz,sz,typ;
 	pItem pBoat=GetBoat(pc->getPosition());
 
@@ -1107,8 +1107,8 @@ bool cBoat::collision(pItem pi,Location where,int dir)
 		boat_db coll=iter_boat->second;
 		if(coll.serial != pi->getSerial())
 		{
-			int xx=abs(x - (int)coll.p_serial->getPosition("x"));
-			int yy=abs(y - (int)coll.p_serial->getPosition("y"));
+			int xx=abs(x - coll.p_serial->getPosition().x);
+			int yy=abs(y - coll.p_serial->getPosition().y);
 			double dist=hypot(xx, yy);
 			if(dist<10)
 			{
@@ -1174,7 +1174,7 @@ bool cBoat::boat_collision(pItem pBoat1,int x1, int y1,int dir,pItem pBoat2)
 				LogError("boat_collision() - bad boat turning direction\n");
 			}
 
-			if ( (x==m2[i2].x+pBoat2->getPosition("x")) && (y==m2[i2].y+pBoat2->getPosition("y")) )
+			if ( (x==m2[i2].x+pBoat2->getPosition().x) && (y==m2[i2].y+pBoat2->getPosition().y) )
 			{
 				return true;
 			}

@@ -2715,7 +2715,7 @@ void cClient::talking(std::string &speech) // PC speech
 	if ( pc_found &&(pc_found->speech) )
 	{
 
-		if(abs(pc_found->getPosition("z")-pc->getPosition("z")) >3 ) return;
+		if(abs(pc_found->getPosition().z-pc->getPosition().z) >3 ) return;
 
 		responsevendor(socket, DEREF_pChar(pc_found));
 

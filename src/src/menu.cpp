@@ -264,7 +264,7 @@ void cMenu::addCommand( char* formatStr, ... )
 	char *temp;
 	va_list vargs;
 	va_start(vargs, formatStr );
-	vasprintf( &temp, sizeof(temp)-1, formatStr, vargs);
+	vasprintf( &temp, formatStr, vargs);
 	va_end(vargs);
 
 	addCommand( std::string( temp ) );
