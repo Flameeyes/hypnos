@@ -105,7 +105,6 @@ struct server_st
  unsigned int skilllevel; // Magius(CHE)
  unsigned int trade_system; // Magius(CHE)
  unsigned int rank_system; // Magius(CHE)
- char armoraffectmana; // Should armor slow mana regen ?
 
  char announceworldsaves;
 

@@ -287,8 +287,8 @@ bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
 
 	if ( ! pc ) return 0;
 	
-	int a,ges=0,d=0;
-	unsigned char lockstate;
+	int ges=0, d=0;
+	uint8_t lockstate;
 	int skillcap = SrvParms->skillcap;
 	uint32_t incval;
 	int atrophy_candidates[ALLSKILLS+1];
@@ -303,7 +303,7 @@ bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
 		skillcap = ret.toSInt32();
 	}
 	
-	lockstate=pc->lockSkill[sk];
+	lockstate = pc->lockSkill[sk];
 	if (pc->isGM()) lockstate=0;
 	// for gms no skill cap exists, also ALL skill will be interperted as up, no matter how they are set
 	
@@ -316,39 +316,38 @@ bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
 	
 	int c=0;
 
-    for (int b=0;b<(ALLSKILLS+1);b++)
-    {
-        if (pc->lockSkill[b]==1 && pc->baseskill[b]!=0) // only count atrophy candidtes if they are above 0 !!!
-        {
-            atrophy_candidates[c]=b;
-            c++;
-        }
-    }
+	for (register int b = 0; b < (ALLSKILLS+1); b++)
+	{
+		if (pc->lockSkill[b]==1 && pc->baseskill[b]!=0) // only count atrophy candidtes if they are above 0 !!!
+		{
+			atrophy_candidates[c] = b;
+			c++;
+		}
+	}
 
-    if (!pc->isGM())
-    {
-        for (a=0;a<ALLSKILLS;a++)
-        {
-            ges+=pc->baseskill[a];
-        }
-        ges=ges/10;
+	if (!pc->isGM())
+	{
+		for (register int a = 0; a < ALLSKILLS; a++)
+			ges+=pc->baseskill[a];
+		
+		ges=ges/10;
+	
+		if (ges>skillcap && c==0) // skill capped and no skill is marked as fall down.
+		{
+			client->sysmessage("You have reached the skill-cap of %i and no skill can fall!", skillcap);
+			return 0;
+		}
+	
+	} else ges=0;
 
-        if (ges>skillcap && c==0) // skill capped and no skill is marked as fall down.
-        {
-            client->sysmessage("You have reached the skill-cap of %i and no skill can fall!", skillcap);
-            return 0;
-        }
-
-    } else ges=0;
-
-    //
-    // Skill advance parameter
-    //
-    // 1. If the race system is active get them from there
-    // 2. Else use the standard server tables
-    //
-    if( Race::isRaceSystemActive() )
-    {
+	//
+	// Skill advance parameter
+	//
+	// 1. If the race system is active get them from there
+	// 2. Else use the standard server tables
+	//
+	if( Race::isRaceSystemActive() )
+	{
 		if ( skillused )
 		{
 			Race* r = Race::getRace( (uint32_t) pc->race );
@@ -369,20 +368,20 @@ bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
 			//SDbgOut("Race advance failure for skill %d with base %d is %d\n", sk, pc->baseskill[sk], incval * 10 );
 		}
 		incval *= 10;
-    }
-    else {
-
-	int i = 0;
-	int loopexit=0;
-    	while ( (wpadvance[1+i+skillinfo[sk].advance_index].skill == sk &&
-      	         wpadvance[1+i+skillinfo[sk].advance_index].base  <= pc->baseskill[sk] ) &&
-    	     	  (++loopexit < MAXLOOPS) ) ++i;
-	if(skillused)
-   		incval=(wpadvance[i+skillinfo[sk].advance_index].success);
-	else
-		incval=(wpadvance[i+skillinfo[sk].advance_index].failure);
-	incval *= 10;
-    }
+	} else {
+		int i = 0;
+		int loopexit=0;
+		while ( (wpadvance[1+i+skillinfo[sk].advance_index].skill == sk &&
+			wpadvance[1+i+skillinfo[sk].advance_index].base  <= pc->baseskill[sk] ) &&
+			(++loopexit < MAXLOOPS) ) ++i;
+		
+		if(skillused)
+			incval=(wpadvance[i+skillinfo[sk].advance_index].success);
+		else
+			incval=(wpadvance[i+skillinfo[sk].advance_index].failure);
+		
+		incval *= 10;
+	}
 
 	bool retval = incval > (rand()%SrvParms->skilladvancemodifier);
 	
@@ -1118,88 +1117,85 @@ void Skills::AButte(pClient client, pItem pButte)
 		pButte->more2=0;
 	}
 
-    if( (v1>=5) && (v1<=8) )
-    {
-        if (!pc->getWeapon()->IsBowType())
-        {
-            client->sysmessage( "You need to equip a bow to use this.");
-            return;
-        }
-        if ((pButte->more1+pButte->more2)>99)
-        {
-            client->sysmessage( "You should empty the butte first!");
-            return;
-        }
-		if (pc->getWeapon()->IsBow())
-			arrowsquant=pc->getAmount(0x0F3F); // Sabrewulf
-        else
-			arrowsquant=pc->getAmount(0x1BFB);
-
-        if (arrowsquant==0)
-        {
-            client->sysmessage( "You have nothing to fire!");
-            return;
-        }
-
-		if (pc->getWeapon()->IsBow())
-        {
-            pc->delItems( 0x0F3F, 1);
-            pButte->more1++;
-            //add moving effect here to item, not character
-        }
-        else
-        {
-            pc->delItems( 0x1BFB, 1);
-            pButte->more2++;
-            //add moving effect here to item, not character
-        }
-        if (pc->isMounting())
-			pc->combatOnHorse();
-        else
-			pc->combatOnFoot();
-
-        if( pc->skill[skArchery] < 350 )
-            pc->checkSkill( skArchery, 0, 1000 );
-        else
-            client->sysmessage( "You learn nothing from practicing here");
-
-        switch( ( pc->skill[skArchery]+ ( (rand()%200) -100) ) /100 )
-        {
-		case -1:
-		case 0:
-		case 1:
-			client->sysmessage( "You miss the target");
-			pc->playSFX(0x0238);
-			break;
-		case 2:
-		case 3:
-			client->sysmessage( "You hit the outer ring!");
-			pc->playSFX(0x0234);
-			break;
-		case 4:
-		case 5:
-		case 6:
-			client->sysmessage( "You hit the middle ring!");
-			pc->playSFX(0x0234);
-			break;
-		case 7:
-		case 8:
-		case 9:
-			client->sysmessage( "You hit the inner ring!");
-			pc->playSFX(0x0234);
-			break;
-		case 10:
-		case 11:
-			client->sysmessage( "You hit the bullseye!!");
-			pc->playSFX(0x0234);
-			break;
-		default:
-			break;
-		}
-    }
-    if ( (v1>1)&&(v1<5) || (v1>8))
+	if ( v1 < 5 || v1 > 8 )
+	{
 		client->sysmessage( "You cant use that from here.");
+		return;
+	}
+	
+	if (!pc->getWeapon()->IsBowType())
+	{
+		client->sysmessage( "You need to equip a bow to use this.");
+		return;
+	}
+	if ((pButte->more1+pButte->more2)>99)
+	{
+		client->sysmessage( "You should empty the butte first!");
+		return;
+	}
+	if (pc->getWeapon()->IsBow())
+		arrowsquant=pc->getAmount(0x0F3F); // Sabrewulf
+	else
+		arrowsquant=pc->getAmount(0x1BFB);
 
+	if (arrowsquant==0)
+	{
+		client->sysmessage( "You have nothing to fire!");
+		return;
+	}
+
+	if (pc->getWeapon()->IsBow())
+	{
+		pc->delItems( 0x0F3F, 1);
+		pButte->more1++;
+		//add moving effect here to item, not character
+	} else {
+		pc->delItems( 0x1BFB, 1);
+		pButte->more2++;
+		//add moving effect here to item, not character
+	}
+
+	if (pc->isMounting())
+		pc->combatOnHorse();
+	else
+		pc->combatOnFoot();
+
+	if( pc->skill[skArchery] < 350 )
+		pc->checkSkill( skArchery, 0, 1000 );
+	else
+		client->sysmessage( "You learn nothing from practicing here");
+
+	switch( ( pc->skill[skArchery]+ ( (rand()%200) -100) ) /100 )
+	{
+	case -1:
+	case 0:
+	case 1:
+		client->sysmessage( "You miss the target");
+		pc->playSFX(0x0238);
+		break;
+	case 2:
+	case 3:
+		client->sysmessage( "You hit the outer ring!");
+		pc->playSFX(0x0234);
+		break;
+	case 4:
+	case 5:
+	case 6:
+		client->sysmessage( "You hit the middle ring!");
+		pc->playSFX(0x0234);
+		break;
+	case 7:
+	case 8:
+	case 9:
+		client->sysmessage( "You hit the inner ring!");
+		pc->playSFX(0x0234);
+		break;
+	case 10:
+	case 11:
+		client->sysmessage( "You hit the bullseye!!");
+		pc->playSFX(0x0234);
+		break;
+	}
 }
 
 /*!
@@ -1220,7 +1216,7 @@ void Skills::Meditation (pClient client)
 		return;
 	}
 
-	if ( SrvParms->armoraffectmana && Skills::GetAntiMagicalArmorDefence(pc) > 15 ) {
+	if ( Skills::GetAntiMagicalArmorDefence(pc) > 15 ) {
 		client->sysmessage( "Regenerative forces cannot penetrate your armor.");
 		return;
 	}
@@ -1375,4 +1371,3 @@ pMap nSkills::getEmptyMap(pChar pc)
 	
 	return false;
 }
-

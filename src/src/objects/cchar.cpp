@@ -2438,7 +2438,7 @@ void cChar::generic_heartbeat()
 	}
 
 	//HP REGEN
-	if( this->regenTimerOk( STAT_HP ) ) {
+	if( regenTimerOk( STAT_HP ) ) {
 		if (hp < getStrength() && (hunger > 3 || SrvParms->hungerrate == 0)) {
 			hp++;
 			update[ 0 ] = true;
@@ -2448,7 +2448,7 @@ void cChar::generic_heartbeat()
 	}
 
 	//STAMINA REGEN
-	if( this->regenTimerOk( STAT_STAMINA )) {
+	if( regenTimerOk( STAT_STAMINA )) {
 		if (stm < dx) {
 			stm++;
 			update[ 2 ] = true;
@@ -2458,7 +2458,7 @@ void cChar::generic_heartbeat()
 	}
 
 	//MANA REGEN
-	if( this->regenTimerOk( STAT_MANA ) )
+	if( regenTimerOk( STAT_MANA ) )
 	{
 		if (mn < in)
 		{
@@ -2472,29 +2472,21 @@ void cChar::generic_heartbeat()
 			med = 0;
 		}
 
-		uint32_t manarate = this->getRegenRate( STAT_MANA, VAR_REAL );
-		if(SrvParms->armoraffectmana)
-		{
-			if (med)
-				manarate += uint32_t( calcDef(0) / 10.0 ) - uint32_t( skill[skMeditation]/222.2 );
-			else
-				manarate += uint32_t( calcDef(0) / 5.0 );
-		}
+		uint32_t manarate = getRegenRate( STAT_MANA, VAR_REAL );
+		if (med)
+			manarate += uint32_t( calcDef(0) / 10.0 ) - uint32_t( skill[skMeditation]/222.2 );
 		else
-		{
-			if(med)
-				manarate -= uint32_t( skill[skMeditation]/222.2 );
-		}
+			manarate += uint32_t( calcDef(0) / 5.0 );
                 manarate = qmax( 1, manarate );
-		this->setRegenRate( STAT_MANA, manarate, VAR_EFF );
-		this->updateRegenTimer( STAT_MANA );
+		setRegenRate( STAT_MANA, manarate, VAR_EFF );
+		updateRegenTimer( STAT_MANA );
 
 	}
 	if ( hp <= 0 )
 		Kill();
 	else
-		for( uint32_t i = 0; i < 3; i++ )
-			if( update[ i ] )
+		for( register int i = 0; i < 3; i++ )
+			if( update[i] )
 				updateStats( i );
 }
 

@@ -239,7 +239,6 @@ void loadserverdefaults()
 	server_data.usespecialbank=0;	//AntiChrist - 1= Special Bank enabled
 	server_data.goldweight=0.005;	//what a goldpiece weighs this is in hundreths of a stone! AntiChrist
 	server_data.poisontimer=180; // lb
-	server_data.armoraffectmana=1; //xan
 	server_data.decaytimer=DECAYTIMER;
 	// Should we check character age for delete?
 	server_data.checkcharage = 0 ;
@@ -406,17 +405,6 @@ static int loadcombat(char *script1, char *script2) // By Magius(CHE)
 		else return -1;
 		return 0;
 }
-
-static int loadregenerate(char *script1, char *script2) // by Magius(CHE)
-{
-		if(!(strcmp(script1,"HITPOINTS_REGENRATE"))) server_data.hitpointrate=str2num(script2);
-		else if(!(strcmp(script1,"STAMINA_REGENRATE"))) server_data.staminarate=str2num(script2);
-		else if(!(strcmp(script1,"MANA_REGENRATE"))) server_data.manarate=str2num(script2);
-		else if(!(strcmp(script1,"ARMOR_AFFECT_MANA_REGEN"))) server_data.armoraffectmana=str2num(script2);
-		else return -1;
-		return 0;
-}
-
 
 static int block_acc(char *script1, char *script2) // elcabesa tempblock
 {													// elcabesa tempblock
@@ -1103,8 +1091,6 @@ void saveserverscript()
 	fprintf(file, "STAMINA_REGENRATE %i\n",server_data.staminarate);
 	fprintf(file, "// Define how often (seconds) mana will regenerate by 1  \n");
 	fprintf(file, "MANA_REGENRATE %i\n",server_data.manarate);
-	fprintf(file, "// If 1, enables meditation. Higher damage, less the speed regen rate  \n");
-	fprintf(file, "ARMOR_AFFECT_MANA_REGEN %i\n",server_data.armoraffectmana);
 	fprintf(file, "}\n\n");
 
 	fprintf(file, "SECTION RESOURCE\n");
