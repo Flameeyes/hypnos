@@ -931,11 +931,10 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
                 }
         	if (dest->getAmount() + pi->getAmount() > 65535))
 		{ //If target is not a container, but an item in the world that is not stackable with dragged item, bounce.. but only if combined amount is too big!
-                	message("Too many of %s are already stacked there", pi->getCurrentName)
+                	message("Too many of %s are already stacked there", pi->getCurrentName().c_str())
 			item_bounce6(pi);
 			return;
 		}
-                else
 		if (!pc_currchar->isGM() && !pc_currchar->isHidden())
 		{
 			//the dragging of the item should not be shown if pc is a gm, is invisible or is trying to drop an item on his backpack (or bank). Since it is already checked is on the ground...
