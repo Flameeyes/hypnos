@@ -100,7 +100,9 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 noinst_LIBRARIES = libarchs.a
-libarchs_a_SOURCES = ntservice.cpp win32registry.cpp signals.cpp daemon.cpp console.cpp
+libarchs_a_SOURCES = ntservice.cpp win32registry.cpp signals.cpp daemon.cpp \
+	console.cpp tinterface.cpp
+
 subdir = src/archs
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -110,7 +112,8 @@ LIBRARIES = $(noinst_LIBRARIES)
 libarchs_a_AR = $(AR) cru
 libarchs_a_LIBADD =
 am_libarchs_a_OBJECTS = ntservice.$(OBJEXT) win32registry.$(OBJEXT) \
-	signals.$(OBJEXT) daemon.$(OBJEXT) console.$(OBJEXT)
+	signals.$(OBJEXT) daemon.$(OBJEXT) console.$(OBJEXT) \
+	tinterface.$(OBJEXT)
 libarchs_a_OBJECTS = $(am_libarchs_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -121,6 +124,7 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/console.Po ./$(DEPDIR)/daemon.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ntservice.Po ./$(DEPDIR)/signals.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/tinterface.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/win32registry.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -161,6 +165,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/daemon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ntservice.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/signals.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tinterface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/win32registry.Po@am__quote@
 
 distclean-depend:

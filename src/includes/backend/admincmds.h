@@ -9,11 +9,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "common_libs.h"
-#include <iostream>
-
 #ifndef __BACKEND_ADMINCMDS_H__
 #define __BACKEND_ADMINCMDS_H__
+
+#include "common_libs.h"
+#include <iosfwd>
 
 /*!
 \brief Administrative commands

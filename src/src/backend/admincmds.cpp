@@ -9,6 +9,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#include "mainloop.h"
 #include "backend/admincmds.h"
 
 /*!
@@ -20,62 +21,48 @@ void nAdminCommands::parseCommand(const std::string &str, std::ostream &outs)
 {
 	switch(str[0])
 	{
-	case '\x1B':
-		keeprun=false;
-		break;
-	case 'Q':
-	case 'q':
-		lowlevelOutput(outs, "Immediate Shutdown initialized!\n");
-		keeprun=false;
-		break;
 	case 'T':
 	case 't':
-		endtime=getClockmSecs()+(SECS*60*2);
-		endmessage(0);
+		tMainLoop::instance->requestShutdown();
 		break;
 	case '#':
-		if ( !cwmWorldState->Saving() )
-		{
-			cwmWorldState->saveNewWorld();
-		}
+		tMainLoop::instance->requestSave();
 		break;
 	case 'W':
 	case 'w':				// Display logged in chars
-		lowlevelOutput(outs, "----------------------------------------------------------------\n");
-		lowlevelOutput(outs, "Current Users in the World:\n");
-		//!\todo Fix this with a better way
-		j = 0;  //Fix bug counting ppl online.
-		for (int i=0;i<now;i++)
+		outs	<< "----------------------------------------------------------------" << std::endl
+			<< "Current Users in the World:" << std::endl;
+		//! \todo Fix this with a better way
 		{
-			pChar pc_i=cSerializable::findCharBySerial(currchar[i]);
-			if(pc_i && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
+			int j = 0;  //Fix bug counting ppl online.
+			for (int i=0;i<now;i++)
 			{
-				lowlevelOutput(outs, "%i) %s [ %08x ]\n", j, pc_i->getCurrentName().c_str(), pc_i->getSerial());
-				j++;
+				pChar pc_i=cSerializable::findCharBySerial(currchar[i]);
+				if(pc_i && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
+				{
+					outs << j << ") " << pc_i->getCurrentName() << " [ " << setw(8) << setfill('0') << hex << pc_i->getSerial() << " ]" << std::endl;
+					j++;
+				}
 			}
 		}
-		lowlevelOutput(outs, "Total Users Online: %d\n", j);
+		outs << "Total Users Online: " << j << std::endl;
 		break;
 	case 'r':
 	case 'R':
-		lowlevelOutput(outs, "Hypnos: Total server reload!");
-		//! \todo Need to freeze and unfreeze all the clients here for the resync
-		//! \todo Need to call a function exported by hypnos.h
-		loadServer();
+		tMainLoop::instance->requestResync();
 		break;
 	case '?':
-		lowlevelOutput(outs, "Console commands:\n");
-		lowlevelOutput(outs, "\tQ - Shutdown the server.\n");
-		lowlevelOutput(outs, "\tT - System Message: The server is shutting down in 2 minutes.\n");
-		lowlevelOutput(outs, "\t# - Save world\n");
-		lowlevelOutput(outs, "\tW - Display logged in characters\n");
-		lowlevelOutput(outs, "\tR - Total server reload\n");
-		lowlevelOutput(outs, "\tS - Toggle Secure mode %s\n", secure ? "[enabled]" : "[disabled]" );
-		lowlevelOutput(outs, "\t? - Commands list (this)\n");
-		lowlevelOutput(outs, "End of commands list.\n");
+		outs	<< "Console commands:" << std::endl
+			<< "\tQ - Shutdown the server (in 2 minutes, with broadcast)." << std::endl
+			<< "\t# - Save world" << std::endl
+			<< "\tW - Display logged in characters" << std::endl
+			<< "\tR - Total server reload" << std::endl
+			<< "\tS - Toggle Secure mode" << secure ? "[enabled]" : "[disabled]" << std::endl
+			<< "\t? - Commands list (this)" << std::endl
+			<< "End of commands list." << std::endl
 		break;
 	default:
-		lowlevelOutput(outs, "Key %c [%x] does not preform a function.\n",c,c);
+		outs << "Command " << str << " does not perform a function." << std::endl;
 		break;
 	}
 }

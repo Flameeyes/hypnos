@@ -9,6 +9,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "clock.h"
+#include "hypnos.h"
 #include "mainloop.h"
 #include "archs/tinterface.h"
 #include "networking/tkiller.h"
@@ -18,6 +19,8 @@
 #ifdef HAVE_SIGNAL_H
 #include "archs/signal.h"
 #endif
+
+#include <fstream>
 
 tMainLoop *tMainLoop::instance = NULL;
 
@@ -32,6 +35,16 @@ tMainLoop::tMainLoop()
 {
 	// Here we should have already an instanced interface...
 	assert(tInterface::instance);
+
+#ifdef __unix__
+	// Put the pid into the right file
+	ofstream pid("/var/run/hypnos.pid");
+	if ( pid )
+	{
+		pid << getpid();
+	} else
+		LogWarning("Error writing PID to /var/run/hypnos.pid. Is the directory writable?");
+#endif
 	
 	srand(getClockmSecs()); // initial randomization call
 	nSettings::load();
