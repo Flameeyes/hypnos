@@ -24,6 +24,8 @@
 #include "cmds.h"
 #include "map.h"
 #include "settings.h"
+#include "enums.h"
+#include "backend/scripting.h"
 
 #ifndef TIMEOUT
 #define TIMEOUT(X) (((X) <= uiCurrentTime) || overflow)
@@ -37,13 +39,6 @@ enum WanderMode {
 	WANDER_FREELY,
 	WANDER_FLEE,
 	WANDER_AMX
-};
-
-//! Type of hiding
-enum HideType {
-	htUnhidden,	//!< Not hidden
-	htBySkill,	//!< Hidden by hiding skill
-	htBySpell	//!< Hidden by invisible spell
 };
 
 /*!
@@ -203,6 +198,8 @@ public:
 	
 	static const uint64_t flagHolyDamaged		= 0x0000000000400000ull;
 	static const uint64_t flagLightDamaged		= 0x0000000000800000ull;
+
+	static const uint64_t flagIsMeditating		= 0x0000000001000000ull; //!< Char is using meditation
 //@}
 
 //@{
@@ -293,6 +290,9 @@ public:
 	inline const bool lightDamaged() const
 	{ return flags & flagLightDamaged; }
 	
+	inline const bool isMeditating() const
+	{ return flags & flagIsMeditating; }
+	
 	/*!
 	\author Xanathar
 	\brief Checks char weight
@@ -346,9 +346,10 @@ public:
 	inline void setLightDamaged(bool set = true)
 	{ setFlag(flagLightDamaged, set); }
 	
+	inline void setIsMeditating(bool set = true)
+	{ setFlag(flagIsMeditating, set); }
+	
 	void warUpdate();
-
-
 
 	/*!
 	\brief Sets criminal or grey depending on a server.cfg setting
@@ -607,17 +608,17 @@ public:
 		void deleteSpeechCurrent();
 
 	public:
+		FunctionVector events;	//!< Handler to call for events
 		uint32_t oldmenu; //!< old menu serial
 
 		int32_t			stat3crc; // xan : future use to keep safe stats
-		class			AmxEvent *amxevents[ALLCHAREVENTS];
+		
 		int32_t			hp;  // Hitpoint32_ts
 		int32_t			stm; // Stamina
 		int32_t			mn;  // Mana
 		int32_t			mn2; // Reserved for calculation
 		uint16_t		baseskill[ALLSKILLS+1]; // Base skills without stat modifiers
 		uint16_t		skill[ALLSKILLS+1]; // List of skills (with stat modifiers)
-
 
 		uint32_t			robe; // Serial number of generated death robe (If char is a ghost)
 		uint8_t			fixedlight; // Fixed lighting level (For chars in dungeons, where they dont see the night)
@@ -691,9 +692,8 @@ public:
 
 		int32_t			squelched; // zippy  - squelching
 		TIMERVAL		mutetime; //Time till they are UN-Squelched.
-		int32_t			med; // 0=not meditating, 1=meditating //Morrolan - Meditation
 		//int32_t statuse[3]; //Morrolan - stat/skill cap STR/INT/DEX in that order
-		//int32_t skilluse[TRUESKILLS][1]; //Morrolan - stat/skill cap
+		//int32_t skilluse[skTrueSkills][1]; //Morrolan - stat/skill cap
 		uint8_t			lockSkill[ALLSKILLS+1]; // LB, client 1.26.2b skill managment
 		int32_t			stealth; //AntiChrist - stealth ( steps already done, -1=not using )
 		uint32_t			running; //AntiChrist - Stamina Loose while running

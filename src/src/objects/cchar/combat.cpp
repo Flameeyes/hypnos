@@ -81,7 +81,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	pItem weapon=getWeapon();
 
-	fightskill = weapon ? weapon->getCombatSkill() : WRESTLING;
+	fightskill = weapon ? weapon->getCombatSkill() : skWrestling;
 	dist = distFrom(pc_def);
 
 	if((dist > 1 && fightskill != skArchery) || !los) return;
@@ -101,7 +101,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	}
 
 	pItem def_Weapon = pc_def->getWeapon();
-	def_fightskill = def_Weapon ? def_Weapon->getCombatSkill() : WRESTLING;
+	def_fightskill = def_Weapon ? def_Weapon->getCombatSkill() : skWrestling;
 
 	int fs1, fs2, str1, str2, dex1, dex2;
 	str1 = body->getStrength();
@@ -209,10 +209,10 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	if (pc_def->dx > 0) pc_def->unfreeze();
 
-	if (fightskill != WRESTLING || npc) {
+	if (fightskill != skWrestling || npc) {
 		basedamage = calcAtt();
 	} else {
-		basedamage = uint32_t( (skill[WRESTLING]/100.0)/2 + RandomNum(1,2) );
+		basedamage = uint32_t( (skill[skWrestling]/100.0)/2 + RandomNum(1,2) );
 
 		//Luxor (6 dec 2001): Wrestling Disarm & Stun punch
 		if ( wresmove == WRESDISARM ) {
@@ -310,7 +310,7 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	if( damage > 0 ) {
 		//Evaluate damage type
-		if (fightskill == WRESTLING) dmgtype = damBludgeon;
+		if (fightskill == skWrestling) dmgtype = damBludgeon;
 		if (npc) {
 			dmgtype = damagetype;
 			damage = int(damage / 3.5);
@@ -434,7 +434,7 @@ void cChar::doCombat()
 	}
 	else if ( combatTimerOk() )
 	{
-		fightskill = weapon ? weapon->getCombatSkill() : WRESTLING;
+		fightskill = weapon ? weapon->getCombatSkill() : skWrestling;
 
 		if (fightskill==skArchery)
 		{
@@ -476,7 +476,7 @@ void cChar::doCombat()
 					}
 					else
 					{
-						unsigned short wrestling = skill[WRESTLING];
+						unsigned short wrestling = skill[skWrestling];
 						if(wrestling>800)
 							j = 50;
 						else if(wrestling>600)
@@ -515,7 +515,7 @@ void cChar::doCombat()
 			}
 			else
 			{
-				unsigned short wrestling = skill[WRESTLING];
+				unsigned short wrestling = skill[skWrestling];
 				if(wrestling>200)
 				{
 					j = 35;
@@ -902,7 +902,7 @@ void cChar::setWresMove(int32_t move)
 	switch (move)
 	{
 		case WRESDISARM:
-			if (skill[WRESTLING] >= 800 && skill[skArmsLore] >= 800) {
+			if (skill[skWrestling] >= 800 && skill[skArmsLore] >= 800) {
 				sysmsg(TRANSLATE("You prepare yourself for a disarm move."));
 				wresmove = 1;	//set wresmove to disarm
 			} else {
@@ -911,7 +911,7 @@ void cChar::setWresMove(int32_t move)
 			break;
 
 		case WRESSTUNPUNCH:
-			if (skill[WRESTLING] >= 800 && skill[skAnatomy] >= 800) {
+			if (skill[skWrestling] >= 800 && skill[skAnatomy] >= 800) {
 				sysmsg(TRANSLATE("You prepare yourself for a stunning punch."));
 				wresmove = 2;	//set wresmove to stun punch
 			} else {
@@ -940,7 +940,7 @@ int cChar::calcAtt()
 	pItem pi = getWeapon();
 	//if(pi==NULL)
 	//	return 0;
-	if ( ! pi ) return skill[WRESTLING]/100;
+	if ( ! pi ) return skill[skWrestling]/100;
 
 	return RandomNum(pi->lodamage, pi->hidamage);
 }
@@ -973,16 +973,16 @@ void cChar::doCombatSoundEffect(uint16_t fightskill, pItem weapon)
 			playSFX(0x0234);
 			break;
 		case FENCING:
-		case SWORDSMANSHIP:
+		case skSwordsmanship:
 			if (a==0 || a==1) playSFX(0x023B);
 			else playSFX(0x023C);
 			break;
-		case MACEFIGHTING:
+		case skMacefighting:
 			if (a==0 || a==1) playSFX(0x0232);
 			else if (a==2) playSFX(0x0139);
 			else playSFX(0x0233);
 			break;
-		case WRESTLING:
+		case skWrestling:
 			if (a==0) playSFX(0x0135);
 			else if (a==1) playSFX(0x0137);
 			else if (a==2) playSFX(0x013D);

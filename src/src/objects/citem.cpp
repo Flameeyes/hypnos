@@ -778,11 +778,11 @@ bool LoadItemEventsFromScript (pItem pi, char *script1, char *script2)
 Skill cItem::getCombatSkill()
 {
 	if (fightskill != INVALID_SKILL) return fightskill;
-	else if (IsSwordType())		return SWORDSMANSHIP;
-	else if (IsMaceType() || IsSpecialMace())		return MACEFIGHTING;
+	else if (IsSwordType())		return skSwordsmanship;
+	else if (IsMaceType() || IsSpecialMace())		return skMacefighting;
 	else if (IsFencingType())	return FENCING;
 	else if (IsBowType())		return skArchery;
-	return WRESTLING;
+	return skWrestling;
 }
 
 /*!

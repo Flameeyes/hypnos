@@ -156,7 +156,7 @@ void cPacketSendDeleteObj::prepare()
 
 void cPacketSendSkillState::prepare()
 {
-	length = 4 + TRUESKILLS*7 + 2;
+	length = 4 + skTrueSkills*7 + 2;
 	buffer = new uint8_t[length];
 
 	buffer[0] = 0x3A;
@@ -164,7 +164,7 @@ void cPacketSendSkillState::prepare()
 	buffer[3] = 0x00;
 
 	uint8_t *skill = buffer+4;
-	for (int i=0; i<TRUESKILLS; i++)
+	for (int i=0; i<skTrueSkills; i++)
 	{
 		Skills::updateSkillLevel(pc,i);
 
@@ -778,7 +778,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 
 	pc->dir=4;
 	pc->namedeedserial=INVALID;
-        for (int ii = 0; ii < TRUESKILLS; i++) Skills::updateSkillLevel(pc, ii);  //updating skill levels for pc
+        for (int ii = 0; ii < skTrueSkills; i++) Skills::updateSkillLevel(pc, ii);  //updating skill levels for pc
 
 	pItem pi;
 

@@ -1580,7 +1580,7 @@ void CWorldMain::SaveChar( pChar pc )
 			if (pc->disabledmsg!=NULL)
 				fprintf(cWsc, "DISABLEMSG %s\n", pc->disabledmsg->c_str()); // Added by Magius(CHE) §
 
-			for (j=0;j<TRUESKILLS;j++)
+			for (j=0;j<skTrueSkills;j++)
 			{
 				// Don't save the default value given by initchar
 				if ((pc->baseskill[j] != 10)&&(pc->baseskill[j]>1))

@@ -112,4 +112,11 @@ enum DamageType {
 	damPure, damSlash, damPierce, damBludgeon, damBackstab, damFire, damElectricity, damMental, damPoison, damCold, damForce, damHoly, damMagic, MAX_RESISTANCE_INDEX
 };
 
+//! Type of hiding
+enum HideType {
+	htUnhidden,	//!< Not hidden
+	htBySkill,	//!< Hidden by hiding skill
+	htBySpell	//!< Hidden by invisible spell
+};
+
 #endif

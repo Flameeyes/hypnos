@@ -103,7 +103,7 @@ void Skills::Stealth(NXWSOCKET s)
     }
     // do not invert the two parts of the || operator otherwise
     // it stops raising skills when training with plate-armor ! :)
-    if ((!pc->checkSkill(STEALTH, min, max))||(def>20))
+    if ((!pc->checkSkill(skStealth, min, max))||(def>20))
     {
 	pc->setHidden(htUnhidden);
         pc->stealth = INVALID;
@@ -111,7 +111,7 @@ void Skills::Stealth(NXWSOCKET s)
         return;
     }
 
-    sysmessage(s,TRANSLATE("You can move %i steps unseen."), ((SrvParms->maxstealthsteps*pc->skill[STEALTH])/1000) );
+    sysmessage(s,TRANSLATE("You can move %i steps unseen."), ((SrvParms->maxstealthsteps*pc->skill[skStealth])/1000) );
     pc->stealth = 0; //AntiChrist -- init. steps already done
     pc->hideBySkill();
 }
@@ -531,7 +531,7 @@ char Skills::CheckSkillSparrCheck(int c, unsigned short int sk, int low, int hig
 
 char Skills::AdvanceSkill(CHARACTER s, int sk, char skillused)
 {
-	if ( sk < 0 || sk >= TRUESKILLS ) //Luxor
+	if ( sk < 0 || sk >= skTrueSkills ) //Luxor
 		return 0;
 
     pChar pc = MAKE_CHAR_REF(s);
@@ -716,7 +716,7 @@ and cuts it down to 100 if necessary
 */
 static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type, pChar pc)
 {
-	if ( sk < 0 || sk >= TRUESKILLS ) //Luxor
+	if ( sk < 0 || sk >= skTrueSkills ) //Luxor
 		return 0;
 
 	int loopexit=0, limit=1000;
@@ -877,7 +877,7 @@ and reduces the two other stats if necessary
 */
 void Skills::AdvanceStats(CHARACTER s, int sk)
 {
-	if ( sk < 0 || sk >= TRUESKILLS ) //Luxor
+	if ( sk < 0 || sk >= skTrueSkills ) //Luxor
 		return;
 
 
@@ -1010,7 +1010,7 @@ void Skills::SpiritSpeak(NXWSOCKET s)
 */
 void Skills::SkillUse(NXWSOCKET s, int x)
 {
-	if ( s < 0 || s >= now || x < 0 || x >= TRUESKILLS) //Luxor
+	if ( s < 0 || s >= now || x < 0 || x >= skTrueSkills) //Luxor
 		return;
 
     NXWCLIENT ps=getClientFromSocket(s);
@@ -1101,7 +1101,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				Skills::Hide(s);
 				break;
 
-			case STEALTH:
+			case skStealth:
 				Skills::Stealth(s);
 				break;
 
@@ -1185,7 +1185,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 			case skTasteID:
 				break;
 
-			case MEDITATION:  //Morrolan - Meditation
+			case skMeditation:  //Morrolan - Meditation
 				//if(SrvParms->armoraffectmana)
 					Skills::Meditation(s);
 				/*else
@@ -1195,7 +1195,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 				}*/
 				break;
 
-			case REMOVETRAPS:
+			case skRemoveTraps:
 				targ=clientInfo[s]->newTarget( new cItemTarget() );
 				targ->code_callback=target_removeTraps;
 				targ->send( ps );
@@ -1231,7 +1231,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 void Skills::updateSkillLevel(pChar pc, int s)
 {
 	if ( ! pc ) return;
-	if ( s < 0 || s >= TRUESKILLS ) //Luxor
+	if ( s < 0 || s >= skTrueSkills ) //Luxor
 		return;
 
 
@@ -1511,7 +1511,7 @@ void Skills::Meditation (NXWSOCKET  s)
 	//
 	// Meditation check
 	//
-	if ( !pc->checkSkill(MEDITATION, 0, 1000) ) {
+	if ( !pc->checkSkill(skMeditation, 0, 1000) ) {
 		pc->sysmsg( TRANSLATE("You cannot focus your concentration.") );
 		return;
 	}
@@ -1692,15 +1692,15 @@ void SkillVars()
     strcpy(skillinfo[skTinkering].madeword,"made");
     strcpy(skillinfo[skTracking].madeword,"made");
     strcpy(skillinfo[skVeterinary].madeword,"made");
-    strcpy(skillinfo[SWORDSMANSHIP].madeword,"made");
-    strcpy(skillinfo[MACEFIGHTING].madeword,"made");
+    strcpy(skillinfo[skSwordsmanship].madeword,"made");
+    strcpy(skillinfo[skMacefighting].madeword,"made");
     strcpy(skillinfo[FENCING].madeword,"made");
-    strcpy(skillinfo[WRESTLING].madeword,"made");
-    strcpy(skillinfo[LUMBERJACKING].madeword,"made");
-    strcpy(skillinfo[MINING].madeword,"smelted");
-    strcpy(skillinfo[MEDITATION].madeword,"envoked");
-    strcpy(skillinfo[STEALTH].madeword,"made");
-    strcpy(skillinfo[REMOVETRAPS].madeword,"made");
+    strcpy(skillinfo[skWrestling].madeword,"made");
+    strcpy(skillinfo[skLumberjacking].madeword,"made");
+    strcpy(skillinfo[skMining].madeword,"smelted");
+    strcpy(skillinfo[skMeditation].madeword,"envoked");
+    strcpy(skillinfo[skStealth].madeword,"made");
+    strcpy(skillinfo[skRemoveTraps].madeword,"made");
 
 }
 

@@ -188,7 +188,7 @@ void Skills::target_mine( NXWCLIENT ps, pTarget t )
 
 	pc->facexy( target.x, target.y );
 
-	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,MINING,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skMining,AMX_BEFORE);
 
 	if ( pc->hidden )
 		pc->unHide();
@@ -294,7 +294,7 @@ void Skills::target_mine( NXWCLIENT ps, pTarget t )
 
 	pc->playSFX(0x0125);
 
-	if(!pc->checkSkill(MINING, 0, 1000))
+	if(!pc->checkSkill(skMining, 0, 1000))
 	{
 		pc->sysmsg(TRANSLATE("You sifted thru the dirt and rocks, but found nothing useable."));
 		if( rand()%2==1)
@@ -302,7 +302,7 @@ void Skills::target_mine( NXWCLIENT ps, pTarget t )
 	}
 	ores.decreaseResource( target, res );
 
-	AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMXMINING), s);
-	AMXEXECSVTARGET(pc->getSerial(),AMXT_SKITARGS,MINING,AMX_AFTER);
+	AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMXskMining), s);
+	AMXEXECSVTARGET(pc->getSerial(),AMXT_SKITARGS,skMining,AMX_AFTER);
 }
 

@@ -296,7 +296,7 @@ void cClient::skillWindow() // Opens the skills list, updated for client 1.26.2b
 							// 0x02 = full list with skillcap, 0xDF = single skill update with cap
 
 	Xsend(s, skillstart, 4);
-	for (int i=0;i<TRUESKILLS;i++)
+	for (int i=0;i<skTrueSkills;i++)
 	{
 		Skills::updateSkillLevel(pc,i);
 		ShortToCharPtr(i+1, skillmid +0);

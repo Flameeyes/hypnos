@@ -98,7 +98,7 @@ bool WalkingHandleHiding (pChar pc, int dir)
 		if(pc->stealth>INVALID)
 		{ //AntiChrist - Stealth
 			pc->stealth++;
-			if( (uint32_t)pc->stealth >= (uint32_t)(((SrvParms->maxstealthsteps*pc->skill[STEALTH])/1000.0)) )
+			if( (uint32_t)pc->stealth >= (uint32_t)(((SrvParms->maxstealthsteps*pc->skill[skStealth])/1000.0)) )
 				pc->unHide();
 		}
 		else
@@ -152,7 +152,7 @@ bool WalkHandleRunning(pChar pc, int dir)
 		if( pc->stealth > INVALID )
 		{ //AntiChrist - Stealth
 			if( /*pc->stealth >= 0 &&*/		// give them at least one step, regardless of skill (Duke)
-				(uint32_t)pc->stealth > ((SrvParms->maxstealthsteps*pc->skill[STEALTH])/1000))
+				(uint32_t)pc->stealth > ((SrvParms->maxstealthsteps*pc->skill[skStealth])/1000))
 			{
 				pc->unHide();
 			}

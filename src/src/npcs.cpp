@@ -645,12 +645,12 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									*/
 
 								}
-								else if ( "LUMBERJACKING" == script1 )
-									pc->baseskill[LUMBERJACKING] = getRangedValue(script2);
+								else if ( "skLumberjacking" == script1 )
+									pc->baseskill[skLumberjacking] = getRangedValue(script2);
 								break;
 							case 'M':
-								if	( "MACEFIGHTING" == script1 )
-									pc->baseskill[MACEFIGHTING] = getRangedValue(script2);
+								if	( "skMacefighting" == script1 )
+									pc->baseskill[skMacefighting] = getRangedValue(script2);
 								else if ( "skMagery" == script1 )
 									pc->baseskill[skMagery] = getRangedValue(script2);
 								else if ( "skMagicResistance" == script1 )
@@ -662,10 +662,10 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									if (ServerScp::g_nUseNewNpcMagic!=0)
 										pc->spattack=str2num(script2);
 								}
-								else if ( "MEDITATION" == script1 )
-									pc->baseskill[MEDITATION] = getRangedValue(script2);
-								else if ( "MINING" == script1 )
-									pc->baseskill[MINING] = getRangedValue(script2);
+								else if ( "skMeditation" == script1 )
+									pc->baseskill[skMeditation] = getRangedValue(script2);
+								else if ( "skMining" == script1 )
+									pc->baseskill[skMining] = getRangedValue(script2);
 								else if ( "MOVESPEED" == script1)
 									pc->npcMoveSpeed = (float) atof( script2.c_str() );
 								else if ( "skMusicianship" == script1 )
@@ -752,8 +752,8 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									pc->setRegenRate( STAT_MANA, v, VAR_REAL );
 									pc->setRegenRate( STAT_MANA, v, VAR_EFF );
 								}
-								else if ( "REMOVETRAPS" == script1 )
-									pc->baseskill[REMOVETRAPS] = getRangedValue(script2);
+								else if ( "skRemoveTraps" == script1 )
+									pc->baseskill[skRemoveTraps] = getRangedValue(script2);
 								else if ( "RESISTS" == script1 )
 								{
 									int params[2];
@@ -897,9 +897,9 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 								{
 									pc->baseskill[skStealing] = getRangedValue(script2);
 								}
-								else if ( "STEALTH" == script1 )
+								else if ( "skStealth" == script1 )
 								{
-									pc->baseskill[STEALTH] = getRangedValue(script2);
+									pc->baseskill[skStealth] = getRangedValue(script2);
 								}
 								else if ( "STR" == script1 || "STRENGTH" == script1 )
 								{
@@ -908,9 +908,9 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 									pc->st3 = pc->getStrength(); //Luxor
 									pc->hp  = pc->getStrength();
 								}
-								else if ( "SWORDSMANSHIP" == script1 )
+								else if ( "skSwordsmanship" == script1 )
 								{
-									pc->baseskill[SWORDSMANSHIP] = getRangedValue(script2);
+									pc->baseskill[skSwordsmanship] = getRangedValue(script2);
 								}
 								break;
 							case 'T':
@@ -949,8 +949,8 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 							case 'W':
 								if	( "WATERWALK" == script1 )
 									pc->nxwflags[0] |= cChar::flagWaterWalk;
-								else if ( "WRESTLING" == script1 )
-									pc->baseskill[WRESTLING] = getRangedValue(script2);
+								else if ( "skWrestling" == script1 )
+									pc->baseskill[skWrestling] = getRangedValue(script2);
 								break;
 							default:
 								ErrOut("Switch fallout in npcs.cpp AddNPC( %d ), invalid script param [ %s ]\n", npcNum, script1.c_str());
@@ -1088,7 +1088,7 @@ pChar AddNPC(NXWSOCKET s, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int8_t
 						pc->region=static_cast<unsigned char>(calcRegionFromXY( pc->getPosition() ));
 
 						//Now find real 'skill' based on 'baseskill' (stat modifiers)
-						for(z=0;z<TRUESKILLS;z++)
+						for(z=0;z<skTrueSkills;z++)
 						{
 							Skills::updateSkillLevel(pc,z);
 						}

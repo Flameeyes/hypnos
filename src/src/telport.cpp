@@ -175,15 +175,15 @@ void advancementobjects(CHARACTER s, int x, int allways)
 					else if ("skTinkering" == script1 ||"SKILL37" == script1 ) pc->baseskill[skTinkering] = getRangedValue(script2);
 					else if ("skTracking" == script1 ||"SKILL38" == script1 ) pc->baseskill[skTracking] = getRangedValue(script2);
 					else if ("skVeterinary" == script1 ||"SKILL39" == script1 ) pc->baseskill[skVeterinary] = getRangedValue(script2);
-					else if ("SWORDSMANSHIP" == script1 ||"SKILL40" == script1 ) pc->baseskill[SWORDSMANSHIP] = getRangedValue(script2);
-					else if ("MACEFIGHTING" == script1 ||"SKILL41" == script1 )pc->baseskill[MACEFIGHTING] = getRangedValue(script2);
+					else if ("skSwordsmanship" == script1 ||"SKILL40" == script1 ) pc->baseskill[skSwordsmanship] = getRangedValue(script2);
+					else if ("skMacefighting" == script1 ||"SKILL41" == script1 )pc->baseskill[skMacefighting] = getRangedValue(script2);
 					else if ("FENCING" == script1 ||"SKILL42" == script1 ) pc->baseskill[FENCING] = getRangedValue(script2);
-					else if ("WRESTLING" == script1 ||"SKILL43" == script1 ) pc->baseskill[WRESTLING] = getRangedValue(script2);
-					else if ("LUMBERJACKING" == script1 ||"SKILL44" == script1 ) pc->baseskill[LUMBERJACKING] = getRangedValue(script2);
-					else if ("MINING" == script1 ||"SKILL45" == script1 ) pc->baseskill[MINING] = getRangedValue(script2);
-					else if ("MEDITATION" == script1 ||"SKILL46" == script1 ) pc->baseskill[MEDITATION] = getRangedValue(script2);
-					else if ("STEALTH" == script1 ||"SKILL47" == script1 ) pc->baseskill[STEALTH] = getRangedValue(script2);
-					else if ("REMOVETRAPS" == script1 ||"SKILL48" == script1 ) pc->baseskill[REMOVETRAPS] = getRangedValue(script2);
+					else if ("skWrestling" == script1 ||"SKILL43" == script1 ) pc->baseskill[skWrestling] = getRangedValue(script2);
+					else if ("skLumberjacking" == script1 ||"SKILL44" == script1 ) pc->baseskill[skLumberjacking] = getRangedValue(script2);
+					else if ("skMining" == script1 ||"SKILL45" == script1 ) pc->baseskill[skMining] = getRangedValue(script2);
+					else if ("skMeditation" == script1 ||"SKILL46" == script1 ) pc->baseskill[skMeditation] = getRangedValue(script2);
+					else if ("skStealth" == script1 ||"SKILL47" == script1 ) pc->baseskill[skStealth] = getRangedValue(script2);
+					else if ("skRemoveTraps" == script1 ||"SKILL48" == script1 ) pc->baseskill[skRemoveTraps] = getRangedValue(script2);
 					else if ("DYEHAIR" == script1 )
 					{
 						int serial;

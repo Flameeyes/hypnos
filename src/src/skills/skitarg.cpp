@@ -63,7 +63,7 @@ void Skills::target_removeTraps( NXWCLIENT ps, pTarget t )
 	{
 		sysmessage(s, TRANSLATE("There are no traps on this object"));
 		if ((rand()%3)==0)
-			pc->checkSkill( REMOVETRAPS, 0, 750); //ndEny is good?
+			pc->checkSkill( skRemoveTraps, 0, 750); //ndEny is good?
 	}
 	else
 		pi->amxevents[EVENT_IONREMOVETRAP]->Call(pi->getSerial(), pc->getSerial32() );
@@ -371,7 +371,7 @@ const short NumberOfOres = sizeof(OreTable)/sizeof(Ore);
     CHARACTER cc = currchar[s];
     pChar pc = MAKE_CHARREF_LRV(cc, false);
 
-    if(pc->skill[MINING] >= minskill)
+    if(pc->skill[skMining] >= minskill)
     {
         char tmp[100];
         sprintf(tmp,"%s Ore",orename);
@@ -394,7 +394,7 @@ void Skills::target_tree( NXWCLIENT ps, pTarget t )
 
 	NXWSOCKET s = ps->toInt();
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,LUMBERJACKING,AMX_BEFORE);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skLumberjacking,AMX_BEFORE);
 
     static TIMERVAL logtime[max_res_x][max_res_y];//see mine for values...they were 1000 also here
     static uint32_t logamount[max_res_x][max_res_y];
@@ -490,7 +490,7 @@ void Skills::target_tree( NXWCLIENT ps, pTarget t )
     pc->playAction( pc->isMounting() ? 0x1C : 0x0D );
     pc->playSFX(0x013E);
 
-    if (!pc->checkSkill(LUMBERJACKING, 0, 1000))
+    if (!pc->checkSkill(skLumberjacking, 0, 1000))
     {
         pc->sysmsg(TRANSLATE("You chop for a while, but fail to produce any usable wood."));
         if(logamount[a][b]>0 && rand()%2==1)
@@ -501,9 +501,9 @@ void Skills::target_tree( NXWCLIENT ps, pTarget t )
     if(logamount[a][b]>0)
 		logamount[a][b]--;
 
-    AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMXLUMBERJACKING), s);
+    AmxFunction::g_prgOverride->CallFn( AmxFunction::g_prgOverride->getFnOrdinal(AMXskLumberjacking), s);
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,LUMBERJACKING,AMX_AFTER);
+    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skLumberjacking,AMX_AFTER);
 }
 
 void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
@@ -518,7 +518,7 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
 
     pc->playAction( pc->isMounting() ? 0x1A : 0x0b );
     pc->playSFX(0x0125);
-    if(!pc->checkSkill(MINING, 0, 800))
+    if(!pc->checkSkill(skMining, 0, 800))
     {
         sysmessage(s,TRANSLATE("You sifted through the dirt and found nothing."));
         return;

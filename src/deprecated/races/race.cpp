@@ -302,14 +302,14 @@ void Race::parseRaceSection( void )
 					break;
 				case 'L':
 					if 			( lha == "skLockPicking" ||
-					     			lha == "LUMBERJACKING")			race->parseSkill( rha );
+					     			lha == "skLumberjacking")			race->parseSkill( rha );
 				case 'M':
-					if 			( lha == "MACEFIGHTING" ||
+					if 			( lha == "skMacefighting" ||
 					     			lha == "skMagery" ||
 					     			lha == "skMagicResistance")		race->parseSkill( rha );
 					else if ( lha == "MAGICRESISTANT" )		race->magicResistant = true; // may need to change this to %
-					else if ( lha == "MEDITATION" ||
-						  			lha == "MINING")						race->parseSkill( rha );
+					else if ( lha == "skMeditation" ||
+						  			lha == "skMining")						race->parseSkill( rha );
 					else if ( lha == "MODE" )
 						if ( rha == "ON" )									race->activeRace = true;
 						else if( rha == "OFF" )							race->activeRace = false;
@@ -342,7 +342,7 @@ void Race::parseRaceSection( void )
 					else if ( lha == "STARTITEM" ) 				race->parseStartItem( rha );
 					else if ( lha == "STATCAP" ) 					race->statCap = str2num( rha );
 					else if ( lha == "skStealing" ||
-						  			lha == "STEALTH")						race->parseSkill( rha );
+						  			lha == "skStealth")						race->parseSkill( rha );
 					else if ( lha == "STRCAP" ) 					race->strCap = str2num( rha );
 					else if	( lha == "STRMOD" )						race->parseAbilityModifiers( STRENGTH, rha );
 					else if	( lha == "STRSTART" )					race->strStart = str2num( rha );
@@ -362,7 +362,7 @@ void Race::parseRaceSection( void )
 					break;
 				case 'W':
 					if 			( lha == "WEBLINK" ) 					race->webLink = rha;
-					else if ( lha == "WRESTLING" )				race->parseSkill( rha );
+					else if ( lha == "skWrestling" )				race->parseSkill( rha );
 					break;
 				default	:
 					WarnOut("Race::parseRaceSection unknown tag %s\n", lha.c_str());

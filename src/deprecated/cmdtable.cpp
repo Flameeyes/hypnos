@@ -1192,7 +1192,7 @@ void target_allSet( pClient client, pTarget t )
 	if( t->buffer_str[0]=="STR" ) {
 		pc->setStrength( t->buffer[0] );
 		pc->st3=t->buffer[0];
-		for( int j=0;j<TRUESKILLS;j++)
+		for( int j=0;j<skTrueSkills;j++)
 		{
 			Skills::updateSkillLevel(pc,j);
 			updateskill(k,j);
@@ -1202,7 +1202,7 @@ void target_allSet( pClient client, pTarget t )
 	else if( t->buffer_str[0]=="DEX" ) {
 		pc->dx=t->buffer[0];
 		pc->dx3=t->buffer[0];
-		for( int j=0;j<TRUESKILLS;j++)
+		for( int j=0;j<skTrueSkills;j++)
 		{
 			Skills::updateSkillLevel(pc,j);
 			updateskill(k,j);
@@ -1212,7 +1212,7 @@ void target_allSet( pClient client, pTarget t )
 	else if( t->buffer_str[0]=="INT" ) {
 		pc->in=t->buffer[0];
 		pc->in3=t->buffer[0];
-		for( int j=0;j<TRUESKILLS;j++)
+		for( int j=0;j<skTrueSkills;j++)
 		{
 			Skills::updateSkillLevel(pc,j);
 			updateskill(k,j);
@@ -1226,7 +1226,7 @@ void target_allSet( pClient client, pTarget t )
 		pc->SetKarma(t->buffer[0]);
 	}
 	else {
-		for( int j=0;j<TRUESKILLS;j++)
+		for( int j=0;j<skTrueSkills;j++)
 		{
 			if( t->buffer_str[0]==skillname[j] ) {
 				pc->baseskill[j]=t->buffer[0];
@@ -2525,7 +2525,7 @@ void target_makegm( pClient client, pTarget t )
     pc->SetPriv(0xF7);
     pc->SetPriv2(0xD9);
 
-    for( int j=0; j<TRUESKILLS; j++ )
+    for( int j=0; j<skTrueSkills; j++ )
     {
         pc->baseskill[j]=1000;
         pc->skill[j]=1000;

@@ -56,6 +56,7 @@ typedef std::map<uint32_t, pMenu> MenuMap;	//!< Map of menus
 typedef class cAccount *pAccount;		//!< Pointer to a cAccount
 typedef std::map<std::string, pAccount> cAccounts;
 						//!< Hashed-map of accounts
+
 //@{
 /*!
 \name Objects and serializables

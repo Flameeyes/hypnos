@@ -76,6 +76,7 @@ void cChar::resetData()
 {
 	client = NULL;
 	hidden = htUnhidden;
+	events = FunctionVector(evtChrMax);
 	// PyUO OK!
 
 	setMultiSerial32Only(INVALID);//Multi serial
@@ -338,13 +339,12 @@ cChar::~cChar()
 /*!
 \note Don't add onstart events in npc scripts, because then they'll also be executed when character is created
 add onstart event to character programmatically
+\todo Remove this
 */
 void cChar::loadEventFromScript(char *script1, TEXT *script2)
 {
 
-#define CASECHAREVENT( NAME, ID ) 	else if (!strcmp( NAME,script1))	amxevents[ID] = newAmxEvent(script2);
-
-
+#if 0
 	if (!strcmp("@ONSTART",script1))	{
 		amxevents[EVENT_CHR_ONSTART] = newAmxEvent(script2);
 		newAmxEvent(script2)->Call(getSerial(), INVALID);
@@ -389,6 +389,7 @@ void cChar::loadEventFromScript(char *script1, TEXT *script2)
 	CASECHAREVENT("@ONSPEECH",EVENT_CHR_ONSPEECH)
 	CASECHAREVENT("@ONCHECKNPCAI",EVENT_CHR_ONCHECKNPCAI)
 	else if (!strcmp("@ONCREATION",script1)) 	newAmxEvent(script2)->Call(getSerial(), INVALID);
+#endif
 }
 
 /*!
@@ -489,32 +490,17 @@ pItem cChar::getBankBox( uint8_t banktype )
 */
 void cChar::disturbMed()
 {
-	if (!med) return; // no reason to stay here :]
-
-	if (amxevents[EVENT_CHR_ONBREAKMEDITATION]) {
-		g_bByPass = false;
-		//<Luxor>
-		pClient cli = getClient();
-		if (cli != NULL)
-  			amxevents[EVENT_CHR_ONBREAKMEDITATION]->Call( getSerial() );
-		//</Luxor>
-		if (g_bByPass==true) return;
-  	}
-
-	/*
-	//<Luxor>
-	NXWCLIENT cli = getClient();
-	if (cli != NULL)
-	{
-		g_bByPass = false;
-		runAmxEvent( EVENT_CHR_ONBREAKMEDITATION, getSerial(), cli->toInt(), INVALID );
-		if (g_bByPass==true)
+	if (!isMeditating()) return; // no reason to stay here :]
+	
+	if ( events[evtChrOnBreakMeditation] && getClient() ) {
+		events[evtChrOnBreakMeditation]->setParams(tVariantVector(1, getSerial()));
+		events[evtChrOnBreakMeditation]->execute();
+		if ( events[evtChrOnBreakMeditation]->bypassed() )
 			return;
 	}
-	//</Luxor>
-	*/
-   	med=0;
-   	sysmsg(TRANSLATE("You break your concentration."));
+
+	setMeditating(false);
+	if ( getClient() ) getClient()->sysmsg(TRANSLATE("You break your concentration."));
 }
 
 /*!
@@ -1031,7 +1017,7 @@ uint8_t cChar::bestSkill() const
 {
 	uint8_t a=0;
 
-	for(uint8_t i=0; i < TRUESKILLS; i++)
+	for(uint8_t i=0; i < skTrueSkills; i++)
 		if ( baseskill[i] > baseskill[a] )
 			a = i;
 	
@@ -1047,7 +1033,7 @@ uint8_t cChar::nextBestSkill(uint8_t previous) const
 {
 	uint8_t a = previous ? 0 : 1; // if previous == 0 skip it
 
-	for(uint8_t i = a; i < TRUESKILLS; i++)
+	for(uint8_t i = a; i < skTrueSkills; i++)
 		if ( baseskill[i] > baseskill[a] && i != previous )
 			a = i;
 	
@@ -1236,11 +1222,11 @@ int32_t cChar::getCombatSkill()
 				}
 				else if (pi->IsSwordType() )
 				{
-					return SWORDSMANSHIP;
+					return skSwordsmanship;
 				}
 				else if (pi->IsMaceType() )
 				{
-					return MACEFIGHTING;
+					return skMacefighting;
 				}
 				else if (pi->IsFencingType() )
 				{
@@ -1254,7 +1240,7 @@ int32_t cChar::getCombatSkill()
 		}
 	}
 
-	return WRESTLING;
+	return skWrestling;
 
 }
 
@@ -1299,7 +1285,7 @@ bool cChar::checkSkill(Skill sk, int32_t low, int32_t high, bool bRaise)
 	NXWCLIENT ps = getClient();;
 	NXWSOCKET s=INVALID;
 
-	if ( sk < 0 || sk > TRUESKILLS ) //Luxor
+	if ( sk < 0 || sk > skTrueSkills ) //Luxor
 		return false;
 
 	if( ps != NULL )
@@ -2554,14 +2540,14 @@ void cChar::generic_heartbeat()
 		if(SrvParms->armoraffectmana)
 		{
 			if (med)
-				manarate += uint32_t( calcDef(0) / 10.0 ) - uint32_t( skill[MEDITATION]/222.2 );
+				manarate += uint32_t( calcDef(0) / 10.0 ) - uint32_t( skill[skMeditation]/222.2 );
 			else
 				manarate += uint32_t( calcDef(0) / 5.0 );
 		}
 		else
 		{
 			if(med)
-				manarate -= uint32_t( skill[MEDITATION]/222.2 );
+				manarate -= uint32_t( skill[skMeditation]/222.2 );
 		}
                 manarate = qmax( 1, manarate );
 		this->setRegenRate( STAT_MANA, manarate, VAR_EFF );

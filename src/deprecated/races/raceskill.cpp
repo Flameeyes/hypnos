@@ -254,15 +254,15 @@ string RaceSkill::names[] = 	{
 					"skTinkering",
 					"skTracking",
 					"skVeterinary",
-					"SWORDSMANSHIP",
-					"MACEFIGHTING",
+					"skSwordsmanship",
+					"skMacefighting",
 					"FENCING",
-					"WRESTLING",
-					"LUMBERJACKING",
-					"MINING",
-					"MEDITATION",
-					"STEALTH",
-					"REMOVETRAPS",
+					"skWrestling",
+					"skLumberjacking",
+					"skMining",
+					"skMeditation",
+					"skStealth",
+					"skRemoveTraps",
 					"INVALID_SKILL"
 				};
 
