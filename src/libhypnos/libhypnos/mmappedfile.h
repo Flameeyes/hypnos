@@ -14,9 +14,9 @@
 #include "libhypnos/commons.h"
 
 #if ! defined(HAVE_MMAP) && ! defined(WIN32)
-# error Your platform miss a way to memory map a file, or we don't know \
-	how to do that on your platform. Please contact Flameeyes at \
-	flameeyes@users.berlios.de with the description of your platform data.
+# error "Your platform miss a way to memory map a file, or we don't know " \
+	"how to do that on your platform. Please contact Flameeyes at " \
+	"flameeyes@users.berlios.de with the description of your platform data."
 #endif
 
 namespace nLibhypnos {

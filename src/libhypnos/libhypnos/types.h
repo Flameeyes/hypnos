@@ -23,8 +23,8 @@ libhypnos library and are common to different applications of the suite.
 // case we usually have MSVC or Borland compiler: gcc should provide stdint.h
 // For now we simply throw error, we'll fix this in the future
 
-#error Your compiler doesn't provide stdint.h header. This is bad, you should \
-	change compiler and in any case report this to Hypnos maintainers!
+#error "Your compiler doesn't provide stdint.h header. This is bad, you should " \
+	"change compiler and in any case report this to Hypnos maintainers!"
 
 #endif
 
