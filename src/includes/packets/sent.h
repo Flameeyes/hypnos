@@ -753,9 +753,9 @@ namespace nPackets {
 			
 			Apparently you can have no more than 50 pins in a map, and it appears a client side limitation (and it appears really messy if you put them all :D)
 			*/
-			const uint16_t pin;
-			const uint32_t x;
-			const uint32_t y;
+			const uint8_t pin;
+			const uint16_t x;
+			const uint16_t y;
 		public:
 			/*!
 			\param aMap map used
@@ -764,7 +764,7 @@ namespace nPackets {
 			\param xx x position of pin (map relative, pixels from topleft corner)
 			\param yy y position of pin (map relative, pixels from topleft corner)
 			*/
-			inline MapPlotCourse(pMap aMap, PlotCourseCommands aCommand, uint16_t aPin = 0, uint32_t xx = 0, uint32_t yy = 0) :
+			inline MapPlotCourse(pMap aMap, PlotCourseCommands aCommand, uint8_t aPin = 0, uint16_t xx = 0, uint16_t yy = 0) :
 				cPacketSend(NULL, 0), map (aMap), command (aCommand), pin (aPin),  x (xx), y (yy)
 			{ }
 

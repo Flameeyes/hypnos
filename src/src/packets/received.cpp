@@ -1107,7 +1107,6 @@ void nPackets::Sent::BBoardCommand::prepare()
 			memset(buffer + 8, 0, 22);				//filling boardname with 22 zeroes
 			LongToCharPtr(0x402000FF, buffer + 30);			//gump id, i believe
 			LongToCharPtr(0x0, buffer + 34);			//zero
-	
 			// If the name the item (Bulletin Board) has been defined, display it
 			// instead of the default "Bulletin Board" title.
 			if ( msgboard->getCurrentName().length() )
@@ -1179,7 +1178,7 @@ void nPackets::Sent::BBoardCommand::prepare()
 			offset +=29;
 			strncpy( buffer + offset + 1, message->body->data(),message->body.size());
 		}
-        }
+	}
 }
 
 
@@ -1206,7 +1205,7 @@ void nPackets::Sent::SecureTrading::prepare()
 void nPackets::Sent::UpdatePlayer::prepare()
 {
 	buffer = new uint8_t[17];
-        length = 17;
+	length = 17;
 	buffer[0]=0x77;
 	sLocation pos = chr->getPosition();
 	LongToCharPtr(chr->getSerial(), buffer +1);
@@ -1223,14 +1222,14 @@ void nPackets::Sent::UpdatePlayer::prepare()
 void nPackets::Sent::WarModeStatus::prepare()
 {
 	buffer = new uint8_t[5];
-        length = 5;
+	length = 5;
 	memcpy(buffer, buf, 5);
 }
 
 void nPackets::Sent::PingReply::prepare()
 {
 	buffer = new uint8_t[2];
-        length = 2;
+	length = 2;
 	memcpy(buffer, buf, 2);
 }
 
@@ -1243,7 +1242,7 @@ void nPackets::Sent::PingReply::prepare()
  *      0x01 => That character doesn't exist.
  *      0x02 => That character is being played right now.
  *      0x03 => That charater is not old enough to delete.
-                The character must be 7days old before it can be deleted.
+		The character must be 7 days old before it can be deleted.
  *      0x04 => That character is currently queued for backup and cannot be
  *              deleted.
  *      0x05 => Couldn't carry out your request.
@@ -1252,8 +1251,8 @@ void nPackets::Sent::PingReply::prepare()
 void nPackets::Sent::CharAfterDelete::prepare()
 {
 	buffer = new uint8_t[2];
-        length = 2;
-        buffer[0] = 0x85;
+	length = 2;
+	buffer[0] = 0x85;
 	buffer[1] = reason;
 }
 
@@ -1261,56 +1260,56 @@ void nPackets::Sent::CharAfterDelete::prepare()
 void nPackets::Sent::CharAfterDelete::prepare()
 {
 	buffer = new uint8_t[304];
-        length = 304;
-        memset(buffer, 304,0); //filling the buffer with zeroes
-        buffer[0] = 0x86;
-        ShortToCharPtr(304, buffer + 1);
-        buffer[3] = account->getCharsNumber();
-        for(int i = 0;i<5; ++i)
-                if (i<= buffer[3])
-                	strcpy(buffer + (i*60) + 4, account->getChar(i)->getCurrentName().c_str());
+	length = 304;
+	memset(buffer, 304,0); //filling the buffer with zeroes
+	buffer[0] = 0x86;
+	ShortToCharPtr(304, buffer + 1);
+	buffer[3] = account->getCharsNumber();
+	for(int i = 0;i<5; ++i)
+		if (i<= buffer[3])
+			strcpy(buffer + (i*60) + 4, account->getChar(i)->getCurrentName().c_str());
 }
 
 void nPackets::Sent::CharProfile::prepare()
 {
 // packet documentation is sketchy at best. Expect many implemetation errors here -_-
-        length = 7;
+	length = 7;
 	length += who->getCurrentName().size() + 1;	//null terminator included
-        length += who->getTitle().size() * 2;		//unicode title, so double characters of title
-        length +=2; //unicode null terminator for title
+	length += who->getTitle().size() * 2;		//unicode title, so double characters of title
+	length +=2; //unicode null terminator for title
 	length += who->getProfile().size();
-        length +=2; //unicode null terminator for profile
+	length +=2; //unicode null terminator for profile
 	buffer = new uint8_t[length];
-        buffer[0] = 0xb8;
-        ShortToCharPtr(length, buffer + 1);
-        LongToCharPtr(serial, buffer + 3);
-        char* offset = buffer +7;
-        strcpy(offset, who->getCurrentName().c_str());	// Copy charname as a null-terminated string
-        cSpeech title = cSpeech(who->getTitle());		// Using cSpeech string constructor
-        title.setPacketByteOrder();				// "unicode" conversion of title
-        offset += who->getCurrentName().size() + 1;
-        // here we cannot use wchar version of strcpy (wcscpy) because wchar is not guaranteed to be the 16bit char that uo protocol requires
-        // so we use memcpy (to copy even the "0" higher bytes)
-        memcpy(offset, title.rawBytes(), title.size() * 2 + 2);		// the "+2" guarantees the copy of the 16 bit null terminator
-        offset += title.size() * 2 + 2;
-        memcpy(offset, who->getProfile().rawBytes(), who->getProfile().size() * 2 + 2);
+	buffer[0] = 0xb8;
+	ShortToCharPtr(length, buffer + 1);
+	LongToCharPtr(serial, buffer + 3);
+	char* offset = buffer +7;
+	strcpy(offset, who->getCurrentName().c_str());	// Copy charname as a null-terminated string
+	cSpeech title = cSpeech(who->getTitle());		// Using cSpeech string constructor
+	title.setPacketByteOrder();				// "unicode" conversion of title
+	offset += who->getCurrentName().size() + 1;
+	// here we cannot use wchar version of strcpy (wcscpy) because wchar is not guaranteed to be the 16bit char that uo protocol requires
+	// so we use memcpy (to copy even the "0" higher bytes)
+	memcpy(offset, title.rawBytes(), title.size() * 2 + 2);		// the "+2" guarantees the copy of the 16 bit null terminator
+	offset += title.size() * 2 + 2;
+	memcpy(offset, who->getProfile().rawBytes(), who->getProfile().size() * 2 + 2);
 }
 
 void nPackets::Sent::ClientViewRange::prepare()
 {
 	buffer = new uint8_t[2];
-        length = 2;
-        buffer[0] = 0xc8;
-        buffer[1] = range;
+	length = 2;
+	buffer[0] = 0xc8;
+	buffer[1] = range;
 }
 
 
 void nPackets::Sent::LogoutStatus::prepare()
 {
 	buffer = new uint8_t[2];
-        length = 2;
-        buffer[0] = 0xd1;
-        buffer[1] = 0x01;
+	length = 2;
+	buffer[0] = 0xd1;
+	buffer[1] = 0x01;
 }
 
 void nPackets::Sent::BookHeader::prepare()
@@ -1334,9 +1333,9 @@ pPacketReceive nPackets::Received::cPacketReceive::fromBuffer(uint8_t *buffer, u
 	switch(buffer[0])
 	{
 		case 0x00: return new nPackets::Received::CreateChar(buffer, length);      	  // Create Character
-                case 0x01: return new nPackets::Received::DisconnectNotify(buffer, length);   // Disconnect Notification
-                case 0x02: return new nPackets::Received::MoveRequest(buffer, length);        // Move Request
-                case 0x03: return new nPackets::Received::TalkRequest(buffer, length);        // Talk Request
+		case 0x01: return new nPackets::Received::DisconnectNotify(buffer, length);   // Disconnect Notification
+		case 0x02: return new nPackets::Received::MoveRequest(buffer, length);        // Move Request
+		case 0x03: return new nPackets::Received::TalkRequest(buffer, length);        // Talk Request
 		case 0x04: return NULL;								// God mode toggle
 		case 0x05: return new nPackets::Received::AttackRequest(buffer, length);	// Attack Request
 		case 0x06: return new nPackets::Received::Doubleclick(buffer, length);		// Double click
