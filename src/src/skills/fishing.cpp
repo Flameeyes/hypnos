@@ -13,9 +13,8 @@
 */
 #include "common_libs.h"
 #include "sndpkg.h"
-#include "data.h"
 #include "skills/fishing.h"
-#include "basics.h"
+#include "misc.h"
 #include "inlines.h"
 
 uint32_t Fishing::basetime = FISHINGTIMEBASE;
@@ -103,10 +102,6 @@ pItem SpawnFishingItem(pChar pc, int nInPack, char* cScript, char* cList, char* 
 
 inline bool isWaterTarget(pClient client)
 {
-	tile_st tile;
-	map_st map;
-	land_st land;
-
 	uint16_t x = ShortFromCharPtr(buffer[s] +11);
 	uint16_t y = ShortFromCharPtr(buffer[s] +13);
 	int16_t z = ShortFromCharPtr(buffer[s] +15);
@@ -118,38 +113,9 @@ inline bool isWaterTarget(pClient client)
 		return true;
 	} 
 
-	if(buffer[s][1]!=0x01) return false; // 0x00 => Target object, 0x01 => Target ground.
-
-	data::seekMap(x, y,map);
-	switch(map.id)
-	{
-		//water tiles:
-		case 0x00A8:
-		case 0x00A9:
-		case 0x00AA:
-		case 0x00Ab:
-		case 0x0136:
-		case 0x0137:
-		case 0x3FF0:
-		case 0x3FF1:
-		case 0x3FF2:
-		case 0x2FF3:
-			return true;
-		default:
-			break;
-	}
-
-	data::seekTile( id_tile, tile);
-	if( !(strstr((char *) tile.name, "water") || strstr((char *) tile.name, "lava")) )
-	{
-		data::seekLand(map.id, land);
-		if (!(land.flags&TILEFLAG_WET))//not a "wet" tile
-		{
-			return false;
-		}
-	}
+	if(buffer[s][1]!=0x01) return false; // 0x00 => Target object, 0x01 => Target ground
 	
-	return true;
+	return isWaterTile(sPoint(x,y));
 }
 
 

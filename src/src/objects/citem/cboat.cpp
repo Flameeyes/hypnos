@@ -8,6 +8,7 @@
 
 #include "objects/citem/cboat.h"
 #include "objects/cclient.h"
+#include "misc.h"
 
 /*!
 \brief Ship items for directions
@@ -349,13 +350,8 @@ bool cBoat::tileCheck(multi_st multi, map_st map, sPoint w, int8_t dir)
 	staticVector s;
 	data::collectStatics( dx, dy, s );
 	for( register int i = 0; i < s.size(); i++ )
-	{
-		std::string tilename = tiledataStatic->getName( s[i].id );
-		
-		if ( strstr( tilename.c_str(), "water" ) || strstr( tilename.c_str(), "water" ) )
+		if ( isWaterTile( sPoint(dx, dy) ) )
 			return true;
-		
-		return tiledataLand->getFlags(map.id) & nMULFiles::flagTileWet;
-	}
+
 	return false;
 }

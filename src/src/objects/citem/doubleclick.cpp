@@ -243,9 +243,6 @@ void cItem::doubleClick(pClient client)
 
 	pContainer pack = pc->getBackpack();
 	if(!pack) return;
-	tile_st item;
-	data::seekTile( getId(), item );
-
 
 	//<Luxor>: Circle of transparency bug fix
 	pContainer cont;

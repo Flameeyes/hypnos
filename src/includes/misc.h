@@ -35,4 +35,6 @@ const double dist( sLocation a, sLocation b, bool countZ = true);
 int fillIntArray(char* str, int *array, int maxsize, int defval = -1, int base = baseAuto);
 int RandomNum(int nLowNum, int nHighNum);
 
+bool isWaterTile(sPoint pt);
+
 #endif

@@ -12,6 +12,73 @@
 #include "libhypmul/mulfiles.h"
 #include "libhypmul/mmappedfile.h"
 
+namespace nMULFiles {
+	//! Is a background
+	static const uint32_t flagTileBackground	= 0x00000001;
+	//! Is a weapon
+	static const uint32_t flagTileWeapon		= 0x00000002;
+	//! Is transparent
+	static const uint32_t flagTileTransparent	= 0x00000004;
+	//! Is translucent
+	static const uint32_t flagTileTranslucent	= 0x00000008;
+	//! Is a wall
+	static const uint32_t flagTileWall		= 0x00000010;
+	//! Can damage
+	static const uint32_t flagTileDamaging		= 0x00000020;
+	//! Can't be passed over
+	static const uint32_t flagTileImpassable	= 0x00000040;
+	//! Is 'wet' (like water)
+	static const uint32_t flagTileWet		= 0x00000080;
+	//! Unknown flag
+	static const uint32_t flagTileUnknown1		= 0x00000100;
+	//! Is a surface
+	static const uint32_t flagTileSurface		= 0x00000200;
+	//! Is a bridge
+	static const uint32_t flagTileBridge		= 0x00000400;
+	//! Is stackable (generic?)
+	static const uint32_t flagTileStackable		= 0x00000800;
+	//! Is a window
+	static const uint32_t flagTileWindow		= 0x00001000;
+	//! Can't be shooted
+	static const uint32_t flagTileNoShoot		= 0x00002000;
+	//! Has 'a' as prefix
+	static const uint32_t flagTileAPrefix		= 0x00004000;
+	//! Has 'an' as prefix
+	static const uint32_t flagTileAnPrefix		= 0x00008000;
+	//! Is internal (like beard, hairs, and so on)
+	static const uint32_t flagTileInternal		= 0x00010000;
+	//! Are foliage (leaves)
+	static const uint32_t flagTileFoliage		= 0x00020000;
+	//! Partially hued
+	static const uint32_t flagTilePartialHue	= 0x00040000;
+	//! Unknown flag
+	static const uint32_t flagTileUnknown2		= 0x00080000;
+	//! Is a map
+	static const uint32_t flagTileMap		= 0x00100000;
+	//! Is a container
+	static const uint32_t flagTileContainer		= 0x00200000;
+	//! Is wearable
+	static const uint32_t flagTileWearable		= 0x00400000;
+	//! Is a light source
+	static const uint32_t flagTileLightSource	= 0x00800000;
+	//! Is animated
+	static const uint32_t flagTileAnimated		= 0x01000000;
+	//! Hasn't diagonal directions
+	static const uint32_t flagTileNoDiagonal	= 0x02000000;
+	//! Unknown flag
+	static const uint32_t flagTileUnknown		= 0x04000000;
+	//! Is armor
+	static const uint32_t flagTileArmor		= 0x08000000;
+	//! Is a roof
+	static const uint32_t flagTileRoof		= 0x10000000;
+	//! Is a door
+	static const uint32_t flagTileDoor		= 0x20000000;
+	//! Is a stair (back)
+	static const uint32_t flagTileStairBack		= 0x40000000;
+	//! Is a stair (right)
+	static const uint32_t flagTileStairRight	= 0x80000000;
+};
+
 /*!
 \file
 \brief Tiledata handling classes

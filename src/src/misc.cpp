@@ -9,6 +9,8 @@
 #include "misc.h"
 #include "objects/cchar.h"
 #include "objects/citem.h"
+#include "hypnos.h"
+#include "libhypmul/tiledata.h"
 
 /*!
 \brief makes an npc attacking someone
@@ -851,4 +853,42 @@ int fillIntArray(char* str, int *array, int maxsize, int defval, int base)
 
 	if (mem != tmp) safedeletearray(mem);
 	return i;
+}
+
+/*!
+\brief Checks if a location has a water tile
+\author Flameeyes
+\param pt Location of the tile to check
+\retval true The location has a water tile
+\retval false The location has a non-water tile
+*/
+bool isWaterTile(sPoint pt)
+{
+	map_st map;
+	data::seekMap(pt.x, pt.y, map);
+	switch(map.id)
+	{
+		//water tiles:
+		case 0x00A8:
+		case 0x00A9:
+		case 0x00AA:
+		case 0x00Ab:
+		case 0x0136:
+		case 0x0137:
+		case 0x3FF0:
+		case 0x3FF1:
+		case 0x3FF2:
+		case 0x2FF3:
+			return true;
+		default:
+			break;
+	}
+
+	std::string tilename = tiledataStatic->getName( s[i].id );
+	
+	if ( strstr( tilename.c_str(), "water" ) || strstr( tilename.c_str(), "water" ) )
+		return true;
+	
+	return tiledataLand->getFlags(map.id) & nMULFiles::flagTileWet;
+
 }

@@ -561,13 +561,10 @@ inline bool operator !=( cItem& a, cItem& b ) {
 */
 const std::string cItem::getRealItemName()
 {
-	if ( current_name == "#" )
-	{
-		tile_st tile;
-		data::seekTile(getId(), tile);
-		return std::string(tile.name);
-	} else
-		return current_name;
+	if ( !current_name.length() )
+		return tiledataStatic->getName(getId());
+
+	return current_name;
 }
 
 /*!
@@ -576,17 +573,15 @@ const std::string cItem::getRealItemName()
 */
 const std::string cItem::getName()
 {
-	tile_st tile;
 	int len, mode, used, ok, namLen;
 	std::string name;
 
-	if ( current_name != "#" )
+	if ( current_name.length() )
 		return current_name;
 
-	data::seekTile(getId(), tile);
-	if (tile.flags&TILEFLAG_PREFIX_AN)
+	if ( tiledataStatic->getFlags(getId()) & nMULFiles::flagTileAnPrefix )
 		name = "an ";
-	else if (tile.flags&TILEFLAG_PREFIX_A)
+	else if ( tiledataStatic->getFlags(getId()) & nMULFiles::flagTileAPrefix )
 		name = "a ";
 
 	mode=0;
@@ -628,19 +623,19 @@ float cItem::getWeight()
 		itemweight=(float)weight;
 	else
 	{
-		tile_st tile;
-		data::seekTile(getId(), tile);
-		if (tile.weight==0) // can't find weight
+		//! \todo Add a try catch block
+		itemweight = tiledataStatic->getWeight(getId());
+		
+		if ( itemweight == 0 )
 		{
 			if(type != ITYPE_FOOD)
 				itemweight = 2.0;	// not food weighs .02 stone
-
 			else
 				itemweight = 100.0;	//food weighs 1 stone
 		}
 		else //found the weight from the tile, set it for next time
 		{
-			weight=(tile.weight*100); // set weight so next time don't have to search
+			weight=(itemweight*100); // set weight so next time don't have to search
 			itemweight = (float)(weight);
 		}
 
