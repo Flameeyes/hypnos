@@ -1,0 +1,21 @@
+<!-- elements in newbies -->
+<!ELEMENT newbies (allnewbies, malenewbies, femalenewbies, bestskill+) >
+<!ATTLIST newbies
+	gold CDATA "300"
+>
+
+<!ELEMENT allnewbies (item+)>
+<!ELEMENT malenewbies (item+)>
+<!ELEMENT femalenewbies (item+)>
+<!ELEMENT bestskill (item+)>
+<!ATTLIST bestskill
+	skill CDATA #REQUIRED
+>
+
+<!ELEMENT item EMPTY>
+<!ATTLIST item
+	id CDATA #REQUIRED
+	place (ipBackpack|ipBankbox|ipEquip) "ipBackpack"
+	amount CDATA "1"
+	color CDATA "colorNeutral"
+>

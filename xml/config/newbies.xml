@@ -1,0 +1,248 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE newbies SYSTEM "http://hypnos.berlios.de/dtds/newbies.dtd">
+<!-- place attributes can be one of these:
+  ipBackpack: the item will be put into the player's backpack
+  ipBankbox: the item will be put into the player's bankbox
+  ipEquip: the itel will be equipped on the player's body
+-->
+<newbies gold="300">
+  <allnewbies>
+    <item id="item_shoes" place="ipEquip" />
+    <item id="item_iron_dagger" place="ipEquip" />
+    <item id="item_bread_loaves" amount="2">
+    <item id="item_book" />
+    <item id="item_candle_3" />
+  </allnewbies>
+  
+  <malenewbies />
+  
+  <femalenewbies />
+  
+  <bestskill skill="skAlchemy">
+    <item id="item_mortar" />
+    <item id="item_bottle_empty" amount="4" />
+    <item id="item_back_pearl" amount="3" />
+    <item id="item_bloodmoss" amount="3" />
+    <item id="item_garlic" amount="3" />
+    <item id="item_ginseng" amount="3" />
+    <item id="item_mandrake_root" amount="3" />
+    <item id="item_nightshade" amount="3" />
+    <item id="item_sulfurous_ash" amount="3" />
+    <item id="item_spiders_silk" amount="3" />
+    <item id="item_robe" color="colorsAlchemy" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skAnatomy">
+    <item id="item_robe" color="colorsAnatomy" place="ipEquip" />
+    <item id="item_bandages_clean" amount="3" />
+  </bestskill>
+  
+  <bestskill skill="skAnimalLore">
+    <item id="item_crook" place="ipEquip" />
+    <item id="item_robe" color="colorsAnimalLore" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skItemID">
+    <item id="item_staff_gnarled" place="ipEquip" />
+    <item id="random_potion" />
+    <item id="random_potion" />
+    <item id="random_potion" />
+  </bestskill>
+  
+  <bestskill skill="skArmsLore">
+    <item id="random_newbie_weapon" />
+  </bestskill>
+  
+  <bestskill skill="skParrying">
+    <item id="item_shield_wooden" />
+  </bestskill>
+  
+  <bestskill skill="skBegging">
+    <item id="item_staff_gnarled" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skBlacksmithing">
+    <item id="random_blacksmith_tool" />
+    <item id="item_ingots_iron" />
+    <item id="item_apron_half" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skBowcrafting">
+    <item id="item_shafts" amount="5" />
+    <item id="item_feather" amount="5" />
+    <item id="item_log" amount="5" />
+  </bestskill>
+  
+  <bestskill skill="skPeacemaking">
+    <item id="random_instrument" />
+  </bestskill>
+  
+  <bestskill skill="skCamping">
+    <item id="item_bedroll" />
+    <item id="item_kindling" amount="5" />
+  </bestskill>
+  
+  <bestskill skill="skCarpentry">
+    <item id="item_log" amount="5" />
+    <item id="random_carpentry_tool" />
+    <item id="item_apron_half" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skCartography">
+    <item id="item_map" amount="2" />
+    <item id="item_sextant" />
+  </bestskill>
+  
+  <bestskill skill="skCooking">
+    <item id="item_pitcher_water_1" />
+    <item id="item_bird_cooked" amount="3" />
+    <item id="item_flour_sack_1" />
+    <item id="item_kindling" amount="2" />
+  </bestskill>
+  
+  <bestskill skill="skDetectingHidden">
+    <item id="item_cloak" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skEnticement">
+    <item id="random_instrument" />
+  </bestskill>
+  
+  <bestskill skill="skEvaluatingIntelligence" />
+  
+  <bestskill skill="skHealing">
+    <item id="item_bandages_clean" amount="5" />
+    <item id="item_scissors" />
+  </bestskill>
+  
+  <bestskill skill="skFishing">
+    <item id="item_fishing_pole" place="ipEquip" />
+    <item id="item_hat_floopy" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skForensics" />
+  
+  <bestskill skill="skHerding">
+    <item id="item_crook" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skHiding">
+    <item id="item_cloak" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skProvocation">
+    <item id="random_instrument" />
+  </bestskill>
+  
+  <bestskill skill="skInscription">
+    <item id="item_scroll_blank" amount="2" />
+  </bestskill>
+  
+  <bestskill skill="skLockPicking">
+    <item id="item_lockpick" amount="5" />
+  </bestskill>
+  
+  <bestskill skill="skMagery">
+    <item id="item_spellbook" />
+    <item id="item_black_pearl" amount="250" />
+    <item id="item_bloodmoss" amount="50" />
+    <item id="item_garlic" amount="3" />
+    <item id="item_ginseng" amount="3" />
+    <item id="item_mandrake_root" amount="50" />
+    <item id="item_nightshade" amount="3" />
+    <item id="item_sulfurous_ash" amount="3" />
+    <item id="item_spiders_silk" amount="3" />
+    <item id="random_scroll_first_circle" />
+    <item id="random_scroll_first_circle" />
+    <item id="random_scroll_first_circle" />
+  </bestskill>
+  
+  <bestskill skill="skMagicResistance" />
+  
+  <bestskill skill="skTactics" />
+  
+  <bestskill skill="skSnooping">
+    <item id="item_lockpick" amount="4" />
+  </bestskill>
+  
+  <bestskill skill="skMusicianship">
+    <item id="random_instrument" />
+  </bestskill>
+  
+  <bestskill skill="skPoisoning">
+    <item id="item_potion_poison" amount="2" />
+  </bestskill>
+  
+  <bestskill skill="skArchery">
+    <item id="item_bow" place="ipEquip" />
+    <item id="item_arrow" amount="25" />
+  </bestskill>
+  
+  <bestskill skill="skSpiritSpeak">
+    <item id="item_cloak" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skStealing">
+    <item id="item_lockpick" amount="4" />
+  </bestskill>
+  
+  <bestskill skill="skTailoring">
+    <item id="item_sewing_kit" />
+    <item id="item_cut_cloth" amount="4" />
+  </bestskill>
+  
+  <bestskill skill="skTaming">
+    <item id="item_crook" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skTasteID">
+    <item id="random_potion" />
+    <item id="random_potion" />
+  </bestskill>
+  
+  <bestskill skill="skTinkering">
+    <item id="item_apron_half" place="ipEquip" />
+    <item id="item_ingot_iron" amount="4" />
+    <item id="item_tinkers_tools" />
+  </bestskill>
+  
+  <bestskill skill="skTracking">
+    <item id="item_boots" place="ipEquip" />
+    <item id="item_knife_skinning" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skVeterinary">
+    <item id="item_bandages_clean" amount="5" />
+  </bestskill>
+  
+  <bestskill skill="skSwordsmanship">
+    <item id="item_longsword" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skMacefighting">
+    <item id="item_mace_iron" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skFencing">
+    <item id="item_spear_iron" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skWrestling">
+    <item id="item_gloves_leather" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skLumberjacking">
+    <item id="item_hatchet" place="ipEquip" />
+  </bestskill>
+  
+  <bestskill skill="skMining">
+    <item id="item_pickaxe" />
+  </bestskill>
+  
+  <bestskill skill="skMeditation" />
+  
+  <bestskill skill="skStealth" />
+  
+  <bestskill skill="skRemoveTraps" />
+
+</newbies>
