@@ -607,7 +607,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 			if (equipitem) //remember: equipitem is pi dynamic-casted to pEquippable
                         {
                         	equipitem->setOldLayer(equipitem->getLayer());	// then the layer
-				equipitem->setLayer(0);
+				body->setLayerItem(layNone, equipitem);
                         }
 
 			if (!pi->isInWorld()) pc_currchar->playSFX(0x0057);
@@ -1591,233 +1591,156 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 		return;
 	}
 
-	if (pck->isDead())
+        tile_st tile;
+	data::seekTile( pi->getId(), tile);
+	if ((((pi->magic==2)||((tile.weight==255)&&(pi->magic!=1))) && !pc->canAllMove()) || ( (pi->magic==3|| pi->magic==4) && !isOwnerOf(pi)) )
 	{
-		sysmessage("You can't dress ghosts!");
+		item_bounce6(pi);
+		return;
+	}
+        pNPC npc = dynamic_cast<pNPC> pck;
+
+
+	if ( pck != pc && !pc->IsGM() && !npc)	// players is trying to dress another pc and he isn't a gm
+	{
+	        sysmessage("You can't put items on other people!");
+		item_bounce6(pi);
+		return;
+	}
+        else if (!pc->isGM() && npc && (!pc->isOwnerOf(npc) || npc->npcaitype!=NPCAI_PLAYERVENDOR )) // target npc isn't this pg's personal vendor (or a GM)
+      	{
 		item_bounce6(pi);
 		return;
 	}
 
+       	NotEquippableReason res = pc->canEquip(ei);
+        switch(res)
+        {
+        case nerUnknown:
+		item_bounce6(pi);
+		return;
+        case nerNotHumanBody:
+		sysmessage("Only humans can wear that!");
+		item_bounce6(pi);
+		return;
+        case nerInsufficientStrength:
+       		sysmessage("%s not strong enough to equip that!", (pck == pc) ? "You are" : "Target is");
+		item_bounce6(pi);
+		return;
+        case nerInsufficientDexterity:
+       		sysmessage("%s not dexterous enough to equip that!", (pck == pc) ? "You are" : "Target is");
+		item_bounce6(pi);
+		return;
+	case nerInsufficientIntelligence:
+      		sysmessage("%s not smart enough to equip that!", (pck == pc) ? "You are" : "Target is");
+		item_bounce6(pi);
+		return;
+        case nerInsufficientSkil1:
+        case nerInsufficientSkil2:
+        case nerInsufficientSkil3:
+      		sysmessage("%s sufficient skills to equip that!", (pck == pc) ? "You lack" : "Target lacks");
+		item_bounce6(pi);
+		return;
+        case nerCharDead:		// Char is dead. Dead people cannot wear anything :D
+       		sysmessage("You can't dress ghosts!");
+		item_bounce6(pi);
+		return;
+        case nerMaleEquippingFemaleArmor:	// It wouldn't fit anyway :D
+		sysmessage("%s wear female armor!", (pck == pc) ? "You can't" : "Target can't");
+		item_bounce6(pi);
+		return;
+      	case nerEquipOk:
+        }
+        //Now it should be equippable
 
-        pNPC npc = dynamic_cast<pNPC> pck;
+        Layer layer = epi->getPossibleLayer();
+        pEquippable epj = body->getLayerItem(layer);	// we get the item already in that layer, or NULL if layer is empty
 
+     	pEquippable firsthand = body->getLayerItem(layWeapon1H);
+     	pEquippable secondhand = body->getLayerItem(layWeapon2H);
 
-	if ( pck == pc || pc->IsGM() ||						// players is dressing himself, player is a gm, or...
-           ( npc && npc->npcaitype==NPCAI_PLAYERVENDOR && pc->isOwnerOf(npc)) )	// player is dressing his own personal vendor
+	if ( ServerScp::g_nUnequipOnReequip )
 	{
-
-		if ( !pc->IsGM() && pi->st > pck->getStrength() && !pi->isNewbie() ) // now you can equip anything if it's newbie
-		{
-			sysmessage("You are not strong enough to use that.");
-			resetDragging = true;
-		}
-		else if ( !pc->IsGM() && !pi->checkItemUsability(pc, ITEM_USE_WEAR) )
-		{
-			resetDragging = true;
-		}
-		else if ( (pc->getId() == BODY_MALE) && ( pi->getId()==0x1c00 || pi->getId()==0x1c02 || pi->getId()==0x1c04 || pi->getId()==0x1c06 || pi->getId()==0x1c08 || pi->getId()==0x1c0a || pi->getId()==0x1c0c ) ) // Ripper...so males cant wear female armor
-		{
-			sysmessage("You cant wear female armor!");
-			resetDragging = true;
-		}
-		else if ((((pi->magic==2)||((tile.weight==255)&&(pi->magic!=1))) && !pc->canAllMove()) ||
-				( (pi->magic==3|| pi->magic==4) && !(pi->getOwnerSerial32() == pc->getSerial)) )
-		{
-			resetDragging = true;
-		}
-
-		if( resetDragging ) {
-			cPacketSendBounceItem pk(5);
-			sendPacket(&pk);
-			if (isDragging())
-			{
-				resetDragging();
-				item_bounce4(pi);
-				updateStatusWindow(pi);
-			}
-			return;
-		}
-
-
-
-		// - AntiChrist (4) - checks for new ITEMHAND system
-		// - now you can't equip 2 hnd weapons with 1hnd weapons nor shields!!
-		serial= pck->getSerial(); //xan -> k not cc :)
-
-		pItem pj = NULL;
- 		pChar pc_currchar= pck;
-// 		pItem pack= pc_currchar->getBackpack();
-                //<Luxor>
-
-		pItem pW = pc_currchar->getWeapon();
-		if (tile.quality == 1 || tile.quality == 2)
-		{ //weapons layers
-			if ( (pi->layer == LAYER_2HANDWEAPON && pc_currchar->getShield()) )
-			{
-				sysmessage("You cannot wear two weapons.");
-				cPacketSendBounceItem pk(5);
-				sendPacket(&pk);
-				if (isDragging())
-				{
-        			        resetDragging();
-					updateStatusWindow(pi);
-	        	}
-				pi->setContainer( pi->getOldContainer() );
-				pi->setPosition( pi->getOldPosition() );
-				pi->layer = pi->oldlayer;
-				pi->Refresh();
-				return;
-			}
-			if ( pW )
-			{
-				if (pi->itmhand != 3 && pi->lodamage != 0 && pi->itmhand == pW->itmhand)
-				{
-					sysmessage("You cannot wear two weapons.");
-					cPacketSendBounceItem pk(5);
-					sendPacket(&pk);
-					if (isDragging())
-					{
-						resetDragging();
-						updateStatusWindow(pi);
-					}
-					pi->setContainer( pi->getOldContainer() );
-					pi->setPosition( pi->getOldPosition() );
-					pi->layer = pi->oldlayer;
-					pi->Refresh();
-					return;
-				}
-			}
-		}
-		//</Luxor>
-
-		if ( ServerScp::g_nUnequipOnReequip )
-		{
-			pItem drop[2]= {NULL, NULL};	                // list of items to drop
-									// there no reason for it to be larger
-			int curindex= 0;
-
-			NxwItemWrapper si;
-			si.fillItemWeared( pc_currchar, false, true, true );
-			for( si.rewind(); !si.isEmpty(); si++ )
-			{
-				// we CANNOT directly bounce the item, or the containersearch() function will not work
-				// so we store the item ID in letsbounce, and at the end we bounce the item
-
-				pj=si.getItem();
-				if( ! pj )
-					continue;
-
-				if ((tile.quality == 1) || (tile.quality == 2))// weapons
-				{
-					if (pi->itmhand == 2) // two handed weapons or shield
-					{
-						if (pj->itmhand == 2)
-							drop[curindex++]= pj;
-
-						if ( (pj->itmhand == 1) || (pj->itmhand == 3) )
-							drop[curindex++]= pj;
-					}
-
-					if (pi->itmhand == 3)
-					{
-						if ((pj->itmhand == 2) || pj->itmhand == 3)
-							drop[curindex++]= pj;
-					}
-
-					if ((pi->itmhand == 1) && ((pj->itmhand == 2) || (pj->itmhand == 1)))
-						drop[curindex++]= pj;
-				}
-				else	// not a weapon
-				{
-					if (pj->layer == tile.quality)
-						drop[curindex++]= pj;
-				}
-			}
-
-			if (ServerScp::g_nUnequipOnReequip)
-			{
-				if (drop[0] != NULL)	// there is at least one item to drop
-				{
-					for (int i= 0; i< 2; i++)
-					{
-						if (drop[i] != NULL)
-						{
-							if( drop[i] ) pc_currchar->unEquip( drop[i], 1);
-						}
-					}
-				}
-				pc->playSFX( itemsfx(pi->getId()) );
-				pc_currchar->equip(pi, 1);
-			}
-			else
-			{
-				if (drop[0] == NULL)
-				{
-					pc->playSFX( itemsfx(pi->getId()) );
-					pc_currchar->equip(pi, 1);
-				}
-			}
-		}
-
-		if (!(pc->IsGM())) //Ripper..players cant equip items on other players or npc`s paperdolls.
-		{
-			if ((pck->getSerial() != pc->getSerial())/*&&(chars[s].npc!=k)*/) //-> really don't understand this! :|, xan
-			{
-				sysmessage("You can't put items on other people!");
+		if (pi->isWeapon() && layer == layWeapon2H)	//If equipping a 2 handed sword, we must empty both layers, so, since the 2h layer is emptied below, we empty the first :D
+		       	if (pck->unEquip(body->getLayerItem(layWeapon1H),false) == 2) //since it is not a bounce, we set the drag bool of unequip to false
+                        {       //if unequip bypass
 				item_bounce6(pi);
 				return;
-			}
-		}
+                        }
+		if (pi->isWeapon() && layer == layWeapon1H && secondhand != NULL) //If equipping a 1 handed sword, while already equipping a 2 handed sword, we must empty both layers, so, since the 1h layer is emptied below, we empty the second :D
+	       	       	if (pck->unEquip(body->getLayerItem(layWeapon2H),false) ==2) //since it is not a bounce, we set the drag bool of unequip to false
+                        {       // if unequip bypass
+				item_bounce6(pi);
+				return;
+                        }
 
-		NxwSocketWrapper sws;
-		sws.fillOnline( pi );
-		for( sws.rewind(); !sws.isEmpty(); sws++ )
-                {
-			cPacketSendDeleteObj pk(pi);
-			sws->sendPacket(&pk);
+	        if (epj && pck->unEquip(epj,true) == 2)
+                {	// if unequip bypass
+			item_bounce6(pi);
+			return;
                 }
-
-
-//! \todo verify if layer behaves as Flameeyes told me :D (but it seems to me it does NOT! :P)
-
-//		pi->layer=buffer[5];  //Chronodt: layer from packet should be ignored in favour of normal layer positioning for item
-		pi->setContSerial(pck);
-
-		if (g_nShowLayers) InfoOut("Item equipped on layer %i.\n",pi->layer);
-
-		wearIt(pi);
-
-		NxwSocketWrapper sw;
-		sw.fillOnline( pck, false );
-		for( sw.rewind(); !sw.isEmpty(); sw++ )
-		{
-			cClient j = sw.getClient();
-			if( j!=NULL )
-				j->wornitems(pck );
-		}
-
-		pc->playSFX( itemsfx(pi->getId()) );
-		pc->getBody()->calcWeight();
-		updateStatusWindow(pi);
-
-//		if (pi->glow>0)
-//		{
-//			pc->removeHalo(pi); // if gm equips on differnt player it needs to be deleted out of the hashteble
-//			pck->addHalo(pi);
-//			pck->glowHalo(pi);
-//		}
-
-		if ( pck->equip(pi, 1) == 2)	// bypass called
-		{
-			pItem pack = pck->getBackpack();
-			pc->playSFX( itemsfx(pi->getId()) );
-			pi->layer= 0;
-			pi->setContainer( pack );
-			showItemInContainer(pi);
+                pc->playSFX( itemsfx(pi->getId()) );
+	        if (pck->equip(epi, true) == 2)
+                {       // equip bounce, this time
+			item_bounce6(pi);
+			return;
+                }
+        }
+        else
+        {
+		if (pi->isWeapon() &&					// If pi is a weapon...
+                   ((layer == layWeapon2H && firsthand) ||		// ..a two handed weapon while another one-handed weapon present or...
+                   (layer == layWeapon1H && secondhand->isWeapon()))	// ...a one-handed weapon when a 2 handed weapon is already equipped....
+		{							// ...it must bounce because we are not allowed to automatically deequip them
+			item_bounce6(pi);
 			return;
 		}
 
+		if (pi->isWeapon() && layer == layWeapon1H && secondhand != NULL) //If equipping a 1 handed sword, while already equipping a 2 handed sword, we must empty both layers, so, since the 1h layer is emptied below, we empty the second :D
+	       	       	if (pck->unEquip(body->getLayerItem(layWeapon2H),false) ==2) //since it is not a bounce, we set the drag bool of unequip to false
+                        {       // if unequip bypass
+				item_bounce6(pi);
+				return;
+                        }
+
+	        if (epj) // if something already equipped in the same layer, bounce (we are not allowed to automatically deequip them)
+                {
+			item_bounce6(pi);
+			return;
+                }
+                pc->playSFX( itemsfx(pi->getId()) );
+	        if (pck->equip(epi, true) == 2)
+                {       // if script bypasses equip, bounce
+			item_bounce6(pi);
+			return;
+                }
+        }
+
+	NxwSocketWrapper sws;
+	sws.fillOnline( pi );
+	for( sws.rewind(); !sws.isEmpty(); sws++ )
+	{
+		cPacketSendDeleteObj pk(pi);
+		sws->sendPacket(&pk);
 	}
+
+	if (g_nShowLayers) InfoOut("Item equipped on layer %i.\n",layer);
+
+
+        //! \todo the sendpacket stuff
+	wearIt(pi);
+
+	NxwSocketWrapper sw;
+	sw.fillOnline( pck, false );
+	for( sw.rewind(); !sw.isEmpty(); sw++ )
+	{
+		cClient j = sw.getClient();
+		if( j!=NULL ) j->wornitems(pck );
+	}
+
+
+	pc->getBody()->calcWeight();
+	updateStatusWindow(pi);
 }
 
 /*!
@@ -1830,7 +1753,7 @@ void cClient::item_bounce3(const pItem pi)
 	if(!pi) return;
 
         pEquippable equipitem = dynamic_cast<pEquippable> pi;
-	if (equipitem && !equipitem->getOldLayer())
+	if (equipitem && equipitem->getOldLayer())
         {
 	        pBody body = dynamic_cast<pBody> equipitem->getOldContainer();  //If it was equipped, old container was a body
                 pChar pc = body->getChar();

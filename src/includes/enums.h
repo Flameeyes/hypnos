@@ -134,6 +134,23 @@ enum Karma {
 	karmaInnocent, karmaMurderer, karmaCriminal
 };
 
+//! cChar::canEquip result
+enum NotEquippableReason {
+	nerUnknown = -1,		//!< unknown reason
+	nerEquipOk = 0,			//!< item can be equipped
+        nerNotEquippableItem,		//!< item is not convertible to a cEquippable
+        nerNotHumanBody,		//!< char cannot equip item because it is not human
+        nerInsufficientStrength,	//!< Insufficient strength
+        nerInsufficientDexterity,	//!< Insufficient dexterity
+	nerInsufficientIntelligence,	//!< Insufficient intelligence
+        nerInsufficientSkil1,		//!< Insufficient skill 1
+        nerInsufficientSkil2,		//!< Insufficient skill 2
+        nerInsufficientSkil3,		//!< Insufficient skill 3
+        nerCharDead,			//!< Char is dead. Dead people cannot wear anything :D
+        nerMaleEquippingFemaleArmor	//!< It wouldn't fit anyway :D
+
+};
+
 //! Skills
 enum Skill {
 	skInvalid = -1, skAlchemy = 0, skAnatomy, skAnimalLore, skItemID, skArmsLore, skParrying,
@@ -151,5 +168,4 @@ enum Skill {
 \author Endymion
 */
 enum VarType { VAR_EFF =0, VAR_DEC, VAR_REAL, VAR_ACT, };
-
 #endif

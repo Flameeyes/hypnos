@@ -2822,3 +2822,46 @@ void cChar::warUpdate()
 		}
 	}
 }
+
+NotEquippableReason cChar::canEquip(pEquippable pi)
+{
+	if (!pi) return nerNotEquippableItem;
+        if (isDead()) return nerCharDead;	//Dead people cannot equip anything
+	body = getBody();
+        if (!body->isHumanBody()) return nerNotHumanBody;
+        sint16_t st,dx,in,sk1,sk2,sk3;
+
+	if ( (body->getId() == BODY_MALE) && ( pi->getId()==0x1c00 || pi->getId()==0x1c02 || pi->getId()==0x1c04 || pi->getId()==0x1c06 || pi->getId()==0x1c08 || pi->getId()==0x1c0a || pi->getId()==0x1c0c ) ) // Ripper...so males cant wear female armor
+		return nerMaleEquippingFemaleArmor;
+
+	// Minimum stats & skill check
+	if ( isGM() || pi->isNewbie()) //If GM or newbie item it can be worn even if stats are normally too low
+        {
+        	st = dx = in = sk1 = sk2 = sk3 = 0;
+        }
+        else
+        {
+        	st = body->getStrength() - pi->getMinEquippingStrength();
+             	dx = body->getDexterity() - pi->getMinEquippingDexterity();
+             	in = body->getIntelligence() - pi->getMinEquippingIntelligence();
+                sk1 = (pi->getMinEquippingSkill1() != UINVALID16) ? (body->getSkill(pi->getMinEquippingSkill1()) - p1->getMinEquippingSkillValue1()) /10 : 0;
+                sk2 = (pi->getMinEquippingSkill2() != UINVALID16) ? (body->getSkill(pi->getMinEquippingSkill2()) - p1->getMinEquippingSkillValue2()) /10 : 0;
+                sk3 = (pi->getMinEquippingSkill3() != UINVALID16) ? (body->getSkill(pi->getMinEquippingSkill3()) - p1->getMinEquippingSkillValue3()) /10 : 0;
+        }
+        if (st>=0 && dx>=0 && in>=0 && sk1>=0 && sk2>=0 && sk3>=0) return nerEquipOK;
+        if (st<=dx  &&  st<=in && st<=sk1 && st<=sk2  && st<=sk3 ) return nerInsufficientStrength;
+        if (dx<=st  &&  dx<=in && dx<=sk1 && dx<=sk2  && dx<=sk3 ) return nerInsufficientDexterity;
+        if (in<=st  &&  in<=dx && in<=sk1 && in<=sk2  && in<=sk3 ) return nerInsufficientIntelligence;
+        if (sk1<=st && sk1<=dx && sk1<=in && sk1<=sk2 && sk1<=sk3) return nerInsufficientSkill1;
+        if (sk2<=st && sk2<=dx && sk2<=in && sk2<=sk1 && sk2<=sk3) return nerInsufficientSkill2;
+        if (sk3<=st && sk3<=dx && sk3<=in && sk3<=sk1 && sk3<=sk2) return nerInsufficientSkill3;
+
+	return nerUnknown;	//should never arrive here
+}
+
+NotEquippableReason cChar::canEquip(pItem pi)
+{
+	pEquippable ei = dynamic_cast<pEquippable> pi;
+        if (ei) return canEquip(ei);
+        return nerNotEquippableItem;
+}

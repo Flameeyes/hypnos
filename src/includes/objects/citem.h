@@ -513,11 +513,11 @@ public:
 	int32_t		spd;		//!< The speed of the weapon
 	int32_t		itmhand;	//!< ITEMHAND system - AntiChrist
 	int32_t		resists[MAX_RESISTANCE_INDEX];	//!< for resists system
-	int32_t		st;		//!< The strength needed to equip the item
+
 	int32_t		st2;		//!< The strength the item gives
-	int32_t		dx;		//!< The dexterity needed to equip the item
+
 	int32_t		dx2;		//!< The dexterity the item gives
-	int32_t		in;		//!< The intelligence needed to equip the item
+
 	int32_t		in2;		//!< The intelligence the item gives
 	PoisonType	poisoned;	//!< type of poison that poisoned item
 	uint32_t	ammo;		//!< Ammo used (firing weapon)
@@ -619,12 +619,56 @@ public:
 protected:
 	bool ToolWearOut(pClient client);			//!< Check for tool consumption. Used in doubleClick
 	virtual void doubleClicked(pClient client);		//!< After an accepted doubleclick, call this virtual
+        uint16_t minUsingStrength;				//!< Minimum strength to use item
+        uint16_t minUsingIntelligence;				//!< Minimum inteligence to use item
+        uint16_t minUsingDexterity;				//!< Minimum dexterity to use item
+        uint16_t minUsingSkill[3];				//!< holds up to 3 skills to be checked for usability. if INVALID no skill check is done
+        uint16_t minUsingSkillvalue[3];				//!< holds the 3 skill values of skills Minimum in the minUsingSkill array
 
 public:
 	void singleClick(pClient client);			//!< Single click on item
 	bool usableWhenLockedDown(pPC pc = NULL);		//!< Item can be used when locked down (e.g. in a house)
-	bool checkItemUsability(pChar pc, int type);		//!< If item can be used with "type" method by pc
+	bool checkItemUsability(pChar pc, int type);		//!< If item can be used with "type" method by pc  \todo update this function with the new usability/ equippability function here and in cEquippable 
 	void doubleClick(pClient client);			//!< Use of item by doubleclicking on it
+
+	inline void setMinUsingStrength(uint16_t newStrength)
+        { minUsingStrength = newStrength; }
+
+	inline void setMinUsingDexterity(uint16_t newDexterity)
+        { minUsingDexterity = newDexterity; }
+
+	inline void setMinUsingIntelligence(uint16_t newIntelligence)
+        { minUsingIntelligence = newIntelligence; }
+
+	inline uint16_t getMinUsingStrength()
+        { return minUsingStrength; }
+
+	inline uint16_t getMinUsingDexterity()
+        { return minUsingDexterity; }
+
+	inline uint16_t getMinUsingIntelligence()
+        { return minUsingIntelligence; }
+
+	inline uint16_t getMinUsingSkill1()
+        { return minUsingSkill[1]; }
+
+        inline uint16_t getMinUsingSkillValue1()
+	{ return minUsingSkillValue[1]; }
+
+	inline uint16_t getMinUsingSkill2()
+        { return minUsingSkill[2]; }
+
+        inline uint16_t getMinUsingSkillValue2()
+	{ return minUsingSkillValue[2]; }
+
+	inline uint16_t getMinUsingSkill3()
+        { return minUsingSkill[3]; }
+
+        inline uint16_t getMinUsingSkillValue3()
+	{ return minUsingSkillValue[3]; }
+
+
+//@}
 
 //@{
 /*!

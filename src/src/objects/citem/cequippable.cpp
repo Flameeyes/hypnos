@@ -22,6 +22,11 @@ cEquippable::cEquippable()
 cEquippable::cEquippable(uint32_t newSerial)
 	: cItem(newSerial)
 {
+	minEquippingStrength = 0;  // Minimum strength to equip item
+        minEquippingIntelligence = 0; // Minimum inteligence to equip item
+        minEquippingDexterity = 0; // Minimum dexterity to equip item
+        minEquippingSkill[3]= { UINVALID16, UINVALID16, UINVALID16 }; // holds up to 3 skills to be checked to equip. if INVALID no skill check is done
+        minEquippingSkillvalue[3] = {0,0,0};
 }
 
 cEquippable::~cEquippable()

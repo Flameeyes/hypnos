@@ -173,6 +173,11 @@ cItem::resetData()
 	dx2=0; // The dexterity the item gives
 	in=0; // The intelligence needed to equip the item
 	in2=0; // The intelligence the item gives
+        minUsingStrength = 0;  // Minimum strength to use item
+        minUsingIntelligence = 0; // Minimum inteligence to use item
+        minUsingDexterity = 0; // Minimum dexterity to use item
+        minUsingSkill[3]= { UINVALID16, UINVALID16, UINVALID16 }; // holds up to 3 skills to be checked for usability. if INVALID no skill check is done
+        minUsingSkillvalue[3] = {0,0,0};
 	spd=0; //The speed of the weapon
 	wipe=0; //Should this item be wiped with the /wipe command
 	magic=0; // 0=Default as stored in client, 1=Always movable, 2=Never movable, 3=Owner movable.
@@ -192,10 +197,6 @@ cItem::resetData()
 	tuses=0;    //Number of uses for trigger
 	poisoned=poisonNone; //AntiChrist -- for poisoning skill
 	murdertime=0; //AntiChrist -- for corpse -- when the people has been killed
-//	glow=0;
-//	glow_effect=0;
-//	glow_c1=0;
-//	glow_c2=0;
 	time_unused=0;
 	timeused_last=getclock();
 	animSetId(0x0000); // elcabesa animation

@@ -121,7 +121,7 @@ public:
 protected:
 	pClient client;	//!< Client connected with the character
 	pBody body;     //! The body the character is currently "using"
-	pBody oldbody;  //! Old body. To use in polimorph-type effects
+	pBody truebody;  //! true body. Holds native character body at all times. Used for reversion of polimorph-type effects
 
 public:
 	inline pClient getClient() const
@@ -136,11 +136,11 @@ public:
 	inline void setBody(pBody b)
 	{ body = b; }
 
-        inline pBody getOldBody() const
-	{ return oldbody; }
+        inline pBody getTrueBody() const
+	{ return truebody; }
 
-	inline void setOldBody(pBody b)
-	{ oldbody = b; }
+	inline void setTrueBody(pBody b)
+	{ truebody = b; }
 
 	//! get online status
 	inline const bool isOnline() const
@@ -507,6 +507,21 @@ public:
 public:
         void singleClick(pClient client);	//!< "this" is the clicked char, client is the client of the clicker
         void doubleClick(pClient client);	//!< Doubleclicking a char. Argument is the client of the pg who has doubleclicked on "this"
+
+        /*!
+        returns a NotEquippableReason with the either nerEquipOK or a reason for failure if char cannot equip pi
+        NOTE:  it will report only the most lacking stat or skill if more than one is below required minimum
+        NOTE2: it doesn't check if item already in that layer
+	*/
+	NotEquippableReason canEquip(pEquippable pi);
+
+        /*!
+        returns a NotEquippableReason with the either nerEquipOK or a reason for failure if char cannot equip pi
+        NOTE:  it will report only the most lacking stat or skill if more than one is below required minimum
+        NOTE2: it doesn't check if item already in that layer
+	*/
+        NotEquippableReason canEquip(pItem pi);
+
 	inline void setSkillDelay( uint32_t seconds = nSettings::Server::getDelaySkills() )
 	{ skilldelay = getclock() + seconds * MY_CLOCKS_PER_SEC; }
 

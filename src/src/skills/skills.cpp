@@ -1044,9 +1044,9 @@ void Skills::updateSkillLevel(pChar pc, int s)
 		return;
 
 
-    int temp = (((skillinfo[s].st * pc->getStrength()) / 100 +
-        (skillinfo[s].dx * pc->dx) / 100 +
-        (skillinfo[s].in * pc->in) / 100)
+    int temp = (((skillinfo[s].st * pc->getBody()->getStrength()) / 100 +
+        (skillinfo[s].dx * pc->getBody()->getDexterity()) / 100 +
+        (skillinfo[s].in * pc->getBody()->getIntelligende()) / 100)
         *(1000-pc->baseskill[s]))/1000+pc->baseskill[s];
 
 
