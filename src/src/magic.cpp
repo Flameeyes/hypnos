@@ -34,6 +34,55 @@ g_Spell g_Spells[MAX_SPELLS];
 std::map< std::string, SpellId > speechMap;
 
 /*!
+\brief Gets the direction for a field magic
+\param pc Caster character
+\param p Point where the field should be summoned
+*/
+static bool fielddir(pChar pc, sPoint p)
+{
+	if ( !pc ) return false;
+
+	int dir = pc->getDirFromXY(loc);
+	switch (dir)
+	{
+	case 0:
+	case 4:
+		return false;
+	case 2:
+	case 6:
+		return true;
+	case 1:
+	case 3:
+	case 5:
+	case 7:
+	case INVALID:
+		switch(pc->dir) //crashfix, LB
+		{
+		case 0:
+		case 4:
+			return false;
+
+		case 2:
+		case 6:
+			return true;
+
+		case 1:
+		case 3:
+		case 5:
+		case 7:
+			return true;
+
+		default:
+			LogError("Switch fallout. misc.cpp, fielddir()\n"); //Morrolan
+			return false;
+		}
+	default:
+		LogError("Switch fallout. misc.cpp, fielddir()\n"); //Morrolan
+		return false;
+	}
+}
+
+/*!
 \author Luxor
 */
 uint32_t getCastingTime( SpellId spell )
