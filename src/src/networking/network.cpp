@@ -381,31 +381,27 @@ void cNetwork::enterchar(pClient client)
 	pPC pc = NULL;
 	if ( ! client || ! ( pc = client->currChar() ) )
 		return;
-	
-	uint8_t techstuff[5]={ 0x69, 0x00, 0x05, 0x01, 0x00 };
-	uint8_t world[6]={0xBF, 0x00, 0x06, 0x00, 0x08, 0x00};
-	uint8_t modeset[5]={0x72, 0x00, 0x00, 0x32, 0x00};
-
-	if (map_height<300) world[5]=0x02;
 
 	clientInfo[s]->ingame=true;
 
-	Xsend(s, world, 6);
+	nPackets::Sent::SetMap pkSetMap(((map_height<300)? 0x02 : 0x00);
+	client->sendPacket(&pkSetMap);
 
 	nPackets::Sent::LoginConfirmation pkLoginConf(pc);
 	client->sendPacket(&pkLoginConf);
 
 	pc->war=0;
-	Xsend(s, modeset, 5);
+	nPackets::Sent::WarModeStatus pkWar(pc->war);
+	client->sendPacket(&pkWar);
 
-	techstuff[3]=0x01;
-	Xsend(s, techstuff, 5);
+	nPackets::Sent::ChangeTextEmoteColor pkTech1(0x01);
+	client->sendPacket(&pkTech1);
 
-	techstuff[3]=0x02;
-	Xsend(s, techstuff, 5);
+	nPackets::Sent::ChangeTextEmoteColor pkTech2(0x02);
+	client->sendPacket(&pkTech2);
 
-	techstuff[3]=0x03;
-	Xsend(s, techstuff, 5);
+	nPackets::Sent::ChangeTextEmoteColor pkTech3(0x03);
+	client->sendPacket(&pkTech3);
 
 	nPackets::Sent::StartGame pkStartGame;
 	client->sendPacket(&pkStartGame);

@@ -770,6 +770,25 @@ void nPackets::Sent::MsgBoardItemsinContainer::prepare()
 	msgboard->boardMutex.unlock();
 }
 
+/*!
+\brief Set cursor hue / Set MAP
+\author Kheru
+\note packet 0xbf - Subcommand: 0008
+
+0 = Felucca, unhued / BRITANNIA map
+1 = Trammel, hued gold / BRITANNIA map
+2 = (switch to) ILSHENAR map
+
+*/
+void nPackets::Sent::SetMap::prepare()
+{
+	length = 5+1;
+	buffer = new uint8_t[length];
+	buffer[0] = 0xBF;
+	ShortToCharPtr(length, buffer+1);
+	ShortToCharPtr(subcmd, buffer+3);
+	buffer[5] = map;
+}
 
 /*!
 \brief Personal Light Level
@@ -989,6 +1008,23 @@ void nPackets::Send::BookPageReadOnly::prepare()
 }
 
 /*!
+\brief Change Text/Emote Color
+\author Kheru
+\note packet 0x69
+\note This message has been removed. It is no longer used.
+*/
+
+void nPackets::Sent::ChangeTextEmoteColor::prepare()
+{
+	length = 5;
+	buffer = new uint8_t[length];
+	buffer[0] = 0x69;
+	ShortToCharPtr(length, buffer+1);
+	buffer[3] = unknown;
+	buffer[4] = 0x00;
+}
+
+/*!
 \brief Send Targeting cursor to client
 \author Chronodt
 \note packet 0x6C
@@ -1195,7 +1231,11 @@ void nPackets::Sent::WarModeStatus::prepare()
 {
 	buffer = new uint8_t[5];
 	length = 5;
-	memcpy(buffer, buf, 5);
+	buffer[0] = 0x72;
+	buffer[1] = war_flag;
+	buffer[2] = 0x00;
+	buffer[3] = 0x32;
+	buffer[4] = 0x00;
 }
 
 /*!

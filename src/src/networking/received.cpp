@@ -1096,16 +1096,17 @@ bool nPackets::Received::BBoardMessage::execute(pClient client)
 bool nPackets::Received::WarModeChange::execute(pClient client)
 {
 	if (length != 5) return false;
+	uint8_t war_flag = buffer[1];
 	pPC pc = client->currChar();
 	if( pc )
 	{
-		if( (pc->inWarMode() && !buffer[1]) || (!pc->inWarMode() && buffer[1]) )  //Translation: if warmode has to change
+		if( (pc->inWarMode() && !war_flag) || (!pc->inWarMode() && war_flag) )  //Translation: if warmode has to change
 		{
 			pc->toggleWarMode();
 			pc->targserial=INVALID;
 		}
-		// Now we send the packet back :D
-		nPackets::Sent::WarModeStatus pk(buffer);
+
+		nPackets::Sent::WarModeStatus pk(war_flag);
 		client->sendPacket(&pk);
 
 		if (pc->dead && pc->war) // Invisible ghost, resend.

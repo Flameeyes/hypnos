@@ -2239,12 +2239,8 @@ void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 	playSFX( goldsfx(totgold) );
 
 
-
-	uint8_t clearmsg[8] = { 0x3B, 0x00, };
-	ShortToCharPtr(0x08, clearmsg +1); 				// Packet len
-	LongToCharPtr( LongFromCharPtr(buffer[s] +3), clearmsg +3);	// vendorID
-	clearmsg[7]=0x00;						// Flag:  0 => no more items  0x02 items following ...
-	Xsend(s, clearmsg, 8);
+	nPackets::Sent::ClearBuyWindow pkt(npc);
+	sendPacket(&pkt);
 }
 
 /*!

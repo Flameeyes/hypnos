@@ -600,6 +600,31 @@ namespace nPackets {
 			void prepare();
 		};
 
+		/*!
+		\brief Set cursor hue / Set MAP
+		\author Kheru
+		\note packet 0xbf - Subcommand: 0008
+
+		0 = Felucca, unhued / BRITANNIA map
+		1 = Trammel, hued gold / BRITANNIA map
+		2 = (switch to) ILSHENAR map
+
+		*/
+		class SetMap : public cPacketSend
+		{
+		protected:
+			uint8_t map; 		//!< Map to switch / set
+			uint8_t subcmd;		//!< 0xBF subcommand type
+		public:
+			/*!
+			\param aMap Map selected ( 0x00 Felucca [Britannia, cursor unhued], 0x01 Trammel [Britannia, hued gold], 0x02 Ilshenar )
+			*/
+			inline SetMap(uint8_t aMap) :
+				map(aMap), subcmd(0x0008)
+			{ }
+
+			void prepare();
+		};
 
 		/*!
 		\brief Personal Light Level
@@ -842,6 +867,22 @@ namespace nPackets {
 			void prepare();
 		};
 
+		/*!
+		\brief Change Text/Emote Color
+		\author Kheru
+		\note packet 0x69
+		*/
+		class ChangeTextEmoteColor : public cPacketSend
+		{
+		protected:
+			uint8_t unknown;
+		public:
+			inline ChangeTextEmoteColor(uint8_t IdontKnow) :
+				unknown(IdontKnow)
+			{ }
+
+			void prepare();
+		};
 
 		/*!
 		\brief Send targeting cursor to client
@@ -1011,12 +1052,12 @@ namespace nPackets {
 		class WarModeStatus : public cPacketSend
 		{
 		protected:
-		
-			uint8_t buf[5];
+			uint8_t war_flag;	//!< 00: Normal, 01: Fighting
 		
 		public:
-			inline WarModeStatus(uint8_t* buffer)
-			{ memcpy(buf, buffer, 5);}
+			inline WarModeStatus(uint8_t aFlag) :
+				war_flag(aFlag)
+			{ }
 
 			void prepare();
 		};
