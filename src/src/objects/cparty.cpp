@@ -103,17 +103,23 @@ void cParty::executeCommand(pClient client, char *buffer, uint16_t size)
 			
 			if ( ! target->getClient() ) return;
 			
-			//! \todo Load the unicode string from the received packet..
+			if ( ! pc->getParty() || pc->getParty() != target->getParty() )
+			{
+				client->sysmessage("You aren't in the same party");
+				return;
+			}
 			
-			nPackets::Sent::PartyPrivateMessage pk(target, unicodeStr);
-			//! \todo And then resend it to the party
+			cSpeech msg(partyPkg+5);
+			
+			nPackets::Sent::PartyPrivateMessage pk(target, msg);
+			//! And then resend it to the party
 			target->getClient()->sendPacket(&pk);
 		}
 		break;
 		
 	case 0x04: // Party broadcast (needs unicode support)
 		{
-			
+			if  
 		}
 		break;
 	

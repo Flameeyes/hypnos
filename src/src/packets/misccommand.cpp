@@ -74,6 +74,18 @@ void nPackets::Sent::PartyPrivateMessage::prepare()
 
 	subpkg[0] = 0x03;
 	LongToCharPtr(target->getSerial(), subpkg+1);
-	//! \todo Put the unicode message in subpkg+5
+	
+	message.setPacketByteOrder();
+	memcpy(subpkg + 5, message.rawBytes(), (message.size()+1)*2);
 }
 
+void nPackets::Sent::PartyBroadcast::prepare()
+{
+	char *subpkg = createBufferBF(buffer, size, 0x06, 7 + message.size()*2);
+	
+	subpkg[0] = 0x04;
+	LongToCharPtr(sender->getSerial(), subpkg+1);
+	
+	message.setPacketByteOrder();
+	memcpy(subpkg + 5, message.rawBytes(), (message.size()+1)*2);
+}

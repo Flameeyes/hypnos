@@ -80,24 +80,7 @@ public:
 	void disband();
 
 	PCSList getMembersList();
-//@{
-/*!
-\name Talk and notices
 
-There we have functions used to talk between party's members and for notices to
-the party members.
-
-The first case is when an user want to send a message to all the allies, this is
-done in game using the / character.
-
-The second case is when we want to inform the party's members of something, like
-a player joined a party, or one leaved it, or the party was disbanded.
-*/
-	void notice(std::string text);
-	void notice(char *str, ...) PRINTF_LIKE(2, 3)
-	void talk(pPC member, std::string text);
-	void talk(pPC member, char *str, ...) PRINTF_LIKE(2,3)
-//@}
 protected:
 	sPartyMember leader;		//!< Party's leader (can kick and add)
 	MemberSList members;		//!< Party's fully members

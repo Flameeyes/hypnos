@@ -102,11 +102,10 @@ namespace nPackets::Sent {
 	{
 	protected:
 		pPC sender;		//!< Member who sent the message
-		pParty party;		//!< Party to send the message to
 		cSpeech message;	//!< Message to send
 	public:
-		PartyBroadcast(pPC s, pParty p, cSpeech msg)
-			: sender(s), party(p), message(msg)
+		PartyBroadcast(pPC s, cSpeech msg)
+			: sender(s), message(msg)
 		{ }
 	}
 };
