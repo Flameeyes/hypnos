@@ -9,7 +9,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "networking/tuoreceiver.h"
-#include "networking/tkilling.h"
+#include "networking/tkiller.h"
 
 /*!
 \brief Constructor for tUOReceiver thread

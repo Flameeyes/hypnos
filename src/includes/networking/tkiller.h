@@ -17,6 +17,7 @@
 
 #include "common_libs.h"
 #include <wefts_thread.h>
+#include <wefts_queue.h>
 
 class tReceiver;
 

@@ -16,6 +16,8 @@
 #define __NETWORKING_TRECEIVING_H__
 
 #include "common_libs.h"
+#include "networking/tpllistener.h"
+
 #include <wefts_thread.h>
 #include <cabal_tcpsocket.h>
 

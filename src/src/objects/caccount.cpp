@@ -50,7 +50,7 @@ void cAccount::loadAll()
 {
 	global_mt.lock();
 	
-	cSQLite::pSQLiteQuery q = globalDB->execQuery("SELECT * FROM accounts");
+/*	cSQLite::pSQLiteQuery q = globalDB->execQuery("SELECT * FROM accounts");
 
 	while( q->fetchRow() )
 	{
@@ -59,7 +59,7 @@ void cAccount::loadAll()
 	}
 	
 	delete q;
-	
+*/
 	global_mt.unlock();
 }
 
@@ -90,6 +90,7 @@ cAccount::cAccount(std::string aName, std::string aPassword)
 	jailInfo = NULL;
 }
 
+#if 0
 /*!
 \brief Constructor from database
 \param r The row returned by SQLite query
@@ -137,6 +138,7 @@ cAccount::cAccount(cSQLite::cSQLiteQuery::tRow r)
 	
 	client = NULL;
 }
+#endif
 
 /*!
 \brief Save an account into database

@@ -18,7 +18,7 @@
 */
 void nAdminCommands::parseCommand(const std::string &str, std::ostream &outs)
 {
-	switch(c)
+	switch(str[0])
 	{
 	case '\x1B':
 		keeprun=false;
@@ -79,4 +79,3 @@ void nAdminCommands::parseCommand(const std::string &str, std::ostream &outs)
 		break;
 	}
 }
-

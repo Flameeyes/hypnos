@@ -44,6 +44,8 @@ template <class tHandler> void *tplListener<tHandler>::run()
 		if ( accepted )
 			new tHandler(accepted);
 	}
+	
+	return NULL;
 }
 
 /*!
@@ -54,6 +56,6 @@ deleted by tKiller, and then destroy itself.
 */
 template <class tHandler> tplListener<tHandler>::~tplListener()
 {
-	for(std::set<tUOReceiver*>::iterator it = threads.begin(): it != threads.end(); it++)
+	for(std::set<tHandler*>::iterator it = threads.begin(): it != threads.end(); it++)
 		(*it)->close();
 }

@@ -6,10 +6,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#include "logsystem.h"
 #include "networking/cclient.h"
 #include "objects/citem/cmsgboard.h"
-#include "objects/cchar/cnpc.h"
-#include "objects/cchar/cpc.h"
+#include "objects/cnpc.h"
+#include "objects/cpc.h"
 
 /*!
 \brief Deleting an MsgBoard message

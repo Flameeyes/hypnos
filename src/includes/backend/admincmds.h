@@ -26,7 +26,7 @@ RAC clients.
 */
 namespace nAdminCommands
 {
-	void parseCommand(const std::string &str, std::ostream &outs)
+	void parseCommand(const std::string &str, std::ostream &outs);
 };
 
 #endif

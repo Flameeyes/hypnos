@@ -19,6 +19,8 @@
 #include <wefts_thread.h>
 #include <cabal_ssocket.h>
 
+class tReceiver;
+
 /*!
 \class tplListener tpllistener.h "networking/tpllistener.h"
 \brief Abstraction for listening threads
@@ -29,7 +31,7 @@ all the work.
 */
 template<class tHandler> class tplListener : public Wefts::Thread
 {
-friend class tHandler;
+friend class tReceiver;
 
 private:
 	Cabal::ServerSocket *sock;	//!< Server socket for the loop

@@ -10,6 +10,9 @@
 
 #include "backend/notify.h"
 
+#include <wefts_mutex.h>
+#include <stdarg.h>
+
 /*!
 \brief Gets a string representing the current date and time for the log
 */
