@@ -100,6 +100,10 @@ class cMsgBoard : public cItem
 {
 
 protected:
+        //These two static functions are used to find a msgboard where to post automatic messages
+        //Or where to move global and regional messages when a msgboard is deleted with such messages inside
+        static pMsgBoard findRegionalBoard(int region);
+	static pMsgBoard findGlobalBoard();
 
 public:
 	/*!
@@ -128,7 +132,7 @@ public:
         ~cMsgBoard();
 
 
-      	static void 	getPostType( pClient client );
+      	static void	getPostType( pClient client );
 	static void 	setPostType( pClient client, PostType nPostType );
         void		openBoard(pClient client);
 	void 		sendMessageSummary( pClient client, pMsgBoardMessage message );
@@ -142,11 +146,15 @@ public:
 	void	MsgBoardQuestEscortRemovePost( int nNPCIndex );
 	void	MsgBoardMaintenance();
 
+        int getRegion();
+        void Delete();
+
+
+        static pair<cMsgBoards::iterator, cMsgBoards::iterator> getBoardsinRegion(int region);
+
         inline const UI32 rtti() const
 	{ return rtti::cMsgBoard; }
 
-        int getRegion();
-        static pair<cMsgBoards::iterator, cMsgBoards::iterator> getBoardsinRegion(int region);
 };
 
 #endif

@@ -311,6 +311,7 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
                 	BBRelations.insert(cBBRelations::pair((*(it.first))->getSerial32(), message->getSerial32()));
         	break;
         case GLOBALPOST:
+        	if (MsgBoards.empty()) return false; //Obiously, even general posts cannot be done when NO msgboards are present at all....
         	for(cMsgBoards::iterator it = MsgBoards.begin(), it != MsgBoards.end(), ++it)
                       	BBRelations.insert(cBBRelations::pair((*it)->getSerial32(), message->getSerial32()));
         }
@@ -386,9 +387,25 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			break;
 		default:
 			ErrOut("cMsgBoard::createQuest() invalid quest type\n");
+	        	message->Delete;
 			return 0;
 	}
 
+        pMsgBoard MsgBoard = NULL;
+
+        switch (message->availability)
+        {
+    	case REGIONALPOST:
+        	MsgBoard = findRegionalBoard(region); break;
+        case GLOBALPOST:
+               	MsgBoard = findGlobalBoard(); break;
+        }
+
+	if (MsgBoard == NULL)
+        {
+        	message->Delete;
+		return 0;
+	}
 
     	cScpIterator* iter = NULL;
     	std::string script1, script2;
@@ -402,7 +419,11 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 		{
 			// Find the list section in order to count the number of entries in the list
 			iter = Scripts::MsgBoard->getNewIterator("SECTION ESCORTS");
-			if (iter==NULL) return 0;
+			if (iter==NULL)
+                        {
+                              	message->Delete;
+                        	return 0;
+                        }
 
 			// Count the number of entries under the list section to determine what range to randomize within
 			int loopexit=0;
@@ -428,6 +449,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			if ( listCount == 0 )
 			{
 				ConOut( "cMsgBoard::createQuest() No msgboard.scp entries found for ESCORT quests\n" );
+		        	message->Delete;
 				return 0;
 			}
 
@@ -445,6 +467,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			if (iter==NULL)
 			{
 				ConOut( "cMsgBoard::createQuest() Couldn't find entry %s for ESCORT quest\n", temp );
+                               	message->Delete;
 				return 0;
 			}
 			break;
@@ -455,7 +478,11 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			// Find the list section in order to count the number of entries in the list
 			// safedelete(iter);
 			iter = Scripts::MsgBoard->getNewIterator("SECTION BOUNTYS");
-			if (iter==NULL) return 0;
+			if (iter==NULL)
+                        {
+                               	message->Delete;
+                        	return 0;
+                        }
 
 			// Count the number of entries under the list section to determine what range to randomize within
 			loopexit=0;
@@ -481,6 +508,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			if ( listCount == 0 )
 			{
 				ConOut( "cMsgBoard::createQuest() No msgboard.scp entries found for BOUNTY quests\n" );
+		        	message->Delete;
 				return 0;
 			}
 
@@ -499,6 +527,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			if (iter==NULL)
 			{
 				ConOut( "cMsgBoard::createQuest() Couldn't find entry %s for BOUNTY quest\n", temp );
+		        	message->Delete;
 				return 0;
 			}
       break;
@@ -507,6 +536,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 	default:
 		{
 			ConOut( "cMsgBoard::createQuest() Invalid questType %d\n", questType );
+		    	message->Delete;
 			return 0;
 		}
 	}
@@ -517,7 +547,11 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 
 	int flagPos = 0;
 	message->body = '\0';  //we start with 0 lines
-	if (iter==NULL) return 0;
+	if (iter==NULL)
+        {
+               	message->Delete;
+        	return 0;
+        }
 	script1 = iter->getEntry()->getFullLine();		//discards {
 
 	loopexit=0;
@@ -541,7 +575,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 			VALIDATEPCR(pc_s,0);
 			switch ( script1[flagPos + 1] )
 			{
-				// NPC Name
+					// NPC Name
 			case 'n':
 				{
                                 	script1.replace(flagpos, 2, pc_s->getCurrentNameC());
@@ -568,7 +602,7 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 					script1.replace(flagpos, 2, region[pc_s->questDestRegion].name);
 					break;
 				}
-				// Region Name
+					// Region Name
 			case 'R':
 				{
 					script1.replace(flagpos, 2, region[pc_s->region].name);
@@ -602,7 +636,12 @@ static UI32 cMsgBoard::createQuest( UI32 targetserial, QuestType questType. int 
 
 	safedelete(iter);
 
-	if (!addMessage( 0, REGIONALPOST, 1 )) return 0;
+
+	if (!MsgBoard->addMessage( message ))
+        {
+        	message->Delete;
+        	return 0;
+        }
         return message->getSerial32();
 
 }
@@ -626,7 +665,7 @@ void MsgBoardQuestEscortCreate( int npcIndex )
 	int loopexit=0;
 	do
 	{
-		if ( escortRegions )
+		if ( escortRegions )  //escortRegions and validEscortRegion[] are global variables and are loaded in sregions.cpp 
 		{
 			// If the number of escort regions is 1, check to make sure that the only
 			// valid escort region is not the NPC's current location - if it is Abort
