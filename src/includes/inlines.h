@@ -61,26 +61,28 @@ inline std::string toString(double value)
 \author Endymion
 \param from the source string
 \param to the dest wstring
+\deprecated This shouldn't be used.. endymion's code warning!
 */
 inline void string2wstring( std::string from, std::wstring& to )
 {
 	to.erase();
 	for( std::string::iterator iter = from.begin(); iter != from.end(); iter++ )
 		to += static_cast<wchar_t>(*iter);
-}
+} DEPRECATED;
 
 /*!
 \brief Convert a wstring to a string
 \author Endymion
 \param from the source wstring
 \param to the dest string
+\deprecated This shouldn't be used.. endymion's code warning!
 */
 inline void wstring2string( std::wstring from, std::string& to )
 {
 	to.erase();
 	for( std::wstring::iterator iter = from.begin(); iter != from.end(); iter++ )
 		to += static_cast<char>(*iter);
-}
+} DEPRECATED;
 
 /*!
 \brief Converts an std::string to a number
@@ -137,7 +139,7 @@ inline const int numbitsset( int number )
 \return true if the string is a valid ip, else false
 
 \note this is not a "clean" function, because uses goto
-but it works great!
+	but it works great!
 
 \author Flameeyes
 */
