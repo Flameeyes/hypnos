@@ -1,21 +1,17 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
-#include <stdlib.h>
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| Hypnos UO Server Emulator                                                |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in hypnos.cpp file.            |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
 #include "network.h"
 #include "sndpkg.h"
-#include "race.h"
-#include "racescriptentry.h"
-#include "raceskill.h"
-#include "racetokenizer.h"
+#include "races/race.h"
+#include "races/racescriptentry.h"
+#include "races/raceskill.h"
+#include "races/racetokenizer.h"
 #include "inlines.h"
 #include "basics.h"
 
