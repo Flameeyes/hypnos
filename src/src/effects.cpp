@@ -5,74 +5,13 @@
 | You can find detailed license information in hypnos.cpp file.            |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
-/*!
-\file
-\brief Effect functions
-
-This file contains the function used for the graphical effects
-*/
 
 #include "effects.h"
 #include "objects/cpacket.h"
 #include "logsystem.h"	
 
 /*!
-\brief Plays a moving effect from this to target serializable
-\param source Source of the effect
-\param destination Target of the effect
-\param speed Speed of the effect
-\param explode If true should do a final explosion
-\param part particle effects structure
-*/
-void nEffects::movingFX(pSerializable source, pSerializable destination, uint16_t eff, uint8_t speed, uint8_t loops, bool explode, ParticleFx* part)
-{
-	if ( !source || !destination ) return;
-
-	nPackets::Sent::GraphicalEffect pk(etBolt, source, destination, eff, speed, loops, false, explode);
-
-	if (!part) // no UO3D effect ? lets send old effect to all clients
-	{
-		NxwSocketWrapper sw;
-		sw.fillOnline( );
-		for( sw.rewind(); !sw.isEmpty(); sw++ )
-		{
-			pClient j =sw.getSocket();
-			pChar pj = cSerializable::findCharBySerial(currchar[j]);
-			if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
-			{
-				j->sendPacket(&pk);
-			}
-		}
-		return;
-	}
-	// UO3D effect -> let's check which client can see it
-
-	NxwSocketWrapper sw;
-	sw.fillOnline();
-	for( sw.rewind(); !sw.isEmpty(); sw++ )
-	{
-		 pClient j =sw.getSocket();
-		 pChar pj = cSerializable::findCharBySerial(currchar[j]);
-		 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
-		 {
-			if (clientDimension[j]==2) // 2D client, send old style'd
-			{
-				j->sendPacket(&pk);
-			} else if (clientDimension[j]==3) // 3d client, send 3d-Particles
-			{
-				//! \todo packet 0xc7
-				movingeffectUO3D(source, dest, part);
-				unsigned char particleSystem[49];
-				Xsend(j, particleSystem, 49);
-			}
-			else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
-				LogError"Invalid Client Dimension: %i\n", clientDimension[j]);
-		}
-	}
-}
-
-/*!
-\brief Plays a static effect on a serializable
+\brief Plays a static effect that follows a cSerializable
 \param source Object where to show the effect
 \param eff id of 2d effect; if -1, 2d effect is get from particles obj
 \param speed speed of effect, -1 and it will be get from particles data
@@ -151,9 +90,8 @@ void nEffects::staticFX(pSerializable source, uint16_t eff, uint8_t speed, uint8
 	// I think it's too infrequnet to consider this as optimization.
 }
 
-
 /*!
-\brief Do an effect on a specified location
+\brief Do a static effect on a specified location (not moving)
 \param pos Position where to send the effect
 \param eff Effect's ID
 \param speed Effect's speed
@@ -173,6 +111,68 @@ void nEffects::locationFX(sLocation pos, uint16_t eff, uint8_t speed, uint8_t lo
 	}
 }
 
+/*!
+\brief Plays a moving effect from a cSerializable to another one
+\param source Source of the effect
+\param destination Target of the effect
+\param speed Speed of the effect
+\param explode If true should do a final explosion
+\param part particle effects structure
+*/
+void nEffects::movingFX(pSerializable source, pSerializable destination, uint16_t eff, uint8_t speed, uint8_t loops, bool explode, ParticleFx* part)
+{
+	if ( !source || !destination ) return;
+
+	nPackets::Sent::GraphicalEffect pk(etBolt, source, destination, eff, speed, loops, false, explode);
+
+	if (!part) // no UO3D effect ? lets send old effect to all clients
+	{
+		NxwSocketWrapper sw;
+		sw.fillOnline( );
+		for( sw.rewind(); !sw.isEmpty(); sw++ )
+		{
+			pClient j =sw.getSocket();
+			pChar pj = cSerializable::findCharBySerial(currchar[j]);
+			if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
+			{
+				j->sendPacket(&pk);
+			}
+		}
+		return;
+	}
+	// UO3D effect -> let's check which client can see it
+
+	NxwSocketWrapper sw;
+	sw.fillOnline();
+	for( sw.rewind(); !sw.isEmpty(); sw++ )
+	{
+		 pClient j =sw.getSocket();
+		 pChar pj = cSerializable::findCharBySerial(currchar[j]);
+		 if ( src->hasInRange(pj) && pj->hasInRange(dst) && clientInfo[j]->ingame )
+		 {
+			if (clientDimension[j]==2) // 2D client, send old style'd
+			{
+				j->sendPacket(&pk);
+			} else if (clientDimension[j]==3) // 3d client, send 3d-Particles
+			{
+				//! \todo packet 0xc7
+				movingeffectUO3D(source, dest, part);
+				unsigned char particleSystem[49];
+				Xsend(j, particleSystem, 49);
+			}
+			else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
+				LogError"Invalid Client Dimension: %i\n", clientDimension[j]);
+		}
+	}
+}
+
+/*!
+\brief Plays a moving effect from a cSerializable to a sLocation
+\param source Source object
+\param pos Target location
+\param eff Effect's ID
+\param speed Effect's speed
+*/
 void nEffects::throwFX(pSerializable source, sLocation pos, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
 {
 	if ( ! source ) return;
@@ -188,6 +188,13 @@ void nEffects::throwFX(pSerializable source, sLocation pos, uint16_t eff, uint8_
 	}
 }
 
+/*!
+\brief Plays a moving effect from a sLocation to a cSerializable
+\param src_pos Source location
+\param destination Target serializable
+\param eff Effect's ID
+\param speed Effect's speed
+*/
 void nEffects::pullFX(sLocation src_pos, pSerializable destination, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
 {
 	if ( ! destination ) return;
@@ -203,13 +210,20 @@ void nEffects::pullFX(sLocation src_pos, pSerializable destination, uint16_t eff
 	}
 }
 
-void nEffects::locationtolocationFX(sLocation src_pos, sLocation dst_loc, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
+/*!
+\brief Plays a moving effect between two sLocation
+\param src Source location
+\param dst Target location
+\param eff Effect's ID
+\param speed Effect's speed
+*/
+void nEffects::locationTolocationFX(sLocation src, sLocation dst, uint16_t eff, uint8_t speed, uint8_t loop, bool explode)
 {
 
-	nPackets::Sent::GraphicalEffect pk(etBolt, src_pos, dst_pos, eff, speed, loop, false, explode);
+	nPackets::Sent::GraphicalEffect pk(etBolt, src, dst, eff, speed, loop, false, explode);
 
 	NxwSocketWrapper sw;
-	sw.fillOnline( src_pos );
+	sw.fillOnline( src );
 	for( sw.rewind(); !sw.isEmpty(); sw++ )
 	{
 		pClient j =sw.getSocket();
@@ -218,7 +232,7 @@ void nEffects::locationtolocationFX(sLocation src_pos, sLocation dst_loc, uint16
 }
 
 /*!
-\brief Bolts a cSerializable
+\brief Sends a lighning bolt to a cSerializable
 \param target Target of the effect
 \param bNoParticles If true \b not use particles
 */
@@ -266,9 +280,11 @@ void nEffects::boltFX(pSerializable target, bool bNoParticles)
 }
 
 /*!
-\brief Plays <i>circle of blood</i> or similar effect
+\brief Sends the given effect around target (random displacement)
 \param target Target of the effect
 \param id Effect's ID
+
+\note Used for <i>circle of blood</i> and similar effects
 */
 void nEffects::circleFX(pSerializable target, uint16_t id)
 {
