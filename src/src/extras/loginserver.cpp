@@ -15,10 +15,25 @@
 #include <mxml.h>
 #include <wefts_mutex.h>
 
+#ifdef HAVE_NETDB_H
 #include <netdb.h>
+#endif
+
+#ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
+#endif
+
+#ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
+#endif
+
+#ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
+#endif
+
+#ifdef HAVE_WINSOCK2_H
+#include <winsock2.h>
+#endif
 
 /*!
 \brief Loads Login Servers List data from loginserver.xml configuration file.
@@ -71,6 +86,7 @@ restore UDP queries.
 */
 uint32_t nLoginServer::sServer::getIPAddress() const
 {
+#if defined(HAVE_GETHOSTBYNAME) && defined(HAVE_INET_ATON)
 	// Mutex used to prevent gethostbyname() returned pointer to be
 	// overwritten by new calls.
 	static Wefts::Mutex m;
@@ -107,4 +123,13 @@ uint32_t nLoginServer::sServer::getIPAddress() const
 	
 	m.unlock();
 	return addr.s_addr;
+#elif defined(WIN32)
+	//! \todo Missing way to resolve on windows
+
+#else
+	#warning Seems like your system's way to resolve hostnames isn't \
+		supported, you can only use IP-value
+	
+	ip2long(hostname);
+#endif
 }
