@@ -14,6 +14,42 @@
 #include "libhypnos/prefix.h"
 #endif
 
+#ifdef WIN32
+
+#include <wefts_mutex.h>
+
+#ifdef HAVE_WINBASE_H
+#include <winbase.h>
+#endif
+
+#ifdef HAVE_SHLWAPI_H
+#include <shlwapi.h>
+#endif
+
+/*!
+\brief Gets the directory in which the executable is
+*/
+static std::string getExePath()
+{
+	static Wefts::Mutex m;
+	static char *buffer[MAX_PATH];
+	
+	m.lock();
+	
+	// _pgmptr contains the full path of the executable file
+	// (see GetModuleFileName() function documentation on msdn)
+	strncpy(buffer, _pgmptr, MAX_PATH);
+	
+	PathRemoveFileSpec(buffer);
+	std::string retstr(buffer);
+	
+	m.unlock();
+	return retstr;
+}
+
+#endif
+
+
 std::string mulsDir;	//!< User directory for MUL files
 std::string logsDir;	//!< User directory for log files
 
@@ -56,7 +92,15 @@ std::string nDirs::getMulsDir()
 #elif defined(__unix__)
 	return DATADIR "/games/hypnos/muls";
 #else // Win32
-	//!\todo Fill this...
+	char *s = getHKLMRegistryString( "SOFTWARE\\Origin Worlds Online\\Ultima Online\\1.0", "ExePath" );
+	if ( s ) {
+		PathRemoveFileSpec(s);
+		std::string strret = s;
+		delete[] s;
+		return strret;
+	} else {
+		return getExePath() + "\\muls";
+	}
 #endif
 }
 
@@ -91,7 +135,7 @@ std::string nDirs::getLogsDir()
 #ifdef __unix__
 	return "/var/log/hypnos";
 #else
-	//!\todo Fill this..
+	return getExePath() + "\\logs";
 #endif
 }
 

@@ -43,7 +43,7 @@ if test "$is_win" == "yes"; then
 	DEFS="$DEFS -DWIN32_LEAN_AND_MEAN"
 	CXXFLAGS="$CXXFLAGS -DWIN32_LEAN_AND_MEAN"
 	
-	AC_CHECK_HEADERS([conio.h windows.h winnt.h winsock2.h winbase.h winreg.h wincon.h],,,
+	AC_CHECK_HEADERS([conio.h windows.h winnt.h winsock2.h winbase.h winreg.h wincon.h shlwapi.h],,,
 	[[#ifdef HAVE_WINDOWS_H
 	#include <windows.h>
 	#endif
