@@ -37,6 +37,9 @@
 
 #define SLPMULTI 1000
 
+// For Wefts
+#define HAVE_LIBPTHREAD
+
 extern bool pollHUPStatus ();
 extern bool pollCloseRequests ();
 extern void setup_signals ();
@@ -55,8 +58,19 @@ void Sleep(unsigned long msec);
 #define closesocket(s)	close(s)
 #define ioctlsocket ioctl
 
-// For Wefts
-#define HAVE_LIBPTHREAD
+/*!
+\brief Checks if a file exists already
+\param filename Relative path of the file to check
+\return true if the file exists, else false
+*/
+bool fileExists(std::string filename);
+
+/*!
+\brief Check if the directory of the given file exists, and if not, create it
+\param dirname Relative path of the file to check the directory of
+\return false if unable to create the directory, else true
+*/
+bool ensureDirectory(std::string filename);
 
 #endif
 #endif

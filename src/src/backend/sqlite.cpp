@@ -20,10 +20,10 @@ cSQLite::cSQLite(std::string filename)
 	flags = 0;
 	litedb = NULL;
 	
-	if ( ! arch::fileExists )
+	if ( ! fileExists(filename) )
 	{
 		LogMessage("File %s non-existant, creating one...", filename.c_str());
-		if ( ! arch::ensureDirectory(filename) )
+		if ( ! ensureDirectory(filename) )
 		{
 			LogCritical("Error ensuring directory path for %s. Closing up...", filename.c_str());
 			setFlag(flagAborted, true);
@@ -39,7 +39,7 @@ cSQLite::cSQLite(std::string filename)
 		LogCritical("Error opening sqlite database: %s", *errmsg);
 		setFlag(flagAborted, true);
 		if ( errmsg )
-			sqlite_freemem(errmsg)
+			sqlite_freemem(errmsg);
 		return;
 	}
 }
@@ -60,18 +60,18 @@ This function calls the facilities of sqlite to compile the query into a vm.
 */
 cSQLite::pSQLiteQuery cSQLite::execQuery(std::string query)
 {
-	mutex.acquire();
+	mutex.lock();
 	char * errmsg;
 	sqlite_vm *vm;
 	int result = sqlite_compile(litedb, query.c_str(), NULL, &vm, &errmsg);
 	if ( ! result )
 	{
-		pSQLiteQuery ret = new pSQLiteQuery(vm);
-		mutex.release();
+		pSQLiteQuery ret = new cSQLiteQuery(vm);
+		mutex.unlock();
 		return ret;
 	} else {
 		LogError("SQLite error executing query %s: %d", query.c_str(), result);
-		mutex.release();
+		mutex.unlock();
 		return NULL;
 	}
 }
@@ -148,7 +148,7 @@ bool cSQLite::cSQLiteQuery::fetchRow()
 	switch(ret)
 	{
 		case SQLITE_BUSY:
-			ZThread::Thread::wait(sqliteBusyTimeout);
+			Wefts::OSSleep(sqliteBusyTimeout, 0);
 			return fetchRow();
 		case SQLITE_ERROR:
 		case SQLITE_MISUSE:
@@ -159,14 +159,14 @@ bool cSQLite::cSQLiteQuery::fetchRow()
 	}
 	flags |= flagStarted;
 	
-	setColumnNames &&
+	if ( setColumnNames )
 		columnNames.resize(columns);
 	
 	for(register int i = 0; i < columns; i++)
 	{
-		setColumnNames &&
-		columnNames[i] = colNames[i];
-		thisRow[columnNames[i]] = std::string(colData[i]);
+		if ( setColumnNames )
+			columnNames[i] = colnames[i];
+		thisRow[columnNames[i]] = std::string(coldata[i]);
 	}
 
 	if ( flags & flagArchiving )
@@ -174,5 +174,3 @@ bool cSQLite::cSQLiteQuery::fetchRow()
 	
 	return complete;
 }
-
-

@@ -23,6 +23,7 @@
 #include <process.h>
 #include <errno.h>
 
+// for wefts
 #define HAVE_WIN_THREADS
 
 char *basename(char *path);
@@ -49,6 +50,20 @@ char *basename(char *path);
 
 int asprintf(char **strp, const char *fmt, ...);
 int vasprintf(char **strp, const char *fmt, va_list ap);
+
+/*!
+\brief Checks if a file exists already
+\param filename Relative path of the file to check
+\return true if the file exists, else false
+*/
+bool fileExists(std::string filename);
+
+/*!
+\brief Check if the directory of the given file exists, and if not, create it
+\param dirname Relative path of the file to check the directory of
+\return false if unable to create the directory, else true
+*/
+bool ensureDirectory(std::string filename);
 
 #endif
 #endif

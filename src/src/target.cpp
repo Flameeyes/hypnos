@@ -163,16 +163,6 @@ pTarget createTarget( TARG_TYPE type )
 
 }
 
-
-
-
-
-
-
-
-
-
-
 ///////////////////////////////////////////////////////////////////////
 //
 // TARGETLOCATION CLASS

@@ -12,7 +12,7 @@
 
 #include "common_libs.h"
 #include <sqlite.h>
-#include <zthread/Mutex.h>
+#include <wefts_mutex.h>
 
 /*!
 \brief SQLite access class
@@ -116,6 +116,8 @@ public:
 	{ return flags & flagAborted; }
 	
 	pSQLiteQuery execQuery(std::string query);
+	
+	void createDatabaseSchema();
 protected:
 	inline void setFlag(uint32_t flag, bool on = true)
 	{
@@ -125,9 +127,11 @@ protected:
 			flags &= ~flag;
 	}
 	
-	cSQLite *litedb;	//!< Pointer to access the SQLite database
+	sqlite *litedb;		//!< Pointer to access the SQLite database
 	uint32_t flags;		//!< Flags for the access
-	ZThread::Mutex mutex;	//!< Mutex for threaded access to the database
+	Wefts::Mutex mutex;	//!< Mutex for threaded access to the database
+	
+	static const uint32_t sqliteBusyTimeout = 100;	//!< Timeout for busy database
 };
 
 extern cSQLite *globalDB;
