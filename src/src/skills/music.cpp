@@ -17,6 +17,7 @@
 #include "objects/cpc.h"
 #include "objects/cbody.h"
 #include "ojbects/ccontainer.h"
+#include "settings.h"
 
 void nSkills::target_enticement2(pClient client, pTarget t )
 {
@@ -115,8 +116,8 @@ void nSkills::target_provocation2(pClient client, pTarget t )
 		nSkills::PlayInstrumentWell(client, inst);
 		if (Player->checkSkill( skProvocation, 0, 1000))
 		{
-			if (Player->InGuardedArea() && ServerScp::g_nInstantGuard == 1) //Luxor
-				npcs::SpawnGuard(Player, Player, charpos.x+1, charpos.y, charpos.z); //ripper
+			if (Player->InGuardedArea() && nSettings::Server::hasInstantGuards() ) //Luxor
+				npcs::SpawnGuard(Player, Player, charpos + (1,0,0)); //ripper
 			client->sysmessage("Your music succeeds as you start a fight.");
 		}
 		else

@@ -123,10 +123,11 @@ static void newCarveTarget(pClient client, pItem pi3)
 	//if it's a human corpse
 	if(pi3->morey)
 	{
-		pc->modifyFame(ServerScp::g_nChopFameLoss); // Ripper..lose fame and karma and criminal.
-		pc->IncreaseKarma(+ServerScp::g_nChopKarmaLoss);
+		// Ripper..lose fame and karma and criminal.
+		pc->modifyFame(- nSettings::Reputation::getChopFameLoss());
+		pc->IncreaseKarma(- nSettings::Reputation::getChopKarmaLoss());
+		pc->setCrimGrey(nSettings::Reputation::getChopAction());
 		client->sysmessage("You lost some fame and karma!");
-		pc->setCrimGrey(ServerScp::g_nChopWillCriminal);//Blue and not attacker and not guild
 
 		//create the Head
 		pItem pi = item::CreateFromScript( "$item_hardcoded" );

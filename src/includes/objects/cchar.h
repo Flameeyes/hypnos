@@ -345,16 +345,9 @@ public:
 	{ setFlag(flagIsMeditating, set); }
 	
 	void warUpdate();
+	
+	void setCrimGrey(SuspectAction mode);
 
-	/*!
-	\brief Sets criminal or grey depending on a server.cfg setting
-	\param mode server.cfg setting to test (1 | 2)
-	*/
-	inline void cChar::setCrimGrey(int mode)
-	{
-		/*if ( mode == 1 ) setGrey();
-		else makeCriminal();*/
-	}
 
 	void increaseKarma(int32_t value, pChar pKilled = 0 );
 	void modifyFame( int32_t value );

@@ -92,8 +92,7 @@ void snooping( pPC snooper, pItem cont )
 		}
 		snooper->IncreaseKarma( - nSettings::Skills::getSnoopKarmaLoss() );
 		snooper->modifyFame( - nSettings::Skills::getSnoopFameLoss() );
-		//!\todo This should be investigated
-		snooper->setCrimGrey(ServerScp::g_nSnoopWillCriminal);
+		snooper->setCrimGrey( nSettings::Reputation::getSnoopAction() );
 	}
 }
 
@@ -217,13 +216,11 @@ void Skills::target_stealing( pClient client, pTarget t )
 	
 	thief->unHide();
 	client->sysmessage("You have been caught!");
-	thief->increaseKarma( - nSettings::Skills::getStealKarmaLoss() );
-	thief->modifyFame( - nSettings::Skills::getStealFameLoss() );
+	thief->increaseKarma( - nSettings::Reputation::getStealKarmaLoss() );
+	thief->modifyFame( - nSettings::Reputation::getStealFameLoss() );
 
 	if ( victim->IsInnocent() && thief->attackerserial != victim->getSerial() && Guilds->Compare(thief,victim)==0)
-		//!\todo should be investigated
-		thief->setCrimGrey(ServerScp::g_nStealWillCriminal); //Blue and not attacker and not same guild
-
+		thief->setCrimGrey( nSettings::Reputation::getStealAction() ); //Blue and not attacker and not same guild
 
 	std::string itmname;
 	
@@ -403,11 +400,11 @@ void Skills::target_randomSteal( pClient client, pTarget t )
 	
 	thief->unHide();
 	client->sysmessage("You have been caught!");
-	thief->IncreaseKarma( - nSettings::Skills::getStealKarmaLoss() );
-	thief->modifyFame( - nSettings::Skills::getStealFameLoss() );
+	thief->IncreaseKarma( - nSettings::Reputation::getStealKarmaLoss() );
+	thief->modifyFame( - nSettings::Reputation::getStealFameLoss() );
 
 	if (victim->IsInnocent() && thief->attackerserial!=victim->getSerial() && Guilds->Compare(thief,victim)==0)//AntiChrist
-		thief->setCrimGrey(ServerScp::g_nStealWillCriminal);//Blue and not attacker and not guild
+		thief->setCrimGrey( nSettings::Reputation::getStealAction() ); //Blue and not attacker and not guild
 
 	std::string itmname = "";
 	if ( pi->getCurrentName() != "#" )

@@ -23,45 +23,37 @@ namespace npcs {	//Luxor
 //<Anthalir>
 void SpawnGuard(pChar pc, pChar pc_i, sLocation where)
 {
-	SpawnGuard(pc, pc_i, where.x, where.y, where.z);
-}
-//</Anthalir>
-
-void SpawnGuard(pChar pc, pChar pc_i, int x, int y, signed char z)
-{
-
 	if ( ! pc || ! pc_i ) return;
 
 	int t;
 	if (!(region[pc_i->region].priv&0x01)) return;
-	if( pc->dead || pc_i->dead ) return; //AntiChrist
+	if( pc->isDead() || pc_i->isDead() ) return; //AntiChrist
+	
+	if ( ! SrvParms->guardsactive || pc->isInvul() )
+		return;
 
-	if(SrvParms->guardsactive /*&& !chars[s].isInvul()*/)
-	{
-		t=RandomNum(1000,1001);
-		t=region[pc_i->region].guardnum[(rand()%10)+1];
-		pChar pc_c = npcs::AddNPCxyz(pc->getSocket(), t, x, y, z);
+	t=RandomNum(1000,1001);
+	t=region[pc_i->region].guardnum[(rand()%10)+1];
+	pChar pc_c = npcs::AddNPCxyz(pc->getSocket(), t, x, y, z);
 
-		if ( pc_c )
-		{
-		  pc_c->npcaitype=NPCAI_TELEPORTGUARD;
-		  pc_c->SetAttackFirst();
-		  pc_c->attackerserial=pc->getSerial();
-		  pc_c->targserial=pc->getSerial();
-		  pc_c->npcWander=WANDER_FREELY_CIRCLE;  //set wander mode Tauriel
-		  pc_c->toggleCombat();
-		  pc_c->setNpcMoveTime();
-		  pc_c->summontimer=(getclock()+(SECS*25));
+	if ( ! pc_c ) return;
+	
+	pc_c->npcaitype=NPCAI_TELEPORTGUARD;
+	pc_c->setAttackFirst();
+	pc_c->attackerserial=pc->getSerial();
+	pc_c->targserial=pc->getSerial();
+	pc_c->npcWander=WANDER_FREELY_CIRCLE;  //set wander mode Tauriel
+	pc_c->toggleCombat();
+	pc_c->setNpcMoveTime();
+	pc_c->summontimer=(getclock()+(SECS*25));
 
-		  pc_c->playSFX(0x01FE);
-		  staticFX(pc_c, 0x372A, 9, 6);
+	pc_c->playSFX(0x01FE);
+	staticFX(pc_c, 0x372A, 9, 6);
 
-		  pc_c->teleport();
-		  pc_c->talkAll("Thou shalt regret thine actions, swine!",1);
-		}
-	}
-
+	pc_c->teleport();
+	pc_c->talkAll("Thou shalt regret thine actions, swine!",1);
 }
+//</Anthalir>
 
 pItem AddRandomLoot(pItem pack, char * lootlist)
 {
@@ -1134,24 +1126,7 @@ pChar SpawnRandomMonster(pChar pc, char* cList, char* cNpcID)
 	return npcs::AddRespawnNPC( pc, str2num( value ) );
 }
 
-
-
 } // namespace
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 cCreatureInfo::cCreatureInfo()
 {
@@ -1279,12 +1254,3 @@ pCreatureInfo cAllCreatures::getCreature( uint16_t id )
 	else
 		return allCreatures[id];
 }
-
-
-
-
-
-
-
-
-

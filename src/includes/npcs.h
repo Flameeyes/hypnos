@@ -35,7 +35,6 @@ namespace npcs
 	};
 
 	void SpawnGuard( pChar pc, pChar pc_i, sLocation where);		// added by Anthalir
-	void SpawnGuard( pChar pc, pChar pc_i, int x, int y, signed char z);
 	void initNpcSpells();
 	void npcCastSpell(pChar pc_att, pChar pc_def);
 	void npcMagicAttack(pChar pc_att, pChar pc_def);

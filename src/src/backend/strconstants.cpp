@@ -17,11 +17,15 @@
 
 This functions test the prefix of a string to find out which can be it's mean
 and then calls the right function to get the C++ constant.
+
+\note The tests must be done from the shortest to the longest.
 */
 uint32_t nStrConstants::generic(std::string str)
 {
 	if ( strcmp(str.c_str(), "sk", 2) == 0 )
 		return skills(str);
+	if ( strcmp(str.c_str(), "sa", 2) == 0 )
+		return suspectAction(str);
 	if ( strcmp(str.c_str(), "weapon", 6) == 0 )
 		return weaponsTypes(str);
 }
@@ -109,4 +113,19 @@ uint16_t nStrConstants::weaponsTypes(std::string str)
 	if ( str == "weaponHXBow" ) return cWeapon::weaponHXBow;
 	
 	return cWeapon::weaponInvalid;
+}
+
+/*!
+\brief Translate a sa?? string into the enumerated constant
+\param str Stirng representing the SuspectAction enum value
+\return The SuspectAction enum value represented by the string, or saNormal if
+	not a valid string
+*/
+SuspectAction nStrConstants::suspectAction(std::string str)
+{
+	if ( str == "saCriminal" ) return saCriminal;
+	if ( str == "saGrey" ) return saGrey;
+	
+	// No need to check for saNormal :)
+	return saNormal;
 }

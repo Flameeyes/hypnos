@@ -80,8 +80,29 @@ namespace nSettings {
 	namespace Actions {
 		bool shouldEquipOnDClick();		//!< Should an item be equipped on double click? [Default: true]
 		bool canUseItemsWhenInvisible();	//!< When invisible (by spell) can a player use items? [Default: false]
+	}
+	
+	//! Reputation system settings
+	namespace Reputation {
 		uint16_t getBountyKarmaGain();		//!< How much karma is gained for bounty hunting? [Default: \b missing ]
 		uint16_t getBountyFameGain();		//!< How much fame is gained for bounty hunting? [Default: \b missing ]
+		
+		SuspectAction getPolymorphAction();
+		SuspectAction getHelpingGreyAction();
+		SuspectAction getHelpingCriminalAction();
+		SuspectAction getLootingAction();
+		
+		uint16_t getStealKarmaLoss();	//!< How much karma is lost stealing? [Default: \b missing ]
+		uint16_t getStealFameLoss();	//!< How much fame is lost stealing? [Default: \b missing ]
+		SuspectAction getStealAction();
+		
+		uint16_t getSnoopKarmaLoss();	//!< How much karma is lost snooping? [Default: \b missing ]
+		uint16_t getSnoopFameLoss();	//!< How much fame is lost snooping? [Default: \b missing ]
+		SuspectAction getSnoopAction();
+		
+		uint16_t getChopFameLoss();
+		uint16_t getChopKarmaLoss();
+		SuspectAction getChopAction();
 	}
 
 	//! Skill related settings
@@ -102,16 +123,6 @@ namespace nSettings {
 			uint16_t getStealthToDropItemsWhileHid();
 				//!< Stealth necessary to drop an item and remain hidden.
 				//!< If INVALID pc is always unhid while dropping items on the ground [Default: 960]
-		//@}
-		
-		//@{
-		/*!
-		\name Stealing and Snooping
-		*/
-			uint16_t getSnoopKarmaLoss();	//!< How much karma is lost snooping? [Default: \b missing ]
-			uint16_t getSnoopFameLoss();	//!< How much fame is lost snooping? [Default: \b missing ]
-			uint16_t getStealKarmaLoss();	//!< How much karma is lost stealing? [Default: \b missing ]
-			uint16_t getStealFameLoss();	//!< How much fame is lost stealing? [Default: \b missing ]
 		//@}
 	}
 	

@@ -23,6 +23,7 @@ if it makes the error handling more difficult).
 #include "settings.h"
 #include "logsystem.h"
 #include "abstraction/tvariant.h"
+#include "backend/strconstants.h"
 
 #define SETTING(type, name, default) \
 	type val##name = default; \
@@ -274,21 +275,92 @@ namespace Actions {
 	bool canUseItemsWhenInvisible()
 	{ return flags & flagActionsUseInvisible; }
 	
+	void load(MXML::Node *s)
+	{
+		MXML::Node *n = s->child();
+		do {
+			BOOLSETTING(EquipOnDClick, flagActionsEquipOnDClick)
+			else BOOLSETTING(UseItemsWhenInvisible, flagActionsUseInvisible)
+			else LogWarning("Unknown node %s for nSettings::Actions namespace, ignoring", n->name().c_str() );
+			n = n->next();
+		} while(n);
+	}
+}
+
+namespace Reputation {
 	//! How much karma is gained for bounty hunting? \todo Set the default
 	SETTING(uint16_t, BountyKarmaGain, 0);
 	
 	//! How much fame is gained for bounty hunting? \todo Set the default
 	SETTING(uint16_t, BountyFameGain, 0);
-
+	
+	//! What to do after a polymorph
+	SETTING(SuspectAction, PolymorphAction, saNormal);
+	
+	//! What to do after helping a grey
+	SETTING(SuspectAction, HelpingGreyAction, saNormal);
+	
+	//! What to do after helping a criminal
+	SETTING(SuspectAction, HelpingCriminalAction, saNormal);
+	
+	//! How much karma is lost stealing? \todo Set the default
+	SETTING(uint16_t, StealKarmaLoss, 0);
+	
+	//! How much fame is lost stealing? \todo Set the default
+	SETTING(uint16_t, StealFameLoss, 0);
+	
+	//! What to do after a steal
+	SETTING(SuspectAction, StealAction, saNormal);
+	
+	//! How much karma is lost snooping? \todo Set the default
+	SETTING(uint16_t, SnoopKarmaLoss, 0);
+	
+	//! How much fame is lost snooping? \todo Set the default
+	SETTING(uint16_t, SnoopFameLoss, 0);
+	
+	//! What to do after a snoop
+	SETTING(SuspectAction, SnoopAction, saNormal);
+	
+	//! How much karma is loss chopping a corpse? \todo Set the default
+	SETTING(uint16_t, ChopKarmaLoss, 0);
+	
+	//! How much fame is loss chopping a corpse? \todo Set the default
+	SETTING(uint16_t, ChopFameLoss, 0);
+	
+	//! What to do after a corpse chop
+	SETTING(SuspectAction, ChopAction, saNormal);
+	
+	//! What to do after a loot
+	SETTING(SuspectAction, LootingAction, saNormal);
+	
+	#define SUSPECT(A) \
+		if ( n->name() == #A ) \
+			var##A = nStrConstants::suspectAction(n->data());
+	
 	void load(MXML::Node *s)
 	{
 		MXML::Node *n = s->child();
 		do {
 			XMLSETTING(BountyKarmaGain, uint16_t, UInt16)
 			else XMLSETTING(BountyFameGain, uint16_t, UInt16)
-			else BOOLSETTING(EquipOnDClick, flagActionsEquipOnDClick)
-			else BOOLSETTING(UseItemsWhenInvisible, flagActionsUseInvisible)
-			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
+			else SUSPECT(PolymorphAction)
+			else SUSPECT(HelpingGreyAction)
+			else SUSPECT(HelpingCriminalAction)
+			
+			else XMLSETTING(StealKarmaLoss, uint16_t, UInt16)
+			else XMLSETTING(StealFameLoss, uint16_t, UInt16)
+			else SUSPECT(StealAction)
+			
+			else XMLSETTING(SnoopKarmaLoss, uint16_t, UInt16)
+			else XMLSETTING(SnoopFameLoss, uint16_t, UInt16)
+			else SUSPECT(SnoopAction)
+			
+			else XMLSETTING(ChopKarmaLoss, uint16_t, UInt16)
+			else XMLSETTING(ChopFameLoss, uint16_t, UInt16)
+			else SUSPECT(ChopAction)
+			
+			else SUSPECT(LootingAction)
+			else LogWarning("Unknown node %s for nSettings::Reputation namespace, ignoring", n->name().c_str() );
 			n = n->next();
 		} while(n);
 	}
@@ -304,18 +376,6 @@ namespace Skills {
 	//! Defending player must have N skill points more than the attacker for the attacker to gain skill (in PvP only).
 	SETTING(uint16_t, LimitPlayerSparring, 0);
 
-	//! How much karma is lost snooping? \todo Set the default
-	SETTING(uint16_t, SnoopKarmaLoss, 0);
-	
-	//! How much fame is lost snooping? \todo Set the default
-	SETTING(uint16_t, SnoopFameLoss, 0);
-	
-	//! How much karma is lost stealing? \todo Set the default
-	SETTING(uint16_t, StealKarmaLoss, 0);
-	
-	//! How much fame is lost stealing? \todo Set the default
-	SETTING(uint16_t, StealFameLoss, 0);
-	
 	//! Stealth necessary to pick up an item and remain hidden.
 	//! If INVALID pc is always unhid while picking up items from the ground
 	SETTING(uint16_t, StealthToTakeItemsWhileHid, 960);
@@ -347,11 +407,7 @@ namespace Skills {
 	{
 		MXML::Node *n = s->child();
 		do {
-			XMLSETTING(SnoopKarmaLoss, uint16_t, UInt16)
-			else XMLSETTING(SnoopFameLoss, uint16_t, UInt16)
-			else XMLSETTING(StealKarmaLoss, uint16_t, UInt16)
-			else XMLSETTING(StealFameLoss, uint16_t, UInt16)
-			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
+			LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
 			n = n->next();
 		} while(n);
 	}
@@ -413,6 +469,7 @@ void load(std::istream &xmlfile)
 			else SECTION(Server)
 			else SECTION(Hunger)
 			else SECTION(Actions)
+			else SECTION(Reputation)
 			else SECTION(Skills)
 			else SECTION(Logging)
 			else

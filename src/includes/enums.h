@@ -232,4 +232,16 @@ enum EffectType {
 	etFollowObject	//!< effect follows source
 }
 
+/*!
+\brief Mode to set a suspect
+
+This enum is used for cChar::setCrimGrey() function which depends on various 
+settings in the nSettings::Reputation namespace.
+*/
+enum SuspectAction {
+	saNormal,	//!< Doesn't change the suspect's state
+	saCriminal,	//!< Set the suspect criminal
+	saGrey		//!< Set the suspect grey
+};
+
 #endif

@@ -663,7 +663,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 				{
 					pc_currchar->IncreaseKarma(-5);
 					//!\todo should be investigated
-					pc_currchar->setCrimGrey(ServerScp::g_nLootingWillCriminal);
+					pc_currchar->setCrimGrey(nSettings::Reputation::getLootingAction());
 					sysmessage("You are loosing karma!");
 				}
 			}
@@ -1442,11 +1442,11 @@ void cClient::droppedOnGuard(pItem pi, pNPC npc)
                                 free(temp);
 
 				// Delete the Bounty from the bulletin board
-				BountyDelete(own );	//!<\todo bounty system
+				BountyDelete(own );	//! \todo bounty system
 
 				// xan : increment fame & karma :)
-				pc->IncreaseKarma( nSettings::Actions::getBountyKarmaGain() );
-				pc->modifyFame( nSettings::Actions::getBountyFameGain() );
+				pc->IncreaseKarma( nSettings::Reputation::getBountyKarmaGain() );
+				pc->modifyFame( nSettings::Reputation::getBountyFameGain() );
 			}
 			else
 				npc->talk(this, "You can not claim that prize scoundrel. You are lucky I don't strike you down where you stand!",0);

@@ -596,29 +596,26 @@ void cChar::MoveTo(sLocation newloc)
 		spelltime = 0;
 	}
 	// </Luxor>
-#ifdef SPAR_C_LOCATION_MAP
 	setPosition( newloc );
 	pointers::updateLocationMap( this );
-#else
-	mapRegions->remove(this);
-	setPosition( newloc );
-	mapRegions->add( this );
-#endif
 }
 
 /*!
-\author Xanathar
-\param pc_i helped character
 \brief Called after helping a character for accomplish to criminals
+\param pc_i helped character
 */
 void cChar::helpStuff(pChar pc_i)
 {
 	if (!pc_i || this == pc_i )
 		return;
 
-	if (pc_i->IsGrey()) setCrimGrey (this, ServerScp::g_nHelpingGreyWillCriminal);
-
-	if (pc_i->IsInnocent())
+	if (pc_i->isGrey())
+		setCrimGrey(nSettings::Reputation::getHelpingGreyAction());
+	else if (pc_i->isCriminal())
+		setCrimGrey(nSettings::Reputation::getHelpingCriminalAction());
+	else if (pc_i->isMurderer())
+		makeCriminal();
+	else if (pc_i->isInnocent())
 	{
 		if ((pc_i->GetKarma()>0)&&((pc_i->GetKarma()-GetKarma())>100)) {
 			IncreaseKarma(+5);
@@ -626,15 +623,11 @@ void cChar::helpStuff(pChar pc_i)
 		}
 		return;
 	}
-
-	if (pc_i->IsCriminal()) setCrimGrey (ServerScp::g_nHelpingCriminalWillCriminal);
-
-	if (pc_i->IsMurderer()) makeCriminal();
 }
 
 /*!
 \brief applies a poison to a char
-\author Xanathar, modified by Endymion
+\author Endymion
 \param poisontype the poison
 \param secs the duration of poison ( if INVALID ( default ) default duration is used )
 */
@@ -2856,4 +2849,23 @@ NotEquippableReason cChar::canEquip(pItem pi)
 	pEquippable ei = dynamic_cast<pEquippable> pi;
         if (ei) return canEquip(ei);
         return nerNotEquippableItem;
+}
+
+/*!
+\brief Sets the character criminal, grey or nothing depending on the given mode
+\param mode Mode to set the character
+*/
+void cChar::setCrimGrey(SuspectAction mode)
+{
+	switch(mode)
+	{
+		case saNormal:
+			return;
+		case saCriminal:
+			makeCriminal();
+			return;
+		case saGrey:
+			setGrey();
+			return;
+	}
 }

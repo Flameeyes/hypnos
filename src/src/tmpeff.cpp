@@ -444,7 +444,7 @@ void cTempfx::start()
 		case SPELL_POLYMORPH:
 			if (dest->morphed)
 				dest->morph();  //if the char is morphed, unmorph him
-			dest->setCrimGrey(ServerScp::g_nPolymorphWillCriminal);
+			dest->setCrimGrey(nSettings::Reputation::getPolymorphAction());
 			dest->morph( m_nMore1, -1, -1, -1, -1, -1, NULL, true );
 			dest->polymorph = true;
 			break;
