@@ -1,0 +1,11 @@
+<!-- elements in weapons -->
+<!ELEMENT weapons (weapon)+>
+<!ELEMENT weapon (id)+>
+
+<!-- The weapon has as attribute the type as string constant -->
+<!ATTLIST weapon
+    type CDATA #REQUIRED
+>
+
+<!-- ID's are only IDs as integers -->
+<!ELEMENT id (#PCDATA)>
