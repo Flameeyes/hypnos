@@ -162,4 +162,56 @@ Set this off to Jail at Character Level.
   </setting>
  </group>
   
+ <group name="Reputation">
+  <setting name="BountyKarmaGain" type="uint16" default="100" flag="get">
+The amount of karma gained when collecting a bounty.
+  </setting>
+  <setting name="BountyFameGain" type="uint16" default="50" flag="get">
+The amount of fame gained when collecting a bounty.
+  </setting>
+  
+  <setting name="StealKarmaLoss" type="uint16" default="9000" flag="get">
+The amount of karma lost when stealing.
+  </setting>
+  <setting name="StealFameLoss" type="uint16" default="0" flag="get">
+The amount of fame lost when stealing.
+  </setting>
+  <setting name="StealAction" type="SuspectAction" default="saNormal" flag="get">
+What to do after a steal.
+  </setting>  
+  
+  <setting name="SnoopKarmaLoss" type="uint16" default="2000" flag="get">
+The amount of karma lost when snooping.
+  </setting>
+  <setting name="SnoopFameLoss" type="uint16" default="0" flag="get">
+The amount of fame lost when snooping.
+  </setting>
+  <setting name="SnoopAction" type="SuspectAction" default="saNormal" flag="get">
+What to do after a snoop.
+  </setting> 
+  
+  <setting name="ChopKarmaLoss" type="uint16" default="0" flag="get">
+The amount of karma lost when chopping a corpse.
+  </setting>
+  <setting name="ChopFameLoss" type="uint16" default="100" flag="get">
+The amount of fame lost when chopping a corpse.
+  </setting>
+  <setting name="ChopAction" type="SuspectAction" default="saNormal" flag="get">
+What to do after a chop.
+  </setting> 
+  
+  <setting name="PolymorphAction" type="SuspectAction" default="saNormal" flag="get">
+What to do after a polymorph.
+  </setting>
+  <setting name="HelpingGreyAction" type="SuspectAction" default="saNormal" flag="get">
+What to do after helping a grey character.
+  </setting> 
+    <setting name="HelpingCriminalAction" type="SuspectAction" default="saNormal" flag="get">
+What to do after helping a criminal.
+  </setting> 
+    <setting name="LootingAction" type="SuspectAction" default="saNormal" flag="get">
+What to do after a loot.
+  </setting> 
+   
+ </group>
 </autosettings>
