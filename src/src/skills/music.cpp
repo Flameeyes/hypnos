@@ -132,8 +132,8 @@ void nSkills::target_provocation2(pClient client, pTarget t )
 		Victim2->fight(Victim1);
 		Victim2->ResetAttackFirst();
 
-		char temp[500];
-		sprintf(temp, "* You see %s attacking %s *", Victim1->getCurrentName().c_str(), Victim2->getCurrentName().c_str());
+		char *temp;
+		asprintf(&temp, "You see %s attacking %s", Victim1->getCurrentName().c_str(), Victim2->getCurrentName().c_str());
 
 		NxwSocketWrapper sw;
 		sw.fillOnline( Victim1, false );
@@ -142,12 +142,13 @@ void nSkills::target_provocation2(pClient client, pTarget t )
 			pClient i = sw.getClient();
 			if( !i ) continue;
 			
-			itemmessage(i, temp, Victim1->getSerial());
+			i->sysmessage(temp);
 		}
+		free(temp);
 	}
 	else
 	{
-	nSkills::PlayInstrumentPoor(client, inst);
+		nSkills::PlayInstrumentPoor(client, inst);
 		client->sysmessage("You play rather poorly and to no effect.");
 	}
 }
