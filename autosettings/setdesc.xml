@@ -19,8 +19,36 @@ read from the registry (under windows) or it will use the Hypnos' share
 directory (under unix-like environments).
   </setting>
   <setting name="EnabledBookSystem" type="flag" default="on" flag="is">
-Set this to on if the book system must be enabled. If book system is not
-enabled, the books aren't writeable or readable.
+Set this to on if you want the book system to be enabled. If book system is not
+enabled, the books aren't writable or readable.
+  </setting>
+  <setting Name="EnabledTradeSystem" type="flag" default="on" flag="is">
+Set this to on if you want the Trade system to be enabled. If trade system is not 
+enabled, pgs can't trade items with each others.
+  </setting>
+  <setting Name="EnabledBountySystem" type="flag" default="on" flag="is">
+Set this to on if you want the Bounty System to be enabled. If bounty system is not
+ enabled, pgs can't ask for the head of the PK
+  <setting Name="EnabledPopupHelp" type="flag" default="on" flag="is">
+Set this to on if you want the PopupHelp to be enabled. (since t2a)
+  </setting>
+  <setting Name="EnabledUOAssist" type="flag" default="on" flag="is">
+Set this to on if you want the UOAssist use to be allowed.
+  </setting>
+  <setting Name="AllowedAssistVersion" type="uint32" default="" flag="get">
+Allowed version of UOAssist
+  </setting>
+  <setting Name="MaximumPCs" type="uint8" default="5" flag="get">
+The maximum numbers of character an account can handle. 
+  </setting>
+  <setting Name="PlayersDeletePCs" type="flag" default="on" flag="can">
+Set this to on if you want the players to be allowed to delete their characters.
+  </setting>
+  <setting Name="BankMaxItems" type="uint16" default="0" flag="get">
+The maximum number of items a player can store in his bank.
+  </setting>
+  <setting Name="MaximumItemsOnTile" type="uint8" default="" flag="get">
+The maximum number of items in a single world tile.
   </setting>
  </group>
 </autosettings>
