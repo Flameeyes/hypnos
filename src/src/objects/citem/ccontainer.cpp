@@ -20,12 +20,9 @@ cContainer::mapContainerGumps cContainer::containers;
 
 /*!
 \brief Loads the containers' gumps' data
-\param in Stream where to read the XML from
 
 This funciton replaces the old loadcontainers() function which loaded from
 containers.xss, instead reads from containers.xml.
-
-\todo Actually write it
 */
 void cContainer::loadContainersData()
 {
