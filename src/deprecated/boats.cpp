@@ -322,7 +322,7 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 	WORD2Duint8_t( pi->getId(), id1, id2 );
 
 	//Of course we need the boat items!
-	serial=calcserial(pi->moreb1,pi->moreb2,pi->moreb3,pi->moreb4);
+	serial = pi->moreb;  //calcserial(pi->moreb1,pi->moreb2,pi->moreb3,pi->moreb4);
 	if(serial<0)
 		return;
 //!\todo Find a better way to handle this
@@ -1394,7 +1394,7 @@ void insert_boat(pItem pi)
 {
 	boat_db boat;
 	boat.serial = pi->getSerial();
-	boat.tiller_serial = calcserial(pi->moreb1,pi->moreb2,pi->moreb3,pi->moreb4);
+	boat.tiller_serial = pi->moreb;
 	boat.l_plank_serial = pi->morex;
 	boat.r_plank_serial = pi->morey;
 	boat.container = pi->morez;

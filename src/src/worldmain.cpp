@@ -935,21 +935,9 @@ void loaditem()
 		case 'm':
 		case 'M':
 			if (!(strcmp(script1, "MORE")))
-			{
-				i=str2num(script2);
-				pi->more1=(unsigned char)(i>>24);
-				pi->more2=(unsigned char)(i>>16);
-				pi->more3=(unsigned char)(i>>8);
-				pi->more4=(unsigned char)(i%256);
-			}
+				pi->more = str2num(script2);
 			else if (!(strcmp(script1, "MORE2")))
-			{
-				i=str2num(script2);
-				pi->moreb1=(unsigned char)(i>>24);
-				pi->moreb2=(unsigned char)(i>>16);
-				pi->moreb3=(unsigned char)(i>>8);
-				pi->moreb4=(unsigned char)(i%256);
-			}
+				pi->moreb = str2num(script2);
 			else if (!(strcmp(script1, "MOVABLE")))
 				pi->magic=str2num(script2);
 			else if (!(strcmp(script1, "MAXHP")))
@@ -1901,10 +1889,10 @@ void CWorldMain::SaveItem( pItem pi )
 		}
 		if (pi->offspell!=dummy.offspell)
 			fprintf(iWsc, "OFFSPELL %i\n", pi->offspell);
-		if ((pi->more1<<24)+(pi->more2<<16)+(pi->more3<<8)+pi->more4) //;
-			fprintf(iWsc, "MORE %i\n", (pi->more1<<24)+(pi->more2<<16)+(pi->more3<<8)+pi->more4);
-		if ((pi->moreb1<<24)+(pi->moreb2<<16)+(pi->moreb3<<8)+pi->moreb4)
-			fprintf(iWsc, "MORE2 %i\n", (pi->moreb1<<24)+(pi->moreb2<<16)+(pi->moreb3<<8)+pi->moreb4);
+		if (pi->more)
+			fprintf(iWsc, "MORE %i\n", pi->more);
+		if ((pi->moreb)
+			fprintf(iWsc, "MORE2 %i\n", pi->moreb);
 		if (pi->morex!=dummy.morex)
 			fprintf(iWsc, "MOREX %i\n", pi->morex);
 		if (pi->morey!=dummy.morey)

@@ -460,11 +460,8 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 		if ( (!equipcont || equipcont->getLayer()== 0) && container->getId() == 0x1E5E)
 		{
 			// Trade window???
-			uint32_t serial = calcserial( pi->moreb1, pi->moreb2, pi->moreb3, pi->moreb4);
-			if ( serial == INVALID )
-				return;
-
-			pItem piz = cSerializable::findItemBySerial(serial );
+			if ( pi->moreb == INVALID ) return;
+			pItem piz = cSerializable::findItemBySerial(pi->moreb);
 			if ( piz )
 				if ( piz->morez || container->morez )
 				{
@@ -494,7 +491,7 @@ void cClient::get_item( pItem pi, uint16_t amount ) // Client grabs an item
 				}
 				if (equipitem && !equipitem->getOldLayer())
                                 {
-                                	if ((body->equip(equipitem, true) == 1)
+                                	if ( body->equip(equipitem, true) == 1 )
                                         {
                                         	equipitem->setOldLayer(0);
                                         	pack_item(pi, pc_currchar->getBackpack()); // If reequip canceled due to script bypass, dump item to the backpack
@@ -815,10 +812,8 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 	if (dest->layer==0 && dest->getId() == 0x1E5E && dest->getContainer() == pc->getBody())
 	{
 		// Trade window???
-		serial=calcserial(dest->moreb1, dest->moreb2, dest->moreb3, dest->moreb4);
-		if(serial==-1) return;
-
-		pItem pi_z = cSerializable::findItemBySerial(serial);
+		if(dest->moreb == INVALID) return;
+		pItem pi_z = cSerializable::findItemBySerial(dest->moreb);
 
 		if ( pi_z )
 			if ((pi_z->morez || dest->morez))
@@ -2313,11 +2308,10 @@ void dotrade(pContainer cont1, pContainer cont2)
 	}
 }
 
-void endtrade(uint32_t serial)
+void endtrade(pContainer c1)
 {
-	pItem c1=cSerializable::findItemBySerial(serial);
 	VALIDATEPI(c1);
-	pItem c2=cSerializable::findItemBySerial(calcserial(c1->moreb1, c1->moreb2, c1->moreb3, c1->moreb4));
+	pItem c2=cSerializable::findItemBySerial( c1->moreb );
 	VALIDATEPI(c2);
 
 	pChar pc1=cSerializable::findCharBySerial(c1->getContSerial());

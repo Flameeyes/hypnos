@@ -705,13 +705,9 @@ void killkeys(uint32_t serial) // Crackerjack 8/11/99
 /*!
 \brief Checks if somebody is on the house list
 \param pi pointer to the house item
-\param s1 serial (byte1)
-\param s2 serial (byte2)
-\param s3 serial (byte3)
-\param s4 serial (byte4)
+\param serial serial
 \param li pointer to variable to put items[] index of list item in or NULL
 \return 0 if character is not on house list, else the type of list
-\todo change the 4 chars to a single serial32
 */
 int on_hlist(pItem pi, uint32_t serial, int *li)
 {

@@ -906,7 +906,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 			break;
 		case 5: ToggleAbbreviation(socket);
 			break;
-		case 6: Resign( cSerializable::findCharBySerial( currchar[socket] ), socket );
+		case 6: Resign( pc, socket );
 			break;
 		case 7: Menu(socket,6);
 			break;
@@ -926,10 +926,10 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 		switch(sub)
 		{
 		case 1: 
-			//entrygump(socket,s1,s2,s3,s4,100,1,40,"Enter a new guildname.");
+			//entrygump(socket,pc->getSerial(),100,1,40,"Enter a new guildname.");
 			break;
 		case 2: 
-			//entrygump(socket,s1,s2,s3,s4,100,2,3,"Enter a new guild abbreviation.");
+			//entrygump(socket,pc->getSerial(),100,2,3,"Enter a new guild abbreviation.");
 			break;
 		case 3: 
 			Guilds->Menu(socket,3);
@@ -960,7 +960,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 			Guilds->Menu(socket,9);
 			break;
 		case 11:
-			//entrygump(socket, s1, s2, s3, s4, 100, 3, 20, "Enter new guildmastertitle.");
+			//entrygump(socket, pc->getSerial(), 100, 3, 20, "Enter new guildmastertitle.");
 			break;
 		case 12: 
 			Guilds->Menu(socket,12);
@@ -984,9 +984,9 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 		{
 		case 1: Menu( socket, 2 );
 			break;
-		case 2: //entrygump( socket, s1, s2, s3, s4, 100, 5, 50, "Enter a new charter.");
+		case 2: //entrygump( socket, pc->getSerial(), 100, 5, 50, "Enter a new charter.");
 			break;
-		case 3:	//entrygump( socket, s1, s2, s3, s4, 100, 6, 50, "Enter a new URL.");
+		case 3:	//entrygump( socket, pc->getSerial(), 100, 6, 50, "Enter a new URL.");
 			break;
 		}
 		return;
@@ -1124,7 +1124,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 				if (sub==counter)
 				{
 //					guilds[guildnumber].priv = calcCharFromSer( guilds[guildnumber].member[member] );
-					//entrygump(socket, s1, s2, s3, s4, 100, 3, 20, "Enter new guildtitle.");
+					//entrygump(socket, pc->getSerial(), 100, 3, 20, "Enter new guildtitle.");
 					return;
 				}
 			}

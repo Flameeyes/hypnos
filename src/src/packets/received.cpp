@@ -1724,6 +1724,8 @@ bool cPacketReceiveTargetSelected::execute(pClient client)
 bool cPacketReceiveSecureTrade::execute(pClient client)
 {
         uint16_t size = ShortFromCharPtr(buffer + 1);
+	uint32_t serial = LongFromCharPtr(buffer +4);
+
         if (length != size) return false;
 
 	pContainer cont1, cont2;
@@ -1733,10 +1735,10 @@ bool cPacketReceiveSecureTrade::execute(pClient client)
 	case 0://Start trade - Never happens, sent out by the server only.
 		break;
 	case 2://Change check marks. Possibly conclude trade
-		cont1 = dynamic_cast<pContainer>(cSerializable::findItemBySerial(LongFromCharPtr(buffer + 4)));
+		cont1 = dynamic_cast<pContainer>(cSerializable::findItemBySerial(serial));
                 //cont1 is now this client's secure trading container (a temporary container wich holds the trade items)
 
-		if (cont1) cont2 = dynamic_cast<pContainer>(cSerializable::findItemBySerial(calcserial(cont1->moreb1, cont1->moreb2, cont1->moreb3, cont1->moreb4)));
+		if (cont1) cont2 = dynamic_cast<pContainer>( cSerializable::findItemBySerial(cont1->moreb) );
 		else cont2=NULL;
 
 		if (cont2)
@@ -1746,12 +1748,12 @@ bool cPacketReceiveSecureTrade::execute(pClient client)
 			if (cont1->morez && cont2->morez)
 			{
 				client->dotrade(cont1, cont2);
-				client->endtrade( LongFromCharPtr(buffer + 4) );
+				client->endtrade(cont1);
 			}
 		}
 		break;
 	case 1://Cancel trade. Send each person cancel messages, move items.
-		client->endtrade( LongFromCharPtr(buffer +4) );
+		client->endtrade(cont1);
 		break;
 	default:
 		ErrOut("Switch fallout. trade.cpp, trademsg()\n"); //Morrolan

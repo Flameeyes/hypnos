@@ -2024,7 +2024,7 @@ void cChar::Kill()
 		if ((pi_j->type==ITYPE_CONTAINER) && (pi_j->getPosition().x==26) && (pi_j->getPosition().y==0) &&
 			(pi_j->getPosition().z==0) && (pi_j->getId()==0x1E5E) )
 		{
-			endtrade(pi_j->getSerial());
+			endtrade(pi_j);
 		}
 	}
 

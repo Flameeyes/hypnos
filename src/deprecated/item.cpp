@@ -259,22 +259,9 @@ namespace item
 					break;
 				case 'M':
 					if ( lha == "MORE" )
-					{
-						tmp = str2num(rha);
-						pi->more1 = tmp >> 24;
-						pi->more2 = tmp >> 16;
-						pi->more3 = tmp >> 8;
-						pi->more4 = tmp%256;
-					}
-					// MORE2 may not be useful ?
+						pi->more = str2num(rha);
 					else if ( lha == "MORE2" )
-					{
-						tmp = str2num(rha);
-						pi->moreb1 = tmp >> 24;
-						pi->moreb2 = tmp >> 16;
-						pi->moreb3 = tmp >> 8;
-						pi->moreb4 = tmp%256;
-					}
+						pi->moreb = str2num(rha);
 					else if ( lha == "MOVABLE" )
 						pi->magic = str2num(rha);
 					else if ( lha == "MAXHP" )
@@ -696,23 +683,8 @@ namespace item
 					case 'm':
 						if (!(strcmp("MAXHP", script1))) pi->maxhp=str2num(script2); // by Magius(CHE)
 						else if (!(strcmp("MOVABLE",script1))) pi->magic=str2num(script2);
-						else if (!(strcmp("MORE", script1)))
-						{
-							tmp=str2num(script2);
-							pi->more1 = (unsigned char) (tmp>>24);
-							pi->more2 = (unsigned char) (tmp>>16);
-							pi->more3 = (unsigned char) (tmp>>8);
-							pi->more4 = (unsigned char) (tmp%256);
-						}
-						//MORE2 may not be useful ?
-						else if (!(strcmp("MORE2", script1)))
-						{
-							tmp=str2num(script2);
-							pi->moreb1=tmp>>24;
-							pi->moreb2=tmp>>16;
-							pi->moreb3=tmp>>8;
-							pi->moreb4=tmp%256;
-						}
+						else if (!(strcmp("MORE", script1))) pi->more = str2num(script2);
+						else if (!(strcmp("MORE2", script1))) pi->moreb = str2num(script2);
 						else if (!(strcmp("MOREX",script1))) pi->morex=str2num(script2);
 						else if (!(strcmp("MOREY",script1))) pi->morey=str2num(script2);
 						else if (!(strcmp("MOREZ",script1))) pi->morez=str2num(script2);
