@@ -39,10 +39,10 @@ private:
 
 public:
 	LogFile(std::string name);
-	LogFile(char *format, ...) PRINTF_LIKE(1,2)	//!< path + filename
+	LogFile(char *format, ...) PRINTF_LIKE(2,3)	//!< path + filename
 	~LogFile();
 	void Write(std::string str);
-	void Write(char *format, ...) PRINTF_LIKE(1,2)
+	void Write(char *format, ...) PRINTF_LIKE(2,3)
 };
 
 /*!

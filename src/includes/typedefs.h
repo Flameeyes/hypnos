@@ -48,7 +48,7 @@ typedef class cGMPage *pGMPage;			//!< Pointer to a GM Page
 typedef std::slist<pGMPage> GMPageSList;	//!< Singly-linked list of GM Pages
 
 typedef class cClient *pClient;			//!< Pointer to a cClient
-typedef std::slist<PClient> ClientSList;	//!< Singly-linked list of connected clients
+typedef std::slist<pClient> ClientSList;	//!< Singly-linked list of connected clients
 
 typedef class cMenu *pMenu;			//!< Pointer to a cMenu
 typedef std::map<uint32_t, pMenu> MenuMap;	//!< Map of menus
@@ -90,6 +90,7 @@ typedef class cNPC *pNPC;			//!< Pointer to a pNPC (non playing character)
 */
 typedef class cItem *pItem;			//!< Pointer to a cItem
 typedef std::list<pItem> ItemList;		//!< List of items
+typedef std::slist<pItem> ItemSList;		//!< Singly-linked list of items
 typedef class cEquippable *pEquippable;		//!< Pointer to a cEquippable
 typedef class cBook *pBook;			//!< Pointer to a cBook
 typedef class cWeapon *pWeapon;			//!< Pointer to a cWeapon

@@ -157,7 +157,7 @@ public:
 	{ return multi; }
 
 	//! Sets the multi of the object
-	virtual void setMulti(pItem nmulti)
+	virtual void setMulti(pItem nmulti);
 	
 	//! Returns the object's owner
 	pChar getOwner() const

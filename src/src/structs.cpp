@@ -94,6 +94,17 @@ sRect::sRect(sPoint a, sPoint b)
 }
 
 /*!
+\brief Constructor for a sRect between two points
+*/
+sRect::sRect(uint16_t ulx, uint16_t uly, uint16_t brx, uint16_t bry)
+{
+	ul.x = qmin(ulx, brx);
+	ul.y = qmin(uly, bry);
+	br.x = qmax(ulx, brx);
+	br.y = qmax(uly, bry);
+}
+
+/*!
 \brief Checks if a given point is inside the rectangle
 \param p Point to check if inside the rectangle
 \retval true The point is inside the box described by the rectangle

@@ -103,7 +103,7 @@ class cMenu : public cBasicMenu
 		uint32_t addString( std::wstring s );
 
 		void removeCommand( std::string command );
-		void removeCommand( char* s, ... ) PRINTF_LIKE(1,2)
+		void removeCommand( char* s, ... ) PRINTF_LIKE(2,3)
 
 		void setPropertyField( uint32_t type, uint32_t obj, int prop, int subProp, int subProp2, bool data );
 		void setPropertyField( uint32_t type, uint32_t obj, int prop, int subProp, int subProp2, std::wstring data );
@@ -142,7 +142,7 @@ class cMenu : public cBasicMenu
 		virtual void handleButton( pClient client,  void /*cClientPacket*/* pkg  );
 
 		void addCommand( std::string command );
-		void addCommand( char* s, ... ) PRINTF_LIKE(1,2)
+		void addCommand( char* s, ... ) PRINTF_LIKE(2,3)
 
 		void addBackground( uint32_t gumpId, uint32_t width, uint32_t height );
 		void addButton( uint32_t x, uint32_t y, uint32_t up, uint32_t down, int32_t returnCode, bool pressable );

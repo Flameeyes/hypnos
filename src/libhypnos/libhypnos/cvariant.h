@@ -65,64 +65,43 @@ public:
 	
 	/*!
 	\brief Constructor with value
-	\param astr String to assign to the variant
-	*/
-	inline tVariant(const std::string &astr)
-	{ tVariant(); *this = astr; }
-	
-	/*!
-	\brief Constructor with value
-	\param aval Boolean to assign to the variant
+	\param aval Value to assign to the variant
 	*/
 	inline tVariant(const bool &aval)
 	{ tVariant(); *this = aval; }
-	
-	/*!
-	\brief Constructor with value
-	\param aval unsigned to assign to the variant
-	*/
-	inline tVariant(const uint32_t &aval)
+
+	//! \copydoc tVariant::tVariant(const bool&)
+	inline tVariant(const std::string &aval)
 	{ tVariant(); *this = aval; }
 	
-	/*!
-	\brief Constructor with value
-	\param aval integer to assign to the variant
-	*/
-	inline tVariant(const int32_t &aval)
+	//! \copydoc tVariant::tVariant(const bool&)
+	inline tVariant(const uint64_t aval)
 	{ tVariant(); *this = aval; }
 	
-	/*!
-	\brief Constructor with value
-	\param aptr void * to assign to the variant
-	*/
-	inline tVariant(void *aptr)
-	{ tVariant(); *this = aptr; }
+	//! \copydoc tVariant::tVariant(const bool&)
+	inline tVariant(const int64_t aval)
+	{ tVariant(); *this = aval; }
 	
-	/*!
-	\brief Constructor with value
-	\param apc pChar to assign to the variant
-	*/
-	inline tVariant(pChar apc)
-	{ tVariant(); *this = apc; }
+	//! \copydoc tVariant::tVariant(const bool&)
+	inline tVariant(void *aval)
+	{ tVariant(); *this = aval; }
 	
-	/*!
-	\brief Constructor with value
-	\param api pItem to assign to the variant
-	*/
-	inline tVariant(pItem api)
-	{ tVariant(); *this = api; }
+	//! \copydoc tVariant::tVariant(const bool&)
+	inline tVariant(pChar aval)
+	{ tVariant(); *this = aval; }
 	
-	/*!
-	\brief Constructor with value
-	\param aclient pClient to assign to the variant
-	*/
-	inline tVariant(pClient aclient)
-	{ tVariant(); *this = aclient; }
+	//! \copydoc tVariant::tVariant(const bool&)
+	inline tVariant(pItem aval)
+	{ tVariant(); *this = aval; }
+	
+	//! \copydoc tVariant::tVariant(const bool&)
+	inline tVariant(pClient aval)
+	{ tVariant(); *this = aval; }
 	
 	tVariant &operator =(const std::string &astr);
 	tVariant &operator =(const bool &aval);
-	tVariant &operator =(const uint32_t &aval);
-	tVariant &operator =(const int32_t &aval);
+	tVariant &operator =(const uint64_t &aval);
+	tVariant &operator =(const int64_t &aval);
 	tVariant &operator =(void *aptr);
 	tVariant &operator =(pChar apc);
 	tVariant &operator =(pItem api);
@@ -143,11 +122,11 @@ public:
 	
 	//! Prefixed increment operator
 	inline tVariant operator ++()
-	{ return (*this += 1); }
+	{ return operator += ((uint64_t)1); }
 	
 	//! Prefixed decrement operator
 	inline tVariant operator --()
-	{ return (*this += 1); }
+	{ return operator -= ((uint64_t)1); }
 	
 	tVariant operator ++(int unused);
 	tVariant operator --(int unused);
@@ -173,8 +152,12 @@ public:
 \name Conversions
 \brief Functions used to return a fixed-type variable
 
-All these functions has a bool* parameter defaulted NULL. If this is not NULL, the
-pointed bool will be set to true if the conversion is done correctly, else to false
+All these functions has a bool* parameter defaulted NULL. If this is not NULL,
+the pointed bool will be set to true if the conversion is done correctly, else
+to false.
+
+In this section you can also find the operators used for the automatic cast of
+a tVariant to one of his usable types.
 */
 	std::string toString(bool *result = NULL) const;
 	bool toBoolean(bool *result = NULL) const;
@@ -182,12 +165,56 @@ pointed bool will be set to true if the conversion is done correctly, else to fa
 	pItem toPItem(bool *result = NULL) const;
 	pClient toPClient(bool *result = NULL) const;
 	void *toPVoid(bool *result = NULL) const;
+	uint64_t toUInt64(bool *result = NULL) const;
 	uint32_t toUInt32(bool *result = NULL) const;
 	uint16_t toUInt16(bool *result = NULL) const;
 	uint8_t toUInt8(bool *result = NULL) const;
+	int64_t toSInt64(bool *result = NULL) const;
 	int32_t toSInt32(bool *result = NULL) const;
 	int16_t toSInt16(bool *result = NULL) const;
 	int8_t toSInt8(bool *result = NULL) const;
+
+	operator std::string() const
+	{ return toString(); }
+	
+	operator bool() const
+	{ return toBoolean(); }
+	
+	operator pChar() const
+	{ return toPChar(); }
+	
+	operator pItem() const
+	{ return toPItem(); }
+	
+	operator pClient() const
+	{ return toPClient(); }
+	
+	operator void*() const
+	{ return toPVoid(); }
+	
+	operator uint64_t() const
+	{ return toUInt64(); }
+	
+	operator uint32_t() const
+	{ return toUInt32(); }
+	
+	operator uint16_t() const
+	{ return toUInt16(); }
+	
+	operator uint8_t() const
+	{ return toUInt8(); }
+	
+	operator int64_t() const
+	{ return toSInt64(); }
+	
+	operator int32_t() const
+	{ return toSInt32(); }
+	
+	operator int16_t() const
+	{ return toSInt16(); }
+	
+	operator int8_t() const
+	{ return toSInt8(); }
 //@}
 
 //@{
@@ -211,25 +238,18 @@ All these functions return a bool which represent the success or not of the conv
 
 	inline const bool isNull() const
 	{ return assignedType == vtNull; }
+	
+	void clear();
 
 private:
-	void recalcUIntSize();
-	void recalcSIntSize();
+	void recalcUIntSize(const uint64_t &val);
+	void recalcSIntSize(const int64_t &val);
 
 protected:
 	VariantTypes assignedType;	//!< Type assigned to the variant
 	IntegerSizes integerSize;	//!< Size of integer variant
 	
 	void *pointer;			//!< Pointer to the store value
-	
-	union {
-		uint32_t uintvalue,		//!< Value of unsigned integers (any size) or boolean
-		int32_t sintvalue,		//!< Value of signed integers (any size)
-		std::string *strpointer,	//!< Pointer to the string object
-		tVariantVector *vectorptr,	//!< Pointer to the vector object
-		void *ptrvalue,			//!< Value of the void pointers
-	} value;
-	
 };
 
 #endif

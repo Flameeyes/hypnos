@@ -118,7 +118,7 @@ public:
 
 	void talk(const std::string &msg);
 
-	void dyeItem(pClient client, uint16_t color) //!< Rehue an item
+	void dyeItem(pClient client, uint16_t color); //!< Rehue an item
 //@{
 /*!
 \name itemid

@@ -230,7 +230,7 @@ enum EffectType {
 	etLightning,	//!< lighning effect at source
 	etStayInPlace,	//!< effect stays at source xyz
 	etFollowObject	//!< effect follows source
-}
+};
 
 /*!
 \brief Mode to set a suspect

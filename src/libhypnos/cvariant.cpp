@@ -17,11 +17,11 @@
 //! Inline function to recalc the uint size
 inline void tVariant::recalcUIntSize(const uint64_t &val)
 {
-	if ( uintvalue > UINT32_MAX )
+	if ( val > UINT32_MAX )
 		integerSize = is64;
-	else if ( uintvalue > UINT16_MAX )
+	else if ( val > UINT16_MAX )
 		integerSize = is32;
-	else if ( uintvalue > UINT8_MAX )
+	else if ( val > UINT8_MAX )
 		integerSize = is16;
 	else
 		integerSize = is8;
@@ -30,11 +30,11 @@ inline void tVariant::recalcUIntSize(const uint64_t &val)
 //! Inline function to recalc the sint size
 inline void tVariant::recalcSIntSize(const int64_t &val)
 {
-	if ( sintvalue > INT32_MAX || sintvalue < INT32_MIN )
+	if ( val > INT32_MAX || val < INT32_MIN )
 		integerSize = is64;
-	else if ( sintvalue > INT16_MAX || sintvalue < INT16_MIN )
+	else if ( val > INT16_MAX || val < INT16_MIN )
 		integerSize = is32;
-	else if ( sintvalue > INT8_MAX || sintvalue < INT8_MIN )
+	else if ( val > INT8_MAX || val < INT8_MIN )
 		integerSize = is16;
 	else
 		integerSize = is8;
@@ -289,7 +289,7 @@ tVariant tVariant::operator -() const
 	switch(assignedType)
 	{
 	case vtUInt:
-		if ( uintvalue > INT64_MAX )
+		if ( uint64_t(*this) > INT64_MAX )
 			return tVariant();
 		
 		return tVariant(-uint64_t(*this));
@@ -336,14 +336,14 @@ tVariant tVariant::operator -(const tVariant &param) const
 tVariant tVariant::operator ++(int unused)
 {
 	tVariant tmp = *this;
-	*this += 1;
+	*this += uint64_t(1);
 	return tmp;
 }
 
 tVariant tVariant::operator --(int unused)
 {
 	tVariant tmp = *this;
-	*this -= 1;
+	*this -= uint64_t(1);
 	return tmp;
 }
 
@@ -365,7 +365,7 @@ bool tVariant::operator ==(const tVariant &param) const
 	case vtPChar:
 	case vtPItem:
 	case vtPClient:
-		return pointer == void*(param);
+		return pointer == (void*)(param);
 	default:
 		return false;
 	}
@@ -523,18 +523,17 @@ std::string tVariant::toString(bool *result) const
 		{
 		case is64:
 			asprintf(&tmp, "%lli", *(reinterpret_cast<int64_t*>(pointer)));
-			return;
+			break;
 		case is32:
 			asprintf(&tmp, "%i", *(reinterpret_cast<int32_t*>(pointer)));
-			return;
+			break;
 		case is16:
 			asprintf(&tmp, "%hi", *(reinterpret_cast<int16_t*>(pointer)));
-			return;
+			break;
 		case is8:
 			asprintf(&tmp, "%hhi", *(reinterpret_cast<int8_t*>(pointer)));
-			return;
+			break;
 		}
-		asprintf(&tmp, "%d", sintvalue);
 		std::string ret(tmp);
 		free(tmp);
 		return ret;
@@ -546,18 +545,17 @@ std::string tVariant::toString(bool *result) const
 		{
 		case is64:
 			asprintf(&tmp, "%llu", *(reinterpret_cast<uint64_t*>(pointer)));
-			return;
+			break;
 		case is32:
 			asprintf(&tmp, "%u", *(reinterpret_cast<uint32_t*>(pointer)));
-			return;
+			break;
 		case is16:
 			asprintf(&tmp, "%hu", *(reinterpret_cast<uint16_t*>(pointer)));
-			return;
+			break;
 		case is8:
 			asprintf(&tmp, "%hhu", *(reinterpret_cast<uint8_t*>(pointer)));
-			return;
+			break;
 		}
-		asprintf(&tmp, "%d", sintvalue);
 		std::string ret(tmp);
 		free(tmp);
 		return ret;
@@ -597,32 +595,24 @@ bool tVariant::toBoolean(bool *result) const
 		{
 		case is64:
 			return *(reinterpret_cast<uint64_t*>(pointer));
-			return;
 		case is32:
 			return *(reinterpret_cast<uint32_t*>(pointer));
-			return;
 		case is16:
 			return *(reinterpret_cast<uint16_t*>(pointer));
-			return;
 		case is8:
 			return *(reinterpret_cast<uint8_t*>(pointer));
-			return;
 		}
 	case vtSInt:
 		switch(integerSize)
 		{
 		case is64:
 			return *(reinterpret_cast<int64_t*>(pointer));
-			return;
 		case is32:
 			return *(reinterpret_cast<int32_t*>(pointer));
-			return;
 		case is16:
 			return *(reinterpret_cast<int16_t*>(pointer));
-			return;
 		case is8:
 			return *(reinterpret_cast<int8_t*>(pointer));
-			return;
 		}
 	case vtPChar:
 	case vtPItem:
@@ -997,12 +987,9 @@ int64_t tVariant::toSInt64(bool *result) const
 				*result = false;
 			else
 				*result = true;
-			return *(reinterpret_cast<uint64_t*>(pointer)) & 0x7FFFFFFF;
+			return *(reinterpret_cast<uint64_t*>(pointer)) & 0x7FFFFFFFFFFFFFFFll;
 		case is32:
-			if ( *(reinterpret_cast<uint32_t*>(pointer)) > INT64_MAX )
-				*result = false;
-			else
-				*result = true;
+			*result = true;
 			return *(reinterpret_cast<uint32_t*>(pointer)) & 0x7FFFFFFF;
 		case is16:
 			*result = true;
@@ -1170,19 +1157,19 @@ int8_t tVariant::toSInt8(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > INT16_MAX || *(reinterpret_cast<int64_t*>(pointer)) < INT16_MIN )
+			if ( result && *(reinterpret_cast<int64_t*>(pointer)) > INT8_MAX || *(reinterpret_cast<int64_t*>(pointer)) < INT8_MIN )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<int64_t*>(pointer)) & 0xFFFF;
 		case is32:
-			if ( result && *(reinterpret_cast<int32_t*>(pointer)) > INT16_MAX || *(reinterpret_cast<int64_t*>(pointer)) < INT16_MIN )
+			if ( result && *(reinterpret_cast<int32_t*>(pointer)) > INT8_MAX || *(reinterpret_cast<int64_t*>(pointer)) < INT8_MIN )
 				*result = false;
 			else
 				*result = true;
 			return *(reinterpret_cast<int32_t*>(pointer)) & 0xFFFF;
 		case is16:
-			if ( result && *(reinterpret_cast<int16_t*>(pointer)) > INT16_MAX || *(reinterpret_cast<int16_t*>(pointer)) < INT16_MIN )
+			if ( result && *(reinterpret_cast<int16_t*>(pointer)) > INT8_MAX || *(reinterpret_cast<int16_t*>(pointer)) < INT8_MIN )
 				*result = false;
 			else
 				*result = true;
@@ -1195,25 +1182,25 @@ int8_t tVariant::toSInt8(bool *result) const
 		switch(integerSize)
 		{
 		case is64:
-			if ( *(reinterpret_cast<uint64_t*>(pointer)) > INT16_MAX )
+			if ( *(reinterpret_cast<uint64_t*>(pointer)) > INT8_MAX )
 				*result = false;
 			else
 				*result = true;
-			return *(reinterpret_cast<uint64_t*>(pointer)) & 0x7FFF;
+			return *(reinterpret_cast<uint64_t*>(pointer)) & 0x7F;
 		case is32:
-			if ( *(reinterpret_cast<uint32_t*>(pointer)) > INT16_MAX )
+			if ( *(reinterpret_cast<uint32_t*>(pointer)) > INT8_MAX )
 				*result = false;
 			else
 				*result = true;
-			return *(reinterpret_cast<uint32_t*>(pointer)) & 0x7FFF;
+			return *(reinterpret_cast<uint32_t*>(pointer)) & 0x7F;
 		case is16:
-			if ( *(reinterpret_cast<uint16_t*>(pointer)) > INT16_MAX )
+			if ( *(reinterpret_cast<uint16_t*>(pointer)) > INT8_MAX )
 				*result = false;
 			else
 				*result = true;
-			return *(reinterpret_cast<uint16_t*>(pointer)) & 0x7FFF;
+			return *(reinterpret_cast<uint16_t*>(pointer)) & 0x7F;
 		case is8:
-			if ( *(reinterpret_cast<uint8_t*>(pointer)) > INT16_MAX )
+			if ( *(reinterpret_cast<uint8_t*>(pointer)) > INT8_MAX )
 				*result = false;
 			else
 				*result = true;

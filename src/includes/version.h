@@ -16,7 +16,7 @@ Please not remove developers from this string if you aren't a Hypnos Project Man
 If you added features or fixed bugs in a special version of Hypnos, you can add
 yourself, anyway.
 */
-static const char *strDevelopers = "Flameeyes, Kheru, Chrono, il_guru, Judas"
+static const char *strDevelopers = "Flameeyes, Kheru, Chrono, il_guru, Judas";
 
 //! Hypnos version string
 static const char *strVersion = "CVS";
