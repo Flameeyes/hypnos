@@ -76,7 +76,6 @@ void cChar::resetData()
 {
 	client = NULL;
 	hidden = htUnhidden;
-	events = FunctionVector(evtChrMax);
 	// PyUO OK!
 
 	setMultiSerial32Only(INVALID);//Multi serial
@@ -285,8 +284,6 @@ void cChar::resetData()
 	npcMoveSpeed = (float)NPCSPEED;
 	npcFollowSpeed = (float)NPCFOLLOWSPEED;
 	setNpcMoveTime();
-	resetNxwFlags();
-	resetAmxEvents();
 	ResetGuildTraitor();
 	SetGuildType( INVALID );
 	magicsphere = 0;
@@ -709,18 +706,17 @@ void cChar::damage(int32_t amount, DamageType typeofdamage, StatType stattobedam
 	pChar pc_att=cSerializable::findCharBySerial(attackerserial);
 	uint32_t serial_att= pc_att ? pc_att->getSerial() : INVALID;
 
-	if (amxevents[EVENT_CHR_ONWOUNDED]) {
-		g_bByPass = false;
-		amount = amxevents[EVENT_CHR_ONWOUNDED]->Call(getSerial(), amount, serial_att);
-		if (g_bByPass==true) return;
-	}
-	/*
-	if ( getAmxEvent(EVENT_CHR_ONWOUNDED) != NULL ) {
-		amount = runAmxEvent( EVENT_CHR_ONWOUNDED, getSerial(), amount, serial_att );
-		if (g_bByPass==true)
+	if ( events[evtChrOnWounded] ) {
+		tVariantVector params = tVariantVector(3);
+		params[0] = getSerial(); params[1] = amount;
+		params[2] = serial_att;
+		events[evtChrOnWounded]->setParams(params);
+		tVariant ret = events[evtChrOnWounded]->execute();
+		if ( events[evtChrOnWounded]->bypassed() )
 			return;
+		amount = ret.toSInt();
 	}
-	*/
+
 	unfreeze();
 
 	if (amount <= 0) return;
@@ -1509,7 +1505,7 @@ void cChar::resurrect( pClient healer )
 	stm= dx;
 	mn=in;
 
-	if ( events[evtChrOnResurrect] && getClient() ) {
+	if ( events[evtChrOnResurrect] ) {
 		tVariantVector params = tVariantVector(2);
 		params[0] = getSerial(); params[1] = healer ? healer->currChar()->getSerial() : INVALID;
 		events[evtChrOnResurrect]->setParams(params);
@@ -1770,18 +1766,15 @@ void cChar::Kill()
 	char murderername[128];
 	murderername[0] = '\0';
 
-	if (amxevents[EVENT_CHR_ONBEFOREDEATH]) {
-		g_bByPass = false;
-		amxevents[EVENT_CHR_ONBEFOREDEATH]->Call(getSerial(), INVALID);
-		if (g_bByPass==true) return;
+	if ( events[evtChrOnBeforeDeath] ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = INVALID;
+		events[evtChrOnBeforeDeath]->setParams(params);
+		events[evtChrOnBeforeDeath]->execute();
+		if ( events[evtChrOnBeforeDeath]->bypassed() )
+			return;
 	}
 
-	/*
-	g_bByPass = false;
-	runAmxEvent( EVENT_CHR_ONDEATH, getSerial(), s );
-	if (g_bByPass==true)
-		return;
-	*/
 	if ( ps != NULL )
 		unmountHorse();	//Luxor bug fix
 	if (morphed)
@@ -1892,23 +1885,33 @@ void cChar::Kill()
 						pKiller->sysmsg(TRANSLATE("You are now a murderer!"));
 					pKiller->updateFlag();
 
-				if (SrvParms->pvp_log)
-				{
-						LogFile pvplog("PvP.log");
-						pvplog.Write("%s was killed by %s!\n",getCurrentName().c_str(), pKiller->getCurrentName().c_str());
+					if (SrvParms->pvp_log)
+					{
+							LogFile pvplog("PvP.log");
+							pvplog.Write("%s was killed by %s!\n",getCurrentName().c_str(), pKiller->getCurrentName().c_str());
+					}
+				}   // was innocent
+
+				pFunctionHandle evt = pKiller->getEvent(evtChrOnKill);
+				if ( evt ) {
+					tVariantVector params = tVariantVector(2);
+					params[0] = pKiller->getSerial(); params[1] = getSerial32();
+					evt->setParams(params);
+					evt->execute();
 				}
-			}   // was innocent
-
-			if (pKiller->amxevents[EVENT_CHR_ONKILL])
-				pKiller->amxevents[EVENT_CHR_ONKILL]->Call( pKiller->getSerial(), getSerial32() );
-
-				//pk->runAmxEvent( EVENT_CHR_ONKILL, pk->getSerial(), pk->getClient()->toInt(), getSerial32(), s);
+			
 			} //PvP
 		}//if !npc
 		else
 		{
-			if (pKiller->amxevents[EVENT_CHR_ONKILL])
-				pKiller->amxevents[EVENT_CHR_ONKILL]->Call( pKiller->getSerial(), getSerial32() );
+			pFunctionHandle evt = pKiller->getEvent(evtChrOnKill);
+			if ( evt ) {
+				tVariantVector params = tVariantVector(2);
+				params[0] = pKiller->getSerial(); params[1] = getSerial32();
+				evt->setParams(params);
+				evt->execute();
+			}
+			
 			if (pKiller->war)
 				pKiller->toggleCombat(); // ripper
 		}
@@ -1978,23 +1981,31 @@ void cChar::Kill()
 						pk->sysmsg(TRANSLATE("You are now a murderer!"));
 					pk->updateFlag();
 
-				if (SrvParms->pvp_log)
-				{
-						LogFile pvplog("PvP.log");
-						pvplog.Write("%s was killed by %s!\n",getCurrentName().c_str(), pk->getCurrentName().c_str());
+					if (SrvParms->pvp_log)
+					{
+							LogFile pvplog("PvP.log");
+							pvplog.Write("%s was killed by %s!\n",getCurrentName().c_str(), pk->getCurrentName().c_str());
+					}
+				}   // was innocent
+	
+				pFunctionHandle evt = pk->getEvent(evtChrOnKill);
+				if ( evt ) {
+					tVariantVector params = tVariantVector(2);
+					params[0] = pk->getSerial(); params[1] = getSerial32();
+					evt->setParams(params);
+					evt->execute();
 				}
-			}   // was innocent
-
-			if (pk->amxevents[EVENT_CHR_ONKILL])
-				pk->amxevents[EVENT_CHR_ONKILL]->Call( pk->getSerial(), getSerial32() );
-
-				//pk->runAmxEvent( EVENT_CHR_ONKILL, pk->getSerial(), pk->getClient()->toInt(), getSerial32(), s);
 			} //PvP
 		}//if !npc
 		else
 		{
-			if (pk->amxevents[EVENT_CHR_ONKILL])
-				pk->amxevents[EVENT_CHR_ONKILL]->Call( pk->getSerial(), getSerial32() );
+			pFunctionHandle evt = pk->getEvent(evtChrOnKill);
+			if ( evt ) {
+				tVariantVector params = tVariantVector(2);
+				params[0] = pk->getSerial(); params[1] = getSerial32();
+				evt->setParams(params);
+				evt->execute();
+			}
 			if (pk->war)
 				pk->toggleCombat(); // ripper
 
@@ -2170,10 +2181,11 @@ void cChar::Kill()
 
 	pCorpse->Refresh();
 
-	if (amxevents[EVENT_CHR_ONAFTERDEATH])
-	{
-		g_bByPass = false;
-		amxevents[EVENT_CHR_ONAFTERDEATH]->Call(getSerial(), pCorpse->getSerial32() );
+	if ( events[evtChrOnAfterDeath] ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = pCorpse->getSerial32();
+		events[evtChrOnAfterDeath]->setParams(params);
+		events[evtChrOnAfterDeath]->execute();
 	}
 
 	if ( npc )

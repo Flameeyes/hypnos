@@ -216,8 +216,6 @@ cItem::resetData()
 	for (i=0;i<MAX_RESISTANCE_INDEX;i++)
 		resists[i]=0;
 
-	for (int X=0; X<ALLITEMEVENTS; X++)
-		amxevents[X] = NULL;
 	//desc[0]=0x00;
 	vendorDescription = std::string("");
 	setDecayTime(); //Luxor
@@ -231,6 +229,7 @@ cItem::resetData()
 cItem& cItem::operator=(const cItem& b)
 {
 	flags = b.flags;
+	cEventThrower::operator=(b);
 	// PyUO OK!
         
 	// NAMES
@@ -324,15 +323,6 @@ cItem& cItem::operator=(const cItem& b)
         for ( i = 0; i < MAX_RESISTANCE_INDEX; i++ )
                 resists[i] = b.resists[i];
 
-	for ( i=0; i < ALLITEMEVENTS; i++ ) {
-		amxevents[i] = b.amxevents[i];
-		/*
-		AmxEvent* event = b.getAmxEvent( i );
-		if ( event == NULL )
-			continue;
-
-		setAmxEvent( i, event->getFuncName(), !(event->shouldBeSaved()) );*/
-	}
 	vendorDescription = b.vendorDescription;
 	amxVS.copyVariable(getSerial(), b.getSerial32());
 
@@ -408,7 +398,7 @@ bool cItem::doDecay(bool dontDelete = false)
 		return false;
 
 
-	if ( events[evtItmOnDecay] && getClient() ) {
+	if ( events[evtItmOnDecay] ) {
 		tVariantVector params = tVariantVector(2);
 		params[0] = getSerial(); params[1] = deleteDecay;
 		events[evtItmOnDecay]->setParams(params);
@@ -594,21 +584,6 @@ inline bool operator ==( cItem& a, cItem& b ) {
 */
 inline bool operator !=( cItem& a, cItem& b ) {
 	return !(a==b);
-}
-
-/*!
-\author Flameeyes
-\brief Handle the right event for this item
-\param code Code of the event
-\param nParams number of params for the event handler
-\param params params for the event handler
-*/
-int cItem::handleEvent(uint8_t code, uint8_t nParams, uint32_t *params)
-{
-	return PythonInterface::handleEvent(
-		events[code], etItem, code,
-		nParams, params
-		);
 }
 
 /*!
