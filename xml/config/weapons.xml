@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE containers SYSTEM "http://hypnos.berlios.de/dtds/weapons.dtd">
+<weapons>
+  <weapon type="weaponSword1H">
+    <id>0x0EC1</id>
+    <id>0x0EC2</id>
+    <id>0x0EC3</id>
+    <id>0x0EC4</id>
+    <id>0x0EC5</id>
+    <id>0x0F5E</id>
+    <id>0x0F5F</id>
+    <id>0x0F60</id>
+    <id>0x0F61</id>
+    <id>0x13B5</id>
+    <id>0x13B6</id>
+    <id>0x13B7</id>
+    <id>0x13B8</id>
+    <id>0x13B9</id>
+    <id>0x13BA</id>
+    <id>0x13FE </id>
+    <id>0x13FF</id>
+    <id>0x1440</id>
+    <id>0x1441</id>
+  </weapon>
+  <weapon type="weaponSword2H" />
+  <weapon type="weaponAxe1H">
+    <id>0x0F43</id>
+    <id>0x0F44</id>
+    <id>0x0F45</id>
+    <id>0x0F46</id>
+    <id>0x0F47</id>
+    <id>0x0F48</id>
+    <id>0x0F49</id>
+    <id>0x0F4A</id>
+    <id>0x0F4B</id>
+    <id>0x0F4C</id>
+    <id>0x0F4D</id>
+    <id>0x0F4E</id>
+    <id>0x13FA</id>
+    <id>0x13FB</id>
+    <id>0x143E </id>
+    <id>0x143F</id>
+    <id>0x1442 </id>
+    <id>0x1443</id>
+  </weapon>
+  <weapon type="weaponAxe2H">
+  </weapon>
+  <weapon type="weaponMace1H">
+    <id>0x0DF0</id>
+    <id>0x0DF0</id>
+    <id>0x0DF0</id>
+    <id>0x0DF0</id>
+    <id>0x0DF0</id>
+    <id>0x0DF0</id>
+    <id>0x13B3</id>
+    <id>0x13B4</id>
+    <id>0x0F5C</id>
+    <id>0x0F5D</id>
+    <id>0x0FB4 </id>
+    <id>0x0FB5</id>
+    <id>0x13AF</id>
+    <id>0x13B0</id>
+    <id>0x13E3 </id>
+    <id>0x13E4</id>
+    <id>0x13F4 </id>
+    <id>0x13F5</id>
+    <id>0x13F8 </id>
+    <id>0x13F9</id>
+    <id>0x143A </id>
+    <id>0x143B</id>
+    <id>0x143C </id>
+    <id>0x143D</id>
+    <id>0x1406 </id>
+    <id>0x1407</id>
+    <id>0x0E89 </id>
+    <id>0x0E8A</id>
+    <id>0x0E81 </id>
+    <id>0x0E82</id>
+  </weapon>
+  <weapon type="weaponMace2H">
+    <id>0x1438</id>
+    <id>0x1439</id>
+    <id>0x143A</id>
+    <id>0x143B</id>
+    <id>0x143C</id>
+  </weapon>
+  <weapon type="weaponFenc1H">
+    <id>0x1404</id>
+    <id>0x1405</id>
+    <id>0x0F51</id>
+    <id>0x0F52</id>
+    <id>0x1400</id>
+    <id>0x1401</id>
+  </weapon>
+  <weapon type="weaponFenc2H">
+    <id>0x1402</id>
+    <id>0x1403</id>
+    <id>0x0E87 </id>
+    <id>0x0E88</id>
+    <id>0x0F62</id>
+    <id>0x0F63</id>
+  </weapon>
+  <weapon type="weaponStaff1H">
+    <id>0x13F8 </id>
+    <id>0x13F9</id>
+    <id>0x0E89 </id>
+    <id>0x0E8A</id>
+    <id>0x0DF0 </id>
+    <id>0x0DF1</id>
+    <id>0x0E81 </id>
+    <id>0x0E82</id>
+  </weapon>
+  <weapon type="weaponStaff2H" />
+  <weapon type="weaponBow">
+    <id>0x13B2</id>
+  </weapon>
+  <weapon type="weaponXBow">
+    <id>0x13FD</id>
+  </weapon>
+  <weapon type="weaponHXBow">
+    <id>0x0F4F</id>
+  </weapon>
+</weapons>
