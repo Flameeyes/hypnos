@@ -16,12 +16,7 @@
 #include "common_libs.h"
 #include "particles.h"
 
-void SndDyevat(pClient client, pClient clienterial, short id);
-
 void itemmessage(pClient client, char *txt, pClient clienterial, short color=0x0000);
-void backpack2(pClient client, uint32_t serial);
-	//!< Send corpse stuff
-void tileeffect(int x, int y, int z, char eff1, char eff2, char speed, char loop);
 void chardel (pClient client);
 	//!< Deletion of character
 void updatechar(pChar pc);
@@ -37,8 +32,6 @@ void broadcast(pClient client);
 void staticeffectUO3D(int/*SERIAL*/ player, ParticleFx *sta);
 void movingeffectUO3D(int/*SERIAL*/ source, int/*SERIAL*/ dest, ParticleFx *sta);
 void itemeffectUO3D(pItem pi, ParticleFx *sta);
-
-void SendDrawObjectPkt(pClient client, pChar pc, int z);
 
 void SendUnicodeSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint32_t lang, uint8_t sysname[30], uint8_t *unicodetext, uint16_t unicodelen);
 

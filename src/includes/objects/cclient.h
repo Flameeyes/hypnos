@@ -165,6 +165,7 @@ public:
 	void endtrade(sSecureTradeSession &session);				//!< closing trade window : called when one client ends the transaction (closing the trade window) or one client crashes (client destruction)
 	bool buyShop(pNPC vendor);						//!< sends list of buyable items to client (opens buy gump)
 	void buyaction(pNPC npc, std::list< sBoughtItem > &allitemsbought);	//!< Getting purchased item and gold/availability check
+	void sellShop(pNPC npc);						//!< compares current player items with the list of npc's sell layer to see items that can be sold (opens sell gump)
 	void sellaction(pNPC npc, std::list< sBoughtItem > &allitemssold);	//!< Sellig of items. Moving from char and getting paid :D
 	
 	void telltime();

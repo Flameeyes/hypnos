@@ -475,23 +475,23 @@ void cClient::senditem_lsd(pItem pi, uint16_t color, sLocation position)
 //! Sends items worn on corpse for display on client
 void cClient::dressCorpse(pContainer corpse)
 {
-	int count=0, count2;
-	uint8_t bpopen2[5]={ 0x3C, 0x00, };
-
-	nPackets::Sent::CorpseClothing pk(corpse);
-	sendPacket(&pk);
-
+	nPackets::Sent::CorpseClothing pk1(corpse);
 	nPackets::Sent::ContainerItem pk2;
-	
+
 	corpse->lockItemsMutex();
 	for(ItemSList::const_iterator it = corpse->getItems().begin(); it != corpse->getItems().end() )
 	{
 		if ( ! (*it) ) continue;
 		pEquippable pi = dynamic_cast<pEquippable> *it;
-		if (pi && pi->getLayer()) pk2.addItem(*it);
+		if (pi && pi->getLayer())
+		{
+			pk1.addItem(pi);
+			pk2.addItem(pi);
+		}
 	}
 	corpse->unlockItemsMutex();
 
+	sendPacket(&pk);
 	sendPacket(&pk2);
 }
 
@@ -2129,6 +2129,62 @@ void cClient::buyaction(pNpc npc, std::list< boughtitem > &allitemsbought)
 	statusWindow(pc,true);  //!< \todo check second argument
 }
 
+void cClient::sellShop(pNPC npc)
+{
+	pChar pc = currChar();
+	if(!pc || !npc) return;
+
+	pEquippableContainer vendorpack= dynamic_cast<pEquippableContainer> (npc->getBody()->getLayerItem(laySell));
+	if(!pp) return;
+
+	pEquippableContainer pack= pc->getBackpack();
+	if(!pack) return;
+
+	// Pause the client only after the validity tests are completed
+	// else we can have a deadlock on the client
+	pause();
+
+	uint16_t itemssent = 0;		// number of items sent to client;
+
+	nPackets::Sent::SellList pk(npc);
+
+	vendorpack->lockItemsMutex();
+	pack->lockItemsMutex();
+
+	for(ItemSList::const_iterator it = vendorpack->getItems().begin(); it != vendorpack->getItems().end() )
+	{
+		if ( ! (*it) ) continue;
+		for(ItemSList::const_iterator it2 = pack->getItems().begin(); it2 != pack->getItems().end() )
+		{
+			if ( ! (*it2) ) continue;
+
+			if (itemssent > nSettings::Server::getMaximumSoldItems()) break;
+
+			pItem pj1 = s_pack.getItem();
+			if ( ! (*it2) ) continue;
+
+			if ((*it2)->getId()==(*it)->getId()  && (*it2)->type==(*it)->type &&
+			   (SrvParms->sellbyname==0 || (SrvParms->sellbyname==1 && (*it2)->getCurrentName() == (*it)->getCurrentName())))
+			{
+				++itemssent;
+				pk.addItem(pi);
+			}
+		}
+	}
+
+	pack->unlockItemsMutex();
+	vendorpack->unlockItemsMutex();
+
+	if (itemssent <= nSettings::Server::getMaximumSoldItems()) //With too many items, server crashes
+	{
+		if (!itemssent) sendPacket(&pk);
+		else npc->talkAll("Thou dont posses nothing of interest to me.", false);
+	}
+	else npc->talkAll("Sorry i cannot take so many items.."), false);
+
+	resume();
+	return;
+}
 
 void cClient::sellaction(pNpc npc, std::list< boughtitem > &allitemssold)
 {

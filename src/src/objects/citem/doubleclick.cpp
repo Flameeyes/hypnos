@@ -747,14 +747,16 @@ void cItem::doubleClicked(pClient client)
 
 void target_selectdyevat( pClient client, pTarget t )
 {
-    pItem pi = dynamic_cast<pItem>( t->getClicked() );
-    if ( ! pi ) return;
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
+	if ( ! pi ) return;
 
-    if( pi->getId()==0x0FAB ||                     //dye vat
-        pi->getId()==0x0EFF || pi->getId()==0x0E27 )  //hair dye
-            client->sndDyevat(pi->getSerial(), pi->getId() );
-        else
-            client->sysmessage("You can only use this item on a dye vat.");
+	if( pi->getId()==0x0FAB ||				//dye vat
+	    pi->getId()==0x0EFF || pi->getId()==0x0E27 )	//hair dye
+	{
+		nPackets::Sent::DyeWindow pk(pi);
+		client->sendPacket(&pk);
+	}
+	else client->sysmessage("You can only use this item on a dye vat.");
 }
 
 void target_dyevat( pClient client, pTarget t )

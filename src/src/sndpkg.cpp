@@ -49,16 +49,6 @@ void gmyell(char *txt)
 }
 
 
-void SndDyevat(pClient client, int serial, short id)
-{
-	uint8_t dyevat[9] ={ 0x95, 0x00, };
-	LongToCharPtr(serial, dyevat +1);
-	ShortToCharPtr(0x0000, dyevat +5);	// ignored on send ....
-	ShortToCharPtr(id, dyevat +7);		// def. on send 0x0FAB
-	Xsend(s, dyevat, 9);
-//AoS/	Network->FlushBuffer(s);
-}
-
 /*!
 \brief play a sound based on item id
 
@@ -178,51 +168,6 @@ void itemmessage(pClient client, char *txt, int serial, short color)
 
 }
 
-
-void MakeGraphicalEffectPkt_(uint8_t pkt[28], uint8_t type, uint32_t src_serial, uint32_t dst_serial, uint16_t model_id, sLocation src_pos, sLocation dst_pos, uint8_t speed, uint8_t duration, uint8_t adjust, uint8_t explode )
-{
-	pkt[1]=type;
-	LongToCharPtr(src_serial, pkt +2);
-	LongToCharPtr(dst_serial, pkt +6);
-	ShortToCharPtr(model_id, pkt +10);
-	ShortToCharPtr(src_pos.x, pkt +12);
-	ShortToCharPtr(src_pos.y, pkt +14);
-	pkt[16]=src_pos.z;
-	ShortToCharPtr(dst_pos.x, pkt +17);
-	ShortToCharPtr(dst_pos.y, pkt +19);
-	pkt[21]=dst_pos.z;
-	pkt[22]=speed;
-	pkt[23]=duration;
-	ShortToCharPtr(0, pkt +24);		//[24] to [25] are not applicable here.
-	pkt[26]=adjust; // LB possible client crashfix
-	pkt[27]=explode;
-}
-
-void tileeffect(int x, int y, int z, char eff1, char eff2, char speed, char loop)
-{//AntiChrist
-
-	uint16_t eff = (eff1<<8)|(eff2%256);
-	uint8_t effect[28]={ 0x70, 0x00, };
-
-	sLocation pos1={ x, y, z, 0}, pos2={ 0, 0, 0, 0};
-	
-	MakeGraphicalEffectPkt_(effect, 0x02, 0, 0, eff, pos1, pos2, speed, loop, 1, 0);
-	
-	pos1.z=0;
-
-	NxwSocketWrapper sw;
-	sw.fillOnline( pos1 );
-	for( sw.rewind(); !sw.isEmpty(); sw++ )
-	{
-		pClient sock=sw.getSocket();
-		if( sock!=INVALID )
-		{
-			Xsend(sock, effect, 28);
-//AoS/			Network->FlushBuffer(sock);
-		}
-	}
-
-}
 
 /*!
 \author Xanathar
@@ -351,88 +296,6 @@ void broadcast(int s) // GM Broadcast (Done if a GM yells something)
 	}
 }
 
-// Last touch: LB 8'th April 2001 for particleSystem
-
-void SendDrawObjectPkt(pClient client, pChar pc, int z)
-{
-	pChar pc_currchar=cSerializable::findCharBySerial(currchar[s]);
-	if(!pc_currchar) return;
-
-	uint32_t k;
-	uint8_t oc[1024]={ 0x78, 0x00, };
-
-	sLocation charpos = pc->getPosition();
-
-	LongToCharPtr(pc->getSerial(), oc +3);
-	ShortToCharPtr(pc->getId(), oc +7); 	// Character art id
-	ShortToCharPtr(charpos.x, oc+9);
-	ShortToCharPtr(charpos.y, oc+11);
-	if (z)
-		oc[13]= charpos.dispz; 			// Character z position
-	else
-		oc[13]= charpos.z;
-	oc[14]= pc->dir; 				// Character direction
-	ShortToCharPtr(pc->getColor(), oc +15);	// Character skin color
-	oc[17]=0; 					// Character flags
-	if (pc->IsHidden() || !(pc->IsOnline()||pc->npc))
-		oc[17]|=0x80; 				// .... show hidden state correctly
-	if (pc->poisoned)
-		oc[17]|=0x04; //AntiChrist -- thnx to SpaceDog
-
-	k=19;
-	int guild;
-	guild=Guilds->Compare(pc_currchar,pc);
-	if (guild==1)					//Same guild (Green)
-		oc[18]=2;
-	else if (guild==2) 				// Enemy guild.. set to orange
-		oc[18]=5;
-	else if (pc->IsGrey()) oc[18] = 3;
-	else switch(pc->flag)
-	{//1=blue 2=green 5=orange 6=Red 7=Transparent(Like skin 66 77a)
-		case 0x01: oc[18]=6; break;// If a bad, show as red.
-		case 0x04: oc[18]=1; break;// If a good, show as blue.
-		case 0x08: oc[18]=2; break; //green (guilds)
-		case 0x10: oc[18]=5; break;//orange (guilds)
-		default: oc[18]=3; break;//grey (Can be pretty much any number.. I like 3 :-)
-	}
-
-	//!\todo Rewrite this with the new layer system
-#if 0
-// layers was a global variable, and global variables are evil. Please rewrite this code from scratch
-
-	NxwItemWrapper si;
-	si.fillItemWeared( pc, true, true, false );
-	for( si.rewind(); !si.isEmpty(); si++ ) {
-
-		pItem pj=si.getItem();
-		if (pj)
-			if ( layers[pj->layer] == 0 )
-			{
-				LongToCharPtr(pj->getSerial(), oc+k+0);
-				ShortToCharPtr(pj->getId(), oc+k+4);
-				oc[k+6]=pj->layer;
-				k += 7;
-				if (pj->getColor() != 0)
-				{
-					oc[k-3]|=0x80;
-					ShortToCharPtr(pj->getColor(), oc+k);
-					k+= 2;
-				}
-				layers[pj->layer] = 1;
-			}
-	}
-#endif
-	uint32_t ser = 0; 	// Not well understood. It's a serial number. I set this to my serial number,
-			// and all of my messages went to my paperdoll gump instead of my character's
-			// head, when I was a character with serial number 0 0 0 1.
-	LongToCharPtr(ser, oc+k);
-	k=k+4;
-	// unimportant remark: its a packet "terminator" !!! LB
-
-	ShortToCharPtr(k, oc +1);
-	Xsend(s, oc, k);
-//AoS/	Network->FlushBuffer(s);
-}
 
 
 void SendUnicodeSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, uint8_t type, uint16_t color, uint16_t fonttype, uint32_t lang, uint8_t sysname[30], uint8_t *unicodetext, uint16_t unicodelen)
@@ -457,118 +320,7 @@ void SendUnicodeSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, ui
 }
 
 
-bool sellstuff(pClient client, pChar pc)
-{
-	if (s < 0 || s >= now) return 0; //Luxor
 
-	pChar pcs = cSerializable::findCharBySerial(currchar[s]);
-
-	if(!pcs || !pc) return 0;
-
-	char itemname[256];
-	int m1t, z, value;
-	int serial,serial1;
-	char ciname[256]; // By Magius(CHE)
-	char cinam2[256]; // By Magius(CHE)
-
-	serial=pc->getSerial();
-	/*for (ci=0;ci<pointers::pContMap[serial].size();ci++)
-	{*/
-	//<Luxor>
-
-	pItem pp=pc->GetItemOnLayer(LAYER_TRADE_BOUGHT);
-	if(!pp) return false;
-
-	pItem pack= pcs->getBackpack();
-	if(!pack) return false;
-
-	// Pause the client only after the validity tests are completed
-	// else we can have a deadlock on the client
-	client->pause();
-
-	uint8_t m1[2048]={ 0x9E, 0x00, };
-
-	LongToCharPtr(pc->getSerial(), m1 +3);
-	ShortToCharPtr(0, m1 +7);	// Num items  m1[7],m1[8]
-
-	m1t=9;
-
-	serial= pp->getSerial();
-	serial1= pack->getSerial();
-
-	NxwItemWrapper s_pack;
-	s_pack.fillItemsInContainer( pack, false );
-
-	NxwItemWrapper si;
-	si.fillItemsInContainer( pp, false );
-	for( si.rewind(); !si.isEmpty(); si++ )
-	{
-		pItem pj=si.getItem();
-		if ( ! pj ) continue;
-			
-		for( s_pack.rewind(); !s_pack.isEmpty(); s_pack++ )
-		{
-			if (m1[8] >= 50) continue;
-
-			pItem pj1 = s_pack.getItem();
-			if ( ! pj1 ) continue;
-			
-			sprintf(ciname,"'%s'",pj1->getCurrentName().c_str()); // Added by Magius(CHE)
-			sprintf(cinam2,"'%s'",pj->getCurrentName().c_str()); // Added by Magius(CHE)
-			strupr(ciname); // Added by Magius(CHE)
-			strupr(cinam2); // Added by Magius(CHE)
-
-			if (pj1->getId()==pj->getId()  &&
-				pj1->type==pj->type &&
-				((SrvParms->sellbyname==0)||(SrvParms->sellbyname==1 && (!strcmp(ciname,cinam2))))) // If the names are the same! --- Magius(CHE)
-			{
-				uint8_t namelen;
-				LongToCharPtr(pj1->getSerial(), m1+m1t+0);
-				ShortToCharPtr(pj1->getId(),m1+m1t+4);
-				ShortToCharPtr(pj1->getColor(),m1+m1t+6);
-				ShortToCharPtr(pj1->amount,m1+m1t+8);
-				value=pj->value;
-				value = pj1->calcValue(value);
-				if ( nSettings::Server::isEnabledTradeSystem() )
-					value=calcGoodValue(pc, pj1,value,1); // by Magius(CHE)
-				ShortToCharPtr(value, m1+m1t+10);
-				namelen = pj1->getName(itemname);
-				m1[m1t+12]=0;// Unknown... 2nd length byte for string?
-				m1[m1t+13] = namelen;
-				m1t += 14;
-				for(z=0;z<namelen;z++)
-				{
-					m1[m1t+z]=itemname[z];
-				}
-				m1t += namelen;
-				m1[8]++;
-			}
-		}
-	}
-
-	ShortToCharPtr(m1t, m1 +1);
-
-	if (m1[8]<51) //With too many items, server crashes
-	{
-		if (m1[8]!=0)
-		{
-			Xsend(s, m1, m1t);
-//AoS/			Network->FlushBuffer(s);
-		}
-		else
-		{
-			pc->talkAll("Thou dont posses nothing of interest to me.", false);
-		}
-	}
-	else
-	{
-			pc->talkAll("Sorry i cannot take so many items.."), false);
-	}
-
-	client->resume();
-
-	return true;
-}
 
 void tellmessage(int i, int s, char *txt)
 //Modified by N6 to use UNICODE packets

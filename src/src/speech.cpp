@@ -981,7 +981,7 @@ void responsevendor(pClient client, pChar pc_vendor)
 		{
 			if (response2 || response1)
 			{
-				sellstuff(s, pc_vendor);
+				client->sellShop(pc_vendor);
 				return;
 			}
 		}
@@ -1074,7 +1074,7 @@ void responsevendor(pClient client, pChar pc_vendor)
 				response3=(strstr( comm, search3));
 				if (response3)
 				{
-					sellstuff(s, pc);
+					client->sellShop(pc);
 					return;
 				}
 			}

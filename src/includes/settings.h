@@ -49,6 +49,8 @@ namespace nSettings {
 		uint16_t getBankMaxItems();		//!< Maximum items a player can put in a bank. 0 = Unlimited [Default: 0]
 		uint8_t getMaximumItemsOnTile();	//!< Maximum number of items in a single world tile  [Default: \b missing]
 
+		uint16_t getMaximumSoldItems();		//!< Maximum number of different item stacks sellable in a single session [default: 50]
+
 		bool hasInstantGuards();		//!< Should guards instantly teleport over new criminals? [Default: false]
 
 		bool shouldShowPCNames();		//!< Should the playing characters' names be shown on single click? [Default: true]

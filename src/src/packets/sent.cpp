@@ -1437,26 +1437,13 @@ void nPackets::Sent::OpenPaperdoll::prepare()
 */
 void nPackets::Sent::CorpseClothing::prepare()
 {
-	length = 8; //7 header + 1 terminator for minimum packet length
-	NxwItemWrapper si;
-	si.fillItemsInContainer( corpse, false );
-	std::slist<pEquippable> itemstosend;
-	for( si.rewind(); !si.isEmpty(); si++ )
-	{
-		pEquippable pi=dynamic_cast<pEquippable> si.getItem();
-		if( pi && (pi->getLayer()) )
-		{
-			length+=5;
-			itemstosend.push_back(pi);
-		}
-	}
-
+	length = 7 + 5 * items.size() + 1; 		//7 header + 5 for each item and + 1 for terminator
 	buffer = new uint8_t[length];
 	ShortToCharPtr(length, buffer + 1);
 	LongToCharPtr(corpse->getSerial(), buffer + 3);
 
 	uint8_t* offset = buffer + 7;
-	for( std::slist<pEquippable>::iterator it = itemstosend.begin(); it!= itemstosend.end(); ++it)
+	for( std::slist<pEquippable>::iterator it = items.begin(); it!= items.end(); ++it)
 	{
 		offset[0]= (*it)->getLayer();
 		LongToCharPtr((*it)->getSerial(), offset + 1);
@@ -1480,7 +1467,91 @@ void nPackets::Sent::ConnectToGameServer::prepare()
 	LongToCharPtr(newkey, buffer + 7);
 }
 
+/*!
+\brief Opens map gump on client [packet 0x90]
+\author Chronodt
+\note packet 0x90
+*/
+void nPackets::Sent::OpenMapGump::prepare()
+{
+	length = 19;
+	buffer = new uint8_t[19];
+	buffer[0] = 0x90;
+	LongToCharPtr(map->getSerial(), buffer +1);
+	ShortToCharPtr(0x139D, buffer + 5);
+	buffer[7]  = map->more1.moreb1;	// Assign topleft x
+	buffer[8]  = map->more1.moreb2;
+	buffer[9]  = map->more1.moreb3;	// Assign topleft y
+	buffer[10] = map->more1.moreb4;
+	buffer[11] = map->more2.moreb1;	// Assign lowright x
+	buffer[12] = map->more2.moreb2;
+	buffer[13] = map->more2.moreb3;	// Assign lowright y
+	buffer[14] = map->more2.moreb4;
+	int width, height;		// Temporary storage for w and h;
+	width = 134 + (134 * morez);	// Calculate new w and h
+	height = 134 + (134 * morez);
+	ShortToCharPtr(width, buffer +15);
+	ShortToCharPtr(height, buffer +17);
+}
 
+/*!
+\brief Sends book header data [packet 0x93]
+\author Flameeyes
+\note packet 0x93
+*/
+void nPackets::Sent::BookHeader::prepare()
+{
+	buffer = new uint8_t[99];
+	length = 99;
+	buffer[0] = 0x93;
+	LongToCharPtr( book->getSerial(), buffer+1 );
+	buffer[5] = readonly ? 0x00 : 0x01;
+	buffer[6] = 0x01; // Seems to be fixed
+	ShortToCharPtr( book->getNumPages(), buffer+7 )
+	strncpy( buffer+9, book->getTitle().c_str(), 60 );
+	strncpy( buffer+69, book->getAuthor().c_str(), 30 );
+}
+
+/*!
+\brief Sends Dye window [packet 0x95]
+\author Chronodt
+\note packet 0x95
+*/
+void nPackets::Sent::DyeWindow::prepare()
+{
+	length = 9;
+	buffer = new uint8_t[9];
+	buffer[0] =0x95;
+	LongToCharPtr(object->getSerial(), buffer +1);
+	ShortToCharPtr(0x0000, buffer +5);	// ignored on send ....
+	pChar pc = dynamic_cast<pChar> object;
+	pItem pi = dynamic_cast<pItem> object;
+	if (pc) ShortToCharPtr(pc->getBody()->getId(), buffer + 7);	// def. on send 0x0FAB (the dyeing vat)
+	if (pi) ShortToCharPtr(pi->getId(), buffer + 7);		// def. on send 0x0FAB (the dyeing vat)
+}
+
+/*!
+\brief Sends Move player [packet 0x97]
+\author Chronodt
+\note packet 0x97
+*/
+void nPackets::Sent::MovePlayer::prepare()
+{
+	length = 2;
+	buffer = new uint8_t[2];
+	buffer[0] = 0x97;
+	buffer[1] = direction;
+}
+
+/*!
+\todo packet 0x98: all names 3d, if needed
+*/
+
+/*!
+\brief This is sent to bring up a house-placing target [packet 0x99]
+\author Kheru
+\note packet 0x99
+*/
 void nPackets::Sent::TargetMulti::prepare()
 {
 	length = 26;
@@ -1493,6 +1564,46 @@ void nPackets::Sent::TargetMulti::prepare()
 	ShortToCharPtr(multi_id, buffer +18);
 	LongToCharPtr(radius, buffer +20);
 }
+
+/*!
+\todo packet 0x9a: console entry prompt, if needed
+*/
+
+/*!
+\brief Sends Sell list [packet 0x9e]
+\author Chronodt
+\note packet 0x9e
+*/
+void nPackets::Sent::SellList::prepare()
+{
+	length = 9; 		// 9 header + (14+namelength) for each item 
+	for( std::slist<pEquippable>::iterator it = items.begin(); it!= items.end(); ++it)
+	{
+		length+= 14 + (*it)->getCurrentName().size();
+	}
+	buffer = new uint8_t[length];
+	ShortToCharPtr(length, buffer + 1);
+	LongToCharPtr(vendor->getSerial(), buffer + 3);
+	ShortToCharPtr(items.size(), buffer + 7);	// number of items to be sent to gump
+	uint8_t* offset = buffer + 9;
+	for( std::slist<pEquippable>::iterator it = items.begin(); it!= items.end(); ++it)
+	{
+		LongToCharPtr((*it)->getSerial(), offset);
+		ShortToCharPtr((*it)->getId(), offset + 4);
+		ShortToCharPtr((*it)->getColor(), offset + 6);
+		ShortToCharPtr((*it)->getAmount(), offset + 8);
+		uint16_t value=(*it)->value;
+		value = (*it)->calcValue(value);
+		if ( nSettings::Server::isEnabledTradeSystem() )
+			value=calcGoodValue(npc, *it,value,1); // by Magius(CHE)
+		ShortToCharPtr(value, offset + 10);
+		ShortToCharPtr((*it)->getCurrentName().size(), offset + 12);
+		strcpy(buffer + 14, (*it)->getCurrentName().c_str());
+		offset+=14 + (*it)->getCurrentName().size();
+	}
+}
+
+
 
 void nPackets::Sent::OpenBrowser::prepare()
 {
@@ -1533,27 +1644,6 @@ void nPackets::Sent::AttackAck::prepare()
 }
 
 
-void nPackets::Sent::OpenMapGump::prepare()
-{
-	length = 19;
-	buffer = new uint8_t[19];
-	buffer[0] = 0x90;
-	LongToCharPtr(map->getSerial(), buffer +1);
-	ShortToCharPtr(0x139D, buffer + 5);
-	buffer[7]  = map->more1.moreb1;	// Assign topleft x
-	buffer[8]  = map->more1.moreb2;
-	buffer[9]  = map->more1.moreb3;	// Assign topleft y
-	buffer[10] = map->more1.moreb4;
-	buffer[11] = map->more2.moreb1;	// Assign lowright x
-	buffer[12] = map->more2.moreb2;
-	buffer[13] = map->more2.moreb3;	// Assign lowright y
-	buffer[14] = map->more2.moreb4;
-	int width, height;		// Temporary storage for w and h;
-	width = 134 + (134 * morez);	// Calculate new w and h
-	height = 134 + (134 * morez);
-	ShortToCharPtr(width, buffer +15);
-	ShortToCharPtr(height, buffer +17);
-}
 
 
 
@@ -1597,20 +1687,6 @@ void nPackets::Sent::LogoutStatus::prepare()
 	length = 2;
 	buffer[0] = 0xd1;
 	buffer[1] = 0x01;
-}
-
-void nPackets::Sent::BookHeader::prepare()
-{
-	buffer = new uint8_t[99];
-	length = 99;
-
-	buffer[0] = 0x93;
-	LongToCharPtr( book->getSerial(), buffer+1 );
-	buffer[5] = readonly ? 0x00 : 0x01;
-	buffer[6] = 0x01; // Seems to be fixed
-	ShortToCharPtr( book->getNumPages(), buffer+7 )
-	strncpy( buffer+9, book->getTitle().c_str(), 60 );
-	strncpy( buffer+69, book->getAuthor().c_str(), 30 );
 }
 
 

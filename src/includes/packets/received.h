@@ -1237,11 +1237,15 @@ namespace nPackets {
 		class CorpseClothing : public cPacketSend
 		{
 		protected:
+			std::slist<pEquippable> items;
 			pContainer corpse;
 		public:
 			inline CorpseClothing(pContainer aCorpse) :
 				cPacketSend(NULL, 0), corpse(aCorpse)
 			{ }
+			inline void addItem(pEquippable item)
+			{ items.push_back(item); }
+
 			void prepare();
 		};
 
@@ -1262,10 +1266,80 @@ namespace nPackets {
 			void prepare();
 		};
 
-
+		/*!
+		\brief Opens map gump on client [packet 0x90]
+		\author Chronodt
+		\todo use something better than the mores for map placement data
+		*/
+		class OpenMapGump : public cPacketSend
+		{
+		protected:
+			const pMap map;		//!< Map's gump
+		public:
+			/*!
+			\param m map
+			*/
+			inline OpenMapGump(pMap m) :
+				cPacketSend(NULL, 0), map (m)
+			{ }
+			void prepare();
+		};
 
 		/*!
-		\brief This is sent to bring up a house-placing target
+		\brief Sends book header data [packet 0x93]
+		\author Flameeyes
+		*/
+		class BookHeader : public cPacketSend
+		{
+		protected:
+			pBook book;	//!< Book to send header of
+			bool readonly;	//!< Is the book read only?
+		public:
+			inline BookHeader(pBook abook, bool ro) :
+				cPacketSend(NULL, 0), book(abook), readonly(ro)
+			{ }
+
+			void prepare();
+		};
+
+		/*!
+		\brief Sends Dye window [packet 0x95]
+		\author Chronodt
+		*/
+		class DyeWindow : public cPacketSend
+		{
+		protected:
+			pSerializable object;	//!< Item/char to dye
+		public:
+			inline DyeWindow(pSerializable aObject) :
+				cPacketSend(NULL, 0), object(aObject)
+			{ }
+			void prepare();
+		};
+
+		/*!
+		\brief Sends Move player [packet 0x97]
+		\author Chronodt
+
+		\note this packet seems to be unused by old nox O_o
+		*/
+		class MovePlayer : public cPacketSend
+		{
+		protected:
+			uint8_t direction;	//!< direction of movement
+		public:
+			inline MovePlayer(uint8_t aDirection) :
+				cPacketSend(NULL, 0), direction(aDirection)
+			{ }
+			void prepare();
+		};
+
+		/*!
+		\todo packet 0x98: all names 3d, if needed
+		*/
+
+		/*!
+		\brief This is sent to bring up a house-placing target [packet 0x99]
 		\author Kheru
 		\param multi_serial The serial of the multi deed
 		\param multi_model The house's multi number (item model - 0x4000)
@@ -1284,7 +1358,31 @@ namespace nPackets {
 			prepare();
 		};
 
-		
+		/*!
+		\todo packet 0x9a: console entry prompt, if needed
+		*/
+
+		/*!
+		\brief Sends Sell list [packet 0x9e]
+		\author Chronodt
+
+		sends list of selling items list
+		*/
+		class SellList : public cPacketSend
+		{
+		protected:
+			std::slist<pItem> items;
+			pNpc vendor;
+		public:
+			inline SellList(pNpc aVendor) :
+				cPacketSend(NULL, 0), vendor(aVendor)
+			{ }
+			inline void addItem(pItem item)
+			{ items.push_back(item); }
+			void prepare();
+		};
+
+
 		//! Open Web Browser
 		class OpenBrowser : public cPacketSend
 		{
@@ -1339,29 +1437,6 @@ namespace nPackets {
 		};
 		
 
-
-		/*!
-		\brief Opens map gump with data from map
-		\author Chronodt
-		*/
-		
-		class OpenMapGump : public cPacketSend
-		{
-		protected:
-		
-			const pMap map;	//!< Map's gump
-		public:
-			/*!
-			\param m map
-			*/
-			inline OpenMapGump(pMap m) :
-				cPacketSend(NULL, 0), map (m)
-			{ }
-		
-			void prepare();
-		};
-
-
 		class CharProfile : public cPacketSend
 		{
 		protected:
@@ -1396,20 +1471,6 @@ namespace nPackets {
 		public:
 			inline ClientViewRange(uint8_t r) :
 				cPacketSend(NULL, 0), range(r)
-			{ }
-		
-			void prepare();
-		};
-		
-		//! Sends a book's header
-		class BookHeader : public cPacketSend
-		{
-		protected:
-			pBook book;	//!< Book to send header of
-			bool readonly;	//!< Is the book read only?
-		public:
-			inline BookHeader(pBook abook, bool ro) :
-				cPacketSend(NULL, 0), book(abook), readonly(ro)
 			{ }
 		
 			void prepare();

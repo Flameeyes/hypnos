@@ -2032,7 +2032,8 @@ void target_dye( pClient client, pTarget t )
 		{
 			if( color==UINVALID16 ) //open dye vat
 			{
-				SndDyevat( ps->toInt(), pi->getSerial(), pi->getId() );
+				nPackets::Sent::DyeWindow pk(pi);
+				ps->sendPacket(&pk);
 			}
 			else {
 				if (! ((color & 0x4000) || (color & 0x8000)) )
@@ -2054,7 +2055,8 @@ void target_dye( pClient client, pTarget t )
 		{
 			if( color==UINVALID16 ) //open dye vat
 			{
-				SndDyevat( ps->toInt(), pc->getSerial(), 0x2106 );
+				nPackets::Sent::DyeWindow pk(pc);
+				ps->sendPacket(&pk);
 			}
 			else {
 
