@@ -995,28 +995,22 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 		return;
 	pChar pc = cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
-#ifdef ENCRYPTION
 	pc->setCrypter(clientCrypter[s]);
-#endif
 	//<Luxor>: possess stuff
 	if (pc->possessedSerial != INVALID) {
 		pChar pcPos = cSerializable::findCharBySerial(pc->possessedSerial);
 		if ( pcPos ) {
 			currchar[s] = pcPos->getSerial();
 			pcPos->setClient(new cNxwClientObj(s));
-#ifdef ENCRYPTION
 			pcPos->setCrypter(clientCrypter[s]);
 			pc->setCrypter(NULL);
-#endif
 			pc->setClient(NULL);
 			Accounts->SetOffline(pc->account);
 			Accounts->SetOnline(pc->account, pcPos);
 		} else pc->possessedSerial = INVALID;
 	}
 	//</Luxor>
-#ifdef ENCRYPTION
 	clientCrypter[s]=NULL;
-#endif
 	char zbuf[255];
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
@@ -1024,17 +1018,11 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	AMXEXECSV( pc->getSerial(),AMXT_SPECIALS, 4, AMX_BEFORE);
 
 	enterchar( s );
-#ifdef ENCRYPTION
 	Network->FlushBuffer(s);
-#endif
-	sysmessage(s,0x058, TRANSLATE("%s %s %s [%s] Compiled by %s"), PRODUCT, VER, VERNUMB, OS , NAME);
-#ifdef ENCRYPTION
+	sysmessage(s,0x058, "%s %s %s [%s] Compiled by %s", PRODUCT, VER, VERNUMB, OS , NAME);
 	Network->FlushBuffer(s);
-#endif
-	sysmessage(s,0x038, TRANSLATE("Programmed by: %s"),PROGRAMMERS);
-#ifdef ENCRYPTION
+	sysmessage(s,0x038, "Programmed by: %s",PROGRAMMERS);
 	Network->FlushBuffer(s);
-#endif
 	// log last time signed on
 	time_t ltime;
 	time( &ltime );
@@ -1042,7 +1030,7 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	if (SrvParms->joinmsg)
 	{
 		if (!strcmp(pc->getCurrentName().c_str(), "pty Slot --")) pc->setCurrentName("A new Character");//AntiChrist
-		sysbroadcast(TRANSLATE("%s entered the realm"),pc->getCurrentName().c_str());//message upon entering a server
+		sysbroadcast("%s entered the realm",pc->getCurrentName().c_str());//message upon entering a server
 	}
 
 	sprintf(zbuf,"%s Logged in the game",pc->getCurrentName().c_str()); //for logging to UOXmon
@@ -1081,23 +1069,17 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 
 	if ( !(strcmp(temp, "ALL") ) )
 	{
-  	  pc->sysmsg(TRANSLATE("There is NO client version checking active on this shard. The recommanded-dev-team-supported client version for this server version is client version %s though"), SUPPORTED_CLIENT);
-#ifdef ENCRYPTION
-	  Network->FlushBuffer(s);
-#endif
+  	  pc->sysmsg("There is NO client version checking active on this shard. The recommanded-dev-team-supported client version for this server version is client version %s though", SUPPORTED_CLIENT);
 	  return;
 
 	} else if ( !(strcmp(temp, "SERVER_DEFAULT") ) )
 	{
-	  pc->sysmsg(TRANSLATE("This shard requires the recommanded-dev-team-supported client version for this server version client version %s"), SUPPORTED_CLIENT);
-#ifdef ENCRYPTION
-	  Network->FlushBuffer(s);
-#endif
+	  pc->sysmsg("This shard requires the recommanded-dev-team-supported client version for this server version client version %s", SUPPORTED_CLIENT);
 	  return;
 	}
 	else
 	{
-	   sprintf(idname, TRANSLATE("This shard requires client version[s] %s"),temp);
+	   sprintf(idname, "This shard requires client version[s] %s",temp);
 	}
 
 	// remark: although it doesn't look good [without], don't add /n's
@@ -1109,12 +1091,12 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	{
 		t = (*vis).c_str();
 		strcpy(temp,t);
-		strcat(temp2,TRANSLATE(" or "));
+		strcat(temp2," or ");
 		strcat(temp2,temp);
 	}
 
 	strcat(idname, temp2);
-	strcat(idname,TRANSLATE(" The NoX-Wizard team recommanded client is "));
+	strcat(idname," The NoX-Wizard team recommanded client is ");
 	strcat(idname, SUPPORTED_CLIENT);
 
 	pc->sysmsg(idname);
@@ -1773,7 +1755,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						}
 						else
 						{
-							sysmessage(s, TRANSLATE("Access Denied!!!"));
+							sysmessage(s, "Access Denied!!!");
 							Disconnect(s);
 							LogWarning("%s tried connecting in with God Client but has no priviledges!\n", pc_currchar->getCurrentName().c_str());
 						}
@@ -2021,13 +2003,13 @@ void cNetwork::GetMsg(int s) // Receive message from client
 							}
 
 							if (pc_currchar->dead) {
-								pc_currchar->sysmsg(TRANSLATE("Ethereal souls really can't cast spells"));
+								pc_currchar->sysmsg("Ethereal souls really can't cast spells");
 							} else {
 								if (pc_currchar->isFrozen()) {
 									if (pc_currchar->casting)
-										pc_currchar->sysmsg(TRANSLATE("You are already casting a spell."));
+										pc_currchar->sysmsg("You are already casting a spell.");
 									else
-										pc_currchar->sysmsg(TRANSLATE("You cannot cast spells while frozen."));
+										pc_currchar->sysmsg("You cannot cast spells while frozen.");
 								} else {
 
 									if (!pc_currchar->knowsSpell(static_cast<magic::SpellId>(book-1))) {
@@ -2177,13 +2159,13 @@ void cNetwork::GetMsg(int s) // Receive message from client
 						pChar murderer=cSerializable::findCharBySerial(pc_currchar->murdererSer);
 						if( murderer && SrvParms->bountysactive )
 						{
-							sysmessage( s,TRANSLATE("To place a bounty on %s, use the command BOUNTY <Amount>."),
+							sysmessage( s,"To place a bounty on %s, use the command BOUNTY <Amount>.",
 								murderer->getCurrentName().c_str()  );
 						}
-						sysmessage(s, TRANSLATE("You are now a ghost."));
+						sysmessage(s, "You are now a ghost.");
 					}
 					if(buffer[s][1]==0x01)
-						sysmessage(s, TRANSLATE("The connection between your spirit and the world is too weak."));
+						sysmessage(s, "The connection between your spirit and the world is too weak.");
 					break;
 
 				case PACKET_BUYITEM:
@@ -2263,7 +2245,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					char clientNumber[TEMP_STR_SIZE];
 					strcpy((char*)clientNumber,(char*) &buffer[s][3]); // copy client version data
 					if ( strlen (clientNumber) > 10) clientDimension[s] = 3; else clientDimension[s] = 2;
-					sysmessage(s,TRANSLATE("You are using a %iD client, version %s"), clientDimension[s], clientNumber);
+					sysmessage(s,"You are using a %iD client, version %s", clientDimension[s], clientNumber);
 
 					viter = find(clientsAllowed.begin(), clientsAllowed.end(), "ALL");
 					if ( viter != clientsAllowed.end() ) break; // ALL mode found/activated -> quit

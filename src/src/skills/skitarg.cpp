@@ -29,7 +29,7 @@ pItem Check4Pack(NXWSOCKET  s)
     pItem packnum= pc->getBackpack();
     if (packnum==NULL)
     {
-        sysmessage(s,TRANSLATE("Time to buy a backpack"));
+        sysmessage(s,"Time to buy a backpack");
         return NULL;
     }
     else
@@ -42,7 +42,7 @@ bool CheckInPack(NXWSOCKET  s, pItem pi)
     VALIDATEPIR(pPack, false);
     if (pi->getContSerial()!=pPack->getSerial())
     {
-        sysmessage(s,TRANSLATE("You can't use material outside your backpack"));
+        sysmessage(s,"You can't use material outside your backpack");
         return false;
     }
     return true;
@@ -60,7 +60,7 @@ void Skills::target_removeTraps( NXWCLIENT ps, pTarget t )
 
 	if (pi->amxevents[EVENT_IONREMOVETRAP]==NULL)
 	{
-		sysmessage(s, TRANSLATE("There are no traps on this object"));
+		sysmessage(s, "There are no traps on this object");
 		if ((rand()%3)==0)
 			pc->checkSkill( skRemoveTraps, 0, 750); //ndEny is good?
 	}
@@ -91,7 +91,7 @@ void Skills::target_tailoring( NXWCLIENT ps, pTarget t )
         {
 			if(pc->getAmount(pi->getId())<1)
 			{
-				pc->sysmsg(TRANSLATE("You don't have enough material to make anything."));
+				pc->sysmsg("You don't have enough material to make anything.");
 				return;
 			}
 
@@ -111,7 +111,7 @@ void Skills::target_tailoring( NXWCLIENT ps, pTarget t )
         }
 
     }
-	else pc->sysmsg(TRANSLATE("You cannot use that material for tailoring."));
+	else pc->sysmsg("You cannot use that material for tailoring.");
 
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skTailoring,AMX_AFTER);
 }
@@ -135,7 +135,7 @@ void Skills::target_fletching( NXWCLIENT ps, pTarget t )
         }
     }
 	else
-		pc->sysmsg(TRANSLATE("You cannot use that for fletching."));
+		pc->sysmsg("You cannot use that for fletching.");
 
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skBowcraft,AMX_AFTER);
 }
@@ -201,7 +201,7 @@ void Skills::target_carpentry( NXWCLIENT ps, pTarget t )
         }
     }
     else
-        pc->sysmsg(TRANSLATE("You cannot use that material for carpentry."));
+        pc->sysmsg("You cannot use that material for carpentry.");
 
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skCarpentry,AMX_AFTER);
 }
@@ -259,7 +259,7 @@ static void AnvilTarget( NXWSOCKET s, pItem pi, int ma, int mm, char* matname)
 	if ( ! pi ) return;
 
     if (!AnvilInRange(s))
-        sysmessage(s,TRANSLATE("The anvil is too far away."));
+        sysmessage(s,"The anvil is too far away.");
     else
     {
         if (CheckInPack(s,pi))
@@ -298,7 +298,7 @@ void Skills::target_smith( NXWCLIENT ps, pTarget t )
 			return;
         }
     }
-    ps->sysmsg( TRANSLATE("You cannot use that material for blacksmithing") );
+    ps->sysmsg( "You cannot use that material for blacksmithing");
 }
 
 struct Ore
@@ -401,7 +401,7 @@ void Skills::target_tree( NXWCLIENT ps, pTarget t )
     unsigned long int curtime=uiCurrentTime;
 
 	if( pc->isMounting() ) {
-		pc->sysmsg(TRANSLATE("You cannot do this on a horse"));
+		pc->sysmsg("You cannot do this on a horse");
 		return;
 	}
 
@@ -411,20 +411,20 @@ void Skills::target_tree( NXWCLIENT ps, pTarget t )
 
     if( dist( charpos, location )>2 )
     {
-        pc->sysmsg(TRANSLATE("You are to far away to reach that"));
+        pc->sysmsg("You are to far away to reach that");
         return;
     }
 
 	pItem weapon = pc->getWeapon();
 	if( !( weapon && ( weapon->IsAxe() || weapon->IsSword() ) ) )
 	{
-		pc->sysmsg(TRANSLATE("You must have a weapon in hand in order to chop."));
+		pc->sysmsg("You must have a weapon in hand in order to chop.");
 		return;
 	}
 
     if (resource.logstamina<0 && abs(resource.logstamina)>pc->stm)
     {
-        pc->sysmsg(TRANSLATE("You are too tired to chop."));
+        pc->sysmsg("You are too tired to chop.");
         return;
     }
 
@@ -439,7 +439,7 @@ void Skills::target_tree( NXWCLIENT ps, pTarget t )
     {
         logtime[0][0]=17;//lucky number ;-)
         logamount[0][0]=resource.logs;
-        LogMessage(TRANSLATE("Lumberjacking startup, setting tree values and times..."));
+        LogMessage("Lumberjacking startup, setting tree values and times...");
 
         //for(a=1;a<410;a++)
         for(a=1;a<max_res_x;a++)//AntiChrist bug fix
@@ -475,13 +475,13 @@ void Skills::target_tree( NXWCLIENT ps, pTarget t )
 
     if(logamount[a][b]<=0)
     {
-        pc->sysmsg(TRANSLATE("There is no more wood here to chop."));
+        pc->sysmsg("There is no more wood here to chop.");
         return;
     }
 
     pItem packnum = pc->getBackpack();
     if( ! packnum ) {
-    	pc->sysmsg(TRANSLATE("No backpack to store logs"));
+    	pc->sysmsg("No backpack to store logs");
 		return;
 	}
 
@@ -490,7 +490,7 @@ void Skills::target_tree( NXWCLIENT ps, pTarget t )
 
     if (!pc->checkSkill(skLumberjacking, 0, 1000))
     {
-        pc->sysmsg(TRANSLATE("You chop for a while, but fail to produce any usable wood."));
+        pc->sysmsg("You chop for a while, but fail to produce any usable wood.");
         if(logamount[a][b]>0 && rand()%2==1)
 			logamount[a][b]--;//Randomly deplete resources even when they fail 1/2 chance you'll loose wood.
         return;
@@ -518,7 +518,7 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
     pc->playSFX(0x0125);
     if(!pc->checkSkill(skMining, 0, 800))
     {
-        sysmessage(s,TRANSLATE("You sifted through the dirt and found nothing."));
+        sysmessage(s,"You sifted through the dirt and found nothing.");
         return;
     }
 
@@ -530,16 +530,16 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
     {
     case 2:
         npcs::SpawnRandomMonster(pc,"UNDEADLIST","1000"); // Low level Undead - Random
-        pc->sysmsg(TRANSLATE("You have disturbed the rest of a vile undead creature."));
+        pc->sysmsg("You have disturbed the rest of a vile undead creature.");
         break;
     case 4:
 		{
 			pItem pi=item::SpawnRandomItem(s,"ITEMLIST","1001"); // Armor and shields - Random
 			if(pi)
 				if((pi->getId()>=7026)&&(pi->getId()<=7035))
-					pc->sysmsg(TRANSLATE("You unearthed an old shield and placed it in your pack"));
+					pc->sysmsg("You unearthed an old shield and placed it in your pack");
 				else
-		            pc->sysmsg(TRANSLATE("You have found an old piece armor and placed it in your pack."));
+		            pc->sysmsg("You have found an old piece armor and placed it in your pack.");
 		}
         break;
     case 5:
@@ -549,7 +549,7 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
         { // randomly create a gem and place in backpack
             pItem pi=item::SpawnRandomItem(s,"ITEMLIST","999");
             if(pi)
-				pc->sysmsg(TRANSLATE("You place a gem in your pack."));
+				pc->sysmsg("You place a gem in your pack.");
         }
         else
         { // Create between 1 and 15 goldpieces and place directly in backpack
@@ -557,9 +557,9 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
 	    pc->addGold(nAmount);
             pc->playSFX( goldsfx(nAmount) );
             if (nAmount==1)
-                pc->sysmsg(TRANSLATE("You unearthed %i gold coin."), nAmount);
+                pc->sysmsg("You unearthed %i gold coin.", nAmount);
             else
-                pc->sysmsg(TRANSLATE("You unearthed %i gold coins."), nAmount);
+                pc->sysmsg("You unearthed %i gold coins.", nAmount);
         }
         break;
     case 6:
@@ -567,13 +567,13 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
             npcs::SpawnRandomMonster(pc,"UNDEADLIST","1000"); // Low level Undead - Random
         else
             npcs::SpawnRandomMonster(pc,"UNDEADLIST","1001"); // Med level Undead - Random
-        pc->sysmsg(TRANSLATE("You have disturbed the rest of a vile undead creature."));
+        pc->sysmsg("You have disturbed the rest of a vile undead creature.");
         break;
     case 8:
 		{
 			pItem pi=item::SpawnRandomItem(s,"ITEMLIST","1000");
 			if(pi)
-				pc->sysmsg(TRANSLATE("You unearthed a old weapon and placed it in your pack."));
+				pc->sysmsg("You unearthed a old weapon and placed it in your pack.");
 		}
         break;
     case 10:
@@ -581,14 +581,14 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
             npcs::SpawnRandomMonster(pc,"UNDEADLIST","1001"); // Med level Undead - Random
         else
             npcs::SpawnRandomMonster(pc,"UNDEADLIST","1002"); // High level Undead - Random
-        pc->sysmsg(TRANSLATE("You have disturbed the rest of a vile undead creature."));
+        pc->sysmsg("You have disturbed the rest of a vile undead creature.");
         break;
     case 12:
         if(nFame>1000)
             npcs::SpawnRandomMonster(pc,"UNDEADLIST","1002"); // High level Undead - Random
         else
             npcs::SpawnRandomMonster(pc,"UNDEADLIST","1001"); // Med level Undead - Random
-        pc->sysmsg(TRANSLATE("You have disturbed the rest of a vile undead creature."));
+        pc->sysmsg("You have disturbed the rest of a vile undead creature.");
         break;
     default:
         nRandnum=rand()%2;
@@ -614,10 +614,10 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
                 }
                 pBone = item::CreateFromScript( "$item_bone", pc->getBackpack() );
                 pBone->setId( 0x1B00 + iID );
-                pc->sysmsg(TRANSLATE("You have unearthed some old bones and placed them in your pack."));
+                pc->sysmsg("You have unearthed some old bones and placed them in your pack.");
                 break;
             default: // found an empty grave
-               	pc->sysmsg(TRANSLATE("This grave seems to be empty."));
+               	pc->sysmsg("This grave seems to be empty.");
         }
     }
 }
@@ -647,7 +647,7 @@ void Skills::target_smeltOre( NXWCLIENT ps, pTarget t )
         if( pi->IsForge() )
         {
             if( !pc->hasInRange(pi, 3) )        //Check if the forge is in range
-                pc->sysmsg(TRANSLATE("You cant smelt here."));
+                pc->sysmsg("You cant smelt here.");
             else
             {
                 pItem pix=cSerializable::findItemBySerial( t->buffer[0] );
@@ -680,14 +680,14 @@ void Skills::target_wheel( NXWCLIENT ps, pTarget t )	//Spinning wheel
         {
             if (!pc_currchar->checkSkill(skTailoring, 0, 1000))
             {
-                pc_currchar->sysmsg(TRANSLATE("You failed to spin your material."));
+                pc_currchar->sysmsg("You failed to spin your material.");
                 return;
             }
 
             pItem pti=cSerializable::findItemBySerial( t->buffer[1] );   // on error return
 			VALIDATEPI(pti);
 
-            pc_currchar->sysmsg(TRANSLATE("You have successfully spun your material."));
+            pc_currchar->sysmsg("You have successfully spun your material.");
 
             if (mat==YARN)
             {
@@ -709,7 +709,7 @@ void Skills::target_wheel( NXWCLIENT ps, pTarget t )	//Spinning wheel
     }
 
     if(!tailme)
-		pc_currchar->sysmsg(TRANSLATE("You cant tailor here."));
+		pc_currchar->sysmsg("You cant tailor here.");
 }
 
 void Skills::target_loom( NXWCLIENT ps, pTarget t )
@@ -732,14 +732,14 @@ void Skills::target_loom( NXWCLIENT ps, pTarget t )
 
 				if(pti->amount<5)
 				{
-					pc_currchar->sysmsg(TRANSLATE("You do not have enough material to make anything!"));
+					pc_currchar->sysmsg("You do not have enough material to make anything!");
 					return;
 				}
 
 				if (!pc_currchar->checkSkill(skTailoring, 300, 1000))
 				{
-					pc_currchar->sysmsg(TRANSLATE("You failed to make cloth."));
-					pc_currchar->sysmsg(TRANSLATE("You have broken and lost some material!"));
+					pc_currchar->sysmsg("You failed to make cloth.");
+					pc_currchar->sysmsg("You have broken and lost some material!");
 					pti->ReduceAmount( 1+(rand() % (pti->amount)));
 					pti->Refresh();
 					return;
@@ -750,7 +750,7 @@ void Skills::target_loom( NXWCLIENT ps, pTarget t )
 					case 0x0E1E: // Yarn
 					case 0x0E1D:
 					case 0x0E1F:
-						pc_currchar->sysmsg(TRANSLATE("You have made your cloth."));
+						pc_currchar->sysmsg("You have made your cloth.");
 						pti->setCurrentName("#");
 						pti->setId( 0x175D );
 						pti->setCanDecay(true);
@@ -758,7 +758,7 @@ void Skills::target_loom( NXWCLIENT ps, pTarget t )
 						break;
 					case 0x0FA0: // Thread
 					case 0x0FA1:
-						pc_currchar->sysmsg(TRANSLATE("You have made a bolt of cloth."));
+						pc_currchar->sysmsg("You have made a bolt of cloth.");
 						pti->setCurrentName("#");
 						pti->setId( 0x0F95 );
 						pti->setCanDecay(true);
@@ -774,7 +774,7 @@ void Skills::target_loom( NXWCLIENT ps, pTarget t )
 	}
 
 	if(!tailme)
-		pc_currchar->sysmsg(TRANSLATE("You can't tailor here."));
+		pc_currchar->sysmsg("You can't tailor here.");
 }
 
 ////////////
@@ -808,7 +808,7 @@ void Skills::target_cookOnFire( NXWCLIENT ps, pTarget t )
                     if (!pc->checkSkill(skCooking, 0, 1000))
                     {
                         piRaw->ReduceAmount(1+(rand() %(piRaw->amount)));
-                        pc->sysmsg(TRANSLATE("You failed to cook the %s and drop some into the ashes."),matname.c_str());
+                        pc->sysmsg("You failed to cook the %s and drop some into the ashes.", matname.c_str());
                     }
                     else
                     {
@@ -820,7 +820,7 @@ void Skills::target_cookOnFire( NXWCLIENT ps, pTarget t )
                         pi->type=ITYPE_FOOD;
                         pi->Refresh();
                         piRaw->Delete();
-                        pc->sysmsg(TRANSLATE("You have cooked the %s,and it smells great."),matname.c_str());
+                        pc->sysmsg("You have cooked the %s,and it smells great.", matname.c_str());
                     }
                 }
             }
@@ -858,7 +858,7 @@ void Skills::target_detectHidden( NXWCLIENT ps, pTarget t )
 	Location lCharPos = pc->getPosition();
 
 	if ( int32_t(dist(lCharPos, location)) > 15 ) {
-		pc->sysmsg( TRANSLATE("You cannot see for hidden objects so far.") );
+		pc->sysmsg( "You cannot see for hidden objects so far.");
 		return;
 	}
 
@@ -883,15 +883,15 @@ void Skills::target_detectHidden( NXWCLIENT ps, pTarget t )
 				nLow = 999;
 			if ( pc->checkSkill(skDetectingHidden, nLow, 1000) ) {
 				pc_curr->unHide();
-				pc_curr->sysmsg( TRANSLATE("You have been revealed!") );
-				pc->sysmsg( TRANSLATE("You revelaled %s"), pc_curr->getCurrentName().c_str() );
+				pc_curr->sysmsg( "You have been revealed!" );
+				pc->sysmsg( "You revelaled %s", pc_curr->getCurrentName().c_str() );
 				bFound = true;
 			}
 		}
 	}
 
 	if( !bFound )
-		pc->sysmsg( TRANSLATE("You fail to find anyone.") );
+		pc->sysmsg( "You fail to find anyone." );
 
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skDetectingHidden,AMX_AFTER);
 }
@@ -910,7 +910,7 @@ void target_enticement2( NXWCLIENT ps, pTarget t )
 	ITEM inst = Skills::GetInstrument(s);
 	if (inst==INVALID)
 	{
-		sysmessage(s, TRANSLATE("You do not have an instrument to play on!"));
+		sysmessage(s, "You do not have an instrument to play on!");
 		return;
 	}
 
@@ -920,12 +920,12 @@ void target_enticement2( NXWCLIENT ps, pTarget t )
 		VALIDATEPC(pc_target);
 		pc_target->ftargserial = pc_ftarg->getSerial();
 		pc_target->npcWander = WANDER_FOLLOW;
-		sysmessage(s, TRANSLATE("You play your hypnotic music, luring them near your target."));
+		sysmessage(s, "You play your hypnotic music, luring them near your target.");
 		Skills::PlayInstrumentWell(s, inst);
 	}
 	else
 	{
-		sysmessage(s, TRANSLATE("Your music fails to attract them."));
+		sysmessage(s, "Your music fails to attract them.");
 		Skills::PlayInstrumentPoor(s, inst);
 	}
 }
@@ -944,28 +944,28 @@ void Skills::target_enticement1( NXWCLIENT ps, pTarget t )
 	ITEM inst = Skills::GetInstrument(s);
 	if (inst==INVALID)
 	{
-		sysmessage(s, TRANSLATE("You do not have an instrument to play on!"));
+		sysmessage(s, "You do not have an instrument to play on!");
 		return;
 	}
 	if ( pc->IsInvul() || pc->shopkeeper )
 	{
-		sysmessage(s,TRANSLATE(" You cant entice that npc!"));
+		sysmessage(s," You cant entice that npc!");
 		return;
 	}
 	if (pc->InGuardedArea())
 	{
-		sysmessage(s,TRANSLATE(" You cant do that in town!"));
+		sysmessage(s," You cant do that in town!");
 		return;
 	}
 	if (!pc->npc)
-		sysmessage(s, TRANSLATE("You cannot entice other players."));
+		sysmessage(s, "You cannot entice other players.");
 	else
 	{
 		pTarget targ= clientInfo[s]->newTarget( new cCharTarget() );
 		targ->code_callback = target_enticement2;
 		targ->buffer[0]= pc->getSerial();
 		targ->send( ps );
-		ps->sysmsg(TRANSLATE("You play your music, luring them near. Whom do you wish them to follow?"));
+		ps->sysmsg("You play your music, luring them near. Whom do you wish them to follow?");
 		PlayInstrumentWell(s, inst);
 	}
 }
@@ -1013,7 +1013,7 @@ void target_provocation2( NXWCLIENT ps, pTarget t )
 		}
 		else
 		{
-			sysmessage(s, TRANSLATE("Your music fails to incite enough anger."));
+			sysmessage(s, "Your music fails to incite enough anger.");
 			Victim2 = Player;		// make the targeted one attack the Player
 		}
 
@@ -1024,7 +1024,7 @@ void target_provocation2( NXWCLIENT ps, pTarget t )
 		Victim2->ResetAttackFirst();
 
 		char temp[500];
-		sprintf(temp, TRANSLATE("* You see %s attacking %s *"), Victim1->getCurrentName().c_str(), Victim2->getCurrentName().c_str());
+		sprintf(temp, "* You see %s attacking %s *", Victim1->getCurrentName().c_str(), Victim2->getCurrentName().c_str());
 
 		NxwSocketWrapper sw;
 		sw.fillOnline( Victim1, false );
@@ -1040,7 +1040,7 @@ void target_provocation2( NXWCLIENT ps, pTarget t )
 	else
 	{
 		Skills::PlayInstrumentPoor(s, inst);
-		sysmessage(s, TRANSLATE("You play rather poorly and to no effect."));
+		sysmessage(s, "You play rather poorly and to no effect.");
 	}
 }
 
@@ -1057,19 +1057,19 @@ void Skills::target_provocation1( NXWCLIENT ps, pTarget t )
 	int inst = Skills::GetInstrument(s);
 	if (inst==INVALID)
 	{
-		sysmessage(s, TRANSLATE("You do not have an instrument to play on!"));
+		sysmessage(s, "You do not have an instrument to play on!");
 		return;
 	}
 
 	if (!pc->npc)
-		sysmessage(s, TRANSLATE("You cannot provoke other players."));
+		sysmessage(s, "You cannot provoke other players.");
 	else
 	{
 		pTarget targ=clientInfo[s]->newTarget( new cCharTarget() );
 		targ->code_callback=target_provocation2;
 		targ->buffer[0]=pc->getSerial();
 		targ->send( ps );
-		ps->sysmsg( TRANSLATE("You play your music, inciting anger, and your target begins to look furious. Whom do you wish it to attack?"));
+		ps->sysmsg( "You play your music, inciting anger, and your target begins to look furious. Whom do you wish it to attack?");
 		PlayInstrumentWell(s, inst);
 	}
 }
@@ -1112,7 +1112,7 @@ void Skills::target_alchemy( NXWCLIENT ps, pTarget t )
 
 	if (!pfbottle)
 	{
-		sysmessage(s,TRANSLATE("There is no bottle in your pack"));
+		sysmessage(s,"There is no bottle in your pack");
 		return;
 	}
 
@@ -1128,7 +1128,7 @@ void Skills::target_alchemy( NXWCLIENT ps, pTarget t )
 		case 0x0F86: itemmenu( s, 7028 ); break;   // Strength,
 		case 0x0E9B: break; // Mortar
 		default:
-            sysmessage(s,TRANSLATE("That is not a valid reagent."));
+            sysmessage(s,"That is not a valid reagent.");
     }
 }
 
@@ -1155,14 +1155,14 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
 		//pChar pc_att=cSerializable::findCharBySerial(ph->attackerserial);
 		if( ph->war/* || pp->war || ( pc_att && pc_att->war)*/)
 		{
-			ph->sysmsg(TRANSLATE("You can't heal while in a fight!"));
+			ph->sysmsg("You can't heal while in a fight!");
 			return;
 		}
 	}
 
 	if( !ph->hasInRange(pp, 1) )
 	{
-		ph->sysmsg(TRANSLATE("You are not close enough to apply the bandages."));
+		ph->sysmsg("You are not close enough to apply the bandages.");
 		return;
 	}
 
@@ -1176,15 +1176,15 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
 	if (pp->dead)
 	{
 		if (ph->baseskill[HEALING] < 800 || ph->baseskill[skAnatomy]<800)
-			ph->sysmsg(TRANSLATE("You are not skilled enough to resurrect"));
+			ph->sysmsg("You are not skilled enough to resurrect");
 		else
 		{
 			if(ph->checkSkill(HEALING,800,1000) && ph->checkSkill(skAnatomy,800,1000) ) {
 				pp->resurrect();
-				ph->sysmsg(TRANSLATE("Because of your skill, you were able to resurrect the ghost."));
+				ph->sysmsg("Because of your skill, you were able to resurrect the ghost.");
 			}
             else
-				ph->sysmsg(TRANSLATE("You failed to resurrect the ghost"));
+				ph->sysmsg("You failed to resurrect the ghost");
 
 			SetTimerSec(&ph->objectdelay,SrvParms->objectdelay+SrvParms->bandagedelay);
 			pib->ReduceAmount(1);
@@ -1197,18 +1197,18 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
 	{
 		if (ph->baseskill[HEALING]<=600 || ph->baseskill[skAnatomy]<=600)
 		{
-			ph->sysmsg(TRANSLATE("You are not skilled enough to cure poison."));
-			ph->sysmsg(TRANSLATE("The poison in your target's system counters the bandage's effect."));
+			ph->sysmsg("You are not skilled enough to cure poison.");
+			ph->sysmsg("The poison in your target's system counters the bandage's effect.");
 		}
 		else
 		{
 			if (ph->checkSkill( HEALING,600,1000) && ph->checkSkill(skAnatomy,600,1000))
 			{
 				pp->poisoned=poisonNone;
-				ph->sysmsg(TRANSLATE("Because of your skill, you were able to counter the poison."));
+				ph->sysmsg("Because of your skill, you were able to counter the poison.");
 			}
 			else
-				ph->sysmsg(TRANSLATE("You fail to counter the poison"));
+				ph->sysmsg("You fail to counter the poison");
 
 		}
 
@@ -1219,7 +1219,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
 
 	if(pp->hp >= pp->getStrength())
 	{
-		ph->sysmsg(TRANSLATE("That being is not damaged"));
+		ph->sysmsg("That being is not damaged");
 		return;
 	}
 
@@ -1227,7 +1227,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
 	{
 		if (!ph->checkSkill(HEALING,0,1000))
 		{
-			ph->sysmsg(TRANSLATE("You apply the bandages, but they barely help!"));
+			ph->sysmsg("You apply the bandages, but they barely help!");
 			pp->hp++;
 		}
 		else
@@ -1250,13 +1250,13 @@ void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
     else //Bandages used on a non-human
 	{
 		if (!ph->checkSkill(skVeterinary,0,1000))
-			ph->sysmsg(TRANSLATE("You are not skilled enough to heal that creature."));
+			ph->sysmsg("You are not skilled enough to heal that creature.");
 		else
 		{
 			j=((3*ph->skill[skVeterinary])/100) + rand()%6;
 			pp->hp=qmin(pp->getStrength(), j+pp->hp);
 			pp->updateStats(0);
-			ph->sysmsg(TRANSLATE("You apply the bandages and the creature looks a bit healthier."));
+			ph->sysmsg("You apply the bandages and the creature looks a bit healthier.");
 		}
 	}
 
@@ -1286,73 +1286,73 @@ void Skills::target_armsLore( NXWCLIENT ps, pTarget t )
     if ( (pi->def==0 || pi->pileable)
         && ((pi->lodamage==0 && pi->hidamage==0) && (pi->rank<1 || pi->rank>9)))
     {
-        pc->sysmsg(TRANSLATE("That does not appear to be a weapon."));
+        pc->sysmsg("That does not appear to be a weapon.");
         return;
     }
     if(pc->IsGM())
     {
-        pc->sysmsg(TRANSLATE("Attack [%i] Defense [%i] Lodamage [%i] Hidamage [%i]"), pi->att, pi->def, pi->lodamage, pi->hidamage);
+        pc->sysmsg("Attack [%i] Defense [%i] Lodamage [%i] Hidamage [%i]", pi->att, pi->def, pi->lodamage, pi->hidamage);
         return;
     }
 
     if (!pc->checkSkill( skArmsLore, 0, 250))
-        pc->sysmsg(TRANSLATE("You are not certain..."));
+        pc->sysmsg("You are not certain...");
     else
     {
         if( pi->maxhp==0)
-            pc->sysmsg(TRANSLATE(" Sorry this is a old item and it doesn't have maximum hp"));
+            pc->sysmsg(" Sorry this is a old item and it doesn't have maximum hp");
         else
         {
             totalhp= (float) pi->hp/pi->maxhp;
-            strcpy(temp,TRANSLATE("This item "));
-            if  (totalhp>0.9) strcpy(p2, TRANSLATE("is brand new."));
-            else if (totalhp>0.8) strcpy(p2, TRANSLATE("is almost new."));
-            else if (totalhp>0.7) strcpy(p2, TRANSLATE("is barely used, with a few nicks and scrapes."));
-            else if (totalhp>0.6) strcpy(p2, TRANSLATE("is in fairly good condition."));
-            else if (totalhp>0.5) strcpy(p2, TRANSLATE("suffered some wear and tear."));
-            else if (totalhp>0.4) strcpy(p2, TRANSLATE("is well used."));
-            else if (totalhp>0.3) strcpy(p2, TRANSLATE("is rather battered."));
-            else if (totalhp>0.2) strcpy(p2, TRANSLATE("is somewhat badly damaged."));
-            else if (totalhp>0.1) strcpy(p2, TRANSLATE("is flimsy and not trustworthy."));
-            else              strcpy(p2, TRANSLATE("is falling apart."));
+            strcpy(temp,"This item ");
+            if  (totalhp>0.9) strcpy(p2, "is brand new.");
+            else if (totalhp>0.8) strcpy(p2, "is almost new.");
+            else if (totalhp>0.7) strcpy(p2, "is barely used, with a few nicks and scrapes.");
+            else if (totalhp>0.6) strcpy(p2, "is in fairly good condition.");
+            else if (totalhp>0.5) strcpy(p2, "suffered some wear and tear.");
+            else if (totalhp>0.4) strcpy(p2, "is well used.");
+            else if (totalhp>0.3) strcpy(p2, "is rather battered.");
+            else if (totalhp>0.2) strcpy(p2, "is somewhat badly damaged.");
+            else if (totalhp>0.1) strcpy(p2, "is flimsy and not trustworthy.");
+            else              strcpy(p2, "is falling apart.");
             strcat(temp,p2);
             char temp2[33];
             sprintf(temp2," [%.1f %%]",totalhp*100);
-            strcat(temp,temp2);  // Magius(CHE) §
+            strcat(temp,temp2);  // Magius(CHE) 
         }
         if (pc->checkSkill(skArmsLore, 250, 510))
         {
             if (pi->hidamage)
             {
                 total = (pi->hidamage + pi->lodamage)/2;
-                if  ( total > 26) strcpy(p2, TRANSLATE(" Would be extraordinarily deadly."));
-                else if ( total > 21) strcpy(p2, TRANSLATE(" Would be a superior weapon."));
-                else if ( total > 16) strcpy(p2, TRANSLATE(" Would inflict quite a lot of damage and pain."));
-                else if ( total > 11) strcpy(p2, TRANSLATE(" Would probably hurt your opponent a fair amount."));
-                else if ( total > 6)  strcpy(p2, TRANSLATE(" Would do some damage."));
-                else if ( total > 3)  strcpy(p2, TRANSLATE(" Would do minimal damage."));
-                else              strcpy(p2, TRANSLATE(" Might scratch your opponent slightly."));
+                if  ( total > 26) strcpy(p2, " Would be extraordinarily deadly.");
+                else if ( total > 21) strcpy(p2, " Would be a superior weapon.");
+                else if ( total > 16) strcpy(p2, " Would inflict quite a lot of damage and pain.");
+                else if ( total > 11) strcpy(p2, " Would probably hurt your opponent a fair amount.");
+                else if ( total > 6)  strcpy(p2, " Would do some damage.");
+                else if ( total > 3)  strcpy(p2, " Would do minimal damage.");
+                else              strcpy(p2, " Might scratch your opponent slightly.");
                 strcat(temp,p2);
 
                 if (pc->checkSkill( skArmsLore, 500, 1000))
                 {
-                    if  (pi->spd > 35) strcpy(p2, TRANSLATE(" And is very fast."));
-                    else if (pi->spd > 25) strcpy(p2, TRANSLATE(" And is fast."));
-                    else if (pi->spd > 15) strcpy(p2, TRANSLATE(" And is slow."));
-                    else               strcpy(p2, TRANSLATE(" And is very slow."));
+                    if  (pi->spd > 35) strcpy(p2, " And is very fast.");
+                    else if (pi->spd > 25) strcpy(p2, " And is fast.");
+                    else if (pi->spd > 15) strcpy(p2, " And is slow.");
+                    else               strcpy(p2, " And is very slow.");
                     strcat(temp,p2);
                 }
             }
             else
             {
-                if  (pi->def> 12) strcpy(p2, TRANSLATE(" Is superbly crafted to provide maximum protection."));
-                else if (pi->def> 10) strcpy(p2, TRANSLATE(" Offers excellent protection."));
-                else if (pi->def> 8 ) strcpy(p2, TRANSLATE(" Is a superior defense against attack."));
-                else if (pi->def> 6 ) strcpy(p2, TRANSLATE(" Serves as a sturdy protection."));
-                else if (pi->def> 4 ) strcpy(p2, TRANSLATE(" Offers some protection against blows."));
-                else if (pi->def> 2 ) strcpy(p2, TRANSLATE(" Provides very little protection."));
-                else if (pi->def> 0 ) strcpy(p2, TRANSLATE(" Provides almost no protection."));
-                else              strcpy(p2, TRANSLATE(" Offers no defense against attackers."));
+                if  (pi->def> 12) strcpy(p2, " Is superbly crafted to provide maximum protection.");
+                else if (pi->def> 10) strcpy(p2, " Offers excellent protection.");
+                else if (pi->def> 8 ) strcpy(p2, " Is a superior defense against attack.");
+                else if (pi->def> 6 ) strcpy(p2, " Serves as a sturdy protection.");
+                else if (pi->def> 4 ) strcpy(p2, " Offers some protection against blows.");
+                else if (pi->def> 2 ) strcpy(p2, " Provides very little protection.");
+                else if (pi->def> 0 ) strcpy(p2, " Provides almost no protection.");
+                else              strcpy(p2, " Offers no defense against attackers.");
                 strcat(temp,p2);
             }
         }
@@ -1364,16 +1364,17 @@ void Skills::target_armsLore( NXWCLIENT ps, pTarget t )
             {
                 switch(pi->rank)
                 {
-                    case 1: strcpy(p2, TRANSLATE("It seems an item with no quality!"));             break;
-                    case 2: strcpy(p2, TRANSLATE("It seems an item very below standard quality!"));     break;
-                    case 3: strcpy(p2, TRANSLATE("It seems an item below standard quality!"));      break;
-                    case 4: strcpy(p2, TRANSLATE("It seems a weak quality item!"));                     break;
-                    case 5: strcpy(p2, TRANSLATE("It seems a standard quality item!"));             break;
-                    case 6: strcpy(p2, TRANSLATE("It seems a nice quality item!"));                     break;
-                    case 7: strcpy(p2, TRANSLATE("It seems a good quality item!"));                     break;
-                    case 8: strcpy(p2, TRANSLATE("It seems a great quality item!"));                break;
-                    case 9: strcpy(p2, TRANSLATE("It seems a beautiful quality item!"));            break;
-                    case 10:strcpy(p2, TRANSLATE("It seems a perfect quality item!"));              break;
+			//!\todo Here we can use static const char*
+                    case 1: strcpy(p2, "It seems an item with no quality!"); break;
+                    case 2: strcpy(p2, "It seems an item very below standard quality!"); break;
+                    case 3: strcpy(p2, "It seems an item below standard quality!"); break;
+                    case 4: strcpy(p2, "It seems a weak quality item!"); break;
+                    case 5: strcpy(p2, "It seems a standard quality item!"); break;
+                    case 6: strcpy(p2, "It seems a nice quality item!"); break;
+                    case 7: strcpy(p2, "It seems a good quality item!"); break;
+                    case 8: strcpy(p2, "It seems a great quality item!"); break;
+                    case 9: strcpy(p2, "It seems a beautiful quality item!"); break;
+                    case 10:strcpy(p2, "It seems a perfect quality item!"); break;
                 }
                 pc->sysmsg(p2);
             }
@@ -1398,13 +1399,13 @@ void Skills::target_itemId( NXWCLIENT ps, pTarget t )
     {
         if (!pc->checkSkill( ITEMID, 0, 250))
         {
-            pc->sysmsg(TRANSLATE("You can't quite tell what this item is..."));
+            pc->sysmsg("You can't quite tell what this item is...");
         }
         else
         {
             if(pi->corpse)
             {
-                pc->sysmsg(TRANSLATE("You have to use your forensics evalutation skill to know more on this corpse."));
+                pc->sysmsg("You have to use your forensics evalutation skill to know more on this corpse.");
                 return;
             }
 
@@ -1417,45 +1418,45 @@ void Skills::target_itemId( NXWCLIENT ps, pTarget t )
             else
 				strcpy(temp2, pi->getCurrentName().c_str());
 
-            pc->sysmsg(TRANSLATE("You found that this item appears to be called: %s"), temp2);
+            pc->sysmsg("You found that this item appears to be called: %s"), temp2);
 
             // Show Creator by Magius(CHE)
             if (pc->checkSkill( ITEMID, 250, 500))
             {
                 if (!pi->creator.empty())
                 {
-                    if (pi->madewith>0) pc->sysmsg(TRANSLATE("It is %s by %s"),skillinfo[pi->madewith-1].madeword,pi->creator.c_str()); // Magius(CHE)
-                    else if (pi->madewith<0) pc->sysmsg(TRANSLATE("It is %s by %s"),skillinfo[0-pi->madewith-1].madeword,pi->creator.c_str()); // Magius(CHE)
-                    else pc->sysmsg(TRANSLATE("It is made by %s"),pi->creator.c_str()); // Magius(CHE)
-                } else pc->sysmsg(TRANSLATE("You don't know its creator!"));
-            } else pc->sysmsg(TRANSLATE("You can't know its creator!"));
+                    if (pi->madewith>0) pc->sysmsg("It is %s by %s",skillinfo[pi->madewith-1].madeword,pi->creator.c_str()); // Magius(CHE)
+                    else if (pi->madewith<0) pc->sysmsg("It is %s by %s",skillinfo[0-pi->madewith-1].madeword,pi->creator.c_str()); // Magius(CHE)
+                    else pc->sysmsg("It is made by %s",pi->creator.c_str()); // Magius(CHE)
+                } else pc->sysmsg("You don't know its creator!");
+            } else pc->sysmsg("You can't know its creator!");
             // End Show creator
 
             if (!pc->checkSkill( ITEMID, 250, 500))
             {
-                pc->sysmsg(TRANSLATE("You can't tell if it is magical or not."));
+                pc->sysmsg("You can't tell if it is magical or not.");
             }
             else
             {
                 if(pi->type != ITYPE_WAND)
                 {
-                    pc->sysmsg(TRANSLATE("This item has no hidden magical properties."));
+                    pc->sysmsg("This item has no hidden magical properties.");
                 }
                 else
                 {
                     if (!pc->checkSkill( ITEMID, 500, 1000))
                     {
-                        pc->sysmsg(TRANSLATE("This item is enchanted with a spell, but you cannot determine which"));
+                        pc->sysmsg("This item is enchanted with a spell, but you cannot determine which");
                     }
                     else
                     {
                         if (!pc->checkSkill( ITEMID, 750, 1100))
                         {
-                            pc->sysmsg(TRANSLATE("It is enchanted with the spell %s, but you cannot determine how many charges remain."),spellname[(8*(pi->morex-1))+pi->morey-1]);
+                            pc->sysmsg("It is enchanted with the spell %s, but you cannot determine how many charges remain.",spellname[(8*(pi->morex-1))+pi->morey-1]);
                         }
                         else
                         {
-                            pc->sysmsg(TRANSLATE("It is enchanted with the spell %s, and has %d charges remaining."),spellname[(8*(pi->morex-1))+pi->morey-1],pi->morez);
+                            pc->sysmsg("It is enchanted with the spell %s, and has %d charges remaining.",spellname[(8*(pi->morex-1))+pi->morey-1],pi->morez);
                         }
                     }
                 }
@@ -1478,8 +1479,6 @@ void Skills::target_tame( NXWCLIENT ps, pTarget t )
 
 	int tamed=0;
 
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-
 	if(line_of_sight(INVALID, pc->getPosition(), target->getPosition(), WALLS_CHIMNEYS+DOORS+FLOORS_FLAT_ROOFING)==0)
 		return;
 
@@ -1491,19 +1490,19 @@ void Skills::target_tame( NXWCLIENT ps, pTarget t )
 	{
 		if ( (target->taming > 1000) || (target->taming ==0) )//Morrolan default is now no tame
 		{
-			pc->sysmsg(TRANSLATE("You can't tame that creature."));
+			pc->sysmsg("You can't tame that creature.");
 			return;
 		}
 
 		if( (target->tamed) && pc->isOwnerOf(target) )
 		{
-			pc->sysmsg(TRANSLATE("You already control that creature!" ));
+			pc->sysmsg("You already control that creature!" );
 			return;
 		}
 
 		if( target->tamed )
 		{
-			pc->sysmsg(TRANSLATE("That creature looks tame already." ));
+			pc->sysmsg("That creature looks tame already." );
 			return;
 		}
 
@@ -1511,10 +1510,10 @@ void Skills::target_tame( NXWCLIENT ps, pTarget t )
 		{
 			switch(rand()%4)
 			{
-				case 0: pc->talkAll( TRANSLATE("I've always wanted a pet like you."),0); break;
-				case 1: pc->talkAll( TRANSLATE("Will you be my friend?"),0); break;
-				case 2: sprintf(temp, TRANSLATE("Here %s."), target->getCurrentName().c_str()); pc->talkAll( temp,0); break;
-				case 3: sprintf(temp, TRANSLATE("Good %s."), target->getCurrentName().c_str()); pc->talkAll( temp,0); break;
+				case 0: pc->talkAll( "I've always wanted a pet like you.", false); break;
+				case 1: pc->talkAll( "Will you be my friend?", false); break;
+				case 2: pc->talkAll( "Here %s.", false, target->getCurrentName().c_str()); break;
+				case 3: pc->talkAll( "Good %s.", false, target->getCurrentName().c_str()); break;
 				default:
 					LogError("switch reached default");
 			}
@@ -1522,11 +1521,11 @@ void Skills::target_tame( NXWCLIENT ps, pTarget t )
 
 		if ( (!pc->checkSkill(skTaming, 0, 1000)) || (pc->skill[skTaming] < target->taming) )
 		{
-			pc->sysmsg(TRANSLATE("You were unable to tame it."));
+			pc->sysmsg("You were unable to tame it.");
 			return;
 		}
 
-		pc->talk(s, TRANSLATE("It seems to accept you as it's master!"),0);
+		pc->talk(s, "It seems to accept you as it's master!",0);
 		tamed=1;
 		target->setOwner(pc);
 
@@ -1539,7 +1538,7 @@ void Skills::target_tame( NXWCLIENT ps, pTarget t )
 		}
 	}
 
-	if (tamed==0) pc->sysmsg(TRANSLATE("You can't tame that!"));
+	if (tamed==0) pc->sysmsg("You can't tame that!");
 
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skTaming,AMX_AFTER);
 }
@@ -1560,7 +1559,7 @@ void Skills::target_animalLore( NXWCLIENT ps, pTarget t )
     // blackwind distance fix
 	if( target->distFrom(pc) >= 10 )
 	{
-		pc->sysmsg(TRANSLATE("You need to be closer to find out more about them" ));
+		pc->sysmsg("You need to be closer to find out more about them" );
 		return;
 	}
 
@@ -1568,12 +1567,12 @@ void Skills::target_animalLore( NXWCLIENT ps, pTarget t )
 
 	if (target->IsGMorCounselor())
 	{
-		pc->sysmsg(TRANSLATE( "Little is known of these robed gods."));
+		pc->sysmsg( "Little is known of these robed gods.");
 		return;
 	}
 	else if( target->HasHumanBody() ) // Used on human
 	{
-		pc->sysmsg(TRANSLATE("The human race should use dvorak!"));
+		pc->sysmsg("The human race should use dvorak!");
 	}
 	else // Lore used on a non-human
 	{
@@ -1582,12 +1581,12 @@ void Skills::target_animalLore( NXWCLIENT ps, pTarget t )
 			pChar target_owner = cSerializable::findCharBySerial( target->getOwnerSerial32() );
 			VALIDATEPC(target_owner);
 
-			sprintf(temp, TRANSLATE("Attack [%i] Defense [%i] Taming [%i] Hit Points [%i] Is Loyal to: [%s]"), target->att, target->def, target->taming/10, target->hp, (target->tamed)? target_owner->getCurrentName().c_str() : "himself" );
+			sprintf(temp, "Attack [%i] Defense [%i] Taming [%i] Hit Points [%i] Is Loyal to: [%s]", target->att, target->def, target->taming/10, target->hp, (target->tamed)? target_owner->getCurrentName().c_str() : "himself" );
 			target->emote(s,temp,1);
         	}
         	else
         	{
-            		pc->sysmsg(TRANSLATE("You can not think of anything relevant at this time."));
+            		pc->sysmsg("You can not think of anything relevant at this time.");
         	}
 	}
 
@@ -1607,27 +1606,34 @@ void Skills::target_forensics( NXWCLIENT ps, pTarget t )
 
 
 	if (!pi->corpse) {
-    		pc->sysmsg(TRANSLATE("That does not appear to be a corpse."));
+    		pc->sysmsg("That does not appear to be a corpse.");
     		return;
 	}
 
 	if(pc->IsGM()) {
-    		pc->sysmsg(TRANSLATE("The %s is %i seconds old and the killer was %s."), pi->getCurrentName().c_str(), (curtim-pi->murdertime)/MY_CLOCKS_PER_SEC, pi->murderer.c_str());
+    		pc->sysmsg("The %s is %i seconds old and the killer was %s.", pi->getCurrentName().c_str(), (curtim-pi->murdertime)/MY_CLOCKS_PER_SEC, pi->murderer.c_str());
 	} else {
-		if (!pc->checkSkill( skForensics, 0, 500)) pc->sysmsg(TRANSLATE("You are not certain about the corpse.")); else
-    		{
-			char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+		if (!pc->checkSkill( skForensics, 0, 500)) pc->sysmsg("You are not certain about the corpse."); else
+		{
+			const char *tmp = NULL;
 
-			if(((curtim-pi->murdertime)/MY_CLOCKS_PER_SEC)<=60) strcpy(temp2,TRANSLATE("few"));
-			if(((curtim-pi->murdertime)/MY_CLOCKS_PER_SEC)>60) strcpy(temp2,TRANSLATE("many"));
-			if(((curtim-pi->murdertime)/MY_CLOCKS_PER_SEC)>180) strcpy(temp2,TRANSLATE("many many"));
+			static const char strFew[] = "few";
+			static const char strMany[] = "many";
+			static const char strManyMany[] = "many many";
+			
+			if ( (curtim-pi->murdertime)/MY_CLOCKS_PER_SEC > 180 )
+				tmp = strManyMany;
+			else if ( (curtim-pi->murdertime)/MY_CLOCKS_PER_SEC > 60 )
+				tmp = strMany;
+			else
+				tmp = strFew;
 
-			pc->sysmsg(TRANSLATE("The %s is %s seconds old."), pi->getCurrentName().c_str(), temp2);
+			pc->sysmsg("The %s is %s seconds old.", pi->getCurrentName().c_str(), tmp);
 
 			if (!pc->checkSkill( skForensics, 500, 1000) || pi->murderer.empty())
-				pc->sysmsg(TRANSLATE("You can't say who was the killer."));
+				pc->sysmsg("You can't say who was the killer.");
 			else
-				pc->sysmsg(TRANSLATE("The killer was %s."), pi->murderer.c_str());
+				pc->sysmsg("The killer was %s."), pi->murderer.c_str();
 		}
 	}
 
@@ -1654,7 +1660,7 @@ void target_poisoning2( NXWCLIENT ps, pTarget t )
 
     if(poison->type!=ITYPE_POTION || poison->morey!=6)
     {
-        pc->sysmsg(TRANSLATE("That is not a valid poison!"));
+        pc->sysmsg("That is not a valid poison!");
 		pc->objectdelay = 0;
         return;
     }
@@ -1668,7 +1674,7 @@ void target_poisoning2( NXWCLIENT ps, pTarget t )
 
     const pItem pi=cSerializable::findItemBySerial( t->getClicked() );
     if( !pi ) {
-        pc->sysmsg(TRANSLATE("You can't poison that item."));
+        pc->sysmsg("You can't poison that item.");
 		pc->objectdelay = 0;
         return;
     }
@@ -1681,14 +1687,14 @@ void target_poisoning2( NXWCLIENT ps, pTarget t )
 
 	if (!pi->IsFencing1H() && !pi->IsSword() && !pi->IsArrow() && !pi->IsBolt())
 	{
-		pc->sysmsg(TRANSLATE("You cannot poison that item"));
+		pc->sysmsg("You cannot poison that item");
 		pc->objectdelay = 0;
 		return;
 	}
 
 	if ( (pi->IsArrow()||pi->IsBolt()) && pi->amount>5)
 	{
-		pc->sysmsg(TRANSLATE("Too many items you can poison at least 5 items"));
+		pc->sysmsg("Too many items you can poison at least 5 items");
 		pc->objectdelay = 0;
 		return;
 	}
@@ -1739,16 +1745,16 @@ void target_poisoning2( NXWCLIENT ps, pTarget t )
 		if(success!=0)
         {
 			if(pi->poisoned<(PoisonType)poison->morez) pi->poisoned=(PoisonType)poison->morez;
-			pc->sysmsg(TRANSLATE("You successfully poison that item."));
+			pc->sysmsg("You successfully poison that item.");
 		}
 		else
 		{
-			pc->sysmsg(TRANSLATE("You fail to apply the poison."));
+			pc->sysmsg("You fail to apply the poison.");
 			pi->hp-=poison->morez;
 			pi->poisoned=poisonNone;
 			if(pi->hp<=0)
 			{
-				pc->sysmsg(TRANSLATE("Your weapon has been destroyed"));
+				pc->sysmsg("Your weapon has been destroyed");
                                 //<Luxor>
 				ps->sendRemoveObject( static_cast<pObject>(pi) );
 				pi->Delete();
@@ -1779,7 +1785,7 @@ void Skills::target_poisoning( NXWCLIENT ps, pTarget t )
 	targ->code_callback=target_poisoning2;
 	targ->buffer[0]=poison->getSerial();
 	targ->send( ps );
-	ps->sysmsg( TRANSLATE("What item do you want to poison?") );
+	ps->sysmsg( "What item do you want to poison?") ;
 
 }
 
@@ -1805,14 +1811,14 @@ void Skills::target_tinkering( NXWCLIENT ps, pTarget t )
                 amt=pc_currchar->CountItems(pi->getId(), pi->getColor());
                 if(amt<2)
                 {
-                    sysmessage(s,TRANSLATE("You don't have enough ingots to make anything."));
+                    sysmessage(s,"You don't have enough ingots to make anything.");
                     return;
                 }
                 if ( pi->IsLog() )
                 {
                     if (amt<4)
                     {
-                        sysmessage(s,TRANSLATE("You don't have enough log's to make anything."));
+                        sysmessage(s,"You don't have enough log's to make anything.");
                         return;
                     }
                     else Skills::MakeMenu(pc_currchar,70,skTinkering,pi);
@@ -1825,7 +1831,7 @@ void Skills::target_tinkering( NXWCLIENT ps, pTarget t )
             return;
         }
     }
-    sysmessage(s,TRANSLATE("You cannot use that material for tinkering."));
+    sysmessage(s,"You cannot use that material for tinkering.");
 
     AMXEXECSVTARGET(pc_currchar->getSerial(),AMXT_SKITARGS,skTinkering,AMX_AFTER);
 }
@@ -1850,7 +1856,7 @@ protected:
     short minskill;
     short id2;
 public:
-    cTinkerCombine(short badsnd=0x0051, char *failmsg=TRANSLATE("You break one of the parts."))
+    cTinkerCombine(short badsnd=0x0051, char *failmsg="You break one of the parts.")
     {
         this->badsnd=badsnd;
         failtext=failmsg;
@@ -1876,14 +1882,14 @@ public:
 		pItem piClick = cSerializable::findItemBySerial( t->buffer[0] );
         if( piClick == NULL )
         {
-            sysmessage( s,TRANSLATE("Original part no longer exists" ));
+            sysmessage( s,"Original part no longer exists" );
             return;
         }
 
         const pItem piTarg=cSerializable::findItemBySerial( t->getClicked() );
         if (piTarg==NULL || piTarg->magic==4)
         {
-            sysmessage(s,TRANSLATE("You can't combine these."));
+            sysmessage(s,"You can't combine these.");
             return;
         }
 
@@ -1893,7 +1899,7 @@ public:
         if ( piTarg->getContSerial()!=pPack->getSerial()
             || piClick->getContSerial()!=pPack->getSerial())
         {
-            sysmessage(s,TRANSLATE("You can't use material outside your backpack"));
+            sysmessage(s,"You can't use material outside your backpack");
             return;
         }
 
@@ -1901,14 +1907,14 @@ public:
         checkPartID( piClick->getId() );
         checkPartID( piTarg->getId() );
         if (!decide())
-            sysmessage(s,TRANSLATE("You can't combine these."));
+            sysmessage(s,"You can't combine these.");
         else
         {
             pChar pc_currchar = cSerializable::findCharBySerial(currchar[s]);
 
             if (pc_currchar->skill[skTinkering]<minskill)
             {
-                sysmessage(s,TRANSLATE("You aren't skilled enough to even try that!"));
+                sysmessage(s,"You aren't skilled enough to even try that!");
                 return;
             }
             if( !pc_currchar->checkSkill( skTinkering, minskill, 1000 ) )
@@ -1920,7 +1926,7 @@ public:
             }
             else
             {
-                sysmessage(s,TRANSLATE("You combined the parts"));
+                sysmessage(s,"You combined the parts");
                 piClick->ReduceAmount(1);
                 piTarg->ReduceAmount(1);        // delete both parts
                 createIt(s);                        // spawn the item
@@ -2046,7 +2052,7 @@ void Skills::target_repair( NXWCLIENT ps, pTarget t )
 
     if (smithing < 500)
     {
-        sysmessage(s,TRANSLATE("* Your not skilled enough to repair items.*"));
+        sysmessage(s,"* Your not skilled enough to repair items.*");
         return;
     }
 
@@ -2056,17 +2062,17 @@ void Skills::target_repair( NXWCLIENT ps, pTarget t )
             return;
         if (!pi->hp)
         {
-            sysmessage(s,TRANSLATE(" That item cant be repaired."));
+            sysmessage(s," That item cant be repaired.");
             return;
         }
         if(!AnvilInRange(s))
         {
-            sysmessage(s,TRANSLATE(" Must be closer to the anvil."));
+            sysmessage(s," Must be closer to the anvil.");
             return;
         }
         if (pi->hp>=pi->maxhp)
         {
-            sysmessage(s,TRANSLATE(" That item is at full strength."));
+            sysmessage(s," That item is at full strength.");
             return;
         }
         short dmg=4;    // damage to maxhp
@@ -2078,15 +2084,14 @@ void Skills::target_repair( NXWCLIENT ps, pTarget t )
         {
             pi->maxhp-=dmg;
             pi->hp=pi->maxhp;
-            sysmessage(s,TRANSLATE(" * the item has been repaired.*"));
+            sysmessage(s," * the item has been repaired.*");
         }
         else
         {
             pi->hp-=2;
             pi->maxhp-=1;
-            sysmessage(s,TRANSLATE(" * You fail to repair the item. *"));
-            sysmessage(s,TRANSLATE(" * You weaken the item.*"));
+            sysmessage(s," * You fail to repair the item. *");
+            sysmessage(s," * You weaken the item.*");
         }
     }
 }
-

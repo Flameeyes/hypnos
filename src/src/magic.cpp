@@ -235,7 +235,7 @@ static inline bool checkMana(pChar pc, SpellId num)
 
 	if (pc->mn >= g_Spells[num].mana) return true;
 
-	pc->sysmsg(TRANSLATE("You have insufficient mana to cast that spell."));
+	pc->sysmsg("You have insufficient mana to cast that spell.");
 	return false;
 }
 
@@ -700,7 +700,7 @@ bool checkReagents(pChar pc, reag_st reagents)
 	if (reagents.shade!=0 && pc->CountItems(0x0F88)<reagents.shade) fail.shade=1;
 	if (reagents.silk!=0 && pc->CountItems(0x0F8D)<reagents.silk) fail.silk=1;
 
-	string str(TRANSLATE("You do not have enough reagents to cast that spell.[ "));
+	std::string str("You do not have enough reagents to cast that spell.[ ");
 
 	if (fail.ash)	  str += "Sa ";
 	if (fail.drake)   str += "Mr ";
@@ -738,7 +738,7 @@ void spellFailFX(pChar pc)
 
 	pc->staticFX(0x3735, 0, 30);
 	pc->playSFX(0x005C);
-	pc->emote(pc->getSocket(), TRANSLATE("The spell fizzles."),1);
+	pc->emote(pc->getSocket(), "The spell fizzles.",1);
 }
 
 
@@ -940,11 +940,11 @@ static bool checkDistance(pChar caster, pChar target)
 	VALIDATEPCR(caster, false);
 	VALIDATEPCR(target, false);
 	if (caster->distFrom(target) > 15) {
-		caster->sysmsg(TRANSLATE("You are too far away from the target."));
+		caster->sysmsg("You are too far away from the target.");
 		return false;
 	}
 	if ( target->IsHidden() ) {
-		caster->sysmsg(TRANSLATE("You cannot see your target."));
+		caster->sysmsg("You cannot see your target.");
 		return false;
 	}
 	return true;
@@ -961,7 +961,7 @@ static bool checkLos(pChar caster, Location destpos)
 {
 	VALIDATEPCR(caster, false);
         if (!line_of_sight(INVALID, caster->getPosition(), destpos, INVALID)) {
-		caster->sysmsg(TRANSLATE("There is something between you and your target that makes the casting impossible."));
+		caster->sysmsg("There is something between you and your target that makes the casting impossible.");
 		return false;
 	}
 	return true;
@@ -1381,12 +1381,12 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					if (src!=NULL)
 					{
 						src->playSFX( 0x1F4 ); //Luxor
-						src->sysmsg(TRANSLATE("It's locked!"));
+						src->sysmsg("It's locked!");
 					}
 				}
 				else
 					if (src!=NULL)
-						src->sysmsg(TRANSLATE("You cannot lock this!!!"));
+						src->sysmsg("You cannot lock this!!!");
 			}
 			break;
 		case SPELL_UNLOCK:
@@ -1399,11 +1399,11 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					}
 					if (src!=NULL) {
 					src->playSFX( 0x1FF ); //Luxor
-					src->sysmsg(TRANSLATE("You unlocked it!"));
+					src->sysmsg("You unlocked it!");
 					}
 				}
-				else src->sysmsg(TRANSLATE("You cannot unlock this!!!"));
-			} else src->sysmsg(TRANSLATE("You cannot unlock this!!!"));
+				else src->sysmsg("You cannot unlock this!!!");
+			} else src->sysmsg("You cannot unlock this!!!");
 			break;
 
 
@@ -1422,12 +1422,12 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
                     pi->moreb2=src->skill[nSkill]/20;
                     pi->moreb3=src->skill[nSkill]/10;
                     src->playSFX( 0x1E9 ); //Luxor
-                    src->sysmsg(TRANSLATE("It's trapped!"));
+                    src->sysmsg("It's trapped!");
                 } else {
                     pi->moreb2=13;
                     pi->moreb3=26;
                 }
-            } else if (src!=NULL) src->sysmsg(TRANSLATE("You cannot trap this!!!"));
+            } else if (src!=NULL) src->sysmsg("You cannot trap this!!!");
         }
         break;
 
@@ -1443,9 +1443,9 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
                    pi->moreb2=0;
                    pi->moreb3=0;
                    src->playSFX( 0x1F0 ); //Luxor
-                   src->sysmsg(TRANSLATE("You successfully untrap this item!"));
-               } else if (src!=NULL) src->sysmsg(TRANSLATE("This item doesn't seem to be trapped!"));
-           } else if (src!=NULL) src->sysmsg(TRANSLATE("This item cannot be untrapped!"));
+                   src->sysmsg("You successfully untrap this item!");
+               } else if (src!=NULL) src->sysmsg("This item doesn't seem to be trapped!");
+           } else if (src!=NULL) src->sysmsg("This item cannot be untrapped!");
         }
         break;
 
@@ -1677,8 +1677,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					damage(src, pd, spellnumber, flags|SPELLFLAG_DONTCRIMINAL, param);
 				} else {
 					if ((pd->dead)&&(pd->IsOnline())) pd->resurrect();
-					else if ((!pd->dead)&&(src!=NULL)) src->sysmsg(TRANSLATE("That player isn't dead!"));
-					else if ((!pd->IsOnline())&&(src!=NULL)) src->sysmsg(TRANSLATE("That player isn't online!"));
+					else if ((!pd->dead)&&(src!=NULL)) src->sysmsg("That player isn't dead!");
+					else if ((!pd->IsOnline())&&(src!=NULL)) src->sysmsg("That player isn't online!");
 				}
 			}
 			break;
@@ -1785,7 +1785,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					pi->morex = srcpos.x;
 					pi->morey = srcpos.y;
 					pi->morez = srcpos.z;
-					src->sysmsg(TRANSLATE("Recall rune marked."));
+					src->sysmsg("Recall rune marked.");
 					spellFX(spellnumber, src, pd);
 				} else {
 					src->sysmsg("That is not a rune!!");
@@ -1959,9 +1959,6 @@ void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, 
 	applySpell(spellnumber, dest, src, flags, param);
 }
 
-
-
-
 ///////////////////////////////////////////////////////////////////
 // Function name	 : beginCasting
 // Description		 : prepares spell casting from a char :)
@@ -1982,23 +1979,23 @@ bool beginCasting (SpellId num, NXWCLIENT s, CastingType type)
 	// caster jailed ?
 	if ((pc->jailed) && (!pc->IsGM()))
 	{
-		s->sysmsg(TRANSLATE("You are in jail and cannot cast spells"));
+		s->sysmsg("You are in jail and cannot cast spells");
 		return false;
 	}
 
 	// spell disabled ?
 	if( g_Spells[num].enabled != true )
 	{
-		s->sysmsg(TRANSLATE("Unseen forces make thou unable to cast that spell."));
+		s->sysmsg("Unseen forces make thou unable to cast that spell.");
 		return false;
 	}
 
 	if ( pc->IsHiddenBySpell() ) {	//Luxor: cannot do magic gestures if under invisible spell
-		pc->sysmsg(TRANSLATE("You cannot cast by invisible."));
+		pc->sysmsg("You cannot cast by invisible.");
 		return false;
 	}
 	if ((type!=CASTINGTYPE_ITEM)&&(type!=CASTINGTYPE_NOMANAITEM)&&(!pc->CanDoGestures())) {
-		pc->sysmsg(TRANSLATE("You cannot cast with a weapon equipped."));
+		pc->sysmsg("You cannot cast with a weapon equipped.");
 		return false;
 	}
 

@@ -171,15 +171,15 @@ void buildhouse( NXWCLIENT ps, pTarget t )
 				targ->buffer[1]=100;
 				//targ->buffer[2]; never setted
 				targ->send( ps );
-				ps->sysmsg( TRANSLATE("Select a place for your structure: "));
+				ps->sysmsg( "Select a place for your structure: ");
 			}
 			else
-				mtarget(s, 0, 1, 0, 0, (id>>8) -0x40, (id%256), TRANSLATE("Select location for building."));
+				mtarget(s, 0, 1, 0, 0, (id>>8) -0x40, (id%256), "Select location for building.");
 
 		}
 		else
 		{
-			mtarget(s, 0, 1, 0, 0, t->buffer[0]-0x40, t->buffer[1], TRANSLATE("Select location for building."));
+			mtarget(s, 0, 1, 0, 0, t->buffer[0]-0x40, t->buffer[1], "Select location for building.");
 		}
 		looptimes++;//for when we come back after they target something
 		return;
@@ -191,7 +191,7 @@ void buildhouse( NXWCLIENT ps, pTarget t )
 		{
 			if ((region[pc->region].priv & RGNPRIV_GUARDED) && itemById::IsHouse(id) ) // popy
 			{
-			    sysmessage(s,TRANSLATE(" You cannot build houses in town!"));
+			    sysmessage(s," You cannot build houses in town!");
 			    return;
 			}
 		}
@@ -206,7 +206,7 @@ void buildhouse( NXWCLIENT ps, pTarget t )
 		//XAN : House placing fix :)
 		if ( (( x<XBORDER || y <YBORDER ) || ( x>(uint32_t)((map_width*8)-XBORDER) || y >(uint32_t)((map_height*8)-YBORDER) ))  )
 		{
-			sysmessage(s, TRANSLATE("You cannot build your structure there!"));
+			sysmessage(s, "You cannot build your structure there!");
 			return;
 		}
 
@@ -216,7 +216,7 @@ void buildhouse( NXWCLIENT ps, pTarget t )
 		{
 			if(!(CheckBuildSite(x,y,z,sx,sy)))
 			{
-				sysmessage(s,TRANSLATE("Can not build a house at that location (CBS)!"));
+				sysmessage(s,"Can not build a house at that location (CBS)!");
 				return;
 			}
 		}*/
@@ -241,7 +241,7 @@ void buildhouse( NXWCLIENT ps, pTarget t )
 					you don't build a house on top of your self..... this had to be done So you
 					could extra space around houses, (12+) and they would still be buildable.*/
 				{
-					sysmessage(s, TRANSLATE("You cannot build your stucture there."));
+					sysmessage(s, "You cannot build your stucture there.");
 					return;
 					//ConOut("Invalid %i,%i [%i,%i]\n",k,l,x+k,y+l);
 				} //else ConOut("DEBUG: Valid at %i,%i [%i,%i]\n",k,l,x+k,y+l);
@@ -249,7 +249,7 @@ void buildhouse( NXWCLIENT ps, pTarget t )
 				pItem pi_ii=findmulti(loc);
 				if ( pi_ii && !(norealmulti))
 				{
-					sysmessage(s,TRANSLATE("You cant build structures inside structures"));
+					sysmessage(s,"You cant build structures inside structures");
 					return;
 				}
 			}
@@ -525,9 +525,9 @@ void deedhouse(NXWSOCKET s, pItem pi)
 		pItem pi_ii=item::CreateFromScript( pi->morex, pc->getBackpack() ); // need to make before delete
 		if ( ! pi_ii ) return;
 
-		sysmessage( s, TRANSLATE("Demolishing House %s"), pi->getCurrentName().c_str());
+		sysmessage( s, "Demolishing House %s", pi->getCurrentName().c_str());
 		pi->Delete();
-		sysmessage(s, TRANSLATE("Converted into a %s."), pi_ii->getCurrentName().c_str());
+		sysmessage(s, "Converted into a %s.", pi_ii->getCurrentName().c_str());
 		// door/sign delete
 
 		NxwCharWrapper sc;
@@ -543,14 +543,14 @@ void deedhouse(NXWSOCKET s, pItem pi)
 					if( p_index->npcaitype == NPCAI_PLAYERVENDOR )
 					{
 						char *temp;
-						asprintf( &temp, TRANSLATE("A vendor deed for %s"), p_index->getCurrentName().c_str() );
+						asprintf( &temp, "A vendor deed for %s", p_index->getCurrentName().c_str() );
 						pItem pDeed = item::CreateFromScript( "$item_employment_deed", pc->getBackpack() );
 						if ( ! pDeed ) return;
 						free(temp);
 
 						pDeed->Refresh();
 						p_index->Delete();
-						sysmessage(s, TRANSLATE("Packed up vendor %s."), p_index->getCurrentName().c_str());
+						sysmessage(s, "Packed up vendor %s.", p_index->getCurrentName().c_str());
 					}
 				}
 			}
@@ -574,7 +574,7 @@ void deedhouse(NXWSOCKET s, pItem pi)
 		}
 
 		killkeys( pi->getSerial() );
-		sysmessage(s,TRANSLATE("All house items and keys removed."));
+		sysmessage(s,"All house items and keys removed.");
 		/*
 		charpos.z= charpos.dispz= Map->MapElevation(charpos.x, charpos.y);
 		pc->setPosition( charpos );
@@ -817,7 +817,7 @@ int add_hlist(int c, int h, int t)
 		pi->setNewbie( false );
 		pi->setDispellable( false );
 		pi->visible= 0;
-		pi->setCurrentName(TRANSLATE("friend of house"));
+		pi->setCurrentName("friend of house");
 
 		pi->setPosition( pi_h->getPosition() );
 #ifdef SPAR_I_LOCATION_MAP
@@ -890,7 +890,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 		targ->code_callback=target_houseBan;
 		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
-		sysmessage( socket, TRANSLATE("Select person to ban from house."));
+		sysmessage( socket, "Select person to ban from house.");
 		return true;
 	}
 	//
@@ -902,7 +902,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 		targ->code_callback=target_houseEject;
 		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
-		sysmessage( socket, TRANSLATE("Select person to eject from house."));
+		sysmessage( socket, "Select person to eject from house.");
 		return true;
 	}
 	//
@@ -914,7 +914,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 		targ->code_callback=target_houseLockdown;
 		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
-		sysmessage( socket, TRANSLATE("Select item to lock down"));
+		sysmessage( socket, "Select item to lock down");
 		return true;
 	}
 	//
@@ -926,7 +926,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 		targ->code_callback=target_houseRelease;
 		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
-		sysmessage( socket, TRANSLATE("Select item to release"));
+		sysmessage( socket, "Select item to release");
 		return true;
 	}
 	//
@@ -938,7 +938,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 		targ->code_callback=target_houseSecureDown;
 		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
-		sysmessage( socket, TRANSLATE("Select item to secure"));
+		sysmessage( socket, "Select item to secure");
 		return true;
 	}
 	return false;
@@ -1057,9 +1057,9 @@ void target_houseEject( NXWCLIENT ps, pTarget t )
 	{
 		pc->MoveTo( ex, ey, pcpos.z );
 		pc->teleport();
-		sysmessage(s, TRANSLATE("Player ejected."));
+		sysmessage(s, "Player ejected.");
 	} else
-		sysmessage(s, TRANSLATE("That is not inside the house."));
+		sysmessage(s, "That is not inside the house.");
 
 }
 
@@ -1139,10 +1139,10 @@ void target_houseUnlist( NXWCLIENT ps, pTarget t )
         int r=del_hlist(DEREF_pChar(pc), DEREF_pItem(pi));
         if(r>0)
         {
-            sysmessage(s, TRANSLATE("%s has been removed from the house registry."), pc->getCurrentName().c_str());
+            sysmessage(s, "%s has been removed from the house registry.", pc->getCurrentName().c_str());
         }
         else
-            sysmessage(s, TRANSLATE("That player is not on the house registry."));
+            sysmessage(s, "That player is not on the house registry.");
     }
 }
 void target_houseLockdown( NXWCLIENT ps, pTarget t )
@@ -1164,22 +1164,22 @@ void target_houseLockdown( NXWCLIENT ps, pTarget t )
 
         if( pi->isFieldSpellItem() )
         {
-            sysmessage(s,TRANSLATE("you cannot lock this down!"));
+            sysmessage(s,"you cannot lock this down!");
             return;
         }
         if (pi->type==12 || pi->type==13 || pi->type==203)
         {
-            sysmessage(s, TRANSLATE("You cant lockdown doors or signs!"));
+            sysmessage(s, "You cant lockdown doors or signs!");
             return;
         }
         if ( pi->IsAnvil() )
         {
-            sysmessage(s, TRANSLATE("You cant lockdown anvils!"));
+            sysmessage(s, "You cant lockdown anvils!");
             return;
         }
         if ( pi->IsForge() )
         {
-            sysmessage(s, TRANSLATE("You cant lockdown forges!"));
+            sysmessage(s, "You cant lockdown forges!");
             return;
         }
 
@@ -1188,7 +1188,7 @@ void target_houseLockdown( NXWCLIENT ps, pTarget t )
         {
             if(pi->magic==4)
             {
-                sysmessage(s,TRANSLATE("That item is already locked down, release it first!"));
+                sysmessage(s,"That item is already locked down, release it first!");
                 return;
             }
             pi->magic = 4;  // LOCKED DOWN!
@@ -1200,13 +1200,13 @@ void target_houseLockdown( NXWCLIENT ps, pTarget t )
         else
         {
             // not in a multi!
-            sysmessage( s, TRANSLATE("That item is not in your house!" ));
+            sysmessage( s, "That item is not in your house!" );
             return;
         }
     }
     else
     {
-        sysmessage( s, TRANSLATE("Invalid item!" ));
+        sysmessage( s, "Invalid item!" );
         return;
     }
 }
@@ -1225,17 +1225,17 @@ void target_houseSecureDown( NXWCLIENT ps, pTarget t )
 
         if( pi->isFieldSpellItem() )
         {
-            sysmessage(s,TRANSLATE("you cannot lock this down!"));
+            sysmessage(s,"you cannot lock this down!");
             return;
         }
         if (pi->type==12 || pi->type==13 || pi->type==203)
         {
-            sysmessage(s, TRANSLATE("You cant lockdown doors or signs!"));
+            sysmessage(s, "You cant lockdown doors or signs!");
             return;
         }
         if(pi->magic==4)
         {
-            sysmessage(s,TRANSLATE("That item is already locked down, release it first!"));
+            sysmessage(s,"That item is already locked down, release it first!");
             return;
         }
 
@@ -1251,19 +1251,19 @@ void target_houseSecureDown( NXWCLIENT ps, pTarget t )
         }
         if(pi->type!=1)
         {
-            sysmessage(s,TRANSLATE("You can only secure chests!"));
+            sysmessage(s,"You can only secure chests!");
             return;
         }
         else
         {
             // not in a multi!
-            sysmessage( s, TRANSLATE("That item is not in your house!" ));
+            sysmessage( s, "That item is not in your house!" );
             return;
         }
     }
     else
     {
-        sysmessage( s, TRANSLATE("Invalid item!" ));
+        sysmessage( s, "Invalid item!" );
         return;
     }
 }
@@ -1284,17 +1284,17 @@ void target_houseRelease( NXWCLIENT ps, pTarget t )
     {
         if(pi->getOwnerSerial32() != pc->getSerial())
         {
-            sysmessage(s,TRANSLATE("This is not your item!"));
+            sysmessage(s,"This is not your item!");
             return;
         }
         if( pi->isFieldSpellItem() )
         {
-            sysmessage(s,TRANSLATE("you cannot release this!"));
+            sysmessage(s,"you cannot release this!");
             return;
         }
         if (pi->type==12 || pi->type==13 || pi->type==203)
         {
-            sysmessage(s, TRANSLATE("You cant release doors or signs!"));
+            sysmessage(s, "You cant release doors or signs!");
             return;
         }
         // time to lock it down!
@@ -1309,16 +1309,13 @@ void target_houseRelease( NXWCLIENT ps, pTarget t )
         else if( !multi )
         {
             // not in a multi!
-            sysmessage( s, TRANSLATE("That item is not in your house!" ));
+            sysmessage( s, "That item is not in your house!" );
             return;
         }
     }
     else
     {
-        sysmessage( s, TRANSLATE("Invalid item!" ));
+        sysmessage( s, "Invalid item!" );
         return;
     }
 }
-
-
-

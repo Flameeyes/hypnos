@@ -169,7 +169,7 @@ void cBoat::PlankStuff(pChar pc , pItem pi)//If the plank is opened, double clic
 		Location boatpos= boat2->getPosition();
 		pc->MoveTo( boatpos.x+1, boatpos.y+1, boatpos.z+3 );
 		pc->teleport();
-		pc->sysmsg(TRANSLATE("you entered a boat"));
+		pc->sysmsg("you entered a boat");
        // pc->setMultiSerial( boat2->getSerial() ); it's has just been called by pc->teleport, so wee need it not
 	}
 
@@ -232,13 +232,13 @@ void cBoat::LeaveBoat(pChar pc, pItem pi)//Get off a boat (dbl clicked an open p
 				pc->setPosition( Location( x, y, typ ? sz : mz, typ ? sz : mz ) );
 				mapRegions->add(pc);
 #endif
-				pc->sysmsg(TRANSLATE("You left the boat."));
+				pc->sysmsg("You left the boat.");
 				pc->teleport();//Show them they moved.
 				return;
 			}
 		}//for y
 	}//for x
-	pc->sysmsg(TRANSLATE("You cannot get off here!"));
+	pc->sysmsg("You cannot get off here!");
 
 }
 
@@ -701,7 +701,7 @@ bool cBoat::Speech(pChar pc, NXWSOCKET socket, std::string &talk)//See if they s
 	{
 		pBoat->type2=1;//Moving
 		Move(socket,dir,pBoat);
-		itemtalk(tiller, TRANSLATE("Aye, sir."));
+		itemtalk(tiller, "Aye, sir.");
 		return true;
 	}
 	if( talk == "BACKWARD" )
@@ -712,7 +712,7 @@ bool cBoat::Speech(pChar pc, NXWSOCKET socket, std::string &talk)//See if they s
 		else
 			dir+=4;
 		Move(socket,dir,pBoat);
-		itemtalk(tiller, TRANSLATE("Aye, sir."));
+		itemtalk(tiller, "Aye, sir.");
 		return true;
 	}
 	if( talk == "ONE LEFT" || talk == "DRIFT LEFT" )
@@ -721,7 +721,7 @@ bool cBoat::Speech(pChar pc, NXWSOCKET socket, std::string &talk)//See if they s
 		if(dir<0)
 			dir+=8;
 		Move(socket,dir,pBoat);
-		itemtalk(tiller,TRANSLATE("Aye, sir."));
+		itemtalk(tiller,"Aye, sir.");
 		return true;
 	}
 	if( talk == "ONE RIGHT" || talk == "DRIFT RIGHT" )
@@ -729,13 +729,13 @@ bool cBoat::Speech(pChar pc, NXWSOCKET socket, std::string &talk)//See if they s
 		dir+=2;
 		if(dir>=8) dir-=8;
 		Move(socket,dir,pBoat);
-		itemtalk(tiller, TRANSLATE("Aye, sir."));
+		itemtalk(tiller, "Aye, sir.");
 		return true;
 	}
 	if( talk == "STOP" || talk == "FURL SAIL" )
 	{
 		pBoat->type2=0;
-		itemtalk(tiller,TRANSLATE("Aye, sir."));
+		itemtalk(tiller,"Aye, sir.");
 		return true;
 	}
 
@@ -744,13 +744,13 @@ bool cBoat::Speech(pChar pc, NXWSOCKET socket, std::string &talk)//See if they s
 		if (good_position(pBoat, pBoat->getPosition(), -1) && collision(pBoat,pBoat->getPosition(),-1)==false)
 		{
 		  Turn(pBoat,0);
-		  itemtalk(tiller, TRANSLATE("Aye, sir."));
+		  itemtalk(tiller, "Aye, sir.");
 		  return true;
 		}
 		else
 		{
 			pBoat->type2=0;
-			itemtalk(tiller, TRANSLATE("Arr,somethings in the way"));
+			itemtalk(tiller, "Arr,somethings in the way");
 			return true;
 		}
 	}
@@ -760,12 +760,12 @@ bool cBoat::Speech(pChar pc, NXWSOCKET socket, std::string &talk)//See if they s
 		if (good_position(pBoat, pBoat->getPosition(), 1) && collision(pBoat,pBoat->getPosition(),1)==false)
 		{
 		  Turn(pBoat,1);
-		  itemtalk(tiller, TRANSLATE("Aye, sir."));
+		  itemtalk(tiller, "Aye, sir.");
 		  return true;
 		} else
 		{
 			pBoat->type2=0;
-			itemtalk(tiller, TRANSLATE("Arr,somethings in the way"));
+			itemtalk(tiller, "Arr,somethings in the way");
 			return true;
 		}
 	}
@@ -776,13 +776,13 @@ bool cBoat::Speech(pChar pc, NXWSOCKET socket, std::string &talk)//See if they s
 		{
 			Turn(pBoat,1);
 			Turn(pBoat,1);
-			itemtalk(tiller, TRANSLATE("Aye, sir."));
+			itemtalk(tiller, "Aye, sir.");
 			return true;
 		}
 		else
 		{
 			pBoat->type2=0;
-			itemtalk(tiller, TRANSLATE("Arr,somethings in the way"));
+			itemtalk(tiller, "Arr,somethings in the way");
 			return true;
 		}
 	}
@@ -951,13 +951,13 @@ bool cBoat::Build(NXWSOCKET  s, pItem pBoat, char id2)
 
 	if( !pBoat )
 	{
-		pc_cs->sysmsg(TRANSLATE("There was an error creating that boat."));
+		pc_cs->sysmsg("There was an error creating that boat.");
 		return false;
 	}
 
 	if(id2!=0x00 && id2!=0x04 && id2!=0x08 && id2!=0x0C && id2!=0x10 && id2!=0x14)//Valid boat ids (must start pointing north!)
 	{
-		pc_cs->sysmsg(TRANSLATE("The deed is broken, please contact a Game Master."));
+		pc_cs->sysmsg("The deed is broken, please contact a Game Master.");
 		return false;
 	}
 	//Start checking for a valid position:
@@ -1328,7 +1328,7 @@ void cBoat::iMove(NXWSOCKET  s, int dir, pItem pBoat, bool forced)
 		|| (boatpos.y+ty<=YBORDER || boatpos.y+ty>=((map_height*8)-YBORDER))) //bugfix LB
 	{
 		pBoat->type2=0;
-		itemtalk(tiller,TRANSLATE("Arr, Sir, we've hit rough waters!"));
+		itemtalk(tiller,"Arr, Sir, we've hit rough waters!");
 		SendPauseResumePkt(s, 0x00);
 		return;
 	}
@@ -1340,14 +1340,14 @@ void cBoat::iMove(NXWSOCKET  s, int dir, pItem pBoat, bool forced)
 	if(!good_position(pBoat, boatpos, 0) && (!forced))
 	{
 		pBoat->type2=0;
-		itemtalk(tiller, TRANSLATE("Arr, somethings in the way!"));
+		itemtalk(tiller, "Arr, somethings in the way!");
 		SendPauseResumePkt(s, 0x00);
 		return;
 	}
 	if(collision(pBoat, boatpos,0)==true)
 	{
 		pBoat->type2=0;
-		itemtalk(tiller, TRANSLATE("Arr, another ship in the way"));
+		itemtalk(tiller, "Arr, another ship in the way");
 		SendPauseResumePkt(s, 0x00);
 		return;
 	}

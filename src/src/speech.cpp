@@ -50,8 +50,6 @@ int response(NXWSOCKET  s)
 	char search1[50];
 
 
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	int x=-1;
 	int y=0;
 
@@ -209,7 +207,7 @@ int response(NXWSOCKET  s)
 					{
 						case BODY_MALE		:
 						case BODY_FEMALE	:
-							pc_map->talkAll( TRANSLATE( "Leave me alone!" ), 0 );
+							pc_map->talkAll("Leave me alone!" , false);
 							break;
 						default		:
 							if ( chance( 40 ) )
@@ -231,10 +229,9 @@ int response(NXWSOCKET  s)
 					{
 						switch ( pc_map->getId() )
 						{
-							case BODY_MALE		:
-							case BODY_FEMALE	:
-								sprintf( temp, TRANSLATE("I am %s."), pc_map->getCurrentName().c_str());
-								pc_map->talkAll( temp, 0);
+							case BODY_MALE:
+							case BODY_FEMALE:
+								pc_map->talkAll( "I am %s.", 0, pc_map->getCurrentName().c_str());
 								break;
 							default		:
 								if ( chance( 40 ) )
@@ -248,8 +245,7 @@ int response(NXWSOCKET  s)
 						{
 							case BODY_MALE		:
 							case BODY_FEMALE	:
-								sprintf( temp, TRANSLATE("I %s will kill you."), pc_map->getCurrentName().c_str());
-								pc_map->talkAll( temp, 0);
+								pc_map->talkAll( "I %s will kill you.", false, pc_map->getCurrentName().c_str());
 								break;
 							default		:
 								if ( chance( 40 ) )
@@ -277,10 +273,9 @@ int response(NXWSOCKET  s)
 					pvDeed= DEREF_pItem(pDeed);
 
 					pDeed->Refresh();
-					sprintf(temp, TRANSLATE("Packed up vendor %s."), pc_map->getCurrentName().c_str());
 					pc_map->playMonsterSound(SND_DIE);
 					pc_map->Delete();
-					sysmessage(s, temp);
+					sysmessage(s, "Packed up vendor %s.", pc_map->getCurrentName().c_str());
 					// return 1;
 					handledRequest = true;
 				}
@@ -296,10 +291,9 @@ int response(NXWSOCKET  s)
 						int ampm = (Calendar::g_nHour>=12) ? 1 : 0;
 						int minute = Calendar::g_nMinute;
 						if (ampm || (!ampm && hour==12))
-							sprintf(temp, "%s %2.2d %s %2.2d %s", TRANSLATE("it is now"), hour, ":", minute, TRANSLATE("in the evening."));
+							pc_ma->talkAll("%s %2.2d %s %2.2d %s", false, "it is now", hour, ":", minute, "in the evening.");
 						else
-							sprintf(temp, "%s %2.2d %s %2.2d %s", TRANSLATE("it is now"), hour, ":",minute, TRANSLATE("in the morning."));
-						pc_map->talkAll( temp, 0);
+							pc_ma->talkAll("%s %2.2d %s %2.2d %s", false, "it is now", hour, ":",minute, "in the morning.");
 						return 1;
 					}
 					handledRequest = true;
@@ -313,12 +307,10 @@ int response(NXWSOCKET  s)
 					if( pc_map->npcaitype!= NPCAI_EVIL && pc_map->npcaitype!= NPCAI_PLAYERVENDOR  && (pc_map->getId()==0x0190 || pc_map->getId()==0x0191))
 					{
 						if (strlen(region[pc->region].name)>0)
-							sprintf(temp, TRANSLATE("You are in %s"),region[pc->region].name);
+							pc_map->takAll("You are in %s", false, region[pc->region].name);
 						else
-							strcpy(temp,TRANSLATE("You are in the wilderness"));
-						pc_map->talkAll( temp, 0 );
-						sprintf( temp, "%i %i (%i)", charpos.x, charpos.y, charpos.z );
-						pc_map->talkAll( temp, 0 );
+							pc_map->takAll("You are in the wilderness", false);
+						pc_map->talkAll( "%i %i (%i)", false, charpos.x, charpos.y, charpos.z );
 						return 1;	// Sparhawk	No use having multiple npcs return same info
 					}
 					handledRequest = true;
@@ -342,8 +334,7 @@ int response(NXWSOCKET  s)
 						pc_map->summontimer = ( uiCurrentTime + ( MY_CLOCKS_PER_SEC * SrvParms->escortactiveexpire ) );
 
 						// Send out the rant about accepting the escort
-						sprintf(temp, TRANSLATE("Lead on! Payment shall be made when we arrive at %s."), region[pc_map->questDestRegion].name);
-						pc_map->talkAll(temp, 0);
+						pc_map->talkAll("Lead on! Payment shall be made when we arrive at %s.", false, region[pc_map->questDestRegion].name);
 
 						// Remove post from message board
 						((pNPC)pc_map)->removepostEscortQuest();
@@ -364,22 +355,19 @@ int response(NXWSOCKET  s)
 						if ( pc_map->ftargserial == pc->getSerial() )
 						{
 							// Send out the rant about accepting the escort
-							sprintf(temp, TRANSLATE("Lead on to %s. I shall pay thee when we arrive."), region[pc_map->questDestRegion].name);
-							pc_map->talkAll(temp, 0);
+							pc_map->talkAll("Lead on to %s. I shall pay thee when we arrive.", 0, region[pc_map->questDestRegion].name);
 						}
 						else if ( pc_map->ftargserial == INVALID )	// If nobody has been accepted for the quest yet
 						{
 							// Send out the rant about accepting the escort
-							sprintf(temp, TRANSLATE("I am seeking an escort to %s. Wilt thou take me there?"), region[pc_map->questDestRegion].name);
-							pc_map->talkAll(temp, 0);
+							pc_map->talkAll("I am seeking an escort to %s. Wilt thou take me there?", false, region[pc_map->questDestRegion].name);
 						}
 						else // They must be enroute
 						{
 							// Send out a message saying we are already being escorted
 							pChar pc_ftarg=cSerializable::findCharBySerial(pc_map->ftargserial);
 							if( pc_ftarg ) {
-								sprintf(temp, TRANSLATE("I am already being escorted to %s by %s."), region[pc_map->questDestRegion].name, pc_ftarg->getCurrentName().c_str() );
-								pc_map->talkAll(temp, 0);
+								pc_map->talkAll("I am already being escorted to %s by %s.", false, region[pc_map->questDestRegion].name, pc_ftarg->getCurrentName().c_str() );
 							}
 						}
 						// Return success ( we handled the message )
@@ -413,8 +401,7 @@ int response(NXWSOCKET  s)
 				{
 					if ( pc_map->npcaitype == NPCAI_BANKER )
 					{
-						sprintf(temp, TRANSLATE("%s's balance as of now is %i."), pc->getCurrentName().c_str(), pc->countBankGold());
-						pc_map->talkAll( temp, 1);
+						pc_map->talkAll("%s's balance as of now is %i.", true, pc->getCurrentName().c_str(), pc->countBankGold());
 						return 1;
 					}
 					else
@@ -459,7 +446,7 @@ int response(NXWSOCKET  s)
 						if( pc->trainer == INVALID) //not being trained, asking what skills they can train in
 						{
 							pc_map->trainingplayerin='\xFF'; // Like above, this is to prevent  errors when a player says "train <skill>" then doesn't pay the npc
-							strcpy(temp,TRANSLATE("I can teach thee the following skills: "));
+							strcpy(temp,"I can teach thee the following skills: ");
 							for(j=0;j<ALLSKILLS;j++)
 							{
 								if(pc_map->baseskill[j]>10)
@@ -479,7 +466,7 @@ int response(NXWSOCKET  s)
 							}
 							else
 							{
-							pc_map->talk(s, TRANSLATE("I am sorry, but I have nothing to teach thee"),0);
+							pc_map->talk(s, "I am sorry, but I have nothing to teach thee",0);
 							}
 							return 1;
 						}
@@ -490,23 +477,23 @@ int response(NXWSOCKET  s)
 						if( pc_map->baseskill[skill] > 10 )
 						{
 							x=skill;
-							sprintf(temp,TRANSLATE("Thou wishest to learn of  %s?"),strlwr(skillname[x]));
+							sprintf(temp,"Thou wishest to learn of %s?",strlwr(skillname[x]));
 							strupr(skillname[x]); // I found out strlwr changes the actual string permanently, so this undoes that
 							if(pc->baseskill[x] >= 250 )
 							{
-								strcat(temp, TRANSLATE(" I can teach thee no more than thou already knowest!"));
+								strcat(temp, " I can teach thee no more than thou already knowest!");
 							}
 							else
 							{
 								uint32_t sum = pc->getSkillSum();
 								if (sum >= SrvParms->skillcap * 10)
-									strcat(temp, TRANSLATE(" I can teach thee no more. Thou already knowest too much!"));
+									strcat(temp, "I can teach thee no more. Thou already knowest too much!");
 								else
 								{
 									int delta = pc_map->getTeachingDelta(pc, skill, sum);
 									int perc = (pc->baseskill[x] + delta)/10;
 
-									sprintf(temp2, TRANSLATE(" Very well I, can train thee up to the level of %i percent for %i gold. Pay for less and I shall teach thee less."),perc,delta);
+									sprintf(temp2, "Very well I, can train thee up to the level of %i percent for %i gold. Pay for less and I shall teach thee less.",perc,delta);
 									strcat(temp, temp2);
 									pc->trainer=pc_map->getSerial();
 									pc_map->trainingplayerin=x;
@@ -515,7 +502,7 @@ int response(NXWSOCKET  s)
 								return 1;
 							}
 						}
-						pc_map->talk(s, TRANSLATE("I am sorry but I cannot train thee in that skill."),0);
+						pc_map->talk(s, "I am sorry but I cannot train thee in that skill.",0);
 						// return 1;
 						handledRequest = true;
 					}
@@ -535,7 +522,7 @@ int response(NXWSOCKET  s)
 							pc->guarded = false; // Hmmm still not very nice needs to be changed <sparhawk>
 							if ( pc_map->npcaitype == NPCAI_PLAYERVENDOR )
 							{
-								pc_map->talk(s, TRANSLATE("I am sorry but I have to mind the shop."),0);
+								pc_map->talk(s, "I am sorry but I have to mind the shop.",0);
 								return 0;
 							}
 							if ( requestFollowMe )
@@ -553,7 +540,7 @@ int response(NXWSOCKET  s)
 							targ->buffer[0]=pc_map->getSerial();
 							targ->code_callback=target_follow;
 							targ->send( getClientFromSocket(s) );
-							sysmessage( s, TRANSLATE("Click on the target to follow.") );
+							sysmessage( s, "Click on the target to follow." );
 							return 1;
 						}
 					}
@@ -570,19 +557,19 @@ int response(NXWSOCKET  s)
 					//I don't understand why i must check for animals stabled too... probably a bug
 					if ( sc.size()==0 )
 					{
-						sysmessage(s,TRANSLATE("You dont have pets following you"));
+						sysmessage(s,"You dont have pets following you");
 						return 1;
 					}
 					if ( region[pc->region].priv&0x01 ) // Ripper..No pet attacking in town.
 					{
-						sysmessage(s,TRANSLATE("You cant have pets attack in town!"));
+						sysmessage(s,"You cant have pets attack in town!");
 						return 1;
 					}
 					pc->guarded = false;
 					pTarget targ=clientInfo[s]->newTarget( new cCharTarget() );
 					targ->code_callback=target_allAttack;
 					targ->send( getClientFromSocket( s ) );
-					sysmessage( s, TRANSLATE("Select the target to attack."));
+					sysmessage( s, "Select the target to attack.");
 					return 1;
 				}
 				//
@@ -600,7 +587,7 @@ int response(NXWSOCKET  s)
 						{
 							if (region[pc->region].priv&0x01) // Ripper..No pet attacking in town.
 							{
-								sysmessage( s, TRANSLATE("You can't have pets attack in town!"));
+								sysmessage( s, "You can't have pets attack in town!");
 								return 0;
 							}
 							if (pc_map->npcaitype== NPCAI_PLAYERVENDOR )
@@ -611,7 +598,7 @@ int response(NXWSOCKET  s)
 							targ->buffer[0] = pc_map->getSerial();
 							targ->send( getClientFromSocket(s) );
 							//pet kill code here
-							sysmessage( s, TRANSLATE("Select the target to attack.") );
+							sysmessage( s, "Select the target to attack.");
 							return 1;
 						}
 					}
@@ -634,7 +621,7 @@ int response(NXWSOCKET  s)
 							targ->code_callback=target_fetch;
 							targ->buffer[0]=pc_map->getSerial();
 							targ->send( getClientFromSocket(s) );							
-							sysmessage( s, TRANSLATE("Click on the object to fetch."));
+							sysmessage( s, "Click on the object to fetch.");
 							return 1;
 						}
 					}
@@ -655,7 +642,7 @@ int response(NXWSOCKET  s)
 							pc->guarded = false;
 							pc_map->ftargserial=pc->getSerial();
 							pc_map->npcWander=WANDER_FOLLOW;
-							sysmessage(s, TRANSLATE("Your pet begins following you."));
+							sysmessage(s, "Your pet begins following you.");
 							return 1;
 						}
 					}
@@ -681,7 +668,7 @@ int response(NXWSOCKET  s)
 								targ->buffer[1]=1;	// indicates we already know whom to guard (for future use)
 										// for now they still must click on themselves (Duke)
 							targ->send( getClientFromSocket( s ) );
-							sysmessage( s, TRANSLATE("Click on the char to guard.") );
+							sysmessage( s, "Click on the char to guard.") ;
 
 							return 1;
 						}
@@ -742,7 +729,7 @@ int response(NXWSOCKET  s)
 							targ->code_callback=target_transfer;
 							targ->buffer[0]=pc_map->getSerial();
 							targ->send( getClientFromSocket(s) );
-							sysmessage( s, TRANSLATE("Select character to transfer your pet to."));
+							sysmessage( s, "Select character to transfer your pet to.");
 							return 1;
 						}
 					}
@@ -771,8 +758,7 @@ int response(NXWSOCKET  s)
 							pc_map->taming=2000;//he cannot be retamed	Sparhawk	This is bullshit!!!
 							//taken from 6904t2(5/10/99) - AntiChrist
 							pc_map->tamed = false;
-							sprintf(temp, TRANSLATE("*%s appears to have decided that it is better off without a master *"), pc_map->getCurrentName().c_str());
-							pc_map->talkAll(temp,0);
+							pc_map->talkAll("*%s appears to have decided that it is better off without a master *", false, pc_map->getCurrentName().c_str());
 							pc_map->playSFX( 0x01FE );
 							if(SrvParms->tamed_disappear==1)
 								pc_map->Delete();
@@ -798,8 +784,7 @@ int response(NXWSOCKET  s)
 						pc_map->setOwnerSerial32(INVALID);
 						pc_map->taming=2000;//he cannot be retamed
 						pc_map->tamed = false;
-						sprintf(temp, TRANSLATE("*%s appears to have decided that it is better off without a master *"), pc_map->getCurrentName().c_str());
-						pc_map->talkAll(temp,0);
+						pc_map->talkAll("*%s appears to have decided that it is better off without a master *", false, pc_map->getCurrentName().c_str());
 						pc_map->playSFX( 0x01FE);
 						if(SrvParms->tamed_disappear==1)
 							pc_map->Delete();
@@ -821,7 +806,7 @@ int response(NXWSOCKET  s)
 						if ( requestTrigger )
 						{
 							if ( !TIMEOUT( pc_map->disabled ) )//AntiChrist
-								pc_map->talkAll(TRANSLATE("I'm a little busy now! Leave me be!"),0);
+								pc_map->talkAll("I'm a little busy now! Leave me be!",0);
 							else
 							{
 								triggerNpc(s,pc_map,TRIGTYPE_NPCWORD);
@@ -861,7 +846,7 @@ void PlVGetgold(NXWSOCKET s, CHARACTER v)//PlayerVendors
 	{
 		if ( pc_vendor->holdg<1)
 		{
-			pc_vendor->talk(s,TRANSLATE("I have no gold waiting for you."),0);
+			pc_vendor->talk(s,"I have no gold waiting for you.",0);
 			pc_vendor->holdg=0;
 			return;
 		}
@@ -890,12 +875,12 @@ void PlVGetgold(NXWSOCKET s, CHARACTER v)//PlayerVendors
 		if (give) //Luxor
 			item::CreateFromScript( "$item_gold_coin", pc_currchar->getBackpack(), give );
 
-		sprintf(temp, TRANSLATE("Today's purchases total %i gold. I am keeping %i gold for my self. Here is the remaining %i gold. Have a nice day."),pc_vendor->holdg,pay,give);
+		sprintf(temp, "Today's purchases total %i gold. I am keeping %i gold for my self. Here is the remaining %i gold. Have a nice day.",pc_vendor->holdg,pay,give);
 		pc_vendor->talk(s,temp,0);
 		pc_vendor->holdg=t;
 	}
 	else
-		pc_vendor->talk(s,TRANSLATE("I don't work for you!"),0);
+		pc_vendor->talk(s,"I don't work for you!",0);
 }
 
 void responsevendor(NXWSOCKET  s, CHARACTER vendor)
@@ -970,7 +955,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 			{
 				if(pc_vendor->npcaitype==NPCAI_PLAYERVENDOR)
 				{
-					pc_vendor->talk(s,TRANSLATE("What would you like to buy?"),0);
+					pc_vendor->talk(s,"What would you like to buy?",0);
 					pTarget targ = clientInfo[s]->newTarget( new cItemTarget() );
 					targ->code_callback=target_playerVendorBuy;
 					targ->buffer[0]=pc_vendor->getSerial();
@@ -1035,7 +1020,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 				{
 					if(pc->npcaitype==NPCAI_PLAYERVENDOR)
 					{
-						pc->talk(s,TRANSLATE("What would you like to buy?"),0);
+						pc->talk(s,"What would you like to buy?",0);
 						pTarget targ= clientInfo[s]->newTarget( new cItemTarget() );
 						targ->code_callback = target_playerVendorBuy;
 						targ->buffer[0]=pc->getSerial();
@@ -1142,19 +1127,19 @@ static bool pricePlayerVendorItem( pChar pc, NXWSOCKET socket, string &price )
 			{
 				pi->value = i;
 				pc->fx2 = 18;
-				sysmessage( socket, TRANSLATE("The price of item %s has been set to %i."), pi->getCurrentName().c_str(), i);
-				sysmessage( socket, TRANSLATE("Enter a description for this item."));
+				sysmessage( socket, "The price of item %s has been set to %i.", pi->getCurrentName().c_str(), i);
+				sysmessage( socket, "Enter a description for this item.");
 			}
 			else
 			{
 				pc->fx2 = 18;
-				sysmessage( socket, TRANSLATE("No price entered, this item's price has been set to %i."), pi->value);
-				sysmessage( socket, TRANSLATE("Enter a description for this item."));
+				sysmessage( socket, "No price entered, this item's price has been set to %i.", pi->value);
+				sysmessage( socket, "Enter a description for this item.");
 			}
 		}
 		else
 		{
-			sysmessage( socket, TRANSLATE("This item is invalid and cannot be priced") );
+			sysmessage( socket, "This item is invalid and cannot be priced" );
 			pc->fx1 = INVALID;
 			pc->fx2 = INVALID;
 		}
@@ -1173,10 +1158,10 @@ static bool describePlayerVendorItem( pChar pc, NXWSOCKET socket, string &descri
 		{
 			//strcpy( pi->desc, description.c_str() );
 			pi->vendorDescription = description;
-			sysmessage( socket, TRANSLATE("This item is now described as %s, "), description.c_str() );
+			sysmessage( socket, "This item is now described as %s, ", description.c_str() );
 		}
 		else
-			sysmessage( socket, TRANSLATE("This item is invalid and cannot be described") );
+			sysmessage( socket, "This item is invalid and cannot be described");
 		pc->fx1 = INVALID;
 		pc->fx2 = INVALID;
 		success = true;
@@ -1190,8 +1175,8 @@ static bool renameRune( pChar pc, NXWSOCKET socket, string &name )
 	pItem pi = cSerializable::findItemBySerial( pc->runeserial );
 	if( pi )
 	{
-		pi->setCurrentName( TRANSLATE("Rune to %s"), name.c_str() );
-		sysmessage( socket, TRANSLATE("Rune renamed to: Rune to %s"), name.c_str() );
+		pi->setCurrentName("Rune to %s", name.c_str() );
+		sysmessage( socket, "Rune renamed to: Rune to %s", name.c_str() );
 		pc->runeserial = INVALID;
 		success = true;
 	}
@@ -1208,10 +1193,10 @@ static bool renameSelf( pChar pc, NXWSOCKET socket, string &name )
 		{
 			pi->setCurrentName( name.c_str());
 			pc->setCurrentName( name.c_str());
-			sysmessage(socket, TRANSLATE("Your new name is: %s"), name.c_str());
+			sysmessage(socket, "Your new name is: %s", name.c_str());
 		}
 		else
-			sysmessage(socket, TRANSLATE("Invalid namedeed") );
+			sysmessage(socket, "Invalid namedeed");
 		pc->namedeedserial = INVALID;
 		success = true;
 	}
@@ -1225,7 +1210,7 @@ static bool renameKey( pChar pc, NXWSOCKET socket, string &name )
 	if( pi )
 	{
 		pi->setCurrentName( name.c_str() );
-		sysmessage( socket, TRANSLATE("Key renamed to: %s"), name.c_str() );
+		sysmessage( socket, "Key renamed to: %s", name.c_str() );
 		success = true;
 	}
 	pc->keyserial = INVALID;
@@ -1239,7 +1224,7 @@ static bool pageCouncillor( pChar pc, NXWSOCKET socket, string &reason )
 	{
 		char temp[TEMP_STR_SIZE];
 		strcpy( counspages[pc->playercallnum].reason, reason.c_str() );
-		sprintf(temp, TRANSLATE("Counselor Page from %s [%08x]: %s"),pc->getCurrentName().c_str(), pc->getSerial(), counspages[pc->playercallnum].reason);
+		sprintf(temp, "Counselor Page from %s [%08x]: %s",pc->getCurrentName().c_str(), pc->getSerial(), counspages[pc->playercallnum].reason);
 		bool foundCons = false;
 		pChar councillor;
 		
@@ -1260,9 +1245,9 @@ static bool pageCouncillor( pChar pc, NXWSOCKET socket, string &reason )
 			}
 		}
 		if (foundCons)
-			sysmessage(socket, TRANSLATE("Available Counselors have been notified of your request."));
+			sysmessage(socket, "Available Counselors have been notified of your request.");
 		else
-			sysmessage(socket, TRANSLATE("There was no Counselor available to take your call."));
+			sysmessage(socket, "There was no Counselor available to take your call.");
 		pc->pagegm = 0;
 		success = true;
 	}
@@ -1412,7 +1397,7 @@ static bool stablePet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharW
 			}
 			if( !petFound )
 			{
-				pc_stablemaster->talk( socket, TRANSLATE("Which pet?"), 0);
+				pc_stablemaster->talk( socket, "Which pet?", 0);
 				return true;
 			}
 			else
@@ -1451,9 +1436,9 @@ static bool stablePet( pChar pc, NXWSOCKET socket, std::string &speech, NxwCharW
 				}
 				char temp[TEMP_STR_SIZE];
 				if( petsToStable.size() == 1 )
-					sprintf(temp,TRANSLATE("I have stabled %s"), pc_pet->getCurrentName().c_str());
+					sprintf(temp,"I have stabled %s", pc_pet->getCurrentName().c_str());
 				else
-					sprintf(temp,TRANSLATE("I have stabled %d pets"), petsToStable.size() );
+					sprintf(temp,"I have stabled %d pets", petsToStable.size() );
 				pc_stablemaster->talk(socket,temp,0);
 			}
 			success = true;
@@ -1544,9 +1529,9 @@ stabledPets.rewind();	// GH!
 				{
 					pc_stablemaster = nearbyStablemasters.getChar();
 					if( pc_stablemaster->war )
-						pc_stablemaster->talk( socket, TRANSLATE("I'm busy!"), 0 );
+						pc_stablemaster->talk( socket, "I'm busy!", 0 );
 					else
-						pc_stablemaster->talk( socket, TRANSLATE("I don't have it"), 0 );
+						pc_stablemaster->talk( socket, "I don't have it", 0 );
 				}
 			success = true;
 		}
@@ -1569,9 +1554,7 @@ stabledPets.rewind();	// GH!
 					fee	+= ( (int) f_fee) + 5;
 				}
 			}
-			char temp[TEMP_STR_SIZE];
-			sprintf(temp,TRANSLATE("That's %i gold pieces"), fee );
-			pc_stablemaster->talk( socket, temp, 0);
+			pc_stablemaster->talk( socket, "That's %i gold pieces", false, fee);
 			//
 			// Check pet owner financials
 			//
@@ -1597,13 +1580,12 @@ stabledPets.rewind();	// GH!
 					pc_pet->teleport();
 				}
 				if( stabledPets.size() == 1 )
-					sprintf( temp, TRANSLATE("Thx! Here's your pet"));
+					pc_stablemaster->talk( socket, "Thx! Here's your pet", false);
 				else
-					sprintf( temp, TRANSLATE("Thx! Here're your %d pets"), stabledPets.size());
+					pc_stablemaster->talk( socket, "Thx! Here're your %d pets", false, stabledPets.size());
 			}
 			else
-				sprintf(temp,TRANSLATE("You don't have %i gold pieces on you!"), fee );
-			pc_stablemaster->talk( socket, temp, 0);
+				pc_stablemaster->talk( socket, "You don't have %i gold pieces on you!", false, fee );
 			success = true;
 		}
 	}
@@ -1704,13 +1686,13 @@ static bool requestChaosShield( pChar pc, NXWSOCKET socket, std::string &speech,
 					if( success )
 					{
 						item::CreateFromScript( "$item_chaos_shield", pc->getBackpack() );
-						chaosGuard->talk( socket, TRANSLATE("Here's is your new shield."), 0);
+						chaosGuard->talk( socket, "Here's is your new shield.", 0);
 					}
 					else
-						chaosGuard->talk( socket, TRANSLATE("You already have a Chaos shield!"), 0);
+						chaosGuard->talk( socket, "You already have a Chaos shield!", 0);
 				}
 				else
-					chaosGuard->talk( socket,TRANSLATE("You're not a Chaos guild member!"), 0);
+					chaosGuard->talk( socket,"You're not a Chaos guild member!", 0);
 				success = true;
 			}
 		}
@@ -1759,13 +1741,13 @@ static bool requestOrderShield( pChar pc, NXWSOCKET socket, std::string &speech,
 					if( success )
 					{
 						item::CreateFromScript( "$item_order_shield", pc->getBackpack() );
-						orderGuard->talk( socket, TRANSLATE("Here's is your new shield."), 0);
+						orderGuard->talk( socket, "Here's is your new shield.", 0);
 					}
 					else
-						orderGuard->talk( socket, TRANSLATE("You already have an Order shield!"), 0);
+						orderGuard->talk( socket, "You already have an Order shield!", 0);
 				}
 				else
-					orderGuard->talk( socket,TRANSLATE("You're not an Order guild member!"), 0);
+					orderGuard->talk( socket,"You're not an Order guild member!", 0);
 				success = true;
 			}
 		}
@@ -1812,7 +1794,7 @@ static bool buyFromVendor( pChar pc, NXWSOCKET socket, string &speech, NxwCharWr
 	}
 	if( pc_vendor->npcaitype == NPCAI_PLAYERVENDOR )
 	{
-		pc_vendor->talk( socket, TRANSLATE("What would you like to buy?"), 0 );
+		pc_vendor->talk( socket, "What would you like to buy?", 0 );
 		pTarget targ = clientInfo[socket]->newTarget( new cItemTarget() );
 		targ->buffer[0]= pc_vendor->getSerial();
 		targ->send( getClientFromSocket( socket ) );
