@@ -43,7 +43,7 @@ namespace nSkills {
 		const char *madeword;		//!< Word for items/char prepared with that skill
 		
 		sSkillInfo();
-	}
+	};
 
 	sSkillInfo infos[skTrueSkills];
 

@@ -14,7 +14,6 @@
 #include "house.h"
 #include "tmpeff.h"
 #include "telport.h"
-#include "weight.h"
 #include "boats.h"
 #include "map.h"
 #include "inlines.h"

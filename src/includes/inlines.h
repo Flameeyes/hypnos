@@ -46,7 +46,7 @@ inline std::string toString(int value)
 {
 	char *s;
 	asprintf(&s, "%d", value);
-	std::string ret(s)
+	std::string ret(s);
 	free(s);
 	
 	return ret;
@@ -56,7 +56,7 @@ inline std::string toString(double value)
 {
 	char *s;
 	asprintf(&s, "%f", value);
-	std::string ret(s)
+	std::string ret(s);
 	free(s);
 	
 	return ret;

@@ -14,7 +14,6 @@
 #include "sregions.h"
 #include "tmpeff.h"
 #include "speech.h"
-#include "weight.h"
 #include "inlines.h"
 #include "basics.h"
 #include "skills.h"

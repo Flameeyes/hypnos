@@ -11,7 +11,6 @@
 #include "constants.h"
 #include "npcai.h"
 #include "debug.h"
-#include "weight.h"
 #include "map.h"
 #include "skills.h"
 #include "basics.h"

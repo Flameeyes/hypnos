@@ -17,7 +17,6 @@
 #include "commands.h"
 #include "tmpeff.h"
 #include "extras/jail.h"
-#include "weight.h"
 #include "data.h"
 #include "boats.h"
 #include "fishing.h"

@@ -8,7 +8,6 @@
 #include "common_libs.h"
 #include "sndpkg.h"
 #include "npcai.h"
-#include "weight.h"
 #include "skills.h"
 #include "inlines.h"
 #include "settings.h"

@@ -20,7 +20,6 @@
 #include "npcai.h"
 #include "network.h"
 #include "extras/jail.h"
-#include "weight.h"
 #include "boats.h"
 #include "walking.h"
 #include "map.h"
