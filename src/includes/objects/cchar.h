@@ -268,6 +268,9 @@ public:
 
         inline const bool hasTelekinesis() const
         { return flags & flagSpellTelekinesys; }
+	
+	inline const bool isDead() const
+	{ return flags & flagDead; }
 
 	inline const bool inGuardedArea() const
 	{ return false/*::region[region].priv & RGNPRIV_GUARDED*/;

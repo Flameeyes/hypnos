@@ -90,6 +90,8 @@ public:
 	int32_t unEquip(pEquippable pi, bool drag = false);
 
 	void checkEquipment();
+	
+	pWeapon getWeapon();
 //@}
 
 //@{

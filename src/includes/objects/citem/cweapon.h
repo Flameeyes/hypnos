@@ -47,6 +47,7 @@ public:
 	static void loadWeaponsInfo();
 	static const bool isWeaponLike(uint16_t id, uint16_t type);
 
+	Skill getCombatSkill();
 protected:
 	typedef std::map<uint16_t,uint16_t> WeaponMap;
 	//! Map with types of weapons
@@ -59,50 +60,50 @@ protected:
 */
 public:
 	inline const bool isAxe() const
-	{ return isWeaponLike( getId(), AXE1H); }
+	{ return isWeaponLike( getId(), weaponAxe1H); }
 
 	inline const bool isSword() const
-	{ return isWeaponLike( getId(), SWORD1H ); }
+	{ return isWeaponLike( getId(), weaponSword1H ); }
 
 	inline const bool isSwordType() const
-	{ return isWeaponLike( getId(), SWORD1H, AXE1H ); }
+	{ return isWeaponLike( getId(), weaponSword1H | weaponAxe1H ); }
 
 	inline const bool isMace1H() const
-	{ return isWeaponLike( getId(), MACE1H); }
+	{ return isWeaponLike( getId(), weaponMace1H); }
 
 	inline const bool isMace2H() const
-	{ return isWeaponLike( getId(), MACE2H); }
+	{ return isWeaponLike( getId(), weaponMace2H); }
 
 	inline const bool isMaceType() const
-	{ return isWeaponLike( getId(), MACE1H, MACE2H ); }
+	{ return isWeaponLike( getId(), weaponMace1H | weaponMace2H ); }
 
 	inline const bool isFencing1H() const
-	{ return isWeaponLike( getId(), FENCING1H); }
+	{ return isWeaponLike( getId(), weaponFenc1H); }
 
 	inline const bool isFencing2H() const
-	{ return isWeaponLike( getId(), FENCING2H); }
+	{ return isWeaponLike( getId(), weaponFenc2H); }
 
 	inline const bool isFencingType() const
-	{ return isWeaponLike( getId(), FENCING1H, FENCING2H ); }
+	{ return isWeaponLike( getId(), weaponFenc1H | weaponFenc2H ); }
 
 	inline const bool isBow() const
-	{ return isWeaponLike( getId(), BOW ); }
+	{ return isWeaponLike( getId(), weaponBow ); }
 
 	inline const bool isCrossbow() const
-	{ return isWeaponLike( getId(), CROSSBOW ); }
+	{ return isWeaponLike( getId(), weaponXBow ); }
 
 	inline const bool isHeavyCrossbow() const
-	{ return isWeaponLike( getId(), HEAVYCROSSBOW ); }
+	{ return isWeaponLike( getId(), weaponHXBow ); }
 
 	inline const bool isBowType() const
-	{ return isWeaponLike( getId(), BOW, CROSSBOW, HEAVYCROSSBOW ); }
+	{ return isWeaponLike( getId(), weaponBow | weaponXBow | weaponHXBow ); }
 	
 	inline const bool isStave() const
-	{ return isWeaponLike( getId(), STAVE1H, STAVE2H ); }
+	{ return isWeaponLike( getId(), weaponStave1H | weaponStave2H ); }
 
 	//! -Fraz- The OSI macing weapons that do stamina and armor damage 2handed only
 	inline const bool IsSpecialMace() const
-	{ return isWeaponLike( getId(), STAVE1H, STAVE2H, MACE2H ); }
+	{ return isWeaponLike( getId(), weaponStave1H | weaponStave2H | weaponMace2H ); }
 
 //@}
 };

@@ -14,6 +14,7 @@
 #include "objects/cchar.h"
 #include "objects/cpc.h"
 #include "objects/cclient.h"
+#include "objects/citem/cweapon.h"
 #include "common_libs.h"
 #include "tmpeff.h"
 #include "inlines.h"
@@ -73,18 +74,18 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 	unHide();
 	disturbMed();
 
-	if( pc_def->IsHidden() ) return; //last-target bugfix
+	if( pc_def->isHidden() ) return; //last-target bugfix
 
 	los = losFrom(pc_def);
 
-	pItem weapon=getWeapon();
+	pWeapon weapon = getBody()->getWeapon();
 
 	fightskill = weapon ? weapon->getCombatSkill() : skWrestling;
 	dist = distFrom(pc_def);
 
 	if((dist > 1 && fightskill != skArchery) || !los) return;
 
-	if ( pc_def->npc && !npc ) {
+	if ( dynamic_cast<pNPC>(pc_def) && dynamic_cast<pPC>(this) )
 		if ( pc_def->IsInvul() )
 			return;
 		pChar pc_target = pc_def->target;
@@ -401,7 +402,7 @@ void cChar::doCombat()
 		return;
 	}
 
-	if ( (!target->npc && !target->IsOnline()) || target->IsHidden() || target->dead || (target->npc && target->npcaitype==NPCAI_PLAYERVENDOR) )
+	if ( (!target->npc && !target->IsOnline()) || target->isHidden() || target->dead || (target->npc && target->npcaitype==NPCAI_PLAYERVENDOR) )
 	{
 		undoCombat();
 		return;
