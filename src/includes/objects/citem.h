@@ -25,8 +25,10 @@ typedef cItem* pItem;
 //! Item class
 class cItem : public cObject
 {
-
 public:
+	static pItem addByID(SI32 id, UI16 nAmount, const char *cName, UI16 color, Location where);
+
+
 	//! Redefinition of = operator for cItem class
         cItem& operator=(cItem& b);
 

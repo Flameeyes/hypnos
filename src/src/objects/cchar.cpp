@@ -802,10 +802,10 @@ P_ITEM cChar::GetBankBox( short banktype )
 	else
 		sprintf(temp, TRANSLATE("%s's bank box."), getCurrentNameC());
 
-	P_ITEM pi = item::addByID(ITEMID_BANKBOX, 1, temp, 0, getPosition());
+	pItem pi = cItem::addByID(ITEMID_BANKBOX, 1, temp, 0, getPosition());
 
-	pi->setContSerial(getSerial32());
-	pi->setOwnerSerial32Only(getSerial32());
+	pi->setContainer(this);
+	pi->setOwner(this);
 
 	pi->type = ITYPE_CONTAINER;
 	pi->layer = LAYER_BANKBOX;
@@ -821,7 +821,7 @@ P_ITEM cChar::GetBankBox( short banktype )
 		}
 	}
 
-	pi->Refresh();
+	pi->refresh();
 
 	return pi;
 }
@@ -3013,11 +3013,11 @@ void cChar::Kill()
 
 	if (!npc)
 	{
-		P_ITEM pDeathRobe = item::addByID( ITEMID_DEATHSHROUD, 1, "a death shroud", 0, getPosition());
-        	if (ISVALIDPI(pDeathRobe))
+		pItem pDeathRobe = cItem::addByID( ITEMID_DEATHSHROUD, 1, "a death shroud", 0, getPosition());
+        	if (pDeathRobe)
 		{
 			robe = pDeathRobe->getSerial32();
-			pDeathRobe->setContSerial(getSerial32());
+			pDeathRobe->setContainer(this);
 			pDeathRobe->layer = LAYER_OUTER_TORSO;
 			pDeathRobe->def = 1;
 			pDeathRobe->Refresh();
@@ -3031,7 +3031,7 @@ void cChar::Kill()
 	char szCorpseName[128];
 	sprintf(szCorpseName, "corpse of %s", getCurrentNameC());
 
-	P_ITEM pCorpse = item::addByID( ITEMID_CORPSEBASE, 1, szCorpseName, getOldColor(), getPosition());
+	pItem pCorpse = cItem::addByID( ITEMID_CORPSEBASE, 1, szCorpseName, getOldColor(), getPosition());
 	if (!ISVALIDPI(pCorpse))
 	{
 	    // panic

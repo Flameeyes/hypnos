@@ -145,11 +145,11 @@ void cScriptCommand::execute( pClient client )
 		std::string p(param.begin()+i+1, param.end());
 		param.erase(param.begin()+i, param.end());
 
-		P_ITEM pi = item::addByID (str2num(param), 1, p.c_str(), 0, 100, 100, 100);
-		if (pi==NULL) return;
-		pi->setContSerial( pb->getSerial32() );
+		pItem pi = cItem::addByID(str2num(param), 1, p.c_str(), 0, Location(100, 100, 100));
+		if (!pi) return;
+		pi->setContainer(pb);
 		pi->SetRandPosInCont(pb);
-		pi->Refresh();
+		pi->refresh();
 	} else if ( command == "@CALL" ) {
 		AmxFunction::g_prgOverride->CallFn(param.c_str());
 	} else {

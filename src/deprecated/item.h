@@ -37,8 +37,6 @@ namespace item
 	P_ITEM		CreateScriptItem(NXWSOCKET s, SI32 itemnum, LOGICAL nSpawned, cObject* cont=NULL );
 
 	void		AddRespawnItem(int s, int x, int y);
-	P_ITEM		addByID(int id, UI32 nAmount, const char *cName, int color, Location where);	// added by Anthalir
-	P_ITEM		addByID(int id, UI32 nAmount = 1, const char* cName = NULL, int color = 0x0000, int x=INVALID, int y = INVALID, int z = INVALID);
 	P_ITEM		SpawnRandomItem(NXWSOCKET s, char* cList, char* cItemID);
 };
 

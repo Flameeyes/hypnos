@@ -39,6 +39,31 @@ cWeapon::cWeapon(SERIAL serial) : cItem (serial)
 {
 }
 
+/*!
+\brief Add item by ID
+\author Anthalir - Rewrote by Flmaeeyes
+\param id id of the item to add
+\param nAmount amount of items to add
+\param cName name of the item to add
+\param color color of the item
+\param where Location to add the item to
+*/
+static pItem cItem::addByID(SI32 id, UI16 nAmount, const char *cName, UI16 color, Location where)
+{
+	pItem pi = item::spawnItemByIdInternal(nAmount, cName, id, color);
+	if ( where.x != 0xFFFF )
+	{
+		z = getHeight(where);
+		pi->moveTo(where);
+		pi->Refresh();
+	}
+	return pi;
+}
+
+/*!
+\brief Tells if an id is a house
+\param id id to check
+*/
 static const bool cItem::isHouse(UI16 id)
 {
 	if (id < 0x0040) return false;

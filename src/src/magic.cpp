@@ -1225,9 +1225,9 @@ void castFieldSpell( P_CHAR pc, int x, int y, int z, int spellnumber)
 	for( j=0; j<=fieldLen; j++ )
 	{
 		SI08 nz=getHeight( Loc( fx[j], fy[j], z ) );
-		P_ITEM pi = item::addByID(id, 1, "#", 0, fx[j], fy[j], nz);
+		pItem pi = cItem::addByID(id, 1, "#", 0, Location(fx[j], fy[j], nz));
 
-		if (pi!=NULL)
+		if (pi)
 		{
 			pi->setDecay();
 			pi->setDispellable();
@@ -1235,7 +1235,7 @@ void castFieldSpell( P_CHAR pc, int x, int y, int z, int spellnumber)
 			pi->morex=pc->skill[MAGERY]; // remember casters magery skill for damage, LB
 			pi->dir=29;
 			pi->magic=2;
-			pi->Refresh();
+			pi->refresh();
 		}
 	}
 }
