@@ -156,65 +156,40 @@ string getDateString()
 \name asprintf and vasprintf stuff
 \author Flameeyes
 \brief Implementation of asprintf and vasprintf function which aren't present
-	in Windows' library
+	in Microsoft's c-library
 */
-
-static char as_buffer[4096];
-static Wefts::Mutex as_mutex;
 
 int asprintf(char **strp, const char *fmt, ...)
 {
-	as_mutex.lock();
 	va_list argptr;
 	va_start( argptr, fmt );
-        int retval = vsnprintf( as_buffer, 4096, fmt, argptr );
+        int retval = vsprintf( NULL, fmt, argptr );
 	va_end( argptr );
 	
-	if ( retval == -1 )
-	{
-		as_mutex.unlock();
-		return -1;
-	}
-	if ( retval >= 4096 )
+	if ( retval != -1 )
 	{
 		*strp = (char*)malloc(retval+1);
 		va_start( argptr, fmt );
-		int retval2 = vsnprintf( *strp, retval+1, fmt, argptr );
+		int retval = vsnprintf( *strp, retval+1, fmt, argptr );
 		va_end( argptr );
-		as_mutex.unlock();
-		return retval2;
+		return retval;
 	}
 	
-	*strp = (char*)malloc(retval+1);
-	strncpy( *strp, as_buffer, retval+1 );
-	as_mutex.unlock();
-	return retval;
+	return -1;
 }
 
 int vasprintf(char **strp, const char *fmt, va_list ap)
 {
+        int retval = vsprintf( NULL, fmt, ap );
 	
-	mutex.lock();
-        int retval = vsnprintf( as_buffer, 4096, fmt, ap );
-	
-	if ( retval == -1 )
+	if ( retval != -1 )
 	{
-		as_mutex.unlock();
-		return -1;
-	}
-	if ( retval >= 4096 )
-	{
-		va_end( ap );
 		*strp = (char*)malloc(retval+1);
-		int retval2 = vsnprintf( *strp, retval+1, fmt, ap );
-		as_mutex.unlock();
-		return retval2;
+		int retval = vsnprintf( *strp, retval+1, fmt, ap );
+		return retval;
 	}
 	
-	*strp = (char*)malloc(retval+1);
-	strncpy( *strp, as_buffer, retval+1 );
-	as_mutex.unlock();
-	return retval;
+	return -1;
 }
 //@}
 #endif
