@@ -2647,7 +2647,7 @@ void cClient::playSFX(uint16_t sound, bool onlyMe, bool repeat)
 }
 
 /*------------------------------------------------------------------------------
-                            TALK & MESSAGES METHODS
+			    TALK & MESSAGES METHODS
 ------------------------------------------------------------------------------*/
 
 
@@ -3274,3 +3274,21 @@ void cClient::resume()
 	static nPackets::Sent::PauseClient pk(0x01);
 	sendPacket(&pk);
 }
+
+
+/*------------------------------------------------------------------------------
+				TARGETING
+------------------------------------------------------------------------------*/
+
+
+void cClient::sendTarget(processTarget callback)
+{
+	sTarget target;
+	nPackets::Sent::TargetingCursor pk(1,);
+}
+/*
+void cClient::sendObjectTarget(processTarget callback);		//!< senda an object target
+void cClient::sendCharTarget(processTarget callback);		//!< sends a char target
+void cClient::sendItemTarget(processTarget callback);		//!< sends an item target
+void cClient::sendLocationTarget(processTarget callback);	//!< sends a location target
+*/

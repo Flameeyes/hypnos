@@ -184,6 +184,29 @@ public:
 
 //@{
 /*!
+\name Targets
+*/
+protected:
+	sTarget target;						//!< current target of this client
+
+public:
+	//! gets target selected
+	inline sTarget getTarget()
+	{ return target; }
+
+	inline void settarget(sTarget newtarget)
+	{ target = newtarget; }
+
+	void sendTarget(processTarget callback);		//!< sends a targeting cursor to client
+	void sendObjectTarget(processTarget callback);		//!< senda an object target
+	void sendCharTarget(processTarget callback);		//!< sends a char target
+	void sendItemTarget(processTarget callback);		//!< sends an item target
+	void sendLocationTarget(processTarget callback);	//!< sends a location target
+
+//@}
+
+//@{
+/*!
 \brief Packets
 */
 public:

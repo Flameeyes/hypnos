@@ -796,12 +796,29 @@ bool nPackets::Received::TargetSelected::execute(pClient client)
 	pTarget target = client->getTarget();
 	if( !target) return false; //maybe it CAN return true if this packet is sent on targeting abortion. verify it! If true, add targeting abortion code instead of returning
 
+	if( target.location && ( target.loc.x==UINVALID16 || target.loc.y==UINVALID16 ) )
+		return false;
+	if( !target.location && !clicked && !model )
+		return false;
 
+
+	switch( target.type )
+	{
+		case ttChar:
+			return new cCharTarget();
+		case ttItem:
+			return new cItemTarget();
+		case ttObject:
+			return new cObjectTarget();
+		case ttLocation:
+			return new cLocationTarget();
+		case ttAll:
+		default:
+	}
 	//! \todo finish to update this when targets redone
 #if 0
 	target->receive( ps );
-
-					if( !target->isValid() )
+						if( !target->isValid() )
 						target->error( ps );
 					else
 						target->code_callback( ps, target );

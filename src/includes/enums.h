@@ -265,4 +265,13 @@ enum ReputationChange {
 	repKarma	//!< Karma changed
 };
 
+//! target type
+enum TargetType {
+	ttAll = 0,		//!< any target is valid
+	ttObj,			//!< anything with a serial is valid
+	ttChar,			//!< chars are valid targets
+	ttItem,			//!< items are valid targets
+	ttLocation		//!< target location rather than an object
+};
+
 #endif
