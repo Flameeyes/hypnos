@@ -73,6 +73,8 @@ public:
 	//! Gets the hold
 	pContainer getHold() const
 	{ return hold; }
+	
+	bool doSpeech(pClient client, const std::string &speech);
 
 private:
 	enum Item {

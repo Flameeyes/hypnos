@@ -41,7 +41,7 @@ void cHouse::Delete()
 */
 bool cHouse::isCoowner(pPC pc) const
 {
-	if ( pc->getAccount() == owner->getAccount() )
+	if ( pc->getAccount() == getOwner()->getAccount() )
 		return true;
 	
 	PSMap::const_iterator it = playerStatus.find(pc->getSerial());
@@ -93,7 +93,7 @@ bool cHouse::isBanned(pPC pc) const
 */
 bool cHouse::setStatus(pPC pc, PlayerStatus status)
 {
-	if ( owner == pc || pc->getAccount() == owner->getAccount() )
+	if ( getOwner() == pc || pc->getAccount() == getOwner()->getAccount() )
 		return false;
 	
 	if ( status != psNone )
@@ -119,7 +119,7 @@ void cHouse::redeed(pClient client)
 	if ( ! client || ! ( pc = client->currChar() ) )
 		return;
 	
-	if ( owner != pc && ! pc->isGM() )
+	if ( getOwner() != pc && ! pc->isGM() )
 		return;
 
 	pItem deed = nArchetypes::createItem( deedID );
@@ -173,7 +173,7 @@ void cHouse::killKeys()
 }
 
 /*!
-\brief Checks for a house's speec
+\brief Checks for a house's speech
 \param client Client who's performing the speech
 \param speech Speech performed
 \retval true The \c speech is recognized as a house's speech and is executed
@@ -188,9 +188,7 @@ void cHouse::killKeys()
 bool cHouse::doSpeech(pClient client, const std::string &speech)
 {
 	assert(client); assert(client->currChar());
-	
 	pPC pc = client->currChar();
-	int fr;
 
 	// if pc is not a friend or owner, we don't care what he says
 	if ( ! canPerformCommand(pc) )

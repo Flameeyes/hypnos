@@ -165,3 +165,89 @@ void cBoat::turn(bool turnRight)
 	for ( ClientSList::iterator it = toResume.begin(); it != toResume.end(); it++ )
 		(*it)->resume():
 }
+
+/*!
+\brief Checks for a boat's speech
+\param client Client who's performing the speech
+\param speech Speech performed
+\retval true The \c speech is recognized as a boat's speech and is executed
+\retval false The \c speech isn't recognized, or the player can't do speech in
+	this boat
+\todo Change this to use a regexp capture using the pcreplus library when
+	available
+*/
+bool cBoat::doSpeech(pClient client, const std::string &speech)
+{
+	assert(client); assert(client->currChar());
+	pPC pc = client->currChar();
+	
+	// if the pc is not the boat owner (or a gm!) ..we don't care what he says
+	if( getOwner() != pc && ! pc->isGM() )
+		return false;
+	
+	uint8_t dir = getDirection() & 0x07;
+	
+	if( speech == "FORWARD" || speech == "UNFURL SAIL" )
+	{
+		tillerMan->talk("Aye, sir.");
+		
+		type2=1;//Moving
+		step(client);
+	} else  if( speech == "BACKWARD" ) {
+		tillerMan->talk("Aye, sir.");
+		
+		type2=2;//Moving backward
+		if(dir>=4)
+			dir-=4;
+		else
+			dir+=4;
+		
+		step(client, dir);
+	} else if( speech == "ONE LEFT" || speech == "DRIFT LEFT" ) {
+		tillerMan->talk("Aye, sir.");
+		
+		step(client, (dir-2)%8);
+	} else if( speech == "ONE RIGHT" || speech == "DRIFT RIGHT" ) {
+		tillerMan->talk("Aye, sir.");
+		
+		step(client, (dir+2)%8);
+	} else if( speech == "STOP" || speech == "FURL SAIL" ) {
+		tillerMan->talk("Aye, sir.");
+		type2=0;
+	} else if( speech == "TURN LEFT" || speech == "TURN PORT" ) {
+		if (good_position(pb, getPosition(), -1) && !collision(pb,getPosition(),-1))
+		{
+			tillerMan->talk("Aye, sir.");
+			turn(false);
+		} else {
+			type2=0;
+			tillerMan->talk("Arr, somethings in the way");
+		}
+	} else if( speech == "TURN RIGHT" || speech == "TURN STARBOARD" )
+	{
+		if (good_position(pb, getPosition(), 1) && !collision(pb,getPosition(),1))
+		{
+			tillerMan->talk("Aye, sir.");
+			turn(true);
+		} else {
+			type2=0;
+			tillerMan->talk("Arr, somethings in the way");
+		}
+	}else if( speech == "COME ABOUT" || speech == "TURN ABOUT" ) {
+
+		if (good_position(pb, getPosition(), 2) && !collision(pb,getPosition(),2))
+		{
+			tillerMan->talk("Aye, sir.");
+			turn(true);
+			turn(true);
+		} else {
+			type2=0;
+			tillerMan->talk("Arr, somethings in the way");
+		}
+	} else if( talk.substr(0, 9) == "SET NAME " ) {
+		tillerMan->setCurrentName( talk.substr( 9 ) );
+	} else
+		return false;
+	
+	return true;
+}

@@ -44,7 +44,6 @@ void TurnStuff_c(pItem, pChar, int, int);
 
 void TurnShip( uint8_t size, uint8_t dir, pItem pPort, pItem pStarboard, pItem pTiller, pItem pHold );
 
-bool Speech(pChar pc, pClient clientocket, std::string &talk );
 void OpenPlank(pItem pi);
 void PlankStuff(pChar pc, pItem pi);
 bool Build(pClient client, pItem pBoat, char);

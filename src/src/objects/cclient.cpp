@@ -2918,7 +2918,7 @@ void cClient::talking(cSpeech &speech) // PC speech
 		pBoat pb = dynamic_cast<pBoat>(pc->getMulti());
 		pHouse ph = dynamic_cast<pHouse>(pc->getMulti());
 		
-		if ( pb && Boats->Speech( pc, socket, speech ) )
+		if ( pb && pb->doSpeech(this, speech) )
 			return;
 		
 		if ( ph && ph->doSpeech(this, speech) )
