@@ -20,6 +20,8 @@
 #include <wincon.h>
 #endif
 
+#include <iostream>
+
 /*!
 \brief Do a low-level output on the console
 \param str String to print (printf-formatted)
@@ -27,23 +29,25 @@
 This function is used by consoleOutput to actually do an output. Must \b not
 be accessed in other ways!
 */
-void lowlevelOutput(int fd, const char *str, ...)
+void lowlevelOutput(std::ostream &outs, const char *str, ...)
 {
-	static char buffer[2048];
+	char *buf = NULL;
 	va_list argptr;
 
 	va_start( argptr, str );
-	vsnprintf( buffer, sizeof(buffer)-1, str, argptr );
+	vasprintf( &buf, str, argptr );
 	va_end( argptr );
 
-	fprintf(fd, buffer);
+	outs << buf;
+	
+	free(buf);
 }
 
 // Only on unix-es we do colored output
 #if defined(__unix__)
-#define AnsiOut(x) lowlevelOutput(stdout, x)
+#define AnsiOut(s, x) s << x
 #else
-#define AnsiOut(x)
+#define AnsiOut(s, x)
 #endif
 
 /*!
@@ -60,10 +64,10 @@ stderr for other).
 */
 void consoleOutput(nNotify::Level lev, const std::string str)
 {
-	static Wefts::Mutex;
+	static Wefts::Mutex m;
 	m.lock();
 	
-	FILE *outfp = stdout;
+	std::ostream outs = std::cout;
 	
 	// Set the color
 	switch(lev)
@@ -71,23 +75,23 @@ void consoleOutput(nNotify::Level lev, const std::string str)
 	case levPlain:
 		break;
 	case levError:
-		AnsiOut("\x1B[1;31m");
-		lowlevelOutput(stderr, "E %s - ", nNotify::getDate().c_str());
-		outfp = stderr;
+		outs = std::cerr;
+		AnsiOut(outs, "\x1B[1;31m");
+		lowlevelOutput(outs, "E %s - ", nNotify::getDate().c_str());
 		break;
 	case levWarning:
-		AnsiOut("\x1B[1;33m");
-		lowlevelOutput(stderr, "W %s - ", nNotify::getDate().c_str());
-		outfp = stderr;
+		outs = std::cerr;
+		AnsiOut(outs, "\x1B[1;33m");
+		lowlevelOutput(outs, "W %s - ", nNotify::getDate().c_str());
 		break;
 	case levInformation:
-		AnsiOut("\x1B[1;34m");
-		lowlevelOutput(stdout, "i %s - ", nNotify::getDate().c_str());
+		AnsiOut(outs, "\x1B[1;34m");
+		lowlevelOutput(outs, "i %s - ", nNotify::getDate().c_str());
 		break;
 	case levPanic:
-		AnsiOut("\x1B[1;31m");
-		lowlevelOutput(stderr, "! %s - ", nNotify::getDate().c_str());
-		outfp = stderr;
+		outs = std::cerr;
+		AnsiOut(outs, "\x1B[1;31m");
+		lowlevelOutput(outs, "! %s - ", nNotify::getDate().c_str());
 		break;
 	}
 	
@@ -95,10 +99,7 @@ void consoleOutput(nNotify::Level lev, const std::string str)
 	
 	// Close the colored part
 	if ( lev != levPlain )
-		AnsiOut("\x1B[0m");
-	
-	// This flushes the output only when all the output is actually done
-	fflush(s_fileStdOut);
+		AnsiOut(outs, "\x1B[0m");
 	
 	m.unlock();
 }
@@ -125,7 +126,7 @@ void setWinTitle(char *str, ...)
 	va_end( argptr );
 	
 	#ifdef __unix__
-		lowlevelOutput("\033]0;%s\007", temp); // xterm code
+		lowlevelOutput(std::cout, "\033]0;%s\007", temp); // xterm code
 	#elif defined(HAVE_WINCON_H)
 		SetConsoleTitle(temp);
 	#endif
@@ -183,128 +184,34 @@ static inline void exitOnError(bool error)
 
 // Define stubs to avoid conditional compilation inside the loop
 
-#ifndef HAVE_KBHIT
-static inline bool kbhit()
-{ return true; }
-#endif
-
-#ifndef HAVE_GETCH
-static inline char getch()
-{ return '\0'; }
-#endif
-
 /*!
 \brief facilitate console control. SysOp keys and localhost controls
 */
 void checkkey ()
 {
-	char c;
-	int i,j=0;
-
-	// Flameeyes: borland c++ builder doesn't accept kbhit() in windows mode
-	// Also to force only remote admin under unix, we can remove the kbhit() test
-
-	if ( ! kbhit() ) return;
+	std::string str;
+	getline(std::cin, str);
 	
-	c = toupper(INKEY ? INKEY : getch());
-	
-	if ( c == '\0' ) return;
+	if ( ! str.lenght() ) return;
 
-	if ( c == 'S' )
+	if ( str == "S" )
 	{
 		if (secure)
-			lowlevelOutput(stdout, "Secure mode disabled. Press ? for a commands list.\n");
+			lowlevelOutput(std::cout, "Secure mode disabled. Press ? for a commands list.\n");
 		else
-			lowlevelOutput(stdout, "Secure mode re-enabled.\n");
+			lowlevelOutput(std::cout, "Secure mode re-enabled.\n");
 		
 		secure = ! secure;
 		return;
 	}
 	
-	if (secure && c != '?')  //Allows help in secure mode.
+	if (secure && str != "?")  //Allows help in secure mode.
 	{
-		lowlevelOutput(stdout, "Secure mode prevents keyboard commands! Press 'S' to disable.\n");
+		lowlevelOutput(std::cout, "Secure mode prevents keyboard commands! Press 'S' to disable.\n");
 		return;
 	}
-
-	switch(c)
-	{
-	case '\x1B':
-		keeprun=false;
-		break;
-	case 'Q':
-	case 'q':
-		lowlevelOutput(stdout, "Immediate Shutdown initialized!\n");
-		keeprun=false;
-		break;
-	case 'T':
-	case 't':
-		endtime=getClockmSecs()+(SECS*60*2);
-		endmessage(0);
-		break;
-	case '#':
-		if ( !cwmWorldState->Saving() )
-		{
-			cwmWorldState->saveNewWorld();
-		}
-		break;
-	case 'D':	// Disconnect account 0 (useful when client crashes)
-	case 'd':
-		{
-			int found = 0;
-			lowlevelOutput(stdout, "Disconnecting account 0 players... ");
-			for (int i=0; i<now; i++)
-				if (acctno[i]==0 && clientInfo[i]->ingame)
-				{
-					found++;
-					Network->Disconnect(i);
-				}
-			if (found>0)
-				lowlevelOutput(stdout, "[  OK  ] (%d disconnected)\n", found);
-			else	
-				lowlevelOutput(stdout, "[FAILED] (no account 0 players online)\n", found);
-		}
-		break;
-	case 'W':
-	case 'w':				// Display logged in chars
-		lowlevelOutput(stdout, "----------------------------------------------------------------\n");
-		lowlevelOutput(stdout, "Current Users in the World:\n");
-		//!\todo Fix this with a better way
-		j = 0;  //Fix bug counting ppl online.
-		for (int i=0;i<now;i++)
-		{
-			pChar pc_i=cSerializable::findCharBySerial(currchar[i]);
-			if(pc_i && clientInfo[i]->ingame) //Keeps NPC's from appearing on the list
-			{
-				lowlevelOutput(stdout, "%i) %s [ %08x ]\n", j, pc_i->getCurrentName().c_str(), pc_i->getSerial());
-				j++;
-			}
-		}
-		lowlevelOutput(stdout, "Total Users Online: %d\n", j);
-		break;
-	case 'r':
-	case 'R':
-		lowlevelOutput(stdout, "Hypnos: Total server reload!");
-		//! \todo Need to freeze and unfreeze all the clients here for the resync
-		//! \todo Need to call a function exported by hypnos.h
-		loadServer();
-		break;
-	case '?':
-		lowlevelOutput(stdout, "Console commands:\n");
-		lowlevelOutput(stdout, "\t<Esc> or Q: Shutdown the server.\n");
-		lowlevelOutput(stdout, "\tT - System Message: The server is shutting down in 2 minutes.\n");
-		lowlevelOutput(stdout, "\t# - Save world\n");
-		lowlevelOutput(stdout, "\tD - Disconnect Account 0\n");
-		lowlevelOutput(stdout, "\tW - Display logged in characters\n");
-		lowlevelOutput(stdout, "\tR - Total server reload\n");
-		lowlevelOutput(stdout, "\tS - Toggle Secure mode %s\n", secure ? "[enabled]" : "[disabled]" );
-		lowlevelOutput(stdout, "\t? - Commands list (this)\n");
-		lowlevelOutput(stdout, "End of commands list.\n");
-		break;
-	default:
-		lowlevelOutput(stdout, "Key %c [%x] does not preform a function.\n",c,c);
-		break;
-	}
+	
+	nAdminCommands::parseCommand(str, std::cout);
 }
 
 int main(int argc, char *argv[])
@@ -324,30 +231,24 @@ int main(int argc, char *argv[])
 	serverstarttime=getClockmSecs();
 
 	initConsole();
-	lowlevelOutput(stdout, "Starting Hypnos...\n\n");
+	lowlevelOutput(std::cout, "Starting Hypnos...\n\n");
 
 	loadServer();
 
-#ifdef USE_SIGNALS
-	//thx to punt and Plastique :]
-	signal(SIGPIPE, SIG_IGN);
-	initSignalHandlers();
-#endif
-
 	if (ServerScp::g_nDeamonMode!=0) {
-		lowlevelOutput(stdout, "Going into deamon mode... bye...\n");
+		lowlevelOutput(std::cout, "Going into deamon mode... bye...\n");
 		init_deamon();
 	}
 
-	lowlevelOutput(stdout, "Applying interface settings... ");
+	lowlevelOutput(std::cout, "Applying interface settings... ");
 	constart();
-	lowlevelOutput(stdout, "[ OK ]\n");
+	lowlevelOutput(std::cout, "[ OK ]\n");
 
 	openings = 0;
 
 	serverstarttime=getClockmSecs();
 
-	lowlevelOutput(stdout, "\n");
+	lowlevelOutput(std::cout, "\n");
 	cwmWorldState->loadNewWorld();
 
 	exitOnError(error); // LB prevents file corruption
@@ -357,11 +258,11 @@ int main(int argc, char *argv[])
 	endtime=0;
 	lclock=0;
 
-	lowlevelOutput(stdout, "\n\n");
+	lowlevelOutput(std::cout, "\n\n");
 
 	clearscreen();
 
-	lowlevelOutput(stdout,
+	lowlevelOutput(std::cout,
 		"Hypnos UO Server Emulator %s\n
 		"Programmed by: %s\n"
 		"Based on NoX-Wizard 20031228\n"
@@ -387,47 +288,47 @@ int main(int argc, char *argv[])
 
 	exitOnError(error);
 
-	lowlevelOutput(stdout, "\nMap size : %dx%d", map_width, map_height);
+	lowlevelOutput(std::cout, "\nMap size : %dx%d", map_width, map_height);
 
 	if ((map_width==768)&&(map_height==512))
-		lowlevelOutput(stdout, " [standard Britannia/Sosaria map size]\n");
+		lowlevelOutput(std::cout, " [standard Britannia/Sosaria map size]\n");
 	else if ((map_width==288)&&(map_height==200))
-		lowlevelOutput(stdout, " [standard Ilshenar map size]\n");
-	else lowlevelOutput(stdout, " [custom map size]\n");
+		lowlevelOutput(std::cout, " [standard Ilshenar map size]\n");
+	else lowlevelOutput(std::cout, " [custom map size]\n");
 
 	if (ServerScp::g_nAutoDetectIP==1)  {
-		lowlevelOutput(stdout, "\nServer waiting connections on all interfaces at TCP port %i\n", g_nMainTCPPort);
+		lowlevelOutput(std::cout, "\nServer waiting connections on all interfaces at TCP port %i\n", g_nMainTCPPort);
 	} else {
-		lowlevelOutput(stdout, "\nServer waiting connections at IP %s, TCP port %i\n", serv[0][1], g_nMainTCPPort);
+		lowlevelOutput(std::cout, "\nServer waiting connections at IP %s, TCP port %i\n", serv[0][1], g_nMainTCPPort);
 	}
 
 	// print allowed clients
 	std::string t;
 	std::vector<std::string>::const_iterator vis( clientsAllowed.begin() ), vis_end( clientsAllowed.end() );
 
-	lowlevelOutput(stdout, "\nAllowed clients : ");
+	lowlevelOutput(std::cout, "\nAllowed clients : ");
 	for ( ; vis != vis_end;  ++vis)
 	{
 		t = (*vis);  // a bit pervert to store c++ strings and operate with c strings, admitably
 
 		if ( t == "SERVER_DEFAULT" )
 		{
-			lowlevelOutput(stdout, "%s : %s\n", t.c_str(), strSupportedClient);
+			lowlevelOutput(std::cout, "%s : %s\n", t.c_str(), strSupportedClient);
 			break;
 		}
 		else if ( t == "ALL" )
 		{
-			lowlevelOutput(stdout, "ALL\n");
+			lowlevelOutput(std::cout, "ALL\n");
 			break;
 		}
 
-		lowlevelOutput(stdout, "%s,", t.c_str());
+		lowlevelOutput(std::cout, "%s,", t.c_str());
 	}
-	lowlevelOutput(stdout, "\n");
+	lowlevelOutput(std::cout, "\n");
 	
 	pointers::init(); //Luxor
 
-	lowlevelOutput(stdout, "Server started\n");
+	lowlevelOutput(std::cout, "Server started\n");
 
 	Spawns->doSpawnAll();
 
@@ -469,7 +370,7 @@ int main(int argc, char *argv[])
 					&& clientInfo[r]->ingame
 					)
 				{
-					lowlevelOutput(stdout, "Player %s disconnected due to inactivity !\n", pc_r->getCurrentName().c_str());
+					lowlevelOutput(std::cout, "Player %s disconnected due to inactivity !\n", pc_r->getCurrentName().c_str());
 					//sysmessage(r,"you have been idle for too long and have been disconnected!");
 					nPackets::Sent::IdleWarning pk(0x7);
 					client->sendPacket(&pk);
@@ -528,7 +429,7 @@ int main(int argc, char *argv[])
 		if (SrvParms->server_log)
 			ServerLog.Write("Server Shutdown by Error!\n");
 	} else {
-		lowlevelOutput(stdout, "Hypnos: Server shutdown complete!\n");
+		lowlevelOutput(std::cout, "Hypnos: Server shutdown complete!\n");
 		if (SrvParms->server_log)
 			ServerLog.Write("Server Shutdown!\n");
 	}

@@ -8,9 +8,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#include "backend/admincmds.h"
 #include "networking/tracreceiver.h"
 #include "networking/tkilling.h"
 #include "networking/exception.h"
+#include <sstream>
 
 /*!
 \brief Constructor for tRACReceiver thread
@@ -53,7 +55,12 @@ void *tRACReceiver::run()
 			if ( ! logon )
 				doLogin();
 			
-			parseCommand(sock->recvLine());
+			sock->send("# ", 2);
+			
+			std::ostringstream sout;
+			nAdminCommands::parseCommand(sock->recvLine(), sout);
+			
+			sock->send(sout.str(), sout.str().lenght());
 		}
 	} catch(eErrorSending exc) {
 		sock->close();
@@ -143,9 +150,4 @@ void tRACReceiver::doLogin()
 	LogMessage("Authorised access on Remote Console for user %s", loginName.c_str());
 	logon = true;
 	return;
-}
-
-void tRACReceiver::parseCommand(const std::string &cmd)
-{
-	
 }
