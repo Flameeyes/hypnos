@@ -82,29 +82,6 @@ struct static_st {
 
 typedef std::vector< static_st > staticVector;
 
-struct land_st
-{
-	uint32_t flags;
-	uint16_t id;
-	char name[20];
-} PACK_NEEDED;
-
-struct tile_st
-{
-	uint32_t flags;
-	uint8_t weight;
-	uint8_t quality; // if wearable, it's the layer. if it's a light source, it's the light id.
-	uint16_t unknown;
-	uint8_t unknown1;
-	uint8_t quantity;
-	uint16_t animid;
-	uint8_t unknown2;
-	uint8_t hue;
-	uint16_t unknown3;
-	int8_t height;
-	char name[20];
-} PACK_NEEDED;
-
 struct multiIdx_st {
 	int32_t start;
 	int32_t length;
@@ -133,51 +110,12 @@ struct verdata_st
 	int32_t various;
 } PACK_NEEDED;
 
-/*!
-\author Luxor
-*/
-enum {
-	TILEFLAG_BACKGROUND	=	0x00000001,
-	TILEFLAG_WEAPON		=	0x00000002,
-	TILEFLAG_TRANSPARENT	=	0x00000004,
-	TILEFLAG_TRANSLUCENT	=	0x00000008,
-	TILEFLAG_WALL		=	0x00000010,
-	TILEFLAG_DAMAGING	=	0x00000020,
-	TILEFLAG_IMPASSABLE	=	0x00000040,
-	TILEFLAG_WET		=	0x00000080,
-	TILEFLAG_SURFACE	=	0x00000200,
-	TILEFLAG_BRIDGE		=	0x00000400,
-	TILEFLAG_STACKABLE	=	0x00000800,
-	TILEFLAG_WINDOW		=	0x00001000,
-	TILEFLAG_NOSHOOT	=	0x00002000,
-	TILEFLAG_PREFIX_A	=	0x00004000,
-	TILEFLAG_PREFIX_AN	=	0x00008000,
-	TILEFLAG_INTERNAL	=	0x00010000,
-	TILEFLAG_FOLIAGE	=	0x00020000,
-	TILEFLAG_PARTIAL_HUE	=	0x00040000,
-	TILEFLAG_MAP		=	0x00100000,
-	TILEFLAG_CONTAINER	=	0x00200000,
-	TILEFLAG_WEARABLE	=	0x00400000,
-	TILEFLAG_LIGHTSOURCE	=	0x00800000,
-	TILEFLAG_ANIMATED	=	0x01000000,
-	TILEFLAG_NODIAGONAL	=	0x02000000,
-	TILEFLAG_ARMOR		=	0x08000000,
-	TILEFLAG_ROOF		=	0x10000000,
-	TILEFLAG_DOOR		=	0x20000000,
-	TILEFLAG_STAIR_BACK	=	0x40000000,
-	TILEFLAG_STAIR_RIGHT	=	0x80000000
-};
-
-
 const uint8_t verdata_st_size = sizeof( verdata_st );
 const uint8_t multi_st_size = sizeof( multi_st );
 const uint8_t multiIdx_st_size = sizeof( multiIdx_st );
-const uint8_t tile_st_size = sizeof( tile_st );
-const uint8_t land_st_size = sizeof( land_st );
 const uint8_t static_st_size = sizeof( static_st );
 const uint8_t staticIdx_st_size = sizeof( staticIdx_st );
 const uint8_t map_st_size = sizeof( map_st );
-
 
 /*!
 \author Luxor

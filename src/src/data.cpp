@@ -30,9 +30,6 @@ cMULFile< static_st >* statics; // statics.mul
 cMULFile< multiIdx_st >* multiIdx; // multi.idx
 cMULFile< multi_st >* multi; // multi.mul
 
-cMULFile< verdata_st >* verIdx; // verdata.mul
-cMULFile< land_st >* verLand; // verdata.mul
-
 static int32_t verdataEntries;
 
 static std::string map_path;
