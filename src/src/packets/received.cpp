@@ -488,6 +488,7 @@ void cPacketSendMsgBoardItemsinContainer::prepare()
 void cPacketSendSecureTradingStatus::prepare()
 {
         buffer = new uint8_t[17];
+        length = 17;
 	buffer[0] = 0x6F;
         ShortToCharPtr(17, buffer+1); 	//Size - no name in this message -  so length is fixed
 	buffer[3]=action;	      	//State
@@ -500,6 +501,7 @@ void cPacketSendSecureTradingStatus::prepare()
 void cPacketSendUpdatePlayer::prepare()
 {
 	buffer = new uint8_t[17];
+        length = 17;
 	buffer[0]=0x77;
 	Location pos = chr->getPosition();
 	LongToCharPtr(chr->getSerial(), buffer +1);
@@ -512,6 +514,21 @@ void cPacketSendUpdatePlayer::prepare()
 	buffer[15]=flag;
 	buffer[16]=hi_color;
 }
+
+void cPacketSendWarModeStatus::prepare()
+{
+	buffer = new uint8_t[5];
+        length = 5;
+	memcpy(buffer, buf, 5);
+}
+
+void cPacketSendPingReply::prepare()
+{
+	buffer = new uint8_t[2];
+        length = 2;
+	memcpy(buffer, buf, 2);
+}
+
 
 
 
@@ -547,9 +564,10 @@ static pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t lengt
                 case 0x6f: return new cPacketReceiveSecureTrade(buffer,length);		// Secure Trading
                 case 0x71: return new cPacketReceiveBBoardMessage(buffer, length); 	// Bulletin Board Message
                 case 0x72: return new cPacketReceiveWarModeChange(buffer, length); 	// Request War Mode Change/Send War Mode status
-                case 0x73: length =   2; break; // Ping message
-                case 0x7d: length =  13; break; // Client Response To Dialog
-                case 0x80: length =  62; break; // Login Request
+                case 0x73: return new cPacketReceivePing(buffer, length); 		// Ping message
+               	case 0x75: return new cPacketReceiveRenameCharacter(buffer, length); 	// New name for a character
+                case 0x7d: return new cPacketReceiveDialogResponse(buffer, length); 	// Client Response To Dialog
+                case 0x80: return new cPacketReceiveLoginRequest(buffer, length); 	// Login Request
                 case 0x83: length =  39; break; // Delete Character
                 case 0x86: length = 304; break; // Resend Characters After Delete
                 case 0x91: length =  65; break; // Game Server Login (Server to play selected)
@@ -1325,7 +1343,7 @@ bool cPacketReceiveTargetSelected::execute(pClient client)
         if( target==NULL ) return true;
 
 
-        //! \todo update this when targets redone
+        //! \todo finish to update this when targets redone
         
 	target->receive( ps );
 
@@ -1374,7 +1392,9 @@ bool cPacketReceiveSecureTrade::execute(pClient client)
 		break;
 	default:
 		ErrOut("Switch fallout. trade.cpp, trademsg()\n"); //Morrolan
+                return false;
 	}
+        return true;
 }
 
 
@@ -1552,22 +1572,72 @@ bool cPacketReceiveWarModeChange::execute(pClient client)
 {
         if (length != 5) return false;
         pPC pc = client->currChar();
-        if( pc !=NULL )
+        if( pc )
         {
-        	if( (inWarMode() && !buffer[1]) || (!inWarMode() && buffer[1])  //Translation: if warmode has to change
+        	if( (pc->inWarMode() && !buffer[1]) || (!pc->inWarMode() && buffer[1])  //Translation: if warmode has to change
                 {
-			pc->setWarMode(buffer[1]);
+			pc->toggleWarMode();
 			pc->targserial=INVALID;
-//TODO: revise from here
+                }
+		// Now we send the packet back :D
+		cPacketSendWarModeStatus pk(buffer);
+        	client->sendPacket(&pk);
 
-		Xsend(s, buffer[s], 5);
-
-
-			if (pc->dead && pc->war) // Invisible ghost, resend.
-				pc->teleport( TELEFLAG_NONE );
-		pc->toggleWarMode();
-						dosocketmidi(s);
-						pc_currchar->disturbMed();
+		if (pc->dead && pc->war) // Invisible ghost, resend.
+			pc->teleport( TELEFLAG_NONE );
+		client->playMidi();
+		pc->disturbMed();
+                return true;
 	}
+        return false;
+}
+
+
+bool cPacketReceivePing::execute(pClient client)
+{
+	if (length != 2) return false;
+	//All this function has to do is send back the packet to the client :D (well if it isn't a ping! :D)
+        cPacketSendPingReply pk(buffer);
+       	client->sendPacket(&pk);
+        return true;
+}
+
+
+bool cPacketReceiveRenameCharacter(pClient client)
+{
+	if (length != 35) return false;
+	pChar pc = pointers::findCharBySerPtr(buffer + 1);
+        if(ISVALIDPC(pc) && ( client->currChar()->IsGMorCounselor() || client->currChar()->isOwnerOf( pc ) ) )
+        {
+        	pc->setCurrentName( buffer + 5 );
+                return true;
+        }
+        return false;
+}
+
+
+bool cPacketReceiveDialogResponse(pClient client)
+{
+	if (length != 13) return false;
+
+        //TODO check menus
+
+	Menus.handleMenu( client );
+
+        return true;
+}
+
+bool cPacketReceiveLoginRequest(pClient client)
+{
+	//!This is the first packet a client sends to the server in the login sequence
+	if (length != 62) return false;
+
+
+	if ( clientCrypter[s] != NULL )
+	clientCrypter[s]->setCryptMode(CRYPT_LOGIN) ;
+	clientInfo[s]->firstpacket=false;
+	LoginMain(s);
+
+        return true;
 }
 

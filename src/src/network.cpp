@@ -1981,7 +1981,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 							pc_currchar->teleport( TELEFLAG_NONE );
 
 						walking2(pc_currchar);
-						dosocketmidi(s);
+						client->playMidi();
 						pc_currchar->disturbMed();
 					}
 					break;

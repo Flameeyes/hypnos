@@ -150,80 +150,6 @@ void cClient::addItemToContainer(pItem item)
 	pc->getBody()->calcWeight();
 }
 
-/*!
-\brief Play a random midi file adapt to the current status
-\author Flameeyes
-\todo Write it after get working XML-Support
-*/
-void cClient::playMidi()
-{
-/*
-    cScpIterator* iter = NULL;
-    char script1[1024];
-    char script2[1024];
-
-	char sect[512];
-
-	if (pc->war)
-		strcpy(sect, "MIDILIST COMBAT");
-	else
-		sprintf(sect, "MIDILIST %i", region[pc->region].midilist);
-
-	iter = Scripts::Regions->getNewIterator(sect);
-	if (iter==NULL) return;
-
-	char midiarray[50];
-	int i=0;
-	int loopexit=0;
-	do
-	{
-		iter->parseLine(script1, script2);
-		if ((script1[0]!='}')&&(script1[0]!='{'))
-		{
-			if (!(strcmp("MIDI",script1)))
-			{
-				midiarray[i]=str2num(script2);
-				i++;
-			}
-		}
-	}
-	while ((script1[0]!='}') && (++loopexit < MAXLOOPS) );
-
-	safedelete(iter);
-
-	if (i!=0)
-	{
-		i=rand()%(i);
-		playmidi(s, 0, midiarray[i]);
-	}
-*/
-}
-
-/*!
-\brief Play a sound effect
-\author Flameeyes
-\todo Fix the set support after get working new sets
-*/
-void cClient::playSFX(uint16_t sound, bool onlyMe)
-{
-	cPacketSendSoundFX pk(sound, pc->getPosition());
-
-	if(onlyMe) {
-		client->send(&pk);
-		return;
-	}
-
-/*
-	NxwSocketWrapper sw;
-	sw.fillOnline( pc, false );
-
-	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
-		NXWCLIENT ps=sw.getClient();
-		if(ps!=NULL)
-			ps->send(&pk);
-	}
-*/
-}
 
 /*!
 \brief Set the light level
@@ -389,6 +315,14 @@ void cClient::skillWindow() // Opens the skills list, updated for client 1.26.2b
 	}
 	Xsend(s, skillend, 2);
 //AoS/	Network->FlushBuffer(s);
+}
+
+
+void sendMidi(char num1, char num2)
+{
+	UI16 music_id = (num1<<8)|(num2%256);
+	cPacketSendPlayMidi pk(music_id);
+	sendPacket(&pk);
 }
 
 
@@ -2252,3 +2186,86 @@ void endtrade(uint32_t serial)
 	c2->Delete();
 }
 
+
+/*------------------------------------------------------------------------------
+                            AUDIO & MUSIC METHODS
+------------------------------------------------------------------------------*/
+
+
+/*!
+\brief Play a random midi file adapt to the current status
+\author Flameeyes
+\todo Modify it after get working XML-Support
+*/
+void cClient::playMidi()
+{
+
+	pPC pc = currChar();
+	VALIDATEPC(pc);
+	cScpIterator* iter = NULL;
+
+    	char script1[1024];
+    	char script2[1024];
+
+	char sect[512];
+
+	if (pc->inWarMode())
+		strcpy(sect, "MIDILIST COMBAT");
+	else
+		sprintf(sect, "MIDILIST %i", region[pc->region].midilist);
+
+	iter = Scripts::Regions->getNewIterator(sect);
+	if (iter==NULL) return;
+
+	char midiarray[50];
+	int i=0;
+	int loopexit=0;
+	do
+	{
+		iter->parseLine(script1, script2);
+		if ((script1[0]!='}')&&(script1[0]!='{'))
+		{
+			if (!(strcmp("MIDI",script1)))
+			{
+				midiarray[i]=str2num(script2);
+				i++;
+			}
+		}
+	}
+	while ((script1[0]!='}') && (++loopexit < MAXLOOPS) );
+
+	safedelete(iter);
+
+	if (i!=0)
+	{
+		i=rand()%(i);
+		sendMidi(0, midiarray[i]);
+	}
+}
+
+
+/*!
+\brief Play a sound effect
+\author Flameeyes
+\todo Fix the set support after get working new sets
+*/
+void cClient::playSFX(uint16_t sound, bool onlyMe)
+{
+	cPacketSendSoundFX pk(sound, pc->getPosition());
+
+	if(onlyMe) {
+		client->send(&pk);
+		return;
+	}
+
+/*
+	NxwSocketWrapper sw;
+	sw.fillOnline( pc, false );
+
+	for( sw.rewind(); !sw.isEmpty(); sw++ ) {
+		NXWCLIENT ps=sw.getClient();
+		if(ps!=NULL)
+			ps->send(&pk);
+	}
+*/
+}

@@ -102,7 +102,6 @@ uint16_t goldsfx(int goldtotal);
 uint16_t itemsfx(uint16_t item);
 
 void weather(int s, unsigned char bolt);
-void dosocketmidi(int s);
 void wornitems(NXWSOCKET  s, P_CHAR pc);
 void bgsound(int s);
 void pweather(NXWSOCKET  s);

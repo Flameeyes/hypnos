@@ -508,6 +508,34 @@ public:
 	void prepare();
 };
 
+class cPacketSendWarModeStatus : cPacketSend
+{
+protected:
+
+        uint8_t buf[5];
+
+public:
+	inline cPacketSendWarModeStatus(uint8_t* buffer) :
+		buffer(NULL), length(NULL)
+	{ memcpy(buf, buffer, 5);}
+
+	void prepare();
+};
+
+
+class cPacketSendPingReply : cPacketSend
+{
+protected:
+
+        uint8_t buf[2];
+
+public:
+	inline cPacketSendPingReply(uint8_t* buffer) :
+		buffer(NULL), length(NULL)
+	{ memcpy(buf, buffer, 2);}
+
+	void prepare();
+};
 
 
 /*!
@@ -560,10 +588,10 @@ class cPacketReceiveTargetSelected      : public cPacketReceive;
 class cPacketReceiveBBoardMessage       : public cPacketReceive;
 class cPacketReceiveSecureTrade         : public cPacketReceive;
 class cPacketReceiveWarModeChange       : public cPacketReceive;
-class        : public cPacketReceive;
-class        : public cPacketReceive;
-class        : public cPacketReceive;
-class        : public cPacketReceive;
+class cPacketReceivePing	        : public cPacketReceive;
+class cPacketReceiveRenameCharacter     : public cPacketReceive;
+class cPacketReceiveDialogResponse      : public cPacketReceive;
+class cPacketReceiveLoginRequest        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;

@@ -328,7 +328,7 @@ void checkregion(P_CHAR pc)
 			}
 		}
 		pc->region=calcreg;
-		if (s!=INVALID) dosocketmidi(s);
+		if (s!=INVALID) client->playMidi();
 	}
 }
 

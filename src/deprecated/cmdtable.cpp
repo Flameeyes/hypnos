@@ -1452,7 +1452,7 @@ void command_midi( pClient client )
 
 	cPacketSendPlayMidi pkt_midi(midi);
 	client->sendPacket(&pkt_midi);	
-/*			if (tnum==3) playmidi(s, strtonum(1), strtonum(2));
+/*			if (tnum==3) sendMidi(strtonum(1), strtonum(2));
 			return;   */
 }
 

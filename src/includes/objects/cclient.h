@@ -44,7 +44,7 @@ protected:
       	static cClients clients;        	                //!< All the clients
 
 public:
-	static const uint32_t clientHasCrypto	= 0x00000001;
+	static const uint32_t clientHasCrypto		= 0x00000001;
 	static const uint32_t clientIsT2A		= 0x00000002;
 	static const uint32_t clientIsUO3D		= 0x00000004;
 	static const uint32_t clientIsAoS		= 0x00000008;
@@ -121,8 +121,6 @@ public:
 
 public:
 	void showContainer(pItem pCont);
-	void playMidi();
-	void playSFX(uint16_t sound, bool onlyMe = false);
 	void light();
 	void showBankBox(pChar dest);
 	void showSpecialBankBox(pChar dest);
@@ -130,7 +128,12 @@ public:
         void updateStatusWindow(pItem item);
         void skillWindow();
         void updatePaperdoll();
+        void sendMidi(char num1, char num2);
 
+
+        //! audio packets (sound effects & music)
+	void playMidi();
+      	void playSFX(uint16_t sound, bool onlyMe = false);
 };
 
 #endif

@@ -529,7 +529,7 @@ P_ITEM cChar::getBankBox( uint8_t banktype )
 /*!
 \author Duke
 \date 17/03/2001
-\brief stops meditation if necessary. Displays message if a socket is passed
+\brief stops meditation if necessary
 */
 void cChar::disturbMed()
 {
@@ -538,7 +538,7 @@ void cChar::disturbMed()
 	if (amxevents[EVENT_CHR_ONBREAKMEDITATION]) {
 		g_bByPass = false;
 		//<Luxor>
-		NXWCLIENT cli = getClient();
+		pClient cli = getClient();
 		if (cli != NULL)
   			amxevents[EVENT_CHR_ONBREAKMEDITATION]->Call( getSerial32() );
 		//</Luxor>
