@@ -7,10 +7,10 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include <stdio.h>
 #include "common_libs.h"
-#include "network.h"
+#include "networking/network.h"
 #include "sndpkg.h"
 #include "backend/scheduler.h"
-#include "remadmin.h"
+#include "networking/remadmin.h"
 #include "worldmain.h"
 #include "inlines.h"
 

@@ -12,7 +12,7 @@
 #include "magic.h"
 #include "tmpeff.h"
 #include "npcai.h"
-#include "network.h"
+#include "networking/network.h"
 #include "boats.h"
 #include "walking.h"
 #include "map.h"

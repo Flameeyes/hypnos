@@ -9,7 +9,7 @@
 #include "objects/cparty.h"
 #include "objects/cclient.h"
 #include "objects/cpc.h"
-#include "packets/sent.h"
+#include "networking/sent.h"
 
 /*!
 \brief Delete the pointers of the parties.

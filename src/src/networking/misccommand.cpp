@@ -6,7 +6,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "packets/sent.h"
+#include "networking/sent.h"
 #include "objects/cparty.h"
 
 /*!

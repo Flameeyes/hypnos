@@ -11,7 +11,7 @@
 */
 #include "objects/citem/cbook.h"
 #include "objects/cclient.h"
-#include "packets/sent.h"
+#include "networking/sent.h"
 
 //! Base constructor
 cBook::cBook()

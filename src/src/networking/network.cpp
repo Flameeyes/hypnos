@@ -6,7 +6,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
-#include "network.h"
+#include "networking/network.h"
 #include "commands.h"
 #include "menu.h"
 #include "dragdrop.h"

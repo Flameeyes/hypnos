@@ -6,7 +6,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
-#include "network.h"
+#include "networking/network.h"
 #include "magic.h"
 #include "house.h"
 #include "npcai.h"

@@ -7,7 +7,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "effects.h"
-#include "packets/sent.h"
+#include "networking/sent.h"
 #include "logsystem.h"	
 
 /*!

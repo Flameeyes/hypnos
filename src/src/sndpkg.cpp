@@ -6,7 +6,7 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
-#include "network.h"
+#include "networking/network.h"
 #include "particles.h"
 #include "sndpkg.h"
 #include "sregions.h"

@@ -11,7 +11,7 @@
 */
 
 #include "objects/csocket.h"
-#include "packets/received.h"
+#include "networking/received.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>

@@ -1798,7 +1798,7 @@ namespace nPackets {
 	} // Sent
 } // nPackets
 
-#include "packets/misccommand.h"
+#include "networking/misccommand.h"
 
 #endif
 

@@ -12,7 +12,7 @@
 
 #include "settings.h"
 #include "inlines.h"
-#include "packets/sent.h"
+#include "networking/sent.h"
 #include "objects/cchar.h"
 #include "objects/cpc.h"
 #include "objects/cbody.h"

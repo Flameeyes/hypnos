@@ -7,7 +7,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "common_libs.h"
-#include "network.h"
+#include "networking/network.h"
 #include "sndpkg.h"
 #include "sregions.h"
 #include "inlines.h"

@@ -10,7 +10,7 @@
 #include "calendar.h"
 #include "house.h"
 #include "npcai.h"
-#include "network.h"
+#include "networking/network.h"
 #include "commands.h"
 #include "boats.h"
 #include "inlines.h"

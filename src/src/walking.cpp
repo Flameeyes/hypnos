@@ -7,7 +7,7 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
 #include "walking.h"
-#include "network.h"
+#include "networking/network.h"
 #include "sregions.h"
 #include "sndpkg.h"
 #include "house.h"

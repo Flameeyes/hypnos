@@ -19408,7 +19408,7 @@ echo "$as_me: error: dynamic linker needed" >&2;}
 
 
 
-                                                                                                                                                      ac_config_files="$ac_config_files Makefile libhypnos/Makefile libhypnos/muls/Makefile src/Makefile src/archs/Makefile src/backend/Makefile src/encryption/Makefile src/extras/Makefile src/objects/cchar/Makefile src/objects/citem/Makefile src/objects/cnpc/Makefile src/objects/Makefile src/skills/Makefile src/packets/Makefile src/archetypes/Makefile"
+                                                                                                                                                      ac_config_files="$ac_config_files Makefile libhypnos/Makefile libhypnos/muls/Makefile src/Makefile src/archs/Makefile src/backend/Makefile src/encryption/Makefile src/extras/Makefile src/objects/cchar/Makefile src/objects/citem/Makefile src/objects/cnpc/Makefile src/objects/Makefile src/skills/Makefile src/networking/Makefile src/archetypes/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -19964,7 +19964,7 @@ do
   "src/objects/cnpc/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/objects/cnpc/Makefile" ;;
   "src/objects/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/objects/Makefile" ;;
   "src/skills/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/skills/Makefile" ;;
-  "src/packets/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/packets/Makefile" ;;
+  "src/networking/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/networking/Makefile" ;;
   "src/archetypes/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/archetypes/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
