@@ -895,7 +895,7 @@ void target_houseOwner( pClient ps, pTarget t )
 	pChar curr=ps->currChar();
 	if ( ! curr ) return;
 
-	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
+	pChar pc = dynamic_cast<pChar>( t->getClicked() );
 	if ( ! pc ) return;
 
 	pItem pSign=cSerializable::findItemBySerial( t->buffer[0] );
@@ -948,10 +948,11 @@ void target_houseOwner( pClient ps, pTarget t )
 }
 
 // buffer[0] house
-void target_houseEject( pClient ps, pTarget t )
+void target_houseEject( pClient client, pTarget t )
 {
-	pChar pc = cSerializable::findCharBySerial(t->getClicked());
+	pChar pc = dynamic_cast<pChar>( t->getClicked() );
 	if ( ! pc ) return;
+
 	pHouse ph = dynamic_cast<pHouse>( cSerializable::findBySerial(t->buffer[0]) );
 	if ( ! ph ) return;
 
@@ -967,46 +968,38 @@ void target_houseEject( pClient ps, pTarget t )
 }
 
 //buffer[0] house
-void target_houseBan( pClient ps, pTarget t )
+void target_houseBan( pClient client, pTarget t )
 {
-	target_houseEject(ps, t);	// first, eject the player
+	target_houseEject(client, t);	// first, eject the player
 
-	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
+	pChar pc = dynamic_cast<pChar>( t->getClicked() );
 	if ( ! pc ) return;
 
-	pChar curr=ps->currChar();
+	pChar curr = client->currChar();
 	if ( ! curr ) return;
-
-	pClient client = ps->toInt();
 
 	pItem pi=cSerializable::findItemBySerial( t->buffer[0] );
 	if(pi)
 	{
 		if(pc == curr)
 			return;
-		int r=add_hlist(pc, pi, H_BAN);
+		int r = add_hlist(pc, pi, H_BAN);
 		if(r==1)
-		{
 			client->sysmessage("%s has been banned from this house.", pc->getCurrentName().c_str());
-		}
 		else if(r==2)
-		{
 			client->sysmessage("That player is already on a house register.");
-		}
 		else
 			client->sysmessage("That player is not on the property.");
 	}
 }
 
 // buffer[0] the house
-void target_houseFriend( pClient ps, pTarget t )
+void target_houseFriend( pClient client, pTarget t )
 {
-	pChar Friend = cSerializable::findCharBySerial( t->getClicked() );
+	pChar Friend = dynamic_cast<pChar>( t->getClicked() );
 
-	pChar curr=ps->currChar();
+	pChar curr = client->currChar();
 	if ( ! curr ) return;
-
-	pClient client = ps->toInt();
 
 	pItem pi=cSerializable::findItemBySerial( t->buffer[0] );
 
@@ -1017,26 +1010,22 @@ void target_houseFriend( pClient ps, pTarget t )
 			client->sysmessage("You cant do that!");
 			return;
 		}
-		int r=add_hlist(Friend, pi, H_FRIEND);
+
+		int r = add_hlist(Friend, pi, H_FRIEND);
 		if(r==1)
-		{
 			client->sysmessage("%s has been made a friend of the house.", Friend->getCurrentName().c_str());
-		}
 		else if(r==2)
-		{
 			client->sysmessage("That player is already on a house register.");
-		}
 		else
 			client->sysmessage("That player is not on the property.");
 	}
 }
 
 // bugffer[0] the hose
-void target_houseUnlist( pClient ps, pTarget t )
+void target_houseUnlist( pClient client, pTarget t )
 {
-	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
-	pItem pi= cSerializable::findItemBySerial( t->buffer[0] );
-	pClient client = ps->toInt();
+	pChar pc = dynamic_cast<pChar>( t->getClicked() );
+	pItem pi = cSerializable::findItemBySerial( t->buffer[0] );
     
 	if(pc && pi)
 	{
@@ -1056,7 +1045,7 @@ void target_houseLockdown( pClient client, pTarget t )
 	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
-	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 	
 	if ( ! pi )
 	{
@@ -1092,7 +1081,7 @@ void target_houseLockdown( pClient client, pTarget t )
 	if( ! cMulti::getAt(pi->getPosition()) )
 	{
 		// not in a multi!
-		sysmessage( s, "That item is not in your house!" );
+		client->sysmessage("That item is not in your house!" );
 		return;
 	}
 	
@@ -1110,17 +1099,16 @@ void target_houseLockdown( pClient client, pTarget t )
 	return;
 }
 
-void target_houseSecureDown( pClient ps, pTarget t )
+void target_houseSecureDown( pClient client, pTarget t )
 // For locked down and secure chests
 {
-	pChar pc=ps->currChar();
+	pChar pc = clean->currChar();
 	if ( ! pc ) return;
-	pClient client = ps->toInt();
 
-	pItem pi=cSerializable::findItemBySerial( t->getClicked() );
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 	if ( ! pi )
 	{
-		sysmessage( s, "Invalid item!" );
+		client->sysmessage("Invalid item!" );
 		return;
 	}
         
@@ -1160,59 +1148,60 @@ void target_houseSecureDown( pClient ps, pTarget t )
         else
         {
 		// not in a multi!
-		sysmessage( s, "That item is not in your house!" );
+		client->sysmessage("That item is not in your house!" );
 		return;
         }
 }
 
-void target_houseRelease( pClient ps, pTarget t )
+void target_houseRelease( pClient client, pTarget t )
 // PRE:     S is the socket of a valid owner/coowner and is in a valid house, the item is locked down
 // POST:    either releases the item from lockdown, or puts a message to the owner saying he's a moron
 // CODER:   Abaddon
 // DATE:    17th December, 1999
 // update: 5-8-00
 {
-	pChar pc=ps->currChar();
+	pChar pc = client->currChar();
 	if ( ! pc ) return;
-	pClient client = ps->toInt();
 
-    pItem pi=cSerializable::findItemBySerial( t->getClicked() );
-    if(pi)
-    {
-        if(pi->getOwner() != pc)
-        {
-            client->sysmessage("This is not your item!");
-            return;
-        }
-        if( pi->isFieldSpellItem() )
-        {
-            client->sysmessage("you cannot release this!");
-            return;
-        }
-        if (pi->type==12 || pi->type==13 || pi->type==203)
-        {
-            client->sysmessage("You cant release doors or signs!");
-            return;
-        }
-        // time to lock it down!
-	pMulti multi = cMulti::getAt( pi->getPosition() );
-        if( multi && pi->magic==4 || pi->type==1)
-        {
-            pi->magic = 1;  // Default as stored by the client, perhaps we should keep a backup?
-            pi->secureIt = 0;
-            pi->Refresh();
-            return;
-        }
-        else if( !multi )
-        {
-            // not in a multi!
-            sysmessage( s, "That item is not in your house!" );
-            return;
-        }
-    }
-    else
-    {
-        sysmessage( s, "Invalid item!" );
-        return;
-    }
+    
+	pItem pi = dynamic_cast<pItem>( t->getClicked() );
+	if(pi)
+	{
+		if(pi->getOwner() != pc)
+		{
+		    client->sysmessage("This is not your item!");
+		    return;
+		}
+
+		if( pi->isFieldSpellItem() )
+		{
+		    client->sysmessage("you cannot release this!");
+		    return;
+		}
+
+		if (pi->type==12 || pi->type==13 || pi->type==203)
+		{
+		    client->sysmessage("You cant release doors or signs!");
+		    return;
+		}
+
+		// time to lock it down!
+		pMulti multi = cMulti::getAt( pi->getPosition() );
+		if( multi && pi->magic==4 || pi->type==1)
+		{
+		    pi->magic = 1;  // Default as stored by the client, perhaps we should keep a backup?
+		    pi->secureIt = 0;
+		    pi->Refresh();
+		    return;
+		}
+
+		if( !multi ) {
+			client->sysmessage("That item is not in your house!" );
+			return;
+		}
+	} else {
+        
+		client->sysmessage("Invalid item!" );
+		return;
+	}
 }
