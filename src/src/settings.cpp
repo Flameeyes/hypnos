@@ -147,4 +147,40 @@ namespace Server {
 	SETTING(uint32_t, WeightPerStr, 4);
 };
 
+namespace Actions {
+	bool shouldEquipOnDClick()
+	{ return flags & flagActionsEquipOnDClick; }
+	
+	bool canUseItemsWhenInvisible()
+	{ return flags & flagActionsUseInvisible; }
+	
+	//! How much karma is gained for bounty hunting? \todo Set the default
+	SETTING(uint16_t, BountyKarmaGain, 0);
+	
+	//! How much fame is gained for bounty hunting? \todo Set the default
+	SETTING(uint16_t, BountyFameGain, 0);
+}
+
+namespace Skills {
+	bool canStealthOnHorse()
+	{ return flags & flagSkillsStealthOnHorse; }
+	
+	//! Maximum stat gain in a (real) day \todo Set the default
+	SETTING(uint16_t, StatDailyLimit, 0)
+	
+	//! Defending player must have N skill points more than the attacker for the attacker to gain skill (in PvP only).
+	SETTING(uint16_t, LimitPlayerSparring, 0);
+
+	//! How much karma is lost snooping? \todo Set the default
+	SETTING(uint16_t, SnoopKarmaLoss, 0);
+	
+	//! How much fame is lost snooping? \todo Set the default
+	SETTING(uint16_t, SnoopFameLoss, 0);
+	
+	//! How much karma is lost stealing? \todo Set the default
+	SETTING(uint16_t, StealKarmaLoss, 0);
+	
+	//! How much fame is lost stealing? \todo Set the default
+	SETTING(uint16_t, StealFameLoss, 0);
+}
 };
