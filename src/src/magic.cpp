@@ -48,7 +48,8 @@ bool checkMagicalSpeech( pChar pc, char* speech )
 {
 	if(!pc) return false;
 
-	pClient client = pc->getClient();
+	pPC pc_tmp;
+	pClient client = (pc_tmp = dynamic_cast<pPC>(pc))? pc_tmp->getClient() : NULL;
 	if(!client) return false;
 
 	strupr( speech );
@@ -58,7 +59,7 @@ bool checkMagicalSpeech( pChar pc, char* speech )
 		return false;
 	SpellId spell = it->second;
 	if ( !pc->knowsSpell( spell ) ) {
-		pc->sysmsg("You don't know that spell yet.");
+		client->sysmessage("You don't know that spell yet.");
 		return true;
 	}
 	beginCasting( spell, client, CASTINGTYPE_SPELL );
@@ -221,12 +222,15 @@ static inline bool checkMana(pChar pc, SpellId num)
 {
 	if(!pc) return false;
 
+	pPC pc_tmp;
+	pClient client = (pc_tmp = dynamic_cast<pPC>(pc))? pc_tmp->getClient() : NULL;
+
 //	if( pc->IsGM() ) return true;
 	if ( pc->dontUseMana() ) return true;
 
 	if (pc->mn >= g_Spells[num].mana) return true;
 
-	pc->sysmsg("You have insufficient mana to cast that spell.");
+	client->sysmessage("You have insufficient mana to cast that spell.");
 	return false;
 }
 
@@ -329,6 +333,9 @@ static bool checkResist(pChar pa, pChar pd, SpellId spellnumber)
 
 	if(!pd) return false;
 
+	pPC tmp;
+	pClient client = (tmp = dynamic_cast<pPC>(pd))? tmp->getClient() : NULL;
+
 	int circle = (spellnumber) / 8;
 	// just to give skill a chance to raise :)
 	pd->checkSkill( skMagicResistance, 80*circle, 1000, !isFieldSpell(spellnumber));
@@ -343,7 +350,7 @@ static bool checkResist(pChar pa, pChar pd, SpellId spellnumber)
 	}
 
 	if (chance(resistchance)) {
-		pd->sysmsg("You feel yourself resisting magical energy!");
+		client->sysmessage("You feel yourself resisting magical energy!");
 		return true;
 	} else return false;
 }
@@ -680,12 +687,15 @@ bool checkReagents(pChar pc, reag_st reagents)
 {
 	if(!pc) return false;
 
+	pPC pc_tmp;
+	pClient client = (pc_tmp = dynamic_cast<pPC>(pc))? pc_tmp->getClient() : NULL;
+
 	reag_st fail;
 
 //	if( pc->IsGM() ) return true;
 
 	if ( pc->dontUseReagents() ) return true;
-	if (pc->npc) return true;
+	if (dynamic_cast<pNPC>(pc)) return true;
 
 	fail.ash=fail.drake=fail.garlic=fail.moss=fail.pearl=fail.shade=fail.silk = 0;
 
@@ -713,7 +723,7 @@ bool checkReagents(pChar pc, reag_st reagents)
 	int failure = fail.ash+fail.drake+fail.garlic+fail.moss+fail.pearl+fail.shade+fail.silk;
 
 	if (failure!=0) {
-		pc->sysmsg(const_cast<char*>(str.c_str()));
+		client->sysmessage(const_cast<char*>(str.c_str()));
 		return false;
 	}
 
@@ -898,12 +908,17 @@ static bool checkDistance(pChar caster, pChar target)
 	if(!caster) return false;
 	if(!target) return false;
 
+	pPC tmp;
+	pClient caster_client;
+
+	caster_client = (tmp = dynamic_cast<pPC>(caster))? tmp ->getClient() : NULL;
+
 	if (caster->distFrom(target) > 15) {
-		caster->sysmsg("You are too far away from the target.");
+		caster_client->sysmessage("You are too far away from the target.");
 		return false;
 	}
 	if ( target->IsHidden() ) {
-		caster->sysmsg("You cannot see your target.");
+		caster_client->sysmessage("You cannot see your target.");
 		return false;
 	}
 	return true;
@@ -920,8 +935,13 @@ static bool checkLos(pChar caster, Location destpos)
 {
 	if(!caster) return false;
 
+	pPC tmp;
+	pClient caster_client;
+
+	caster_client = (tmp = dynamic_cast<pPC>(caster))? tmp ->getClient() : NULL;
+
         if (!line_of_sight(INVALID, caster->getPosition(), destpos, INVALID)) {
-		caster->sysmsg("There is something between you and your target that makes the casting impossible.");
+		caster_client->sysmessage("There is something between you and your target that makes the casting impossible.");
 		return false;
 	}
 	return true;
@@ -1213,6 +1233,9 @@ void castFieldSpell( pChar pc, int x, int y, int z, int spellnumber)
 static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, int param)
 {
 	if ( ! src ) return;
+	
+	pPC pc_tmp;
+	pClient client = (pc_tmp = dynamic_cast<pPC>(src))? pc_tmp->getClient() : NULL;
 
 	pChar pd = dest.getChar();
 	pItem pi = dest.getItem();
@@ -1246,7 +1269,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_AGILITY:
 		case SPELL_STRENGHT:
 		case SPELL_BLESS:
-			if (pd!=NULL) {
+			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
 				castStatPumper(spellnumber, dest, src, flags|SPELLFLAG_IGNORERESISTANCE, param);
@@ -1256,21 +1279,21 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_FEEBLEMIND:
 		case SPELL_WEAKEN:
 		case SPELL_CURSE:
-			if (pd!=NULL) {
+			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
 				castStatPumper(spellnumber, dest, src, flags|SPELLFLAG_IGNORERESISTANCE, param);
 			}
 			break;
 		case SPELL_PARALYZE:
-			if (pd != NULL) {
+			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
 				tempfx::add(src, pd, tempfx::SPELL_PARALYZE);
 			}
 			break;
 		case SPELL_POISON:
-			if (pd != NULL) {
+			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
 				if ( src->skill[skMagery] < 700 )
@@ -1291,7 +1314,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_METEORSWARM:
 		case SPELL_CHAINLIGHTNING:
 		case SPELL_EARTHQUAKE:
-			if (pd!=NULL) {
+			if (pd) {
 				if (g_Spells[spellnumber].areasize<=0 && (spellnumber!=SPELL_EXPLOSION || src->skill[skMagery] < 800)) //Luxor
 				{
 					CHECKDISTANCE(src, pd);
@@ -1313,7 +1336,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			break;
 
 		case SPELL_MINDBLAST:
-			if ( pd != 0 ) {
+			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
 				param = ( (src->in + 10) - pd->in ) / 2;
@@ -1322,7 +1345,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			break;
 
 		case SPELL_MANADRAIN:
-			if ( pd != 0 ) {
+			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
 				damage(src, pd, spellnumber, flags, param);
@@ -1330,12 +1353,12 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			break;
 
 		case SPELL_MANAVAMPIRE:
-			if ( pd != 0 ) {
+			if (pd) {
 				CHECKDISTANCE(src, pd);
 				spellFX(spellnumber, src, pd);
 				int manabogus = pd->mn;
 				damage(src, pd, spellnumber, flags, param);
-				if (src!=NULL) {
+				if (src) {
 					manabogus -= pd->mn;
 					src->mn+=manabogus/2;
 					if (src->mn > src->in) src->mn = src->in;
@@ -1345,7 +1368,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			break;
 
 		case SPELL_LOCK:
-			if (pi!=NULL) {
+			if (pi) {
 				if( pi->toContainer() && !pi->toSecureContainer() )
 				{
 					//!\todo What the fuck is that?!?
@@ -1354,33 +1377,31 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 						case ITYPE_CONTAINER: pi->type=ITYPE_LOCKED_ITEM_SPAWNER; break;
 						case ITYPE_UNLOCKED_CONTAINER: pi->type=ITYPE_LOCKED_CONTAINER; break;
 					}
-					if (src!=NULL)
+					if (src)
 					{
 						src->playSFX( 0x1F4 ); //Luxor
-						src->sysmsg("It's locked!");
+						client->sysmessage("It's locked!");
 					}
 				}
 				else
-					if (src!=NULL)
-						src->sysmsg("You cannot lock this!!!");
+					if (client)
+						client->sysmessage("You cannot lock this!!!");
 			}
 			break;
 
 		case SPELL_UNLOCK:
-			if ( ( pi != 0 )&&(pi->more1==0)&&(pi->more2==0)&&(pi->more3==0)&&(pi->more4==0)) {
-				if(pi->isSecureContainer()) {
-					switch(pi->type)
-					{
-						case ITYPE_LOCKED_ITEM_SPAWNER: pi->type=ITYPE_CONTAINER; break;
-						case ITYPE_LOCKED_CONTAINER: pi->type=ITYPE_UNLOCKED_CONTAINER; break;
-					}
-					if (src!=NULL) {
-						src->playSFX( 0x1FF ); //Luxor
-						src->sysmsg("You unlocked it!");
-					}
+			if ( pi && (pi->more1.more == 0) && (pi->isSecureContainer()) ) {
+				switch(pi->type)
+				{
+					case ITYPE_LOCKED_ITEM_SPAWNER: pi->type=ITYPE_CONTAINER; break;
+					case ITYPE_LOCKED_CONTAINER: pi->type=ITYPE_UNLOCKED_CONTAINER; break;
 				}
-				else src->sysmsg("You cannot unlock this!!!");
-			} else src->sysmsg("You cannot unlock this!!!");
+				if (src) {
+					src->playSFX( 0x1FF ); //Luxor
+					client->sysmessage("You unlocked it!");
+				}
+			} else 
+				client->sysmessage("You cannot unlock this!!!");
 			break;
 
 		case SPELL_TRAP:
@@ -1388,20 +1409,20 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				if(( pi->type==ITYPE_DOOR || pi->type==ITYPE_CONTAINER || pi->type==ITYPE_LOCKED_ITEM_SPAWNER ||
 				     pi->type==ITYPE_LOCKED_CONTAINER || pi->type==ITYPE_UNLOCKED_CONTAINER) && pi->getId()!=0x0E75 )
 				{
-					pi->moreb1=1;
+					pi->more2.moreb1=1;
 					if (nValue!=-1) {
-                    				pi->moreb2=nValue/2;
-						pi->moreb3=nValue;
+                    				pi->more2.moreb2=nValue/2;
+						pi->more2.moreb3=nValue;
 					} else if (src!=NULL) {
-						pi->moreb2=src->skill[nSkill]/20;
-						pi->moreb3=src->skill[nSkill]/10;
+						pi->more2.moreb2=src->skill[nSkill]/20;
+						pi->more2.moreb3=src->skill[nSkill]/10;
 						src->playSFX( 0x1E9 ); //Luxor
-						src->sysmsg("It's trapped!");
+						client->sysmessage("It's trapped!");
 					} else {
-						pi->moreb2=13;
-						pi->moreb3=26;
+						pi->more2.moreb2=13;
+						pi->more2.moreb3=26;
 					}
-				} else if (src!=NULL) src->sysmsg("You cannot trap this!!!");
+				} else if (client) client->sysmessage("You cannot trap this!!!");
 			}
 			break;
 
@@ -1410,14 +1431,14 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 				if((  pi->type==ITYPE_DOOR || pi->type==ITYPE_CONTAINER || pi->type==ITYPE_LOCKED_ITEM_SPAWNER ||
 				      pi->type==ITYPE_LOCKED_CONTAINER || pi->type==ITYPE_UNLOCKED_CONTAINER))
 				{
-					if(pi->moreb1==1) {
-						pi->moreb1=0;
-						pi->moreb2=0;
-						pi->moreb3=0;
+					if(pi->more2.moreb1==1) {
+						pi->more2.moreb1=0;
+						pi->more2.moreb2=0;
+						pi->more2.moreb3=0;
 						src->playSFX( 0x1F0 ); //Luxor
-						src->sysmsg("You successfully untrap this item!");
-					} else if (src!=NULL) src->sysmsg("This item doesn't seem to be trapped!");
-				} else if (src!=NULL) src->sysmsg("This item cannot be untrapped!");
+						client->sysmessage("You successfully untrap this item!");
+					} else if (client) client->sysmessage("This item doesn't seem to be trapped!");
+				} else if (client) client->sysmessage("This item cannot be untrapped!");
 			}
 			break;
 
@@ -1426,6 +1447,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			spellFX(spellnumber, src, src);
 			tempfx::add(src,src, tempfx::SPELL_REACTARMOR, 0, 0, 0, nTime);
 			break;
+
 		case SPELL_DISPEL:	//Luxor
 			if ( pd && pd->summontimer > 0 ) { //Only if it's a summoned creature
 				pd->emoteall( "%s begins disappearing", true, pd->getCurrentName().c_str() );
@@ -1480,7 +1502,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 			if ( src && pi ) {
 				if ( pi->type == ITYPE_RUNE ) {
 					if ((pi->morex < 10)&&(pi->morey < 10)) {
-						src->sysmsg("The rune is not marked yet.");
+						client->sysmessage("The rune is not marked yet.");
 					} else {
 						pItem pgate = item::CreateFromScript( "$item_a_blue_moongate" );
 						if(!pgate) return;
@@ -1509,7 +1531,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 						spellFX( spellnumber, src );
 					}
 				} else
-					src->sysmsg("That is not a rune!!");
+					client->sysmessage("That is not a rune!!");
 			}
 			break;
 
@@ -1554,12 +1576,12 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 		case SPELL_ARCHPROTECTION:
 			{
-			if (src!=NULL) {
-			  if (nTime==INVALID) nTime = 12;
-			  if (nValue==INVALID) nValue = 80;
+			if (src) {
+				if (nTime==INVALID) nTime = 12;
+				if (nValue==INVALID) nValue = 80;
 			} else {
-			  if (nTime==INVALID) nTime = src->skill[nSkill]/15;
-			  if (nValue==INVALID) nValue = src->skill[nSkill]/10;
+				if (nTime==INVALID) nTime = src->skill[nSkill]/15;
+				if (nValue==INVALID) nValue = src->skill[nSkill]/10;
 			}
 			NxwCharWrapper sc;
 			sc.fillCharsNearXYZ( x, y, src->skill[skMagery] / 100, true);
@@ -1576,8 +1598,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 		case SPELL_INCOGNITO:
 			spellFX(spellnumber, src, pd);
-			if ((pd==NULL)&&(src!=NULL)) pd = src;
-			if (pd!=NULL) {
+			if ( !pd && src ) pd = src;
+			if (pd) {
 				if (nTime==INVALID) nTime = 90;
 				tempfx::add(pd,pd, tempfx::SPELL_INCOGNITO, 0,0,0, nTime);
 			}
@@ -1585,8 +1607,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 		case SPELL_REFLECTION:
 			spellFX(spellnumber, src, pd);
-			if ((pd==NULL)&&(src!=NULL)) pd = src;
-			if (pd!=NULL) pd->setReflection(true);
+			if ( !pd && src ) pd = src;
+			if (pd) pd->setReflection(true);
 			break;
 
 		case SPELL_INVISIBILITY:
@@ -1601,8 +1623,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 
 		case SPELL_HEAL:
 		case SPELL_GREATHEAL:
-			if (pd==NULL) pd = src;
-			if (pd!=NULL) {
+			if ( !pd ) pd = src;
+			if (pd) {
                                 CHECKDISTANCE(src, pd);
                                 spellFX(spellnumber, src, pd);
 				if (pd->isHolyDamaged()) {
@@ -1650,8 +1672,8 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					damage(src, pd, spellnumber, flags|SPELLFLAG_DONTCRIMINAL, param);
 				} else {
 					if ((pd->dead)&&(pd->IsOnline())) pd->resurrect();
-					else if ((!pd->dead)&&(src!=NULL)) src->sysmsg("That player isn't dead!");
-					else if ((!pd->IsOnline())&&(src!=NULL)) src->sysmsg("That player isn't online!");
+					else if ( !pd->dead && client ) client->sysmessage("That player isn't dead!");
+					else if ( !pd->IsOnline() && client ) client->sysmessage("That player isn't online!");
 				}
 			}
 			break;
@@ -1762,10 +1784,10 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 					pi->morex = srcpos.x;
 					pi->morey = srcpos.y;
 					pi->morez = srcpos.z;
-					src->sysmsg("Recall rune marked.");
+					client->sysmessage("Recall rune marked.");
 					spellFX(spellnumber, src, pd);
 				} else {
-					src->sysmsg("That is not a rune!!");
+					client->sysmessage("That is not a rune!!");
 				}// if a rune
 			}
 			break;
@@ -1773,18 +1795,18 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 		case SPELL_RECALL:
 			if ((src!=NULL)&&(pi!=NULL)) {
 				if (src->isOverWeight()) {
-					src->sysmsg("You're too heavy!");
+					client->sysmessage("You're too heavy!");
 				} else {
 					if (pi->type==ITYPE_RUNE) {
 						if ((pi->morex < 10)&&(pi->morey < 10)) {
-							src->sysmsg("The rune is not marked yet.");
+							client->sysmessage("The rune is not marked yet.");
 						} else {
 							src->MoveTo( pi->morex, pi->morey, pi->morez );
 							src->teleport();
 							spellFX(spellnumber, src, pd);
 						} // if rune marked ok
 					} else {
-						src->sysmsg("That is not a rune!!");
+						client->sysmessage("That is not a rune!!");
 					}// if a rune
 				} // if not overweight
 			} // if src & pi valids
@@ -1943,23 +1965,23 @@ bool beginCasting (SpellId num, pClient s, CastingType type)
 	// caster jailed ?
 	if ((pc->jailed) && (!pc->IsGM()))
 	{
-		s->sysmsg("You are in jail and cannot cast spells");
+		s->sysmessage("You are in jail and cannot cast spells");
 		return false;
 	}
 
 	// spell disabled ?
 	if( g_Spells[num].enabled != true )
 	{
-		s->sysmsg("Unseen forces make thou unable to cast that spell.");
+		s->sysmessage("Unseen forces make thou unable to cast that spell.");
 		return false;
 	}
 
 	if ( pc->IsHiddenBySpell() ) {	//Luxor: cannot do magic gestures if under invisible spell
-		pc->sysmsg("You cannot cast by invisible.");
+		pc->sysmessage("You cannot cast by invisible.");
 		return false;
 	}
 	if ((type!=CASTINGTYPE_ITEM)&&(type!=CASTINGTYPE_NOMANAITEM)&&(!pc->CanDoGestures())) {
-		pc->sysmsg("You cannot cast with a weapon equipped.");
+		pc->sysmessage("You cannot cast with a weapon equipped.");
 		return false;
 	}
 

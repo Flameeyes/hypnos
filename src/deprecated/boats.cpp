@@ -304,7 +304,7 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 			hold;
 
 	//Of course we need the boat items!
-	serial = pi->moreb;  //calcserial(pi->moreb1,pi->moreb2,pi->moreb3,pi->moreb4);
+	serial = pi->more2;  //calcserial(pi->moreb1,pi->moreb2,pi->moreb3,pi->moreb4);
 	if(serial<0)
 		return;
 //!\todo Find a better way to handle this
@@ -361,16 +361,16 @@ void cBoat::Turn(pItem pi, int turn)//Turn the boat item, and send all the peopl
 		id2--;
 	}
 	
-	if(id2 < pi->more1.more)
+	if(id2 < pi->more1.moreb1)
 		id2+=4;//make sure we don't have any id errors either
-	if(id2 > pi->more2.more)
+	if(id2 > pi->more1.moreb2)
 		id2-=4;//Now you know what the min/max id is for :-)
 
 	pi->setId( Duint8_t2WORD( id1, id2 ) );//set the id
 
-	if(id2==pi->more1.more)
+	if(id2==pi->more1.moreb1)
 		pi->setDirection(0);//extra DIR error checking
-	if(id2==pi->more2.more)
+	if(id2==pi->more1.moreb2)
 		pi->setDirection(6);
 
 	//Set the DIR for use in the Offsets/IDs array
