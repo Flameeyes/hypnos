@@ -1533,58 +1533,53 @@ void cClient::droppedOnTrainer(pItem pi, pNPC npc)
 \brief item has been dropped on self and verifies if it was a correct item
 \author Unknown, moved here by Chronodt (4/2/2004)
 \param pi item to be dropped (already in dragging mode)
-\param loc position to drop item at (eventually in cont)
-\param cont container into which *pi has to be dropped (-1 = world)
-\return bool
 */
 
 
-bool cClient::droppedOnSelf(pItem pi, Location &loc, pItem cont)
+void cClient::droppedOnSelf(pItem pi)
 {
 
-	VALIDATEPIR(pi, false);
+	VALIDATEPI(pi);
 	pChar pc = currChar();
-	VALIDATEPCR(pc, false);
+	VALIDATEPC(pc);
 
 	Location charpos = pc->getPosition();
 
 	if (pi->getId() >= 0x4000 ) // crashfix , prevents putting multi-objects ni your backback
 	{
-		sysmsg("Hey, putting houses in your pack crashes your back and client !");
+		sysmessage("Hey, putting houses in your pack crashes your back and client !");
 		pi->MoveTo( charpos );
 		pi->Refresh();//AntiChrist
-		return true;
+		resetDragging();
+		dragItem = NULL;
+		statusWindow(pc, true);
+		return;
 	}
 
-//	if (pi->glow>0) // glowing items
-//	{
-//		pc->addHalo(pi);
-//		pc->glowHalo(pi);
-//	}
-
-	pItem pack = pc->getBackpack();
+	pEquippableContainer pack = pc->getBackpack();
 	if (pack==NULL) // if player has no pack, put it at its feet
 	{
 		pi->MoveTo( charpos );
 		pi->Refresh();
+		resetDragging();
+		dragItem = NULL;
+		updateStatusWindow(pi);
 	}
 	else
 	{
-		pack->AddItem(pi); // player has a pack, put it in there
-
+		pack->addItem(pi, UINVALID16, UINVALID16); // player has a pack, put it in there (in a random position)
 		pc->getBody()->calcWeight();
-		updateStatusWindow(pc,true);
+		updateStatusWindow(pi);
 		pc->playSFX( itemsfx(pi->getId()) );
 	}
-	return true;
 }
-
 
 /*!
 \brief Wears item dragged on paperdoll
 \param pck char to "dressup" :)
 \param pi item to be put on pc
 */
+
 void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 {
 
