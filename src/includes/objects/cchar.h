@@ -261,7 +261,7 @@ public:
 	\todo Reactivate GM Support
 	*/
 	inline const bool isOverWeight()
-	{ return !isGM() && body->overloadedTeleport(); }
+	{ return /*!isGM() &&*/ body->overloadedTeleport(); }
 	
 	const bool canDoGestures() const;
 	const bool inDungeon() const;
@@ -658,7 +658,7 @@ public:
 	void			curePoison();
 	void			resurrect(pClient healer = NULL);
 	void			unfreeze( bool calledByTempfx = false );
-	void			damage(int32_t amount, DamageType typeofdamage = damPure, StatType stattobedamaged = STAT_HP);
+	void			damage(int32_t amount, DamageType type = damPhysical, StatType stattobedamaged = STAT_HP);
 	void			playAction(uint16_t action);
 	void			impAction(uint16_t action);
 

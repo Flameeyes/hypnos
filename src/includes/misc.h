@@ -11,6 +11,7 @@
 
 #include "common_libs.h"
 #include "structs.h"
+#include "constants.h"
 
 void npcattacktarget(pChar npc, pChar target);
 void callguards( int p );
@@ -25,7 +26,6 @@ void dooruse(pClient client, pItem pi/*int item*/);
 int calcGoodValue(pChar npc, pItem pi, int value,int goodtype); // by Magius(CHE) for trade system
 
 int whichbit( int number, int bit );
-int numbitsset( int number );
 
 std::string getSextantCoords(sPoint p, sPoint center);
 

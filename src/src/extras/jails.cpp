@@ -34,7 +34,6 @@ namespace nJails {
 void nJails::loadJails()
 {
 	mutex.lock();
-	bool motdLoaded = false;
 
 	ConOut("Loading jails data...\t\t");
 	
@@ -63,7 +62,7 @@ void nJails::loadJails()
 				
 				if ( loc == sLocation(0,0,0) || ! isValidCoord(loc) )
 				{
-					LogWarning("Invalid jail location %u, %u, %s", loc.x, loc.y, loc.z);
+					LogWarning("Invalid jail location %u, %u, %c", loc.x, loc.y, loc.z);
 					continue;
 				}
 				

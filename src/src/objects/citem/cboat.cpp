@@ -45,11 +45,11 @@ pBoat cBoat::searchByPlank(pItem pl)
 	return dynamic_cast<pBoat>( pl->getMulti() );
 }
 
-cBoat::cBoat() : cItem()
+cBoat::cBoat() : cMulti()
 {
 }
 
-cBoat::cBoat(uint32_t nserial) : cItem(nserial)
+cBoat::cBoat(uint32_t nserial) : cMulti(nserial)
 {
 }
 
