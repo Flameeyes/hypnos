@@ -14,6 +14,7 @@
 
 #include "common_libs.h"
 #include "objects/cbody.h"
+#include "objects/ceventthrower.h"
 #include "magic.h"
 #include "npcs.h"
 #include "target.h"
@@ -25,7 +26,6 @@
 #include "map.h"
 #include "settings.h"
 #include "enums.h"
-#include "backend/scripting.h"
 
 #ifndef TIMEOUT
 #define TIMEOUT(X) (((X) <= uiCurrentTime) || overflow)
@@ -45,50 +45,6 @@ enum WanderMode {
 \brief AMX Events for Characters
 \author Akron
 */
-enum AmxCharEvents
-{
-	EVENT_CHR_ONDEATH 		=  0,
-	EVENT_CHR_ONBEFOREDEATH		=  0,
-	EVENT_CHR_ONWOUNDED		=  1,
-	EVENT_CHR_ONHIT			=  2,
-	EVENT_CHR_ONHITMISS		=  3,
-	EVENT_CHR_ONGETHIT		=  4,
-	EVENT_CHR_ONREPUTATIONCHG	=  5,
-	EVENT_CHR_ONDISPEL		=  6,
-	EVENT_CHR_ONRESURRECT		=  7,
-	EVENT_CHR_ONFLAGCHG		=  8,
-	EVENT_CHR_ONWALK		=  9,
-	EVENT_CHR_ONADVANCESKILL	= 10,
-	EVENT_CHR_ONADVANCESTAT		= 11,
-	EVENT_CHR_ONBEGINATTACK		= 12,
-	EVENT_CHR_ONBEGINDEFENSE	= 13,
-	EVENT_CHR_ONTRANSFER		= 14,
-	EVENT_CHR_ONMULTIENTER		= 15,
-	EVENT_CHR_ONMULTILEAVE		= 16,
-	EVENT_CHR_ONSNOOPED		= 17,
-	EVENT_CHR_ONSTOLEN		= 18,
-	EVENT_CHR_ONPOISONED		= 19,
-	EVENT_CHR_ONREGIONCHANGE	= 20,
-	EVENT_CHR_ONCASTSPELL		= 21,
-	EVENT_CHR_ONGETSKILLCAP		= 22,
-	EVENT_CHR_ONGETSTATCAP		= 23,
-	EVENT_CHR_ONBLOCK		= 24,
-	EVENT_CHR_ONSTART		= 25,
-	EVENT_CHR_ONHEARTBEAT		= 26,
-	EVENT_CHR_ONBREAKMEDITATION	= 27,
-	EVENT_CHR_ONCLICK		= 28,
-	EVENT_CHR_ONMOUNT		= 29,
-	EVENT_CHR_ONDISMOUNT		= 30,
-	EVENT_CHR_ONKILL		= 31,
-	EVENT_CHR_ONHEARPLAYER		= 32,
-	EVENT_CHR_ONDOCOMBAT		= 33,
-	EVENT_CHR_ONCOMBATHIT		= 34,
-	EVENT_CHR_ONSPEECH		= 35,
-	EVENT_CHR_ONCHECKNPCAI		= 36,
-	EVENT_CHR_ONDIED		= 37,
-	EVENT_CHR_ONAFTERDEATH		= 37,
-	ALLCHAREVENTS			= 38
-};
 
 enum StatCap
 {
@@ -109,11 +65,53 @@ class ClientCrypt;
 \class cChar cchar.h "objects/cchar.h"
 \brief Character class
 */
-class cChar : public cSerializable
+class cChar : public cSerializable, virtual public cEventThrower
 {
+public:
+	enum {
+		evtChrOnStart,
+		evtChrOnDeath,
+		evtChrOnBeforeDeath,
+		evtChrOnAfterDeath
+		evtChrOnDied,
+		evtChrOnWounded,
+		evtChrOnHit,
+		evtChrOhHitMiss,
+		evtChrOnGetHit,
+		evtChrOnReputationChange,
+		evtChrOnResurrect,
+		evtChrOnWalk,
+		evtChrOnAdvanceSkill,
+		evtChrOnAdvanceStat,
+		evtChrOnBeginAttack,
+		evtChrOnBeginDefence,
+		evtChrOnMultiEnter,
+		evtChrOnMultiLeave,
+		evtChrOnSnooped,
+		evtChrOnStolen,
+		evtChrOnPoisoned,
+		evtChrOnRegionChange,
+		evtChrOnCastSpell,
+		evtChrOnGetSkillCap,
+		evtChrOnGetStatCap,
+		evtChrOnBlock,
+		evtChrOnBreakMeditation,
+		evtChrOnClick,
+		evtChrOnMount,
+		evtChrOnDismount,
+		evtChrOnKill,
+		evtChrOnHearPlayer,
+		evtChrOnDoCombat,
+		evtChrOnCombatHit,
+		evtChrOnSpeech,
+		evtChrMax
+	};
+
 protected:
 	static uint32_t nextSerial;
 	uint32_t newSerial();
+	virtual uint16_t eventsNumber() const
+	{ return evtChrMax; }
 	
 	cChar();
 	cChar(uint32_t ser);
@@ -125,7 +123,7 @@ public:
 	void MoveTo(Location newloc);
 	void loadEventFromScript(char *script1, char *script2);
 	void doGmEffect();
-
+	
 protected:
 	pClient client;	//!< Client connected with the character
 	pBody body;     //! The body the character is currently "using"
@@ -582,7 +580,7 @@ public:
 	public:
 		std::wstring profile; //!< player profile
 
-	private:
+	protected:
 		std::wstring* speechCurrent;
 	public:
 		//! Return current speech
@@ -600,7 +598,6 @@ public:
 		void deleteSpeechCurrent();
 
 	public:
-		FunctionVector events;	//!< Handler to call for events
 		uint32_t oldmenu; //!< old menu serial
 
 		int32_t			stat3crc; // xan : future use to keep safe stats

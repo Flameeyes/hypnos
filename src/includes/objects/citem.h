@@ -68,9 +68,6 @@ public:
 \name Main properties
 */
 protected:
-	Event			*events[ALLITEMEVENTS];
-	int			handleEvent(uint8_t code, uint8_t nParams, uint32_t *params);
-
 	int32_t			hp;	//!< Number of hit points an item has.
 	int32_t			maxhp;	//!< Max number of hit points an item can have.
 public:

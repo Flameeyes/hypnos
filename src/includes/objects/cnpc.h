@@ -25,6 +25,14 @@ characters.
 class cNPC : cChar
 {
 public:
+	enum {
+		evtNpcOnDispel = evtChrMax,
+		evtNpcOnTransfer,
+		evtNpcOnHeartBeat,
+		evtNpcOnCheckNPCAI,
+		evtNpcMax
+	};
+	
 	cNPC();
 	cNPC(uint32_t serial);
 	virtual ~cNPC();
@@ -33,6 +41,8 @@ public:
 
 protected:
 	pChar owner;	//! NPC's owner
+	virtual const uint16_t eventsNumber() const
+	{ return evtNpcMax; }
 
 public:
 	//! Gets NPC's owner

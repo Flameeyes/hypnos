@@ -24,6 +24,11 @@ In this class there are members used only for PCs, and not for NPCs.
 class cPC : public cChar
 {
 public:
+	enum {
+		evtPcOnFlagChange = evtChrMax,
+		evtPcMax
+	};
+	
 	cPC();
 	cPC(uint32_t serial);
 	virtual ~cPC();
@@ -31,6 +36,8 @@ public:
 protected:
 	//! Heartbeat for PCs
 	void heartbeat();
+	virtual const uint16_t eventsNumber() const
+	{ return evtPcMax; }
 
 public:
 	virtual const std::string getPopupHelp() const;

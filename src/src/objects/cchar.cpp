@@ -487,6 +487,7 @@ pItem cChar::getBankBox( uint8_t banktype )
 \author Duke
 \date 17/03/2001
 \brief stops meditation if necessary
+\todo Why we can't disturb NPC's meditation?
 */
 void cChar::disturbMed()
 {

@@ -2011,11 +2011,11 @@ void target_remove( pClient client, pTarget t )
 {
 	pChar pc = NULL; pItem pi = NULL;
 	
-	if ( reinterpret_cast<pPC>(t->getClicked()) )
+	if ( dynamic_cast<pPC>(t->getClicked()) )
 	{
 		client->sysmessage("You can't delete players");
 		return;
-	} else if ( ( pc = reinterpret_cast<pNPC>(t->getClicked()) ) ) {
+	} else if ( ( pc = dynamic_cast<pNPC>(t->getClicked()) ) ) {
 	
 		pFunctionHandler fh = pc->getEvent(evtNpcOnDispel);
 		tVariantVector params = tVariantVector(3);
@@ -2026,7 +2026,7 @@ void target_remove( pClient client, pTarget t )
 		
 		client->sysmessage("Removing character.");
 		pc->Delete();
-	} else if ( ( pi = reinterpret_cast<pItem>(t->getClicked()) ) ) {
+	} else if ( ( pi = dynamic_cast<pItem>(t->getClicked()) ) ) {
 		pFunctionHandler fh = pi->getEvent(evtItmOnDecay);
 		tVariantVector params = tVariantVector(2);
 		params[0] = pc->getSerial(); params[1] = deleteGMRemove;

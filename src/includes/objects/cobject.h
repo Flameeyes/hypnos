@@ -25,7 +25,7 @@ typedef std::slist< tempfx::cTempfx > TempfxVector;
 \author Anthalir
 \since 0.82a
 */
-class cObject
+class cObject, virtual public cEventThrower
 {
 //@{
 /*!
