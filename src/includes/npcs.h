@@ -56,8 +56,6 @@ namespace npcs
 
 	int AddRandomNPC(int s, char *npclist);
 	
-	void checkAI(pChar pc );
-
 	pChar SpawnRandomMonster(pChar pc, char* cList, char* cNpcID);
 
 

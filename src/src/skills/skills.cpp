@@ -984,19 +984,19 @@ void Skills::SpiritSpeak(NXWSOCKET s)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
-    //  Unsure if spirit speaking should they attempt again?
-    //  Suggestion: If they attempt the skill and the timer is !0 do not have it raise the skill
-
-    if(!pc->checkSkill(SPIRITSPEAK, 0, 1000))
-    {
-        sysmessage(s,TRANSLATE("You fail your attempt at contacting the netherworld."));
-        return;
-    }
-
-    pc->impAction(0x11);   // I heard there is no action...but I decided to add one
-    pc->playSFX(0x024A);   // only get the sound if you are successful
-    sysmessage(s,TRANSLATE("You establish a connection to the netherworld."));
-    SetTimerSec(&(pc->spiritspeaktimer),spiritspeak_data.spiritspeaktimer+pc->in);
+	//  Unsure if spirit speaking should they attempt again?
+	//  Suggestion: If they attempt the skill and the timer is !0 do not have it raise the skill
+	
+	if(!pc->checkSkill(SPIRITSPEAK, 0, 1000))
+	{
+		sysmessage(s,TRANSLATE("You fail your attempt at contacting the netherworld."));
+		return;
+	}
+	
+	pc->impAction(0x11);   // I heard there is no action...but I decided to add one
+	pc->playSFX(0x024A);   // only get the sound if you are successful
+	sysmessage(s,TRANSLATE("You establish a connection to the netherworld."));
+	SetTimerSec(&(pc->spiritspeaktimer),spiritspeak_data.spiritspeaktimer+pc->in);
 }
 
 /*!

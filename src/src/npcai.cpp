@@ -17,30 +17,6 @@
 
 namespace npcs {
 
-
-/*!
-\author Luxor
-*/
-static void npcBeginCasting( pChar pc, pChar target, magic::SpellId spell )
-{
-	if ( ! pc || ! target ) return;
-	if ( pc->spellTL != NULL )
-		safedelete( pc->spellTL );
-	pc->spellTL = new TargetLocation( target );
-	pc->spelltype = magic::CASTINGTYPE_NPC;
-	pc->spell = spell;
-	pc->casting = 1;
-	pc->nextact = 1;
-	pc->spellaction = 6;
-	pc->spelltime = magic::getCastingTime( spell );
-	pc->addTempfx( *pc, tempfx::SPELL_PARALYZE, 0, 0, 0, ( pc->spelltime - uiCurrentTime ) / MY_CLOCKS_PER_SEC );
-	pc->emoteall("*Begins casting a spell*", false);
-}
-
-///////////////NPC MAGIC STUFF
-///////////////BY LUXOR & XANATHAR
-#define NPCMAGIC_FLAGS (SPELLFLAG_DONTCRIMINAL+SPELLFLAG_DONTREQREAGENTS+SPELLFLAG_DONTCHECKSPELLBOOK+SPELLFLAG_IGNORETOWNLIMITS+SPELLFLAG_DONTCHECKSKILL)
-
 int spherespells[256][256];
 
 void npcMagicAttack(pChar pc_att, pChar pc_def)
@@ -64,7 +40,7 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 
 	if ( pc_def->summontimer && pc_att->baseskill[skMagery] > 700 ) {
 		pc_att->facexy( pc_def->getPosition().x, pc_def->getPosition().y );
-		{ npcBeginCasting( pc_att, pc_def ,  magic::SPELL_DISPEL ); }
+		pc_att->beginCasting(pc_def, magic::SPELL_DISPEL);
 		return;
 	}
 	// We're here.. let's spellcast ;)
@@ -77,52 +53,52 @@ void npcMagicAttack(pChar pc_att, pChar pc_def)
 		switch(whichbit(pc_att->spattack, spattackbit))
 		{
 			case 1:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MAGICARROW ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_MAGICARROW );
 				break;
 			case 2:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_HARM ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_HARM );
 				break;
 			case 3:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_CLUMSY ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_CLUMSY );
 				break;
 			case 4:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FEEBLEMIND ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_FEEBLEMIND );
 				break;
 			case 5:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_WEAKEN ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_WEAKEN );
 				break;
 			case 6:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FIREBALL ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_FIREBALL );
 				break;
 			case 7:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_CURSE ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_CURSE );
 				break;
 			case 8:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_LIGHTNING ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_LIGHTNING );
 				break;
 			case 9:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_PARALYZE ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_PARALYZE );
 				break;
 			case 10:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MINDBLAST ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_MINDBLAST );
 				break;
 			case 11:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_ENERGYBOLT ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_ENERGYBOLT );
 				break;
 			case 12:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_EXPLOSION ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_EXPLOSION );
 				break;
 			case 13:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FLAMESTRIKE ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_FLAMESTRIKE );
 				break;
 			case 14:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MINDBLAST ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_MINDBLAST );
 				break;
 			case 15:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MINDBLAST ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_MINDBLAST );
 				break;
 			case 16:
-				{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MINDBLAST ); }
+				pc_att->beginCasting(pc_def, magic::SPELL_MINDBLAST );
 				break;
 			default:
 				break;
@@ -234,73 +210,73 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 	switch(spherespells[sphere][spell])
 	{
 		case 1:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MAGICARROW ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_MAGICARROW );
 			break;
 		case 2:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_HARM ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_HARM );
 			break;
 		case 3:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_CLUMSY ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_CLUMSY );
 			break;
 		case 4:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FEEBLEMIND ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_FEEBLEMIND );
 			break;
 		case 5:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_WEAKEN ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_WEAKEN );
 			break;
 		case 6:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FIREBALL ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_FIREBALL );
 			break;
 		case 7:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_CURSE ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_CURSE );
 			break;
 		case 8:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_LIGHTNING ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_LIGHTNING );
 			break;
 		case 9:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_PARALYZE ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_PARALYZE );
 			break;
 		case 10:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MINDBLAST ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_MINDBLAST );
 			break;
 		case 11:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_ENERGYBOLT ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_ENERGYBOLT );
 			break;
 		case 12:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_EXPLOSION ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_EXPLOSION );
 			break;
 		case 13:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FLAMESTRIKE ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_FLAMESTRIKE );
 			break;
 		case 14:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_FIREFIELD ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_FIREFIELD );
 			break;
 		case 15:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_POISONFIELD ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_POISONFIELD );
 			break;
 		case 16:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_PARALYZEFIELD ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_PARALYZEFIELD );
 			break;
 		case 17:
-			{ npcBeginCasting( pc_att, pc_att, magic::SPELL_HEAL ); }
+			pc_att->beginCasting(pc_att, magic::SPELL_HEAL );
 			break;
 		case 18:
-			{ npcBeginCasting( pc_att, pc_att, magic::SPELL_GREATHEAL ); }
+			pc_att->beginCasting(pc_att, magic::SPELL_GREATHEAL );
 			break;
 		case 19:
-			{ npcBeginCasting( pc_att, pc_att, magic::SPELL_CURE ); }
+			pc_att->beginCasting(pc_att, magic::SPELL_CURE );
 			break;
 		case 22:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_POISON ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_POISON );
 			break;
 		case 23:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MANADRAIN ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_MANADRAIN );
 			break;
 		case 24:
-			{ npcBeginCasting( pc_att, pc_def, magic::SPELL_MANAVAMPIRE ); }
+			pc_att->beginCasting(pc_def, magic::SPELL_MANAVAMPIRE );
 			break;
 		case 27:
-			{ npcBeginCasting( pc_att, pc_att, magic::SPELL_REFLECTION ); }
+			pc_att->beginCasting(pc_att, magic::SPELL_REFLECTION );
 			break;
 		default :
 			WarnOut("NPC-Spell %d not yet implemented, sorry :(\n", spherespells[sphere][spell]);
@@ -310,499 +286,4 @@ void npcCastSpell(pChar pc_att, pChar pc_def)
 }
 //END MAGIG STUFF
 
-
-
-/*!
-\author Luxor
-\todo Need to be backported into cNPC as cNPC::checkAI()
-*/
-void checkAI(pChar pc) //Lag Fix -- Zippy
-{
-	if ( !pc->npc ) return;
-	if ( !TIMEOUT( pc->nextAiCheck ) )
-		return;
-
-	pc->nextAiCheck = (uint32_t) ((double)uiCurrentTime + (speed.npcaitime*MY_CLOCKS_PER_SEC));
-
-//!\todo Need to be rewrote after arrays are implemented in tVariant
-	if( pc->amxevents[ EVENT_CHR_ONCHECKNPCAI ]!=NULL ) {
-
-		NxwCharWrapper sc;
-		sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
-		uint32_t set = amxSet::create();
-		amxSet::copy( set, sc );
-
-		g_bByPass = false;
-		pc->amxevents[ EVENT_CHR_ONCHECKNPCAI ]->Call( pc->getSerial(), set, uiCurrentTime );
-
-		amxSet::deleteSet( set );
-
-		if (g_bByPass==true)
-			return;
-	}
-
-	switch(pc->npcaitype)
-	{
-		case NPCAI_GOOD:
-			if( pc->war )
-				return;
-
-			if( pc->npcWander == WANDER_FLEE )
-				return;
-
-			if( pc->shopkeeper )
-			{
-				NxwCharWrapper sc;
-				sc.fillCharsNearXYZ( pc->getPosition(), 3, true, true );
-				for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-					pChar pj=sc.getChar();
-					if (pj->getSerial() == pc->getSerial()) continue; //Luxor
-
-					if( pj->dead )
-						continue;
-
-					if( pj->hidden )
-						continue;
-					// Stop talking npcs to each other
-					if( pj->IsInnocent() && !pj->npc )
-					{
-						char *temp;
-						asprintf(&temp,TRANSLATE("Hello %s, Welcome to my shop, How may i help thee?."), pj->getCurrentName().c_str());
-						pc->talkAll( temp, 1);
-						free(temp);
-					}
-				}
-			}
-			break;
-		case NPCAI_HEALER: // good healers
-		{
-			if ( pc->war )
-				return;
-
-			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( pc->getPosition(), 3, true, true );
-
-			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-
-				pChar pj=sc.getChar();
-
-				if ( !pj || !pj->dead )
-			  		continue;
-
-				if (pj->getSerial() == pc->getSerial()) continue; //Luxor
-			  	if ( !pj->IsInnocent() || pj->IsCriminal() || pj->IsMurderer())
-			  	{
-			  		if (pj->IsMurderer())
-			  			pc->talkAll(TRANSLATE("I will nay give life to a scoundrel like thee!"), 1);
-			  		else if (pj->IsCriminal())
-						pc->talkAll(TRANSLATE("I will nay give life to thee for thou art a criminal!"), 1);
-
-			  		continue;
-			  	}
-
-				pc->playAction(0x10);
-				pj->resurrect();
-				pj->staticFX(0x376A, 1, 0, NULL);
-				switch(RandomNum(0, 4))
-				{
-					case 0: pc->talkAll(TRANSLATE("Thou art dead, but 'tis within my power to resurrect thee.	Live!"), 1); break;
-					case 1: pc->talkAll(TRANSLATE("Allow me to resurrect thee ghost.  Thy time of true death has not yet come."), 1); break;
-					case 2: pc->talkAll(TRANSLATE("Perhaps thou shouldst be more careful.	Here, I shall resurrect thee."), 1); break;
-					case 3: pc->talkAll(TRANSLATE("Live again, ghost!	Thy time in this world is not yet done."), 1); break;
-					case 4: pc->talkAll(TRANSLATE("I shall attempt to resurrect thee."), 1); break;
-				}
-
-			}
-		}
-		break;
-		case NPCAI_EVIL:
-		{
-			if ( pc->war )
-				return;
-			if ( pc->npcWander == WANDER_FLEE )
-				return;
-
-			if (pc->baseskill[skMagery] > 400)
-			{
-				if ( chance( 50 ) )
-				{
-					if (pc->hp < pc->getStrength()/2)
-						{ npcBeginCasting( pc, pc, magic::SPELL_GREATHEAL ); }
-				}
-				else
-					if (pc->poisoned > 0)
-						{ npcBeginCasting( pc, pc, magic::SPELL_CURE ); }
-			}
-#ifdef SPAR_NEW_WR_SYSTEM
-			pointers::pCharVector *pcv = pointers::getCharsNearLocation( pc, VISRANGE, pointers::NPC );
-			pointers::pCharVectorIt it( pcv->begin() ), end( pcv->end() );
-			pChar	pj = 0;
-			pChar	pc_target = NULL;
-			int32_t	att_value = 0, curr_value = 0;
-			while( it != end )
-			{
-				pj = (*it);
-				if ( 	!(
-					pc->getSerial() == pj->getSerial() ||
-					pj->IsInvul() ||
-					pj->hidden > 0 ||
-					pj->dead ||
-					pj->npcaitype == NPCAI_EVIL ||
-					pj->npcaitype == NPCAI_HEALER ||
-					( SrvParms->monsters_vs_animals == 0 && ((pj->title.size() == 0) && !pj->IsOnline()) ) ||
-					( SrvParms->monsters_vs_animals == 1 && chance( SrvParms->animals_attack_chance ) )
-					)
-				   )
-				{
-					if( pc->losFrom( pj ) )
-					{
-						if ( pc_target != 0 )
-						{
-                                        		curr_value = pc->distFrom( pj ) + pj->hp/3;
-							if ( curr_value < att_value )
-								pc_target = pj;
-						}
-						else
-						{
-							att_value = curr_value = pc->distFrom( pj ) + pj->hp/3;
-							pc_target = pj;
-						}
-					}
-				}
-				++it;
-			}
-			if ( pc_target != NULL )
-				pc->fight( pc_target );
-#else
-			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
-			pChar pc_target = NULL;
-			int32_t att_value = 0, curr_value = 0;
-			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-
-				pChar pj=sc.getChar();
-				if (!pj || pc->getSerial()==pj->getSerial() )
-					continue;
-
-				if (	pj->IsInvul() ||
-						pj->hidden > 0 ||
-						pj->dead ||
-						pj->npcaitype == NPCAI_EVIL ||
-						pj->npcaitype == NPCAI_HEALER ||
-						( SrvParms->monsters_vs_animals == 0 && ((pj->title.size() == 0) && !pj->IsOnline()) ) ||
-						( SrvParms->monsters_vs_animals == 1 && chance( SrvParms->animals_attack_chance ) )
-					)
-					continue;
-
-				if ( !pc->losFrom( pj ) )
-					continue;
-
-				if ( pc_target != NULL ) {
-                                        curr_value = pc->distFrom( pj ) + pj->hp/3;
-					if ( curr_value < att_value )
-						pc_target = pj;
-				} else {
-					att_value = curr_value = pc->distFrom( pj ) + pj->hp/3;
-					pc_target = pj;
-				}
-			}
-
-                        if ( pc_target != NULL )
-				pc->fight( pc_target );
-#endif
-		}
-		break;
-		case NPCAI_EVILHEALER:
-		{
-			if (pc->war) return;
-
-			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( pc->getPosition(), 3, true, true );
-
-			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-				pChar pj=sc.getChar();
-				if ( ! pj || !pj->dead )
-					continue;
-				if (pj->getSerial() == pc->getSerial()) continue; //Luxor
-				if ( pj->IsInnocent() ) {
-					pc->talkAll(TRANSLATE("I despise all things good. I shall not give thee another chance!"), 1);
-					continue;
-				}
-				pc->playAction(0x10);
-				pj->resurrect();
-				pj->staticFX(0x3709, 1, 0, NULL);
-				switch (RandomNum(0,4))
-				{
-					case 0:	pc->talkAll(TRANSLATE("Fellow minion of Mondain, Live!!"), 1); break;
-					case 1:	pc->talkAll(TRANSLATE("Thou has evil flowing through your vains, so I will bring you back to life."), 1); break;
-					case 2:	pc->talkAll(TRANSLATE("If I res thee, promise to raise more hell!."), 1); break;
-					case 3:	pc->talkAll(TRANSLATE("From hell to Britannia, come alive!."), 1); break;
-					case 4:	pc->talkAll(TRANSLATE("Since you are Evil, I will bring you back to consciouness."), 1); break;
-
-				}
-			}
-		}
-		break;
-
-		case NPCAI_BEGGAR:
-		{
-			if (pc->war) return;
-
-			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( pc->getPosition(), 3, true, true );
-
-			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-
-				pChar pj=sc.getChar();
-				if (!pj) continue;
-
-				if (pj->getSerial() == pc->getSerial()) continue; //Luxor
-				if ( pj->dead || !pj->IsInnocent() || pj->hidden > 0)
-					continue;
-
-				switch (RandomNum(0,2))
-				{
-					case 0: pc->talkAll(TRANSLATE("Could thou spare a few coins?"), 1); break;
-					case 1: pc->talkAll(TRANSLATE("Hey buddy can you spare some gold?"), 1); break;
-					case 2: pc->talkAll(TRANSLATE("I have a family to feed, think of the children."), 1); break;
-					default: break;
-				}
-			}
-		}
-		break;
-
-		case NPCAI_ORDERGUARD: break;
-		case NPCAI_CHAOSGUARD: break;
-		case NPCAI_BANKER: break;
-		case NPCAI_TELEPORTGUARD:
-		case NPCAI_GUARD : 		// in world guards, they dont teleport out...Ripper
-		{
-			if (pc->war || !(region[pc->region].priv & RGNPRIV_GUARDED))	// this region is not guarded
-				return;
-			//
-			// Sparhawk	Check wether a guard should continue walking towards the character who called him
-			//
-			int x, y;
-			if ( pc->npcWander == WANDER_FOLLOW )
-			{
-				pChar guardcaller = cSerializable::findCharBySerial( pc->ftargserial );
-
-				if ( ! guardcaller || TIMEOUT( pc->antiguardstimer ) || pc->distFrom( guardcaller ) <= 1 )
-				{
-					pc->npcWander = pc->oldnpcWander;
-					pc->oldnpcWander = WANDER_NOMOVE;
-					pc->ftargserial = INVALID;
-				}
-				else
-				{
-					//
-					//	Guard is still walking towards char who called
-					//	In that case check whether guard can see targets within visual range of caller
-					//
-					x = guardcaller->getPosition().x;
-					y = guardcaller->getPosition().y;
-				}
-			}
-			else
-			{
-				x = pc->getPosition().x;
-				y = pc->getPosition().y;
-			}
-
-			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
-
-			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-
-				pChar character=sc.getChar();
-				if ( character )
-				{
-					if ( character->getSerial() != pc->getSerial() &&
-					     !character->dead &&
-					     !character->IsHidden() &&
-					     pc->losFrom( character )
-					   )
-					{
-						if ( 	character->npcaitype == NPCAI_EVIL ||
-							character->npcaitype == NPCAI_MADNESS ||
-							character->IsMurderer() ||
-							character->IsCriminal()
-						   )
-						{
-							if ( pc->npcWander == WANDER_FOLLOW )
-							{
-								pc->npcWander = pc->oldnpcWander;
-								pc->oldnpcWander = WANDER_NOMOVE;
-								pc->ftargserial = INVALID;
-							}
-
-							pc->talkAll(TRANSLATE("Thou shalt regret thine actions, swine!"), 1);
-							pc->fight( character );
-							return;
-						}
-					}
-				}
-			}
-		}
-		break;
-		case NPCAI_TAMEDDRAGON: // Tamed Dragons ..not white wyrm..Ripper
-		// so regular dragons attack reds on sight while tamed.
-		{
-			if (!pc->tamed) return;
-			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( pc->getPosition(), 10, true, false );
-
-			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-
-				pChar pj=sc.getChar();
-
-				if (pj->getSerial() == pc->getSerial()) continue; //Luxor
-				if( pj && pj->npc && pj->npcaitype==NPCAI_EVIL)
-				{
-					npcattacktarget(pc, pj);
-					return;
-				}
-			}
-		}
-		break;
-		case NPCAI_ATTACKSRED:
-		{
-			if (pc->war) return;
-			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( pc->getPosition(), 10, true, false );
-
-			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-
-				pChar pj=sc.getChar();
-				if (!pj) continue;
-				if (pj->getSerial() == pc->getSerial()) continue; //Luxor
-				if ( pj->IsInvul() || pj->dead || (pj->npcaitype != NPCAI_EVIL && !pj->IsCriminal() && !pj->IsMurderer())) continue;
-
-				npcattacktarget(pc, pj);
-			}
-		}
-		break;
-		case NPCAI_PLAYERVENDOR: break;
-		case NPCAI_PETGUARD:
-		{
-			if (!pc->tamed) return;
-			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
-
-			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-
-				pChar pj=sc.getChar();
-				if (!(pj)) continue;
-				if (pj->npc || pj->dead || pj->guarded == false) continue;
-				if (pc->getOwnerSerial32() == pj->getSerial()) {
-					if (pj->IsOnline()) {
-						pChar pc_attacker = cSerializable::findCharBySerial(pj->attackerserial);
-						if ( ! pc_attacker ) return;
-						if (pc->distFrom(pc_attacker) <= 10) {
-							npcattacktarget(pc, pc_attacker);
-							return;
-						}
-					}
-				}
-			}
-		}
-		break;
-		case 30: // why is this the same as case 50???..Ripper
-		case NPCAI_MADNESS://Energy Vortex/Blade Spirit
-		{
-			if (pc->war) return;
-			if (pc->attackerserial == INVALID) {
-				NxwCharWrapper sc;
-				sc.fillCharsNearXYZ( pc->getPosition(), 10, true, false );
-
-				for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-
-					pChar pj=sc.getChar();
-					if ( !pj->IsInvul() && !pj->dead && ! pj->isHidden() && pj->npcaitype != NPCAI_MADNESS) {
-						pc->fight(pj);
-						return;
-					}
-				}
-			}
-		}
-		break;
-		// Case 60-70 is Skyfires new AI
-		case NPCAI_DRAGON1:
-		case NPCAI_DRAGON2: //Dragon AI (Skyfire and araknesh)
-		{
-			NxwCharWrapper sc;
-			sc.fillCharsNearXYZ( pc->getPosition(), VISRANGE, true, false );
-
-			for( sc.rewind(); !sc.isEmpty(); sc++ ) {
-
-				pChar pj=sc.getChar();
-				if (!(pj)) continue;
-				if (pj->dead ||
-						pj->IsInvul() ||
-						pj->IsGMorCounselor() ||
-						pj->npcaitype == NPCAI_EVIL ||
-						pj->npcaitype == NPCAI_HEALER ||
-						pj->npcaitype == NPCAI_DRAGON1 ||
-						pj->npcaitype == NPCAI_DRAGON2 || pj == pc) continue;
-
-				if ( ! pj->isHidden() ) {
-					switch(RandomNum(0, 6))
-					{
-						case 0:
-							{ npcBeginCasting( pc, pj, magic::SPELL_CURSE ); }
-							pc->talkAll(TRANSLATE("You are ridiculous"), 1);
-							break;
-						case 1:
-							{ npcBeginCasting( pc, pj, magic::SPELL_FLAMESTRIKE ); }
-							pc->talkAll(TRANSLATE("Die unusefull mortal!"), 1);
-							break;
-						case 2:
-							{ npcBeginCasting( pc, pj, magic::SPELL_PARALYZE ); }
-							pc->talkAll(TRANSLATE("What are you doing? Come here and Die!"), 1);
-							break;
-						case 3:
-							{ npcBeginCasting( pc, pj, magic::SPELL_LIGHTNING ); }
-							pc->talkAll(TRANSLATE("Stupid Mortal I'll crush you as a fly"), 1);
-							break;
-						case 4:
-							{ npcBeginCasting( pc, pj, magic::SPELL_LIGHTNING ); }
-							pc->talkAll(TRANSLATE("Stupid Mortal I'll crush you as a fly"), 1);
-							break;
-						case 5:
-							{ npcBeginCasting( pc, pj, magic::SPELL_EXPLOSION ); }
-							pc->talkAll(TRANSLATE("Die unusefull mortal!"), 1);
-							break;
-						case 6:
-							{ npcBeginCasting( pc, pj, magic::SPELL_EXPLOSION ); }
-							pc->talkAll(TRANSLATE("Die unusefull mortal!"), 1);
-							break;
-					}
-				}
-				if (pc->hp < pc->getStrength()/2) {
-					pc->talkAll("In Vas Mani", 1);
-					{ npcBeginCasting( pc, pc, magic::SPELL_GREATHEAL ); }
-				}
-				if (pc->poisoned > 0) {
-					pc->talkAll("An Nox", 1);
-					{ npcBeginCasting( pc, pc, magic::SPELL_CURE ); }
-				}
-				if ( pj->isDispellable() ) {
-					pc->talkAll("An Ort", 1);
-					{ npcBeginCasting( pc, pj, magic::SPELL_DISPEL ); }
-				}
-
-				if ( !pj->IsHidden() ) npcattacktarget(pc, pj);
-				return;
-			}
-		}
-		break;
-		default:
-			WarnOut("cCharStuff::CheckAI-> Error npc %i ( %08x ) has invalid AI type %i\n", pc->getSerial(), pc->getSerial(), pc->npcaitype);
-			return;
-	}	//switch(pc->npcaitype)
-} //void checkAI(unsigned int currenttime, pChar pc)
-
-
 } //namespace
-
-

@@ -35,32 +35,23 @@ cNPC::cNPC(uint32_t serial)
 
 void cNPC::heartbeat()
 {
-	if ( dead )
+	if ( isDead() )
 		return;
-	if( stablemaster_serial != INVALID )
+	if( stablemaster )
 		return;
 
-	if( mounted )
-		return;
-#if 0
-	if ( amxevents[EVENT_CHR_ONHEARTBEAT] )
-	{
-		g_bByPass = false;
-		amxevents[EVENT_CHR_ONHEARTBEAT]->Call( getSerial(), uiCurrentTime );
-		if ( g_bByPass == true )
+	if ( events[evtChrOnHeartBeat] ) {
+		tVariantVector params = tVariantVector(2);
+		params[0] = getSerial(); params[1] = uiCurrentTime;
+		events[evtChrOnHeartBeat]->setParams(params);
+		events[evtChrOnHeartBeat]->execute();
+		if ( events[evtChrOnHeartBeat]->bypassed() )
 			return;
-		if( dead )	// Killed as result of action in script
+		
+		if ( isDead() )
 			return;
 	}
-#endif
-	/*
-	g_bByPass = false;
-	runAmxEvent( EVENT_CHR_ONHEARTBEAT, getSerial(), uiCurrentTime );
-	if ( g_bByPass == true )
-		return;
-	*/
-	if( dead )	// Killed as result of action in script
-		return;
+	
 	//
 	//	Enable if possible
 	//
@@ -70,16 +61,16 @@ void cNPC::heartbeat()
 		return;
 	//
 	generic_heartbeat();
-	if( dead )	// Killed as result of action in generic heartbeat
+	if ( isDead() )
 		return;
 	//
 	//	Handle poisoning
 	//
 	checkPoisoning();
-	if( dead )
+	if ( isDead() )
 		return;
 	checkFieldEffects( uiCurrentTime, this, 0 );
-	if( dead )
+	if ( isDead() )
 		return;
 	//
 	//	Handle summoned npc's
@@ -175,7 +166,7 @@ void cNPC::heartbeat()
 	//	Handle ai
 	//
 	if ( TIMEOUT( nextAiCheck ) )
-		npcs::checkAI( this );
+		checkAI();
 
 	//
 	//	Handle walking
@@ -481,7 +472,6 @@ void cNPC::clearedEscordQuest(pPC pc)
 /*!
 \brief deletes msgboard post for this quest, since it has been accepted (or has expired)
 */
-
 void cNPC::removepostEscortQuest()
 {
 	cMsgBoard::removeQuestMessage(questEscortPostSerial);
@@ -491,10 +481,8 @@ void cNPC::removepostEscortQuest()
 \brief deletes npc used for quest
 \note it is mainly used as a wrapper, so if a particular necessity ever arises, it can be added here
 */
-
 void cNPC::deleteEscortQuest()
 {
 	Kill();
 	Delete();
 }
-
