@@ -22,34 +22,58 @@ directory (under unix-like environments).
 Set this to on if you want the book system to be enabled. If book system is not
 enabled, the books aren't writable or readable.
   </setting>
-  <setting Name="EnabledTradeSystem" type="flag" default="on" flag="is">
+  <setting name="EnabledTradeSystem" type="flag" default="on" flag="is">
 Set this to on if you want the Trade system to be enabled. If trade system is not 
 enabled, pgs can't trade items with each others.
   </setting>
-  <setting Name="EnabledBountySystem" type="flag" default="on" flag="is">
+  <setting name="EnabledBountySystem" type="flag" default="on" flag="is">
 Set this to on if you want the Bounty System to be enabled. If bounty system is not
 enabled, pgs can't ask for the head of the PK
   </setting>
-  <setting Name="EnabledPopupHelp" type="flag" default="on" flag="is">
+  <setting name="EnabledPopupHelp" type="flag" default="on" flag="is">
 Set this to on if you want the PopupHelp to be enabled. (since t2a)
   </setting>
-  <setting Name="EnabledUOAssist" type="flag" default="on" flag="is">
+  <setting name="EnabledUOAssist" type="flag" default="on" flag="is">
 Set this to on if you want the UOAssist use to be allowed.
   </setting>
-  <setting Name="AllowedAssistVersion" type="uint32" default="" flag="get">
+  <setting name="AllowedAssistVersion" type="uint32" default="" flag="get">
 Allowed version of UOAssist
   </setting>
-  <setting Name="MaximumPCs" type="uint8" default="5" flag="get">
+  <setting name="MaximumPCs" type="uint8" default="5" flag="get">
 The maximum numbers of character an account can handle. 
   </setting>
-  <setting Name="PlayersDeletePCs" type="flag" default="on" flag="can">
+  <setting name="PlayersDeletePCs" type="flag" default="on" flag="can">
 Set this to on if you want the players to be allowed to delete their characters.
   </setting>
-  <setting Name="BankMaxItems" type="uint16" default="0" flag="get">
+  <setting name="BankMaxItems" type="uint16" default="0" flag="get">
 The maximum number of items a player can store in his bank.
   </setting>
-  <setting Name="MaximumItemsOnTile" type="uint8" default="" flag="get">
+  <setting name="MaximumItemsOnTile" type="uint8" default="" flag="get">
 The maximum number of items in a single world tile.
+  </setting>
+  <setting name="MaximumSoldItems" type="uint16" default="50" flag="get">
+The maximum number of different item stacks sellable in a single session.
+  </setting>
+  <setting name="InstantGuards" type="flag" default="off" flag="has">
+Set this on if you want the Guards to instantly teleport over new criminals.
+  </setting>
+  <setting name="ShowPCNames" type="flag" default="on" flag="should">
+Set this on if you want the characters' names to be shown on single click.
+  </setting>
+  <setting name="DelaySkills" type="uint32" default="5" flag="get">
+Delay between the use of two skills.
+  </setting>
+  <setting name="DelayObjects" type="uint32" default="2" flag="get">
+Delay between the use of two objects.
+  </setting>
+  <setting name="DecayTimer" type="uint32" default="300" flag="get">
+The time before a corpse is removed.
+  </setting>
+  <setting name="WeightPerStr" type="uint32" default="4" flag="get">
+The weight a character can carry with one strenght point.
+  </setting>
+  <setting name="NewbiesGold" type="uint16" default="300" flag="get">
+The amount of gold pieces a new character get.
   </setting>
  </group>
 </autosettings>
