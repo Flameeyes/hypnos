@@ -54,8 +54,7 @@ public:
 	void add(pSerializable obj);
 	bool remove(pSerializable obj);
 	
-	const sRect &getArea() const
-	{ return area; }
+	const sRect &getArea() const;
 	
 	static pMulti cMulti::getAt(sPoint p);
 	

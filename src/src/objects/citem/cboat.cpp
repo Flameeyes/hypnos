@@ -75,7 +75,7 @@ void cBoat::step(pClient client, uint8_t dir)
 		return;
 	}
 
-	if( ! good_position(this, boatpos, 0) )
+	if( ! isGoodPosition(getId(), boatpos, 0) )
 	{
 		type2=0;
 		tillerMan->talk("Arr, somethings in the way!");
@@ -215,7 +215,7 @@ bool cBoat::doSpeech(pClient client, const std::string &speech)
 		tillerMan->talk("Aye, sir.");
 		type2=0;
 	} else if( speech == "TURN LEFT" || speech == "TURN PORT" ) {
-		if (good_position(pb, getPosition(), -1) && !collision(pb,getPosition(),-1))
+		if (isGoodPosition(getId(), getPosition(), -1) && !collision(pb,getPosition(),-1))
 		{
 			tillerMan->talk("Aye, sir.");
 			turn(false);
@@ -225,7 +225,7 @@ bool cBoat::doSpeech(pClient client, const std::string &speech)
 		}
 	} else if( speech == "TURN RIGHT" || speech == "TURN STARBOARD" )
 	{
-		if (good_position(pb, getPosition(), 1) && !collision(pb,getPosition(),1))
+		if (isGoodPosition(getId(), getPosition(), 1) && !collision(pb,getPosition(),1))
 		{
 			tillerMan->talk("Aye, sir.");
 			turn(true);
@@ -235,7 +235,7 @@ bool cBoat::doSpeech(pClient client, const std::string &speech)
 		}
 	}else if( speech == "COME ABOUT" || speech == "TURN ABOUT" ) {
 
-		if (good_position(pb, getPosition(), 2) && !collision(pb,getPosition(),2))
+		if (isGoodPosition(getId(), getPosition(), 2) && !collision(pb,getPosition(),2))
 		{
 			tillerMan->talk("Aye, sir.");
 			turn(true);
@@ -250,4 +250,116 @@ bool cBoat::doSpeech(pClient client, const std::string &speech)
 		return false;
 	
 	return true;
+}
+
+/*!
+\brief Check if this is a good position for building or moving a boat
+\param id ID of the boat to check the collision of
+\param w Point where the base of the boat is
+\param dir Direction of boat (from -1 to 2, this is strange!)
+\todo Fix the dir stuff
+*/
+bool cBoat::isGoodPosition(uint16_t id, sPoint w, int8_t dir)
+{
+	bool good_pos = false;
+
+	multiVector m;
+	data::seekMulti( id-0x4000, m );
+
+	for(register int i = 0; i < m.size(); i++ )
+	{
+
+		map_st map;
+		switch(dir)
+		{
+		case -1:
+			data::seekMap(w.x-m[i].y, w.y+m[i].x, map);
+			break;
+		case 0:
+			data::seekMap(w.x+m[i].x, w.y+m[i].y, map);
+			break;
+		case 1:
+			data::seekMap(w.x+m[i].y, w.y-m[i].x, map);
+			break;
+		case 2:
+			data::seekMap(w.x-m[i].x, w.y-m[i].y, map);
+			break;
+		}
+
+		switch(map.id)
+		{
+//water tiles:
+		case 0x00A8://168
+		case 0x00A9://169
+		case 0x00AA://170
+		case 0x00Ab://171
+		case 0x0136://310
+		case 0x0137://311
+		case 0x3FF0://16368
+		case 0x3FF1://16369
+		case 0x3FF2://16370
+		case 0x3FF3://16371
+//Lava tiles:
+		case 0x01F4://500
+		case 0x01F5://501
+		case 0x01F6://502
+		case 0x01F7://503
+			good_pos=true;
+			break;
+		default:// we are in default if we are nearer coast
+			good_pos = tileCheck( m[i], map, w, dir );
+			if (!good_pos) return false;
+		}
+	}
+	return good_pos;
+}
+
+/*!
+\brief Check if all the boats tile are in water
+\param multi Multi data of the boat to check
+\param map Tile to check
+\param w Base point for the check
+\param dir Direction of boat (from -1 to 2, this is strange!)
+\todo Fix the dir stuff
+*/
+bool cBoat::tileCheck(multi_st multi, map_st map, sPoint w, int8_t dir)
+{
+	int16_t dx,dy;
+	switch(dir)
+	{
+	case -1:
+		dx=w.x-multi.y;
+		dy=w.y+multi.x;
+		break;
+	case 0:
+		dx=w.x+multi.x;
+		dy=w.y+multi.y;
+		break;
+	case 1:
+		dx=w.x+multi.y;
+		dy=w.y-multi.x;
+		break;
+
+	case 2:
+		dx=w.x-multi.y;
+		dy=w.y-multi.x;
+		break;
+	}
+
+	staticVector s;
+	data::collectStatics( dx, dy, s );
+	for( register int i = 0; i < s.size(); i++ )
+	{
+		tile_st tile;
+		if( ! data::seekTile( s[i].id, tile ) )
+			continue;
+			
+		if(strstr((char *) tile.name, "water") || strstr((char *) tile.name, "lava"))
+			return true;
+			
+		land_st land;
+		if( data::seekLand( map.id, land ) )
+			return !(land.flags&TILEFLAG_WET);	//not a "wet" tile
+	}
+	return false;
 }

@@ -54,6 +54,14 @@ void cMulti::Delete()
 }
 
 /*!
+\brief Gets the actual area occupied by the multi
+*/
+const sRect getArea() const
+{
+	return sRect(area.ul + sPositionOffset(getPosition().x, getPosition().y), area.br + sPositionOffset(getPosition().x, getPosition().y) )
+}
+
+/*!
 \brief Adds an object to the list of multi's objects
 \param obj Object to add
 

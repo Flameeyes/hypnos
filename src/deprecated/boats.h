@@ -35,8 +35,6 @@ extern signed short int iLargeShipOffsets[4][4][2];
 
 bool boat_collision(pBoat pBoat1, pBoat pBoat2, sPoint w, uint8_t dir,);
 bool collision(pBoat pi, sPoint where, uint8_t dir);
-bool good_position(pItem pBoat, sLocation where, uint8_t dir);
-bool tile_check(multi_st multi, pItem pBoat, map_st map, sPoint w,uint8_t dir);
 void LeaveBoat(pChar pc, pItem pi);
 void TurnStuff_i(pItem, pItem, int, int);
 

@@ -86,6 +86,9 @@ private:
 		idHold			//!< Hold
 	};
 	static const uint8_t ShipItems[4][6];
+	
+	static bool isGoodPosition(uint16_t id, sPoint w, int8_t dir);
+	static bool tileCheck(multi_st multi, map_st map, sPoint w, int8_t dir);
 };
 
 #endif

@@ -318,118 +318,6 @@ void TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, pItem p
 
 /*!
 \author Elcabesa
-\brief Check if all the boats tile are in water
-*/
-bool tile_check(multi_st multi, pItem pb, map_st map, sPoint w,uint8_t dir)
-{
-	int16_t dx,dy;
-	switch(dir)
-		{
-		case -1:
-			dx=w.x-multi.y;
-			dy=w.y+multi.x;
-			break;
-		case 0:
-			dx=w.x+multi.x;
-			dy=w.y+multi.y;
-			break;
-		case 1:
-			dx=w.x+multi.y;
-			dy=w.y-multi.x;
-			break;
-
-		case 2:
-
-			dx=w.x-multi.y;
-
-			dy=w.y-multi.x;
-
-			break;
-		}
-
-	staticVector s;
-	data::collectStatics( dx, dy, s );
-	for( uint32_t i = 0; i < s.size(); i++ )
-	{
-		tile_st tile;
-		if( data::seekTile( s[i].id, tile ) )
-		{
-			if(!(strstr((char *) tile.name, "water") || strstr((char *) tile.name, "lava")))
-			{
-				land_st land;
-				if( data::seekLand( map.id, land ) )
-					return !(land.flags&TILEFLAG_WET);	//not a "wet" tile
-			}
-			else
-				return true;
-		}
-
-	}
-	return false;
-}
-
-/*!
-\author Elcabesa
-\brief Check if this is a good position for building or moving a boat
-*/
-bool good_position(pItem pb, sLocation where, uint8_t dir)
-{
-	uint32_t x= where.x, y= where.y, i;
-	bool good_pos = false;
-
-	multiVector m;
-	data::seekMulti( pb->getId()-0x4000, m );
-
-	for( i = 0; i < m.size(); i++ )
-	{
-
-		map_st map;
-		switch(dir)
-		{
-		case -1:
-			data::seekMap(x-m[i].y,y+m[i].x, map);
-			break;
-		case 0:
-			data::seekMap(x+m[i].x,y+m[i].y, map);
-			break;
-		case 1:
-			data::seekMap(x+m[i].y,y-m[i].x, map);
-			break;
-		case 2:
-			data::seekMap(x-m[i].x,y-m[i].y, map);
-			break;
-		}
-
-		switch(map.id)
-		{
-//water tiles:
-		case 0x00A8://168
-		case 0x00A9://169
-		case 0x00AA://170
-		case 0x00Ab://171
-		case 0x0136://310
-		case 0x0137://311
-		case 0x3FF0://16368
-		case 0x3FF1://16369
-		case 0x3FF2://16370
-		case 0x3FF3://16371
-//Lava tiles:
-		case 0x01F4://500
-		case 0x01F5://501
-		case 0x01F6://502
-		case 0x01F7://503
-			good_pos=true;
-			break;
-		default:// we are in default if we are nearer coast
-			good_pos=tile_check( m[i],pb,map,x,y,dir );
-			if (!good_pos) return false;
-		}
-	}
-	return good_pos;
-}
-
-/*!
-\author Elcabesa
 \brief Build a boat
 */
 bool Build(pClient client, pItem pb, char id2)
@@ -453,7 +341,7 @@ bool Build(pClient client, pItem pb, char id2)
 	}
 	
 	//Start checking for a valid position:
-	if (! good_position(pb, pb->getPosition(), 0))
+	if (! cBoat::isGoodPosition(pb->getId(), pb->getPosition(), 0))
 		return false;
 	
 	if(collision(pb, pb->getPosition(),0))

@@ -2769,8 +2769,8 @@ void cClient::talking(cSpeech &speech) // PC speech
 	talk.obj=pc->getSerial();
 	talk.model=pc->getId();
 	talk.type= buffer[socket][3];
-	talk.color= Duint8_t2WORD( buffer[socket][4], buffer[socket][5] );
-	talk.font= Duint8_t2WORD( buffer[socket][6], buffer[socket][7] );
+	talk.color = ShortFromCharPtr(buffer[socket]+4);
+	talk.font = ShortFromCharPtr(buffer[socket]+6);
 	talk.name+=pc->getCurrentName();
 
 	wstring speechUni;

@@ -18,16 +18,16 @@
 
 template<typename T> inline T qmax(T a, T b) { return a > b ? a : b; }
 template<typename T> inline T qmin(T a, T b) { return a < b ? a : b; }
+
 template<typename T> inline bool between(T val, T min, T max)
-{ return val >= min && val <= max; }
+{
+	if ( qmax(min, max) == min ) qswap(min, max); 
+	return val >= min && val <= max;
+}
 
 template<typename T> inline void safedelete(T*& p) { delete p; p = NULL; }
 template<typename T> inline void safedeletearray(T*& p) { delete[] p; p = NULL; }
 template<typename T> inline void qswap(T& a, T& b) { T dummy; dummy = a; a = b; b = dummy; }
-
-//!\todo remove them!!
-#define Duint8_t2WORD(A,B) (((A)<<8) + ((B)&0xFF))
-#define WORD2Duint8_t(A,B,C) { B = WORD2DBYTE1(A); C = WORD2DBYTE2(A); }
 
 inline bool chance(uint8_t percent) { return ( (rand()%100) < percent); }
 
