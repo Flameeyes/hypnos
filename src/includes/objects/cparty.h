@@ -20,13 +20,28 @@
 This class is used to accessa and manage the players' parties.
 
 A party is a group of players which can talk one another wherever they are,
-avoiding to be listened by other players.
+avoiding to be listened by other players (this is done in game using the /
+character).
 Members of the same party can also loots their own victims and can allow the
 others members to loot them if they die (obviously without make them criminals).
 
 To create a party a non-partied PC must ask another PC to join the party, then
 it can accept or decline the party. If it's accepted, the party is acknowledged
-and so it's 
+and so it's isntance is sure. If the PC refuses to join the party, it will be
+removed from it.
+
+When removing a PC (invited or already member) from the party, we'll check for
+the content of the party: if the total members are less than 2, the party is
+disbanded and its instance deleted.
+
+Please also note that parties aren't saved in the worldfile, so after a reboot
+of the server the party are resetted, and that the party's won't work with
+offline players. However, if a player crashes or lose the connection, it will
+remain in the party for a configurable time (it can be 0, so an admin can
+disable the maintaining of disconnetted players).
+
+\todo Add a tempfx to invited for timeout on accept, and one on both invited and
+	members after a disconnection to remove them fromt he party.
 */
 class cParty {
 protected:
@@ -55,7 +70,7 @@ public:
 	cParty(pPC leader, pPC member);
 	~cParty();
 	
-	void inviteMember(pPC member);
+	void inviteMember(pClient client, pPC member);
 	void addMember(pPC member);
 	bool removeMember(pPC member);
 	void disband();
@@ -81,7 +96,7 @@ a player joined a party, or one leaved it, or the party was disbanded.
 protected:
 	sPartyMember leader;		//!< Party's leader (can kick and add)
 	MemberSList members;		//!< Party's fully members
-	MemberSList invited;		//!< Party's invited members
+	PCSList invited;		//!< Party's invited members
 };
 
 #endif

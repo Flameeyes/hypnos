@@ -194,6 +194,23 @@ public:
 	}
 //@}
 
+//@{
+/*!
+\name Party
+\see cParty
+*/
+protected:
+	pParty party;
+public:
+	//! Gets the current party (NULL if not in a party)
+	pParty getParty() const
+	{ return party; }
+	
+	//! Sets the party of the player (if NULL remove from party)
+	void setParty(pParty p)
+	{ party = p; }
+//@}
+                
 };
 
 #endif
