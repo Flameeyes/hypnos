@@ -79,6 +79,12 @@ warnings/errors/issues.
 #include <stdint.h>
 #include <unistd.h>
 
+#ifdef __unix__
+	#include "archs/hypunix.h"
+#else
+	#include "archs/hypwin32.h"
+#endif
+
 #ifndef MSG_NOSIGNAL
     #define MSG_NOSIGNAL 0
 #endif
@@ -86,12 +92,6 @@ warnings/errors/issues.
 #include "typedefs.h"
 #include "constants.h"
 #include "console.h"
-
-#ifdef __unix__
-	#include "archs/hypunix.h"
-#else
-	#include "archs/hypwin32.h"
-#endif
 
 #define TIMEOUT(X) (((X) <= getclock()) || overflow)
 

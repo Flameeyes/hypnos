@@ -49,6 +49,9 @@ typedef int FAR socklen_t ;
 
 char *basename(char *path);
 
+int asprintf(char **strp, const char *fmt, ...);
+int vasprintf(char **strp, const char *fmt, va_list ap);
+
 #endif
 
 #endif

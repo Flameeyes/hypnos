@@ -8,8 +8,10 @@
 
 #ifdef _WIN32
 
-#include "hypwin32.h"
+#include "archs/hypwin32.h"
 #include <process.h>
+
+#include <wefts_mutex.h>
 
 namespace arch {
 	WSADATA wsaData;
@@ -100,25 +102,6 @@ void initclock()
 }
 
 } // namespace arch
-
-/*!
-\brief Thread abstraction namespace
-\author Xanathar
-*/
-namespace tthreads {
-/*!
-\author Xanathar
-\param funk pointer to thread function
-\param param pointer to a volatile buffer created with should be eventually
-freed by the thread itself
-*/
-int startTThread( TTHREAD ( *funk )( void * ), void* param )
-{
-	pthread_t pt;
-	return pthread_create( &pt, NULL, funk, param );
-}
-
-} //namespaze
 
 static char g_szOSVerBuffer[1024];
 char* getOSVersionString()
@@ -211,6 +194,64 @@ char *basename(char *path)
 
 	while( (*ret!='\\') && (*ret!='/') ) ret--;	// stop on the first '/' or '\' encountered
 	return ++ret;
+}
+
+static const char as_buffer[4096];
+static Wefts::Mutex as_mutex;
+
+int asprintf(char **strp, const char *fmt, ...)
+{
+	as_mutex.lock();
+	va_list argptr;
+	va_start( argptr, fmt );
+        int retval = vsnprintf( as_buffer, 4096, fmt, argptr );
+	va_end( argptr );
+	
+	if ( retval == -1 )
+	{
+		as_mutex.unlock();
+		return -1;
+	}
+	if ( retval >= 4096 )
+	{
+		*strp = (char*)malloc(retval+1);
+		va_start( argptr, fmt );
+		int retval2 = vsnprintf( tempbuff, retval+1, fmt, argptr );
+		va_end( argptr );
+		as_mutex.unlock();
+		return retval2;
+	}
+	
+	*strp = (char*)malloc(retval+1);
+	strncpy( *strp, as_buffer, retval+1 );
+	as_mutex.unlock();
+	return retval;
+}
+
+int vasprintf(char **strp, const char *fmt, va_list ap)
+{
+	
+	mutex.lock();
+        int retval = vsnprintf( as_buffer, 4096, fmt, ap );
+	
+	if ( retval == -1 )
+	{
+		as_mutex.unlock();
+		return -1;
+	}
+	if ( retval >= 4096 )
+	{
+		va_end( ap );
+		*strp = (char*)malloc(retval+1);
+		int retval2 = vsnprintf( tempbuff, retval+1, fmt, ap );
+		as_mutex.unlock();
+		return retval2;
+	}
+	
+	*strp = (char*)malloc(retval+1);
+	strncpy( *strp, as_buffer, retval+1 );
+	as_mutex.unlock();
+	return retval;
 }
 
 #endif

@@ -8,6 +8,8 @@
 
 #ifdef __unix__
 
+#include "archs/hypunix.h"
+
 namespace arch {
 
 	termios termstate;
@@ -101,27 +103,6 @@ char *strupr(char *str) {
     str[i]=toupper(str[i]);
   return str;
 }
-
-/*!
-\brief Thread abstraction namespace
-\author Xanathar
-*/
-namespace tthreads {
-
-/*!
-\author Xanathar
-\param funk pointer to thread function
-\param param pointer to a volatile buffer created with should be eventually
-freed by the thread itself
-*/
-int startTThread( TTHREAD ( *funk )( void * ), void* param )
-{
-	pthread_t pt;
-	return pthread_create( &pt, NULL, funk, param );
-}
-
-} //namespaze
-
 
 /*!
 \brief Sleeps some milliseconds
