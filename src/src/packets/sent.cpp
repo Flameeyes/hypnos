@@ -273,7 +273,7 @@ void cPacketSendStatus::prepare1()
 	ShortToCharPtr(body->getMana(), buffer+54);
 	ShortToCharPtr(body->getMaxMana(), buffer+56);
 
-	UI32 gold = pc->rtti() == rttiPC ? (reinterpret_cast<pPC*>pc)->getGold : 0;
+	UI32 gold = pc->rtti() == rtti::rttiPC ? (reinterpret_cast<pPC*>pc)->getGold : 0;
 	LongToCharPtr(gold, buffer+58);
 
 	ShortToCharPtr(body->getArmor(), buffer+62);
@@ -306,6 +306,62 @@ void cPacketSendStatus::prepare4()
 	memset(buffer+84, 0, 4);
 }
 
+
+void cPacketSendClearBuyWindow::prepare()
+{
+//	length = 8;    //redundant. Constructor already sets length to 8
+	buffer = new UI08[8];
+	buffer[0] = 0x3B;
+	ShortToCharPtr(0x08, buffer +1);			// Packet len
+	LongToCharPtr( npc->getSerial32(), buffer + 3);	        // vendorID
+	buffer[7]=0x00;						// Flag:  0 => no more items  0x02 items following ...
+}
+
+
+void cPacketSendPaperdollClothingUpdated::prepare()
+{
+//	length = 1;    //redundant. Constructor already sets length to 1
+	buffer = new UI08[1];
+	buffer[0] = 0x29;
+}
+
+void cPacketSendOpenMapGump::prepare()
+{
+//	length = 19;
+	buffer = new UI08[19];
+        buffer[0] = 0x90;
+	LongToCharPtr(map->getSerial32(), buffer +1);
+        ShortToCharPtr(0x139D, buffer + 5);
+	buffer[7]  = map->more1;	// Assign topleft x
+	buffer[8]  = map->more2;
+	buffer[9]  = map->more3;	// Assign topleft y
+	buffer[10] = map->more4;
+	buffer[11] = map->moreb1;	// Assign lowright x
+	buffer[12] = map->moreb2;
+	buffer[13] = map->moreb3;	// Assign lowright y
+	buffer[14] = map->moreb4;
+	int width, height;		// Temporary storage for w and h;
+	width = 134 + (134 * morez);	// Calculate new w and h
+	height = 134 + (134 * morez);
+	ShortToCharPtr(width, map1 +15);
+	ShortToCharPtr(height, map1 +17);
+}
+
+void cPacketSendMapPlotCourse::prepare()
+{
+//	length = 11;
+	buffer = new UI08[11];
+        buffer[0] = 0x56;
+	LongToCharPtr(map->getSerial32(), buffer +1);
+	buffer[5]  = command;
+	if (command == WriteableStatus) buffer[6] = (pin) ? 1 : 0;  // not sure if the values needed by client are exactly 1 and 0, but better safe than sorry 	
+        else buffer[6] = pin;
+        ShortToCharPtr(x, buffer + 7);
+        ShortToCharPtr(y, buffer + 9);
+}
+
+
+
 static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
 {
 
@@ -315,44 +371,36 @@ static pPacketReceive cPacketReceive::fromBuffer(UI08 *buffer, UI16 length)
                 case 0x01: return new cPacketReceiveDisconnectNotify(buffer, length);   // Disconnect Notification
                 case 0x02: return new cPacketReceiveMoveRequest(buffer, length);        // Move Request
                 case 0x03: return new cPacketReceiveTalkRequest(buffer, length);        // Talk Request
+                case 0x04: return NULL;							// God mode toggle
                 case 0x05: return new cPacketReceiveAttackRequest(buffer, length);      // Attack Request
                 case 0x06: return new cPacketReceiveDoubleclick(buffer, length);        // Double click
                 case 0x07: return new cPacketReceivePickUp(buffer, length);             // Pick Up Item(s)
                 case 0x08: return new cPacketReceiveDropItem(buffer, length);           // Drop Item(s)
                 case 0x09: return new cPacketReceiveSingleclick(buffer, length);        // Single click
                 case 0x12: return new cPacketReceiveActionRequest(buffer, length);      // Request Skill/Action/Magic Usage
-                case 0x13: length =  10; break; // Drop - Wear Item
-                case 0x1a: length = ???; break; // Object Information
-                case 0x1b: length =  37; break; // Char Location and body type (Login confirmation)
-                case 0x1c: length = ???; break; // Send Speech
-                case 0x22: length =   3; break; // when received, this packet is a Resync Request
-                case 0x23: length =  26; break; // Dragging of Items
-//                case 0x2c: length =   2; break; // (Obsolete) Resurrection Menu Choice
-                case 0x34: length =  10; break; // Get Player Status
+                case 0x13: return new cPacketReceiveWearItem(buffer, length);           // Drop - Wear Item
+                case 0x22: return new cPacketReceiveResyncRequest(buffer, length);      // when received, this packet is a Resync Request
+                case 0x2c: return new cPacketReceiveRessChoice(buffer, length);         // (Obsolete) Resurrection Menu Choice
+                case 0x34: return new cPacketReceiveStatusRequest(buffer, length);      // Get Player Status
 
                 // packet 0x38 (pathfinding) is received or sent???
 
-                case 0x3a: length = ???; break; // Set Skill Lock (receive version of packet 0x3a)
-                case 0x3b: length = ???; break; // Buy Item(s)
-                case 0x56: length =  11; break; // Map Related
-                case 0x5d: length =  73; break; // Login Character
-                case 0x66: length = ???; break; // Books - Page
-//                case 0x69: length =   5; break; // (Obsolete) Change Text/Emote Color
-                case 0x6c: length =  19; break; // Targeting Cursor Commands
-
-                // packet 0x6f (secure trading) seems send-only package, but not sure
-
-                case 0x71: length = ???; break; // Bulletin Board Message
+                case 0x3a: return new cPacketReceiveSetSkillLock(buffer, length);       // Set Skill Lock (receive version of packet 0x3a)
+                case 0x3b: return new cPacketReceiveBuyItems(buffer, length);           // Buy Item(s)
+                case 0x56: return new cPacketReceiveMapPlotCourse(buffer, length);      // Map Related
+                case 0x5d: return new cPacketReceiveLoginChar(buffer, length); 		// Login Character
+                case 0x66: return new cPacketReceiveBookPage(buffer, length); 	 	// Books - Page (receive version)
+                case 0x69: return NULL; 						// (Obsolete) Change Text/Emote Color
+                case 0x6c: return new cPacketReceiveTargetSelected(buffer, length);	// Targeting Cursor Commands
+                case 0x6f: 								// Secure Trading
+                case 0x71: return new cPacketReceiveBBoardMessage(buffer, length); 	// Bulletin Board Message
                 case 0x72: length =   5; break; // Request War Mode Change/Send War Mode status
                 case 0x73: length =   2; break; // Ping message
                 case 0x7d: length =  13; break; // Client Response To Dialog
                 case 0x80: length =  62; break; // Login Request
                 case 0x83: length =  39; break; // Delete Character
                 case 0x86: length = 304; break; // Resend Characters After Delete
-
-                //what is this???
-                case 0x91: length =  65; break; // Game Server Login
-
+                case 0x91: length =  65; break; // Game Server Login (Server to play selected)
                 case 0x93: length =  99; break; // Books – Update Title Page (receive version of packet 0x93)
                 case 0x95: length =   9; break; // Dye Window
                 case 0x98: length =   7; break; // All-names “3D” (3d clients only packet, receive version 7 bytes long)
@@ -463,9 +511,9 @@ bool cPacketReceiveCreateChar::execute(pClient client)
         if (!((HairStyle >= 0x203b && HairStyle <= 0x203d ) || ( HairStyle >= 0x2044 && HairStyle <= 0x204a ))) HairStyle = 0;
         if (!(((FacialHair >= 0x203e && FacialHair <= 0x2041) || ( FacialHair >= 0x204b && FacialHair <= 0x204d )) || sex )) FacialHair = 0; //if female the beard check is always valid :P So FacialHair is put to 0
 
-        // From here building a cBody to pass to cClient::charcreate()
-        // no serial number required because we use it only as a "container" to pass parameters to charcreate
+        // From here building a cBody
         pBody charbody = new cBody();
+        charbody->setSerial(charbody->getNextSerial());
 
         if (sex) charbody->setId(bodyFemale) else charbody->setId(bodyMale);     // 0 = male 1 = female
 
@@ -768,10 +816,10 @@ bool cPacketReceiveActionRequest::execute(pClient client)
         VALIDATEPCR(pc, false);
 	if (type==0xC7) // Action
 	{
-		if (pc->isMounting()) break;
+		if (pc->isMounting()) return true;
 		if (!(strcmp((char*)&buffer[4],"bow"))) pc->playAction(0x20);
 		if (!(strcmp((char*)&buffer[4],"salute"))) pc->playAction(0x21);
-		break; // Morrolan
+	        return true; // Morrolan
 	}
 	else if (type) // Skill
 	{
@@ -779,7 +827,7 @@ bool cPacketReceiveActionRequest::execute(pClient client)
 		while ( (buffer[i]!=' ') && (i < size) ) i++;
 		buffer[i]=0;
 		Skills::SkillUse(client, str2num((char*)&buffer[4]));
-		break;
+		return true;
 	}
 	else if ((type==0x27)||(type==0x56))  // Spell
 	{
@@ -840,8 +888,362 @@ bool cPacketReceiveActionRequest::execute(pClient client)
 		{
 			client->sendSpellBook(NULL);
 		}
-		break;
+		return true;
 	}
+        return false; //If flow arrives here, maybe invalid data in packet
+}
+
+/*!
+\brief Wear Item Packet
+\author Chronodt
+\param client client who sent the packet
+*/
+
+bool cPacketReceiveWearItem::execute(pClient client)
+{
+        if (length != 10) return false;
+	pChar pc = pointers::findCharBySerPtr(buffer+6);
+	VALIDATEPCR(pck, false);
+	pItem pi = pointers::findItemBySerPtr(buffer+1);
+	VALIDATEPIR(pi, false);
+        client->wear_item(pc, pi);
+        return true;
+}
+
+/*!
+\brief Resync Request Packet
+\author Chronodt
+\param client client who sent the packet
+*/
+
+
+bool cPacketReceiveResyncRequest::execute(pClient client)
+{
+        if (length != 3) return false;
+	if( client->currChar()!=NULL ) {
+        	client->currChar()->teleport();
+	}
+        return true;
+}
+
+/*!
+\brief (probably very much obsolete) Resurrection Choice Menu Packet
+\author Chronodt
+\param client client who sent the packet
+*/
+
+bool cPacketReceiveRessChoice::execute(pClient client)
+{
+        if (length != 2) return false;
+        if(buffer[1]==0x02)
+	{
+		pChar murderer=pointers::findCharBySerial(client->currChar()->murdererSer);
+		if( ( ISVALIDPC(murderer) ) && SrvParms->bountysactive )
+		{
+			client->sysmessage(TRANSLATE("To place a bounty on %s, use the command BOUNTY <Amount>."), murderer->getCurrentNameC() );
+		}
+		client->sysmessage(TRANSLATE("You are now a ghost."));
+	}
+	if(buffer[1]==0x01)
+	client->sysmessage(TRANSLATE("The connection between your spirit and the world is too weak."));
+        return true;
+}
+
+/*!
+\brief Receive Status Request Packet: client asks for status or skilllist
+\author Chronodt
+\param client client who sent the packet
+*/
+
+bool cPacketReceiveStatusRequest::execute(pClient client)
+{
+        if (length != 10) return false;
+        if ( client->currChar() != NULL ) {
+	        if (buffer[5]==4) client->statusWindow(pointers::findCharBySerPtr(buffer + 6), false); //!< NOTE: packet description states sending basic stats, so second argument is false. Correct if necessary 
+                if (buffer[5]==5) client->skillWindow();
+	}
+        return true
+}
+
+/*!
+\brief Set Skill Lock Packet
+\author Chronodt
+\param client client who sent the packet
+*/
+
+bool cPacketReceiveSetSkillLock::execute(pClient client)
+{
+        UI16 size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+      	// client 1.26.2b+ skill managment packet
+        // -> 0,1,2,3 -> ignore them
+	// -> 4 = skill number
+	// -> 5 = 0 raising (up), 1 falling=candidate for atrophy, 2 = locked
+        if ( ISVALIDPC( client->currChar()) ) client->currChar()->lockSkill[buffer[4]] = buffer[5]; // save skill managment changes
+        return true;
+}
+
+/*!
+\brief Buy Items Packet
+\author Chronodt
+\param client client who sent the packet
+\note this packet contains all items purchased by player in buy gump
+\note with current buffer implementation in csocket.cpp (1024 bytes) we can handle up to 135 different stacks of purchased items in a single go. Should be enough :D
+*/
+
+bool cPacketReceiveBuyItems::execute(pClient client)
+{
+        UI16 size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+
+        std::vector< buyeditem > allitemsbought;
+
+	pNpc npc = (pNpc)pointers::findCharBySerPtr(buffer + 3);
+	VALIDATEPCR(npc, false);
+
+	int itemtotal=(size - 8)/7;
+	if (itemtotal>256) return false;
+
+        for(i=0;i<itemtotal;i++)
+	{
+		int pos=8+(7*i);
+
+		buyeditem b;
+
+		b.layer=buffer[pos];
+		b.item=pointers::findItemBySerPtr(buffer + pos + 1);
+		if(!ISVALIDPI(b.item))
+			continue;
+		b.amount=ShortFromCharPtr(buffer + pos + 5);
+		allitemsbought.push_back( b );
+	}
+        client->buyaction(npc, allitemsbought);
+        return true;
+}
+
+/*!
+\brief Receive map pins commands (add, remove, etc.)
+\author Chronodt
+\param client client who sent the packet
+\todo to be completed when treasure maps done
+*/
+
+bool cPacketReceiveMapPlotCourse::execute(pClient client)
+{
+        if (length != 10) return false;
+
+        pMap map = (pMap)pointers::findItemBySerPtr(LongFromCharPtr(buffer + 1));
+        VALIDATEPIR( map, false);
+
+        PlotCourseCommands command     	= buffer[5];
+        int pin 	 		= buffer[6];
+        UI16 x 				= ShortFromCharPtr(buffer + 7);
+        UI16 y 				= ShortFromCharPtr(buffer + 9);
+
+        switch(command)
+        {
+        	case AddPin:
+                        return map->addPin(x, y);
+                case InsertPin:
+                        return map->insertPin(x,y,pin);
+                case ChangePin:
+                	return map->changePin(x,y,pin);
+                case RemovePin:
+                	return map->removePin(pin);
+                case ClearAllPins:
+                	return map->clearAllPins();
+                case ToggleWritable:
+                	return map->toggleWritable();
+                case WriteableStatus:  //this message is only sent, so if it is received, continues out of the switch and returns false :D
+                default:
+        }
+        return false;
 }
 
 
+bool cPacketReceiveLoginChar::execute(pClient client)
+{
+        if (length != 73) return false;
+        if (LongFromCharPtr(buffer+1) != 0xedededed) return false;	//pattern check
+
+
+        //TODO revise this
+
+
+	loginchars[s] = NULL;
+
+	P_CHAR pc_k=NULL;
+
+	if (acctno[s]>INVALID)
+	{
+		int j=0;
+		Accounts->SetOffline(acctno[s]);
+		NxwCharWrapper sc;
+		Accounts->GetAllChars( acctno[s], sc );
+		for( sc.rewind(); !sc.isEmpty(); sc++ ) {
+			P_CHAR pc_i=sc.getChar();
+			if(!ISVALIDPC(pc_i))
+				continue;
+			if (j==buffer[s][0x44]) {
+				pc_k=pc_i;
+				break;
+			}
+			j++;
+		}
+
+		if (ISVALIDPC(pc_k))
+		{
+			pc_k->setClient(NULL);
+			SI32 nSer = pc_k->getSerial32();
+			for ( SI32 idx = 0; idx < now; idx++ ) {
+				if ( pc_k == loginchars[idx] ) {
+					// TODO We need to fix this!!!
+					UI08 msg2[2]={ 0x53, 0x05 };
+					Xsend(s, msg2, 2);
+//AoS/					Network->FlushBuffer(s);
+					Disconnect(s);
+					Disconnect(idx);
+					return;
+				}
+			}
+
+			Accounts->SetOnline(acctno[s], pc_k);
+			pc_k->logout=INVALID;
+
+			loginchars[s] = pc_k;
+
+			pc_k->setClient(new cNxwClientObj(s));
+			startchar(s);
+		}
+		else
+		{
+			UI08 msg[2]={ 0x53, 0x05 };
+			Xsend(s, msg, 2);
+//AoS/			Network->FlushBuffer(s);
+			Disconnect(s);
+		}
+	}
+}
+
+/*!
+\brief Receive changed book page
+\author Akron & Chronodt
+\param client client who sent the packet
+*/
+
+
+bool cPacketReceiveBookPage::execute(pClient client)
+{
+        UI16 size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+	pItem book=pointers::findItemBySerPtr(buffer+3);
+	if(ISVALIDPI(book))
+	{
+		if (book->morez == 0)	Books::addNewBook(book);
+		if (book->morex!=666 && book->morex!=999)
+			book->morex = 666;
+		if (book->morex==666) // writeable book -> copy page data send by client to the class-page buffer
+			Books::books[book->morez].ChangePages((char*)(buffer + 13), ShortFromCharPtr(buffer + 9), ShortFromCharPtr(buffer + 11), size - 13 );
+		else if (pBook->morex==999)
+			Books::books[book->morez].SendPageReadOnly(client, book, ShortFromCharPtr(buffer + 9));
+	}
+        return true;
+}
+
+
+
+bool cPacketReceiveTargetSelected::execute(pClient client)
+{
+        if (length != 19) return false;
+	pTarget target = client->getTarget();
+        if( target==NULL ) return true;
+
+
+        //! \todo update this when targets redone
+        
+	target->receive( ps );
+
+					if( !target->isValid() )
+						target->error( ps );
+					else
+						target->code_callback( ps, target );
+}
+
+
+
+/*!
+\brief Receive bullettin board message
+\author Chronodt
+\param client client who sent the packet
+*/
+
+
+bool cPacketReceiveBBoardMessage::execute(pClient client)
+{
+        UI16 size = ShortFromCharPtr(buffer + 1);
+        if (length != size) return false;
+
+	// Message \x71 has numerous uses for the Bulletin Board
+	// so we need to get the type of message from the client first.
+
+	int msgType = buffer[3];
+        pMsgBoard msgboard = (pMsgBoard)pointers::findItemBySerial(LongFromCharPtr(buffer + 4));
+        VALIDATEPIR( msgboard, false)
+
+	switch (msgType)
+	{
+		case 3:  // Client->Server: Client has dbl-clicked on subject, requesting body of message
+		{        // Example  [SEND:12] 71 00 0c 03 40 07 ba 3d 40 1c 53 eb
+	                msgSN = LongFromCharPtr(buffer + 8);
+			msgboard->MsgBoardOpenPost( client, msgSN );
+			break;
+		}
+
+		case 4:  // Client->Server: Client has ACK'ed servers download of posting serial numbers
+		{
+      	                msgSN = LongFromCharPtr(buffer + 8);
+			// Check to see whether client has ACK'd all of our message ID's before proceeding
+			client->postAckCount++;
+			//ConOut(" pstAckCont=%d        postCount=%d\n", postAckCount[s], postCount[s]);
+			if ( postAckCount[s] != postCount[s] )
+				return;
+
+			// Server needs to handle ACK from client that contains the posting serial numbers
+			MsgBoardList( s );
+			break;
+		}
+
+	case 5:  // Client->Server: Client clicked on Post button (either from the main board or after pressing the Reply)
+		{        //                 Reply just switches to the Post item.
+
+			P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+			VALIDATEPC(pc);
+			// Check privledge level against server.cfg msgpostaccess
+
+			if ( (pc->IsGM()) || (SrvParms->msgpostaccess) )
+				MsgBoardPost( s, pc->postType, 0 );
+			else
+				pc->sysmsg(TRANSLATE("Thou art not allowed to post messages."));
+
+			break;
+		}
+
+	case 6:  // Remove post from Bulletin board
+		{
+			P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
+			VALIDATEPC(pc);
+			//             |p#|s1|s2|mt|b1|b2|b3|b4|m1|m2|m3|m4|
+			// Client sends 71  0  c  6 40  0  0 18  1  0  0  4
+			if ( (pc->IsGM()) || (SrvParms->msgpostremove) )
+				MsgBoardRemovePost( s );
+			break;
+		}
+
+
+	default:
+		{
+			ErrOut("MsgBoardEvent() Unknown msgType:%x for message: %x\n", buffer[s][3], buffer[s][0]);
+			break;
+		}
+	}
+}

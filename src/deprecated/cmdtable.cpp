@@ -1228,7 +1228,7 @@ void target_allSet( pClient client, P_TARGET t )
 			Skills::updateSkillLevel(pc,j);
 			updateskill(k,j);
 		}
-		statwindow(pc,pc);
+		client->statusWindow(pc,true);  //!< \todo check second argument
 	}
 	else if( t->buffer_str[0]=="DEX" ) {
 		pc->dx=t->buffer[0];
@@ -1238,7 +1238,7 @@ void target_allSet( pClient client, P_TARGET t )
 			Skills::updateSkillLevel(pc,j);
 			updateskill(k,j);
 		}
-		statwindow(pc,pc);
+		client->statusWindow(pc,true);  //!< \todo check second argument
 	}
 	else if( t->buffer_str[0]=="INT" ) {
 		pc->in=t->buffer[0];
@@ -1248,7 +1248,7 @@ void target_allSet( pClient client, P_TARGET t )
 			Skills::updateSkillLevel(pc,j);
 			updateskill(k,j);
 		}
-		statwindow(pc,pc);
+		client->statusWindow(pc,true);  //!< \todo check second argument
 	}
 	else if( t->buffer_str[0]=="FAME" ) {
 		pc->SetFame(t->buffer[0]);
@@ -1263,7 +1263,7 @@ void target_allSet( pClient client, P_TARGET t )
 				pc->baseskill[j]=t->buffer[0];
 				Skills::updateSkillLevel(pc,j);
 				updateskill(k,j);
-				statwindow(pc,pc);
+                		client->statusWindow(pc,true);  //!< \todo check second argument
 
 				break;
 			}

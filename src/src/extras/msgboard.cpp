@@ -1126,7 +1126,7 @@ int MsgBoardPost( int s, int msgType, int autoPost )
 //
 // RETURNS:     void
 //////////////////////////////////////////////////////////////////////////////
-void MsgBoardOpenPost( int s )
+void MsgBoardOpenPost( pClient client, SERIAL msgSN )
 {
 	// READ IN bbp FILE  (Client dbl-clicked on posted message on message board list)
 	// Get Message Board serial number from message buffer

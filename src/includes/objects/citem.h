@@ -671,7 +671,7 @@ protected:
 
 public:
         void            singleClick(pClient client);            //!< Single click on item
-        bool            usableWhenLockedDown();                 //!< Item can be used when locked down (in a house)
+        bool            usableWhenLockedDown(pPc pc = NULL);	//!< Item can be used when locked down (e.g. in a house)
         bool            checkItemUsability(pChar pc, int type); //!< If item can be used with "type" method by pc
         void            doubleClick(pClient client);            //!< Use of item by doubleclicking on it
 

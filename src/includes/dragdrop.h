@@ -15,6 +15,5 @@
 #ifndef __DRAGDROP_H_
 #define __DRAGDROP_H_
 
-void wear_item(NXWCLIENT ps);	//!< Item is dropped on paperdoll
 
 #endif

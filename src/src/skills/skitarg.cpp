@@ -682,7 +682,7 @@ void Skills::target_smeltOre( NXWCLIENT ps, P_TARGET t )
     }
 
 	weights::NewCalc(pc);   // Ison 2-20-99
-    statwindow(pc,pc);      // Ison 2-20-99
+    client->statusWindow(pc,true);  //!< \todo check second argument
 }
 
 void Skills::target_wheel( NXWCLIENT ps, P_TARGET t )	//Spinning wheel

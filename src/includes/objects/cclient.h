@@ -18,6 +18,14 @@ typedef cClient *pClient;
 
 typedef std::list<pClient> cClients;
 
+
+typedef struct {
+	int layer;
+	pItem item;
+	int amount;
+} buyeditem;                    // Used in trading methods
+
+
 #include "cchar.h"
 
 /*!
@@ -46,7 +54,7 @@ protected:
 	pSocket sock;	//!< Current socket used by the client
 
 	UI32 flags;	//!< Flags of capabilities of the client
-        short int clientDimension;      //!< 2d or 3d client? (must contain 2 or 3) 
+        short int clientDimension;      //!< 2d or 3d client? (must contain 2 or 3)
 public:
 	cClient(SI32 sd, struct sockaddr_in* addr);
 	~cClient();
@@ -65,6 +73,7 @@ public:
 	void encrypt(char &*);
 
         //! drag & drop methods
+
 protected:
        	bool dragging; //!< true if is dragging
 	bool evilDrag; //!< evil dragging, we need this for UO3D clients to save dragging history
@@ -78,6 +87,7 @@ protected:
         bool droppedOnBeggar(pItem pi, Location &loc, pItem cont);      //!< Item is dropped on a beggar
         bool droppedOnTrainer(pItem pi, Location &loc, pItem cont);     //!< Item is dropped on a trainer
         bool droppedOnSelf(pItem pi, Location &loc, pItem cont);        //!< Item is dropped on self
+        void wear_item(pChar pck, pItem pi);                            //!< Item is dropped on paperdoll
         void item_bounce3(const pItem pi);                              //!< simple bouncing
         void item_bounce4(const pItem pi);                              //!< bounce & checkid before resending item
         void item_bounce5(const pItem pi);                              //!< bounce & resend item
@@ -97,9 +107,25 @@ public:
 
         void get_item(pItem pi, UI16 amount);                   //!< Client grabs an item
         void drop_item(pItem pi, Location &loc, pItem cont);    //!< Item is dropped on ground, char or item
-void wear_item(NXWCLIENT ps);	//!< Item is dropped on paperdoll
+        void wear_item(pChar pck, pItem pi);	                //!< Item is dropped on paperdoll
+
+        //! trading methods
+
+public:
+        void buyaction(pNpc npc, std::vector< buyeditem > &allitemsbought);      //!< Getting purchased item and gold/availability check
+
+        //! Message boards properties
+public:
+	UI08 postAcked[MAXPOSTS][5];
+        UI32 postCount;
+	UI32 postAckCount;
+
+
+
+
 
         //! packet methods
+
 public:
 	void showContainer(pItem pCont);
 	void playMidi();
@@ -109,6 +135,8 @@ public:
 	void showSpecialBankBox(pChar dest);
 	void statusWindow(pChar target, bool extended = true); //, bool canrename);  canrename will be "calculated" within the method
         void updateStatusWindow(pItem item);
+        void skillWindow();
+        void updatePaperdoll();
 };
 
 #endif

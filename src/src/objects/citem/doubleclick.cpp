@@ -47,9 +47,37 @@
 
 
 
-bool cItem::usableWhenLockedDown()
+bool cItem::usableWhenLockedDown(pPc pc)
 {
 //! \todo this function
+	switch(type)
+        {
+        	case ITYPE_CONTAINER:
+                case ITYPE_LOCKED_ITEM_SPAWNER:
+		case ITYPE_SPELLBOOK:
+                case ITYPE_MAP:
+                case ITYPE_BOOK:
+                case ITYPE_DOOR:
+                case ITYPE_LOCKED_DOOR:
+                case ITYPE_RESURRECT:
+                case ITYPE_UNLOCKED_CONTAINER:
+		case ITYPE_LOCKED_CONTAINER:
+                case ITYPE_TRASH:
+                case ITYPE_SLOTMACHINE:
+                case ITYPE_DECIPHERED_MAP:
+                	return true;		// These items are always usable when locked down
+
+
+                case ITYPE_KEY:
+                	{
+                        	if (pc == owner) return true;
+                        	if (inHouse!= NULL)
+                                	if(inHouse->isFriend(pc)) return true;
+
+
+                	}	// these items can be used only by owner or house owner/coowner/friend when locked down
+        }
+        return false
 }
 
 /*!
@@ -187,7 +215,7 @@ void cItem::singleClick(pClient client )
 
 #define CASE(FUNC) else if( ( FUNC() ) )
 #define CASEOR(A, B) else if( (A())||(B()) )
-static void doubleclick_itemid( NXWSOCKET s, P_CHAR pc, P_ITEM pi, P_ITEM pack );
+static void doubleclick_itemid( pClient client, pChar pc, pItem pi, pContainer pack );
 
 /*!
 \brief Double click
@@ -243,7 +271,7 @@ void cItem::doubleClick(pClient client);
 
 	tile_st item;
 
-	pItem pack= pc->getBackpack();
+	pContainer pack = pc->getBackpack();
 	VALIDATEPI( pack );
 
 
@@ -425,20 +453,14 @@ void cItem::doubleClick(pClient client);
 
 		P_TARGET targ = clientInfo[s]->newTarget( new cObjectTarget() );
 		targ->code_callback=target_envoke;
-		targ->send( ps );
-		ps->sysmsg( TRANSLATE("What will you use this on?"));
+		targ->send( client );
+		client->sysmsg( TRANSLATE("What will you use this on?"));
 		return;
 	}
 	// end trigger stuff
 	// BEGIN Check items by type
 
 	int los = 0;
-
-
-	BYTE map1[20] = "\x90\x40\x01\x02\x03\x13\x9D\x00\x00\x00\x00\x13\xFF\x0F\xFF\x01\x90\x01\x90";
-	BYTE map2[12] = "\x56\x40\x01\x02\x03\x05\x00\x00\x00\x00\x00";
-	// By Polygon: This one is needed to show the location on treasure maps
-	BYTE map3[12] = "\x56\x40\x01\x02\x03\x01\x00\x00\x00\x00\x00";
 
 
 	P_TARGET targ = NULL;
@@ -512,8 +534,8 @@ void cItem::doubleClick(pClient client);
 
 		targ = clientInfo[s]->newTarget( new cLocationTarget() );
 		targ->code_callback = target_tele;
-		targ->send( ps );
-		ps->sysmsg( TRANSLATE("Select teleport target."));
+		targ->send( client );
+		client->sysmsg( TRANSLATE("Select teleport target."));
 		return;
 	case ITYPE_KEY:
 
@@ -525,8 +547,8 @@ void cItem::doubleClick(pClient client);
 		targ->buffer[1]= pi->more2;
 		targ->buffer[2]= pi->more3;
 		targ->buffer[3]= pi->more4;
-		targ->send( ps );
-		ps->sysmsg( TRANSLATE("Select item to use the key on."));
+		targ->send( client );
+		client->sysmsg( TRANSLATE("Select item to use the key on."));
 		return;
 	case ITYPE_LOCKED_ITEM_SPAWNER:
 	case ITYPE_LOCKED_CONTAINER:
@@ -551,42 +573,28 @@ void cItem::doubleClick(pClient client);
 	case ITYPE_SPELLBOOK:
 		if (ISVALIDPI(pack)) // morrolan
 			if(getContSerial()==pack->getSerial32() || pc->IsWearing(this))
-				ps->sendSpellBook(this);
+				client->sendSpellBook(this);
 			else
 				pc->sysmsg(TRANSLATE("If you wish to open a spellbook, it must be equipped or in your main backpack."));
 			return;
+	case ITYPE_BLANK_MAP:
+    		  //TODO check if pc has a pen to write maps with
+                //! \todo map writing code
+		return;
 	case ITYPE_MAP:
-		LongToCharPtr(getSerial32(), map1 +1);
-		map2[1] = map1[1];
-		map2[2] = map1[2];
-		map2[3] = map1[3];
-		map2[4] = map1[4];
-/*
-		By Polygon:
-		Assign areas and map size before sending
-*/
-		map1[7]  = more1;	// Assign topleft x
-		map1[8]  = more2;
-		map1[9]  = more3;	// Assign topleft y
-		map1[10] = more4;
-		map1[11] = moreb1;	// Assign lowright x
-		map1[12] = moreb2;
-		map1[13] = moreb3;	// Assign lowright y
-		map1[14] = moreb4;
-		int width, height;		// Tempoary storage for w and h;
-		width = 134 + (134 * morez);	// Calculate new w and h
-		height = 134 + (134 * morez);
-		ShortToCharPtr(width, map1 +15);
-		ShortToCharPtr(height, map1 +17);
-//		END OF: By Polygon
+                cPacketSendOpenMapGump pk((pMap)this);
+		client->sendPacket(&pk);
+                cPacketSendMapPlotCourse pk2((pMap)this, ClearAllPins); //Sending clear all pins command
+		client->sendPacket(&pk2);
+
+                std::vector<pindataobject>::iterator iter = ((pMap)this)->pinData.begin()
+                for(int i = 1;i <= ((pMap)this)->getPinsNumber(); i++)
+                {
+                	cPacketSendMapPlotCourse pki((pMap)this, AddPin, 0, ((pMap)this)->getX(i), ((pMap)this)->getY(i));
+			client->sendPacket(&pki);
+                }
 
 
-//TODO: redo when send packet for map redone
-
-		Xsend(s, map1, 19);
-//AoS/		Network->FlushBuffer(s);
-		Xsend(s, map2, 11);
-//AoS/		Network->FlushBuffer(s);
 		return;
 	case ITYPE_BOOK:
 
@@ -797,7 +805,7 @@ void cItem::doubleClick(pClient client);
 			return;
 	case ITYPE_PLAYER_VENDOR_DEED:			// PlayerVendors deed
 			{
-			pNPC vendor = npcs::AddNPCxyz(-1, 2117, charpos.x, charpos.y, charpos.z);
+			pNpc vendor = npcs::AddNPCxyz(-1, 2117, charpos.x, charpos.y, charpos.z);
 			if ( !ISVALIDPC(vendor) )
 			{
 				WarnOut("npc-script couldnt find vendor !\n");
@@ -828,27 +836,12 @@ void cItem::doubleClick(pClient client);
 			return;
 
 	case ITYPE_DECIPHERED_MAP:
-                //TODO: redo when treasures redone
-			map1[ 1] = map2[1] = map3[1] = getSerial().ser1;
-			map1[ 2] = map2[2] = map3[2] = getSerial().ser2;
-			map1[ 3] = map2[3] = map3[3] = getSerial().ser3;
-			map1[ 4] = map2[4] = map3[4] = getSerial().ser4;
-			map1[ 7] = more1;	// Assign topleft x
-			map1[ 8] = more2;
-			map1[ 9] = more3;	// Assign topleft y
-			map1[10] = more4;
-			map1[11] = moreb1;	// Assign lowright x
-			map1[12] = moreb2;
-			map1[13] = moreb3;	// Assign lowright y
-			map1[14] = moreb4;
-			ShortToCharPtr(0x0100, map1 +15);			// Let width and height be 256
-			ShortToCharPtr(0x0100, map1 +17);
-			Xsend(s, map1, 19);
-//AoS/			Network->FlushBuffer(s);
 
-			Xsend(s, map2, 11);
-//AoS/			Network->FlushBuffer(s);
-
+                	cPacketSendOpenMapGump pk((pMap)this);
+			client->sendPacket(&pk);
+	                cPacketSendMapPlotCourse pk2((pMap)this, ClearAllPins); //Sending clear all pins command
+			client->sendPacket(&pk2);
+        
 			// Generate message to add a map point
 			SI16 posx, posy;					// tempoary storage for map point
 			SI16 tlx, tly, lrx, lry;				// tempoary storage for map extends
@@ -858,10 +851,9 @@ void cItem::doubleClick(pClient client);
 			lry = (moreb3 << 8) | moreb4;
 			posx = (256 * (morex - tlx)) / (lrx - tlx);		// Generate location for point
 			posy = (256 * (morey - tly)) / (lry - tly);
-			ShortToCharPtr(posx, map3 +7);				// Store the point position
-			ShortToCharPtr(posy, map3 +9);
-			Xsend(s, map3, 11);					// Fire data to client :D
-//AoS/			Network->FlushBuffer(s);
+                        
+                        cPacketSendMapPlotCourse pk3((pMap)this, AddPin,0,posx, posy);//Sending add pin command
+			client->sendPacket(&pk3);
 			return;
 		default:
 			break;
@@ -876,7 +868,7 @@ void cItem::doubleClick(pClient client);
 		if (ISVALIDPI(pack))
 			if( getContSerial()==pack->getSerial32()) {
 				magic::SpellId spn = magic::spellNumberFromScrollId(getId());	// avoid reactive armor glitch
-				if ((spn>=0)&&(magic::beginCasting(spn, ps, magic::CASTINGTYPE_SCROLL)))
+				if ((spn>=0)&&(magic::beginCasting(spn, client, magic::CASTINGTYPE_SCROLL)))
 					ReduceAmount(1);							// remove scroll if successful
 			}
 			else pc->sysmsg(TRANSLATE("The scroll must be in your backpack to envoke its magic."));
@@ -885,61 +877,64 @@ void cItem::doubleClick(pClient client);
         //TODO: redo when targets redone
 		targ = clientInfo[s]->newTarget( new cItemTarget() );
 		targ->code_callback=Skills::target_repair;
-		targ->send( ps );
-		ps->sysmsg( TRANSLATE("Select item to be repaired."));
+		targ->send( client );
+		client->sysmsg( TRANSLATE("Select item to be repaired."));
 	}
 	CASE(IsAxe) {
         //TODO: redo when targets redone
 		targ = clientInfo[s]->newTarget( new cTarget() );
 		targ->code_callback=target_axe;
 		targ->buffer[0]=pi->getSerial32();
-		targ->send( ps );
-		ps->sysmsg( TRANSLATE("What would you like to use that on ?"));
+		targ->send( client );
+		client->sysmsg( TRANSLATE("What would you like to use that on ?"));
 	}
 	CASEOR(IsFeather, IsShaft) {
         //TODO: redo when targets redone
 		targ = clientInfo[s]->newTarget( new cItemTarget() );
 		targ->buffer[0]= pi->getSerial32();
 		targ->code_callback=Skills::target_fletching;
-		targ->send( ps );
-		ps->sysmsg( TRANSLATE("What would you like to use this with?"));
+		targ->send( client );
+		client->sysmsg( TRANSLATE("What would you like to use this with?"));
 	}
 	CASEOR( IsFencing1H, IsSword ) {
         //TODO: redo when targets redone
 		targ = clientInfo[s]->newTarget( new cTarget() );
 		targ->code_callback=target_sword;
-		targ->send( ps );
-		ps->sysmsg( TRANSLATE("What would you like to use that on ?"));
+		targ->send( client );
+		client->sysmsg( TRANSLATE("What would you like to use that on ?"));
 	}
 	else ///BEGIN IDENTIFICATION BY ID ( RAW MODE, DEPRECATED )
-		doubleclick_itemid( s, pc, pi, pack );
+		doubleclick_itemid( client, pc, pi, pack );
 
 }
 
-void target_selectdyevat( NXWCLIENT ps, P_TARGET t )
+
+//TODO revise from here
+
+void target_selectdyevat( pClient client, P_TARGET t )
 {
     P_ITEM pi=pointers::findItemBySerial(t->getClicked());
     VALIDATEPI(pi);
 
     if( pi->getId()==0x0FAB ||                     //dye vat
         pi->getId()==0x0EFF || pi->getId()==0x0E27 )  //hair dye
-            SndDyevat( ps->toInt(), pi->getSerial32(), pi->getId() );
+            client->sndDyevat(pi->getSerial32(), pi->getId() );
         else
-            ps->sysmsg( TRANSLATE("You can only use this item on a dye vat."));
+            client->sysmsg( TRANSLATE("You can only use this item on a dye vat."));
 }
 
-void target_dyevat( NXWCLIENT ps, P_TARGET t )
+void target_dyevat( pClient client, P_TARGET t )
 {
-	P_CHAR curr = ps->currChar();
+	pChar curr = client->currChar();
 	VALIDATEPC(curr);
 
-	P_ITEM pi=pointers::findItemBySerial( t->getClicked() );
+	pItem pi=pointers::findItemBySerial( t->getClicked() );
 	VALIDATEPI(pi);
 
 	if( pi->dye )//if dyeable
 	{
 
-		P_CHAR pc = pi->getPackOwner();
+		pChar pc = pi->getPackOwner();
 
 		if( !ISVALIDPC(pc) || ( pc->getSerial32()==curr->getSerial32() ) ) //in world or owned
 		{
@@ -955,21 +950,20 @@ void target_dyevat( NXWCLIENT ps, P_TARGET t )
 }
 
 
-static void doubleclick_itemid( NXWSOCKET s, P_CHAR pc, P_ITEM pi, P_ITEM pack )
+static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pack )
 {
 	P_TARGET targ = NULL;
-	NXWCLIENT ps = getClientFromSocket( s );
 
 	switch (pi->getId())
 	{
 		case 0x0FA9: // dye
-			targ = clientInfo[s]->newTarget( new cItemTarget() );
+			targ = client->clientInfo->newTarget( new cItemTarget() );
 			targ->code_callback=target_selectdyevat;
-			targ->send( ps );
-			ps->sysmsg( TRANSLATE("Which dye vat will you use this on?") );
+			targ->send( client );
+			client->sysmsg( TRANSLATE("Which dye vat will you use this on?") );
 			return;// dye
 		case 0x0FAB:// dye vat
-			targ = clientInfo[s]->newTarget( new cItemTarget() );
+			targ = client->clientInfo->newTarget( new cItemTarget() );
 			targ->code_callback=target_dyevat;
 			targ->buffer[0]=pi->getColor();
 			targ->send( ps );
@@ -1098,7 +1092,7 @@ static void doubleclick_itemid( NXWSOCKET s, P_CHAR pc, P_ITEM pi, P_ITEM pack )
 			return;
 		case 0x1E5E:
 		case 0x1E5F: // Message board opening
-			MsgBoards::MsgBoardEvent(s);
+			MsgBoards::MsgBoardOpen( client );
 			return;
 		case 0x0DE1:
 		case 0x0DE2: // camping

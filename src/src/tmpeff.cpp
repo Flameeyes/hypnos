@@ -360,7 +360,7 @@ void cTempfx::start()
 			dest->dx -= m_nMore1;
 			dest->stm = min (dest->dx, dest->stm);
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_FEEBLEMIND:
@@ -368,7 +368,7 @@ void cTempfx::start()
 				m_nMore1 = dest->in;
 			dest->in -= m_nMore1;
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_WEAKEN:
@@ -376,28 +376,28 @@ void cTempfx::start()
 				m_nMore1 = dest->getStrength();
 			dest->modifyStrength(-m_nMore1);
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_AGILITY:
 			dest->dx += m_nMore1;
 			dest->stm += m_nMore1;
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_STRENGHT:
 			dest->modifyStrength(m_nMore1);
 			dest->hp += m_nMore1;
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_CUNNING:
 			dest->in += m_nMore1;
 			dest->mn += m_nMore1;
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_BLESS:
@@ -409,7 +409,7 @@ void cTempfx::start()
 			dest->stm += m_nMore2;
 			dest->mn += m_nMore3;
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_CURSE:
@@ -423,7 +423,7 @@ void cTempfx::start()
 			dest->dx -= m_nMore2;
 			dest->in -= m_nMore3;
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_INVISIBILITY:
@@ -600,7 +600,7 @@ void cTempfx::start()
 				m_nMore1 = dest->in;
 			dest->in -= m_nMore1;
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case CRIMINAL:
@@ -664,21 +664,21 @@ void cTempfx::executeExpireCode()
 			VALIDATEPC(dest);
 			dest->dx += m_nMore1;
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_FEEBLEMIND:
 			VALIDATEPC(dest);
 			dest->in += m_nMore1;
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_WEAKEN:
 			VALIDATEPC(dest);
 			dest->modifyStrength(m_nMore1);
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_AGILITY:
@@ -686,7 +686,7 @@ void cTempfx::executeExpireCode()
 			dest->dx -= m_nMore1;
 			dest->stm = min(dest->stm, dest->dx);
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_STRENGHT:
@@ -694,7 +694,7 @@ void cTempfx::executeExpireCode()
 			dest->modifyStrength(-m_nMore1);
 			dest->hp = min(dest->hp, (SI32)dest->getStrength());
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_CUNNING:
@@ -702,7 +702,7 @@ void cTempfx::executeExpireCode()
 			dest->in -= m_nMore1;
 			dest->mn = min(dest->mn, dest->in);
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_BLESS:
@@ -714,7 +714,7 @@ void cTempfx::executeExpireCode()
 			dest->stm = min(dest->stm, dest->dx);
 			dest->mn = min(dest->mn, dest->in);
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_CURSE:
@@ -723,7 +723,7 @@ void cTempfx::executeExpireCode()
 			dest->dx += m_nMore2;
 			dest->in += m_nMore3;
 			if (dest->getClient())
-				statwindow(dest, dest);
+                		client->statusWindow(dest,true);  //!< \todo check second argument
 			break;
 
 		case SPELL_INVISIBILITY:

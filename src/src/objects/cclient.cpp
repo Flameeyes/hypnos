@@ -102,16 +102,16 @@ UI32 new_len=0, tmp_len=out_len;
 \author Kheru - rewrote by Flameeyes
 \param pCont the container
 */
-void cClient::showContainer(pItem pCont)
+void cClient::showContainer(pCont cont)
 {
-	if ( ! pCont )
+	if ( ! cont )
 		return;
 
 	NxwItemWrapper si;
-	si.fillItemsInContainer( pCont, false, false );
+	si.fillItemsInContainer( cont, false, false );
 	SI32 count=si.size();
 
-	cPacketSendDrawContainer pk(pCont->getSerial(), pCont->getGump());
+	cPacketSendDrawContainer pk(cont->getSerial(), cont->getGump());
 	sendPacket(&pk);
 
 	cPacketSendContainerItem pk2;
@@ -245,6 +245,14 @@ void cClient::light(UI08 level)
 	sendPacket(&pk);
 }
 
+
+void cClient::updatePaperdoll()
+{
+	cPacketSendPaperdollClothingUpdated pk();
+	sendPacket(&pk);
+}
+
+
 void cClient::showBankBox(pPC dest)
 {
 	if ( ! dest || (dest != pc && acc->getPrivLevel() < privSeer ) )
@@ -256,6 +264,7 @@ void cClient::showBankBox(pPC dest)
 
 	showClient(bank);
 }
+
 
 /*!
 \brief region specific bankbox
@@ -334,6 +343,53 @@ void cClient::updateStatusWindow(pItem item)
 		statusWindow( pc, true );
 }
 
+/*!
+\brief brings up the skill window in client
+*/
+void cClient::skillWindow() // Opens the skills list, updated for client 1.26.2b by LB
+{
+
+	pChar pc = currChar();
+	VALIDATEPC(pc);
+
+
+
+
+
+        //!  \todo: port this into cPackets since it is a raw packet
+
+
+
+	UI08 skillstart[4]={ 0x3A, 0x00, };
+	UI08 skillmid[7]={ 0x00, };
+	UI08 skillend[2]={ 0x00, };
+	UI16 len;
+	char x;
+
+	len = 0x015D;					// Hardcoded -_-;  // hack for that 3 new skills+1.26.2 client, LB 4'th dec 1999
+	ShortToCharPtr(len, skillstart +1);
+	skillstart[3] = 0x00;				// Type:
+							// 0x00 = full list, 0xFF = single skill update,
+							// 0x02 = full list with skillcap, 0xDF = single skill update with cap
+
+	Xsend(s, skillstart, 4);
+	for (int i=0;i<TRUESKILLS;i++)
+	{
+		Skills::updateSkillLevel(pc,i);
+		ShortToCharPtr(i+1, skillmid +0);
+		ShortToCharPtr(pc->skill[i], skillmid +2);
+		ShortToCharPtr(pc->baseskill[i], skillmid +4);
+
+		x=pc->lockSkill[i];
+		if (x!=0 && x!=1 && x!=2) x=0;
+		skillmid[6]=x; // leave it unlocked, regardless
+		Xsend(s, skillmid, 7);
+	}
+	Xsend(s, skillend, 2);
+//AoS/	Network->FlushBuffer(s);
+}
+
+
 /*------------------------------------------------------------------------------
                         DRAG & DROP METHODS
 ------------------------------------------------------------------------------*/
@@ -378,12 +434,9 @@ void cClient::get_item( pItem pi, UI16 amount ) // Client grabs an item
  		if( pc_currchar->UnEquip( pi, 1 ) == 1 )	// bypass called
  		{
  			if( isDragging() )
-                        //! \todo the sendpacket stuff here
  			{
- 				UI08 cmd[1]= {0x29};
  				resetDragging();
- 				Xsend(s, cmd, 1);
-//AoS/				Network->FlushBuffer(s);
+				updatePaperdoll();
  			}
  			return;
  		}
@@ -1114,7 +1167,6 @@ void cClient::dump_item(pItem pi, Location &loc, pItem cont) // Item is dropped 
 		}
 
 		weights::NewCalc(pc);  // Ison 2-20-99
-                //! \todo the sendpacket stuff here
 		statusWindow(pc, true);
 		pc->playSFX( itemsfx(pi->getId()) );
 
@@ -1569,6 +1621,273 @@ void cClient::item_bounce3(const pItem pi)
 }
 
 /*!
+\brief Wears item dragged on paperdoll
+\param pck char to "dressup" :)
+\param pi item to be put on pc
+*/
+
+
+void wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
+{
+
+	pChar pc = currChar();
+	VALIDATEPC( pc );
+	if( pck->dead )  //Exploit fix: Dead ppl can't equip anything.
+		return;
+
+	bool resetDragging = false;
+
+	if( (pi->getId()>>8) >= 0x40)  // LB, client crashfix if multi-objects are moved to PD
+		resetDragging = true;
+
+	tile_st tile;
+	int serial/*, letsbounce=0*/; // AntiChrist (5) - new ITEMHAND system
+
+	data::seekTile(pi->getId(), tile);
+
+	if( ( clientDimension == 3 ) &&  (tile.quality == 0) )
+	{
+		sysmsg(TRANSLATE("You can't wear that"));
+		resetDragging = true;
+	}
+	else {
+		pItem outmost = pi->getOutMostCont();
+		pChar vendor = (pChar) outmost->getContainer();
+		if( ISVALIDPC( vendor ) && ( vendor->getOwnerSerial32() != pc->getSerial() ) )
+		{
+			resetDragging = true;
+		}
+	}
+
+	if( resetDragging ) {
+                //! \todo the sendpacket stuff here
+		Sndbounce5();
+		if (isDragging())
+		{
+			resetDragging();
+			item_bounce4(pi);
+			updateStatusWindow(pi);
+		}
+		return;
+	}
+
+	if ( pck == pc || pc->IsGM() )
+	{
+
+		if ( !pc->IsGM() && pi->st > pck->getStrength() && !pi->isNewbie() ) // now you can equip anything if it's newbie
+		{
+			sysmsg(TRANSLATE("You are not strong enough to use that."));
+			resetDragging = true;
+		}
+		else if ( !pc->IsGM() && !pi->checkItemUsability(pc, ITEM_USE_WEAR) )
+		{
+			resetDragging = true;
+		}
+		else if ( (pc->getId() == BODY_MALE) && ( pi->getId()==0x1c00 || pi->getId()==0x1c02 || pi->getId()==0x1c04 || pi->getId()==0x1c06 || pi->getId()==0x1c08 || pi->getId()==0x1c0a || pi->getId()==0x1c0c ) ) // Ripper...so males cant wear female armor
+		{
+			sysmsg(TRANSLATE("You cant wear female armor!"));
+			resetDragging = true;
+		}
+		else if ((((pi->magic==2)||((tile.weight==255)&&(pi->magic!=1))) && !pc->canAllMove()) ||
+				( (pi->magic==3|| pi->magic==4) && !(pi->getOwnerSerial32() == pc->getSerial)) )
+		{
+			resetDragging = true;
+		}
+
+		if( resetDragging ) {
+                        //! \todo the sendpacket stuff here
+			Sndbounce5(s);
+			if (isDragging())
+			{
+				resetDragging();
+				item_bounce4(pi);
+				updateStatusWindow(pi);
+			}
+			return;
+		}
+
+
+
+		// - AntiChrist (4) - checks for new ITEMHAND system
+		// - now you can't equip 2 hnd weapons with 1hnd weapons nor shields!!
+		serial= pck->getSerial32(); //xan -> k not cc :)
+
+		pItem pj = NULL;
+ 		pChar pc_currchar= pck;
+// 		P_ITEM pack= pc_currchar->getBackpack();
+                //<Luxor>
+
+		pItem pW = pc_currchar->getWeapon();
+		if (tile.quality == 1 || tile.quality == 2)
+		{ //weapons layers
+			if ( (pi->layer == LAYER_2HANDWEAPON && ISVALIDPI(pc_currchar->getShield())) )
+			{
+				sysmsg("You cannot wear two weapons.");
+                                //! \todo the sendpacket stuff here
+				Sndbounce5(s);
+				if (isDragging())
+				{
+        			        resetDragging();
+					updateStatusWindow(pi);
+	        	}
+				pi->setContainer( pi->getOldContainer() );
+				pi->setPosition( pi->getOldPosition() );
+				pi->layer = pi->oldlayer;
+				pi->Refresh();
+				return;
+			}
+			if (ISVALIDPI(pW))
+			{
+				if (pi->itmhand != 3 && pi->lodamage != 0 && pi->itmhand == pW->itmhand)
+				{
+					sysmsg("You cannot wear two weapons.");
+                                        //! \todo the sendpacket stuff here
+					Sndbounce5(s);
+					if (isDragging())
+					{
+						resetDragging();
+						updateStatusWindow(pi);
+					}
+					pi->setContainer( pi->getOldContainer() );
+					pi->setPosition( pi->getOldPosition() );
+					pi->layer = pi->oldlayer;
+					pi->Refresh();
+					return;
+				}
+			}
+		}
+		//</Luxor>
+
+		if ( ServerScp::g_nUnequipOnReequip )
+		{
+			pItem drop[2]= {NULL, NULL};	                // list of items to drop
+									// there no reason for it to be larger
+			int curindex= 0;
+
+			NxwItemWrapper si;
+			si.fillItemWeared( pc_currchar, false, true, true );
+			for( si.rewind(); !si.isEmpty(); si++ )
+			{
+				// we CANNOT directly bounce the item, or the containersearch() function will not work
+				// so we store the item ID in letsbounce, and at the end we bounce the item
+
+				pj=si.getItem();
+				if(!ISVALIDPI(pj))
+					continue;
+
+				if ((tile.quality == 1) || (tile.quality == 2))// weapons
+				{
+					if (pi->itmhand == 2) // two handed weapons or shield
+					{
+						if (pj->itmhand == 2)
+							drop[curindex++]= pj;
+
+						if ( (pj->itmhand == 1) || (pj->itmhand == 3) )
+							drop[curindex++]= pj;
+					}
+
+					if (pi->itmhand == 3)
+					{
+						if ((pj->itmhand == 2) || pj->itmhand == 3)
+							drop[curindex++]= pj;
+					}
+
+					if ((pi->itmhand == 1) && ((pj->itmhand == 2) || (pj->itmhand == 1)))
+						drop[curindex++]= pj;
+				}
+				else	// not a weapon
+				{
+					if (pj->layer == tile.quality)
+						drop[curindex++]= pj;
+				}
+			}
+
+			if (ServerScp::g_nUnequipOnReequip)
+			{
+				if (drop[0] != NULL)	// there is at least one item to drop
+				{
+					for (int i= 0; i< 2; i++)
+					{
+						if (drop[i] != NULL)
+						{
+							if(ISVALIDPI(drop[i])) pc_currchar->unEquip( drop[i], 1);
+						}
+					}
+				}
+				pc->playSFX( itemsfx(pi->getId()) );
+				pc_currchar->equip(pi, 1);
+			}
+			else
+			{
+				if (drop[0] == NULL)
+				{
+					pc->playSFX( itemsfx(pi->getId()) );
+					pc_currchar->equip(pi, 1);
+				}
+			}
+		}
+
+		if (!(pc->IsGM())) //Ripper..players cant equip items on other players or npc`s paperdolls.
+		{
+			if ((pck->getSerial32() != pc->getSerial32())/*&&(chars[s].npc!=k)*/) //-> really don't understand this! :|, xan
+			{
+				sysmsg(TRANSLATE("You can't put items on other people!"));
+				item_bounce6(pi);
+				return;
+			}
+		}
+
+		NxwSocketWrapper sws;
+		sws.fillOnline( pi );
+		for( sws.rewind(); !sws.isEmpty(); sws++ )
+                        //! \todo the sendpacket stuff here
+			SendDeleteObjectPkt( sws.getSocket(), pi->getSerial32() );
+
+//! \todo verify if layer behaves as Flameeyes told me :D (but it seems to me it does NOT! :P)
+
+//		pi->layer=buffer[5];  //Chronodt: layer from packet should be ignored in favour of normal layer positioning for item
+		pi->setContSerial(pck);
+
+		if (g_nShowLayers) InfoOut("Item equipped on layer %i.\n",pi->layer);
+
+		wearIt(pi);
+
+		NxwSocketWrapper sw;
+		sw.fillOnline( pck, false );
+		for( sw.rewind(); !sw.isEmpty(); sw++ )
+		{
+			cClient j = sw.getClient();
+			if( j!=NULL )
+				j->wornitems(pck );
+		}
+
+		pc->playSFX( itemsfx(pi->getId()) );
+		weights::NewCalc(pc);	// Ison 2-20-99
+		statusWindow(pc, true);
+
+//		if (pi->glow>0)
+//		{
+//			pc->removeHalo(pi); // if gm equips on differnt player it needs to be deleted out of the hashteble
+//			pck->addHalo(pi);
+//			pck->glowHalo(pi);
+//		}
+
+		if ( pck->equip(pi, 1) == 2)	// bypass called
+		{
+			pItem pack = pck->getBackpack();
+			pc->playSFX( itemsfx(pi->getId()) );
+			pi->layer= 0;
+			pi->setContainer( pack );
+                        //! \todo the sendpacket stuff here
+			sendbpitem(pi);
+			return;
+		}
+
+	}
+}
+
+
+/*!
 \brief holds some statements that were COPIED some 50 times
 \param pi item to be bounced back (already in dragging mode)
 */
@@ -1608,3 +1927,178 @@ void cClient::item_bounce6(const pItem pi)
 		item_bounce4( pi );
 	}
 }
+
+
+
+
+/*------------------------------------------------------------------------------
+                             TRADING METHODS
+------------------------------------------------------------------------------*/
+
+/*!
+\brief holds some statements that were COPIED some 50 times
+\author Unknown, updated to pyuo Chronodt (24/2/04)
+\param npc vendor whose goods player is buying
+\param allitemsbought vector of items selected from player (layer, pItem and amount for each item)
+*/
+
+
+
+void cClient::buyaction(pNpc npc, std::vector< buyeditem > &allitemsbought)
+{
+
+	int i, j;
+
+	int playergoldtotal;
+
+	int tmpvalue=0; // Fixed for adv trade system -- Magius(CHE) §
+ 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+
+	pChar pc = currChar();
+	VALIDATEPC(pc);
+
+	pItem pack = pc->getBackpack();
+	VALIDATEPI(pack);
+
+	int itemtotal=allitemsbought.size();
+	if (itemtotal>256)
+		return; //LB
+
+	int clear=0;
+	int goldtotal=0;
+	int soldout=0;
+
+        std::vector<buyeditem>::iterator iter( allitemsbought.begin()), end( allitemsbought.end() );
+	for (; iter!=end; iter++)
+	{
+		iter.item->rank=10;     //Just to be on the safe side... :)
+		// Fixed for adv trade system -- Magius(CHE) §
+		tmpvalue = iter.item->value;
+		tmpvalue = iter.item->calcValue(tmpvalue);
+		if (SrvParms->trade_system==1)
+			tmpvalue=calcGoodValue(client,iter.item,tmpvalue,0);
+		goldtotal+=iter.amount*tmpvalue;
+		// End Fix for adv trade system -- Magius(CHE) §
+                if (iter->item->amount < iter->amount) soldout=1;
+	}
+
+	bool useBank;
+	useBank = (goldtotal >= SrvParms->CheckBank );
+
+	if( useBank )
+		playergoldtotal = pc->countBankGold();//GetBankCount(pc_currchar, 0x0EED );
+	else
+		playergoldtotal = pc->CountGold();
+
+	if ((playergoldtotal<goldtotal)&&(!pc->IsGM()))
+	{
+		npc->talkAll( TRANSLATE("Alas, thou dost not possess sufficient gold for this purchase!"),0);
+	}
+	else {
+                if (soldout)
+		{
+			npc->talk(this, TRANSLATE("Alas, I no longer have all those goods in stock. Let me know if there is something else thou wouldst buy."),0);
+			clear=1;
+		}
+		else
+		{
+			if (pc->IsGM())
+			{
+				sprintf(temp, TRANSLATE("Here you are, %s. Someone as special as thee will receive my wares for free of course."), pc->getCurrentNameC());
+			}
+			else
+			{
+				if(useBank)
+				{
+					sprintf(temp, TRANSLATE("Here you are, %s. %d gold coin%s will be deducted from your bank account.  I thank thee for thy business."),
+					pc->getCurrentNameC(), goldtotal, (goldtotal==1) ? "" : "s");
+				}
+			    else
+				{
+				    sprintf(temp, TRANSLATE("Here you are, %s.  That will be %d gold coin%s.  I thank thee for thy business."),
+					pc->getCurrentNameC(), goldtotal, (goldtotal==1) ? "" : "s");
+				}
+			    pc->playSFX( goldsfx(goldtotal) );
+			}
+			npc->talkAll(temp,0);
+			npc->playAction(0x20);	// bow (Duke, 17/03/2001)
+
+			clear=1;
+			if( !(pc->IsGM() ) )
+			{
+				if( useBank )
+				{
+					pItem bank= pc->GetBankBox();
+					bank->DeleteAmount(goldtotal, ITEMID_GOLD, 0);
+				}
+				else
+				{
+					pack->DeleteAmount( goldtotal, ITEMID_GOLD);
+				}
+			}
+
+			for (iter = allitemsbought.begin(); iter!=end; iter++) {
+				if (iter->item->amount > iter->amount)
+				{
+					if (iter->item->pileable)
+					{
+						item::CreateFromScript(  iter->item->getScriptID(), pack, iter->amount );
+					}
+					else
+					{
+						for (j=0;j<iter->amount;j++)
+							item::CreateFromScript( iter->item->getScriptID(), pack );
+					}
+					iter->item->amount-=iter->amount;
+					iter->item->restock+=iter->amount;
+				}
+				else
+				{
+					switch(iter->layer)
+					{
+						case LAYER_TRADE_RESTOCK:
+							if (iter->item->pileable)
+							{
+
+								item::CreateFromScript( iter->item->getScriptID(), pack, iter->amount );
+
+							}
+							else
+							{
+								for (j=0;j<iter->amount;j++)
+									item::CreateFromScript( iter->item->getScriptID(), pack );
+
+							}
+							iter->item->amount-=iter->amount;
+							iter->item->restock+=iter->amount;
+							break;
+						case LAYER_TRADE_NORESTOCK:
+							if (iter->item->pileable)
+								iter->item->setContainer( pack );
+							else
+							{
+								for (j=0;j<iter->amount;j++)
+									item::CreateFromScript( iter->item->getScriptID(), pack );
+
+								iter->item->setContainer( pack );
+								iter->item->amount=1;
+							}
+							iter->item->Refresh();
+							break;
+						default:
+							ErrOut("Switch fallout. trade.cpp, buyaction()\n"); //Morrolan
+					}
+				}
+			}
+		}
+	}
+
+	if (clear)
+	{
+                cPacketSendClearBuyWindow pk(npc);
+	        sendPacket(&pk);
+	}
+	weights::NewCalc(pc);	// Ison 2-20-99
+	statusWindow(pc,true);  //!< \todo check second argument
+}
+

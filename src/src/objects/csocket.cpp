@@ -47,7 +47,7 @@ void cSocket::cReceiver::run()
                         }
                         //! after execution (and probably ending the buffer usefulness) pr should be deleted or we'll run out of memory :D
                         //! but since PacketReceive is not yet fully done, there may be need (in future packets) of keeping it, even with the buffer no longer valid
-                        // delete pr;
+                        delete pr;
                 }
 	}
 }

@@ -997,7 +997,7 @@ void Skills::AdvanceStats(CHARACTER s, int sk)
 			++pc->statGainedToday;
 
 			if ( socket != INVALID )
-				statwindow( pc, pc);              // update client's status window
+                		client->statusWindow(pc,true);  //!< \todo check second argument
 
 
 			for ( i = 0;  i < ALLSKILLS; i++ )

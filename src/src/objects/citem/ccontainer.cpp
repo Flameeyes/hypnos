@@ -11,12 +11,11 @@
 */
 
 #include "ccontainer.h"
-
 cContainer::cContainer(bool ser/*= true*/) : cItem(ser)
 {
 }
 
-//! Gets hte container's gump
+//! Gets the container's gump
 UI16 cContainer::getGump()
 {
 	CONTINFOMAP::iterator iter( contInfo.find( getId() ) );

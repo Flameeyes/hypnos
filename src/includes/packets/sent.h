@@ -322,6 +322,121 @@ public:
 };
 
 /*!
+\brief Packet to confirm processing of buy (or sell) window
+\author Chronodt
+*/
+
+class cPacketSendClearBuyWindow : cPacketSend
+{
+protected:
+	const pNpc npc;	        //!< Vendor
+
+public:
+	/*!
+	\param s serial of the container
+	\param g gump of the container
+	*/
+	inline cPacketSendClearBuyWindow(pNpc n) :
+		npc(n),
+		buffer(NULL), length(8)
+	{ }
+
+	void prepare();
+};
+
+/*!
+\brief Packet to warn client that something has been added to pc's clothing
+\author Chronodt
+*/
+
+class cPacketSendPaperdollClothingUpdated : cPacketSend
+{
+public:
+	/*!
+	\param s serial of the container
+	\param g gump of the container
+	*/
+	inline cPacketSendPaperdollClothingUpdated() :
+		buffer(NULL), length(1)
+	{ }
+
+	void prepare();
+};
+
+/*!
+\brief Opens map gump with data from map
+\author Chronodt
+*/
+
+class cPacketSendOpenMapGump : cPacketSend
+{
+protected:
+
+	const pMap map;
+public:
+	/*!
+	\param s serial of the container
+	\param g gump of the container
+	*/
+	inline cPacketSendOpenMapGump(pMap m) :
+        	map (m),
+		buffer(NULL), length(19)
+	{ }
+
+	void prepare();
+};
+
+
+
+/*!
+command:
+1 = add map point
+2 = add new pin with pin number. (insertion. other pins after the number are pushed back.)
+3 = change pin
+4 = remove pin
+5 = remove all pins on the map
+6 = toggle the 'editable' state of the map.
+7 = return msg from the server to the request 6 of the client.
+pin:
+if command is 7, it is plotting state (1=on, 0=off)
+if command is 2, it is the pin number that the new pin must have (all others must be "pushed onward" :D
+
+Apparently you can have no more than 50 pins in a map, and it appears a client side limitation (and it appears really messy if you put them all :D)
+*/
+
+
+//!the following enum is used for both incoming and outgoing 0x56 packet
+
+enum PlotCourseCommands (AddPin = 1, InsertPin, ChangePin, RemovePin, ClearAllPins, ToggleWritable, WriteableStatus);
+
+class cPacketSendMapPlotCourse : cPacketSend
+{
+public:
+
+protected:
+
+	const pMap map;
+        const PlotCourseCommands command;
+        const short int pin;
+        const int x;
+        const int y;
+public:
+	/*!
+	\param s serial of the container
+	\param g gump of the container
+	*/
+	inline cPacketSendMapPlotCourse(pMap m, PlotCourseCommands comm, short int p = 0, int xx = 0, int yy = 0) :
+        	map (m), command (comm), pin (p),  x (xx), y (yy),
+		buffer(NULL), length(11)
+	{ }
+
+	void prepare();
+};
+
+
+
+
+/*!
 \brief Packet received
 \author Flameeyes
 */
@@ -329,10 +444,10 @@ class cPacketReceive
 {
 protected:
 
-        UI08 *buffer;           // needed in derived classes 
+        UI08 *buffer;           // needed in all derived classes
         UI16 length;
 public:
-	cPacketReceive();
+//	cPacketReceive();
       	inline cPacketReceive(UI08 *buf, UI16 len) :
 		buffer(buf), length(len)
 	{ } 
@@ -358,4 +473,30 @@ class cPacketReceivePickUp              : public cPacketReceive;
 class cPacketReceiveDropItem            : public cPacketReceive;
 class cPacketReceiveSingleclick         : public cPacketReceive;
 class cPacketReceiveActionRequest       : public cPacketReceive;
+class cPacketReceiveWearItem            : public cPacketReceive;
+class cPacketReceiveResyncRequest       : public cPacketReceive;
+class cPacketReceiveRessChoice          : public cPacketReceive;
+class cPacketReceiveStatusRequest       : public cPacketReceive;
+class cPacketReceiveSetSkillLock        : public cPacketReceive;
+class cPacketReceiveBuyItems            : public cPacketReceive;
+class cPacketReceiveMapPlotCourse       : public cPacketReceive;
+class cPacketReceiveLoginChar       	: public cPacketReceive;
+class cPacketReceiveBookPage		: public cPacketReceive;
+class cPacketReceiveTargetSelected      : public cPacketReceive;
+class cPacketReceiveBBoardMessage       : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
+class        : public cPacketReceive;
 #endif

@@ -10,7 +10,6 @@
 #ifndef __TRADE_H__
 #define __TRADE_H__
 
-void buyaction(int s);
 void sellaction(int s);
 P_ITEM tradestart(P_CHAR pc1, P_CHAR pc2);
 void clearalltrades();

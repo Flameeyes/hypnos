@@ -508,7 +508,10 @@ int BuyShop(NXWSOCKET s, SERIAL c)
     sendshopinfo(s, DEREF_P_CHAR(pc), buyRestockContainer); // Send normal shop items
 //  sendshopinfo(s, c, buyNoRestockContainer); // Send items sold to shop by players
     SndShopgumpopen(s,pc->getSerial32());
-    statwindow(curr,curr); // Make sure the gold total has been sent.
+
+    //! \todo check second argument
+    client->statusWindow(curr,true); // Make sure the gold total has been sent.
+
     return 1;
 }
 
