@@ -21,30 +21,30 @@
 
 /*!
 \brief Checks if the Char is allowed to move at all (not frozen, overloaded...)
-\author Duke
-\param pc ptr to the car
-\return true if the walk is allowed
-\todo document missing parameters
+\param pc Character to acknowledge the walk
+\param sequence Walk sequence number
+\retval true The step is acknowledged and can be done
+\retval false The step isn't acknowledged so can't be done
+\todo Move walksequence[] array into cClient
+\todo Split in pc- and npc-dependent stuff and common stuff, and move into
+	cChar, cPC and cNPC classes
 */
 bool WalkHandleAllowance(pChar pc, int sequence)
 {
-	if(!pc) return false;
+	assert(pc);
 
 	if (pc->isStabled() || pc->mounted) return false; // shouldnt be called for stabled pets, just to be on the safe side
 
-	pClient client = pc->getSocket();
-	if(s!=INVALID)
+	pClient client = pc->getClient();
+	if(client && walksequence[s]+1 != sequence && sequence != 256 )
 	{
-		if ((walksequence[s]+1!=sequence)&&(sequence!=256))
-		{
-			nPackets::Sent::MoveReject(pc, sequence);
-                        pc->getClient()->sendPacket(&pk);
-                       	walksequence[s]=INVALID;
-			return false;
-		}
+		nPackets::Sent::MoveReject(pc, sequence);
+		pc->getClient()->sendPacket(&pk);
+		walksequence[s]=INVALID;
+		return false;
 	}
 
-	if (!pc->dead && !pc->npc && !(pc->IsGMorCounselor()))
+	if (!pc->isDead() && !pc->npc && !(pc->IsGMorCounselor()))
 	{
 		if (! pc->getBody()->overloadedWalking() || (pc->stm<1)) // this has to executes, even if s==-1, thus that many !=-1's
 		{
@@ -61,15 +61,15 @@ bool WalkHandleAllowance(pChar pc, int sequence)
 		}
 	}
 
-	if(pc->isFrozen()) // lord binary !!!
+	if(pc->isFrozen())
 	{
 		pc->teleport();
-		if (s>INVALID)
+		if (client)
 		{
-			if (pc->casting)
-				pc->sysmsg("You cannot move while casting.");
+			if (pc->isCasting())
+				client->sysmessage("You cannot move while casting.");
 			else
-				pc->sysmsg("You are frozen and cannot move.");
+				client->sysmessage("You are frozen and cannot move.");
 			nPackets::Sent::MoveReject(pc, sequence);
                         pc->getClient()->sendPacket(&pk);
                        	walksequence[s]=INVALID;
@@ -79,13 +79,12 @@ bool WalkHandleAllowance(pChar pc, int sequence)
 	return true;
 }
 
-
-///////////////
-// Name:	WalkingHandleHiding
-// history:	cut from WalkHandleRunning() by Xanathar, 14.06.2001
-// Purpose:	handles stealth/hiding
-//
-bool WalkingHandleHiding (pChar pc, int dir)
+/*!
+\brief Handles steps under stealth/hiding skills effects
+\param pc Character which is moving
+\param dir Direction in which che character is moving
+*/
+void WalkingHandleHiding (pChar pc, uint8_t dir)
 {
 	if(!pc) return false;
 
@@ -106,7 +105,6 @@ bool WalkingHandleHiding (pChar pc, int dir)
 				pc->unHide();
 		}
 	}
-
 
 	return true;
 
@@ -496,13 +494,12 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 		return;
 	}	
 	
-	int newX = charpos.x;
-	int newY = charpos.y;
-	getXYfromDir( pc_i->dir, newX, newY );	// get coords of the location we want to walk
-	//<Luxor>
-	sLocation newpos = sLocation( newX, newY, charpos.z );
+	
+	sLocation newpos = charpos;
+	newpos.move(pc_i->getDirection(), 1);
+	
 	valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
-	//</Luxor>
+	
 	if ( valid )
 	{
 		move = checkBounds( pc_i, newX, newY, type );
@@ -513,31 +510,26 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 		else 	// We're out of the boundary, so we need to get back
 		{
 			uint8_t direction = pc_i->getDirFromXY(pc_i->fx1, pc_i->fy1);
-			getXYfromDir( direction, newX, newY );
-			//<Luxor>
-			newpos = sLocation( newX, newY, charpos.z );
+			newpos.move(direction, 1);
 			valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
-			//</Luxor>
+			
 			if ( !valid ) // try to bounce around obstacle
 			{
 				direction = pc_i->dir;
-				getXYfromDir( pc_i->dir, newX, newY );
-				//<Luxor>
-				newpos = sLocation( newX, newY, charpos.z );
+				
+				newpos.move( pc_i->getDirection(), 1);
 				valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
-				//</Luxor>
+				
 				bool clockwise = chance( 50 );
-				while( direction != pc_i->dir && !valid )
+				while( direction != pc_i->getDirection() && !valid )
 				{
 					if ( clockwise )
 						direction = getRightDir( direction );
 					else
 						direction = getLeftDir( direction );
-					getXYfromDir( pc_i->dir, newX, newY );
-					//<Luxor>
-					newpos = sLocation( newX, newY, charpos.z );
+					
+					newpos.move( pc_i->getDirection(), 1 );
 					valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
-					//</Luxor>
 				}
 			}
 			if ( valid )
@@ -557,11 +549,9 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 			direction = getLeftDir( pc_i->dir );
 		while( !valid && direction != pc_i->dir )
 		{
-			getXYfromDir( direction, newX, newY );
-			//<Luxor>
-			newpos = sLocation( newX, newY, charpos.z );
+			newpos.move(direction, 1);
 			valid = ( isWalkable( newpos, WALKFLAG_ALL, pc_i ) != illegal_z );
-			//</Luxor>
+			
 			if ( clockwise )
 				direction = getRightDir( direction );
 			else

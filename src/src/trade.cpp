@@ -117,9 +117,8 @@ void cRestockMng::doRestock()
 
 void cRestockMng::doRestockAll()
 {
-
 	rewindList();
-
+	
 	while( !needrestock.empty() ) {
 
 		pItem pi= cSerializable::findItemBySerial( needrestock.front() );
@@ -146,7 +145,6 @@ void cRestockMng::doRestockAll()
 	}
 
 	updateTimer();
-
 }
 
 void cRestockMng::addNewRestock( pItem pi )

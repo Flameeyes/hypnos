@@ -15,9 +15,8 @@
 
 /*!
 \brief Calculates the adjacent direction (counterclockwise)
-\author Duke
 \param dir initial direction
-\return the adjacent direction
+\return The adjacent direction
 */
 inline const uint8_t getLeftDir(uint8_t dir)
 {
@@ -27,37 +26,13 @@ inline const uint8_t getLeftDir(uint8_t dir)
 
 /*!
 \brief Calculates the adjacent direction (clockwise)
-\author Duke
 \param dir initial direction
-\return the adjacent direction
+\return The adjacent direction
 */
 inline const uint8_t getRightDir(uint8_t dir)
 {
 	dir &= 7;
 	return dir==7 ? 0 : dir+1;
-}
-
-/*!
-\brief Calculats and changes the given coords one step into the given direction
-\author Duke
-\param dir the direction
-\param x reference to the x coord
-\param y reference to the y coord
-\todo use reference instead of pointer?
-*/
-inline void getXYfromDir(uint8_t dir, uint16_t &x, uint16_t &y)
-{
-	switch(dir&0x07)
-	{
-	case 0: y--;		break;
-	case 1: x++; y--;	break;
-	case 2: x++;		break;
-	case 3: x++; y++;	break;
-	case 4: y++;		break;
-	case 5: x--; y++;	break;
-	case 6: x--;		break;
-	case 7: x--; y--;	break;
-	}
 }
 
 void handleCharsAtNewPos( pChar pc );
