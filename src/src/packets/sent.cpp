@@ -236,15 +236,17 @@ void nPackets::Sent::Speech::prepare()
 	else text = speech.toString();	// reducing unicode string to simple text
 	length = 44 + text.size() + 1;
 	buffer = new uint8_t[length];
+	pSerializable ps = speech.getSpeaker();
 
 	buffer[0] = 0x1c;
 	ShortToCharPtr(length, buffer+1);
+	//! \todo verify if system messages are thrown with these serial and id (when speaker is NULL)
 	LongToCharPtr(ps ? ps->getSerial() : 0xffffffff, buffer+3);
 	ShortToCharPtr(ps ? ps->getId() : 0xffff, buffer+7);
 	buffer[9] = speech.getMode();
 	ShortToCharPtr(speech.getColor(), buffer+10);
 	ShortToCharPtr(speech.getFont(), buffer+12);
-	strncpy(buffer + 14, (ps) ? ps->getCurrentName().c_str() : "", 30); //this will write the name and fills the missing char in the 30 bytes buffer with \0
+	strncpy(buffer + 14, (ps) ? ps->getCurrentName().c_str() : "System", 30); //this will write the name and fills the missing char in the 30 bytes buffer with \0
 	strcpy(buffer + 44, text.c_str());
 }
 
@@ -1726,6 +1728,30 @@ void nPackets::Sent::OpenTextEntryDialog::prepare()
 	//! \todo this function (awaiting gump remake)
 }
 
+/*!
+\brief Unicode speech [packet 0xae]
+\author Chronodt
+\note packet 0xae
+*/
+
+void nPackets::Sent::UnicodeSpeech::prepare()
+{
+	length = 48 + speech.size() * 2 + 2;
+	buffer = new uint8_t[length];
+	pSerializable ps = speech.getSpeaker();
+
+	buffer[0] = 0xae;
+	ShortToCharPtr(length, buffer+1);
+	//! \todo verify if system messages are thrown with these serial and id (when speaker is NULL)
+	LongToCharPtr(ps ? ps->getSerial() : 0xffffffff, buffer+3);
+	ShortToCharPtr(ps ? ps->getId() : 0xffff, buffer+7);
+	buffer[9] = speech.getMode();
+	ShortToCharPtr(speech.getColor(), buffer+10);
+	ShortToCharPtr(speech.getFont(), buffer+12);
+	LongToCharPtr(speech.getLanguage(), buffer+14);
+	strncpy(buffer + 18, (ps) ? ps->getCurrentName().c_str() : "System", 30);	// this will write the name and fills the missing char in the 30 bytes buffer with \0
+	speech.setPacketByteOrder();							// reorder (if necessary) packet to network-endian
+	memcpy(buffer + 48, text.rawBytes(), length - 48);
 
 
 void nPackets::Sent::CharProfile::prepare()

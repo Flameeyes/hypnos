@@ -20,15 +20,12 @@
 
 void gmyell(char *txt)
 {
-	uint8_t unicodetext[512];
-	int ucl = ( strlen ( txt ) * 2 ) + 2 ;
 
-	char2wchar(txt);
-	memcpy(unicodetext, Unicode::temp, ucl);
-
-	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
+/*
+	verify if this name should be used instead of "System"
 	uint8_t sysname[30]={ 0x00, };
 	strcpy((char *)sysname, "[WebAdmin - GM Only]");
+*/
 
 
 	NxwSocketWrapper sw;
@@ -41,7 +38,13 @@ void gmyell(char *txt)
 		pClient client = ps_i->toInt();
 		if( pc && pc->IsGM())
 		{
-			SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 1, 0x0040, 0x0003, lang, sysname, unicodetext,  ucl);
+			cSpeech speech(std::string(txt));	//we must use string constructor or else it is supposed to be an unicode packet
+			speech.setColor(0x40);
+			speech.setFont(0x03);		// normal font
+			speech.setMode(0x01);		// broadcast
+
+			nPackets::Sent::UnicodeSpeech pk(speech);
+			client->sendPacket(&pk);
 		}
 	}
 
@@ -139,104 +142,30 @@ void bgsound(pChar pc_curr)
 }
 
 
-void itemmessage(pClient client, char *txt, int serial, short color)
+void itemmessage(pClient client, char *txt, pItem pi, short color)
 {
 // The message when an item is clicked (new interface, Duke)
 //Modified by N6 to use UNICODE packets
 
-	uint8_t unicodetext[512];
-	uint16_t ucl = ( strlen ( txt ) * 2 ) + 2 ;
-
-	pItem pi=cSerializable::findItemBySerial(serial);
 	if ( ! pi ) return;
+
 
 	if ((pi->type == ITYPE_CONTAINER && color == 0x0000)||
 		(pi->type == ITYPE_SPELLBOOK && color == 0x0000)||
 		(pi->getId()==0x1BF2 && color == 0x0000))
 		color = 0x03B2;
 
-	char2wchar(txt);
-	memcpy(unicodetext, Unicode::temp, ucl);
-
 	color = 0x0481; // UOLBR patch to prevent client crash by Juliunus
 
-	uint32_t lang = calcserial(server_data.Unicodelanguage[0], server_data.Unicodelanguage[1], server_data.Unicodelanguage[2], 0);
-	uint8_t sysname[30]={ 0x00, };
-	strcpy((char *)sysname, "System");
 
-	SendUnicodeSpeechMessagePkt(s, serial, 0x0101, 6, color, 0x0003, lang, sysname, unicodetext,  ucl);
+	cSpeech speech(std::string(txt));	//we must use string constructor or else it is supposed to be an unicode packet
+	speech.setColor(color);
+	speech.setFont(0x03);		// normal font
+	speech.setMode(0x06);		// label
+	speech.setSpeaker(pi);
 
-}
-
-
-void broadcast(int s) // GM Broadcast (Done if a GM yells something)
-//Modified by N6 to use UNICODE packets
-{
-	//! \todo For my sake, can someone try to figure out how works this?! - Flame
-	pChar pc=cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return;
-
-	int i;
-	char nonuni[512];
-
-	if(pc->unicode)
-		for (i=13;i<ShortFromCharPtr(buffer[s] +1);i=i+2)
-		{
-			nonuni[(i-13)/2]=buffer[s][i];
-		}
-	if(!(pc->unicode))
-	{
-		uint32_t id;
-		uint16_t model,font, color;
-
-		id = pc->getSerial();
-		model = pc->getId();
-		color = ShortFromCharPtr(buffer[s] +4);		// use color from client
-		font = (buffer[s][6]<<8)|(pc->fonttype%256);	// use font ("not only") from  client
-
-		uint8_t name[30]={ 0x00, };
-		strcpy((char *)name, pc->getCurrentName().c_str());
-
-		NxwSocketWrapper sw;
-		sw.fillOnline();
-		for( sw.rewind(); !sw.isEmpty(); sw++ )
-		{
-			pClient i=sw.getSocket();
-
-			//!\todo redo adding to cpeech all the data and verifying
-			nPackets::Sent::Speech pk(cSpeech(buffer+8));
-			sw->sendPacket(&pk);
-
-			//SendSpeechMessagePkt(i, id, model, 1, color, font, name, (char*)&buffer[s][8]);
-		}
-	} // end unicode IF
-	else
-	{
-		uint32_t id;
-		uint16_t model,font, color;
-		uint8_t unicodetext[512];
-		uint16_t ucl = ( strlen ( &nonuni[0] ) * 2 ) + 2 ;
-
-		char2wchar(&nonuni[0]);
-		memcpy(unicodetext, Unicode::temp, ucl);
-
-		id = pc->getSerial();
-		model = pc->getId();
-		color = ShortFromCharPtr(buffer[s] +4);		// use color from client
-		font = (buffer[s][6]<<8)|(pc->fonttype%256);	// use font ("not only") from  client
-
-		uint32_t lang =  LongFromCharPtr(buffer[s] +9);
-		uint8_t name[30]={ 0x00, };
-		strcpy((char *)name, pc->getCurrentName().c_str());
-
-		NxwSocketWrapper sw;
-		sw.fillOnline();
-		for( sw.rewind(); !sw.isEmpty(); sw++ )
-		{
-			pClient i=sw.getSocket();
-			SendUnicodeSpeechMessagePkt(i, id, model, 1, color, font, lang, name, unicodetext,  ucl);
-		}
-	}
+	nPackets::Sent::UnicodeSpeech pk(speech);
+	client->sendPacket(&pk);
 }
 
 

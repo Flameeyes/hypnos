@@ -1676,132 +1676,132 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 	pChar pc = currChar();
 	if ( ! pc ) return;
 
-        pEquippable epi = dynamic_cast<pEquippable> pi;
+	pEquippable epi = dynamic_cast<pEquippable> pi;
 
-        if (!epi || (pi->getId()>>8) >= 0x40)
+	if (!epi || (pi->getId()>>8) >= 0x40)
 	{
 		sysmessage("You can't wear that!");
 		item_bounce6(pi);
 		return;
 	}
 
-        tile_st tile;
+	tile_st tile;
 	data::seekTile( pi->getId(), tile);
 	if ((((pi->magic==2)||((tile.weight==255)&&(pi->magic!=1))) && !pc->canAllMove()) || ( (pi->magic==3|| pi->magic==4) && !isOwnerOf(pi)) )
 	{
 		item_bounce6(pi);
 		return;
 	}
-        pNPC npc = dynamic_cast<pNPC> pck;
+	pNPC npc = dynamic_cast<pNPC> pck;
 
 
 	if ( pck != pc && !pc->IsGM() && !npc)	// players is trying to dress another pc and he isn't a gm
 	{
-	        sysmessage("You can't put items on other people!");
+		sysmessage("You can't put items on other people!");
 		item_bounce6(pi);
 		return;
 	}
-        else if (!pc->isGM() && npc && (!pc->isOwnerOf(npc) || npc->npcaitype!=NPCAI_PLAYERVENDOR )) // target npc isn't this pg's personal vendor (or a GM)
-      	{
+	else if (!pc->isGM() && npc && (!pc->isOwnerOf(npc) || npc->npcaitype!=NPCAI_PLAYERVENDOR )) // target npc isn't this pg's personal vendor (or a GM)
+	{
 		item_bounce6(pi);
 		return;
 	}
 
-       	NotEquippableReason res = pc->canEquip(ei);
-        switch(res)
-        {
-        case nerUnknown:
+	NotEquippableReason res = pc->canEquip(ei);
+	switch(res)
+	{
+	case nerUnknown:
 		item_bounce6(pi);
 		return;
-        case nerNotHumanBody:
+	case nerNotHumanBody:
 		sysmessage("Only humans can wear that!");
 		item_bounce6(pi);
 		return;
-        case nerInsufficientStrength:
-       		sysmessage("%s not strong enough to equip that!", (pck == pc) ? "You are" : "Target is");
+	case nerInsufficientStrength:
+		sysmessage("%s not strong enough to equip that!", (pck == pc) ? "You are" : "Target is");
 		item_bounce6(pi);
 		return;
-        case nerInsufficientDexterity:
-       		sysmessage("%s not dexterous enough to equip that!", (pck == pc) ? "You are" : "Target is");
+	case nerInsufficientDexterity:
+		sysmessage("%s not dexterous enough to equip that!", (pck == pc) ? "You are" : "Target is");
 		item_bounce6(pi);
 		return;
 	case nerInsufficientIntelligence:
-      		sysmessage("%s not smart enough to equip that!", (pck == pc) ? "You are" : "Target is");
+		sysmessage("%s not smart enough to equip that!", (pck == pc) ? "You are" : "Target is");
 		item_bounce6(pi);
 		return;
-        case nerInsufficientSkil1:
-        case nerInsufficientSkil2:
-        case nerInsufficientSkil3:
-      		sysmessage("%s sufficient skills to equip that!", (pck == pc) ? "You lack" : "Target lacks");
+	case nerInsufficientSkil1:
+	case nerInsufficientSkil2:
+	case nerInsufficientSkil3:
+		sysmessage("%s sufficient skills to equip that!", (pck == pc) ? "You lack" : "Target lacks");
 		item_bounce6(pi);
 		return;
-        case nerCharDead:		// Char is dead. Dead people cannot wear anything :D
-       		sysmessage("You can't dress ghosts!");
+	case nerCharDead:		// Char is dead. Dead people cannot wear anything :D
+		sysmessage("You can't dress ghosts!");
 		item_bounce6(pi);
 		return;
-        case nerMaleEquippingFemaleArmor:	// It wouldn't fit anyway :D
+	case nerMaleEquippingFemaleArmor:	// It wouldn't fit anyway :D
 		sysmessage("%s wear female armor!", (pck == pc) ? "You can't" : "Target can't");
 		item_bounce6(pi);
 		return;
-      	case nerEquipOk:
-        }
-        //Now it should be equippable
+	case nerEquipOk:
+	}
+	//Now it should be equippable
 
-        Layer layer = epi->getPossibleLayer();
-        pEquippable epj = body->getLayerItem(layer);	// we get the item already in that layer, or NULL if layer is empty
+	Layer layer = epi->getPossibleLayer();
+	pEquippable epj = body->getLayerItem(layer);	// we get the item already in that layer, or NULL if layer is empty
 
-     	pEquippable firsthand = body->getLayerItem(layWeapon1H);
-     	pEquippable secondhand = body->getLayerItem(layWeapon2H);
+	pEquippable firsthand = body->getLayerItem(layWeapon1H);
+	pEquippable secondhand = body->getLayerItem(layWeapon2H);
 
 	if ( ServerScp::g_nUnequipOnReequip )
 	{
 		if (pi->isWeapon() && layer == layWeapon2H)	//If equipping a 2 handed sword, we must empty both layers, so, since the 2h layer is emptied below, we empty the first :D
-		       	if (pck->unEquip(body->getLayerItem(layWeapon1H),false) == 2) //since it is not a drag on paperdoll, we set the drag bool of unequip to false
-                        {       //if unequip bypass
+			if (pck->unEquip(body->getLayerItem(layWeapon1H),false) == 2) //since it is not a drag on paperdoll, we set the drag bool of unequip to false
+			{       //if unequip bypass
 				item_bounce6(pi);
 				return;
-                        }
+			}
 		if (pi->isWeapon() && layer == layWeapon1H && secondhand->isWeapon()) //If equipping a 1 handed sword, while already equipping a 2 handed sword, we must empty both layers, so, since the 1h layer is emptied below, we empty the second :D
-	       	       	if (pck->unEquip(body->getLayerItem(layWeapon2H),false) ==2) //since it is not a drag on paperdoll, we set the drag bool of unequip to false
-                        {       // if unequip bypass
+			if (pck->unEquip(body->getLayerItem(layWeapon2H),false) ==2) //since it is not a drag on paperdoll, we set the drag bool of unequip to false
+			{       // if unequip bypass
 				item_bounce6(pi);
 				return;
-                        }
+			}
 
-	        if (epj && pck->unEquip(epj,true) == 2)
-                {	// if unequip bypass
+		if (epj && pck->unEquip(epj,true) == 2)
+		{	// if unequip bypass
 			item_bounce6(pi);
 			return;
-                }
+		}
 		if (pck->equip(epi, true) == 2)
 		{       // equip bounce, this time
 			item_bounce6(pi);
 			return;
 		}
-                pc->playSFX( itemsfx(pi->getId()) );
-        }
-        else
-        {
+		pc->playSFX( itemsfx(pi->getId()) );
+	}
+	else
+	{
 		if (pi->isWeapon() &&					// If pi is a weapon...
-                   ((layer == layWeapon2H && firsthand) ||		// ..a two handed weapon while another one-handed weapon present or...
-                   (layer == layWeapon1H && secondhand->isWeapon()))	// ...a one-handed weapon when a 2 handed weapon is already equipped....
+		   ((layer == layWeapon2H && firsthand) ||		// ..a two handed weapon while another one-handed weapon present or...
+		   (layer == layWeapon1H && secondhand->isWeapon()))	// ...a one-handed weapon when a 2 handed weapon is already equipped....
 		{							// ...it must bounce because we are not allowed to automatically deequip them
 			item_bounce6(pi);
 			return;
 		}
 
-	        if (epj) // if something already equipped in the same layer, bounce (we are not allowed to automatically deequip them)
-                {
+		if (epj) // if something already equipped in the same layer, bounce (we are not allowed to automatically deequip them)
+		{
 			item_bounce6(pi);
 			return;
-                }
+		}
 		if (pck->equip(epi, true) == 2)
 		{       // if script bypasses equip, bounce
 			item_bounce6(pi);
 			return;
 		}
 		pc->playSFX( itemsfx(pi->getId()) );
-        }
+	}
 
 	NxwSocketWrapper sws;
 	sws.fillOnline( pi );
@@ -1814,7 +1814,7 @@ void cClient::wear_item(pChar pck, pItem pi) // Item is dropped on paperdoll
 	if (g_nShowLayers) InfoOut("Item equipped on layer %i.\n",layer);
 
 
-        //! \todo the sendpacket stuff
+	//! \todo the sendpacket stuff
 	wearIt(pi);
 
 	NxwSocketWrapper sw;
@@ -1839,16 +1839,16 @@ void cClient::item_bounce3(const pItem pi)
 {
 	if(!pi) return;
 
-        pEquippable equipitem = dynamic_cast<pEquippable> pi;
+	pEquippable equipitem = dynamic_cast<pEquippable> pi;
 	if (equipitem && equipitem->getOldLayer())
-        {
-	        pBody body = dynamic_cast<pBody> equipitem->getOldContainer();  //If it was equipped, old container was a body
-                pChar pc = body->getChar();
+	{
+		pBody body = dynamic_cast<pBody> equipitem->getOldContainer();  //If it was equipped, old container was a body
+		pChar pc = body->getChar();
 		if( body->equip(equipitem, true) == 1)
-                {
-                        equipitem->setOldLayer(0); //to avoid infinite loop if bouncing again
-                	pack_item(pi, pc->getBackpack()); // If reequip canceled due to script bypass, dump item to the backpack
-                }
+		{
+			equipitem->setOldLayer(0); //to avoid infinite loop if bouncing again
+			pack_item(pi, pc->getBackpack()); // If reequip canceled due to script bypass, dump item to the backpack
+		}
 	}
 	else
 	{
@@ -1911,7 +1911,7 @@ void cClient::item_bounce6(const pItem pi)
 {
 	if ( ! pi ) return;
 	nPackets::Sent::BounceItem pk(5);
-        sendPacket(&pk);
+	sendPacket(&pk);
 	if ( isDragging() )
 	{
 		resetDragging();
@@ -2657,9 +2657,6 @@ void cClient::talking(cSpeech &speech) // PC speech
 	if ( ! pc ) return;
 
 
-        //!\todo revise from here
-
-
 	uint32_t i, j;
 	int match;
 	char sect[512];
@@ -2670,9 +2667,9 @@ void cClient::talking(cSpeech &speech) // PC speech
 	// len+font+color+type = same postion for non unicode and unicode speech packets
 	// but 8 ... x DIFFER a lot for unicode and non unicode packets !!!
 
-	if ( buffer[socket][3] == '\x09' && pc->CanBroadcast() )
+	if ( speech.getMode() == 0x09 && pc->CanBroadcast() )
 	{
-		broadcast(socket);
+		broadcast(speech);
 		return;
 	}
 
@@ -2704,6 +2701,11 @@ void cClient::talking(cSpeech &speech) // PC speech
 	//
 	// Process speech which should not be send/echoed to others
 	//
+
+
+	//!\todo revise from here
+
+
 	if( magic::checkMagicalSpeech( pc, speech) ) //Luxor
 		return;
 	if( pricePlayerVendorItem( pc, socket, speech ) )
@@ -3043,6 +3045,76 @@ void cClient::talking(cSpeech &speech) // PC speech
 		if (match == 0)
 			pc_found->talk(socket, sect, 0);
 		safedelete(iter);
+	}
+}
+
+void broadcast(cSpeech &speech) // GM Broadcast (Done if a GM yells something)
+{
+
+	pPC pc= currChar();
+	if ( ! pc ) return;
+
+	//! \todo revise from here
+	int i;
+	char nonuni[512];
+
+	if(pc->unicode)
+		for (i=13;i<ShortFromCharPtr(buffer[s] +1);i=i+2)
+		{
+			nonuni[(i-13)/2]=buffer[s][i];
+		}
+	if(!(pc->unicode))
+	{
+		uint32_t id;
+		uint16_t model,font, color;
+
+		id = pc->getSerial();
+		model = pc->getId();
+		color = ShortFromCharPtr(buffer[s] +4);		// use color from client
+		font = (buffer[s][6]<<8)|(pc->fonttype%256);	// use font ("not only") from  client
+
+		uint8_t name[30]={ 0x00, };
+		strcpy((char *)name, pc->getCurrentName().c_str());
+
+		NxwSocketWrapper sw;
+		sw.fillOnline();
+		for( sw.rewind(); !sw.isEmpty(); sw++ )
+		{
+			pClient i=sw.getSocket();
+
+			//!\todo redo adding to cpeech all the data and verifying
+			nPackets::Sent::Speech pk(cSpeech(buffer+8));
+			sw->sendPacket(&pk);
+
+			//SendSpeechMessagePkt(i, id, model, 1, color, font, name, (char*)&buffer[s][8]);
+		}
+	} // end unicode IF
+	else
+	{
+		uint32_t id;
+		uint16_t model,font, color;
+		uint8_t unicodetext[512];
+		uint16_t ucl = ( strlen ( &nonuni[0] ) * 2 ) + 2 ;
+
+		char2wchar(&nonuni[0]);
+		memcpy(unicodetext, Unicode::temp, ucl);
+
+		id = pc->getSerial();
+		model = pc->getId();
+		color = ShortFromCharPtr(buffer[s] +4);		// use color from client
+		font = (buffer[s][6]<<8)|(pc->fonttype%256);	// use font ("not only") from  client
+
+		uint32_t lang =  LongFromCharPtr(buffer[s] +9);
+		uint8_t name[30]={ 0x00, };
+		strcpy((char *)name, pc->getCurrentName().c_str());
+
+		NxwSocketWrapper sw;
+		sw.fillOnline();
+		for( sw.rewind(); !sw.isEmpty(); sw++ )
+		{
+			pClient i=sw.getSocket();
+			SendUnicodeSpeechMessagePkt(i, id, model, 1, color, font, lang, name, unicodetext,  ucl);
+		}
 	}
 }
 

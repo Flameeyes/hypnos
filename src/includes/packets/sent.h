@@ -133,7 +133,7 @@ namespace nPackets {
 		};
 		
 		/*!
-		\brief Char sLocation and body type (Login confirmation)
+		\brief Char location and body type (Login confirmation)
 		\author Chronodt
 		\note packet 0x1b
 		*/
@@ -163,7 +163,6 @@ namespace nPackets {
 		{
 		protected:
 			cSpeech speech;				//!< what ps is saying
-			pSerializable ps;			//!< everything with a serial can talk... but please use some logic :P
 			bool ghost;				//!< "ghostize" message (OOOoOOOoOOO :) )
 		public:
 			/*!
@@ -171,8 +170,8 @@ namespace nPackets {
 			\param p talker. NOTE: if p is NULL, it is considered a system message
 			\param ghostize speech has to be mutated to ghost speech
 			*/
-			inline Speech(cSpeech &s, pSerializable p = NULL, bool ghostize = false) :
-				cPacketSend(NULL, 0), speech(s), ps(p), ghost(ghostize)
+			inline Speech(cSpeech &s, bool ghostize = false) :
+				cPacketSend(NULL, 0), speech(s), ghost(ghostize)
 			{ }
 			void prepare();
 		};
@@ -1493,6 +1492,26 @@ namespace nPackets {
 			{ }
 			void prepare();
 		};
+
+		/*!
+		\brief Send character unicode speech to listener [packet 0xae]
+		\author Chronodt
+		*/
+
+		class UnicodeSpeech : public cPacketSend
+		{
+		protected:
+			cSpeech speech;				//!< what ps is saying
+		public:
+			/*!
+			\param s what is being told
+			*/
+			inline UnicodeSpeech(cSpeech &s) :
+				cPacketSend(NULL, 0), speech(s)
+			{ }
+			void prepare();
+		};
+
 
 		class CharProfile : public cPacketSend
 		{

@@ -1415,8 +1415,7 @@ bool nPackets::Received::UnicodeSpeechReq::execute(pClient client)
 	uint8_t mode   = buffer[3];	//0=say,2=emote,8=whisper,9=yell
 	uint16_t color = ShortFromCharPtr(buffer + 4);
 	uint16_t font  = ShortFromCharPtr(buffer + 6);
-	char[4] language;
-	strncpy(language, buffer + 8, 4); language[3] = 0;
+	uint32_t language = LongFromCharPtr(buffer + 8);
 	int offset = 12;
 	pc->unicode=true;
 	// Check for command word versions of this packet

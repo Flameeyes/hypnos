@@ -75,7 +75,7 @@ void cItem::singleClick(pClient client )
 	if ( type == ITYPE_SPELLBOOK )
 	{
 		asprintf( &temp, "[%i spells]", countSpellsInSpellBook() );
-		itemmessage(client, temp, serial, 0x0481);
+		itemmessage(client, temp, this, 0x0481);
 		free(temp);
 	}
 
@@ -86,7 +86,7 @@ void cItem::singleClick(pClient client )
 		else
 			sprintf( &temp, "%s [%x]", itemname, getSerial());
 
-		itemmessage(client, temp, serial);
+		itemmessage(client, temp, this);
 		free(temp);
 		return;
 	}
@@ -108,7 +108,7 @@ void cItem::singleClick(pClient client )
 
 					asprintf( &temp, "%s at %igp", temp2, value );
 
-					itemmessage(client, temp, serial);
+					itemmessage(client, temp, this);
 					free(temp); free(temp2);
 					return;
 				}
@@ -150,22 +150,22 @@ void cItem::singleClick(pClient client )
 	if (corpse==1)
 	{
 		if(more2==1)
-		        itemmessage( client,"[Innocent]",serial, 0x005A);
+			itemmessage( client,"[Innocent]",this, 0x005A);
 		else if(more2==2)
-			itemmessage( client,"[Criminal]",serial, 0x03B2);
+			itemmessage( client,"[Criminal]",this, 0x03B2);
 		else if(pi->more2==3)
-			itemmessage( client,"[Murderer]",serial, 0x0026);
+			itemmessage( client,"[Murderer]",this, 0x0026);
 	}  // end highlighting
 	// Let's handle secure/locked down stuff.
 	if (magic == 4 && type != ITYPE_DOOR && type != ITYPE_GUMPMENU)
 	{
 		if (secureIt !=1)
-			itemmessage( client, "[locked down]", serial, 0x0481);
+			itemmessage( client, "[locked down]", this, 0x0481);
 		if (secureIt == 1 && magic == 4)
-			itemmessage( client, "[locked down & secure]", serial, 0x0481);
+			itemmessage( client, "[locked down & secure]", this, 0x0481);
 	}
 
-	itemmessage(client, temp, serial);
+	itemmessage(client, temp, this);
 	free(temp); free(temp2);
 
 	/*! \todo This should be changed to a virtual function */
@@ -177,10 +177,10 @@ void cItem::singleClick(pClient client )
 		if (amt>0)
 		{
 			sprintf( temp2, "[%i items, %i stones]", amt, wgt);
-			itemmessage( client, temp2, serial);
+			itemmessage( client, temp2, this);
 		}
 		else
-			itemmessage( client, "[0 items, 0 stones]", serial);
+			itemmessage( client, "[0 items, 0 stones]", this);
 	}
 	*/
 #endif

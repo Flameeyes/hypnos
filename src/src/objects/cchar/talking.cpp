@@ -52,7 +52,7 @@ void cChar::talkAll(char *txt, bool antispam)
 
 /*!
 \author Luxor
-\brief Shows speech text of a char to the given char
+\brief Shows speech text of a char to the given client
 \param client client to send the speech to
 \param txt the speech
 \param antispam use or not antispam
@@ -87,11 +87,14 @@ void cChar::talk(pClient client, char *txt, bool antispam)
 		{
 			saycolor=0x005B;
 		}
-		//!\todo redo adding to cpeech all the data and verifying
-		nPackets::Sent::Speech pk(cSpeech(txt));
-		getClient()->sendPacket(&pk);
+		cSpeech speech(std::string(txt));	//we must use string constructor or else it is supposed to be an unicode packet
+		speech.setColor(saycolor);
+		speech.setFont(fonttype);
+		speech.setMode(0x00);		// normal speech
+		speech.setSpeaker(this);
 
-		SendSpeechMessagePkt(s, getSerial(), getId(), 0, saycolor, fonttype, name, txt);
+		nPackets::Sent::Speech pk(speech);
+		getClient()->sendPacket(&pk);
 	}
 }
 
@@ -128,12 +131,15 @@ void cChar::emote( pClient client, char *txt, bool antispam, ... )
 	uint8_t name[30]={ 0x00, };
 	strcpy((char *)name, getCurrentName().c_str());
 
-	//!\todo redo adding to cpeech all the data and verifying
-	nPackets::Sent::Speech pk(cSpeech(msg));
+	cSpeech speech(std::string(msg));	//we must use string constructor or else it is supposed to be an unicode packet
+	speech.setColor(emotecolor);
+	speech.setFont(fonttype);
+	speech.setMode(0x02);		// Emote
+	speech.setSpeaker(this);
+
+	nPackets::Sent::Speech pk(speech);
 	getClient()->sendPacket(&pk);
 
-	SendSpeechMessagePkt(socket, getSerial(), getId(), 2, emotecolor, fonttype, name, msg);
-	
 	free(msg);
 }
 
@@ -191,28 +197,19 @@ void cChar::talkRunic(pClient client, char *txt, bool antispam)
 
 	if (antispam)
 	{
-		if (TIMEOUT(antispamtimer))
-		{
-			antispamtimer=getclock()+SECS*10;
-			machwas = true;
-		}
-		else
-			machwas = false;
+		if (TIMEOUT(antispamtimer)) antispamtimer=getclock()+SECS*10;
+		else return;
 	}
-	else
-		machwas = true;
 
-	if (machwas)
-	{
-		uint8_t name[30]={ 0x00, };
-		strcpy((char *)name, getCurrentName().c_str());
+	cSpeech speech(std::string(txt));	//we must use string constructor or else it is supposed to be an unicode packet
+	speech.setColor(0x1);
+	speech.setFont(0x0008);		// runic font
+	speech.setMode(0x00);		// normal speech
+	speech.setSpeaker(this);
 
-                //!\todo redo adding to cpeech all the data and verifying
-		nPackets::Sent::Speech pk(cSpeech(txt));
-		getClient()->sendPacket(&pk);
+	nPackets::Sent::Speech pk(speech);
+	getClient()->sendPacket(&pk);
 
-		SendSpeechMessagePkt(s, getSerial(), getId(), 0, 0x0001, 0x0008, name, txt);
-	}
 }
 
 /*!

@@ -47,13 +47,13 @@ void cGuilds::StonePlacement(pClient client)
 	{
 		if (pc->GetGuildNumber() !=0)
 		{
-			itemmessage(s,"You are already in a guild.",pi_fx1->getSerial());
+			itemmessage(s,"You are already in a guild.",pi_fx1);
 			return;
 		}
 		guildnumber=Guilds->SearchSlot(0,1);
 		if (guildnumber==-1)
 		{
-			itemmessage(s,"There are already enough guildstones placed.",pi_fx1->getSerial());
+			itemmessage(s,"There are already enough guildstones placed.",pi_fx1);
 			return;
 		}
 		pc->SetGuildNumber( guildnumber );
@@ -117,7 +117,7 @@ void cGuilds::StonePlacement(pClient client)
 			guilds[guildnumber].stone = pStone->getSerial();
 		}
 		else 
-			itemmessage(s,"You are not the guildmaster of this guild. Only the guildmaster may use this guildstone teleporter.",pi_fx1->getSerial());
+			itemmessage(s,"You are not the guildmaster of this guild. Only the guildmaster may use this guildstone teleporter.",pi_fx1);
 	}
 }
 
@@ -159,7 +159,7 @@ void cGuilds::Menu(int s, int page)
 	if ((guilds[guildnumber].stone!=pStone->getSerial())&&
 		(!(pc->IsGM())))
 	{
-		itemmessage(s,"You are not a member of this guild. Ask an existing guildmember to invite you into this guild.", pStone->getSerial());
+		itemmessage(s,"You are not a member of this guild. Ask an existing guildmember to invite you into this guild.", pStone);
 		return;
 	}
 

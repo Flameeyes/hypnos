@@ -22,7 +22,7 @@ well as network to host byte order conversion and vice versa.
 \li \c 0x00 - Regular
 \li \c 0x01 - Broadcast
 \li \c 0x02 - Emote (adds *'s as part of text)
-\li \c 0x06  Label (You see: )
+\li \c 0x06 - Label (You see: )
 \li \c 0x07 - Emphasis (clears previous messages)
 \li \c 0x08 - Whisper
 \li \c 0x09  Yell
@@ -36,8 +36,8 @@ protected:
 				//!< \see \ref sm
 	uint16_t color;		//!< Color of the speech
 	uint16_t font;		//!< Font to use for the speech
-	char language[4];	//!< Language code (null terminated)
-	pSerializable speaker;	//!< Character who's speaking. \note Everything with a serial can speak!
+	uint32_t language;	//!< Language code (is a 3byte text + null terminator, so it fits in a single uint32_t)
+	pSerializable speaker;	//!< Character who's speaking. NOTE: everything with a serial can speak!
 	bool packetByteOrder;	//!< Is the string in network-endian?
 public:
 //@{
@@ -93,13 +93,12 @@ public:
 	inline void setFont(const uint16_t newfont)
 	{ font = newfont; }
 
-	inline const char* getLanguage()
+	inline const uint32_t getLanguage()
 	{ return language; }
 
-	inline void setLanguage(char* newlanguage)
+	inline void setLanguage(uint32_t newlanguage)
 	{
-		strncpy(language, newlanguage, 3);
-		language[3] = 0;
+		language = newlanguage & 0xffffff00;	//ensure 0-termination
 	}
 
 	inline const pSerializable getSpeaker()

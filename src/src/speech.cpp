@@ -34,6 +34,8 @@ cSpeech::cSpeech(char* buffer, uint16_t size)
 	else for(uint16_t i = 0;!*(reinterpret_cast<const uint16_t *>(buffer +i));i+=2) unicodeText += *(reinterpret_cast<const uint16_t *>(buffer +i);
 	packetByteOrder = true;
 	mode = 0;	// normal speech
+	speaker = NULL;	//defaults to system
+	language = server_data.Unicodelanguage & 0xffffff00;	//Sets default language to server language
 }
 
 cSpeech::cSpeech(std:string& s)
@@ -42,6 +44,8 @@ cSpeech::cSpeech(std:string& s)
 	for(uint16_t i = 0; i < s.size(); ++i) unicodeText += (uint16_t) s[i];	//expands ascii text to a "16bit char" to add into cSpeech
 	packetByteOrder = false;
 	mode = 0;	// normal speech
+	speaker = NULL;	//defaults to system
+	language = server_data.Unicodelanguage & 0xffffff00;	//Sets default language to server language
 }
 
 cSpeech& cSpeech::operator= (std::string& s)
@@ -58,7 +62,7 @@ cSpeech& cSpeech::operator= (cSpeech& s)
 	mode = s.getMode();
 	color = s.getColor();
 	font = s.getFont();
-	setLanguage(s.getLanguage());
+	language = s.getLanguage();
 	pSerializable speaker = s.getSpeaker();
 	packetByteOrder = s.isPacketByteOrder();
 	return *this;
@@ -99,8 +103,6 @@ std::string cSpeech::toGhost()
 	for(uint16_t i = 0; i<text.size(); ++i) if (text[i] != ' ') text[i] = rand()&1 ? 'O' : 'o';
 	return text;
 }
-
-
 
 
 

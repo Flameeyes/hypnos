@@ -16,7 +16,7 @@
 #include "common_libs.h"
 #include "particles.h"
 
-void itemmessage(pClient client, char *txt, pClient clienterial, short color=0x0000);
+void itemmessage(pClient client, char *txt, pItem pi, short color=0x0000);
 void chardel (pClient client);
 	//!< Deletion of character
 void updatechar(pChar pc);
@@ -25,9 +25,6 @@ void target(pClient client, int a1, int a2, int a3, int a4, char *txt);
 	//!< Send targetting cursor to client
 void weblaunch(pClient client, const char *txt);
 	//!< Direct client to a web page
-void broadcast(pClient client);
-	//!< GM Broadcast (Done if a GM yells something);
-
 
 void staticeffectUO3D(int/*SERIAL*/ player, ParticleFx *sta);
 void movingeffectUO3D(int/*SERIAL*/ source, int/*SERIAL*/ dest, ParticleFx *sta);

@@ -2217,7 +2217,7 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 
 	//!\todo Remove these temp vars
 	char temp[TEMP_STR_SIZE];
- 	char temp1[TEMP_STR_SIZE];
+	char temp1[TEMP_STR_SIZE];
 
 	*(temp1)='\0';
 
@@ -2345,9 +2345,6 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 	uint16_t color;
 	int32_t guild = Guilds->Compare(showToWho,this);
 
-	uint8_t sysname[30]={ 0x00, };
-	strcpy((char *)sysname, "System");
-
 	if (guild==1) //Same guild (Green)
 	{
 		color = 0x0043;
@@ -2376,11 +2373,14 @@ void cChar::showLongName( pChar showToWho, bool showSerials )
 		}
 	}
 
-	//!\todo redo adding to cpeech all the data and verifying
-	nPackets::Sent::Speech pk(cSpeech(temp1));
-	client->sendPacket(&pk);
+	cSpeech speech(std::string(temp1));	//we must use string constructor or else it is supposed to be an unicode packet
+	speech.setColor(color);
+	speech.setFont(0x0003);		// Normal font
+	speech.setMode(0x06);		// Label
+	speech.setSpeaker(this);
+	nPackets::Sent::Speech pk(speech);
 
-	//SendSpeechMessagePkt(socket, getSerial(), 0x0101, 6, color, 0x0003, sysname, temp1);
+	client->sendPacket(&pk);
 }
 
 /*!
