@@ -29,7 +29,7 @@ ifdef DEBUG
 	CXXBASEFLAGS = -O0 -g -Wall
 else
 	actdefault =$(default)
-	CXXBASEFLAGS = -O3 -fshort-enums
+	CXXBASEFLAGS = -O3 -fshort-enums -DNDEBUG
 endif
 
 .SUFFIXES: .cpp
@@ -41,19 +41,19 @@ nodebug: $(default)
 debug: $(default)-debug
 
 linux: #$(TARGET)
-	@make -f makefiles/Makefile.linux $(TARGET) CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums"
+	@make -f makefiles/Makefile.linux $(TARGET) CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums -DNDEBUG"
 
 linux-debug: #$(TARGET)
 	@make -f makefiles/Makefile.linux $(TARGET) CXXFLAGS="$(CXXFLAGS) -O0 -g -Wall"
 
 mingw: #$(TARGET).exe
-	@make -f makefiles/Makefile.mingw $(TARGET).exe CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums"
+	@make -f makefiles/Makefile.mingw $(TARGET).exe CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums -DNDEBUG"
 
 mingw-debug: #$(TARGET).exe
 	@make -f makefiles/Makefile.mingw $(TARGET).exe CXXFLAGS="$(CXXFLAGS) -O0 -g -Wall"
 
 xmingw: #$(TARGET).exe
-	@make -f makefiles/Makefile.xmingw32 $(TARGET).exe CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums"
+	@make -f makefiles/Makefile.xmingw32 $(TARGET).exe CXXFLAGS="$(CXXFLAGS) -O3 -fshort-enums -DNDEBUG"
 
 xmingw-debug: #$(TARGET).exe
 	@make -f makefiles/Makefile.xmingw32 $(TARGET).exe CXXFLAGS="$(CXXFLAGS) -O0 -g -Wall"
