@@ -189,4 +189,50 @@ char *long2ip(int l, char *out)
   return out;
 }
 
+/*!
+\author Duke
+\brief Calculates a long int from 4 subsequent bytes pointed to by p in network endian
+\param p pointer to the 4 subsequent bytes
+\return the value of the long found
+*/
+inline uint32_t LongFromCharPtr(const unsigned char *p)
+{
+	return ntohl( *(reinterpret_cast<uint32_t *>(p)) );
+}
+
+/*!
+\author Duke
+\brief Calculates a short int from 2 subsequent bytes pointed to by p in network endian
+\param p pointer to the 2 subsequent bytes
+\return the value of the short found
+*/
+inline uint16_t ShortFromCharPtr(const unsigned char *p)
+{
+	return ntohs( *(reinterpret_cast<uint16_t *>(p)) );
+}
+
+/*!
+\author Duke
+\brief Stores a long int into 4 subsequent bytes pointed to by p in network endian
+\param i value to store
+\param p pointer to the char array
+*/
+inline void LongToCharPtr(const uint32_t i, unsigned char *p)
+{
+	uint32_t *b = reinterpret_cast<uint32_t*>(p);
+	*b = htonl(i);
+}
+
+/*!
+\author Duke
+\brief Stores a short int into 2 subsequent bytes pointed to by p in network endian
+\param i value to store
+\param p pointer to the char array
+*/
+inline void ShortToCharPtr(const uint16_t i, unsigned char *p)
+{
+	uint16_t *b = reinterpret_cast<uint16_t*>(p);
+	*b = htons(i);
+}
+
 #endif //__INLINES_H__
