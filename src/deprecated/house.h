@@ -14,15 +14,11 @@
 
 extern std::map< uint32_t, pChar > houses;
 
-int add_hlist(pChar c, pItem h, int t);
 void buildhouse( pClient client, pTarget t );
 int check_house_decay();
-void 	deedhouse(pClient client, pItem pi);
-int del_hlist(pChar pc, pItem pi);
-int on_hlist(pItem pi, uint32_t serial, int *li);
+void deedhouse(pClient client, pItem pi);
 bool house_speech( pChar pc, pClient clientocket, std::string &talk);
-void 	killkeys(uint32_t serial);
-
+void killkeys(uint32_t serial);
 
 void target_houseOwner( pClient client, pTarget t );
 void target_houseEject( pClient client, pTarget t );
@@ -32,7 +28,5 @@ void target_houseUnlist( pClient client, pTarget t );
 void target_houseLockdown( pClient client, pTarget t );
 void target_houseRelease( pClient client, pTarget t );
 void target_houseSecureDown( pClient client, pTarget t );
-
-
 
 #endif

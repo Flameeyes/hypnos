@@ -664,105 +664,6 @@ void killkeys(uint32_t serial) // Crackerjack 8/11/99
 	}
 }
 
-/*!
-\brief Checks if somebody is on the house list
-\param pi pointer to the house item
-\param serial serial
-\param li pointer to variable to put items[] index of list item in or NULL
-\return 0 if character is not on house list, else the type of list
-*/
-int on_hlist(pItem pi, uint32_t serial, int *li)
-{
-	if ( ! pi || ! pi->isInWorld() ) return 0;
-
-	pItem p_ci=NULL;
-
-	NxwItemWrapper si;
-	si.fillItemsNearXYZ( pi->getPosition(), BUILDRANGE, false );
-	for( si.rewind(); !si.isEmpty(); si++ ) {
-
-		p_ci=si.getItem();
-		if( p_ci ) {
-
-			if((p_ci->morey == (uint32_t)pi->getSerial())&& ( p_ci->more == serial) )
-				{
-				    if(li!=NULL) *li=p_ci->getSerial();
-						return p_ci->morex;
-				}
-		}
-	}
-
-	return 0;
-}
-
-/*!
-\brief Adds somebody to a house list
-\param pc someone character
-\param pi_h someonelse's house
-\param t list tyle
-\return 1 if successful addition, 2 if the char was alredy on a house list, 3 if the character is not on property
-*/
-int add_hlist(pChar pc, pHouse pi_h, int t)
-{
-	if ( ! pc || ! pi_h ) return 3;
-
-	if(on_hlist(pi_h, pc->getSerial(), NULL))
-		return 2;
-
-	// Make an object with the character's serial & the list type
-	// and put it "inside" the house item.
-	sLocation charpos= pc->getPosition();
-
-	if ( ! pi_h->getArea().isInside(pc->getPosition()) )
-		return 3;
-	
-	pItem pi = new cItem(cItem::nextSerial());
-
-	pi->morex= t;
-	pi->more = pc->getSerial();
-	pi->morey= pi_h->getSerial();
-
-	pi->setDecay( false );
-	pi->setNewbie( false );
-	pi->setDispellable( false );
-	pi->visible= 0;
-	pi->setCurrentName("friend of house");
-
-	pi->setPosition( pi_h->getPosition() );
-	pointers::addToLocationMap(pi);
-	return 1;
-}
-
-/*!
-\brief Remove somebody from a house list
-\param pc someone
-\param pi house
-\return 0 if the player was not on a list, else the list which the player was in.
-*/
-int del_hlist(pChar pc, pItem pi)
-{
-	int hl, li;
-
-	if ( ! pc || ! pi ) return 0;
-
-	hl=on_hlist(pi, pc->getSerial(), &li);
-	if(hl) {
-		pItem pli=MAKE_ITEM_REF(li);
-		if( pli ) {
-#ifdef SPAR_I_LOCATION_MAP
-			//
-			// Hmmm....this is handled by pointers::delItem()....must remove it later
-			//
-			pointers::delItemFromLocationMap(pli);
-#else
-			mapRegions->remove(pli);
-#endif
-			pli->Delete();
-		}
-	}
-	return(hl);
-}
-
 bool house_speech( pChar pc, pClient client, std::string &talk)
 {
 	//
@@ -774,15 +675,11 @@ bool house_speech( pChar pc, pClient client, std::string &talk)
 	if( !pi )
 		return false;
 
-	//
 	// if pc is not a friend or owner, we don't care what he says
-	//
-	fr=on_hlist(pi, pc->getSerial(), NULL);
-	if( fr != H_FRIEND && pi->getOwner() != pc )
+	if ( ! pi_house->canPerformCommand(pc) )
 		return false;
-	//
+	
 	// house ban
-	//
 	if( talk.find("I BAN THEE") != std::string::npos )
 	{
 		pTarget targ = clientInfo[socket]->newTarget( new cCharTarget() );
@@ -954,70 +851,85 @@ void target_houseEject( pClient client, pTarget t )
 //buffer[0] house
 void target_houseBan( pClient client, pTarget t )
 {
-	target_houseEject(client, t);	// first, eject the player
-
 	pChar pc = dynamic_cast<pChar>( t->getClicked() );
 	if ( ! pc ) return;
 
 	pChar curr = client->currChar();
 	if ( ! curr ) return;
 
-	pItem pi=cSerializable::findItemBySerial( t->buffer );
-	if(pi)
+	if(pc == curr)
+		return;
+	
+	pHouse ph = dynamic_cast<pHouse>(cSerializable::findBySerial( t->buffer[0] ));
+	if ( ! ph ) return;
+	
+	if ( ! ph->getArea().isInside(pc->getBody()->getPosition()) )
 	{
-		if(pc == curr)
-			return;
-		int r = add_hlist(pc, pi, H_BAN);
-		if(r==1)
-			client->sysmessage("%s has been banned from this house.", pc->getCurrentName().c_str());
-		else if(r==2)
-			client->sysmessage("That player is already on a house register.");
-		else
-			client->sysmessage("That player is not on the property.");
+		client->sysmessage("That player is not on the property.");
+		return;
 	}
+	
+	// Eject the player only when the target is acknowledged
+	target_houseEject(client, t);
+
+	if ( ! ph->setStatus(pc, cHouse::psBanned) )
+		client->sysmessage("That player can't be banned.");
+	else
+		client->sysmessage("%s has been banned from this house.", pc->getCurrentName().c_str());
 }
 
 // buffer[0] the house
 void target_houseFriend( pClient client, pTarget t )
 {
-	pChar Friend = dynamic_cast<pChar>( t->getClicked() );
+	pChar pc = dynamic_cast<pChar>( t->getClicked() );
+	if ( ! pc ) return;
 
 	pChar curr = client->currChar();
 	if ( ! curr ) return;
 
-	pItem pi=cSerializable::findItemBySerial( t->buffer );
-
-	if( Friend && pi)
+	if(pc == curr)
+		return;
+	
+	pHouse ph = dynamic_cast<pHouse>(cSerializable::findBySerial( t->buffer[0] ));
+	if ( ! ph ) return;
+	
+	if ( ! ph->getArea().isInside(pc->getBody()->getPosition()) )
 	{
-		if(Friend == curr)
-		{
-			client->sysmessage("You cant do that!");
-			return;
-		}
-
-		int r = add_hlist(Friend, pi, H_FRIEND);
-		if(r==1)
-			client->sysmessage("%s has been made a friend of the house.", Friend->getCurrentName().c_str());
-		else if(r==2)
-			client->sysmessage("That player is already on a house register.");
-		else
-			client->sysmessage("That player is not on the property.");
+		client->sysmessage("That player is not on the property.");
+		return;
 	}
+	
+	if ( ! ph->setStatus(pc, cHouse::psFriend) )
+		client->sysmessage("That player can't be made friend.");
+	else
+		client->sysmessage("%s has been made a friend of the house.", pc->getCurrentName().c_str());
 }
 
 // bugffer[0] the hose
 void target_houseUnlist( pClient client, pTarget t )
 {
 	pChar pc = dynamic_cast<pChar>( t->getClicked() );
-	pItem pi = cSerializable::findItemBySerial( t->buffer );
-    
-	if(pc && pi)
+	if ( ! pc ) return;
+
+	pChar curr = client->currChar();
+	if ( ! curr ) return;
+
+	if(pc == curr)
+		return;
+	
+	pHouse ph = dynamic_cast<pHouse>(cSerializable::findBySerial( t->buffer[0] ));
+	if ( ! ph ) return;
+	
+	if ( ! ph->getArea().isInside(pc->getBody()->getPosition()) )
 	{
-        	if ( del_hlist(pc, pi) >0)
-			client->sysmessage("%s has been removed from the house registry.", pc->getCurrentName().c_str());
-		else 
-			client->sysmessage("That player is not on the house registry.");
+		client->sysmessage("That player is not on the property.");
+		return;
 	}
+	
+	if ( ! ph->setStatus(pc, cHouse::psFriend) )
+		client->sysmessage("That player can't be removed from the house registry.");
+	else
+		client->sysmessage("%s has been removed from the house registry.", pc->getCurrentName().c_str());
 }
 
 void target_houseLockdown( pClient client, pTarget t )

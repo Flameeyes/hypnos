@@ -255,12 +255,9 @@ bool WalkHandleBlocking(pChar pc, int sequence, int dir, int oldx, int oldy)
 					pc_b->teleport();
 				}
 			} else if ( ph ) {
-				//!\todo When new house stuff is done, please clean this up :)
-				int j = on_hlist(pi_multi, pc->getSerial(), NULL);
-
-				if(j==H_BAN)
+				if ( ph->isBanned(pc) )
 				{
-					pc->sysmsg("You are banned from that location.");
+					client->sysmesage("You are banned from that location.");
 					sLocation newpos = pi_multi->getArea().br + sLocation(1, 1, pc->getPosition().z);
 					pc->setPosition(newpos);
 					pc->teleport();

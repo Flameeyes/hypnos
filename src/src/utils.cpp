@@ -256,10 +256,8 @@ void dooruse(pChar pc, pItem pi)
 	if ( ! pi_house->isHouse() )
 		return;
 	
-	houseowner_serial=pi2->getOwner()->getSerial();
-	j=on_hlist(pi_house, pc->getSerial(), NULL);
-	
-	if ( j != H_FRIEND && ( pi->getOwner() != pc ) )
+	// Coowner also tests if owner
+	if ( ! pi_house->canPerformCommand(pc) )
 		return;
 	
 	if (SrvParms->housedecay_secs!=0)
@@ -271,7 +269,7 @@ void dooruse(pChar pc, pItem pi)
 	
 	if ( client )
 	{
-		if (houseowner_serial != pc->getSerial())
+		if (pi_house->isFriend(pc))
 			client->sysmessage("You refreshed your friend's house");
 		else
 			client->sysmessage("You refreshed the house");
