@@ -43,6 +43,8 @@ public:
 			const bool isBypassed() const
 			{ return bypassed; }
 			
+			virtual ~cFunctionHandle();
+			
 		protected:
 			cFunctionHandle();
 			tVariantVector params;

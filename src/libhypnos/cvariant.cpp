@@ -194,6 +194,8 @@ bool tVariant::operator ==(const tVariant &param) const
 		case vtPItem:
 		case vtPClient:
 			return ptrvalue == param.toPVoid();
+		default:
+			return false;
 	}
 }
 
@@ -375,6 +377,9 @@ std::string tVariant::toString(bool *result) const
 			}
 		case vtNull:
 			return std::string("[nil]");
+		default:
+			if ( result ) *result = false;
+			return std::string("[Undefined]");
 	}
 }
 
@@ -398,7 +403,7 @@ bool tVariant::toBoolean(bool *result) const
 		case vtString:
 			if ( stringvalue == "true" ) return true;
 			if ( stringvalue == "false" ) return false;
-			
+		default:
 			// If not true or false
 			if ( result ) *result = false;
 			return false;

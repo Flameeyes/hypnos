@@ -125,19 +125,19 @@ public:
 	
 	//! Addiction operator
 	tVariant operator +=(const tVariant &param)
-	{ *this = *this + param; }
+	{ return (*this = *this + param); }
 	
 	//! Subtraction operator
 	tVariant operator -=(const tVariant &param)
-	{ *this = *this - param; }
+	{ return (*this = *this - param); }
 	
 	//! Prefixed increment operator
 	inline tVariant operator ++()
-	{ return *this += 1; }
+	{ return (*this += 1); }
 	
 	//! Prefixed decrement operator
 	inline tVariant operator --()
-	{ return *this += 1; }
+	{ return (*this += 1); }
 	
 	tVariant operator ++(int unused);
 	tVariant operator --(int unused);
