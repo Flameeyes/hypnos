@@ -14,6 +14,11 @@
 #include "logsystem.h"
 #include "basics.h"
 
+static void cContainer::loadContainersData()
+{
+	
+}
+
 cContainer::cContainer()
 	: cItem()
 {

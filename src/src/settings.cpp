@@ -19,14 +19,41 @@ of the settings, so I defined the macros to have the code more clean (also
 if it makes the error handling more difficult).
 */
 
+#include <mxml.h>
 #include "settings.h"
-#include "mxml.h"
+#include "logsystem.h"
+#include "abstraction/tvariant.h"
 
 #define SETTING(type, name, default) \
 	type val##name = default; \
 	type get##name() \
 	{ return val##name; }
 	
+#define SECTION(sname) \
+	if ( n->name() == #sname ) \
+		sname::load(n);
+
+#define XMLSETTING(sname, vartype, functype) \
+	if ( n->name() == #sname ) \
+	{ \
+		tVariant v = n->data(); \
+		bool result = false; \
+		vartype temp = v.to##functype(&result); \
+		if ( result ) val##sname = temp; \
+		else LogWarning("Invalid value for parameter ##name"); \
+	}
+
+#define BOOLSETTING(sname, sflag) \
+	if ( n->name() == #sname ) { \
+		if ( ! n->hasAttribute("enabled") || \
+			( n->getAttribute("enabled") != "false" && n->getAttribute("enabled") != "true" ) ) \
+		{ \
+			LogWarning("Invalid value for setting #sname"); \
+		} else { \
+			setFlag(sflag, n->getAttribute("enabled") == "true"); \
+		} \
+	}
+
 namespace nSettings
 {
 
@@ -60,15 +87,6 @@ The constants of this group are or-ed together to get the server boolean's setti
 	static const uint64_t flagActionsUseInvisible	= 0x0000000000000400;
 	//! Stealth on horse
 	static const uint64_t flagSkillsStealthOnHorse	= 0x0000000000000800;
-	
-	//! Sets a determined flag on or off
-	void setFlag(const uint64_t flag, bool on = true)
-	{
-		if ( on )
-			flags |= flag;
-		else
-			flags &= ~flag;
-	}
 //@}
 
 /*!
@@ -79,8 +97,17 @@ the flags found in <b>Flags constants</b> group.
 */
 uint64_t flags = 
 	flagServerBookSystem | flagServerTradeSystem | flagServerBountySystem |
-	flagServerHungerSystem | flagServerPopupHelp | flagServerUOAssist | 
+	flagHungerSystemEnabled | flagServerPopupHelp | flagServerUOAssist | 
 	flagServerPlayerDeletePC | flagServerShowPCNames | flagActionsEquipOnDClick;
+
+//! Sets a determined flag on or off
+void setFlag(const uint64_t flag, bool on = true)
+{
+	if ( on )
+		flags |= flag;
+	else
+		flags &= ~flag;
+}
 
 /*!
 \brief Message Boards related settings
@@ -96,6 +123,7 @@ Round down to 128 messages allowable on a message board (better safe than sorry)
 Outbound packets now can have any length, so the maxpost is only used to have a
 REASONABLE sized packet to send (Chronodt 10/3/04)
 */
+
 namespace MsgBoards {
 	//! Maximum post possible
 	SETTING(uint16_t, MaxPosts, 128);
@@ -106,9 +134,9 @@ namespace MsgBoards {
 	void load(MXML::Node *n)
 	{
 		do {
-			XMLSETTING(MaxPosts, UInt16)
-			else XMLSETTING(MaxEntries, UInt16)
-			else LogWarning("Unknown node %s in settings.xml, ignoring", d->name().c_str() );
+			XMLSETTING(MaxPosts, uint16_t, UInt16)
+			else XMLSETTING(MaxEntries, uint16_t, UInt16)
+			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
 			n = n->next();
 		} while(n);
 	}
@@ -163,12 +191,27 @@ namespace Server {
 	//! How much weight can take with one str point?
 	SETTING(uint32_t, WeightPerStr, 4);
 
-	void load(MXML::Node *n)
+	void load(MXML::Node *s)
 	{
+		MXML::Node *n = s->child();
 		do {
-			XMLSETTING(MaxPosts)
-			else XMLSETTING(MaxEntries)
-			else LogWarning("Unknown node %s in settings.xml, ignoring", d->name().c_str() );
+			XMLSETTING(AllowedAssistVersion, uint32_t, UInt32)
+			else XMLSETTING(MaximumPCs, uint8_t, UInt8)
+			else XMLSETTING(BankMaxItems, uint16_t, UInt16)
+			else XMLSETTING(MaximumItemsOnTile, uint8_t, UInt8)
+			else XMLSETTING(DelaySkills, uint32_t, UInt32)
+			else XMLSETTING(DelayObjects, uint32_t, UInt32)
+			else XMLSETTING(DecayTimer, uint32_t, UInt32)
+			else XMLSETTING(WeightPerStr, uint32_t, UInt32)
+			else BOOLSETTING(BookSystem, flagServerBookSystem)
+			else BOOLSETTING(TradeSystem, flagServerTradeSystem)
+			else BOOLSETTING(BountySystem, flagServerBountySystem)
+			else BOOLSETTING(PopupHelp, flagServerPopupHelp)
+			else BOOLSETTING(UOAssist, flagServerUOAssist)
+			else BOOLSETTING(ShowPCNames, flagServerShowPCNames)
+			else BOOLSETTING(InstantGuards, flagServerInstantGuards)
+			else BOOLSETTING(PlayersDeletePC, flagServerPlayerDeletePC)
+			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
 			n = n->next();
 		} while(n);
 	}
@@ -183,10 +226,29 @@ namespace Hunger {
 	SETTING(uint16_t, HungerRate, 6000);
 	
 	//! How much health is lost when you are starving
-	SETTING(uint16_t, HungetDamage, 2);
+	SETTING(uint16_t, HungerDamage, 2);
 	
 	//! How often you lose health when you are starving
 	SETTING(uint16_t, HungerDamageRate, 10);
+
+	void load(MXML::Node *s)
+	{
+		if ( ! s->hasAttribute("enabled") ||
+			( s->getAttribute("enabled") != "false" && s->getAttribute("enabled") != "true" ) )
+		{
+			LogWarning("Invalid value for setting HungerSystem");
+		} else
+			setFlag(flagHungerSystemEnabled, s->getAttribute("enabled") == "true");
+			
+		MXML::Node *n = s->child();
+		do {
+			XMLSETTING(HungerRate, uint16_t, UInt16)
+			else XMLSETTING(HungerDamage, uint16_t, UInt16)
+			else XMLSETTING(HungerDamageRate, uint16_t, UInt16)
+			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
+			n = n->next();
+		} while(n);
+	}
 }
 
 namespace Actions {
@@ -201,6 +263,19 @@ namespace Actions {
 	
 	//! How much fame is gained for bounty hunting? \todo Set the default
 	SETTING(uint16_t, BountyFameGain, 0);
+
+	void load(MXML::Node *s)
+	{
+		MXML::Node *n = s->child();
+		do {
+			XMLSETTING(BountyKarmaGain, uint16_t, UInt16)
+			else XMLSETTING(BountyFameGain, uint16_t, UInt16)
+			else BOOLSETTING(EquipOnDClick, flagActionsEquipOnDClick)
+			else BOOLSETTING(UseItemsWhenInvisible, flagActionsUseInvisible)
+			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
+			n = n->next();
+		} while(n);
+	}
 }
 
 namespace Skills {
@@ -235,23 +310,69 @@ namespace Skills {
 
 	//! Maximum skill an npc trainer can teach to a PC
 	SETTING(uint16_t, MaximumSkillTraining, 250);
+
+	void loadHiding(MXML::Node *s)
+	{
+		MXML::Node *n = s->child();
+		do {
+			BOOLSETTING(StealthOnHorse, flagSkillsStealthOnHorse)
+			else XMLSETTING(StealthToTakeItemsWhileHid, uint16_t, UInt16)
+			else XMLSETTING(StealthToDropItemsWhileHid, uint16_t, UInt16)
+			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
+			n = n->next();
+		} while(n);
+	}
+	
+	void loadThievery(MXML::Node *s)
+	{
+		MXML::Node *n = s->child();
+		do {
+			XMLSETTING(SnoopKarmaLoss, uint16_t, UInt16)
+			else XMLSETTING(SnoopFameLoss, uint16_t, UInt16)
+			else XMLSETTING(StealKarmaLoss, uint16_t, UInt16)
+			else XMLSETTING(StealFameLoss, uint16_t, UInt16)
+			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
+			n = n->next();
+		} while(n);
+	}
+	
+	void load(MXML::Node *s)
+	{
+		MXML::Node *n = s->child();
+		do {
+			if ( n->name() == "Hiding" ) loadHiding(n);
+			else if ( n->name() == "Thievery" ) loadThievery(n);
+			else XMLSETTING(StatDailyLimit, uint16_t, UInt16)
+			else XMLSETTING(LimitPlayerSparring, uint16_t, UInt16)
+			else XMLSETTING(MaximumSkillTraining, uint16_t, UInt16)
+			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
+			n = n->next();
+		} while(n);
+	}
 }
 
 namespace Logging {
 	//! Gets the absolute path of the logs directory
 	SETTING(std::string, LogPath, "");
+	
+	void load(MXML::Node *s)
+	{
+		MXML::Node *n = s->child();
+		do {
+			XMLSETTING(LogPath, std::string, String)
+			else LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
+			n = n->next();
+		} while(n);
+	}
+	
 }
-
-#define SECTION(name) \
-	if ( d->name() == #name )
-		##name::load(d);
 
 void load(std::istream &xmlfile)
 {
 	try {
-		MXML::Document(xmlfile);
+		MXML::Document doc(xmlfile);
 		
-		MXML::Node *d = doc.main()->child();
+		MXML::Node *n = doc.main()->child();
 		do {
 			SECTION(MsgBoards)
 			else SECTION(Server)
@@ -260,7 +381,7 @@ void load(std::istream &xmlfile)
 			else SECTION(Skills)
 			else SECTION(Logging)
 			else
-				LogWarning("Unknown node %s in settings.xml, ignoring", d->name().c_str() );
+				LogWarning("Unknown node %s in settings.xml, ignoring", n->name().c_str() );
 			
 			n = n->next();
 		} while(n);
