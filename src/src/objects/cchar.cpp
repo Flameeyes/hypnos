@@ -932,6 +932,23 @@ void cChar::fight(P_CHAR other)
 }
 
 /*!
+\brief Simpler attack for NPCs
+*/
+void cChar::npcSimpleAttack(pChar pc_target)
+{
+	if ( ! pc_target )
+		return;
+
+	if ( ( pc_target == this ) || pc_target->dead || dead )
+		return;
+
+	fight( pc_target2 );
+	SetAttackFirst();
+	pc_target2->fight( this );
+	pc_target2->ResetAttackFirst();
+}
+
+/*!
 \brief count items of given id and color
 \author Duke
 \date 26/03/2001

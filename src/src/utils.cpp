@@ -625,7 +625,7 @@ UI32 getsysclock()
    return seconds ;
 }
 
-void setabovelight(unsigned char lightchar)
+void setabovelight(UI08 lightchar)
 {
 
 	if (lightchar != worldcurlevel)
@@ -635,7 +635,7 @@ void setabovelight(unsigned char lightchar)
 		sw.fillOnline();
 		for( sw.rewind(); !sw.isEmpty(); sw++ )
 		{
-			dolight(sw.getSocket(), worldcurlevel);
+			client->light(worldcurlevel);
 		}
 	}
 }
@@ -717,22 +717,6 @@ void getSextantCoords(SI32 x, SI32 y, LOGICAL t2a, char *sextant)
    strcat(sextant, yMs);
    strcat(sextant,"' ");
    if (yH>=0) strcat(sextant,"S"); else strcat(sextant,"N");
-}
-
-
-void npcsimpleattacktarget(CHARACTER target2, CHARACTER target)
-{
-	P_CHAR pc_target2 = MAKE_CHAR_REF( target2 );
-	VALIDATEPC( pc_target2 );
-	P_CHAR pc_target  = MAKE_CHAR_REF( target  );
-	VALIDATEPC( pc_target );
-	if ( pc_target->dead || pc_target2->dead || ( pc_target->targserial == pc_target2->getSerial32() && pc_target2->targserial == pc_target->getSerial32() ) )
-		return;
-
-	pc_target->fight( pc_target2 );
-	pc_target->SetAttackFirst();
-	pc_target2->fight( pc_target );
-	pc_target2->ResetAttackFirst();
 }
 
 void donewithcall(int s, int type)

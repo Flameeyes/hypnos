@@ -50,15 +50,14 @@ static bool checkForCastingLoss(P_CHAR pc, int damage)
 \author Luxor
 \brief Attack a char
 \param pc_def defender char
-\todo complete param documentation
 */
-void cChar::combatHit( P_CHAR pc_def, SI32 nTimeOut )
+void cChar::combatHit( pChar pc_def, SI32 nTimeOut )
 {
-	if ( !ISVALIDPC(pc_def) ) {
-		swingtargserial = INVALID;
+	if ( !pc_def ) {
+		swingtarget = NULL;
 		return;
 	}
-	
+
 	if ( amxevents[EVENT_CHR_ONCOMBATHIT] ) {
 		g_bByPass = false;
 		amxevents[EVENT_CHR_ONCOMBATHIT]->Call( getSerial32(), pc_def->getSerial32() );
@@ -95,17 +94,17 @@ void cChar::combatHit( P_CHAR pc_def, SI32 nTimeOut )
 	dist = distFrom(pc_def);
 
 	if((dist > 1 && fightskill != ARCHERY) || !los) return;
-	
+
 	if ( pc_def->npc && !npc ) {
 		if ( pc_def->IsInvul() )
 			return;
-		P_CHAR pc_target = pointers::findCharBySerial( pc_def->targserial );
+		P_CHAR pc_target = pc_def->target;
 		if ( ISVALIDPC( pc_target ) ) {
                         SI32 att_value = pc_target->hp/10 + pc_def->distFrom( pc_target ) / 2;
                         SI32 this_value = hp/10 + distFrom( pc_def ) / 2;
                         if ( this_value < att_value ) {
-				pc_def->targserial = getSerial32();
-				pc_def->attackerserial = getSerial32();
+				pc_def->target = this;
+				pc_def->attacker = this;
 			}
 		}
 	}
@@ -115,7 +114,7 @@ void cChar::combatHit( P_CHAR pc_def, SI32 nTimeOut )
 	int fs1, fs2, str1, str2, dex1, dex2;
 	str1 = getStrength();
 	str2 = pc_def->getStrength();
-	
+
 	(pc_def->dx < 100) ? dex2 = pc_def->dx : dex2 = 100;
 	(dx < 100) ? dex1 = dx : dex1 = 100;
 	(skill[fightskill] > 0) ? fs1 = skill[fightskill] : fs1 = 1;
@@ -144,13 +143,13 @@ void cChar::combatHit( P_CHAR pc_def, SI32 nTimeOut )
 	hit = chance( chanceToHit );
 
 	checkSkillSparrCheck(fightskill, 0, 1000, pc_def);
-	swingtargserial = INVALID;
+	swingtarget = NULL;
 
 	if ( fightskill == ARCHERY && isRunning() )
 		hit = false;
 
 	if (!hit) {
-		
+
 		if (amxevents[EVENT_CHR_ONHITMISS]) {
 			g_bByPass = false;
 			amxevents[EVENT_CHR_ONHITMISS]->Call(getSerial32(), pc_def->getSerial32());
@@ -158,7 +157,7 @@ void cChar::combatHit( P_CHAR pc_def, SI32 nTimeOut )
 		}
 		/*
 		runAmxEvent( EVENT_CHR_ONHITMISS, getSerial32(), pc_def->getSerial32() );
-		if (g_bByPass==true) 
+		if (g_bByPass==true)
 			return;
 		*/
 		if (!npc) {
@@ -187,7 +186,7 @@ void cChar::combatHit( P_CHAR pc_def, SI32 nTimeOut )
 		}
 		return;
 	}
-	
+
 	if (amxevents[EVENT_CHR_ONHIT]) {
 		g_bByPass = false;
 		amxevents[EVENT_CHR_ONHIT]->Call(getSerial32(), pc_def->getSerial32());
@@ -195,10 +194,10 @@ void cChar::combatHit( P_CHAR pc_def, SI32 nTimeOut )
 	}
 	/*
 	runAmxEvent( EVENT_CHR_ONHIT, getSerial32(), pc_def->getSerial32());
-	if (g_bByPass==true) 
+	if (g_bByPass==true)
 		return;
 	*/
-	
+
 	if (pc_def->amxevents[EVENT_CHR_ONGETHIT]) {
 		g_bByPass = false;
 		pc_def->amxevents[EVENT_CHR_ONGETHIT]->Call(pc_def->getSerial32(), getSerial32());
@@ -252,9 +251,9 @@ void cChar::combatHit( P_CHAR pc_def, SI32 nTimeOut )
 				}
 			} else {
 				wresmove = 0;
-				sysmsg( TRANSLATE("You failed to disarm your opponent!") );	
+				sysmsg( TRANSLATE("You failed to disarm your opponent!") );
 			}
-		}                 
+		}
 
 		if ( wresmove == WRESSTUNPUNCH ) {
 			chanceToHit += int( skill[TACTICS]/100.0 - pc_def->skill[TACTICS]/100.0 );
@@ -406,8 +405,8 @@ void cChar::undoCombat()
 	/*if ( war ) //Luxor
 		toggleCombat();*/
 	timeout = 0;
-	attackerserial = INVALID;
-	targserial = INVALID;
+	attacker = NULL;
+	target = NULL;
 	ResetAttackFirst();
 }
 
@@ -430,25 +429,24 @@ void cChar::doCombat()
 		arrowsquant = 0;
 	P_ITEM	pWeapon = getWeapon();
 	bool	validWeapon = ISVALIDPI( pWeapon );
-	P_CHAR	pc_def = pointers::findCharBySerial(targserial);
 
-	if( !ISVALIDPC(pc_def) )
+	if( !target )
 	{
 		undoCombat();
 		return;
 	}
 
-	if ( (!pc_def->npc && !pc_def->IsOnline()) || pc_def->IsHidden() || pc_def->dead || (pc_def->npc && pc_def->npcaitype==NPCAI_PLAYERVENDOR) )
+	if ( (!target->npc && !target->IsOnline()) || target->IsHidden() || target->dead || (target->npc && target->npcaitype==NPCAI_PLAYERVENDOR) )
 	{
 		undoCombat();
 		return;
 	}
-	if ( !npc && !losFrom(pc_def) ) {
+	if ( !npc && !losFrom(target) ) {
 		undoCombat();
 		return;
 	}
 
-	dist = distFrom(pc_def);
+	dist = distFrom(pctarget);
 
 	if ( amxevents[EVENT_CHR_ONDOCOMBAT] ) {
 		g_bByPass = false;
@@ -473,15 +471,14 @@ void cChar::doCombat()
 	*/
 
 	if ( npc )
-		npcs::npcMagicAttack( this, pc_def );
+		npcs::npcMagicAttack( this, target );
 
 	if ( dist > VISRANGE )
 	{
-		P_CHAR pc_att=pointers::findCharBySerial(attackerserial);
-		if ( ISVALIDPC(pc_att) )
+		if ( attacker )
 		{
-			pc_att->ResetAttackFirst();
-			pc_att->attackerserial=INVALID;
+			attacker->ResetAttackFirst();
+			attacker->attackerserial=INVALID;
 		}
 		undoCombat();
 		return;
@@ -620,12 +617,13 @@ void cChar::doCombat()
 				}
 
 			if ( dist < 2 || fightskill == ARCHERY )
+				npcSimpleAttack(
 				npcsimpleattacktarget( getSerial32(), targserial);
 
 			if (fightskill == ARCHERY)
 				combatHit( pc_def );
 			else
-				swingtargserial=pc_def->getSerial32();
+				swingtarget = pc_def;
 		}	//End -> if (x)
 
 		if (fightskill != ARCHERY)
@@ -795,7 +793,7 @@ int cChar::combatHitMessage(SI32 damage)
 	if (ISVALIDPC(pc_attacker)) {
 		sysmsg("%s %s",pc_attacker->getCurrentNameC(), temp);
 	}
-	
+
 	return x;
 }
 

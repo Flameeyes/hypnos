@@ -55,7 +55,6 @@ void splitline();
 
 int hexnumber(int countx);
 
-void batchcheck(int s);
 void location2xyz(int loc, int& x, int& y, int& z);
 
 UI32 getclock();

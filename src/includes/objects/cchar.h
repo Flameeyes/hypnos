@@ -508,6 +508,7 @@ protected:
 	public:
 		void			checkPoisoning();
 		void 			fight(P_CHAR pOpponent);
+		void			npcSimpleAttack(pChar pc_target);
 		void			combatHit( P_CHAR pc_def, SI32 nTimeOut = 0 );
 		void			doCombat();
 		void			combatOnHorse();
@@ -744,18 +745,16 @@ public:
 
 	/********************************/
 
-		SERIAL			keyserial;  //!< for renaming keys
-		SERIAL			packitemserial; //!< Only used during character creation
-		SERIAL			targserial; //!< Current combat target
-		SERIAL			runeserial; //!< Used for naming runes
-		SERIAL			attackerserial; //!< Character who attacked this character
-		SERIAL			ftargserial; //!< NPC Follow Target
-		SERIAL			swingtargserial; //!< Target they are going to hit after they swing
-		SI32			namedeedserial;
+		pItem			nameKey;	//!< for renaming keys
+		pItem			nameRune;	//!< Used for naming runes
+		pItem			nameDeed;
+
+		pChar			target;		//!< Current combat target
+		pChar			attacker;	//!< Character who attacked this character
+		pChar			followtarget;	//!< NPC Follow Target
+		pChar			swingtarget;	//!< Target they are going to hit after they swing
 
 		SI32 			account; // changed to signed, lb
-
-
 
 	public:
 		wstring profile; //!< player profile
