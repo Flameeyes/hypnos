@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<settings emulator="pyuo" buildnum="0">
+	<group name="shard">
+		<setting name="title">PyUO Shard</setting>
+		<setting name="host">127.0.0.1</setting>
+		<setting name="port">2593</setting>
+		<setting name="racport">2594</setting>
+	</group>
+	<group name="mulfiles">
+		<setting name="map">muls/map0.mul</setting>
+		<setting name="statics">muls/statics0.mul</setting>
+		<setting name="staidx">muls/staidx0.mul</setting>
+		<setting name="verdata">muls/verdata.mul</setting>
+		<setting name="tiledata">muls/tiledata.mul</setting>
+		<setting name="multi">muls/multi.mul</setting>
+		<setting name="multiidx">muls/multi.idx</setting>
+
+		<setting name="caches">STATICS|TILEDATA|MULTI</setting>
+	</group>
+	<group name="skills">
+		<setting name="skillcap">2700</setting>
+		<setting name="statcap">219</setting>
+		<setting name="dailystatcap">1999</setting>
+		<setting name="statsadvancesystem">0</setting>
+		<setting name="skilladvancemodifier">1000</setting>
+		<setting name="statsadvancemodifier">500</setting>
+		<setting name="skillevel">5</setting>
+
+		<setting name="base_traking_range">10</setting>
+		<setting name="max_tracking_targets">20</setting>
+		<setting name="base_tracking_time">30</setting>
+		<setting name="traking_message_redisplay_time">30</setting>
+
+		<setting name="begging_range">3</setting>
+		<setting name="begging_time">300</setting>
+		<setting name="begging_text0">Could thou spare a few coins?</setting>
+		<setting name="begging_text1">Hey buddy can you spare some gold?</setting>
+		<setting name="begging_text2">I have a family to feed, think of the children.</setting>
+
+		<setting name="base_fishing_time">10</setting>
+		<setting name="random_fishing_time">10</setting>
+
+		<setting name="spiritspeaktimer">30</setting>
+
+		<setting name="rogue">1</setting>
+		<setting name="max_stealth_steps">10</setting>
+		<setting name="stealth_on_horse">0</setting>
+		<setting name="stealth_ar_limit">1</stting>
+
+		<setting name="cut_scroll_requirements">1</setting>
+
+		<setting name="bandage_in_combat">1</setting>
+
+		<setting name="sparring_limit">0</setting>
+	</group>
+	<group name="bank">
+		<setting name="usespecialbank">0</setting>
+		<setting name="specialbanktrigger">ware</setting>
+		<setting name="bankitemlimit">0</setting>
+	</group>
+	<group name="stamina">
+		<setting name="running_stamina_steps">4</setting>
+		<setting name="shove_stamina_loss">3</setting>
+		<setting name="stamina_usage">0.002|0.008|0.018|0.018|0.025|0.25</setting>
+		<setting name="stamina_loss_on_horse">0.001</setting>
+		<setting name="gold_weight">0.005</setting>
+	</group>
+</settings>
