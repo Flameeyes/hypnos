@@ -6,9 +6,17 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
-#include "common_libs.h"
+#include "newbie.h"
 #include "basics.h"
 #include "inlines.h"
+#include "constants.h"
+#include "enums.h"
+#include "logsystem.h"
+#include "objects/citem.h"
+#include "objects/citem/cequippablecontainer.h"
+#include "objects/cbody.h"
+#include "archetypes/generic.h"
+
 #include <mxml.h>
 #include <fstream>
 #include <assert.h>
@@ -28,14 +36,14 @@ namespace nNewbies {
 	//! Items common to all the female newbies
 	NBItemSList NewbiesFemale;
 	//! Items for skills' newbies
-	NBItemSlist NewbiesSkills[skTrueSkills];
+	NBItemSList NewbiesSkills[skTrueSkills];
 	//@}
 	
-	void padMissingLocations();
+	static void padMissingLocations();
 	void deleteLocations();
 	
-	void giveItemsMale(pPC pc, uint16_t pantsColor, uint16_t shirtColor);
-	void giveItemsFemale(pPC pc, uint16_t pantsColor, uint16_t shirtColor);
+	void giveItemsMale(pBody body, uint16_t pantsColor, uint16_t shirtColor);
+	void giveItemsFemale(pBody body, uint16_t pantsColor, uint16_t shirtColor);
 }
 
 /*!
@@ -52,7 +60,7 @@ static void nNewbies::padMissingLocations()
 	for(register int i = 0; i < 9; i++)
 	{
 		if ( ! startLocations[i] )
-			startLocations[i] = startLocation[0];
+			startLocations[i] = startLocations[0];
 	}
 }
 
@@ -92,7 +100,7 @@ void nNewbies::loadStartLocations()
 	
 	if ( ! firstLoad ) deleteLocations();
 	
-	memset(startLocations, NULL, sizeof(startLocations));
+	memset(startLocations, 0, sizeof(startLocations));
 	firstLoad = false;
 	
 	ConOut("Loading start locations...\t\t");
@@ -145,7 +153,7 @@ void nNewbies::loadStartLocations()
 					
 				} while ( (p = p->next()) );
 				
-				locations[i] = l;
+				startLocations[i] = l;
 				if ( ++i >= 9 ) // We reached the full array
 					break;
 			
@@ -167,9 +175,9 @@ void nNewbies::loadStartLocations()
 
 /*!
 \brief Creates the newbie item and set it to the given character
-\param pc Character to give the item to
+\param body Body of the player to give the newbie's items to
 */
-void nNewbies::sNewbieItem::createItem(pPC pc)
+void nNewbies::sNewbieItem::createItem(pBody body)
 {
 	pItem pi = nArchetypes::createItem( item );
 	pi->setAmount(amount);
@@ -180,25 +188,23 @@ void nNewbies::sNewbieItem::createItem(pPC pc)
 	switch( place )
 	{
 	case ipBackpack:
-		pi->setContainer( pc->getBody()->getBackpack(true) );
+		pi->setContainer( body->getBackpack(true) );
 		break;
 	case ipBankbox:
-		pi->getContainer( pc->getBody()->getBankBox() );
+		pi->setContainer( body->getBankBox() );
 		break;
 	case ipEquip:
 		{
 			pEquippable pe = dynamic_cast<pEquippable>(pi);
-			if ( ! pe ) continue; // pass over if not equippable
-			pc->getBody()->equip(pe);
+			if ( ! pe ) break; // pass over if not equippable
+			body->equip(pe);
 		}
 	}
-	
-	pi->refresh();
 }
 
 /*!
 \brief Give to the passed player the newbie's items for his skills and gender.
-\param pc Player to give the newbie's items to
+\param body Body of the player to give the newbie's items to
 \param pantsColor Color of the pants to give to the player
 \param shirtColor Color of the shirt to give to the player
 
@@ -206,41 +212,39 @@ This function adds the base items to the newly created player, so it gives to
 him the backpack, the shirt and the pants, and the datafile-defined items for
 the newbies, for the males or females (as needed) and for him starting skills.
 */
-void nNewbies::giveItems(pPC pc, uint16_t pantsColor, uint16_t shirtColor)
+void nNewbies::giveItems(pBody body, uint16_t pantsColor, uint16_t shirtColor)
 {
-	assert(pc);
+	assert(body);
 	
-	pEquippableContainer pi = dynamic_cast<pEquippableContainer>(nArchetypes::createItem(strBackpackId));
-	assert(pi);
-	pc->getBody()->setBackpack(pi);
+	// Create the backpack
+	pEquippableContainer bp = dynamic_cast<pEquippableContainer>(nArchetypes::createItem(strBackpackId));
+	assert(bp);
+	body->equip(bp);
 
-	Skills first = pc->bestSkill();
-	Skills second = pc->nextBestSkill(first);
-	Skills third = pc->nextBestSkill(second);
-	
-	if ( pc->getBody()->getSkill(third) < 190 )
-		third = skInvalid;
+	Skill first = body->bestSkill();
+	Skill second = body->nextBestSkill(first);
+	Skill third = body->nextBestSkill(second);
 	
 	for( NBItemSList::iterator it = NewbiesAll.begin(); it != NewbiesAll.end(); it++ )
-		(*it).createItem(pc);
+		(*it).createItem(body);
 	
-	if ( pc->getBody()->getId() == BODY_MALE )
-		giveItemsMale(pc, pantsColor, shirtColor);
-	else if ( pc->getBody()->getId() == BODY_FEMALE )
-		giveItemsFemale(pc, pantsColor, shirtColor);
+	if ( body->getId() == BODY_MALE )
+		giveItemsMale(body, pantsColor, shirtColor);
+	else if ( body->getId() == BODY_FEMALE )
+		giveItemsFemale(body, pantsColor, shirtColor);
 	else
 		LogWarning("We are creating a new player which isn't an human.");
 
 	// Add items by skill
 	for( NBItemSList::iterator it = NewbiesSkills[first].begin(); it != NewbiesSkills[first].end(); it++ )
-		(*it).createItem(pc);
+		(*it).createItem(body);
 	
 	for( NBItemSList::iterator it = NewbiesSkills[second].begin(); it != NewbiesSkills[second].end(); it++ )
-		(*it).createItem(pc);
+		(*it).createItem(body);
 	
-	if ( pc->getBody()->getSkill(third) >= 190 )
+	if ( body->getSkill(third) >= 190 )
 		for( NBItemSList::iterator it = NewbiesSkills[third].begin(); it != NewbiesSkills[third].end(); it++ )
-			(*it).createItem(pc);
+			(*it).createItem(body);
 	
 	// Add the gold
 	if ( ! nSettings::Server::getNewbiesGold() )
@@ -249,14 +253,13 @@ void nNewbies::giveItems(pPC pc, uint16_t pantsColor, uint16_t shirtColor)
 	pItem gold = nArchetypes::createItem(strGoldId);
 	gold->setAmount( nSettings::Server::getNewbiesGold() );
 	gold->setNewbie(true);
-	gold->setContainer( pc->getBody()->getBackpack() );
+	gold->setContainer( body->getBackpack() );
 	gold->setColor(0);
-	gold->refresh();
 }
 
 /*!
 \brief Gives the items restricted to male players
-\param pc Player to give the items to (i.e.: the parameter of giveItems())
+\param body Body of the player to give the newbie's items to
 \param pantsColor Color of the pants to give to the player
 \param shirtColor Color of the shirt to give to the player
 
@@ -265,7 +268,7 @@ This function also gives the items contained in NewbiesMale list.
 \note Shirt is added here because this makes trivial the change to make the
 	default shirt for females/males differs.
 */
-void nNewbies::giveItemsMale(pPC pc, uint16_t pantsColor, uint16_t shirtColor)
+void nNewbies::giveItemsMale(pBody body, uint16_t pantsColor, uint16_t shirtColor)
 {
 	pEquippable pants = NULL;
 	if ( ! RandomNum(0, 1) )
@@ -275,7 +278,7 @@ void nNewbies::giveItemsMale(pPC pc, uint16_t pantsColor, uint16_t shirtColor)
 	assert(pants);
 	
 	pants->setColor(pantsColor);
-	pc->getBody()->equip(pants);
+	body->equip(pants);
 	
 	pEquippable shirt = NULL;
 	if ( ! RandomNum(0, 1) )
@@ -285,15 +288,15 @@ void nNewbies::giveItemsMale(pPC pc, uint16_t pantsColor, uint16_t shirtColor)
 	assert(shirt);
 	
 	shirt->setColor(shirtColor);
-	pc->getBody()->equip(shirt);
+	body->equip(shirt);
 	
 	for( NBItemSList::iterator it = NewbiesMale.begin(); it != NewbiesMale.end(); it++ )
-		(*it).createItem(pc);
+		(*it).createItem(body);
 }
 
 /*!
 \brief Gives the items restricted to female players
-\param pc Player to give the items to (i.e.: the parameter of giveItems())
+\param body Body of the player to give the newbie's items to
 \param pantsColor Color of the pants to give to the player
 \param shirtColor Color of the shirt to give to the player
 
@@ -302,7 +305,7 @@ This function also gives the items contained in NewbiesFemale list.
 \note Shirt is added here because this makes trivial the change to make the
 	default shirt for females/males differs.
 */
-void nNewbies::giveItemsFemale(pPC pc, uint16_t pantsColor, uint16_t shirtColor)
+void nNewbies::giveItemsFemale(pBody body, uint16_t pantsColor, uint16_t shirtColor)
 {
 	pEquippable pants = NULL;
 	if ( ! RandomNum(0, 1) )
@@ -312,7 +315,7 @@ void nNewbies::giveItemsFemale(pPC pc, uint16_t pantsColor, uint16_t shirtColor)
 	assert(pants);
 	
 	pants->setColor(pantsColor);
-	pc->getBody()->equip(pants);
+	body->equip(pants);
 	
 	pEquippable shirt = NULL;
 	if ( ! RandomNum(0, 1) )
@@ -322,32 +325,32 @@ void nNewbies::giveItemsFemale(pPC pc, uint16_t pantsColor, uint16_t shirtColor)
 	assert(shirt);
 	
 	shirt->setColor(shirtColor);
-	pc->getBody()->equip(shirt);
+	body->equip(shirt);
 	
 	for( NBItemSList::iterator it = NewbiesFemale.begin(); it != NewbiesFemale.end(); it++ )
-		(*it).createItem(pc);
+		(*it).createItem(body);
 }
 
 /*!
 \brief Gives to the defined player him new hairs and facial hairs with the chosen color
-\param pc Player to give the hairs to
+\param body Body of the player to give the hairs to
 \param hairStyle Hairs' ID
 \param hairColor Hairs' color ID
 \param facialStyle Facial hairs' ID
 \param facialColor Facial hairs' color ID
 */
-void nNewbies::giveHairs(pPC pc, uint16_t hairStyle, uint16_t hairColor, uint16_t facialStyle, uint16_t facialColor)
+void nNewbies::giveHairs(pBody body, uint16_t hairStyle, uint16_t hairColor, uint16_t facialStyle, uint16_t facialColor)
 {
 	pEquippable hair = NULL, facial = NULL;
 	if ( hairStyle && (hair = dynamic_cast<pEquippable>(nArchetypes::createItem(hairStyle))) )
 	{
 		hair->setColor(hairColor);
-		pc->getBody()->equip(hair);
+		body->equip(hair);
 	}
 	
 	if ( facialStyle && (facial = dynamic_cast<pEquippable>(nArchetypes::createItem(facialStyle))) )
 	{
 		facial->setColor(facialColor);
-		pc->getBody()->equip(facial);
+		body->equip(facial);
 	}
 }

@@ -172,6 +172,9 @@ public:
 
 	inline void setSkill(uint16_t skill, uint16_t value)
 	{ skills[skill] = value; }
+
+	Skill bestSkill() const;
+	Skill nextBestSkill(uint8_t previous) const;
 //@}
 
 //@{

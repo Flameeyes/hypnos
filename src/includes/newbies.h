@@ -9,6 +9,9 @@
 #ifndef __NEWBIE_H__
 #define __NEWBIE_H__
 
+#include "common_libs.h"
+#include "structs.h"
+
 /*!
 \namespace nNewbies
 \brief New players stuff
@@ -55,14 +58,14 @@ namespace nNewbies {
 		uint16_t amount;	//!< Amount of items to add
 		std::string color;	//!< Color of the items to add
 		
-		createItem(pChar pc);
+		void createItem(pBody body);
 	};
 	
 	//! Singly-linked list of sNewbieItem's
 	typedef std::slist<sNewbieItem> NBItemSList;
 	
-	void giveItems(pPC pc, uint16_t pantsColor, uint16_t shirtColor);
-	void giveHairs(pPC pc, uint16_t hairStyle, uint16_t hairColor, uint16_t facialStyle, uint16_t facialColor);
+	void giveItems(pBody body, uint16_t pantsColor, uint16_t shirtColor);
+	void giveHairs(pBody body, uint16_t hairStyle, uint16_t hairColor, uint16_t facialStyle, uint16_t facialColor);
 }
 
 #endif

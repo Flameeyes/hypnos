@@ -66,6 +66,7 @@ static const char strNull[] = "";
 These constants are the identifiers for some items of general use.
 */
 	static const char strGoldId[] = "item_gold";
+	static const char strBackpackId[] = "item_backpack";
 //@}
 
 //@{

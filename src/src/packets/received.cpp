@@ -1908,8 +1908,8 @@ bool nPackets::Received::CreateChar::execute(pClient client)
 	}
 
 
-	// Correctable-level protocol error check (mainly out of bonds color or hair/beard style)
-	//! Color & hairstyle boundary check
+	// Correctable-level protocol error check (mainly out of bounds color or hair/beard style)
+	// Color & hairstyle boundary check
 	if ((SkinColor <= 0x83EA) || (SkinColor >= 0x8422)) SkinColor = 0x83EA;
 	if ((FacialHairColor <= 0x44E) || (FacialHairColor >= 0x4AD)) FacialHairColor = 0x044E;
 	if ((HairColor <= 0x44E) || (HairColor >= 0x4AD)) HairColor = 0x044E;
@@ -1946,7 +1946,10 @@ bool nPackets::Received::CreateChar::execute(pClient client)
 	charbody->setName((const char*)&buffer[10]);
 	charbody->setTitle("");                         //!\todo change this setTitle to something like calculateTitle or DefaultTitle, to have standard title behaviour
 
-
+	// Items are added directly to the body - Flameeyes
+	nNewbies::addHairs(charbody, HairStyle, HairColor, FacialHair, FacialHairColor);
+	nNewbies::giveItems(charbody, pants_color, shirt_color);
+	
 	//Now with the body completed and data verified, building cPC
 	pPC pc = new cPC();
 
@@ -1959,15 +1962,12 @@ bool nPackets::Received::CreateChar::execute(pClient client)
 
 	pc->MoveTo(startLocations[StartingLocation]->position);
 
-	pc->dir=4;	//should be facing north. not that it matters :D
+	pc->setDirection(dirNorth);	//should be facing north. not that it matters :D
 	pc->namedeedserial=INVALID;
 	for (int ii = 0; ii < skTrueSkills; i++) Skills::updateSkillLevel(pc, ii);  //updating skill levels for pc
 
-	nNewbies::addHairs(pc, HairStyle, HairColor, FacialHair, FacialHairColor);
-	nNewbies::giveItems(pc, pants_color, shirt_color);
-	
 	// Assignation of new Char to user account
-	client->currAccount()->addChartoAccount( pc );
+	client->currAccount()->addCharToAccount( pc );
 
 	client->startchar(); //!\todo move startchar from network to cClient
 	//clientInfo[s]->ingame=true;

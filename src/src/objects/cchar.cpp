@@ -975,37 +975,6 @@ void cChar::teleport( uint8_t flags, pClient cli )
 }
 
 /*!
-\brief Gets the character's best skill
-\return baseskill's index for the best skill of the character
-*/
-uint8_t cChar::bestSkill() const
-{
-	uint8_t a=0;
-
-	for(register int i=0; i < skTrueSkills; i++)
-		if ( baseskill[i] > baseskill[a] )
-			a = i;
-	
-	return a;
-}
-
-/*!
-\brief Gets the second or third character's best skill
-\param previous index of the previous find best skill
-\return baseskill's index for the next best skill of the character
-*/
-uint8_t cChar::nextBestSkill(uint8_t previous) const
-{
-	uint8_t a = previous ? 0 : 1; // if previous == 0 skip it
-
-	for(register int i = a; i < skTrueSkills; i++)
-		if ( baseskill[i] > baseskill[a] && i != previous )
-			a = i;
-	
-	return a;
-}
-
-/*!
 \brief Paperdoll title for character [1]
 \return A string with the title
 */

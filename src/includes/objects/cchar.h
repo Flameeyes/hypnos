@@ -523,9 +523,6 @@ public:
 	inline const bool canDoObjectAction() const
 	{ return TIMEOUT( objectdelay ); }
 	
-	uint8_t bestSkill() const;
-	uint8_t nextBestSkill(uint8_t previous) const;
-	
 /*	//! Gets the overridden title 
 	inline std::string getTitle() const
 	{ return title; }

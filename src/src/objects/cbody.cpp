@@ -239,7 +239,38 @@ bool cBody::overloadedTeleport()
 \return true if the body is wearing the item, else false
 \note Can't be inlined, because in this case cbody will need to include citem.h
 */
-const bool isWearing(pItem pi) const
+const bool cBody::isWearing(pItem pi) const
 {
 	return this == pi->getContainer();
+}
+
+/*!
+\brief Gets the body's best skill
+\return baseskill's index for the best skill of the character
+*/
+Skill cBody::bestSkill() const
+{
+	Skill a = 0;
+
+	for(register int i=0; i < skTrueSkills; i++)
+		if ( skills[i] > skills[a] )
+			a = i;
+	
+	return a;
+}
+
+/*!
+\brief Gets the second or third body's best skill
+\param previous index of the previous find best skill
+\return baseskill's index for the next best skill of the character
+*/
+Skill cBody::nextBestSkill(uint8_t previous) const
+{
+	Skill a = previous ? 0 : 1; // if previous == 0 skip it
+
+	for(register int i = a; i < skTrueSkills; i++)
+		if ( skills[i] > skills[a] && i != previous )
+			a = i;
+	
+	return a;
 }
