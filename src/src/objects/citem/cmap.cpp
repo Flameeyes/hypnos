@@ -42,11 +42,16 @@ bool cMap::addPin(uint16_t x, uint16_t y)
         return true;
 }
 
-bool cMap::insertPin(uint16_t x,uint16_t y, uint32_t pin) 	//!< Inserts a pin between 2 existing ones. existing pins >= pin get shifted by one
+//! Inserts a pin between 2 existing ones. existing pins >= pin get shifted by one
+bool cMap::insertPin(uint16_t x,uint16_t y, uint32_t pin)
 {
 	if (pin >= pinData.size() || !(flags & flagWritable)) return false;
-	pinData.insert(pin - 1, sPoint(x,y));
-        return true;
+	for( int i = pinData.size() -1; i >= (pin-1); i++ )
+		pinData[i+1] = pinData[i];
+	
+	pinData[(pin-1)] = sPoint(x, y);
+        
+	return true;
 }
 
 bool cMap::changePin(uint16_t x,uint16_t y, uint32_t pin)	//!< Moves pin to another position
@@ -70,7 +75,7 @@ bool cMap::clearAllPins()		//!< Removes all pins
         return true;
 }
 
-bool cMap::toggleWritable()		//!< Toggle pin addability and replies to client actual writeability status
+bool cMap::toggleWritable(pClient client)		//!< Toggle pin addability and replies to client actual writeability status
 {
 	if (!isTreasureMap()) flags ^= flagWritable;
         else flags &= ~flagWritable;

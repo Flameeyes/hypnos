@@ -1750,7 +1750,7 @@ bool nPackets::Received::MapPlotCourse::execute(pClient client)
                 case pccClearAllPins:
                 	return map->clearAllPins();
                 case pccToggleWritable:
-                	return map->toggleWritable();
+                	return map->toggleWritable(this);
         }
         return false;
 }

@@ -26,6 +26,7 @@ at construction time.
 */
 class cEventThrower {
 protected:
+	cEventThrower();
 	cEventThrower(uint16_t n);
 	FunctionVector events;	//!< Handlers to call for events
 	virtual uint16_t eventsNumber() const = 0;

@@ -57,7 +57,7 @@ public:
 	bool changePin(uint16_t x, uint16_t y, uint32_t pin);	//!< Moves pin to another position
 	bool removePin(uint32_t pin);		//!< Removes pin
 	bool clearAllPins();			//!< Removes all pins
-	bool toggleWritable();			//!< Toggle pin addability and replies to client actual writeability status
+	bool toggleWritable(pClient client);	//!< Toggle pin addability and replies to client actual writeability status
 
 	//! Gets x "coordinate" for pin number "pin" (1<= pin <= 50)
 	inline uint16_t getX(uint32_t pin)

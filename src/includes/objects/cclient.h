@@ -126,11 +126,13 @@ protected:
 		bool status2;		//status of the secure trade: flagged or not
 
 		inline bool operator==(const sSecureTradeSession& session2) const
+		{
 			return 	tradepartner == session2.tradepartner &&
 				container1   == session2.container1 &&
 				container2   == session2.container2 &&
 				status1      == session2.status1 &&
 				status2      == session2.status2;
+		}
 	};
 
 	std::list<sSecureTradeSession> SecureTrade;	//!< Holds the secure trade session of this client (begun and received both)
@@ -142,11 +144,11 @@ public:
 
 	//! returns true if client has at least an open trade session
 	inline bool hasOpenTradeSessions()
-	{ return SecureTrade.size() }
+	{ return SecureTrade.size(); }
 
 	//! removing trade session between this and another client
 	inline void removeTradeSession(sSecureTradeSession &session)
-	{ SecureTrade.erase(find(SecureTrade.begin(), Securerade.end(), session)); }
+	{ SecureTrade.erase(find(SecureTrade.begin(), SecureTrade.end(), session)); }
 
 	sSecureTradeSession findTradeSession(pContainer tradecontainer);	//!< Finds the trade session between "this" and another client knowing "this" tradecontainer
 	sSecureTradeSession findTradeSession(pClient tradeclient);		//!< Finds the trade session between "this" and another client knowing the other client
