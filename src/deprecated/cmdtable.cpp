@@ -60,9 +60,7 @@
 
 void command_bounty( pClient client )
 {
-	NXWSOCKET s = ps->toInt();
-
-	pChar pc_cs = client->currChar();
+	pChar pc = client->currChar();
 
 	if( !SrvParms->bountysactive )
 	{
@@ -70,51 +68,43 @@ void command_bounty( pClient client )
 		return;
 	}
 
-	if( !pc_cs->dead )
+	if( !pc->dead )
 	{
-		pc_cs->sysmsg(TRANSLATE("You can only place a bounty while you are a ghost."));
-		pc_cs->murdererSer = 0;
+		pc->sysmsg(TRANSLATE("You can only place a bounty while you are a ghost."));
+		pc->murdererSer = 0;
 		return;
 	}
 
-	if( pc_cs->murdererSer == 0 )
+	if( pc->murdererSer == 0 )
 	{
-		pc_cs->sysmsg(TRANSLATE("You can only place a bounty once after someone has murdered you."));
+		pc->sysmsg(TRANSLATE("You can only place a bounty once after someone has murdered you."));
 		return;
 	}
 
 	if( tnum == 2 )
 	{
 		int nAmount = strtonum(1);
-		if( BountyWithdrawGold( pc_cs, nAmount ) )
+		if( BountyWithdrawGold( pc, nAmount ) )
 		{
-			P_CHAR pchar_murderer = pointers::findCharBySerial(pc_cs->murdererSer);
-			if( BountyCreate( pchar_murderer, nAmount ) )
+			P_CHAR pc_murderer = pointers::findCharBySerial(pc->murdererSer);
+			if( BountyCreate( pc_murderer, nAmount ) )
 			{
-				if(ISVALIDPC(pchar_murderer))
-				pc_cs->sysmsg(TRANSLATE("You have placed a bounty of %d gold coins on %s."),
-						nAmount, pchar_murderer->getCurrentNameC() );
-			}
-			else
-			{
-				pc_cs->sysmsg(TRANSLATE("You were not able to place a bounty (System Error)") );
-			}
+				if(ISVALIDPC(pc_murderer))
+					pc->sysmsg(TRANSLATE("You have placed a bounty of %d gold coins on %s."),
+						nAmount, pc_murderer->getCurrentNameC() );
+			} else
+				pc->sysmsg(TRANSLATE("You were not able to place a bounty (System Error)") );
 
 			// Set murdererSer to 0 after a bounty has been
 			// placed so it can only be done once
-			pc_cs->murdererSer = 0;
+			pc->murdererSer = 0;
 		}
 		else
-		{
-			pc_cs->sysmsg(TRANSLATE("You do not have enough gold to cover the bounty."));
-		}
+			pc->sysmsg(TRANSLATE("You do not have enough gold to cover the bounty."));
 	}
 	else
-	{
 		pc_cs->sysmsg(TRANSLATE("To place a bounty on a murderer, use BOUNTY <amount>"));
-	}
 
-	return;
 }
 
 
@@ -243,7 +233,7 @@ void target_setMurderCount( P_TARGET t )
 
 }
 
-void command_setmurder( NXWCLIENT ps )
+void command_setmurder( pClient client )
 {
 	if( tnum == 2 )
 	{
@@ -255,8 +245,9 @@ void command_setmurder( NXWCLIENT ps )
 }
 
 
-void command_readaccounts( NXWCLIENT ps )
+void command_readaccounts( pClient client )
 {
+	pChar pc = client->currChar();
 	Accounts->LoadAccounts();
 	ps->sysmsg("Accounts reloaded...attention, if you changed exisiting(!) account numbers you should use the letusin command afterwards ");
 }
@@ -531,7 +522,7 @@ void command_action( pClient client )
 // BYTE unknown	If 0, cannot change from undead, so 1 is the default
 void command_setseason( pClient client )
 {
-	pChar pc = ps->currChar();
+	pChar pc = client->currChar();
 
 #warn ///FLAME? 
 	UI08 setseason[3]={ 0xBC, 0x00, 0x01 };
@@ -584,7 +575,6 @@ void command_go( pClient client )
 
 			pChar pc = client->currChar();
 			pc->doGmEffect(); 	// Adding the gmmove effects ..Aldur
-
 
 			pc->MoveTo( x, y, z );
 			pc->teleport();
@@ -908,9 +898,7 @@ void command_skills( pClient client )
 void command_sfx( pClient client )
 {
 	if (tnum==3)
-	{
 		client->playSFX((strtonum(1)<<8)|(strtonum(2)%256));
-	}
 }
 
 // (h) Sets the light level. 0=brightest, 15=darkest, -1=enable day/night cycles.
@@ -919,21 +907,22 @@ void command_light()
 	if (tnum==2)
 	{
 		worldfixedlevel=strtonum(1);
-		if (worldfixedlevel!=255) setabovelight(worldfixedlevel);
-		else setabovelight(worldcurlevel);
+
+		if (worldfixedlevel!=255)
+			setabovelight(worldfixedlevel);
+		else 
+			setabovelight(worldcurlevel);
 	}
 }
 
 // Debugging command.
 void command_web( pClient client )
-{
-#error ///FLAMEEEE c'e' un cPacket ;p per questo !? ;)
-	NXWSOCKET s = ps->toInt();
+
+	string urlz(&tbuffer[Commands::cmd_offset+4]);
+	cPacketSendOpenBrowser openUrl(urlz);
 
 	if (tnum>1)
-	{
-		weblaunch(s, &tbuffer[Commands::cmd_offset+4]);
-	}
+		client->sendPacket(&openUrl);
 }
 
 
@@ -962,7 +951,7 @@ void command_tell( pClient client )
 }
 
 // Set weather to dry (no rain or snow).
-void command_dry( NXWCLIENT ps )
+void command_dry( pClient client )
 {
 	wtype=0;
 	NxwSocketWrapper sw;
@@ -976,7 +965,7 @@ void command_dry( NXWCLIENT ps )
 
 
 // Sets the weather condition to rain.
-void command_rain( NXWCLIENT ps )
+void command_rain( pClient client )
 {
 	NxwSocketWrapper sw;
 
@@ -1003,7 +992,7 @@ void command_rain( NXWCLIENT ps )
 }
 
 // Sets the weather condition to snow.
-void command_snow( NXWCLIENT ps )
+void command_snow( pClient client )
 {
 	NxwSocketWrapper sw;
 	if (wtype==1)
@@ -1028,7 +1017,7 @@ void command_snow( NXWCLIENT ps )
 }
 
 // (d) Opens the specified GM Menu.
-void command_gmmenu( NXWCLIENT ps )
+void command_gmmenu( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -1037,20 +1026,16 @@ void command_gmmenu( NXWCLIENT ps )
 }
 
 // (d) Opens the specified Item Menu from ITEMS.SCP.
-void command_itemmenu( NXWCLIENT ps )
+void command_itemmenu( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
-
-	P_CHAR pc = MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	pChar pc = client->currChar();
 
 	if (tnum==2)
 		showAddMenu(pc, strtonum(1)); //itemmenu(s, strtonum(1));
 
 }
 
-void target_additem( NXWCLIENT ps, P_TARGET t )
+void target_additem( pClient client, P_TARGET t )
 {
 	Location loc=t->getLocation();
 
@@ -1059,10 +1044,9 @@ void target_additem( NXWCLIENT ps, P_TARGET t )
 
 	pi->MoveTo( loc );
 	pi->Refresh();
-
 }
 
-void menu_additem( P_MENU menu, NXWCLIENT ps, SERIAL button )
+void menu_additem( P_MENU menu, pClient client, SERIAL button )
 {
 	if( button<=MENU_CLOSE )
 		return;
@@ -1080,14 +1064,14 @@ void menu_additem( P_MENU menu, NXWCLIENT ps, SERIAL button )
 }
 
 // (d) Adds the specified item from ITEMS.XSS
-void command_additem( NXWCLIENT ps )
+void command_additem( pClient client )
 {
+	pChar pc = client->currChar();
 
-	NXWSOCKET s = ps->toInt();
-
+#error ///FLAMEEEE !
+/*	NXWSOCKET s = ps->toInt();
 	P_CHAR pc = MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
-
+	VALIDATEPC(pc);    */
 	if (tnum==2)
 	{
 		int item=0;
@@ -1109,10 +1093,9 @@ void command_additem( NXWCLIENT ps )
 		targ->buffer[0]=item;
 		targ->code_callback=target_additem;
 		targ->send( getClientFromSocket(s) );
-		sysmessage( s, "Select location for item. [Number: %i]", item);
+		pc->sysmsg("Select location for item. [Number: %i]", item);
 	}
 	else {
-
 		cMenu* menu = (cMenu*)Menus.insertMenu( new cMenu( MENUTYPE_CUSTOM, 50, 50, true, true, true ) );
 		VALIDATEPM( menu );
 
@@ -1123,11 +1106,10 @@ void command_additem( NXWCLIENT ps )
 		menu->addButton( 5, 5, 0x0850, 0x0851, 1, true );
 
 		menu->show( pc );
-
 	}
 }
 
-void target_dupe( NXWCLIENT ps, P_TARGET t )
+void target_dupe( pClient client, P_TARGET t )
 {
     int n = t->buffer[0];
 	if( n>=1)
@@ -1144,9 +1126,10 @@ void target_dupe( NXWCLIENT ps, P_TARGET t )
     }
 }
 
-void command_dupe( NXWCLIENT ps )
+void command_dupe( pClient client )
 // (d / nothing) Duplicates an item. If a parameter is specified, it's how many copies to make.
 {
+#error ///FLAME
 	P_TARGET targ = clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
 	targ->buffer[0] = (tnum==2)? strtonum(1) : 1;
 	targ->code_callback=target_dupe;
@@ -1156,8 +1139,9 @@ void command_dupe( NXWCLIENT ps )
 
 
 // Executes a trigger scripting command.
-void command_command( NXWCLIENT ps )
+void command_command( pClient client )
 {
+#error ///FLAMEEE
 
 	NXWSOCKET s = ps->toInt();
 
@@ -1288,13 +1272,9 @@ void target_allSet( pClient client, P_TARGET t )
 }
 
 // (text, d) Set STR/DEX/INT/Skills on yourself arguments are skill & amount.
-void command_set( NXWCLIENT ps )
+void command_set( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
-
-	P_CHAR pc = MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	pChar pc = client->currChar();
 
 	if (tnum==3)
 	{
@@ -1310,28 +1290,19 @@ void command_set( NXWCLIENT ps )
 		std::string propName, propValue;
 		splitLine( prop, propName, propValue );
 
+#error ///FLAMEEE
 		P_TARGET targ=clientInfo[s]->newTarget( new cCharTarget() );
 		targ->buffer_str[0]=propName;
 		targ->buffer[0]=str2num( propValue );
 		targ->code_callback=target_allSet;
 		targ->send( getClientFromSocket(s) );
-		sysmessage( s, "Select character to modify.");
+		pc->sysmsg("Select character to modify.");
 
 	}
 }
 
 
-// Debugging command.
-void command_temp( NXWCLIENT ps )
-{
-
-	NXWSOCKET s = ps->toInt();
-
-	sysmessage(s, TRANSLATE("This command is simply no more supported. Sorry :["));
-}
-
-
-void target_addNpc( NXWCLIENT ps, P_TARGET t )
+void target_addNpc( pClient client, P_TARGET t )
 {
 	if( t->buffer[0]==0 ) {
 
@@ -1345,24 +1316,25 @@ void target_addNpc( NXWCLIENT ps, P_TARGET t )
 		pc->SetPriv(0x10);
 
 		Location loc = t->getLocation();
-		loc.z+=tileHeight( t->getModel() );
-		pc->MoveTo( loc.x, loc.y, loc.z );
+		loc.z += tileHeight( t->getModel() );
+		pc->MoveTo( loc );
 		pc->npc=1;
 		pc->teleport();
 	}
 	else {
+#error ///FLAMEE!
 		npcs::AddNPCxyz( ps->toInt(), t->buffer[1], t->getLocation() );
 	}
 }
 
-void command_addnpc( NXWCLIENT ps )
+void command_addnpc( pClient client )
 {
-	P_CHAR pc = ps->currChar();
-	VALIDATEPC(pc);
+	pChar pc = client->currChar();
 
+#error ///FLAME
 	NXWSOCKET s = ps->toInt();
 
-	P_TARGET targ = clientInfo[ps->toInt()]->newTarget( new cLocationTarget() );
+	P_TARGET targ = clientInfo[s]->newTarget( new cLocationTarget() );
 	if (tnum==3)
 	{
 		targ->buffer[0]=0;
@@ -1393,9 +1365,9 @@ void command_addnpc( NXWCLIENT ps )
 }
 
 
-void command_tweak(  NXWCLIENT ps )
+void command_tweak( pClient client )
 {
-
+#error ///FLAME
 	NXWSOCKET s = ps->toInt();
 
 	static AmxFunction* cmd = NULL;
@@ -1407,196 +1379,176 @@ void command_tweak(  NXWCLIENT ps )
 
 
 // (d) Sets the number of real-world seconds that pass for each UO minute.
-void command_secondsperuominute( NXWCLIENT ps )
+void command_secondsperuominute( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
+	pChar pc = client->currChar();
 
 	if (tnum==2)
 	{
-		secondsperuominute=strtonum(1);
-		sysmessage(s, "Seconds per UO minute set.");
+		secondsperuominute = strtonum(1);
+		pc->sysmsg("Seconds per UO minute set.");
 	}
 }
 
 // (h) Sets default daylight level.
-void command_brightlight( NXWCLIENT ps )
+void command_brightlight( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
+	pChar pc = client->currChar();
 
 	if (tnum==2)
 	{
-		worldbrightlevel=strtonum(1);
-		sysmessage(s, "World bright light level set.");
+		worldbrightlevel = strtonum(1);
+		pc->sysmg("World bright light level set.");
 	}
 }
 
 // (h) Sets default nighttime light level.
-void command_darklight( NXWCLIENT ps )
+void command_darklight( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
+	pChar pc = client->currChar();
 
 	if (tnum==2)
 	{
-		worlddarklevel=strtonum(1);
-		sysmessage(s, "World dark light level set.");
+		worlddarklevel = strtonum(1);
+		pc->sysmsg("World dark light level set.");
 	}
 }
 
 // (h) Sets default dungeon light level.
-void command_dungeonlight( NXWCLIENT ps )
+void command_dungeonlight( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
+	pChar pc = client->currChar();
 
 	if (tnum==2)
 	{
-		dungeonlightlevel=qmin(strtonum(1), 27);
-		sysmessage(s, "Dungeon light level set.");
+		dungeonlightlevel = qmin(strtonum(1), 27);
+		pc->sysmsg("Dungeon light level set.");
 	}
 }
 
 // Forces a manual vendor restock.
-void command_restock( NXWCLIENT ps )
+void command_restock( pClient client )
 {
+	pChar pc = client->currChar();
 
-	NXWSOCKET s = ps->toInt();
-
-	sysmessage(s, "Manual shop restock has occurred.");
 	Restocks->doRestock();
+	pc->sysmsg("Manual shop restock has occurred.");
 }
 
 // Forces a manual vendor restock to maximum values.
-void command_restockall( NXWCLIENT ps )
+void command_restockall( pClient client )
 {
+	pChar pc = client->currChar();
 
-	NXWSOCKET s = ps->toInt();
-
-	sysmessage(s, "Restocking all shops to their maximums");
 	Restocks->doRestockAll();
+	pc->sysmsg("Restocking all shops to their maximums");
 }
 
 // (d) Sets the universe's shop restock rate.
-void command_setshoprestockrate( NXWCLIENT ps )
+void command_setshoprestockrate( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
+	pChar pc = client->currChar();
 
 	if (tnum==2)
-	{
-		sysmessage(s, "NPC shop restock rate IS DISABLED.");
-	}
-	else sysmessage(s, "Invalid number of parameters.");
-		return;
+		pc->sysmsg("NPC shop restock rate IS DISABLED.");
+	else
+		pc->sysmsg("Invalid number of parameters.");
 
 }
 
 // (d d) Plays the specified MIDI file.
-void command_midi( NXWCLIENT ps )
+void command_midi( pClient client )
 {
+	pChar pc = client->currChar();
+	UI16 midi = DBYTE2WORD(strtonum(1), strtonum(2));
 
-	NXWSOCKET s = ps->toInt();
-
-			if (tnum==3) playmidi(s, strtonum(1), strtonum(2));
-			return;
-
+	cPacketSendPlayMidi pkt_midi(midi);
+	client->sendPacket(&pkt_midi);	
+/*			if (tnum==3) playmidi(s, strtonum(1), strtonum(2));
+			return;   */
 }
 
 // Forces a respawn.
-void command_respawn( NXWCLIENT ps )
+void command_respawn( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
-
-
-	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	pChar pc = client->currChar();
 
 	sysbroadcast(TRANSLATE("World is now respawning, expect some lag!"));
-	LogMessage(s_szCmdTableTemp,"Respawn command called by %s.\n", pc->getCurrentNameC());
+	LogMessage("Respawn command called by %s.\n", pc->getCurrentNameC());
 	//Respawn->Start();
-	return;
-
 }
 
 // (d) Spawns in all regions up to the specified maximum number of NPCs/Items.
-void command_regspawnmax( NXWCLIENT ps )
+void command_regspawnmax( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
-
+#error // FLAMEE !
+	pChar pc = client->currChar();
+/*	NXWSOCKET s = ps->toInt();
 	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	VALIDATEPC(pc); */
 
 	if (tnum==2)
 	{
-		sprintf(s_szCmdTableTemp,"MAX Region Respawn command called by %s.\n", pc->getCurrentNameC());//AntiChrist
-		LogMessage(s_szCmdTableTemp);
+		LogMessage("MAX Region Respawn command called by %s.\n", pc->getCurrentNameC());//AntiChrist
 		Commands::RegSpawnMax(s, strtonum(1));
-		return;
 	}
-
 }
 
 // (d d) Preforms a region spawn. First argument is region, second argument is max # of items/NPCs to spawn in that region.
-void command_regspawn( NXWCLIENT ps )
+void command_regspawn( pClient client )
 {
+#error // FLAMEE !
+	pChar pc = client->currChar();
 
-	NXWSOCKET s = ps->toInt();
-
+/*	NXWSOCKET s = ps->toInt();
 	P_CHAR pc=MAKE_CHAR_REF(currchar[s]);
-	VALIDATEPC(pc);
+	VALIDATEPC(pc);*/
 
 	if (tnum==3)
 	{
-		sprintf(s_szCmdTableTemp,"Specific Region Respawn command called by %s.\n", pc->getCurrentNameC());//AntiChrist
-		LogMessage(s_szCmdTableTemp);
+		LogMessage("Specific Region Respawn command called by %s.\n", pc->getCurrentNameC());
 		Commands::RegSpawnNum(s, strtonum(1), strtonum(2));
-		return;
 	}
 }
 
-void command_regedit( NXWCLIENT ps )
+void command_regedit( pClient client ) // O_o" to rewrite/trash ?
 {
+	pChar pc = client->currChar();
 
-	NXWSOCKET s = ps->toInt();
-
-	P_CHAR pc = MAKE_CHAR_REF( currchar[s] );
-	VALIDATEPC( pc );
-	sprintf(s_szCmdTableTemp,"Region edit command called by %s.\n", pc->getCurrentNameC());
-	LogMessage(s_szCmdTableTemp);
+	LogMessage("Region edit command called by %s.\n", pc->getCurrentNameC());
 	//newAmxEvent("gui_rgnList")->Call( pc->getSerial32(), 0 );
 }
 
 // Reloads the SERVER.cfg file.
-void command_reloadserver( NXWCLIENT ps )
+void command_reloadserver( pClient client )
 {
-
-	NXWSOCKET s = ps->toInt();
+	pChar pc = client->currChar();
 
 	loadserverscript();
-	sysmessage(s,"server.cfg reloaded.");
+	pc->sysmsg("server.cfg reloaded.");
 }
 
 // Loads the server defaults.
-void command_loaddefaults( NXWCLIENT ps )
+void command_loaddefaults( pClient client )
 {
+	pChar pc = client->currChar();
+
 	loadserverdefaults();
+	pc->sysmsg("server defaults reloaded.");
 }
 
 // Display the counselor queue.
-void command_cq( NXWCLIENT ps )
+void command_cq( pClient client )
 {
-
+#error ///FLAMEEE
 	NXWSOCKET s = ps->toInt();
 
 	Commands::ShowGMQue(s, 0); // Show the Counselor queue, not GM queue
 }
 
+/*GH!*/
 // Attend to the next call in the counselor queue.
-void command_cnext( NXWCLIENT ps )
+void command_cnext( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -1606,7 +1558,7 @@ void command_cnext( NXWCLIENT ps )
 }
 
 // Remove the current call from the counselor queue.
-void command_cclear( NXWCLIENT ps )
+void command_cclear( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -1615,14 +1567,14 @@ void command_cclear( NXWCLIENT ps )
 }
 
 // (d) Set the server mine check interval in minutes.
-void command_minecheck( NXWCLIENT ps )
+void command_minecheck( pClient client )
 {
 	if (tnum==2)
 		SrvParms->minecheck=strtonum(1);
 }
 
 
-void target_invul( NXWCLIENT ps, P_TARGET t )
+void target_invul( pClient client, P_TARGET t )
 {
 	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
@@ -1634,7 +1586,7 @@ void target_invul( NXWCLIENT ps, P_TARGET t )
 }
 
 // Makes the targeted character immortal.
-void command_invul( NXWCLIENT ps )
+void command_invul( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -1647,7 +1599,7 @@ void command_invul( NXWCLIENT ps )
 }
 
 // Makes the targeted character mortal.
-void command_noinvul( NXWCLIENT ps )
+void command_noinvul( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -1661,7 +1613,7 @@ void command_noinvul( NXWCLIENT ps )
 }
 
 // Activates town guards.
-void command_guardson( NXWCLIENT ps )
+void command_guardson( pClient client )
 {
 	SrvParms->guardsactive=1;
 	sysbroadcast(TRANSLATE("Guards have been reactivated."));
@@ -1669,7 +1621,7 @@ void command_guardson( NXWCLIENT ps )
 }
 
 // Deactivates town guards.
-void command_guardsoff( NXWCLIENT ps )
+void command_guardsoff( pClient client )
 {
 	SrvParms->guardsactive=0;
 	sysbroadcast(TRANSLATE("Warning: Guards have been deactivated globally."));
@@ -1677,7 +1629,7 @@ void command_guardsoff( NXWCLIENT ps )
 }
 
 // Enables decay on an object.
-void command_decay( NXWCLIENT ps )
+void command_decay( pClient client )
 {
 	P_TARGET targ=clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
 	targ->code_callback=target_setprivItem;
@@ -1688,7 +1640,7 @@ void command_decay( NXWCLIENT ps )
 }
 
 // Display some performance information.
-void command_pdump( NXWCLIENT ps )
+void command_pdump( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -1712,7 +1664,7 @@ void command_pdump( NXWCLIENT ps )
 }
 
 // (text) GM Yell - Announce a message to all online GMs.
-void command_gy( NXWCLIENT ps )
+void command_gy( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -1757,7 +1709,7 @@ void command_gy( NXWCLIENT ps )
 }
 
 // (text) GM Yell - Announce a message to all online players.
-void command_yell( NXWCLIENT ps )
+void command_yell( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -1800,7 +1752,7 @@ void command_yell( NXWCLIENT ps )
 	}
 }
 
-void target_squelch( NXWCLIENT ps, P_TARGET t )
+void target_squelch( pClient client, P_TARGET t )
 {
 	P_CHAR curr = ps->currChar();
 	VALIDATEPC(curr);
@@ -1839,7 +1791,7 @@ void target_squelch( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void command_squelch( NXWCLIENT ps )
+void command_squelch( pClient client )
 // (d / nothing) Squelchs specified player. (Makes them unnable to speak.)
 {
 
@@ -1863,7 +1815,7 @@ void command_squelch( NXWCLIENT ps )
 }
 
 // (d) Kills spawns from the specified spawn region in SPAWN.SCP.
-void command_spawnkill( NXWCLIENT ps )
+void command_spawnkill( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -1874,7 +1826,7 @@ void command_spawnkill( NXWCLIENT ps )
 	}
 }
 
-void command_stats( NXWCLIENT ps )
+void command_stats( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -1886,7 +1838,7 @@ void command_stats( NXWCLIENT ps )
 	cmd->Call( s );
 }
 
-void command_options( NXWCLIENT ps )
+void command_options( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -1900,7 +1852,7 @@ void command_options( NXWCLIENT ps )
 
 
 // Goes to the current call in the GM/Counsellor Queue
-void command_gotocur( NXWCLIENT ps )
+void command_gotocur( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -1938,7 +1890,7 @@ void command_gotocur( NXWCLIENT ps )
 }
 
 // Escilate a Counsellor Page into the GM Queue
-void command_gmtransfer( NXWCLIENT ps )
+void command_gmtransfer( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -1992,7 +1944,7 @@ void command_gmtransfer( NXWCLIENT ps )
 }
 
 // Displays a list of users currently online.
-void command_who( NXWCLIENT ps )
+void command_who( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -2027,7 +1979,7 @@ void command_who( NXWCLIENT ps )
 	pc->sysmsg("End of userlist");
 }
 
-void command_gms( NXWCLIENT ps )
+void command_gms( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -2057,7 +2009,7 @@ void command_gms( NXWCLIENT ps )
 	pc->sysmsg("End of stafflist");
 }
 
-void command_regspawnall( NXWCLIENT ps )
+void command_regspawnall( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -2069,7 +2021,7 @@ void command_regspawnall( NXWCLIENT ps )
 	sysmessage(s, "[DONE] All NPCs/items spawned in regions");
 }
 
-void command_sysm( NXWCLIENT ps )
+void command_sysm( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -2082,7 +2034,7 @@ void command_sysm( NXWCLIENT ps )
 	sysbroadcast(&tbuffer[Commands::cmd_offset + 5]);
 }
 
-void target_jail( NXWCLIENT ps, P_TARGET t )
+void target_jail( pClient client, P_TARGET t )
 {
 	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC( pc );
@@ -2090,7 +2042,7 @@ void target_jail( NXWCLIENT ps, P_TARGET t )
 	prison::jail( ps->currChar(), pc, t->buffer[0] );
 }
 
-void command_jail( NXWCLIENT ps )
+void command_jail( pClient client )
 // (d) Jails the target with given secs.
 {
 	P_TARGET targ=clientInfo[ ps->toInt() ]->newTarget( new cCharTarget() );
@@ -2114,7 +2066,7 @@ void command_jail( NXWCLIENT ps )
 // Aldur
 //
 // (h) set your movement effect.
-void command_setGmMoveEff( NXWCLIENT ps )
+void command_setGmMoveEff( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -2128,7 +2080,7 @@ void command_setGmMoveEff( NXWCLIENT ps )
 
 
 // (text) Changes the account password
-void command_password( NXWCLIENT ps )
+void command_password( pClient client )
 {
 
 	NXWSOCKET s = ps->toInt();
@@ -2161,7 +2113,7 @@ void command_password( NXWCLIENT ps )
 		return;
 }
 
-void target_tele( NXWCLIENT ps, P_TARGET t )
+void target_tele( pClient client, P_TARGET t )
 {
 
 	P_CHAR pc= ps->currChar();
@@ -2182,7 +2134,7 @@ void target_tele( NXWCLIENT ps, P_TARGET t )
 
 }
 
-void target_remove( NXWCLIENT ps, P_TARGET t )
+void target_remove( pClient client, P_TARGET t )
 {
 
 	SERIAL serial = t->getClicked();
@@ -2218,7 +2170,7 @@ void target_remove( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void target_dye( NXWCLIENT ps, P_TARGET t )
+void target_dye( pClient client, P_TARGET t )
 {
 
 	SERIAL serial = t->getClicked();
@@ -2283,7 +2235,7 @@ void target_dye( NXWCLIENT ps, P_TARGET t )
 
 
 
-void command_dye( NXWCLIENT ps )
+void command_dye( pClient client )
 // (h h/nothing) Dyes an item a specific color, or brings up a dyeing menu if no color is specified.
 {
 
@@ -2310,7 +2262,7 @@ void command_dye( NXWCLIENT ps )
 
 }
 
-void target_newz( NXWCLIENT ps, P_TARGET t )
+void target_newz( pClient client, P_TARGET t )
 {
 
     SERIAL serial = t->getClicked();
@@ -2336,7 +2288,7 @@ void target_newz( NXWCLIENT ps, P_TARGET t )
 
 };
 
-void command_newz( NXWCLIENT ps )
+void command_newz( pClient client )
 {
 	if (tnum==2) {
 		P_TARGET targ = clientInfo[ ps->toInt() ]->newTarget( new cObjectTarget() );
@@ -2349,7 +2301,7 @@ void command_newz( NXWCLIENT ps )
 }
 
 
-void target_setid( NXWCLIENT ps, P_TARGET t )
+void target_setid( pClient client, P_TARGET t )
 {
 
     SERIAL serial = t->getClicked();
@@ -2372,7 +2324,7 @@ void target_setid( NXWCLIENT ps, P_TARGET t )
 	}
 }
 
-void target_spy( NXWCLIENT ps, P_TARGET t )
+void target_spy( pClient client, P_TARGET t )
 {
 	P_CHAR curr= ps->currChar();
 
@@ -2392,12 +2344,12 @@ void target_spy( NXWCLIENT ps, P_TARGET t )
 	}
 }
 
-void target_ban( NXWCLIENT ps, P_TARGET t )
+void target_ban( pClient client, P_TARGET t )
 {
 	//todo
 }
 
-void target_emptypack( NXWCLIENT ps, P_TARGET t )
+void target_emptypack( pClient client, P_TARGET t )
 {
 	SERIAL serial = t->getClicked();
 	P_ITEM pack=NULL;
@@ -2429,7 +2381,7 @@ void target_emptypack( NXWCLIENT ps, P_TARGET t )
 	}
 }
 
-void target_possess( NXWCLIENT ps, P_TARGET t )
+void target_possess( pClient client, P_TARGET t )
 {
 	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc);
@@ -2440,7 +2392,7 @@ void target_possess( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void target_hide( NXWCLIENT ps, P_TARGET t )
+void target_hide( pClient client, P_TARGET t )
 {
 	P_CHAR pc = MAKE_CHAR_REF(t->getClicked());
 	VALIDATEPC(pc);
@@ -2463,7 +2415,7 @@ void target_hide( NXWCLIENT ps, P_TARGET t )
 
 }
 
-void target_unhide( NXWCLIENT ps, P_TARGET t )
+void target_unhide( pClient client, P_TARGET t )
 {
 	P_CHAR pc = MAKE_CHAR_REF( t->getClicked() );
 	VALIDATEPC(pc);
@@ -2485,7 +2437,7 @@ void target_unhide( NXWCLIENT ps, P_TARGET t )
 	}
 }
 
-void target_fullstats( NXWCLIENT ps, P_TARGET t )
+void target_fullstats( pClient client, P_TARGET t )
 {
     P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
     if (ISVALIDPC(pc))
@@ -2501,7 +2453,7 @@ void target_fullstats( NXWCLIENT ps, P_TARGET t )
     }
 }
 
-void target_heal( NXWCLIENT ps, P_TARGET t )
+void target_heal( pClient client, P_TARGET t )
 {
     P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
     if (ISVALIDPC(pc))
@@ -2513,7 +2465,7 @@ void target_heal( NXWCLIENT ps, P_TARGET t )
     }
 }
 
-void target_mana( NXWCLIENT ps, P_TARGET t )
+void target_mana( pClient client, P_TARGET t )
 {
     P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
     if (ISVALIDPC(pc))
@@ -2525,7 +2477,7 @@ void target_mana( NXWCLIENT ps, P_TARGET t )
     }
 }
 
-void target_stamina( NXWCLIENT ps, P_TARGET t )
+void target_stamina( pClient client, P_TARGET t )
 {
     P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
     if( ISVALIDPC(pc) )
@@ -2537,7 +2489,7 @@ void target_stamina( NXWCLIENT ps, P_TARGET t )
     }
 }
 
-void target_tiledata( NXWCLIENT ps, P_TARGET t )
+void target_tiledata( pClient client, P_TARGET t )
 {
 
 	Location loc = t->getLocation();
@@ -2578,7 +2530,7 @@ void target_tiledata( NXWCLIENT ps, P_TARGET t )
 	ps->sysmsg( TRANSLATE("Item info has been dumped to the console.") );
 }
 
-void target_freeze( NXWCLIENT ps, P_TARGET t )
+void target_freeze( pClient client, P_TARGET t )
 {
 	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
 	if( ISVALIDPC(pc) ) {
@@ -2587,7 +2539,7 @@ void target_freeze( NXWCLIENT ps, P_TARGET t )
 	};
 }
 
-void target_unfreeze( NXWCLIENT ps, P_TARGET t )
+void target_unfreeze( pClient client, P_TARGET t )
 {
 	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
 	if( ISVALIDPC(pc) ) {
@@ -2596,7 +2548,7 @@ void target_unfreeze( NXWCLIENT ps, P_TARGET t )
 	}
 }
 
-void target_setamount( NXWCLIENT ps, P_TARGET t )
+void target_setamount( pClient client, P_TARGET t )
 {
 
 	P_ITEM pi= MAKE_ITEM_REF( t->getClicked() );
@@ -2607,7 +2559,7 @@ void target_setamount( NXWCLIENT ps, P_TARGET t )
 
 }
 
-void target_npcaction( NXWCLIENT ps, P_TARGET t )
+void target_npcaction( pClient client, P_TARGET t )
 {
 	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
 	VALIDATEPC( pc );
@@ -2615,7 +2567,7 @@ void target_npcaction( NXWCLIENT ps, P_TARGET t )
 	pc->playAction( t->buffer[0] );
 }
 
-void target_kick( NXWCLIENT ps, P_TARGET t )
+void target_kick( pClient client, P_TARGET t )
 {
 	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
     if( ISVALIDPC(pc) )
@@ -2625,7 +2577,7 @@ void target_kick( NXWCLIENT ps, P_TARGET t )
     }
 }
 
-void target_kill( NXWCLIENT ps, P_TARGET t )
+void target_kill( pClient client, P_TARGET t )
 {
     P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
     if(ISVALIDPC(pc) )
@@ -2643,7 +2595,7 @@ void target_kill( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void target_bolt( NXWCLIENT ps, P_TARGET t )
+void target_bolt( pClient client, P_TARGET t )
 {
     P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
 	if( ISVALIDPC(pc) ) {
@@ -2651,14 +2603,14 @@ void target_bolt( NXWCLIENT ps, P_TARGET t )
     }
 }
 
-void target_resurrect( NXWCLIENT ps, P_TARGET t )
+void target_resurrect( pClient client, P_TARGET t )
 {
     P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
 	if(ISVALIDPC(pc) && pc->dead)
 		pc->resurrect();
 }
 
-void target_killhair( NXWCLIENT ps, P_TARGET t )
+void target_killhair( pClient client, P_TARGET t )
 {
 	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
 	if( ISVALIDPC(pc) ) {
@@ -2668,7 +2620,7 @@ void target_killhair( NXWCLIENT ps, P_TARGET t )
 	}
 }
 
-void target_killbeard( NXWCLIENT ps, P_TARGET t )
+void target_killbeard( pClient client, P_TARGET t )
 {
 	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
 	if( ISVALIDPC(pc) ) {
@@ -2679,7 +2631,7 @@ void target_killbeard( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void target_makegm( NXWCLIENT ps, P_TARGET t )
+void target_makegm( pClient client, P_TARGET t )
 {
 
 	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
@@ -2748,7 +2700,7 @@ void target_makegm( NXWCLIENT ps, P_TARGET t )
 
 }
 
-void target_makecns( NXWCLIENT ps, P_TARGET t )
+void target_makecns( pClient client, P_TARGET t )
 {
 
 	P_CHAR pc=pointers::findCharBySerial( t->getClicked() );
@@ -2793,7 +2745,7 @@ void target_makecns( NXWCLIENT ps, P_TARGET t )
 	pc->teleport();
 }
 
-void target_xbank( NXWCLIENT ps, P_TARGET t )
+void target_xbank( pClient client, P_TARGET t )
 {
 
 	P_CHAR pc2 = pointers::findCharBySerial( t->getClicked() );
@@ -2804,7 +2756,7 @@ void target_xbank( NXWCLIENT ps, P_TARGET t )
 	pc->openBankBox(pc2);
 }
 
-void target_xsbank( NXWCLIENT ps, P_TARGET t )
+void target_xsbank( pClient client, P_TARGET t )
 {
 
 	P_CHAR pc2 = pointers::findCharBySerial( t->getClicked() );
@@ -2815,7 +2767,7 @@ void target_xsbank( NXWCLIENT ps, P_TARGET t )
     pc->openSpecialBank(pc2);
 }
 
-void target_release( NXWCLIENT ps, P_TARGET t )
+void target_release( pClient client, P_TARGET t )
 {
 
 	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
@@ -2826,7 +2778,7 @@ void target_release( NXWCLIENT ps, P_TARGET t )
 	prison::release( rel, pc  );
 }
 
-void target_title( NXWCLIENT ps, P_TARGET t )
+void target_title( pClient client, P_TARGET t )
 {
 
 	P_CHAR pc = pointers::findCharBySerial( t->getClicked() );
