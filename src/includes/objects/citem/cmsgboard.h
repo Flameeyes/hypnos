@@ -87,6 +87,7 @@ public:
        	virtual void Delete();
         std::string getTimeString();
         bool expired();		// expiration time check & delete. Returns true if post has been deleted for reaching expiration time
+       	void refreshQuestMessage();
 
 	inline const UI32 rtti() const
 	{ return rtti::cMsgBoardMessage; }
@@ -139,12 +140,18 @@ public:
         void		openBoard(pClient client);
 	void 		sendMessageSummary( pClient client, pMsgBoardMessage message );
         bool    	addMessage( pMsgBoardMessage message );
-	static UI32 	createQuestMessage(QuestType questType, pNPC npc = NULL, pItem item = NULL, int region = -1);
+	static UI32 	createQuestMessage(QuestType questType, pChar npc = NULL, pItem item = NULL, int region = -1);
 	static void	removeQuestMessage(UI32 messageserial);
 
-	void	MsgBoardMaintenance();
+
+        static bool     relinkQuestMessage(pMsgBoardMessage message);
+
+        
+      	static void	MsgBoardMaintenance();
 
         int getRegion();
+
+        
         void Delete();
 
 

@@ -147,6 +147,11 @@ cMsgBoardMessage::~cMsgBoardMessage()
         MsgBoardMessages.erase(find(MsgBoardMessages.begin(), MsgBoardMessages.end(), this));
 }
 
+/*!
+\brief Gets posttime in a string formatted version
+\todo check if there is space for a full time string comprehensive of date in letters rather than "day xxx"
+\author Chronodt
+*/
 std::string cMsgBoardMessage::getTimeString()
 {
 	char result[25];
@@ -154,6 +159,12 @@ std::string cMsgBoardMessage::getTimeString()
         sprintf( result, "Day %i @ %i:%02i", timest.tm_yday + 1, timest.tm_hour, timest.tm_min );
         return std::string(result);
 }
+
+/*!
+\brief check expiration time of message. If message is expired, it is deleted
+\returns true if message expired (and deleted)
+\author Chronodt
+*/
 
 bool cMsgBoardMessage::expired()
 {
@@ -187,6 +198,12 @@ bool cMsgBoardMessage::expired()
                         // If it is an npc created just for the bounty (function not yet implemented) but it has not yet
                         // disappeared, but the serial is still the right npc (the serial may have been reused!!) we delete it
                         if (!pc && pc->rtti() == rtti::cNPC && pc->questBountyPostSerial == getSerial32()) pc->Delete();
+			if (!pc && pc->rtti() == rtti::cPC && pc->questBountyPostSerial == getSerial32())
+                        {
+                        	//Deleting bounty
+				pc->questBountyReward     = 0;
+				pc->questBountyPostSerial = 0;
+                        }
                         Delete();
                         return true;
 		}
@@ -199,6 +216,70 @@ bool cMsgBoardMessage::expired()
 	return false;
 }
 
+/*!
+\brief Refreshes a quest
+\author Chronodt
+\note this should be called by MsgBoardMainteinance. It refreshes the timers of quests
+*/
+void cMsgBoardMessage::refreshQuestMessage()
+{
+	pChar pc=pointers::findCharBySerial(targetnpc);
+        pItem item = pointers::findItemBySerial(targetitem);
+        switch (qtype)
+        {
+	case ESCORTQUEST:
+		if (ISVALIDPC(pc))
+		{
+			if ( pc->rtti() == rtti::cNPC &&  pc->questType == ESCORTQUEST  )
+			{
+				// Now lets reset all of the escort timers after the server has reloaded the WSC file
+				// And it doesn't have a player escorting it yet
+				if ( pc->ftargserial==INVALID )
+				{
+					// Lets reset the summontimer to the escortinit
+				        pc->summontimer = ( uiCurrentTime + ( MY_CLOCKS_PER_SEC * SrvParms->escortinitexpire ) );
+				}
+				else // It must have an escort in progress so set the escortactiveexpire timer
+				{
+					// Lets reset the summontimers to the escortactive value
+					pc->summontimer = ( uiCurrentTime + ( MY_CLOCKS_PER_SEC * SrvParms->escortactiveexpire ) );
+				}
+			}
+		}
+		break;
+
+	case BOUNTYQUEST:
+		if (ISVALIDPC(pc))
+		{
+			if ( pc->rtti() == rtti::cNPC &&  pc->questType == BOUNTYQUEST )
+			{
+/*
+	NPC bounty code, not yet implemented
+******** this is just a cut&paste of escort code quest, update to bounty when activating :D *************
+
+				// Now lets reset all of the escort timers after the server has reloaded the WSC file
+				// And it doesn't have a player escorting it yet
+				if ( pc->ftargserial==INVALID )
+				{
+					// Lets reset the summontimer to the escortinit
+				        pc->summontimer = ( uiCurrentTime + ( MY_CLOCKS_PER_SEC * SrvParms->escortinitexpire ) );
+				}
+				else // It must have an escort in progress so set the escortactiveexpire timer
+				{
+					// Lets reset the summontimers to the escortactive value
+					pc->summontimer = ( uiCurrentTime + ( MY_CLOCKS_PER_SEC * SrvParms->escortactiveexpire ) );
+				}
+*/
+			}
+		}
+		break;
+	case ITEMQUEST:
+        	//Yet to be implemented
+        	break;
+	default:
+        	ConOut("[WARNING]\n\tUnhandled QuestType found during maintenance\n");
+	}
+}
 //-----------------------------------------------------------------------------------------
 //				cMsgBoard Methods
 //-----------------------------------------------------------------------------------------
@@ -364,39 +445,16 @@ bool cMsgBoard::addMessage(pMsgBoardMessage message)
 	return true;
 }
 
-
-
-//////////////////////////////////////////////////////////////////////////////
-// FUNCTION:    MsgBoardPostQuest( int serial, int questType )
-//
-// PURPOSE:     Used to read in the template for displaying a typical quest
-//              message based on the type of quest and the serial number of
-//              the NPC or Item.  Certain parameters can be used as variables
-//              to replace certain NPC such as %n for NPC name, %t NPC title
-//              etc.  See the MSGBOARD.SCP file for an example.
-//
-// PARAMETERS:  serial      NPC or Item serial number
-//              questType   Type of quest being posted (used to determine
-//                          if the item_st or char_st should be used to
-//                          for replacing paramters in the script.
-//
-// RETURNS:     0           Failed to post message
-//              PostSerial  Serial number of the post if successfull
-//
-// NOTES:       Currently only escort quests work so this function us still
-//              in its early stages in regards to the questType parameter.
-//////////////////////////////////////////////////////////////////////////////
-
 /*!
-\brief creates an automatic quest
-/note Since they are always general or regional, method is static because no single msgboard is normally selected
+\brief creates an automatic quest message
+\note Since they are always general or regional, method is static because no single msgboard is normally selected
 \param targetserial serial of the quest's target
 \param questtype type of quest
 \param region validity region of quest (where is to be posted)
 \return serial of message posted 
 */
 
-static UI32 cMsgBoard::createQuestMessage(QuestType questType, pNPC npc, pItem item, int region )
+static UI32 cMsgBoard::createQuestMessage(QuestType questType, pChar npc, pItem item, int region )
 {
 	static const char subjectEscort[]     = "Escort: Needed for the day.";  // Default escort message
 	static const char subjectBounty[]     = "Bounty: Reward for capture.";  // Default bounty message
@@ -484,130 +542,123 @@ static UI32 cMsgBoard::createQuestMessage(QuestType questType, pNPC npc, pItem i
 	switch ( questType )
 	{
 	case ESCORTQUEST:
+		// Find the list section in order to count the number of entries in the list
+		iter = Scripts::MsgBoard->getNewIterator("SECTION ESCORTS");
+		if (iter==NULL)
+                {
+                	message->Delete;
+                        return 0;
+                }
+
+		// Count the number of entries under the list section to determine what range to randomize within
+		int loopexit=0;
+		do
 		{
-			// Find the list section in order to count the number of entries in the list
-			iter = Scripts::MsgBoard->getNewIterator("SECTION ESCORTS");
-			if (iter==NULL)
-                        {
-                              	message->Delete;
-                        	return 0;
-                        }
-
-			// Count the number of entries under the list section to determine what range to randomize within
-			int loopexit=0;
-			do
+			iter->parseLine(script1, script2);
+			if ( !script1.compare("ESCORT") )
 			{
-				iter->parseLine(script1, script2);
-				if ( !script1.compare("ESCORT") )
+				if ( listCount >= MAXENTRIES )
 				{
-					if ( listCount >= MAXENTRIES )
-					{
-						ErrOut("cMsgBoard::createQuestMessage() Too many entries in ESCORTS list [MAXENTRIES=%d]\n", MAXENTRIES );
-						break;
-					}
-
-					sectionEntrys[listCount] = str2num(script2.c_str());
-					listCount++;
+					ErrOut("cMsgBoard::createQuestMessage() Too many entries in ESCORTS list [MAXENTRIES=%d]\n", MAXENTRIES );
+					break;
 				}
-			} while ( script1[0]!='}' && script1[0]!=0 	&& (++loopexit < MAXLOOPS) );
 
-			safedelete(iter);
-
-			// If no entries are found in the list, then there must be no entries at all.
-			if ( listCount == 0 )
-			{
-				ConOut( "cMsgBoard::createQuestMessage() No msgboard.scp entries found for ESCORT quests\n" );
-		        	message->Delete;
-				return 0;
+				sectionEntrys[listCount] = str2num(script2.c_str());
+				listCount++;
 			}
+		} while ( script1[0]!='}' && script1[0]!=0 	&& (++loopexit < MAXLOOPS) );
 
-			// Choose a random number between 1 and listCount to use as a message
-			entryToUse = RandomNum( 1, listCount );
-#ifdef DEBUG
-			ErrOut("cMsgBoard::createQuestMessage() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
-#endif
-			// Open the script again and find the section choosen by the randomizer
-			char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+		safedelete(iter);
 
-			sprintf( temp, "SECTION ESCORT %i", sectionEntrys[entryToUse-1] );
-			iter = Scripts::MsgBoard->getNewIterator(temp);
-
-			if (iter==NULL)
-			{
-				ConOut( "cMsgBoard::createQuestMessage() Couldn't find entry %s for ESCORT quest\n", temp );
-                               	message->Delete;
-				return 0;
-			}
-			break;
-		}
-
-  case BOUNTYQUEST:
-    {
-			// Find the list section in order to count the number of entries in the list
-			// safedelete(iter);
-			iter = Scripts::MsgBoard->getNewIterator("SECTION BOUNTYS");
-			if (iter==NULL)
-                        {
-                               	message->Delete;
-                        	return 0;
-                        }
-
-			// Count the number of entries under the list section to determine what range to randomize within
-			loopexit=0;
-			do
-			{
-				iter->parseLine(script1, script2);
-				if ( !script1.compare("BOUNTY") )
-				{
-					if ( listCount >= MAXENTRIES )
-					{
-						ErrOut("cMsgBoard::createQuestMessage() Too many entries in BOUNTYS list [MAXENTRIES=%d]\n", MAXENTRIES );
-						break;
-					}
-
-					sectionEntrys[listCount] = str2num(script2.c_str());
-					listCount++;
-				}
-			} while ( script1[0]!='}' && script1[0]!=0 	&& (++loopexit < MAXLOOPS)  );
-
-			safedelete(iter);
-
-			// If no entries are found in the list, then there must be no entries at all.
-			if ( listCount == 0 )
-			{
-				ConOut( "cMsgBoard::createQuestMessage() No msgboard.scp entries found for BOUNTY quests\n" );
-		        	message->Delete;
-				return 0;
-			}
-
-			// Choose a random number between 1 and listCount to use as a message
-			entryToUse = RandomNum( 1, listCount );
-#ifdef DEBUG
-			ErrOut("cMsgBoard::createQuestMessage() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
-#endif
-			// Open the script again and find the section choosen by the randomizer
- 			char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-
-			sprintf( temp, "BOUNTY %i", sectionEntrys[entryToUse-1] );
-
-			safedelete(iter);
-			iter = Scripts::MsgBoard->getNewIterator(temp);
-			if (iter==NULL)
-			{
-				ConOut( "cMsgBoard::createQuestMessage() Couldn't find entry %s for BOUNTY quest\n", temp );
-		        	message->Delete;
-				return 0;
-			}
-      break;
-    }
-
-	default:
+		// If no entries are found in the list, then there must be no entries at all.
+		if ( listCount == 0 )
 		{
-			ConOut( "cMsgBoard::createQuestMessage() Invalid questType %d\n", questType );
-		    	message->Delete;
+			ConOut( "cMsgBoard::createQuestMessage() No msgboard.scp entries found for ESCORT quests\n" );
+		       	message->Delete;
 			return 0;
 		}
+
+		// Choose a random number between 1 and listCount to use as a message
+		entryToUse = RandomNum( 1, listCount );
+#ifdef DEBUG
+		ErrOut("cMsgBoard::createQuestMessage() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
+#endif
+		// Open the script again and find the section choosen by the randomizer
+		char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+
+		sprintf( temp, "SECTION ESCORT %i", sectionEntrys[entryToUse-1] );
+		iter = Scripts::MsgBoard->getNewIterator(temp);
+
+		if (iter==NULL)
+		{
+			ConOut( "cMsgBoard::createQuestMessage() Couldn't find entry %s for ESCORT quest\n", temp );
+                      	message->Delete;
+			return 0;
+		}
+		break;
+  	case BOUNTYQUEST:
+	 	// Find the list section in order to count the number of entries in the list
+		// safedelete(iter);
+		iter = Scripts::MsgBoard->getNewIterator("SECTION BOUNTYS");
+		if (iter==NULL)
+		{
+        	   	message->Delete;
+                	return 0;
+	        }
+
+		// Count the number of entries under the list section to determine what range to randomize within
+		loopexit=0;
+		do
+		{
+			iter->parseLine(script1, script2);
+			if ( !script1.compare("BOUNTY") )
+			{
+				if ( listCount >= MAXENTRIES )
+				{
+					ErrOut("cMsgBoard::createQuestMessage() Too many entries in BOUNTYS list [MAXENTRIES=%d]\n", MAXENTRIES );
+					break;
+				}
+
+				sectionEntrys[listCount] = str2num(script2.c_str());
+				listCount++;
+			}
+		} while ( script1[0]!='}' && script1[0]!=0 	&& (++loopexit < MAXLOOPS)  );
+
+		safedelete(iter);
+
+		// If no entries are found in the list, then there must be no entries at all.
+		if ( listCount == 0 )
+		{
+			ConOut( "cMsgBoard::createQuestMessage() No msgboard.scp entries found for BOUNTY quests\n" );
+	       		message->Delete;
+			return 0;
+		}
+
+		// Choose a random number between 1 and listCount to use as a message
+		entryToUse = RandomNum( 1, listCount );
+#ifdef DEBUG
+		ErrOut("cMsgBoard::createQuestMessage() listCount=%d  entryToUse=%d\n", listCount, entryToUse );
+#endif
+		// Open the script again and find the section choosen by the randomizer
+		char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+
+		sprintf( temp, "BOUNTY %i", sectionEntrys[entryToUse-1] );
+
+	        safedelete(iter);
+		iter = Scripts::MsgBoard->getNewIterator(temp);
+		if (iter==NULL)
+		{
+			ConOut( "cMsgBoard::createQuestMessage() Couldn't find entry %s for BOUNTY quest\n", temp );
+	       		message->Delete;
+			return 0;
+		}
+	      	break;
+	default:
+		ConOut( "cMsgBoard::createQuestMessage() Invalid questType %d\n", questType );
+	    	message->Delete;
+		return 0;
 	}
+
 
 	////////////////////////////////////////////////////////////////////////////////////
 	//  Randomly picked a message, now get the message data and fill in up the buffer //
@@ -725,300 +776,103 @@ static UI32 cMsgBoard::createQuestMessage(QuestType questType, pNPC npc, pItem i
 
 }
 
+
+/*!
+\brief removes an automatic quest message
+\param messageserial serial of the message to delete
+*/
+
 static void cMsgBoard::removeQuestMessage(UI32 messageserial)
 {
-        for (cMsgBoardMessages::iterator it = MsgBoardMessages.begin(); (*it)->getSerial32() != messageserial && it != MsgBoardMessages.end(); ++it) {}
+	cMsgBoardMessages::iterator it = MsgBoardMessages.begin();
+        for (; (*it)->getSerial32() != messageserial && it != MsgBoardMessages.end(); ++it) {}
         if (it != MsgBoardMessages.end()) (*it)->Delete();
 }
 
 
 
-//////////////////////////////////////////////////////////////////////////////
-// FUNCTION:    MsgBoardMaintenance( void )
-//
-// PURPOSE:     Cleans out old posts which are older than the MSGRETENTION
-//              period set in SERVER.cfg and any posts that have been marked
-//              for deletion (such as escort quests after they have been
-//              accepted or posts that have been "removed" through the user
-//              interface.  This is called as a cleanup routine on server
-//              startup.  Compacts and reassigns message serial numbers.
-//
-// PARAMETERS:  void
-//
-// RETURNS:     void
-//
-// NOTES:       This function uses the _findfirst() and _findnext() functions
-//              which are OS specific.  There will definetly be an issue in
-//              compiling this on LINUX because I have no idea what the
-//              structure to be passed to the functions needs to be for LINUX.
-//              This will definetly have to be #ifdef'd to handle this.
-//              Anyone with LINUX experience please feel free to fix it up.
-//////////////////////////////////////////////////////////////////////////////
-void MsgBoardMaintenance( void )
+
+/*!
+\brief Message board mainteinance
+\note Message retention check, link consistency check and refreshing of quests 
+*/
+
+static void cMsgBoard::MsgBoardMaintenance()
 {
-	int loopexit=0, loopexit2=0;
-	UI08                  msg2[MAXBUFFER];
-
-	struct tm             currentDate;
-	time_t                now;
-	int                   dayOfYear;
-	int                   postDay;
-	int                   postAge;
-	int                   count;
-
 	// Display progress message
-	InfoOut("Bulletin board maintenance... ");
-
-
-	ConOut("1\n");
-	ConOut("2\n");
-	ConOut("3\n");
-	// Calculate current time and date to check if post retention period has expired
-
-	time( &now );
-        // "now" now contains time elapsed in seconds from 1 jan 1970, but since the messages also
-        // keep the time that way, we only need to make a subtraction to get seconds since posting
-
-	ConOut("4\n");
-
-	ConOut("[DONE]\n");
+	InfoOut("Bulletin board maintenance... \n");
 
 	// Now lets find out what posts we keep and what posts to remove
         // to realize that, we create two sets: the first will contain all serials for the loaded messages,
         // the second all the serial linked by bsgboards. If the two are not identical, there are some unlinked
         // posts, to be deleted or moved, depending on the type of message
-        std::set<UI32> serialsm, serialsb;
+        std::set<UI32> serialsm, serialsb, serialdiff;
         cMsgBoardMessages::iterator it = MsgBoardMessages.begin();
-
+	ConOut("Message expiration check : ");
         //checking the expiration time while we insert the posts in the set
-        for(;it != MsgBoardMessages.end(); ++it) if (!(*it)->expired()) serialsm.insert((*it)->getSerial32());
+        int expired = 0;
+        for(;it != MsgBoardMessages.end(); ++it)
+        {
+        	if (!(*it)->expired()) serialsm.insert((*it)->getSerial32());
+                else expired++;
+                //while browsing the messages and after expiration checks, refresh quests :) 
+		if((*it)->qtype != QTINVALID) (*it)->refreshQuest();
+        }
+      	ConOut("%i message(s) deleted", expired);
 
+	//now the set serialsm is full of the serials of all messages loaded
 
+        cBBRelations::iterator it2 = BBRelations.begin();
+        for(;it2 != BBRelations.end(); ++it2) serialsb.insert((*it2).second));
+	// now the set serialsb is full of the serials of all messages linked to msgboards. On a set, multiple
+        // insertions are ignored if value already present, so we don't need to check it
 
+	std::set<UI32>::iterator itdiff = serialdiff.begin();
 
-	// Loop until we have reached the end of the BBI file
-	while ( !feof(pBBIOld) 	&& (loopexit < MAXLOOPS) )
-	{
-		//Increment progress dots
-		ConOut(".");
+        // This will fill set serialdiff with the DIFFERENCE between the set containing the serials of
+        // existing messages and a set containing all linked messages. If any difference exist, those posts
+        // should be deleted (if not quests)
+        set_difference(serialsm.begin(), serialsm.end(), serialsb.begin(), serialsb.end(), itdiff);
+        if (!serialdiff.empty())
+        {
+		ConOut("Found %i lost messages. Trying to relink\n", serialdiff.size());
+                expired = 0;  // reusing expired variable to count deleted items :D
+		for(itdiff = serialdiff.begin();itdiff != serialdiff.end(); ++itdiff)
+                {
+		        for(it = MsgBoardMessages.begin();(*it)->getSerial32() != (*itdiff) && it != MsgBoardMessages.end() ; ++it) {}
+			// *it is now the message to be relinked
+                        if ((*it)->qtype == QTINVALID)
+                        {
+                        	if  (!(*it)->getContainer())
+                                {
+                        		//If the messageboard whose it was linked to no longer exist, delete! (even if not local)
+                        		(*it)->Delete();
+                                	expired++;
+                                }
+                                else
+                                {
+                                	//relink message :)
+                                        pMsgBoard board = (pMsgBoard)(*it)->getContainer();
+                                        if (!board->addMessage(*it))
+                                        {
+                                        	//If it couldn't even relink, delete
+	                        		(*it)->Delete();
+        	                        	expired++;
+                                        }
+                                }
+                                continue;
+                        }
+                        else if (!relinkQuestMessage(*it))
+                        {
+                      		(*it)->Delete();
+	                      	expired++;
+                        }
 
-		// Day that post was created
-		postDay = ShortFromCharPtr(msg +7);
+                }
+                ConOut("Relinking complete. %i message(s) relinked, %i message(s) deleted\n", serialdiff.size() - expired, expired);
 
-			// Calculate the age of this post;
-			postAge = dayOfYear - postDay;
-
-			// If postAge is negative, then we are wrapping around the end of the year so add 365 to
-			// make it positive
-			if ( postAge < 0 )
-				postAge += 365;
-
-			//  |Off| 1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18
-			//  |mg1|mg2|mg3|mg4|mo1|mo2|???|sg1|sg2|xx1|xx2|yy1|yy2|cS1|cS2|cS3|cS4|co1|co2|
-			// "\x40\x1c\x53\xeb\x0e\xb0\x00\x00\x00\x00\x3a\x00\x3a\x40\x00\x00\x19\x00\x00";
-			// cS = Charater SN ( only has a value when an NPC posted the message )
-
-			// Check to see whether the post is a dangling quest posting.  Can occur if a quest was
-			// generate and posted and then the server crashed without saving the world file.
-			// You would then have a post with no quest object related to it.  So we have to
-			// scan through the WSC file to figure out if the quest posted has a related object
-			// in the world.
-			// Message type > 0x05 is a quest && every quest must have an object associated with it
-			// So if this is true we must have a quest post with a valid quest object
-			if (  (msg[6]>0x05) && ( msg[13] || msg[14] || msg[15] || msg[16]) )
-			{
-				// Convert the post objects serial number to an int.
-				SERIAL postObjectSN  = LongFromCharPtr(msg +13);
-				int postQuestType = msg[6];
-				int foundMatch    = 0;
-
-				P_CHAR pc_z=pointers::findCharBySerial(postObjectSN);
-
-				switch ( postQuestType )
-				{
-					case ESCORTQUEST:
-						{
-							if (ISVALIDPC(pc_z))
-							{
-								if ( pc_z->npc && ( pc_z->questType>0 ) )
-								{
-									// Now lets reset all of the escort timers after the server has reloaded the WSC file
-									// If this is an Escor Quest NPC
-									if ( (pc_z->questType==ESCORTQUEST) )
-									{
-										// And it doesn't have a player escorting it yet
-										if ( pc_z->ftargserial==INVALID )
-										{
-											// Lets reset the summontimer to the escortinit
-											pc_z->summontimer = ( uiCurrentTime + ( MY_CLOCKS_PER_SEC * SrvParms->escortinitexpire ) );
-										}
-										else // It must have an escort in progress so set the escortactiveexpire timer
-										{
-											// Lets reset the summontimers to the escortactive value
-											pc_z->summontimer = ( uiCurrentTime + ( MY_CLOCKS_PER_SEC * SrvParms->escortactiveexpire ) );
-										}
-										// Found a matching NPC for this posted quest so flag the post for compression
-										foundMatch = 1;
-										break;
-									}
-								}
-							}
-						}
-						break;
-					case BOUNTYQUEST:
-						{
-							if (ISVALIDPC(pc_z))
-							{
-								if ( (pc_z->npc == 0) && (pc_z->questBountyReward  >  0) )
-								{
-									// Check that if this is a BOUNTYQUEST that should be removed first!
-									if( ( postAge>=SrvParms->bountysexpire ) && ( SrvParms->bountysexpire!=0 ) )
-									{
-										// Reset the Player so they have no bounty on them
-										pc_z->questBountyReward     = 0;
-										pc_z->questBountyPostSerial = 0;
-									}
-									else
-									{
-										// Found a matching PC for this posted quest and the post
-										// has not expired so flag the post for compression
-													foundMatch = 1;
-									}
-									break;
-								}
-							}
-						}
-						break;
-					default:
-						{
-							ConOut("[WARNING]\n\tUnhandled QuestType found during maintenance\n");
-						}
-				}
-
-				// After looking through the char_st for a matching SN for the object that posted the message
-				// If we found a match , then everything is ok, other wise there is a dangling post with no
-				// related object owning it in the world.
-				if ( !foundMatch )
-				{
-					// Show the operator a message indicating that a dangling post has been removed
-					ConOut("[WARNING]\n\tDangling Post found (SN = %08x, questType = %02x) REMOVING!\n", postObjectSN, msg[6] );
-					// Set the flag to delete the dangling post
-					msg[6]=0x00;
-				}
-			}
-
-			// If the segment 6 is 0x00 OR the postAge is greater than the MSGRETENTION period
-			// then the message is marked for deletion so don't add it to the post2Keep array
-			if ( (msg[6]!=0x00 || msg[6]==BOUNTYQUEST) && (postAge<=SrvParms->msgretention) )
-			{
-				// We found a message to be saved and compressed so lets find the matching
-				// message in the BBP file and compress it
-				// Loop until we have reached the end of the BBP file
-				loopexit2=0;
-				while ( !feof(pBBPOld) 	&& (++loopexit2 < MAXLOOPS) )
-				{
-					//Increment progress dots
-					ConOut(".");
-					// Fill up msg2 with the first 12 bytes of data from the bbp file
-					if ( fread( msg2, sizeof(char), 12, pBBPOld ) != 12 )
-						break;
-					// Calculate the size of the remainder of this BBP segment ( -12 because we just read the first 12 bytes)
-					sizeOfBBP = ShortFromCharPtr(msg2 +1) - 12;
-					// Fill up the rest of the msg2 with data from the BBP file
-					if ( fread( &msg2[12], sizeof(char), sizeOfBBP, pBBPOld ) != sizeOfBBP )
-						if ( feof(pBBPOld) ) break;
-					// Check to see that the post SN of the message just read matches the SN in the BBI file
-					if ( LongFromCharPtr(msg2 +8) == LongFromCharPtr(msg +0) )
-					{
-						// This is a match so write the message out to the new BBP file
-						// First set the serial number of this post to the newPostSN
-						LongToCharPtr(newPostSN, msg2 +8);
-
-						// If this is a BOUNTYQUEST, then make sure you update the
-						// PC that references this bounty with the new BountyPostSerial#
-						if( msg[6] == BOUNTYQUEST )
-						{
-        						SERIAL postObjectSN  = LongFromCharPtr(msg +13);
-							P_CHAR pc_z=pointers::findCharBySerial(postObjectSN);
-							if (ISVALIDPC(pc_z))
-							{
-								if ( /*(pc_z->getSerial32()== postObjectSN) &&*/ (pc_z->npc== 0) && (pc_z->questBountyReward  >  0) )
-								{
-									pc_z->questBountyPostSerial = newPostSN;
-								}
-							}
-						}
-
-						// Write out the entire message
-						if ( fwrite( msg2, sizeof(char), (sizeOfBBP+12), pBBPNew ) != (sizeOfBBP+12) )
-							ConOut("[FAIL]\n\tMsgBoardMaintenance() Failed to write out BBP segment to pBBPNew\n");
-
-						// We found the message we are looking for so exit the loop leaving the file
-						// pointer where it is (messages must be in the same order in both files).
-						// Update msg[] with newPostSN value
-						LongToCharPtr(newPostSN, msg +0);
-
-						// Write out new BBI segment to pBBINew
-						if ( fwrite( msg, sizeof(char), 19, pBBINew ) != 19)
-							ConOut("[FAIL]\n\t MsgBoardMaintenance() Failed to write out BBI segment to pBBINew\n");
-						// Increment the newPostSN
-						newPostSN++;
-						// Increment the count of the number of times we compressed a message
-						count++;
-						// We found the message we wanted so break out of this BBP loop
-						break;
-					}
-				}
-			}
-		}
-
-		// Finished iterating through the BBI & BBP file so set the new max message SN in the BBI file
-		// and clean up in order to get ready for the next set of BBI & BBP files
-
-		// Jump to the start of the pBBINew file
-		if ( fseek( pBBINew, 0, SEEK_SET ) )
-				ConOut("[FAIL]\n\tMsgBoardMaintenance() failed to seek to start of pBBINew file\n");
-
-		// If we the number of times through the loop is 0 then we need to increment the newPostSN
-		if ( count == 0 ) newPostSN++;
-
-		// Set the buffer to the newPostSN
-		LongToCharPtr(newPostSN-1, msg +0);
-
-		// Write out the newPostSN
-		if ( fwrite( msg, sizeof(char), 4, pBBINew ) != 4)
-				ConOut("[FAIL]\n\tMsgBoardMaintenance() Failed to write out newPostSN pBBINew\n");
-
-
-		// Close both BBP files
-		fclose( pBBPOld );
-		fclose( pBBPNew );
-
-		// Delete the BBP temp file
-		remove( fileBBPTmp );
-
-		// Close both BBI files
-		fclose( pBBIOld );
-		fclose( pBBINew );
-
-		// Delete the BBI temp file
-		remove( fileBBITmp );
-
-		loopexit=0;
-
-		index++ ;
-#if defined(__unix__)
 	}
-	while ((vecFiles.size() < index)   && (++loopexit < MAXLOOPS)  );
-#else
-	}
-	while ( (_findnext( hBBIFile, &BBIFile ) == 0) 	&& (++loopexit < MAXLOOPS)  );
-
-	// Close the _findfirst handle
-	_findclose( hBBIFile );
-#endif
-	ConOut("[ OK ]\n");
-	return;
+      	ConOut("[DONE]\n");
 }
 
 
