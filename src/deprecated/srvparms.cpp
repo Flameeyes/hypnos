@@ -326,11 +326,6 @@ void loadserverdefaults()
 	server_data.disable_z_checking=0;
  	server_data.archivePath="save/";
  	server_data.savePath="backup/";
- 	server_data.characterWorldfile="nxwchars";
- 	server_data.itemWorldfile="nxwitems";
- 	server_data.guildWorldfile="nxwguild";
- 	server_data.jailWorldfile="nxwjail";
-	server_data.bookWorldfile="nxwbook";
 }
 
 extern bool g_bInMainCycle;
@@ -635,17 +630,6 @@ void saveserverscript()
 	fprintf(file, "SECTION SERVER\n");
 	fprintf(file, "{\n");
 	
-	fprintf(file, "// Character worldfile name\n");
-	fprintf(file, "CHARACTERWORLDFILE %s\n", server_data.characterWorldfile.c_str() );
-	fprintf(file, "// Item worldfile name\n");
-	fprintf(file, "ITEMWORLDFILE %s\n", server_data.itemWorldfile.c_str() );
-	fprintf(file, "// Guild worldfile name\n");
-	fprintf(file, "GUILDWORLDFILE %s\n", server_data.guildWorldfile.c_str() );
-	fprintf(file, "// Jail worldfile name\n");
-	fprintf(file, "JAILWORLDFILE %s\n", server_data.jailWorldfile.c_str() );
-	fprintf(file, "// Book worldfile name\n");
-	fprintf(file, "BOOKWORLDFILE %s\n", server_data.bookWorldfile.c_str() );
-	fprintf(file, "// Set directory where worldfile saves will be stored\n");
 	fprintf(file, "SAVEPATH %s\n", server_data.savePath.c_str() );
 	fprintf(file, "// Set directory where worldfile backups will be stored\n");
 	fprintf(file, "ARCHIVEPATH %s\n", server_data.archivePath.c_str() );
@@ -958,7 +942,7 @@ void saveserverscript()
 	fprintf(file, "SECTION MAP\n");
 	fprintf(file, "{\n");
 	fprintf(file, "// These are width and height of the map. Set to 768x512 for Britannian Maps, or \n");
-	fprintf(file, "// to 288x200 for Ilshenar maps. Remember to use different worldfiles! \n");
+	fprintf(file, "// to 288x200 for Ilshenar maps.\n");
 	fprintf(file, "MAPWIDTH %i\n", map_width); // lb
 	fprintf(file, "MAPHEIGHT %i\n", map_height); // lb
 	fprintf(file, "}\n\n");
