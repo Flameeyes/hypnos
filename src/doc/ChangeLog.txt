@@ -1,27 +1,13 @@
-CHANGELOG
+Give a changelog for PyUO is a very complex operation. You probably prefer
+to access to cvsweb and take a look to revisions.
+This file was here in the NoX-Wizard distribution so I wanted to give you
+a look to what we have changed from original NoX-Wizard emulator.
 
-DATE		AUTHOR		CHANGETYPE	DESCRIPTION
----------------------------------------------------------------------------------------------------------------------
-2002-sep-01	Sparhawk	FEATURE		Symbolic constants can now be used in the commands addnpc and additem
-						example addnpc $npc_ratman
-							additem $item_heater
-
-
-2002-aug-31	Sparhawk	BUGFIX		Linux server abort when walking
-				BUGFIX		Wrestling
-				FEATURE		Small API added	chr_getGuildType( const chr );
-								chr_setGuildType( const chr, const type );
-								chr_isGuildTraitor( const chr );
-								chr_setGuildTraitor( const chr, const traitor = 1 );
-								chr_hasGuildToggle( const chr );
-								chr_setGuildToggle( const chr, const toggle = 1 );
-								chr_getGuildTitle( const chr, title[] );
-								chr_setGuildTitle( const chr, const title[] );
-								chr_getGuildFealty( const chr );
-								chr_setGuildFealty( const chr, const serial );
-								chr_getGuildNumber( const chr );
-								chr_setGuildNumebr( const chr, const guild );
-								chr_getCreationDay( const chr );
-								chr_setCreationDay( const chr, const creationday );
-				FEATURE		Speech overrides in override.scp can now be bypassed through small code
-						This way texts like e.g. passwords will not be echoed to the screen.
+- First, and most important, thing is that we don't use AMX or Small as
+  scripting language. Instead we use Python scripts.
+- PyUO doesn't have a GUI neither under windows, should be run in production
+  shards as a daemon (we still miss the code, but we'll fix this ASAP).
+- Support for BeOS is dropped right now (sorry, but we need a lot of work to
+  make it works under BeOS, and now we can't. If you use BeOS and can make a
+  non-intrusive patch to PyUO to support it, you're wellcome).
+- Windows supported compiler is mingw32
