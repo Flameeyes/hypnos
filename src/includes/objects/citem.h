@@ -410,12 +410,12 @@ public:
 	inline const pObject getContainer() const
 	{ return cont; }
 
-	void setContainer(pOjbect obj);
+	void setContainer(pObject obj);
 
 	inline const pObject getOldContainer() const
 	{ return oldcont; }
 
-	void setOldContainer(pOjbect obj);
+	void setOldContainer(pObject obj);
 
 	//! check if item is a container
 	inline const bool isContainer() const
