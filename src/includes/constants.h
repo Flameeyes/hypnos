@@ -115,33 +115,27 @@ enum
 
 }; //enum
 
-#define INVALID -1
-#define UINVALID08 0xFF
-#define UINVALID16 0xFFFF
-#define UINVALID32 0xFFFFFFFF
+//@{
+/*!
+\name Invalid constants
+\brief Constants used to represent an invalid integer value
+\deprecated We shouldn't use them as widespread as it's now
+*/
+	static const int64_t INVALID = -1;
+	static const uint8_t UINVALID08 = 0xFF;
+	static const uint16_t UINVALID16 = 0xFFFF;
+	static const uint32_t UINVALID32 = 0xFFFFFFFF;
+//@}
 
 //@{
 /*!
-\name enumerated constants
+\name Region privs
 */
-
-//! Verdata patches index
-enum
-{
-	VERFILE_MAP = 0, VERFILE_STAIDX, VERFILE_STATICS, VERFILE_ARTIDX, VERFILE_ART,
-	VERFILE_ANIMIDX, VERFILE_ANIM, VERFILE_SOUNDIDX, VERFILE_SOUND, VERFILE_TEXIDX,
-	VERFILE_TEXMAPS, VERFILE_GUMPIDX, VERFILE_GUMPART, VERFILE_MULTIIDX, VERFILE_MULTI,
-	VERFILE_SKILLSIDX, VERFILE_SKILLS, VERFILE_TILEDATA, VERFILE_ANIMDATA,
-	TILEDATA_TILES = 0x68800
-};
-
-//! List of monster sounds (see cChar::playMonsterSound())
-typedef enum { SND_STARTATTACK = 0, SND_IDLE, SND_ATTACK, SND_DEFEND, SND_DIE } MonsterSound;
-#define ALL_MONSTER_SOUND 5
-
-enum { ALLSKILLS = 49, STR , DEX, INTEL, FAME, KARMA,
-	I_ACCOUNT, SKILLS
-};
+	static const uint8_t rgnFlagGuarded		= 0x01; //!< The region is guarded
+	static const uint8_t rgnFlagMarkAllowed		= 0x02; //!< Marking rule is allowed
+	static const uint8_t rgnFlagGateAllowed		= 0x04; //!< Gates are allowed
+	static const uint8_t rgnFlagRecallAllowed	= 0x08; //!< Recall is allowed
+//@}
 
 //@{
 /*!
@@ -156,30 +150,6 @@ enum { ALLSKILLS = 49, STR , DEX, INTEL, FAME, KARMA,
 	static const uint8_t teleSendWeather	= 0x10; //!< Sends the weather status
 	static const uint8_t teleAll		= 0x1F; //!< Mask for all the flags
 //@}
-
-//! for spinning wheel -vagrant
-enum { YARN, THREAD };
-
-//! Wrestling - Luxor
-enum { WRESDISARM = 1, WRESSTUNPUNCH };
-
-//! type of item use
-enum { ITEM_USE_UNKNOWN = 0, ITEM_USE_WEAR, ITEM_USE_CHECKEQUIP, ITEM_USE_DBLCLICK };
-
-enum { spawn_script = 20, NUM_SCRIPTS = 32};
-
-//@{
-/*!
-\name Region privs
-*/
-	static const uint8_t rgnFlagGuarded		= 0x01; //!< The region is guarded
-	static const uint8_t rgnFlagMarkAllowed		= 0x02; //!< Marking rule is allowed
-	static const uint8_t rgnFlagGateAllowed		= 0x04; //!< Gates are allowed
-	static const uint8_t rgnFlagRecallAllowed	= 0x08; //!< Recall is allowed
-//@}
-
-//! Stat types
-enum StatType { STAT_HP = 0, STAT_MANA, STAT_STAMINA, ALL_STATS };
 
 //@{
 /*!
@@ -230,9 +200,6 @@ enum StatType { STAT_HP = 0, STAT_MANA, STAT_STAMINA, ALL_STATS };
 	static const uint16_t ITYPE_ITEMID_WAND = 404;
 //@}
 
-//! Bank Type
-enum { BANK_GOLD = 1, BANK_ITEM = 0, MOREY_GOLDONLYBANK = 123, MOREX_BANK = 1 };
-
 //@{
 /*!
 \name Line of sight
@@ -244,6 +211,46 @@ enum { BANK_GOLD = 1, BANK_ITEM = 0, MOREY_GOLDONLYBANK = 123, MOREX_BANK = 1 };
 	static const uint8_t losRoofingFlat	= 0x10; //!< So can't tele onto flat roofs, basically
 	static const uint8_t losLavaWater	= 0x20; //!< Don't know what all to use this for yet
 //@}
+
+//@{
+/*!
+\name enumerated constants
+*/
+
+//! Verdata patches index
+enum
+{
+	VERFILE_MAP = 0, VERFILE_STAIDX, VERFILE_STATICS, VERFILE_ARTIDX, VERFILE_ART,
+	VERFILE_ANIMIDX, VERFILE_ANIM, VERFILE_SOUNDIDX, VERFILE_SOUND, VERFILE_TEXIDX,
+	VERFILE_TEXMAPS, VERFILE_GUMPIDX, VERFILE_GUMPART, VERFILE_MULTIIDX, VERFILE_MULTI,
+	VERFILE_SKILLSIDX, VERFILE_SKILLS, VERFILE_TILEDATA, VERFILE_ANIMDATA,
+	TILEDATA_TILES = 0x68800
+};
+
+//! List of monster sounds (see cChar::playMonsterSound())
+typedef enum { SND_STARTATTACK = 0, SND_IDLE, SND_ATTACK, SND_DEFEND, SND_DIE } MonsterSound;
+#define ALL_MONSTER_SOUND 5
+
+enum { ALLSKILLS = 49, STR , DEX, INTEL, FAME, KARMA,
+	I_ACCOUNT, SKILLS
+};
+
+//! for spinning wheel -vagrant
+enum { YARN, THREAD };
+
+//! Wrestling - Luxor
+enum { WRESDISARM = 1, WRESSTUNPUNCH };
+
+//! type of item use
+enum { ITEM_USE_UNKNOWN = 0, ITEM_USE_WEAR, ITEM_USE_CHECKEQUIP, ITEM_USE_DBLCLICK };
+
+enum { spawn_script = 20, NUM_SCRIPTS = 32};
+
+//! Stat types
+enum StatType { STAT_HP = 0, STAT_MANA, STAT_STAMINA, ALL_STATS };
+
+//! Bank Type
+enum { BANK_GOLD = 1, BANK_ITEM = 0, MOREY_GOLDONLYBANK = 123, MOREX_BANK = 1 };
 
 /*!
 \brief temp effects
