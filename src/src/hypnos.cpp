@@ -218,7 +218,7 @@ void callguards( CHARACTER p )
 				guard->summontimer = uiCurrentTime + MY_CLOCKS_PER_SEC * 25 ;
 
 				guard->playSFX( 0x01FE );
-				staticeffect( DEREF_pChar( guard ), 0x37, 0x2A, 0x09, 0x06);
+				guard->staticFX(0x372A, 9, 6);
 
 				guard->teleport();
 				guard->talkAll( TRANSLATE("Don't fear, help is near"), 0 );
@@ -1226,7 +1226,7 @@ void usepotion(pChar pc, pItem pi)
 	switch(pi->morey)
 	{
 	case 1: // Agility Potion
-		staticeffect(DEREF_pChar(pc), 0x37, 0x3a, 0, 15);
+		pc->staticFX(0x373A, 0, 15);
 		switch(pi->morez)
 		{
 		case 1:
@@ -1282,7 +1282,7 @@ void usepotion(pChar pc, pItem pi)
 				pc->sysmsg(TRANSLATE("The potion was not able to cure this poison."));
 			else
 			{
-				staticeffect(DEREF_pChar(pc), 0x37, 0x3A, 0, 15);
+				pc->staticFX(0x373A, 0, 15);
 				pc->playSFX(0x01E0); //cure sound - SpaceDog
 				pc->sysmsg(TRANSLATE("The poison was cured."));
 			}
@@ -1333,12 +1333,12 @@ void usepotion(pChar pc, pItem pi)
 		if (s!=INVALID)
 			pc->updateStats(0);
 
-		staticeffect(DEREF_pChar(pc), 0x37, 0x6A, 0x09, 0x06); // Sparkle effect
+		pc->staticFX(0x376A, 9, 6); // Sparkle effect
 		pc->playSFX(0x01F2); //Healing Sound - SpaceDog
 		break;
 
 	case 5: // Night Sight Potion
-		staticeffect(DEREF_pChar(pc), 0x37, 0x6A, 0x09, 0x06);
+		pc->staticFX(0x376A, 9, 6);
 		tempfx::add(pc, pc, tempfx::SPELL_LIGHT, 0, 0, 0,(720*secondsperuominute*MY_CLOCKS_PER_SEC));
 		pc->playSFX(0x01E3);
 		break;
@@ -1373,12 +1373,13 @@ void usepotion(pChar pc, pItem pi)
 		}
 		if (s!=INVALID)
 			pc->updateStats(2);
-		staticeffect(DEREF_pChar(pc), 0x37, 0x6A, 0x09, 0x06); // Sparkle effect
+		
+		pc->staticFX(0x376A, 9, 6);
 		pc->playSFX(0x01F2); //Healing Sound
 		break;
 
 	case 8: // Strength Potion
-		staticeffect(DEREF_pChar(pc), 0x37, 0x3a, 0, 15);
+		pc->staticFX(0x373A, 0, 15);
 		switch(pi->morez)
 		{
 		case 1:
@@ -1413,7 +1414,7 @@ void usepotion(pChar pc, pItem pi)
 		}
 		if (s!=INVALID)
 			pc->updateStats(1);
-		staticeffect(DEREF_pChar(pc), 0x37, 0x6A, 0x09, 0x06); // Sparkle effect
+		pc->staticFX(0x376A, 9, 6); // Sparkle effect
 		pc->playSFX(0x01E7); //agility sound - SpaceDog
 		break;
 
@@ -1426,7 +1427,7 @@ void usepotion(pChar pc, pItem pi)
 			return;
 		}
 		tempfx::add(pc, pc, tempfx::LSD, 60+RandomNum(1,120), 0, 0); // trigger effect
-		staticeffect(DEREF_pChar(pc), 0x37, 0x6A, 0x09, 0x06); // Sparkle effect
+		pc->staticFX(0x376A, 9, 6); // Sparkle effect
 		pc->playSFX(0x00F8, true); // lsd sound :)
 		break;
 

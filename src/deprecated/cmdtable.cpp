@@ -2308,8 +2308,8 @@ void target_fullstats( pClient client, pTarget t )
     pChar pc = cSerializable::findCharBySerial( t->getClicked() );
     if (pc)
     {
-        pc->playSFX( 0x01F2);
-        staticeffect( pc->getSerial(), 0x37, 0x6A, 0x09, 0x06);
+        pc->playSFX(0x01F2);
+	pc->staticFX(0x376A, 9, 6);
         pc->mn=pc->in;
         pc->hp=pc->getStrength();
         pc->stm=pc->dx;
@@ -2324,8 +2324,8 @@ void target_heal( pClient client, pTarget t )
     pChar pc = cSerializable::findCharBySerial( t->getClicked() );
     if (pc)
     {
-        pc->playSFX( 0x01F2);
-        staticeffect( pc->getSerial(), 0x37, 0x6A, 0x09, 0x06);
+        pc->playSFX(0x01F2);
+	pc->staticFX(0x376A, 9, 6);
         pc->hp=pc->getStrength();
         pc->updateStats(0);
     }
@@ -2336,8 +2336,8 @@ void target_mana( pClient client, pTarget t )
     pChar pc = cSerializable::findCharBySerial( t->getClicked() );
     if (pc)
     {
-        pc->playSFX( 0x01F2);
-        staticeffect( pc->getSerial(), 0x37, 0x6A, 0x09, 0x06);
+        pc->playSFX(0x01F2);
+	pc->staticFX(0x376A, 9, 6);
         pc->mn=pc->in;
         pc->updateStats(1);
     }
@@ -2349,7 +2349,7 @@ void target_stamina( pClient client, pTarget t )
     if( pc )
     {
         pc->playSFX( 0x01F2);
-        staticeffect( pc->getSerial(), 0x37, 0x6A, 0x09, 0x06);
+	pc->staticFX(0x376A, 9, 6);
         pc->stm=pc->dx;
         pc->updateStats(2);
     }

@@ -52,9 +52,10 @@ namespace nSettings {
 	\brief Server related settings
 	*/
 	namespace Server {
-		bool isEnabledBookSystem();		//!< Is the book system is enabled or not? [Default: true]
-                bool isEnabledPopupHelp();		//!< popup help (since T2A) is enabled [Default:true]
-                bool isEnabledUOAssist();		//!< UO Assist enabled? [Default: true]
+		bool isEnabledBookSystem();		//!< Is the book system enabled? [Default: true]
+		bool isEnabledTradeSystem();		//!< Is the trade sysem enabled? [Default: true]
+		bool isEnabledPopupHelp();		//!< popup help (since T2A) is enabled [Default:true]
+		bool isEnabledUOAssist();		//!< UO Assist enabled? [Default: true]
                 uint32_t getAllowedAssistVersion();	//!< Returns allowed version of UO assist [Default: \b missing]
 
 		uint8_t getMaximumPCs();		//!< Maximum characters for account [Default: 5]

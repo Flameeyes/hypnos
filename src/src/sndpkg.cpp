@@ -1629,10 +1629,12 @@ void sendshopinfo(int s, int c, pItem pi)
 				ShortToCharPtr(pj->getColor(), m1+m1t+17);
 				m1[4]++; // Increase item count.
 				m1t += 19;
-				value=pj->value;
-				value=calcValue(DEREF_pItem(pj), value);
-				if (SrvParms->trade_system==1)
+				value = pj->value;
+				value = pj->calcValue(value);
+				
+				if ( nSettings::Server::isEnabledTradeSystem() )
 					value=calcGoodValue(c,DEREF_pItem(pj),value,0); // by Magius(CHE)
+				
 				LongToCharPtr(value, m2+m2t+0);		// Item value/price
 				namelen = pj->getName((char *)itemname);
 				m2[m2t+4]=namelen; 			// Item name length
@@ -1729,8 +1731,8 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 						ShortToCharPtr(pj1->getColor(),m1+m1t+6);
 						ShortToCharPtr(pj1->amount,m1+m1t+8);
 						value=pj->value;
-						value=calcValue(DEREF_pItem(pj1), value);
-						if (SrvParms->trade_system==1)
+						value = pj1->calcValue(value);
+						if ( nSettings::Server::isEnabledTradeSystem() )
 							value=calcGoodValue(i,DEREF_pItem(pj1),value,1); // by Magius(CHE)
 						ShortToCharPtr(value, m1+m1t+10);
 						namelen = pj1->getName(itemname);

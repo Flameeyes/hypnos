@@ -1438,7 +1438,7 @@ void cChar::hideBySkill()
 
     	if ( IsGM() )
     	{
-        	staticeffect( DEREF_pChar(this), 0x37, 0x09, 0x09, 0x19);
+		staticFX(0x3709, 9, 25);
         	playSFX( 0x0208 );
         	tempfx::add(this, this, tempfx::GM_HIDING, 1, 0, 0);
         	// immediate hiding overwrites the effect.
