@@ -1187,7 +1187,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 
 			case BEGGING:
 				targ=clientInfo[s]->newTarget( new cCharTarget() );
-				targ->code_callback=Skills::target_begging;
+				targ->code_callback = Begging::target;
 				targ->send( ps );
 				ps->sysmsg( TRANSLATE("Whom do you wish to annoy?"));
 				break;

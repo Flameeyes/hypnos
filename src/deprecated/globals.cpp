@@ -13,11 +13,7 @@
 
 server_st server_data;
 
-#if defined(__unix__)
-termios termstate ;
-#endif
 unsigned int uiCurrentTime;
-
 
 unsigned short int doorbase[DOORTYPES]={
 0x0675, 0x0685, 0x0695, 0x06A5, 0x06B5, 0x06C5, 0x06D5, 0x06E5, 0x0839, 0x084C,
@@ -70,14 +66,6 @@ char spellname[71][25]={
 //unsigned char bounce[3]="\x27\x00";
 //unsigned char extmove[18]="\x77\x01\x02\x03\x04\x01\x90\x01\x02\x01\x02\x0A\x00\xED\x00\x00\x00";
 //unsigned char particleSystem[49];
-
-#ifndef __unix__
-	WSADATA wsaData;
-	WORD wVersionRequested;
-	long int oldtime, newtime;
-#else
-	unsigned long int oldtime, newtime;
-#endif
 
 unsigned long int updatepctime=0;
 
@@ -298,8 +286,5 @@ namespace Unicode {
 char temp[TEMP_STR_SIZE];
 char temp2[TEMP_STR_SIZE];
 }
-
-
-int dummy__; //!< dont touch ! nomen est omen !
 
 amxVariableServer amxVS;

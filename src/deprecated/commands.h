@@ -29,7 +29,6 @@ namespace Commands
 {
 	extern SI32 cmd_offset;					//!< Command Offset
 
-	void NextCall(NXWSOCKET s, int type);
 	void KillSpawn(NXWSOCKET s, int r);
 	void RegSpawnMax(NXWSOCKET s, int r);
 	void RegSpawnNum(NXWSOCKET s, int r, int n);

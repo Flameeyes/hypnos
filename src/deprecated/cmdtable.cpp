@@ -295,18 +295,6 @@ void command_q( pClient client )
 		Commands::ShowGMQue(s, 1); // They are a GM
 }
 
-//! For Counselors or GM's, goes to next call in queue.
-void command_next( pClient client )
-{
-	pChar pc = client->currChar();
-
-#error //FLAME!!!
-	if (!pc->IsGM()) //They are not a GM
-	   Commands::NextCall(s, 0);
-	else
-	   Commands::NextCall(s, 1); // They are a GM
-}
-
 //! For Counselor's and GM's, removes current call from queue.
 void command_clear( pClient client )
 {
@@ -1544,18 +1532,6 @@ void command_cq( pClient client )
 	NXWSOCKET s = ps->toInt();
 
 	Commands::ShowGMQue(s, 0); // Show the Counselor queue, not GM queue
-}
-
-/*GH!*/
-// Attend to the next call in the counselor queue.
-void command_cnext( pClient client )
-{
-#error ///FLAMEEE
-
-	NXWSOCKET s = ps->toInt();
-
-	Commands::NextCall(s, 0); // Show the Counselor queue, not GM queue
-
 }
 
 // Remove the current call from the counselor queue.

@@ -26,19 +26,7 @@
 
 extern server_st server_data;
 
-
-#ifdef __unix__
-extern unsigned long int oldtime, newtime;
-#define SLPMULTI 1000
-#else
-extern WSADATA wsaData;
-extern WORD wVersionRequested;
-extern long int oldtime, newtime;
-#endif
-
 extern bool g_nShowLayers;
-
-extern int dummy__; //used for default parameters of type int& and int*
 
 extern repsys_st repsys;
 extern resource_st resource;
@@ -175,11 +163,7 @@ extern char temp2[TEMP_STR_SIZE];
 
 extern unsigned char w_anim[3];
 
-#ifdef __unix__
-extern termios termstate ;
-#endif
 extern int g_nCurrentSocket;
-
 
 // Global Variables
 extern unsigned int uiCurrentTime;

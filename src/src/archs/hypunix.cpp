@@ -8,6 +8,9 @@
 
 namespace arch {
 
+	termios termstate;
+	unsigned long int oldtime, newtime;
+	
 /*!
 \brief signal handlers
 \param signal the signal received

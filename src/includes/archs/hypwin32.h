@@ -34,6 +34,10 @@ namespace arch {
 	inline bool pollCloseRequests () { return false; }
 	inline void setup_signals (){ return; }
 	inline void start_signal_thread() {return;}
+
+	extern WSADATA wsaData;
+	extern WORD wVersionRequested;
+	extern long int oldtime, newtime;
 } // namespace arch
 	
 namespace tthreads {

@@ -35,6 +35,8 @@
 
 #define SOCKET_ERROR -1
 
+#define SLPMULTI 1000
+
 #if defined(__OpenBSD__) || defined(__FreeBSD__)
     #include <pthread.h>
 #endif
@@ -47,6 +49,8 @@ namespace arch {
 
 	void init_deamon();
 	void initclock();
+	extern termios termstate ;
+	extern unsigned long int oldtime, newtime;
 } // namespace arch
 
 char *strlwr(char *);

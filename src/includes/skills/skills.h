@@ -160,8 +160,6 @@ namespace Skills {
 	void target_lockpick( NXWCLIENT ps, P_TARGET t );
 	//@}
 
-	void target_begging( NXWCLIENT ps, P_TARGET t );
-	
 	void target_animalLore( NXWCLIENT ps, P_TARGET t );
 	
 	void target_forensics( NXWCLIENT ps, P_TARGET t );

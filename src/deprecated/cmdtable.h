@@ -81,7 +81,6 @@ CMD_HANDLER(command_resend);
 CMD_HANDLER(command_teleport);
 CMD_HANDLER(command_where);
 CMD_HANDLER(command_q);
-CMD_HANDLER(command_next);
 CMD_HANDLER(command_clear);
 CMD_HANDLER(command_newz);
 CMD_HANDLER(command_password);
@@ -164,7 +163,6 @@ CMD_HANDLER(command_reloadserver);
 CMD_HANDLER(command_loaddefaults);
 CMD_HANDLER(command_cq);
 /* CMD_HANDLER(command_wipenpcs); */
-CMD_HANDLER(command_cnext);
 CMD_HANDLER(command_cclear);
 CMD_HANDLER(command_minecheck);
 CMD_HANDLER(command_invul);
@@ -241,8 +239,5 @@ void target_emptypack( NXWCLIENT ps, P_TARGET t );
 void target_ban( NXWCLIENT ps, P_TARGET t );
 void target_spy( NXWCLIENT ps, P_TARGET t );
 void target_title( NXWCLIENT ps, P_TARGET t );
-
-
-
 
 #endif /* __CMDTABLE_H */

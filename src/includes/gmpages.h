@@ -7,18 +7,16 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
-\brief Begging methods declaration
+ \brief GM Pages management declaration
+ */
 
-This file contains Begging namespace with begging functions and paramters
-*/
-
-#include "typedefs.h"
-
-namespace Begging {
-	extern TIMERVAL timer;
-	extern UI32 range;
-	extern std::string text[3];
+namespace Pages {
+	class cPage {
+	public:
+	protected:
+		SERIAL serial;
+		
+	};
 	
-	void initialize();
-	void target(NXWCLIENT ps, pTarget t);
+	void cmdNextCall(pClient cli);
 }

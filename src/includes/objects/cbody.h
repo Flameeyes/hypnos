@@ -160,7 +160,7 @@ public:
 */
 public:
 	//! Character is Female
-	static const UI32 flagFemale		= 0x0000000000000001;
+	static const UI32 flagFemale		= 0x0000001;
 //@}
 
 //@{

@@ -1213,35 +1213,12 @@ void npcattacktarget(P_CHAR pc, P_CHAR pc_target)
 
 
 /*!
-\brief Initilizes the gmpages[] and counspages[] arrays and also jails
-\author ?
+\brief Initialize  jails
+\author Sabrewulf
+\todo Rename it or better remove it
 */
 void initque()
 {
-	int i;
-	for(i=1;i<MAXPAGES;i++)
-	{
-		gmpages[i].name[0] = '\0';
-		gmpages[i].reason[0] = '\0';
-		gmpages[i].serial.ser1='\x00';
-		gmpages[i].serial.ser2='\x00';
-		gmpages[i].serial.ser3='\x00';
-		gmpages[i].serial.ser4='\x00';
-		gmpages[i].timeofcall[0]=0;
-		gmpages[i].handled=1;
-	}
-	for(i=1;i<MAXPAGES;i++)
-	{
-		counspages[i].name[0] = '\0';
-		counspages[i].reason[0] = '\0';
-		counspages[i].serial.ser1='\x00';
-		counspages[i].serial.ser2='\x00';
-		counspages[i].serial.ser3='\x00';
-		counspages[i].serial.ser4='\x00';
-		counspages[i].timeofcall[0]=0;
-		counspages[i].handled=1;
-	}
-
 //Sabrewulf: scriptable jails locations
 //jails are the locations 1-10
 

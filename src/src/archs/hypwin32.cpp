@@ -10,7 +10,10 @@
 #include <process.h>
 
 namespace arch {
-
+	WSADATA wsaData;
+	WORD wVersionRequested;
+	long int oldtime, newtime;
+	
 /*!
 \brief Gets a string value from the KHEY_LOCAL_MACHINE registry
 \author Xanathar [NoX]
