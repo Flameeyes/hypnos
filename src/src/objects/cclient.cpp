@@ -30,8 +30,72 @@ cClient::~cClient()
 }
 
 /*!
+\brief Compress packet buffer
+\param out_buffer buffer to send
+\param out_len size of buffer to send
+*/
+void cClient::compress(UI08& *out_buffer, UI32& out_len)
+{
+UI08 *new_buffer = new UI08[out_len];
+UI32 new_len=0, tmp_len=out_len;
+
+	if(out_len <= 0)
+		return;
+
+	for(i = 0; i < out_len; i++ ) {
+
+		n_bits = bit_table[out_buffer[i]][0];
+		value = bit_table[out_buffer[i]][1];
+
+		while(n_bits--) {
+//			new_buffer[new_len] = (new_buffer[new_len] << 1) | (UI08)((value >> n_bits) & 1);
+			new_buffer[new_len] <<= 1;
+			new_buffer[new_len] |= (UI08)((value >> n_bits) & 1);
+			
+			bit_4_byte++;
+			if(bit_4_byte / 8) {
+				new_len++;
+				bit_4_byte %= 8;	
+			}
+		}
+	}
+
+	n_bits = bit_table[256][0];
+	value = bit_table[256][1];
+
+	if(n_bits <= 0) {
+		out_len = 0;
+		return;
+	}
+
+	while(n_bits--) {
+//		new_buffer[new_len] = (new_buffer[new_len] << 1) | (UI08)((value >> n_bits) & 1);
+		new_buffer[new_len] <<= 1;
+		new_buffer[new_len] |= (UI08)((value >> n_bits) & 1);
+		
+		bit_4_byte++;
+		if(bit_4_byte / 8) {
+			new_len++;
+			bit_4_byte %= 8;	
+		}
+	}
+
+	if(bit_4_byte) {
+		while(bit_4_byte < 8) {
+			new_buffer[new_len] <<= 1;
+			bit_4_byte++;		
+		}
+		new_len++;
+	}
+
+	delete out_buffer;
+	out_buffer = new_buffer;
+	out_len = new_len;
+}
+
+/*!
 \brief Show a container to player
-\author GHisha - rewrote by Flameeyes
+\author Kheru - rewrote by Flameeyes
 \param pCont the container
 */
 void cClient::showContainer(pItem pCont)
