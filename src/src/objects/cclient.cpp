@@ -364,7 +364,8 @@ void senditem_lsd(pItem pi, uint16_t color, Location position)
 
 	if ( pi->visible>=1 && !(pc->IsGM()) ) return; // workaround for missing gm-check client side for visibity since client 1.26.2
 	// for lsd we dont need extra work for type 1 as in senditem
-       	cPacketSendObjectInformation pk(pi, pc, true, color, position);
+
+       	cPacketSendLSDObject pk(pi, pc, color, position);
         sendPacket(&pk);
 }
 

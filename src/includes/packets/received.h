@@ -96,19 +96,44 @@ class cPacketSendObjectInformation : public cPacketSend
 protected:
 	pItem item;	//!< Item
         pPC pc;		//!< Player who sees the item
-        bool lsd;
-        uint_16 color
-        Location position
 public:
 	/*!
 	\param i item
+	\param p pc who sees the item
 	*/
-	inline cPacketSendObjectInformation(pItem i, pPC p, bool l = false, uint_16 c = 0, Location pos = Location(0,0,0)) :
-		cPacketSend(NULL, 0), item(i), pc(p), lsd(l), color(c), position(pos)
+	inline cPacketSendObjectInformation(pItem i, pPC p) :
+		cPacketSend(NULL, 0), item(i), pc(p)
 	{ }
 	void prepare();
 };
 
+
+/*!
+\brief Sends to client info on item on the ground
+\author Chronodt
+\note packet 0x1a
+*/
+
+
+class cPacketSendLSDObject : public cPacketSend
+{
+protected:
+	pItem item;		//!< Item
+        pPC pc;			//!< Player who sees the item
+        uint16_t color  	//!< new color of item
+        Location position	//!< new position of item
+public:
+	/*!
+	\param i item
+        \param p pc who sees the item
+        \param c new color of item
+        \param pos new position of item
+	*/
+	inline cPacketSendObjectInformation(pItem i, pPC p, uint16_t c, Location pos) :
+		cPacketSend(NULL, 0), item(i), pc(p), color(c), position(pos)
+	{ }
+	void prepare();
+};
 
 /*!
 \brief cChar::action() packet

@@ -259,7 +259,7 @@ void cPC::do_lsd()
 		if (rand()%10==0) pos.y= pi->getPosition().y + rand()%3;
 		if (rand()%10==0) pos.z= pi->getPosition().z + rand()%33;
 
-		if (distFrom(pi)<13 && rand()%7==0) //Only one item every seven is twisted
+		if (distFrom(pi)<13 && rand()%7==0) //Only one item about every seven is twisted, to a maximum of 10 for each heartbeat event
 		{
 			icnt++;
 			if (icnt%10==0 || icnt<10) client->senditem_lsd(pi,color,pos); // attempt to cut packet-bombing by this thing
