@@ -494,8 +494,11 @@ namespace Jails {
 	}
 }
 
-void load(std::istream &xmlfile)
+void nSettings::load()
 {
+	//! \todo Need do define a better way to find out the default settings file.
+	std::ifstream xmlfile("xmls/settings.xml");
+	
 	try {
 		MXML::Document doc(xmlfile);
 		

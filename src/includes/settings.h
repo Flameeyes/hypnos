@@ -32,12 +32,17 @@ there won't be inline methods. This should be anyway managed by the compiler.
 	values.
 */
 namespace nSettings {
+	load();
+
 	/*!
 	\brief Server related settings
 	*/
 	namespace Server {
 		std::string getLocalHostname();		//!< Gets the server local's hostname to bind the socket to [Default: localhost]
 		std::string getLocalPort();		//!< Gets the server local's port to bind the socket to [Default: 2593]
+		std::string getRACPort();		//!< Gets the server local's port to bind the socket of rac to [Default: 2594]
+		
+		std::string getMULFilesPath();		//!< Gets the path for mul files to load.
 	
 		bool isEnabledBookSystem();		//!< Is the book system enabled? [Default: true]
 		bool isEnabledTradeSystem();		//!< Is the trade system enabled? [Default: true]

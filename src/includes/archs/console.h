@@ -13,8 +13,20 @@
 #define __ARCHS_CONSOLE_H__
 
 #include "backend/notify.h"
+#include "archs/tinterface.h"
 
-void consoleOutput(nNotify::Level lev, const std::string str);
-void setWinTitle(char *str, ...) PRINTF_LIKE(1,2);
+/*!
+\brief Console handling thread
+*/
+class tConsoleInterface : public tInterface
+{
+private:
+public:
+	tConsoleInterface();
+	
+	void *run();
+	
+	void output(tInterface::Level lev, const std::string &str);
+};
 
 #endif

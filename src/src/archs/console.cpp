@@ -18,7 +18,6 @@
 #include "archs/console.h"
 #include "archs/daemon.h"
 #include "archs/signals.h"
-#include "backend/notify.h"
 #include "backend/admincmds.h"
 
 #ifdef HAVE_WINCON_H
@@ -36,82 +35,27 @@
 #endif
 
 /*!
-\brief Output a given string to the console at a given level
-\param lev Level to output the string at
-\param str String to output
+\brief Constructor for console interface thread
 
-This function outputs a message at the given level, setting te color of the
-text and changing the output stream (stdout for plain and info messages,
-stderr for other).
-
-\note This function is thread-safe, a Mutex prevent that the console is
-	accessed more than one time.
+This constructor replaces the old constart() function, setting the stuff needed
+by console interface, and preparing to expect orders from standard input.
 */
-void consoleOutput(nNotify::Level lev, const std::string str)
+tConsoleInterface::tConsoleInterface() : tInterface()
 {
-	static Wefts::Mutex m;
-	m.lock();
+	std::ios::sync_with_stdio(false);
 	
-	std::ostream outs = std::cout;
+	std::cout << "Starting Hypnos..." << std::endl << std::endl;
 	
-	// Set the color
-	switch(lev)
-	{
-	case nNotify::levPlain:
-		break;
-	case nNotify::levError:
-		outs = std::cerr;
-		AnsiOut(outs, "\x1B[1;31m");
-		outs << "E " << nNotify::getDate() << " - ";
-		break;
-	case nNotify::levWarning:
-		outs = std::cerr;
-		AnsiOut(outs, "\x1B[1;33m");
-		outs << "W " << nNotify::getDate() << " - ";
-		break;
-	case nNotify::levInformation:
-		AnsiOut(outs, "\x1B[1;34m");
-		outs << "i " << nNotify::getDate() << " - ";
-		break;
-	case nNotify::levPanic:
-		outs = std::cerr;
-		AnsiOut(outs, "\x1B[1;31m");
-		outs << "! " << nNotify::getDate() << " - ";
-		break;
-	}
+	outputHypnosIntro(std::cout);
 	
-	outs << str;
-	
-	// Close the colored part
-	if ( lev != nNotify::levPlain )
-		AnsiOut(outs, "\x1B[0m");
-	
-	m.unlock();
-}
-
-void setWinTitle(char *str, ...)
-{
-	if (ServerScp::g_nDeamonMode!=0) return;
-
-	char *temp; //xan -> this overrides the global temp var
-	va_list argptr;
-
-	va_start( argptr, str );
-	vasprintf( &temp, str, argptr );
-	va_end( argptr );
-	
+	// sets the window title
 	#ifdef __unix__
-		std::cout << "\033]0;" << temp << "\007";
+		std::cout << "\033]0;Hypnos " << strVersion << "\007";
 	#elif defined(HAVE_WINCON_H)
-		SetConsoleTitle(temp);
+		std::string tmp = "Hypnos " + strVersion;
+		SetConsoleTitle(tmp.c_str());
 	#endif
 	
-	free(temp);
-}
-
-static void constart()
-{
-	setWinTitle("Hypnos %s", strVersion);
 	#ifdef WIN32
 	if ( ServerScp::g_nDeamonMode )
 		return;
@@ -127,8 +71,6 @@ static void constart()
 
 	color=FOREGROUND_BLUE|FOREGROUND_RED|FOREGROUND_GREEN;
 
-
-	
 	SetConsoleTextAttribute(Buff,color);
 
 	coord.X = coord.Y = 0;
@@ -142,60 +84,117 @@ static void constart()
 }
 
 /*!
-\brief facilitate console control. SysOp keys and localhost controls
+\brief Output a given string to the console at a given level
+\param lev Level to output the string at
+\param str String to output
+
+This function outputs a message at the given level, setting te color of the
+text and changing the output stream (stdout for plain and info messages,
+stderr for other).
+
+\note This function is thread-safe, a Mutex prevent that the console is
+	accessed more than one time.
 */
-static void checkkey ()
+void tConsoleInterface::output(tInterface::Level lev, const std::string &str)
+{
+	static Wefts::Mutex m;
+	m.lock();
+	
+	std::ostream outs = std::cout;
+	
+	// Set the color
+	switch(lev)
+	{
+	case tInterface::levPlain:
+		break;
+	case tInterface::levError:
+		outs = std::cerr;
+		AnsiOut(outs, "\x1B[1;31m");
+		outs << "E " << tInterface::getDate() << " - ";
+		break;
+	case tInterface::levWarning:
+		outs = std::cerr;
+		AnsiOut(outs, "\x1B[1;33m");
+		outs << "W " << tInterface::getDate() << " - ";
+		break;
+	case tInterface::levInformation:
+		AnsiOut(outs, "\x1B[1;34m");
+		outs << "i " << tInterface::getDate() << " - ";
+		break;
+	case tInterface::levPanic:
+		outs = std::cerr;
+		AnsiOut(outs, "\x1B[1;31m");
+		outs << "! " << tInterface::getDate() << " - ";
+		break;
+	}
+	
+	outs << str;
+	
+	// Close the colored part
+	if ( lev != tInterface::levPlain )
+		AnsiOut(outs, "\x1B[0m");
+	
+	m.unlock();
+}
+
+/*!
+\brief Thread function for console interface
+
+This is the function which does all the dirt work for the console interface
+thread. It waits for input on standard input stream, and then parse the
+received commands.
+
+This is an infinite loop (<pre>while(true)</pre>), but can be cancelled on
+the getline.
+*/
+void *tConsoleInterface::run()
 {
 	static bool secure = true;
 	std::string str;
-	getline(std::cin, str);
 	
-	if ( ! str.length() ) return;
-
-	if ( str == "S" )
+	while(true)
 	{
-		if (secure)
-			std::cout << "Secure mode disabled. Press ? for a commands list." << std::endl;
-		else
-			std::cout << "Secure mode re-enabled." << std::endl;
+		getline(std::cin, str);
 		
-		secure = ! secure;
-		return;
-	}
+		if ( ! str.length() ) continue;
 	
-	if (secure && str != "?")  //Allows help in secure mode.
-	{
-		std::cout << "Secure mode prevents keyboard commands! Press 'S' to disable." << std::endl;
-		return;
+		if ( str == "S" )
+		{
+			if (secure)
+				std::cout << "Secure mode disabled. Press ? for a commands list." << std::endl;
+			else
+				std::cout << "Secure mode re-enabled." << std::endl;
+			
+			secure = ! secure;
+			continue;
+		}
+		
+		if (secure && str != "?")  //Allows help in secure mode.
+		{
+			std::cout << "Secure mode prevents keyboard commands! Press 'S' to disable." << std::endl;
+			continue;
+		}
+		
+		nAdminCommands::parseCommand(str, std::cout);
 	}
-	
-	nAdminCommands::parseCommand(str, std::cout);
 }
 
 int main(int argc, char *argv[])
 {
-	initclock();
-
-	std::cout << "Starting Hypnos..." << std::endl << std::endl;
-
-	loadServer();
-
 	if (ServerScp::g_nDeamonMode!=0)
 		init_deamon();
-
-	std::cout << "Applying interface settings... ";
-	constart();
-	std::cout << "[ OK ]" << std::endl
-		<< std::endl;
 	
-	cwmWorldState->loadNewWorld();
-
-	lclock=0;
-
-	std::cout << std::endl << std::endl;
-
-	outputHypnosIntro(std::cout);
+	new tConsoleInterface();
+	new tMainLoop();
 	
+	tMainLoop::instance->join();
+	
+	delete tMainLoop::instance;
+	
+	return 0;
+}
+
+#if 0
 	if (SrvParms->server_log)
 		ServerLog.Write(
 			"-=Server Startup=-\n"
@@ -231,42 +230,7 @@ int main(int argc, char *argv[])
 	}
 	std::cout << std::endl;
 	
-	pointers::init(); //Luxor
-
 	std::cout << "Server started" << std::endl;
-
-	Spawns->doSpawnAll();
-
-	while (keeprun)
-	{
-		keeprun = (!pollCloseRequests());
-		
-		checkkey();
-		//OnLoop
-
-		CheckClientIdle=((SrvParms->inactivitytimeout/2)*SECS)+getClockmSecs();
-
-		for (int r=0;r<now;r++)
-		{
-			pChar pc_r=cSerializable::findCharBySerial(currchar[r]);
-			if(! pc_r )
-				continue;
-			if (!pc_r->IsGM()
-				&& pc_r->clientidletime<getClockmSecs()
-				&& clientInfo[r]->ingame
-				)
-			{
-				std::cout << "Player " << pc_r->getCurrentName() << " disconnected due to inactivity !" << std::endl;
-				nPackets::Sent::IdleWarning pk(0x7);
-				client->sendPacket(&pk);
-				Network->Disconnect(r);
-			}
-
-		}
-
-		checktimers();
-		checkauto();
-	}
 	
 	shutdownServer();
 
@@ -283,3 +247,4 @@ int main(int argc, char *argv[])
 	
 	return 0;
 }
+#endif
