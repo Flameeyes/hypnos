@@ -794,19 +794,19 @@ void target_transfer( NXWCLIENT ps, pTarget t )
     pChar pc2 = cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(pc2);
 
-	//Araknesh Call OnTransfer Event Passing Animal,NewOwner
-
-	if (pc1->amxevents[EVENT_CHR_ONTRANSFER])
+	pFunctionHandle evt = pc1->getEvent(evtNpcOnTransfer);
+	if ( evt )
 	{
-		g_bByPass = false;
-		pc1->amxevents[EVENT_CHR_ONTRANSFER]->Call(pc1->getSerial(),pc2->getSerial());
-		if (g_bByPass==true) return ;
+		tVariantVector params = tVariantVector(2);
+		params[0] = pc1->getSerial(); params[1] = pc2->getSerial();
+		evt->setParams(params);
+		evt->execute();
+		if ( evt->bypassed() )
+			return;
+
+		free(evt);
 	}
-	/*
-	pc1->runAmxEvent( EVENT_CHR_ONTRANSFER, pc1->getSerial(),pc2->getSerial());
-	if (g_bByPass==true)
-		return ;
-	*/
+
     char bb[120];
     sprintf(bb,TRANSLATE("* %s will now take %s as his master *"), pc1->getCurrentName().c_str(), pc2->getCurrentName().c_str());
     pc1->talkAll(bb,0);
