@@ -6,12 +6,13 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
+#ifndef __STRCONSTANTS_H__
+#define __STRCONSTANTS_H__
+
 #include "common_libs.h"
 #include "constants.h"
 #include "typedefs.h"
-
-#ifndef __STRCONSTANTS_H__
-#define __STRCONSTANTS_H__
+#include "enums.h"
 
 /*!
 \brief Functions for string constants translation

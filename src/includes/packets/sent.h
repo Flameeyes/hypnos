@@ -775,7 +775,7 @@ namespace nPackets {
 			/*!
 			\param v Character attacked (should be NULL to undo an attack)
 			*/
-			void AttackAck(pChar v) :
+			AttackAck(pChar v) :
 				cPacketSend(NULL, 0), victim(v)
 			{ }
 			
