@@ -568,7 +568,7 @@ static pPacketReceive cPacketReceive::fromBuffer(uint8_t *buffer, uint16_t lengt
                	case 0x75: return new cPacketReceiveRenameCharacter(buffer, length); 	// New name for a character
                 case 0x7d: return new cPacketReceiveDialogResponse(buffer, length); 	// Client Response To Dialog
                 case 0x80: return new cPacketReceiveLoginRequest(buffer, length); 	// Login Request
-                case 0x83: length =  39; break; // Delete Character
+                case 0x83: return new cPacketReceiveDeleteCharacter(buffer, length); 	// Delete Character
                 case 0x86: length = 304; break; // Resend Characters After Delete
                 case 0x91: length =  65; break; // Game Server Login (Server to play selected)
                 case 0x93: length =  99; break; // Books – Update Title Page (receive version of packet 0x93)
@@ -655,7 +655,7 @@ bool cPacketReceiveCreateChar::execute(pClient client)
 
         // Disconnect-level protocol error check (possible client hack or too many chars already present in account)
         if (
-                !(client->currAccount()->getPassword()->compare(buffer+40)) ||                  //!< Password check
+                !(client->currAccount()->comparePassword(buffer+40)) ||                  //!< Password check
                 (client->currAccount()->getCharsNumber() >= ServerScp::g_nLimitRoleNumbers) ||  //!< Max PCs per account check
                 ((sex !=1) && (sex != 0)) ||                                                    //!< Sex validity check
                 (strength + dexterity + intelligence > 80) ||                                   //!< Stat check: stat sum must be <=80
@@ -1603,7 +1603,7 @@ bool cPacketReceivePing::execute(pClient client)
 }
 
 
-bool cPacketReceiveRenameCharacter(pClient client)
+bool cPacketReceiveRenameCharacter::execute(pClient client)
 {
 	if (length != 35) return false;
 	pChar pc = pointers::findCharBySerPtr(buffer + 1);
@@ -1616,7 +1616,7 @@ bool cPacketReceiveRenameCharacter(pClient client)
 }
 
 
-bool cPacketReceiveDialogResponse(pClient client)
+bool cPacketReceiveDialogResponse::execute(pClient client)
 {
 	if (length != 13) return false;
 
@@ -1627,17 +1627,81 @@ bool cPacketReceiveDialogResponse(pClient client)
         return true;
 }
 
-bool cPacketReceiveLoginRequest(pClient client)
+bool cPacketReceiveLoginRequest::execute(pClient client)
 {
 	//!This is the first packet a client sends to the server in the login sequence
 	if (length != 62) return false;
 
+        //! \todo crypting code handling here
+/*
 
 	if ( clientCrypter[s] != NULL )
 	clientCrypter[s]->setCryptMode(CRYPT_LOGIN) ;
 	clientInfo[s]->firstpacket=false;
 	LoginMain(s);
-
+*/
+	//TODO: Add code from loginmain in network.cpp and update it
         return true;
 }
 
+bool cPacketReceiveDeleteCharacter::execute(pClient client)
+{
+	if (length != 39) return false;
+        uint32_t index    = LongFromCharPtr (buffer + 31); // index of character to delete
+	uint32_t clientip = LongFromCharPtr (buffer + 35);
+
+/* PkG 0x85,
+ *      0x00 => That character password is invalid.
+ *      0x01 => That character doesn't exist.
+ *      0x02 => That character is being played right now.
+ *      0x03 => That charater is not old enough to delete.
+                The character must be 7days old before it can be deleted.
+ *      0x04 => That character is currently queued for backup and cannot be
+ *              deleted.
+ *      0x05 => Couldn't carry out your request.
+ */
+
+        pAccount account = client->currAccount();
+        if(!account->comparePassword(buffer+1))
+       	{
+             	// Password invalid
+        	return true;
+        }
+
+	pPC TrashMeUp = account->getChar(index);	//PC to delete. if index is too large or invalid, it returns NULL
+
+
+
+	if (ServerScp::g_nPlayersCanDeleteRoles)
+        {
+	/// Do Character Deletion ... and return if all ok
+		if(!TrashMeUp)
+                {
+			// Character does not exist
+                        return true;
+		}
+
+		if (ISVALIDPC(TrashMeUp))
+		{
+			if( SrvParms->checkcharage && (getclockday() < TrashMeUp->getCreationDay() + 7) )
+                        {
+                        	// Character too young to die :D
+				return true;
+			}
+
+			if(TrashMeUp->isOnline())
+                        {
+                        	// Character is being played right now!
+				return true;
+			}
+			TrashMeUp->Delete();
+
+			//TODO: resend characters after delete
+
+
+			return true; // All done ;]
+		}
+	}
+        // sending message "0x05 => Couldn't carry out your request" ???????
+        return true;
+}

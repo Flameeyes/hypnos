@@ -592,7 +592,7 @@ class cPacketReceivePing	        : public cPacketReceive;
 class cPacketReceiveRenameCharacter     : public cPacketReceive;
 class cPacketReceiveDialogResponse      : public cPacketReceive;
 class cPacketReceiveLoginRequest        : public cPacketReceive;
-class        : public cPacketReceive;
+class cPacketReceiveDeleteCharacter     : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;
 class        : public cPacketReceive;

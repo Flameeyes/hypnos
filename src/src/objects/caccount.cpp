@@ -138,3 +138,12 @@ void cAccount::save(int id)
 			delete q;
 	}
 }
+
+
+pPC cAccount::getChar(int index)
+{
+	if (index<0) || (index >= getCharsNumber()) ) return NULL;
+	std::list<pChar>::iterator it = chars.front();
+        for(int ind2 = 0; ind2 < index; ++ind2) { ++it; }
+        return (pPC) *it;
+}

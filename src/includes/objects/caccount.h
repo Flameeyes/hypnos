@@ -87,8 +87,10 @@ public:
 
 	void save();
 
-	inline const bool inGame() const			//!< Returns if an accout is in game
+	inline const bool inGame() const			//!< Returns if an account is in game
 	{ return currentChar; }
+
+        pPC getChar(int index);		//!< gets char number "index" in player account
 
 };
 
