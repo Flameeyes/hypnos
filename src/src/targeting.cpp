@@ -274,158 +274,112 @@ static void newCarveTarget(pClient client, pItem pi3)
 static void CorpseTarget(pClient client)
 {
 	if (!client) return;
-    int n=0;
+	int n=0;
+	
+	uint32_t serial=LongFromCharPtr(buffer[s]+7);
+	pItem pi = cSerializable::findItemBySerial( serial );
+	pChar pc = client->currChar();
+	
+	if ( ! pi || ! pc->hasInRange(pi, 1) )
+		return;
+    
+	
+	//!\todo Move to new carve system always
+	
+	npcshape[0]=i;
+	pc->playAction(0x20);
+	n=1;
+	if(pi->more1.moreb1 !=0 )
+	{
+		client->sysmessage("You carve the corpse but find nothing usefull.");
+		return;
+	}
+	
+	pi->more1=1;//corpse being carved...can't carve it anymore
 
-    uint32_t serial=LongFromCharPtr(buffer[s]+7);
-    pItem pi = cSerializable::findItemBySerial( serial );
-    pChar pc = client->currChar();
-    if(pi)
-    {
-        if( pc->hasInRange(pi, 1) )
-        {
-            npcshape[0]=i;
-            pc->playAction(0x20);
-            n=1;
-            if(pi->more1==0)
-            {
-                pi->more1=1;//corpse being carved...can't carve it anymore
-
-                if(pi->morey || pi->carve>-1)
-                {//if specified, use enhanced carving system!
-                    newCarveTarget(client, pi);//AntiChrist
-                } else
-                {//else use standard carving
-                    switch(pi->amount) {
-                    case 0x01: CarveTarget(client, 0, 2, 0, 0, 0, 0); break; //Ogre
-                    case 0x02: CarveTarget(client, 0, 5, 0, 0, 0, 0); break; //Ettin
-                    case 0x03: break;   //Zombie
-                    case 0x04: break;   //Gargoyle
-                    case 0x05: CarveTarget(client,36, 0, 0, 0, 0, 1); break; //Eagle
-                    case 0x06: CarveTarget(client,25, 0, 0, 0, 0, 1); break; //Bird
-                    case 0x07: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Orc w/axe
-                    case 0x08: break;   //Corpser
-                    case 0x09: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Deamon
-                    case 0x0A: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Deamon w/sword
-                    case 0x0B: break;   //-NULL-
-                    case 0x0C: CarveTarget(client, 0,19,20, 0, 0, 0); break; //Dragon (green)
-                    case 0x0D: break;   //Air Elemental
-                    case 0x0E: break;   //Earth Elemental
-                    case 0x0F: break;   //Fire Elemental
-                    case 0x10: break;   //Water Elemental
-                    case 0x11: CarveTarget(client, 0, 3, 0, 0, 0, 0); break; //Orc
-                    case 0x12: CarveTarget(client, 0, 5, 0, 0, 0, 0); break; //Ettin w/club
-                    case 0x13: break; //-NULL-
-                    case 0x14: break; //-NULL-
-                    case 0x15: CarveTarget(client, 0, 4,20, 0, 0, 0); break; //Giant Serpent
-                    case 0x16: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Gazer
-                    case 0x17: break;   //-NULL-
-                    case 0x18: break;   //Liche
-                    case 0x19: break;   //-NULL-
-                    case 0x1A: break;   //Ghoul
-                    case 0x1B: break;   //-NULL-
-                    case 0x1C: break;   //Spider
-                    case 0x1D: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Gorilla
-                    case 0x1E: CarveTarget(client,50, 0, 0, 0, 0, 1); break; //Harpy
-                    case 0x1F: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Headless
-                    case 0x20: break;   //-NULL-
-                    case 0x21: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Lizardman
-                    case 0x0122: CarveTarget(client, 0,10, 0, 0, 0, 0); break; // Boar
-                    case 0x23: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Lizardman w/spear
-                    case 0x24: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Lizardman w/mace
-                    case 0x25: break;   //-NULL-
-                    case 0x26: break;   //-NULL-
-                    case 0x27: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Mongbat
-                    case 0x28: break;   //-NULL-
-                    case 0x29: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Orc w/club
-                    case 0x2A: break;   //Ratman
-                    case 0x2B: break;   //-NULL-
-                    case 0x2C: break;   //Ratman w/axe
-                    case 0x2D: break;   //Ratman w/dagger
-                    case 0x2E: break;   //-NULL-
-                    case 0x2F: break;   //Reaper
-                    case 0x30: break;   //Scorpion
-                    case 0x31: break;   //-NULL-
-                    case 0x32: break;   //Skeleton
-                    case 0x33: break;   //Slime
-                    case 0x34: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Snake
-                    case 0x35: CarveTarget(client, 0, 2, 0, 0, 0, 0); break; //Troll w/axe
-                    case 0x36: CarveTarget(client, 0, 2, 0, 0, 0, 0); break; //Troll
-                    case 0x37: CarveTarget(client, 0, 2, 0, 0, 0, 0); break; //Troll w/club
-                    case 0x38: break;   //Skeleton w/axe
-                    case 0x39: break;   //Skeleton w/sword
-                    case 0x3A: break;   //Wisp
-                    case 0x3B: CarveTarget(client, 0,19,20, 0, 0, 0); break; //Dragon (red)
-                    case 0x3C: CarveTarget(client, 0,10,20, 0, 0, 0); break; //Drake (green)
-                    case 0x3D: CarveTarget(client, 0,10,20, 0, 0, 0); break; //Drake (red)
-                    case 0x46: CarveTarget(client, 0, 0, 0, 0, 0, 0); break; //Terathen Matriarche - t2a
-                    case 0x47: CarveTarget(client, 0, 0, 0, 0, 0, 0); break; //Terathen drone - t2a
-                    case 0x48: CarveTarget(client, 0, 0, 0, 0, 0, 0); break; //Terathen warrior, Terathen Avenger - t2a
-                    case 0x4B: CarveTarget(client, 0,4, 0, 0, 0, 0); break; //Titan - t2a
-                    case 0x4C: CarveTarget(client, 0, 4, 0, 0, 0, 0); break; //Cyclopedian Warrior - t2a
-                    case 0x50: CarveTarget(client, 0,10, 2, 0, 0, 0); break; //Giant Toad - t2a
-                    case 0x51: CarveTarget(client, 0, 4, 1, 0, 0, 0); break; //Bullfrog - t2a
-                    case 0x55: CarveTarget(client, 0, 5, 7, 0, 0, 0); break; //Ophidian apprentice, Ophidian Shaman - t2a
-                    case 0x56: CarveTarget(client, 0, 5, 7, 0, 0, 0); break; //Ophidian warrior, Ophidian Enforcer, Ophidian Avenger - t2a
-                    case 0x57: CarveTarget(client, 0, 5, 7, 0, 0, 0); break; //Ophidian Matriarche - t2a
-                    case 0x5F: CarveTarget(client, 0,19,20, 0, 0, 0); break; //Kraken - t2a
-                        //case 0x3E-case 0x95: break; //-NULL-
-                    case 0x96: CarveTarget(client, 0,10, 0, 0, 0, 0); break; //Sea Monster
-                    case 0x97: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Dolphin
-                        //case 0x98-case 0xC7: break; //-NULL-
-                    case 0xC8: CarveTarget(client, 0, 3,10, 0, 0, 0); break; //Horse (tan)
-                    case 0xC9: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Cat
-                    case 0xCA: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Alligator
-                    case 0xCB: CarveTarget(client, 0, 6, 0, 0, 0, 0); break; //Pig
-                    case 0xCC: CarveTarget(client, 0, 3,10, 0, 0, 0); break; //Horse (dark)
-                    case 0xCD: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Rabbit
-                    case 0xCE: CarveTarget(client, 0, 1,12, 0 ,0, 0); break; //Lava Lizard - t2a
-                    case 0xCF: CarveTarget(client, 0, 3, 0, 0, 1, 0); break; //Sheep
-                    case 0xD0: CarveTarget(client,25, 0, 0, 0, 0, 1); break; //Chicken
-                    case 0xD1: CarveTarget(client, 0, 2, 8, 0, 0, 0); break; //Goat
-                    case 0xD2: CarveTarget(client, 0,15, 0, 0, 0, 0); break; //Desert Ostarge - t2a
-                    case 0xD3: CarveTarget(client, 0, 1, 12, 0, 0, 0); break; //Bear
-                    case 0xD4: CarveTarget(client, 0, 1, 0, 2, 0, 0); break; //Grizzly Bear
-                    case 0xD5: CarveTarget(client, 0, 2, 0, 3, 0, 0); break; //Polar Bear
-                    case 0xD6: CarveTarget(client, 0, 1, 10, 0, 0, 0); break; //Cougar
-                    case 0xD7: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Giant Rat
-                    case 0xD8: CarveTarget(client, 0, 8,12, 0, 0, 0); break; //Cow (black)
-                    case 0xD9: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Dog
-                    case 0xDA: CarveTarget(client, 0,15, 0, 0, 0, 0); break; //Frenzied Ostard - t2a
-                    case 0xDB: CarveTarget(client, 0,15, 0, 0, 0, 0); break; //Forest Ostard - t2a
-                    case 0xDC: CarveTarget(client, 0, 1, 12,0, 0, 0); break; //Llama
-                    case 0xDD: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Walrus
-                    case 0xDE: break;   //-NULL-
-                    case 0xDF: CarveTarget(client, 0, 3, 0, 0, 0, 0); break; //Sheep (BALD)
-                    case 0xE1: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Timber Wolf
-                    case 0xE2: CarveTarget(client, 0, 3,10, 0, 0, 0); break; //Horse (Silver)
-                    case 0xE3: break;   //-NULL-
-                    case 0xE4: CarveTarget(client, 0, 3,10, 0, 0, 0); break; //Horse (tan)
-                    case 0xE5: break;   //-NULL-
-                    case 0xE6: break;   //-NULL-
-                    case 0xE7: CarveTarget(client, 0, 8,12, 0, 0, 0); break; //Cow (brown)
-                    case 0xE8: CarveTarget(client, 0,10,15, 0, 0, 0); break; //Bull (brown)
-                    case 0xE9: CarveTarget(client, 0,10,15, 0, 0, 0); break; //Bull (d-brown)
-                    case 0xEA: CarveTarget(client, 0, 6,15, 0, 0, 0); break; //Great Heart
-                    case 0xEB: break;   //-NULL-
-                    case 0xEC: break;   //-NULL-
-                    case 0xED: CarveTarget(client, 0, 5, 8, 0, 0, 0); break; //Hind
-                    case 0xEE: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Rat
-                        //case 0xEF-case 0xFF: break; //-NULL-
-                    default:
-                        LogError("Fallout of switch statement, corpsetarget()");
-                    }// switch
-                }//if morey || carve>-1
-            } else {
-                 client->sysmessage("You carve the corpse but find nothing usefull.");
-            }// if more1==0
-        //break;
-        }
-    }// if i!=-1
-    if (!n) client->sysmessage("That is too far away.");
+	if( pi->morey || pi->carve > -1 )	//if specified, use enhanced carving system!
+	{
+		newCarveTarget(client, pi);
+		return;
+	}
+	
+	switch(pi->amount)
+	{
+	case 0x01: CarveTarget(client, 0, 2, 0, 0, 0, 0); break; //Ogre
+	case 0x02: CarveTarget(client, 0, 5, 0, 0, 0, 0); break; //Ettin
+	case 0x05: CarveTarget(client,36, 0, 0, 0, 0, 1); break; //Eagle
+	case 0x06: CarveTarget(client,25, 0, 0, 0, 0, 1); break; //Bird
+	case 0x07: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Orc w/axe
+	case 0x09: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Deamon
+	case 0x0A: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Deamon w/sword
+	case 0x0C: CarveTarget(client, 0,19,20, 0, 0, 0); break; //Dragon (green)
+	case 0x11: CarveTarget(client, 0, 3, 0, 0, 0, 0); break; //Orc
+	case 0x12: CarveTarget(client, 0, 5, 0, 0, 0, 0); break; //Ettin w/club
+	case 0x15: CarveTarget(client, 0, 4,20, 0, 0, 0); break; //Giant Serpent
+	case 0x16: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Gazer
+	case 0x1D: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Gorilla
+	case 0x1E: CarveTarget(client,50, 0, 0, 0, 0, 1); break; //Harpy
+	case 0x1F: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Headless
+	case 0x21: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Lizardman
+	case 0x0122: CarveTarget(client, 0,10, 0, 0, 0, 0); break; // Boar
+	case 0x23: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Lizardman w/spear
+	case 0x24: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Lizardman w/mace
+	case 0x27: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Mongbat
+	case 0x29: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Orc w/club
+	case 0x34: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Snake
+	case 0x35: CarveTarget(client, 0, 2, 0, 0, 0, 0); break; //Troll w/axe
+	case 0x36: CarveTarget(client, 0, 2, 0, 0, 0, 0); break; //Troll
+	case 0x37: CarveTarget(client, 0, 2, 0, 0, 0, 0); break; //Troll w/club
+	case 0x3B: CarveTarget(client, 0,19,20, 0, 0, 0); break; //Dragon (red)
+	case 0x3C: CarveTarget(client, 0,10,20, 0, 0, 0); break; //Drake (green)
+	case 0x3D: CarveTarget(client, 0,10,20, 0, 0, 0); break; //Drake (red)
+	case 0x46: CarveTarget(client, 0, 0, 0, 0, 0, 0); break; //Terathen Matriarche - t2a
+	case 0x47: CarveTarget(client, 0, 0, 0, 0, 0, 0); break; //Terathen drone - t2a
+	case 0x48: CarveTarget(client, 0, 0, 0, 0, 0, 0); break; //Terathen warrior, Terathen Avenger - t2a
+	case 0x4B: CarveTarget(client, 0,4, 0, 0, 0, 0); break; //Titan - t2a
+	case 0x4C: CarveTarget(client, 0, 4, 0, 0, 0, 0); break; //Cyclopedian Warrior - t2a
+	case 0x50: CarveTarget(client, 0,10, 2, 0, 0, 0); break; //Giant Toad - t2a
+	case 0x51: CarveTarget(client, 0, 4, 1, 0, 0, 0); break; //Bullfrog - t2a
+	case 0x55: CarveTarget(client, 0, 5, 7, 0, 0, 0); break; //Ophidian apprentice, Ophidian Shaman - t2a
+	case 0x56: CarveTarget(client, 0, 5, 7, 0, 0, 0); break; //Ophidian warrior, Ophidian Enforcer, Ophidian Avenger - t2a
+	case 0x57: CarveTarget(client, 0, 5, 7, 0, 0, 0); break; //Ophidian Matriarche - t2a
+	case 0x5F: CarveTarget(client, 0,19,20, 0, 0, 0); break; //Kraken - t2a
+	case 0x96: CarveTarget(client, 0,10, 0, 0, 0, 0); break; //Sea Monster
+	case 0x97: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Dolphin
+	case 0xC8: CarveTarget(client, 0, 3,10, 0, 0, 0); break; //Horse (tan)
+	case 0xC9: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Cat
+	case 0xCA: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Alligator
+	case 0xCB: CarveTarget(client, 0, 6, 0, 0, 0, 0); break; //Pig
+	case 0xCC: CarveTarget(client, 0, 3,10, 0, 0, 0); break; //Horse (dark)
+	case 0xCD: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Rabbit
+	case 0xCE: CarveTarget(client, 0, 1,12, 0 ,0, 0); break; //Lava Lizard - t2a
+	case 0xCF: CarveTarget(client, 0, 3, 0, 0, 1, 0); break; //Sheep
+	case 0xD0: CarveTarget(client,25, 0, 0, 0, 0, 1); break; //Chicken
+	case 0xD1: CarveTarget(client, 0, 2, 8, 0, 0, 0); break; //Goat
+	case 0xD2: CarveTarget(client, 0,15, 0, 0, 0, 0); break; //Desert Ostarge - t2a
+	case 0xD3: CarveTarget(client, 0, 1, 12, 0, 0, 0); break; //Bear
+	case 0xD4: CarveTarget(client, 0, 1, 0, 2, 0, 0); break; //Grizzly Bear
+	case 0xD5: CarveTarget(client, 0, 2, 0, 3, 0, 0); break; //Polar Bear
+	case 0xD6: CarveTarget(client, 0, 1, 10, 0, 0, 0); break; //Cougar
+	case 0xD7: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Giant Rat
+	case 0xD8: CarveTarget(client, 0, 8,12, 0, 0, 0); break; //Cow (black)
+	case 0xD9: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Dog
+	case 0xDA: CarveTarget(client, 0,15, 0, 0, 0, 0); break; //Frenzied Ostard - t2a
+	case 0xDB: CarveTarget(client, 0,15, 0, 0, 0, 0); break; //Forest Ostard - t2a
+	case 0xDC: CarveTarget(client, 0, 1, 12,0, 0, 0); break; //Llama
+	case 0xDD: CarveTarget(client, 0, 1,12, 0, 0, 0); break; //Walrus
+	case 0xDF: CarveTarget(client, 0, 3, 0, 0, 0, 0); break; //Sheep (BALD)
+	case 0xE1: CarveTarget(client, 0, 1, 0, 1, 0, 0); break; //Timber Wolf
+	case 0xE2: CarveTarget(client, 0, 3,10, 0, 0, 0); break; //Horse (Silver)
+	case 0xE4: CarveTarget(client, 0, 3,10, 0, 0, 0); break; //Horse (tan)
+	case 0xE7: CarveTarget(client, 0, 8,12, 0, 0, 0); break; //Cow (brown)
+	case 0xE8: CarveTarget(client, 0,10,15, 0, 0, 0); break; //Bull (brown)
+	case 0xE9: CarveTarget(client, 0,10,15, 0, 0, 0); break; //Bull (d-brown)
+	case 0xEA: CarveTarget(client, 0, 6,15, 0, 0, 0); break; //Great Heart
+	case 0xED: CarveTarget(client, 0, 5, 8, 0, 0, 0); break; //Hind
+	case 0xEE: CarveTarget(client, 0, 1, 0, 0, 0, 0); break; //Rat
+	}// switch
 }
-
-
-
 
 int BuyShop(pClient client, pChar pc)
 {
@@ -637,7 +591,7 @@ void target_key( pClient client, pTarget t )
 
 void target_attack( pClient client, pTarget t )
 {
-	//!\TODO modify the parameter to get client instead of socket
+	//!\todo modify the parameter to get client instead of socket
 	pChar pc_t1 = cSerializable::findCharBySerial( t->buffer[0] );
 	pChar pc_t2 = dynamic_cast<pChar>( t->getClicked() );
 	if ( ! pc_t1 || ! pc_t2 ) return;
@@ -856,11 +810,12 @@ void target_allAttack( pClient client, pTarget t )
 	NxwCharWrapper sc;
 	sc.fillOwnedNpcs( pc, false, true );
 	pc->attackStuff(pc_target);
-	for( sc.rewind(); !sc.isEmpty(); sc++ ) {
+	for( sc.rewind(); !sc.isEmpty(); sc++ )
+	{
 		pChar pet=sc.getChar();
-		if( pet )
-			npcattacktarget(pet, pc_target);
-    }
+		if( ! pet ) return;
+		npcattacktarget(pet, pc_target);
+	}
 }
 
 void target_xTeleport( pClient client, pTarget t )
@@ -871,8 +826,7 @@ void target_xTeleport( pClient client, pTarget t )
 	if(pc = dynamic_cast<pChar>( t->getClicked() )) {
 		pc->MoveTo( me->getPosition() );
 		pc->teleport();
-	}
-	else if(pi = dynamic_cast<pItem>( t->getClicked() )) {
+	} else if(pi = dynamic_cast<pItem>( t->getClicked() )) {
 		pi->MoveTo( me->getPosition() );
 		pi->Refresh();
 	}

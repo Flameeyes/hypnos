@@ -1332,7 +1332,7 @@ void target_poisoning2(pClient client, pTarget t )
 	pItem poison = cSerializable::findItemBySerial(t->buffer[0]);
 	if ( !pc || !poison ) return;
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skPoisoning,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skPoisoning,AMX_BEFORE);
 
 	if(poison->type!=ITYPE_POTION || poison->morey!=6)
 	{
@@ -1417,7 +1417,7 @@ void target_poisoning2(pClient client, pTarget t )
 	if (poison->morez!=0) {
 		pc->playSFX( 0x0247);
 		if(success!=0)
-        {
+		{
 			if(pi->poisoned<(PoisonType)poison->morez) pi->poisoned=(PoisonType)poison->morez;
 			client->sysmessage("You successfully poison that item.");
 		}
@@ -1449,9 +1449,6 @@ void target_poisoning2(pClient client, pTarget t )
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skPoisoning,AMX_AFTER);
 }
 
-
-/*!
-*/
 void nSkills::target_poisoning(pClient client, pTarget t )
 {
 	pItem poison = dynamic_cast<pItem>( t->getClicked() );
@@ -1465,47 +1462,45 @@ void nSkills::target_poisoning(pClient client, pTarget t )
 	client->sysmessage( "What item do you want to poison?") ;
 }
 
-
 void nSkills::target_tinkering(pClient client, pTarget t )
 {
 	pChar pc = client->currChar();
 	pItem pi = dynamic_cast<pItem>( t->getClicked() );
 	if ( !pc || !pi ) return;
 
-    AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skTinkering,AMX_BEFORE);
+	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skTinkering,AMX_BEFORE);
 
-	if ( pi->magic!=4) // Ripper
+	if ( pi->magic == 4 || ( pi->getId() != 0x1BEF && pi->getId() 1= 0x1BF2 && pi->isLog() ) )
 	{
-		if(pi->getId()==0x1BEF || pi->getId()==0x1BF2 || pi->isLog() )
-		{
-			if (CheckInPack(client,pi))
-			{
-				int amt;
-				amt = pc->CountItems(pi->getId(), pi->getColor());
-				if(amt<2)
-				{
-					client->sysmessage("You don't have enough ingots to make anything.");
-					return;
-				}
-				if ( pi->isLog() )
-				{
-					if (amt<4)
-					{
-						client->sysmessage("You don't have enough log's to make anything.");
-						return;
-					}
-					else 
-						MakeMenu(pc,70,skTinkering,pi);
-				} else {
-					MakeMenu(pc,80,skTinkering,pi);
-				}
-			}
-			return;
-		}
+		client->sysmessage("You cannot use that material for tinkering.");
+		AMXEXECSVTARGET(pc->getSerial(),AMXT_SKITARGS,skTinkering,AMX_AFTER);
 	}
-    client->sysmessage("You cannot use that material for tinkering.");
 
-    AMXEXECSVTARGET(pc->getSerial(),AMXT_SKITARGS,skTinkering,AMX_AFTER);
+	
+	if ( ! CheckInPack(client,pi) )
+		return;
+		
+	int amt;
+	amt = pc->CountItems(pi->getId(), pi->getColor());
+	if(amt<2)
+	{
+		client->sysmessage("You don't have enough ingots to make anything.");
+		return;
+	}
+	
+	if ( ! pi->isLog() )
+	{
+		MakeMenu(pc,80,skTinkering,pi);
+		return;
+	}
+	
+	if (amt<4)
+	{
+		client->sysmessage("You don't have enough log's to make anything.");
+		return;
+	}
+	
+	MakeMenu(pc,70,skTinkering,pi);
 }
 
 //////////////////////////////////
@@ -1727,45 +1722,45 @@ void nSkills::target_repair(pClient client, pTarget t )
 		return;
 	}
 
-	if ( pi->magic!=4)
-	{
-		if (!CheckInPack(s,pi))
-			return;
-        
-		if (!pi->hp)
-		{
-			client->sysmessage(" That item cant be repaired.");
-			return;
-		}
+	if ( pi->magic == 4)
+		return;
 	
-		if(!AnvilInRange(client))
-		{
-			client->sysmessage(" Must be closer to the anvil.");
-			return;
-		}
+	if (!CheckInPack(s,pi))
+		return;
 
-        	if (pi->hp>=pi->maxhp)
-		{
-			client->sysmessage(" That item is at full strength.");
-			return;
-		}
+	if (!pi->hp)
+	{
+		client->sysmessage(" That item cant be repaired.");
+		return;
+	}
 
-        
-		int16_t dmg=4;    // damage to maxhp
-		if      ((smithing>=900)) dmg=1;
-		else if ((smithing>=700)) dmg=2;
-		else if ((smithing>=500)) dmg=3;
+	if(!AnvilInRange(client))
+	{
+		client->sysmessage(" Must be closer to the anvil.");
+		return;
+	}
 
-		if (pc->checkSkill(skBlacksmithing, 0, 1000))
-		{
-			pi->maxhp-=dmg;
-			pi->hp=pi->maxhp;
-			client->sysmessage(" * the item has been repaired.*");
-		} else {
-			pi->hp-=2;
-			pi->maxhp-=1;
-			client->sysmessage(" * You fail to repair the item. *");
-			client->sysmessage(" * You weaken the item.*");
-		}
+	if (pi->hp>=pi->maxhp)
+	{
+		client->sysmessage(" That item is at full strength.");
+		return;
+	}
+
+
+	int16_t dmg=4;    // damage to maxhp
+	if      ((smithing>=900)) dmg=1;
+	else if ((smithing>=700)) dmg=2;
+	else if ((smithing>=500)) dmg=3;
+
+	if (pc->checkSkill(skBlacksmithing, 0, 1000))
+	{
+		pi->maxhp-=dmg;
+		pi->hp=pi->maxhp;
+		client->sysmessage(" * the item has been repaired.*");
+	} else {
+		pi->hp-=2;
+		pi->maxhp-=1;
+		client->sysmessage(" * You fail to repair the item. *");
+		client->sysmessage(" * You weaken the item.*");
 	}
 }

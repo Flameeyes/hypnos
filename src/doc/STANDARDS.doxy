@@ -20,6 +20,9 @@ All the files should have this header:
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*\/
 \endcode
 
+\note The backslash before the slash at end of block is to avoid the end
+	of the doxygen comment block :)
+
 \section iden Identation
 
 For indentation, we should use this form, inserting a linebreak after the
@@ -82,5 +85,7 @@ getSerial() function is unique for all the instances. This code check only
 two pointer values:
 
 \code a == b \endcode
+
+\see cSerializable
 
 */
