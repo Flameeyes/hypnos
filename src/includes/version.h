@@ -1,12 +1,10 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| PyUO Server Emulator                                                     |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in pyuo.cpp file.              |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
 \brief header
@@ -16,7 +14,7 @@
 #define __VERSION_H__
 
 //NXW versions number are :
-// 
+//
 //MajorNumber.MinorNumber(Letter)
 //
 //Letter is :
@@ -28,15 +26,15 @@
 //
 //		public releases usually fall in s or u categories
 
-#define VER "**Oxygene**"
+#define VER ""
 //Note : vernumb MUST always be 5 char lenght and WSCREQVER also must.
-#define VERNUMB "0.82s"
+#define VERNUMB "0.90a"
 //This is the requested version for the WSC to be read correctly
-#define WSCREQVER "0.60s"
+#define WSCREQVER "0.90a"
 //This is the requested version for the server.cfg to be read correctly
-#define SCPREQVER "0.67b"
-#define HOTFIX "11AF"
-#define VERHEXCODE 0x081
+#define SCPREQVER "0.90a"
+#define HOTFIX ""
+#define VERHEXCODE 0x090
 
 #define VTF_SUPPORTED 0x1
 #define VTF_PRIVATE	  0x2
@@ -52,17 +50,6 @@
 
 #define VERTYPE2 VT_X
 
-//#define EXTREMELY_UNTESTED
-
-#ifdef _WINDOWS
-#define VERTYPE ((VERTYPE2|VTF_GUI))
-#else
-#define VERTYPE (VERTYPE2)
-#endif
-
-
-
-
 #define OS    "UNKNOWN OS"
 #define OSFIX "[UNKNOWN OS]   "
 #define PLATFORMID 0
@@ -73,16 +60,7 @@
 #undef PLATFORMID
 #define OS    ((ServerScp::g_nDeamonMode==0) ? ("Win32-Console") : ("WinNT-Service"))
 #define OSFIX ((ServerScp::g_nDeamonMode==0) ? ("[Win32-Console]") : ("[WinNT-Service]"))
-#define PLATFORMID 1                            
-#endif 
-
-#ifdef _WINDOWS
-#undef OS
-#undef OSFIX
-#undef PLATFORMID
-#define OS    (("Win32-GUI"))
-#define OSFIX (("[Win32-Gui]    "))
-#define PLATFORMID 2
+#define PLATFORMID 1
 #endif
 
 #ifdef __unix__
@@ -91,7 +69,7 @@
 #undef PLATFORMID
 #define OS    ((ServerScp::g_nDeamonMode==0) ? ("Linux-Console") : ("Linux-Deamon"))
 #define OSFIX ((ServerScp::g_nDeamonMode==0) ? ("[GNU/Linux tty]") : ("[GNU/Linux dmn]"))
-#define PLATFORMID 4                            
+#define PLATFORMID 4
 #endif
 
 #if defined(__OpenBSD__)
@@ -122,10 +100,10 @@
 #define PLATFORMID 5
 #endif
 
-#define PRODUCT (("NoX-Wizard"))
+#define PRODUCT (("PyUO"))
 
 
-#define SUPPORTED_CLIENT "3.0.3a" 
+#define SUPPORTED_CLIENT "3.0.3a"
 // #define SUPPORTED_CLIENT_T3D "3.0.0 UO:Third Dawn Build 61"
 
 // SUPPORTED_CLIENT is part of the client version control system.
@@ -140,10 +118,10 @@
 
 #define NAME "Official Dev Team"
 
-//NOTE: In order to modify this, please ask to the nox-wizard staff. Remember to do not remove any developer from PROGRAMMERS without nox-wizard staff permission
-#define PROGRAMMERS "Xanathar, Luxor, Sparhawk, Elcabesa, Araknesh, Anthalir, Endymion, Akron and Riekr"
+//NOTE: In order to modify this, please ask to the PyUO staff. Remember to do not remove any developer from PROGRAMMERS without PyUO staff permission
+#define PROGRAMMERS "Kheru and Flameeyes"
 
-#define EMAIL "staff@noxwizard.com"
+#define EMAIL ""
 
 
 #endif //__VERSION_H__
