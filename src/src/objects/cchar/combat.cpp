@@ -310,12 +310,12 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 
 	if( damage > 0 ) {
 		//Evaluate damage type
-		if (fightskill == WRESTLING) dmgtype = DAMAGE_BLUDGEON;
+		if (fightskill == WRESTLING) dmgtype = damBludgeon;
 		if (npc) {
 			dmgtype = damagetype;
 			damage = int(damage / 3.5);
 		}
-		dmgtype = weapon ? weapon->damagetype : DAMAGE_PURE;
+		dmgtype = weapon ? weapon->damagetype : damPure;
 
 		if (pc_def->ra) {	 // Reactive Armor
 			//80% to defender, 10-20% to attacker

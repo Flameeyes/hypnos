@@ -290,7 +290,7 @@ void cChar::resetData()
 	SetGuildType( INVALID );
 	magicsphere = 0;
 	resetResists();
-	damagetype = DAMAGE_BLUDGEON;
+	damagetype = damBludgeon;
 	fstm=0.0f;
 
 	setGuild( NULL, NULL );
@@ -762,7 +762,7 @@ void cChar::damage(int32_t amount, DamageType typeofdamage, StatType stattobedam
 
 	if (amount <= 0) return;
 	// typeofdamage is ignored till now
-    if (typeofdamage!=DAMAGE_PURE) {
+    if (typeofdamage!=damPure) {
     	amount -= int32_t((amount/100.0)*float(calcResist(typeofdamage)));
     }
 	if (amount <= 0) return;
@@ -793,7 +793,7 @@ void cChar::damage(int32_t amount, DamageType typeofdamage, StatType stattobedam
 */
 int32_t cChar::calcResist(DamageType typeofdamage)
 {
-	if (typeofdamage == DAMAGE_PURE || typeofdamage > MAX_RESISTANCE_INDEX)
+	if (typeofdamage == damPure || typeofdamage > MAX_RESISTANCE_INDEX)
 		return 0;
 
 	int32_t total = 0;

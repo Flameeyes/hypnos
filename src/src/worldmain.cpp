@@ -1502,7 +1502,7 @@ void CWorldMain::SaveChar( pChar pc )
 				fprintf(cWsc, "PRIV %i\n", pc->GetPriv());
 
 
-        	if (pc->damagetype!=DAMAGE_PURE) //Luxor
+        	if (pc->damagetype!=damPure) //Luxor
             	fprintf(cWsc, "DAMAGETYPE %i\n", pc->damagetype);
 			if (pc->getStablemaster()!=dummy.getStablemaster())
 			    fprintf(cWsc, "STABLEMASTER %i\n", pc->getStablemaster());

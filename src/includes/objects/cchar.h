@@ -797,7 +797,7 @@ public:
 		void			curePoison();
 		void			resurrect(pClient healer = NULL);
 		void			unfreeze( bool calledByTempfx = false );
-		void			damage(int32_t amount, DamageType typeofdamage = DAMAGE_PURE, StatType stattobedamaged = STAT_HP);
+		void			damage(int32_t amount, DamageType typeofdamage = damPure, StatType stattobedamaged = STAT_HP);
 		void			playAction(uint16_t action);
 		void			impAction(uint16_t action);
 

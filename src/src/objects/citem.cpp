@@ -166,8 +166,8 @@ cItem::resetData()
 	fightskill=INVALID_SKILL; //Luxor: skill used by item
 	reqskill[0]=0; //Luxor: skill value required by item (skillnum = fightskill)
 	reqskill[1]=0;
-	damagetype=DAMAGE_PURE; //Luxor: damage types system
-	auxdamagetype=DAMAGE_PURE; //Luxor: damage types system
+	damagetype=damPure; //Luxor: damage types system
+	auxdamagetype=damPure; //Luxor: damage types system
 	auxdamage=0;
 	lodamage=0; //Minimum Damage weapon inflicts
 	hidamage=0; //Maximum damage weapon inflicts
@@ -517,7 +517,7 @@ void cItem::explode(NXWSOCKET  s)
 
 		pChar pc=sc.getChar();
 		if( pc ) {
-			pc->damage( dmg+(2-pc->distFrom(this)), DAMAGE_FIRE );
+			pc->damage( dmg+(2-pc->distFrom(this)), damFire );
 		}
 	}
 

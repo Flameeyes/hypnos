@@ -107,4 +107,9 @@ enum Direction {
 	dirNorth, dirNorthEast, dirEast, dirSouthEast, dirSouth, dirSouthWest, dirWest, dirNorthWest
 };
 
+//! Type of damage
+enum DamageType {
+	damPure, damSlash, damPierce, damBludgeon, damBackstab, damFire, damElectricity, damMental, damPoison, damCold, damForce, damHoly, damMagic, MAX_RESISTANCE_INDEX
+};
+
 #endif
