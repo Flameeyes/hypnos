@@ -84,9 +84,6 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "arch/signals.h"
 #endif
 
-void LoadOverrides ();
-extern "C" int g_nTraceMode;
-
 RemoteAdmin TelnetInterface;	//!< remote administration
 
 nMULFiles::fTiledataLand *tiledataLand = NULL;
@@ -192,7 +189,6 @@ void loadServer()
 
 	TelnetInterface.Init();	// initialise remote admin interface
 
-	LoadOverrides();
 	cScheduler::init();
 
 	ConOut(" [DONE]\nLoading custom titles...");
