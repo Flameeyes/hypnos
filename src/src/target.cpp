@@ -171,10 +171,10 @@ pTarget createTarget( TARG_TYPE type )
 
 
 ///////////////////////////////////////////////////////////////////
-// Function name     : TargetLocation::TargetLocation
+// Function name     : sTarget::sTarget
 // Author            : Xanathar
 // Changes           : none yet
-void TargetLocation::init(pChar pc)
+void sTarget::init(pChar pc)
 {
 	sLocation pcpos= pc->getPosition();
 
@@ -187,10 +187,10 @@ void TargetLocation::init(pChar pc)
 	m_pcSerial = pc->getSerial();
 }
 ///////////////////////////////////////////////////////////////////
-// Function name     : void TargetLocation::init
+// Function name     : void sTarget::init
 // Author            : Xanathar
 // Changes           : none yet
-void TargetLocation::init(pItem pi)
+void sTarget::init(pItem pi)
 {
 	m_pc = NULL;
 	if (pi->isInWorld()) {
@@ -206,10 +206,10 @@ void TargetLocation::init(pItem pi)
 }
 
 ///////////////////////////////////////////////////////////////////
-// Function name     : TargetLocation::init
+// Function name     : sTarget::init
 // Author            : Xanathar
 // Changes           : none yet
-void TargetLocation::init(int x, int y, int z)
+void sTarget::init(int x, int y, int z)
 {
 	m_x = x;
 	m_y = y;
@@ -224,7 +224,7 @@ void TargetLocation::init(int x, int y, int z)
 \author Xanathar
 \todo Is really needed? BTW is actually right?
 */
-void TargetLocation::revalidate()
+void sTarget::revalidate()
 {
 	m_pi=cSerializable::findItemBySerial(m_piSerial);
 
@@ -245,7 +245,7 @@ void TargetLocation::revalidate()
 \brief extends item data to x,y,z and eventually owner char
 \brief Xanathar
 */
-void TargetLocation::extendItemTarget()
+void sTarget::extendItemTarget()
 {
 	if ( ! m_pc || ! m_pi )
 		return;
@@ -264,10 +264,10 @@ void TargetLocation::extendItemTarget()
 }
 
 ///////////////////////////////////////////////////////////////////
-// Function name     : TargetLocation::TargetLocation
+// Function name     : sTarget::sTarget
 // Author            : Xanathar
 // Changes           : none yet
-TargetLocation::TargetLocation( pTarget pp )
+sTarget::sTarget( pTarget pp )
 {
 	sLocation loc = pp->getPosition();
 	init( loc.x, loc.y, loc.z );

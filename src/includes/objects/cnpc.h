@@ -172,9 +172,17 @@ protected:
 	void beginCasting(pChar target, magic::SpellId spell);
 	void checkAI();
 	NpcAi ai;
+
+	class cPath*	path;			//!< current path
+	void		walkNextStep();		//!< walk next path step
 public:
 	NpcAi getAIType() const
 	{ return ai; }
+
+	//! has a path set?
+	inline const bool hasPath() const
+	{ return path; }
+
 //@}
 };
 

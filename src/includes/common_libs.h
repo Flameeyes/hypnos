@@ -66,6 +66,10 @@ warnings/errors/issues.
 	#endif
 #endif
 
+#ifdef __APPLE__
+	#define __unix__
+#endif
+
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>

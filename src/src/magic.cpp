@@ -971,7 +971,7 @@ static bool checkLos(pChar caster, sLocation destpos)
 \param spellnum Spell number
 \param t Target location
 */
-bool checkRequiredTargetType(SpellId spellnum, TargetLocation& t)
+bool checkRequiredTargetType(SpellId spellnum, sTarget& t)
 {
 	// 0:none,1:xyz,2:item,3:char,4:container or door,6:rune,5:container
 	pItem pi = t.getItem();
@@ -1041,7 +1041,7 @@ SpellId spellNumberFromScrollId(int id)
 \param dest target position
 \param pa attacker mage
 */
-static void castStatPumper(SpellId spellnumber, TargetLocation& dest, pChar pa, int flags, int param)
+static void castStatPumper(SpellId spellnumber, sTarget& dest, pChar pa, int flags, int param)
 {
 	int bonus = 10; //default
 	pChar pd = NULL;
@@ -1235,7 +1235,7 @@ void castFieldSpell( pChar pc, sPosition pos, int spellnumber)
 \param flags spell flags
 \param param spell param
 */
-static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, int param)
+static void applySpell(SpellId spellnumber, sTarget& dest, pChar src, int flags, int param)
 {
 	if ( ! src ) return;
 	
@@ -1867,7 +1867,7 @@ static void applySpell(SpellId spellnumber, TargetLocation& dest, pChar src, int
 \param flags spell flags
 \param param param
 */
-void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src, int flags, int param)
+void castSpell(SpellId spellnumber, sTarget& dest, pChar src, int flags, int param)
 {
 
 	if (!checkRequiredTargetType(spellnumber, dest)) return;

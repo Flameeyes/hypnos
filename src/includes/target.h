@@ -17,6 +17,9 @@
 #include "structs.h"
 #include "inlines.h"
 
+//! Target callback
+typedef void (*processTarget)( pClient, struct sTarget* );
+
 /*!
 \brief Struct for a target callback
 
@@ -31,9 +34,6 @@ struct sTarget
 	processTarget callback; 	//!< note: callback function must be static or global!
 	TargetType type;		//!< item, char or location target?
 };
-
-//! Target callback
-typedef void ( *processTarget ) ( pClient, sTarget );
 
 // OLD TARGETS BEGIN HERE
 #if 0
@@ -134,7 +134,7 @@ typedef enum {
 
 pTarget createTarget( TARG_TYPE type );
 
-class TargetLocation
+class sTarget
 {
 private:
 	pChar	m_pc;
@@ -148,13 +148,13 @@ private:
 
 public:
 	//!creates a target loc from a character
-	TargetLocation(pChar pc) { init(pc); }
+	sTarget(pChar pc) { init(pc); }
 	//!creates a target loc from an item
-	TargetLocation(pItem pi) { init(pi); }
+	sTarget(pItem pi) { init(pi); }
 	//!creates a target loc from a target net packet
-	TargetLocation( pTarget pp );
+	sTarget( pTarget pp );
 	//!creates a target loc from a xyz position in the map
-	TargetLocation(sLocation l) { init(l); }
+	sTarget(sLocation l) { init(l); }
 
 	//!recalculates item&char from their serial
 	void revalidate();

@@ -163,7 +163,7 @@ void cPC::heartbeat()
 			}
 			else
 			{
-		    		TargetLocation TL( this );
+		    		sTarget TL( this );
 				magic::castSpell( spell, TL, this );
 			}
 			flags &= ~flagIsCasting;

@@ -20,7 +20,7 @@ void cNPC::beginCasting(pChar target, magic::SpellId spell)
 	if ( ! target ) return;
 	
 	safedelete( spellTL );
-	spellTL = new TargetLocation( target );
+	spellTL = new sTarget( target );
 	spelltype = magic::CASTINGTYPE_NPC;
 	spell = spell;
 	pc->setCasting(true);

@@ -246,7 +246,7 @@ namespace magic {
 	bool checkMagicalSpeech( pChar pc, char* speech );
 	bool beginCasting (SpellId num, pClient client, CastingType type);
 	SpellId spellNumberFromScrollId(int id);
-	void castSpell(SpellId spellnumber, TargetLocation& dest, pChar src = NULL, int flags = 0, int param = 0);
+	void castSpell(SpellId spellnumber, sTarget& dest, pChar src = NULL, int flags = 0, int param = 0);
 	void castAreaAttackSpell (sPoint epi, SpellId spellnum, pChar pcaster = NULL);
 	bool spellRequiresTarget(SpellId spellnum);
 	pChar summon (pChar owner, int npctype, int duration, bool bTamed = true, int x = INVALID, int y = INVALID, int z = INVALID);

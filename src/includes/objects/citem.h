@@ -212,7 +212,7 @@ public:
 	{ return isShaft(getId()); }
 
 	inline const bool isBoard() const
-	{ return between(getId(), 0x1BD7, 0x1BDC); }
+	{ return between(getId(), (uint16_t)0x1BD7, (uint16_t)0x1BDC); }
 
 	inline const bool isFeather() const
 	{ return isFeather(getId()); }
@@ -227,7 +227,7 @@ public:
 	{ return ( getId()==0x1078 || getId()==0x1079 ); }
 
 	inline const bool isBoltOfCloth() const
-	{ return between(getId(), 0x0F95, 0x0F9C); }
+	{ return between(getId(), (uint16_t)0x0F95, (uint16_t)0x0F9C); }
 
 	inline const bool isCutCloth() const
 	{ return ( getId()>=0x1766 && getId()<=0x1768 ); }

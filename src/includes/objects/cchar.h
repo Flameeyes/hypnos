@@ -399,7 +399,7 @@ public:
 	\param dest target location of the spell
 	\todo Document parameters
 	*/
-	inline void castSpell(magic::SpellId spellnumber, TargetLocation& dest, int32_t flags = 0, int32_t param = 0)
+	inline void castSpell(magic::SpellId spellnumber, sTarget& dest, int32_t flags = 0, int32_t param = 0)
 	{ magic::castSpell(spellnumber, dest, this, flags, param); }
 //@}
 
@@ -408,17 +408,11 @@ public:
 \name Movement
 */
 protected:
-	cPath*		path;			//!< current path
-	void		walkNextStep();		//!< walk next path step
 	uint32_slist	sentObjects;
 	uint8_t		dir;			//!< &0F=Direction
 	uint32_t	LastMoveTime;		//!< server time of last move
 
 public:
-	//! has a path set?
-	inline const bool hasPath() const
-	{ return path; }
-
 	bool		canSee( pObject obj );	//!< can it see the object?
 	bool		seeForFirstTime( pObject obj );	//!< does it see the object for the first time?
 	bool		seeForLastTime( pObject obj ); //!< does it see the object for the first time?
@@ -610,7 +604,7 @@ public:
 	int32_t			spellaction; //!< Action of the current spell....
 	magic::CastingType	spelltype;
 	uint32_t		nextact; //!< time to next spell action....
-	TargetLocation*		spellTL; //!< Luxor: npc spell targetlocation
+	sTarget*		spellTL; //!< Luxor: npc spell targetlocation
 
 	int32_t			squelched; //!< zippy  - squelching
 	uint32_t		mutetime; //!< Time till they are UN-Squelched.
@@ -649,12 +643,6 @@ public:
 
 
 private:
-	inline void resetBaseSkill()
-	{ memset(baseskill, 0, sizeof(baseskill)); }
-
-	inline void resetSkill()
-	{ memset(skill, 0, sizeof(skill)); }
-
 	inline void resetFlags()
 	{ flags = 0; }
 
