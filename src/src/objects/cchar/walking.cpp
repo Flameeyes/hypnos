@@ -261,8 +261,6 @@ void cChar::walk()
 				evt->execute();
 				if( evt->bypassed() )
 					return;
-
-				free(evt);
 			}
 
 			int k = dir;

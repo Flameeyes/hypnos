@@ -62,10 +62,6 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		evt->execute();
 		if( evt->bypassed() )
 			return;
-		if( isDead() )	// Killed as result of script action
-			return;
-
-		free(evt);
 	}
 
 	if( isDead() )	// Killed as result of script action
@@ -156,8 +152,6 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 			evt->execute();
 			if ( evt->bypassed() )
 				return;
-
-			free(evt);
 		}
 
 		if (!npc) {
@@ -195,8 +189,6 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		evt->execute();
 		if ( evt->bypassed() )
 			return;
-
-		free(evt);
 	}
 
 	evt = getEvent(evtChrOnGetHit);
@@ -207,8 +199,6 @@ void cChar::combatHit( pChar pc_def, int32_t nTimeOut )
 		evt->execute();
 		if ( evt->bypassed() )
 			return;
-
-		free(evt);
 	}
 
 	if ( weapon ) {
@@ -441,8 +431,6 @@ void cChar::doCombat()
 			undoCombat();
 			return;
 		}
-
-		free(evt);
 	}
 
 	if ( npc )
@@ -1132,8 +1120,6 @@ void cChar::attackStuff(pChar victim)
 		evt->execute();
 		if( evt->bypassed() )
 			return;
-
-		free(evt);
 	}
 
 
@@ -1145,8 +1131,6 @@ void cChar::attackStuff(pChar victim)
 		evt->execute();
 		if( evt->bypassed() )
 			return;
-
-		free(evt);
 	}
 
 	targserial=victim->getSerial();

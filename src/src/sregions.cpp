@@ -281,8 +281,6 @@ void checkregion(pChar pc)
 			params[0] = pc->getSerial(); params[1] = pc->region; params[2] = calcreg;
 			evt->setParams(params);
 			evt->execute();
-			
-			free(evt);
 		}
 
 		s = pc->getSocket();

@@ -1150,9 +1150,6 @@ void npcattacktarget(pChar pc, pChar pc_target)
 			return;
 	}
 
-	if(evt)
-		free(evt);
-
 	evt = pc->getEvent(evtChrOnBeginDefence);
 	if (evt) {
 		tVariantVector params = tVariantVector(2);
@@ -1162,9 +1159,6 @@ void npcattacktarget(pChar pc, pChar pc_target)
 		if( evt->bypassed() )
 			return;
 	}
-
-	if(evt)
-		free(evt);
 
 	pc->playMonsterSound(SND_STARTATTACK);
 

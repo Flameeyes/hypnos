@@ -803,8 +803,6 @@ void target_transfer( NXWCLIENT ps, pTarget t )
 		evt->execute();
 		if ( evt->bypassed() )
 			return;
-
-		free(evt);
 	}
 
     char bb[120];

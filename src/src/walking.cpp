@@ -400,8 +400,6 @@ void walking(pChar pc, int dir, int sequence)
 		evt->execute();
 		if( evt->bypassed() )
 			return;
-
-		free(evt);
 	}
 
 	WalkingHandleHiding(pc,dir);
@@ -630,8 +628,6 @@ void npcwalk( pChar pc_i, uint8_t newDirection, int type)   //type is npcwalk mo
 			evt->execute();
 			if( evt->bypassed() )
 				return;
- 
-			free(evt);
 		}
 	}
 	else	// Change direction
