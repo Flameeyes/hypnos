@@ -389,44 +389,7 @@ public:
 	{ return creationday; }
 //@}
 
-//@{
-/*!
-\name Stats
-\brief Stats related functions and attributes
-*/
-	private:
-		UI32_s			str;				//!< Strength
-
-	public:
-		SI32			st2;				//!< Reserved for calculation
-		SI32			st3;				//!< Luxor: safe strength value
-		SI32			dx;				//!< Dexterity
-		SI32			dx2;				//!< Reserved for calculation
-		SI32			dx3;				//!< Luxor: safe dexterity value
-		SI32			in;				//!< Intelligence
-		SI32			in2;				//!< Reserved for calculation
-		SI32			in3;				//!< Luxor: safe intelligence value
-		SI32			statGainedToday;		//!< xan :-> for stat-gain cap
-
-		void			setStrength(UI32 val, bool check= true);
-		void			checkSafeStats();
-
-		//! Get the strength-value
-		inline const SI32	getStrength() const
-		{ return str.value; }
-
-		/*!
-		\brief modify the strength
-		\author Anthalir
-		\since 0.82
-		\param mod signed value representing the value to add to curent strength:
-				\li negative: lower the str
-				\li positive: rise the str
-		\todo document check parameter
-		*/
-		inline void		modifyStrength(SI32 mod, bool check= true)
-		{ setStrength( str.value + mod, check ); }
-//@}
+	void			checkSafeStats();
 
 public:
 	void			heartbeat();
@@ -441,24 +404,9 @@ private:
 */
 protected:
 	std::string	title;
-	UI16		oldhairstyle;
-	UI16		oldbeardstyle;
-	UI16		oldhaircolor;
-	UI16		oldbeardcolor;
-	pItem		hairs;
-	pItem		beard;
 
 public:
-	inline const bool HasHumanBody() const
-	{ return (getId()==BODY_MALE) || (getId()==BODY_FEMALE); }
-
 	void showLongName( P_CHAR showToWho, bool showSerials );
-
-	pItem getBeardItem() const
-	{ return beard; }
-
-	pItem getHairItem() const
-	{ return hairs; }
 
 //@}
 

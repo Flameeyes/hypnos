@@ -5,6 +5,10 @@
 | You can find detailed license information in pyuo.cpp file.              |
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+/*!
+\file
+\brief Implementation of cChar class
+*/
 
 #include "nxwcommn.h"
 #include "itemid.h"
@@ -42,12 +46,6 @@
 #include "targeting.h"
 #include "cmds.h"
 
-
-void cChar::setClient(NXWCLIENT client)
-{
-	if (m_client != NULL) safedelete(m_client);
-	m_client = client;
-}
 
 void cChar::archive()
 {

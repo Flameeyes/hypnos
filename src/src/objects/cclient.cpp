@@ -51,11 +51,11 @@ UI32 new_len=0, tmp_len=out_len;
 //			new_buffer[new_len] = (new_buffer[new_len] << 1) | (UI08)((value >> n_bits) & 1);
 			new_buffer[new_len] <<= 1;
 			new_buffer[new_len] |= (UI08)((value >> n_bits) & 1);
-			
+
 			bit_4_byte++;
 			if(bit_4_byte / 8) {
 				new_len++;
-				bit_4_byte %= 8;	
+				bit_4_byte %= 8;
 			}
 		}
 	}
@@ -72,18 +72,18 @@ UI32 new_len=0, tmp_len=out_len;
 //		new_buffer[new_len] = (new_buffer[new_len] << 1) | (UI08)((value >> n_bits) & 1);
 		new_buffer[new_len] <<= 1;
 		new_buffer[new_len] |= (UI08)((value >> n_bits) & 1);
-		
+
 		bit_4_byte++;
 		if(bit_4_byte / 8) {
 			new_len++;
-			bit_4_byte %= 8;	
+			bit_4_byte %= 8;
 		}
 	}
 
 	if(bit_4_byte) {
 		while(bit_4_byte < 8) {
 			new_buffer[new_len] <<= 1;
-			bit_4_byte++;		
+			bit_4_byte++;
 		}
 		new_len++;
 	}
@@ -120,8 +120,8 @@ void cClient::showContainer(pItem pCont)
 
 		//fix location of items if they mess up. (needs tweaked for container types)
 		//! \todo The position of the items should be bound to client-specific protocol
-		if (pi->getPosition("x") > 150) pi->setPosition("x", 150);
-		if (pi->getPosition("y") > 140) pi->setPosition("y", 140);
+		if (pi->getPosition().x > 150) pi->setPosition("x", 150);
+		if (pi->getPosition().y > 140) pi->setPosition("y", 140);
 
 		pk2.addItem(pi);
 	}
