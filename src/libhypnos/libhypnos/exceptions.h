@@ -11,8 +11,7 @@
 
 #include "common_libs.h"
 
-namespace nLibhypmul
-{
+namespace nLibhypnos {
 	/*!
 	\class eOutOfBound exceptions.h "libhypnos/muls/exceptions.h"
 	\brief Exception thrown when trying to access an index out of the bound
@@ -34,6 +33,7 @@ namespace nLibhypmul
 		*/
 		eOutOfBound(uint32_t pMax, uint32_t pRequested)
 			: max(pMax), requested(pRequested)
+		{ }
 	};
 }
 

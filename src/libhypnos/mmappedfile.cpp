@@ -14,12 +14,11 @@
 #include <fcntl.h>
 
 namespace nLibhypnos {
-template<class MUL> {
 
 	/*!
 	\brief Default constructor for mmapped files
 	*/
-	tMMappedFile::tMMappedFile()
+	template<class MUL> tMMappedFile<MUL>::tMMappedFile()
 	{
 		array = NULL;
 	}
@@ -36,7 +35,7 @@ template<class MUL> {
 		offset before the file can be mmapped, \b must call the default
 		constructor which does nothing.
 	*/
-	tMMappedFile::tMMappedFile(std::string filename, uint32_t offset, uint32_t length)
+	template<class MUL> tMMappedFile<MUL>::tMMappedFile(std::string filename, uint32_t offset, uint32_t length)
 	{
 		array = NULL;
 		open(filename);
@@ -49,7 +48,7 @@ template<class MUL> {
 	This function closes the file descriptor and unmap the file from the
 	memory.
 	*/
-	tMMappedFile::~tMMappedFile()
+	template<class MUL> tMMappedFile<MUL>::~tMMappedFile()
 	{
 		munmap(array);
 		close(fd);
@@ -61,7 +60,7 @@ template<class MUL> {
 	
 	\note The mmapped files are all opened read only.
 	*/
-	void tMMappedFile::open(std::string filename)
+	template<class MUL> void tMMappedFile<MUL>::open(std::string filename)
 	{
 		fd = open(filename.c_str(), O_RDONLY);
 		if ( fd == -1 )
@@ -85,7 +84,7 @@ template<class MUL> {
 	open the file and read something from that before mmap (to load offsets
 	or length) can call it if it wasn't called by the constructor.
 	*/
-	void tMMappedFile::mmap(uint32_t offset, uint32_t length)
+	template<class MUL> void tMMappedFile<MUL>::mmap(uint32_t offset, uint32_t length)
 	{
 		if ( array )
 		{
@@ -116,5 +115,4 @@ template<class MUL> {
 		// And here we mmap the file
 		array = (MUL*)mmap(NULL, length, PROT_READ, MAP_SHARED, fd, offset);
 	}
-};
 }

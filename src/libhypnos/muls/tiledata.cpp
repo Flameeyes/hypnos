@@ -7,12 +7,13 @@
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 
 #include "libhypnos/muls/tiledata.h"
+#include "libhypnos/exceptions.h"
 
 namespace nLibhypnos {
 namespace nMULFiles {
 
 //! Gets the name of the entry
-std::string nMULFiles::cTiledataLand::cEntry::getName()
+std::string cTiledataLand::cEntry::getName() const
 {
 	char tmp[21];
 	strncpy(tmp, name, 20);
@@ -21,7 +22,7 @@ std::string nMULFiles::cTiledataLand::cEntry::getName()
 }
 
 //! Gets the name of the entry
-std::string nMULFiles::cTiledataStatic::cEntry::getName()
+std::string cTiledataStatic::cEntry::getName() const
 {
 	char tmp[21];
 	strncpy(tmp, name, 20);
@@ -29,17 +30,17 @@ std::string nMULFiles::cTiledataStatic::cEntry::getName()
 	return std::string(tmp);
 }
 
-nMULFiles::fTiledataLand::fTiledataLand()
+fTiledataLand::fTiledataLand()
 	: tMMappedFile<cTiledataLand>(nMULFiles::getMULpath() + "tiledata.mul", 0, 512*sizeof(cTiledataLand))
 {
 }
 
-nMULFiles::fTiledataStatic::fTiledataStatic()
+fTiledataStatic::fTiledataStatic()
 	: tMMappedFile<cTiledataStatic>()
 {
 	open(nMULFiles::getMULpath() + "tiledata.mul");
 	
-	mmap(512*sizeOf(cTiledataLand));
+	mmap(512*sizeof(cTiledataLand));
 }
 
 }}

@@ -12,10 +12,13 @@
 #include "libhypnos/muls/mulfiles.h"
 #include "libhypnos/muls/mmappedfile.h"
 
+namespace nLibhypnos {
+namespace nMULFiles {
+
 /*!
 \brief Internal structure of gumpidx.mul file
 */
-class nMULFiles::cGumpIDX
+class cGumpIDX
 {
 protected:
 	uint32_t lookup;	//!< Offset to seek to to have the
@@ -63,5 +66,7 @@ public:
 	
 	sPoint getDimensions(uint16_t index);
 };
+
+}}
 
 #endif

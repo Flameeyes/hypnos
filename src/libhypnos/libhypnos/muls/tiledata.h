@@ -11,8 +11,16 @@
 
 #include "libhypnos/muls/mulfiles.h"
 #include "libhypnos/muls/mmappedfile.h"
+#include "libhypnos/exceptions.h"
 
+namespace nLibhypnos {
 namespace nMULFiles {
+
+//@{
+/*!
+\name Tiledata flags
+\brief Flags used in tiledata.mul to set attributes for tiledata elements
+*/
 	//! Is a background
 	static const uint32_t flagTileBackground	= 0x00000001;
 	//! Is a weapon
@@ -77,7 +85,7 @@ namespace nMULFiles {
 	static const uint32_t flagTileStairBack		= 0x40000000;
 	//! Is a stair (right)
 	static const uint32_t flagTileStairRight	= 0x80000000;
-};
+//@}
 
 /*!
 \file
@@ -104,7 +112,7 @@ The landentries are structured like that:
 
 Information grabbed from Krrios File Formats
 */
-class nMULFiles::cTiledataLand
+class cTiledataLand
 {
 public:
 	class cEntry
@@ -120,7 +128,7 @@ public:
 		uint32_t getTextureID() const
 		{ return mtohs(flags); }
 		
-		std::string getName();
+		std::string getName() const;
 	} PACK_NEEDED;
 
 	uint32_t unknown;
@@ -135,12 +143,12 @@ This class handles the access to the tiledata.mul file, restricted to the 512
 land blocks.
 
 */
-class nMULFiles::fTiledataLand : public tMMappedFile<cTiledataLand>
+class fTiledataLand : public tMMappedFile<cTiledataLand>
 {
 protected:
-	cTiledataLand &tile(uint16_t id) const
+	cTiledataLand::cEntry &tile(uint16_t id) const
 	{
-		if ( id >= 512 ) throw nLibhypmul::eOutOfBound(511, id);
+		if ( id >= 512 ) throw eOutOfBound(511, id);
 		return array[id/32].entries[id%32];
 	}
 public:
@@ -157,9 +165,9 @@ public:
 		return tile(id).getTextureID();
 	}
 	
-	std::string getString(uint16_t id) const
+	std::string getName(uint16_t id) const
 	{
-		return tile(id).getString();
+		return tile(id).getName();
 	}
 };
 
@@ -185,7 +193,7 @@ The staticentries are structured like that:
 \li \b uint8_t height
 \li \b char[20] name
 */
-class nMULFiles::cTiledataStatic
+class cTiledataStatic
 {
 public:
 	class cEntry
@@ -238,13 +246,13 @@ This class handles the access to the tiledata.mul file, restricted to the
 variables static blocks.
 
 */
-class nMULFiles::fTiledataStatic : public tMMappedFile<cTiledataStatic>
+class fTiledataStatic : public tMMappedFile<cTiledataStatic>
 {
 protected:
-	cTiledataStatic &tile(uint16_t id) const
+	cTiledataStatic::cEntry &tile(uint16_t id) const
 	{
 		if ( id >= getCount()*32 )
-			throw nLibhypmul::eOutOfBound(getCount()*32-1, id);
+			throw eOutOfBound(getCount()*32-1, id);
 		
 		return array[id/32].entries[id%32];
 	}
@@ -274,5 +282,6 @@ public:
 	{ return tile(id).getName(); }
 };
 
+}}
 
 #endif

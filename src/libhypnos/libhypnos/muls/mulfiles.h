@@ -11,6 +11,8 @@
 
 #include "common_libs.h"
 
+namespace nLibhypnos {
+
 /*!
 \namespace nMULFiles
 \brief MUL files handling
@@ -94,6 +96,7 @@ namespace nMULFiles {
 	
 	void setMULpath(std::string path);
 	std::string getMULpath();
-};
+
+}}
 
 #endif
