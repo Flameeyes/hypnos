@@ -405,7 +405,7 @@ void objTeleporters(pChar pc)
 				if (pmi->type == 86)
 				{
 					if ((uint32_t)RandomNum(1, 100) <= pmi->morez)
-						soundeffect3(pmi, (pmi->morex << 8) + pmi->morey);
+						pmi->soundEffect2((pmi->morex << 8) + pmi->morey);
 				}
 			}
 	}

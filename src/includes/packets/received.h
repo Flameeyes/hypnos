@@ -657,13 +657,15 @@ namespace nPackets {
 		protected:
 			uint16_t model;	//!< Sound model
 			Location loc;	//!< Location where the sound is played
+			bool rep;	//!< If true, the sound will be repeated
 		public:
 			/*!
 			\param m sound model
 			\param l where the sound will be played
+			\param r should the sound be repeated?
 			*/
-			inline SoundFX(uint16_t m, Location l) :
-				cPacketSend(NULL, 0), model(m), loc(l)
+			inline SoundFX(uint16_t m, Location l, bool r) :
+				cPacketSend(NULL, 0), model(m), loc(l), rep(r)
 			{ }
 
 			void prepare();

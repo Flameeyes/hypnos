@@ -505,7 +505,7 @@ void Skills::target_lockpick( pClient client, pTarget t )
 				LogError("switch reached default");
 				return;
 		}
-		soundeffect3(chest, 0x0241);
+		chest->playSFX(0x0241);
 		client->sysmessage("You manage to pick the lock.");
 	} else {
 		if((rand()%100)>50)

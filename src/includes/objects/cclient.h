@@ -194,7 +194,7 @@ public:
 
 	//! audio packets (sound effects & music)
 	void playMidi();
-	void playSFX(uint16_t sound, bool onlyMe = false);
+	void playSFX(uint16_t sound, bool onlyMe = false, bool repeat = false);
 //@}
 };
 

@@ -2422,9 +2422,9 @@ void cClient::playMidi()
 \author Flameeyes
 \todo Fix the set support after get working new sets
 */
-void cClient::playSFX(uint16_t sound, bool onlyMe)
+void cClient::playSFX(uint16_t sound, bool onlyMe, bool repeat)
 {
-	nPackets::Sent::SoundFX pk(sound, pc->getPosition());
+	nPackets::Sent::SoundFX pk(sound, pc->getPosition(), repeat);
 
 	if(onlyMe) {
 		client->send(&pk);

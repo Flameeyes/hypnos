@@ -729,18 +729,18 @@ void nPackets::Sent::IdleWarning::prepare()
 \author Flameeyes
 \note packet 0x54
 */
-
 void nPackets::Sent::SoundFX::prepare()
 {
 	static const uint8_t templ[12] = {
-		0x54, 0x01, 0x12, 0x34, 0x00, 0x00,
+		0x54, 0x00, 0x12, 0x34, 0x00, 0x00,
 		0x06, 0x40, 0x05, 0x9A, 0x00, 0x00
 		};
 
 	buffer = new uint8_t[12];
 	length = 12;
 	memcpy(buffer, templ, 12);
-
+	
+	buffer[1] = rep ? 0x00 : 0x01;
 	ShortToCharPtr(model, buffer +2);
 	ShortToCharPtr(loc.x, buffer +6);
 	ShortToCharPtr(loc.y, buffer +8);

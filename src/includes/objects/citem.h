@@ -96,19 +96,20 @@ public:
 
 //@{
 /*!
-\name Look
+\name Look and Sound
 */
 protected:
-	uint16_t	animid;		//!< animation id
+	uint16_t animid;	//!< animation id
 
-	int8_t		magic;		//!< 0=Default as stored in client, 1=Always movable, 2=Never movable, 3=Owner movable.
-					//!< \todo Change to enum
-	int8_t		visible;	//!< 0=Normally Visible, 1=Owner & GM Visible, 2=GM Visible
-					//!< \todo Change to enum
-	uint8_t		dir;		//!< Item's direction (?)
-
+	int8_t magic;		//!< 0=Default as stored in client, 1=Always movable, 2=Never movable, 3=Owner movable.
+				//!< \todo Change to enum
+	int8_t visible;		//!< 0=Normally Visible, 1=Owner & GM Visible, 2=GM Visible
+				//!< \todo Change to enum
+	uint8_t dir;		//!< Item's direction (?)
 
 public:
+	void playSFX(uint16_t sound);
+
 	//! Gets the direction of the item (?)
 	const uint8_t getDirection() const
 	{ return dir; }
@@ -501,11 +502,8 @@ public:
 \brief weapon, armour, wear related stuff
 \author Xan & Luxor (mostly)
 */
-	Skill		getCombatSkill();
-	uint32_t		att;		//!< Item attack
-	uint32_t		def;		//!< Item defense
-	Skill		fightskill;	//!< skill used by item
-	int32_t		reqskill[2];	//!< required skill by item
+	uint32_t	att;		//!< Item attack
+	uint32_t	def;		//!< Item defense
 	DamageType	damagetype;	//!< for different damage types system
 	DamageType	auxdamagetype;	//!< Additional damage :]
 	int32_t		auxdamage;	//!< Additional damage :]

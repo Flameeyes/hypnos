@@ -446,7 +446,7 @@ void cItem::explode(pClient client)
 	//End Luxor recursive explosions
 
 	staticeffect2(this, 0x36, 0xB0, 0x10, 0x80, 0x00);
-	soundeffect3(this, 0x0207);
+	playSFX(0x0207);
 
 	len=morex/250; //4 square max damage at 100 alchemy
 	switch (morez)
@@ -993,4 +993,35 @@ void cItem::setDirection(uint8_t newdir)
 {
 	newdir %= 8;
 	dir = newdir;
+}
+
+/*!
+\brief Plays the given sound to the near clients
+\param sound Sound to play
+\todo Port to the new proximity system
+*/
+void cItem::playSFX(uint16_t sound)
+{
+	nPackets::Sent::SoundFX pk(sound, getPosition(), false);
+
+	NxwSocketWrapper sw;
+	sw.fillOnline( pi );
+	for( sw.rewind(); !sw.isEmpty(); sw++ )
+	{
+		pClient ps_i=sw.getClient();
+		if( ! ps_i ) continue;
+		
+		ps_i->sendPacket(&pk);
+	}
+}
+
+/*!
+\brief Plays the given sound to the given client
+\param client Client to send the sound to
+\param sound Sound to play
+*/
+void cItem::playSFX(pClient client, uint16_t sound)
+{
+	nPackets::Sent::SoundFX pk(sound, getPosition(), false);
+	client->sendPacket(&pk);
 }

@@ -171,39 +171,6 @@ void bgsound(pChar pc_curr)
 	}
 }
 
-void soundeffect3(pItem pi, uint16_t sound)
-{
-	if ( ! pi ) return;
-
-	Location pos = pi->getPosition();
-
-	pos.z = 0;
-
-	NxwSocketWrapper sw;
-	sw.fillOnline( pi );
-	for( sw.rewind(); !sw.isEmpty(); sw++ )
-	{
-		pClient ps_i=sw.getClient();
-		if(ps_i==NULL) continue;
-		pChar pc_j=ps_i->currChar();
-		if( pc_j )
-		{
-			SendPlaySoundEffectPkt(ps_i->toInt(), 0x01, sound, 0x0000, pos);
-		}
-	}
-}
-
-void soundeffect4(pClient client, pItem pi, uint16_t sound)
-{
-	if ( ! pi ) return;
-
-	Location pos = pi->getPosition();
-
-	pos.z = 0;
-
-	SendPlaySoundEffectPkt(s, 0x01, sound, 0x0000, pos);
-}
-
 //xan : fast weather function.. maybe we should find a more complete system like the
 //old one below!
 void weather(pClient client, unsigned char bolt)
@@ -232,14 +199,6 @@ void pweather(pClient client)
 	Xsend(s, packet, 4);
 //AoS/	Network->FlushBuffer(s);
 }
-
-
-
-
-
-
-
-
 
 void itemmessage(pClient client, char *txt, int serial, short color)
 {
@@ -908,23 +867,6 @@ void SendUnicodeSpeechMessagePkt(pClient client, uint32_t id, uint16_t model, ui
 	Xsend(s, talk2, 18);
 	Xsend(s, sysname, 30);
 	Xsend(s, unicodetext, unicodelen);
-//AoS/	Network->FlushBuffer(s);
-}
-
-void SendPlaySoundEffectPkt(pClient client, uint8_t mode, uint16_t sound_model, uint16_t unkn, Location pos, bool useDispZ)
-{
-	uint8_t sfx[12]={ 0x54, 0x00, };
-	int16_t Z;
-
-	Z = (useDispZ)? pos.dispz : pos.z;
-
-	sfx[1] = mode;					// Mode: 0x00 repeating, 0x01 single
-	ShortToCharPtr(sound_model, sfx +2);		// Sound model
-	ShortToCharPtr(unkn, sfx +4);			// unkn, (speed/volume modifier? Line of sight stuff?)
-	ShortToCharPtr(pos.x, sfx +6);			// POS:  X
-	ShortToCharPtr(pos.y, sfx +8);			//       Y
-	ShortToCharPtr(Z , sfx +10);			//       Z
-	Xsend(s, sfx, 12);
 //AoS/	Network->FlushBuffer(s);
 }
 

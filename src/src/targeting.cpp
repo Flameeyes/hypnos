@@ -565,13 +565,13 @@ void target_key( pClient client, pTarget t )
                 if (!pc->checkSkill(skTinkering, 400, 1000))
                 {
                     client->sysmessage("You fail and destroy the key blank.");
-                    // soundeffect3( pi, <whatever> );
+                    // pi->playSFX( <whatever> );
                     pi->Delete();
                 }
                 else
                 {
                     pi->more = LongFromCharPtr( t->buffer +0);
-                    // soundeffect3( pi, <whatever> );
+                    // pi->playSFX( <whatever> );
                     client->sysmessage("You copy the key."); //Morrolan can copy keys
                 }
             }
@@ -584,7 +584,7 @@ void target_key( pClient client, pTarget t )
             {
                 if(pi->type==ITYPE_CONTAINER) pi->type=ITYPE_LOCKED_ITEM_SPAWNER;
                 if(pi->type==ITYPE_UNLOCKED_CONTAINER) pi->type=ITYPE_LOCKED_CONTAINER;
-                // soundeffect3( pi, <whatever> );
+                // pi->playSFX( <whatever> );
                 client->sysmessage("You lock the container.");
                 return;
             }
@@ -598,21 +598,21 @@ void target_key( pClient client, pTarget t )
             {
                 if(pi->type==ITYPE_LOCKED_ITEM_SPAWNER) pi->type=ITYPE_CONTAINER;
                 if(pi->type==ITYPE_LOCKED_CONTAINER) pi->type=ITYPE_UNLOCKED_CONTAINER;
-                // soundeffect3( pi, <whatever> );
+                // pi->playSFX( <whatever> );
                 client->sysmessage("You unlock the container.")
                 return;
             }
             else if ((pi->type==ITYPE_DOOR)&& pc->hasInRange(pi, 2) )
             {
                 pi->type=ITYPE_LOCKED_DOOR;
-                // soundeffect3( pi, <whatever> );
+                // pi->playSFX( <whatever> );
                 client->sysmessage("You lock the door.");
                 return;
             }
             else if ((pi->type==ITYPE_LOCKED_DOOR)&& pc->hasInRange(pi, 2) )
             {
                 pi->type=ITYPE_DOOR;
-                // soundeffect3( pi, <whatever> );
+                // pi->playSFX( <whatever> );
                 client->sysmessage("You unlock the door.");
                 return;
             }
