@@ -15,7 +15,7 @@
 #include "speech.h"
 #include "inlines.h"
 #include "basics.h"
-#include "skills.h"
+#include "skills/skills.h"
 #include "utils.h"
 
 void gmyell(char *txt)

@@ -20,7 +20,7 @@
 #include "inlines.h"
 #include "basics.h"
 #include "magic.h"
-#include "skills.h"
+#include "skills/skills.h"
 #include "utils.h"
 #include "targeting.h"
 

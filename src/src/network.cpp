@@ -21,9 +21,9 @@
 #include "sndpkg.h"
 #include "walking.h"
 #include "inlines.h"
-#include "skills.h"
+#include "newbies.h"
+#include "skills/skills.h"
 #include "encryption/clientcrypt.h"
-#include "newbie.h"
 
 cNetwork	*Network;
 

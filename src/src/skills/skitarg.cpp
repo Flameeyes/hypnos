@@ -11,7 +11,7 @@
 #include "constants.h"
 #include "npcai.h"
 #include "map.h"
-#include "skills.h"
+#include "skills/skills.h"
 #include "basics.h"
 #include "inlines.h"
 #include "backend/scripting.h"

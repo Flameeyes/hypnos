@@ -8,7 +8,7 @@
 #include "common_libs.h"
 #include "skills/extractionskills.h"
 #include "data.h"
-#include "skills.h"
+#include "skills/skills.h"
 #include "inlines.h"
 
 

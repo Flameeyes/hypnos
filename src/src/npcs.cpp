@@ -14,7 +14,7 @@
 #include "data.h"
 #include "map.h"
 #include "inlines.h"
-#include "skills.h"
+#include "skills/skills.h"
 #include "utils.h"
 
 namespace npcs {	//Luxor

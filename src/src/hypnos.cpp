@@ -70,7 +70,7 @@ Also thanks to Judas for translating this text from italian to english :)
 #include "area.h"
 #include "spawn.h"
 #include "trade.h"
-#include "newbie.h"
+#include "newbies.h"
 #include "timing.h"
 #include "inlines.h"
 #include "basics.h"
@@ -441,7 +441,8 @@ int main(int argc, char *argv[])
 	ConOut("\n");
 	SetGlobalVars();
 
-	loadStartLocations();
+	nNewbies::loadStartLocations();
+	nNewbies::loadNewbieItems();
 	nSkills::loadSkills();
 	nJails::loadJails();
 	cWeapon::loadWeaponsInfo();

@@ -18,7 +18,7 @@
 #include "boats.h"
 #include "fishing.h"
 #include "map.h"
-#include "skills.h"
+#include "skills/skills.h"
 #include "inlines.h"
 #include "basics.h"
 
