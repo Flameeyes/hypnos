@@ -165,7 +165,7 @@ void cPC::heartbeat()
 		if ( TIMEOUT( spelltime ) )//Spell is complete target it.
 		{
 			if ( magic::spellRequiresTarget( spell ) ) {
-				P_TARGET targ = clientInfo[socket]->newTarget( new cTarget() );
+				pTarget targ = clientInfo[socket]->newTarget( new cTarget() );
 				targ->code_callback = target_castSpell;
 				targ->buffer[0]=spell;
 				targ->send( ps );

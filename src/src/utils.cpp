@@ -87,7 +87,7 @@ void cScriptCommand::execute( pClient client )
 			now,Accounts->Count());
 		return;
 	} else if ( command == "NPC" ) {
-		P_TARGET targ= clientInfo[s]->newTarget( new cLocationTarget() );
+		pTarget targ= clientInfo[s]->newTarget( new cLocationTarget() );
 		targ->code_callback = target_npcMenu;
 		targ->buffer[0]=str2num(param);
 		targ->send( getClientFromSocket(s) );

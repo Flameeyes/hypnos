@@ -499,7 +499,7 @@ int BuyShop(NXWSOCKET s, uint32_t c)
 
 
 
-void target_playerVendorBuy( NXWCLIENT ps, P_TARGET t )
+void target_playerVendorBuy( NXWCLIENT ps, pTarget t )
 {
     pChar pc = MAKE_CHAR_REF(t->buffer[0]);
 	if ( ! pc ) return;
@@ -548,7 +548,7 @@ void target_playerVendorBuy( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void target_envoke( NXWCLIENT ps, P_TARGET t )
+void target_envoke( NXWCLIENT ps, pTarget t )
 {
 
 	pChar curr=ps->currChar();
@@ -575,7 +575,7 @@ void target_envoke( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void target_key( NXWCLIENT ps, P_TARGET t )
+void target_key( NXWCLIENT ps, pTarget t )
 {
 
 	pChar pc=ps->currChar();
@@ -674,7 +674,7 @@ void target_key( NXWCLIENT ps, P_TARGET t )
 }
 
 //TODO modify the parameter to get client instead of socket
-void target_attack( NXWCLIENT ps, P_TARGET t )
+void target_attack( NXWCLIENT ps, pTarget t )
 {
 
     pChar pc_t1= cSerializable::findCharBySerial( t->buffer[0] );
@@ -687,7 +687,7 @@ void target_attack( NXWCLIENT ps, P_TARGET t )
     npcattacktarget(pc_t1, pc_t2);
 }
 
-void target_follow( NXWCLIENT ps, P_TARGET t )
+void target_follow( NXWCLIENT ps, pTarget t )
 {
 
     pChar pc = cSerializable::findCharBySerial( t->buffer[0] );
@@ -700,7 +700,7 @@ void target_follow( NXWCLIENT ps, P_TARGET t )
     pc->npcWander=WANDER_FOLLOW;
 }
 
-void target_axe( NXWCLIENT ps, P_TARGET t )
+void target_axe( NXWCLIENT ps, pTarget t )
 {
     uint16_t id=t->getModel();
     if (itemById::IsTree(id))
@@ -712,7 +712,7 @@ void target_axe( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void target_sword( NXWCLIENT ps, P_TARGET t )
+void target_sword( NXWCLIENT ps, pTarget t )
 {
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
@@ -753,12 +753,12 @@ void target_sword( NXWCLIENT ps, P_TARGET t )
 		pc->sysmsg(TRANSLATE("You can't think of a way to use your blade on that."));
 }
 
-void target_fetch( NXWCLIENT ps, P_TARGET t )
+void target_fetch( NXWCLIENT ps, pTarget t )
 {
     ps->sysmsg( TRANSLATE("Fetch is not available at this time.") );
 }
 
-void target_guard( NXWCLIENT ps, P_TARGET t )
+void target_guard( NXWCLIENT ps, pTarget t )
 {
     pChar pc=ps->currChar();
 	if ( ! pc ) return;
@@ -779,7 +779,7 @@ void target_guard( NXWCLIENT ps, P_TARGET t )
     pc->guarded = true;
 }
 
-void target_transfer( NXWCLIENT ps, P_TARGET t )
+void target_transfer( NXWCLIENT ps, pTarget t )
 {
 
     pChar pc1 = cSerializable::findCharBySerial( t->buffer[0] );
@@ -811,7 +811,7 @@ void target_transfer( NXWCLIENT ps, P_TARGET t )
 }
 
  //Throws the potion and places it (unmovable) at that spot
-void target_expPotion( NXWCLIENT ps, P_TARGET t )
+void target_expPotion( NXWCLIENT ps, pTarget t )
 {
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
@@ -837,7 +837,7 @@ void target_expPotion( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void target_trigger( NXWCLIENT ps, P_TARGET t )
+void target_trigger( NXWCLIENT ps, pTarget t )
 {
 
 	pItem pi = MAKE_ITEM_REF(t->getClicked());
@@ -847,7 +847,7 @@ void target_trigger( NXWCLIENT ps, P_TARGET t )
 
 }
 
-void target_npcMenu( NXWCLIENT ps, P_TARGET t )
+void target_npcMenu( NXWCLIENT ps, pTarget t )
 {
 
 	pChar pc=ps->currChar();
@@ -860,7 +860,7 @@ void target_npcMenu( NXWCLIENT ps, P_TARGET t )
 \brief implements the 'telestuff GM command
 \author Endymion
 */
-void target_telestuff( NXWCLIENT ps, P_TARGET t )
+void target_telestuff( NXWCLIENT ps, pTarget t )
 {
 
 	pChar pc = ps->currChar();
@@ -871,7 +871,7 @@ void target_telestuff( NXWCLIENT ps, P_TARGET t )
 	pObject po = objects.findObject( t->getClicked() );
 
 	if( po ) { //clicked on obj to move
-		P_TARGET targ=clientInfo[s]->newTarget( new cLocationTarget() );
+		pTarget targ=clientInfo[s]->newTarget( new cLocationTarget() );
 		targ->code_callback=target_telestuff;
 		targ->buffer[0]=po->getSerial();
 		targ->send(ps);
@@ -903,7 +903,7 @@ void target_telestuff( NXWCLIENT ps, P_TARGET t )
 \param s socket to attack
 \brief Manages all attack command
 */
-void target_allAttack( NXWCLIENT ps, P_TARGET t )
+void target_allAttack( NXWCLIENT ps, pTarget t )
 {
 
 	pChar pc=ps->currChar();
@@ -926,7 +926,7 @@ void target_allAttack( NXWCLIENT ps, P_TARGET t )
 
 
 
-void target_xTeleport( NXWCLIENT ps, P_TARGET t )
+void target_xTeleport( NXWCLIENT ps, pTarget t )
 {
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;

@@ -57,7 +57,7 @@ for the house section in house.cpp. Extra items can be added
 using HOUSE ITEM, (this includes all doors!) and locked "LOCK"
 Space around the house with SPACEX/Y and CHAR offset CHARX/Y/Z
 */
-void buildhouse( NXWCLIENT ps, P_TARGET t )
+void buildhouse( NXWCLIENT ps, pTarget t )
 {
 	NXWSOCKET s = ps->toInt();
 	int i = t->buffer[2];
@@ -163,7 +163,7 @@ void buildhouse( NXWCLIENT ps, P_TARGET t )
 
 
 			if (norealmulti) {
-				P_TARGET targ = clientInfo[s]->newTarget( new cLocationTarget() );
+				pTarget targ = clientInfo[s]->newTarget( new cLocationTarget() );
 				targ->code_callback=buildhouse;
 				targ->buffer[0]=0x40;
 				targ->buffer[1]=100;
@@ -884,7 +884,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 	//
 	if( talk.find("I BAN THEE") != std::string::npos )
 	{
-		P_TARGET targ = clientInfo[socket]->newTarget( new cCharTarget() );
+		pTarget targ = clientInfo[socket]->newTarget( new cCharTarget() );
 		targ->code_callback=target_houseBan;
 		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
@@ -896,7 +896,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 	//
 	if( talk.find("REMOVE THYSELF") != std::string::npos )
 	{
-		P_TARGET targ = clientInfo[socket]->newTarget( new cCharTarget() );
+		pTarget targ = clientInfo[socket]->newTarget( new cCharTarget() );
 		targ->code_callback=target_houseEject;
 		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
@@ -908,7 +908,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 	//
 	if ( talk.find("I WISH TO LOCK THIS DOWN") != std::string::npos )
 	{
-		P_TARGET targ = clientInfo[socket]->newTarget( new cItemTarget() );
+		pTarget targ = clientInfo[socket]->newTarget( new cItemTarget() );
 		targ->code_callback=target_houseLockdown;
 		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
@@ -920,7 +920,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 	//
 	if ( talk.find("I WISH TO RELEASE THIS") != std::string::npos )
 	{
-		P_TARGET targ = clientInfo[socket]->newTarget( new cItemTarget() );
+		pTarget targ = clientInfo[socket]->newTarget( new cItemTarget() );
 		targ->code_callback=target_houseRelease;
 		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
@@ -932,7 +932,7 @@ bool house_speech( pChar pc, NXWSOCKET socket, std::string &talk)
 	//
 	if ( talk.find("I WISH TO SECURE THIS") != std::string::npos )
 	{
-		P_TARGET targ = clientInfo[socket]->newTarget( new cItemTarget() );
+		pTarget targ = clientInfo[socket]->newTarget( new cItemTarget() );
 		targ->code_callback=target_houseSecureDown;
 		targ->buffer[0]=pi->getSerial();
 		targ->send( getClientFromSocket( socket) );
@@ -973,7 +973,7 @@ bool CheckBuildSite(int x, int y, int z, int sx, int sy)
 }
 
 // buffer 0 the sign
-void target_houseOwner( NXWCLIENT ps, P_TARGET t )
+void target_houseOwner( NXWCLIENT ps, pTarget t )
 {
 	pChar curr=ps->currChar();
 	if ( ! curr ) return;
@@ -1038,7 +1038,7 @@ void target_houseOwner( NXWCLIENT ps, P_TARGET t )
 }
 
 // buffer[0] house
-void target_houseEject( NXWCLIENT ps, P_TARGET t )
+void target_houseEject( NXWCLIENT ps, pTarget t )
 {
 	pChar pc = MAKE_CHAR_REF(t->getClicked());
 	if ( ! pc ) return;
@@ -1062,7 +1062,7 @@ void target_houseEject( NXWCLIENT ps, P_TARGET t )
 }
 
 //buffer[0] house
-void target_houseBan( NXWCLIENT ps, P_TARGET t )
+void target_houseBan( NXWCLIENT ps, pTarget t )
 {
 	target_houseEject(ps, t);	// first, eject the player
 
@@ -1094,7 +1094,7 @@ void target_houseBan( NXWCLIENT ps, P_TARGET t )
 }
 
 // buffer[0] the house
-void target_houseFriend( NXWCLIENT ps, P_TARGET t )
+void target_houseFriend( NXWCLIENT ps, pTarget t )
 {
 	pChar Friend = cSerializable::findCharBySerial( t->getClicked() );
 
@@ -1127,7 +1127,7 @@ void target_houseFriend( NXWCLIENT ps, P_TARGET t )
 }
 
 // bugffer[0] the hose
-void target_houseUnlist( NXWCLIENT ps, P_TARGET t )
+void target_houseUnlist( NXWCLIENT ps, pTarget t )
 {
 	pChar pc = cSerializable::findCharBySerial( t->getClicked() );
     pItem pi= cSerializable::findItemBySerial( t->buffer[0] );
@@ -1143,7 +1143,7 @@ void target_houseUnlist( NXWCLIENT ps, P_TARGET t )
             sysmessage(s, TRANSLATE("That player is not on the house registry."));
     }
 }
-void target_houseLockdown( NXWCLIENT ps, P_TARGET t )
+void target_houseLockdown( NXWCLIENT ps, pTarget t )
 // PRE:     S is the socket of a valid owner/coowner and is in a valid house
 // POST:    either locks down the item, or puts a message to the owner saying he's a moron
 // CODER:   Abaddon
@@ -1209,7 +1209,7 @@ void target_houseLockdown( NXWCLIENT ps, P_TARGET t )
     }
 }
 
-void target_houseSecureDown( NXWCLIENT ps, P_TARGET t )
+void target_houseSecureDown( NXWCLIENT ps, pTarget t )
 // For locked down and secure chests
 {
 	pChar pc=ps->currChar();
@@ -1266,7 +1266,7 @@ void target_houseSecureDown( NXWCLIENT ps, P_TARGET t )
     }
 }
 
-void target_houseRelease( NXWCLIENT ps, P_TARGET t )
+void target_houseRelease( NXWCLIENT ps, pTarget t )
 // PRE:     S is the socket of a valid owner/coowner and is in a valid house, the item is locked down
 // POST:    either releases the item from lockdown, or puts a message to the owner saying he's a moron
 // CODER:   Abaddon

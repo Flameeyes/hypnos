@@ -379,7 +379,7 @@ void cItem::doubleClick(pClient client)
 
                 //TODO: REVISE WHEN TARGETS REDONE!!
 
-		P_TARGET targ = clientInfo[s]->newTarget( new cObjectTarget() );
+		pTarget targ = clientInfo[s]->newTarget( new cObjectTarget() );
 		targ->code_callback=target_envoke;
 		targ->send( client );
 		client->sysmsg( TRANSLATE("What will you use this on?"));
@@ -390,7 +390,7 @@ void cItem::doubleClick(pClient client)
 
 	int los = 0;
 
-	P_TARGET targ = NULL;
+	pTarget targ = NULL;
 	
 	doubleClicked(client);
 }
@@ -836,7 +836,7 @@ void cItem::doubleClicked(pClient client)
 
 //TODO revise from here
 
-void target_selectdyevat( pClient client, P_TARGET t )
+void target_selectdyevat( pClient client, pTarget t )
 {
     pItem pi=cSerializable::findItemBySerial(t->getClicked());
     if ( ! pi ) return;
@@ -848,7 +848,7 @@ void target_selectdyevat( pClient client, P_TARGET t )
             client->sysmsg( TRANSLATE("You can only use this item on a dye vat."));
 }
 
-void target_dyevat( pClient client, P_TARGET t )
+void target_dyevat( pClient client, pTarget t )
 {
 	pChar curr = client->currChar();
 	if ( ! curr ) return;
@@ -876,7 +876,7 @@ void target_dyevat( pClient client, P_TARGET t )
 
 static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pack )
 {
-	P_TARGET targ = NULL;
+	pTarget targ = NULL;
 
 	switch (pi->getId())
 	{

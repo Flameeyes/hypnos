@@ -893,7 +893,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 		switch( sub )
 		{
 		case 1: { /*
-			P_TARGET targ = clientInfo[socket]->newTarget( new cCharTarget() );
+			pTarget targ = clientInfo[socket]->newTarget( new cCharTarget() );
 			targ->code_callback=Guilds->Recruit(socket);
 			targ->send( getClientFromSocket(s) );
 			sysmessage( socket, TRANSLATE("Select person to invite into the guild."));
@@ -946,7 +946,7 @@ void cGuilds::GumpChoice(NXWSOCKET socket, int main, int sub)
 			Guilds->Menu(socket,14);
 			break;
 		case 7: {/*
-			P_TARGET targ = clientInfo[socket]->newTarget( new cCharTarget() );
+			pTarget targ = clientInfo[socket]->newTarget( new cCharTarget() );
 			targ->code_callback=Guilds->TargetWar(s);
 			targ->send( getClientFromSocket(s) );
 			sysmessage( socket, TRANSLATE("Select person to declare war to."));*/

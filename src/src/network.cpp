@@ -1932,7 +1932,7 @@ void cNetwork::GetMsg(int s) // Receive message from client
 					break;
 
 				case PACKET_TARGETING: {
-					P_TARGET target = clientInfo[s]->getTarget();
+					pTarget target = clientInfo[s]->getTarget();
 					if( target==NULL )
 						return;
 

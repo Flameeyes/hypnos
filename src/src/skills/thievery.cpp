@@ -104,7 +104,7 @@ void snooping( pChar snooper, pItem cont )
 \author Unknow, completly rewritten by Endymion
 \param ps the client
 */
-void Skills::target_stealing( NXWCLIENT ps, P_TARGET t )
+void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 {
 	pChar thief = ps->currChar();
 	VALIDATEPC(thief);
@@ -298,7 +298,7 @@ void Skills::PickPocketTarget(NXWCLIENT ps)
 \param ps the client
 \todo add string because it's locked contanier into translate
 */
-void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
+void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 {
 
 	pChar thief=ps->currChar();
@@ -462,7 +462,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, P_TARGET t )
 \since 0.53
 \param ps the client
 */
-void Skills::target_lockpick( NXWCLIENT ps, P_TARGET t )
+void Skills::target_lockpick( NXWCLIENT ps, pTarget t )
 {
 
 	pChar pc = ps->currChar();

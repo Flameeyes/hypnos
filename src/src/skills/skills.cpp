@@ -389,7 +389,7 @@ void Skills::CreatePotion(CHARACTER s, char type, char sub, int mortar)
 
 	if (pc->getAmount(0x0F0E)<1)
 	{
-		P_TARGET targ = clientInfo[s]->newTarget( new cItemTarget() );
+		pTarget targ = clientInfo[s]->newTarget( new cItemTarget() );
 		targ->code_callback=Skills::target_bottle;
 		targ->buffer[0]=pi_mortar->getSerial();
 		targ->send( ps );
@@ -410,7 +410,7 @@ void Skills::CreatePotion(CHARACTER s, char type, char sub, int mortar)
 pour in the potion from the mortar
 \param s socket of the crafter
 */
-void Skills::target_bottle( NXWCLIENT ps, P_TARGET t )
+void Skills::target_bottle( NXWCLIENT ps, pTarget t )
 {
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
@@ -1067,7 +1067,7 @@ void Skills::SkillUse(NXWSOCKET s, int x)
 	}
 	else
 	{
-		P_TARGET targ=NULL;
+		pTarget targ=NULL;
 		switch(x)
 		{
 			case ARMSLORE:

@@ -1303,7 +1303,7 @@ void usepotion(pChar pc, pItem pi)
 		tempfx::add(pc, pc, tempfx::EXPLOTIONMSG, 0, 3, 1);
 		tempfx::add(pc, pi, tempfx::EXPLOTIONEXP, 0, 4, 0);
 
-		P_TARGET targ= clientInfo[s]->newTarget( new cTarget() );
+		pTarget targ= clientInfo[s]->newTarget( new cTarget() );
 		targ->code_callback=target_expPotion;
 		targ->buffer[0]= pi->getSerial();
 		targ->send( getClientFromSocket(s) );

@@ -2602,7 +2602,7 @@ void cChar::generic_heartbeat()
 
 void checkFieldEffects(uint32_t currenttime, pChar pc, char timecheck );
 
-void target_castSpell( NXWCLIENT ps, P_TARGET t )
+void target_castSpell( NXWCLIENT ps, pTarget t )
 {
 	TargetLocation TL( t );
 	magic::castSpell( static_cast<magic::SpellId>(t->buffer[0]), TL, ps->currChar() );

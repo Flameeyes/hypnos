@@ -549,7 +549,7 @@ int response(NXWSOCKET  s)
 							// Select target to follow
 							//
 
-							P_TARGET targ = clientInfo[s]->newTarget( new cCharTarget() );
+							pTarget targ = clientInfo[s]->newTarget( new cCharTarget() );
 							targ->buffer[0]=pc_map->getSerial();
 							targ->code_callback=target_follow;
 							targ->send( getClientFromSocket(s) );
@@ -579,7 +579,7 @@ int response(NXWSOCKET  s)
 						return 1;
 					}
 					pc->guarded = false;
-					P_TARGET targ=clientInfo[s]->newTarget( new cCharTarget() );
+					pTarget targ=clientInfo[s]->newTarget( new cCharTarget() );
 					targ->code_callback=target_allAttack;
 					targ->send( getClientFromSocket( s ) );
 					sysmessage( s, TRANSLATE("Select the target to attack."));
@@ -606,7 +606,7 @@ int response(NXWSOCKET  s)
 							if (pc_map->npcaitype== NPCAI_PLAYERVENDOR )
 								return 0; //ripper
 
-							P_TARGET targ = clientInfo[s]->newTarget( new cCharTarget() );
+							pTarget targ = clientInfo[s]->newTarget( new cCharTarget() );
 							targ->code_callback=target_playerVendorBuy;
 							targ->buffer[0] = pc_map->getSerial();
 							targ->send( getClientFromSocket(s) );
@@ -630,7 +630,7 @@ int response(NXWSOCKET  s)
 						if ( requestPetname )
 						{
 							pc->guarded = false;
-							P_TARGET targ = clientInfo[s]->newTarget( new cObjectTarget() );
+							pTarget targ = clientInfo[s]->newTarget( new cObjectTarget() );
 							targ->code_callback=target_fetch;
 							targ->buffer[0]=pc_map->getSerial();
 							targ->send( getClientFromSocket(s) );							
@@ -673,7 +673,7 @@ int response(NXWSOCKET  s)
 						bool requestPetname = ( strstr( comm, search1) != NULL);
 						if (requestPetname)
 						{
-							P_TARGET targ=clientInfo[s]->newTarget( new cCharTarget() );
+							pTarget targ=clientInfo[s]->newTarget( new cCharTarget() );
 							targ->code_callback=target_guard;
 							targ->buffer[0] = pc_map->getSerial();	// the pet's serial
 							targ->buffer[1] = 0;
@@ -739,7 +739,7 @@ int response(NXWSOCKET  s)
 								return 0;
 							*/
 							//pet transfer code here
-							P_TARGET targ = clientInfo[s]->newTarget( new cCharTarget() );
+							pTarget targ = clientInfo[s]->newTarget( new cCharTarget() );
 							targ->code_callback=target_transfer;
 							targ->buffer[0]=pc_map->getSerial();
 							targ->send( getClientFromSocket(s) );
@@ -972,7 +972,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 				if(pc_vendor->npcaitype==NPCAI_PLAYERVENDOR)
 				{
 					pc_vendor->talk(s,TRANSLATE("What would you like to buy?"),0);
-					P_TARGET targ = clientInfo[s]->newTarget( new cItemTarget() );
+					pTarget targ = clientInfo[s]->newTarget( new cItemTarget() );
 					targ->code_callback=target_playerVendorBuy;
 					targ->buffer[0]=pc_vendor->getSerial();
 					targ->send( getClientFromSocket(s) );
@@ -1037,7 +1037,7 @@ void responsevendor(NXWSOCKET  s, CHARACTER vendor)
 					if(pc->npcaitype==NPCAI_PLAYERVENDOR)
 					{
 						pc->talk(s,TRANSLATE("What would you like to buy?"),0);
-						P_TARGET targ= clientInfo[s]->newTarget( new cItemTarget() );
+						pTarget targ= clientInfo[s]->newTarget( new cItemTarget() );
 						targ->code_callback = target_playerVendorBuy;
 						targ->buffer[0]=pc->getSerial();
 						targ->send( getClientFromSocket(s) );
@@ -1814,7 +1814,7 @@ static bool buyFromVendor( pChar pc, NXWSOCKET socket, string &speech, NxwCharWr
 	if( pc_vendor->npcaitype == NPCAI_PLAYERVENDOR )
 	{
 		pc_vendor->talk( socket, TRANSLATE("What would you like to buy?"), 0 );
-		P_TARGET targ = clientInfo[socket]->newTarget( new cItemTarget() );
+		pTarget targ = clientInfo[socket]->newTarget( new cItemTarget() );
 		targ->buffer[0]= pc_vendor->getSerial();
 		targ->send( getClientFromSocket( socket ) );
 		success = true;

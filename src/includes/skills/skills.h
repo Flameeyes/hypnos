@@ -49,8 +49,8 @@ namespace Skills {
 	void PlayInstrumentWell(NXWSOCKET s, int i);
 	void PlayInstrumentPoor(NXWSOCKET s, int i);
 	int GetInstrument(NXWSOCKET s);
-	void target_provocation1( NXWCLIENT ps, P_TARGET t );
-	void target_enticement1( NXWCLIENT ps, P_TARGET t );
+	void target_provocation1( NXWCLIENT ps, pTarget t );
+	void target_enticement1( NXWCLIENT ps, pTarget t );
 	//@}
 
 	void Meditation(NXWSOCKET s);
@@ -63,15 +63,15 @@ namespace Skills {
 	void ApplyRank(NXWSOCKET s,int c,int rank); // by Magius(CHE)
 	int GetSubIngotAmt(int p, char id1, char id2, char color1, char color2);
 	int DeleSubIngot(int p, int id1, int id2, int color1, int color2, int amount);
-	void target_repair( NXWCLIENT ps, P_TARGET t );
-	void target_smith( NXWCLIENT ps, P_TARGET t );
+	void target_repair( NXWCLIENT ps, pTarget t );
+	void target_smith( NXWCLIENT ps, pTarget t );
 	//@}
 
 	//@{
 	/*!
 	\name ID-Stuff
 	*/
-	void target_itemId( NXWCLIENT ps, P_TARGET t );
+	void target_itemId( NXWCLIENT ps, pTarget t );
 	//@}
 
 	//@{
@@ -80,8 +80,8 @@ namespace Skills {
 	*/
 	void CreatePotion(CHARACTER s, char type, char sub, int mortar);
 	void DoPotion(NXWSOCKET s, int32_t type, int32_t sub, pItem mortar);
-	void target_alchemy( NXWCLIENT ps, P_TARGET t );
-	void target_bottle( NXWCLIENT ps, P_TARGET t );
+	void target_alchemy( NXWCLIENT ps, pTarget t );
+	void target_bottle( NXWCLIENT ps, pTarget t );
 	void PotionToBottle(pChar pc, pItem mortar);
 	//@}
 
@@ -89,38 +89,38 @@ namespace Skills {
 	/*!
 	\name Tinkering stuff
 	*/
-	void target_tinkerAxel( NXWCLIENT ps, P_TARGET t );
-	void target_tinkerAwg( NXWCLIENT ps, P_TARGET t );
-	void target_tinkerClock( NXWCLIENT ps, P_TARGET t );
+	void target_tinkerAxel( NXWCLIENT ps, pTarget t );
+	void target_tinkerAwg( NXWCLIENT ps, pTarget t );
+	void target_tinkerClock( NXWCLIENT ps, pTarget t );
 	//@}
 
 	//@{
 	/*!
 	\name Cooking stuff
 	*/
-	void target_cookOnFire( NXWCLIENT ps, P_TARGET t );
+	void target_cookOnFire( NXWCLIENT ps, pTarget t );
 	//@}
 
 	//@{
 	/*!
 	\name Tailoring stuff
 	*/
-	void target_tailoring( NXWCLIENT ps, P_TARGET t );
-	void target_wheel( NXWCLIENT ps, P_TARGET t );
-	void target_loom( NXWCLIENT ps, P_TARGET t );
+	void target_tailoring( NXWCLIENT ps, pTarget t );
+	void target_wheel( NXWCLIENT ps, pTarget t );
+	void target_loom( NXWCLIENT ps, pTarget t );
 	//@}
 
 	//@{
 	/*!
 	\name Bowcrafting stuff
 	*/
-	void target_fletching( NXWCLIENT ps, P_TARGET t );
-	void target_bowcraft( NXWCLIENT ps, P_TARGET t );
+	void target_fletching( NXWCLIENT ps, pTarget t );
+	void target_bowcraft( NXWCLIENT ps, pTarget t );
 	//@}
 
-	void target_removeTraps( NXWCLIENT ps, P_TARGET t );
+	void target_removeTraps( NXWCLIENT ps, pTarget t );
 	
-	void target_carpentry( NXWCLIENT ps, P_TARGET t );
+	void target_carpentry( NXWCLIENT ps, pTarget t );
 
 	void MakeMenu( pChar pc, int m, int skill, pItem first, pItem second = NULL );
 	void MakeMenu( pChar pc, int m, int skill, uint16_t firstId=0, COLOR firstColor=0, uint16_t secondId=0, COLOR secondColor=0 );
@@ -129,46 +129,46 @@ namespace Skills {
 	/*!
 	\name Mining stuff
 	*/
-	void target_mine( NXWCLIENT ps, P_TARGET t );
+	void target_mine( NXWCLIENT ps, pTarget t );
 	void GraveDig(NXWSOCKET s);
 	//@}
 
-	void target_smeltOre( NXWCLIENT ps, P_TARGET t );
-	void target_tree( NXWCLIENT ps, P_TARGET t );
+	void target_smeltOre( NXWCLIENT ps, pTarget t );
+	void target_tree( NXWCLIENT ps, pTarget t );
 
-	void target_detectHidden( NXWCLIENT ps, P_TARGET t );
+	void target_detectHidden( NXWCLIENT ps, pTarget t );
 
 	//@{
 	/*!
 	\name Healing stuff
 	*/
-	void target_healingSkill( NXWCLIENT ps, P_TARGET t );
+	void target_healingSkill( NXWCLIENT ps, pTarget t );
 	//@}
 
 	void SpiritSpeak(NXWSOCKET s);
 	
-	void target_armsLore( NXWCLIENT ps, P_TARGET t );
-	void target_tame( NXWCLIENT ps, P_TARGET t );
+	void target_armsLore( NXWCLIENT ps, pTarget t );
+	void target_tame( NXWCLIENT ps, pTarget t );
 
 	//@{
 	/*!
 	\name Thievery stuff
 	*/
-	void target_randomSteal( NXWCLIENT ps, P_TARGET t );
-	void target_stealing( NXWCLIENT ps, P_TARGET t );
+	void target_randomSteal( NXWCLIENT ps, pTarget t );
+	void target_stealing( NXWCLIENT ps, pTarget t );
 	void PickPocketTarget(NXWCLIENT ps);
-	void target_lockpick( NXWCLIENT ps, P_TARGET t );
+	void target_lockpick( NXWCLIENT ps, pTarget t );
 	//@}
 
-	void target_animalLore( NXWCLIENT ps, P_TARGET t );
+	void target_animalLore( NXWCLIENT ps, pTarget t );
 	
-	void target_forensics( NXWCLIENT ps, P_TARGET t );
+	void target_forensics( NXWCLIENT ps, pTarget t );
 	
-	void target_poisoning( NXWCLIENT ps, P_TARGET t );
+	void target_poisoning( NXWCLIENT ps, pTarget t );
 
 	void TDummy(NXWSOCKET s);
 	
-	void target_tinkering( NXWCLIENT ps, P_TARGET t );
+	void target_tinkering( NXWCLIENT ps, pTarget t );
 	
 	void AButte(NXWSOCKET s1, pItem pButte);
 

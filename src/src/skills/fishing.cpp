@@ -158,7 +158,7 @@ inline bool isWaterTarget(NXWSOCKET  s)
 }
 
 
-void Fishing::target_fish( NXWCLIENT ps, P_TARGET t )
+void Fishing::target_fish( NXWCLIENT ps, pTarget t )
 {
 	NXWSOCKET  s=ps->toInt();
 	pChar pPlayer=ps->currChar();

@@ -50,7 +50,7 @@ bool CheckInPack(NXWSOCKET  s, pItem pi)
 }
 
 
-void Skills::target_removeTraps( NXWCLIENT ps, P_TARGET t )
+void Skills::target_removeTraps( NXWCLIENT ps, pTarget t )
 {
 
 	pChar pc=ps->currChar();
@@ -70,7 +70,7 @@ void Skills::target_removeTraps( NXWCLIENT ps, P_TARGET t )
 
 }
 
-void Skills::target_tailoring( NXWCLIENT ps, P_TARGET t )
+void Skills::target_tailoring( NXWCLIENT ps, pTarget t )
 {
 
 	pChar pc=ps->currChar();
@@ -117,7 +117,7 @@ void Skills::target_tailoring( NXWCLIENT ps, P_TARGET t )
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,TAILORING,AMX_AFTER);
 }
 
-void Skills::target_fletching( NXWCLIENT ps, P_TARGET t )
+void Skills::target_fletching( NXWCLIENT ps, pTarget t )
 {
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
@@ -141,7 +141,7 @@ void Skills::target_fletching( NXWCLIENT ps, P_TARGET t )
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,BOWCRAFT,AMX_AFTER);
 }
 
-void Skills::target_bowcraft( NXWCLIENT ps, P_TARGET t )
+void Skills::target_bowcraft( NXWCLIENT ps, pTarget t )
 {
 	pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
@@ -180,7 +180,7 @@ void Skills::target_bowcraft( NXWCLIENT ps, P_TARGET t )
 //          If logs are targetted, Makemenu 19 is called to produce boards
 //          If boards, MM 20 is called for furniture etc.
 //
-void Skills::target_carpentry( NXWCLIENT ps, P_TARGET t )
+void Skills::target_carpentry( NXWCLIENT ps, pTarget t )
 {
 
 	pChar pc=ps->currChar();
@@ -284,7 +284,7 @@ static void AnvilTarget( NXWSOCKET s, pItem pi, int ma, int mm, char* matname)
 //
 extern int ingottype;
 
-void Skills::target_smith( NXWCLIENT ps, P_TARGET t )
+void Skills::target_smith( NXWCLIENT ps, pTarget t )
 {
     pItem pi=cSerializable::findItemBySerial( t->getClicked() );
 	if ( ! pi ) return;
@@ -387,7 +387,7 @@ const short NumberOfOres = sizeof(OreTable)/sizeof(Ore);
 #define max_res_x 610
 #define max_res_y 410
 
-void Skills::target_tree( NXWCLIENT ps, P_TARGET t )
+void Skills::target_tree( NXWCLIENT ps, pTarget t )
 {
 
     pChar pc = ps->currChar();
@@ -637,7 +637,7 @@ void Skills::GraveDig(NXWSOCKET s) // added by Genesis 11-4-98
 //              minskill and ingot type
 // Remarks:     NOTE: ingot color is different from ore color for gold, silver & copper!
 //
-void Skills::target_smeltOre( NXWCLIENT ps, P_TARGET t )
+void Skills::target_smeltOre( NXWCLIENT ps, pTarget t )
 {
     pChar pc = ps->currChar();
 	if ( ! pc ) return;
@@ -664,7 +664,7 @@ void Skills::target_smeltOre( NXWCLIENT ps, P_TARGET t )
     client->statusWindow(pc,true);  //!< \todo check second argument
 }
 
-void Skills::target_wheel( NXWCLIENT ps, P_TARGET t )	//Spinning wheel
+void Skills::target_wheel( NXWCLIENT ps, pTarget t )	//Spinning wheel
 {
     pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
@@ -714,7 +714,7 @@ void Skills::target_wheel( NXWCLIENT ps, P_TARGET t )	//Spinning wheel
 		pc_currchar->sysmsg(TRANSLATE("You cant tailor here."));
 }
 
-void Skills::target_loom( NXWCLIENT ps, P_TARGET t )
+void Skills::target_loom( NXWCLIENT ps, pTarget t )
 {
     pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
@@ -784,7 +784,7 @@ void Skills::target_loom( NXWCLIENT ps, P_TARGET t )
 // By:      Ripper & Duke, 07/20/00
 // Purpose: so you can use raw meat on fire
 //
-void Skills::target_cookOnFire( NXWCLIENT ps, P_TARGET t )
+void Skills::target_cookOnFire( NXWCLIENT ps, pTarget t )
 {
 
 	pChar pc=ps->currChar();
@@ -844,7 +844,7 @@ void Skills::target_cookOnFire( NXWCLIENT ps, P_TARGET t )
 /*!
 \author Luxor
 */
-void Skills::target_detectHidden( NXWCLIENT ps, P_TARGET t )
+void Skills::target_detectHidden( NXWCLIENT ps, pTarget t )
 {
 
 	pChar pc = ps->currChar();
@@ -898,7 +898,7 @@ void Skills::target_detectHidden( NXWCLIENT ps, P_TARGET t )
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,DETECTINGHIDDEN,AMX_AFTER);
 }
 
-void target_enticement2( NXWCLIENT ps, P_TARGET t )
+void target_enticement2( NXWCLIENT ps, pTarget t )
 {
 
 	pChar pc=ps->currChar();
@@ -932,7 +932,7 @@ void target_enticement2( NXWCLIENT ps, P_TARGET t )
 	}
 }
 
-void Skills::target_enticement1( NXWCLIENT ps, P_TARGET t )
+void Skills::target_enticement1( NXWCLIENT ps, pTarget t )
 {
 
 	pChar current=ps->currChar();
@@ -963,7 +963,7 @@ void Skills::target_enticement1( NXWCLIENT ps, P_TARGET t )
 		sysmessage(s, TRANSLATE("You cannot entice other players."));
 	else
 	{
-		P_TARGET targ= clientInfo[s]->newTarget( new cCharTarget() );
+		pTarget targ= clientInfo[s]->newTarget( new cCharTarget() );
 		targ->code_callback = target_enticement2;
 		targ->buffer[0]= pc->getSerial();
 		targ->send( ps );
@@ -973,7 +973,7 @@ void Skills::target_enticement1( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void target_provocation2( NXWCLIENT ps, P_TARGET t )
+void target_provocation2( NXWCLIENT ps, pTarget t )
 {
 	pChar Victim2 = cSerializable::findCharBySerial( t->getClicked() );
 	VALIDATEPC(Victim2);
@@ -1046,7 +1046,7 @@ void target_provocation2( NXWCLIENT ps, P_TARGET t )
 	}
 }
 
-void Skills::target_provocation1( NXWCLIENT ps, P_TARGET t )
+void Skills::target_provocation1( NXWCLIENT ps, pTarget t )
 {
 	pChar current=ps->currChar();
 	VALIDATEPC(current);
@@ -1067,7 +1067,7 @@ void Skills::target_provocation1( NXWCLIENT ps, P_TARGET t )
 		sysmessage(s, TRANSLATE("You cannot provoke other players."));
 	else
 	{
-		P_TARGET targ=clientInfo[s]->newTarget( new cCharTarget() );
+		pTarget targ=clientInfo[s]->newTarget( new cCharTarget() );
 		targ->code_callback=target_provocation2;
 		targ->buffer[0]=pc->getSerial();
 		targ->send( ps );
@@ -1084,7 +1084,7 @@ void Skills::target_provocation1( NXWCLIENT ps, P_TARGET t )
 // Purpose: checks for valid reg and brings up gumpmenu to select potion
 //          This is called after the user dblclicked a mortar and targeted a reg
 //
-void Skills::target_alchemy( NXWCLIENT ps, P_TARGET t )
+void Skills::target_alchemy( NXWCLIENT ps, pTarget t )
 {
 
 	pChar pc_currchar = ps->currChar();
@@ -1139,7 +1139,7 @@ void Skills::target_alchemy( NXWCLIENT ps, P_TARGET t )
 // name:    HealingSkillTarget
 // history: unknown, revamped by Duke, 4.06.2000
 //
-void Skills::target_healingSkill( NXWCLIENT ps, P_TARGET t )
+void Skills::target_healingSkill( NXWCLIENT ps, pTarget t )
 {
 
     pChar ph = ps->currChar();   // points to the healer
@@ -1269,7 +1269,7 @@ void Skills::target_healingSkill( NXWCLIENT ps, P_TARGET t )
     AMXEXECSVTARGET( ph->getSerial(),AMXT_SKITARGS,HEALING,AMX_AFTER);
 }
 
-void Skills::target_armsLore( NXWCLIENT ps, P_TARGET t )
+void Skills::target_armsLore( NXWCLIENT ps, pTarget t )
 {
     pChar pc = ps->currChar();
 	if ( ! pc ) return;
@@ -1385,7 +1385,7 @@ void Skills::target_armsLore( NXWCLIENT ps, P_TARGET t )
 
 }
 
-void Skills::target_itemId( NXWCLIENT ps, P_TARGET t )
+void Skills::target_itemId( NXWCLIENT ps, pTarget t )
 {
 	pChar pc=ps->currChar();
 	if ( ! pc ) return;
@@ -1469,7 +1469,7 @@ void Skills::target_itemId( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void Skills::target_tame( NXWCLIENT ps, P_TARGET t )
+void Skills::target_tame( NXWCLIENT ps, pTarget t )
 {
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
@@ -1547,7 +1547,7 @@ void Skills::target_tame( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void Skills::target_animalLore( NXWCLIENT ps, P_TARGET t )
+void Skills::target_animalLore( NXWCLIENT ps, pTarget t )
 {
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
@@ -1596,7 +1596,7 @@ void Skills::target_animalLore( NXWCLIENT ps, P_TARGET t )
     AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,ANIMALLORE,AMX_AFTER);
 }
 
-void Skills::target_forensics( NXWCLIENT ps, P_TARGET t )
+void Skills::target_forensics( NXWCLIENT ps, pTarget t )
 {
 	pChar pc = ps->currChar();
 	if ( ! pc ) return;
@@ -1644,7 +1644,7 @@ void Skills::target_forensics( NXWCLIENT ps, P_TARGET t )
 \param ps the client
 \note pi->morez is the poison type
 */
-void target_poisoning2( NXWCLIENT ps, P_TARGET t )
+void target_poisoning2( NXWCLIENT ps, pTarget t )
 {
 	pChar pc = ps->currChar();
     if ( ! pc ) return;
@@ -1772,12 +1772,12 @@ void target_poisoning2( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void Skills::target_poisoning( NXWCLIENT ps, P_TARGET t )
+void Skills::target_poisoning( NXWCLIENT ps, pTarget t )
 {
 	pItem poison = cSerializable::findItemBySerial( t->getClicked() );
 	VALIDATEPI(poison);
 
-	P_TARGET targ = clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
+	pTarget targ = clientInfo[ps->toInt()]->newTarget( new cItemTarget() );
 	targ->code_callback=target_poisoning2;
 	targ->buffer[0]=poison->getSerial();
 	targ->send( ps );
@@ -1786,7 +1786,7 @@ void Skills::target_poisoning( NXWCLIENT ps, P_TARGET t )
 }
 
 
-void Skills::target_tinkering( NXWCLIENT ps, P_TARGET t )
+void Skills::target_tinkering( NXWCLIENT ps, pTarget t )
 {
     pChar pc_currchar = ps->currChar();
 	VALIDATEPC(pc_currchar);
@@ -1871,7 +1871,7 @@ public:
     virtual bool decide()               {return (itembits == 3) ? true : false;}
     virtual void createIt(NXWSOCKET s)        {;}
     static cTinkerCombine* factory(short combinetype);
-    virtual void DoIt( NXWCLIENT ps, P_TARGET t )
+    virtual void DoIt( NXWCLIENT ps, pTarget t )
     {
         NXWSOCKET s = ps->toInt();
 
@@ -2015,25 +2015,25 @@ cTinkerCombine* cTinkerCombine::factory(short combinetype)
     }
 }
 
-void Skills::target_tinkerAxel( NXWCLIENT ps, P_TARGET t )
+void Skills::target_tinkerAxel( NXWCLIENT ps, pTarget t )
 {
     cTinkerCombine *ptc = cTinkerCombine::factory(cTC_AwG);
     ptc->DoIt(ps, t);
 }
 
-void Skills::target_tinkerAwg( NXWCLIENT ps, P_TARGET t )
+void Skills::target_tinkerAwg( NXWCLIENT ps, pTarget t )
 {
     cTinkerCombine *ptc = cTinkerCombine::factory(cTC_Parts);
     ptc->DoIt(ps, t);
 }
 
-void Skills::target_tinkerClock( NXWCLIENT ps, P_TARGET t )
+void Skills::target_tinkerClock( NXWCLIENT ps, pTarget t )
 {
     cTinkerCombine *ptc = cTinkerCombine::factory(cTC_Clock);
     ptc->DoIt(ps, t);
 }
 
-void Skills::target_repair( NXWCLIENT ps, P_TARGET t )
+void Skills::target_repair( NXWCLIENT ps, pTarget t )
 {
 
     pChar pc = ps->currChar();
