@@ -54,8 +54,6 @@ void target(NXWSOCKET  s, int a1, int a2, int a3, int a4, char *txt);
 	//!< Send targetting cursor to client
 void skillwindow(int s);
 	//!< Opens the skills list, updated for client 1.26.2b by LB
-void statwindow(P_CHAR pc_to, P_CHAR pc);
-	//!< Opens the status window
 void updates(NXWSOCKET  s);
 	//!< Update Window
 void tips(NXWSOCKET s, UI16 i, UI08 flag);

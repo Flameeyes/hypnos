@@ -371,23 +371,6 @@ public:
 		SI32 			race;				//!< Race index
 //@}
 
-//@{
-/*!
-\name Date/Time
-\brief Date/Time related functions and attributes
-*/
-protected:
-	//! Day since EPOCH this character was created on
-	TIMERVAL creationday;
-public:
-	//! Set the creation day of a character
-	inline void setCreationDay(TIMERVAL day)
-	{ creationday = day; }
-
-	//! Get the creation day of a character
-	inline const TIMERVAL getCreationDay() const
-	{ return creationday; }
-//@}
 
 	void			checkSafeStats();
 
@@ -784,10 +767,6 @@ public:
 		SI32  			countBankGold();
 		bool			isInBackpack( P_ITEM pi );
 		void			addGold(UI16 totgold);
-
-		//! Show Backpack to player
-		inline void showBackpack()
-		{ showContainer( getBackpack() ); }
 
 		// The bit for setting what effect gm movement
 		// commands shows

@@ -55,6 +55,23 @@ public:
 	{ return trainingplayerin; }
 //@}
 
+//@{
+/*!
+\name Creation
+\brief Creation date and time related
+*/
+protected:
+	//! Day since EPOCH this character was created on
+	TIMERVAL creationday;
+public:
+	//! Set the creation day of a character
+	inline void setCreationDay(TIMERVAL day)
+	{ creationday = day; }
+
+	//! Get the creation day of a character
+	inline const TIMERVAL getCreationDay() const
+	{ return creationday; }
+//@}
 };
 
 #endif

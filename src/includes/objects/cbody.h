@@ -142,6 +142,8 @@ public:
 	inline pItem setLayerItem(UI08 layer, pItem item)
 	{ layers[layer] = item; }
 
+	pItem getBackpack(bool create = false);
+
 	inline const bool isWearing(pItem pi) const
 	{ return this == pi->getContainer(); }
 
@@ -166,6 +168,74 @@ public:
 	//! Gets the character flags
 	inline const UI32 getFlags() const
 	{ return flags; }
+//@}
+
+//@{
+/*!
+\name Skills
+\brief Skill stuff
+*/
+public:
+	static const UI16 skillAlchemy	 	= 0x00;
+	static const UI16 skillAnatomy		= 0x01;
+	static const UI16 skillAnimalLore	= 0x02;
+	static const UI16 skillItemID		= 0x03;
+	static const UI16 skillArmsLore		= 0x04;
+	static const UI16 skillParrying		= 0x05;
+	static const UI16 skillBagging		= 0x06;
+	static const UI16 skillBlacksmithing	= 0x07;
+	static const UI16 skillBowcraft		= 0x08;
+	static const UI16 skillPeacemaking	= 0x09;
+	static const UI16 skillCamping		= 0x0a;
+	static const UI16 skillCarpentry	= 0x0b;
+	static const UI16 skillCartography	= 0x0c
+	static const UI16 skillCooking		= 0x0d;
+	static const UI16 skillDetectHidden	= 0x0e;
+	static const UI16 skillEnticement	= 0x0f;
+	static const UI16 skillEvalutateIntell	= 0x10;
+	static const UI16 skillHealing		= 0x11;
+	static const UI16 skillFishing		= 0x12;
+	static const UI16 skillForensic		= 0x13;
+	static const UI16 skillHerding		= 0x14;
+	static const UI16 skillHiding		= 0x15;
+	static const UI16 skillProvocation	= 0x16;
+	static const UI16 skillInscription	= 0x17;
+	static const UI16 skillLockpicking	= 0x18;
+	static const UI16 skillMagery		= 0x19;
+	static const UI16 skillMagicResistance	= 0x1a;
+	static const UI16 skillTactics		= 0x1b;
+	static const UI16 skillSnooping		= 0x1c;
+	static const UI16 skillMusicianship	= 0x1d;
+	static const UI16 skillPoisoning	= 0x1e;
+	static const UI16 skillArchery		= 0x1f;
+	static const UI16 skillSpiritSpeak	= 0x20;
+	static const UI16 skillStealing		= 0x21;
+	static const UI16 skillTailoring	= 0x22;
+	static const UI16 skillTaming		= 0x23;
+	static const UI16 skillTasteID		= 0x24;
+	static const UI16 skillTinkering	= 0x25;
+	static const UI16 skillTracking		= 0x26;
+	static const UI16 skillVeterinary	= 0x27;
+	static const UI16 skillSwordsmanship	= 0x28;
+	static const UI16 skillMaceFighting	= 0x29;
+	static const UI16 skillFencing		= 0x2a;
+	static const UI16 skillWrestling	= 0x2b;
+	static const UI16 skillLumberjacking	= 0x2c;
+	static const UI16 skillMining		= 0x2d;
+	static const UI16 skillMeditation	= 0x2e;
+	static const UI16 skillStealth		= 0x2f;
+	static const UI16 skillRemoveTrap	= 0x30;
+	static const UI16 skillNecromancy	= 0x31;
+
+protected:
+	UI16 skills[50];
+
+public:
+	inline const UI16 getSkill(UI16 skill) const
+	{ return skills[skill]; }
+
+	inline void setSkill(UI16 skill, UI16 value)
+	{ skills[skill] = value; }
 //@}
 
 //@{
@@ -301,6 +371,27 @@ public:
 	void setResistEnergy(UI16 value);
 	void setDamageMin(UI16 value);
 	void setDamageMax(UI16 value);
+//@}
+
+//@{
+/*!
+\name Mount
+\brief Mount related stuff
+*/
+protected:
+	pNPC mounting;	//!< Horse mounted (actually can be every mountable npc)
+public:
+	void mount(pNPC horse);
+	void unmount();
+
+	inline const bool isMounted() const
+	{ return horse; }
+
+	inline const bool isMouting(pNPC horse) const
+	{ return mounting == horse; }
+
+	inline pChar getHorse() const
+	{ return mounting; }
 //@}
 
 	void checkEquipment();
