@@ -184,8 +184,8 @@ void cClient::disconnect()
 */
 void cClient::compress(uint8_t *&out_4buffer, uint32_t& out_len)
 {
-uint8_t *new_buffer = new uint8_t[out_len];
-uint32_t new_len=0, tmp_len=out_len;
+	uint8_t *new_buffer = new uint8_t[out_len];
+	uint32_t new_len=0, tmp_len=out_len;
 
 	if(out_len <= 0)
 		return;
@@ -243,37 +243,32 @@ uint32_t new_len=0, tmp_len=out_len;
 
 /*!
 \brief Show a container to player
-\author Kheru - rewrote by Flameeyes
-\param cont the container
+\author Flameeyes
+\param cont Container to show
 */
-void cClient::showContainer(pCont cont)
+void cClient::showContainer(pContainer cont)
 {
 	if ( ! cont )
 		return;
-
-	NxwItemWrapper si;
-	si.fillItemsInContainer( cont, false, false );
-	int32_t count=si.size();
-
+	
 	nPackets::Sent::OpenGump pk(cont->getSerial(), cont->getGump());
 	sendPacket(&pk);
-
+	
 	nPackets::Sent::ContainerItem pk2;
-
-	for( si.rewind(); !si.isEmpty(); si++ )
+	
+	cont->lockItemsMutex();
+	for(ItemSLIst::const_iterator it = cont->getItems().begin(); it != cont->getItems().end() )
 	{
-		pItem pi=si.getItem();
-		if ( ! pi )
-			continue;
-
-		//fix location of items if they mess up. (needs tweaked for container types)
+		if ( ! (*it) ) continue;
+		
 		//! \todo The position of the items should be bound to client-specific protocol
-		if (pi->getPosition().x > 150) pi->setPosition("x", 150);
-		if (pi->getPosition().y > 140) pi->setPosition("y", 140);
-
+		if ( (*it)->getPosition().x > 150 ) (*it)->setPositionX(150);
+		if ( (*it)->getPosition().y > 150 ) (*it)->setPositionY(150);
+		
 		pk2.addItem(pi);
 	}
-
+	cont->unlockItemsMutex();
+	
 	sendPacket(&pk2);
 }
 
@@ -287,8 +282,7 @@ void cClient::showItemInContainer(pItem item)
 	if ( ! item || pc->distFrom(pi) > VISRANGE )
 		return;
 
-	nPackets::Sent::ShowItemInContainer pk( item );
-
+	nPackets::Sent::ShowItemInContainer pk(item);
 	sendPacket(&pk);
 
 	pc->getBody()->calcWeight();
@@ -322,19 +316,17 @@ void cClient::updatePaperdoll()
 	sendPacket(&pk);
 }
 
-
 void cClient::showBankBox(pPC dest)
 {
 	if ( ! dest || (dest != pc && acc->getPrivLevel() < privSeer ) )
 		return;
 
-	pItem bank = dest->getBankBox();
+	pEquippableContainer bank = dest->getBankBox();
 	if ( ! bank )
 		return;
 
-	showClient(bank);
+	showContainer(bank);
 }
-
 
 /*!
 \brief region specific bankbox
@@ -356,11 +348,11 @@ void cClient::showSpecialBankBox(pPC dest)
 	if ( ! dest || (dest != pc && acc->getPrivLevel() < privSeer ) )
 		return;
 
-	pItem bank = dest->getSpecialBankBox();
+	pEquippableContainer bank = dest->getSpecialBankBox();
 	if ( ! bank )
 		return;
 
-	showClient(bank);
+	showContainer(bank);
 }
 
 /*!
@@ -372,7 +364,7 @@ void cClient::showSpecialBankBox(pPC dest)
 void cClient::statusWindow(pChar target, bool extended) //, bool canrename)  will be calculated from client data
 {
 	if(!target) return;
-	cChar pc = currChar();  // pc who will get the status window
+	pPC pc = currChar();  // pc who will get the status window
 
 	bool canrename;
 
@@ -399,7 +391,6 @@ void cClient::statusWindow(pChar target, bool extended) //, bool canrename)  wil
 \brief updates status window of client if drag & drop has modified player in any way, weight included
 \param item item moved in drag & drop
 */
-
 void cClient::updateStatusWindow(pItem item)
 {
 	if ( ! item ) return;
@@ -412,7 +403,6 @@ void cClient::updateStatusWindow(pItem item)
 	if( oldcont->getOutMostCont() != item->getOutMostCont() && (owner == pc || oldowner == pc) )     //!< if item was in pack and has been moved out or has been equipped/deequipped update char
 		statusWindow( pc, true );
 }
-
 
 
 /*!
@@ -814,12 +804,9 @@ void cClient::drop_item(pItem pi, sLocation &loc, pSerializable dest) // Item is
 /*!
 \brief Item is dragged on another item
 \author Unknown, moved here by Chronodt (3/2/2004)
-\param pi item to be dropped (already in dragging mode)
-\param loc position to drop item at (eventually in cont)
-\param dest container into which *pi has to be dropped (or item being dragged upon)
+\param pi Item to be dropped (already in dragging mode)
+\param dest Container into which the item has to be dropped (or item being dragged upon)
 */
-
-
 void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 {
 	pChar pc= currChar();
@@ -1144,10 +1131,9 @@ void cClient::pack_item(pItem pi, pItem dest) // Item is dragged on another item
 /*!
 \brief dragged item on the ground (drop)
 \author Unknown, moved here by Chronodt (4/2/2004)
-\param pi item to be dropped (already in dragging mode)
-\param loc position to drop item at
+\param pi Item to be dropped (already in dragging mode)
+\param loc Position to drop item at
 */
-
 void cClient::dump_item(pItem pi, sLocation &loc) // Item is dropped on the ground
 {
 	if ( ! pi ) return;
@@ -1424,14 +1410,11 @@ void cClient::droppedOnPet(pItem pi, pNPC pet)
 \brief item has been dropped on a guard and verifies if correct item given
 \author Unknown, moved here by Chronodt (4/2/2004)
 \param pi item to be dropped (already in dragging mode)
-\param npg guard pointer
+\param npc guard pointer
 */
-
-
 void cClient::droppedOnGuard(pItem pi, pNPC npc)
 {
-	if(!pi) return;
-	if(!npc) return;
+	if( !pi || ! npc) return;
 
 	pChar pc = currChar();
 	if(!pc) return;
@@ -1480,10 +1463,9 @@ void cClient::droppedOnGuard(pItem pi, pNPC npc)
 /*!
 \brief item has been dropped on a beggar and verifies if correct item given
 \author Unknown, moved here by Chronodt (4/2/2004)
-\param pi item to be dropped (already in dragging mode)
-\param npc beggar
+\param pi Item to be dropped (already in dragging mode)
+\param npc Beggar
 */
-
 void cClient::droppedOnBeggar(pItem pi, pNPC npc)
 {
 	pChar pc = currChar();
@@ -1530,10 +1512,8 @@ void cClient::droppedOnBeggar(pItem pi, pNPC npc)
 \brief item has been dropped on a trainer and verifies if correct item given
 \author Unknown, moved here by Chronodt (4/2/2004)
 \param pi item to be dropped (already in dragging mode)
-\param npc trainer
+\param npc Trainer
 */
-
-
 void cClient::droppedOnTrainer(pItem pi, pNPC npc)
 {
 	if(!pi) return;
@@ -3027,9 +3007,9 @@ void cClient::telltime()
 	static const char strNight[]		= "at night.";
 	static const char strMorning[]		= "in the morning.";
 
-	char *prefix = NULL;
-	char *strhour = NULL;
-	char *suffix = NULL;
+	const char *prefix = NULL;
+	const char *strhour = NULL;
+	const char *suffix = NULL;
 	
 	uint8_t hour = Calendar::g_nHour % 12;
 	if (hour==0) hour = 12;

@@ -370,7 +370,8 @@ void cItem::setContainer(pObject obj)
 \author Luxor & Flameeyes
 \brief execute decay on the item
 \param dontDelete Should be called by inherited classes to not delete the item.
-\return true if decayed (so deleted), false else
+\retval true The item is decayed (and so deleted)
+\retval false The item not decayed
 */
 bool cItem::doDecay(bool dontDelete = false)
 {
@@ -478,12 +479,12 @@ void cItem::explode(pClient client)
 
 }
 
-/*
+/*!
 \author Duke
 \brief reduce the amount of piled items
 \param amt amount to subtract to item amount
 
-Reduces the given item's amount by 'amt' and deletes it if necessary and returns 0.
+Reduces the given item's amount by \c amt and deletes it if necessary and returns 0.
 If the request could not be fully satisfied, the remainder is returned
 */
 int32_t cItem::ReduceAmount(const int16_t amt)
@@ -505,14 +506,24 @@ int32_t cItem::ReduceAmount(const int16_t amt)
 /*!
 \brief increase the amount of piled items
 \param amt amount to add to item amount
+\return the new amount of the item
+\bug There's no check about overflow of the amount
 */
-int32_t cItem::IncreaseAmount(const int16_t amt)
+uint16_t cItem::IncreaseAmount(const int16_t amt)
 {
-	amount+= amt;
+	amount += amt;
 	Refresh();
 	return amount;
 }
 
+/*!
+\brief Checks if an item is a piece of a field spell
+\retval magic::fieldInvalid The item isn't a field spell piece
+\retval magic::fieldFire The item is a piece of a fire field
+\retval magic::fieldPoison The item is a piece of a poison field
+\retval magic::fieldParalyse The item is a piece of a paralyse field
+\retval magic::fieldEnergy The item is a piece of an energy field
+*/
 const magic::FieldType cItem::isFieldSpellItem() const
 {
 	if( (getId()==0x3996) || (getId()==0x398C) ) return magic::fieldFire;
@@ -520,23 +531,13 @@ const magic::FieldType cItem::isFieldSpellItem() const
 	if( (getId()==0x3979) || (getId()==0x3967) ) return magic::fieldParalyse;
 	if( (getId()==0x3956) || (getId()==0x3946) ) return magic::fieldEnergy;
 
-	return fieldInvalid;
-}
-
-/*!
-\author Anthalir
-*/
-void cItem::MoveTo(sLocation newloc)
-{
-	setPosition( newloc );
-	pointers::updateLocationMap(this);
+	return magic::fieldInvalid;
 }
 
 /*!
 \brief Gets the location of a serial instance in the world
 \author Flameeyes
-\note This function returns the location of the player with the object or with
-the outmost container for it.
+\return The location of the player with the object or with it's outmost container.
 */
 sLocation cItem::getWorldLocation() const
 {
@@ -553,6 +554,7 @@ sLocation cItem::getWorldLocation() const
 \brief Check if two item are similar so pileable
 \author Endymion
 \note if same item is compared, false is returned
+\todo This should be moved to a normal function
 */
 inline bool operator ==( cItem& a, cItem& b ) {
 	return  a.isPileable() && b.isPileable()  &&
@@ -563,9 +565,10 @@ inline bool operator ==( cItem& a, cItem& b ) {
 		( a.poisoned == b.poisoned );
 }
 
-/*
+/*!
 \brief Check if two item are not similar so not pileable
 \author Endymion
+\todo This should be moved to a normal function
 */
 inline bool operator !=( cItem& a, cItem& b ) {
 	return !(a==b);
@@ -676,39 +679,6 @@ const float cItem::getWeightActual()
 	return (amount>1)? getWeight()*amount : getWeight();
 }
 
-bool LoadItemEventsFromScript (pItem pi, char *script1, char *script2)
-{
-
-#if 0
-#define CASEITEMEVENT( NAME, ID ) 	else if (!(strcmp(NAME,script1))) pi->amxevents[ID] = newAmxEvent(script2);
-
-	if (!strcmp("@ONSTART",script1))	{
-		pi->amxevents[EVENT_IONSTART] = newAmxEvent(script2);
-		newAmxEvent(script2)->Call(pi->getSerial(), -1);
-	}
-	CASEITEMEVENT("@ONDAMAGE", EVENT_IONDAMAGE)
-	CASEITEMEVENT("@ONEQUIP", EVENT_IONEQUIP)
-	CASEITEMEVENT("@ONUNEQUIP", EVENT_IONUNEQUIP)
-	CASEITEMEVENT("@ONCLICK", EVENT_IONCLICK)
-	CASEITEMEVENT("@ONDBLCLICK", EVENT_IONDBLCLICK)
-	CASEITEMEVENT("@ONCHECKCANUSE", EVENT_IONCHECKCANUSE)
-	CASEITEMEVENT("@ONPUTINBACKPACK", EVENT_IPUTINBACKPACK)
-	CASEITEMEVENT("@ONDROPINLAND", EVENT_IDROPINLAND)
-	CASEITEMEVENT("@ONTRANSFER", EVENT_IONTRANSFER)
-	CASEITEMEVENT("@ONSTOLEN", EVENT_IONSTOLEN)
-	CASEITEMEVENT("@ONPOISONED", EVENT_IONPOISONED)
-	CASEITEMEVENT("@ONDECAY", EVENT_IONDECAY)
-	CASEITEMEVENT("@ONREMOVETRAP", EVENT_IONREMOVETRAP)
-	CASEITEMEVENT("@ONLOCKPICK", EVENT_IONLOCKPICK)
-	CASEITEMEVENT("@ONWALKOVER", EVENT_IONWALKOVER)
-	CASEITEMEVENT("@ONPUTITEM", EVENT_IONPUTITEM)
-	CASEITEMEVENT("@ONTAKEFROMCONTAINER", EVENT_ITAKEFROMCONTAINER)
-	else if (!(strcmp("@ONCREATION",script1))) newAmxEvent(script2)->Call(pi->getSerial(),-1);
-	else return false;
-	return true;
-#endif
-}
-
 /*!
 \author Luxor
 \brief gets the combat skill of an item
@@ -716,10 +686,10 @@ bool LoadItemEventsFromScript (pItem pi, char *script1, char *script2)
 */
 Skill cItem::getCombatSkill()
 {
-	if (fightskill != INVALID_SKILL) return fightskill;
+	if (fightskill != skInvalid) return fightskill;
 	else if (IsSwordType())		return skSwordsmanship;
 	else if (IsMaceType() || IsSpecialMace())		return skMacefighting;
-	else if (IsFencingType())	return FENCING;
+	else if (IsFencingType())	return skFencing;
 	else if (IsBowType())		return skArchery;
 	return skWrestling;
 }
@@ -862,7 +832,6 @@ pBody cItem::getPackOwner()
 \author Flameeyes
 \return pointer to pack owner
 */
-
 pChar getCurrentOwner(bool searchBank)
 {
 	pItem cont = getOutMostCont(); 		// this returns a container equipped on char or a container in the world. If it is equipped, cont == this
@@ -974,8 +943,20 @@ const int32_t cItem::calcValue(int32_t bvalue)
 	return bvalue;
 }
 
+/*!
+\brief Sets the direction of the item
+\param newdir New direction to set
+
+This functions strips from the parameter the MSB (which is used to say that
+it's running) and rewrap the direction in the 0x00-0x07 possible range.
+
+\see Direction enumerated constants
+*/
 void cItem::setDirection(uint8_t newdir)
 {
+	// Strips the 'running' stuff
+	newdir &= 0x7F;
+	
 	newdir %= 8;
 	dir = newdir;
 }

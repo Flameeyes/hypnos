@@ -66,7 +66,8 @@ void cMulti::add(pSerializable obj)
 /*!
 \brief Removes an object from the list of multi's objects
 \param obj Object to remove
-\return True if the multi was deleted, else false
+\retval true The multi was deleted because obj was a required item
+\retval false The multi wasn't deleted, the obj was removed from the lists
 
 This funciton get the right type for the object (item or char) and then tries
 to remove it from the lists.

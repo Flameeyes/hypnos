@@ -96,7 +96,8 @@ sRect::sRect(sPoint a, sPoint b)
 /*!
 \brief Checks if a given point is inside the rectangle
 \param p Point to check if inside the rectangle
-\return true if the point is internal, else false
+\retval true The point is inside the box described by the rectangle
+\retval false The point is outside the box described by the rectangle
 */
 bool sRect::isInside(sPoint p) const
 {

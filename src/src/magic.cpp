@@ -216,7 +216,8 @@ static inline bool checkTownLimits(SpellId spellnum, pChar pa, pChar pd, int spe
 \author Xanathar
 \param pc the player who want to cast
 \param num spell id
-\return true if the pc has enough mana, else false
+\retval true The player has enough mana
+\retval false The player hasn't enough mana (and was sysmessaged)
 */
 static inline bool checkMana(pChar pc, SpellId num)
 {
@@ -225,7 +226,6 @@ static inline bool checkMana(pChar pc, SpellId num)
 	pPC pc_tmp;
 	pClient client = (pc_tmp = dynamic_cast<pPC>(pc))? pc_tmp->getClient() : NULL;
 
-//	if( pc->IsGM() ) return true;
 	if ( pc->dontUseMana() ) return true;
 
 	if (pc->mn >= g_Spells[num].mana) return true;
@@ -239,7 +239,6 @@ static inline bool checkMana(pChar pc, SpellId num)
 \brief Subtracts mana from char
 \author Xanatar
 \param pc caster
-\param spellnumber
 */
 static inline void subtractMana(pChar pc, SpellId spellnumber)
 {
@@ -257,9 +256,10 @@ static inline void subtractMana(pChar pc, SpellId spellnumber)
 /*!
 \brief Checks (recursively) magic reflection and eventually changes attacker/defender roles
 \author Xanatar
-\param pa attacker
-\param pd defender
-\return true if role has changed
+\param[in,out] pa attacker
+\param[in,out] pd defender
+\retval true The roles of \c pa and \c pd are inverted
+\retval false The roles aren't inverted
 */
 static bool checkReflection(pChar &pa, pChar &pd)
 {
@@ -280,7 +280,8 @@ static bool checkReflection(pChar &pa, pChar &pd)
 \brief Checks if a spell is a field
 \author Xanathar
 \param spell Spell to check
-\return true if the spell is a field
+\retval true The spell is a field type
+\retval false The spell isn't a field type
 */
 static inline bool isFieldSpell(SpellId spell)
 {
@@ -301,25 +302,13 @@ static inline bool isFieldSpell(SpellId spell)
 \brief Checks if a spell is a box cast
 \author Xanathar
 \param spell Spell to check
-\return true if the spell is a box cast
+\retval true The spell is a box spell
+\retval false The spell is an area spell
 */
 static inline bool isBoxSpell(SpellId spell)
 {
-	return (g_Spells[spell].areasize==0);
+	return !(g_Spells[spell].areasize == 0);
 }
-
-
-/*!
-\brief Checks if a spell is a area cast 
-\author Xanathar
-\param spell Spell to check
-\return true if the spell is a area cast
-*/
-static inline bool isAreaSpell(SpellId spell)
-{
-	return g_Spells[spell].areasize;
-}
-
 
 /*!
 \brief Check if defender can resist a spell
@@ -360,10 +349,6 @@ static bool checkResist(pChar pa, pChar pd, SpellId spellnumber)
 /*!
 \author Luxor
 \brief Plays the spell effect
-\param spellnum
-\param pcaster
-\param pctarget
-\param pitarget
 */
 static void spellFX(SpellId spellnum, pChar pcaster = NULL, pChar pctarget = NULL, pItem pitarget = NULL )
 {

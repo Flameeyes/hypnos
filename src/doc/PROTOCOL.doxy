@@ -64,10 +64,8 @@ an Apple machine). These functions are now used inside the four conversion
 functions, which should only be called inside packet forging functions, so we
 should, in the future, move them away from the 'general' functions.
 
-\see LongToCharPtr()
-\see LongFromCharPtr()
-\see ShortToCharPtr()
-\see ShortFromCharPtr()
+\see LongToCharPtr(), LongFromCharPtr(), ShortToCharPtr(), ShortFromCharPtr()
+	functions
 
 \section links Links
 

@@ -96,33 +96,35 @@ uint16_t cContainer::getGump()
 
 /*!
 \brief try to find an item in the container to stack with and stack.
-\param item item to pile (note: it must already be in the container)
-\return true if pileable [and piled]
+\param[in,out] item item to pile (note: it must already be in the container)
+\retval true The item was pilable, so it was piled
+\retval false The item wasn't pilable or wasn't possible to pile it
 \note after this function, item can be NULL
 \todo cItem::refresh() missing ?
 */
 bool cContainer::pileItem(pItem &item)
 {
-	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
+	// Let's check if the item is already in this container
+	if ( item->getContainer() != this ) return false;
+	
+	for(ItemSList::iterator it = items.begin(); it != items.end(); it++)
 	{
-		if ( ! *it ) continue;	//!< \todo shouldn't this be an error in ItemList items?
-                if ( *it == item ) continue; //item cannot stack with itself! :D
-		if ( !(*it)->isCombinableWith(item)) continue;
+		if ( ! *it || *it == item || !(*it)->isCombinableWith(item) )
+			continue;
 
 		if ( (*it)->getAmount() + item->getAmount() > 65535 )
 		{
-//                	item->setContainer(this);	//not necessary. This method is called by addItem()
 			setRandPos(item);
 			item->setAmount( (*it)->getAmount() + item->getAmount() - 65535 );
 			(*it)->setAmount(65535);
-//			item->refresh();
+			item->refresh();
 			return true;
 		} else {
 			(*it)->setAmount( (*it)->getAmount() + item->getAmount() );
 			item->Delete();
 			return true;
 		}
-//		(*it)->refresh();
+		(*it)->refresh();
 	}
         return false;	//if it exits the for without having found a combinable item, we can report the failure
 }
@@ -130,7 +132,6 @@ bool cContainer::pileItem(pItem &item)
 /*!
 \brief Sets a random position for the given item in the container
 \param item item to set the position for
-\todo Missing CONTINFOMAP
 */
 void cContainer::setRandPos(pItem item)
 {
@@ -162,7 +163,7 @@ uint32_t cContainer::countItems(uint16_t matchId, uint16_t matchColor, bool recu
 {
 	uint32_t count = 0;
 
-	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
+	for(ItemSList::iterator it = items.begin(); it != items.end(); it++)
 	{
 		if ( ! *it ) {
 			LogWarning("NULL item!");
@@ -189,7 +190,7 @@ uint32_t cContainer::countItems(uint16_t matchId, uint16_t matchColor, bool recu
 */
 pItem cContainer::findFirstType(uint16_t type, bool recurse)
 {
-	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
+	for(ItemSList::iterator it = items.begin(); it != items.end(); it++)
 	{
 		if ( ! *it ) {
 			LogWarning("NULL item!");
@@ -225,7 +226,7 @@ uint32_t cContainer::removeItems(uint32_t delAmount, uint16_t matchId, uint16_t 
 {
 	uint32_t rest = amount;
 
-	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
+	for(ItemSList::iterator it = items.begin(); it != items.end(); it++)
 	{
 		if ( ! *it ) {
 			LogWarning("NULL item!");
@@ -255,7 +256,7 @@ void cContainer::dropitem(pItem pi)
 {
 	int ser= pi->getSerial();
 
-	ItemList::iterator it = items.find(pi);
+	ItemSList::iterator it = items.find(pi);
 
 	if ( it != items.end() )
 		items.erase(it);
@@ -293,18 +294,19 @@ void cContainer::addItem(pItem item, uint16_t xx, uint16_t yy)
 
 /*!
 \brief Count spells
-\author Flameeyes (based on Xanathar)
+\author Flameeyes
 \param stdOnly If true, count only standard spells
 \return The number of spells in the spellbook
 \note This function is here, because a spellbook is handled like a container
 	with spells as items inside it
 \todo Improve stdOnly support
+\todo Move this on cSpellbook class when done
 */
 uint32_t cContainer::countSpellsInSpellBook(bool stdOnly)
 {
 	uint32_t spellcount=0;
 
-	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
+	for(ItemSList::iterator it = items.begin(); it != items.end(); it++)
 	{
 		if ( ! *it ) {
 			LogWarning("NULL item!");
@@ -329,13 +331,14 @@ uint32_t cContainer::countSpellsInSpellBook(bool stdOnly)
 }
 
 /*!
-\author Flameeyes (based on Xanathar)
+\author Flameeyes
 \brief Check if a spellbook contains a given spell
 \param spellnum Spell identifier
 \return true if the spell is present
 \todo not using hardcoded ids... in this case we are
 	using an extended spellbook... that can have
 	only the base spells...
+\todo Move this on cSpellbook class when done
 */
 bool cContainer::containsSpell(magic::SpellId spellnum)
 {
@@ -348,7 +351,7 @@ bool cContainer::containsSpell(magic::SpellId spellnum)
 	if (raflag)
 		spellnum=static_cast<magic::SpellId>(0);
 
-	for(ItemList::iterator it = items.begin(); it != items.end(); it++)
+	for(ItemSList::iterator it = items.begin(); it != items.end(); it++)
 	{
 		if ( (*it)->getId() == ( 0x1F2D + spellnum ) || (*it)->getId() == 0x1F6D )
 			return true;
@@ -360,13 +363,13 @@ bool cContainer::containsSpell(magic::SpellId spellnum)
 /*!
 \brief Adds an item to the internal items list
 \param itm Item to add
-\note Should be called <b>only</b> by cItem::setContainer() function
+\note Should be called \b only by cItem::setContainer() function
 */
 void cContainer::insertItem(pItem itm)
 {
-	if ( items.find(itm) != items.end() )
+	if ( std::find(itm, items.begin(), items.end()) != items.end() )
 		return;
-	items.push_back(itm);
+	items.push_front(itm);
 }
 
 /*!
@@ -376,8 +379,8 @@ const float cContainer::getWeightActual()
 {
 	float totalWeight = cItem::getWeightActual();
 	
-	for(ItemList::iterator iit = items.begin(); iit != items.end(); it++)
-		totalWeight += (*iit)->getWeightActual();
+	for(ItemSList::iterator it = items.begin(); it != items.end(); it++)
+		totalWeight += (*it)->getWeightActual();
 	
 	return totalWeight;
 }
@@ -394,7 +397,7 @@ bool cContainer::doDecay(bool dontDelete = false)
 	if ( ! cItem::doDecay(true) )
 		return false;
 	
-	for ( ItemList::iterator it = items.begin(); it != items.end(); it++ )
+	for ( ItemSList::iterator it = items.begin(); it != items.end(); it++ )
 	{
 		(*it)->setContainer(NULL);
 		(*it)->MoveTo( getPosition() );
@@ -413,7 +416,7 @@ bool cContainer::doDecay(bool dontDelete = false)
 */
 pItem cContainer::getInstrument()
 {
-	for ( ItemList::iterator it = items.begin(); it != items.end(); it++ )
+	for ( ItemSList::iterator it = items.begin(); it != items.end(); it++ )
 		if ( (*it)->isInstument() )
 			return (*it);
 	
@@ -422,11 +425,11 @@ pItem cContainer::getInstrument()
 
 void cContainer::doubleClicked()
 {
-		// Wintermute: GMs or Counselors should be able to open trapped containers always
-		if (moreb1 > 0 && !pc->IsGMorCounselor()) {
-			magic::castAreaAttackSpell(getPosition().x, getPosition().y, magic::SPELL_EXPLOSION);
-			moreb1--;
-		}
-		//Magic->MagicTrap(currchar[s], pi); // added by AntiChrist
-		// only 1 and 63 can be trapped, so pleaz leave it here :) - Anti
+	// Wintermute: GMs or Counselors should be able to open trapped containers always
+	if (moreb1 > 0 && !pc->IsGMorCounselor()) {
+		magic::castAreaAttackSpell(getPosition().x, getPosition().y, magic::SPELL_EXPLOSION);
+		moreb1--;
+	}
+	//Magic->MagicTrap(currchar[s], pi); // added by AntiChrist
+	// only 1 and 63 can be trapped, so pleaz leave it here :) - Anti
 }

@@ -486,7 +486,7 @@ public:
 \name Position
 */
 public:
-	void MoveTo(sLocation newloc);
+	virtual void MoveTo(sLocation newloc) = 0;
 
 	inline const bool isInWorld() const
 	{ return !cont; }

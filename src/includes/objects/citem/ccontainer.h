@@ -12,6 +12,7 @@
 #include "common_libs.h"
 #include "objects/citem.h"
 #include "objects/citem/cequippable.h"
+#include <wefts_mutex.h>
 
 /*!
 \brief Container item
@@ -44,12 +45,6 @@ protected:
 //@}
 
 protected:
-	//! Items in the container
-	ItemList	items;
-
-	bool		pileItem(pItem &item);
-	void		setRandPos(pItem Item);
-
 	virtual uint16_t eventsNumber() const
 	{ return evtCntMax; }
 public:
@@ -58,7 +53,18 @@ public:
 	
 	virtual void doubleClicked();
 
-	bool addItem(pItem item, uint16_t xx=-1, uint16_t yy=-1);
+//@{
+/*!
+\name Container specific stuff
+*/
+protected:
+	ItemSList items;		//!< List of items in the container
+	Wefts::Mutex itemsMutex;	//!< Mutex for the items' list
+
+	bool		pileItem(pItem &item);
+	void		setRandPos(pItem Item);
+public:
+	bool addItem(pItem item, sPoint pos = sPoint(0xFFFF, 0xFFFF));
 	void insertItem(pItem itm);
 
 	uint16_t getGump();
@@ -68,16 +74,29 @@ public:
 	void dropItem(pItem pi);
 
 	uint32_t countItems(uint16_t id, uint16_t color = 0, bool recurse = false);
-
+	
 	pItem findFirstType(uint16_t type, bool recurse = false);
+
+	pItem getInstrument() const;
+	
+	//! Gets the items' list
+	const ItemSList &getItems() const
+	{ return items; }
+	
+	//! Locks the mutex for items' list to avoid concurrency
+	void lockItemsMutex()
+	{ itemsMutex.lock(); }
+	
+	//! Unlocks the mutex for items' list to resume concurrency
+	void unlockItemsMutex()
+	{ itemsMutex.unlock(); }
+//@}
 
 	uint32_t countSpellsInSpellBook(bool stdOnly = true);
 	bool containsSpell(magic::SpellId spellnum);
 	
 	const float getWeightActual();
 	
-	pItem getInstrument() const;
-
 	virtual bool doDecay(bool dontDelete = false);
 	
 	//! Events for containers

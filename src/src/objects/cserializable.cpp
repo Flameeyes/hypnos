@@ -121,4 +121,3 @@ void cSerializable::setMulti(pMulti nMulti)
 
 	multi = nMulti;
 }
-
