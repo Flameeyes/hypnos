@@ -22,22 +22,17 @@
 
 /*!
 \brief Snoop into container
-\author Unknow, completly rewritten by Endymion
+\author Endymion
 \param snooper the snooper
 \param cont the contanier
 */
-void snooping( pChar snooper, pItem cont )
+void snooping( pPC snooper, pItem cont )
 {
-	VALIDATEPC(snooper);
-	NXWCLIENT ps = snooper->getClient();
-	if( ps == NULL ) return;
-	NXWSOCKET s = ps->toInt();
-	VALIDATEPI(cont);
-	pChar owner = cont->getPackOwner();
-	VALIDATEPC(owner);
-	char temp[TEMP_STR_SIZE];
+	pChar owner;
+	if ( ! snooper || ! cont || ! snooper->getClient() || ! ( owner = cont->getPackOwner() ) )
+		return;
 
-	if (snooper->getSerial() == owner->getSerial32())
+	if (snooper == owner)
 		snooper->showContainer(cont);
 	else if (snooper->IsGMorCounselor())
 		snooper->showContainer(cont);
@@ -68,8 +63,7 @@ void snooping( pChar snooper, pItem cont )
 				if ( owner->IsGMorCounselor())
 				{
 					snooper->sysmsg( TRANSLATE("You can't peek into that container or you'll be jailed."));// AntiChrist
-					sprintf( temp, TRANSLATE("%s is trying to snoop you!"), snooper->getCurrentName().c_str());
-					owner->sysmsg(temp);
+					owner->sysmsg(TRANSLATE("%s is trying to snoop you!"), snooper->getCurrentName().c_str());
 					return;
 				}
 				else if (snooper->checkSkill( SNOOPING, 0, 1000))
@@ -83,8 +77,7 @@ void snooping( pChar snooper, pItem cont )
 					if ( owner->npc )
 						owner->talk(s, TRANSLATE("Art thou attempting to disturb my privacy?"), 0);
 					else {
-						sprintf( temp, TRANSLATE("You notice %s trying to peek into your pack!"), snooper->getCurrentName().c_str());
-						owner->sysmsg( temp );
+						owner->sysmsg( TRANSLATE("You notice %s trying to peek into your pack!"), snooper->getCurrentName().c_str());
 					}
 					snooper->IncreaseKarma( - nSettings::Skills::getSnoopKarmaLoss() );
 					snooper->modifyFame( - nSettings::Skills::getSnoopFameLoss() );
@@ -226,26 +219,23 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 				thief->setCrimGrey(ServerScp::g_nStealWillCriminal); //Blue and not attacker and not same guild
 
 
-			std::string itmname ( "" );
-			char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-			char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+			std::string itmname;
+			
 			if ( pi->getCurrentName() != "#" )
 				itmname = pi->getCurrentName();
 			else
-			{
-				pi->getName( temp );
-				itmname = temp;
-			}
-			sprintf(temp,TRANSLATE("You notice %s trying to steal %s from you!"), thief->getCurrentName().c_str(), itmname.c_str());
-			sprintf(temp2,TRANSLATE("You notice %s trying to steal %s from %s!"), thief->getCurrentName().c_str(), itmname.c_str(), victim->getCurrentName().c_str());
-
+				itmname = pi->getName();
+			
 			if ( victim->npc )
 				if( victim->HasHumanBody() )
 					victim->talkAll(TRANSLATE( "Guards!! A thief is amoung us!"),0);
 			else
-				victim->sysmsg(temp);
+				victim->sysmsg(TRANSLATE("You notice %s trying to steal %s from you!"), thief->getCurrentName().c_str(), itmname.c_str());
 
-			//send to all player temp2 = thief are stealing victim if are more intelligent and a bonus of luck :D
+			char *temp;
+			asprintf(&temp,TRANSLATE("You notice %s trying to steal %s from %s!"), thief->getCurrentName().c_str(), itmname.c_str(), victim->getCurrentName().c_str());
+
+			//send to all player temp = thief are stealing victim if are more intelligent and a bonus of luck :D
 			NxwSocketWrapper sw;
 			sw.fillOnline( thief, true );
 			for( sw.rewind(); !sw.isEmpty(); sw++ ) {
@@ -256,8 +246,9 @@ void Skills::target_stealing( NXWCLIENT ps, pTarget t )
 				pChar pc_i=ps_i->currChar();
 				if ( pc_i )
 					if( (rand()%10+10==17) || ( (rand()%2==1) && (pc_i->in>=thief->in)))
-						pc_i->sysmsg(temp2);
+						pc_i->sysmsg(temp);
 			}
+			free(temp);
 		}
 	}
 	else
@@ -332,10 +323,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 		return;
 	}
 
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	char temp2[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	sprintf(temp, TRANSLATE("You reach into %s's pack to steal something ..."), victim->getCurrentName().c_str() );
-	thief->sysmsg(temp);
+	thief->sysmsg(TRANSLATE("You reach into %s's pack to steal something ..."), victim->getCurrentName().c_str() );
 
 	if ( thief->hasInRange(victim, 1) )
 	{
@@ -385,6 +373,7 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 				thief->sysmsg(TRANSLATE("... and fail because it is too heavy."));
 			else
 			{
+			#if 0
 				if (victim->amxevents[EVENT_CHR_ONSTOLEN])
 				{
 					g_bByPass = false;
@@ -392,9 +381,10 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 					if (g_bByPass==true)
 						return;
 				}
+			#endif
 
 				pItem thiefpack = thief->getBackpack();
-				VALIDATEPI(thiefpack);
+				if ( ! thiefpack ) return;
 				pi->setContainer( thiefpack );
 				thief->sysmsg(TRANSLATE("... and you succeed."));
 				pi->Refresh();
@@ -418,22 +408,17 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 			if ( pi->getCurrentName() != "#" )
 				itmname = pi->getCurrentName();
 			else
-			{
-				pi->getName( temp );
-				itmname = temp;
-			}
-
-			sprintf(temp,TRANSLATE("You notice %s trying to steal %s from you!"), thief->getCurrentName().c_str(), itmname.c_str());
-			sprintf(temp2,TRANSLATE("You notice %s trying to steal %s from %s!"), thief->getCurrentName().c_str(), itmname.c_str(), victim->getCurrentName().c_str());
+				itmname = pi->getName();
 
 			if ( victim->npc)
 				victim->talkAll(TRANSLATE( "Guards!! A thief is amoung us!"),0);
 			else
-				victim->sysmsg(temp);
+				victim->sysmsg(TRANSLATE("You notice %s trying to steal %s from you!"), thief->getCurrentName().c_str(), itmname.c_str());
 
-			//send to all player temp2 = thief are stealing victim if are more intelligent and a bonus of luck :D
-			//
-			//
+			char *temp;
+			asprintf(&temp,TRANSLATE("You notice %s trying to steal %s from %s!"), thief->getCurrentName().c_str(), itmname.c_str(), victim->getCurrentName().c_str());
+			
+			//send to all player temp = thief are stealing victim if are more intelligent and a bonus of luck :D
 			NxwSocketWrapper sw;
 			sw.fillOnline( thief, true );
 			for( sw.rewind(); !sw.isEmpty(); sw++ ) {
@@ -444,8 +429,10 @@ void Skills::target_randomSteal( NXWCLIENT ps, pTarget t )
 				pChar pc_i=ps_i->currChar();
 				if ( pc_i )
 					if( (rand()%10+10==17) || ( (rand()%2==1) && (pc_i->in>=thief->in)))
-						sysmessage(ps_i->toInt(),temp2);
+						sysmessage(ps_i->toInt(),temp);
 			}
+			
+			free(temp);
 		}
 	}
 	else

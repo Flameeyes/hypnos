@@ -31,7 +31,6 @@ void BountyAskVictim( int nVictimSerial, int nMurdererSerial )
   int nVictimIdx  = calcCharFromSer( nVictimSerial );
   int nMurderIdx  = calcCharFromSer( nMurdererSerial );
   int err2;
-  char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
   pChar pcc_nVictimIdx=MAKE_CHARREF_LOGGED(nVictimIdx,err);
   pChar pcc_nMurderIdx=MAKE_CHARREF_LOGGED(nMurderIdx,err2);
@@ -39,29 +38,26 @@ void BountyAskVictim( int nVictimSerial, int nMurdererSerial )
   if (err || err2) return;
 
   // Indicate that the victim is being asked if they want to place a bounty
-  sprintf((char*)temp, "BountyAskVictim():  %s is attempting to place a bounty of %i on %s\n",
+  LogMessage("BountyAskVictim():  %s is attempting to place a bounty of %i on %s\n",
           pcc_nVictimIdx->getCurrentName().c_str(), nAmount, pcc_nMurderIdx->getCurrentName().c_str() );
-  LogMessage((char*)temp);
 
   // If the amount of the bounty is larger than zero, create a bounty posting
   if( nAmount > 0 )
   {
      if( BountyCreate( pcc_nMurderIdx, nAmount ) )
 	 {
-         sprintf((char*)temp, "BountyAskVictim():  %s has placed a bounty of %i on %s\n",
+		 LogMessage("BountyAskVictim():  %s has placed a bounty of %i on %s\n",
                 pcc_nVictimIdx->getCurrentName().c_str(),
                 nAmount,
                 pcc_nMurderIdx->getCurrentName().c_str() );
-		 LogMessage((char*)temp);
 	 }
 
      else
 	 {
-       sprintf((char*)temp, "BountyAskVictim():  %s FAILED to place a bounty of %i on %s\n",
+	   LogMessage("BountyAskVictim():  %s FAILED to place a bounty of %i on %s\n",
                pcc_nVictimIdx->getCurrentName().c_str(),
                nAmount,
                pcc_nMurderIdx->getCurrentName().c_str() );
-	   LogMessage((char*)temp);
 	 }
   }
 

@@ -323,7 +323,6 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 	if ( ! pc ) return;
 	pChar pc_att = pc;	//Dirty... but now we can use NPC_CASTSPELL macro :P
 	if ( !pc->npc ) return;
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	if ( !TIMEOUT( pc->nextAiCheck ) )
 		return;
 
@@ -370,8 +369,10 @@ void checkAI(pChar pc) //Lag Fix -- Zippy
 					// Stop talking npcs to each other
 					if( pj->IsInnocent() && !pj->npc )
 					{
-						sprintf( temp,TRANSLATE("Hello %s, Welcome to my shop, How may i help thee?."), pj->getCurrentName().c_str());
+						char *temp;
+						asprintf(&temp,TRANSLATE("Hello %s, Welcome to my shop, How may i help thee?."), pj->getCurrentName().c_str());
 						pc->talkAll( temp, 1);
+						free(temp);
 					}
 				}
 			}

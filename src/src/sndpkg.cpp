@@ -1028,7 +1028,6 @@ void staticeffect(CHARACTER player, unsigned char eff1, unsigned char eff2, unsi
 	uint16_t eff = (eff1<<8)|(eff2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
 
-    	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	 int a0,a1,a2,a3,a4;
 	 Location charpos= pc->getPosition();
 
@@ -1087,11 +1086,9 @@ MakeGraphicalEffectPkt_(effect, 0x03, pc->getSerial(), 0, eff, charpos, pos2, sp
 				if (a4!=0xff) { particleSystem[46] = a4; Xsend(j, particleSystem, 49); }
 
 //AoS/				Network->FlushBuffer(j);
-				//sprintf(temp, "a0: %x a1: %x a2: %x a3: %x a4: %x \n",a0,a1,a2,a3,a4);
-				//ConOut(temp);
 			 }
-			 else if (clientDimension[j] != 2 && clientDimension[j] !=3 ) { sprintf(temp, "Invalid Client Dimension: %i\n",clientDimension[j]); LogError(temp); } // attention: a simple else is wrong !
-
+			else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
+				LogError("Invalid Client Dimension: %i\n",clientDimension[j]);
 	   } // end for
 	} // end UO:3D effect
 
@@ -1112,7 +1109,6 @@ void movingeffect(CHARACTER source, CHARACTER dest, unsigned char eff1, unsigned
 	uint16_t eff = (eff1<<8)|(eff2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
 
- 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	Location srcpos= src->getPosition();
 	Location destpos= dst->getPosition();
 
@@ -1162,7 +1158,8 @@ MakeGraphicalEffectPkt_(effect, 0x00, src->getSerial(), dst->getSerial32(), eff,
 					Xsend(j, particleSystem, 49);
 //AoS/					Network->FlushBuffer(j);
 				}
-				else if (clientDimension[j] != 2 && clientDimension[j] !=3 ) { sprintf(temp, "Invalid Client Dimension: %i\n",clientDimension[j]); LogError(temp); }
+				else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
+					LogError"Invalid Client Dimension: %i\n", clientDimension[j]);
 			}
 		}
 	}
@@ -1175,8 +1172,6 @@ void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned ch
 
 	uint16_t eff = (eff1<<8)|(eff2%256);
 	uint8_t effect[28]={ 0x70, 0x00, };
-
- 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
 	Location pos = pi->getPosition();
 
@@ -1223,7 +1218,7 @@ void staticeffect2(pItem pi, unsigned char eff1, unsigned char eff2, unsigned ch
 //AoS/					Network->FlushBuffer(j);
 				}
 				else if (clientDimension[j] != 2 && clientDimension[j] !=3 )
-				{ sprintf(temp, "Invalid Client Dimension: %i\n",clientDimension[j]); LogError(temp); }
+					LogError("Invalid Client Dimension: %i\n", clientDimension[j]);
 			}
 		}
 	}
@@ -1782,14 +1777,13 @@ int sellstuff(NXWSOCKET s, CHARACTER i)
 void tellmessage(int i, int s, char *txt)
 //Modified by N6 to use UNICODE packets
 {
-
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	if ( ! pc ) return;
 
 	uint8_t unicodetext[512];
- 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+	char temp;
 
-	sprintf(temp, TRANSLATE("GM tells %s: %s"), pc->getCurrentName().c_str(), txt);
+	asprintf(&temp, "GM tells %s: %s", pc->getCurrentName().c_str(), txt);
 
 	uint16_t ucl = ( strlen ( temp ) * 2 ) + 2 ;
 	char2wchar(temp);
@@ -1801,7 +1795,8 @@ void tellmessage(int i, int s, char *txt)
 
 	SendUnicodeSpeechMessagePkt(s, 0x01010101, 0x0101, 0, 0x0035, 0x0003, lang, sysname, unicodetext,  ucl);
 	SendUnicodeSpeechMessagePkt(i, 0x01010101, 0x0101, 0, 0x0035, 0x0003, lang, sysname, unicodetext,  ucl); //So Person who said it can see too
-
+	
+	free(temp);
 }
 
 

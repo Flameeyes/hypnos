@@ -432,16 +432,16 @@ void cNPC::createEscortQuest()
 
 void cNPC::clearedEscordQuest(pPC pc)
 {
-
- 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	// Calculate payment for services rendered
 	int servicePay = ( RandomNum(0, 20) * RandomNum(1, 30) );  // Equals a range of 0 to 600 possible gold with a 5% chance of getting 0 gold
 
 	// If they have no money, well, oops!
 	if ( servicePay == 0 )
 	{
-		sprintf( temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Alas, I seem to be a little short on gold. I have nothing to pay you with."), pc->getCurrentName().c_str(), region[questDestRegion].name );
+		char *temp;
+		asprintf( &temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Alas, I seem to be a little short on gold. I have nothing to pay you with."), pc->getCurrentName().c_str(), region[questDestRegion].name );
 		talk( pc->getClient(), temp, 0 );
+		free(temp);
 	}
 	else // Otherwise pay the poor sod for his time
 	{
@@ -449,12 +449,14 @@ void cNPC::clearedEscordQuest(pPC pc)
 		if ( servicePay < 75 ) servicePay += RandomNum(75, 100);
 		pc->addGold(servicePay);
 		pc->playSFX( goldsfx(servicePay) );
-		sprintf( temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Here is thy pay as promised."), pc->getCurrentName().c_str(), region[questDestRegion].name );
+		char *temp;
+		asprintf( &temp, TRANSLATE("Thank you %s for thy service. We have made it safely to %s. Here is thy pay as promised."), pc->getCurrentName().c_str(), region[questDestRegion].name );
 		talk( pc->getClient(), temp, 0 );
+		free(temp);
 	}
 
 	// Inform the PC of what he has just been given as payment
-	pc->getClient()->sysmsg(TRANSLATE("You have just received %d gold coins from %s %s"), servicePay, getCurrentName().c_str(), title.c_str() );
+	pc->getClient()->sysmessage(TRANSLATE("You have just received %d gold coins from %s %s"), servicePay, getCurrentName().c_str(), title.c_str() );
 
 	// Take the NPC out of quest mode
 	npcWander = WANDER_FREELY_CIRCLE;         // Wander freely

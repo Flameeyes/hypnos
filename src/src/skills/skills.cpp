@@ -255,21 +255,21 @@ static bool DoOnePotion(NXWSOCKET s, uint16_t regid, uint32_t regamount, char* r
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	VALIDATEPCR(pc,false);
 
-    bool success=false;
-    char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-
-    if (pc->getAmount(regid) >= regamount)
-    {
-        success=true;
-        sprintf(temp, TRANSLATE("*%s starts grinding some %s in the mortar.*"), pc->getCurrentName().c_str(), regname);
-        pc->emoteall( temp,1); // LB, the 1 stops stupid alchemy spam
-	pc->delItems(regid, regamount);
-    }
-    else
-        sysmessage(s, TRANSLATE("You do not have enough reagents for that potion."));
-
-    return success;
-
+	bool success=false;
+	
+	if (pc->getAmount(regid) >= regamount)
+	{
+		success=true;
+		char *temp;
+		asprintf(&temp, TRANSLATE("*%s starts grinding some %s in the mortar.*"), pc->getCurrentName().c_str(), regname);
+		pc->emoteall( temp,1); // LB, the 1 stops stupid alchemy spam
+		pc->delItems(regid, regamount);
+		free(temp);
+	}
+	else
+		sysmessage(s, TRANSLATE("You do not have enough reagents for that potion."));
+	
+	return success;
 }
 
 /*!
@@ -1327,66 +1327,64 @@ void Skills::AButte(NXWSOCKET s1, pItem pButte)
 
 
 	int v1;
-    if(pButte->getId()==0x100A)
-    { // East Facing Butte
-        if ((pButte->getPosition("x") > pc->getPosition("x"))||(pButte->getPosition("y") != pc->getPosition("y")))
-            v1= INVALID;
-        else v1= pc->getPosition("x") - pButte->getPosition("x");
-    }
-    else
-    { // South Facing Butte
-        if ((pButte->getPosition("y") > pc->getPosition("y"))||(pButte->getPosition("x") != pc->getPosition("x")))
-            v1= INVALID;
-        else v1= pc->getPosition("y") - pButte->getPosition("y");
-    }
+	if(pButte->getId()==0x100A)
+	{ // East Facing Butte
+		if ( pButte->getPosition().x > pc->getPosition().x || pButte->getPosition().y != pc->getPosition().y )
+			v1= INVALID;
+		else
+			v1= pc->getPosition().x - pButte->getPosition().x;
+	}
+	else
+	{ // South Facing Butte
+		if ( pButte->getPosition().y > pc->getPosition().y || pButte->getPosition().x != pc->getPosition().x )
+			v1= INVALID;
+		else
+			v1= pc->getPosition().y - pButte->getPosition().y;
+	}
 
-    int arrowsquant=0;
-    if(v1==1)
-    {
-
-        if(pButte->more1>0)
-        {
-
+	int arrowsquant=0;
+	if(v1==1)
+	{
+	
+		if(pButte->more1>0)
+		{
 			pItem pi = item::CreateFromScript( "$item_arrow", pc->getBackpack(), pButte->more1/2 );
 			if ( ! pi ) return;
-            pi->Refresh();
-        }
+			pi->Refresh();
+		}
 
-        if(pButte->more2>0)
-        {
+		if(pButte->more2>0)
+		{
 			pItem pi = item::CreateFromScript( "$item_crossbow_bolt", pc->getBackpack(), pButte->more2/2 );
 			if ( ! pi ) return;
-            pi->Refresh();
-        }
+			pi->Refresh();
+		}
+	
+		int i=0;
+		if(pButte->more1>0) i++;
+		if(pButte->more2>0) i+=2;
 
-        int i=0;
-        if(pButte->more1>0) i++;
-        if(pButte->more2>0) i+=2;
-
-        char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-
-        switch(i)
-        {
-        case 0:
-            sprintf(temp,TRANSLATE("This target is empty"));
-            break;
-        case 1:
-            sprintf(temp,TRANSLATE("You pull %d arrows from the target"),pButte->more1/2);
-            break;
-        case 2:
-            sprintf(temp,TRANSLATE("You pull %d bolts from the target"),pButte->more2/2);
-            break;
-        case 3:
-            sprintf(temp,TRANSLATE("You pull %d arrows and %d bolts from the target"),pButte->more1,pButte->more2/2);
-            break;
-        default:
-            LogError("switch reached default");
-            return;
-        }
-        pc->sysmsg(temp);
-        pButte->more1=0;
-        pButte->more2=0;
-    }
+		switch(i)
+		{
+			case 0:
+				pc->getClient()->sysmessage(TRANSLATE("This target is empty"));
+				break;
+			case 1:
+				pc->getClient()->sysmessage(TRANSLATE("You pull %d arrows from the target"),pButte->more1/2);
+				break;
+			case 2:
+				pc->getClient()->sysmessage(TRANSLATE("You pull %d bolts from the target"),pButte->more2/2);
+				break;
+			case 3:
+				pc->getClient()->sysmessage(TRANSLATE("You pull %d arrows and %d bolts from the target"),pButte->more1,pButte->more2/2);
+				break;
+			default:
+				LogError("switch reached default");
+				return;
+		}
+		pButte->more1=0;
+		pButte->more2=0;
+	}
 
     if( (v1>=5) && (v1<=8) )
     {
@@ -1531,7 +1529,6 @@ void Skills::Meditation (NXWSOCKET  s)
 //
 /*!
 \author AntiChrist
-\date 05/11/1999
 \param s socket of the persecuter
 
 If you are a ghost and attack a player, you can PERSECUTE him
@@ -1543,47 +1540,41 @@ void Skills::Persecute (NXWSOCKET  s)
 	if ( s < 0 || s >= now ) //Luxor
 		return;
 
-	pChar pc=MAKE_CHAR_REF(currchar[s]);
+	pChar pc = MAKE_CHAR_REF(currchar[s]);
 	if ( ! pc ) return;
 
-	pChar pc_targ=cSerializable::findCharBySerial(pc->targserial);
-	VALIDATEPC(pc_targ);
+	pChar pc_targ = pc->getTarget();
+	if ( ! pc_targ ) return;
 
-    char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-
-    if (pc_targ->IsGM()) return;
-
-    int decrease=(pc->in/10)+3;
-
-    if((pc->skilldelay<=uiCurrentTime) || pc->IsGM())
-    {
-        if(((rand()%20)+pc->in)>45) //not always
-        {
-            if( pc_targ->mn <= decrease )
-                pc_targ->mn = 0;
-            else
-                pc_targ->mn-=decrease;//decrease mana
-            pc_targ->updateStats(1);//update
-		pc->sysmsg(TRANSLATE("Your spiritual forces disturb the enemy!"));
-		pc_targ->sysmsg(TRANSLATE("A damned soul is disturbing your mind!"));
-            SetSkillDelay(DEREF_pChar(pc));
-
-            sprintf(temp, TRANSLATE("%s is persecuted by a ghost!!"), pc_targ->getCurrentName().c_str());
-
-            // Dupois pointed out the for loop was changing i which would drive stuff nuts later
-
-			pc_targ->emoteall( temp, 1);
-
-        } else
-        {
+	if (pc_targ->IsGM()) return;
+	
+	int decrease=(pc->in/10)+3;
+	
+	if( pc->skilldelay > uiCurrentTime && !pc->IsGM() )
+	{
+		pc->sysmsg(TRANSLATE("You are unable to persecute him now...rest a little..."));
+		return;
+	}
+	
+	if ( (rand()%20 + pc->in) <= 45 )
+	{
 		pc->sysmsg(TRANSLATE("Your mind is not strong enough to disturb the enemy."));
-        }
-    } else
-    {
+		return;
+	}
+	
+	if( pc_targ->mn <= decrease )
+		pc_targ->mn = 0;
+	else
+		pc_targ->mn-=decrease;//decrease mana
+	pc_targ->updateStats(1);//update
+	pc->sysmsg(TRANSLATE("Your spiritual forces disturb the enemy!"));
+	pc_targ->sysmsg(TRANSLATE("A damned soul is disturbing your mind!"));
+	SetSkillDelay(DEREF_pChar(pc));
 
-	pc->sysmsg(TRANSLATE("You are unable to persecute him now...rest a little..."));
-    }
-
+	char *temp;
+	asprintf(&temp, TRANSLATE("%s is persecuted by a ghost!!"), pc_targ->getCurrentName().c_str());
+	pc_targ->emoteall( temp, 1);
+	free(temp);
 }
 
 void loadskills()

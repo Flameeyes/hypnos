@@ -111,7 +111,6 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 {
 	bool deletecorpse=false;
 	char sect[512];
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
 	pChar pc=MAKE_CHAR_REF(currchar[s]);
 	if ( ! pc ) return;
@@ -140,9 +139,12 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pc->setCrimGrey(ServerScp::g_nChopWillCriminal);//Blue and not attacker and not guild
 
 		//create the Head
-		sprintf(temp,"the head of %s",pi3->getSecondaryNameC());
 		pItem pi = item::CreateFromScript( "$item_hardcoded" );
 		if ( ! pi ) return;
+		
+		char *temp;
+		asprintf(temp,"the head of %s",pi3->getSecondaryNameC());
+		
 		pi->setId( 0x1DA0 );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
@@ -154,11 +156,12 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
+		free(temp);
 
 		//create the Heart
-		sprintf(temp,"the heart of %s",pi3->getSecondaryNameC());
 		pi=item::CreateFromScript( "$item_a_heart" );
 		if ( ! pi ) return;
+		asprintf(&temp,"the heart of %s",pi3->getSecondaryNameC());
 		pi->setCurrentName( temp );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
@@ -168,12 +171,13 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
+		free(temp);
 
 		//create the Body
-		sprintf(temp,"the body of %s",pi3->getSecondaryNameC());
-        pi = item::CreateFromScript( "$item_hardcoded" );
-        if ( ! pi ) return;
-        pi->setId( 0x1DAD );
+		pi = item::CreateFromScript( "$item_hardcoded" );
+		asprintf(&temp,"the body of %s",pi3->getSecondaryNameC());
+		if ( ! pi ) return;
+		pi->setId( 0x1DAD );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
@@ -182,12 +186,13 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
+		free(temp);
 
 		//create the Left Arm
-		sprintf(temp,"the left arm of %s",pi3->getSecondaryNameC());
-        pi = item::CreateFromScript( "$item_hardcoded" );
-        if ( ! pi ) return;
-        pi->setId( 0x1DA1 );
+		pi = item::CreateFromScript( "$item_hardcoded" );
+		if ( ! pi ) return;
+		asprintf(&temp,"the left arm of %s",pi3->getSecondaryNameC());
+		pi->setId( 0x1DA1 );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
@@ -196,12 +201,13 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
+		free(temp);
 
 		//create the Right Arm
-		sprintf(temp,"the right arm of %s",pi3->getSecondaryNameC());
-        pi = item::CreateFromScript( "$item_hardcoded" );
-        if ( ! pi ) return;
-        pi->setId( 0x1DA2 );
+		pi = item::CreateFromScript( "$item_hardcoded" );
+		if ( ! pi ) return;
+		asprintf(&temp,"the right arm of %s",pi3->getSecondaryNameC());
+		pi->setId( 0x1DA2 );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
@@ -210,12 +216,13 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
+		free(temp);
 
 		//create the Left Leg
-		sprintf(temp,"the left leg of %s",pi3->getSecondaryNameC());
-        pi = item::CreateFromScript( "$item_hardcoded" );
-        if ( ! pi ) return;
-        pi->setId( 0x1DAE );
+		pi = item::CreateFromScript( "$item_hardcoded" );
+		if ( ! pi ) return;
+		asprintf(&temp,"the left leg of %s",pi3->getSecondaryNameC());
+		pi->setId( 0x1DAE );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
@@ -224,12 +231,13 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
+		free(temp);
 
 		//create the Rigth Leg
-		sprintf(temp,"the right leg of %s",pi3->getSecondaryNameC());
-        pi = item::CreateFromScript( "$item_hardcoded" );
-        if ( ! pi ) return;
-        pi->setId( 0x1DA4 );
+		pi = item::CreateFromScript( "$item_hardcoded" );
+		if ( ! pi ) return;
+		asprintf(&temp,"the right leg of %s",pi3->getSecondaryNameC());
+		pi->setId( 0x1DA4 );
 		pi->setContainer(0);
 		pi->MoveTo(pi3->getPosition());
 		pi->layer=0x01;
@@ -238,12 +246,11 @@ static void newCarveTarget(NXWSOCKET  s, ITEM i)
 		pi->setCurrentName( temp ); //Luxor
 		pi->setDecay();
 		pi->Refresh();
+		free(temp)
 
 		//human: always delete corpse!
 		deletecorpse=true;
-	}
-		else
-	{
+	} else {
 		cScpIterator* iter = NULL;
 		char script1[1024];
 		char script2[1024];

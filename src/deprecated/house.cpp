@@ -56,6 +56,8 @@ Triggered by double clicking a deed-> the deed's morex is read
 for the house section in house.cpp. Extra items can be added
 using HOUSE ITEM, (this includes all doors!) and locked "LOCK"
 Space around the house with SPACEX/Y and CHAR offset CHARX/Y/Z
+
+\todo Remove temp variable
 */
 void buildhouse( NXWCLIENT ps, pTarget t )
 {

@@ -1042,8 +1042,7 @@ void cNetwork::startchar(int s) // Send character startup stuff to player
 	if (SrvParms->joinmsg)
 	{
 		if (!strcmp(pc->getCurrentName().c_str(), "pty Slot --")) pc->setCurrentName("A new Character");//AntiChrist
-		sprintf((char*)temp,TRANSLATE("%s entered the realm"),pc->getCurrentName().c_str());//message upon entering a server
-		sysbroadcast((char*)temp);//message upon entering a server
+		sysbroadcast(TRANSLATE("%s entered the realm"),pc->getCurrentName().c_str());//message upon entering a server
 	}
 
 	sprintf(zbuf,"%s Logged in the game",pc->getCurrentName().c_str()); //for logging to UOXmon

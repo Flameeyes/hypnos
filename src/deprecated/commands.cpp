@@ -72,7 +72,6 @@ namespace Commands
 	{
 		/*unsigned int i;
 		int killed=0;
-		char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
 		r++; // synch with 1-indexed real storage, casue 0 is no region indicator, LB
 
@@ -111,8 +110,7 @@ namespace Commands
 
 		gcollect();
 		sysmessage(s, "Done.");
-		sprintf(temp, "%i of Spawn %i have been killed.",killed,r-1);
-		sysmessage(s, temp);*/
+		sysmessage(s, "%i of Spawn %i have been killed.",killed,r-1);*/
 	}
 
 	void RegSpawnMax (NXWSOCKET s, int r ) // rewrite LB
@@ -200,7 +198,6 @@ namespace Commands
 		int i;
 		uint32_t a;
 		int x2=0;
-		char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 
 		pChar pc_currchar = MAKE_CHAR_REF(currchar[s]);
 		if ( !pc_currchar ) return;
@@ -218,7 +215,6 @@ namespace Commands
 				time_t current_time = time(0);
 				struct tm *local = localtime(&current_time);
 				sprintf(counspages[i].timeofcall, "%02d:%02d:%02d", local->tm_hour, local->tm_min, local->tm_sec);
-				sprintf(temp,"%s [ %08x ] called at %s, %s",counspages[i].name,a,counspages[i].timeofcall,counspages[i].reason);
 				pc_currchar->playercallnum=i;
 				pc_currchar->pagegm=2;
 				x2++;
@@ -234,9 +230,9 @@ namespace Commands
 		{
 			if(reason == "OTHER")
 			{
+				char *temp;
 				pc_currchar->pagegm=0;
-				sprintf(temp, "Counselor Page from %s [ %08x ]: %s",
-				pc_currchar->getCurrentName().c_str(), a, reason.c_str());
+				asprintf(&temp, "Counselor Page from %s [ %08x ]: %s", pc_currchar->getCurrentName().c_str(), a, reason.c_str());
 				bool found=false;
 
 				NxwSocketWrapper sw;
@@ -254,6 +250,8 @@ namespace Commands
 					}
 
 				}
+				free(temp);
+				
 				if (found)
 					pc_currchar->sysmsg(TRANSLATE("Available Counselors have been notified of your request."));
 				else

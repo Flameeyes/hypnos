@@ -544,11 +544,7 @@ void cBoat::TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, 
 			break;
 
 		default:
-			{
-			char temp[TEMP_STR_SIZE];
-			sprintf(temp,"Turnboatstuff() more1 error! more1 = %c not found!\n", size );
-			LogWarning(temp);
-			}
+			LogWarning("Turnboatstuff() more1 error! more1 = %c not found!\n", size);
 			break;
 	}
 #else
@@ -664,11 +660,7 @@ void cBoat::TurnShip( uint8_t size, int32_t dir, pItem pPort, pItem pStarboard, 
 			break;
 
 		default:
-			{
-			char temp[TEMP_STR_SIZE];
-			sprintf(temp,"Turnboatstuff() more1 error! more1 = %c not found!\n", size );
-			LogWarning(temp);
-			}
+			LogWarning("Turnboatstuff() more1 error! more1 = %c not found!\n", size);
 			break;
 	}
 #endif

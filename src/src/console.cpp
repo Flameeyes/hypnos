@@ -29,24 +29,21 @@ void setWinTitle(char *str, ...)
 {
 	if (ServerScp::g_nDeamonMode!=0) return;
 
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
+	char temp; //xan -> this overrides the global temp var
 	va_list argptr;
 
 	va_start( argptr, str );
-	vsnprintf( temp, sizeof(temp)-1, str, argptr );
+	vasprintf( &temp, str, argptr );
 	va_end( argptr );
 	
 	#ifdef __unix__
 	    ConOut("\033]0;%s\007", temp); // xterm code
 	#endif
 	#ifdef WIN32
-    	#ifdef _WINDOWS
-    		SetWindowText(g_HWnd, temp);
-    	#endif
-    	#ifdef _CONSOLE
-    		SetConsoleTitle(temp);
-    	#endif
+		SetConsoleTitle(temp);
 	#endif
+	
+	free(temp);
 }
 
 void constart( void )

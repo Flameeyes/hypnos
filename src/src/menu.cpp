@@ -261,14 +261,14 @@ void cMenu::addCommand( std::string command )
 
 void cMenu::addCommand( char* formatStr, ... )
 {
-	char temp[TEMP_STR_SIZE];
-	
+	char *temp;
 	va_list vargs;
 	va_start(vargs, formatStr );
-	vsnprintf( temp, sizeof(temp)-1, formatStr, vargs);
+	vasprintf( &temp, sizeof(temp)-1, formatStr, vargs);
 	va_end(vargs);
 
 	addCommand( std::string( temp ) );
+	free(temp);
 }
 
 void cMenu::removeCommand( std::string command )

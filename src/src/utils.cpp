@@ -149,11 +149,11 @@ void cScriptCommand::execute( pClient client )
 
 void location2xyz(int loc, int& x, int& y, int& z)
 {
+#if 0
 	int  loopexit=0;
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-    cScpIterator* iter = NULL;
-    char script1[1024];
-    char script2[1024];
+	char script1[1024];
+	char script2[1024];
 
 
 	sprintf(temp, "SECTION LOCATION %i", loc);
@@ -180,6 +180,7 @@ void location2xyz(int loc, int& x, int& y, int& z)
 		while ( (strcmp(script1,"}")) && (++loopexit < MAXLOOPS) );
 	}
 	safedelete(iter);
+#endif
 }
 
 /*!
@@ -518,11 +519,10 @@ void endmessage(int x) // If shutdown is initialized
 	if (endtime<igetclock)
 		endtime=igetclock;
 
-	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
-	sprintf(temp, "server going down in %i minutes.\n",
+	sysbroadcast("server going down in %i minutes.\n",
 		((endtime-igetclock)/MY_CLOCKS_PER_SEC)/60);
-	sysbroadcast(temp);
-	InfoOut(temp);
+	InfoOut("server going down in %i minutes.\n",
+		((endtime-igetclock)/MY_CLOCKS_PER_SEC)/60);
 }
 
 /*!
