@@ -191,11 +191,11 @@ namespace nSkills {
 	//@{
 	/*!
 	\name Cartography Stuff
+	\todo Move all this inside cMap class
 	*/
-	void Cartography(pClient client); //!< By Polygon - opens the cartography skillmenu
-	bool HasEmptyMap(pChar pc); //!< By Polygon - checks if player has an empty map
-	bool DelEmptyMap(pChar pc); //!< By Polygon - deletes an empty map from the player's pack
-	void Decipher(pItem tmap, pClient client); //!< By Polygon - attempt to decipher a tattered treasure map
+	void Cartography(pClient client);
+	pMap getEmptyMap(pChar pc);
+	void Decipher(pMap tmap, pClient client);
 	//@}
 
 	int GetAntiMagicalArmorDefence(pChar pc); //!< blackwind meditation armor stuff

@@ -19,9 +19,6 @@ int ingottype=0;//will hold number of ingot type to be deleted
 
 inline void SetSkillDelay(pChar pc)
 {
-	if(!pc)
-		return;
-
 	SetTimerSec(&pc->skilldelay,SrvParms->skilldelay);
 }
 
@@ -130,7 +127,14 @@ void nSkills::loadSkills()
 	loadSkillVars();
 }
 
-inline void nSkills::loadSkillVars()
+/*!
+\brief Loads the 'madewords' for the skills
+
+This function loads into the \ref skillinfo vector the data about the
+'madeword' to use in the identification of the item's crafter.
+\see Made words
+*/
+static inline void nSkills::loadSkillVars()
 {
 	// Note: lore, knowledge and combat skills can't made anything!	
 	skillinfo[skAnimalLore].madeword = strNull;
@@ -443,7 +447,6 @@ bool Skills::AdvanceSkill(pChar pc, int sk, char skillused)
 
 /*!
 \author Duke
-\date 21/03/2000
 \brief Little helper function for cSkills::AdvanceStats()
 
 finds the appropriate line for the used skill in advance table
@@ -615,8 +618,6 @@ static int AdvanceOneStat(uint32_t sk, int i, char stat, bool *update, int type,
 }
 
 /*!
-\author Duke
-\date 21/03/2000
 \brief Advance STR, DEX and INT after use of a skill
 \param pc crafter character
 \param sk skill identifier
@@ -746,19 +747,19 @@ void Skills::SpiritSpeak(pClient client)
 	
 	if(!pc->checkSkill(SPIRITSPEAK, 0, 1000))
 	{
-		sysmessage(s,"You fail your attempt at contacting the netherworld.");
+		client->sysmessage("You fail your attempt at contacting the netherworld.");
 		return;
 	}
 	
 	pc->impAction(0x11);   // I heard there is no action...but I decided to add one
 	pc->playSFX(0x024A);   // only get the sound if you are successful
-	sysmessage(s,"You establish a connection to the netherworld.");
+	client->sysmessage("You establish a connection to the netherworld.");
 	SetTimerSec(&(pc->spiritspeaktimer),spiritspeak_data.spiritspeaktimer+pc->in);
 }
 
 /*!
 \brief Skill is clicked on the skill list
-\param client client to the character that used skill
+\param client Client of the character that used skill
 \param x skill identifier
 */
 void Skills::SkillUse(pClient client, int x)
@@ -1216,14 +1217,13 @@ void Skills::AButte(pClient client, pItem pButte)
 /*!
 \author Luxor
 \brief Implements Meditation skill
+\param client Client who requested the meditation
 */
 void Skills::Meditation (pClient client)
 {
 	if ( ! client ) return;
 	pPC pc = client->currChar();
 	if ( ! pc ) return;
-
-	pItem pi = NULL;
 
 	pc->setMeditating(false);
 
@@ -1237,7 +1237,7 @@ void Skills::Meditation (pClient client)
 		return;
 	}
 
-	pi = pc->getWeapon();
+	pWeapon pi = pc->getWeapon();
 	if ( (pi && !pi->IsStave()) || pc->getShield() ) {
 		client->sysmessage( "You cannot meditate with a weapon or shield equipped!");
 		return;
@@ -1257,7 +1257,7 @@ void Skills::Meditation (pClient client)
 		return;
 	}
 
-	client->sysmessage( "You enter a meditative trance.");
+	client->sysmessage("You enter a meditative trance.");
 	pc->setMeditating(true);
 	pc->playSFX(0x00F9);
 }
@@ -1332,212 +1332,188 @@ int Skills::GetAntiMagicalArmorDefence(pChar pc)
     return ar;
 }
 /*!
-\author Polygon
 \brief Builds the cartography menu
-\param client client of the crafter
+\param client Client of the crafter
 
-Function is called when clicked on the <i>Cartography</i> button
+Function is called when clicked on the \em Cartography button
 */
 void Skills::Cartography(pClient client)
 {
 	if ( ! client ) //Luxor
 		return;
 
-	pChar pc=cSerializable::findCharBySerial(currchar[s]);
+	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
-    if( Skills::HasEmptyMap(pc) )
-    {
-        //itemmake[s].has = 1;
-		//Skills::MakeMenu(s, 1200, skCartography);
-    }
-    else
-        sysmessage(s, "You don't have an empty map to draw on");
+	if ( ! Skills::getEmptyMap(pc) )
+	{
+		client->sysmessage("You don't have an empty map to draw on");
+		return;
+	}
+	
+	//itemmake[s].has = 1;
+	//Skills::MakeMenu(s, 1200, skCartography);
 }
 
 /*!
-\author Polygon
 \brief Check if the player carries an empty map
-\param cc character to check if has empty map
-\return always false (?)
-\todo write it
+\author Flameeyes
+\param pc Character to check for an empty map
+\return NULL if not found a map, else the pointer to the found map
+\note This function doesn't search recursively inside the container
 */
-bool Skills::HasEmptyMap(pChar pc)
+pMap nSkills::getEmptyMap(pChar pc)
 {
-	/*
-	if(!pc) return false;
-
-	pItem pack = pc->getBackpack();    // Get the packitem
-	if(!pack) return false;
-
-	int ci = 0, loopexit = 0;
-	pItem pi;
-	while (((pi = ContainerSearch(pack->getSerial(), &ci)) != NULL) &&(++loopexit < MAXLOOPS))
+	if ( ! pc ) return false;
+	
+	pContainer pack = pc->getBackpack();
+	if ( ! pack ) return false;
+	
+	pack->lockItemsMutex();
+	
+	pMap pm = NULL;
+	for(ItemSList::const_iterator it = pack->getItems().begin(); it != pack->getItems().end(); it++)
 	{
-        if(!pi)
-			continue;
-
-        if (pi->type == 300)  // Is it the right type
-            return true;    // Yay, go on with carto
-    }
-*/
-    return false;
+		if ( ! (pm = dynamic_cast<pMap>(*it)) ) continue;
+		
+		if ( pm->isBlankMap() )
+		{ // Remember to unlock the mutex else we have a deadlock :)
+			pack->unlockItemsMutex();
+			return pm;
+		}
+	}
+	
+	pack->unlockItemsMutex();
+	
+	return false;
 }
 
 /*!
-\author Polygon
-\brief Delete an empty map from the player's backpack, use HasEmptyMap before!
-\return always false (?)
-\todo write it
-*/
-bool Skills::DelEmptyMap(pChar pc)
-{
- 	/*
-	if(!pc) return false;
-
-	pItem pack = pc->getBackpack();    // Get the packitem
-	if(!pack) return false;
-
-    int ci=0;       // Stores the last found item
-    int loopexit=0; // Avoids the loop to take too much time
-	pItem cand=NULL;
-	while (((cand = ContainerSearch(pack->getSerial(), &ci)) != NULL) &&(++loopexit < MAXLOOPS))
-	{
-        if(!cand)
-			continue;
-
-        if (cand->type == 300)  // Is it the right type
-        {
-            cand->deleteItem();    // Delete it
-            return true;        // Go on with cartography
-        }
-    }
-*/
-    return false;   // Search lasted too long, abort (shouldn't happen, abort if ya get this)
-}
-
-/*!
-\author Polygon
 \brief Attempt to decipher a tattered map
-\param tmap item pointer to the map
-\param client client of the decipher
+\param tmap Map to decipher
+\param client Client of the decipher
 
-Called when double-click such a map
+Called by cMap::doubleClicked() when called for a not deciphered treasure map.
 */
-void Skills::Decipher(pItem tmap, pClient client)
+void nSkills::Decipher(pMap tmap, pClient client)
 {
 	if ( ! client ) //Luxor
 		return;
  	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
-    char sect[512];         // Needed for script search
-    int regtouse;           // Stores the region-number of the TH-region
-    int i;                  // Loop variable
-    int btlx, btly, blrx, blry; // Stores the borders of the tresure region (topleft x-y, lowright x-y)
-    int tlx, tly, lrx, lry;     // Stores the map borders
-    int x, y;                   // Stores the final treasure location
-    cScpIterator* iter = NULL;
-    char script1[1024];
+	char sect[512];         // Needed for script search
+	int regtouse;           // Stores the region-number of the TH-region
+	int i;                  // Loop variable
+	int btlx, btly, blrx, blry; // Stores the borders of the tresure region (topleft x-y, lowright x-y)
+	int tlx, tly, lrx, lry;     // Stores the map borders
+	int x, y;                   // Stores the final treasure location
+	cScpIterator* iter = NULL;
+	char script1[1024];
+	
+	// Set the skill delay, no matter if it was a success or not
+	SetTimerSec(&pc->skilldelay,SrvParms->skilldelay);
+	pc->playSFX(0x0249);
+	
+	if( pc->skilldelay > getclock() && !pc->isGM()) // Char doin something?
+	{
+		client->sysmessage("You must wait to perform another action");
+		return;
+	}
+    
+	if ( ! pc->checkSkill( skCartography, tmap->morey * 10, 1000)) // Is the char skilled enaugh to decipher the map
+	{
+		client->sysmessage("You fail to decipher the map");
+		return;
+	}
+	
+	// Stores the new map
+	pItem nmap=item::CreateFromScript( 70025, pc->getBackpack() );
+	if (!nmap)
+	{
+		LogWarning("bad script item # 70025(Item Not found).");
+		return; //invalid script item
+	}
 
-    if(pc->skilldelay<=getclock() || pc->isGM()) // Char doin something?
-    {
-        if (pc->checkSkill( skCartography, tmap->morey * 10, 1000)) // Is the char skilled enaugh to decipher the map
-        {
-            // Stores the new map
-            pItem nmap=item::CreateFromScript( 70025, pc->getBackpack() );
-            if (!nmap)
-            {
-                LogWarning("bad script item # 70025(Item Not found).");
-                return; //invalid script item
-            }
-
-			nmap->setCurrentName("a deciphered lvl.%d treasure map", tmap->morez);   // Give it the correct name
-            nmap->morez = tmap->morez;              // Give it the correct level
-            nmap->creator = pc->getCurrentName();  // Store the creator
+	nmap->setCurrentName("a deciphered lvl.%d treasure map", tmap->morez);   // Give it the correct name
+	nmap->morez = tmap->morez;              // Give it the correct level
+	nmap->creator = pc->getCurrentName();  // Store the creator
 
 
-            sprintf(sect, "SECTION TREASURE %i", nmap->morez);
+	sprintf(sect, "SECTION TREASURE %i", nmap->morez);
 
-            iter = Scripts::Regions->getNewIterator(sect);
+	iter = Scripts::Regions->getNewIterator(sect);
 
-            if (iter == NULL) {
-                LogWarning("Treasure hunting cSkills::Decipher : Unable to find 'SECTION TREASURE %d' in regions-script", nmap->morez);
-                return;
-            }
-            strcpy(script1, iter->getEntry()->getFullLine().c_str());               // skip the {
-            strcpy(script1, iter->getEntry()->getFullLine().c_str());               // Get the number of areas
-            regtouse = rand()%str2num(script1); // Select a random one
-            for (i = 0; i < regtouse; i++)      // Skip the ones before the correct one
-            {
-                strcpy(script1, iter->getEntry()->getFullLine().c_str());
-                strcpy(script1, iter->getEntry()->getFullLine().c_str());
-                strcpy(script1, iter->getEntry()->getFullLine().c_str());
-                strcpy(script1, iter->getEntry()->getFullLine().c_str());
-            }
-            strcpy(script1, iter->getEntry()->getFullLine().c_str());
-            btlx = str2num(script1);
-            strcpy(script1, iter->getEntry()->getFullLine().c_str());
-            btly = str2num(script1);
-            strcpy(script1, iter->getEntry()->getFullLine().c_str());
-            blrx = str2num(script1);
-            strcpy(script1, iter->getEntry()->getFullLine().c_str());
-            blry = str2num(script1);
+	if (iter == NULL)
+	{
+		LogWarning("Treasure hunting cSkills::Decipher : Unable to find 'SECTION TREASURE %d' in regions-script", nmap->morez);
+		return;
+	}
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());               // skip the {
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());               // Get the number of areas
+	regtouse = rand()%str2num(script1); // Select a random one
+	for (i = 0; i < regtouse; i++)      // Skip the ones before the correct one
+	{
+		strcpy(script1, iter->getEntry()->getFullLine().c_str());
+		strcpy(script1, iter->getEntry()->getFullLine().c_str());
+		strcpy(script1, iter->getEntry()->getFullLine().c_str());
+		strcpy(script1, iter->getEntry()->getFullLine().c_str());
+	}
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());
+	btlx = str2num(script1);
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());
+	btly = str2num(script1);
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());
+	blrx = str2num(script1);
+	strcpy(script1, iter->getEntry()->getFullLine().c_str());
+	blry = str2num(script1);
 
-            safedelete(iter);
+	safedelete(iter);
 
-            if ((btlx < 0) || (btly < 0) || (blrx > 0x13FF) || (blry > 0x0FFF)) // Valid region?
-            {
-                sprintf(sect, "Treasure Hunting cSkills::Decipher : Invalid region borders for lvl.%d , region %d", nmap->morez, regtouse+1);   // Give out detailed warning :D
-                LogWarning(sect);
-                return;
-            }
-            x = btlx + (rand()%(blrx-btlx));    // Generate treasure location
-            y = btly + (rand()%(blry-btly));
-            tlx = x - 250;      // Generate map borders
-            tly = y - 250;
-            lrx = x + 250;
-            lry = y + 250;
-            // Check if we are over the borders and correct errors
-            if (tlx < 0)    // Too far left?
-            {
-                lrx -= tlx; // Add the stuff too far left to the right border (tlx is neg. so - and - gets + ;)
-                tlx = 0;    // Set tlx to correct value
-            }
-            else if (lrx > 0x13FF) // Too far right?
-            {
-                tlx -= lrx - 0x13FF;    // Subtract what is to much from the left border
-                lrx = 0x13FF;   // Set lrx to correct value
-            }
-            if (tly < 0)    // Too far top?
-            {
-                lry -= tly; // Add the stuff too far top to the bottom border (tly is neg. so - and - gets + ;)
-                tly = 0;    // Set tly to correct value
-            }
-            else if (lry > 0x0FFF) // Too far bottom?
-            {
-                tly -= lry - 0x0FFF;    // Subtract what is to much from the top border
-                lry = 0x0FFF;   // Set lry to correct value
-            }
-            nmap->more1 = tlx>>8;   // Store the map extends
-            nmap->more2 = tlx%256;
-            nmap->more3 = tly>>8;
-            nmap->more4 = tly%256;
-            nmap->moreb1 = lrx>>8;
-            nmap->moreb2 = lrx%256;
-            nmap->moreb3 = lry>>8;
-            nmap->moreb4 = lry%256;
-            nmap->morex = x;        // Store the treasure's location
-            nmap->morey = y;
-            tmap->Delete();    // Delete the tattered map
-        }
-        else
-            client->sysmessage("You fail to decipher the map");      // Nope :P
-        // Set the skill delay, no matter if it was a success or not
-        SetTimerSec(&pc->skilldelay,SrvParms->skilldelay);
-        pc->playSFX(0x0249); // Do some inscription sound regardless of success or failure
-        client->sysmessage("You put the deciphered tresure map in your pack");       // YAY
-    }
-    else
-        client->sysmessage("You must wait to perform another action");       // wait a bit
+	if ((btlx < 0) || (btly < 0) || (blrx > 0x13FF) || (blry > 0x0FFF)) // Valid region?
+	{
+		sprintf(sect, "Treasure Hunting cSkills::Decipher : Invalid region borders for lvl.%d , region %d", nmap->morez, regtouse+1);   // Give out detailed warning :D
+		LogWarning(sect);
+		return;
+	}
+	x = btlx + (rand()%(blrx-btlx));    // Generate treasure location
+	y = btly + (rand()%(blry-btly));
+	tlx = x - 250;      // Generate map borders
+	tly = y - 250;
+	lrx = x + 250;
+	lry = y + 250;
+	// Check if we are over the borders and correct errors
+	if (tlx < 0)    // Too far left?
+	{
+		lrx -= tlx; // Add the stuff too far left to the right border (tlx is neg. so - and - gets + ;)
+		tlx = 0;    // Set tlx to correct value
+	}
+	else if (lrx > 0x13FF) // Too far right?
+	{
+		tlx -= lrx - 0x13FF;    // Subtract what is to much from the left border
+		lrx = 0x13FF;   // Set lrx to correct value
+	}
+	if (tly < 0)    // Too far top?
+	{
+		lry -= tly; // Add the stuff too far top to the bottom border (tly is neg. so - and - gets + ;)
+		tly = 0;    // Set tly to correct value
+	}
+	else if (lry > 0x0FFF) // Too far bottom?
+	{
+		tly -= lry - 0x0FFF;    // Subtract what is to much from the top border
+		lry = 0x0FFF;   // Set lry to correct value
+	}
+	nmap->more1 = tlx>>8;   // Store the map extends
+	nmap->more2 = tlx%256;
+	nmap->more3 = tly>>8;
+	nmap->more4 = tly%256;
+	nmap->moreb1 = lrx>>8;
+	nmap->moreb2 = lrx%256;
+	nmap->moreb3 = lry>>8;
+	nmap->moreb4 = lry%256;
+	nmap->morex = x;        // Store the treasure's location
+	nmap->morey = y;
+	tmap->Delete();    // Delete the tattered map
+
+	client->sysmessage("You put the deciphered tresure map in your pack");
 }
