@@ -31,7 +31,7 @@ AC_EXEEXT
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([fcntl.h limits.h memory.h signal.h stdint.h stdlib.h sys/time.h sys/timeb.h sys/mman.h sys/utsname.h unistd.h netinet/in.h ])
+AC_CHECK_HEADERS([fcntl.h limits.h memory.h signal.h stdint.h stdlib.h sys/time.h sys/timeb.h sys/mman.h sys/utsname.h unistd.h netinet/in.h sstream iosfwd iostream ostream])
 
 AC_EGREP_CPP(yes,
 [#ifdef WIN32
@@ -75,7 +75,7 @@ else
 	
 	# define FHS-compliant directories only if not under windows :)
 	
-	AC_DEFINE(DATADIR, $datadir, "Base data dir for hypnos")
+	DEFDIRS="-DDATADIR=\"$datadir\" "
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -98,7 +98,7 @@ AC_CHECK_FUNCS([basename ftime gettimeofday memset munmap strchr strstr strtol s
 
 # Adding include dirs and WEFTS_ variables
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
-CXXFLAGS="$CXXFLAGS $INCLUDES $WEFTS_CXXFLAGS -Wall $WARNS"
+CXXFLAGS="$CXXFLAGS $INCLUDES $WEFTS_CXXFLAGS -Wall $WARNS $DEFDIRS"
 CFLAGS="$CXXFLAGS"
 LDFLAGS="$LDFLAGS $WEFTS_LIBS"
 

@@ -20149,7 +20149,11 @@ fi
 
 
 
-for ac_header in fcntl.h limits.h memory.h signal.h stdint.h stdlib.h sys/time.h sys/timeb.h sys/mman.h sys/utsname.h unistd.h netinet/in.h
+
+
+
+
+for ac_header in fcntl.h limits.h memory.h signal.h stdint.h stdlib.h sys/time.h sys/timeb.h sys/mman.h sys/utsname.h unistd.h netinet/in.h sstream iosfwd iostream ostream
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then
@@ -21130,6 +21134,10 @@ _ACEOF
 fi
 done
 
+
+	# define FHS-compliant directories only if not under windows :)
+
+	DEFDIRS="-DDATADIR=\"$datadir\" "
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -22915,7 +22923,7 @@ done
 
 # Adding include dirs and WEFTS_ variables
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'
-CXXFLAGS="$CXXFLAGS $INCLUDES $WEFTS_CXXFLAGS -Wall $WARNS"
+CXXFLAGS="$CXXFLAGS $INCLUDES $WEFTS_CXXFLAGS -Wall $WARNS $DEFDIRS"
 CFLAGS="$CXXFLAGS"
 LDFLAGS="$LDFLAGS $WEFTS_LIBS"
 
