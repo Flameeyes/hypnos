@@ -18,7 +18,7 @@ AM_PATH_WEFTS()
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h memory.h netdb.h netinet/in.h stdint.h stdlib.h sys/ioctl.h sys/socket.h sys/time.h sys/timeb.h termios.h unistd.h winsock2.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h memory.h stdint.h stdlib.h sys/ioctl.h sys/time.h sys/timeb.h termios.h unistd.h])
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_CONST
@@ -35,10 +35,9 @@ t includes]))
 AC_FUNC_FORK
 AC_FUNC_MALLOC
 AC_FUNC_MMAP
-AC_FUNC_SELECT_ARGTYPES
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([ftime gethostbyname gettimeofday inet_aton inet_ntoa memset munmap select socket strchr strerror strstr strtol strtoul strtoull strlwr strupr uname asprintf strcmpi strcasecmp strncmpi strncasecmp kbhit getch])
+AC_CHECK_FUNCS([ftime gettimeofday memset munmap strchr strerror strstr strtol strtoul strtoull strlwr strupr uname asprintf strcmpi strcasecmp strncmpi strncasecmp kbhit getch])
 
 # Adding include dirs and WEFTS_ variables
 INCLUDES='-I$(top_srcdir)/libhypnos/ -I$(top_srcdir)/includes/'

@@ -51,5 +51,13 @@ void *tReceiving::run()
 		
 	}
 	
+	// Lock the threads set
+	tListening::instance->threads_m.lock();
+	
+	threads.erase(this);
+	
+	tListening::instance->threads_m.unlock();
+	// Unlock the threads set
+	
 	tKilling::instance->deadSockets->push(this);
 }
