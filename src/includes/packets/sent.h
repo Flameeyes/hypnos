@@ -95,12 +95,13 @@ class cPacketSendObjectInformation : public cPacketSend
 {
 protected:
 	pItem item;	//!< Item
+        pPC pc;		//!< Player who sees the item
 public:
 	/*!
 	\param i item
 	*/
-	inline cPacketSendObjectInformation(pItem i) :
-		cPacketSend(NULL, 0), item(i)
+	inline cPacketSendObjectInformation(pItem i, pPC p) :
+		cPacketSend(NULL, 0), item(i), pc(p)
 	{ }
 
 	void prepare();
