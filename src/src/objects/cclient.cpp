@@ -122,7 +122,7 @@ void cClient::showContainer(pCont cont)
 	si.fillItemsInContainer( cont, false, false );
 	int32_t count=si.size();
 
-	nPackets::Sent::DrawContainer pk(cont->getSerial(), cont->getGump());
+	nPackets::Sent::OpenGump pk(cont->getSerial(), cont->getGump());
 	sendPacket(&pk);
 
 	nPackets::Sent::ContainerItem pk2;
@@ -1215,7 +1215,7 @@ void cClient::dump_item(pItem pi, Location &loc) // Item is dropped on the groun
 void cClient::droppedOnChar(pItem pi, pChar dest)
 {
 	if(!pi) return false;
-	if(!dest) false;
+	if(!dest) return false;
 
 	pChar pc_currchar = currChar();
 	if(!pc_currchar) return false;
@@ -1227,7 +1227,7 @@ void cClient::droppedOnChar(pItem pi, pChar dest)
 	{
 		if (npc)
 		{
-			if(!npc->HasHumanBody()) droppedOnPet( pi, npc);
+			if(!npc->getBody()->isHuman()) droppedOnPet( pi, npc);
 			else	// Item dropped on a Human character
 			{
 				// Item dropped on a Guard (possible bounty quest)

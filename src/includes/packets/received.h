@@ -281,19 +281,62 @@ namespace nPackets {
 			Location destination; 	//!< where the item is dragged to
 			uint16_t amount;	//!< how many items in stack
 		public:
-			inline DragItem(pItem aItem, Location aDestination, uint16_t aAmount) :
+			inline DragItem(pItem aitem, Location aDestination, uint16_t aAmount) :
 				cPacketSend(NULL, 0), item(aItem), destination(aDestination), amount(aAmount)
 			{ }
-		
+
 			void prepare();
 		};
-		
+
+                /*!
+		\brief Open gump
+		\author Chronodt
+		\note packet 0x24
+		*/
+
+		class OpenGump : public cPacketSend
+		{
+		protected:
+			uint32_t serial; 		//!< serial of gump or gump-related item/char
+			uint16_t gump;			//!< gump id
+		public:
+			inline OpenGump(pItem aSerial, uint16_t aGump) :
+				cPacketSend(NULL, 0), serial(aSerial), gump(aGump)
+			{ }
+
+			void prepare();
+		};
+
+		/*!
+		\brief tells to the client the serial and all other data about an item in the given container. usually preceded by another package
+		\author Flameeyes & Chronodt
+		\note packet 0x25
+
+		\note packet has to be sent AFTER the real moving of the item. This only tells the client where it has gone to
+		*/
+
+		class ShowItemInContainer : public cPacketSend
+		{
+		protected:
+			pItem item;	//!< Item to add
+		public:
+			/*!
+			\param aItem item to add
+			*/
+			inline ShowItemInContainer(pItem aItem) :
+				cPacketSend(NULL, 0), item(aItem)
+			{ }
+
+			void prepare();
+		};
+
+
 		/*!
 		\brief Bounce item
 		\author Chronodt
 		\note packet 0x27
 		*/
-		
+
 		class BounceItem : public cPacketSend
 		{
 		protected:
@@ -302,13 +345,10 @@ namespace nPackets {
 			inline BounceItem(uint8_t aMode = 0) :
 				cPacketSend(NULL, 0), mode(aMode)
 			{ }
-		
+
 			void prepare();
 		};
-		
-		
-		
-		
+
 		/*!
 		\brief cChar::action() packet
 		\author Flameeyes
@@ -326,28 +366,6 @@ namespace nPackets {
 			*/
 			inline Action(uint32_t s, uint16_t a) :
 				cPacketSend(NULL, 0), serial(s), action(a)
-			{ }
-		
-			void prepare();
-		};
-		
-		/*!
-		\brief Draws a container on the user script
-		\author Flameeyes
-		*/
-		class DrawContainer : public cPacketSend
-		{
-		protected:
-			const uint32_t serial;	//!< Serial of the container to draw
-			const uint16_t gump;	//!< Gump of the container to draw
-		
-		public:
-			/*!
-			\param s serial of the container
-			\param g gump of the container
-			*/
-			inline DrawContainer(uint32_t s, uint16_t g) :
-				cPacketSend(NULL, 0), serial(s), gump(g)
 			{ }
 		
 			void prepare();
@@ -379,24 +397,7 @@ namespace nPackets {
 		
 			void prepare();
 		};
-		
-		//! Add item to container
-		//! \note packet has to be sent AFTER the real moving of the item. This only tells the client where it has gone to
-		class ShowItemInContainer : public cPacketSend
-		{
-		protected:
-			pItem item;	//!< Item to add
-		public:
-			/*!
-			\param itm item to add
-			*/
-			inline ShowItemInContainer(pItem itm) :
-				cPacketSend(NULL, 0), item(itm)
-			{ }
-		
-			void prepare();
-		};
-		
+
 		//! Work item
 		class WornItem : public cPacketSend
 		{

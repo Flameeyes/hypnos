@@ -222,9 +222,9 @@ void cItem::doubleClick(pClient client)
 
 	Location charpos= pc->getPosition();
 
-        // Luxor: cannot use items if under invisible spell
-        // Chronodt: 1/2/2004 added a server parameter check to allow servers to let items be used when invisible
-        if (pc->IsHiddenBySpell() && !nSettings::Actions::canUseItemsWhenInvisible()) return;
+	// Luxor: cannot use items if under invisible spell
+	// Chronodt: 1/2/2004 added a server parameter check to allow servers to let items be used when invisible
+	if (pc->IsHiddenBySpell() && !nSettings::Actions::canUseItemsWhenInvisible()) return;
 
 	if ( !pc->IsGM() && pc->objectdelay >= getclock() )
 	{
@@ -264,7 +264,7 @@ void cItem::doubleClick(pClient client)
 	if(cont->isInWorld()) {
 		dst = cont->getPosition();
 	} else {
-		pChar pg_dst = cSerializable::findCharBySerial( cont->getContSerial() );  //TODO: verify if doing a getContSerial to a body returns a char
+		pChar pg_dst = cSerializable::findCharBySerial( cont->getContSerial() );  //!\todo: verify if doing a getContSerial to a body returns a char
 		if(!pg_dist) return;
 
 		dst = pg_dst->getPosition();

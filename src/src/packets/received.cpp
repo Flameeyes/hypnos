@@ -45,11 +45,11 @@ void nPackets::Sent::Status::prepare()
 	ShortToCharPtr(pc->getSerial(), buffer+3);
 
 	memset(buffer+7, 0, 30);
-	strncpy((char*)buffer+7, body->getName().c_str(), 30);
+	strncpy(buffer + 7, body->getName().c_str(), 30);
 
 
-        ShortToCharPtr(body->getHitPoints(), buffer+37);
-        ShortToCharPtr(body->getMaxHitPoints(), buffer+39);
+	ShortToCharPtr(body->getHitPoints(), buffer+37);
+	ShortToCharPtr(body->getMaxHitPoints(), buffer+39);
 
 	buffer[41] = canrename ? 0xFF : 0x00;
 	buffer[42] = type;
@@ -96,7 +96,7 @@ void nPackets::Sent::Status::prepare()
 */
 void nPackets::Sent::ObjectInformation::prepare()
 {
-        buffer = new uint8_t[20]; 	//MAXIMUM packet length
+	buffer = new uint8_t[20]; 	//MAXIMUM packet length
 
 	Location pos = pi->getPosition();
 	LongToCharPtr(pi->getSerial() | 0x80000000, buffer +3);
@@ -107,27 +107,28 @@ void nPackets::Sent::ObjectInformation::prepare()
 	//invisible light source!
 	if(pc->isGM() && pi->getId()==0x1647) ShortToCharPtr(0x0A0F, buffer +7);
 	else 	if (pc->canViewHouseIcon() && pi->getId()>=0x4000 && pi->getId()<=0x40FF) ShortToCharPtr(0x14F0, buffer +7);         // LB, 25-dec-1999 litle bugfix for treasure multis, ( == changed to >=)
-                else ShortToCharPtr(pi->animid(), buffer +7);
+		else ShortToCharPtr(pi->animid(), buffer +7);
 	ShortToCharPtr(pi->amount, buffer +9);
 	ShortToCharPtr(pos.x, buffer +11);
 	ShortToCharPtr(pos.y | 0xC000, buffer +13);
 
-        uint8_t offset = 15;
+	uint8_t offset = 15;
 
-        if (pi->dir)
-        {
-        	++offset;
-                buffer[11]|=0x80;
-                buffer[15]=static_cast<unsigned char>(pi->dir);
-        }
+	if (pi->dir)
+	{
+		++offset;
+		buffer[11]|=0x80;
+		buffer[15]=static_cast<unsigned char>(pi->dir);
+	}
 
 	buffer[offset]= pos.z;
 
-	if(pc->isGM() && pi->getId()==0x1647) ShortToCharPtr(0x00C6, buffer + offset +1);	//let's show the lightsource like a blue item
-        else ShortToCharPtr(pi->getColor(), buffer + offset + 1);
+
+	if(pc->IsGM() && pi->getId()==0x1647) ShortToCharPtr(0x00C6, buffer + offset +1);	//let's show the lightsource like a blue item
+	else ShortToCharPtr(pi->getColor(), buffer + offset + 1);
 
 	buffer[offset +2]=0;
-        if (pc->isGM() && (pi->visible ==1 || pi->visible==2)) buffer[offset +2]|=0x80;
+	If (pc->isGM() && (pi->visible ==1 || pi->visible==2)) buffer[offset +2]|=0x80;
 
 	if (pi->magic==1 || pc->canAllMove()) itmput[offset +2]|=0x20; //item can be moved even if normally cannot
 
@@ -145,7 +146,7 @@ void nPackets::Sent::ObjectInformation::prepare()
 
 void nPackets::Sent::LSDObject::prepare()
 {
-        buffer = new uint8_t[20]; 	//MAXIMUM packet length
+	buffer = new uint8_t[20]; 	//MAXIMUM packet length
 
 	LongToCharPtr(pi->getSerial() | 0x80000000, buffer +3);
 
@@ -155,19 +156,19 @@ void nPackets::Sent::LSDObject::prepare()
 	//invisible light source!
 	if(pc->isGM() && pi->getId()==0x1647) ShortToCharPtr(0x0A0F, buffer +7);
 	else 	if (pc->canViewHouseIcon() && pi->getId()>=0x4000 && pi->getId()<=0x40FF) ShortToCharPtr(0x14F0, buffer +7);         // LB, 25-dec-1999 litle bugfix for treasure multis, ( == changed to >=)
-                else ShortToCharPtr(pi->animid(), buffer +7);
+		else ShortToCharPtr(pi->animid(), buffer +7);
 	ShortToCharPtr(pi->amount, buffer +9);
 	ShortToCharPtr(position.x, buffer +11);
 	ShortToCharPtr(position.y | 0xC000, buffer +13);
 
-        uint8_t offset = 15;
+	uint8_t offset = 15;
 
-        if (pi->dir)
-        {
-        	++offset;
-                buffer[11]|=0x80;
-                buffer[15]=static_cast<unsigned char>(pi->dir);
-        }
+	if (pi->dir)
+	{
+		++offset;
+		buffer[11]|=0x80;
+		buffer[15]=static_cast<unsigned char>(pi->dir);
+	}
 
 	buffer[offset]= position.z;
 
@@ -175,7 +176,7 @@ void nPackets::Sent::LSDObject::prepare()
         else ShortToCharPtr(color, buffer + offset + 1);
 
 	buffer[offset +2]=0;
-        if (pc->isGM() && (pi->visible ==1 || pi->visible==2)) buffer[offset +2]|=0x80;
+	if (pc->isGM() && (pi->visible ==1 || pi->visible==2)) buffer[offset +2]|=0x80;
 
 	if (pi->magic==1 || pc->canAllMove()) itmput[offset +2]|=0x20; //item can be moved even if normally cannot
 
@@ -194,10 +195,10 @@ void nPackets::Sent::LSDObject::prepare()
 
 void nPackets::Sent::LoginConfirmation::prepare()
 {
-        buffer = new uint8_t[37];
-        length= 37;
+	buffer = new uint8_t[37];
+	length= 37;
 
-       	static const uint8_t templ[37] = {
+	static const uint8_t templ[37] = {
 	        0x1B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	        0x00, 0x7F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x80, 0x09,
@@ -224,19 +225,19 @@ void nPackets::Sent::LoginConfirmation::prepare()
 void nPackets::Sent::Speech::prepare()
 {
 	std::string text;
-        if (ghost) text = speech.toGhost()
-        else text = speech.toString();	// reducing unicode string to simple text
+	if (ghost) text = speech.toGhost()
+	else text = speech.toString();	// reducing unicode string to simple text
 	length = 44 + text.size() + 1;
-        buffer = new uint8_t[length];
-        buffer[0] = 0x1c;
+	buffer = new uint8_t[length];
+	buffer[0] = 0x1c;
 	ShortToCharPtr(length, buffer+1);
-       	LongToCharPtr(ps ? ps->getSerial() : 0xffffffff, buffer+3);
+	LongToCharPtr(ps ? ps->getSerial() : 0xffffffff, buffer+3);
 	ShortToCharPtr(ps ? ps->getId() : 0xffff, buffer+7);
-        buffer[9] = speech.getMode();
-      	ShortToCharPtr(speech.getColor(), buffer+10);
-      	ShortToCharPtr(speech.getFont(), buffer+12);
-        strncpy(buffer + 14, (ps) ? ps->getCurrentName().c_str() : "", 30); //this will write the name and fills the missing char in the 30 bytes buffer with \0
-        strcpy(buffer + 44, text.c_str()); 
+	buffer[9] = speech.getMode();
+	ShortToCharPtr(speech.getColor(), buffer+10);
+	ShortToCharPtr(speech.getFont(), buffer+12);
+	strncpy(buffer + 14, (ps) ? ps->getCurrentName().c_str() : "", 30); //this will write the name and fills the missing char in the 30 bytes buffer with \0
+	strcpy(buffer + 44, text.c_str());
 }
 
 /*!
@@ -264,7 +265,7 @@ void nPackets::Sent::DrawGamePlayer::prepare()
 {
 	length = 19;
 	buffer = new uint8_t[19];
-        pBody body = pc->getBody();
+	pBody body = pc->getBody();
 
 	buffer[0] = 0x20;
 	LongToCharPtr(pc->getSerial(), buffer+1);
@@ -278,12 +279,12 @@ void nPackets::Sent::DrawGamePlayer::prepare()
 
 	buffer[10] = flag;
 
-        Location pos = pc->getPosition();
+	Location pos = pc->getPosition();
 	ShortToCharPtr(pos.x, buffer +11);
 	ShortToCharPtr(pos.y, buffer +13);
 	ShortToCharPtr(0, buffer +15);
 	buffer[17]= pc->dir;   // old nox used this packet sending dir|0x80, but that wouldn't make the char always running?
-        //!\todo verify if using pos.dispz or pos.z changes anything here
+	//!\todo verify if using pos.dispz or pos.z changes anything here
 	buffer[18]= pos.dispz;
 }
 
@@ -297,12 +298,12 @@ void nPackets::Sent::MoveReject::prepare()
 {
 	length = 8;
 	buffer = new uint8_t[8];
-        buffer[0] = 0x21;
+	buffer[0] = 0x21;
 	buffer[1] = sequence;
 	ShortToCharPtr(pc->getPosition().x, buffer + 2);
 	ShortToCharPtr(pc->getPosition().y, buffer + 4);
-        buffer[6] = pc->direction;
-        buffer[7] = pc->getPosition().z;
+	buffer[6] = pc->direction;
+	buffer[7] = pc->getPosition().z;
 }
 
 /*!
@@ -314,9 +315,9 @@ void nPackets::Sent::MoveReject::prepare()
 void nPackets::Sent::MoveAcknowdledge::prepare()
 {
 	buffer = new uint8_t[3];
-        length = 3;
-        buffer[0] = 0x22;
-        buffer[1] = sequence;
+	length = 3;
+	buffer[0] = 0x22;
+	buffer[1] = sequence;
 	buffer[2] = notoriety;
 /*
 notoriety:
@@ -340,20 +341,71 @@ notoriety:
 void nPackets::Sent::DragItem::prepare()
 {
 	buffer = new uint8_t[26];
-        length = 26;
-        buffer[0] = 0x23;
+	length = 26;
+	buffer[0] = 0x23;
 	ShortToCharPtr(item->getId(), buffer + 1);
-        memset(buffer + 3, 0, 3); //sets 3 unknown bytes to 0
-       	ShortToCharPtr(amount, buffer + 6);
-       	LongToCharPtr(item->getSerial(), buffer + 8);
-        Location worldpos = item->getWorldPosition()
+	memset(buffer + 3, 0, 3); //sets 3 unknown bytes to 0
+	ShortToCharPtr(amount, buffer + 6);
+	LongToCharPtr(item->getSerial(), buffer + 8);
+	Location worldpos = item->getWorldPosition()
 	ShortToCharPtr(worldpos.x, buffer + 12);
 	ShortToCharPtr(worldpos.y, buffer + 14);
-        buffer[16] = worldpos.z;
+	buffer[16] = worldpos.z;
 	LongToCharPtr(item->getSerial(), buffer + 17);
 	ShortToCharPtr(destination.x, buffer + 21);
 	ShortToCharPtr(destination.y, buffer + 23);
         buffer[25] = destination.z;
+}
+
+/*!
+\brief Open gump
+\author Chronodt
+\note packet 0x24
+*/
+
+void nPackets::Sent::OpenGump::prepare()
+{
+	buffer = new uint8_t[7];
+	length = 7;
+	buffer[0] = 0x24;
+	LongToCharPtr(serial, buffer + 1);
+	ShortToCharPtr(gump, buffer + 5);
+}
+
+/*!
+\brief tells to the client the serial and all other data about an item in the given container. usually preceded by another package
+\author Flameeyes & Chronodt
+\note packet 0x25
+*/
+
+void nPackets::Sent::ShowItemInContainer::prepare()
+{
+	length = 20;
+	buffer = new uint8_t[20];
+
+	buffer[0] = 0x25;
+	buffer[7] = 0x00;
+
+	LongToCharPtr(item->getSerial(), buffer+1);
+
+	//if player is a gm, this item
+	//is shown like a candle (so that he can move it),
+	//....if not, the item is a normal
+	//invisible light source!
+	if(pc->IsGM() && item.id == 0x1647)
+	{
+		ShortToCharPtr(0x0A0F, ptrItem+5);
+		ShortToCharPtr(0x00C6, ptrItem+18);
+	}
+	else
+	{
+		ShortToCharPtr(item->getAnimId(), ptrItem+5);
+		ShortToCharPtr(item->getColor(), ptrItem+18);
+	}
+	ShortToCharPtr(item->getAmount(), ptrItem+8);
+	ShortToCharPtr(item->getLocation().x, ptrItem+10);
+	ShortToCharPtr(item->getLocation().y, ptrItem+12);
+	LongToCharPtr(item->getContainer()->getSerial(), ptrItem+14);
 }
 
 /*!
@@ -365,8 +417,8 @@ void nPackets::Sent::DragItem::prepare()
 void nPackets::Sent::BounceItem::prepare()
 {
 	buffer = new uint8_t[2];
-        length = 2;
-        buffer[0] = 0x27;
+	length = 2;
+	buffer[0] = 0x27;
 	buffer[1] = mode;
 }
 
@@ -383,20 +435,6 @@ void nPackets::Sent::Action::prepare()
 	memcpy(buffer, templ, 14);
 	LongToCharPtr(serial, buffer+1);
 	ShortToCharPtr(action, buffer+5);
-}
-
-void cPacketDrawContainer::prepare()
-{
-	static const uint8_t templ[7] = {
-		0x24, 0x40, 0x0B, 0x00, 0x1A, 0x00, 0x3C
-		};
-
-	buffer = new uint8_t[7];
-	length = 7;
-	memcpy(buffer, templ, 7);
-
-	LongToCharPtr(serial, buffer+1);
-	ShortToCharPtr(gump, buffer+5);
 }
 
 void nPackets::Sent::ContainerItem::prepare()
@@ -435,40 +473,6 @@ void nPackets::Sent::ContainerItem::prepare()
 
 		ptrItem += 19;
 	}
-}
-
-
-
-void nPackets::Sent::ShowItemInContainer::prepare()
-{
-	length = 20;
-	buffer = new uint8_t[20];
-
-	buffer[0] = 0x25;
-	buffer[7] = 0x00;
-
-	LongToCharPtr(item->getSerial(), buffer+1);
-
-       	//AntiChrist - world light sources stuff
-	//if player is a gm, this item
-	//is shown like a candle (so that he can move it),
-	//....if not, the item is a normal
-	//invisible light source!
-        if(pc->isGM() && item.id == 0x1647)
-        {
-        	ShortToCharPtr(0x0A0F, ptrItem+5);
-                ShortToCharPtr(0x00C6, ptrItem+18);
-        }
-        else
-        {
-		ShortToCharPtr(item->getAnimId(), ptrItem+5);
-                ShortToCharPtr(item->getColor(), ptrItem+18);
-        }
-	ShortToCharPtr(item->getAmount(), ptrItem+8);
-	ShortToCharPtr(item->getLocation().x, ptrItem+10);
-	ShortToCharPtr(item->getLocation().y, ptrItem+12);
-	LongToCharPtr(item->getContainer()->getSerial(), ptrItem+14);
-
 }
 
 void nPackets::Sent::WornItem::prepare()

@@ -82,15 +82,6 @@ void SndUpdscroll(pClient client, short txtlen, const char* txt)
 //AoS/	Network->FlushBuffer(s);
 }
 
-void SndShopgumpopen(pClient client, uint32_t serial)	//it's really necessary ? It is used 1 time, perhaps replace it with the scriptable vers. :/
-{
-	uint8_t shopgumpopen[7]={ 0x24, 0x00, };
-	LongToCharPtr(serial, shopgumpopen +1);		// ItemID
-	ShortToCharPtr(0x0030, shopgumpopen +5);	// GumpID
-	Xsend(s, shopgumpopen, 7);
-//AoS/	Network->FlushBuffer(s);
-}
-
 /*!
 \brief play a sound based on item id
 

@@ -278,19 +278,6 @@ SEND( Speech ) {
 	Xsend( ps->toInt(), this->name.c_str(), 30 );
 	Xsend( ps->toInt(), this->msg->c_str(), this->msg->length()+1 );
 };
-
-CREATE( Delete, PKG_DELETE, 0x05 )
-
-CREATE( DrawPlayer, PKG_DRAW_PLAYER, 0x13 )
-
-CREATE( MoveReject, PKG_REJECT_MOVEMENT, 0x08 )
-
-CREATE( MoveACK, PKG_MOVE_ACK, 0x03 )
-
-CREATE( Dragging, PKG_DRAGGING, 0x1A )
-
-CREATE( DrawContainer, PKG_DRAW_CONTAINER, 0x07 )
-
 CREATE( AddItemIntoCont, PKG_ADD_ITEM_INTO_CONTAINER, 0x14 )
 
 CREATE( Kick, PKG_KICK, 0x05 )

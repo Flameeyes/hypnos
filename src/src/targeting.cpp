@@ -464,7 +464,8 @@ int BuyShop(pClient client, pChar pc)
 
     sendshopinfo(s, pc, buyRestockContainer); // Send normal shop items
 //  sendshopinfo(s, c, buyNoRestockContainer); // Send items sold to shop by players
-    SndShopgumpopen(s,pc->getSerial());
+    nPackets::Sent::OpenGump ok(pc->getSerial(), 0x0030);
+    client->sendPacket(&pk);
 
     //! \todo check second argument
     client->statusWindow(curr,true); // Make sure the gold total has been sent.

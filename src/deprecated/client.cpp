@@ -161,9 +161,8 @@ void cNxwClientObj::sendSpellBook(pItem pi)
 
     if (pi->layer!=1) senditem(m_sck,pi); // prevents crash if pack not open
 
-    uint8_t sbookstart[8]="\x24\x40\x01\x02\x03\xFF\xFF";
-    LongToCharPtr(pi->getSerial(), sbookstart +1);
-    send(sbookstart, 7);
+    nPackets::Sent::OpenGump pk(pi->getSerial(), 0xffff);
+    client->sendPacket(&pk);
 
     int spells[70] = {0,};
     int i, scount=0;

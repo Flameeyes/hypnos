@@ -21,7 +21,6 @@ void SndAttackOK(pClient client, pClient clienterial);
 void SndDyevat(pClient client, pClient clienterial, short id);
 void SndUpdscroll(pClient client, short txtlen, const char* txt);
 
-void SndShopgumpopen(pClient client, pClient clienterial);
 
 void soundeffect3(pItem pi, uint16_t sound);
 void soundeffect4(pClient client, pItem pi, uint16_t sound);
