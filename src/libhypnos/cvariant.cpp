@@ -269,7 +269,7 @@ tVariant &tVariant::operator =(pChar aptr)
 //! \copydoc tVariant::operator=(void*)
 tVariant &tVariant::operator =(pItem aptr)
 {
-	pointer = api;
+	pointer = aptr;
 	assignedType = vtPItem;
 	integerSize = isNotInt;
 	return *this;
@@ -278,7 +278,7 @@ tVariant &tVariant::operator =(pItem aptr)
 //! \copydoc tVariant::operator=(void*)
 tVariant &tVariant::operator =(pClient aptr)
 {
-	pointer = aclient;
+	pointer = aptr;
 	assignedType = vtPClient;
 	integerSize = isNotInt;
 	return *this;

@@ -1357,6 +1357,19 @@ void nPackets::Sent::LoginDenied::prepare()
 	buffer[1] = reason;
 }
 
+void nPackets::Sent::TargetMulti::prepare()
+{
+	length = 26;
+	buffer = new uint8_t[length];
+	memset(buffer, 0, length);
+
+	buffer[0] = 0x99;
+	buffer[1] = 0x01; // Target type: (0x01 from server, 0x00 from client)
+	LongToCharPtr(multi_serial, buffer +2);
+	ShortToCharPtr(multi_id, buffer +18);
+	LongToCharPtr(radius, buffer +20);
+}
+
 void nPackets::Sent::OpenBrowser::prepare()
 {
 	length = url.size() + 3;

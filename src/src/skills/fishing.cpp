@@ -110,7 +110,7 @@ inline bool isWaterTarget(pClient client)
 	uint16_t x = ShortFromCharPtr(buffer[s] +11);
 	uint16_t y = ShortFromCharPtr(buffer[s] +13);
 	int16_t z = ShortFromCharPtr(buffer[s] +15);
-	uint16_t id_tile = ShortFromCharPtr(buffer[s] +18);
+	uint16_t id_tile = ShortFromCharPtr(buffer[s] +17);
 
 	if(	id_tile == 0x1798 || id_tile == 0x179B || id_tile == 0x179C ||
 		id_tile == 0x1799 || id_tile == 0x1797 || id_tile == 0x1712	)

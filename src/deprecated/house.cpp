@@ -26,23 +26,6 @@ std::map< uint32_t, pChar > houses;
 
 bool CheckBuildSite(int x, int y, int z, int sx, int sy);
 
-/*!
-\todo Change all that... it's shitty!
-*/
-void mtarget(int s, int a1, int a2, int a3, int a4, char b1, char b2, char *txt)
-{
-	uint8_t multitarcrs[26]= { 0x99, 0x01, 0x40, 0x01, 0x02, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-
-	multitarcrs[2]=a1;
-	multitarcrs[3]=a2;
-	multitarcrs[4]=a3;
-	multitarcrs[5]=a4;
-	multitarcrs[18]=b1;
-	multitarcrs[19]=b2;
-	client->sysmessage(txt);
-	Xsend(s, multitarcrs, 26);
-//AoS/	Network->FlushBuffer(s);
-}
 
 /*!
 \author Zippy
@@ -55,14 +38,14 @@ Space around the house with SPACEX/Y and CHAR offset CHARX/Y/Z
 
 \todo Remove temp variable
 */
-void buildhouse( pClient ps, pTarget t )
+void buildhouse( pClient client, pTarget t )
 {
-	pClient client = ps->toInt();
 	int i = t->buffer[2];
 	char temp[TEMP_STR_SIZE]; //xan -> this overrides the global temp var
 	int loopexit=0;//where they click, and the house/key items
-	uint32_t x, y, k, sx = 0, sy = 0, icount=0;
-	signed char z;
+	uint32_t k, sx = 0, sy = 0, icount=0;
+	uint16_t x, y, id_tile;
+	int16_t z;
 	int hitem[100];//extra "house items" (up to 100)
 	char sect[512];                         //file reading
 	char itemsdecay = 0;            // set to 1 to make stuff decay in houses
@@ -72,8 +55,10 @@ void buildhouse( pClient ps, pTarget t )
 	int hdeed=0;//deed id #
 	int norealmulti=0,nokey=0,othername=0;
 	char name[512];
-	pChar pc=ps->currChar();
+
+	pChar pc = client->currChar();
 	if ( ! pc ) return;
+
 	sLocation charpos= pc->getPosition();
 
 	int16_t id = INVALID; //house ID
@@ -170,12 +155,15 @@ void buildhouse( pClient ps, pTarget t )
 				ps->sysmsg( "Select a place for your structure: ");
 			}
 			else
-				mtarget(s, 0, 1, 0, 0, (id>>8) -0x40, (id%256), "Select location for building.");
-
+				client->sysmessage("Select location for building.");
+				nPackets::Sent::TargetMulti pk(0x00010000/*serial*/, id -0x4000/*model*/);
+				client->sendPacket(&pk);
 		}
 		else
 		{
-			mtarget(s, 0, 1, 0, 0, t->buffer[0]-0x40, t->buffer[1], "Select location for building.");
+			client->sysmessage("Select location for building.");
+			nPackets::Sent::TargetMulti pk(0x00010000/*serial*/, ((t->buffer[0]<<8)|(t->buffer[1]%256)) -0x4000/*model*/);
+			client->sendPacket(&pk);
 		}
 		looptimes++;//for when we come back after they target something
 		return;
@@ -191,10 +179,11 @@ void buildhouse( pClient ps, pTarget t )
 			    return;
 			}
 		}
-
-		x = ShortFromCharPtr(buffer[s] +11); //where they targeted
+		x = ShortFromCharPtr(buffer[s] +11); //where they targeted	
 		y = ShortFromCharPtr(buffer[s] +13);
-		z = buffer[s][16] + tileHeight(ShortFromCharPtr(buffer[s] +17));
+		z = ShortFromCharPtr(buffer[s] +15);
+		id_tile = ShortFromCharPtr(buffer[s] +17);
+		z += tileHeight(id_tile);
 
 		//XAN : House placing fix :)
 		if ( (( x<XBORDER || y <YBORDER ) || ( x>(uint32_t)((map_width*8)-XBORDER) || y >(uint32_t)((map_height*8)-YBORDER) ))  )
@@ -322,7 +311,6 @@ void buildhouse( pClient ps, pTarget t )
 			sprintf(temp,"%s's ship key",pc->getCurrentName().c_str());
 			pKey= item::CreateFromScript( "$item_bronze_key", pBackPack ); //Boats -Rusty Iron Key
 			pKey2= item::CreateFromScript( "$item_bronze_key", pBackPack );
-
 		}
 		else
 		{
@@ -352,7 +340,6 @@ void buildhouse( pClient ps, pTarget t )
 		pItem bankbox = pc->GetBankBox();
 		if(bankbox!=NULL) // we sould add a key in bankbox only if the player has a bankbox =)
 		{
-
 			pItem p_key3=item::CreateFromScript( "$item_gold_key" );
 			if ( ! p_key3 ) return;
 			p_key3->setCurrentName( "a house key" );
@@ -489,10 +476,10 @@ void buildhouse( pClient ps, pTarget t )
 */
 void deedhouse(pClient client, pHouse pi)
 {
-	if ( ! pi ) return;
-	pChar pc = cSerializable::findCharBySerial(currchar[s]);
-	if ( ! pc ) return;
-	sLocation charpos= pc->getPosition();
+	if ( !pi ) return;
+	pChar pc = client->currChar();
+	if ( !pc ) return;
+	sLocation charpos = pc->getPosition();
 
 	if ( pi->getOwner() != pc && ! pc->isGM() )
 		return;
@@ -500,7 +487,7 @@ void deedhouse(pClient client, pHouse pi)
 	pItem pi_ii=item::CreateFromScript( pi->morex, pc->getBackpack() ); // need to make before delete
 	if ( ! pi_ii ) return;
 
-	sysmessage( s, "Demolishing House %s", pi->getCurrentName().c_str());
+	client->sysmessage("Demolishing House %s", pi->getCurrentName().c_str());
 	pi->Delete();
 	client->sysmessage("Converted into a %s.", pi_ii->getCurrentName().c_str());
 	// door/sign delete

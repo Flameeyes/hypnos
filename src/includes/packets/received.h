@@ -1151,6 +1151,29 @@ namespace nPackets {
 			void prepare();
 		};
 
+
+		/*!
+		\brief This is sent to bring up a house-placing target
+		\param multi_serial The serial of the multi deed
+		\param multi_model The house's multi number (item model - 0x4000)
+		\param radius The object's tile radius. [Default: 0 ??]
+		*/
+		class TargetMulti : public cPacketSend
+		{
+		protected:
+			uint32_t multi_serial;
+			uint16_t multi_model;
+			uint32_t radius;
+
+		public:
+			inline TargetMulti(uint32_t aSerial, uint16_t aModelID, uint32_t aRadius = 0x00000000) :
+				cPacketSend(NULL, 0), multi_serial(aSerial), multi_model(aModelID), radius(aRadius)
+			{ }
+
+			prepare();
+		};
+
+		
 		//! Open Web Browser
 		class OpenBrowser : public cPacketSend
 		{

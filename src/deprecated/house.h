@@ -22,7 +22,6 @@ int del_hlist(pChar pc, pItem pi);
 int on_hlist(pItem pi, uint32_t serial, int *li);
 bool house_speech( pChar pc, pClient clientocket, std::string &talk);
 void 	killkeys(uint32_t serial);
-void 	mtarget(int s, int a1, int a2, int a3, int a4, char b1, char b2, char *txt);
 
 
 void target_houseOwner( pClient client, pTarget t );
