@@ -8,7 +8,6 @@
 #include "common_libs.h"
 #include "magic.h"
 #include "npcai.h"
-#include "basics.h"
 #include "misc.h"
 #include "inlines.h"
 

@@ -11,18 +11,14 @@
 #include "sndpkg.h"
 #include "magic.h"
 #include "tmpeff.h"
-#include "race.h"
 #include "npcai.h"
 #include "network.h"
 #include "boats.h"
 #include "walking.h"
 #include "map.h"
 #include "inlines.h"
-#include "basics.h"
 #include "magic.h"
 #include "skills/skills.h"
-#include "misc.h"
-#include "targeting.h"
 
 #include <wefts_mutex.h>
 

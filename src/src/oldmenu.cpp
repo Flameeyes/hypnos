@@ -8,10 +8,6 @@
 #include "oldmenu.h"
 #include "inlines.h"
 
-
-#include "basics.h"
-
-
 /* Classic menu
 	mnu_prepare(s, 1, 3);
 	mnu_setStyle(s, MENUSTYLE_SCROLL, 0x481);

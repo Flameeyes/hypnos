@@ -12,14 +12,11 @@
 \note not necessarily ALL those functions
 */
 #include "common_libs.h"
-#include "basics.h"
 #include "sregions.h"
 #include "sndpkg.h"
-#include "calendar.h"
 #include "magic.h"
 #include "tmpeff.h"
 #include "timers.h"
-#include "boats.h"
 #include "spawn.h"
 #include "trade.h"
 #include "inlines.h"

@@ -14,7 +14,6 @@
 #define __MAGIC_H__
 
 #include "common_libs.h"
-#include "targeting.h"
 #include "menu.h"
 #include "enums.h"
 

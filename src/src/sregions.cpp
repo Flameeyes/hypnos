@@ -9,9 +9,7 @@
 #include "common_libs.h"
 #include "network.h"
 #include "sndpkg.h"
-#include "calendar.h"
 #include "sregions.h"
-#include "basics.h"
 #include "inlines.h"
 
 void loadregions()//New -- Zippy spawn regions

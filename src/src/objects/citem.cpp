@@ -9,13 +9,10 @@
 #include "common_libs.h"
 #include "sndpkg.h"
 #include "magic.h"
-#include "races/race.h"
 #include "pointer.h"
 #include "data.h"
 #include "boats.h"
 #include "inlines.h"
-#include "basics.h"
-#include "misc.h"
 
 #include <wefts_mutex.h>
 

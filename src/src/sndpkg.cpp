@@ -8,13 +8,11 @@
 #include "common_libs.h"
 #include "network.h"
 #include "particles.h"
-#include "basics.h"
 #include "sndpkg.h"
 #include "sregions.h"
 #include "tmpeff.h"
 #include "speech.h"
 #include "inlines.h"
-#include "basics.h"
 #include "skills/skills.h"
 #include "misc.h"
 

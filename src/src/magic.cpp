@@ -6,7 +6,6 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
-#include "targeting.h"
 #include "magic.h"
 #include "tmpeff.h"
 #include "particles.h"

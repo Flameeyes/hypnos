@@ -6,13 +6,11 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 #include "common_libs.h"
-#include "targeting.h"
 #include "tmpeff.h"
 #include "constants.h"
 #include "npcai.h"
 #include "map.h"
 #include "skills/skills.h"
-#include "basics.h"
 #include "inlines.h"
 #include "backend/scripting.h"
 #include "objects/cclient.h"

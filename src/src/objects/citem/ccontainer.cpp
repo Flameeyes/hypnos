@@ -8,7 +8,6 @@
 
 #include "objects/citem/ccontainer.h"
 #include "logsystem.h"
-#include "basics.h"
 #include <mxml.h>
 
 cContainer::mapGumpsInfo cContainer::gumpinfos;
