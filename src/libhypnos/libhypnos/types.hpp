@@ -4,6 +4,7 @@
 | This software is free software released under GPL2 license.              |
 | You can find detailed license information in LICENSE file.               |
 |                                                                          |
+| Integer limits copyright (C) 1997-2001 Free Software Foundation, Inc.    |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
 \file
@@ -89,36 +90,46 @@ struct sRect {
 	bool isInside(sPoint p) const;
 };
 
+#ifndef __INT64_C
+# if __WORDSIZE == 64
+#  define __INT64_C(c)	c ## L
+#  define __UINT64_C(c)	c ## UL
+# else
+#  define __INT64_C(c)	c ## LL
+#  define __UINT64_C(c)	c ## ULL
+# endif
+#endif
+
 #ifdef UINT64_MAX // take this as its defined with every else..
 	static const uint8_t maxU8 = UINT8_MAX;
 	static const uint16_t maxU16 = UINT16_MAX;
 	static const uint32_t maxU32 = UINT32_MAX;
 	static const uint64_t maxU64 = UINT64_MAX;
 	
+	static const int8_t minS8 = INT8_MIN;
+	static const int16_t minS16 = INT16_MIN;
+	static const int32_t minS32 = INT32_MIN;
+	static const int64_t minS64 = INT64_MIN;
+	
+	static const int8_t maxS8 = INT8_MAX;
+	static const int16_t maxS16 = INT16_MAX;
+	static const int32_t maxS32 = INT32_MAX;
+	static const int64_t maxS64 = INT64_MAX;
+#else // if we don't have the defines, we define it manually
+	static const uint8_t maxU8 = 255;
+	static const uint16_t maxU16 = 65535;
+	static const uint32_t maxU32 = 4294967295U;
+	static const uint64_t maxU64 = (__UINT64_C(18446744073709551615));
+	
 	static const int8_t minS8 = -128;
 	static const int16_t minS16 = -32768;
-	static const int32_t minS32 = -2147483648l;
-	static const int64_t minS64 = -9223372036854775808ll;
+	static const int32_t minS32 = -(-2147483647-1);
+	static const int64_t minS64 = (-__INT64_C(9223372036854775807)-1);
 	
 	static const int8_t maxS8 = 127;
 	static const int16_t maxS16 = 32767;
 	static const int32_t maxS32 = 2147483647ll;
-	static const int64_t maxS64 = 9223372036854775807ll;
-#else
-	static const uint8_t maxU8 = 255u;
-	static const uint16_t maxU16 = 65535u;
-	static const uint32_t maxU32 = 4294967295ul;
-	static const uint64_t maxU64 = 18446744073709551615ull;
-	
-	static const int8_t minS8 = -128;
-	static const int16_t minS16 = -32768;
-	static const int32_t minS32 = -2147483648l;
-	static const int64_t minS64 = -9223372036854775808ll;
-	
-	static const int8_t maxS8 = 127;
-	static const int16_t maxS16 = 32767;
-	static const int32_t maxS32 = 2147483647ll;
-	static const int64_t maxS64 = 9223372036854775807ll;
+	static const int64_t maxS64 = (__INT64_C(9223372036854775807));
 #endif
 
 #endif
