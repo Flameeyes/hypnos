@@ -851,8 +851,8 @@ namespace nPackets {
 		class TargetingCursor : public cPacketSend
 		{
 		protected:
-			bool islocationtarget;	//!< false = creature/item target, true = xyz(location) target
 			pSerializable source;	//!< item/char that called up the target
+			bool islocationtarget;	//!< false = creature/item target, true = xyz(location) target
 		public:
 			inline TargetingCursor(pSerializable aSource, bool aIsLocationTarget) :
 				source(aSource), islocationtarget(aIsLocationTarget)

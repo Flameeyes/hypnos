@@ -19,6 +19,23 @@
 /*!
 \brief Item class for books
 \author Flameeyes
+
+Ultima OnLine provides some different books with different gumps to write the
+PCs memories.
+We can have mainly two types of books: writable books and read only books.
+Read only books are often used in quests or to provide useful informations to
+players.
+
+Read write books are like the one the player is getting at the default character
+creation, where there's space for the title and the author, and the pages are
+blank to be wrote on.
+
+This class provides storage space and functions to handle the books, which are
+called by the correspondent UOP packet to get or set the data of the book.
+
+\todo Missing a way to define the different gump of the book (if possible)
+\todo Missing a GM-only editable book support
+\todo Missing a datafile-loaded readonly book support
 */
 class cBook : public cItem
 {
@@ -51,9 +68,10 @@ public:
 	{ return flags & flagIsReadOnly; }
 
 	inline void setReadOnly(bool set = true)
-	{ setFlag(flagIsReadOnly, set); }
+	{ setFlag(flags, flagIsReadOnly, set); }
 protected:
-	static const uint64_t flagIsReadOnly	= 0x0000000000010000ull;	//!< Is the book read only?
+	//! The book is read only (can't be modified neither by GMs)
+	static const uint64_t flagIsReadOnly	= 0x0000000000010000ull;
 //@}
 
 public:

@@ -66,7 +66,7 @@ void cBoat::step(pClient client, uint8_t dir)
 
 	if ( dir == 0xFF ) dir = getDirection();
 	sLocation boatpos = getPosition();
-	boatpos.move(dir&0x07, 1);
+	boatpos.move((Direction)dir, 1);
 
 	if ( ! navigable.isInside(boatpos) )
 	{
