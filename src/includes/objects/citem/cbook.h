@@ -6,10 +6,8 @@
 |                                                                          |
 *+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
 /*!
-\file books.h
+\file
 \brief Declaration of cBook Class
-\author Akron
-\since 0.82r3
 */
 
 #ifndef __CBOOKS_H__
@@ -40,9 +38,10 @@ public:
 \author Akron
 */
 public:
-	cBook();					//!< default constructor
-	cBook(const cBook &oldbook);			//!< copy constructor
-	cBook &operator = (const cBook & oldbook); 	//!< assignment operator =
+	cBook();
+	cBook(const cBook &oldbook);
+	cBook(uint32_t serial);
+	cBook &operator =(const cBook &oldbook);
 //@}
 
 //@{

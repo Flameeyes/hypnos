@@ -1,41 +1,34 @@
-  /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    || NoX-Wizard UO Server Emulator (NXW) [http://noxwizard.sourceforge.net]  ||
-    ||                                                                         ||
-    || This software is free software released under GPL2 license.             ||
-    || You can find detailed license information in nox-wizard.cpp file.       ||
-    ||                                                                         ||
-    || For any question post to NoX-Wizard forums.                             ||
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
-#include "common_libs.h"
-#include "books.h"
-#include "debug.h"
-#include "network.h"
-#include "worldmain.h"
-#include "globals.h"
-
-
-#include "utils.h"
+/*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+| PyUO Server Emulator                                                     |
+|                                                                          |
+| This software is free software released under GPL2 license.              |
+| You can find detailed license information in pyuo.cpp file.              |
+|                                                                          |
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*/
+/*!
+\file
+\brief Implementation of cBook Class
+*/
+#include "objects/citem/cbook.h"
+#include "objects/cclient.h"
 #include "basics.h"
 
-/*!
-\brief Base constructor
-*/
-cBook::cBook() : cItem()
-{
-}
-
-/*!
-\brief Constructor when serial is known
-*/
-cBook::cBook(uint32_t serial) : cItem(serial)
+//! Base constructor
+cBook::cBook()
+	: cItem()
 {
 	setReadOnly(false);
 
-	std::string("");
-	pages = std::vector<std::vector<std::string>>(pages.size(), <std::vector<std::string>(8, std::string("")));
-	
-	classType = cItem::itBook;
+	pages = tpages(pages.size(), std::vector<std::string>(8, std::string("")));
+}
+
+//! Constructor when serial is known
+cBook::cBook(uint32_t serial)
+	: cItem(serial)
+{
+	setReadOnly(false);
+
+	pages = tpages(pages.size(), std::vector<std::string>(8, std::string("")));
 }
 
 /*!
@@ -44,15 +37,16 @@ cBook::cBook(uint32_t serial) : cItem(serial)
 */
 cBook::cBook(const cBook &oldbook) : cItem(oldbook)
 {
-	setReadOnly(oldbook.isReadOnly());
-	author = oldbook.getAuthor();
-	title = oldbook.getTitle();
-	oldbook.getPages(pages);
+	*this = oldbook;
 }
 
-cBook &cBook::operator = (const cBook &oldbook)
+/*!
+\brief Assignment operator
+\param oldbook book to assign to this
+*/
+cBook &cBook::operator =(const cBook &oldbook)
 {
-	cItem::operator=(oldbook);
+	cItem::operator=(dynamic_cast<const cItem&>(oldbook));
 	
 	setReadOnly(oldbook.isReadOnly());
 	author = oldbook.getAuthor();
@@ -142,7 +136,7 @@ void cBook::doubleClicked(pClient client)
 */
 void cBook::openBookReadWrite(pClient client)
 {
-	uint8_t bookopen[10]= "\x93\x40\x01\x02\x03\x01\x01\x00\x02";
+	uint8_t bookopen[9] = { 0x93, 0x40, 0x01, 0x02, 0x03, 0x01, 0x01, 0x00, 0x02 };
 
 	uint16_t bytes;
 
@@ -150,16 +144,12 @@ void cBook::openBookReadWrite(pClient client)
 	char bookauthor[30];
 
 	uint16_t i;
-	for(i = 0; i < author.size() && i < 30; i++)
-		bookauthor[i] = author[i];
-	for(; i < 30; i++)
-		bookauthor[i] = '\0';
-
-	for(i = 0; i < title.size() && i < 60; i++)
-		booktitle[i] = title[i];
-	for(; i < 30; i++)
-		booktitle[i] = '\0';
-
+	strncpy(bookauthor, author.c_str(), 29);
+	bookauthor[29] = '\0';
+	
+	strncpy(booktitle, title.c_str(), 59);
+	booktitle[59] = '\0';
+	
 	LongToCharPtr(getSerial(), bookopen+1);
 	ShortToCharPtr(pages.size(), bookopen+7);
 

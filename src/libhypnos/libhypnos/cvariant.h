@@ -13,9 +13,6 @@
 #ifndef __TVARIANT_H__
 #define __TVARIANT_H__
 
-// Request limits
-#define __STDC_LIMIT_MACROS
-
 #include "common_libs.h"
 #include "objects/cchar.h"
 #include "objects/citem.h"

@@ -17,7 +17,6 @@
 
 #include "common_libs.h"
 #include "targeting.h"
-#include "objects/cchar.h"
 
 #include "menu.h"
 

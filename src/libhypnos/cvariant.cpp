@@ -10,6 +10,9 @@
 \brief Implementation of tVariant type
 */
 
+// Request limits
+#define __STDC_LIMIT_MACROS
+
 #include "abstraction/tvariant.h"
 
 //! Inline function to recalc the uint size

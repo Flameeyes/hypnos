@@ -30,7 +30,7 @@ public:
 */
 public:
 	//! Redefinition of = operator for cItem class
-        cItem& operator=(cItem& b);
+        cItem& operator=(const cItem& b);
 
 	cItem(uint32_t serial);
         cItem();

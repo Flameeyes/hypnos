@@ -23,9 +23,6 @@ static const uint16_t REGION_X_CELLS = MAP_WIDTH/REGION_GRIDSIZE;
 static const uint16_t REGION_Y_CELLS = MAP_HEIGHT/REGION_COLSIZE;
 						//!< Count of Y Cells
 
-#include "objects/cchar.h"
-#include "objects/citem.h"
-
 struct region_st
 {
 	bool inUse;

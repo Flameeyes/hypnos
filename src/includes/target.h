@@ -15,9 +15,7 @@
 #ifndef __TARGET_H__
 #define __TARGET_H__
 
-#include "objects/cchar.h"
-#include "objects/citem.h"
-#include "objects/cclient.h"
+#include "common_libs.h"
 
 typedef void ( cClient::*processTarget ) ( pTarget );
 

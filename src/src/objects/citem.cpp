@@ -210,7 +210,7 @@ cItem::resetData()
 \brief operator = for the cItem class, let's dupe :)
 \todo dupe books fix
 */
-cItem& cItem::operator=(cItem& b)
+cItem& cItem::operator=(const cItem& b)
 {
 	flags = b.flags;
 	// PyUO OK!
