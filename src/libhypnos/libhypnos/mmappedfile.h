@@ -9,6 +9,8 @@
 #ifndef __LIBHYPMUL_MMAPPDEFILE_H__
 #define __LIBHYPMUL_MMAPPDEFILE_H__
 
+#include "common_libs.h"
+
 /*!
 \class tMMappedFile mmappedfile.h "libhypmul/mmappedfile.h"
 \brief Memory Mapped File
@@ -58,11 +60,14 @@ protected:
 	int fd;		//!< Descriptor of the mmapped file
 	
 	void open(std::string filename);
-	vodi mmap(uint32_t offset, uint32_t length);
+	void mmap(uint32_t offset, uint32_t length);
 public:
 	tMMappedFile();
 	tMMappedFile(std::string filename, uint32_t offset = 0, uint32_t length = 0);
-	~tMMappedFile();
+	virtual ~tMMappedFile();
+	
+	uint32_t getCount() const
+	{ return size / sizeof(MUL); }
 };
 
 #endif
