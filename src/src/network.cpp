@@ -904,11 +904,9 @@ void cNetwork::enterchar(int s)
 	pChar pc=cSerializable::findCharBySerial(currchar[s]);
 	if ( ! pc ) return;
 
-	uint8_t startup[38]="\x1B\x00\x05\xA8\x90\x00\x00\x00\x00\x01\x90\x06\x08\x06\x49\x00\x0A\x04\x00\x00\x00\x7F\x00\x00\x00\x00\x00\x07\x80\x09\x60\x00\x00\x00\x00\x00\x00";
 	uint8_t techstuff[5]={ 0x69, 0x00, 0x05, 0x01, 0x00 };
 	uint8_t world[6]={0xBF, 0x00, 0x06, 0x00, 0x08, 0x00};
 	uint8_t modeset[5]={0x72, 0x00, 0x00, 0x32, 0x00};
-	uint8_t TimeZ[4]={0x5B, 0x0C, 0x13, 0x03};
 
 	if (map_height<300) world[5]=0x02;
 
@@ -920,22 +918,12 @@ void cNetwork::enterchar(int s)
 
 	sLocation charpos= pc->getPosition();
 
-	LongToCharPtr(pc->getSerial(), startup +1);
-	ShortToCharPtr(pc->getId(), startup +9);
-	ShortToCharPtr(charpos.x, startup +11);
-	ShortToCharPtr(charpos.y, startup +13);
-	startup[16]= charpos.z;
-	startup[17]= pc->dir;
-	startup[28]= 0;
-
-	if(pc->poisoned) startup[28]=0x04; else startup[28]=0x00; //AntiChrist -- thnx to SpaceDog
-
 	Xsend(s, world, 6);
 #ifdef ENCRYPTION
 	Network->FlushBuffer(s);
 #endif
-//!\todo use nPackets::Sent::LoginConfirmation when rewriting here
-	Xsend(s, startup, 37);
+	nPackets::Sent::LoginConfirmation pkLoginConf(pc);
+	client->sendPacket(&pkLoginConf);
 #ifdef ENCRYPTION
 	Network->FlushBuffer(s);
 #endif
@@ -959,12 +947,13 @@ void cNetwork::enterchar(int s)
 #ifdef ENCRYPTION
 	Network->FlushBuffer(s);
 #endif
-	nPackets::Sent::StartGame pkStartGgame;
-	client->sendPacket(pkStartGame);
+	nPackets::Sent::StartGame pkStartGame;
+	client->sendPacket(&pkStartGame);
 #ifdef ENCRYPTION
 	Network->FlushBuffer(s);
 #endif
-	Xsend(s, TimeZ, 4);
+	nPackets::Sent::GameTime pkGameTime;
+	client->sendPacket(&pkGameTime);
 #ifdef ENCRYPTION
 	Network->FlushBuffer(s);
 #endif

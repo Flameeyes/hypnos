@@ -779,6 +779,41 @@ void nPackets::Sent::MapPlotCourse::prepare()
 	ShortToCharPtr(y, buffer + 9);
 }
 
+/*!
+\brief Local time of server (or game time?)
+\author Chronodt
+\note packet 0x5b
+*/
+
+void nPackets::Sent::GameTime::prepare()
+{
+	length = 4;
+	buffer = new uint8_t[4];
+	buffer[0] = 0x5b;
+	time_t now;
+	time( &now );
+	struct tm timest = localtime( &now);
+	buffer[1] = timest.hour;
+	buffer[2] = timest.min;
+	buffer[3] = timest.sec;
+}
+
+/*!
+\brief Send Weather
+\author Chronodt
+\note packet 0x65
+*/
+
+void nPackets::Sent::Weather::prepare()
+{
+
+	length = 4;
+	buffer = new uint8_t[4];
+	buffer[0] = 0x65;
+
+}
+
+
 void nPackets::Sent::Action::prepare()
 {
 	static const uint8_t templ[14] = {
@@ -830,7 +865,7 @@ void nPackets::Sent::ClearBuyWindow::prepare()
 	buffer = new uint8_t[8];
 	buffer[0] = 0x3B;
 	ShortToCharPtr(0x08, buffer +1);			// Packet len
-	LongToCharPtr( npc->getSerial(), buffer + 3);	        // vendorID
+	LongToCharPtr( npc->getSerial(), buffer + 3);		// vendorID
 	buffer[7]=0x00;						// Flag:  0 => no more items  0x02 items following ...
 }
 

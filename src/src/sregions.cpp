@@ -331,6 +331,7 @@ void check_region_weatherchange ()
 
 	InfoOut("performing weather change...");
 
+	//! \todo revisit this part
 	for (i=0;i<256;i++)
 	{
 		region_st &regionRef = region[i];
@@ -354,6 +355,35 @@ void check_region_weatherchange ()
 		else regionRef.wtype = 2;
 	}
 
+
+	// Chronodt 17/8/04 - begun additional weathercode
+	//! \todo sobstitute temporary region subnames with the true ones when regions redone
+
+	uint8_t current = region[cregion].weatherCurrent;
+	sint8_t newintensity = region[cregion].weatherIntensity;
+
+	//Getting the 4 adiacent regions. getXXXXregion should return invalid if such region does not exist
+	uint8_t nregion = getNorthregion(cregion);
+	uint8_t eregion = getEastregion(cregion);
+	uint8_t sregion = getSouthregion(cregion);
+	uint8_t wregion = getWestregion(cregion);
+
+	switch (current)
+	{
+	case wtNormal:	//in this weather type, we use intensity as the "cloud coverage" :P
+		newintensity = getIntensityModifier(cregion, nregion);
+
+
+	//! \todo weather control in nox wasn't bad, not much to modify, but still we must update it to hypnos
+	if (region[wregion].wtype==0) packet[2] = 0x00;
+	if (region[wregion].wtype==1) packet[1] = 0x00;
+	if (region[wregion].wtype==2) { packet[1] = 0x02; packet[3] = 0xEC; }
+
+	Xsend(s, packet, 4);
+//AoS/	Network->FlushBuffer(s);
+#endif
+
+
 	//here : we should commit weather changes to players
    wtype=0;
 
@@ -361,6 +391,18 @@ void check_region_weatherchange ()
 	for (i=0;i<now;i++) { if (clientInfo[i]->ingame) { pweather(i); } }
 
    ConOut("[ OK ]\n");
+
+}
+
+
+sint8_t getIntensityModifier(region1, region2)
+{
+	if (region1 == INVALID || region2 == INVALID) return 0;
+	if (region[region1].climate == clNone ||  region[region2].climate == clNone) return 0;	//dungeons don't influence nearby areas' weather
+
+	if (region[region1].weatherCurrent == region[region2].weatherCurrent)
+		return (region[region1].weatherIntensity - region[region1].weatherIntensity) /4;
+
 
 }
 

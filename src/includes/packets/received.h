@@ -713,14 +713,45 @@ namespace nPackets {
 			/*!
 			\param aMap map used
 			\param aCommand command to be sent to client
-			\param aPin pin modified (or writeability status if comm == 6)
+			\param aPin pin modified (or writeability status if command == 6)
 			\param xx x position of pin (map relative, pixels from topleft corner)
 			\param yy y position of pin (map relative, pixels from topleft corner)
 			*/
 			inline MapPlotCourse(pMap aMap, PlotCourseCommands aCommand, uint16_t aPin = 0, uint32_t xx = 0, uint32_t yy = 0) :
 				cPacketSend(NULL, 0), map (aMap), command (aCommand), pin (aPin),  x (xx), y (yy)
 			{ }
-		
+
+			void prepare();
+		};
+		/*!
+		\brief Local time of server (or game time?)
+		\author Chronodt
+		\note packet 0x5b
+		*/
+
+		class GameTime : public cPacketSend
+		{
+		protected:
+		public:
+			inline GameTime() :
+				cPacketSend(NULL, 0)
+			{ }
+			void prepare();
+		};
+
+		/*!
+		\brief Send Weather
+		\author Chronodt
+		\note packet 0x65
+		*/
+		class Weather : public cPacketSend
+		{
+		protected:
+			uint8_t cregion;	//!< current region (to which weather effect is sent)
+		public:
+			inline Weather(uint8_t aCregion) :
+				cPacketSend(NULL, 0), cregion(aCregion)
+			{ }
 			void prepare();
 		};
 
@@ -743,7 +774,7 @@ namespace nPackets {
 			inline Action(uint32_t s, uint16_t a) :
 				cPacketSend(NULL, 0), serial(s), action(a)
 			{ }
-		
+
 			void prepare();
 		};
 
@@ -759,9 +790,10 @@ namespace nPackets {
 			inline OpenBrowser(std::string str) :
 				cPacketSend(NULL, 0), url(str)
 			{ }
-		
+
 			void prepare();
 		};
+
 		
 		/*!
 		\brief Sends the OK/Not OK for an attack
@@ -782,6 +814,7 @@ namespace nPackets {
 			void prepare();
 		};
 		
+
 		//! Play midi file
 		class PlayMidi : public cPacketSend
 		{
@@ -794,10 +827,10 @@ namespace nPackets {
 			inline PlayMidi(uint16_t midi) :
 				cPacketSend(NULL, 0), id(midi)
 			{ }
-		
+
 			void prepare();
 		};
-		
+
 
 
 		/*!
