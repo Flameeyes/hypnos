@@ -42,7 +42,7 @@ void cNPC::heartbeat()
 
 	if ( events[evtChrOnHeartBeat] ) {
 		cVariantVector params = cVariantVector(2);
-		params[0] = getSerial(); params[1] = getclock();
+		params[0] = getSerial(); params[1] = getClockmSecs();
 		events[evtChrOnHeartBeat]->setParams(params);
 		events[evtChrOnHeartBeat]->execute();
 		if ( events[evtChrOnHeartBeat]->isBypassed() )
@@ -69,7 +69,7 @@ void cNPC::heartbeat()
 	checkPoisoning();
 	if ( isDead() )
 		return;
-	checkFieldEffects( getclock(), this, 0 );
+	checkFieldEffects( getClockmSecs(), this, 0 );
 	if ( isDead() )
 		return;
 	//
@@ -143,7 +143,7 @@ void cNPC::heartbeat()
 					break;
 			}
 		}
-		hungertime = getclock() + ( SrvParms->hungerrate * SECS );
+		hungertime = getClockmSecs() + ( SrvParms->hungerrate * SECS );
 	}
 
 	if( npcWander!=cNPC::WANDER_FLEE ) {
@@ -197,7 +197,7 @@ void cNPC::heartbeat()
 				safedelete( spellTL );
 			}
 		} else if ( TIMEOUT( nextact ) ) {
-			nextact = getclock() + uint32_t(SECS*1.5);
+			nextact = getClockmSecs() + uint32_t(SECS*1.5);
 			if ( isMounting() )
 				playAction( 0x1b );
 			else
@@ -397,7 +397,7 @@ void cNPC::createEscortQuest()
 
 	// Set the expirey time on the NPC if no body accepts the quest
 	if ( SrvParms->escortinitexpire )
-		summontimer = ( getclock() + ( SECS * SrvParms->escortinitexpire ) );
+		summontimer = ( getClockmSecs() + ( SECS * SrvParms->escortinitexpire ) );
 
 	// Make sure the questDest is valid otherwise don't post and delete the NPC
 	if ( !questDestRegion )
@@ -451,7 +451,7 @@ void cNPC::clearedEscordQuest(pPC pc)
 	questDestRegion = 0;   // Reset quest destination region
 
 	// Set a timer to automatically delete the NPC
-	summontimer = ( getclock() + ( SECS * SrvParms->escortdoneexpire ) );
+	summontimer = ( getClockmSecs() + ( SECS * SrvParms->escortdoneexpire ) );
 
 	setOwner(NULL);
 }

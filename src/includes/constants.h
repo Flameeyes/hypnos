@@ -17,9 +17,9 @@
 
 static const uint32_t DAYSECONDS = 86400;	//!< Number of seconds in a day. To don't repeat it
 static const uint32_t DAYMSECONDS = 86400000;	//!< Number of milliseconds in a day. To don't repeat it
-static const uint16_t SECS = 1000;		//!< Used to convert seconds to milliseconds ( getclock() returns msecs )
-static const uint32_t MINUTES = 60*SECS;	//!< Used to convert minutes to milliseconds ( getclock() returns msecs )
-static const uint32_t HOURS = 60*MINUTES;	//!< Used to convert hours to milliseconds ( getclock() returns msecs )
+static const uint16_t SECS = 1000;		//!< Used to convert seconds to milliseconds ( getClockmSecs() returns msecs )
+static const uint32_t MINUTES = 60*SECS;	//!< Used to convert minutes to milliseconds ( getClockmSecs() returns msecs )
+static const uint32_t HOURS = 60*MINUTES;	//!< Used to convert hours to milliseconds ( getClockmSecs() returns msecs )
 
 static const uint16_t T2A = 0x0001;
 static const uint16_t LBR = 0x0002;

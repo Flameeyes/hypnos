@@ -404,7 +404,7 @@ int response(pClient client)
 						pc_map->npcWander = cNPC::WANDER_FOLLOW;
 
 						// Set the expire time if nobody excepts the quest
-						pc_map->summontimer = ( getclock() + ( SECS * SrvParms->escortactiveexpire ) );
+						pc_map->summontimer = ( getClockmSecs() + ( SECS * SrvParms->escortactiveexpire ) );
 
 						// Send out the rant about accepting the escort
 						pc_map->talkAll("Lead on! Payment shall be made when we arrive at %s.", false, region[pc_map->questDestRegion].name);
@@ -822,7 +822,7 @@ int response(pClient client)
 							pc->guarded = false; // Sparhawk	How about when more than 1 pets is guarding me??
 							if (pc_map->summontimer)
 							{
-								pc_map->summontimer=getclock();
+								pc_map->summontimer=getClockmSecs();
 							}
 							//pet release code here
 							pc_map->ftargserial=INVALID;
@@ -849,7 +849,7 @@ int response(pClient client)
 					{
 						if (pc_map->summontimer)
 						{
-							pc_map->summontimer=getclock();
+							pc_map->summontimer=getClockmSecs();
 						}
 						//pet release code here
 						pc_map->ftargserial=INVALID;
@@ -1504,7 +1504,7 @@ static bool stablePet( pChar pc, pClient client, std::string &speech, NxwCharWra
 					pc_pet->stable( pc_stablemaster );
 					// set timer for fee calculation
 					pc_pet->time_unused=0;
-					pc_pet->timeused_last = getclock();
+					pc_pet->timeused_last = getClockmSecs();
 				}
 				char *temp;
 				if( petsToStable.size() == 1 )
@@ -1643,7 +1643,7 @@ stabledPets.rewind();	// GH!
 					
 					pc_pet->unStable();
 					
-					pc_pet->timeused_last = getclock();
+					pc_pet->timeused_last = getClockmSecs();
 					pc_pet->time_unused=0;
 #ifdef SPAR_C_LOCATION_MAP
 					pointers::addToLocationMap( pc_pet );

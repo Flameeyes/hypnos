@@ -34,10 +34,7 @@ warnings/errors/issues.
 	#define strcasecmp strcmpi
 #endif
 
-#if defined WIN32 || defined _WIN32
-	#ifndef _WIN32
-		#define _WIN32
-	#endif
+#if defined WIN32
 #endif
 
 #ifdef __APPLE__
@@ -81,10 +78,6 @@ extern OSVersion getOSVersion();
 
 Functions defined into archs/hypunix and archs/hypwin32
 */
-uint32_t getclock();
-uint32_t getsysclock();
-uint32_t getclockday();
-void initclock();
 
 /*!
 \brief Manages a socket error

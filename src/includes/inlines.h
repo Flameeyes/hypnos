@@ -50,7 +50,7 @@ inline bool chance(uint8_t percent) { return ( (rand()%100) < percent); }
 
 inline void SetTimerSec( uint32_t *timer, const short seconds)
 {
-	*timer=seconds * SECS + getclock();
+	*timer=seconds * SECS + getClockmSecs();
 }
 
 /*!

@@ -201,7 +201,7 @@ void nSkills::decipher(pClient client)
 	SetTimerSec(&pc->skilldelay, nSettings::Skills::getSkillDelay() );
 	pc->playSFX(0x0249);
 	
-	if( pc->skilldelay > getclock() && !pc->isGM()) // Char doin something?
+	if( pc->skilldelay > getClockmSecs() && !pc->isGM()) // Char doin something?
 	{
 		client->sysmessage("You must wait to perform another action");
 		return;

@@ -187,7 +187,7 @@ void cChar::mountHorse( pNPC mount )
 	mount->attackerserial=INVALID;
 
 	mount->time_unused = 0;
-	mount->timeused_last = getclock();
+	mount->timeused_last = getClockmSecs();
 }
 
 /*!
@@ -225,7 +225,7 @@ bool cChar::unmountHorse()
 		if( p_pet ) {
 
 
-			p_pet->timeused_last = getclock();
+			p_pet->timeused_last = getClockmSecs();
 			p_pet->time_unused = 0;
 
 			p_pet->mounted=false;

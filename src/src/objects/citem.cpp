@@ -180,7 +180,7 @@ cItem::resetData()
 	poisoned=poisonNone; //AntiChrist -- for poisoning skill
 	murdertime=0; //AntiChrist -- for corpse -- when the people has been killed
 	time_unused=0;
-	timeused_last=getclock();
+	timeused_last=getClockmSecs();
 	animSetId(0x0000); // elcabesa animation
 	ammo=0;
 	ammoFx=0;

@@ -1217,7 +1217,7 @@ bool nPackets::Received::DeleteCharacter::execute(pClient client)
 
 		if (TrashMeUp)
 		{
-			if( SrvParms->checkcharage && (getclockday() < TrashMeUp->getCreationDay() + 7) )
+			if( SrvParms->checkcharage && (getClockDay() < TrashMeUp->getCreationDay() + 7) )
 			{
 				// Character is too young to die :D
 				nPackets::Sent::CharDeleteError pk(0x3);

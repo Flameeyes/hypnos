@@ -169,12 +169,12 @@ void cMessage::refreshQuestMessage()
 		if ( pc->ftargserial==INVALID )
 		{
 			// Lets reset the summontimer to the escortinit
-			pc->summontimer = ( getclock() + ( SECS * nSettings::MsgBoards::getEscortInitExpire() ) );
+			pc->summontimer = ( getClockmSecs() + ( SECS * nSettings::MsgBoards::getEscortInitExpire() ) );
 		}
 		else // It must have an escort in progress so set the escortactiveexpire timer
 		{
 			// Lets reset the summontimers to the escortactive value
-			pc->summontimer = ( getclock() + ( SECS * nSettings::MsgBoards::getEscortActiveExpire() ) );
+			pc->summontimer = ( getClockmSecs() + ( SECS * nSettings::MsgBoards::getEscortActiveExpire() ) );
 		}
 		break;
 
@@ -191,12 +191,12 @@ void cMessage::refreshQuestMessage()
 		if ( pc->ftargserial==INVALID )
 		{
 			// Lets reset the summontimer to the escortinit
-			pc->summontimer = ( getclock() + ( SECS * SrvParms->escortinitexpire ) );
+			pc->summontimer = ( getClockmSecs() + ( SECS * SrvParms->escortinitexpire ) );
 		}
 		else // It must have an escort in progress so set the escortactiveexpire timer
 		{
 			// Lets reset the summontimers to the escortactive value
-			pc->summontimer = ( getclock() + ( SECS * SrvParms->escortactiveexpire ) );
+			pc->summontimer = ( getClockmSecs() + ( SECS * SrvParms->escortactiveexpire ) );
 		}
 */
 		break;

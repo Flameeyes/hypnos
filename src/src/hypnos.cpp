@@ -163,7 +163,7 @@ void loadServer()
 	commitserverscript(); // second phase setup
 	SetGlobalVars();
 	
-	srand(getclock()); // initial randomization call
+	srand(getClockmSecs()); // initial randomization call
 	
 	// Load MULs
 	nMULFiles::setMULpath("./muls"); //!\todo need to fix this

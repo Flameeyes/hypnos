@@ -67,7 +67,7 @@ void cChar::talk(pClient client, char *txt, bool antispam)
 	if( antispam )
 	{
 		if( TIMEOUT(antispamtimer) )
-			antispamtimer=getclock()+SECS*10;
+			antispamtimer=getClockmSecs()+SECS*10;
 		else
 			machwas = false;
 	}
@@ -114,7 +114,7 @@ void cChar::emote( pClient client, char *txt, bool antispam, ... )
 	if ( antispam )
 	{
 		if ( TIMEOUT( antispamtimer ) )
-			antispamtimer=getclock()+SECS*10;
+			antispamtimer=getClockmSecs()+SECS*10;
 		else
 			sendEmote = false;
 	}
@@ -156,7 +156,7 @@ void cChar::emoteall( char *txt, bool antispam, ... )
 	if ( antispam )
 	{
 		if ( TIMEOUT( antispamtimer ) )
-			antispamtimer=getclock()+SECS*10;
+			antispamtimer=getClockmSecs()+SECS*10;
 		else
 			sendEmote = false;
 	}
@@ -197,7 +197,7 @@ void cChar::talkRunic(pClient client, char *txt, bool antispam)
 
 	if (antispam)
 	{
-		if (TIMEOUT(antispamtimer)) antispamtimer=getclock()+SECS*10;
+		if (TIMEOUT(antispamtimer)) antispamtimer=getClockmSecs()+SECS*10;
 		else return;
 	}
 

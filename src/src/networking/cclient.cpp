@@ -126,8 +126,8 @@ void cClient::disconnect()
 	{
 		currChar()->setClient( NULL );
 
-		if( currChar()->murderrate>getclock() ) //save murder decay
-			currChar()->murdersave= (currChar()->murderrate -getclock()) / SECS;
+		if( currChar()->murderrate>getClockmSecs() ) //save murder decay
+			currChar()->murdersave= (currChar()->murderrate -getClockmSecs()) / SECS;
 
 	}
 

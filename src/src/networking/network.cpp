@@ -383,7 +383,7 @@ void cNetwork::Relay(pClient client) // Relay player to a certain IP
 
 	uint32_t key = calcserial('a', 'K', 'E', 'Y');
 
-	srand(ip+acctno[s]+now+getclock()); // Perform randomize
+	srand(ip+acctno[s]+now+getClockmSecs()); // Perform randomize
 #ifdef ENCRYPTION
 	if ( clientCrypter[s] != NULL )
 	{
@@ -645,8 +645,8 @@ void cNetwork::enterchar(pClient client)
 	nPackets::Sent::GameTime pkGameTime;
 	client->sendPacket(&pkGameTime);
 
-	pc->spiritspeaktimer=getclock();
-	pc->begging_timer=getclock();
+	pc->spiritspeaktimer=getClockmSecs();
+	pc->begging_timer=getClockmSecs();
 
 	pc->stealth=INVALID;
 	if (!(pc->IsGMorCounselor()))
@@ -704,8 +704,8 @@ void cNetwork::startchar(pClient client)
 	}
 
 	// very stupid stuff
-	//pc->murderrate=getclock()+repsys.murderdecay*SECS; // LB, bugfix for murder-count getting --'ed each start
-	pc->murderrate=getclock()+pc->murdersave*SECS;
+	//pc->murderrate=getClockmSecs()+repsys.murderdecay*SECS; // LB, bugfix for murder-count getting --'ed each start
+	pc->murderrate=getClockmSecs()+pc->murdersave*SECS;
 
 	nPackets::Sent::TipsWindow pkMOTD(nMOTD::getMOTD());
 	client->sendPacket(&pkMOTD);
@@ -806,7 +806,7 @@ char cNetwork::LogOut(pClient client)//Instalog
 	} else {
 		if ( clientInfo[s]->ingame )
 		{
-		    pc->logout=getclock()+SrvParms->quittime*SECS;
+		    pc->logout=getClockmSecs()+SrvParms->quittime*SECS;
 		}
 	}
 
@@ -1287,7 +1287,7 @@ void cNetwork::GetMsg(pClient client) // Receive message from client
 			if (readstat > SOCKET_ERROR)
 			{
 				if (pc_currchar && packet !=0x73 && packet!=0x80 && packet!=0xA4 && packet!=0xA0 && packet!=0x90 && packet!=0x91 ) {
-					pc_currchar->clientidletime=SrvParms->inactivitytimeout*SECS+getclock();
+					pc_currchar->clientidletime=SrvParms->inactivitytimeout*SECS+getClockmSecs();
 				}
         		    // LB, client activity-timestamp !!! to detect client crashes, ip changes etc and disconnect in that case
         		    // 0x73 (idle packet) also counts towards client idle time

@@ -32,7 +32,7 @@ void cPC::heartbeat()
 {
 	if ( dead )
 		return;
-	if ( Accounts->GetInWorld( account ) == getSerial() && logout > 0 && ( logout <= (int32_t)getclock()  ) )
+	if ( Accounts->GetInWorld( account ) == getSerial() && logout > 0 && ( logout <= (int32_t)getClockmSecs()  ) )
 	{
 		Accounts->SetOffline( account);
 		logout = INVALID;
@@ -44,7 +44,7 @@ void cPC::heartbeat()
 
 	if ( events[evtChrOnHeartBeat] ) {
 		cVariantVector params = cVariantVector(2);
-		params[0] = getSerial(); params[1] = getclock();
+		params[0] = getSerial(); params[1] = getClockmSecs();
 		events[evtChrOnHeartBeat]->setParams(params);
 		events[evtChrOnHeartBeat]->execute();
 		if ( events[evtChrOnResurrect]->isBypassed() )
@@ -61,12 +61,12 @@ void cPC::heartbeat()
 	{
 		--hunger;
 		sayHunger();
-		hungertime = getclock()+(nSettings::Hunger::getRate()*SECS); // Bookmark
+		hungertime = getClockmSecs()+(nSettings::Hunger::getRate()*SECS); // Bookmark
 	}
 	if ( nSettings::Hunger::isEnabled() && TIMEOUT( hungerdamagetimer ) && nSettings::Hunger::getDamage() > 0 )
 	// Damage them if they are very hungry
 	{
-		hungerdamagetimer=getclock()+(nSettings::Hunger::getDamageRate()*SECS); /** set new hungertime **/
+		hungerdamagetimer=getClockmSecs()+(nSettings::Hunger::getDamageRate()*SECS); /** set new hungertime **/
 		if (hp > 0 && hunger<2 && !IsCounselor() && !dead)
 		{
 			client->sysmessage("You are starving !");
@@ -82,7 +82,7 @@ void cPC::heartbeat()
 	if ( isDead() )	// Starved to death
 		return;
 
-	checkFieldEffects( getclock(), this, 1 );
+	checkFieldEffects( getClockmSecs(), this, 1 );
 	if ( isDead() )
 		return;
 
@@ -102,7 +102,7 @@ void cPC::heartbeat()
 	{
 		if ( TIMEOUT( smokedisplaytimer ) )
 		{
-			smokedisplaytimer = getclock() + 5 * SECS;
+			smokedisplaytimer = getClockmSecs() + 5 * SECS;
 			staticFX(this, 0x3735, 0, 30);
 			playSFX( 0x002B );
 			switch( RandomNum( 0, 6 ) )
@@ -129,7 +129,7 @@ void cPC::heartbeat()
 		client->sysmessage("You are no longer squelched!");
 	}
 
-/*	if ( IsCriminal() && ( crimflag <= getclock()  ) )
+/*	if ( IsCriminal() && ( crimflag <= getClockmSecs()  ) )
 	{
 		client->sysmessage("You are no longer a criminal.");
 		crimflag = 0;
@@ -145,7 +145,7 @@ void cPC::heartbeat()
 			client->sysmessage("You are no longer a murderer.");
 			SetInnocent();
 		}
-		murderrate = ( repsys.murderdecay * SECS ) + getclock();
+		murderrate = ( repsys.murderdecay * SECS ) + getClockmSecs();
 	}
 
 	updateFlag();
@@ -171,7 +171,7 @@ void cPC::heartbeat()
 		}
 		else if ( TIMEOUT( nextact ) ) //redo the spell action
 		{ //<Luxor>
-			nextact = getclock() + uint32_t(SECS*1.5);
+			nextact = getClockmSecs() + uint32_t(SECS*1.5);
 			if ( isMounting() )
 				playAction( 0x1b );
 			else
@@ -285,7 +285,7 @@ bool cPC::updateFlag()
 		//! \todo - TODO check out logic of next 2 statements (Sparhawk)
 		//
 		SetMurderer();
-		murderrate = (repsys.murderdecay*SECS)+getclock();
+		murderrate = (repsys.murderdecay*SECS)+getClockmSecs();
 	}
 	/*else
 

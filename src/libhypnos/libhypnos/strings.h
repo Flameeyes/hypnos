@@ -190,7 +190,7 @@ inline int32_t atoi(std::string str)
 	return atoi(str.c_str());
 }
 
-#ifdef _WIN32
+#ifdef WIN32
 int asprintf(char **strp, const char *fmt, ...) PRINTF_LIKE(2,3)
 int vasprintf(char **strp, const char *fmt, va_list ap);
 #endif

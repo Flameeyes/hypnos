@@ -212,7 +212,7 @@ void usepotion(pChar pc, pItem pi)
 			pc->poisoned=(PoisonType)pi->morez;
 		if(pi->morez>4)
 			pi->morez=4;
-		pc->poisonwearofftime=getclock()+(SECS*SrvParms->poisontimer); // lb, poison wear off timer setting
+		pc->poisonwearofftime=getClockmSecs()+(SECS*SrvParms->poisontimer); // lb, poison wear off timer setting
 		client->sendchar(pc);
 		pc->playSFX(0x0246); //poison sound - SpaceDog
 		if(client) client->sysmessage("You poisoned yourself! *sigh*"); //message -SpaceDog
@@ -344,7 +344,7 @@ void callguards( pChar caller )
 	if( !(region[caller->region].priv&0x01 ) || !SrvParms->guardsactive || !TIMEOUT( caller->antiguardstimer ) || caller->dead )
 		return;
 
-	caller->antiguardstimer=getclock()+(SECS*10);
+	caller->antiguardstimer=getClockmSecs()+(SECS*10);
 
 	/*
 	Sparhawk:
@@ -384,7 +384,7 @@ void callguards( pChar caller )
 			guard->npcaitype=NPCAI_TELEPORTGUARD;
 			guard->npcWander=cNPC::WANDER_FREELY_CIRCLE;
 			guard->setNpcMoveTime();
-			guard->summontimer = getclock() + SECS * 25 ;
+			guard->summontimer = getClockmSecs() + SECS * 25 ;
 
 			guard->playSFX( 0x01FE );
 			staticFX(guard, 0x372A, 9, 6);
@@ -402,9 +402,9 @@ void callguards( pChar caller )
 			guard->oldnpcWander = guard->npcWander;
 			guard->npcWander = cNPC::WANDER_FOLLOW;
 			guard->ftargserial = caller->getSerial();
-			guard->antiguardstimer=getclock()+(SECS*10); // Sparhawk this should become server configurable
+			guard->antiguardstimer=getClockmSecs()+(SECS*10); // Sparhawk this should become server configurable
 			guard->talkAll("Don't fear, help is on the way", false );
-			//guard->antispamtimer = getclock()+SECS*5;
+			//guard->antispamtimer = getClockmSecs()+SECS*5;
 			guards.pop_back();
 		}
 	}
@@ -641,7 +641,7 @@ void dooruse(pChar pc, pItem pi)
 	if ( ! changed || ! pc )
 		return;
 
-	pc->objectdelay=getclock()+ (server_data.objectdelay/4)*SECS;
+	pc->objectdelay=getClockmSecs()+ (server_data.objectdelay/4)*SECS;
 	// house refreshment when a house owner or friend of a houe opens the house door
 
 	int j, houseowner_serial,ds;
@@ -670,18 +670,18 @@ void dooruse(pChar pc, pItem pi)
 	}
 
 	pi_house->time_unused=0;
-	pi_house->timeused_last=getclock();
+	pi_house->timeused_last=getClockmSecs();
 }
 
 void endmessage(int x) // If shutdown is initialized
 {
-	uint32_t igetclock = getclock();
+	uint32_t igetClockmSecs = getClockmSecs();
 
-	if (endtime<igetclock)
-		endtime=igetclock;
+	if (endtime<igetClockmSecs)
+		endtime=igetClockmSecs;
 
-	sysbroadcast("server going down in %i minutes.\n", ((endtime-igetclock)/SECS)/60);
-	outInfof("server going down in %i minutes.\n", ((endtime-igetclock)/SECS)/60);
+	sysbroadcast("server going down in %i minutes.\n", ((endtime-igetClockmSecs)/SECS)/60);
+	outInfof("server going down in %i minutes.\n", ((endtime-igetClockmSecs)/SECS)/60);
 }
 
 int checkBoundingBox(int xPos, int yPos, int fx1, int fy1, int fz1, int fx2, int fy2)

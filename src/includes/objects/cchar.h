@@ -448,13 +448,13 @@ public:
 	NotEquippableReason canEquip(pEquippable pi);
 
 	inline void setSkillDelay( uint32_t seconds = nSettings::Server::getDelaySkills() )
-	{ skilldelay = getclock() + seconds * SECS; }
+	{ skilldelay = getClockmSecs() + seconds * SECS; }
 
 	inline const bool canDoSkillAction() const
 	{ return TIMEOUT( skilldelay ); }
 
 	inline void setObjectDelay( uint32_t seconds = nSettings::Server::getDelayObjects() )
-	{ objectdelay = getclock() + seconds * SECS; }
+	{ objectdelay = getClockmSecs() + seconds * SECS; }
 
 	inline const bool canDoObjectAction() const
 	{ return TIMEOUT( objectdelay ); }
@@ -625,10 +625,10 @@ private:
 public:
 	//! tells if a character is running
 	inline const bool isRunning() const
-	{ return ( (getclock() - lastRunning) <= 100 ); }
+	{ return ( (getClockmSecs() - lastRunning) <= 100 ); }
 
 	inline void setRunning()
-	{ lastRunning = getclock(); }
+	{ lastRunning = getClockmSecs(); }
 
 	void 			setNextMoveTime(short tamediv=1);
 	void 			disturbMed();

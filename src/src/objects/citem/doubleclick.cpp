@@ -220,13 +220,13 @@ void cItem::doubleClick(pClient client)
 	// Chronodt: 1/2/2004 added a server parameter check to allow servers to let items be used when invisible
 	if (pc->IsHiddenBySpell() && !nSettings::Actions::canUseItemsWhenInvisible()) return;
 
-	if ( !pc->IsGM() && pc->objectdelay >= getclock() )
+	if ( !pc->IsGM() && pc->objectdelay >= getClockmSecs() )
 	{
 		client->sysmessage("You must wait to perform another action.");
 		return;
 	}
 	else
-		pc->objectdelay = nSettings::Actions::getObjectsDelay() * SECS + getclock();
+		pc->objectdelay = nSettings::Actions::getObjectsDelay() * SECS + getClockmSecs();
 
 	///MODIFY, CANT CLICK ITEM AT DISTANCE >2//////////////
 	if ( (pc->distFrom(pi)>2) && !pc->IsGM() && !(pc->hasTelekinesis()) ) //Luxor: let's check also for the telekinesys spell
@@ -595,7 +595,7 @@ void cItem::doubleClicked(pClient client)
 			}
 			return;
 	case ITYPE_SMOKE:
-			pc->smoketimer = morex*SECS + getclock();
+			pc->smoketimer = morex*SECS + getClockmSecs();
 			ReduceAmount(1);
 			return;
 	case ITYPE_RENAME_DEED:
@@ -1030,7 +1030,7 @@ static void doubleclick_itemid(pClient client, pChar pc, pItem pi, pContainer pa
 			ps->telltime();
 			return;
 		case 0x0E9B: // Mortar for Alchemy
-			pc->objectdelay = ((nSettings::Actions::getObjectsDelay() * SECS)*3) + getclock();
+			pc->objectdelay = ((nSettings::Actions::getObjectsDelay() * SECS)*3) + getClockmSecs();
 			if (pi->type == ITYPE_MANAREQ_WAND)
 			{
 				targ = clientInfo[s]->newTarget( new cItemTarget() );

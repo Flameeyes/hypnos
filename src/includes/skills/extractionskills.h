@@ -19,7 +19,7 @@
 class cResource {
 public:
 
-	cResource( ) { this->consumed=0; timer=getclock(); }
+	cResource( ) { this->consumed=0; timer=getClockmSecs(); }
 
 	uint32_t timer; //!< timer for respawn
 	uint32_t consumed; //!< amount of resource consumed

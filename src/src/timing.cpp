@@ -80,12 +80,12 @@ void checkFieldEffects( uint32_t currenttime, pChar pc, char timecheck )
 void checktimers() // Check shutdown timers
 {
 
-	overflow = (lclock > getclock());
+	overflow = (lclock > getClockmSecs());
 	if (endtime)
 	{
-		if ( endtime <= getclock() ) keeprun=false;
+		if ( endtime <= getClockmSecs() ) keeprun=false;
 	}
-	lclock = getclock();
+	lclock = getClockmSecs();
 
 }
 
@@ -116,7 +116,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 	{
 		if (Calendar::advanceMinute())
 			day++;
-		uotickcount=getclock()+secondsperuominute*SECS;
+		uotickcount=getClockmSecs()+secondsperuominute*SECS;
 		if (Calendar::g_nMinute%8==0)
 			moon1=(moon1+1)%8;
 		if (Calendar::g_nMinute%3==0)
@@ -187,7 +187,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 			worldcurlevel = lightLevel;
 			lightChanged  = true;
 		}
-		lighttime=getclock()+secondsperuominute*5*SECS;
+		lighttime=getClockmSecs()+secondsperuominute*5*SECS;
 	}
 
 	//
@@ -198,7 +198,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 		// check_houses
 		if( SrvParms->housedecay_secs != UINVALID )
 			cHouse::checkDecay();
-		housedecaytimer = getclock()+HOURS; // check only each hour
+		housedecaytimer = getClockmSecs()+HOURS; // check only each hour
 	}
 	//
 	// Spawns
@@ -253,13 +253,13 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 			while( it != end )
 			{
 				pNpc = (*it);
-				if( pNpc->lastNpcCheck != getclock() &&
+				if( pNpc->lastNpcCheck != getClockmSecs() &&
 				    (TIMEOUT( checknpcs ) ||
 				    (TIMEOUT( checktamednpcs ) && pNpc->tamed) ||
 				    (TIMEOUT( checknpcfollow ) && pNpc->npcWander == cNPC::WANDER_FOLLOW ) ) )
 				{
 					pNpc->heartbeat();
-					pNpc->lastNpcCheck = getclock();
+					pNpc->lastNpcCheck = getClockmSecs();
 				}
 				++it;
 			}
@@ -313,7 +313,7 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 									dir%=8;
 									Boats->Move(ps->toInt(),dir,pi);
 								}
-								pi->gatetime=(uint32_t)(getclock() + (double)(SrvParms->boatspeed*SECS));
+								pi->gatetime=(uint32_t)(getClockmSecs() + (double)(SrvParms->boatspeed*SECS));
 							}
 						break;
 				}
@@ -323,22 +323,22 @@ void checkauto() // Check automatic/timer controlled stuff (Like fighting and re
 
 
 	if( TIMEOUT( checkitemstime ) )
-		checkitemstime = (uint32_t)((double) getclock()+(speed.itemtime*SECS));
+		checkitemstime = (uint32_t)((double) getClockmSecs()+(speed.itemtime*SECS));
 	if( TIMEOUT( checknpcs ) )
-		checknpcs = (uint32_t)((double) getclock()+(speed.npctime*SECS));
+		checknpcs = (uint32_t)((double) getClockmSecs()+(speed.npctime*SECS));
 	if( TIMEOUT( checktamednpcs ) )
-		checktamednpcs=(uint32_t)((double) getclock()+(speed.tamednpctime*SECS));
+		checktamednpcs=(uint32_t)((double) getClockmSecs()+(speed.tamednpctime*SECS));
 	if( TIMEOUT( checknpcfollow ) )
-		checknpcfollow=(uint32_t)((double) getclock()+(speed.npcfollowtime*SECS));
+		checknpcfollow=(uint32_t)((double) getClockmSecs()+(speed.npcfollowtime*SECS));
 	//
 	// Finish
 	//
 	if ( TIMEOUT( nextfieldeffecttime ) )
-		nextfieldeffecttime = (uint32_t)((double) getclock() + (0.5*SECS));
+		nextfieldeffecttime = (uint32_t)((double) getClockmSecs() + (0.5*SECS));
 	if ( TIMEOUT( nextdecaytime ) )
-		nextdecaytime = getclock() + (15*SECS);
+		nextdecaytime = getClockmSecs() + (15*SECS);
         if( TIMEOUT( checktempfx ) )
-		checktempfx = (uint32_t)((double) getclock()+(0.5*SECS));
+		checktempfx = (uint32_t)((double) getClockmSecs()+(0.5*SECS));
 }
 
 static int32_t linInterpolation (int32_t ix1, int32_t iy1, int32_t ix2, int32_t iy2, int32_t ix)

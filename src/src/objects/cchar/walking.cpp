@@ -155,7 +155,7 @@ void cChar::flee( pChar pc, int32_t seconds )
 	if ( ! pc ) return;
 
 	if( seconds!=INVALID )
-		fleeTimer=getclock() +SECS*seconds;
+		fleeTimer=getClockmSecs() +SECS*seconds;
 	else
 		fleeTimer=INVALID;
 

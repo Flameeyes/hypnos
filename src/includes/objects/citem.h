@@ -721,7 +721,7 @@ protected:
 public:
 	virtual bool doDecay(bool dontDelete = false);
 
-	inline const void setDecayTime( const uint32_t delay = /*getclock()+*/(nSettings::Server::getDecayTimer()*SECS) )
+	inline const void setDecayTime( const uint32_t delay = /*getClockmSecs()+*/(nSettings::Server::getDecayTimer()*SECS) )
 	{ decaytime = delay; }
 
 	inline const uint32_t getDecayTime() const

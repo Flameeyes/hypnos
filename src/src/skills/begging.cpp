@@ -52,7 +52,7 @@ void Begging::target(pClient client, pTarget t)
 		return;
 	}
 
-	if (pc->begging_timer >= getclock())
+	if (pc->begging_timer >= getClockmSecs())
 	{
 		pc->talk(s,"Annoy someone else!",1);
 		return;

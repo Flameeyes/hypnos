@@ -69,7 +69,7 @@ void snooping( pPC snooper, pItem cont )
 	
 	pPC pc_owner = dynamic_cast<pPC>(owner);
 
-	snooper->objectdelay = nSettings::Skills::getSnoopDelay() * SECS + getclock();
+	snooper->objectdelay = nSettings::Skills::getSnoopDelay() * SECS + getClockmSecs();
 	
 	if ( owner->IsGMorCounselor())
 	{

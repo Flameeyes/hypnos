@@ -72,7 +72,7 @@ void restock(bool total)
 
 cRestockMng::cRestockMng()
 {
-	timer=getclock();
+	timer=getClockmSecs();
 }
 
 void cRestockMng::doRestock()
@@ -164,9 +164,9 @@ void cRestockMng::rewindList()
 void cRestockMng::updateTimer()
 {
 	if( needrestock.empty() ) //end restock.. next after much time
-		timer=getclock()+ServerScp::g_nRestockTimeRate*60*SECS;
+		timer=getClockmSecs()+ServerScp::g_nRestockTimeRate*60*SECS;
 	else
-		timer=getclock()+CHECK_RESTOCK_EVERY*SECS;
+		timer=getClockmSecs()+CHECK_RESTOCK_EVERY*SECS;
 }
 
 cRestockMng* Restocks = NULL;

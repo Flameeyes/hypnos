@@ -363,7 +363,7 @@ void nSkills::target_tree(pClient client, pTarget t )
     static uint32_t logamount[max_res_x][max_res_y];
     int a, b;
     unsigned int c;
-    unsigned long int curtime=getclock();
+    unsigned long int curtime=getClockmSecs();
 
 	if( pc->isMounting() ) {
 		client->sysmessage("You cannot do this on a horse");
@@ -1268,7 +1268,7 @@ void nSkills::target_forensics(pClient client, pTarget t )
 
 	AMXEXECSVTARGET( pc->getSerial(),AMXT_SKITARGS,skForensics,AMX_BEFORE);
 
-	int curtim=getclock();
+	int curtim=getClockmSecs();
 
 
 	if (!pi->corpse) {

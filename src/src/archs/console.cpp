@@ -266,7 +266,7 @@ void checkkey ()
 				break;
 			case 'T':
 			case 't':
-				endtime=getclock()+(SECS*60*2);
+				endtime=getClockmSecs()+(SECS*60*2);
 				endmessage(0);
 				break;
 			case '#':
@@ -349,7 +349,7 @@ int main(int argc, char *argv[])
 
 	initclock() ;
 
-	serverstarttime=getclock();
+	serverstarttime=getClockmSecs();
 
 	initConsole();
 	lowlevelOutput(stdout, "Starting Hypnos...\n\n");
@@ -377,7 +377,7 @@ int main(int argc, char *argv[])
 	error=Network->faul; // i hope i can find a cleaner solution for that, but this works !!!
 	// has to here and not at the cal cause it would get overriten later
 
-	serverstarttime=getclock();
+	serverstarttime=getClockmSecs();
 
 	exitOnError(error);
 
@@ -391,7 +391,7 @@ int main(int argc, char *argv[])
 	lowlevelOutput(stdout, " [DONE]\n");
 
 	FD_ZERO(&conn);
-	starttime=getclock();
+	starttime=getClockmSecs();
 	endtime=0;
 	lclock=0;
 
@@ -421,7 +421,7 @@ int main(int argc, char *argv[])
 			"-=Server Startup=-\n"
 			"=======================================================================\n");
 
-	serverstarttime=getclock(); // dont remove, its absolutly necassairy that its 3 times in the startup sequence for several timing reasons.
+	serverstarttime=getClockmSecs(); // dont remove, its absolutly necassairy that its 3 times in the startup sequence for several timing reasons.
 
 	exitOnError(error);
 
@@ -499,7 +499,7 @@ int main(int argc, char *argv[])
 
 		if ( TIMEOUT( CheckClientIdle ) )
 		{
-			CheckClientIdle=((SrvParms->inactivitytimeout/2)*SECS)+getclock();
+			CheckClientIdle=((SrvParms->inactivitytimeout/2)*SECS)+getClockmSecs();
 
 			for (r=0;r<now;r++)
 			{
@@ -507,7 +507,7 @@ int main(int argc, char *argv[])
 				if(! pc_r )
 					continue;
 				if (!pc_r->IsGM()
-					&& pc_r->clientidletime<getclock()
+					&& pc_r->clientidletime<getClockmSecs()
 					&& clientInfo[r]->ingame
 					)
 				{
@@ -524,7 +524,7 @@ int main(int argc, char *argv[])
 		{
 			Network->CheckConn();
 			TelnetInterface.CheckConn();
-			uiNextCheckConn = (unsigned int)( getclock() + 250 );
+			uiNextCheckConn = (unsigned int)( getClockmSecs() + 250 );
 		}
 
 		Network->CheckMessage();

@@ -761,7 +761,7 @@ void Skills::SkillUse(pClient client, int x)
 	pChar pc = client->currChar();
 	if ( ! pc ) return;
 
-	if( (pc->skilldelay>getclock()) && (!pc->isGM()) )
+	if( (pc->skilldelay>getClockmSecs()) && (!pc->isGM()) )
 	{
 		client->sysmessage("You must wait a few moments before using another skill.");
 		return;
@@ -1259,7 +1259,7 @@ void Skills::Persecute (pClient client)
 	
 	int decrease=(pc->in/10)+3;
 	
-	if( pc->skilldelay > getclock() && !pc->isGM() )
+	if( pc->skilldelay > getClockmSecs() && !pc->isGM() )
 	{
 		client->sysmessage("You are unable to persecute him now...rest a little...");
 		return;

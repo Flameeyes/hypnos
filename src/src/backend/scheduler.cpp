@@ -144,7 +144,7 @@ void *cScheduler::run()
 	{
 		Wefts::OSSleep(minInterval, 0);
 		for(EventsList::iterator it = events.begin(); it != events.end(); it++)
-			if ( getclock() > ( (*it)->lastrun + (*it)->interval ) )
+			if ( getClockmSecs() > ( (*it)->lastrun + (*it)->interval ) )
 				(*it)->callback->execute();
 	}
 	return 0;
