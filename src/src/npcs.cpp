@@ -997,18 +997,8 @@ pChar AddNPC(pClient client, pItem pi, int npcNum, uint16_t x1, uint16_t y1, int
 
 									//Bug fix Monsters spawning on water:
 
-									staticVector s;
-									data::collectStatics( pi_i->getPosition().x+xos, pi_i->getPosition().y+yos, s );
-									uint32_t i;
-									for( i = 0; i < s.size(); i++ ) {
-										tile_st tile;
-										data::seekTile( s[i].id, tile );
-										if(!(strcmp((char *) tile.name, "water")))//Water
-										{//Don't spawn on water tiles... Just add other stuff here you don't want spawned on.
-											lb=0;
-											break;
-										}
-									}
+									if ( isWaterTile(pi_i->getPosition().x+xos, pi_i->getPosition().y+yos) )
+										break;
 								} while (!lb);
 							} // end Zippy's changes (exept for all the +xos and +yos around here....)
 

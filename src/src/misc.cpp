@@ -884,13 +884,19 @@ bool isWaterTile(sPoint pt)
 			break;
 	}
 
-	std::string tilename = tiledataStatic->getName( s[i].id );
-	
-	if ( strstr( tilename.c_str(), "water" ) || strstr( tilename.c_str(), "water" ) )
-		return true;
-	
-	return tiledataLand->getFlags(map.id) & nMULFiles::flagTileWet;
-
+	staticVector s;
+	data::collectStatics( p.x, p.y, s );
+	for( register int i = 0; i < s.size(); i++ )
+	{
+		std::string tilename = tiledataStatic->getName( s[i].id );
+		
+		if ( strstr( tilename.c_str(), "water" ) || strstr( tilename.c_str(), "water" ) )
+			return true;
+		
+		if ( tiledataLand->getFlags(map.id) & nMULFiles::flagTileWet )
+			return true;
+	}
+	return false;
 }
 
 /*!
